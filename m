@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A92451FA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:42:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0D074518A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:02:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349072AbhKPAow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:44:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44626 "EHLO mail.kernel.org"
+        id S1343581AbhKOXFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:05:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343867AbhKOTWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:22:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 245506329D;
-        Mon, 15 Nov 2021 18:47:42 +0000 (UTC)
+        id S243052AbhKOSxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:53:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FF22633BE;
+        Mon, 15 Nov 2021 18:10:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002062;
-        bh=vPMz/5VMfVrv/JhrgRAhUPgIPq+gfRu4moruOfVYe3Y=;
+        s=korg; t=1636999825;
+        bh=iqKqQWEqOV02w7w19Komc4oSE8RCEfpJm9URWeylwTc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QPrxvQ5rcZeG0QMbunHhJgx+gU7nOvzbAEMDfgQZbRt09DnLatWtn4gyK1SiD+Y+t
-         9trpe6dyRDZZqUFJr3y3JZxLSBV/IkH+Y2ZyKii/hJ5CekRdDwRQf6rMC5UhliKvS3
-         nDoGpIv4Kyht9TNvmdVB/YPQBLVQUWbv+4O+rNH8=
+        b=F15FE4/ttuzmttG79jFj30E8qxbBMaHvmlOaF6iyZblvWF8bhOMpIO2RHUTzTVCmH
+         6Iwvet/o1J6w/jjqZEUCZ7Dy0lSBgUEpviEGQUfk7pVe5UcHIJ1I9F/ehjmAMfx1sy
+         tW1Mq/U7kP6q72pqDVolZag70kQxh0nLENYdQE9s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Guenter Roeck <linux@roeck-us.net>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 425/917] hwmon: Fix possible memleak in __hwmon_device_register()
-Date:   Mon, 15 Nov 2021 17:58:40 +0100
-Message-Id: <20211115165443.206688464@linuxfoundation.org>
+Subject: [PATCH 5.14 438/849] drm/msm: uninitialized variable in msm_gem_import()
+Date:   Mon, 15 Nov 2021 17:58:41 +0100
+Message-Id: <20211115165435.099652361@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,65 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit ada61aa0b1184a8fda1a89a340c7d6cc4e59aee5 ]
+[ Upstream commit 2203bd0e5c12ffc53ffdd4fbd7b12d6ba27e0424 ]
 
-I got memory leak as follows when doing fault injection test:
+The msm_gem_new_impl() function cleans up after itself so there is no
+need to call drm_gem_object_put().  Conceptually, it does not make sense
+to call a kref_put() function until after the reference counting has
+been initialized which happens immediately after this call in the
+drm_gem_(private_)object_init() functions.
 
-unreferenced object 0xffff888102740438 (size 8):
-  comm "27", pid 859, jiffies 4295031351 (age 143.992s)
-  hex dump (first 8 bytes):
-    68 77 6d 6f 6e 30 00 00                          hwmon0..
-  backtrace:
-    [<00000000544b5996>] __kmalloc_track_caller+0x1a6/0x300
-    [<00000000df0d62b9>] kvasprintf+0xad/0x140
-    [<00000000d3d2a3da>] kvasprintf_const+0x62/0x190
-    [<000000005f8f0f29>] kobject_set_name_vargs+0x56/0x140
-    [<00000000b739e4b9>] dev_set_name+0xb0/0xe0
-    [<0000000095b69c25>] __hwmon_device_register+0xf19/0x1e50 [hwmon]
-    [<00000000a7e65b52>] hwmon_device_register_with_info+0xcb/0x110 [hwmon]
-    [<000000006f181e86>] devm_hwmon_device_register_with_info+0x85/0x100 [hwmon]
-    [<0000000081bdc567>] tmp421_probe+0x2d2/0x465 [tmp421]
-    [<00000000502cc3f8>] i2c_device_probe+0x4e1/0xbb0
-    [<00000000f90bda3b>] really_probe+0x285/0xc30
-    [<000000007eac7b77>] __driver_probe_device+0x35f/0x4f0
-    [<000000004953d43d>] driver_probe_device+0x4f/0x140
-    [<000000002ada2d41>] __device_attach_driver+0x24c/0x330
-    [<00000000b3977977>] bus_for_each_drv+0x15d/0x1e0
-    [<000000005bf2a8e3>] __device_attach+0x267/0x410
+In the msm_gem_import() function the "obj" pointer is uninitialized, so
+it will lead to a crash.
 
-When device_register() returns an error, the name allocated in
-dev_set_name() will be leaked, the put_device() should be used
-instead of calling hwmon_dev_release() to give up the device
-reference, then the name will be freed in kobject_cleanup().
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: bab2243ce189 ("hwmon: Introduce hwmon_device_register_with_groups")
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20211012112758.2681084-1-yangyingliang@huawei.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Fixes: 05b849111c07 ("drm/msm: prime support")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/20211013081315.GG6010@kili
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/hwmon.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/msm/msm_gem.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hwmon/hwmon.c b/drivers/hwmon/hwmon.c
-index 8d3b1dae31df1..3501a3ead4ba6 100644
---- a/drivers/hwmon/hwmon.c
-+++ b/drivers/hwmon/hwmon.c
-@@ -796,8 +796,10 @@ __hwmon_device_register(struct device *dev, const char *name, void *drvdata,
- 	dev_set_drvdata(hdev, drvdata);
- 	dev_set_name(hdev, HWMON_ID_FORMAT, id);
- 	err = device_register(hdev);
--	if (err)
--		goto free_hwmon;
-+	if (err) {
-+		put_device(hdev);
-+		goto ida_remove;
-+	}
+diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
+index 1ba18f53dbda1..9533225b5c88c 100644
+--- a/drivers/gpu/drm/msm/msm_gem.c
++++ b/drivers/gpu/drm/msm/msm_gem.c
+@@ -1220,7 +1220,7 @@ static struct drm_gem_object *_msm_gem_new(struct drm_device *dev,
  
- 	INIT_LIST_HEAD(&hwdev->tzdata);
+ 	ret = msm_gem_new_impl(dev, size, flags, &obj);
+ 	if (ret)
+-		goto fail;
++		return ERR_PTR(ret);
+ 
+ 	msm_obj = to_msm_bo(obj);
+ 
+@@ -1320,7 +1320,7 @@ struct drm_gem_object *msm_gem_import(struct drm_device *dev,
+ 
+ 	ret = msm_gem_new_impl(dev, size, MSM_BO_WC, &obj);
+ 	if (ret)
+-		goto fail;
++		return ERR_PTR(ret);
+ 
+ 	drm_gem_private_object_init(dev, obj, size);
  
 -- 
 2.33.0
