@@ -2,94 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A289451C0B
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE35451C0A
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:08:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230459AbhKPALG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:11:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57208 "EHLO
+        id S1349661AbhKPALD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:11:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353255AbhKOUzc (ORCPT
+        with ESMTP id S1353262AbhKOUzd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 15:55:32 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D7AEC061229
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 12:44:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=v0cEKznz+bdKQmpgmLdrTxblJ+4rLf7n2JRdMFbmYIA=; b=dDXa5A8mOv3QGPKTbyNFns0pVI
-        RJi2uapzXC8P26skt/z0PIC9AIOYLN2mqKoInVgsHlxDnOaRL6/4S8aBJ6+iPjek1YITjM2HnJLsq
-        D+S1+1XFkvsz2qNFec0ccAbphkaPRV9pBUeY5Nv0IjJhL8Mvu2LxeCNz1HEnqHbx0UDQov+1wi25Y
-        UM992PCWN9vlZRtQBxENWJdB02pTnmsIEG69W/IOX1NBOyIOnBdAZMCo+FKtQ+eAPDh1BB1PlWsTt
-        dHZk9TZtXvtItCisLrQouyS8zEeYnNDvssqaQOqLxXzPjToKLNKW3Ekk+6S7juclzRDu+31EbuLeP
-        0bJCp/6w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mmiqC-00GCDF-TY; Mon, 15 Nov 2021 20:44:37 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F3E22986687; Mon, 15 Nov 2021 21:44:35 +0100 (CET)
-Date:   Mon, 15 Nov 2021 21:44:35 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Brian Gerst <brgerst@gmail.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH 3/3] x86_64: Use relative per-cpu offsets
-Message-ID: <20211115204435.GP174703@worktop.programming.kicks-ass.net>
-References: <20211113124035.9180-1-brgerst@gmail.com>
- <20211113124035.9180-4-brgerst@gmail.com>
- <719e0170-7645-4787-8c3a-676f34068c27@www.fastmail.com>
- <CAMzpN2gbOzsmnAh330+zk+ZZQmk-xNdUdCar6WaPrvHtgzknTA@mail.gmail.com>
- <20211114110305.GN174703@worktop.programming.kicks-ass.net>
- <CAMzpN2jWs8heND7PydKw9CCZ0cjvJgxLMwXXQj45rwR6twpJLw@mail.gmail.com>
+        Mon, 15 Nov 2021 15:55:33 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF29C06122B
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 12:44:51 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id b12so33208113wrh.4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 12:44:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vTY9c4nGjIAug267W1FIDAR4zM5DtlqZP0wVMolCP6Y=;
+        b=ZK96HyZ2YT+avJ1gsOlAqjWYenDUxGgPr9tGQAWxohnH0c2uivMzzbZz5kQmad8fU1
+         OjdtDg1nlws8wGQGHmhE+Sg+MiRV6Ju/TYmo/5EP9AYdFtlJUajxsESL+wtI2F6AyPOE
+         p5L+TXv6Zy8YUITp7yqzY8yqmhn/oXubFx9o8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vTY9c4nGjIAug267W1FIDAR4zM5DtlqZP0wVMolCP6Y=;
+        b=bCdoEpZ4nuXlDS9MJSuOQDH4cUT8MjFucMgvrXbm6iXGCWLOEH2PSykvJJ3qQHAhU/
+         rCAnTXhWNmNczNPLK5p0ORZU7YZSLhdNBrMZ0cb3g3VFUuvWRDWvgOUJFgex1XUX9Xv0
+         8LJzUcoHT9UhMP8uklFxY7DXaJBqOnSR2ALvfb6uuoXbG/l/HUI+AaltbKBu19DlWr6v
+         xMLUGSpfrAOqpWOtfgpCSjD5eGbwJH7jm6wc9hiX4pY+5hTlhz2BFk0iAC/eYgwfNBNe
+         kLj2nPfVb9PmYhVBedYHw9OXfmvWtAKE7radBLY+RullVsjSNIjYGkQkI6PnmpqvW/w3
+         Y7yw==
+X-Gm-Message-State: AOAM533qojHW1S8nKAqLDzMweLWDJRwHBl1uAEG7BIyZUKCi1zlQbxi8
+        jMuK1iHlEv1kHgSay+8vftQFCXa7JPi0ZJccBWIn/Q==
+X-Google-Smtp-Source: ABdhPJz0N8/xG/aw3eeYg6AUrhU2UbyR1m/ZTw9COLLRNJzPTKFIafhrFVxB9Y+TQHKhIUCugNzRHfp/8kzPUtpQ8kw=
+X-Received: by 2002:a5d:4b41:: with SMTP id w1mr2249118wrs.437.1637009090444;
+ Mon, 15 Nov 2021 12:44:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMzpN2jWs8heND7PydKw9CCZ0cjvJgxLMwXXQj45rwR6twpJLw@mail.gmail.com>
+References: <20211110221456.11977-1-jim2101024@gmail.com> <20211110221456.11977-6-jim2101024@gmail.com>
+ <CAL_Jsq+6g-EhyVCeWTMkjOZmBwsOOVZo2jXpzAkjOXcZaxb2eA@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+6g-EhyVCeWTMkjOZmBwsOOVZo2jXpzAkjOXcZaxb2eA@mail.gmail.com>
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Mon, 15 Nov 2021 15:44:39 -0500
+Message-ID: <CA+-6iNxfrOQtH1JDEjAdSZQkENoaw1tUDTfVc5+G7P6BAbSc6g@mail.gmail.com>
+Subject: Re: [PATCH v8 5/8] PCI/portdrv: add mechanism to turn on subdev regulators
+To:     Rob Herring <robh@kernel.org>
+Cc:     Jim Quinlan <jim2101024@gmail.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Sean V Kelley <sean.v.kelley@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Keith Busch <kbusch@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 14, 2021 at 01:29:46PM -0500, Brian Gerst wrote:
-> On Sun, Nov 14, 2021 at 6:03 AM Peter Zijlstra <peterz@infradead.org> wrote:
+On Thu, Nov 11, 2021 at 5:57 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Wed, Nov 10, 2021 at 4:15 PM Jim Quinlan <jim2101024@gmail.com> wrote:
 > >
-> > On Sat, Nov 13, 2021 at 11:54:19PM -0500, Brian Gerst wrote:
-> > > On Sat, Nov 13, 2021 at 8:18 PM Andy Lutomirski <luto@kernel.org> wrote:
-> > > >
-> > > >
-> > > >
-> > > > On Sat, Nov 13, 2021, at 4:40 AM, Brian Gerst wrote:
-> > > > > The per-cpu section is currently linked at virtual address 0, because
-> > > > > older compilers hardcoded the stack protector canary value at a fixed
-> > > > > offset from the start of the GS segment.  Use a standard relative offset
-> > > > > as the GS base when the stack protector is disabled, or a newer compiler
-> > > > > is used that supports a configurable location for the stack canary.
-> > > >
-> > > > Can you explain the benefit?  Also, I think we should consider dropping support for the fixed model like we did on x86_32.
-> > >
-> > > This patch probably makes more sense if we drop the fixed model, as
-> > > that gets rid of alot of code that works around having to link the
-> > > percpu section differently.
+> > Adds a mechanism inside the root port device to identify standard PCIe
+> > regulators in the DT, allocate them, and turn them on before the rest of
+> > the bus is scanned during pci_host_probe().  A root complex driver can
+> > leverage this mechanism by setting the pci_ops methods add_bus and
+> > remove_bus to pci_subdev_regulators_{add,remove}_bus.
 > >
-> > Can someone spell out these benefits please? To me having per-cpu start
-> > at 0 makes perfect sense, how does not having that make things better?
-> 
-> The best reason is that the percpu section is currently not subject to
-> KASLR.  It actually needs extra support to counter the effects of
-> relocation.  There have also been a number of linker bugs over the
-> years that have had to be worked around.
+> > The allocated structure that contains the regulators is stored in
+> > dev.driver_data.
+> >
+> > The unabridged reason for doing this is as follows.  We would like the
+> > Broadcom STB PCIe root complex driver (and others) to be able to turn
+> > off/on regulators[1] that provide power to endpoint[2] devices.  Typically,
+> > the drivers of these endpoint devices are stock Linux drivers that are not
+> > aware that these regulator(s) exist and must be turned on for the driver to
+> > be probed.  The simple solution of course is to turn these regulators on at
+> > boot and keep them on.  However, this solution does not satisfy at least
+> > three of our usage modes:
+> >
+> > 1. For example, one customer uses multiple PCIe controllers, but wants the
+> > ability to, by script invoking and unbind, turn any or all of them by and
+> > their subdevices off to save power, e.g. when in battery mode.
+> >
+> > 2. Another example is when a watchdog script discovers that an endpoint
+> > device is in an unresponsive state and would like to unbind, power toggle,
+> > and re-bind just the PCIe endpoint and controller.
+> >
+> > 3. Of course we also want power turned off during suspend mode.  However,
+> > some endpoint devices may be able to "wake" during suspend and we need to
+> > recognise this case and veto the nominal act of turning off its regulator.
+> > Such is the case with Wake-on-LAN and Wake-on-WLAN support where PCIe
+> > end-point device needs to be kept powered on in order to receive network
+> > packets and wake-up the system.
+> >
+> > In all of these cases it is advantageous for the PCIe controller to govern
+> > the turning off/on the regulators needed by the endpoint device.  The first
+> > two cases can be done by simply unbinding and binding the PCIe controller,
+> > if the controller has control of these regulators.
+> >
+> > [1] These regulators typically govern the actual power supply to the
+> >     endpoint chip.  Sometimes they may be a the official PCIe socket
+> >     power -- such as 3.3v or aux-3.3v.  Sometimes they are truly
+> >     the regulator(s) that supply power to the EP chip.
+> >
+> > [2] The 99% configuration of our boards is a single endpoint device
+> >     attached to the PCIe controller.  I use the term endpoint but it could
+> >     possible mean a switch as well.
+> >
+> > Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+> > ---
+> >  drivers/pci/bus.c              | 72 ++++++++++++++++++++++++++++++++++
+> >  drivers/pci/pci.h              |  8 ++++
+> >  drivers/pci/pcie/portdrv_pci.c | 32 +++++++++++++++
+> >  3 files changed, 112 insertions(+)
+> >
+> > diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
+> > index 3cef835b375f..c39fdf36b0ad 100644
+> > --- a/drivers/pci/bus.c
+> > +++ b/drivers/pci/bus.c
+> > @@ -419,3 +419,75 @@ void pci_bus_put(struct pci_bus *bus)
+> >         if (bus)
+> >                 put_device(&bus->dev);
+> >  }
+> > +
+> > +static void *alloc_subdev_regulators(struct device *dev)
+> > +{
+> > +       static const char * const supplies[] = {
+> > +               "vpcie3v3",
+> > +               "vpcie3v3aux",
+> > +               "vpcie12v",
+> > +       };
+> > +       const size_t size = sizeof(struct subdev_regulators)
+> > +               + sizeof(struct regulator_bulk_data) * ARRAY_SIZE(supplies);
+> > +       struct subdev_regulators *sr;
+> > +       int i;
+> > +
+> > +       sr = devm_kzalloc(dev, size, GFP_KERNEL);
+> > +
+> > +       if (sr) {
+> > +               sr->num_supplies = ARRAY_SIZE(supplies);
+> > +               for (i = 0; i < ARRAY_SIZE(supplies); i++)
+> > +                       sr->supplies[i].supply = supplies[i];
+> > +       }
+> > +
+> > +       return sr;
+> > +}
+> > +
+> > +
+> > +int pci_subdev_regulators_add_bus(struct pci_bus *bus)
+> > +{
+> > +       struct device *dev = &bus->dev;
+> > +       struct subdev_regulators *sr;
+> > +       int ret;
+> > +
+> > +       if (!pcie_is_port_dev(bus->self))
+> > +               return 0;
+> > +
+> > +       if (WARN_ON(bus->dev.driver_data))
+> > +               dev_err(dev, "multiple clients using dev.driver_data\n");
+> > +
+> > +       sr = alloc_subdev_regulators(&bus->dev);
+> > +       if (!sr)
+> > +               return -ENOMEM;
+> > +
+> > +       bus->dev.driver_data = sr;
+> > +       ret = regulator_bulk_get(dev, sr->num_supplies, sr->supplies);
+> > +       if (ret)
+> > +               return ret;
+> > +
+> > +       ret = regulator_bulk_enable(sr->num_supplies, sr->supplies);
+> > +       if (ret) {
+> > +               dev_err(dev, "failed to enable regulators for downstream device\n");
+> > +               return ret;
+> > +       }
+> > +
+> > +       return 0;
+> > +}
+> > +EXPORT_SYMBOL_GPL(pci_subdev_regulators_add_bus);
+>
+> Can't these just go in the portdrv probe and remove functions now?
+>
+> Rob
 
-I'm confused.. having the variables 0-offset is related to KASLR how?
-The dynamic placement of per-cpu thunks and their base address in %GS
-gives plenty opportunity to move them around at boot time, no?
+Not really.  The idea is that  only when a host controller driver does this
 
-> If we were to decide to drop the fixed stack protector the diffstat
-> would look something like:
+static struct pci_ops my_pcie_ops = {
+    .add_bus = pci_subdev_regulators_add_bus , /* see  note below */
+    .remove_bus = pci_subdev_regulators_remove_bus,
+    ...
+}
 
-Dropping the fixed stack protecter seems fine to me; I just don't see
-why we should move away from 0-offset.
+does it explicitly want this feature.  Without doing this, every PCI
+port in the world will execute a devm_kzalloc() and
+devm_regulator_bulk_get() to (likely) grab nothing, and then there
+will be three superfluous lines in the boot log:
+
+pci_bus 0001:01: 0001:01 supply vpcie12v not found, using dummy regulator
+pci_bus 0001:01: 0001:01 supply vpcie3v3 not found, using dummy regulator
+pci_bus 0001:01: 0001:01 supply vpcie3v3aux not found, using dummy regulator
+
+Secondly, our  HW needs to know when the  alloc/get/enable of
+regulators is done so that the PCIe link can then be attempted.   This
+is pretty much the cornerstone of this patchset.   To do this the brcm
+RC driver's call to pci_subdev_regulators_add_bus() is wrapped by
+brcm_pcie_add_bus() so that we can do this:
+
+static struct pci_ops my_pcie_ops = {
+    .add_bus = brcm_pcie_add_bus ,   /* calls pci_subdev_regulators_add_bus() */
+    .remove_bus = pci_subdev_regulators_remove_bus,
+    ...
+}
+
+Regards,
+Jim Quinlan
+Broadcom STB
