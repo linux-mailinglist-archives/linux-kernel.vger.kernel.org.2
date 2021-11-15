@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65AC7451E1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:32:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 613EE4518D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:06:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345219AbhKPAfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:35:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
+        id S1352183AbhKOXI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:08:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344000AbhKOTXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:23:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3AFA61A52;
-        Mon, 15 Nov 2021 18:49:50 +0000 (UTC)
+        id S243224AbhKOS5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:57:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94B8D633D1;
+        Mon, 15 Nov 2021 18:12:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002191;
-        bh=nJN+TsdqJfQK67Uf7jXTTWFVG8lLgeSpUz+HJUdBQzc=;
+        s=korg; t=1636999958;
+        bh=BwZJKnpZU/sNbF4AjNPmMWMJrsMVNqYH33obNIstlj4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jDIS8Zbob0/38tkpF2yd5ynUwbIKLGB4iYrdNd4/E3EpVmsOj/7kbrQXzIYr70T0M
-         PgWLVYSb+EmebYRxkPNBXBDOJ/3X4nCAySPGEAwjV2IHob2Kkkbm7rzEouOuFoUIrB
-         yXJPBn1CoKKioeaOGrYyhNi/jWjt5is7zq3CFZkE=
+        b=PMDI6I1NHu3NipenJj0/kswKs8Fv/H6urrV4LP9GJ1aE41UUP0W5YN3nax6lRzmsh
+         7U1HiOQL67XU8EmFU0h0HoGLVO/yHoMDVK32P6IfyLlw2aKZFIOHGNeAeEVGUCa5WL
+         3aLo+DSFc9TlYPtgvOaD2cYS3WQfyp0dLvz7RZlg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ryder Lee <ryder.lee@mediatek.com>,
-        Eric-SY Chang <Eric-SY.Chang@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 472/917] mt76: mt7921: report HE MU radiotap
-Date:   Mon, 15 Nov 2021 17:59:27 +0100
-Message-Id: <20211115165444.779374875@linuxfoundation.org>
+        stable@vger.kernel.org, Anders Roxell <anders.roxell@linaro.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 485/849] PM: hibernate: fix sparse warnings
+Date:   Mon, 15 Nov 2021 17:59:28 +0100
+Message-Id: <20211115165436.682558685@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,185 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Wang <sean.wang@mediatek.com>
+From: Anders Roxell <anders.roxell@linaro.org>
 
-[ Upstream commit 4fee32153ab62356aeea9d152d8f33a5fd3a0086 ]
+[ Upstream commit 01de5fcd8b1ac0ca28d2bb0921226a54fdd62684 ]
 
-Report HE MU/BF radiotap.
+When building the kernel with sparse enabled 'C=1' the following
+warnings shows up:
 
-That fixed HE MU packets dropped by mac80211 because they are missing the
-ieee80211_radiotap_he_mu header.
+kernel/power/swap.c:390:29: warning: incorrect type in assignment (different base types)
+kernel/power/swap.c:390:29:    expected int ret
+kernel/power/swap.c:390:29:    got restricted blk_status_t
 
-Fixes: 163f4d22c118d ("mt76: mt7921: add MAC support")
-Co-developed-by: Ryder Lee <ryder.lee@mediatek.com>
-Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
-Co-developed-by: Eric-SY Chang <Eric-SY.Chang@mediatek.com>
-Signed-off-by: Eric-SY Chang <Eric-SY.Chang@mediatek.com>
-Tested-by: Eric-SY Chang <Eric-SY.Chang@mediatek.com>
-Signed-off-by: Sean Wang <sean.wang@mediatek.com>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+This is due to function hib_wait_io() returns a 'blk_status_t' which is
+a bitwise u8. Commit 5416da01ff6e ("PM: hibernate: Remove
+blk_status_to_errno in hib_wait_io") seemed to have mixed up the return
+type. However, the 4e4cbee93d56 ("block: switch bios to blk_status_t")
+actually broke the behaviour by returning the wrong type.
+
+Rework so function hib_wait_io() returns a 'int' instead of
+'blk_status_t' and make sure to call function
+blk_status_to_errno(hb->error)' when returning from function
+hib_wait_io() a int gets returned.
+
+Fixes: 4e4cbee93d56 ("block: switch bios to blk_status_t")
+Fixes: 5416da01ff6e ("PM: hibernate: Remove blk_status_to_errno in hib_wait_io")
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/wireless/mediatek/mt76/mt7921/mac.c   | 65 ++++++++++++++++---
- .../net/wireless/mediatek/mt76/mt7921/mac.h   |  8 +++
- 2 files changed, 65 insertions(+), 8 deletions(-)
+ kernel/power/swap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
-index f4714b0f6e5c4..8a16f3f4d5253 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
-@@ -180,12 +180,56 @@ mt7921_mac_decode_he_radiotap_ru(struct mt76_rx_status *status,
- 				      IEEE80211_RADIOTAP_HE_DATA2_RU_OFFSET);
+diff --git a/kernel/power/swap.c b/kernel/power/swap.c
+index 0aabc94125d6b..f3a1086f7cdb2 100644
+--- a/kernel/power/swap.c
++++ b/kernel/power/swap.c
+@@ -299,7 +299,7 @@ static int hib_submit_io(int op, int op_flags, pgoff_t page_off, void *addr,
+ 	return error;
  }
  
-+static void
-+mt7921_mac_decode_he_mu_radiotap(struct sk_buff *skb,
-+				 struct mt76_rx_status *status,
-+				 __le32 *rxv)
-+{
-+	static const struct ieee80211_radiotap_he_mu mu_known = {
-+		.flags1 = HE_BITS(MU_FLAGS1_SIG_B_MCS_KNOWN) |
-+			  HE_BITS(MU_FLAGS1_SIG_B_DCM_KNOWN) |
-+			  HE_BITS(MU_FLAGS1_CH1_RU_KNOWN) |
-+			  HE_BITS(MU_FLAGS1_SIG_B_SYMS_USERS_KNOWN) |
-+			  HE_BITS(MU_FLAGS1_SIG_B_COMP_KNOWN),
-+		.flags2 = HE_BITS(MU_FLAGS2_BW_FROM_SIG_A_BW_KNOWN) |
-+			  HE_BITS(MU_FLAGS2_PUNC_FROM_SIG_A_BW_KNOWN),
-+	};
-+	struct ieee80211_radiotap_he_mu *he_mu = NULL;
-+
-+	he_mu = skb_push(skb, sizeof(mu_known));
-+	memcpy(he_mu, &mu_known, sizeof(mu_known));
-+
-+#define MU_PREP(f, v)	le16_encode_bits(v, IEEE80211_RADIOTAP_HE_MU_##f)
-+
-+	he_mu->flags1 |= MU_PREP(FLAGS1_SIG_B_MCS, status->rate_idx);
-+	if (status->he_dcm)
-+		he_mu->flags1 |= MU_PREP(FLAGS1_SIG_B_DCM, status->he_dcm);
-+
-+	he_mu->flags2 |= MU_PREP(FLAGS2_BW_FROM_SIG_A_BW, status->bw) |
-+			 MU_PREP(FLAGS2_SIG_B_SYMS_USERS,
-+				 le32_get_bits(rxv[2], MT_CRXV_HE_NUM_USER));
-+
-+	he_mu->ru_ch1[0] = FIELD_GET(MT_CRXV_HE_RU0, cpu_to_le32(rxv[3]));
-+
-+	if (status->bw >= RATE_INFO_BW_40) {
-+		he_mu->flags1 |= HE_BITS(MU_FLAGS1_CH2_RU_KNOWN);
-+		he_mu->ru_ch2[0] =
-+			FIELD_GET(MT_CRXV_HE_RU1, cpu_to_le32(rxv[3]));
-+	}
-+
-+	if (status->bw >= RATE_INFO_BW_80) {
-+		he_mu->ru_ch1[1] =
-+			FIELD_GET(MT_CRXV_HE_RU2, cpu_to_le32(rxv[3]));
-+		he_mu->ru_ch2[1] =
-+			FIELD_GET(MT_CRXV_HE_RU3, cpu_to_le32(rxv[3]));
-+	}
-+}
-+
- static void
- mt7921_mac_decode_he_radiotap(struct sk_buff *skb,
- 			      struct mt76_rx_status *status,
- 			      __le32 *rxv, u32 phy)
+-static blk_status_t hib_wait_io(struct hib_bio_batch *hb)
++static int hib_wait_io(struct hib_bio_batch *hb)
  {
--	/* TODO: struct ieee80211_radiotap_he_mu */
- 	static const struct ieee80211_radiotap_he known = {
- 		.data1 = HE_BITS(DATA1_DATA_MCS_KNOWN) |
- 			 HE_BITS(DATA1_DATA_DCM_KNOWN) |
-@@ -193,6 +237,7 @@ mt7921_mac_decode_he_radiotap(struct sk_buff *skb,
- 			 HE_BITS(DATA1_CODING_KNOWN) |
- 			 HE_BITS(DATA1_LDPC_XSYMSEG_KNOWN) |
- 			 HE_BITS(DATA1_DOPPLER_KNOWN) |
-+			 HE_BITS(DATA1_SPTL_REUSE_KNOWN) |
- 			 HE_BITS(DATA1_BSS_COLOR_KNOWN),
- 		.data2 = HE_BITS(DATA2_GI_KNOWN) |
- 			 HE_BITS(DATA2_TXBF_KNOWN) |
-@@ -207,9 +252,12 @@ mt7921_mac_decode_he_radiotap(struct sk_buff *skb,
- 
- 	he->data3 = HE_PREP(DATA3_BSS_COLOR, BSS_COLOR, rxv[14]) |
- 		    HE_PREP(DATA3_LDPC_XSYMSEG, LDPC_EXT_SYM, rxv[2]);
-+	he->data4 = HE_PREP(DATA4_SU_MU_SPTL_REUSE, SR_MASK, rxv[11]);
- 	he->data5 = HE_PREP(DATA5_PE_DISAMBIG, PE_DISAMBIG, rxv[2]) |
- 		    le16_encode_bits(ltf_size,
- 				     IEEE80211_RADIOTAP_HE_DATA5_LTF_SIZE);
-+	if (cpu_to_le32(rxv[0]) & MT_PRXV_TXBF)
-+		he->data5 |= HE_BITS(DATA5_TXBF);
- 	he->data6 = HE_PREP(DATA6_TXOP, TXOP_DUR, rxv[14]) |
- 		    HE_PREP(DATA6_DOPPLER, DOPPLER, rxv[14]);
- 
-@@ -217,8 +265,7 @@ mt7921_mac_decode_he_radiotap(struct sk_buff *skb,
- 	case MT_PHY_TYPE_HE_SU:
- 		he->data1 |= HE_BITS(DATA1_FORMAT_SU) |
- 			     HE_BITS(DATA1_UL_DL_KNOWN) |
--			     HE_BITS(DATA1_BEAM_CHANGE_KNOWN) |
--			     HE_BITS(DATA1_SPTL_REUSE_KNOWN);
-+			     HE_BITS(DATA1_BEAM_CHANGE_KNOWN);
- 
- 		he->data3 |= HE_PREP(DATA3_BEAM_CHANGE, BEAM_CHNG, rxv[14]) |
- 			     HE_PREP(DATA3_UL_DL, UPLINK, rxv[2]);
-@@ -232,17 +279,15 @@ mt7921_mac_decode_he_radiotap(struct sk_buff *skb,
- 		break;
- 	case MT_PHY_TYPE_HE_MU:
- 		he->data1 |= HE_BITS(DATA1_FORMAT_MU) |
--			     HE_BITS(DATA1_UL_DL_KNOWN) |
--			     HE_BITS(DATA1_SPTL_REUSE_KNOWN);
-+			     HE_BITS(DATA1_UL_DL_KNOWN);
- 
- 		he->data3 |= HE_PREP(DATA3_UL_DL, UPLINK, rxv[2]);
--		he->data4 |= HE_PREP(DATA4_SU_MU_SPTL_REUSE, SR_MASK, rxv[11]);
-+		he->data4 |= HE_PREP(DATA4_MU_STA_ID, MU_AID, rxv[7]);
- 
- 		mt7921_mac_decode_he_radiotap_ru(status, he, rxv);
- 		break;
- 	case MT_PHY_TYPE_HE_TB:
- 		he->data1 |= HE_BITS(DATA1_FORMAT_TRIG) |
--			     HE_BITS(DATA1_SPTL_REUSE_KNOWN) |
- 			     HE_BITS(DATA1_SPTL_REUSE2_KNOWN) |
- 			     HE_BITS(DATA1_SPTL_REUSE3_KNOWN) |
- 			     HE_BITS(DATA1_SPTL_REUSE4_KNOWN);
-@@ -606,9 +651,13 @@ int mt7921_mac_fill_rx(struct mt7921_dev *dev, struct sk_buff *skb)
- 
- 	mt7921_mac_assoc_rssi(dev, skb);
- 
--	if (rxv && status->flag & RX_FLAG_RADIOTAP_HE)
-+	if (rxv && status->flag & RX_FLAG_RADIOTAP_HE) {
- 		mt7921_mac_decode_he_radiotap(skb, status, rxv, mode);
- 
-+		if (status->flag & RX_FLAG_RADIOTAP_HE_MU)
-+			mt7921_mac_decode_he_mu_radiotap(skb, status, rxv);
-+	}
-+
- 	if (!status->wcid || !ieee80211_is_data_qos(fc))
- 		return 0;
- 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mac.h b/drivers/net/wireless/mediatek/mt76/mt7921/mac.h
-index 3af67fac213df..f0194c8780372 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/mac.h
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/mac.h
-@@ -116,6 +116,7 @@ enum rx_pkt_type {
- #define MT_PRXV_TX_DCM			BIT(4)
- #define MT_PRXV_TX_ER_SU_106T		BIT(5)
- #define MT_PRXV_NSTS			GENMASK(9, 7)
-+#define MT_PRXV_TXBF			BIT(10)
- #define MT_PRXV_HT_AD_CODE		BIT(11)
- #define MT_PRXV_FRAME_MODE		GENMASK(14, 12)
- #define MT_PRXV_SGI			GENMASK(16, 15)
-@@ -138,8 +139,15 @@ enum rx_pkt_type {
- #define MT_CRXV_HE_LTF_SIZE		GENMASK(18, 17)
- #define MT_CRXV_HE_LDPC_EXT_SYM		BIT(20)
- #define MT_CRXV_HE_PE_DISAMBIG		BIT(23)
-+#define MT_CRXV_HE_NUM_USER		GENMASK(30, 24)
- #define MT_CRXV_HE_UPLINK		BIT(31)
- 
-+#define MT_CRXV_HE_RU0			GENMASK(7, 0)
-+#define MT_CRXV_HE_RU1			GENMASK(15, 8)
-+#define MT_CRXV_HE_RU2			GENMASK(23, 16)
-+#define MT_CRXV_HE_RU3			GENMASK(31, 24)
-+#define MT_CRXV_HE_MU_AID		GENMASK(30, 20)
-+
- #define MT_CRXV_HE_SR_MASK		GENMASK(11, 8)
- #define MT_CRXV_HE_SR1_MASK		GENMASK(16, 12)
- #define MT_CRXV_HE_SR2_MASK             GENMASK(20, 17)
+ 	/*
+ 	 * We are relying on the behavior of blk_plug that a thread with
 -- 
 2.33.0
 
