@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD97C451B61
+	by mail.lfdr.de (Postfix) with ESMTP id 80A03451B60
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:57:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236536AbhKPAAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:00:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45404 "EHLO mail.kernel.org"
+        id S234498AbhKPAAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:00:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233789AbhKOTYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344392AbhKOTYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 14:24:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7A5563675;
-        Mon, 15 Nov 2021 18:56:49 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D76F63673;
+        Mon, 15 Nov 2021 18:56:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637002610;
-        bh=5zkn8EtUAC03mm/4g4bHXKqDjNKVIIDJ/CXnOXbyv2M=;
+        s=korg; t=1637002613;
+        bh=FVgRtSFxjBLi4lbTDdzMZGiHodtA1kV+lQqNjG6YAyY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gRoqgQ8T+nOEP4NQaHcTJFhb2eVTbul8y448/U/vszxGU6HAnDTR265jDX9hYeqAX
-         WgSbJjWIVrCRWyqrkmYHQQ32Kw3aY6NZh9ethT4WIFLmjnDTRtqyTN5NGpEI43t+gs
-         DfFgJ42ZPifdmnLp7mVhtBZ6k9IzJRx9+8yw2OeE=
+        b=jWr0INP5moBagZeYcHUh/O/KiN7LZr+vcYDpetahJvx+Q93xjt9rCQR8GPS40lu//
+         UMpfcLuxjyn6g5PNZbHurevY1kIcTl1LWfffsSjOqUSY1hd0yi1tnHH0zCaDbrNj2C
+         afo3gd23oqxF4vme9YqgYPQAgG42rEi61wNXvNa4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <jroedel@suse.de>,
+        stable@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 599/917] iommu/mediatek: Fix out-of-range warning with clang
-Date:   Mon, 15 Nov 2021 18:01:34 +0100
-Message-Id: <20211115165449.076175662@linuxfoundation.org>
+Subject: [PATCH 5.15 600/917] arm64: dts: qcom: pm8916: Remove wrong reg-names for rtc@6000
+Date:   Mon, 15 Nov 2021 18:01:35 +0100
+Message-Id: <20211115165449.108062115@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
 References: <20211115165428.722074685@linuxfoundation.org>
@@ -40,45 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Stephan Gerhold <stephan@gerhold.net>
 
-[ Upstream commit f13efafc1a2cf30d4a74c00f40210d6de36db2d0 ]
+[ Upstream commit 483de2b44cd3a168458f8f9ff237e78a434729bc ]
 
-clang-14 notices that a comparison is never true when
-CONFIG_PHYS_ADDR_T_64BIT is disabled:
+While removing the size from the "reg" properties in pm8916.dtsi,
+commit bd6429e81010 ("ARM64: dts: qcom: Remove size elements from
+pmic reg properties") mistakenly also removed the second register
+address for the rtc@6000 device. That one did not represent the size
+of the register region but actually the address of the second "alarm"
+register region of the rtc@6000 device.
 
-drivers/iommu/mtk_iommu.c:553:34: error: result of comparison of constant 5368709120 with expression of type 'phys_addr_t' (aka 'unsigned int') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
-        if (dom->data->enable_4GB && pa >= MTK_IOMMU_4GB_MODE_REMAP_BASE)
-                                     ~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Now there are "reg-names" for two "reg" elements, but there is actually
+only one "reg" listed.
 
-Add an explicit check for the type of the variable to skip the check
-and the warning in that case.
+Since the DT schema for "qcom,pm8941-rtc" only expects one "reg"
+element anyway, just drop the "reg-names" entirely to fix this.
 
-Fixes: b4dad40e4f35 ("iommu/mediatek: Adjust the PA for the 4GB Mode")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Yong Wu <yong.wu@mediatek.com>
-Link: https://lore.kernel.org/r/20210927121857.941160-1-arnd@kernel.org
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Fixes: bd6429e81010 ("ARM64: dts: qcom: Remove size elements from pmic reg properties")
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/20210928112945.25310-1-stephan@gerhold.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/mtk_iommu.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/qcom/pm8916.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index d837adfd1da55..25b834104790c 100644
---- a/drivers/iommu/mtk_iommu.c
-+++ b/drivers/iommu/mtk_iommu.c
-@@ -550,7 +550,9 @@ static phys_addr_t mtk_iommu_iova_to_phys(struct iommu_domain *domain,
- 	phys_addr_t pa;
+diff --git a/arch/arm64/boot/dts/qcom/pm8916.dtsi b/arch/arm64/boot/dts/qcom/pm8916.dtsi
+index f931cb0de231f..42180f1b5dbbb 100644
+--- a/arch/arm64/boot/dts/qcom/pm8916.dtsi
++++ b/arch/arm64/boot/dts/qcom/pm8916.dtsi
+@@ -86,7 +86,6 @@
+ 		rtc@6000 {
+ 			compatible = "qcom,pm8941-rtc";
+ 			reg = <0x6000>;
+-			reg-names = "rtc", "alarm";
+ 			interrupts = <0x0 0x61 0x1 IRQ_TYPE_EDGE_RISING>;
+ 		};
  
- 	pa = dom->iop->iova_to_phys(dom->iop, iova);
--	if (dom->data->enable_4GB && pa >= MTK_IOMMU_4GB_MODE_REMAP_BASE)
-+	if (IS_ENABLED(CONFIG_PHYS_ADDR_T_64BIT) &&
-+	    dom->data->enable_4GB &&
-+	    pa >= MTK_IOMMU_4GB_MODE_REMAP_BASE)
- 		pa &= ~BIT_ULL(32);
- 
- 	return pa;
 -- 
 2.33.0
 
