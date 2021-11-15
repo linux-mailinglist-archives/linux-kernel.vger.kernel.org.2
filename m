@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3748450CCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:41:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5736450C55
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:34:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238679AbhKORnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 12:43:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59810 "EHLO mail.kernel.org"
+        id S237137AbhKORh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:37:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237126AbhKORRY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:17:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C533061BF4;
-        Mon, 15 Nov 2021 17:13:15 +0000 (UTC)
+        id S237131AbhKORR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:17:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C75563238;
+        Mon, 15 Nov 2021 17:13:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996396;
-        bh=/pd5iX5CMMG/3ikllfiPRVZXqq7LkR6VQa7ufsfMr2U=;
+        s=korg; t=1636996399;
+        bh=AlNY1KDY+3Z4FOFEcpeF7Bga+azl9Y2sftpCI89T+Y8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2rZGFEQ8cooh/j/rRpp3I/7DZpfkoMoteia8yAoXNF2CtLDofBBUSu97uV9c7w4kn
-         HldTI76Igc4H2nwxBTPxh6tCjMTbJRXdccghgSJSP8dGyj8E+r/mqrA7M/iA/MaYz2
-         gclUUPB3zUUzTrvFlPOyuuVxgdZ+vCOo1L4QUU0I=
+        b=dVOYeVAnIIHORrS+Uuc2MdFcmqPbfKFP9ZvpY0xH5THD+5jcPo0pP8T+OvrITsALg
+         crJvH76Ur6QE5cuH6XXEaHiC9VGvTMJKQ1EOgmtELg9axHBJqq9Xdf+pdO3uzXJG8D
+         pycisSPplz+7kDtVw8YyA5JcmHV4HUbfjtGbPpLQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+3f91de0b813cc3d19a80@syzkaller.appspotmail.com,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
+        stable@vger.kernel.org, Michael Wang <yun.wang@linux.alibaba.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 124/355] smackfs: Fix use-after-free in netlbl_catmap_walk()
-Date:   Mon, 15 Nov 2021 18:00:48 +0100
-Message-Id: <20211115165317.824667340@linuxfoundation.org>
+Subject: [PATCH 5.4 125/355] x86: Increase exception stack sizes
+Date:   Mon, 15 Nov 2021 18:00:49 +0100
+Message-Id: <20211115165317.858370194@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -42,53 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit 0817534ff9ea809fac1322c5c8c574be8483ea57 ]
+[ Upstream commit 7fae4c24a2b84a66c7be399727aca11e7a888462 ]
 
-Syzkaller reported use-after-free bug as described in [1]. The bug is
-triggered when smk_set_cipso() tries to free stale category bitmaps
-while there are concurrent reader(s) using the same bitmaps.
+It turns out that a single page of stack is trivial to overflow with
+all the tracing gunk enabled. Raise the exception stacks to 2 pages,
+which is still half the interrupt stacks, which are at 4 pages.
 
-Wait for RCU grace period to finish before freeing the category bitmaps
-in smk_set_cipso(). This makes sure that there are no more readers using
-the stale bitmaps and freeing them should be safe.
-
-[1] https://lore.kernel.org/netdev/000000000000a814c505ca657a4e@google.com/
-
-Reported-by: syzbot+3f91de0b813cc3d19a80@syzkaller.appspotmail.com
-Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+Reported-by: Michael Wang <yun.wang@linux.alibaba.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/YUIO9Ye98S5Eb68w@hirez.programming.kicks-ass.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/smack/smackfs.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/page_64_types.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
-index 3823ab2c4e4be..cec3f56739dc2 100644
---- a/security/smack/smackfs.c
-+++ b/security/smack/smackfs.c
-@@ -831,6 +831,7 @@ static int smk_open_cipso(struct inode *inode, struct file *file)
- static ssize_t smk_set_cipso(struct file *file, const char __user *buf,
- 				size_t count, loff_t *ppos, int format)
- {
-+	struct netlbl_lsm_catmap *old_cat;
- 	struct smack_known *skp;
- 	struct netlbl_lsm_secattr ncats;
- 	char mapcatset[SMK_CIPSOLEN];
-@@ -920,9 +921,11 @@ static ssize_t smk_set_cipso(struct file *file, const char __user *buf,
+diff --git a/arch/x86/include/asm/page_64_types.h b/arch/x86/include/asm/page_64_types.h
+index 288b065955b72..9d0b479452720 100644
+--- a/arch/x86/include/asm/page_64_types.h
++++ b/arch/x86/include/asm/page_64_types.h
+@@ -15,7 +15,7 @@
+ #define THREAD_SIZE_ORDER	(2 + KASAN_STACK_ORDER)
+ #define THREAD_SIZE  (PAGE_SIZE << THREAD_SIZE_ORDER)
  
- 	rc = smk_netlbl_mls(maplevel, mapcatset, &ncats, SMK_CIPSOLEN);
- 	if (rc >= 0) {
--		netlbl_catmap_free(skp->smk_netlabel.attr.mls.cat);
-+		old_cat = skp->smk_netlabel.attr.mls.cat;
- 		skp->smk_netlabel.attr.mls.cat = ncats.attr.mls.cat;
- 		skp->smk_netlabel.attr.mls.lvl = ncats.attr.mls.lvl;
-+		synchronize_rcu();
-+		netlbl_catmap_free(old_cat);
- 		rc = count;
- 	}
+-#define EXCEPTION_STACK_ORDER (0 + KASAN_STACK_ORDER)
++#define EXCEPTION_STACK_ORDER (1 + KASAN_STACK_ORDER)
+ #define EXCEPTION_STKSZ (PAGE_SIZE << EXCEPTION_STACK_ORDER)
  
+ #define IRQ_STACK_ORDER (2 + KASAN_STACK_ORDER)
 -- 
 2.33.0
 
