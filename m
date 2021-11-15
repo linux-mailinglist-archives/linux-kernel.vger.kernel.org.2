@@ -2,29 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54381450DD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:06:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D1E2450D7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 18:56:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238913AbhKOSIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:08:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50936 "EHLO mail.kernel.org"
+        id S239402AbhKOR6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 12:58:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237858AbhKOR0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 12:26:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6354263268;
-        Mon, 15 Nov 2021 17:18:35 +0000 (UTC)
+        id S237794AbhKORYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:24:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B76E6325E;
+        Mon, 15 Nov 2021 17:18:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636996718;
+        bh=1FvhlQUbr1kw9/nJQlANYYFbH1FZNQi8JDdb4qg82x8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=w6LpQZLCiaREd+tRbqPX85lRxmZPdzygXi4riZK2cbTQKkTllqZiSow+TySTDbvt+
+         FL1SKiUMbM+saQJNNQpCjSiBoewtvaNJ2OEtIkaLiu3fwsYSJThVh59yfeuei1MHNT
+         X+apYWiOyEevs7QycfNIyMVXTBNKiLcSXDgA6Wws=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Eckelmann <sven@narfation.org>,
-        Simon Wunderlich <sw@simonwunderlich.de>,
-        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>,
-        =?UTF-8?q?Linus=20L=C3=BCssing?= <ll@simonwunderlich.de>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 209/355] ath9k: Fix potential interrupt storm on queue reset
-Date:   Mon, 15 Nov 2021 18:02:13 +0100
-Message-Id: <20211115165320.527879188@linuxfoundation.org>
+        stable@vger.kernel.org, Yazen Ghannam <yazen.ghannam@amd.com>,
+        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 210/355] EDAC/amd64: Handle three rank interleaving mode
+Date:   Mon, 15 Nov 2021 18:02:14 +0100
+Message-Id: <20211115165320.559135480@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -36,94 +39,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Lüssing <ll@simonwunderlich.de>
+From: Yazen Ghannam <yazen.ghannam@amd.com>
 
-[ Upstream commit 4925642d541278575ad1948c5924d71ffd57ef14 ]
+[ Upstream commit 9f4873fb6af7966de8fcbd95c36b61351c1c4b1f ]
 
-In tests with two Lima boards from 8devices (QCA4531 based) on OpenWrt
-19.07 we could force a silent restart of a device with no serial
-output when we were sending a high amount of UDP traffic (iperf3 at 80
-MBit/s in both directions from external hosts, saturating the wifi and
-causing a load of about 4.5 to 6) and were then triggering an
-ath9k_queue_reset().
+AMD Rome systems and later support interleaving between three identical
+ranks within a channel.
 
-Further debugging showed that the restart was caused by the ath79
-watchdog. With disabled watchdog we could observe that the device was
-constantly going into ath_isr() interrupt handler and was returning
-early after the ATH_OP_HW_RESET flag test, without clearing any
-interrupts. Even though ath9k_queue_reset() calls
-ath9k_hw_kill_interrupts().
+Check for this mode by counting the number of enabled chip selects and
+comparing their masks. If there are exactly three enabled chip selects
+and their masks are identical, then three rank interleaving is enabled.
 
-With JTAG we could observe the following race condition:
+The size of a rank is determined from its mask value. However, three
+rank interleaving doesn't follow the method of swapping an interleave
+bit with the most significant bit. Rather, the interleave bit is flipped
+and the most significant bit remains the same. There is only a single
+interleave bit in this case.
 
-1) ath9k_queue_reset()
-   ...
-   -> ath9k_hw_kill_interrupts()
-   -> set_bit(ATH_OP_HW_RESET, &common->op_flags);
-   ...
-   <- returns
+Account for this when determining the chip select size by keeping the
+most significant bit at its original value and ignoring any zero bits.
+This will return a full bitmask in [MSB:1].
 
-      2) ath9k_tasklet()
-         ...
-         -> ath9k_hw_resume_interrupts()
-         ...
-         <- returns
-
-                 3) loops around:
-                    ...
-                    handle_int()
-                    -> ath_isr()
-                       ...
-                       -> if (test_bit(ATH_OP_HW_RESET,
-                                       &common->op_flags))
-                            return IRQ_HANDLED;
-
-                    x) ath_reset_internal():
-                       => never reached <=
-
-And in ath_isr() we would typically see the following interrupts /
-interrupt causes:
-
-* status: 0x00111030 or 0x00110030
-* async_cause: 2 (AR_INTR_MAC_IPQ)
-* sync_cause: 0
-
-So the ath9k_tasklet() reenables the ath9k interrupts
-through ath9k_hw_resume_interrupts() which ath9k_queue_reset() had just
-disabled. And ath_isr() then keeps firing because it returns IRQ_HANDLED
-without actually clearing the interrupt.
-
-To fix this IRQ storm also clear/disable the interrupts again when we
-are in reset state.
-
-Cc: Sven Eckelmann <sven@narfation.org>
-Cc: Simon Wunderlich <sw@simonwunderlich.de>
-Cc: Linus Lüssing <linus.luessing@c0d3.blue>
-Fixes: 872b5d814f99 ("ath9k: do not access hardware on IRQs during reset")
-Signed-off-by: Linus Lüssing <ll@simonwunderlich.de>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210914192515.9273-3-linus.luessing@c0d3.blue
+Fixes: e53a3b267fb0 ("EDAC/amd64: Find Chip Select memory size using Address Mask")
+Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20211005154419.2060504-1-yazen.ghannam@amd.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath9k/main.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/edac/amd64_edac.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath9k/main.c b/drivers/net/wireless/ath/ath9k/main.c
-index 28ccdcb197de2..ec13bd8d5487d 100644
---- a/drivers/net/wireless/ath/ath9k/main.c
-+++ b/drivers/net/wireless/ath/ath9k/main.c
-@@ -530,8 +530,10 @@ irqreturn_t ath_isr(int irq, void *dev)
- 	ath9k_debug_sync_cause(sc, sync_cause);
- 	status &= ah->imask;	/* discard unasked-for bits */
+diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
+index aed0f26c9af5d..ac4a5015c146b 100644
+--- a/drivers/edac/amd64_edac.c
++++ b/drivers/edac/amd64_edac.c
+@@ -797,12 +797,14 @@ static void debug_dump_dramcfg_low(struct amd64_pvt *pvt, u32 dclr, int chan)
+ #define CS_ODD_PRIMARY		BIT(1)
+ #define CS_EVEN_SECONDARY	BIT(2)
+ #define CS_ODD_SECONDARY	BIT(3)
++#define CS_3R_INTERLEAVE	BIT(4)
  
--	if (test_bit(ATH_OP_HW_RESET, &common->op_flags))
-+	if (test_bit(ATH_OP_HW_RESET, &common->op_flags)) {
-+		ath9k_hw_kill_interrupts(sc->sc_ah);
- 		return IRQ_HANDLED;
+ #define CS_EVEN			(CS_EVEN_PRIMARY | CS_EVEN_SECONDARY)
+ #define CS_ODD			(CS_ODD_PRIMARY | CS_ODD_SECONDARY)
+ 
+ static int f17_get_cs_mode(int dimm, u8 ctrl, struct amd64_pvt *pvt)
+ {
++	u8 base, count = 0;
+ 	int cs_mode = 0;
+ 
+ 	if (csrow_enabled(2 * dimm, ctrl, pvt))
+@@ -815,6 +817,20 @@ static int f17_get_cs_mode(int dimm, u8 ctrl, struct amd64_pvt *pvt)
+ 	if (csrow_sec_enabled(2 * dimm + 1, ctrl, pvt))
+ 		cs_mode |= CS_ODD_SECONDARY;
+ 
++	/*
++	 * 3 Rank inteleaving support.
++	 * There should be only three bases enabled and their two masks should
++	 * be equal.
++	 */
++	for_each_chip_select(base, ctrl, pvt)
++		count += csrow_enabled(base, ctrl, pvt);
++
++	if (count == 3 &&
++	    pvt->csels[ctrl].csmasks[0] == pvt->csels[ctrl].csmasks[1]) {
++		edac_dbg(1, "3R interleaving in use.\n");
++		cs_mode |= CS_3R_INTERLEAVE;
 +	}
++
+ 	return cs_mode;
+ }
  
- 	/*
- 	 * If there are no status bits set, then this interrupt was not
+@@ -1623,10 +1639,14 @@ static int f17_addr_mask_to_cs_size(struct amd64_pvt *pvt, u8 umc,
+ 	 *
+ 	 * The MSB is the number of bits in the full mask because BIT[0] is
+ 	 * always 0.
++	 *
++	 * In the special 3 Rank interleaving case, a single bit is flipped
++	 * without swapping with the most significant bit. This can be handled
++	 * by keeping the MSB where it is and ignoring the single zero bit.
+ 	 */
+ 	msb = fls(addr_mask_orig) - 1;
+ 	weight = hweight_long(addr_mask_orig);
+-	num_zero_bits = msb - weight;
++	num_zero_bits = msb - weight - !!(cs_mode & CS_3R_INTERLEAVE);
+ 
+ 	/* Take the number of zero bits off from the top of the mask. */
+ 	addr_mask_deinterleaved = GENMASK_ULL(msb - num_zero_bits, 1);
 -- 
 2.33.0
 
