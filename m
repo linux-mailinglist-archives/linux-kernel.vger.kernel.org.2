@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7373E450F41
+	by mail.lfdr.de (Postfix) with ESMTP id BBB51450F42
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 19:26:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241800AbhKOS23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 13:28:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45642 "EHLO mail.kernel.org"
+        id S241826AbhKOS3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 13:29:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237338AbhKOReQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237664AbhKOReQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 12:34:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61FA563231;
-        Mon, 15 Nov 2021 17:22:21 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBDEA63271;
+        Mon, 15 Nov 2021 17:22:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996941;
-        bh=AHHG2iZTUXX4PfrEMTBZMlvqWsZ/3ta9pyckJY4D62c=;
+        s=korg; t=1636996944;
+        bh=5tgvtFbDhgbdofoNixaH/jT5x/PmV1GkjsS8GYqNzoE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CVcxDR4uW7TnYYiAydOs+HibQDxLHqqk9Cs6STIZuZuCnxWkyWPbTi51G0cuBBFY8
-         tGr6u6LlcspD/ek1CTnjeCj9Ufw7N7qzNnhmFCgk7IetJRL5epDGRq4aUg0q9bhk8W
-         msVUVc6CIYDOBfrpKDmxoX1O9AKwSpyBcO2qDpew=
+        b=WrIo5HAHjWMmZM9tJvPvavMQ7AYi42QIH/kRSGUNCANRvbGnTkAf7lcOnRPdVZamB
+         hQgZYi/sDMb8wvZSvSXocZA7YdPKmFDx8rgp1VDJVBletAraa6dlcZqZRYmO7vEOVW
+         7tySrH2ZTYuSE0uqGp6XyJ2eK0U13Helr+9WKHgo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
+        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jussi Maki <joamaki@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 325/355] arm64: pgtable: make __pte_to_phys/__phys_to_pte_val inline functions
-Date:   Mon, 15 Nov 2021 18:04:09 +0100
-Message-Id: <20211115165324.250708152@linuxfoundation.org>
+Subject: [PATCH 5.4 326/355] bpf: sockmap, strparser, and tls are reusing qdisc_skb_cb and colliding
+Date:   Mon, 15 Nov 2021 18:04:10 +0100
+Message-Id: <20211115165324.282508068@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
 References: <20211115165313.549179499@linuxfoundation.org>
@@ -40,65 +42,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: John Fastabend <john.fastabend@gmail.com>
 
-[ Upstream commit c7c386fbc20262c1d911c615c65db6a58667d92c ]
+[ Upstream commit e0dc3b93bd7bcff8c3813d1df43e0908499c7cf0 ]
 
-gcc warns about undefined behavior the vmalloc code when building
-with CONFIG_ARM64_PA_BITS_52, when the 'idx++' in the argument to
-__phys_to_pte_val() is evaluated twice:
+Strparser is reusing the qdisc_skb_cb struct to stash the skb message handling
+progress, e.g. offset and length of the skb. First this is poorly named and
+inherits a struct from qdisc that doesn't reflect the actual usage of cb[] at
+this layer.
 
-mm/vmalloc.c: In function 'vmap_pfn_apply':
-mm/vmalloc.c:2800:58: error: operation on 'data->idx' may be undefined [-Werror=sequence-point]
- 2800 |         *pte = pte_mkspecial(pfn_pte(data->pfns[data->idx++], data->prot));
-      |                                                 ~~~~~~~~~^~
-arch/arm64/include/asm/pgtable-types.h:25:37: note: in definition of macro '__pte'
-   25 | #define __pte(x)        ((pte_t) { (x) } )
-      |                                     ^
-arch/arm64/include/asm/pgtable.h:80:15: note: in expansion of macro '__phys_to_pte_val'
-   80 |         __pte(__phys_to_pte_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
-      |               ^~~~~~~~~~~~~~~~~
-mm/vmalloc.c:2800:30: note: in expansion of macro 'pfn_pte'
- 2800 |         *pte = pte_mkspecial(pfn_pte(data->pfns[data->idx++], data->prot));
-      |                              ^~~~~~~
+But, more importantly strparser is using the following to access its metadata.
 
-I have no idea why this never showed up earlier, but the safest
-workaround appears to be changing those macros into inline functions
-so the arguments get evaluated only once.
+  (struct _strp_msg *)((void *)skb->cb + offsetof(struct qdisc_skb_cb, data))
 
-Cc: Matthew Wilcox <willy@infradead.org>
-Fixes: 75387b92635e ("arm64: handle 52-bit physical addresses in page table entries")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20211105075414.2553155-1-arnd@kernel.org
-Signed-off-by: Will Deacon <will@kernel.org>
+Where _strp_msg is defined as:
+
+  struct _strp_msg {
+        struct strp_msg            strp;                 /*     0     8 */
+        int                        accum_len;            /*     8     4 */
+
+        /* size: 12, cachelines: 1, members: 2 */
+        /* last cacheline: 12 bytes */
+  };
+
+So we use 12 bytes of ->data[] in struct. However in BPF code running parser
+and verdict the user has read capabilities into the data[] array as well. Its
+not too problematic, but we should not be exposing internal state to BPF
+program. If its really needed then we can use the probe_read() APIs which allow
+reading kernel memory. And I don't believe cb[] layer poses any API breakage by
+moving this around because programs can't depend on cb[] across layers.
+
+In order to fix another issue with a ctx rewrite we need to stash a temp
+variable somewhere. To make this work cleanly this patch builds a cb struct
+for sk_skb types called sk_skb_cb struct. Then we can use this consistently
+in the strparser, sockmap space. Additionally we can start allowing ->cb[]
+write access after this.
+
+Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Tested-by: Jussi Maki <joamaki@gmail.com>
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+Link: https://lore.kernel.org/bpf/20211103204736.248403-5-john.fastabend@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/pgtable.h | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ include/net/strparser.h   | 16 +++++++++++++++-
+ net/core/filter.c         | 21 +++++++++++++++++++++
+ net/strparser/strparser.c | 10 +---------
+ 3 files changed, 37 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index a92a187ec8919..3a057d4279007 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -54,9 +54,15 @@ extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
-  * page table entry, taking care of 52-bit addresses.
-  */
- #ifdef CONFIG_ARM64_PA_BITS_52
--#define __pte_to_phys(pte)	\
--	((pte_val(pte) & PTE_ADDR_LOW) | ((pte_val(pte) & PTE_ADDR_HIGH) << 36))
--#define __phys_to_pte_val(phys)	(((phys) | ((phys) >> 36)) & PTE_ADDR_MASK)
-+static inline phys_addr_t __pte_to_phys(pte_t pte)
-+{
-+	return (pte_val(pte) & PTE_ADDR_LOW) |
-+		((pte_val(pte) & PTE_ADDR_HIGH) << 36);
-+}
-+static inline pteval_t __phys_to_pte_val(phys_addr_t phys)
-+{
-+	return (phys | (phys >> 36)) & PTE_ADDR_MASK;
-+}
- #else
- #define __pte_to_phys(pte)	(pte_val(pte) & PTE_ADDR_MASK)
- #define __phys_to_pte_val(phys)	(phys)
+diff --git a/include/net/strparser.h b/include/net/strparser.h
+index 1d20b98493a10..bec1439bd3be6 100644
+--- a/include/net/strparser.h
++++ b/include/net/strparser.h
+@@ -54,10 +54,24 @@ struct strp_msg {
+ 	int offset;
+ };
+ 
++struct _strp_msg {
++	/* Internal cb structure. struct strp_msg must be first for passing
++	 * to upper layer.
++	 */
++	struct strp_msg strp;
++	int accum_len;
++};
++
++struct sk_skb_cb {
++#define SK_SKB_CB_PRIV_LEN 20
++	unsigned char data[SK_SKB_CB_PRIV_LEN];
++	struct _strp_msg strp;
++};
++
+ static inline struct strp_msg *strp_msg(struct sk_buff *skb)
+ {
+ 	return (struct strp_msg *)((void *)skb->cb +
+-		offsetof(struct qdisc_skb_cb, data));
++		offsetof(struct sk_skb_cb, strp));
+ }
+ 
+ /* Structure for an attached lower socket */
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 0e161a6dff7e5..5ebc973ed4c50 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -8356,6 +8356,27 @@ static u32 sk_skb_convert_ctx_access(enum bpf_access_type type,
+ 		*insn++ = BPF_LDX_MEM(BPF_SIZEOF(void *), si->dst_reg,
+ 				      si->src_reg, off);
+ 		break;
++	case offsetof(struct __sk_buff, cb[0]) ...
++	     offsetofend(struct __sk_buff, cb[4]) - 1:
++		BUILD_BUG_ON(sizeof_field(struct sk_skb_cb, data) < 20);
++		BUILD_BUG_ON((offsetof(struct sk_buff, cb) +
++			      offsetof(struct sk_skb_cb, data)) %
++			     sizeof(__u64));
++
++		prog->cb_access = 1;
++		off  = si->off;
++		off -= offsetof(struct __sk_buff, cb[0]);
++		off += offsetof(struct sk_buff, cb);
++		off += offsetof(struct sk_skb_cb, data);
++		if (type == BPF_WRITE)
++			*insn++ = BPF_STX_MEM(BPF_SIZE(si->code), si->dst_reg,
++					      si->src_reg, off);
++		else
++			*insn++ = BPF_LDX_MEM(BPF_SIZE(si->code), si->dst_reg,
++					      si->src_reg, off);
++		break;
++
++
+ 	default:
+ 		return bpf_convert_ctx_access(type, si, insn_buf, prog,
+ 					      target_size);
+diff --git a/net/strparser/strparser.c b/net/strparser/strparser.c
+index b3815c1e8f2ea..cd9954c4ad808 100644
+--- a/net/strparser/strparser.c
++++ b/net/strparser/strparser.c
+@@ -27,18 +27,10 @@
+ 
+ static struct workqueue_struct *strp_wq;
+ 
+-struct _strp_msg {
+-	/* Internal cb structure. struct strp_msg must be first for passing
+-	 * to upper layer.
+-	 */
+-	struct strp_msg strp;
+-	int accum_len;
+-};
+-
+ static inline struct _strp_msg *_strp_msg(struct sk_buff *skb)
+ {
+ 	return (struct _strp_msg *)((void *)skb->cb +
+-		offsetof(struct qdisc_skb_cb, data));
++		offsetof(struct sk_skb_cb, strp));
+ }
+ 
+ /* Lower lock held */
 -- 
 2.33.0
 
