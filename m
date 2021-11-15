@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D28034520D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CAF3451DBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:31:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358876AbhKPA4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:56:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44602 "EHLO mail.kernel.org"
+        id S233701AbhKOTW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 14:22:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343741AbhKOTV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:21:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9003363295;
-        Mon, 15 Nov 2021 18:45:25 +0000 (UTC)
+        id S238891AbhKORsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 12:48:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A431C6329A;
+        Mon, 15 Nov 2021 17:30:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001926;
-        bh=jDpWWNLYwrE6qn3YFGFn3WLQE9+cO7dx1d6VZzxUcZk=;
+        s=korg; t=1636997425;
+        bh=9RkiO4g4NF3T9zFHVriGn5KFLta2My4giFSt7pHihfs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SshYeWm/KflefT46bBhAmG86nAt8VCgKQ2MMe6sdbyenEDYdW7rXIiVA3VEw0L0dN
-         IV+dfiVdf+I2uZPmY3mIInggLNgU13osqWnKyN/uCf8jFLorbU800le63UyisfGMtX
-         iSdrsLMnoJiqQg0sxOKh49xExtZV797twmxoLsdM=
+        b=GE2jIq9fIQy226PGhZc2JwK1z/Eqb0JpUbuxpIRezWkCr7Gs6qipiU/6FP6sa5FPH
+         +6Xu5UbzFxv66DMgjdxVRqR5t3TP2o4GYO6oabsmOyPjDSZqZKTpqDxt2gyO8Y1RYb
+         /DgAq00NCcDNiogp/k7LrnqSEgzp8aj6nAUzeXDQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabio Estevam <festevam@denx.de>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 372/917] ath10k: sdio: Add missing BH locking around napi_schdule()
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: [PATCH 5.10 142/575] PCI: aardvark: Do not unmask unused interrupts
 Date:   Mon, 15 Nov 2021 17:57:47 +0100
-Message-Id: <20211115165441.377813209@linuxfoundation.org>
+Message-Id: <20211115165348.599374136@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
+References: <20211115165343.579890274@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,71 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabio Estevam <festevam@denx.de>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit 019edd01d174ce4bb2e517dd332922514d176601 ]
+commit 1fb95d7d3c7a926b002fe8a6bd27a1cb428b46dc upstream.
 
-On a i.MX-based board with a QCA9377 Wifi chip, the following errors
-are seen after launching the 'hostapd' application:
+There are lot of undocumented interrupt bits. To prevent unwanted
+spurious interrupts, fix all *_ALL_MASK macros to define all interrupt
+bits, so that driver can properly mask all interrupts, including those
+which are undocumented.
 
-hostapd /etc/wifi.conf
-Configuration file: /etc/wifi.conf
-wlan0: interface state UNINITIALIZED->COUNTRY_UPDATE
-NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!
-Using interface wlan0 with hwaddr 00:1f:7b:31:04:a0 and ssid "thessid"
-IPv6: ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
-wlan0: interface state COUNTRY_UPDATE->ENABLED
-wlan0: AP-ENABLED
-NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!
-NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!
-NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!
-NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!
-...
-
-Fix this problem by adding the BH locking around napi-schedule(),
-in the same way it was done in commit e63052a5dd3c ("mlx5e: add
-add missing BH locking around napi_schdule()").
-
-Its commit log provides the following explanation:
-
-"It's not correct to call napi_schedule() in pure process
-context. Because we use __raise_softirq_irqoff() we require
-callers to be in a context which will eventually lead to
-softirq handling (hardirq, bh disabled, etc.).
-
-With code as is users will see:
-
-NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!
-"
-
-Fixes: cfee8793a74d ("ath10k: enable napi on RX path for sdio")
-Signed-off-by: Fabio Estevam <festevam@denx.de>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210824144339.2796122-1-festevam@denx.de
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lore.kernel.org/r/20211005180952.6812-8-kabel@kernel.org
+Fixes: 8c39d710363c ("PCI: aardvark: Add Aardvark PCI host controller driver")
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Marek Behún <kabel@kernel.org>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Marek Behún <kabel@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/ath/ath10k/sdio.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/pci/controller/pci-aardvark.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index b746052737e0b..eb705214f3f0a 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -1363,8 +1363,11 @@ static void ath10k_rx_indication_async_work(struct work_struct *work)
- 		ep->ep_ops.ep_rx_complete(ar, skb);
- 	}
+--- a/drivers/pci/controller/pci-aardvark.c
++++ b/drivers/pci/controller/pci-aardvark.c
+@@ -105,13 +105,13 @@
+ #define     PCIE_ISR0_MSI_INT_PENDING		BIT(24)
+ #define     PCIE_ISR0_INTX_ASSERT(val)		BIT(16 + (val))
+ #define     PCIE_ISR0_INTX_DEASSERT(val)	BIT(20 + (val))
+-#define	    PCIE_ISR0_ALL_MASK			GENMASK(26, 0)
++#define     PCIE_ISR0_ALL_MASK			GENMASK(31, 0)
+ #define PCIE_ISR1_REG				(CONTROL_BASE_ADDR + 0x48)
+ #define PCIE_ISR1_MASK_REG			(CONTROL_BASE_ADDR + 0x4C)
+ #define     PCIE_ISR1_POWER_STATE_CHANGE	BIT(4)
+ #define     PCIE_ISR1_FLUSH			BIT(5)
+ #define     PCIE_ISR1_INTX_ASSERT(val)		BIT(8 + (val))
+-#define     PCIE_ISR1_ALL_MASK			GENMASK(11, 4)
++#define     PCIE_ISR1_ALL_MASK			GENMASK(31, 0)
+ #define PCIE_MSI_ADDR_LOW_REG			(CONTROL_BASE_ADDR + 0x50)
+ #define PCIE_MSI_ADDR_HIGH_REG			(CONTROL_BASE_ADDR + 0x54)
+ #define PCIE_MSI_STATUS_REG			(CONTROL_BASE_ADDR + 0x58)
+@@ -239,7 +239,7 @@ enum {
+ #define     PCIE_IRQ_MSI_INT2_DET		BIT(21)
+ #define     PCIE_IRQ_RC_DBELL_DET		BIT(22)
+ #define     PCIE_IRQ_EP_STATUS			BIT(23)
+-#define     PCIE_IRQ_ALL_MASK			0xfff0fb
++#define     PCIE_IRQ_ALL_MASK			GENMASK(31, 0)
+ #define     PCIE_IRQ_ENABLE_INTS_MASK		PCIE_IRQ_CORE_INT
  
--	if (test_bit(ATH10K_FLAG_CORE_REGISTERED, &ar->dev_flags))
-+	if (test_bit(ATH10K_FLAG_CORE_REGISTERED, &ar->dev_flags)) {
-+		local_bh_disable();
- 		napi_schedule(&ar->napi);
-+		local_bh_enable();
-+	}
- }
- 
- static int ath10k_sdio_read_rtc_state(struct ath10k_sdio *ar_sdio, unsigned char *state)
--- 
-2.33.0
-
+ /* Transaction types */
 
 
