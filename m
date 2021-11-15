@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE634514B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:10:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C517345141D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 21:04:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349443AbhKOUMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 15:12:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46080 "EHLO mail.kernel.org"
+        id S1349005AbhKOUBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 15:01:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239728AbhKOSEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:04:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF3386101B;
-        Mon, 15 Nov 2021 17:38:49 +0000 (UTC)
+        id S239244AbhKOSCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 13:02:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3E0A632DD;
+        Mon, 15 Nov 2021 17:37:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636997930;
-        bh=TBI3aO7xF0u1trT5ru+rFS23Y1JCnXCPXJA1PDBjIPU=;
+        s=korg; t=1636997840;
+        bh=dQiUjyVYhqppDt0Inm25W2OeF8CpFYuGtBwEO0Vfj6o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CDBWlpuXiEYhjavKYoi3ih8o2jP9kJPVf7O1J5mTNFmGBATzgn8vo6Il36BVDiK+X
-         W9DyUHLgklesDlJ+cIWu0OWIKZWDIItnRJTgMRT8X4SF9ATVq0/XK+TM0ubEGx1UXr
-         oq5W1WRL8yMCl7W2jqhAmQW7IfRY9iVBbvYFFOUw=
+        b=ydAnUFhVcOCufyCC1uNSShP1E+Ka9N18wD8lg6+lgefIJYaKMRflcQxGzS/hF2o4i
+         nPlfLWo8hYEwKkPiN1P+yzArLr6GIuPrysnmAc9UOeo+peZyiGPpcxuyszNeaNZte4
+         iNf+ZNw5V0ysYJcsM/MqEdIL+huGRknzP/3cUZxo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Kees Cook <keescook@chromium.org>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 294/575] media: i2c: ths8200 needs V4L2_ASYNC
-Date:   Mon, 15 Nov 2021 18:00:19 +0100
-Message-Id: <20211115165353.946824789@linuxfoundation.org>
+Subject: [PATCH 5.10 295/575] media: radio-wl1273: Avoid card name truncation
+Date:   Mon, 15 Nov 2021 18:00:20 +0100
+Message-Id: <20211115165353.985068516@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
 References: <20211115165343.579890274@linuxfoundation.org>
@@ -44,42 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit e4625044d656f3c33ece0cc9da22577bc10ca5d3 ]
+[ Upstream commit dfadec236aa99f6086141949c9dc3ec50f3ff20d ]
 
-Fix the build errors reported by the kernel test robot by
-selecting V4L2_ASYNC:
+The "card" string only holds 31 characters (and the terminating NUL).
+In order to avoid truncation, use a shorter card description instead of
+the current result, "Texas Instruments Wl1273 FM Rad".
 
-mips-linux-ld: drivers/media/i2c/ths8200.o: in function `ths8200_remove':
-ths8200.c:(.text+0x1ec): undefined reference to `v4l2_async_unregister_subdev'
-mips-linux-ld: drivers/media/i2c/ths8200.o: in function `ths8200_probe':
-ths8200.c:(.text+0x404): undefined reference to `v4l2_async_register_subdev'
-
-Fixes: ed29f89497006 ("media: i2c: ths8200: support asynchronous probing")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Reviewed-by: Lad Prabhakar <prabhakar.csengg@gmail.com>
-Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Fixes: 87d1a50ce451 ("[media] V4L2: WL1273 FM Radio: TI WL1273 FM radio driver")
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/media/radio/radio-wl1273.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
-index 878f66ef2719f..5f5a3915ac778 100644
---- a/drivers/media/i2c/Kconfig
-+++ b/drivers/media/i2c/Kconfig
-@@ -595,6 +595,7 @@ config VIDEO_AK881X
- config VIDEO_THS8200
- 	tristate "Texas Instruments THS8200 video encoder"
- 	depends on VIDEO_V4L2 && I2C
-+	select V4L2_ASYNC
- 	help
- 	  Support for the Texas Instruments THS8200 video encoder.
+diff --git a/drivers/media/radio/radio-wl1273.c b/drivers/media/radio/radio-wl1273.c
+index 1123768731676..484046471c03f 100644
+--- a/drivers/media/radio/radio-wl1273.c
++++ b/drivers/media/radio/radio-wl1273.c
+@@ -1279,7 +1279,7 @@ static int wl1273_fm_vidioc_querycap(struct file *file, void *priv,
  
+ 	strscpy(capability->driver, WL1273_FM_DRIVER_NAME,
+ 		sizeof(capability->driver));
+-	strscpy(capability->card, "Texas Instruments Wl1273 FM Radio",
++	strscpy(capability->card, "TI Wl1273 FM Radio",
+ 		sizeof(capability->card));
+ 	strscpy(capability->bus_info, radio->bus_type,
+ 		sizeof(capability->bus_info));
 -- 
 2.33.0
 
