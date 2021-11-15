@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC974518CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:06:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68523452066
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:52:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346505AbhKOXIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:08:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34346 "EHLO mail.kernel.org"
+        id S1348043AbhKPAxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 19:53:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243492AbhKOS7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:59:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CB0C61B04;
-        Mon, 15 Nov 2021 18:13:40 +0000 (UTC)
+        id S1344057AbhKOTXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:23:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1D8C633B9;
+        Mon, 15 Nov 2021 18:50:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000020;
-        bh=5wKCXZgJs50IfqxEX0Hcmi9cCjL9Sqv8f2CKMecUbuY=;
+        s=korg; t=1637002253;
+        bh=MiKAFx3DtbtzBKVuyf7U8m5qGcjyBxadkSSOMvslgeo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mscrjFeQ3CQAexacP7eHBFOBFN5fRHTgKr1Pw1FzVfUkMgIiTYLrQRijztncvGZFB
-         hQxSuLEvZJsIWMOexmXpMzMop/ftm+F9jpRSyyM/U7RPLbRuggKurpsAkPZ2WS2Tpv
-         QaaPjcQWwJow9BP4SjB6KuVqSJZrzOc4mVtwqmMM=
+        b=o4w2Br3n4pEKRX3Ijv0gA2hWzqID51ttfViiJJzGkwTIoYGmhJd72Bg23PN9TGRzY
+         kTnmneK+oth8btv5OBcMQqgFkvaaYrtUKqDp6UFu5qlfEntFV6kfowKGNYD3migVew
+         67LL/inG8Y0kgp9CyxMbFEIKu2TfqnOpqyBWti30=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
-        Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Jessica Zhang <jesszhan@codeaurora.org>,
+        Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 509/849] blk-cgroup: synchronize blkg creation against policy deactivation
+Subject: [PATCH 5.15 497/917] drm/msm/dsi: fix wrong type in msm_dsi_host
 Date:   Mon, 15 Nov 2021 17:59:52 +0100
-Message-Id: <20211115165437.503523906@linuxfoundation.org>
+Message-Id: <20211115165445.625429263@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,158 +41,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+From: Jessica Zhang <jesszhan@codeaurora.org>
 
-[ Upstream commit 0c9d338c8443b06da8e8d3bfce824c5ea6d3488f ]
+[ Upstream commit 409af447c2a0a6e08ba190993a1153c91d3b11bd ]
 
-Our test reports a null pointer dereference:
+Change byte_clk_rate, pixel_clk_rate, esc_clk_rate, and src_clk_rate
+from u32 to unsigned long, since clk_get_rate() returns an unsigned long.
 
-[  168.534653] ==================================================================
-[  168.535614] Disabling lock debugging due to kernel taint
-[  168.536346] BUG: kernel NULL pointer dereference, address: 0000000000000008
-[  168.537274] #PF: supervisor read access in kernel mode
-[  168.537964] #PF: error_code(0x0000) - not-present page
-[  168.538667] PGD 0 P4D 0
-[  168.539025] Oops: 0000 [#1] PREEMPT SMP KASAN
-[  168.539656] CPU: 13 PID: 759 Comm: bash Tainted: G    B             5.15.0-rc2-next-202100
-[  168.540954] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_0738364
-[  168.542736] RIP: 0010:bfq_pd_init+0x88/0x1e0
-[  168.543318] Code: 98 00 00 00 e8 c9 e4 5b ff 4c 8b 65 00 49 8d 7c 24 08 e8 bb e4 5b ff 4d0
-[  168.545803] RSP: 0018:ffff88817095f9c0 EFLAGS: 00010002
-[  168.546497] RAX: 0000000000000001 RBX: ffff888101a1c000 RCX: 0000000000000000
-[  168.547438] RDX: 0000000000000003 RSI: 0000000000000002 RDI: ffff888106553428
-[  168.548402] RBP: ffff888106553400 R08: ffffffff961bcaf4 R09: 0000000000000001
-[  168.549365] R10: ffffffffa2e16c27 R11: fffffbfff45c2d84 R12: 0000000000000000
-[  168.550291] R13: ffff888101a1c098 R14: ffff88810c7a08c8 R15: ffffffffa55541a0
-[  168.551221] FS:  00007fac75227700(0000) GS:ffff88839ba80000(0000) knlGS:0000000000000000
-[  168.552278] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  168.553040] CR2: 0000000000000008 CR3: 0000000165ce7000 CR4: 00000000000006e0
-[  168.554000] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  168.554929] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  168.555888] Call Trace:
-[  168.556221]  <TASK>
-[  168.556510]  blkg_create+0x1c0/0x8c0
-[  168.556989]  blkg_conf_prep+0x574/0x650
-[  168.557502]  ? stack_trace_save+0x99/0xd0
-[  168.558033]  ? blkcg_conf_open_bdev+0x1b0/0x1b0
-[  168.558629]  tg_set_conf.constprop.0+0xb9/0x280
-[  168.559231]  ? kasan_set_track+0x29/0x40
-[  168.559758]  ? kasan_set_free_info+0x30/0x60
-[  168.560344]  ? tg_set_limit+0xae0/0xae0
-[  168.560853]  ? do_sys_openat2+0x33b/0x640
-[  168.561383]  ? do_sys_open+0xa2/0x100
-[  168.561877]  ? __x64_sys_open+0x4e/0x60
-[  168.562383]  ? __kasan_check_write+0x20/0x30
-[  168.562951]  ? copyin+0x48/0x70
-[  168.563390]  ? _copy_from_iter+0x234/0x9e0
-[  168.563948]  tg_set_conf_u64+0x17/0x20
-[  168.564467]  cgroup_file_write+0x1ad/0x380
-[  168.565014]  ? cgroup_file_poll+0x80/0x80
-[  168.565568]  ? __mutex_lock_slowpath+0x30/0x30
-[  168.566165]  ? pgd_free+0x100/0x160
-[  168.566649]  kernfs_fop_write_iter+0x21d/0x340
-[  168.567246]  ? cgroup_file_poll+0x80/0x80
-[  168.567796]  new_sync_write+0x29f/0x3c0
-[  168.568314]  ? new_sync_read+0x410/0x410
-[  168.568840]  ? __handle_mm_fault+0x1c97/0x2d80
-[  168.569425]  ? copy_page_range+0x2b10/0x2b10
-[  168.570007]  ? _raw_read_lock_bh+0xa0/0xa0
-[  168.570622]  vfs_write+0x46e/0x630
-[  168.571091]  ksys_write+0xcd/0x1e0
-[  168.571563]  ? __x64_sys_read+0x60/0x60
-[  168.572081]  ? __kasan_check_write+0x20/0x30
-[  168.572659]  ? do_user_addr_fault+0x446/0xff0
-[  168.573264]  __x64_sys_write+0x46/0x60
-[  168.573774]  do_syscall_64+0x35/0x80
-[  168.574264]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  168.574960] RIP: 0033:0x7fac74915130
-[  168.575456] Code: 73 01 c3 48 8b 0d 58 ed 2c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 444
-[  168.577969] RSP: 002b:00007ffc3080e288 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-[  168.578986] RAX: ffffffffffffffda RBX: 0000000000000009 RCX: 00007fac74915130
-[  168.579937] RDX: 0000000000000009 RSI: 000056007669f080 RDI: 0000000000000001
-[  168.580884] RBP: 000056007669f080 R08: 000000000000000a R09: 00007fac75227700
-[  168.581841] R10: 000056007655c8f0 R11: 0000000000000246 R12: 0000000000000009
-[  168.582796] R13: 0000000000000001 R14: 00007fac74be55e0 R15: 00007fac74be08c0
-[  168.583757]  </TASK>
-[  168.584063] Modules linked in:
-[  168.584494] CR2: 0000000000000008
-[  168.584964] ---[ end trace 2475611ad0f77a1a ]---
-
-This is because blkg_alloc() is called from blkg_conf_prep() without
-holding 'q->queue_lock', and elevator is exited before blkg_create():
-
-thread 1                            thread 2
-blkg_conf_prep
- spin_lock_irq(&q->queue_lock);
- blkg_lookup_check -> return NULL
- spin_unlock_irq(&q->queue_lock);
-
- blkg_alloc
-  blkcg_policy_enabled -> true
-  pd = ->pd_alloc_fn
-  blkg->pd[i] = pd
-                                   blk_mq_exit_sched
-                                    bfq_exit_queue
-                                     blkcg_deactivate_policy
-                                      spin_lock_irq(&q->queue_lock);
-                                      __clear_bit(pol->plid, q->blkcg_pols);
-                                      spin_unlock_irq(&q->queue_lock);
-                                    q->elevator = NULL;
-  spin_lock_irq(&q->queue_lock);
-   blkg_create
-    if (blkg->pd[i])
-     ->pd_init_fn -> q->elevator is NULL
-  spin_unlock_irq(&q->queue_lock);
-
-Because blkcg_deactivate_policy() requires queue to be frozen, we can
-grab q_usage_counter to synchoronize blkg_conf_prep() against
-blkcg_deactivate_policy().
-
-Fixes: e21b7a0b9887 ("block, bfq: add full hierarchical scheduling and cgroups support")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Link: https://lore.kernel.org/r/20211020014036.2141723-1-yukuai3@huawei.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: a6bcddbc2ee1 ("drm/msm: dsi: Handle dual-channel for 6G as well")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Jessica Zhang <jesszhan@codeaurora.org>
+Link: https://lore.kernel.org/r/20211020183438.32263-1-jesszhan@codeaurora.org
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-cgroup.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/gpu/drm/msm/dsi/dsi_host.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 8e4dcf6036f60..8d9041e0f4bec 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -634,6 +634,14 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
+diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
+index bccd379bdba75..ea641151e77e7 100644
+--- a/drivers/gpu/drm/msm/dsi/dsi_host.c
++++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
+@@ -115,16 +115,16 @@ struct msm_dsi_host {
+ 	struct clk *pixel_clk_src;
+ 	struct clk *byte_intf_clk;
  
- 	q = bdev->bd_disk->queue;
+-	u32 byte_clk_rate;
+-	u32 pixel_clk_rate;
+-	u32 esc_clk_rate;
++	unsigned long byte_clk_rate;
++	unsigned long pixel_clk_rate;
++	unsigned long esc_clk_rate;
  
-+	/*
-+	 * blkcg_deactivate_policy() requires queue to be frozen, we can grab
-+	 * q_usage_counter to prevent concurrent with blkcg_deactivate_policy().
-+	 */
-+	ret = blk_queue_enter(q, 0);
-+	if (ret)
-+		return ret;
-+
- 	rcu_read_lock();
- 	spin_lock_irq(&q->queue_lock);
+ 	/* DSI v2 specific clocks */
+ 	struct clk *src_clk;
+ 	struct clk *esc_clk_src;
+ 	struct clk *dsi_clk_src;
  
-@@ -703,6 +711,7 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
- 			goto success;
- 	}
- success:
-+	blk_queue_exit(q);
- 	ctx->bdev = bdev;
- 	ctx->blkg = blkg;
- 	ctx->body = input;
-@@ -715,6 +724,7 @@ fail_unlock:
- 	rcu_read_unlock();
- fail:
- 	blkdev_put_no_open(bdev);
-+	blk_queue_exit(q);
- 	/*
- 	 * If queue was bypassing, we should retry.  Do so after a
- 	 * short msleep().  It isn't strictly necessary but queue
+-	u32 src_clk_rate;
++	unsigned long src_clk_rate;
+ 
+ 	struct gpio_desc *disp_en_gpio;
+ 	struct gpio_desc *te_gpio;
+@@ -498,10 +498,10 @@ int msm_dsi_runtime_resume(struct device *dev)
+ 
+ int dsi_link_clk_set_rate_6g(struct msm_dsi_host *msm_host)
+ {
+-	u32 byte_intf_rate;
++	unsigned long byte_intf_rate;
+ 	int ret;
+ 
+-	DBG("Set clk rates: pclk=%d, byteclk=%d",
++	DBG("Set clk rates: pclk=%d, byteclk=%lu",
+ 		msm_host->mode->clock, msm_host->byte_clk_rate);
+ 
+ 	ret = dev_pm_opp_set_rate(&msm_host->pdev->dev,
+@@ -583,7 +583,7 @@ int dsi_link_clk_set_rate_v2(struct msm_dsi_host *msm_host)
+ {
+ 	int ret;
+ 
+-	DBG("Set clk rates: pclk=%d, byteclk=%d, esc_clk=%d, dsi_src_clk=%d",
++	DBG("Set clk rates: pclk=%d, byteclk=%lu, esc_clk=%lu, dsi_src_clk=%lu",
+ 		msm_host->mode->clock, msm_host->byte_clk_rate,
+ 		msm_host->esc_clk_rate, msm_host->src_clk_rate);
+ 
+@@ -673,10 +673,10 @@ void dsi_link_clk_disable_v2(struct msm_dsi_host *msm_host)
+ 	clk_disable_unprepare(msm_host->byte_clk);
+ }
+ 
+-static u32 dsi_get_pclk_rate(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
++static unsigned long dsi_get_pclk_rate(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
+ {
+ 	struct drm_display_mode *mode = msm_host->mode;
+-	u32 pclk_rate;
++	unsigned long pclk_rate;
+ 
+ 	pclk_rate = mode->clock * 1000;
+ 
+@@ -696,7 +696,7 @@ static void dsi_calc_pclk(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
+ {
+ 	u8 lanes = msm_host->lanes;
+ 	u32 bpp = dsi_get_bpp(msm_host->format);
+-	u32 pclk_rate = dsi_get_pclk_rate(msm_host, is_bonded_dsi);
++	unsigned long pclk_rate = dsi_get_pclk_rate(msm_host, is_bonded_dsi);
+ 	u64 pclk_bpp = (u64)pclk_rate * bpp;
+ 
+ 	if (lanes == 0) {
+@@ -713,7 +713,7 @@ static void dsi_calc_pclk(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
+ 	msm_host->pixel_clk_rate = pclk_rate;
+ 	msm_host->byte_clk_rate = pclk_bpp;
+ 
+-	DBG("pclk=%d, bclk=%d", msm_host->pixel_clk_rate,
++	DBG("pclk=%lu, bclk=%lu", msm_host->pixel_clk_rate,
+ 				msm_host->byte_clk_rate);
+ 
+ }
+@@ -772,7 +772,7 @@ int dsi_calc_clk_rate_v2(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
+ 
+ 	msm_host->esc_clk_rate = msm_host->byte_clk_rate / esc_div;
+ 
+-	DBG("esc=%d, src=%d", msm_host->esc_clk_rate,
++	DBG("esc=%lu, src=%lu", msm_host->esc_clk_rate,
+ 		msm_host->src_clk_rate);
+ 
+ 	return 0;
 -- 
 2.33.0
 
