@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72DBB452005
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 01:44:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C62974519B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:23:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343872AbhKPArV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 19:47:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
+        id S1349615AbhKOXZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:25:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344825AbhKOTZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80ADB636D4;
-        Mon, 15 Nov 2021 19:05:04 +0000 (UTC)
+        id S244992AbhKOTST (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:18:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFE21634F2;
+        Mon, 15 Nov 2021 18:26:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003105;
-        bh=K4ne8YE2c/7j1spFSp9l1T/d44YzHGl6QRftd2lQY5o=;
+        s=korg; t=1637000790;
+        bh=pyKJXitu9zXRSG3lK7a2NWw9sKfdbmPhqi3fOBvrbL0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JGpCE2ZwUXsf2ynf1R4JQKXMYFk2Pyh/gDKac42mdBxUuuPnjJkGURrWpm7atNpPq
-         /hc3mVtrwn6lkeS6VU5RvDUQYOQxOAZUM7sRFcJIemf7RoaPuZA90FPzx1iJGn4XAm
-         mUt8JOXm/gUn19Yz0s47O8dNGmznW5xaZgmU66B4=
+        b=UPGX7jxxi0svtyYjhlpgnQlojxcoALDVzefmgF/rp0I+n+5N82VYRtYSQTq+snbVl
+         bOIegTdVUNzT/wxQis3dne8ZMMe8Cd5kZMdLGt7tL3lUFc/OQxPif5XkYUdHN8OZns
+         +jybzerclKqMDWKxL26MQ7bs5BrfY0EvbVpVNGoM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 780/917] scsi: ufs: ufshpb: Use proper power management API
-Date:   Mon, 15 Nov 2021 18:04:35 +0100
-Message-Id: <20211115165455.394125962@linuxfoundation.org>
+        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.14 793/849] KVM: x86: move guest_pv_has out of user_access section
+Date:   Mon, 15 Nov 2021 18:04:36 +0100
+Message-Id: <20211115165447.068593140@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+References: <20211115165419.961798833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daejun Park <daejun7.park@samsung.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-[ Upstream commit 351b3a849ac7d92449dc75c43db8a857b38387ea ]
+commit 3e067fd8503d6205aa0c1c8f48f6b209c592d19c upstream.
 
-In ufshpb, pm_runtime_{get,put}_sync() are used to avoid unwanted runtime
-suspend during query requests. Whereas commit b294ff3e3449 ("scsi: ufs:
-core: Enable power management for wlun") modified the driver core to use
-ufshcd_rpm_{get,put}_sync() APIs.
+When UBSAN is enabled, the code emitted for the call to guest_pv_has
+includes a call to __ubsan_handle_load_invalid_value.  objtool
+complains that this call happens with UACCESS enabled; to avoid
+the warning, pull the calls to user_access_begin into both arms
+of the "if" statement, after the check for guest_pv_has.
 
-Switch to these APIs in HPB module as well.
-
-Link: https://lore.kernel.org/r/20210902003534epcms2p1937a0f0eeb48a441cb69f5ef13ff8430@epcms2p1
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
-Signed-off-by: Daejun Park <daejun7.park@samsung.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/ufs/ufshpb.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/x86/kvm/x86.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-index 026a133149dce..46cdfb0dfca94 100644
---- a/drivers/scsi/ufs/ufshpb.c
-+++ b/drivers/scsi/ufs/ufshpb.c
-@@ -2371,11 +2371,11 @@ static int ufshpb_get_lu_info(struct ufs_hba *hba, int lun,
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3222,9 +3222,6 @@ static void record_steal_time(struct kvm
+ 	}
  
- 	ufshcd_map_desc_id_to_length(hba, QUERY_DESC_IDN_UNIT, &size);
+ 	st = (struct kvm_steal_time __user *)ghc->hva;
+-	if (!user_access_begin(st, sizeof(*st)))
+-		return;
+-
+ 	/*
+ 	 * Doing a TLB flush here, on the guest's behalf, can avoid
+ 	 * expensive IPIs.
+@@ -3233,6 +3230,9 @@ static void record_steal_time(struct kvm
+ 		u8 st_preempted = 0;
+ 		int err = -EFAULT;
  
--	pm_runtime_get_sync(hba->dev);
-+	ufshcd_rpm_get_sync(hba);
- 	ret = ufshcd_query_descriptor_retry(hba, UPIU_QUERY_OPCODE_READ_DESC,
- 					    QUERY_DESC_IDN_UNIT, lun, 0,
- 					    desc_buf, &size);
--	pm_runtime_put_sync(hba->dev);
-+	ufshcd_rpm_put_sync(hba);
- 
- 	if (ret) {
- 		dev_err(hba->dev,
-@@ -2598,10 +2598,10 @@ void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf)
- 	if (version == HPB_SUPPORT_LEGACY_VERSION)
- 		hpb_dev_info->is_legacy = true;
- 
--	pm_runtime_get_sync(hba->dev);
-+	ufshcd_rpm_get_sync(hba);
- 	ret = ufshcd_query_attr_retry(hba, UPIU_QUERY_OPCODE_READ_ATTR,
- 		QUERY_ATTR_IDN_MAX_HPB_SINGLE_CMD, 0, 0, &max_hpb_single_cmd);
--	pm_runtime_put_sync(hba->dev);
-+	ufshcd_rpm_put_sync(hba);
- 
- 	if (ret)
- 		dev_err(hba->dev, "%s: idn: read max size of single hpb cmd query request failed",
--- 
-2.33.0
-
++		if (!user_access_begin(st, sizeof(*st)))
++			return;
++
+ 		asm volatile("1: xchgb %0, %2\n"
+ 			     "xor %1, %1\n"
+ 			     "2:\n"
+@@ -3255,6 +3255,9 @@ static void record_steal_time(struct kvm
+ 		if (!user_access_begin(st, sizeof(*st)))
+ 			goto dirty;
+ 	} else {
++		if (!user_access_begin(st, sizeof(*st)))
++			return;
++
+ 		unsafe_put_user(0, &st->preempted, out);
+ 		vcpu->arch.st.preempted = 0;
+ 	}
 
 
