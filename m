@@ -2,239 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0884507DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:08:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B4F54507E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 16:09:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235690AbhKOPKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 10:10:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236029AbhKOPKg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 10:10:36 -0500
-Received: from lb1-smtp-cloud9.xs4all.net (lb1-smtp-cloud9.xs4all.net [IPv6:2001:888:0:108::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A903C061200;
-        Mon, 15 Nov 2021 07:07:31 -0800 (PST)
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id mdZumFmK7fwDFmdZxmOrzl; Mon, 15 Nov 2021 16:07:30 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1636988850; bh=sthIg1+/a+1Vw8t243zAiH4D6+V0/ZH0e/mjzRimmBo=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=rX+ndb9UZ/vakCOot0O0HH76IKJRO7QhU2SFj0wZ4Lg6KkF1xjq6Nr7Rgu3dnETrw
-         /daHkioLLYNJyf2NRxTAGJGyS3mCTlOAF6hB+Mq5ZftaAbAySzQ2iRYDzRn5kZswfE
-         NoMzMDD4XxGzRaP6bc+GpXAu5tTimZTW0d1LOR4d6zH+gROzib/yDbK1JQZdfSg0fD
-         Zgb+zSpA3C5UCU+/GWaFmvV2Hs5Iypnep73ArpJ1j9Q0d1RiCo3sr1pYsXz4z4J/6j
-         ye4jDJMDM5lOJ4r73cWLUfyExcOweDjaM6NCjpVRKc7NlxIyO5BwIIsUgTjUORCSfz
-         YL+CzlJ0OvoeA==
-Subject: Re: [PATCH v7 00/11] VP9 codec V4L2 control interface
-To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev
-Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com
-References: <20210929160439.6601-1-andrzej.p@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <9db47ebc-cb95-872d-feb4-d6432a74f2cb@xs4all.nl>
-Date:   Mon, 15 Nov 2021 16:07:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+        id S236468AbhKOPMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 10:12:17 -0500
+Received: from mga01.intel.com ([192.55.52.88]:24346 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236268AbhKOPMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 10:12:09 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="257206178"
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="257206178"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 07:09:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; 
+   d="scan'208";a="505950730"
+Received: from chenyu-desktop.sh.intel.com ([10.239.158.186])
+  by orsmga008.jf.intel.com with ESMTP; 15 Nov 2021 07:09:10 -0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     linux-acpi@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Mike Rapoport <rppt@kernel.org>, Chen Yu <yu.c.chen@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v10 0/4] Introduce Platform Firmware Runtime Update and Telemetry drivers
+Date:   Mon, 15 Nov 2021 23:08:11 +0800
+Message-Id: <cover.1636987638.git.yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210929160439.6601-1-andrzej.p@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfK51L1WmSNzo5DkW1tzQGMj4V/59OVUJ+nhNMV0rx/lAqDwC1TeJJj2kgyjuukQUvfuqb+/KEbqHrOBOwEja3XTs21AK7vp/prtnyXro5/H89gnjoDQE
- I2rlMsQ6TOHEsoiNQE6uHaG+j5DfXTUIEZEDBnylPIZyl8ySXhq5KgoesqBncPooga9Y4wvL7HFblmEDM8hn1u8AL+KLdvpHJg745OOg7YOt8dvK92o/l8Nf
- s1S97QGM1vMZpvy9+qpwwqAKeU7bPtZ8VCyhJmtCPRt20IMLz2q+7GD42vPogxxAhW26RdeU30D0IRZ8E5+R0mQfPNANK0a90Q+SNqeb9AMGyucZ7yYcxpc1
- eprs7W0SmbNAxSzYavLCclSJp5kDym6KU4VP3B/QrArMWuefkpjLlT4SdvLBqvvHCLeCpDpTI7JuMFkVIwNVPfXtIh7KjQrOfF4GgaIcIZmkp4JjgjEG7ZZu
- um3u05fyvmj1+WdPneNLdBR6DwOKLozeB13Q1ORRgEXWD0CcY3RRsNVJ8q0hz5T/VjzwP9zPVhCw+yEWI5sXJ8GK4+lIdxNwAArvHBl1SSKIrPjUS0niK/XC
- f9LsR/bImvSmu7FWOJEJhMymwJFejWZfDiRD4PBjLU3dBM13EG+0x2NKBDL2A2jFKgFsdXflakW2FaruEe3GEOueocIM1bL/4lXQyvgdeAfAQUBPF6/TJgCZ
- tdb3KcCZe7BJ6eOyGhJXQeNrbDqPliWu1X9+eLVBY4OajVdjM+LeQu/oCaAP4rOZ/YJDSdH6kR+GHgfYs/Jyt0cjBCjjReeoJXY3P9DnN8uhYMmQHt6Oo3uV
- Ikijy8ubbDT67MyfV9TScJ11FrwV4/v6SIYu3+gjHAT+TBJVqwRfSbZLD3wzYEE42baotM+OouORkjYGd5kcpdTHUxpGd34g+QhASRl3T91vMzSui32oO39c
- Y+y8IX9xryTTf/+PiwhqgEgTD9g=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrzej,
+The PFRU (Platform Firmware Runtime Update) kernel interface is designed
+to interact with the platform firmware interface defined in the
+`Management Mode Firmware Runtime Update
+<https://uefi.org/sites/default/files/resources/Intel_MM_OS_Interface_Spec_Rev100.pdf>`
+specification. The primary function of PFRU is to carry out runtime
+updates of the platform firmware, which doesn't require the system to
+be restarted. It also allows telemetry data to be retrieved from the
+platform firmware.
 
-Can you rebase this series on top of the master branch of
-https://git.linuxtv.org/media_stage.git/ ? Unfortunately this v7 no longer
-applies. Specifically "rkvdec: Add the VP9 backend" failed in a non-trivial
-manner.
+=============
+- Change from v9 to v10:
+  - Remove the explicit assignment of the last item of enum.
+    (Andy Shevchenko)
+- Change from v8 to v9:
+  - Use GUID_INIT() instead of guid_parse() during boot up.
+    (Andy Shevchenko)
+  - Drop uuid, code_uuid, drv_uuid in struct pfru_device as they
+    are not needed. (Andy Shevchenko)
+  - Drop type casting from void * in valid_version().
+    (Andy Shevchenko)
+  - Use kfree() instead of ACPI_FREE() in non-ACPICA usage.
+    (Andy Shevchenko)
+  - Use sizeof(rev) instead of sizeof(u32) in copy_from_user().
+    (Andy Shevchenko)
+  - Generate physical address from MSB part to LSB.
+    (Andy Shevchenko)
+  - Use devm_add_action_or_reset() to add ida release into dev resource
+    management. (Andy Shevchenko)
+  - Use devm_kasprintf() instead of kasprintf() to format the
+    pfru_dev name.(Andy Shevchenko)
+  - Remove redundant 0 in acpi_pfru_ids. (Andy Shevchenko)
+  - Adjust the order of included headers in pfru.h.
+    (Andy Shevchenko)
+  - Replace PFRU_MAGIC with PFRU_MAGIC_FOR_IOCTL in uapi file.
+    (Andy Shevchenko)
+    Use devm_kasprintf() instead of kasprintf() to format the
+    pfru_log_dev name.(Andy Shevchenko)
+    Remove redundant 0 in acpi_pfru_log_ids. (Andy Shevchenko)
+- Change from v7 to v8:
+  - Remove the variable-length array in struct pfru_update_cap_info, and
+    copy the non-variable-length struct pfru_update_cap_info to userspace
+    directly. (Greg Kroah-Hartman)
+  - Use efi_guid_t instead of guid_t when parsing capsule file.
+    (Andy Shevchenko)
+  - Change the type of rev_id from int to u32, because this data will
+    be copied between kernel and userspace. (Greg Kroah-Hartman)
+  - Add a prefix for dev in struct pfru_device to parent_dev, so as
+    to indicate that this filed is the parent of the created miscdev.
+    (Greg Kroah-Hartman)
+  - Use blank lines between different macro sections. (Greg Kroah-Hartman)
+    Illusatrate the possible errno for each ioctl interface.
+    (Greg Kroah-Hartman)
+  - Remove pfru_valid_revid() from uapi header to avoid poluting the global
+    namespace.(Greg Kroah-Hartman)
+  - Assign the value to the enum type explicitly.(Greg Kroah-Hartman)
+  - Change the guid_t to efi_guid_t when parsing image header in get_image_type()
+    (Greg Kroah-Hartman)
+  - Remove the void * to other type casting in valid_version(). (Andy Shevchenko)
+  - Combined the assignment of variables with definitions. (Andy Shevchenko)
+  - Define this magic for revision ID. (Andy Shevchenko)
+  - Make the labeling consistent for error handling. (Andy Shevchenko)
+  - Replace the UUID_SIZE in uapi with 16 directly. (Andy Shevchenko)
+  - Add blank line between generic include header and uapi header.
+    (Andy Shevchenko)
+  - Arrange the order between devm_kzalloc() and normal allocation in
+    acpi_pfru_probe() that, the former should always be ahead of the
+    latter. (Andy Shevchenko)
+- Change from v6 to v7:
+  - Use __packed instead of pragma pack(1).
+    (Greg Kroah-Hartman, Ard Biesheuve)
+  - Use ida_alloc() to allocate a ID, and release the ID when
+    device is removed. (Greg Kroah-Hartman)
+  - Check the _DSM method at early stage, before allocate or parse
+    anything in acpi_pfru_[log_]probe(). (Greg Kroah-Hartman)
+  - Set the parent of the misc device. (Greg Kroah-Hartman)
+  - Use module_platform_driver() instead of platform_driver_register()
+    in module_init(). Separate pfru driver and pfru_telemetry driver
+    to two files. (Greg Kroah-Hartman) 
+- Change from v5 to v6:
+  - Use Link: tag to add the specification download address.
+    (Andy Shevchenko)
+  - Drop comma for each terminator entry in the enum structure.
+    (Andy Shevchenko)
+  - Remove redundant 'else' in get_image_type().
+    (Andy Shevchenko)
+  - Directly return results from the switch cases in adjust_efi_size()
+    and pfru_ioctl().(Andy Shevchenko)
+  - Keep comment style consistency by removing the period for
+    one line comment.
+    (Andy Shevchenko)
+  - Remove devm_kfree() if .probe() failed. 
+    (Andy Shevchenko)
+  - Remove linux/uuid.h and use raw buffers to contain uuid.
+    (Andy Shevchenko)
+  - Include types.h in pfru.h. (Andy Shevchenko)
+  - Use __u8[16] instead of uuid_t. (Andy Shevchenko)
+  - Replace enum in pfru.h with __u32 as enum size is not the
+    same size on all possible architectures.
+    (Andy Shevchenko)
+  - Simplify the userspace tool to use while loop for getopt_long().
+    (Andy Shevchenko)
+- Change from v4 to v5:
+  - Remove Documentation/ABI/pfru, and move the content to kernel doc
+    in include/uapi/linux/pfru.h (Greg Kroah-Hartman)
+  - Shrink the range of ioctl numbers declared in
+    Documentation/userspace-api/ioctl/ioctl-number.rst
+    from 16 to 8. (Greg Kroah-Hartman)
+  - Change global variable struct pfru_device *pfru_dev to
+    per PFRU device. (Greg Kroah-Hartman)
+  - Unregister the misc device in acpi_pfru_remove().
+    (Greg Kroah-Hartman)
+  - Convert the kzalloc() to devm_kzalloc() in the driver so
+    as to avoid freeing the memory. (Greg Kroah-Hartman)
+  - Fix the compile warning by declaring the pfru_log_ioctl() as
+    static. (kernel test robot LKP)
+  - Change to global variable misc_device to per PFRU device.
+    (Greg Kroah-Hartman)
+  - Remove the telemetry output in commit log. (Greg Kroah-Hartman)
+  - Add link for corresponding userspace tool in the commit log.
+    (Greg Kroah-Hartman)
+  - Replace the telemetry .read() with .mmap() so that the userspace
+    could mmap once, and read multiple times. (Greg Kroah-Hartman)
+- Change from v3 to v4:
+  - Add Documentation/ABI/testing/pfru to document the ABI and
+    remove Documentation/x86/pfru.rst (Rafael J. Wysocki)
+  - Replace all pr_err() with dev_dbg() (Greg Kroah-Hartman,
+    Rafael J. Wysocki)
+  - returns ENOTTY rather than ENOIOCTLCMD if invalid ioctl command
+    is provided. (Greg Kroah-Hartman)
+  - Remove compat ioctl. (Greg Kroah-Hartman)
+  - Rename /dev/pfru/pfru_update to /dev/acpi_pfru (Greg Kroah-Hartman)
+  - Simplify the check for element of the package in query_capability()
+    (Rafael J. Wysocki)
+  - Remove the loop in query_capability(), query_buffer() and query
+    the package elemenet directly. (Rafael J. Wysocki)
+  - Check the number of elements in case the number of package
+    elements is too small. (Rafael J. Wysocki)
+  - Doing the assignment as initialization in get_image_type().
+    Meanwhile, returns the type or a negative error code in
+    get_image_type(). (Rafael J. Wysocki)
+  - Put the comments inside the function. (Rafael J. Wysocki)
+  - Returns the size or a negative error code in adjust_efi_size()
+    (Rafael J. Wysocki)
+  - Fix the return value from EFAULT to EINVAL if pfru_valid_revid()
+    does not pass. (Rafael J. Wysocki)
+  - Change the write() to be the code injection/update, the read() to
+    be telemetry retrieval and all of the rest to be ioctl()s under
+    one special device file.(Rafael J. Wysocki)
+  - Remove redundant parens. (Rafael J. Wysocki)
+  - Putting empty code lines after an if () statement that is not
+    followed by a block. (Rafael J. Wysocki)
+  - Remove "goto" tags to make the code more readable. (Rafael J. Wysocki)
+- Change from v2 to v3:
+  - Use valid types for structures that cross the user/kernel boundary
+    in the uapi header. (Greg Kroah-Hartman)
+  - Rename the structure in uapi to start with a prefix pfru so as
+    to avoid confusing in the global namespace. (Greg Kroah-Hartman)
+- Change from v1 to v2:
+  - Add a spot in index.rst so it becomes part of the docs build
+    (Jonathan Corbet).
+  - Sticking to the 80-column limit(Jonathan Corbet).
+  - Underline lengths should match the title text(Jonathan Corbet).
+  - Use literal blocks for the code samples(Jonathan Corbet).
+  - Add sanity check for duplicated instance of ACPI device.
+  - Update the driver to work with allocated pfru_device objects.
+    (Mike Rapoport)
+  - For each switch case pair, get rid of the magic case numbers
+    and add a default clause with the error handling.(Mike Rapoport)
+  - Move the obj->type checks outside the switch to reduce redundancy.
+    (Mike Rapoport)
+  - Parse the code_inj_id and drv_update_id at driver initialization time
+    to reduce the re-parsing at runtime. (Mike Rapoport)
+  - Explain in detail how the size needs to be adjusted when doing
+    version check. (Mike Rapoport)
+  - Rename parse_update_result() to dump_update_result()
+    (Mike Rapoport)
+  - Remove redundant return.(Mike Rapoport)
+  - Do not expose struct capsulate_buf_info to uapi, since it is
+    not needed in userspace. (Mike Rapoport)
+  - Do not allow non-root user to run this test.(Shuah Khan)
+  - Test runs on platform without pfru_telemetry should skip
+    instead of reporting failure/error.(Shuah Khan)
+  - Reuse uapi/linux/pfru.h instead of copying it into the test
+    directory. (Mike Rapoport)
 
-Regards,
+Chen Yu (4):
+  efi: Introduce EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER and
+    corresponding structures
+  drivers/acpi: Introduce Platform Firmware Runtime Update device driver
+  drivers/acpi: Introduce Platform Firmware Runtime Update Telemetry
+  tools: Introduce power/acpi/tools/pfru
 
-	Hans
+ .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+ drivers/acpi/Kconfig                          |   1 +
+ drivers/acpi/Makefile                         |   1 +
+ drivers/acpi/pfru/Kconfig                     |  13 +
+ drivers/acpi/pfru/Makefile                    |   2 +
+ drivers/acpi/pfru/pfru_telemetry.c            | 457 +++++++++++++
+ drivers/acpi/pfru/pfru_update.c               | 598 ++++++++++++++++++
+ include/linux/efi.h                           |  46 ++
+ include/uapi/linux/pfru.h                     | 262 ++++++++
+ tools/power/acpi/.gitignore                   |   1 +
+ tools/power/acpi/Makefile                     |  16 +-
+ tools/power/acpi/Makefile.rules               |   2 +-
+ tools/power/acpi/man/pfru.8                   | 137 ++++
+ tools/power/acpi/tools/pfru/Makefile          |  23 +
+ tools/power/acpi/tools/pfru/pfru.c            | 417 ++++++++++++
+ 15 files changed, 1968 insertions(+), 9 deletions(-)
+ create mode 100644 drivers/acpi/pfru/Kconfig
+ create mode 100644 drivers/acpi/pfru/Makefile
+ create mode 100644 drivers/acpi/pfru/pfru_telemetry.c
+ create mode 100644 drivers/acpi/pfru/pfru_update.c
+ create mode 100644 include/uapi/linux/pfru.h
+ create mode 100644 tools/power/acpi/man/pfru.8
+ create mode 100644 tools/power/acpi/tools/pfru/Makefile
+ create mode 100644 tools/power/acpi/tools/pfru/pfru.c
 
-On 29/09/2021 18:04, Andrzej Pietrasiewicz wrote:
-> Dear all,
-> 
-> This patch series adds VP9 codec V4L2 control interface and two drivers
-> using the new controls. It is a follow-up of previous v6 series [1].
-> 
-> In this iteration, we've implemented VP9 hardware decoding on two devices:
-> Rockchip VDEC and Hantro G2, and tested on RK3399, i.MX8MQ and i.MX8MP.
-> The i.MX8M driver needs proper power domains support, though, which is a
-> subject of a different effort, but in all 3 cases we were able to run the
-> drivers.
-> 
-> GStreamer support is also available, the needed changes have been submitted
-> by Daniel Almeida [2]. This MR is ready to be merged, and just needs the
-> VP9 V4L2 controls to be merged and released.
-> 
-> Both rkvdec and hantro drivers are passing a significant number of VP9 tests
-> using Fluster[3]. There are still a few tests that are not passing, due to
-> dynamic frame resize (not yet supported by V4L2) and small size videos
-> (due to IP block limitations).
-> 
-> The series adds the VP9 codec V4L2 control API as uAPI, so it aims at being
-> merged without passing through staging, as agreed[4]. The ABI has been checked
-> for padding and verified to contain no holes.
-> 
-> [1] https://patchwork.linuxtv.org/project/linux-media/list/?series=6377
-> [2] https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/merge_requests/2144
-> [3] https://github.com/fluendo/fluster
-> [4] https://lore.kernel.org/linux-media/b8f83c93-67fd-09f5-9314-15746cbfdc61@xs4all.nl/
-> 
-> The series depends on the YUV tiled format support prepared by Ezequiel:
-> https://www.spinics.net/lists/linux-media/msg197047.html
-> 
-> Rebased onto latest media_tree.
-> 
-> Changes related to v6:
-> - moved setting tile filter and tile bsd auxiliary buffer addresses so
-> that they are always set, even if no tiles are used (thanks, Jernej)
-> - added a comment near the place where the 32-bit DMA mask is applied
->   (thanks, Nicolas)
-> - improved consistency in register names (thanks, Nicolas)
-> 
-> Changes related to v5:
-> - improved the doc comments as per Ezequiel's review (thanks, Ezequiel)
-> - improved pdf output of documentation
-> - added Benjamin's Reviewed-by (thanks, Benjamin)
-> 
-> Changes related to v4:
-> - removed unused enum v4l2_vp9_intra_prediction_mode
-> - converted remaining enums to defines to follow the convention
-> - improved the documentation, in particular better documented how to use segmentation 
-> features
-> 
-> Changes related to v3:
-> 
-> Apply suggestions from Jernej's review (thanks, Jernej):
-> - renamed a control and two structs:
-> 	V4L2_CTRL_TYPE_VP9_COMPRESSED_HDR_PROBS =>
-> 		V4L2_CTRL_TYPE_VP9_COMPRESSED_HDR
-> 	v4l2_ctrl_vp9_compressed_hdr_probs =>
-> 		v4l2_ctrl_vp9_compressed_hdr
-> 	v4l2_vp9_mv_compressed_hdr_probs => v4l2_vp9_mv_probs
-> - moved tx_mode to v4l2_ctrl_vp9_compressed_hdr
-> - fixed enum v4l2_vp9_ref_frame_sign_bias values (which are used to test a bitfield)
-> - explicitly assigned values to all other vp9 enums
-> 
-> Apply suggestion from Nicolas's review (thanks, Nicolas):
-> - explicitly stated that the v4l2_ctrl_vp9_compressed_hdr control is optional
-> and implemented only by drivers which need it
-> 
-> Changes related to the RFC v2:
-> 
-> - added another driver including a postprocessor to de-tile
->         codec-specific tiling
-> - reworked uAPI structs layout to follow VP8 style
-> - changed validation of loop filter params
-> - changed validation of segmentation params
-> - changed validation of VP9 frame params
-> - removed level lookup array from loop filter struct
->         (can be computed by drivers)
-> - renamed some enum values to match the spec more closely
-> - V4L2 VP9 library changed the 'eob' member of
->         'struct v4l2_vp9_frame_symbol_counts' so that it is an array
->         of pointers instead of an array of pointers to arrays
->         (IPs such as g2 creatively pass parts of the 'eob' counts in
->         the 'coeff' counts)
-> - factored out several repeated portions of code
-> - minor nitpicks and cleanups
-> 
-> Andrzej Pietrasiewicz (6):
->   media: uapi: Add VP9 stateless decoder controls
->   media: Add VP9 v4l2 library
->   media: hantro: Rename registers
->   media: hantro: Prepare for other G2 codecs
->   media: hantro: Support VP9 on the G2 core
->   media: hantro: Support NV12 on the G2 core
-> 
-> Boris Brezillon (1):
->   media: rkvdec: Add the VP9 backend
-> 
-> Ezequiel Garcia (4):
->   hantro: postproc: Fix motion vector space size
->   hantro: postproc: Introduce struct hantro_postproc_ops
->   hantro: Simplify postprocessor
->   hantro: Add quirk for NV12/NV12_4L4 capture format
-> 
->  .../userspace-api/media/v4l/biblio.rst        |   10 +
->  .../media/v4l/ext-ctrls-codec-stateless.rst   |  573 +++++
->  .../media/v4l/pixfmt-compressed.rst           |   15 +
->  .../media/v4l/vidioc-g-ext-ctrls.rst          |    8 +
->  .../media/v4l/vidioc-queryctrl.rst            |   12 +
->  .../media/videodev2.h.rst.exceptions          |    2 +
->  drivers/media/v4l2-core/Kconfig               |    4 +
->  drivers/media/v4l2-core/Makefile              |    1 +
->  drivers/media/v4l2-core/v4l2-ctrls-core.c     |  180 ++
->  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |    8 +
->  drivers/media/v4l2-core/v4l2-ioctl.c          |    1 +
->  drivers/media/v4l2-core/v4l2-vp9.c            | 1850 +++++++++++++++++
->  drivers/staging/media/hantro/Kconfig          |    1 +
->  drivers/staging/media/hantro/Makefile         |    7 +-
->  drivers/staging/media/hantro/hantro.h         |   40 +-
->  drivers/staging/media/hantro/hantro_drv.c     |   23 +-
->  drivers/staging/media/hantro/hantro_g2.c      |   27 +
->  .../staging/media/hantro/hantro_g2_hevc_dec.c |   69 +-
->  drivers/staging/media/hantro/hantro_g2_regs.h |  132 +-
->  .../staging/media/hantro/hantro_g2_vp9_dec.c  |  980 +++++++++
->  drivers/staging/media/hantro/hantro_hw.h      |   83 +-
->  .../staging/media/hantro/hantro_postproc.c    |   79 +-
->  drivers/staging/media/hantro/hantro_v4l2.c    |   20 +
->  drivers/staging/media/hantro/hantro_vp9.c     |  240 +++
->  drivers/staging/media/hantro/hantro_vp9.h     |  103 +
->  drivers/staging/media/hantro/imx8m_vpu_hw.c   |   38 +-
->  .../staging/media/hantro/rockchip_vpu_hw.c    |    7 +-
->  .../staging/media/hantro/sama5d4_vdec_hw.c    |    3 +-
->  drivers/staging/media/rkvdec/Kconfig          |    1 +
->  drivers/staging/media/rkvdec/Makefile         |    2 +-
->  drivers/staging/media/rkvdec/rkvdec-vp9.c     | 1078 ++++++++++
->  drivers/staging/media/rkvdec/rkvdec.c         |   52 +-
->  drivers/staging/media/rkvdec/rkvdec.h         |   12 +-
->  include/media/v4l2-ctrls.h                    |    4 +
->  include/media/v4l2-vp9.h                      |  182 ++
->  include/uapi/linux/v4l2-controls.h            |  284 +++
->  include/uapi/linux/videodev2.h                |    6 +
->  37 files changed, 6033 insertions(+), 104 deletions(-)
->  create mode 100644 drivers/media/v4l2-core/v4l2-vp9.c
->  create mode 100644 drivers/staging/media/hantro/hantro_g2.c
->  create mode 100644 drivers/staging/media/hantro/hantro_g2_vp9_dec.c
->  create mode 100644 drivers/staging/media/hantro/hantro_vp9.c
->  create mode 100644 drivers/staging/media/hantro/hantro_vp9.h
->  create mode 100644 drivers/staging/media/rkvdec/rkvdec-vp9.c
->  create mode 100644 include/media/v4l2-vp9.h
-> 
-> 
-> base-commit: e4e737bb5c170df6135a127739a9e6148ee3da82
-> 
+-- 
+2.25.1
 
