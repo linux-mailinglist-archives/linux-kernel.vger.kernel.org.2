@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5264518C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:04:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 006914518C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 00:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244871AbhKOXHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 18:07:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34356 "EHLO mail.kernel.org"
+        id S241674AbhKOXHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 18:07:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243490AbhKOS7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243488AbhKOS7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 13:59:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD79C633DA;
-        Mon, 15 Nov 2021 18:13:42 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EE5E633D5;
+        Mon, 15 Nov 2021 18:13:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637000023;
-        bh=C9kJ6GWlo/roEIsnh50MarW2fDWfuLopZfLR7c4rbAc=;
+        s=korg; t=1637000025;
+        bh=SCN5aa6sZco6dzL9HU0MMi0W+4jJJx1rWX7LrT34Wwk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ddCiXM4vVz+04Cq9anvxjg3FZXIon7JNPhIAUY8ydFEnDaMDK/eAJSPyS+i4iDOOF
-         2E/7tajuB8bjjAjsuGtG8iInk653cBCL6uE+0eAvgXcpHLNGzCMR3kLHMWZJ8oqJ5f
-         N2jEu986qKMTmqc8COZmcymiqtQ2tBvabu0ksNgs=
+        b=Po/S+PA8czLXhn9qguGiYrICa6DpM6SoyzAdlnY/uj9XWlyi502OcSenvnk1JgqsR
+         0/TnTwW+FCNVeyShBzudvLj7l3XYZ+Badax3tRMi0pCkWRGQksPOBfMqvhkhRSj/wV
+         zYQmMc41k92apbeyA2dd8s0mxZCDDTgVj4i7jD3s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hao Wu <hao.wu@rubrik.com>,
+        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
         Jarkko Sakkinen <jarkko@kernel.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 510/849] tpm: fix Atmel TPM crash caused by too frequent queries
-Date:   Mon, 15 Nov 2021 17:59:53 +0100
-Message-Id: <20211115165437.533626087@linuxfoundation.org>
+Subject: [PATCH 5.14 511/849] tpm_tis_spi: Add missing SPI ID
+Date:   Mon, 15 Nov 2021 17:59:54 +0100
+Message-Id: <20211115165437.573569047@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
 References: <20211115165419.961798833@linuxfoundation.org>
@@ -40,168 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hao Wu <hao.wu@rubrik.com>
+From: Mark Brown <broonie@kernel.org>
 
-[ Upstream commit 79ca6f74dae067681a779fd573c2eb59649989bc ]
+[ Upstream commit 7eba41fe8c7bb01ff3d4b757bd622375792bc720 ]
 
-The Atmel TPM 1.2 chips crash with error
-`tpm_try_transmit: send(): error -62` since kernel 4.14.
-It is observed from the kernel log after running `tpm_sealdata -z`.
-The error thrown from the command is as follows
-```
-$ tpm_sealdata -z
-Tspi_Key_LoadKey failed: 0x00001087 - layer=tddl,
-code=0087 (135), I/O error
-```
+In commit c46ed2281bbe ("tpm_tis_spi: add missing SPI device ID entries")
+we added SPI IDs for all the DT aliases to handle the fact that we always
+use SPI modaliases to load modules even when probed via DT however the
+mentioned commit missed that the SPI and OF device ID entries did not
+match and were different and so DT nodes with compatible
+"tcg,tpm_tis-spi" will not match.  Add an extra ID for tpm_tis-spi
+rather than just fix the existing one since what's currently there is
+going to be better for anyone actually using SPI IDs to instantiate.
 
-The issue was reproduced with the following Atmel TPM chip:
-```
-$ tpm_version
-T0  TPM 1.2 Version Info:
-  Chip Version:        1.2.66.1
-  Spec Level:          2
-  Errata Revision:     3
-  TPM Vendor ID:       ATML
-  TPM Version:         01010000
-  Manufacturer Info:   41544d4c
-```
-
-The root cause of the issue is due to the TPM calls to msleep()
-were replaced with usleep_range() [1], which reduces
-the actual timeout. Via experiments, it is observed that
-the original msleep(5) actually sleeps for 15ms.
-Because of a known timeout issue in Atmel TPM 1.2 chip,
-the shorter timeout than 15ms can cause the error described above.
-
-A few further changes in kernel 4.16 [2] and 4.18 [3, 4] further
-reduced the timeout to less than 1ms. With experiments,
-the problematic timeout in the latest kernel is the one
-for `wait_for_tpm_stat`.
-
-To fix it, the patch reverts the timeout of `wait_for_tpm_stat`
-to 15ms for all Atmel TPM 1.2 chips, but leave it untouched
-for Ateml TPM 2.0 chip, and chips from other vendors.
-As explained above, the chosen 15ms timeout is
-the actual timeout before this issue introduced,
-thus the old value is used here.
-Particularly, TPM_ATML_TIMEOUT_WAIT_STAT_MIN is set to 14700us,
-TPM_ATML_TIMEOUT_WAIT_STAT_MIN is set to 15000us according to
-the existing TPM_TIMEOUT_RANGE_US (300us).
-The fixed has been tested in the system with the affected Atmel chip
-with no issues observed after boot up.
-
-[1] 9f3fc7bcddcb tpm: replace msleep() with usleep_range() in TPM
-1.2/2.0 generic drivers
-[2] cf151a9a44d5 tpm: reduce tpm polling delay in tpm_tis_core
-[3] 59f5a6b07f64 tpm: reduce poll sleep time in tpm_transmit()
-[4] 424eaf910c32 tpm: reduce polling time to usecs for even finer
-granularity
-
-Fixes: 9f3fc7bcddcb ("tpm: replace msleep() with usleep_range() in TPM 1.2/2.0 generic drivers")
-Link: https://patchwork.kernel.org/project/linux-integrity/patch/20200926223150.109645-1-hao.wu@rubrik.com/
-Signed-off-by: Hao Wu <hao.wu@rubrik.com>
+Fixes: c46ed2281bbe ("tpm_tis_spi: add missing SPI device ID entries")
+Fixes: 96c8395e2166 ("spi: Revert modalias changes")
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
 Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/tpm/tpm_tis_core.c | 26 ++++++++++++++++++--------
- drivers/char/tpm/tpm_tis_core.h |  4 ++++
- include/linux/tpm.h             |  1 +
- 3 files changed, 23 insertions(+), 8 deletions(-)
+ drivers/char/tpm/tpm_tis_spi_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
-index 69579efb247b3..b2659a4c40168 100644
---- a/drivers/char/tpm/tpm_tis_core.c
-+++ b/drivers/char/tpm/tpm_tis_core.c
-@@ -48,6 +48,7 @@ static int wait_for_tpm_stat(struct tpm_chip *chip, u8 mask,
- 		unsigned long timeout, wait_queue_head_t *queue,
- 		bool check_cancel)
- {
-+	struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
- 	unsigned long stop;
- 	long rc;
- 	u8 status;
-@@ -80,8 +81,8 @@ again:
- 		}
- 	} else {
- 		do {
--			usleep_range(TPM_TIMEOUT_USECS_MIN,
--				     TPM_TIMEOUT_USECS_MAX);
-+			usleep_range(priv->timeout_min,
-+				     priv->timeout_max);
- 			status = chip->ops->status(chip);
- 			if ((status & mask) == mask)
- 				return 0;
-@@ -945,7 +946,22 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
- 	chip->timeout_b = msecs_to_jiffies(TIS_TIMEOUT_B_MAX);
- 	chip->timeout_c = msecs_to_jiffies(TIS_TIMEOUT_C_MAX);
- 	chip->timeout_d = msecs_to_jiffies(TIS_TIMEOUT_D_MAX);
-+	priv->timeout_min = TPM_TIMEOUT_USECS_MIN;
-+	priv->timeout_max = TPM_TIMEOUT_USECS_MAX;
- 	priv->phy_ops = phy_ops;
-+
-+	rc = tpm_tis_read32(priv, TPM_DID_VID(0), &vendor);
-+	if (rc < 0)
-+		goto out_err;
-+
-+	priv->manufacturer_id = vendor;
-+
-+	if (priv->manufacturer_id == TPM_VID_ATML &&
-+		!(chip->flags & TPM_CHIP_FLAG_TPM2)) {
-+		priv->timeout_min = TIS_TIMEOUT_MIN_ATML;
-+		priv->timeout_max = TIS_TIMEOUT_MAX_ATML;
-+	}
-+
- 	dev_set_drvdata(&chip->dev, priv);
- 
- 	if (is_bsw()) {
-@@ -988,12 +1004,6 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
- 	if (rc)
- 		goto out_err;
- 
--	rc = tpm_tis_read32(priv, TPM_DID_VID(0), &vendor);
--	if (rc < 0)
--		goto out_err;
--
--	priv->manufacturer_id = vendor;
--
- 	rc = tpm_tis_read8(priv, TPM_RID(0), &rid);
- 	if (rc < 0)
- 		goto out_err;
-diff --git a/drivers/char/tpm/tpm_tis_core.h b/drivers/char/tpm/tpm_tis_core.h
-index b2a3c6c72882d..3be24f221e32a 100644
---- a/drivers/char/tpm/tpm_tis_core.h
-+++ b/drivers/char/tpm/tpm_tis_core.h
-@@ -54,6 +54,8 @@ enum tis_defaults {
- 	TIS_MEM_LEN = 0x5000,
- 	TIS_SHORT_TIMEOUT = 750,	/* ms */
- 	TIS_LONG_TIMEOUT = 2000,	/* 2 sec */
-+	TIS_TIMEOUT_MIN_ATML = 14700,	/* usecs */
-+	TIS_TIMEOUT_MAX_ATML = 15000,	/* usecs */
+diff --git a/drivers/char/tpm/tpm_tis_spi_main.c b/drivers/char/tpm/tpm_tis_spi_main.c
+index 54584b4b00d19..aaa59a00eeaef 100644
+--- a/drivers/char/tpm/tpm_tis_spi_main.c
++++ b/drivers/char/tpm/tpm_tis_spi_main.c
+@@ -267,6 +267,7 @@ static const struct spi_device_id tpm_tis_spi_id[] = {
+ 	{ "st33htpm-spi", (unsigned long)tpm_tis_spi_probe },
+ 	{ "slb9670", (unsigned long)tpm_tis_spi_probe },
+ 	{ "tpm_tis_spi", (unsigned long)tpm_tis_spi_probe },
++	{ "tpm_tis-spi", (unsigned long)tpm_tis_spi_probe },
+ 	{ "cr50", (unsigned long)cr50_spi_probe },
+ 	{}
  };
- 
- /* Some timeout values are needed before it is known whether the chip is
-@@ -98,6 +100,8 @@ struct tpm_tis_data {
- 	wait_queue_head_t read_queue;
- 	const struct tpm_tis_phy_ops *phy_ops;
- 	unsigned short rng_quality;
-+	unsigned int timeout_min; /* usecs */
-+	unsigned int timeout_max; /* usecs */
- };
- 
- struct tpm_tis_phy_ops {
-diff --git a/include/linux/tpm.h b/include/linux/tpm.h
-index aa11fe323c56b..12d827734686d 100644
---- a/include/linux/tpm.h
-+++ b/include/linux/tpm.h
-@@ -269,6 +269,7 @@ enum tpm2_cc_attrs {
- #define TPM_VID_INTEL    0x8086
- #define TPM_VID_WINBOND  0x1050
- #define TPM_VID_STM      0x104A
-+#define TPM_VID_ATML     0x1114
- 
- enum tpm_chip_flags {
- 	TPM_CHIP_FLAG_TPM2		= BIT(1),
 -- 
 2.33.0
 
