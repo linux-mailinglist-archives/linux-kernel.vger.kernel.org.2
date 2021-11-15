@@ -2,110 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 760F54502B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A78754502BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 11:44:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237606AbhKOKpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 05:45:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237647AbhKOKpZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 05:45:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 605EE63232;
-        Mon, 15 Nov 2021 10:42:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636972950;
-        bh=GF5ppKwJBGyzBz8YYmc0v0PuTfRZzEb8KsPYdX9kZys=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ah/2tRgiVpL5fsi7FPpcL635JDhcln6l2ExZIWHTLBUbMjdBJtz0DoVh8A2lD2GeS
-         Vn5loajjfQVDFPQtLSRLZGgFOOu9gaKK3ygqoSrLlln9jWXCpaNqhh48lZ8c+k+4gu
-         sRf7wuCD69gIDwdqAcDKjxNp/YsEuFSMvDDDQT7VHpaJYuJxZPW/xofRGd5PidTsHa
-         kAWstx1aMCAeHyFhdJIprnubYysWs5QAKZBMy/vWApTOP0uD7D8phUBIQiY3lLQ5f/
-         +MVP+HB9F9xrWDthVsi8GxjjhUCyNhOn85FTRAs3rVEuGA/K5Upw6e+cpw5gK86TyV
-         zRQeafG4VMnqA==
-Received: by mail-wm1-f48.google.com with SMTP id i12so12630047wmq.4;
-        Mon, 15 Nov 2021 02:42:30 -0800 (PST)
-X-Gm-Message-State: AOAM533V71Zs+sw2dEBymXO02n62snMw7/lgyzhTvq1NziLMRdPVOwAr
-        Jwd8dWTGYB1PEaibVHYthPczN0VjzeXVDRxaY3I=
-X-Google-Smtp-Source: ABdhPJxXAexhirAvGW2LKyfe3zijMEf2dKYT5qfqRJ6eAMXzz6GR60sm0yXhnH6+pWfe4YG9EjpedQhiHwxXAXFjyDM=
-X-Received: by 2002:a1c:770e:: with SMTP id t14mr57234330wmi.173.1636972948695;
- Mon, 15 Nov 2021 02:42:28 -0800 (PST)
+        id S237641AbhKOKrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 05:47:01 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:45310 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237639AbhKOKqz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 05:46:55 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 3FBF91FD65;
+        Mon, 15 Nov 2021 10:43:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636973039; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=833FoBJroEwcf8aYlUSW0H0gnUbGPYrGy9snOMHf4J8=;
+        b=fPpzRQr+zYuM8VmbNGhoOhu7lL01rGVkgWJH/kp8xewBxwsOinG+OEFiKiU9p9qhsCxaGe
+        Uw5uNYTSEL0vgzoJKmA6IE358CPonxsdvj27ho6rCSjkrPZhk56FKZpYm3BoI9cSHGtY8D
+        IMZdj59SHXmFkuufqOvj82KeAoEPRDc=
+Received: from suse.cz (mhocko.udp.ovpn2.prg.suse.de [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 588C6A3B83;
+        Mon, 15 Nov 2021 10:43:58 +0000 (UTC)
+Date:   Mon, 15 Nov 2021 11:43:57 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, thuth@redhat.com,
+        frankja@linux.ibm.com, borntraeger@de.ibm.com,
+        Ulrich.Weigand@de.ibm.com, david@redhat.com, ultrachin@163.com,
+        akpm@linux-foundation.org, vbabka@suse.cz, brookxu.cn@gmail.com,
+        xiaoggchen@tencent.com, linuszeng@tencent.com, yihuilu@tencent.com,
+        daniel.m.jordan@oracle.com, axboe@kernel.dk, legion@kernel.org,
+        peterz@infradead.org, aarcange@redhat.com, christian@brauner.io,
+        tglx@linutronix.de
+Subject: Re: [RFC v1 2/4] kernel/fork.c: implement new process_mmput_async
+ syscall
+Message-ID: <YZI57bFLvBptKkYj@dhcp22.suse.cz>
+References: <20211111095008.264412-1-imbrenda@linux.ibm.com>
+ <20211111095008.264412-4-imbrenda@linux.ibm.com>
+ <874k8ixzx0.fsf@email.froward.int.ebiederm.org>
+ <20211112103439.441b4c12@p-imbrenda>
+ <87v90xv2uu.fsf@email.froward.int.ebiederm.org>
+ <20211112175309.7e0fe52a@p-imbrenda>
 MIME-Version: 1.0
-References: <20211115085403.360194-1-arnd@kernel.org> <20211115085403.360194-2-arnd@kernel.org>
- <647b842d-76a1-7a96-3ea7-8a37b62bc18e@metafoo.de>
-In-Reply-To: <647b842d-76a1-7a96-3ea7-8a37b62bc18e@metafoo.de>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 15 Nov 2021 11:42:12 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2EVseM4t=e982fFhzBGSZxZ2_V-FHwr-fQPd-bkAKaJg@mail.gmail.com>
-Message-ID: <CAK8P3a2EVseM4t=e982fFhzBGSZxZ2_V-FHwr-fQPd-bkAKaJg@mail.gmail.com>
-Subject: Re: [PATCH 01/11] ASoC: dai_dma: remove slave_id field
-To:     Lars-Peter Clausen <lars@metafoo.de>
-Cc:     Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andy Gross <agross@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Scott Branden <sbranden@broadcom.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        dmaengine@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211112175309.7e0fe52a@p-imbrenda>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 11:14 AM Lars-Peter Clausen <lars@metafoo.de> wrote:
->
-> On 11/15/21 9:53 AM, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > This field is never set, and serves no purpose, so remove it.
->
-> I agree that we should remove it. Its been legacy support code for a
-> while, but the description that there is no user is not right.
->
-> The tegra20_spdif driver obviously uses it and that user is removed in
-> this patch. I think it makes sense to split that out into a separate
-> patch with a description why the driver will still work even with
-> slave_id removed. Maybe the best is to remove the whole tegra20_spdif
-> driver.
+On Fri 12-11-21 17:53:09, Claudio Imbrenda wrote:
+[...]
+> Of course, but this also means that it's not possible to stop the OOM
+> killer while the teardown is in progress,
 
-Ok, I'll split out the tegra patch and try to come up with a better
-description for it. What I saw in that driver is it just passes down the
-slave_id number from a 'struct resource', but there is nothing in
-the kernel that sets up this resource.
-
-Do you or someone else have more information on the state of this
-driver? I can see that it does not contain any of_device_id based
-probing, so it seems that this is either dead code, the platform_device
-gets created by some other code that is no longer compatible with
-this driver.
-
-      Arnd
+Blocking the OOM killer and depend on the userspace to make a forward
+progress is not acceptable solution.
+-- 
+Michal Hocko
+SUSE Labs
