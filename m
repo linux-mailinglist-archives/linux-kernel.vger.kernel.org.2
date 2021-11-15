@@ -2,102 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6275D45015A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:27:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5E245015F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Nov 2021 10:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234669AbhKOJac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 04:30:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237676AbhKOJ37 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 04:29:59 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831B8C061220;
-        Mon, 15 Nov 2021 01:27:00 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id e7so19513703ljq.12;
-        Mon, 15 Nov 2021 01:27:00 -0800 (PST)
+        id S237420AbhKOJbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 04:31:14 -0500
+Received: from mail-mw2nam10on2057.outbound.protection.outlook.com ([40.107.94.57]:20545
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237373AbhKOJaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 04:30:39 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ce8Lh56MTIiySJmnQaK829+egpiShcHDjgRPKzPUoVAvGJZlbE1LS9scFTlLN2Vj517kP8j2tnlfhiPJlXfCJG52eSHeGhN1gkn8+5QDQeGCvJumUi+5G+xxmRImOorXIY69IF/nx88bJwf93HDZafSgVa5sX/q0jxt8yubOE0zailOpMy9BaCNfPpW5ZaSt7xipHWSn79vZzwKNYjF049C8ftnincYK1FWCWSg8uFkc+/AAoY0b4zfpFI+T62m49Juvbrqui/xrmfjoQxlnBvJCSUXjZR2301wpSEkcSGJP2psas2GmqF4DJ49VSSetBScKDGyDQg9TOM51l9DuUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6gGfMreQTDGGaiTeH1vkZqS7r2TMddLfePQoCn4820Q=;
+ b=aNgKahqyE3SdGctgxOVdpHFlzr7PQ6ZoArr+HsYFOZ29SoLEsxIIaP4ZRGnk25FXCgG25ZmC0sGeF+uA6fCCRKfzGTSI9jCZdVinr/uVyJwSLLrLL7hma4WqX+1wEk8ovR2Nx+RlQMlfYNrEn15CP/Nw7GlC/QT4tYWhtNqRMmtIpE8b0jfDYCxb77mk5/C8rhQspRwebGuYZWHxeEgG+03IXCG8BSoPeztc/qgo1AcZWCoG4ozdE42dfSvLgKOWqDkxSCley7ZPExRQz78sGJ7x5pxvm6yuhkQpObnQ8tEH4o3c7ZtSrTWsXh8Pr29G0CfWFXT9887nygexBKPU9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=seco.com smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=cHDJGKZoIt3Qvf99KfbasimQ+ZvWTUZpWV/kwcIxxcE=;
-        b=IWmt0HHNxT+F5HX7t+OPRF+L3YGJ9ilWgsiQGUpin9c3mIlnxjnL/SLvlvDj4iT7RF
-         s5LehX2AY1VZ+oowhzUcOAeICJW6ccmU/Ma+BuEc5159xr+pgd11fLjX4AQwMugCQMSy
-         5ZbHrMlnkrb+soOcWOMF06nnMmSWF3EqVecB8ANiiyTSCGqq1CQSgiMCYlY7TCR5Hfa2
-         5KnknkyMatKYgL+seUMbq7NknpRTS4IfT52HckTTNXfBUr6kz7R5c2JaUsdbto55EWPC
-         yFW4rWRtfeN0CWe/CABR0l76fW7l8hjCCotWcNLYvGOz57kDTqgizPgl3KSAhaogVAL+
-         eBdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=cHDJGKZoIt3Qvf99KfbasimQ+ZvWTUZpWV/kwcIxxcE=;
-        b=Cpy5B6/h3XvOZRkeSlgOr8aTlJMPZsp5YFIrC9ArIQrzshyxug8XXqvWwRYsF8dNxV
-         1bzABJDCmKzEz89RZioAdnGIPdmjUBvTtfpM347IK0ZzQqQNUqCazpNFrvL5e0kxG0bN
-         3cnGU7mqy8zngDyBcF+QJaomaEbjchzBvKgSFa8C89ustY3xxlrq/7Xw6DGogL4Ub+AE
-         6SBY5Ps3Ir1JR0IuNAOqVFJUf1eyyHPfVFEEASICzGKGjJ320nr02D12yx9K++3RpN0o
-         9W+xVtLehiU67YFw+wMwtOxBF8ZlKPBLctROekytW8M5t8K8ftGeI+hNDHFO0bvpyzik
-         il3A==
-X-Gm-Message-State: AOAM533GhNruI978mcdvj+mfoXUUrrN+XmeJW7TVh839hpghKiXa7Rec
-        51TzSWohwKTW+N7XoCikLYs=
-X-Google-Smtp-Source: ABdhPJxv/LcPZowZ9jkwjHoLct8hWdA+g5iJ23DCn5Pn/SmRFJiOK/9ULfpreoKtUN7cnthEssX1eQ==
-X-Received: by 2002:a2e:a54d:: with SMTP id e13mr28507661ljn.319.1636968418855;
-        Mon, 15 Nov 2021 01:26:58 -0800 (PST)
-Received: from [192.168.1.11] ([94.103.224.112])
-        by smtp.gmail.com with ESMTPSA id j21sm1354975lfu.151.2021.11.15.01.26.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 01:26:57 -0800 (PST)
-Message-ID: <af7d7175-730e-5a41-4cff-92c2554010d9@gmail.com>
-Date:   Mon, 15 Nov 2021 12:26:56 +0300
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6gGfMreQTDGGaiTeH1vkZqS7r2TMddLfePQoCn4820Q=;
+ b=SLetnEgYmj3dBNSG4gJL/H0T1MONXSE7RAJb9XMsB0+R9QCY1jx0MXk+BSL7NDSHQ/V+RnLWIklcWjqNtLPEeIAT7PYflngPJKgG4xXDiRKQeHgP8yhoVGIEnWZZ4RD/AlVLfBkNJMPp1GAHMqlYTfFbOO4BjZngLiMtoSnO14c=
+Received: from DM3PR12CA0110.namprd12.prod.outlook.com (2603:10b6:0:55::30) by
+ SJ0PR02MB7837.namprd02.prod.outlook.com (2603:10b6:a03:327::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.17; Mon, 15 Nov
+ 2021 09:27:39 +0000
+Received: from DM3NAM02FT037.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:0:55:cafe::c5) by DM3PR12CA0110.outlook.office365.com
+ (2603:10b6:0:55::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.16 via Frontend
+ Transport; Mon, 15 Nov 2021 09:27:39 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ DM3NAM02FT037.mail.protection.outlook.com (10.13.4.166) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4690.15 via Frontend Transport; Mon, 15 Nov 2021 09:27:38 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Mon, 15 Nov 2021 01:27:36 -0800
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Mon, 15 Nov 2021 01:27:36 -0800
+Envelope-to: sean.anderson@seco.com,
+ linux-pwm@vger.kernel.org,
+ devicetree@vger.kernel.org,
+ thierry.reding@gmail.com,
+ u.kleine-koenig@pengutronix.de,
+ lee.jones@linaro.org,
+ linux-arm-kernel@lists.infradead.org,
+ alvaro.gamez@hazent.com,
+ linux-kernel@vger.kernel.org,
+ robh@kernel.org
+Received: from [10.254.241.49] (port=57400)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1mmYH2-000GiK-6w; Mon, 15 Nov 2021 01:27:36 -0800
+Message-ID: <be09f273-d8eb-7d23-c1de-58c38ccbb421@xilinx.com>
+Date:   Mon, 15 Nov 2021 10:27:33 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.3.0
-Subject: Re: [PATCH v2] can: etas_es58x: fix error handling
+Subject: Re: [PATCH v10 1/3] microblaze: timer: Remove unused properties
 Content-Language: en-US
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     Johan Hovold <johan@kernel.org>, wg@grandegger.com,
-        mkl@pengutronix.de, davem@davemloft.net, kuba@kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <CAMZ6Rq+orfUuUCCgeWyGc7P0vp3t-yjf_g9H=Jhk43f1zXGfDQ@mail.gmail.com>
- <20211115075124.17713-1-paskripkin@gmail.com>
- <YZIWT9ATzN611n43@hovoldconsulting.com>
- <7a98b159-f9bf-c0dd-f244-aec6c9a7dcaa@gmail.com>
- <YZIXdnFQcDcC2QvE@hovoldconsulting.com>
- <e91eb5b1-295e-1a21-d153-5e0fa52b2ffe@gmail.com>
- <CAMZ6Rq+3uPE31q=HN-BdkXsMYZf53=VfNSn0OD6HcweLO0u-_Q@mail.gmail.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <CAMZ6Rq+3uPE31q=HN-BdkXsMYZf53=VfNSn0OD6HcweLO0u-_Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Sean Anderson <sean.anderson@seco.com>,
+        <linux-pwm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+CC:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Alvaro Gamez <alvaro.gamez@hazent.com>,
+        <linux-kernel@vger.kernel.org>, <michal.simek@xilinx.com>,
+        Rob Herring <robh@kernel.org>
+References: <20211112185504.1921780-1-sean.anderson@seco.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+In-Reply-To: <20211112185504.1921780-1-sean.anderson@seco.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4b191a9f-d501-41e0-d05d-08d9a81a2ac6
+X-MS-TrafficTypeDiagnostic: SJ0PR02MB7837:
+X-Microsoft-Antispam-PRVS: <SJ0PR02MB783743B6D7C9FB068E503171C6989@SJ0PR02MB7837.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ID2Rr0/4OHaSAXGs8LxHFJ7VzpV+Pw9sACyHhZGEjAuXYlZondsyiZLFLmSiSQG5O7ltsgSDtZQ0CmCfb1ClUKR0h3/qw5C+FnEtbxedqhUN3IG9lQNhqFHVDa4k7ayVgktBplxsTgu6tmln151kdFZKDqKlJhMxYNrcMG3pQ+eQ7eWdXmiAVgnE8cWr+hQ3RGvB192Mg0Vwv8EnG7CL10XToOgGrAos0GIIur3JU8j8e2yTw7GFguF8/cjYP9rgS0ueosVVjRVoLaV7zW9JmAtCtrJioGrZnkdouNqC6KYy0dVbyxAiPscYSJZn5OdgtiTvktMtBUN3ykoqnoqweoKA27P+EAMRCcrk2SVIdWWfq/gs1wvHDgnclMUUseDfH3hzCasZq9lsd6RKfj4cRmWHZXllT976JkHuyWWRHznGKiQPZqDwyUDu8pPGMRH57cpgErBJ/IfbrjD6qGekRAGi4p+/67CKTY+EvWAP+yoNzoyAPgdlODImxZB+WxFVW0AXiGbg/vq5iUfAyjQb/R3zROToGwsWactyPi3IR3dm+EwZdK2s8pj+AagOXpuR2w/8hG8NfQ1DXKr4ebm/L7JmoCMqs3juCInmHV02P1Evz/svNlWkp8NljS1/Y8Hms0JBDvpL5D7CU+k7e4p2fhK1WAPcWW1txGKYKBFkDjyja2bhFoKXYvnEdEcFpj3b+xMhNGWxwoJJtFeNNqX2ndL+lh2kKKOkcrhi5plNXe6sF4i6BJ6WLGh0CkV16Uqs
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(46966006)(36840700001)(5660300002)(2616005)(36756003)(9786002)(53546011)(36860700001)(31696002)(31686004)(336012)(426003)(44832011)(7416002)(316002)(186003)(47076005)(356005)(7636003)(8676002)(4326008)(83380400001)(2906002)(36906005)(508600001)(82310400003)(26005)(8936002)(6666004)(70206006)(54906003)(110136005)(70586007)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2021 09:27:38.9014
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4b191a9f-d501-41e0-d05d-08d9a81a2ac6
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT037.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB7837
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/21 12:24, Vincent MAILHOL wrote:
->> Sure! I should have check it before sending v2 :( My bad, sorry. I see
->> now, that there is possible calltrace which can hit NULL defer.
-> 
-> I should be the one apologizing here. Sorry for the confusion.
-> 
->> One thing I am wondering about is why in some code parts there are
->> validation checks for es58x_dev->netdev[i] and in others they are missing.
-> 
-> There is a validation when it is accessed in a for loop.
-> It is not guarded in es58x_send_msg() because this function
-> expects the channel_idx to be a valid index.
-> 
-> Does this answer your wonders?
-> 
-
-Yeah! I have just looked at the code one more time and came up with the 
-same idea.
-
-Thank you for confirming and acking my patch :)
 
 
+On 11/12/21 19:55, Sean Anderson wrote:
+> This removes properties not used by either the PWM or timer drivers.
+> This lets us set additionalProperties: false.
+> 
+> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+> Acked-by: Michal Simek <michal.simek@xilinx.com>
+> ---
+> 
+> (no changes since v8)
+> 
+> Changes in v8:
+> - Remove additional properties from microblaze device tree
+> 
+>   arch/microblaze/boot/dts/system.dts | 5 -----
+>   1 file changed, 5 deletions(-)
+> 
+> diff --git a/arch/microblaze/boot/dts/system.dts b/arch/microblaze/boot/dts/system.dts
+> index b7ee1056779e..22252451ec09 100644
+> --- a/arch/microblaze/boot/dts/system.dts
+> +++ b/arch/microblaze/boot/dts/system.dts
+> @@ -347,12 +347,7 @@ xps_timer_1: timer@83c00000 {
+>   			interrupts = < 3 2 >;
+>   			reg = < 0x83c00000 0x10000 >;
+>   			xlnx,count-width = <0x20>;
+> -			xlnx,family = "virtex5";
+> -			xlnx,gen0-assert = <0x1>;
+> -			xlnx,gen1-assert = <0x1>;
+>   			xlnx,one-timer-only = <0x0>;
+> -			xlnx,trig0-assert = <0x1>;
+> -			xlnx,trig1-assert = <0x1>;
+>   		} ;
+>   	} ;
+>   }  ;
+> 
 
-With regards,
-Pavel Skripkin
+
+FYI: This is merged to Linus tree already. It means you can remove this 
+patch from this series.
+
+M
