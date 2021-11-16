@@ -2,91 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB00452DF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:26:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D2E0452E01
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:30:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233039AbhKPJ33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 04:29:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232697AbhKPJ31 (ORCPT
+        id S233114AbhKPJd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 04:33:29 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:35213 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233127AbhKPJdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 04:29:27 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F78CC061570;
-        Tue, 16 Nov 2021 01:26:30 -0800 (PST)
-Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1mmujP-0003C7-Uz; Tue, 16 Nov 2021 10:26:24 +0100
-Message-ID: <e75bf933-9b93-89d2-d73f-f85af65093c8@leemhuis.info>
-Date:   Tue, 16 Nov 2021 10:26:23 +0100
+        Tue, 16 Nov 2021 04:33:13 -0500
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-239--w25oYSSNc6H4O020wqeeA-1; Tue, 16 Nov 2021 09:30:13 +0000
+X-MC-Unique: -w25oYSSNc6H4O020wqeeA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.26; Tue, 16 Nov 2021 09:30:12 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.026; Tue, 16 Nov 2021 09:30:12 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Alistair Delva' <adelva@google.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>
+CC:     Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        "Khazhismel Kumykov" <khazhy@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Serge Hallyn" <serge@hallyn.com>, Jens Axboe <axboe@kernel.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux Stable maillist <stable@vger.kernel.org>
+Subject: RE: [PATCH] block: Check ADMIN before NICE for IOPRIO_CLASS_RT
+Thread-Topic: [PATCH] block: Check ADMIN before NICE for IOPRIO_CLASS_RT
+Thread-Index: AQHX2n2CNxSicaUdZEuXqRynLrd2WawF4ZBA
+Date:   Tue, 16 Nov 2021 09:30:12 +0000
+Message-ID: <43aeb7451621474ea0d7bee6b99039c3@AcuMS.aculab.com>
+References: <20211115173850.3598768-1-adelva@google.com>
+ <CAFqZXNvVHv8Oje-WV6MWMF96kpR6epTsbc-jv-JF+YJw=55i1w@mail.gmail.com>
+ <CANDihLEFZAz8DwkkMGiDJnDMjxiUuSCanYsJtkRwa9RoyruLFA@mail.gmail.com>
+In-Reply-To: <CANDihLEFZAz8DwkkMGiDJnDMjxiUuSCanYsJtkRwa9RoyruLFA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCHv2] Bluetooth: quirk disabling LE Read Transmit Power
-Content-Language: en-BS
-To:     Orlando Chamberlain <redecorating@protonmail.com>
-Cc:     danielwinkler@google.com, gargaditya08@live.com,
-        gregkh@linuxfoundation.org, johan.hedberg@intel.com,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.dentz@gmail.com, marcel@holtmann.org,
-        regressions@lists.linux.dev, sonnysasaka@chromium.org
-References: <4970a940-211b-25d6-edab-21a815313954@protonmail.com>
- <275acce4-9eab-9cba-7145-5a75a69ca530@protonmail.com>
- <20211001083412.3078-1-redecorating@protonmail.com>
- <CABBYNZLjSfcG_KqTEbL6NOSvHhA5-b1t_S=3FQP4=GwW21kuzg@mail.gmail.com>
- <972034A8-4B22-4FEE-9B37-C0A7C7ADD60C@live.com> <YYZr14zwHnd52rQ7@kroah.com>
- <829A2DF8-818E-4AF1-84F9-49B5822F9146@live.com> <YYePw07y2DzEPSBR@kroah.com>
- <70a875d0-7162-d149-dbc1-c2f5e1a8e701@leemhuis.info>
- <20211116090128.17546-1-redecorating@protonmail.com>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <20211116090128.17546-1-redecorating@protonmail.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1637054791;0c66314f;
-X-HE-SMSGID: 1mmujP-0003C7-Uz
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.11.21 10:02, Orlando Chamberlain wrote:
->> Bluetooth maintainers, what's the status here? The proposed patch is
->> fixing a regression. It's not a recent one (it afaics was introduced in
->> v5.11-rc1). Nevertheless it would be good to get this finally resolved.
->> But this thread seems inactive for more than a week now. Or was progress
->> made, but is only visible somewhere else?
-> 
-> I think the best solution is getting broadcom to update their firmware,
-> I've just sent them a message through a form on their website, I couldn't
-> seem to get it to tell me "Your message has been sent", so it's possible
-> that it didn't submit (more likely I've sent the same message several times).
-> 
-> If I hear back from them I'll send something here.
+RnJvbTogQWxpc3RhaXIgRGVsdmENCj4gU2VudDogMTUgTm92ZW1iZXIgMjAyMSAxOTowOQ0KLi4u
+DQo+ID4gPiAtICAgICAgICAgICAgICAgICAgICAgICBpZiAoIWNhcGFibGUoQ0FQX1NZU19OSUNF
+KSAmJiAhY2FwYWJsZShDQVBfU1lTX0FETUlOKSkNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAg
+ICAgIGlmICghY2FwYWJsZShDQVBfU1lTX0FETUlOKSAmJiAhY2FwYWJsZShDQVBfU1lTX05JQ0Up
+KQ0KPiA+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gLUVQRVJNOw0K
+DQpJc24ndCB0aGUgcmVhbCBwcm9ibGVtIHRoYXQgeW91IGFjdHVhbGx5IHdhbnQgdG8gdGVzdDoN
+CgkJaWYgKCFjYXBhYmxlKENBUF9TWVNfTklDRSB8IENBUF9TWVNfQURNSU4pKQ0KCQkJcmV0dXJu
+IC1FUEVSTTsNCnNvIHRoYXQgeW91IG9ubHkgZ2V0IHRoZSBmYWlsICdzcGxhdCcgd2hlbiBuZWl0
+aGVyIGlzIHNldC4NCg0KVGhpcyB3aWxsIGJlIHRydWUgd2hlbmV2ZXIgbW9yZSB0aGFuIG9uZSBj
+YXBhYmlsaXR5IGVuYWJsZXMgc29tZXRoaW5nLg0KDQpQb3NzaWJseSB0aGlzIG5lZWRzIHNvbWV0
+aGluZyBsaWtlOg0KaW50IGNhcGFiYWxlX29yKHVuc2lnbmVkIGludCwgLi4uKTsNCiNkZWZpbmUg
+Y2FwYWJhbGVfb3IoLi4uKSBjYXBhYmFibGVfb3IoX19WQV9MSVNUX18sIH4wdSkNCg0KCURhdmlk
+DQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBG
+YXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2
+IChXYWxlcykNCg==
 
-Thx for that. But FWIW: from the point of the regression tracker that's
-not the best solution, as according to your report this is a regression.
-IOW: we deal with something that used to up to a certain kernel version
-and was broken by a change to the kernel. That is something frown upon
-in Linux kernel development, hence changes introducing regression are
-often quickly reverted, if they can't get fixed by follow up change quickly.
-
-That sentence has two "quickly", as we want to prevent more people
-running into the issue, resulting in a loss of trust. But that's what
-will happen if we wait for a firmware update to get developed, tested,
-published, and rolled out. And even then we can't expect users to have
-the latest firmware installed when they switch to a new kernel.
-
-Hence the best solution *afaics* might be: fix this in the kernel
-somehow now with a workaround; once the firmware update is out, change
-the kernel again to only apply the workaround if the old firmware is in use.
-
-At least that's how it looks to me from the outside. But as mentioned
-earlier already: as a Linux kernel regression tracker I'm getting a lot
-of reports on my table. I can only look briefly into most of them.
-Therefore I unfortunately will get things wrong or miss something
-important. I hope that's not the case here; if you think it is, don't
-hesitate to tell me about it in a public reply. That's in everyone's
-interest, as what I wrote above might be misleading to everyone reading
-this, which is something I'd like to avoid.
-
-Ciao, Thorsten (carrying his Linux kernel regression tracker hat)
