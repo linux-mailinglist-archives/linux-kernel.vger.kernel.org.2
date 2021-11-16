@@ -2,79 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D84453618
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA66453624
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:43:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238432AbhKPPny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 10:43:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238410AbhKPPmn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 10:42:43 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA028C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:39:45 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id d24so38491958wra.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:39:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=2rnU60dRO+TOeEQ8QTvW2o8LrLiuFOFdxntBRWJpoQ8=;
-        b=gSlt42+nerC8lPvGNbzJMcuGn11aXKD0Qw+dXZ0m8E6JbROQZaSZLXYtk5ZoKiams0
-         sbegOrU+q5j/P8dJnB3oZlkHrP103AjCJlFAdFFxvDC8zjVEpDxOGagUS9uRvJH0sIoQ
-         Upjie+IXSHUzuOpsa26TeO3ji88prG/QYZLeagCmEH+gVy0BYQvBW74OV1JbIwnSkkqr
-         MWyOeW9pAFhHT84kIwTkRu4AtnTuIxEkaIVXc2mvSG3t0I07eYJzbcy2wgG6KNxBBnf/
-         CWVek9E8YorN04U9P5jH/tpuVGfSjgxefnh6MPp9MwwKSkiFUXjH5gitZ6zBXK1AoW9h
-         8Hew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=2rnU60dRO+TOeEQ8QTvW2o8LrLiuFOFdxntBRWJpoQ8=;
-        b=BvgGf6meILknzEBayEH7Y8egXg0s/1cVD+C7d6YvtMZ7qfAdwsETovULpe/g0JPeZU
-         zm1Y9u31YObKOZ3Z02O+6xYaGnLZ5Vw/A+MiWWymhoQjzgdLr8oy3E/jW6aoM3PX+wTe
-         f9paaINCwbnvIEeifHz9YmotvCREMNlVzpIhHO/d+yboh/dMBtULkNqApsGlUm2+JQOs
-         k2CIzu5QDUUbF86DQkeUrNn4tnJ5aMVZBJnuWJ6BTIVYwGribOVQZ0Kkn++9UTg1Gw9q
-         +BmpWeQbXW3zicYxLfHnzewg9TD5DDYE/nk4ebYhrYNIbOH7TajDoCxeHeENdE2XC6V7
-         zVTg==
-X-Gm-Message-State: AOAM5308OBqWK4AA7J2RpmE3/rCCZFJrwhcMq43L/4rSU6YN1dfACX79
-        GkDJg5JzIUnzbK2dvFZnS6P1LSatjCGamcPLJA0=
-X-Google-Smtp-Source: ABdhPJzauNo7u8LAkyRofHq7NbyKJY0AUETDrSoQu3mA5o9mPjKFZNPEWM+ZyY9MB7/JzVP8YdWbmS5ip4hlYDzSrL4=
-X-Received: by 2002:adf:ef4f:: with SMTP id c15mr10550043wrp.226.1637077184362;
- Tue, 16 Nov 2021 07:39:44 -0800 (PST)
+        id S238486AbhKPPoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 10:44:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50746 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238589AbhKPPn2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 10:43:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BF3060EE0;
+        Tue, 16 Nov 2021 15:40:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637077231;
+        bh=WY/fUvla4+0dT7GcjonjtIDUlsJcA57S5H7vggmT+kU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=J6vWPMBWMZeNZxf8d+irHVTWDSiw0teGb1/RSLkjrm0X+/E0xhT3/2GZySvtA1gcx
+         298t+B/Hzzx4eMJCr15pP58ABg7nMXyZH1qWHEwL3HLfozxhk42sfKvRkep2WZoBj+
+         SeZ9eCHTZi0c2t7A9dZakPeuWbgj8M5Y2Z3io79tkDO6XcsLgQCN4kQFIwOJDzBEtG
+         DACdVKypsjOtfCgpHE4qMHyNf6b//tax9j3U5r96LgQr9evIEm0/pj/oa69vG7U3hw
+         npY8FKVx74hb63gp5vn++JSDwusd0n/hbvgY6DBjWQqHqLPuS8kR9uEFQxupC4Sk+X
+         jYyZBA4sVDTrw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id C644E4088E; Tue, 16 Nov 2021 12:40:27 -0300 (-03)
+Date:   Tue, 16 Nov 2021 12:40:27 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jiri Olsa <jolsa@redhat.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/1] Documentation: Add minimum pahole version
+Message-ID: <YZPQ6+u2wTHRfR+W@kernel.org>
 MIME-Version: 1.0
-Received: by 2002:adf:fa04:0:0:0:0:0 with HTTP; Tue, 16 Nov 2021 07:39:43
- -0800 (PST)
-Reply-To: mrsaishag45@gmail.com
-From:   Mrs Aisha Al-Qaddafi <mrsaishag31@gmail.com>
-Date:   Tue, 16 Nov 2021 07:39:43 -0800
-Message-ID: <CANoeRo5qiFAZ0sjqyaUaqbyVTS7U_CJFTQEjfMRN9UPywRsVWw@mail.gmail.com>
-Subject: Dear Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+A report was made in https://github.com/acmel/dwarves/issues/26 about
+pahole not being listed in the process/changes.rst file as being needed
+for building the kernel, address that.
 
-I came across your e-mail contact prior to a private search while in
-need of your assistance. I am Aisha Al-Qaddafi, the only biological
-Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
-single Mother and a Widow with three Children.
+Link: https://github.com/acmel/dwarves/issues/26
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ Documentation/process/changes.rst | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
-investment Manager/Partner because of my current refugee status,
-however, I am interested in you for investment project assistance in
-your country, may be from there, we can build business relationship in
-the nearest future.
+diff --git a/Documentation/process/changes.rst b/Documentation/process/changes.rst
+index e35ab74a0f804b04..c45f167a1b6c02a4 100644
+--- a/Documentation/process/changes.rst
++++ b/Documentation/process/changes.rst
+@@ -35,6 +35,7 @@ GNU make               3.81             make --version
+ binutils               2.23             ld -v
+ flex                   2.5.35           flex --version
+ bison                  2.0              bison --version
++pahole                 1.16             pahole --version
+ util-linux             2.10o            fdformat --version
+ kmod                   13               depmod -V
+ e2fsprogs              1.41.4           e2fsck -V
+@@ -108,6 +109,14 @@ Bison
+ Since Linux 4.16, the build system generates parsers
+ during build.  This requires bison 2.0 or later.
+ 
++pahole:
++-------
++
++Since Linux 5.2 the build system generates BTF (BPF Type Format) from DWARF in
++vmlinux, a bit later from kernel modules as well, if CONFIG_DEBUG_INFO_BTF is
++selected.  This requires pahole v1.16 or later. It is found in the 'dwarves' or
++'pahole' distro packages or from https://fedorapeople.org/~acme/dwarves/.
++
+ Perl
+ ----
+ 
+-- 
+2.31.1
 
-I am willing to negotiate an investment/business profit sharing ratio
-with you based on the future investment earning profits.
-
-Your Urgent Reply Will Be Appreciated
-
-Best Regards
-Mrs Aisha Al-Qaddafi
