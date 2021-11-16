@@ -2,426 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA04E452824
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:54:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54AB0452826
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:58:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241450AbhKPC5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 21:57:41 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:4699 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233971AbhKPCzq (ORCPT
+        id S240611AbhKPDA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 22:00:56 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:58060 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241467AbhKPDAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 21:55:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637031170; x=1668567170;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=CB8ERLokzWgcQ25ClSltrZAEv9+3Fm1ZTXOeytEpwIE=;
-  b=fcdV86Y8MLC7X4R18Z1hAn1nZLntoNJ3KbTvgUV6Y/D9R6/ZfL7dGUg2
-   +n2U5kN/N7OecEJUmdXk8NbY1HpYsD5CKGNEBkUXkVLiS28kHQ56ym0QD
-   JbJjD84s45myDesnebQvlGhmKdVtxiiXELVfkoAx/5F2wewLVF8YdSw40
-   0=;
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 15 Nov 2021 18:52:48 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 18:52:47 -0800
-Received: from nalasex01c.na.qualcomm.com (10.47.97.35) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Mon, 15 Nov 2021 18:52:47 -0800
-Received: from [10.239.96.187] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Mon, 15 Nov
- 2021 18:52:45 -0800
-Message-ID: <32b433a1-31f9-14ba-e8f6-87b69c2c4ac9@quicinc.com>
-Date:   Tue, 16 Nov 2021 10:52:42 +0800
+        Mon, 15 Nov 2021 22:00:30 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UwnkBMe_1637031451;
+Received: from 30.21.164.20(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UwnkBMe_1637031451)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 16 Nov 2021 10:57:32 +0800
+Message-ID: <b8f13349-187d-876f-4812-0605a7db6fa8@linux.alibaba.com>
+Date:   Tue, 16 Nov 2021 10:58:18 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.3.0
-Subject: Re: [PATCH v5] locking/rwsem: Make handoff bit handling more
- consistent
-To:     Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        mazhenhua <mazhenhua@xiaomi.com>, Hillf Danton <hdanton@sina.com>
-References: <20211116012912.723980-1-longman@redhat.com>
-From:   "Aiqun(Maria) Yu" <quic_aiquny@quicinc.com>
-In-Reply-To: <20211116012912.723980-1-longman@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [PATCH v3] mm: migrate: Support multiple target nodes demotion
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Zi Yan <ziy@nvidia.com>, Oscar Salvador <osalvador@suse.de>,
+        zhongjiang-ali@linux.alibaba.com,
+        Xunlei Pang <xlpang@linux.alibaba.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <a31dc065a7901bcdca0d9642d0def0f57e865e20.1636683991.git.baolin.wang@linux.alibaba.com>
+ <CAHbLzkpTo0yW9YWPyE6omiiP2QiwMRETe1ZJ1x4sEJCk0WZOkg@mail.gmail.com>
+ <d953e533-e175-17ba-c065-dfd1354a858f@linux.alibaba.com>
+ <CAHbLzkqSqCL+g7dfzeOw8fPyeEC0BBv13Ny1UVGHDkadnQdR=g@mail.gmail.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <CAHbLzkqSqCL+g7dfzeOw8fPyeEC0BBv13Ny1UVGHDkadnQdR=g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/2021 9:29 AM, Waiman Long wrote:
-> There are some inconsistency in the way that the handoff bit is being
-> handled in readers and writers.
-> 
-> Firstly, when a queue head writer set the handoff bit, it will clear it
-> when the writer is being killed or interrupted on its way out without
-> acquiring the lock. That is not the case for a queue head reader. The
-> handoff bit will simply be inherited by the next waiter.
-> 
-> Secondly, in the out_nolock path of rwsem_down_read_slowpath(), both
-> the waiter and handoff bits are cleared if the wait queue becomes empty.
-> For rwsem_down_write_slowpath(), however, the handoff bit is not checked
-> and cleared if the wait queue is empty. This can potentially make the
-> handoff bit set with empty wait queue.
-> 
-> To make the handoff bit handling more consistent and robust, extract
-> out handoff bit clearing code into the new rwsem_del_waiter() helper
-> function.  The common function will only use atomic_long_andnot() to
-> clear bits when the wait queue is empty to avoid possible race condition.
-we do have race condition needed to be fixed with this change.
-> If the first waiter with handoff bit set is killed or interrupted to
-> exit the slowpath without acquiring the lock, the next waiter will
-> inherit the handoff bit.
-> 
-> While at it, simplify the trylock for loop in rwsem_down_write_slowpath()
-> to make it easier to read.
-> 
-> Fixes: 4f23dbc1e657 ("locking/rwsem: Implement lock handoff to prevent lock starvation")
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->   kernel/locking/rwsem.c | 171 ++++++++++++++++++++---------------------
->   1 file changed, 85 insertions(+), 86 deletions(-)
-> 
-> diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-> index c51387a43265..e039cf1605af 100644
-> --- a/kernel/locking/rwsem.c
-> +++ b/kernel/locking/rwsem.c
-> @@ -105,9 +105,9 @@
->    * atomic_long_cmpxchg() will be used to obtain writer lock.
->    *
->    * There are three places where the lock handoff bit may be set or cleared.
-> - * 1) rwsem_mark_wake() for readers.
-> - * 2) rwsem_try_write_lock() for writers.
-> - * 3) Error path of rwsem_down_write_slowpath().
-> + * 1) rwsem_mark_wake() for readers		-- set, clear
-> + * 2) rwsem_try_write_lock() for writers	-- set, clear
-> + * 3) rwsem_del_waiter()			-- clear
->    *
->    * For all the above cases, wait_lock will be held. A writer must also
->    * be the first one in the wait_list to be eligible for setting the handoff
-> @@ -334,6 +334,9 @@ struct rwsem_waiter {
->   	struct task_struct *task;
->   	enum rwsem_waiter_type type;
->   	unsigned long timeout;
-> +
-> +	/* Writer only, not initialized in reader */
-> +	bool handoff_set;
->   };
->   #define rwsem_first_waiter(sem) \
->   	list_first_entry(&sem->wait_list, struct rwsem_waiter, list)
-> @@ -344,12 +347,6 @@ enum rwsem_wake_type {
->   	RWSEM_WAKE_READ_OWNED	/* Waker thread holds the read lock */
->   };
->   
-> -enum writer_wait_state {
-> -	WRITER_NOT_FIRST,	/* Writer is not first in wait list */
-> -	WRITER_FIRST,		/* Writer is first in wait list     */
-> -	WRITER_HANDOFF		/* Writer is first & handoff needed */
-> -};
-> -
->   /*
->    * The typical HZ value is either 250 or 1000. So set the minimum waiting
->    * time to at least 4ms or 1 jiffy (if it is higher than 4ms) in the wait
-> @@ -365,6 +362,31 @@ enum writer_wait_state {
->    */
->   #define MAX_READERS_WAKEUP	0x100
->   
-> +static inline void
-> +rwsem_add_waiter(struct rw_semaphore *sem, struct rwsem_waiter *waiter)
-> +{
-> +	lockdep_assert_held(&sem->wait_lock);
-> +	list_add_tail(&waiter->list, &sem->wait_list);
-> +	/* caller will set RWSEM_FLAG_WAITERS */
-> +}
-> +
-> +/*
-> + * Remove a waiter from the wait_list and clear flags.
-> + *
-> + * Both rwsem_mark_wake() and rwsem_try_write_lock() contain a full 'copy' of
-> + * this function. Modify with care.
-> + */
-> +static inline void
-> +rwsem_del_waiter(struct rw_semaphore *sem, struct rwsem_waiter *waiter)
-> +{
-> +	lockdep_assert_held(&sem->wait_lock);
-> +	list_del(&waiter->list);
-> +	if (likely(!list_empty(&sem->wait_list)))
-> +		return;
-> +
-> +	atomic_long_andnot(RWSEM_FLAG_HANDOFF | RWSEM_FLAG_WAITERS, &sem->count);
-> +}
-> +
->   /*
->    * handle the lock release when processes blocked on it that can now run
->    * - if we come here from up_xxxx(), then the RWSEM_FLAG_WAITERS bit must
-> @@ -376,6 +398,8 @@ enum writer_wait_state {
->    *   preferably when the wait_lock is released
->    * - woken process blocks are discarded from the list after having task zeroed
->    * - writers are only marked woken if downgrading is false
-> + *
-> + * Implies rwsem_del_waiter() for all woken readers.
->    */
->   static void rwsem_mark_wake(struct rw_semaphore *sem,
->   			    enum rwsem_wake_type wake_type,
-> @@ -490,18 +514,25 @@ static void rwsem_mark_wake(struct rw_semaphore *sem,
->   
->   	adjustment = woken * RWSEM_READER_BIAS - adjustment;
->   	lockevent_cond_inc(rwsem_wake_reader, woken);
-> +
-> +	oldcount = atomic_long_read(&sem->count);
->   	if (list_empty(&sem->wait_list)) {
-> -		/* hit end of list above */
-> +		/*
-> +		 * Combined with list_move_tail() above, this implies
-> +		 * rwsem_del_waiter().
-> +		 */
->   		adjustment -= RWSEM_FLAG_WAITERS;
-> +		if (oldcount & RWSEM_FLAG_HANDOFF)
-> +			adjustment -= RWSEM_FLAG_HANDOFF;
-> +	} else if (woken) {
-> +		/*
-> +		 * When we've woken a reader, we no longer need to force
-> +		 * writers to give up the lock and we can clear HANDOFF.
-> +		 */
-> +		if (oldcount & RWSEM_FLAG_HANDOFF)
-> +			adjustment -= RWSEM_FLAG_HANDOFF;
->   	}
->   
-> -	/*
-> -	 * When we've woken a reader, we no longer need to force writers
-> -	 * to give up the lock and we can clear HANDOFF.
-> -	 */
-> -	if (woken && (atomic_long_read(&sem->count) & RWSEM_FLAG_HANDOFF))
-> -		adjustment -= RWSEM_FLAG_HANDOFF;
-> -
->   	if (adjustment)
->   		atomic_long_add(adjustment, &sem->count);
->   
-> @@ -532,12 +563,12 @@ static void rwsem_mark_wake(struct rw_semaphore *sem,
->    * race conditions between checking the rwsem wait list and setting the
->    * sem->count accordingly.
->    *
-> - * If wstate is WRITER_HANDOFF, it will make sure that either the handoff
-> - * bit is set or the lock is acquired with handoff bit cleared.
-> + * Implies rwsem_del_waiter() on success.
->    */
->   static inline bool rwsem_try_write_lock(struct rw_semaphore *sem,
-> -					enum writer_wait_state wstate)
-> +					struct rwsem_waiter *waiter)
->   {
-> +	bool first = rwsem_first_waiter(sem) == waiter;
->   	long count, new;
->   
->   	lockdep_assert_held(&sem->wait_lock);
-> @@ -546,13 +577,19 @@ static inline bool rwsem_try_write_lock(struct rw_semaphore *sem,
->   	do {
->   		bool has_handoff = !!(count & RWSEM_FLAG_HANDOFF);
->   
-> -		if (has_handoff && wstate == WRITER_NOT_FIRST)
-> -			return false;
-> +		if (has_handoff) {
-> +			if (!first)
-> +				return false;
-> +
-> +			/* First waiter inherits a previously set handoff bit */
-> +			waiter->handoff_set = true;
-> +		}
->   
->   		new = count;
->   
->   		if (count & RWSEM_LOCK_MASK) {
-> -			if (has_handoff || (wstate != WRITER_HANDOFF))
-> +			if (has_handoff || (!rt_task(waiter->task) &&
-> +					    !time_after(jiffies, waiter->timeout)))
->   				return false;
->   
->   			new |= RWSEM_FLAG_HANDOFF;
-> @@ -569,9 +606,17 @@ static inline bool rwsem_try_write_lock(struct rw_semaphore *sem,
->   	 * We have either acquired the lock with handoff bit cleared or
->   	 * set the handoff bit.
->   	 */
-> -	if (new & RWSEM_FLAG_HANDOFF)
-> +	if (new & RWSEM_FLAG_HANDOFF) {
-> +		waiter->handoff_set = true;
-> +		lockevent_inc(rwsem_wlock_handoff);
->   		return false;
-> +	}
->   
-> +	/*
-> +	 * Have rwsem_try_write_lock() fully imply rwsem_del_waiter() on
-> +	 * success.
-> +	 */
-> +	list_del(&waiter->list);
->   	rwsem_set_owner(sem);
->   	return true;
->   }
-> @@ -956,7 +1001,7 @@ rwsem_down_read_slowpath(struct rw_semaphore *sem, long count, unsigned int stat
->   		}
->   		adjustment += RWSEM_FLAG_WAITERS;
->   	}
-> -	list_add_tail(&waiter.list, &sem->wait_list);
-> +	rwsem_add_waiter(sem, &waiter);
->   
->   	/* we're now waiting on the lock, but no longer actively locking */
->   	count = atomic_long_add_return(adjustment, &sem->count);
-> @@ -1002,11 +1047,7 @@ rwsem_down_read_slowpath(struct rw_semaphore *sem, long count, unsigned int stat
->   	return sem;
->   
->   out_nolock:
-> -	list_del(&waiter.list);
-> -	if (list_empty(&sem->wait_list)) {
-> -		atomic_long_andnot(RWSEM_FLAG_WAITERS|RWSEM_FLAG_HANDOFF,
-> -				   &sem->count);
-> -	}
-> +	rwsem_del_waiter(sem, &waiter);
->   	raw_spin_unlock_irq(&sem->wait_lock);
->   	__set_current_state(TASK_RUNNING);
->   	lockevent_inc(rwsem_rlock_fail);
-> @@ -1020,9 +1061,7 @@ static struct rw_semaphore *
->   rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
->   {
->   	long count;
-> -	enum writer_wait_state wstate;
->   	struct rwsem_waiter waiter;
-> -	struct rw_semaphore *ret = sem;
->   	DEFINE_WAKE_Q(wake_q);
->   
->   	/* do optimistic spinning and steal lock if possible */
-> @@ -1038,16 +1077,13 @@ rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
->   	waiter.task = current;
->   	waiter.type = RWSEM_WAITING_FOR_WRITE;
->   	waiter.timeout = jiffies + RWSEM_WAIT_TIMEOUT;
-> +	waiter.handoff_set = false;
->   
->   	raw_spin_lock_irq(&sem->wait_lock);
-> -
-> -	/* account for this before adding a new element to the list */
-> -	wstate = list_empty(&sem->wait_list) ? WRITER_FIRST : WRITER_NOT_FIRST;
-> -
-> -	list_add_tail(&waiter.list, &sem->wait_list);
-> +	rwsem_add_waiter(sem, &waiter);
->   
->   	/* we're now waiting on the lock */
-> -	if (wstate == WRITER_NOT_FIRST) {
-> +	if (rwsem_first_waiter(sem) != &waiter) {
->   		count = atomic_long_read(&sem->count);
->   
->   		/*
-> @@ -1083,13 +1119,16 @@ rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
->   	/* wait until we successfully acquire the lock */
->   	set_current_state(state);
->   	for (;;) {
-> -		if (rwsem_try_write_lock(sem, wstate)) {
-> +		if (rwsem_try_write_lock(sem, &waiter)) {
->   			/* rwsem_try_write_lock() implies ACQUIRE on success */
->   			break;
->   		}
->   
->   		raw_spin_unlock_irq(&sem->wait_lock);
->   
-> +		if (signal_pending_state(state, current))
-> +			goto out_nolock;
-> +
->   		/*
->   		 * After setting the handoff bit and failing to acquire
->   		 * the lock, attempt to spin on owner to accelerate lock
-> @@ -1098,7 +1137,7 @@ rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
->   		 * In this case, we attempt to acquire the lock again
->   		 * without sleeping.
->   		 */
-> -		if (wstate == WRITER_HANDOFF) {
-> +		if (waiter.handoff_set) {
->   			enum owner_state owner_state;
->   
->   			preempt_disable();
-> @@ -1109,66 +1148,26 @@ rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
->   				goto trylock_again;
->   		}
->   
-> -		/* Block until there are no active lockers. */
-> -		for (;;) {
-> -			if (signal_pending_state(state, current))
-> -				goto out_nolock;
-> -
-> -			schedule();
-> -			lockevent_inc(rwsem_sleep_writer);
-> -			set_current_state(state);
-> -			/*
-> -			 * If HANDOFF bit is set, unconditionally do
-> -			 * a trylock.
-> -			 */
-> -			if (wstate == WRITER_HANDOFF)
-> -				break;
-> -
-> -			if ((wstate == WRITER_NOT_FIRST) &&
-> -			    (rwsem_first_waiter(sem) == &waiter))
-> -				wstate = WRITER_FIRST;
-> -
-> -			count = atomic_long_read(&sem->count);
-> -			if (!(count & RWSEM_LOCK_MASK))
-> -				break;
-> -
-> -			/*
-> -			 * The setting of the handoff bit is deferred
-> -			 * until rwsem_try_write_lock() is called.
-> -			 */
-> -			if ((wstate == WRITER_FIRST) && (rt_task(current) ||
-> -			    time_after(jiffies, waiter.timeout))) {
-> -				wstate = WRITER_HANDOFF;
-> -				lockevent_inc(rwsem_wlock_handoff);
-> -				break;
-> -			}
-> -		}
-> +		schedule();
-> +		lockevent_inc(rwsem_sleep_writer);
-> +		set_current_state(state);
->   trylock_again:
->   		raw_spin_lock_irq(&sem->wait_lock);
->   	}
->   	__set_current_state(TASK_RUNNING);
-> -	list_del(&waiter.list);
->   	raw_spin_unlock_irq(&sem->wait_lock);
->   	lockevent_inc(rwsem_wlock);
-> -
-> -	return ret;
-> +	return sem;
->   
->   out_nolock:
->   	__set_current_state(TASK_RUNNING);
->   	raw_spin_lock_irq(&sem->wait_lock);
-> -	list_del(&waiter.list);
-> -
-> -	if (unlikely(wstate == WRITER_HANDOFF))
-> -		atomic_long_add(-RWSEM_FLAG_HANDOFF,  &sem->count);
-> -
-> -	if (list_empty(&sem->wait_list))
-> -		atomic_long_andnot(RWSEM_FLAG_WAITERS, &sem->count);
-> -	else
-> +	rwsem_del_waiter(sem, &waiter);
-> +	if (!list_empty(&sem->wait_list))
->   		rwsem_mark_wake(sem, RWSEM_WAKE_ANY, &wake_q);
->   	raw_spin_unlock_irq(&sem->wait_lock);
->   	wake_up_q(&wake_q);
->   	lockevent_inc(rwsem_wlock_fail);
-> -
->   	return ERR_PTR(-EINTR);
->   }
->   
-> 
 
 
--- 
-Thx and BRs,
-Aiqun(Maria) Yu
+On 2021/11/16 3:06, Yang Shi wrote:
+> On Sun, Nov 14, 2021 at 6:40 AM Baolin Wang
+> <baolin.wang@linux.alibaba.com> wrote:
+>>
+>>
+>>
+>> On 2021/11/13 3:05, Yang Shi wrote:
+>>> On Thu, Nov 11, 2021 at 6:28 PM Baolin Wang
+>>> <baolin.wang@linux.alibaba.com> wrote:
+>>>>
+>>>> We have some machines with multiple memory types like below, which
+>>>> have one fast (DRAM) memory node and two slow (persistent memory) memory
+>>>> nodes. According to current node demotion policy, if node 0 fills up,
+>>>> its memory should be migrated to node 1, when node 1 fills up, its
+>>>> memory will be migrated to node 2: node 0 -> node 1 -> node 2 ->stop.
+>>>>
+>>>> But this is not efficient and suitbale memory migration route
+>>>> for our machine with multiple slow memory nodes. Since the distance
+>>>> between node 0 to node 1 and node 0 to node 2 is equal, and memory
+>>>> migration between slow memory nodes will increase persistent memory
+>>>> bandwidth greatly, which will hurt the whole system's performance.
+>>>>
+>>>> Thus for this case, we can treat the slow memory node 1 and node 2
+>>>> as a whole slow memory region, and we should migrate memory from
+>>>> node 0 to node 1 and node 2 if node 0 fills up.
+>>>>
+>>>> This patch changes the node_demotion data structure to support multiple
+>>>> target nodes, and establishes the migration path to support multiple
+>>>> target nodes with validating if the node distance is the best or not.
+>>>>
+>>>> available: 3 nodes (0-2)
+>>>> node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+>>>> node 0 size: 62153 MB
+>>>> node 0 free: 55135 MB
+>>>> node 1 cpus:
+>>>> node 1 size: 127007 MB
+>>>> node 1 free: 126930 MB
+>>>> node 2 cpus:
+>>>> node 2 size: 126968 MB
+>>>> node 2 free: 126878 MB
+>>>> node distances:
+>>>> node   0   1   2
+>>>>     0:  10  20  20
+>>>>     1:  20  10  20
+>>>>     2:  20  20  10
+>>>>
+>>>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>>>> ---
+>>>> Changes from v2:
+>>>>    - Redefine the DEMOTION_TARGET_NODES macro according to the
+>>>>      MAX_NUMNODES.
+>>>>    - Change node_demotion to a pointer and allocate it dynamically.
+>>>>
+>>>> Changes from v1:
+>>>>    - Add a new patch to allocate the node_demotion dynamically.
+>>>>    - Update some comments.
+>>>>    - Simplify some variables' name.
+>>>>
+>>>> Changes from RFC v2:
+>>>>    - Change to 'short' type for target nodes array.
+>>>>    - Remove nodemask instead selecting target node directly.
+>>>>    - Add WARN_ONCE() if the target nodes exceed the maximum value.
+>>>>
+>>>> Changes from RFC v1:
+>>>>    - Re-define the node_demotion structure.
+>>>>    - Set up multiple target nodes by validating the node distance.
+>>>>    - Add more comments.
+>>>> ---
+>>>>    mm/migrate.c | 167 ++++++++++++++++++++++++++++++++++++++++++++++-------------
+>>>>    1 file changed, 132 insertions(+), 35 deletions(-)
+>>>>
+>>>> diff --git a/mm/migrate.c b/mm/migrate.c
+>>>> index cf25b00..9b8a813 100644
+>>>> --- a/mm/migrate.c
+>>>> +++ b/mm/migrate.c
+>>>> @@ -50,6 +50,7 @@
+>>>>    #include <linux/ptrace.h>
+>>>>    #include <linux/oom.h>
+>>>>    #include <linux/memory.h>
+>>>> +#include <linux/random.h>
+>>>>
+>>>>    #include <asm/tlbflush.h>
+>>>>
+>>>> @@ -1119,12 +1120,25 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+>>>>     *
+>>>>     * This is represented in the node_demotion[] like this:
+>>>>     *
+>>>> - *     {  1, // Node 0 migrates to 1
+>>>> - *        2, // Node 1 migrates to 2
+>>>> - *       -1, // Node 2 does not migrate
+>>>> - *        4, // Node 3 migrates to 4
+>>>> - *        5, // Node 4 migrates to 5
+>>>> - *       -1} // Node 5 does not migrate
+>>>> + *     {  nr=1, nodes[0]=1 }, // Node 0 migrates to 1
+>>>> + *     {  nr=1, nodes[0]=2 }, // Node 1 migrates to 2
+>>>> + *     {  nr=0, nodes[0]=-1 }, // Node 2 does not migrate
+>>>> + *     {  nr=1, nodes[0]=4 }, // Node 3 migrates to 4
+>>>> + *     {  nr=1, nodes[0]=5 }, // Node 4 migrates to 5
+>>>> + *     {  nr=0, nodes[0]=-1 }, // Node 5 does not migrate
+>>>> + *
+>>>> + * Moreover some systems may have multiple slow memory nodes.
+>>>> + * Suppose a system has one socket with 3 memory nodes, node 0
+>>>> + * is fast memory type, and node 1/2 both are slow memory
+>>>> + * type, and the distance between fast memory node and slow
+>>>> + * memory node is same. So the migration path should be:
+>>>> + *
+>>>> + *     0 -> 1/2 -> stop
+>>>> + *
+>>>> + * This is represented in the node_demotion[] like this:
+>>>> + *     { nr=2, {nodes[0]=1, nodes[1]=2} }, // Node 0 migrates to node 1 and node 2
+>>>> + *     { nr=0, nodes[0]=-1, }, // Node 1 dose not migrate
+>>>> + *     { nr=0, nodes[0]=-1, }, // Node 2 does not migrate
+>>>>     */
+>>>>
+>>>>    /*
+>>>> @@ -1135,8 +1149,20 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+>>>>     * must be held over all reads to ensure that no cycles are
+>>>>     * observed.
+>>>>     */
+>>>> -static int node_demotion[MAX_NUMNODES] __read_mostly =
+>>>> -       {[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
+>>>> +#define DEFAULT_DEMOTION_TARGET_NODES 15
+>>>> +
+>>>> +#if MAX_NUMNODES < DEFAULT_DEMOTION_TARGET_NODES
+>>>> +#define DEMOTION_TARGET_NODES  (MAX_NUMNODES - 1)
+>>>> +#else
+>>>> +#define DEMOTION_TARGET_NODES  DEFAULT_DEMOTION_TARGET_NODES
+>>>> +#endif
+>>>> +
+>>>> +struct demotion_nodes {
+>>>> +       unsigned short nr;
+>>>> +       short nodes[DEMOTION_TARGET_NODES];
+>>>> +};
+>>>> +
+>>>> +static struct demotion_nodes *node_demotion __read_mostly;
+>>>>
+>>>>    /**
+>>>>     * next_demotion_node() - Get the next node in the demotion path
+>>>> @@ -1149,8 +1175,15 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+>>>>     */
+>>>>    int next_demotion_node(int node)
+>>>>    {
+>>>> +       struct demotion_nodes *nd;
+>>>> +       unsigned short target_nr, index;
+>>>>           int target;
+>>>>
+>>>> +       if (!node_demotion)
+>>>> +               return NUMA_NO_NODE;
+>>>> +
+>>>> +       nd = &node_demotion[node];
+>>>> +
+>>>>           /*
+>>>>            * node_demotion[] is updated without excluding this
+>>>>            * function from running.  RCU doesn't provide any
+>>>> @@ -1161,9 +1194,28 @@ int next_demotion_node(int node)
+>>>>            * node_demotion[] reads need to be consistent.
+>>>>            */
+>>>>           rcu_read_lock();
+>>>> -       target = READ_ONCE(node_demotion[node]);
+>>>> -       rcu_read_unlock();
+>>>> +       target_nr = READ_ONCE(nd->nr);
+>>>> +
+>>>> +       switch (target_nr) {
+>>>> +       case 0:
+>>>> +               target = NUMA_NO_NODE;
+>>>> +               goto out;
+>>>> +       case 1:
+>>>> +               index = 0;
+>>>> +               break;
+>>>> +       default:
+>>>> +               /*
+>>>> +                * If there are multiple target nodes, just select one
+>>>> +                * target node randomly.
+>>>> +                */
+>>>> +               index = get_random_int() % target_nr;
+>>>
+>>> Sorry for chiming in late. I don't get why not select demotion targe > node interleave? TBH, it makes more sense to me. Random is ok, but at
+>>> least I'd expect to see some explanation about why random is used.
+>>
+>> My first version patch[1] already did round-robin to select target node.
+>> For interleave (or round-robin), we should introduce another member to
+>> record last selected target node, as Dave and Ying said, that will cause
+>> cache ping-pong to hurt performance, or introduce per-cpu data to avoid
+>> this, which seems more complicated now.
+> 
+> Thanks. It should be better to have some words in the commit log or
+> code to elaborate this? Someone else may have the same question in the
+> future.
+
+OK. I saw Andrew has queued v4 patch, and I can create an incremental 
+patch to add some comments to explain this. Thanks.
