@@ -2,300 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326694535AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:24:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 543B24535C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:28:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238289AbhKPPZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 10:25:33 -0500
-Received: from mail-eopbgr80073.outbound.protection.outlook.com ([40.107.8.73]:46081
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238188AbhKPPZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 10:25:04 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YTWCBxVeuN0Blez+5F65mQaBAh92UIw+qhuVKm9HZHYpHPYkCaYE+73zeaOif5KsiP/DZLx02yShg46WHUQ7p5LiCe3oahEJvDMosiquopzImb6XzYUxS6u00wMQx4qYLfpb9YPxS0OBxIVlS4ws46nvritpb1AOBXy2bmNGKc6GsYIP6aeVrx5nsMwXJKu52+l+bZNTuWJ8375l8D4poNf0370oLnn/RobOQcGtUBajBCF4oZWXrFEos7AcwrNb2F+KBdr8/81Oz6JLA0Og5+nS/aMcdXWSR2M966+bBVnPfoWDDrB6C/GA27GayQBPZLrlj6VMY9vwa/jDdqqJuQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tvv/0YJKWYkflLH+1wJtCCao9SKMDhETORHXs0z0yfI=;
- b=Xu/qsl/RQBbCW8HaA0CJFKYr0ITG8dyUwo14SVk+QOUIag/2S2y8jG/9wEZYwzjIS3xY6rqApmjIVYjlX0P6xZeKp4BuaWPHZmj3moEfUbUEDouwwVlwchfMNpRUq261Jyt8jI/4k28WH8R3BJdEVKRtnpAI7F1cw5RSnwdCFeOfO9fm0dPZFZUzoJcPRqdWbj7V2bBQhVScJJikCx21SKkLDS2ahSDVgp5C8rK7v8J02QwEeRSj0HKeTA2VWkLpDeJo38k18TljeNfftUbpGorvHm5Q9MtpBwDB6ZyTfdkyhgM1FzWbU1OEVIGI1lj6F4nx2bLhmLUXkUZqDKRY2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tvv/0YJKWYkflLH+1wJtCCao9SKMDhETORHXs0z0yfI=;
- b=RU7WhU0sCylX985BARuiNBxsxhgmFFqktt5kipr6WvBrY+j78gY5BEJYG6Izbr0Z44OFyKkGOeGp5rBPZ1+Lu8tD9YOkVhbDOK8eeJeyHGttB9dIlIB7jKh+J22TBSp7kJVZwnhhe4Ke4yaaRMAnSp9SJ7WzPoUrRj9j3GxAT8Y=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
- by VE1PR04MB7213.eurprd04.prod.outlook.com (2603:10a6:800:1b3::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Tue, 16 Nov
- 2021 15:22:05 +0000
-Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
- ([fe80::85af:f8be:aa99:ba5f]) by VI1PR04MB5151.eurprd04.prod.outlook.com
- ([fe80::85af:f8be:aa99:ba5f%3]) with mapi id 15.20.4690.027; Tue, 16 Nov 2021
- 15:22:05 +0000
-From:   Daniel Baluta <daniel.baluta@oss.nxp.com>
-To:     broonie@kernel.org, peter.ujfalusi@linux.intel.com
-Cc:     daniel.baluta@nxp.com, daniel.baluta@gmail.com,
-        pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
-        ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Rander Wang <rander.wang@intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Subject: [PATCH 4/4] ASoC: SOF: debug: Add support for IPC message injection
-Date:   Tue, 16 Nov 2021 17:21:37 +0200
-Message-Id: <20211116152137.52129-5-daniel.baluta@oss.nxp.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211116152137.52129-1-daniel.baluta@oss.nxp.com>
-References: <20211116152137.52129-1-daniel.baluta@oss.nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: AM4PR0302CA0013.eurprd03.prod.outlook.com
- (2603:10a6:205:2::26) To VI1PR04MB5151.eurprd04.prod.outlook.com
- (2603:10a6:803:61::28)
+        id S238242AbhKPPbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 10:31:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238210AbhKPPbB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 10:31:01 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 538E0C061746;
+        Tue, 16 Nov 2021 07:28:04 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id m20so43751933edc.5;
+        Tue, 16 Nov 2021 07:28:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dIxAulZGhe8FSNRDbe6lspOQRntq7iKkrQ7YJUamTrE=;
+        b=H2dRB1tmub7FmqAf+2gPesNCCZvWpw4VPXLBEH3IyZufX087WhaOzcQvx9RRB5dhz8
+         jm6a7eG+nG58ciNzZzcPOfWA0ldnPB0I9tKH+QyF53WjqVdp3xX/anon2r3lFAH1aCat
+         Mt+VG1xt5lk/tKcbkTPTkXay5sSImHyFtoPEnvpKNIoAonqxJ8v7uYvZpYISw9RQzkwx
+         OjUHaA9/mMBNijIO+xXfMRx87bn/fq7zrY6bk8E1aNNbIK1xhR58qGmu0+8KioqVCvw2
+         gach2cQ3C1ns2QY93ng+KlhaApfHQ+Elj2e3sf93Ri5Gri9DhpWlXzFfLa8mnEghEni/
+         aEtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dIxAulZGhe8FSNRDbe6lspOQRntq7iKkrQ7YJUamTrE=;
+        b=mrEzoK7yKUcba+sdbGKuYM8qLvhD0veQ1FOWNdfZeL3Cs1wWc2lAC+4047aXGzZ9R9
+         r4LP7HqJHZCSmgCh+F6hUebBaSC31kJezuDoFFN78b9l2O7UMZEnGJyEVCywpe/zg9rR
+         xABTK0ewx8/kapUCOos3GdZ9d8cWseNLY/c9sRXfjsxX9PPG0dU8hjloS6//jbqP/5id
+         EBrfnI2SHGRFwa2rnhqP0XwoMCmS90VpuSLtUytMBDW3MQoc3NmS0wEbGVz+V0JwlUp3
+         32wSq+EuzO7PL6FG1yLMyzYzdxXZMFFp/xRq1rbxrjUjuS4BpXJRsisxyxVvkyzT47ZT
+         RbsQ==
+X-Gm-Message-State: AOAM531i5W35lY8sSQWwzrQTPOr9qmp+O+uIGp8AKTEX7DoJrsdHxIbM
+        0rlogYrREghKjwV4uYoF7RJZ16Ox27zno4AOyWrbvPq+8kICOg==
+X-Google-Smtp-Source: ABdhPJxlCHMzmmqISOAsV2eJDLJviURmzDXeBzNZwNN8hZzEgPRRxrFwjjzdnsheotK2EQMxfb+RQN7ch3mo1H3A5O4=
+X-Received: by 2002:a17:907:60d0:: with SMTP id hv16mr10742076ejc.425.1637076482742;
+ Tue, 16 Nov 2021 07:28:02 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (2a02:2f08:5706:b700:1e69:ee6:2dad:c9e7) by AM4PR0302CA0013.eurprd03.prod.outlook.com (2603:10a6:205:2::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.16 via Frontend Transport; Tue, 16 Nov 2021 15:22:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fb3c13db-7e3b-4023-fd73-08d9a914d88e
-X-MS-TrafficTypeDiagnostic: VE1PR04MB7213:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-Microsoft-Antispam-PRVS: <VE1PR04MB7213B8350BDB9FD240DCBD05B8999@VE1PR04MB7213.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:576;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qioCDHpL2+UMpyH5C8nC0SvIMt9pWqcxZ87AFnSpX1QuzHIitpZwp/W3Lq2RW3/3Z/uox70iZKrj0hiYnOVfTSjrq+XBt2At5bndGNCKCoEJroG/wP70WEHVPwTEzDZpz7qL1t3UbrnXn7oRTIudbLi4aQn6kp9QrEV07vpj5xCC6fRRyfoi1x47RpnhwSJDkB7LRzVifk08RerfBDnEnFKwqHx8u0mSVNP5nL/BXl6a6cLroEFw9i8GbBOdMnyR9q9ZbYwRw3OvHs5r7mmQV2abMrm06mHHkjfGowoduilqWGCOSV3wHui4gvyHAb4EFTXsrBxx1IG55XnTCainBmWE1H2PdsFFYyOQh1nEwavUzr8wQRCQ/jQHPYshuKjUALHyF+PIisOD3yuy38SW2xNvH06f/DOa2lbStG8SrU1qX/hKBDGGQPpPJTw+M8jNrowsjVJP8az9Ag6gsuYV1A+5Sph103KOGFKG5q8BQDPfi9KoyYNY+QwiA9Y4QgY7WpeFTcAjyfloqLGUxP0ig5mAUt/VsclOMysoPfi6Nzgz4vLHyO1muoVnB1i31fieirgrtzn8DsCTV7PeiJo+aurlYF/7FiKpMrbGDUdmpwQ9Mg7+sJ6hQl823RC7CxhakM9Vv1N4a3+fnsoGlpTBpQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5151.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(54906003)(15650500001)(6666004)(44832011)(2616005)(66476007)(66556008)(66946007)(8676002)(8936002)(38100700002)(186003)(316002)(83380400001)(1076003)(508600001)(6486002)(5660300002)(52116002)(4326008)(2906002)(6512007)(7416002)(6506007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3GzETrlWWQ/x+j5OgVWdXdoo1UtQ64PDsHPE0N9qjShUN7vS8T3t24nBTWPB?=
- =?us-ascii?Q?QBtgkaZ693zDsdYiDHz6uCYoVuvDVmLUI1K0ecsmbSbYyyIa3FguyAfrmjFD?=
- =?us-ascii?Q?3ibQnFYk0AdkhU1TeR8HLnVfBre9qbp1F1st6w7/QjQfKO12AMLgtG9UIaiG?=
- =?us-ascii?Q?VEteZ0jgbyVkYcbPX5z5XfjwiYUlrdsUKX3MP6YhVYdHsXobvaifnXVfCZPv?=
- =?us-ascii?Q?nGilTLk1oHycmsE5jpUCbb0iSoa1275In/g5kb/3kMlowGNwG57nw1PYe//y?=
- =?us-ascii?Q?pd4Hb7b/lBvKmsd6Q/b4a3ebBDmgVpEFAQ2cVnnoqcalSMnspmt9L/0Ms7UV?=
- =?us-ascii?Q?FcbBbLxuJpJRrDk+G+ygvEYBCHFiQZSnZbTaItn/ZB67Tx18EtPr5a5NtD7U?=
- =?us-ascii?Q?PN+RP0cw6mf3HOeeqPP+I7sztz2QOK0kOV1lbkHF9NU1biud41iVl+Je75OS?=
- =?us-ascii?Q?IdciwojiQ8pvY9k1uVFvnyGsyJ8HwGNtEzjeMw5FHkJxRrOwPrfUOEXEKzhz?=
- =?us-ascii?Q?69SLA7ZbdEBShL2udNmee46hD6hOvAGwQQAwtzF59MVTU29e3mhC9xLWK0l/?=
- =?us-ascii?Q?y/TmjM97ALWQaa0/mquCJ6c+PlZuxe/p+UG532Q2IhVptKdzoiLwFVFqKnHl?=
- =?us-ascii?Q?4FOCq4lyCIeM2BP+A0vTaW44640aJy6UqxfgW4tpf0XAdi7A5DmLv7Lomn8I?=
- =?us-ascii?Q?xe6gwgScm3b6kn3ctFYhMSRyY61lC9UazrAyugZgYBFy3y21/wp1gz5XF0ul?=
- =?us-ascii?Q?z6o876Y0Bybtd05mFlT7h5CrpSMgnSTFu+S8pN0Q/vrRzYmxl09l7vIdDfch?=
- =?us-ascii?Q?Nz/C3iFRLZixDJ4s2yt+fepfFCV3z675DtgGeVRkXg5D7UB3vgNfd5/M9++F?=
- =?us-ascii?Q?MDWItE0ySNu7gvn3M6iB4wfw8ybu2EC4yzKLABa+BTE0TucovPuUs2GDyBT/?=
- =?us-ascii?Q?Fl0cSuse0QCZzlKT7hJvjc+TmDrzlSdbN+det28QAk7ckNWCz/xhk7fV95bU?=
- =?us-ascii?Q?2S+EUW0dGET6wdUgMijaBj9OEQymdHlWnlUWB9k5cSoLEfQQ7aNu7WQd9mVM?=
- =?us-ascii?Q?ZKjs4A8Hzb63Vx22RUvtz9j4Hat3+uvIGLN63fWgubhb6aLy98wI7D606tMV?=
- =?us-ascii?Q?Vmgg6+NbUCgmA8Z/iNsDeXWmA6+MZXZOIijYmEPPA3BDkQE5E/Ku58aRChmM?=
- =?us-ascii?Q?WxzB0+cMhlBa3M9WMGXeUL3VefJDyccUONFHaSP1MTAssJNN8F5jLB7swpVN?=
- =?us-ascii?Q?dUrHmeZ7jX6sDE8GuufOLYOgyHqTI/Qz64e8c4h7HVB5Iz+UfMAGxbidwthZ?=
- =?us-ascii?Q?oc4r9WfEqM7BUZgyquBZjxcLBuLsCbqXzpYol6hRGd8KbmRqD26FhGhTiEQw?=
- =?us-ascii?Q?5HivdEc7yLCQrgKmt5fhHQaw6p0qWaFx18+QBKUQ3L+9rZDanx08kdueIeth?=
- =?us-ascii?Q?C5dEgR+nGXluQJKYUmSnIsgpWyxRR2ia+1/wXuY7xZLrB1Er8TmRqvpl5IZs?=
- =?us-ascii?Q?ERLL3D5wSSebANo6iiwq7OHGCzErq0aYRJ/TLmoA6HLO81CMjmAoUfApn+gu?=
- =?us-ascii?Q?+bh9lWMR1ReHuF+hwPoS5Owb8oiKgh40Fbjb26uO1M8woARCcSJP/bZMt9Qr?=
- =?us-ascii?Q?4MA8QN1uwEHqkSZ0RX8qVcZYMDcRRz55St64bQMZLFySfSEnVIMC/5JGdqIJ?=
- =?us-ascii?Q?yviXwAAmCosqI10dMMar6Uj2DL2IsYpri8CLZhncQ8YVi3GM?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb3c13db-7e3b-4023-fd73-08d9a914d88e
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 15:22:04.9164
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lSCCyrA3xlAfyoiwvV3hEFUaicMOBgkAEyNEh7De8FPOAr2hTfffLmCHrVbG7ZyuEtg7kAKBBI0iBwUVYz+NhQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7213
+References: <20211115210842.11972-1-pauk.denis@gmail.com> <CAHp75VcPHi1XyZr=CFbUhiUXK0q-10iBx5U3d==aG8pMG27k1Q@mail.gmail.com>
+ <c016d0ca-b8b1-fb06-50f3-06a7b1c4aaea@roeck-us.net> <YZOKLDg582dQPzVN@smile.fi.intel.com>
+ <d2943033-e701-f719-5da6-c00dc431dff9@roeck-us.net>
+In-Reply-To: <d2943033-e701-f719-5da6-c00dc431dff9@roeck-us.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 16 Nov 2021 17:27:21 +0200
+Message-ID: <CAHp75Vdh+Fv_mV6VunzzndzXBONjbxMYKrii6We9Y+jD+NsYDQ@mail.gmail.com>
+Subject: Re: [PATCH v11 0/2] Update ASUS WMI supported boards
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Denis Pauk <pauk.denis@gmail.com>,
+        Eugene Shalygin <eugene.shalygin@gmail.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        thomas@weissschuh.net, Ed Brindley <kernel@maidavale.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+On Tue, Nov 16, 2021 at 4:32 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> On 11/16/21 2:38 AM, Andy Shevchenko wrote:
+> > On Mon, Nov 15, 2021 at 03:15:39PM -0800, Guenter Roeck wrote:
+> >> On 11/15/21 2:01 PM, Andy Shevchenko wrote:
+> >>> On Mon, Nov 15, 2021 at 11:09 PM Denis Pauk <pauk.denis@gmail.com> wrote:
+> >>>>
+> >>>> Add support by WMI interface provided by Asus for B550/X570 boards:
+> >>>> * PRIME X570-PRO,
+> >>>> * ROG CROSSHAIR VIII HERO
+> >>>> * ROG CROSSHAIR VIII DARK HERO
+> >>>> * ROG CROSSHAIR VIII FORMULA
+> >>>> * ROG STRIX X570-E GAMING
+> >>>> * ROG STRIX B550-I GAMING
+> >>>> * ROG STRIX B550-E GAMING
+> >>>>
+> >>>> Add support by WMI interface provided by Asus for X370/X470/
+> >>>> B450/X399 boards:
+> >>>> * ROG CROSSHAIR VI HERO,
+> >>>> * PRIME X399-A,
+> >>>> * PRIME X470-PRO,
+> >>>> * ROG CROSSHAIR VI EXTREME,
+> >>>> * ROG CROSSHAIR VI HERO (WI-FI AC),
+> >>>> * ROG CROSSHAIR VII HERO,
+> >>>> * ROG CROSSHAIR VII HERO (WI-FI),
+> >>>> * ROG STRIX Z390-F GAMING
+> >>>> * ROG STRIX B450-E GAMING,
+> >>>> * ROG STRIX B450-F GAMING,
+> >>>> * ROG STRIX B450-I GAMING,
+> >>>> * ROG STRIX X399-E GAMING,
+> >>>> * ROG STRIX X470-F GAMING,
+> >>>> * ROG STRIX X470-I GAMING,
+> >>>> * ROG ZENITH EXTREME,
+> >>>> * ROG ZENITH EXTREME ALPHA.
+> >>>>
+> >>>> I have added "ROG STRIX Z390-F GAMING" to list of supported boards in
+> >>>> asus_wmi_sensors.
+> >>>
+> >>> Guenter, what is your plan about this patch series? It seems it
+> >>> missed, by unknown (?) reason, the v5.16-rc1 (I remember seeing it in
+> >>> some of your tree branches at some point).
+> >>>
+> >>
+> >> I don't see it in my record. Earlier I was simply waiting for some
+> >> Reviewed-by: tags, which I have never seen.
+> >
+> > Ah, understood. Thank you for clarifications.
+> >
+> >> Looking into the commit log,
+> >> I do see:
+> >>
+> >> Signed-off-by: Denis Pauk <pauk.denis@gmail.com>
+> >> Co-developed-by: Eugene Shalygin <eugene.shalygin@gmail.com>
+> >> Signed-off-by: Eugene Shalygin <eugene.shalygin@gmail.com>
+> >> Co-developed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> >> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> >>
+> >> Did you and Eugene indeed sign this off, ie did you write it, and
+> >> Eugene and Denis signed it off ? If so, the tags are in the wrong order.
+> >
+> > I'm not sure I follow. I have helped Denis with the code and according to
+> > Submitting Patches documentation the order should be chronological with the
+> > main author to be first in the list. Here the committer (submitter) is the
+> > same as the original author IIUC. (I can't speak for Eugene, though)
+> >
+>
+> I got the patch from Denis. At the very least, Denis' signature should be
+> last. It is first.
 
-In order to stress test the firmware's ability to handle (mis)crafted
-IPC messages this patch adds a debugfs interface where a binary file
-(message) can be written and the message is sent to the firmware as it is.
+"...the ordering of Signed-off-by: tags should reflect the
+chronological history of the patch insofar as possible, regardless of
+whether the author is attributed via From: or Co-developed-by:.
+Notably, the last Signed-off-by: must always be that of the developer
+submitting the patch."
 
-Read on the same file will return the reply from the firmware if it is
-available as a binary.
+Okay, "must" obviously takes precedence over the "as possible".
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
----
- sound/soc/sof/Kconfig    |   8 +++
- sound/soc/sof/debug.c    | 107 +++++++++++++++++++++++++++++++++++++++
- sound/soc/sof/sof-priv.h |   4 ++
- 3 files changed, 119 insertions(+)
+> >> On the other side, if the code is ultimately from Denis, with your input,
+> >> the tags should be either Acked-by: or Reviewed-by: for both Eugene
+> >> and yourself.
+> >
+> > I'm fine with either Co-developed-by+SoB or Reviewed-by.
+> >
+> >> Note that v11 of this patch series is missing from
+> >> https://patchwork.kernel.org/project/linux-hwmon/list/
+> >> for some reason.
+> >
+> > Hmm... Denis, please check locally how you prepare your patches.
 
-diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-index b6fa659179b6..89eea5558190 100644
---- a/sound/soc/sof/Kconfig
-+++ b/sound/soc/sof/Kconfig
-@@ -194,6 +194,14 @@ config SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST
- 	  Say Y if you want to enable IPC flood test.
- 	  If unsure, select "N".
- 
-+config SND_SOC_SOF_DEBUG_IPC_MSG_INJECTOR
-+	bool "SOF enable IPC message injector"
-+	help
-+	  This option enables the IPC message injector which can be used to send
-+	  crafted IPC messages to the DSP to test its robustness.
-+	  Say Y if you want to enable the IPC message injector.
-+	  If unsure, select "N".
-+
- config SND_SOC_SOF_DEBUG_RETAIN_DSP_CONTEXT
- 	bool "SOF retain DSP context on any FW exceptions"
- 	help
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index dc1df5fb7b4c..2f8b5ac9b78a 100644
---- a/sound/soc/sof/debug.c
-+++ b/sound/soc/sof/debug.c
-@@ -336,6 +336,104 @@ static int sof_debug_ipc_flood_test(struct snd_sof_dev *sdev,
- }
- #endif
- 
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_MSG_INJECTOR)
-+static ssize_t msg_inject_read(struct file *file, char __user *buffer,
-+			       size_t count, loff_t *ppos)
-+{
-+	struct snd_sof_dfsentry *dfse = file->private_data;
-+	struct sof_ipc_reply *rhdr = dfse->msg_inject_rx;
-+
-+	if (!rhdr->hdr.size || !count || *ppos)
-+		return 0;
-+
-+	if (count > rhdr->hdr.size)
-+		count = rhdr->hdr.size;
-+
-+	if (copy_to_user(buffer, dfse->msg_inject_rx, count))
-+		return -EFAULT;
-+
-+	*ppos += count;
-+	return count;
-+}
-+
-+static ssize_t msg_inject_write(struct file *file, const char __user *buffer,
-+				size_t count, loff_t *ppos)
-+{
-+	struct snd_sof_dfsentry *dfse = file->private_data;
-+	struct snd_sof_dev *sdev = dfse->sdev;
-+	struct sof_ipc_cmd_hdr *hdr = dfse->msg_inject_tx;
-+	size_t size;
-+	int ret, err;
-+
-+	if (*ppos)
-+		return 0;
-+
-+	size = simple_write_to_buffer(dfse->msg_inject_tx, SOF_IPC_MSG_MAX_SIZE,
-+				      ppos, buffer, count);
-+	if (size != count)
-+		return size > 0 ? -EFAULT : size;
-+
-+	ret = pm_runtime_get_sync(sdev->dev);
-+	if (ret < 0 && ret != -EACCES) {
-+		dev_err_ratelimited(sdev->dev, "%s: DSP resume failed: %d\n",
-+				    __func__, ret);
-+		pm_runtime_put_noidle(sdev->dev);
-+		goto out;
-+	}
-+
-+	/* send the message */
-+	memset(dfse->msg_inject_rx, 0, SOF_IPC_MSG_MAX_SIZE);
-+	ret = sof_ipc_tx_message(sdev->ipc, hdr->cmd, dfse->msg_inject_tx, count,
-+				 dfse->msg_inject_rx, SOF_IPC_MSG_MAX_SIZE);
-+
-+	pm_runtime_mark_last_busy(sdev->dev);
-+	err = pm_runtime_put_autosuspend(sdev->dev);
-+	if (err < 0)
-+		dev_err_ratelimited(sdev->dev, "%s: DSP idle failed: %d\n",
-+				    __func__, err);
-+
-+	/* return size if test is successful */
-+	if (ret >= 0)
-+		ret = size;
-+
-+out:
-+	return ret;
-+}
-+
-+static const struct file_operations msg_inject_fops = {
-+	.open = simple_open,
-+	.read = msg_inject_read,
-+	.write = msg_inject_write,
-+	.llseek = default_llseek,
-+};
-+
-+static int snd_sof_debugfs_msg_inject_item(struct snd_sof_dev *sdev,
-+					   const char *name, mode_t mode,
-+					   const struct file_operations *fops)
-+{
-+	struct snd_sof_dfsentry *dfse;
-+
-+	dfse = devm_kzalloc(sdev->dev, sizeof(*dfse), GFP_KERNEL);
-+	if (!dfse)
-+		return -ENOMEM;
-+
-+	/* pre allocate the tx and rx buffers */
-+	dfse->msg_inject_tx = devm_kzalloc(sdev->dev, SOF_IPC_MSG_MAX_SIZE, GFP_KERNEL);
-+	dfse->msg_inject_rx = devm_kzalloc(sdev->dev, SOF_IPC_MSG_MAX_SIZE, GFP_KERNEL);
-+	if (!dfse->msg_inject_tx || !dfse->msg_inject_rx)
-+		return -ENOMEM;
-+
-+	dfse->type = SOF_DFSENTRY_TYPE_BUF;
-+	dfse->sdev = sdev;
-+
-+	debugfs_create_file(name, mode, sdev->debugfs_root, dfse, fops);
-+	/* add to dfsentry list */
-+	list_add(&dfse->list, &sdev->dfsentry_list);
-+
-+	return 0;
-+}
-+#endif
-+
- static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
- 				  size_t count, loff_t *ppos)
- {
-@@ -812,6 +910,15 @@ int snd_sof_dbg_init(struct snd_sof_dev *sdev)
- 		return err;
- #endif
- 
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_MSG_INJECTOR)
-+	err = snd_sof_debugfs_msg_inject_item(sdev, "ipc_msg_inject", 0644,
-+					      &msg_inject_fops);
-+
-+	/* errors are only due to memory allocation, not debugfs */
-+	if (err < 0)
-+		return err;
-+#endif
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(snd_sof_dbg_init);
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 2c97ffa98e3e..9a8af76b2f8b 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -325,6 +325,10 @@ struct snd_sof_dfsentry {
- 	enum sof_debugfs_access_type access_type;
- #if ENABLE_DEBUGFS_CACHEBUF
- 	char *cache_buf; /* buffer to cache the contents of debugfs memory */
-+#endif
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_MSG_INJECTOR)
-+	void *msg_inject_tx;
-+	void *msg_inject_rx;
- #endif
- 	struct snd_sof_dev *sdev;
- 	struct list_head list;  /* list in sdev dfsentry list */
 -- 
-2.27.0
-
+With Best Regards,
+Andy Shevchenko
