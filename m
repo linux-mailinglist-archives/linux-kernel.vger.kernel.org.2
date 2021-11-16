@@ -2,49 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6204527ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:47:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1A345280D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:51:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241127AbhKPCud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 21:50:33 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:37292 "EHLO
+        id S241096AbhKPCxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 21:53:21 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:37460 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356826AbhKPCs1 (ORCPT
+        with ESMTP id S1350532AbhKPCuc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 21:48:27 -0500
+        Mon, 15 Nov 2021 21:50:32 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id EED111FD47;
-        Tue, 16 Nov 2021 02:45:26 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C08E01FD6E;
+        Tue, 16 Nov 2021 02:46:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1637030726; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1637030812; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=STuKPK8oZgtzlQ4TzQCaIEO4WItR+O1Pk/1ubRhrUlo=;
-        b=ZCw8oIvZtxNtv4c+HmVtPJpEbXwIaN63nTDizauf48LPH/v7Mjo7rKwBrFfBZn63AC4StO
-        PE4GztE7Xc8RXSgsFSJVJ76414RoAMIBbhaKYPWURVN9SNj26rp84CbVYkRKrfVr3p+mhg
-        w5x9wbEeJT4RY853YvZ8tCTrCgAUb0Q=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ilqBwRNcKCWrWikYfICWiUGsbiDnIfpp6dIzn05L/u0=;
+        b=bxOgH2KDZq5WM3FoP6Hh8QNS3dDmYdj+VdHSkOCn5TaCua9nhQnZJ5j0OMTAs7i9ksqJfQ
+        7r2QXkHt7QPW4DPKehojOONQMslkVY3Bs2DqimQIn7QxwvcxtVtGafL9N0oUEMggYfIW6e
+        induzPCcnkKaCwsfjr5mBC7mqtYGRSE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1637030726;
+        s=susede2_ed25519; t=1637030812;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=STuKPK8oZgtzlQ4TzQCaIEO4WItR+O1Pk/1ubRhrUlo=;
-        b=5BGexwnp1XLU+pa89ep9cuEGHTTW3PysChT7qH1Aza20mJSBwF/2Zyi4j7usu3YsUPwB6/
-        LuxAgAHhgtfAQ1BA==
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ilqBwRNcKCWrWikYfICWiUGsbiDnIfpp6dIzn05L/u0=;
+        b=J6AaypphTXdJwcS+m7MJGN9qLmx78KXfjbO2OjSvoBgV5QKOlL2pGzUnKSOEtDgXjBZvFh
+        JDE7foDThmS2U/Aw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 97E9313B70;
-        Tue, 16 Nov 2021 02:45:24 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6A52913B70;
+        Tue, 16 Nov 2021 02:46:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id AG6oFUQbk2G5CAAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 16 Nov 2021 02:45:24 +0000
-Subject: [PATCH 00/13] Repair SWAP-over-NFS
+        id t4CfCpobk2EmCQAAMHmgww
+        (envelope-from <neilb@suse.de>); Tue, 16 Nov 2021 02:46:50 +0000
+Subject: [PATCH 11/13] NFS: swap-out must always use STABLE writes.
 From:   NeilBrown <neilb@suse.de>
 To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
         Anna Schumaker <anna.schumaker@netapp.com>,
@@ -54,7 +56,9 @@ To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
 Cc:     linux-nfs@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
 Date:   Tue, 16 Nov 2021 13:44:04 +1100
-Message-ID: <163702956672.25805.16457749992977493579.stgit@noble.brown>
+Message-ID: <163703064457.25805.5324231084334985723.stgit@noble.brown>
+In-Reply-To: <163702956672.25805.16457749992977493579.stgit@noble.brown>
+References: <163702956672.25805.16457749992977493579.stgit@noble.brown>
 User-Agent: StGit/0.23
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -63,82 +67,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-swap-over-NFS currently has a variety of problems.
+The commit handling code is not safe against memory-pressure deadlocks
+when writing to swap.  In particular, nfs_commitdata_alloc() blocks
+indefinitely waiting for memory, and this can consume all available
+workqueue threads.
 
-Due to a newish test in generic_write_checks(), all writes to swap
-currently fail.
-With that fixed, there are various sources of deadlocks that can cause
-a swapping system to freeze.
+swap-out most likely uses STABLE writes anyway as COND_STABLE indicates
+that a stable write should be used if the write fits in a single
+request, and it normally does.  However if we ever swap with a small
+wsize, or gather unusually large numbers of pages for a single write,
+this might change.
 
-swap has never worked over NFSv4 due to the occasional need to start the
-state-management thread - which won't happen when under high memory
-pressure.
+For safety, make it explicit in the code that direct writes use for swap
+must always use FLUSH_COND_STABLE.
 
-This series addresses all the problems that I could find, and also
-changes writes to be asynchronous, and both reads and writes to use
-multi-page RPC requests when possible (the last 2 patches).
-
-This last change causes interesting performance changes.  The rate of
-writes to the swap file (measured in K/sec) increases by a factor of
-about 5 (not precisely measured).  However interactive response falls
-noticeably (response time in multiple seconds, but not minutes).  So
-while it seems like it should be a good idea, I'm not sure if we want it
-until it is better understood.
-
-I'd be very happy if others could test out some swapping scenarios to
-see how it performs.  I've been using
-    stress-ng --brk 2 --stack 2 --bigheap 2
-which doesn't give me any insight into whether more useful work is
-getting done.
-
-Apart from the last two patches, I think this series is ready.
-
-Thanks,
-NeilBrown
-
+Signed-off-by: NeilBrown <neilb@suse.de>
 ---
+ fs/nfs/direct.c        |   12 +++++++-----
+ fs/nfs/file.c          |    2 +-
+ include/linux/nfs_fs.h |    3 ++-
+ 3 files changed, 10 insertions(+), 7 deletions(-)
 
-NeilBrown (13):
-      NFS: move generic_write_checks() call from nfs_file_direct_write() to nfs_file_write()
-      NFS: do not take i_rwsem for swap IO
-      MM: reclaim mustn't enter FS for swap-over-NFS
-      SUNRPC/call_alloc: async tasks mustn't block waiting for memory
-      SUNRPC/auth: async tasks mustn't block waiting for memory
-      SUNRPC/xprt: async tasks mustn't block waiting for memory
-      SUNRPC: remove scheduling boost for "SWAPPER" tasks.
-      NFS: discard NFS_RPC_SWAPFLAGS and RPC_TASK_ROOTCREDS
-      SUNRPC: improve 'swap' handling: scheduling and PF_MEMALLOC
-      NFSv4: keep state manager thread active if swap is enabled
-      NFS: swap-out must always use STABLE writes.
-      MM: use AIO/DIO for reads from SWP_FS_OPS swap-space
-      MM: use AIO for DIO writes to swap
+diff --git a/fs/nfs/direct.c b/fs/nfs/direct.c
+index 1e80d243ba25..8d3b12402725 100644
+--- a/fs/nfs/direct.c
++++ b/fs/nfs/direct.c
+@@ -173,7 +173,7 @@ ssize_t nfs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
+ 
+ 	if (iov_iter_rw(iter) == READ)
+ 		return nfs_file_direct_read(iocb, iter);
+-	return nfs_file_direct_write(iocb, iter);
++	return nfs_file_direct_write(iocb, iter, FLUSH_STABLE);
+ }
+ 
+ static void nfs_direct_release_pages(struct page **pages, unsigned int npages)
+@@ -789,7 +789,7 @@ static const struct nfs_pgio_completion_ops nfs_direct_write_completion_ops = {
+  */
+ static ssize_t nfs_direct_write_schedule_iovec(struct nfs_direct_req *dreq,
+ 					       struct iov_iter *iter,
+-					       loff_t pos)
++					       loff_t pos, int ioflags)
+ {
+ 	struct nfs_pageio_descriptor desc;
+ 	struct inode *inode = dreq->inode;
+@@ -797,7 +797,7 @@ static ssize_t nfs_direct_write_schedule_iovec(struct nfs_direct_req *dreq,
+ 	size_t requested_bytes = 0;
+ 	size_t wsize = max_t(size_t, NFS_SERVER(inode)->wsize, PAGE_SIZE);
+ 
+-	nfs_pageio_init_write(&desc, inode, FLUSH_COND_STABLE, false,
++	nfs_pageio_init_write(&desc, inode, ioflags, false,
+ 			      &nfs_direct_write_completion_ops);
+ 	desc.pg_dreq = dreq;
+ 	get_dreq(dreq);
+@@ -875,6 +875,7 @@ static ssize_t nfs_direct_write_schedule_iovec(struct nfs_direct_req *dreq,
+  * nfs_file_direct_write - file direct write operation for NFS files
+  * @iocb: target I/O control block
+  * @iter: vector of user buffers from which to write data
++ * @ioflags: flags for nfs_pageio_init_write()
+  *
+  * We use this function for direct writes instead of calling
+  * generic_file_aio_write() in order to avoid taking the inode
+@@ -891,7 +892,8 @@ static ssize_t nfs_direct_write_schedule_iovec(struct nfs_direct_req *dreq,
+  * Note that O_APPEND is not supported for NFS direct writes, as there
+  * is no atomic O_APPEND write facility in the NFS protocol.
+  */
+-ssize_t nfs_file_direct_write(struct kiocb *iocb, struct iov_iter *iter)
++ssize_t nfs_file_direct_write(struct kiocb *iocb, struct iov_iter *iter,
++			      int ioflags)
+ {
+ 	ssize_t result, requested;
+ 	size_t count;
+@@ -935,7 +937,7 @@ ssize_t nfs_file_direct_write(struct kiocb *iocb, struct iov_iter *iter)
+ 
+ 	nfs_start_io_direct(inode);
+ 
+-	requested = nfs_direct_write_schedule_iovec(dreq, iter, pos);
++	requested = nfs_direct_write_schedule_iovec(dreq, iter, pos, ioflags);
+ 
+ 	if (mapping->nrpages) {
+ 		invalidate_inode_pages2_range(mapping,
+diff --git a/fs/nfs/file.c b/fs/nfs/file.c
+index 59c271f42ea5..878a6a510a5e 100644
+--- a/fs/nfs/file.c
++++ b/fs/nfs/file.c
+@@ -630,7 +630,7 @@ ssize_t nfs_file_write(struct kiocb *iocb, struct iov_iter *from)
+ 		result = generic_write_checks(iocb, from);
+ 		if (result <= 0)
+ 			return result;
+-		return nfs_file_direct_write(iocb, from);
++		return nfs_file_direct_write(iocb, from, FLUSH_COND_STABLE);
+ 	}
+ 
+ 	dprintk("NFS: write(%pD2, %zu@%Ld)\n",
+diff --git a/include/linux/nfs_fs.h b/include/linux/nfs_fs.h
+index 5a605e51f4b1..ca312aea6bec 100644
+--- a/include/linux/nfs_fs.h
++++ b/include/linux/nfs_fs.h
+@@ -509,7 +509,8 @@ extern ssize_t nfs_direct_IO(struct kiocb *, struct iov_iter *);
+ extern ssize_t nfs_file_direct_read(struct kiocb *iocb,
+ 			struct iov_iter *iter);
+ extern ssize_t nfs_file_direct_write(struct kiocb *iocb,
+-			struct iov_iter *iter);
++				     struct iov_iter *iter,
++				     int ioflags);
+ 
+ /*
+  * linux/fs/nfs/dir.c
 
-
- fs/nfs/direct.c                 |  12 +-
- fs/nfs/file.c                   |  21 ++-
- fs/nfs/io.c                     |   9 ++
- fs/nfs/nfs4_fs.h                |   1 +
- fs/nfs/nfs4proc.c               |  20 +++
- fs/nfs/nfs4state.c              |  39 ++++-
- fs/nfs/read.c                   |   4 -
- fs/nfs/write.c                  |   2 +
- include/linux/nfs_fs.h          |   8 +-
- include/linux/nfs_xdr.h         |   2 +
- include/linux/sunrpc/auth.h     |   1 +
- include/linux/sunrpc/sched.h    |   1 -
- include/trace/events/sunrpc.h   |   1 -
- mm/page_io.c                    | 243 +++++++++++++++++++++++++++-----
- mm/vmscan.c                     |  12 +-
- net/sunrpc/auth.c               |   8 +-
- net/sunrpc/auth_gss/auth_gss.c  |   6 +-
- net/sunrpc/auth_unix.c          |  10 +-
- net/sunrpc/clnt.c               |   7 +-
- net/sunrpc/sched.c              |  29 ++--
- net/sunrpc/xprt.c               |  19 +--
- net/sunrpc/xprtrdma/transport.c |  10 +-
- net/sunrpc/xprtsock.c           |   8 ++
- 23 files changed, 374 insertions(+), 99 deletions(-)
-
---
-Signature
 
