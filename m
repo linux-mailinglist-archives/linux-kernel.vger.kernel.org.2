@@ -2,99 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86005452A10
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3A345295A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:02:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237962AbhKPFyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 00:54:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237619AbhKPFyE (ORCPT
+        id S232422AbhKPFEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 00:04:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27152 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237217AbhKPFEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 00:54:04 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 527B9C03AA3A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 20:56:12 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id m27so25352370lfj.12
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 20:56:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=P95ELlRgMRZkG9bYMP1tznGDyj5awpaPH3jueNkr9vs=;
-        b=fc60BO/LhMAvTzt1F7fb84/UivvOkjq1d3XJQoYvajCOGz8LFjBXGN/8tdKJKhpOSD
-         tJclVXPw0M22drkWldIvCeGHEG5TjGuyi9JyjFSTjZT/qNs7k+Mgln4iLRaRr+/4w/4p
-         IcwPKeH9Zwq3WUROVHUv5AZHOQ7bggOI8Pi6dZ4JG5ns2FPuByqKahev4NLghX9/+VmR
-         D46+QjhiJ9Y709O4KaRL/V+16BBqJFOAguORbSvY0lB40CKdldHxBfPZSDIcho3Vw/Rz
-         4W1A6r5g14KYf2dFJU5jh6pENFoW8ebek2rOMbWMvKZaPPSycRSbxVzB3NNya65zkUdq
-         oM2g==
+        Tue, 16 Nov 2021 00:04:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637038864;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NZbJVFSsiYxk6JEYO0Xpu55G92qAXMwmH+tm+8XpReU=;
+        b=AxtLH/8vHIUJ3uoKaIj3dRD5pDN39ed/qKFYiIYwBVAb3cUlr4n8NreW15bHlprCVzZHuU
+        CljWU1dPEkKsUSVmS/DxwZVIAsJXXETChTwCMlHmY7DUhMce5bMEUmaX7Qc6tKt1BJcTh9
+        Sju7aCV3M/1JLuBnh/rnWbAfJa/jZ2c=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-240-OEoMW5oVMYquo_cG0GiOrw-1; Tue, 16 Nov 2021 00:01:02 -0500
+X-MC-Unique: OEoMW5oVMYquo_cG0GiOrw-1
+Received: by mail-lf1-f69.google.com with SMTP id n18-20020a0565120ad200b004036c43a0ddso7730159lfu.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 21:01:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=P95ELlRgMRZkG9bYMP1tznGDyj5awpaPH3jueNkr9vs=;
-        b=p6KBDxudIgcr1zA0qAzqdEM3nnB6z4Gk/tUXyB4m8h3pumT+ivSYr30fxW0yn5bCZZ
-         xOw/XWyrRCwoy1ql4TLS1StWYImrFE5v3vgYBdup3YWxDj2r3Nfn1+PHjIkEuL3X0vwp
-         Z4e6NUHg7MotYULmoSmy/+qu80cDi3jKKTCQ71pe2+Hfh4wlc0MSNHOocL+qsPflpefv
-         z4Z4FIPob2AUUkz3KqU4vpe4ObY44QEaP/z50UxEHu70xOf3FLAjlUcokO/Bj8n3r1KR
-         CwdpkDiBTCJYTzN6Pd/A7A8JkT51PasXhfBVzM0QsJZeQpajZpkPbb126pk2EHXq43oZ
-         ar8g==
-X-Gm-Message-State: AOAM533c4Kl+T9bB+d2h31iTrGoGS2Pyv3jj1yseDWp08wlC6v5bzCQz
-        09eaKfGzBA5Cb4pKSMC+AsU=
-X-Google-Smtp-Source: ABdhPJzH+TYpnt3oy1FqocZ1A8ZSjdLchUbbv88G/CLiD/w1q4sft1RfgxacRYroytzVicTDMyRR1Q==
-X-Received: by 2002:a05:6512:21c8:: with SMTP id d8mr4188821lft.7.1637038570719;
-        Mon, 15 Nov 2021 20:56:10 -0800 (PST)
-Received: from [172.28.2.233] ([46.61.204.60])
-        by smtp.gmail.com with ESMTPSA id k15sm1646322ljh.102.2021.11.15.20.56.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 20:56:10 -0800 (PST)
-Message-ID: <6d2d9c4a-3f05-1d51-42dc-b1ebbb4aefe1@gmail.com>
-Date:   Tue, 16 Nov 2021 07:56:09 +0300
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NZbJVFSsiYxk6JEYO0Xpu55G92qAXMwmH+tm+8XpReU=;
+        b=mjMHBY0gTyR86Blui6ewXLqBMV3CitP+DLBwwPp40ZWGaKYlY2Q+UcN6eDWV4+P9nx
+         UPR6esq0lotOwpqrxX+uo6NKiwJbUM7tSQpm/6Gg8WjL0AMXTwF81iA34C7zjHxIAZJD
+         XqRQqtudwkIQx0qSFQk3Pq+7QCuxZlvNR5+0a6uhFOGbWRefZe62cy+gil7cmaIGvTbZ
+         7rtQNGOmKMvIdZcVtMVr53zolK66drGfYz23vWMioHZr29c6H4L2J7YZkDGDcOY8B2XB
+         stI2mvnDgydJYyXkbKavKGWTfRPE84bW9P3lLet/p+b6VeRVuwu/mbV1OEDBFmyuYbhh
+         3y/g==
+X-Gm-Message-State: AOAM533Y2y459w/zZDEVcjjUYkuZBwkI0oXKwsReJjxuWTv1o0iE7C9O
+        hvY+emuHenlDLnMIOLeeHfAs4aG9v9hEelTcgabW0ZvFhyEMT3k1nIiMp0NP6AJ/ERc0bqbwKgg
+        cz/XhV8JMBB9SeQzbRUgKI8qDHFIBIx7G+1Un5QVb
+X-Received: by 2002:ac2:518b:: with SMTP id u11mr3980765lfi.498.1637038861127;
+        Mon, 15 Nov 2021 21:01:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwmwi8ZBJDwkdhthf+6U7z0+K409Zl2U1G1z4cKoLh4WJGn9JeAOqnszcmQh+p5V5nQXwNj+ySZvlSCNDXcV2U=
+X-Received: by 2002:ac2:518b:: with SMTP id u11mr3980732lfi.498.1637038860836;
+ Mon, 15 Nov 2021 21:01:00 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] staging: r8188eu: remove unused defines in wifi.h
-Content-Language: en-US
-To:     Zameer Manji <zmanji@gmail.com>, gregkh@linuxfoundation.org
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Michael Straube <straube.linux@gmail.com>,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20211116011451.896714-1-zmanji@gmail.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <20211116011451.896714-1-zmanji@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211115153003.9140-1-arbn@yandex-team.com> <20211115153003.9140-6-arbn@yandex-team.com>
+In-Reply-To: <20211115153003.9140-6-arbn@yandex-team.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Tue, 16 Nov 2021 13:00:50 +0800
+Message-ID: <CACGkMEumax9RFVNgWLv5GyoeQAmwo-UgAq=DrUd4yLxPAUUqBw@mail.gmail.com>
+Subject: Re: [PATCH 6/6] vhost_net: use RCU callbacks instead of synchronize_rcu()
+To:     Andrey Ryabinin <arbn@yandex-team.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        kvm <kvm@vger.kernel.org>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 04:14, Zameer Manji wrote:
-> None of these defines in wifi.h are used so they
-> can be safely removed.
-> 
-> Signed-off-by: Zameer Manji <zmanji@gmail.com>
+On Mon, Nov 15, 2021 at 11:32 PM Andrey Ryabinin <arbn@yandex-team.com> wrote:
+>
+> Currently vhost_net_release() uses synchronize_rcu() to synchronize
+> freeing with vhost_zerocopy_callback(). However synchronize_rcu()
+> is quite costly operation. It take more than 10 seconds
+> to shutdown qemu launched with couple net devices like this:
+>         -netdev tap,id=tap0,..,vhost=on,queues=80
+> because we end up calling synchronize_rcu() netdev_count*queues times.
+>
+> Free vhost net structures in rcu callback instead of using
+> synchronize_rcu() to fix the problem.
+
+I admit the release code is somehow hard to understand. But I wonder
+if the following case can still happen with this:
+
+CPU 0 (vhost_dev_cleanup)   CPU1
+(vhost_net_zerocopy_callback()->vhost_work_queue())
+                                                if (!dev->worker)
+dev->worker = NULL
+
+wake_up_process(dev->worker)
+
+If this is true. It seems the fix is to move RCU synchronization stuff
+in vhost_net_ubuf_put_and_wait()?
+
+Thanks
+
+>
+> Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
 > ---
->   drivers/staging/r8188eu/include/wifi.h | 57 --------------------------
->   1 file changed, 57 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/include/wifi.h b/drivers/staging/r8188eu/include/wifi.h
-> index 193a557f0f47..7cbc7015e90f 100644
-> --- a/drivers/staging/r8188eu/include/wifi.h
-> +++ b/drivers/staging/r8188eu/include/wifi.h
-> @@ -13,32 +13,9 @@
->   #define BIT(x)	(1 << (x))
+>  drivers/vhost/net.c | 22 ++++++++++++++--------
+>  1 file changed, 14 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+> index 97a209d6a527..0699d30e83d5 100644
+> --- a/drivers/vhost/net.c
+> +++ b/drivers/vhost/net.c
+> @@ -132,6 +132,7 @@ struct vhost_net {
+>         struct vhost_dev dev;
+>         struct vhost_net_virtqueue vqs[VHOST_NET_VQ_MAX];
+>         struct vhost_poll poll[VHOST_NET_VQ_MAX];
+> +       struct rcu_head rcu;
+>         /* Number of TX recently submitted.
+>          * Protected by tx vq lock. */
+>         unsigned tx_packets;
+> @@ -1389,6 +1390,18 @@ static void vhost_net_flush(struct vhost_net *n)
+>         }
+>  }
+>
+> +static void vhost_net_free(struct rcu_head *rcu_head)
+> +{
+> +       struct vhost_net *n = container_of(rcu_head, struct vhost_net, rcu);
+> +
+> +       kfree(n->vqs[VHOST_NET_VQ_RX].rxq.queue);
+> +       kfree(n->vqs[VHOST_NET_VQ_TX].xdp);
+> +       kfree(n->dev.vqs);
+> +       if (n->page_frag.page)
+> +               __page_frag_cache_drain(n->page_frag.page, n->refcnt_bias);
+> +       kvfree(n);
+> +}
+> +
+>  static int vhost_net_release(struct inode *inode, struct file *f)
+>  {
+>         struct vhost_net *n = f->private_data;
+> @@ -1404,15 +1417,8 @@ static int vhost_net_release(struct inode *inode, struct file *f)
+>                 sockfd_put(tx_sock);
+>         if (rx_sock)
+>                 sockfd_put(rx_sock);
+> -       /* Make sure no callbacks are outstanding */
+> -       synchronize_rcu();
+>
+> -       kfree(n->vqs[VHOST_NET_VQ_RX].rxq.queue);
+> -       kfree(n->vqs[VHOST_NET_VQ_TX].xdp);
+> -       kfree(n->dev.vqs);
+> -       if (n->page_frag.page)
+> -               __page_frag_cache_drain(n->page_frag.page, n->refcnt_bias);
+> -       kvfree(n);
+> +       call_rcu(&n->rcu, vhost_net_free);
+>         return 0;
+>  }
+>
+> --
+> 2.32.0
+>
 
-What about BIT() macro? It's already defined in include/vdso/bits.h and 
-can be included via include/bits.h.
-
-Most likely linux/ieee80211.h contains bits.h. Haven't checked yet, but 
-anyway redefining kernel macros is not good approach and BIT() can be 
-also removed.
-
-
-
-With regards,
-Pavel Skripkin
