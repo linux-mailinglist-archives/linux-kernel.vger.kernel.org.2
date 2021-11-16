@@ -2,110 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9636945297B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:19:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55942452981
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:21:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233449AbhKPFWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 00:22:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42120 "EHLO mail.kernel.org"
+        id S233602AbhKPFX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 00:23:57 -0500
+Received: from muru.com ([72.249.23.125]:56730 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233403AbhKPFWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 00:22:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E471E60F6E;
-        Tue, 16 Nov 2021 05:19:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1637039948;
-        bh=0+h5I2fETKUh6GKu9bzTHSm7jqJYMvkVoBdFhY2URtE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jg2HkZELTf65WPyR611JRctoeh08n8+NPdKweeTf7PMvxNchHTMDvWsc/5jZuQ/5i
-         ZSHaM85TcRKSIWfX3oRQ5tTjfXwlBiVW017CXWo1I5M5IFi8nFXpWqtUBuoxXzgx65
-         HJ94E1llTJD5T6zTl3FoH9Z3y20PLI77DAK7rqnM=
-Date:   Mon, 15 Nov 2021 21:19:05 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
+        id S233571AbhKPFWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 00:22:47 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 31EF8806C;
+        Tue, 16 Nov 2021 05:20:23 +0000 (UTC)
+Date:   Tue, 16 Nov 2021 07:19:43 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Abel Vesa <abelvesa@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        Chinwen Chang (=?UTF-8?Q?=E5=BC=B5=E9=8C=A6?= =?UTF-8?Q?=E6=96=87?=) 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        John Hubbard <jhubbard@nvidia.com>,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH v11 2/3] mm: add a field to store names for private
- anonymous memory
-Message-Id: <20211115211905.faef6f9db3ce4a6fb9ed66a2@linux-foundation.org>
-In-Reply-To: <CAJuCfpGG-j00eDL8p3vNDh4ye2Ja4untoA20UdTkTubm3AfMEQ@mail.gmail.com>
-References: <20211019215511.3771969-1-surenb@google.com>
-        <20211019215511.3771969-2-surenb@google.com>
-        <CAJuCfpGG-j00eDL8p3vNDh4ye2Ja4untoA20UdTkTubm3AfMEQ@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Will Deacon <will@kernel.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, kernel-team@android.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-oxnas@groups.io, linux-renesas-soc@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v4 1/2] drivers: bus: simple-pm-bus: Add support for
+ probing simple bus only devices
+Message-ID: <YZM/b2/F8xmK43vr@atomide.com>
+References: <20210929000735.585237-1-saravanak@google.com>
+ <20210929000735.585237-2-saravanak@google.com>
+ <YYu4EglV7SBZU2Iy@ryzen>
+ <CAGETcx_m3f5JgrKQXZ5DUxDkpGhAau9G8uYm8a0iQ8JbcD0Rtg@mail.gmail.com>
+ <CAGETcx_a-d7qQNi3sUce3AzbPcvGJK5JSuiiHm4h4e_q-MT7Dg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGETcx_a-d7qQNi3sUce3AzbPcvGJK5JSuiiHm4h4e_q-MT7Dg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021 14:58:36 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
+* Saravana Kannan <saravanak@google.com> [211115 20:19]:
+> On Wed, Nov 10, 2021 at 12:24 PM Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > On Wed, Nov 10, 2021 at 4:16 AM Abel Vesa <abelvesa@kernel.org> wrote:
+> > >
+> > > On 21-09-28 17:07:33, Saravana Kannan wrote:
+> > > > fw_devlink could end up creating device links for bus only devices.
+> > > > However, bus only devices don't get probed and can block probe() or
+> > > > sync_state() [1] call backs of other devices. To avoid this, probe these
+> > > > devices using the simple-pm-bus driver.
+> > > >
+> > > > However, there are instances of devices that are not simple buses (they get
+> > > > probed by their specific drivers) that also list the "simple-bus" (or other
+> > > > bus only compatible strings) in their compatible property to automatically
+> > > > populate their child devices. We still want these devices to get probed by
+> > > > their specific drivers. So, we make sure this driver only probes devices
+> > > > that are only buses.
+...
+> > >
+> > > This change is breaking the expected behavior for the already existent
+> > > simple-bus nodes. All the simple-bus compatibles should be replaced now
+> > > to simple-pm-bus. In my case, on some i.MX8 platforms, without the
+> > > devlink, the devices suspend sequence changes (and even breaks).
+> > >
+> > > To avoid breaking the already existent simple-bus nodes, maybe the logic
+> > > should've been reversed: keep the simple-bus as is and add another
+> > > compatible, IDK, something like simple-trasnparent-bus, or something.
+> >
+> > The intent of this change IS to affect existing simple-bus nodes (but
+> > not in the way it's affecting you). But if it's breaking stuff, we
+> > obviously need to fix it.
+> >
+> > I have a hunch on what's going on in your case, but can you point me
+> > to the specific simple-bus node that's getting affected? I'm expecting
+> > it to be a simple-bus node that gets added AFTER this driver is
+> > registered at device_initcall (module_init gets converted to
+> > device_initcall).
+> >
+> > Also, can you try this hack patch to see if it helps your case?
+> > https://lore.kernel.org/lkml/CAGETcx9U130Oq-umrvXME4JhEpO0Wadoki3kNxx=0-YvTR6PtQ@mail.gmail.com/
+> >
+> > I have some thoughts on how I could fix this, but I need to think
+> > about a few cases.
 
-> As Andrew suggested, I checked the image sizes with allnoconfig builds:
-> 
-> unpatched Linus' ToT
->    text    data     bss     dec     hex filename
-> 1324759      32   73928 1398719 1557bf vmlinux
-> 
-> After the first patch is applied (madvise refactoring)
->    text    data     bss     dec     hex filename
-> 1322346      32   73928 1396306 154e52 vmlinux
-> >>> 2413 bytes decrease vs ToT <<<
-> 
-> After all patches applied with CONFIG_ANON_VMA_NAME=n
->    text    data     bss     dec     hex filename
-> 1322337      32   73928 1396297 154e49 vmlinux
-> >>> 2422 bytes decrease vs ToT <<<
-> 
-> After all patches applied with CONFIG_ANON_VMA_NAME=y
->    text    data     bss     dec     hex filename
-> 1325228      32   73928 1399188 155994 vmlinux
-> >>> 469 bytes increase vs ToT <<<
+Not sure if this is related.. Some drivers need to be updated from
+builtin_platform_driver_probe() to use builtin_platform_driver() when
+switching to simple-pm-bus because of deferred probe. See more info
+in commit e259c2926c01 ("PCI: pci-dra7xx: Prepare for deferred probe
+with module_platform_driver").
 
-Nice.  Presumably there are memory savings from no longer duplicating
-the vma names?
+Regards,
 
-I fudged up a [0/n] changelog (please don't forget this) and merged it
-all for testing.
+Tony
