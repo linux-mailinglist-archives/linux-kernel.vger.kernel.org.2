@@ -2,158 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72CBB452E3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:42:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA9F452E45
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:43:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233411AbhKPJpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 04:45:15 -0500
-Received: from mga03.intel.com ([134.134.136.65]:11756 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233149AbhKPJpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 04:45:13 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="233599062"
-X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
-   d="scan'208";a="233599062"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 01:42:14 -0800
-X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
-   d="scan'208";a="506359272"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.210.220]) ([10.254.210.220])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 01:42:07 -0800
-Message-ID: <14bed5c1-a385-7e99-bda9-1041341fe68d@linux.intel.com>
-Date:   Tue, 16 Nov 2021 17:42:04 +0800
+        id S233435AbhKPJqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 04:46:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20395 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233349AbhKPJqL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 04:46:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637055794;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/gJI+/Lq5aRkarenKXwAKuBJuvK2Jwl6N6vyetwo1U0=;
+        b=Udi22WdAlc6UgluQl284mCihH/BSiekShAeAMcFhaWxk4qxbE61Pwd4iRiegwsDqcqcjbm
+        4cifjqwixyjcswaKq7V8p/8C0RW7vS2jGaKc4a+ITizvUDIVG2ALtHMr1rKR1q5cxVUJH1
+        6tYy94pFbQ/kMvZ3AhTrln0J9rEGUDs=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-95-TKGQdpA-NDypxiOuURG9hg-1; Tue, 16 Nov 2021 04:43:13 -0500
+X-MC-Unique: TKGQdpA-NDypxiOuURG9hg-1
+Received: by mail-ed1-f70.google.com with SMTP id v22-20020a50a456000000b003e7cbfe3dfeso4508347edb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 01:43:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=/gJI+/Lq5aRkarenKXwAKuBJuvK2Jwl6N6vyetwo1U0=;
+        b=SrAZA88DRoDJITrfT1nRv0nSyzR6dUv6xuwtfxdyAADAKbd0sY4IFlHh1p33IPFBf7
+         rWzc/K0yWZNxZ7/drJf+7keUufA3g0QURf4Z0+FYjDjLWJTce0vuS3WJHSSQLPxWD6zp
+         c825XRCIPC5Nnm2kSzJGZyLu7vlc4ESLsd4FX5fxOAcrlHUTOKVr9GiUxm2ApJyiDDEA
+         ABO8/dUDiLngqpaO7FWF0r0WputQN6wDDdGA/vBE0yx2SyGOt52dz/a5ucZn/+Alttu4
+         2hmstcOFkUSAcTF8jEbazCUHUPf9frbazJvXl4Bks9aCeJa44bI5F8/NBYBJRu4MwQS4
+         SiTw==
+X-Gm-Message-State: AOAM531f26ld5Hg/u8JUgKuvACJrDwkKvPsHaJl1622Z51SBo0Oxs7aT
+        n8nrFBw8sg4rEfFOINCZRDBg3CJpnCLhF6wGMkSEuBz3CGJPaLAa+V/U4G4HUB99BQ7Q+Iwx05T
+        DqhQMr13Gos0qj2xGDQIZ30MR
+X-Received: by 2002:a17:906:52cf:: with SMTP id w15mr8021773ejn.122.1637055792471;
+        Tue, 16 Nov 2021 01:43:12 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw7mhtY4eET4LN9sV+SnCqEy35FazLPo2t3ghMXBr9Asn6lew1NgsN4r1t0Y/Krk0LJwKbExg==
+X-Received: by 2002:a17:906:52cf:: with SMTP id w15mr8021740ejn.122.1637055792248;
+        Tue, 16 Nov 2021 01:43:12 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id z25sm7548720ejd.80.2021.11.16.01.43.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 01:43:11 -0800 (PST)
+Message-ID: <2314890c-cec3-7d1a-125d-47fc7b1d2625@redhat.com>
+Date:   Tue, 16 Nov 2021 10:43:10 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Cc:     baolu.lu@linux.intel.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Chaitanya Kulkarni <kch@nvidia.com>, kvm@vger.kernel.org,
-        rafael@kernel.org, linux-pci@vger.kernel.org,
-        Cornelia Huck <cohuck@redhat.com>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Jacob jun Pan <jacob.jun.pan@intel.com>,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
-        Will Deacon <will@kernel.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 04/20] power: supply: bq25890: Reduce reported
+ CONSTANT_CHARGE_CURRENT_MAX for low temperatures
 Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>
-References: <20211115020552.2378167-1-baolu.lu@linux.intel.com>
- <20211115020552.2378167-7-baolu.lu@linux.intel.com>
- <YZJgMzYzuxjJpWIC@infradead.org>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: [PATCH 06/11] iommu: Expose group variants of dma ownership
- interfaces
-In-Reply-To: <YZJgMzYzuxjJpWIC@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        Yauhen Kharuzhy <jekhor@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-efi@vger.kernel.org
+References: <20211114170335.66994-1-hdegoede@redhat.com>
+ <20211114170335.66994-5-hdegoede@redhat.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20211114170335.66994-5-hdegoede@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+Hi,
 
-On 2021/11/15 21:27, Christoph Hellwig wrote:
-> On Mon, Nov 15, 2021 at 10:05:47AM +0800, Lu Baolu wrote:
->> The vfio needs to set DMA_OWNER_USER for the entire group when attaching
+On 11/14/21 18:03, Hans de Goede wrote:
+> From: Yauhen Kharuzhy <jekhor@gmail.com>
 > 
-> The vfio subsystem?  driver?
-
-"vfio subsystem"
-
+> Take into account possible current reduction due to low-temperature when
+> reading POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX. As described in
+> the datasheet in cool (0-20° Celcius) conditions the current limit is
+> decreased to 20% or 50% of ICHG field value depended on JEITA_ISET field.
 > 
->> it to a vfio container. So expose group variants of setting/releasing dma
->> ownership for this purpose.
->>
->> This also exposes the helper iommu_group_dma_owner_unclaimed() for vfio
->> report to userspace if the group is viable to user assignment, for
+> Also add NTC_FAULT field value to the debug message in
+> bq25890_get_chip_state().
 > 
-> .. for vfio to report .. ?
-
-Yes.
-
+> Changed by Hans de Goede:
+> - Fix reading F_CHG_FAULT instead of F_NTC_FIELD for state->ntc_fault
+> - Only read JEITA_ISET field if necessary
+> - Tweak commit message a bit
 > 
->>   void iommu_device_release_dma_owner(struct device *dev, enum iommu_dma_owner owner);
->> +int iommu_group_set_dma_owner(struct iommu_group *group, enum iommu_dma_owner owner,
->> +			      struct file *user_file);
->> +void iommu_group_release_dma_owner(struct iommu_group *group, enum iommu_dma_owner owner);
+> Signed-off-by: Yauhen Kharuzhy <jekhor@gmail.com>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+>  drivers/power/supply/bq25890_charger.c | 33 +++++++++++++++++++++++---
+>  1 file changed, 30 insertions(+), 3 deletions(-)
 > 
-> Pleae avoid all these overly long lines.
+> diff --git a/drivers/power/supply/bq25890_charger.c b/drivers/power/supply/bq25890_charger.c
+> index b208cc2193b8..617a653221ab 100644
+> --- a/drivers/power/supply/bq25890_charger.c
+> +++ b/drivers/power/supply/bq25890_charger.c
+> @@ -94,6 +94,7 @@ struct bq25890_state {
+>  	u8 vsys_status;
+>  	u8 boost_fault;
+>  	u8 bat_fault;
+> +	u8 ntc_fault;
+>  };
+>  
+>  struct bq25890_device {
+> @@ -383,6 +384,14 @@ enum bq25890_chrg_fault {
+>  	CHRG_FAULT_TIMER_EXPIRED,
+>  };
+>  
+> +enum bq25890_ntc_fault {
+> +	NTC_FAULT_NORMAL = 0,
+> +	NTC_FAULT_WARM = 2,
+> +	NTC_FAULT_COOL = 3,
+> +	NTC_FAULT_COLD = 5,
+> +	NTC_FAULT_HOT = 6,
+> +};
+> +
+>  static bool bq25890_is_adc_property(enum power_supply_property psp)
+>  {
+>  	switch (psp) {
+> @@ -474,6 +483,18 @@ static int bq25890_power_supply_get_property(struct power_supply *psy,
+>  
+>  	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX:
+>  		val->intval = bq25890_find_val(bq->init_data.ichg, TBL_ICHG);
+> +
+> +		/* When temperature is too low, charge current is decreased */
+> +		if (bq->state.ntc_fault == NTC_FAULT_COOL) {
+> +			ret = bq25890_field_read(bq, F_JEITA_ISET);
+> +			if (ret < 0)
+> +				return ret;
+> +
+> +			if (ret)
+> +				val->intval /= 5;
+> +			else
+> +				val->intval /= 2;
+> +		}
+>  		break;
+>  
+>  	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE:
+> @@ -486,6 +507,10 @@ static int bq25890_power_supply_get_property(struct power_supply *psy,
+>  		if (ret < 0)
+>  			return ret;
+>  
+> +		ret = bq25890_field_read(bq, F_JEITA_VSET);
+> +		if (ret < 0)
+> +			return ret;
+> +
+>  		/* converted_val = 2.304V + ADC_val * 20mV (table 10.3.15) */
+>  		val->intval = 2304000 + ret * 20000;
+>  		break;
 
-Sure. Thanks!
+Ugh, this should not be here. I guess this is a leftover from an attempt to
+also apply temperature correction to the POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE
+prop.
 
+I'll drop this for v3 of the series. Note I'll first wait a week or so for
+other feedback.
+
+Regards,
+
+Hans
+
+
+
+
+> @@ -549,7 +574,8 @@ static int bq25890_get_chip_state(struct bq25890_device *bq,
+>  		{F_VSYS_STAT,	&state->vsys_status},
+>  		{F_BOOST_FAULT, &state->boost_fault},
+>  		{F_BAT_FAULT,	&state->bat_fault},
+> -		{F_CHG_FAULT,	&state->chrg_fault}
+> +		{F_CHG_FAULT,	&state->chrg_fault},
+> +		{F_NTC_FAULT,	&state->ntc_fault}
+>  	};
+>  
+>  	for (i = 0; i < ARRAY_SIZE(state_fields); i++) {
+> @@ -560,9 +586,10 @@ static int bq25890_get_chip_state(struct bq25890_device *bq,
+>  		*state_fields[i].data = ret;
+>  	}
+>  
+> -	dev_dbg(bq->dev, "S:CHG/PG/VSYS=%d/%d/%d, F:CHG/BOOST/BAT=%d/%d/%d\n",
+> +	dev_dbg(bq->dev, "S:CHG/PG/VSYS=%d/%d/%d, F:CHG/BOOST/BAT/NTC=%d/%d/%d/%d\n",
+>  		state->chrg_status, state->online, state->vsys_status,
+> -		state->chrg_fault, state->boost_fault, state->bat_fault);
+> +		state->chrg_fault, state->boost_fault, state->bat_fault,
+> +		state->ntc_fault);
+>  
+>  	return 0;
+>  }
 > 
->> +static inline int iommu_group_set_dma_owner(struct iommu_group *group,
->> +					    enum iommu_dma_owner owner,
->> +					    struct file *user_file)
->> +{
->> +	return -EINVAL;
->> +}
->> +
->> +static inline void iommu_group_release_dma_owner(struct iommu_group *group,
->> +						 enum iommu_dma_owner owner)
->> +{
->> +}
->> +
->> +static inline bool iommu_group_dma_owner_unclaimed(struct iommu_group *group)
->> +{
->> +	return false;
->> +}
-> 
-> Why do we need these stubs?  All potential callers should already
-> require CONFIG_IOMMU_API?  Same for the helpers added in patch 1, btw.
 
-You are right. This helper is only for vfio which requires IOMMU_API. I
-will remove this.
-
-The helpers in patch 1 seem not the same. The driver core (or bus
-dma_configure() callback as suggested) will also call them.
-
-> 
->> +	mutex_lock(&group->mutex);
->> +	ret = __iommu_group_set_dma_owner(group, owner, user_file);
->> +	mutex_unlock(&group->mutex);
-> 
->> +	mutex_lock(&group->mutex);
->> +	__iommu_group_release_dma_owner(group, owner);
->> +	mutex_unlock(&group->mutex);
-> 
-> Unless I'm missing something (just skipping over the patches),
-> the existing callers also take the lock just around these calls,
-> so we don't really need the __-prefixed lowlevel helpers.
-> 
-
-Move mutex_lock/unlock will make the helper implementation easier. :-)
-It seems to be common code style in iommu core. For example,
-__iommu_attach_group(), __iommu_group_for_each_dev(), etc.
-
->> +	mutex_lock(&group->mutex);
->> +	owner = group->dma_owner;
->> +	mutex_unlock(&group->mutex);
-> 
-> No need for a lock to read a single scalar.
-
-Adding the lock will make kcasn happy. Jason G also told me that
-
-[citing from his review comment]
-"
-It is always incorrect to read concurrent data without an annotation
-of some kind.
-
-For instance it can cause mis-execution of logic where the compiler is
-unaware that a value it loads is allowed to change - ie no 
-READ_ONCE/WRITE_ONCE semantic.
-"
-
-> 
->> +
->> +	return owner == DMA_OWNER_NONE;
->> +}
->> +EXPORT_SYMBOL_GPL(iommu_group_dma_owner_unclaimed);
-
-Best regards,
-baolu
