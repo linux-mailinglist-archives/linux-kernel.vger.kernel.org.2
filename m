@@ -2,97 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A00745335A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:57:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0801D45335E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236927AbhKPOAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 09:00:03 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:38266 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236145AbhKPOAD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 09:00:03 -0500
-X-UUID: 0b77ccc204e74dbcb983fceb93d2deb4-20211116
-X-UUID: 0b77ccc204e74dbcb983fceb93d2deb4-20211116
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <mark-pk.tsai@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 3687600; Tue, 16 Nov 2021 21:57:04 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Tue, 16 Nov 2021 21:57:03 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 16 Nov 2021 21:57:03 +0800
-From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-To:     <mathieu.poirier@linaro.org>
-CC:     <bjorn.andersson@linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-remoteproc@vger.kernel.org>, <mark-pk.tsai@mediatek.com>,
-        <matthias.bgg@gmail.com>, <ohad@wizery.com>,
-        <yj.chiang@mediatek.com>
-Subject: Re: [PATCH v2] remoteproc: use %pe format string to print return error code
-Date:   Tue, 16 Nov 2021 21:57:03 +0800
-Message-ID: <20211116135703.19432-1-mark-pk.tsai@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <CANLsYkzsoXw8vCC-OBqHyQv216Rbjf9ZR7FuFK-zxC7gMzt9Kg@mail.gmail.com>
-References: <CANLsYkzsoXw8vCC-OBqHyQv216Rbjf9ZR7FuFK-zxC7gMzt9Kg@mail.gmail.com>
+        id S236951AbhKPOAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 09:00:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236145AbhKPOAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 09:00:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3296F61B98;
+        Tue, 16 Nov 2021 13:57:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637071042;
+        bh=HHtT1pWYVFIKaaLQb5hTL9vWxiHKQzHPIP2j3PuVyFA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZLuk3eR7gwjzTFme95YWRPvMd8gjS/AjVuatggxAg0o1mhMU5UGkDwRrPxtFYJueM
+         HvbuGEQNwJCfgEECCxBOByZyDmvZ44zkaXnRRKST4w3Jv2DS+aHzRcx3IsN/vdb1Ra
+         4yFziTiPs7J9b3ipPfVmrj3q8n+AB2fU83HfHezM=
+Date:   Tue, 16 Nov 2021 14:57:20 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Sasha Levin <sashal@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Mathieu Malaterre <malat@debian.org>,
+        Paul Mackerras <paulus@ozlabs.org>, kvm-ppc@vger.kernel.org
+Subject: Re: [PATCH 5.4 063/355] powerpc/kvm: Fix kvm_use_magic_page
+Message-ID: <YZO4wIfpjxnzZjuh@kroah.com>
+References: <20211115165313.549179499@linuxfoundation.org>
+ <20211115165315.847107930@linuxfoundation.org>
+ <CAHc6FU7a+gTDCZMCE6gOH1EDUW5SghPbQbsbeVtdg4tV1VdGxg@mail.gmail.com>
+ <YZMBVdDZzjE6Pziq@sashalap>
+ <CAHc6FU4cgAXc2GxYw+N=RACPG0xc=urrrqw8Gc3X1Rpr4255pg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHc6FU4cgAXc2GxYw+N=RACPG0xc=urrrqw8Gc3X1Rpr4255pg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > > Use %pe format string to print return error code which
-> > > > make the error message easier to understand.
-> > > >
-> > > > Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-> > > > ---
-> > > >  drivers/remoteproc/remoteproc_core.c | 4 ++--
-> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> > > > index 502b6604b757..2242da320368 100644
-> > > > --- a/drivers/remoteproc/remoteproc_core.c
-> > > > +++ b/drivers/remoteproc/remoteproc_core.c
-> > > > @@ -575,8 +575,8 @@ static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
-> > > >                                            dma_get_mask(rproc->dev.parent));
-> > > >         if (ret) {
-> > > >                 dev_warn(dev,
-> > > > -                        "Failed to set DMA mask %llx. Trying to continue... %x\n",
-> > > > -                        dma_get_mask(rproc->dev.parent), ret);
-> > > > +                        "Failed to set DMA mask %llx. Trying to continue... (%pe)\n",
-> > > > +                        dma_get_mask(rproc->dev.parent), ERR_PTR(ret));
+On Tue, Nov 16, 2021 at 02:54:10PM +0100, Andreas Gruenbacher wrote:
+> On Tue, Nov 16, 2021 at 1:54 AM Sasha Levin <sashal@kernel.org> wrote:
+> > On Mon, Nov 15, 2021 at 06:47:41PM +0100, Andreas Gruenbacher wrote:
+> > >Greg,
 > > >
-> > > Macro ERR_PTR() is used to convert error codes to pointer type when
-> > > returning from a function - I fail to see how doing so in a dev_warn()
-> > > context can make the message easier to understand.  Can you provide an
-> > > example?
+> > >On Mon, Nov 15, 2021 at 6:10 PM Greg Kroah-Hartman
+> > ><gregkh@linuxfoundation.org> wrote:
+> > >> From: Andreas Gruenbacher <agruenba@redhat.com>
+> > >>
+> > >> commit 0c8eb2884a42d992c7726539328b7d3568f22143 upstream.
+> > >>
+> > >> When switching from __get_user to fault_in_pages_readable, commit
+> > >> 9f9eae5ce717 broke kvm_use_magic_page: like __get_user,
+> > >> fault_in_pages_readable returns 0 on success.
+> > >
+> > >I've not heard back from the maintainers about this patch so far, so
+> > >it would probably be safer to leave it out of stable for now.
 > >
-> > Hi,
-> >
-> > When dma_coerce_mask_and_coherent() fail, the output log will be as following.
-> >
-> > format          log
-> > %x              Trying to continue... fffffffb
-> > %d              Trying to continue... -5
-> > %pe             Trying to continue... -5        (if CONFIG_SYMBOLIC_ERRNAME is not set)
-> > %pe             Trying to continue... -EIO      (if CONFIG_SYMBOLIC_ERRNAME=y)
->
-> When failing, functions dma_coerce_mask_and_coherent() returns -EIO.
-> Casting that to a (void *) with ERR_PTR() does not change that value.
-> Since variable @ret is already declared as "int" the real fix is to
-> change "%x" to "%d".
+> > What do you mean exactly? It's upstream.
+> 
+> Mathieu Malaterre broke this test in 2018 (commit 9f9eae5ce717) but
+> that wasn't noticed until now (commit 0c8eb2884a42). This means that
+> this fix probably isn't critical, so I shouldn't be backported.
 
-There're some other drivers do the same thing in the recent kernel, so I think
-it's fine to casting the `ret` to a (void *) for more user friendly.
-But I suppose it would depend on the maintainer's opinion.
+Then why did you tag it to be explicitly backported to all stable
+kernels newer than 4.18?
 
-So how about previous patch I sent, which also fix this issue by using %d.
+We are just doing what you asked to be done here...
 
-https://lore.kernel.org/lkml/20211102120805.27137-1-mark-pk.tsai@mediatek.com/
+confused,
 
+greg k-h
