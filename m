@@ -2,181 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B421B4529D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2104529E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:39:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234885AbhKPFiV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 16 Nov 2021 00:38:21 -0500
-Received: from out03.mta.xmission.com ([166.70.13.233]:57792 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234717AbhKPFhs (ORCPT
+        id S235492AbhKPFlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 00:41:52 -0500
+Received: from so254-9.mailgun.net ([198.61.254.9]:49691 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235392AbhKPFlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 00:37:48 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52]:55522)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mmr7B-00AaPP-Mf; Mon, 15 Nov 2021 22:34:41 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:45578 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mmr7A-001l92-Ea; Mon, 15 Nov 2021 22:34:41 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     <linux-kernel@vger.kernel.org>
-Cc:     Kyle Huey <me@kylehuey.com>, Jens Axboe <axboe@kernel.dk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marco Elver <elver@google.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        "Robert O'Callahan" <rocallahan@gmail.com>,
-        Marko =?utf-8?B?TcOka2Vs?= =?utf-8?B?w6Q=?= 
-        <marko.makela@mariadb.com>, <linux-api@vger.kernel.org>,
-        Al Viro <viro@ZenIV.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>
-References: <20211101034147.6203-1-khuey@kylehuey.com>
-        <877ddqabvs.fsf@disp2133>
-        <CAP045AqJVXA60R9RF8Gb2PWGBsK6bZ7tVBkdCcPYYrp6rOkG-Q@mail.gmail.com>
-        <87fsse8maf.fsf@disp2133>
-        <CAP045ApAX725ZfujaK-jJNkfCo5s+oVFpBvNfPJk+DKY8K7d=Q@mail.gmail.com>
-        <CAP045AqsstnxfTyXhhCGDSucqGN7BTtfHJ5s6ZxUQC5K-JU56A@mail.gmail.com>
-        <87bl2kekig.fsf_-_@email.froward.int.ebiederm.org>
-Date:   Mon, 15 Nov 2021 23:34:33 -0600
-In-Reply-To: <87bl2kekig.fsf_-_@email.froward.int.ebiederm.org> (Eric
-        W. Biederman's message of "Mon, 15 Nov 2021 23:29:11 -0600")
-Message-ID: <87tugcd5p2.fsf_-_@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-XM-SPF: eid=1mmr7A-001l92-Ea;;;mid=<87tugcd5p2.fsf_-_@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+onuKKUGqsUIK08Xm/5KwhYxu4ZLme44k=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,XMNoVowels,XM_B_Unicode autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;<linux-kernel@vger.kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 624 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 11 (1.8%), b_tie_ro: 10 (1.5%), parse: 1.11
-        (0.2%), extract_message_metadata: 22 (3.6%), get_uri_detail_list: 3.2
-        (0.5%), tests_pri_-1000: 29 (4.7%), tests_pri_-950: 1.22 (0.2%),
-        tests_pri_-900: 1.02 (0.2%), tests_pri_-90: 77 (12.4%), check_bayes:
-        67 (10.8%), b_tokenize: 11 (1.7%), b_tok_get_all: 12 (1.9%),
-        b_comp_prob: 3.2 (0.5%), b_tok_touch_all: 38 (6.1%), b_finish: 0.76
-        (0.1%), tests_pri_0: 461 (73.8%), check_dkim_signature: 0.87 (0.1%),
-        check_dkim_adsp: 3.4 (0.5%), poll_dns_idle: 1.01 (0.2%), tests_pri_10:
-        2.3 (0.4%), tests_pri_500: 15 (2.4%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH 3/3] signal: Requeue ptrace signals
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+        Tue, 16 Nov 2021 00:41:23 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1637041103; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=rnRezh1dn/Uc+3/SygoVMHA3pQwrOPcij5LNbizx4ss=; b=mJfkQQUZ7jDGcYPS+XsW7881ngOmU9EiGYz+X7TTCHobopwKEHveDUZcNvlI3zd7Vz0GlgXk
+ 6vG8nZeUCs5Qiks1H70M0fKnyqKHQHsw5xKjxiWQ6PZNde420Q9YydeZn79+9gDmlIwfdrY+
+ 9xjhaQuQ5SVQCXNKcSCjJ0JSMnc=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 619343ced8e58e6de19f4549 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Nov 2021 05:38:22
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BAB94C43617; Tue, 16 Nov 2021 05:38:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E447EC4360D;
+        Tue, 16 Nov 2021 05:38:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E447EC4360D
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+To:     bjorn.andersson@linaro.org, agross@kernel.org,
+        linus.walleij@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, psodagud@codeaurora.org,
+        dianders@chromium.org, swboyd@chromium.org,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Subject: [PATCH v3 1/2] pinctrl: qcom: Add egpio feature support
+Date:   Tue, 16 Nov 2021 11:08:03 +0530
+Message-Id: <1637041084-3299-1-git-send-email-rnayak@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Prasad Sodagudi <psodagud@codeaurora.org>
 
-Kyle Huey <me@kylehuey.com> writes:
+egpio is a scheme which allows special power Island Domain IOs
+(LPASS,SSC) to be reused as regular chip GPIOs by muxing regular
+TLMM functions with Island Domain functions.
+With this scheme, an IO can be controlled both by the cpu running
+linux and the Island processor. This provides great flexibility to
+re-purpose the Island IOs for regular TLMM usecases.
 
-> rr, a userspace record and replay debugger[0], uses the recorded register
-> state at PTRACE_EVENT_EXIT to find the point in time at which to cease
-> executing the program during replay.
->
-> If a SIGKILL races with processing another signal in get_signal, it is
-> possible for the kernel to decline to notify the tracer of the original
-> signal. But if the original signal had a handler, the kernel proceeds
-> with setting up a signal handler frame as if the tracer had chosen to
-> deliver the signal unmodified to the tracee. When the kernel goes to
-> execute the signal handler that it has now modified the stack and registers
-> for, it will discover the pending SIGKILL, and terminate the tracee
-> without executing the handler. When PTRACE_EVENT_EXIT is delivered to
-> the tracer, however, the effects of handler setup will be visible to
-> the tracer.
->
-> Because rr (the tracer) was never notified of the signal, it is not aware
-> that a signal handler frame was set up and expects the state of the program
-> at PTRACE_EVENT_EXIT to be a state that will be reconstructed naturally
-> by allowing the program to execute from the last event. When that fails
-> to happen during replay, rr will assert and die.
->
-> The following patches add an explicit check for a newly pending SIGKILL
-> after the ptracer has been notified and the siglock has been reacquired.
-> If this happens, we stop processing the current signal and proceed
-> immediately to handling the SIGKILL. This makes the state reported at
-> PTRACE_EVENT_EXIT the unmodified state of the program, and also avoids the
-> work to set up a signal handler frame that will never be used.
->
-> [0] https://rr-project.org/
+2 new bits are added to ctl_reg, egpio_present is a read only bit
+which shows if egpio feature is available or not on a given gpio.
+egpio_enable is the read/write bit and only effective if egpio_present
+is 1. Once its set, the Island IO is controlled from Chip TLMM.
+egpio_enable when set to 0 means the GPIO is used as Island Domain IO.
 
-The problem is that while the traced process makes it into ptrace_stop,
-the tracee is killed before the tracer manages to wait for the
-tracee and discover which signal was about to be delivered.
+To support this we add a new function 'egpio' which can be used to
+set the egpio_enable to 0, for any other TLMM controlled functions
+we set the egpio_enable to 1.
 
-More generally the problem is that while siglock was dropped a signal
-with process wide effect is short cirucit delivered to the entire
-process killing it, but the process continues to try and deliver another
-signal.
-
-In general it impossible to avoid all cases where work is performed
-after the process has been killed.  In particular if the process is
-killed after get_signal returns the code will simply not know it has
-been killed until after delivering the signal frame to userspace.
-
-On the other hand when the code has already discovered the process
-has been killed and taken user space visible action that shows
-the kernel knows the process has been killed, it is just silly
-to then write the signal frame to the user space stack.
-
-Instead of being silly detect the process has been killed
-in ptrace_signal and requeue the signal so the code can pretend
-it was simply never dequeued for delivery.
-
-To test the process has been killed I use fatal_signal_pending rather
-than signal_group_exit to match the test in signal_pending_state which
-is used in schedule which is where ptrace_stop detects the process has
-been killed.
-
-Requeuing the signal so the code can pretend it was simply never
-dequeued improves the user space visible behavior that has been
-present since ebf5ebe31d2c ("[PATCH] signal-fixes-2.5.59-A4").
-
-Kyle Huey verified that this change in behavior and makes rr happy.
-
-Reported-by: Kyle Huey <khuey@kylehuey.com>
-Reported-by: Marko Mäkelä <marko.makela@mariadb.com>
-History Tree: https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.gi
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
 ---
- kernel/signal.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/pinctrl/qcom/pinctrl-msm.c | 15 +++++++++++++--
+ drivers/pinctrl/qcom/pinctrl-msm.h | 10 ++++++++++
+ 2 files changed, 23 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 43e8b7e362b0..621401550f0f 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2565,7 +2565,8 @@ static int ptrace_signal(int signr, kernel_siginfo_t *info, enum pid_type type)
- 	}
+diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
+index 8476a8a..ae09e2d 100644
+--- a/drivers/pinctrl/qcom/pinctrl-msm.c
++++ b/drivers/pinctrl/qcom/pinctrl-msm.c
+@@ -185,6 +185,7 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
+ 	unsigned int irq = irq_find_mapping(gc->irq.domain, group);
+ 	struct irq_data *d = irq_get_irq_data(irq);
+ 	unsigned int gpio_func = pctrl->soc->gpio_func;
++	unsigned int egpio_func = pctrl->soc->egpio_func;
+ 	const struct msm_pingroup *g;
+ 	unsigned long flags;
+ 	u32 val, mask;
+@@ -218,8 +219,18 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
+ 	raw_spin_lock_irqsave(&pctrl->lock, flags);
  
- 	/* If the (new) signal is now blocked, requeue it.  */
--	if (sigismember(&current->blocked, signr)) {
-+	if (sigismember(&current->blocked, signr) ||
-+	    fatal_signal_pending(current)) {
- 		send_signal(signr, info, current, type);
- 		signr = 0;
- 	}
+ 	val = msm_readl_ctl(pctrl, g);
+-	val &= ~mask;
+-	val |= i << g->mux_bit;
++
++	if (egpio_func && i == egpio_func) {
++		if (val & BIT(g->egpio_present))
++			val &= ~BIT(g->egpio_enable);
++	} else {
++		val &= ~mask;
++		val |= i << g->mux_bit;
++		/* Claim ownership of pin if egpio capable */
++		if (egpio_func && val & BIT(g->egpio_present))
++			val |= BIT(g->egpio_enable);
++	}
++
+ 	msm_writel_ctl(val, pctrl, g);
+ 
+ 	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
+diff --git a/drivers/pinctrl/qcom/pinctrl-msm.h b/drivers/pinctrl/qcom/pinctrl-msm.h
+index e31a516..dd0d949 100644
+--- a/drivers/pinctrl/qcom/pinctrl-msm.h
++++ b/drivers/pinctrl/qcom/pinctrl-msm.h
+@@ -77,6 +77,8 @@ struct msm_pingroup {
+ 	unsigned drv_bit:5;
+ 
+ 	unsigned od_bit:5;
++	unsigned egpio_enable:5;
++	unsigned egpio_present:5;
+ 	unsigned oe_bit:5;
+ 	unsigned in_bit:5;
+ 	unsigned out_bit:5;
+@@ -119,6 +121,13 @@ struct msm_gpio_wakeirq_map {
+  *                            to be aware that their parent can't handle dual
+  *                            edge interrupts.
+  * @gpio_func: Which function number is GPIO (usually 0).
++ * @egpio_func: If non-zero then this SoC supports eGPIO. Even though in
++ *              hardware this is a mux 1-level above the TLMM, we'll treat
++ *              it as if this is just another mux state of the TLMM. Since
++ *              it doesn't really map to hardware, we'll allocate a virtual
++ *              function number for eGPIO and any time we see that function
++ *              number used we'll treat it as a request to mux away from
++ *              our TLMM towards another owner.
+  */
+ struct msm_pinctrl_soc_data {
+ 	const struct pinctrl_pin_desc *pins;
+@@ -136,6 +145,7 @@ struct msm_pinctrl_soc_data {
+ 	unsigned int nwakeirq_map;
+ 	bool wakeirq_dual_edge_errata;
+ 	unsigned int gpio_func;
++	unsigned int egpio_func;
+ };
+ 
+ extern const struct dev_pm_ops msm_pinctrl_dev_pm_ops;
 -- 
-2.20.1
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
