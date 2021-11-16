@@ -2,126 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F449452C98
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:21:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E9C452CA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:23:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231893AbhKPIYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 03:24:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38478 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231869AbhKPIYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 03:24:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 263636321A;
-        Tue, 16 Nov 2021 08:21:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637050905;
-        bh=bYQKZcw7c2FQMHwIW5aHteUVhe1xXATHDDnJ7Fn6nvM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1z3iMBeJeljTxggjE+0L4THG0ujjtzEQL65xZOXcDaQ8VjpANvvoVWED04LYF/AvB
-         zolX6Blbg9K0nCBEp8ls4ve8p+qV/bno+gOYeqaePLr6geYTIfVXQ8NKk+AV79pi9x
-         yP+uvpZlqW/eCULiDCmjGWF4n5whDdDU0TmcqRPs=
-Date:   Tue, 16 Nov 2021 09:21:43 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Alistair Delva <adelva@google.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Serge Hallyn <serge@hallyn.com>, Jens Axboe <axboe@kernel.dk>,
-        Paul Moore <paul@paul-moore.com>,
-        SElinux list <selinux@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux Stable maillist <stable@vger.kernel.org>
-Subject: Re: [PATCH] block: Check ADMIN before NICE for IOPRIO_CLASS_RT
-Message-ID: <YZNqF7fuwLTd8IIM@kroah.com>
-References: <20211115173850.3598768-1-adelva@google.com>
- <CAFqZXNvVHv8Oje-WV6MWMF96kpR6epTsbc-jv-JF+YJw=55i1w@mail.gmail.com>
- <CANDihLEFZAz8DwkkMGiDJnDMjxiUuSCanYsJtkRwa9RoyruLFA@mail.gmail.com>
- <ead81edf-ca8f-9e97-96ca-984202e7d8ac@schaufler-ca.com>
+        id S231918AbhKPI0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 03:26:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231859AbhKPI0I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 03:26:08 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96620C061570;
+        Tue, 16 Nov 2021 00:23:11 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id v23so15117186pjr.5;
+        Tue, 16 Nov 2021 00:23:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3+vKQR2yjsr4EpvmyaU72REwMRnHBJTnUozWbZ4+OkE=;
+        b=cBuE7Usu1jQbcBJMZKMLs7FbU7IGjsBMIpTOA2j2S4GoI8Ks0C7VsFzJqeAzPk3S/c
+         gun3rgx7ykHpO2INlKwu5qY6x933MZqNwW/idwm4bI15InCICTmbeB9KL4OUGS+xt6IQ
+         hiYZ2+3xFWnYzXT+dtXst5y/WUx5ZJUVoS1V16BEwiKDIHgimE79zAR4M6up0Yc7xorb
+         CjVYYkymFZAzc5c3lsrKRPu0udULmHG0QylJmywi2ZQRexr3gWjVZQxtZMXanoHlSkiP
+         wOHLT1FJag2QBjKOD9NwfmvomENUzhMIMeJY6sDVCSNkc1ZfpFiRZl9c2Y2+HknyvRAb
+         E5nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3+vKQR2yjsr4EpvmyaU72REwMRnHBJTnUozWbZ4+OkE=;
+        b=P14mQMfB+BzGgwzalj9uviL2u3SPStDfPATCoO5oaj2kouGj99Rfy02gqKp2NYltAa
+         aGrAzVJtFB6HOi1jvvAo3uY0Wzt4PBa33mfF+oPKPcxYVhXWMkwgRBPHzyjv9MINhcLD
+         6OmnIFtc90yox645O0pLeDKWSw/q/U7MwqC1wBo1KKOSLgh2sv9oDqKVQyTVBxwdExQp
+         vZw/1DS6xt1WZs59ZYWMD3+dyBrujtETqiR0ds70SbJwJ9cjKK3m4+hIqWlUTk4lmCTO
+         IVRau86omgeuLk8CSz9hkyp3cfB2Lj6KeOWvQ4KCpTlVaFj8EBjuFDa+14F1IUFikNYL
+         QlVw==
+X-Gm-Message-State: AOAM533arS+PHc31ZHFELHECs/0euktfk6LnKvyV+lAwUTnjBWJ/8pEh
+        4ETn3AIo2AZT2uzkbwu6ge5MOPe1daByv3odboQ=
+X-Google-Smtp-Source: ABdhPJxKZE+MWVQYmW3TQ0WM6WxO4BDm1lvKTnO98Ys/xKMCj83AX9173FQ5v5JK7vIKCh+0yQ0SvV40PcqU1lVdg3w=
+X-Received: by 2002:a17:90b:4b83:: with SMTP id lr3mr73448586pjb.98.1637050991159;
+ Tue, 16 Nov 2021 00:23:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ead81edf-ca8f-9e97-96ca-984202e7d8ac@schaufler-ca.com>
+References: <20211115141925.60164-1-paul@crapouillou.net> <20211115141925.60164-3-paul@crapouillou.net>
+In-Reply-To: <20211115141925.60164-3-paul@crapouillou.net>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Tue, 16 Nov 2021 10:22:59 +0200
+Message-ID: <CA+U=DsqGZvCdVcEyTW7YpQOaPG7RMUzziN83d_ChnvNeFv3Paw@mail.gmail.com>
+Subject: Re: [PATCH 02/15] iio: buffer-dma: Remove unused iio_buffer_block struct
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 01:42:54PM -0800, Casey Schaufler wrote:
-> On 11/15/2021 11:08 AM, Alistair Delva wrote:
-> > On Mon, Nov 15, 2021 at 11:04 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> > > On Mon, Nov 15, 2021 at 7:14 PM Alistair Delva <adelva@google.com> wrote:
-> > > > Booting to Android userspace on 5.14 or newer triggers the following
-> > > > SELinux denial:
-> > > > 
-> > > > avc: denied { sys_nice } for comm="init" capability=23
-> > > >       scontext=u:r:init:s0 tcontext=u:r:init:s0 tclass=capability
-> > > >       permissive=0
-> > > > 
-> > > > Init is PID 0 running as root, so it already has CAP_SYS_ADMIN. For
-> > > > better compatibility with older SEPolicy, check ADMIN before NICE.
-> > > But with this patch you in turn punish the new/better policies that
-> > > try to avoid giving domains CAP_SYS_ADMIN unless necessary (using only
-> > > the more granular capabilities wherever possible), which may now get a
-> > > bogus sys_admin denial. IMHO the order is better as it is, as it
-> > > motivates the "good" policy writing behavior - i.e. spelling out the
-> > > capability permissions more explicitly and avoiding CAP_SYS_ADMIN.
-> > > 
-> > > IOW, if you domain does CAP_SYS_NICE things, and you didn't explicitly
-> > > grant it that (and instead rely on the CAP_SYS_ADMIN fallback), then
-> > > the denial correctly flags it as an issue in your policy and
-> > > encourages you to add that sys_nice permission to the domain. Then
-> > > when one beautiful hypothetical day the CAP_SYS_ADMIN fallback is
-> > > removed, your policy will be ready for that and things will keep
-> > > working.
-> > > 
-> > > Feel free to carry that patch downstream if patching the kernel is
-> > > easier for you than fixing the policy, but for the upstream kernel
-> > > this is just a step in the wrong direction.
-> > I'm personally fine with this position, but I am curious why "never
-> > break userspace" doesn't apply to SELinux policies.
-> 
-> Because SELinux policy is configuration data, not system code.
-> One is free to modify SELinux policy to suit one's whims without
-> making any change to the Linux kernel or its APIs.
+On Mon, Nov 15, 2021 at 4:19 PM Paul Cercueil <paul@crapouillou.net> wrote:
+>
+> This structure was never used anywhere, so it can safely be dropped.
+>
+> It will later be re-introduced as a different structure in a
+> different header.
 
-Sure, but the problem here is when the kernel is updated and the
-userspace configuration is not changed and then the kernel can not boot
-or has other problems.  That is a kernel regression.
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
 
-> >   At the end of the
-> > day, booting 5.13 or older, we don't get a denial, and there's nothing
-> > for the sysadmin to do. On 5.14 and newer, we get denials. This is a
-> > common pattern we see each year: some new capability or permission is
-> > required where it wasn't required before, and there's no compatibility
-> > mechanism to grandfather in old policies.
-> 
-> This is an artifact of separating policy from mechanism. The
-> capability mechanism does not suffer from this issue because
-> it embodies its policy. SELinux, Smack, AppArmor and "containers"
-> are vulnerable to it because they explicitly deny the kernel and
-> kernel developers permission to make assumptions about how they
-> define "policy".
-> 
-> >   So, we have to touch
-> > userspace. If this is just how things are, I can certainly update our
-> > init.te definitions.
-> 
-> If SELinux was a required kernel mechanism and the policy was
-> included in the kernel tree you might be able to argue that
-> kernel developers are responsible for changes to SELinux policy.
-> But it ain't, and it isn't.   By design.
-
-Again, when you change the logic in the kernel that then requires you to
-also somehow change userspace files in order to keep the kernel booting
-properly, that is a problem.
-
-Same thing if we changed the tty api to require different options to be
-handled differently.  There is nothing "special" about security policies
-from any other user/kernel interaction and api.
-
-thanks,
-
-greg k-h
+>
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  include/linux/iio/buffer-dma.h | 5 -----
+>  1 file changed, 5 deletions(-)
+>
+> diff --git a/include/linux/iio/buffer-dma.h b/include/linux/iio/buffer-dma.h
+> index d4ed5ff39d44..a65a005c4a19 100644
+> --- a/include/linux/iio/buffer-dma.h
+> +++ b/include/linux/iio/buffer-dma.h
+> @@ -17,11 +17,6 @@ struct iio_dma_buffer_queue;
+>  struct iio_dma_buffer_ops;
+>  struct device;
+>
+> -struct iio_buffer_block {
+> -       u32 size;
+> -       u32 bytes_used;
+> -};
+> -
+>  /**
+>   * enum iio_block_state - State of a struct iio_dma_buffer_block
+>   * @IIO_BLOCK_STATE_DEQUEUED: Block is not queued
+> --
+> 2.33.0
+>
