@@ -2,109 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32D8453A16
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 20:21:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BEFF453A2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 20:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239464AbhKPTX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 14:23:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234139AbhKPTX0 (ORCPT
+        id S239948AbhKPTcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 14:32:15 -0500
+Received: from shells.gnugeneration.com ([66.240.222.126]:48304 "EHLO
+        shells.gnugeneration.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhKPTcP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 14:23:26 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8BA6C061570;
-        Tue, 16 Nov 2021 11:20:28 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637090427;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=x2KWQ8Oh4UH2l0tA32LVkIco7cmGVqFYP1+iJVEZMQk=;
-        b=fFTNJ/UnPNXRkW6L0YNh0bsgC1/GpXsTcYElUEFwvRHb344/6pOAFoyJMtPzJiRxgz0h90
-        g+XMTUiBBiiFz0/2KlBvh7Ev81nylKGFRDYgGkute/LlUXMKX67KNx+fuW43VVeLUND3yG
-        K3Zlam875GEsnIjBTKLtb5c8ZqH4TJzo+3bO6ZFuunmKwvFdBW22YgvNrwm/fIi9s5GPsQ
-        87Oh1HUfewZ6J62EVzd57XAPi2eGqBtgC0dff8vMoMj+69lNndSHUKEpvGf+APHPRT5M91
-        9PhVFNqzpimzpzeQR5lThkfWXjtnokjz82L3Y1PVvwRVOl2ydP3C7kkDnS/K0A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637090427;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=x2KWQ8Oh4UH2l0tA32LVkIco7cmGVqFYP1+iJVEZMQk=;
-        b=Xpl12LGwuHl3RybY25Mwu0A6n2v0Ju5ZQQ70YqAGTVwEzyeR1eo1YZ/lHWYqwDt8YfJ5je
-        uR3oeT3JZVZB7GBg==
-To:     "Liu, Jing2" <jing2.liu@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Jing Liu <jing2.liu@linux.intel.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "Cooper, Andrew" <andrew.cooper3@citrix.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Subject: Re: Thoughts of AMX KVM support based on latest kernel
-In-Reply-To: <BYAPR11MB325685AB8E3DFD245846F854A9939@BYAPR11MB3256.namprd11.prod.outlook.com>
-References: <BYAPR11MB325685AB8E3DFD245846F854A9939@BYAPR11MB3256.namprd11.prod.outlook.com>
-Date:   Tue, 16 Nov 2021 20:20:26 +0100
-Message-ID: <878rxn6h6t.ffs@tglx>
+        Tue, 16 Nov 2021 14:32:15 -0500
+X-Greylist: delayed 449 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Nov 2021 14:32:15 EST
+Received: by shells.gnugeneration.com (Postfix, from userid 1000)
+        id 468601A40175; Tue, 16 Nov 2021 11:21:48 -0800 (PST)
+Date:   Tue, 16 Nov 2021 11:21:48 -0800
+From:   Vito Caputo <vcaputo@pengaru.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        Drew DeVault <sir@cmpwn.com>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+Message-ID: <20211116192148.vjdlng7pesbgjs6b@shells.gnugeneration.com>
+References: <20211028080813.15966-1-sir@cmpwn.com>
+ <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
+ <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
+ <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
+ <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
+ <YZP6JSd4h45cyvsy@casper.infradead.org>
+ <b97f1b15-fbcc-92a4-96ca-e918c2f6c7a3@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b97f1b15-fbcc-92a4-96ca-e918c2f6c7a3@kernel.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jing,
+On Tue, Nov 16, 2021 at 11:55:41AM -0700, Jens Axboe wrote:
+> On 11/16/21 11:36 AM, Matthew Wilcox wrote:
+> > On Mon, Nov 15, 2021 at 08:35:30PM -0800, Andrew Morton wrote:
+> >> I'd also be interested in seeing feedback from the MM developers.
+> > [...]
+> >> Subject: Increase default MLOCK_LIMIT to 8 MiB
+> > 
+> > On the one hand, processes can already allocate at least this much
+> > memory that is non-swappable, just by doing things like opening a lot of
+> > files (allocating struct file & fdtable), using a lot of address space
+> > (allocating page tables), so I don't have a problem with it per se.
+> > 
+> > On the other hand, 64kB is available on anything larger than an IBM XT.
+> > Linux will still boot on machines with 4MB of RAM (eg routers).  For
+> > someone with a machine with only, say, 32MB of memory, this allows a
+> > process to make a quarter of the memory unswappable, and maybe that's
+> > not a good idea.  So perhaps this should scale over a certain range?
+> > 
+> > Is 8MB a generally useful amount of memory for an iouring user anyway?
+> > If you're just playing with it, sure, but if you have, oh i don't know,
+> > a database, don't you want to pin the entire cache and allow IO to the
+> > whole thing?
+> 
+> 8MB is plenty for most casual use cases, which is exactly the ones that
+> we want to "just work" without requiring weird system level
+> modifications to increase the memlock limit.
+> 
 
-On Wed, Nov 10 2021 at 13:01, Liu, Jing2 wrote:
+Considering a single fullscreen 32bpp 4K-resolution framebuffer is
+~32MiB, I'm not convinced this is really correct in nearly 2022.
 
-more thoughts.
+If we're going to bump the default at the kernel, I'm with Matthew on
+making it autoscale within a sane range, depending on available
+memory.
 
-> Once we start passthrough the XFD MSR, we need to save/restore
-> them at VM exit/entry time. If we immediately resume the guest
-> without enabling interrupts/preemptions (exit fast-path), we have no
-> issues. We don't need to save the MSR.
+As an upper bound I'd probably look at the highest anticipated
+consumer resolutions, and handle a couple fullscreen 32bpp instances
+being pinned.
 
-Correct.
-
-> The question is how the host XFD MSR is restored while control is in
-> KVM.
->
-> The XSAVE(S) instruction saves the (guest) state component[x] as 0 or
-> doesn't save when XFD[x] != 0. Accordingly, XRSTOR(S) cannot restore
-> that (guest state). And it is possible that XFD != 0 and the guest is using
-> extended feature at VM exit;
-
-You mean on creative guests which just keep AMX state alive and set
-XFD[AMX] = 1 to later restore it to XFD[AMX] = 0?
-
-> we can check the XINUSE state-component bitmap by XGETBV(1). By adding
-> more meaning to the existing field: fpstate->in_use, it can be useful
-> for KVM to set the XINUSE value.
-
-As I pointed out to Sean, the problem is inconsistent state. Checking
-XGETBV(1) cannot make that go away. And I have no idea how you want to
-abuse fpstate->in_use for anything related to the XINUSE bitmap. It's a
-single bit for a particular purpose and has absolutely nothing to do
-with XINUSE. Trying to overload that is just wrong.
-
-If XFD is not trapped then you have exactly three options:
-
-   1) Make it an autosave MSR and grab the guest XFD value from that
-      memory to update fpstate and the shadow memory before reenabling
-      interrupts
-
-   2) Do the MSR read how I suggested before reenabling interrupts
-
-   3) Conditionally post XSAVES when fpstate->is_guest == true
-
-Anything else wont work.
-
-Thanks,
-
-        tglx
+Regards,
+Vito Caputo
