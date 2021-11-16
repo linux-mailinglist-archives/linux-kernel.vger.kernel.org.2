@@ -2,169 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1F1453B5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:58:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A49453B3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231823AbhKPVBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 16:01:23 -0500
-Received: from p3plsmtp03-03-2.prod.phx3.secureserver.net ([72.167.218.215]:60619
-        "EHLO p3plwbeout03-03.prod.phx3.secureserver.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231698AbhKPVBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 16:01:22 -0500
-X-Greylist: delayed 468 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Nov 2021 16:01:22 EST
-Received: from mailex.mailcore.me ([94.136.40.144])
-        by :WBEOUT: with ESMTP
-        id n5PXmMZq31yg2n5PYmXtlW; Tue, 16 Nov 2021 13:50:36 -0700
-X-CMAE-Analysis: v=2.4 cv=brGJuGWi c=1 sm=1 tr=0 ts=6194199c
- a=wXHyRMViKMYRd//SnbHIqA==:117 a=84ok6UeoqCVsigPHarzEiQ==:17
- a=ggZhUymU-5wA:10 a=IkcTkHD0fZMA:10 a=vIxV3rELxO4A:10 a=i0EeH86SAAAA:8
- a=FXvPX3liAAAA:8 a=3-y2XQbapDSkYxSPjksA:9 a=QEXdDO2ut3YA:10
- a=UObqyxdv-6Yh2QiB9mM_:22
-X-SECURESERVER-ACCT: phillip@squashfs.org.uk  
-X-SID:  n5PXmMZq31yg2
-Received: from 82-69-79-175.dsl.in-addr.zen.co.uk ([82.69.79.175] helo=[192.168.178.33])
-        by smtp04.mailcore.me with esmtpa (Exim 4.94.2)
-        (envelope-from <phillip@squashfs.org.uk>)
-        id 1mn5PW-0004Ff-Lh; Tue, 16 Nov 2021 20:50:35 +0000
-Message-ID: <89e27e25-ec2b-337e-4bf0-705912eea62d@squashfs.org.uk>
-Date:   Tue, 16 Nov 2021 20:50:32 +0000
+        id S231474AbhKPUyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 15:54:32 -0500
+Received: from mail-bn8nam08on2072.outbound.protection.outlook.com ([40.107.100.72]:29664
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229527AbhKPUya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 15:54:30 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JTxfVROHp2LnDSbVqzS2SWta81PvCbFMsaB52PPvbWzYagO7MiQ4t9sY+HT1bioM7XOOBpC/LhHAu1/gw5fB1yPD097JAK8R+UCajV4xCY00Vnyu6fBbFydVCpcKiRVPM7bdx4PAOTFgrbhp2Z64SC+rurrnAXE+50jg7KaxAw8O8di0/BXda2lfgplt3eYj5ZEA1Je1BKKbQQXaAFb6OYNmAS3+PCVLCLGk7sK0zfq+EWkKM8boTQoLiH5JcaWLtxvjQjtsWPpH7PgHUm7WQi+tbsij0m3TxhRf7bQEwwtEp+seb+necENVC6l90MUx3AvRkVfv5uiM/+MAArYZ0Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=s9pAocGdv7uXza+vMSQrU+L5gQc7Ndf2cmxXm2U1O9E=;
+ b=PR+NDglJYGwiLzRR/DWAweKe21NOuNjVEuAk+fomA34GYPC+o5XNFGyUp/H2OG5lonsiYuKRvCewth+3cFJRtIzX9QTQ3+o0HRnJQik8HGiDl9KRIUa33ixNCMnZecF9buuh/A8MoplS95W9T/VO0eOlYCDKi6evlzWjlF73/uIY5aSDxka2j+/KUMx9W1FuMQdQKidAUStNRA6MLjje7mAgBFKejDBNJV9UjszL5OkrIPQ6uNZa2ypDeXL7ovXNH9yINH3O+gMESyK6xSQS/PIiOSaEHUFjJbOaClZcw/dpqQCzEIOQpHtD5HTP+PiRTmyfIjwaaBLbn0C4fHaXDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s9pAocGdv7uXza+vMSQrU+L5gQc7Ndf2cmxXm2U1O9E=;
+ b=aKAeg9CADDMqwT1cvO3jH5S+gEav+teef8wU3IDaKKxZWwceepnc9tT6TpPVzQPGOPcyePtP4To8HmpEtXTlzjI33zniX9GkMFSRevRW74fVdiofFT+JRwxLls0yQ9hrgI5wpym5t2zxsXZPY55ae5ODRymopPKCfXgaYGvI3NjyhIQDKs/Iv1FHJxdFKQqVsK8Lv11HOQqkR02BfAGFQ8ZsakC0AJmzcVzvIGllx7h0NMVyIGRnDRLAy6kBHYn2XnVGJdEh4N0a1F6MkAA5Fzq5bo/gNQqBqre4dGg0VklVeRP87amHctTOElfsraAIS/Ox/Y2XoqgIASXwlXtXtw==
+Received: from BY5PR12MB4209.namprd12.prod.outlook.com (2603:10b6:a03:20d::22)
+ by BYAPR12MB3206.namprd12.prod.outlook.com (2603:10b6:a03:130::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Tue, 16 Nov
+ 2021 20:51:29 +0000
+Received: from BY5PR12MB4209.namprd12.prod.outlook.com
+ ([fe80::b9dc:e444:3941:e034]) by BY5PR12MB4209.namprd12.prod.outlook.com
+ ([fe80::b9dc:e444:3941:e034%7]) with mapi id 15.20.4713.019; Tue, 16 Nov 2021
+ 20:51:29 +0000
+From:   Saeed Mahameed <saeedm@nvidia.com>
+To:     Tariq Toukan <tariqt@nvidia.com>,
+        Khalid Manaa <khalidm@nvidia.com>,
+        "arnd@kernel.org" <arnd@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "leon@kernel.org" <leon@kernel.org>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Roi Dayan <roid@nvidia.com>, Maor Gottlieb <maorg@nvidia.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Aya Levin <ayal@nvidia.com>
+Subject: Re: [PATCH 2/2] mlx5: fix mlx5i_grp_sw_update_stats() stack usage
+Thread-Topic: [PATCH 2/2] mlx5: fix mlx5i_grp_sw_update_stats() stack usage
+Thread-Index: AQHX1JFNMjyRIHOIj02dBpFsstGsXqwGrlEA
+Date:   Tue, 16 Nov 2021 20:51:29 +0000
+Message-ID: <87789d9ba455d7abc7f083bcd9b10af4671bea7f.camel@nvidia.com>
+References: <20211108111040.3748899-1-arnd@kernel.org>
+         <20211108111040.3748899-2-arnd@kernel.org>
+In-Reply-To: <20211108111040.3748899-2-arnd@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.40.4 (3.40.4-2.fc34) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 965e647e-7749-43c2-e9e3-08d9a942dd5b
+x-ms-traffictypediagnostic: BYAPR12MB3206:
+x-microsoft-antispam-prvs: <BYAPR12MB32068E89758EF2D0B30DA207B3999@BYAPR12MB3206.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: tT+S9w4ttmTxPnT4q8x3Uf0w6v6OCPeeDIvEi2bwLYhvFVDJRoRkMWQuDW2M27FD5H257mJ6mJFY9L8HLqVHoFWNaewvsz0Y3Kpnm/FYI3xcT4vs41XepIacNa5zciW8IWf5/KdFR3t/sGgBLKUjRfPsJdo0v9rqVcSzWvNN+yoCrg/LR65umvQxdXoGi9xU3QHClka7jS26+sEoJvZah+Lr8/V3Eu8to2EVt5c1dLL5lyBYOSGkPOi0hwvu1Ch2uGiwovEY+7Pku4bNm5YUURL5DapESzRww97CSkl7Z8mMdaeeiKouunKLfC/An0mD+1Dujite19E6Zy18pkoh87krr6jDVk0iIJvriQZaSZIIAy5ITXDosVIKyG6WONQxvLPW/F9wk9VSaSo26EnybUp+7hri8pe7HSJEACOBVrV252S6daiJyJ5xaMhTvbHkgpjU6uoFA/msedtBN4vYssKKs9uCvgL8rFy87kzokRAPB2eDo0wmJuVNohBRX05A/AGS+xCV+33qZm80GLmZDpHr2f7LxuR/CestNGprXXpRD6c3CFZ8pPqLPZdJXcouyAz/QpJJ9INkmxYFcJ/4x6kSrb7aD31VAS799NaYPDOHDnFXDcshNuFL08VPDuEO5lsDd32nJsnFAaEAOflzK7LJSsO12nm61CG1xCzyODH+KNX2Bkz3xpPyYSKW19tJ9HADPnFIrzBMDVOPBg0j8w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4209.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(36756003)(26005)(4744005)(122000001)(8936002)(38100700002)(8676002)(6512007)(6486002)(186003)(508600001)(6506007)(66476007)(54906003)(66946007)(66446008)(5660300002)(4326008)(64756008)(66556008)(110136005)(38070700005)(2616005)(2906002)(71200400001)(316002)(107886003)(76116006)(83380400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?S2hvdVVLdGdZRzFuTGQ3QmtvdkpodkRlcUMwR1hOamNhU0pzNkdVTW8vNGla?=
+ =?utf-8?B?ZGpiME5qeEN4RzFOY1BuaWxZZWtJbHQrSmx0ajZKSnp0K3NDaGltUDRnaGtM?=
+ =?utf-8?B?dUNuNnhFQzZMSngrOFk0VWs5SVdISzRDOUcvVk1nbWdvS0haMTlFa1dzRHRN?=
+ =?utf-8?B?SW5FY0NWWCtsKzZQM1IvQ3lQYWQzcXBwSzY3ZmFjVk52S2RGZUpnNnVPQWVo?=
+ =?utf-8?B?RGdmUjlnMW80WmUrTUlHSW15QWJ2R0VkM2dLelpVS01IOE45aTJWQ01WMTFZ?=
+ =?utf-8?B?eC9kVkpTNUVlOEtuazBqeHpvQVhaZXhZdVlYTXlYUXFSdEFhcjk3Sm9Ka2x6?=
+ =?utf-8?B?aWxSL3ZWT2xQeE5nMERkbkJmcnR2QWVXVUp6aC9qZ0NsZmV1YjBHd2pWUDJM?=
+ =?utf-8?B?SEdEelZXeW52M1hKTVJPUmZkNkNLNXdlbUpBczJ5a1NUbkt4UmN2bVlmUlB5?=
+ =?utf-8?B?MjR1ajBSc3gwYWo1akJ6TDR6MHhiRllLS1VRemFaVXRJMUlXQU5VSWNvVU41?=
+ =?utf-8?B?WDFwUWtDTjMvOGZxSjJ2YUVCWnZNRVJ5VnNHRWhUenpjS21OZ2hqZSs0dXNV?=
+ =?utf-8?B?Njd5b1ZRSFloaXU2d0Fyeis1dUJXVkEwZm16cFlJbDM5TEtLTTRZRUFXSnpY?=
+ =?utf-8?B?VkpYeDc4djJkT1ljUTh6czY0SERUM21ZN0RMak95WGQ3d1QxeFVoNzdnT05L?=
+ =?utf-8?B?OGRIZ2pRQUhTekZJZWZ4c09odW4reStUVUZOOWpBekwyRnc4L0R5eW1RTG93?=
+ =?utf-8?B?WFFIcWgrOWRSWTdObmtxUTRtMURyMEhwNm5IQ0p5VmlENFRpNGczUHNkVFBB?=
+ =?utf-8?B?QlF1NU5kNHFjVnBTclFybno1VW1CN0R3S1ZoaWcrbWFZak1HRzROeklHNDhI?=
+ =?utf-8?B?U1c3N3gyWE1KVEVDVllKNnJwbFJ6eU90WUZLbTRIb2RMdGhiVjlPazAxeHEx?=
+ =?utf-8?B?eFlGTCs4empiN2NsRVBzODk2Mjl4NGYxTUxTMUp4NElYcm9udEpwR1ZRV3Vr?=
+ =?utf-8?B?ME5TVnpDL3BLaVk1OGtodHJJS3J3RTdWd0svNmZlK1VnZHRKb0Q2aW1pQ242?=
+ =?utf-8?B?eHNEdktNTnduM0UrblNadW5XMk9nS3E2T2NZWTk3a2daNkYwMS9PMEVXUjhV?=
+ =?utf-8?B?L0k2RUFwaEtuSGZwdUNvZ0pCM2c0S2RzSXc1cWJTOGFjaU5XNHBqOVF4ZzVC?=
+ =?utf-8?B?Z3o3Ly9NdnQ0YjBabVR4ZE1iWndVUHM1WnN1UE8xOUNlWmVNUm80RmNLOTdS?=
+ =?utf-8?B?OElGS0hHVDRPVXpRczg5R3hrUmxpY0NlWEtBSzEzVElSb2N5UGhDOXo0VVBV?=
+ =?utf-8?B?TDFRNlFOeDVYaXpxYXM3MmdDWkw3RXpZWGViTUxrNG00ZGt6TUZCWm1kRGQz?=
+ =?utf-8?B?YytTZVY3UWQzK0JqZ1VKamZhQmRBZnkrcUt5OE9aRWcrM1ZQQnIvcnkzN1Qr?=
+ =?utf-8?B?YnVUa1huVG5ySWRCeThucHJkdTVQTlMrdDd3b0c4dVRiWTJxcE5zdkRKMmdJ?=
+ =?utf-8?B?bjZweDFwb2g2MnIrZzB0R0R1UVFnUGVOVkc5WTF6VEVSeHpNSzZjMS9VQXR0?=
+ =?utf-8?B?aVByaG5LQUI2azNVWGcxUmRKUW5OSnU0WEFRa0FFUThOY0x2WjRmV1NxVXNF?=
+ =?utf-8?B?SytrMFhkUlRFSnFEMkRZMjVVWE5NaHdLYThXUWtJUDRud1h1aXE0aHo4TUMy?=
+ =?utf-8?B?eC8zT0lSeG1vRFdDdlpZT3VRSUU0MzZOK25odWJsZzlhamtDb0h1dlVGSC9p?=
+ =?utf-8?B?QWxuUzFQSC9GcHl5OW8yWnlQN2NVUENIY1J2MjhMUW90MU5PZHBXY2tFQ1B4?=
+ =?utf-8?B?OFhkOUtjanZnZ0pzNmtZbnBmYjlEZUZ4QjcxZlM4cHJDUnhWeDZ1cDNSbmY4?=
+ =?utf-8?B?Z2daT3N1T2pJSW02M0JEcHpkQkVoTzlCYXUrQVFvcXhkdmVoUW13WEprTDI2?=
+ =?utf-8?B?TEJZbjBZZTlSMHZJeEVyV2o4TS9IUUFjclljYk9UREJ5WFBNT0x3ZlFWRWY0?=
+ =?utf-8?B?UEtURmZLSGcvek1haEx1S3krcHFIZ1RuUHBMS0VsWXRhUDFtaGhtYUZpVDJ4?=
+ =?utf-8?B?TXFiL0lWYW5MR2E3dmx0Z0REM0xwNXVNNHV0R2JJNXU5WEZFSXVLanpvcWxJ?=
+ =?utf-8?B?NHNVb2xNamtQNVFWZ1o0Z21SSS9KKzRUclU2ZWNLRExvdFZmSHpZSklqcWQy?=
+ =?utf-8?Q?UemVuRqYbAzyA4sLnZgIt+l3UH951TcAvEwO2VjBMdL/?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <0587DD25D2B85C48A11277390A2F1294@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] squashfs: provides backing_dev_info in order to disable
- read-ahead
-To:     Zheng Liang <zhengliang6@huawei.com>, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     yi.zhang@huawei.com, houtao1@huawei.com, miaoxie@huawei.com
-References: <20211116113141.1391026-1-zhengliang6@huawei.com>
-From:   Phillip Lougher <phillip@squashfs.org.uk>
-In-Reply-To: <20211116113141.1391026-1-zhengliang6@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Mailcore-Auth: 439999529
-X-Mailcore-Domain: 1394945
-X-123-reg-Authenticated:  phillip@squashfs.org.uk  
-X-Originating-IP: 82.69.79.175
-X-CMAE-Envelope: MS4xfHAMQ3K2ZJnRc6bekDYq4nmHF7Al3chg+TA8CgLGRla1NaJdm7idHn9gSXJYZBaQVhV4P6b0WMyZs2sPVkBsqIuV1EsvD2nc5P7+fR6M5Y1B4AEf5sTh
- TELwZactmmi86cuKdx2jjoP0+iTsXm3enxXM+NT2pooP0dnu1uswE4PLrwAjvrvJ/mwfk5dEMUmG9FfjcDLqEuamNkCf4d+dHgg=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4209.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 965e647e-7749-43c2-e9e3-08d9a942dd5b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Nov 2021 20:51:29.4189
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4XPWR/i4LHyXrmwgOyuUqknMbpu3mMGNT6ACtZIVObolTdNHKHoiYrx4HFHMq/PgKjgUUPf+H2RsXFDRpOxHsg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3206
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2021 11:31, Zheng Liang wrote:
-> the commit c1f6925e1091("mm: put readahead pages in cache earlier")
-> causes the read performance of squashfs to deteriorate.Through testing,
-> we find that the performance will be back by closing the readahead of
-> squashfs. So we want to learn the way of ubifs, provides backing_dev_info
-> and disable read-ahead.
-> 
-> --------------------------------------------------------------------
-> We tested the following data by fio.
-> squashfs image blocksize=128K
-> test command:
-> fio --name basic --bs=? --filename="/mnt/test_file" --rw=? --iodepth=1 --ioengine=psync --runtime=200 --time_based
-> 
-> turn on squashfs readahead in 5.10 kernel
-> bs(k)      read/randread           MB/s
-> 4            randread              271
-> 128          randread              231
-> 1024         randread              246
-> 4            read                  310
-> 128          read                  245
-> 1024         read                  247
-> 
-> turn off squashfs readahead in 5.10 kernel
-> bs(k)      read/randread           MB/s
-> 4            randread              293
-> 128          randread              330
-> 1024         randread              363
-> 4            read                  338
-> 128          read                  360
-> 1024         read                  365
-> 
-> turn on squashfs readahead and revert the
-> commit c1f6925e1091("mm: put readahead
-> pages in cache earlier") in 5.10 kernel
-> bs(k)      read/randread           MB/s
-> 4           randread               289
-> 128         randread               306
-> 1024        randread               335
-> 4           read                   337
-> 128         read                   336
-> 1024        read                   338
-> 
-> Signed-off-by: Zheng Liang <zhengliang6@huawei.com>
-
-Signed-off-by: Phillip Lougher <phillip@squashfs.org.uk>
-
-Looks good to me.
-
-Phillip
---
-Squashfs maintainer.
-
-> ---
->   fs/squashfs/super.c | 33 +++++++++++++++++++++++++++++++++
->   1 file changed, 33 insertions(+)
-> 
-> diff --git a/fs/squashfs/super.c b/fs/squashfs/super.c
-> index bb44ff4c5cc6..7a4c865fc8e6 100644
-> --- a/fs/squashfs/super.c
-> +++ b/fs/squashfs/super.c
-> @@ -29,6 +29,7 @@
->   #include <linux/module.h>
->   #include <linux/magic.h>
->   #include <linux/xattr.h>
-> +#include <linux/backing-dev.h>
->   
->   #include "squashfs_fs.h"
->   #include "squashfs_fs_sb.h"
-> @@ -112,6 +113,24 @@ static const struct squashfs_decompressor *supported_squashfs_filesystem(
->   	return decompressor;
->   }
->   
-> +static int squashfs_bdi_init(struct super_block *sb)
-> +{
-> +	int err;
-> +	unsigned int major = MAJOR(sb->s_dev);
-> +	unsigned int minor = MINOR(sb->s_dev);
-> +
-> +	bdi_put(sb->s_bdi);
-> +	sb->s_bdi = &noop_backing_dev_info;
-> +
-> +	err = super_setup_bdi_name(sb, "squashfs_%u_%u", major, minor);
-> +	if (err)
-> +		return err;
-> +
-> +	sb->s_bdi->ra_pages = 0;
-> +	sb->s_bdi->io_pages = 0;
-> +
-> +	return 0;
-> +}
->   
->   static int squashfs_fill_super(struct super_block *sb, struct fs_context *fc)
->   {
-> @@ -127,6 +146,20 @@ static int squashfs_fill_super(struct super_block *sb, struct fs_context *fc)
->   
->   	TRACE("Entered squashfs_fill_superblock\n");
->   
-> +	/*
-> +	 * squashfs provides 'backing_dev_info' in order to disable read-ahead. For
-> +	 * squashfs, I/O is not deferred, it is done immediately in readpage,
-> +	 * which means the user would always have to wait their own I/O. So the effect
-> +	 * of readahead is very weak for squashfs. squashfs_bdi_init will set
-> +	 * sb->s_bdi->ra_pages and sb->s_bdi->io_pages to 0 and close readahead for
-> +	 * squashfs.
-> +	 */
-> +	err = squashfs_bdi_init(sb);
-> +	if (err) {
-> +		errorf(fc, "squashfs init bdi failed");
-> +		return err;
-> +	}
-> +
->   	sb->s_fs_info = kzalloc(sizeof(*msblk), GFP_KERNEL);
->   	if (sb->s_fs_info == NULL) {
->   		ERROR("Failed to allocate squashfs_sb_info\n");
-> 
-
+T24gTW9uLCAyMDIxLTExLTA4IGF0IDEyOjEwICswMTAwLCBBcm5kIEJlcmdtYW5uIHdyb3RlOg0K
+PiBGcm9tOiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRlPg0KPiANCj4gVGhlIG1seDVlX3N3
+X3N0YXRzIHN0cnVjdHVyZSBoYXMgZ3Jvd24gdG8gdGhlIHBvaW50IG9mIHRyaWdnZXJpbmcNCj4g
+YSB3YXJuaW5nIHdoZW4gcHV0IG9uIHRoZSBzdGFjayBvZiBhIGZ1bmN0aW9uOg0KPiANCj4gbWx4
+NS9jb3JlL2lwb2liL2lwb2liLmM6IEluIGZ1bmN0aW9uICdtbHg1aV9ncnBfc3dfdXBkYXRlX3N0
+YXRzJzoNCj4gbWx4NS9jb3JlL2lwb2liL2lwb2liLmM6MTM2OjE6IGVycm9yOiB0aGUgZnJhbWUg
+c2l6ZSBvZiAxMDI4IGJ5dGVzIGlzDQo+IGxhcmdlciB0aGFuIDEwMjQgYnl0ZXMgWy1XZXJyb3I9
+ZnJhbWUtbGFyZ2VyLXRoYW49XQ0KPiANCj4gSW4gdGhpcyBjYXNlLCBvbmx5IGZpdmUgb2YgdGhl
+IHN0cnVjdHVyZSBtZW1iZXJzIGFyZSBhY3R1YWxseSBzZXQsDQo+IHNvIGl0J3Mgc3VmZmljaWVu
+dCB0byBoYXZlIHRob3NlIGFzIHNlcGFyYXRlIGxvY2FsIHZhcmlhYmxlcy4NCj4gQXMgZW5fcmVw
+LmMgdXNlcyAnc3RydWN0IHJ0bmxfbGlua19zdGF0czY0JyBmb3IgdGhpcywganVzdCB1c2UNCj4g
+dGhlIHNhbWUgb25lIGhlcmUgZm9yIGNvbnNpc3RlbmN5Lg0KPiANCj4gRml4ZXM6IGRlZjA5ZTdi
+YmMzZCAoIm5ldC9tbHg1ZTogQWRkIEhXX0dSTyBzdGF0aXN0aWNzIikNCj4gU2lnbmVkLW9mZi1i
+eTogQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5kZT4NCj4gLS0tDQoNClRoYW5rcyBBcm5kLCBC
+b3RoIHBhdGNoZXMgYXBwbGllZCB0byBuZXQtbmV4dC1tbHg1LA0KDQpTaW5jZSBJIHdpbGwgYmUg
+cXVldWluZyB0aGVtIHVwIGZvciBuZXQtbmV4dCwgSSB3aWxsIGhhdmUgdG8gcmVtb3ZlIHRoZQ0K
+Rml4ZXMgdGFncy4NCg0KDQo=
