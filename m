@@ -2,130 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0B34538E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 18:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 029C04538E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 18:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239127AbhKPR41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 12:56:27 -0500
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:43655 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235838AbhKPR40 (ORCPT
+        id S239154AbhKPR5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 12:57:15 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:49476 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239144AbhKPR5M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 12:56:26 -0500
-Received: by mail-oi1-f175.google.com with SMTP id o4so171249oia.10;
-        Tue, 16 Nov 2021 09:53:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+AOLI+W/JpDfVVShrdJeTQ9AA6emXlOltLGyHRFz9ZM=;
-        b=AQVV2HTIwbM+Be8CNl2ToBPlSFQb5UK2ccvHVx/8QJEuxNU8LggPmHFzc2hFYazoGS
-         hLsBqGoRliTCURpN2XwzMQyKqQGNR/csQY9+jmILy4kc1wGYWSB97yB1Sv2DHhOquiIO
-         ikAsa9YxW87qjocITbWKXikyI5/v6d4psCLiHhvabkVIrjqACh2bjZFMDv7chRkUtVFC
-         KROEfREU4YGZHA4yFcG9CCbBdVe628xwo4/prv6EGPlWg1KX/isRObl3Cvv3T9xnz183
-         JzV0Wd8wUw7LQAglSWD2He8xeel+eO9MWfbn5X2n3tyw9pQnnJdxecr5nBQdwprsPmB4
-         Q3yg==
-X-Gm-Message-State: AOAM532SeeNxJuCNXHxxt9GIqlnsTHmpeIvvA3uccpO1uYVNN3diRpnB
-        iFzWW/IMObyyrrRUP6Ljw5ARfWBeEVaWSLkoc5w=
-X-Google-Smtp-Source: ABdhPJwoSwKbzjrWGSgNjMKh+u+JdJh4YXIcT9cLRq41Zo8vSQSHIRfVdJgImUbetg86JitSmEkqnYyIo424GQcI/3w=
-X-Received: by 2002:a05:6808:14c2:: with SMTP id f2mr8068053oiw.154.1637085209025;
- Tue, 16 Nov 2021 09:53:29 -0800 (PST)
+        Tue, 16 Nov 2021 12:57:12 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E4F61212C3;
+        Tue, 16 Nov 2021 17:54:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637085252; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AQ4Vs3Ue9V/rPlPCCX2Ku26e9rOXlRcNGXZau4L0nns=;
+        b=WWKIaz/W38nsYFEg/zCDoNaH0kIwA0H6XZ/FTs4KYO6YXn8PB48U92vHHzY8eCaYtbXNAw
+        0bDRV5xqAZCLG+pNMxZJqK3emAMALV9Jw4J7trsryDzNOGA1ZVp1riAEmChz92M0DHw1cB
+        L/4UkS3yo+5VogH9yJjdHpqz3Sx7RAE=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B374513BA0;
+        Tue, 16 Nov 2021 17:54:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id JaE7K0Twk2G0cQAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 16 Nov 2021 17:54:12 +0000
+Date:   Tue, 16 Nov 2021 18:54:11 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: Re: [PATCH v8 5/6] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+Message-ID: <20211116175411.GA50019@blackbody.suse.cz>
+References: <20211018143619.205065-1-longman@redhat.com>
+ <20211018143619.205065-6-longman@redhat.com>
+ <20211115193122.GA16798@blackbody.suse.cz>
+ <8f68692b-bd8f-33fd-44ae-f6f83bf2dc00@redhat.com>
 MIME-Version: 1.0
-References: <20211022075057.10759-1-Pierre.Gondois@arm.com>
- <CAJZ5v0g4RrpnRfTsBm_Qi2-JM8SQCAH9_7gTM9cB3Rmc0DG4Hg@mail.gmail.com> <fe34da7f-7090-bc11-ae1a-5ab228d0cb05@arm.com>
-In-Reply-To: <fe34da7f-7090-bc11-ae1a-5ab228d0cb05@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 16 Nov 2021 18:53:18 +0100
-Message-ID: <CAJZ5v0g6W_BuQz99YzVe=8kU4PkaaF4FUfDd65WpjMpQvwL8qA@mail.gmail.com>
-Subject: Re: [PATCH v1] cpufreq: CPPC: Fix performance/frequency conversion
-To:     Pierre Gondois <pierre.gondois@arm.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ionela Voinescu <Ionela.Voinescu@arm.com>,
-        Lukasz Luba <Lukasz.Luba@arm.com>,
-        Morten Rasmussen <Morten.Rasmussen@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dietmar Eggemann <Dietmar.Eggemann@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8f68692b-bd8f-33fd-44ae-f6f83bf2dc00@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 11:19 AM Pierre Gondois <pierre.gondois@arm.com> wrote:
->
-> Hello Rafael,
->
-> On 11/5/21 15:40, Rafael J. Wysocki wrote:
-> > On Fri, Oct 22, 2021 at 9:51 AM Pierre Gondois <Pierre.Gondois@arm.com> wrote:
-> >> CPUfreq governors request CPU frequencies using information
-> >> on current CPU usage. The CPPC driver converts them to
-> >> performance requests. Frequency targets are computed as:
-> >>   target_freq = (util / cpu_capacity) * max_freq
-> >> target_freq is then clamped between [policy->min, policy->max].
-> >>
-> >> The CPPC driver converts performance values to frequencies
-> >> (and vice-versa) using cppc_cpufreq_perf_to_khz() and
-> >> cppc_cpufreq_khz_to_perf(). These functions both use two different
-> >> factors depending on the range of the input value. For
-> >> cppc_cpufreq_khz_to_perf():
-> >> - (NOMINAL_PERF / NOMINAL_FREQ) or
-> >> - (LOWEST_PERF / LOWEST_FREQ)
-> >> and for cppc_cpufreq_perf_to_khz():
-> >> - (NOMINAL_FREQ / NOMINAL_PERF) or
-> >> - ((NOMINAL_PERF - LOWEST_FREQ) / (NOMINAL_PERF - LOWEST_PERF))
-> >>
-> >> This means the functions are not inverse for some values:
-> >> (perf_to_khz(khz_to_perf(x)) != x)
-> >>
-> >> This patch makes use of one single conversion factor, being
-> >> (MAX_PERF / MAX_FREQ).
-> >>
-> >> As LOWEST_FREQ is not used during conversion, the LOWEST_FREQ
-> >> advertised through policy->cpuinfo.min_freq might be different
-> >> from the LOWEST_FREQ value available in the CPPC object,
-> >> but the conversion will be correct.
-> > Well, this assumes that there is a linear perf <-> freq mapping which
-> > is a change in behavior.
-> The perf <-> freq relation is currently linear on 2 distinct segments.
->
-> The patch is also intending handle the case of CPUs whose frequency and
-> performance values are not proportional.
->
-> Example for the current code:
->   MAX_FREQ = 1.000.000
->   MIN_FREQ = 300.000
->   MAX_PERF = 100 ("nominal_perf" in the code)
->   MIN_PERF = 40  ("lowest_perf" in the code)
-> With these values, frequencies and performances are not proportional as
-> (MAX_FREQ / MAX_PERF) != (MIN_FREQ / MIN_PERF).
->
-> A util of 40% gives:
->   target_freq = 40% * MAX_FREQ.
-> cppc_cpufreq_khz_to_perf() then requests:
->   target_perf = target_freq * (MIN_PERF / MIN_FREQ)
->   target_perf = 40% * 1.000.000 * (40 / 300.000)
->   target_perf = 53.3
-> A performance request of 40 would have been sufficient.
->
-> The error comes from the utilization of 2 different factors.
-> policy->max (frequency) is computed with this factor:
-> - (MAX_FREQ / MAX_PERF)
-> and frequency requests are mostly converted to performance
-> values with this factor:
-> - (MIN_PERF / MIN_FREQ)
->
-> Using one single factor per conversion function, being
-> (MAX_PERF / MAX_FREQ) for cppc_cpufreq_khz_to_perf():
->   target_perf = target_freq * (MAX_PERF / MAX_FREQ)
->   target_perf = 40% * 1.000.000 * (100 / 1.000.000)
->   target_perf = 40
-> > While I agree that consistency is a good thing in general, won't this
-> > cause the values visible via sysfs to change?  And if it does, won't
-> > it confuse anyone or break anything in user space?
-> Yes it changes the minimum frequency advertised on sysfs. It might
-> effectively be confusing. It should be possible to still advertise the
-> minimum frequency in the ACPI _CPC object while using one conversion
-> factor, but this will require more changes.
+On Mon, Nov 15, 2021 at 04:10:29PM -0500, Waiman Long <longman@redhat.com> wrote:
+> > On Mon, Oct 18, 2021 at 10:36:18AM -0400, Waiman Long <longman@redhat.com> wrote:
+> > > +	scheduler.  Tasks in such a partition must be explicitly bound
+> > > +	to each individual CPU.
+> [...]
+> 
+> It can be a problem when one is trying to move from one cgroup to another
+> cgroup with non-overlapping cpus laterally. However, if a task is initially
+> from a parent cgroup with affinity mask that include cpus in the isolated
+> child cgroup, I believe it should be able to move to the isolated child
+> cgroup without problem. Otherwise, it is a bug that needs to be fixed.
 
-So why don't we make them?
+app_root	cpuset.cpus=0-3
+`- non_rt	cpuset.cpus=0-1	cpuset.cpus.partition=member
+`- rt		cpuset.cpus=2-3	cpuset.cpus.partition=isolated
+
+The app_root would have cpuset.cpus.effective=0-1 so even the task in
+app_root can't sched_setaffinity() to cpus 2-3.
+But AFAICS, the migration calls set_cpus_allowed_ptr() anyway, so the
+task in the isolated partition needn't to bind explicitly with
+sched_setaffinity(). (It'd have two cpus available, so one more
+sched_setaffinity() or migration into a single-cpu list is desirable.)
+
+All in all, I think the behavior is OK and the explicit binding of tasks
+in an isolated cpuset is optional (not a must as worded currently).
+
+
+> I think the wording may be confusing. What I meant is none of the requested
+> cpu can be granted. So if there is at least one granted, the effective cpus
+> won't be empty.
+
+Ack.
+
+> You currently cannot make change to cpuset.cpus that violates the cpu
+> exclusivity rule. The above constraints will not disallow you to make the
+> change. They just affect the validity of the partition root.
+
+Sibling exclusivity should be a validity condition regardless of whether
+transition is allowed or not. (At least it looks simpler to me.)
+
+
+> > > +        Changing a partition root to "member" is always allowed.
+> > > +        If there are child partition roots underneath it, however,
+> > > +        they will be forced to be switched back to "member" too and
+> > > +        lose their partitions. So care must be taken to double check
+> > > +        for this condition before disabling a partition root.
+> > (Or is this how delegation is intended?) However, AFAICS, parent still
+> > can't remove cpuset.cpus even when the child is a "member". Otherwise,
+> > I agree with the back-switch.
+> There are only 2 possibilities here. Either we force the child partitions to
+> be become members or invalid partition root.
+
+My point here was mostly about preempting the cpus (as a v2 specific
+feature). (I'm rather indifferent whether children turn into invalid
+roots or members.)
+
+Thanks,
+Michal
