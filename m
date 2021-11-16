@@ -2,121 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3177453712
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23739453715
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:16:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230111AbhKPQQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 11:16:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbhKPQQn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:16:43 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B37C061570;
-        Tue, 16 Nov 2021 08:13:46 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id e3so53835787edu.4;
-        Tue, 16 Nov 2021 08:13:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=50QCkGUElk/jMFTX3H/2D+qJecjTCiwTPcIPrxs29UY=;
-        b=lROBxbp6aw1lSJFZve0CLEi4r203O6x+xtEj4ordjC5YTDarvHSdJbgbfvOZeQ4ryQ
-         dmel/Fomvo8b1w2IxT5JHIBLL9YmtpQBnc6aiL8Hpnhjn9y/Ms+zRyzsuXzsyi13N9B1
-         rCjjSDOCjdoezAhHLmxac+RjiU/GAIoHBGRc6R232naf75seKfUcJhXtso17EAfNKyrx
-         udsHnKa59eMP4lZl2tuZzYuXUlAn2LOKugdb0ndhYuAugSN+nGtB40egxYe9nC62qJz4
-         fxWh0LgJ21Ig9tf8KDFyFN6bu4AiLlaRDjG/NhR5ixEMQ7LYwdvNKzwETWjwVedqr9cQ
-         b7fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=50QCkGUElk/jMFTX3H/2D+qJecjTCiwTPcIPrxs29UY=;
-        b=BnteWz4npiQu9ZxDyjqoOGOjvfhNQS3TdXk/4YxbNVN5nQ0moFJAflLmXxcSyG2sGj
-         YKkysUYWrD6kwYIoieZDrDQZ58Tq8hO78CLgFlYkPhJ8OYn2DL6qfrwpT9qpOY5EsQb3
-         dy04Gdv6Daw/aY459U4JGIQAXE9BxC8pEhkibRLPknZ+9XhKtO/W8kC8ep5opSMKcskT
-         z8zFn9r9oTC5/10vsKmqn9JTz9AzptsGOfZuhSO5cvURvMiLiaei3VT2xuK+/+bZTudA
-         rg4Dqqrm4xbNrpgRCv3mU6mBOE8plTliIfJaR/EQvD+sNQn7pq7Sy0SS+GaOPO0mLcGn
-         f0MA==
-X-Gm-Message-State: AOAM531ORE+a/4/jI9E99GnTP/YDXYwVHrKpnNCW9XADg8nJQ1DvQfW8
-        TlV4RHBLV5eQsONFOiIMxHq7ttVzUbGzDtPLFNw=
-X-Google-Smtp-Source: ABdhPJxz9YUq27598es1YhF6T5O+95wGFrkVO6obEtS3MnJuRp9PIA9hZgOWIYXzAalnrrOc/cFIJBlzV47JzYhjrgk=
-X-Received: by 2002:a17:906:6a0a:: with SMTP id qw10mr11823300ejc.141.1637079225318;
- Tue, 16 Nov 2021 08:13:45 -0800 (PST)
+        id S230126AbhKPQSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 11:18:08 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:36366 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229712AbhKPQRx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 11:17:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=PASFtIvmXiuXx07CpS5qPMWdo9F5rRsD+QtwJAjZM6g=; b=cRzLZXkbPG/+EWHe3Ieb6zRQAx
+        QtkvuoERuuD+/QVMx0krTm9TCvjQe7tUvSYWi0ajliw7L3wcXHYkOoQFquObSzVn6WSsfVRWhlaem
+        DfZW7cQ9SZcJPNe/ETaDzvqbxJ5NWwI7QaXxw4Lf5XSPr9eI2dghFTumcnjrSTa/wOVE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mn16f-00Dg7y-RA; Tue, 16 Nov 2021 17:14:49 +0100
+Date:   Tue, 16 Nov 2021 17:14:49 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Modi, Geet" <geet.modi@ti.com>
+Cc:     "Nagalla, Hari" <hnagalla@ti.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Sharma, Vikram" <vikram.sharma@ti.com>,
+        "Strashko, Grygorii" <grygorii.strashko@ti.com>
+Subject: Re: [EXTERNAL] Re: [PATCH net-next] net: phy: add support for TI
+ DP83561-SP phy
+Message-ID: <YZPY+WSLVcTtkDwm@lunn.ch>
+References: <20211116102015.15495-1-hnagalla@ti.com>
+ <YZO33aidzEwo3YFC@lunn.ch>
+ <722B4304-CE9B-436C-A157-48007D289956@ti.com>
 MIME-Version: 1.0
-References: <20211116150119.2171-1-kernel@esmil.dk> <CAK8P3a38+Osmr7SjD42ZEQzOPwWXM7x+31a5E4bRWVp6JdMS_w@mail.gmail.com>
-In-Reply-To: <CAK8P3a38+Osmr7SjD42ZEQzOPwWXM7x+31a5E4bRWVp6JdMS_w@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 16 Nov 2021 18:13:04 +0200
-Message-ID: <CAHp75VcCL1eSMaZy_KXdfY=UyTy-hxz4XN5TGkXd6Cf8p+pRNw@mail.gmail.com>
-Subject: Re: [PATCH v4 00/16] Basic StarFive JH7100 RISC-V SoC support
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Emil Renner Berthing <kernel@esmil.dk>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <722B4304-CE9B-436C-A157-48007D289956@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 6:09 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> On Tue, Nov 16, 2021 at 4:01 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+On Tue, Nov 16, 2021 at 03:58:27PM +0000, Modi, Geet wrote:
+> Hello Andrew,
+> 
+>  
+> 
+> We being Texas Instruments are conservative and don't promote meaningless
+> marketing as well. Please note DP83561-SP is a Radiation Hardened Space Grade
+> Gigabit PHY. It has been tested for Single Event Latch up upto 121 MeV, the
+> critical reliability parameter Space Designs look for.
 
-...
+That statement i have no problems with, it is clearly factual.
 
-> One general (minor) comment about the patches: please put your own
-> 'Signed-off-by'
-> into the last line of the patch description, below all the lines you
-> took from other people, so
-> instead of:
->
-> | Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> | Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> | Acked-by: Rob Herring <robh@kernel.org>
->
-> do this:
->
-> | Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> | Acked-by: Rob Herring <robh@kernel.org>
-> | Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+> The dp83561-sp is a high reliability gigabit ethernet PHY designed
 
-Why?
-Submitting Patches tells about chronological order and last SoB to be
-from the submitter.
-These both are correct. Note the difference between 'last SoB' and
-'SoB to be last [line]'.
+is clearly Marketing, who would design a low reliability gigabit
+ethernet PHY? It is meaningless.
 
-Here is the excerpt:
-"Notably, the last Signed-off-by: must always be that of the developer
-submitting the patch."
+So please use your text from above in the commit message, it nicely
+describes what this PHY is in engineering terms.
 
--- 
-With Best Regards,
-Andy Shevchenko
+   Andrew
