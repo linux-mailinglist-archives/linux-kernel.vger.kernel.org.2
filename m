@@ -2,107 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8347B4528D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 04:55:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9B74528D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 04:55:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236096AbhKPD55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 22:57:57 -0500
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:58639 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236043AbhKPD5y (ORCPT
+        id S236199AbhKPD6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 22:58:47 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:60764 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236281AbhKPD6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 22:57:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637034898; x=1668570898;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=cJiWH8DuB9KsnVg18puSuj5NIH9G1wk8fKMRlG0VdLM=;
-  b=M56mj7gDZ4t8wLbgHUYlJYW+foimgZ+KfZtWW8GVbuYipVdubJ1My6Qg
-   CNwSFgLd+QahVKEH0mvrTsD/K2MfMybGcxn3OBuns+8G5R1aYI6ZEpB5y
-   47Qd9XX119QFCUPY69mx20owM5Rc1mow/O0MlCp9300ehVlBNF7otCH2P
-   U=;
-Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 15 Nov 2021 19:54:58 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 19:54:57 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Mon, 15 Nov 2021 19:54:57 -0800
-Received: from qian-HP-Z2-SFF-G5-Workstation (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Mon, 15 Nov 2021 19:54:56 -0800
-Date:   Mon, 15 Nov 2021 22:54:54 -0500
-From:   Qian Cai <quic_qiancai@quicinc.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] software node: Skip duplicated software_node sysfs
-Message-ID: <YZMrjqhYYNGMP84x@qian-HP-Z2-SFF-G5-Workstation>
-References: <20211101200346.16466-1-quic_qiancai@quicinc.com>
- <CAHp75VcrWPdR8EVGpcsniQedT0J4X700N7thFs6+srTP1MTgwQ@mail.gmail.com>
- <52df4a97-1132-d594-0180-132d0ca714d5@quicinc.com>
- <CAHp75VebOnrce-XZjOnZiivQPz-Cdgq6mor5oiLxK8Y49GiNNg@mail.gmail.com>
+        Mon, 15 Nov 2021 22:58:42 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 172DD2191A;
+        Tue, 16 Nov 2021 03:55:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1637034945; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QZ6kdCgSp2XTia4ThpxgHwIvBYQFQnpzJR9yhAgEjPc=;
+        b=RXKAkG5IoHk42VOhvmLbrK0PfGDEHLTYeNlrL4HJNuQ1rCgAoUZ9mSY1HUgfnA4eTeYASu
+        cw4LvMdvyOqzzUdrkrhsUc6Kbc6zRtOZ69Tey9dD+PzWMpQv3PLcZcv1AorRpHKv9iNSq9
+        WDvYdMFsEU/Odfp/GPfwObst+gQMS2c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1637034945;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QZ6kdCgSp2XTia4ThpxgHwIvBYQFQnpzJR9yhAgEjPc=;
+        b=LbuBz/kBCXvgI1ZgdTh5JDA/tayHkqmsIPa4tjxK4ovGtJSYm4R4Ve3klTg6Sz3hGuDB6c
+        sanSkBuPxbLi7JCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6C02313B65;
+        Tue, 16 Nov 2021 03:55:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id z+xgCr4rk2E9GwAAMHmgww
+        (envelope-from <neilb@suse.de>); Tue, 16 Nov 2021 03:55:42 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAHp75VebOnrce-XZjOnZiivQPz-Cdgq6mor5oiLxK8Y49GiNNg@mail.gmail.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Matthew Wilcox" <willy@infradead.org>
+Cc:     "Trond Myklebust" <trond.myklebust@hammerspace.com>,
+        "Anna Schumaker" <anna.schumaker@netapp.com>,
+        "Chuck Lever" <chuck.lever@oracle.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Mel Gorman" <mgorman@suse.de>, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/13] Repair SWAP-over-NFS
+In-reply-to: <YZMlk2sVjt5viat2@casper.infradead.org>
+References: <163702956672.25805.16457749992977493579.stgit@noble.brown>,
+ <YZMlk2sVjt5viat2@casper.infradead.org>
+Date:   Tue, 16 Nov 2021 14:55:39 +1100
+Message-id: <163703493923.13692.11352680016082986967@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 09:39:42PM +0200, Andy Shevchenko wrote:
-> > Anyway, what's the "upper layer"? Is that "struct device" or "struct
-> > swnode"? I suppose you meant:
+On Tue, 16 Nov 2021, Matthew Wilcox wrote:
+> On Tue, Nov 16, 2021 at 01:44:04PM +1100, NeilBrown wrote:
+> > swap-over-NFS currently has a variety of problems.
+> > 
+> > Due to a newish test in generic_write_checks(), all writes to swap
+> > currently fail.
 > 
-> struct device here.
+> And by "currently", you mean "for over two years" (August 2019).
+
+That's about the time scale for "enterprise" releases...
+Actually, the earliest patches that impacted swap-over-NFS was more like
+4 years ago.  I didn't bother tracking Fixes: tags for everything that
+was a fix, as I didn't think it would really help and might encourage
+people to backport little bits of the series which I wouldn't recommend.
+
+> Does swap-over-NFS (or any other network filesystem) actually have any
+> users, and should we fix it or rip it out?
 > 
-> > - Remove "secondary" field from "struct fwnode_handle".
-> > - Replace "fwnode" from "upper layer" with
-> >   "struct list_head fwnode_head;".
-> > - Modify all functions in "software_node_ops" to use "fwnode_head".
-> >
-> > Is that correct?
 > 
-> Yes.
-> 
-> It might be a bit complicated taking into account how much fwnode is
-> spreaded in the kernel... Basically, you need to fix all direct
-> accesses to the dev->fwnode first.
-> Besides that you need to check that fwnode, which is used out of the
-> device scope, like in IRQ domains, doesn't use secondary pointer(s).
-> 
-> This nevertheless adds a lot of flexibility and we may add whatever
-> type of fwnodes and mix them together.
+We have at least one user (why else would I be working on this?).  I
+think we have more, though they are presumably still on an earlier
+release.
 
-Okay, here is my plan until someone still has an idea to avoid a
-redesign.
+I'd prefer "fix it" over "rip it out".
 
-Frist, fixes all dev->fwnode / dev.fwnode to use dev_fwnode(). This
-could be a standalone tree-wide patchset going out to avoid
-heavy-lifting later.
+I don't think any other network filesystem supports swap, but it is
+not trivial to grep for.. There must be a 'swap_activate' method, and it
+must return 0.  There must also be a direct_IO that works.
+The only other network filesystem with swap_activate is cifs.  It
+returns 0, but direct_IO returns -EINVAL.
 
-Then, we can create another patchset on top. I have audited
-"irq_domain" but not seen any "secondary" leakage. Struct
-"cht_int33fe_data" does have some need to fix.
-
-Rename set_secondary_fwnode() to insert_secondary_fwnode(). Fix things
-in drivers/base/core.c, swnode.c etc to use the new fwnode_head and
-anything I can't think of right now.
-
-Since we will have multiple "software_node" (secondary fwnode:s) for a
-single "device". What would be the usual way to deal with a
-linked-list in the sysfs? I can think of just let "software_node"
-become a directory to host a list of symlinks named from
-swnode->id. Thoughts?
+NeilBrown
