@@ -2,87 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD71452F2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 11:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE99452F32
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 11:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234198AbhKPKh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 05:37:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234103AbhKPKhV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 05:37:21 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C93C061570;
-        Tue, 16 Nov 2021 02:34:24 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id v23so15380157pjr.5;
-        Tue, 16 Nov 2021 02:34:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9sbnnlZw+9ULD6WGIrHh2ju30Rwtd48avD7994Ytg28=;
-        b=NRYpPIKC1HXpt0VN7zdUNuWrXbRE2Jwe/iQInn/3ItqXN0IW8LQRQ0CNujo2nfOIrc
-         TQdXxf9lESW9dkBWtYu/UUuijBtqZCZQu0xVjyM0IbJZ0CtHXOXeek0whBjwTM/CsJTJ
-         yeJhO+0W0xWJ0rlvJPqvNdlvI0agwdWXPzYJaW5oTc4QZH0o27nKry3M+UDNHvnfa185
-         R55ftwZDgEpijHF5TDOmzWZOq0gyp3X2mEaSs/fw82nSP8iXPCI0BnsXLCLEbMkKlEj7
-         5bTthjKORcMfKuVONDtu72gBbUzaRZZm5XwU4wbyTvzyAnga8UUfqQF04884vUH8gFWY
-         LFNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9sbnnlZw+9ULD6WGIrHh2ju30Rwtd48avD7994Ytg28=;
-        b=lZOP1lucxGmfiYeMshbcpleGS0oHphRfSL2NBCMuew3ZfuBQ1f+m5Q7fQc57BQ/ARc
-         VLTngQUcwUdT/v9/NP0LAvTwB9EpPVkm7zMUIJUhM1t+F+1AyL4Oi0I/NN4C6s9g+dFt
-         NUCl585HI4S+RZrXMe72Dyu76BdjQ12ZrJmiBve3bLEUrlBaJxvodsb8JHup9Ntfk9Px
-         zAH27Nr8Hr2gCccwUqOzyw3HXxw4T9kKnsdUhTWSgUm50N+Ezn0CghuuUVkdyes0h3mz
-         liII5hN17XAUNZt/OwY/1elFEpLqcatsjZ/kmu8pGy4v9a6MVjV4+q8KuNU2l6bH2ST6
-         IkRw==
-X-Gm-Message-State: AOAM532NQ5lEiRVXOlsUm7ITWV8+Li8EhFy0ad9CHP0scOQCtkmIU6+K
-        qNiBj6hJdZZkSl0xdIm6hkWzs1rRnnw=
-X-Google-Smtp-Source: ABdhPJzo+L7IMl9q9krDr5jLPHcBamRuFmBfCW8NSdiRVQ2inXGr+ShTGKTWo4Hu9Wc2JRVnkSQzDg==
-X-Received: by 2002:a17:90b:3ec2:: with SMTP id rm2mr73366796pjb.1.1637058864095;
-        Tue, 16 Nov 2021 02:34:24 -0800 (PST)
-Received: from fedora.. ([157.34.191.12])
-        by smtp.gmail.com with ESMTPSA id z7sm7407301pfe.77.2021.11.16.02.34.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 02:34:23 -0800 (PST)
-From:   Sahil Patidar <sahilpatidar4051@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sahil Patidar <sahilpatidar4051@gmail.com>
-Subject: [PATCH] tty: serial: jsm: jsm_neo: fixed a conditional statement coding style issue
-Date:   Tue, 16 Nov 2021 16:04:11 +0530
-Message-Id: <20211116103411.71987-1-sahilpatidar4051@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        id S234243AbhKPKhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 05:37:33 -0500
+Received: from mga12.intel.com ([192.55.52.136]:10019 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234199AbhKPKha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 05:37:30 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="213700719"
+X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
+   d="scan'208";a="213700719"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 02:34:33 -0800
+X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
+   d="scan'208";a="454200794"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 02:34:26 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mmvn7-007O4Y-CJ;
+        Tue, 16 Nov 2021 12:34:17 +0200
+Date:   Tue, 16 Nov 2021 12:34:17 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Colin Foster <colin.foster@in-advantage.com>,
+        Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Subject: Re: [RFC PATCH v4 net-next 00/23] add support for VSC75XX control
+ over SPI
+Message-ID: <YZOJKZZSVQ9wvUTS@smile.fi.intel.com>
+References: <20211116062328.1949151-1-colin.foster@in-advantage.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211116062328.1949151-1-colin.foster@in-advantage.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed a coding style issue
+On Mon, Nov 15, 2021 at 10:23:05PM -0800, Colin Foster wrote:
+> My apologies for this next RFC taking so long. Life got in the way.
+> 
+> 
+> The patch set in general is to add support for the VSC7511, VSC7512,
+> VSC7513 and VSC7514 devices controlled over SPI. The driver is
+> relatively functional for the internal phy ports (0-3) on the VSC7512.
+> As I'll discuss, it is not yet functional for other ports yet.
 
-Signed-off-by: Sahil Patidar <sahilpatidar4051@gmail.com>
----
- drivers/tty/serial/jsm/jsm_neo.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/jsm/jsm_neo.c b/drivers/tty/serial/jsm/jsm_neo.c
-index c6f927a76c3b..9b828989d13f 100644
---- a/drivers/tty/serial/jsm/jsm_neo.c
-+++ b/drivers/tty/serial/jsm/jsm_neo.c
-@@ -668,8 +668,7 @@ static void neo_flush_uart_read(struct jsm_channel *ch)
- 			jsm_dbg(IOCTL, &ch->ch_bd->pci_dev,
- 				"Still flushing RX UART... i: %d\n", i);
- 			udelay(10);
--		}
--		else
-+		} else
- 			break;
- 	}
- }
+Since series touches fwnode, please Cc next time to Daniel Scally.
+It also appears [1] that somewhere in PHY code a bug is hidden
+(at least I think so).
+
+[1]: https://lore.kernel.org/lkml/20211113204141.520924-1-djrscally@gmail.com/T/#u
+
 -- 
-2.33.1
+With Best Regards,
+Andy Shevchenko
+
 
