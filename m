@@ -2,79 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D0D452A01
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9864529FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:46:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236431AbhKPFtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 00:49:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
+        id S236312AbhKPFtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 00:49:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236022AbhKPFsK (ORCPT
+        with ESMTP id S236357AbhKPFsV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 00:48:10 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A375BC0F26E6;
-        Mon, 15 Nov 2021 19:37:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=rGZoRjzS8OBQ0BoAwguUyjRpfqfXQyes581vJP1YZuE=; b=KPKPk5ddbXfl5cxeY7OUQV+o4G
-        nnGfEOXBimJgjfIlhsiaVkTuQw61DM4PBxQZKDebVZVQlcgCbn5NfxD+7rQWSCUxLtxTk9LMmBMS+
-        T6Ianpg4pk9O7WLPF6Im0/o4zPDpX4rh5O8bzgV7BAJDeAxHZjPnGIXknFiE4fcyNhnCDDfqrjf3d
-        QEzrusefcHOwUx98k2WNgbqlQNZ7Tnhy6iMub1j2SrIsna0dAX8Lm1AekD0qL8GD8W1hMryCbv4IY
-        boQ3EZA4fKSg38ukt2vgzy3FxmygXupD4d8q8g7jS0aRsIV3g1v6e/MQw/un+Vk1MCxFyu68slG8n
-        QVhF5R7Q==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mmpHO-000DhI-0K; Tue, 16 Nov 2021 03:37:06 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org
-Subject: [PATCH 2/2 v2] sh: math-emu: fix macro redefined warning
-Date:   Mon, 15 Nov 2021 19:37:05 -0800
-Message-Id: <20211116033705.10418-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Tue, 16 Nov 2021 00:48:21 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC636C110F00;
+        Mon, 15 Nov 2021 19:43:06 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id r23so518240pgu.13;
+        Mon, 15 Nov 2021 19:43:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aJdSZ6OMshOYDRFetJsmDqIzbFQ+ncYaLLKX863U+rQ=;
+        b=B/CbNxsiIl7LssZg4EyhZONZdhuiglG3Ns6FHvUEvyxHktTtEQpWk3ItIVlUOJy+28
+         5+CWyXihGpWO2qhfaLmKrstargsJXGdSFWmswJrUIhqwXnVyFuaj4ioAH7i6CTtcrAfo
+         Pd7X1oAsXA/esTme3MVoMG8pLw64zVvNtOo6ZvhetUlozk6dOEmNC0Ek262+QuKFiaXE
+         EyxPB1NWBLWeuRsfqi3crzkG0yic02KHjbXMv5OSD1yOTZCtXBFNphKt6Ldxl0dsbyog
+         Fd73Kk34nsdeJhnG459ynTlx97YduFFXOvcPWMVOVk9turZtbHukLWoubstS1QSUl0gq
+         uVFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aJdSZ6OMshOYDRFetJsmDqIzbFQ+ncYaLLKX863U+rQ=;
+        b=EuVR+9Xo8fbm6jecsWSJyFRzynEubQh2ujdNu6KXv0Xs5UKwwh2BTrkk4hy1ScGYhD
+         1EsIeRkatSclqL/uyBX5EcVY81+gV4W4Pc28d652rZgODj1v+wYfDIgPiT2sXywxY62t
+         VMrF4nxQoVI6XviL1QVvr8mRqvKt2DiWyUsAtpPLTgeBerXtQtktaNYFDC+FANIM6yFu
+         S39/d5obPmz05lzT+MSG0JG4cLHrxd6DX0gRFleEgkHX9o0ejQE+Xh3Tvwn5yGFufor4
+         l7s8UO8utlzXX9i4bkkfht8uRppiD03k36nAlEKIO0CBsI4HFs79H9wWhfulKT7OCBlR
+         MZSw==
+X-Gm-Message-State: AOAM530D/E3525CvNf7/LBc4EyIgGYaJhdJXigdhYOAluCd4B1NhbXIx
+        KDdYP4OCNJc+zc3SSZyzwWw=
+X-Google-Smtp-Source: ABdhPJytN+BCbSo2XoyZL1yfqHBrcw+TjawhXqhoEKScx4RJiH1ISdxQt/lwduHlzaaIdqWLbWSy6w==
+X-Received: by 2002:a63:be4e:: with SMTP id g14mr2895099pgo.194.1637034186344;
+        Mon, 15 Nov 2021 19:43:06 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id q13sm18861701pfj.26.2021.11.15.19.43.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 19:43:05 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: chi.minghao@zte.com.cn
+To:     peterz@infradead.org
+Cc:     mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, chiminghao <chi.minghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] tools:perf: Remove Unneeded variable
+Date:   Tue, 16 Nov 2021 03:42:53 +0000
+Message-Id: <20211116034253.154422-1-chi.minghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a warning that was reported by the kernel test robot:
+From: chiminghao <chi.minghao@zte.com.cn>
 
-In file included from ../include/math-emu/soft-fp.h:27,
-                 from ../arch/sh/math-emu/math.c:22:
-../arch/sh/include/asm/sfp-machine.h:17: warning: "__BYTE_ORDER" redefined
-   17 | #define __BYTE_ORDER __BIG_ENDIAN
-In file included from ../arch/sh/math-emu/math.c:21:
-../arch/sh/math-emu/sfp-util.h:71: note: this is the location of the previous definition
-   71 | #define __BYTE_ORDER __LITTLE_ENDIAN
+Fix the following coccicheck review:
+./tools/perf/builtin-trace.c: Remove Unneeded variable
 
-Fixes: b929926f01f2 ("sh: define __BIG_ENDIAN for math-emu")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: linux-sh@vger.kernel.org
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: chiminghao <chi.minghao@zte.com.cn>
 ---
-v2: add Reviewed-by Geert,
-    rebase to linux-next-20211115
+ tools/perf/builtin-trace.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
- arch/sh/math-emu/sfp-util.h |    4 ----
- 1 file changed, 4 deletions(-)
-
---- linux-next-20211115.orig/arch/sh/math-emu/sfp-util.h
-+++ linux-next-20211115/arch/sh/math-emu/sfp-util.h
-@@ -67,7 +67,3 @@
-   } while (0)
+diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+index 624ea12ce5ca..4d5106877fcd 100644
+--- a/tools/perf/builtin-trace.c
++++ b/tools/perf/builtin-trace.c
+@@ -2967,7 +2967,6 @@ static int trace__process_sample(struct perf_tool *tool,
+ {
+ 	struct trace *trace = container_of(tool, struct trace, tool);
+ 	struct thread *thread;
+-	int err = 0;
  
- #define abort()	return 0
--
--#define __BYTE_ORDER __LITTLE_ENDIAN
--
--
+ 	tracepoint_handler handler = evsel->handler;
+ 
+@@ -2983,7 +2982,7 @@ static int trace__process_sample(struct perf_tool *tool,
+ 	}
+ out:
+ 	thread__put(thread);
+-	return err;
++	return 0;
+ }
+ 
+ static int trace__record(struct trace *trace, int argc, const char **argv)
+-- 
+2.25.1
+
