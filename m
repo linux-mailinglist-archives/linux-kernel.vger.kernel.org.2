@@ -2,184 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB433453AFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:32:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 796EF453AFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:33:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbhKPUev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 15:34:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbhKPUev (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 15:34:51 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0B9C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 12:31:53 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id t26so711376lfk.9
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 12:31:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BwXJZaaWusgVMgmXqOiErDy4czcCFmpYPGxUtMBtu/A=;
-        b=LeltEy4n3uTfpY6PVq27Iq+eTi5hOgjE7g40Pvfz7GBDL/agIXq2AWP7Zx7zbl4EMd
-         7IjYR6xUuv51pZIXJk/+EPFVtS5Da6M91aAj2sSGb7jcshzCsiJM8gTI+cTyjXFjBPUW
-         87gk3TRoH09ad1efXAO7Mw6Ab8bMiBRDsW0nMaT3uNbBMi51wXsn65Gn5eWNvniHGZ90
-         P44qjNHLrYeOMBWmh52EZHUlGYZfZsyyT+fMwo++xQi/OuDTz+DhTQhsglUmHnWEr7Xo
-         PNpXw815UIP/TxwzFgJKn6FbYmMq1Ubd1jfAx5tCudlz4MCxBWIIzzVANqTy2Krzgv5t
-         YRCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BwXJZaaWusgVMgmXqOiErDy4czcCFmpYPGxUtMBtu/A=;
-        b=aL2jh7SGesDlNDm+7yhdpTpMQU5gJSfB7so/Qb2ItakD9ir0J5KRuAJgSKz2xSDW3u
-         nCSRVVmnIJYTs9WvWPbFtqjYAYckTI4MvZdcHHLywgEauICi5ax+NdDPWY+Tj5McoRVj
-         GEDRBf3aZzug5kcKe1/5/oEf/goaiuZ6wypzkpAAepni4L26EQ6d+A+juWitYhT7WhqC
-         Yuwc6oRnWX6hKrFScet6svmWdBWz/hxUujt0EoXeU7OyMBTyj8e6EEd/xjt0zY9h6u26
-         q8WWiQTDA05zH45OAlY2I/Ob1NaFOr3F2fcGf8p+6//cwxUawkPJiLrdgbcbcVMfRBzo
-         CBDQ==
-X-Gm-Message-State: AOAM532yCgJLKiXrRtjMglZdTdJwGbce8HPkrqJnaExEQktORtPx36zY
-        ssTWS0PswqtsFG4nU4CVhIkHziRQnoOYqzuO/vuU1hIXlnY3xg==
-X-Google-Smtp-Source: ABdhPJxhE1gwqA8ACb0njEOWqxpIDPkpQJpsL7xDp1b/Nm20WTPKpTKjq3B6z20C9wG6/V2E5vkYWImXUZfPTLBIUjU=
-X-Received: by 2002:a05:6512:1327:: with SMTP id x39mr516788lfu.613.1637094711899;
- Tue, 16 Nov 2021 12:31:51 -0800 (PST)
+        id S230085AbhKPUg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 15:36:27 -0500
+Received: from mga07.intel.com ([134.134.136.100]:1604 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229649AbhKPUg0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 15:36:26 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="297245113"
+X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
+   d="scan'208";a="297245113"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 12:33:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
+   d="scan'208";a="494630354"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 16 Nov 2021 12:33:22 -0800
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mn58r-0000nX-UN; Tue, 16 Nov 2021 20:33:21 +0000
+Date:   Wed, 17 Nov 2021 04:32:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [paulmck-rcu:dev.2021.11.12a] BUILD SUCCESS
+ 91802a8b5bb183d724e261be8afe07fa1713331e
+Message-ID: <61941560.BNiE6V8dftkkuVF0%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20211114074704.3508622-1-chenhuacai@loongson.cn>
- <CALAqxLVpTtjFrtKAkcrjDKN9R6FuSdY6LKQw8Mye-3Atqv7kQw@mail.gmail.com>
- <CAAhV-H6Bq63uM-ifkM8KDJGD1uavv42bG9ij_CZBbCpC-AFSjg@mail.gmail.com>
- <CALAqxLWkXu-rpn6Bu8Y92z3c8yPasCUrZY44GVM9dxxcViDorA@mail.gmail.com> <CAAhV-H5TrpRjgS6Fdoh5U63yh3QvixcByqnKDyXahKXphGKKAg@mail.gmail.com>
-In-Reply-To: <CAAhV-H5TrpRjgS6Fdoh5U63yh3QvixcByqnKDyXahKXphGKKAg@mail.gmail.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Tue, 16 Nov 2021 12:31:38 -0800
-Message-ID: <CALAqxLWg+zvGBytLw+353r00G2gbUMzvroxcsRqhdSGUZyjCcA@mail.gmail.com>
-Subject: Re: [PATCH] time/sched_clock: Allow architecture to override cyc_to_ns()
-To:     Huacai Chen <chenhuacai@gmail.com>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 3:37 AM Huacai Chen <chenhuacai@gmail.com> wrote:
-> On Tue, Nov 16, 2021 at 10:05 AM John Stultz <john.stultz@linaro.org> wrote:
-> > On Mon, Nov 15, 2021 at 5:41 PM Huacai Chen <chenhuacai@gmail.com> wrote:
-> > > On Tue, Nov 16, 2021 at 1:27 AM John Stultz <john.stultz@linaro.org> wrote:
-> > > > On Sat, Nov 13, 2021 at 11:47 PM Huacai Chen <chenhuacai@loongson.cn> wrote:
-> > > > >
-> > > > > The current cyc_to_ns() implementation is like this:
-> > > > >
-> > > > > static inline u64 notrace cyc_to_ns(u64 cyc, u32 mult, u32 shift)
-> > > > > {
-> > > > >         return (cyc * mult) >> shift;
-> > > > > }
-> > > > >
-> > > > > But u64*u32 maybe overflow, so introduce ARCH_HAS_CYC_TO_NS to allow
-> > > > > architecture to override it.
-> > > > >
-> > > >
-> > > > If that's the case, it would seem too large a mult/shift pair had been selected.
-> > > We use a 100MHz clock and the counter is 64bit, the mult is ~160M. But
-> > > even if we use a smaller mult, cyc*mult, it can also overflow.
-> >
-> > Well, yes, any simple multiplication could overflow. My point is that
-> > the mult/shift pair is usually calculated for an expected interval
-> > range via clocks_calc_mult_shift(), where the max interval for
-> > sched_clock is set to an hour.  So any interval length under an hour
-> > should not overflow in a simple multiplication.
-> >
-> > What I'm trying to understand is what is the case you have where your
-> > interval length is longer than an hour?
-> > As that might break other assumptions going on in the code.
-> We found that the mult is "reasonable" if we use 100MHz, 50MHz or
-> 25MHz clocks, but if we use some others, such as 33MHz, the calculated
-> mult is dramatically large.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.11.12a
+branch HEAD: 91802a8b5bb183d724e261be8afe07fa1713331e  rcu: Avoid running boost kthreads on isolated CPUs
 
-So that sounds a little concerning, but in clocks_calc_mult_shift() we
-try to find an accurate mult/shift pair that fits the expected range.
-As we want to be as accurate as possible, we need higher shift values
-for freqs that don't evenly divide NSEC_PER_SEC, in order to minimize
-the error. So larger mult/shift values isn't necessarily a problem.
+elapsed time: 1568m
 
-For the set you gave, the code should give
-100000000 -> m:20971520 s:21
-50000000 -> m:41943040 s:21
-25000000 -> m:83886080 s:21
-33333333 -> m:125829121 s:22
+configs tested: 126
+configs skipped: 3
 
-And yes, the 33Mhz does have a larger mult/shift pair, but that's
-because we want to be as accurate as possible in the conversion.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-And calculating that max interval multiplication (one hour of cycles):
-100Mhz:     (180000000000cyc * 41943040 = 7549747200000000000) >> 21 =
-3600000000000 ns
-50Mhz:       (90000000000cyc * 83886080 = 7549747200000000000) >> 21 =
-3600000000000 ns
-25Mhz:       (360000000000cyc * 20971520 = 7549747200000000000) >> 21
-= 3600000000000 ns
-33Mhz:       (119999998800cyc * 125829121 = 15099494369005054800) >>
-22 = 3599999992610 ns
+gcc tested configs:
+arm                              allyesconfig
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211116
+arm                         lubbock_defconfig
+sh                             shx3_defconfig
+sh                          lboxre2_defconfig
+powerpc                 linkstation_defconfig
+powerpc                     sequoia_defconfig
+powerpc                        icon_defconfig
+powerpc                        warp_defconfig
+xtensa                generic_kc705_defconfig
+arc                        vdk_hs38_defconfig
+powerpc64                           defconfig
+arm                        mvebu_v5_defconfig
+arm                         mv78xx0_defconfig
+sh                           se7619_defconfig
+arm                         cm_x300_defconfig
+arm                       cns3420vb_defconfig
+sparc                       sparc64_defconfig
+powerpc                      ppc6xx_defconfig
+powerpc                mpc7448_hpc2_defconfig
+m68k                            mac_defconfig
+arm                          badge4_defconfig
+sh                           sh2007_defconfig
+powerpc                     ksi8560_defconfig
+powerpc                     kilauea_defconfig
+arm                     am200epdkit_defconfig
+h8300                               defconfig
+mips                            e55_defconfig
+mips                           mtx1_defconfig
+powerpc                  mpc885_ads_defconfig
+i386                             alldefconfig
+m68k                        m5307c3_defconfig
+arm                            xcep_defconfig
+arm                            dove_defconfig
+nds32                            alldefconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                      mgcoge_defconfig
+powerpc                     rainier_defconfig
+xtensa                  audio_kc705_defconfig
+sh                          rsk7264_defconfig
+powerpc                     powernv_defconfig
+arm                            pleb_defconfig
+mips                       bmips_be_defconfig
+sh                            shmin_defconfig
+powerpc                      ppc40x_defconfig
+arm                  randconfig-c002-20211115
+arm                  randconfig-c002-20211116
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+s390                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+powerpc                          allyesconfig
+x86_64               randconfig-a003-20211115
+x86_64               randconfig-a002-20211115
+x86_64               randconfig-a001-20211115
+x86_64               randconfig-a004-20211115
+x86_64               randconfig-a005-20211115
+i386                 randconfig-a006-20211115
+i386                 randconfig-a003-20211115
+i386                 randconfig-a005-20211115
+i386                 randconfig-a001-20211115
+i386                 randconfig-a004-20211115
+i386                 randconfig-a002-20211115
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
+x86_64                           allyesconfig
 
-So assuming you're seeing the same mult/shift from above, we should be
-able to handle an hour of cycles without overflowing the
-multiplication.
-(Though it definitely gets close with the 33Mhz case, as we would
-overflow with an hour + 7 seconds or so of cycles.)
+clang tested configs:
+x86_64               randconfig-a003-20211116
+x86_64               randconfig-a001-20211116
+x86_64               randconfig-a002-20211116
+x86_64               randconfig-a004-20211116
+x86_64               randconfig-a006-20211116
+x86_64               randconfig-a005-20211116
+i386                 randconfig-a014-20211115
+i386                 randconfig-a016-20211115
+i386                 randconfig-a012-20211115
+i386                 randconfig-a013-20211115
+i386                 randconfig-a011-20211115
+i386                 randconfig-a015-20211115
+hexagon              randconfig-r045-20211115
+hexagon              randconfig-r041-20211115
+s390                 randconfig-r044-20211115
+riscv                randconfig-r042-20211115
 
-If you're seeing something else, let us know, as then it's probably a bug.
-
-But again, it would be good to understand the use case where the
-sched_clock epoch isn't being updated for over an hour.  I'm guessing
-hrtimers are being deferred for a super long time?
-
-> > > > What sort of cycle range are you considering to be valid here? Can you
-> > > > provide more rationale as to why this needs the ability to be
-> > > > overridden?
-> > > >
-> > > > And what sort of arch-specific logic do you envision, rather than
-> > > > having a common implementation to avoid the overflow?
-> > > u64*u64 can be handled by hardware (store the high bits and low bits
-> > > of result in two registers). So, if we use assembly, we can handle the
-> > > overflow correctly. E.g., LoongArch (and MIPS) can override
-> > > cyc_to_ns() like this:
-> > >
-> > > static inline u64 notrace cyc_to_ns(u64 cyc, u32 mult, u32 shift)
-> > > {
-> > >         u64 t1, t2, t3;
-> > >         unsigned long long rv;
-> > >
-> > >         /* 64-bit arithmetic can overflow, so use 128-bit. */
-> > >         __asm__ (
-> > >                 "nor            %[t1], $r0, %[shift]    \n\t"
-> > >                 "mulh.du        %[t2], %[cyc], %[mult]  \n\t"
-> > >                 "mul.d          %[t3], %[cyc], %[mult]  \n\t"
-> > >                 "slli.d         %[t2], %[t2], 1         \n\t"
-> > >                 "srl.d          %[rv], %[t3], %[shift]  \n\t"
-> > >                 "sll.d          %[t1], %[t2], %[t1]     \n\t"
-> > >                 "or             %[rv], %[t1], %[rv]     \n\t"
-> > >                 : [rv] "=&r" (rv), [t1] "=&r" (t1), [t2] "=&r" (t2),
-> > > [t3] "=&r" (t3)
-> > >                 : [cyc] "r" (cyc), [mult] "r" (mult), [shift] "r" (shift)
-> > >                 : );
-> > >         return rv;
-> > > }
-> >
-> > But then isn't the mul_u64_u32_shr() the right abstraction for such a
-> > custom implementation?
-> >
-> > Then potentially implement a generic cyc_to_ns() implementation that
-> > uses that instead?
-> OK, we will try to override mul_u64_u32_shr() rather than cyc_to_ns().
-
-If the use case is considered reasonable, there likely still needs to
-be a cyc_to_ns() implementation that uses mult_u64_u32_shr(), but
-hopefully it can be generic (maybe under a config option for the
-deferred hrtimer use case?).
-
-thanks
--john
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
