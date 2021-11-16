@@ -2,88 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7714532D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:29:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E334532DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:30:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236672AbhKPNc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 08:32:27 -0500
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:50904 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230471AbhKPNcZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 08:32:25 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UwtzyaM_1637069366;
-Received: from localhost(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0UwtzyaM_1637069366)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 16 Nov 2021 21:29:26 +0800
-Date:   Tue, 16 Nov 2021 21:29:21 +0800
-From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, wei.yang1@linux.alibaba.com
-Subject: Re: [PATCH] vhost-vdpa: clean irqs before reseting vdpa device
-Message-ID: <20211116132921.GA15534@L-PF27918B-1352.localdomain>
-Reply-To: Wu Zongyong <wuzongyong@linux.alibaba.com>
-References: <a2cb60cf73be9da5c4e6399242117d8818f975ae.1636946171.git.wuzongyong@linux.alibaba.com>
- <20211115055336-mutt-send-email-mst@kernel.org>
+        id S236718AbhKPNcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 08:32:53 -0500
+Received: from pegase2.c-s.fr ([93.17.235.10]:58253 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230471AbhKPNcw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 08:32:52 -0500
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Htn3j6dQLz9sSJ;
+        Tue, 16 Nov 2021 14:29:53 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id US9XL2ibzr6x; Tue, 16 Nov 2021 14:29:53 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Htn3j50jLz9sSH;
+        Tue, 16 Nov 2021 14:29:53 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 95FD48B77A;
+        Tue, 16 Nov 2021 14:29:53 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id f2Vdc5Ovhuop; Tue, 16 Nov 2021 14:29:53 +0100 (CET)
+Received: from [192.168.234.8] (unknown [192.168.234.8])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id BFA358B763;
+        Tue, 16 Nov 2021 14:29:52 +0100 (CET)
+Message-ID: <2f22c57d-9bf0-3cc1-f0f1-61ecdf5dfa52@csgroup.eu>
+Date:   Tue, 16 Nov 2021 14:29:51 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115055336-mutt-send-email-mst@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 2/5] preempt/dynamic: Introduce preempt mode accessors
+Content-Language: fr-FR
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kbuild@vger.kernel.org
+Cc:     Marco Elver <elver@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Mike Galbraith <efault@gmx.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+References: <20211110202448.4054153-1-valentin.schneider@arm.com>
+ <20211110202448.4054153-3-valentin.schneider@arm.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+In-Reply-To: <20211110202448.4054153-3-valentin.schneider@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 05:56:17AM -0500, Michael S. Tsirkin wrote:
-> On Mon, Nov 15, 2021 at 11:16:42AM +0800, Wu Zongyong wrote:
-> > Vdpa devices should be reset after unseting irqs of virtqueues, or we
-> > will get errors when killing qemu process:
-> > 
-> > >> pi_update_irte: failed to update PI IRTE
-> > >> irq bypass consumer (token 0000000065102a43) unregistration fails: -22
-> > 
-> > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
-> 
-> 
-> A Fixes flag might be appropriate here.  2cf1ba9a4d15c ?
 
-Yes.
 
+Le 10/11/2021 à 21:24, Valentin Schneider a écrit :
+> CONFIG_PREEMPT{_NONE, _VOLUNTARY} designate either:
+> o The build-time preemption model when !PREEMPT_DYNAMIC
+> o The default boot-time preemption model when PREEMPT_DYNAMIC
 > 
-> Also, remind me of commit 97f854be203883b61d24f230445bd533bbdf770c
-> vhost_vdpa: unset vq irq before freeing irq - what's the difference
-> in scenarios?
+> IOW, using those on PREEMPT_DYNAMIC kernels is meaningless - the actual
+> model could have been set to something else by the "preempt=foo" cmdline
+> parameter.
+> 
+> Introduce a set of helpers to determine the actual preemption mode used by
+> the live kernel.
+> 
+> Suggested-by: Marco Elver <elver@google.com>
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> ---
+>   include/linux/sched.h | 16 ++++++++++++++++
+>   kernel/sched/core.c   | 11 +++++++++++
+>   2 files changed, 27 insertions(+)
+> 
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index 5f8db54226af..0640d5622496 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -2073,6 +2073,22 @@ static inline void cond_resched_rcu(void)
+>   #endif
+>   }
+>   
+> +#ifdef CONFIG_PREEMPT_DYNAMIC
+> +
+> +extern bool is_preempt_none(void);
+> +extern bool is_preempt_voluntary(void);
+> +extern bool is_preempt_full(void);
 
-The issue fixed by the two patches is the same actually.
-The commit you mentioned above takes effect when users unset the status
-bit VIRTIO_CONFIG_S_DRIVER_OK. And this patch takes effect when the file
-descriptor of vhost vdpa device is closed without unseting the status
-bit VIRTIO_CONFIG_S_DRIVER_OK, for example, we send SIGKILL to qemu
-process.
+Those are trivial tests supposed to be used in fast pathes. They should 
+be static inlines in order to minimise the overhead.
+
+> +
+> +#else
+> +
+> +#define is_preempt_none() IS_ENABLED(CONFIG_PREEMPT_NONE)
+> +#define is_preempt_voluntary() IS_ENABLED(CONFIG_PREEMPT_VOLUNTARY)
+> +#define is_preempt_full() IS_ENABLED(CONFIG_PREEMPT)
+
+Would be better to use static inlines here as well instead of macros.
+
+> +
+> +#endif
+> +
+> +#define is_preempt_rt() IS_ENABLED(CONFIG_PREEMPT_RT)
+> +
+>   /*
+>    * Does a critical section need to be broken due to another
+>    * task waiting?: (technically does not depend on CONFIG_PREEMPTION,
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 97047aa7b6c2..9db7f77e53c3 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -6638,6 +6638,17 @@ static void __init preempt_dynamic_init(void)
+>   	}
+>   }
+>   
+> +#define PREEMPT_MODE_ACCESSOR(mode) \
+> +	bool is_preempt_##mode(void)						 \
+> +	{									 \
+> +		WARN_ON_ONCE(preempt_dynamic_mode == preempt_dynamic_undefined); \
+
+Not sure using WARN_ON is a good idea here, as it may be called very 
+early, see comment on powerpc patch.
+
+> +		return preempt_dynamic_mode == preempt_dynamic_##mode;		 \
+> +	}
+
+I'm not sure that's worth a macro. You only have 3 accessors, 2 lines of 
+code each. Just define all 3 in plain text.
+
+CONFIG_PREEMPT_DYNAMIC is based on using strategies like static_calls in 
+order to minimise the overhead. For those accessors you should use the 
+same kind of approach and use things like jump_labels in order to not 
+redo the test at each time and minimise overhead as much as possible.
+
+> +
+> +PREEMPT_MODE_ACCESSOR(none)
+> +PREEMPT_MODE_ACCESSOR(voluntary)
+> +PREEMPT_MODE_ACCESSOR(full)
+> +
+>   #else /* !CONFIG_PREEMPT_DYNAMIC */
+>   
+>   static inline void preempt_dynamic_init(void) { }
 > 
-> 
-> > ---
-> >  drivers/vhost/vdpa.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> > index 01c59ce7e250..29cced1cd277 100644
-> > --- a/drivers/vhost/vdpa.c
-> > +++ b/drivers/vhost/vdpa.c
-> > @@ -1014,12 +1014,12 @@ static int vhost_vdpa_release(struct inode *inode, struct file *filep)
-> >  
-> >  	mutex_lock(&d->mutex);
-> >  	filep->private_data = NULL;
-> > +	vhost_vdpa_clean_irq(v);
-> >  	vhost_vdpa_reset(v);
-> >  	vhost_dev_stop(&v->vdev);
-> >  	vhost_vdpa_iotlb_free(v);
-> >  	vhost_vdpa_free_domain(v);
-> >  	vhost_vdpa_config_put(v);
-> > -	vhost_vdpa_clean_irq(v);
-> >  	vhost_dev_cleanup(&v->vdev);
-> >  	kfree(v->vdev.vqs);
-> >  	mutex_unlock(&d->mutex);
-> > -- 
-> > 2.31.1
