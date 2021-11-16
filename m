@@ -2,75 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B9CA453947
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 19:15:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C16453956
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 19:20:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239347AbhKPSSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 13:18:32 -0500
-Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:58656 "EHLO
-        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236111AbhKPSSa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 13:18:30 -0500
-Received: from [128.177.79.46] (helo=csail.mit.edu)
-        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_256_CBC_SHA1:256)
-        (Exim 4.82)
-        (envelope-from <srivatsa@csail.mit.edu>)
-        id 1mn2zO-00026C-FP; Tue, 16 Nov 2021 13:15:26 -0500
-Date:   Tue, 16 Nov 2021 10:18:37 -0800
-From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-To:     Joe Perches <joe@perches.com>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>, jgross@suse.com,
-        x86@kernel.org, pv-drivers@vmware.com,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        Deep Shah <sdeep@vmware.com>, stable@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, keerthanak@vmware.com,
-        srivatsab@vmware.com, anishs@vmware.com, vithampi@vmware.com,
-        linux-kernel@vger.kernel.org, namit@vmware.com, kuba@kernel.org,
-        rostedt@goodmis.org
-Subject: Re: [PATCH v3 1/3] MAINTAINERS: Update maintainers for paravirt ops
- and VMware hypervisor interface
-Message-ID: <20211116181837.GA24696@csail.mit.edu>
-References: <163657479269.84207.13658789048079672839.stgit@srivatsa-dev>
- <163657487268.84207.5604596767569015608.stgit@srivatsa-dev>
- <YYy9P7Rjg9hntmm3@kroah.com>
- <20211111153916.GA7966@csail.mit.edu>
- <YY1krlfM5R7uEzJF@kroah.com>
- <20211111194002.GA8739@csail.mit.edu>
- <YY6hhWtvh+OvOqAl@sashalap>
- <20211115223900.GA22267@csail.mit.edu>
- <70cd970d6c39a5ea5e88cbf4b86031c22c5d10d4.camel@perches.com>
+        id S239393AbhKPSXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 13:23:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37236 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236659AbhKPSXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 13:23:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 994CC63231;
+        Tue, 16 Nov 2021 18:20:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637086836;
+        bh=zQ23lBUVqtQtYQ5TID6YCdJ8tlFXhml1gZkaxzR+gvc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=o04ZzvwRCLZoSDgGGOfWQNXo0akTSCu8K4C4Y9NVIxqlZi2uFEhvIA/T9J2M1HAYt
+         FRuj7wosu6Obiv4Yas7GmhZWZ4FjJPPewu9lGx6a9vk+9uug4YbbHEA/590ne0PozT
+         SXh2P+3ML2h7SY1pMs1x0aU90Cvq6kd/qeaWqWIQoZIzy+6Fx4Q2Gn0ppbaQr52ETa
+         wTS8Fn69qGaqNUQzNnR83DXkM4bzasQ/9dm/TMjGQVpGJKhEo7tQtfMDlE7ik75jsD
+         s/GIYzWw+xAjg5sGDwazcVHrU8M9B26qIHA9w+/Y+AeflPIY3T9BZnPXx5nyn+lALx
+         RKepEQirfDMwg==
+Received: by mail-ed1-f50.google.com with SMTP id z5so31943437edd.3;
+        Tue, 16 Nov 2021 10:20:36 -0800 (PST)
+X-Gm-Message-State: AOAM530NNBuAUcVQhniKv8PJhisLCV9kJ7k1JbFsftTR0TFknAMLFdRx
+        ja8PsiDua2YHKdyLpXTxcthRJRetjdSrnnhUHQ==
+X-Google-Smtp-Source: ABdhPJwwDyer0PToNILufn0VRX0SlTOAApNbRDmf1a5oEpMFwAza7UOpzYSwetb2VCFA/vZX/ZYDpHNDiDRUK/48Y5Y=
+X-Received: by 2002:a17:906:bccc:: with SMTP id lw12mr12270768ejb.128.1637086834835;
+ Tue, 16 Nov 2021 10:20:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <70cd970d6c39a5ea5e88cbf4b86031c22c5d10d4.camel@perches.com>
+References: <20211115112000.23693-1-andriy.shevchenko@linux.intel.com>
+ <94d3f4e5-a698-134c-8264-55d31d3eafa6@arm.com> <CAHp75VeJ8ZiD=qQVfeahUjGZduFRJJ5683hn8f4810JYEzsCyw@mail.gmail.com>
+ <YZJxG7JFAfIqr1/f@smile.fi.intel.com>
+In-Reply-To: <YZJxG7JFAfIqr1/f@smile.fi.intel.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 16 Nov 2021 12:20:22 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJndi-gmenSpPtMVfsb3SrA=w+YBsSh3GigfgXC3rYDeQ@mail.gmail.com>
+Message-ID: <CAL_JsqJndi-gmenSpPtMVfsb3SrA=w+YBsSh3GigfgXC3rYDeQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] PCI: brcmstb: Use BIT() as __GENMASK() is for
+ internal use only
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jim Quinlan <jim2101024@gmail.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 08:33:40PM -0800, Joe Perches wrote:
-> On Mon, 2021-11-15 at 14:39 -0800, Srivatsa S. Bhat wrote:
-> > On Fri, Nov 12, 2021 at 12:16:53PM -0500, Sasha Levin wrote:
-> > > Maybe we should just remove MAINTAINERS from stable trees to make it
-> > > obvious.
-> > 
-> > I don't think we should go quite that far. Instead, perhaps we can
-> > modify get_maintainer.pl (if needed) such that it prints out a warning
-> > or reminder to consult the upstream MAINTAINERS file if the script is
-> > invoked on an older stable kernel.
-> 
-> I don't see how that's feasible.
-> 
++Marc Z
 
-Not that I'm pushing for this change, but isn't it straight-forward to
-distinguish upstream and stable kernel releases based on their
-versioning schemes? The SUBLEVEL in the Makefile is always 0 for
-upstream, and positive for stable versions (ignoring ancient kernels
-like v2.6.32, of course). Since stable kernels are behind mainline by
-definition, anytime the get_maintainer.pl script is invoked on a
-kernel with a positive SUBLEVEL value, we can print out the said
-warning/reminder (if it is considered useful).
+On Mon, Nov 15, 2021 at 8:39 AM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Mon, Nov 15, 2021 at 04:14:21PM +0200, Andy Shevchenko wrote:
+> > On Mon, Nov 15, 2021 at 4:01 PM Robin Murphy <robin.murphy@arm.com> wrote:
+> > > On 2021-11-15 11:20, Andy Shevchenko wrote:
+> > > > Use BIT() as __GENMASK() is for internal use only. The rationale
+> > > > of switching to BIT() is to provide better generated code. The
+> > > > GENMASK() against non-constant numbers may produce an ugly assembler
+> > > > code. On contrary the BIT() is simply converted to corresponding shift
+> > > > operation.
+> > >
+> > > FWIW, If you care about code quality and want the compiler to do the
+> > > obvious thing, why not specify it as the obvious thing:
+> > >
+> > >         u32 val = ~0 << msi->legacy_shift;
+> >
+> > Obvious and buggy (from the C standard point of view)? :-)
+>
+> Forgot to mention that BIT() is also makes it easy to avoid such mistake.
+>
+> > > Personally I don't think that abusing BIT() in the context of setting
+> > > multiple bits is any better than abusing __GENMASK()...
+> >
+> > No, BIT() is not abused here, but __GENMASK().
+> >
+> > After all it's up to you, folks, consider that as a bug report.
 
-Regards,
-Srivatsa
+Couldn't we get rid of legacy_shift entirely if the legacy case sets
+up 'hwirq' as 24-31 rather than 0-7? Though the data for the MSI msg
+uses the hwirq.
+
+Rob
