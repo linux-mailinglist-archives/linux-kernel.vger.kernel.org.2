@@ -2,98 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F205C453AEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:25:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A45E4453AF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:28:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhKPU2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 15:28:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46984 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229733AbhKPU2e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 15:28:34 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 32DD561ABD;
-        Tue, 16 Nov 2021 20:25:36 +0000 (UTC)
-Date:   Tue, 16 Nov 2021 15:25:34 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Joe Korty <joe.korty@concurrent-rt.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Clark Williams <williams@redhat.com>,
-        Jun Miao <jun.miao@windriver.com>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        id S230231AbhKPUbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 15:31:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229733AbhKPUbS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 15:31:18 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06DBDC061570;
+        Tue, 16 Nov 2021 12:28:21 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id 200so214055pga.1;
+        Tue, 16 Nov 2021 12:28:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MM08HeeM0WW4wvSJTAanSXHVRaCn/t8mr2R+iHSWSFE=;
+        b=d5mThjLxudqSgPWDZBGvkI8jk7XN2GsLcJE8FB7Gq/1n16MmfiXn5bc+dcsRpyFocV
+         M3G2HeTCKtGnkeEYZRLs175z9yuuuDg9waVcjNmUSffcx7eGkSUpzgvUQMoTDoGbZ6Hg
+         rXEgqVjH8rnKiv2cf1nj3Ve3CDSKSOj4eW7urHnNnZ1h1SN5/pfa4LZXVn3tT/75BkBq
+         IxN3s9vRQEip+8ACENZYZOZQxW70EX2dnsG6ilRa22BEoOjxfvH4KsxaZA+uUF/ARcZ1
+         BylbohwAgQQddA1e20qMRfoj1K+q5gUQbaTcMW0m1co+WQsvoMkoEvew5VgOYjqVSdbF
+         Bs5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MM08HeeM0WW4wvSJTAanSXHVRaCn/t8mr2R+iHSWSFE=;
+        b=wWNwXjIdL3dhI3j92/Ezo0rgfTvEhxZJGqaKzcvxVkbcup7xuDNjwEUG3nTx2vn69K
+         Dx4jqrGOiYCyVlpYNIoCFv0HSxzRgitHPjlnBz0pga5zHLA7toOaMETHIJpSY1mJINdG
+         YbAnan6wHe2poiVaC8viXwSXtWOxzN2QHAzy3LooNgEnjXhHxafPnI2dxl1mEVH7uCEl
+         7jSluX9rRA9XX0RIiOimWoiQKwd/6NQgUaUDDEfPLHom+EijjMOhgCnjFvsUS1Y7Gb38
+         CBEyqZFQEHQbllqYNGsvNBdsjZxuiZL/SfVl+bYeRpTGXBxGKjB8+5/H5LsoQO088BKx
+         kaiw==
+X-Gm-Message-State: AOAM531vW4kLGvp4iBNb1HwztSMjjih4Oykmz/p7WRXvku414G4teSnC
+        YcM0tT7JPMd9exzJnV3BxZZ0OXGuHEI=
+X-Google-Smtp-Source: ABdhPJxfW3oRAXFdjkuiWVh8054XccX7yiDtLDHSnYVQg2j19VQrbACL5jWo47qfaj3HdfqP+1VBFg==
+X-Received: by 2002:a65:40c2:: with SMTP id u2mr1222840pgp.309.1637094500146;
+        Tue, 16 Nov 2021 12:28:20 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id k5sm2573729pgt.49.2021.11.16.12.28.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 12:28:19 -0800 (PST)
+Subject: Re: [PATCH 5.15 000/927] 5.15.3-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5.10-rt+] drm/i915/gt: transform irq_disable into
- local_lock.
-Message-ID: <20211116152534.122f8357@gandalf.local.home>
-In-Reply-To: <20211009164908.GA21269@zipoli.concurrent-rt.com>
-References: <20211007165928.GA43890@zipoli.concurrent-rt.com>
-        <20211007171929.hegwwqelf46skjyw@linutronix.de>
-        <20211009164908.GA21269@zipoli.concurrent-rt.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20211116142631.571909964@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <d74d7fbf-a6bf-045e-b3ed-46ed37025f79@gmail.com>
+Date:   Tue, 16 Nov 2021 12:28:18 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20211116142631.571909964@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 9 Oct 2021 12:49:08 -0400
-Joe Korty <joe.korty@concurrent-rt.com> wrote:
+On 11/16/21 7:01 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.3 release.
+> There are 927 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 18 Nov 2021 14:24:22 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.3-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-> On Thu, Oct 07, 2021 at 07:19:29PM +0200, Sebastian Andrzej Siewior wrote:
-> > On 2021-10-07 12:59:28 [-0400], Joe Korty wrote:  
-> > > Convert IRQ blocking in intel_breadcrumbs_park() to a local lock.
-> > > 
-> > > Affects 5.10-rt and all later releases, up to and including when
-> > > rt was merged into mainline.  
-> > 
-> > RT was merged into mainline? Nobody tells me anything anymore??? 
-> >   
-> > > This problem has been reported in two other linux-rt-users postings,
-> > >   
-> > >    [PREEMPT_RT] i915: fix PREEMPT_RT locking splats (Clark Williams)
-> > >    [linux-5.12.y-rt] drm/i915/gt: Fix a lockdep warning with interrupts enabled (Jun Miao)
-> > > 
-> > > Neither of these submit the obvious solution, nor,
-> > > AFAICT, has either yet been acted on.  So I muddy the
-> > > waters further by submitting this, a third fix.  
-> > 
-> > 5.12 is longer maintained. Could you please take the latest devel tree
-> > for testing and participate in
-> >   https://lore.kernel.org/all/20211005150046.1000285-1-bigeasy@linutronix.de/
-> > 
-> > If anything I would prefer those patches backported into v5.10 if it is
-> > affected.  
-> 
-> 
-> Hi Sebastian,
-> Please add my 'Tested-by' to the below patch.  
-> 
->    [linux-5.12.y-rt] drm/i915/gt: Fix a lockdep warning with interrupts enabled (Jun Miao)
-> 
-> What was tested was a backport to 5.10-rt.  One reject
-> was encountered, trivially resolved.  No other adjustments
-> were made.
-> 
-> My regression tests of last night all passed without any
-> of the usual lockdep splats occuring.  Prior to this,
-> I could be assured of a large enough flood of splats to
-> overwhelm the kernel log.
-> 
-> My test stand is a Supermicro C7Z170-SQ.  This is tthe
-> only system I have on which I could trigger the problem.
-> 
-> I could not find this patch in the 5.12-rt or the 5.15-rt
-> tree, so I fetched a copy out of the linux-rt-users
-> archives, and backported that.
-> 
-> Tested-by: Joe Korty <joe.korty@concurrent-rt.com>
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-I'm looking to see what needs to be added to 5.10-rt. Is there a particular
-fix in one of the 5.x-rt trees (x > 10) that I can pull from? Or is this
-only an issue with 5.10 and below?
-
--- Steve
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
