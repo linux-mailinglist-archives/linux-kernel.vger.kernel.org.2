@@ -2,90 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E9D452E28
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72CBB452E3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:42:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233393AbhKPJmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 04:42:17 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:47936 "EHLO gloria.sntech.de"
+        id S233411AbhKPJpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 04:45:15 -0500
+Received: from mga03.intel.com ([134.134.136.65]:11756 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233162AbhKPJmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 04:42:12 -0500
-Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mmuvh-00039f-KB; Tue, 16 Nov 2021 10:39:05 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
-        Yash Shah <yash.shah@sifive.com>, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Abdurachmanov <david.abdurachmanov@sifive.com>
-Cc:     Vincent Pelletier <plr.vincent@gmail.com>
-Subject: Re: [PATCH] riscv: dts: sifive unmatched: Name gpio lines.
-Date:   Tue, 16 Nov 2021 10:39:04 +0100
-Message-ID: <11612716.TMCrJ2abzX@diego>
-In-Reply-To: <f6512cc50dc31a086e00ed59c63ea60d8c148fc4.1637023980.git.plr.vincent@gmail.com>
-References: <f6512cc50dc31a086e00ed59c63ea60d8c148fc4.1637023980.git.plr.vincent@gmail.com>
+        id S233149AbhKPJpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 04:45:13 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="233599062"
+X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
+   d="scan'208";a="233599062"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 01:42:14 -0800
+X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
+   d="scan'208";a="506359272"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.210.220]) ([10.254.210.220])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 01:42:07 -0800
+Message-ID: <14bed5c1-a385-7e99-bda9-1041341fe68d@linux.intel.com>
+Date:   Tue, 16 Nov 2021 17:42:04 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Cc:     baolu.lu@linux.intel.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Chaitanya Kulkarni <kch@nvidia.com>, kvm@vger.kernel.org,
+        rafael@kernel.org, linux-pci@vger.kernel.org,
+        Cornelia Huck <cohuck@redhat.com>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Jacob jun Pan <jacob.jun.pan@intel.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>,
+        Will Deacon <will@kernel.org>
+Content-Language: en-US
+To:     Christoph Hellwig <hch@infradead.org>
+References: <20211115020552.2378167-1-baolu.lu@linux.intel.com>
+ <20211115020552.2378167-7-baolu.lu@linux.intel.com>
+ <YZJgMzYzuxjJpWIC@infradead.org>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: [PATCH 06/11] iommu: Expose group variants of dma ownership
+ interfaces
+In-Reply-To: <YZJgMzYzuxjJpWIC@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vincent,
+Hi Christoph,
 
-Am Dienstag, 16. November 2021, 01:52:56 CET schrieb Vincent Pelletier:
-> Follow the pin descriptions given in the version 3 of the board schematics.
+On 2021/11/15 21:27, Christoph Hellwig wrote:
+> On Mon, Nov 15, 2021 at 10:05:47AM +0800, Lu Baolu wrote:
+>> The vfio needs to set DMA_OWNER_USER for the entire group when attaching
 > 
-> Signed-off-by: Vincent Pelletier <plr.vincent@gmail.com>
+> The vfio subsystem?  driver?
 
-when sending a patch series with "git format-patch -6" and friends will
-automcatically generate x/y additions like "[PATCH 1/6]" and so on.
+"vfio subsystem"
 
-Please try to keep them around when sending, as automated tools for patch
-handling like "b4", stumble when they encounter a patch series without them.
-
-In this case a
-
-	b4 am f6512cc50dc31a086e00ed59c63ea60d8c148fc4.1637023980.git.plr.vincent@gmail.com
-
-[first patch in the series]
-will actually only retrieve the last patch
-
-	"[PATCH] riscv: dts: sifive unmatched: Link the tmp451 with its power supply."
-
-as it thinks it's a new version of the first one.
-
-
-Thanks
-Heiko
-
-> ---
->  arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 4 ++++
->  1 file changed, 4 insertions(+)
 > 
-> diff --git a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-> index 4f66919215f6..305a086e5207 100644
-> --- a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-> +++ b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-> @@ -245,4 +245,8 @@ &pwm1 {
->  
->  &gpio {
->  	status = "okay";
-> +	gpio-line-names = "J29.1", "PMICNTB", "PMICSHDN", "J8.1", "J8.3",
-> +		"PCIe_PWREN", "THERM", "UBRDG_RSTN", "PCIe_PERSTN",
-> +		"ULPI_RSTN", "J8.2", "UHUB_RSTN", "GEMGXL_RST", "J8.4",
-> +		"EN_VDD_SD", "SD_CD";
->  };
+>> it to a vfio container. So expose group variants of setting/releasing dma
+>> ownership for this purpose.
+>>
+>> This also exposes the helper iommu_group_dma_owner_unclaimed() for vfio
+>> report to userspace if the group is viable to user assignment, for
+> 
+> .. for vfio to report .. ?
+
+Yes.
+
+> 
+>>   void iommu_device_release_dma_owner(struct device *dev, enum iommu_dma_owner owner);
+>> +int iommu_group_set_dma_owner(struct iommu_group *group, enum iommu_dma_owner owner,
+>> +			      struct file *user_file);
+>> +void iommu_group_release_dma_owner(struct iommu_group *group, enum iommu_dma_owner owner);
+> 
+> Pleae avoid all these overly long lines.
+
+Sure. Thanks!
+
+> 
+>> +static inline int iommu_group_set_dma_owner(struct iommu_group *group,
+>> +					    enum iommu_dma_owner owner,
+>> +					    struct file *user_file)
+>> +{
+>> +	return -EINVAL;
+>> +}
+>> +
+>> +static inline void iommu_group_release_dma_owner(struct iommu_group *group,
+>> +						 enum iommu_dma_owner owner)
+>> +{
+>> +}
+>> +
+>> +static inline bool iommu_group_dma_owner_unclaimed(struct iommu_group *group)
+>> +{
+>> +	return false;
+>> +}
+> 
+> Why do we need these stubs?  All potential callers should already
+> require CONFIG_IOMMU_API?  Same for the helpers added in patch 1, btw.
+
+You are right. This helper is only for vfio which requires IOMMU_API. I
+will remove this.
+
+The helpers in patch 1 seem not the same. The driver core (or bus
+dma_configure() callback as suggested) will also call them.
+
+> 
+>> +	mutex_lock(&group->mutex);
+>> +	ret = __iommu_group_set_dma_owner(group, owner, user_file);
+>> +	mutex_unlock(&group->mutex);
+> 
+>> +	mutex_lock(&group->mutex);
+>> +	__iommu_group_release_dma_owner(group, owner);
+>> +	mutex_unlock(&group->mutex);
+> 
+> Unless I'm missing something (just skipping over the patches),
+> the existing callers also take the lock just around these calls,
+> so we don't really need the __-prefixed lowlevel helpers.
 > 
 
+Move mutex_lock/unlock will make the helper implementation easier. :-)
+It seems to be common code style in iommu core. For example,
+__iommu_attach_group(), __iommu_group_for_each_dev(), etc.
 
+>> +	mutex_lock(&group->mutex);
+>> +	owner = group->dma_owner;
+>> +	mutex_unlock(&group->mutex);
+> 
+> No need for a lock to read a single scalar.
 
+Adding the lock will make kcasn happy. Jason G also told me that
 
+[citing from his review comment]
+"
+It is always incorrect to read concurrent data without an annotation
+of some kind.
+
+For instance it can cause mis-execution of logic where the compiler is
+unaware that a value it loads is allowed to change - ie no 
+READ_ONCE/WRITE_ONCE semantic.
+"
+
+> 
+>> +
+>> +	return owner == DMA_OWNER_NONE;
+>> +}
+>> +EXPORT_SYMBOL_GPL(iommu_group_dma_owner_unclaimed);
+
+Best regards,
+baolu
