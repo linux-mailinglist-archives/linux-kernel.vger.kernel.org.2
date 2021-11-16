@@ -2,120 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB364530CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:32:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4644530B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:31:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235697AbhKPLfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 06:35:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234888AbhKPLcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 06:32:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8785461BF4;
-        Tue, 16 Nov 2021 11:29:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637062148;
-        bh=AmrLTVF7atW2JxYtibxKiMRPGifoFVFCsOEGQDjBXBM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tdyl+cYdThNn54fQPhjg+piMuYRkObXCxXKbU5dOFA7EhoKkGbEAee3hWNlXeuFAw
-         wqzOm2uOyW1VOKMIyTfsjjytRfLY5wBlWhb220xGP/ODIhgqRRZOpYMRiM5VFLeNXN
-         TIiVoLKOMEoNm0M9TlilYpj2CgRcDMCTZCVd5Q+pQs64ggxLAdy62ifsiPiXwAiNY7
-         83fk0EiqNi3PhOW1kZU8HBHQAxITctXkBoLB7ku6/Ifz1YQJ13blUXwDdOYblEzFxk
-         A4m97mPFoKgpVhusALHo7Q0O+w7SxnHcSLYhAUST9OaYThiU7nVOv9X7p353h2uLXj
-         o5S6UvguhLHkg==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mmwe9-008QgD-OF; Tue, 16 Nov 2021 11:29:05 +0000
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: [PATCH 23/23] media: atomisp: get rid of #ifdef ISP_VEC_NELEMS
-Date:   Tue, 16 Nov 2021 11:29:04 +0000
-Message-Id: <51fd47d183ce35081591d1e84ee66ffaae030658.1637061474.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <cover.1637061474.git.mchehab+huawei@kernel.org>
-References: <cover.1637061474.git.mchehab+huawei@kernel.org>
+        id S235228AbhKPLcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:32:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235089AbhKPLcK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 06:32:10 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F914C061202;
+        Tue, 16 Nov 2021 03:29:12 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id d11so42529578ljg.8;
+        Tue, 16 Nov 2021 03:29:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KgH8hxHm/FrDWe8yu/KtutrLYb/eHAySYSG7tABVZD8=;
+        b=WQXwJtlQVd+47QBnnFnwMnHb+unQnWJRVp8wa0AAzlb+m5V+4E+gTCt24sAj6B+xxt
+         0rlCxO8r9bnoJFqpL0pyGjT8MmhgYrolx5H6mBWDWMYoneuhLPnvtMUzQlkuEy6Qfb+K
+         aMoyWbKCGA03sRWgwyTm+66RhHAlpLbu3ZzjG3MUverXK1LlZ70OPYkvA7uxllqr5EdW
+         Ynee/tWnWOjd3LKBwmADf1dGMGAQfiMm/9ZJT/tthXNR1a8Xv+W8g5T4EYW20We6a8Oo
+         6pmb1HVHbsushdwxfYUN+yWOeoYhokFpirI0P5DGS9lAiJ2fLv9X6CdCKuFRio9gHv2y
+         QMNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KgH8hxHm/FrDWe8yu/KtutrLYb/eHAySYSG7tABVZD8=;
+        b=BAVTJJCLBlWwbJcX9jRs1T30Dy0FlTrC+mVmtlw0ENIrB6y/ewwK6ZgDIrj1cnQlm1
+         5dwpm5fq6e998gWyzJBtIw0bsBHFQE3LEmp7frWjcvMjURNY1dsNr336KqHGG5wHVGrI
+         p+ev45DZSr7Nfb4KRyxGFI+18rUvw3TB+Nxr5Ly2xMeu7ES4xMkKPmP3WkSlYu42a9jc
+         AtXiIkiUFS0DIJl4TYn1uw1U1SOBNPLPxkEvSLssO1BieyHeMCChjuLWvYfRoUaFprkN
+         vXDKMQlfDn9lRn+fTu17fvAbzN4eQ/BTQKJ+sdO1/5JXjOf2AfRxuo5Ms6Z4+qfqkm2R
+         KaJA==
+X-Gm-Message-State: AOAM532sTcyhqNRZlThacGkcxooVYlLOb+JIj2umCasL5BV686x3rsnP
+        JZAnhii7Uk0uijUZIWVr1ws=
+X-Google-Smtp-Source: ABdhPJwT05xYGdFvFfnRIzfOHSrJKu1dUYSKUfjYX/R14U1ARea6ixOoVJqMNgE6F5QYwh5yfRZxWQ==
+X-Received: by 2002:a2e:7807:: with SMTP id t7mr6110206ljc.426.1637062150438;
+        Tue, 16 Nov 2021 03:29:10 -0800 (PST)
+Received: from mobilestation ([95.79.188.236])
+        by smtp.gmail.com with ESMTPSA id m16sm1485527lfj.59.2021.11.16.03.29.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 03:29:10 -0800 (PST)
+Date:   Tue, 16 Nov 2021 14:29:07 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Brad Larson <brad@pensando.io>, Rob Herring <robh@kernel.org>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Olof Johansson <olof@lixom.net>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 05/11] spi: dw: Add Pensando Elba SoC SPI Controller
+ bindings
+Message-ID: <20211116112907.lbwdcz5pmgxqzv55@mobilestation>
+References: <20211025015156.33133-1-brad@pensando.io>
+ <20211025015156.33133-6-brad@pensando.io>
+ <20211028074945.rv2j5kgzk7yc2srr@mobilestation>
+ <CAK9rFnw396xK+u3qUpgbnGNw7WDJPJm0L3o4nPAcFeqQjBDbXg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK9rFnw396xK+u3qUpgbnGNw7WDJPJm0L3o4nPAcFeqQjBDbXg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is defined as 64 for the devices/firmware that were chosen.
+On Mon, Nov 15, 2021 at 02:24:40PM -0800, Brad Larson wrote:
+> Hi Sergey,
+> 
+> On Thu, Oct 28, 2021 at 12:49 AM Serge Semin <fancer.lancer@gmail.com> wrote:
+> >
+> > On Sun, Oct 24, 2021 at 06:51:50PM -0700, Brad Larson wrote:
+> > > The Pensando Elba SoC has integrated the DW APB SPI Controller
+> >
+> > Please add the "dt-bindings: " prefix to the patch name and discard
+> > the word "bindings" from the title as the submitting DT-patches
+> > requires:
+> > Documentation/devicetree/bindings/submitting-patches.rst
+> 
+> I'll add that.  I recall looking at the recent git log for similar
+> changes to the file as the current recommended approach.
+> 
+> > >
+> > > Signed-off-by: Brad Larson <brad@pensando.io>
+> > > ---
+> > >  Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> > > index d7e08b03e204..0b5ebb2ae6e7 100644
+> > > --- a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> > > +++ b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> > > @@ -73,6 +73,8 @@ properties:
+> > >                - renesas,r9a06g032-spi # RZ/N1D
+> > >                - renesas,r9a06g033-spi # RZ/N1S
+> > >            - const: renesas,rzn1-spi   # RZ/N1
+> >
+> > > +      - description: Pensando Elba SoC SPI Controller
+> > > +        const: pensando,elba-spi
+> >
+> > AFAICS from the driver-part of the patchset it's not enough. You've
+> > also got the syscon phandle, which needs to be reflected in the
+> > bindings. That also makes me thinking that you didn't perform the
+> > "dtbs_check" on the dts-files you were going to submit, but for some
+> > reason discarded from this series (btw why?). If you did you would
+> > have got an error of an unevaluated property detection.
+> 
+> I ran the checks below and didn't get errors.  Rob provided some info
+> and I found the server did not have yamllint installed (not flagged by
+> tool).  Also dt-schema was not the latest.  I'm re-doing this and
+> including "DT_CHECKER_FLAGS=-m" as that is new with v5.13.
+> 
 
-So, evaluate the macros accordingly.
+> make ARCH=arm64 dtbs_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
+> make ARCH=arm64 dtbs_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+> make ARCH=arm64 dtbs_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> make ARCH=arm64 dtbs_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/vendor-prefixes.yaml
+> make ARCH=arm64 dtbs_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/arm/pensando,elba.yaml
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
+Hmm, that's weird. Rob, does dtschema tool have the
+"unevaluatedProperties" property support?
 
-To mailbombing on a large number of people, only mailing lists were C/C on the cover.
-See [PATCH 00/23] at: https://lore.kernel.org/all/cover.1637061474.git.mchehab+huawei@kernel.org/
+Brad, anyway you still need to add the syscon-property (pensando,*spics)
+requirement in the snps,dw-apb-ssi.yaml schema. See the way it's done there
+for instance for "baikal,bt1-sys-ssi" when it comes to the
+vendor-specific properties definition in the allOf composition block.
+You'll need to define a custom phandle property there in case if a
+DT-node is compatible with you SPI controller.
 
- .../media/atomisp/pci/isp/modes/interface/isp_const.h  | 10 ----------
- drivers/staging/media/atomisp/pci/sh_css_defs.h        | 10 ----------
- 2 files changed, 20 deletions(-)
+-Sergey
 
-diff --git a/drivers/staging/media/atomisp/pci/isp/modes/interface/isp_const.h b/drivers/staging/media/atomisp/pci/isp/modes/interface/isp_const.h
-index 11e439d838ae..e5c595e5020b 100644
---- a/drivers/staging/media/atomisp/pci/isp/modes/interface/isp_const.h
-+++ b/drivers/staging/media/atomisp/pci/isp/modes/interface/isp_const.h
-@@ -36,17 +36,7 @@ more details.
- #define BITS8_ELEMENTS_PER_XMEM_ADDR    CEIL_DIV(XMEM_WIDTH_BITS, 8)
- #define BITS16_ELEMENTS_PER_XMEM_ADDR    CEIL_DIV(XMEM_WIDTH_BITS, 16)
- 
--#if ISP_VEC_NELEMS == 64
- #define ISP_NWAY_LOG2  6
--#elif ISP_VEC_NELEMS == 32
--#define ISP_NWAY_LOG2  5
--#elif ISP_VEC_NELEMS == 16
--#define ISP_NWAY_LOG2  4
--#elif ISP_VEC_NELEMS == 8
--#define ISP_NWAY_LOG2  3
--#else
--#error "isp_const.h ISP_VEC_NELEMS must be one of {8, 16, 32, 64}"
--#endif
- 
- /* *****************************
-  * ISP input/output buffer sizes
-diff --git a/drivers/staging/media/atomisp/pci/sh_css_defs.h b/drivers/staging/media/atomisp/pci/sh_css_defs.h
-index 30a84a587b2a..239230ae4b4b 100644
---- a/drivers/staging/media/atomisp/pci/sh_css_defs.h
-+++ b/drivers/staging/media/atomisp/pci/sh_css_defs.h
-@@ -117,13 +117,8 @@ RGB[0,8191],coef[-8192,8191] -> RGB[0,8191]
- #define SH_CSS_NUM_INPUT_BUF_LINES        4
- 
- /* Left cropping only applicable for sufficiently large nway */
--#if ISP_VEC_NELEMS == 16
--#define SH_CSS_MAX_LEFT_CROPPING          0
--#define SH_CSS_MAX_TOP_CROPPING           0
--#else
- #define SH_CSS_MAX_LEFT_CROPPING          12
- #define SH_CSS_MAX_TOP_CROPPING           12
--#endif
- 
- #define	SH_CSS_SP_MAX_WIDTH               1280
- 
-@@ -137,13 +132,8 @@ RGB[0,8191],coef[-8192,8191] -> RGB[0,8191]
- #define SH_CSS_MIN_DVS_ENVELOPE           12U
- 
- /* The FPGA system (vec_nelems == 16) only supports upto 5MP */
--#if ISP_VEC_NELEMS == 16
--#define SH_CSS_MAX_SENSOR_WIDTH           2560
--#define SH_CSS_MAX_SENSOR_HEIGHT          1920
--#else
- #define SH_CSS_MAX_SENSOR_WIDTH           4608
- #define SH_CSS_MAX_SENSOR_HEIGHT          3450
--#endif
- 
- /* Limited to reduce vmem pressure */
- #if ISP_VMEM_DEPTH >= 3072
--- 
-2.33.1
-
+> 
+> make dt_binding_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
+> make dt_binding_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+> make dt_binding_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> make dt_binding_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/vendor-prefixes.yaml
+> make dt_binding_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/arm/pensando,elba.yaml
+> 
+> Thanks
+> Brad
