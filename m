@@ -2,91 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F184529FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:46:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CA2E452A02
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:46:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236345AbhKPFtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 00:49:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60134 "EHLO
+        id S236515AbhKPFtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 00:49:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236431AbhKPFs2 (ORCPT
+        with ESMTP id S236287AbhKPFsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 00:48:28 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD21C06BA94;
-        Mon, 15 Nov 2021 19:54:07 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so1631721pjb.4;
-        Mon, 15 Nov 2021 19:54:07 -0800 (PST)
+        Tue, 16 Nov 2021 00:48:38 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 044F9C04E201
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 19:59:39 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id gx15-20020a17090b124f00b001a695f3734aso1686544pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 19:59:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=uXbfw/izal149Gz5yqwKVpenNb0MrLQ7PVdG9ilARhI=;
-        b=Lu/wvcRI5AXNv6tsBujJhaL/4L2p9/BLilOlq2zJyp5Gst02OMemQYFNKJn5C+AoyF
-         iiJsLcczKZHir7jVHsiZmw/EQLNT3PXaes8OeX5ox2S9s0T0HGV1bZoTYvbl0XfwViDg
-         p+9BwpIpDnQI2WH38MpDOpZun3GNaVY/xXZ3fVXjv3D6U7Gwe4yOfoBJ5MygWnRHMjjf
-         8QYyewUgmhYqzsL4NuH3d6E3a2XxKTxrxY9zIHTcR1ljNw/Lo2WF/qp7ZEyRyPIgrN7Q
-         yZH9v/S0CzTB79mVJ548ElH3drHEjTdkxlFKgnMFqCGdadjUrx9YXSCz7ljUihr6jEpt
-         6j5A==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=OD3I3LT4cd/NlKPjbaF84wzyVeqal/CYdheaDHtLVBQ=;
+        b=D9MB2cD5ZTkPvVciUtxG5JCdjR2f3TJaJMYV4Psbq6km1huVNqG90Z9WsVwtBhdtF1
+         pRMI2ngvEhfcNAykf2cSbWFTiawhSocFdkW7PyhJ0fujnACiPPsLtxnPDzVbQVmH9fZb
+         0ZCztGz76Gw8tS/4WQKcVnoG0VuQzoynuTlu2yKYzl3Z/xmf+kYDGDrhE+JZSnwwnQtg
+         RPJpIg9qUBdSsRlhxVEWhxVUi3VxECVoDYQHrmITOfoOm0hSUXirR4CbluK9+hFau0uh
+         c6ohN0DXxkW5yF2ysEYfuofWIaV8ZKHFx2SXBaVjXJyGG/RwVdmm6PW26nKgsAlDzAFF
+         FMkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=uXbfw/izal149Gz5yqwKVpenNb0MrLQ7PVdG9ilARhI=;
-        b=aM4NJk9Q/H1u8dp/dMm2Xnl1MqY78fQ6FXC1FozT+lmVKZ/DsQM8aeGZs1tb7HO44a
-         dtMtpOyIwln82TSm66dvCYITiN7+A0J+1ouHdrrfWg7nI1COuPeAStlqkh5h+nTArLR7
-         5dZok1xuxM14GZ/RnDx/SZoqf4hdUaSXdmkgZTMK6uymYsYPKsQthy/TCwl6WjCAXY+c
-         3rW6M2YNFHu+rw1d0/J2a7ReE/i7tWqgrSOOJ2xi8+kDQCEHY30NKXl6xFPdnXW/QdOn
-         /vq4mIscojjnJWbSsuonWKFYu0ThQ4Ux3jNu8/jZP1gxx4Ug3xQ5vj0wl/oCFWr0+mJQ
-         itQA==
-X-Gm-Message-State: AOAM5336/XrSYlOQo0OKYdykWQp3XIbE0BxmUxPCrd4HNSlCnbM9ci6w
-        84t8psHZY4VQ2htnk1W03/69Uam80FSqbC9pd4Q=
-X-Google-Smtp-Source: ABdhPJymZx6pXQY24wSlQVstcliQQQBRNaUYIOsBenM2qkd8z5cfw7qK0Un+zHO12V0ANPtye45Meg==
-X-Received: by 2002:a17:90a:b105:: with SMTP id z5mr68883616pjq.64.1637034846642;
-        Mon, 15 Nov 2021 19:54:06 -0800 (PST)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
-        by smtp.gmail.com with ESMTPSA id i67sm16628105pfg.189.2021.11.15.19.54.01
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=OD3I3LT4cd/NlKPjbaF84wzyVeqal/CYdheaDHtLVBQ=;
+        b=X1AcJxUCvJvJcL6uUf2ZWyEOGEP1a8CG2UemCGL4OoveDDJrWLrw/uNh8ldEMd95V4
+         ocVKMd/bBjwf34voTAUePP58Oj73A4ticn+oPcQNZdfpXytYeDWBOzYXrt4vRuCr+X+R
+         9jpQGI15cqEHnuhTzZY3/tXNzdTQG80vumND/ZQLqADhBR6MB9Cqn4fVqhPvyUe494AY
+         fB7U9MvENg+7zMR0Gpc+5d0mzn7fv5WBywZkVUbc5YEjqGWyTrw9RQXvswUAveVtM7qz
+         R2ozFNVC0LZtTXhFKOaIVR3McN8fuso4Sb2kRjeH2tYSX1NYaEHieZjLxcBXzjs1ydZo
+         UxgA==
+X-Gm-Message-State: AOAM531ZJ4s3hGlijv86EVs5iznsgT+jZmh4ORsZok0nLyJlUsuJCiue
+        RJBlUw5Ia511/xqdBI30VBstWw==
+X-Google-Smtp-Source: ABdhPJzxtLF3JUXA2rr0FEnL3UDohuQb6rtrfCfIfhUdDORN4CRvGDf9QXb8ooZiRKQLCrfECHUN/g==
+X-Received: by 2002:a17:90a:3045:: with SMTP id q5mr4961611pjl.58.1637035178534;
+        Mon, 15 Nov 2021 19:59:38 -0800 (PST)
+Received: from localhost ([223.226.77.81])
+        by smtp.gmail.com with ESMTPSA id n13sm16560345pfj.188.2021.11.15.19.59.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 19:54:05 -0800 (PST)
-Message-ID: <61932b5d.1c69fb81.d235.1c67@mx.google.com>
-Date:   Mon, 15 Nov 2021 19:54:05 -0800 (PST)
-X-Google-Original-Date: Tue, 16 Nov 2021 03:53:59 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-Subject: RE: [PATCH 5.14 000/849] 5.14.19-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Mon, 15 Nov 2021 19:59:37 -0800 (PST)
+Date:   Tue, 16 Nov 2021 09:29:35 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Steev Klimaszewski <steev@kali.org>
+Cc:     Thara Gopinath <thara.gopinath@linaro.org>, rafael@kernel.org,
+        bjorn.andersson@linaro.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] cpufreq: freq_table: Initialize cpuinfo.max_freq to
+ correct max frequency.
+Message-ID: <20211116035935.wmazontuznhys6qu@vireshk-i7>
+References: <20211115195011.52999-1-thara.gopinath@linaro.org>
+ <5ae2c644-4743-c62c-b17c-96945a0e6a01@kali.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5ae2c644-4743-c62c-b17c-96945a0e6a01@kali.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021 17:51:23 +0100, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.14.19 release.
-> There are 849 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 15-11-21, 19:23, Steev Klimaszewski wrote:
+> Hi Thara,
 > 
-> Responses should be made by Wed, 17 Nov 2021 16:52:23 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.19-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> On 11/15/21 1:50 PM, Thara Gopinath wrote:
+> > cpuinfo.max_freq reflects the maximum supported frequency of cpus in a
+> > cpufreq policy. When cpus support boost frequency and if boost is disabled
+> > during boot up (which is the default), cpuinfo.max_freq does not reflect
+> > boost frequency as the maximum supported frequency till boost is explicitly
+> > enabled via sysfs interface later. This also means that policy reports two
+> > different cpuinfo.max_freq before and after turning on boost.  Fix this by
+> > separating out setting of policy->max and cpuinfo.max_freq in
+> > cpufreq_frequency_table_cpuinfo.
+> > 
+> > e.g. of the problem. Qualcomm sdm845 supports boost frequency for gold
+> > cluster (cpus 4-7). After boot up (boost disabled),
+> > 
+> > 1.  cat /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq 2649600
+> > <- This is wrong because boost frequency is
+> > 
+> > 2.  echo 1 > /sys/devices/system/cpu/cpufreq/boost  <- Enable boost cat
+> > /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq 2803200	<-
+> > max freq reflects boost freq.
+> > 
+> > 3.  echo 0 > /sys/devices/system/cpu/cpufreq/boost <- Disable boost cat
+> > /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq 2803200	<-
+> > Discrepancy with step 1 as in both cases boost is disabled.
+> > 
+> > Note that the other way to fix this is to set cpuinfo.max_freq in Soc
+> > cpufreq driver during initialization. Fixing it in
+> > cpufreq_frequency_table_cpuinfo seems more generic solution
+> > 
+> > Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> > ---
+> >   drivers/cpufreq/freq_table.c | 8 ++++++--
+> >   1 file changed, 6 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/cpufreq/freq_table.c b/drivers/cpufreq/freq_table.c
+> > index 67e56cf638ef..6784f94124df 100644
+> > --- a/drivers/cpufreq/freq_table.c
+> > +++ b/drivers/cpufreq/freq_table.c
+> > @@ -35,11 +35,15 @@ int cpufreq_frequency_table_cpuinfo(struct cpufreq_policy *policy,
+> >   	struct cpufreq_frequency_table *pos;
+> >   	unsigned int min_freq = ~0;
+> >   	unsigned int max_freq = 0;
+> > +	unsigned int cpuinfo_max_freq = 0;
+> >   	unsigned int freq;
+> >   	cpufreq_for_each_valid_entry(pos, table) {
+> >   		freq = pos->frequency;
+> > +		if (freq > cpuinfo_max_freq)
+> > +			cpuinfo_max_freq = freq;
+> > +
+> >   		if (!cpufreq_boost_enabled()
+> >   		    && (pos->flags & CPUFREQ_BOOST_FREQ))
+> >   			continue;
+> > @@ -57,8 +61,8 @@ int cpufreq_frequency_table_cpuinfo(struct cpufreq_policy *policy,
+> >   	 * If the driver has set its own cpuinfo.max_freq above max_freq, leave
+> >   	 * it as is.
+> >   	 */
+> > -	if (policy->cpuinfo.max_freq < max_freq)
+> > -		policy->max = policy->cpuinfo.max_freq = max_freq;
+> > +	if (policy->cpuinfo.max_freq < cpuinfo_max_freq)
+> > +		policy->cpuinfo.max_freq = cpuinfo_max_freq;
 
-5.14.19-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+You need to keep the check of policy->max here and update policy->max,
+else you will never run at boost freq. I think this is what Steev
+reported as well ?
 
+So basically something like this:
+
+	if (policy->max < max_freq)
+		policy->max = max_freq;
+
+	if (policy->cpuinfo.max_freq < cpuinfo_max_freq)
+		policy->cpuinfo.max_freq = cpuinfo_max_freq;
+
+-- 
+viresh
