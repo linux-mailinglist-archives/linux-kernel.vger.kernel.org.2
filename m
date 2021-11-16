@@ -2,199 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B0E4538D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 18:50:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB9B4538DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 18:52:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239086AbhKPRxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 12:53:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239137AbhKPRxR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 12:53:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1076561465;
-        Tue, 16 Nov 2021 17:50:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637085020;
-        bh=7chFxL2VIzeIO8x8U54bIeYwu9/UcgGBmH9pnFSuxv4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SNkmaVUc/8eGI6KHqNuB+sJIkrqsRcAOKdOV3APyrXI7YZ508bM5Ymrr85WZpqhqo
-         oYJ0t+mxY9FBkoOOwN5D9ozREFan/WP7lMtqFq7gjjctxmefBfUaoVgPmY7V3vnuBd
-         iWVEC4Aub3waLONDrzUwTXSaozx6FQqVMFz5Iw9o7JGBP6jM0TO3D5Yg2gIOCj2iEO
-         xcy9We0LTMVNT343wEkOdU9PVkuCcAXhFR6/FGgpnEpcIUg2hjTphmQA/92xRVHKf9
-         r4hsqMEXnz79nR+cLXClFpJEtVCuEx17vQbHl3XLDds6kpvwdD9Jm4eaWEgWUxqiRC
-         iuBpuqi+bBg7w==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 983E44088E; Tue, 16 Nov 2021 14:50:16 -0300 (-03)
-Date:   Tue, 16 Nov 2021 14:50:16 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [RFC 3/3] perf tools: Fix p_stage_cyc sort key behavior
-Message-ID: <YZPvWHiqmjAavQxZ@kernel.org>
-References: <20211105225617.151364-1-namhyung@kernel.org>
- <20211105225617.151364-3-namhyung@kernel.org>
- <5CF112C6-95B5-47C5-95B7-55129B5CB24B@linux.vnet.ibm.com>
-MIME-Version: 1.0
+        id S234261AbhKPRzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 12:55:15 -0500
+Received: from mail-sn1anam02on2067.outbound.protection.outlook.com ([40.107.96.67]:64641
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239065AbhKPRzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 12:55:15 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NLYtF/oq2Jh9iDn/zJxcSLf5Tt2TQZHNqhxSxzs51f6pwik4HHJgoUvYxqkbfeZGyBpswYzXl+5LwnlBeEHShrCSrkqVk36cawK36g4juYMW90EYxHbm/K5gYqYWpuT/cOFNZI7G8PWvUZMH8D5KRg3nKbKmIryA8WWDHAM+XefdQ3qUvgavManbIUB0gQ7kcyUsaD6tH8Ltu05LKQmjVUVn6pnla2J2yc/v4p1qCdHxwMzTidVD5y+GQ1TE4LR66Vxvu86q4kicX3R1rxpX4cQXppzPgr0J31Y0SDAl6hd34qbh+u6KSzAPm/U4EJLGYStcr8i/KiEz3kW7cIcETQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6ggIYJ9MCrY2XrxexguLXEOyQsI4c8r44UbSbx+8C1U=;
+ b=NjKyLjp88nLGSg71Ll5w1cek9mvhAc7WT3K3qgfyQn3ujwWLS6zUpzzYHUk+fhvRHNUxGsMG8gK6Mkr6DN92SRvyIXg9CYUjaGLF8n7fFTzDeevvJ3wGVTsEUznTozglKS+Q2k3AihuAW3ncMXeEOLA1IwmqDIILPbayLnlUaT1z8W6cgpY4LPL/f4bRdFvtXThApHV+3UnIMjT07bcSrzZWE5JP62yHY3Ad7I0aOdes/b+W125qrRykqtjA31vIjl8A89kTtb+uW+CygMSMM63iFWqszRYX422nxNyH2mUpgjrPg2uZal7TyHPjcroIZTT2t3Edlw/s8O2l4+fUtQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6ggIYJ9MCrY2XrxexguLXEOyQsI4c8r44UbSbx+8C1U=;
+ b=Rx37WHDZdM2BFoN6JeEka0Pq6bGrt5vOcHXErzIgpJzsf7uykNZAAzdwnyzIG94gTV+CIjuTKOns8JSkoO8YI/BADtuLbZet2Ktjbe88fzEB/R0D5ZvyddPqEauMgM5RAtl7uFCoDKNK92ux6jSBwYRRJNdaGQ4oqAPi4V3a7ZXTKIOE0/ZIgw8ZAYBRayyK/6fMqyoPSitpr8UDrU+vswvXOMS9qEaDuz5R+/zoaImKBP6KhYtW/geZXdeTpNFhnfMfqD7iNuq1t2x0y3AA0HWrXT/MuhKyypSiS36KrxfoZpnlVb6xZHzM0/zpWfuDxlWhY7mAZ11qCRhc5byoPQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL0PR12MB5505.namprd12.prod.outlook.com (2603:10b6:208:1ce::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.27; Tue, 16 Nov
+ 2021 17:52:16 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::5897:83b2:a704:7909]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::5897:83b2:a704:7909%7]) with mapi id 15.20.4690.027; Tue, 16 Nov 2021
+ 17:52:16 +0000
+Date:   Tue, 16 Nov 2021 13:52:14 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        kernel test robot <lkp@intel.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-rc] RDMA/netlink: Annotate unused function that is
+ needed for compilation check
+Message-ID: <20211116175214.GA2656760@nvidia.com>
+References: <4a8101919b765e01d7fde6f27fd572c958deeb4a.1636267207.git.leonro@nvidia.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5CF112C6-95B5-47C5-95B7-55129B5CB24B@linux.vnet.ibm.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <4a8101919b765e01d7fde6f27fd572c958deeb4a.1636267207.git.leonro@nvidia.com>
+X-ClientProxiedBy: CH2PR05CA0016.namprd05.prod.outlook.com (2603:10b6:610::29)
+ To BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR05CA0016.namprd05.prod.outlook.com (2603:10b6:610::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.15 via Frontend Transport; Tue, 16 Nov 2021 17:52:15 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mn2cw-00B99m-Am; Tue, 16 Nov 2021 13:52:14 -0400
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f19b721c-16a8-43da-0cf6-08d9a929d3a9
+X-MS-TrafficTypeDiagnostic: BL0PR12MB5505:
+X-Microsoft-Antispam-PRVS: <BL0PR12MB5505782559DF1999B0910DDEC2999@BL0PR12MB5505.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1169;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lWXGH3baZC8brfsISMHDLm5xjt2Z2EH6i2cL95Xh1UTiT9/mkHbCoKTbFr4Mi9DmaMgJkL9Wjto/mzf2bY0JDKUuIAxzovi6Iwc47V1mV4WKXY5lsT3ZxDS0ZOa0330BDt53mi97aKssqOGPIK4qBcA7tTuIgWDxd3Yh1umQUcDIr08dzljRMoQRqau+51Im7ON9LcGFz++FZ2OeVs6Evmg/GWLkEqvpF6WPNyZfvhqdGAMwyxMPlot/LHyd9ZmtG17lOI/Vk1RMwLvGMFiM01EgKZCN3Ceu7PXjwRDDywm6yPC/BEw5oZRObUsJjw1kTizb1FLg1H3lss/3fy6bLx8LAuquXXNjJQEuTYd3PvThoRfzLgYl+tTu76mtrAtg22v/gAaE1lgYJomsQEDNj3lJzUtudAuIVtAfNgqmleDnMdoH6hiXI74I/3hSRn9qWwtd1afXlupQPEyaDxJqEJJ7X7UzOR5LklVSlOGx/0dZYjDuritd0x+m64cQFCAtjcndbxfmyeX5VgJbeuIVYlxbkG9nwtH63j1R8nKhHdeE3JkG1C9cma1p4rhzFM3jM0Yv18pUxtQz9vMgID8RvBnKfVZVPJiq/mWTk0BOiARhZGo45CqcU47vxM7mShbV5cAUBJWmoHIYQs4cmV2XBw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(426003)(8936002)(66946007)(66476007)(66556008)(8676002)(9746002)(9786002)(186003)(26005)(86362001)(36756003)(1076003)(83380400001)(33656002)(4744005)(54906003)(38100700002)(2616005)(4326008)(6916009)(508600001)(5660300002)(316002)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?k9wlUF+JM+jNORox3JjVq+qtqfbzXl/7+NwXHr+FSz9y6JEEcXXwubSCXu8c?=
+ =?us-ascii?Q?kI40nsDI2GM8oj0JFM/+4jh6dPa9YM33zPkAK8EjxQyyVxYyn9+oV9Ucz7Vn?=
+ =?us-ascii?Q?XUIw+hyrZgCC0288Hu/U5J3UUrBfCxRCJf7AAf5/lHemBP9jeSh9BQNx2w1t?=
+ =?us-ascii?Q?obHa0v1GgYZy275bgXFwKerZHq9iGicrN4JbTmxnnQPA1EveIFyC6Vd1VNAN?=
+ =?us-ascii?Q?G7JbrAqT7ClKrV61mD6iEs0tLHJ7Ny+Ne1Sk18IWN32+iJcj//Q7/C3t7Yj7?=
+ =?us-ascii?Q?QSiZHgq0ErlnBPwJJS+dxnn+FMgsGR8dSML+emsqfOF2clCKHLDC9n2GVGbg?=
+ =?us-ascii?Q?mOEG/V2B1Y84wvlSPu+cH+Xn5bHoz2yXXhKX8V5CELSljm//Y+K4SO6/B2M1?=
+ =?us-ascii?Q?GC3+st6Vzy/7nlkFdIO4DdwtQ7x4EhzoQZQNWshUG6lqsvPCMmbGL0cHZdb5?=
+ =?us-ascii?Q?e3eOM/gc9/7Uv2/1waeyYsmQVEMSUFQxHiqhh/mSrkUHLm+HZHVeM4jnlOIr?=
+ =?us-ascii?Q?PRdp9PnA1P6k7WGwbaRaohyAt3BweA9/j+UCRa/v8VwRKQXZJy8DxbO/yuiN?=
+ =?us-ascii?Q?iPhTU71uIooN8Rzs7NqoNxyFj63oNFT7ASDhrFeYDS9NZxSrammCfNuNPqxg?=
+ =?us-ascii?Q?u2qMBmV1Z6EBaLYG269mjUcOWMKm/SDjv8fY2tY8Jj527mb736wHzG9siCrk?=
+ =?us-ascii?Q?vo81SXu0fp6s00+poP1RsHfq6pj86zICqDQNZXrgsHQne8wxcXJGqJcy1QPs?=
+ =?us-ascii?Q?g7jvo3PlIXQKz2Q15bCYX+nx+5T35qA4yOZnlUnW5Q/I1efYREC8Vx+j1uVp?=
+ =?us-ascii?Q?eMqOw8DhjEt7Ti6xZIcBwT9y7ZAZ0d3Lk2SgqR3ENSlXB6dKvrpJUmk9oYHz?=
+ =?us-ascii?Q?bTQ7GoJLoIWz822aW/I0iyd4fihBo4WYCkw+6o+ja2oPOWQvJ6ALjJHc6PcE?=
+ =?us-ascii?Q?+BiVKl06LTqTxaqFPW1JdWpUq8avzX+ceBtPu42tKVojiHvabGJUvNKg2C4t?=
+ =?us-ascii?Q?D9CGEqEOAmrOPH9lARUOgRzH3LNje6t6oGeLG7AsXTPQ41tkEL6ATYiE1PLb?=
+ =?us-ascii?Q?RSyW/M+R300EffYlbz4Z5yO6u+QH7gVxJkAxIrn1QCdtXeJoCeIhGnpey0B+?=
+ =?us-ascii?Q?ZPkgfHDH3GdmaF1EZgQo7fdedX7z2Ra27d/cO4ouAiPTY1rMq9+9CSBuHgcY?=
+ =?us-ascii?Q?BTPBX7cmqX7/5z3h+gM3PsH/CU3DeM/Jr3R+ksaVahnnlqCElp4YM325XEbf?=
+ =?us-ascii?Q?1EQ/+ftDdbPqUajq7v+4pgA9zwFAQEyd+nFkUYEJNlf7tgL0jH7QNW2w0Fjw?=
+ =?us-ascii?Q?pYdmuCDY55Q6nnMCaQvZZ8cQZJoixTFmu+okH4+R8O7rRwB5KI6qvj9Apsm0?=
+ =?us-ascii?Q?cIgDeltn124NS+6YSeZVrRKzX/0ubWFaRbIy0B11AMTD5t3o3CHyK2vG5Veq?=
+ =?us-ascii?Q?ncL8cjvC7MGmeualK2DPt2Le54j29LIzqdR9XuyiPcDLIRmVzGmbvB4qfPBL?=
+ =?us-ascii?Q?3FAaA0edT/+OyZdvU0Nmz1ZPTiX3YPLtG2oSgTRhf8zsWB3pwz3JT3b+R/dl?=
+ =?us-ascii?Q?y0isFDX4zvMdgoHdSd8=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f19b721c-16a8-43da-0cf6-08d9a929d3a9
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 17:52:16.1740
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HQOhHdOkGpA5TtF8F1wm8FcyORQ1D9hiw7+4rOA9TkDSHrIjIW7u4u6x6cEKyMYJ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5505
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Nov 16, 2021 at 09:59:42PM +0530, Athira Rajeev escreveu:
+On Sun, Nov 07, 2021 at 08:40:47AM +0200, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
+> >> drivers/infiniband/core/nldev.c:2543:1: warning: unused function '__chk_RDMA_NL_NLDEV'
+>    MODULE_ALIAS_RDMA_NETLINK(RDMA_NL_NLDEV, 5);
+>    ^
 > 
-> > On 06-Nov-2021, at 4:26 AM, Namhyung Kim <namhyung@kernel.org> wrote:
-> > 
-> > Like weight and local_weight, the p_stage_cyc (for pipeline stage
-> > cycles) should be handled the same way.  Not sure it also needs
-> > the local and global variants.
-> 
-> Hi Namhyung,
-> 
-> Thanks for the fixes. I could test the fix for "weight" and "ins_lat" in powerpc.
-> Also it makes sense to have global variant for p_stage_cyc as well. Thanks for pointing that. I will post fix to have both the variants for the p_stage_cyc.
-> 
-> Thanks
-> Athira
+> Fixes: e3bf14bdc17a ("rdma: Autoload netlink client modules")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  include/rdma/rdma_netlink.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-So I'm going to wait for Namhyung's patch with some extra touches? Or is
-thie one below good to go and you can send the other fixes in a followup
-patch?
+Applied to for-rc, thanks
 
-Please advise.
-
-- Arnaldo
-
-> > 
-> > But I couldn't test it actually because I don't have the machine.
-> > 
-> > Cc: Kan Liang <kan.liang@linux.intel.com>
-> > Cc: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> > tools/perf/util/hist.c | 12 ++++--------
-> > tools/perf/util/sort.c |  4 ++--
-> > tools/perf/util/sort.h |  2 +-
-> > 3 files changed, 7 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/hist.c b/tools/perf/util/hist.c
-> > index 54fe97dd191c..b776465e04ef 100644
-> > --- a/tools/perf/util/hist.c
-> > +++ b/tools/perf/util/hist.c
-> > @@ -289,12 +289,10 @@ static long hist_time(unsigned long htime)
-> > 	return htime;
-> > }
-> > 
-> > -static void he_stat__add_period(struct he_stat *he_stat, u64 period,
-> > -				u64 p_stage_cyc)
-> > +static void he_stat__add_period(struct he_stat *he_stat, u64 period)
-> > {
-> > 	he_stat->period		+= period;
-> > 	he_stat->nr_events	+= 1;
-> > -	he_stat->p_stage_cyc	+= p_stage_cyc;
-> > }
-> > 
-> > static void he_stat__add_stat(struct he_stat *dest, struct he_stat *src)
-> > @@ -305,7 +303,6 @@ static void he_stat__add_stat(struct he_stat *dest, struct he_stat *src)
-> > 	dest->period_guest_sys	+= src->period_guest_sys;
-> > 	dest->period_guest_us	+= src->period_guest_us;
-> > 	dest->nr_events		+= src->nr_events;
-> > -	dest->p_stage_cyc	+= src->p_stage_cyc;
-> > }
-> > 
-> > static void he_stat__decay(struct he_stat *he_stat)
-> > @@ -593,7 +590,6 @@ static struct hist_entry *hists__findnew_entry(struct hists *hists,
-> > 	struct hist_entry *he;
-> > 	int64_t cmp;
-> > 	u64 period = entry->stat.period;
-> > -	u64 p_stage_cyc = entry->stat.p_stage_cyc;
-> > 	bool leftmost = true;
-> > 
-> > 	p = &hists->entries_in->rb_root.rb_node;
-> > @@ -612,11 +608,11 @@ static struct hist_entry *hists__findnew_entry(struct hists *hists,
-> > 
-> > 		if (!cmp) {
-> > 			if (sample_self) {
-> > -				he_stat__add_period(&he->stat, period, p_stage_cyc);
-> > +				he_stat__add_period(&he->stat, period);
-> > 				hist_entry__add_callchain_period(he, period);
-> > 			}
-> > 			if (symbol_conf.cumulate_callchain)
-> > -				he_stat__add_period(he->stat_acc, period, p_stage_cyc);
-> > +				he_stat__add_period(he->stat_acc, period);
-> > 
-> > 			/*
-> > 			 * This mem info was allocated from sample__resolve_mem
-> > @@ -726,7 +722,6 @@ __hists__add_entry(struct hists *hists,
-> > 		.stat = {
-> > 			.nr_events = 1,
-> > 			.period	= sample->period,
-> > -			.p_stage_cyc = sample->p_stage_cyc,
-> > 		},
-> > 		.parent = sym_parent,
-> > 		.filtered = symbol__parent_filter(sym_parent) | al->filtered,
-> > @@ -741,6 +736,7 @@ __hists__add_entry(struct hists *hists,
-> > 		.time = hist_time(sample->time),
-> > 		.weight = sample->weight,
-> > 		.ins_lat = sample->ins_lat,
-> > +		.p_stage_cyc = sample->p_stage_cyc,
-> > 	}, *he = hists__findnew_entry(hists, &entry, al, sample_self);
-> > 
-> > 	if (!hists->has_callchains && he && he->callchain_size != 0)
-> > diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
-> > index adc0584695d6..a111065b484e 100644
-> > --- a/tools/perf/util/sort.c
-> > +++ b/tools/perf/util/sort.c
-> > @@ -1394,13 +1394,13 @@ struct sort_entry sort_global_ins_lat = {
-> > static int64_t
-> > sort__global_p_stage_cyc_cmp(struct hist_entry *left, struct hist_entry *right)
-> > {
-> > -	return left->stat.p_stage_cyc - right->stat.p_stage_cyc;
-> > +	return left->p_stage_cyc - right->p_stage_cyc;
-> > }
-> > 
-> > static int hist_entry__p_stage_cyc_snprintf(struct hist_entry *he, char *bf,
-> > 					size_t size, unsigned int width)
-> > {
-> > -	return repsep_snprintf(bf, size, "%-*u", width, he->stat.p_stage_cyc);
-> > +	return repsep_snprintf(bf, size, "%-*u", width, he->p_stage_cyc);
-> > }
-> > 
-> > struct sort_entry sort_p_stage_cyc = {
-> > diff --git a/tools/perf/util/sort.h b/tools/perf/util/sort.h
-> > index 22ae7c6ae398..7b7145501933 100644
-> > --- a/tools/perf/util/sort.h
-> > +++ b/tools/perf/util/sort.h
-> > @@ -49,7 +49,6 @@ struct he_stat {
-> > 	u64			period_us;
-> > 	u64			period_guest_sys;
-> > 	u64			period_guest_us;
-> > -	u64			p_stage_cyc;
-> > 	u32			nr_events;
-> > };
-> > 
-> > @@ -109,6 +108,7 @@ struct hist_entry {
-> > 	u64			code_page_size;
-> > 	u64			weight;
-> > 	u64			ins_lat;
-> > +	u64			p_stage_cyc;
-> > 	u8			cpumode;
-> > 	u8			depth;
-> > 
-> > -- 
-> > 2.34.0.rc0.344.g81b53c2807-goog
-> > 
-
--- 
-
-- Arnaldo
+Jason
