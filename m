@@ -2,179 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F25244532F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 887EA4532F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:38:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236702AbhKPNkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 08:40:49 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:46018 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232201AbhKPNkr (ORCPT
+        id S236740AbhKPNl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 08:41:28 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:54661 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232201AbhKPNlW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 08:40:47 -0500
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AGCw83g025448;
-        Tue, 16 Nov 2021 13:37:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=3i+ADeIjk8WnNC2XVNwBzRMvOCXOiMD8JcUjImnyOaM=;
- b=B0iasQLEqXJjP4OXIskUC7BOJoovcnz/YJn3oOBL+Jj/WKWPoN2JK0O23Kt34NJwm9DG
- ml2AoZOQDKyWGCL38RX4rCS6KyksPBewycIiiID5ArDwlJ2INsTeXjX/EeUp9QpBrKQT
- RhiMrd3f2KV58n9uTeljqPVMze+zqCVILOqXs6u4iw5r0tGZnoA2fIcdLsHmNvL8+RfM
- 910wmsj9ztkJhe12TREGecnaf6RUqYlXVr/e920g3gGNE1wErE/PI5JkUm4c+wKhcWR0
- 2nw/mdsnHMUh5TU3qMHkYrGYohMDA9esCQHeUblrNXOQyOM7cbvw09MFN+ft4wlGRqZl Zw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3cbhmnskrc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Nov 2021 13:37:45 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AGDUDRH188361;
-        Tue, 16 Nov 2021 13:37:44 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2049.outbound.protection.outlook.com [104.47.66.49])
-        by userp3030.oracle.com with ESMTP id 3ca2fw6s59-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Nov 2021 13:37:43 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bX2ok4TQf9DPC+MosH5fQsSwOQdOJy85c19PhXhZJAbd1QKxKw/62NYht2icVH2QNS9QvCLqbHUzXD10WN0d14hVlrVAZBC1oU50cacrPBtd3Pi3lapcCE5Wq2CoI72HoZapsYCknin/UcYgAp/FEr8KbmH7YAIRn9ecIf6uKGNKnY6p5dhl/pRu7RNuI2OWRhQLx4ncIrGOSwgoLYs8ID8Z8u30r+b95pmy6KUKAJe/P4MP7IiG0KC3N6yrpN34U72DfwTmngq2IJATL7PU5kW1XxURmHkb5G9M/Ig5UkPIxVU9tQ9IVKQhFQoyMx7Cs0qCaeBs2pxAQMUdSQRxDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3i+ADeIjk8WnNC2XVNwBzRMvOCXOiMD8JcUjImnyOaM=;
- b=BAziGM10NV/9TWvBPjNxPXoKlCjtl+5TbBhBQ/h3N88Xyu2+Cak22O8fLrSUIQiAeclh0p7SgrKC6DZToZmVq5sWzXs1nsisLoIclPal5FBBs1dcNIx1itGfMmhwxHWhvNdTx3PiEpuYTsYM8gQ/M3WO7iVM6JxdmL192ISAzbnqcROIMTYMhn6LjF0aFHd0WFB0YCYjyiCL60UclqQ9H37t0Maoqo0M+or7KB10JPBlyOEHPD19iY8TBghop96y8u96RRd/34D3XAPJ15KKfV3mBk1o9kuUrcPAvVmxJnuYZEnz5BvNWqlCzhTTWqRjKhHz+u5Era2Lcz1ISF7vjw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3i+ADeIjk8WnNC2XVNwBzRMvOCXOiMD8JcUjImnyOaM=;
- b=rDP+qv/bRk14Mu/Df3zErMrNv6+DbZJilD1R+BPq/WuA7vyGZvdehJGVUJ9uJxb98MFi0BpzkxqsSXJyJt35RA3aSa5ZiZ9SWNUNO4nGrtIshdQVKSh+vBVuago3kONP/XV6AajPsNMPzgzxT+k4Mg7Y+Vqf/ieJROiy8s9KnL8=
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MWHPR1001MB2319.namprd10.prod.outlook.com
- (2603:10b6:301:34::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.27; Tue, 16 Nov
- 2021 13:37:41 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4690.016; Tue, 16 Nov 2021
- 13:37:41 +0000
-Date:   Tue, 16 Nov 2021 16:37:20 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     kbuild@lists.01.org, kernel test robot <lkp@intel.com>,
-        kbuild-all@lists.01.org, open list <linux-kernel@vger.kernel.org>
-Subject: Re: drivers/net/dsa/qca8k.c:944 qca8k_parse_port_config() error:
- testing array offset 'cpu_port_index' after use.
-Message-ID: <20211116133720.GI27562@kadam>
-References: <202111120534.jZEya5QR-lkp@intel.com>
- <CA+_ehUyjDVdEe=64WbBihqSQrHeKSHx_8C3pcHctgvWy4dvnJQ@mail.gmail.com>
- <20211116063058.GH27562@kadam>
- <CA+_ehUwbUYc6GBGx1VFfqknWrFTk=Xm7NmMUhbyxMSBE4KdnjQ@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+_ehUwbUYc6GBGx1VFfqknWrFTk=Xm7NmMUhbyxMSBE4KdnjQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNAP275CA0028.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::13)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        Tue, 16 Nov 2021 08:41:22 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 25F723201C9B;
+        Tue, 16 Nov 2021 08:38:24 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 16 Nov 2021 08:38:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:mime-version:content-transfer-encoding; s=fm1; bh=
+        7Jjr5ukXlwDW5Tw8k0Q0sV7tsthe0z5djAVFAB3mnAw=; b=DQm6EMBPlBm1kFXM
+        BzuEdY25PY9h2Ylu4lhNDtqW5cPGfcHD8/cvftWgXlxczAzWRARt9oeY5HjeL3IX
+        G1/ZJWyC4D3vQAugr9EcVh2v+37Qx6fbMMXzZ2MqS0xyNRKdu1vxRiFgZq+m6Wac
+        un1ugc+y/NZ4GqMobbiwlmA63p+aFpAMhQkjlKpdAeS4jwiPjcmnxT0TBYEB7KgM
+        WxGc9mhXI2Zbam8zKDPTujQOZfodVnq0I3+5LX3Mj/uFb5kQtmAj0+dkjIJrQTbM
+        zm0EsFHwhFRkRumHGMpOTjhrmokm8h3SJyDDIzUMoNlPq87llro/S72klVUivfpz
+        i9wT4w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=7Jjr5ukXlwDW5Tw8k0Q0sV7tsthe0z5djAVFAB3mn
+        Aw=; b=XPGlNcd3MlzNhLSxakAlEwVYLQ693TRhbXrc3YX7ju0fKkiOkBJuelagH
+        PUz+9mAMee3H4UTvVgkB2mDMQrK86eOwgK+S0+L1kL7Zo+dmLH+SVQKhuCezFyYN
+        WFI/QBy+BqC1YN0eJFDc7W1tpC3to1f7kZ+CjSHANmFaCASqUlsyuboc1mnWsR1B
+        beWRmwspRKNWI0FFJ6wCu1HzCN5BIUZzHTzr3B0bnHWBsmt6mXuVVbUxzoltDG9P
+        4vKM/eBKGmSbRLbaSAgGsfHRDnNb/RzF8/qqqucSYm08gmcEOfNYxy1dbEtIC+YU
+        i5iOT3kbgfilWdUSrYfri9E08TLFA==
+X-ME-Sender: <xms:T7STYfXq_IPMxm7_mk2X-V0SpxYBIErbM0nP6zKrOMmOq-szV4eiZA>
+    <xme:T7STYXlEmsUpH_zUPFTo50JXvbHpMg_r6GdUuUoLfeJW5_d5dWrfmB9SPaU3rnO9M
+    bbJ2-5pVW7h>
+X-ME-Received: <xmr:T7STYbY1IME5EgpZy3x16I3NKHwHTx7OgKm-QlN198Y3EmCFQO-CmO96fB0pO8-ouF0wLs0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfedvgdehvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkuffhvfffjghftggfggfgsehtkeertddtreejnecuhfhrohhmpefkrghnucfm
+    vghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnhepgf
+    elleekteehleegheeujeeuudfhueffgfelhefgvedthefhhffhhfdtudfgfeehnecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnhesth
+    hhvghmrgifrdhnvght
+X-ME-Proxy: <xmx:T7STYaXOo8fGs-YurHekLlP_wsEVTPkXEDV8woyX8Qq40xiH7LWQcg>
+    <xmx:T7STYZn-xv4u6aXdQd9VHyt-jvGfVG4Q2H_L6fSB1wWHHV-CdHKyiw>
+    <xmx:T7STYXd5aicVD1FtDI79t0nxfla7MpsrVDGoe5NrqIeXdUCMxN0sSg>
+    <xmx:T7STYXb3fn-HXk3A9SWzUO0ykzudFssVOs9gyDESyq8JYMMSrbH7Uw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 16 Nov 2021 08:38:19 -0500 (EST)
+Message-ID: <06b5d7bc6feb5a011929bb26112fda7a8529bbd4.camel@themaw.net>
+Subject: Re: [PATCH 2/2] xfs: make sure link path does not go away at access
+From:   Ian Kent <raven@themaw.net>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        xfs <linux-xfs@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Brian Foster <bfoster@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Tue, 16 Nov 2021 21:38:16 +0800
+In-Reply-To: <20211116030120.GQ449541@dread.disaster.area>
+References: <163660195990.22525.6041281669106537689.stgit@mickey.themaw.net>
+         <163660197073.22525.11235124150551283676.stgit@mickey.themaw.net>
+         <20211112003249.GL449541@dread.disaster.area>
+         <CAJfpegvHDM_Mtc8+ASAcmNLd6RiRM+KutjBOoycun_Oq2=+p=w@mail.gmail.com>
+         <20211114231834.GM449541@dread.disaster.area>
+         <CAJfpegu4BwJD1JKngsrzUs7h82cYDGpxv0R1om=WGhOOb6pZ2Q@mail.gmail.com>
+         <20211115222417.GO449541@dread.disaster.area>
+         <f8425d1270fe011897e7e14eaa6ba8a77c1ed077.camel@themaw.net>
+         <20211116030120.GQ449541@dread.disaster.area>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Received: from kadam (102.222.70.114) by JNAP275CA0028.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend Transport; Tue, 16 Nov 2021 13:37:36 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 32b12825-6eee-4503-56df-08d9a906435f
-X-MS-TrafficTypeDiagnostic: MWHPR1001MB2319:
-X-Microsoft-Antispam-PRVS: <MWHPR1001MB23194D6217274B026562A2B48E999@MWHPR1001MB2319.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: R1ukTJXS+D734zh2stOLxbsd0wRwjRB0uqg3POxAxvLtILqdVgGnI1wiwZrbB1clFHAkq0AUvHlTWwFgtbqgmaL5kBXXqa+bOL6chVy/RtFaZLlpLXoKFrr2qu2AmD9E2c/LOczAhbwQz92o7PbCdhAke9Tsha3UVXzca3h1OuizGXhwVk/M57podXTIK+m2d3ZxNXKVbjdbWQnvGv1Se7naXX+5Mfq80ct82ZsNbJyBHBI9gR24LWkx2Tk9XstEwzW7oa+rEsgcwyWuoSbnhT13DERXoojkPtneTu6QA6qofLotjWm92zjyVvLiHQO5UTF+XL8eUpGENQEUM5cSxcDYgU6jhfVWY0805W+eQw7KIAjvSGNT97Dh5W/ie5jGcpxoXFuOJNuRP0/9dE2EIfGwjWAlgEytwZcqKzIq4HzZObZ3FZ5K5XUdtL3Z5LLqgwZ0llsWs4lkd0yqmytUawXmoL3wWL3kQxzHcQQ9Z7eaGnCodK4xA0BPjQl6m2DvCz0DWOacIpxUJj4rrnueeJ/KZroNx6Zco5t7SQscAU5aarNCW6AuPWEpuDfsiwnj4ruXFJFer2GkchxMlDwcY9JYNBcDe6ZsVhraW+E7kp2BoVmCsvmioFOhVDWCsKvsZrHFyiBSkaszCFTSJTT04ew57t1HvnVk322GHL7t0F8g+v6xL/oZJel5z9zOIEqTs5AjEIA0kFdtAy6t2S7yGg1mf3cxN24rtbjmJ/UEJhuwLBAlHwEqpUKMwcigcYlkVm9nQYuyYQ72RSwdr0Q03ppFXeSwKxUIHdOl0XvJmrU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(66556008)(38100700002)(956004)(33716001)(66946007)(55016002)(9686003)(6916009)(54906003)(316002)(508600001)(6666004)(83380400001)(1076003)(966005)(86362001)(52116002)(6496006)(33656002)(8936002)(9576002)(66476007)(44832011)(26005)(2906002)(8676002)(5660300002)(4326008)(186003)(38350700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NsRkfXFQJKxTeBdzKZ7dl5J59t269mey5avguAe88VsPBIWNX+MEP/YmKVVM?=
- =?us-ascii?Q?FHHfmKnjYlep2UzCprXhwlhb+/8nuCn1c+jUxFZKXLnKWAF25fncUWtNUA0g?=
- =?us-ascii?Q?RE87tT11jhnxL0VZPgbaiHIhYJmSEHnynzKX1Ys0M37BzwDFA3BDZtkWIvpR?=
- =?us-ascii?Q?arwDTchJuZbF6q9sCSEglDWjTEXJXAZtVP7YIU1AWJXh+7HA6dJTZvkz/cec?=
- =?us-ascii?Q?VmFuHVpa3XF0FcqWVu6EXf80vkDW450pzDCgHB0IpP/YibNtpYT+pmJRwZN3?=
- =?us-ascii?Q?7STgjDcnInBfw1WAGT3+5hcVdtjKkyJySkfahK3dwjvmE7z+Laitg3P/p3Ri?=
- =?us-ascii?Q?X2/SgRFz2gAg6xOG7sDKHhEXg5lAa2t0FbplFRk2GJniKF7j8UYxjV68Miwd?=
- =?us-ascii?Q?kN4STcrWNnOOFI17noI8xvTh8A07VuL8p8q+hXmAsrW2g+XbqOVTNWHIAsoY?=
- =?us-ascii?Q?/BPm994Ch7veQ7qedNnankdLJ2jXkJ5+/TvDvpg8tf4wZIvLElppWrRyXf7Y?=
- =?us-ascii?Q?Iw5kwZUgRL5JeaQ3e4OO5flqGwa5XN7Ibe94UfydGFFlFqJ1+P+ZZwOtsJu1?=
- =?us-ascii?Q?QiOZdjFUj0q0qAQ3LNof4NzimLOhyL7oCdDyBtVYNDc/onsg534grIFQTll9?=
- =?us-ascii?Q?RIDmYO4iE7daqQ/dAbyK7Oy5JVY9T70q+CBLb+Oaouu+0XrOZ7Rqp4ZUcad4?=
- =?us-ascii?Q?Cc0opfiIFNM4EwbuU4DGzLAKkyxbtg/4KUmUob6TUV49CUG73evoWh6YDr/2?=
- =?us-ascii?Q?XKSSXWz89ynZAWOndfdYyGcMw0WjzWUUUI1oRy6QtmSGRG+ePmgPzxqWJ8Oj?=
- =?us-ascii?Q?wPvor3UR/r2dQopN+KrMkU64Q4bGLKu4v5bm0N8x6KZ/GAWN61xDdO+H/fHK?=
- =?us-ascii?Q?jjaY8ch40AjlQDvqsr8xGNRtkne2UNeDtmf4mZP0zZorsoey1Fn2E3R5Tv1x?=
- =?us-ascii?Q?rjwWnWY0UB0rieBNJT+wn0A1KcswgfwfSrqRP8tnHSYWA9cot84KT6CbYb2C?=
- =?us-ascii?Q?5ZyTcsLScMsF4jHvsNBLoRS+bOAtOSkFBhVKYPoGP5xyc6nEOqg+wBCwy5ml?=
- =?us-ascii?Q?LuXuC4Eca9triFfDNqjgwlQDkVT5gD4pRxFbgfFeRLLOO7XXiaqR2gE984CC?=
- =?us-ascii?Q?YbOXik7spAeS1HJInubRPXd+WuCi3KUaeyMgLI1RmHLLa/TNam/7eLKPUnaj?=
- =?us-ascii?Q?skENgE2SWvMBYuafTfbjM7vNEasQw6Rc093mAk7GqVwLqVaLwckJfnrWReb0?=
- =?us-ascii?Q?ccZSdgucS0+Mb0bpVXK15hGfPzFcigBPNbxfWkcDCZcDv1efBx8+QWNAjZoD?=
- =?us-ascii?Q?Wim41ZKAlbJN6H1uvbfh7wi71kdpzHuXzprnopwjptJmODwzEsJLH/xvMIQF?=
- =?us-ascii?Q?LXAdaNechhSzmgq0j9N7UQfip/9W2oBa7nOo14gKdSTwWVAknuCdRfemZ3BL?=
- =?us-ascii?Q?i3PwMMfQopPygjqCxKEla9PLDkuEYVhFAGrh6kXSY8CKBUXjVkO9Fj7S7BGC?=
- =?us-ascii?Q?aVU/fCVeCVrZu2hFfINAP1+9gBSW1j0NrQH1VenqV+9YqUnn6F/rOtom87vZ?=
- =?us-ascii?Q?1gAhMGquMDAn2bycR4lE7D5E8LuIVnQ/Z3a/7l0HpbmjZuWDwYy5z1nQ0NrT?=
- =?us-ascii?Q?MwdDll1eC3xjg4wUOFQuUvJTAFc2NYvkuikdwn4xjczMDNYU9WXsxik191Tj?=
- =?us-ascii?Q?U1uW70Rf/a+73U/CvcqidES5GMw=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32b12825-6eee-4503-56df-08d9a906435f
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 13:37:41.6364
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3VXn7MXMpfurAponvRH1ze2O505YbygOZRwBu65+tNwBNyLAUaFQDm1dhznx03LErZHdGTybdoWbY/9S/C+GozL4T31/nviHPvYMqV9TjEw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1001MB2319
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10169 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
- adultscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111160069
-X-Proofpoint-ORIG-GUID: R6bZ3FP5NzyMozLP5BnPH3fja7wkpryQ
-X-Proofpoint-GUID: R6bZ3FP5NzyMozLP5BnPH3fja7wkpryQ
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 02:30:59PM +0100, Ansuel Smith wrote:
-> > On Mon, Nov 15, 2021 at 07:08:30PM +0100, Ansuel Smith wrote:
-> > > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git   master
-> > > > head:   debe436e77c72fcee804fb867f275e6d31aa999c
-> > > > commit: 5654ec78dd7e64b1e04777b24007344329e6a63b net: dsa: qca8k: rework rgmii delay logic and scan for cpu port 6
-> > > > config: i386-randconfig-m021-20211025 (attached as .config)
-> > > > compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> > > >
-> > > > If you fix the issue, kindly add following tag as appropriate
-> > > > Reported-by: kernel test robot <lkp@intel.com>
-> > > > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > > >
-> > >
-> > > This should already be fixed by 06dd34a628ae5b6a839b757e746de165d6789ca8
-> > > Can you confirm this?
-> > >
-> >
-> > No, it doesn't fix the problem.  The check is either useless and should
-> > be removed or there is an out of bounds bug.  Checking for an out of
-> > bounds *after* you've already written to the memory is *never* useful.
-> >
-> > regards,
-> > dan carpenter
-> >
+On Tue, 2021-11-16 at 14:01 +1100, Dave Chinner wrote:
+> On Tue, Nov 16, 2021 at 09:03:31AM +0800, Ian Kent wrote:
+> > On Tue, 2021-11-16 at 09:24 +1100, Dave Chinner wrote:
+> > > On Mon, Nov 15, 2021 at 10:21:03AM +0100, Miklos Szeredi wrote:
+> > > > On Mon, 15 Nov 2021 at 00:18, Dave Chinner
+> > > > <david@fromorbit.com>
+> > > > wrote:
+> > > > > I just can't see how this race condition is XFS specific and
+> > > > > why
+> > > > > fixing it requires XFS to sepcifically handle it while we
+> > > > > ignore
+> > > > > similar theoretical issues in other filesystems...
+> > > > 
+> > > > It is XFS specific, because all other filesystems RCU free the
+> > > > in-
+> > > > core
+> > > > inode after eviction.
+> > > > 
+> > > > XFS is the only one that reuses the in-core inode object and
+> > > > that
+> > > > is
+> > > > very much different from anything the other filesystems do and
+> > > > what
+> > > > the VFS expects.
+> > > 
+> > > Sure, but I was refering to the xfs_ifree issue that the patch
+> > > addressed, not the re-use issue that the *first patch addressed*.
+> > > 
+> > > > I don't see how clearing the quick link buffer in
+> > > > ext4_evict_inode()
+> > > > could do anything bad.  The contents are irrelevant, the lookup
+> > > > will
+> > > > be restarted anyway, the important thing is that the buffer is
+> > > > not
+> > > > freed and that it's null terminated, and both hold for the
+> > > > ext4,
+> > > > AFAICS.
+> > > 
+> > > You miss the point (which, admittedly, probably wasn't clear).
+> > > 
+> > > I suggested just zeroing the buffer in xfs_ifree instead of
+> > > zeroing
+> > > it, which you seemed to suggest wouldn't work and we should move
+> > > the
+> > > XFS functionality to .free_inode. That's what I was refering to
+> > > as
+> > > "not being XFS specific" - if it is safe for ext4 to zero the
+> > > link
+> > > buffer in .evict while lockless lookups can still be accessing
+> > > the
+> > > link buffer, it is safe for XFS to do the same thing in .destroy
+> > > context.
+> > 
+> > I'll need to think about that for a while.
+> > 
+> > Zeroing the buffer while it's being used seems like a problem to
+> > me and was what this patch was trying to avoid.
 > 
-> Again sorry if I insist and I'm 99% missing something.
-> There was an out of bounds bug.
-> It was fixed by 06dd34a628ae5b6a839b757e746de165d6789ca8 by
-> starting the counter to -1.
-> The extra check is useless, yes.
+> *nod*
+> 
+> That was my reading of the situation when I saw what ext4 was doing.
+> But Miklos says that this is fine, and I don't know the code well
+> enough to say he's wrong. So if it's ok for ext4, it's OK for XFS.
+> If it's not OK for XFS, then it isn't OK for ext4 either, and we
+> have more bugs to fix than just in XFS.
+> 
+> > I thought all that would be needed for this to happen is for a
+> > dentry drop to occur while the link walk was happening after
+> > ->get_link() had returned the pointer.
+> > 
+> > What have I got wrong in that thinking?
+> 
+> Nothing that I can see, but see my previous statement above.
+> 
+> I *think* that just zeroing the buffer means the race condition
+> means the link resolves as either wholly intact, partially zeroed
+> with trailing zeros in the length, wholly zeroed or zero length.
+> Nothing will crash, the link string is always null terminated even
+> if the length is wrong, and so nothing bad should happen as a result
+> of zeroing the symlink buffer when it gets evicted from the VFS
+> inode cache after unlink.
 
-Then just delete it.  We don't want code which is illogical even if it
-has no effect on run time.
+Oh, of course (sound of penny dropping), the walk will loop around
+and an empty link string will essentially end the walk. What's
+needed then is to look at what would be returned in that case.
 
-regards,
-dan carpenter
+So, there shouldn't be a crash then, and assuming a sensible walk
+failure in this case ENOENT (dentry now negative) or similar is
+most likely (need to check that).
+
+> 
+> > > If it isn't safe for ext4 to do that, then we have a general
+> > > pathwalk problem, not an XFS issue. But, as you say, it is safe
+> > > to do this zeroing, so the fix to xfs_ifree() is to zero the
+> > > link buffer instead of freeing it, just like ext4 does.
+> > > 
+> > > As a side issue, we really don't want to move what XFS does in
+> > > .destroy_inode to .free_inode because that then means we need to
+> > > add synchronise_rcu() calls everywhere in XFS that might need to
+> > > wait on inodes being inactivated and/or reclaimed. And because
+> > > inode reclaim uses lockless rcu lookups, there's substantial
+> > > danger of adding rcu callback related deadlocks to XFS here.
+> > > That's just not a direction we should be moving in.
+> > 
+> > Another reason I decided to use the ECHILD return instead is that
+> > I thought synchronise_rcu() might add an unexpected delay.
+> 
+> It depends where you put the synchronise_rcu() call. :)
+> 
+> > Since synchronise_rcu() will only wait for processes that
+> > currently have the rcu read lock do you think that could actually
+> > be a problem in this code path?
+> 
+> No, I don't think it will.  The inode recycle case in XFS inode
+> lookup can trigger in two cases:
+> 
+> 1. VFS cache eviction followed by immediate lookup
+> 2. Inode has been unlinked and evicted, then free and reallocated by
+> the filesytsem.
+> 
+> In case #1, that's a cold cache lookup and hence delays are
+> acceptible (e.g. a slightly longer delay might result in having to
+> fetch the inode from disk again). Calling synchronise_rcu() in this
+> case is not going to be any different from having to fetch the inode
+> from disk...
+> 
+> In case #2, there's a *lot* of CPU work being done to modify
+> metadata (inode btree updates, etc), and so the operations can block
+> on journal space, metadata IO, etc. Delays are acceptible, and could
+> be in the order of hundreds of milliseconds if the transaction
+> subsystem is bottlenecked. waiting for an RCU grace period when we
+> reallocate an indoe immediately after freeing it isn't a big deal.
+> 
+> IOWs, if synchronize_rcu() turns out to be a problem, we can
+> optimise that separately - we need to correct the inode reuse
+> behaviour w.r.t. VFS RCU expectations, then we can optimise the
+> result if there are perf problems stemming from correct behaviour.
+
+Sounds good, so a synchronize_rcu() in that particular location
+would allow some time to rail the walk before the inode is re-used.
+That should be quick enough to avoid any possible re-use races ...
+
+Interesting ... 
+
+OTOH ext4 is not a problem because the inode is going away not
+being re-used so there's no potential race from filling in the
+inode fields afresh.
+
+I think that's the concern Miklos is alluding to.
+
+> 
+> > > I'll also point out that this would require XFS inodes to pass
+> > > through *two* rcu grace periods before the memory they hold could
+> > > be
+> > > freed because, as I mentioned, xfs inode reclaim uses rcu
+> > > protected
+> > > inode lookups and so relies on inodes to be freed by rcu
+> > > callback...
+> > > 
+> > > > I tend to agree with Brian and Ian at this point: return -
+> > > > ECHILD
+> > > > from
+> > > > xfs_vn_get_link_inline() until xfs's inode resue vs. rcu walk
+> > > > implications are fully dealt with.  No way to fix this from VFS
+> > > > alone.
+> > > 
+> > > I disagree from a fundamental process POV - this is just sweeping
+> > > the issue under the table and leaving it for someone else to
+> > > solve
+> > > because the root cause of the inode re-use issue has not been
+> > > identified. But to the person who architected the lockless XFS
+> > > inode
+> > > cache 15 years ago, it's pretty obvious, so let's just solve it
+> > > now.
+> > 
+> > Sorry, I don't understand what you mean by the root cause not
+> > being identified?
+> 
+> The whole approach of "we don't know how to fix the inode reuse case
+> so disable it" implies that nobody has understood where in the reuse
+> case the problem lies. i.e. "inode reuse" by itself is not the root
+> cause of the problem.
+
+Right, not strictly no.
+
+> 
+> The root cause is "allowing an inode to be reused without waiting
+> for an RCU grace period to expire". This might seem pedantic, but
+> "without waiting for an rcu grace period to expire" is the important
+> part of the problem (i.e. the bug), not the "allowing an inode to be
+> reused" bit.
+
+Pedantic is good, it's needed in this case for sure.
+
+Provided handling of the dentry (and indirectly the inode) is
+done quickly. And zeroing the field should do just that. Trying
+to preserve the old link path string isn't feasible, it could
+take too long to resolve the path and possibly switch path walk
+modes introducing side effects related to the rcu-grace expiring.
+But the truth is the link is gone so failing the walk should be
+a perfectly valid result.
+
+> 
+> Once the RCU part of the problem is pointed out, the solution
+> becomes obvious. As nobody had seen the obvious (wait for an RCU
+> grace period when recycling an inode) it stands to reason that
+> nobody really understood what the root cause of the inode reuse
+> problem.
+
+Well, I guess, not completely, yes ...
+
+I'll think about what's been discussed and wait for any further
+contributions before doing anything else on this. In any case
+there's a few things to look at resulting from the discussion.
+
+Thanks for your patience with this,
+Ian
+
+> 
+> > > With the xfs_ifree() problem solved by zeroing rather than
+> > > freeing,
+> > > then the only other problem is inode reuse *within an rcu grace
+> > > period*. Immediate inode reuse tends to be rare, (we can actually
+> > > trace occurrences to validate this assertion), and implementation
+> > > wise reuse is isolated to a single function: xfs_iget_recycle().
+> > > 
+> > > xfs_iget_recycle() drops the rcu_read_lock() inode lookup context
+> > > that found the inode marks it as being reclaimed (preventing
+> > > other
+> > > lookups from finding it), then re-initialises the inode. This is
+> > > what makes .get_link change in the middle of pathwalk - we're
+> > > reinitialising the inode without waiting for the RCU grace period
+> > > to
+> > > expire.
+> > 
+> > Ok, good to know that, there's a lot of icache code to look
+> > through, ;)
+> 
+> My point precisely. :)
+> 
+> Cheers,
+> 
+> Dave.
+
 
