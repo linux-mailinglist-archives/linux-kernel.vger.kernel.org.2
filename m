@@ -2,91 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 159DC452F18
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 11:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15972452F21
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 11:31:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234149AbhKPKd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 05:33:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49594 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234063AbhKPKdX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 05:33:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D30EB63217;
-        Tue, 16 Nov 2021 10:30:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637058626;
-        bh=dJoICNBNvtwo8fELFQThHAtcO48zN/9C4FoNx0nlRLI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HpS32mN8DkORYLYffAQpwjWsBWtPEBjB0CHa26YtudoUQm39C2KUovSZAXnPMauwU
-         kW9qQXVlwHEvFqf7cNffN38IkMVoctnQ7GveL8W9f8YBdL8mnoO2MiGO+wunp1k3Be
-         xQcqCVqxOLDItJXTolTW7fuOVGp5e/yp1xvG7PMv79fikvLUL2F05UV8GYW9oYGJ83
-         P12S4D4HwtVWJHBFYIfd8UerNoi6LO2AxxTwtJZkjQuci8hhL/5Cz7VWb77aWEnswA
-         tCpbiqWeSLiD8+HXydZeIhxLrQn+dl0zEP77fnkJSzRQj081lLd71tCvo/fdG7qpPj
-         LwZ978SLJp3+Q==
-Date:   Tue, 16 Nov 2021 11:30:23 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Andrea Righi <andrea.righi@canonical.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Phoenix Huang <phoenix@emc.com.tw>, jingle.wu@emc.com.tw,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Input: elantech - Fix stack out of bound access in
- elantech_change_report_id()
-Message-ID: <YZOIP1RaMpomnmLp@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Phoenix Huang <phoenix@emc.com.tw>, jingle.wu@emc.com.tw,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211116095559.24395-1-andrea.righi@canonical.com>
+        id S234186AbhKPKep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 05:34:45 -0500
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:41428
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234126AbhKPKek (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 05:34:40 -0500
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 2C1403F19A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 10:31:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1637058703;
+        bh=z+K3n14wNxyJpFthL4d/JKrdOFIgfqkYidh/vwHh0o8=;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version:Content-Type;
+        b=Se1cPDujcfh+xmtclW5H1YWTw/u8W21jJim8WQFKyovTVAWBfep4ko14C3/EW/Y7V
+         kGLyuA3AHRTcgJMR7cFit2M42pS+/8DG696TvqLyAGCRETrujvI9nglhsRmxu/b0HP
+         KGuFOgJGbrYBnOeGtFneMtEK00gbRoWP/afc7TPPBaX4uCod6pOJvpf8yOSxWLEozC
+         76hopsUzc3Mcbiq7YD9ydV4R/82g/6Go3AEl8YIkOdjgCrzFY/nItO2rOipssX8Sc6
+         HzI1BvpKQT6NjEJvap38KWmdk6savcCzfN7ah2L8pF9aidrmK6GcO7SJV1AMq9xsX8
+         FNzgxpYT4Zy3Q==
+Received: by mail-lj1-f197.google.com with SMTP id l9-20020a2e8349000000b00218c7c981bcso6076952ljh.8
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 02:31:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=z+K3n14wNxyJpFthL4d/JKrdOFIgfqkYidh/vwHh0o8=;
+        b=WFEJkURm2yOdv1HMzyeqdxb1awFTcDM3aZvXHOyjpGykgbauomhdtqj3Erd/+VLf9/
+         5dahn5meUz/5l0EdNP8tftQKwza8lTNPzBblxvINUV9jwqNQqpl9KD782lq6vn+j6xdV
+         JB7XYpkYe8vyCHmrQQSHlYtyCAQtmBGpaHIZDloELmAHc2SUX+FRIX77ewg4wPou6BPU
+         +JcS0wkjVVhFAbdU7BqfXWJB2sd1k6waFaX3A6NC8lgmKf8BmwYDqTz7+2GkNm7F4yjp
+         IF+oKZ1EtEs1lTJbikz9hdeM9pXx+yB8+pdIo47GmYUAuSBRRHWwCrUf1BvCb7wq5AQT
+         AxDA==
+X-Gm-Message-State: AOAM530YTddmqgYIIYP+YSWmS8GSOFRs9rNJJrHAkCtucwKW2dAwixNq
+        pqKS7J5h2WpsFEOi/4xY/guVHvdGX/qdE9JKPCDL17cTdzThmCRMCZxHoIurjdvIUnNoo4crkdX
+        42/s7FDqCu3/ppNZGt/4Blbf8CEVSnixRf9x6F8misw==
+X-Received: by 2002:a05:6512:2601:: with SMTP id bt1mr5653779lfb.147.1637058702684;
+        Tue, 16 Nov 2021 02:31:42 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyVpknv8td/Cxpbi8ipZR258BpylSboXrsot6U5M9i5s8+zkf0/9R+6Q6RjQtFYrAR4CqJBFg==
+X-Received: by 2002:a05:6512:2601:: with SMTP id bt1mr5653761lfb.147.1637058702540;
+        Tue, 16 Nov 2021 02:31:42 -0800 (PST)
+Received: from localhost.localdomain (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id j5sm1114418lfe.219.2021.11.16.02.31.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 02:31:42 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        devicetree@vger.kernel.org
+Subject: Re: (subset) [PATCH v2 1/7] dt-bindings: memory: renesas,rpc-if: Add support for the R9A07G044
+Date:   Tue, 16 Nov 2021 11:31:02 +0100
+Message-Id: <163705866144.26823.6564269821681639208.b4-ty@canonical.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211025205631.21151-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20211025205631.21151-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="S+qPwRSR5NoZgGfL"
-Content-Disposition: inline
-In-Reply-To: <20211116095559.24395-1-andrea.righi@canonical.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 25 Oct 2021 21:56:25 +0100, Lad Prabhakar wrote:
+> SPI Multi I/O Bus Controller on RZ/G2L SoC is almost identical to
+> the RPC-IF interface found on R-Car Gen3 SoC's.
+> 
+> This patch adds a new compatible string to identify the RZ/G2L family
+> so that the timing values on RZ/G2L can be adjusted.
+> 
+> 
+> [...]
 
---S+qPwRSR5NoZgGfL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied, thanks!
 
->=20
-> [    6.512374] BUG: KASAN: stack-out-of-bounds in __ps2_command+0x372/0x7=
-e0
-> [    6.512397] Read of size 1 at addr ffff8881024d77c2 by task kworker/2:=
-1/118
+[1/7] dt-bindings: memory: renesas,rpc-if: Add support for the R9A07G044
+      commit: c271aa1f73515bcb35f977f30825832d41a2f504
 
-I wonder if the KASAN trace could be shortened, but I leave this to
-Dmitry.
-
-I like the comment, thanks!
-
-Reviewed-by: Wolfram Sang <wsa@kernel.org>
-
-
---S+qPwRSR5NoZgGfL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmGTiDsACgkQFA3kzBSg
-KbathRAArw2YsJMAqIun+77yhtA2noaG+bu/N3ptLQfBt0J8tD7qktr4c3G+pWIx
-ycPR+EeMwpJAqtgqs/lpDkGwnVIIQPeBvS6v8mp0aTkZcJocjy2l7UucbKxzBxQj
-Wc9P/kLjsNKIdADBWsGpVIe9G/u6wWHcOlHQroWugF9kNVo4LBGViDqnOwcMgEli
-Zn6a6P6Nbr9s95Ma5NlGV+z5gzdGxPUN9OaEH8+1RQSVJo3nZA0zATkskNBi2x3X
-f7El2ogPdCl2FFtPBJhfeVtOsQosxKHi9ToQnP0G99daODCiMg7ZMAo+5aWwYctI
-IGf9BwWFU3SbmGmrgXRUxY6XEDRIjFyXJA2Yrm8NcTIxhWHlS1Pdc0hpHrBhsuTO
-JTKs/eIBFFnYnzpEQeonlzoL5D4llLpcQxP+YRCcX5QOh7ce5tIQDbRoKlLOoWHT
-dnGwrqeGE0HiCwz7nyY/MYbe+hreDFbxstT3eQYwBaAkgQDKs3HQqop7oaMrZdv8
-K7Yckmb/eFo/c9NHd0sPzehRFTV6zvWb4e1ey3ff7JHl8YvORhCRn2pRmKihhGty
-wX5YvdFiHheVuRIsmL92UsyFlSfDJpQ6/zIwIa3wc3yvllF1hE5i87Zwx4cHpCSi
-KKamROF8ZbL0gQYEv8uLBJW0Tr13oeO3xZrKIudSubQtlxDygOg=
-=1JDz
------END PGP SIGNATURE-----
-
---S+qPwRSR5NoZgGfL--
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
