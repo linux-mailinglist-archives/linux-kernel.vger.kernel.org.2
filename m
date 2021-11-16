@@ -2,89 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA49453249
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:35:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD4D45324C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:36:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236341AbhKPMiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 07:38:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21351 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236394AbhKPMiW (ORCPT
+        id S236327AbhKPMjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 07:39:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236328AbhKPMjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 07:38:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637066125;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nDD8Pw0nMM0sd/mdc/qJwcDjr7sQieU+0fU4PkeGCmc=;
-        b=Cua2wkhFq1yA9LsfRNgnGAgn5aaoNN3yL8tTq8VI8K6QlIEkxMTHS5UMxqBOGNo20DbnW1
-        /QyheqEgv434kNDr/4WqLzdlVpU+fSa8tcYZOOu9IPWWkKbLkpjeQ2Ix92URmSH6nED53Y
-        cy7LK2qofCbD8aLHfX5IARg6FFACqYk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-484-mpXQ5iUKOvmdeF9Oqlmleg-1; Tue, 16 Nov 2021 07:35:22 -0500
-X-MC-Unique: mpXQ5iUKOvmdeF9Oqlmleg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D504101AFA8;
-        Tue, 16 Nov 2021 12:35:21 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 652B55D9DE;
-        Tue, 16 Nov 2021 12:35:17 +0000 (UTC)
-Message-ID: <bd778500-b925-6b5c-7f57-8acd5530df73@redhat.com>
-Date:   Tue, 16 Nov 2021 13:35:12 +0100
+        Tue, 16 Nov 2021 07:39:10 -0500
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C28C061206
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 04:36:07 -0800 (PST)
+Received: by mail-ua1-x92e.google.com with SMTP id ay21so41983903uab.12
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 04:36:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=zNmSVnxPetdA0L3V4GkasCFzJmUbdsvVFKb52Nomjig=;
+        b=g4US1ExxJigUReu0nCm6t7eenv87wdEvhvIC9IPkm5AUhqVQCYDiktBcoWD0ZZ25Xl
+         AxOl19gDUJhflVAcMIDol8Msye7P9p12QxCgqu48YcxwK4It+3cELtjGCt7B+rET5OQU
+         0QH8DhxxbMcTJUwdW5NuzCXgNoS+StGwY3EAw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zNmSVnxPetdA0L3V4GkasCFzJmUbdsvVFKb52Nomjig=;
+        b=nrqfibAV/CcsFD0VsDxXYLhdzvukMYXtnQxAvHn0XBVWOqlnR/fJIFls7yLx+44Trt
+         nNoD1LH2M1SWMVOcxtlLCYBEc1g4BiJevrJyOTo8VKgXlfttrzG/rWkDLtX5JXJQXzKf
+         3v0t/sLqEg0uyVhz3rlDypZ1RHyStE4LbxCtUT55RAiZLxLtR0c7q0ViAt5IgdckJQeD
+         wGuWehJ47MCT1MAepkR5gCv1XRwe9FaSWJyljUTLaYrHqyw7K4grs77c2SLugLHkT/vD
+         TKrMaWP+P8AbICMpMXHUXnX1ZKVsR2gF48AfJ9NvavWOMuv1cOiYGM2NAH2qn6ifkaE6
+         9AvQ==
+X-Gm-Message-State: AOAM530hragxwUDSESuJubwJzcfroZY6kBBR7p8sFlLaxOkFL4sBo7ak
+        2TEIu0jPjjd/rPxbetnhh+4ZKysSck3viXvUOTYOtCoAY9U=
+X-Google-Smtp-Source: ABdhPJzHYyzPvcxM6korW49fJ4HfL4hi+nMo6aC6cPBOiY6HTGLaUERL/do/oqHiPu5HovfkCuQ7/ow/7kyvew2ELZw=
+X-Received: by 2002:ab0:25da:: with SMTP id y26mr10449936uan.72.1637066166488;
+ Tue, 16 Nov 2021 04:36:06 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 0/6] KVM: SEV: Bug fix, cleanups and enhancements
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Gonda <pgonda@google.com>,
-        Marc Orr <marcorr@google.com>,
-        Nathan Tempelman <natet@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-References: <20211109215101.2211373-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211109215101.2211373-1-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210923130814.140814-1-cgxu519@mykernel.net> <20210923130814.140814-7-cgxu519@mykernel.net>
+ <CAJfpeguqj2vst4Zj5EovSktJkXiDSCSWY=X12X0Yrz4M8gPRmQ@mail.gmail.com>
+ <17c5aba1fef.c5c03d5825886.6577730832510234905@mykernel.net>
+ <CAJfpegtr1NkOiY9YWd1meU1yiD-LFX-aB55UVJs94FrX0VNEJQ@mail.gmail.com>
+ <17c5adfe5ea.12f1be94625921.4478415437452327206@mykernel.net>
+ <CAJfpegt4jZpSCXGFk2ieqUXVm3m=ng7QtSzZp2bXVs07bfrbXg@mail.gmail.com> <17d268ba3ce.1199800543649.1713755891767595962@mykernel.net>
+In-Reply-To: <17d268ba3ce.1199800543649.1713755891767595962@mykernel.net>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Tue, 16 Nov 2021 13:35:55 +0100
+Message-ID: <CAJfpegttQreuuD_jLgJmrYpsLKBBe2LmB5NSj6F5dHoTzqPArw@mail.gmail.com>
+Subject: Re: [RFC PATCH v5 06/10] ovl: implement overlayfs' ->write_inode operation
+To:     Chengguang Xu <cgxu519@mykernel.net>
+Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/21 22:50, Sean Christopherson wrote:
-> Bug fix for COPY_ENC_CONTEXT_FROM that IIRC is very belated feedback (git
-> says its been sitting in my local repo since at least early September).
-> 
-> The other patches are tangentially related cleanups and enhancements for
-> the SEV and SEV-ES info, e.g. active flag, ASID, etc...
-> 
-> Booted an SEV guest, otherwise it's effectively all compile-tested only.
-> 
-> Sean Christopherson (6):
->    KVM: SEV: Disallow COPY_ENC_CONTEXT_FROM if target has created vCPUs
->    KVM: SEV: Explicitly document that there are no TOCTOU races in copy
->      ASID
->    KVM: SEV: Set sev_info.active after initial checks in sev_guest_init()
->    KVM: SEV: WARN if SEV-ES is marked active but SEV is not
->    KVM: SEV: Drop a redundant setting of sev->asid during initialization
->    KVM: SEV: Fix typo in and tweak name of cmd_allowed_from_miror()
-> 
->   arch/x86/kvm/svm/sev.c | 42 +++++++++++++++++++++++++++---------------
->   arch/x86/kvm/svm/svm.h |  2 +-
->   2 files changed, 28 insertions(+), 16 deletions(-)
-> 
+On Tue, 16 Nov 2021 at 03:20, Chengguang Xu <cgxu519@mykernel.net> wrote:
+>
+>  ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E5=9B=9B, 2021-10-07 21:34:19 Miklos S=
+zeredi <miklos@szeredi.hu> =E6=92=B0=E5=86=99 ----
+>  > On Thu, 7 Oct 2021 at 15:10, Chengguang Xu <cgxu519@mykernel.net> wrot=
+e:
+>  > >  > However that wasn't what I was asking about.  AFAICS ->write_inod=
+e()
+>  > >  > won't start write back for dirty pages.   Maybe I'm missing somet=
+hing,
+>  > >  > but there it looks as if nothing will actually trigger writeback =
+for
+>  > >  > dirty pages in upper inode.
+>  > >  >
+>  > >
+>  > > Actually, page writeback on upper inode will be triggered by overlay=
+fs ->writepages and
+>  > > overlayfs' ->writepages will be called by vfs writeback function (i.=
+e writeback_sb_inodes).
+>  >
+>  > Right.
+>  >
+>  > But wouldn't it be simpler to do this from ->write_inode()?
+>  >
+>  > I.e. call write_inode_now() as suggested by Jan.
+>  >
+>  > Also could just call mark_inode_dirty() on the overlay inode
+>  > regardless of the dirty flags on the upper inode since it shouldn't
+>  > matter and results in simpler logic.
+>  >
+>
+> Hi Miklos=EF=BC=8C
+>
+> Sorry for delayed response for this, I've been busy with another project.
+>
+> I agree with your suggesion above and further more how about just mark ov=
+erlay inode dirty
+> when it has upper inode? This approach will make marking dirtiness simple=
+ enough.
 
-Queued all except 2.
+Are you suggesting that all non-lower overlay inodes should always be dirty=
+?
 
-Paolo
+The logic would be simple, no doubt, but there's the cost to walking
+those overlay inodes which don't have a dirty upper inode, right?  Can
+you quantify this cost with a benchmark?  Can be totally synthetic,
+e.g. lookup a million upper files without modifying them, then call
+syncfs.
 
+Thanks,
+Miklos
