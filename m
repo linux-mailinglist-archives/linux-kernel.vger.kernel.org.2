@@ -2,107 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2649B45375B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:25:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4629453754
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:25:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232272AbhKPQ2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 11:28:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231539AbhKPQ2W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:28:22 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0642DC061570;
-        Tue, 16 Nov 2021 08:25:25 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id t5so4822793edd.0;
-        Tue, 16 Nov 2021 08:25:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q88psRCm5CJ7gKksPQ7q1UXlzh7VhWtfPRNOkpoGNsw=;
-        b=kfiUOtAuB5auAwn6AVDVpys4wB6g0I2bSAC0FIHN3DpPvqcIlOSTeoC1oGWMueVfym
-         RmnYtoARlWHc+I4MY3t5a9LQztqWjJwtu6lEpY5zkkPMdRpO7cHOSeg8iFoqKM1m7tL9
-         /sMZVW+2uoSK/wvjjEFrcJDv230PSSB9Y8nAd/iihG+dRUmbjm+Dz6MqaWqMADWUxvPz
-         EXhI5fOuNlLnOftgovf0Mhz1o6peHH1ZzFNE8ApE9z84vdYBCSqO2O7inmeyowTQOOJ1
-         NjutVAiljTVNpv0UqG7zOKG/GqNg9FYzUS972bTDhPxONhK4539hCCLVe09RWrrqLAOJ
-         5dOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q88psRCm5CJ7gKksPQ7q1UXlzh7VhWtfPRNOkpoGNsw=;
-        b=qbNdR+sbTyRLtS9kQpmLNAOt6JCeanXh1Lsuqbjrz/ms9tEOf8a9DQ7RquPTTpHQEF
-         gcxxu3z5OmahqTrht+d9S3r7nD97x+mtZd0+JvpDNxuV2Cd3D58etbVae2XAL8OaxCnY
-         TrpYWNB17oY2ZBYtk6F08Zyss8AcEWl7ToEr3ScyGPSwpFcVbKn0eX4+OYmoXSQKQaVk
-         jrh+83EsMlHRRY49Sp0MULFfagpak+eZwQQsuKPPMEskVgr5sUcsrRh68m/d9Ubn1AOJ
-         nK6n5VQdb12/1mHKNcJrlSSUNbextVKNEShJGa7sdTQErntvEl47sWatKJLeODLGRfwU
-         V88A==
-X-Gm-Message-State: AOAM5319INpTJs1Q9WYx0t2Pmvnbos2vay5+J1XkDRPhsL77smKpFvPr
-        trCi8rq+Od/KRQwxr1eSHKIJKcEkPa6ikeTye5c=
-X-Google-Smtp-Source: ABdhPJw6thu0W4I08er21OMHvXTqHCmRke36jRJTw4oXoQF/f+U0K4R8gl9a4RxuiOpRyHKj2w6qLkAgCbzfL6d5hyk=
-X-Received: by 2002:a50:9ec9:: with SMTP id a67mr11550144edf.238.1637079923561;
- Tue, 16 Nov 2021 08:25:23 -0800 (PST)
-MIME-Version: 1.0
-References: <20211116150119.2171-1-kernel@esmil.dk> <20211116150119.2171-10-kernel@esmil.dk>
- <CAHp75VcUziRv4_U9aDfKu2SKnqj1dab7y+N90tw0JaEKxWW_wQ@mail.gmail.com>
- <CANBLGcz-sRBVGDc2sLtuTdwUesi4QDgB9yCZqhZpMfF6f5dReg@mail.gmail.com> <CAHp75VdJ1xZ8ZGSwjKdvcQzkyfTKcEDzVBLkhdh-Vp3Cx=HdBA@mail.gmail.com>
-In-Reply-To: <CAHp75VdJ1xZ8ZGSwjKdvcQzkyfTKcEDzVBLkhdh-Vp3Cx=HdBA@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 16 Nov 2021 18:24:42 +0200
-Message-ID: <CAHp75VcX-RRjEwK_4GjoXwsgM_Uz5foXTXA7E8rUZm_px1ZTOg@mail.gmail.com>
-Subject: Re: [PATCH v4 09/16] reset: starfive-jh7100: Add StarFive JH7100
- reset driver
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S232171AbhKPQ14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 11:27:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232018AbhKPQ1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 11:27:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CDDE61452;
+        Tue, 16 Nov 2021 16:24:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637079894;
+        bh=R8TUjbzona/14mAw6X3xJh07BJccma1nrJsodrH8riE=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=A73hp9O7hSoTJ6cI6KS5T/r2askBHeFC2F40oQpz1Tqo/ZTrIja8JBHFpjqejFL11
+         PTv1Ha+IHm68zVNxY/ErHGsvyYqsC+YCLrBytUGVTPfYnUs5wWQKiHfnJQtC+vTMAn
+         +HgF67pIWFOP5ryAGU3CJCSJ6yz5Oxn4oTgEdDyMk7SNnUxGFTMjiCNZRRGsMaz9rl
+         dlI7if1RDh4XkK/+Rh/DxfPHP9pDdlQw418FBStDFTFkDLNwv9BpUOQfIo3C7njxvs
+         qds05UF9l598Q6Ohez508fq4kh7joZf2bjnKmjq5BpbOblnjvnzLH596rTHcb4faVY
+         vgsLt7z886Vwg==
+Message-ID: <f30a1399208a88257b3ff25b369088cf88a96367.camel@kernel.org>
+Subject: Re: [PATCH v7 00/17] Enroll kernel keys thru MOK
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
+        linux-integrity@vger.kernel.org, zohar@linux.ibm.com,
+        dhowells@redhat.com, dwmw2@infradead.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
+        torvalds@linux-foundation.org, weiyongjun1@huawei.com,
+        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
+        nramas@linux.microsoft.com, lszubowi@redhat.com, jason@zx2c4.com,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-security-module@vger.kernel.org,
+        James.Bottomley@HansenPartnership.com, pjones@redhat.com
+Date:   Tue, 16 Nov 2021 18:24:52 +0200
+In-Reply-To: <YZPZww0bafYEQ0VS@0xbeefdead.lan>
+References: <20211116001545.2639333-1-eric.snowberg@oracle.com>
+         <eac5f11d7ddcc65d16a9a949c5cf44851bff8f5f.camel@kernel.org>
+         <YZPZww0bafYEQ0VS@0xbeefdead.lan>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.4-1 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 6:21 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Tue, Nov 16, 2021 at 6:06 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
-> > On Tue, 16 Nov 2021 at 17:01, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > On Tue, Nov 16, 2021 at 5:06 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+On Tue, 2021-11-16 at 11:18 -0500, Konrad Rzeszutek Wilk wrote:
+> > > I have included=C2=A0 a link to the mokutil [5] changes I have made t=
+o support=20
+> > > this new functionality.=C2=A0 The shim changes have now been accepted
+> > > upstream [6].
+>=20
+> ..snip..
+> > > [6] https://github.com/rhboot/shim/commit/4e513405b4f1641710115780d19=
+dcec130c5208f
+>=20
+> ..snip..
+> >=20
+> > Does shim have the necessary features in a release?
+>=20
+> Hi!
+>=20
+> It has been accepted in the upstream shim. If you are looking
+> for a distribution having rolled out a shim with this feature (so signed
+> by MSF) I fear that distributions are not that fast with shim releases.
+>=20
+> Also these:
+> https://github.com/rhboot/shim/pulls
+> https://github.com/rhboot/shim/issues
+>=20
+> do mean some extra work would need to go in before an official
+> release is cut.
+>=20
+> Hope this helps?
 
-> Maybe at the end of the day simple use of u64 will be better than bitmap.
-> Up to you, you have got the idea. Either way you may put my tag.
+Yes. I'll hold with this up until there is an official release. Thank you.
 
-At least I see pros of the current solution that it won't read more
-registers than needed.
-
-P.S. And do not add that guy to the Cc list, I think people are
-already annoyed by bounces.
-
--- 
-With Best Regards,
-Andy Shevchenko
+/Jarkko
