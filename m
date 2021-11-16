@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B367452808
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:50:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9363F4527F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:48:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241259AbhKPCxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 21:53:00 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:59500 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241303AbhKPCug (ORCPT
+        id S239762AbhKPCvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 21:51:02 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:37354 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241059AbhKPCs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 21:50:36 -0500
+        Mon, 15 Nov 2021 21:48:57 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 648AF2191A;
-        Tue, 16 Nov 2021 02:47:02 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7F2D71FD6B;
+        Tue, 16 Nov 2021 02:46:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1637030822; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1637030760; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5S+tNHKYQRjSQpQ0rt9HAN4Yso3tuzIn6GjWJ7BDcbM=;
-        b=RiR+NzovbNVimxXKnbO8sg+DB9mcHvi+oRfRQufGEKJA+HSI41DLd7/p8q7wjVwvK083Vj
-        U+2Lq3jN9iy3FDtRDL+kknUUPQGwezjiXSVpsUDK18wVcKllnh8rQRMIvSJJISD8ewaP0s
-        wttat1fAXecoSOuoGTG/M4gyhvrpqDo=
+        bh=uJLgBSr+4ac2HtnFPf6KLC0wSgPyRK3wpQcub+LxsjE=;
+        b=JkAmyrxApRyuTBn7vn5Z5g6h1Fw+zu5G/EIQ3HoU4SR6DCkJTc9MQRxY5p+rbbFiopf+Ks
+        DfC0qFsTopsEA3OGsIEL0PyieQTegaqXDMaaPL7gVyaFlhnW1dIbc/ade8zsDKNbivdhIn
+        ENj9yTsm/EJZis0r4Llb018InpIGK5I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1637030822;
+        s=susede2_ed25519; t=1637030760;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5S+tNHKYQRjSQpQ0rt9HAN4Yso3tuzIn6GjWJ7BDcbM=;
-        b=lDDHnMQnFJWN7BiK5p99csvV+JYZ9vVilNR0Qfa1eWNMUOemxSUgy1qksLpeBzfz6hGmKn
-        rSXnnqtgDrv+MdAg==
+        bh=uJLgBSr+4ac2HtnFPf6KLC0wSgPyRK3wpQcub+LxsjE=;
+        b=Za/pDRAZdOa2LQNWoKokZQtyi9KJ4nzaePa487hjO6EW2QwB66ceS2eOY+PoOiRooaGF/M
+        PTd0buGgp9HXduDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 01AEE13B70;
-        Tue, 16 Nov 2021 02:46:59 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2896513B70;
+        Tue, 16 Nov 2021 02:45:57 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 7pekLKMbk2E0CQAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 16 Nov 2021 02:46:59 +0000
-Subject: [PATCH 12/13] MM: use AIO/DIO for reads from SWP_FS_OPS swap-space
+        id Dl4tNmUbk2HiCAAAMHmgww
+        (envelope-from <neilb@suse.de>); Tue, 16 Nov 2021 02:45:57 +0000
+Subject: [PATCH 04/13] SUNRPC/call_alloc: async tasks mustn't block waiting
+ for memory
 From:   NeilBrown <neilb@suse.de>
 To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
         Anna Schumaker <anna.schumaker@netapp.com>,
@@ -56,7 +57,7 @@ To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
 Cc:     linux-nfs@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
 Date:   Tue, 16 Nov 2021 13:44:04 +1100
-Message-ID: <163703064458.25805.6777856691611196478.stgit@noble.brown>
+Message-ID: <163703064453.25805.15157255463292733812.stgit@noble.brown>
 In-Reply-To: <163702956672.25805.16457749992977493579.stgit@noble.brown>
 References: <163702956672.25805.16457749992977493579.stgit@noble.brown>
 User-Agent: StGit/0.23
@@ -67,154 +68,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When pages a read from SWP_FS_OPS swap-space, the reads are submitted as
-separate reads for each page.  This is generally less efficient than
-larger reads.
+When memory is short, new worker threads cannot be created and we depend
+on the minimum one rpciod thread to be able to handle everything.
+So it must not block waiting for memory.
 
-We can use the block-plugging infrastructure to delay submitting the
-read request until multiple contigious pages have been collected.  This
-requires using ->direct_IO to submit the read (as ->readpages isn't
-suitable for swap).
+mempools are particularly a problem as memory can only be released back
+to the mempool by an async rpc task running.  If all available
+workqueue threads are waiting on the mempool, no thread is available to
+return anything.
 
-If the caller schedules before unplugging, we hand the read-in task off
-to systemwq to avoid any possible locking issues.
+rpc_malloc() can block, and this might cause deadlocks.
+So check RPC_IS_ASYNC(), rather than RPC_IS_SWAPPER() to determine if
+blocking is acceptable.
 
 Signed-off-by: NeilBrown <neilb@suse.de>
 ---
- mm/page_io.c |  107 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 103 insertions(+), 4 deletions(-)
+ net/sunrpc/sched.c              |    4 +++-
+ net/sunrpc/xprtrdma/transport.c |    4 +++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/mm/page_io.c b/mm/page_io.c
-index 9725c7e1eeea..30d613881995 100644
---- a/mm/page_io.c
-+++ b/mm/page_io.c
-@@ -282,6 +282,14 @@ static void bio_associate_blkg_from_page(struct bio *bio, struct page *page)
- #define bio_associate_blkg_from_page(bio, page)		do { } while (0)
- #endif /* CONFIG_MEMCG && CONFIG_BLK_CGROUP */
+diff --git a/net/sunrpc/sched.c b/net/sunrpc/sched.c
+index e2c835482791..d5b6e897f5a5 100644
+--- a/net/sunrpc/sched.c
++++ b/net/sunrpc/sched.c
+@@ -1023,8 +1023,10 @@ int rpc_malloc(struct rpc_task *task)
+ 	struct rpc_buffer *buf;
+ 	gfp_t gfp = GFP_NOFS;
  
-+struct swap_iocb {
-+	struct blk_plug_cb	cb;	/* Must be first */
-+	struct kiocb		iocb;
-+	struct bio_vec		bvec[SWAP_CLUSTER_MAX];
-+	struct work_struct	work;
-+	int			pages;
-+};
-+
- int __swap_writepage(struct page *page, struct writeback_control *wbc,
- 		bio_end_io_t end_write_func)
- {
-@@ -353,6 +361,59 @@ int __swap_writepage(struct page *page, struct writeback_control *wbc,
- 	return 0;
- }
++	if (RPC_IS_ASYNC(task))
++		gfp = GFP_NOWAIT | __GFP_NOWARN;
+ 	if (RPC_IS_SWAPPER(task))
+-		gfp = __GFP_MEMALLOC | GFP_NOWAIT | __GFP_NOWARN;
++		gfp |= __GFP_MEMALLOC;
  
-+static void sio_read_complete(struct kiocb *iocb, long ret)
-+{
-+	struct swap_iocb *sio = container_of(iocb, struct swap_iocb, iocb);
-+	int p;
-+
-+	for (p = 0; p < sio->pages; p++) {
-+		struct page *page = sio->bvec[p].bv_page;
-+
-+		if (ret != PAGE_SIZE * sio->pages) {
-+			SetPageError(page);
-+			ClearPageUptodate(page);
-+			pr_alert_ratelimited("Read-error on swap-device\n");
-+		} else {
-+			SetPageUptodate(page);
-+			count_vm_event(PSWPIN);
-+		}
-+		unlock_page(page);
-+	}
-+	kfree(sio);
-+}
-+
-+static void sio_read_unplug(struct blk_plug_cb *cb, bool from_schedule);
-+
-+static void sio_read_unplug_worker(struct work_struct *work)
-+{
-+	struct swap_iocb *sio = container_of(work, struct swap_iocb, work);
-+	sio_read_unplug(&sio->cb, 0);
-+}
-+
-+static void sio_read_unplug(struct blk_plug_cb *cb, bool from_schedule)
-+{
-+	struct swap_iocb *sio = container_of(cb, struct swap_iocb, cb);
-+	struct address_space *mapping = sio->iocb.ki_filp->f_mapping;
-+	struct iov_iter from;
-+	unsigned int nofs_flag;
-+	int ret;
-+
-+	if (from_schedule) {
-+		INIT_WORK(&sio->work, sio_read_unplug_worker);
-+		schedule_work(&sio->work);
-+		return;
-+	}
-+
-+	iov_iter_bvec(&from, READ, sio->bvec,
-+		      sio->pages, PAGE_SIZE * sio->pages);
-+	/* nofs needs as ->direct_IO may take the same mutex it takes for write */
-+	nofs_flag = memalloc_nofs_save();
-+	ret = mapping->a_ops->direct_IO(&sio->iocb, &from);
-+	memalloc_nofs_restore(nofs_flag);
-+	if (ret != -EIOCBQUEUED)
-+		sio_read_complete(&sio->iocb, ret);
-+}
-+
- int swap_readpage(struct page *page, bool synchronous)
- {
- 	struct bio *bio;
-@@ -380,10 +441,48 @@ int swap_readpage(struct page *page, bool synchronous)
- 	if (data_race(sis->flags & SWP_FS_OPS)) {
- 		struct file *swap_file = sis->swap_file;
- 		struct address_space *mapping = swap_file->f_mapping;
--
--		ret = mapping->a_ops->readpage(swap_file, page);
--		if (!ret)
--			count_vm_event(PSWPIN);
-+		struct blk_plug_cb *cb;
-+		struct swap_iocb *sio;
-+		loff_t pos = page_file_offset(page);
-+		struct blk_plug plug;
-+		int p;
-+
-+		/* We are sometimes called without a plug active.
-+		 * By calling blk_start_plug() here, we ensure blk_check_plugged
-+		 * only fails if memory allocation fails.
-+		 */
-+		blk_start_plug(&plug);
-+		cb = blk_check_plugged(sio_read_unplug, swap_file, sizeof(*sio));
-+		sio = container_of(cb, struct swap_iocb, cb);
-+		if (cb && sio->pages &&
-+		    sio->iocb.ki_pos + sio->pages * PAGE_SIZE != pos) {
-+			/* Not contiguous - hide this sio from lookup */
-+			cb->data = NULL;
-+			cb = blk_check_plugged(sio_read_unplug, swap_file,
-+					       sizeof(*sio));
-+			sio = container_of(cb, struct swap_iocb, cb);
-+		}
-+		if (!cb) {
-+			blk_finish_plug(&plug);
-+			ret = mapping->a_ops->readpage(swap_file, page);
-+			if (!ret)
-+				count_vm_event(PSWPIN);
-+			goto out;
-+		}
-+		if (sio->pages == 0) {
-+			init_sync_kiocb(&sio->iocb, swap_file);
-+			sio->iocb.ki_pos = pos;
-+			sio->iocb.ki_complete = sio_read_complete;
-+		}
-+		p = sio->pages;
-+		sio->bvec[p].bv_page = page;
-+		sio->bvec[p].bv_len = PAGE_SIZE;
-+		sio->bvec[p].bv_offset = 0;
-+		p += 1;
-+		sio->pages = p;
-+		if (p == ARRAY_SIZE(sio->bvec))
-+			cb->data = NULL;
-+		blk_finish_plug(&plug);
- 		goto out;
- 	}
+ 	size += sizeof(struct rpc_buffer);
+ 	if (size <= RPC_BUFFER_MAXSIZE)
+diff --git a/net/sunrpc/xprtrdma/transport.c b/net/sunrpc/xprtrdma/transport.c
+index 16e5696314a4..a52277115500 100644
+--- a/net/sunrpc/xprtrdma/transport.c
++++ b/net/sunrpc/xprtrdma/transport.c
+@@ -574,8 +574,10 @@ xprt_rdma_allocate(struct rpc_task *task)
+ 	gfp_t flags;
  
+ 	flags = RPCRDMA_DEF_GFP;
++	if (RPC_IS_ASYNC(task))
++		flags = GFP_NOWAIT | __GFP_NOWARN;
+ 	if (RPC_IS_SWAPPER(task))
+-		flags = __GFP_MEMALLOC | GFP_NOWAIT | __GFP_NOWARN;
++		flags |= __GFP_MEMALLOC;
+ 
+ 	if (!rpcrdma_check_regbuf(r_xprt, req->rl_sendbuf, rqst->rq_callsize,
+ 				  flags))
 
 
