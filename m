@@ -2,83 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1DD453C7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 23:59:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 305C8453C7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:01:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232183AbhKPXBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 18:01:22 -0500
-Received: from smtprelay0131.hostedemail.com ([216.40.44.131]:40256 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229775AbhKPXBW (ORCPT
+        id S231784AbhKPXD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 18:03:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229447AbhKPXDz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 18:01:22 -0500
-Received: from omf05.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id AB5BB86E90;
-        Tue, 16 Nov 2021 22:58:23 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf05.hostedemail.com (Postfix) with ESMTPA id 2FC745092ECC;
-        Tue, 16 Nov 2021 22:58:15 +0000 (UTC)
-Message-ID: <f03d59adc565c1cf2e97c97c5ea6083e614549dd.camel@perches.com>
-Subject: Re: [PATCH v4 3/3] MAINTAINERS: Mark VMware mailing list entries as
- email aliases
-From:   Joe Perches <joe@perches.com>
-To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>, jgross@suse.com,
-        x86@kernel.org, pv-drivers@vmware.com
-Cc:     Zack Rusin <zackr@vmware.com>, Nadav Amit <namit@vmware.com>,
-        Vivek Thampi <vithampi@vmware.com>,
-        Vishal Bhakta <vbhakta@vmware.com>,
-        Ronak Doshi <doshir@vmware.com>,
-        linux-graphics-maintainer@vmware.com,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        linux-input@vger.kernel.org, sdeep@vmware.com,
-        amakhalov@vmware.com, keerthanak@vmware.com, srivatsab@vmware.com,
-        anishs@vmware.com, linux-kernel@vger.kernel.org, kuba@kernel.org,
-        rostedt@goodmis.org
-Date:   Tue, 16 Nov 2021 14:58:17 -0800
-In-Reply-To: <163710245724.123451.10205809430483374831.stgit@csail.mit.edu>
-References: <163710239472.123451.5004514369130059881.stgit@csail.mit.edu>
-         <163710245724.123451.10205809430483374831.stgit@csail.mit.edu>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+        Tue, 16 Nov 2021 18:03:55 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63CBC061570;
+        Tue, 16 Nov 2021 15:00:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
+        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
+        bh=3hJqriphVMM07OM/Kwo2cD42Pvvn1Qz15qReihX4PtA=; b=jumkp0tSeYoAPtRUqzOMoMBk2l
+        AXF3xXTEcIo0D+x65knBNjDTiy9q3pNCkBquegZITxoFnm8jou1bsg/kZwls6sinD/us0WJzJ3iD3
+        CRfWQY0auo3D51k7hG+NC6gI1hZg7Y6Q50erfnZVDTXBFeqZq7IEsMk1oeQl5irquZk7i5asq1Y0R
+        Y5ehBPopiiaf9YCTeuCY1WFTuDNMoWbNWNH3cQNyilkzLIy9OzzryUq6Vn8li0vSqRZche8rrNs1R
+        8hRvgbX1Mm3PZ+r1AvGIFxYYytiYWlkJm0kD7r15vUwP8ZHWlu97gbYSWMgh9LxCEG9SA2tnD3QXz
+        Zae5FyyQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mn7Rf-002uG4-BF; Tue, 16 Nov 2021 23:00:55 +0000
+Subject: Re: [PATCH] fs: Eliminate compilation warnings for misc
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211116080611.31199-1-tianjia.zhang@linux.alibaba.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <941c9239-3b73-c2ae-83aa-f83d4e587fc8@infradead.org>
+Date:   Tue, 16 Nov 2021 15:00:54 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <20211116080611.31199-1-tianjia.zhang@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 2FC745092ECC
-X-Spam-Status: No, score=0.10
-X-Stat-Signature: bag15ygnb7zycjmij7n8krsg37adfghn
-X-Rspamd-Server: rspamout03
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+Z1DWOQKC1GCVRxp1buSNRLZLwazhnR2M=
-X-HE-Tag: 1637103495-673145
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-11-16 at 14:41 -0800, Srivatsa S. Bhat wrote:
-> From: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+On 11/16/21 12:06 AM, Tianjia Zhang wrote:
+> Eliminate the following clang compilation warnings by adding or
+> fixing function comment:
+
+These are from clang?  They all appear to be from scripts/kernel-doc.
+
+Can someone please clarify?
+
+thanks.
+
+>    fs/file.c:655: warning: Function parameter or member 'fdt' not described in 'last_fd'
+>    fs/file.c:655: warning: Excess function parameter 'cur_fds' description in 'last_fd'
+>    fs/file.c:703: warning: Function parameter or member 'flags' not described in '__close_range'
 > 
-> VMware mailing lists in the MAINTAINERS file are private lists meant
-> for VMware-internal review/notification for patches to the respective
-> subsystems. Anyone can post to these addresses, but there is no public
-> read access like open mailing lists, which makes them more like email
-> aliases instead (to reach out to reviewers).
+>    fs/fs_context.c:202: warning: Function parameter or member 'fc' not described in 'generic_parse_monolithic'
+>    fs/fs_context.c:202: warning: Excess function parameter 'ctx' description in 'generic_parse_monolithic'
+>    fs/fs_context.c:386: warning: Function parameter or member 'log' not described in 'logfc'
+>    fs/fs_context.c:386: warning: Function parameter or member 'prefix' not described in 'logfc'
+>    fs/fs_context.c:386: warning: Function parameter or member 'level' not described in 'logfc'
+>    fs/fs_context.c:386: warning: Excess function parameter 'fc' description in 'logfc'
 > 
-> So update all the VMware mailing list references in the MAINTAINERS
-> file to mark them as such, using "R: email-alias@vmware.com".
+>    fs/namei.c:1044: warning: Function parameter or member 'inode' not described in 'may_follow_link'
 > 
-> Signed-off-by: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+>    fs/read_write.c:88: warning: Function parameter or member 'maxsize' not described in 'generic_file_llseek_size'
+>    fs/read_write.c:88: warning: Excess function parameter 'size' description in 'generic_file_llseek_size'
+> 
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> ---
+>   fs/file.c       | 3 ++-
+>   fs/fs_context.c | 6 ++++--
+>   fs/namei.c      | 1 +
+>   fs/read_write.c | 2 +-
+>   4 files changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/file.c b/fs/file.c
+> index 8627dacfc424..ab3b635b0c86 100644
+> --- a/fs/file.c
+> +++ b/fs/file.c
+> @@ -645,7 +645,7 @@ EXPORT_SYMBOL(close_fd); /* for ksys_close() */
+>   
+>   /**
+>    * last_fd - return last valid index into fd table
+> - * @cur_fds: files struct
+> + * @fdt: fdtable struct
+>    *
+>    * Context: Either rcu read lock or files_lock must be held.
+>    *
+> @@ -695,6 +695,7 @@ static inline void __range_close(struct files_struct *cur_fds, unsigned int fd,
+>    *
+>    * @fd:     starting file descriptor to close
+>    * @max_fd: last file descriptor to close
+> + * @flags:  close range flags
+>    *
+>    * This closes a range of file descriptors. All file descriptors
+>    * from @fd up to and including @max_fd are closed.
+> diff --git a/fs/fs_context.c b/fs/fs_context.c
+> index b7e43a780a62..e94fb7f19d3f 100644
+> --- a/fs/fs_context.c
+> +++ b/fs/fs_context.c
+> @@ -189,7 +189,7 @@ EXPORT_SYMBOL(vfs_parse_fs_string);
+>   
+>   /**
+>    * generic_parse_monolithic - Parse key[=val][,key[=val]]* mount data
+> - * @ctx: The superblock configuration to fill in.
+> + * @fc: filesystem context
+>    * @data: The data to parse
+>    *
+>    * Parse a blob of data that's in key[=val][,key[=val]]* form.  This can be
+> @@ -379,7 +379,9 @@ EXPORT_SYMBOL(vfs_dup_fs_context);
+>   
+>   /**
+>    * logfc - Log a message to a filesystem context
+> - * @fc: The filesystem context to log to.
+> + * @log: The filesystem context to log to.
+> + * @prefix: The log prefix.
+> + * @level: The log level.
+>    * @fmt: The format of the buffer.
+>    */
+>   void logfc(struct fc_log *log, const char *prefix, char level, const char *fmt, ...)
+> diff --git a/fs/namei.c b/fs/namei.c
+> index 1f9d2187c765..3bc73b4f39c9 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -1028,6 +1028,7 @@ int sysctl_protected_regular __read_mostly;
+>   /**
+>    * may_follow_link - Check symlink following for unsafe situations
+>    * @nd: nameidata pathwalk data
+> + * @inode: inode to check
+>    *
+>    * In the case of the sysctl_protected_symlinks sysctl being enabled,
+>    * CAP_DAC_OVERRIDE needs to be specifically ignored if the symlink is
+> diff --git a/fs/read_write.c b/fs/read_write.c
+> index 0074afa7ecb3..d7b0f8528930 100644
+> --- a/fs/read_write.c
+> +++ b/fs/read_write.c
+> @@ -71,7 +71,7 @@ EXPORT_SYMBOL(vfs_setpos);
+>    * @file:	file structure to seek on
+>    * @offset:	file offset to seek to
+>    * @whence:	type of seek
+> - * @size:	max size of this file in file system
+> + * @maxsize:	max size of this file in file system
+>    * @eof:	offset used for SEEK_END position
+>    *
+>    * This is a variant of generic_file_llseek that allows passing in a custom
+> 
 
-Acked-by: Joe Perches <joe@perches.com>
 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-[]
-> @@ -6223,8 +6223,8 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
->  F:	drivers/gpu/drm/vboxvideo/
->  
->  DRM DRIVER FOR VMWARE VIRTUAL GPU
-> -M:	"VMware Graphics" <linux-graphics-maintainer@vmware.com>
->  M:	Zack Rusin <zackr@vmware.com>
-> +R:	VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>
-
-etc...
-
-
+-- 
+~Randy
