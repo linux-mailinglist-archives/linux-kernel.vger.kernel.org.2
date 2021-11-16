@@ -2,134 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F19B3453B62
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 22:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5323D453B65
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 22:04:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231905AbhKPVEw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 16 Nov 2021 16:04:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40710 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231624AbhKPVEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 16:04:50 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A76461A8D;
-        Tue, 16 Nov 2021 21:01:51 +0000 (UTC)
-Date:   Tue, 16 Nov 2021 16:01:50 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Cai,Huoqing" <caihuoqing@baidu.com>
-Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Ingo Molnar" <mingo@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v3 1/6] kthread: Add the helper function
- kthread_run_on_cpu()
-Message-ID: <20211116160150.44267ea8@gandalf.local.home>
-In-Reply-To: <40fae23eb02c4363bc75649e23f78c1c@baidu.com>
-References: <20211022025711.3673-1-caihuoqing@baidu.com>
-        <20211022025711.3673-2-caihuoqing@baidu.com>
-        <40fae23eb02c4363bc75649e23f78c1c@baidu.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231924AbhKPVFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 16:05:51 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:55040 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229899AbhKPVFu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 16:05:50 -0500
+Date:   Tue, 16 Nov 2021 22:02:49 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637096571;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZBHs0v/DRYrmYPb4+ZG5g0FFfV8r/vqdStHVilbYAv4=;
+        b=vLe3wZf8kI23BrtHAm8ywEC1iq13uoU7tWSO6HsoeJcxGu4/GJmz37O5OoqYt6ROP3OV5x
+        NntrbXziJmQuOvLIm/OOrigYQEDlQAPZXzITV0GfYi+ccXxBMGfGEfLcyYfAV0rgWTvLS0
+        PF+7ogH4MMfYgT6Rjr2nyY/+bMuQIWjRn7vf8y3tBhSQBP2ZMDhd1261QflGgAD2yxUKUQ
+        JgFzhR6xAdeshozX/r55ak75pSoH+0UtSvIQEM6UAYlbaP2EjhxdFnREZe5IsgkbKILgQb
+        b5iOyLa+4wSr0UU3WkeFiLCGd499Q9xfDqKwkP/qG+2hP4lJ7un+4jZCRvkj2A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637096571;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZBHs0v/DRYrmYPb4+ZG5g0FFfV8r/vqdStHVilbYAv4=;
+        b=q2WoW6K7n4R/4cfJ9cKjQmqg3UEBbCxyH2t+R2DTVLyoMPX8mrw7aZ3WkKb6TkN99KamHa
+        wySxa99CvanVUCCg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Joe Korty <joe.korty@concurrent-rt.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Clark Williams <williams@redhat.com>,
+        Jun Miao <jun.miao@windriver.com>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5.10-rt+] drm/i915/gt: transform irq_disable into
+ local_lock.
+Message-ID: <20211116210249.t3f6gw56iaow57mq@linutronix.de>
+References: <20211007165928.GA43890@zipoli.concurrent-rt.com>
+ <20211007171929.hegwwqelf46skjyw@linutronix.de>
+ <20211009164908.GA21269@zipoli.concurrent-rt.com>
+ <20211116152534.122f8357@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211116152534.122f8357@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 08:32:30 +0000
-"Cai,Huoqing" <caihuoqing@baidu.com> wrote:
+On 2021-11-16 15:25:34 [-0500], Steven Rostedt wrote:
+> I'm looking to see what needs to be added to 5.10-rt. Is there a particular
+> fix in one of the 5.x-rt trees (x > 10) that I can pull from? Or is this
+> only an issue with 5.10 and below?
 
-> Hello,
-> Just a ping, to see if there are any more comments :-P
+I have this:
+  https://lore.kernel.org/all/20211026114100.2593433-1-bigeasy@linutronix.de
 
-I have no real issue with this patch set. As it seems to be a generic clean
-up, perhaps Andrew might like to take a look at it, and if he's fine with
-it, he can take it through his tree?
+pending vs upstream and I *think* more than just that one (2/9 from the
+series) needs to be backported here. We do have 1/9 differently in 5.10,
+not sure about 4/9.
+I would love more feedback here from people and I tried to motivate Joe
+to provide some. Clark was so nice to test these patches and provide
+feedback. My i915 does not trigger all the code paths I'm touching
+there.
 
--- Steve
+If you think that 2/9 is obvious enough, please go ahead. If you start
+touching that irq_work area then you might also want to pick
+  810979682ccc9 ("irq_work: Allow irq_work_sync() to sleep if irq_work() no IRQ support.")
+  b4c6f86ec2f64 ("irq_work: Handle some irq_work in a per-CPU thread on PREEMPT_RT")
+  09089db79859c ("irq_work: Also rcuwait for !IRQ_WORK_HARD_IRQ on PREEMPT_RT")
 
+which made their way into v5.16-rc1.
 
-> > -----Original Message-----
-> > From: Cai,Huoqing <caihuoqing@baidu.com>
-> > Sent: 2021年10月22日 10:57
-> > Subject: [PATCH v3 1/6] kthread: Add the helper function kthread_run_on_cpu()
-> > 
-> > the helper function kthread_run_on_cpu() includes
-> > kthread_create_on_cpu/wake_up_process().
-> > In some cases, use kthread_run_on_cpu() directly instead of
-> > kthread_create_on_node/kthread_bind/wake_up_process() or
-> > kthread_create_on_cpu/wake_up_process() or
-> > kthreadd_create/kthread_bind/wake_up_process() to simplify the code.
-> > 
-> > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> > ---
-> > v1->v2:
-> > 	*Remove cpu_to_node from kthread_create_on_cpu params.
-> > 	*Updated the macro description comment.
-> > v2->v3:
-> > 	*Convert this helper macro to static inline function
-> > 	*Fix typo in changelog
-> > 
-> > v1 link:
-> > 	https://lore.kernel.org/lkml/20211021120135.3003-2-
-> > caihuoqing@baidu.com/
-> > v2 link:
-> > 	https://lore.kernel.org/lkml/20211021122758.3092-2-
-> > caihuoqing@baidu.com/
-> > 
-> >  include/linux/kthread.h | 25 +++++++++++++++++++++++++
-> >  1 file changed, 25 insertions(+)
-> > 
-> > diff --git a/include/linux/kthread.h b/include/linux/kthread.h
-> > index 346b0f269161..db47aae7c481 100644
-> > --- a/include/linux/kthread.h
-> > +++ b/include/linux/kthread.h
-> > @@ -56,6 +56,31 @@ bool kthread_is_per_cpu(struct task_struct *k);
-> >  	__k;								   \
-> >  })
-> > 
-> > +/**
-> > + * kthread_run_on_cpu - create and wake a cpu bound thread.
-> > + * @threadfn: the function to run until signal_pending(current).
-> > + * @data: data ptr for @threadfn.
-> > + * @cpu: The cpu on which the thread should be bound,
-> > + * @namefmt: printf-style name for the thread. Format is restricted
-> > + *	     to "name.*%u". Code fills in cpu number.
-> > + *
-> > + * Description: Convenient wrapper for kthread_create_on_cpu()
-> > + * followed by wake_up_process().  Returns the kthread or
-> > + * ERR_PTR(-ENOMEM).
-> > + */
-> > +static inline struct task_struct *
-> > +kthread_run_on_cpu(int (*threadfn)(void *data), void *data,
-> > +			unsigned int cpu, const char *namefmt)
-> > +{
-> > +	struct task_struct *p;
-> > +
-> > +	p = kthread_create_on_cpu(threadfn, data, cpu, namefmt);
-> > +	if (!IS_ERR(p))
-> > +		wake_up_process(p);
-> > +
-> > +	return p;
-> > +}
-> > +
-> >  void free_kthread_struct(struct task_struct *k);
-> >  void kthread_bind(struct task_struct *k, unsigned int cpu);
-> >  void kthread_bind_mask(struct task_struct *k, const struct cpumask *mask);
-> > --
-> > 2.25.1  
-> 
+> -- Steve
 
+Sebastian
