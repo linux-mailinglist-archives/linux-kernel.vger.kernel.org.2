@@ -2,114 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D38B5452A53
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 07:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B58D452A57
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 07:06:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232316AbhKPGIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 01:08:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230489AbhKPGH5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 01:07:57 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E7FDC061570
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 22:05:00 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id i12so175338pfd.6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 22:05:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=bFUeJG1PK9M94eXJmjy8xlktobGNPFdvyVdHGVDoXdY=;
-        b=eGTQ7I2u8pR3PkbccaeyYQs7RCyRw0UVLRi5wDUNsC4lC7NAV/wGQWE5a00v6hdNCS
-         UfBv8zXuWg6pZZZAf5IBs/Fq/MFOVJr9bcnwKnnT8djO/1Mvm1gWdZ4iPsYnR+YqJKO1
-         OeC8vGZY+UusbCE1z3ynqoPrHADnkRpIL8BmkoxALG88Ae/enXuHBymOZnpNXQS21GrD
-         /xKimUIM0MyAsevMAIjqiBgKAqU+2ixyPA/H0cfyHdyPyCB//qnPiP8SvNtVvN2Ghwj+
-         nww7IhbKxubsnOkeJ8sincxt98QtBu55muDXYhkeSTocr+2m5R2V6jWU2O9LoH/oNAFs
-         W20A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=bFUeJG1PK9M94eXJmjy8xlktobGNPFdvyVdHGVDoXdY=;
-        b=MpWVUcfgBWGu8i8oVt3K6HRF5X59vBNNrgrLUzZAq5LiSB8Zr+MWBXmWZC8M93OaDb
-         ebNjgztnkMrLsYGqqSXvcNmTeopXd2aes/ZNLrq/UweMXsCLKBEliI4xoWiNgnPa3mEq
-         PVpyJzF8qqCq/MO5/qx+gIygwq33JQzetpZ7vl0lbtQQbn+1hanwDgya3xouCqSBMMFU
-         gHX4/0vpFSCAA4QqrzQc8DB4rxxm7qEq7HUPWRzycwpgZCCOQ8fZeN/pjFPMchGOSDBl
-         gqYRxiINTKmd3W7jx7uFB0k70EL2qSOhnUiIlcW1qc7xBlDBQJkdYuFubS2dSEJNW06T
-         9HYg==
-X-Gm-Message-State: AOAM5323MOtyeVgIS7MwkIWPrE5GezEps5mxG6hqXjJZ/Tv2nBCume77
-        8nrxn3nMGMIbd3OGrevlCrS9juOa8HQ=
-X-Google-Smtp-Source: ABdhPJwf6HMS5nA8V3e4KuZjx5RKOPadX/pvdJ5D86x7OCiqK7KoKUW2PfnwxFVJANxN7NXcPIdc6g==
-X-Received: by 2002:a63:595c:: with SMTP id j28mr3224266pgm.350.1637042699928;
-        Mon, 15 Nov 2021 22:04:59 -0800 (PST)
-Received: from [172.18.2.138] ([137.59.101.13])
-        by smtp.gmail.com with ESMTPSA id s30sm17587800pfg.17.2021.11.15.22.04.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 22:04:59 -0800 (PST)
-Subject: Re: [PATCH] watchdog: ignore nohz_full cores in new cpumask
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     akpm@linux-foundation.org, frederic@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211112051434.23642-1-qiang.zhang1211@gmail.com>
- <YZJ9ZNusQR/3nh/9@alley>
-From:   Zqiang <qiang.zhang1211@gmail.com>
-Message-ID: <a8426729-6fd8-4855-d934-552d80f74561@gmail.com>
-Date:   Tue, 16 Nov 2021 14:04:57 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S237455AbhKPGJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 01:09:21 -0500
+Received: from mga06.intel.com ([134.134.136.31]:3868 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232933AbhKPGIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 01:08:36 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="294448235"
+X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
+   d="scan'208";a="294448235"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 22:05:34 -0800
+X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
+   d="scan'208";a="454327607"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.215.107]) ([10.254.215.107])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 22:05:29 -0800
+Message-ID: <c7add816-853a-c31d-6425-464512a2de61@linux.intel.com>
+Date:   Tue, 16 Nov 2021 14:05:27 +0800
 MIME-Version: 1.0
-In-Reply-To: <YZJ9ZNusQR/3nh/9@alley>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     baolu.lu@linux.intel.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, Will Deacon <will@kernel.org>,
+        rafael@kernel.org, Diana Craciun <diana.craciun@oss.nxp.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Liu Yi L <yi.l.liu@intel.com>,
+        Jacob jun Pan <jacob.jun.pan@intel.com>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        iommu@lists.linux-foundation.org, linux-pci@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211115221747.GA1587608@bhelgaas>
 Content-Language: en-US
+Subject: Re: [PATCH 03/11] PCI: pci_stub: Suppress kernel DMA ownership
+ auto-claiming
+In-Reply-To: <20211115221747.GA1587608@bhelgaas>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Bjorn,
 
-On 2021/11/15 下午11:31, Petr Mladek wrote:
-> On Fri 2021-11-12 13:14:34, Zqiang wrote:
->> If the nohz_full is enabled, when update watchdog_mask, the
->> nohz_full cores should be ignored.
->>
->> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
->> ---
->>   kernel/watchdog.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
->> index ad912511a0c0..3ef11a94783c 100644
->> --- a/kernel/watchdog.c
->> +++ b/kernel/watchdog.c
->> @@ -628,7 +628,9 @@ void lockup_detector_soft_poweroff(void)
->>   static void proc_watchdog_update(void)
->>   {
->>   	/* Remove impossible cpus to keep sysctl output clean. */
->> -	cpumask_and(&watchdog_cpumask, &watchdog_cpumask, cpu_possible_mask);
->> +	cpumask_and(&watchdog_cpumask, &watchdog_cpumask,
->> housekeeping_cpumask(HK_FLAG_TIMER));
-> I am not familiar with nozh_full code but this looks fine.
->
->
->> +	if (cpumask_empty(&watchdog_cpumask))
->> +		return;
-> But this looks looks wrong. Is there any reason for this?
->
-> We need to stop the watchdog when it was running before.
->
-> I mean that lockup_detector_reconfigure() must be called anytime
-> when the mask has changed even when it became empty.
+On 11/16/21 6:17 AM, Bjorn Helgaas wrote:
+> On Mon, Nov 15, 2021 at 10:05:44AM +0800, Lu Baolu wrote:
+>> pci_stub allows the admin to block driver binding on a device and make
+>> it permanently shared with userspace. Since pci_stub does not do DMA,
+>> it is safe. However the admin must understand that using pci_stub allows
+>> userspace to attack whatever device it was bound to.
+> This commit log doesn't say what the patch does.  I think it tells us
+> something about what pci-stub*already*  does ("allows admin to block
+> driver binding") and something about why that is safe ("does not do
+> DMA").
 
-Thanks Petr
+Yes, you are right. This patch is to keep the pci_stub's existing use
+case ("allows admin to block driver binding") after moving the viable
+check from the vfio to iommu layer (done by this series).
 
-I will resend patch v2.
+About "safe" (should not be part of this description), there are two
+sides from my understanding:
 
->
->
->>   	lockup_detector_reconfigure();
->>   }
-> Best Regards,
-> Petr
+#1) The pci_stub driver itself doesn't control the device to do any DMA.
+     So it won't interfere the user space through device DMA.
+
+#2) The pci_stub driver doesn't access the PCI bar and doesn't build any
+     device driver state around any value in the bar. So other devices
+     in the same iommu group (assigned to user space) have no means to
+     change the kernel driver consistency via p2p access.
+> 
+> But it doesn't say what this patch changes.  Based on the subject
+> line, I expected something like:
+> 
+>    As of ("<commit subject>"), <some function>() marks the iommu_group
+>    as containing only devices with kernel drivers that manage DMA.
+> 
+>    Avoid this default behavior for pci-stub because it does not program
+>    any DMA itself.  This allows <some desirable behavior>.
+> 
+
+Sure. I will rephrase the description like above.
+
+Best regards,
+baolu
