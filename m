@@ -2,63 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 132BE4532CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:22:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD24D4532D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:24:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236691AbhKPNY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 08:24:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236677AbhKPNY6 (ORCPT
+        id S236711AbhKPN0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 08:26:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44528 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236705AbhKPN01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 08:24:58 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95455C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 05:22:01 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id y13so12802086edd.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 05:22:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=pNPXYr/Bv/L+VmzGPgKR9ZiItCiRAut700iKN/YXrGY=;
-        b=Lx7fLF0HiTuS2xNMP5UJl3MsalhEiwsj7l0VPQhHduxfqmbQf/DB8GJpFzip5LWJBK
-         R+WewzD8WLLJ+lppotPK/RdxjF36GcGq/1YS5UFry9t5GC1t8qPE9LGkt6P+49LA4sxC
-         OTRX9VkVgGE7RzIUgAHiecdYtWYs9yGSO0CRABUymNOg43i3pDXRPp9iiPwig59XSjOt
-         wy/sL/r/wxEK0h3D46OlWwwT765AHA6CnK/iqxMIRkns0HpcwOJVMQXW4s28dXueNrDr
-         2pK1DB4Sl18tokQ/eKFrt+rzrr2qUd8OLwlagEkNPreVh0p/aV0wIH8LIgxADgTgGMj3
-         97iA==
+        Tue, 16 Nov 2021 08:26:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637069010;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7QB9Djd7unSuWFppJ6ryGSoufF2SRnNHGOPyI0tESn4=;
+        b=ZIstAnW0E0rBi5YPmzUSbyRKpnq0DuO6PR50Jh4JD3q9SQe/gbMGDETnNGnz20QqQ7PKKd
+        6kLe4ilGFg11hvIySMDKfQ88SS7dHDVNQTQcFU6i/jqtJpfB9fYTj10LmjIGH7yr0JoyvK
+        vf7oU3SyUiZQX2B1YsEZQD29hSCh41c=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-579-FxIFk6D0MG2caOT_jDHOzQ-1; Tue, 16 Nov 2021 08:23:29 -0500
+X-MC-Unique: FxIFk6D0MG2caOT_jDHOzQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 201-20020a1c04d2000000b003335bf8075fso6484614wme.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 05:23:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=pNPXYr/Bv/L+VmzGPgKR9ZiItCiRAut700iKN/YXrGY=;
-        b=z/ksOeuwn1O6GA+PPwEoKBjsfsLohVTa7doSuIYpevD83uwGDbKbDIQPIydFyR4O1U
-         oqrCDgLGJV3YPIQDsJQTm2BHCUG1HPbyJdfRg2kWtpNf/spw1SZQCXarG3g4tKjztzPp
-         qEePxCzsyzw6+HQ4hBzbvQ+vb8joYyf1FQOF668UtWa1aOlptxCMEppn7dnLaNLxcJVT
-         JlBh65HdmoqtUfnfIeqnyUMkIvYc4zk7xV01jF7vH97oJFleoq++NGEmiTkxs16RVPK1
-         aObpmsGo0me/3Mp3IicMjE7b+eZpdwAPqIoHTUUDEvyhH+JbRCOyrxtOInyT/bpxamPQ
-         tv6Q==
-X-Gm-Message-State: AOAM530k858t6htgJoLDum5Dv3H5KFkD/fAHNak+V8OZlfGZiTaRXJxl
-        OsEF+O21idhEleqkxZC8nuYWKdEL4j7qZpjA7KA=
-X-Google-Smtp-Source: ABdhPJwQqrCqhAwsPxuRJ0FLRmmLK1c3elFwM6QM1lP+TS3CbLJnsQCf4qEQItg1KhFy+a/f91Vr1BtjuyoYoTHNDLU=
-X-Received: by 2002:a17:906:2bd5:: with SMTP id n21mr9777693ejg.337.1637068920249;
- Tue, 16 Nov 2021 05:22:00 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=7QB9Djd7unSuWFppJ6ryGSoufF2SRnNHGOPyI0tESn4=;
+        b=22Y9DnTPW+T+pecLLyDFUE7J9/eTZxYC/HDCDRX/N5VkFNbjfl9UQ2ksjWW6m+4HwW
+         4mdZsVl13JU2ieQNgSErAhWCRUfr/lk/IWS3QUQYKg26PPFkhgnsg0VggyyTVP6h+MIs
+         7I9ehR5DFeWX9lmupUDQOL6a7ULW3ovB8btCnuf5oPRJAbayfxxHoSShy8L7ZhL6aVKU
+         AEO5URrVHDLV0OTAfnwFb2OowXiyQSbL4KIattMxGdrQ60gQ/yurKzaJbL/soCJYrC4x
+         AiQcVHMqpDubl059q1QY9MZtMC0TPK5FTz746cp5EgYfNkJLb88QbwXZ3JFc7aYK++p7
+         WuaQ==
+X-Gm-Message-State: AOAM532Pk5KlhNkuJH7uW8x7u8CnqWdEHSeWig3zU4rEU8wAGYbelftf
+        imJTudd4lGwXD5ZagH70eryd+Kb4PAUodjWF5BJETf+m737YT8H2I5XrxkwXRSCE4Yge7rwMUkf
+        /vxF+v+NOtsAM2XyCsp8G4BzquI50yF0sez++vgq0WsoVNcK4JRhdw/0ROU7ColhPgC3+wiUHlN
+        Ju
+X-Received: by 2002:adf:fd90:: with SMTP id d16mr9035263wrr.385.1637069007901;
+        Tue, 16 Nov 2021 05:23:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJypb9wLmwBU+C8U60E20ALWxdPmsGCyP6NgX66fxkM73bNsY5mStZduwVGh4q0guawc8+jIEQ==
+X-Received: by 2002:adf:fd90:: with SMTP id d16mr9035209wrr.385.1637069007612;
+        Tue, 16 Nov 2021 05:23:27 -0800 (PST)
+Received: from fedora (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id n7sm17311363wro.68.2021.11.16.05.23.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 05:23:27 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>
+Cc:     kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, kvm-ppc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] KVM: arm64: Cap KVM_CAP_NR_VCPUS by KVM_CAP_MAX_VCPUS
+In-Reply-To: <ad3534bc-fe3a-55f5-b022-4dbec5f29798@redhat.com>
+References: <20211111162746.100598-1-vkuznets@redhat.com>
+ <20211111162746.100598-2-vkuznets@redhat.com>
+ <a5cdff6878b7157587e92ebe4d5af362@kernel.org> <875ysxg0s1.fsf@redhat.com>
+ <87k0hd8obo.wl-maz@kernel.org>
+ <ad3534bc-fe3a-55f5-b022-4dbec5f29798@redhat.com>
+Date:   Tue, 16 Nov 2021 14:23:25 +0100
+Message-ID: <87y25onsj6.fsf@redhat.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6402:3490:0:0:0:0 with HTTP; Tue, 16 Nov 2021 05:22:00
- -0800 (PST)
-Reply-To: kathrynh566@gmail.com
-From:   Kathryn Hensley <marinavanessa534@gmail.com>
-Date:   Tue, 16 Nov 2021 05:22:00 -0800
-Message-ID: <CAAPyjrtRoR9ZRn5Lvx-3ugApbRyPZXa5qkW3MM3mospNSQ2bHA@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Sir,
-I have a transaction that involves the transfer of $17.9 million for
-foreign investment, if you are interested kindly reply to:
-kathrynh566@gmail.com for more specific details.
-Thank you.
+Paolo Bonzini <pbonzini@redhat.com> writes:
+
+> On 11/12/21 15:02, Marc Zyngier wrote:
+>>> I'd like KVM to be consistent across architectures and have the same
+>>> (similar) meaning for KVM_CAP_NR_VCPUS.
+>> Sure, but this is a pretty useless piece of information anyway. As
+>> Andrew pointed out, the information is available somewhere else, and
+>> all we need to do is to cap it to the number of supported vcpus, which
+>> is effectively a KVM limitation.
+>> 
+>> Also, we are talking about representing the architecture to userspace.
+>> No amount of massaging is going to make an arm64 box look like an x86.
+>
+> Not sure what you mean?  The API is about providing a piece of 
+> information independent of the architecture, while catering for a ppc 
+> weirdness.  Yes it's mostly useless if you don't care about ppc, but 
+> it's not about making arm64 look like x86 or ppc; it's about not having 
+> to special case ppc in userspace.
+>
+> If anything, if KVM_CAP_NR_VCPUS returns the same for kvm and !kvm, then 
+> *that* is making an arm64 box look like an x86.  On ARM the max vCPUs 
+> depends on VM's GIC configuration, so KVM_CAP_NR_VCPUS should take that 
+> into account.
+
+(I'm about to send v2 as we have s390 sorted out.)
+
+So what do we decide about ARM? 
+- Current approach (kvm->arch.max_vcpus/kvm_arm_default_max_vcpus()
+ depending on 'if (kvm)') - that would be my preference.
+- Always kvm_arm_default_max_vcpus to make the output independent on 'if
+ (kvm)'.
+- keep the status quo (drop the patch).
+
+Please advise)
+
+-- 
+Vitaly
+
