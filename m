@@ -2,177 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D15452D06
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:40:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 757BE452D0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:42:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbhKPInA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 03:43:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232091AbhKPImx (ORCPT
+        id S232420AbhKPIow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 03:44:52 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:38642 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231863AbhKPIou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 03:42:53 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F5CC061746
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 00:39:56 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id m14so84589586edd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 00:39:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=29oqjmL46qhcPK7GumgLq+DG8d/OcnmM7sBa267LNJc=;
-        b=HONPxPc4fpua+nyA5KACQL975ArZH3/eBZ5dZY+p2HgPVPrzmmke+3HJWO2fCuuPVf
-         l6f/AdcurSlwQitjA8g/mqh5lMP6Ad7Y2yKDZ3KPIDSx/M9xUBEV1QmMbD9uzAlXdMnm
-         2Pq6zA92NLyZGraUjpKEnUeaXM8JEomRJRcxIk3CjGNzoDdCiIAeukpjfz5e9+dKV+1c
-         y0luK2d9szpkwic7PL+e/BbeLQ3eEvF2IkQeSyDfW6u4WlVuDTNraMytYMqlRCrUgZwX
-         LHmEkcCL8WrLlzzguwmU1M1g+DuVFytZ6yvWZ9Fyz1Mm+5z2F+fz+/KOCsQkakBVfK4r
-         /1Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=29oqjmL46qhcPK7GumgLq+DG8d/OcnmM7sBa267LNJc=;
-        b=BxKiQJ0n/bGVU2cLUrYYI+B/1tGsCE+eUdCAqbs++QiXEeDoKKguSKBHC+tCLYoAXp
-         shwA8sj1/PdClrxBGqjb7FfYzBg/XcldoWKfSM9Ty7mqLRPiWdNmu1X/mrSmreI6Gfm4
-         kHUeM+ICMEXH2zy87s+lj+t2gYVraaUpwTrfeb0XcbE9PXABQNWy2nJYY9yyCSs6ry7f
-         QeuJV8+eYrV7Xk91/T2K+suqGL1feVZY2MzOq8YBkkuLFzsJAsFYoBDDMs/uTV7fgaXA
-         tdwmWpEwctz4UdxJhoDPNegurILC5LYsEcoSR6ty4pLID87jsL+6x/qUx0t9iijjGGa+
-         H7MA==
-X-Gm-Message-State: AOAM530grSgE2OYVb31la463Gu5MakuZcqMkKPIRnk1WODT9V5rJixx0
-        fsKbqKbaGw07An7GFhQ+qUqawQeoewF9vHuwvbgaCg==
-X-Google-Smtp-Source: ABdhPJzw2cpdURyncHf4l37gZdIW9qTyoDRpERcWbGarQ+ldN+Qh5JZMa2Mv6dpFTys9HHv83+R10ncImdIENaH1IUM=
-X-Received: by 2002:a17:906:7955:: with SMTP id l21mr8006801ejo.6.1637051995253;
- Tue, 16 Nov 2021 00:39:55 -0800 (PST)
+        Tue, 16 Nov 2021 03:44:50 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 7CF68218F0;
+        Tue, 16 Nov 2021 08:41:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637052112; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=C55AwTWUd1GkY83Qar7hlYhX0sMPC1zTqlrpdkKmksU=;
+        b=ujlSZx2xq2UNx6Gfwb6APaWg8C/a5u7GwUcCTjJEpL+nfxQYYq4zZrH7hSjeCyqLbIP0Qs
+        3sYoOjRqSyOSvhKR2GJ6JAzLfipwCa7iHvYMPyCrL0/snaFxOQDeTN9Dl6lzauB/SngQ89
+        obm/9puvR0ZvvQrT4Mq2Wzx5nF3C2OM=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 31C55A3B83;
+        Tue, 16 Nov 2021 08:41:50 +0000 (UTC)
+Date:   Tue, 16 Nov 2021 09:41:46 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Alexander Popov <alex.popov@linux.com>
+Cc:     Gabriele Paoloni <gpaoloni@redhat.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Robert Krutsch <krutsch@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul McKenney <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Maciej Rozycki <macro@orcam.me.uk>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jann Horn <jannh@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Laura Abbott <labbott@kernel.org>,
+        David S Miller <davem@davemloft.net>,
+        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Scull <ascull@google.com>,
+        Marc Zyngier <maz@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Wang Qing <wangqing@vivo.com>, Mel Gorman <mgorman@suse.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
+        Mathieu Chouquet-Stringer <me@mathieu.digital>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stephen Kitt <steve@sk2.org>, Stephen Boyd <sboyd@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-hardening@vger.kernel.org,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>, notify@kernel.org,
+        main@lists.elisa.tech, safety-architecture@lists.elisa.tech,
+        devel@lists.elisa.tech, Shuah Khan <shuah@kernel.org>
+Subject: Re: [ELISA Safety Architecture WG] [PATCH v2 0/2] Introduce the
+ pkill_on_warn parameter
+Message-ID: <YZNuyssYsAB0ogUD@alley>
+References: <20211027233215.306111-1-alex.popov@linux.com>
+ <ac989387-3359-f8da-23f9-f5f6deca4db8@linux.com>
+ <CAHk-=wgRmjkP3+32XPULMLTkv24AkA=nNLa7xxvSg-F0G1sJ9g@mail.gmail.com>
+ <77b79f0c-48f2-16dd-1d00-22f3a1b1f5a6@linux.com>
+ <CAKXUXMx5Oi-dNVKB+8E-pdrz+ooELMZf=oT_oGXKFrNWejz=fg@mail.gmail.com>
+ <22828e84-b34f-7132-c9e9-bb42baf9247b@redhat.com>
+ <cf57fb34-460c-3211-840f-8a5e3d88811a@linux.com>
 MIME-Version: 1.0
-References: <20211115165428.722074685@linuxfoundation.org> <CA+G9fYtFOnKQ4=3-4rUTfVM-fPno1KyTga1ZAFA2OoqNvcnAUg@mail.gmail.com>
-In-Reply-To: <CA+G9fYtFOnKQ4=3-4rUTfVM-fPno1KyTga1ZAFA2OoqNvcnAUg@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 16 Nov 2021 14:09:44 +0530
-Message-ID: <CA+G9fYuF1F-9TAwgR9ik_qjFqQvp324FJwFJbYForA_iRexZjg@mail.gmail.com>
-Subject: Re: [PATCH 5.15 000/917] 5.15.3-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Vladis Dronov <vdronov@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cf57fb34-460c-3211-840f-8a5e3d88811a@linux.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Nov 2021 at 12:06, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> On Tue, 16 Nov 2021 at 00:03, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.15.3 release.
-> > There are 917 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Wed, 17 Nov 2021 16:52:23 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.3-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
->
->
+On Tue 2021-11-16 10:52:39, Alexander Popov wrote:
+> On 15.11.2021 18:51, Gabriele Paoloni wrote:
+> > On 15/11/2021 14:59, Lukas Bulwahn wrote:
+> > > On Sat, Nov 13, 2021 at 7:14 PM Alexander Popov <alex.popov@linux.com> wrote:
+> > > > On 13.11.2021 00:26, Linus Torvalds wrote:
+> > > > > On Fri, Nov 12, 2021 at 10:52 AM Alexander Popov <alex.popov@linux.com> wrote:
+> > > > Killing the process that hit a kernel warning complies with the Fail-Fast
+> > > > principle [1]. pkill_on_warn sysctl allows the kernel to stop the process when
+> > > > the **first signs** of wrong behavior are detected.
+> > > > 
+> > > In summary, I am not supporting pkill_on_warn. I would support the
+> > > other points I mentioned above, i.e., a good enforced policy for use
+> > > of warn() and any investigation to understand the complexity of
+> > > panic() and reducing its complexity if triggered by such an
+> > > investigation.
+> > 
+> > Hi Alex
+> > 
+> > I also agree with the summary that Lukas gave here. From my experience
+> > the safety system are always guarded by an external flow monitor (e.g. a
+> > watchdog) that triggers in case the safety relevant workloads slows down
+> > or block (for any reason); given this condition of use, a system that
+> > goes into the panic state is always safe, since the watchdog would
+> > trigger and drive the system automatically into safe state.
+> > So I also don't see a clear advantage of having pkill_on_warn();
+> > actually on the flip side it seems to me that such feature could
+> > introduce more risk, as it kills only the threads of the process that
+> > caused the kernel warning whereas the other processes are trusted to
+> > run on a weaker Kernel (does killing the threads of the process that
+> > caused the kernel warning always fix the Kernel condition that lead to
+> > the warning?)
+> 
+> Lukas, Gabriele, Robert,
+> Thanks for showing this from the safety point of view.
+> 
+> The part about believing in panic() functionality is amazing :)
 
-Regression found on arm64 juno-r2 / qemu.
-Following kernel crash reported on stable-rc 5.15.
+Nothing is 100% reliable.
 
-Anders bisected this kernel crash and found the first bad commit,
+With printk() maintainer hat on, the current panic() implementation
+is less reliable because it tries hard to provide some debugging
+information, for example, error message, backtrace, registry,
+flush pending messages on console, crashdump.
 
-Herbert Xu <herbert@gondor.apana.org.au>
-   crypto: api - Fix built-in testing dependency failures
+See panic() implementation, the reboot is done by emergency_restart().
+The rest is about duping the information.
+
+Well, the information is important. Otherwise, it is really hard to
+fix the problem.
+
+From my experience, especially the access to consoles is not fully
+safe. The reliability might improve a lot when a lockless console
+is used. I guess that using non-volatile memory for the log buffer
+might be even more reliable.
+
+I am not familiar with the code under emergency_restart(). I am not
+sure how reliable it is.
+
+> Yes, safety critical systems depend on the robust ability to restart.
+
+If I wanted to implement a super-reliable panic() I would
+use some external device that would cause power-reset when
+the watched device is not responding.
+
+Best Regards,
+Petr
 
 
->
-> metadata:
->   git branch: linux-5.15.y
->   git repo: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
->   git commit: ff5232812521d01d1ddfd8f36559a9cf83fea928
->   git describe: v5.15.2-918-gff5232812521
->   make_kernelversion: 5.15.3-rc1
->   kernel-config: https://builds.tuxbuild.com/20yUV5tYmCSzjklEffg3Dhkbdzi/config
->
-> Kernel crash log:
-> -----------------
-> [    1.178361] kvm [1]: Hyp mode initialized successfully
-> [    1.184780] Unable to handle kernel NULL pointer dereference at
-> virtual address 000000000000019b
-> [    1.193599] Mem abort info:
-> [    1.196394]   ESR = 0x96000044
-> [    1.199458]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [    1.204786]   SET = 0, FnV = 0
-> [    1.207848]   EA = 0, S1PTW = 0
-> [    1.210998]   FSC = 0x04: level 0 translation fault
-> [    1.215889] Data abort info:
-> [    1.218777]   ISV = 0, ISS = 0x00000044
-> [    1.222623]   CM = 0, WnR = 1
-> [    1.225605] [000000000000019b] user address but active_mm is swapper
-> [    1.231979] Internal error: Oops: 96000044 [#1] PREEMPT SMP
-> [    1.237559] Modules linked in:
-> [    1.240617] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.15.3-rc1 #1
-> [    1.246894] Hardware name: ARM Juno development board (r2) (DT)
-> [    1.252820] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [    1.259793] pc : crypto_register_alg+0x88/0xe4
-> [    1.264246] lr : crypto_register_alg+0x78/0xe4
-> [    1.268694] sp : ffff800012b9bce0
-> [    1.272008] x29: ffff800012b9bce0 x28: 0000000000000000 x27: ffff800012644c80
-> [    1.279162] x26: ffff000820d95480 x25: ffff000820d96000 x24: ffff800012644d3a
-> [    1.286313] x23: ffff800012644cba x22: 0000000000000000 x21: ffff800012742518
-> [    1.293463] x20: 0000000000000000 x19: ffffffffffffffef x18: ffffffffffffffff
-> [    1.300614] x17: 000000000000003f x16: 0000000000000010 x15: ffff000800844a1c
-> [    1.307765] x14: 0000000000000001 x13: 293635326168732c x12: 2973656128636263
-> [    1.314916] x11: 0000000000000010 x10: 0101010101010101 x9 : ffff80001054b5a8
-> [    1.322066] x8 : 7f7f7f7f7f7f7f7f x7 : fefefefefeff6462 x6 : 0000808080808080
-> [    1.329217] x5 : 0000000000000000 x4 : 8080808080800000 x3 : 0000000000000000
-> [    1.336367] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff800012742518
-> [    1.343517] Call trace:
-> [    1.345962]  crypto_register_alg+0x88/0xe4
-> [    1.350062]  crypto_register_skcipher+0x80/0x9c
-> [    1.354600]  simd_skcipher_create_compat+0x19c/0x1d0
-> [    1.359572]  cpu_feature_match_AES_init+0x9c/0xdc
-> [    1.364284]  do_one_initcall+0x50/0x2b0
-> [    1.368125]  kernel_init_freeable+0x250/0x2d8
-> [    1.372488]  kernel_init+0x30/0x140
-> [    1.375981]  ret_from_fork+0x10/0x20
-> [    1.379562] Code: 2a0003f6 710002df aa1503e0 1a9fd7e1 (3906b261)
-> [    1.385667] ---[ end trace a032e96fc9ec202d ]---
-> [    1.390350] Kernel panic - not syncing: Attempted to kill init!
-> exitcode=0x0000000b
-> [    1.398018] SMP: stopping secondary CPUs
-> [    1.401947] Kernel Offset: disabled
-> [    1.405434] CPU features: 0x10001871,00000846
-> [    1.409794] Memory Limit: none
-> [    1.412849] ---[ end Kernel panic - not syncing: Attempted to kill
-> init! exitcode=0x0000000b ]---
->
->
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> build link:
-> -----------
-> https://builds.tuxbuild.com/20yUV5tYmCSzjklEffg3Dhkbdzi/build.log
->
-> build config:
-> -------------
-> https://builds.tuxbuild.com/20yUV5tYmCSzjklEffg3Dhkbdzi/config
+PS: I do not believe much into the pkill approach as well.
 
-- Naresh
+    It is similar to OOM killer. And I always had to restart the
+    system when it was triggered.
+
+    Also kernel is not prepared for the situation that an external
+    code kills a kthread. And kthreads are used by many subsystems
+    to handle work that has to be done asynchronously and/or in
+    process context. And I guess that kthreads are non-trivial
+    source of WARN().
