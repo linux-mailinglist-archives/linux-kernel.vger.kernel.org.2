@@ -2,62 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F4D45329B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2581D45329C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:08:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234305AbhKPNK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 08:10:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236537AbhKPNKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 08:10:48 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S236542AbhKPNLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 08:11:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22979 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236547AbhKPNLC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 08:11:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637068084;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=85tu1V93/v6Qq49LU8YMu/X35SbnS4FMEWQpe6dLFTs=;
+        b=cgkcHkVhTZsPRVPmXzGy9T3zO4D5GR+z9T2jcmbw+rDxCA1IDTCvJDkUp93zzCcVin1wRG
+        QLkjCee9SJnQq7rmF3T6rSLQ4PViHPFPqxvr1du9RZx1rezEfwm2K52g4OiQpwgQmzj83S
+        3oWCH1HDSI63EtmJclrjj4K/z4ZsU9M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-604-7y-BmI9QMTC1lCGF7NMKYw-1; Tue, 16 Nov 2021 08:08:02 -0500
+X-MC-Unique: 7y-BmI9QMTC1lCGF7NMKYw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 032716127C;
-        Tue, 16 Nov 2021 13:07:50 +0000 (UTC)
-Date:   Tue, 16 Nov 2021 08:07:49 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Yinan Liu <yinan@linux.alibaba.com>, mark-pk.tsai@mediatek.com,
-        mingo@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] scripts: ftrace - move the nop-processing in
- ftrace_init to compile time
-Message-ID: <20211116080749.1ef6337f@gandalf.local.home>
-In-Reply-To: <20211116081020.GW174703@worktop.programming.kicks-ass.net>
-References: <20210911135043.16014-1-yinan@linux.alibaba.com>
-        <20211116024942.60644-1-yinan@linux.alibaba.com>
-        <20211116024942.60644-3-yinan@linux.alibaba.com>
-        <20211116081020.GW174703@worktop.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 12AB91054F91;
+        Tue, 16 Nov 2021 13:08:02 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B3EFA60D30;
+        Tue, 16 Nov 2021 13:08:01 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     mlevitsk@redhat.com
+Subject: [PATCH v2] KVM: MMU: update comment on the number of page role combinations
+Date:   Tue, 16 Nov 2021 08:08:01 -0500
+Message-Id: <20211116130801.706346-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Nov 2021 09:10:20 +0100
-Peter Zijlstra <peterz@infradead.org> wrote:
+Fix the number of bits in the role, and simplify the explanation of
+why several bits or combinations of bits are redundant.
 
-> On Tue, Nov 16, 2021 at 10:49:42AM +0800, Yinan Liu wrote:
-> > In some business scenarios, GCC versions are so old that
-> > optimizations in ftrace cannot be completed, such as
-> > -mrecord-mcount and -mnop-mcount. The recordmCount in the
-> > kernel is actually used. In this case, ftrace_init will
-> > consume a period of time, usually around 9~12ms. Do nop
-> > substitution in recordmcount.c to speed up ftrace_init.  
-> 
-> I really don't buy this.. if you can build a fresh kernel, you can
-> install a fresh gcc too -- and if you care about performance that's a
-> very good idea anyway.
-> 
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/include/asm/kvm_host.h | 30 ++++++++++++++++++------------
+ 1 file changed, 18 insertions(+), 12 deletions(-)
 
-I'm not sure this is true for all archs, is it? That is, is the nop
-substitution available in all archs that support mcount updates. Some
-(most) archs are special, because they have to deal with link registers and
-such.
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index e977634333d4..f69b100b23f4 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -291,19 +291,25 @@ struct kvm_kernel_irq_routing_entry;
+  * the number of unique SPs that can theoretically be created is 2^n, where n
+  * is the number of bits that are used to compute the role.
+  *
+- * But, even though there are 18 bits in the mask below, not all combinations
+- * of modes and flags are possible.  The maximum number of possible upper-level
+- * shadow pages for a single gfn is in the neighborhood of 2^13.
++ * But, even though there are 19 bits in the mask below, not all combinations
++ * of modes and flags are possible:
+  *
+- *   - invalid shadow pages are not accounted.
+- *   - level is effectively limited to four combinations, not 16 as the number
+- *     bits would imply, as 4k SPs are not tracked (allowed to go unsync).
+- *   - level is effectively unused for non-PAE paging because there is exactly
+- *     one upper level (see 4k SP exception above).
+- *   - quadrant is used only for non-PAE paging and is exclusive with
+- *     gpte_is_8_bytes.
+- *   - execonly and ad_disabled are used only for nested EPT, which makes it
+- *     exclusive with quadrant.
++ *   - invalid shadow pages are not accounted, so the bits are effectively 18
++ *
++ *   - quadrant will only be used if gpte_is_8_bytes=0 (non-PAE paging);
++ *     execonly and ad_disabled are only used for nested EPT which has
++ *     gpte_is_8_bytes=1.  Therefore, 2 bits are always unused.
++ *
++ *   - the 4 bits of level are effectively limited to the values 2/3/4/5,
++ *     as 4k SPs are not tracked (allowed to go unsync).  In addition non-PAE
++ *     paging has exactly one upper level, making level completely redundant
++ *     when gpte_is_8_bytes=0.
++ *
++ *   - on top of this, smep_andnot_wp and smap_andnot_wp are only set if
++ *     cr0_wp=0, therefore these three bits only give rise to 5 possibilities.
++ *
++ * Therefore, the maximum number of possible upper-level shadow pages for a
++ * single gfn is a bit less than 2^13.
+  */
+ union kvm_mmu_page_role {
+ 	u32 word;
+-- 
+2.27.0
 
-And because of that, I'm not sure the patch works for all those archs.
-
--- Steve
