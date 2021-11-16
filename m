@@ -2,177 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D42453255
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:41:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35559453256
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236325AbhKPMnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 07:43:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:44361 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232312AbhKPMnv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 07:43:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637066453;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RBJ7RWyv48x4mnCXA2rB7PkoXVIkHv6ITPGrMo6Rs0o=;
-        b=HKmaKwqJMoZA9+40dc0sKFQBm+cUdt5kixJuYdi6vb7/WoyvbkpEG2Nokij1Ozwf9KiprC
-        O18tNIKY829nJ1n9egQFYbkppP0L4lRULcdjH4zmwKaTgUH46OGkmRrU1Z6RrDc6wbVM4x
-        oOx7hWQqA6m7IdhzOtkReBrKAdIWxPI=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-121-JgonArafOUGUNpv99b5VEQ-1; Tue, 16 Nov 2021 07:40:52 -0500
-X-MC-Unique: JgonArafOUGUNpv99b5VEQ-1
-Received: by mail-ed1-f70.google.com with SMTP id v10-20020aa7d9ca000000b003e7bed57968so5817736eds.23
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 04:40:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=RBJ7RWyv48x4mnCXA2rB7PkoXVIkHv6ITPGrMo6Rs0o=;
-        b=LhqsNU8axOSz+0saWGSlA0WS/rUfkRLK4UhDaikRpR1AyhjZkzqKFFZ1sHN/1Qdu46
-         KSwyiUZ+7U/Czc+axg9y4SN6kztlvOmRwT0ya1s962uOQXx23xowXeWvLu2qh2ue1Dt3
-         CkXxYudfo6dSE1o7Jhcaog4qFzrhWM5EJPtcHTGUHQY5ySovQ0Un/XtD0iVg/iZJm4OY
-         OliBNS11tFcbTV612+zpMfMlZgKOvIael7OHuIYFD9DSPOolfL+i+YXrIW5kIByS1jgf
-         SCSCSOJX1pwt5Iu8fKM5R0jLgLKoOdwjZmSdrW8TyWAZK6B8NizK9VeqYHsNYDu1UOpq
-         6PCw==
-X-Gm-Message-State: AOAM530cfw7MNhActdre0ud4tGGp4R+p9cUiWp9AcRVJarl72To/yvUf
-        5U/4Lfp+8Mv3CNhsNcx8cfUpj+XUfrWBL35VazUyYJGNbBaPcOG3Hcuk1IsKBtAs8bxuLOJ3l3B
-        fQyBmGz16PRqgLBpun9MoUm79
-X-Received: by 2002:a05:6402:f:: with SMTP id d15mr9246235edu.331.1637066451281;
-        Tue, 16 Nov 2021 04:40:51 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwl66oKIgG9QUCBpjpJg1S1BOk+OPFJog9GvSqjZbbRQu57C7NgQhPvg0QQ8T/V5I8E5gJnFg==
-X-Received: by 2002:a05:6402:f:: with SMTP id d15mr9246193edu.331.1637066451017;
-        Tue, 16 Nov 2021 04:40:51 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id w1sm9830839edd.49.2021.11.16.04.40.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 04:40:50 -0800 (PST)
-Message-ID: <de7f0b11-373b-6d7b-ca34-20d2162a7f70@redhat.com>
-Date:   Tue, 16 Nov 2021 13:40:50 +0100
+        id S236344AbhKPMo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 07:44:59 -0500
+Received: from mail-eopbgr70079.outbound.protection.outlook.com ([40.107.7.79]:35245
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232312AbhKPMo5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 07:44:57 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P6kQocDWMaChejuaYDJwazkjkDwGXfa+tytOFhXZSZCoqPp2mP/KyOBspsLfyNyrB8jYlQMeWst3TU8r37+VQz359LKNd49Mt04TEHqjw5QOhdDGXUaQgaq/VXEayiiacNXwhU8ulY+rcarKCeW5Lw6VlqBCLST/kymvWD7JBSZ+25NfNkGmTqxFZSvdnzyhVCiJnFCfgMgd+s3aXADZf0fu6TwUo0vIP/eb+aI/zA7+cN7HFgQA9VHV9PY9ev6GLFzIPPNoCjS2m8lhI35/azqyVyMFOArZQRcgXg8mvJRol23rHT6+177YmYTSwwCzV33D9mIQ05JRoO2q6eFBhQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uF8VYUKlCXOMIjd0vKb1ydDlfE2KatTZI8ul1KYId8k=;
+ b=Xs8e8uzoPqQAqRrYNpfaPW6lWNb555PxS0b2IHuDabYEd8b/pFCWyJVvHCWLftkj68ZoDiSEoYZUeKBahcAKRN7PbHKDpQ+FUzIvcN/h2TxTT7BU9G8yJW+2/xIRMhYPzE9e+YMKj0Q8CYATGIZ2kneTxlIb6OJaufslXgqHDhR+49kpHy/Y8TdX0mm8+/dHlzOf0OmBoTmAhZLoJWpxnzsdEsrEWeZgac6n01HWr0iDW31igzDHpPQ3fD1x2/8BS5YDEEJ9cp7W26cSTQ7J6pSYGkNackY3Y/+eaa2wJxMs7rhtZmkkNLyLDN/OJjT90fPkDmDN5Fl0gq6QdABK2Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uF8VYUKlCXOMIjd0vKb1ydDlfE2KatTZI8ul1KYId8k=;
+ b=A1RTTXM+NrCczM0BjbXS0dpMPXYvOz//cAzAJyJO3/cmRxH2ze3fSoh4nncaOegwnIiiWApIe3CzjsZ8AFpBDhpS0kvScb61lkHFlQl80jFxqlr+t4DAvCWZeusJLo/WO5zwcO03Sl1KRS1DS3nu+ak65zBFh/DeVHntl+9d6/I=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
+ by VI1PR0401MB2479.eurprd04.prod.outlook.com (2603:10a6:800:53::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Tue, 16 Nov
+ 2021 12:41:57 +0000
+Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
+ ([fe80::85af:f8be:aa99:ba5f]) by VI1PR04MB5151.eurprd04.prod.outlook.com
+ ([fe80::85af:f8be:aa99:ba5f%3]) with mapi id 15.20.4690.027; Tue, 16 Nov 2021
+ 12:41:57 +0000
+From:   Daniel Baluta <daniel.baluta@oss.nxp.com>
+To:     pierre-louis.bossart@linux.intel.com, broonie@kernel.org,
+        alsa-devel@alsa-project.org
+Cc:     lgirdwood@gmail.com, ranjani.sridharan@linux.intel.com,
+        daniel.baluta@nxp.com, daniel.baluta@gmail.com,
+        kernel@pengutronix.de, linux-imx@nxp.com,
+        peter.ujfalusi@linux.intel.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: SOF: i.MX: simplify Kconfig
+Date:   Tue, 16 Nov 2021 14:41:31 +0200
+Message-Id: <20211116124131.46414-1-daniel.baluta@oss.nxp.com>
+X-Mailer: git-send-email 2.27.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR01CA0160.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:aa::29) To VI1PR04MB5151.eurprd04.prod.outlook.com
+ (2603:10a6:803:61::28)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [kbuild-all] Re: drivers/platform/x86/thinkpad_acpi.c:4475:35:
- error: unused variable 'fwbug_cards_ids'
-Content-Language: en-US
-To:     Philip Li <philip.li@intel.com>
-Cc:     kernel test robot <lkp@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>
-References: <202111141153.mtggZgGq-lkp@intel.com>
- <009706db-230a-1e49-0a42-447a0ff97fbb@redhat.com>
- <YZOlZPna3djQPYsp@rli9-dbox>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <YZOlZPna3djQPYsp@rli9-dbox>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (2a02:2f08:5706:b700:1e69:ee6:2dad:c9e7) by AM0PR01CA0160.eurprd01.prod.exchangelabs.com (2603:10a6:208:aa::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.15 via Frontend Transport; Tue, 16 Nov 2021 12:41:56 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5fd4fbaf-533d-43d9-4816-08d9a8fe79fc
+X-MS-TrafficTypeDiagnostic: VI1PR0401MB2479:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-Microsoft-Antispam-PRVS: <VI1PR0401MB2479C6273FD5953226EB189BB8999@VI1PR0401MB2479.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2VT9NKafqwcs2smyhcrUUTmZ6yh7hfjE9bE72Jv13BhVcEdCbQvqZajQJ4DI9t7Wnp/m0jWZcfCIZSLGda66+A+NJFfi9DwvXU0V34JJddtMxzJxV6u4IcfqpKoTqIuLSuqgo9D+GzmEM8BssrqNp3tIgdPinLkxhUP0XkIZz/iYqy93Rs/hd+cp5az3/Qovq1nU+RZjofvKyAAf63aAQ99zJfsVbVMWLk8NFRjTAVEvMGNKOREW+q/S/kTFBFtL+bM7lFUAwnr4fCFCSpEy4V7qInwxFjvGj4pTfiZ1/8GhY/qdGt2U3VwpR0T5/Su0anh0gvbNe8jJIRTLdyL5vS+DegTWotS7exIikAFMwwMBL4enVDWvLjsQydWIYbUFV4M6+RAoEbaFcbCOlyepcAP7x26zQle79mZeI5d2a8eRuJtWX1YrxIsXXHKDMcbPrA5ZlozP37F/99d6cJUSLNmskJLV5+40FwoI6FholUkpiZUaV/mCg5vvX6cWKMzZth10wDugAg8IjUrq7RitLQVebeOa2vWmqrHVE2m5wh61McJlulYk375r9dCvEAgxSCqM5gctkqlBsU9iNxbqYx2DhkezsexN01Y4mzcgEfDXcc5MvJTVyI4euRa/52EkUfj7B3KIWIGGD+nMeIgTYA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5151.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(508600001)(6512007)(66946007)(66556008)(6506007)(83380400001)(186003)(8936002)(6486002)(8676002)(1076003)(38100700002)(6666004)(86362001)(52116002)(2616005)(316002)(2906002)(5660300002)(4326008)(44832011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?v9sGRRLEiOCDb3FezPeCauZ5VjUz5ctXAJNrWlC4boBdl6NccDwBSQr1UQyE?=
+ =?us-ascii?Q?O22ESgodMWe52s759+WMKj3CZYb/UM2SdpfVO2CQgnIvEfpisMjkZL68OTTJ?=
+ =?us-ascii?Q?0C4a6LdcfTFl5h/KBYjRQQT6XMieJ7dMWfXEeCCxHZqR/AswvQT//fk4ePwI?=
+ =?us-ascii?Q?cV4xv7+Jsgbg36/A6uQ0SmNpUNczoW7wt08DyUgAtYK9TtWxf69MWScYSvM1?=
+ =?us-ascii?Q?h0Med9Nj7NWniW7oUDk5iEDQODAElyPjtO+G7gjAwzNGFdYhbmkpQpKoTU1q?=
+ =?us-ascii?Q?9R1y9SxeGBSkPw7hd9p6vo1G6FCDvM9AW6dxvs0zZvoe3ox7IwFjJyY2BVqe?=
+ =?us-ascii?Q?UY2Rzd4x0BW64l/liOjMAPMjd5t+BgDEKWY85sdgsTvMMFpUJejPERN9RyHb?=
+ =?us-ascii?Q?ra4oz77m/l30owMyu1Nd287nlWzKaACfSVKxub2vsPKQAJA8lbLxCYS3tW2r?=
+ =?us-ascii?Q?UiW6mFwSKMABiD8ujyKHB9spTzwuPeNU4NoxmwyjOElhRFmykfss6lJM78gu?=
+ =?us-ascii?Q?gdW/w+WjrO8sexmFLF+LioJ98efr+m9iZeO8ZQvsndX7sj0LXAD5hreSj9Ig?=
+ =?us-ascii?Q?QTBryfrF6rp52r7oVMIvaVbLLTNXfeyuZWCT7n6mxfRDMDuD4NdyQrXq8gMR?=
+ =?us-ascii?Q?DTGDKxQHITkSJgmBPkhHy41vzJQmLrdsheN7zNwgkKVZ5VWpeDVs4n3l4F8E?=
+ =?us-ascii?Q?16wWtPyJS6o5EJ9P7aXCzbylAROyLCLps5qsbGzABQphuGNc+fLJdDkMXtNM?=
+ =?us-ascii?Q?XEXATKgFIEIUZBPflZPJwMKpT5C47Cm+/+Oz6cq1XyLPsZrNRaDOIqn601xe?=
+ =?us-ascii?Q?pSreRYmMGqVduxehFK98tsW7sCOnGWt88M/7NLALFqI+MSiQtqgG4prs7QGV?=
+ =?us-ascii?Q?BpmMvZqTOI9FnUdRfbN3b0zPHB7Ues0S1WUzOCH/N+IDTkCgRQdBzVwLh+uh?=
+ =?us-ascii?Q?RcEgxjJfEMC5OsJ5e2qnvPFKnyKQRGuvnWjhqDXPopNrdtPknQeZJXkSCxYg?=
+ =?us-ascii?Q?xbynJ9gT/Igo0zEIypmteaXhgphVcT4qOCn3jsHrAnvVIdaa0hCCzq0nX1YA?=
+ =?us-ascii?Q?KPMjQudEouFMD4hwT+JP4IJ8bHGWYJOUoNNPE215UBrhOT2TxYnRl0XOYw4X?=
+ =?us-ascii?Q?uonNHyehy0TAyG+dIccgGl8UxecX/0IyVu0Dn099J1zYwxcJcNzq5l84w8MH?=
+ =?us-ascii?Q?BU7lWDp0mMzUsetuWrFXLLGXewZIYeMMtv4aPDYd8V3t2oG2CpPaDGZ+FLOk?=
+ =?us-ascii?Q?zbXLPcIvNJl2WC6DjLvJ4+/oRQbBu0xbictFzUtQjHTG0O8LSMusYIZy1E/n?=
+ =?us-ascii?Q?UoQOMGIA6ZynRxdgKY3ovkXP1iG3td5gq8uGTQzWSHfWDFLBIlStJDa8kUyp?=
+ =?us-ascii?Q?ZgSKnGz+NLscnmHTWnFhpE2BQDCo6MsIaOcVmRROp1gr0Nn7Ak0KG1tXHGCL?=
+ =?us-ascii?Q?S54Hc0Iw0zPMElIx8RMykIbU3+JwZ1tv8fn+peBZWsRw5ov+N7RrbwL+42m+?=
+ =?us-ascii?Q?HLUdqwXrs8zA8yA20VKqX1i3E3DajWcKdEcRp2YBlO9ZVT8qMPk6t+Tj0KhN?=
+ =?us-ascii?Q?qzgjmk8p4eEYLKMjcq5Q6bO1RXqoRy76s8rPsIglBp/dGk7Y4XmMqupNdoJm?=
+ =?us-ascii?Q?fLlwlmqHqJzs5Hqxet6wo7lT6rWSk4rwM5i7YC9o6+cZyJM7SdCwh+rHwi7k?=
+ =?us-ascii?Q?TWo7Vmsp5q2TiulKY8+a2J/abxM=3D?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5fd4fbaf-533d-43d9-4816-08d9a8fe79fc
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 12:41:57.3161
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 91oToABM89Ton2oXF+bXtVeMKlH5hDO8tz/aFJ9l/h51TnMsj3ewHtu3gH97t5PcRQwAEurHgZc8o3FLV7E2FQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2479
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-On 11/16/21 13:34, Philip Li wrote:
-> On Tue, Nov 16, 2021 at 11:26:48AM +0100, Hans de Goede wrote:
->> Hi,
->>
->> On 11/14/21 04:10, kernel test robot wrote:
->>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->>> head:   c8c109546a19613d323a319d0c921cb1f317e629
->>> commit: fd96e35ea7b95f1e216277805be89d66e4ae962d platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning
->>> date:   4 weeks ago
->>> config: i386-buildonly-randconfig-r005-20211114 (attached as .config)
->>> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project c3dddeeafb529e769cde87bd29ef6271ac6bfa5c)
->>> reproduce (this is a W=1 build):
->>>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>>         chmod +x ~/bin/make.cross
->>>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fd96e35ea7b95f1e216277805be89d66e4ae962d
->>>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>>         git fetch --no-tags linus master
->>>         git checkout fd96e35ea7b95f1e216277805be89d66e4ae962d
->>>         # save the attached .config to linux build tree
->>>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=i386 
->>>
->>> If you fix the issue, kindly add following tag as appropriate
->>> Reported-by: kernel test robot <lkp@intel.com>
->>>
->>> All errors (new ones prefixed by >>):
->>>
->>>>> drivers/platform/x86/thinkpad_acpi.c:4475:35: error: unused variable 'fwbug_cards_ids' [-Werror,-Wunused-const-variable]
->>>    static const struct pci_device_id fwbug_cards_ids[] __initconst = {
->>>                                      ^
->>>    1 error generated.
->>
->> So this *again* has absolutely nothing to do with the:
->>
->> "platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning"
->>
->> commit, the problem is that:
->>
->> 1. the .config does not have CONFIG_PCI set; combined with:
->> 2. include/pci.h using a #define instead of a
->>    static inline for pci_dev_present() when this is the case
->> 3. This is a clang WERROR build
->>
->> I'll submit a fix for 2. upstream which should also fix
->> similar errors in a lot of other drivers.
->>
->> Again I must say that as a maintainer I'm unhappy about the amount
->> of noise being generated by clang WERROR builds here though,
->> is it really necessary for the kernel test robot to do builds
->> of this type ?
-> Sorry Hans for the noise, we will look into this to consider the
-> solution. And want to consult, do you specially have concern about
-> -Wunused-const-variable or all W=1 related build issues?
+Follow the Intel example and simplify the Kconfig
+a) start from the end-product for 'select' chains
+b) use 'depends on' to filter out configurations.
+c) use snd-sof-of as a common module without any 'select'
 
-Thank you.
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+---
+ sound/soc/sof/Kconfig     |  4 +++-
+ sound/soc/sof/Makefile    |  2 +-
+ sound/soc/sof/imx/Kconfig | 46 +++++++++++----------------------------
+ 3 files changed, 17 insertions(+), 35 deletions(-)
 
-W=1 is know to cause many many warnings, so to me it seems that
-combining W=1 with CONFIG_WERROR=1 is a bad idea.
-
-If it would be possible to avoid that combination then that would
-be great.
-
-Regards,
-
-Hans
-
-
-
-
-
-
->>> vim +/fwbug_cards_ids +4475 drivers/platform/x86/thinkpad_acpi.c
->>>
->>> f7db839fccf087 Jiaxun Yang 2019-03-07  4474  
->>> f7db839fccf087 Jiaxun Yang 2019-03-07 @4475  static const struct pci_device_id fwbug_cards_ids[] __initconst = {
->>> f7db839fccf087 Jiaxun Yang 2019-03-07  4476  	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x24F3) },
->>> f7db839fccf087 Jiaxun Yang 2019-03-07  4477  	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x24FD) },
->>> f7db839fccf087 Jiaxun Yang 2019-03-07  4478  	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x2526) },
->>> f7db839fccf087 Jiaxun Yang 2019-03-07  4479  	{}
->>> f7db839fccf087 Jiaxun Yang 2019-03-07  4480  };
->>> f7db839fccf087 Jiaxun Yang 2019-03-07  4481  
->>> f7db839fccf087 Jiaxun Yang 2019-03-07  4482  
->>>
->>> :::::: The code at line 4475 was first introduced by commit
->>> :::::: f7db839fccf087664e5587966220821289b6a9cb platform/x86: thinkpad_acpi: Disable Bluetooth for some machines
->>>
->>> :::::: TO: Jiaxun Yang <jiaxun.yang@flygoat.com>
->>> :::::: CC: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->>>
->>> ---
->>> 0-DAY CI Kernel Test Service, Intel Corporation
->>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->>>
->> _______________________________________________
->> kbuild-all mailing list -- kbuild-all@lists.01.org
->> To unsubscribe send an email to kbuild-all-leave@lists.01.org
-> 
+diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
+index 041c54639c4d..b6fa659179b6 100644
+--- a/sound/soc/sof/Kconfig
++++ b/sound/soc/sof/Kconfig
+@@ -40,12 +40,14 @@ config SND_SOC_SOF_ACPI_DEV
+ config SND_SOC_SOF_OF
+ 	tristate "SOF OF enumeration support"
+ 	depends on OF || COMPILE_TEST
+-	select SND_SOC_SOF
+ 	help
+ 	  This adds support for Device Tree enumeration. This option is
+ 	  required to enable i.MX8 devices.
+ 	  Say Y if you need this option. If unsure select "N".
+ 
++config SND_SOC_SOF_OF_DEV
++	tristate
++
+ config SND_SOC_SOF_COMPRESS
+ 	bool
+ 	select SND_SOC_COMPRESS
+diff --git a/sound/soc/sof/Makefile b/sound/soc/sof/Makefile
+index 06e5f49f7ee8..1dac5cb4dfd6 100644
+--- a/sound/soc/sof/Makefile
++++ b/sound/soc/sof/Makefile
+@@ -17,7 +17,7 @@ obj-$(CONFIG_SND_SOC_SOF_NOCODEC) += snd-sof-nocodec.o
+ 
+ 
+ obj-$(CONFIG_SND_SOC_SOF_ACPI_DEV) += snd-sof-acpi.o
+-obj-$(CONFIG_SND_SOC_SOF_OF) += snd-sof-of.o
++obj-$(CONFIG_SND_SOC_SOF_OF_DEV) += snd-sof-of.o
+ obj-$(CONFIG_SND_SOC_SOF_PCI_DEV) += snd-sof-pci.o
+ 
+ obj-$(CONFIG_SND_SOC_SOF_INTEL_TOPLEVEL) += intel/
+diff --git a/sound/soc/sof/imx/Kconfig b/sound/soc/sof/imx/Kconfig
+index 34cf228c188f..9b8d5bb1e449 100644
+--- a/sound/soc/sof/imx/Kconfig
++++ b/sound/soc/sof/imx/Kconfig
+@@ -11,53 +11,33 @@ config SND_SOC_SOF_IMX_TOPLEVEL
+ 
+ if SND_SOC_SOF_IMX_TOPLEVEL
+ 
+-config SND_SOC_SOF_IMX_OF
+-	def_tristate SND_SOC_SOF_OF
+-	select SND_SOC_SOF_IMX8 if SND_SOC_SOF_IMX8_SUPPORT
+-	select SND_SOC_SOF_IMX8M if SND_SOC_SOF_IMX8M_SUPPORT
+-	help
+-	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level.
+-
+ config SND_SOC_SOF_IMX_COMMON
+ 	tristate
++	select SND_SOC_SOF_OF_DEV
++	select SND_SOC_SOF
++	select SND_SOC_SOF_XTENSA
++	select SND_SOC_SOF_COMPRESS
+ 	help
+ 	  This option is not user-selectable but automagically handled by
+ 	  'select' statements at a higher level.
+ 
+-config SND_SOC_SOF_IMX8_SUPPORT
+-	bool "SOF support for i.MX8"
+-	depends on IMX_SCU=y || IMX_SCU=SND_SOC_SOF_IMX_OF
+-	depends on IMX_DSP=y || IMX_DSP=SND_SOC_SOF_IMX_OF
++config SND_SOC_SOF_IMX8
++	tristate "SOF support for i.MX8"
++	depends on IMX_SCU
++	depends on IMX_DSP
++	select SND_SOC_SOF_IMX_COMMON
+ 	help
+ 	  This adds support for Sound Open Firmware for NXP i.MX8 platforms.
+ 	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
+-config SND_SOC_SOF_IMX8
+-	tristate
++config SND_SOC_SOF_IMX8M
++	tristate "SOF support for i.MX8M"
++	depends on IMX_DSP
+ 	select SND_SOC_SOF_IMX_COMMON
+-	select SND_SOC_SOF_XTENSA
+-	select SND_SOC_SOF_COMPRESS
+-	help
+-	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level.
+-
+-config SND_SOC_SOF_IMX8M_SUPPORT
+-	bool "SOF support for i.MX8M"
+-	depends on IMX_DSP=y || IMX_DSP=SND_SOC_SOF_OF
+ 	help
+ 	  This adds support for Sound Open Firmware for NXP i.MX8M platforms.
+ 	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
+-config SND_SOC_SOF_IMX8M
+-	tristate
+-	select SND_SOC_SOF_IMX_COMMON
+-	select SND_SOC_SOF_XTENSA
+-	select SND_SOC_SOF_COMPRESS
+-	help
+-	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level.
+-
+-endif ## SND_SOC_SOF_IMX_IMX_TOPLEVEL
++endif ## SND_SOC_SOF_IMX_TOPLEVEL
+-- 
+2.27.0
 
