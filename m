@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD177452CB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:26:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8785C452CBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231983AbhKPI3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 03:29:08 -0500
-Received: from mga04.intel.com ([192.55.52.120]:19551 "EHLO mga04.intel.com"
+        id S232149AbhKPIaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 03:30:24 -0500
+Received: from mga09.intel.com ([134.134.136.24]:45084 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231926AbhKPI3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 03:29:06 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="232369844"
+        id S232112AbhKPIaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 03:30:08 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="233483350"
 X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
-   d="scan'208";a="232369844"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 00:26:09 -0800
+   d="scan'208";a="233483350"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 00:27:08 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
-   d="scan'208";a="454363841"
+   d="scan'208";a="506333986"
 Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 16 Nov 2021 00:26:07 -0800
+  by orsmga008.jf.intel.com with ESMTP; 16 Nov 2021 00:27:07 -0800
 Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mmtn4-0000ER-JU; Tue, 16 Nov 2021 08:26:06 +0000
-Date:   Tue, 16 Nov 2021 16:26:00 +0800
+        id 1mmto2-0000Eg-Kz; Tue, 16 Nov 2021 08:27:06 +0000
+Date:   Tue, 16 Nov 2021 16:26:11 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/sgx] BUILD SUCCESS
- 688542e29fae655a8be25832f6a9959bdd308dd8
-Message-ID: <61936b18.jLamIbLeLrnbPZye%lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars:testing/cast-function-type] BUILD SUCCESS
+ 552a23a0e5d0a84cecd4687043d8030673981d30
+Message-ID: <61936b23.oZWzmxK5Vr7sqE6/%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,8 +39,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/sgx
-branch HEAD: 688542e29fae655a8be25832f6a9959bdd308dd8  selftests/sgx: Add test for multiple TCS entry
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/cast-function-type
+branch HEAD: 552a23a0e5d0a84cecd4687043d8030673981d30  Makefile: Enable -Wcast-function-type
 
 elapsed time: 727m
 
