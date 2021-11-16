@@ -2,105 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6218453886
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 18:29:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A18B4453887
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 18:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238879AbhKPRbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 12:31:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238728AbhKPRbt (ORCPT
+        id S238874AbhKPRb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 12:31:59 -0500
+Received: from mail-pg1-f177.google.com ([209.85.215.177]:44904 "EHLO
+        mail-pg1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238725AbhKPRbu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 12:31:49 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D61C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 09:28:52 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mn2G8-00014a-0v; Tue, 16 Nov 2021 18:28:40 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mn2G4-000KQv-9X; Tue, 16 Nov 2021 18:28:35 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mn2G3-0007nB-Dd; Tue, 16 Nov 2021 18:28:35 +0100
-Date:   Tue, 16 Nov 2021 18:28:35 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Tony Luck <tony.luck@intel.com>, Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        kernel@pengutronix.de, Colin Cross <ccross@android.com>
-Subject: Re: [PATCH] pstore/ftrace: add a kernel parameter to start pstore
- recording
-Message-ID: <20211116172835.r3puikipzryxnsoj@pengutronix.de>
-References: <20210610082134.20636-1-u.kleine-koenig@pengutronix.de>
- <20211116120603.4e0c04c2@gandalf.local.home>
+        Tue, 16 Nov 2021 12:31:50 -0500
+Received: by mail-pg1-f177.google.com with SMTP id m15so14347847pgu.11;
+        Tue, 16 Nov 2021 09:28:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FkA51tWxSsscDQ4OnDVF0gVKl+TpddKexu+rNB6rga4=;
+        b=SGPLW0Gs4GbGKkyxZ5mwFJQ8mK+cSYPURcI1lpwH9R0ikX9PnRvhqq3IhaMSw6cigF
+         wYInfhIxvua96lYrJWEGVASX2z5w7WkJfh9tcLr8aUE90WUlcsSJ9qNwENe5gaCVZeLL
+         Pe4AV/I+nAhOyb5dpeSlZraDc5Wjm4rvoTGnsxCg2SS4tgIA4v8GndMJNmRzF0lN5wJq
+         Ka2m5bbuBmh4MYKHbpmuPuMrhoGD2FCqqyhNjaienJvKNRLGG9vnzpWm/QyBBxyOXQun
+         PtH8yqSr0w0YQkPtZnUofhZ73TAuo2/K0dCgqA5XFNCxdaMA1Lr+0e+qWHoB15yUm5LQ
+         ZRJQ==
+X-Gm-Message-State: AOAM533MpTy5ZOd85TrYgGO4zWHPTqaD5RgKUoISRONCWE3xMX1dkX14
+        HGLHJXDF5ZbFa72HCmFZ/TWV7dmE8hKcb2aLAWc=
+X-Google-Smtp-Source: ABdhPJztWnQTEvyFBXk/EWoYZuOO/BsO/4j2XiqLi5dCPei8GORqCEcvrDQZtaHkVUqJCHntXdMP/Q0JwesAiwH1PXU=
+X-Received: by 2002:a63:3f44:: with SMTP id m65mr422498pga.15.1637083733060;
+ Tue, 16 Nov 2021 09:28:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3v5e3fxrzi2lvohf"
-Content-Disposition: inline
-In-Reply-To: <20211116120603.4e0c04c2@gandalf.local.home>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20211116150119.2171-1-kernel@esmil.dk> <CAK8P3a38+Osmr7SjD42ZEQzOPwWXM7x+31a5E4bRWVp6JdMS_w@mail.gmail.com>
+In-Reply-To: <CAK8P3a38+Osmr7SjD42ZEQzOPwWXM7x+31a5E4bRWVp6JdMS_w@mail.gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Tue, 16 Nov 2021 18:28:41 +0100
+Message-ID: <CANBLGcykFks+EF2m0bdD+j5w43Qy30LBgVnAYJWU+5-WVJH6PA@mail.gmail.com>
+Subject: Re: [PATCH v4 00/16] Basic StarFive JH7100 RISC-V SoC support
+To:     Arnd Bergmann <arnd@arndb.de>, Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 16 Nov 2021 at 17:08, Arnd Bergmann <arnd@arndb.de> wrote:
+> On Tue, Nov 16, 2021 at 4:01 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> >
+> > This series adds support for the StarFive JH7100 RISC-V SoC. The SoC has
+> > many devices that need non-coherent dma operations to work which isn't
+> > upstream yet[1], so this just adds basic support to boot up, get a
+> > serial console, blink an LED and reboot itself. Unlike the Allwinner D1
+> > this chip doesn't use any extra pagetable bits, but instead the DDR RAM
+> > appears twice in the memory map, with and without the cache.
+> >
+> > The JH7100 is a test chip for the upcoming JH7110 and about 300 BeagleV
+> > Starlight Beta boards were sent out with them as part of a now cancelled
+> > BeagleBoard.org project. However StarFive has produced more of the
+> > JH7100s and more boards will be available[2] to buy. I've seen pictures
+> > of the new boards now, so hopefully before the end of the year.
+> >
+> > This series is also available at
+> > https://github.com/esmil/linux/commits/starlight-minimal
+> > ..but a more complete kernel including drivers for non-coherent
+> > peripherals based on this series can be found at
+> > https://github.com/starfive-tech/linux/tree/visionfive
+> >
+> > [1]: https://lore.kernel.org/linux-riscv/20210723214031.3251801-2-atish.patra@wdc.com/
+> > [2]: https://www.linkedin.com/pulse/starfive-release-open-source-single-board-platform-q3-2021-starfive/
+>
+> Thanks for adding me to Cc, I've had a look at the series and didn't
+> see anything
+> wrong with it, and I'm happy to merge it through the SoC tree for the
+> initial support
+> in 5.17, provided you get an Ack from the arch/riscv maintainers for it.
 
---3v5e3fxrzi2lvohf
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Cool!
 
-Hello Steven,
+@Palmer, do you mind looking through this? Probably patch 1, 15 and 16
+are the most relevant to you.
 
-On Tue, Nov 16, 2021 at 12:06:03PM -0500, Steven Rostedt wrote:
-> On Thu, 10 Jun 2021 10:21:34 +0200
-> Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de> wrote:
->=20
-> > With this knob you can enable pstore recording early enough to debug
-> > hangs happening during the boot process before userspace is up enough to
-> > enable it via sysfs.
->=20
-> Is this still needed? It's still in my internal patchwork, and I haven't
-> seen any responses.
+> Regarding the coherency issue, it's a bit sad to see yet another hacky
+> workaround
+> in the hardware, but as you say this is unrelated to the driver
+> series. I'd actually
+> argue that this one isn't that different from the other hack you
+> describe, except
+> this steals the pagetable bits from the address instead of the reserved flags...
 
-I didn't see any responses either, and unless someone else implemented
-something similar somewhere else, it's still needed.
+Yeah, it's definitely a hack, but at least it's not using bits the
+spec said was reserved. Hopefully the JH7110 will be fully coherent or
+maybe implement the new Svpbmt extension.
 
-The change was actually useful to debug a clk problem, where the machine
-freezed when a certain driver was loaded.
+/Emil
 
-Thanks for keeping track of this change. I would only have noticed it
-missing next time when I have to debug a similar problem.
 
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---3v5e3fxrzi2lvohf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGT6joACgkQwfwUeK3K
-7AkHDQf/fNU67siXsSYQC23dj2owDqfmkFmWztn13/rUvRVqGma1PLhp5aYKfMPO
-fzZ6PimB/ukOg/xl6bx0uJonshLVlZ0WRf/V7mooJuBQynNOwDd0vWiHsKlv521H
-TZVYZ0YqLWSGiK2LDmFMoqwPiBXJDeQbwlOYU10PLLxdQYgwE5nPP4BLa66M/MT+
-Z0pjzlQPwhQ47X7gvQra9rEA5NJltPCVvi6T+fECQwtFMfZoQ4Hi86cIZ7iIpVzx
-TMwwQGirGKP2Z23zfCR3cnxhsabHxbKsPoSjfiv5mVBv8/7Yv74tsKPDCs0J7ARS
-MUjK9UnbFPjO+aeotufGEtX+dmpB7w==
-=lJo7
------END PGP SIGNATURE-----
-
---3v5e3fxrzi2lvohf--
+/Emil
