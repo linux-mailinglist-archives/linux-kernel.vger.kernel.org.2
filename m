@@ -2,86 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7EB3453CB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37765453CBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbhKPXiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 18:38:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbhKPXix (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 18:38:53 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E991AC061570;
-        Tue, 16 Nov 2021 15:35:55 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637105752;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9uL6alBtzbSwWo4J3REeTUCzQ4YPJ5LPQzd9HoPbnRc=;
-        b=MoFwvZY9tjv3ESgZnaViMaPfDa1CPIFbIp4oXbDK+darUpkNYB+LtoQerhjhoK0BvRdGwH
-        krYgeUUn2dZajNm0AAlhNpBBjrnt2zfXCOes37tI/NIU3z0dJmNdhgk34xSAYAExk5JOaY
-        HcMxfVgZCjZn1r5VksExV0slqQ3WoG140ELVE9r0fEh1nFEs4UGDfqOqLgX//rPGv8Fnrn
-        WLsfxWHBMdCgtOuA9h01S9er+YuMXwbLa7rThJzKKQiNfJSYbfP8JnconQzEUH8asYKAKZ
-        +WMFvKBrovTUA1XXhy3sbQeVfjPymW+sIMNtUkgZfa0PTdpas5msOYYRyneeGA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637105752;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9uL6alBtzbSwWo4J3REeTUCzQ4YPJ5LPQzd9HoPbnRc=;
-        b=CVqAG9xg+TqxF0jpBOoQS+i2pYAobRVTVSQyaUcubPMNPdmra5n+/MbJdan6ABA0Y5PIeL
-        ktcF96d4IHgibzAQ==
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     "Liu, Jing2" <jing2.liu@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Jing Liu <jing2.liu@linux.intel.com>,
-        "Cooper, Andrew" <andrew.cooper3@citrix.com>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Subject: Re: Thoughts of AMX KVM support based on latest kernel
-In-Reply-To: <YZQQuQDWPhcJG6pM@google.com>
-References: <BYAPR11MB325685AB8E3DFD245846F854A9939@BYAPR11MB3256.namprd11.prod.outlook.com>
- <87k0h85m65.ffs@tglx> <YZPWsICdDTZ02UDu@google.com> <87ee7g53rp.ffs@tglx>
- <YZQQuQDWPhcJG6pM@google.com>
-Date:   Wed, 17 Nov 2021 00:35:51 +0100
-Message-ID: <87wnl74qso.ffs@tglx>
+        id S231354AbhKPXjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 18:39:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58696 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229532AbhKPXjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 18:39:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C05E61B71;
+        Tue, 16 Nov 2021 23:36:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637105814;
+        bh=yYPlVugWDLGu9reVQ8/u3/GZP8SiDuuyCaxKBOzfcVM=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=m/AKUdkjjyY6+d3sb0CiKGOAeikfv8YLummaMW7zDUzdxdGIBMHIgraY5HCMertt6
+         aCyeOUzgjLzA+TmhsPK5+MPE8EKVQkHMOKLI/S8DRZIbBgAIR473kqWjV8w7YWC2iI
+         nSAf6KYVYkMwDPV7mecs797zARv0uMUQBbrpkVIPRD8pb6zMWWYauJeJVh5FqIr7yz
+         B68kdvu6bwkaWUun0+7coAlOBQ54NOvvYApr3VMJRK7Zy+Zpa+CdVk1Vxcu4O9SUsb
+         K2udHY1hlFrD9hYW/B3OaYrkTbuj6mRM+/DP5P8NlbEQAkK/5OaChjDBP++xcOTkQ0
+         DGYUWMCKx/R9A==
+Received: by mail-oi1-f179.google.com with SMTP id t23so2163863oiw.3;
+        Tue, 16 Nov 2021 15:36:54 -0800 (PST)
+X-Gm-Message-State: AOAM53179ESS9Vryg+su2NIZvHa76tLk4aBWsqKEwnxtlIT3MMnh5JCb
+        IUIe9CIZR1Tm84aVcOPJb4BslsbC+0tI8WSkv0c=
+X-Google-Smtp-Source: ABdhPJzsFjtMS0Pa8Z55mHQ8ceBA+FC1Ld+XmJGtIqRgm4plYpcEVCG7bhZzJ90L91LUeE1jf1i9fj2sZHC8gedbV1c=
+X-Received: by 2002:a05:6808:14c3:: with SMTP id f3mr37766948oiw.51.1637105813781;
+ Tue, 16 Nov 2021 15:36:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+Received: by 2002:ac9:4448:0:0:0:0:0 with HTTP; Tue, 16 Nov 2021 15:36:53
+ -0800 (PST)
+In-Reply-To: <5831447.lOV4Wx5bFT@natalenko.name>
+References: <5831447.lOV4Wx5bFT@natalenko.name>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Wed, 17 Nov 2021 08:36:53 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd-KmxMeYWP8z6RYYK6za-Sj81Qtb3RO=oG+Yy3kXDaLjg@mail.gmail.com>
+Message-ID: <CAKYAXd-KmxMeYWP8z6RYYK6za-Sj81Qtb3RO=oG+Yy3kXDaLjg@mail.gmail.com>
+Subject: Re: ksmbd: Unsupported addition info
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steve French <sfrench@samba.org>,
+        Hyunchul Lee <hyc.lee@gmail.com>, linux-cifs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16 2021 at 20:12, Sean Christopherson wrote:
-> On Tue, Nov 16, 2021, Thomas Gleixner wrote:
->> Now you could argue that the interrupt/softirq XSAVES should also read
->> the XFD MSR and save it in guest_fpstate.xfd. Same in schedule()
->> and kvm_put_guest_fpu(), i.e:
->> 
->>       XSAVES
->>       if (fpstate->is_guest) {
->>             rdmsrl(XFD, xfd);
->>             fpstate->xfd = xfd;
->>             __this_cpu_write(..., xfd);
->>       }
->> 
->> We can do that, but I'm unhappy about this conditional in schedule(). So
->> I was asking for doing a simple KVM only solution first:
+2021-11-17 6:44 GMT+09:00, Oleksandr Natalenko <oleksandr@natalenko.name>:
+> Hello Namjae et al.
+Hi Oleksandr,
 >
-> Ah, the schedule() conditional is the part I was missing.  Thanks!
+> With the latest ksmbd from the next branch I have an issue with wife's
+> Windows
+> 10 laptop while copying/removing files from the network share. On her cli=
+ent
+> it
+> looks like copy operation (server -> laptop) reaches 99% and then stalls,
+> and
+> on the server side there's this in the kernel log:
+>
+> ```
+> ksmbd: Unsupported addition info: 0xf)
+> ksmbd: Unsupported addition info: 0x20)
+> ```
+>
+> repeated multiple times. I must note that in fact the file gets copied to
+> her
+> laptop, but Windows copy dialog just hangs.
+>
+> Any idea what it could be and how to avoid it? This also happened before
+> (I'm
+> a pretty early ksmbd adopter), but I'm reporting it just now because I
+> na=C3=AFvely
+> hoped it would be fixed automagically :). This never happened to me with
+> userspace Samba though.
+>
+> This is my smb.conf:
+>
+> ```
+> [global]
+> workgroup =3D KANAPKA
+> server string =3D ksmbd server %v
+> netbios name =3D defiant
+> valid users =3D __guest
+>
+> [Shared]
+> valid users =3D __guest
+> path =3D /mnt/shared
+> force user =3D _shared
+> force group =3D _shared
+> browsable =3D no
+> writeable =3D yes
+> veto files =3D /lost+found/
+> ```
+>
+> Appreciate your time and looking forward to your response.
+Thanks for your report, I have seen same symptom before, I thought it
+was a windows issue as it is also reproduced against samba. If you
+wait for a few minutes, does not the 99% message window close?
 
-As I was missing the preempt notifier... which makes it a different
-story, but I still think that the simple version is good enough at least
-for a start.
-
-Thanks,
-
-        tglx
+Thanks!
+>
+> Thanks.
+>
+> --
+> Oleksandr Natalenko (post-factum)
+>
+>
+>
