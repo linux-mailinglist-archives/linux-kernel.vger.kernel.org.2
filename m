@@ -2,115 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634BD4533DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FE54533E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237261AbhKPOQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 09:16:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237250AbhKPOQG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 09:16:06 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5295EC061570;
-        Tue, 16 Nov 2021 06:13:09 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id l22so53578407lfg.7;
-        Tue, 16 Nov 2021 06:13:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SAFo3rW8eZqicBwfdhly0zJ3f49mYTVHGsP4fwuNE6M=;
-        b=MUBZmLYHsWTdx+5/t1Gnba93NEA1+CzW6up/O8ayTi9yXCkqkPRb5LM7i9iyAOYpdt
-         nQsSmAiVJJJet3zOnm1bL7QX5oW1JHGe7qEqh0eTTXKOqaXGiNG78R6fC+vguErWG0eq
-         McCafKtF0gG6DbNjpp8HukkNDCP7ZJhNa1pjuj2h8SRtDnW1dl3SZS7ZetoxKw2Y9vfM
-         pzzpcVhkTfsypm5ZjYIJ+saBBTJlMUIZVrMNIp3/AcZIxBfkOQsjtrar9q6AU2ccEl5C
-         xjkDM4a4zblFULgbYABH8iDIfvnVr1IAnz0kx+un20/AzvG9dk84Kx9BFp2OEZJ7xyoz
-         qrtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SAFo3rW8eZqicBwfdhly0zJ3f49mYTVHGsP4fwuNE6M=;
-        b=tmjq9ptD5lWWGAlkEQvZR8GrGJREs5lCRQrXjOe6HmGLyMssgf7m/x9TThx+a92TOk
-         vH8Lut4kIScV6pFA9lrtNyZ3950eDJ50C1pn2VTaTNB2EkyeeRB9K0ShBHWt9NNJb30p
-         a1ZM9tzyCfxNDRDv6Pnr1fZjSFa69jGivPv3GnYH9CBYyEEfgzMmtqR3OIamoe3r93nc
-         2LCg4NUf4fXHVMmQPDRTq/CjNuZfgZzBklD4qvZxpmQLmE8CGwFkHFPfVdmJBekm+ejZ
-         UD1s7EidZoSJw0Ln2ktlf2SodIJqTY/9di/i1EYtAM9Tjh7/ux/Ey62lM2Adjfratpk/
-         p43g==
-X-Gm-Message-State: AOAM533iBJtczYyzjctbTawIkT3FvP7PnNWyG7FN81s9p9Y+xSPdd6jX
-        t3vqNkphIx+ewXq1P+2QLYE=
-X-Google-Smtp-Source: ABdhPJwLRyDiXtrBK8Po6LmQf+B7tKRmIG7EcnOt9NFPYmPQI/2U4h1HjQQJf29P0sG7sEqT1WJ3XA==
-X-Received: by 2002:a05:6512:1520:: with SMTP id bq32mr7019710lfb.232.1637071987677;
-        Tue, 16 Nov 2021 06:13:07 -0800 (PST)
-Received: from localhost.localdomain ([94.103.224.112])
-        by smtp.gmail.com with ESMTPSA id bt3sm1770397lfb.132.2021.11.16.06.13.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 06:13:07 -0800 (PST)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     kuba@kernel.org, davem@davemloft.net, manishc@marvell.com
-Cc:     netdev@vger.kernel.org, aelior@marvell.com, skalluru@marvell.com,
-        linux-kernel@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH v2] MAINTAINERS: remove GR-everest-linux-l2@marvell.com
-Date:   Tue, 16 Nov 2021 17:13:03 +0300
-Message-Id: <20211116141303.32180-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211116081601.11208-1-palok@marvell.com>
-References: <20211116081601.11208-1-palok@marvell.com>
+        id S237220AbhKPORs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 09:17:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237334AbhKPORd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 09:17:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E10DF61A40;
+        Tue, 16 Nov 2021 14:14:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637072074;
+        bh=7G6p0eMBJYpvdBwMo9D60h07DEbfBQdsNKicFx83ZM8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jSSx2zqG6YDhoIGugcxwWjMJZ76XGHGU3Bg/hHHvTROWrLd40xaLq0ndVoNXB73F2
+         BM09Ms2awQTL54arbQrExeqdeqLrwwazNSqbivPOuEnsoZRWKZG+b3bZVxwFwgSaB4
+         sNd33T5ZBMXBDldGU+KrOESAcWmteyqTdUqtsvNY=
+Date:   Tue, 16 Nov 2021 15:14:32 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, f.fainelli@gmail.com,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        jonathanh@nvidia.com, linux- stable <stable@vger.kernel.org>,
+        pavel@denx.de, Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux@roeck-us.net, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH 5.4 000/355] 5.4.160-rc1 review
+Message-ID: <YZO8yO9tn3C7XhHp@kroah.com>
+References: <20211115165313.549179499@linuxfoundation.org>
+ <CA+G9fYvxhzL9KUxZcRzMxnbGPK5GKTCtb5kWM3JB09D+-KhVug@mail.gmail.com>
+ <CAEf4BzZHsbAhA6RJYias+e10PsXWbOD9ekyNMAHKt5PKAGe=Rw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZHsbAhA6RJYias+e10PsXWbOD9ekyNMAHKt5PKAGe=Rw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I've sent a patch to GR-everest-linux-l2@marvell.com few days ago and
-got a reply from postmaster@marvell.com:
+On Mon, Nov 15, 2021 at 09:57:55PM -0800, Andrii Nakryiko wrote:
+> On Mon, Nov 15, 2021 at 10:00 AM Naresh Kamboju
+> <naresh.kamboju@linaro.org> wrote:
+> >
+> > On Mon, 15 Nov 2021 at 22:39, Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > This is the start of the stable review cycle for the 5.4.160 release.
+> > > There are 355 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > >
+> > > Responses should be made by Wed, 17 Nov 2021 16:52:23 +0000.
+> > > Anything received after that time might be too late.
+> > >
+> > > The whole patch series can be found in one patch at:
+> > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.160-rc1.gz
+> > > or in the git tree and branch at:
+> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> > > and the diffstat can be found below.
+> > >
+> > > thanks,
+> > >
+> > > greg k-h
+> >
+> >
+> > Perf build broken due to following errors.
+> >
+> > > Andrii Nakryiko <andrii@kernel.org>
+> > >     libbpf: Fix BTF data layout checks and allow empty BTF
+> >
+> >
+> > In file included from btf.c:17:
+> > btf.c: In function 'btf_parse_hdr':
+> > btf.c:104:62: error: 'struct btf' has no member named 'raw_size'; did
+> > you mean 'data_size'?
+> >   104 |                 pr_debug("Invalid BTF total size:%u\n", btf->raw_size);
+> >       |                                                              ^~~~~~~~
+> >
+> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> >
+> > Build log:
+> > https://builds.tuxbuild.com/20xsgAxLwf4E60xl2dTdXnNS8FZ/
+> 
+> Greg,
+> 
+> c733c19fda7b ("libbpf: Fix BTF data layout checks and allow empty
+> BTF") should either be dropped, or fixed like the below:
+> 
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index 3380aadb7465..41daf0fa95b9 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -101,7 +101,7 @@ static int btf_parse_hdr(struct btf *btf)
+>         }
+> 
+>         if (meta_left < hdr->str_off + hdr->str_len) {
+> -               pr_debug("Invalid BTF total size:%u\n", btf->raw_size);
+> +               pr_debug("Invalid BTF total size:%u\n", btf->data_size);
+>                 return -EINVAL;
+>         }
+> 
+> Not sure which one you'd prefer. Both will fix perf build.
 
-	Delivery has failed to these recipients or groups:
+I'll go fix it up, thanks.
 
-	gr-everest-linux-l2@marvell.com<mailto:gr-everest-linux-l2@marvell.com>
-	The email address you entered couldn't be found. Please check the
-	recipient's email address and try to resend the message. If the problem
-	continues, please contact your helpdesk.
-
-As requested by Alok Prasad, replacing GR-everest-linux-l2@marvell.com
-with Manish Chopra's email address. [0]
-
-Link: https://lore.kernel.org/all/20211116081601.11208-1-palok@marvell.com/ [0]
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
-
-Changes in v2:
-	Replaced GR-everest-linux-l2@marvell.com with Manish Chopra's email, as
-	requested by Alok.
-
----
- MAINTAINERS | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7a2345ce8521..10c8ae3a8c73 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3733,7 +3733,7 @@ F:	drivers/scsi/bnx2i/
- BROADCOM BNX2X 10 GIGABIT ETHERNET DRIVER
- M:	Ariel Elior <aelior@marvell.com>
- M:	Sudarsana Kalluru <skalluru@marvell.com>
--M:	GR-everest-linux-l2@marvell.com
-+M:	Manish Chopra <manishc@marvell.com>
- L:	netdev@vger.kernel.org
- S:	Supported
- F:	drivers/net/ethernet/broadcom/bnx2x/
-@@ -15593,7 +15593,7 @@ F:	drivers/scsi/qedi/
- 
- QLOGIC QL4xxx ETHERNET DRIVER
- M:	Ariel Elior <aelior@marvell.com>
--M:	GR-everest-linux-l2@marvell.com
-+M:	Manish Chopra <manishc@marvell.com>
- L:	netdev@vger.kernel.org
- S:	Supported
- F:	drivers/net/ethernet/qlogic/qed/
--- 
-2.33.1
-
+greg k-h
