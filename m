@@ -2,159 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 305C8453C7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:01:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C39EA453C80
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:02:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231784AbhKPXD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 18:03:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbhKPXDz (ORCPT
+        id S232183AbhKPXFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 18:05:25 -0500
+Received: from gandalf.ozlabs.org ([150.107.74.76]:48369 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229447AbhKPXFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 18:03:55 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63CBC061570;
-        Tue, 16 Nov 2021 15:00:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
-        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
-        bh=3hJqriphVMM07OM/Kwo2cD42Pvvn1Qz15qReihX4PtA=; b=jumkp0tSeYoAPtRUqzOMoMBk2l
-        AXF3xXTEcIo0D+x65knBNjDTiy9q3pNCkBquegZITxoFnm8jou1bsg/kZwls6sinD/us0WJzJ3iD3
-        CRfWQY0auo3D51k7hG+NC6gI1hZg7Y6Q50erfnZVDTXBFeqZq7IEsMk1oeQl5irquZk7i5asq1Y0R
-        Y5ehBPopiiaf9YCTeuCY1WFTuDNMoWbNWNH3cQNyilkzLIy9OzzryUq6Vn8li0vSqRZche8rrNs1R
-        8hRvgbX1Mm3PZ+r1AvGIFxYYytiYWlkJm0kD7r15vUwP8ZHWlu97gbYSWMgh9LxCEG9SA2tnD3QXz
-        Zae5FyyQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mn7Rf-002uG4-BF; Tue, 16 Nov 2021 23:00:55 +0000
-Subject: Re: [PATCH] fs: Eliminate compilation warnings for misc
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211116080611.31199-1-tianjia.zhang@linux.alibaba.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <941c9239-3b73-c2ae-83aa-f83d4e587fc8@infradead.org>
-Date:   Tue, 16 Nov 2021 15:00:54 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 16 Nov 2021 18:05:25 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hv1mJ4PSYz4xbM;
+        Wed, 17 Nov 2021 10:02:24 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1637103746;
+        bh=5DEATmn6MEnai5qTpQy2X9uIyJ+NQ+vZgcENf6p1Oeo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=WQQ/9tcCtUOXNzeLutCLDat9RYhmdosvdGq6qcRh/EFqyqHShB5rjBwYRj/G+P+Tc
+         ptXzslEruMp5TIAv9uqUIO5k1SwFCnsb1SltES0TjEYs++IFTgC+vZBWxFX3ZxZZ1R
+         97lIq+5KDpaUdRqzkllQAWiksg99HwPmK0FWwbQDk2gqulxypLUUzIZ8P+m0JURHsh
+         CyR7cobpU98mpjHLxX8nIgCdwFvWd5BazUC2iD9HpgMP3NgcDyh7wh1Z8dZP01Yrnk
+         IUasdjZU04Mu0Tjtp4dCNknsgbQcRHjvoSPp5r8s0r0aS4ghSwaEkuNtxfEENVVY4b
+         cuA/nqbXYj17w==
+Date:   Wed, 17 Nov 2021 10:02:23 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the drm-intel-gt tree
+Message-ID: <20211117100223.52c7460a@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20211116080611.31199-1-tianjia.zhang@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/HyY3mkcO0SKpLL.Za5=zlAf";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 12:06 AM, Tianjia Zhang wrote:
-> Eliminate the following clang compilation warnings by adding or
-> fixing function comment:
+--Sig_/HyY3mkcO0SKpLL.Za5=zlAf
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-These are from clang?  They all appear to be from scripts/kernel-doc.
+Hi all,
 
-Can someone please clarify?
+After merging the etnaviv tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-thanks.
+drivers/gpu/drm/i915/gem/i915_gem_ttm.c: In function 'vm_fault_ttm':
+drivers/gpu/drm/i915/gem/i915_gem_ttm.c:862:9: error: too many arguments to=
+ function 'ttm_bo_vm_fault_reserved'
+  862 |   ret =3D ttm_bo_vm_fault_reserved(vmf, vmf->vma->vm_page_prot,
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from include/drm/ttm/ttm_bo_driver.h:42,
+                 from drivers/gpu/drm/i915/gem/i915_gem_ttm.c:6:
+include/drm/ttm/ttm_bo_api.h:585:12: note: declared here
+  585 | vm_fault_t ttm_bo_vm_fault_reserved(struct vm_fault *vmf,
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~
 
->    fs/file.c:655: warning: Function parameter or member 'fdt' not described in 'last_fd'
->    fs/file.c:655: warning: Excess function parameter 'cur_fds' description in 'last_fd'
->    fs/file.c:703: warning: Function parameter or member 'flags' not described in '__close_range'
-> 
->    fs/fs_context.c:202: warning: Function parameter or member 'fc' not described in 'generic_parse_monolithic'
->    fs/fs_context.c:202: warning: Excess function parameter 'ctx' description in 'generic_parse_monolithic'
->    fs/fs_context.c:386: warning: Function parameter or member 'log' not described in 'logfc'
->    fs/fs_context.c:386: warning: Function parameter or member 'prefix' not described in 'logfc'
->    fs/fs_context.c:386: warning: Function parameter or member 'level' not described in 'logfc'
->    fs/fs_context.c:386: warning: Excess function parameter 'fc' description in 'logfc'
-> 
->    fs/namei.c:1044: warning: Function parameter or member 'inode' not described in 'may_follow_link'
-> 
->    fs/read_write.c:88: warning: Function parameter or member 'maxsize' not described in 'generic_file_llseek_size'
->    fs/read_write.c:88: warning: Excess function parameter 'size' description in 'generic_file_llseek_size'
-> 
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> ---
->   fs/file.c       | 3 ++-
->   fs/fs_context.c | 6 ++++--
->   fs/namei.c      | 1 +
->   fs/read_write.c | 2 +-
->   4 files changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/file.c b/fs/file.c
-> index 8627dacfc424..ab3b635b0c86 100644
-> --- a/fs/file.c
-> +++ b/fs/file.c
-> @@ -645,7 +645,7 @@ EXPORT_SYMBOL(close_fd); /* for ksys_close() */
->   
->   /**
->    * last_fd - return last valid index into fd table
-> - * @cur_fds: files struct
-> + * @fdt: fdtable struct
->    *
->    * Context: Either rcu read lock or files_lock must be held.
->    *
-> @@ -695,6 +695,7 @@ static inline void __range_close(struct files_struct *cur_fds, unsigned int fd,
->    *
->    * @fd:     starting file descriptor to close
->    * @max_fd: last file descriptor to close
-> + * @flags:  close range flags
->    *
->    * This closes a range of file descriptors. All file descriptors
->    * from @fd up to and including @max_fd are closed.
-> diff --git a/fs/fs_context.c b/fs/fs_context.c
-> index b7e43a780a62..e94fb7f19d3f 100644
-> --- a/fs/fs_context.c
-> +++ b/fs/fs_context.c
-> @@ -189,7 +189,7 @@ EXPORT_SYMBOL(vfs_parse_fs_string);
->   
->   /**
->    * generic_parse_monolithic - Parse key[=val][,key[=val]]* mount data
-> - * @ctx: The superblock configuration to fill in.
-> + * @fc: filesystem context
->    * @data: The data to parse
->    *
->    * Parse a blob of data that's in key[=val][,key[=val]]* form.  This can be
-> @@ -379,7 +379,9 @@ EXPORT_SYMBOL(vfs_dup_fs_context);
->   
->   /**
->    * logfc - Log a message to a filesystem context
-> - * @fc: The filesystem context to log to.
-> + * @log: The filesystem context to log to.
-> + * @prefix: The log prefix.
-> + * @level: The log level.
->    * @fmt: The format of the buffer.
->    */
->   void logfc(struct fc_log *log, const char *prefix, char level, const char *fmt, ...)
-> diff --git a/fs/namei.c b/fs/namei.c
-> index 1f9d2187c765..3bc73b4f39c9 100644
-> --- a/fs/namei.c
-> +++ b/fs/namei.c
-> @@ -1028,6 +1028,7 @@ int sysctl_protected_regular __read_mostly;
->   /**
->    * may_follow_link - Check symlink following for unsafe situations
->    * @nd: nameidata pathwalk data
-> + * @inode: inode to check
->    *
->    * In the case of the sysctl_protected_symlinks sysctl being enabled,
->    * CAP_DAC_OVERRIDE needs to be specifically ignored if the symlink is
-> diff --git a/fs/read_write.c b/fs/read_write.c
-> index 0074afa7ecb3..d7b0f8528930 100644
-> --- a/fs/read_write.c
-> +++ b/fs/read_write.c
-> @@ -71,7 +71,7 @@ EXPORT_SYMBOL(vfs_setpos);
->    * @file:	file structure to seek on
->    * @offset:	file offset to seek to
->    * @whence:	type of seek
-> - * @size:	max size of this file in file system
-> + * @maxsize:	max size of this file in file system
->    * @eof:	offset used for SEEK_END position
->    *
->    * This is a variant of generic_file_llseek that allows passing in a custom
-> 
+Caused by commit
 
+  ebd4a8ec7799 ("drm/i915/ttm: move shrinker management into adjust_lru")
 
--- 
-~Randy
+interacting with commit
+
+  0d979509539e ("drm/ttm: remove ttm_bo_vm_insert_huge()")
+
+from Linus' tree.
+
+I applied the following merge fix patch.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Wed, 17 Nov 2021 09:57:09 +1100
+Subject: [PATCH] fix up for "drm/ttm: remove ttm_bo_vm_insert_huge()"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ drivers/gpu/drm/i915/gem/i915_gem_ttm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/i915/gem/i915_gem_ttm.c b/drivers/gpu/drm/i915=
+/gem/i915_gem_ttm.c
+index d08a270b0921..68cfe6e9ceab 100644
+--- a/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
++++ b/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
+@@ -860,7 +860,7 @@ static vm_fault_t vm_fault_ttm(struct vm_fault *vmf)
+=20
+ 	if (drm_dev_enter(dev, &idx)) {
+ 		ret =3D ttm_bo_vm_fault_reserved(vmf, vmf->vma->vm_page_prot,
+-					       TTM_BO_VM_NUM_PREFAULT, 1);
++					       TTM_BO_VM_NUM_PREFAULT);
+ 		drm_dev_exit(idx);
+ 	} else {
+ 		ret =3D ttm_bo_vm_dummy_page(vmf, vmf->vma->vm_page_prot);
+--=20
+2.33.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/HyY3mkcO0SKpLL.Za5=zlAf
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGUOH8ACgkQAVBC80lX
+0Gx0lgf/duysNW+6PPbRRIYTuvq/Z8o9d6FFtldIFl0l5MUZuhLAIJoGtAeP4oHj
+kj6RCPUj9RN22Y7Zcz4Yb82w/VpdfDO5FvG3tBGg2mmqQvxrsAGRLwY+ZKL2RPio
+QpgGfx5sRKqXInPrDXllTQ6355267UVc/IUPPY+wPbAH3JKSQzgBVwjtOT+tP1Gm
+t2PInyrM9AaRadQTR0zMIt4i2EpAcSoRK8B35oQ/YdgE/3u34GVsKqq7vtMG0wSe
+ei6sr1VwJB26sd/E9lh7nGO/SuAQKHKLwxVL2hiBwHaBZOqhfhEoXQAUv7AGz/Fg
+nhWb89rG0ZSCNycad7Ymo7ex5WYtoA==
+=Mclm
+-----END PGP SIGNATURE-----
+
+--Sig_/HyY3mkcO0SKpLL.Za5=zlAf--
