@@ -2,149 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53135452F68
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 11:44:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF89452F6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 11:45:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234268AbhKPKrK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 16 Nov 2021 05:47:10 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4098 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234039AbhKPKqd (ORCPT
+        id S234343AbhKPKri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 05:47:38 -0500
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:41972
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234039AbhKPKrh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 05:46:33 -0500
-Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HtjHN6bskz67mLl;
-        Tue, 16 Nov 2021 18:39:44 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 16 Nov 2021 11:43:27 +0100
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2308.020;
- Tue, 16 Nov 2021 11:43:27 +0100
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     "tytso@mit.edu" <tytso@mit.edu>, "corbet@lwn.net" <corbet@lwn.net>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "hughd@google.com" <hughd@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC][PATCH 5/5] shmem: Add fsverity support
-Thread-Topic: [RFC][PATCH 5/5] shmem: Add fsverity support
-Thread-Index: AQHX18M/qVU4RXchik23Vn+neZuDEKwAMhaAgAQN/bCAAKcCAIABDzqA
-Date:   Tue, 16 Nov 2021 10:43:27 +0000
-Message-ID: <0974034ff3b6426abd89f3c6f45c6d23@huawei.com>
-References: <20211112124411.1948809-1-roberto.sassu@huawei.com>
- <20211112124411.1948809-6-roberto.sassu@huawei.com>
- <YY68iXKPWN8+rd+0@gmail.com> <6adb6da30b734213942f976745c456f6@huawei.com>
- <YZKvXK+vX/we4GCD@gmail.com>
-In-Reply-To: <YZKvXK+vX/we4GCD@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.204.63.33]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Tue, 16 Nov 2021 05:47:37 -0500
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id E01193FFE6
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 10:44:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1637059479;
+        bh=HNvZ1tf4tqT4mDgVZbm+N3k8Io7A/bebwGQCK1l5BZ0=;
+        h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+         In-Reply-To:Content-Type;
+        b=vTDiw06NhQZHs2H6DaBOTGe9FxhW0VlB9VdPJ+BA0Vvr4RZX6aZ6eJF5/e00k77Df
+         H3p2z+VzIwDrcrvQ6BsgzR9paSioLmbf0MheBeaizr04PhwAJE6kMsez8O49x6LEob
+         07wrZrloDUXkaFsqZwkItuD2469tfGSr8k+hNikdd30D7VSVFCgbjGjYAse5ol9C5g
+         NuhGvyKg7F/sQtkMjaBHWlSx5YlPqMMCxnozjWEF4jUFmI7QhYV0dhVnc/kIEoc6Ll
+         NckywGSpAkIGhlH/QSGwskJ4BC8+w/XHSUfsXJInWanq4qAqrEGArJ2+M11YOYknpV
+         khpLA1LQLKd3g==
+Received: by mail-lf1-f70.google.com with SMTP id z1-20020a056512308100b003ff78e6402bso7989642lfd.4
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 02:44:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=HNvZ1tf4tqT4mDgVZbm+N3k8Io7A/bebwGQCK1l5BZ0=;
+        b=eawVYAsVulqpSKA6gESrtyDCpfw0jc//o4m1y5+RJ0jreUgCWUPdLfEk1nwWibXpS4
+         rqs7P7ZRJGp6pIL/t52x4x78IHQCesWsG+aYGjWJrTqUfr5cZHOmc3dyGh2ZnC7YpRe3
+         pcgjhr8sc4kveFKQtk19ovND63JTHtP7hK8o6XyiPHv/IXaYZisIlQD6Ostt2iYI+F/Z
+         Zmvz6jxkgJUXyR5If3qJ16fEJM2gWKDQGaNcm7G9ZlHw5by1WFhXySKT9FUmx8qLjihO
+         27myka/pxPJ7RuT1JTy6UgMXAwqDYm2lHMkGBf85eYdQYN9dB9GK5QmAEVb/dhWxFNeg
+         /89Q==
+X-Gm-Message-State: AOAM530g+FUhSxHOgXTGagTrTa1bztA632dRojhAMONlVo+GSdFcjVbL
+        JJmGVPrMAM3jd6XCCdTV481TU5yz1FhR0NWmnKy2MplkGSJUE3rM8FFbpPMZW+nN4djRA4T1ppB
+        EZUeWJOD5L5h1xlrIw5kxoWFcCXrV7v9aVBYHivPJag==
+X-Received: by 2002:a05:651c:1506:: with SMTP id e6mr6017418ljf.41.1637059479357;
+        Tue, 16 Nov 2021 02:44:39 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyD2/brVwmP+fxPjmH64gkeCFja1QsZELxsviHR6oPBbUhLXYbkGo8De6w06v59AluCYYjESw==
+X-Received: by 2002:a05:651c:1506:: with SMTP id e6mr6017398ljf.41.1637059479149;
+        Tue, 16 Nov 2021 02:44:39 -0800 (PST)
+Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id e19sm1782137ljn.82.2021.11.16.02.44.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 02:44:38 -0800 (PST)
+Message-ID: <886518b4-de22-2443-286d-8135eeaa2ad1@canonical.com>
+Date:   Tue, 16 Nov 2021 11:44:37 +0100
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH] riscv: dts: sifive unmatched: Expose the FU740 core
+ supply regulator.
+Content-Language: en-US
+To:     Vincent Pelletier <plr.vincent@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
+        Yash Shah <yash.shah@sifive.com>, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Abdurachmanov <david.abdurachmanov@sifive.com>
+References: <f6512cc50dc31a086e00ed59c63ea60d8c148fc4.1637023980.git.plr.vincent@gmail.com>
+ <0879c5b0c72b9bf6bf71f880def166f8804f41c7.1637023980.git.plr.vincent@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <0879c5b0c72b9bf6bf71f880def166f8804f41c7.1637023980.git.plr.vincent@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Eric Biggers [mailto:ebiggers@kernel.org]
-> Sent: Monday, November 15, 2021 8:05 PM
-> On Mon, Nov 15, 2021 at 08:49:41AM +0000, Roberto Sassu wrote:
-> > > From: Eric Biggers [mailto:ebiggers@kernel.org]
-> > > Sent: Friday, November 12, 2021 8:12 PM
-> > > On Fri, Nov 12, 2021 at 01:44:11PM +0100, Roberto Sassu wrote:
-> > > > Make the necessary modifications to support fsverity in tmpfs.
-> > > >
-> > > > First, implement the fsverity operations (in a similar way of f2fs). These
-> > > > operations make use of shmem_read_mapping_page() instead of
-> > > > read_mapping_page() to handle the case where the page has been
-> swapped
-> > > out.
-> > > > The fsverity descriptor is placed at the end of the file and its location
-> > > > is stored in an xattr.
-> > > >
-> > > > Second, implement the ioctl operations to enable, measure and read
-> fsverity
-> > > > metadata.
-> > > >
-> > > > Lastly, add calls to fsverity functions, to ensure that fsverity-relevant
-> > > > operations are checked and handled by fsverity (file open, attr set, inode
-> > > > evict).
-> > > >
-> > > > Fsverity support can be enabled through the kernel configuration and
-> > > > remains enabled by default for every tmpfs filesystem instantiated (there
-> > > > should be no overhead, unless fsverity is enabled for a file).
-> > > >
-> > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > >
-> > > I don't see how this makes sense at all.  The point of fs-verity is to avoid
-> > > having to hash the whole file when verifying it.  However, obviously the
-> whole
-> > > file still has to be hashed to build the Merkle tree in the first place.  That
-> > > makes sense for a persistent filesystem where a file can be written once and
-> > > verified many times.  I don't see how it makes sense for tmpfs, where files
-> have
-> > > to be re-created on every boot.  You might as well just hash the whole file.
-> >
-> > The point of adding fsverity support for tmpfs was to being able to do
-> > integrity enforcement with just one mechanism, given that I was
-> > planning to do integrity verification with reference values loaded
-> > to the kernel with DIGLIM [1].
-> >
-> > With an LSM such as IPE [2], integrity verification would consist in
-> > querying the fsverity digest with DIGLIM and allowing the operation
-> > if the digest was found. With fsverity support in tmpfs, this can be
-> > done from the very beginning of the boot process.
-> >
-> > Using regular file digests would be also possible but this requires
-> > loading with DIGLIM both fsverity and non-fsverity reference values.
-> > It would also require two separate mechanisms for calculating
-> > the file digest depending on the filesystem. It could be done, but
-> > I thought it was easier to add support for fsverity in tmpfs.
-> >
-> > > Also, you didn't implement actually verifying the data (by calling
-> > > fsverity_verify_page()), so this patch doesn't really do anything anyway.
-> >
-> > Yes, at the end I didn't add it. Probably the only place where
-> > calling fsverity_verify_page() would make sense is when a page
-> > is swapped in (assuming that the swap device is untrusted).
-> >
-> > I tried to add a call in shmem_swapin_page() but fsverity complained
-> > due to the fact that the page was already up to date, and also
-> > rejected the page. I will check it better.
-> >
+On 16/11/2021 01:52, Vincent Pelletier wrote:
+> Provides monitoring of core voltage and current:
+> tps544b20-i2c-0-1e
+> Adapter: i2c-ocores
+> vout1:       906.00 mV
+> temp1:        -40.0°C  (high = +125.0°C, crit = +150.0°C)
+> iout1:         5.06 A  (max = +20.00 A, crit max = +26.00 A)
 > 
-> It sounds like you really only care about calculating fs-verity file digests.
-> That's just an algorithm for hashing a file, so it could just be implemented in
-> generic code that operates on any file on any filesystem, like how IMA
-> implemennts full file hashing for any file.  There isn't a need for any special
-> filesystem support to do this.
+> Signed-off-by: Vincent Pelletier <plr.vincent@gmail.com>
+> 
+> --
+> Note for review: this patch has one warning from checkpatch.pl:
+>   WARNING: DT compatible string "tps544b20" appears un-documented -- check ./Documentation/devicetree/bindings/
+>   #32: FILE: arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts:55:
+>   +               compatible = "tps544b20";
+> This chip is handled by the existing pmbus module, and there is indeed no
+> matching entry in Documentation/devicetree/bindings/hwmon/pmbus. I am not
+> especially knowledgeable about this chip, I only know it is used by this
+> board, so I am not sure I can do the best job in putting such a file
+> together.
+> If needed I can git it a try.
 
-Initially I thought the same. Then, I realized that fsverity is much more
-than that. Fsverity could be seen as a sort of property enforcer, it provides
-a property associated to the file (the fsverity digest) and ensures that
-the property remains the same while the system is running. In addition,
-it takes advantage of the page cache to avoid remeasuring an up to date
-page.
+It's not required. I can try adding it.
 
-This remove some burden from LSMs. IPE would have just to compare
-the fsverity digest with that in the policy (or just query it with DIGLIM).
-Not taking into consideration the specific filesystem, not having to
-fall back to the new fsverity measurement function, and avoiding to
-preserve the fsverity property by itself, would make the LSM
-implementation very simple.
+> ---
+>  arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+> index 270360b258b7..e327831d0d48 100644
+> --- a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+> +++ b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+> @@ -51,6 +51,11 @@ &uart1 {
+>  &i2c0 {
+>  	status = "okay";
+>  
+> +	tps544b20@1e {
 
-Roberto
+Node name should be a generic class of a device. This is a DC-DC
+converter, so I suppose we should name it "regulator"?
 
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Zhong Ronghua
+> +		compatible = "tps544b20";
+> +		reg = <0x1e>;
+> +	};
+> +
+>  	temperature-sensor@4c {
+>  		compatible = "ti,tmp451";
+>  		reg = <0x4c>;
+> 
+
+
+Best regards,
+Krzysztof
