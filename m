@@ -2,217 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 401B445291E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:26:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA93045292B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:34:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237839AbhKPE2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 23:28:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42558 "EHLO
+        id S241047AbhKPEg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 23:36:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240492AbhKPE2N (ORCPT
+        with ESMTP id S240016AbhKPEgu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 23:28:13 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67430C04EF93
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 17:23:53 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id o15-20020a9d410f000000b0055c942cc7a0so30609649ote.8
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 17:23:53 -0800 (PST)
+        Mon, 15 Nov 2021 23:36:50 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70830C219381;
+        Mon, 15 Nov 2021 17:37:37 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id t21so15986656plr.6;
+        Mon, 15 Nov 2021 17:37:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kali.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=nTaWvWeeIvOoP/P3B+BmghLZFxSmkp20dJxrE1Em0B0=;
-        b=hODih3i3lk4StlS/Iqc9FkpsXI0426vZgUigkUppIJ4xA80HH4bgJh9Ia+jK/m7Gg5
-         nKSgUCupmGcAKhN0ut2ZSlQfDLqO1twd1Fh2a0xwLWlPNhaZ68snOokozoxW18EuHLXN
-         jC4dVkKbXfauv6PlYfl48LQiFXg3RJNAw/Hhp2r5te5HcMcwP3lbJq4ejF+O3shJdhXB
-         7izOz0ACJo8MdLGLnGU04Y+uFEFiWZg7ra7vDWfH4t3YSVjJwf+0fHXrVy/6/etATcWX
-         zFtDab3mneymYKABGNJuL1HHqc06t0gcgJqlBddYqJi65A8N1P1ieGOfbdmI0O/LaIhr
-         Kfyg==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5giEjXmFz5wVNw4jTGQLtnYcBIEt2xUkApnMbyHyBfE=;
+        b=YnTyUJ0mN5pZKCVFRp3lOKtS23GA5iSeP+PdfC3fnB5s64f4z+nYvqQvFxsC0LcuBE
+         IaYPTdXFiKztP785jsKenmZuEN4WV7xBrTw4fSEWbTs9iStW07+MlsQh5Yg4VRuiDqgQ
+         ngGNz/ImmiqiCl+9mNQCETcerwdnNtIKHoP7mgCAntK4KB+lUCwCFP68iQM7Da1riJp7
+         uO8otg8eocqFZZLJzhDYhCcCE41+Rc3b5L88DuWtFHM86hHjDWWMjTXE2yjzZi1Iak++
+         c5eBiqqoDHq/E3z0UyN2NM9x7NAVb9yxGWG68yZ1MoQe72rJOwDvbWPEh1C2ALytRdQp
+         ax/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=nTaWvWeeIvOoP/P3B+BmghLZFxSmkp20dJxrE1Em0B0=;
-        b=kvQGWhB6cTNZyTBAy/fK0uAEQiUuYYBkg71z2uvjZ3121cogB7zAbX2e/KIAQOKKN0
-         q1SSIRufGqhb5aUBvhehfxhgV33C/USBrq+bVRrjugvCLA6evwNu7bFndP4DB8VST/SB
-         Lun4JH3GYSw44wZRj7Ji4xwjV1ah8aSxUszmIKP3205PLCSB/5OLOzXeg0nQywB/K9gb
-         pf9R7f363f+lbUNVKSLUh1krHyM5PhzTCS+MB+yrgPbkGqgvpLnCavMQk8pEfw6m+99c
-         T3AgEGatWAyFLNCzIJh1AMkQxM4IQ/uA5lFRdi8pq6yrf9PGdL1ujPklHVhsW08cNUuO
-         g2nw==
-X-Gm-Message-State: AOAM531H9lWpDmDvdRpMJrgbsN2lfDUROCFqRlz39+HmEwvDA4kYBcfp
-        5LzCRpsZwFdc95mk/Hh87brKRA==
-X-Google-Smtp-Source: ABdhPJzKVuOebXxy3RD99OR/9h+EwRvdqloC8YuBYE87p9xUODg5mFOHBn1LO5G0RHJpomFtr8JGOA==
-X-Received: by 2002:a05:6830:1cc:: with SMTP id r12mr2845768ota.76.1637025832711;
-        Mon, 15 Nov 2021 17:23:52 -0800 (PST)
-Received: from [192.168.11.48] (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
-        by smtp.gmail.com with ESMTPSA id l23sm3302357oti.16.2021.11.15.17.23.51
+        bh=5giEjXmFz5wVNw4jTGQLtnYcBIEt2xUkApnMbyHyBfE=;
+        b=aOCsRBSXEoxBXqbIO1iemGjghWBCfJR6f3uqCv+23ULfdYFj7+eii1Rnj6TNImn3su
+         l99v6a9X5Gdf4+4uZmJ9gFM3Cc4DxBQHY68m7P+TGMIxrH5aFz5Y7E0wJYKzaRbWzHte
+         ZKr9V8it+CeEKIWZxfVg7qMPFDoLWPgNzjkiwZPi7RSL/tCdr6q2JD7Ozz/C1WYnMesA
+         t7RrbhESUpfWy4N5muLD3XD645YcoXiamTnAUfxa3BtXVLsi5STReqtvIkU108htjvX1
+         qUR/4J+2VO1usnNue/p6uqwf0dQl8UOYJrlI1jQKaQ2Sd2LvFc9dOTpwDmD7QjZUQjt/
+         adUA==
+X-Gm-Message-State: AOAM5311Z4puQazS6Gm4poHqgv9LEy07VLUYn84izJyEICbCgEQIcMYC
+        wnsHKRv6MwhxEGXLyvU4VgWhvNDTO2Q=
+X-Google-Smtp-Source: ABdhPJzjv43rOd/qgrJTCbShy+/xS7YfXJVRITn+oLyvCMoVD0IoooCVrsLBYmdDF4idNmav6yilBQ==
+X-Received: by 2002:a17:902:c78a:b0:142:1b7a:930 with SMTP id w10-20020a170902c78a00b001421b7a0930mr40969098pla.8.1637026656267;
+        Mon, 15 Nov 2021 17:37:36 -0800 (PST)
+Received: from [192.168.11.5] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id v19sm484427pju.32.2021.11.15.17.37.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 17:23:52 -0800 (PST)
-Message-ID: <5ae2c644-4743-c62c-b17c-96945a0e6a01@kali.org>
-Date:   Mon, 15 Nov 2021 19:23:50 -0600
+        Mon, 15 Nov 2021 17:37:35 -0800 (PST)
+Subject: Re: [PATCH] docs: Update Sphinx requirements
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Federico Vaga <federico.vaga@vaga.pv.it>,
+        Alex Shi <alexs@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <2c704ddd-2da2-138b-4928-890e92b66f9f@gmail.com>
+ <875ystn40s.fsf@meer.lwn.net>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <550fe790-b18d-f882-4c70-477b596facc7@gmail.com>
+Date:   Tue, 16 Nov 2021 10:37:31 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Subject: Re: [PATCH] cpufreq: freq_table: Initialize cpuinfo.max_freq to
- correct max frequency.
+In-Reply-To: <875ystn40s.fsf@meer.lwn.net>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Thara Gopinath <thara.gopinath@linaro.org>, rafael@kernel.org,
-        viresh.kumar@linaro.org, bjorn.andersson@linaro.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20211115195011.52999-1-thara.gopinath@linaro.org>
-From:   Steev Klimaszewski <steev@kali.org>
-In-Reply-To: <20211115195011.52999-1-thara.gopinath@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thara,
+On Mon, 15 Nov 2021 02:48:19 -0700
+Jonathan Corbet wrote:
+> Akira Yokosawa <akiyks@gmail.com> writes:
+> 
+>> Subject: [PATCH] docs: Update Sphinx requirements
+>>
+>> Commit f546ff0c0c07 ("Move our minimum Sphinx version to 1.7") raised
+>> the minimum version to 1.7.
+>>
+>> For pdfdocs, sphinx_pre_install says:
+>>
+>>     note: If you want pdf, you need at least Sphinx 2.4.4.
+>>
+>> , and current requirements.txt installs Sphinx 2.4.4.
+>>
+>> Update Sphinx versions mentioned in docs and remove a note on earlier
+>> Sphinx versions.
+> 
+> It may be time to consider raising the minimum sphinx version
+> overall...
 
-On 11/15/21 1:50 PM, Thara Gopinath wrote:
-> cpuinfo.max_freq reflects the maximum supported frequency of cpus in a
-> cpufreq policy. When cpus support boost frequency and if boost is disabled
-> during boot up (which is the default), cpuinfo.max_freq does not reflect
-> boost frequency as the maximum supported frequency till boost is explicitly
-> enabled via sysfs interface later. This also means that policy reports two
-> different cpuinfo.max_freq before and after turning on boost.  Fix this by
-> separating out setting of policy->max and cpuinfo.max_freq in
-> cpufreq_frequency_table_cpuinfo.
->
-> e.g. of the problem. Qualcomm sdm845 supports boost frequency for gold
-> cluster (cpus 4-7). After boot up (boost disabled),
->
-> 1.  cat /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq 2649600
-> <- This is wrong because boost frequency is
->
-> 2.  echo 1 > /sys/devices/system/cpu/cpufreq/boost  <- Enable boost cat
-> /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq 2803200	<-
-> max freq reflects boost freq.
->
-> 3.  echo 0 > /sys/devices/system/cpu/cpufreq/boost <- Disable boost cat
-> /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq 2803200	<-
-> Discrepancy with step 1 as in both cases boost is disabled.
->
-> Note that the other way to fix this is to set cpuinfo.max_freq in Soc
-> cpufreq driver during initialization. Fixing it in
-> cpufreq_frequency_table_cpuinfo seems more generic solution
->
-> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-> ---
->   drivers/cpufreq/freq_table.c | 8 ++++++--
->   1 file changed, 6 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/cpufreq/freq_table.c b/drivers/cpufreq/freq_table.c
-> index 67e56cf638ef..6784f94124df 100644
-> --- a/drivers/cpufreq/freq_table.c
-> +++ b/drivers/cpufreq/freq_table.c
-> @@ -35,11 +35,15 @@ int cpufreq_frequency_table_cpuinfo(struct cpufreq_policy *policy,
->   	struct cpufreq_frequency_table *pos;
->   	unsigned int min_freq = ~0;
->   	unsigned int max_freq = 0;
-> +	unsigned int cpuinfo_max_freq = 0;
->   	unsigned int freq;
->   
->   	cpufreq_for_each_valid_entry(pos, table) {
->   		freq = pos->frequency;
->   
-> +		if (freq > cpuinfo_max_freq)
-> +			cpuinfo_max_freq = freq;
-> +
->   		if (!cpufreq_boost_enabled()
->   		    && (pos->flags & CPUFREQ_BOOST_FREQ))
->   			continue;
-> @@ -57,8 +61,8 @@ int cpufreq_frequency_table_cpuinfo(struct cpufreq_policy *policy,
->   	 * If the driver has set its own cpuinfo.max_freq above max_freq, leave
->   	 * it as is.
->   	 */
-> -	if (policy->cpuinfo.max_freq < max_freq)
-> -		policy->max = policy->cpuinfo.max_freq = max_freq;
-> +	if (policy->cpuinfo.max_freq < cpuinfo_max_freq)
-> +		policy->cpuinfo.max_freq = cpuinfo_max_freq;
->   
->   	if (policy->min == ~0)
->   		return -EINVAL;
+There is one thing we need to address (you might well be aware of).
 
+Our Documentation/conf.py is not compatible for hrmldocs with
+the combination sphinx_rtd_theme 1.0.0 and Sphinx >= 3.0.
+This issue is the same as the one reported at:
+    https://github.com/readthedocs/sphinx_rtd_theme/issues/1240
+    "No stylesheet after upgrading to 1.0.0"
 
-Something still isn't quite right...
+I tried the fix suggested there (html_css_files option),
+and a stylesheet can be generated.
+But the resulting html pages look quite different from the one
+you see at https://www.kernel.org/doc/html/latest/ with the sans
+font for text and distracting look of monospaced strings.
 
-The setup is that I have an rc.local of
+You can see a screenshot of such a page at
+    https://fars.ee/nkkZ
 
-#!/bin/sh
+I guess there should be some knobs of Sphinx for customizing
+the style, but have not figured them out.
 
-echo 1 > /sys/devices/system/cpu/cpufreq/boost
+Thoughts?
 
-exit 0
+        Thanks, Akira
 
-
-After booting and logging in:
-
-steev@limitless:~$ cat 
-/sys/devices/system/cpu/cpufreq/policy4/stats/time_in_state
-825600 2499
-<snip>
-2649600 38
-2745600 31
-2841600 1473
-2956800 0
-
-After running a "cargo build --release" in an alacritty git checkout:
-
-teev@limitless:~$ cat 
-/sys/devices/system/cpu/cpufreq/policy4/stats/time_in_state
-825600 11220
-<snip>
-2649600 41
-2745600 35
-2841600 3065
-2956800 0
-
-
-however...
-
-If I then
-
-steev@limitless:~$ echo 0 | sudo tee /sys/devices/system/cpu/cpufreq/boost
-[sudo] password for steev:
-0
-steev@limitless:~$ echo 1 | sudo tee /sys/devices/system/cpu/cpufreq/boost
-1
-
-and run the build again...
-
-steev@limitless:~$ cat 
-/sys/devices/system/cpu/cpufreq/policy4/stats/time_in_state
-825600 21386
-<snip>
-2649600 45
-2745600 38
-2841600 3326
-2956800 4815
-
-As a workaround, I attempted to jiggle it 1-0-1 in rc.local, however 
-that ends up giving
-
-steev@limitless:~$ cat 
-/sys/devices/system/cpu/cpufreq/policy4/stats/time_in_state
-825600 2902
-<snip>
-2649600 36
-2745600 36
-2841600 6050
-2956800 13
-
-And it doesn't go up, I even tried adding a sleep of 1 second between 
-the echo 1/0/1 lines and while 2956800 goes up to 28 (but never uses it) 
-it seems like, unless I do it manually once I've logged in, which I'm 
-assuming is a lot slower than waiting 1 second between them, it's not 
-quite giving us 2956800 "easily".
-
-If the email wasn't clear, please let me know! I tried to explain as 
-best I could what I am seeing here.
-
--- steev
-
+>              meanwhile, though, I've applied this, thanks. 
+> 
+> jon
+> 
