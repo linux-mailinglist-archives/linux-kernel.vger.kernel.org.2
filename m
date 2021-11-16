@@ -2,78 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34274452CFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:37:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FB4452D03
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:39:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232297AbhKPIjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 03:39:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231863AbhKPIjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 03:39:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 804386152B;
-        Tue, 16 Nov 2021 08:36:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637051814;
-        bh=/t0e4IeDXzGKX4p1dz+7mNaAA0MK312fgunnrIZK2/s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J2TtRdSs9kDyxUNmQcdD8K37GrC1+1ceOUQ8AgOG2c+w+aVDjdRbOrkKwR1N7nD2f
-         i9up4SKEbp2TP7BcbDvVm8A9dV8J3naetdo/ao38ihMKXO+r7PdKebCeTPRG47TUNV
-         /BWp6cQR87apiVhFXMoadjS48cLPmnlhe6lXTPAtFDYIxPAm32Z4lqDVRgzfWd3HNE
-         St0tD6P+GnHfw5vtOhtVcmRk5ZE3LkKPg0dDr2P3gfLKI2srMEH+xaoXfSpCCyReiQ
-         KR6xl6rqOBlBt+DtnQ8uzmoh3aKasSkGpfRjqsofBXNWIRnwzimkyqx5XDtbx/RNQ/
-         Z65DxgQWg0mhg==
-Date:   Tue, 16 Nov 2021 14:06:49 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     quic_vamslank@quicinc.com
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        tglx@linutronix.de, maz@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, manivannan.sadhasivam@linaro.org,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v4 6/6] dt-bindings: clock: Introduce pdc bindings for
- SDX65
-Message-ID: <YZNtobehz9MUq6mz@matsya>
-References: <cover.1637047731.git.quic_vamslank@quicinc.com>
- <0943c652b09dda026545cc10f44b0c535088072f.1637047731.git.quic_vamslank@quicinc.com>
+        id S232333AbhKPImJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 03:42:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232125AbhKPImE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 03:42:04 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24ED2C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 00:39:08 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mmtzc-0001T6-Oi; Tue, 16 Nov 2021 09:39:04 +0100
+Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mmtzb-0008FT-5m; Tue, 16 Nov 2021 09:39:03 +0100
+Date:   Tue, 16 Nov 2021 09:39:03 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Vladimir Oltean <olteanv@gmail.com>, g@pengutronix.de
+Cc:     Woojung Huh <woojung.huh@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com,
+        kernel@pengutronix.de, Jakub Kicinski <kuba@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>
+Subject: Re: [RFC PATCH net-next] net: dsa: microchip: implement multi-bridge
+ support
+Message-ID: <20211116083903.GA16121@pengutronix.de>
+References: <20211108111034.2735339-1-o.rempel@pengutronix.de>
+ <20211110123640.z5hub3nv37dypa6m@skbuf>
+ <20211112075823.GJ12195@pengutronix.de>
+ <20211115234546.spi7hz2fsxddn4dz@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <0943c652b09dda026545cc10f44b0c535088072f.1637047731.git.quic_vamslank@quicinc.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211115234546.spi7hz2fsxddn4dz@skbuf>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 05:38:52 up 271 days,  8:02, 107 users,  load average: 0.04, 0.14,
+ 0.13
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-11-21, 23:38, quic_vamslank@quicinc.com wrote:
-> From: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
-> 
-> Add compatible for SDX65 pdc.
+On Tue, Nov 16, 2021 at 01:45:46AM +0200, Vladimir Oltean wrote:
 
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
+.....
 
+> > > Why != DISABLED? I expect that dev_ops->cfg_port_member() affects only
+> > > data packet forwarding, not control packet forwarding, right?
+> > 
+> > No. According to the KSZ9477S datasheet:
+> > "The processor should program the “Static MAC Table” with the entries that it
+> > needs to receive (for example, BPDU packets). The “overriding” bit should be set
+> > so that the switch will forward those specific packets to the processor. The
+> > processor may send packets to the port(s) in this state. Address learning is
+> > disabled on the port in this state."
+> > 
+> > This part is not implemented.
+> > 
+> > In current driver implementation (before or after this patch), all
+> > packets are forwarded. It looks like, current STP implementation in this driver
+> > is not complete. If I create a loop, the bridge will permanently toggle one of
+> > ports between blocking and listening. 
+> > 
+> > Currently I do not know how to proceed with it. Remove stp callback and
+> > make proper, straightforward bride_join/leave? Implement common soft STP
+> > for all switches without HW STP support?
 > 
-> Signed-off-by: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Acked-by: Rob Herring <robh@kernel.org>
-> ---
->  .../devicetree/bindings/interrupt-controller/qcom,pdc.txt        | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.txt b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.txt
-> index 98d89e53013d..ce631d853db4 100644
-> --- a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.txt
-> +++ b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.txt
-> @@ -23,6 +23,7 @@ Properties:
->  		    - "qcom,sdm845-pdc": For SDM845
->  		    - "qcom,sdm8250-pdc": For SM8250
->  		    - "qcom,sdm8350-pdc": For SM8350
-> +		    - "qcom,sdx65-pdc": For SDX65
->  
->  - reg:
->  	Usage: required
-> -- 
-> 2.33.1
+> What does "soft STP" mean?
 
+Some HW seems to provide configuration bits for ports STP states. For
+example by enabling it, I can just set listening state and it will only pass
+BPDU packets without need to program static MAC table. (At least, this
+would be my expectation)
+
+For example like this:
+https://elixir.bootlin.com/linux/v5.16-rc1/source/drivers/net/dsa/mt7530.c#L1121
+
+If this HW really exist and works as expected, how should I name it?
+
+> You need to have a port state in which data  plane packets are blocked,
+> but BPDUs can pass.
+
+ack.
+
+> Unless you trap all packets to the CPU and make the selection in software
+> (therefore, including the forwarding, I don't know if that is so desirable),
+
+Yes, this is my point, on plain linux bridge with two simple USB ethernet
+adapters, I'm able to use STP without any HW offloading.
+
+If my HW do not provide straightforward way to trap BPDU packets to CPU,
+i should be able to reuse functionality already provided by the linux
+bridge. Probably I need to signal it some how from dsa driver, to let linux
+bridge make proper decision and reduce logging noise.
+
+For example:
+- Have flag like: ds->sta_without_bpdu_trap = true;
+- If no .port_mdb_add/.port_fdb_add callbacks are implemented, handle
+  all incoming packet by the linux bridge without making lots of noise,
+  and use .port_bridge_join/.port_bridge_leave to separate ports.
+- If .port_mdb_add/.port_fdb_add are implemented, program the static MAC table.
+
+> you don't have much of a choice except to do what you've said above, program
+> the static MAC table with entries for 01-80-c2-00-00-0x which trap those
+> link-local multicast addresses to the CPU and set the STP state override
+> bit for them and for them only.
+
+Hm... Microchip documentation do not describes it as STP state override. Only
+as "port state override". And since STP state is not directly configurable
+on this switch, it probably means receive/transmit enable state of the port.
+So, packets with matching MAC should be forwarded even if port is in the
+receive disabled state. Correct?
+
+> BTW, see the "bridge link set" section in "man bridge" for a list of
+> what you should do in each STP state.
+
+ack. Thank you.
+
+Regards,
+Oleksij
 -- 
-~Vinod
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
