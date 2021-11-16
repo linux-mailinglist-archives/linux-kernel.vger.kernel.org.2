@@ -2,126 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8108C4523C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:27:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0EB4524A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352089AbhKPB32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:29:28 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:56590 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237761AbhKPB0W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 20:26:22 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 64B3121910;
-        Tue, 16 Nov 2021 01:23:22 +0000 (UTC)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E252113B2D;
-        Tue, 16 Nov 2021 01:23:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id wyF6JwgIk2EYcAAAMHmgww
-        (envelope-from <dave@stgolabs.net>); Tue, 16 Nov 2021 01:23:20 +0000
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     song@kernel.org
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dave@stgolabs.net, Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH] md/raid5: play nice with PREEMPT_RT
-Date:   Mon, 15 Nov 2021 17:23:17 -0800
-Message-Id: <20211116012317.69456-1-dave@stgolabs.net>
-X-Mailer: git-send-email 2.26.2
+        id S241407AbhKPBkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:40:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47886 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1379111AbhKPBaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 20:30:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BE9461027;
+        Tue, 16 Nov 2021 01:27:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637026043;
+        bh=ejw5DSWAYfxDZtzp+bb98cqbsDSFko0lVTF/qo2BNRc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=vPQ+taYLxWguYZM3jINyxjIM/C9a3YUpZHGdjnoPQk6yeKqdwGAYyXZjsDvEaQMCX
+         JYuDzjr2SO8We1pypuVN4ODETQ2rAZYH6u/sfPJqhHKBRbvtfMETmXfwQDuPpDUNQn
+         LFWR3wTCij5Rh/rlBuPjMBMCz/HVvPkQNOrbES6pB/F6F/KQYdp0G44GxkiX4EJG/t
+         trTu3e75st7o93p+TkApscEetp2J44UcptAaTmlAKF5OmdsT4XOa2FmgRxlyuba7XK
+         gltlKEUxmwpXvxPJnPi1jumLGDv+vGMA+IALJph1FZXaX+9Fe/9XEk4+uKWqeLaAA6
+         8DXZTKPo/JIHQ==
+Date:   Mon, 15 Nov 2021 17:27:22 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Pavel Skripkin <paskripkin@gmail.com>, ioana.ciornei@nxp.com,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] net: dpaa2-eth: fix use-after-free in dpaa2_eth_remove
+Message-ID: <20211115172722.6a582623@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211115080817.GE27562@kadam>
+References: <20211113172013.19959-1-paskripkin@gmail.com>
+        <20211115080817.GE27562@kadam>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-raid_run_ops() relies on the implicitly disabled preemption for
-its percpu ops, although this is really about CPU locality. This
-breaks RT semantics as it can take regular (and thus sleeping)
-spinlocks, such as stripe_lock.
+On Mon, 15 Nov 2021 11:08:17 +0300 Dan Carpenter wrote:
+> > @Dan, is there a smatch checker for straigthforward use after free bugs?
+> > Like acessing pointer after free was called? I think, adding
+> > free_netdev() to check list might be good idea
+> > 
+> > I've skimmed througth smatch source and didn't find one, so can you,
+> > please, point out to it if it exists.  
+> 
+> It's check_free_strict.c.
+> 
+> It does cross function analysis but free_netdev() is tricky because it
+> doesn't free directly, it just drops the reference count.  Also it
+> delays freeing in the NETREG_UNREGISTERING path so this check might
+> cause false positives?
 
-Add a local_lock such that non-RT does not change and continues
-to be just map to preempt_disable/enable, but makes RT happy as
-the region will use a per-CPU spinlock and thus be preemptible
-and still guarantee CPU locality.
+I'd ignore that path, it's just special casing that's supposed to keep
+the driver-visible API sane. Nobody should be touching netdev past
+free_netdev(). Actually if you can it'd be interesting to add checks
+for using whatever netdev_priv(ndev) returned past free_netdev(ndev).
 
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
----
- drivers/md/raid5.c | 11 ++++++-----
- drivers/md/raid5.h |  4 +++-
- 2 files changed, 9 insertions(+), 6 deletions(-)
+Most UAFs that come to mind from the past were people doing something
+like:
 
-diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index 9c1a5877cf9f..1240a5c16af8 100644
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -2215,10 +2215,9 @@ static void raid_run_ops(struct stripe_head *sh, unsigned long ops_request)
- 	struct r5conf *conf = sh->raid_conf;
- 	int level = conf->level;
- 	struct raid5_percpu *percpu;
--	unsigned long cpu;
- 
--	cpu = get_cpu();
--	percpu = per_cpu_ptr(conf->percpu, cpu);
-+	local_lock(&conf->percpu->lock);
-+	percpu = this_cpu_ptr(conf->percpu);
- 	if (test_bit(STRIPE_OP_BIOFILL, &ops_request)) {
- 		ops_run_biofill(sh);
- 		overlap_clear++;
-@@ -2271,13 +2270,14 @@ static void raid_run_ops(struct stripe_head *sh, unsigned long ops_request)
- 			BUG();
- 	}
- 
--	if (overlap_clear && !sh->batch_head)
-+	if (overlap_clear && !sh->batch_head) {
- 		for (i = disks; i--; ) {
- 			struct r5dev *dev = &sh->dev[i];
- 			if (test_and_clear_bit(R5_Overlap, &dev->flags))
- 				wake_up(&sh->raid_conf->wait_for_overlap);
- 		}
--	put_cpu();
-+	}
-+	local_unlock(&conf->percpu->lock);
- }
- 
- static void free_stripe(struct kmem_cache *sc, struct stripe_head *sh)
-@@ -7052,6 +7052,7 @@ static int alloc_scratch_buffer(struct r5conf *conf, struct raid5_percpu *percpu
- 		return -ENOMEM;
- 	}
- 
-+	local_lock_init(&percpu->lock);
- 	return 0;
- }
- 
-diff --git a/drivers/md/raid5.h b/drivers/md/raid5.h
-index 5c05acf20e1f..9e8486a9e445 100644
---- a/drivers/md/raid5.h
-+++ b/drivers/md/raid5.h
-@@ -4,6 +4,7 @@
- 
- #include <linux/raid/xor.h>
- #include <linux/dmaengine.h>
-+#include <linux/local_lock.h>
- 
- /*
-  *
-@@ -640,7 +641,8 @@ struct r5conf {
- 					     * lists and performing address
- 					     * conversions
- 					     */
--		int scribble_obj_size;
-+		int             scribble_obj_size;
-+		local_lock_t    lock;
- 	} __percpu *percpu;
- 	int scribble_disks;
- 	int scribble_sectors;
--- 
-2.26.2
+	struct my_priv *mine = netdev_priv(ndev);
+
+	netdev_unregister(ndev);
+	free_netdev(ndev);
+
+	free(mine->bla); /* UAF, free_netdev() frees the priv */
+
+> I'll add free_netdev() to the list of free
+> functions and test it overnight tonight.
+> 
+> 	register_free_hook("free_netdev", &match_free, 0);
 
