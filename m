@@ -2,77 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3759453906
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 18:57:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC72453918
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 19:00:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239268AbhKPSAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 13:00:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:35031 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239231AbhKPSAx (ORCPT
+        id S239280AbhKPSDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 13:03:22 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:49654 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239287AbhKPSDR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 13:00:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637085476;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bxRsAOBW/nYmpQYZ1/qsSGInqYX/0c52l0jGtO/u6l4=;
-        b=DDqmtxrXYmLw9TkSMQw+PoejnDkYewXdVytMXRw64Nrs98XeecN1lePRJ12kLGxD2sCr5U
-        bei4rmcT6lU68mT+JG5MwhXekXaVhCqgHGdUCqVAMK+cmsdwu3h5IeiKPEzfCfKi6RoOHc
-        abfyiWLgc/co41825vjsKYEzvX9S7qw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-353-jhEMIlk-OzSSU4MNOqdXkw-1; Tue, 16 Nov 2021 12:57:52 -0500
-X-MC-Unique: jhEMIlk-OzSSU4MNOqdXkw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 16 Nov 2021 13:03:17 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5EDC41808323;
-        Tue, 16 Nov 2021 17:57:51 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3714460C81;
-        Tue, 16 Nov 2021 17:57:50 +0000 (UTC)
-Message-ID: <3226f821-1461-b7cf-3f75-ba2e3dcaa446@redhat.com>
-Date:   Tue, 16 Nov 2021 18:57:49 +0100
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D2887218D5;
+        Tue, 16 Nov 2021 18:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637085618; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kyoKspNHubmntuojoiakxQgRvVcpyVRSO96mR7W75T8=;
+        b=G81YlzInUuiguuUMv+tpmWuHcUzfjsXqHA4ntdGsvok9VtuKuBH8WpeDevTBES3TIbZIEv
+        W+7Piog+eR4vlS8lxgUEK4FUCyFPgAy8rKcyVT8W+0xA6dCb7DNxBzqU80kLUDbyTMZVsJ
+        5J8w1MDLjqyA3T8c66GQdlfzTekB8YE=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AC65913BA0;
+        Tue, 16 Nov 2021 18:00:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id p7uBKbLxk2EydAAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 16 Nov 2021 18:00:18 +0000
+Date:   Tue, 16 Nov 2021 19:00:17 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Wei Yang <richard.weiyang@gmail.com>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Patch v2] cgroup: pretty format /proc/cgroups
+Message-ID: <20211116180013.GA8884@blackbody.suse.cz>
+References: <20211115011253.20778-1-richard.weiyang@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] KVM: x86: Use a stable condition around all VT-d PI paths
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, jgross@suse.com,
-        stable@vger.kernel.org
-References: <20211116142205.719375-1-pbonzini@redhat.com>
- <YZPtheR+pShP+CX6@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <YZPtheR+pShP+CX6@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211115011253.20778-1-richard.weiyang@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 18:42, Sean Christopherson wrote:
->> +	return kvm_arch_has_assigned_device(kvm) &&
->> +		irq_remapping_cap(IRQ_POSTING_CAP) &&
->> +		irqchip_in_kernel(kvm) && enable_apicv;
-> Bad indentation/alignment.
+Hello.
 
-What is even the right indentation?  I'd just wrap everything in 
-parentheses but then check patch complains "return is not a function" 
-(NSS), so I went for two tabs and called it a day.
+On Mon, Nov 15, 2021 at 01:12:53AM +0000, Wei Yang <richard.weiyang@gmail.com> wrote:
+> Let's align the title and value. After this patch, it looks like this.
 
-> Not that it's likely to matter, but would it make sense to invert the checks so
-> that they're short-circuited on the faster KVM checks?  E.g. fastest to slowest:
-> 
-> 	return irqchip_in_kernel(kvm) && enable_apic &&
-> 	       kvm_arch_has_assigned_device(kvm) &&
-> 	       irq_remapping_cap(IRQ_POSTING_CAP);
+For machines this change may come as a surprise (so better not change
+it).
 
-Sure, why not.
+For humans (for instance column from util-linux)
 
-Paolo
+$ column -t /proc/cgroups
+#subsys_name  hierarchy  num_cgroups  enabled
+cpuset        11         2            1
+cpu           4          9            1
+cpuacct       4          9            1
+...
 
+Michal
