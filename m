@@ -2,149 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC6E453204
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23652453207
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:21:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235934AbhKPMWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 07:22:15 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:52128 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235902AbhKPMV6 (ORCPT
+        id S235889AbhKPMYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 07:24:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234427AbhKPMYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 07:21:58 -0500
-From:   Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637065134;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UxstMfuhLeN5/jMedYHgGOo7lkIy2tu51aj5ea1+e58=;
-        b=uYIo1Vt2tdTSXYliTzbzT6S6b0CrV5Gr4nA28gFpToXF5O1N1997tpEdijFmcGr5/r5rL4
-        xQiUKC3xXFEah3n3usNFY2C7CBGNXHqVaQw5MHliEHhtRzwQeuRbG81nlA/0ivud4wmSos
-        +zNO658/K2HU0nOQX2NdXim4vTEjkmwpZJ/hwyZZYN5LGpMqv3ENg/yKU3cO1pivb8g7Si
-        4zNhT0YNQwKWaQM27+jk13Fy32qLvCnkSEHCRg5m12EGfyi6dD9U8ZnRJsHK/qadvmljqg
-        VpeVYeXpg5pCmI1+z53GAKcTL1VtU121h3n6zoCuNUZ4DOfXjklRM9Yv1Eg8fA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637065134;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UxstMfuhLeN5/jMedYHgGOo7lkIy2tu51aj5ea1+e58=;
-        b=ZmZWJTEapiDDCqzr36mlSXGjduoTOQVb+V2nbXl+6eLeRFytjAZFC/T1Kz7KiZGBc2J97j
-        3beddcUAXXZMzHBQ==
-To:     Yannick Vignon <yannick.vignon@oss.nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-Subject: Re: [PATCH net] net: stmmac: allow a tc-taprio base-time of zero
-In-Reply-To: <144f229b-fc8b-92fd-1031-f24fcc740064@oss.nxp.com>
-References: <20211108202854.1740995-1-vladimir.oltean@nxp.com>
- <87bl2t3fkq.fsf@kurt> <20211109103504.ahl2djymnevsbhoj@skbuf>
- <87h7cl1j41.fsf@kurt> <144f229b-fc8b-92fd-1031-f24fcc740064@oss.nxp.com>
-Date:   Tue, 16 Nov 2021 13:18:53 +0100
-Message-ID: <87v90s9tua.fsf@kurt>
+        Tue, 16 Nov 2021 07:24:18 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA66AC061570;
+        Tue, 16 Nov 2021 04:21:21 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id iq11so15620741pjb.3;
+        Tue, 16 Nov 2021 04:21:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MGunNnA0ehqJBZXzMtKjllq/AXIDZHQK3zRwqjaEorw=;
+        b=iYsibB7z4Ip5qrb9o0dLivJ+TFnOnFslqjDmKwAFoPZcYTP/rqbP3AplBlNPNbOlcl
+         RtV+VqasUO8GvQT6zf1FhTcJdc30uA0BFb7+pm+VAehBkhTchEbeoyzZbvmD0plIR4Ei
+         xcVmzAKrXKGw3Bvq8G8E3I9vGmvXWA7SB4n2Lky1YdERX/rBj99vdEhwa8w3ceRtorWQ
+         XorYF9hsTsTrEMIPtYT0201pnS7L9TlHbShg02t48h6G7EeiinBYkQ5Tsa9/Hewe1zqs
+         MVJRw9bh1vplzoF3Q41GTUa1Kr1kHSbda5DmC/IriNo3xUu2Qvi/NFmH0+gCZR3kC0lL
+         eHtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MGunNnA0ehqJBZXzMtKjllq/AXIDZHQK3zRwqjaEorw=;
+        b=pREV61xx7bYQTfit/uiknDNYXpTkb67Y9lo6UTfKg7KYJTggMb/3IWfIRGlhNnEfk5
+         e1wsg/UWJ1/Q2qEHzs/u/DiRyAaVR/4Tg+K1NyyHy9vjpksW9ciO9NXh1xfRxj/rGpBd
+         JNFf1gH5g4p19K0vYVa5LKfrD1U+BgZAnzpRp57Zrvegm39qsk06PbiYNf+tUEqUhxy9
+         EeIsT35A5cDJ4SHS5iPvLXK2zIErrgrOA1IWCeskR3zqUpIPKr+2mY8LMKNneJqFWuoJ
+         Sk0cVxy7WheS3XyyQxptjOueuylwTpKh517QK6uX6OkncHUpVPh0kU16gELSr2aQLVvc
+         MU7w==
+X-Gm-Message-State: AOAM531Ap671rlLGahynzfc2ZaMWLL3vnn7Ex9WvAgrMEUz9iebdpggR
+        3ar4xu3OQbz+NTI3nbIzyWc=
+X-Google-Smtp-Source: ABdhPJzgiFbkF2ly462apig3kWTJllNzQf1adcNZK3/mxuDL/SJGSZRjeh3fiCL6VlCCMPlDKZ1MZQ==
+X-Received: by 2002:a17:902:d88b:b0:142:8acf:615b with SMTP id b11-20020a170902d88b00b001428acf615bmr44900441plz.62.1637065281224;
+        Tue, 16 Nov 2021 04:21:21 -0800 (PST)
+Received: from localhost.localdomain ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id i67sm18557613pfg.189.2021.11.16.04.21.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 16 Nov 2021 04:21:13 -0800 (PST)
+From:   Like Xu <like.xu.linux@gmail.com>
+X-Google-Original-From: Like Xu <likexu@tencent.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] KVM: x86/pmu: An insightful refactoring of vPMU code
+Date:   Tue, 16 Nov 2021 20:20:26 +0800
+Message-Id: <20211116122030.4698-1-likexu@tencent.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi Yannick,
+This patch set is essentially triggered by Jim's patch set[1]
+(especially patch 01 and 04).
 
-On Tue Nov 09 2021, Yannick Vignon wrote:
-> Hi Kurt,
->
-> On 11/9/2021 3:47 PM, Kurt Kanzenbach wrote:
->> On Tue Nov 09 2021, Vladimir Oltean wrote:
->>> On Tue, Nov 09, 2021 at 09:20:53AM +0100, Kurt Kanzenbach wrote:
->>>> Hi Vladimir,
->>>>
->>>> On Mon Nov 08 2021, Vladimir Oltean wrote:
->>>>> Commit fe28c53ed71d ("net: stmmac: fix taprio configuration when
->>>>> base_time is in the past") allowed some base time values in the past,
->>>>> but apparently not all, the base-time value of 0 (Jan 1st 1970) is st=
-ill
->>>>> explicitly denied by the driver.
->>>>>
->>>>> Remove the bogus check.
->>>>>
->>>>> Fixes: b60189e0392f ("net: stmmac: Integrate EST with TAPRIO schedule=
-r API")
->>>>> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
->>>>
->>>> I've experienced the same problem and wanted to send a patch for
->>>> it. Thanks!
->>>>
->>>> Reviewed-by: Kurt Kanzenbach <kurt@linutronix.de>
->>>
->>> Cool. So you had that patch queued up? What other stmmac patches do you
->>> have queued up? :).
->>=20
->> I'm experiencing some problems with XDP using this driver. We're
->> currently investigating.
->
-> Could you elaborate a bit?
+The new idea to set up and maintain pmc->eventsel for fixed counters.
+This would unify all fixed/gp code logic based on the same semantics
+"pmc->eventse". (I demonstrated this in patch 01-03, more can be done)
 
-It was a combination of oddities within the PCP based VLAN steering and
-bugs in my application. No driver issues.
+[1] https://lore.kernel.org/kvm/96170437-1e00-7841-260e-39d181e7886d@gmail.com/T/#t
 
-The last issue I have is packet loss from time to time. Still debugging.
+Please check each commit message for more details
+and let me know if there is any room for improvement,
 
-> I've been using XDP a lot with the stmmac driver recently, and while I=20
-> did see issues initially, most of them got fixed by using a recent=20
-> enough kernel, thanks to the following commits:
-> . a6451192da2691dcf39507bd ("net: stmmac: fix kernel panic due to NULL=20
-> pointer dereference of xsk_pool")
-> . 2b9fff64f03219d78044d1ab ("net: stmmac: fix kernel panic due to NULL=20
-> pointer dereference of buf->xdp")
-> . 81d0885d68ec427e62044cf4 ("net: stmmac: Fix overall budget calculation=
-=20
-> for rxtx_napi")
->
-> There was one remaining issue for which I need to push a fix: if you=20
-> remove an XDP program from an interface while transmitting traffic, you=20
-> are likely to trigger a kernel panic. I'll try to push a patch for that=20
-> soon.
+Thanks.
 
-OK, great.
+Like Xu (4):
+  KVM: x86/pmu: Setup pmc->eventsel for fixed PMCs
+  KVM: x86/pmu: Refactoring find_arch_event() to find_perf_hw_id()
+  KVM: x86/pmu: Reuse find_perf_hw_id() and drop find_fixed_event()
+  KVM: x86/pmu: Refactoring kvm_perf_overflow{_intr}()
 
-Thanks,
-Kurt
+ arch/x86/kvm/pmu.c           | 74 ++++++++++++++++++------------------
+ arch/x86/kvm/pmu.h           |  4 +-
+ arch/x86/kvm/svm/pmu.c       | 19 ++++-----
+ arch/x86/kvm/vmx/pmu_intel.c | 54 +++++++++++++++++---------
+ 4 files changed, 83 insertions(+), 68 deletions(-)
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.33.1
 
------BEGIN PGP SIGNATURE-----
-
-iQJSBAEBCgA8FiEEooWgvezyxHPhdEojeSpbgcuY8KYFAmGToa0eHGt1cnQua2Fu
-emVuYmFjaEBsaW51dHJvbml4LmRlAAoJEHkqW4HLmPCmNfkP/21fsU6JI1QnFA6+
-d5SZvciv0J2GEQ4aSXLeixh3ciUdx66t5+Sug8hen2yCJcEsbl6nCpIg/I0JcpZG
-OYvSvnj2FC1CfHPqaqeDaslMcUtKtUjsvC2T7RnO5avSgn9otk9p7khEVd1VOWwL
-Q7Cq+ee5ykcQ5UE180RtkGrL/9qRmRhKYEifvGdyJoQE7VagXXD/wlnk5Wbjvhfw
-JrXpnBMtiQbrRzgRtYtnjqDMW+M4HGVSDVe0LOIhcR7MD0vm8kyJ15Q38Oepn+xI
-c6W7mIlhBtw0lDwaX9lsj7Mk5mfF72Op0qzA+FtmYxw1tzH6yZyHpyQK3Jkl4KRu
-qkF4wmLpac/SWJCWj23lTanxohDpw1Hf3jsKJBD2221/2cFBjbDmEDKCpJQz4cMX
-3kZvPse5CyaQ2C/Bf87yIJrkxh+sxfixj0TIECMDgNsTjY8yS0uZ+GffLkfkDzjx
-/AVs58RoSJBVWcA7zFdd/jTo9kcYe9vx/w8dYumA7XIBy4gRon2M8m11bjMnnSul
-bwDoWI6VYqgTLTogZWvdPodr3bo+cEDfgBowbfbSuGMqCk0KP0zrIV6TJxDSkQK6
-iC0n8vd3+CDv3/ZwbVCK+Zg561D/gvLYyrO9l7xeYBUyAjME6/XDIoBAgHln8eST
-O4VKyIuoB+PNyWz6O9T1BCkssk1h
-=M39l
------END PGP SIGNATURE-----
---=-=-=--
