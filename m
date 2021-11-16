@@ -2,136 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0DD6453A51
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 20:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7D2453A59
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 20:43:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240110AbhKPToB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 14:44:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
+        id S240125AbhKPTqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 14:46:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239957AbhKPToA (ORCPT
+        with ESMTP id S239957AbhKPTqS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 14:44:00 -0500
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63567C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 11:41:03 -0800 (PST)
-Received: by mail-il1-x12a.google.com with SMTP id x9so313100ilu.6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 11:41:03 -0800 (PST)
+        Tue, 16 Nov 2021 14:46:18 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97909C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 11:43:21 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id q12so97727pgh.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 11:43:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gCwZVwpoJeaJCb5/6fK67L0swcN4dpoDE8WnNZs2ToY=;
-        b=dTtYPdHq5lvt9GBufnyfjUA/x2lqL9wHfQevWzCSzSBHK0OulY8nG8v5nfFWRzVnGH
-         aPbfowVmkDoZMckvahvJbWqMciMQOGHOJ75j8QZlrefV4Rvycr+E6PulYSc65Jyztnok
-         Sl+0tn99H+TH4uAoyFYX+9VbFsxZQ76kIqu2WrlopgrRUz4028WjbtS5stw9L1LWPfLk
-         FVMi0xLpa7hbv2Wsj4OvfdTPSPKHCNtHA1h+j/x0i6xNMtajKs32mG1O4LW+JoBj0chN
-         +64qE7wgNv7zZf86tSkEjcPfWVGcGgwZO5GuIVrQDk7Mq2XIVk43/+EaKlkdNyfi1Ie4
-         BVMA==
+        d=gmail.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aPOYW20bP9axR+huv2l40pnrQ8xrHrsRaFVlcPUQJRE=;
+        b=b/tDytIcwvHt9kT147ZgbyOV6huXsUHxKjT6i253GBWKL2vi5zQ7KH1+WrlJEOfQAT
+         VaCxa5zdckSJWk+FiaUpAFA9sbQwvusr1KpE1wM3I6qgqW8ggHpbkCN+pMu1x7Gf9AI0
+         bFjES3U9eJD40dh0IYXqJ3EoGYWuuWrmi+w03HB05kQ92f5Y/Qlm3cfAhZFpBYZCxB+h
+         lvLmCauoIW+YgCuj5/CyphT/6baQ2ZnsAGkfdbMy8pVQc1HA80xbtobRT5i4+0eEx1Gl
+         WzTkOAeZUg8c3Cas8R6Gj7xfsoV1d6N7LMCEE4oX1q645kNtAlAYlJWIGsE2kO9JNYyp
+         lk3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gCwZVwpoJeaJCb5/6fK67L0swcN4dpoDE8WnNZs2ToY=;
-        b=nBB23ZD7Z/MUJBeHpExQJmjtxPdV+dijIWbT+IwmIJ4I/8IDvW7weZXdZa2rLIa7gR
-         /oQyy04VwNvs2fICvIk5lnfKq6wdptHhtfXi6xIQjsLo/slb9V5dfLkmxkFaedYkl2zC
-         IbAqQ4ap5KFgXd6H+53gk15qaXw88QURBjRkXJo3LTRsNdLQJgzuYiwRWnpdpMyoY/KJ
-         l19uae9mynikv/iDJOHjpu6AOZ6RHpeXR34MOTjO5i4c3VPCNVOLzHl7ayh21+PChPQr
-         6K13rZ1sEn1VhHkxuccXStcU25SWRGqQAv8UjWFg937jfs10dsDheVg/0KJervLsOjfY
-         mwAg==
-X-Gm-Message-State: AOAM530zxY9mDSVAQGcUtVc+7c/j3fn6JFifL+Supp8GUwdPfoTes1z7
-        F0Nv4S4Imls+pcJKkuuYC2qSpi5gXiNUxEnS
-X-Google-Smtp-Source: ABdhPJyQ4KzDMpmAsfIa7lC2q8hhzfJvbCXYbia8UvBuaOpKyggSYTKPQmq2wc1YWqZv61rvd9Ik2w==
-X-Received: by 2002:a05:6e02:19cd:: with SMTP id r13mr6423937ill.119.1637091662675;
-        Tue, 16 Nov 2021 11:41:02 -0800 (PST)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id y12sm13482221ill.71.2021.11.16.11.41.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 11:41:02 -0800 (PST)
-Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
-To:     Vito Caputo <vcaputo@pengaru.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
-        Drew DeVault <sir@cmpwn.com>, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org,
-        io_uring Mailing List <io-uring@vger.kernel.org>,
-        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
-References: <20211028080813.15966-1-sir@cmpwn.com>
- <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
- <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
- <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
- <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
- <YZP6JSd4h45cyvsy@casper.infradead.org>
- <b97f1b15-fbcc-92a4-96ca-e918c2f6c7a3@kernel.dk>
- <20211116192148.vjdlng7pesbgjs6b@shells.gnugeneration.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <475f4f4d-47cc-19b7-fb02-6227fd5a1362@kernel.dk>
-Date:   Tue, 16 Nov 2021 12:41:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=aPOYW20bP9axR+huv2l40pnrQ8xrHrsRaFVlcPUQJRE=;
+        b=T/4CALUJjSjFXWxLrlVanNMThWOer8DJIuSWP5lzXZ8IAcCPxtc0RTIbU6z35uR2UB
+         DQlltczKNhQSTuzPwkLjwcCz6G2grFlV83KKMTPFc5JeYrmjtU6ud/p8iybZot+/q/YY
+         dfPLr+syari6iOERbokQuaODAsRoyu9VOkqO0S9PcxwjYnRZI0c+Pk7yUy/QZtOFkK3K
+         DGsrPf+FDieTn/iF1S49gs4qN6R6sgr7MJXsWyad8afwyOn/Oy9EFYIwct0ETx6Wm1TS
+         /4J3ovt6tAdLo7IF/VbSzCr+wBD1Yxz0jEjV0jpHOPErZFgMr69eOHmulSRbwwcz5C90
+         6V1g==
+X-Gm-Message-State: AOAM532Xo9KWYo1uXrpHawKbezEwIDITAlb/jZzz/QRlzExK/BWbRTHc
+        ZK+KcwGPZNzlYK8aqm5rhXdljGdhR8k=
+X-Google-Smtp-Source: ABdhPJw/3XDiznj8S8mykd65Ahpj91WYQGjhIr10eS9bIqY6W/XSiOsBfVnjNQtdVdPz0NI9v8UWoA==
+X-Received: by 2002:aa7:88cb:0:b0:49f:ad17:c08 with SMTP id k11-20020aa788cb000000b0049fad170c08mr42243482pff.19.1637091801086;
+        Tue, 16 Nov 2021 11:43:21 -0800 (PST)
+Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:3a93:19e8:b5b5:97fd])
+        by smtp.gmail.com with ESMTPSA id ep15sm2407300pjb.3.2021.11.16.11.43.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 11:43:20 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+From:   Minchan Kim <minchan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>
+Subject: [RFC PATCH] kernfs: release kernfs_mutex before the inode allocation
+Date:   Tue, 16 Nov 2021 11:43:17 -0800
+Message-Id: <20211116194317.1430399-1-minchan@kernel.org>
+X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
 MIME-Version: 1.0
-In-Reply-To: <20211116192148.vjdlng7pesbgjs6b@shells.gnugeneration.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 12:21 PM, Vito Caputo wrote:
-> On Tue, Nov 16, 2021 at 11:55:41AM -0700, Jens Axboe wrote:
->> On 11/16/21 11:36 AM, Matthew Wilcox wrote:
->>> On Mon, Nov 15, 2021 at 08:35:30PM -0800, Andrew Morton wrote:
->>>> I'd also be interested in seeing feedback from the MM developers.
->>> [...]
->>>> Subject: Increase default MLOCK_LIMIT to 8 MiB
->>>
->>> On the one hand, processes can already allocate at least this much
->>> memory that is non-swappable, just by doing things like opening a lot of
->>> files (allocating struct file & fdtable), using a lot of address space
->>> (allocating page tables), so I don't have a problem with it per se.
->>>
->>> On the other hand, 64kB is available on anything larger than an IBM XT.
->>> Linux will still boot on machines with 4MB of RAM (eg routers).  For
->>> someone with a machine with only, say, 32MB of memory, this allows a
->>> process to make a quarter of the memory unswappable, and maybe that's
->>> not a good idea.  So perhaps this should scale over a certain range?
->>>
->>> Is 8MB a generally useful amount of memory for an iouring user anyway?
->>> If you're just playing with it, sure, but if you have, oh i don't know,
->>> a database, don't you want to pin the entire cache and allow IO to the
->>> whole thing?
->>
->> 8MB is plenty for most casual use cases, which is exactly the ones that
->> we want to "just work" without requiring weird system level
->> modifications to increase the memlock limit.
->>
-> 
-> Considering a single fullscreen 32bpp 4K-resolution framebuffer is
-> ~32MiB, I'm not convinced this is really correct in nearly 2022.
+The kernfs implementation has big lock granularity(kernfs_rwsem) so
+every kernfs-based(e.g., sysfs, cgroup, dmabuf) fs are able to compete
+the lock. Thus, if one of userspace goes the sleep under holding
+the lock for a long time, rest of them should wait it. A example is
+the holder goes direct reclaim with the lock since it needs memory
+allocation. Let's fix it at common technique that release the lock
+and then allocate the memory. Fortunately, kernfs looks like have
+an refcount so I hope it's fine.
 
-You don't need to register any buffers, and I don't expect any basic
-uses cases to do so. Which means that the 8MB just need to cover the
-ring itself, and you can fit a _lot_ of rings into 8MB. The memlock
-limit only applies to buffers if you register them, not for any "normal"
-use cases where you just pass buffers for read/write or O_DIRECT
-read/write.
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+---
+ fs/kernfs/dir.c             | 14 +++++++++++---
+ fs/kernfs/inode.c           |  2 +-
+ fs/kernfs/kernfs-internal.h |  1 +
+ 3 files changed, 13 insertions(+), 4 deletions(-)
 
-> If we're going to bump the default at the kernel, I'm with Matthew on
-> making it autoscale within a sane range, depending on available
-> memory.
-
-I just don't want to turn this into a bikeshedding conversation. I'm
-fine with making it autoscale obviously, but who's going to do the work?
-
-> As an upper bound I'd probably look at the highest anticipated
-> consumer resolutions, and handle a couple fullscreen 32bpp instances
-> being pinned.
-
-Not sure I see the relevance here.
-
+diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+index 8e0a1378a4b1..ecdb2975060d 100644
+--- a/fs/kernfs/dir.c
++++ b/fs/kernfs/dir.c
+@@ -1119,9 +1119,17 @@ static struct dentry *kernfs_iop_lookup(struct inode *dir,
+ 			up_read(&kernfs_rwsem);
+ 			return NULL;
+ 		}
+-		inode = kernfs_get_inode(dir->i_sb, kn);
+-		if (!inode)
+-			inode = ERR_PTR(-ENOMEM);
++		kernfs_get(kn);
++		up_read(&kernfs_rwsem);
++		inode = iget_locked(dir->i_sb, kernfs_ino(kn));
++		if (!inode) {
++			kernfs_put(kn);
++			return ERR_PTR(-ENOMEM);
++		}
++		down_read(&kernfs_rwsem);
++		if (inode->i_state & I_NEW)
++			kernfs_init_inode(kn, inode);
++		kernfs_put(kn);
+ 	}
+ 	/*
+ 	 * Needed for negative dentry validation.
+diff --git a/fs/kernfs/inode.c b/fs/kernfs/inode.c
+index c0eae1725435..6e2004010435 100644
+--- a/fs/kernfs/inode.c
++++ b/fs/kernfs/inode.c
+@@ -195,7 +195,7 @@ int kernfs_iop_getattr(struct user_namespace *mnt_userns,
+ 	return 0;
+ }
+ 
+-static void kernfs_init_inode(struct kernfs_node *kn, struct inode *inode)
++void kernfs_init_inode(struct kernfs_node *kn, struct inode *inode)
+ {
+ 	kernfs_get(kn);
+ 	inode->i_private = kn;
+diff --git a/fs/kernfs/kernfs-internal.h b/fs/kernfs/kernfs-internal.h
+index f9cc912c31e1..eef7656f7cd8 100644
+--- a/fs/kernfs/kernfs-internal.h
++++ b/fs/kernfs/kernfs-internal.h
+@@ -118,6 +118,7 @@ int kernfs_iop_getattr(struct user_namespace *mnt_userns,
+ 		       u32 request_mask, unsigned int query_flags);
+ ssize_t kernfs_iop_listxattr(struct dentry *dentry, char *buf, size_t size);
+ int __kernfs_setattr(struct kernfs_node *kn, const struct iattr *iattr);
++void kernfs_init_inode(struct kernfs_node *kn, struct inode *inode);
+ 
+ /*
+  * dir.c
 -- 
-Jens Axboe
+2.34.0.rc1.387.gb447b232ab-goog
 
