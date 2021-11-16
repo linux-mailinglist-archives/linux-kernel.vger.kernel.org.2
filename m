@@ -2,122 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A18B4453887
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 18:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0972E45388D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 18:30:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238874AbhKPRb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 12:31:59 -0500
-Received: from mail-pg1-f177.google.com ([209.85.215.177]:44904 "EHLO
-        mail-pg1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238725AbhKPRbu (ORCPT
+        id S238904AbhKPRdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 12:33:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238905AbhKPRdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 12:31:50 -0500
-Received: by mail-pg1-f177.google.com with SMTP id m15so14347847pgu.11;
-        Tue, 16 Nov 2021 09:28:53 -0800 (PST)
+        Tue, 16 Nov 2021 12:33:00 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2178FC061746
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 09:30:03 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id v23so27109874iom.12
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 09:30:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=UFXLUrqt2nWjnEKxs8dvNrPBWJOzGCmF0MKcZw+tO+E=;
+        b=dluHkotYDKJNPQxe/aYzm9VcuvkPHtOj3GlbfBPZ2Fva+bWRx4a7xEHBEvIwoQuymZ
+         QG1A+X0KpRfscM20AKXTdDqYKRAA92U1vvMLN05x3hSc5lMqh6tlFDa84vX6jES+4fCq
+         f87jWtAGxkpCyyY0I+2Fqiyny61PdCUyVlvRtfNWZPuMQVUmHIF1CfkaoZtzhVSXRHpS
+         SyiD9HuuTDkKEDC7tUpQPvUjSoXrl6a2GTvB4RnMZNupDCpgSEl2PJJFLxDx+woy3eg6
+         fHGW80Wrakaz0W+60xgpJlz4tG+A4TWJxQTjQjDurY9fIQ+hKv+qxFPU/KTKxGO7qcY8
+         reaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FkA51tWxSsscDQ4OnDVF0gVKl+TpddKexu+rNB6rga4=;
-        b=SGPLW0Gs4GbGKkyxZ5mwFJQ8mK+cSYPURcI1lpwH9R0ikX9PnRvhqq3IhaMSw6cigF
-         wYInfhIxvua96lYrJWEGVASX2z5w7WkJfh9tcLr8aUE90WUlcsSJ9qNwENe5gaCVZeLL
-         Pe4AV/I+nAhOyb5dpeSlZraDc5Wjm4rvoTGnsxCg2SS4tgIA4v8GndMJNmRzF0lN5wJq
-         Ka2m5bbuBmh4MYKHbpmuPuMrhoGD2FCqqyhNjaienJvKNRLGG9vnzpWm/QyBBxyOXQun
-         PtH8yqSr0w0YQkPtZnUofhZ73TAuo2/K0dCgqA5XFNCxdaMA1Lr+0e+qWHoB15yUm5LQ
-         ZRJQ==
-X-Gm-Message-State: AOAM533MpTy5ZOd85TrYgGO4zWHPTqaD5RgKUoISRONCWE3xMX1dkX14
-        HGLHJXDF5ZbFa72HCmFZ/TWV7dmE8hKcb2aLAWc=
-X-Google-Smtp-Source: ABdhPJztWnQTEvyFBXk/EWoYZuOO/BsO/4j2XiqLi5dCPei8GORqCEcvrDQZtaHkVUqJCHntXdMP/Q0JwesAiwH1PXU=
-X-Received: by 2002:a63:3f44:: with SMTP id m65mr422498pga.15.1637083733060;
- Tue, 16 Nov 2021 09:28:53 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UFXLUrqt2nWjnEKxs8dvNrPBWJOzGCmF0MKcZw+tO+E=;
+        b=7FWjH6D87zmSxFPtKqSR5R71kfSnd82RUxMoSDh0jSgWPJ194h8ZDxQbFoO5NiR24p
+         oGmCLwRkTKPW+A6RHMBFaqYSyaoLLN0ncYHu07qIsQMxDmzVZeISoociLslt25r2hYKX
+         nHyDwa6uzvrOL+RLomWj7KPJ7b+liNgZ5zyhUbOqtMMerNruhihH0QT6smbsRAaKXGaO
+         tIZ1VcaroyGCoW7nmknwUXWx9dD+309i51qTvjCv6WShfiOllZZRlLFVrbKT40EArChu
+         2gxxI2f+VxFVBJEYMrRT/c7MzzVIN8YveGz2xdU25zGW6I7KlYdGt5uob7MNQQ6RNYS4
+         V3iQ==
+X-Gm-Message-State: AOAM531sQco6CTplOm0tftNpt5bB8BPSHEfSjGaBtnITM+fHtzUuMRva
+        x1ozC+BL95NJ2TwnHEzKgAe85aAdKDPC9/l79T1rcw==
+X-Google-Smtp-Source: ABdhPJzYH+IIPNW2qbWehRxVmvJb0UAszoUsv5tmhNjRZ4u918O1kNBkkesQHn3b3tc5ZiH7sRY06sN8IUPwh7WWF3A=
+X-Received: by 2002:a02:70cf:: with SMTP id f198mr7017013jac.124.1637083802289;
+ Tue, 16 Nov 2021 09:30:02 -0800 (PST)
 MIME-Version: 1.0
-References: <20211116150119.2171-1-kernel@esmil.dk> <CAK8P3a38+Osmr7SjD42ZEQzOPwWXM7x+31a5E4bRWVp6JdMS_w@mail.gmail.com>
-In-Reply-To: <CAK8P3a38+Osmr7SjD42ZEQzOPwWXM7x+31a5E4bRWVp6JdMS_w@mail.gmail.com>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-Date:   Tue, 16 Nov 2021 18:28:41 +0100
-Message-ID: <CANBLGcykFks+EF2m0bdD+j5w43Qy30LBgVnAYJWU+5-WVJH6PA@mail.gmail.com>
-Subject: Re: [PATCH v4 00/16] Basic StarFive JH7100 RISC-V SoC support
-To:     Arnd Bergmann <arnd@arndb.de>, Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211115211704.2621644-1-bgardon@google.com> <YZL1ZiKQVRQd8rZi@google.com>
+In-Reply-To: <YZL1ZiKQVRQd8rZi@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Tue, 16 Nov 2021 09:29:50 -0800
+Message-ID: <CANgfPd-UQKbnkoKGS0yoQvTtMAyPc0Xa2=o7ics2vQ50-KGQHA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] KVM: x86/mmu: Fix TLB flush range when handling
+ disconnected pt
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>,
+        David Hildenbrand <david@redhat.com>, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Nov 2021 at 17:08, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Tue, Nov 16, 2021 at 4:01 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
-> >
-> > This series adds support for the StarFive JH7100 RISC-V SoC. The SoC has
-> > many devices that need non-coherent dma operations to work which isn't
-> > upstream yet[1], so this just adds basic support to boot up, get a
-> > serial console, blink an LED and reboot itself. Unlike the Allwinner D1
-> > this chip doesn't use any extra pagetable bits, but instead the DDR RAM
-> > appears twice in the memory map, with and without the cache.
-> >
-> > The JH7100 is a test chip for the upcoming JH7110 and about 300 BeagleV
-> > Starlight Beta boards were sent out with them as part of a now cancelled
-> > BeagleBoard.org project. However StarFive has produced more of the
-> > JH7100s and more boards will be available[2] to buy. I've seen pictures
-> > of the new boards now, so hopefully before the end of the year.
-> >
-> > This series is also available at
-> > https://github.com/esmil/linux/commits/starlight-minimal
-> > ..but a more complete kernel including drivers for non-coherent
-> > peripherals based on this series can be found at
-> > https://github.com/starfive-tech/linux/tree/visionfive
-> >
-> > [1]: https://lore.kernel.org/linux-riscv/20210723214031.3251801-2-atish.patra@wdc.com/
-> > [2]: https://www.linkedin.com/pulse/starfive-release-open-source-single-board-platform-q3-2021-starfive/
+On Mon, Nov 15, 2021 at 4:03 PM Sean Christopherson <seanjc@google.com> wro=
+te:
 >
-> Thanks for adding me to Cc, I've had a look at the series and didn't
-> see anything
-> wrong with it, and I'm happy to merge it through the SoC tree for the
-> initial support
-> in 5.17, provided you get an Ack from the arch/riscv maintainers for it.
+> On Mon, Nov 15, 2021, Ben Gardon wrote:
+> > When recursively clearing out disconnected pts, the range based TLB
+> > flush in handle_removed_tdp_mmu_page uses the wrong starting GFN,
+> > resulting in the flush mostly missing the affected range. Fix this by
+> > using base_gfn for the flush.
+> >
+> > In response to feedback from David Matlack on the RFC version of this
+> > patch, also move a few definitions into the for loop in the function to
+> > prevent unintended references to them in the future.
+>
+> Rats, I didn't read David's feedback or I would've responded there.
+>
+> > Fixes: a066e61f13cf ("KVM: x86/mmu: Factor out handling of removed page=
+ tables")
+> > CC: stable@vger.kernel.org
+> >
+> > Signed-off-by: Ben Gardon <bgardon@google.com>
+> > ---
+> >  arch/x86/kvm/mmu/tdp_mmu.c | 10 ++++------
+> >  1 file changed, 4 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> > index 7c5dd83e52de..4bd541050d21 100644
+> > --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> > +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> > @@ -317,9 +317,6 @@ static void handle_removed_tdp_mmu_page(struct kvm =
+*kvm, tdp_ptep_t pt,
+> >       struct kvm_mmu_page *sp =3D sptep_to_sp(rcu_dereference(pt));
+> >       int level =3D sp->role.level;
+> >       gfn_t base_gfn =3D sp->gfn;
+> > -     u64 old_child_spte;
+> > -     u64 *sptep;
+> > -     gfn_t gfn;
+> >       int i;
+> >
+> >       trace_kvm_mmu_prepare_zap_page(sp);
+> > @@ -327,8 +324,9 @@ static void handle_removed_tdp_mmu_page(struct kvm =
+*kvm, tdp_ptep_t pt,
+> >       tdp_mmu_unlink_page(kvm, sp, shared);
+> >
+> >       for (i =3D 0; i < PT64_ENT_PER_PAGE; i++) {
+> > -             sptep =3D rcu_dereference(pt) + i;
+> > -             gfn =3D base_gfn + i * KVM_PAGES_PER_HPAGE(level);
+> > +             u64 *sptep =3D rcu_dereference(pt) + i;
+> > +             gfn_t gfn =3D base_gfn + i * KVM_PAGES_PER_HPAGE(level);
+> > +             u64 old_child_spte;
+>
+> TL;DR: this type of optional refactoring doesn't belong in a patch Cc'd f=
+or stable,
+> and my personal preference is to always declare variables at function sco=
+pe (it's
+> not a hard rule though, Paolo has overruled me at least once :-) ).
 
-Cool!
+That makes sense. I don't have a preference either way. Paolo, if you
+want the version without the refactor, the version I sent in the RFC
+should be good. If the refactor is desired, I can separate it out into
+another patch and send a v2 of this patch as a mini series, tagging
+only the fix for stable.
 
-@Palmer, do you mind looking through this? Probably patch 1, 15 and 16
-are the most relevant to you.
+I've generally preferred declaring variables at function scope too
+since that seems like the overwhelming convention, but it's always
+struck me as a bit of a waste to not make use of scoping rules more.
+It does make it nice and clear how things should be laid out when
+debugging the kernel with GDB or something though.
 
-> Regarding the coherency issue, it's a bit sad to see yet another hacky
-> workaround
-> in the hardware, but as you say this is unrelated to the driver
-> series. I'd actually
-> argue that this one isn't that different from the other hack you
-> describe, except
-> this steals the pagetable bits from the address instead of the reserved flags...
+In any case, please let me know how you'd like the changes organized
+and I can send up follow ups as needed, or we can just move forward
+with the RFC version.
 
-Yeah, it's definitely a hack, but at least it's not using bits the
-spec said was reserved. Hopefully the JH7110 will be fully coherent or
-maybe implement the new Svpbmt extension.
-
-/Emil
-
-
-/Emil
+>
+> Declaring variables in an inner scope is not always "better".  In particu=
+lar, it
+> can lead to variable shadowing, which can lead to functional issues of a =
+different
+> sort.  Most shadowing is fairly obvious, and truly egregious bugs will of=
+ten result
+> in the compiler complaining about consuming an uninitialized variable.
+>
+> But the worst-case scenario is if the inner scope shadows a function para=
+meter, in
+> which the case the compiler will not complain and will even consume an un=
+initialized
+> variable without warning.  IIRC, we actually had a Hyper-V bug of that na=
+ture
+> where an incoming @vcpu was shadowed.  Examples below.
+>
+> So yes, on one hand moving the declarations inside the loop avoid potenti=
+al flavor
+> of bug, but they create the possibility for an entirely different class o=
+f bugs.
+> The main reason I prefer declaring at function scope is that I find it ea=
+sier to
+> visually detect using variables after a for loop, versus detecting that a=
+ variable
+> is being shadowed, especially if the function is largish and the two decl=
+arations
+> don't fit on the screen.
+>
+> There are of course counter-examples, e.g. commit 5c49d1850ddd ("KVM: VMX=
+: Fix a
+> TSX_CTRL_CPUID_CLEAR field mask issue") immediately jumps to mind, so the=
+re's
+> certainly an element of personal preference.
+>
+> E.g. this will fail with "error: =E2=80=98sptep=E2=80=99 redeclared as di=
+fferent kind of symbol
+>
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 4e226cdb40d9..011639bf633c 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -369,7 +369,7 @@ static void tdp_mmu_unlink_page(struct kvm *kvm, stru=
+ct kvm_mmu_page *sp,
+>   * early rcu_dereferences in the function.
+>   */
+>  static void handle_removed_tdp_mmu_page(struct kvm *kvm, tdp_ptep_t pt,
+> -                                       bool shared)
+> +                                       bool shared, u64 *sptep)
+>  {
+>         struct kvm_mmu_page *sp =3D sptep_to_sp(rcu_dereference(pt));
+>         int level =3D sp->role.level;
+> @@ -431,8 +431,9 @@ static void handle_removed_tdp_mmu_page(struct kvm *k=
+vm, tdp_ptep_t pt,
+>                                     shared);
+>         }
+>
+> -       kvm_flush_remote_tlbs_with_address(kvm, gfn,
+> -                                          KVM_PAGES_PER_HPAGE(level + 1)=
+);
+> +       if (sptep)
+> +               kvm_flush_remote_tlbs_with_address(kvm, gfn,
+> +                                                  KVM_PAGES_PER_HPAGE(le=
+vel + 1));
+>
+>         call_rcu(&sp->rcu_head, tdp_mmu_free_sp_rcu_callback);
+>  }
+> @@ -532,7 +533,7 @@ static void __handle_changed_spte(struct kvm *kvm, in=
+t as_id, gfn_t gfn,
+>          */
+>         if (was_present && !was_leaf && (is_leaf || !is_present))
+>                 handle_removed_tdp_mmu_page(kvm,
+> -                               spte_to_child_pt(old_spte, level), shared=
+);
+> +                               spte_to_child_pt(old_spte, level), shared=
+, NULL);
+>  }
+>
+>  static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+>
+>
+> whereas moving the second declaration into the loop will compile happily.
+>
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 4e226cdb40d9..3e83fd66c0dc 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -369,13 +369,12 @@ static void tdp_mmu_unlink_page(struct kvm *kvm, st=
+ruct kvm_mmu_page *sp,
+>   * early rcu_dereferences in the function.
+>   */
+>  static void handle_removed_tdp_mmu_page(struct kvm *kvm, tdp_ptep_t pt,
+> -                                       bool shared)
+> +                                       bool shared, u64 *sptep)
+>  {
+>         struct kvm_mmu_page *sp =3D sptep_to_sp(rcu_dereference(pt));
+>         int level =3D sp->role.level;
+>         gfn_t base_gfn =3D sp->gfn;
+>         u64 old_child_spte;
+> -       u64 *sptep;
+>         gfn_t gfn;
+>         int i;
+>
+> @@ -384,7 +383,7 @@ static void handle_removed_tdp_mmu_page(struct kvm *k=
+vm, tdp_ptep_t pt,
+>         tdp_mmu_unlink_page(kvm, sp, shared);
+>
+>         for (i =3D 0; i < PT64_ENT_PER_PAGE; i++) {
+> -               sptep =3D rcu_dereference(pt) + i;
+> +               u64 *sptep =3D rcu_dereference(pt) + i;
+>                 gfn =3D base_gfn + i * KVM_PAGES_PER_HPAGE(level);
+>
+>                 if (shared) {
+> @@ -431,8 +430,9 @@ static void handle_removed_tdp_mmu_page(struct kvm *k=
+vm, tdp_ptep_t pt,
+>                                     shared);
+>         }
+>
+> -       kvm_flush_remote_tlbs_with_address(kvm, gfn,
+> -                                          KVM_PAGES_PER_HPAGE(level + 1)=
+);
+> +       if (sptep)
+> +               kvm_flush_remote_tlbs_with_address(kvm, gfn,
+> +                                                  KVM_PAGES_PER_HPAGE(le=
+vel + 1));
+>
+>         call_rcu(&sp->rcu_head, tdp_mmu_free_sp_rcu_callback);
+>  }
+> @@ -532,7 +532,7 @@ static void __handle_changed_spte(struct kvm *kvm, in=
+t as_id, gfn_t gfn,
+>          */
+>         if (was_present && !was_leaf && (is_leaf || !is_present))
+>                 handle_removed_tdp_mmu_page(kvm,
+> -                               spte_to_child_pt(old_spte, level), shared=
+);
+> +                               spte_to_child_pt(old_spte, level), shared=
+, NULL);
+>  }
+>
+>  static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
