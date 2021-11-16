@@ -2,46 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03C645288A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 04:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F5E452897
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 04:32:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348185AbhKPDaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 22:30:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59104 "EHLO
+        id S243251AbhKPDfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 22:35:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23771 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237914AbhKPD3K (ORCPT
+        by vger.kernel.org with ESMTP id S239865AbhKPDeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 22:29:10 -0500
+        Mon, 15 Nov 2021 22:34:04 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637033174;
+        s=mimecast20190719; t=1637033467;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=4GKDrRXKet0v+/VOG01YIpAm79DrIJoe/NUE0aZSIyU=;
-        b=RNxi72GswYaKB7d0/4MlG8R5PbwwUB4gR6BORZzfeQZllyvJHl8j5OSC5MES0+aZtUiKGa
-        8dr7qtTnYDdgxq/pZ9V/fpRhV7BlGv1Hi17xyH9pBvxFgPOUV1ZxkysdacwvkcaoVjyyvd
-        8h/gnBCEO7nd1CuH0+8N9wiYF0X+FW0=
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vsr7tOPK7Y5VuSVrTKiVhFvojkVdBSuchZU9h7bR2Gw=;
+        b=PADv+w93NalqZV7jZiIW5AljBD+VXp7TZyROiMYWyneWAp/xNhfodb6UNw/G6rHnBiMqMF
+        2cion9hejXv/6OvBgwXYVYdWmqTnDHhZaZS7QetRu8I2/Cm0ORiuB/XkZ0MokzMrwj7ltr
+        n0jH8voV5jTOsXi1jTlBm+UjdPvYH8o=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-412-I42sgoC2N2S2tVzAsBXxuQ-1; Mon, 15 Nov 2021 22:26:10 -0500
-X-MC-Unique: I42sgoC2N2S2tVzAsBXxuQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+ us-mta-526-tlJoC0S5PrauTgW0IdJC_w-1; Mon, 15 Nov 2021 22:31:05 -0500
+X-MC-Unique: tlJoC0S5PrauTgW0IdJC_w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AAD80102CB73;
-        Tue, 16 Nov 2021 03:26:09 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-162.pek2.redhat.com [10.72.12.162])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DA7DE1835B;
-        Tue, 16 Nov 2021 03:26:06 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D39D315721;
+        Tue, 16 Nov 2021 03:31:04 +0000 (UTC)
+Received: from localhost (ovpn-12-162.pek2.redhat.com [10.72.12.162])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3A9DF60BE5;
+        Tue, 16 Nov 2021 03:31:03 +0000 (UTC)
+Date:   Tue, 16 Nov 2021 11:31:01 +0800
 From:   Baoquan He <bhe@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-s390@vger.kernel.org, kexec@lists.infradead.org,
-        hca@linux.ibm.com, prudo@redhat.com, Baoquan He <bhe@redhat.com>
-Subject: [PATCH v2 2/2] s390/kexec: fix kmemleak
-Date:   Tue, 16 Nov 2021 11:25:57 +0800
-Message-Id: <20211116032557.14075-2-bhe@redhat.com>
-In-Reply-To: <20211116032557.14075-1-bhe@redhat.com>
+        hca@linux.ibm.com, prudo@redhat.com
+Subject: [PATCH v2 RESEND 2/2] s390/kexec: fix memory leak of ipl report
+ buffer
+Message-ID: <20211116033101.GD21646@MiWiFi-R3L-srv>
 References: <20211116032557.14075-1-bhe@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+ <20211116032557.14075-2-bhe@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211116032557.14075-2-bhe@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -67,6 +74,9 @@ unreferenced object 0x38000195000 (size 4096):
 Signed-off-by: Baoquan He <bhe@redhat.com>
 Fixes: 99feaa717e55 ("s390/kexec_file: Create ipl report and pass to next kernel")
 ---
+RESEND:
+  Fix the incorrect subject.
+
  arch/s390/include/asm/kexec.h         | 7 +++++++
  arch/s390/kernel/machine_kexec_file.c | 9 +++++++++
  2 files changed, 16 insertions(+)
