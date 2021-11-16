@@ -2,142 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3156D452B23
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 07:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2979452B25
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 07:42:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234822AbhKPGpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 01:45:24 -0500
-Received: from mail-psaapc01on2097.outbound.protection.outlook.com ([40.107.255.97]:16160
-        "EHLO APC01-PSA-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233185AbhKPGpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 01:45:09 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TqVHL2+Y2TVLmaqMhX/to2o4RHE2lPg56vRX0C9LiKqxWCpfM8UHcMC/OhaB5VWlhqHdT/dxQxEOQnzS/D2wOA2zJ5N1Dzs4qtqZqD0GQmjdfcEd+fTmzbFx7nvKmpwAjmvo2QJ4nGPWdkfd0Qv827WAqibqnksJNtfpvvAJvCwyqlIaBxlt0Fy7QL+q2Obf41z1vQ+7NNbYiRDM31p98Vo0VqJjKHm5WwDHrx7riUCoyDMZabJQzsLUb++Y7QuX+72q6tJiYQTxAjpV5Es/QMCUtrmdCM7F/m+PvsnRhX20ZLR4mdcKSU1yBf/mD2iCr1zDhE72B2zMkNqXlZa2aQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=j4rex29SYtDNyhH08CwsoaIQgoQIHUNk3dHEnGMpwoc=;
- b=dd2ISIasaJ6PXMiExbzEI3RPR7jCtqNIKEcI4o4a7PV4JqfRerHymR/l2/DjuHx3TL3GC2hX/pzNujfLYI0u0Ut0FAHxyG9jgN4ZPGvhI8xg8ZDo2VGsPJSV1MoKHDwgWSAbenmxNIllXcnti99I5B7y8EtYRZHgzSOmrh5ZTjsOX+aaGV8oSZ29/W1k48wrm0tcRiaWXnvEQ+bMr1+xuJHFwsP7D+LrkrTN673yQxmGcEPCiJNoTLVFVVRKqH6+b+iSxMCI8x3jGwRvNACr/XugsBBfqdDrGrX/Sw4pIcNK7IXglVIa3BK5klvmLO7N8+Xwy4Qzh/xxsS64RIC72A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j4rex29SYtDNyhH08CwsoaIQgoQIHUNk3dHEnGMpwoc=;
- b=mw4P8OqqlON03EGlDF7LCspxb0hi1Cr46KsZVG/dN09CqC9xnc+7zGFjxVPWTbXoZycVUsuqStHxN1AyXQyEpQ/U5cFNwMQYFqheraNKD8DZwHATfheepB3GgVihemdhJO2UAKP6X9iUHy9mn9K28r5A9ZPgVhDZt4cW+k1AwF8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from HK2PR06MB3492.apcprd06.prod.outlook.com (2603:1096:202:2f::10)
- by HK0PR06MB2100.apcprd06.prod.outlook.com (2603:1096:203:49::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.15; Tue, 16 Nov
- 2021 06:42:07 +0000
-Received: from HK2PR06MB3492.apcprd06.prod.outlook.com
- ([fe80::814a:4668:a3bd:768]) by HK2PR06MB3492.apcprd06.prod.outlook.com
- ([fe80::814a:4668:a3bd:768%7]) with mapi id 15.20.4690.027; Tue, 16 Nov 2021
- 06:42:07 +0000
-From:   Guo Zhengkui <guozhengkui@vivo.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guo Zhengkui <guozhengkui@vivo.com>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev (open list:STAGING SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     kernel@vivo.com
-Subject: [PATCH] staging: r8188eu: fix array_size.cocci warning
-Date:   Tue, 16 Nov 2021 14:41:07 +0800
-Message-Id: <20211116064124.8833-2-guozhengkui@vivo.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211116064124.8833-1-guozhengkui@vivo.com>
-References: <20211116064124.8833-1-guozhengkui@vivo.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR0302CA0014.apcprd03.prod.outlook.com
- (2603:1096:202::24) To HK2PR06MB3492.apcprd06.prod.outlook.com
- (2603:1096:202:2f::10)
+        id S234014AbhKPGpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 01:45:49 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:58892 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234817AbhKPGpW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 01:45:22 -0500
+Received: from [192.168.1.111] (91-158-153-130.elisa-laajakaista.fi [91.158.153.130])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id AFA7C93;
+        Tue, 16 Nov 2021 07:42:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1637044942;
+        bh=oRQSCgF5wtD0slgPyvbtlKIrlsaPM1o2AXg4IEkcBpg=;
+        h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
+        b=PeoizySOxRAsSuzLEH6mnYI4j/VepsmRqDv/l8kK/jiUoZwMEXM4VyJNyiuXvxC5O
+         NjCWFdaudTSkU7Fc8bHV/ufs+YFw3E+I296KCFNVZsfAlzGYXLwbH29PzHsc9RGQsM
+         DDfkSqg7Kc1OAwIknlGBrlFwLOk4FoQ0hBdQiV70=
+To:     Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+Cc:     matthijsvanduin@gmail.com, airlied@linux.ie, daniel@ffwll.ch,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <1636796417-5997-1-git-send-email-ivo.g.dimitrov.75@gmail.com>
+ <1636797239-6384-1-git-send-email-ivo.g.dimitrov.75@gmail.com>
+ <36598203-eced-131d-85ef-f4940872e751@ideasonboard.com>
+ <16a38e8e-071c-7275-8a33-487f7c3c8f2a@gmail.com>
+ <ee42102b-c584-6e20-e710-711f79467fa3@ideasonboard.com>
+ <e24ba773-298c-c703-9719-abba3527f8dd@gmail.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: Re: [PATCH v2] drm: omapdrm: Export correct scatterlist for TILER
+ backed BOs
+Message-ID: <16724dbf-ff40-4d18-cde4-b3716583289f@ideasonboard.com>
+Date:   Tue, 16 Nov 2021 08:42:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Received: from localhost.localdomain (203.90.234.87) by HK2PR0302CA0014.apcprd03.prod.outlook.com (2603:1096:202::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.16 via Frontend Transport; Tue, 16 Nov 2021 06:42:07 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 60aea1c6-cb6e-4942-a403-08d9a8cc3591
-X-MS-TrafficTypeDiagnostic: HK0PR06MB2100:
-X-Microsoft-Antispam-PRVS: <HK0PR06MB210015983EF4E5089A4C5A15C7999@HK0PR06MB2100.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GTqC2QMXz4JOhaD08Dzwgh7pgyp4wGkWkRRcAXxgSN/Sgh7FbcPkzaIkcw8QRB/NOVMIodM4OHrk8nO/I2fuS8ZbTqkUC9CGkBrGGkVl4N7Nfh9thYKLI5zR+brhMQLJ6q5CA8CFXpAiKfqGK9q+kGwUn1btvfwsp4RmiuaBcqAX+VJ1zzwyPn8/ocA24P2hOUsaA3X7+fkHl8GqfYbSoXt1fQ3ebrGWPa7ca+mXczjXVU81P/QwO2mcfm+u3SxbpGgaKjgasCPTL55k15+QvLhkdRaWeWLYkvTZqbxFecqkjD54ESXW0KJZZwN7JwnMU/KRbzdWSOPRGoM0n59IufJXOOPRg2HImO2nEAG0uGmtS1yhLbzzrbt9VA1MNWLLC3UgawMGqit0x2KKItsIV90K9cnN4tXo5A66cGzobwXEc9dON7EpfczhL7qGW3iAyKFn74rIfNefnkYu2Y5GBHZyRIPR470SEdK0qSBs7ZaNZugWNDzyYm9I35elfjaajAdunQjxHl2EFZ20KRWevlWuL893R6Qjou/VPsplbaZlutDy3bKajAttz60u6g2LcCyZB6gFC6YQZW2VUfuknGpoqnYh5GHKizhFJx7piWfOn6ThQ5nfcaJGcOkcsSD71WjcgKlIxQl/CPKj2YJaTXMeURWXJh0bCrReaB+q2GUH6qGbL0oJ1p4ABKIhcfT44Sp4vu35IZXrF4vclB7X1Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK2PR06MB3492.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(83380400001)(66476007)(26005)(186003)(66946007)(38100700002)(508600001)(316002)(66556008)(38350700002)(8676002)(6486002)(5660300002)(1076003)(4326008)(110136005)(86362001)(6506007)(52116002)(107886003)(36756003)(4744005)(2616005)(2906002)(6512007)(956004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QOQubZtlPEomBRy9eo+8X2rSVYODxMZ8pUM2PMZe+5hJJeAJimwkFTTm617i?=
- =?us-ascii?Q?JeoP0sIjsKizDYrxI57qH5Z3p6VaqCYauqz2DmOpzB/LiUPNiWRibj4q6Js8?=
- =?us-ascii?Q?aksjUAssAvkHYxY0WxbDgi1gjPejMakGS9exzXfxAnWpMqOeAx9TNKnAmF0b?=
- =?us-ascii?Q?IuAePynwXrXZPDIhnWWdFYFs3mRlKzZsMR396JBdo/2gCzxFt3btc4YhcAas?=
- =?us-ascii?Q?M4vz3JOGB1OBeL7AA4ydlYhyCTTg+WK7AGNmk+hRoSwLQzqXUi1MNo7uXju/?=
- =?us-ascii?Q?yS3+YCwuoOB39dY6w6AaiapAs/KPeh1TURaAFZEWYd/GUEqSLOFo8pOmrrb1?=
- =?us-ascii?Q?V5u2of7I0I4Ql2pRs/i9893MZJJvn5kdJ8YUrMZPQSt+g7I1Iy1E8V0APfyQ?=
- =?us-ascii?Q?By8NGnMzdDT9xD/yBL6KcA2fOK8qknunYRBCpR8nYOvdnp01E+tjQHkJxK6u?=
- =?us-ascii?Q?iD7t+UfnqubrBkG+vimwUg1IADd0/TnmFWekZmy1ZNwzehJao5u4LmTWIJIz?=
- =?us-ascii?Q?25OnFZ1LTrqCZINDYKZKNH1RbfANq5dzWuw0ojM2mbLb92V0wTs4CDOnL8Zg?=
- =?us-ascii?Q?/iXYrP7wD2zWu3/8YfuNPPbbFRj8jfAvBdux/jQfsqE6ZcVLuNwtyMI4zlYB?=
- =?us-ascii?Q?anV4IM5XyueVRyyvMZXpfwgLrM8cHL2/VVQp+Ipk5ZY0VMOXxeBY4w5bfe/G?=
- =?us-ascii?Q?zUnCwqaDqSMBtorN3zy1skVYSWVuBK0yFZ2w2IfclPUMuVMof//89lA12/an?=
- =?us-ascii?Q?4IBFqXxCcRGxEFPObljf99/kx+WCVCodUNltBcThwHvyjc3XqPa1p22T0cAN?=
- =?us-ascii?Q?Utqrbm9trioGMpGzzZFC8jDUVkLKnp5JiAZ0lRbYL8CMBiEmc3qsJdW+gE+7?=
- =?us-ascii?Q?zu773I59IOil3LGb/mxFiwyWF3SYz1vPa2OXl7+9oj/7UZMwtDHvwlTf0aoA?=
- =?us-ascii?Q?Cm7KVBZXd8ykQeBFIhz/5aMRpMFW5XhA8XuiGM/waD/M2S363w59+jUFEl05?=
- =?us-ascii?Q?xfmLzaW6+pP8hsEC+fa6N3jJOyNsRIwBVJB3Eu8CxbSodW22ijVWc9nmi4ln?=
- =?us-ascii?Q?FFhg20dbjlRPF5fxQhUwD6zaUfUJQH4EukUvwn4bFS4Vhuvux3j0b0kSrklc?=
- =?us-ascii?Q?apozaQtKvQnX0ojCyEWFW2r8C4XOAxsbvG4BF53FQYwJiUiahHOvifhg41B2?=
- =?us-ascii?Q?kgWn2Mn3RCi+yK66qlvmQwywZgLI3K2tEtsIyqRSsfKPj0d6ueqamL3N2BHo?=
- =?us-ascii?Q?pZee/SK0eEvJtTZCulkNmEUXogD4ByOQrP9+slvlruxXGZ1Drag9u5fP24+2?=
- =?us-ascii?Q?z5FdVGDCiLNQkalB26TxvToZRXVtcdedCV4G7s5xwq6V8+jGv4XNnxQCZgQu?=
- =?us-ascii?Q?uWbJasMCGJNO1OTRplm/a4PnJRQMVXi8nfK0mmxh7vwg88632J8VkpPL+4TT?=
- =?us-ascii?Q?W4BUuTcVp1QBL9GgZavfeYVhKGaEmPpvrCSbRraGVgMOU/jBuxf/IkbAcsH6?=
- =?us-ascii?Q?YdZkQqH+hSKvJKZ5grg1lYz9mnklAHPk6e87RwqN6q7/gHwDjN+aI57lw8BB?=
- =?us-ascii?Q?wFsMU9N9kl7l8i0nHgsi3jduuz3Tx0MWhFmNFHFMYMgNdoi+4gEMg3mH45ZF?=
- =?us-ascii?Q?MNIVS5gEz/denliYOj6seek=3D?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 60aea1c6-cb6e-4942-a403-08d9a8cc3591
-X-MS-Exchange-CrossTenant-AuthSource: HK2PR06MB3492.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 06:42:07.6786
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /FRGR5kMzWmTW9b1EmD9Tep5dhqtEyexNYpX+OWKeRhmJm0CF7SwODoTO67INZiumv+qnx3pcEpDdRASoYzXcw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2100
+In-Reply-To: <e24ba773-298c-c703-9719-abba3527f8dd@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix following array_size.cocci warning:
-./drivers/staging/r8188eu/core/rtw_rf.c:38:48-49: WARNING: Use ARRAY_SIZE.
+On 15/11/2021 19:15, Ivaylo Dimitrov wrote:
+> Hi,
+> 
+> On 15.11.21 г. 17:37 ч., Tomi Valkeinen wrote:
+>> On 15/11/2021 15:55, Ivaylo Dimitrov wrote:
+>>> Hi Tomi,
+>>>
+>>> On 15.11.21 г. 10:42 ч., Tomi Valkeinen wrote:
+>>>> Hi,
+>>>>
+>>>> On 13/11/2021 11:53, Ivaylo Dimitrov wrote:
+>>>>> Memory of BOs backed by TILER is not contiguous, but 
+>>>>> omap_gem_map_dma_buf()
+>>>>> exports it like it is. This leads to (possibly) invalid memory 
+>>>>> accesses if
+>>>>> another device imports such a BO.
+>>>>
+>>>> This is one reason why TILER hasn't been officially supported. But 
+>>>> the above is not exactly right, or at least not the whole truth.
+>>>>
+>>>
+>>> Definitely, not only these BOs lie about their memory layout, they 
+>>> lie about size and alignment as well. I have 2 more patches here (one 
+>>> is to align TILER memory on page, as proposed by Matthijs in the 
+>>> other mail, the other to set the correct size when exporting TILER 
+>>> BO), but I wanted to hear from you first, like, what is the general 
+>>> trend :) .
+>>
+>> My thoughts here are that the current code doesn't work in practice, 
+>> so if you get it fixed, it's great =).
+>>
+>>> Also, I have another patch in mind, that will enable exporting of 
+>>> buffers that are not TILER backed, but are not CMA backed either. SGX 
+>>> for example does not need CMA memory to render to.
+>>
+>> What do you mean with this? DSS needs contiguous memory, so the memory 
+>> has to be 1) physically contiguous, 2) mapped with DMM or 3) mapped 
+>> with TILER. There's no reason for the driver to export non-contiguous 
+>> memory.
+>>
+> 
+> DSS yes, but, omapdrm is used to allocate non-scanout buffers as well, 
+> which do not need to be (and in practice are not) contiguous. GPU (or 
+> anyone with MMU) can render on them (DRI buffers for example) and later 
+> on those buffers can be copied (blit) to the framebuffer. Yes, not 
+> zero-copy, but if you're doing compositing, there is no option anyway.
+> 
+> Exactly this is done by omap-video driver for example. GBM BOs are 
+> allocated through omapdrm as well.
 
-ARRAY_SIZE() defined in <linux/kernel.h> is safer because it uses
-__must_be_array().
+That is not correct and shouldn't be done. omapdrm is not a generic 
+memory allocator. We have real generic allocators, so those should be 
+used. Or, if the buffer is only used for a single device, the buffer 
+should be allocated from that device's driver.
 
-Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
----
- drivers/staging/r8188eu/core/rtw_rf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>>>> A BO's memory via the TILER memory is contiguous, although with 
+>>>> consistent gaps of memory that should not be accessed. 
+>>>
+>>> I think this more or less contradicts to the definition of 
+>>> contiguous, no?  :)
+>>
+>> Depends on the definition ;). The buffers can be handled with DMA that 
+>> only supports contiguous memory, so...
+>>
+>>>> That point is important, as the IPs that might use TILER backed BOs 
+>>>> only support contiguous memory.
+>>>>
+>>>
+>>> Well, every IP with MMU should be capable to use such BOs. SGX has 
+>>> one for sure, IIRC IVA and ISP on omap3 has MMUs too.
+>>
+>> True, we have those. But none of the DRA7 capture IPs have MMU.
+>>
+>>>> This means that the drivers for such IPs cannot use the BOs exported 
+>>>
+>>> Neither they can use them without the patch.
+>>>
+>>>> like you do in this patch. I believe the drivers could be improved 
+>>>> by writing a helper function which studies the sg_table and 
+>>>> concludes that it's actually contiguous. I think we should have at 
+>>>> least one such driver fixed along with this patch so that we can be 
+>>>> more confident that this actually works.
+>>>>
+>>>
+>>> Yes, I we have such driver, but unfortunately it is not upstream (PVR 
+>>> driver that is). Right now I have droid4 in front of me with SGX 
+>>> rendering hildon-desktop in landscape using TILER BO.
+>>>
+>>> Sure I had 2 more patches applied and also had to teach PVR driver to 
+>>> know how to use that scatterlist, but that was a trivial change (an 
+>>> old version of the patch 
+>>> https://github.com/tmlind/linux_openpvrsgx/commit/90f16ed906c8c6eb4893d3ff647ca7d921972495). 
+>>>
+>>>
+>>> See glmark-es2 results (with a little help of a simple PVR EXA):
+>>>
+>>> user@devuan-droid4:/root$ uname -a
+>>> Linux devuan-droid4 5.15.2-01783-g6ba3430a6fad-dirty #28 SMP PREEMPT 
+>>> Mon Nov 15 08:48:21 EET 2021 armv7l GNU/Linux
+>>> user@devuan-droid4:/root$ xrandr -o 3
+>>> user@devuan-droid4:/root$ glmark2-es2 --fullscreen
+>>> =======================================================
+>>>      glmark2 2020.04
+>>> =======================================================
+>>>      OpenGL Information
+>>>      GL_VENDOR:     Imagination Technologies
+>>>      GL_RENDERER:   PowerVR SGX 540
+>>>      GL_VERSION:    OpenGL ES 2.0 build 1.17@4948957
+>>> =======================================================
+>>> [build] use-vbo=false: FPS: 107 FrameTime: 9.346 ms
+>>> [build] use-vbo=true: FPS: 136 FrameTime: 7.353 ms
+>>> [texture] texture-filter=nearest: FPS: 156 FrameTime: 6.410 ms
+>>> [texture] texture-filter=linear: FPS: 153 FrameTime: 6.536 ms
+>>> [texture] texture-filter=mipmap: FPS: 152 FrameTime: 6.579 ms
+>>> [shading] shading=gouraud: FPS: 111 FrameTime: 9.009 ms
+>>> [shading] shading=blinn-phong-inf: FPS: 116 FrameTime: 8.621 ms
+>>> [shading] shading=phong: FPS: 104 FrameTime: 9.615 ms
+>>> [shading] shading=cel: FPS: 96 FrameTime: 10.417 ms
+>>> [bump] bump-render=high-poly: FPS: 67 FrameTime: 14.925 ms
+>>> [bump] bump-render=normals: FPS: 140 FrameTime: 7.143 ms
+>>> [bump] bump-render=height: FPS: 131 FrameTime: 7.634 ms
+>>> [effect2d] kernel=0,1,0;1,-4,1;0,1,0;: FPS: 49 FrameTime: 20.408 ms
+>>> [effect2d] kernel=1,1,1,1,1;1,1,1,1,1;1,1,1,1,1;: FPS: 17 FrameTime: 
+>>> 58.824 ms
+>>> [pulsar] light=false:quads=5:texture=false: FPS: 152 FrameTime: 6.579 ms
+>>> [desktop] 
+>>> blur-radius=5:effect=blur:passes=1:separable=true:windows=4: FPS: 23 
+>>> FrameTime: 43.478 ms
+>>> [desktop] effect=shadow:windows=4: FPS: 64 FrameTime: 15.625 ms
+>>> [buffer] 
+>>> columns=200:interleave=false:update-dispersion=0.9:update-fraction=0.5:update-method=map: 
+>>> FPS: 33 FrameTime: 30.303 ms
+>>> [buffer] 
+>>> columns=200:interleave=false:update-dispersion=0.9:update-fraction=0.5:update-method=subdata: 
+>>> FPS: 33 FrameTime: 30.303 ms
+>>> [buffer] 
+>>> columns=200:interleave=true:update-dispersion=0.9:update-fraction=0.5:update-method=map: 
+>>> FPS: 60 FrameTime: 16.667 ms
+>>> [ideas] speed=duration: FPS: 115 FrameTime: 8.696 ms
+>>> [jellyfish] <default>: FPS: 48 FrameTime: 20.833 ms
+>>> [terrain] <default>:PVR:(Error): SGXKickTA: TA went out of Mem and 
+>>> SPM occurred during last TA kick [0, ]
+>>> PVR:(Error): SGXKickTA: TA went out of Mem and SPM occurred during 
+>>> last TA kick [0, ]
+>>> PVR:(Error): SGXKickTA: TA went out of Mem and SPM occurred during 
+>>> last TA kick [0, ]
+>>>   FPS: 1 FrameTime: 1000.000 ms
+>>> [shadow] <default>: FPS: 31 FrameTime: 32.258 ms
+>>> [refract] <default>: FPS: 13 FrameTime: 76.923 ms
+>>> [conditionals] fragment-steps=0:vertex-steps=0: FPS: 156 FrameTime: 
+>>> 6.410 ms
+>>> [conditionals] fragment-steps=5:vertex-steps=0: FPS: 100 FrameTime: 
+>>> 10.000 ms
+>>> [conditionals] fragment-steps=0:vertex-steps=5: FPS: 156 FrameTime: 
+>>> 6.410 ms
+>>> [function] fragment-complexity=low:fragment-steps=5: FPS: 128 
+>>> FrameTime: 7.812 ms
+>>> [function] fragment-complexity=medium:fragment-steps=5: FPS: 83 
+>>> FrameTime: 12.048 ms
+>>> [loop] fragment-loop=false:fragment-steps=5:vertex-steps=5: FPS: 127 
+>>> FrameTime: 7.874 ms
+>>> [loop] fragment-steps=5:fragment-uniform=false:vertex-steps=5: FPS: 
+>>> 104 FrameTime: 9.615 ms
+>>> [loop] fragment-steps=5:fragment-uniform=true:vertex-steps=5: FPS: 77 
+>>> FrameTime: 12.987 ms
+>>> =======================================================
+>>>                                    glmark2 Score: 92
+>>> =======================================================
+>>>
+>>> Impressive, ain't it ;)
+>>>
+>>>> But I'm not sure what that driver would be on droid4. I have DRA7 
+>>>> boards which have VIP, CAL and VPE that I can use here. Perhaps it 
+>>>> wouldn't be too much effort for me to extend my tests a bit to 
+>>>> include CAL, and try to fix the driver. I just fear the driver 
+>>>> changes won't be trivial.
+>>>>
+>>>
+>>> At least PVR change was really trivial.
+>>>
+>>>> Did you test this somehow?
+>>>>
+>>>
+>>> Yes, on droid4, works with no issue, see above.
+>>>
+>>>> Did you look at the userspace mmap of TILER buffers? I wonder if 
+>>>> that goes correctly or not. Isn't memory to userspace mapped per 
+>>>> page, and lengths of the TILER lines are not page aligned?
+>>>>
+>>>
+>>> I really can't explain it any better than Matthijs, see the other mail.
+>>>
+>>> So, what I think shall be done to have TILER BOs (and not only) in a 
+>>> shape that's usable for anything else but a simple test-cases, if you 
+>>> accept the $subject patch:
+>>>
+>>> 1. Make TILER BOs page-aligned (simple patch, I already have it). 
+>>> That should fix possible invalid memory accesses for both mmap()-ed 
+>>> memory and kernel drivers.
+>>
+>> Sounds good.
+>>
+>>> 2. Set exp_info.size = omap_gem_mmap_size(obj); when exporting a BO. 
+>>> That way importer knows the real BO memory size (including alignment 
+>>> etc) so he will be able to calculate the number of pages he needs to 
+>>> map the scatterlist.
+>>
+>> Can you elaborate what this means?
+>>
+> 
+> When we align to page, we shall report the size including the alignment, 
+> no? Or, it is the importer that shall take care to calculate BO size( 
+> including the alignment) based on scatterlist if he needs to?
 
-diff --git a/drivers/staging/r8188eu/core/rtw_rf.c b/drivers/staging/r8188eu/core/rtw_rf.c
-index 2ec56012516e..e704092d31d0 100644
---- a/drivers/staging/r8188eu/core/rtw_rf.c
-+++ b/drivers/staging/r8188eu/core/rtw_rf.c
-@@ -35,7 +35,7 @@ static struct ch_freq ch_freq_map[] = {
- 	{216, 5080},/* Japan, means J16 */
- };
- 
--static int ch_freq_map_num = (sizeof(ch_freq_map) / sizeof(struct ch_freq));
-+static int ch_freq_map_num = ARRAY_SIZE(ch_freq_map);
- 
- u32 rtw_ch2freq(u32 channel)
- {
--- 
-2.20.1
+I'm not sure... But I guess the export size should include the alignment.
 
+Hmm... I haven't had enough coffee yet, but how does this go... Let's 
+say we have a tiled fb, and the width gets expanded to a page. What 
+happens to reads/writes that happen outside the fb, but still within the 
+page? Those should cause an error or do nothing, but is it possible that 
+they go through TILER and get mapped to some real memory location?
+
+>>> 3. Do not refuse to export non-TILER non-contiguous buffers (we can 
+>>> use them for rendering, for example)
+>>
+>> omapdrm should only allow allocation of buffers that are used for 
+>> display. Pure render buffers should be allocated from SGX.
+>>
+> 
+> In practice everyone around uses omapdrm to allocate all kinds of 
+> buffers, which kind of makes sense to me - that way you keep only one 
+> DRM fd around. Take omap-video for example, it uses omap_bo_new() (or 
+> omap_bo_tiled()) to allocate DRI buffers. GBM does the same 
+> (gbm_bo_create() uses omapdrm, because that's the DRM fd you create gbm 
+> with), IIUC. But those buffers should not be necessarily scanout capable.
+> 
+> The problem with contiguous buffers as I see it, is that CMA is limited, 
+> so lets not waste it if we can use DMA memory and scatterlist.
+> 
+> To support that, we just need to simply create a scatterlist, in similar 
+> way we do for TILER BOs in the $subject patch, so it should be few lines 
+> of code only.
+
+Yep. Well, as I mentioned above, I disagree with this. We have proper 
+generic memory allocators.
+
+  Tomi
