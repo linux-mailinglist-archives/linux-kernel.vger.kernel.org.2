@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD804528F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:02:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B290B4528F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:03:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241505AbhKPEF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 23:05:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37500 "EHLO
+        id S241566AbhKPEFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 23:05:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241327AbhKPEFA (ORCPT
+        with ESMTP id S241334AbhKPEFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 23:05:00 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ABC4C07C914;
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53862C07C915;
         Mon, 15 Nov 2021 16:53:06 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id gt5so14306757pjb.1;
+Received: by mail-pg1-x52b.google.com with SMTP id q12so4367299pgh.5;
         Mon, 15 Nov 2021 16:53:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=wt28/gXv7rd70jokBmRNQ4HFfWSUY5adpHknddEwpQM=;
-        b=cmoR/uvRZCYHiW23dDQn8hsx2eu3WaFfYi1csQ/NbY3/XY0KBLwp3xh2Oc7aTe1Hdq
-         iBMC293nQA5XJadNKCCVuAdTaFWwh9ibzdDZvmPT1hnm2caovByw/VXk0y+uUEw+DGYu
-         ZANXmp898h/7gI+GgvhzUsFVNjzBWLIFxwRxKXILMeT2vNKGPxkZoNb1gTCk1Gm3/jb3
-         TWPwIbwFTru3IDTyvBNhGEn1Fka95OXRftAZfBMEkMd78Q8JtA6SvCMfZugOuASJYrj4
-         7RGqacnnY2xDWKTtmyK662m3DSDU1y5HpThhPLYn3dsLucXmFTngxDj2UXZQuNX1DPRy
-         490w==
+        bh=mQ4zBzdLNeEoEE74Qz4XRg/VBkFxechuDPINXlbW2qc=;
+        b=VEU1Q9m+nafMaezjJbss0mGeK7ymabadCo5+aoUS/F2b7H4K5CZ731E2duImYM77uE
+         M/jd5rLQt1f0y6D4OVNm+8Je8kFmLkE8OKO5Cab71ISBGPrOCrMTxCGC6WH+HtQogF+9
+         lTEd0lDibWcJ9OXrkHxNyMPltK3hbFVzWfggQBw3oswWf3BwalmhG9r1ULbyVl0DPDN9
+         t+TLg76Hp2hSst0XRDn67WmiV3Jtma3LMRgnHyF4g00ycZt4DHBuTUS6HHZYEBI9G72G
+         PDjb1Nv3MiOVDqxk09bfedjwOgylWanBJHTXSr0eVJY0P/5ORf7UuN+fg/bd/nMaxNtp
+         sI2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wt28/gXv7rd70jokBmRNQ4HFfWSUY5adpHknddEwpQM=;
-        b=b/Pa0E1jA79bgSNNvCE4P48ka6DrN/sF/AXonoEGBCoJU70tkXssiJzZ94OK7OOQeL
-         2Pl0xz1x24k1Z+B7SU0JdMEwlDFL8plMfxLJi6K4vCqau730G0GQGvF3uHp1xAqIA2tv
-         95NxFcy7KV9SToZH+4WWcoz4j3DEkp+we2loEQfeyUaJC2tih9HOMYWR0Jm+sL6Vd7xs
-         pvbZN6yAQWuOVO/1u442N9IL8pb5gGpND/fFox5e+X+EX4ahwbZKEfD1Jadu2adIJEi1
-         aCSNtGT2bh41/mcpNMmnvMArWGnKMZt5UbHbxZlQOkugRro8HLk48afUBLRX6sj58cp4
-         yCcw==
-X-Gm-Message-State: AOAM532g9Ra3MT2Zz+vFBtZgYyYNG0zNbmvW9V2C/Ika88XzPpzodIpx
-        74TbrPY4H2AxRnNMR7vwPnY=
-X-Google-Smtp-Source: ABdhPJx3oxgmqZPrNfa+Gj01j7IcRdcW1OiyaiwfxsUYOmy8BhuDeJ/HRuCz40hEir8Hs16UtzznVQ==
-X-Received: by 2002:a17:90b:1b0a:: with SMTP id nu10mr69147337pjb.35.1637023985802;
+        bh=mQ4zBzdLNeEoEE74Qz4XRg/VBkFxechuDPINXlbW2qc=;
+        b=gdDxaGmu6A4E8qrvzQrpkKaG+/Zr5BEyN3rtQOc+w6ceAYStuUw3k0YvBOkuTpBVom
+         MbcYQFyibrc2auoqYAfAgsNYLobIVO3TC/A/PpU+jWusmWtaUKmUVZx5sFkpj91j0ex2
+         xMb1xt5ka9VQtAJjGHeSYzvVrYZrtCrTtcg4v8Iwet53Iu7UhmMNE7fQtn3qg0wIJUmW
+         s1fO1qQLynh7cGRlpRapE8UvFoj1jz7Vx2X8GRZq0mRWgwsJX3dEJUt4qmFHY5WK3kfu
+         Ord5/n3e3foA0gDU/hc3Ql8LurlDD6GHRa9c5y2m78AtMuquXK1JDJMQf+STYNwrzyBt
+         h3GQ==
+X-Gm-Message-State: AOAM533/phbMmNMr7LUXkAtuVglIAwxgSMezJM96eyHG87SqaB/Srx5g
+        uBR3uVA0pbwW2zOzut5wrRA=
+X-Google-Smtp-Source: ABdhPJwWHpML+YUDcHJCudx7sqn0Ep4LzQiuRZB9kU2ct73HsNkMskXqdNdDQtw32VZtOAqRbi0FoQ==
+X-Received: by 2002:a63:8c5c:: with SMTP id q28mr2247255pgn.244.1637023985989;
         Mon, 15 Nov 2021 16:53:05 -0800 (PST)
-Received: from localhost.lan (p4899162-ipngn25301marunouchi.tokyo.ocn.ne.jp. [122.18.9.162])
-        by smtp.gmail.com with ESMTPSA id l21sm435129pjt.24.2021.11.15.16.53.04
+Received: from localhost.lan ([2400:4070:175b:7500::7a7])
+        by smtp.gmail.com with ESMTPSA id 14sm4819960pge.35.2021.11.15.16.53.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 15 Nov 2021 16:53:05 -0800 (PST)
 Received: from x2.lan (localhost [127.0.0.1])
-        by localhost.lan (Postfix) with ESMTPSA id 6F9EE900956;
+        by localhost.lan (Postfix) with ESMTPSA id 71755900957;
         Tue, 16 Nov 2021 00:53:03 +0000 (GMT)
 From:   Vincent Pelletier <plr.vincent@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>,
@@ -61,9 +61,9 @@ To:     Rob Herring <robh+dt@kernel.org>,
         Yash Shah <yash.shah@sifive.com>, devicetree@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         David Abdurachmanov <david.abdurachmanov@sifive.com>
-Subject: [PATCH] riscv: dts: sifive unmatched: Expose the board ID eeprom.
-Date:   Tue, 16 Nov 2021 00:52:57 +0000
-Message-Id: <eaf9679c4c93b68fd8b7a427ceb8ef59387fe925.1637023980.git.plr.vincent@gmail.com>
+Subject: [PATCH] riscv: dts: sifive unmatched: Expose the PMIC sub-functions.
+Date:   Tue, 16 Nov 2021 00:52:58 +0000
+Message-Id: <0f5e86c3658817874f158b06f78cf2d4e8e1a9e5.1637023980.git.plr.vincent@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <f6512cc50dc31a086e00ed59c63ea60d8c148fc4.1637023980.git.plr.vincent@gmail.com>
 References: <f6512cc50dc31a086e00ed59c63ea60d8c148fc4.1637023980.git.plr.vincent@gmail.com>
@@ -73,41 +73,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark it as read-only as it is factory-programmed with identifying
-information, and no executable nor configuration:
-- eth MAC address
-- board model (PCB version, BoM version)
-- board serial number
-Accidental modification would cause misidentification which could brick
-the board, so marking read-only seem like both a safe and non-constraining
-choice.
+These sub-functions are available in the chip revision on this board, so
+expose them.
 
 Signed-off-by: Vincent Pelletier <plr.vincent@gmail.com>
 ---
- arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-index 305a086e5207..cf8937708829 100644
+index cf8937708829..270360b258b7 100644
 --- a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
 +++ b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-@@ -58,6 +58,16 @@ temperature-sensor@4c {
- 		interrupts = <6 IRQ_TYPE_LEVEL_LOW>;
- 	};
+@@ -75,6 +75,18 @@ pmic@58 {
+ 		interrupts = <1 IRQ_TYPE_LEVEL_LOW>;
+ 		interrupt-controller;
  
-+	eeprom@54 {
-+		compatible = "microchip,24c02", "atmel,24c02";
-+		reg = <0x54>;
-+		vcc-supply = <&vdd_bpro>;
-+		label = "board-id";
-+		pagesize = <16>;
-+		read-only;
-+		size = <256>;
-+	};
++		onkey {
++			compatible = "dlg,da9063-onkey";
++		};
 +
- 	pmic@58 {
- 		compatible = "dlg,da9063";
- 		reg = <0x58>;
++		rtc {
++			compatible = "dlg,da9063-rtc";
++		};
++
++		wdt {
++			compatible = "dlg,da9063-watchdog";
++		};
++
+ 		regulators {
+ 			vdd_bcore1: bcore1 {
+ 				regulator-min-microvolt = <900000>;
 -- 
 2.33.1
 
