@@ -2,69 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7ED453CE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:51:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 906EF453CE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:51:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232442AbhKPXxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 18:53:51 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:51802 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231237AbhKPXxr (ORCPT
+        id S232432AbhKPXyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 18:54:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231237AbhKPXym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 18:53:47 -0500
-Received: from thelio.attlocal.net (107-203-255-60.lightspeed.sntcca.sbcglobal.net [107.203.255.60])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 51D9820C63B5;
-        Tue, 16 Nov 2021 15:50:49 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 51D9820C63B5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1637106649;
-        bh=LttQCpO7QeJlDeMp9c834UuDMHtJOZUdMm3s6DbZzK4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W3BO2RrRgwhLfMEO6QLeBIbs8gvbq1eNYDIseAdQOhFWteUvREN+dTOXx+CwuhglC
-         Ub8AySU6j3QncShtzwC0lK5ktZhx30usjS2HvEtjkVDPbmwz1xX7oi+8O0Sn/gJhoO
-         W1mt2P4gAnNNr8baGc9yqMEV9F+Ae2WJq2FK03Qc=
-From:   Katherine Perez <kaperez@linux.microsoft.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Felipe Balbi <balbi@kernel.org>
-Subject: [RESEND PATCH 2/2] arm64: dts: sm8350: fix tlmm base address
-Date:   Tue, 16 Nov 2021 15:50:45 -0800
-Message-Id: <20211116235045.3748572-3-kaperez@linux.microsoft.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211116235045.3748572-1-kaperez@linux.microsoft.com>
-References: <20211116235045.3748572-1-kaperez@linux.microsoft.com>
+        Tue, 16 Nov 2021 18:54:42 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B36C061570;
+        Tue, 16 Nov 2021 15:51:44 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id x5so953425pfr.0;
+        Tue, 16 Nov 2021 15:51:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/a8VkPOBp+sRhshdlMGv/oDCg20jVzLPWjV5XIU6qh0=;
+        b=KfK1z35s2reqrgZuw9I2YR5DGVMmAJQjacu4q2s730DsD+K+mkk3bTKBWODTSTsh9S
+         KKImSmEE/fEPslTeVzPzTXAv3NWJXT332fPqtzCuJMneWCHd8EFMZqoxZEBF58rMPXr1
+         PG8g/Q1bKI4pW1sR/6jpu+w/db4iczyD73JNMlhmOpIMzAys/d66GJ86FXyMZToBf8VC
+         SiGeo/TkYQkcPMq62RE4Bt99H2FoPBh0Un8/bSnmTJKddPIB3RLpfN/B7N4ri590zz7K
+         ur8z6nYqLe+vbTo1lZNk/b+QkXLvRxadzwmHcUsVAbi7ztXeDL8n+nq0TIqy8Y0e5Dgj
+         vkuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/a8VkPOBp+sRhshdlMGv/oDCg20jVzLPWjV5XIU6qh0=;
+        b=SJ+wQomNFNEhzTQri6kENcJg81ebSiQA3jNSJgHydf2eyRgBs6FfOLu5k96ZRLxP8Z
+         tynclnHn7NMXTRxCdJ2wOAQNRfp52hbJA7LwXXLxZk8vRY7WtQjGUCM6pJOfNnAqhaQ8
+         evzy2okDQ0AzLb8eeqbBKhLz6sfsHeG04jj35K/5m+vejeRGIdMsvDYOfgX7FZdb2qnX
+         1ieTv+gvK550sMDRY+a7AQb22Fy46eo6180npw8BxY+lw6NhnD6RK6Ay8OSUYxSz/exn
+         etQnIyxfvGf7TZhLwUXJPQjZwYx1ZzfhjvVNl0IsFd/MxQk1z+1088AYNAH7aX+lsCTe
+         Onmw==
+X-Gm-Message-State: AOAM533nPPvRDmtUm9jNjmTkq6wIeVzu61Ib1Yyu0WLVyzgSiYi9ekUJ
+        yOK3IpGwVhOauCVH3ZaMT1YCADLRlms=
+X-Google-Smtp-Source: ABdhPJyHo9ax2VndO116SXAPqjSqES9eXZgyrgnatGJhOXhl1DOJeWTaVdhxGABayePJ4jBp09H6mw==
+X-Received: by 2002:a63:f95b:: with SMTP id q27mr2238531pgk.202.1637106704042;
+        Tue, 16 Nov 2021 15:51:44 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id g5sm3299599pjt.15.2021.11.16.15.51.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 15:51:43 -0800 (PST)
+Subject: Re: [RFC PATCH v4 net-next 03/23] net: dsa: ocelot: seville: utilize
+ of_mdiobus_register
+To:     Colin Foster <colin.foster@in-advantage.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+References: <20211116062328.1949151-1-colin.foster@in-advantage.com>
+ <20211116062328.1949151-4-colin.foster@in-advantage.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <8dca509f-5dff-bc19-c702-ed03e52a8f86@gmail.com>
+Date:   Tue, 16 Nov 2021 15:51:40 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211116062328.1949151-4-colin.foster@in-advantage.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TLMM controller base address is incorrect and will hang on some platforms.
-Fix by giving the correct address.
+On 11/15/21 10:23 PM, Colin Foster wrote:
+> Switch seville to use of_mdiobus_register(bus, NULL) instead of just
+> mdiobus_register. This code is about to be pulled into a separate module
+> that can optionally define ports by the device_node.
+> 
+> Signed-off-by: Colin Foster <colin.foster@in-advantage.com>
 
-Signed-off-by: Katherine Perez <kaperez@linux.microsoft.com>
----
- arch/arm64/boot/dts/qcom/sm8350.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-index d134280e2939..624d294612d8 100644
---- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-@@ -960,9 +960,9 @@ spmi_bus: spmi@c440000 {
- 			#interrupt-cells = <4>;
- 		};
- 
--		tlmm: pinctrl@f100000 {
-+		tlmm: pinctrl@f000000 {
- 			compatible = "qcom,sm8350-tlmm";
--			reg = <0 0x0f100000 0 0x300000>;
-+			reg = <0 0x0f000000 0 0x300000>;
- 			interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
- 			gpio-controller;
- 			#gpio-cells = <2>;
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.31.1
-
+Florian
