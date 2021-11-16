@@ -2,191 +2,392 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B128452C90
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 122CA452C94
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:21:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231855AbhKPIV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 03:21:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38970 "EHLO
+        id S231840AbhKPIYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 03:24:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231405AbhKPIV2 (ORCPT
+        with ESMTP id S231790AbhKPIYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 03:21:28 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D78FC061570;
-        Tue, 16 Nov 2021 00:18:30 -0800 (PST)
-Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1mmtfe-0006Cp-Tz; Tue, 16 Nov 2021 09:18:26 +0100
-Message-ID: <70a875d0-7162-d149-dbc1-c2f5e1a8e701@leemhuis.info>
-Date:   Tue, 16 Nov 2021 09:18:26 +0100
+        Tue, 16 Nov 2021 03:24:37 -0500
+Received: from lb2-smtp-cloud8.xs4all.net (lb2-smtp-cloud8.xs4all.net [IPv6:2001:888:0:108::2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B40F1C061570;
+        Tue, 16 Nov 2021 00:21:40 -0800 (PST)
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id mtifmi2ToBB1QmtiimWOZW; Tue, 16 Nov 2021 09:21:37 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1637050897; bh=h8P1ZGnaXGSxLcp94e7rii9KK+G5Qsx37NOnajpxVjI=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=pQeAH3ionIaWUxTZlbm3T4v47aaSjfZHncjnC3bZEwIBpkKXjFanEJWc8BZ88wzOK
+         m4TtNkD5uPjICGC1YlgBD8adWIxBlq2YHtzycuTeuoV3FALawb77nkYc8ySyJwTuWB
+         KspLbl5Xw++kCWYvijmcMG/DlCupHL6UK796hezZlb9giV5HUB3xbwJv+wYb8IFEuK
+         rqtn+4OVCIK8m5HkHlbDWQbQbUGqzQcG2mSLp5A1rjxdByogFMp4F79qsTBGUJWRDx
+         GdmtXbvziUBcjpczOwTLBmnTbYLpxp0GmsAkDlP5cBv2I09VMZ7joUfv+GPdUzBUJ0
+         O8DGz1ZnmMTsw==
+Subject: Re: [PATCH v7 00/11] VP9 codec V4L2 control interface
+To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev
+Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Fabio Estevam <festevam@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com
+References: <20210929160439.6601-1-andrzej.p@collabora.com>
+ <9db47ebc-cb95-872d-feb4-d6432a74f2cb@xs4all.nl>
+ <29f27bad-28ae-12ff-eed6-79902bd5b722@collabora.com>
+ <b8f8ee2e-ea98-4700-f4ca-f0af68c9de5c@xs4all.nl>
+ <cdbbe5e6-0811-1276-1f62-fc7ad2628a30@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <4da113ef-7b12-3729-0186-f746901c892a@xs4all.nl>
+Date:   Tue, 16 Nov 2021 09:21:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-BS
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        Johan Hedberg <johan.hedberg@intel.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc:     Orlando Chamberlain <redecorating@protonmail.com>,
-        Daniel Winkler <danielwinkler@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
-        Sonny Sasaka <sonnysasaka@chromium.org>,
-        Aditya Garg <gargaditya08@live.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-References: <4970a940-211b-25d6-edab-21a815313954@protonmail.com>
- <20210930063106.19881-1-redecorating@protonmail.com>
- <20210930141256.19943-1-redecorating@protonmail.com>
- <FA02CDD7-CFEC-4481-9940-BA95D81FD3F3@holtmann.org>
- <275acce4-9eab-9cba-7145-5a75a69ca530@protonmail.com>
- <20211001083412.3078-1-redecorating@protonmail.com>
- <CABBYNZLjSfcG_KqTEbL6NOSvHhA5-b1t_S=3FQP4=GwW21kuzg@mail.gmail.com>
- <972034A8-4B22-4FEE-9B37-C0A7C7ADD60C@live.com> <YYZr14zwHnd52rQ7@kroah.com>
- <829A2DF8-818E-4AF1-84F9-49B5822F9146@live.com> <YYePw07y2DzEPSBR@kroah.com>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-Subject: Re: [PATCHv2] Bluetooth: quirk disabling LE Read Transmit Power
-In-Reply-To: <YYePw07y2DzEPSBR@kroah.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <cdbbe5e6-0811-1276-1f62-fc7ad2628a30@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1637050711;63614f9b;
-X-HE-SMSGID: 1mmtfe-0006Cp-Tz
+X-CMAE-Envelope: MS4xfMe8VEPZkII9bBhLsr0D0B9nXRKypxasJhpfeflKg1LABj3rfOeFWbp5OPQR818cUMbtWFIJOnHHKLFmWNS0wRZia+cYqpwOPeeH0ZzcPyfxNpobf8+p
+ ZxSCdUKgx1ykxS5w7+T+5ZdBjj9wwezEshF0xAtaDvenD+6VDjkpkHe0HFHteYiLVWOR85FmEoD7Mm817TTPS+4y0fiOU9ybK/fKRg2JAcG6Chs5ztQ9rwSh
+ /tO87Xe0HpXuSrzMid0U/g16Mum8SWDB0fodhifB4OTKeQp5waglf/PCsnZ4ehcnbtW3wNx95LXNdBaGnPCdSbWAnMGXFWdiH91t3GiAm8cThbBbiabWX09c
+ n/6cT5IKTErE7bKjGQm9uTZ82i5XqPmHYQWLvp445M7+s/gdy1YwSgsQZZEcwXaBQCYFCCK9eJNDWyg7YRQRRme8OP44r4euK2OGRcyxvsCqIXOo8dZUcCPj
+ 4qlIgc14t/OFkA2Ew24mVMob36XCWJ9MaVx+UQ3T0koc3yiOQqymUcRHF1LbKUxGSLDn4MxJJ5eiwJ2mHGirqgpCTRTGjO4StwZ1fl6ov/YC+aWeP0bT+A6F
+ PGAcCch0e0FLN7GpjapvlugypoNFsW80LBVel9l0OW9tkLuDSSLwfUNN79eOSIH8Zh3kGOv6LQl9L+C6w5lZDZnWriCPcGX7xY5sjVW2nDO5je0tVw8Z10rn
+ JAA+LFB1PyBq3UsG/4WbCMZyboknSWCPMrG9BesPr02nsEBGEEHoTBzQOnMOrbdTwqVUaX+FH+mTrFAiUslt08uGlBRcDq0BroXiIxqzudKTnSCVh/pQE4Nb
+ WLX5Z0Zx0Qwuz/2NX+BjYA2TW3v8lPN4g6zl+juwa6muzjTz/GOUJvp+m641Er5iIyXB+JLRX3C6merCVGfQmmpeNW8fACOo1X9O7546jwkH+LfMM+3SAz5Y
+ I+ExZU043+TQ2eXEOA4V3SYEM28=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, this is your Linux kernel regression tracker speaking. To make this
-easy and quick to read for everyone I for once rely on top-posting:
-
-Bluetooth maintainers, what's the status here? The proposed patch is
-fixing a regression. It's not a recent one (it afaics was introduced in
-v5.11-rc1). Nevertheless it would be good to get this finally resolved.
-But this thread seems inactive for more than a week now. Or was progress
-made, but is only visible somewhere else?
-
-Ciao, Thorsten (carrying his Linux kernel regression tracker hat)
-
-P.S.: As a Linux kernel regression tracker I'm getting a lot of reports
-on my table. I can only look briefly into most of them. Therefore I
-unfortunately will get things wrong or miss something important. I hope
-that's not the case here; if you think it is, don't hesitate to tell me
-about it in a public reply. That's in everyone's interest, as what I
-wrote above might be misleading to everyone reading this, which is
-something I'd like to avoid.
-
-BTW, I have no personal interest in this issue, which is tracked using
-regzbot, my Linux kernel regression tracking bot
-(https://linux-regtracking.leemhuis.info/regzbot/). I'm only posting
-this mail to hopefully get things rolling again and hence don't need to
-be CC on all further activities wrt to this regression. Also feel free
-to ignore the following lines, they are meant for regzbot:
-
-#regzbot poke
-
-On 07.11.21 09:35, Greg KH wrote:
-> On Sat, Nov 06, 2021 at 05:27:27PM +0000, Aditya Garg wrote:
->>> On 06-Nov-2021, at 5:19 PM, Greg KH <gregkh@linuxfoundation.org> wrote:
->>> On Sat, Nov 06, 2021 at 09:41:28AM +0000, Aditya Garg wrote:
->>>>> On 06-Nov-2021, at 3:17 AM, Luiz Augusto von Dentz <luiz.dentz@gmail.com> wrote:
->>>>> On Fri, Oct 1, 2021 at 1:56 AM Orlando Chamberlain
->>>>> <redecorating@protonmail.com> wrote:
->>>>>>
->>>>>> The LE Read Transmit Power command is Advertised on some Broadcom
->>>>>> controlers, but not supported. Using this command breaks Bluetooth
->>>>>> on the MacBookPro16,1 and iMac20,1. Added a quirk disabling LE Read
->>>>>> Transmit Power for these devices, based off their common chip id 150.
->>>>>>
->>>>>> Link: https://lore.kernel.org/r/4970a940-211b-25d6-edab-21a815313954@protonmail.com
->>>>>> Signed-off-by: Orlando Chamberlain <redecorating@protonmail.com>
->>>>>> ---
->>>>>> v1->v2: Clarified quirk description
->>>>>>
->>>>>> drivers/bluetooth/btbcm.c   |  4 ++++
->>>>>> include/net/bluetooth/hci.h | 11 +++++++++++
->>>>>> net/bluetooth/hci_core.c    |  3 ++-
->>>>>> 3 files changed, 17 insertions(+), 1 deletion(-)
->>>>>>
->>>>>> diff --git a/drivers/bluetooth/btbcm.c b/drivers/bluetooth/btbcm.c
->>>>>> index e4182acee488..4ecc50d93107 100644
->>>>>> --- a/drivers/bluetooth/btbcm.c
->>>>>> +++ b/drivers/bluetooth/btbcm.c
->>>>>> @@ -353,6 +353,10 @@ static int btbcm_read_info(struct hci_dev *hdev)
->>>>>>               return PTR_ERR(skb);
->>>>>>
->>>>>>       bt_dev_info(hdev, "BCM: chip id %u", skb->data[1]);
->>>>>> +
->>>>>> +       if (skb->data[1] == 150)
->>>>>> +               set_bit(HCI_QUIRK_BROKEN_READ_TRANSMIT_POWER, &hdev->quirks);
->>>>>> +
->>>>>>       kfree_skb(skb);
->>>>>>
->>>>>>       /* Read Controller Features */
->>>>>> diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
->>>>>> index b80415011dcd..6da9bd6b7259 100644
->>>>>> --- a/include/net/bluetooth/hci.h
->>>>>> +++ b/include/net/bluetooth/hci.h
->>>>>> @@ -246,6 +246,17 @@ enum {
->>>>>>        * HCI after resume.
->>>>>>        */
->>>>>>       HCI_QUIRK_NO_SUSPEND_NOTIFIER,
->>>>>> +
->>>>>> +       /* When this quirk is set, LE Read Transmit Power is disabled.
->>>>>> +        * This is mainly due to the fact that the HCI LE Read Transmit
->>>>>> +        * Power command is advertised, but not supported; these
->>>>>> +        * controllers often reply with unknown command and need a hard
->>>>>> +        * reset.
->>>>>> +        *
->>>>>> +        * This quirk can be set before hci_register_dev is called or
->>>>>> +        * during the hdev->setup vendor callback.
->>>>>> +        */
->>>>>> +       HCI_QUIRK_BROKEN_READ_TRANSMIT_POWER,
->>>>>> };
->>>>>>
->>>>>> /* HCI device flags */
->>>>>> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
->>>>>> index 8a47a3017d61..9a23fe7c8d67 100644
->>>>>> --- a/net/bluetooth/hci_core.c
->>>>>> +++ b/net/bluetooth/hci_core.c
->>>>>> @@ -742,7 +742,8 @@ static int hci_init3_req(struct hci_request *req, unsigned long opt)
->>>>>>                       hci_req_add(req, HCI_OP_LE_READ_ADV_TX_POWER, 0, NULL);
->>>>>>               }
->>>>>>
->>>>>> -               if (hdev->commands[38] & 0x80) {
->>>>>> +               if (hdev->commands[38] & 0x80 &&
->>>>>> +                       !test_bit(HCI_QUIRK_BROKEN_READ_TRANSMIT_POWER, &hdev->quirks)) {
->>>>>>                       /* Read LE Min/Max Tx Power*/
->>>>>>                       hci_req_add(req, HCI_OP_LE_READ_TRANSMIT_POWER,
->>>>>>                                   0, NULL);
->>>>>> --
->>>>>> 2.33.0
->>>>>
->>>>> Nowadays it is possible to treat errors such like this on a per
->>>>> command basis (assuming it is not essential for the init sequence):
->>>>>
->>>>> diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
->>>>> index 979da5179ff4..f244f42cc609 100644
->>>>> --- a/include/net/bluetooth/hci.h
->>>>> +++ b/include/net/bluetooth/hci.h
->>>>> @@ -551,6 +551,7 @@ enum {
->>>>> #define HCI_LK_AUTH_COMBINATION_P256   0x08
->>>>>
->>>>> /* ---- HCI Error Codes ---- */
->>>>> +#define HCI_ERROR_UNKNOWN_CMD          0x01
->>>>> #define HCI_ERROR_UNKNOWN_CONN_ID      0x02
->>>>> #define HCI_ERROR_AUTH_FAILURE         0x05
->>>>> #define HCI_ERROR_PIN_OR_KEY_MISSING   0x06
->>>>> diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
->>>> This diff cannot be applied to stable 5.15. Could you provide a patch capable of being applied to stable.
+On 16/11/2021 09:09, Andrzej Pietrasiewicz wrote:
+> Hi Hans,
+> 
+> W dniu 15.11.2021 o 22:16, Hans Verkuil pisze:
+>> On 15/11/2021 18:14, Andrzej Pietrasiewicz wrote:
+>>> Hi Hans,
 >>>
->>> That is not needed until a patch is in Linus's tree.  Why do you need it
->>> earlier?
+>>> W dniu 15.11.2021 o 16:07, Hans Verkuil pisze:
+>>>> Andrzej,
+>>>>
+>>>> Can you rebase this series on top of the master branch of
+>>>> https://git.linuxtv.org/media_stage.git/ ? Unfortunately this v7 no longer
+>>>> applies. Specifically "rkvdec: Add the VP9 backend" failed in a non-trivial
+>>>> manner.
 >>>
->> Well not an emergency, but the issue of Bluetooth not working on some Apple Macs has been there for a long time. BTW, will this patch be there in Linus’s tree in the coming days?
+>>> This is a branch for you:
+>>>
+>>> https://gitlab.collabora.com/linux/for-upstream/-/tree/vp9-uapi
+>>
+>> I'm getting a bunch of sparse/smatch warnings:
+>>
 > 
-> That is up to the bluetooth maintainers, they have to accept it first.
+> Thanks for finding this, I will re-create the branch and let you know on irc.
+> Some of the below are "false positives, namely:
 > 
-> thanks,
+> drivers/media/platform/omap3isp/omap3isp.h
+> drivers/media/platform/qcom/venus/core.h
+
+Ah, sorry, I though I had filtered those out. Obviously you can ignore those.
+
+Please post a v8. That way the series is archived on lore. And it works better
+with patchwork.
+
+Regards,
+
+	Hans
+
 > 
-> greg k-h
+> which are not touched by the series.
 > 
+> Regards,
 > 
+> Andrzej
+> 
+>> sparse:
+>> rkvdec/rkvdec-vp9.c:190:43: warning: variable 'dec_params' set but not used [-Wunused-but-set-variable]
+>> rkvdec/rkvdec-vp9.c:245:43: warning: variable 'dec_params' set but not used [-Wunused-but-set-variable]
+>> SPARSE:hantro/hantro_postproc.c hantro/hantro_postproc.c:37:35: warning: symbol 'hantro_g1_postproc_regs' was not declared. Should it be static?
+>>
+>> smatch:
+>> rkvdec/rkvdec-vp9.c:190:43: warning: variable 'dec_params' set but not used [-Wunused-but-set-variable]
+>> rkvdec/rkvdec-vp9.c:245:43: warning: variable 'dec_params' set but not used [-Wunused-but-set-variable]
+>> rkvdec/rkvdec-vp9.c: rkvdec/rkvdec-vp9.c:236 init_intra_only_probs() error: buffer overflow 'ptr' 90 <= 91
+>> hantro/hantro_g2_vp9_dec.c: hantro/hantro_g2_vp9_dec.c:670 config_probs() error: memcpy() 'adaptive->inter_mode[i]' too small (4 vs 21)
+>> hantro/hantro_g2_vp9_dec.c: hantro/hantro_g2_vp9_dec.c:670 config_probs() error: memcpy() 'probs->inter_mode[i]' too small (3 vs 21
+>>
+>> Also a bunch of kerneldoc warnings:
+>>
+>> include/media/v4l2-vp9.h:30: warning: Function parameter or member 'joint' not described in 'v4l2_vp9_frame_mv_context'
+>> include/media/v4l2-vp9.h:30: warning: Function parameter or member 'sign' not described in 'v4l2_vp9_frame_mv_context'
+>> include/media/v4l2-vp9.h:30: warning: Function parameter or member 'classes' not described in 'v4l2_vp9_frame_mv_context'
+>> include/media/v4l2-vp9.h:30: warning: Function parameter or member 'class0_bit' not described in 'v4l2_vp9_frame_mv_context'
+>> include/media/v4l2-vp9.h:30: warning: Function parameter or member 'bits' not described in 'v4l2_vp9_frame_mv_context'
+>> include/media/v4l2-vp9.h:30: warning: Function parameter or member 'class0_fr' not described in 'v4l2_vp9_frame_mv_context'
+>> include/media/v4l2-vp9.h:30: warning: Function parameter or member 'fr' not described in 'v4l2_vp9_frame_mv_context'
+>> include/media/v4l2-vp9.h:30: warning: Function parameter or member 'class0_hp' not described in 'v4l2_vp9_frame_mv_context'
+>> include/media/v4l2-vp9.h:30: warning: Function parameter or member 'hp' not described in 'v4l2_vp9_frame_mv_context'
+>> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'tx8' not described in 'v4l2_vp9_frame_context'
+>> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'tx16' not described in 'v4l2_vp9_frame_context'
+>> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'tx32' not described in 'v4l2_vp9_frame_context'
+>> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'coef' not described in 'v4l2_vp9_frame_context'
+>> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'skip' not described in 'v4l2_vp9_frame_context'
+>> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'inter_mode' not described in 'v4l2_vp9_frame_context'
+>> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'interp_filter' not described in 'v4l2_vp9_frame_context'
+>> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'is_inter' not described in 'v4l2_vp9_frame_context'
+>> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'comp_mode' not described in 'v4l2_vp9_frame_context'
+>> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'single_ref' not described in 'v4l2_vp9_frame_context'
+>> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'comp_ref' not described in 'v4l2_vp9_frame_context'
+>> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'y_mode' not described in 'v4l2_vp9_frame_context'
+>> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'uv_mode' not described in 'v4l2_vp9_frame_context'
+>> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'partition' not described in 'v4l2_vp9_frame_context'
+>> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'mv' not described in 'v4l2_vp9_frame_context'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'partition' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'skip' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'intra_inter' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'tx32p' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'tx16p' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'tx8p' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'y_mode' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'uv_mode' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'comp' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'comp_ref' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'single_ref' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'mv_mode' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'filter' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'mv_joint' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'sign' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'classes' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'class0' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'bits' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'class0_fp' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'fp' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'class0_hp' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'hp' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'coeff' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'eob' not described in 'v4l2_vp9_frame_symbol_counts'
+>> include/media/v4l2-vp9.h:166: warning: expecting prototype for v4l2_vp9_adapt_coef_probs(). Prototype was for v4l2_vp9_adapt_noncoef_probs()
+>> instead
+>> drivers/media/platform/omap3isp/omap3isp.h:107: warning: Function parameter or member 'vp_clk_pol' not described in 'isp_ccp2_cfg'
+>> drivers/media/platform/omap3isp/omap3isp.h:107: warning: Function parameter or member 'lanecfg' not described in 'isp_ccp2_cfg'
+>> drivers/media/platform/qcom/venus/core.h:202: warning: Function parameter or member 'sys_err_done' not described in 'venus_core'
+>> drivers/media/platform/qcom/venus/core.h:462: warning: Function parameter or member 'fw_min_cnt' not described in 'venus_inst'
+>> drivers/media/platform/qcom/venus/core.h:462: warning: Function parameter or member 'flags' not described in 'venus_inst'
+>> drivers/media/platform/qcom/venus/core.h:462: warning: Function parameter or member 'dpb_ids' not described in 'venus_inst'
+>> drivers/staging/media/hantro/hantro.h:115: warning: Enum value 'HANTRO_MODE_VP9_DEC' not described in enum 'hantro_codec_mode'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'tile_edge' not described in 'hantro_vp9_dec_hw_ctx'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'segment_map' not described in 'hantro_vp9_dec_hw_ctx'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'misc' not described in 'hantro_vp9_dec_hw_ctx'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'cnts' not described in 'hantro_vp9_dec_hw_ctx'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'probability_tables' not described in
+>> 'hantro_vp9_dec_hw_ctx'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'frame_context' not described in 'hantro_vp9_dec_hw_ctx'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'cur' not described in 'hantro_vp9_dec_hw_ctx'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'last' not described in 'hantro_vp9_dec_hw_ctx'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'bsd_ctrl_offset' not described in 'hantro_vp9_dec_hw_ctx'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'segment_map_size' not described in 'hantro_vp9_dec_hw_ctx'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'ctx_counters_offset' not described in
+>> 'hantro_vp9_dec_hw_ctx'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'tile_info_offset' not described in 'hantro_vp9_dec_hw_ctx'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'tile_r_info' not described in 'hantro_vp9_dec_hw_ctx'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'tile_c_info' not described in 'hantro_vp9_dec_hw_ctx'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'last_tile_r' not described in 'hantro_vp9_dec_hw_ctx'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'last_tile_c' not described in 'hantro_vp9_dec_hw_ctx'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'last_sbs_r' not described in 'hantro_vp9_dec_hw_ctx'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'last_sbs_c' not described in 'hantro_vp9_dec_hw_ctx'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'active_segment' not described in 'hantro_vp9_dec_hw_ctx'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'feature_enabled' not described in 'hantro_vp9_dec_hw_ctx'
+>> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'feature_data' not described in 'hantro_vp9_dec_hw_ctx'
+>>
+>> You can test kerneldoc yourself with: scripts/kernel-doc -none include/media/v4l2-vp9.h
+>>
+>> Regards,
+>>
+>> 	Hans
+>>
+>>>
+>>> Regards,
+>>>
+>>> Andrzej
+>>>
+>>>
+>>>>
+>>>> Regards,
+>>>>
+>>>> 	Hans
+>>>>
+>>>> On 29/09/2021 18:04, Andrzej Pietrasiewicz wrote:
+>>>>> Dear all,
+>>>>>
+>>>>> This patch series adds VP9 codec V4L2 control interface and two drivers
+>>>>> using the new controls. It is a follow-up of previous v6 series [1].
+>>>>>
+>>>>> In this iteration, we've implemented VP9 hardware decoding on two devices:
+>>>>> Rockchip VDEC and Hantro G2, and tested on RK3399, i.MX8MQ and i.MX8MP.
+>>>>> The i.MX8M driver needs proper power domains support, though, which is a
+>>>>> subject of a different effort, but in all 3 cases we were able to run the
+>>>>> drivers.
+>>>>>
+>>>>> GStreamer support is also available, the needed changes have been submitted
+>>>>> by Daniel Almeida [2]. This MR is ready to be merged, and just needs the
+>>>>> VP9 V4L2 controls to be merged and released.
+>>>>>
+>>>>> Both rkvdec and hantro drivers are passing a significant number of VP9 tests
+>>>>> using Fluster[3]. There are still a few tests that are not passing, due to
+>>>>> dynamic frame resize (not yet supported by V4L2) and small size videos
+>>>>> (due to IP block limitations).
+>>>>>
+>>>>> The series adds the VP9 codec V4L2 control API as uAPI, so it aims at being
+>>>>> merged without passing through staging, as agreed[4]. The ABI has been checked
+>>>>> for padding and verified to contain no holes.
+>>>>>
+>>>>> [1] https://patchwork.linuxtv.org/project/linux-media/list/?series=6377
+>>>>> [2] https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/merge_requests/2144
+>>>>> [3] https://github.com/fluendo/fluster
+>>>>> [4] https://lore.kernel.org/linux-media/b8f83c93-67fd-09f5-9314-15746cbfdc61@xs4all.nl/
+>>>>>
+>>>>> The series depends on the YUV tiled format support prepared by Ezequiel:
+>>>>> https://www.spinics.net/lists/linux-media/msg197047.html
+>>>>>
+>>>>> Rebased onto latest media_tree.
+>>>>>
+>>>>> Changes related to v6:
+>>>>> - moved setting tile filter and tile bsd auxiliary buffer addresses so
+>>>>> that they are always set, even if no tiles are used (thanks, Jernej)
+>>>>> - added a comment near the place where the 32-bit DMA mask is applied
+>>>>>     (thanks, Nicolas)
+>>>>> - improved consistency in register names (thanks, Nicolas)
+>>>>>
+>>>>> Changes related to v5:
+>>>>> - improved the doc comments as per Ezequiel's review (thanks, Ezequiel)
+>>>>> - improved pdf output of documentation
+>>>>> - added Benjamin's Reviewed-by (thanks, Benjamin)
+>>>>>
+>>>>> Changes related to v4:
+>>>>> - removed unused enum v4l2_vp9_intra_prediction_mode
+>>>>> - converted remaining enums to defines to follow the convention
+>>>>> - improved the documentation, in particular better documented how to use segmentation
+>>>>> features
+>>>>>
+>>>>> Changes related to v3:
+>>>>>
+>>>>> Apply suggestions from Jernej's review (thanks, Jernej):
+>>>>> - renamed a control and two structs:
+>>>>> 	V4L2_CTRL_TYPE_VP9_COMPRESSED_HDR_PROBS =>
+>>>>> 		V4L2_CTRL_TYPE_VP9_COMPRESSED_HDR
+>>>>> 	v4l2_ctrl_vp9_compressed_hdr_probs =>
+>>>>> 		v4l2_ctrl_vp9_compressed_hdr
+>>>>> 	v4l2_vp9_mv_compressed_hdr_probs => v4l2_vp9_mv_probs
+>>>>> - moved tx_mode to v4l2_ctrl_vp9_compressed_hdr
+>>>>> - fixed enum v4l2_vp9_ref_frame_sign_bias values (which are used to test a bitfield)
+>>>>> - explicitly assigned values to all other vp9 enums
+>>>>>
+>>>>> Apply suggestion from Nicolas's review (thanks, Nicolas):
+>>>>> - explicitly stated that the v4l2_ctrl_vp9_compressed_hdr control is optional
+>>>>> and implemented only by drivers which need it
+>>>>>
+>>>>> Changes related to the RFC v2:
+>>>>>
+>>>>> - added another driver including a postprocessor to de-tile
+>>>>>           codec-specific tiling
+>>>>> - reworked uAPI structs layout to follow VP8 style
+>>>>> - changed validation of loop filter params
+>>>>> - changed validation of segmentation params
+>>>>> - changed validation of VP9 frame params
+>>>>> - removed level lookup array from loop filter struct
+>>>>>           (can be computed by drivers)
+>>>>> - renamed some enum values to match the spec more closely
+>>>>> - V4L2 VP9 library changed the 'eob' member of
+>>>>>           'struct v4l2_vp9_frame_symbol_counts' so that it is an array
+>>>>>           of pointers instead of an array of pointers to arrays
+>>>>>           (IPs such as g2 creatively pass parts of the 'eob' counts in
+>>>>>           the 'coeff' counts)
+>>>>> - factored out several repeated portions of code
+>>>>> - minor nitpicks and cleanups
+>>>>>
+>>>>> Andrzej Pietrasiewicz (6):
+>>>>>     media: uapi: Add VP9 stateless decoder controls
+>>>>>     media: Add VP9 v4l2 library
+>>>>>     media: hantro: Rename registers
+>>>>>     media: hantro: Prepare for other G2 codecs
+>>>>>     media: hantro: Support VP9 on the G2 core
+>>>>>     media: hantro: Support NV12 on the G2 core
+>>>>>
+>>>>> Boris Brezillon (1):
+>>>>>     media: rkvdec: Add the VP9 backend
+>>>>>
+>>>>> Ezequiel Garcia (4):
+>>>>>     hantro: postproc: Fix motion vector space size
+>>>>>     hantro: postproc: Introduce struct hantro_postproc_ops
+>>>>>     hantro: Simplify postprocessor
+>>>>>     hantro: Add quirk for NV12/NV12_4L4 capture format
+>>>>>
+>>>>>    .../userspace-api/media/v4l/biblio.rst        |   10 +
+>>>>>    .../media/v4l/ext-ctrls-codec-stateless.rst   |  573 +++++
+>>>>>    .../media/v4l/pixfmt-compressed.rst           |   15 +
+>>>>>    .../media/v4l/vidioc-g-ext-ctrls.rst          |    8 +
+>>>>>    .../media/v4l/vidioc-queryctrl.rst            |   12 +
+>>>>>    .../media/videodev2.h.rst.exceptions          |    2 +
+>>>>>    drivers/media/v4l2-core/Kconfig               |    4 +
+>>>>>    drivers/media/v4l2-core/Makefile              |    1 +
+>>>>>    drivers/media/v4l2-core/v4l2-ctrls-core.c     |  180 ++
+>>>>>    drivers/media/v4l2-core/v4l2-ctrls-defs.c     |    8 +
+>>>>>    drivers/media/v4l2-core/v4l2-ioctl.c          |    1 +
+>>>>>    drivers/media/v4l2-core/v4l2-vp9.c            | 1850 +++++++++++++++++
+>>>>>    drivers/staging/media/hantro/Kconfig          |    1 +
+>>>>>    drivers/staging/media/hantro/Makefile         |    7 +-
+>>>>>    drivers/staging/media/hantro/hantro.h         |   40 +-
+>>>>>    drivers/staging/media/hantro/hantro_drv.c     |   23 +-
+>>>>>    drivers/staging/media/hantro/hantro_g2.c      |   27 +
+>>>>>    .../staging/media/hantro/hantro_g2_hevc_dec.c |   69 +-
+>>>>>    drivers/staging/media/hantro/hantro_g2_regs.h |  132 +-
+>>>>>    .../staging/media/hantro/hantro_g2_vp9_dec.c  |  980 +++++++++
+>>>>>    drivers/staging/media/hantro/hantro_hw.h      |   83 +-
+>>>>>    .../staging/media/hantro/hantro_postproc.c    |   79 +-
+>>>>>    drivers/staging/media/hantro/hantro_v4l2.c    |   20 +
+>>>>>    drivers/staging/media/hantro/hantro_vp9.c     |  240 +++
+>>>>>    drivers/staging/media/hantro/hantro_vp9.h     |  103 +
+>>>>>    drivers/staging/media/hantro/imx8m_vpu_hw.c   |   38 +-
+>>>>>    .../staging/media/hantro/rockchip_vpu_hw.c    |    7 +-
+>>>>>    .../staging/media/hantro/sama5d4_vdec_hw.c    |    3 +-
+>>>>>    drivers/staging/media/rkvdec/Kconfig          |    1 +
+>>>>>    drivers/staging/media/rkvdec/Makefile         |    2 +-
+>>>>>    drivers/staging/media/rkvdec/rkvdec-vp9.c     | 1078 ++++++++++
+>>>>>    drivers/staging/media/rkvdec/rkvdec.c         |   52 +-
+>>>>>    drivers/staging/media/rkvdec/rkvdec.h         |   12 +-
+>>>>>    include/media/v4l2-ctrls.h                    |    4 +
+>>>>>    include/media/v4l2-vp9.h                      |  182 ++
+>>>>>    include/uapi/linux/v4l2-controls.h            |  284 +++
+>>>>>    include/uapi/linux/videodev2.h                |    6 +
+>>>>>    37 files changed, 6033 insertions(+), 104 deletions(-)
+>>>>>    create mode 100644 drivers/media/v4l2-core/v4l2-vp9.c
+>>>>>    create mode 100644 drivers/staging/media/hantro/hantro_g2.c
+>>>>>    create mode 100644 drivers/staging/media/hantro/hantro_g2_vp9_dec.c
+>>>>>    create mode 100644 drivers/staging/media/hantro/hantro_vp9.c
+>>>>>    create mode 100644 drivers/staging/media/hantro/hantro_vp9.h
+>>>>>    create mode 100644 drivers/staging/media/rkvdec/rkvdec-vp9.c
+>>>>>    create mode 100644 include/media/v4l2-vp9.h
+>>>>>
+>>>>>
+>>>>> base-commit: e4e737bb5c170df6135a127739a9e6148ee3da82
+>>>>>
+>>>>
+>>>
+>>
+> 
+
