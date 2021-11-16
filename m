@@ -2,115 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0BFD453BA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 22:28:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3C51453BA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 22:29:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230451AbhKPVaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 16:30:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36713 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230413AbhKPVas (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 16:30:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637098071;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bG84hpn6W1Ce0UZLXpoqOhyDwS32BUv6DCCBEZ7b4bY=;
-        b=SUOwUDJ8Sh6xg0z0vO+szchmEs0GBLMoILRseCdvkM2FzNkjEW+8KMedvU/7bg/BMpoltr
-        +l7RzHutzPHNv8ejYYrMHxNqvXydNgwj1SVllQGu95fxef7EgbSWcqoCup8DGW5pjl48iG
-        zF9obTfyRcudyfAQ5iy3irxk+Tnkawo=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-482-mpNPWQ_aOFWkTYuWFRuAEQ-1; Tue, 16 Nov 2021 16:27:49 -0500
-X-MC-Unique: mpNPWQ_aOFWkTYuWFRuAEQ-1
-Received: by mail-qv1-f70.google.com with SMTP id ke1-20020a056214300100b003b5a227e98dso606461qvb.14
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 13:27:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bG84hpn6W1Ce0UZLXpoqOhyDwS32BUv6DCCBEZ7b4bY=;
-        b=5kTGnuGD1bV8olQdkoK1hu4SSvll8nKWg7bCO8YI9S7iZQThKPsob5O8UKD5L8zEOi
-         YwkwQD3DINkc+V9m7U+L4eD0SUeg3lhXg7zVDC1tDT17k4+L2NIa+uJTNNQXA6Qb08yW
-         +ZdmAeXDmwOdSSEwCamcrIM1sjV6OS3DLnknjRuS2lA7musPjaRnYDGTjzKtFVDc8JsK
-         ObKL7lCtrDe0Udf9PNqsqH8uzwoMssewThYCNI6E1iJwBtC785NyEgpcCPIglD05BvnA
-         5h2smx7xzT9GznexlB5k6wdkkecHuOEn6TIW2PgfWEgRzcwG1ESn7EkzqNyoTwFbQ2Xu
-         4MUA==
-X-Gm-Message-State: AOAM531XJ1X9AtTdDVPF9C16DkBcKH9rmIv55eyeU27Ehxhynw+apC5c
-        BA1xgN7r5iLEHLU9qNCgMaYKwrjt99t7gLgq4xssYaCOTdAZit7nKY+ozU2AyuOeYtqyfGBVFKy
-        91bugD4+HV69j1BSLRn7tzhCw
-X-Received: by 2002:ac8:5f84:: with SMTP id j4mr11562274qta.271.1637098069420;
-        Tue, 16 Nov 2021 13:27:49 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx0St0o43XIqlBNq/4XHEmss+fFXxHlpXC9ZaRAk6a4tHpGQiJkuUzVvVz/UKpde8JY+mNI6Q==
-X-Received: by 2002:ac8:5f84:: with SMTP id j4mr11562242qta.271.1637098069203;
-        Tue, 16 Nov 2021 13:27:49 -0800 (PST)
-Received: from treble ([2600:1700:6e32:6c00::35])
-        by smtp.gmail.com with ESMTPSA id j22sm5655991qko.68.2021.11.16.13.27.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 13:27:48 -0800 (PST)
-Date:   Tue, 16 Nov 2021 13:27:45 -0800
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        David Laight <David.Laight@aculab.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "dvyukov@google.com" <dvyukov@google.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH 20/22] x86,word-at-a-time: Remove .fixup usage
-Message-ID: <20211115230737.27gqnzwvkaxoi7es@treble>
-References: <YYov8SVHk/ZpFsUn@hirez.programming.kicks-ass.net>
- <CAKwvOdn8yrRopXyfd299=SwZS9TAPfPj4apYgdCnzPb20knhbg@mail.gmail.com>
- <20211109210736.GV174703@worktop.programming.kicks-ass.net>
- <f6dbe42651e84278b44e44ed7d0ed74f@AcuMS.aculab.com>
- <YYuogZ+2Dnjyj1ge@hirez.programming.kicks-ass.net>
- <2734a37ebed2432291345aaa8d9fd47e@AcuMS.aculab.com>
- <20211112015003.pefl656m3zmir6ov@treble>
- <YY408BW0phe9I1/o@hirez.programming.kicks-ass.net>
- <20211113053500.jcnx5airbn7g763a@treble>
- <alpine.LSU.2.21.2111151353550.29981@pobox.suse.cz>
+        id S230492AbhKPVbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 16:31:36 -0500
+Received: from mout.gmx.net ([212.227.17.20]:56845 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229556AbhKPVbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 16:31:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1637098110;
+        bh=JjihNC2AuMle56rp/XZwqMFFyfo8WjXDke4I/IpBhek=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=f+7IyAwqkBrue5PnhRySoRtMi567QBNukMC7C1UebYBMsoU95zkB4nclrrGy8HZO0
+         Sxk6LxfvORM58mYSgzKOtYMModRSLuD2rwE0XGI7EEjZAQmYJmRK4Q1k6DcQHph4XR
+         fh9a4HAS1FkHy8h4DhyLbmVmvmP6vvlV4ZYSeEUY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.fritz.box ([62.216.209.243]) by mail.gmx.net
+ (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1MnJlc-1mLhnN49dk-00jMJU; Tue, 16 Nov 2021 22:28:30 +0100
+From:   Peter Seiderer <ps.report@gmx.net>
+To:     linux-wireless@vger.kernel.org
+Cc:     Johannes Berg <johannes@sipsolutions.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Felix Fietkau <nbd@nbd.name>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [RFC v2] mac80211: minstrel_ht: do not set RTS/CTS flag for fallback rates
+Date:   Tue, 16 Nov 2021 22:28:28 +0100
+Message-Id: <20211116212828.27613-1-ps.report@gmx.net>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.21.2111151353550.29981@pobox.suse.cz>
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:i0D7gr7L/ZCMLUuc1pnVQU1UzGNyCFGILH/EzO2yW/WcxBLuIaT
+ 2lPH/XkCH28ZPBg4U476PBfzrcqqOcH8iFvH15KRTtNwM+EF0eZVYlYIDGfOO4df8Hk/NEK
+ 6OkqaIP4o59tIlYD61SK1/QSRLgIZo5EuY9SLSBAhOwg1Cxs4R/2L8rzoq6Ti7e1Q3Mhn9s
+ Oe7e743WZmFK5/NKBquBQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:vfR6jKaB1wQ=:EZxKxdYDzgle0aw8IefyA7
+ iLYQK0VPBaz7ECtaTRipoJ63ecxY1wPjD32uYl6mEsK4EvRN7iVE4F0u/JLqK4VUr+6VXa2hL
+ Bu5ql38/LjFPpj4ivg22SjmmKONYViNoHLKMfNaT3O6oMrqarMv2PvXpUthQpTOno8yheWKgp
+ CHlZ/mfEtdUBHpzdR58C45XwprZRf4+sSF3mV+kM8/TCXcDFb5cqWnlEVnKDuqmli7Jp2Skl6
+ aa1pmqa+gZsoujubqvbBlswTUJykWToSgLU7G0zvhaA8QogsZmkbDw3cuFbwRmZUmWz4U4l/Y
+ v7ltsUPmM6hOhUELtKkz+Xkpv0pNwi4xsiCNLF1+yS66Kd36uH6amyUlJk8HOGuj5fO6TYqMQ
+ CWVrfgCu/h2113x9mztwWn90iQT+6muLotIkF39w0q4A53C7PuvigOS0WoUvCTYWM63WbidQG
+ 9hbu4u9if92Y0bP7qChjS7q8E8JC3jKpZWXR0TenMnBkqUJBWCp/dUcAL+pdR4UGNG3Mhy3bL
+ SIO/wnOUT3tqq3s1IjRBOy8SqDiCwNQu9YMCxYKfA2W34FSgQcGZA3Svr0NxZC0IO5Kd8u525
+ Vg6YZCzbqdYeVX3VdwT7goT3x4ghLhXhcxw4CwFiTakNIobOOIn6Ausqx2ow0BI8nOsv7JxeT
+ Q1fH9Zivd+ZykiOm6+W/y1tkzh2gIx0qVmkK7Wu1pewYKPtw4um2jgWdTnn4AzsLjFqs2JaTa
+ pg8nqv1TrMOX9cMC69n4hbUeMbVim1V8bvr62agCRculPkJeAFdVIhknVL2FbFiMBVzZbghdH
+ pHCFID5g697gQAtwVZffVGLggYNaQB64r3tTqJpC91eB5lwafTySKNSjURqtmh2gOU68cOtqd
+ uyfLy5rxjbFNwJNvIys/tCjFGQUTFsYXq4VA5yFAVzIh6Dn4sOyKv1l8LPWarPDcG6yQPL+Id
+ n8sm0vTc54iXMaalAujnIS3aH+IuoRD/zANLBqzeA0tRgQ8Q01EQOdrWNpGhtrlQcu0QO1De3
+ a4DB3e+FkFQoQ/SvWApdx71H6GmCKYtLQEhQDKzOney2ZQblw3s40zNGx/1tXG9jkHVBCunzX
+ ueEOki3YG0lu5A=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 01:59:36PM +0100, Miroslav Benes wrote:
-> On Fri, 12 Nov 2021, Josh Poimboeuf wrote:
-> 
-> > If the child schedules out, and then the parent gets patched, things can
-> > go off-script if the child later jumps back to the unpatched version of
-> > the parent, and then for example the old parent tries to call another
-> > patched function with a since-changed ABI.
-> 
-> ...
->  
-> > I don't know about other patch creation tooling, but I'd imagine they
-> > also need to know about .cold functions, unless they have that
-> > optimization disabled.  Because the func and its .cold counterpart
-> > always need to be patched together.
-> 
-> We, at SUSE, solve the issue differently... the new patched parent would 
-> call that another patched function with a changed ABI statically in a live 
-> patch. So in that example, .cold child would jump back to the unpatched 
-> parent which would then call, also, the unpatched function.
-
-So if I understand correctly, if a function's ABI changes then you don't
-patch it directly, but only patch its callers to call the replacement?
-
-Is there a reason for that?
-
--- 
-Josh
-
+RGVzcGl0ZSB0aGUgJ1JUUyB0aHI6b2ZmJyBzZXR0aW5nIGEgd2lyZXNoYXJrIHRyYWNlIG9mIElC
+U1MKdHJhZmZpYyB3aXRoIEhUNDAgbW9kZSBlbmFibGVkIGJldHdlZW4gdHdvIGF0aDlrIGNhcmRz
+IHJldmVhbGVkCnNvbWUgUlRTL0NUUyB0cmFmZmljLgoKRGVidWcgYW5kIGNvZGUgYW5hbHlzaXMg
+c2hvd2VkIHRoYXQgbW9zdCBwbGFjZXMgc2V0dGluZwpJRUVFODAyMTFfVFhfUkNfVVNFX1JUU19D
+VFMgcmVzcGVjdCB0aGUgUlRTIHN0cmF0ZWd5IGJ5CmV2YWx1YXRpbmcgcnRzX3RocmVzaG9sZCwg
+ZS5nLiBuZXQvbWFjODAyMTEvdHguYzoKCiA2OTggICAgICAgICAvKiBzZXQgdXAgUlRTIHByb3Rl
+Y3Rpb24gaWYgZGVzaXJlZCAqLwogNjk5ICAgICAgICAgaWYgKGxlbiA+IHR4LT5sb2NhbC0+aHcu
+d2lwaHktPnJ0c190aHJlc2hvbGQpIHsKIDcwMCAgICAgICAgICAgICAgICAgdHhyYy5ydHMgPSB0
+cnVlOwogNzAxICAgICAgICAgfQogNzAyCiA3MDMgICAgICAgICBpbmZvLT5jb250cm9sLnVzZV9y
+dHMgPSB0eHJjLnJ0czsKCm9yIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGg5ay94bWl0LmMK
+CjEyMzggICAgICAgICAgICAgICAgIC8qCjEyMzkgICAgICAgICAgICAgICAgICAqIEhhbmRsZSBS
+VFMgdGhyZXNob2xkIGZvciB1bmFnZ3JlZ2F0ZWQgSFQgZnJhbWVzLgoxMjQwICAgICAgICAgICAg
+ICAgICAgKi8KMTI0MSAgICAgICAgICAgICAgICAgaWYgKGJmX2lzYW1wZHUoYmYpICYmICFiZl9p
+c2FnZ3IoYmYpICYmCjEyNDIgICAgICAgICAgICAgICAgICAgICAocmF0ZXNbaV0uZmxhZ3MgJiBJ
+RUVFODAyMTFfVFhfUkNfTUNTKSAmJgoxMjQzICAgICAgICAgICAgICAgICAgICAgdW5saWtlbHko
+cnRzX3RocmVzaCAhPSAodTMyKSAtMSkpIHsKMTI0NCAgICAgICAgICAgICAgICAgICAgICAgICBp
+ZiAoIXJ0c190aHJlc2ggfHwgKGxlbiA+IHJ0c190aHJlc2gpKQoxMjQ1ICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgcnRzID0gdHJ1ZTsKMTI0NiAgICAgICAgICAgICAgICAgfQoKVGhl
+IG9ubHkgcGxhY2Ugc2V0dGluZyBJRUVFODAyMTFfVFhfUkNfVVNFX1JUU19DVFMgdW5jb25kaXRp
+b25hbGx5CndhcyBmb3VuZCBpbiBuZXQvbWFjODAyMTEvcmM4MDIxMV9taW5zdHJlbF9odC5jLgoK
+QXMgdGhlIHVzZV9ydHMgdmFsdWUgaXMgb25seSBjYWxjdWxhdGVkIGFmdGVyIGhpdHRpbmcgdGhl
+IG1pbnN0cmVsX2h0IGNvZGUKcHJlZmVycmUgdG8gbm90IHNldCBJRUVFODAyMTFfVFhfUkNfVVNF
+X1JUU19DVFMgKGFuZCBvdmVycnVsaW5nIHRoZQpSVFMgdGhyZXNob2xkIHNldHRpbmcpIGZvciB0
+aGUgZmFsbGJhY2sgcmF0ZXMgY2FzZS4KClNpZ25lZC1vZmYtYnk6IFBldGVyIFNlaWRlcmVyIDxw
+cy5yZXBvcnRAZ214Lm5ldD4KLS0tCkNoYW5nZXMgdjEgLT4gdjI6CiAgLSBjaGFuZ2UgZnJvbSAn
+cmVzcGVjdCBSVFMgdGhyZXNob2xkIHNldHRpbmcnIHRvICdkbyBub3Qgc2V0IFJUUy9DVFMKICAg
+IGZsYWcgZm9yIGZhbGxiYWNrIHJhdGVzJyAoc2VlIGNvbW1pdCBtZXNzYWdlIGZvciByZWFzb25p
+bmcpCi0tLQogbmV0L21hYzgwMjExL3JjODAyMTFfbWluc3RyZWxfaHQuYyB8IDYgKystLS0tCiAx
+IGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdp
+dCBhL25ldC9tYWM4MDIxMS9yYzgwMjExX21pbnN0cmVsX2h0LmMgYi9uZXQvbWFjODAyMTEvcmM4
+MDIxMV9taW5zdHJlbF9odC5jCmluZGV4IDcyYjQ0ZDRjNDJkMC4uZjE1MWFjYmU3YmY1IDEwMDY0
+NAotLS0gYS9uZXQvbWFjODAyMTEvcmM4MDIxMV9taW5zdHJlbF9odC5jCisrKyBiL25ldC9tYWM4
+MDIxMS9yYzgwMjExX21pbnN0cmVsX2h0LmMKQEAgLTEzNTUsMTEgKzEzNTUsOSBAQCBtaW5zdHJl
+bF9odF9zZXRfcmF0ZShzdHJ1Y3QgbWluc3RyZWxfcHJpdiAqbXAsIHN0cnVjdCBtaW5zdHJlbF9o
+dF9zdGEgKm1pLAogCiAJLyogZW5hYmxlIFJUUy9DVFMgaWYgbmVlZGVkOgogCSAqICAtIGlmIHN0
+YXRpb24gaXMgaW4gZHluYW1pYyBTTVBTIChhbmQgc3RyZWFtcyA+IDEpCi0JICogIC0gZm9yIGZh
+bGxiYWNrIHJhdGVzLCB0byBpbmNyZWFzZSBjaGFuY2VzIG9mIGdldHRpbmcgdGhyb3VnaAogCSAq
+LwotCWlmIChvZmZzZXQgPiAwIHx8Ci0JICAgIChtaS0+c3RhLT5zbXBzX21vZGUgPT0gSUVFRTgw
+MjExX1NNUFNfRFlOQU1JQyAmJgotCSAgICAgZ3JvdXAtPnN0cmVhbXMgPiAxKSkgeworCWlmICht
+aS0+c3RhLT5zbXBzX21vZGUgPT0gSUVFRTgwMjExX1NNUFNfRFlOQU1JQyAmJgorCSAgICBncm91
+cC0+c3RyZWFtcyA+IDEpIHsKIAkJcmF0ZXRibC0+cmF0ZVtvZmZzZXRdLmNvdW50ID0gcmF0ZXRi
+bC0+cmF0ZVtvZmZzZXRdLmNvdW50X3J0czsKIAkJZmxhZ3MgfD0gSUVFRTgwMjExX1RYX1JDX1VT
+RV9SVFNfQ1RTOwogCX0KLS0gCjIuMzMuMQoK
