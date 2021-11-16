@@ -2,147 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1134530F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:39:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E405C4530FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235343AbhKPLku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 06:40:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56144 "EHLO
+        id S235420AbhKPLlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:41:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235341AbhKPLj6 (ORCPT
+        with ESMTP id S235412AbhKPLkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 06:39:58 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CFCEC06122C;
-        Tue, 16 Nov 2021 03:35:39 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id e11so42494452ljo.13;
-        Tue, 16 Nov 2021 03:35:39 -0800 (PST)
+        Tue, 16 Nov 2021 06:40:47 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 980E2C061229;
+        Tue, 16 Nov 2021 03:36:40 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id c71-20020a1c9a4a000000b0032cdcc8cbafso2127069wme.3;
+        Tue, 16 Nov 2021 03:36:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nuAKFfZrhphSU5MOec8wBgqrQsEuj7SXWSyVWKXSMUk=;
-        b=VF6ymiIgQHloa5CW6ayQFt0EfOvH0Fr+a++yaQgmdN5j78r0UBHl5G6K+Qe5/2hvrT
-         +XqjJ3Gx0R/8IwdnssTvkz+lbSyzqwobX5VtvZo6zpvXqlzRjqFP0CYbfpSzS41nrQgX
-         MGifl6vuGuSnUC6INWn0rXa0MS2OO2dF8Pa1AXvTzy6szOGc4GmBMulcQ+OzyCGRz1Sf
-         K/EccARbvlqKELQ8xWb2J1ZNlkHnCFPEGJxZGSHXghvz8YCjeDMoc85J4ttSuWINKDwv
-         6/SUMWhgYwOenAp/Z+KbMBIR6lNVyeAabPN9QqttszfZZI78ehNbeBHZ2Q1TSYsToEao
-         Y8dw==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=LTEOIY/eUybXZeS3eIxrCfmEcoic7/sGgtFEUDGaJhE=;
+        b=TX706o8lUSRxnx83yKZ6yV71gIapSpXePBuPaeHWnam0Id4igbdcZPmccfGZfhpZ0C
+         CccmK8bLuDsGAxlXHkRNFn12LSwgEBR4ei9IB42HhhNl6Etrm0gm/EcaEiZrU4oREu5F
+         Fi7WVt8/7c64zE2QwZKIKrWjTH098pWekxFwWEI2G1LJPFOT/oADK11W/XWFAEAXBewH
+         lLplvb0H0c12nWMR2V5xGSmP+6yGY4CegPi4OU9tJdAnFWb1Gcn9xEkAo5QUnKm0fatw
+         OXOyKCzOUuLkyoZVCfdqWzvGVsfqAHOkryQVcWJEIv0yUeDMeIfCZ+Tt3VLz9jhV5Rma
+         FJ9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nuAKFfZrhphSU5MOec8wBgqrQsEuj7SXWSyVWKXSMUk=;
-        b=wVKCxsTwmLYCnPFgkoecVL9ZXB0uEHW25fRW8ryPvnwP8HMC2/ZGCXZYbPHTXpwL5q
-         bCV7hGv35a9TdSVjIIaMvAZnzqbllKy+rfnyA7kkj0HHHClIGT8WW8k4ugRtTxtrXye4
-         emPUmrUh8ZjhC2Q5r1e9OLwcKBQ8LowkxbsHp9/HslevD+rxj8PEYx/+GaQ+NHRPAx9y
-         EwyvSL2GRszqMIgOA/wehFY5cJONPGhJFOrBLPQN1lGHaME1VELlr6/GWVu2W0GGUZrU
-         k5NPQnu/cq9KziLSVqZ8Ge2BUGG+w5z8Y1okNqKjkKR+zsbspFTCg2CBZIzjqa5eTKtY
-         OfgQ==
-X-Gm-Message-State: AOAM532u3m6OupHfTf0fELJULMKS7y2q4BzUQ08+vcPWpbNXkrJNlIMl
-        3n7rDIqt7usUHDCZQ6rCRDk=
-X-Google-Smtp-Source: ABdhPJzTXaBqwrCJlIK25CaD0Lpgt6kwiUFA/WLwVWR1bY9X4oYZOABam3vZ8dMIpXjU+EZkyUvzBA==
-X-Received: by 2002:a2e:a22a:: with SMTP id i10mr6485691ljm.16.1637062537846;
-        Tue, 16 Nov 2021 03:35:37 -0800 (PST)
-Received: from mobilestation ([95.79.188.236])
-        by smtp.gmail.com with ESMTPSA id a29sm393498lfi.302.2021.11.16.03.35.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 03:35:37 -0800 (PST)
-Date:   Tue, 16 Nov 2021 14:35:35 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Nandhini Srikandan <nandhini.srikandan@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andy Shevchenko <andy@kernel.org>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/7] spi: dw: Cleanup macros/funcs naming and add
- IP-core version support
-Message-ID: <20211116113535.fe26cna3mkl6er5m@mobilestation>
-References: <20211115181917.7521-1-Sergey.Semin@baikalelectronics.ru>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=LTEOIY/eUybXZeS3eIxrCfmEcoic7/sGgtFEUDGaJhE=;
+        b=fevG8kj0mwFoofG1LkEW17aDJg9mWL9E1kpl26rjUF7pIyXXDMHo1d8Y/DSsKI3dxj
+         fJlK5ujRVOGSFlujlNqf4I8sb+4D+sZrHxvHb60NFnqrce4DpWvYpOwLvqME9VelDnfW
+         sgIJDuin+Odad46Qtk0GxKfYlOZzSlyRLO21I56mVKxY3CvjaGbPU2/QZBNICI/XuVf+
+         691Ec7Xejlln6hPqLbe1Ueky+3kDG8SJxkzb+b1AExBL+MtRVK5Fzd/t5g4mKnfpyf9N
+         9xdB2t+3P54Pl58Zy9H1qFVDlNpE+obdn1L4vNOtsh8OU6s1XVi0qyCiq03x/mTXrivP
+         y2ew==
+X-Gm-Message-State: AOAM531gkEhn5IwbZtfwsezaClfSq8WH88ZjQQ+oRyLbo+fUHiQ1wapH
+        Wl1z63zT+JMVS0M/REQwABIPzWuqTO6Sj3NOiGxFSueLz48=
+X-Google-Smtp-Source: ABdhPJzWaXUihz1qRzdj5NZSXo8+WJKVajZuoybvlc540cny3ejqfzkPDvfcpA1jdVeu2+/PHrIjDB+HgptCkgqd//4=
+X-Received: by 2002:a05:600c:2246:: with SMTP id a6mr67667259wmm.5.1637062599013;
+ Tue, 16 Nov 2021 03:36:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115181917.7521-1-Sergey.Semin@baikalelectronics.ru>
+From:   Sandy Harris <sandyinchina@gmail.com>
+Date:   Tue, 16 Nov 2021 19:36:27 +0800
+Message-ID: <CACXcFm=02=y=+0m3h_q4X1Jtf--7Ou=tmvVMKjEC46tFGj=V4A@mail.gmail.com>
+Subject: [PATCH 6/8] Replace memset() with memzero_explicit()
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Mark,
+Replace memset(address,0,bytes) which may be optimised
+away with memzero_explicit(address,bytes) which resists
+such optimisation
 
-I think Andy is done with reviewing this patchset. If you are ok with
-what is introduced here please consider merging the series in.
+---
+ crypto/sha3_generic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--Sergey
+diff --git a/crypto/sha3_generic.c b/crypto/sha3_generic.c
+index 3e4069935b53..cfc10dd62e02 100644
+--- a/crypto/sha3_generic.c
++++ b/crypto/sha3_generic.c
+@@ -232,7 +232,7 @@ int crypto_sha3_final(struct shash_desc *desc, u8 *out)
+     if (digest_size & 4)
+         put_unaligned_le32(sctx->st[i], (__le32 *)digest);
 
-On Mon, Nov 15, 2021 at 09:19:10PM +0300, Serge Semin wrote:
-> I was going to submit a cleanup patchset for the DW SSI driver for a
-> long time, but due to lack of free time couldn't make it so far.
-> Nandhini's series [1] made me to proceed with this task so mate would
-> finally have his patchset accepted and merged into the mainline kernel.
-> 
-> There are four cleanup patches here and three feature patches. In the
-> framework of the former patches we convert the DW SPI driver to using
-> module namespaces and provide a better code organization. In particular
-> the second part concerns the methods and macros naming unification (using
-> a unified prefixes of the code object names) and the CSR fields macro
-> implementation using the bitfield helpers available in the kernel. The
-> later patches introduce the DW SSI IP-core versions interface so it
-> could be used for a version-specific features implementation. Nandhini
-> will be mostly interested in the later patches in the framework of his
-> series [1].
-> 
-> Nandhini, could you please test the patchset out on your DWC SSI hardware?
-> After it's merged into the spi/for-next branch of the Mark' repository you
-> will be able to rebase your series on top of it and use the last IP-core
-> version interface for your benefit.
-> 
-> Andy, I have added your tag to all the patches except the last one since
-> it's new (though suggested by you).
-> 
-> [1] https://lore.kernel.org/linux-spi/20211111065201.10249-4-nandhini.srikandan@intel.com
-> 
-> Link: https://lore.kernel.org/linux-spi/20211112204927.8830-1-Sergey.Semin@baikalelectronics.ru
-> Changelog v2:
-> - Replace "assi" suffixes with "pssi" in the spi-dw-mmio.c methods.
->   (Thanks Andy for noticing this pity mistake)
-> - Add new patches:
->   [PATCH v2 6/6] spi: dw: Replace DWC_HSSI capability with IP-core version checker
->   [PATCH v2 1/6] spi: dw: Add symbol namespaces for the core and DMA modules
-> - Replace the ASCII-to-integer conversion with a unified IP-core versioning
->   interface (Suggested by Andy).
-> 
-> Link: https://lore.kernel.org/linux-spi/20211114223026.13359-1-Sergey.Semin@baikalelectronics.ru
-> Changelog v3:
-> - Discard the symbols importing from the spi-dw-dma object since it's
->   linked into the spi-dw-core module anyway thus having the same symbols
->   namespace.
-> - Move the DW_SPI_CAP_DFS32 capability flag position fix to a separate
->   patch.
-> 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Cc: Andy Shevchenko <andy@kernel.org>
-> Cc: linux-spi@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> 
-> Serge Semin (7):
->   spi: dw: Add a symbols namespace for the core module
->   spi: dw: Discard redundant DW SSI Frame Formats enumeration
->   spi: dw: Put the driver entities naming in order
->   spi: dw: Convert to using the Bitfield access macros
->   spi: dw: Introduce Synopsys IP-core versions interface
->   spi: dw: Replace DWC_HSSI capability with IP-core version checker
->   spi: dw: Define the capabilities in a continuous bit-flags set
-> 
->  drivers/spi/spi-dw-bt1.c  |   9 +-
->  drivers/spi/spi-dw-core.c | 175 ++++++++++++++++++++----------------
->  drivers/spi/spi-dw-dma.c  |  55 ++++++------
->  drivers/spi/spi-dw-mmio.c |  22 ++---
->  drivers/spi/spi-dw-pci.c  |  60 ++++++-------
->  drivers/spi/spi-dw.h      | 182 ++++++++++++++++++++------------------
->  6 files changed, 271 insertions(+), 232 deletions(-)
-> 
-> -- 
-> 2.33.0
-> 
+-    memset(sctx, 0, sizeof(*sctx));
++    memzero_explicit(sctx, sizeof(*sctx));
+     return 0;
+ }
+ EXPORT_SYMBOL(crypto_sha3_final);
+-- 
+2.25.1
