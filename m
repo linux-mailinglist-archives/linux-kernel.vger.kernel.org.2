@@ -2,106 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A23453792
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:34:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1EF453796
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:34:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233406AbhKPQfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 11:35:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40560 "EHLO
+        id S233889AbhKPQgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 11:36:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233591AbhKPQfW (ORCPT
+        with ESMTP id S233804AbhKPQgw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:35:22 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6658EC061766;
-        Tue, 16 Nov 2021 08:32:25 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so3381158pjb.4;
-        Tue, 16 Nov 2021 08:32:25 -0800 (PST)
+        Tue, 16 Nov 2021 11:36:52 -0500
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BFDC061746;
+        Tue, 16 Nov 2021 08:33:55 -0800 (PST)
+Received: by mail-oi1-x236.google.com with SMTP id t23so12342425oiw.3;
+        Tue, 16 Nov 2021 08:33:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4Eigl8CTV30vfs4Rr0oPOqqDh9MUrAqo4TKdoVAZUF0=;
-        b=YzKQzDcU9DInxjehS8CG8qaPQDIELyJFrFWG+NmFmq88NTuQnIaczkwz+eL0BdDdNC
-         aCoAWv0b21le7llPc8SzxMNUkyRVQo1F8BmPStfxzaLq978T2YE2yMesTktilO8wQfkL
-         W0HdFJi5ct/18rs/7AWvE85i+vG2qAuM/ubILfvIO30oYbivoT4z4OVmXknefMQwKybE
-         VQJtEdsJhuIg5Xt0dKLlswcZ4sOxm/quMYiHSBgl1gQdDeo8zK4ITyzNPUujFgacYKp4
-         iTC0EXQi33Mu6Vyjr+rQK5rD5/1WW6Q/ed+B1rTRYuIdbgJke4kd9r+j/1uGbLCFD1bZ
-         82Sw==
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LlxygBrGDQWQgkQKbo6h1xP90fhPlZPtnoixKFIvswQ=;
+        b=U8ynJPhYmZw4y3AgDjF9X0Ro+obiOWxglyAJvQg7el3E0ruoO48xC/osRtFqclOzUB
+         MqZ5kQD65fNb7DnxE8JggTGx2VbBdktyKmjpK3sFYNnMQh/v3h29IBdO97fadhIgtUrq
+         m/q+M2JvTyMjU5/5b/O5lzGj7dS28mDV7I1AELbgsvepIsD7NPkUk8Oh3q57jA3KvoOQ
+         B6flAySP81AWiXv8J6tlAEB5B3TyQiatTPGKiiQSDk4a3ame7lUMU9t5UiUm5XucB0kH
+         oYkS+GKoffdvD/dN2NaNsQCJFo99WdldgMKFZ9N6IwgxExKzmRFmuhXcw4tz0oqXgMQe
+         yBnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=4Eigl8CTV30vfs4Rr0oPOqqDh9MUrAqo4TKdoVAZUF0=;
-        b=ZgXI5ueaqepiUtapg4MQ4zTM3iuoqaS11bF2Zjm/ES9nMyFB8j9leDGQog1F81B11d
-         RcpvH2qghrLTbA4b7dTiRw1z+ao6nSM1KJW28tYkuE2yjpKFV77ZrbV7D5e6IdPjje9t
-         whk6Bail2t2e9vhicBdR8rLIBBP3p7FHQyyKJuq9oqMuz8Igebbw9+2QZdBq9uZVyvTx
-         6hVxJSoQ/x38eWmfLeDDv85u8qyyGS1v3YUvtH5T4Eq9G0ljF68UqtkniFfTMwmPdVJA
-         W7EhY85DQcF9qnuBQxI2NQDTO7LImyFLRqJEFPNbNT3XnZ2b1Y88RPasAbVm7SSgSM6Z
-         1bJQ==
-X-Gm-Message-State: AOAM5338ARgZXQ+wnTL6GRE8Hpq4KDRdu5dLV8rgRpfGvMA+FNgsy+oS
-        pHxe5YZIcbRcyFJE7O/pl1g=
-X-Google-Smtp-Source: ABdhPJwx52GLHFwv+SV0f1RqF7IJR455BfEa3vKehcsUFExKQqlvwJt7iApJ/AZnpYGD+FUqVIquFw==
-X-Received: by 2002:a17:90b:4d09:: with SMTP id mw9mr354976pjb.238.1637080344757;
-        Tue, 16 Nov 2021 08:32:24 -0800 (PST)
-Received: from localhost.localdomain ([94.177.118.102])
-        by smtp.gmail.com with ESMTPSA id x17sm18424345pfa.209.2021.11.16.08.32.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 08:32:24 -0800 (PST)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Antti Palosaari <crope@iki.fi>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: msi2500: fix UAF in the msi2500_disconnect
-Date:   Wed, 17 Nov 2021 00:32:07 +0800
-Message-Id: <20211116163208.75879-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=LlxygBrGDQWQgkQKbo6h1xP90fhPlZPtnoixKFIvswQ=;
+        b=PSmhtVow04/ZUS8saFAXmvatfUoEizzHEOs3/mVffOsHQRNdZCpR3CQ7CMdsnUkLdN
+         RjW2SZ22fyiyFcPXp+wcy+s/UdjexjDFhWk3MrH+Zy7saDtQxRci5Ts3P2Y8ISliqroI
+         T1Z1QcABef9CVL2D6gIwhQvl29aPihkPw2Ak6+MfnUa8hsBgR7lIJ3iqbQHuBLpQRgBr
+         oRc0bD1I6qe0pjTcEiyKcYsd5687B+JpP2efOttH07kvcezC978wQPd9vCo9bZyNXd3N
+         FXf2JqdvxW8LUHgAw9TH+Jd0+sa35mRqsfo0yEmNztxpAdFPh0jwKS4oYYnNrv6uv/SP
+         a4Vw==
+X-Gm-Message-State: AOAM531SmnLNm7U9Ovq2reYCkNE60ZuOFBNMgTjpvUS/j6epDODLDirV
+        sWNhkfpOdARVWXO1JIa05o0=
+X-Google-Smtp-Source: ABdhPJyeXYp7WX+skGLcooZeHeigxd0zf6FS/5WhEKsAlyLurKL+PWXivzNtvn3iVP6E9K/1bCMLUQ==
+X-Received: by 2002:aca:1204:: with SMTP id 4mr50102134ois.136.1637080434814;
+        Tue, 16 Nov 2021 08:33:54 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id q9sm3603638oti.32.2021.11.16.08.33.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 08:33:54 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] hwmon: (tmp401) Fix clang -Wimplicit-fallthrough in
+ tmp401_is_visible()
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+References: <20211116154438.1383290-1-nathan@kernel.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <34038273-3d00-a8e0-d6dc-4317fe56c0d1@roeck-us.net>
+Date:   Tue, 16 Nov 2021 08:33:52 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211116154438.1383290-1-nathan@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In msi2500_probe, it invokes spi_alloc_master to allocate master
-controller and spi_register_master to register master controller.
-Then in msi2500_disconnect, it calls spi_unregister_master to unregister
-the master controller. And in spi_unregister_master, it calls put_device
-to decrease the refcount and the device object will be freed then. As a
-result, the dereference of dev->lock will cause a use-after-free bug.
+On 11/16/21 7:44 AM, Nathan Chancellor wrote:
+> Clang warns:
+> 
+> drivers/hwmon/tmp401.c:526:2: error: unannotated fall-through between switch labels [-Werror,-Wimplicit-fallthrough]
+>          default:
+>          ^
+> drivers/hwmon/tmp401.c:526:2: note: insert 'break;' to avoid fall-through
+>          default:
+>          ^
+>          break;
+> 1 error generated.
+> 
+> Clang is a little more pedantic than GCC, which does not warn when
+> falling through to a case that is just break or return. Clang's version
+> is more in line with the kernel's own stance in deprecated.rst, which
+> states that all switch/case blocks must end in either break,
+> fallthrough, continue, goto, or return. Add the missing break to silence
+> the warning.
+> 
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1505
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+> 
+> Feel free to squash this into the offending commit.
 
-Fix it by changing spi_alloc_master to devm_spi_alloc_master, and
-removing spi_master_put in the error handling code.
+Done, thanks a lot for the feedback.
 
-Note that this patch can prevent UAF occurring any more
+Guenter
 
-Fixes: fd8b5f502929 ("msi2500: move msi3101 out of staging and rename")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
- drivers/media/usb/msi2500/msi2500.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/media/usb/msi2500/msi2500.c b/drivers/media/usb/msi2500/msi2500.c
-index 71de6b4c4e4c..64c3ec9f1d0c 100644
---- a/drivers/media/usb/msi2500/msi2500.c
-+++ b/drivers/media/usb/msi2500/msi2500.c
-@@ -1220,7 +1220,7 @@ static int msi2500_probe(struct usb_interface *intf,
- 	}
- 
- 	/* SPI master adapter */
--	master = spi_alloc_master(dev->dev, 0);
-+	master = devm_spi_alloc_master(dev->dev, 0);
- 	if (master == NULL) {
- 		ret = -ENOMEM;
- 		goto err_unregister_v4l2_dev;
-@@ -1233,7 +1233,6 @@ static int msi2500_probe(struct usb_interface *intf,
- 	spi_master_set_devdata(master, dev);
- 	ret = spi_register_master(master);
- 	if (ret) {
--		spi_master_put(master);
- 		goto err_unregister_v4l2_dev;
- 	}
- 
--- 
-2.25.1
+> 
+>   drivers/hwmon/tmp401.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/hwmon/tmp401.c b/drivers/hwmon/tmp401.c
+> index f7b6a2c4fbcf..b86d9df7105d 100644
+> --- a/drivers/hwmon/tmp401.c
+> +++ b/drivers/hwmon/tmp401.c
+> @@ -523,6 +523,7 @@ static umode_t tmp401_is_visible(const void *data, enum hwmon_sensor_types type,
+>   		default:
+>   			break;
+>   		}
+> +		break;
+>   	default:
+>   		break;
+>   	}
+> 
+> base-commit: 82b520da9134a594eb9816759ed66ba6ef44888e
+> 
 
