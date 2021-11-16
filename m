@@ -2,112 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 699F345397B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 19:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3DC453980
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 19:41:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239569AbhKPSmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 13:42:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41464 "EHLO
+        id S239585AbhKPSop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 13:44:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233361AbhKPSmh (ORCPT
+        with ESMTP id S233361AbhKPSon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 13:42:37 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DDA3C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 10:39:39 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id z34so55725057lfu.8
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 10:39:39 -0800 (PST)
+        Tue, 16 Nov 2021 13:44:43 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19035C061570;
+        Tue, 16 Nov 2021 10:41:46 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id v15so614587ljc.0;
+        Tue, 16 Nov 2021 10:41:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y8BSCacTYyDcVPM5IoKBN/fEmfxWN/lo+RC/ugsV1kA=;
-        b=rYJ0YguBFbcmp1Tg5G/C5elRrhHlqhZPZ9s8Rgi1EyZL/mBO38rP8TLiOW+ATwSvse
-         hx7oPPVfHIuXUqflFoLp78XS17/oAIFNICUc0clQp+DsHzreVloNA65wQQOnbMStJO7L
-         cRJz23BZ68/NRRpFbqz0JWlQ7dBZs4VkbRuFof2ir9z4E3NFYT2j+EcVSEvD7mBaI+7n
-         cayKlHYWqpdyX7SKzf/EHZxBnRiaA/IxQ9tqIztiqPblFl2RiruzS7/DSXEX3z38FmRW
-         AuC05B/4Cg4W+0nfuwbanEM5/q3cutNMoV8HbSx303/tnFRkK8RaZJvdv1FWALYQOU6m
-         tiZQ==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=Ev+Z8GofAuShA+6MSPbZsEyMexTvzjpgK5iAE8RYcEo=;
+        b=WP6JjhxLaDgeIKB3Oaah0awO6eNzClvs20jJHLQ4Uhm9yqz4hM9gHJ8mH1nQJacF9o
+         lpaMm6uMdq3YLjCO2MNAT2W9GOpC3c5KVDXSW0Xu/VsyXIV7LZx7AXoojNM7pRxT3b5A
+         Img5LjlfTYCoYRqFEccV6Z8AhFIctVXFl0gy67lBTFwCWFRDYVXqaEDPrkJGeSn5o1wV
+         bvWYykjXvB6VK+LZnbzlq8YbfRXSDjIXE8ABWl4ktk4RUvYUXIilP85DJTFI1YdFoBHk
+         OCtSucHG//VoN2Q8k2s+QQwqProlEESCn4/Jp9GwGW8o5RM2U5RknKIFA0Uo3Fq0gGD8
+         17ZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y8BSCacTYyDcVPM5IoKBN/fEmfxWN/lo+RC/ugsV1kA=;
-        b=LfbrHHhoAjjIiSdTK7D2g8K12Shl6Mm9Y+Wkr78vCiauEcCTnKkvoP7eV6jA0A//WP
-         tVaQpwZxaZxdfzTR5vzzYWOTzsxK2GQH09OgSBnZT/ST1jYbW+ZuBGEAkTVvh3SKHIng
-         BrTDbHbN/HjtyFeJvobz95ytpibEIvgsrN+Obkx4z1DKn21KA49etpmQCQ592p/iUWty
-         BTnrjcD28/kqem+lEqyIYmxqLFetjS2tBMNwzNkbqegCFRGE/B9PhxslGZNojXvEU/OU
-         pRPzAZJjPOdy+VUIYTxL1rF1kCmQFm1wcCT5Y8/mznQV3Swn160xenfUrSwpRGZKz50Q
-         LHdw==
-X-Gm-Message-State: AOAM53311Zwfv+o9MYca0taxECrHu91C2UlvGm1iwl+uEulMdOZw/q0G
-        0SvHzchvYFNs4q0sfxVbendKfQe7zdWVstyG85Pwbw==
-X-Google-Smtp-Source: ABdhPJywTYnlEyhOxCxt2a7nHxlAjR09HGR/8hsv2oGiftn1/xaXRUoDkhP1uYAcS9P5PWYcD8g2hetueUBVXSKepCg=
-X-Received: by 2002:a05:6512:3e12:: with SMTP id i18mr8517991lfv.456.1637087977701;
- Tue, 16 Nov 2021 10:39:37 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=Ev+Z8GofAuShA+6MSPbZsEyMexTvzjpgK5iAE8RYcEo=;
+        b=SfxhXloDNU++kDpLGMV+0yxfB4NM5L92Q64LSXY00nN9l/MKhHPT5zFGA32+N9jJgY
+         hdKL/vkNu6+QkSXyN73CnDJQTgKFCCvMx8fkDO8jxEHK1nfgRwsOE1RItZ+6rZgVhjmu
+         AlICnz8cXajya+wNnJpKjyiQwV1LeELnF7EBya9nvgwit7U6CZ86p6hCg02pmph3YDVW
+         WaPljZA+0ttwwBp4IuDiopd0H1kzH+8rDz2PVMJJQZ+abcSKkLI1deqoRmZn483YPKrC
+         fZ9/bll/Vas1lab/XHvw0SXWkXpFSRvZNAIbgR6tifZEx9VtVTm+Rakr7YjDxvOnHhRz
+         040w==
+X-Gm-Message-State: AOAM530VWDiOoaUP6KiJNL3+jswRbaGUkvTR+pwEUFBX5SXp0tnu8kAz
+        l3NAiYQ7uPayo/mKtE82SBo=
+X-Google-Smtp-Source: ABdhPJwy7gnyina6AmEtdTgTI8tN+0APz/lr3dAPSGSO7jRZEGujy4FJ3mEu9Kb8MKhcScMinhw4ug==
+X-Received: by 2002:a05:651c:11cf:: with SMTP id z15mr1349209ljo.30.1637088104403;
+        Tue, 16 Nov 2021 10:41:44 -0800 (PST)
+Received: from ?IPV6:2001:14ba:16ee:fa00::4? (dc73szyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16ee:fa00::4])
+        by smtp.gmail.com with ESMTPSA id n7sm1924466ljg.113.2021.11.16.10.41.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 10:41:44 -0800 (PST)
+Message-ID: <50c260a1-c6d0-1a0b-45da-ab1a2d1379c3@gmail.com>
+Date:   Tue, 16 Nov 2021 20:41:42 +0200
 MIME-Version: 1.0
-References: <061ccd49-3b9f-d603-bafd-61a067c3f6fa@intel.com>
- <YY6z5/0uGJmlMuM6@zn.tnic> <YY7FAW5ti7YMeejj@google.com> <YZJTA1NyLCmVtGtY@work-vm>
- <YZKmSDQJgCcR06nE@google.com> <CAA03e5E3Rvx0t8_ZrbNMZwBkjPivGKOg5HCShSFYwfkKDDHWtA@mail.gmail.com>
- <YZKxuxZurFW6BVZJ@google.com> <CAA03e5GBajwRJBuTJLPjji7o8QD2daEUJU7DpPJBxtWsf-DE8g@mail.gmail.com>
- <8a244d34-2b10-4cf8-894a-1bf12b59cf92@www.fastmail.com> <YZOwbjGVEfa/wLaS@suse.de>
- <YZP31a8acsfD+snJ@google.com>
-In-Reply-To: <YZP31a8acsfD+snJ@google.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Tue, 16 Nov 2021 11:39:25 -0700
-Message-ID: <CAMkAt6o=G4U8iUkLxquT9E2JsyxVASOhNZcA9s7JFnrVPf_hfA@mail.gmail.com>
-Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
- Hypervisor Support
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Joerg Roedel <jroedel@suse.de>, Andy Lutomirski <luto@kernel.org>,
-        Marc Orr <marcorr@google.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH RESEND 0/4] Drop ROHM BD70528 support
+Content-Language: en-US
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        devicetree <devicetree@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Quentin Perret <qperret@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>
+References: <cover.1637066805.git.matti.vaittinen@fi.rohmeurope.com>
+ <CAHp75Ve_qS0Qc8XLHLwFnWEPzQtgNfEeVr8q9L4gK2m5a-By0A@mail.gmail.com>
+From:   Matti Vaittinen <mazziesaccount@gmail.com>
+In-Reply-To: <CAHp75Ve_qS0Qc8XLHLwFnWEPzQtgNfEeVr8q9L4gK2m5a-By0A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 11:26 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Tue, Nov 16, 2021, Joerg Roedel wrote:
-> > But as Marc already pointed out, the kernel needs a plan B when an RMP
-> > happens anyway due to some bug.
->
-> I don't see why unexpected RMP #PF is a special snowflake that needs a different
-> plan than literally every other type of unexpected #PF in the kernel.
+On 11/16/21 18:10, Andy Shevchenko wrote:
+> On Tue, Nov 16, 2021 at 2:52 PM Matti Vaittinen
+> <matti.vaittinen@fi.rohmeurope.com> wrote:
+>>
+>> Drop ROHM BD70528 support
+>>
+>> Unfortunately there has not been a big demand for ROHM BD70528
+>> IC. The few users I know control PMIC from separate M4-core,
+>> which is not running Linux. I am not aware of any users of this
+>> Linux driver.
+>>
+>> While I did really like this IC and writing the drivers for it,
+>> seems like these drivers are becoming useless burden. So, I see
+>> no point in maintaining them. Let's just drop the drivers if
+>> there is no objections to this series. :(
+>>
+>> The regulator, WDG and power-supply drivers were already dropped.
+>>
+>> The RTC and clk drivers remain in use by few other ROHM IC drivers.
+>> Nevertheless, they are already converted to not depend the BD70528
+>> defines during previous cycle.
+>>
+>> This series cleans the remaining pieces, GPIO, MFD, dt-bindings and
+>> MAINTAINER entries. The GPIO code uses defines from MFD - but the GPIO
+>> part is also depending on MFD KConfig entry - so there should be no
+>> breakages even if the patches were applied to respective subsystem trees
+>> and were not carried via single tree.
+> 
+> FWIW, no objections from me.
 
-When I started this thread I was not trying to say we *need* to do
-something different for RMP faults, but that we *could* improve host
-reliability by doing something. Since it is possible to special case
-an RMP fault and prevent a panic I thought it was with discussing.
+Thanks Andy!
+
+I see acks from Andu, Bartosz, Lee and Rob. It'd be nice to see ack from 
+Linus W too - but other than that - I guess this is good to go. Any 
+preferences regarding the tree(s) that could carry the patches? All via 
+MFD or each patch merged to the subsystem it fits the best?
+
+Best Regards
+	Matti Vaittinen
