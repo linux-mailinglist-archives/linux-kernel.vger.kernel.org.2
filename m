@@ -2,115 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9203A45293D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:50:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9950945293F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:50:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237715AbhKPEwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 23:52:46 -0500
-Received: from so254-9.mailgun.net ([198.61.254.9]:18606 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343613AbhKPEwR (ORCPT
+        id S1343747AbhKPEwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 23:52:54 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:50984 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237339AbhKPEwp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 23:52:17 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1637038131; h=Message-ID: Subject: Cc: To: From: Date:
- Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
- bh=C6dta68YCuwcmrwbqCnIM+uu0DuHMK2MLotTOPhNpns=; b=Q/dnfGfpMP9PmP4B9fIxtjz5CF85aXRwv384/zwY4hvbgk242VbbfDfQVtKK0tH2yRL8r+gy
- N1T3oJ8u4gvX1/UHmpcjKqQ4fWmFGuomyOADPYDx+Z3pb57NXON7U0BzShIQG5MO4w91SBMU
- /u3NPXf32x8ktnXbhdP3HPvRLhk=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 619338334db4233966b20122 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Nov 2021 04:48:51
- GMT
-Sender: tjiang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D6E47C43617; Tue, 16 Nov 2021 04:48:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: tjiang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 16926C43460;
-        Tue, 16 Nov 2021 04:48:50 +0000 (UTC)
+        Mon, 15 Nov 2021 23:52:45 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AG3gdZp006366;
+        Tue, 16 Nov 2021 04:49:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=/IiP3OJn3/x2BE7U7GqNBNSQHO3LlVNZfJj+YeFRfp0=;
+ b=ZBoYc9/DKHdhgl1HFTsLjiOx2oxQOlKsBZHpOyI0/lRGUnVlXf7cc8Etxy/A7POsZR2v
+ Ks3eojG6rlweEMjuL+D52EoJ6hw8VOK/RIIf27N/Uf30CFraYbEWtM1e5OguYVt2ZSON
+ FyM/ofxEn+XuAC5xsAwkUUGYmixY5kbqRoPAVPMBUkINTAApQxguIxDZJngtCJOr5y4v
+ 8KkD8hkH6ykvrUXoan6+yEZFWuH4hIRX0Rl6YYhw4HJ5o1LzWKE7vEw8p+8Xz9f5TraW
+ Ke5KZaRg3iu9YYEEilCG4DXofS/gppFcWaVg1bGkgUboAlCcSjQhSVLNk6Y1Ccc3Kceo cg== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cc4yr0wrr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Nov 2021 04:49:25 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AG4ghtC000721;
+        Tue, 16 Nov 2021 04:49:23 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 3ca4mjkbrh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Nov 2021 04:49:23 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AG4gPQg63701320
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Nov 2021 04:42:25 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F370142041;
+        Tue, 16 Nov 2021 04:49:19 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1C31A42047;
+        Tue, 16 Nov 2021 04:49:16 +0000 (GMT)
+Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com.com (unknown [9.43.127.103])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 16 Nov 2021 04:49:15 +0000 (GMT)
+From:   Kajol Jain <kjain@linux.ibm.com>
+To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
+        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, dan.j.williams@intel.com,
+        ira.weiny@intel.com, vishal.l.verma@intel.com
+Cc:     santosh@fossix.org, maddy@linux.ibm.com, rnsastry@linux.ibm.com,
+        aneesh.kumar@linux.ibm.com, atrajeev@linux.vnet.ibm.com,
+        vaibhav@linux.ibm.com, kjain@linux.ibm.com
+Subject: [RESEND PATCH v5 0/4] Add perf interface to expose nvdimm
+Date:   Tue, 16 Nov 2021 10:19:00 +0530
+Message-Id: <20211116044904.48718-1-kjain@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: IKOvPVtZdbC7CVoCd5xM3ObBko36qe5k
+X-Proofpoint-GUID: IKOvPVtZdbC7CVoCd5xM3ObBko36qe5k
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 16 Nov 2021 12:48:49 +0800
-From:   tjiang@codeaurora.org
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org, tjiang@codeaurora.org
-Subject: [PATCH v4] Bluetooth: btusb: re-definition for board_id in struct 
- qca_version
-Message-ID: <2659a5743ab560b2c89e341fc61d9cc4@codeaurora.org>
-X-Sender: tjiang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-15_16,2021-11-15_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1011
+ lowpriorityscore=0 phishscore=0 adultscore=0 priorityscore=1501
+ mlxlogscore=999 spamscore=0 mlxscore=0 malwarescore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111160023
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The board ID should be split into two bytes.
-The 1st byte is chip ID, and the 2nd byte is platform ID.
-For example, board ID 0x010A, 0x01 is platform ID. 0x0A is chip ID.
-we have several platforms, and platform IDs are continuously added.
-We would not distinguish different chips if we get these mixed up.
-Platform ID:
-0x00 is for Mobile
-0x01 is for X86
-0x02 is for Automotive
-0x03 is for Consumer electronic
+Patchset adds performance stats reporting support for nvdimm.
+Added interface includes support for pmu register/unregister
+functions. A structure is added called nvdimm_pmu to be used for
+adding arch/platform specific data such as cpumask, nvdimm device
+pointer and pmu event functions like event_init/add/read/del.
+User could use the standard perf tool to access perf events
+exposed via pmu.
 
-Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
+Interface also defines supported event list, config fields for the
+event attributes and their corresponding bit values which are exported
+via sysfs. Patch 3 exposes IBM pseries platform nmem* device
+performance stats using this interface.
+
+Result from power9 pseries lpar with 2 nvdimm device:
+
+Ex: List all event by perf list
+
+command:# perf list nmem
+
+  nmem0/cache_rh_cnt/                                [Kernel PMU event]
+  nmem0/cache_wh_cnt/                                [Kernel PMU event]
+  nmem0/cri_res_util/                                [Kernel PMU event]
+  nmem0/ctl_res_cnt/                                 [Kernel PMU event]
+  nmem0/ctl_res_tm/                                  [Kernel PMU event]
+  nmem0/fast_w_cnt/                                  [Kernel PMU event]
+  nmem0/host_l_cnt/                                  [Kernel PMU event]
+  nmem0/host_l_dur/                                  [Kernel PMU event]
+  nmem0/host_s_cnt/                                  [Kernel PMU event]
+  nmem0/host_s_dur/                                  [Kernel PMU event]
+  nmem0/med_r_cnt/                                   [Kernel PMU event]
+  nmem0/med_r_dur/                                   [Kernel PMU event]
+  nmem0/med_w_cnt/                                   [Kernel PMU event]
+  nmem0/med_w_dur/                                   [Kernel PMU event]
+  nmem0/mem_life/                                    [Kernel PMU event]
+  nmem0/poweron_secs/                                [Kernel PMU event]
+  ...
+  nmem1/mem_life/                                    [Kernel PMU event]
+  nmem1/poweron_secs/                                [Kernel PMU event]
+
+Patch1:
+        Introduces the nvdimm_pmu structure
+Patch2:
+        Adds common interface to add arch/platform specific data
+        includes nvdimm device pointer, pmu data along with
+        pmu event functions. It also defines supported event list
+        and adds attribute groups for format, events and cpumask.
+        It also adds code for cpu hotplug support.
+Patch3:
+        Add code in arch/powerpc/platform/pseries/papr_scm.c to expose
+        nmem* pmu. It fills in the nvdimm_pmu structure with pmu name,
+        capabilities, cpumask and event functions and then registers
+        the pmu by adding callbacks to register_nvdimm_pmu.
+Patch4:
+        Sysfs documentation patch
+
+Changelog
 ---
-  drivers/bluetooth/btusb.c | 15 +++++++++++++--
-  1 file changed, 13 insertions(+), 2 deletions(-)
+v4 -> v5:
+- Remove multiple variables defined in nvdimm_pmu structure include
+  name and pmu functions(event_int/add/del/read) as they are just
+  used to copy them again in pmu variable. Now we are directly doing
+  this step in arch specific code as suggested by Dan Williams.
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 46d892bbde62..c2a48824ab1e 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -2883,7 +2883,8 @@ struct qca_version {
-  	__le32	rom_version;
-  	__le32	patch_version;
-  	__le32	ram_version;
--	__le16	board_id;
-+	__u8	chip_id;
-+	__u8	platform_id;
-  	__le16	flag;
-  	__u8	reserved[4];
-  } __packed;
-@@ -3072,7 +3073,17 @@ static void btusb_generate_qca_nvm_name(char 
-*fwname, size_t max_size,
-  	u16 flag = le16_to_cpu(ver->flag);
+- Remove attribute group field from nvdimm pmu structure and
+  defined these attribute groups in common interface which
+  includes format, event list along with cpumask as suggested by
+  Dan Williams.
+  Since we added static defination for attrbute groups needed in
+  common interface, removes corresponding code from papr.
 
-  	if (((flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
--		u16 board_id = le16_to_cpu(ver->board_id);
-+		/* The board_id should be split into two bytes
-+		 * The 1st byte is chip ID, and the 2nd byte is platform ID
-+		 * For example, board ID 0x010A, 0x01 is platform ID. 0x0A is chip ID
-+		 * Currently we have several platforms, and platform IDs are 
-continuously added.
-+		 * Platform ID:
-+		 * 0x00 is for Mobile
-+		 * 0x01 is for X86
-+		 * 0x02 is for Automotive
-+		 * 0x03 is for Consumer electronic
-+		 */
-+		u16 board_id = (ver->chip_id << 8) + ver->platform_id;
-  		const char *variant;
+- Add nvdimm pmu event list with event codes in the common interface.
 
-  		switch (le32_to_cpu(ver->ram_version)) {
+- Remove Acked-by/Reviewed-by/Tested-by tags as code is refactored
+  to handle review comments from Dan.
+
+- Make nvdimm_pmu_free_hotplug_memory function static as reported
+  by kernel test robot, also add corresponding Reported-by tag.
+
+- Link to the patchset v4: https://lkml.org/lkml/2021/9/3/45
+
+v3 -> v4
+- Rebase code on top of current papr_scm code without any logical
+  changes.
+
+- Added Acked-by tag from Peter Zijlstra and Reviewed by tag
+  from Madhavan Srinivasan.
+
+- Link to the patchset v3: https://lkml.org/lkml/2021/6/17/605
+
+v2 -> v3
+- Added Tested-by tag.
+
+- Fix nvdimm mailing list in the ABI Documentation.
+
+- Link to the patchset v2: https://lkml.org/lkml/2021/6/14/25
+
+v1 -> v2
+- Fix hotplug code by adding pmu migration call
+  incase current designated cpu got offline. As
+  pointed by Peter Zijlstra.
+
+- Removed the retun -1 part from cpu hotplug offline
+  function.
+
+- Link to the patchset v1: https://lkml.org/lkml/2021/6/8/500
+
+Kajol Jain (4):
+  drivers/nvdimm: Add nvdimm pmu structure
+  drivers/nvdimm: Add perf interface to expose nvdimm performance stats
+  powerpc/papr_scm: Add perf interface support
+  docs: ABI: sysfs-bus-nvdimm: Document sysfs event format entries for
+    nvdimm pmu
+
+ Documentation/ABI/testing/sysfs-bus-nvdimm |  35 +++
+ arch/powerpc/include/asm/device.h          |   5 +
+ arch/powerpc/platforms/pseries/papr_scm.c  | 225 ++++++++++++++
+ drivers/nvdimm/Makefile                    |   1 +
+ drivers/nvdimm/nd_perf.c                   | 328 +++++++++++++++++++++
+ include/linux/nd.h                         |  41 +++
+ 6 files changed, 635 insertions(+)
+ create mode 100644 drivers/nvdimm/nd_perf.c
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum, a Linux Foundation Collaborative Project
+2.26.2
+
