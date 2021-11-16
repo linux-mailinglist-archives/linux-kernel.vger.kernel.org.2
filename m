@@ -2,100 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A89C94535CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:29:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6945B4535D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:33:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238267AbhKPPbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 10:31:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:45658 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238273AbhKPPbg (ORCPT
+        id S238298AbhKPPez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 10:34:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238278AbhKPPex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 10:31:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637076518;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UYQN9I70gjsFE5Naqa2HU/h8w6OlAwkKbYGsjtVq6nA=;
-        b=R8p1twqzTE5iLARiqESHX3fIUTIP8adtUDlWe9ztw5DCV1jHty/jmDdNtpIGK6l/lF5nl5
-        0yNEphXttKWBU2OgmB33y8TPrhgALM5wOW+rWrmtSYUTlfLOXHprkEfiD4rd/X6yypQV5I
-        ZPiiP5GX7o7AgQEPmw4l0Tj/htOuUYE=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-305-_X-VpFSGMd-VWNBt4GeM8w-1; Tue, 16 Nov 2021 10:28:37 -0500
-X-MC-Unique: _X-VpFSGMd-VWNBt4GeM8w-1
-Received: by mail-wm1-f72.google.com with SMTP id 145-20020a1c0197000000b0032efc3eb9bcso1377287wmb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:28:37 -0800 (PST)
+        Tue, 16 Nov 2021 10:34:53 -0500
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F647C061766
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:31:56 -0800 (PST)
+Received: by mail-ua1-x92b.google.com with SMTP id v3so43163461uam.10
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:31:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tsrV+hfFCVu/lguKxyW5H34AzEuQICjVq9Wuxqx+30s=;
+        b=t5/2NAXadqXAMwAiI9RIP3gOoQY4iP2IRi9cf5GQoc3LIoPav3xQzx9O6dh8IWGd+B
+         S4VutQCpR3V9WIfTCmveVjh3KKjL7jILRXRqcRBgqReRwrHVt2uwRQJhtE+YbeXvdIcH
+         f2K1j30ztG6CwRB/8CgVoxgqEsZqtWFz1GIr7klc9YT1NDQqqUEZXQv4qTAVKo1vUeJ2
+         hReZoa+BfBUX7Um1+ZKMr27iclbkoSqEZQ8hk1szDHC6UDhAn9DnMLgoH50ozs4hHzQf
+         uEVcJma99XK7xK8meSQ/l9ZRmPmEBq5ylKKP3aGi5tXxKiN7Dk6Zp4qj2lxGtw3r4SQN
+         jnwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=UYQN9I70gjsFE5Naqa2HU/h8w6OlAwkKbYGsjtVq6nA=;
-        b=WdX2JLHpKylsbpTa5FVjrQywsR2Awq9LyI4EDEM92dXkn15EmHIU0Iy/baz0JbPjuz
-         pylLRwhSMw3Qu1zuuWLX2fzV84A1tXWT7G3QNs+0Nunb5nR1QVMtIEhUGR/k1eNWVmNb
-         Mw/Q5A7pTykb0eZeUOe7Rk23VHLVwNDN7t70EI2xpv6ZNorZth220JpozdXZ8GBtHTTC
-         BqR06VJmCC9OgXbm5IsriOOKIHREERBQP3oQTkvXHD4X5Dy6zEqoKDSnsr9BwYlUJ6aH
-         itBXE2jKnnko76V+wgDAUp5ao+KZOE15enLVxOSxIV2gLGRZ0i/8FQm3vDsXa/oUyCqX
-         UWhA==
-X-Gm-Message-State: AOAM531Iap9bdWyQ1pZojbURotxBuBHfL2Avp8rQDRVZNenMSJ6WPuBC
-        PzzXX6LYHCoydChz5Jlz1BXVDKXNoh3wriPITu6BJsd3iiDv5U93YstBYknY8ubE09u/ni+wItp
-        Ct2oYUEjfJzYFP5WHoufZLozU
-X-Received: by 2002:adf:e2c5:: with SMTP id d5mr10551311wrj.338.1637076516087;
-        Tue, 16 Nov 2021 07:28:36 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyF815fmFuY8bG7dsEGyu346D4qU2PxLAXuM2xLKBP7NcVm/OObn1MwERjTAqvhG73N6sbKbg==
-X-Received: by 2002:adf:e2c5:: with SMTP id d5mr10551281wrj.338.1637076515927;
-        Tue, 16 Nov 2021 07:28:35 -0800 (PST)
-Received: from [192.168.1.36] (62.red-83-57-168.dynamicip.rima-tde.net. [83.57.168.62])
-        by smtp.gmail.com with ESMTPSA id f12sm3586100wmq.0.2021.11.16.07.28.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 07:28:35 -0800 (PST)
-Message-ID: <2ced2fae-2ffd-3a70-f02c-175662baf7bc@redhat.com>
-Date:   Tue, 16 Nov 2021 16:28:34 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tsrV+hfFCVu/lguKxyW5H34AzEuQICjVq9Wuxqx+30s=;
+        b=X5+4XWlXVtdFHEXla0kM3GOzuQC5Md2kLKjnyqnN4sq2IorQhy9igqISyKINTxumXz
+         t4paw4RY7KgGykBfoAgvsyp/R+m2UxFmT+0o1wIrgV+fJj8jeFnN2LfKOjzKHiPWbQ0x
+         BMs8DkeqprNhS/9z1jmwbVsSGPeXeMauXjQ1psOwSkfarZ6m1UuH/yRrk5/SXGN0AKrc
+         9BtOWwsjXT7NoXWlN44FbAW0JsQVHc5Ugr5ls+8N7UP/SN2XHsGMTpUe4mfqlZYZiZOz
+         EGvF4nAHpyZAPFLmeDjxiXkM2znzGZaDC/glLPRYyhCrP+3mRkYqvdC+yuTwdRXlSL1H
+         LU1Q==
+X-Gm-Message-State: AOAM531x1BbpxZKa6Xf8/9b6MAaDg0a9+DL2X78kmqUd5O0/EB1V5Viu
+        /rBH/uAH4iHRv4KOnWxVb/yTiYHeqR2tmVEDufljEA==
+X-Google-Smtp-Source: ABdhPJzI1vYHs3IlbeTAF3zLZ2iugMLFFYsb7zRv/5mdhBpZbcKWUCT8T42LC150nqoSu9alCPYFu2j907jPq57oocE=
+X-Received: by 2002:ab0:458e:: with SMTP id u14mr12043487uau.104.1637076715001;
+ Tue, 16 Nov 2021 07:31:55 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] fw_cfg: Fix memory leak in fw_cfg_register_file
-Content-Language: en-US
-To:     Miaoqian Lin <linmq006@gmail.com>, Qiushi Wu <wu000273@umn.edu>
-Cc:     qemu-devel@nongnu.org, linux-kernel@vger.kernel.org,
-        Gabriel Somlo <somlo@cmu.edu>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-References: <20211116114233.29462-1-linmq006@gmail.com>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@redhat.com>
-In-Reply-To: <20211116114233.29462-1-linmq006@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <CGME20211112010603epcas2p339d1a6ef3df7cdbe61c87c8afa541fd0@epcas2p3.samsung.com>
+ <20211112010137.149174-1-jaewon02.kim@samsung.com> <20211112010137.149174-3-jaewon02.kim@samsung.com>
+ <CAPLW+4==X+irRBKHiDfgJeAb0oDKkzbcWERFs7Y3=PSOg0+qAw@mail.gmail.com>
+ <001401d7da86$f7ebd660$e7c38320$@samsung.com> <da9bd8cc-9415-6db7-024e-8d50b5f666f7@canonical.com>
+In-Reply-To: <da9bd8cc-9415-6db7-024e-8d50b5f666f7@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Tue, 16 Nov 2021 17:31:43 +0200
+Message-ID: <CAPLW+4n2hZ1c9BuOo4JtKLZp48fH81xUr0GSaJoc21=ad2vv1Q@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] i2c: exynos5: add support for ExynosAutov9 SoC
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Chanho Park <chanho61.park@samsung.com>,
+        Jaewon Kim <jaewon02.kim@samsung.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 12:42, Miaoqian Lin wrote:
-> When kobject_init_and_add() fails, entry should be freed just like
-> when sysfs_create_bin_file() fails.
-> 
+On Tue, 16 Nov 2021 at 11:32, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On 16/11/2021 02:12, Chanho Park wrote:
+> >> With this patch the Exynos850 HSI2C becomes functional. The only nit-pick
+> >> from my side (just a food for thought): do we want to configure USI
+> >> related config inside of particular drivers (SPI, I2C, UART)? Or it would
+> >> be better design to implement some platform driver for that, so we can
+> >> choose USI configuration (SPI/I2C/UART) in device tree? I think this
+> >> series is good to be merged as is, but we should probably consider all
+> >> upsides and downsides of each option, for the future work.
+> >
+> > I'm also considering how to support this USI configuration gracefully.
+> > Current version of USI is v2 which means there is a v1 version as well. It might be a non-upstream SoC so we don't need to consider it so far.
+> > But, there is a possibility that the USI hw version can be bumped for future SoCs.
+> >
+> > As you probably know, earlier version of the product kernel has a USI SoC driver[1] and it was designed to be configured the USI settings by device tree.
+> >
+> > Option1) Make a USI driver under soc/samsung/ like [1].
+> > Option2) Use more generic driver such as "reset driver"? This might be required to extend the reset core driver.
+> > Option3) Each USI driver(uart/i2c/spi) has its own USI configurations respectively and expose some configurations which can be variable as device tree.
+> >
+> > [1]: https://github.com/ianmacd/d2s/blob/master/drivers/soc/samsung/usi_v2.c
+>
+> I don't have user manuals, so all my knowledge here is based on
+> Exynos9825 vendor source code, therefore it is quite limited. In
+> devicetree the USI devices have their own nodes - but does it mean it's
+> separate SFR range dedicated to USI? Looks like that, especially that
+> address space is just for one register (4 bytes).
+>
+> In such case having separate dedicated driver makes sense and you would
+> only have to care about driver ordering (e.g. via device links or phandles).
+>
+> Option 2 looks interesting - reusing reset framework to set proper USI
+> mode, however this looks more like a hack. As you said Chanho, if there
+> is a USI version 3, this reset framework might not be sufficient.
+>
+> In option 3 each driver (UART/I2C/SPI) would need to receive second IO
+> range and toggle some registers, which could be done via shared
+> function. If USI v3 is coming, all such drivers could get more complicated.
+>
+> I think option 1 is the cleanest and extendable in future. It's easy to
+> add usi-v3 or whatever without modifying the UART/I2C/SPI drivers. It
+> also nicely encapsulates USI-related stuff in separate driver. Probe
+> ordering should not be a problem now.
+>
+> But as I said, I don't have even the big picture here, so I rely on your
+> opinions more.
+>
 
-Fixes: fe3c60684377 ("firmware: Fix a reference count leak.")
-Reviewed-by: Philippe Mathieu-Daudé <philmd@redhat.com>
+To provide more context, USI registers are split across two different
+register maps:
 
-> Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
-> ---
->  drivers/firmware/qemu_fw_cfg.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/firmware/qemu_fw_cfg.c b/drivers/firmware/qemu_fw_cfg.c
-> index 172c751a4f6c..0f404777f016 100644
-> --- a/drivers/firmware/qemu_fw_cfg.c
-> +++ b/drivers/firmware/qemu_fw_cfg.c
-> @@ -608,6 +608,7 @@ static int fw_cfg_register_file(const struct fw_cfg_file *f)
->  				   fw_cfg_sel_ko, "%d", entry->select);
->  	if (err) {
->  		kobject_put(&entry->kobj);
-> +		kfree(entry);
->  		return err;
->  	}
->  
-> 
+    - USI protocol configuration (where we choose which protocol to
+use: HSI2C, SPI or UART) is done via *_SW_CONF registers, from System
+Register SFR range. To access those SW_CONF registers we need to
+either:
+        (Option 3) pass System Register registers to corresponding
+driver (HSI2C/SPI/UART) via syscon
+        (Option 1) or implement separate USI driver, so we can choose
+desired protocol in device tree; in that case I guess System Register
+registers should be passed via syscon to USI driver
+    - USI registers (like USI_CON register, which contains USI_RESET
+bit) are contained in the same SFR range as corresponding
+HSI2C/SPI/UART IP-core. Or rather HSI2C/SPI/UART IP-cores are
+encapsulated within USI block(s). So to access registers like USI_CON
+we only need to use memory already passed to corresponding
+HSI2C/SPI/UART driver via "reg" property.
 
+So I'd say ideally we should do next:
+  - modify USI registers (like USI_CON) in corresponding
+HSI2C/SPI/UART drivers; but because all HSI2C/SPI/UART drivers share
+the same USI registers, we might want to pull USI register offsets and
+bits to some common header file, for example (to not duplicate that
+code in drivers)
+  - implement separate USI driver to control SW_CONF registers from
+System Register module (Option 1), so we can choose desired protocol
+in device tree (in some USI node, not in HSI2C node)
+  - also, it probably makes sense to group all USI related nodes in
+some separate *-usi.dtsi file; that would reduce confusion, given that
+we have even more encapsulation in Exynos850 thanks to CMGP (Common
+GPIO) block
+
+My suggestion is to take this patch as is, and then we can work on USI
+driver implementation/upstreaming. Right now we don't have much of
+device tree files that use USI HSI2C driver, so it'll be fairly easy
+to fix those dts's once we implemented USI driver. That will also
+unblock me with submitting dev board support (dts files) I'm working
+on right now. Krzysztof, please let me know if I'm wrong and if we
+shouldn't change dts API too much, so it's mandatory to implement USI
+driver before accepting this patch.
+
+Thanks!
+
+> Best regards,
+> Krzysztof
