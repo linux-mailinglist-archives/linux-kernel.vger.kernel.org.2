@@ -2,63 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED12B452CD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:33:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84337452CDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:34:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232148AbhKPIfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 03:35:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232223AbhKPIfw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 03:35:52 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EE39C061746;
-        Tue, 16 Nov 2021 00:32:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4es8FO5SJaQGq2UgE1ci1YHP56WQQ2cHosypX0fQUds=; b=shYGA2EQWsHmDyFu5BR3rthX+m
-        fINS2KeKdL7lH1ZuCThcNqv/nOwm2fJRlL9T1/yiFgPOirEIettm4ER3zGz8PChISJW4mo99JhmZn
-        4r+wuekG50XBiCggC36fX8KPX70E3L3aqbkBnfuQ8VD0SFV9KDM8w+pyyAXbKVkgFTq1obxYW2Ogc
-        B73HKBgKiSwnaWTDTJUZ2FdAwBRWPOzQjWbaillvxKqRzIWMHNZGGPBD18UeHZ/loXpIQtxRk4p/w
-        8Dnv5a0szw+Rj/ZtgLfIkT7zREGg5Gnz7Th4TvVxX65QFkudNJd4n5Ac4AhVP9mSujhqbrroDhVo2
-        Ch4Cr1HA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mmttb-000kGz-Tl; Tue, 16 Nov 2021 08:32:51 +0000
-Date:   Tue, 16 Nov 2021 00:32:51 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@suse.de>, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/13] MM: reclaim mustn't enter FS for swap-over-NFS
-Message-ID: <YZNss/ujX3yovr/k@infradead.org>
-References: <163702956672.25805.16457749992977493579.stgit@noble.brown>
- <163703064452.25805.16932817889703270242.stgit@noble.brown>
+        id S232257AbhKPIgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 03:36:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232144AbhKPIgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 03:36:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62A8761104;
+        Tue, 16 Nov 2021 08:33:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637051587;
+        bh=815Kbc3zKvskUedozJdeNakdfBrmFEPbGS+tpaXNMZc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mkuN+v2TSJerwZ+iWmj0Yo1rMAqQxzk8uDXNs7HbZ5J01h7rJXQhpykk3zFr1sZtj
+         2tvUy4zq4W9MyKdmQDsU2e07RqdQ1k0iK7WKSNZFdSbHSttE8W296Ls0+U+mCzPNmk
+         A5mDsIc+V7YWW85j0m3Q/G/qWWv3xS/uEJqcxb1BJv3i77heJQFFEKbOSKJiMsb3pE
+         vGX1ifcc5SREMLFGJYZGtS4z9An2ZjCG8mraLuZ76ipBZoq4hpfuQwA+4D+AUn2Jxg
+         z7iTPpPwO2zMVS51DfB8kpbtrNyBAdYH0Fd6MIt4J4YQYamsCvQ582XBRh7vC2jBPl
+         Zy772gTBbSR/w==
+Date:   Tue, 16 Nov 2021 14:03:02 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     quic_vamslank@quicinc.com
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        tglx@linutronix.de, maz@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, manivannan.sadhasivam@linaro.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v4 3/6] clk: qcom: Add SDX65 GCC support
+Message-ID: <YZNsvjwp0/AX0Hdo@matsya>
+References: <cover.1637047731.git.quic_vamslank@quicinc.com>
+ <b61d16ad890bcf07057f8fbd83dfffaf9812cda6.1637047731.git.quic_vamslank@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <163703064452.25805.16932817889703270242.stgit@noble.brown>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <b61d16ad890bcf07057f8fbd83dfffaf9812cda6.1637047731.git.quic_vamslank@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 01:44:04PM +1100, NeilBrown wrote:
-> +		/* ->flags can be updated non-atomicially (scan_swap_map_slots),
-> +		 * but that will never affect SWP_FS_OPS, so the data_race
-> +		 * is safe.
-> +		 */
->  		may_enter_fs = (sc->gfp_mask & __GFP_FS) ||
-> +			(PageSwapCache(page) &&
-> +			 !data_race(page_swap_info(page)->flags & SWP_FS_OPS) &&
-> +			 (sc->gfp_mask & __GFP_IO));
+On 15-11-21, 23:38, quic_vamslank@quicinc.com wrote:
+> From: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
+> 
+> Add Global Clock Controller (GCC) support for SDX65 SoCs from Qualcomm.
+> 
+> Signed-off-by: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
+> Reported-by: kernel test robot <lkp@intel.com>
 
-You might want to move the comment and SWP_FS_OPS into a little
-inline helper.  That makes it a lot more readable and also avoids the
-overly long line in the second hunk.
+Missing support reported ??
+
+> +static struct clk_branch gcc_ahb_pcie_link_clk = {
+> +	.halt_reg = 0x2e004,
+> +	.halt_check = BRANCH_HALT,
+> +	.clkr = {
+> +		.enable_reg = 0x2e004,
+> +		.enable_mask = BIT(0),
+> +		.hw.init = &(struct clk_init_data){
+> +			.name = "gcc_ahb_pcie_link_clk",
+> +			.flags = CLK_IS_CRITICAL,
+> +			.ops = &clk_branch2_ops,
+> +		},
+
+If this clk is critical then why model in linux, enable directly in probe
+and leave it...?
+
+> +static struct clk_branch gcc_pcie_0_clkref_en = {
+> +	.halt_reg = 0x88004,
+> +	.halt_check = BRANCH_HALT_DELAY,
+
+Why delay, add a comment at least for that
+
+> +	.clkr = {
+> +		.enable_reg = 0x88004,
+> +		.enable_mask = BIT(0),
+> +		.hw.init = &(struct clk_init_data){
+> +			.name = "gcc_pcie_0_clkref_en",
+> +			.ops = &clk_branch2_ops,
+> +		},
+> +	},
+> +};
+> +
+> +static struct clk_branch gcc_pcie_aux_clk = {
+> +	.halt_reg = 0x43034,
+> +	.halt_check = BRANCH_HALT_DELAY,
+
+Here too
+
+> +static struct clk_branch gcc_pcie_mstr_axi_clk = {
+> +	.halt_reg = 0x43024,
+> +	.halt_check = BRANCH_HALT_VOTED,
+> +	.hwcg_reg = 0x43024,
+> +	.hwcg_bit = 1,
+> +	.clkr = {
+> +		.enable_reg = 0x6d010,
+> +		.enable_mask = BIT(1),
+> +		.hw.init = &(struct clk_init_data){
+> +			.name = "gcc_pcie_mstr_axi_clk",
+> +			.ops = &clk_branch2_ops,
+> +		},
+> +	},
+> +};
+> +
+> +static struct clk_branch gcc_pcie_pipe_clk = {
+> +	.halt_reg = 0x4303c,
+> +	.halt_check = BRANCH_HALT_DELAY,
+
+here as well and few more places I guess
+
+> +static struct clk_branch gcc_xo_pcie_link_clk = {
+> +	.halt_reg = 0x2e008,
+> +	.halt_check = BRANCH_HALT,
+> +	.hwcg_reg = 0x2e008,
+> +	.hwcg_bit = 1,
+> +	.clkr = {
+> +		.enable_reg = 0x2e008,
+> +		.enable_mask = BIT(0),
+> +		.hw.init = &(struct clk_init_data){
+> +			.name = "gcc_xo_pcie_link_clk",
+> +			.flags = CLK_IS_CRITICAL,
+
+Here as well
+-- 
+~Vinod
