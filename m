@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5D2453CFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:57:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 760CC453CF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbhKQAAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 19:00:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57128 "EHLO
+        id S232032AbhKQAAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 19:00:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230274AbhKQAAp (ORCPT
+        with ESMTP id S229527AbhKQAAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 16 Nov 2021 19:00:45 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0778C061766;
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87573C061570;
         Tue, 16 Nov 2021 15:57:47 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id z6so897331pfe.7;
+Received: by mail-pg1-x532.google.com with SMTP id r132so566934pgr.9;
         Tue, 16 Nov 2021 15:57:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=lKn8U3vTkXK9ZBlzMtXDj+YHFGEgluUXaeDmujmDJDU=;
-        b=MYBFr2IrCPsxtOescR/u9V3YhA8hvrw9TEvKwsfslqq26VneO16fyXkQ7r768npAbc
-         gXRFft8rJ3RsXRpQn13tG40SKUJN+ZC/1JTp7ue4elz23wfeRFnj362LccsFIQ1J7Vam
-         cTO80DFxGb22J5ciIRt7W7a1eqWaUePV6bUwX3kBy9pF8Ej1wff4hlNqCYcT5yt1GY24
-         wfkJWbjeUrTbmREkEOm3qYwFPV7wJJxrAzErEBx8YUwLW4O/esKNlzDcQ1EMWi4iy7nO
-         j/KjduD/0D0W5em1Les0P157nYMPT5LINhKkhgok3T2H5gP4gzprtM3FHp87LD/Gl9gf
-         KOLg==
+        bh=OVuTAXKfST06LlKa+3lMZr3LwgCnmVMpB0im1jCL3Bc=;
+        b=R0HeMjNP0oOGJit2TNJfMFN3aPrN1kb/JK9644Ic65UEfFRZsGsK27vd282geVOWWR
+         8rMMFbhSbiwKLImoS0pmCSPUVPS3cQiz1Xm+I+jN7d2JUWRir8XzGHSci5G0DpQZwR3n
+         GMFG8ocDfIR5V3PGgjJzPBNMVGeKzmFfKLRob3Y0tZTpt0WGLkf4IE7sqqc6m6+RSfKB
+         DtGY2U7f6anDms43hsqdaE1rTLqodp0KXkto0tO2/18238ePV9eOIjxs9zP+/VX9/bqZ
+         wOILzAbQx6dRbNTj6Su3pjRxZUVzdLZL+R3VCnTXnS9ecQZe7AvCY1RzRkPUzWp4alVq
+         V/dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lKn8U3vTkXK9ZBlzMtXDj+YHFGEgluUXaeDmujmDJDU=;
-        b=NaYQWw0BiicoNHS3xqmoy9oDS3HnJD7eRAd7C7iL4vlBUm6wEUh9i1s35Dm4grsTmD
-         KaxhkJ1iptgFTpgYuWlqMPTUqXB7dGl70E/qdPoOW41LLHwcQ2fJ5X3ZrUEYg8ZEVvKP
-         8C+3p3DjFD/yXmTx4LIHzHk8WMCv+Wa6MW+l0oR1U3o2igsgA6ipH/vONd9bLPMntP7R
-         NsMWdCxHS83iElHbnIJFrjDw8BhlRH6qpQgSNRTr+DkaxNYyFjdLMTJ93V2zX8bYLKQX
-         KSjNWRNjLmmwKHMJgZJ9jb1WeH001LycdTAbN8lb34y6/SZAAQPno4cEiqE5hT03NnAB
-         BAaw==
-X-Gm-Message-State: AOAM533oPBT1zYx0cBF9g9hUlWI2FKN+DZB5HZWK/8howN2baFFgEGHJ
-        wj2vrjI7qufo72EoTyVslLk=
-X-Google-Smtp-Source: ABdhPJzjR/I+yZIEQg5XCsv58hcLYy2yU8CB0QdQdk/mWraFZCmiLWi/R/xzqlIXqFS3+BRz//FSqA==
-X-Received: by 2002:a62:1d09:0:b0:4a2:82d7:17a5 with SMTP id d9-20020a621d09000000b004a282d717a5mr32135027pfd.64.1637107067442;
+        bh=OVuTAXKfST06LlKa+3lMZr3LwgCnmVMpB0im1jCL3Bc=;
+        b=yQPN/+nNR2iyOMGuodmM2FTOzRlKn2oaG8B9ktmosApFEFrLldVT3R8+8wjR6zHtt0
+         hw29U6fhXMj24djppF6dBODxuQc+kH2Wz5AM1AwfMq2YH9DXa3Qs/QCPdX9xXOevX2FK
+         nt1hMCiKoktSBjufV1Qe+sfZjF3COEM9SvLiic/KASqIfFrzyyzEULXqJQRGAkJz/G4v
+         W+YH78EUQzjhyaoU/pwSd/WXscsa2Ffv12IBGlH4A9trblykXq5ew5C3Lq76g12ezyiM
+         3bCLpu2M8aaB3cnZF54R7udfMz9ZvpH8dxt2UsPisv6+BkJMDm7KBkuEZiHvI1n2LtY7
+         2nxw==
+X-Gm-Message-State: AOAM530Z9rgPijVPz8FZNXiFHn97M9A8VgOQZNdv9hsdoL1D8jxmuqQg
+        SE9LP8KW72c/0se0enN7XkQ=
+X-Google-Smtp-Source: ABdhPJwsRHRl1g6o/W4ZLU43Dsi9Xri70sEvBX9y2A2g4/QPkp4X8RIip5UKAvVk62VsVeP0+/K+pg==
+X-Received: by 2002:a63:e614:: with SMTP id g20mr2120302pgh.159.1637107067072;
         Tue, 16 Nov 2021 15:57:47 -0800 (PST)
-Received: from localhost.lan ([2400:4070:175b:7500::7a7])
-        by smtp.gmail.com with ESMTPSA id b10sm21210389pfl.200.2021.11.16.15.57.46
+Received: from localhost.lan (p4899162-ipngn25301marunouchi.tokyo.ocn.ne.jp. [122.18.9.162])
+        by smtp.gmail.com with ESMTPSA id t67sm717236pfd.24.2021.11.16.15.57.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 16 Nov 2021 15:57:46 -0800 (PST)
 Received: from x2.lan (localhost [127.0.0.1])
-        by localhost.lan (Postfix) with ESMTPSA id AF508900956;
+        by localhost.lan (Postfix) with ESMTPSA id B13E2900957;
         Tue, 16 Nov 2021 23:57:44 +0000 (GMT)
 From:   Vincent Pelletier <plr.vincent@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>,
@@ -61,9 +61,9 @@ To:     Rob Herring <robh+dt@kernel.org>,
         devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
         linux-kernel@vger.kernel.org,
         David Abdurachmanov <david.abdurachmanov@sifive.com>
-Subject: [PATCH v2 2/6] riscv: dts: sifive unmatched: Expose the board ID eeprom
-Date:   Tue, 16 Nov 2021 23:57:38 +0000
-Message-Id: <be05f8604f72634fc21286623266a85fc12eae70.1637107062.git.plr.vincent@gmail.com>
+Subject: [PATCH v2 3/6] riscv: dts: sifive unmatched: Expose the PMIC sub-functions
+Date:   Tue, 16 Nov 2021 23:57:39 +0000
+Message-Id: <72d7baa6829ff02ee7ad0344fe1d33a2269780a6.1637107062.git.plr.vincent@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <bb7e8e36425a2c243cfbf03a23af525499268822.1637107062.git.plr.vincent@gmail.com>
 References: <bb7e8e36425a2c243cfbf03a23af525499268822.1637107062.git.plr.vincent@gmail.com>
@@ -73,14 +73,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark it as read-only as it is factory-programmed with identifying
-information, and no executable nor configuration:
-- eth MAC address
-- board model (PCB version, BoM version)
-- board serial number
-Accidental modification would cause misidentification which could brick
-the board, so marking read-only seem like both a safe and non-constraining
-choice.
+These sub-functions are available in the chip revision on this board, so
+expose them.
 
 Signed-off-by: Vincent Pelletier <plr.vincent@gmail.com>
 
@@ -88,30 +82,32 @@ Signed-off-by: Vincent Pelletier <plr.vincent@gmail.com>
 Changes since v1:
 - Remove trailing "." on subject line.
 ---
- arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-index 305a086e5207..cf8937708829 100644
+index cf8937708829..270360b258b7 100644
 --- a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
 +++ b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-@@ -58,6 +58,16 @@ temperature-sensor@4c {
- 		interrupts = <6 IRQ_TYPE_LEVEL_LOW>;
- 	};
+@@ -75,6 +75,18 @@ pmic@58 {
+ 		interrupts = <1 IRQ_TYPE_LEVEL_LOW>;
+ 		interrupt-controller;
  
-+	eeprom@54 {
-+		compatible = "microchip,24c02", "atmel,24c02";
-+		reg = <0x54>;
-+		vcc-supply = <&vdd_bpro>;
-+		label = "board-id";
-+		pagesize = <16>;
-+		read-only;
-+		size = <256>;
-+	};
++		onkey {
++			compatible = "dlg,da9063-onkey";
++		};
 +
- 	pmic@58 {
- 		compatible = "dlg,da9063";
- 		reg = <0x58>;
++		rtc {
++			compatible = "dlg,da9063-rtc";
++		};
++
++		wdt {
++			compatible = "dlg,da9063-watchdog";
++		};
++
+ 		regulators {
+ 			vdd_bcore1: bcore1 {
+ 				regulator-min-microvolt = <900000>;
 -- 
 2.33.1
 
