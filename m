@@ -2,108 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60223453C08
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 22:59:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1D3453C0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 22:59:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231719AbhKPWCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 17:02:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58950 "EHLO
+        id S231755AbhKPWCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 17:02:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230467AbhKPWCP (ORCPT
+        with ESMTP id S231743AbhKPWCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 17:02:15 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92962C061746;
-        Tue, 16 Nov 2021 13:59:17 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id w33-20020a17090a6ba400b001a722a06212so3034030pjj.0;
-        Tue, 16 Nov 2021 13:59:17 -0800 (PST)
+        Tue, 16 Nov 2021 17:02:22 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95D07C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 13:59:24 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id u3so1379086lfl.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 13:59:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=SxYidUcQF/JRSeOjMS+zF5IXpdU1AyWxQh1T5sdHgXo=;
-        b=AFa6UZ2QDYSmQw0ehe2r+5tWvs2jmVBk9R/zUM3vCM4cU4o+xmZPAnh80M2lcsxY7H
-         BVm4l4ktmV7ip8fGeMKlNp4E0aEpmMjqLB+QphgoRBvakPsvG+MK31gzj/hATBqC7KSV
-         cWLFYf/YidsqPM1naBw54/7ssupWmujuXqCE5s4vyx97SuiFwVS1bUXw8lGpcSFe/Pzo
-         AqxRxXXIf3jFrgCL00zZ8QgJiAzo+OQvxOVigvXo8a1BIsWpjKYwdfuGFKL01xnAizaf
-         NUf7y2qm66r3O2UHbl1mhTlzsoEtXWlqGz12fu5KD1zpcMCrSQetA3z+679bbs3qKOrv
-         VYGA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KzBSG7kqq1EY//DQG7+JE9yhI7O+ZkeELeJBY10brBc=;
+        b=e5itTIH1lt/EmfH/WYKCPydb4uuDiRzUrgSRSeHm2fvv4Niw2na+bMeRcl5YYXOrC1
+         olXg8K21mKkqOkuEY7xoQkjBPQBdEDOBxx73i89UPAFG81PxTnbKqk51KVGarXIyhgRg
+         8p2+vo2Eeyli/5lMZfnvHgSEhR8BxLm/9MlY4G1KRQR3VymbLUbEzsdFlXJrbvBNQ978
+         HH5R/KNg77tsaDZHdMp/opldbCyc68Nc18RjX8mIjz9PfYf79jH0SzGAQ4rw1xrAktb2
+         +0gSa+S+qOe5KNcbH5pzcdIcAZdM+B6ZN/9JVSLKOGA9o+hGbQlZwC5B7zsyr6UfRz/s
+         CMBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=SxYidUcQF/JRSeOjMS+zF5IXpdU1AyWxQh1T5sdHgXo=;
-        b=rCS4Cb563BYzfwbqWkpMPL5qk0r18OoE+212CDNJkeIqCApX6prnMOktWklsfDlhLt
-         MTqIrnPj4oBdXVh6bQf0lZNw879vLI1BoXtkpfhioOitRGhUYctt1Uw1YingiTRIE16n
-         EnJJv69jeHHq0r6JlBNytWSnLM9f9NicJw9SUYInZw/9rKZBmuPhRVa5dK0RmJ/YYJlj
-         AnrVMyqhV8HUGtU76i+zfEuvYZZsGYDuEnBfLaS2oZG2WPxmXyNQMGpltK27uvOmV+is
-         UvEnoD6yZZpQawsA6lSxEvmBl206W+PHvczxU1uD0V2MsITDpScKu/TDj50po/ZAO20I
-         v2cg==
-X-Gm-Message-State: AOAM531XrEFIiq3yFWnVjYeG2vXPiuI14ElTst44sAtf5CjjQ8NkwDZA
-        4GVatZ6vhh+NmAlMKiZa5i8=
-X-Google-Smtp-Source: ABdhPJznFZdv3R0iVf5XnrBfpjS3EK+hgBZ7MQaDZd0t6sCV8VHA5pRG8/ArIWtu97PnyY+CrF3Twg==
-X-Received: by 2002:a17:90b:1b4a:: with SMTP id nv10mr2892663pjb.87.1637099957157;
-        Tue, 16 Nov 2021 13:59:17 -0800 (PST)
-Received: from ?IPV6:2601:206:8000:2834::19b? ([2601:206:8000:2834::19b])
-        by smtp.gmail.com with ESMTPSA id d6sm18751621pfh.190.2021.11.16.13.59.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 13:59:16 -0800 (PST)
-Message-ID: <4ef11d86-28f6-69c8-ed79-926d39bdc13d@gmail.com>
-Date:   Tue, 16 Nov 2021 13:59:14 -0800
+        bh=KzBSG7kqq1EY//DQG7+JE9yhI7O+ZkeELeJBY10brBc=;
+        b=TwebxfkAcUcczVLv64TX0vkiDmcNJrbdGiJsX2r0Z+An1wHK7H/pDpxngne+2LPQy7
+         epYmMWQAt0KmOxqoTewhbwRtiv7oU5mlBtPljujCGAoky1LqL4M2iRRgZvBuqHeX7g18
+         DyRpj893ZGwF48pSYl7ln2yL0VTLbML2MBFNuedoSVJr4K0K92jVFlx4nrsAlL2p+pgj
+         SEDC0RCauv87TKNbRlkG3c8TN2IA+ymsEMwxIWQ0vipI7HQ6u12e2TICCq8UUUM6awc8
+         s7aC07Om3XZgqBO7fWVYACE0b4S1Jtmg6BamFYIbt6lU5v7WLFkT/0XjXwbwIFeeYPzl
+         XUxg==
+X-Gm-Message-State: AOAM530O3W2qAmQ8GVCRYx+WZEfbh7uYunUhNXPi0GmnlBhr4X/nUCse
+        7BGE+VrSAuFCOfSgc/XiUQEMjg==
+X-Google-Smtp-Source: ABdhPJzO9Hn1W3kxt9zTmvgN8G1UlwIKRw+MfPxLZ4aHc/cTCYlpK/q9vdVM41qpxsomd3FG8uqGRQ==
+X-Received: by 2002:a19:7709:: with SMTP id s9mr10036514lfc.682.1637099962990;
+        Tue, 16 Nov 2021 13:59:22 -0800 (PST)
+Received: from eriador.lan ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id k43sm1896871lfv.177.2021.11.16.13.59.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 13:59:22 -0800 (PST)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH] arm64: cpufeature: fix CPU features mismatch message
+Date:   Wed, 17 Nov 2021 00:59:22 +0300
+Message-Id: <20211116215922.2021550-1-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH 5.15 000/927] 5.15.3-rc2 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-References: <20211116142631.571909964@linuxfoundation.org>
-From:   Scott Bruce <smbruce@gmail.com>
-In-Reply-To: <20211116142631.571909964@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 07:01, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.3 release.
-> There are 927 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 18 Nov 2021 14:24:22 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.3-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Fix cpp magic involved in ARM64_FTR_REG/ARM64_FTR_REG_OVERRIDE macros.
+Currently ARM64_FTR_REG parameters are expanded early, resulting in
+cryptic debug messages:
 
-Regression found on x86-64 AMD (ASUS GA503QR, Cezanne platform) 
-somewhere between 7f9a9d5d9983 and 5.15.3-rc1. The very early -rc1 tag 
-from a day and a half ago boots fine, -rc1 final and -rc2 boot into a 
-kernel panic during init.
+[    0.071123] CPU features: SANITY CHECK: Unexpected variation in (((3) << 19) | ((0) << 16) | ((0) << 12) | ((7) << 8) | ((0) << 5)). Boot CPU: 0x00022200101022, CPU4: 0x00022200101122
 
-Unfortunately I can't gather any useful debug info from the panic as the 
-relevant bits are instantly pushed off the screen by rest of the dump.
-	
-Here's what I'm left with on screen after the panic, hopefully someone 
-can get something useful out of it: 
-https://photos.app.goo.gl/6FrYPfZCY6YdnPDz6
+Make ARM64_FTR_REG to be expanded before parameters, resulting in proper
+debug log:
 
-I'll bisect and try to narrow this down some today but I'm running 
-builds on my laptop while I work so it won't be super quick.
+[    0.071163] CPU features: SANITY CHECK: Unexpected variation in SYS_ID_AA64MMFR0_EL1. Boot CPU: 0x00022200101022, CPU4: 0x00022200101122
 
-Scott
+Fixes: 8f266a5d878a ("arm64: cpufeature: Add global feature override facility")
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+---
+ arch/arm64/kernel/cpufeature.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index 6ec7036ef7e1..72e3e3819eb4 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -573,15 +573,17 @@ static const struct arm64_ftr_bits ftr_raz[] = {
+ 	ARM64_FTR_END,
+ };
+ 
+-#define ARM64_FTR_REG_OVERRIDE(id, table, ovr) {		\
++#define __ARM64_FTR_REG(id, _name, table, ovr) {		\
+ 		.sys_id = id,					\
+ 		.reg = 	&(struct arm64_ftr_reg){		\
+-			.name = #id,				\
++			.name = _name,				\
+ 			.override = (ovr),			\
+ 			.ftr_bits = &((table)[0]),		\
+ 	}}
+ 
+-#define ARM64_FTR_REG(id, table) ARM64_FTR_REG_OVERRIDE(id, table, &no_override)
++#define ARM64_FTR_REG_OVERRIDE(id, table, ovr) __ARM64_FTR_REG(id, #id, table, ovr)
++
++#define ARM64_FTR_REG(id, table) __ARM64_FTR_REG(id, #id, table, &no_override)
+ 
+ struct arm64_ftr_override __ro_after_init id_aa64mmfr1_override;
+ struct arm64_ftr_override __ro_after_init id_aa64pfr1_override;
+-- 
+2.33.0
+
