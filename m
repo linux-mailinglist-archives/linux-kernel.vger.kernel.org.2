@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B290B4528F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:03:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C144528F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:03:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241566AbhKPEFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 23:05:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
+        id S241662AbhKPEGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 23:06:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241334AbhKPEFA (ORCPT
+        with ESMTP id S241343AbhKPEFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 23:05:00 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53862C07C915;
+        Mon, 15 Nov 2021 23:05:01 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7CB6C07C919;
         Mon, 15 Nov 2021 16:53:06 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id q12so4367299pgh.5;
+Received: by mail-pl1-x632.google.com with SMTP id t21so15907628plr.6;
         Mon, 15 Nov 2021 16:53:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=mQ4zBzdLNeEoEE74Qz4XRg/VBkFxechuDPINXlbW2qc=;
-        b=VEU1Q9m+nafMaezjJbss0mGeK7ymabadCo5+aoUS/F2b7H4K5CZ731E2duImYM77uE
-         M/jd5rLQt1f0y6D4OVNm+8Je8kFmLkE8OKO5Cab71ISBGPrOCrMTxCGC6WH+HtQogF+9
-         lTEd0lDibWcJ9OXrkHxNyMPltK3hbFVzWfggQBw3oswWf3BwalmhG9r1ULbyVl0DPDN9
-         t+TLg76Hp2hSst0XRDn67WmiV3Jtma3LMRgnHyF4g00ycZt4DHBuTUS6HHZYEBI9G72G
-         PDjb1Nv3MiOVDqxk09bfedjwOgylWanBJHTXSr0eVJY0P/5ORf7UuN+fg/bd/nMaxNtp
-         sI2g==
+        bh=aZ5tXp1sMvrUv561doAiiCqmD/rNuSSbtkKz5FumcyA=;
+        b=Fokzzr5kW5aWUlaCTKfzgxiKq8Sz0JJNct2dPr95icW0vsZJtaR2EFMTnO1oVDfMOq
+         Lz6JGgFasUyOruecRwq5Aml0eaiTTg2hnH8ICBGuMMPr777ZnKVxIVX5IvluwbuK+Rxh
+         IsN8tYvUeOJ/6U6qlHZicvs0HDoYKEcXWRmbJRZCLUI/NSUB23Le+8IpMm1BnErovhx0
+         /LQuVgCI0ouIkBrtJacuCHdWWHdWgKrQCegBDrITIPL4TLXT0NkMQRmFyoWkFbcwxX37
+         thogFTUiBYPEvVKPH9yj+GjkpWVutq8FxhlU8Uua6imHeqE6Fadf2rf4Rz5xTfSBxRVx
+         MKQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mQ4zBzdLNeEoEE74Qz4XRg/VBkFxechuDPINXlbW2qc=;
-        b=gdDxaGmu6A4E8qrvzQrpkKaG+/Zr5BEyN3rtQOc+w6ceAYStuUw3k0YvBOkuTpBVom
-         MbcYQFyibrc2auoqYAfAgsNYLobIVO3TC/A/PpU+jWusmWtaUKmUVZx5sFkpj91j0ex2
-         xMb1xt5ka9VQtAJjGHeSYzvVrYZrtCrTtcg4v8Iwet53Iu7UhmMNE7fQtn3qg0wIJUmW
-         s1fO1qQLynh7cGRlpRapE8UvFoj1jz7Vx2X8GRZq0mRWgwsJX3dEJUt4qmFHY5WK3kfu
-         Ord5/n3e3foA0gDU/hc3Ql8LurlDD6GHRa9c5y2m78AtMuquXK1JDJMQf+STYNwrzyBt
-         h3GQ==
-X-Gm-Message-State: AOAM533/phbMmNMr7LUXkAtuVglIAwxgSMezJM96eyHG87SqaB/Srx5g
-        uBR3uVA0pbwW2zOzut5wrRA=
-X-Google-Smtp-Source: ABdhPJwWHpML+YUDcHJCudx7sqn0Ep4LzQiuRZB9kU2ct73HsNkMskXqdNdDQtw32VZtOAqRbi0FoQ==
-X-Received: by 2002:a63:8c5c:: with SMTP id q28mr2247255pgn.244.1637023985989;
-        Mon, 15 Nov 2021 16:53:05 -0800 (PST)
+        bh=aZ5tXp1sMvrUv561doAiiCqmD/rNuSSbtkKz5FumcyA=;
+        b=EWTdTgU4rS81mDbYySh+sbS1r6WQqGWXlt6Daw+kyk/eYHh/pURyisgtpLSXgfCzuy
+         UMsy8acsFv5q5iFZF6HexXd4EkWwdNJ07A4vi9yEHKQsNnW8k9/tmDK+BDkr3+/k1bqw
+         Hlpjm0wNUjmkq2uUfmIRdvteDODQ4h1z/9D4NW9VVQCp1sm0RLQw65HYuAu2p0FxLl7z
+         wPl8+2Ds4Z7xkmkDomMa1yyOHAq4Or8Zip0rjVkrTPPpST7ooCPbKoGwQ4fJT4IJa7+J
+         41zWiAe8PS26lGv87IL7/NYQ4Bap8X8zPQa/fqPG9cKWoOh154UqJJDsM047LugCXVdU
+         M1Cw==
+X-Gm-Message-State: AOAM533FrIbbVrAMpJ9zL4CeFY2CY2K+T0gBy2DsaGvA+b+cOrSh0CZC
+        wlQGVhI3WS7dljOlT2E9/xM=
+X-Google-Smtp-Source: ABdhPJyigJGV07hysM698lYSq2/gFNLDQaOt6dLD9KS7jPLXXnrmHTdY0gRp1kmucLGbfl6j1VlUpA==
+X-Received: by 2002:a17:90a:1b45:: with SMTP id q63mr70178224pjq.135.1637023986396;
+        Mon, 15 Nov 2021 16:53:06 -0800 (PST)
 Received: from localhost.lan ([2400:4070:175b:7500::7a7])
-        by smtp.gmail.com with ESMTPSA id 14sm4819960pge.35.2021.11.15.16.53.04
+        by smtp.gmail.com with ESMTPSA id b22sm12780502pge.2.2021.11.15.16.53.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 15 Nov 2021 16:53:05 -0800 (PST)
 Received: from x2.lan (localhost [127.0.0.1])
-        by localhost.lan (Postfix) with ESMTPSA id 71755900957;
+        by localhost.lan (Postfix) with ESMTPSA id 7D2D4900958;
         Tue, 16 Nov 2021 00:53:03 +0000 (GMT)
 From:   Vincent Pelletier <plr.vincent@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>,
@@ -61,49 +61,59 @@ To:     Rob Herring <robh+dt@kernel.org>,
         Yash Shah <yash.shah@sifive.com>, devicetree@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         David Abdurachmanov <david.abdurachmanov@sifive.com>
-Subject: [PATCH] riscv: dts: sifive unmatched: Expose the PMIC sub-functions.
-Date:   Tue, 16 Nov 2021 00:52:58 +0000
-Message-Id: <0f5e86c3658817874f158b06f78cf2d4e8e1a9e5.1637023980.git.plr.vincent@gmail.com>
+Subject: [PATCH] riscv: dts: sifive unmatched: Expose the FU740 core supply regulator.
+Date:   Tue, 16 Nov 2021 00:52:59 +0000
+Message-Id: <0879c5b0c72b9bf6bf71f880def166f8804f41c7.1637023980.git.plr.vincent@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <f6512cc50dc31a086e00ed59c63ea60d8c148fc4.1637023980.git.plr.vincent@gmail.com>
 References: <f6512cc50dc31a086e00ed59c63ea60d8c148fc4.1637023980.git.plr.vincent@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These sub-functions are available in the chip revision on this board, so
-expose them.
+Provides monitoring of core voltage and current:
+tps544b20-i2c-0-1e
+Adapter: i2c-ocores
+vout1:       906.00 mV
+temp1:        -40.0°C  (high = +125.0°C, crit = +150.0°C)
+iout1:         5.06 A  (max = +20.00 A, crit max = +26.00 A)
 
 Signed-off-by: Vincent Pelletier <plr.vincent@gmail.com>
+
+--
+Note for review: this patch has one warning from checkpatch.pl:
+  WARNING: DT compatible string "tps544b20" appears un-documented -- check ./Documentation/devicetree/bindings/
+  #32: FILE: arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts:55:
+  +               compatible = "tps544b20";
+This chip is handled by the existing pmbus module, and there is indeed no
+matching entry in Documentation/devicetree/bindings/hwmon/pmbus. I am not
+especially knowledgeable about this chip, I only know it is used by this
+board, so I am not sure I can do the best job in putting such a file
+together.
+If needed I can git it a try.
 ---
- arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-index cf8937708829..270360b258b7 100644
+index 270360b258b7..e327831d0d48 100644
 --- a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
 +++ b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-@@ -75,6 +75,18 @@ pmic@58 {
- 		interrupts = <1 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
+@@ -51,6 +51,11 @@ &uart1 {
+ &i2c0 {
+ 	status = "okay";
  
-+		onkey {
-+			compatible = "dlg,da9063-onkey";
-+		};
++	tps544b20@1e {
++		compatible = "tps544b20";
++		reg = <0x1e>;
++	};
 +
-+		rtc {
-+			compatible = "dlg,da9063-rtc";
-+		};
-+
-+		wdt {
-+			compatible = "dlg,da9063-watchdog";
-+		};
-+
- 		regulators {
- 			vdd_bcore1: bcore1 {
- 				regulator-min-microvolt = <900000>;
+ 	temperature-sensor@4c {
+ 		compatible = "ti,tmp451";
+ 		reg = <0x4c>;
 -- 
 2.33.1
 
