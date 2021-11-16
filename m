@@ -2,102 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AAD9453BC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 22:39:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D1C453BC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 22:39:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbhKPVmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 16:42:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59884 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229733AbhKPVmA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 16:42:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637098742;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iTjW19qZdyUqpVYPyw3O2e3LOsDvSyyIGNuakp97I8M=;
-        b=QkpMX5u/zzzaZYMn03sRnYosFN75E1hLNcuo/R1zwN9s8OUZNIRIqx6wb3mxE48xnhgzcb
-        BMTSlQ+uGk7UImuBHeUAijqVJdUcR7zIFAE7/gythO/+gIG8Iu3mRo/ZvDmYjz+3ylh3i2
-        ORnDg23D09B/E5i90Yd6tPv1sohtH8M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-468-VIIy0NdwMbur5PwILq9BcQ-1; Tue, 16 Nov 2021 16:38:59 -0500
-X-MC-Unique: VIIy0NdwMbur5PwILq9BcQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S230350AbhKPVmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 16:42:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229710AbhKPVmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 16:42:24 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6258C15721;
-        Tue, 16 Nov 2021 21:38:57 +0000 (UTC)
-Received: from starship (unknown [10.40.194.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1762760BF1;
-        Tue, 16 Nov 2021 21:38:48 +0000 (UTC)
-Message-ID: <f983e2e343f600ab5196aef8389d719bc2ab7308.camel@redhat.com>
-Subject: Re: [PATCH v2 0/6] nSVM optional features
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Shuah Khan <shuah@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
+        by mail.kernel.org (Postfix) with ESMTPSA id E73B661A53;
+        Tue, 16 Nov 2021 21:39:25 +0000 (UTC)
+Date:   Tue, 16 Nov 2021 16:39:24 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Joe Korty <joe.korty@concurrent-rt.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Bandan Das <bsd@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wei Huang <wei.huang2@amd.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>
-Date:   Tue, 16 Nov 2021 23:38:47 +0200
-In-Reply-To: <20211101140324.197921-1-mlevitsk@redhat.com>
-References: <20211101140324.197921-1-mlevitsk@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Clark Williams <williams@redhat.com>,
+        Jun Miao <jun.miao@windriver.com>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5.10-rt+] drm/i915/gt: transform irq_disable into
+ local_lock.
+Message-ID: <20211116163924.5d5a2ffd@gandalf.local.home>
+In-Reply-To: <20211116210249.t3f6gw56iaow57mq@linutronix.de>
+References: <20211007165928.GA43890@zipoli.concurrent-rt.com>
+        <20211007171929.hegwwqelf46skjyw@linutronix.de>
+        <20211009164908.GA21269@zipoli.concurrent-rt.com>
+        <20211116152534.122f8357@gandalf.local.home>
+        <20211116210249.t3f6gw56iaow57mq@linutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-11-01 at 16:03 +0200, Maxim Levitsky wrote:
-> This is a resend of a few patches that implement few
-> SVM's optional features for nesting.
-> 
-> I was testing these patches during last few weeks with various nested configurations
-> and I was unable to find any issues.
-> 
-> I also implemented support for nested vGIF in the last patch.
-> 
-> Best regards,
-> 	Maxim Levitsky
-> 
-> Maxim Levitsky (6):
->   KVM: x86: SVM: add module param to control LBR virtualization
->   KVM: x86: nSVM: correctly virtualize LBR msrs when L2 is running
->   KVM: x86: nSVM: implement nested LBR virtualization
->   KVM: x86: nSVM: implement nested VMLOAD/VMSAVE
->   KVM: x86: nSVM: support PAUSE filter threshold and count when
->     cpu_pm=on
->   KVM: x86: SVM: implement nested vGIF
-> 
->  arch/x86/kvm/svm/nested.c |  86 ++++++++++++++++++++---
->  arch/x86/kvm/svm/svm.c    | 140 ++++++++++++++++++++++++++++++++------
->  arch/x86/kvm/svm/svm.h    |  38 +++++++++--
->  3 files changed, 228 insertions(+), 36 deletions(-)
-> 
-> -- 
-> 2.26.3
-> 
-> 
-Kind ping on these patches.
+On Tue, 16 Nov 2021 22:02:49 +0100
+Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
 
-Best regards,
-	Maxim Levitsky
+> On 2021-11-16 15:25:34 [-0500], Steven Rostedt wrote:
+> > I'm looking to see what needs to be added to 5.10-rt. Is there a particular
+> > fix in one of the 5.x-rt trees (x > 10) that I can pull from? Or is this
+> > only an issue with 5.10 and below?  
+> 
+> I have this:
+>   https://lore.kernel.org/all/20211026114100.2593433-1-bigeasy@linutronix.de
+> 
+> pending vs upstream and I *think* more than just that one (2/9 from the
+> series) needs to be backported here. We do have 1/9 differently in 5.10,
+> not sure about 4/9.
+> I would love more feedback here from people and I tried to motivate Joe
+> to provide some. Clark was so nice to test these patches and provide
+> feedback. My i915 does not trigger all the code paths I'm touching
+> there.
+> 
+> If you think that 2/9 is obvious enough, please go ahead. If you start
+> touching that irq_work area then you might also want to pick
+>   810979682ccc9 ("irq_work: Allow irq_work_sync() to sleep if irq_work() no IRQ support.")
+>   b4c6f86ec2f64 ("irq_work: Handle some irq_work in a per-CPU thread on PREEMPT_RT")
+>   09089db79859c ("irq_work: Also rcuwait for !IRQ_WORK_HARD_IRQ on PREEMPT_RT")
+> 
+> which made their way into v5.16-rc1.
+>
 
+I have a few boxes with i915, that maybe could help in testing.
+
+I'll take a look.
+
+-- Steve
