@@ -2,127 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E634532BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B144C4532C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:21:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236656AbhKPNUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 08:20:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232753AbhKPNUA (ORCPT
+        id S236657AbhKPNYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 08:24:00 -0500
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:46646 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230471AbhKPNYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 08:20:00 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E69C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 05:17:04 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mmyKZ-0003me-Tq; Tue, 16 Nov 2021 14:16:59 +0100
-Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mmyKX-000665-QV; Tue, 16 Nov 2021 14:16:57 +0100
-Date:   Tue, 16 Nov 2021 14:16:57 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     g@pengutronix.de, Woojung Huh <woojung.huh@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com,
-        kernel@pengutronix.de, Jakub Kicinski <kuba@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>
-Subject: Re: [RFC PATCH net-next] net: dsa: microchip: implement multi-bridge
- support
-Message-ID: <20211116131657.GC16121@pengutronix.de>
-References: <20211108111034.2735339-1-o.rempel@pengutronix.de>
- <20211110123640.z5hub3nv37dypa6m@skbuf>
- <20211112075823.GJ12195@pengutronix.de>
- <20211115234546.spi7hz2fsxddn4dz@skbuf>
- <20211116083903.GA16121@pengutronix.de>
- <20211116124723.kivonrdbgqdxlryd@skbuf>
+        Tue, 16 Nov 2021 08:24:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1637068863;
+        bh=Sl6WuLnqTU5TtnSO/QxFeyGJuRtLYuKL8EqqmhmDJXE=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=MPT0whG2bQpz0Y8+0rTOzk/Lt9c8RRm7MpZUKNOWWeP09PrTuZbxrGsGMCDBVFtIB
+         73aZZDq3UHdFL++Ub3OxRSnL3yZgntpKyZsNEZe8JaDLPYS2yUL+Vf9WsvhhtP0pGY
+         tjqCDNMkJTzaDuHazCXWjzVHrqqtiLkYOTTXFlu0=
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 0286C1280119;
+        Tue, 16 Nov 2021 08:21:03 -0500 (EST)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id dfdi4ZtKv-8E; Tue, 16 Nov 2021 08:21:02 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1637068862;
+        bh=Sl6WuLnqTU5TtnSO/QxFeyGJuRtLYuKL8EqqmhmDJXE=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=Gh53x5MAbxqanSOf9Z+qToC4xT79AG5yx757N80jyZsGwNIA803bfe57ViasAsXQi
+         4z92/voDtClOm88EHF5A+G0dQSjdu5NI1LOynI7X+wrinp8pr0XgpF0ALZd0R3BPPB
+         joY1Qno04GjG9pkA6f892MOy/dAQoO90oGkz0myw=
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4300:c551::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 2C450128010E;
+        Tue, 16 Nov 2021 08:20:58 -0500 (EST)
+Message-ID: <d751a5dd17550b21f890e3efcf70d5228451767d.camel@HansenPartnership.com>
+Subject: Re: [ELISA Safety Architecture WG] [PATCH v2 0/2] Introduce the
+ pkill_on_warn parameter
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Petr Mladek <pmladek@suse.com>,
+        Alexander Popov <alex.popov@linux.com>
+Cc:     Gabriele Paoloni <gpaoloni@redhat.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Robert Krutsch <krutsch@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul McKenney <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Maciej Rozycki <macro@orcam.me.uk>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jann Horn <jannh@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Laura Abbott <labbott@kernel.org>,
+        David S Miller <davem@davemloft.net>,
+        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Scull <ascull@google.com>,
+        Marc Zyngier <maz@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Wang Qing <wangqing@vivo.com>, Mel Gorman <mgorman@suse.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
+        Mathieu Chouquet-Stringer <me@mathieu.digital>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stephen Kitt <steve@sk2.org>, Stephen Boyd <sboyd@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-hardening@vger.kernel.org,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>, notify@kernel.org,
+        main@lists.elisa.tech, safety-architecture@lists.elisa.tech,
+        devel@lists.elisa.tech, Shuah Khan <shuah@kernel.org>
+Date:   Tue, 16 Nov 2021 08:20:57 -0500
+In-Reply-To: <YZNuyssYsAB0ogUD@alley>
+References: <20211027233215.306111-1-alex.popov@linux.com>
+         <ac989387-3359-f8da-23f9-f5f6deca4db8@linux.com>
+         <CAHk-=wgRmjkP3+32XPULMLTkv24AkA=nNLa7xxvSg-F0G1sJ9g@mail.gmail.com>
+         <77b79f0c-48f2-16dd-1d00-22f3a1b1f5a6@linux.com>
+         <CAKXUXMx5Oi-dNVKB+8E-pdrz+ooELMZf=oT_oGXKFrNWejz=fg@mail.gmail.com>
+         <22828e84-b34f-7132-c9e9-bb42baf9247b@redhat.com>
+         <cf57fb34-460c-3211-840f-8a5e3d88811a@linux.com> <YZNuyssYsAB0ogUD@alley>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211116124723.kivonrdbgqdxlryd@skbuf>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 13:58:20 up 271 days, 16:22, 156 users,  load average: 0.13, 0.15,
- 0.20
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 02:47:23PM +0200, Vladimir Oltean wrote:
-> On Tue, Nov 16, 2021 at 09:39:03AM +0100, Oleksij Rempel wrote:
-> > On Tue, Nov 16, 2021 at 01:45:46AM +0200, Vladimir Oltean wrote:
-> > 
-> > .....
- 
-> > Probably I need to signal it some how from dsa driver, to let linux
-> > bridge make proper decision and reduce logging noise.
-> 
-> What logging noise?
+On Tue, 2021-11-16 at 09:41 +0100, Petr Mladek wrote:
+[...]
+> If I wanted to implement a super-reliable panic() I would
+> use some external device that would cause power-reset when
+> the watched device is not responding.
 
-I get this with current ksz driver:
-[   40.185928] br0: port 2(lan2) entered blocking state
-[   40.190924] br0: port 2(lan2) entered listening state
-[   41.043186] br0: port 2(lan2) entered blocking state
-[   55.512832] br0: port 1(lan1) entered learning state
-[   61.272802] br0: port 2(lan2) neighbor 8000.ae:1b:91:58:77:8b lost
-[   61.279192] br0: port 2(lan2) entered listening state
-[   63.113236] br0: received packet on lan1 with own address as source address (addr:00:0e:cd:00:cd:be, vlan:0)
-[   63.123314] br0: port 2(lan2) entered blocking state
-[   68.953098] br0: received packet on lan1 with own address as source address (addr:00:0e:cd:00:cd:be, vlan:0)
-[   70.872840] br0: port 1(lan1) entered forwarding state
-[   70.878183] br0: topology change detected, propagating
-[   70.883820] br0: received packet on lan1 with own address as source address (addr:00:0e:cd:00:cd:be, vlan:0)
-[   83.672804] br0: port 2(lan2) neighbor 8000.ae:1b:91:58:77:8b lost
-[   83.679181] br0: port 2(lan2) entered listening state
-[   85.113244] br0: received packet on lan1 with own address as source address (addr:00:0e:cd:00:cd:be, vlan:0)
-[   85.123313] br0: port 2(lan2) entered blocking state
-[   97.753160] br0: received packet on lan1 with own address as source address (addr:00:0e:cd:00:cd:be, vlan:0)
-[  103.513076] br0: received packet on lan1 with own address as source address (addr:00:0e:cd:00:cd:be, vlan:0)
-[  105.432801] br0: port 2(lan2) neighbor 8000.ae:1b:91:58:77:8b lost
-[  105.439221] br0: port 2(lan2) entered listening state
-[  107.113238] br0: received packet on lan1 with own address as source address (addr:00:0e:cd:00:cd:be, vlan:0)
-[  107.123326] br0: port 2(lan2) entered blocking state
-[  127.192807] br0: port 2(lan2) neighbor 8000.ae:1b:91:58:77:8b lost
-[  127.199220] br0: port 2(lan2) entered listening state
-[  129.113249] br0: received packet on lan1 with own address as source address (addr:00:0e:cd:00:cd:be, vlan:0)
-[  129.123378] br0: port 2(lan2) entered blocking state
-[  149.592804] br0: port 2(lan2) neighbor 8000.ae:1b:91:58:77:8b lost
-[  149.600308] br0: port 2(lan2) entered listening state
-[  151.113276] br0: received packet on lan1 with own address as source address (addr:00:0e:cd:00:cd:be, vlan:0)
-[  151.125213] br0: port 2(lan2) entered blocking state
+They're called watchdog timers.  We have a whole subsystem full of
+them:
 
-Probably I have wrong expectation... 
+drivers/watchdog
 
-> > And since STP state is not directly configurable on this switch, it
-> > probably means receive/transmit enable state of the port.  So, packets
-> > with matching MAC should be forwarded even if port is in the receive
-> > disabled state. Correct?
-> 
-> In the context we've been discussing so far, "forwarding" has a pretty
-> specific meaning, which is autonomously redirecting from one front port
-> to another. For link-local packets, what you want is "trapping", i.e.
-> send to the CPU and to the CPU only.
+We used them in old cluster HA systems to guarantee successful recovery
+of shared state from contaminated cluster members, but I think they'd
+serve the reliable panic need equally well.  Most server class systems
+today have them built in (on the BMC if they don't have a separate
+mechanism), they're just not usually activated.
 
-Ok. Thank you!
+James
 
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
