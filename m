@@ -2,118 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C0145396B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 19:32:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C61DF453969
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 19:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239487AbhKPSeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 13:34:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39558 "EHLO
+        id S239479AbhKPSdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 13:33:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235838AbhKPSeG (ORCPT
+        with ESMTP id S235838AbhKPSds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 13:34:06 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993FCC061746
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 10:31:09 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id s14so89568ilv.10
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 10:31:09 -0800 (PST)
+        Tue, 16 Nov 2021 13:33:48 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55345C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 10:30:51 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id j6-20020a17090a588600b001a78a5ce46aso3055431pji.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 10:30:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1EViyUHQdSut6g+RY4rG3RX+9KMNh10G4tRFHz9NG9E=;
-        b=BPlylCR84zbphWWF7YUzdn4WkJmgNf/MrOQz/jFWkfQ9bdYeyGwjDpcFolSsS3egOe
-         8X/fCkqeL2w5C4MYsBNhuj/7w/970bRxMisig2Bd3UUXBUHNRAA7a6/Ow3S4dkSEsswr
-         dk630OUIqnhLds9oSGFMgYz8tM0D4JR8gRkKLuaMISRSh282560nfqfSSf6Muiaa3EKK
-         de6oUD6qfQdBZYk+S/n4AeYIfoVt+xAbPphoDbukYetQD/dnNeGcMi15nTm4BXgaTbyu
-         H8/e/qZ/n6+EudcD8Jox7vFxLYdohLimBZYEa9C2tVX0dMEmOgpUzTpTkFGYvdt0YmJ2
-         XGeA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GTAAJI0ltdrSWld+SGAvys7taWMA2HrVk1Gbz1jjxAU=;
+        b=G0/YE+xN3GXAlKTirM119NnjTGOanYz5HutU0khmj0xNrDGfLpo9dEXLpI3ayiN/LZ
+         qT6bC9tj6UPCso3JyA38ScZrBB3vr4Nq3iYlU/KXovXqFiI4f3y1KjqvO7kkS07BRaYy
+         jX6akc2uJrqioQ4KSESa6rP9D/FuQQLKHOV7c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1EViyUHQdSut6g+RY4rG3RX+9KMNh10G4tRFHz9NG9E=;
-        b=ztc1DuAFHSiH2cQ2UHO4Yufk5IxIji5OuDxGS3gtsaBXXWysYWfuMOQo4Gh2lEZFCU
-         aV9G9DiatMq03Fr6a8wL6z4jDQ50fvWEaNfREQKA0NijpXE4m0XsKcUlp4WTRKwrEEa+
-         wRG6csY0Wl93HWPOQM0tSgpSKkGLj1p2ZO5ZBBJKsF5NN1h6nyi/jtZR86uupCKX/U+y
-         KyeqQFwE63sYt1IO983/7HYIoEjAh25QZLQdKvYkBsRbFELNXKYeVr5TGzddYjuGBLqu
-         suoYcczwOJU5hwB0sI0qvFX5fN1Se4aLTeC89szyrftjOv0L220jank5hFnTOcZ7I2ng
-         ltMQ==
-X-Gm-Message-State: AOAM530jPRzOke7HLjUJtkBPF6vkffxuR/oaY/LR3gdtub+zrs3tsPS5
-        uI5YKqin37Z7NZRXP8E0ImPoletPmOq6wB64kES7hA==
-X-Google-Smtp-Source: ABdhPJzOKDJ98X1OJQtFLiL6PuZPZvNI9s+5gIkGORkhTGagdy3QHFC93lEmQFbr1bq8pi3PmWdmQK2SEkSuhCUfKaE=
-X-Received: by 2002:a05:6e02:1445:: with SMTP id p5mr5940397ilo.105.1637087469025;
- Tue, 16 Nov 2021 10:31:09 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GTAAJI0ltdrSWld+SGAvys7taWMA2HrVk1Gbz1jjxAU=;
+        b=UG05rH1Y1lHRNx7qyh0owMdCmek1YAUikEslt59TW8sVCkjNnRRikYr8kUBpmgzFTv
+         xktYUdmYeSuB1Kyd0L757q9Ls3hmGAwaHZNW1dJHRd9MfQTmiUWiyK5eK+VjmMmpDJ3o
+         o3SylW+6WHji27iE7SqXijEhPU1L3XF5iz1eG7Qm/WOXsMkJLoSc0SdwVmX6yWjA4obx
+         Yy02o9v81Zbv8DbbIyZiOWIFYqhvgQ5X5ptFE1BK4WmGjLwPSBRIZ8UsZFzw14RaIcSD
+         zVLf5O/8whau0olTOzNe7WX/DbKP4f/VcUI9z1jYc2QkCLf01uku9m1B0TYLT3d8+cgm
+         ZGfQ==
+X-Gm-Message-State: AOAM531P8isdDJLJY3BV2UzlqhhVCbdszInjKQW0+FnVYeD/N2fA68Zn
+        BQXOl7Wxz7M5womO6VEmMxFZyw==
+X-Google-Smtp-Source: ABdhPJx/y/oON+xAv+NB14+oceVr4Ex7+YFLLyvs3AGDqKNobo2YB1xxQ6109Jactf8wbpFYJyrjHQ==
+X-Received: by 2002:a17:902:e88a:b0:141:dfde:eed7 with SMTP id w10-20020a170902e88a00b00141dfdeeed7mr47904017plg.17.1637087450846;
+        Tue, 16 Nov 2021 10:30:50 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id z30sm18705960pfg.30.2021.11.16.10.30.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 10:30:50 -0800 (PST)
+Date:   Tue, 16 Nov 2021 10:30:49 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marco Elver <elver@google.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Robert O'Callahan <rocallahan@gmail.com>,
+        Marko =?iso-8859-1?B?TeRrZWzk?= <marko.makela@mariadb.com>,
+        linux-api@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 2/3] signal: Requeue signals in the appropriate queue
+Message-ID: <202111161027.C7957C65@keescook>
+References: <20211101034147.6203-1-khuey@kylehuey.com>
+ <877ddqabvs.fsf@disp2133>
+ <CAP045AqJVXA60R9RF8Gb2PWGBsK6bZ7tVBkdCcPYYrp6rOkG-Q@mail.gmail.com>
+ <87fsse8maf.fsf@disp2133>
+ <CAP045ApAX725ZfujaK-jJNkfCo5s+oVFpBvNfPJk+DKY8K7d=Q@mail.gmail.com>
+ <CAP045AqsstnxfTyXhhCGDSucqGN7BTtfHJ5s6ZxUQC5K-JU56A@mail.gmail.com>
+ <87bl2kekig.fsf_-_@email.froward.int.ebiederm.org>
+ <87zgq4d5r4.fsf_-_@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-References: <20211116155545.473311-1-robdclark@gmail.com>
-In-Reply-To: <20211116155545.473311-1-robdclark@gmail.com>
-From:   Amit Pundir <amit.pundir@linaro.org>
-Date:   Wed, 17 Nov 2021 00:00:33 +0530
-Message-ID: <CAMi1Hd0qzu1t6QeZCNgSoTrScZL0_XQnZUPkQ5y7D+oV49GREw@mail.gmail.com>
-Subject: Re: [PATCH] drm/scheduler: fix drm_sched_job_add_implicit_dependencies
- harder
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87zgq4d5r4.fsf_-_@email.froward.int.ebiederm.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Nov 2021 at 21:21, Rob Clark <robdclark@gmail.com> wrote:
->
-> From: Rob Clark <robdclark@chromium.org>
->
-> drm_sched_job_add_dependency() could drop the last ref, so we need to do
-> the dma_fence_get() first.
->
+On Mon, Nov 15, 2021 at 11:33:19PM -0600, Eric W. Biederman wrote:
+> 
+> In the event that a tracer changes which signal needs to be delivered
+> and that signal is currently blocked then the signal needs to be
+> requeued for later delivery.
+> 
+> With the advent of CLONE_THREAD the kernel has 2 signal queues per
+> task.  The per process queue and the per task queue.  Update the code
+> so that if the signal is removed from the per process queue it is
+> requeued on the per process queue.  This is necessary to make it
+> appear the signal was never dequeued.
+> 
+> The rr debugger reasonably believes that the state of the process from
+> the last ptrace_stop it observed until PTRACE_EVENT_EXIT can be recreated
+> by simply letting a process run.  If a SIGKILL interrupts a ptrace_stop
+> this is not true today.
+> 
+> So return signals to their original queue in ptrace_signal so that
+> signals that are not delivered appear like they were never dequeued.
 
-It fixed the splats I saw on RB5 (sm8250 | A650). Thanks.
+The only comment I have on this is that it seems like many callers
+totally ignore the result store in "type" (signalfd_dequeue,
+kernel_dequeue_signal, do_sigtimedwait), which would imply a different
+API might be desirable. That said, it's also not a big deal.
 
-Tested-by: Amit Pundir <amit.pundir@linaro.org>
+> 
+> Fixes: 794aa320b79d ("[PATCH] sigfix-2.5.40-D6")
+> History Tree: https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.gi
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
-> Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
-> Fixes: 9c2ba265352a drm/scheduler: ("use new iterator in drm_sched_job_ad=
-d_implicit_dependencies v2")
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+
 > ---
-> Applies on top of "drm/scheduler: fix drm_sched_job_add_implicit_dependen=
-cies"
-> but I don't think that has a stable commit sha yet.
->
->  drivers/gpu/drm/scheduler/sched_main.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/sch=
-eduler/sched_main.c
-> index 94fe51b3caa2..f91fb31ab7a7 100644
-> --- a/drivers/gpu/drm/scheduler/sched_main.c
-> +++ b/drivers/gpu/drm/scheduler/sched_main.c
-> @@ -704,12 +704,13 @@ int drm_sched_job_add_implicit_dependencies(struct =
-drm_sched_job *job,
->         int ret;
->
->         dma_resv_for_each_fence(&cursor, obj->resv, write, fence) {
-> -               ret =3D drm_sched_job_add_dependency(job, fence);
-> -               if (ret)
-> -                       return ret;
-> -
->                 /* Make sure to grab an additional ref on the added fence=
- */
->                 dma_fence_get(fence);
-> +               ret =3D drm_sched_job_add_dependency(job, fence);
-> +               if (ret) {
-> +                       dma_fence_put(fence);
-> +                       return ret;
-> +               }
->         }
->         return 0;
+>  fs/signalfd.c                |  5 +++--
+>  include/linux/sched/signal.h |  7 ++++---
+>  kernel/signal.c              | 21 ++++++++++++++-------
+>  3 files changed, 21 insertions(+), 12 deletions(-)
+> 
+> diff --git a/fs/signalfd.c b/fs/signalfd.c
+> index 040e1cf90528..74f134cd1ff6 100644
+> --- a/fs/signalfd.c
+> +++ b/fs/signalfd.c
+> @@ -165,11 +165,12 @@ static int signalfd_copyinfo(struct signalfd_siginfo __user *uinfo,
+>  static ssize_t signalfd_dequeue(struct signalfd_ctx *ctx, kernel_siginfo_t *info,
+>  				int nonblock)
+>  {
+> +	enum pid_type type;
+>  	ssize_t ret;
+>  	DECLARE_WAITQUEUE(wait, current);
+>  
+>  	spin_lock_irq(&current->sighand->siglock);
+> -	ret = dequeue_signal(current, &ctx->sigmask, info);
+> +	ret = dequeue_signal(current, &ctx->sigmask, info, &type);
+>  	switch (ret) {
+>  	case 0:
+>  		if (!nonblock)
+> @@ -184,7 +185,7 @@ static ssize_t signalfd_dequeue(struct signalfd_ctx *ctx, kernel_siginfo_t *info
+>  	add_wait_queue(&current->sighand->signalfd_wqh, &wait);
+>  	for (;;) {
+>  		set_current_state(TASK_INTERRUPTIBLE);
+> -		ret = dequeue_signal(current, &ctx->sigmask, info);
+> +		ret = dequeue_signal(current, &ctx->sigmask, info, &type);
+>  		if (ret != 0)
+>  			break;
+>  		if (signal_pending(current)) {
+> diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+> index 23505394ef70..167995d471da 100644
+> --- a/include/linux/sched/signal.h
+> +++ b/include/linux/sched/signal.h
+> @@ -286,17 +286,18 @@ static inline int signal_group_exit(const struct signal_struct *sig)
+>  extern void flush_signals(struct task_struct *);
+>  extern void ignore_signals(struct task_struct *);
+>  extern void flush_signal_handlers(struct task_struct *, int force_default);
+> -extern int dequeue_signal(struct task_struct *task,
+> -			  sigset_t *mask, kernel_siginfo_t *info);
+> +extern int dequeue_signal(struct task_struct *task, sigset_t *mask,
+> +			  kernel_siginfo_t *info, enum pid_type *type);
+>  
+>  static inline int kernel_dequeue_signal(void)
+>  {
+>  	struct task_struct *task = current;
+>  	kernel_siginfo_t __info;
+> +	enum pid_type __type;
+>  	int ret;
+>  
+>  	spin_lock_irq(&task->sighand->siglock);
+> -	ret = dequeue_signal(task, &task->blocked, &__info);
+> +	ret = dequeue_signal(task, &task->blocked, &__info, &__type);
+>  	spin_unlock_irq(&task->sighand->siglock);
+>  
+>  	return ret;
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index 986fa69c15c5..43e8b7e362b0 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -626,7 +626,8 @@ static int __dequeue_signal(struct sigpending *pending, sigset_t *mask,
+>   *
+>   * All callers have to hold the siglock.
+>   */
+> -int dequeue_signal(struct task_struct *tsk, sigset_t *mask, kernel_siginfo_t *info)
+> +int dequeue_signal(struct task_struct *tsk, sigset_t *mask,
+> +		   kernel_siginfo_t *info, enum pid_type *type)
+>  {
+>  	bool resched_timer = false;
+>  	int signr;
+> @@ -634,8 +635,10 @@ int dequeue_signal(struct task_struct *tsk, sigset_t *mask, kernel_siginfo_t *in
+>  	/* We only dequeue private signals from ourselves, we don't let
+>  	 * signalfd steal them
+>  	 */
+> +	*type = PIDTYPE_PID;
+>  	signr = __dequeue_signal(&tsk->pending, mask, info, &resched_timer);
+>  	if (!signr) {
+> +		*type = PIDTYPE_TGID;
+>  		signr = __dequeue_signal(&tsk->signal->shared_pending,
+>  					 mask, info, &resched_timer);
+>  #ifdef CONFIG_POSIX_TIMERS
+> @@ -2522,7 +2525,7 @@ static void do_freezer_trap(void)
+>  	freezable_schedule();
 >  }
-> --
-> 2.33.1
->
+>  
+> -static int ptrace_signal(int signr, kernel_siginfo_t *info)
+> +static int ptrace_signal(int signr, kernel_siginfo_t *info, enum pid_type type)
+>  {
+>  	/*
+>  	 * We do not check sig_kernel_stop(signr) but set this marker
+> @@ -2563,7 +2566,7 @@ static int ptrace_signal(int signr, kernel_siginfo_t *info)
+>  
+>  	/* If the (new) signal is now blocked, requeue it.  */
+>  	if (sigismember(&current->blocked, signr)) {
+> -		send_signal(signr, info, current, PIDTYPE_PID);
+> +		send_signal(signr, info, current, type);
+>  		signr = 0;
+>  	}
+>  
+> @@ -2664,6 +2667,7 @@ bool get_signal(struct ksignal *ksig)
+>  
+>  	for (;;) {
+>  		struct k_sigaction *ka;
+> +		enum pid_type type;
+>  
+>  		/* Has this task already been marked for death? */
+>  		if (signal_group_exit(signal)) {
+> @@ -2706,16 +2710,18 @@ bool get_signal(struct ksignal *ksig)
+>  		 * so that the instruction pointer in the signal stack
+>  		 * frame points to the faulting instruction.
+>  		 */
+> +		type = PIDTYPE_PID;
+>  		signr = dequeue_synchronous_signal(&ksig->info);
+>  		if (!signr)
+> -			signr = dequeue_signal(current, &current->blocked, &ksig->info);
+> +			signr = dequeue_signal(current, &current->blocked,
+> +					       &ksig->info, &type);
+>  
+>  		if (!signr)
+>  			break; /* will return 0 */
+>  
+>  		if (unlikely(current->ptrace) && (signr != SIGKILL) &&
+>  		    !(sighand->action[signr -1].sa.sa_flags & SA_IMMUTABLE)) {
+> -			signr = ptrace_signal(signr, &ksig->info);
+> +			signr = ptrace_signal(signr, &ksig->info, type);
+>  			if (!signr)
+>  				continue;
+>  		}
+> @@ -3540,6 +3546,7 @@ static int do_sigtimedwait(const sigset_t *which, kernel_siginfo_t *info,
+>  	ktime_t *to = NULL, timeout = KTIME_MAX;
+>  	struct task_struct *tsk = current;
+>  	sigset_t mask = *which;
+> +	enum pid_type type;
+>  	int sig, ret = 0;
+>  
+>  	if (ts) {
+> @@ -3556,7 +3563,7 @@ static int do_sigtimedwait(const sigset_t *which, kernel_siginfo_t *info,
+>  	signotset(&mask);
+>  
+>  	spin_lock_irq(&tsk->sighand->siglock);
+> -	sig = dequeue_signal(tsk, &mask, info);
+> +	sig = dequeue_signal(tsk, &mask, info, &type);
+>  	if (!sig && timeout) {
+>  		/*
+>  		 * None ready, temporarily unblock those we're interested
+> @@ -3575,7 +3582,7 @@ static int do_sigtimedwait(const sigset_t *which, kernel_siginfo_t *info,
+>  		spin_lock_irq(&tsk->sighand->siglock);
+>  		__set_task_blocked(tsk, &tsk->real_blocked);
+>  		sigemptyset(&tsk->real_blocked);
+> -		sig = dequeue_signal(tsk, &mask, info);
+> +		sig = dequeue_signal(tsk, &mask, info, &type);
+>  	}
+>  	spin_unlock_irq(&tsk->sighand->siglock);
+>  
+> -- 
+> 2.20.1
+> 
+
+-- 
+Kees Cook
