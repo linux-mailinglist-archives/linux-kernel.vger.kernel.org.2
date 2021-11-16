@@ -2,85 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C97453637
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D3B45363B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238491AbhKPPqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 10:46:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238378AbhKPPpr (ORCPT
+        id S238439AbhKPPqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 10:46:45 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:42294 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238374AbhKPPqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 10:45:47 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF12C061766
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:42:41 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id z18so2482802iof.5
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:42:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=qZTHx1FvTHabhubW5uLJTFw9g14LfOUphosZneheXs4=;
-        b=w3QG6GtaZbgUU/+dtPJdAPWmz2QGCSQsvGWcNOjVgJzNUtppuN3BuL6C793MwPsZco
-         vmpfKXeKJF5z9hGpGvKNH8qXEqsKBJa//YA7/NsmjWcI7ePjzc707vdTSfxUa5RRaze5
-         3toFmyOzFAODOhoRXNXy8XE81gD/Au+qO9TNc22HyPGVBXVWCATQQdOuwc6p5jiP16Is
-         FP5Ce9W3ANlg3rjI9JLET3UWo2rETlyvy6UcENgodYMRaZHNJWlwtdwsfmXl3uDpZN13
-         8Ed7vKFVvUydjzwgPptOkIz5BNiPjJ1+CwafmBa/wPySHb5HrIHRnpnmEkmI0ZDscVCv
-         lU3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qZTHx1FvTHabhubW5uLJTFw9g14LfOUphosZneheXs4=;
-        b=SLbYWqbAwDbttXqjieeVgJQ4AP9+mu6ETC+yH9xis13iFar5DdnxVkDaWk4ITN8NCr
-         xODBE6xaAayBuHpLUI4fL5T5DlppDE2b5r4avvhBrp6kiCC5jzXp0QrEGdnJjvfRwTQX
-         tPpJLiy60IUvAgmT3wa86aBkrsgjWsqWkWu8QHR2rwX1WygxE7zikr4ZrbpccHkyB+Gu
-         U42qEsvHW/gf5XWSJPGxZhTaLvnZ8aAwTqAYRhzQWyOEU10+WjSm2Wu4ENq3p/R0oMUz
-         uHx902ohExow5vzJf7FX5zNayXsZIjpjJyM+8GsC8Iup86KdhQLtoAbQw9z4+eOd9+8T
-         WNxw==
-X-Gm-Message-State: AOAM530iVJJXBKsusU+gEDwVtRp9aiAoORrM6+8RweQD8I5ThH5Fmetq
-        lj8HKbbRjMAYdKiv1fgitDl9FA==
-X-Google-Smtp-Source: ABdhPJyrpIfc2UW9Rx72NBiL5cdgp4TrZ59GyNqn8h8b6TcBQy++Dv52FlJE6Vv7QfaAlwnjezgwfQ==
-X-Received: by 2002:a02:a601:: with SMTP id c1mr6313123jam.114.1637077361081;
-        Tue, 16 Nov 2021 07:42:41 -0800 (PST)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id o10sm9609624ioa.26.2021.11.16.07.42.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 07:42:40 -0800 (PST)
-Subject: Re: [syzbot] INFO: rcu detected stall in __hrtimer_run_queues
-To:     syzbot <syzbot+de9526ade17c659d8336@syzkaller.appspotmail.com>,
-        fweisbec@gmail.com, hch@lst.de, hdanton@sina.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, paulmck@kernel.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-References: <0000000000007ee63e05d0e9c172@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <097631ea-d781-c4e1-aa0e-d921a7a2e69e@kernel.dk>
-Date:   Tue, 16 Nov 2021 08:42:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 16 Nov 2021 10:46:40 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 9E49821891;
+        Tue, 16 Nov 2021 15:43:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637077422;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vdU3ZtCLDsWLBeLjGc1suDgGFypFD7LtqB59Xy3SG2Y=;
+        b=FHrsUWSlrrgR8lLN0Y4S3L98GxIsW99UFd6YC0uTj6pXAes9crtq6yzg4u5NNtlSW6nDff
+        VAnpSE/8lwssUV0g7zenZcHnltdyamGIB0Jsw824emJ922ZZKIOfWzsUUTcw3XxhHHToHf
+        bDsRYWdPPEeKTC1jphQxygdXO4nBNDY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637077422;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vdU3ZtCLDsWLBeLjGc1suDgGFypFD7LtqB59Xy3SG2Y=;
+        b=tCfAGl7yqJsP7cPsocIFZW72qcnEedXjrfzG2hhgffKNT3Bevp0ALO0QGS485OsedZ4YOY
+        /sNzaXTu095YwsAw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 947AEA3B81;
+        Tue, 16 Nov 2021 15:43:42 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 1BFF8DA799; Tue, 16 Nov 2021 16:43:38 +0100 (CET)
+Date:   Tue, 16 Nov 2021 16:43:38 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     dsterba@suse.cz, Linus Torvalds <torvalds@linux-foundation.org>,
+        Qu Wenruo <wqu@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Subject: Re: Kmap-related crashes and memory leaks on 32bit arch (5.15+)
+Message-ID: <20211116154338.GQ28560@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Qu Wenruo <wqu@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+References: <20211104115001.GU20319@twin.jikos.cz>
+ <CAHk-=whYQvExYESEOJoSj4Jy7t+tSZgbCWuNpdwXYh+3zq2itw@mail.gmail.com>
+ <CAHk-=whBOXM3mh-QtzK-EQtDEHQLcziAXu07KxU1crUc5jiQUg@mail.gmail.com>
+ <20211105195004.GJ28560@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <0000000000007ee63e05d0e9c172@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211105195004.GJ28560@suse.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 8:41 AM, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
+On Fri, Nov 05, 2021 at 08:50:04PM +0100, David Sterba wrote:
+> On Thu, Nov 04, 2021 at 04:37:25PM -0700, Linus Torvalds wrote:
+> > On Thu, Nov 4, 2021 at 3:09 PM Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> > > If (a) works, but (b) still fails, then it must be some odd
+> > > interaction issug withs-----ing else. Which sounds unlikely, since I
+> > > don't think we really had anything that should affect kmap or anything
+> > > in this area, but who knows...
+> > 
+> > And bisection ends up perhaps somewhat painful, but sounds like the
+> > way to go if there's no other path forward.
 > 
-> commit b60876296847e6cd7f1da4b8b7f0f31399d59aa1
-> Author: Jens Axboe <axboe@kernel.dk>
-> Date:   Fri Oct 15 21:03:52 2021 +0000
+> Just to give an update, I tested several merge commits and the btrfs
+> merge is the first bad (037c50bfbeb33b4c).
 > 
->     block: improve layout of struct request
+> Last good is the one right before that,
+> 
+> 9c6e8d52a7299  Merge tag 'exfat-for-5.16-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat
+> (plus the fixup to make it compile e66435936756d9bce)
+> 
+> The remaining test to do is the merge conflict resolved by me, as you
+> suggested.
 
-No functional changes in that patch, so looks like a fluky bisection.
+So the result is that the merge conflict from Linus resolved the kmaps
+correctly, there was a bug in the lzo refactoring patch itself that
+caused some page array overflow and some random address was accessed.
 
--- 
-Jens Axboe
-
+I'll send a pull request in a day, I've been validating the patch on the
+unmerged base and on rc1, also with various debugging options on.
+Curiously, with SLOB there's an early crash while still doing the
+compression, but with SLUB (and debugging enabled) there is not an
+immediate crash but some other warning/assertion notices a page with
+mapping (unexpected).
