@@ -2,113 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46651453787
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:31:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A23453792
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:34:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232730AbhKPQem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 11:34:42 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:19148 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231458AbhKPQel (ORCPT
+        id S233406AbhKPQfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 11:35:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233591AbhKPQfW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:34:41 -0500
+        Tue, 16 Nov 2021 11:35:22 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6658EC061766;
+        Tue, 16 Nov 2021 08:32:25 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so3381158pjb.4;
+        Tue, 16 Nov 2021 08:32:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637080305; x=1668616305;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=k8QLCKX7KLdR2qE03Ri6JtRCS+E7WMMOcwsnXytBH+g=;
-  b=v86/JoxAIs8rFBvNdq0LZ25CPi1jH3CqG63VklCdg6GfNb9cGntDdckd
-   GWJF2ow/TZwF67PG1wUWp8ix2y0pT9s51Zt6+lMRxdN33ECcOjIgdOoTI
-   p7jZBvg0yYEdXyYec8oAh+uv+TgwzDU9zZx+MHZGujCTDGnpGgkm+4NAG
-   o=;
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 16 Nov 2021 08:31:45 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 08:31:44 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Tue, 16 Nov 2021 08:31:43 -0800
-Received: from qian-HP-Z2-SFF-G5-Workstation (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Tue, 16 Nov 2021 08:31:42 -0800
-Date:   Tue, 16 Nov 2021 11:31:40 -0500
-From:   Qian Cai <quic_qiancai@quicinc.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <catalin.marinas@arm.com>,
-        <dvyukov@google.com>, <peterz@infradead.org>,
-        <valentin.schneider@arm.com>, <will@kernel.org>,
-        <woodylin@google.com>
-Subject: Re: [PATCH] Reset task stack state in bringup_cpu()
-Message-ID: <YZPc7MLxwmd47YYw@qian-HP-Z2-SFF-G5-Workstation>
-References: <20211115113310.35693-1-mark.rutland@arm.com>
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4Eigl8CTV30vfs4Rr0oPOqqDh9MUrAqo4TKdoVAZUF0=;
+        b=YzKQzDcU9DInxjehS8CG8qaPQDIELyJFrFWG+NmFmq88NTuQnIaczkwz+eL0BdDdNC
+         aCoAWv0b21le7llPc8SzxMNUkyRVQo1F8BmPStfxzaLq978T2YE2yMesTktilO8wQfkL
+         W0HdFJi5ct/18rs/7AWvE85i+vG2qAuM/ubILfvIO30oYbivoT4z4OVmXknefMQwKybE
+         VQJtEdsJhuIg5Xt0dKLlswcZ4sOxm/quMYiHSBgl1gQdDeo8zK4ITyzNPUujFgacYKp4
+         iTC0EXQi33Mu6Vyjr+rQK5rD5/1WW6Q/ed+B1rTRYuIdbgJke4kd9r+j/1uGbLCFD1bZ
+         82Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4Eigl8CTV30vfs4Rr0oPOqqDh9MUrAqo4TKdoVAZUF0=;
+        b=ZgXI5ueaqepiUtapg4MQ4zTM3iuoqaS11bF2Zjm/ES9nMyFB8j9leDGQog1F81B11d
+         RcpvH2qghrLTbA4b7dTiRw1z+ao6nSM1KJW28tYkuE2yjpKFV77ZrbV7D5e6IdPjje9t
+         whk6Bail2t2e9vhicBdR8rLIBBP3p7FHQyyKJuq9oqMuz8Igebbw9+2QZdBq9uZVyvTx
+         6hVxJSoQ/x38eWmfLeDDv85u8qyyGS1v3YUvtH5T4Eq9G0ljF68UqtkniFfTMwmPdVJA
+         W7EhY85DQcF9qnuBQxI2NQDTO7LImyFLRqJEFPNbNT3XnZ2b1Y88RPasAbVm7SSgSM6Z
+         1bJQ==
+X-Gm-Message-State: AOAM5338ARgZXQ+wnTL6GRE8Hpq4KDRdu5dLV8rgRpfGvMA+FNgsy+oS
+        pHxe5YZIcbRcyFJE7O/pl1g=
+X-Google-Smtp-Source: ABdhPJwx52GLHFwv+SV0f1RqF7IJR455BfEa3vKehcsUFExKQqlvwJt7iApJ/AZnpYGD+FUqVIquFw==
+X-Received: by 2002:a17:90b:4d09:: with SMTP id mw9mr354976pjb.238.1637080344757;
+        Tue, 16 Nov 2021 08:32:24 -0800 (PST)
+Received: from localhost.localdomain ([94.177.118.102])
+        by smtp.gmail.com with ESMTPSA id x17sm18424345pfa.209.2021.11.16.08.32.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 08:32:24 -0800 (PST)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Antti Palosaari <crope@iki.fi>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: msi2500: fix UAF in the msi2500_disconnect
+Date:   Wed, 17 Nov 2021 00:32:07 +0800
+Message-Id: <20211116163208.75879-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20211115113310.35693-1-mark.rutland@arm.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 11:33:10AM +0000, Mark Rutland wrote:
-> To hot unplug a CPU, the idle task on that CPU calls a few layers of C
-> code before finally leaving the kernel. When KASAN is in use, poisoned
-> shadow is left around for each of the active stack frames, and when
-> shadow call stacks are in use. When shadow call stacks are in use the
-> task's SCS SP is left pointing at an arbitrary point within the task's
-> shadow call stack.
-> 
-> When an offlines CPU is hotlpugged back into the kernel, this stale
-> state can adversely affect the newly onlined CPU. Stale KASAN shadow can
-> alias new stackframes and result in bogus KASAN warnings. A stale SCS SP
-> is effectively a memory leak, and prevents a portion of the shadow call
-> stack being used. Across a number of hotplug cycles the task's entire
-> shadow call stack can become unusable.
-> 
-> We previously fixed the KASAN issue in commit:
-> 
->   e1b77c92981a5222 ("sched/kasan: remove stale KASAN poison after hotplug")
-> 
-> In commit:
-> 
->   f1a0a376ca0c4ef1 ("sched/core: Initialize the idle task with preemption disabled")
-> 
-> ... we broke both KASAN and SCS, with SCS being fixed up in commit:
-> 
->   63acd42c0d4942f7 ("sched/scs: Reset the shadow stack when idle_task_exit")
-> 
-> ... but as this runs in the context of the idle task being offlines it's
-> potentially fragile.
-> 
-> Fix both of these consistently and more robustly by resetting the SCS SP
-> and KASAN shadow immediately before we online a CPU. This ensures the
-> idle task always has a consistent state, and removes the need to do so
-> when initializing an idle task or when unplugging an idle task.
-> 
-> I've tested this with both GCC and clang, with reelvant options enabled,
-> offlining and online CPUs with:
-> 
-> | while true; do
-> |   for C in /sys/devices/system/cpu/cpu*/online; do
-> |     echo 0 > $C;
-> |     echo 1 > $C;
-> |   done
-> | done
-> 
-> Link: https://lore.kernel.org/lkml/20211012083521.973587-1-woodylin@google.com/
-> Link: https://lore.kernel.org/linux-arm-kernel/YY9ECKyPtDbD9q8q@qian-HP-Z2-SFF-G5-Workstation/
-> Fixes: 1a0a376ca0c4ef1 ("sched/core: Initialize the idle task with preemption disabled")
-> Reported-by: Qian Cai <quic_qiancai@quicinc.com>
-> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+In msi2500_probe, it invokes spi_alloc_master to allocate master
+controller and spi_register_master to register master controller.
+Then in msi2500_disconnect, it calls spi_unregister_master to unregister
+the master controller. And in spi_unregister_master, it calls put_device
+to decrease the refcount and the device object will be freed then. As a
+result, the dereference of dev->lock will cause a use-after-free bug.
 
-Thanks for fixing this quickly, Mark. Triggering an user-after-free in
-user namespace but don't think it is related. I'll investigate that
-first since it is blocking the rest of regression testing.
+Fix it by changing spi_alloc_master to devm_spi_alloc_master, and
+removing spi_master_put in the error handling code.
+
+Note that this patch can prevent UAF occurring any more
+
+Fixes: fd8b5f502929 ("msi2500: move msi3101 out of staging and rename")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ drivers/media/usb/msi2500/msi2500.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/media/usb/msi2500/msi2500.c b/drivers/media/usb/msi2500/msi2500.c
+index 71de6b4c4e4c..64c3ec9f1d0c 100644
+--- a/drivers/media/usb/msi2500/msi2500.c
++++ b/drivers/media/usb/msi2500/msi2500.c
+@@ -1220,7 +1220,7 @@ static int msi2500_probe(struct usb_interface *intf,
+ 	}
+ 
+ 	/* SPI master adapter */
+-	master = spi_alloc_master(dev->dev, 0);
++	master = devm_spi_alloc_master(dev->dev, 0);
+ 	if (master == NULL) {
+ 		ret = -ENOMEM;
+ 		goto err_unregister_v4l2_dev;
+@@ -1233,7 +1233,6 @@ static int msi2500_probe(struct usb_interface *intf,
+ 	spi_master_set_devdata(master, dev);
+ 	ret = spi_register_master(master);
+ 	if (ret) {
+-		spi_master_put(master);
+ 		goto err_unregister_v4l2_dev;
+ 	}
+ 
+-- 
+2.25.1
 
