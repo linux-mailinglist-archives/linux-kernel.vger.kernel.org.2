@@ -2,193 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE669453305
+	by mail.lfdr.de (Postfix) with ESMTP id A5CBB453304
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236842AbhKPNnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 08:43:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38621 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236805AbhKPNnK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 08:43:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637070013;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lVUfInF5ff7DFbS9kneFAxd/0FXJHhTH3/aRVwgi3TY=;
-        b=E/bZfkxUt3O4WhOwjZNl6cmakpNibVFYfyRv6kY1oEScko6T5DoHD0nK/tH0U9qjJY+L67
-        3yI2jSC0xzq5WWSIhpnmRykb+yyRtVL9dzEr8P6kAOB5TYZqDj9ynpE6IlI5+bJHkUUAjs
-        d0GyYZv8ahsn4J83XX5ufWdxbMMs8VA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-598-gsLn0IaVP6SvJJsupkk3Kw-1; Tue, 16 Nov 2021 08:40:04 -0500
-X-MC-Unique: gsLn0IaVP6SvJJsupkk3Kw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 83811804148;
-        Tue, 16 Nov 2021 13:40:03 +0000 (UTC)
-Received: from localhost (ovpn-12-162.pek2.redhat.com [10.72.12.162])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D82AA101E692;
-        Tue, 16 Nov 2021 13:39:49 +0000 (UTC)
-Date:   Tue, 16 Nov 2021 21:39:47 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        kexec@lists.infradead.org, prudo@redhat.com
-Subject: Re: [PATCH v2 1/2] s390/kexec: check the return value of
- ipl_report_finish
-Message-ID: <20211116133947.GE21646@MiWiFi-R3L-srv>
-References: <20211116032557.14075-1-bhe@redhat.com>
- <YZOTO+37BbIwOpUK@osiris>
+        id S236795AbhKPNnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 08:43:09 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:35906 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236566AbhKPNnH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 08:43:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=/ZTRNnUNEgr3hlsthAHSmJ8lnNXuu59AnWYQvhB9PG4=; b=ccCyq4GiHwe9oaJJZGgJwkwKyp
+        2GsAJntl5p5+Gvi9TMowlgtcGJIC8VpNQtKlCXKfsfDAShDZggb3MfUZcJx4qkWXqoRJECAvXH41m
+        KrWAJ8Ph9+rBMB/lVJUb0FclkepNodv1QpU4hdarlirG2f62G5lFxD8jkzJ3kqjimWVo=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mmygw-00DeWd-Gp; Tue, 16 Nov 2021 14:40:06 +0100
+Date:   Tue, 16 Nov 2021 14:40:06 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Vladimir Oltean <olteanv@gmail.com>, g@pengutronix.de,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com,
+        kernel@pengutronix.de, Jakub Kicinski <kuba@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>
+Subject: Re: [RFC PATCH net-next] net: dsa: microchip: implement multi-bridge
+ support
+Message-ID: <YZO0tuMtDUIbRfcC@lunn.ch>
+References: <20211108111034.2735339-1-o.rempel@pengutronix.de>
+ <20211110123640.z5hub3nv37dypa6m@skbuf>
+ <20211112075823.GJ12195@pengutronix.de>
+ <20211115234546.spi7hz2fsxddn4dz@skbuf>
+ <20211116083903.GA16121@pengutronix.de>
+ <20211116124723.kivonrdbgqdxlryd@skbuf>
+ <20211116131657.GC16121@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YZOTO+37BbIwOpUK@osiris>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20211116131657.GC16121@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 at 12:17pm, Heiko Carstens wrote:
-> On Tue, Nov 16, 2021 at 11:25:56AM +0800, Baoquan He wrote:
-> > In function ipl_report_finish(), it could fail by memory allocation
-> > failure, so check the return value to handle the case.
-> > 
-> > Signed-off-by: Baoquan He <bhe@redhat.com>
-> > ---
-> >  arch/s390/include/asm/ipl.h           | 2 +-
-> >  arch/s390/kernel/ipl.c                | 6 ++++--
-> >  arch/s390/kernel/machine_kexec_file.c | 5 ++++-
-> >  3 files changed, 9 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/arch/s390/include/asm/ipl.h b/arch/s390/include/asm/ipl.h
-> > index 3f8ee257f9aa..864ab5d2890c 100644
-> > --- a/arch/s390/include/asm/ipl.h
-> > +++ b/arch/s390/include/asm/ipl.h
-> > @@ -122,7 +122,7 @@ struct ipl_report_certificate {
-> >  
-> >  struct kexec_buf;
-> >  struct ipl_report *ipl_report_init(struct ipl_parameter_block *ipib);
-> > -void *ipl_report_finish(struct ipl_report *report);
-> > +int ipl_report_finish(struct ipl_report *report, void **ipl_buf);
-> >  int ipl_report_free(struct ipl_report *report);
-> >  int ipl_report_add_component(struct ipl_report *report, struct kexec_buf *kbuf,
-> >  			     unsigned char flags, unsigned short cert);
-> > diff --git a/arch/s390/kernel/ipl.c b/arch/s390/kernel/ipl.c
-> > index e2cc35775b99..a0af0b23148d 100644
-> > --- a/arch/s390/kernel/ipl.c
-> > +++ b/arch/s390/kernel/ipl.c
-> > @@ -2144,7 +2144,7 @@ struct ipl_report *ipl_report_init(struct ipl_parameter_block *ipib)
-> >  	return report;
-> >  }
-> >  
-> > -void *ipl_report_finish(struct ipl_report *report)
-> > +int ipl_report_finish(struct ipl_report *report, void **ipl_buf)
-> >  {
-> >  	struct ipl_report_certificate *cert;
-> >  	struct ipl_report_component *comp;
-> > @@ -2195,7 +2195,9 @@ void *ipl_report_finish(struct ipl_report *report)
-> >  	}
-> >  
-> >  	BUG_ON(ptr > buf + report->size);
-> > -	return buf;
-> > +	*ipl_buf = buf;
-> > +
-> > +	return 0;
+> > What logging noise?
 > 
-> This does not compile:
-> 
->   CC      arch/s390/kernel/ipl.o
-> arch/s390/kernel/ipl.c: In function ‘ipl_report_finish’:
-> arch/s390/kernel/ipl.c:2159:24: warning: returning ‘void *’ from a function with return type ‘int’ makes integer from pointer without a cast [-Wint-conversion]
->  2159 |                 return ERR_PTR(-ENOMEM);
->       |                        ^~~~~~~~~~~~~~~~
+> I get this with current ksz driver:
+> [   40.185928] br0: port 2(lan2) entered blocking state
+> [   40.190924] br0: port 2(lan2) entered listening state
+> [   41.043186] br0: port 2(lan2) entered blocking state
+> [   55.512832] br0: port 1(lan1) entered learning state
+> [   61.272802] br0: port 2(lan2) neighbor 8000.ae:1b:91:58:77:8b lost
+> [   61.279192] br0: port 2(lan2) entered listening state
+> [   63.113236] br0: received packet on lan1 with own address as source address (addr:00:0e:cd:00:cd:be, vlan:0)
 
-Oops, I forgot changing this place to "return -ENOMEM;". Thanks for
-taking care of it with below patch.
-> 
-> Anyway, before we are going to have more iterations I just applied the
-> patch below instead before applying your memory leak fix.
-> 
-> From 78e5f268d1be775354ab83c1e039dcfacaa5e258 Mon Sep 17 00:00:00 2001
-> From: Heiko Carstens <hca@linux.ibm.com>
-> Date: Tue, 16 Nov 2021 11:06:38 +0100
-> Subject: s390/kexec: fix return code handling
-> 
-> kexec_file_add_ipl_report ignores that ipl_report_finish may fail and
-> can return an error pointer instead of a valid pointer.
-> Fix this and simplify by returning NULL in case of an error and let
-> the only caller handle this case.
-> 
-> Fixes: 99feaa717e55 ("s390/kexec_file: Create ipl report and pass to next kernel")
-> Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-> ---
->  arch/s390/kernel/ipl.c                | 3 ++-
->  arch/s390/kernel/machine_kexec_file.c | 8 +++++++-
->  2 files changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/s390/kernel/ipl.c b/arch/s390/kernel/ipl.c
-> index e2cc35775b99..5ad1dde23dc5 100644
-> --- a/arch/s390/kernel/ipl.c
-> +++ b/arch/s390/kernel/ipl.c
-> @@ -2156,7 +2156,7 @@ void *ipl_report_finish(struct ipl_report *report)
->  
->  	buf = vzalloc(report->size);
->  	if (!buf)
-> -		return ERR_PTR(-ENOMEM);
-> +		goto out;
->  	ptr = buf;
->  
->  	memcpy(ptr, report->ipib, report->ipib->hdr.len);
-> @@ -2195,6 +2195,7 @@ void *ipl_report_finish(struct ipl_report *report)
->  	}
->  
->  	BUG_ON(ptr > buf + report->size);
-> +out:
->  	return buf;
->  }
->  
-> diff --git a/arch/s390/kernel/machine_kexec_file.c b/arch/s390/kernel/machine_kexec_file.c
-> index 528edff085d9..f0200b503f94 100644
-> --- a/arch/s390/kernel/machine_kexec_file.c
-> +++ b/arch/s390/kernel/machine_kexec_file.c
-> @@ -170,6 +170,7 @@ static int kexec_file_add_ipl_report(struct kimage *image,
->  	struct kexec_buf buf;
->  	unsigned long addr;
->  	void *ptr, *end;
-> +	int ret;
->  
->  	buf.image = image;
->  
-> @@ -199,7 +200,10 @@ static int kexec_file_add_ipl_report(struct kimage *image,
->  		ptr += len;
->  	}
->  
-> +	ret = -ENOMEM;
->  	buf.buffer = ipl_report_finish(data->report);
-> +	if (!buf.buffer)
-> +		goto out;
->  	buf.bufsz = data->report->size;
->  	buf.memsz = buf.bufsz;
->  
-> @@ -209,7 +213,9 @@ static int kexec_file_add_ipl_report(struct kimage *image,
->  		data->kernel_buf + offsetof(struct lowcore, ipl_parmblock_ptr);
->  	*lc_ipl_parmblock_ptr = (__u32)buf.mem;
->  
-> -	return kexec_add_buffer(&buf);
-> +	ret = kexec_add_buffer(&buf);
-> +out:
-> +	return ret;
->  }
->  
->  void *kexec_file_add_components(struct kimage *image,
-> -- 
-> 2.31.1
-> 
+I would guess that transmission from the CPU is broken in this
+case. It could be looking up the destination address in the
+translation table and not finding an entry. So it floods the packet
+out all interfaces, including the CPU. So the CPU receives its own
+packet and gives this warning.
+
+Flooding should exclude where the frame came from.
+
+	 Andrew
 
