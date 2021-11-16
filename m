@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92443453979
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 19:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12344453978
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 19:37:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239549AbhKPSmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 13:42:16 -0500
-Received: from mga03.intel.com ([134.134.136.65]:22670 "EHLO mga03.intel.com"
+        id S239542AbhKPSkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 13:40:23 -0500
+Received: from mga01.intel.com ([192.55.52.88]:54486 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233361AbhKPSmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 13:42:12 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="233737343"
+        id S239518AbhKPSkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 13:40:21 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="257553941"
 X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
-   d="scan'208";a="233737343"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 10:37:22 -0800
+   d="scan'208";a="257553941"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 10:37:22 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
-   d="scan'208";a="536013828"
+   d="scan'208";a="506568866"
 Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 16 Nov 2021 10:37:20 -0800
+  by orsmga008.jf.intel.com with ESMTP; 16 Nov 2021 10:37:20 -0800
 Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mn3KZ-0000hn-Q9; Tue, 16 Nov 2021 18:37:19 +0000
-Date:   Wed, 17 Nov 2021 02:36:37 +0800
+        id 1mn3KZ-0000hd-NI; Tue, 16 Nov 2021 18:37:19 +0000
+Date:   Wed, 17 Nov 2021 02:36:50 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/mm] BUILD SUCCESS
- 19c88fc96d941dd7102399bbf7f437f2b93d7e4e
-Message-ID: <6193fa35.ScBxYLoe/1ItdFN1%lkp@intel.com>
+Subject: [tip:master] BUILD SUCCESS
+ 236d7b9d0ae40c6ad4c071bafb5153a00bf3462e
+Message-ID: <6193fa42.RnT3yG/PqZz37TmS%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,23 +39,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/mm
-branch HEAD: 19c88fc96d941dd7102399bbf7f437f2b93d7e4e  x86/mm: Add missing <asm/cpufeatures.h> dependency to <asm/page_64.h>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 236d7b9d0ae40c6ad4c071bafb5153a00bf3462e  Merge branch 'x86/mm'
 
-elapsed time: 725m
+elapsed time: 726m
 
-configs tested: 209
-configs skipped: 71
+configs tested: 214
+configs skipped: 4
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
 
 gcc tested configs:
+arm                              allyesconfig
+arm                              allmodconfig
 arm                                 defconfig
 arm64                            allyesconfig
 arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
 i386                 randconfig-c001-20211116
 powerpc                      ep88xc_defconfig
 mips                      pic32mzda_defconfig
@@ -114,6 +114,12 @@ mips                          rm200_defconfig
 arm                           stm32_defconfig
 arm                       spear13xx_defconfig
 ia64                             alldefconfig
+arm                         cm_x300_defconfig
+arm                       cns3420vb_defconfig
+arm                         lubbock_defconfig
+sparc                       sparc64_defconfig
+powerpc                      ppc6xx_defconfig
+powerpc                mpc7448_hpc2_defconfig
 sh                            titan_defconfig
 mips                          malta_defconfig
 arm                       versatile_defconfig
@@ -144,7 +150,6 @@ mips                       bmips_be_defconfig
 um                               alldefconfig
 ia64                                defconfig
 arm                        magician_defconfig
-powerpc                mpc7448_hpc2_defconfig
 mips                          ath79_defconfig
 arm                          collie_defconfig
 sh                          rsk7203_defconfig
@@ -190,11 +195,11 @@ m68k                             allyesconfig
 nios2                               defconfig
 arc                              allyesconfig
 nds32                             allnoconfig
+nios2                            allyesconfig
 nds32                               defconfig
 csky                                defconfig
 alpha                               defconfig
 alpha                            allyesconfig
-nios2                            allyesconfig
 xtensa                           allyesconfig
 h8300                            allyesconfig
 arc                                 defconfig
