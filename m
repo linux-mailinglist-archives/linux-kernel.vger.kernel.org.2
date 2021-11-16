@@ -2,81 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 476CC453C64
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 23:52:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9AF453C6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 23:54:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232097AbhKPWzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 17:55:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42506 "EHLO
+        id S232141AbhKPW5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 17:57:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbhKPWz3 (ORCPT
+        with ESMTP id S232135AbhKPW5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 17:55:29 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08CEEC061570
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 14:52:32 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id u18-20020a9d7212000000b00560cb1dc10bso1063820otj.11
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 14:52:32 -0800 (PST)
+        Tue, 16 Nov 2021 17:57:35 -0500
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F00C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 14:54:37 -0800 (PST)
+Received: by mail-oo1-xc36.google.com with SMTP id t9-20020a4a8589000000b002c5c4d19723so276595ooh.11
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 14:54:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OecF1BbqsxHuxs1+6x6lNqlLgG9K3kJNOTTucdcNkPg=;
-        b=MtXwM7O5OKvUbeiN2lwW8Ov64fKBAExk180fpvGV+pavI2cbx3Hxt5pyO3yMECmq5X
-         LW/pNuqPYP5wpO60MORNu5O4acyH7Uf8iLj+Gqz8p0WqvN82hBLeIrMNzjLZQ1XuFhpu
-         ry8yZ3qKdkbGjHzxkb916C2D8n7FT4A05jm8Z8C5kn2WNhwH7fDRxeVoUpY4mXN+c5fc
-         7I55116jWuy2qjYjiinKs7LxnfMV0CT3mBwN6/GT7hBwmIcg3YtGgoHhwi7a4eYrV4oR
-         B4my2Ux1HnJiaAfIiLKaYM9dOf7bHVsvKUQRzg11mbIRV2mD5BN6jVpYPdYmOjsiQqR2
-         huLQ==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=lcfXvg0IaBhpdgTpdukd2g8BXYbPMue+9fWAr5sE3qY=;
+        b=DLbni/4pdZ4WtAFdegibs6kRiC2e49dG9xFpcKP1msXWFT++xCNPX2kYSZvPjE+5HC
+         urz/esecalxk2ejV/Hr61RSULZZAT5cmr47dOxqgs8Hziq7bnLnQ5+WNjK8ImrW2MreI
+         28ddm8S6AlPheme6gpcg8SgG44Y7yVXoyN40M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OecF1BbqsxHuxs1+6x6lNqlLgG9K3kJNOTTucdcNkPg=;
-        b=CfLvA1xVF+tGEBEXz16cx6mDdRlkt4zicTbtGe+vLtkQ54HXZnoZDxf7ViacE8sv84
-         8ZK23M+pEwanA8v7Kaw6Sy8qHPrGKlIZY3tc1YSyKuf55c1MIYt18YHhcsfvpfGxbjyO
-         FOwmu0/TNbVcGMO07yCLnEMU/lWnvOi6orjILV+8PyXuSDaxpg+F02YpkGse9ah1Bkyw
-         xKV2OjEwXws25PJotGYWvgY36rkOsk5xN46gxKVOb2PWu7czqgGSb8m8HBvOXoxRtr4B
-         5TCwJ/sB39rq+ABhSuDKdw/8T7aJxx5KWJcbMKVxwfBB+YHxHq1TCDV3aWKm9JeNjxLi
-         W5Gg==
-X-Gm-Message-State: AOAM530WfzTQnbZr575HpFoLCaiQn3n2eeM4b0BN3Th5GJGJUhwRTJ7X
-        CWmLqQWIIxeKIzgZ/394/ToiyseIJzmEQGikhdP/3g==
-X-Google-Smtp-Source: ABdhPJy3xSZkgt5J1IN15s2fGgvywYH5rJ/4MbT3jfNX+qjb6TCizzD79OANTnNUA9T03S0RnwU1spPqTJ/pHKES0UI=
-X-Received: by 2002:a9d:74d0:: with SMTP id a16mr9065421otl.237.1637103151373;
- Tue, 16 Nov 2021 14:52:31 -0800 (PST)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=lcfXvg0IaBhpdgTpdukd2g8BXYbPMue+9fWAr5sE3qY=;
+        b=Of0S1IxFWwqw8IquRXDE6LE9DqJ6Lw56aZ6vvksHyKpVXB+N8r586tYdTIT7vVaeI/
+         QQwcWdGi/EzOFOt3+WizOFHwe2PGr8pzkWiFm2Fk0/87NsYVegtInVI96ZoVCAwjsCGr
+         lIyNLrexuzozFFI0pVZIuYrbK7qA8IBFfviKGZpdvZcwmgWWdb6QB3mJi6iaBpuWcOFa
+         Ar2Y6C6xZ3TErk6qdDJXnek6N4QlEcab1p6hGhVRNB5xKQ4gorebO9qhVtXnLvUp5eAM
+         rzRH34g0o9DZvRrhOzYu4iWQ8wtoUA0ii6qObJ4DLibl/b/bHuVTDhfrV9kwwUxZyiri
+         F6bQ==
+X-Gm-Message-State: AOAM531ek7HApIGsjPTMqtfkGIYflT+131n68xEc3PKbgWcY9vktGVuz
+        pOwfUC7uOwWGHHH6QlBQ3KkXtCsObAY7Hp75+rGu0w==
+X-Google-Smtp-Source: ABdhPJyfqEZmDn75mnZMOousDMEmSosUvQpycigR3dCdH1vdwHe2Zz4XzZmDdEC+Oea8MedhPHKEfgM36mDg+Uuq3tU=
+X-Received: by 2002:a4a:cf12:: with SMTP id l18mr1238026oos.25.1637103277072;
+ Tue, 16 Nov 2021 14:54:37 -0800 (PST)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 16 Nov 2021 14:54:36 -0800
 MIME-Version: 1.0
-References: <cover.1637066805.git.matti.vaittinen@fi.rohmeurope.com>
- <CAHp75Ve_qS0Qc8XLHLwFnWEPzQtgNfEeVr8q9L4gK2m5a-By0A@mail.gmail.com> <50c260a1-c6d0-1a0b-45da-ab1a2d1379c3@gmail.com>
-In-Reply-To: <50c260a1-c6d0-1a0b-45da-ab1a2d1379c3@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 16 Nov 2021 23:52:19 +0100
-Message-ID: <CACRpkda_=LSyqKq=+mocqie667b5pTfM_SAWozxnWpgjMvHg5g@mail.gmail.com>
-Subject: Re: [PATCH RESEND 0/4] Drop ROHM BD70528 support
-To:     Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>
+In-Reply-To: <1635860673-12146-4-git-send-email-pillair@codeaurora.org>
+References: <1635860673-12146-1-git-send-email-pillair@codeaurora.org> <1635860673-12146-4-git-send-email-pillair@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 16 Nov 2021 14:54:36 -0800
+Message-ID: <CAE-0n53PSDzj9owjeaB1bGQ5=255=Q_djEvcQGtZzRxMRMhe1g@mail.gmail.com>
+Subject: Re: [PATCH v8 3/3] remoteproc: qcom: q6v5_wpss: Add support for
+ sc7280 WPSS
+To:     Rakesh Pillai <pillair@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
+        ohad@wizery.com, p.zabel@pengutronix.de, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sibis@codeaurora.org, mpubbise@codeaurora.org, kuabhs@chromium.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 7:41 PM Matti Vaittinen
-<mazziesaccount@gmail.com> wrote:
+Quoting Rakesh Pillai (2021-11-02 06:44:33)
+> @@ -457,7 +608,13 @@ static int adsp_probe(struct platform_device *pdev)
+>         if (ret)
+>                 goto free_rproc;
+>
+> -       pm_runtime_enable(adsp->dev);
+> +       ret = qcom_rproc_pds_attach(adsp->dev, adsp->proxy_pds,
+> +                                   desc->proxy_pd_names);
+> +       if (ret < 0) {
+> +               dev_err(&pdev->dev, "Failed to attach proxy power domains\n");
+> +               goto free_rproc;
+> +       }
+> +       adsp->proxy_pd_count = ret;
 
-> I see acks from Andu, Bartosz, Lee and Rob. It'd be nice to see ack from
-> Linus W too - but other than that - I guess this is good to go.
-
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+Can we check this against the define so that we don't have more than the
+fixed number of power domains and try to access elements beyond the
+length of the array?
