@@ -2,145 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E19453068
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:25:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6B74530ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:36:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235001AbhKPL17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 06:27:59 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:26317 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235182AbhKPLZs (ORCPT
+        id S235280AbhKPLjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:39:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235379AbhKPLho (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 06:25:48 -0500
-Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Htk7Q00s4zbhc5;
-        Tue, 16 Nov 2021 19:17:53 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by dggeme756-chm.china.huawei.com
- (10.3.19.102) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.20; Tue, 16
- Nov 2021 19:22:48 +0800
-From:   Zheng Liang <zhengliang6@huawei.com>
-To:     <phillip@squashfs.org.uk>, <linux-kernel@vger.kernel.org>
-CC:     <yi.zhang@huawei.com>, <houtao1@huawei.com>, <miaoxie@huawei.com>
-Subject: [PATCH] squashfs: provides backing_dev_info in order to disable read-ahead
-Date:   Tue, 16 Nov 2021 19:31:41 +0800
-Message-ID: <20211116113141.1391026-1-zhengliang6@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 16 Nov 2021 06:37:44 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8983AC061198;
+        Tue, 16 Nov 2021 03:32:13 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id c32so52344876lfv.4;
+        Tue, 16 Nov 2021 03:32:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0wHfYNBbY8FMdZUkxBiBczwR2At84lrdrMa7+k/uGck=;
+        b=auVex1g5JoqReaZ8JAUPU+QM5e9X+3RnRs59GB02CYvHTyNj+hB8jus9eFhGF2Ogxu
+         q05TZMZ4rTE4AdEml28q6tpAJRWbI+vB+H0fbazMmUoCUqe64K0E682cTMm6clSCbpLW
+         J5w7m9U0j2H5x2Yl+wi7qbtJ0x/M9uc6myC0t0XBq0sZKnVJnBjuP30Dad1itTUSSs8w
+         rfl+5fMZtmSh4QY3LzrTHO9PW+mIIJWKWL+cWjRuFwiDdpNW/a3ytxWgC8EFumjVoH2N
+         sjbEkMVPgDbbEhMOuP2ruhvEMewF1qVYG8+TcTUCyrGFCtJAU2AGVUuSGu4kp2t05uQp
+         Pskg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0wHfYNBbY8FMdZUkxBiBczwR2At84lrdrMa7+k/uGck=;
+        b=4FYs2RJzzYh+m1fJJMF6C1rw/msaIqVuZRJA7AQahKHLN2924OnLwW5MHN3D+3QpFu
+         xrD3/WLbqGAF8qBdfnKrv0o/3tF7QcN3jJNuxVQR1PwKqaNTUSzu9OkB9oZ2QztLgENK
+         Ve5mNkDjvPZUBtjmZ2gUU7hIzlyxvJnASDDwkYrTuyX6C8bnTa7H5A4XV6xqP45AFLrj
+         9SUQQIqMoCAcU/tsy2IVneO2uIwgayblYhVlmgWtYYfOnmu1HaTvpxDEE8Z3W5Q6ottG
+         OJOoLwk5/EQ5bvXb8AZGyEj13PHE2s5xmzVr6+OiI8Au95o5v5849MQLFUG4aPrGAdru
+         2pGg==
+X-Gm-Message-State: AOAM532Prp3Fjngto0yH5zHedW+dCnDkLxTEQOeY83Qwl5W8TSqEjSI+
+        ipgPrHdX6vWwC7igJt4wHJA=
+X-Google-Smtp-Source: ABdhPJwp4ntrXwEtL8pC4eKsuqTGCFz0FKTnz4Mju7GtHehKLTBxsfvLtIWU8o7nFk5VTBaRaXeTdg==
+X-Received: by 2002:a05:6512:3f8b:: with SMTP id x11mr5750586lfa.486.1637062331999;
+        Tue, 16 Nov 2021 03:32:11 -0800 (PST)
+Received: from mobilestation ([95.79.188.236])
+        by smtp.gmail.com with ESMTPSA id m20sm1726896lfu.241.2021.11.16.03.32.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 03:32:11 -0800 (PST)
+Date:   Tue, 16 Nov 2021 14:32:09 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mark Brown <broonie@kernel.org>,
+        Nandhini Srikandan <nandhini.srikandan@intel.com>,
+        Andy Shevchenko <andy@kernel.org>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 7/7] spi: dw: Define the capabilities in a continuous
+ bit-flags set
+Message-ID: <20211116113209.n5njzklgh3fmbwwe@mobilestation>
+References: <20211115181917.7521-1-Sergey.Semin@baikalelectronics.ru>
+ <20211115181917.7521-8-Sergey.Semin@baikalelectronics.ru>
+ <YZOEM591s7iulPH1@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggeme756-chm.china.huawei.com (10.3.19.102)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZOEM591s7iulPH1@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-the commit c1f6925e1091("mm: put readahead pages in cache earlier")
-causes the read performance of squashfs to deteriorate.Through testing,
-we find that the performance will be back by closing the readahead of
-squashfs. So we want to learn the way of ubifs, provides backing_dev_info
-and disable read-ahead.
+On Tue, Nov 16, 2021 at 12:13:07PM +0200, Andy Shevchenko wrote:
+> On Mon, Nov 15, 2021 at 09:19:17PM +0300, Serge Semin wrote:
+> > Since the DW_SPI_CAP_DWC_HSSI capability has just been replaced with using
+> > the DW SSI IP-core versions interface, the DW SPI capability flags are now
+> > represented with a gap. Let's fix it by redefining the DW_SPI_CAP_DFS32
+> > macro to setting BIT(2) of the capabilities field.
+> > 
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> 
 
---------------------------------------------------------------------
-We tested the following data by fio.
-squashfs image blocksize=128K
-test command:
-fio --name basic --bs=? --filename="/mnt/test_file" --rw=? --iodepth=1 --ioengine=psync --runtime=200 --time_based
+> Fine with me, thanks!
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-turn on squashfs readahead in 5.10 kernel
-bs(k)      read/randread           MB/s
-4            randread              271
-128          randread              231
-1024         randread              246
-4            read                  310
-128          read                  245
-1024         read                  247
+Great! Thanks to you too for very fast responses and thorough review.
 
-turn off squashfs readahead in 5.10 kernel
-bs(k)      read/randread           MB/s
-4            randread              293
-128          randread              330
-1024         randread              363
-4            read                  338
-128          read                  360
-1024         read                  365
+-Sergey
 
-turn on squashfs readahead and revert the
-commit c1f6925e1091("mm: put readahead
-pages in cache earlier") in 5.10 kernel
-bs(k)      read/randread           MB/s
-4           randread               289
-128         randread               306
-1024        randread               335
-4           read                   337
-128         read                   336
-1024        read                   338
-
-Signed-off-by: Zheng Liang <zhengliang6@huawei.com>
----
- fs/squashfs/super.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
-
-diff --git a/fs/squashfs/super.c b/fs/squashfs/super.c
-index bb44ff4c5cc6..7a4c865fc8e6 100644
---- a/fs/squashfs/super.c
-+++ b/fs/squashfs/super.c
-@@ -29,6 +29,7 @@
- #include <linux/module.h>
- #include <linux/magic.h>
- #include <linux/xattr.h>
-+#include <linux/backing-dev.h>
- 
- #include "squashfs_fs.h"
- #include "squashfs_fs_sb.h"
-@@ -112,6 +113,24 @@ static const struct squashfs_decompressor *supported_squashfs_filesystem(
- 	return decompressor;
- }
- 
-+static int squashfs_bdi_init(struct super_block *sb)
-+{
-+	int err;
-+	unsigned int major = MAJOR(sb->s_dev);
-+	unsigned int minor = MINOR(sb->s_dev);
-+
-+	bdi_put(sb->s_bdi);
-+	sb->s_bdi = &noop_backing_dev_info;
-+
-+	err = super_setup_bdi_name(sb, "squashfs_%u_%u", major, minor);
-+	if (err)
-+		return err;
-+
-+	sb->s_bdi->ra_pages = 0;
-+	sb->s_bdi->io_pages = 0;
-+
-+	return 0;
-+}
- 
- static int squashfs_fill_super(struct super_block *sb, struct fs_context *fc)
- {
-@@ -127,6 +146,20 @@ static int squashfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 
- 	TRACE("Entered squashfs_fill_superblock\n");
- 
-+	/*
-+	 * squashfs provides 'backing_dev_info' in order to disable read-ahead. For
-+	 * squashfs, I/O is not deferred, it is done immediately in readpage,
-+	 * which means the user would always have to wait their own I/O. So the effect
-+	 * of readahead is very weak for squashfs. squashfs_bdi_init will set 
-+	 * sb->s_bdi->ra_pages and sb->s_bdi->io_pages to 0 and close readahead for
-+	 * squashfs.
-+	 */
-+	err = squashfs_bdi_init(sb);
-+	if (err) {
-+		errorf(fc, "squashfs init bdi failed");
-+		return err;
-+	}
-+
- 	sb->s_fs_info = kzalloc(sizeof(*msblk), GFP_KERNEL);
- 	if (sb->s_fs_info == NULL) {
- 		ERROR("Failed to allocate squashfs_sb_info\n");
--- 
-2.31.1
-
+> 
+> > ---
+> > 
+> > Changelog v3:
+> > - This is a new patch unpinned from the previous one as of Andy
+> >   suggested.
+> > ---
+> >  drivers/spi/spi-dw.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/spi/spi-dw.h b/drivers/spi/spi-dw.h
+> > index 8334e6b35f89..d5ee5130601e 100644
+> > --- a/drivers/spi/spi-dw.h
+> > +++ b/drivers/spi/spi-dw.h
+> > @@ -32,7 +32,7 @@
+> >  /* DW SPI controller capabilities */
+> >  #define DW_SPI_CAP_CS_OVERRIDE		BIT(0)
+> >  #define DW_SPI_CAP_KEEMBAY_MST		BIT(1)
+> > -#define DW_SPI_CAP_DFS32		BIT(3)
+> > +#define DW_SPI_CAP_DFS32		BIT(2)
+> >  
+> >  /* Register offsets (Generic for both DWC APB SSI and DWC SSI IP-cores) */
+> >  #define DW_SPI_CTRLR0			0x00
+> > -- 
+> > 2.33.0
+> > 
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
