@@ -2,53 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E959D45370B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:12:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3177453712
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:14:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbhKPQPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 11:15:13 -0500
-Received: from tomli.me ([31.220.7.45]:18203 "EHLO tomli.me"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230111AbhKPQPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:15:12 -0500
-Received: from tomli.me (localhost [127.0.0.1])
-        by tomli.me (OpenSMTPD) with ESMTP id 342b78f7;
-        Tue, 16 Nov 2021 16:12:11 +0000 (UTC)
-Authentication-Results: tomli.me; auth=pass (login) smtp.auth=tomli
-Received: from Unknown (HELO work) (221.219.136.22)
- by tomli.me (qpsmtpd/0.96) with ESMTPSA (AEAD-AES256-GCM-SHA384 encrypted); Tue, 16 Nov 2021 16:12:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=tomli.me; h=date:from:to:cc:subject:message-id:references:mime-version:content-type:content-transfer-encoding:in-reply-to; s=1490979754; bh=ZdeCFomZuUX67sEeX/j/Qslv3H8jxKXMskQ8KBYoi9M=; b=MBKqDqSKYrixUXwILf3eof8388vuaFzxZBV4tnXueE3addZdcfFt9ctOweSrenj6HzV+YsYrIV1rlHELQZmvmBD6D4ezZciZwC1d0CS3McsI7Y/wfyAPElcATrVIFE9g9Ii/27V9E3ow3Mh0H9Qh3GdKBD2asjb/aD7vTDfZUH4xByf5gD6hhZzHH0lbYr9koqgYZH0ZXe2IkAanTWtvlxlG3+2XYI2juPAKj4aCtJCuB8grV2tmtwz9197rOnb/AG1SoGlJwj6OSoHrtu6btLBWMtAO0RZXZyhm871XF3UpVmQ50KcM9BmJjsIr7+1bZt9OntQUIKSo8/wt+5W7MA==
-Date:   Tue, 16 Nov 2021 16:12:04 +0000
-From:   Tom Li <tomli@tomli.me>
-To:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] PCI: Add func1 DMA quirk for Marvell 88SE9125 SATA
- controller
-Message-ID: <YZPYVK9UbNXLcks2@work>
-References: <YZPA+gSsGWI6+xBP@work>
- <YZPTIllU1KKPviHU@rocinante>
+        id S230111AbhKPQQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 11:16:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229568AbhKPQQn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 11:16:43 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B37C061570;
+        Tue, 16 Nov 2021 08:13:46 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id e3so53835787edu.4;
+        Tue, 16 Nov 2021 08:13:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=50QCkGUElk/jMFTX3H/2D+qJecjTCiwTPcIPrxs29UY=;
+        b=lROBxbp6aw1lSJFZve0CLEi4r203O6x+xtEj4ordjC5YTDarvHSdJbgbfvOZeQ4ryQ
+         dmel/Fomvo8b1w2IxT5JHIBLL9YmtpQBnc6aiL8Hpnhjn9y/Ms+zRyzsuXzsyi13N9B1
+         rCjjSDOCjdoezAhHLmxac+RjiU/GAIoHBGRc6R232naf75seKfUcJhXtso17EAfNKyrx
+         udsHnKa59eMP4lZl2tuZzYuXUlAn2LOKugdb0ndhYuAugSN+nGtB40egxYe9nC62qJz4
+         fxWh0LgJ21Ig9tf8KDFyFN6bu4AiLlaRDjG/NhR5ixEMQ7LYwdvNKzwETWjwVedqr9cQ
+         b7fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=50QCkGUElk/jMFTX3H/2D+qJecjTCiwTPcIPrxs29UY=;
+        b=BnteWz4npiQu9ZxDyjqoOGOjvfhNQS3TdXk/4YxbNVN5nQ0moFJAflLmXxcSyG2sGj
+         YKkysUYWrD6kwYIoieZDrDQZ58Tq8hO78CLgFlYkPhJ8OYn2DL6qfrwpT9qpOY5EsQb3
+         dy04Gdv6Daw/aY459U4JGIQAXE9BxC8pEhkibRLPknZ+9XhKtO/W8kC8ep5opSMKcskT
+         z8zFn9r9oTC5/10vsKmqn9JTz9AzptsGOfZuhSO5cvURvMiLiaei3VT2xuK+/+bZTudA
+         rg4Dqqrm4xbNrpgRCv3mU6mBOE8plTliIfJaR/EQvD+sNQn7pq7Sy0SS+GaOPO0mLcGn
+         f0MA==
+X-Gm-Message-State: AOAM531ORE+a/4/jI9E99GnTP/YDXYwVHrKpnNCW9XADg8nJQ1DvQfW8
+        TlV4RHBLV5eQsONFOiIMxHq7ttVzUbGzDtPLFNw=
+X-Google-Smtp-Source: ABdhPJxz9YUq27598es1YhF6T5O+95wGFrkVO6obEtS3MnJuRp9PIA9hZgOWIYXzAalnrrOc/cFIJBlzV47JzYhjrgk=
+X-Received: by 2002:a17:906:6a0a:: with SMTP id qw10mr11823300ejc.141.1637079225318;
+ Tue, 16 Nov 2021 08:13:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YZPTIllU1KKPviHU@rocinante>
+References: <20211116150119.2171-1-kernel@esmil.dk> <CAK8P3a38+Osmr7SjD42ZEQzOPwWXM7x+31a5E4bRWVp6JdMS_w@mail.gmail.com>
+In-Reply-To: <CAK8P3a38+Osmr7SjD42ZEQzOPwWXM7x+31a5E4bRWVp6JdMS_w@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 16 Nov 2021 18:13:04 +0200
+Message-ID: <CAHp75VcCL1eSMaZy_KXdfY=UyTy-hxz4XN5TGkXd6Cf8p+pRNw@mail.gmail.com>
+Subject: Re: [PATCH v4 00/16] Basic StarFive JH7100 RISC-V SoC support
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 04:49:54PM +0100, Krzysztof Wilczyński wrote:
-> > Reported-by: sbingner <sam@bingner.com>
-> > Tested-by: sbingner <sam@bingner.com>
-> 
-> Both of these tags would require a proper full name, if possible, rather
-> than a name that is abbreviated and/or a username.
-> 
-> Reviewed-by: Krzysztof Wilczyński <kw@liunx.com>
-> 
-> 	Krzysztof
+On Tue, Nov 16, 2021 at 6:09 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> On Tue, Nov 16, 2021 at 4:01 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
 
-No problem, I'll send a revision to correct the tags immediately.
+...
 
-Cheers,
-Yifeng Li
+> One general (minor) comment about the patches: please put your own
+> 'Signed-off-by'
+> into the last line of the patch description, below all the lines you
+> took from other people, so
+> instead of:
+>
+> | Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+> | Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> | Acked-by: Rob Herring <robh@kernel.org>
+>
+> do this:
+>
+> | Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> | Acked-by: Rob Herring <robh@kernel.org>
+> | Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+
+Why?
+Submitting Patches tells about chronological order and last SoB to be
+from the submitter.
+These both are correct. Note the difference between 'last SoB' and
+'SoB to be last [line]'.
+
+Here is the excerpt:
+"Notably, the last Signed-off-by: must always be that of the developer
+submitting the patch."
+
+-- 
+With Best Regards,
+Andy Shevchenko
