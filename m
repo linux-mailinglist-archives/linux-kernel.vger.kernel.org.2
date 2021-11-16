@@ -2,83 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 679B7452DBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:16:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 329D4452DBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:18:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232964AbhKPJTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 04:19:10 -0500
-Received: from elvis.franken.de ([193.175.24.41]:53000 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232784AbhKPJTB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 04:19:01 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mmuZJ-0006sq-00; Tue, 16 Nov 2021 10:15:57 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 5D232C2D9C; Tue, 16 Nov 2021 10:15:42 +0100 (CET)
-Date:   Tue, 16 Nov 2021 10:15:42 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nick Terrell <terrelln@fb.com>,
-        Rob Clark <robdclark@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Joey Gouly <joey.gouly@arm.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Hector Martin <marcan@marcan.st>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-ntfs-dev@lists.sourceforge.net,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: Build regressions/improvements in v5.16-rc1
-Message-ID: <20211116091542.GA21775@alpha.franken.de>
-References: <20211115155105.3797527-1-geert@linux-m68k.org>
- <CAMuHMdUCsyUxaEf1Lz7+jMnur4ECwK+JoXQqmOCkRKqXdb1hTQ@mail.gmail.com>
+        id S232948AbhKPJUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 04:20:09 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:41392 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232764AbhKPJUH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 04:20:07 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id D81CD212BA;
+        Tue, 16 Nov 2021 09:17:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637054229; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AIbvDzruXDpiz6o3C+vMRbbHQk4h/5m45mBuGjw+Bc4=;
+        b=vPXOYsZ+YGsdnTvLdoviWTzMHpBOs8vIr1ssujT58Xu4bpxz0lXV3v5OTE7y3I6P/lnoEC
+        WcFwW5YORxz7jMShxLrwdrGPzmtLxE987oPrx61ukpfz5CCSvtlhcqMpbabYjNgIVPERXQ
+        ahh2LtMWmUAL3sSkf/LiekhW+FAapsc=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id A452DA3B83;
+        Tue, 16 Nov 2021 09:17:09 +0000 (UTC)
+Date:   Tue, 16 Nov 2021 10:17:07 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Alexey Makhalov <amakhalov@vmware.com>
+Cc:     Dennis Zhou <dennis@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH v3] mm: fix panic in __alloc_pages
+Message-ID: <YZN3ExwL7BiDS5nj@dhcp22.suse.cz>
+References: <908909e0-4815-b580-7ff5-d824d36a141c@redhat.com>
+ <20211108202325.20304-1-amakhalov@vmware.com>
+ <2e191db3-286f-90c6-bf96-3f89891e9926@gmail.com>
+ <YYqstfX8PSGDfWsn@dhcp22.suse.cz>
+ <YYrGpn/52HaLCAyo@fedora>
+ <YYrSC7vtSQXz652a@dhcp22.suse.cz>
+ <BAE95F0C-FAA7-40C6-A0D6-5049B1207A27@vmware.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdUCsyUxaEf1Lz7+jMnur4ECwK+JoXQqmOCkRKqXdb1hTQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <BAE95F0C-FAA7-40C6-A0D6-5049B1207A27@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 05:12:50PM +0100, Geert Uytterhoeven wrote:
-> >   + error: modpost: "mips_cm_is64" [drivers/pci/controller/pcie-mt7621.ko] undefined!:  => N/A
-> >   + error: modpost: "mips_cm_lock_other" [drivers/pci/controller/pcie-mt7621.ko] undefined!:  => N/A
-> >   + error: modpost: "mips_cm_unlock_other" [drivers/pci/controller/pcie-mt7621.ko] undefined!:  => N/A
-> >   + error: modpost: "mips_cpc_base" [drivers/pci/controller/pcie-mt7621.ko] undefined!:  => N/A
-> >   + error: modpost: "mips_gcr_base" [drivers/pci/controller/pcie-mt7621.ko] undefined!:  => N/A
-> 
-> mips-allmodconfig
+On Tue 16-11-21 01:31:44, Alexey Makhalov wrote:
+[...]
+> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+> index 6737b1cbf..bbc1a70d5 100644
+> --- a/drivers/acpi/acpi_processor.c
+> +++ b/drivers/acpi/acpi_processor.c
+> @@ -200,6 +200,10 @@ static int acpi_processor_hotadd_init(struct acpi_processor *pr)
+>          * gets online for the first time.
+>          */
+>         pr_info("CPU%d has been hot-added\n", pr->id);
+> +       {
+> +               int nid = cpu_to_node(pr->id);
+> +               printk("%s:%d cpu %d, node %d, online %d, ndata %p\n", __FUNCTION__, __LINE__, pr->id, nid, node_online(nid), NODE_DATA(nid));
+> +       }
+>         pr->flags.need_hotplug_init = 1;
 
-there is a patchset fixing this
+OK, IIUC you are adding a processor which is outside of
+possible_cpu_mask and that means that the node is not allocated for such
+a future to be hotplugged cpu and its memory node. init_cpu_to_node
+would have done that initialization otherwise. I think you want to talk
+to x86 maintainers and people who have introduced a support for
+memoryless nodes for x86.
 
-https://lore.kernel.org/all/20211115070809.15529-1-sergio.paracuellos@gmail.com/
-
-> > 3 warning regressions:
-> >   + <stdin>: warning: #warning syscall futex_waitv not implemented [-Wcpp]:  => 1559:2
-> 
-> powerpc, m68k, mips, s390, parisc (and probably more)
-
-I've queued a patch to fix this for mips.
-
-Thomas.
-
+To me it seems like you are trying to use a functionality that has
+never been properly implemented. I do not remember how other acpi based
+architectures handle this and maybe we need a generic solution and that
+would bring up the node as soon as a new cpu is hot added.
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Michal Hocko
+SUSE Labs
