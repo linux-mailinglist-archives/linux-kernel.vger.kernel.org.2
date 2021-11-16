@@ -2,129 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B7C45340F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:22:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCB2453416
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237360AbhKPOZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 09:25:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55606 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237338AbhKPOZJ (ORCPT
+        id S237376AbhKPO0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 09:26:54 -0500
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:40028 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237310AbhKPO0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 09:25:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637072532;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=j4fQpNyu2pGaDoE12djfDxdstokOhujexoT8EXQgWW4=;
-        b=MDh2837kAD9lR1n8pxrc86fG8xxKqTIVJO1VV6ZnX3JepKTy010meP70hO+AIMEojteJXZ
-        ZBLeQI2xNJonFRZn4mrbYQVyGQ3jdFRjD91m4X4Pmr0feOiMVsek1OYvgkDrZCbqoQQ0JW
-        zpLvE5Hf5+T7V496OoQGAq4iCyy9rdg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-170-2cDFxo97N3-XE4B677b26A-1; Tue, 16 Nov 2021 09:22:07 -0500
-X-MC-Unique: 2cDFxo97N3-XE4B677b26A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 226A3100CD00;
-        Tue, 16 Nov 2021 14:22:06 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A368A5F4EF;
-        Tue, 16 Nov 2021 14:22:05 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     jgross@suse.com, Sean Christopherson <seanjc@google.com>,
-        stable@vger.kernel.org
-Subject: [PATCH] KVM: x86: Use a stable condition around all VT-d PI paths
-Date:   Tue, 16 Nov 2021 09:22:05 -0500
-Message-Id: <20211116142205.719375-1-pbonzini@redhat.com>
+        Tue, 16 Nov 2021 09:26:50 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AGENkqt065266;
+        Tue, 16 Nov 2021 08:23:46 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1637072626;
+        bh=kY4CrTITYhZQo3KclPHQ/T1EO2q3iKAUvdwiAQ6O+h4=;
+        h=From:To:CC:Subject:Date;
+        b=iapUqKBJJQ9AJD8crxpDWQl/UXso2xr39CR5+uXlnAf58ZM3TZHZ68Taox4mtF/9e
+         OvOIqZareQUNF/cFT6v1ZSKZPSZdkjO+o46E3auB49ZTx37jZLeyAFKB8uk1+FmVj2
+         heq6LWrVUZEV3mv66hYEgxYR983Vi6gREd/WSVxs=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AGENk3D073525
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 16 Nov 2021 08:23:46 -0600
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 16
+ Nov 2021 08:23:46 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 16 Nov 2021 08:23:46 -0600
+Received: from a0393678-lt.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AGENgJs005673;
+        Tue, 16 Nov 2021 08:23:43 -0600
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Subject: [PATCH v2] PCI: endpoint: Use DMA channel's 'dev' for dma_map_single()
+Date:   Tue, 16 Nov 2021 19:53:42 +0530
+Message-ID: <20211116142342.21689-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, checks for whether VT-d PI can be used refer to the current
-status of the feature in the current vCPU; or they more or less pick
-vCPU 0 in case a specific vCPU is not available.
+For the case where the pci-epf-test driver uses DMA for transferring
+data to the root complex device, dma_map_single() is used to map virtual
+address to a physical address (address accessible by DMA controller) and
+provided to the DMAengine API for transferring data. Here instead of
+using the PCIe endpoint controller's 'dev' for dma_map_single(), provide
+DMA channel's 'dev' for dma_map_single() since the data transfer is
+actually done by DMA.
 
-However, these checks do not attempt to synchronize with changes to
-the IRTE.  In particular, there is no path that updates the IRTE when
-APICv is re-activated on vCPU 0; and there is no path to wakeup a CPU
-that has APICv disabled, if the wakeup occurs because of an IRTE
-that points to a posted interrupt.
-
-To fix this, always go through the VT-d PI path as long as there are
-assigned devices and APICv is available on both the host and the VM side.
-Since the relevant condition was copied over three times, take the hint
-and factor it into a separate function.
-
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 ---
- arch/x86/kvm/vmx/posted_intr.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+Changes from v1:
+Use dmaengine_get_dma_device() to get dma device from channel
+V1: https://lore.kernel.org/r/20211115044944.31103-1-kishon@ti.com
+ drivers/pci/endpoint/functions/pci-epf-test.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kvm/vmx/posted_intr.c b/arch/x86/kvm/vmx/posted_intr.c
-index 5f81ef092bd4..b64dd1374ed9 100644
---- a/arch/x86/kvm/vmx/posted_intr.c
-+++ b/arch/x86/kvm/vmx/posted_intr.c
-@@ -5,6 +5,7 @@
- #include <asm/cpu.h>
+diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
+index 90d84d3bc868..51f5b0b7b225 100644
+--- a/drivers/pci/endpoint/functions/pci-epf-test.c
++++ b/drivers/pci/endpoint/functions/pci-epf-test.c
+@@ -314,12 +314,12 @@ static int pci_epf_test_read(struct pci_epf_test *epf_test)
+ 	u32 crc32;
+ 	bool use_dma;
+ 	phys_addr_t phys_addr;
++	struct device *dma_dev;
+ 	phys_addr_t dst_phys_addr;
+ 	struct timespec64 start, end;
+ 	struct pci_epf *epf = epf_test->epf;
+ 	struct device *dev = &epf->dev;
+ 	struct pci_epc *epc = epf->epc;
+-	struct device *dma_dev = epf->epc->dev.parent;
+ 	enum pci_barno test_reg_bar = epf_test->test_reg_bar;
+ 	struct pci_epf_test_reg *reg = epf_test->reg[test_reg_bar];
  
- #include "lapic.h"
-+#include "irq.h"
- #include "posted_intr.h"
- #include "trace.h"
- #include "vmx.h"
-@@ -77,13 +78,18 @@ void vmx_vcpu_pi_load(struct kvm_vcpu *vcpu, int cpu)
- 		pi_set_on(pi_desc);
- }
+@@ -353,6 +353,7 @@ static int pci_epf_test_read(struct pci_epf_test *epf_test)
+ 			goto err_dma_map;
+ 		}
  
-+static bool vmx_can_use_vtd_pi(struct kvm *kvm)
-+{
-+	return kvm_arch_has_assigned_device(kvm) &&
-+		irq_remapping_cap(IRQ_POSTING_CAP) &&
-+		irqchip_in_kernel(kvm) && enable_apicv;
-+}
-+
- void vmx_vcpu_pi_put(struct kvm_vcpu *vcpu)
- {
- 	struct pi_desc *pi_desc = vcpu_to_pi_desc(vcpu);
++		dma_dev = dmaengine_get_dma_device(epf_test->dma_chan);
+ 		dst_phys_addr = dma_map_single(dma_dev, buf, reg->size,
+ 					       DMA_FROM_DEVICE);
+ 		if (dma_mapping_error(dma_dev, dst_phys_addr)) {
+@@ -402,12 +403,12 @@ static int pci_epf_test_write(struct pci_epf_test *epf_test)
+ 	void *buf;
+ 	bool use_dma;
+ 	phys_addr_t phys_addr;
++	struct device *dma_dev;
+ 	phys_addr_t src_phys_addr;
+ 	struct timespec64 start, end;
+ 	struct pci_epf *epf = epf_test->epf;
+ 	struct device *dev = &epf->dev;
+ 	struct pci_epc *epc = epf->epc;
+-	struct device *dma_dev = epf->epc->dev.parent;
+ 	enum pci_barno test_reg_bar = epf_test->test_reg_bar;
+ 	struct pci_epf_test_reg *reg = epf_test->reg[test_reg_bar];
  
--	if (!kvm_arch_has_assigned_device(vcpu->kvm) ||
--		!irq_remapping_cap(IRQ_POSTING_CAP)  ||
--		!kvm_vcpu_apicv_active(vcpu))
-+	if (!vmx_can_use_vtd_pi(vcpu->kvm))
- 		return;
+@@ -444,6 +445,7 @@ static int pci_epf_test_write(struct pci_epf_test *epf_test)
+ 			goto err_map_addr;
+ 		}
  
- 	/* Set SN when the vCPU is preempted */
-@@ -141,9 +147,7 @@ int pi_pre_block(struct kvm_vcpu *vcpu)
- 	struct pi_desc old, new;
- 	struct pi_desc *pi_desc = vcpu_to_pi_desc(vcpu);
- 
--	if (!kvm_arch_has_assigned_device(vcpu->kvm) ||
--		!irq_remapping_cap(IRQ_POSTING_CAP)  ||
--		!kvm_vcpu_apicv_active(vcpu))
-+	if (!vmx_can_use_vtd_pi(vcpu->kvm))
- 		return 0;
- 
- 	WARN_ON(irqs_disabled());
-@@ -270,9 +274,7 @@ int pi_update_irte(struct kvm *kvm, unsigned int host_irq, uint32_t guest_irq,
- 	struct vcpu_data vcpu_info;
- 	int idx, ret = 0;
- 
--	if (!kvm_arch_has_assigned_device(kvm) ||
--	    !irq_remapping_cap(IRQ_POSTING_CAP) ||
--	    !kvm_vcpu_apicv_active(kvm->vcpus[0]))
-+	if (!vmx_can_use_vtd_pi(kvm))
- 		return 0;
- 
- 	idx = srcu_read_lock(&kvm->irq_srcu);
++		dma_dev = dmaengine_get_dma_device(epf_test->dma_chan);
+ 		src_phys_addr = dma_map_single(dma_dev, buf, reg->size,
+ 					       DMA_TO_DEVICE);
+ 		if (dma_mapping_error(dma_dev, src_phys_addr)) {
 -- 
-2.27.0
+2.17.1
 
