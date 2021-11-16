@@ -2,135 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B144C4532C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:21:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF8A4532C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236657AbhKPNYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 08:24:00 -0500
-Received: from bedivere.hansenpartnership.com ([96.44.175.130]:46646 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230471AbhKPNYA (ORCPT
+        id S236674AbhKPNY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 08:24:57 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:59814 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230471AbhKPNYv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 08:24:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1637068863;
-        bh=Sl6WuLnqTU5TtnSO/QxFeyGJuRtLYuKL8EqqmhmDJXE=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=MPT0whG2bQpz0Y8+0rTOzk/Lt9c8RRm7MpZUKNOWWeP09PrTuZbxrGsGMCDBVFtIB
-         73aZZDq3UHdFL++Ub3OxRSnL3yZgntpKyZsNEZe8JaDLPYS2yUL+Vf9WsvhhtP0pGY
-         tjqCDNMkJTzaDuHazCXWjzVHrqqtiLkYOTTXFlu0=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 0286C1280119;
-        Tue, 16 Nov 2021 08:21:03 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id dfdi4ZtKv-8E; Tue, 16 Nov 2021 08:21:02 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1637068862;
-        bh=Sl6WuLnqTU5TtnSO/QxFeyGJuRtLYuKL8EqqmhmDJXE=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=Gh53x5MAbxqanSOf9Z+qToC4xT79AG5yx757N80jyZsGwNIA803bfe57ViasAsXQi
-         4z92/voDtClOm88EHF5A+G0dQSjdu5NI1LOynI7X+wrinp8pr0XgpF0ALZd0R3BPPB
-         joY1Qno04GjG9pkA6f892MOy/dAQoO90oGkz0myw=
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4300:c551::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 16 Nov 2021 08:24:51 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 2C450128010E;
-        Tue, 16 Nov 2021 08:20:58 -0500 (EST)
-Message-ID: <d751a5dd17550b21f890e3efcf70d5228451767d.camel@HansenPartnership.com>
-Subject: Re: [ELISA Safety Architecture WG] [PATCH v2 0/2] Introduce the
- pkill_on_warn parameter
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Petr Mladek <pmladek@suse.com>,
-        Alexander Popov <alex.popov@linux.com>
-Cc:     Gabriele Paoloni <gpaoloni@redhat.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Robert Krutsch <krutsch@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul McKenney <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Laura Abbott <labbott@kernel.org>,
-        David S Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Scull <ascull@google.com>,
-        Marc Zyngier <maz@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Wang Qing <wangqing@vivo.com>, Mel Gorman <mgorman@suse.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
-        Mathieu Chouquet-Stringer <me@mathieu.digital>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stephen Kitt <steve@sk2.org>, Stephen Boyd <sboyd@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-hardening@vger.kernel.org,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
+        by smtp-out1.suse.de (Postfix) with ESMTPS id F3BD92171F;
+        Tue, 16 Nov 2021 13:21:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1637068913; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bj8OHCgSrbq+V/cw6sxiyhHVBBsU+2OM597MpAb5BZg=;
+        b=FvHU/jl2199AE2bExbH95cSBnVBc0A0DFymdn7Ycad6qFhI0sckwmP/6PpgjWav9JyM27A
+        RcUhTulu5ISAeqWUEJXqB8r5VKYA1gaSFuU/IIWwjEAU3ARxJmRHUhhDFakcU8RGjUc3gD
+        Ye9KJCcqExc1c8jC8bVb3SxpPKRMwX8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1637068913;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bj8OHCgSrbq+V/cw6sxiyhHVBBsU+2OM597MpAb5BZg=;
+        b=W+CsR+ED9QoPp02iJkTfQhcpL4p4plyUvfGYY2ay2mfW7qf5xMIFb0wnBh/E6eCKTShf51
+        2yy6k64D1S2MMQBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ACDB313C1B;
+        Tue, 16 Nov 2021 13:21:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id OyV6KG+wk2EDeQAAMHmgww
+        (envelope-from <jroedel@suse.de>); Tue, 16 Nov 2021 13:21:51 +0000
+Date:   Tue, 16 Nov 2021 14:21:50 +0100
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Marc Orr <marcorr@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Peter Gonda <pgonda@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>, notify@kernel.org,
-        main@lists.elisa.tech, safety-architecture@lists.elisa.tech,
-        devel@lists.elisa.tech, Shuah Khan <shuah@kernel.org>
-Date:   Tue, 16 Nov 2021 08:20:57 -0500
-In-Reply-To: <YZNuyssYsAB0ogUD@alley>
-References: <20211027233215.306111-1-alex.popov@linux.com>
-         <ac989387-3359-f8da-23f9-f5f6deca4db8@linux.com>
-         <CAHk-=wgRmjkP3+32XPULMLTkv24AkA=nNLa7xxvSg-F0G1sJ9g@mail.gmail.com>
-         <77b79f0c-48f2-16dd-1d00-22f3a1b1f5a6@linux.com>
-         <CAKXUXMx5Oi-dNVKB+8E-pdrz+ooELMZf=oT_oGXKFrNWejz=fg@mail.gmail.com>
-         <22828e84-b34f-7132-c9e9-bb42baf9247b@redhat.com>
-         <cf57fb34-460c-3211-840f-8a5e3d88811a@linux.com> <YZNuyssYsAB0ogUD@alley>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        kvm list <kvm@vger.kernel.org>, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <Michael.Roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Quentin Perret <qperret@google.com>
+Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
+ Hypervisor Support
+Message-ID: <YZOwbjGVEfa/wLaS@suse.de>
+References: <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
+ <061ccd49-3b9f-d603-bafd-61a067c3f6fa@intel.com>
+ <YY6z5/0uGJmlMuM6@zn.tnic>
+ <YY7FAW5ti7YMeejj@google.com>
+ <YZJTA1NyLCmVtGtY@work-vm>
+ <YZKmSDQJgCcR06nE@google.com>
+ <CAA03e5E3Rvx0t8_ZrbNMZwBkjPivGKOg5HCShSFYwfkKDDHWtA@mail.gmail.com>
+ <YZKxuxZurFW6BVZJ@google.com>
+ <CAA03e5GBajwRJBuTJLPjji7o8QD2daEUJU7DpPJBxtWsf-DE8g@mail.gmail.com>
+ <8a244d34-2b10-4cf8-894a-1bf12b59cf92@www.fastmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8a244d34-2b10-4cf8-894a-1bf12b59cf92@www.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-11-16 at 09:41 +0100, Petr Mladek wrote:
-[...]
-> If I wanted to implement a super-reliable panic() I would
-> use some external device that would cause power-reset when
-> the watched device is not responding.
+On Mon, Nov 15, 2021 at 09:14:14PM -0800, Andy Lutomirski wrote:
+> It’s time to put on my maintainer hat. This is solidly in my
+> territory, and NAK.  A kernel privilege fault, from who-knows-what
+> context (interrupts off? NMI? locks held?) that gets an RMP violation
+> with no exception handler is *not* going to blindly write the RMP and
+> retry.  It’s not going to send flush IPIs or call into KVM to “fix”
+> things.  Just the locking issues alone are probably showstopping, even
+> ignoring the security and sanity issues.
 
-They're called watchdog timers.  We have a whole subsystem full of
-them:
+RMP faults are expected from two contexts:
 
-drivers/watchdog
+	* User-space
+	* KVM running in task context
 
-We used them in old cluster HA systems to guarantee successful recovery
-of shared state from contaminated cluster members, but I think they'd
-serve the reliable panic need equally well.  Most server class systems
-today have them built in (on the BMC if they don't have a separate
-mechanism), they're just not usually activated.
+The only situation where RMP faults could happen outside of these
+contexts is when running a kexec'ed kernel, which was launched while SNP
+guests were still running (that needs to be taken care of as well).
 
-James
+And from the locking side, which lock does the #PF handler need to take?
+Processors supporting SNP also have hardware support for flushing remote
+TLBs, so locks taken in the flush path are not strictly required.
 
+Calling into KVM is another story and needs some more thought, I agree
+with that.
+
+> Otherwise can we please get on with designing a reasonable model for
+> guest-private memory please?
+
+It is fine to unmap guest-private memory from the host kernel, even if
+it is not required by SNP. TDX need to do that because of the #MC thing
+that happens otherwise, but that is also just a way to emulate an
+RMP-like fault with TDX.
+
+But as Marc already pointed out, the kernel needs a plan B when an RMP
+happens anyway due to some bug.
+
+Regards,
+
+-- 
+Jörg Rödel
+jroedel@suse.de
+
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5
+90409 Nürnberg
+Germany
+ 
+(HRB 36809, AG Nürnberg)
+Geschäftsführer: Ivo Totev
 
