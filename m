@@ -2,78 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A559945334A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:55:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D425045334F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:55:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236912AbhKPN5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 08:57:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39100 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236916AbhKPN5Q (ORCPT
+        id S236919AbhKPN5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 08:57:52 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:58587 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236921AbhKPN5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 08:57:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637070859;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=LVBTm2cLG7alqW0oIHq3ofGGY2ENw2S7kG/TEcnQIDE=;
-        b=KfiQDiexCtbjVxuDhhw8F8Xv6izvfZcREkXeD2kx/hzGJixbfiG9bmPHOLr7R7Z63njVMK
-        3FNs1bHu/95H7MGTfg9owJXWyljW9NGiXCUlvocJsnIkSTfikv4JE7GAmDn/7emedX39Nt
-        fzPdqtPR7lgmmEudgQIqtNWFJljzqYI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-403-l2umVZfVOGWmwzImnVkGEQ-1; Tue, 16 Nov 2021 08:54:16 -0500
-X-MC-Unique: l2umVZfVOGWmwzImnVkGEQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F4881006AA2;
-        Tue, 16 Nov 2021 13:54:15 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1F70560BD8;
-        Tue, 16 Nov 2021 13:54:13 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH] mm: Export PageHeadHuge()
-From:   David Howells <dhowells@redhat.com>
-To:     willy@infradead.org
-Cc:     linux-mm@kvack.org, torvalds@linux-foundation.org,
-        dhowells@redhat.com, linux-kernel@vger.kernel.org
-Date:   Tue, 16 Nov 2021 13:54:13 +0000
-Message-ID: <163707085314.3221130.14783857863702203440.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+        Tue, 16 Nov 2021 08:57:24 -0500
+Received: from smtpclient.apple (p4fefc15c.dip0.t-ipconnect.de [79.239.193.92])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 78BC6CECD7;
+        Tue, 16 Nov 2021 14:54:25 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
+Subject: Re: [PATCH v2] Bluetooth: hci_h4: Fix padding calculation error
+ within h4_recv_buf()
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <1637052698-14326-1-git-send-email-zijuhu@codeaurora.org>
+Date:   Tue, 16 Nov 2021 14:54:24 +0100
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, c-hbandi@codeaurora.org,
+        hemantg@codeaurora.org, rjliao@codeaurora.org,
+        Zijun Hu <quic_zijuhu@quicinc.com>
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Message-Id: <6935AD40-7060-4A42-9DB6-74DEB6516D6D@holtmann.org>
+References: <1637052698-14326-1-git-send-email-zijuhu@codeaurora.org>
+To:     Zijun Hu <zijuhu@codeaurora.org>
+X-Mailer: Apple Mail (2.3693.20.0.1.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Export PageHeadHuge() - it's used by folio_test_hugetlb() and thence by
-folio_file_page() and folio_contains().
+Hi Zijun,
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: linux-mm@kvack.org
----
+> it is erroneous to calculate padding by subtracting length of type
+> indication from skb->len, it will cause data analysis error for
+> alignment which is greater than 1, so fixed by adding length of type
+> indication with skb->len.
+> 
+> Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
+> ---
+> drivers/bluetooth/hci_h4.c | 4 ++--
+> 1 file changed, 2 insertions(+), 2 deletions(-)
 
- mm/hugetlb.c |    1 +
- 1 file changed, 1 insertion(+)
+patch has been applied to bluetooth-next tree.
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index e09159c957e3..16f2e5d5f1a9 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1852,6 +1852,7 @@ int PageHeadHuge(struct page *page_head)
- 
- 	return page_head[1].compound_dtor == HUGETLB_PAGE_DTOR;
- }
-+EXPORT_SYMBOL(PageHeadHuge);
- 
- /*
-  * Find and lock address space (mapping) in write mode.
+Regards
 
+Marcel
 
