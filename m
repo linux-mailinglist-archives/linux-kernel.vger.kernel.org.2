@@ -2,205 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294C7452D63
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:57:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AA6F452D66
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:58:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232666AbhKPJAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 04:00:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232462AbhKPJAj (ORCPT
+        id S232711AbhKPJBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 04:01:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42120 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232486AbhKPJB1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 04:00:39 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45CB2C061570;
-        Tue, 16 Nov 2021 00:57:41 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id u60so55317143ybi.9;
-        Tue, 16 Nov 2021 00:57:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=fArE1d3Ulykml4CgLbAJBmsnXKMaBKmi+cka7s12SBg=;
-        b=qZh4d7ufoMlh5QZR9cyM9/ddtzbSL2TmEVwCAX95NMlhNd5MAOhMGfSY7glHz/kM35
-         4+oNv9sFAnrtWD22RT/iCf+OVUvS7jBsLYlBcKZibDKdrc6SZhLZ6MXcpNbGMK7zwjUU
-         IeHGIEOj6VHcfcRWucDx3Ntjlk27TT+joR0/UdOhyCYqOABts9r7zWIPQo2ooCoK0X2r
-         N0niQsSYlDNFiGSxSd8XHwL3mBKujcHc/Lif6yYv9NK0Ly+Rb8+QzqGLH8pNkndNPX+o
-         WWpKDoszQqlLgt6ejGVoPUWlEkqY/q5H2qbmCwwqeeBByyWTU4pPRyibhJ88N/7LhXNM
-         fMPw==
+        Tue, 16 Nov 2021 04:01:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637053108;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4284vAzYHLAxGcEEtHPUG4T3Bgo3Ms3nj1In/yM7t9U=;
+        b=RilFCKKXJ+OsMz9k9GYBNHcHPqIPDy3vcSUG/1H52dpUpziF4YQFgvtTByCC8FlWxL/bmB
+        3qxPjHJ3wVtq6DI/QSjoHJoB4qmZw1DbCMQhlAZfqAC6sXRgeJfpgVSNxvgyGSnq6oZlhA
+        YeMaSXIUCBezI+YIy8pWcnoJCrBOnBs=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-583-dSPrh5XBMWCUnaQ4f_pH1A-1; Tue, 16 Nov 2021 03:58:26 -0500
+X-MC-Unique: dSPrh5XBMWCUnaQ4f_pH1A-1
+Received: by mail-wm1-f71.google.com with SMTP id i131-20020a1c3b89000000b00337f92384e0so897599wma.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 00:58:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=fArE1d3Ulykml4CgLbAJBmsnXKMaBKmi+cka7s12SBg=;
-        b=GZSAATLYbH/6yg5770xfuSlBIongU+z+r/wzvGbiPPKpMP2JHR6ktsc+s3txdhKGTz
-         qKMjgZy7m4WOzwORjjdI4EXfaf8r0PRQA6r8OLXYkoTmeT1JVLssLp6P9wexl11cWEQC
-         TVVPOzgw4fk0k8y6lcUbzeoS+FRki9Y/okplfoEn18ch3D1+EdQII/eUGsZi+ywTasJf
-         ckWggmf9pYqE9WqBGbLTfCNNKDSTqYOf8zmNk0bgSU3qzo6df5nMykyD+0WW8XSp8N0Z
-         sa4jXeJ0XQiT+8cxjGVs3aXR6Qj46DJHRKOSP3Pv9oNsYpFovI8kANZ9aTnpiJRfguVx
-         MdCA==
-X-Gm-Message-State: AOAM531NFmvZ2TyNofh0d+g6xL0KSTdLPRdMPeK8c92ScLvseDNscko3
-        cS1wPKEpY7u9JuxMJMeCtnEkOHht2wMPrR/i13M=
-X-Google-Smtp-Source: ABdhPJxfFAVkOZNzOziDBttm9KDunA8P0GQbNKqKUE387cNuKoKqYunYpWbm15kx9wqKWRxobW74MXXVzuM4for8PxA=
-X-Received: by 2002:a25:34d5:: with SMTP id b204mr6119397yba.154.1637053060362;
- Tue, 16 Nov 2021 00:57:40 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:organization:subject
+         :in-reply-to:content-transfer-encoding;
+        bh=4284vAzYHLAxGcEEtHPUG4T3Bgo3Ms3nj1In/yM7t9U=;
+        b=EJfv5w/ZWX1QEldvhqOiw5aQSUlejWqRKNzcgV8qSuEZEZLDUXytrCjBH74Usx4AHt
+         KTTRyC0wlNn7samtqTNFnsVbU6Emw7DYXIT73/kmU30N68qvOTUUTNRVxvpK0gm6hbrQ
+         N/4mxKO605lHUduSVJACkTI+a0JJBo6MHWXe05EshogVo49B0+3ZxDsK2EFcK1YxLRVQ
+         0s+M6S9yUf2kZrqzc9fIyqs+kerFlJTXf+Mq351aj/6cKD6E+FFgdYShZDuqqiNxz5Vw
+         f5klaEwKexMILXJ4zarRq+eOh68j/qQmcj6QqDOQcS9AQaMtU4JGD92xpqrkmARv3ZTw
+         i+ew==
+X-Gm-Message-State: AOAM5312+jQOGlBOMz7L5dbPw68OHBJlvcfx+rBSAw1R4kw94HDe7aBs
+        hLWmsV4Agrxm/EzqsH9iJz8x7sI2klOESTkV74pCINUXWgVCCYOmdF8NTqKeXe7jjMD3KcWd925
+        bQmsmDua51GxhSA1hxnmB1Mkv
+X-Received: by 2002:adf:e8c8:: with SMTP id k8mr7111268wrn.135.1637053105602;
+        Tue, 16 Nov 2021 00:58:25 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwNnhYnmoiEKmhWbgITaAMbH06RYzALBRVXN/xZ5keEiGtxNnsHeJdzCkwXHAfqWjFKt7cxCw==
+X-Received: by 2002:adf:e8c8:: with SMTP id k8mr7111233wrn.135.1637053105277;
+        Tue, 16 Nov 2021 00:58:25 -0800 (PST)
+Received: from [192.168.3.132] (p4ff23d3a.dip0.t-ipconnect.de. [79.242.61.58])
+        by smtp.gmail.com with ESMTPSA id r17sm2015005wmq.11.2021.11.16.00.58.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 00:58:24 -0800 (PST)
+Message-ID: <d19fb078-cb9b-f60f-e310-fdeea1b947d2@redhat.com>
+Date:   Tue, 16 Nov 2021 09:58:24 +0100
 MIME-Version: 1.0
-References: <20211027233215.306111-1-alex.popov@linux.com> <ac989387-3359-f8da-23f9-f5f6deca4db8@linux.com>
- <CAHk-=wgRmjkP3+32XPULMLTkv24AkA=nNLa7xxvSg-F0G1sJ9g@mail.gmail.com>
- <77b79f0c-48f2-16dd-1d00-22f3a1b1f5a6@linux.com> <CAKXUXMx5Oi-dNVKB+8E-pdrz+ooELMZf=oT_oGXKFrNWejz=fg@mail.gmail.com>
- <20211115110649.4f9cb390@gandalf.local.home> <380a8fd0-d7c3-2487-7cd5-e6fc6e7693d9@csgroup.eu>
-In-Reply-To: <380a8fd0-d7c3-2487-7cd5-e6fc6e7693d9@csgroup.eu>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Tue, 16 Nov 2021 09:57:28 +0100
-Message-ID: <CAKXUXMxqg3MpwBMUSrjNS222C=MptrLiE5VXTVpVwXSQjSgKrA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] Introduce the pkill_on_warn parameter
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Alexander Popov <alex.popov@linux.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul McKenney <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Content-Language: en-US
+To:     Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
         Robin Murphy <robin.murphy@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Laura Abbott <labbott@kernel.org>,
-        David S Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Scull <ascull@google.com>,
-        Marc Zyngier <maz@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Wang Qing <wangqing@vivo.com>, Mel Gorman <mgorman@suse.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
-        Mathieu Chouquet-Stringer <me@mathieu.digital>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stephen Kitt <steve@sk2.org>, Stephen Boyd <sboyd@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-hardening@vger.kernel.org,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>, notify@kernel.org,
-        main@lists.elisa.tech, safety-architecture@lists.elisa.tech,
-        devel@lists.elisa.tech, Shuah Khan <shuah@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org,
+        iommu@lists.linux-foundation.org
+References: <20211115193725.737539-1-zi.yan@sent.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [RFC PATCH 0/3] Use pageblock_order for cma and
+ alloc_contig_range alignment.
+In-Reply-To: <20211115193725.737539-1-zi.yan@sent.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 7:37 AM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
->
->
-> Le 15/11/2021 =C3=A0 17:06, Steven Rostedt a =C3=A9crit :
-> > On Mon, 15 Nov 2021 14:59:57 +0100
-> > Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
-> >
-> >> 1. Allow a reasonably configured kernel to boot and run with
-> >> panic_on_warn set. Warnings should only be raised when something is
-> >> not configured as the developers expect it or the kernel is put into a
-> >> state that generally is _unexpected_ and has been exposed little to
-> >> the critical thought of the developer, to testing efforts and use in
-> >> other systems in the wild. Warnings should not be used for something
-> >> informative, which still allows the kernel to continue running in a
-> >> proper way in a generally expected environment. Up to my knowledge,
-> >> there are some kernels in production that run with panic_on_warn; so,
-> >> IMHO, this requirement is generally accepted (we might of course
-> >
-> > To me, WARN*() is the same as BUG*(). If it gets hit, it's a bug in the
-> > kernel and needs to be fixed. I have several WARN*() calls in my code, =
-and
-> > it's all because the algorithms used is expected to prevent the conditi=
-on
-> > in the warning from happening. If the warning triggers, it means either=
- that
-> > the algorithm is wrong or my assumption about the algorithm is wrong. I=
-n
-> > either case, the kernel needs to be updated. All my tests fail if a WAR=
-N*()
-> > gets hit (anywhere in the kernel, not just my own).
-> >
-> > After reading all the replies and thinking about this more, I find the
-> > pkill_on_warning actually worse than not doing anything. If you are
-> > concerned about exploits from warnings, the only real solution is a
-> > panic_on_warning. Yes, it brings down the system, but really, it has to=
- be
-> > brought down anyway, because it is in need of a kernel update.
-> >
->
-> We also have LIVEPATCH to avoid bringing down the system for a kernel
-> update, don't we ? So I wouldn't expect bringing down a vital system
-> just for a WARN.
->
-> As far as I understand from
-> https://www.kernel.org/doc/html/latest/process/deprecated.html#bug-and-bu=
-g-on,
-> WARN() and WARN_ON() are meant to deal with those situations as
-> gracefull as possible, allowing the system to continue running the best
-> it can until a human controled action is taken.
->
-> So I'd expect the WARN/WARN_ON to be handled and I agree that that
-> pkill_on_warning seems dangerous and unrelevant, probably more dangerous
-> than doing nothing, especially as the WARN may trigger for a reason
-> which has nothing to do with the running thread.
->
+On 15.11.21 20:37, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
+> 
+> Hi David,
 
-Christophe,
+Hi,
 
-I agree with a reasonable goal that WARN() should allow users "to deal
-with those situations as gracefull as possible, allowing the system to
-continue running the best it can until a human controled action is
-taken."
+thanks for looking into this.
 
-However, that makes me wonder even more: what does the system after a
-WARN() invocation still need to provide as properly working
-functionality, so that the human can take action, and how can the
-kernel indicate to the whole user applications that a certain
-functionality is not working anymore and how adaptive can those user
-application really be here? Making that explicit for every WARN()
-invocation seems to be tricky and probably also quite error-prone. So,
-in the end, after a WARN(), you end up running a system where you have
-this uncomfortable feeling of a running system where some things work
-and some things do not and it might be insecure (the whole system
-security concept is invalidated, because security features do not
-work, security holes are opened etc.) or other surprises happen.
+> 
+> You suggested to make alloc_contig_range() deal with pageblock_order instead of
+> MAX_ORDER - 1 and get rid of MAX_ORDER - 1 dependency in virtio_mem[1]. This
+> patchset is my attempt to achieve that. Please take a look and let me know if
+> I am doing it correctly or not.
+> 
+> From what my understanding, cma required alignment of
+> max(MAX_ORDER - 1, pageblock_order), because when MIGRATE_CMA was introduced,
+> __free_one_page() does not prevent merging two different pageblocks, when
+> MAX_ORDER - 1 > pageblock_order. But current __free_one_page() implementation
+> does prevent that. It should be OK to just align cma to pageblock_order.
+> alloc_contig_range() relies on MIGRATE_CMA to get free pages, so it can use
+> pageblock_order as alignment too.
 
-The panic_on_warn implements a simple policy of that "run as graceful
-as possible": We assume stopping the kernel is _graceful_, and we just
-assume that the functionality "panic shuts down the system" still
-works properly after any WARN() invocation. Once the system is shut
-down, the human can take action and switch it into some (remote)
-diagnostic mode for further analysis and repair.
+I wonder if that's sufficient. Especially the outer_start logic in
+alloc_contig_range() might be problematic. There are some ugly corner
+cases with free pages/allocations spanning multiple pageblocks and we
+only isolated a single pageblock.
 
-I am wondering if that policy and that assumption holds for all WARN()
-invocations in the kernel? I would hope that we can answer this
-question, which is much simpler than getting the precise answer on
-"what as graceful as possible actually means".
 
-Lukas
+Regarding CMA, we have to keep the following cases working:
+
+a) Different pageblock types (MIGRATE_CMA and !MIGRATE_CMA) in MAX_ORDER
+   - 1 page:
+   [       MAX_ ORDER - 1     ]
+   [ pageblock 0 | pageblock 1]
+
+Assume either pageblock 0 is MIGRATE_CMA or pageblock 1 is MIGRATE_CMA,
+but not both. We have to make sure alloc_contig_range() keeps working
+correctly. This should be the case even with your change, as we won't
+merging pages accross differing migratetypes.
+
+b) Migrating/freeing a MAX_ ORDER - 1 page while partially isolated:
+   [       MAX_ ORDER - 1     ]
+   [ pageblock 0 | pageblock 1]
+
+Assume both are MIGRATE_CMA. Assume we want to either allocate from
+pageblock 0 or pageblock 1. Especially, assume we want to allocate from
+pageblock 1. While we would isolate pageblock 1, we wouldn't isolate
+pageblock 0.
+
+What happens if we either have a free page spanning the MAX_ORDER - 1
+range already OR if we have to migrate a MAX_ORDER - 1 page, resulting
+in a free MAX_ORDER - 1 page of which only the second pageblock is
+isolated? We would end up essentially freeing a page that has mixed
+pageblocks, essentially placing it in !MIGRATE_ISOLATE free lists ... I
+might be wrong but I have the feeling that this would be problematic.
+
+c) Concurrent allocations:
+    [       MAX_ ORDER - 1     ]
+    [ pageblock 0 | pageblock 1]
+
+Assume b) but we have two concurrent CMA allocations to pageblock 0 and
+pageblock 1, which would now be possible as start_isolate_page_range()
+isolate would succeed on both.
+
+
+Regarding virtio-mem, we care about the following cases:
+
+a) Allocating parts from completely movable MAX_ ORDER - 1 page:
+   [       MAX_ ORDER - 1     ]
+   [ pageblock 0 | pageblock 1]
+
+Assume pageblock 0 and pageblock 1 are either free or contain only
+movable pages. Assume we allocated pageblock 0. We have to make sure we
+can allocate pageblock 1. The other way around, assume we allocated
+pageblock 1, we have to make sure we can allocate pageblock 0.
+
+Free pages spanning both pageblocks might be problematic.
+
+b) Allocate parts of partially movable MAX_ ORDER - 1 page:
+   [       MAX_ ORDER - 1     ]
+   [ pageblock 0 | pageblock 1]
+
+Assume pageblock 0 contains unmovable data but pageblock 1 not: we have
+to make sure we can allocate pageblock 1. Similarly, assume pageblock 1
+contains unmovable data but pageblock 0 no: we have to make sure we can
+allocate pageblock 1. has_unmovable_pages() might allow for that.
+
+But, we want to fail early in case we want to allocate a single
+pageblock but it contains unmovable data. This could be either directly
+or indirectly.
+
+If we have an unmovable (compound) MAX_ ORDER - 1 and we'd try isolating
+pageblock 1, has_unmovable_pages() would always return "false" because
+we'd simply be skiping over any tail pages, and not detect the
+un-movability.
+
+c) Migrating/freeing a MAX_ ORDER - 1 page while partially isolated:
+
+Same concern as for CMA b)
+
+
+So the biggest concern I have is dealing with migrating/freeing >
+pageblock_order pages while only having isolated a single pageblock.
+
+> 
+> In terms of virtio_mem, if I understand correctly, it relies on
+> alloc_contig_range() to obtain contiguous free pages and offlines them to reduce
+> guest memory size. As the result of alloc_contig_range() alignment change,
+> virtio_mem should be able to just align PFNs to pageblock_order.
+
+For virtio-mem it will most probably be desirable to first try
+allocating the MAX_ORDER -1 range if possible and then fallback to
+pageblock_order. But that's an additional change on top in virtio-mem code.
+
+
+
+My take to teach alloc_contig_range() to properly handle would be the
+following:
+
+a) Convert MIGRATE_ISOLATE into a separate pageblock flag
+
+We would want to convert MIGRATE_ISOLATE into a separate pageblock
+flags, such that when we isolate a page block we preserve the original
+migratetype. While start_isolate_page_range() would set that bit,
+undo_isolate_page_range() would simply clear that bit. The buddy would
+use a single MIGRATE_ISOLATE queue as is: the original migratetype is
+only used for restoring the correct migratetype. This would allow for
+restoring e.g., MIGRATE_UNMOVABLE after isolating an unmovable pageblock
+(below) and not simply setting all such pageblocks to MIGRATE_MOVABLE
+when un-isolating.
+
+Ideally, we'd get rid of the "migratetype" parameter for
+alloc_contig_range(). However, even with the above change we have to
+make sure that memory offlining and ordinary alloc_contig_range() users
+will fail on MIGRATE_CMA pageblocks (has_unmovable_page() checks that as
+of today). We could achieve that differently, though (e.g., bool
+cma_alloc parameter instead).
+
+
+b) Allow isolating pageblocks with unmovable pages
+
+We'd pass the actual range of interest to start_isolate_page_range() and
+rework the code to check has_unmovable_pages() only on the range of
+interest, but considering overlapping larger allocations. E.g., if we
+stumble over a compound page, lookup the head an test if that page is
+movable/unmovable.
+
+c) Change alloc_contig_range() to not "extend" the range of interest to
+include pageblock of different type. Assume we're isolating a
+MIGRATE_CMA pageblock, only isolate a neighboring MIGRATE_CMA pageblock,
+not other pageblocks.
+
+
+So we'd keep isolating complete MAX_ORDER - 1 pages unless c) prevents
+it. We'd allow isolating even pageblocks that contain unmovable pages on
+ZONE_NORMAL, and check via has_unmovable_pages() only if the range of
+interest contains unmovable pages, not the whole MAX_ORDER -1 range or
+even the whole pageblock. We'd not silently overwrite the pageblock type
+when restoring but instead restore the old migratetype.
+
+-- 
+Thanks,
+
+David / dhildenb
+
