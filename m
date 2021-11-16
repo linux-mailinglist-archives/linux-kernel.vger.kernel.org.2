@@ -2,268 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF54453337
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:49:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B73453340
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236884AbhKPNwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 08:52:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55665 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236861AbhKPNwY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 08:52:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637070567;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3OTy/9YrFlHb1FbgIXV6RVmtWPM+q99vU/2+dtI6ml4=;
-        b=BNHOz1+h0E7CbcjqgGKy2Uq+4mVpBIcAbLidyxeSX0Z/QF/2Z5C4IJCJavWjhW2bsbMjNN
-        WA6Y0Am35j25U1ZunEQnDZYysbFBDkPu1LYElaSZayD+RvHA49vebVt44wE9S6oL2eiKxV
-        bTetvilFZw121e/T3pg6VfWtphqcPqQ=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-382-ZJyjOhxVMgC_9S2NqeXezQ-1; Tue, 16 Nov 2021 08:49:25 -0500
-X-MC-Unique: ZJyjOhxVMgC_9S2NqeXezQ-1
-Received: by mail-wm1-f72.google.com with SMTP id ay34-20020a05600c1e2200b00337fd217772so1507054wmb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 05:49:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:from:to:cc:references:in-reply-to
-         :content-transfer-encoding;
-        bh=3OTy/9YrFlHb1FbgIXV6RVmtWPM+q99vU/2+dtI6ml4=;
-        b=p+8aJvBS1kABb6CqcJocmJtWBliimcHNsRIoEDoOzIH7qutGDe/S+LVnBRSOwuCE69
-         wZHaFRV16/hqiEzw3dybqnVPGYkOci/ffbp53Y4m8owtPguJ1YQoI3Z7iDB6T/Qw6S7a
-         a/JiV+3z7O3nK/nEC4ddwYm228V0xxsJMP+8NRoji3OnT8y17DPLcYDhumdyzXOLILdY
-         8uoKx4vV6ic4QSOtLcvz58Cy57nHABeSqzUien3tuWLXAyatZeV4tGFG3tkYfbFWQaTG
-         JFg3YnfOLdQAtMLWyxihA8tR5rkFgO0JV4R4lKxe50bY1+LNngIJu46EvmcSj0YSJ5BY
-         xN4A==
-X-Gm-Message-State: AOAM533bl/+eKkNrVx5/B4cC28AeCRCUqUOVTXYJEkubpGfDtam1rhcB
-        YsP/8TIwO8jddVBSsc6vCiiDwvFt4UOhGY4C+P2fXt+FHAwcpD9Rbcy/l4s3FOoVSOFRaJQkegz
-        8xtlF7Pyq64QL4Z4aZbrDnI5T
-X-Received: by 2002:adf:e387:: with SMTP id e7mr9648489wrm.412.1637070564718;
-        Tue, 16 Nov 2021 05:49:24 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxA2+Uq7LQFH/v6rrXJG7SiujqhI87w7fpQ+njuY49G4fs4N3h5OBpPDk4Z/+ieJE2TAY7GFw==
-X-Received: by 2002:adf:e387:: with SMTP id e7mr9648431wrm.412.1637070564424;
-        Tue, 16 Nov 2021 05:49:24 -0800 (PST)
-Received: from [192.168.1.102] (91.pool90-171-47.dynamic.orange.es. [90.171.47.91])
-        by smtp.gmail.com with ESMTPSA id b10sm18226962wrt.36.2021.11.16.05.49.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 05:49:23 -0800 (PST)
-Message-ID: <74ca8095-7f09-b373-5434-8fefbbaf6476@redhat.com>
-Date:   Tue, 16 Nov 2021 14:49:21 +0100
+        id S236851AbhKPNzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 08:55:53 -0500
+Received: from foss.arm.com ([217.140.110.172]:45518 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231753AbhKPNzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 08:55:52 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71BB26D;
+        Tue, 16 Nov 2021 05:52:55 -0800 (PST)
+Received: from [10.57.76.160] (unknown [10.57.76.160])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2FD7F3F766;
+        Tue, 16 Nov 2021 05:52:54 -0800 (PST)
+Message-ID: <c716be29-4f0c-b516-c0bf-dc89ba466885@arm.com>
+Date:   Tue, 16 Nov 2021 13:52:52 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2] fbdev: Prevent probing generic drivers if a FB is
- already registered
-Content-Language: en-US
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Peter Jones <pjones@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ilya Trukhanov <lahvuun@gmail.com>,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        Borislav Petkov <bp@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20211111111120.1344613-1-javierm@redhat.com>
- <CAMuHMdWA2V_KDpcpMw3yRKmN+6YDjmysJoz6D-6JjJs-3+XYTQ@mail.gmail.com>
- <579a584a-68af-d5c9-0547-30cb1592d46f@redhat.com>
- <CAMuHMdWotEN1TtTr7douLkQPkpXE-rQgamM3GOYO1XNHbUiguw@mail.gmail.com>
- <7cbadb2a-b6e9-f264-9d95-b76c7071af27@redhat.com>
-In-Reply-To: <7cbadb2a-b6e9-f264-9d95-b76c7071af27@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.0
+Subject: Re: [PATCH v1 0/4] coresight: etm: Correct (virtual) contextID
+ tracing for namespace
+To:     Leo Yan <leo.yan@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211031144214.237879-1-leo.yan@linaro.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20211031144214.237879-1-leo.yan@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 11:01, Javier Martinez Canillas wrote:
-> Hello Geert,
+Hi Leo
+
+
+On 31/10/2021 14:42, Leo Yan wrote:
+> If a profiling program runs in a non-root PID namespace, if CoreSight
+> driver enables contextID tracing, it can lead to mismatching issue
+> between the context ID in hardware trace data and the allocated PID in
+> the non-root namespace.
 > 
-> On 11/16/21 10:43, Geert Uytterhoeven wrote:
+> CoreSight driver has tried to address this issue for the contextID
+> related interfaces under sysfs, but it misses other parts: it doesn't
+> prevent user to set VMID (virtual contextID) for kernel runs in EL2 with
+> VHE, and furthermore, it misses to handle the perf mode when the
+> profiling tool (e.g. perf) doesn't run in root PID namespace.
 > 
-> [snip]
+> For this reason, this patch series is to correct contextID tracing for
+> non-root namespace.
 > 
->>>
->>> So this is already a fragile solution and $SUBJECT doesn't make things worse
->>> IMO. Since not having something like this can lead to issues as reported by:
->>>
->>> https://lore.kernel.org/all/20211110200253.rfudkt3edbd3nsyj@lahvuun/
->>>
->>> We could probably do some smarter here by providing a function that checks
->>> if the registered fbdev drivers matches the aperture base. But I'm unsure
->>> if that's worth it. After all, fbdev drivers are likely to be disabled by
->>> most distros soon now that we have the simpledrm driver.
->>
->> Checking the aperture base is what was done in all other cases of
->> preventing generic (fbdev) drivers from stepping on specific drivers'
->> toes...
->>
+> Patch 01 is to use spinlock to protect reading virtual context ID
+> comparator.
 > 
-> Ok, I can re-spin the patch checking if the aperture ranges overlap. There's
-> an apertures_overlap() function in drivers/video/fbdev/core/fbmem.c that can
-> be exported for fbdev drivers to use.
+> Patch 02 corrects the virtual contextID tracing for non-root PID
+> namespace.
+> 
+> Patch 03/04 are used to fix the contextID tracing for perf mode.
+> 
+> I only verified this patch series on Juno board in the root PID
+> namespace and confirmed the patches don't introduce any regression for
+> root PID namespace.
 > 
 
-So I tried the following patch [0]. But when testing on a VM, the efifb driver
-is probed even after the virtio_gpu driver has already been probed. Being a DRM
-driver, it doesn't use the fbdev infra and AFAIU doesn't reserve any apertures.
+I have finished reviewing the set.
 
-When the {efi,simple}fb drivers check if there's an aperture already reserved
-using the fb_aperture_registered() helper, this just returns false even when a
-driver for the same hardware was already registered. The kernel log says:
-
-[    0.891512] checking generic (0 0) vs hw (c0000000 1d5000)
-
-That is because when DRM_FBDEV_EMULATION=y, the virtio_gpu driver registers an
-fbdev but without any aperture set.
-
-I discussed this with Thomas and even though $SUBJECT is just a workaround, it
-seems that is the best we can do as an heuristic to prevent the generic fbdev
-drivers to be probed after a native DRM driver.
-
-[0]:
-From d962c20bc9fd90c2525d79b69e632d99e8050fc5 Mon Sep 17 00:00:00 2001
-From: Javier Martinez Canillas <javierm@redhat.com>
-Date: Thu, 11 Nov 2021 00:55:06 +0100
-Subject: [PATCH v4] fbdev: Prevent probing generic drivers if a FB is already
- registered
-
-The efifb and simplefb drivers just render to a pre-allocated frame buffer
-and rely on the display hardware being initialized before the kernel boots.
-
-But if another driver already probed correctly and registered a fbdev, the
-generic drivers shouldn't be probed since an actual driver for the display
-hardware is already present.
-
-This is more likely to occur after commit d391c5827107 ("drivers/firmware:
-move x86 Generic System Framebuffers support") since the "efi-framebuffer"
-and "simple-framebuffer" platform devices are registered at a later time.
-
-Link: https://lore.kernel.org/r/20211110200253.rfudkt3edbd3nsyj@lahvuun/
-Fixes: d391c5827107 ("drivers/firmware: move x86 Generic System Framebuffers support")
-Reported-by: Ilya Trukhanov <lahvuun@gmail.com>
-Cc: <stable@vger.kernel.org> # 5.15.x
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
----
-
-Changes in v4:
-- Only fail to probe if a registered fbdev has overlapping aperture (Geert).
-
-Changes in v3:
-- Cc <stable@vger.kernel.org> since a Fixes: tag is not enough (gregkh).
-
-Changes in v2:
-- Add a Link: tag with a reference to the bug report (Thorsten Leemhuis).
-- Add a comment explaining why the probe fails earlier (Daniel Vetter).
-- Add a Fixes: tag for stable to pick the fix (Daniel Vetter).
-- Add Daniel Vetter's Reviewed-by: tag.
-- Improve the commit message and mention the culprit commit
-
- drivers/video/fbdev/core/fbmem.c | 16 ++++++++++++++++
- drivers/video/fbdev/efifb.c      | 11 +++++++++++
- drivers/video/fbdev/simplefb.c   | 11 +++++++++++
- include/linux/fb.h               |  1 +
- 4 files changed, 39 insertions(+)
-
-diff --git drivers/video/fbdev/core/fbmem.c drivers/video/fbdev/core/fbmem.c
-index 826175ad88a2..9906b83132cb 100644
---- drivers/video/fbdev/core/fbmem.c
-+++ drivers/video/fbdev/core/fbmem.c
-@@ -1546,6 +1546,22 @@ static bool fb_do_apertures_overlap(struct apertures_struct *gena,
- 	return false;
- }
- 
-+bool fb_aperture_registered(struct apertures_struct *a)
-+{
-+	int i;
-+
-+	for_each_registered_fb(i) {
-+		struct apertures_struct *gen_aper;
-+
-+		gen_aper = registered_fb[i]->apertures;
-+		if (fb_do_apertures_overlap(gen_aper, a))
-+			return true;
-+	}
-+
-+	return false;
-+}
-+EXPORT_SYMBOL(fb_aperture_registered);
-+
- static void do_unregister_framebuffer(struct fb_info *fb_info);
- 
- #define VGA_FB_PHYS 0xA0000
-diff --git drivers/video/fbdev/efifb.c drivers/video/fbdev/efifb.c
-index edca3703b964..1ad6698b2e05 100644
---- drivers/video/fbdev/efifb.c
-+++ drivers/video/fbdev/efifb.c
-@@ -457,6 +457,17 @@ static int efifb_probe(struct platform_device *dev)
- 	info->apertures->ranges[0].base = efifb_fix.smem_start;
- 	info->apertures->ranges[0].size = size_remap;
- 
-+	/*
-+	 * Generic drivers must not be registered if a framebuffer exists.
-+	 * If a native driver was probed, the display hardware was already
-+	 * taken and attempting to use the system framebuffer is dangerous.
-+	 */
-+	if (fb_aperture_registered(info->apertures)) {
-+		dev_err(&dev->dev,
-+			"efifb: a framebuffer is already registered\n");
-+		return -EINVAL;
-+	}
-+
- 	if (efi_enabled(EFI_MEMMAP) &&
- 	    !efi_mem_desc_lookup(efifb_fix.smem_start, &md)) {
- 		if ((efifb_fix.smem_start + efifb_fix.smem_len) >
-diff --git drivers/video/fbdev/simplefb.c drivers/video/fbdev/simplefb.c
-index 62f0ded70681..3ad0f538ca91 100644
---- drivers/video/fbdev/simplefb.c
-+++ drivers/video/fbdev/simplefb.c
-@@ -456,6 +456,17 @@ static int simplefb_probe(struct platform_device *pdev)
- 	info->apertures->ranges[0].base = info->fix.smem_start;
- 	info->apertures->ranges[0].size = info->fix.smem_len;
- 
-+	/*
-+	 * Generic drivers must not be registered if a framebuffer exists.
-+	 * If a native driver was probed, the display hardware was already
-+	 * taken and attempting to use the system framebuffer is dangerous.
-+	 */
-+	if (fb_aperture_registered(info->apertures)) {
-+		dev_err(&pdev->dev,
-+			"simplefb: a framebuffer is already registered\n");
-+		return -EINVAL;
-+	}
-+
- 	info->fbops = &simplefb_ops;
- 	info->flags = FBINFO_DEFAULT | FBINFO_MISC_FIRMWARE;
- 	info->screen_base = ioremap_wc(info->fix.smem_start,
-diff --git include/linux/fb.h include/linux/fb.h
-index 6f3db99ab990..f1fbdb39932b 100644
---- include/linux/fb.h
-+++ include/linux/fb.h
-@@ -604,6 +604,7 @@ extern ssize_t fb_sys_write(struct fb_info *info, const char __user *buf,
- 			    size_t count, loff_t *ppos);
- 
- /* drivers/video/fbmem.c */
-+extern bool fb_aperture_registered(struct apertures_struct *a);
- extern int register_framebuffer(struct fb_info *fb_info);
- extern void unregister_framebuffer(struct fb_info *fb_info);
- extern int remove_conflicting_pci_framebuffers(struct pci_dev *pdev,
--- 
-2.33.1
-
-Best regards,
--- 
-Javier Martinez Canillas
-Linux Engineering
-Red Hat
-
+Suzuki
