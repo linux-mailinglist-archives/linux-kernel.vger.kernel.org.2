@@ -2,107 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08568453BE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 22:46:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71009453BE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 22:48:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbhKPVtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 16:49:19 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:37832 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbhKPVtS (ORCPT
+        id S231389AbhKPVu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 16:50:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhKPVu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 16:49:18 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 54BE31FD37;
-        Tue, 16 Nov 2021 21:46:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1637099180; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c/L9KoKoaxSnL1Jn59yhmyWCrQE61s5MuhLMctoNPdU=;
-        b=RgzNBBALsJ0q2yi+k2olZ09hFBSCYQFALEp/JjAQDq4nLpSfYjvvHEg/Rm9JLSsbPvmYIs
-        X1evb7fGBb8VJfZEYPFkOMAiTGB3YXTFqpRDKvTtVMmoYY0R7t2eFXRqWtnrXdxxnMfzkg
-        7IG93MR8RpuFfCBsFoXHmz4cMLRBtpQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1637099180;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c/L9KoKoaxSnL1Jn59yhmyWCrQE61s5MuhLMctoNPdU=;
-        b=e+eCzDrgx+fAWEyBwRLIBGiZi7tt3MdyveQGsQYTzDZEZFb0WOrqhV0aryshHyw5hHZAhx
-        tDlLcC5pWj2rVHAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 70BAB13C5E;
-        Tue, 16 Nov 2021 21:46:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id C1WzC6kmlGG1IAAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 16 Nov 2021 21:46:17 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 16 Nov 2021 16:50:56 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3616C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 13:47:58 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id i8-20020a7bc948000000b0030db7b70b6bso3146599wml.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 13:47:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=CH+wOU8IkpDGfrPMJt+XhHiyZDF6T70EhzybBc8lVmM=;
+        b=qEwFgJ4U7LTjWdRCTYx0yi6+SIjDlyTtX2cbtRLGNQrkc13D/DB/O5DJw9Y9of0/LO
+         pXATjSXWlIB1hiT+NIkT6g2XxmSKx8Z0CwdEP4aMWyB0FmTcJUSYFcMrGNGQ+y6FluvS
+         mzZ1tQE0pk8WAqb1b0tRiFOEzN8AJsFZrgVd2O7mQxozfBz0aT703TZUQHVxLwBGrhT7
+         5Ag2Cwtm+bBIQQVOYoj5n+RUNZ3o2VQgsOQa1qyiXoUhhJYtZfK24vMZHQ5SaBP2q+3C
+         JZQ0Bt1u/kSixXsHaW6xsRvvOBtjyj+b8i9TN/CcdSWOuY2nzdQ+WpaoJPVXLYjCkwwv
+         uQEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=CH+wOU8IkpDGfrPMJt+XhHiyZDF6T70EhzybBc8lVmM=;
+        b=25i0gtgxutieIQJPzgDlWdPY0+IPH8Vm18gZq7+PLajqPTsOYew+vGKM6cEr087GdU
+         3AJGxpeZH7q8eJM/EaIiYcWgRBneUqjG5KSpO2r4r7+Yb/Sw/OVYPn/hqPloWOEHxgjo
+         18NQapxzDfFVeXawkWF0EOT6lsMd12AjlSdSFImUpwl9EbWIK9MoKxoNaAOtpJC9K9+c
+         jMNgiJ8XAwyPSwzA9gx4sbYtY4Q+ohaGnmENFF6gWl5SeMEIg+NnYrcHcR7DCQtmG2pb
+         KhaYnKy3Fm9ZqefGITlMuEZ/AHsTOGuOeRv72ly3A4fpgvOupoSVa9aBjTugxBwEkfA9
+         yjqw==
+X-Gm-Message-State: AOAM53243drpOk8jV+9ytqwCmGslHTIlT/TnCUgRqmhGDsqAm7ysrawA
+        19/v6NUK4sgO0Ntxv5aMp/Sj8g==
+X-Google-Smtp-Source: ABdhPJz/gXu7UjAE8Pg+B9OjTYttzkEf3y6nVZxkFEaWbbvKwFMnOuHZAAj6ceBKrZZsh1t2dH7tvA==
+X-Received: by 2002:a7b:c4c4:: with SMTP id g4mr11223073wmk.93.1637099277010;
+        Tue, 16 Nov 2021 13:47:57 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:ee27:74df:199e:beab])
+        by smtp.gmail.com with ESMTPSA id v7sm18040254wrq.25.2021.11.16.13.47.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 13:47:56 -0800 (PST)
+Date:   Tue, 16 Nov 2021 22:47:50 +0100
+From:   Marco Elver <elver@google.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Mina Almasry <almasrymina@google.com>, paulmck@kernel.org,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Jue Wang <juew@google.com>, Yang Yao <ygyao@google.com>,
+        Joanna Li <joannali@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, kasan-dev@googlegroups.com
+Subject: Re: [PATCH v6] hugetlb: Add hugetlb.*.numa_stat file
+Message-ID: <YZQnBoPqMGhtLxnJ@elver.google.com>
+References: <CAMZfGtVjrMC1+fm6JjQfwFHeZN3dcddaAogZsHFEtL4HJyhYUw@mail.gmail.com>
+ <CAHS8izPjJRf50yAtB0iZmVBi1LNKVHGmLb6ayx7U2+j8fzSgJA@mail.gmail.com>
+ <CALvZod7VPD1rn6E9_1q6VzvXQeHDeE=zPRpr9dBcj5iGPTGKfA@mail.gmail.com>
+ <CAMZfGtWJGqbji3OexrGi-uuZ6_LzdUs0q9Vd66SwH93_nfLJLA@mail.gmail.com>
+ <6887a91a-9ec8-e06e-4507-b2dff701a147@oracle.com>
+ <CAHS8izP3aOZ6MOOH-eMQ2HzJy2Y8B6NYY-FfJiyoKLGu7_OoJA@mail.gmail.com>
+ <CALvZod7UEo100GLg+HW-CG6rp7gPJhdjYtcPfzaPMS7Yxa=ZPA@mail.gmail.com>
+ <YZOeUAk8jqO7uiLd@elver.google.com>
+ <CAHS8izPV20pD8nKEsnEYicaCKLH7A+QTYphWRrtTqcppzoQAWg@mail.gmail.com>
+ <CALvZod6zGa15CDQTp+QOGLUi=ap_Ljx9-L5+S6w84U6xTTdpww@mail.gmail.com>
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Christoph Hellwig" <hch@infradead.org>
-Cc:     "Trond Myklebust" <trond.myklebust@hammerspace.com>,
-        "Anna Schumaker" <anna.schumaker@netapp.com>,
-        "Chuck Lever" <chuck.lever@oracle.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Mel Gorman" <mgorman@suse.de>, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org
-Subject: Re: [PATCH 12/13] MM: use AIO/DIO for reads from SWP_FS_OPS swap-space
-In-reply-to: <YZNsf5yvfb8+SiqB@infradead.org>
-References: <163702956672.25805.16457749992977493579.stgit@noble.brown>,
- <163703064458.25805.6777856691611196478.stgit@noble.brown>,
- <YZNsf5yvfb8+SiqB@infradead.org>
-Date:   Wed, 17 Nov 2021 08:46:14 +1100
-Message-id: <163709917463.13692.6685266362531701682@noble.neil.brown.name>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod6zGa15CDQTp+QOGLUi=ap_Ljx9-L5+S6w84U6xTTdpww@mail.gmail.com>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Nov 2021, Christoph Hellwig wrote:
-> On Tue, Nov 16, 2021 at 01:44:04PM +1100, NeilBrown wrote:
-> > When pages a read from SWP_FS_OPS swap-space, the reads are submitted as
-> > separate reads for each page.  This is generally less efficient than
-> > larger reads.
-> >=20
-> > We can use the block-plugging infrastructure to delay submitting the
-> > read request until multiple contigious pages have been collected.  This
-> > requires using ->direct_IO to submit the read (as ->readpages isn't
-> > suitable for swap).
->=20
-> Abusing the block code here seems little ugly.  Also this won't
-> compile if CONFIG_BLOCK is not set, will it?
+On Tue, Nov 16, 2021 at 12:59PM -0800, Shakeel Butt wrote:
+> On Tue, Nov 16, 2021 at 12:48 PM Mina Almasry <almasrymina@google.com> wrote:
+[...]
+> > > Per above, probably unlikely, but allowed. WRITE_ONCE should prevent it,
+> > > and at least relieve you to not worry about it (and shift the burden to
+> > > WRITE_ONCE's implementation).
+> > >
+> >
+> > Thank you very much for the detailed response. I can add READ_ONCE()
+> > at the no-lock read site, that is no issue.
+> >
+> > However, for the writes that happen while holding the lock, the write
+> > is like so:
+> > +               h_cg->nodeinfo[page_to_nid(page)]->usage[idx] += nr_pages;
+> >
+> > And like so:
+> > +               h_cg->nodeinfo[page_to_nid(page)]->usage[idx] -= nr_pages;
+> >
+> > I.e. they are increments/decrements. Sorry if I missed it but I can't
+> > find an INC_ONCE(), and it seems wrong to me to do something like:
+> >
+> > +               WRITE_ONCE(h_cg->nodeinfo[page_to_nid(page)]->usage[idx],
+> > +
+> > h_cg->nodeinfo[page_to_nid(page)] + nr_pages);
 
-There is nothing really block-layer-specific about the plugging
-interfaces.  I think it would be quite reasonable to move them to lib/
-But you are correct that currently without CONFIG_BLOCK the code will
-compile but not work.
+From what I gather there are no concurrent writers, right?
 
->=20
-> What is the problem with just batching up manually?
+WRITE_ONCE(a, a + X) is perfectly fine. What it says is that you can
+have concurrent readers here, but no concurrent writers (and KCSAN will
+still check that). Maybe we need a more convenient macro for this idiom
+one day..
 
-That would require a bigger change to common code, which would only
-benefit one user.  The plugging mechanism works well for batching
-requests to a block device.  Why not use it for non-block-devices too?
+Though I think for something like
 
-Thanks,
-NeilBrown
+	h_cg->nodeinfo[page_to_nid(page)]->usage[idx] += nr_pages;
 
+it seems there wants to be an temporary long* so that you could write
+WRITE_ONCE(*usage, *usage + nr_pages) or something.
 
->=20
-> > +	/* nofs needs as ->direct_IO may take the same mutex it takes for write=
- */
->=20
-> Overly long line.
->=20
->=20
+> > I know we're holding a lock anyway so there is no race, but to the
+> > casual reader this looks wrong as there is a race between the fetch of
+> > the value and the WRITE_ONCE(). What to do here? Seems to me the most
+> > reasonable thing to do is just READ_ONCE() and leave the write plain?
+> >
+> >
+> 
+> How about atomic_long_t?
+
+That would work of course; if this is very hot path code it might be
+excessive if you don't have concurrent writers.
+
+Looking at the patch in more detail, the counter is a stat counter that
+can be read from a stat file, correct? Hypothetically, what would happen
+if the reader of 'usage' reads approximate values?
+
+If the answer is "nothing", then this could classify as an entirely
+"benign" data race and you could only use data_race() on the reader and
+leave the writers unmarked using normal +=/-=. Check if it fits
+"Data-Racy Reads for Approximate Diagnostics" [1].
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/memory-model/Documentation/access-marking.txt#n74
