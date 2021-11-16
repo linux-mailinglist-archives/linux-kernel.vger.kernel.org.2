@@ -2,58 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3EE453A68
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 20:49:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C6D453A6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 20:51:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240153AbhKPTvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 14:51:55 -0500
-Received: from out0.migadu.com ([94.23.1.103]:51916 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235941AbhKPTvy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 14:51:54 -0500
-MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cmpwn.com; s=key1;
-        t=1637092128;
+        id S240162AbhKPTwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 14:52:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44153 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229815AbhKPTwQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 14:52:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637092158;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nQ2Roqr4t3/SV+7leP8bPNMMTTpbsF9DiwE9Tze497g=;
-        b=hBLZ+5jW5zrQLKx2cGehdibCh8NNXWDVRtOvHRI/oggNejYTYbK83V36z/xOUkRLaZbnSc
-        gefkDlF0/qn73MDGBlF5pCU80UbtN0QEYq19ysx/MCbXO0EUv6YFi3kMg691OEUhGbKRby
-        BuAcIKL0pZknNsf0q01r9SH2nLE6qdimYwfht7pvDh4vH1/tutKIrU8aLoPa47vJH6OOpN
-        qpNCJ+jyhj0Coc543slxkimkm/9pUy7vM9K1jyZcNngE8qJARO3A77cQvm57OUq+/gxTRa
-        xN9C6GBZ2kDEuP54weWPZqdUmkL+nya5NmXBLpxfUd8SVSjTxEnMfruQKsY7Ig==
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 16 Nov 2021 20:48:48 +0100
-Message-Id: <CFRGQ58D9IFX.PEH1JI9FGHV4@taiga>
-To:     "Andrew Morton" <akpm@linux-foundation.org>
-Cc:     "Ammar Faizi" <ammarfaizi2@gnuweeb.org>,
-        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>,
-        "io_uring Mailing List" <io-uring@vger.kernel.org>,
-        "Jens Axboe" <axboe@kernel.dk>,
-        "Pavel Begunkov" <asml.silence@gmail.com>, <linux-mm@kvack.org>
-Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   "Drew DeVault" <sir@cmpwn.com>
-References: <20211028080813.15966-1-sir@cmpwn.com>
- <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
- <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
- <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
- <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
- <CFQZSHV700KV.18Y62SACP8KOO@taiga>
- <20211116114727.601021d0763be1f1efe2a6f9@linux-foundation.org>
-In-Reply-To: <20211116114727.601021d0763be1f1efe2a6f9@linux-foundation.org>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: sir@cmpwn.com
+        bh=C3b5knlYZX1AIJ216JlJ+2mMKUoVtkxyIscJTP+T4Ew=;
+        b=AszMuhzJ1vxXqTlTNJfrJY9MpuZSoOI7HOxDY//h2sg3eTzLOCbGdme0Ygq2TL9zE0TcE0
+        g9hjqZfgG+rTNAdFf6+clcPn6o1OA9xKua0qX3veD7J4vLX/OjU7Lj5gTWKaykLV8GhPaN
+        8xEolp+KbEWQqgWU/YnfN6MiirPycKo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-382-N8_baTvXPKWn_z9raQc8Rw-1; Tue, 16 Nov 2021 14:49:13 -0500
+X-MC-Unique: N8_baTvXPKWn_z9raQc8Rw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D498D423B9;
+        Tue, 16 Nov 2021 19:49:11 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 466F960BD8;
+        Tue, 16 Nov 2021 19:49:09 +0000 (UTC)
+Message-ID: <04978d6d-8e1a-404d-b30d-402a7569c1f0@redhat.com>
+Date:   Tue, 16 Nov 2021 20:49:08 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: Thoughts of AMX KVM support based on latest kernel
+Content-Language: en-US
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     "Liu, Jing2" <jing2.liu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Jing Liu <jing2.liu@linux.intel.com>,
+        "Cooper, Andrew" <andrew.cooper3@citrix.com>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>
+References: <BYAPR11MB325685AB8E3DFD245846F854A9939@BYAPR11MB3256.namprd11.prod.outlook.com>
+ <87k0h85m65.ffs@tglx> <YZPWsICdDTZ02UDu@google.com> <87ee7g53rp.ffs@tglx>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <87ee7g53rp.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue Nov 16, 2021 at 8:47 PM CET, Andrew Morton wrote:
-> Well, why change the default? Surely anyone who cares is altering it
-> at runtime anyway. And if they are not, we should encourage them to do
-> so?
+On 11/16/21 19:55, Thomas Gleixner wrote:
+> We can do that, but I'm unhappy about this conditional in schedule(). So
+> I was asking for doing a simple KVM only solution first:
+> 
+> vcpu_run()
+>          kvm_load_guest_fpu()
+>              wrmsrl(XFD, guest_fpstate->xfd);
+>              XRSTORS
+>            
+>          do {
+> 
+>             local_irq_disable();
+> 
+>             if (test_thread_flag(TIF_NEED_FPU_LOAD))
+> 		switch_fpu_return()
+>                    wrmsrl(XFD, guest_fpstate->xfd);
+> 
+>             do {
+>                  vmenter();              // Guest modifies XFD
+>             } while (reenter);
+> 
+>             update_xfd_state();          // Restore consistency
+> 
+>             local_irq_enable();
+> 
+> and check how bad that is for KVM in terms of overhead on AMX systems.
 
-I addressed this question in the original patch's commit message.
+I agree, this is how we handle SPEC_CTRL for example and it can be 
+extended to XFD.  We should first do that, then switch to the MSR lists. 
+  Hacking into schedule() should really be the last resort.
+
+>            local_irq_enable();     <- Problem starts here
+> 
+>            preempt_enable();	   <- Becomes wider here
+
+It doesn't become that much wider because there's always preempt 
+notifiers.  So if it's okay to save XFD in the XSAVES wrapper and in 
+kvm_arch_vcpu_put(), that might be already remove the need to do it 
+schedule().
+
+Paolo
+
