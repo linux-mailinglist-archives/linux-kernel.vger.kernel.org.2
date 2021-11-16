@@ -2,159 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 543B24535C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:28:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C554535C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:28:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238242AbhKPPbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 10:31:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53436 "EHLO
+        id S238169AbhKPPaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 10:30:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238210AbhKPPbB (ORCPT
+        with ESMTP id S238078AbhKPPad (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 10:31:01 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 538E0C061746;
-        Tue, 16 Nov 2021 07:28:04 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id m20so43751933edc.5;
-        Tue, 16 Nov 2021 07:28:04 -0800 (PST)
+        Tue, 16 Nov 2021 10:30:33 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E04C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:27:35 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id b17so13983767qvl.9
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:27:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dIxAulZGhe8FSNRDbe6lspOQRntq7iKkrQ7YJUamTrE=;
-        b=H2dRB1tmub7FmqAf+2gPesNCCZvWpw4VPXLBEH3IyZufX087WhaOzcQvx9RRB5dhz8
-         jm6a7eG+nG58ciNzZzcPOfWA0ldnPB0I9tKH+QyF53WjqVdp3xX/anon2r3lFAH1aCat
-         Mt+VG1xt5lk/tKcbkTPTkXay5sSImHyFtoPEnvpKNIoAonqxJ8v7uYvZpYISw9RQzkwx
-         OjUHaA9/mMBNijIO+xXfMRx87bn/fq7zrY6bk8E1aNNbIK1xhR58qGmu0+8KioqVCvw2
-         gach2cQ3C1ns2QY93ng+KlhaApfHQ+Elj2e3sf93Ri5Gri9DhpWlXzFfLa8mnEghEni/
-         aEtw==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aIR+6SGDsBIdvPmIidBVFrt2gkfBA8dAwyBdKNZqHWw=;
+        b=XdAq18HqT3EbhBXUlxrtfVFuucegkjZpFGAHqIihs50oSdNtQ6OtlkfjqUkt8Jn5I8
+         nzcWUYJALeVwCDOjAJKF+duSnwblNR+u39AuwLi17ZJ4XJUYUy6V6k3XJ/y/ejcNzRls
+         +8/orDG4K+ljPKryCqwqblcJ+N2Irb7XrQxZK9mFgUDN3WNy0ZdUf74VhD/k84omYfl0
+         iZROc1uFpGIoZcU7KE1mEzZ65/dVX/U2rHicw2MXcxWs6BbPY20Xj5GS6bHs0SK48Gha
+         ipR1sx3sCjJtDa2ZVbRCwo/pEmQmwHzGMbv27Bq5hPsIEkjTAcQ8VDelYcKqA2qxQ/NU
+         ToqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dIxAulZGhe8FSNRDbe6lspOQRntq7iKkrQ7YJUamTrE=;
-        b=mrEzoK7yKUcba+sdbGKuYM8qLvhD0veQ1FOWNdfZeL3Cs1wWc2lAC+4047aXGzZ9R9
-         r4LP7HqJHZCSmgCh+F6hUebBaSC31kJezuDoFFN78b9l2O7UMZEnGJyEVCywpe/zg9rR
-         xABTK0ewx8/kapUCOos3GdZ9d8cWseNLY/c9sRXfjsxX9PPG0dU8hjloS6//jbqP/5id
-         EBrfnI2SHGRFwa2rnhqP0XwoMCmS90VpuSLtUytMBDW3MQoc3NmS0wEbGVz+V0JwlUp3
-         32wSq+EuzO7PL6FG1yLMyzYzdxXZMFFp/xRq1rbxrjUjuS4BpXJRsisxyxVvkyzT47ZT
-         RbsQ==
-X-Gm-Message-State: AOAM531i5W35lY8sSQWwzrQTPOr9qmp+O+uIGp8AKTEX7DoJrsdHxIbM
-        0rlogYrREghKjwV4uYoF7RJZ16Ox27zno4AOyWrbvPq+8kICOg==
-X-Google-Smtp-Source: ABdhPJxlCHMzmmqISOAsV2eJDLJviURmzDXeBzNZwNN8hZzEgPRRxrFwjjzdnsheotK2EQMxfb+RQN7ch3mo1H3A5O4=
-X-Received: by 2002:a17:907:60d0:: with SMTP id hv16mr10742076ejc.425.1637076482742;
- Tue, 16 Nov 2021 07:28:02 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aIR+6SGDsBIdvPmIidBVFrt2gkfBA8dAwyBdKNZqHWw=;
+        b=MFOsrPKRhLS6q0CXD4oSvEvnhgTCieqiRxKWWecdzSCgz5AudWhzvv9FocVkeWVynk
+         QegNFQgWpuPw2idH6q6tl/XDu8qVmYYe1v1jHaiMt917FgrmM/bCS0W/oYtFfSvJuiXi
+         G4zjdW91JKGDUNM8vjwzCDZpuzQ80T08l709LAIkpqYSF/tZtBlHrnODsnIKK6ZUbFbP
+         9kjxs16UBQzmQPmll/5gBeE8f4P25ScATZDUxlmPmltTfBRPrhV2UE8IhAwcTUE9DRfy
+         45syAg2cYi1vM1ss8ZxcFShxhcKU5e2AMTymbOmIeCplClfuVsxF9LVEAG1nT7KKV4qP
+         Otug==
+X-Gm-Message-State: AOAM533SCwoNmw78Paxbcu1zJOsRaEseE+By8BW7MZUu3KRXLtqPr+fS
+        VG+pG3+6yyUNY8MFWzgye0xStQ==
+X-Google-Smtp-Source: ABdhPJzPGtn8z2/uvb42fjIpYlSwhf/BFtetEKiM5RTkPesV1zDtM7BTk53pbcVTRx78B2tpvRp/PQ==
+X-Received: by 2002:a05:6214:29c3:: with SMTP id gh3mr19606948qvb.30.1637076454395;
+        Tue, 16 Nov 2021 07:27:34 -0800 (PST)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id c13sm9524138qtx.51.2021.11.16.07.27.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 07:27:33 -0800 (PST)
+Subject: Re: [PATCH] cpufreq: freq_table: Initialize cpuinfo.max_freq to
+ correct max frequency.
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Steev Klimaszewski <steev@kali.org>
+Cc:     rafael@kernel.org, bjorn.andersson@linaro.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20211115195011.52999-1-thara.gopinath@linaro.org>
+ <5ae2c644-4743-c62c-b17c-96945a0e6a01@kali.org>
+ <20211116035935.wmazontuznhys6qu@vireshk-i7>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <fd153d84-411a-c843-eab9-2dc66940a3d3@linaro.org>
+Date:   Tue, 16 Nov 2021 10:27:33 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20211115210842.11972-1-pauk.denis@gmail.com> <CAHp75VcPHi1XyZr=CFbUhiUXK0q-10iBx5U3d==aG8pMG27k1Q@mail.gmail.com>
- <c016d0ca-b8b1-fb06-50f3-06a7b1c4aaea@roeck-us.net> <YZOKLDg582dQPzVN@smile.fi.intel.com>
- <d2943033-e701-f719-5da6-c00dc431dff9@roeck-us.net>
-In-Reply-To: <d2943033-e701-f719-5da6-c00dc431dff9@roeck-us.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 16 Nov 2021 17:27:21 +0200
-Message-ID: <CAHp75Vdh+Fv_mV6VunzzndzXBONjbxMYKrii6We9Y+jD+NsYDQ@mail.gmail.com>
-Subject: Re: [PATCH v11 0/2] Update ASUS WMI supported boards
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Denis Pauk <pauk.denis@gmail.com>,
-        Eugene Shalygin <eugene.shalygin@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        thomas@weissschuh.net, Ed Brindley <kernel@maidavale.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211116035935.wmazontuznhys6qu@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 4:32 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> On 11/16/21 2:38 AM, Andy Shevchenko wrote:
-> > On Mon, Nov 15, 2021 at 03:15:39PM -0800, Guenter Roeck wrote:
-> >> On 11/15/21 2:01 PM, Andy Shevchenko wrote:
-> >>> On Mon, Nov 15, 2021 at 11:09 PM Denis Pauk <pauk.denis@gmail.com> wrote:
-> >>>>
-> >>>> Add support by WMI interface provided by Asus for B550/X570 boards:
-> >>>> * PRIME X570-PRO,
-> >>>> * ROG CROSSHAIR VIII HERO
-> >>>> * ROG CROSSHAIR VIII DARK HERO
-> >>>> * ROG CROSSHAIR VIII FORMULA
-> >>>> * ROG STRIX X570-E GAMING
-> >>>> * ROG STRIX B550-I GAMING
-> >>>> * ROG STRIX B550-E GAMING
-> >>>>
-> >>>> Add support by WMI interface provided by Asus for X370/X470/
-> >>>> B450/X399 boards:
-> >>>> * ROG CROSSHAIR VI HERO,
-> >>>> * PRIME X399-A,
-> >>>> * PRIME X470-PRO,
-> >>>> * ROG CROSSHAIR VI EXTREME,
-> >>>> * ROG CROSSHAIR VI HERO (WI-FI AC),
-> >>>> * ROG CROSSHAIR VII HERO,
-> >>>> * ROG CROSSHAIR VII HERO (WI-FI),
-> >>>> * ROG STRIX Z390-F GAMING
-> >>>> * ROG STRIX B450-E GAMING,
-> >>>> * ROG STRIX B450-F GAMING,
-> >>>> * ROG STRIX B450-I GAMING,
-> >>>> * ROG STRIX X399-E GAMING,
-> >>>> * ROG STRIX X470-F GAMING,
-> >>>> * ROG STRIX X470-I GAMING,
-> >>>> * ROG ZENITH EXTREME,
-> >>>> * ROG ZENITH EXTREME ALPHA.
-> >>>>
-> >>>> I have added "ROG STRIX Z390-F GAMING" to list of supported boards in
-> >>>> asus_wmi_sensors.
-> >>>
-> >>> Guenter, what is your plan about this patch series? It seems it
-> >>> missed, by unknown (?) reason, the v5.16-rc1 (I remember seeing it in
-> >>> some of your tree branches at some point).
-> >>>
-> >>
-> >> I don't see it in my record. Earlier I was simply waiting for some
-> >> Reviewed-by: tags, which I have never seen.
-> >
-> > Ah, understood. Thank you for clarifications.
-> >
-> >> Looking into the commit log,
-> >> I do see:
-> >>
-> >> Signed-off-by: Denis Pauk <pauk.denis@gmail.com>
-> >> Co-developed-by: Eugene Shalygin <eugene.shalygin@gmail.com>
-> >> Signed-off-by: Eugene Shalygin <eugene.shalygin@gmail.com>
-> >> Co-developed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> >> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> >>
-> >> Did you and Eugene indeed sign this off, ie did you write it, and
-> >> Eugene and Denis signed it off ? If so, the tags are in the wrong order.
-> >
-> > I'm not sure I follow. I have helped Denis with the code and according to
-> > Submitting Patches documentation the order should be chronological with the
-> > main author to be first in the list. Here the committer (submitter) is the
-> > same as the original author IIUC. (I can't speak for Eugene, though)
-> >
->
-> I got the patch from Denis. At the very least, Denis' signature should be
-> last. It is first.
 
-"...the ordering of Signed-off-by: tags should reflect the
-chronological history of the patch insofar as possible, regardless of
-whether the author is attributed via From: or Co-developed-by:.
-Notably, the last Signed-off-by: must always be that of the developer
-submitting the patch."
 
-Okay, "must" obviously takes precedence over the "as possible".
+On 11/15/21 10:59 PM, Viresh Kumar wrote:
+> On 15-11-21, 19:23, Steev Klimaszewski wrote:
+>> Hi Thara,
+>>
+>> On 11/15/21 1:50 PM, Thara Gopinath wrote:
+>>> cpuinfo.max_freq reflects the maximum supported frequency of cpus in a
+>>> cpufreq policy. When cpus support boost frequency and if boost is disabled
+>>> during boot up (which is the default), cpuinfo.max_freq does not reflect
+>>> boost frequency as the maximum supported frequency till boost is explicitly
+>>> enabled via sysfs interface later. This also means that policy reports two
+>>> different cpuinfo.max_freq before and after turning on boost.  Fix this by
+>>> separating out setting of policy->max and cpuinfo.max_freq in
+>>> cpufreq_frequency_table_cpuinfo.
+>>>
+>>> e.g. of the problem. Qualcomm sdm845 supports boost frequency for gold
+>>> cluster (cpus 4-7). After boot up (boost disabled),
+>>>
+>>> 1.  cat /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq 2649600
+>>> <- This is wrong because boost frequency is
+>>>
+>>> 2.  echo 1 > /sys/devices/system/cpu/cpufreq/boost  <- Enable boost cat
+>>> /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq 2803200	<-
+>>> max freq reflects boost freq.
+>>>
+>>> 3.  echo 0 > /sys/devices/system/cpu/cpufreq/boost <- Disable boost cat
+>>> /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq 2803200	<-
+>>> Discrepancy with step 1 as in both cases boost is disabled.
+>>>
+>>> Note that the other way to fix this is to set cpuinfo.max_freq in Soc
+>>> cpufreq driver during initialization. Fixing it in
+>>> cpufreq_frequency_table_cpuinfo seems more generic solution
+>>>
+>>> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+>>> ---
+>>>    drivers/cpufreq/freq_table.c | 8 ++++++--
+>>>    1 file changed, 6 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/cpufreq/freq_table.c b/drivers/cpufreq/freq_table.c
+>>> index 67e56cf638ef..6784f94124df 100644
+>>> --- a/drivers/cpufreq/freq_table.c
+>>> +++ b/drivers/cpufreq/freq_table.c
+>>> @@ -35,11 +35,15 @@ int cpufreq_frequency_table_cpuinfo(struct cpufreq_policy *policy,
+>>>    	struct cpufreq_frequency_table *pos;
+>>>    	unsigned int min_freq = ~0;
+>>>    	unsigned int max_freq = 0;
+>>> +	unsigned int cpuinfo_max_freq = 0;
+>>>    	unsigned int freq;
+>>>    	cpufreq_for_each_valid_entry(pos, table) {
+>>>    		freq = pos->frequency;
+>>> +		if (freq > cpuinfo_max_freq)
+>>> +			cpuinfo_max_freq = freq;
+>>> +
+>>>    		if (!cpufreq_boost_enabled()
+>>>    		    && (pos->flags & CPUFREQ_BOOST_FREQ))
+>>>    			continue;
+>>> @@ -57,8 +61,8 @@ int cpufreq_frequency_table_cpuinfo(struct cpufreq_policy *policy,
+>>>    	 * If the driver has set its own cpuinfo.max_freq above max_freq, leave
+>>>    	 * it as is.
+>>>    	 */
+>>> -	if (policy->cpuinfo.max_freq < max_freq)
+>>> -		policy->max = policy->cpuinfo.max_freq = max_freq;
+>>> +	if (policy->cpuinfo.max_freq < cpuinfo_max_freq)
+>>> +		policy->cpuinfo.max_freq = cpuinfo_max_freq;
+> 
+> You need to keep the check of policy->max here and update policy->max,
+> else you will never run at boost freq. I think this is what Steev
+> reported as well ?
 
-> >> On the other side, if the code is ultimately from Denis, with your input,
-> >> the tags should be either Acked-by: or Reviewed-by: for both Eugene
-> >> and yourself.
-> >
-> > I'm fine with either Co-developed-by+SoB or Reviewed-by.
-> >
-> >> Note that v11 of this patch series is missing from
-> >> https://patchwork.kernel.org/project/linux-hwmon/list/
-> >> for some reason.
-> >
-> > Hmm... Denis, please check locally how you prepare your patches.
+Hi Viresh,
+	policy->max is unconditionally set to max_freq in the line before "if 
+(policy->cpuinfo.max_freq < max_freq)". So this is not the issue Steev 
+is reporting.
+	policy->max = max_freq
+
+
+> 
+> So basically something like this:
+> 
+> 	if (policy->max < max_freq)
+> 		policy->max = max_freq;
+> 
+> 	if (policy->cpuinfo.max_freq < cpuinfo_max_freq)
+> 		policy->cpuinfo.max_freq = cpuinfo_max_freq;
+> 
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Warm Regards
+Thara (She/Her/Hers)
