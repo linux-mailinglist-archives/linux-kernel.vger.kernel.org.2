@@ -2,130 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9002D4538BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 18:44:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E5A4538C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 18:48:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239050AbhKPRr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 12:47:26 -0500
-Received: from pegase2.c-s.fr ([93.17.235.10]:35875 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238906AbhKPRrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 12:47:20 -0500
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HttjK4RZJz9sSD;
-        Tue, 16 Nov 2021 18:44:21 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 5fICMPG7UyIJ; Tue, 16 Nov 2021 18:44:21 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HttjK3kSvz9sSC;
-        Tue, 16 Nov 2021 18:44:21 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6B3618B7AF;
-        Tue, 16 Nov 2021 18:44:21 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id NhgUqVfQH72O; Tue, 16 Nov 2021 18:44:21 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.234.8])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 36F318B763;
-        Tue, 16 Nov 2021 18:44:21 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 1AGHiAa3063990
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Tue, 16 Nov 2021 18:44:10 +0100
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 1AGHi99T063988;
-        Tue, 16 Nov 2021 18:44:09 +0100
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH] gup: Avoid multiple user access locking/unlocking in fault_in_{read/write}able
-Date:   Tue, 16 Nov 2021 18:43:57 +0100
-Message-Id: <720dcf79314acca1a78fae56d478cc851952149d.1637084492.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.31.1
+        id S234349AbhKPRuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 12:50:55 -0500
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:37808 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231666AbhKPRuy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 12:50:54 -0500
+Received: by mail-oi1-f181.google.com with SMTP id bj13so213439oib.4;
+        Tue, 16 Nov 2021 09:47:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u8e7hzTw8B2j6N2eJqtuT11zBVR9b0rrryuunla9JsI=;
+        b=4IIALVPc5cYSVp/vaAcDt/fMidapHGh2qhjZzL6UjTo3U2z8E4ozyMFOHMUHvNpevs
+         /ymKovHk8kbwkVgffi2C6dFrZpjeLLWSl7BlTGu96vtmvccdnQ0zZrx3qtpuN0nfIvrB
+         nVBPNjunTfZm8JZac2AtA/TlOq9qMifdadw+0POcZQ5nZd08ybWvEi0Ck31DuGP0dNWx
+         CiqyHyTrBeu57j3/UPrN9qO51N11mvv8U/gQIx6u9o+6YSHwMs46EGhZjwy5xPhTMJ13
+         AtsFtedEus2ywmFMbRAFJ6dZvDEHIP12TFbG6Sbz91u40cINLeK+PUKEJKd5zK+fXFbG
+         iJFQ==
+X-Gm-Message-State: AOAM532Sa7zTPjH38fUn+2ZT4A1H6EYU4Up3+fOOuTMiKkKiR2T2+3Zd
+        6YU5nlmx1aeTeIkT0ly5NdQTyb8Fo0kzzMwjF/biHL0tsJ4=
+X-Google-Smtp-Source: ABdhPJwiFE2QcWklcUZ1lmcx262LXQjyeJUNXjPVxiTg84yya3jCmcIvVEFwQgezqNmiDmcZ3x6MRiogMotvbtg/BiU=
+X-Received: by 2002:a05:6808:14c2:: with SMTP id f2mr8036609oiw.154.1637084876799;
+ Tue, 16 Nov 2021 09:47:56 -0800 (PST)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1637084636; l=2057; s=20211009; h=from:subject:message-id; bh=fhDcpjOtwou8iZfA1W7BxN9s1FsuoPsOmduFg92JpxI=; b=A09G105PO7NdnBsD33IOQj1QCzcEOtb/mDObw7ysCJH+BA5zioXHEdaWG5yfyESaI7Xc1nlD5p/K xdXOUuFCBPS2jjl5YKXQIXbcqnU9Aqu7YmASbm8tFyVW9hVc/3Ei
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
+References: <20211115134017.1257932-1-srinivas.pandruvada@linux.intel.com>
+In-Reply-To: <20211115134017.1257932-1-srinivas.pandruvada@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 16 Nov 2021 18:47:45 +0100
+Message-ID: <CAJZ5v0jk3KB6+uynpvdBAO+Q-Qr4HiCam=x4dxzT6NFWjROLzg@mail.gmail.com>
+Subject: Re: [UPDATE][PATCH] cpufreq: intel_pstate: Fix EPP restore after offline/online
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fault_in_readable() and fault_in_writeable() perform __get_user()
-and __put_user() in a loop, implying multiple user access
-locking/unlocking.
+On Mon, Nov 15, 2021 at 2:40 PM Srinivas Pandruvada
+<srinivas.pandruvada@linux.intel.com> wrote:
+>
+> When using performance policy, EPP value is restored to non "performance"
+> mode EPP after offline and online.
+>
+> For example:
+> cat /sys/devices/system/cpu/cpu1/cpufreq/energy_performance_preference
+> performance
+> echo 0 > /sys/devices/system/cpu/cpu1/online
+> echo 1 > /sys/devices/system/cpu/cpu1/online
+> cat /sys/devices/system/cpu/cpu1/cpufreq/energy_performance_preference
+> balance_performance
+>
+> The commit 4adcf2e5829f ("cpufreq: intel_pstate: Add ->offline and ->online callbacks")
+> optimized save restore path of the HWP request MSR, when there is no
+> change in the policy. Also added special processing for performance mode
+> EPP. If EPP has been set to "performance" by the active mode "performance"
+> scaling algorithm, replace that value with the cached EPP. This ends up
+> replacing with cached EPP during offline, which is restored during online
+> again.
+>
+> So add a change which will set cpu_data->epp_policy to zero, when in
+> performance policy and has non zero epp. In this way EPP is set to zero
+> again.
+>
+> Fixes: 4adcf2e5829f ("cpufreq: intel_pstate: Add ->offline and ->online callbacks")
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Cc: stable@vger.kernel.org # v5.9+
+> ---
+> Update: Minor optimization to skip non performance policy code path
+>
+>  drivers/cpufreq/intel_pstate.c | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+> index 815df3daae9d..6d7d73a0c66b 100644
+> --- a/drivers/cpufreq/intel_pstate.c
+> +++ b/drivers/cpufreq/intel_pstate.c
+> @@ -936,11 +936,17 @@ static void intel_pstate_hwp_set(unsigned int cpu)
+>         max = cpu_data->max_perf_ratio;
+>         min = cpu_data->min_perf_ratio;
+>
+> -       if (cpu_data->policy == CPUFREQ_POLICY_PERFORMANCE)
+> -               min = max;
+> -
+>         rdmsrl_on_cpu(cpu, MSR_HWP_REQUEST, &value);
+>
+> +       if (cpu_data->policy == CPUFREQ_POLICY_PERFORMANCE) {
+> +               min = max;
+> +               epp = 0;
+> +               if (boot_cpu_has(X86_FEATURE_HWP_EPP))
+> +                       epp = (value >> 24) & 0xff;
+> +               if (epp)
+> +                       cpu_data->epp_policy = 0;
+> +       }
 
-To avoid that, use user access blocks.
+I understand the bug, but it should not be necessary to check this
+every time intel_pstate_hwp_set() runs.
 
-Cc: Andreas Gruenbacher <agruenba@redhat.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> +
+>         value &= ~HWP_MIN_PERF(~0L);
+>         value |= HWP_MIN_PERF(min);
+>
+> --
+
+Isn't the following sufficient (modulo the gmail-induced whitespace damage)?
+
 ---
- mm/gup.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ drivers/cpufreq/intel_pstate.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/mm/gup.c b/mm/gup.c
-index 2c51e9748a6a..be2a41feec7d 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -1672,21 +1672,22 @@ size_t fault_in_writeable(char __user *uaddr, size_t size)
- 
- 	if (unlikely(size == 0))
- 		return 0;
-+	if (!user_write_access_begin(uaddr, size))
-+		return size;
- 	if (!PAGE_ALIGNED(uaddr)) {
--		if (unlikely(__put_user(0, uaddr) != 0))
--			return size;
-+		unsafe_put_user(0, uaddr, out);
- 		uaddr = (char __user *)PAGE_ALIGN((unsigned long)uaddr);
- 	}
- 	end = (char __user *)PAGE_ALIGN((unsigned long)start + size);
- 	if (unlikely(end < start))
- 		end = NULL;
- 	while (uaddr != end) {
--		if (unlikely(__put_user(0, uaddr) != 0))
--			goto out;
-+		unsafe_put_user(0, uaddr, out);
- 		uaddr += PAGE_SIZE;
- 	}
- 
- out:
-+	user_write_access_end();
- 	if (size > uaddr - start)
- 		return size - (uaddr - start);
- 	return 0;
-@@ -1771,21 +1772,22 @@ size_t fault_in_readable(const char __user *uaddr, size_t size)
- 
- 	if (unlikely(size == 0))
- 		return 0;
-+	if (!user_read_access_begin(uaddr, size))
-+		return size;
- 	if (!PAGE_ALIGNED(uaddr)) {
--		if (unlikely(__get_user(c, uaddr) != 0))
--			return size;
-+		unsafe_get_user(c, uaddr, out);
- 		uaddr = (const char __user *)PAGE_ALIGN((unsigned long)uaddr);
- 	}
- 	end = (const char __user *)PAGE_ALIGN((unsigned long)start + size);
- 	if (unlikely(end < start))
- 		end = NULL;
- 	while (uaddr != end) {
--		if (unlikely(__get_user(c, uaddr) != 0))
--			goto out;
-+		unsafe_get_user(c, uaddr, out);
- 		uaddr += PAGE_SIZE;
- 	}
- 
- out:
-+	user_read_access_end();
- 	(void)c;
- 	if (size > uaddr - start)
- 		return size - (uaddr - start);
--- 
-2.31.1
+Index: linux-pm/drivers/cpufreq/intel_pstate.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/intel_pstate.c
++++ linux-pm/drivers/cpufreq/intel_pstate.c
+@@ -1006,6 +1006,12 @@ static void intel_pstate_hwp_offline(str
+          */
+         value &= ~GENMASK_ULL(31, 24);
+         value |= HWP_ENERGY_PERF_PREFERENCE(cpu->epp_cached);
++        /*
++         * However, make sure that EPP will be set to "performance" when
++         * the CPU is brought back online again and the "performance"
++         * scaling algorithm is still in effect.
++         */
++        cpu->epp_policy = CPUFREQ_POLICY_UNKNOWN;
+     }
 
+     /*
