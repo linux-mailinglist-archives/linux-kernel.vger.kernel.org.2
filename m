@@ -2,300 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515B2453540
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:07:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A817453515
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:06:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237968AbhKPPJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 10:09:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47790 "EHLO
+        id S238055AbhKPPIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 10:08:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237864AbhKPPHR (ORCPT
+        with ESMTP id S237722AbhKPPGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 10:07:17 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA0DC06122D;
-        Tue, 16 Nov 2021 07:02:30 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id g14so25545778edb.8;
-        Tue, 16 Nov 2021 07:02:30 -0800 (PST)
+        Tue, 16 Nov 2021 10:06:49 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2412C06120F
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:01:48 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id t11so43952348ljh.6
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:01:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=n3D3isQYQoZt8oK+QagFyG/F4ee/acgQw48favSVe0E=;
-        b=iHtjl/nfmPQHpfqvVe7OLbfIuLYEAbPeHSJuoW8MqzMXzXOag9XBTIRgw6kZ1h0PQ2
-         7vV/sAo6B0TUNocYJ5r8MQdhv5ZeMi6dcttI06A77+9Tdl3eudJis97cTMjuLIlISOPb
-         VC11VpvkRo8eZZlAY20con9fibd6R6nxz5dzDB243tc6nkwEWXG4awvk+fiHoavDQfoB
-         CULxGMBfTjUXQT+jj0fP/Xk5EaRFrRHjZKfJ0JgSfLRfyDsd1Igh/iq4ViSujhhR91jy
-         HYSCoe8ipljVHJwjhRsg7KjgyRwCe61hv3SFzN+es8VXpXmSIsHEp4OQk5+cXjGtVFoo
-         Mjgw==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=UuIR/LC5SZev9/eHpT6QZZqfs4WuN126EuywzDwkq7g=;
+        b=nqTPwTBVRq32cNn1Jujn9/JLlQohZJJjJf5gVKmHbROJAU3xq4TV+9GJexVSAtzdti
+         YgtX1tWHKce4IliAELS3DhH9r2+6gwhu4aYoDVI8yqTx7ccPo5YuBpDJ7IsKWoB0bsSP
+         eupb1zU9syyjZkrVs56pwf7iLj9aSneLB0BFFQ2lbBX3WOnr2rZCLR+ppEBhXQ/+laI+
+         fAfrcRfLxKbCm2327cFBNQIUjTj9jIXeW1Um+i9Cv1xEKah9Uj/jEIRTJbQy3To8JKj7
+         085KSwX84gUjPRWWEU87II8WrD0OOTayfIyNU5RXBRPakgMQE7EU5QVQoaNQpDxY48lb
+         OT+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=n3D3isQYQoZt8oK+QagFyG/F4ee/acgQw48favSVe0E=;
-        b=emR4v1LpcizArF6jCapniwpwr64PWNiykGnDZpK8TEBrpmQpKYKFNY1SG/S0BC/OQY
-         3iBeJqpg/IW4EbaE0LvzRdA9PRi3oDrFESq2x4OHqj4LlZPbLhEacZ9dtUkY3qeGWnCB
-         J5oLkONNttTeP1N/cCsPS2bIebR3P5FUkVv1FDoAwQHBwQlPxKvlfDYXeQDx5k6sqUCM
-         o/aiSNuGOyM1upRBZr+hQsmqd9fOI17x8V+sDY6utXYMp+mQFVExzDkL/MWO4a/EwgnY
-         v58R3VLYRGtYLjwMEOnWAOefP9clx0QhpvvPckhEvt4E7ojVsxZSHL21G+ZkWu1UtKCy
-         C79w==
-X-Gm-Message-State: AOAM533avAajNM24wUPpNkZqsxmXxozfeJ0Wj6zkFL1cEIJ3FsQ3NqYL
-        cWu9GXcY0Wy0T8CjsGyy7hU=
-X-Google-Smtp-Source: ABdhPJzT/NUBHx0bHf0OxPsubbU8JaUF7vSGJZwT5jNIsSUak4miN+RnN3IM9rNPAph6p5SyUnHU5Q==
-X-Received: by 2002:a17:907:97c3:: with SMTP id js3mr10922236ejc.240.1637074948242;
-        Tue, 16 Nov 2021 07:02:28 -0800 (PST)
-Received: from stitch.. ([2a02:aa7:4600:b4ae:a375:e7a0:9eaf:8d7b])
-        by smtp.gmail.com with ESMTPSA id u16sm9414311edr.43.2021.11.16.07.02.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 07:02:27 -0800 (PST)
-Sender: Emil Renner Berthing <emil.renner.berthing@gmail.com>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-To:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Cc:     Emil Renner Berthing <kernel@esmil.dk>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 16/16] RISC-V: Add BeagleV Starlight Beta device tree
-Date:   Tue, 16 Nov 2021 16:01:19 +0100
-Message-Id: <20211116150119.2171-17-kernel@esmil.dk>
-X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211116150119.2171-1-kernel@esmil.dk>
-References: <20211116150119.2171-1-kernel@esmil.dk>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=UuIR/LC5SZev9/eHpT6QZZqfs4WuN126EuywzDwkq7g=;
+        b=gV8nN74fNce1OjGa5n6Q2CTgSHDOLsKUSHxM4GO5P1Zq/jvUMmEKy0QtrKt8OEJUo+
+         bCvqAZOw0rWtWIYhBrHYg8aM3hj0x/7Ee22ZVWH4JuF6aFtev9h5RKZTxhZecpFFX/CC
+         ggBfB5xAs6r+uzW+3Mesl5/kuWbWZppvgqKZVI/GAswZWZVpgcys4U+4gLM6CTE3H9XU
+         6Ob5ar75k9KB5ZBbUPwYPE/4Y4K1PEPX0MUWjs/C6xm4PAZUhm5RRR8V6Be23vRnbp4E
+         dVKjfpPJ0y67oeX527XVYWOoF6o8xoovioSOZtSG58mJCiZYDg1Q1scA8XG6QmaRQHkE
+         jvGw==
+X-Gm-Message-State: AOAM532YfVbeCnHrB8hoH8Sbd3KsxUQQxylrQnrwBqziDGACiY00X2y0
+        GCIgeESC3s2lKLZ7ykzoHp4=
+X-Google-Smtp-Source: ABdhPJwKXYaVHZATt0RLChSCOq+HG2P+t+x0FPazQIoy7EwZg6loUPIlGN9o5As0jSAZqoVpQIX4Jg==
+X-Received: by 2002:a2e:a6a0:: with SMTP id q32mr7873917lje.148.1637074906230;
+        Tue, 16 Nov 2021 07:01:46 -0800 (PST)
+Received: from [192.168.1.11] ([94.103.224.112])
+        by smtp.gmail.com with ESMTPSA id f10sm1783979lfu.122.2021.11.16.07.01.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 07:01:45 -0800 (PST)
+Message-ID: <a072c468-f9dd-25f4-70fa-535cb7196b13@gmail.com>
+Date:   Tue, 16 Nov 2021 18:01:42 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] staging: r8188eu: remove unused defines in wifi.h
+Content-Language: en-US
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Zameer Manji <zmanji@gmail.com>, gregkh@linuxfoundation.org,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Michael Straube <straube.linux@gmail.com>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20211116011451.896714-1-zmanji@gmail.com>
+ <6d2d9c4a-3f05-1d51-42dc-b1ebbb4aefe1@gmail.com>
+ <CABtXzjSPNxe-n9QTujMB7=CmhqPFp8V2e86BXmoErWm+6c5coA@mail.gmail.com>
+ <22a48290-814e-bcae-81e5-c23e6310f8f6@gmail.com>
+ <20211116141838.GI26989@kadam>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <20211116141838.GI26989@kadam>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial device tree for the BeagleV Starlight Beta board. About 300
-of these boards were sent out as part of a now cancelled BeagleBoard.org
-project.
+On 11/16/21 17:18, Dan Carpenter wrote:
+>> I cannot ack, since I am not the maintainer (or even reviewer) of this
+>> driver :) I just saw this BIT() definition and decided to say, that it can
+>> be also removed
+> 
+> Just give a Reviewed-by tag...  No one is appointed as a maintainer, you
+> just have to start handing our reviewed-by tags until people start to
+> respect your judgement and then you're a maintainer.
+> 
 
-I2C timing data is based on the device tree in the vendor u-boot port.
-Heartbeat LED added by Geert.
+Ok, I will send the R-b tag, since patch looks correct to me as is :)
 
-Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-Co-developed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/riscv/boot/dts/Makefile                  |   1 +
- arch/riscv/boot/dts/starfive/Makefile         |   2 +
- .../dts/starfive/jh7100-beaglev-starlight.dts | 164 ++++++++++++++++++
- 3 files changed, 167 insertions(+)
- create mode 100644 arch/riscv/boot/dts/starfive/Makefile
- create mode 100644 arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts
+I think, I misunderstood what "ack" means. I thought Zameer means 
+Acked-by tag, which can sent only by maintainers (Larry and Phillip in 
+case of r8188eu), but I was wrong, I guess...
 
-diff --git a/arch/riscv/boot/dts/Makefile b/arch/riscv/boot/dts/Makefile
-index fe996b88319e..ff174996cdfd 100644
---- a/arch/riscv/boot/dts/Makefile
-+++ b/arch/riscv/boot/dts/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- subdir-y += sifive
-+subdir-y += starfive
- subdir-$(CONFIG_SOC_CANAAN_K210_DTB_BUILTIN) += canaan
- subdir-y += microchip
- 
-diff --git a/arch/riscv/boot/dts/starfive/Makefile b/arch/riscv/boot/dts/starfive/Makefile
-new file mode 100644
-index 000000000000..0ea1bc15ab30
---- /dev/null
-+++ b/arch/riscv/boot/dts/starfive/Makefile
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0
-+dtb-$(CONFIG_SOC_STARFIVE) += jh7100-beaglev-starlight.dtb
-diff --git a/arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts b/arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts
-new file mode 100644
-index 000000000000..c9af67f7a0d2
---- /dev/null
-+++ b/arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts
-@@ -0,0 +1,164 @@
-+// SPDX-License-Identifier: GPL-2.0 OR MIT
-+/*
-+ * Copyright (C) 2021 StarFive Technology Co., Ltd.
-+ * Copyright (C) 2021 Emil Renner Berthing <kernel@esmil.dk>
-+ */
-+
-+/dts-v1/;
-+#include "jh7100.dtsi"
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/leds/common.h>
-+#include <dt-bindings/pinctrl/pinctrl-starfive.h>
-+
-+/ {
-+	model = "BeagleV Starlight Beta";
-+	compatible = "beagle,beaglev-starlight-jh7100-r0", "starfive,jh7100";
-+
-+	aliases {
-+		serial0 = &uart3;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	cpus {
-+		timebase-frequency = <6250000>;
-+	};
-+
-+	memory@80000000 {
-+		device_type = "memory";
-+		reg = <0x0 0x80000000 0x2 0x0>;
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led-ack {
-+			gpios = <&gpio 43 GPIO_ACTIVE_HIGH>;
-+			color = <LED_COLOR_ID_GREEN>;
-+			function = LED_FUNCTION_HEARTBEAT;
-+			linux,default-trigger = "heartbeat";
-+			label = "ack";
-+		};
-+	};
-+};
-+
-+&gpio {
-+	i2c0_pins: i2c0-0 {
-+		i2c-pins {
-+			pinmux = <GPIOMUX(62, GPO_LOW,
-+				  GPO_I2C0_PAD_SCK_OEN,
-+				  GPI_I2C0_PAD_SCK_IN)>,
-+				 <GPIOMUX(61, GPO_LOW,
-+				  GPO_I2C0_PAD_SDA_OEN,
-+				  GPI_I2C0_PAD_SDA_IN)>;
-+			bias-disable; /* external pull-up */
-+			input-enable;
-+			input-schmitt-enable;
-+		};
-+	};
-+
-+	i2c1_pins: i2c1-0 {
-+		i2c-pins {
-+			pinmux = <GPIOMUX(47, GPO_LOW,
-+				  GPO_I2C1_PAD_SCK_OEN,
-+				  GPI_I2C1_PAD_SCK_IN)>,
-+				 <GPIOMUX(48, GPO_LOW,
-+				  GPO_I2C1_PAD_SDA_OEN,
-+				  GPI_I2C1_PAD_SDA_IN)>;
-+			bias-pull-up;
-+			input-enable;
-+			input-schmitt-enable;
-+		};
-+	};
-+
-+	i2c2_pins: i2c2-0 {
-+		i2c-pins {
-+			pinmux = <GPIOMUX(60, GPO_LOW,
-+				  GPO_I2C2_PAD_SCK_OEN,
-+				  GPI_I2C2_PAD_SCK_IN)>,
-+				 <GPIOMUX(59, GPO_LOW,
-+				  GPO_I2C2_PAD_SDA_OEN,
-+				  GPI_I2C2_PAD_SDA_IN)>;
-+			bias-disable; /* external pull-up */
-+			input-enable;
-+			input-schmitt-enable;
-+		};
-+	};
-+
-+	uart3_pins: uart3-0 {
-+		rx-pins {
-+			pinmux = <GPIOMUX(13, GPO_LOW, GPO_DISABLE,
-+				  GPI_UART3_PAD_SIN)>;
-+			bias-pull-up;
-+			drive-strength = <14>;
-+			input-enable;
-+			input-schmitt-enable;
-+			slew-rate = <0>;
-+		};
-+		tx-pins {
-+			pinmux = <GPIOMUX(14, GPO_UART3_PAD_SOUT,
-+				  GPO_ENABLE, GPI_NONE)>;
-+			bias-disable;
-+			drive-strength = <35>;
-+			input-disable;
-+			input-schmitt-disable;
-+			slew-rate = <0>;
-+		};
-+	};
-+};
-+
-+&i2c0 {
-+	clock-frequency = <100000>;
-+	i2c-sda-hold-time-ns = <300>;
-+	i2c-sda-falling-time-ns = <500>;
-+	i2c-scl-falling-time-ns = <500>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c0_pins>;
-+	status = "okay";
-+
-+	pmic@5e {
-+		compatible = "ti,tps65086";
-+		reg = <0x5e>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		regulators {
-+		};
-+	};
-+};
-+
-+&i2c1 {
-+	clock-frequency = <400000>;
-+	i2c-sda-hold-time-ns = <300>;
-+	i2c-sda-falling-time-ns = <100>;
-+	i2c-scl-falling-time-ns = <100>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c1_pins>;
-+	status = "okay";
-+};
-+
-+&i2c2 {
-+	clock-frequency = <100000>;
-+	i2c-sda-hold-time-ns = <300>;
-+	i2c-sda-falling-time-ns = <500>;
-+	i2c-scl-falling-time-ns = <500>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c2_pins>;
-+	status = "okay";
-+};
-+
-+&osc_sys {
-+	clock-frequency = <25000000>;
-+};
-+
-+&osc_aud {
-+	clock-frequency = <27000000>;
-+};
-+
-+&uart3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&uart3_pins>;
-+	status = "okay";
-+};
--- 
-2.33.1
 
+
+
+
+With regards,
+Pavel Skripkin
