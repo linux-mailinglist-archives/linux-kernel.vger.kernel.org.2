@@ -2,61 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F76453A23
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 20:26:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B76F7453A31
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 20:32:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239913AbhKPT2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 14:28:36 -0500
-Received: from out0.migadu.com ([94.23.1.103]:47314 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229663AbhKPT2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 14:28:35 -0500
+        id S239988AbhKPTes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 14:34:48 -0500
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:46898 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhKPTeq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 14:34:46 -0500
+Received: by mail-ot1-f51.google.com with SMTP id b5-20020a9d60c5000000b0055c6349ff22so171840otk.13;
+        Tue, 16 Nov 2021 11:31:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HPtQKIRcS+qWiNkh4FPrwPNJEjoLFSm+DQsqzMRzjmU=;
+        b=iU99A7FXqTWEinyZifTVg0m94wzgf/SFzG+0pJYV/hoXo/CHWv7RRs5i6TRGu9/Uui
+         eVyFGQYLbGWwsplVLhPzJAfuSZ05UAENnVj4/M47ZbvIsluQwmKWxb/j4wS/75sWdPmz
+         yVqKDzEjr8vr1IPN8Vdu3CY98ChRnWkySzCfayuqC+mJkJ7IBxn27gXi35c4XNjYA0ru
+         2+vFQqpBU9nsOSTSU36E9kkLixo8GoEYa3Y5bsFuHwPUAJ/GuhmbDa8KYERfZ6p/sLAE
+         2TC/0FDiOetnBjN57xKJq3Uri8NQGPwEVnKnrNhygpR0Xro2xovajfZpy0WP9b/lpriN
+         MymQ==
+X-Gm-Message-State: AOAM532ottYpKQoOiE9QINQx4J2W4NhrlQbVjM0/U+/aKU5R8LYfSjaN
+        zxPrhdcZK5NUEUe4SCXu+SKs4NP+k1MPbt34oOU=
+X-Google-Smtp-Source: ABdhPJzpdXqeitf3sDPouuM8JusRK56qP6YJbKhus9sRokEStxX5OUwmQJKpWmzvp8Mc/bZY8L1r+RFA2r9bjYJibdc=
+X-Received: by 2002:a05:6830:1e57:: with SMTP id e23mr8272453otj.16.1637091108883;
+ Tue, 16 Nov 2021 11:31:48 -0800 (PST)
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cmpwn.com; s=key1;
-        t=1637090734;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NH4D06+wvki1Y2o8G9uIKdZSfom0w6wnccvPwaGoNTQ=;
-        b=tC1QclNLGPZYG5G+lNBUu61UJQoA9aD6mERtdhl9mxWXld6jHcG39WfFWPkGgYDgX9hYva
-        JBRnijENUJGIvCEjF0s3QXXdwgG8+cPey/+vjUSO+xevG07WiuwOwkHMiWmQxslOweAY9+
-        YKIgiIwhCh1/YmseHtmKc/sxvw6Pyw+liAK7Mmjhj1M2V04m4wMfm6qQ4UzAMT5qU6fYc+
-        dhyqsi7KqM+xDTLD55r2/gEymAt1xTQb2DUPYuuU8QfSxkwA3JVi1tyvD6e95Xys2ZAU84
-        44YhrkldU32fCmxtoRnPAV+hFr0lsyxdCnWK+XwfvrnV4XfUX4lLE5V1q4bw3Q==
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 16 Nov 2021 20:25:33 +0100
-Message-Id: <CFRG8CM6QUPN.1Z75SA6XN02W1@taiga>
-Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   "Drew DeVault" <sir@cmpwn.com>
-To:     "Vito Caputo" <vcaputo@pengaru.com>, "Jens Axboe" <axboe@kernel.dk>
-Cc:     "Matthew Wilcox" <willy@infradead.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Ammar Faizi" <ammarfaizi2@gnuweeb.org>,
-        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>,
-        "io_uring Mailing List" <io-uring@vger.kernel.org>,
-        "Pavel Begunkov" <asml.silence@gmail.com>, <linux-mm@kvack.org>
-References: <20211028080813.15966-1-sir@cmpwn.com>
- <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
- <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
- <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
- <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
- <YZP6JSd4h45cyvsy@casper.infradead.org>
- <b97f1b15-fbcc-92a4-96ca-e918c2f6c7a3@kernel.dk>
- <20211116192148.vjdlng7pesbgjs6b@shells.gnugeneration.com>
-In-Reply-To: <20211116192148.vjdlng7pesbgjs6b@shells.gnugeneration.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: sir@cmpwn.com
+References: <1635883240-24293-1-git-send-email-manafm@codeaurora.org> <51de966a-9c9e-88a8-5c2c-96773a64d527@linaro.org>
+In-Reply-To: <51de966a-9c9e-88a8-5c2c-96773a64d527@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 16 Nov 2021 20:31:38 +0100
+Message-ID: <CAJZ5v0gFC6RY6wStwHRaPY7zeMNRBex8GwqyrNrv10USJMxKkQ@mail.gmail.com>
+Subject: Re: [PATCH] drivers: thermal: Reset previous low and high trip during
+ thermal zone init
+To:     Thara Gopinath <thara.gopinath@linaro.org>,
+        Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue Nov 16, 2021 at 8:21 PM CET, Vito Caputo wrote:
-> Considering a single fullscreen 32bpp 4K-resolution framebuffer is
-> ~32MiB, I'm not convinced this is really correct in nearly 2022.
+On Fri, Nov 5, 2021 at 7:49 PM Thara Gopinath <thara.gopinath@linaro.org> wrote:
+>
+>
+>
+> On 11/2/21 4:00 PM, Manaf Meethalavalappu Pallikunhi wrote:
+> > During the suspend is in process, thermal_zone_device_update bails out
+> > thermal zone re-evaluation for any sensor trip violation without
+> > setting next valid trip to that sensor. It assumes during resume
+> > it will re-evaluate same thermal zone and update trip. But when it is
+> > in suspend temperature goes down and on resume path while updating
+> > thermal zone if temperature is less than previously violated trip,
+> > thermal zone set trip function evaluates the same previous high and
+> > previous low trip as new high and low trip. Since there is no change
+> > in high/low trip, it bails out from thermal zone set trip API without
+> > setting any trip. It leads to a case where sensor high trip or low
+> > trip is disabled forever even though thermal zone has a valid high
+> > or low trip.
+> >
+> > During thermal zone device init, reset thermal zone previous high
+> > and low trip. It resolves above mentioned scenario.
+> >
+> > Signed-off-by: Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+>
+> Reviewed-by: Thara Gopinath <thara.gopinath@linaro.org>
+>
+> --
+> Warm Regards
+> Thara (She/Her/Hers)
+>
+> > ---
+> >   drivers/thermal/thermal_core.c | 2 ++
+> >   1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+> > index 21db445..2b7a0b4 100644
+> > --- a/drivers/thermal/thermal_core.c
+> > +++ b/drivers/thermal/thermal_core.c
+> > @@ -477,6 +477,8 @@ static void thermal_zone_device_init(struct thermal_zone_device *tz)
+> >   {
+> >       struct thermal_instance *pos;
+> >       tz->temperature = THERMAL_TEMP_INVALID;
+> > +     tz->prev_low_trip = -INT_MAX;
+> > +     tz->prev_high_trip = INT_MAX;
+> >       list_for_each_entry(pos, &tz->thermal_instances, tz_node)
+> >               pos->initialized = false;
+> >   }
 
-Can you name a practical use-case where you'll be doing I/O with
-uncompressed 4K framebuffers? The kind of I/O which is supported by
-io_uring, to be specific, not, say, handing it off to libdrm.
+Applied as 5.16-rc2 material, thanks!
