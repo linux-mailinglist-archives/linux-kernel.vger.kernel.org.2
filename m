@@ -2,100 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968FB45219A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:03:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7615E4521B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:03:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345218AbhKPBFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:05:40 -0500
-Received: from mga07.intel.com ([134.134.136.100]:30901 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245604AbhKPA5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 19:57:07 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="297013467"
-X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; 
-   d="scan'208";a="297013467"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 16:50:52 -0800
-X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; 
-   d="scan'208";a="454247909"
-Received: from asu1-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.20.192])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 16:50:38 -0800
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
-Cc:     "H . Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1 1/1] x86: Skip WBINVD instruction for VM guest
-Date:   Mon, 15 Nov 2021 16:50:27 -0800
-Message-Id: <20211116005027.2929297-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1345961AbhKPBGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:06:30 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:50136 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1359162AbhKPAys (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 19:54:48 -0500
+Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
+        by linux.microsoft.com (Postfix) with ESMTPSA id A891C20C635A;
+        Mon, 15 Nov 2021 16:50:52 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A891C20C635A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1637023852;
+        bh=rM8MHl4ykgEOSqBXbNpd3T1p3N1pd0+DYAkgx2CZx80=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=UgFO57oJLuH3+KWqOsmhbBu59tENG+gj9ijOKjZlMj+A7axfX4mSMvDdt2kmGSx8F
+         lymSC67yonmaUMduvWTJFMh+PrnTNtB8CoqjOVCe6AqEvpBfxBMEQs9R91uum7KywZ
+         3KMF+SrGNE+/XNVhhk21m27YwjcbQL6LGKej3Q8Y=
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     rostedt@goodmis.org, mhiramat@kernel.org
+Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        beaub@linux.microsoft.com
+Subject: [PATCH v5 05/12] user_events: Add basic perf and eBPF support
+Date:   Mon, 15 Nov 2021 16:50:40 -0800
+Message-Id: <20211116005047.1808-6-beaub@linux.microsoft.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211116005047.1808-1-beaub@linux.microsoft.com>
+References: <20211116005047.1808-1-beaub@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ACPI mandates that CPU caches be flushed before entering any sleep
-state. This ensures that the CPU and its caches can be powered down
-without losing data.
+Adds support to write out user_event data to perf_probe/perf files as
+well as to any attached eBPF program.
 
-ACPI-based VMs have maintained this sleep-state-entry behavior.
-However, cache flushing for VM sleep state entry is useless. Unlike on
-bare metal, guest sleep states are not correlated with potential data
-loss of any kind; the host is responsible for data preservation. In
-fact, some KVM configurations simply skip the cache flushing
-instruction (see need_emulate_wbinvd()).
-
-Further, on TDX systems, the WBINVD instruction causes an
-unconditional #VE exception.  If this cache flushing remained, it would
-need extra code in the form of a #VE handler.
-
-All use of ACPI_FLUSH_CPU_CACHE() appears to be in sleep-state-related
-code.
-
-This means that the ACPI use of WBINVD is at *best* superfluous.
-
-Disable ACPI CPU cache flushing on all X86_FEATURE_HYPERVISOR systems,
-which includes TDX.
-
-Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
-Cc: linux-acpi@vger.kernel.org
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- arch/x86/include/asm/acenv.h | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ kernel/trace/trace_events_user.c | 63 ++++++++++++++++++++++++++++++++
+ 1 file changed, 63 insertions(+)
 
-diff --git a/arch/x86/include/asm/acenv.h b/arch/x86/include/asm/acenv.h
-index 9aff97f0de7f..d4162e94bee8 100644
---- a/arch/x86/include/asm/acenv.h
-+++ b/arch/x86/include/asm/acenv.h
-@@ -10,10 +10,15 @@
- #define _ASM_X86_ACENV_H
+diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+index 8415aaf8e3b1..badf505568dd 100644
+--- a/kernel/trace/trace_events_user.c
++++ b/kernel/trace/trace_events_user.c
+@@ -528,6 +528,50 @@ static void user_event_ftrace(struct user_event *user, void *data, u32 datalen,
+ 	trace_event_buffer_commit(&event_buffer);
+ }
  
- #include <asm/special_insns.h>
-+#include <asm/cpu.h>
++#ifdef CONFIG_PERF_EVENTS
++/*
++ * Writes the user supplied payload out to perf ring buffer or eBPF program.
++ */
++static void user_event_perf(struct user_event *user, void *data, u32 datalen,
++			    void *tpdata)
++{
++	struct hlist_head *perf_head;
++
++	if (bpf_prog_array_valid(&user->call)) {
++		struct user_bpf_context context = {0};
++
++		context.data_len = datalen;
++		context.data_type = USER_BPF_DATA_KERNEL;
++		context.kdata = data;
++
++		trace_call_bpf(&user->call, &context);
++	}
++
++	perf_head = this_cpu_ptr(user->call.perf_events);
++
++	if (perf_head && !hlist_empty(perf_head)) {
++		struct trace_entry *perf_entry;
++		struct pt_regs *regs;
++		size_t size = sizeof(*perf_entry) + datalen;
++		int context;
++
++		perf_entry = perf_trace_buf_alloc(ALIGN(size, 8),
++						  &regs, &context);
++
++		if (unlikely(!perf_entry))
++			return;
++
++		perf_fetch_caller_regs(regs);
++
++		memcpy(perf_entry + 1, data, datalen);
++
++		perf_trace_buf_submit(perf_entry, size, context,
++				      user->call.event.type, 1, regs,
++				      perf_head, NULL);
++	}
++}
++#endif
++
+ /*
+  * Update the register page that is shared between user processes.
+  */
+@@ -550,6 +594,10 @@ static void update_reg_page_for(struct user_event *user)
  
- /* Asm macros */
+ 				if (probe_func == user_event_ftrace)
+ 					status |= EVENT_STATUS_FTRACE;
++#ifdef CONFIG_PERF_EVENTS
++				else if (probe_func == user_event_perf)
++					status |= EVENT_STATUS_PERF;
++#endif
+ 				else
+ 					status |= EVENT_STATUS_OTHER;
+ 			} while ((++probe_func_ptr)->func);
+@@ -591,7 +639,19 @@ static int user_event_reg(struct trace_event_call *call,
  
--#define ACPI_FLUSH_CPU_CACHE()	wbinvd()
-+#define ACPI_FLUSH_CPU_CACHE()				\
-+do {							\
-+	if (!boot_cpu_has(X86_FEATURE_HYPERVISOR))	\
-+		wbinvd();				\
-+} while (0)
+ #ifdef CONFIG_PERF_EVENTS
+ 	case TRACE_REG_PERF_REGISTER:
++		ret = tracepoint_probe_register(call->tp,
++						call->class->perf_probe,
++						data);
++		if (!ret)
++			goto inc;
++		break;
++
+ 	case TRACE_REG_PERF_UNREGISTER:
++		tracepoint_probe_unregister(call->tp,
++					    call->class->perf_probe,
++					    data);
++		goto dec;
++
+ 	case TRACE_REG_PERF_OPEN:
+ 	case TRACE_REG_PERF_CLOSE:
+ 	case TRACE_REG_PERF_ADD:
+@@ -849,6 +909,9 @@ static int user_event_parse(char *name, char *args, char *flags,
+ 	user->class.get_fields = user_event_get_fields;
+ 	user->class.reg = user_event_reg;
+ 	user->class.probe = user_event_ftrace;
++#ifdef CONFIG_PERF_EVENTS
++	user->class.perf_probe = user_event_perf;
++#endif
  
- int __acpi_acquire_global_lock(unsigned int *lock);
- int __acpi_release_global_lock(unsigned int *lock);
+ 	mutex_lock(&event_mutex);
+ 	ret = user_event_trace_register(user);
 -- 
-2.25.1
+2.17.1
 
