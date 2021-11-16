@@ -2,115 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD99452FC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:04:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4DF4452FB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:04:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234684AbhKPLGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 06:06:53 -0500
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:42448
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234700AbhKPLFu (ORCPT
+        id S234563AbhKPLFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:05:31 -0500
+Received: from so254-9.mailgun.net ([198.61.254.9]:62716 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234600AbhKPLFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 06:05:50 -0500
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Tue, 16 Nov 2021 06:05:15 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1637060538; h=Message-ID: Subject: Cc: To: From: Date:
+ Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
+ bh=G5SlQUsVTp2RwuwemGomxoJqR9I2xNuo3BfL022fXs0=; b=m8GvMbEqcEo8KnUg5jnnFSHNWJRjkUT++MXmW+8ytn1iaIaedz1wq7dzby5wIibeOgkxEoCf
+ Tb7Qc9UeJ+qqQNBrxwRw/3FZeb/NDFdmN5sO4/FeM7GMZI2DbYkCVxJTdfB7qExi64As9bfJ
+ 8KFFR28XDP3ZnNvJu3jUxCbWOrg=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 61938fb94db4233966bbc215 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Nov 2021 11:02:17
+ GMT
+Sender: tjiang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9C9B5C43460; Tue, 16 Nov 2021 11:02:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 8B1813F1A9
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 11:02:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1637060571;
-        bh=/fhj+bVJm076Wq/VhTriJ0yxdPwTog87+Zp8k+Dl/zY=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=g7PNkbHBpyz9f9f1XKeT3hOaBloAHxzPMJmoiF0Artb7vHWmDGZdWKqYO+5fi4gwT
-         iOqO9TxjDT9p3n2EU2sABFhlzz8rrBOBaWPtro4FotNonEvX6ZEc/4SQGmMu/5iVfX
-         lRnFWErhvvY9t8c62ZFpm7iA96ciCWYvKmoWKenWDWZ9s8AGKcltVpGjAIvt4+PyRI
-         d9c7qRfgky1FX5Ta/I9jngCwn4GKuXryhQWvYO4Vs4uQPuxAH6Zk2wTvHpmQ3KS9LU
-         mmodQq1hTCerWL/PPwGjTPLZU1aUu4RVZ+g95TegUMLBAmT0pcakHvHciwWuMyfO2I
-         xEVPmXJ5LDxTQ==
-Received: by mail-lf1-f72.google.com with SMTP id n18-20020a0565120ad200b004036c43a0ddso8020773lfu.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 03:02:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/fhj+bVJm076Wq/VhTriJ0yxdPwTog87+Zp8k+Dl/zY=;
-        b=5EtCGfAsZMMngk5Kwxo6VN5k36U001KNe8teBAVSH6wAFuTS2pgbp89Tul29adqWYO
-         EsUkqbZ4/KMNVt3R/rDpFQ16ivu7mbE5578CxAO5MDbNyL3YcWKkJaA5pWsZem2xIjwx
-         rJLKQhUBFZjIKL3s1dxFhAmOL0FDIm970iH4fKu4s56X7Xs6QMP79mi8IzhTxirpWIeF
-         BzXm7zxLfl0t15jpNnimIsotBbxfSu0Uf462Caua+Y5Dr7ozj03nCxCTIBC2QYMIGb1B
-         /gu56eswGJy5/FwW0zj47D6TGZyNP3+zmud2v34p8mfPqiKZOrFxK7v6ftx8Ov4SxsaP
-         51Xg==
-X-Gm-Message-State: AOAM5339tE3qFPMwkGW3wt2/2QU/+ZqXr4SN1pmDtbxnN6W9R5L7Rone
-        zQIytS5aprxO0toeTFTw4Fex+bJL+2gGA3PypGEnhgdQk85wJhvuJ9vq1ODb69a251yKbu6iNV0
-        6Ze1iFc0Ivk0Ii4QGYeMMnGd9BJ7ZYzbF4qtuRaZgrQ==
-X-Received: by 2002:a05:6512:604:: with SMTP id b4mr5696013lfe.198.1637060569538;
-        Tue, 16 Nov 2021 03:02:49 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx7ajDYjXbeKcZbiXLfcr+dTx8ryW8atDeHVo7pyKw8Zx2SmbmhraxaC8+5fg6M9h4tJ5URtQ==
-X-Received: by 2002:a05:6512:604:: with SMTP id b4mr5695972lfe.198.1637060569244;
-        Tue, 16 Nov 2021 03:02:49 -0800 (PST)
-Received: from localhost.localdomain (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id z8sm1420074ljj.86.2021.11.16.03.02.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 03:02:48 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        devicetree@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Vincent Pelletier <plr.vincent@gmail.com>
-Subject: [PATCH] dt-bindings: hwmon: add TI DC-DC converters
-Date:   Tue, 16 Nov 2021 12:02:07 +0100
-Message-Id: <20211116110207.68494-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        (Authenticated sender: tjiang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 12914C4360C;
+        Tue, 16 Nov 2021 11:02:17 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 16 Nov 2021 19:02:16 +0800
+From:   tjiang@codeaurora.org
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org, tjiang@codeaurora.org
+Subject: [PATCH v3] Bluetooth: btusb: Add the new support IDs for WCN6855
+Message-ID: <c3f2783ddb0ac0bbcaae70b57c6afdfd@codeaurora.org>
+X-Sender: tjiang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Few Texas Instruments DC-DC converters on PMBus like TPS544B20 do not
-have bindings and are used only as hardware monitoring sensor.  These
-devices are actually not trivial and can receive basic configuration
-(e.g. power up mode, CNTL pin polarity, expected input voltage), however
-devicetree support for configuration was never added.
+Add the more IDs of HP to usb_device_id table for WCN6855.
 
-Therefore in current state the devices are used only in read-only mode
-and have trivial bindings, so document them to have basic dtschema
-tests.
+-Device(0489:e0cc) from /sys/kernel/debug/usb/devices
+T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
+D:  Ver= 1.10 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+P:  Vendor=0489 ProdID=e0cc Rev= 0.01
+C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
+I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+I:  If#= 1 Alt= 7 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  65 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  65 Ivl=1ms
 
-Cc: Vincent Pelletier <plr.vincent@gmail.com>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+-Device(0489:e0d6) from /sys/kernel/debug/usb/devices
+T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
+D:  Ver= 1.10 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+P:  Vendor=0489 ProdID=e0d6 Rev= 0.01
+C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
+I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+I:  If#= 1 Alt= 7 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  65 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  65 Ivl=1ms
+
+Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
 ---
- Documentation/devicetree/bindings/trivial-devices.yaml | 7 +++++++
- 1 file changed, 7 insertions(+)
+  drivers/bluetooth/btusb.c | 8 +++++++-
+  1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
-index 791079021f1b..3297a6480534 100644
---- a/Documentation/devicetree/bindings/trivial-devices.yaml
-+++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-@@ -329,12 +329,19 @@ properties:
-           - ti,tmp122
-             # Digital Temperature Sensor
-           - ti,tmp275
-+            # TI DC-DC converter on PMBus
-+          - ti,tps40400
-             # TI Dual channel DCAP+ multiphase controller TPS53676 with AVSBus
-           - ti,tps53676
-             # TI Dual channel DCAP+ multiphase controller TPS53679
-           - ti,tps53679
-             # TI Dual channel DCAP+ multiphase controller TPS53688
-           - ti,tps53688
-+            # TI DC-DC converters on PMBus
-+          - ti,tps544b20
-+          - ti,tps544b25
-+          - ti,tps544c20
-+          - ti,tps544c25
-             # Winbond/Nuvoton H/W Monitor
-           - winbond,w83793
-             # i2c trusted platform module (TPM)
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index c2a48824ab1e..506e9ab5329d 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -296,6 +296,12 @@ static const struct usb_device_id blacklist_table[] 
+= {
+  	{ USB_DEVICE(0x0cf3, 0xe600), .driver_info = BTUSB_QCA_WCN6855 |
+  						     BTUSB_WIDEBAND_SPEECH |
+  						     BTUSB_VALID_LE_STATES },
++	{ USB_DEVICE(0x0489, 0xe0cc), .driver_info = BTUSB_QCA_WCN6855 |
++						     BTUSB_WIDEBAND_SPEECH |
++						     BTUSB_VALID_LE_STATES },
++	{ USB_DEVICE(0x0489, 0xe0d6), .driver_info = BTUSB_QCA_WCN6855 |
++						     BTUSB_WIDEBAND_SPEECH |
++						     BTUSB_VALID_LE_STATES },
+
+  	/* Broadcom BCM2035 */
+  	{ USB_DEVICE(0x0a5c, 0x2009), .driver_info = BTUSB_BCM92035 },
+@@ -3076,7 +3082,7 @@ static void btusb_generate_qca_nvm_name(char 
+*fwname, size_t max_size,
+  		/* The board_id should be split into two bytes
+  		 * The 1st byte is chip ID, and the 2nd byte is platform ID
+  		 * For example, board ID 0x010A, 0x01 is platform ID. 0x0A is chip ID
+-		 * Currently we have several platforms, and platform IDs are 
+continuously added.
++		 * we have several platforms, and platform IDs are continuously added
+  		 * Platform ID:
+  		 * 0x00 is for Mobile
+  		 * 0x01 is for X86
 -- 
-2.32.0
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum, a Linux Foundation Collaborative Project
