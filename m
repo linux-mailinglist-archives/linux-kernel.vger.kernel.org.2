@@ -2,133 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA64452E4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:44:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6249D452E4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:44:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233463AbhKPJrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 04:47:18 -0500
-Received: from mail-ua1-f43.google.com ([209.85.222.43]:35510 "EHLO
-        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233392AbhKPJrI (ORCPT
+        id S233490AbhKPJrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 04:47:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:24697 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233470AbhKPJrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 04:47:08 -0500
-Received: by mail-ua1-f43.google.com with SMTP id l24so36774073uak.2;
-        Tue, 16 Nov 2021 01:44:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QboxZaD2WJSCfrRwQW0wjmUeNXv+y+DA5Jn72gGB79E=;
-        b=jmx7G8u+L3uZB3wuBsEDGWUMhqi9oqi+7M8g+IPTKPv95s5mgK1hkjsq4bn1yUEt9Z
-         NYA56zkkyy+5tqe5uO2STcvgTcN0Aq3vX2Gqa/ng38SR1bi7qe+FZcGv8gd3gb5omLv0
-         Pn2FJwLnbe71TAxetiN5AhcgUuczqMxME7Ef9JDjo2zRnxxyZQwe51z0eCbDl+wFAOUX
-         22EgAwpvfRp5qIKLJUKU1fB1S8F8ZxQ2pBjHMER7JihEeVDPLOYemF63bJqHe7ElCTIv
-         QoVrHMGzhYYqgmyaEetA0qZvsTmEKzTICBhxcCyJvYJGLTOhxxyFUM+3w/sCCp6LKcwu
-         Q9bQ==
-X-Gm-Message-State: AOAM531Za4e1AY94ertMvmkB4croDXy2Liemso4G4O8ZD7wlEWPtOZGH
-        5EIkr/QZjcDd4p2dlq3G+7wUq9s7sD4gvQ==
-X-Google-Smtp-Source: ABdhPJwtBbPmsN3gIDmjfj3yhbqvfc1IEcwMu18gH0i4OB4kixCL1Iv0799Owg8gKx95m1ugI/OALw==
-X-Received: by 2002:a67:d491:: with SMTP id g17mr53613125vsj.41.1637055851212;
-        Tue, 16 Nov 2021 01:44:11 -0800 (PST)
-Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com. [209.85.221.170])
-        by smtp.gmail.com with ESMTPSA id g187sm10445120vsc.10.2021.11.16.01.44.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 01:44:10 -0800 (PST)
-Received: by mail-vk1-f170.google.com with SMTP id d130so10843850vke.0;
-        Tue, 16 Nov 2021 01:44:10 -0800 (PST)
-X-Received: by 2002:a05:6122:50e:: with SMTP id x14mr71391026vko.7.1637055850664;
- Tue, 16 Nov 2021 01:44:10 -0800 (PST)
+        Tue, 16 Nov 2021 04:47:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637055864;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TUrHH0FE+UhMCMP4XCeZVHo5kb/MulSzwtpsVjUnBJg=;
+        b=CyGV9GHadGyfPP6LdcoqjwY+LcOUqvVQQPU5KieR9npdbq0LGpxnG9drDb25M91oq+cg3Q
+        MyEWuSj9WU9RlTXblu7HEXVI+3VS615n1wJBrVYywe4Sy5xMhU5EaMa71jiknyRUtfA+aC
+        zCsGiwWlo6a/gmCNl40GrKeYNRKKlcY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-79-c1rrBeZgMcmwZX0Vqdb2cg-1; Tue, 16 Nov 2021 04:44:21 -0500
+X-MC-Unique: c1rrBeZgMcmwZX0Vqdb2cg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1AF601015DA2;
+        Tue, 16 Nov 2021 09:44:20 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B30325C1D5;
+        Tue, 16 Nov 2021 09:44:18 +0000 (UTC)
+Message-ID: <b455d273-ef5e-bc78-ac31-2543499324b6@redhat.com>
+Date:   Tue, 16 Nov 2021 10:44:17 +0100
 MIME-Version: 1.0
-References: <20211111111120.1344613-1-javierm@redhat.com> <CAMuHMdWA2V_KDpcpMw3yRKmN+6YDjmysJoz6D-6JjJs-3+XYTQ@mail.gmail.com>
- <579a584a-68af-d5c9-0547-30cb1592d46f@redhat.com>
-In-Reply-To: <579a584a-68af-d5c9-0547-30cb1592d46f@redhat.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 16 Nov 2021 10:43:59 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWotEN1TtTr7douLkQPkpXE-rQgamM3GOYO1XNHbUiguw@mail.gmail.com>
-Message-ID: <CAMuHMdWotEN1TtTr7douLkQPkpXE-rQgamM3GOYO1XNHbUiguw@mail.gmail.com>
-Subject: Re: [PATCH v2] fbdev: Prevent probing generic drivers if a FB is
- already registered
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Peter Jones <pjones@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ilya Trukhanov <lahvuun@gmail.com>,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        Borislav Petkov <bp@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2] KVM: x86: Fix uninitialized eoi_exit_bitmap usage in
+ vcpu_load_eoi_exitmap()
+Content-Language: en-US
+To:     =?UTF-8?B?6buE5LmQ?= <huangle1@jd.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>
+Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+References: <62115b277dab49ea97da5633f8522daf@jd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <62115b277dab49ea97da5633f8522daf@jd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Javier,
+On 11/15/21 15:08, 黄乐 wrote:
+> In vcpu_load_eoi_exitmap(), currently the eoi_exit_bitmap[4] array is
+> initialized only when Hyper-V context is available, in other path it is
+> just passed to kvm_x86_ops.load_eoi_exitmap() directly from on the stack,
+> which would cause unexpected interrupt delivery/handling issues, e.g. an
+> *old* linux kernel that relies on PIT to do clock calibration on KVM might
+> randomly fail to boot.
+> 
+> Fix it by passing ioapic_handled_vectors to load_eoi_exitmap() when Hyper-V
+> context is not available.
+> 
+> Fixes: f2bc14b69c38 ("KVM: x86: hyper-v: Prepare to meet unallocated Hyper-V context")
+> Cc: stable@vger.kernel.org
+> Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Signed-off-by: Huang Le <huangle1@jd.com>
+> ---
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index dc7eb5fddfd3..26466f94e31a 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -9547,12 +9547,16 @@ static void vcpu_load_eoi_exitmap(struct kvm_vcpu *vcpu)
+>   	if (!kvm_apic_hw_enabled(vcpu->arch.apic))
+>   		return;
+>   
+> -	if (to_hv_vcpu(vcpu))
+> +	if (to_hv_vcpu(vcpu)) {
+>   		bitmap_or((ulong *)eoi_exit_bitmap,
+>   			  vcpu->arch.ioapic_handled_vectors,
+>   			  to_hv_synic(vcpu)->vec_bitmap, 256);
+> +		static_call(kvm_x86_load_eoi_exitmap)(vcpu, eoi_exit_bitmap);
+> +		return;
+> +	}
+>   
+> -	static_call(kvm_x86_load_eoi_exitmap)(vcpu, eoi_exit_bitmap);
+> +	static_call(kvm_x86_load_eoi_exitmap)(
+> +		vcpu, (u64 *)vcpu->arch.ioapic_handled_vectors);
+>   }
+>   
+>   void kvm_arch_mmu_notifier_invalidate_range(struct kvm *kvm,
+> 
 
-On Tue, Nov 16, 2021 at 10:30 AM Javier Martinez Canillas
-<javierm@redhat.com> wrote:
-> On 11/15/21 17:20, Geert Uytterhoeven wrote:
-> >> @@ -351,6 +351,17 @@ static int efifb_probe(struct platform_device *dev)
-> >>         char *option = NULL;
-> >>         efi_memory_desc_t md;
-> >>
-> >> +       /*
-> >> +        * Generic drivers must not be registered if a framebuffer exists.
-> >> +        * If a native driver was probed, the display hardware was already
-> >> +        * taken and attempting to use the system framebuffer is dangerous.
-> >> +        */
-> >> +       if (num_registered_fb > 0) {
-> >
-> > Who says this registered fbdev is driving the same hardware as efifb?
-> > This might be e.g. a small external display connected to i2c or spi.
-> >
-> >> +               dev_err(&dev->dev,
-> >> +                       "efifb: a framebuffer is already registered\n");
-> >> +               return -EINVAL;
-> >> +       }
-> >> +
->
-> That's true, although I wonder if the {efi,simple}fb drivers should even be
-> probed in that case. As I see it, these are always a best effort that are
-> only useful for earlycon or if there isn't another display driver supported.
->
-> Since there may be other conditions needed in order for these to work. For
-> example, when using the u-boot EFI stub in most cases the unused clocks and
-> power domains can't be gated or otherwise the firmware frame buffer could go
-> away (e.g: will need to boot with "clk_ignore_unused" and "pd_ignore_unused").
->
-> Same for the simplefb driver, if the DT node is missing resources that are
-> needed by the display controller to continue working (clocks, regulators,
-> power domains), the firmware setup framebuffer will go away at some point.
->
-> So this is already a fragile solution and $SUBJECT doesn't make things worse
-> IMO. Since not having something like this can lead to issues as reported by:
->
-> https://lore.kernel.org/all/20211110200253.rfudkt3edbd3nsyj@lahvuun/
->
-> We could probably do some smarter here by providing a function that checks
-> if the registered fbdev drivers matches the aperture base. But I'm unsure
-> if that's worth it. After all, fbdev drivers are likely to be disabled by
-> most distros soon now that we have the simpledrm driver.
+Queued, thanks.
 
-Checking the aperture base is what was done in all other cases of
-preventing generic (fbdev) drivers from stepping on specific drivers'
-toes...
+Paolo
 
-But as you're only impacting efifb and simplefb, thus not crippling
-generic fbdev support, I don't care that much.
-
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
