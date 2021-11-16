@@ -2,135 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70EA94528DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 04:58:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 753084528E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 04:58:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236950AbhKPEAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 23:00:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36258 "EHLO
+        id S237474AbhKPEB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 23:01:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235335AbhKPEAh (ORCPT
+        with ESMTP id S237358AbhKPEBW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 23:00:37 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B880C1F0C11
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 16:42:06 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id m6so38595689oim.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 16:42:06 -0800 (PST)
+        Mon, 15 Nov 2021 23:01:22 -0500
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54CDAC1F14FF
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 16:43:24 -0800 (PST)
+Received: by mail-oi1-x229.google.com with SMTP id bf8so38611424oib.6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 16:43:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:in-reply-to:references:from:user-agent:date:message-id
          :subject:to:cc;
-        bh=R5eOgQLLM4QxME5CDs41GNmTwkVxPDAe8ZaxJG3cpYo=;
-        b=Jw+xywDv6rQDFegmQ+p8I8vbmyAhlppO/fXJPKq30zTZ6h985lp7mIdHxHN8DIm8l4
-         w2w+N4rX8MqwdPTeZzZ15zmsHaXeiBquVl2DIgssLv3Suk8647Um9ihNRaRbKXMMIEM+
-         1PiYO3AICbst90OOZW9uBGuZbyVMqlb/lKTZU=
+        bh=AR+MJXQt1hZ4ak+KffeN9j/qO8HcFtJTxsTibtq8SN0=;
+        b=OcKmfLQ8A9BF4S3di4lz4OZXJGUTA4mbSUlF7s+b0wJ+grSJIRm0i7Ca1yMgwNY2g8
+         70uW5S/5kzyfc1VQ8Ov++7/+Wf/wwIurMBsGC3VDQ7uOz30vQJ8ca0/iDQhvQA8YU7oX
+         rWRos7i6GY4nzLNbDZkm+x0eFcNMhKjkB3BMY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:in-reply-to:references:from
          :user-agent:date:message-id:subject:to:cc;
-        bh=R5eOgQLLM4QxME5CDs41GNmTwkVxPDAe8ZaxJG3cpYo=;
-        b=3iHttkSk0JZZC+AZ88xg9dyBQntAgHe5IVBM8bWiY92MkzoloOODaKN07lDTDIujyn
-         h3YiYIsRTZOCMKIPA86fYxYyCuBDB0vz1TJx9DqNl48ekeSS8gpOWE0zGmpXT8P2oviw
-         NvkUKUc3ej8QxgFY31rL1uW9j8jq8BzcPSDl02hZBgyC6vehNwvpGM1CPwhsk1+h0EK1
-         rAuRMcbCExkLODlhhazJxFoRZQFnuy5urBPu7BCnEb2ehoIuegVm8fW06guiPaH/zSmh
-         keNgyW037ecgGslPXDnYIqVj4QU+sV4H43XcnyF17aggbMRpBlWEfPlH+sHg6L8QEZG6
-         akDQ==
-X-Gm-Message-State: AOAM530VlCmvzUyDghmBGV2BYh5l1a3KXj8KuZUZjZif8zY8+BOSyOwy
-        e7c9XBVCt+2N7LtXGQN4kKQbHi5Y5r54Nwa2Dl2w1A==
-X-Google-Smtp-Source: ABdhPJzN6lMpvqQKlLXPZAElkaHQvyXykKQoORKEtFyKD4aeINCYFsH8oohTwEDsg6XATxYIXS1ZSzkE8GNN2oLbr6M=
-X-Received: by 2002:a05:6808:211f:: with SMTP id r31mr2706331oiw.64.1637023325967;
- Mon, 15 Nov 2021 16:42:05 -0800 (PST)
+        bh=AR+MJXQt1hZ4ak+KffeN9j/qO8HcFtJTxsTibtq8SN0=;
+        b=CO5zGgLb7oLH1ssWBpq63o0f731lYgZZYkILjeLm4yJi6tChYRCRTRTg8LvGYHEUMB
+         A+DROiYID07gBWX7+cJloiblwKJxDcgkJQPW7y72OsUwBLnyI4enL0eGHLoAxfySb4y8
+         THhsSF2voBbcdmq9Fwt6W/pq2A5+zjd6Xe+n+LtNVNuCubDdfeKKKqS80Fh4jJAtXmfF
+         Tto8Ki+503hOg5XItsQAqnoc3z6FxHlwd8XhGlMjTa/8bsAEul88HKtnLYUOWN4cnR+E
+         iHYlMemB7/uNE/RkzT1vbEpdjut8KX6UdNWelEkr/fsY8K+kWdfQDW6iIVVZAGse+bsD
+         uRpg==
+X-Gm-Message-State: AOAM530bmCQAppsuwG1G0B+E57LEJdnwzBUQ3kCKIifJNvhdhdD67Iss
+        SATp3GGIe7JioeB8vBA0F42tST2xVRFmeBoEzc0upWDojIE=
+X-Google-Smtp-Source: ABdhPJz9z5atxroq/GjxihboHlC2x5PboGmywHnjxtnAjxqEQZyoBJQEvr8K/IKhil58m74mic8cKR+6S4n+PtT7tBE=
+X-Received: by 2002:aca:2319:: with SMTP id e25mr49152738oie.164.1637023403674;
+ Mon, 15 Nov 2021 16:43:23 -0800 (PST)
 Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 15 Nov 2021 16:42:05 -0800
+ HTTPREST; Mon, 15 Nov 2021 16:43:23 -0800
 MIME-Version: 1.0
-In-Reply-To: <20211110113334.1.I1687e716adb2df746da58b508db3f25423c40b27@changeid>
-References: <20211110113334.1.I1687e716adb2df746da58b508db3f25423c40b27@changeid>
+In-Reply-To: <20211110120512.150940-1-deng.changcheng@zte.com.cn>
+References: <20211110120512.150940-1-deng.changcheng@zte.com.cn>
 From:   Stephen Boyd <swboyd@chromium.org>
 User-Agent: alot/0.9.1
-Date:   Mon, 15 Nov 2021 16:42:05 -0800
-Message-ID: <CAE-0n52YFUmX826kPyXEP+g4avoS2FM2wsph4Uu9DFwp37swZA@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm: Fix mmap to include VM_IO and VM_DONTDUMP
-To:     Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Sean Paul <sean@poorly.run>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 15 Nov 2021 16:43:23 -0800
+Message-ID: <CAE-0n50=P06ByQrG0FixVK4cGW--Vgt6uwGsLUu792SPhqzqXQ@mail.gmail.com>
+Subject: Re: [PATCH linux-next] drm/msm/dp: remove unneeded variable
+To:     cgel.zte@gmail.com, robdclark@gmail.com
+Cc:     sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        abhinavk@codeaurora.org, deng.changcheng@zte.com.cn,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Zeal Robot <zealci@zte.com.cn>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2021-11-10 11:33:42)
-> In commit 510410bfc034 ("drm/msm: Implement mmap as GEM object
-> function") we switched to a new/cleaner method of doing things. That's
-> good, but we missed a little bit.
+Quoting cgel.zte@gmail.com (2021-11-10 04:05:12)
+> From: Changcheng Deng <deng.changcheng@zte.com.cn>
 >
-> Before that commit, we used to _first_ run through the
-> drm_gem_mmap_obj() case where `obj->funcs->mmap()` was NULL. That meant
-> that we ran:
+> Fix the following coccicheck review:
+> ./drivers/gpu/drm/msm/dp/dp_debug.c: Unneeded variable
 >
->   vma->vm_flags |= VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP;
->   vma->vm_page_prot = pgprot_writecombine(vm_get_page_prot(vma->vm_flags));
->   vma->vm_page_prot = pgprot_decrypted(vma->vm_page_prot);
+> Remove unneeded variable used to store return value.
 >
-> ...and _then_ we modified those mappings with our own. Now that
-> `obj->funcs->mmap()` is no longer NULL we don't run the default
-> code. It looks like the fact that the vm_flags got VM_IO / VM_DONTDUMP
-> was important because we're now getting crashes on Chromebooks that
-> use ARC++ while logging out. Specifically a crash that looks like this
-> (this is on a 5.10 kernel w/ relevant backports but also seen on a
-> 5.15 kernel):
->
->   Unable to handle kernel paging request at virtual address ffffffc008000000
->   Mem abort info:
->     ESR = 0x96000006
->     EC = 0x25: DABT (current EL), IL = 32 bits
->     SET = 0, FnV = 0
->     EA = 0, S1PTW = 0
->   Data abort info:
->     ISV = 0, ISS = 0x00000006
->     CM = 0, WnR = 0
->   swapper pgtable: 4k pages, 39-bit VAs, pgdp=000000008293d000
->   [ffffffc008000000] pgd=00000001002b3003, p4d=00000001002b3003,
->                      pud=00000001002b3003, pmd=0000000000000000
->   Internal error: Oops: 96000006 [#1] PREEMPT SMP
->   [...]
->   CPU: 7 PID: 15734 Comm: crash_dump64 Tainted: G W 5.10.67 #1 [...]
->   Hardware name: Qualcomm Technologies, Inc. sc7280 IDP SKU2 platform (DT)
->   pstate: 80400009 (Nzcv daif +PAN -UAO -TCO BTYPE=--)
->   pc : __arch_copy_to_user+0xc0/0x30c
->   lr : copyout+0xac/0x14c
->   [...]
->   Call trace:
->    __arch_copy_to_user+0xc0/0x30c
->    copy_page_to_iter+0x1a0/0x294
->    process_vm_rw_core+0x240/0x408
->    process_vm_rw+0x110/0x16c
->    __arm64_sys_process_vm_readv+0x30/0x3c
->    el0_svc_common+0xf8/0x250
->    do_el0_svc+0x30/0x80
->    el0_svc+0x10/0x1c
->    el0_sync_handler+0x78/0x108
->    el0_sync+0x184/0x1c0
->   Code: f8408423 f80008c3 910020c6 36100082 (b8404423)
->
-> Let's add the two flags back in.
->
-> While we're at it, the fact that we aren't running the default means
-> that we _don't_ need to clear out VM_PFNMAP, so remove that and save
-> an instruction.
->
-> NOTE: it was confirmed that VM_IO was the important flag to fix the
-> problem I was seeing, but adding back VM_DONTDUMP seems like a sane
-> thing to do so I'm doing that too.
->
-> Fixes: 510410bfc034 ("drm/msm: Implement mmap as GEM object function")
-> Reported-by: Stephen Boyd <swboyd@chromium.org>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
 > ---
+>  drivers/gpu/drm/msm/dp/dp_debug.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/dp/dp_debug.c b/drivers/gpu/drm/msm/dp/dp_debug.c
+> index 2f6247e80e9d..c5c75273d1e5 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_debug.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_debug.c
+> @@ -365,7 +365,6 @@ static const struct file_operations test_active_fops = {
+>
+>  static int dp_debug_init(struct dp_debug *dp_debug, struct drm_minor *minor)
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Tested-by: Stephen Boyd <swboyd@chromium.org>
+Would be nice to make it void as well and then cleanup the caller. Can
+you do that too?
+
+>  {
+> -       int rc = 0;
+>         struct dp_debug_private *debug = container_of(dp_debug,
+>                         struct dp_debug_private, dp_debug);
+>
