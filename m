@@ -2,119 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6DD452F4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 11:41:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AEE0452F58
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 11:41:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234307AbhKPKmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 05:42:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234126AbhKPKmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 05:42:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AC7F613AC;
-        Tue, 16 Nov 2021 10:39:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637059195;
-        bh=XuSaCqE1nhjoL0CrlGLFu0tkK3MNnpJGYFxS6WQ6Dmo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vAKKI2pKS5JWgOA4kjyydScgaT7t84f+Ij80pF7cdp/wwNoFi6pxH1SNvEQ0ZSs1B
-         omkPruc4rrDjOHiW97k5Vb6NmZxQqtlrLB+ajkQvIbP8w3v5ZpgnTzvmyLr6GVQbUU
-         /6VrOOu8qD8kYQ80LGtNNjHNpmx78mIup+IYqSfw=
-Date:   Tue, 16 Nov 2021 11:39:52 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Jon Hunter <jonathanh@nvidia.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Vladis Dronov <vdronov@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH 5.15 000/917] 5.15.3-rc1 review
-Message-ID: <YZOKeFT8NGenpbsU@kroah.com>
-References: <20211115165428.722074685@linuxfoundation.org>
- <CA+G9fYtFOnKQ4=3-4rUTfVM-fPno1KyTga1ZAFA2OoqNvcnAUg@mail.gmail.com>
- <CA+G9fYuF1F-9TAwgR9ik_qjFqQvp324FJwFJbYForA_iRexZjg@mail.gmail.com>
- <YZNwcylQcKVlZDlO@kroah.com>
- <dabc323f-b0e1-8c9f-1035-c48349a0eff4@nvidia.com>
- <CAMuHMdXG2Y-rwPtBw1PsGckk3MLRQvn6Xht6ts2RkW7Zkx=w2w@mail.gmail.com>
+        id S234374AbhKPKoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 05:44:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234426AbhKPKnc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 05:43:32 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7901BC061570;
+        Tue, 16 Nov 2021 02:40:35 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id g17so55999990ybe.13;
+        Tue, 16 Nov 2021 02:40:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eacFzYG4y/pmaSwfOMyeXjG9lV8APV1lD0PKm7xyB/I=;
+        b=ngwEN5TVA0svBcjJzzGL3O55/UcHEaakrj43No/oa9ntWIMLYsEhfed8sbkStcQWPF
+         mg2pG3j1UkaSqg/kJkmcuNx+G9pPLSPBoy/ei0/rXFe+9vVyJ9GoJ5tRffF71YzpIuyT
+         e5azrTImutlNzMLBHObvpiQBqkI5W0r8kwKaBEpdaBv6NBk1WFNb1sl4+JlE4rN+VhKo
+         V2qJG+l5lDVJHsluuO7KfGwWJBQEtYtU318jcreBbEloKsGX1Be32f4o8Y0VZhuqVjJB
+         O7tc+UIYF0c9f5ZAjStsKrxP3v8vXPQQZ7UpYQCp44J1JjCWaHfL+Ri9cOx/SQdho+Qo
+         c77w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eacFzYG4y/pmaSwfOMyeXjG9lV8APV1lD0PKm7xyB/I=;
+        b=qDaZxl1vfwxQ0kd6QUXOd/A+Dtb2gHyfAtXlaoPdehJrkQEV8nrw208PdHc+Yo4epy
+         fqICSQzsIKeLk/mS8ciShGulNYXiN0gryfA2zNyvphy8ocNdkKi71eOtySW5YciWBAXr
+         yqxpTzcXjdJeZQtzUJZEY9Smjj8qToLAVmgRoUtDzVguZw5AtW08zI55tmFmTsxZZSYd
+         NKB9XUuSayqMFcwoQ3NHHnNs747T277CLntqAWJOrqe82HBq25K2kDglasyeNcmpYXgu
+         yqAmA7Irts6t9TsH1zSAeWb0OJli3Rb10v0jJy2STgjnWG0X0+kXyEz9iqw36P12/yks
+         WQrA==
+X-Gm-Message-State: AOAM530SbYM3tE9OubAyeQ7a8M7PPzOvyox8CfxX6egEZ31yzIluOh/w
+        vUYMj6QRlKureyOlTe3TwfR3thN/GzzAs7U3YZ4=
+X-Google-Smtp-Source: ABdhPJxQlTsxuIuK8DAfcNTrc65rpOtrU8od9nVzHXcfzD8nb+05xUlyFaZ6Ir0Ny/pG8KtbRieCnOZ3Z7a/mNeCAJ8=
+X-Received: by 2002:a25:c792:: with SMTP id w140mr6655608ybe.131.1637059234773;
+ Tue, 16 Nov 2021 02:40:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdXG2Y-rwPtBw1PsGckk3MLRQvn6Xht6ts2RkW7Zkx=w2w@mail.gmail.com>
+References: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <a8b126e6-62e7-7979-01cb-b7a1ce4ae8d1@canonical.com>
+In-Reply-To: <a8b126e6-62e7-7979-01cb-b7a1ce4ae8d1@canonical.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Tue, 16 Nov 2021 10:40:08 +0000
+Message-ID: <CA+V-a8t=JsMJ=w9dDpeUfdTUwFhnHrZ-eWdpTmvOxC0uvOz4Wg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/7] Add SPI Multi I/O Bus Controller support for RZ/G2L
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Mark Brown <broonie@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-mtd@lists.infradead.org,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 11:12:23AM +0100, Geert Uytterhoeven wrote:
-> Hi Jon,
-> 
-> On Tue, Nov 16, 2021 at 10:23 AM Jon Hunter <jonathanh@nvidia.com> wrote:
-> > On 16/11/2021 08:48, Greg Kroah-Hartman wrote:
-> > > On Tue, Nov 16, 2021 at 02:09:44PM +0530, Naresh Kamboju wrote:
-> > >> On Tue, 16 Nov 2021 at 12:06, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> > >>>
-> > >>> On Tue, 16 Nov 2021 at 00:03, Greg Kroah-Hartman
-> > >>> <gregkh@linuxfoundation.org> wrote:
-> > >>>>
-> > >>>> This is the start of the stable review cycle for the 5.15.3 release.
-> > >>>> There are 917 patches in this series, all will be posted as a response
-> > >>>> to this one.  If anyone has any issues with these being applied, please
-> > >>>> let me know.
-> > >>>>
-> > >>>> Responses should be made by Wed, 17 Nov 2021 16:52:23 +0000.
-> > >>>> Anything received after that time might be too late.
-> > >>>>
-> > >>>> The whole patch series can be found in one patch at:
-> > >>>>          https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.3-rc1.gz
-> > >>>> or in the git tree and branch at:
-> > >>>>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> > >>>> and the diffstat can be found below.
-> > >>>>
-> > >>>> thanks,
-> > >>>>
-> > >>>> greg k-h
-> > >>>
-> > >>>
-> > >>
-> > >> Regression found on arm64 juno-r2 / qemu.
-> > >> Following kernel crash reported on stable-rc 5.15.
-> > >>
-> > >> Anders bisected this kernel crash and found the first bad commit,
-> > >>
-> > >> Herbert Xu <herbert@gondor.apana.org.au>
-> > >>     crypto: api - Fix built-in testing dependency failures
-> 
-> That's commit adad556efcdd ("crypto: api - Fix built-in testing
-> dependency failures")
-> 
-> > I am seeing the same for Tegra as well and bisect is pointing to the
-> > above for me too.
-> > > Is this also an issue on 5.16-rc1?
+Hi Krzysztof,
+
+On Tue, Nov 16, 2021 at 10:33 AM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On 25/10/2021 22:56, Lad Prabhakar wrote:
+> > Hi All,
 > >
-> > I have not observed the same issue for 5.16-rc1.
-> 
-> Following the "Fixes: adad556efcdd" chain:
-> 
-> cad439fc040efe5f ("crypto: api - Do not create test larvals if manager
-> is disabled")
-> beaaaa37c664e9af ("crypto: api - Fix boot-up crash when crypto manager
-> is disabled")
+> > This patch series adds a couple of fixes for rpc-if driver and
+> > adds support for RZ/G2L SoC, where the SPI Multi I/O Bus Controller
+> > is identical to the RPC-IF block found on R-Car Gen3 SoC's.
+> >
+> > Cheers,
+> > Prabhakar
+> >
+> > Changes for v2:
+> > * Rebased the patches on linux-next
+> > * Split patch 5 from v1
+> > * Included RB tags
+> > * Fixed review comments pointed by Wolfram
+> >
+> > v1:
+> > https://patchwork.kernel.org/project/linux-renesas-soc/cover/
+> > 20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
+> >
+> > Lad Prabhakar (7):
+> >   dt-bindings: memory: renesas,rpc-if: Add support for the R9A07G044
+> >   dt-bindings: memory: renesas,rpc-if: Add optional interrupts property
+> >   spi: spi-rpc-if: Check return value of rpcif_sw_init()
+> >   mtd: hyperbus: rpc-if: Check return value of rpcif_sw_init()
+> >   memory: renesas-rpc-if: Return error in case devm_ioremap_resource()
+> >     fails
+> >   memory: renesas-rpc-if: Drop usage of RPCIF_DIRMAP_SIZE macro
+> >   memory: renesas-rpc-if: Add support for RZ/G2L
+> >
+>
+> Applied parts 1, 2, 5 and 6. I think 7 is going to have a new version
+> due to Wolfram's comments?
+>
+Thank you for queuing up the patches, wrt patch 7/7 this can also be
+picked up, after the internal discussion it was clear that we cannot
+use the R-car hw manual for RZ/G2L (we will have to live with magic
+values). Wolfram has agreed on this and has already Acked patch 7/7.
 
-Argh, yes, I didn't run my "check for fixes for patches in the queue"
-script which would have caught these.  I'll go queue these up and a few
-others that it just caught...
+Cheers,
+Prabhakar
 
-thanks,
-
-greg k-h
+>
+> Best regards,
+> Krzysztof
