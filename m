@@ -2,241 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41E2453677
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:56:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2273F45367D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:56:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238633AbhKPP5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 10:57:51 -0500
-Received: from mail-dm6nam10on2058.outbound.protection.outlook.com ([40.107.93.58]:12896
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238627AbhKPP52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 10:57:28 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JAuHtcT3azNQlXX6o9DxeXzH9ZIRlr+C2rT1wVSQce5J0K2UjhqbI4wsdJDWPfpTUQNpnJej8O/ufoOCmornlcjWFtwnN/4EUNDb7HVCQp7zmhkrU+BpEudDCWY7lkor4YvlttScenlahFb1yOQ8bYHYJDowazQiX/f5w0RDjqbwWNfR9TKIaKFJME8hs223CH5ghULTNNmNE/parerJvFZzdGtNU7tRk/l0HYJ6uG6n0gLUC+NsWHwVqak8gXtvFP9r1HZhwRlsLsE4Y4KtyeQ8rG0JuR+fLoU/dJipRXAhhMRmr+hlhSIqrB17AiNDSNA7aXGVJgEBRQ1+9Ppanw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Zn5Q8bh8jYStsvRCO/wZ+ql/12lFOmpC5TY/9K6oM/0=;
- b=Q/MbpDqqApZu2dIvGCZ99e2HL0GLjgLdqaom97hz6ibfwk98ydhwkbK2FC6+mxRx6pf6xK4gnyNAC0OjGVSdWZ4aaCqP4VwPbZ/vx667kSge7h640I01KXnj2OLgM87sEaxMu1oDORZRHXIBQ25BISFgUhqNk6gC/x/IBN/852ObSq8hsm1QxcIYUjcsc+gUFeJZWDbr+iC8tgPR8S/HBkaBaJOHr0bVnusvYwfb5+BENRh0KflmOKgHUccFBUoBk84X7fw+d82A0m+XwtZogkm6tu9MHY/YiAl6jb/v0E4WMEb5+IymawwVhkgNztyVNBVcSGgB4j4mTR1Vrztm4A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.35) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Zn5Q8bh8jYStsvRCO/wZ+ql/12lFOmpC5TY/9K6oM/0=;
- b=X1Tw/EdopPxKxezwdprS8zKO9drTZbX5v5gFO5DFakOHa01ugUodlWqCUjtuHPcXyZC081z8ev4wxqSaX406I3hWVBH/cejHtIhWUBmuIlpuXNBTlM3+FEXwZm11ThALA87uHErfHuDyjaDG95yLyuFo/xPjSvxnJZ6G0VeV/Cl17gkT7vowHfXW5yczIjFu/J2TtUfCVaRuyMTX7anOgCnHoDjuddDHtofvRX4R5914NQMFwvMfu33zsZ5JlI+ggS6FYXzxGIbJ/aJoMq8/WvTN4HyGb4dvfaIIS9pJw/rBts0bqiUdqRLbiNMmyJxvSlkJXe4YumHzch7spfuJNg==
-Received: from BN6PR14CA0046.namprd14.prod.outlook.com (2603:10b6:404:13f::32)
- by MW2PR12MB2428.namprd12.prod.outlook.com (2603:10b6:907:6::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.25; Tue, 16 Nov
- 2021 15:54:28 +0000
-Received: from BN8NAM11FT046.eop-nam11.prod.protection.outlook.com
- (2603:10b6:404:13f:cafe::f0) by BN6PR14CA0046.outlook.office365.com
- (2603:10b6:404:13f::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26 via Frontend
- Transport; Tue, 16 Nov 2021 15:54:28 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.35; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.35) by
- BN8NAM11FT046.mail.protection.outlook.com (10.13.177.127) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4690.15 via Frontend Transport; Tue, 16 Nov 2021 15:54:27 +0000
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 16 Nov
- 2021 15:54:26 +0000
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 16 Nov
- 2021 15:54:26 +0000
-Received: from moonraker.nvidia.com (172.20.187.6) by mail.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Tue, 16 Nov 2021 15:54:24 +0000
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>
-CC:     <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Jon Hunter <jonathanh@nvidia.com>
-Subject: [PATCH V2 2/2] arm64: tegra: Add NVENC and NVJPG nodes for Tegra186 and Tegra194
-Date:   Tue, 16 Nov 2021 15:54:13 +0000
-Message-ID: <20211116155413.164242-2-jonathanh@nvidia.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211116155413.164242-1-jonathanh@nvidia.com>
-References: <20211116155413.164242-1-jonathanh@nvidia.com>
-MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: be5393e6-4421-4341-04f7-08d9a9195e91
-X-MS-TrafficTypeDiagnostic: MW2PR12MB2428:
-X-Microsoft-Antispam-PRVS: <MW2PR12MB2428EEFDA885B29CF2A10491D9999@MW2PR12MB2428.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: doEVXBCOc8Fr4Wh9p+X/hh1PbMBKtPZj4fU6L/2f3wEGCULcsLOPRUJknT8focKdx1sJIuLUfDpuv3P6/pyy8xik1r1ZP6UzC0VqkbBgDWeLpRkH7mGEEn1GJUllhBSlHayQtc4n/tLnBBC2VwtRdPFM3qr+tNJLhFZU77b/S17CVnb5q8Fj9zFzrfMziaO7S6z/NUP+d5BJAhcWiolypfANShFywgZ59F4ME+sW7HGCAdgGRLN6O1EFTmQ7bf/O+g5SD/aB553++TxmZAtjf6JOcObWh9hH7xcyBOTMG0j1S+xaxuMQYj7FnsFQ2htJXMTRcTBknuADjhnwXGYVtWTLmTbVvuPcRmsP2ffgSi2q4gDGcy9/tV+UjvaPkqJt48giEo+Ahn6Pbe//80JYqnPvZR1AZdp709U/oD0slC8x0j+Mxknq44S3vOmcfgIJ/Z3Xhcblf0z4/okqw7Ay8hLHpeL+E4+nWJjLiQMhyG8qIzLdG1p9E/6L5gAMZ4unGqJIPqOHkYCOnGY7MV8zkmyf1Si6TgO49dKuFiBS3KpB7WhMDTx9KDGZbKwY9sDl1n3R2SIzOV6Wx3J4pcpXlT3kn2/PUnxuDVs87OBCfPDfQ4i2b56vU096kv6FLv7JY54428rJZRay/K4WFU4S+nbKzSg3RAu7qyeVLh7kEkr/7r3OZ6DcX/yHk4rVa6rls1q+30RXAdwqZLkgyrENdw==
-X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid04.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(54906003)(70206006)(1076003)(36906005)(6666004)(8936002)(110136005)(70586007)(508600001)(47076005)(6636002)(7636003)(2906002)(316002)(36756003)(2616005)(107886003)(186003)(83380400001)(356005)(7696005)(426003)(336012)(82310400003)(4326008)(36860700001)(5660300002)(86362001)(26005)(8676002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 15:54:27.3635
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: be5393e6-4421-4341-04f7-08d9a9195e91
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT046.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB2428
+        id S238659AbhKPP6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 10:58:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58408 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238671AbhKPP6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 10:58:11 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC8B061929;
+        Tue, 16 Nov 2021 15:55:13 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mn0nf-005sK1-QH; Tue, 16 Nov 2021 15:55:11 +0000
+Date:   Tue, 16 Nov 2021 15:55:11 +0000
+Message-ID: <875yss859c.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, kvm-ppc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] KVM: arm64: Cap KVM_CAP_NR_VCPUS by KVM_CAP_MAX_VCPUS
+In-Reply-To: <87y25onsj6.fsf@redhat.com>
+References: <20211111162746.100598-1-vkuznets@redhat.com>
+        <20211111162746.100598-2-vkuznets@redhat.com>
+        <a5cdff6878b7157587e92ebe4d5af362@kernel.org>
+        <875ysxg0s1.fsf@redhat.com>
+        <87k0hd8obo.wl-maz@kernel.org>
+        <ad3534bc-fe3a-55f5-b022-4dbec5f29798@redhat.com>
+        <87y25onsj6.fsf@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: vkuznets@redhat.com, pbonzini@redhat.com, kvm@vger.kernel.org, seanjc@google.com, wanpengli@tencent.com, jmattson@google.com, ehabkost@redhat.com, drjones@redhat.com, chenhuacai@kernel.org, aleksandar.qemu.devel@gmail.com, anup.patel@wdc.com, paulus@ozlabs.org, mpe@ellerman.id.au, kvm-ppc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Populate the device-tree nodes for NVENC and NVJPG Host1x engines on
-Tegra186 and Tegra194.
+On Tue, 16 Nov 2021 13:23:25 +0000,
+Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
+> 
+> Paolo Bonzini <pbonzini@redhat.com> writes:
+> 
+> > On 11/12/21 15:02, Marc Zyngier wrote:
+> >>> I'd like KVM to be consistent across architectures and have the same
+> >>> (similar) meaning for KVM_CAP_NR_VCPUS.
+> >> Sure, but this is a pretty useless piece of information anyway. As
+> >> Andrew pointed out, the information is available somewhere else, and
+> >> all we need to do is to cap it to the number of supported vcpus, which
+> >> is effectively a KVM limitation.
+> >> 
+> >> Also, we are talking about representing the architecture to userspace.
+> >> No amount of massaging is going to make an arm64 box look like an x86.
+> >
+> > Not sure what you mean?  The API is about providing a piece of 
+> > information independent of the architecture, while catering for a ppc 
+> > weirdness.  Yes it's mostly useless if you don't care about ppc, but 
+> > it's not about making arm64 look like x86 or ppc; it's about not having 
+> > to special case ppc in userspace.
+> >
+> > If anything, if KVM_CAP_NR_VCPUS returns the same for kvm and !kvm, then 
+> > *that* is making an arm64 box look like an x86.  On ARM the max vCPUs 
+> > depends on VM's GIC configuration, so KVM_CAP_NR_VCPUS should take that 
+> > into account.
+> 
+> (I'm about to send v2 as we have s390 sorted out.)
+> 
+> So what do we decide about ARM? 
 
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
----
-Changes since V1:
-- None
+[...]
 
- arch/arm64/boot/dts/nvidia/tegra186.dtsi | 30 +++++++++++++
- arch/arm64/boot/dts/nvidia/tegra194.dtsi | 54 ++++++++++++++++++++++++
- 2 files changed, 84 insertions(+)
+> - Always kvm_arm_default_max_vcpus to make the output independent on 'if
+>  (kvm)'.
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra186.dtsi b/arch/arm64/boot/dts/nvidia/tegra186.dtsi
-index 9ac4f0140700..f21cfcaab2a6 100644
---- a/arch/arm64/boot/dts/nvidia/tegra186.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra186.dtsi
-@@ -1538,6 +1538,21 @@ vic@15340000 {
- 			iommus = <&smmu TEGRA186_SID_VIC>;
- 		};
- 
-+		nvjpg@15380000 {
-+			compatible = "nvidia,tegra186-nvjpg";
-+			reg = <0x15380000 0x40000>;
-+			clocks = <&bpmp TEGRA186_CLK_NVJPG>;
-+			clock-names = "nvjpg";
-+			resets = <&bpmp TEGRA186_RESET_NVJPG>;
-+			reset-names = "nvjpg";
-+
-+			power-domains = <&bpmp TEGRA186_POWER_DOMAIN_NVJPG>;
-+			interconnects = <&mc TEGRA186_MEMORY_CLIENT_NVJPGSRD &emc>,
-+					<&mc TEGRA186_MEMORY_CLIENT_NVJPGSWR &emc>;
-+			interconnect-names = "dma-mem", "write";
-+			iommus = <&smmu TEGRA186_SID_NVJPG>;
-+		};
-+
- 		dsib: dsi@15400000 {
- 			compatible = "nvidia,tegra186-dsi";
- 			reg = <0x15400000 0x10000>;
-@@ -1569,6 +1584,21 @@ nvdec@15480000 {
- 			iommus = <&smmu TEGRA186_SID_NVDEC>;
- 		};
- 
-+		nvenc@154c0000 {
-+			compatible = "nvidia,tegra186-nvenc";
-+			reg = <0x154c0000 0x40000>;
-+			clocks = <&bpmp TEGRA186_CLK_NVENC>;
-+			clock-names = "nvenc";
-+			resets = <&bpmp TEGRA186_RESET_NVENC>;
-+			reset-names = "nvenc";
-+
-+			power-domains = <&bpmp TEGRA186_POWER_DOMAIN_MPE>;
-+			interconnects = <&mc TEGRA186_MEMORY_CLIENT_NVENCSRD &emc>,
-+					<&mc TEGRA186_MEMORY_CLIENT_NVENCSWR &emc>;
-+			interconnect-names = "dma-mem", "write";
-+			iommus = <&smmu TEGRA186_SID_NVENC>;
-+		};
-+
- 		sor0: sor@15540000 {
- 			compatible = "nvidia,tegra186-sor";
- 			reg = <0x15540000 0x10000>;
-diff --git a/arch/arm64/boot/dts/nvidia/tegra194.dtsi b/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-index 1adf076526c8..9586af9a100b 100644
---- a/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-@@ -1782,6 +1782,22 @@ vic@15340000 {
- 				dma-coherent;
- 			};
- 
-+			nvjpg@15380000 {
-+				compatible = "nvidia,tegra194-nvjpg";
-+				reg = <0x15380000 0x40000>;
-+				clocks = <&bpmp TEGRA194_CLK_NVJPG>;
-+				clock-names = "nvjpg";
-+				resets = <&bpmp TEGRA194_RESET_NVJPG>;
-+				reset-names = "nvjpg";
-+
-+				power-domains = <&bpmp TEGRA194_POWER_DOMAIN_NVJPG>;
-+				interconnects = <&mc TEGRA194_MEMORY_CLIENT_NVJPGSRD &emc>,
-+						<&mc TEGRA194_MEMORY_CLIENT_NVJPGSWR &emc>;
-+				interconnect-names = "dma-mem", "write";
-+				iommus = <&smmu TEGRA194_SID_NVJPG>;
-+				dma-coherent;
-+			};
-+
- 			nvdec@15480000 {
- 				compatible = "nvidia,tegra194-nvdec";
- 				reg = <0x15480000 0x00040000>;
-@@ -1801,6 +1817,25 @@ nvdec@15480000 {
- 				nvidia,host1x-class = <0xf0>;
- 			};
- 
-+			nvenc@154c0000 {
-+				compatible = "nvidia,tegra194-nvenc";
-+				reg = <0x154c0000 0x40000>;
-+				clocks = <&bpmp TEGRA194_CLK_NVENC>;
-+				clock-names = "nvenc";
-+				resets = <&bpmp TEGRA194_RESET_NVENC>;
-+				reset-names = "nvenc";
-+
-+				power-domains = <&bpmp TEGRA194_POWER_DOMAIN_NVENCA>;
-+				interconnects = <&mc TEGRA194_MEMORY_CLIENT_NVENCSRD &emc>,
-+						<&mc TEGRA194_MEMORY_CLIENT_NVENCSRD1 &emc>,
-+						<&mc TEGRA194_MEMORY_CLIENT_NVENCSWR &emc>;
-+				interconnect-names = "dma-mem", "read-1", "write";
-+				iommus = <&smmu TEGRA194_SID_NVENC>;
-+				dma-coherent;
-+
-+				nvidia,host1x-class = <0x21>;
-+			};
-+
- 			dpaux0: dpaux@155c0000 {
- 				compatible = "nvidia,tegra194-dpaux";
- 				reg = <0x155c0000 0x10000>;
-@@ -1937,6 +1972,25 @@ i2c-bus {
- 				};
- 			};
- 
-+			nvenc@15a80000 {
-+				compatible = "nvidia,tegra194-nvenc";
-+				reg = <0x15a80000 0x00040000>;
-+				clocks = <&bpmp TEGRA194_CLK_NVENC1>;
-+				clock-names = "nvenc";
-+				resets = <&bpmp TEGRA194_RESET_NVENC1>;
-+				reset-names = "nvenc";
-+
-+				power-domains = <&bpmp TEGRA194_POWER_DOMAIN_NVENCB>;
-+				interconnects = <&mc TEGRA194_MEMORY_CLIENT_NVENC1SRD &emc>,
-+						<&mc TEGRA194_MEMORY_CLIENT_NVENC1SRD1 &emc>,
-+						<&mc TEGRA194_MEMORY_CLIENT_NVENC1SWR &emc>;
-+				interconnect-names = "dma-mem", "read-1", "write";
-+				iommus = <&smmu TEGRA194_SID_NVENC1>;
-+				dma-coherent;
-+
-+				nvidia,host1x-class = <0x22>;
-+			};
-+
- 			sor0: sor@15b00000 {
- 				compatible = "nvidia,tegra194-sor";
- 				reg = <0x15b00000 0x40000>;
+This. Between two useless numbers, I prefer the one that doesn't
+introduce any userspace visible changes.
+
+Thanks,
+
+	M.
+
 -- 
-2.25.1
-
+Without deviation from the norm, progress is not possible.
