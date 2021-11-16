@@ -2,111 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D61452690
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:04:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B44452702
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:11:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244988AbhKPCHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 21:07:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34036 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343987AbhKPCCU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 21:02:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637027959;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PcHmUdloBDYBnO1Vfa9QPmbf+FFF2gIjnC+Yb39rMoE=;
-        b=NR7IrsoUp+JhUxKhS47X95j2zq045L71EoOFHsA8f21AbGJItUfHuGp//f+7EroCzH6C0G
-        iMgA5ooLAntq7/9B+4TmHEj0hVEwjLpoWz6mW8Oaqkh6wSOW7QUqdzjHjVzcApxrROulUE
-        9ReHRb/27OORfqYdtVtkLu9e6lidozg=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-591-jgW61KcQO0W7v6oFQa6S0g-1; Mon, 15 Nov 2021 20:59:18 -0500
-X-MC-Unique: jgW61KcQO0W7v6oFQa6S0g-1
-Received: by mail-pf1-f198.google.com with SMTP id q2-20020a056a00084200b004a2582fcec1so7643804pfk.15
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 17:59:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PcHmUdloBDYBnO1Vfa9QPmbf+FFF2gIjnC+Yb39rMoE=;
-        b=OjA3N+WwjGzVYJcu7jc8QB35QaHK1cmA9rw3mFo/CvKq0SHF7CZ7qjW3nm5qrHeAI4
-         UUHtbzj3iH6J6inuVzfJ2EI3RegZol6MStatrbBDs0CqLv/1RLVLvSfL+19TQ3mNKeKP
-         KUMu1hnL3fluIjIMfLoMzupelJBoApzVkEL8nBuZRaUU/u+f3/yUnr+XCsVdRr6YyHIw
-         2wkyBIspPX+lmF+pOePu1eMffGHyZlXg5D+FvWqH0f/+xNMPpGTnLVMYyVGL0f1NU+5o
-         MkSnMdmNTR4bVLjDRYW/lTf2c5e0/LLY+/D7rxB7ju0QX/2Ayykir6VRsIVdcN/Hbqe7
-         1Vig==
-X-Gm-Message-State: AOAM530TYF2pE7gO1eNY2kgZzPxOj3mTVHYjy4J6JWhDuexO7/UcwuYT
-        Nv4wFlP0iZdFy0q7TcNH5rdgOOcZrCMbsAU22HEjOyqmz9apap3vTPfiwCXioS5fuhqVZb0z0Ut
-        QbOrOMG5rOg3yfa077mbc4g2c
-X-Received: by 2002:a17:902:6b47:b0:142:82e1:6cf5 with SMTP id g7-20020a1709026b4700b0014282e16cf5mr40927403plt.28.1637027957543;
-        Mon, 15 Nov 2021 17:59:17 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwKM0irZy6MEENYIUeb4VgibHSWGI1JDBHGPOY88s77OFBFd8XKwQnOpry9mxgunT5NjmEyBw==
-X-Received: by 2002:a17:902:6b47:b0:142:82e1:6cf5 with SMTP id g7-20020a1709026b4700b0014282e16cf5mr40927373plt.28.1637027957285;
-        Mon, 15 Nov 2021 17:59:17 -0800 (PST)
-Received: from xz-m1.local ([191.101.132.59])
-        by smtp.gmail.com with ESMTPSA id lx12sm546013pjb.5.2021.11.15.17.59.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 17:59:16 -0800 (PST)
-Date:   Tue, 16 Nov 2021 09:59:10 +0800
-From:   Peter Xu <peterx@redhat.com>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Paul E . McKenney" <paulmckrcu@fb.com>,
-        Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <florian.schmidt@nutanix.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v4] mm: Add PM_HUGE_THP_MAPPING to /proc/pid/pagemap
-Message-ID: <YZMQbiV9JQWd0EM+@xz-m1.local>
-References: <20211107235754.1395488-1-almasrymina@google.com>
- <YYtuqsnOSxA44AUX@t490s>
- <CAHS8izP9zJYfqmDouA1otnD-CsQtWJSta0KhOQq81qLSTOHB4Q@mail.gmail.com>
- <YY4bFPkfUhlpUqvo@xz-m1.local>
- <CAHS8izP7_BBH9NGz3XoL2=xVniH6REor=biqDSZ4wR=NaFS-8A@mail.gmail.com>
+        id S1346617AbhKPCOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 21:14:37 -0500
+Received: from mga17.intel.com ([192.55.52.151]:29965 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238827AbhKPCLN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 21:11:13 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="214325772"
+X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; 
+   d="scan'208";a="214325772"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 18:08:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,237,1631602800"; 
+   d="scan'208";a="506206418"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.68])
+  by orsmga008.jf.intel.com with ESMTP; 15 Nov 2021 18:08:14 -0800
+Date:   Tue, 16 Nov 2021 10:01:15 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Tom Rix <trix@redhat.com>
+Cc:     hao.wu@intel.com, mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fpga: dfl: pci: generalize find_dfls_by_vsec()
+Message-ID: <20211116020115.GA269984@yilunxu-OptiPlex-7050>
+References: <20211113221252.4062704-1-trix@redhat.com>
+ <20211115012516.GA288162@yilunxu-OptiPlex-7050>
+ <f645abbe-230c-b3b8-de6c-6b8a605535f4@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHS8izP7_BBH9NGz3XoL2=xVniH6REor=biqDSZ4wR=NaFS-8A@mail.gmail.com>
+In-Reply-To: <f645abbe-230c-b3b8-de6c-6b8a605535f4@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 02:50:26PM -0800, Mina Almasry wrote:
-> PM_THP_MAPPED sounds good to me.
+On Mon, Nov 15, 2021 at 10:28:32AM -0800, Tom Rix wrote:
 > 
-> TBH I think I still prefer this approach because it's a very simple 2
-> line patch which addresses the concrete use case I have well. I'm not
-> too familiar with the smaps code to be honest but I think adding a
-> range-based smaps API will be a sizeable patch to add a syscall,
-> handle a stable interface, and handle cases where the memory range
-> doesn't match a VMA boundary. I'm not sure the performance benefit
-> would justify this patch and I'm not sure the extra info from smaps
-> would be widely useful. However if you insist and folks believe this
-> is the better approach I can prototype a range-based smaps and test
-> its performance to see if it works for us as well, just let me know
-> what kind of API you're envisioning.
+> On 11/14/21 5:25 PM, Xu Yilun wrote:
+> > On Sat, Nov 13, 2021 at 02:12:52PM -0800, trix@redhat.com wrote:
+> > > From: Tom Rix <trix@redhat.com>
+> > > 
+> > > find_dfls_by_vsec() is a general dfl function.
+> > > Although dfl has multiple vendors, only Intel is supported.
+> > > Move vsec and vendor id to an array variable.
+> > > Other vendors can append the array to enable their support.
+> > As Hao mentioned, DVSEC could be a better solution if DFL should be
+> > present in components by a variety of vendors. This is not finally
+> > determined, but I think we should not add new features for VSEC now.
+> 
+> Can you expand what you mean by this ?
 
-Yeah indeed I haven't yet thought enough on such a new interface, it's just
-that I think it'll be something that solves a broader range of requests
-including the thp-aware issue, so I raised it up.
+Using vendor_id-vsec pair is not a good way. It requires a specific VSEC
+ID for each vendor to describe DFL. DVSEC is actually the existing
+solution for these cases. I expect we switch to DVSEC for DFL and drop
+this VSEC solution.
 
-That shouldn't require a lot code change either afaiu, as smap_gather_stats()
-already takes a "start" and I think what's missing is another end where we just
-pass in 0 when we want the default vma->vm_end as the end of range.
+> 
+> I am considering the n5010 usecase, the vendor is not intel and will go
+> through this dfl function and always fail.
 
-I don't have a solid clue on other use case to ask for that more generic
-interface, so please feel free to move on with it.  If you'll need a repost to
-address the comment from Andrew on removing the debugging lines, please also
-consider using the shorter PM_THP_MAPPED then it looks good to me too.
+Is n5010 using the DFL VSEC, or it just finds DFL by default? Its devId
+is supported several month ago and no issue reported so I assume it is
+using the default DFL finding. It would be better to stick to it.
 
-Thanks!
+Thanks,
+Yilun
 
--- 
-Peter Xu
-
+> 
+> This is broken.
+> 
+> Either the function should be generalized or moved to an intel specific
+> call.
+> 
+> Tom
+> 
+> > 
+> > Thanks,
+> > Yilun
+> > 
+> > > Signed-off-by: Tom Rix <trix@redhat.com>
+> > > ---
+> > >   drivers/fpga/dfl-pci.c | 31 ++++++++++++++++++++++++-------
+> > >   1 file changed, 24 insertions(+), 7 deletions(-)
+> > > 
+> > > diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
+> > > index 4d68719e608f..9dc0815c8274 100644
+> > > --- a/drivers/fpga/dfl-pci.c
+> > > +++ b/drivers/fpga/dfl-pci.c
+> > > @@ -136,19 +136,36 @@ static int *cci_pci_create_irq_table(struct pci_dev *pcidev, unsigned int nvec)
+> > >   	return table;
+> > >   }
+> > > -static int find_dfls_by_vsec(struct pci_dev *pcidev, struct dfl_fpga_enum_info *info)
+> > > +struct dfl_vsec {
+> > > +	u16 vendor;
+> > > +	u16 id;
+> > > +};
+> > > +
+> > > +static struct dfl_vsec vsecs[] = {
+> > > +	{ PCI_VENDOR_ID_INTEL, PCI_VSEC_ID_INTEL_DFLS },
+> > > +};
+> > > +
+> > > +static int find_dfls_by_vsec(struct pci_dev *pcidev,
+> > > +			     struct dfl_fpga_enum_info *info)
+> > >   {
+> > >   	u32 bir, offset, vndr_hdr, dfl_cnt, dfl_res;
+> > >   	int dfl_res_off, i, bars, voff = 0;
+> > >   	resource_size_t start, len;
+> > > -	while ((voff = pci_find_next_ext_capability(pcidev, voff, PCI_EXT_CAP_ID_VNDR))) {
+> > > -		vndr_hdr = 0;
+> > > -		pci_read_config_dword(pcidev, voff + PCI_VNDR_HEADER, &vndr_hdr);
+> > > +	for (i = 0; i < ARRAY_SIZE(vsecs); i++) {
+> > > +		if (pcidev->vendor != vsecs[i].vendor)
+> > > +			continue;
+> > > +
+> > > +		while ((voff =
+> > > +			pci_find_next_ext_capability(pcidev, voff,
+> > > +						     PCI_EXT_CAP_ID_VNDR))) {
+> > > +			vndr_hdr = 0;
+> > > +			pci_read_config_dword(pcidev, voff + PCI_VNDR_HEADER,
+> > > +					      &vndr_hdr);
+> > > -		if (PCI_VNDR_HEADER_ID(vndr_hdr) == PCI_VSEC_ID_INTEL_DFLS &&
+> > > -		    pcidev->vendor == PCI_VENDOR_ID_INTEL)
+> > > -			break;
+> > > +			if (PCI_VNDR_HEADER_ID(vndr_hdr) == vsecs[i].id)
+> > > +				break;
+> > > +		}
+> > >   	}
+> > >   	if (!voff) {
+> > > -- 
+> > > 2.26.3
