@@ -2,113 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3300F453CDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:48:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58DCF453CE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232387AbhKPXvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 18:51:39 -0500
-Received: from mga07.intel.com ([134.134.136.100]:14843 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229791AbhKPXvi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 18:51:38 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="297271832"
-X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
-   d="scan'208";a="297271832"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 15:48:40 -0800
-X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
-   d="scan'208";a="506668644"
-Received: from schen9-mobl.amr.corp.intel.com ([10.209.94.155])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 15:48:40 -0800
-Message-ID: <41d0d7cbd3e292eb89b12d27d9beb576be3531bf.camel@linux.intel.com>
-Subject: Re: [PATCH 0/2] avoid spurious blocked load update
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org
-Cc:     joel@joelfernandes.org
-Date:   Tue, 16 Nov 2021 15:48:40 -0800
-In-Reply-To: <20211112095857.7016-1-vincent.guittot@linaro.org>
-References: <20211112095857.7016-1-vincent.guittot@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S232402AbhKPXxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 18:53:47 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:51790 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229791AbhKPXxq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 18:53:46 -0500
+Received: from thelio.attlocal.net (107-203-255-60.lightspeed.sntcca.sbcglobal.net [107.203.255.60])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 9585B20C5A74;
+        Tue, 16 Nov 2021 15:50:48 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9585B20C5A74
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1637106648;
+        bh=1kav/zBHA7FiqkPaBcUDQL/HgQa52sySa8iFFV8lzTA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fxj1SYVPLyqs47s7fC6iK5jpnfMjtkTTl/I6+Mura4YGNKa7CgIE3mTgBn0fVCp3r
+         2I0qHds3VPgv0wszZx4nuK/oaYPnRgvl4JA5CJW6nwAChmcjMY3XpeU/DItWnTJzCo
+         tmkVa0XFn/dzpDCttBZS+K7BnFDpXOQrqjylz+bY=
+From:   Katherine Perez <kaperez@linux.microsoft.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Felipe Balbi <balbi@kernel.org>
+Subject: [RESEND PATCH 0/2] arm64: dts: sm8350: add support for Microsoft Surface Duo 2
+Date:   Tue, 16 Nov 2021 15:50:43 -0800
+Message-Id: <20211116235045.3748572-1-kaperez@linux.microsoft.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-11-12 at 10:58 +0100, Vincent Guittot wrote:
-> This patchset is a follow up of : 
-> https://lore.kernel.org/lkml/20211019123537.17146-1-vincent.guittot@linaro.org/
-> 
-> It ensures that newly idle load balance will not kick the update of
-> blocked load if it skips the load balance because avg_idle is too
-> short.
-> It also makes sure that rq->next_balance doesn't go in the past when
-> updated.
-> 
-> Tim Chen (1):
->   sched: sched: Fix rq->next_balance time updated to earlier than
->     current time
-> 
-> Vincent Guittot (1):
->   sched/fair: skip newidle update stats
-> 
->  kernel/sched/fair.c | 25 ++++++++++++++++++++-----
->  1 file changed, 20 insertions(+), 5 deletions(-)
-> 
+Add initial support for the Microsoft Surface Duo 2 based on the
+sm8350-mtp DT.
 
-Vincent,
+Katherine Perez (2):
+  arm64: dts: add minimal DTS for Microsoft Surface Duo2
+  arm64: dts: sm8350: fix tlmm base address
 
-Got some data back from the benchmark team.
-To my surprise, the skip_new_idle_update_stats patch
-actually makes things a little worse.
+ arch/arm64/boot/dts/qcom/Makefile             |   1 +
+ .../qcom/sm8350-microsoft-surface-duo2.dts    | 363 ++++++++++++++++++
+ arch/arm64/boot/dts/qcom/sm8350.dtsi          |   4 +-
+ 3 files changed, 366 insertions(+), 2 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/qcom/sm8350-microsoft-surface-duo2.dts
 
-                                        Relative Performance 
-                                        (higher better)
-5.15 rc4 vanilla (cgroup disabled)      100%
-5.15 rc4 vanilla (cgroup enabled)       96%
-patch v2                                96%
-patch v3                                96%
-patch v3
-	+skip_new_idle_update_stats	93.7%
-patch v3
-	+skip_new_idle_update_stats
-	+Fix rq->next_balance_time	93.7%	
-
-The cpu utilization actually is the similar compared with
-having just the v3 patch. In both cases they are
-81% user
-12% kernel
-2%  idle
-5%  waiting for IO
-
-
-Profile on key functions
-in load balancing shows a little more cpu utilization,
-which is unexpected as we are cutting short
-the newidle_balance.
-
-patch v3
-     0.56%          [k] __update_load_avg_cfs_rq  
-     0.51%          [k] update_load_avg    
-     0.39%          [k] update_blocked_averages
-     0.36%          [k] __update_load_avg_se  
-     0.05%	    [k] newidle_balance
-
-patch v3 + skip_new_idle_update_stats
-     0.58%          [k] __update_load_avg_cfs_rq  
-     0.53%          [k] update_load_avg    
-     0.40%          [k] update_blocked_averages
-     0.37%          [k] __update_load_avg_se  
-     0.06%	    [k] newidle_balance
-
-Context switch frequency is lower by 4% with the skip_new_idle_update_stats
-patch.  
-
-Thanks.
-
-Tim
+--
+2.31.1
 
