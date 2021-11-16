@@ -2,199 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1235F453B5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 22:00:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC55453B5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 22:00:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231879AbhKPVDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 16:03:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45534 "EHLO
+        id S229791AbhKPVDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 16:03:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231624AbhKPVDK (ORCPT
+        with ESMTP id S231624AbhKPVDG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 16:03:10 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F75C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 13:00:12 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id t26so899699lfk.9
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 13:00:12 -0800 (PST)
+        Tue, 16 Nov 2021 16:03:06 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66208C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 13:00:09 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id fv9-20020a17090b0e8900b001a6a5ab1392so536538pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 13:00:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4ho2YimSshTIlWxN1DU+R1DWkXdd3pS7JkTLwXCA0Rw=;
-        b=rmlE9LF9BHlhm9kM1UzOC2kax+QJiHS67C/y+4HinlpweUdS9Ev/w9ZmvPd40GmMYg
-         w6/P02nYWNh42UaMlaGjH2w4zeNrsdx+SjeCIIO4RIfz6qYQGEN/2zzv9yGk4Y/yHSx/
-         vTNDJ5f2Y+RJ273tt/2uCSzkXr2zEd4w2EGyGh7OIztN72wR82aq4+Obp04JOg+SHPTb
-         kXySIJ47iaysLjyHL0IIx1mrPzDoAhlvC8/jHkMrxFbC6mKcILUHkqxkr+WiOZcv7GoS
-         etfYfj9XyQJz/9H6eV5+2vQquzM4IVf006fskzH10n6VVKXvyTXfzhwwNZaJ9Z62sAwR
-         esiw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=mAplr8PEhIO15cAUUnB3At6He73Gp4yXfbaxAwrFMC4=;
+        b=QFyDwAWi6oJ+VSdIKJL9RUtbF18X5siPqog6ctZUw774YLWAQK9BXfeg53Nietm3Bc
+         XkGX3KcHjcsOTs5OAMIt1twjcv+ne1A2500yOi95W/iEHLLPbVM2Y7bk6GtFF5RNXTZK
+         Ys3MWcFL0M39Tz2R9J5l0x33YPliX4aUdCr2k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4ho2YimSshTIlWxN1DU+R1DWkXdd3pS7JkTLwXCA0Rw=;
-        b=dZJNMicM0PzL1ZsA1VN90WmAkVIDsDgl3xF/AvmP9i8C/k+dyRZzlvknBfaseDCFdi
-         bqyzaaKZUCky5vpNJSailOIM8jKn+Ycaovim+mj9QeNaASKWmopLq4/mV5uQoTOcECT6
-         1Rg690HNBbzEiPq8cZYnvh03RtR+cdvP4Vey98miPHZfkEmq9DSl+kLUWfZeVoMQFsgV
-         EKIDd4YT50O/cQa3Dm4vyIKt4Fz5wouU3WaTk10OCoHaOVRp4ECPXmz8Z2D8gIZ7K/FY
-         iYE4dZVWJqqi5TF5fN1pSBw73dVv68IfgznIEvFS6Vtc8tygJBjpt/EtzNNh5+/5UfI1
-         hTlg==
-X-Gm-Message-State: AOAM533mqgodgdfNlclMOA6kf31xhSSohJsGylSUX8sEgCEeXZlXpKvH
-        zQYmWkLNOj0P+W617+exevCbLuh24/UukKevMkOM0g==
-X-Google-Smtp-Source: ABdhPJzMuOahiadeSMy/Qc4PVElznVgPfUARgtpcvroa7F5xNduWUphSDZhCC2l2EFM4CNuq6D2jOJoaoXwqzwp60Es=
-X-Received: by 2002:a05:6512:5c2:: with SMTP id o2mr9476625lfo.8.1637096410679;
- Tue, 16 Nov 2021 13:00:10 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=mAplr8PEhIO15cAUUnB3At6He73Gp4yXfbaxAwrFMC4=;
+        b=dKdpzoGOOsRFMiElz2OzD06pH3qdDNof+4Noqd3eZBnVs5sw9M2VvCreMDiE4eKBKo
+         dq9KmOQaUDAqxGRYc8tSgNNbUKo8Fz/MAQTHBR8ty7gBuxNNuG6RCs7t0Hgw2biZ2OAz
+         d1b2QSKq3qdL82d57y8mFfpG9E/PjmtZRWGgIfjYVdkGVBSmMldNXPiG+BYDhVuD2Jxw
+         +MB8nAb3yLoqT1IOVbPJWXxkgyYzeq2Nnwf7oCCwnJUyFnMmL1Ls6oBTSS6iNdSY2Bxr
+         +ySUv+iu1GCeOelvIaR/58a/sUr4XzEWROt2XRK3k9Hv0E64OTQwT4OPm3B/bCAMOtCU
+         uGhg==
+X-Gm-Message-State: AOAM532l12l4q9556TQcyx1fNxZAQ4BWKcv/7BYGg+mdJsM6jFxBVCa+
+        t1S130HdFr7VqgqeiCkv0UmqJw==
+X-Google-Smtp-Source: ABdhPJzvb/gvYUlnL/n45uWkDIt5hoxsNQHjJAXMd0zkfxI5AEQ4EMNhTfD2aCecaz8NxUGOhzw+pw==
+X-Received: by 2002:a17:90b:380d:: with SMTP id mq13mr2536745pjb.110.1637096409013;
+        Tue, 16 Nov 2021 13:00:09 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c6sm18702233pfd.114.2021.11.16.13.00.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 13:00:08 -0800 (PST)
+Date:   Tue, 16 Nov 2021 13:00:07 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Tony Luck <tony.luck@intel.com>,
+        Anton Vorontsov <anton@enomsg.org>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        kernel@pengutronix.de, Colin Cross <ccross@android.com>
+Subject: Re: [PATCH] pstore/ftrace: add a kernel parameter to start pstore
+ recording
+Message-ID: <202111161259.D0972333@keescook>
+References: <20210610082134.20636-1-u.kleine-koenig@pengutronix.de>
+ <20211116120603.4e0c04c2@gandalf.local.home>
+ <20211116172835.r3puikipzryxnsoj@pengutronix.de>
+ <20211116123705.7f99e35e@gandalf.local.home>
 MIME-Version: 1.0
-References: <20211111015037.4092956-1-almasrymina@google.com>
- <CAMZfGtWj5LU0ygDpH9B58R48kM8w3tnowQDD53VNMifSs5uvig@mail.gmail.com>
- <cfa5a07d-1a2a-abee-ef8c-63c5480af23d@oracle.com> <CAMZfGtVjrMC1+fm6JjQfwFHeZN3dcddaAogZsHFEtL4HJyhYUw@mail.gmail.com>
- <CAHS8izPjJRf50yAtB0iZmVBi1LNKVHGmLb6ayx7U2+j8fzSgJA@mail.gmail.com>
- <CALvZod7VPD1rn6E9_1q6VzvXQeHDeE=zPRpr9dBcj5iGPTGKfA@mail.gmail.com>
- <CAMZfGtWJGqbji3OexrGi-uuZ6_LzdUs0q9Vd66SwH93_nfLJLA@mail.gmail.com>
- <6887a91a-9ec8-e06e-4507-b2dff701a147@oracle.com> <CAHS8izP3aOZ6MOOH-eMQ2HzJy2Y8B6NYY-FfJiyoKLGu7_OoJA@mail.gmail.com>
- <CALvZod7UEo100GLg+HW-CG6rp7gPJhdjYtcPfzaPMS7Yxa=ZPA@mail.gmail.com>
- <YZOeUAk8jqO7uiLd@elver.google.com> <CAHS8izPV20pD8nKEsnEYicaCKLH7A+QTYphWRrtTqcppzoQAWg@mail.gmail.com>
-In-Reply-To: <CAHS8izPV20pD8nKEsnEYicaCKLH7A+QTYphWRrtTqcppzoQAWg@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 16 Nov 2021 12:59:58 -0800
-Message-ID: <CALvZod6zGa15CDQTp+QOGLUi=ap_Ljx9-L5+S6w84U6xTTdpww@mail.gmail.com>
-Subject: Re: [PATCH v6] hugetlb: Add hugetlb.*.numa_stat file
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Marco Elver <elver@google.com>, paulmck@kernel.org,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        Jue Wang <juew@google.com>, Yang Yao <ygyao@google.com>,
-        Joanna Li <joannali@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, kasan-dev@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211116123705.7f99e35e@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 12:48 PM Mina Almasry <almasrymina@google.com> wrote:
->
-> On Tue, Nov 16, 2021 at 4:04 AM Marco Elver <elver@google.com> wrote:
-> >
-> > On Mon, Nov 15, 2021 at 11:59AM -0800, Shakeel Butt wrote:
-> > > On Mon, Nov 15, 2021 at 10:55 AM Mina Almasry <almasrymina@google.com> wrote:
-> > [...]
-> > > > Sorry I'm still a bit confused. READ_ONCE/WRITE_ONCE isn't documented
-> > > > to provide atomicity to the write or read, just prevents the compiler
-> > > > from re-ordering them. Is there something I'm missing, or is the
-> > > > suggestion to add READ_ONCE/WRITE_ONCE simply to supress the KCSAN
-> > > > warnings?
-> >
-> > It's actually the opposite: READ_ONCE/WRITE_ONCE provide very little
-> > ordering (modulo dependencies) guarantees, which includes ordering by
-> > compiler, but are supposed to provide atomicity (when used with properly
-> > aligned types up to word size [1]; see __READ_ONCE for non-atomic
-> > variant).
-> >
-> > Some more background...
-> >
-> > The warnings that KCSAN tells you about are "data races", which occur
-> > when you have conflicting concurrent accesses, one of which is "plain"
-> > and at least one write. I think [2] provides a reasonable summary of
-> > data races and why we should care.
-> >
-> > For Linux, our own memory model (LKMM) documents this [3], and says that
-> > as long as concurrent operations are marked (non-plain; e.g. *ONCE),
-> > there won't be any data races.
-> >
-> > There are multiple reasons why data races are undesirable, one of which
-> > is to avoid bad compiler transformations [4], because compilers are
-> > oblivious to concurrency otherwise.
-> >
-> > Why do marked operations avoid data races and prevent miscompiles?
-> > Among other things, because they should be executed atomically. If they
-> > weren't a lot of code would be buggy (there had been cases where the old
-> > READ_ONCE could be used on data larger than word size, which certainly
-> > weren't atomic, but this is no longer possible).
-> >
-> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/asm-generic/rwonce.h#n35
-> > [2] https://lwn.net/Articles/816850/#Why%20should%20we%20care%20about%20data%20races?
-> > [3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/memory-model/Documentation/explanation.txt#n1920
-> > [4] https://lwn.net/Articles/793253/
-> >
-> > Some rules of thumb when to use which marking:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/memory-model/Documentation/access-marking.txt
-> >
-> > In an ideal world, we'd have all intentionally concurrent accesses
-> > marked. As-is, KCSAN will find:
-> >
-> > A. Data race, where failure due to current compilers is unlikely
-> >    (supposedly "benign"); merely marking the accesses appropriately is
-> >    sufficient. Finding a crash for these will require a miscompilation,
-> >    but otherwise look "benign" at the C-language level.
-> >
-> > B. Race-condition bugs where the bug manifests as a data race, too --
-> >    simply marking things doesn't fix the problem. These are the types of
-> >    bugs where a data race would point out a more severe issue.
-> >
-> > Right now we have way too much of type (A), which means looking for (B)
-> > requires patience.
-> >
-> > > +Paul & Marco
-> > >
-> > > Let's ask the experts.
-> > >
-> > > We have a "unsigned long usage" variable that is updated within a lock
-> > > (hugetlb_lock) but is read without the lock.
-> > >
-> > > Q1) I think KCSAN will complain about it and READ_ONCE() in the
-> > > unlocked read path should be good enough to silent KCSAN. So, the
-> > > question is should we still use WRITE_ONCE() as well for usage within
-> > > hugetlb_lock?
-> >
-> > KCSAN's default config will forgive the lack of WRITE_ONCE().
-> > Technically it's still a data race (which KCSAN can find with a config
-> > change), but can be forgiven because compilers are less likely to cause
-> > trouble for writes (background: https://lwn.net/Articles/816854/ bit
-> > about "Unmarked writes (aligned and up to word size)...").
-> >
-> > I would mark both if feasible, as it clearly documents the fact the
-> > write can be read concurrently.
-> >
-> > > Q2) Second question is more about 64 bit archs breaking a 64 bit write
-> > > into two 32 bit writes. Is this a real issue? If yes, then the
-> > > combination of READ_ONCE()/WRITE_ONCE() are good enough for the given
-> > > use-case?
-> >
-> > Per above, probably unlikely, but allowed. WRITE_ONCE should prevent it,
-> > and at least relieve you to not worry about it (and shift the burden to
-> > WRITE_ONCE's implementation).
-> >
->
-> Thank you very much for the detailed response. I can add READ_ONCE()
-> at the no-lock read site, that is no issue.
->
-> However, for the writes that happen while holding the lock, the write
-> is like so:
-> +               h_cg->nodeinfo[page_to_nid(page)]->usage[idx] += nr_pages;
->
-> And like so:
-> +               h_cg->nodeinfo[page_to_nid(page)]->usage[idx] -= nr_pages;
->
-> I.e. they are increments/decrements. Sorry if I missed it but I can't
-> find an INC_ONCE(), and it seems wrong to me to do something like:
->
-> +               WRITE_ONCE(h_cg->nodeinfo[page_to_nid(page)]->usage[idx],
-> +
-> h_cg->nodeinfo[page_to_nid(page)] + nr_pages);
->
-> I know we're holding a lock anyway so there is no race, but to the
-> casual reader this looks wrong as there is a race between the fetch of
-> the value and the WRITE_ONCE(). What to do here? Seems to me the most
-> reasonable thing to do is just READ_ONCE() and leave the write plain?
->
->
+On Tue, Nov 16, 2021 at 12:37:05PM -0500, Steven Rostedt wrote:
+> On Tue, 16 Nov 2021 18:28:35 +0100
+> Uwe Kleine-König <u.kleine-koenig@pengutronix.de> wrote:
+> 
+> > > Is this still needed? It's still in my internal patchwork, and I haven't
+> > > seen any responses.  
+> > 
+> > I didn't see any responses either, and unless someone else implemented
+> > something similar somewhere else, it's still needed.
+> > 
+> > The change was actually useful to debug a clk problem, where the machine
+> > freezed when a certain driver was loaded.
+> 
+> Perhaps I should ask this. Would anyone object if I just take this change
+> through my tree for the next merge window?
 
-How about atomic_long_t?
+If you can Ack it, I'll take it via the pstore tree; I've got a few
+other things that will likely need to go in for the next merge window
+too.
+
+-Kees
+
+-- 
+Kees Cook
