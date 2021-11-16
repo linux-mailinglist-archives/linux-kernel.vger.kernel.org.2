@@ -2,109 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2DA7452FCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:05:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D3F452FD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:08:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234673AbhKPLIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 06:08:07 -0500
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:42494
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234740AbhKPLH0 (ORCPT
+        id S234511AbhKPLJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:09:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32031 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234669AbhKPLIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 06:07:26 -0500
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 7A0493F1AD
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 11:04:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1637060667;
-        bh=bd/U/oRwjQmdvpZocDSS6S8UbyaPfaAFv6cbOhCrjwk=;
-        h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-         In-Reply-To:Content-Type;
-        b=lhJzfvve+52ddVzNah2DKS4ZqG775igkvfgKtHZaqEVBnWDyfxabXJl3l45b6wSeY
-         rbl/RHnACejr1Nb31WjRuXQ6TSCcMnaitN3/yCdCg+ThiMc5c6k6nqNW3R0EBbwEnj
-         quhR3xGrcvNdP4So2vYs8s+39+o3Fp07graFpM/EYlz4Cr6brfgxzl8FlARnsCJe1R
-         1Gxo51YNm+WPRucnuMVTjAbnDJ3gjj4Y/eRceyuqVkiDF/NRdioQfcON3T8ybYUo2H
-         1N4I3mfiy3pYQzwebnMLZMsf47nTd9+T1Ig1qalnwvZtsZP1ZmN9rvOG+Syghnc5zR
-         TjnhKV466/w9A==
-Received: by mail-lf1-f69.google.com with SMTP id x17-20020a0565123f9100b003ff593b7c65so8056923lfa.12
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 03:04:27 -0800 (PST)
+        Tue, 16 Nov 2021 06:08:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637060708;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wbmIBzriyMiidR902JIsFIskMTSm37Jsy4HrcpI1HxQ=;
+        b=eHGA0RCmrzjTwd5ixyoHC46+YL0a+/VvIkVv463sZgEa6C7GjS8srJi6n+raSMjQwYxdWS
+        oKss2UIPlIMyeo/vKVjUYJuq3n7cpAuYkQZ/xdhrbi5NGCenjx8Zn/mpECVGbr/YhnueF6
+        Mf6omJOKZ1Eco84YqXy3k4T6upUprUA=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-276-G_O2I1joNGeBke2hDQyuug-1; Tue, 16 Nov 2021 06:05:05 -0500
+X-MC-Unique: G_O2I1joNGeBke2hDQyuug-1
+Received: by mail-ed1-f72.google.com with SMTP id v10-20020aa7d9ca000000b003e7bed57968so5611121eds.23
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 03:05:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=bd/U/oRwjQmdvpZocDSS6S8UbyaPfaAFv6cbOhCrjwk=;
-        b=QPKyDzEtRsT6QzF7RnfpPMaRc/b3Nu+s1rkXUt00hdqvnlzAMd1YLTAuA8XhL7/P5f
-         q5/wqC4ltTXrHdzUFM9EggwkmkPzP02eeYUi3m3t5Ywj9wNERA1fF6/ONw/NTMjfa+aa
-         y7IpUMHbNSvBQEcu5kQXhU7jirBDhDJe5jAm91bXI1Qqtm3KAi2Ple6y9Lu1Zjve8uMJ
-         xhdHFdmVGfKM6fyJUo3NZgZk8x9DKXJsXi2Hex0XDt6kIwX1tnpIF5ioaUKS1UqqEU93
-         kJcKqP01quDiId+a0SKaq6ClehC2wOBXOtDkGvrMfasKRL210reGzjvBhVpS7hkp9HYm
-         GzCw==
-X-Gm-Message-State: AOAM533U2Po8zRqOLP7qt0+x4J2KMXMfEAcY0izuXldLSAjoGl78XJ+K
-        f/1vtHXv4fmsXM3bPrDp8rlLPkiMdBAfIrKCEX6gDb915DOOYZouCRqmaOlhcIxOVTRoeZCj6B+
-        wlKry0g+TIHtG26c6jdq4E7ntJ9JBfYJL4itiGckBRw==
-X-Received: by 2002:a2e:9c58:: with SMTP id t24mr6002333ljj.506.1637060666823;
-        Tue, 16 Nov 2021 03:04:26 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw3ZYxUSFJRJ5iP/OKHvrIDa1zcy8UEUVBHT/gsOdQTDQkeqm/SrTdZ4qxtY7sZdQaUPhlyxA==
-X-Received: by 2002:a2e:9c58:: with SMTP id t24mr6002284ljj.506.1637060666538;
-        Tue, 16 Nov 2021 03:04:26 -0800 (PST)
-Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id b22sm1915106lfv.20.2021.11.16.03.04.25
+        bh=wbmIBzriyMiidR902JIsFIskMTSm37Jsy4HrcpI1HxQ=;
+        b=IFXR2MI3g4KVCN/fJs6OEq89VBVT/4+wa/k/XL61VFG1V1kqIEzxnqOQU9kVFGzRmJ
+         MBj+qWZf7uWdlmlz9icDHfVyhHMnY2JCbM0ldn0rjmEqLQBSo1hXpCbO3G7JOgmJ+tmZ
+         LapaoBse8r0itbF1iTktu8JKoyDHMwbTrH9dXee4xP/ERHJ50FcVOUx2C/aejUdnfo0D
+         V6wVpUMQrayvxCmPwTCS17YAa4EkxwHR5DfTCVSlAuDpPKrJPQWmvJR9lgF2BObQtE0N
+         T0P8NekLWFoSVX1elhrthuwxOtr4avs4jLzaCPcGp/WSPjcvLt7cAo0Xe+hkv3DQfTdd
+         y3SQ==
+X-Gm-Message-State: AOAM530rxMcC1DosJOATEZiZhNWH9l6mFgyFzsaSUTQc2nwIgh+rI5ql
+        qiY+3OQMhedxg2WB4n9iD9CP0mJXlL15VOJ95EdKkEODf91GoTrkUJdvRs9qvY8soPNmYp9Jeu0
+        UO56pGYhLUt6tbEPMp0nYqw1k
+X-Received: by 2002:a17:907:160b:: with SMTP id hb11mr9113610ejc.336.1637060704462;
+        Tue, 16 Nov 2021 03:05:04 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzzV6WFQipfuLRwIm3t2+exoHw4xftYYeP1WniIIsmjPL9BrCl5c8f4Sd8heJ8XXEUWJ6Yizg==
+X-Received: by 2002:a17:907:160b:: with SMTP id hb11mr9113572ejc.336.1637060704229;
+        Tue, 16 Nov 2021 03:05:04 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id m22sm6649409eda.97.2021.11.16.03.05.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 03:04:26 -0800 (PST)
-Message-ID: <842021c3-b199-8917-6354-93b396c2541a@canonical.com>
-Date:   Tue, 16 Nov 2021 12:04:25 +0100
+        Tue, 16 Nov 2021 03:05:03 -0800 (PST)
+Message-ID: <684c11bc-3703-1de9-3073-96701405cd2c@redhat.com>
+Date:   Tue, 16 Nov 2021 12:05:02 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH] riscv: dts: sifive unmatched: Link the tmp451 with its
- power supply.
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 00/20] power-suppy/i2c/extcon: Fix charger setup on
+ Xiaomi Mi Pad 2 and Lenovo Yogabook
 Content-Language: en-US
-To:     Vincent Pelletier <plr.vincent@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
-        Yash Shah <yash.shah@sifive.com>, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Abdurachmanov <david.abdurachmanov@sifive.com>
-References: <f6512cc50dc31a086e00ed59c63ea60d8c148fc4.1637023980.git.plr.vincent@gmail.com>
- <d04daf5956ad61496188c7aee3d2eb958e34d7d2.1637023980.git.plr.vincent@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <d04daf5956ad61496188c7aee3d2eb958e34d7d2.1637023980.git.plr.vincent@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Yauhen Kharuzhy <jekhor@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>
+References: <20211114170335.66994-1-hdegoede@redhat.com>
+ <CAHp75Vf+0yw8Nb4Lxbf9ukYWw9xPnpy2C0OyaXJ+o5xsamP4qA@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <CAHp75Vf+0yw8Nb4Lxbf9ukYWw9xPnpy2C0OyaXJ+o5xsamP4qA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2021 01:53, Vincent Pelletier wrote:
-> Signed-off-by: Vincent Pelletier <plr.vincent@gmail.com>
+Hi,
 
-This needs commit description, explaining what are you doing and why.
-
-> ---
->  arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 1 +
->  1 file changed, 1 insertion(+)
+On 11/16/21 12:00, Andy Shevchenko wrote:
+> On Sun, Nov 14, 2021 at 7:03 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> Hi All,
+>>
+>> This is version 2 of my series previously titled:
+>> "[PATCH 00/13] power-suppy/i2c/extcon: Add support for cht-wc PMIC
+>> without USB-PD support".
+>>
+>> So far almost all the kernel code surrounding the Cherry Trail Whiskey Cove
+>> PMIC has been developed on the GPD win / pocket devices and it has various
+>> assumption based on that. In the mean time I've learned (and gotten access
+>> to) about 2 more designs and none of the 3 now known designs use a single
+>> standard setup for the charger, fuel-gauge and other chips surrounding the
+>> PMIC / charging+data USB port:
+>>
+>> 1. The GPD Win and GPD Pocket mini-laptops, these are really 2 models
+>> but the Pocket re-uses the GPD Win's design in a different housing:
+>>
+>> The WC PMIC is connected to a TI BQ24292i charger, paired with
+>> a Maxim MAX17047 fuelgauge + a FUSB302 USB Type-C Controller +
+>> a PI3USB30532 USB switch, for a fully functional Type-C port.
+>>
+>> 2. The Xiaomi Mi Pad 2:
+>>
+>> The WC PMIC is connected to a TI BQ25890 charger, paired with
+>> a TI BQ27520 fuelgauge, using the TI BQ25890 for BC1.2 charger type
+>> detection, for a USB-2 only Type-C port without PD.
+>>
+>> 3. The Lenovo Yoga Book YB1-X90 / Lenovo Yoga Book YB1-X91 series:
+>>
+>> The WC PMIC is connected to a TI BQ25892 charger, paired with
+>> a TI BQ27542 fuelgauge, using the WC PMIC for BC1.2 charger type
+>> detection and using the BQ25892's Mediatek Pump Express+ (1.0)
+>>
+>> ###
+>>
+>> Unlike what is normal on X86 this diversity in designs is not handled /
+>> abstracted away by the ACPI tables.
 > 
-> diff --git a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-> index bd6e90288c8a..73c1e4adf650 100644
-> --- a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-> +++ b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-> @@ -59,6 +59,7 @@ tps544b20@1e {
->  	temperature-sensor@4c {
->  		compatible = "ti,tmp451";
->  		reg = <0x4c>;
-> +		vcc-supply = <&vdd_bpro>;
->  		interrupt-parent = <&gpio>;
->  		interrupts = <6 IRQ_TYPE_LEVEL_LOW>;
->  	};
-> 
+> I will briefly look into it, right now two observations (or nit-picks):
 
+Thank you.
 
-Best regards,
-Krzysztof
+> - you may utilize Co-developed-by tag when it makes sense
+
+Right, I intended to do so in patch 13/20, but I now see that I
+somehow forgot that :)
+
+> - I would rather see "x86/ACPI" in all texts (note small "x")
+
+Ack.
+
+Regards,
+
+Hans
+
