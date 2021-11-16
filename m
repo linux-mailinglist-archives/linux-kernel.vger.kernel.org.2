@@ -2,178 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B22AE45310A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:41:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B626C45310D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:42:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235286AbhKPLoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 06:44:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:43527 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235612AbhKPLn1 (ORCPT
+        id S234946AbhKPLpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:45:36 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:55198 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234990AbhKPLos (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 06:43:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637062829;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q2yhddqwOIyYZPL3FhXeGjYy0DQgznm+v+3hij7ERdE=;
-        b=NVaV+fApsyINJgLaHkxx3KOlDh/E0PX8Ak4LCme/X5Q0drbuR+uhbu1DgG86EZznxixv3e
-        SZ9fb78uBBXHSNf+ip5VF+o3ru2PQo4HyRklxHpiYnxq4jNZrOGhpx1L8vBvbTCo4lajGf
-        9WS5mt0H58jt1rI3ogMhh/8TpLb5xcE=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-123-pFi0kpDjMLaw0j991Gno2w-1; Tue, 16 Nov 2021 06:40:28 -0500
-X-MC-Unique: pFi0kpDjMLaw0j991Gno2w-1
-Received: by mail-ed1-f71.google.com with SMTP id g3-20020a056402424300b003e2981e1edbso17035095edb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 03:40:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=q2yhddqwOIyYZPL3FhXeGjYy0DQgznm+v+3hij7ERdE=;
-        b=z+3BKlI9i4eVzICD9vmB6R0mjPqsIL3NV0XfDQuPmkBy0XpbQy5l/uQMsV4hVlddHN
-         McFV7Xc0DqVnShbyly52AIEk16bzR9+3FNxGZaS52vJDgCTZP1EATqDF6co5Mngj4QOJ
-         9s2F9o1Ko2QuwZexQyNtZWEAEYsWTch7tEiraKGNoTFmXQ/dkViN8CXeaJDPKh8vuy/a
-         /q2aMAO3+HamFKWNHuYFuiNX4DBqjwxsot2E6Da/6zWkI6kuogn3lhBVd1sp6dTDZ3K1
-         Qe4047GcMsV5kcmJMSvZGZ2AG2UbQu8GP40vXa6YyHrVU0+kBaYZX1I2QqL50oIjAY+l
-         bd0g==
-X-Gm-Message-State: AOAM5326sS1mjpMw+Ul5+khUSgiA4jpAkQ6cGAF9h9mwMjoyB/7ZFT5+
-        qGGduCooYN/RMg3s/SaaRHuEC0UiXf0ub2D/ulqeLDABulV2OU3FtsOorCfj69I6d0wrevM9nrT
-        DtcDWr3+c4ZAe9aiHed24Bp8C
-X-Received: by 2002:a50:bf01:: with SMTP id f1mr9258004edk.102.1637062827601;
-        Tue, 16 Nov 2021 03:40:27 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJymU6yKouEKafBLdercgexA8Y6Lq4DD1sfYwW1qjfS7Zl1Y82tULN5DbCIDyJTLShnlIyoCVQ==
-X-Received: by 2002:a50:bf01:: with SMTP id f1mr9257958edk.102.1637062827380;
-        Tue, 16 Nov 2021 03:40:27 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id gs17sm8188492ejc.28.2021.11.16.03.40.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 03:40:26 -0800 (PST)
-Message-ID: <b592e94f-5bff-0f9e-7297-94f7ad646fb7@redhat.com>
-Date:   Tue, 16 Nov 2021 12:40:26 +0100
+        Tue, 16 Nov 2021 06:44:48 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 3FF991C0B76; Tue, 16 Nov 2021 12:41:48 +0100 (CET)
+Date:   Tue, 16 Nov 2021 12:41:47 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Johannes Berg <johannes.berg@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.14 232/849] leds: trigger: use RCU to protect the
+ led_cdevs list
+Message-ID: <20211116114147.GD16318@amd>
+References: <20211115165419.961798833@linuxfoundation.org>
+ <20211115165428.044566164@linuxfoundation.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 13/20] power: supply: bq25890: Support higher charging
- voltages through Pump Express+ protocol
-Content-Language: en-US
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Yauhen Kharuzhy <jekhor@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>
-References: <20211114170335.66994-1-hdegoede@redhat.com>
- <20211114170335.66994-14-hdegoede@redhat.com>
- <CAHp75VceeV634BPm4X8vgKCFG7CFSnApPrB-uxG8-F+hgXXMvA@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <CAHp75VceeV634BPm4X8vgKCFG7CFSnApPrB-uxG8-F+hgXXMvA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="a2FkP9tdjPU2nyhF"
+Content-Disposition: inline
+In-Reply-To: <20211115165428.044566164@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 11/16/21 12:14, Andy Shevchenko wrote:
-> On Sun, Nov 14, 2021 at 7:04 PM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> From: Yauhen Kharuzhy <jekhor@gmail.com>
->>
->> Add a "linux,pump-express-vbus-max" property which indicates if the Pump
->> Express+ protocol should be used to increase the charging protocol.
->>
->> If this new property is set and a DCP charger is detected then request
->> a higher charging voltage through the Pump Express+ protocol.
->>
->> So far this new property is only used on X86/ACPI (non devicetree) devs,
->> IOW it is not used in actual devicetree files. The devicetree-bindings
->> maintainers have requested properties like these to not be added to the
->> devicetree-bindings, so the new property is deliberately not added
->> to the existing devicetree-bindings.
->>
->> Changes by Hans de Goede:
->> - Port to my bq25890 patch-series + various cleanups
->> - Make behavior configurable through a new "linux,pump-express-vbus-max"
->>   device-property
->> - Sleep 1 second before re-checking the Vbus voltage after requesting
->>   it to be raised, to ensure that the ADC has time to sampled the new Vbus
->> - Add VBUSV bq25890_tables[] entry and use it in bq25890_get_vbus_voltage()
->> - Tweak commit message
-> 
-> ...
-> 
->> +#define PUMP_EXPRESS_START_DELAY       (5 * HZ)
->> +#define PUMP_EXPRESS_MAX_TRIES         6
->> +#define PUMP_EXPRESS_VBUS_MARGIN       1000000
-> 
-> Units? Perhaps "_uV"?
-> 
-> ...
-> 
->> +               dev_dbg(bq->dev, "input voltage = %d mV\n", voltage);
-> 
-> Just to be sure, is it indeed "mV" and not "uV"?
+--a2FkP9tdjPU2nyhF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It is uV, will fix for the next version.
+On Mon 2021-11-15 17:55:15, Greg Kroah-Hartman wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+>=20
+> [ Upstream commit 2a5a8fa8b23144d14567d6f8293dd6fbeecee393 ]
+>=20
+> Even with the previous commit 27af8e2c90fb
+> ("leds: trigger: fix potential deadlock with libata")
+> to this file, we still get lockdep unhappy, and Boqun
+> explained the report here:
+> https://lore.kernel.org/r/YNA+d1X4UkoQ7g8a@boqun-archlinux
+>=20
+> Effectively, this means that the read_lock_irqsave() isn't
+> enough here because another CPU might be trying to do a
+> write lock, and thus block the readers.
+>=20
+> This is all pretty messy, but it doesn't seem right that
+> the LEDs framework imposes some locking requirements on
+> users, in particular we'd have to make the spinlock in the
+> iwlwifi driver always disable IRQs, even if we don't need
+> that for any other reason, just to avoid this deadlock.
+>=20
+> Since writes to the led_cdevs list are rare (and are done
+> by userspace), just switch the list to RCU. This costs a
+> synchronize_rcu() at removal time so we can ensure things
+> are correct, but that seems like a small price to pay for
+> getting lock-free iterations and no deadlocks (nor any
+> locking requirements imposed on users.)
+>=20
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> Signed-off-by: Pavel Machek <pavel@ucw.cz>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-> 
-> ...
-> 
->> +               while (bq25890_field_read(bq, F_PUMPX_UP) == 1)
->> +                       msleep(100);
-> 
-> Infinite loop?
-> 
-> Sounds like a good candidate to switch to read_poll_timeout() // note> it accepts any type of (op) with a variadic number of args.
+Please drop. We discussed this with Johannes, and it was not marked
+for stable on purpose. Bug is rather obscure and change did not have
+enough testing.
 
-Good catch, will fix.
+Best regards,
+								Pavel
 
-> 
-> ...
-> 
->> +error:
-> 
-> error_print: ?
-> 
->> +       dev_err(bq->dev, "Failed to request hi-voltage charging\n");
-> 
-> ...
-> 
->> +       ret = device_property_read_u32(bq->dev, "linux,pump-express-vbus-max",
->> +                                      &bq->pump_express_vbus_max);
->> +       if (ret < 0)
->> +               bq->pump_express_vbus_max = 0;
-> 
-> Isn't it 0 by default?
-> 
-> Anyway, for all optional properties one may use
-> 
-> bq->...property... = $default;
-> device_property_read_u32(bq->dev, "linux,...property...", &bq->...property...);
-> 
-> I.e. no conditional needed.
+> ---
+>  drivers/leds/led-triggers.c | 41 +++++++++++++++++++------------------
+>  include/linux/leds.h        |  2 +-
+>  2 files changed, 22 insertions(+), 21 deletions(-)
+>=20
+> diff --git a/drivers/leds/led-triggers.c b/drivers/leds/led-triggers.c
+> index 4e7b78a84149b..072491d3e17b0 100644
+> --- a/drivers/leds/led-triggers.c
+> +++ b/drivers/leds/led-triggers.c
+> @@ -157,7 +157,6 @@ EXPORT_SYMBOL_GPL(led_trigger_read);
+>  /* Caller must ensure led_cdev->trigger_lock held */
+>  int led_trigger_set(struct led_classdev *led_cdev, struct led_trigger *t=
+rig)
+>  {
+> -	unsigned long flags;
+>  	char *event =3D NULL;
+>  	char *envp[2];
+>  	const char *name;
+> @@ -171,10 +170,13 @@ int led_trigger_set(struct led_classdev *led_cdev, =
+struct led_trigger *trig)
+> =20
+>  	/* Remove any existing trigger */
+>  	if (led_cdev->trigger) {
+> -		write_lock_irqsave(&led_cdev->trigger->leddev_list_lock, flags);
+> -		list_del(&led_cdev->trig_list);
+> -		write_unlock_irqrestore(&led_cdev->trigger->leddev_list_lock,
+> -			flags);
+> +		spin_lock(&led_cdev->trigger->leddev_list_lock);
+> +		list_del_rcu(&led_cdev->trig_list);
+> +		spin_unlock(&led_cdev->trigger->leddev_list_lock);
+> +
+> +		/* ensure it's no longer visible on the led_cdevs list */
+> +		synchronize_rcu();
+> +
+>  		cancel_work_sync(&led_cdev->set_brightness_work);
+>  		led_stop_software_blink(led_cdev);
+>  		if (led_cdev->trigger->deactivate)
+> @@ -186,9 +188,9 @@ int led_trigger_set(struct led_classdev *led_cdev, st=
+ruct led_trigger *trig)
+>  		led_set_brightness(led_cdev, LED_OFF);
+>  	}
+>  	if (trig) {
+> -		write_lock_irqsave(&trig->leddev_list_lock, flags);
+> -		list_add_tail(&led_cdev->trig_list, &trig->led_cdevs);
+> -		write_unlock_irqrestore(&trig->leddev_list_lock, flags);
+> +		spin_lock(&trig->leddev_list_lock);
+> +		list_add_tail_rcu(&led_cdev->trig_list, &trig->led_cdevs);
+> +		spin_unlock(&trig->leddev_list_lock);
+>  		led_cdev->trigger =3D trig;
+> =20
+>  		if (trig->activate)
+> @@ -223,9 +225,10 @@ err_add_groups:
+>  		trig->deactivate(led_cdev);
+>  err_activate:
+> =20
+> -	write_lock_irqsave(&led_cdev->trigger->leddev_list_lock, flags);
+> -	list_del(&led_cdev->trig_list);
+> -	write_unlock_irqrestore(&led_cdev->trigger->leddev_list_lock, flags);
+> +	spin_lock(&led_cdev->trigger->leddev_list_lock);
+> +	list_del_rcu(&led_cdev->trig_list);
+> +	spin_unlock(&led_cdev->trigger->leddev_list_lock);
+> +	synchronize_rcu();
+>  	led_cdev->trigger =3D NULL;
+>  	led_cdev->trigger_data =3D NULL;
+>  	led_set_brightness(led_cdev, LED_OFF);
+> @@ -285,7 +288,7 @@ int led_trigger_register(struct led_trigger *trig)
+>  	struct led_classdev *led_cdev;
+>  	struct led_trigger *_trig;
+> =20
+> -	rwlock_init(&trig->leddev_list_lock);
+> +	spin_lock_init(&trig->leddev_list_lock);
+>  	INIT_LIST_HEAD(&trig->led_cdevs);
+> =20
+>  	down_write(&triggers_list_lock);
+> @@ -378,15 +381,14 @@ void led_trigger_event(struct led_trigger *trig,
+>  			enum led_brightness brightness)
+>  {
+>  	struct led_classdev *led_cdev;
+> -	unsigned long flags;
+> =20
+>  	if (!trig)
+>  		return;
+> =20
+> -	read_lock_irqsave(&trig->leddev_list_lock, flags);
+> -	list_for_each_entry(led_cdev, &trig->led_cdevs, trig_list)
+> +	rcu_read_lock();
+> +	list_for_each_entry_rcu(led_cdev, &trig->led_cdevs, trig_list)
+>  		led_set_brightness(led_cdev, brightness);
+> -	read_unlock_irqrestore(&trig->leddev_list_lock, flags);
+> +	rcu_read_unlock();
+>  }
+>  EXPORT_SYMBOL_GPL(led_trigger_event);
+> =20
+> @@ -397,20 +399,19 @@ static void led_trigger_blink_setup(struct led_trig=
+ger *trig,
+>  			     int invert)
+>  {
+>  	struct led_classdev *led_cdev;
+> -	unsigned long flags;
+> =20
+>  	if (!trig)
+>  		return;
+> =20
+> -	read_lock_irqsave(&trig->leddev_list_lock, flags);
+> -	list_for_each_entry(led_cdev, &trig->led_cdevs, trig_list) {
+> +	rcu_read_lock();
+> +	list_for_each_entry_rcu(led_cdev, &trig->led_cdevs, trig_list) {
+>  		if (oneshot)
+>  			led_blink_set_oneshot(led_cdev, delay_on, delay_off,
+>  					      invert);
+>  		else
+>  			led_blink_set(led_cdev, delay_on, delay_off);
+>  	}
+> -	read_unlock_irqrestore(&trig->leddev_list_lock, flags);
+> +	rcu_read_unlock();
+>  }
+> =20
+>  void led_trigger_blink(struct led_trigger *trig,
+> diff --git a/include/linux/leds.h b/include/linux/leds.h
+> index 329fd914cf243..fa59326b0ad9f 100644
+> --- a/include/linux/leds.h
+> +++ b/include/linux/leds.h
+> @@ -354,7 +354,7 @@ struct led_trigger {
+>  	struct led_hw_trigger_type *trigger_type;
+> =20
+>  	/* LEDs under control by this trigger (for simple triggers) */
+> -	rwlock_t	  leddev_list_lock;
+> +	spinlock_t	  leddev_list_lock;
+>  	struct list_head  led_cdevs;
+> =20
+>  	/* Link to next registered trigger */
 
-Ack, will fix.
+--=20
+http://www.livejournal.com/~pavelmachek
 
-Regards,
+--a2FkP9tdjPU2nyhF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Hans
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
+iEYEARECAAYFAmGTmPoACgkQMOfwapXb+vITJQCgnCOylJR0hph3324A9RUi79E7
+8T0AmwRk0Zl10OFDLyP9NAo/v1AeZMtx
+=xW/S
+-----END PGP SIGNATURE-----
+
+--a2FkP9tdjPU2nyhF--
