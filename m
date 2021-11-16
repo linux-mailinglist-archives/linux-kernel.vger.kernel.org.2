@@ -2,80 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA174529D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:35:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE9B4529DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:38:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234918AbhKPFi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 00:38:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57944 "EHLO
+        id S235248AbhKPFkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 00:40:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234734AbhKPFiD (ORCPT
+        with ESMTP id S235200AbhKPFkc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 00:38:03 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789FCC048CB7;
-        Mon, 15 Nov 2021 18:48:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=27a+1ERJiH1WxGa9BIP0FoUnLa4JJB0EvgPKYUvef4Y=; b=Jn6x4AZ11HbKguQC85dX6scWfY
-        aiwL6LjYjOxls2bDmT+sTPu9ZwHBbhgmahL4WbLk8VrIFP3fw9Fwh9vZ2jnMNgN8wKmBS9BZiLpth
-        8Oxu6SawZV44UOHxMmJ3Gg3+PiWY0hqeSZQ3Ai96gQLE+rv4YFElm+zP16V70dQpm+FWkOvdZC3Rv
-        kD2ZqjnbOHv8pqHJPVK+Al/Fs2YIzmgl4svYu8UsCSikkngzYOZCgA4eIKJaxNzBAjnlpQgPSz0Tp
-        /WETx4HskPe5PKUlNJkb9W8rp6+kzf9QKh/4a1G7XEDtOQZxF0TyVokq35I9Cx7YOTnsXdltiWy9T
-        HE6KXlNA==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mmoWW-0008B1-Ht; Tue, 16 Nov 2021 02:48:40 +0000
-Subject: Re: [PATCH 1/2] sh: mcount.S: fix build error when PRINTK is not
- enabled
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Paul Mundt <lethal@linux-sh.org>
-References: <20211115064128.9896-1-rdunlap@infradead.org>
- <CAMuHMdULwWi6hEUGY7vA3Nc7DhYLp_dH0o-sVdijWg6Z54GijQ@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <7d54befc-496c-2035-a817-dd7ff74e5bf8@infradead.org>
-Date:   Mon, 15 Nov 2021 18:48:39 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 16 Nov 2021 00:40:32 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C718C0E646C
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 18:55:34 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id e136so52966966ybc.4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 18:55:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rpqDaIvxd8atjdNJzYkyVRAJyAC7aztRzEj4r3gO0pg=;
+        b=oSeIDCVNGsGEVXFab6uHOW5y/tU6dCosRJNm8cBd6SB2tIa+QdWw8Bho0kGLw4muyN
+         eZH8Kop1RkUJ2T9Ndf26h1x7X9674XMPtZUhUxo04UqFnOScyeZSXqNCuKicvOitGlcs
+         uafaqgkcDVW4drNAjZJV8mZxXP4uSIR/+RyMW/Ksnr4p4Fae4+4B1yoeOfrZm30Xb+8f
+         oVQNQCmL/R7/2Z0BBlvg5pcEv7E91LzdOx9tekxQ+WIDNVoS4daBXOcuyYljeeRaFSgj
+         hafEXhqTpyw1WOUW0bz50gxhXy/1MsG7dUV+CXCazhIEEMp+F9j3rt/S07Q129V6beKZ
+         nRxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rpqDaIvxd8atjdNJzYkyVRAJyAC7aztRzEj4r3gO0pg=;
+        b=2gV4vUZ1RbOH0czrNW03L5Kb4BWoxGqtKNNIKcw29IdNL/IEv1yHb+egkMm4VPIhQv
+         0/E8FB4uwF/24RVOEW0wl/gRGEbGYF2NaJG2NOqa7CXjAbo42S96e+wvor/60eGBddiB
+         xoyGwUE5obaNJ806MqoKeFtVH8qe+PW6NB3eFVEA9aKwrmHmmmzUMezP0cpEyqfX2E+X
+         tvEIZoMNLZcrtzIpCD5uV8IibA7ddfBORiBAv6lFBr2yOyh91q8rQapU1YgoZaTX2+2t
+         mdU3A9ywKr7iP7/PcUi7lUfJ1LUYMGXLG1GXEdb4OhwAkPvDCalqYqfo9v0RFdzq1MS2
+         Fx0w==
+X-Gm-Message-State: AOAM5315nEHwUgTvsgHt9c3A+BadP+tWFBrnAu1TWlfLJTy4wdKiepiw
+        ql5EM08+ujAdgJ9YooWlWmv0nyXIwwOKUymtJE5P8w==
+X-Google-Smtp-Source: ABdhPJxT40IF9I4AT6hA6vyiNjJ7uBJV0B7ydVaE8t/+5pTk6/UDSyL+eXhgQEEqlJQnZDNNzuYQz2kzumRuSLOpriE=
+X-Received: by 2002:a5b:648:: with SMTP id o8mr4668222ybq.208.1637031333423;
+ Mon, 15 Nov 2021 18:55:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdULwWi6hEUGY7vA3Nc7DhYLp_dH0o-sVdijWg6Z54GijQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211115020850.3154366-1-rkovhaev@gmail.com>
+In-Reply-To: <20211115020850.3154366-1-rkovhaev@gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 16 Nov 2021 10:54:53 +0800
+Message-ID: <CAMZfGtXqxe6Sf62s2Uk8pYOj-L=rUB4viHJ04YPFQOTSN0zBLw@mail.gmail.com>
+Subject: Re: [PATCH] mm: kmemleak: slob: respect SLAB_NOLEAKTRACE flag
+To:     Rustam Kovhaev <rkovhaev@gmail.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/21 2:10 AM, Geert Uytterhoeven wrote:
-> Hi Randy,
-> 
-> On Mon, Nov 15, 2021 at 7:41 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->> Fix a build error in mcount.S when CONFIG_PRINTK is not enabled.
->> Fixes this build error:
->>
->> sh2-linux-ld: arch/sh/lib/mcount.o: in function `stack_panic':
->> (.text+0xec): undefined reference to `dump_stack'
->>
->> Fixes: e460ab27b6c3e ("sh: Fix up stack overflow check with ftrace disabled.")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> 
-> Thanks for your patch!
-> 
->> Possibly even more of this function should conditionally not be built...
-> 
-> What about making STACK_DEBUG depend on PRINTK instead?
-> It doesn't make much sense to enable the former, if you won't print
-> any output...
+On Mon, Nov 15, 2021 at 10:09 AM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
+>
+> When kmemleak is enabled for SLOB, system does not boot and does not
+> print anything to the console. At the very early stage in the boot
+> process we hit infinite recursion from kmemleak_init() and eventually
+> kernel crashes.
+> kmemleak_init() specifies SLAB_NOLEAKTRACE for KMEM_CACHE(), but
+> kmem_cache_create_usercopy() removes it because CACHE_CREATE_MASK is not
+> valid for SLOB.
+> Let's fix CACHE_CREATE_MASK and make kmemleak work with SLOB
+>
+> Fixes: d8843922fba4 ("slab: Ignore internal flags in cache creation")
+> Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
 
-Hi Geert,
-That works. Thanks for the suggestion.
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 
-I'll send a v2.
--- 
-~Randy
+Thanks.
