@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B929E4531CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:07:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0EA4531CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:07:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236050AbhKPMK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 07:10:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48456 "EHLO mail.kernel.org"
+        id S235768AbhKPMKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 07:10:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236236AbhKPMIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236231AbhKPMIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 16 Nov 2021 07:08:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 172EF61B39;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1459961414;
         Tue, 16 Nov 2021 12:05:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1637064350;
-        bh=RzYJiPe0MQQ5yuETSfop/8ZsyC6/3KQUXUFe+BQQeuA=;
+        bh=e7+yzDZOLvstJHIWR1WcsOs+RKbc+SNcRppOEfI6ixw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oyOmqjmaQzhXB42QVZBZYQhphJ9dKsoYuvs4mDU6qGQziqDGgaSRgbmICn//3rSgY
-         Blb29l//AqMTUI02oYILKDjFLwnYO9EWnRiS6kOvgyvgXgw2vJMpzLAQH+ps2NJ9YT
-         Nxt2CHpVfseB5JJbyAQ9UIjMIaG4Eh19ftDbtfkURqePYJvcXlRXEXZ+uMqtG5U9Wx
-         SqP0L2OCTxKzlrJmNdyCJhV8mGm0K7B6204O5x895bT6Z8roabOPwIFzGRX+vka4RB
-         ENm9Ch0U/bbp9e+IFD0pkdDzDIlo6B47pyH6unPQIZ3O5keZ3HA0xI6q/rP49fkND5
-         YIcBqQJKCy3BQ==
+        b=LNJfkLZWEdJ2AJmSTQzzvu+A+2uP27adn+sj1kNQJ+A3X2AxvqoTF8tXA+AJrfLEr
+         nFFOjqJq+zRUBlP6gPmbF2IlKcJZaqPFlXx7NtbaPwF45/eh8L4tqsDihTI8EcE2Lh
+         0JZvWgeQmA3aXrm9RfIaSoGv5M6Ivb9f2URiwDnjEwcP77W/ROK2jHfgJmqs1Clf0C
+         MFE3A1rUV53z4fhFco0DFTz2su8AhBrbWLpg/y1+YZAipR/2acRy78UlqrjUx0x2WD
+         9Ehv6Ibz6XNtJxdMgBbdzFs8xo9qScdpa8vzgACbmQz49+3cWsFKxay7kU9LDROirI
+         pZ/VSiFx/Q1gQ==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mmxDe-00A9CF-Fw; Tue, 16 Nov 2021 12:05:46 +0000
+        id 1mmxDe-00A9CI-Gc; Tue, 16 Nov 2021 12:05:46 +0000
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>
@@ -33,9 +33,9 @@ Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Wei Xu" <xuwei5@hisilicon.com>, linux-clk@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND 1/2] clk: wait for extra time before disabling unused clocks
-Date:   Tue, 16 Nov 2021 12:05:43 +0000
-Message-Id: <e984318c61da720f4a46e919141162c0672dc5c9.1637064075.git.mchehab+huawei@kernel.org>
+Subject: [PATCH RESEND 2/2] clk: clk-hi3670: mark some clocks as CLK_IS_CRITICAL
+Date:   Tue, 16 Nov 2021 12:05:44 +0000
+Message-Id: <69e24043e4c3e085b926282a5e528b8bd232ab7e.1637064075.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <cover.1637064075.git.mchehab+huawei@kernel.org>
 References: <cover.1637064075.git.mchehab+huawei@kernel.org>
@@ -46,63 +46,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On some tests with HiKey970, with several drivers compiled as
-modules, clk_disable_unused() has been called too early,
-before the init code from the drivers built as module to be called.
+Some clocks can't be disabled or the device stops working.
 
-If the system is left to disable unused clocks, those are the last
-messages at the console:
-
-	[   22.348592] initcall acpi_gpio_handle_deferred_request_irqs+0x0/0xa8 returned 0 after 1 usecs, irqs_disabled() 0
-	[   22.366973] calling  fb_logo_late_init+0x0/0x20 @ 1 irqs_disabled() 0
-	[   22.373432] initcall fb_logo_late_init+0x0/0x20 returned 0 after 1 usecs, irqs_disabled() 0
-
-	[   22.381800] calling  clk_disable_unused+0x0/0xe8 @ 1 irqs_disabled() 0
-				==================
-
-	<SoC dies here... no other messages>
-
-Preventing clk_disable_unused to be called, there are several other initcall
-logs after it:
-
-	[   22.340305] calling  acpi_gpio_handle_deferred_request_irqs+0x0/0xa8 @ 1 irqs_disabled() 0
-	[   22.348594] dwmmc_k3 fc183000.dwmmc2: card claims to support voltages below defined range
-	[   22.348592] initcall acpi_gpio_handle_deferred_request_irqs+0x0/0xa8 returned 0 after 1 usecs, irqs_disabled() 0
-	[   22.366973] calling  fb_logo_late_init+0x0/0x20 @ 1 irqs_disabled() 0
-	[   22.373432] initcall fb_logo_late_init+0x0/0x20 returned 0 after 1 usecs, irqs_disabled() 0
-
-	[   22.356984] initcall clk_disable_unused+0x0/0xe8 returned 0 after 117 usecs, irqs_disabled() 0
-				==================
-
-	[   22.372335] initcall imx_clk_disable_uart+0x0/0x88 returned 0 after 1 usecs, irqs_disabled() 0
-	[   22.387946] initcall regulator_init_complete+0x0/0x58 returned 0 after 2 usecs, irqs_disabled() 0
-	[   22.404163] initcall of_platform_sync_state_init+0x0/0x20 returned 0 after 1 usecs, irqs_disabled() 0
-	[   22.426508] initcall alsa_sound_last_init+0x0/0x90 returned 0 after 6239 usecs, irqs_disabled() 0
-	[   22.703071] initcall inet6_init+0x0/0x358 [ipv6] returned 0 after 13341 usecs, irqs_disabled() 0
-	[   22.723861] initcall xt_init+0x0/0x1000 [x_tables] returned 0 after 8 usecs, irqs_disabled() 0
-	[   22.744405] initcall ip_tables_init+0x0/0x1000 [ip_tables] returned 0 after 23 usecs, irqs_disabled() 0
-	[   23.467003] initcall fuse_init+0x0/0x154 [fuse] returned 0 after 392 usecs, irqs_disabled() 0
-	[   23.537742] initcall drm_core_init+0x0/0x1000 [drm] returned 0 after 122 usecs, irqs_disabled() 0
-	[   24.519076] initcall rfkill_init+0x0/0x12c [rfkill] returned 0 after 15654 usecs, irqs_disabled() 0
-	[   24.622168] initcall hi3670_pcie_phy_driver_init+0x0/0x1000 [phy_hi3670_pcie] returned 0 after 836 usecs, irqs_disabled() 0
-	[   24.665100] initcall hi3670_phy_driver_init+0x0/0x1000 [phy_hi3670_usb3] returned 0 after 1888 usecs, irqs_disabled() 0
-	[   24.694668] initcall typec_init+0x0/0x1000 [typec] returned 0 after 89 usecs, irqs_disabled() 0
-	[   24.732557] initcall cpu_feature_match_ASIMD_init+0x0/0x1000 [crct10dif_ce] returned 0 after 8838 usecs, irqs_disabled() 0
-	[   24.746636] initcall tcpci_i2c_driver_init+0x0/0x1000 [tcpci] returned 0 after 8607 usecs, irqs_disabled() 0
-	[   24.774541] initcall hisi_hikey_usb_driver_init+0x0/0x1000 [hisi_hikey_usb] returned 0 after 35860 usecs, irqs_disabled() 0
-	[   24.892957] initcall rt1711h_i2c_driver_init+0x0/0x1000 [tcpci_rt1711h] returned 0 after 21500 usecs, irqs_disabled() 0
-	[   24.956528] initcall wl1271_init+0x0/0x1000 [wlcore_sdio] returned 0 after 83582 usecs, irqs_disabled() 0
-	[   25.039853] initcall cfg80211_init+0x0/0xdc [cfg80211] returned 0 after 26291 usecs, irqs_disabled() 0
-	[   25.118288] initcall ieee80211_init+0x0/0x40 [mac80211] returned 0 after 15 usecs, irqs_disabled() 0
-	[   25.335203] initcall wl18xx_driver_init+0x0/0x1000 [wl18xx] returned 0 after 134423 usecs, irqs_disabled() 0
-	[   26.277300] initcall ecdh_init+0x0/0xd0 [ecdh_generic] returned 0 after 302 usecs, irqs_disabled() 0
-	[   26.435409] initcall bt_init+0x0/0xcc [bluetooth] returned 0 after 63051 usecs, irqs_disabled() 0
-	[   26.508033] initcall btusb_driver_init+0x0/0x1000 [btusb] returned 0 after 305 usecs, irqs_disabled() 0
-	[   27.333049] initcall kirin_pcie_driver_init+0x0/0x1000 [pcie_kirin] returned 0 after 805983 usecs, irqs_disabled() 0
-
-So, just like regulator_init_complete code at drivers/regulator/core.c
-does, we need to also delay the call to the actual logic which
-disables the unused clocks.
+Mark those with CLK_IS_CRITICAL.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
@@ -110,99 +56,99 @@ Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To mailbombing on a large number of people, only mailing lists were C/C on the cover.
 See [PATCH RESEND 0/2] at: https://lore.kernel.org/all/cover.1637064075.git.mchehab+huawei@kernel.org/
 
- drivers/clk/clk.c | 51 +++++++++++++++++++++++++++++------------------
- 1 file changed, 32 insertions(+), 19 deletions(-)
+ drivers/clk/hisilicon/clk-hi3670.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index f467d63bbf1e..3e6f80b90594 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -21,6 +21,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/sched.h>
- #include <linux/clkdev.h>
-+#include <linux/workqueue.h>
- 
- #include "clk.h"
- 
-@@ -1206,7 +1207,7 @@ static void clk_core_disable_unprepare(struct clk_core *core)
- 	clk_core_unprepare_lock(core);
- }
- 
--static void __init clk_unprepare_unused_subtree(struct clk_core *core)
-+static void clk_unprepare_unused_subtree(struct clk_core *core)
- {
- 	struct clk_core *child;
- 
-@@ -1236,7 +1237,7 @@ static void __init clk_unprepare_unused_subtree(struct clk_core *core)
- 	clk_pm_runtime_put(core);
- }
- 
--static void __init clk_disable_unused_subtree(struct clk_core *core)
-+static void clk_disable_unused_subtree(struct clk_core *core)
- {
- 	struct clk_core *child;
- 	unsigned long flags;
-@@ -1290,30 +1291,42 @@ static int __init clk_ignore_unused_setup(char *__unused)
- }
- __setup("clk_ignore_unused", clk_ignore_unused_setup);
- 
-+static void __clk_disable_unused(struct work_struct *w)
-+{
-+	struct clk_core *core;
-+
-+	clk_prepare_lock();
-+
-+	hlist_for_each_entry(core, &clk_root_list, child_node)
-+		clk_disable_unused_subtree(core);
-+
-+	hlist_for_each_entry(core, &clk_orphan_list, child_node)
-+		clk_disable_unused_subtree(core);
-+
-+	hlist_for_each_entry(core, &clk_root_list, child_node)
-+		clk_unprepare_unused_subtree(core);
-+
-+	hlist_for_each_entry(core, &clk_orphan_list, child_node)
-+		clk_unprepare_unused_subtree(core);
-+
-+	clk_prepare_unlock();
-+}
-+DECLARE_DELAYED_WORK(disable_unused, __clk_disable_unused);
-+
- static int __init clk_disable_unused(void)
- {
--	struct clk_core *core;
--
- 	if (clk_ignore_unused) {
- 		pr_warn("clk: Not disabling unused clocks\n");
- 		return 0;
- 	}
- 
--	clk_prepare_lock();
--
--	hlist_for_each_entry(core, &clk_root_list, child_node)
--		clk_disable_unused_subtree(core);
--
--	hlist_for_each_entry(core, &clk_orphan_list, child_node)
--		clk_disable_unused_subtree(core);
--
--	hlist_for_each_entry(core, &clk_root_list, child_node)
--		clk_unprepare_unused_subtree(core);
--
--	hlist_for_each_entry(core, &clk_orphan_list, child_node)
--		clk_unprepare_unused_subtree(core);
--
--	clk_prepare_unlock();
-+	/*
-+	 * We punt completion for an arbitrary amount of time since
-+	 * systems with enable clocks during module load are initialized
-+	 * after late_initcall_sync(), as module drivers will be probed
-+	 * and initialized afterwards.
-+	 */
-+	schedule_delayed_work(&disable_unused, msecs_to_jiffies(15000));
- 
- 	return 0;
- }
+diff --git a/drivers/clk/hisilicon/clk-hi3670.c b/drivers/clk/hisilicon/clk-hi3670.c
+index 4d05a71683a5..d5813132df9c 100644
+--- a/drivers/clk/hisilicon/clk-hi3670.c
++++ b/drivers/clk/hisilicon/clk-hi3670.c
+@@ -82,13 +82,13 @@ static const struct hisi_gate_clock hi3670_crgctrl_gate_sep_clks[] = {
+ 	{ HI3670_PPLL2_EN_ACPU, "ppll2_en_acpu", "clk_ppll2",
+ 	  CLK_SET_RATE_PARENT, 0x0, 3, 0, },
+ 	{ HI3670_PPLL3_EN_ACPU, "ppll3_en_acpu", "clk_ppll3",
+-	  CLK_SET_RATE_PARENT, 0x0, 27, 0, },
++	  CLK_SET_RATE_PARENT | CLK_IS_CRITICAL, 0x0, 27, 0, },
+ 	{ HI3670_PPLL1_GT_CPU, "ppll1_gt_cpu", "clk_ppll1",
+ 	  CLK_SET_RATE_PARENT, 0x460, 16, 0, },
+ 	{ HI3670_PPLL2_GT_CPU, "ppll2_gt_cpu", "clk_ppll2",
+ 	  CLK_SET_RATE_PARENT, 0x460, 18, 0, },
+ 	{ HI3670_PPLL3_GT_CPU, "ppll3_gt_cpu", "clk_ppll3",
+-	  CLK_SET_RATE_PARENT, 0x460, 20, 0, },
++	  CLK_SET_RATE_PARENT | CLK_IS_CRITICAL, 0x460, 20, 0, },
+ 	{ HI3670_CLK_GATE_PPLL2_MEDIA, "clk_gate_ppll2_media", "clk_ppll2",
+ 	  CLK_SET_RATE_PARENT, 0x410, 27, 0, },
+ 	{ HI3670_CLK_GATE_PPLL3_MEDIA, "clk_gate_ppll3_media", "clk_ppll3",
+@@ -166,7 +166,7 @@ static const struct hisi_gate_clock hi3670_crgctrl_gate_sep_clks[] = {
+ 	{ HI3670_CLK_CCI400_BYPASS, "clk_cci400_bypass", "clk_ddrc_freq",
+ 	  CLK_SET_RATE_PARENT, 0x22C, 28, 0, },
+ 	{ HI3670_CLK_GATE_CCI400, "clk_gate_cci400", "clk_ddrc_freq",
+-	  CLK_SET_RATE_PARENT, 0x50, 14, 0, },
++	  CLK_SET_RATE_PARENT | CLK_IS_CRITICAL, 0x50, 14, 0, },
+ 	{ HI3670_CLK_GATE_SD, "clk_gate_sd", "clk_mux_sd_sys",
+ 	  CLK_SET_RATE_PARENT, 0x40, 17, 0, },
+ 	{ HI3670_HCLK_GATE_SD, "hclk_gate_sd", "clk_div_sysbus",
+@@ -248,15 +248,15 @@ static const struct hisi_gate_clock hi3670_crgctrl_gate_sep_clks[] = {
+ 	{ HI3670_CLK_GATE_AO_ASP, "clk_gate_ao_asp", "clk_div_ao_asp",
+ 	  CLK_SET_RATE_PARENT, 0x0, 26, 0, },
+ 	{ HI3670_PCLK_GATE_PCTRL, "pclk_gate_pctrl", "clk_div_ptp",
+-	  CLK_SET_RATE_PARENT, 0x20, 31, 0, },
++	  CLK_SET_RATE_PARENT | CLK_IS_CRITICAL, 0x20, 31, 0, },
+ 	{ HI3670_CLK_CSI_TRANS_GT, "clk_csi_trans_gt", "clk_div_csi_trans",
+-	  CLK_SET_RATE_PARENT, 0x30, 24, 0, },
++	  CLK_SET_RATE_PARENT | CLK_IS_CRITICAL, 0x30, 24, 0, },
+ 	{ HI3670_CLK_DSI_TRANS_GT, "clk_dsi_trans_gt", "clk_div_dsi_trans",
+ 	  CLK_SET_RATE_PARENT, 0x30, 25, 0, },
+ 	{ HI3670_CLK_GATE_PWM, "clk_gate_pwm", "clk_div_ptp",
+ 	  CLK_SET_RATE_PARENT, 0x20, 0, 0, },
+ 	{ HI3670_ABB_AUDIO_EN0, "abb_audio_en0", "clk_gate_abb_192",
+-	  CLK_SET_RATE_PARENT, 0x30, 8, 0, },
++	  CLK_SET_RATE_PARENT | CLK_IS_CRITICAL, 0x30, 8, 0, },
+ 	{ HI3670_ABB_AUDIO_EN1, "abb_audio_en1", "clk_gate_abb_192",
+ 	  CLK_SET_RATE_PARENT, 0x30, 9, 0, },
+ 	{ HI3670_ABB_AUDIO_GT_EN0, "abb_audio_gt_en0", "abb_audio_en0",
+@@ -331,9 +331,9 @@ static const struct hisi_gate_clock hi3670_crgctrl_gate_clks[] = {
+ 	{ HI3670_CLK_GATE_DSI_TRANS, "clk_gate_dsi_trans", "clk_ppll2",
+ 	  CLK_SET_RATE_PARENT, 0xF4, 1, CLK_GATE_HIWORD_MASK, },
+ 	{ HI3670_CLK_ANDGT_PTP, "clk_andgt_ptp", "clk_div_320m",
+-	  CLK_SET_RATE_PARENT, 0xF8, 5, CLK_GATE_HIWORD_MASK, },
++	  CLK_SET_RATE_PARENT | CLK_IS_CRITICAL, 0xF8, 5, CLK_GATE_HIWORD_MASK, },
+ 	{ HI3670_CLK_ANDGT_OUT0, "clk_andgt_out0", "clk_ppll0",
+-	  CLK_SET_RATE_PARENT, 0xF0, 10, CLK_GATE_HIWORD_MASK, },
++	  CLK_SET_RATE_PARENT | CLK_IS_CRITICAL, 0xF0, 10, CLK_GATE_HIWORD_MASK, },
+ 	{ HI3670_CLK_ANDGT_OUT1, "clk_andgt_out1", "clk_ppll0",
+ 	  CLK_SET_RATE_PARENT, 0xF0, 11, CLK_GATE_HIWORD_MASK, },
+ 	{ HI3670_CLKGT_DP_AUDIO_PLL_AO, "clkgt_dp_audio_pll_ao", "clk_ppll6",
+@@ -569,9 +569,9 @@ static const struct hisi_gate_clock hi3670_sctrl_gate_sep_clks[] = {
+ 	{ HI3670_PCLK_GATE_SPI, "pclk_gate_spi", "clk_div_ioperi",
+ 	  CLK_SET_RATE_PARENT, 0x1B0, 10, 0, },
+ 	{ HI3670_CLK_GATE_UFS_SUBSYS, "clk_gate_ufs_subsys", "clk_div_ufs_subsys",
+-	  CLK_SET_RATE_PARENT, 0x1B0, 14, 0, },
++	  CLK_SET_RATE_PARENT | CLK_IS_CRITICAL, 0x1B0, 14, 0, },
+ 	{ HI3670_CLK_GATE_UFSIO_REF, "clk_gate_ufsio_ref", "clkin_sys",
+-	  CLK_SET_RATE_PARENT, 0x1b0, 12, 0, },
++	  CLK_SET_RATE_PARENT | CLK_IS_CRITICAL, 0x1b0, 12, 0, },
+ 	{ HI3670_PCLK_AO_GPIO0, "pclk_ao_gpio0", "clk_div_aobus",
+ 	  CLK_SET_RATE_PARENT, 0x160, 11, 0, },
+ 	{ HI3670_PCLK_AO_GPIO1, "pclk_ao_gpio1", "clk_div_aobus",
+@@ -593,7 +593,7 @@ static const struct hisi_gate_clock hi3670_sctrl_gate_sep_clks[] = {
+ 	{ HI3670_PCLK_GATE_SYSCNT, "pclk_gate_syscnt", "clk_div_aobus",
+ 	  CLK_SET_RATE_PARENT, 0x160, 19, 0, },
+ 	{ HI3670_CLK_GATE_SYSCNT, "clk_gate_syscnt", "clkin_sys",
+-	  CLK_SET_RATE_PARENT, 0x160, 20, 0, },
++	  CLK_SET_RATE_PARENT | CLK_IS_CRITICAL, 0x160, 20, 0, },
+ 	{ HI3670_CLK_GATE_ASP_SUBSYS_PERI, "clk_gate_asp_subsys_peri",
+ 	  "clk_mux_asp_subsys_peri",
+ 	  CLK_SET_RATE_PARENT, 0x170, 6, 0, },
+@@ -703,7 +703,7 @@ static const struct hisi_gate_clock hi3670_media1_gate_sep_clks[] = {
+ 	{ HI3670_PCLK_GATE_DISP_NOC_SUBSYS, "pclk_gate_disp_noc_subsys", "clk_div_sysbus",
+ 	  CLK_SET_RATE_PARENT, 0x10, 18, 0, },
+ 	{ HI3670_ACLK_GATE_DISP_NOC_SUBSYS, "aclk_gate_disp_noc_subsys", "clk_gate_vivobusfreq",
+-	  CLK_SET_RATE_PARENT, 0x10, 17, 0, },
++	  CLK_SET_RATE_PARENT | CLK_IS_CRITICAL, 0x10, 17, 0, },
+ 	{ HI3670_PCLK_GATE_DSS, "pclk_gate_dss", "pclk_gate_disp_noc_subsys",
+ 	  CLK_SET_RATE_PARENT, 0x00, 14, 0, },
+ 	{ HI3670_ACLK_GATE_DSS, "aclk_gate_dss", "aclk_gate_disp_noc_subsys",
 -- 
 2.33.1
 
