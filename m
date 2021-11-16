@@ -2,176 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52EA94529E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:39:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2D64529EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235558AbhKPFmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 00:42:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59026 "EHLO
+        id S235651AbhKPFmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 00:42:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235426AbhKPFlf (ORCPT
+        with ESMTP id S235501AbhKPFlx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 00:41:35 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63EAEC0EC8F7;
-        Mon, 15 Nov 2021 18:59:52 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id x10so24139888ioj.9;
-        Mon, 15 Nov 2021 18:59:52 -0800 (PST)
+        Tue, 16 Nov 2021 00:41:53 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 897BBC0EEBC4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 19:00:43 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id t23so7825563oiw.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 19:00:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MjDTtA6DTI6xzB5x2nBzzPrcPt5OZM3EBixaaL8qpWI=;
-        b=N6FKSQHI+zQdfdfVISllSNmjgLMXXkJHY/TiKMgsMt8oYRWnon0pPWUazM3Xs1gY/n
-         BeSt23MOkEdzvltuzyjhA2W1AwzfWBzNLP8JYGN2Eh9yojOQq6HKLPlQqGKz1j9wQTIJ
-         EEQmUVZutLBo6Pl/eGgjo3PlIezigsnF5+A3PLISrBQyklp3/eox9ecKgFYmQtC6PmGi
-         AYEtN9iZHZjdjB7RGdguUDIDHrx6RMtFS4OaPQ8E77JH/UUPMge5otDS0eG7Q2WqW9VH
-         kkMs3moEZNFZe4U2oOqdMxCxdCWf6BZacaafN3t/26AyCh3wwQeDBoVBfiWdkdViIahG
-         1bdQ==
+        d=kali.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language
+         :from:to:cc:references:in-reply-to:content-transfer-encoding;
+        bh=o88lqLbXiByZSEm5Oe3EmBOSlVPhL0Q4BRAUKBtJ+uQ=;
+        b=K/OlInL0tAUwrXGjW3e7hdI1Qt+9UmNZVEpQgea9WXJXbENuBOLJJXO978bLVgPL09
+         frIs9LsU4LJ4YRMhIgJih/o6S1uai/SIAxRI01cA1OofrEg2xMjCE26bBzki7279KAON
+         hKVeoTTbJP6pKrQjFgTiDg1y548bOvJCEwYr3eYNwHX21KWkjWQwv4n2nLXbXSl1NDtW
+         2YlVgaf0hEE/JCQxTTnn5z87bT6Z7AiSM0jjgaH50T+a/5jfL/Fb5Kyyr7hTOmSYVo82
+         hgz8goirDLehCMGmD/tjKRW7/U+e3OkcaS2ju8jHpawV0ZiQnMWo0sX+iWh3ANKBUvE0
+         EfuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MjDTtA6DTI6xzB5x2nBzzPrcPt5OZM3EBixaaL8qpWI=;
-        b=LK+J/DyQKqzsYT2de7kkmskhNvKsoykCJN3hhjRgm9Lq0NHtJrUhREcuNx6fvUuAQ7
-         U2uBuF7vm4p6UXJoLRvrPC5on/0mgFWeHq/SlZoLFY6WLpC8ipbwOYBzpzx/B20c1oCy
-         T1Ob6gEJwXR8TpcExApFTklMU3fJEAt3tBvNc9JSe/3RUlTGn429g3Yo0gurOTsAKn3t
-         kqNCDVV0cbwOlGQSzp7r9mje31mvNMCwvjkxWbnJ/i7oHYPBwHq+m50RVpgBBBvpNHCe
-         tNX8NNJ07S+tLDNL3S+S3d7kIMgpKYM00K/ax+4BZWSlGjSUqW2wB4STmLsBu+g6d24m
-         VP3g==
-X-Gm-Message-State: AOAM530DoAMF75KBC9tx05pML4rpsXkJN28Q6CBzUrHkhicmOd9gcfVz
-        bcko5rE+khVx1qzexhyrg4ck9E4oBqPTB7mVfhE=
-X-Google-Smtp-Source: ABdhPJxGpDo22JWP+St++nExricZPROGw5bLAgB0waYE2v6yK5NuFCtHkI7fS9pVeii7gurWxgpSXYliFkDT2TmDNeE=
-X-Received: by 2002:a05:6638:13d5:: with SMTP id i21mr2746797jaj.79.1637031591902;
- Mon, 15 Nov 2021 18:59:51 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:cc:references:in-reply-to
+         :content-transfer-encoding;
+        bh=o88lqLbXiByZSEm5Oe3EmBOSlVPhL0Q4BRAUKBtJ+uQ=;
+        b=1w2JvLjv3sIwH7aRkDbtxQv0aGAbNzyvRxGr338TXLrIZjVLsxDR6lHXjAE0SlOapq
+         G6xrPmJ765OuiVQoir3IlQPmyDdewcmY9JqGfffJ5A9bfB+m3WsxEPRQ3HIxs1JYpyPv
+         krPCAu3U3BfOx7RyCsboDFCEPIN9ehoC1sd3qC2EvtMKY2ZquB1FCNpofyejSM+iWpmW
+         x6bAYYTykpy7pHf/KOrXcMYNiASIqFwmgVN81eqZ5Tlb+PiE5jwV4t2GA5IPtM3NN35y
+         IaJwIxZNRbAuaRAKnED3U2Ei2JwiY836oBUC85xg11HTzuBP7jiERrXZCzBsbTDVzfTX
+         7TwA==
+X-Gm-Message-State: AOAM532oOQQCf2P5tgIvaNyhzf43KZqMZvNOAvxcnX6gp2PXzeiL2rF6
+        83qUjWDAJygeocJf4odHkTbb3Q==
+X-Google-Smtp-Source: ABdhPJxvP2FW2Cw2JHL4/3O5X2lE/MNb0RjTAl1y9dgNVehB47HDHZ69W5LnyJsjv575FrQUClNSkg==
+X-Received: by 2002:a05:6808:1814:: with SMTP id bh20mr49231251oib.31.1637031642978;
+        Mon, 15 Nov 2021 19:00:42 -0800 (PST)
+Received: from [192.168.11.48] (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
+        by smtp.gmail.com with ESMTPSA id g10sm3350916otg.10.2021.11.15.19.00.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Nov 2021 19:00:42 -0800 (PST)
+Message-ID: <43528a0b-678c-f1c1-c9af-ad8ea324cb85@kali.org>
+Date:   Mon, 15 Nov 2021 21:00:40 -0600
 MIME-Version: 1.0
-References: <m3lf36n0d8.fsf@t19.piap.pl> <AS8PR04MB86766EED807B963F4D9931E68CB29@AS8PR04MB8676.eurprd04.prod.outlook.com>
-In-Reply-To: <AS8PR04MB86766EED807B963F4D9931E68CB29@AS8PR04MB8676.eurprd04.prod.outlook.com>
-From:   Art Nikpal <email2tema@gmail.com>
-Date:   Tue, 16 Nov 2021 10:59:40 +0800
-Message-ID: <CAKaHn9+Mm7ijodyhsGS5FQO+yWnCUL46QtBjcu40TD3K7=U_zg@mail.gmail.com>
-Subject: Re: [PATCH v3 REPOST] PCIe: limit Max Read Request Size on i.MX to
- 512 bytes
-To:     Richard Zhu <hongxing.zhu@nxp.com>
-Cc:     =?UTF-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.0
+Subject: Re: [PATCH] cpufreq: freq_table: Initialize cpuinfo.max_freq to
+ correct max frequency.
+Content-Language: en-US
+From:   Steev Klimaszewski <steev@kali.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>, rafael@kernel.org,
+        viresh.kumar@linaro.org, bjorn.andersson@linaro.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20211115195011.52999-1-thara.gopinath@linaro.org>
+ <5ae2c644-4743-c62c-b17c-96945a0e6a01@kali.org>
+In-Reply-To: <5ae2c644-4743-c62c-b17c-96945a0e6a01@kali.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 3:19 PM Richard Zhu <hongxing.zhu@nxp.com> wrote:
->
-> > -----Original Message-----
-> > From: Krzysztof Ha=C5=82asa <khalasa@piap.pl>
-> > Sent: Wednesday, October 6, 2021 2:17 PM
-> > To: Bjorn Helgaas <bhelgaas@google.com>
-> > Cc: linux-pci@vger.kernel.org; Artem Lapkin <email2tema@gmail.com>; Nei=
-l
-> > Armstrong <narmstrong@baylibre.com>; Huacai Chen
-> > <chenhuacai@gmail.com>; Rob Herring <robh@kernel.org>; Lorenzo Pieralis=
-i
-> > <lorenzo.pieralisi@arm.com>; Krzysztof Wilczy=C5=84ski <kw@linux.com>; =
-Richard
-> > Zhu <hongxing.zhu@nxp.com>; Lucas Stach <l.stach@pengutronix.de>;
-> > linux-kernel@vger.kernel.org
-> > Subject: [PATCH v3 REPOST] PCIe: limit Max Read Request Size on i.MX to=
- 512
-> > bytes
-> >
-> > DWC PCIe controller imposes limits on the Read Request Size that it can
-> > handle. For i.MX6 family it's fixed at 512 bytes by default.
-> >
-> > If a memory read larger than the limit is requested, the CPU responds w=
-ith
-> > Completer Abort (CA) (on i.MX6 Unsupported Request (UR) is returned
-> > instead due to a design error).
-> >
-> > The i.MX6 documentation states that the limit can be changed by writing=
- to
-> > the PCIE_PL_MRCCR0 register, however there is a fixed (and
-> > undocumented) maximum (CX_REMOTE_RD_REQ_SIZE constant). Tests
-> > indicate that values larger than 512 bytes don't work, though.
-> >
-> > This patch makes the RTL8111 work on i.MX6.
-> >
-> > Signed-off-by: Krzysztof Ha=C5=82asa <khalasa@piap.pl>
-> [Richard Zhu] I'm fine with this patch. Acked-by: Richard Zhu <hongxing.z=
-hu@nxp.com>. Thanks.
 
-Same will be fine for us
+On 11/15/21 7:23 PM, Steev Klimaszewski wrote:
+> Hi Thara,
+> <snip>
+>
+> And it doesn't go up, I even tried adding a sleep of 1 second between 
+> the echo 1/0/1 lines and while 2956800 goes up to 28 (but never uses 
+> it) it seems like, unless I do it manually once I've logged in, which 
+> I'm assuming is a lot slower than waiting 1 second between them, it's 
+> not quite giving us 2956800 "easily".
+>
+> If the email wasn't clear, please let me know! I tried to explain as 
+> best I could what I am seeing here.
+>
+> -- steev
+>
+So after more testing... *sometimes* it works, with the jiggle, but not 
+always.  I'm really not sure why though, so if there's any guidance, I'm 
+all for it!
 
->
-> Best Regards
-> Richard Zhu
->
-> > ---
-> > While ATM needed only on ARM, this version is compiled in on all archs.
-> >
-> > diff --git a/drivers/pci/controller/dwc/pci-imx6.c
-> > b/drivers/pci/controller/dwc/pci-imx6.c
-> > index 80fc98acf097..225380e75fff 100644
-> > --- a/drivers/pci/controller/dwc/pci-imx6.c
-> > +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> > @@ -1148,6 +1148,7 @@ static int imx6_pcie_probe(struct platform_device
-> > *pdev)
-> >               imx6_pcie->vph =3D NULL;
-> >       }
-> >
-> > +     max_pcie_mrrs =3D 512;
-> >       platform_set_drvdata(pdev, imx6_pcie);
-> >
-> >       ret =3D imx6_pcie_attach_pd(dev);
-> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c index
-> > aacf575c15cf..abeb48a64ee3 100644
-> > --- a/drivers/pci/pci.c
-> > +++ b/drivers/pci/pci.c
-> > @@ -112,6 +112,8 @@ enum pcie_bus_config_types pcie_bus_config =3D
-> > PCIE_BUS_PEER2PEER;  enum pcie_bus_config_types pcie_bus_config =3D
-> > PCIE_BUS_DEFAULT;  #endif
-> >
-> > +u16 max_pcie_mrrs =3D 4096; // no limit
-> > +
-> >  /*
-> >   * The default CLS is used if arch didn't set CLS explicitly and not
-> >   * all pci devices agree on the same value.  Arch can override either =
-@@
-> > -5816,6 +5818,9 @@ int pcie_set_readrq(struct pci_dev *dev, int rq)
-> >                       rq =3D mps;
-> >       }
-> >
-> > +     if (rq > max_pcie_mrrs)
-> > +             rq =3D max_pcie_mrrs;
-> > +
-> >       v =3D (ffs(rq) - 8) << 12;
-> >
-> >       ret =3D pcie_capability_clear_and_set_word(dev, PCI_EXP_DEVCTL, d=
-iff
-> > --git a/include/linux/pci.h b/include/linux/pci.h index
-> > 06ff1186c1ef..2b95a8204819 100644
-> > --- a/include/linux/pci.h
-> > +++ b/include/linux/pci.h
-> > @@ -996,6 +996,7 @@ enum pcie_bus_config_types {  };
-> >
-> >  extern enum pcie_bus_config_types pcie_bus_config;
-> > +extern u16 max_pcie_mrrs;
-> >
-> >  extern struct bus_type pci_bus_type;
-> >
-> >
-> > --
-> > Krzysztof "Chris" Ha=C5=82asa
-> >
-> > Sie=C4=87 Badawcza =C5=81ukasiewicz
-> > Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP Al. Jerozolim=
-skie 202,
-> > 02-486 Warszawa
+-- steev
+
