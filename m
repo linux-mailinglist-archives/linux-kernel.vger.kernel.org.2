@@ -2,75 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0E0453CED
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A56B453CF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbhKPX4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 18:56:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232460AbhKPX4G (ORCPT
+        id S232024AbhKPX5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 18:57:23 -0500
+Received: from mail-qk1-f181.google.com ([209.85.222.181]:34729 "EHLO
+        mail-qk1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229819AbhKPX5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 18:56:06 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19623C061746
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 15:53:09 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id r26so2210032oiw.5
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 15:53:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=KFUf/CthI/bS+ZQgvAygcfDGxDGo7QNEjise0MnefUk=;
-        b=mK/6ikPS6kaJlyMjmNnOBa6iOsd2iYbIqMHzl1BXEDg/YUNMNxad5YIiG5G+Gv0Mha
-         lg4L8Z5bJIKf4WzbYdu1iSQCh7v2Hn7N8xF1Ke78/rjwmlLkOzB2v1tYFHErHCGfBV9d
-         qOLpnuRbRmNkN8FNDgGobx6YnmCyo/78RyVb8=
+        Tue, 16 Nov 2021 18:57:22 -0500
+Received: by mail-qk1-f181.google.com with SMTP id t6so723109qkg.1;
+        Tue, 16 Nov 2021 15:54:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=KFUf/CthI/bS+ZQgvAygcfDGxDGo7QNEjise0MnefUk=;
-        b=4ojC7L7ozQdD/L4D9KFGvOYAiSflR2FrMZb/RzajyvLSBqsudD3Ys1dy/l/Hxmc4QS
-         P4oyMcg0zHvqnbDO23Hw4sORmAMHTSY9SOjd5Z94hm7HS/kXlOg4EenVGt5MDP+DTwxj
-         esM6iNDeEMfUNN5KsdUToNiJiuBLDSXXjhCmBd8twtKqipBNJQC4dwvdq8I9bLNd2FiH
-         3K5kLrjRjINCW/bqx09kcBIuNpoZE1SUO+6/1+6ZKAD/DAt+7ICVfK4vdV5KVZwU3/2i
-         3Jr9K+ftJoPa9Cm2vtdnCjY5V1sS9iCZUuQj4CJIOh07Ze0uEfzD/cUb3Tr1osOxickv
-         Z1Ww==
-X-Gm-Message-State: AOAM530KbMspS6bjl1hUbxqUO78KSQ/fLYq+ehK9AX5XBEiMfaasvpLm
-        1tNExRZFa8zjayGsHXFkH1EvU73pXgKM1Jq/lQTcPw==
-X-Google-Smtp-Source: ABdhPJwccuxLou2oRfuz+ayeUbq55/sG63cd1jzCiEn4K2zwqAWWmXhnujN2bMQ6TSnBc66iJtbNr0QrzdjedXY/oZ4=
-X-Received: by 2002:aca:2319:: with SMTP id e25mr56712319oie.164.1637106788501;
- Tue, 16 Nov 2021 15:53:08 -0800 (PST)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 16 Nov 2021 15:53:07 -0800
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XaM4c4Woo9gfrvREvQLOCh29FfhU00zvUd3aOtJYfOg=;
+        b=sCaecqAR3GZolgoGmPyiT/2WqP8iyosDyP/P5bkCJqZ139cQhPb3uF39kG6IkaRar7
+         veHlF9gwaAoHyEua+6hjGLZuIgr4nTDiP1tqRKbVgx8yUpZNdr5xHZPSucdXG3myffIe
+         0cBbHtCLO8R+0w+HqfNy8twz2wOL+fJUENdA5IXYISC2eHv4hjCDqaWGVe4ToHbBrV8s
+         1pthJzRc2f8XjEHh9duwQ6XerWpc15y6KvGeb1q5lrxdmtC3j2UBotBdxcd081IFXd7P
+         z8oIHfQ3kM7CijjXThmeeS9d5lplv5a7aO/9RCHpNgF7cK4NjPeiK6/CMx2sxdsO9QuJ
+         Iraw==
+X-Gm-Message-State: AOAM533NRy+heJxccqKiz8dha2sOzPNnk68109uG5XF6b37aRHbcjx/s
+        RpWW8MuyZe9dhcFIQPKz2kA=
+X-Google-Smtp-Source: ABdhPJyNqHXlIdR1dddmf41eQfSmAWQwVpkLgbiNIPnG2pGIX2g9DxuYaO6+j+cW4wjASefJ+dshlg==
+X-Received: by 2002:a05:620a:5d:: with SMTP id t29mr9627108qkt.220.1637106864801;
+        Tue, 16 Nov 2021 15:54:24 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id u9sm6822849qta.17.2021.11.16.15.54.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 15:54:24 -0800 (PST)
+Date:   Wed, 17 Nov 2021 00:54:19 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Cc:     Yuji Nakao <contact@yujinakao.com>, linux-kernel@vger.kernel.org,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        ". Bjorn Helgaas" <bhelgaas@google.com>,
+        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Sasha Levin <sashal@kernel.org>,
+        Jeremy Soller <jeremy@system76.com>
+Subject: Re: Kernel 5.15 doesn't detect SATA drive on boot
+Message-ID: <YZREq6jQOhyKIHk0@rocinante>
+References: <87h7ccw9qc.fsf@yujinakao.com>
+ <8951152e-12d7-0ebe-6f61-7d3de7ef28cb@opensource.wdc.com>
+ <YZQ+GhRR+CPbQ5dX@rocinante>
+ <26826c5d-2fa6-9719-be2a-5a22d1e9abc0@opensource.wdc.com>
 MIME-Version: 1.0
-In-Reply-To: <00ea01d7db12$43b6d9b0$cb248d10$@codeaurora.org>
-References: <1635860673-12146-1-git-send-email-pillair@codeaurora.org>
- <1635860673-12146-4-git-send-email-pillair@codeaurora.org>
- <CAE-0n52effcajLwjOY_v-pjp68ytkb-zo4R9EHp3CQi=yB8nPQ@mail.gmail.com> <00ea01d7db12$43b6d9b0$cb248d10$@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 16 Nov 2021 15:53:07 -0800
-Message-ID: <CAE-0n53Djw69-Q6VOrayhdgefiWOWqAjmuFj0MkkwyEMaS0sCw@mail.gmail.com>
-Subject: RE: [PATCH v8 3/3] remoteproc: qcom: q6v5_wpss: Add support for
- sc7280 WPSS
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, ohad@wizery.com,
-        p.zabel@pengutronix.de, pillair@codeaurora.org, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sibis@codeaurora.org, mpubbise@codeaurora.org, kuabhs@chromium.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <26826c5d-2fa6-9719-be2a-5a22d1e9abc0@opensource.wdc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting pillair@codeaurora.org (2021-11-16 09:49:05)
-> >
-> > Is this documented in the binding? If not, please add it.
->
-> Hi Stephen,
-> "firmware-name" is already documented in the bindings.
->
+[+CC Adding Jeremy for visibility]
 
-Ok I see it now. Thanks!
+Hi Damien,
+
+[...]
+> > The error in the dmesg output (see [2] where the log file is attached)
+> > looks similar to the problem reported a week or so ago, as per:
+> > 
+> >   https://lore.kernel.org/linux-pci/ee3884db-da17-39e3-4010-bcc8f878e2f6@xenosoft.de/
+> 
+> Thanks. I searched this thread but could not find it in the archive.
+> Early morning, need more coffee :)
+
+No worries!  Got you covered!
+
+     )))
+    (((
+  +-----+
+  |     |]
+  `-----'
+
+Enjoy!
+
+> 
+> > 
+> > The problematic commits where reverted by Bjorn and the Pull Request that
+> > did it was accepted, as per:
+> > 
+> >   https://lore.kernel.org/linux-pci/20211111195040.GA1345641@bhelgaas/
+> > 
+> > Thus, this would made its way into 5.16-rc1, I suppose.  We might have to
+> > back-port this to the stable and long-term kernels.
+> 
+> Yes, I think the fix needs to go in 5.15, which is latest stable and LTS.
+
+On the plus side, not everyone is on 5.15 yet, but those who are using it would
+have some issues.  Albeit, with it being an LTS release, the adoption might
+increase rapidly.
+
+For instance, I believe that Pop!_OS already ships kernels that are very close
+to the upstream, which would hit their current user base.
+
+	Krzysztof
