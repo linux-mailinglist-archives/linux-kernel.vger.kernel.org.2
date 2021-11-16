@@ -2,103 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7EEC452FBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:04:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E467452FAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:02:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234566AbhKPLGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 06:06:11 -0500
-Received: from smtpout1.mo529.mail-out.ovh.net ([178.32.125.2]:54033 "EHLO
-        smtpout1.mo529.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234637AbhKPLFa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 06:05:30 -0500
-X-Greylist: delayed 1799 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Nov 2021 06:05:30 EST
-Received: from mxplan5.mail.ovh.net (unknown [10.108.4.240])
-        by mo529.mail-out.ovh.net (Postfix) with ESMTPS id E001BCBCDEA1;
-        Tue, 16 Nov 2021 11:27:10 +0100 (CET)
-Received: from kaod.org (37.59.142.101) by DAG4EX1.mxp5.local (172.16.2.31)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Tue, 16 Nov
- 2021 11:27:10 +0100
-Authentication-Results: garm.ovh; auth=pass (GARM-101G00488e9d7c1-0317-46b2-b738-c13bf1602699,
-                    BFAEB7FE3C4E2C4D96001007C3BA12B7689A693E) smtp.auth=clg@kaod.org
-X-OVh-ClientIp: 82.64.250.170
-Message-ID: <50482eb9-389c-0114-ba21-988f1fce493c@kaod.org>
-Date:   Tue, 16 Nov 2021 11:27:09 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 16/39] irqdomain: Make normal and nomap irqdomains
- exclusive
-Content-Language: en-US
-To:     Marc Zyngier <maz@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Greg Kurz <groug@kaod.org>
-References: <20210520163751.27325-1-maz@kernel.org>
- <20210520163751.27325-17-maz@kernel.org>
- <1fe9d629-0f5f-4807-b97c-77b3b3c7de72@kaod.org>
- <87a6i48pp5.wl-maz@kernel.org>
-From:   =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-In-Reply-To: <87a6i48pp5.wl-maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [37.59.142.101]
-X-ClientProxiedBy: DAG5EX1.mxp5.local (172.16.2.41) To DAG4EX1.mxp5.local
- (172.16.2.31)
-X-Ovh-Tracer-GUID: a0750013-07d5-4706-bb9b-93a98d531333
-X-Ovh-Tracer-Id: 9763241045856979750
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvuddrfedvgdduhecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfhfhfgjtgfgihesthejredttdefjeenucfhrhhomhepveorughrihgtpgfnvggpifhorghtvghruceotghlgheskhgrohgurdhorhhgqeenucggtffrrghtthgvrhhnpefhhfelgeeukedtteffvdffueeiuefgkeekleehleetfedtgfetffefheeugeelheenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddruddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphhouhhtpdhhvghlohepmhigphhlrghnhedrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpegtlhhgsehkrghougdrohhrghdprhgtphhtthhopehgrhhouhhgsehkrghougdrohhrgh
+        id S234555AbhKPLFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:05:03 -0500
+Received: from m43-7.mailgun.net ([69.72.43.7]:63499 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234511AbhKPLFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 06:05:01 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1637060521; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=Wt/HjrcdB9QYwp3Rr18jUECoJIJBfzCHQYUTqCg6wzA=; b=cyHonmwfs0k9wn0g+cBAXnBhspEZNDSRNhMBLDnRhgfG1wIjtXub1bFdrVcOX4eQG4QGme1D
+ rd3RTHCQYGPX98qtKCkumLfn6XIxjx3JPg1Dr1EdZHifXAqzZjGaLyiZZLWtGewnM51RFg7p
+ /Abv0EQ9Qiks43/Ux1cJDtX/bEg=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 61938fa94db4233966bb7418 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Nov 2021 11:02:01
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 65B6CC43618; Tue, 16 Nov 2021 11:02:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from pmaliset-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 14EA0C4338F;
+        Tue, 16 Nov 2021 11:01:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 14EA0C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     swboyd@chromium.org, agross@kernel.org, bjorn.andersson@linaro.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, manivannan.sadhasivam@linaro.org,
+        robh+dt@kernel.org, mka@chromium.org, lorenzo.pieralisi@arm.com,
+        svarbanov@mm-sol.com, bhelgaas@google.com
+Cc:     Prasad Malisetty <pmaliset@codeaurora.org>
+Subject: [PATCH v3 0/2] Add PCIe clock DT entries for SC7280
+Date:   Tue, 16 Nov 2021 16:31:45 +0530
+Message-Id: <1637060508-30375-1-git-send-email-pmaliset@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Marc,
+Changes Added in v3:
+	
+	* Seperated v2 patch as two patches. One patch is for 
+	  Fixing incorrect clock name and another patch is for
+	  Adding PCIe clock handle for SC7280.
 
->> This patch is breaking the POWER9/POWER10 XIVE driver (these are not
->> old PPC systems :) on machines sharing the same LSI HW IRQ. For instance,
->> a linux KVM guest with a virtio-rng and a virtio-balloon device. In that
->> case, Linux creates two distinct IRQ mappings which can lead to some
->> unexpected behavior.
-> 
-> Either the irq domain translates, or it doesn't. If the driver creates
-> a nomap domain, and yet expects some sort of translation to happen,
-> then the driver is fundamentally broken. And even without that: how do
-> you end-up with a single HW interrupt having two mappings?
-> 
->> A fix to go forward would be to change the XIVE IRQ domain to use a
->> 'Tree' domain for reverse mapping and not the 'No Map' domain mapping.
->> I will keep you updated for XIVE.
-> 
-> I bet there is a bit more to it. From what you are saying above,
-> something rather ungodly is happening in the XIVE code.
+	* Added fixes patch for interrup-map parent address cells 
+	  For SC7280.
 
-It's making progress.
+Prasad Malisetty (2):
+  arm64: dts: qcom: sc7280: Fix incorrect clock name
+  arm64: dts: qcom: sc7280: Add pcie clock support
 
-This change in irq_find_mapping() is what 'breaks' XIVE :
+ arch/arm64/boot/dts/qcom/sc7280.dtsi | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-   +       if (irq_domain_is_nomap(domain)) {
-   +               if (hwirq < domain->revmap_size) {
-   +                      data = irq_domain_get_irq_data(domain, hwirq);
-   +                      if (data && data->hwirq == hwirq)
-   +                               return hwirq;
-   +               }
-   +
-   +               return 0;
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-
-With the introduction of IRQ_DOMAIN_FLAG_NO_MAP, the revmap_tree lookup
-is skipped and the previously mapped IRQ is not found. XIVE was relying
-on a side effect of irq_domain_set_mapping() which is not true anymore.
-
-I guess the easiest fix for 5.14 and 5.15 (in which was introduced MSI
-domains) is to change the XIVE IRQ domain to a domain tree. Since the HW
-can handle 1MB interrupts, this looks like a better choice for the driver.
-
-Thanks,
-
-C.
