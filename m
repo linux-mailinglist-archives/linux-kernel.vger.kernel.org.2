@@ -2,302 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF8F4534B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE114534BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237680AbhKPO6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 09:58:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42416 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233685AbhKPO6B (ORCPT
+        id S237708AbhKPO7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 09:59:01 -0500
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:50802 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233685AbhKPO65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 09:58:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637074503;
+        Tue, 16 Nov 2021 09:58:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1637074558;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aJsdqckMpSrnjgsJbAncoNF9lWAO7/84piA2ZLXdMvk=;
-        b=XcIcVbA0Y5/j/T5jolPhhl5k/42egTMbQPUl6EdbMpk7yftTkmZLzL+oYRCiO/juNyu4JP
-        rUlpi8g7iy46kKSD/pebkGqAsnToGY/HgcV0tKHyX9XPSElxsAiYZ1dkyb5i56Tz+mY3Tb
-        7kBoE5A+h4sl8Z8OgHYo1PGt4NoAhPE=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-399-gJQXi4QpO326wQE1o_dong-1; Tue, 16 Nov 2021 09:55:02 -0500
-X-MC-Unique: gJQXi4QpO326wQE1o_dong-1
-Received: by mail-ed1-f71.google.com with SMTP id y9-20020aa7c249000000b003e7bf7a1579so6035176edo.5
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 06:55:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=aJsdqckMpSrnjgsJbAncoNF9lWAO7/84piA2ZLXdMvk=;
-        b=oB0MoDgQUn02r2vd5SoQCqzjdkLqozNZxoOevmAOEeNDuphZ0B06z+O7kADuGK+dZr
-         jKqbr0UN1p98sSHUa/BH6MIviZwI02Ucu3cuLZSj6AxNSVggURl1ee1xo1PV1wjpXU8Q
-         OJzJnl8tPsqpJ4mm0jdPqGY3auLIU3+6pJ3iLL8SpQAtGkFgRilIJGEeWKcVoa2S8Sch
-         ENOuf7ivvTzvc14RP+vmSkHlRme6Q8dvBib/zstkkTSu46aaOqVPJhAV09MU1P4oZ9Mj
-         7gVmr8V6y2B/z0yNuJTlqm4xeIMfWOTnjtYCMY+BP0ji6Pc4mihXEGLJGGIs8eKUwxyB
-         6VBA==
-X-Gm-Message-State: AOAM531rgOXgzXXbZHys5duBslQzZyH9AwWNlSMZ79YGSxLAIAYXl0Uf
-        hGmm0EXVfADmYjAhfJ/JaRKTk02+tXiBwXzpKhG21cvWc/9E6Dm2Z7uQXTYnJx7+yG0xYsxXIsF
-        uQtFUa8hS5Voqq7IbbfQZ0JFn
-X-Received: by 2002:a17:907:7850:: with SMTP id lb16mr10773091ejc.67.1637074501309;
-        Tue, 16 Nov 2021 06:55:01 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzuubmLlbRPpMLaXbB55egMjZQjbrU8Iv0RwixL6xLUvtTh1WVnaG2lAjC4K9g+JVxyCXsWPA==
-X-Received: by 2002:a17:907:7850:: with SMTP id lb16mr10773053ejc.67.1637074501058;
-        Tue, 16 Nov 2021 06:55:01 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id u16sm8308560ejy.16.2021.11.16.06.55.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 06:55:00 -0800 (PST)
-Message-ID: <f54546b1-b0dc-c2bc-3a5f-bcdaf35297fc@redhat.com>
-Date:   Tue, 16 Nov 2021 15:55:00 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [device property] 995fe757ec:
- BUG:kernel_NULL_pointer_dereference,address
+        bh=aPiSSaE6JmblMcftistrINGmNpA2/8MuKKgoo3uP3w0=;
+        b=HiSS89pl2wFZ9SWlq0NdqMXbAI72bzEEcQh3jJKum5C6vMPo0WVekpmNGuRZl1atABDVta
+        h6oosKstEe5KbLL6jHLW2hh/qLdSa7nKjS5hUP+ornkXVOpWdA48T9ZmTe++V/tSPluL2i
+        8GdgQkCUcuZQd6xy09GP4w3h9Ql41Ek=
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur01lp2052.outbound.protection.outlook.com [104.47.0.52]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-13-n0m8UhPdPKysGxIz-Tb7Yw-1; Tue, 16 Nov 2021 15:55:57 +0100
+X-MC-Unique: n0m8UhPdPKysGxIz-Tb7Yw-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jmLwTlh/3XMT4zYDZhBOu4vPZ/bQ7l87ZllQhF/HAME47bBr+DxEc6cGFsX5QBgYOv8FISQeEXz16OTpJYhX8RrxWOk9fd1Z8qLRZ+C2/SIsV91Nv0yYuOkfFRbv+4/HmwMcqBHyQ3a5/LxPapvNAO/kjbly14w30InNYahiZ4lC1TuakhQB+8V4OS+PlVNCLUq66k43eDEm5NjJTpY1qN5wwbBU2U7SEpgYh5ugaWgqR1GxTdlMPUK8rEjdIx8ZxA9mWk8TyodHpqG45iWjfK+5yWPHlG7+XkOY522PCPIKXOtsf070bzFlxu4mCUsnFUbfy4L/AdA0eU7KLWDWZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6ByBp5MZeD59CjWf5VwLe51Y0tIsapc3swcZVUvIiHI=;
+ b=d4Sk0/c7YbpJyFtDYSTSGQYPosrHHZmTysl/Gau4OFge4dN+wiVx9fPWc6Ow+UF3cOmqcsQhQIO7pgIoq40tCuszL8Q4Yb6mRJfUY3aEel5FfdVO6nIZFolxx6uh5oU/li/LwIWq/JTKzQK5f0pDcp34wn1mmVjZwBeXJr9bk7N7qimDayq/DPRwV1mEgwmDABef9FwZi05IGvy5jjtIVrdGYxz6+lHC9EJddBO9n7h0On7Sw93Sh1Xry/pWcwcPb7Lq4Ay0nJ6xY5t7eXSsKu7L4HvCfArNSfpG8RBjKW9IkKMQIojybJpmRA+sA9GQkobVwcoyi+S3JSGH8eScxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR04MB3117.eurprd04.prod.outlook.com (2603:10a6:802:6::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.15; Tue, 16 Nov
+ 2021 14:55:54 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::8062:d7cb:ca45:1898]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::8062:d7cb:ca45:1898%3]) with mapi id 15.20.4690.027; Tue, 16 Nov 2021
+ 14:55:53 +0000
+Message-ID: <f80f3207-363d-51b7-4ae0-e4b8aeb2544b@suse.com>
+Date:   Tue, 16 Nov 2021 15:55:46 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] xen/privcmd: make option visible in Kconfig
 Content-Language: en-US
-To:     kernel test robot <oliver.sang@intel.com>,
-        Daniel Scally <djrscally@gmail.com>
-Cc:     lkp@lists.01.org, lkp@intel.com, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-References: <20211116074104.GC32102@xsang-OptiPlex-9020>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20211116074104.GC32102@xsang-OptiPlex-9020>
+To:     Juergen Gross <jgross@suse.com>
+CC:     linux@weissschuh.net, Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+References: <20211116143323.18866-1-jgross@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+In-Reply-To: <20211116143323.18866-1-jgross@suse.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: AM5PR0701CA0072.eurprd07.prod.outlook.com
+ (2603:10a6:203:2::34) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
+MIME-Version: 1.0
+Received: from [10.156.60.236] (37.24.206.209) by AM5PR0701CA0072.eurprd07.prod.outlook.com (2603:10a6:203:2::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.15 via Frontend Transport; Tue, 16 Nov 2021 14:55:53 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 161156a7-bf84-42dc-d0af-08d9a911301d
+X-MS-TrafficTypeDiagnostic: VI1PR04MB3117:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-Microsoft-Antispam-PRVS: <VI1PR04MB31175B10B52CFD316D2707DBB3999@VI1PR04MB3117.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: giFg30kwEZZfOtLnrZWIL2abEQq7Ix+fhYRxOCUeHZEDyOnyLA2T2pVsVtzg4iId1R1acvdMat4JpdTKXjOP+UfLQpUqIZMc7BkxP8xjw8EnZkZjfg9cZQTpFutfgVr4sfAsEQZuYWEkJUnhO4C0RRJr2tCBfkztt3mcmazrcdzjPcImgPbsg3xk2qeEPctLuPSj3g9rmyXbglidV5hK9gYxCA2W3Y9BbWDs4FJrw+C6CWckSVk4UdM4RddpRO9liy/Z3Q7Bv33nG0KBsHQLHR+K16Dn13elZN5E+iYd7Tr3oYBoCFG8IrdZUcOEF9SsHpX5AlrFmn6LfhvEh9C3hjQeDpertW7UFxnjjsnQmVqeJfXrgPeP17fS/oB9q/+h1hP7H5fqh3PjptGfb7eRWAyVdlhyMC3T+HOmiu+2xhQ/H0U4PYOgpUy8B+0i6HwMF0eVxjYE62Dnn/0HCIPCfy9ZLxhX/JuNHk/JaMrU8vQLp3Wu3Rg1kmmIkB5WEncydzuCtO7ahXPRDADEkQ6Xg5Wi9QMYMRhnn4RoHlfgjzMRpzCZJqkJ8F5Ki2kd8CDwsrO2a9Z+g+txC/EYmYeJil0U3W6QTgyBBHkpO/8gwYdsXLMzjY56XrWdBWTbMNtMOzqi+X4xgzZLmqE8ZnCbLs/AnXAQQMesI1QfES5YgPPVfLi3p0MDKiOy15sYYhF3YXIqW6ma3l7N0XLwnjt76D3elpiu6nEjTNjOlIEfKdc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6666004)(66556008)(53546011)(5660300002)(16576012)(2616005)(66946007)(2906002)(54906003)(66476007)(36756003)(86362001)(26005)(316002)(6486002)(66574015)(31686004)(508600001)(83380400001)(956004)(6636002)(8676002)(4326008)(37006003)(31696002)(186003)(38100700002)(6862004)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?aUic87nJrHWHGCLLQbOQWXJ3JM9dmq5SS34htK4YqxXX/xi48Gs6/4+G+3CE?=
+ =?us-ascii?Q?kUXyQMsB9KTuwqehnDOlGy46oP/DvzO4n1PgK/ymnvo9OzlBnIPBNovROU5I?=
+ =?us-ascii?Q?ZiT7k549MNKOKHQi1k9i+vpwHChmhalqsJVHhFylGCQNygq/wodFHCAgZd+L?=
+ =?us-ascii?Q?lishlpjV7bNXrp/GEVcOXNPsrB1omENnkN8XTTMzJnrCVYLCbSKHRQ343SiM?=
+ =?us-ascii?Q?8cf1MRribiuK5Sla7uBMBioNmgDuXczIfdd358o93/mxrVMvtY7YI/jkU43Y?=
+ =?us-ascii?Q?RjUFIHicK4D3v6DwV/O/97KJa2YrDlQzEVR5FVInHV0KKbmWdRn0a25na2fN?=
+ =?us-ascii?Q?3mLAFeTW16Qdcm9/NMSAIBLjPF4ACZHNpZn7alIA4V+UdMfXK5phEUYh+z3i?=
+ =?us-ascii?Q?fYNt5gVY6svuylJFv1F60ASwAZHePszAtpc1PMaS6XPLYqJvcm43OqRXaKUV?=
+ =?us-ascii?Q?g5dxc2+rBeF/MwT+UhC2cNmW61q+N3fUXUgy5vANmnVjIvPAZ1IT0OygUdOV?=
+ =?us-ascii?Q?pBmPEpKxJv7iRAkVObrTxcvBNfma12qArd1wHn284GVBuERh44kKqFV8pZbg?=
+ =?us-ascii?Q?cHoom4RPA47x7aFJAvyP5cQIM9/4yFauwe5hknZ0yDpTKejgPEpNkJQIlLYX?=
+ =?us-ascii?Q?xUmaR8+s52o6xRtieAVCVrEN/Dv4SrjLDtZY2Ong8iwQba8AflQ1s/4yjO4V?=
+ =?us-ascii?Q?Z6QOhhH9iytC5Qfz+uoHp1TCzuBagNUY2h3HDR5cimVI5csL75VFyHphMYtU?=
+ =?us-ascii?Q?grXb7HusUpK9sA49XP9kA6kvOep5aPgo+WxR/P2Uo4Wsjlk+aEOG4eOB7fy/?=
+ =?us-ascii?Q?Fwu5hD2KtU94xc7CW8zOBc2tfZnMciYsk8y+fP3Y+X9To+OSuNJv9fIdcsV7?=
+ =?us-ascii?Q?dT9eBNeZaHNgyoxOjHsjS7yl85NmAuDsk+gKKuEfzw8wjXUTtVZVURTPI18g?=
+ =?us-ascii?Q?2kDTpj2eUluiVf9V0hW7c7h5nVxyQRmX8IewM9iz6eFBrLf30yuhHx1XFa1Y?=
+ =?us-ascii?Q?Td2+Hm5JT0dIfMAC/T1pBMsx6x8Uzt7EgeTafjBu1CRjRQc7+kZAR3I6MWp/?=
+ =?us-ascii?Q?JEx+P+McJO/Xo911vgz0iT5ykHCj3QTNq9+vPmZri1q8/fXt2E2qi2oQ4zCX?=
+ =?us-ascii?Q?Zxy5OCx0na8hICqHp4ZtspCeGUPmdwQZiV+8FWhxP75NTyHfS3Udg81XcLLv?=
+ =?us-ascii?Q?0ubA1VS6y+blRsnrcoFQiTi5U/YObPHgQcjYDxNKi7XyqIGQFTo3iDKEOxPw?=
+ =?us-ascii?Q?pX5PhQYCTB+RmoS7JqrQJ7+D1EaD9hPhEFlEqO2jZhlp2j1Qy8O7RzfdRRPT?=
+ =?us-ascii?Q?nb7uGTcPlL4l4vx1rNTWGFqRdE20NmrcppkoFrxCdZINNizmKHIuQMuzF9x2?=
+ =?us-ascii?Q?Zmk1vW4R4RX/Q77CQHuyY4apQSNogdFBZQpAvVbkIyBx77/9sSEu/OIf4J/2?=
+ =?us-ascii?Q?bH6dDDOp0sUN8UQ9BctoKUn1uVpwznX0xbxy1IZvGiztszstiEdOldKZoBhV?=
+ =?us-ascii?Q?b5xfseJNDIkCAYV4P6dg4WmaD47pnbXgHU94/tCd7IRqo+G2FbV2ZVDxVYWx?=
+ =?us-ascii?Q?xPvIta1+jJMVFwBYywBT+wTn2DUXDzlsl69dseEQHJePHKAIhHTCxInE3hjO?=
+ =?us-ascii?Q?nMsKECYZsZT8w/yH1U1JZY8=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 161156a7-bf84-42dc-d0af-08d9a911301d
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 14:55:53.7343
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BG/aUZ1+Um3YFUmljdLnsi2KZmnemH8biKt4tqI67Hmnor23bx0pqNP4RgPgHyOAAvX+6YKEQNW1R+ccETKziA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 16.11.2021 15:33, Juergen Gross wrote:
+> This configuration option provides a misc device as an API to userspace.
+> Make this API usable without having to select the module as a transitive
+> dependency.
+>=20
+> This also fixes an issue where localyesconfig would select
+> CONFIG_XEN_PRIVCMD=3Dm because it was not visible and defaulted to
+> building as module.
+>=20
+> Based-on-patch-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
+> Signed-off-by: Juergen Gross <jgross@suse.com>
 
-On 11/16/21 08:41, kernel test robot wrote:
-> 
-> 
-> Greeting,
-> 
-> FYI, we noticed the following commit (built with gcc-9):
-> 
-> commit: 995fe757ecaeac44e023458af64d27655f9dbf73 ("[PATCH] device property: Check fwnode->secondary when finding properties")
-> url: https://github.com/0day-ci/linux/commits/Daniel-Scally/device-property-Check-fwnode-secondary-when-finding-properties/20211114-044259
-> base: https://git.kernel.org/cgit/linux/kernel/git/gregkh/driver-core.git b5013d084e03e82ceeab4db8ae8ceeaebe76b0eb
-> patch link: https://lore.kernel.org/lkml/20211113204141.520924-1-djrscally@gmail.com
-> 
-> in testcase: boot
-> 
-> on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 4G
-> 
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> 
-> 
-> +---------------------------------------------+------------+------------+
-> |                                             | b5013d084e | 995fe757ec |
-> +---------------------------------------------+------------+------------+
-> | boot_successes                              | 23         | 0          |
-> | boot_failures                               | 0          | 22         |
-> | BUG:kernel_NULL_pointer_dereference,address | 0          | 22         |
-> | Oops:#[##]                                  | 0          | 22         |
-> | EIP:fwnode_property_get_reference_args      | 0          | 22         |
-> | Kernel_panic-not_syncing:Fatal_exception    | 0          | 22         |
-> +---------------------------------------------+------------+------------+
-> 
-> 
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <oliver.sang@intel.com>
+Reviewed-by: Jan Beulich <jbeulich@suse.com>
 
-Ok, so this patch likely needs a v2 which changes the if to this:
+> --- a/drivers/xen/Kconfig
+> +++ b/drivers/xen/Kconfig
+> @@ -259,9 +259,14 @@ config XEN_SCSI_BACKEND
+>  	  if guests need generic access to SCSI devices.
+> =20
+>  config XEN_PRIVCMD
+> -	tristate
+> +	tristate "Xen hypercall passthrough driver"
+>  	depends on XEN
+>  	default m
+> +	help
+> +	  The hypercall passthrough driver allows user land programs to perform
 
-        if (ret == -EINVAL && !IS_ERR_OR_NULL(fwnode) &&
-            !IS_ERR_OR_NULL(fwnode->secondary))
-                ret = fwnode_call_int_op(fwnode->secondary, get_reference_args,
-                                         prop, nargs_prop, nargs, index, args);
+Maybe worth adding "privileged" here? Albeit of course that's different
+from the use of the word ...
 
+> +	  Xen hypercalls. This driver is normally required for systems running
+> +	  as Dom0 to perform privileged operations, but in some disaggregated
 
-So that we check fwnode before dereferencing it, note this also changes the
-(ret < 0) check to (ret == -EINVAL), this makes the secondary node handling
-identical to fwnode_property_read_int_array() and
-fwnode_property_read_string_array()
+... here, so there'd be a small risk of confusion.
 
-Danny, can you send a v2 with this change please?
+Jan
 
-Regards,
-
-Hans
-
-
-
-
-
-
-> 
-> 
-> [   17.327851][    T7] BUG: kernel NULL pointer dereference, address: 00000000
-> [   17.329758][    T7] #PF: supervisor read access in kernel mode
-> [   17.331371][    T7] #PF: error_code(0x0000) - not-present page
-> [   17.332992][    T7] *pde = 00000000
-> [   17.334107][    T7] Oops: 0000 [#1] PREEMPT
-> [   17.335310][    T7] CPU: 0 PID: 7 Comm: kworker/u2:0 Tainted: G S                5.15.0-11191-g995fe757ecae #1
-> [   17.338036][    T7] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-> [   17.340544][    T7] Workqueue: events_unbound deferred_probe_work_func
-> [ 17.342291][ T7] EIP: fwnode_property_get_reference_args (drivers/base/property.c:486 (discriminator 1)) 
-> [ 17.344051][ T7] Code: 8b 45 0c 50 8b 45 08 50 89 d8 89 55 f4 ff d6 83 c4 0c 89 c6 85 c0 78 55 8d 65 f8 89 f0 5b 5e 5d c3 8d 74 26 00 be fa ff ff ff <8b> 03 85 c0 74 e8 3d 00 f0 ff ff 77 e1 8b 58 04 85 db 74 37 8b 5b
-> All code
-> ========
->    0:	8b 45 0c             	mov    0xc(%rbp),%eax
->    3:	50                   	push   %rax
->    4:	8b 45 08             	mov    0x8(%rbp),%eax
->    7:	50                   	push   %rax
->    8:	89 d8                	mov    %ebx,%eax
->    a:	89 55 f4             	mov    %edx,-0xc(%rbp)
->    d:	ff d6                	callq  *%rsi
->    f:	83 c4 0c             	add    $0xc,%esp
->   12:	89 c6                	mov    %eax,%esi
->   14:	85 c0                	test   %eax,%eax
->   16:	78 55                	js     0x6d
->   18:	8d 65 f8             	lea    -0x8(%rbp),%esp
->   1b:	89 f0                	mov    %esi,%eax
->   1d:	5b                   	pop    %rbx
->   1e:	5e                   	pop    %rsi
->   1f:	5d                   	pop    %rbp
->   20:	c3                   	retq   
->   21:	8d 74 26 00          	lea    0x0(%rsi,%riz,1),%esi
->   25:	be fa ff ff ff       	mov    $0xfffffffa,%esi
->   2a:*	8b 03                	mov    (%rbx),%eax		<-- trapping instruction
->   2c:	85 c0                	test   %eax,%eax
->   2e:	74 e8                	je     0x18
->   30:	3d 00 f0 ff ff       	cmp    $0xfffff000,%eax
->   35:	77 e1                	ja     0x18
->   37:	8b 58 04             	mov    0x4(%rax),%ebx
->   3a:	85 db                	test   %ebx,%ebx
->   3c:	74 37                	je     0x75
->   3e:	8b                   	.byte 0x8b
->   3f:	5b                   	pop    %rbx
-> 
-> Code starting with the faulting instruction
-> ===========================================
->    0:	8b 03                	mov    (%rbx),%eax
->    2:	85 c0                	test   %eax,%eax
->    4:	74 e8                	je     0xffffffffffffffee
->    6:	3d 00 f0 ff ff       	cmp    $0xfffff000,%eax
->    b:	77 e1                	ja     0xffffffffffffffee
->    d:	8b 58 04             	mov    0x4(%rax),%ebx
->   10:	85 db                	test   %ebx,%ebx
->   12:	74 37                	je     0x4b
->   14:	8b                   	.byte 0x8b
->   15:	5b                   	pop    %rbx
-> [   17.350847][    T7] EAX: 00000000 EBX: 00000000 ECX: 00000000 EDX: c37cd6d8
-> [   17.352783][    T7] ESI: ffffffea EDI: f5b5a400 EBP: c4cffd24 ESP: c4cffd14
-> [   17.354673][    T7] DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 0068 EFLAGS: 00010246
-> [   17.362075][    T7] CR0: 80050033 CR2: 00000000 CR3: 04206000 CR4: 00000690
-> [   17.363993][    T7] Call Trace:
-> [ 17.365018][ T7] fwnode_find_reference (drivers/base/property.c:514) 
-> [ 17.366430][ T7] ? __this_cpu_preempt_check (lib/smp_processor_id.c:67) 
-> [ 17.367825][ T7] ? lockdep_init_map_type (kernel/locking/lockdep.c:4813) 
-> [ 17.369325][ T7] ? phylink_run_resolve+0x20/0x20 
-> [ 17.370897][ T7] ? init_timer_key (kernel/time/timer.c:818) 
-> [ 17.372228][ T7] fwnode_get_phy_node (drivers/net/phy/phy_device.c:2986) 
-> [ 17.373574][ T7] phylink_fwnode_phy_connect (drivers/net/phy/phylink.c:1180 drivers/net/phy/phylink.c:1166) 
-> [ 17.375014][ T7] phylink_of_phy_connect (drivers/net/phy/phylink.c:1152) 
-> [ 17.376373][ T7] dsa_slave_create (net/dsa/slave.c:1889 net/dsa/slave.c:2036) 
-> [ 17.377765][ T7] dsa_tree_setup_switches (net/dsa/dsa2.c:477 net/dsa/dsa2.c:977) 
-> [ 17.379282][ T7] dsa_register_switch (net/dsa/dsa2.c:1065 net/dsa/dsa2.c:1565 net/dsa/dsa2.c:1579) 
-> [ 17.380762][ T7] dsa_loop_drv_probe (drivers/net/dsa/dsa_loop.c:333) 
-> [ 17.382137][ T7] mdio_probe (drivers/net/phy/mdio_device.c:157) 
-> [ 17.383362][ T7] really_probe (drivers/base/dd.c:744) 
-> [ 17.384808][ T7] really_probe (drivers/base/dd.c:678) 
-> [ 17.385999][ T7] __driver_probe_device (drivers/base/dd.c:751) 
-> [ 17.387393][ T7] driver_probe_device (drivers/base/dd.c:781) 
-> [ 17.388787][ T7] __device_attach_driver (drivers/base/dd.c:899) 
-> [ 17.390253][ T7] ? driver_allows_async_probing (drivers/base/dd.c:867) 
-> [ 17.391829][ T7] bus_for_each_drv (drivers/base/bus.c:427) 
-> [ 17.393226][ T7] __device_attach (drivers/base/dd.c:969) 
-> [ 17.394610][ T7] ? driver_allows_async_probing (drivers/base/dd.c:867) 
-> [ 17.396270][ T7] device_initial_probe (drivers/base/dd.c:1017) 
-> [ 17.397637][ T7] bus_probe_device (drivers/base/bus.c:487) 
-> [ 17.398907][ T7] deferred_probe_work_func (drivers/base/dd.c:123) 
-> [ 17.400385][ T7] process_one_work (arch/x86/include/asm/jump_label.h:41 include/linux/jump_label.h:212 include/trace/events/workqueue.h:108 kernel/workqueue.c:2303) 
-> [ 17.401834][ T7] worker_thread (include/linux/list.h:282 kernel/workqueue.c:2358 kernel/workqueue.c:2450) 
-> [ 17.403204][ T7] kthread (kernel/kthread.c:327) 
-> [ 17.404417][ T7] ? process_one_work (kernel/workqueue.c:2388) 
-> [ 17.405766][ T7] ? set_kthread_struct (kernel/kthread.c:272) 
-> [ 17.407168][ T7] ret_from_fork (arch/x86/entry/entry_32.S:775) 
-> [   17.408421][    T7] Modules linked in:
-> [   17.409637][    T7] CR2: 0000000000000000
-> [   17.410743][    T7] ---[ end trace f8ecb8c3f56e69be ]---
-> [ 17.412229][ T7] EIP: fwnode_property_get_reference_args (drivers/base/property.c:486 (discriminator 1)) 
-> [ 17.414104][ T7] Code: 8b 45 0c 50 8b 45 08 50 89 d8 89 55 f4 ff d6 83 c4 0c 89 c6 85 c0 78 55 8d 65 f8 89 f0 5b 5e 5d c3 8d 74 26 00 be fa ff ff ff <8b> 03 85 c0 74 e8 3d 00 f0 ff ff 77 e1 8b 58 04 85 db 74 37 8b 5b
-> All code
-> ========
->    0:	8b 45 0c             	mov    0xc(%rbp),%eax
->    3:	50                   	push   %rax
->    4:	8b 45 08             	mov    0x8(%rbp),%eax
->    7:	50                   	push   %rax
->    8:	89 d8                	mov    %ebx,%eax
->    a:	89 55 f4             	mov    %edx,-0xc(%rbp)
->    d:	ff d6                	callq  *%rsi
->    f:	83 c4 0c             	add    $0xc,%esp
->   12:	89 c6                	mov    %eax,%esi
->   14:	85 c0                	test   %eax,%eax
->   16:	78 55                	js     0x6d
->   18:	8d 65 f8             	lea    -0x8(%rbp),%esp
->   1b:	89 f0                	mov    %esi,%eax
->   1d:	5b                   	pop    %rbx
->   1e:	5e                   	pop    %rsi
->   1f:	5d                   	pop    %rbp
->   20:	c3                   	retq   
->   21:	8d 74 26 00          	lea    0x0(%rsi,%riz,1),%esi
->   25:	be fa ff ff ff       	mov    $0xfffffffa,%esi
->   2a:*	8b 03                	mov    (%rbx),%eax		<-- trapping instruction
->   2c:	85 c0                	test   %eax,%eax
->   2e:	74 e8                	je     0x18
->   30:	3d 00 f0 ff ff       	cmp    $0xfffff000,%eax
->   35:	77 e1                	ja     0x18
->   37:	8b 58 04             	mov    0x4(%rax),%ebx
->   3a:	85 db                	test   %ebx,%ebx
->   3c:	74 37                	je     0x75
->   3e:	8b                   	.byte 0x8b
->   3f:	5b                   	pop    %rbx
-> 
-> Code starting with the faulting instruction
-> ===========================================
->    0:	8b 03                	mov    (%rbx),%eax
->    2:	85 c0                	test   %eax,%eax
->    4:	74 e8                	je     0xffffffffffffffee
->    6:	3d 00 f0 ff ff       	cmp    $0xfffff000,%eax
->    b:	77 e1                	ja     0xffffffffffffffee
->    d:	8b 58 04             	mov    0x4(%rax),%ebx
->   10:	85 db                	test   %ebx,%ebx
->   12:	74 37                	je     0x4b
->   14:	8b                   	.byte 0x8b
->   15:	5b                   	pop    %rbx
-> 
-> 
-> To reproduce:
-> 
->         # build kernel
-> 	cd linux
-> 	cp config-5.15.0-11191-g995fe757ecae .config
-> 	make HOSTCC=gcc-9 CC=gcc-9 ARCH=i386 olddefconfig prepare modules_prepare bzImage
-> 
->         git clone https://github.com/intel/lkp-tests.git
->         cd lkp-tests
->         bin/lkp qemu -k <bzImage> job-script # job-script is attached in this email
-> 
->         # if come across any failure that blocks the test,
->         # please remove ~/.lkp and /lkp dir to run from a clean state.
-> 
-> 
-> 
-> ---
-> 0DAY/LKP+ Test Infrastructure                   Open Source Technology Center
-> https://lists.01.org/hyperkitty/list/lkp@lists.01.org       Intel Corporation
-> 
-> Thanks,
-> Oliver Sang
-> 
+> +	  Xen setups this driver might be needed for other domains, too.
+> =20
+>  config XEN_ACPI_PROCESSOR
+>  	tristate "Xen ACPI processor"
+>=20
 
