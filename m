@@ -2,93 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753084528E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 04:58:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF444528E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237474AbhKPEB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 23:01:28 -0500
+        id S239304AbhKPEDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 23:03:13 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237358AbhKPEBW (ORCPT
+        with ESMTP id S236088AbhKPEC6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 23:01:22 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54CDAC1F14FF
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 16:43:24 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id bf8so38611424oib.6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 16:43:24 -0800 (PST)
+        Mon, 15 Nov 2021 23:02:58 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B95C1F44AA
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 16:49:20 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id o14so15920067plg.5
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 16:49:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=AR+MJXQt1hZ4ak+KffeN9j/qO8HcFtJTxsTibtq8SN0=;
-        b=OcKmfLQ8A9BF4S3di4lz4OZXJGUTA4mbSUlF7s+b0wJ+grSJIRm0i7Ca1yMgwNY2g8
-         70uW5S/5kzyfc1VQ8Ov++7/+Wf/wwIurMBsGC3VDQ7uOz30vQJ8ca0/iDQhvQA8YU7oX
-         rWRos7i6GY4nzLNbDZkm+x0eFcNMhKjkB3BMY=
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=yJN/gap7KdAy16hYzWg/TQ53YhYMDXXVj0aBb/U2j/w=;
+        b=ikqo5RKRgOuCWb/tE5Wsu6/Lbpz7tcMIObAYBIERj2KzOwVpFwpieRXXUvMaX7XwT2
+         k8oMEES4I07wBo8L4PPK+0ha0Ba+0KC/fVNmtjIkcag841l3Zdh53YX0XHAUtFLqwgU4
+         xry7HOSDO25dm/KDW4U7zjUNdHYx47YgH0Ulk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=AR+MJXQt1hZ4ak+KffeN9j/qO8HcFtJTxsTibtq8SN0=;
-        b=CO5zGgLb7oLH1ssWBpq63o0f731lYgZZYkILjeLm4yJi6tChYRCRTRTg8LvGYHEUMB
-         A+DROiYID07gBWX7+cJloiblwKJxDcgkJQPW7y72OsUwBLnyI4enL0eGHLoAxfySb4y8
-         THhsSF2voBbcdmq9Fwt6W/pq2A5+zjd6Xe+n+LtNVNuCubDdfeKKKqS80Fh4jJAtXmfF
-         Tto8Ki+503hOg5XItsQAqnoc3z6FxHlwd8XhGlMjTa/8bsAEul88HKtnLYUOWN4cnR+E
-         iHYlMemB7/uNE/RkzT1vbEpdjut8KX6UdNWelEkr/fsY8K+kWdfQDW6iIVVZAGse+bsD
-         uRpg==
-X-Gm-Message-State: AOAM530bmCQAppsuwG1G0B+E57LEJdnwzBUQ3kCKIifJNvhdhdD67Iss
-        SATp3GGIe7JioeB8vBA0F42tST2xVRFmeBoEzc0upWDojIE=
-X-Google-Smtp-Source: ABdhPJz9z5atxroq/GjxihboHlC2x5PboGmywHnjxtnAjxqEQZyoBJQEvr8K/IKhil58m74mic8cKR+6S4n+PtT7tBE=
-X-Received: by 2002:aca:2319:: with SMTP id e25mr49152738oie.164.1637023403674;
- Mon, 15 Nov 2021 16:43:23 -0800 (PST)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 15 Nov 2021 16:43:23 -0800
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=yJN/gap7KdAy16hYzWg/TQ53YhYMDXXVj0aBb/U2j/w=;
+        b=LlhL9+xi9a4NGX3nzLU5tb3PLqrKAgys9+ex1TtbJWvN+V8Ei4z26CCkAA2cRdXkKB
+         ufpO7JM4H7ZRbgppaqjCsy+nSTl7zQskLSTL2LmO159Gs02kNulO5d69Feq0Hl1o2F0y
+         zd7f5MwSZI5LmmUpOVrnqDOGalJOZhFcRS9tgmmlUIP0pVXewbcEaYA50LtbLwZF4m8G
+         ARLjF0xQTLwRDNmXZAC89eMYtCBzkg32wpgHk6kfe0lMQ/yOFKiAuW5SLdHib8LRLF3G
+         MpHEL/xmjXxXEFIZbG3q9m8HtfRqs21TllaWycRUmbwK99UD3K9KVS/Mbi8fERVEtF2V
+         +4CA==
+X-Gm-Message-State: AOAM530IyQ7tHN7zyRbcMpotde7wbk+o5yspmwJPGn7fp0nRWrDaW5b3
+        a9hvJ6hHC84eKNjlH1L+KZfbbw==
+X-Google-Smtp-Source: ABdhPJzft+ivC/MlWDFI2hxkz8qHExc3R4XStEq5YjNU9NTrcs/Epfe1Egcz95hubrvaUXp3X8CJnw==
+X-Received: by 2002:a17:903:1d2:b0:142:24f1:1213 with SMTP id e18-20020a17090301d200b0014224f11213mr40756726plh.81.1637023759622;
+        Mon, 15 Nov 2021 16:49:19 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g9sm165302pfj.160.2021.11.15.16.49.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 16:49:18 -0800 (PST)
+Date:   Mon, 15 Nov 2021 16:49:18 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Tony Luck <tony.luck@intel.com>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pstore/blk: Use "%lu" to format unsigned long
+Message-ID: <202111151648.0498D0AE@keescook>
+References: <20210629103700.1935012-1-geert@linux-m68k.org>
+ <162500112137.438178.14586324457676666976.b4-ty@chromium.org>
+ <CAMuHMdWwDK0bB2B7iFXqMhkZrmw26vKDFZEv+z+mYYTavp5-Eg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211110120512.150940-1-deng.changcheng@zte.com.cn>
-References: <20211110120512.150940-1-deng.changcheng@zte.com.cn>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 15 Nov 2021 16:43:23 -0800
-Message-ID: <CAE-0n50=P06ByQrG0FixVK4cGW--Vgt6uwGsLUu792SPhqzqXQ@mail.gmail.com>
-Subject: Re: [PATCH linux-next] drm/msm/dp: remove unneeded variable
-To:     cgel.zte@gmail.com, robdclark@gmail.com
-Cc:     sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
-        abhinavk@codeaurora.org, deng.changcheng@zte.com.cn,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Zeal Robot <zealci@zte.com.cn>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdWwDK0bB2B7iFXqMhkZrmw26vKDFZEv+z+mYYTavp5-Eg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting cgel.zte@gmail.com (2021-11-10 04:05:12)
-> From: Changcheng Deng <deng.changcheng@zte.com.cn>
->
-> Fix the following coccicheck review:
-> ./drivers/gpu/drm/msm/dp/dp_debug.c: Unneeded variable
->
-> Remove unneeded variable used to store return value.
->
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
-> ---
->  drivers/gpu/drm/msm/dp/dp_debug.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/dp/dp_debug.c b/drivers/gpu/drm/msm/dp/dp_debug.c
-> index 2f6247e80e9d..c5c75273d1e5 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_debug.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_debug.c
-> @@ -365,7 +365,6 @@ static const struct file_operations test_active_fops = {
->
->  static int dp_debug_init(struct dp_debug *dp_debug, struct drm_minor *minor)
+On Mon, Nov 15, 2021 at 08:58:51AM +0100, Geert Uytterhoeven wrote:
+> Hi Kees,
+> 
+> On Tue, Jun 29, 2021 at 11:12 PM Kees Cook <keescook@chromium.org> wrote:
+> > On Tue, 29 Jun 2021 12:37:00 +0200, Geert Uytterhoeven wrote:
+> > > On 32-bit:
+> > >
+> > >     fs/pstore/blk.c: In function ‘__best_effort_init’:
+> > >     include/linux/kern_levels.h:5:18: warning: format ‘%zu’ expects argument of type ‘size_t’, but argument 3 has type ‘long unsigned int’ [-Wformat=]
+> > >       5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
+> > >         |                  ^~~~~~
+> > >     include/linux/kern_levels.h:14:19: note: in expansion of macro ‘KERN_SOH’
+> > >        14 | #define KERN_INFO KERN_SOH "6" /* informational */
+> > >         |                   ^~~~~~~~
+> > >     include/linux/printk.h:373:9: note: in expansion of macro ‘KERN_INFO’
+> > >       373 |  printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
+> > >         |         ^~~~~~~~~
+> > >     fs/pstore/blk.c:314:3: note: in expansion of macro ‘pr_info’
+> > >       314 |   pr_info("attached %s (%zu) (no dedicated panic_write!)\n",
+> > >         |   ^~~~~~~
+> >
+> > Applied to for-next/pstore, thanks!
+> 
+> Thanks!
+> 
+> > [1/1] pstore/blk: Use "%lu" to format unsigned long
+> >       https://git.kernel.org/kees/c/c5d4fb2539ca
+> 
+> Looks like this still hasn't made upstream, although it has been in
+> linux-next since the end of June?  The issue is still present (and
+> now an error with -Werror), but hidden due to commit d07f3b081ee63226
+> ("mark pstore-blk as broken").
 
-Would be nice to make it void as well and then cleanup the caller. Can
-you do that too?
+Argh, I didn't notice that d07f3b081ee63226 actually landed upstream. It
+was not supposed to land since pstore-blk got fixed before the merge
+window. Bleh. I will try to get this all sorted out.
 
->  {
-> -       int rc = 0;
->         struct dp_debug_private *debug = container_of(dp_debug,
->                         struct dp_debug_private, dp_debug);
->
+-Kees
+
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+
+-- 
+Kees Cook
