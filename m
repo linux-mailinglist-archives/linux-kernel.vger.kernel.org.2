@@ -2,106 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4957545298B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:23:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B8E64529A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:25:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233857AbhKPFZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 00:25:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55336 "EHLO
+        id S234164AbhKPF16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 00:27:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233715AbhKPFYZ (ORCPT
+        with ESMTP id S234006AbhKPF0J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 00:24:25 -0500
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F54C0D8D9B;
-        Mon, 15 Nov 2021 18:34:04 -0800 (PST)
-Received: by mail-qt1-x831.google.com with SMTP id n15so17651165qta.0;
-        Mon, 15 Nov 2021 18:34:04 -0800 (PST)
+        Tue, 16 Nov 2021 00:26:09 -0500
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D8AC048CA7;
+        Mon, 15 Nov 2021 18:40:10 -0800 (PST)
+Received: by mail-oi1-x22c.google.com with SMTP id bf8so39161094oib.6;
+        Mon, 15 Nov 2021 18:40:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H7zphfLIx/KIgfDYl4IOIHLAMRHep0aAJWdFC+/UaNA=;
-        b=Rv9D8UmXSnZm8Bh1GoID8bVVWxDSBCNC4THC6v2fMK/Xjd292jrTfr7HPA60SNEtwN
-         ZgsT0rxJwlV6MOX9Mg6pvUENSnqSy2PQ2g8jSGe+VqlgUmaWXSUfhPUZeSN4Fjajej12
-         5XGHxJR8dHzi+y/D5OyS1PY3DAsZpFVkKp3/v6f/uQCqYI1Qr3yD9AkpuaeXc9VqfW+V
-         M1x6wN6oOWmV11GcQr/YkSBk23I2+wU1hI/jCjuvcU38zE/cs/R7fEQsdfdOc5KnoW9r
-         Rm7LflRIaRzZ6opJytsFOdWfMdhhaI2YGLSFevIBziJS5jOjAAh8T2jiE5v+PuwtXZTT
-         AZxg==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=J2P6f/Qll54psTzyshVTaRUOsXK9V7Nooaq1sBo16AM=;
+        b=LpJQ9l5eNWhRzMJZ+xAPvmtGeEWSZcsq/EbnPw/xlX1wTgsD4R6fX1SkvGvn5mDWs4
+         U/XDGd2vlLuUKQKTh5LfsTRVv9mleDxVzZNIL2O4wftg7UwDIDGNQxDPRhUPz01P1jpg
+         wkQOekmP//nsHA37J3Q7Zd/+8EcFoV3cS9rN5OkUTxT3xki/jPwxD7UVJyK5ckKJ4hjU
+         tZBoNZbERlVD5xA+nVjRpaJT6b1O+2vQVoTsoDlZ0D+8lggkNKpyRwf/EuvNjSG8d7H6
+         u66OjPV3abPHiaaV8QPd48ug6jDjPRLP6vMjp+jnymNPIYs24eA9bCLu5YY1jHUcur/i
+         6ELQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H7zphfLIx/KIgfDYl4IOIHLAMRHep0aAJWdFC+/UaNA=;
-        b=ShToxldu4E5cIZ5V3DLiS3tpdKdG5js9M/NdYDrKrMffCJXpJ1HuN62ZHJGNAnggsB
-         m96x5GDExONmsot9wQt4QPhmO3ElWzHviK0X9MKwoqpmxOkC9ZjYtwzDMsi3LP20V0wc
-         o0OtDD8NYtbKEGKidOhy01WS13lG1za9INDxPVIhUW06c25iibr6K8PDMLPU9x3rc8cB
-         cRYX7hFP1aP7rpRFeenpgQ8swPtGYEtetNU+ExYgXG2cbZwDzSD01GSP1StVlMSjpbVS
-         oh8XTSt0ujyoP+m4d0ZgPVIQDArp8b5+cH+hBhSD3GD4tSxpKQ5qTypowc9F8/B+nQoT
-         WMNw==
-X-Gm-Message-State: AOAM5320l4QaPXUkbNnCOKI9ieJjPJB160sezD81Guw0jjy41TWJiyFB
-        UIFxemwZco+XgzeEgeb4Ob5sNeU8sdYN7b4949GyfJwY/3M=
-X-Google-Smtp-Source: ABdhPJxy3/yvIoE1Sby1RB+LrFWAG186ca20J3KfKBtNLU6iYwGxwglI0cKh7RVW16SHtAlV0ZDpZK2743We/bDxwtI=
-X-Received: by 2002:ac8:5991:: with SMTP id e17mr3975451qte.344.1637030043682;
- Mon, 15 Nov 2021 18:34:03 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=J2P6f/Qll54psTzyshVTaRUOsXK9V7Nooaq1sBo16AM=;
+        b=SJzSFxTkQd9KN+vZhFUVq89NXMLsFFTL7BWRqx4yMVZXRXK8FJ4jXHQ+1KqXcg3cG9
+         uhx1LSNHQ5+d3NSqH1PgbNGfMo76J7VHpH/5ULLR8gQv2Oit/Q+hOeCjbMsLd8C9PFps
+         NRYXezsjBB9mC9OiMXXHh0oc0hHaDYq42SBZLvpRbrSydBEqTbHzsF+vkfkYYHEGs/zS
+         9XWA+qMxwKOrhJY6opObpSGUItECTHCB6oJA2f7QUQFlWN/nKMWcvxapyns5VsYXXAAE
+         lU+jGWvXA5Zbz/byyVxgBmBTMzeKInlvyNJa+s+Wk/5bnijHO5Zau1TImFcX7HPxuLlr
+         fqWA==
+X-Gm-Message-State: AOAM531yGuNfUnJ8Pyi+VyfsRxDN3QH2WCfWRTQNvVA0KPfkBaSAs2Sm
+        trs7RQQ2zseFHZDlUGXJxDA=
+X-Google-Smtp-Source: ABdhPJwrqr/f9zGtFfDhRDzosynmlvgk8Ol+BxnLfPEd/r3UzkWFd2RReMfqAjP0pnoJh/ol2/7uXA==
+X-Received: by 2002:aca:ac8a:: with SMTP id v132mr36254278oie.44.1637030409922;
+        Mon, 15 Nov 2021 18:40:09 -0800 (PST)
+Received: from [172.16.0.2] ([8.48.134.30])
+        by smtp.googlemail.com with ESMTPSA id l9sm2902366oom.4.2021.11.15.18.40.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Nov 2021 18:40:09 -0800 (PST)
+Message-ID: <69706525-65b1-8372-8ef1-1ee12e7bbc26@gmail.com>
+Date:   Mon, 15 Nov 2021 19:40:08 -0700
 MIME-Version: 1.0
-References: <20211115085403.360194-1-arnd@kernel.org> <20211115085403.360194-7-arnd@kernel.org>
-In-Reply-To: <20211115085403.360194-7-arnd@kernel.org>
-From:   Baolin Wang <baolin.wang7@gmail.com>
-Date:   Tue, 16 Nov 2021 10:34:39 +0800
-Message-ID: <CADBw62oYab_d+uS_8kfC9JqhUxVhK79G4wbWyZy7+RL6P9tVvA@mail.gmail.com>
-Subject: Re: [PATCH 06/11] dmaengine: sprd: stop referencing config->slave_id
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andy Gross <agross@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Scott Branden <sbranden@broadcom.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com,
-        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.0
+Subject: Re: [PATCH net-next] ipv6: don't generate link-local addr in random
+ or privacy mode
+Content-Language: en-US
+To:     Rocco Yue <rocco.yue@mediatek.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-mtd@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-tegra@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        linux-mediatek@lists.infradead.org, Rocco.Yue@gmail.com,
+        chao.song@mediatek.com, zhuoliang.zhang@mediatek.com
+References: <de051ecb-0efe-27e2-217c-60a502f4415f@gmail.com>
+ <20211116022145.31322-1-rocco.yue@mediatek.com>
+From:   David Ahern <dsahern@gmail.com>
+In-Reply-To: <20211116022145.31322-1-rocco.yue@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On 11/15/21 7:21 PM, Rocco Yue wrote:
+> 
+> Due to I can see this patch from the link below, I'm not sure why this
+> happened, could you kindly tell me what the merge window is, so I can
+> avoid such problem next time.
+>   https://lore.kernel.org/netdev/20211113084636.11685-1-rocco.yue@mediatek.com/t/
+>   https://lore.kernel.org/lkml/20211113084636.11685-1-rocco.yue@mediatek.com/T/
 
-On Mon, Nov 15, 2021 at 4:55 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> It appears that the code that reads the slave_id from the channel config
-> was copied incorrectly from other drivers. Nothing ever sets this field
-> on platforms that use this driver, so remove the reference.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+check patch status here:
+    https://patchwork.kernel.org/project/netdevbpf/list/
 
-Thanks. LGTM.
-Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
+check net-next status here:
+    http://vger.kernel.org/~davem/net-next.html
 
---
-Baolin Wang
+
