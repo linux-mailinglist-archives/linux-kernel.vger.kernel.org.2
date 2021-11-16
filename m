@@ -2,99 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3171445381C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E999F453826
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:57:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236701AbhKPQzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 11:55:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236295AbhKPQzh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:55:37 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB6AC061570;
-        Tue, 16 Nov 2021 08:52:40 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id t30so38816603wra.10;
-        Tue, 16 Nov 2021 08:52:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7+Jn+St2IjENzpDxhPyfEvI27AjWPnJkawEdwNfJRK8=;
-        b=G6AF87R42HEdDV7OfHDvDi5SWQNB8wn2NqTDZDi4w1JtJC9p+5Q+lBf9pgwN4tWiAN
-         H0ramcM/9vownJPjh2sUU4TwmzmZn78XywfZf987QHf6GQ/fS5dgwlsDwwNLhx9hHNxT
-         R4vUQyccZJW8qHEcT37fzOkrMtIoa71zyYIzwoUT7C1m16j2YFo3PxdgLDvgnVUzyyH+
-         ernPRoN+GAHZhvgTdR2YH7Nndf03SCSrI5cmIt9AY5ZdKgTXgkdujpr9IfpGvtWT1FBi
-         K9czKifcx/pkGVLwb4PgLCRwDKmtWkaVqJ/bOSXSXWpkxUpSz7KCpS2HOuDjBgc1AHrT
-         tfvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7+Jn+St2IjENzpDxhPyfEvI27AjWPnJkawEdwNfJRK8=;
-        b=Fb2CgHjiVHgwbEZr6PueHaO0+sbVgcR0uRbhIAtbeyHofXF609nBGcJ9YiUbNfVAvA
-         gwLYITS938ElVHiLYKZ2LoldXxa7RyhzaHrTM/+2noIyNok7szh1z0U4bMYJpan7sstV
-         8P203QjMC8PN+8hMRipzwxX+tMX+0/VqYk8qoD53st7E5NPYQjj6jkAtTcyPFJvhiywn
-         FnWurVg7MefK18SyhjplGdjSTqNOeY9sB+ktf6ztl7p/ZKnlMOnQDY3DdGNv+4JI6MSl
-         o6O8D1UbS4A0Euwiu1bvOFWlQhVSzmb27vS1Pa0ZxWGxGL80SaBLoIaqRiyZTawI+qfF
-         t7bQ==
-X-Gm-Message-State: AOAM530FXM8M+D99TIkcA4NFExfS2vSsMo/YIVnPnt7hjIA748/qcrqD
-        D7AYjlsmYb3KK7ScmafnKXA=
-X-Google-Smtp-Source: ABdhPJwCLOSlr/fZ5Hvuheowlrl1k4TKX8GCoi/IJTloN4hUmDs2pNYz60NbJlKyiFaWTpfokBFXfQ==
-X-Received: by 2002:a5d:604a:: with SMTP id j10mr11282979wrt.93.1637081559006;
-        Tue, 16 Nov 2021 08:52:39 -0800 (PST)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id u16sm2780914wmc.21.2021.11.16.08.52.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 08:52:38 -0800 (PST)
-Date:   Tue, 16 Nov 2021 16:52:36 +0000
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/575] 5.10.80-rc1 review
-Message-ID: <YZPh1DL4qbf0wluG@debian>
-References: <20211115165343.579890274@linuxfoundation.org>
+        id S236571AbhKPRAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 12:00:17 -0500
+Received: from mout.gmx.net ([212.227.15.19]:37155 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230103AbhKPRAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 12:00:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1637081805;
+        bh=M+95GG9pOYr+sggZ23h8a1YVbdAtpertOAKkIz3RoPU=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=BPK1gM/+x29dXwIb4VTJ0wuqARu0SlJvHSd1htQ9OyB8V2hvsp+3LnI8zIebc6DWZ
+         Q59+RrPKfrKrCK4ajxRyWN1ZTdeW1hRHOQLUZeXMbEmvBgLlyEEhH+XRXoq8Ct9S+J
+         1+yscgOvUiZtkCkWgsDHgXNetdwEzqYU46+pF/Qg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [10.135.7.100] ([87.123.191.145]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N95iH-1mZslu1CeV-0163ef; Tue, 16
+ Nov 2021 17:56:45 +0100
+Subject: Re: [PATCH 0/4] power: supply: add charge_behaviour property
+ (force-discharge, inhibit-charge)
+To:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
+        linux-pm@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org,
+        Mark Gross <markgross@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Cc:     linux-kernel@vger.kernel.org, bberg@redhat.com, hadess@hadess.net,
+        markpearson@lenovo.com, nicolopiazzalunga@gmail.com,
+        njoshi1@lenovo.com, smclt30p@gmail.com
+References: <20211113104225.141333-1-linux@weissschuh.net>
+From:   Thomas Koch <linrunner@gmx.net>
+Message-ID: <9cebba85-f399-a7aa-91f7-237852338dc5@gmx.net>
+Date:   Tue, 16 Nov 2021 17:56:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
+In-Reply-To: <20211113104225.141333-1-linux@weissschuh.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:x0ju+oRwoPkuyA8uflSr94bEewFh4Xtgfzb+77evOag2GA29Kam
+ kQYZF+ptmlGuEkmDsU5plA8urpKQH+2YvpfkSQaaCfNCJ0+lfwzJ1slypCodsFEbwtORK2v
+ EUFBmsq6OfNVpRp0YudFpTMdE7Rt1/1jUqEzouFZrokKFr2UPDWN6AzTLVVTdICVcIcZRme
+ ts3BcJnQiauwNaXlmROsw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:btgV3Qyhq+4=:5T9pn9zDZK6OHVY98O34Xi
+ c5VEwyrxQvqhdymO51ZIqR9XwTjWBS09/8q35zoQQY/sYPiFRYXM8DHHocsoiGOGyQU+y2Wqj
+ 2k6mygFxFydYyJOK2GbNg3uL1CqW06FrurmISMcM2is+Qbyes4cMcPgXVoIidZ2ktf+LKlOm2
+ sqd722LcJFOAxueHVtsBzKqggbEYg6bVKdn79Jh0rx01qAi8v01aQ+Ln1+D4JQacyUEcb3gaM
+ ax50mwB7AkuITzhi4kso0ywthcpsFNvbZCTq1FOelGqV4KikNYRMfRws5r0nJsFj5fhuqamo3
+ LdfnhnzK9IJEgdcDtApzT+JDHB5n3VO0W0qqYNRf8Ym6KsdqEBNF7fJEPpFbJTo2dIV9DwCyc
+ dts/BXzWyKspbN6v6vuPYOkdi69LVwVfvrlZqj2ZMZ9vQmn8qdP7HEPFItwEut9pZ6C/f90rm
+ gDu6xOyBuAyYmibZ6f5qz+0LqU0LsA1yRRdZ8E0TiGP8CUBNQZECwViC5uUGE5Q09wx9WRJse
+ m9mqeobCW8rVuW9IH34zlJN9vkLd9DcWEks2QSGAwrjABhBiS3TMUmtCjf6rHhJ6hzjGJZU+a
+ V0pAULg6/UvBSQRaD0SQXUQiJ7oI0wRdD/WdrOrEE6OnmQuxBip0Zxpb3bOC3ibdmETJueInS
+ Di50UmFXDbR/mzTiufH9wt+a4DYFBLTuJnMbpRgCabAR1E+6FcycmtzSUZGl688obbiLShzGk
+ Iy8R93Y519AQBU4L1AQHVFPCjz8yq1Agb84IhYzmjKljXCqIAjXIMXIhj6/+zay7ug6Fe8BzW
+ nHBOSotN4UNj/HvLwMHoPBQEysIVZgKb/MF5mnaIB+Ui1WImbgiFj/FMQO2QFJNRQRkAhauk9
+ xHWwvAV9LDnOXWZKa6R+0TqrOaoNI7kOF9kU+mQjwt6JiiONADi/UninmskYlIMm6b3eyOD5/
+ 4LlJemCvu3USdi7HffKiqe1o5QHwqlNpf3MSLoFPd5zqnPH7OIdWnRWlFqMb0/FJ4IISIWfnY
+ rrP1URkUBe+Ty+kcw6jJeq0ZiXh3SMppDQzf8hBdSkJaHM/POjKOBlsKZEGvrJ4cNziqXTa2e
+ wVKlmYh112NEz4=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Hi Thomas,
 
-On Mon, Nov 15, 2021 at 05:55:25PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.80 release.
-> There are 575 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 17 Nov 2021 16:52:23 +0000.
-> Anything received after that time might be too late.
+thank you very much for working on this. It is high time that we leave
+external kernel modules for ThinkPads behind us.
 
-Build test:
-mips (gcc version 11.2.1 20211112): 63 configs -> no new failure
-arm (gcc version 11.2.1 20211112): 105 configs -> no new failure
-arm64 (gcc version 11.2.1 20211112): 3 configs -> no failure
-x86_64 (gcc version 11.2.1 20211112): 4 configs -> no failure
+On 13.11.21 11:42, Thomas Wei=C3=9Fschuh wrote:
+> Hi,
+>
+> this series adds support for the charge_behaviour property to the power
+> subsystem and thinkpad_acpi driver.
+>
+> As thinkpad_acpi has to use the 'struct power_supply' created by the gen=
+eric
+> ACPI driver it has to rely on custom sysfs attributes instead of proper
+> power_supply properties to implement this property.
+>
+> Patch 1: Adds the power_supply documentation and basic public API
+> Patch 2: Adds helpers to power_supply core to help drivers implement the
+>    charge_behaviour attribute
+> Patch 3: Adds support for force-discharge to thinkpad_acpi.
+> Patch 4: Adds support for inhibit-discharge to thinkpad_acpi.
+>
+> Patch 3 and 4 are largely taken from other patches and adapted to the ne=
+w API.
+> (Links are in the patch trailer)
+>
+> Ognjen Galic, Nicolo' Piazzalunga, Thomas Koch:
+>
+> Your S-o-b is on the original inhibit_charge and force_discharge patches=
+.
+> I would like to add you as Co-developed-by but to do that it will also r=
+equire
+> your S-o-b. Could you give your sign-offs for the new patches, so you ca=
+n be
+> properly attributed?
+S-o-b/Co-developed-by/Tested-by is fine with me.
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-arm64: Booted on rpi4b (4GB model). No regression. [2]
+I tested your patches.
 
-[1]. https://openqa.qa.codethink.co.uk/tests/392
-[2]. https://openqa.qa.codethink.co.uk/tests/389
+Hardware:
+
+- ThinkPad X220, BAT0
+- ThinkPad T450s, BAT0+BAT1
+- ThinkPad X1C6, BAT0
+
+Test Results:
+
+1. force-discharge
+
+Everythings works as expected
+- Writing including disengaging w/ "auto" : OK
+- Reading: OK
+
+- Battery discharging: OK
+- Disengaging with "auto": OK
+
+2. inhibit-charge
+
+Works as expected:
+- Writing: OK
+
+- Disengaging with "auto": OK
 
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+Discrepancies:
+- Battery charge inhibited: BAT0 OK, BAT1 no effect e.g. continues chargin=
+g
+- Reading: always returns "auto"
 
---
-Regards
-Sudip
+Note: the reading discrepancy may be related to Hans' remarks [1].
 
+[1]
+https://lore.kernel.org/all/09a66da1-1a8b-a668-3179-81670303ea37@redhat.co=
+m/
+
+>
+> Sebastian Reichel:
+>
+> Currently the series does not actually support the property as a proper
+> powersupply property handled fully by power_supply_sysfs.c because there=
+ would
+> be no user for this property.
+>
+> Previous discussions about the API:
+>
+> https://lore.kernel.org/platform-driver-x86/20211108192852.357473-1-linu=
+x@weissschuh.net/
+> https://lore.kernel.org/platform-driver-x86/21569a89-8303-8573-05fb-c2fe=
+c29983d1@gmail.com/
+>
+> Thomas Wei=C3=9Fschuh (4):
+>    power: supply: add charge_behaviour attributes
+>    power: supply: add helpers for charge_behaviour sysfs
+>    platform/x86: thinkpad_acpi: support force-discharge
+>    platform/x86: thinkpad_acpi: support inhibit-charge
+>
+>   Documentation/ABI/testing/sysfs-class-power |  14 ++
+>   drivers/platform/x86/thinkpad_acpi.c        | 154 +++++++++++++++++++-
+>   drivers/power/supply/power_supply_sysfs.c   |  51 +++++++
+>   include/linux/power_supply.h                |  16 ++
+>   4 files changed, 231 insertions(+), 4 deletions(-)
+>
+>
+> base-commit: 66f4beaa6c1d28161f534471484b2daa2de1dce0
+>
+=2D-
+Freundliche Gr=C3=BC=C3=9Fe / Kind regards,
+Thomas Koch
+
+Mail : linrunner@gmx.net
+Web  : https://linrunner.de/tlp
