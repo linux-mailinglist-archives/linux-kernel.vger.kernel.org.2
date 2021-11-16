@@ -2,116 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D894530FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:39:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A66D8453109
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:41:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235097AbhKPLmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 06:42:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56144 "EHLO
+        id S235262AbhKPLn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:43:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235125AbhKPLlh (ORCPT
+        with ESMTP id S234944AbhKPLmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 06:41:37 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3FEEC06120F;
-        Tue, 16 Nov 2021 03:37:50 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id gx15-20020a17090b124f00b001a695f3734aso2640750pjb.0;
-        Tue, 16 Nov 2021 03:37:50 -0800 (PST)
+        Tue, 16 Nov 2021 06:42:36 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8CDC061767;
+        Tue, 16 Nov 2021 03:38:19 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id p3-20020a05600c1d8300b003334fab53afso1679397wms.3;
+        Tue, 16 Nov 2021 03:38:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1YkV59UUDuaHjxt/1El7vRrZli8yesHvirxeJm8kUfY=;
-        b=SUhAh/UqrXAsmszhI7xHQZcaUnqK2mNWfaOcVLbS2AsTCZhY0kvmfUnvW7MVtakrWs
-         EUg4rpiSRzYTMXcSMm2SUBX+VAHWPVu3qSf8sGMKN+qUuchzdLIAJR7OginiyWMdDm6w
-         G0BTPFdLmesv2Q8qVHBhPh08sth/MgLSHJzf9agbmefULJr1ctjbVuYWtibhrJsm/BgG
-         97wGjRNdnARtjQ4ZIraX69LzupqtrxabjkPppfG33q5Xt6fiEIMMkzh4szCntow17Uex
-         wAoXpgRxtj5Eylgd044FzXF+kBwgzw3dMYZLJpzR9xfWiGoUkzCyL3fxRKD+1vCtOZHe
-         tWHw==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=eHO+LnzYTLvi1ibWQBQ4VJT9l42Re/gLaBNAO09hBu0=;
+        b=pu130IqB8Qy4jcg4TDLmnmcKdgryY8vLFCykVkkPJfcnk+FX8jnNgtK88l1bDHL5+W
+         lhhes8rAN46j/p3Ok/L8YwIUH/K78PiaU9P5ABv+gQAfN9pr5rSoh84kTj6SYzbrycdL
+         vKffhO1bYf30ZbIaqxezRU5MqfGyCC7XDMRqgf0G7elhzzoeNZm23WJpPJmyR2r9OIsV
+         2QQL3OnET3qK27plJHFGEyMVRfwxvWeOpPUAfMga6eRvT9+Dls8y92ry6RhzHMsvl+vz
+         1Zh/UrSN0tvDDaT7DzWilExeBYmWK0o+4BwLntgVF+SqWq0xvITEyVkv75qikIV+OJfU
+         LGLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1YkV59UUDuaHjxt/1El7vRrZli8yesHvirxeJm8kUfY=;
-        b=Ew4mNzIit00SJ061Lo4NP+haBcLFhvoF5wdzlSvIdcV8YvBMbJx18JFmba5ojQX82O
-         SC+RGgtgY22K69RNRJNz/mcIs4EgiIlrZAEY4avSdpHC5aYcPmVG+5p073Ih2e6YORqD
-         LiAxC3d5RrAbKHA3D1QQ1wtXtllKiByoqUvt7lL6ado+lYGG1CtYbdW7J/4s9hxjRmXJ
-         vOHVuPsvOdgyT3fV9Fr7aQzdI//AqAKYptHeFKXiIFolwYNHcXKJ47by5x8RYZr/nqmt
-         AY7K0y6/Eav4Q8WN2Zc1SHKJLI/Hq/SCkyB+OHSaIoft5e4aw2th1mVT7LGlwoyHLh/z
-         j3HQ==
-X-Gm-Message-State: AOAM531WiqhX6rWpVwsRZY5+X7z0BtX/v0JUxDOxU4oF2g4wP6QjJO00
-        WurD+UpbePQTc/9b7HtVrVo=
-X-Google-Smtp-Source: ABdhPJyNbNWxjZ1rGxCKGL7DETShGe0vZaEhJ0qTJ11ZfJ5vXM9qB0HpSgW1IyFnaogtSABdUYAoNg==
-X-Received: by 2002:a17:902:e546:b0:141:f4f7:7460 with SMTP id n6-20020a170902e54600b00141f4f77460mr44777686plf.17.1637062670458;
-        Tue, 16 Nov 2021 03:37:50 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id w17sm14874358pfu.58.2021.11.16.03.37.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 03:37:50 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: deng.changcheng@zte.com.cn
-To:     mingo@redhat.com
-Cc:     acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, tglx@linutronix.de, bp@alien8.de,
-        x86@kernel.org, hpa@zytor.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] perf/x86/intel: replace scnprintf in show functions with sysfs_emit
-Date:   Tue, 16 Nov 2021 11:37:39 +0000
-Message-Id: <20211116113739.156706-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=eHO+LnzYTLvi1ibWQBQ4VJT9l42Re/gLaBNAO09hBu0=;
+        b=c1jr6Tz51KM/PAg+yntP2Dc8MaP7LwwCPHtB+0VVr7vasxaR8/J5tNmGaRb0QTXvJh
+         EN4RLmSZSaZXnGKPWWzno0HbLDN3iT8mumlRQk3mtUxsSSvCRawixewbz84f+MQfAKHH
+         E+UbP7Ng5qQhHuZzWuxje2YP+f54orSfoNkycmEw001sUKYdHlkx0RJk1lnLC7Ff6QK6
+         DBUh/Wa9uRoc0SmRSmY3cTv6sz9PvR1n0iZ8ZUwcaWpb5EhUog1r+9q7sKAG+43Kwy4s
+         VLLLSz1nXOMXpFBJiXrxG0us2MXZQQchNMDKjd7UfcGEKsnVyWKqnkuGGKdF2dWmPJEu
+         NOaw==
+X-Gm-Message-State: AOAM5305BlISJ/yVE2hAPzPzpOA0ovpfhIcbypajp3bPZ9FA7+D147Cu
+        BACO3vhaMpNfVDE7JPPMhMZMcviPJCP/4h2qHV35ByAY/u0=
+X-Google-Smtp-Source: ABdhPJyeOJR96UJvqBee6IUrqwD26c0Xsj7Rz0iifGm1qj625vOJ1lY28aMdqEdExTkhtHnu3XsR5Oexjj5iVJnHvwI=
+X-Received: by 2002:a05:600c:1f13:: with SMTP id bd19mr52327080wmb.9.1637062698315;
+ Tue, 16 Nov 2021 03:38:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Sandy Harris <sandyinchina@gmail.com>
+Date:   Tue, 16 Nov 2021 19:38:06 +0800
+Message-ID: <CACXcFmm=eUjfVAJGgFGPfHWCc7s37j0==eASdqJK3OBAazeyOQ@mail.gmail.com>
+Subject: [PATCH 7/8] Replace memset() with memzero_explicit()
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changcheng Deng <deng.changcheng@zte.com.cn>
+Replace memset(address,0,bytes) which may be optimised
+away with memzero_explicit(address,bytes) which resists
+such optimisation
 
-Fix the coccicheck warning:
-WARNING: use scnprintf or sprintf
-
-Use sysfs_emit instead of scnprintf or sprintf makes more sense.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
 ---
- arch/x86/events/intel/core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ crypto/sm2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 4d679b2d6024..ad87a48bfb41 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -5115,7 +5115,7 @@ static ssize_t show_sysctl_tfa(struct device *cdev,
- 			      struct device_attribute *attr,
- 			      char *buf)
+diff --git a/crypto/sm2.c b/crypto/sm2.c
+index db8a4a265669..58641d964671 100644
+--- a/crypto/sm2.c
++++ b/crypto/sm2.c
+@@ -124,7 +124,7 @@ static void sm2_ec_ctx_deinit(struct mpi_ec_ctx *ec)
  {
--	return snprintf(buf, 40, "%d\n", allow_tsx_force_abort);
-+	return sysfs_emit(buf, "%d\n", allow_tsx_force_abort);
- }
- 
- static ssize_t set_sysctl_tfa(struct device *cdev,
-@@ -5149,7 +5149,7 @@ static ssize_t branches_show(struct device *cdev,
- 			     struct device_attribute *attr,
- 			     char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%d\n", x86_pmu.lbr_nr);
-+	return sysfs_emit(buf, "%d\n", x86_pmu.lbr_nr);
- }
- 
- static DEVICE_ATTR_RO(branches);
-@@ -5165,7 +5165,7 @@ static ssize_t pmu_name_show(struct device *cdev,
- 			     struct device_attribute *attr,
- 			     char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%s\n", pmu_name_str);
-+	return sysfs_emit(buf, "%s\n", pmu_name_str);
- }
- 
- static DEVICE_ATTR_RO(pmu_name);
--- 
-2.25.1
+     mpi_ec_deinit(ec);
 
+-    memset(ec, 0, sizeof(*ec));
++    memzero_explicit(ec, sizeof(*ec));
+ }
+
+ /* RESULT must have been initialized and is set on success to the
+--
