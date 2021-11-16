@@ -2,89 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB797453483
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:42:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93769453487
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237733AbhKPOpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 09:45:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237777AbhKPOoK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 09:44:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 210E46323D;
-        Tue, 16 Nov 2021 14:41:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637073673;
-        bh=BI3DXbE9gpfIqWL9BnbaNZ6E/Bn4OUk2FHNYGVBobTk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TrvFSCcMyTIR9IVO+ThXMrw0tcoffWYWpf8myCun9FASehWutNb10MQ+3WMjGLM/M
-         zfY5FGVJTlE38W0ko3zcTDyujAjvyyj5MCTi7ylgWp+F9HEFoMwUSyV+LNxCjgodq2
-         Z7mZ9KHIt3W8feRD9nZ5zHEkuT57rWzyZBDxh170wVA4KhvnnXsd0MzDFXSbvT/U5Z
-         Ew54jUQAx6AAwhxNxTQqYpPspXnrvSr4915YbGoiyDhm+iBs/7q7VRvAVOMHL3+U8D
-         X9xlejw09rBzZ7MikbKxcblj6WtV20RYxktX/h8dErc0M9UIZij4uSOid1OGFY44HW
-         l2y7cZoAF3/PA==
-Received: by mail-ot1-f42.google.com with SMTP id u18-20020a9d7212000000b00560cb1dc10bso33810457otj.11;
-        Tue, 16 Nov 2021 06:41:13 -0800 (PST)
-X-Gm-Message-State: AOAM530HLwUC7wa1rKwZS9E3xh6BQAbtn5GZHhDGhU/cr0LdFtNoLgy0
-        tI2ChKtSuKHxAEuRs2pt+PraYAFp91d7/6YHN2k=
-X-Google-Smtp-Source: ABdhPJyz182iVRGs2o144bv5JsNE7qgZa+kRxcT3JaTqZi5BX2Ugif7IVqr45uC7Ts3OoFdaw6xmJmhcM99DAzDQNNM=
-X-Received: by 2002:a9d:6c54:: with SMTP id g20mr6710255otq.30.1637073672398;
- Tue, 16 Nov 2021 06:41:12 -0800 (PST)
+        id S237585AbhKPOpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 09:45:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40805 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237800AbhKPOoY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 09:44:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637073685;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AfHc271RXOUnz4mYvex1noJIxI7ZHKxUfmBIzMbPzoE=;
+        b=iPAQuoLAgIFKF32cXr6pC+7DmO4BOT/c3Bx82OAq8x68XvsDlEgFPzF+f6hwfm7Ruix08k
+        w2GRV1Jg/CCbPIciXFdJojbgGu8e3PiPjIdKOvxO0VMFaI0cPi378OnqZvuWh9SOgEGfIQ
+        +2i682iPuNB42P85Te9OqXaV5rcMOjc=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-534-FAREUBowM4KR75W5ZkRuHA-1; Tue, 16 Nov 2021 09:41:24 -0500
+X-MC-Unique: FAREUBowM4KR75W5ZkRuHA-1
+Received: by mail-ed1-f71.google.com with SMTP id v22-20020a50a456000000b003e7cbfe3dfeso5222509edb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 06:41:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AfHc271RXOUnz4mYvex1noJIxI7ZHKxUfmBIzMbPzoE=;
+        b=pmJ3gVosIrrGDChpds1H0g8nUmveubGM3a+2kLPJwDCKAVaBriCm9Q/VCmlQicEeVl
+         uSS8EjJ8oWwUOV2D6GxiQKgrAW8CAomq72zAthPRmkjxdkoAyK+hao02XrQw8ariUEVA
+         d/kjfwkXdNIiVO656ItEMMsDvfA3EpThwllJt2M6kg5uvfR/klciWge7W7sBcNn9taEC
+         RDxqt046vR2uYECCbyI0Yr07wIPzWpWYLSlqIlNGoibXID8A+Ocfd0LBwjL9zW6W1dk1
+         q3bn8qEpPerpJPmq92ZWFe7xyVto9dBbQQ/UoAvWXrE4AAX7LYO51rsIGOq/QIqZWyjV
+         UGvQ==
+X-Gm-Message-State: AOAM531ZRjmdcE+GLco198oflRz1LQC+XJxrESYKgrm2s0ouJmRB9C+/
+        PHQva15TKHrf7e6cVb1O1NtJJUnWE8Iqfs254PmTZuHjJwMnzKOvf8voBywYOtcCQWjE3TSiVov
+        3XLSoAXgErCGrQGcBIjkKS1ow
+X-Received: by 2002:a50:f18a:: with SMTP id x10mr10933213edl.193.1637073683466;
+        Tue, 16 Nov 2021 06:41:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxB2sbwGvYxWKbC+UMKYgg2LVMQ3q254bvGdk6QiC2h+UbWm6XEbEkZoXht5LV0mMQvzs1Y0Q==
+X-Received: by 2002:a50:f18a:: with SMTP id x10mr10933184edl.193.1637073683291;
+        Tue, 16 Nov 2021 06:41:23 -0800 (PST)
+Received: from steredhat (host-87-10-72-39.retail.telecomitalia.it. [87.10.72.39])
+        by smtp.gmail.com with ESMTPSA id hv13sm8368872ejc.75.2021.11.16.06.41.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 06:41:22 -0800 (PST)
+Date:   Tue, 16 Nov 2021 15:41:19 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Andrey Ryabinin <arbn@yandex-team.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] vhost: get rid of vhost_poll_flush() wrapper
+Message-ID: <20211116144119.56ph52twuyc4jtdr@steredhat>
+References: <20211115153003.9140-1-arbn@yandex-team.com>
 MIME-Version: 1.0
-References: <CACXcFmkO0g2YRjvfknKXr_ZnJaMg2cpvOsLq=h1ZcB=hg9NK8w@mail.gmail.com>
-In-Reply-To: <CACXcFmkO0g2YRjvfknKXr_ZnJaMg2cpvOsLq=h1ZcB=hg9NK8w@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 16 Nov 2021 15:41:00 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXE5rZdUoNd4vqXDCuNbHuwapnxskU1pabQax4LVvUWxgg@mail.gmail.com>
-Message-ID: <CAMj1kXE5rZdUoNd4vqXDCuNbHuwapnxskU1pabQax4LVvUWxgg@mail.gmail.com>
-Subject: Re: [PATCH 0/8] memset() in crypto code
-To:     Sandy Harris <sandyinchina@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20211115153003.9140-1-arbn@yandex-team.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Nov 2021 at 12:20, Sandy Harris <sandyinchina@gmail.com> wrote:
+On Mon, Nov 15, 2021 at 06:29:58PM +0300, Andrey Ryabinin wrote:
+>vhost_poll_flush() is a simple wrapper around vhost_work_dev_flush().
+>It gives wrong impression that we are doing some work over vhost_poll,
+>while in fact it flushes vhost_poll->dev.
+>It only complicate understanding of the code and leads to mistakes
+>like flushing the same vhost_dev several times in a row.
 >
-> Fairly often we want to clear some memory in crypto code; it holds
-> things we are done using and do not want to leave lying around where
-> an enemy might discover them. Typical examples are crypto keys or
-> random numbers we have generated and used for output.
+>Just remove vhost_poll_flush() and call vhost_work_dev_flush() directly.
 >
-> The obvious way to do this is with memset(address,0,bytes) but there
-> is a problem with that; because we are done using that memory, the
-> compiler may optimise away the "useless" memset() call. Using
-> memzero_explicit(address,bytes) instead solves the problem; that
-> function is designed to resist the optimisation.
+>Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
+>---
+> drivers/vhost/net.c   |  4 ++--
+> drivers/vhost/test.c  |  2 +-
+> drivers/vhost/vhost.c | 12 ++----------
+> drivers/vhost/vsock.c |  2 +-
+> 4 files changed, 6 insertions(+), 14 deletions(-)
 >
-> There are well over 100 memset() calls in .c files in the crypto and
-> security directories. I looked at them all and found about a dozen in
-> eight files that I thought should be changed to memzero_explicit().
-> Here they are as patches 1 to 8 in this series.
+>diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+>index 28ef323882fb..11221f6d11b8 100644
+>--- a/drivers/vhost/net.c
+>+++ b/drivers/vhost/net.c
+>@@ -1375,8 +1375,8 @@ static void vhost_net_stop(struct vhost_net *n, struct socket **tx_sock,
 >
-> I did read some code & think moderately carefully, but I do not know
-> the code deeply & it is possible I have made some errors. I think
-> false positives (making unnecessary changes) are more likely than
-> false negatives (not catching necessary changes).
+> static void vhost_net_flush_vq(struct vhost_net *n, int index)
+> {
+>-	vhost_poll_flush(n->poll + index);
+>-	vhost_poll_flush(&n->vqs[index].vq.poll);
+>+	vhost_work_dev_flush(n->poll[index].dev);
+>+	vhost_work_dev_flush(n->vqs[index].vq.poll.dev);
+> }
+>
+> static void vhost_net_flush(struct vhost_net *n)
+>diff --git a/drivers/vhost/test.c b/drivers/vhost/test.c
+>index a09dedc79f68..1a8ab1d8cb1c 100644
+>--- a/drivers/vhost/test.c
+>+++ b/drivers/vhost/test.c
+>@@ -146,7 +146,7 @@ static void vhost_test_stop(struct vhost_test *n, void **privatep)
+>
+> static void vhost_test_flush_vq(struct vhost_test *n, int index)
+> {
+>-	vhost_poll_flush(&n->vqs[index].poll);
+>+	vhost_work_dev_flush(n->vqs[index].poll.dev);
+> }
+>
+> static void vhost_test_flush(struct vhost_test *n)
+>diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+>index 59edb5a1ffe2..ca088481da0e 100644
+>--- a/drivers/vhost/vhost.c
+>+++ b/drivers/vhost/vhost.c
+>@@ -245,14 +245,6 @@ void vhost_work_dev_flush(struct vhost_dev *dev)
+> }
+> EXPORT_SYMBOL_GPL(vhost_work_dev_flush);
+>
+>-/* Flush any work that has been scheduled. When calling this, don't hold any
+>- * locks that are also used by the callback. */
+>-void vhost_poll_flush(struct vhost_poll *poll)
+>-{
+>-	vhost_work_dev_flush(poll->dev);
+>-}
+>-EXPORT_SYMBOL_GPL(vhost_poll_flush);
+>-
+> void vhost_work_queue(struct vhost_dev *dev, struct vhost_work *work)
+> {
+> 	if (!dev->worker)
+>@@ -663,7 +655,7 @@ void vhost_dev_stop(struct vhost_dev *dev)
+> 	for (i = 0; i < dev->nvqs; ++i) {
+> 		if (dev->vqs[i]->kick && dev->vqs[i]->handle_kick) {
+> 			vhost_poll_stop(&dev->vqs[i]->poll);
+>-			vhost_poll_flush(&dev->vqs[i]->poll);
+>+			vhost_work_dev_flush(dev->vqs[i]->poll.dev);
 
-Hello Sandy,
+Not related to this patch, but while looking at vhost-vsock I'm 
+wondering if we can do the same here in vhost_dev_stop(), I mean move 
+vhost_work_dev_flush() outside the loop and and call it once. (In 
+another patch eventually)
 
-As Greg alluded in reply to one of these patches, memzero_explicit()
-is only usually needed for stack variables, because in those cases,
-the compiler is able to infer that the memset() is the last thing that
-touches the variable before it goes out of scope, and so memset()ing
-it can be omitted.
+Stefano
 
-Variables that are passed into a function by pointer reference have a
-life time that is not known to the callee, and so there is no way the
-compiler can elide memset() calls, which means that using
-memzero_explicit() in such cases is not needed. The exception is
-functions with static linkage that may end up being inlined into their
-callers, but in the crypto subsystem, many such functions are invoked
-indirectly via exported function pointers, which makes inlining
-impossible.
