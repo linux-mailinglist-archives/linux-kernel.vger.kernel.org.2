@@ -2,113 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42FE54533E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 307484533E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:15:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237220AbhKPORs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 09:17:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39246 "EHLO mail.kernel.org"
+        id S237273AbhKPOSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 09:18:01 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:36068 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237334AbhKPORd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 09:17:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E10DF61A40;
-        Tue, 16 Nov 2021 14:14:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637072074;
-        bh=7G6p0eMBJYpvdBwMo9D60h07DEbfBQdsNKicFx83ZM8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jSSx2zqG6YDhoIGugcxwWjMJZ76XGHGU3Bg/hHHvTROWrLd40xaLq0ndVoNXB73F2
-         BM09Ms2awQTL54arbQrExeqdeqLrwwazNSqbivPOuEnsoZRWKZG+b3bZVxwFwgSaB4
-         sNd33T5ZBMXBDldGU+KrOESAcWmteyqTdUqtsvNY=
-Date:   Tue, 16 Nov 2021 15:14:32 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, f.fainelli@gmail.com,
-        patches@kernelci.org, lkft-triage@lists.linaro.org,
-        jonathanh@nvidia.com, linux- stable <stable@vger.kernel.org>,
-        pavel@denx.de, Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux@roeck-us.net, Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH 5.4 000/355] 5.4.160-rc1 review
-Message-ID: <YZO8yO9tn3C7XhHp@kroah.com>
-References: <20211115165313.549179499@linuxfoundation.org>
- <CA+G9fYvxhzL9KUxZcRzMxnbGPK5GKTCtb5kWM3JB09D+-KhVug@mail.gmail.com>
- <CAEf4BzZHsbAhA6RJYias+e10PsXWbOD9ekyNMAHKt5PKAGe=Rw@mail.gmail.com>
+        id S237212AbhKPORz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 09:17:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=3AIZ41+tqVRM1/xAiVsE723Y0TQuUEbBW9w9e6TgV3Y=; b=0s4GLgMY4QwvUzfOUF+u2Ihr84
+        jc983K1vxOEmD4fnmJrC0uj0R3kyx2tRPKr3Zm2tsAtVj5AueuHBkE9xsBbDRwMZhDb9xlBsiWKBK
+        E/KA3aI0x06d+F7CMDIsT8ity6epg/0GJGgaJICwMbVsy+cDpdfS65+BBljBVFdhiJkQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mmzEe-00DesX-NR; Tue, 16 Nov 2021 15:14:56 +0100
+Date:   Tue, 16 Nov 2021 15:14:56 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, g@pengutronix.de,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com,
+        kernel@pengutronix.de, Jakub Kicinski <kuba@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>
+Subject: Re: [RFC PATCH net-next] net: dsa: microchip: implement multi-bridge
+ support
+Message-ID: <YZO84IfL87dxg3n+@lunn.ch>
+References: <20211108111034.2735339-1-o.rempel@pengutronix.de>
+ <20211110123640.z5hub3nv37dypa6m@skbuf>
+ <20211112075823.GJ12195@pengutronix.de>
+ <20211115234546.spi7hz2fsxddn4dz@skbuf>
+ <20211116083903.GA16121@pengutronix.de>
+ <20211116124723.kivonrdbgqdxlryd@skbuf>
+ <20211116131657.GC16121@pengutronix.de>
+ <YZO0tuMtDUIbRfcC@lunn.ch>
+ <20211116135335.j5mmvpnfzw4hfz67@skbuf>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzZHsbAhA6RJYias+e10PsXWbOD9ekyNMAHKt5PKAGe=Rw@mail.gmail.com>
+In-Reply-To: <20211116135335.j5mmvpnfzw4hfz67@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 09:57:55PM -0800, Andrii Nakryiko wrote:
-> On Mon, Nov 15, 2021 at 10:00 AM Naresh Kamboju
-> <naresh.kamboju@linaro.org> wrote:
-> >
-> > On Mon, 15 Nov 2021 at 22:39, Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > This is the start of the stable review cycle for the 5.4.160 release.
-> > > There are 355 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> > >
-> > > Responses should be made by Wed, 17 Nov 2021 16:52:23 +0000.
-> > > Anything received after that time might be too late.
-> > >
-> > > The whole patch series can be found in one patch at:
-> > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.160-rc1.gz
-> > > or in the git tree and branch at:
-> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> > > and the diffstat can be found below.
-> > >
-> > > thanks,
-> > >
-> > > greg k-h
-> >
-> >
-> > Perf build broken due to following errors.
-> >
-> > > Andrii Nakryiko <andrii@kernel.org>
-> > >     libbpf: Fix BTF data layout checks and allow empty BTF
-> >
-> >
-> > In file included from btf.c:17:
-> > btf.c: In function 'btf_parse_hdr':
-> > btf.c:104:62: error: 'struct btf' has no member named 'raw_size'; did
-> > you mean 'data_size'?
-> >   104 |                 pr_debug("Invalid BTF total size:%u\n", btf->raw_size);
-> >       |                                                              ^~~~~~~~
-> >
-> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> >
-> > Build log:
-> > https://builds.tuxbuild.com/20xsgAxLwf4E60xl2dTdXnNS8FZ/
+On Tue, Nov 16, 2021 at 03:53:35PM +0200, Vladimir Oltean wrote:
+> On Tue, Nov 16, 2021 at 02:40:06PM +0100, Andrew Lunn wrote:
+> > > > What logging noise?
+> > > 
+> > > I get this with current ksz driver:
+> > > [   40.185928] br0: port 2(lan2) entered blocking state
+> > > [   40.190924] br0: port 2(lan2) entered listening state
+> > > [   41.043186] br0: port 2(lan2) entered blocking state
+> > > [   55.512832] br0: port 1(lan1) entered learning state
+> > > [   61.272802] br0: port 2(lan2) neighbor 8000.ae:1b:91:58:77:8b lost
+> > > [   61.279192] br0: port 2(lan2) entered listening state
+> > > [   63.113236] br0: received packet on lan1 with own address as source address (addr:00:0e:cd:00:cd:be, vlan:0)
+> > 
+> > I would guess that transmission from the CPU is broken in this
+> > case. It could be looking up the destination address in the
+> > translation table and not finding an entry. So it floods the packet
+> > out all interfaces, including the CPU. So the CPU receives its own
+> > packet and gives this warning.
+> > 
+> > Flooding should exclude where the frame came from.
 > 
-> Greg,
-> 
-> c733c19fda7b ("libbpf: Fix BTF data layout checks and allow empty
-> BTF") should either be dropped, or fixed like the below:
-> 
-> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> index 3380aadb7465..41daf0fa95b9 100644
-> --- a/tools/lib/bpf/btf.c
-> +++ b/tools/lib/bpf/btf.c
-> @@ -101,7 +101,7 @@ static int btf_parse_hdr(struct btf *btf)
->         }
-> 
->         if (meta_left < hdr->str_off + hdr->str_len) {
-> -               pr_debug("Invalid BTF total size:%u\n", btf->raw_size);
-> +               pr_debug("Invalid BTF total size:%u\n", btf->data_size);
->                 return -EINVAL;
->         }
-> 
-> Not sure which one you'd prefer. Both will fix perf build.
+> I interpret this very differently. If Oleksij is looping lan1 with lan2
+> and he keeps the MAC addresses the way DSA sets them up by default, i.e.
+> equal and inherited from the DSA master, then receiving a packet with a
+> MAC SA (lan2) equal with the address of the receiving interface (lan1)
+> is absolutely natural. What is not natural is that the bridge attempts
+> to learn from this packet (the message is printed from br_fdb_update),
+> which in turn is caused by the fact that the port is allowed to proceed
+> to the LEARNING state despite there being a loop (which is not detected
+> by STP because STP is broken as Oleksij describes).
 
-I'll go fix it up, thanks.
+Ah, yes, that is more likely.
 
-greg k-h
+Sorry, should not of jumped in without reading all the context. If STP
+is broken, odd things will happen.
+
+   Andrew
