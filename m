@@ -2,82 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E442245389E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 18:36:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6794538A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 18:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238939AbhKPRi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 12:38:57 -0500
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:56359 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233537AbhKPRi4 (ORCPT
+        id S238952AbhKPRjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 12:39:37 -0500
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:47763 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233537AbhKPRjg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 12:38:56 -0500
-Received: from [77.244.183.192] (port=62096 helo=[192.168.178.41])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1mn2NB-0000Vf-6r; Tue, 16 Nov 2021 18:35:57 +0100
-Subject: Re: [PATCH v2 3/3] power: supply: max77976: add Maxim MAX77976
- charger driver
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-References: <20211108162706.2816454-1-luca@lucaceresoli.net>
- <20211108162706.2816454-3-luca@lucaceresoli.net>
- <20211116152108.z4qpfl43h4f2pbm7@earth.universe>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <7f91e875-3a87-0b01-4b40-232ca109ef38@lucaceresoli.net>
-Date:   Tue, 16 Nov 2021 18:35:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 16 Nov 2021 12:39:36 -0500
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 67A7560011;
+        Tue, 16 Nov 2021 17:36:34 +0000 (UTC)
+Date:   Tue, 16 Nov 2021 18:36:33 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Colin Foster <colin.foster@in-advantage.com>,
+        =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [RFC PATCH v4 net-next 11/23] pinctrl: ocelot: update pinctrl to
+ automatic base address
+Message-ID: <YZPsIW2bfbBThtWj@piout.net>
+References: <20211116062328.1949151-1-colin.foster@in-advantage.com>
+ <20211116062328.1949151-12-colin.foster@in-advantage.com>
 MIME-Version: 1.0
-In-Reply-To: <20211116152108.z4qpfl43h4f2pbm7@earth.universe>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211116062328.1949151-12-colin.foster@in-advantage.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sebastian,
+Hello,
 
-On 16/11/21 16:21, Sebastian Reichel wrote:
-> Hi,
+On 15/11/2021 22:23:16-0800, Colin Foster wrote:
+> struct gpio_chip recommends passing -1 as base to gpiolib. Doing so avoids
+> conflicts when the chip is external and gpiochip0 already exists.
 > 
-> On Mon, Nov 08, 2021 at 05:27:06PM +0100, Luca Ceresoli wrote:
->> Add support for the MAX77976 3.5/5.5A 1-Cell Li+ Battery Charger.
->>
->> This is a simple implementation enough to be used as a simple battery
->> charger without OTG and boost.
->>
->> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
->>
->> ---
+> Signed-off-by: Colin Foster <colin.foster@in-advantage.com>
+> ---
+>  drivers/pinctrl/pinctrl-ocelot.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Thanks, I queued this to power-supply's for-next branch together
-> with the other 2 patches
+> diff --git a/drivers/pinctrl/pinctrl-ocelot.c b/drivers/pinctrl/pinctrl-ocelot.c
+> index cc7fb0556169..f015404c425c 100644
+> --- a/drivers/pinctrl/pinctrl-ocelot.c
+> +++ b/drivers/pinctrl/pinctrl-ocelot.c
+> @@ -1308,7 +1308,7 @@ static int ocelot_gpiochip_register(struct platform_device *pdev,
+>  	gc = &info->gpio_chip;
+>  	gc->ngpio = info->desc->npins;
+>  	gc->parent = &pdev->dev;
+> -	gc->base = 0;
+> +	gc->base = -1;
 
-Thanks!
+I can't remember why but I'm pretty sure I did that on purpose but this
+indeed cause issues when the chip is external. I've asked Clément to
+check, let's see what the result is ;)
 
-> with one small change: The of_match_ptr()
-> is not needed and actually should result in a warning when building
-> the driver with CONFIG_OF disabled.
+>  	gc->of_node = info->dev->of_node;
+>  	gc->label = "ocelot-gpio";
+>  
+> -- 
+> 2.25.1
+> 
 
-Ouch. I made the same mistake in the past and the kernel test robot
-noticed, I wonder why it didn't this time but hopefully I will remember
-in the future!
-
-Regards,
 -- 
-Luca
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
