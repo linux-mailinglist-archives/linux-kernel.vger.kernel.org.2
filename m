@@ -2,244 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C6B4536AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:03:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E6CA4536B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:03:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238748AbhKPQFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 11:05:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238705AbhKPQF3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:05:29 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8EA1C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 08:02:31 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id p18so8095954wmq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 08:02:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=wR86pjAKDcIIUjt4g0ysng9Tddgdb2GO7C//iSJkn0k=;
-        b=FftBZOyVFz0PYRsL59Z0G8+qAi7RSjGedwAPQPPtbfF5SsCowVTzSBy3p0mssJB21z
-         Cadco0sNSqDTxiKuvu8X3O5kJSAu1Ihr2jIxiQJnP3rroZAp6sXuoluwDXsq2xPShhsj
-         D1QoP4+qDRLuNWU8JoSwUas/UnXTDhsXeVDJQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=wR86pjAKDcIIUjt4g0ysng9Tddgdb2GO7C//iSJkn0k=;
-        b=YdbvRLDlnHy6RV2xho8vNPbCnjSPXVEKh3V2XGJ3nGNDjHbgtteOURUj7N2VS4oeDI
-         WMVe4u3Qs7FhyQWfE/U1vJQl1SoS47cw4BOAHumG394DEQG3A7vwNZbKonyG0Z+4q60Z
-         OjfLDmNrnV1GutmetxrktAK7lQuUcZoln/ZIAG15KI/i5I8oW7sOiMLfidkS9jrF1/Vp
-         xcjRQzY7tfzivz2rTzG2mEh/ZtcE/dmrDEfrnfGA0761fLpf/qH7jDPXCcGENFQQV59j
-         bRBgmhC14WaE/+o0VD9rMGByYEU8eP1KC4rMPtmPOigZ06DAbDsgxIVjh7FiLcAurk+z
-         eLwA==
-X-Gm-Message-State: AOAM530snR0vR2a0tzzujJrkkfscZun0rgif0W/Xeu0MDxsZTPawURpC
-        oIefhZLSmxQt7/JFeP3xEDfxLg==
-X-Google-Smtp-Source: ABdhPJxVC3Ayf3ujyTs1tnzW1O0d4iFKas9hSskyyJx1LFP+DqbDyiOzSuzf3vWlKhxoGmALSZFsHQ==
-X-Received: by 2002:a1c:20cc:: with SMTP id g195mr70520481wmg.42.1637078548445;
-        Tue, 16 Nov 2021 08:02:28 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id u2sm20799672wrs.17.2021.11.16.08.02.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 08:02:27 -0800 (PST)
-Date:   Tue, 16 Nov 2021 17:02:25 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        linaro-mm-sig@lists.linaro.org,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH 00/15] iio: buffer-dma: write() and new DMABUF based API
-Message-ID: <YZPWEU2zRCY0En4l@phenom.ffwll.local>
-Mail-Followup-To: Paul Cercueil <paul@crapouillou.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        linaro-mm-sig@lists.linaro.org,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
-        linux-media@vger.kernel.org
-References: <20211115141925.60164-1-paul@crapouillou.net>
- <YZJwnPbgCOdeKq6S@phenom.ffwll.local>
- <18CM2R.6UYFWJDX5UQD@crapouillou.net>
+        id S238734AbhKPQGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 11:06:30 -0500
+Received: from mail-bn7nam10on2073.outbound.protection.outlook.com ([40.107.92.73]:46113
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238744AbhKPQGN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 11:06:13 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bRS8o4socwULaGDwxo7eba262gGj0PPC3S5X75+smG0m8TZSkuTCmgea/Ggw0xUJ339MdIskMHEnadCJO08e1ZFpIkUnXAWdU4SYWvTksRcWaOunyqX0/0mpcQyNxY/JB2+4ZaWCrkXlxIo3K7mPXoqbPkuAtHR1l5dVbaV9yI4rLJ1/D6Dv8IXal+P39pWLBHJDxh5sCcIWA8jAIvcqm2A0HRuB17QX0S3KNM8t13w+P6KOyZVXX3mfVmkW0WfARecHp4da0gtEFuAxriuUYehR3iNZSkmJQ1mcglBNBH3gTtsNxv+0AALQ/+e1S4cQQJhaPwEXmhOQb/VBhL9K7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9Xog9J4J97BAFZGoYcavuLSQBCDG7n1ieGmduIflrE8=;
+ b=UcalXS7FCw3a+08QkC4Z6UxGQVstDOfm6ZDts30TE0TDLKezH39YrZTeZ+dwSci3NT1I7mxJR6TMTMHsaCmOBOdJtmSAPGsYcGNjK2l28OmsQJH5D8+aOlvezQ4kOAo1AxB4rA4KCroTLVct0CYYMoStGSB+rBxTTnyGyqQ9/YgJkPZpheLlpwE2yoKLJJWknoEPt9sHUvEQVend66OlGlGIfwP/6lGgn0+eQzkuBVWs8d92M1Z0cRgcW3xU7DPd1mQkoLGc9R4Mu2CW22l7dxijwtmrv+BMvr84iwhNs8B8IHbgKbMsLXDChua3JyeJ+6a1WPEkS7/iUaVHJQPwIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9Xog9J4J97BAFZGoYcavuLSQBCDG7n1ieGmduIflrE8=;
+ b=dntmcj2uvdxAWw9oWxDCJifUbJBo6Htemi0/8WXzwulptmAKuGihJoFQ75WPaAatfQw7WoiO7Uj5IP/WkYbio6KMsP7y27c3TLArVgZ0zfiBwbXehXJ+iHpG068dvOP5QWkrpX3mwYFq7TDMS66+gPCGIEP3U+EgVB9APlaZ0mE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SN6PR12MB2686.namprd12.prod.outlook.com (2603:10b6:805:72::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Tue, 16 Nov
+ 2021 16:03:13 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::e4da:b3ea:a3ec:761c]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::e4da:b3ea:a3ec:761c%7]) with mapi id 15.20.4690.027; Tue, 16 Nov 2021
+ 16:03:13 +0000
+Cc:     brijesh.singh@amd.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH v7 00/45] Add AMD Secure Nested Paging (SEV-SNP) Guest
+ Support
+To:     Venu Busireddy <venu.busireddy@oracle.com>
+References: <20211110220731.2396491-1-brijesh.singh@amd.com>
+ <YZKDGKOgHKNWq8s2@dt> <a631d02a-c99e-a0d6-444a-3574609c7a25@amd.com>
+ <YZKMvjEIGarn8RrR@dt> <88aa149c-5fbe-b5c4-5979-6b01d4e79bee@amd.com>
+ <YZKRBOl9UkTJE4jx@dt> <YZPSN1Ctl6H8lxsR@dt>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <3ab027b9-9a9a-119d-7fc2-3551bffe6811@amd.com>
+Date:   Tue, 16 Nov 2021 10:03:08 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <YZPSN1Ctl6H8lxsR@dt>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MN2PR15CA0016.namprd15.prod.outlook.com
+ (2603:10b6:208:1b4::29) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <18CM2R.6UYFWJDX5UQD@crapouillou.net>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+Received: from [10.236.30.107] (165.204.77.1) by MN2PR15CA0016.namprd15.prod.outlook.com (2603:10b6:208:1b4::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend Transport; Tue, 16 Nov 2021 16:03:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6e0b3b73-d29a-4211-6475-08d9a91a9828
+X-MS-TrafficTypeDiagnostic: SN6PR12MB2686:
+X-Microsoft-Antispam-PRVS: <SN6PR12MB26865AB344DD4EEF162790F6E5999@SN6PR12MB2686.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:580;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CK8lbtlSRJ36AHceN8rNM6UCOMOcGf6fN28916snJrK6Y7KgqxdCraRL1bzpjb9D+gxrI18zqdqKeTMfEFAKksAqTDiglb0lniySdhMllWQdzRtmdIW2ZNWeHn/wi4VaMBRHcSw5QiL7rcqmjzOkaXUmiEZ2x0byAIDNoPbRZ+KNvh5oBoS5SvSVWGp6xU1ThEORTO1PPWh5GnXJDWkL/jrKEI56mxZ06UUNuiIM6lzfK9UEK47KJNv3/yU85VRxl+moiWWQ91jPybHZUMHefLimFPeQ8jjoECtdqyqhB/NVWOcyxT+ZssCzuwsfh50ljxIxZivzIvYWDt8ZieD1C107ioWi2hDP+9eQBerylCDBZ04F66LKKl6hcQPjFhwC8NVirzdP56H++d53f6W080aSOusqKIteAGFb2MSU1ISSMF1BejCNJJ1RquqEd4BD5ALJxAiOZ6LLmPHvCxKBtekDw4hkeVYg34CorRCoafNbk1UgLIHM+bkp08aK1c/+xNidLZOj2vlV419cY+p9Lk+uUVOAns1LcWA1ZwbqJYjWowDABpjmBLA9Cb42p80vH4QK04w+zZqYq9TtsKXkKZ0OosynRtWtNwpDO5SBjETPkbB73bF4Zpf3hbl3rQ3ZjgDgesXNMXLNaLK7f3k6oLZYQh3S6G0N3Zq9qIwbLzpcHRaUxiSM7E6KXIhpfsKETMxWg9b5L7F323DvVih3uj4TKJUkqZz7SYz2daIVhTkhnc8VJBErah39MBeKYWgxj/SkWmxP7eCr4Ji4Ko7xGRkI3S8groiNhEzgcpv3E7c2TMYmxqb6w7H/y+DqI/SXrafqa1gp1BV/neQ7wEPRTBG7kmNKCiQV1w593PerZQ9tx30c2TS2hesW88sVAC/v
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(66556008)(66476007)(66946007)(8676002)(2906002)(5660300002)(45080400002)(966005)(44832011)(16576012)(4001150100001)(2616005)(956004)(31686004)(38100700002)(508600001)(8936002)(316002)(6486002)(186003)(54906003)(7406005)(7416002)(83380400001)(6916009)(26005)(53546011)(4326008)(31696002)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cU0ydE1pV3N1Z3hDY1JHZWYyMDRrUHFHLzh0UzVhdTdLaUJPb0xMQ3NDTU5t?=
+ =?utf-8?B?TGFiekZvb2ZqaGRIRjA1QlowdXloUmp2Mjl0bytSUTRNOVpTbVJXd3ZDK3BO?=
+ =?utf-8?B?RGpXczk0MGZNa3I0dGllV2tyakJrMnc4RXBMb1orN3VXbVl3SWlMTjk0aTdI?=
+ =?utf-8?B?ZDdwd2UzTk52MnBISlZ3SG94TjA4VGF2eTJZUEFUdUJLeS9Da0pGZyt0QVZj?=
+ =?utf-8?B?aDJnUGc3aDRjZk9uaWpxVEJxTWlmMmp1RWpySzdNREpxNGt3dm50cW1BZ3FY?=
+ =?utf-8?B?bHpIL3hpKzZZN2M5ZUFSQ3hVY1ZaeXAxZW9ReEhpVFEva3hxaTVIYURKZ3Vu?=
+ =?utf-8?B?akV3LzlweFMwbFJDUWFmckVQcU9meFpOTHVQQ3RzWFR5SmE3RXhOVS94aEs1?=
+ =?utf-8?B?dVVIUi9Qb042U2JmTXFWdHM0YWF6SmtpWXNieFNwamlNWUVsMlllaUxrTUx4?=
+ =?utf-8?B?akNBa2xFNVo3NER2U09OSTF2ZS9ZR3N0aUxaMXpyaTRqd081V0hSWUx0cUNN?=
+ =?utf-8?B?QVJlUHZORjRrRlZBYU5UbDQwcUVVRUkzbHlnbUpBN2QvNWtGdWo3NVlzL0hl?=
+ =?utf-8?B?UHRvdkUxVkllUnZIN3RabDNPU2hMckRwRWVrd1BMQmZ2b2Jsdk04RHNxck1E?=
+ =?utf-8?B?eDNoOTlVUGpFTGlaM1dBSmdBd2ZReDVQZEo1U0NxODN5UnJGb25VemhsdlNi?=
+ =?utf-8?B?UHNVVU91c0VSZjloYjVuekN5eXlqUnFGUmpPaXRCODlvWE1kTnQ3cExmcE5n?=
+ =?utf-8?B?aStIblNEc240QlN1NDlvWTh1cG91VG54TFpBbTVHWm9YOWF5eHlKRHNtZWdV?=
+ =?utf-8?B?Uno0Mkt6OVpCdHl3Sjd6eit3NzRMNGNORE8vQVkybmFuTmJkNytJaGdjaU9a?=
+ =?utf-8?B?VEkzQ2Rjbmp2TjR6SVl0ZFVHbUpwL0trTXd2NlpIYStWSTI3N0tXVEZzSUI5?=
+ =?utf-8?B?WkVvNjRqdlFKK0NYWlVzUEhqUkFQZ1cycWx6NlY2bFE4Ti9XZWVQVE55a2k0?=
+ =?utf-8?B?NlR5VFRaZm9TVExnWWlZU2J6R1ppcVZiWWhLWFhaS05rdWlzR2JVZGEvUUZM?=
+ =?utf-8?B?NTFYdkJsL01WTXUrZHdCenRxQytRa3FaV25SbkpVRm1GMlpWK3VySGJnY09B?=
+ =?utf-8?B?TDJYVWRMNDJzU1kyYnBXd05mbVU5SDZIakV1NjlBZ2x4L3hhZGRzOGZJMUVE?=
+ =?utf-8?B?ZzNRMGhtY3lSSzBoOG8wZ3E2VFlXOEJpNGMzckxJZjdSQlhFb2dXYityZXFJ?=
+ =?utf-8?B?VkIwRjI2SUJBeVhjQzhPbUU2Vm4rZmtJblAyNTRYNC94aThXQXQwWVVHZTVS?=
+ =?utf-8?B?OHlTM21ma0tCRnhZYzYyODV1ZG5ZZzNWQ1IvK3FjYmNTV1ZEUHVTU05JcmhI?=
+ =?utf-8?B?MEFyc3ZkamdOakpVa0ZwUkZBRXgxejlnN08vd3paY2NFTElZZi84djZMQ0pJ?=
+ =?utf-8?B?a1pCZVRZVi9BUWdSUVNocDZLWWVKZGJsMkUwcmdMQVpuVXF2RUh3K2dld0U4?=
+ =?utf-8?B?M2dGVEtaMGlwbEROaFBnMGo1WGZ1K0RFaWQ0bkh4NmZOR2J3QXl5ZGpjenY2?=
+ =?utf-8?B?dDdrY2tTSWlKTllKYzR3YTYzdXg2OFg3RTN5d0FFcVY0emQ1VzJvMWdWNlVM?=
+ =?utf-8?B?WHFiSE4vakM3YVNQckx4amZtQytuT0hCYmNleUUrZWdZRjFaaGpQMjBTTWFx?=
+ =?utf-8?B?R20ySUlId0E2anRVSlBFSHNLQnJmT0FsYkxlNERmSDF2Nm9tTCtkbm9uUmRX?=
+ =?utf-8?B?ZERsWmx3bFkvVXVtMGNMZTIxaDJMbGpkeUM1SDUzTElzNWZSODRiaEx3ckNT?=
+ =?utf-8?B?ZlFWUkJOZFkzT1V4YmFweFdHOGZxcC9rTkdSbStBMWhNTFdZaWExUExweXh5?=
+ =?utf-8?B?KytpVjRLMjQwekpLYXVFL1RSUC8yRGYvd0tjR3dSRUsrS2hJRGNZZi8zQlk2?=
+ =?utf-8?B?d1BMbGFpMDZYMnRhcnUxbUJXZzA4MHJ0amVHNlJTN3ZsTHBISDhqdGd1cnFN?=
+ =?utf-8?B?KzFXcUtVaUZLdTRPOUtWcjg3Y29SUXFld2R4eHkzRGF4NVprODh3TmlxZll2?=
+ =?utf-8?B?RGJzQlg4L1RJMnBBeTMybDJQWjNEMkdlWXlQMTNiWnlNeUs5Q2xQUjQ1TjUr?=
+ =?utf-8?B?NDM5VmVhNEcvb09zZHJtVFJHRDM4NHhSUDRrVlVvYnRMVlU3Mmw4Y1FlWlI3?=
+ =?utf-8?Q?cu/QMLNIAdRAWH9T0dmWmPs=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6e0b3b73-d29a-4211-6475-08d9a91a9828
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 16:03:13.7832
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1Sbvz33co2UfBb6izIgQFYfVYyLLJPk9/RqHMCNtVMquOBcNUsrGA0qIzWMadpL8hWTqNwZMpMp0B81X/y2ioQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2686
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 02:57:37PM +0000, Paul Cercueil wrote:
-> Hi Daniel,
-> 
-> Le lun., nov. 15 2021 at 15:37:16 +0100, Daniel Vetter <daniel@ffwll.ch> a
-> écrit :
-> > On Mon, Nov 15, 2021 at 02:19:10PM +0000, Paul Cercueil wrote:
-> > >  Hi Jonathan,
-> > > 
-> > >  This patchset introduces a new userspace interface based on DMABUF
-> > >  objects, to complement the existing fileio based API.
-> > > 
-> > >  The advantage of this DMABUF based interface vs. the fileio
-> > >  interface, is that it avoids an extra copy of the data between the
-> > >  kernel and userspace. This is particularly userful for high-speed
-> > >  devices which produce several megabytes or even gigabytes of data
-> > > per
-> > >  second.
-> > > 
-> > >  The first few patches [01/15] to [03/15] are not really related, but
-> > >  allow to reduce the size of the patches that introduce the new API.
-> > > 
-> > >  Patch [04/15] to [06/15] enables write() support to the buffer-dma
-> > >  implementation of the buffer API, to continue the work done by
-> > >  Mihail Chindris.
-> > > 
-> > >  Patches [07/15] to [12/15] introduce the new DMABUF based API.
-> > > 
-> > >  Patches [13/15] and [14/15] add support for cyclic buffers, only
-> > > through
-> > >  the new API. A cyclic buffer will be repeated on the output until
-> > > the
-> > >  buffer is disabled.
-> > > 
-> > >  Patch [15/15] adds documentation about the new API.
-> > > 
-> > >  For now, the API allows you to alloc DMABUF objects and mmap() them
-> > > to
-> > >  read or write the samples. It does not yet allow to import DMABUFs
-> > >  parented to other subsystems, but that should eventually be possible
-> > >  once it's wired.
-> > > 
-> > >  This patchset is inspired by the "mmap interface" that was
-> > > previously
-> > >  submitted by Alexandru Ardelean and Lars-Peter Clausen, so it would
-> > > be
-> > >  great if I could get a review from you guys. Alexandru's commit was
-> > >  signed with his @analog.com address but he doesn't work at ADI
-> > > anymore,
-> > >  so I believe I'll need him to sign with a new email.
-> > 
-> > Why dma-buf? dma-buf looks like something super generic and useful,
-> > until
-> > you realize that there's a metric ton of gpu/accelerator bagage piled
-> > in.
-> > So unless buffer sharing with a gpu/video/accel/whatever device is the
-> > goal here, and it's just for a convenient way to get at buffer handles,
-> > this doesn't sound like a good idea.
-> 
-> Good question. The first reason is that a somewhat similar API was intented
-> before[1], but refused upstream as it was kind of re-inventing the wheel.
-> 
-> The second reason, is that we want to be able to share buffers too, not with
-> gpu/video but with the network (zctap) and in the future with USB
-> (functionFS) too.
-> 
-> [1]: https://lore.kernel.org/linux-iio/20210217073638.21681-1-alexandru.ardelean@analog.com/T/
-
-Hm is that code merged already in upstream already?
-
-I know that dma-buf looks really generic, but like I said if there's no
-need ever to interface with any of the gpu buffer sharing it might be
-better to use something else (like get_user_pages maybe, would that work?).
-
-> > Also if the idea is to this with gpus/accelerators then I'd really like
-> > to
-> > see the full thing, since most likely at that point you also want
-> > dma_fence. And once we talk dma_fence things get truly horrible from a
-> > locking pov :-( Or well, just highly constrained and I get to review
-> > what
-> > iio is doing with these buffers to make sure it all fits.
-> 
-> There is some dma_fence action in patch #10, which is enough for the
-> userspace apps to use the API.
-> 
-> What "horribleness" are we talking about here? It doesn't look that scary to
-> me, but I certainly don't have the complete picture.
-
-You need to annotate all the code involved in signalling that dma_fence
-using dma_fence_begin/end_signalling, and then enable full lockdep and
-everything.
-
-You can safely assume you'll find bugs, because we even have bugs about
-this in gpu drivers (where that annotation isn't fully rolled out yet).
-
-The tldr is that you can allocate memory in there. And a pile of other
-restrictions, but not being able to allocate memory (well GFP_ATOMIC is
-ok, but that can fail) is a very serious restriction.
--Daniel
 
 
+On 11/16/21 9:45 AM, Venu Busireddy wrote:
+> On 2021-11-15 10:55:32 -0600, Venu Busireddy wrote:
+>> On 2021-11-15 10:45:48 -0600, Brijesh Singh wrote:
+>>>
+>>>
+>>> On 11/15/21 10:37 AM, Venu Busireddy wrote:
+>>>> On 2021-11-15 10:02:24 -0600, Brijesh Singh wrote:
+>>>>>
+>>>>>
+>>>>> On 11/15/21 9:56 AM, Venu Busireddy wrote:
+>>>>> ...
+>>>>>
+>>>>>>> The series is based on tip/master
+>>>>>>>      ea79c24a30aa (origin/master, origin/HEAD, master) Merge branch 'timers/urgent'
+>>>>>>
+>>>>>> I am looking at
+>>>>>> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.kernel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Ftorvalds%2Flinux.git&amp;data=04%7C01%7Cbrijesh.singh%40amd.com%7C527b875208904981677108d9a9183dba%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637726744508270539%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=hfqoF4d95hWAY8%2BKW4t5UyrWIPAUuHOTvzTQGXyxQik%3D&amp;reserved=0,
+>>>>>> and I cannot find the commit ea79c24a30aa there. Am I looking at the
+>>>>>> wrong tree?
+>>>>>>
+>>>>>
+>>>>> Yes.
+>>>>>
+>>>>> You should use the tip [1] tree .
+>>>>>
+>>>>> [1] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.kernel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Ftip%2Ftip.git%2F&amp;data=04%7C01%7Cbrijesh.singh%40amd.com%7C527b875208904981677108d9a9183dba%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637726744508270539%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=TDbL2dnzCp%2FlFHv6Tr%2Fn6QhFKL2kL3DFWj5BT6Abcms%3D&amp;reserved=0
+>>>>
+>>>> Same problem with tip.git too.
+>>>>
+>>>> bash-4.2$ git remote -v
+>>>> origin  https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.kernel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Ftip%2Ftip.git&amp;data=04%7C01%7Cbrijesh.singh%40amd.com%7C527b875208904981677108d9a9183dba%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637726744508270539%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=0qPjqphHSBSnpxOrPGDyJ7BF5O3fnTJtXQgnO0ZwCXY%3D&amp;reserved=0 (fetch)
+>>>> origin  https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.kernel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Ftip%2Ftip.git&amp;data=04%7C01%7Cbrijesh.singh%40amd.com%7C527b875208904981677108d9a9183dba%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637726744508270539%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=0qPjqphHSBSnpxOrPGDyJ7BF5O3fnTJtXQgnO0ZwCXY%3D&amp;reserved=0 (push)
+>>>> bash-4.2$ git branch
+>>>> * master
+>>>> bash-4.2$ git log --oneline | grep ea79c24a30aa
+>>>> bash-4.2$
+>>>>
+>>>> Still missing something?
+>>>>
+>>>
+>>> I can see the base commit on my local clone and also on web interface
+>>
+>> But can you see the commit ea79c24a30aa if you clone
+>> git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git?
+>>
+>>> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.kernel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Ftip%2Ftip.git%2Fcommit%2F%3Fid%3Dea79c24a30aa27ccc4aac26be33f8b73f3f1f59c&amp;data=04%7C01%7Cbrijesh.singh%40amd.com%7C527b875208904981677108d9a9183dba%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637726744508270539%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=mG4i3ZNHgyrS3Xkdxw%2BhkmfxvzFkS%2FpX0B3xHlxN0Nc%3D&amp;reserved=0
+>>
+>> The web interface has the weird warning "Notice: this object is not
+>> reachable from any branch." Don't know what to make of that.
 > 
-> Cheers,
-> -Paul
-> 
-> > Cheers, Daniel
-> > 
-> > > 
-> > >  Cheers,
-> > >  -Paul
-> > > 
-> > >  Alexandru Ardelean (1):
-> > >    iio: buffer-dma: split iio_dma_buffer_fileio_free() function
-> > > 
-> > >  Paul Cercueil (14):
-> > >    iio: buffer-dma: Get rid of incoming/outgoing queues
-> > >    iio: buffer-dma: Remove unused iio_buffer_block struct
-> > >    iio: buffer-dma: Use round_down() instead of rounddown()
-> > >    iio: buffer-dma: Enable buffer write support
-> > >    iio: buffer-dmaengine: Support specifying buffer direction
-> > >    iio: buffer-dmaengine: Enable write support
-> > >    iio: core: Add new DMABUF interface infrastructure
-> > >    iio: buffer-dma: Use DMABUFs instead of custom solution
-> > >    iio: buffer-dma: Implement new DMABUF based userspace API
-> > >    iio: buffer-dma: Boost performance using write-combine cache
-> > > setting
-> > >    iio: buffer-dmaengine: Support new DMABUF based userspace API
-> > >    iio: core: Add support for cyclic buffers
-> > >    iio: buffer-dmaengine: Add support for cyclic buffers
-> > >    Documentation: iio: Document high-speed DMABUF based API
-> > > 
-> > >   Documentation/driver-api/dma-buf.rst          |   2 +
-> > >   Documentation/iio/dmabuf_api.rst              |  94 +++
-> > >   Documentation/iio/index.rst                   |   2 +
-> > >   drivers/iio/adc/adi-axi-adc.c                 |   3 +-
-> > >   drivers/iio/buffer/industrialio-buffer-dma.c  | 670
-> > > ++++++++++++++----
-> > >   .../buffer/industrialio-buffer-dmaengine.c    |  42 +-
-> > >   drivers/iio/industrialio-buffer.c             |  49 ++
-> > >   include/linux/iio/buffer-dma.h                |  43 +-
-> > >   include/linux/iio/buffer-dmaengine.h          |   5 +-
-> > >   include/linux/iio/buffer_impl.h               |   8 +
-> > >   include/uapi/linux/iio/buffer.h               |  30 +
-> > >   11 files changed, 783 insertions(+), 165 deletions(-)
-> > >   create mode 100644 Documentation/iio/dmabuf_api.rst
-> > > 
-> > >  --
-> > >  2.33.0
-> > > 
-> > 
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
-> 
+> Just wanted to clarify. I am not interested in the commit ea79c24a30aa
+> per se. I am trying to apply this patch series to a local copy of the
+> tip. I tried applying to the top of the tree, and that failed. I tried
+> to apply on top of commit ca7752caeaa7 (which appeared to be the closest
+> commit to your description), and that also failed. I just need a commit
+> on which I can successfully apply this series.
 > 
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+At the time I pulled the tip, the said commit was valid and my entire 
+series was generated against it. Its possible that commit is no longer 
+valid in the recent tip (maybe due to force push). You can grab a 
+staging tree from here https://github.com/AMDESE/linux/tree/snp-part1-v7.
+
+
+> Thanks,
+> 
+> Venu
+> 
+>>
+>> Venu
+>>
+>>>
+>>> thanks
