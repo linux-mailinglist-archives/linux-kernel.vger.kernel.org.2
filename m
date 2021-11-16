@@ -2,87 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B530E452D21
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:49:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D130452D25
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:51:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232488AbhKPIwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 03:52:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44598 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232161AbhKPIvu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 03:51:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEAA561101;
-        Tue, 16 Nov 2021 08:48:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637052533;
-        bh=egbGIYFi4v7cS2x4F9uQ5GOy67VTqb9Lor5GYwZqQg0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RIT3UCz6MSHfBlhXrQ1JxWe6CFiGH/GMV0/KGuFuM9tIeE+clcqeCI+sZmwgKr0uL
-         oYmGz2WtAodo028GvwCXbXHmOuZ/atP2MNrAEoG/GIwX6ML2thkSXXyAg1cGvCKMlu
-         WxpKH1vT5dlBTuwszq1poSFjXpdoLai39CW0Ljg8=
-Date:   Tue, 16 Nov 2021 09:48:51 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Vladis Dronov <vdronov@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: Re: [PATCH 5.15 000/917] 5.15.3-rc1 review
-Message-ID: <YZNwcylQcKVlZDlO@kroah.com>
-References: <20211115165428.722074685@linuxfoundation.org>
- <CA+G9fYtFOnKQ4=3-4rUTfVM-fPno1KyTga1ZAFA2OoqNvcnAUg@mail.gmail.com>
- <CA+G9fYuF1F-9TAwgR9ik_qjFqQvp324FJwFJbYForA_iRexZjg@mail.gmail.com>
+        id S232475AbhKPIxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 03:53:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232452AbhKPIx2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 03:53:28 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC2EC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 00:50:31 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id bk14so40951535oib.7
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 00:50:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JEjJ77+UyJwVlPULZ4jyz+pU/j+PKMrGW1TigVTD6KA=;
+        b=VgSubul8sBxv+qgCERzD8MvC1scC+FnFNWf12Dg0QDssMijQSpkE6i6w/lPeVspc+W
+         MFnDBjmo9VE7m0OdSirJbSOzmUdcSKmga7+4wYrFxUgV/2/nA8dD29g2dshb6tthUxww
+         dSbPHdDxxbqyLUGRw9BYgsD/k4ZSw4Z4Mlr0k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JEjJ77+UyJwVlPULZ4jyz+pU/j+PKMrGW1TigVTD6KA=;
+        b=67kXMDGswsjwyx/3jB4DpYkT2qoc5sCyZkWSpv1bbIuREwSezTUUrmpSvtBBivazLA
+         vYZFIv8AOO1WE1OU+MOW2dhqKudGP+iNw0EGmfK1CB7htayo4sgdGEm8+t+BAHaaHVqn
+         LV7OKPcJk6mKH/pM3yKGmbNm8cD4b3RJQYwCXKECXHYyekatnLnvMPUFuaQ32Boq8fCy
+         97TAe//0Q9IFVvfYsFox2/JneqJ8OjafCIS3LwBbJx4ddeyFj/6RaZvMtyBaMTVgRiqL
+         7uFE37ZuLSOBcELa0X0DE3dqnmkzSHih0ZdEVTugbf8fqUluc/l25Enq0tvYO3uXDXDQ
+         vGxA==
+X-Gm-Message-State: AOAM5320y8xT0CCcMnG9ePJsYlvrV0WsEpT5OQ+P6jPpiTOgnpi2ZQKI
+        lmyP51gPkKux4jPgjP8Wo55/roZGhuXVxsNrres+2Q==
+X-Google-Smtp-Source: ABdhPJxDVhU01pH2Yg3VeM0lg0LzD0oc91nPo2b/uM76zBNm/7ZeCVtJB6saqXlaUPaWtvcGeZnDgnsGxlkpVia2jhg=
+X-Received: by 2002:a05:6808:118a:: with SMTP id j10mr51262797oil.101.1637052631363;
+ Tue, 16 Nov 2021 00:50:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYuF1F-9TAwgR9ik_qjFqQvp324FJwFJbYForA_iRexZjg@mail.gmail.com>
+References: <20211115160135.25451-1-angus@akkea.ca> <87czn01odd.fsf@intel.com>
+In-Reply-To: <87czn01odd.fsf@intel.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Tue, 16 Nov 2021 09:50:20 +0100
+Message-ID: <CAKMK7uHVS-SSVHYy132NuaDfsEgF4SBa69rjSVT4zEm8PzSXJA@mail.gmail.com>
+Subject: Re: [PATCH] drm: drm_probe_helper: add modes upto 1920x1080
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Angus Ainslie <angus@akkea.ca>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>, kernel@puri.sm,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 02:09:44PM +0530, Naresh Kamboju wrote:
-> On Tue, 16 Nov 2021 at 12:06, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> >
-> > On Tue, 16 Nov 2021 at 00:03, Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > This is the start of the stable review cycle for the 5.15.3 release.
-> > > There are 917 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> > >
-> > > Responses should be made by Wed, 17 Nov 2021 16:52:23 +0000.
-> > > Anything received after that time might be too late.
-> > >
-> > > The whole patch series can be found in one patch at:
-> > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.3-rc1.gz
-> > > or in the git tree and branch at:
-> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> > > and the diffstat can be found below.
-> > >
-> > > thanks,
-> > >
-> > > greg k-h
-> >
-> >
-> 
-> Regression found on arm64 juno-r2 / qemu.
-> Following kernel crash reported on stable-rc 5.15.
-> 
-> Anders bisected this kernel crash and found the first bad commit,
-> 
-> Herbert Xu <herbert@gondor.apana.org.au>
->    crypto: api - Fix built-in testing dependency failures
+On Tue, Nov 16, 2021 at 9:44 AM Jani Nikula <jani.nikula@linux.intel.com> wrote:
+>
+>
+> Cc: Ville
+>
+> On Mon, 15 Nov 2021, Angus Ainslie <angus@akkea.ca> wrote:
+> > Lots of monitors nowdays support more than 1024x768 so if the EDID is
+> > unknown then add resolutions upto 1920x1080.
+>
+> IIUC it's supposed to be the fallback that's pretty much guaranteed to
+> work. What's going to happen if we add 1920x1080 and it fails?
 
-Is this also an issue on 5.16-rc1?
+Yeah unless we are now in a times where monitors fail to light up
+these very low resolutions then I don't think adding more here is a
+good idea. This absolute fallback list is _not_ about making things
+good, but about getting anything onto the screen. If we really, really
+need this (and then it needs good reasons) then a defensive approach
+might be to add more modes, but still leave the old 1024x768 as the
+preferred one. That would avoid any regression potential.
 
-thanks,
+Otherwise this just becomes a game of "I want to have the best mode
+for my broken screen without working edid as the default", which is
+no-go.
+-Daniel
 
-greg k-h
+> BR,
+> Jani.
+>
+> >
+> > Signed-off-by: Angus Ainslie <angus@akkea.ca>
+> > ---
+> >  drivers/gpu/drm/drm_probe_helper.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/drm_probe_helper.c b/drivers/gpu/drm/drm_probe_helper.c
+> > index e7e1ee2aa352..5ad66ae9916e 100644
+> > --- a/drivers/gpu/drm/drm_probe_helper.c
+> > +++ b/drivers/gpu/drm/drm_probe_helper.c
+> > @@ -517,7 +517,7 @@ int drm_helper_probe_single_connector_modes(struct drm_connector *connector,
+> >
+> >       if (count == 0 && (connector->status == connector_status_connected ||
+> >                          connector->status == connector_status_unknown))
+> > -             count = drm_add_modes_noedid(connector, 1024, 768);
+> > +             count = drm_add_modes_noedid(connector, 1920, 1080);
+> >       count += drm_helper_probe_add_cmdline_mode(connector);
+> >       if (count == 0)
+> >               goto prune;
+>
+> --
+> Jani Nikula, Intel Open Source Graphics Center
+
+
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
