@@ -2,104 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B8D452D8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:06:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9560452D94
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:09:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232781AbhKPJJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 04:09:25 -0500
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:38110
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232883AbhKPJI6 (ORCPT
+        id S232871AbhKPJMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 04:12:19 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15824 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232764AbhKPJMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 04:08:58 -0500
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 097753F1AD
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 09:05:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1637053559;
-        bh=3EPGy1bR5I7+w5vmVQBBHzbUVQueeAHQUR0k5ZLmF2k=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=JxuLGKcfNoepbflkKnlOzRbOgEXNEwPbuNZWarR82BIY7O0z2jMJf3VHaiYozrEfn
-         TvlEFufdN83Y8VjUR1rmR47j8dJ/BnRhuHXuRd/6fuWCsRiNtxkgHncA8/y7/tipex
-         09fEzfgelJyH0ltXQ/3SoBLkk6Yy9FUDTL4R4s2GRmK7MFv89xLEc1GBDvlOlW23OU
-         Lay/1TO3oXO9AsuSs0enHM2um0O+KV1JDobWG/AajdFMCBLvSTEcLo0S8P/RY1hQKr
-         xd3k2vehUJqh2BAQnsIGe+GWuPRb+vZCxy/qUqEQ4DIK3KZGwdig82u9czW8f+jo2/
-         /78A0gc5vap4Q==
-Received: by mail-lj1-f199.google.com with SMTP id w16-20020a05651c103000b00218c9d46faeso5976227ljm.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 01:05:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=3EPGy1bR5I7+w5vmVQBBHzbUVQueeAHQUR0k5ZLmF2k=;
-        b=z/E74kD2fDgMofuomPtOCPyd0qUP3ZkO8AytwAavoOmDzQJeUSoJaO+mvTFIyDNKcx
-         y0x9lIqnfcA4Okq4gjvqhqsN/DuCzHOffQsdGoTIN7HtsNyx0oSHNebdunl7v1NPFoMq
-         q9TPi7fyx8U1bMnQO2xGa7mfFW37hyhGS/U63MZoUfPiAlx3G2YlJlYMnlOVyfqdZZpa
-         Erj4MiTlsolWDGCNAZ/pOK17uvsA8CsubHh2z29Ri9YcWm2m3vtSD+D1NMmXIy5u30MV
-         tJQfmS+SHxj7RddapgcWmwHnBEy+AiChBAsf6bOND/eV0+ZrQ7ZYQ3C99psVh3h79q3+
-         Tz8A==
-X-Gm-Message-State: AOAM532C6QuP6CDF1ma0OXGGF/xgAi635pqtKAQurO9ZVWeoKlCvbH4w
-        wEct69hYJtV3jusYh8PaeN2J4WeG3cva+9SjJ2O1lts8ZOJS1DqLvBAA8RfIcne0WMouQc8T0Am
-        9LRoiTASGpc9uM573BXaDpFIAO8jCQzovyDmqbekKiw==
-X-Received: by 2002:a05:6512:604:: with SMTP id b4mr5087897lfe.198.1637053558336;
-        Tue, 16 Nov 2021 01:05:58 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw1d2VaCPAfQf1c8LsXwYWlnMEptk5KrYLaPB04zm7G3TJ+VPZBh3WhuNwnzf/aAfVjPcB72g==
-X-Received: by 2002:a05:6512:604:: with SMTP id b4mr5087881lfe.198.1637053558157;
-        Tue, 16 Nov 2021 01:05:58 -0800 (PST)
-Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id b12sm1165411lfb.146.2021.11.16.01.05.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 01:05:57 -0800 (PST)
-Message-ID: <fec64d66-8019-ae14-fd11-9af88440c12a@canonical.com>
-Date:   Tue, 16 Nov 2021 10:05:56 +0100
+        Tue, 16 Nov 2021 04:12:09 -0500
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HtgGT36KQz916w;
+        Tue, 16 Nov 2021 17:08:49 +0800 (CST)
+Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.20; Tue, 16 Nov 2021 17:09:09 +0800
+Received: from localhost.localdomain (10.67.165.2) by
+ dggema772-chm.china.huawei.com (10.1.198.214) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.20; Tue, 16 Nov 2021 17:09:08 +0800
+From:   Yicong Yang <yangyicong@hisilicon.com>
+To:     <gregkh@linuxfoundation.org>, <helgaas@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <lorenzo.pieralisi@arm.com>,
+        <will@kernel.org>, <mark.rutland@arm.com>,
+        <mathieu.poirier@linaro.org>, <suzuki.poulose@arm.com>,
+        <mike.leach@linaro.org>, <leo.yan@linaro.org>,
+        <jonathan.cameron@huawei.com>, <daniel.thompson@linaro.org>,
+        <joro@8bytes.org>, <john.garry@huawei.com>,
+        <shameerali.kolothum.thodi@huawei.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <coresight@lists.linaro.org>, <linux-pci@vger.kernel.org>,
+        <linux-perf-users@vger.kernel.org>,
+        <iommu@lists.linux-foundation.org>
+CC:     <prime.zeng@huawei.com>, <liuqi115@huawei.com>,
+        <zhangshaokun@hisilicon.com>, <linuxarm@huawei.com>,
+        <yangyicong@hisilicon.com>, <song.bao.hua@hisilicon.com>
+Subject: [PATCH v2 0/6] Add support for HiSilicon PCIe Tune and Trace device
+Date:   Tue, 16 Nov 2021 17:06:19 +0800
+Message-ID: <20211116090625.53702-1-yangyicong@hisilicon.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH] memory: tegra20-emc: Remove unnecessary print function
- dev_err()
-Content-Language: en-US
-To:     Xu Wang <vulab@iscas.ac.cn>, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, digetx@gmail.com, dan.carpenter@oracle.com,
-        cw00.choi@samsung.com, viresh.kumar@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20211116013925.1087-1-vulab@iscas.ac.cn>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20211116013925.1087-1-vulab@iscas.ac.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.165.2]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema772-chm.china.huawei.com (10.1.198.214)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2021 02:39, Xu Wang wrote:
-> The print function dev_err() is redundant because
-> platform_get_irq() already prints an error.
-> 
-> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
-> ---
->  drivers/memory/tegra/tegra20-emc.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/memory/tegra/tegra20-emc.c b/drivers/memory/tegra/tegra20-emc.c
-> index 497b6edbf3ca..b2107d16570e 100644
-> --- a/drivers/memory/tegra/tegra20-emc.c
-> +++ b/drivers/memory/tegra/tegra20-emc.c
-> @@ -1207,10 +1207,8 @@ static int tegra_emc_probe(struct platform_device *pdev)
->  	int irq, err;
->  
->  	irq = platform_get_irq(pdev, 0);
-> -	if (irq < 0) {
-> -		dev_err(&pdev->dev, "please update your device tree\n");
-> +	if (irq < 0)
->  		return irq;
-> -	}
+HiSilicon PCIe tune and trace device (PTT) is a PCIe Root Complex
+integrated Endpoint (RCiEP) device, providing the capability
+to dynamically monitor and tune the PCIe traffic (tune),
+and trace the TLP headers (trace).
 
-No, it's not redundant because it is a different error message.
+PTT tune is designed for monitoring and adjusting PCIe link parameters.
+We provide several parameters of the PCIe link. Through the driver,
+user can adjust the value of certain parameter to affect the PCIe link
+for the purpose of enhancing the performance in certian situation.
 
-Best regards,
-Krzysztof
+PTT trace is designed for dumping the TLP headers to the memory, which
+can be used to analyze the transactions and usage condition of the PCIe
+Link. Users can choose filters to trace headers, by either requester
+ID, or those downstream of a set of Root Ports on the same core of the
+PTT device. It's also supported to trace the headers of certain type and
+of certain direction.
+
+The driver registers a PMU device for each PTT device. The trace can
+be used through `perf record` and the traced headers can be decoded
+by `perf report`. The perf command support for the device is also
+added in this patchset. The tune can be used through the sysfs
+attributes of related PMU device. See the documentation for the
+detailed usage.
+
+Change since v1:
+- switch the user interface of trace to perf from debugfs
+- switch the user interface of tune to sysfs from debugfs
+- add perf tool support to start trace and decode the trace data
+- address the comments of documentation from Bjorn
+- add RMR[1] support of the device as trace works in RMR mode or
+  direct DMA mode. RMR support is achieved by common APIs rather
+  than the APIs implemented in [1].
+Link: https://lore.kernel.org/lkml/1618654631-42454-1-git-send-email-yangyicong@hisilicon.com/
+
+[1] https://lore.kernel.org/linux-acpi/20210805080724.480-1-shameerali.kolothum.thodi@huawei.com/
+
+Qi Liu (1):
+  perf tool: Add support for HiSilicon PCIe Tune and Trace device driver
+
+Yicong Yang (5):
+  iommu: Export iommu_{get,put}_resv_regions()
+  hwtracing: Add trace function support for HiSilicon PCIe Tune and
+    Trace device
+  hwtracing: Add tune function support for HiSilicon PCIe Tune and Trace
+    device
+  docs: Add HiSilicon PTT device driver documentation
+  MAINTAINERS: Add maintainer for HiSilicon PTT driver
+
+ Documentation/trace/hisi-ptt.rst              |  305 ++++
+ MAINTAINERS                                   |    7 +
+ drivers/Makefile                              |    1 +
+ drivers/hwtracing/Kconfig                     |    2 +
+ drivers/hwtracing/hisilicon/Kconfig           |    8 +
+ drivers/hwtracing/hisilicon/Makefile          |    2 +
+ drivers/hwtracing/hisilicon/hisi_ptt.c        | 1313 +++++++++++++++++
+ drivers/iommu/iommu.c                         |    2 +
+ include/linux/iommu.h                         |    4 +-
+ tools/perf/arch/arm/util/auxtrace.c           |   56 +-
+ tools/perf/arch/arm/util/pmu.c                |    3 +
+ tools/perf/arch/arm64/util/Build              |    2 +-
+ tools/perf/arch/arm64/util/hisi_ptt.c         |  195 +++
+ tools/perf/util/Build                         |    2 +
+ tools/perf/util/auxtrace.c                    |    4 +
+ tools/perf/util/auxtrace.h                    |    1 +
+ tools/perf/util/hisi-ptt-decoder/Build        |    1 +
+ .../hisi-ptt-decoder/hisi-ptt-pkt-decoder.c   |  170 +++
+ .../hisi-ptt-decoder/hisi-ptt-pkt-decoder.h   |   28 +
+ tools/perf/util/hisi_ptt.c                    |  228 +++
+ tools/perf/util/hisi_ptt.h                    |   28 +
+ 21 files changed, 2356 insertions(+), 6 deletions(-)
+ create mode 100644 Documentation/trace/hisi-ptt.rst
+ create mode 100644 drivers/hwtracing/hisilicon/Kconfig
+ create mode 100644 drivers/hwtracing/hisilicon/Makefile
+ create mode 100644 drivers/hwtracing/hisilicon/hisi_ptt.c
+ create mode 100644 tools/perf/arch/arm64/util/hisi_ptt.c
+ create mode 100644 tools/perf/util/hisi-ptt-decoder/Build
+ create mode 100644 tools/perf/util/hisi-ptt-decoder/hisi-ptt-pkt-decoder.c
+ create mode 100644 tools/perf/util/hisi-ptt-decoder/hisi-ptt-pkt-decoder.h
+ create mode 100644 tools/perf/util/hisi_ptt.c
+ create mode 100644 tools/perf/util/hisi_ptt.h
+
+-- 
+2.33.0
+
