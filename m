@@ -2,135 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E09F452DA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:13:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 586DF452DA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbhKPJPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 04:15:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51594 "EHLO
+        id S232925AbhKPJQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 04:16:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232933AbhKPJPi (ORCPT
+        with ESMTP id S232802AbhKPJQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 04:15:38 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C44AC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 01:12:42 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id w1so84825626edd.10
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 01:12:42 -0800 (PST)
+        Tue, 16 Nov 2021 04:16:20 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ACFFC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 01:13:23 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id b15so84368564edd.7
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 01:13:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qKVkYLH3mOowH9ihjxmK78ep8UuW+0rWvJVOqRYNCN4=;
-        b=7kGEMByJoCTKLzBecErJpTJcSpp8TYNs47ih0FIsR8BboXBXDTVrz9X2CHpFsqCjAQ
-         plsZumoB6V8NrmfWB1JsyuJXZnWAbzNtxDSNpn/0gfRd6V8sO3jemtgvSY4Px/Qc6YDQ
-         yAQXq3KXBl17GyClcDfBnOL/5SWTW5Hi6jMbaEbSrID6AQDpQlWj+n5gvEWFykrk4g0G
-         +qvZJGNrHafjgBIcO6zXohiXQAcaGBWM6teeU6CUBHznIvnWv2WlBvEpieT8TvNL2twO
-         FkwDw11qnsNrKe2jvJTP/t3yO3TlQYFJ9ZyM77EhuwtbAwTqTAnVJ8DOGqTQEJoqWE30
-         6Ifg==
+        d=gmail.com; s=20210112;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=Titug5d67LzpBF68sn9rEkCJ8fbreaCra8Rn/2rSVL8=;
+        b=FMmWdviJTqpKdRAswaiyMY/meHHxG82lC9WXaA25U7ch/lWITSwShgK0qvTRxxZwlT
+         YxgKRSDWukZ92jDt35cCOk02TiOfwGFi45N7JkdrFB1r0VC/Ph1MvNn9LRm9BpXCKrhu
+         0fUpT2DZNNLnbc9twWs1C/lregtFKr7G4mnUTbjlfRnFfKSRbC8icrC4RPXSLcSGrrno
+         U9IJR5++5vqUNHiCBw6yM/tbcQh3Cbo2tYLjOExTFasPSNSsCjovBO0o0wRfB+met/Dc
+         NhqyY+QbT9D4zAgTBHJvOXA+Mxta3pAT4vCEmTJTgYVHPIi5SJNOccpM7/ZWC+tq7JoK
+         IpQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qKVkYLH3mOowH9ihjxmK78ep8UuW+0rWvJVOqRYNCN4=;
-        b=E2c6amokYRP4cN4icX8TB2WVkgncbHOeY0SDXfvU24tnZCjY831T1Umea11ot8SA5i
-         ABwmgES7fi3wDi1Sxay+Q3VbDQQXBIzACnNyiLrly1GkL+t3/U2S+nXCyrucRt7+l3UK
-         E/XEg1bi/eFLYAeA/xZK7W3pYQ8SW6lbEtZT0EVAqlXDN8ngIHSlLHmQepTo9Z/R8h0Z
-         RiSyKxrUllGOWCk8KnvIIuYSYrhVHtOALhkRp04a5K/vTIIp8SouRe0fXJV1j3IQsbNr
-         Fl8sy9Gsel+E3JBJrdtlDA0q69dgpYTbQmeuRaNRgz52Z2WgW/ihBaE6sqeoicvuqTZb
-         KvZA==
-X-Gm-Message-State: AOAM5302nP/9Li21LLgPgabukqURjmd+ntITh3CHVXa/AFRWW7WGChls
-        iWHRJn0EysOSFZOLA0LsI8vs7xLtuNLKtW9QnJ1FaQ==
-X-Google-Smtp-Source: ABdhPJyN+4pYB4ITOLCCI2vxwYTJycQb5pex8bjnakGV8Kf69ptx0Ib7k3LjS+VYdVHfNClgN8lvQe15xzC1yaFSyIw=
-X-Received: by 2002:a17:907:75f0:: with SMTP id jz16mr7942096ejc.77.1637053960836;
- Tue, 16 Nov 2021 01:12:40 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Titug5d67LzpBF68sn9rEkCJ8fbreaCra8Rn/2rSVL8=;
+        b=D/nY/s5YiCukag6sJE/TY9FA/zJMA7OHQY4vL+EoyIWHa+5qQwBmh4St+3y2Fu1wu1
+         WhLf/vAXW64uZct4eRmSry2sEFMuDYjJ1YBZkijoBkxBvLc102qAvicZo7CzhwRXUWNB
+         ns6dR9QCrzDIhGwM7mOaOU5iaFg2n35r1G5rwxMDVH04L5UcAIYQlM8qAOvCDK2rYkfI
+         itCrtm2GpTR1FtzHkRDPEmGHuXczxgOe2AiI5M4fya/EHojWruJGq0aHmENDiI5eq56f
+         tmbS5jFXdh1UNTiB72qNIoIUnJKE+c06FoVIqoCto+WwLLa1HTPBxjqB/M81Z+3oM3NS
+         DaHw==
+X-Gm-Message-State: AOAM5331wNLIff8+efic3rThCcj/0Op3wTjqEHFTK9jB+5xvtI+4a5uo
+        /VKpKOixq0O9ohjQMJOF7ckFtAe/7AM=
+X-Google-Smtp-Source: ABdhPJySJW/ML5mMqldsYYTSiOG5Jevc9WEJ+6Wi2E8TlPh2uEEXP9/ahwoMJlPGxYysBza7si0ApA==
+X-Received: by 2002:a05:6402:486:: with SMTP id k6mr8147704edv.315.1637054001919;
+        Tue, 16 Nov 2021 01:13:21 -0800 (PST)
+Received: from localhost.localdomain (host-82-61-38-115.retail.telecomitalia.it. [82.61.38.115])
+        by smtp.gmail.com with ESMTPSA id gn26sm7919967ejc.14.2021.11.16.01.13.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 01:13:21 -0800 (PST)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     elver@google.com, gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        syzbot <syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com>
+Subject: Re: [syzbot] BUG: sleeping function called from invalid context in __might_resched
+Date:   Tue, 16 Nov 2021 10:13:19 +0100
+Message-ID: <3786254.cann4MMnV1@localhost.localdomain>
+In-Reply-To: <5631140.hc6UrLtR2d@localhost.localdomain>
+References: <000000000000be6cff05d0e3709b@google.com> <5631140.hc6UrLtR2d@localhost.localdomain>
 MIME-Version: 1.0
-References: <20211105124242.27288-1-andriy.shevchenko@linux.intel.com> <20211105124242.27288-19-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20211105124242.27288-19-andriy.shevchenko@linux.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 16 Nov 2021 10:12:30 +0100
-Message-ID: <CAMRc=Me20whtwS--+Zy2NLDGKH+wvxVtXFGMXj+E-ANun2U=qA@mail.gmail.com>
-Subject: Re: [PATCH v1 19/19] gpio: mockup: Switch to use kasprintf_strarray()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jianqun Xu <jay.xu@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Bamvor Jian Zhang <bamv2005@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Andy Shevchenko <andy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; boundary="nextPart2317752.Q3uhY6xqpY"
+Content-Transfer-Encoding: 7Bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 5, 2021 at 1:43 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> Since we have a generic helper, switch the module to use it.
-> No functional change intended.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+This is a multi-part message in MIME format.
+
+--nextPart2317752.Q3uhY6xqpY
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="ISO-8859-1"
+
+On Tuesday, November 16, 2021 9:53:53 AM CET Fabio M. De Francesco wrote:
+> On Tuesday, November 16, 2021 9:09:11 AM CET syzbot wrote:
+> > Hello,
+> > 
+> > syzbot has tested the proposed patch but the reproducer is still 
+triggering 
+> an issue:
+> > BUG: sleeping function called from invalid context in __might_resched
+> > 
+> > BUG: sleeping function called from invalid context at kernel/printk/
+> printk.c:2522
+> > in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 8755, name: syz-
+> executor.2
+> > preempt_count: 1, expected: 0
+> > RCU nest depth: 0, expected: 0
+> > 3 locks held by syz-executor.2/8755:
+> >  #0: ffff888070c9a098
+> >  (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/
+> tty/tty_ldisc.c:252
+> >  #1: ffff888070c9a468
+> >  (&tty->flow.lock){....}-{2:2}, at: spin_lock_irq include/linux/
+spinlock.h:
+> 374 [inline]
+> >  (&tty->flow.lock){....}-{2:2}, at: n_tty_ioctl_helper+0xb6/0x2d0 
+drivers/
+> tty/tty_ioctl.c:877
+> >  #2: ffff888070c9a098 (&tty->ldisc_sem){++++}-{0:0}, at: 
+> tty_ldisc_ref+0x1d/0x80 drivers/tty/tty_ldisc.c:273
+> > irq event stamp: 916
+> > hardirqs last  enabled at (915): [<ffffffff81beabd5>] 
+> kasan_quarantine_put+0xf5/0x210 mm/kasan/quarantine.c:220
+> > hardirqs last disabled at (916): [<ffffffff8950a731>] __raw_spin_lock_irq 
+> include/linux/spinlock_api_smp.h:117 [inline]
+> > hardirqs last disabled at (916): [<ffffffff8950a731>] 
+> _raw_spin_lock_irq+0x41/0x50 kernel/locking/spinlock.c:170
+> > softirqs last  enabled at (0): [<ffffffff8144cf0c>] copy_process+0x1e8c/
+> 0x75a0 kernel/fork.c:2136
+> > softirqs last disabled at (0): [<0000000000000000>] 0x0
+> > Preemption disabled at:
+> > [<0000000000000000>] 0x0
+> > CPU: 1 PID: 8755 Comm: syz-executor.2 Not tainted 5.16.0-rc1-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS 
+> Google 01/01/2011
+> > Call Trace:
+> >  <TASK>
+> >  __dump_stack lib/dump_stack.c:88 [inline]
+> >  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+> >  __might_resched.cold+0x222/0x26b kernel/sched/core.c:9542
+> >  console_lock+0x17/0x80 kernel/printk/printk.c:2522
+> >  con_flush_chars drivers/tty/vt/vt.c:3365 [inline]
+> >  con_flush_chars+0x35/0x90 drivers/tty/vt/vt.c:3357
+> >  con_write+0x2c/0x40 drivers/tty/vt/vt.c:3296
+> 
+> The reproducer is still triggering an issue, but this time it looks like it 
+> is triggered by a different path of execution.
+> 
+> The same invalid "in_interrupt()" test is also in con_flush_chars().
+> 
+> Let's try to remove it too...
+> 
+> My first idea would be to replace "if (in_interrupt())" with the same 
+> "preempt_count() || irqs_disabled()" I used in do_con_write(). However I 
+> noticed that both do_con_write() and con_flush_chars() are only called from 
+> inside con_write() (which, aside from calling those functions, does nothing 
+> else).
+> 
+> So why not remove the if (in_interrupt()) from both them and use if 
+> (preempt_count() || irqs_disabled()) just once in con_write()?
+> 
+> I think this should be the right solution, but I prefer to go one step at a 
+> time.
+> 
+> Therefore, I'll (1) use the same (redundant, if it was used in con_write()) 
+> test also in con_flush_chars(), (2) wait for Syzbot to confirm that it 
+fixes 
+> the bug, and (3) wait for maintainers review and suggestions about whether 
+or 
+> not moving those tests one level upper.
+> 
+
+#syz test:
+git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+
+> 
 > ---
->  drivers/gpio/gpio-mockup.c | 23 +----------------------
->  1 file changed, 1 insertion(+), 22 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
-> index d26bff29157b..8943cea92764 100644
-> --- a/drivers/gpio/gpio-mockup.c
-> +++ b/drivers/gpio/gpio-mockup.c
-> @@ -491,27 +491,6 @@ static void gpio_mockup_unregister_pdevs(void)
->         }
->  }
->
-> -static __init char **gpio_mockup_make_line_names(const char *label,
-> -                                                unsigned int num_lines)
-> -{
-> -       unsigned int i;
-> -       char **names;
-> -
-> -       names = kcalloc(num_lines + 1, sizeof(char *), GFP_KERNEL);
-> -       if (!names)
-> -               return NULL;
-> -
-> -       for (i = 0; i < num_lines; i++) {
-> -               names[i] = kasprintf(GFP_KERNEL, "%s-%u", label, i);
-> -               if (!names[i]) {
-> -                       kfree_strarray(names, i);
-> -                       return NULL;
-> -               }
-> -       }
-> -
-> -       return names;
-> -}
-> -
->  static int __init gpio_mockup_register_chip(int idx)
->  {
->         struct property_entry properties[GPIO_MOCKUP_MAX_PROP];
-> @@ -538,7 +517,7 @@ static int __init gpio_mockup_register_chip(int idx)
->         properties[prop++] = PROPERTY_ENTRY_U16("nr-gpios", ngpio);
->
->         if (gpio_mockup_named_lines) {
-> -               line_names = gpio_mockup_make_line_names(chip_label, ngpio);
-> +               line_names = kasprintf_strarray(GFP_KERNEL, chip_label, ngpio);
->                 if (!line_names)
->                         return -ENOMEM;
->
-> --
-> 2.33.0
->
+> Fabio M. De Francesco
+> 
 
-Acked-by: Bartosz Golaszewski <brgl@bgdev.pl>
 
-Feel free to take it with the rest of the series.
+--nextPart2317752.Q3uhY6xqpY
+Content-Disposition: attachment; filename="vt.c.diff"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/x-patch; charset="UTF-8"; name="vt.c.diff"
 
-Bart
+diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+index 7359c3e80d63..46511d1ac6ee 100644
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -2902,7 +2902,7 @@ static int do_con_write(struct tty_struct *tty, const unsigned char *buf, int co
+ 	struct vt_notifier_param param;
+ 	bool rescan;
+ 
+-	if (in_interrupt())
++	if (preempt_count() || irqs_disabled())
+ 		return count;
+ 
+ 	console_lock();
+@@ -3358,7 +3358,7 @@ static void con_flush_chars(struct tty_struct *tty)
+ {
+ 	struct vc_data *vc;
+ 
+-	if (in_interrupt())	/* from flush_to_ldisc */
++	if (preempt_count() || irqs_disabled())	/* from flush_to_ldisc */
+ 		return;
+ 
+ 	/* if we race with con_close(), vt may be null */
+
+--nextPart2317752.Q3uhY6xqpY--
+
+
+
