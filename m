@@ -2,392 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122CA452C94
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F449452C98
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:21:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbhKPIYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 03:24:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231790AbhKPIYh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 03:24:37 -0500
-Received: from lb2-smtp-cloud8.xs4all.net (lb2-smtp-cloud8.xs4all.net [IPv6:2001:888:0:108::2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B40F1C061570;
-        Tue, 16 Nov 2021 00:21:40 -0800 (PST)
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id mtifmi2ToBB1QmtiimWOZW; Tue, 16 Nov 2021 09:21:37 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1637050897; bh=h8P1ZGnaXGSxLcp94e7rii9KK+G5Qsx37NOnajpxVjI=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=pQeAH3ionIaWUxTZlbm3T4v47aaSjfZHncjnC3bZEwIBpkKXjFanEJWc8BZ88wzOK
-         m4TtNkD5uPjICGC1YlgBD8adWIxBlq2YHtzycuTeuoV3FALawb77nkYc8ySyJwTuWB
-         KspLbl5Xw++kCWYvijmcMG/DlCupHL6UK796hezZlb9giV5HUB3xbwJv+wYb8IFEuK
-         rqtn+4OVCIK8m5HkHlbDWQbQbUGqzQcG2mSLp5A1rjxdByogFMp4F79qsTBGUJWRDx
-         GdmtXbvziUBcjpczOwTLBmnTbYLpxp0GmsAkDlP5cBv2I09VMZ7joUfv+GPdUzBUJ0
-         O8DGz1ZnmMTsw==
-Subject: Re: [PATCH v7 00/11] VP9 codec V4L2 control interface
-To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev
-Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com
-References: <20210929160439.6601-1-andrzej.p@collabora.com>
- <9db47ebc-cb95-872d-feb4-d6432a74f2cb@xs4all.nl>
- <29f27bad-28ae-12ff-eed6-79902bd5b722@collabora.com>
- <b8f8ee2e-ea98-4700-f4ca-f0af68c9de5c@xs4all.nl>
- <cdbbe5e6-0811-1276-1f62-fc7ad2628a30@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <4da113ef-7b12-3729-0186-f746901c892a@xs4all.nl>
-Date:   Tue, 16 Nov 2021 09:21:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+        id S231893AbhKPIYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 03:24:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38478 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231869AbhKPIYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 03:24:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 263636321A;
+        Tue, 16 Nov 2021 08:21:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637050905;
+        bh=bYQKZcw7c2FQMHwIW5aHteUVhe1xXATHDDnJ7Fn6nvM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1z3iMBeJeljTxggjE+0L4THG0ujjtzEQL65xZOXcDaQ8VjpANvvoVWED04LYF/AvB
+         zolX6Blbg9K0nCBEp8ls4ve8p+qV/bno+gOYeqaePLr6geYTIfVXQ8NKk+AV79pi9x
+         yP+uvpZlqW/eCULiDCmjGWF4n5whDdDU0TmcqRPs=
+Date:   Tue, 16 Nov 2021 09:21:43 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Alistair Delva <adelva@google.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Serge Hallyn <serge@hallyn.com>, Jens Axboe <axboe@kernel.dk>,
+        Paul Moore <paul@paul-moore.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux Stable maillist <stable@vger.kernel.org>
+Subject: Re: [PATCH] block: Check ADMIN before NICE for IOPRIO_CLASS_RT
+Message-ID: <YZNqF7fuwLTd8IIM@kroah.com>
+References: <20211115173850.3598768-1-adelva@google.com>
+ <CAFqZXNvVHv8Oje-WV6MWMF96kpR6epTsbc-jv-JF+YJw=55i1w@mail.gmail.com>
+ <CANDihLEFZAz8DwkkMGiDJnDMjxiUuSCanYsJtkRwa9RoyruLFA@mail.gmail.com>
+ <ead81edf-ca8f-9e97-96ca-984202e7d8ac@schaufler-ca.com>
 MIME-Version: 1.0
-In-Reply-To: <cdbbe5e6-0811-1276-1f62-fc7ad2628a30@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfMe8VEPZkII9bBhLsr0D0B9nXRKypxasJhpfeflKg1LABj3rfOeFWbp5OPQR818cUMbtWFIJOnHHKLFmWNS0wRZia+cYqpwOPeeH0ZzcPyfxNpobf8+p
- ZxSCdUKgx1ykxS5w7+T+5ZdBjj9wwezEshF0xAtaDvenD+6VDjkpkHe0HFHteYiLVWOR85FmEoD7Mm817TTPS+4y0fiOU9ybK/fKRg2JAcG6Chs5ztQ9rwSh
- /tO87Xe0HpXuSrzMid0U/g16Mum8SWDB0fodhifB4OTKeQp5waglf/PCsnZ4ehcnbtW3wNx95LXNdBaGnPCdSbWAnMGXFWdiH91t3GiAm8cThbBbiabWX09c
- n/6cT5IKTErE7bKjGQm9uTZ82i5XqPmHYQWLvp445M7+s/gdy1YwSgsQZZEcwXaBQCYFCCK9eJNDWyg7YRQRRme8OP44r4euK2OGRcyxvsCqIXOo8dZUcCPj
- 4qlIgc14t/OFkA2Ew24mVMob36XCWJ9MaVx+UQ3T0koc3yiOQqymUcRHF1LbKUxGSLDn4MxJJ5eiwJ2mHGirqgpCTRTGjO4StwZ1fl6ov/YC+aWeP0bT+A6F
- PGAcCch0e0FLN7GpjapvlugypoNFsW80LBVel9l0OW9tkLuDSSLwfUNN79eOSIH8Zh3kGOv6LQl9L+C6w5lZDZnWriCPcGX7xY5sjVW2nDO5je0tVw8Z10rn
- JAA+LFB1PyBq3UsG/4WbCMZyboknSWCPMrG9BesPr02nsEBGEEHoTBzQOnMOrbdTwqVUaX+FH+mTrFAiUslt08uGlBRcDq0BroXiIxqzudKTnSCVh/pQE4Nb
- WLX5Z0Zx0Qwuz/2NX+BjYA2TW3v8lPN4g6zl+juwa6muzjTz/GOUJvp+m641Er5iIyXB+JLRX3C6merCVGfQmmpeNW8fACOo1X9O7546jwkH+LfMM+3SAz5Y
- I+ExZU043+TQ2eXEOA4V3SYEM28=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ead81edf-ca8f-9e97-96ca-984202e7d8ac@schaufler-ca.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2021 09:09, Andrzej Pietrasiewicz wrote:
-> Hi Hans,
+On Mon, Nov 15, 2021 at 01:42:54PM -0800, Casey Schaufler wrote:
+> On 11/15/2021 11:08 AM, Alistair Delva wrote:
+> > On Mon, Nov 15, 2021 at 11:04 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> > > On Mon, Nov 15, 2021 at 7:14 PM Alistair Delva <adelva@google.com> wrote:
+> > > > Booting to Android userspace on 5.14 or newer triggers the following
+> > > > SELinux denial:
+> > > > 
+> > > > avc: denied { sys_nice } for comm="init" capability=23
+> > > >       scontext=u:r:init:s0 tcontext=u:r:init:s0 tclass=capability
+> > > >       permissive=0
+> > > > 
+> > > > Init is PID 0 running as root, so it already has CAP_SYS_ADMIN. For
+> > > > better compatibility with older SEPolicy, check ADMIN before NICE.
+> > > But with this patch you in turn punish the new/better policies that
+> > > try to avoid giving domains CAP_SYS_ADMIN unless necessary (using only
+> > > the more granular capabilities wherever possible), which may now get a
+> > > bogus sys_admin denial. IMHO the order is better as it is, as it
+> > > motivates the "good" policy writing behavior - i.e. spelling out the
+> > > capability permissions more explicitly and avoiding CAP_SYS_ADMIN.
+> > > 
+> > > IOW, if you domain does CAP_SYS_NICE things, and you didn't explicitly
+> > > grant it that (and instead rely on the CAP_SYS_ADMIN fallback), then
+> > > the denial correctly flags it as an issue in your policy and
+> > > encourages you to add that sys_nice permission to the domain. Then
+> > > when one beautiful hypothetical day the CAP_SYS_ADMIN fallback is
+> > > removed, your policy will be ready for that and things will keep
+> > > working.
+> > > 
+> > > Feel free to carry that patch downstream if patching the kernel is
+> > > easier for you than fixing the policy, but for the upstream kernel
+> > > this is just a step in the wrong direction.
+> > I'm personally fine with this position, but I am curious why "never
+> > break userspace" doesn't apply to SELinux policies.
 > 
-> W dniu 15.11.2021 o 22:16, Hans Verkuil pisze:
->> On 15/11/2021 18:14, Andrzej Pietrasiewicz wrote:
->>> Hi Hans,
->>>
->>> W dniu 15.11.2021 o 16:07, Hans Verkuil pisze:
->>>> Andrzej,
->>>>
->>>> Can you rebase this series on top of the master branch of
->>>> https://git.linuxtv.org/media_stage.git/ ? Unfortunately this v7 no longer
->>>> applies. Specifically "rkvdec: Add the VP9 backend" failed in a non-trivial
->>>> manner.
->>>
->>> This is a branch for you:
->>>
->>> https://gitlab.collabora.com/linux/for-upstream/-/tree/vp9-uapi
->>
->> I'm getting a bunch of sparse/smatch warnings:
->>
-> 
-> Thanks for finding this, I will re-create the branch and let you know on irc.
-> Some of the below are "false positives, namely:
-> 
-> drivers/media/platform/omap3isp/omap3isp.h
-> drivers/media/platform/qcom/venus/core.h
+> Because SELinux policy is configuration data, not system code.
+> One is free to modify SELinux policy to suit one's whims without
+> making any change to the Linux kernel or its APIs.
 
-Ah, sorry, I though I had filtered those out. Obviously you can ignore those.
+Sure, but the problem here is when the kernel is updated and the
+userspace configuration is not changed and then the kernel can not boot
+or has other problems.  That is a kernel regression.
 
-Please post a v8. That way the series is archived on lore. And it works better
-with patchwork.
+> >   At the end of the
+> > day, booting 5.13 or older, we don't get a denial, and there's nothing
+> > for the sysadmin to do. On 5.14 and newer, we get denials. This is a
+> > common pattern we see each year: some new capability or permission is
+> > required where it wasn't required before, and there's no compatibility
+> > mechanism to grandfather in old policies.
+> 
+> This is an artifact of separating policy from mechanism. The
+> capability mechanism does not suffer from this issue because
+> it embodies its policy. SELinux, Smack, AppArmor and "containers"
+> are vulnerable to it because they explicitly deny the kernel and
+> kernel developers permission to make assumptions about how they
+> define "policy".
+> 
+> >   So, we have to touch
+> > userspace. If this is just how things are, I can certainly update our
+> > init.te definitions.
+> 
+> If SELinux was a required kernel mechanism and the policy was
+> included in the kernel tree you might be able to argue that
+> kernel developers are responsible for changes to SELinux policy.
+> But it ain't, and it isn't.   By design.
 
-Regards,
+Again, when you change the logic in the kernel that then requires you to
+also somehow change userspace files in order to keep the kernel booting
+properly, that is a problem.
 
-	Hans
+Same thing if we changed the tty api to require different options to be
+handled differently.  There is nothing "special" about security policies
+from any other user/kernel interaction and api.
 
-> 
-> which are not touched by the series.
-> 
-> Regards,
-> 
-> Andrzej
-> 
->> sparse:
->> rkvdec/rkvdec-vp9.c:190:43: warning: variable 'dec_params' set but not used [-Wunused-but-set-variable]
->> rkvdec/rkvdec-vp9.c:245:43: warning: variable 'dec_params' set but not used [-Wunused-but-set-variable]
->> SPARSE:hantro/hantro_postproc.c hantro/hantro_postproc.c:37:35: warning: symbol 'hantro_g1_postproc_regs' was not declared. Should it be static?
->>
->> smatch:
->> rkvdec/rkvdec-vp9.c:190:43: warning: variable 'dec_params' set but not used [-Wunused-but-set-variable]
->> rkvdec/rkvdec-vp9.c:245:43: warning: variable 'dec_params' set but not used [-Wunused-but-set-variable]
->> rkvdec/rkvdec-vp9.c: rkvdec/rkvdec-vp9.c:236 init_intra_only_probs() error: buffer overflow 'ptr' 90 <= 91
->> hantro/hantro_g2_vp9_dec.c: hantro/hantro_g2_vp9_dec.c:670 config_probs() error: memcpy() 'adaptive->inter_mode[i]' too small (4 vs 21)
->> hantro/hantro_g2_vp9_dec.c: hantro/hantro_g2_vp9_dec.c:670 config_probs() error: memcpy() 'probs->inter_mode[i]' too small (3 vs 21
->>
->> Also a bunch of kerneldoc warnings:
->>
->> include/media/v4l2-vp9.h:30: warning: Function parameter or member 'joint' not described in 'v4l2_vp9_frame_mv_context'
->> include/media/v4l2-vp9.h:30: warning: Function parameter or member 'sign' not described in 'v4l2_vp9_frame_mv_context'
->> include/media/v4l2-vp9.h:30: warning: Function parameter or member 'classes' not described in 'v4l2_vp9_frame_mv_context'
->> include/media/v4l2-vp9.h:30: warning: Function parameter or member 'class0_bit' not described in 'v4l2_vp9_frame_mv_context'
->> include/media/v4l2-vp9.h:30: warning: Function parameter or member 'bits' not described in 'v4l2_vp9_frame_mv_context'
->> include/media/v4l2-vp9.h:30: warning: Function parameter or member 'class0_fr' not described in 'v4l2_vp9_frame_mv_context'
->> include/media/v4l2-vp9.h:30: warning: Function parameter or member 'fr' not described in 'v4l2_vp9_frame_mv_context'
->> include/media/v4l2-vp9.h:30: warning: Function parameter or member 'class0_hp' not described in 'v4l2_vp9_frame_mv_context'
->> include/media/v4l2-vp9.h:30: warning: Function parameter or member 'hp' not described in 'v4l2_vp9_frame_mv_context'
->> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'tx8' not described in 'v4l2_vp9_frame_context'
->> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'tx16' not described in 'v4l2_vp9_frame_context'
->> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'tx32' not described in 'v4l2_vp9_frame_context'
->> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'coef' not described in 'v4l2_vp9_frame_context'
->> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'skip' not described in 'v4l2_vp9_frame_context'
->> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'inter_mode' not described in 'v4l2_vp9_frame_context'
->> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'interp_filter' not described in 'v4l2_vp9_frame_context'
->> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'is_inter' not described in 'v4l2_vp9_frame_context'
->> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'comp_mode' not described in 'v4l2_vp9_frame_context'
->> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'single_ref' not described in 'v4l2_vp9_frame_context'
->> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'comp_ref' not described in 'v4l2_vp9_frame_context'
->> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'y_mode' not described in 'v4l2_vp9_frame_context'
->> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'uv_mode' not described in 'v4l2_vp9_frame_context'
->> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'partition' not described in 'v4l2_vp9_frame_context'
->> include/media/v4l2-vp9.h:58: warning: Function parameter or member 'mv' not described in 'v4l2_vp9_frame_context'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'partition' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'skip' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'intra_inter' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'tx32p' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'tx16p' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'tx8p' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'y_mode' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'uv_mode' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'comp' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'comp_ref' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'single_ref' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'mv_mode' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'filter' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'mv_joint' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'sign' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'classes' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'class0' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'bits' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'class0_fp' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'fp' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'class0_hp' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'hp' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'coeff' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:93: warning: Function parameter or member 'eob' not described in 'v4l2_vp9_frame_symbol_counts'
->> include/media/v4l2-vp9.h:166: warning: expecting prototype for v4l2_vp9_adapt_coef_probs(). Prototype was for v4l2_vp9_adapt_noncoef_probs()
->> instead
->> drivers/media/platform/omap3isp/omap3isp.h:107: warning: Function parameter or member 'vp_clk_pol' not described in 'isp_ccp2_cfg'
->> drivers/media/platform/omap3isp/omap3isp.h:107: warning: Function parameter or member 'lanecfg' not described in 'isp_ccp2_cfg'
->> drivers/media/platform/qcom/venus/core.h:202: warning: Function parameter or member 'sys_err_done' not described in 'venus_core'
->> drivers/media/platform/qcom/venus/core.h:462: warning: Function parameter or member 'fw_min_cnt' not described in 'venus_inst'
->> drivers/media/platform/qcom/venus/core.h:462: warning: Function parameter or member 'flags' not described in 'venus_inst'
->> drivers/media/platform/qcom/venus/core.h:462: warning: Function parameter or member 'dpb_ids' not described in 'venus_inst'
->> drivers/staging/media/hantro/hantro.h:115: warning: Enum value 'HANTRO_MODE_VP9_DEC' not described in enum 'hantro_codec_mode'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'tile_edge' not described in 'hantro_vp9_dec_hw_ctx'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'segment_map' not described in 'hantro_vp9_dec_hw_ctx'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'misc' not described in 'hantro_vp9_dec_hw_ctx'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'cnts' not described in 'hantro_vp9_dec_hw_ctx'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'probability_tables' not described in
->> 'hantro_vp9_dec_hw_ctx'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'frame_context' not described in 'hantro_vp9_dec_hw_ctx'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'cur' not described in 'hantro_vp9_dec_hw_ctx'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'last' not described in 'hantro_vp9_dec_hw_ctx'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'bsd_ctrl_offset' not described in 'hantro_vp9_dec_hw_ctx'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'segment_map_size' not described in 'hantro_vp9_dec_hw_ctx'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'ctx_counters_offset' not described in
->> 'hantro_vp9_dec_hw_ctx'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'tile_info_offset' not described in 'hantro_vp9_dec_hw_ctx'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'tile_r_info' not described in 'hantro_vp9_dec_hw_ctx'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'tile_c_info' not described in 'hantro_vp9_dec_hw_ctx'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'last_tile_r' not described in 'hantro_vp9_dec_hw_ctx'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'last_tile_c' not described in 'hantro_vp9_dec_hw_ctx'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'last_sbs_r' not described in 'hantro_vp9_dec_hw_ctx'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'last_sbs_c' not described in 'hantro_vp9_dec_hw_ctx'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'active_segment' not described in 'hantro_vp9_dec_hw_ctx'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'feature_enabled' not described in 'hantro_vp9_dec_hw_ctx'
->> drivers/staging/media/hantro/hantro_hw.h:211: warning: Function parameter or member 'feature_data' not described in 'hantro_vp9_dec_hw_ctx'
->>
->> You can test kerneldoc yourself with: scripts/kernel-doc -none include/media/v4l2-vp9.h
->>
->> Regards,
->>
->> 	Hans
->>
->>>
->>> Regards,
->>>
->>> Andrzej
->>>
->>>
->>>>
->>>> Regards,
->>>>
->>>> 	Hans
->>>>
->>>> On 29/09/2021 18:04, Andrzej Pietrasiewicz wrote:
->>>>> Dear all,
->>>>>
->>>>> This patch series adds VP9 codec V4L2 control interface and two drivers
->>>>> using the new controls. It is a follow-up of previous v6 series [1].
->>>>>
->>>>> In this iteration, we've implemented VP9 hardware decoding on two devices:
->>>>> Rockchip VDEC and Hantro G2, and tested on RK3399, i.MX8MQ and i.MX8MP.
->>>>> The i.MX8M driver needs proper power domains support, though, which is a
->>>>> subject of a different effort, but in all 3 cases we were able to run the
->>>>> drivers.
->>>>>
->>>>> GStreamer support is also available, the needed changes have been submitted
->>>>> by Daniel Almeida [2]. This MR is ready to be merged, and just needs the
->>>>> VP9 V4L2 controls to be merged and released.
->>>>>
->>>>> Both rkvdec and hantro drivers are passing a significant number of VP9 tests
->>>>> using Fluster[3]. There are still a few tests that are not passing, due to
->>>>> dynamic frame resize (not yet supported by V4L2) and small size videos
->>>>> (due to IP block limitations).
->>>>>
->>>>> The series adds the VP9 codec V4L2 control API as uAPI, so it aims at being
->>>>> merged without passing through staging, as agreed[4]. The ABI has been checked
->>>>> for padding and verified to contain no holes.
->>>>>
->>>>> [1] https://patchwork.linuxtv.org/project/linux-media/list/?series=6377
->>>>> [2] https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/merge_requests/2144
->>>>> [3] https://github.com/fluendo/fluster
->>>>> [4] https://lore.kernel.org/linux-media/b8f83c93-67fd-09f5-9314-15746cbfdc61@xs4all.nl/
->>>>>
->>>>> The series depends on the YUV tiled format support prepared by Ezequiel:
->>>>> https://www.spinics.net/lists/linux-media/msg197047.html
->>>>>
->>>>> Rebased onto latest media_tree.
->>>>>
->>>>> Changes related to v6:
->>>>> - moved setting tile filter and tile bsd auxiliary buffer addresses so
->>>>> that they are always set, even if no tiles are used (thanks, Jernej)
->>>>> - added a comment near the place where the 32-bit DMA mask is applied
->>>>>     (thanks, Nicolas)
->>>>> - improved consistency in register names (thanks, Nicolas)
->>>>>
->>>>> Changes related to v5:
->>>>> - improved the doc comments as per Ezequiel's review (thanks, Ezequiel)
->>>>> - improved pdf output of documentation
->>>>> - added Benjamin's Reviewed-by (thanks, Benjamin)
->>>>>
->>>>> Changes related to v4:
->>>>> - removed unused enum v4l2_vp9_intra_prediction_mode
->>>>> - converted remaining enums to defines to follow the convention
->>>>> - improved the documentation, in particular better documented how to use segmentation
->>>>> features
->>>>>
->>>>> Changes related to v3:
->>>>>
->>>>> Apply suggestions from Jernej's review (thanks, Jernej):
->>>>> - renamed a control and two structs:
->>>>> 	V4L2_CTRL_TYPE_VP9_COMPRESSED_HDR_PROBS =>
->>>>> 		V4L2_CTRL_TYPE_VP9_COMPRESSED_HDR
->>>>> 	v4l2_ctrl_vp9_compressed_hdr_probs =>
->>>>> 		v4l2_ctrl_vp9_compressed_hdr
->>>>> 	v4l2_vp9_mv_compressed_hdr_probs => v4l2_vp9_mv_probs
->>>>> - moved tx_mode to v4l2_ctrl_vp9_compressed_hdr
->>>>> - fixed enum v4l2_vp9_ref_frame_sign_bias values (which are used to test a bitfield)
->>>>> - explicitly assigned values to all other vp9 enums
->>>>>
->>>>> Apply suggestion from Nicolas's review (thanks, Nicolas):
->>>>> - explicitly stated that the v4l2_ctrl_vp9_compressed_hdr control is optional
->>>>> and implemented only by drivers which need it
->>>>>
->>>>> Changes related to the RFC v2:
->>>>>
->>>>> - added another driver including a postprocessor to de-tile
->>>>>           codec-specific tiling
->>>>> - reworked uAPI structs layout to follow VP8 style
->>>>> - changed validation of loop filter params
->>>>> - changed validation of segmentation params
->>>>> - changed validation of VP9 frame params
->>>>> - removed level lookup array from loop filter struct
->>>>>           (can be computed by drivers)
->>>>> - renamed some enum values to match the spec more closely
->>>>> - V4L2 VP9 library changed the 'eob' member of
->>>>>           'struct v4l2_vp9_frame_symbol_counts' so that it is an array
->>>>>           of pointers instead of an array of pointers to arrays
->>>>>           (IPs such as g2 creatively pass parts of the 'eob' counts in
->>>>>           the 'coeff' counts)
->>>>> - factored out several repeated portions of code
->>>>> - minor nitpicks and cleanups
->>>>>
->>>>> Andrzej Pietrasiewicz (6):
->>>>>     media: uapi: Add VP9 stateless decoder controls
->>>>>     media: Add VP9 v4l2 library
->>>>>     media: hantro: Rename registers
->>>>>     media: hantro: Prepare for other G2 codecs
->>>>>     media: hantro: Support VP9 on the G2 core
->>>>>     media: hantro: Support NV12 on the G2 core
->>>>>
->>>>> Boris Brezillon (1):
->>>>>     media: rkvdec: Add the VP9 backend
->>>>>
->>>>> Ezequiel Garcia (4):
->>>>>     hantro: postproc: Fix motion vector space size
->>>>>     hantro: postproc: Introduce struct hantro_postproc_ops
->>>>>     hantro: Simplify postprocessor
->>>>>     hantro: Add quirk for NV12/NV12_4L4 capture format
->>>>>
->>>>>    .../userspace-api/media/v4l/biblio.rst        |   10 +
->>>>>    .../media/v4l/ext-ctrls-codec-stateless.rst   |  573 +++++
->>>>>    .../media/v4l/pixfmt-compressed.rst           |   15 +
->>>>>    .../media/v4l/vidioc-g-ext-ctrls.rst          |    8 +
->>>>>    .../media/v4l/vidioc-queryctrl.rst            |   12 +
->>>>>    .../media/videodev2.h.rst.exceptions          |    2 +
->>>>>    drivers/media/v4l2-core/Kconfig               |    4 +
->>>>>    drivers/media/v4l2-core/Makefile              |    1 +
->>>>>    drivers/media/v4l2-core/v4l2-ctrls-core.c     |  180 ++
->>>>>    drivers/media/v4l2-core/v4l2-ctrls-defs.c     |    8 +
->>>>>    drivers/media/v4l2-core/v4l2-ioctl.c          |    1 +
->>>>>    drivers/media/v4l2-core/v4l2-vp9.c            | 1850 +++++++++++++++++
->>>>>    drivers/staging/media/hantro/Kconfig          |    1 +
->>>>>    drivers/staging/media/hantro/Makefile         |    7 +-
->>>>>    drivers/staging/media/hantro/hantro.h         |   40 +-
->>>>>    drivers/staging/media/hantro/hantro_drv.c     |   23 +-
->>>>>    drivers/staging/media/hantro/hantro_g2.c      |   27 +
->>>>>    .../staging/media/hantro/hantro_g2_hevc_dec.c |   69 +-
->>>>>    drivers/staging/media/hantro/hantro_g2_regs.h |  132 +-
->>>>>    .../staging/media/hantro/hantro_g2_vp9_dec.c  |  980 +++++++++
->>>>>    drivers/staging/media/hantro/hantro_hw.h      |   83 +-
->>>>>    .../staging/media/hantro/hantro_postproc.c    |   79 +-
->>>>>    drivers/staging/media/hantro/hantro_v4l2.c    |   20 +
->>>>>    drivers/staging/media/hantro/hantro_vp9.c     |  240 +++
->>>>>    drivers/staging/media/hantro/hantro_vp9.h     |  103 +
->>>>>    drivers/staging/media/hantro/imx8m_vpu_hw.c   |   38 +-
->>>>>    .../staging/media/hantro/rockchip_vpu_hw.c    |    7 +-
->>>>>    .../staging/media/hantro/sama5d4_vdec_hw.c    |    3 +-
->>>>>    drivers/staging/media/rkvdec/Kconfig          |    1 +
->>>>>    drivers/staging/media/rkvdec/Makefile         |    2 +-
->>>>>    drivers/staging/media/rkvdec/rkvdec-vp9.c     | 1078 ++++++++++
->>>>>    drivers/staging/media/rkvdec/rkvdec.c         |   52 +-
->>>>>    drivers/staging/media/rkvdec/rkvdec.h         |   12 +-
->>>>>    include/media/v4l2-ctrls.h                    |    4 +
->>>>>    include/media/v4l2-vp9.h                      |  182 ++
->>>>>    include/uapi/linux/v4l2-controls.h            |  284 +++
->>>>>    include/uapi/linux/videodev2.h                |    6 +
->>>>>    37 files changed, 6033 insertions(+), 104 deletions(-)
->>>>>    create mode 100644 drivers/media/v4l2-core/v4l2-vp9.c
->>>>>    create mode 100644 drivers/staging/media/hantro/hantro_g2.c
->>>>>    create mode 100644 drivers/staging/media/hantro/hantro_g2_vp9_dec.c
->>>>>    create mode 100644 drivers/staging/media/hantro/hantro_vp9.c
->>>>>    create mode 100644 drivers/staging/media/hantro/hantro_vp9.h
->>>>>    create mode 100644 drivers/staging/media/rkvdec/rkvdec-vp9.c
->>>>>    create mode 100644 include/media/v4l2-vp9.h
->>>>>
->>>>>
->>>>> base-commit: e4e737bb5c170df6135a127739a9e6148ee3da82
->>>>>
->>>>
->>>
->>
-> 
+thanks,
 
+greg k-h
