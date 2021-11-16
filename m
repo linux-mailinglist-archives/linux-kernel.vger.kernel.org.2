@@ -2,90 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692FD453071
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:27:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3CB45306F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:27:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235006AbhKPL3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 06:29:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234874AbhKPL3b (ORCPT
+        id S234983AbhKPL3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:29:48 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:49714 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235004AbhKPL3P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 06:29:31 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B19C061766;
-        Tue, 16 Nov 2021 03:25:35 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id b184-20020a1c1bc1000000b0033140bf8dd5so2095684wmb.5;
-        Tue, 16 Nov 2021 03:25:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=KIxL8pBMd//z5YINEw+kh9VMjDTIKYH5lzSpZAefCDI=;
-        b=WjtCOMMLpaA8sOhPA/0pKpG5Pjx22ssT5Zy9+XY45U6LQ7ZVk/7eaNAi4nZPfhoT09
-         7R4XhIrksJQ1CdNDDFWh1WJBhfGmzbwc+bGMwxKAC6ttM4G5LOS5AySeONbhcI1xHve/
-         X5wuPCrQR5rAfnh+sG1Yb7QziO5QrrIOxmSBH//cO0iUYtPws1fjK9ZiCNmVVEUU576H
-         haZKIcCgIglMWTisNVK3Vd9dI8GqPpvTeqoEs7+71qxDhH5oTBmrWEgUEAwUF705qJ3z
-         4uzlGH6g5wHgOjurP7ylVKCafttBGNEZBHeYJEs+g3xAJo4Rj4avxR+UE9Fy+8Z65bSl
-         5fiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=KIxL8pBMd//z5YINEw+kh9VMjDTIKYH5lzSpZAefCDI=;
-        b=yiEfgKW3d3TAxoGksgOH1hscOjdHkHpsxyUHCNtdy1qFZ52yosuH6wPwn7yFySqzb/
-         SD8IeZDHp+TTAev54D3qIWcjwDyq8zLCL3hxw1T1CEJj82/3ZrOUOxYSiiK/bM3CA/ii
-         DjGkNJk9tz74XBxm4nmOp3JH9x+OU4tHiQmCW6zWkhC+6W7CE1iIgwi19smIgpkvdBpb
-         WyrCiIeCv6bmE+NWkJrN1KitmjMiEifBNxnLlY+yF0Y7CZ8psSDo7+SgcjK6LWznr5IW
-         oeSVQwGJ7/uUYsLEd0hWOPiI7l5M+js1KyxwoEOSf/XAFO0Iady/SIxiyuyFbcM1NA26
-         uqxg==
-X-Gm-Message-State: AOAM533FNYTD0hF+iM6DoiyQMVY/Z7IWmrQMncau++DbnQq4zKlfbMCb
-        sD4aXmIBMCDbSRo1+XRtsvDHTl2EMVd6vg623yq7ajo4rM0=
-X-Google-Smtp-Source: ABdhPJxnbFQv1dTzlXUN67+XMFz/lUUZpvt7OlTc0tdxapNHsE53zcaflGNH6ScTj3O2csAYZxRXAeBNNWGHy7A7oNk=
-X-Received: by 2002:a7b:cf10:: with SMTP id l16mr69365510wmg.17.1637061933897;
- Tue, 16 Nov 2021 03:25:33 -0800 (PST)
+        Tue, 16 Nov 2021 06:29:15 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8EADD212B7;
+        Tue, 16 Nov 2021 11:26:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637061977; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5+gUcs/tjKbbk/7yjyhx4CtVWFpBne6sQR2PGyQ6344=;
+        b=ML6kzvf86bM4nnzWKFtNChdojDg87P2IrQwJmzvErHw1YCxQyy1sWz1UOQc4HC82R3OD5e
+        Y+NB9wEzQBFUNOZMjoxFNPH5cdNt+LOhsNzGjcH+CZSrbNgs2+ka8GqfMgb6D9XpsLiTXW
+        7qXbuQhrROM9fivT6OxNZc73SJdaEW0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637061977;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5+gUcs/tjKbbk/7yjyhx4CtVWFpBne6sQR2PGyQ6344=;
+        b=bq5Owu98dWYzz0faNGWzKmuJajz1+tkAdQOg4tXKeWJeakdNKIV0+MZWkxmVPrDSBtBoxW
+        DdcgfvYNOLswnpCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5648813C01;
+        Tue, 16 Nov 2021 11:26:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id nkATFFmVk2F1QwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 16 Nov 2021 11:26:17 +0000
+Message-ID: <037227db-c869-7d9c-65e8-8f5f8682171d@suse.cz>
+Date:   Tue, 16 Nov 2021 12:26:17 +0100
 MIME-Version: 1.0
-From:   Sandy Harris <sandyinchina@gmail.com>
-Date:   Tue, 16 Nov 2021 19:25:22 +0800
-Message-ID: <CACXcFm=kwziZ5Etdevu0uq_t5qy0NbGY753WfLvnwkMqtU9Tvg@mail.gmail.com>
-Subject: [PATCH 1/8] Replace memset() with memzero_explicit()
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH v3] slob: add size header to all allocations
+Content-Language: en-US
+To:     Rustam Kovhaev <rkovhaev@gmail.com>, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, corbet@lwn.net
+Cc:     djwong@kernel.org, david@fromorbit.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, gregkh@linuxfoundation.org,
+        viro@zeniv.linux.org.uk, dvyukov@google.com
+References: <be7ee3a6-9b3c-b436-f042-82bd3c416acc@suse.cz>
+ <20211029030534.3847165-1-rkovhaev@gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20211029030534.3847165-1-rkovhaev@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace memset(address,0,bytes) which may be optimised away
-with memzero_explicit(address,bytes) which resists
-such optimisation
+On 10/29/21 05:05, Rustam Kovhaev wrote:
+> Let's prepend both kmalloc() and kmem_cache_alloc() allocations with the
+> size header.
+> It simplifies the slab API and guarantees that both kmem_cache_alloc()
+> and kmalloc() memory could be freed by kfree().
+> 
+> meminfo right after the system boot, x86-64 on xfs, without the patch:
+> Slab:              35456 kB
+> 
+> the same, with the patch:
+> Slab:              36100 kB
+> 
+> Link: https://lore.kernel.org/lkml/20210929212347.1139666-1-rkovhaev@gmail.com
+> Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
 
----
- crypto/des_generic.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Sorry for the late reply. I think we can further simplify this. We have:
 
-diff --git a/crypto/des_generic.c b/crypto/des_generic.c
-index c85354a5e94c..105a32e7afea 100644
---- a/crypto/des_generic.c
-+++ b/crypto/des_generic.c
-@@ -30,7 +30,7 @@ static int des_setkey(struct crypto_tfm *tfm, const u8 *key,
-             err = 0;
-     }
-     if (err)
--        memset(dctx, 0, sizeof(*dctx));
-+        memzero_explicit(dctx, sizeof(*dctx));
-     return err;
- }
+static void *slob_alloc(size_t size, gfp_t gfp, int align,
+			int node, int align_offset)
 
-@@ -62,7 +62,7 @@ static int des3_ede_setkey(struct crypto_tfm *tfm,
-const u8 *key,
-             err = 0;
-     }
-     if (err)
--        memset(dctx, 0, sizeof(*dctx));
-+        memzero_explicit(dctx, sizeof(*dctx));
-     return err;
- }
+Previously there was one caller that passed size as unchanged, align_offset
+= 0, the other passed size + SLOB_HDR_SIZE, align_offset = SLOB_HDR_SIZE.
+Now both callers do the latter. We can drop the align_offset parameter and
+pass size unchanged. slob_alloc() can internally add SLOB_HDR_SIZE to size,
+and use SLOB_HDR_SIZE instead of align_offset.
 
---
+Thanks,
+Vlastimil
+
