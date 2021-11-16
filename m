@@ -2,163 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7AE452989
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:23:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4957545298B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:23:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233811AbhKPFZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 00:25:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55332 "EHLO
+        id S233857AbhKPFZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 00:25:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233711AbhKPFYY (ORCPT
+        with ESMTP id S233715AbhKPFYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 00:24:24 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1FB2C0D8D99
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 18:33:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=hHCwnZsfgnQlvOFigVHk17lgCiiAoL4uov9tgSnKeD4=; b=qZrTWqx68GQuafrNVAG/iEghMb
-        ACRW9xHziBefhuDm9fTQB72+tWcNcHf3W2Eqn7GNNBEDGXeumhf6Vrr2OpVo/bcNQ4aA7676yWHuX
-        2c5cEPbaASpJFHWbZo5/ZhF/kL4ybOQrfDGW3Si2JpsXQJuITn85F+6RGkgwdRoRaU7bFRwgN75+S
-        p04alv5WhC5amOGDIw0YEJecubTe+ANEutHB2jLkxRxRre5cYXQzYzwMAOFv7SbDZpstM2xiBxNl9
-        rjYgUgura/xHyYI6cS6z8L/dHxj7WIsktdGe+rkUrV2sYLn3zjWNgpjIbZk69oEG5Hg7E7Z9AlNPZ
-        E/c9cgKg==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mmoIG-0004aH-NK; Tue, 16 Nov 2021 02:33:56 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        dri-devel@lists.freedesktop.org, Stefano Babic <sbabic@denx.de>,
-        Anatolij Gustschin <agust@denx.de>
-Subject: [PATCH v2] backlight: ili922x: fix kernel-doc warnings & notation
-Date:   Mon, 15 Nov 2021 18:33:55 -0800
-Message-Id: <20211116023355.1775-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Tue, 16 Nov 2021 00:24:25 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F54C0D8D9B;
+        Mon, 15 Nov 2021 18:34:04 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id n15so17651165qta.0;
+        Mon, 15 Nov 2021 18:34:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H7zphfLIx/KIgfDYl4IOIHLAMRHep0aAJWdFC+/UaNA=;
+        b=Rv9D8UmXSnZm8Bh1GoID8bVVWxDSBCNC4THC6v2fMK/Xjd292jrTfr7HPA60SNEtwN
+         ZgsT0rxJwlV6MOX9Mg6pvUENSnqSy2PQ2g8jSGe+VqlgUmaWXSUfhPUZeSN4Fjajej12
+         5XGHxJR8dHzi+y/D5OyS1PY3DAsZpFVkKp3/v6f/uQCqYI1Qr3yD9AkpuaeXc9VqfW+V
+         M1x6wN6oOWmV11GcQr/YkSBk23I2+wU1hI/jCjuvcU38zE/cs/R7fEQsdfdOc5KnoW9r
+         Rm7LflRIaRzZ6opJytsFOdWfMdhhaI2YGLSFevIBziJS5jOjAAh8T2jiE5v+PuwtXZTT
+         AZxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H7zphfLIx/KIgfDYl4IOIHLAMRHep0aAJWdFC+/UaNA=;
+        b=ShToxldu4E5cIZ5V3DLiS3tpdKdG5js9M/NdYDrKrMffCJXpJ1HuN62ZHJGNAnggsB
+         m96x5GDExONmsot9wQt4QPhmO3ElWzHviK0X9MKwoqpmxOkC9ZjYtwzDMsi3LP20V0wc
+         o0OtDD8NYtbKEGKidOhy01WS13lG1za9INDxPVIhUW06c25iibr6K8PDMLPU9x3rc8cB
+         cRYX7hFP1aP7rpRFeenpgQ8swPtGYEtetNU+ExYgXG2cbZwDzSD01GSP1StVlMSjpbVS
+         oh8XTSt0ujyoP+m4d0ZgPVIQDArp8b5+cH+hBhSD3GD4tSxpKQ5qTypowc9F8/B+nQoT
+         WMNw==
+X-Gm-Message-State: AOAM5320l4QaPXUkbNnCOKI9ieJjPJB160sezD81Guw0jjy41TWJiyFB
+        UIFxemwZco+XgzeEgeb4Ob5sNeU8sdYN7b4949GyfJwY/3M=
+X-Google-Smtp-Source: ABdhPJxy3/yvIoE1Sby1RB+LrFWAG186ca20J3KfKBtNLU6iYwGxwglI0cKh7RVW16SHtAlV0ZDpZK2743We/bDxwtI=
+X-Received: by 2002:ac8:5991:: with SMTP id e17mr3975451qte.344.1637030043682;
+ Mon, 15 Nov 2021 18:34:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211115085403.360194-1-arnd@kernel.org> <20211115085403.360194-7-arnd@kernel.org>
+In-Reply-To: <20211115085403.360194-7-arnd@kernel.org>
+From:   Baolin Wang <baolin.wang7@gmail.com>
+Date:   Tue, 16 Nov 2021 10:34:39 +0800
+Message-ID: <CADBw62oYab_d+uS_8kfC9JqhUxVhK79G4wbWyZy7+RL6P9tVvA@mail.gmail.com>
+Subject: Re: [PATCH 06/11] dmaengine: sprd: stop referencing config->slave_id
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andy Gross <agross@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Scott Branden <sbranden@broadcom.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com,
+        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-mtd@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-tegra@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert function-like macro comments to kernel-doc notation and
-fix other kernel-doc warnings:
+Hi Arnd,
 
-drivers/video/backlight/ili922x.c:85: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * START_BYTE(id, rs, rw)
-drivers/video/backlight/ili922x.c:118: warning: expecting prototype for CHECK_FREQ_REG(spi_device s, spi_transfer x)(). Prototype was for CHECK_FREQ_REG() instead
+On Mon, Nov 15, 2021 at 4:55 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> It appears that the code that reads the slave_id from the channel config
+> was copied incorrectly from other drivers. Nothing ever sets this field
+> on platforms that use this driver, so remove the reference.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-ili922x.c:92: warning: contents before sections
-ili922x.c:150: warning: No description found for return value of 'ili922x_read_status'
-ili922x.c:193: warning: No description found for return value of 'ili922x_read'
-ili922x.c:247: warning: No description found for return value of 'ili922x_write'
-ili922x.c:353: warning: No description found for return value of 'ili922x_poweron'
-ili922x.c:382: warning: No description found for return value of 'ili922x_poweroff'
+Thanks. LGTM.
+Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
 
-Fixes: 4cfbfa971478 ("video: backlight: add ili922x lcd driver")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: Daniel Thompson <daniel.thompson@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>
-Cc: dri-devel@lists.freedesktop.org
-Cc: Stefano Babic <sbabic@denx.de>
-Cc: Anatolij Gustschin <agust@denx.de>
----
-v2: add periods at end of sentences so that the generated documentation
-    flows correctly. (thanks, Daniel)
-
- drivers/video/backlight/ili922x.c |   29 ++++++++++++++++++----------
- 1 file changed, 19 insertions(+), 10 deletions(-)
-
---- linux-next-20211115.orig/drivers/video/backlight/ili922x.c
-+++ linux-next-20211115/drivers/video/backlight/ili922x.c
-@@ -82,13 +82,7 @@
- #define START_RW_READ		1
- 
- /**
-- * START_BYTE(id, rs, rw)
-- *
-- * Set the start byte according to the required operation.
-- * The start byte is defined as:
-- *   ----------------------------------
-- *  | 0 | 1 | 1 | 1 | 0 | ID | RS | RW |
-- *   ----------------------------------
-+ * START_BYTE() - Set the start byte according to the required operation.
-  * @id: display's id as set by the manufacturer
-  * @rs: operation type bit, one of:
-  *	  - START_RS_INDEX	set the index register
-@@ -96,14 +90,19 @@
-  * @rw: read/write operation
-  *	 - START_RW_WRITE	write
-  *	 - START_RW_READ	read
-+ *
-+ * The start byte is defined as:
-+ *   ----------------------------------
-+ *  | 0 | 1 | 1 | 1 | 0 | ID | RS | RW |
-+ *   ----------------------------------
-  */
- #define START_BYTE(id, rs, rw)	\
- 	(0x70 | (((id) & 0x01) << 2) | (((rs) & 0x01) << 1) | ((rw) & 0x01))
- 
- /**
-- * CHECK_FREQ_REG(spi_device s, spi_transfer x) - Check the frequency
-- *	for the SPI transfer. According to the datasheet, the controller
-- *	accept higher frequency for the GRAM transfer, but it requires
-+ * CHECK_FREQ_REG() - Check the frequency for the SPI transfer.
-+ *	According to the datasheet, the controller
-+ *	accepts higher frequency for the GRAM transfer, but it requires
-  *	lower frequency when the registers are read/written.
-  *	The macro sets the frequency in the spi_transfer structure if
-  *	the frequency exceeds the maximum value.
-@@ -145,6 +144,8 @@ struct ili922x {
-  * ili922x_read_status - read status register from display
-  * @spi: spi device
-  * @rs:  output value
-+ *
-+ * Return: %0 on success or a negative error code on failure
-  */
- static int ili922x_read_status(struct spi_device *spi, u16 *rs)
- {
-@@ -188,6 +189,8 @@ static int ili922x_read_status(struct sp
-  * @spi: spi device
-  * @reg: offset of the register to be read
-  * @rx:  output value
-+ *
-+ * Return: %0 on success or a negative error code on failure
-  */
- static int ili922x_read(struct spi_device *spi, u8 reg, u16 *rx)
- {
-@@ -242,6 +245,8 @@ static int ili922x_read(struct spi_devic
-  * @spi: struct spi_device *
-  * @reg: offset of the register to be written
-  * @value: value to be written
-+ *
-+ * Return: %0 on success or a negative error code on failure
-  */
- static int ili922x_write(struct spi_device *spi, u8 reg, u16 value)
- {
-@@ -348,6 +353,8 @@ static void set_write_to_gram_reg(struct
-  * The sequence to turn on the display is taken from
-  * the datasheet and/or the example code provided by the
-  * manufacturer.
-+ *
-+ * Return: %0 on success or a negative value on failure
-  */
- static int ili922x_poweron(struct spi_device *spi)
- {
-@@ -377,6 +384,8 @@ static int ili922x_poweron(struct spi_de
- /**
-  * ili922x_poweroff - turn the display off
-  * @spi: spi device
-+ *
-+ * Return: %0 on success or a negative value on failure
-  */
- static int ili922x_poweroff(struct spi_device *spi)
- {
+--
+Baolin Wang
