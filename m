@@ -2,94 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA7C4536C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:05:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9AF4536DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:06:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238805AbhKPQHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 11:07:37 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:45788 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238820AbhKPQGw (ORCPT
+        id S238814AbhKPQHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 11:07:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:27918 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238813AbhKPQHx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:06:52 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AG7FCiW005416;
-        Tue, 16 Nov 2021 10:03:48 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type;
- s=PODMain02222019; bh=wtR/S16kh0dxL/tCa9AfNyWpssNmTbifcATxl0gQQlc=;
- b=Vu26Wqd0p9YjAL+2Xk+tS+ZtAkuJBI0aHGrTqugA6Zs2ztS+zxWL/UlGFBTPVKFJTbfU
- xkJRrLF5njYhghckKhZO1uyI8dmmOIiNvQ+IEOoRZvxW60kNU0K+f08oUPLn91DsmtHR
- s91yp7Xh1AdSfsKWN2Jj1ZvyEL4HkgP82NAKQYJfe05CSlWJz5NIUg9d6goZeaUGTuY4
- 0Y7cuS5VQZiQ5cje9sxvNxT99cib6jt7L+p88Fb31tvx9v6Kd9YncKLZZdYgoCYAhnEu
- B7PanAhH0VJEDW3VLTHKoUFpla5Q7XWUJ4mHOxOUw1DgmfbmotvkQLvWrwWiQmyYi5aX Jw== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3cbdjgt241-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 16 Nov 2021 10:03:47 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Tue, 16 Nov
- 2021 16:03:41 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via Frontend
- Transport; Tue, 16 Nov 2021 16:03:41 +0000
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9D49D11DB;
-        Tue, 16 Nov 2021 16:03:41 +0000 (UTC)
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     <lee.jones@linaro.org>
-CC:     <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mfd: arizona: Add missing statics to the of_match_tables
-Date:   Tue, 16 Nov 2021 16:03:41 +0000
-Message-ID: <20211116160341.27865-1-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.11.0
+        Tue, 16 Nov 2021 11:07:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637078695;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IQYqrYWzH5LMm02dblZ0VbWUHvwdTF0Rr46Metf8L3g=;
+        b=Uav/75OcjYp1prq8/9vVfTUWRowJnEHXveMJr+pPhWCl2ZGZZCpoA2FoxTZagOEczEUpai
+        UkctwNSE+c4FS1+M1aL82M15mI7niOYIQ+EdyWQ3bMHi/asP1c2hiiINRqLq1dz5g8LbI/
+        Aq1xKdBTBbWKYMVF5TJDuN+ocpqpl8g=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-155-TIG5Qg_fOxSz4AnMTltXcA-1; Tue, 16 Nov 2021 11:04:54 -0500
+X-MC-Unique: TIG5Qg_fOxSz4AnMTltXcA-1
+Received: by mail-qt1-f200.google.com with SMTP id g2-20020ac87d02000000b002b277218d03so9993690qtb.16
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 08:04:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IQYqrYWzH5LMm02dblZ0VbWUHvwdTF0Rr46Metf8L3g=;
+        b=eUcnVKomN9oIGYmN6XwOFTgFPnMHN5s67u87h4r77rUXA4iR9bB/bDyN0MNL4QP+oa
+         iu480ly97l6HYrRyBOxlzux/97giEQ7Sx4z/wAjTlUMBVVpogGCqHK35N8CfkYWO2bZV
+         5+6doPpmbmYhwSxAK5pbOvFDrOtENO8nMbAtqDO5HWm5FKNpneb1Pp1DEJmqLvKn5tPY
+         6RLS3VtC6Oxscbi9EkyavIlrJ7MlNn3kx/Ry16FMftRQCrUW4LOl/sUNmhPBRnJThWGs
+         VAuIfIw4LU9JYJARnnVwjvBfCsxgikhObVn1rvjEGzqbioCDbH5nGwFb5/XpNuNeBF4p
+         H2sg==
+X-Gm-Message-State: AOAM532XH7zv6hO6didnyH7WqpSLi7IMXsr9T55wv5H/cuJYXGnETiVg
+        xLkTlGxZJa4d9Xm4lfQHDwKXMIymp3TK15RiWCRmfQI5tkIaOj4ishD1jFQXrSpIxTxusCKnFSK
+        u+zQT8ABq89uW+O/pknojDL5S
+X-Received: by 2002:ac8:5787:: with SMTP id v7mr8755674qta.79.1637078693510;
+        Tue, 16 Nov 2021 08:04:53 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx1VmixXkHPd8zrvy0yn0CKnKhyT/INH+jtxoy7BwJ1qOemuevJEj2WkOO1YOifT68fo90R1Q==
+X-Received: by 2002:ac8:5787:: with SMTP id v7mr8755630qta.79.1637078693258;
+        Tue, 16 Nov 2021 08:04:53 -0800 (PST)
+Received: from bfoster (c-24-61-119-116.hsd1.ma.comcast.net. [24.61.119.116])
+        by smtp.gmail.com with ESMTPSA id f18sm8939102qko.34.2021.11.16.08.04.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 08:04:52 -0800 (PST)
+Date:   Tue, 16 Nov 2021 11:04:50 -0500
+From:   Brian Foster <bfoster@redhat.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Dave Chinner <david@fromorbit.com>, Ian Kent <raven@themaw.net>,
+        xfs <linux-xfs@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] xfs: make sure link path does not go away at access
+Message-ID: <YZPWoj6mM/N2reKz@bfoster>
+References: <163660195990.22525.6041281669106537689.stgit@mickey.themaw.net>
+ <163660197073.22525.11235124150551283676.stgit@mickey.themaw.net>
+ <20211112003249.GL449541@dread.disaster.area>
+ <CAJfpegvHDM_Mtc8+ASAcmNLd6RiRM+KutjBOoycun_Oq2=+p=w@mail.gmail.com>
+ <20211114231834.GM449541@dread.disaster.area>
+ <CAJfpegu4BwJD1JKngsrzUs7h82cYDGpxv0R1om=WGhOOb6pZ2Q@mail.gmail.com>
+ <20211115222417.GO449541@dread.disaster.area>
+ <f8425d1270fe011897e7e14eaa6ba8a77c1ed077.camel@themaw.net>
+ <20211116030120.GQ449541@dread.disaster.area>
+ <CAJfpegsvL6SjNZdk=J9N-gYWZK0uhg_bT579WRHyVisW1sGZ=Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: An8gWad6DQQep5Fe82vwer8UfYvi9pnq
-X-Proofpoint-GUID: An8gWad6DQQep5Fe82vwer8UfYvi9pnq
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJfpegsvL6SjNZdk=J9N-gYWZK0uhg_bT579WRHyVisW1sGZ=Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the match tables were split for I2C and SPI a static should have
-been added since the tables are no longer exported.
+On Tue, Nov 16, 2021 at 11:12:13AM +0100, Miklos Szeredi wrote:
+> On Tue, 16 Nov 2021 at 04:01, Dave Chinner <david@fromorbit.com> wrote:
+> 
+> > I *think* that just zeroing the buffer means the race condition
+> > means the link resolves as either wholly intact, partially zeroed
+> > with trailing zeros in the length, wholly zeroed or zero length.
+> > Nothing will crash, the link string is always null terminated even
+> > if the length is wrong, and so nothing bad should happen as a result
+> > of zeroing the symlink buffer when it gets evicted from the VFS
+> > inode cache after unlink.
+> 
+> That's my thinking.  However, modifying the buffer while it is being
+> processed does seem pretty ugly, and I have to admit that I don't
+> understand why this needs to be done in either XFS or EXT4.
+> 
 
-Fixes: 3f65555c417c ("mfd: arizona: Split of_match table into I2C and SPI versions")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- drivers/mfd/arizona-i2c.c | 2 +-
- drivers/mfd/arizona-spi.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Agreed. I'm also not following what problem this is intended to solve..?
 
-diff --git a/drivers/mfd/arizona-i2c.c b/drivers/mfd/arizona-i2c.c
-index 3ed810e81f631..6d83e6b9a692d 100644
---- a/drivers/mfd/arizona-i2c.c
-+++ b/drivers/mfd/arizona-i2c.c
-@@ -105,7 +105,7 @@ static const struct i2c_device_id arizona_i2c_id[] = {
- MODULE_DEVICE_TABLE(i2c, arizona_i2c_id);
- 
- #ifdef CONFIG_OF
--const struct of_device_id arizona_i2c_of_match[] = {
-+static const struct of_device_id arizona_i2c_of_match[] = {
- 	{ .compatible = "wlf,wm5102", .data = (void *)WM5102 },
- 	{ .compatible = "wlf,wm5110", .data = (void *)WM5110 },
- 	{ .compatible = "wlf,wm8280", .data = (void *)WM8280 },
-diff --git a/drivers/mfd/arizona-spi.c b/drivers/mfd/arizona-spi.c
-index 9fe06dda37829..98c87d3bd00fa 100644
---- a/drivers/mfd/arizona-spi.c
-+++ b/drivers/mfd/arizona-spi.c
-@@ -226,7 +226,7 @@ static const struct spi_device_id arizona_spi_ids[] = {
- MODULE_DEVICE_TABLE(spi, arizona_spi_ids);
- 
- #ifdef CONFIG_OF
--const struct of_device_id arizona_spi_of_match[] = {
-+static const struct of_device_id arizona_spi_of_match[] = {
- 	{ .compatible = "wlf,wm5102", .data = (void *)WM5102 },
- 	{ .compatible = "wlf,wm5110", .data = (void *)WM5110 },
- 	{ .compatible = "wlf,wm8280", .data = (void *)WM8280 },
--- 
-2.11.0
+Hmm.. it looks to me that the ext4 code zeroes the symlink to
+accommodate its own truncate/teardown code because it will access the
+field via a structure to interpret it as a (empty?) data mapping. IOW,
+it doesn't seem to have anything to do with the vfs or path
+walks/lookups but rather is an internal implementation detail of ext4.
+It would probably be best if somebody who knows ext4 better could
+comment on that before we take anything from it. Of course, there is the
+fact that ext4 doing this seemingly doesn't disturb/explode the vfs, but
+really neither does the current XFS code so it's kind of hard to say
+whether one approach is any more or less correct purely based on the
+fact that the code exists.
+
+Brian
+
+> > The root cause is "allowing an inode to be reused without waiting
+> > for an RCU grace period to expire". This might seem pedantic, but
+> > "without waiting for an rcu grace period to expire" is the important
+> > part of the problem (i.e. the bug), not the "allowing an inode to be
+> > reused" bit.
+> 
+> Yes.
+> 
+> Thanks,
+> Miklos
+> 
 
