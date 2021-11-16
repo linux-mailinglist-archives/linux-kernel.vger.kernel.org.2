@@ -2,180 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2F945320F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:22:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E86B4453212
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:24:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232318AbhKPMZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 07:25:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236046AbhKPMYj (ORCPT
+        id S235960AbhKPM1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 07:27:18 -0500
+Received: from mail-lj1-f172.google.com ([209.85.208.172]:47074 "EHLO
+        mail-lj1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235642AbhKPM1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 07:24:39 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E3FC061746;
-        Tue, 16 Nov 2021 04:21:42 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id t21so17227244plr.6;
-        Tue, 16 Nov 2021 04:21:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FErY3LGewnY6+TGF0EyO560jrhVYm9Tzy44GCNEa3Fc=;
-        b=USchBcFCVTBgOftgykvUz1ZnyI6xgWfM8ZZM8v2sCfW+J5XdlzW3cvDMmGaW3cHd9g
-         ku6Oeu3LYAlUtEohzOxWoRvQ8Ikq9ul+pY0zxuRKXWaLlCG+IGFkIzPbtr3jUvCDJXjk
-         Gl8Tl29LkflMWOnUCSnywOFQWq5XtMlpak05HSuRcql99No24bIbmJzKcPTkhamfUVYd
-         kHNsk9adHWb/6JR1YIeZs5x/Ev4nk85gge1v5/lRPD939ZgA8LpSyUDt6xuM1iAyZk7H
-         u00K3ICLVo4XEqdVX88dH4fEWZfnqPUCdXd2Czlm3WhYYSQrqda2yyIjveNSxhVQIFd7
-         w/Fg==
+        Tue, 16 Nov 2021 07:27:12 -0500
+Received: by mail-lj1-f172.google.com with SMTP id e11so42792245ljo.13;
+        Tue, 16 Nov 2021 04:24:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FErY3LGewnY6+TGF0EyO560jrhVYm9Tzy44GCNEa3Fc=;
-        b=b/P/E9Bxr4Z0303nH3SAOLUbktfvQDeI9NzPfdQ2WNqDJ2UE+tU3KNHNtiqXeqPUdk
-         bXJwOWiW7N18CWrSjbXe3cOOL2UIF1s8TYbE4NEUwz5PkbC6pwAg/dTt1njdIx3pVeib
-         fYoR7MNlyEC2MiXz+Mq2Q7d/lYlkh6xHFr50leag+wAxsZG1SGZJNTMSpv0uSwq5xj/8
-         6BCpcg39jdfRrcMKhMpjZsKEBSV3LLvXCSKUPz+GvRsXX/u8OqaMVez+4xes+4JAO51R
-         4mekJmFkpVYcRUV67QxALrXyusUfH3jb/AFWh9vKlP/bqeezzTR3xpmc/7iqhHRP21dY
-         SH3g==
-X-Gm-Message-State: AOAM533u+EgWq9dTQNGmp0Drx7eI4SvPVbgPH8Ru11S/RRY0TYOtkk6I
-        eAevhH5JGwqVWzLRNlmLRaaUb4WuZqY=
-X-Google-Smtp-Source: ABdhPJyf1wf6zjwq8ZicuWkWEpd4PNCV0MSpRC5N16PFXXzg6gaOdAgs+9knP3RnSk4N65nfdIUENQ==
-X-Received: by 2002:a17:90b:1bd1:: with SMTP id oa17mr8205970pjb.246.1637065302154;
-        Tue, 16 Nov 2021 04:21:42 -0800 (PST)
-Received: from localhost.localdomain ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id i67sm18557613pfg.189.2021.11.16.04.21.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 16 Nov 2021 04:21:40 -0800 (PST)
-From:   Like Xu <like.xu.linux@gmail.com>
-X-Google-Original-From: Like Xu <likexu@tencent.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] KVM: x86/pmu: Refactoring kvm_perf_overflow{_intr}()
-Date:   Tue, 16 Nov 2021 20:20:30 +0800
-Message-Id: <20211116122030.4698-5-likexu@tencent.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211116122030.4698-1-likexu@tencent.com>
-References: <20211116122030.4698-1-likexu@tencent.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=nwXPLfuXNs4r/4M323hMt8HZvJdI500wmNneRu9EdJs=;
+        b=3kfQ0CaOwTOsttqbVu4HxRuDStQgYWbxZ2k+1Bj5FFpx9hSzYoYbT8IgElA6YdI5AD
+         wThtyAqqiyTbB3ctQys46RS+HiKnAPEOI4XzVs/Na3ptjqVkuNjA5xqkd2G1NeFEqeFk
+         l8JLpuwSweepax/kR+eyFnG+eQaVvBXBOjSPKcrwZ+S6ZOGz6qtVuDR18Nk+/EulR5M8
+         Y4xpz/Hh4uuaNziNB7kckAmnKrShweJSmbX9oS9uzbVzMB3VQKpJrVU0rf12X4MrwMBM
+         nOYmXncsfDTRcl6GPeTOAAC9ayyg2Kezj6SLtYTeDKOukG7C/xu2mv6/btyKdOY0E0H0
+         ruWA==
+X-Gm-Message-State: AOAM532xXW3neaZR846bmQEijeBBtXqCKo3si6Y06/Tut5BLwRv5IE29
+        Ga22S/Pxn/zRS3sNw0oARJk=
+X-Google-Smtp-Source: ABdhPJxeOb8ZhaC7ZWfhkLirFwlmLfcypzLHupToDHjHuAXtZbFv2xGNAzxsogSAOyOeHTXSPitRVQ==
+X-Received: by 2002:a05:651c:54d:: with SMTP id q13mr6685924ljp.498.1637065454297;
+        Tue, 16 Nov 2021 04:24:14 -0800 (PST)
+Received: from fedora (dc73szyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16ee:fa00::4])
+        by smtp.gmail.com with ESMTPSA id o1sm1822192ljg.130.2021.11.16.04.24.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 04:24:13 -0800 (PST)
+Date:   Tue, 16 Nov 2021 14:24:06 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>, rostokus@gmail.com,
+        fan.chen@mediatek.com, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com
+Subject: [RFC PATCH v3 0/9] power: supply: Add some fuel-gauge logic
+Message-ID: <cover.1637061794.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="HOenYRA7r8rtk9BF"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Like Xu <likexu@tencent.com>
 
-Depending on whether intr should be triggered or not, KVM registers
-two different event overflow callbacks in the perf_event context.
+--HOenYRA7r8rtk9BF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The code skeleton of these two functions is very similar, so
-need_overflow_intr() is introduced to increase the potential code reuse.
+As usual, I picked you as recipients just because I assumed
+you could have something to say in here. Again, please let me know
+if you wish to be dropped from CC if this gets any further.
 
-There is a trade-off between extra cycles in the irq context and a
-smaller instructions footprint against the u-architecture branch predictor.
+power: supply: add simple-gauge for SOC estimation and CC correction
 
-Signed-off-by: Like Xu <likexu@tencent.com>
+This RFC has received some testing under qemu, with recorded
+battery-data and a dummy MFD driver converting the battery-data to
+register-values for BD71815 PMIC driver. The testing has not really
+covered a lot though. Some tests are also ran on a BeagleBoneBlack
+connected to a real PMIC hwrdware - but unfortunately without a real
+battery. So - this is still not tested too well.
+
+Regarding the purpose of this RFC:
+
+Patches 1 - 6
+I hope that the patches which change the power-supply class for static
+battery node information  could be properly reviewed and perhaps even
+considered to be merged upstream. It'd be great if someone had the time
+to test those in real HW to ensure existing stuff is not borked.
+Especially the patches 4 and 6 might be of interest.
+
+The patch 7:
+This adds some simple fuel-gauge logic in kernel. I think this is
+getting it's shape - but may have few hiccups left - and could benefit
+=66rom suggestions how to run the gauge thread. A few downstream setups do
+use separate ROHM drivers for BD71815, BD71817, BD71827, BD71828 and
+BD71879 which all contain similar fuel-gauge logic to what is implented
+in simple-gauge. They poll the PMIC and compute the temperature/capacity
+and zero-corrected "state of charge" and report that to the user-space.
+Additionally those drivers 'calibrate' the CC based on OCV when battery
+is relaxed - or when battery is fully charged. The patch 7 attempts to
+make this logic generic and allows IC drivers to fill the IC specific
+operations.
+
+It is fair to say that I don't know the user-space software which is
+utilizing the existing drivers - or why the SoC computation is
+originally placed in-kernel. I can only assume the existing IC users
+might have a bit wider smile if the SOC was reported by the kernel also
+in the future.
+
+Patches 8 and 9:
+The patches 8 and 9 bring in IC level support for ROHM BD71815 and BD71828
+PMIC charger IPs. It is also fairly trivial to extend the support to
+ND71827 and BD71879 later. The state of these patches is not final yet,
+I don't expect them to be thoroughly reviewed yet. They are provided to
+give some more context.
+
+Changelog RFC v3:
+  - rename sw-gauge to simple-gauge
+  batinfo:
+     - kerneldoc fixes
+     - add batinfo getters usable prior supply registration
+     - Add constant battery aging degradation to batinfo
+  simple-gauge:
+      - use devm_add_action_or_reset
+      - Rename to simple_gauge
+      - Limit access to power_supply parameters
+      - Introduce simple_gauge_drvdata
+      - no need to show simple_gauge at config menu. Users should just SELE=
+CT it.
+      - allow tristate
+      - Add blocking 'iteration run' - loop.
+      - updated the comment section
+      - Fixed clamped SOC which was not updated
+      - Small comment improvements
+      - Don't allow negative CC after computing capacity corrections
+      - Fix gauge looping when last client exits
+ ROHM ic-drivers:
+      - Updated BD71815 IRQ information
+      - adapt to simple_gauge parameter changes
+      - Initial BD71815 support
+      - Use drvdata properly.
+      - Sort includes
+      - Prepare to provide dcin_collapse voltage from DT
+      - clean unused defines
+      - use OCV tables from batinfo if module params not given
+      - do not directly call bd71827_voltage_to_capacity from calibration
+        but use provided operation.
+      - Mask the power-state from relax-condition on BD71815 as is done by
+        the ROHM driver. REX state is used to do OCV =3D> SOC conversion
+        when battery is relaxed even if REX_CC was not used.
+      - Clarify that we require either the module params or DT values for
+        battery. Fail probe if parameters are not given.
+      - Utilize degrade_cycle_uah aging degradation.
+      - Get battery max and min values either as module parameters or from
+        static battery node at DT.
+      - Allow giving the zero correction threshold as a module param or
+        compute it as 10% of "remaining battery voltage" based on max and
+        min voltages given via DT.
+      - Add proper MODULE_ALIAS
+      - Implement VDR table reading from DT
+      - Do not require fixed amount of battery parameters
+      - Fix Coulomb Counter to uAh conversion
+      - Fix endianess related warnings
+      - clean-up comment
+      - Avoid dividing by zero at VDR computation
+      - Use the fwnode API instead of of_* API
+      . don't assume 32bit int
+      - Fix IC type prints
+      - Fix the current sense resistor DT property *-ohm =3D> *-ohms
+
+Changelog RFC v2:
+ - lots of logic fixes.
+ - rechecked units
+ - changed low-voltage correction to capacity correction
+ - added first draft of IC driver which could use the swgauge
+
 ---
- arch/x86/kvm/pmu.c | 64 +++++++++++++++++++++++++---------------------
- 1 file changed, 35 insertions(+), 29 deletions(-)
 
-diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
-index 3c45467b4275..ef4bba8be7f7 100644
---- a/arch/x86/kvm/pmu.c
-+++ b/arch/x86/kvm/pmu.c
-@@ -55,43 +55,50 @@ static void kvm_pmi_trigger_fn(struct irq_work *irq_work)
- 	kvm_pmu_deliver_pmi(vcpu);
- }
- 
--static void kvm_perf_overflow(struct perf_event *perf_event,
--			      struct perf_sample_data *data,
--			      struct pt_regs *regs)
-+static inline bool need_overflow_intr(struct kvm_pmc *pmc)
- {
--	struct kvm_pmc *pmc = perf_event->overflow_handler_context;
- 	struct kvm_pmu *pmu = pmc_to_pmu(pmc);
- 
--	if (!test_and_set_bit(pmc->idx, pmu->reprogram_pmi)) {
--		__set_bit(pmc->idx, (unsigned long *)&pmu->global_status);
--		kvm_make_request(KVM_REQ_PMU, pmc->vcpu);
--	}
-+	if (pmc_is_gp(pmc))
-+		return (pmc->eventsel & ARCH_PERFMON_EVENTSEL_INT);
-+	else
-+		return fixed_ctrl_field(pmu->fixed_ctr_ctrl,
-+			pmc->idx - INTEL_PMC_IDX_FIXED) & 0x8;
- }
- 
--static void kvm_perf_overflow_intr(struct perf_event *perf_event,
--				   struct perf_sample_data *data,
--				   struct pt_regs *regs)
-+static inline void kvm_pmu_counter_overflow(struct kvm_pmc *pmc, bool intr)
- {
--	struct kvm_pmc *pmc = perf_event->overflow_handler_context;
- 	struct kvm_pmu *pmu = pmc_to_pmu(pmc);
- 
--	if (!test_and_set_bit(pmc->idx, pmu->reprogram_pmi)) {
--		__set_bit(pmc->idx, (unsigned long *)&pmu->global_status);
--		kvm_make_request(KVM_REQ_PMU, pmc->vcpu);
-+	__set_bit(pmc->idx, (unsigned long *)&pmu->global_status);
-+	kvm_make_request(KVM_REQ_PMU, pmc->vcpu);
- 
--		/*
--		 * Inject PMI. If vcpu was in a guest mode during NMI PMI
--		 * can be ejected on a guest mode re-entry. Otherwise we can't
--		 * be sure that vcpu wasn't executing hlt instruction at the
--		 * time of vmexit and is not going to re-enter guest mode until
--		 * woken up. So we should wake it, but this is impossible from
--		 * NMI context. Do it from irq work instead.
--		 */
--		if (!kvm_is_in_guest())
--			irq_work_queue(&pmc_to_pmu(pmc)->irq_work);
--		else
--			kvm_make_request(KVM_REQ_PMI, pmc->vcpu);
--	}
-+	if (!intr)
-+		return;
-+
-+	/*
-+	 * Inject PMI. If vcpu was in a guest mode during NMI PMI
-+	 * can be ejected on a guest mode re-entry. Otherwise we can't
-+	 * be sure that vcpu wasn't executing hlt instruction at the
-+	 * time of vmexit and is not going to re-enter guest mode until
-+	 * woken up. So we should wake it, but this is impossible from
-+	 * NMI context. Do it from irq work instead.
-+	 */
-+	if (!kvm_is_in_guest())
-+		irq_work_queue(&pmc_to_pmu(pmc)->irq_work);
-+	else
-+		kvm_make_request(KVM_REQ_PMI, pmc->vcpu);
-+}
-+
-+static void kvm_perf_overflow(struct perf_event *perf_event,
-+			      struct perf_sample_data *data,
-+			      struct pt_regs *regs)
-+{
-+	struct kvm_pmc *pmc = perf_event->overflow_handler_context;
-+	struct kvm_pmu *pmu = pmc_to_pmu(pmc);
-+
-+	if (!test_and_set_bit(pmc->idx, pmu->reprogram_pmi))
-+		kvm_pmu_counter_overflow(pmc, need_overflow_intr(pmc));
- }
- 
- static void pmc_reprogram_counter(struct kvm_pmc *pmc, u32 type,
-@@ -126,7 +133,6 @@ static void pmc_reprogram_counter(struct kvm_pmc *pmc, u32 type,
- 	}
- 
- 	event = perf_event_create_kernel_counter(&attr, -1, current,
--						 intr ? kvm_perf_overflow_intr :
- 						 kvm_perf_overflow, pmc);
- 	if (IS_ERR(event)) {
- 		pr_debug_ratelimited("kvm_pmu: event creation failed %ld for pmc->idx = %d\n",
--- 
-2.33.1
+Matti Vaittinen (9):
+  dt-bindings: battery: Add temperature-capacity degradation table
+  power: supply: add cap2ocv batinfo helper
+  power: supply: Support DT originated temperature-capacity tables
+  power: supply: Add batinfo getters usable prior supply registration
+  power: supply: Add constant battery aging degradation to batinfo
+  power: supply: Add batinfo functions for OCV to SOC with 0.1% accuracy
+  power: supply: add simple-gauge for SOC estimation and CC correction
+  mfd: bd71828, bd71815 prepare for power-supply support
+  power: supply: Add bd718(15/27/28/78) charger driver
 
+ .../bindings/power/supply/battery.yaml        |   19 +
+ drivers/mfd/rohm-bd71828.c                    |   42 +-
+ drivers/power/supply/Kconfig                  |   14 +
+ drivers/power/supply/Makefile                 |    2 +
+ drivers/power/supply/bd71827-power.c          | 2473 +++++++++++++++++
+ drivers/power/supply/power_supply_core.c      |  449 ++-
+ drivers/power/supply/simple-gauge.c           | 1303 +++++++++
+ include/linux/mfd/rohm-bd71827.h              |  295 ++
+ include/linux/mfd/rohm-bd71828.h              |   65 +
+ include/linux/mfd/rohm-generic.h              |    2 +
+ include/linux/power/simple_gauge.h            |  244 ++
+ include/linux/power_supply.h                  |   41 +
+ 12 files changed, 4843 insertions(+), 106 deletions(-)
+ create mode 100644 drivers/power/supply/bd71827-power.c
+ create mode 100644 drivers/power/supply/simple-gauge.c
+ create mode 100644 include/linux/mfd/rohm-bd71827.h
+ create mode 100644 include/linux/power/simple_gauge.h
+
+--=20
+2.31.1
+
+
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
+
+--HOenYRA7r8rtk9BF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmGTos8ACgkQeFA3/03a
+ocXImAgAnxiVYJM0qSBRFNkSeBT3fSVTqeD8jkry5KgUJHj8UXrUyBszpxgkdunW
+652pADFgox2nc1z5ZSA4tpYV2KuArQchQOBw2joFmGIfPbS7IKiJrN/V5IPvIzlZ
+i/BCGYP6J3RR7M14GZMiOn5SI/sJFXwcwnvF8OkcYTto1AbzknLbMXhaLJ7xRdOK
+5n9QXXRa0IZ6dgO30Hp5m12yi9aFmMjivDtt4StE0bEhz7aamsQTZTGUA5nFLpHe
+QGHeafqTNLrWBtdQ9e5bwMH6PSU4d09IKkgxsyC11tBeYD6lsXC3S68Ozi5JHtmN
+TUMENyxRd8ZaQ6WqTpMNk1eZim2Ikw==
+=2+sv
+-----END PGP SIGNATURE-----
+
+--HOenYRA7r8rtk9BF--
