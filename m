@@ -2,294 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07908453234
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:29:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D504B45323A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:31:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235829AbhKPMcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 07:32:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236182AbhKPMbx (ORCPT
+        id S236183AbhKPMcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 07:32:48 -0500
+Received: from mail-lf1-f50.google.com ([209.85.167.50]:35667 "EHLO
+        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236341AbhKPMca (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 07:31:53 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305B2C06120F
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 04:28:49 -0800 (PST)
-Received: from pan.home (unknown [IPv6:2a00:23c6:c31a:b300:fe43:c17b:2e58:6ca])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: martyn)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 96F901F45465;
-        Tue, 16 Nov 2021 12:28:46 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637065727; bh=3VBA5G5z/CWOMTHYcCMT8tNc4F1TqutTJPzyyMq7044=;
-        h=From:To:Cc:Subject:Date:From;
-        b=x1HR4ZlImnQ1N1Ez9CLX0tkjZHmORJ51EF+/C8VFmp0ZPdlyl1CBqO/rSCRtXgCVR
-         z+CAlSIJR71QUVMrb02L86hNe04mKTJObllcPf7nUkXsx2PVqZEZbxxw/49s8E1enV
-         6aP/0OP9nT39EMg1gla421reOylZ8UblQAtoSi0W0/0vI7C4zHh1vacwzC7pkmdS8j
-         eTZrTgqQpaJCcIwgPVHCxd1/C48xDbhVHF9Be4WxeRBgeAoLl5+W3tPJWXBfr/ZtUp
-         gMQM/uxNbK9hG617yLNmIfudWfe7BovHKrXcz4ENv5RyKrqscF7M10J1VcrGIF1/Fg
-         aempU+MZgAYHw==
-From:   Martyn Welch <martyn.welch@collabora.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     linux-kernel@vger.kernel.org, kernel@collabora.com,
-        Martyn Welch <martyn.welch@collabora.com>,
-        Peter Senna Tschudin <peter.senna@gmail.com>,
-        Martin Donnelly <martin.donnelly@ge.com>,
-        Martyn Welch <martyn.welch@collabora.co.uk>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Subject: [PATCH] drm/bridge: megachips: Ensure both bridges are probed before registration
-Date:   Tue, 16 Nov 2021 12:28:31 +0000
-Message-Id: <20211116122831.278576-1-martyn.welch@collabora.com>
-X-Mailer: git-send-email 2.33.0
+        Tue, 16 Nov 2021 07:32:30 -0500
+Received: by mail-lf1-f50.google.com with SMTP id p16so52853131lfa.2;
+        Tue, 16 Nov 2021 04:29:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=56xLv6JmcjfsI8FlVRwUTjzLIMUQa2SiRCS0GWh88Nc=;
+        b=eN7qZPOF9JMKFyIHAZfSVrrkNaZ+oiUtZuSLB1+x6exlRob7LDLBZylytC26MkqbbS
+         VwKlECWCgb4u5XsPy9l1KDP75vXTuZ9dblywl3dbsRXdfA0cWUK34gXsmj5SLIFxWnBH
+         fEv/7/HnESgQjPpJ+8CBSqGmgRQR84/0As1Ya/zoDs4V4CAC2uNIxzDBKTjx170hKORK
+         H72ynRz7hdXL0Dz+2nfus4jKV4m9nWAOzc5vm9RGcBO6GunVtHN10zgPLzQWAUmz3YPX
+         Z90sYy8HVpA5bHJUR7pz60S5ZMgiGJGupLA0S4E1/j4tBP9fpy+9lGyzKnkM2KSeFupC
+         sE9Q==
+X-Gm-Message-State: AOAM5308t+JTRRDXH6sdZrqfFkn4d4nspkvA9795vKoWlQ+ffH1mES6d
+        0CDjPHtzH6qBgTL4X0bzT94/QoPDSzE=
+X-Google-Smtp-Source: ABdhPJxBZip9rSM/LC4Ed2xHSYrQ60UwRdqpr/NGMtQcLDhbmG4sIZdwtr2H3T96N6E+kdXL2GHk2A==
+X-Received: by 2002:a05:6512:3090:: with SMTP id z16mr6364257lfd.335.1637065772419;
+        Tue, 16 Nov 2021 04:29:32 -0800 (PST)
+Received: from fedora (dc73szyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16ee:fa00::4])
+        by smtp.gmail.com with ESMTPSA id e20sm1832964ljo.119.2021.11.16.04.29.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 04:29:31 -0800 (PST)
+Date:   Tue, 16 Nov 2021 14:29:24 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>, rostokus@gmail.com,
+        fan.chen@mediatek.com, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com
+Subject: [RFC PATCH v3 8/9] mfd: bd71828, bd71815 prepare for power-supply
+ support
+Message-ID: <b8be0e3458185f6c5c80a028c091c63ad1bcbd91.1637061794.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1637061794.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ldloiiX/4CfTWCfw"
+Content-Disposition: inline
+In-Reply-To: <cover.1637061794.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the configuration used by the b850v3, the STDP2690 is used to read EDID
-data whilst it's the STDP4028 which can detect when monitors are connected.
 
-This can result in problems at boot with monitors connected when the
-STDP4028 is probed first, a monitor is detected and an attempt is made to
-read the EDID data before the STDP2690 has probed:
+--ldloiiX/4CfTWCfw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[    3.795721] Unable to handle kernel NULL pointer dereference at virtual address 00000018
-[    3.803845] pgd = (ptrval)
-[    3.806581] [00000018] *pgd=00000000
-[    3.810180] Internal error: Oops: 5 [#1] SMP ARM
-[    3.814813] Modules linked in:
-[    3.817879] CPU: 0 PID: 64 Comm: kworker/u4:1 Not tainted 5.15.0 #1
-[    3.824161] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-[    3.830705] Workqueue: events_unbound deferred_probe_work_func
-[    3.836565] PC is at stdp2690_get_edid+0x44/0x19c
-[    3.841286] LR is at ge_b850v3_lvds_get_modes+0x2c/0x5c
-[    3.846526] pc : [<805eae10>]    lr : [<805eb138>]    psr: 80000013
-[    3.852802] sp : 81c359d0  ip : 7dbb550b  fp : 81c35a1c
-[    3.858037] r10: 81c73840  r9 : 81c73894  r8 : 816d9800
-[    3.863270] r7 : 00000000  r6 : 81c34000  r5 : 00000000  r4 : 810c35f0
-[    3.869808] r3 : 80e3e294  r2 : 00000080  r1 : 00000cc0  r0 : 81401180
-[    3.876349] Flags: Nzcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
-[    3.883499] Control: 10c5387d  Table: 1000404a  DAC: 00000051
-[    3.889254] Register r0 information: slab kmem_cache start 81401180 pointer offset 0
-[    3.897034] Register r1 information: non-paged memory
-[    3.902097] Register r2 information: non-paged memory
-[    3.907160] Register r3 information: non-slab/vmalloc memory
-[    3.912832] Register r4 information: non-slab/vmalloc memory
-[    3.918503] Register r5 information: NULL pointer
-[    3.923217] Register r6 information: non-slab/vmalloc memory
-[    3.928887] Register r7 information: NULL pointer
-[    3.933601] Register r8 information: slab kmalloc-1k start 816d9800 pointer offset 0 size 1024
-[    3.942244] Register r9 information: slab kmalloc-2k start 81c73800 pointer offset 148 size 2048
-[    3.951058] Register r10 information: slab kmalloc-2k start 81c73800 pointer offset 64 size 2048
-[    3.959873] Register r11 information: non-slab/vmalloc memory
-[    3.965632] Register r12 information: non-paged memory
-[    3.970781] Process kworker/u4:1 (pid: 64, stack limit = 0x(ptrval))
-[    3.977148] Stack: (0x81c359d0 to 0x81c36000)
-[    3.981517] 59c0:                                     80b2b668 80b2b5bc 000002e2 0000034e
-[    3.989712] 59e0: 81c35a8c 816d98e8 81c35a14 7dbb550b 805bfcd0 810c35f0 81c73840 824addc0
-[    3.997906] 5a00: 00001000 816d9800 81c73894 81c73840 81c35a34 81c35a20 805eb138 805eadd8
-[    4.006099] 5a20: 810c35f0 00000045 81c35adc 81c35a38 80594188 805eb118 80d7c788 80dd1848
-[    4.014292] 5a40: 00000000 81c35a50 80dca950 811194d3 80dca7c4 80dca944 80dca91c 816d9800
-[    4.022485] 5a60: 81c34000 81c760a8 816d9800 80c58c98 810c35f0 816d98e8 00001000 00001000
-[    4.030678] 5a80: 00000000 00000000 8017712c 81c60000 00000002 00000001 00000000 00000000
-[    4.038870] 5aa0: 816d9900 816d9900 00000000 7dbb550b 805c700c 00000008 826282c8 826282c8
-[    4.047062] 5ac0: 00001000 81e1ce40 00001000 00000002 81c35bf4 81c35ae0 805d9694 80593fc0
-[    4.055255] 5ae0: 8017a970 80179ad8 00000179 00000000 81c35bcc 81c35b00 80177108 8017a950
-[    4.063447] 5b00: 00000000 81c35b10 81c34000 00000000 81004fd8 81010a38 00000000 00000059
-[    4.071639] 5b20: 816d98d4 81fbb718 00000013 826282c8 8017a940 81c35b40 81134448 00000400
-[    4.079831] 5b40: 00000178 00000000 e063b9c1 00000000 c2000049 00000040 00000000 00000008
-[    4.088024] 5b60: 82628300 82628380 00000000 00000000 81c34000 00000000 81fbb700 82628340
-[    4.096216] 5b80: 826283c0 00001000 00000000 00000010 816d9800 826282c0 801766f8 00000000
-[    4.104408] 5ba0: 00000000 81004fd8 00000049 00000000 00000000 00000001 80dcf940 80178de4
-[    4.112601] 5bc0: 81c35c0c 7dbb550b 80178de4 81fbb700 00000010 00000010 810c35f4 81e1ce40
-[    4.120793] 5be0: 81c40908 0000000c 81c35c64 81c35bf8 805a7f18 805d94a0 81c35c3c 816d9800
-[    4.128985] 5c00: 00000010 81c34000 81c35c2c 81c35c18 8012fce0 805be90c 81c35c3c 81c35c28
-[    4.137178] 5c20: 805be90c 80173210 81fbb600 81fbb6b4 81c35c5c 7dbb550b 81c35c64 81fbb700
-[    4.145370] 5c40: 816d9800 00000010 810c35f4 81e1ce40 81c40908 0000000c 81c35c84 81c35c68
-[    4.153565] 5c60: 805a8c78 805a7ed0 816d9800 81fbb700 00000010 00000000 81c35cac 81c35c88
-[    4.161758] 5c80: 805a8dc4 805a8b68 816d9800 00000000 816d9800 00000000 8179f810 810c42d0
-[    4.169950] 5ca0: 81c35ccc 81c35cb0 805e47b0 805a8d18 824aa240 81e1ea80 81c40908 81126b60
-[    4.178144] 5cc0: 81c35d14 81c35cd0 8060db1c 805e46cc 81c35d14 81c35ce0 80dd90f8 810c4d58
-[    4.186338] 5ce0: 80dd90dc 81fe9740 fffffffe 81fe9740 81e1ea80 00000000 810c4d6c 80c4b95c
-[    4.194531] 5d00: 80dd9a3c 815c6810 81c35d34 81c35d18 8060dc9c 8060d8fc 8246b440 815c6800
-[    4.202724] 5d20: 815c6810 eefd8e00 81c35d44 81c35d38 8060dd80 8060dbec 81c35d6c 81c35d48
-[    4.210918] 5d40: 805e98a4 8060dd70 00000000 815c6810 810c45b0 81126e90 81126e90 80dd9a3c
-[    4.219112] 5d60: 81c35d8c 81c35d70 80619574 805e9808 815c6810 00000000 810c45b0 81126e90
-[    4.227305] 5d80: 81c35db4 81c35d90 806168dc 80619514 80625df0 80623c80 815c6810 810c45b0
-[    4.235498] 5da0: 81c35e6c 815c6810 81c35dec 81c35db8 80616d04 80616800 81c35de4 81c35dc8
-[    4.243691] 5dc0: 808382b0 80b2f444 8116e310 8116e314 81c35e6c 815c6810 00000003 80dd9a3c
-[    4.251884] 5de0: 81c35e14 81c35df0 80616ec8 80616c60 00000001 810c45b0 81c35e6c 815c6810
-[    4.260076] 5e00: 00000001 80dd9a3c 81c35e34 81c35e18 80617338 80616e90 00000000 81c35e6c
-[    4.268269] 5e20: 80617284 81c34000 81c35e64 81c35e38 80614730 80617290 81c35e64 8171a06c
-[    4.276461] 5e40: 81e220b8 7dbb550b 815c6810 81c34000 815c6854 81126e90 81c35e9c 81c35e68
-[    4.284654] 5e60: 8061673c 806146a8 8060f5e0 815c6810 00000001 7dbb550b 00000000 810c5080
-[    4.292847] 5e80: 810c5320 815c6810 81126e90 00000000 81c35eac 81c35ea0 80617554 80616650
-[    4.301040] 5ea0: 81c35ecc 81c35eb0 80615694 80617544 810c5080 810c5080 810c5094 81126e90
-[    4.309233] 5ec0: 81c35efc 81c35ed0 80615c6c 8061560c 80615bc0 810c50c0 817eeb00 81412800
-[    4.317425] 5ee0: 814c3000 00000000 814c300d 81119a60 81c35f3c 81c35f00 80141488 80615bcc
-[    4.325618] 5f00: 81c60000 81c34000 81c35f24 81c35f18 80143078 817eeb00 81412800 817eeb18
-[    4.333811] 5f20: 81412818 81003d00 00000088 81412800 81c35f74 81c35f40 80141a48 80141298
-[    4.342005] 5f40: 81c35f74 81c34000 801481ac 817efa40 817efc00 801417d8 817eeb00 00000000
-[    4.350199] 5f60: 815a7e7c 81c34000 81c35fac 81c35f78 80149b1c 801417e4 817efc20 817efc20
-[    4.358391] 5f80: ffffe000 817efa40 801499a8 00000000 00000000 00000000 00000000 00000000
-[    4.366583] 5fa0: 00000000 81c35fb0 80100130 801499b4 00000000 00000000 00000000 00000000
-[    4.374774] 5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-[    4.382966] 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
-[    4.391155] Backtrace:
-[    4.393613] [<805eadcc>] (stdp2690_get_edid) from [<805eb138>] (ge_b850v3_lvds_get_modes+0x2c/0x5c)
-[    4.402691]  r10:81c73840 r9:81c73894 r8:816d9800 r7:00001000 r6:824addc0 r5:81c73840
-[    4.410534]  r4:810c35f0
-[    4.413073] [<805eb10c>] (ge_b850v3_lvds_get_modes) from [<80594188>] (drm_helper_probe_single_connector_modes+0x1d4/0x84c)
-[    4.424240]  r5:00000045 r4:810c35f0
-[    4.427822] [<80593fb4>] (drm_helper_probe_single_connector_modes) from [<805d9694>] (drm_client_modeset_probe+0x200/0x1384)
-[    4.439074]  r10:00000002 r9:00001000 r8:81e1ce40 r7:00001000 r6:826282c8 r5:826282c8
-[    4.446917]  r4:00000008
-[    4.449455] [<805d9494>] (drm_client_modeset_probe) from [<805a7f18>] (__drm_fb_helper_initial_config_and_unlock+0x54/0x5b4)
-[    4.460713]  r10:0000000c r9:81c40908 r8:81e1ce40 r7:810c35f4 r6:00000010 r5:00000010
-[    4.468556]  r4:81fbb700
-[    4.471095] [<805a7ec4>] (__drm_fb_helper_initial_config_and_unlock) from [<805a8c78>] (drm_fbdev_client_hotplug+0x11c/0x1b0)
-[    4.482434]  r10:0000000c r9:81c40908 r8:81e1ce40 r7:810c35f4 r6:00000010 r5:816d9800
-[    4.490276]  r4:81fbb700
-[    4.492814] [<805a8b5c>] (drm_fbdev_client_hotplug) from [<805a8dc4>] (drm_fbdev_generic_setup+0xb8/0x1a4)
-[    4.502494]  r7:00000000 r6:00000010 r5:81fbb700 r4:816d9800
-[    4.508160] [<805a8d0c>] (drm_fbdev_generic_setup) from [<805e47b0>] (imx_drm_bind+0xf0/0x130)
-[    4.516805]  r7:810c42d0 r6:8179f810 r5:00000000 r4:816d9800
-[    4.522474] [<805e46c0>] (imx_drm_bind) from [<8060db1c>] (try_to_bring_up_master+0x22c/0x2f0)
-[    4.531116]  r7:81126b60 r6:81c40908 r5:81e1ea80 r4:824aa240
-[    4.536783] [<8060d8f0>] (try_to_bring_up_master) from [<8060dc9c>] (__component_add+0xbc/0x184)
-[    4.545597]  r10:815c6810 r9:80dd9a3c r8:80c4b95c r7:810c4d6c r6:00000000 r5:81e1ea80
-[    4.553440]  r4:81fe9740
-[    4.555980] [<8060dbe0>] (__component_add) from [<8060dd80>] (component_add+0x1c/0x20)
-[    4.563921]  r7:eefd8e00 r6:815c6810 r5:815c6800 r4:8246b440
-[    4.569589] [<8060dd64>] (component_add) from [<805e98a4>] (dw_hdmi_imx_probe+0xa8/0xe8)
-[    4.577702] [<805e97fc>] (dw_hdmi_imx_probe) from [<80619574>] (platform_probe+0x6c/0xc8)
-[    4.585908]  r9:80dd9a3c r8:81126e90 r7:81126e90 r6:810c45b0 r5:815c6810 r4:00000000
-[    4.593662] [<80619508>] (platform_probe) from [<806168dc>] (really_probe+0xe8/0x460)
-[    4.601524]  r7:81126e90 r6:810c45b0 r5:00000000 r4:815c6810
-[    4.607191] [<806167f4>] (really_probe) from [<80616d04>] (__driver_probe_device+0xb0/0x230)
-[    4.615658]  r7:815c6810 r6:81c35e6c r5:810c45b0 r4:815c6810
-[    4.621326] [<80616c54>] (__driver_probe_device) from [<80616ec8>] (driver_probe_device+0x44/0xe0)
-[    4.630313]  r9:80dd9a3c r8:00000003 r7:815c6810 r6:81c35e6c r5:8116e314 r4:8116e310
-[    4.638068] [<80616e84>] (driver_probe_device) from [<80617338>] (__device_attach_driver+0xb4/0x12c)
-[    4.647227]  r9:80dd9a3c r8:00000001 r7:815c6810 r6:81c35e6c r5:810c45b0 r4:00000001
-[    4.654981] [<80617284>] (__device_attach_driver) from [<80614730>] (bus_for_each_drv+0x94/0xd8)
-[    4.663794]  r7:81c34000 r6:80617284 r5:81c35e6c r4:00000000
-[    4.669461] [<8061469c>] (bus_for_each_drv) from [<8061673c>] (__device_attach+0xf8/0x190)
-[    4.677753]  r7:81126e90 r6:815c6854 r5:81c34000 r4:815c6810
-[    4.683419] [<80616644>] (__device_attach) from [<80617554>] (device_initial_probe+0x1c/0x20)
-[    4.691971]  r8:00000000 r7:81126e90 r6:815c6810 r5:810c5320 r4:810c5080
-[    4.698681] [<80617538>] (device_initial_probe) from [<80615694>] (bus_probe_device+0x94/0x9c)
-[    4.707318] [<80615600>] (bus_probe_device) from [<80615c6c>] (deferred_probe_work_func+0xac/0xf0)
-[    4.716305]  r7:81126e90 r6:810c5094 r5:810c5080 r4:810c5080
-[    4.721973] [<80615bc0>] (deferred_probe_work_func) from [<80141488>] (process_one_work+0x1fc/0x54c)
-[    4.731139]  r10:81119a60 r9:814c300d r8:00000000 r7:814c3000 r6:81412800 r5:817eeb00
-[    4.738981]  r4:810c50c0 r3:80615bc0
-[    4.742563] [<8014128c>] (process_one_work) from [<80141a48>] (worker_thread+0x270/0x570)
-[    4.750765]  r10:81412800 r9:00000088 r8:81003d00 r7:81412818 r6:817eeb18 r5:81412800
-[    4.758608]  r4:817eeb00
-[    4.761147] [<801417d8>] (worker_thread) from [<80149b1c>] (kthread+0x174/0x190)
-[    4.768574]  r10:81c34000 r9:815a7e7c r8:00000000 r7:817eeb00 r6:801417d8 r5:817efc00
-[    4.776417]  r4:817efa40
-[    4.778955] [<801499a8>] (kthread) from [<80100130>] (ret_from_fork+0x14/0x24)
-[    4.786201] Exception stack(0x81c35fb0 to 0x81c35ff8)
-[    4.791266] 5fa0:                                     00000000 00000000 00000000 00000000
-[    4.799459] 5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-[    4.807651] 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-[    4.814279]  r10:00000000 r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:801499a8
-[    4.822120]  r4:817efa40
-[    4.824664] Code: e3a02080 e593001c e3a01d33 e3a05000 (e5979018)
+Add core support for ROHM BD718(15/28/78) PMIC's charger blocks.
 
-Split the registration from the STDP4028 probe routine and only perform
-registration once both the STDP4028 and STDP2690 have probed.
-
-Signed-off-by: Martyn Welch <martyn.welch@collabora.com>
-CC: Peter Senna Tschudin <peter.senna@gmail.com>
-CC: Martin Donnelly <martin.donnelly@ge.com>
-CC: Martyn Welch <martyn.welch@collabora.co.uk>
-CC: Andrzej Hajda <a.hajda@samsung.com>
-CC: Neil Armstrong <narmstrong@baylibre.com>
-CC: Robert Foss <robert.foss@linaro.org>
-CC: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-CC: Jonas Karlman <jonas@kwiboo.se>
-CC: Jernej Skrabec <jernej.skrabec@gmail.com>
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 ---
- .../bridge/megachips-stdpxxxx-ge-b850v3-fw.c  | 40 +++++++++++++------
- 1 file changed, 28 insertions(+), 12 deletions(-)
+RFCv3:
+ - Updated BD71815 IRQ information
 
-diff --git a/drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c b/drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c
-index d2808c4a6fb1..72f134849822 100644
---- a/drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c
-+++ b/drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c
-@@ -306,19 +306,10 @@ static void ge_b850v3_lvds_remove(void)
- 	mutex_unlock(&ge_b850v3_lvds_dev_mutex);
- }
- 
--static int stdp4028_ge_b850v3_fw_probe(struct i2c_client *stdp4028_i2c,
--				       const struct i2c_device_id *id)
-+static int ge_b850v3_register(void)
- {
-+	struct i2c_client *stdp4028_i2c = ge_b850v3_lvds_ptr->stdp4028_i2c;
- 	struct device *dev = &stdp4028_i2c->dev;
--	int ret;
--
--	ret = ge_b850v3_lvds_init(dev);
--
--	if (ret)
--		return ret;
--
--	ge_b850v3_lvds_ptr->stdp4028_i2c = stdp4028_i2c;
--	i2c_set_clientdata(stdp4028_i2c, ge_b850v3_lvds_ptr);
- 
- 	/* drm bridge initialization */
- 	ge_b850v3_lvds_ptr->bridge.funcs = &ge_b850v3_lvds_funcs;
-@@ -343,6 +334,27 @@ static int stdp4028_ge_b850v3_fw_probe(struct i2c_client *stdp4028_i2c,
- 			"ge-b850v3-lvds-dp", ge_b850v3_lvds_ptr);
- }
- 
-+static int stdp4028_ge_b850v3_fw_probe(struct i2c_client *stdp4028_i2c,
-+				       const struct i2c_device_id *id)
-+{
-+	struct device *dev = &stdp4028_i2c->dev;
-+	int ret;
-+
-+	ret = ge_b850v3_lvds_init(dev);
-+
-+	if (ret)
-+		return ret;
-+
-+	ge_b850v3_lvds_ptr->stdp4028_i2c = stdp4028_i2c;
-+	i2c_set_clientdata(stdp4028_i2c, ge_b850v3_lvds_ptr);
-+
-+	/* Only register after both bridges are probed */
-+	if (!(ge_b850v3_lvds_ptr->stdp2690_i2c && ge_b850v3_lvds_ptr->stdp4028_i2c))
-+		return 0;
-+
-+	return ge_b850v3_register();
-+}
-+
- static int stdp4028_ge_b850v3_fw_remove(struct i2c_client *stdp4028_i2c)
- {
- 	ge_b850v3_lvds_remove();
-@@ -386,7 +398,11 @@ static int stdp2690_ge_b850v3_fw_probe(struct i2c_client *stdp2690_i2c,
- 	ge_b850v3_lvds_ptr->stdp2690_i2c = stdp2690_i2c;
- 	i2c_set_clientdata(stdp2690_i2c, ge_b850v3_lvds_ptr);
- 
--	return 0;
-+	/* Only register after both bridges are probed */
-+	if (!(ge_b850v3_lvds_ptr->stdp2690_i2c && ge_b850v3_lvds_ptr->stdp4028_i2c))
-+		return 0;
-+
-+	return ge_b850v3_register();
- }
- 
- static int stdp2690_ge_b850v3_fw_remove(struct i2c_client *stdp2690_i2c)
--- 
-2.33.0
+drop include/linux/mfd/rohm-bd71827.h
+---
+ drivers/mfd/rohm-bd71828.c       | 42 +++++++++++++++++----
+ include/linux/mfd/rohm-bd71828.h | 65 ++++++++++++++++++++++++++++++++
+ include/linux/mfd/rohm-generic.h |  2 +
+ 3 files changed, 101 insertions(+), 8 deletions(-)
 
+diff --git a/drivers/mfd/rohm-bd71828.c b/drivers/mfd/rohm-bd71828.c
+index 714d9fcbf07b..0dd56c6f827a 100644
+--- a/drivers/mfd/rohm-bd71828.c
++++ b/drivers/mfd/rohm-bd71828.c
+@@ -45,8 +45,8 @@ static const struct resource bd71828_rtc_irqs[] =3D {
+=20
+ static struct resource bd71815_power_irqs[] =3D {
+ 	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_RMV, "bd71815-dcin-rmv"),
+-	DEFINE_RES_IRQ_NAMED(BD71815_INT_CLPS_OUT, "bd71815-clps-out"),
+-	DEFINE_RES_IRQ_NAMED(BD71815_INT_CLPS_IN, "bd71815-clps-in"),
++	DEFINE_RES_IRQ_NAMED(BD71815_INT_CLPS_OUT, "bd71815-dcin-clps-out"),
++	DEFINE_RES_IRQ_NAMED(BD71815_INT_CLPS_IN, "bd71815-dcin-clps-in"),
+ 	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_OVP_RES, "bd71815-dcin-ovp-res"),
+ 	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_OVP_DET, "bd71815-dcin-ovp-det"),
+ 	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_MON_RES, "bd71815-dcin-mon-res"),
+@@ -56,7 +56,7 @@ static struct resource bd71815_power_irqs[] =3D {
+ 	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_LOW_RES, "bd71815-vsys-low-res"),
+ 	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_LOW_DET, "bd71815-vsys-low-det"),
+ 	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_MON_RES, "bd71815-vsys-mon-res"),
+-	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_MON_RES, "bd71815-vsys-mon-det"),
++	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_MON_DET, "bd71815-vsys-mon-det"),
+ 	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_WDG_TEMP, "bd71815-chg-wdg-temp"),
+ 	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_WDG_TIME, "bd71815-chg-wdg"),
+ 	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_RECHARGE_RES, "bd71815-rechg-res"),
+@@ -87,10 +87,10 @@ static struct resource bd71815_power_irqs[] =3D {
+ 	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_OVER_CURR_2_DET, "bd71815-bat-oc2-de=
+t"),
+ 	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_OVER_CURR_3_RES, "bd71815-bat-oc3-re=
+s"),
+ 	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_OVER_CURR_3_DET, "bd71815-bat-oc3-de=
+t"),
+-	DEFINE_RES_IRQ_NAMED(BD71815_INT_TEMP_BAT_LOW_RES, "bd71815-bat-low-res"),
+-	DEFINE_RES_IRQ_NAMED(BD71815_INT_TEMP_BAT_LOW_DET, "bd71815-bat-low-det"),
+-	DEFINE_RES_IRQ_NAMED(BD71815_INT_TEMP_BAT_HI_RES, "bd71815-bat-hi-res"),
+-	DEFINE_RES_IRQ_NAMED(BD71815_INT_TEMP_BAT_HI_DET, "bd71815-bat-hi-det"),
++	DEFINE_RES_IRQ_NAMED(BD71815_INT_TEMP_BAT_LOW_RES, "bd71815-temp-bat-low-=
+res"),
++	DEFINE_RES_IRQ_NAMED(BD71815_INT_TEMP_BAT_LOW_DET, "bd71815-temp-bat-low-=
+det"),
++	DEFINE_RES_IRQ_NAMED(BD71815_INT_TEMP_BAT_HI_RES, "bd71815-temp-bat-hi-re=
+s"),
++	DEFINE_RES_IRQ_NAMED(BD71815_INT_TEMP_BAT_HI_DET, "bd71815-temp-bat-hi-de=
+t"),
+ };
+=20
+ static struct mfd_cell bd71815_mfd_cells[] =3D {
+@@ -109,6 +109,29 @@ static struct mfd_cell bd71815_mfd_cells[] =3D {
+ 	},
+ };
+=20
++static const struct resource bd71828_power_irqs[] =3D {
++	DEFINE_RES_IRQ_NAMED(BD71828_INT_CHG_TOPOFF_TO_DONE,
++			     "bd71828-chg-done"),
++	DEFINE_RES_IRQ_NAMED(BD71828_INT_DCIN_DET, "bd71828-pwr-dcin-in"),
++	DEFINE_RES_IRQ_NAMED(BD71828_INT_DCIN_RMV, "bd71828-pwr-dcin-out"),
++	DEFINE_RES_IRQ_NAMED(BD71828_INT_BAT_LOW_VOLT_RES,
++			     "bd71828-vbat-normal"),
++	DEFINE_RES_IRQ_NAMED(BD71828_INT_BAT_LOW_VOLT_DET, "bd71828-vbat-low"),
++	DEFINE_RES_IRQ_NAMED(BD71828_INT_TEMP_BAT_HI_DET, "bd71828-btemp-hi"),
++	DEFINE_RES_IRQ_NAMED(BD71828_INT_TEMP_BAT_HI_RES, "bd71828-btemp-cool"),
++	DEFINE_RES_IRQ_NAMED(BD71828_INT_TEMP_BAT_LOW_DET, "bd71828-btemp-lo"),
++	DEFINE_RES_IRQ_NAMED(BD71828_INT_TEMP_BAT_LOW_RES,
++			     "bd71828-btemp-warm"),
++	DEFINE_RES_IRQ_NAMED(BD71828_INT_TEMP_CHIP_OVER_VF_DET,
++			     "bd71828-temp-hi"),
++	DEFINE_RES_IRQ_NAMED(BD71828_INT_TEMP_CHIP_OVER_VF_RES,
++			     "bd71828-temp-norm"),
++	DEFINE_RES_IRQ_NAMED(BD71828_INT_TEMP_CHIP_OVER_125_DET,
++			     "bd71828-temp-125-over"),
++	DEFINE_RES_IRQ_NAMED(BD71828_INT_TEMP_CHIP_OVER_125_RES,
++			     "bd71828-temp-125-under"),
++};
++
+ static struct mfd_cell bd71828_mfd_cells[] =3D {
+ 	{ .name =3D "bd71828-pmic", },
+ 	{ .name =3D "bd71828-gpio", },
+@@ -118,8 +141,11 @@ static struct mfd_cell bd71828_mfd_cells[] =3D {
+ 	 * BD70528 clock gate are the register address and mask.
+ 	 */
+ 	{ .name =3D "bd71828-clk", },
+-	{ .name =3D "bd71827-power", },
+ 	{
++		.name =3D "bd71828-power",
++		.resources =3D bd71828_power_irqs,
++		.num_resources =3D ARRAY_SIZE(bd71828_power_irqs),
++	}, {
+ 		.name =3D "bd71828-rtc",
+ 		.resources =3D bd71828_rtc_irqs,
+ 		.num_resources =3D ARRAY_SIZE(bd71828_rtc_irqs),
+diff --git a/include/linux/mfd/rohm-bd71828.h b/include/linux/mfd/rohm-bd71=
+828.h
+index 3b5f3a7db4bd..7e0674f184ee 100644
+--- a/include/linux/mfd/rohm-bd71828.h
++++ b/include/linux/mfd/rohm-bd71828.h
+@@ -188,6 +188,71 @@ enum {
+ /* Charger/Battey */
+ #define BD71828_REG_CHG_STATE		0x65
+ #define BD71828_REG_CHG_FULL		0xd2
++#define BD71828_REG_CHG_EN		0x6F
++#define BD71828_REG_DCIN_STAT		0x68
++#define BD71828_MASK_DCIN_DET		0x01
++#define BD71828_REG_VDCIN_U		0x9c
++#define BD71828_MASK_CHG_EN		0x01
++#define BD71828_CHG_MASK_DCIN_U		0x0f
++#define BD71828_REG_BAT_STAT		0x67
++#define BD71828_REG_BAT_TEMP		0x6c
++#define BD71828_MASK_BAT_TEMP		0x07
++#define BD71828_BAT_TEMP_OPEN		0x07
++#define BD71828_MASK_BAT_DET		0x20
++#define BD71828_MASK_BAT_DET_DONE	0x10
++#define BD71828_REG_CHG_STATE		0x65
++#define BD71828_REG_VBAT_U		0x8c
++#define BD71828_MASK_VBAT_U		0x0f
++#define BD71828_REG_VBAT_REX_AVG_U	0x92
++
++#define BD71828_REG_OCV_PWRON_U		0x8A
++
++#define BD71828_REG_VBAT_MIN_AVG_U	0x8e
++#define BD71828_REG_VBAT_MIN_AVG_L	0x8f
++
++#define BD71828_REG_CC_CNT3		0xb5
++#define BD71828_REG_CC_CNT2		0xb6
++#define BD71828_REG_CC_CNT1		0xb7
++#define BD71828_REG_CC_CNT0		0xb8
++#define BD71828_REG_CC_CURCD_AVG_U	0xb2
++#define BD71828_MASK_CC_CURCD_AVG_U	0x3f
++#define BD71828_MASK_CC_CUR_DIR		0x80
++#define BD71828_REG_VM_BTMP_U		0xa1
++#define BD71828_REG_VM_BTMP_L		0xa2
++#define BD71828_MASK_VM_BTMP_U		0x0f
++#define BD71828_REG_COULOMB_CTRL	0xc4
++#define BD71828_REG_COULOMB_CTRL2	0xd2
++#define BD71828_MASK_REX_CC_CLR		0x01
++#define BD71828_MASK_FULL_CC_CLR	0x10
++#define BD71828_REG_CC_CNT_FULL3	0xbd
++#define BD71828_REG_CC_CNT_CHG3		0xc1
++
++#define BD71828_REG_VBAT_INITIAL1_U	0x86
++#define BD71828_REG_VBAT_INITIAL1_L	0x87
++
++#define BD71828_REG_VBAT_INITIAL2_U	0x88
++#define BD71828_REG_VBAT_INITIAL2_L	0x89
++
++#define BD71828_REG_IBAT_U		0xb0
++#define BD71828_REG_IBAT_L		0xb1
++
++#define BD71828_REG_IBAT_AVG_U		0xb2
++#define BD71828_REG_IBAT_AVG_L		0xb3
++
++#define BD71828_REG_VSYS_AVG_U		0x96
++#define BD71828_REG_VSYS_AVG_L		0x97
++#define BD71828_REG_VSYS_MIN_AVG_U	0x98
++#define BD71828_REG_VSYS_MIN_AVG_L	0x99
++#define BD71828_REG_CHG_SET1		0x75
++#define BD71828_REG_ALM_VBAT_LIMIT_U	0xaa
++#define BD71828_REG_BATCAP_MON_LIMIT_U	0xcc
++#define BD71828_REG_CONF		0x64
++
++#define BD71828_REG_DCIN_CLPS		0x71
++
++#define BD71828_REG_MEAS_CLEAR		0xaf
++
++
+=20
+ /* LEDs */
+ #define BD71828_REG_LED_CTRL		0x4A
+diff --git a/include/linux/mfd/rohm-generic.h b/include/linux/mfd/rohm-gene=
+ric.h
+index 35b392a0d73a..b60c2ea3e37c 100644
+--- a/include/linux/mfd/rohm-generic.h
++++ b/include/linux/mfd/rohm-generic.h
+@@ -14,9 +14,11 @@ enum rohm_chip_type {
+ 	ROHM_CHIP_TYPE_BD9576,
+ 	ROHM_CHIP_TYPE_BD70528,
+ 	ROHM_CHIP_TYPE_BD71815,
++	ROHM_CHIP_TYPE_BD71827,
+ 	ROHM_CHIP_TYPE_BD71828,
+ 	ROHM_CHIP_TYPE_BD71837,
+ 	ROHM_CHIP_TYPE_BD71847,
++	ROHM_CHIP_TYPE_BD71878,
+ 	ROHM_CHIP_TYPE_AMOUNT
+ };
+=20
+--=20
+2.31.1
+
+
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
+
+--ldloiiX/4CfTWCfw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmGTpCQACgkQeFA3/03a
+ocW8kwgAqhkVVU+KoeklLBg7yRZP7Yc15jxnWIn1ETLT894bhk1/hdUrTL/Ll+nm
+y9fXwNfsW9+nU5ydfXTRJ7yEo/5QlNoEECRWt5JcD5PAGC1pWYW2B3r2RawEiWVk
+SfhOoPzpHhcELDBWLZSMy9VF9UZEAmqdThWEnDJVpY75aCIbaS0AY8hECNGIgwup
+9PPLIRlgPv9kn6BDvUC7OnokKX62N3cnOkjOxL8e0w24gLtQcqkWxIqjoHUB55ru
+zlOPMcwWFHE6lCNO4JKoVVyK1Pn3hE0Ez2rytadeYpRSUTPkAwwanbG0DY9qZlTp
+O896MwEryfORgXCD4d7x9TY70meNRA==
+=TMbO
+-----END PGP SIGNATURE-----
+
+--ldloiiX/4CfTWCfw--
