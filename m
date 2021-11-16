@@ -2,123 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79CD3452FEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:10:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE596453001
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234639AbhKPLMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 06:12:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:27402 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233701AbhKPLMR (ORCPT
+        id S234725AbhKPLP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:15:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234722AbhKPLPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 06:12:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637060959;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HL9hhLdIrLyUpBuE4w+BC97fd9zpve2OyGyAHsqNBwE=;
-        b=DEC4tYVqVE97FFFuwOk91/GtZN1xD2nGcA0K3Pfuk1kN83eX2c4qMIzAW7FqXsitywfPFR
-        H4xhqjlKnjY7xGm92W1Rm65P3Kyxac4+XFeorqFwi0zsWI4vERAMhuh86lZoQ4TZo1a/qQ
-        0N9Cy+lkzXFvKtQF+SAA9+GJt7vGh7U=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-241-Md9CVOOyOx2JCDlNQcitPA-1; Tue, 16 Nov 2021 06:09:18 -0500
-X-MC-Unique: Md9CVOOyOx2JCDlNQcitPA-1
-Received: by mail-wr1-f71.google.com with SMTP id q7-20020adff507000000b0017d160d35a8so4414790wro.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 03:09:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HL9hhLdIrLyUpBuE4w+BC97fd9zpve2OyGyAHsqNBwE=;
-        b=OU+Ts9Iu5IEL/f5TU51FaWDPFc4UpjFZDlPUWoMSKJbrRgSLrLxjJ1/51jYut8s7Mf
-         aXHIzXo5FAqCkaEf2GU0ttGb/mCA16/sacMmIQF0r658ctkt+1UTZA7NqLW66v5qzF8p
-         nX7zg9rvMYRASlAVstyo8fsK8arYMCZiklGUEUKFtznZE+Sd3hDJHtJxBBX6XYyF/z7f
-         4f1p1OP0mZKCn2gyYmNX4niNmgY5Na40qU8EpmII3sZy5I4tozLeSaAOrWEF6/hAcT6m
-         dIRiFfXtfk4n/20xbxJJh/Te3nxbIl5zmdkZNjamNrYCDj7yiJZ5mOdQAN11yghxV00x
-         nYcA==
-X-Gm-Message-State: AOAM533Dc2PUrVOQAT3RreFt2y72YPMPNP2FyCMRYYgUIFSSYL+OPpmV
-        fyoHxSqeoXPfMbsEe7V4uLVaVHVLzQpAkyX4FXlavMTVg6Jacyhe/n4NG+CfFF++oulRhy3jHtC
-        zxQbX8+2uC5kMEp2gkspZE2WsxLMjGOcBZJsK/LKC
-X-Received: by 2002:adf:dcd0:: with SMTP id x16mr8196476wrm.229.1637060956897;
-        Tue, 16 Nov 2021 03:09:16 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyTgah4x2G9O8O+iUz5EmWC3uhlRWC07X48xzTEYzOUA98ZreV80VeBn9mcy5hBafA5uvas47+J9y5b040RUo4=
-X-Received: by 2002:adf:dcd0:: with SMTP id x16mr8196441wrm.229.1637060956649;
- Tue, 16 Nov 2021 03:09:16 -0800 (PST)
+        Tue, 16 Nov 2021 06:15:04 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE58C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 03:12:07 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mmwNh-0003cc-2u; Tue, 16 Nov 2021 12:12:05 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mmwNf-000JZr-RT; Tue, 16 Nov 2021 12:12:03 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mmwNe-0005jf-KF; Tue, 16 Nov 2021 12:12:02 +0100
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Support Opensource <support.opensource@diasemi.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: [PATCH] regulator: da9121: Emit only one error message in .remove()
+Date:   Tue, 16 Nov 2021 12:09:51 +0100
+Message-Id: <20211116110951.1213566-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <CABvMjLTVZaU8vMW__2BDo6FnjFa_bsh2S-kEmg=KV4KTsFiUzA@mail.gmail.com>
- <CACO55tuDQ9UC2rr=_Hsowvujk49oNK1zWfHj3jMnhEqsTAnh0Q@mail.gmail.com> <CABvMjLSFLpG4=+tE3Sr2wfRsEuKLXMm++Xx+JNmA8YXptgzkmw@mail.gmail.com>
-In-Reply-To: <CABvMjLSFLpG4=+tE3Sr2wfRsEuKLXMm++Xx+JNmA8YXptgzkmw@mail.gmail.com>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Tue, 16 Nov 2021 12:09:05 +0100
-Message-ID: <CACO55tu5V1pF-Ox937Auq6vSreFTfz3gkaz0zg6Zk+ydyVpZwg@mail.gmail.com>
-Subject: Re: [PATCH] drm/nouveau/core: fix the uninitialized use in nvkm_ioctl_map()
-To:     Yizhuo Zhai <yzhai003@ucr.edu>
-Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+X-Patch-Hashes: v=1; h=sha256; i=3+6clOr0diYOpZJYKZyjIjkXEwRuf9y1157jEHFl440=; m=/RkPrYbYg2wisFkD5xGgLAEtfvjSWZsjAgOD//enhC8=; p=cW59XZAeB7qPlUiYDeVAU78d0ASJh+kM0Qg463Wu/Q8=; g=ac8063cb5526a473f03faafbac6b7bf088f74c31
+X-Patch-Sig: m=pgp; i=u.kleine-koenig@pengutronix.de; s=0x0D2511F322BFAB1C1580266BE2DCDD9132669BD6; b=iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGTkXwACgkQwfwUeK3K7AlkPQf/YYT N1vWac9KdsPK2/3sbnI25u/ssxmHm3Aj2+EM9IOss8KoImfslXTFbPE3DIr8kIZT+pC9PGkBYq50A rDHZi9EhGaiylGK35eXO0jltqBbBevZC++okfhOBf5r8qK+olHZ/BsxE5yl69dIsETcD9F69io4Ly FpeOwYT60aU9Kn8AJ8PaoEySDbLXybV3JtkDTkfbPG7y8TNijQxCeQ0I2SOqQBZswRbCDIw5SI41c 9l7DIBAi1lLpwZHVTAU53TMupugia8g+4TRnFo8aUI3j9ZiDL1UT/TRGUKoOeUiQ54pewsa1Em2wQ xEKYVms0mkUAlj4qu4efu5CNif+IFZQ==
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 6:58 AM Yizhuo Zhai <yzhai003@ucr.edu> wrote:
->
-> Hi Karol:
-> Thanks for the feedback, the patch might be too old to apply to the
-> latest code tree. Let me check and get back to you soon.
->
+When an i2c remove callback fails, the i2c core emits a generic error
+message and still removes the device. Apart from the message there the
+return value isn't further used.
 
-sorry, that's not what I meant. It used whitespaces instead of tabs
-and the headers were also a bit broken. I just suspect that when
-sending it something went wrong or so.
+So don't return an error code after having already emitted a driver
+specific warning about the problem to prevent two messages about the
+same issue.
 
-> On Sat, Nov 13, 2021 at 12:22 PM Karol Herbst <kherbst@redhat.com> wrote:
-> >
-> > something seems to have messed with the patch so it doesn't apply correctly.
-> >
-> > On Thu, Jun 17, 2021 at 9:39 AM Yizhuo Zhai <yzhai003@ucr.edu> wrote:
-> > >
-> > > In function nvkm_ioctl_map(), the variable "type" could be
-> > > uninitialized if "nvkm_object_map()" returns error code,
-> > > however, it does not check the return value and directly
-> > > use the "type" in the if statement, which is potentially
-> > > unsafe.
-> > >
-> > > Signed-off-by: Yizhuo <yzhai003@ucr.edu>
-> > > ---
-> > >  drivers/gpu/drm/nouveau/nvkm/core/ioctl.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/drivers/gpu/drm/nouveau/nvkm/core/ioctl.c
-> > > b/drivers/gpu/drm/nouveau/nvkm/core/ioctl.c
-> > > index d777df5a64e6..7f2e8482f167 100644
-> > > --- a/drivers/gpu/drm/nouveau/nvkm/core/ioctl.c
-> > > +++ b/drivers/gpu/drm/nouveau/nvkm/core/ioctl.c
-> > > @@ -266,6 +266,8 @@ nvkm_ioctl_map(struct nvkm_client *client,
-> > >                 ret = nvkm_object_map(object, data, size, &type,
-> > >                                       &args->v0.handle,
-> > >                                       &args->v0.length);
-> > > +               if (ret)
-> > > +                       return ret;
-> > >                 if (type == NVKM_OBJECT_MAP_IO)
-> > >                         args->v0.type = NVIF_IOCTL_MAP_V0_IO;
-> > >                 else
-> > > --
-> > > 2.17.1
-> > >
-> >
->
->
-> --
-> Kind Regards,
->
-> Yizhuo Zhai
->
-> Computer Science, Graduate Student
-> University of California, Riverside
->
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/regulator/da9121-regulator.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/regulator/da9121-regulator.c b/drivers/regulator/da9121-regulator.c
+index e66925090258..a5a83b772a85 100644
+--- a/drivers/regulator/da9121-regulator.c
++++ b/drivers/regulator/da9121-regulator.c
+@@ -1065,7 +1065,7 @@ static int da9121_i2c_remove(struct i2c_client *i2c)
+ {
+ 	struct da9121 *chip = i2c_get_clientdata(i2c);
+ 	const int mask_all[4] = { 0xFF, 0xFF, 0xFF, 0xFF };
+-	int ret = 0;
++	int ret;
+ 
+ 	free_irq(chip->chip_irq, chip);
+ 	cancel_delayed_work_sync(&chip->work);
+@@ -1073,7 +1073,7 @@ static int da9121_i2c_remove(struct i2c_client *i2c)
+ 	ret = regmap_bulk_write(chip->regmap, DA9121_REG_SYS_MASK_0, mask_all, 4);
+ 	if (ret != 0)
+ 		dev_err(chip->dev, "Failed to set IRQ masks: %d\n", ret);
+-	return ret;
++	return 0;
+ }
+ 
+ static const struct i2c_device_id da9121_i2c_id[] = {
+-- 
+2.30.2
 
