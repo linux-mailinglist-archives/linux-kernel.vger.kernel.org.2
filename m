@@ -2,101 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD1145291B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:26:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 401B445291E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240391AbhKPE14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 23:27:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
+        id S237839AbhKPE2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 23:28:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232725AbhKPE1s (ORCPT
+        with ESMTP id S240492AbhKPE2N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 23:27:48 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20A7C04EF8B
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 17:22:41 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id q17so15932296plr.11
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 17:22:41 -0800 (PST)
+        Mon, 15 Nov 2021 23:28:13 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67430C04EF93
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 17:23:53 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id o15-20020a9d410f000000b0055c942cc7a0so30609649ote.8
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 17:23:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aLlAKKMK4zWJlIgrhsHRMUlQ2PCfb9lNnyiaBk8geX0=;
-        b=JlmmblLFDgw1DkNOb+baplsLuAjwNhPsBiIwdHZglimjMsSOKYUeT/5Non3ayn+dfp
-         LuKbvw7NuKYlllrvRr5SIJmg42YuQGKiCbjJHNzIjVRe7nfCzhc2vt8sER++UKhMQoeg
-         REGB9CZTDQNk8g/ErDe59wXD5O2+PmBWk94F4=
+        d=kali.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=nTaWvWeeIvOoP/P3B+BmghLZFxSmkp20dJxrE1Em0B0=;
+        b=hODih3i3lk4StlS/Iqc9FkpsXI0426vZgUigkUppIJ4xA80HH4bgJh9Ia+jK/m7Gg5
+         nKSgUCupmGcAKhN0ut2ZSlQfDLqO1twd1Fh2a0xwLWlPNhaZ68snOokozoxW18EuHLXN
+         jC4dVkKbXfauv6PlYfl48LQiFXg3RJNAw/Hhp2r5te5HcMcwP3lbJq4ejF+O3shJdhXB
+         7izOz0ACJo8MdLGLnGU04Y+uFEFiWZg7ra7vDWfH4t3YSVjJwf+0fHXrVy/6/etATcWX
+         zFtDab3mneymYKABGNJuL1HHqc06t0gcgJqlBddYqJi65A8N1P1ieGOfbdmI0O/LaIhr
+         Kfyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aLlAKKMK4zWJlIgrhsHRMUlQ2PCfb9lNnyiaBk8geX0=;
-        b=Q2WGK/dpJnMHiYHtUlS3ovChBbew8Csubv96mJp2sLJr9KEru3IdntnUtfgVGmL9ho
-         XCmKo3DdIaS9g81DSw9Nu+Gef2iQYnOCDcPVVqXUSBgJqUYd4qzFx4tPfm9VeoWaLvxw
-         1zBqCHFty2hzg4R1eVZqLzDUy6dx8YBqzKoG+fXZPm/887CX5sBeH8/G741J4K5CR7U1
-         ZlGXordQHNFt2udKZ/beRa9jvGCh1Chfhpg6gy1O+bfGFNRH7RA7t+h8iOsECQTCG0Cm
-         eCUxGD6kjTYN1s6FEhNrfd3AwHBO27FNkNXu1/slmxWLRYnCot4Pp0BLgl5Bng4448cz
-         oKsg==
-X-Gm-Message-State: AOAM53082m1HFUUNmKYe4VDjPpIE5loSvPm9hZlNxXri9xesYkVuBW+x
-        JFEtHuruB/yfOmGVTu0dOu6zEKihrnkAtA==
-X-Google-Smtp-Source: ABdhPJxOZsXh2an/fmXsdKtq1xUwYZYHofQN0Q0A3LR9drO9LA3LwIsyoH4icywOLygKi2bP49uZYQ==
-X-Received: by 2002:a17:90a:9294:: with SMTP id n20mr3773465pjo.69.1637025761136;
-        Mon, 15 Nov 2021 17:22:41 -0800 (PST)
-Received: from google.com ([240f:75:7537:3187:1c10:fee2:d55b:53cd])
-        by smtp.gmail.com with ESMTPSA id z3sm16223760pfh.79.2021.11.15.17.22.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 17:22:40 -0800 (PST)
-Date:   Tue, 16 Nov 2021 10:22:36 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.15 228/917] media: videobuf2: rework vb2_mem_ops API
-Message-ID: <YZMH3DJ7FbNZbx0G@google.com>
-References: <20211115165428.722074685@linuxfoundation.org>
- <20211115165436.520296731@linuxfoundation.org>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=nTaWvWeeIvOoP/P3B+BmghLZFxSmkp20dJxrE1Em0B0=;
+        b=kvQGWhB6cTNZyTBAy/fK0uAEQiUuYYBkg71z2uvjZ3121cogB7zAbX2e/KIAQOKKN0
+         q1SSIRufGqhb5aUBvhehfxhgV33C/USBrq+bVRrjugvCLA6evwNu7bFndP4DB8VST/SB
+         Lun4JH3GYSw44wZRj7Ji4xwjV1ah8aSxUszmIKP3205PLCSB/5OLOzXeg0nQywB/K9gb
+         pf9R7f363f+lbUNVKSLUh1krHyM5PhzTCS+MB+yrgPbkGqgvpLnCavMQk8pEfw6m+99c
+         T3AgEGatWAyFLNCzIJh1AMkQxM4IQ/uA5lFRdi8pq6yrf9PGdL1ujPklHVhsW08cNUuO
+         g2nw==
+X-Gm-Message-State: AOAM531H9lWpDmDvdRpMJrgbsN2lfDUROCFqRlz39+HmEwvDA4kYBcfp
+        5LzCRpsZwFdc95mk/Hh87brKRA==
+X-Google-Smtp-Source: ABdhPJzKVuOebXxy3RD99OR/9h+EwRvdqloC8YuBYE87p9xUODg5mFOHBn1LO5G0RHJpomFtr8JGOA==
+X-Received: by 2002:a05:6830:1cc:: with SMTP id r12mr2845768ota.76.1637025832711;
+        Mon, 15 Nov 2021 17:23:52 -0800 (PST)
+Received: from [192.168.11.48] (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
+        by smtp.gmail.com with ESMTPSA id l23sm3302357oti.16.2021.11.15.17.23.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Nov 2021 17:23:52 -0800 (PST)
+Message-ID: <5ae2c644-4743-c62c-b17c-96945a0e6a01@kali.org>
+Date:   Mon, 15 Nov 2021 19:23:50 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115165436.520296731@linuxfoundation.org>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.0
+Subject: Re: [PATCH] cpufreq: freq_table: Initialize cpuinfo.max_freq to
+ correct max frequency.
+Content-Language: en-US
+To:     Thara Gopinath <thara.gopinath@linaro.org>, rafael@kernel.org,
+        viresh.kumar@linaro.org, bjorn.andersson@linaro.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20211115195011.52999-1-thara.gopinath@linaro.org>
+From:   Steev Klimaszewski <steev@kali.org>
+In-Reply-To: <20211115195011.52999-1-thara.gopinath@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/11/15 17:55), Greg Kroah-Hartman wrote:
-> From: Sergey Senozhatsky <senozhatsky@chromium.org>
-> 
-> [ Upstream commit a4b83deb3e76fb9385ca58e2c072a145b3a320d6 ]
-> 
-> With the new DMA API we need an extension of the videobuf2 API.
-> Previously, videobuf2 core would set the non-coherent DMA bit
-> in the vb2_queue dma_attr field (if user-space would pass a
-> corresponding memory hint); the vb2 core then would pass the
-> vb2_queue dma_attrs to the vb2 allocators. The vb2 allocator
-> would use the queue's dma_attr and the DMA API would allocate
-> either coherent or non-coherent memory.
-> 
-> But we cannot do this anymore, since there is no corresponding DMA
-> attr flag and, hence, there is no way for the allocator to become
-> aware of what type of allocation user-space has requested. So we
-> need to pass more context from videobuf2 core to the allocators.
-> 
-> Fix this by changing the call_ptr_memop() macro to pass the
-> vb2 pointer to the corresponding op callbacks.
-> 
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+Hi Thara,
 
-Hello Greg, Sasha,
+On 11/15/21 1:50 PM, Thara Gopinath wrote:
+> cpuinfo.max_freq reflects the maximum supported frequency of cpus in a
+> cpufreq policy. When cpus support boost frequency and if boost is disabled
+> during boot up (which is the default), cpuinfo.max_freq does not reflect
+> boost frequency as the maximum supported frequency till boost is explicitly
+> enabled via sysfs interface later. This also means that policy reports two
+> different cpuinfo.max_freq before and after turning on boost.  Fix this by
+> separating out setting of policy->max and cpuinfo.max_freq in
+> cpufreq_frequency_table_cpuinfo.
+>
+> e.g. of the problem. Qualcomm sdm845 supports boost frequency for gold
+> cluster (cpus 4-7). After boot up (boost disabled),
+>
+> 1.  cat /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq 2649600
+> <- This is wrong because boost frequency is
+>
+> 2.  echo 1 > /sys/devices/system/cpu/cpufreq/boost  <- Enable boost cat
+> /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq 2803200	<-
+> max freq reflects boost freq.
+>
+> 3.  echo 0 > /sys/devices/system/cpu/cpufreq/boost <- Disable boost cat
+> /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq 2803200	<-
+> Discrepancy with step 1 as in both cases boost is disabled.
+>
+> Note that the other way to fix this is to set cpuinfo.max_freq in Soc
+> cpufreq driver during initialization. Fixing it in
+> cpufreq_frequency_table_cpuinfo seems more generic solution
+>
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> ---
+>   drivers/cpufreq/freq_table.c | 8 ++++++--
+>   1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/cpufreq/freq_table.c b/drivers/cpufreq/freq_table.c
+> index 67e56cf638ef..6784f94124df 100644
+> --- a/drivers/cpufreq/freq_table.c
+> +++ b/drivers/cpufreq/freq_table.c
+> @@ -35,11 +35,15 @@ int cpufreq_frequency_table_cpuinfo(struct cpufreq_policy *policy,
+>   	struct cpufreq_frequency_table *pos;
+>   	unsigned int min_freq = ~0;
+>   	unsigned int max_freq = 0;
+> +	unsigned int cpuinfo_max_freq = 0;
+>   	unsigned int freq;
+>   
+>   	cpufreq_for_each_valid_entry(pos, table) {
+>   		freq = pos->frequency;
+>   
+> +		if (freq > cpuinfo_max_freq)
+> +			cpuinfo_max_freq = freq;
+> +
+>   		if (!cpufreq_boost_enabled()
+>   		    && (pos->flags & CPUFREQ_BOOST_FREQ))
+>   			continue;
+> @@ -57,8 +61,8 @@ int cpufreq_frequency_table_cpuinfo(struct cpufreq_policy *policy,
+>   	 * If the driver has set its own cpuinfo.max_freq above max_freq, leave
+>   	 * it as is.
+>   	 */
+> -	if (policy->cpuinfo.max_freq < max_freq)
+> -		policy->max = policy->cpuinfo.max_freq = max_freq;
+> +	if (policy->cpuinfo.max_freq < cpuinfo_max_freq)
+> +		policy->cpuinfo.max_freq = cpuinfo_max_freq;
+>   
+>   	if (policy->min == ~0)
+>   		return -EINVAL;
 
-This patch needs two fix up patches to be applied.
 
-The first one is in Linus's tree (media: videobuf2: always set buffer vb2 pointer)
-67f85135c57c8ea20b5417b28ae65e53dc2ec2c3
+Something still isn't quite right...
 
-The second one isn't yet (media: videobuf2-dma-sg: Fix buf->vb NULL pointer dereference)
-https://lore.kernel.org/all/20211101145355.533704-1-hdegoede@redhat.com/raw
+The setup is that I have an rc.local of
+
+#!/bin/sh
+
+echo 1 > /sys/devices/system/cpu/cpufreq/boost
+
+exit 0
+
+
+After booting and logging in:
+
+steev@limitless:~$ cat 
+/sys/devices/system/cpu/cpufreq/policy4/stats/time_in_state
+825600 2499
+<snip>
+2649600 38
+2745600 31
+2841600 1473
+2956800 0
+
+After running a "cargo build --release" in an alacritty git checkout:
+
+teev@limitless:~$ cat 
+/sys/devices/system/cpu/cpufreq/policy4/stats/time_in_state
+825600 11220
+<snip>
+2649600 41
+2745600 35
+2841600 3065
+2956800 0
+
+
+however...
+
+If I then
+
+steev@limitless:~$ echo 0 | sudo tee /sys/devices/system/cpu/cpufreq/boost
+[sudo] password for steev:
+0
+steev@limitless:~$ echo 1 | sudo tee /sys/devices/system/cpu/cpufreq/boost
+1
+
+and run the build again...
+
+steev@limitless:~$ cat 
+/sys/devices/system/cpu/cpufreq/policy4/stats/time_in_state
+825600 21386
+<snip>
+2649600 45
+2745600 38
+2841600 3326
+2956800 4815
+
+As a workaround, I attempted to jiggle it 1-0-1 in rc.local, however 
+that ends up giving
+
+steev@limitless:~$ cat 
+/sys/devices/system/cpu/cpufreq/policy4/stats/time_in_state
+825600 2902
+<snip>
+2649600 36
+2745600 36
+2841600 6050
+2956800 13
+
+And it doesn't go up, I even tried adding a sleep of 1 second between 
+the echo 1/0/1 lines and while 2956800 goes up to 28 (but never uses it) 
+it seems like, unless I do it manually once I've logged in, which I'm 
+assuming is a lot slower than waiting 1 second between them, it's not 
+quite giving us 2956800 "easily".
+
+If the email wasn't clear, please let me know! I tried to explain as 
+best I could what I am seeing here.
+
+-- steev
+
