@@ -2,129 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB3245387C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 18:27:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6FA4538B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 18:42:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238764AbhKPRaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 12:30:20 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:54574 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238746AbhKPRaU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 12:30:20 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2F67C1FD33;
-        Tue, 16 Nov 2021 17:27:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637083642; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GVNWcGse0qDkmGgCird4qZLuxFgYfISBGCUtscZ9EN8=;
-        b=bIhgJ5MONGk6Agtl/SZ/UgCZ0bBcAYpq5d5lbzFCIVZgVVNdA9D7zfczAMWeWktd3OMhc4
-        pl6XcQzsFYMLeeO9OtUuFHRR1H3Lx7w0bVSF/Ta5yHOUT7Zs4BpClChhyrb4b21cSrqb3E
-        HfEuU0Xn92GjRNan9VDn7BQNoxLiRJM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637083642;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GVNWcGse0qDkmGgCird4qZLuxFgYfISBGCUtscZ9EN8=;
-        b=Hu8VOyAh+Wn6Ej05XTdbP8sjQ6UguJ00bb766o6agFlS8Tz0jezrTzjGY5oFCYAXf2bArv
-        86VrmE0wOjsYmXAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1359013C3C;
-        Tue, 16 Nov 2021 17:27:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id RJLiA/rpk2GbZwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 16 Nov 2021 17:27:22 +0000
-Message-ID: <206e47d2-64da-babe-17d1-da846fbba959@suse.cz>
-Date:   Tue, 16 Nov 2021 18:27:21 +0100
+        id S239000AbhKPRpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 12:45:20 -0500
+Received: from mga05.intel.com ([192.55.52.43]:6771 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238906AbhKPRpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 12:45:19 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="319970946"
+X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
+   d="scan'208";a="319970946"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 09:27:51 -0800
+X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
+   d="scan'208";a="567329979"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 09:27:49 -0800
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 3CF6C206F9;
+        Tue, 16 Nov 2021 19:27:46 +0200 (EET)
+Date:   Tue, 16 Nov 2021 19:27:46 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@puri.sm,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH] media: i2c: dw9714: use pm_runtime_force_suspend/resume
+ for system suspend
+Message-ID: <YZPqEu4W+JnY6LMY@paasikivi.fi.intel.com>
+References: <20211109125505.2682553-1-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH] mm: memcontrol: make cgroup_memory_nokmem static
-Content-Language: en-US
-To:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org,
-        hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20211109065418.21693-1-songmuchun@bytedance.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20211109065418.21693-1-songmuchun@bytedance.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211109125505.2682553-1-martin.kepplinger@puri.sm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/21 07:54, Muchun Song wrote:
-> The commit 494c1dfe855e ("mm: memcg/slab: create a new set of kmalloc-cg-<n>
-> caches") makes cgroup_memory_nokmem global, however, it is unnecessary
-> because there is already a function mem_cgroup_kmem_disabled() which
-> exports it.
-> 
-> Just make it static and replace it with mem_cgroup_kmem_disabled()
-> in mm/slab_common.c.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Hi Martin,
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
+On Tue, Nov 09, 2021 at 01:55:05PM +0100, Martin Kepplinger wrote:
+> Using the same suspend function for runtime and system suspend doesn't
+> work in this case (when controlling regulators and clocks). suspend() and
+> resume() are clearly meant to stay balanced.
+> 
+> Use the pm_runtime_force_* helpers for system suspend and fix error like the
+> following when transitioning to system suspend:
+> 
+> [  559.685921] dw9714 3-000c: I2C write fail
+> [  559.685941] dw9714 3-000c: dw9714_vcm_suspend I2C failure: -5
+> 
+> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
 > ---
->  mm/internal.h    | 5 -----
->  mm/memcontrol.c  | 2 +-
->  mm/slab_common.c | 2 +-
->  3 files changed, 2 insertions(+), 7 deletions(-)
+>  drivers/media/i2c/dw9714.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/mm/internal.h b/mm/internal.h
-> index 18256e32a14c..ad15251d7a3c 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -137,11 +137,6 @@ extern void putback_lru_page(struct page *page);
->  extern pmd_t *mm_find_pmd(struct mm_struct *mm, unsigned long address);
+> diff --git a/drivers/media/i2c/dw9714.c b/drivers/media/i2c/dw9714.c
+> index fcbebb3558b5..f6ddd7c4a1ff 100644
+> --- a/drivers/media/i2c/dw9714.c
+> +++ b/drivers/media/i2c/dw9714.c
+> @@ -267,7 +267,8 @@ static const struct of_device_id dw9714_of_table[] = {
+>  MODULE_DEVICE_TABLE(of, dw9714_of_table);
 >  
->  /*
-> - * in mm/memcontrol.c:
-> - */
-> -extern bool cgroup_memory_nokmem;
-> -
-> -/*
->   * in mm/page_alloc.c
->   */
->  
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 8f1d9c028897..89fc3ca65b2d 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -84,7 +84,7 @@ EXPORT_PER_CPU_SYMBOL_GPL(int_active_memcg);
->  static bool cgroup_memory_nosocket __ro_after_init;
->  
->  /* Kernel memory accounting disabled? */
-> -bool cgroup_memory_nokmem __ro_after_init;
-> +static bool cgroup_memory_nokmem __ro_after_init;
->  
->  /* Whether the swap controller is active */
->  #ifdef CONFIG_MEMCG_SWAP
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index e5d080a93009..d05203a11201 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -849,7 +849,7 @@ new_kmalloc_cache(int idx, enum kmalloc_cache_type type, slab_flags_t flags)
->  	if (type == KMALLOC_RECLAIM) {
->  		flags |= SLAB_RECLAIM_ACCOUNT;
->  	} else if (IS_ENABLED(CONFIG_MEMCG_KMEM) && (type == KMALLOC_CGROUP)) {
-> -		if (cgroup_memory_nokmem) {
-> +		if (mem_cgroup_kmem_disabled()) {
->  			kmalloc_caches[type][idx] = kmalloc_caches[KMALLOC_NORMAL][idx];
->  			return;
->  		}
-> 
+>  static const struct dev_pm_ops dw9714_pm_ops = {
+> -	SET_SYSTEM_SLEEP_PM_OPS(dw9714_vcm_suspend, dw9714_vcm_resume)
+> +	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
+> +				pm_runtime_force_resume)
+>  	SET_RUNTIME_PM_OPS(dw9714_vcm_suspend, dw9714_vcm_resume, NULL)
+>  };
 
+The purpose of the vcm suspend / resume callbacks is to gently move the
+lens to the resting position without hitting the stopper.
+
+The problem currently appears to be that during system suspend, the VCM may
+well be powered off and the driver isn't checking for that. How about
+adding that check?
+
+-- 
+Sakari Ailus
