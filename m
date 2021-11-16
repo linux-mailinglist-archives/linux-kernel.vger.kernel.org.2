@@ -2,134 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7D2453A59
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 20:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C3F453A62
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 20:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240125AbhKPTqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 14:46:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239957AbhKPTqS (ORCPT
+        id S240135AbhKPTtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 14:49:43 -0500
+Received: from shells.gnugeneration.com ([66.240.222.126]:48570 "EHLO
+        shells.gnugeneration.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235941AbhKPTtm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 14:46:18 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97909C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 11:43:21 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id q12so97727pgh.5
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 11:43:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aPOYW20bP9axR+huv2l40pnrQ8xrHrsRaFVlcPUQJRE=;
-        b=b/tDytIcwvHt9kT147ZgbyOV6huXsUHxKjT6i253GBWKL2vi5zQ7KH1+WrlJEOfQAT
-         VaCxa5zdckSJWk+FiaUpAFA9sbQwvusr1KpE1wM3I6qgqW8ggHpbkCN+pMu1x7Gf9AI0
-         bFjES3U9eJD40dh0IYXqJ3EoGYWuuWrmi+w03HB05kQ92f5Y/Qlm3cfAhZFpBYZCxB+h
-         lvLmCauoIW+YgCuj5/CyphT/6baQ2ZnsAGkfdbMy8pVQc1HA80xbtobRT5i4+0eEx1Gl
-         WzTkOAeZUg8c3Cas8R6Gj7xfsoV1d6N7LMCEE4oX1q645kNtAlAYlJWIGsE2kO9JNYyp
-         lk3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=aPOYW20bP9axR+huv2l40pnrQ8xrHrsRaFVlcPUQJRE=;
-        b=T/4CALUJjSjFXWxLrlVanNMThWOer8DJIuSWP5lzXZ8IAcCPxtc0RTIbU6z35uR2UB
-         DQlltczKNhQSTuzPwkLjwcCz6G2grFlV83KKMTPFc5JeYrmjtU6ud/p8iybZot+/q/YY
-         dfPLr+syari6iOERbokQuaODAsRoyu9VOkqO0S9PcxwjYnRZI0c+Pk7yUy/QZtOFkK3K
-         DGsrPf+FDieTn/iF1S49gs4qN6R6sgr7MJXsWyad8afwyOn/Oy9EFYIwct0ETx6Wm1TS
-         /4J3ovt6tAdLo7IF/VbSzCr+wBD1Yxz0jEjV0jpHOPErZFgMr69eOHmulSRbwwcz5C90
-         6V1g==
-X-Gm-Message-State: AOAM532Xo9KWYo1uXrpHawKbezEwIDITAlb/jZzz/QRlzExK/BWbRTHc
-        ZK+KcwGPZNzlYK8aqm5rhXdljGdhR8k=
-X-Google-Smtp-Source: ABdhPJw/3XDiznj8S8mykd65Ahpj91WYQGjhIr10eS9bIqY6W/XSiOsBfVnjNQtdVdPz0NI9v8UWoA==
-X-Received: by 2002:aa7:88cb:0:b0:49f:ad17:c08 with SMTP id k11-20020aa788cb000000b0049fad170c08mr42243482pff.19.1637091801086;
-        Tue, 16 Nov 2021 11:43:21 -0800 (PST)
-Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:3a93:19e8:b5b5:97fd])
-        by smtp.gmail.com with ESMTPSA id ep15sm2407300pjb.3.2021.11.16.11.43.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 11:43:20 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-From:   Minchan Kim <minchan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>
-Subject: [RFC PATCH] kernfs: release kernfs_mutex before the inode allocation
-Date:   Tue, 16 Nov 2021 11:43:17 -0800
-Message-Id: <20211116194317.1430399-1-minchan@kernel.org>
-X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
+        Tue, 16 Nov 2021 14:49:42 -0500
+Received: by shells.gnugeneration.com (Postfix, from userid 1000)
+        id AF72A1A40175; Tue, 16 Nov 2021 11:46:44 -0800 (PST)
+Date:   Tue, 16 Nov 2021 11:46:44 -0800
+From:   Vito Caputo <vcaputo@pengaru.com>
+To:     Drew DeVault <sir@cmpwn.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+Message-ID: <20211116194644.uyvfz4zzzjlbfqbm@shells.gnugeneration.com>
+References: <20211028080813.15966-1-sir@cmpwn.com>
+ <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
+ <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
+ <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
+ <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
+ <YZP6JSd4h45cyvsy@casper.infradead.org>
+ <b97f1b15-fbcc-92a4-96ca-e918c2f6c7a3@kernel.dk>
+ <20211116192148.vjdlng7pesbgjs6b@shells.gnugeneration.com>
+ <CFRG8CM6QUPN.1Z75SA6XN02W1@taiga>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CFRG8CM6QUPN.1Z75SA6XN02W1@taiga>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernfs implementation has big lock granularity(kernfs_rwsem) so
-every kernfs-based(e.g., sysfs, cgroup, dmabuf) fs are able to compete
-the lock. Thus, if one of userspace goes the sleep under holding
-the lock for a long time, rest of them should wait it. A example is
-the holder goes direct reclaim with the lock since it needs memory
-allocation. Let's fix it at common technique that release the lock
-and then allocate the memory. Fortunately, kernfs looks like have
-an refcount so I hope it's fine.
+On Tue, Nov 16, 2021 at 08:25:33PM +0100, Drew DeVault wrote:
+> On Tue Nov 16, 2021 at 8:21 PM CET, Vito Caputo wrote:
+> > Considering a single fullscreen 32bpp 4K-resolution framebuffer is
+> > ~32MiB, I'm not convinced this is really correct in nearly 2022.
+> 
+> Can you name a practical use-case where you'll be doing I/O with
+> uncompressed 4K framebuffers? The kind of I/O which is supported by
+> io_uring, to be specific, not, say, handing it off to libdrm.
 
-Signed-off-by: Minchan Kim <minchan@kernel.org>
----
- fs/kernfs/dir.c             | 14 +++++++++++---
- fs/kernfs/inode.c           |  2 +-
- fs/kernfs/kernfs-internal.h |  1 +
- 3 files changed, 13 insertions(+), 4 deletions(-)
+Obviously video/image editing software tends to operate on raw frames,
+and sometimes even persists them via filesystems.
 
-diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-index 8e0a1378a4b1..ecdb2975060d 100644
---- a/fs/kernfs/dir.c
-+++ b/fs/kernfs/dir.c
-@@ -1119,9 +1119,17 @@ static struct dentry *kernfs_iop_lookup(struct inode *dir,
- 			up_read(&kernfs_rwsem);
- 			return NULL;
- 		}
--		inode = kernfs_get_inode(dir->i_sb, kn);
--		if (!inode)
--			inode = ERR_PTR(-ENOMEM);
-+		kernfs_get(kn);
-+		up_read(&kernfs_rwsem);
-+		inode = iget_locked(dir->i_sb, kernfs_ino(kn));
-+		if (!inode) {
-+			kernfs_put(kn);
-+			return ERR_PTR(-ENOMEM);
-+		}
-+		down_read(&kernfs_rwsem);
-+		if (inode->i_state & I_NEW)
-+			kernfs_init_inode(kn, inode);
-+		kernfs_put(kn);
- 	}
- 	/*
- 	 * Needed for negative dentry validation.
-diff --git a/fs/kernfs/inode.c b/fs/kernfs/inode.c
-index c0eae1725435..6e2004010435 100644
---- a/fs/kernfs/inode.c
-+++ b/fs/kernfs/inode.c
-@@ -195,7 +195,7 @@ int kernfs_iop_getattr(struct user_namespace *mnt_userns,
- 	return 0;
- }
- 
--static void kernfs_init_inode(struct kernfs_node *kn, struct inode *inode)
-+void kernfs_init_inode(struct kernfs_node *kn, struct inode *inode)
- {
- 	kernfs_get(kn);
- 	inode->i_private = kn;
-diff --git a/fs/kernfs/kernfs-internal.h b/fs/kernfs/kernfs-internal.h
-index f9cc912c31e1..eef7656f7cd8 100644
---- a/fs/kernfs/kernfs-internal.h
-+++ b/fs/kernfs/kernfs-internal.h
-@@ -118,6 +118,7 @@ int kernfs_iop_getattr(struct user_namespace *mnt_userns,
- 		       u32 request_mask, unsigned int query_flags);
- ssize_t kernfs_iop_listxattr(struct dentry *dentry, char *buf, size_t size);
- int __kernfs_setattr(struct kernfs_node *kn, const struct iattr *iattr);
-+void kernfs_init_inode(struct kernfs_node *kn, struct inode *inode);
- 
- /*
-  * dir.c
--- 
-2.34.0.rc1.387.gb447b232ab-goog
+I haven't given it a lot of thought, but a framebuffer is a commonly
+used unit of memory allocation in code run on the CPU I've written
+over the years.  Being able to pin those for something like io_uring
+(or some other DMA-possible interface) seems like an obvious
+memory-hungry thing to consider here if we're talking default upper
+bounds.
 
+Regards,
+Vito Caputo
