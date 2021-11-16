@@ -2,92 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7934531B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:04:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7C04531DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:11:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236131AbhKPMHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 07:07:21 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:26318 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235938AbhKPMFD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 07:05:03 -0500
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Htl0d64YMzbhrv;
-        Tue, 16 Nov 2021 19:57:05 +0800 (CST)
-Received: from dggpeml500019.china.huawei.com (7.185.36.137) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 16 Nov 2021 20:02:00 +0800
-Received: from [10.174.179.189] (10.174.179.189) by
- dggpeml500019.china.huawei.com (7.185.36.137) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 16 Nov 2021 20:01:59 +0800
-Subject: Re: [PATCH v2] scsi: core: use eh_timeout to timeout start_unit
- command
-To:     brookxu <brookxu.cn@gmail.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>
-CC:     <hch@infradead.org>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1636507412-21678-1-git-send-email-brookxu.cn@gmail.com>
-From:   Wu Bo <wubo40@huawei.com>
-Message-ID: <34b23c4f-65b0-4c01-4148-d536732b3aeb@huawei.com>
-Date:   Tue, 16 Nov 2021 20:01:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S232892AbhKPMNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 07:13:44 -0500
+Received: from mga12.intel.com ([192.55.52.136]:15987 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235617AbhKPMMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 07:12:09 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="213713309"
+X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
+   d="scan'208";a="213713309"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 04:03:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
+   d="scan'208";a="586090299"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 16 Nov 2021 04:03:11 -0800
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mmxB8-0000Q8-Vf; Tue, 16 Nov 2021 12:03:10 +0000
+Date:   Tue, 16 Nov 2021 20:02:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars:for-next/kspp-misc-fixes] BUILD SUCCESS
+ 9d4762c447d3a3955bfd005a68e9b1acfd7e42d9
+Message-ID: <61939dc3.q/TaUabQ7WoAzNTC%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <1636507412-21678-1-git-send-email-brookxu.cn@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.189]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500019.china.huawei.com (7.185.36.137)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/11/10 9:23, brookxu wrote:
-> From: Chunguang Xu <brookxu@tencent.com>
-> 
-> In some abnormal scenarios, STU may timeout. The recovery
-> time of 30 seconds is relatively large. Now we need to modify
-> rq_timeout to adjust STU timeout value, but it will affect the
-> actual IO.
-> 
-> commit 9728c0814ecb ("[SCSI] make scsi_eh_try_stu use block
-> timeout") use rq_timeout to timeout the STU command, but after
-> commit 0816c9251a71 ("[SCSI] Allow error handling timeout to
-> be specified") eh_timeout will init to SCSI_DEFAULT_EH_TIMEOUT,
-> so it is more reasonable to use eh_timeout as the timeout value
-> of STU command. In this way, we can uniformly control recovery
-> time through eh_timeout.
-> 
-> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
-> ---
-> v2: Update commit log and fix some format issues.
-> 
->   drivers/scsi/scsi_error.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
-> index a531336..a665318 100644
-> --- a/drivers/scsi/scsi_error.c
-> +++ b/drivers/scsi/scsi_error.c
-> @@ -1404,7 +1404,8 @@ static int scsi_eh_try_stu(struct scsi_cmnd *scmd)
->   		enum scsi_disposition rtn = NEEDS_RETRY;
->   
->   		for (i = 0; rtn == NEEDS_RETRY && i < 2; i++)
-> -			rtn = scsi_send_eh_cmnd(scmd, stu_command, 6, scmd->device->request_queue->rq_timeout, 0);
-> +			rtn = scsi_send_eh_cmnd(scmd, stu_command, 6,
-> +						scmd->device->eh_timeout, 0);
->   
->   		if (rtn == SUCCESS)
->   			return 0;
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/kspp-misc-fixes
+branch HEAD: 9d4762c447d3a3955bfd005a68e9b1acfd7e42d9  fbdev: sh7760fb: document fallthrough cases
 
-Reviewed-by: Wu Bo <wubo40@huawei.com>
+elapsed time: 723m
 
--- 
-Wu Bo
+configs tested: 147
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211115
+i386                 randconfig-c001-20211116
+m68k                             alldefconfig
+powerpc                 linkstation_defconfig
+ia64                                defconfig
+mips                         db1xxx_defconfig
+mips                malta_qemu_32r6_defconfig
+powerpc                        cell_defconfig
+arm                         lubbock_defconfig
+sh                             shx3_defconfig
+sh                          lboxre2_defconfig
+arc                                 defconfig
+arm                       netwinder_defconfig
+arm                        mini2440_defconfig
+powerpc                mpc7448_hpc2_defconfig
+m68k                        m5307c3_defconfig
+powerpc                     stx_gp3_defconfig
+powerpc                 mpc85xx_cds_defconfig
+m68k                       m5208evb_defconfig
+powerpc                     ppa8548_defconfig
+mips                     decstation_defconfig
+sh                         apsh4a3a_defconfig
+sparc64                             defconfig
+powerpc                    klondike_defconfig
+m68k                          amiga_defconfig
+arm                       versatile_defconfig
+m68k                        mvme147_defconfig
+openrisc                 simple_smp_defconfig
+arm                       aspeed_g4_defconfig
+m68k                       m5275evb_defconfig
+arm                        magician_defconfig
+mips                           ip22_defconfig
+m68k                            mac_defconfig
+arm                          badge4_defconfig
+sh                           sh2007_defconfig
+powerpc                     ksi8560_defconfig
+powerpc                     kilauea_defconfig
+arm                      tct_hammer_defconfig
+sh                          sdk7780_defconfig
+powerpc                      cm5200_defconfig
+powerpc                   microwatt_defconfig
+mips                       bmips_be_defconfig
+um                               alldefconfig
+arm                         at91_dt_defconfig
+m68k                         amcore_defconfig
+powerpc                      ppc6xx_defconfig
+sh                   sh7770_generic_defconfig
+mips                      malta_kvm_defconfig
+sparc                               defconfig
+um                             i386_defconfig
+s390                             alldefconfig
+s390                                defconfig
+arm                  randconfig-c002-20211116
+arm                  randconfig-c002-20211115
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+sparc                            allyesconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20211115
+i386                 randconfig-a003-20211115
+i386                 randconfig-a005-20211115
+i386                 randconfig-a001-20211115
+i386                 randconfig-a004-20211115
+i386                 randconfig-a002-20211115
+x86_64               randconfig-a015-20211116
+x86_64               randconfig-a013-20211116
+x86_64               randconfig-a012-20211116
+x86_64               randconfig-a011-20211116
+x86_64               randconfig-a016-20211116
+x86_64               randconfig-a014-20211116
+i386                 randconfig-a014-20211116
+i386                 randconfig-a016-20211116
+i386                 randconfig-a012-20211116
+i386                 randconfig-a013-20211116
+i386                 randconfig-a011-20211116
+i386                 randconfig-a015-20211116
+x86_64               randconfig-a005-20211115
+x86_64               randconfig-a003-20211115
+x86_64               randconfig-a002-20211115
+x86_64               randconfig-a001-20211115
+x86_64               randconfig-a006-20211115
+x86_64               randconfig-a004-20211115
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+x86_64                           allyesconfig
+
+clang tested configs:
+x86_64               randconfig-c007-20211116
+i386                 randconfig-c001-20211116
+arm                  randconfig-c002-20211116
+riscv                randconfig-c006-20211116
+powerpc              randconfig-c003-20211116
+s390                 randconfig-c005-20211116
+mips                 randconfig-c004-20211116
+x86_64               randconfig-a005-20211116
+x86_64               randconfig-a003-20211116
+x86_64               randconfig-a001-20211116
+x86_64               randconfig-a002-20211116
+x86_64               randconfig-a006-20211116
+x86_64               randconfig-a004-20211116
+i386                 randconfig-a014-20211115
+i386                 randconfig-a016-20211115
+i386                 randconfig-a012-20211115
+i386                 randconfig-a013-20211115
+i386                 randconfig-a011-20211115
+i386                 randconfig-a015-20211115
+hexagon              randconfig-r045-20211115
+hexagon              randconfig-r041-20211115
+s390                 randconfig-r044-20211115
+riscv                randconfig-r042-20211115
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
