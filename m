@@ -2,74 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCAD04537D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6951E4537D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235586AbhKPQnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 11:43:00 -0500
-Received: from mail-pl1-f179.google.com ([209.85.214.179]:33624 "EHLO
-        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234535AbhKPQm7 (ORCPT
+        id S235147AbhKPQnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 11:43:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233238AbhKPQnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:42:59 -0500
-Received: by mail-pl1-f179.google.com with SMTP id y7so18030887plp.0;
-        Tue, 16 Nov 2021 08:40:02 -0800 (PST)
+        Tue, 16 Nov 2021 11:43:47 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A940CC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 08:40:50 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id n85so18703462pfd.10
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 08:40:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=cxePJecZE2WrH9xlN/wiiMl9PdujliUhViJjtEXdKvM=;
+        b=CjI6nPGXTaxn1IUbfuqmnU7jsgsOyaLVHes0gJhzOZ46AANKKa37G0+jgykyF0dKym
+         FEYdNOgTSaNFbIQRbyJ9CFdCElqQ95aRRv/8SaKbW177/x4fdhTdC2LLjhav7FtDSiCq
+         kKVvlBvAXDabF+3odlIj64NYQo9cwxjEkO/w7ZWm0VRdkX61bcEeGNgjfJhBxW1FXZJW
+         8mvJkjYcqPnx1pBOaJ/HTx05g6gdMc19q8Lm4yOYxsWJAGrVZA413mS5GS3swKmwYKUg
+         AR6kpkZ9ySGoV2ZnJRU6RHBHdoNsJ4/WQPaVakiM9hslKLFtvs03ofnjXcXkwgE4JhPP
+         Qxaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=piaXFTBaC2+rpiS9NbodLteQrworeZAeegtjVggyKWc=;
-        b=B9Xs5aDFFrWR9WJ77seB/hb1rovDBRWwdNYg5Cm1i16xq4L4CqiKE36r31HOwibsu4
-         6NFkFesdWBu3nw9Sxu9xwrhmpuzbMv1XmJsEeOYHNZHzWNaDry3c9+sQ+9V4oo8QRzoF
-         10WUF/bRV63qEHzBNF1IPdfW5X2G1joLjGqEWbZgVW+yz6E8wUhvlAud3JM//N1tHAAB
-         d9Qgjtl3d/3TDX98FuOxnWuoO4HzzVNhRpomER7t50bdz5yXeFGvaAtYCG+PfZr4+5qw
-         xAR/c1wlSND/vzHLaVXc0a1f/Y1haboLaLSwDBNx1VZ2J7WAVgJcIi/5JyRkhyhFFzre
-         iG/A==
-X-Gm-Message-State: AOAM532dteRqRsyC3QsPCZNpBXqnK5U0VR+kvmilU+8WwKCGodKYmvAR
-        Mk2BmPtZhcbPiwzBud75EDyo2jm5BqsBMeJR
-X-Google-Smtp-Source: ABdhPJzHQVDgKgk/q6/SL1BPAwHHykK3FrDm7hbVL6c4dElYDdfS2v8PQKlegbZL3RGLj3p/JzT3RA==
-X-Received: by 2002:a17:90a:1bc5:: with SMTP id r5mr455835pjr.90.1637080801871;
-        Tue, 16 Nov 2021 08:40:01 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id y28sm19750558pfa.208.2021.11.16.08.39.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 08:40:01 -0800 (PST)
-Date:   Tue, 16 Nov 2021 17:39:53 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Tom Li <tomli@tomli.me>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] PCI: Add func1 DMA quirk for Marvell 88SE9125 SATA
- controller
-Message-ID: <YZPe2XdAYS6zrzxa@rocinante>
-References: <YZPA+gSsGWI6+xBP@work>
- <YZPTIllU1KKPviHU@rocinante>
- <YZPYVK9UbNXLcks2@work>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=cxePJecZE2WrH9xlN/wiiMl9PdujliUhViJjtEXdKvM=;
+        b=CkBTKYhFe2ymmrTcBiM8TNJIFqjBuuOaV2IXYBvzvTMKuM4U2U8bSKrFGHSaL43/Ue
+         furHKD9TZ/m+3aADWN/Mc1u1OwG4D41QYfWbew+4Qxazxl3lXICCm5+WufLPkwda1Rm1
+         7RxCR5Vk8fYrrMI+VDEuuDG6iB4Zv7cLwhkA8YZsO9BW9nXjcKWjfhATNlno3JYg5q3B
+         WGftzd/OTYp18x1e5obxQdm5fmgOP6XA0vPAs4K23kb7YYBTuRkarE8z1k9jmUvje2BE
+         wbu+flr1Z6krkDw628uzi/uhyN/Ajx1eXaMoc7uUiBGI9jkshRCYWXscM1QvVBV4aB0R
+         siNw==
+X-Gm-Message-State: AOAM532RXQqEozFqKg0K+uHKCMm1AjdHOMP3JkXGEoe+XU4vgRCm5gad
+        nJB/2r/XcWedPSWag/CzYzGYkQ==
+X-Google-Smtp-Source: ABdhPJx1VgKF3eHPsymFLYS3ut78yITSt0gbbo3PvB3yrcy/kif0ctGWaMIcQM8nAiTCtSHwoZFYjg==
+X-Received: by 2002:a05:6a00:a8e:b0:480:ab08:1568 with SMTP id b14-20020a056a000a8e00b00480ab081568mr41832261pfl.28.1637080850233;
+        Tue, 16 Nov 2021 08:40:50 -0800 (PST)
+Received: from [192.168.254.17] ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id h25sm14182861pgm.33.2021.11.16.08.40.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 08:40:50 -0800 (PST)
+Message-ID: <a0baf2b6-70f9-3185-cd92-d83533c63ff0@linaro.org>
+Date:   Tue, 16 Nov 2021 08:40:49 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YZPYVK9UbNXLcks2@work>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] tipc: use consistent GFP flags
+Content-Language: en-US
+To:     patchwork-bot+netdevbpf@kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     jmaloy@redhat.com, ying.xue@windriver.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <20211111205916.37899-2-tadeusz.struk@linaro.org>
+ <163698120846.10163.14371622974741533436.git-patchwork-notify@kernel.org>
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+In-Reply-To: <163698120846.10163.14371622974741533436.git-patchwork-notify@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-> On Tue, Nov 16, 2021 at 04:49:54PM +0100, Krzysztof Wilczyński wrote:
-> > > Reported-by: sbingner <sam@bingner.com>
-> > > Tested-by: sbingner <sam@bingner.com>
-> > 
-> > Both of these tags would require a proper full name, if possible, rather
-> > than a name that is abbreviated and/or a username.
-> > 
-> > Reviewed-by: Krzysztof Wilczyński <kw@liunx.com>
-> > 
-> > 	Krzysztof
+On 11/15/21 05:00, patchwork-bot+netdevbpf@kernel.org wrote:
+> This patch was applied to netdev/net.git (master)
+> by David S. Miller<davem@davemloft.net>:
 > 
-> No problem, I'll send a revision to correct the tags immediately.
+> On Thu, 11 Nov 2021 12:59:16 -0800 you wrote:
+>> Some functions, like tipc_crypto_start use inconsisten GFP flags
+>> when allocating memory. The mentioned function use GFP_ATOMIC to
+>> to alloc a crypto instance, and then calls alloc_ordered_workqueue()
+>> which allocates memory with GFP_KERNEL. tipc_aead_init() function
+>> even uses GFP_KERNEL and GFP_ATOMIC interchangeably.
+>> No doc comment specifies what context a function is designed to
+>> work in, but the flags should at least be consistent within a function.
+>>
+>> [...]
+> Here is the summary with links:
+>    - tipc: use consistent GFP flags
+>      https://git.kernel.org/netdev/net/c/86c3a3e964d9
+> 
+> You are awesome, thank you!
 
-No worries!  Thank you!
+Thanks, you are awesome too! ;)
+Any feedback about the patch:
+[PATCH v2] tipc: check for null after calling kmemdup
 
-	Krzysztof
+-- 
+Thanks,
+Tadeusz
