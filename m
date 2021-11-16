@@ -2,184 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796EF453AFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:33:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4356453AFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:34:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbhKPUg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 15:36:27 -0500
-Received: from mga07.intel.com ([134.134.136.100]:1604 "EHLO mga07.intel.com"
+        id S230350AbhKPUhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 15:37:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229649AbhKPUg0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 15:36:26 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="297245113"
-X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
-   d="scan'208";a="297245113"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 12:33:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
-   d="scan'208";a="494630354"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 16 Nov 2021 12:33:22 -0800
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mn58r-0000nX-UN; Tue, 16 Nov 2021 20:33:21 +0000
-Date:   Wed, 17 Nov 2021 04:32:32 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:dev.2021.11.12a] BUILD SUCCESS
- 91802a8b5bb183d724e261be8afe07fa1713331e
-Message-ID: <61941560.BNiE6V8dftkkuVF0%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229649AbhKPUhC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 15:37:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7519461037;
+        Tue, 16 Nov 2021 20:34:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637094845;
+        bh=l/dWLarqEiULV16loJz9pqYO1tl43IJkf7N+4+RSMzE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=YLPy/WNNfSlbTj+TTVBESv/gmHmoJKN32uvTyYzN4V5tbpANersFwEMW/292UASzp
+         wUqGPtBlKzik90k28oMg+JtiThX1F0EOxq0TZ/+mpAzpwW4ZQlUAR8n5e853LnSyu0
+         cbwwvrf2jmaG8mDO/hcBe+26HrVmTD5nLH686HpU5VXl4JTr/yneopjFqXCmI3WAH3
+         lFAn3RjCvqsm6QMbxA6CUTz7bhxBCI/tOPBSHmvANsEAd6vJDOmN4StThB64eqaEIK
+         7ccshRwY3i9dOdGuUGHspO5aB2mZ41xJ6K2bRpJOH4/bQL7hzNno89XvIWgrFy4TW8
+         vJC54KSjm1oTQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 428345C0433; Tue, 16 Nov 2021 12:34:05 -0800 (PST)
+Date:   Tue, 16 Nov 2021 12:34:05 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     Jun Miao <jun.miao@intel.com>, urezki@gmail.com, elver@google.com,
+        josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, qiang.zhang1211@gmail.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, jianwei.hu@windriver.com
+Subject: Re: [V2][PATCH] rcu: avoid alloc_pages() when recording stack
+Message-ID: <20211116203405.GU641268@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <1637018582-10788-1-git-send-email-jun.miao@intel.com>
+ <20211116173959.osdzlvv7niyxthd6@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20211116173959.osdzlvv7niyxthd6@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.11.12a
-branch HEAD: 91802a8b5bb183d724e261be8afe07fa1713331e  rcu: Avoid running boost kthreads on isolated CPUs
+On Tue, Nov 16, 2021 at 05:39:59PM +0000, Juri Lelli wrote:
+> Hi,
+> 
+> On 16/11/21 07:23, Jun Miao wrote:
+> > The default kasan_record_aux_stack() calls stack_depot_save() with GFP_NOWAIT,
+> > which in turn can then call alloc_pages(GFP_NOWAIT, ...).  In general, however,
+> > it is not even possible to use either GFP_ATOMIC nor GFP_NOWAIT in certain
+> > non-preemptive contexts/RT kernel including raw_spin_locks (see gfp.h and ab00db216c9c7).
+> > Fix it by instructing stackdepot to not expand stack storage via alloc_pages()
+> > in case it runs out by using kasan_record_aux_stack_noalloc().
+> > 
+> > Jianwei Hu reported:
+> > BUG: sleeping function called from invalid context at kernel/locking/rtmutex.c:969
+> > in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 15319, name: python3
+> > INFO: lockdep is turned off.
+> > irq event stamp: 0
+> >   hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+> >   hardirqs last disabled at (0): [<ffffffff856c8b13>] copy_process+0xaf3/0x2590
+> >   softirqs last  enabled at (0): [<ffffffff856c8b13>] copy_process+0xaf3/0x2590
+> >   softirqs last disabled at (0): [<0000000000000000>] 0x0
+> >   CPU: 6 PID: 15319 Comm: python3 Tainted: G        W  O 5.15-rc7-preempt-rt #1
+> >   Hardware name: Supermicro SYS-E300-9A-8C/A2SDi-8C-HLN4F, BIOS 1.1b 12/17/2018
+> >   Call Trace:
+> >     show_stack+0x52/0x58
+> >     dump_stack+0xa1/0xd6
+> >     ___might_sleep.cold+0x11c/0x12d
+> >     rt_spin_lock+0x3f/0xc0
+> >     rmqueue+0x100/0x1460
+> >     rmqueue+0x100/0x1460
+> >     mark_usage+0x1a0/0x1a0
+> >     ftrace_graph_ret_addr+0x2a/0xb0
+> >     rmqueue_pcplist.constprop.0+0x6a0/0x6a0
+> >      __kasan_check_read+0x11/0x20
+> >      __zone_watermark_ok+0x114/0x270
+> >      get_page_from_freelist+0x148/0x630
+> >      is_module_text_address+0x32/0xa0
+> >      __alloc_pages_nodemask+0x2f6/0x790
+> >      __alloc_pages_slowpath.constprop.0+0x12d0/0x12d0
+> >      create_prof_cpu_mask+0x30/0x30
+> >      alloc_pages_current+0xb1/0x150
+> >      stack_depot_save+0x39f/0x490
+> >      kasan_save_stack+0x42/0x50
+> >      kasan_save_stack+0x23/0x50
+> >      kasan_record_aux_stack+0xa9/0xc0
+> >      __call_rcu+0xff/0x9c0
+> >      call_rcu+0xe/0x10
+> >      put_object+0x53/0x70
+> >      __delete_object+0x7b/0x90
+> >      kmemleak_free+0x46/0x70
+> >      slab_free_freelist_hook+0xb4/0x160
+> >      kfree+0xe5/0x420
+> >      kfree_const+0x17/0x30
+> >      kobject_cleanup+0xaa/0x230
+> >      kobject_put+0x76/0x90
+> >      netdev_queue_update_kobjects+0x17d/0x1f0
+> >      ... ...
+> >      ksys_write+0xd9/0x180
+> >      __x64_sys_write+0x42/0x50
+> >      do_syscall_64+0x38/0x50
+> >      entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > 
+> > Links: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/include/linux/kasan.h?id=7cb3007ce2da27ec02a1a3211941e7fe6875b642
+> > Fixes: 84109ab58590 ("rcu: Record kvfree_call_rcu() call stack for KASAN")
+> > Fixes: 26e760c9a7c8 ("rcu: kasan: record and print call_rcu() call stack")
+> > Reported-by: Jianwei Hu <jianwei.hu@windriver.com>
+> > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > Signed-off-by: Jun Miao <jun.miao@intel.com>
+> > ---
+> 
+> I gave this a quick try on RT. No splats. Nice!
+> 
+> Tested-by: Juri Lelli <juri.lelli@redhat.com>
 
-elapsed time: 1568m
+Applied with Juri's Tested-by and Marco's Acked-by.  Thank you all!
 
-configs tested: 126
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                              allyesconfig
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20211116
-arm                         lubbock_defconfig
-sh                             shx3_defconfig
-sh                          lboxre2_defconfig
-powerpc                 linkstation_defconfig
-powerpc                     sequoia_defconfig
-powerpc                        icon_defconfig
-powerpc                        warp_defconfig
-xtensa                generic_kc705_defconfig
-arc                        vdk_hs38_defconfig
-powerpc64                           defconfig
-arm                        mvebu_v5_defconfig
-arm                         mv78xx0_defconfig
-sh                           se7619_defconfig
-arm                         cm_x300_defconfig
-arm                       cns3420vb_defconfig
-sparc                       sparc64_defconfig
-powerpc                      ppc6xx_defconfig
-powerpc                mpc7448_hpc2_defconfig
-m68k                            mac_defconfig
-arm                          badge4_defconfig
-sh                           sh2007_defconfig
-powerpc                     ksi8560_defconfig
-powerpc                     kilauea_defconfig
-arm                     am200epdkit_defconfig
-h8300                               defconfig
-mips                            e55_defconfig
-mips                           mtx1_defconfig
-powerpc                  mpc885_ads_defconfig
-i386                             alldefconfig
-m68k                        m5307c3_defconfig
-arm                            xcep_defconfig
-arm                            dove_defconfig
-nds32                            alldefconfig
-powerpc                 mpc834x_itx_defconfig
-powerpc                      mgcoge_defconfig
-powerpc                     rainier_defconfig
-xtensa                  audio_kc705_defconfig
-sh                          rsk7264_defconfig
-powerpc                     powernv_defconfig
-arm                            pleb_defconfig
-mips                       bmips_be_defconfig
-sh                            shmin_defconfig
-powerpc                      ppc40x_defconfig
-arm                  randconfig-c002-20211115
-arm                  randconfig-c002-20211116
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-s390                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-powerpc                          allyesconfig
-x86_64               randconfig-a003-20211115
-x86_64               randconfig-a002-20211115
-x86_64               randconfig-a001-20211115
-x86_64               randconfig-a004-20211115
-x86_64               randconfig-a005-20211115
-i386                 randconfig-a006-20211115
-i386                 randconfig-a003-20211115
-i386                 randconfig-a005-20211115
-i386                 randconfig-a001-20211115
-i386                 randconfig-a004-20211115
-i386                 randconfig-a002-20211115
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                          rhel-8.3-func
-x86_64                    rhel-8.3-kselftests
-x86_64                           allyesconfig
-
-clang tested configs:
-x86_64               randconfig-a003-20211116
-x86_64               randconfig-a001-20211116
-x86_64               randconfig-a002-20211116
-x86_64               randconfig-a004-20211116
-x86_64               randconfig-a006-20211116
-x86_64               randconfig-a005-20211116
-i386                 randconfig-a014-20211115
-i386                 randconfig-a016-20211115
-i386                 randconfig-a012-20211115
-i386                 randconfig-a013-20211115
-i386                 randconfig-a011-20211115
-i386                 randconfig-a015-20211115
-hexagon              randconfig-r045-20211115
-hexagon              randconfig-r041-20211115
-s390                 randconfig-r044-20211115
-riscv                randconfig-r042-20211115
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+							Thanx, Paul
