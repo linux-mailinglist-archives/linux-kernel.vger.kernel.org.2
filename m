@@ -2,123 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DCB2453416
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:24:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C838F453419
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237376AbhKPO0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 09:26:54 -0500
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:40028 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237310AbhKPO0u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 09:26:50 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AGENkqt065266;
-        Tue, 16 Nov 2021 08:23:46 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1637072626;
-        bh=kY4CrTITYhZQo3KclPHQ/T1EO2q3iKAUvdwiAQ6O+h4=;
-        h=From:To:CC:Subject:Date;
-        b=iapUqKBJJQ9AJD8crxpDWQl/UXso2xr39CR5+uXlnAf58ZM3TZHZ68Taox4mtF/9e
-         OvOIqZareQUNF/cFT6v1ZSKZPSZdkjO+o46E3auB49ZTx37jZLeyAFKB8uk1+FmVj2
-         heq6LWrVUZEV3mv66hYEgxYR983Vi6gREd/WSVxs=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AGENk3D073525
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 16 Nov 2021 08:23:46 -0600
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 16
- Nov 2021 08:23:46 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 16 Nov 2021 08:23:46 -0600
-Received: from a0393678-lt.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AGENgJs005673;
-        Tue, 16 Nov 2021 08:23:43 -0600
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Subject: [PATCH v2] PCI: endpoint: Use DMA channel's 'dev' for dma_map_single()
-Date:   Tue, 16 Nov 2021 19:53:42 +0530
-Message-ID: <20211116142342.21689-1-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
+        id S237399AbhKPO1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 09:27:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237412AbhKPO1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 09:27:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2716161502
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 14:24:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637072679;
+        bh=biTocHL1hGp24ay2csZW1S7RPhxxw+8vfjvhmfQo7OE=;
+        h=From:To:Subject:Date:From;
+        b=OLfNsqEvJfbZCv2wUP7YTo7Zqxjpyinu+NagAIfN6RvdoPRcjvKtf51sFPdXzvBjP
+         mnS7L/N0k4+Ru8N6N20xj7n5QKC1CeCvBcdTCiWtcpx9e5OxZHqI+ZEJ9Ld5oLZZqt
+         ms1H8bI2VMyf1xxfnJqJgjea0Lq0Rv7u1EAU5N2QyUiRodG3qfGHNxIXzVJKVHs07t
+         r2BA5vsp3e5+bXcffKWDOwsACLeqp6NK0f4HUukzmlizhzkGM232tRMqvpGrn581dH
+         3e0mDKu7LEKUWTRkBE5U/HKRzGI5tN9+76p0EUohdI1zj4s97vp3j437/Ma3lWrMcd
+         ZryY24R1S5+dQ==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] habanalabs: abort reset on invalid request
+Date:   Tue, 16 Nov 2021 16:24:35 +0200
+Message-Id: <20211116142436.1153282-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the case where the pci-epf-test driver uses DMA for transferring
-data to the root complex device, dma_map_single() is used to map virtual
-address to a physical address (address accessible by DMA controller) and
-provided to the DMAengine API for transferring data. Here instead of
-using the PCIe endpoint controller's 'dev' for dma_map_single(), provide
-DMA channel's 'dev' for dma_map_single() since the data transfer is
-actually done by DMA.
+Hard-reset is mutually exclusive with reset-on-device-release.
+Therefore, if such a request arrives to the reset function, abort
+the reset and return an error to the callee.
 
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
-Changes from v1:
-Use dmaengine_get_dma_device() to get dma device from channel
-V1: https://lore.kernel.org/r/20211115044944.31103-1-kishon@ti.com
- drivers/pci/endpoint/functions/pci-epf-test.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/misc/habanalabs/common/device.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
-index 90d84d3bc868..51f5b0b7b225 100644
---- a/drivers/pci/endpoint/functions/pci-epf-test.c
-+++ b/drivers/pci/endpoint/functions/pci-epf-test.c
-@@ -314,12 +314,12 @@ static int pci_epf_test_read(struct pci_epf_test *epf_test)
- 	u32 crc32;
- 	bool use_dma;
- 	phys_addr_t phys_addr;
-+	struct device *dma_dev;
- 	phys_addr_t dst_phys_addr;
- 	struct timespec64 start, end;
- 	struct pci_epf *epf = epf_test->epf;
- 	struct device *dev = &epf->dev;
- 	struct pci_epc *epc = epf->epc;
--	struct device *dma_dev = epf->epc->dev.parent;
- 	enum pci_barno test_reg_bar = epf_test->test_reg_bar;
- 	struct pci_epf_test_reg *reg = epf_test->reg[test_reg_bar];
+diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
+index ca74d7815a67..a3d5617da64c 100644
+--- a/drivers/misc/habanalabs/common/device.c
++++ b/drivers/misc/habanalabs/common/device.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
  
-@@ -353,6 +353,7 @@ static int pci_epf_test_read(struct pci_epf_test *epf_test)
- 			goto err_dma_map;
- 		}
+ /*
+- * Copyright 2016-2019 HabanaLabs, Ltd.
++ * Copyright 2016-2021 HabanaLabs, Ltd.
+  * All Rights Reserved.
+  */
  
-+		dma_dev = dmaengine_get_dma_device(epf_test->dma_chan);
- 		dst_phys_addr = dma_map_single(dma_dev, buf, reg->size,
- 					       DMA_FROM_DEVICE);
- 		if (dma_mapping_error(dma_dev, dst_phys_addr)) {
-@@ -402,12 +403,12 @@ static int pci_epf_test_write(struct pci_epf_test *epf_test)
- 	void *buf;
- 	bool use_dma;
- 	phys_addr_t phys_addr;
-+	struct device *dma_dev;
- 	phys_addr_t src_phys_addr;
- 	struct timespec64 start, end;
- 	struct pci_epf *epf = epf_test->epf;
- 	struct device *dev = &epf->dev;
- 	struct pci_epc *epc = epf->epc;
--	struct device *dma_dev = epf->epc->dev.parent;
- 	enum pci_barno test_reg_bar = epf_test->test_reg_bar;
- 	struct pci_epf_test_reg *reg = epf_test->reg[test_reg_bar];
+@@ -1020,8 +1020,8 @@ static void handle_reset_trigger(struct hl_device *hdev, u32 flags)
+  */
+ int hl_device_reset(struct hl_device *hdev, u32 flags)
+ {
+-	u64 idle_mask[HL_BUSY_ENGINES_MASK_EXT_SIZE] = {0};
+ 	bool hard_reset, from_hard_reset_thread, fw_reset, hard_instead_soft = false;
++	u64 idle_mask[HL_BUSY_ENGINES_MASK_EXT_SIZE] = {0};
+ 	int i, rc;
  
-@@ -444,6 +445,7 @@ static int pci_epf_test_write(struct pci_epf_test *epf_test)
- 			goto err_map_addr;
- 		}
+ 	if (!hdev->init_done) {
+@@ -1039,11 +1039,13 @@ int hl_device_reset(struct hl_device *hdev, u32 flags)
+ 		hard_reset = true;
+ 	}
  
-+		dma_dev = dmaengine_get_dma_device(epf_test->dma_chan);
- 		src_phys_addr = dma_map_single(dma_dev, buf, reg->size,
- 					       DMA_TO_DEVICE);
- 		if (dma_mapping_error(dma_dev, src_phys_addr)) {
+-	if (hdev->reset_upon_device_release &&
+-			(flags & HL_DRV_RESET_DEV_RELEASE)) {
+-		dev_dbg(hdev->dev,
+-			"Perform %s-reset upon device release\n",
+-			hard_reset ? "hard" : "soft");
++	if (hdev->reset_upon_device_release && (flags & HL_DRV_RESET_DEV_RELEASE)) {
++		if (hard_reset) {
++			dev_crit(hdev->dev,
++				"Aborting reset because hard-reset is mutually exclusive with reset-on-device-release\n");
++			return -EINVAL;
++		}
++
+ 		goto do_reset;
+ 	}
+ 
 -- 
-2.17.1
+2.25.1
 
