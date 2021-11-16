@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7615E4521B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:03:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D94A84521B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:03:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345961AbhKPBGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:06:30 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:50136 "EHLO
+        id S242339AbhKPBGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:06:24 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:50138 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359162AbhKPAys (ORCPT
+        with ESMTP id S1359167AbhKPAys (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Nov 2021 19:54:48 -0500
 Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A891C20C635A;
+        by linux.microsoft.com (Postfix) with ESMTPSA id DAF2420C635B;
         Mon, 15 Nov 2021 16:50:52 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A891C20C635A
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DAF2420C635B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1637023852;
-        bh=rM8MHl4ykgEOSqBXbNpd3T1p3N1pd0+DYAkgx2CZx80=;
+        s=default; t=1637023853;
+        bh=+mXlG14gdSajYN3+Eq9v1QgIph4+8rvSCzU2C5qR0zQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UgFO57oJLuH3+KWqOsmhbBu59tENG+gj9ijOKjZlMj+A7axfX4mSMvDdt2kmGSx8F
-         lymSC67yonmaUMduvWTJFMh+PrnTNtB8CoqjOVCe6AqEvpBfxBMEQs9R91uum7KywZ
-         3KMF+SrGNE+/XNVhhk21m27YwjcbQL6LGKej3Q8Y=
+        b=a1YUOMgJt2e3C0ETot5OzGX2O6AS3B03u92+0d1Isu7bchhjX2x69HRIYsVcvS83C
+         nY3u4b60vLAg8sOPRfnb87luPqT4XBUjtaLG+AYWHdaHw4Jiziaxwrk9HyBDIY5h75
+         Za6AxiWw1kYcHBATux5DxPghqHhPkSTGdXUgzXco=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         beaub@linux.microsoft.com
-Subject: [PATCH v5 05/12] user_events: Add basic perf and eBPF support
-Date:   Mon, 15 Nov 2021 16:50:40 -0800
-Message-Id: <20211116005047.1808-6-beaub@linux.microsoft.com>
+Subject: [PATCH v5 06/12] user_events: Add self-test for ftrace integration
+Date:   Mon, 15 Nov 2021 16:50:41 -0800
+Message-Id: <20211116005047.1808-7-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211116005047.1808-1-beaub@linux.microsoft.com>
 References: <20211116005047.1808-1-beaub@linux.microsoft.com>
@@ -37,110 +37,252 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds support to write out user_event data to perf_probe/perf files as
-well as to any attached eBPF program.
+Tests basic functionality of registering/deregistering, status and
+writing data out via ftrace mechanisms within user_events.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- kernel/trace/trace_events_user.c | 63 ++++++++++++++++++++++++++++++++
- 1 file changed, 63 insertions(+)
+ tools/testing/selftests/user_events/Makefile  |   9 +
+ .../selftests/user_events/ftrace_test.c       | 205 ++++++++++++++++++
+ tools/testing/selftests/user_events/settings  |   1 +
+ 3 files changed, 215 insertions(+)
+ create mode 100644 tools/testing/selftests/user_events/Makefile
+ create mode 100644 tools/testing/selftests/user_events/ftrace_test.c
+ create mode 100644 tools/testing/selftests/user_events/settings
 
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 8415aaf8e3b1..badf505568dd 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -528,6 +528,50 @@ static void user_event_ftrace(struct user_event *user, void *data, u32 datalen,
- 	trace_event_buffer_commit(&event_buffer);
- }
- 
-+#ifdef CONFIG_PERF_EVENTS
+diff --git a/tools/testing/selftests/user_events/Makefile b/tools/testing/selftests/user_events/Makefile
+new file mode 100644
+index 000000000000..d66c551a6fe3
+--- /dev/null
++++ b/tools/testing/selftests/user_events/Makefile
+@@ -0,0 +1,9 @@
++# SPDX-License-Identifier: GPL-2.0
++CFLAGS += -Wl,-no-as-needed -Wall -I../../../../usr/include
++LDLIBS += -lrt -lpthread -lm
++
++TEST_GEN_PROGS = ftrace_test
++
++TEST_FILES := settings
++
++include ../lib.mk
+diff --git a/tools/testing/selftests/user_events/ftrace_test.c b/tools/testing/selftests/user_events/ftrace_test.c
+new file mode 100644
+index 000000000000..9d53717139e6
+--- /dev/null
++++ b/tools/testing/selftests/user_events/ftrace_test.c
+@@ -0,0 +1,205 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * Writes the user supplied payload out to perf ring buffer or eBPF program.
++ * User Events FTrace Test Program
++ *
++ * Copyright (c) 2021 Beau Belgrave <beaub@linux.microsoft.com>
 + */
-+static void user_event_perf(struct user_event *user, void *data, u32 datalen,
-+			    void *tpdata)
++
++#include <errno.h>
++#include <linux/user_events.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <fcntl.h>
++#include <sys/ioctl.h>
++#include <sys/stat.h>
++#include <unistd.h>
++
++#include "../kselftest_harness.h"
++
++const char *data_file = "/sys/kernel/debug/tracing/user_events_data";
++const char *status_file = "/sys/kernel/debug/tracing/user_events_status";
++const char *enable_file = "/sys/kernel/debug/tracing/events/user_events/__test_event/enable";
++const char *trace_file = "/sys/kernel/debug/tracing/trace";
++
++static int trace_bytes(void)
 +{
-+	struct hlist_head *perf_head;
++	int fd = open(trace_file, O_RDONLY);
++	char buf[256];
++	int bytes = 0, got;
 +
-+	if (bpf_prog_array_valid(&user->call)) {
-+		struct user_bpf_context context = {0};
++	if (fd == -1)
++		return -1;
 +
-+		context.data_len = datalen;
-+		context.data_type = USER_BPF_DATA_KERNEL;
-+		context.kdata = data;
++	while (true) {
++		got = read(fd, buf, sizeof(buf));
 +
-+		trace_call_bpf(&user->call, &context);
++		if (got == -1)
++			return -1;
++
++		if (got == 0)
++			break;
++
++		bytes += got;
 +	}
 +
-+	perf_head = this_cpu_ptr(user->call.perf_events);
++	close(fd);
 +
-+	if (perf_head && !hlist_empty(perf_head)) {
-+		struct trace_entry *perf_entry;
-+		struct pt_regs *regs;
-+		size_t size = sizeof(*perf_entry) + datalen;
-+		int context;
++	return bytes;
++}
 +
-+		perf_entry = perf_trace_buf_alloc(ALIGN(size, 8),
-+						  &regs, &context);
++FIXTURE(user) {
++	int status_fd;
++	int data_fd;
++	int enable_fd;
++};
 +
-+		if (unlikely(!perf_entry))
-+			return;
++FIXTURE_SETUP(user) {
++	self->status_fd = open(status_file, O_RDONLY);
++	ASSERT_NE(-1, self->status_fd);
 +
-+		perf_fetch_caller_regs(regs);
++	self->data_fd = open(data_file, O_RDWR);
++	ASSERT_NE(-1, self->data_fd);
 +
-+		memcpy(perf_entry + 1, data, datalen);
++	self->enable_fd = -1;
++}
 +
-+		perf_trace_buf_submit(perf_entry, size, context,
-+				      user->call.event.type, 1, regs,
-+				      perf_head, NULL);
++FIXTURE_TEARDOWN(user) {
++	close(self->status_fd);
++	close(self->data_fd);
++
++	if (self->enable_fd != -1) {
++		write(self->enable_fd, "0", sizeof("0"));
++		close(self->enable_fd);
 +	}
 +}
-+#endif
 +
- /*
-  * Update the register page that is shared between user processes.
-  */
-@@ -550,6 +594,10 @@ static void update_reg_page_for(struct user_event *user)
- 
- 				if (probe_func == user_event_ftrace)
- 					status |= EVENT_STATUS_FTRACE;
-+#ifdef CONFIG_PERF_EVENTS
-+				else if (probe_func == user_event_perf)
-+					status |= EVENT_STATUS_PERF;
-+#endif
- 				else
- 					status |= EVENT_STATUS_OTHER;
- 			} while ((++probe_func_ptr)->func);
-@@ -591,7 +639,19 @@ static int user_event_reg(struct trace_event_call *call,
- 
- #ifdef CONFIG_PERF_EVENTS
- 	case TRACE_REG_PERF_REGISTER:
-+		ret = tracepoint_probe_register(call->tp,
-+						call->class->perf_probe,
-+						data);
-+		if (!ret)
-+			goto inc;
-+		break;
++TEST_F(user, register_events) {
++	struct user_reg reg = {0};
++	int page_size = sysconf(_SC_PAGESIZE);
++	char *status_page;
 +
- 	case TRACE_REG_PERF_UNREGISTER:
-+		tracepoint_probe_unregister(call->tp,
-+					    call->class->perf_probe,
-+					    data);
-+		goto dec;
++	reg.size = sizeof(reg);
++	reg.name_args = (__u64)"__test_event u32 field1; u32 field2";
 +
- 	case TRACE_REG_PERF_OPEN:
- 	case TRACE_REG_PERF_CLOSE:
- 	case TRACE_REG_PERF_ADD:
-@@ -849,6 +909,9 @@ static int user_event_parse(char *name, char *args, char *flags,
- 	user->class.get_fields = user_event_get_fields;
- 	user->class.reg = user_event_reg;
- 	user->class.probe = user_event_ftrace;
-+#ifdef CONFIG_PERF_EVENTS
-+	user->class.perf_probe = user_event_perf;
-+#endif
- 
- 	mutex_lock(&event_mutex);
- 	ret = user_event_trace_register(user);
++	status_page = mmap(NULL, page_size, PROT_READ, MAP_SHARED,
++			   self->status_fd, 0);
++
++	/* Register should work */
++	ASSERT_EQ(0, ioctl(self->data_fd, DIAG_IOCSREG, &reg));
++	ASSERT_EQ(0, reg.write_index);
++	ASSERT_NE(0, reg.status_index);
++
++	/* Multiple registers should result in same index */
++	ASSERT_EQ(0, ioctl(self->data_fd, DIAG_IOCSREG, &reg));
++	ASSERT_EQ(0, reg.write_index);
++	ASSERT_NE(0, reg.status_index);
++
++	/* Ensure disabled */
++	self->enable_fd = open(enable_file, O_RDWR);
++	ASSERT_NE(-1, self->enable_fd);
++	ASSERT_NE(-1, write(self->enable_fd, "0", sizeof("0")))
++
++	/* MMAP should work and be zero'd */
++	ASSERT_NE(MAP_FAILED, status_page);
++	ASSERT_NE(NULL, status_page);
++	ASSERT_EQ(0, status_page[reg.status_index]);
++
++	/* Enable event and ensure bits updated in status */
++	ASSERT_NE(-1, write(self->enable_fd, "1", sizeof("1")))
++	ASSERT_EQ(EVENT_STATUS_FTRACE, status_page[reg.status_index]);
++
++	/* Disable event and ensure bits updated in status */
++	ASSERT_NE(-1, write(self->enable_fd, "0", sizeof("0")))
++	ASSERT_EQ(0, status_page[reg.status_index]);
++
++	/* File still open should return -EBUSY for delete */
++	ASSERT_EQ(-1, ioctl(self->data_fd, DIAG_IOCSDEL, "__test_event"));
++	ASSERT_EQ(EBUSY, errno);
++
++	/* Delete should work only after close */
++	close(self->data_fd);
++	self->data_fd = open(data_file, O_RDWR);
++	ASSERT_EQ(0, ioctl(self->data_fd, DIAG_IOCSDEL, "__test_event"));
++
++	/* Unmap should work */
++	ASSERT_EQ(0, munmap(status_page, page_size));
++}
++
++TEST_F(user, write_events) {
++	struct user_reg reg = {0};
++	struct iovec io[3];
++	__u32 field1, field2;
++	int before = 0, after = 0;
++
++	reg.size = sizeof(reg);
++	reg.name_args = (__u64)"__test_event u32 field1; u32 field2";
++
++	field1 = 1;
++	field2 = 2;
++
++	io[0].iov_base = &reg.write_index;
++	io[0].iov_len = sizeof(reg.write_index);
++	io[1].iov_base = &field1;
++	io[1].iov_len = sizeof(field1);
++	io[2].iov_base = &field2;
++	io[2].iov_len = sizeof(field2);
++
++	/* Register should work */
++	ASSERT_EQ(0, ioctl(self->data_fd, DIAG_IOCSREG, &reg));
++	ASSERT_EQ(0, reg.write_index);
++	ASSERT_NE(0, reg.status_index);
++
++	/* Write should fail on invalid slot with ENOENT */
++	io[0].iov_base = &field2;
++	io[0].iov_len = sizeof(field2);
++	ASSERT_EQ(-1, writev(self->data_fd, (const struct iovec *)io, 3));
++	ASSERT_EQ(ENOENT, errno);
++	io[0].iov_base = &reg.write_index;
++	io[0].iov_len = sizeof(reg.write_index);
++
++	/* Enable event */
++	self->enable_fd = open(enable_file, O_RDWR);
++	ASSERT_NE(-1, write(self->enable_fd, "1", sizeof("1")))
++
++	/* Write should make it out to ftrace buffers */
++	before = trace_bytes();
++	ASSERT_NE(-1, writev(self->data_fd, (const struct iovec *)io, 3));
++	after = trace_bytes();
++	ASSERT_GT(after, before);
++}
++
++TEST_F(user, write_fault) {
++	struct user_reg reg = {0};
++	struct iovec io[2];
++	int l = sizeof(__u64);
++	void *anon;
++
++	reg.size = sizeof(reg);
++	reg.name_args = (__u64)"__test_event u64 anon";
++
++	anon = mmap(NULL, l, PROT_READ, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++	ASSERT_NE(MAP_FAILED, anon);
++
++	io[0].iov_base = &reg.write_index;
++	io[0].iov_len = sizeof(reg.write_index);
++	io[1].iov_base = anon;
++	io[1].iov_len = l;
++
++	/* Register should work */
++	ASSERT_EQ(0, ioctl(self->data_fd, DIAG_IOCSREG, &reg));
++	ASSERT_EQ(0, reg.write_index);
++	ASSERT_NE(0, reg.status_index);
++
++	/* Write should work normally */
++	ASSERT_NE(-1, writev(self->data_fd, (const struct iovec *)io, 2));
++
++	/* Faulted data should zero fill and work */
++	ASSERT_EQ(0, madvise(anon, l, MADV_DONTNEED));
++	ASSERT_NE(-1, writev(self->data_fd, (const struct iovec *)io, 2));
++	ASSERT_EQ(0, munmap(anon, l));
++}
++
++int main(int argc, char **argv)
++{
++	return test_harness_run(argc, argv);
++}
+diff --git a/tools/testing/selftests/user_events/settings b/tools/testing/selftests/user_events/settings
+new file mode 100644
+index 000000000000..ba4d85f74cd6
+--- /dev/null
++++ b/tools/testing/selftests/user_events/settings
+@@ -0,0 +1 @@
++timeout=90
 -- 
 2.17.1
 
