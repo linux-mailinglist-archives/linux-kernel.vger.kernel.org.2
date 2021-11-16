@@ -2,193 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7BB452913
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:18:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6581C452914
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:21:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343585AbhKPEU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 23:20:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41626 "EHLO
+        id S243064AbhKPEWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 23:22:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245635AbhKPEUW (ORCPT
+        with ESMTP id S243001AbhKPEVO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 23:20:22 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D35C200E6C
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 17:13:15 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id l19so18639740ilk.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 17:13:15 -0800 (PST)
+        Mon, 15 Nov 2021 23:21:14 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100C7C081979
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 17:15:40 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id f20so17147951qtb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 17:15:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/RylitkTtnBHc/Lo8gM0trwtbuaJL6rG5rKwCgLIAZE=;
-        b=GgkuvFc7y5u16M9Tf9hD6iE7JLwnvhiZGpRHrmBZn2AYkMs4PdA69bg34XN6bG+Twh
-         ugPsT+vThoA5y5QgRBt82R9szKSBZIblNbVDt1Ib138qL30JNgOPVZB2Jl4AR3dleunI
-         eenShhNMA5uHx00GX6iLVR2OxL3UhTJsMDLn8=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nTmVpcqEuNMF9B6vHrRyqFuTKE2hk54YsDuclLPVpbY=;
+        b=PDmzrL+XWLfAsLwwkwQSUW4yVuUce0rRD2qTUpkaZBZuc7GWpmP+PW1WJgUDaXJn4J
+         h1n52CwV5OnJCCyZX/gp+j3FjXLC0Vty1fDLdrONijqSg/Gg/gLKj8rDxTZ7VNPgUz41
+         ExlDrWfd9mdlLGf1bqqDzZ+i4IOQkMql9HhkpWI2d+gZPrW2qEslA6Fh3no6KqBGLfuA
+         sLqr0e9laHkJNbOR8v7t+Lo6aKUl4mXTYnR1rc0QWTr2KFsU7SHtt6+aZ869awMykNHK
+         9Gd8o7JHJPUCIQ16l7k4r+ols0+8NUAAFzn/HvqHsKzt99YUCrj6lm7H03eQAK48aDlV
+         4kOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/RylitkTtnBHc/Lo8gM0trwtbuaJL6rG5rKwCgLIAZE=;
-        b=E4nL0gFtg/+Sam80Li2g/07sttZieDHp21pnXvnrik0ujnyGCjgRaDY8+rbv07MSaP
-         RyIDUsFWo8QPICT6S+5ZkBroc/5tW1jLODThW4FsFmQKJHOFWoJc67KxHauVMXaq1O0f
-         cPm4qZiL/HTkwlLVwIRVSEtuP31Btfv3AdaOTLmzZw51wRgQhwB8JWBi8HO+u/+POwY0
-         iZwkNp7ZGWK8qs3spGwwfiEhKYZBzE4Qx6JQSRxDPjP7FIqViYDqbNK6eYzYQytJFUFE
-         w1ZDNq/RjwA0++8+ci6wFIe/x0vmj69OAUab2H/Td9wpK3oZFtSJS+UB6m0cp5hpxBmc
-         vmZg==
-X-Gm-Message-State: AOAM532372pNwSDw1wSI2UUrx6IruzF+XDFh4zDN9GXqHHaLBMVinhB+
-        Zba2Dasi1FGvS1XCJ/5HyLQd9WkV58s+EQ==
-X-Google-Smtp-Source: ABdhPJyq5TZgV6wOOlFLgrUVfDNj8loezoKV4G8+ZROzNga7I+fVJ6aE6MfxpRiLkEoe8+caEW/zng==
-X-Received: by 2002:a05:6e02:1487:: with SMTP id n7mr1937029ilk.252.1637025194594;
-        Mon, 15 Nov 2021 17:13:14 -0800 (PST)
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com. [209.85.166.50])
-        by smtp.gmail.com with ESMTPSA id ay13sm4743731iob.37.2021.11.15.17.13.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 17:13:14 -0800 (PST)
-Received: by mail-io1-f50.google.com with SMTP id m9so23979463iop.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 17:13:14 -0800 (PST)
-X-Received: by 2002:a05:6638:190f:: with SMTP id p15mr2378516jal.82.1637025193783;
- Mon, 15 Nov 2021 17:13:13 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nTmVpcqEuNMF9B6vHrRyqFuTKE2hk54YsDuclLPVpbY=;
+        b=YUUi6ccz6ilyf51l06SJWxh+UFokIkWx5a4pEgvUwLHOpNBzuTUqpsIeD9Af7/HOc/
+         YWLmY37k2BOZQpxAre2JmCxE23okGY3bjbDOREiUKsOlkGU+RuR5SpbQEKHXN0RUw9fH
+         DJNIIIr9XIq37SUxUx3RrlTsUdcD/M7uL4qu47zIElFRYNq8zm3UjFVsCHJ3vFwNUi1c
+         YjLhgDo+QGS2R7NoxIsOcNTire+RNk53Y7Ja7JakWCk8ipYfKHTZzAsLBuZ+Xy0dt/wr
+         pKppBcZVuQ7hkIr/YrtM6sVs35BCnMEP6jyZiKA7Kll4QyTyoVbl03FlvNcqnegDoGTM
+         XDfw==
+X-Gm-Message-State: AOAM530mz37Z0LfFWTAaqLsSeht71TBaNMrkeLXiKZuqym5Lc/VTIVhP
+        Q0Fh7quOnngz7P+TFngIT849RZnAAhg=
+X-Google-Smtp-Source: ABdhPJwUR8gPRHS+I+YnegLkVJD3iVLubw7CsFtS/vmJ3/Pd2BRRnmFO7rKWizwo57d5LwgzFN29NQ==
+X-Received: by 2002:ac8:3d49:: with SMTP id u9mr3648750qtf.264.1637025339162;
+        Mon, 15 Nov 2021 17:15:39 -0800 (PST)
+Received: from localhost.localdomain (pool-98-113-42-30.nycmny.fios.verizon.net. [98.113.42.30])
+        by smtp.googlemail.com with ESMTPSA id j20sm3472493qtj.43.2021.11.15.17.15.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 17:15:38 -0800 (PST)
+From:   Zameer Manji <zmanji@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Zameer Manji <zmanji@gmail.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Michael Straube <straube.linux@gmail.com>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: r8188eu: remove unused defines in wifi.h
+Date:   Tue, 16 Nov 2021 01:14:33 +0000
+Message-Id: <20211116011451.896714-1-zmanji@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CAD=FV=UKyJLhDEKxhqrit16kvLfi+g0DyYKL6bLJ35fO7NCTsg@mail.gmail.com>
-In-Reply-To: <CAD=FV=UKyJLhDEKxhqrit16kvLfi+g0DyYKL6bLJ35fO7NCTsg@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 15 Nov 2021 17:13:02 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=X35OW+YRvspk=M-W+qcLObCxzGc7dJsvAZSXSyCZsv1Q@mail.gmail.com>
-Message-ID: <CAD=FV=X35OW+YRvspk=M-W+qcLObCxzGc7dJsvAZSXSyCZsv1Q@mail.gmail.com>
-Subject: Re: RT_GROUP_SCHED throttling blocks unthrottled RT tasks?
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Joel Fernandes <joelaf@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+None of these defines in wifi.h are used so they
+can be safely removed.
 
-On Fri, Nov 5, 2021 at 10:44 AM Doug Anderson <dianders@chromium.org> wrote:
->
-> Hi,
->
-> I'm seeing a strange behavior that I _think_ is a bug. I'm hoping that
-> some of the scheduling experts can tell me if I'm just
-> misunderstanding or if this is truly a bug. To see it, I do this:
->
-> --
->
-> # Allow 1000 us more of RT at system and top cgroup
-> old_rt=$(cat /proc/sys/kernel/sched_rt_runtime_us)
-> echo $((old_rt + 1000)) > /proc/sys/kernel/sched_rt_runtime_us
-> old_rt=$(cat /sys/fs/cgroup/cpu/cpu.rt_runtime_us)
-> echo $((old_rt + 1000)) > /sys/fs/cgroup/cpu/cpu.rt_runtime_us
->
-> # Give the 1000 us to my own group
-> mkdir /sys/fs/cgroup/cpu/doug
-> echo 1000 > /sys/fs/cgroup/cpu/doug/cpu.rt_runtime_us
->
-> # Fork off a bunch of spinny things
-> for i in $(seq 13); do
->   python -c "while True: pass"&
-> done
->
-> # Make my spinny things RT and put in my group
-> # (assumes no other python is running!)
-> for pid in $(ps aux | grep python | grep -v grep | awk '{print $2}'); do
->   echo $pid >> /sys/fs/cgroup/cpu/doug/tasks
->   chrt -p -f 99 $pid
-> done
->
-> --
->
-> As expected, the spinny python tasks are pretty much throttled down to
-> 0 in the above (they get 1 ms out of 1 second).
->
-> However, _the bug_ is that the above basically causes all _other_ RT
-> things in my system to stop functioning. I'm on an ARM Chromebook
-> (sc7180-trogdor) and we communicate to our EC on a "realtime" thread
-> due to SPI timing requirements. The above commands appear to starve
-> the EC's communication task and (as far as I can tell) other RT tasks
-> in the system.
->
-> Notably:
->
-> a) My EC comms slow to a crawl (eventually one gets through).
->
-> b) "top" shows stuff like this:
->
->   PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+
-> COMMAND
->   179 root     -51   0       0      0      0 R 100.0   0.0   0:31.79
-> cros_ec_spi_hig
->   180 root     -51   0       0      0      0 R  95.2   0.0   0:50.19
-> irq/169-chromeo
->   184 root     -51   0       0      0      0 R  95.2   0.0   0:13.24
-> spi10
->   221 root      -2   0       0      0      0 R  95.2   0.0   0:50.57
-> ring0
->
-> c) If I give my spinny tasks just a little bit more time than 1 ms
-> then I get a hung task.
->
->
-> When I'm testing the above, the non-RT stuff in the system continues
-> to work OK though. I can even go in and kill all my python tasks and
-> the system returns to normal.
->
-> I tried gathering some tracing. One bit that might (?) be relevant:
->
->  cros_ec_spi_hig-179     [000] d.h5  1495.305919: sched_waking:
-> comm=kworker/4:2 pid=5232 prio=120 target_cpu=004
->  cros_ec_spi_hig-179     [000] d.h6  1495.305926: sched_wakeup:
-> comm=kworker/4:2 pid=5232 prio=120 target_cpu=004
->           <idle>-0       [001] d.H5  1495.309113: sched_waking:
-> comm=sugov:6 pid=2658 prio=-1 target_cpu=006
->           <idle>-0       [001] d.H6  1495.309119: sched_wakeup:
-> comm=sugov:6 pid=2658 prio=-1 target_cpu=006
->  cros_ec_spi_hig-179     [000] d.h5  1495.309336: sched_waking:
-> comm=sugov:6 pid=2658 prio=-1 target_cpu=006
->  cros_ec_spi_hig-179     [000] d.h6  1495.309341: sched_wakeup:
-> comm=sugov:6 pid=2658 prio=-1 target_cpu=006
->           <idle>-0       [001] d.H5  1495.312137: sched_waking:
-> comm=sugov:6 pid=2658 prio=-1 target_cpu=006
->           <idle>-0       [001] d.H6  1495.312142: sched_wakeup:
-> comm=sugov:6 pid=2658 prio=-1 target_cpu=006
->  cros_ec_spi_hig-179     [000] d.h5  1495.312859: sched_waking:
-> comm=sugov:6 pid=2658 prio=-1 target_cpu=006
->  cros_ec_spi_hig-179     [000] d.h6  1495.312870: sched_wakeup:
-> comm=sugov:6 pid=2658 prio=-1 target_cpu=006
->
-> My best guess is that there's some bug in the scheduler where it just
-> loops constantly picking an unthrottled RT task but then incorrectly
-> decides that it's throttled and thus doesn't run it.
->
-> Most of my testing has been on the chromeos-5.4 kernel, but just in
-> case I tried a vanilla v5.15 kernel and I could reproduce the same
-> problems.
->
->
-> Anyway, if I'm just doing something stupid then I appologize of the
-> noise. If the above should work and you need me to gather more logging
-> / try any experiments, I'm happy to do so.
+Signed-off-by: Zameer Manji <zmanji@gmail.com>
+---
+ drivers/staging/r8188eu/include/wifi.h | 57 --------------------------
+ 1 file changed, 57 deletions(-)
 
-I spent a little more time here and:
+diff --git a/drivers/staging/r8188eu/include/wifi.h b/drivers/staging/r8188eu/include/wifi.h
+index 193a557f0f47..7cbc7015e90f 100644
+--- a/drivers/staging/r8188eu/include/wifi.h
++++ b/drivers/staging/r8188eu/include/wifi.h
+@@ -13,32 +13,9 @@
+ #define BIT(x)	(1 << (x))
+ 
+ #define WLAN_ETHHDR_LEN		14
+-#define WLAN_ETHADDR_LEN	6
+-#define WLAN_IEEE_OUI_LEN	3
+-#define WLAN_ADDR_LEN		6
+-#define WLAN_CRC_LEN		4
+-#define WLAN_BSSID_LEN		6
+-#define WLAN_BSS_TS_LEN		8
+ #define WLAN_HDR_A3_LEN		24
+-#define WLAN_HDR_A4_LEN		30
+ #define WLAN_HDR_A3_QOS_LEN	26
+-#define WLAN_HDR_A4_QOS_LEN	32
+ #define WLAN_SSID_MAXLEN	32
+-#define WLAN_DATA_MAXLEN	2312
+-
+-#define WLAN_A3_PN_OFFSET	24
+-#define WLAN_A4_PN_OFFSET	30
+-
+-#define WLAN_MIN_ETHFRM_LEN	60
+-#define WLAN_MAX_ETHFRM_LEN	1514
+-#define WLAN_ETHHDR_LEN		14
+-
+-#define P80211CAPTURE_VERSION	0x80211001
+-
+-/*  This value is tested by WiFi 11n Test Plan 5.2.3. */
+-/*  This test verifies the WLAN NIC can update the NAV through sending
+- *  the CTS with large duration. */
+-#define	WiFiNavUpperUs				30000	/*  30 ms */
+ 
+ enum WIFI_FRAME_TYPE {
+ 	WIFI_MGT_TYPE  =	(0),
+@@ -487,13 +464,6 @@ static inline int IsFrameTypeCtrl(unsigned char *pframe)
+ #define _STATUS_CODE_		2
+ #define _TIMESTAMP_		8
+ 
+-#define AUTH_ODD_TO		0
+-#define AUTH_EVEN_TO		1
+-
+-#define WLAN_ETHCONV_ENCAP	1
+-#define WLAN_ETHCONV_RFC1042	2
+-#define WLAN_ETHCONV_8021h	3
+-
+ #define cap_ESS		BIT(0)
+ #define cap_IBSS	BIT(1)
+ #define cap_CFPollable	BIT(2)
+@@ -632,13 +602,6 @@ enum ht_cap_ampdu_factor {
+ #define HT_INFO_OPERATION_MODE_TRANSMIT_BURST_LIMIT	((u8) BIT(3))
+ #define HT_INFO_OPERATION_MODE_NON_HT_STA_PRESENT	((u8) BIT(4))
+ 
+-#define HT_INFO_STBC_PARAM_DUAL_BEACON		((u16) BIT(6))
+-#define HT_INFO_STBC_PARAM_DUAL_STBC_PROTECT	((u16) BIT(7))
+-#define HT_INFO_STBC_PARAM_SECONDARY_BC		((u16) BIT(8))
+-#define HT_INFO_STBC_PARAM_LSIG_TXOP_PROTECT_ALLOWED	((u16) BIT(9))
+-#define HT_INFO_STBC_PARAM_PCO_ACTIVE		((u16) BIT(10))
+-#define HT_INFO_STBC_PARAM_PCO_PHASE		((u16) BIT(11))
+-
+ /*	===============WPS Section=============== */
+ /*	For WPSv1.0 */
+ #define WPSOUI					0x0050f204
+@@ -949,26 +912,6 @@ enum P2P_PS_MODE {
+ 	P2P_PS_MIX = 3, /*  CTWindow and NoA */
+ };
+ 
+-/*	=====================WFD Section===================== */
+-/*	For Wi-Fi Display */
+-#define	WFD_ATTR_DEVICE_INFO		0x00
+-#define	WFD_ATTR_ASSOC_BSSID		0x01
+-#define	WFD_ATTR_COUPLED_SINK_INFO	0x06
+-#define	WFD_ATTR_LOCAL_IP_ADDR		0x08
+-#define	WFD_ATTR_SESSION_INFO		0x09
+-#define	WFD_ATTR_ALTER_MAC		0x0a
+-
+-/*	For WFD Device Information Attribute */
+-#define	WFD_DEVINFO_SOURCE			0x0000
+-#define	WFD_DEVINFO_PSINK			0x0001
+-#define	WFD_DEVINFO_SSINK			0x0002
+-#define	WFD_DEVINFO_DUAL			0x0003
+-
+-#define	WFD_DEVINFO_SESSION_AVAIL		0x0010
+-#define	WFD_DEVINFO_WSD				0x0040
+-#define	WFD_DEVINFO_PC_TDLS			0x0080
+-#define	WFD_DEVINFO_HDCP_SUPPORT		0x0100
+-
+ #define IP_MCAST_MAC(mac)				\
+ 	((mac[0] == 0x01) && (mac[1] == 0x00) && (mac[2] == 0x5e))
+ #define ICMPV6_MCAST_MAC(mac)				\
+-- 
+2.25.1
 
-a) Managed to come up with a test case that makes it easy for anyone
-to reproduce the problem themselves.
-
-b) Managed to come up with a short patch that "fixes" this problem for me.
-
-Since I had a potential fix, I posted this as a patch. Maybe we can
-move the discussion to my post of that patch, which will hopefully
-show up at:
-
-https://lore.kernel.org/r/20211115170241.1.I94825a614577505bd1a8be9aeff208a49cb39b3d@changeid
-
-...oddly that patch isn't showing up (?). It should be "[PATCH]
-sched/rt: Don't reschedule a throttled task even if it's higher
-priority". If it's not there tomorrow, I can try to repost again.
-
--Doug
