@@ -2,92 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F464530F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:39:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED284530F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235121AbhKPLkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 06:40:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56130 "EHLO
+        id S235197AbhKPLkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:40:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235256AbhKPLj6 (ORCPT
+        with ESMTP id S235339AbhKPLj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 16 Nov 2021 06:39:58 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6C4C06121D;
-        Tue, 16 Nov 2021 03:34:56 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id z1-20020a05600c220100b00337f97d2464so1598399wml.1;
-        Tue, 16 Nov 2021 03:34:56 -0800 (PST)
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B8BC06122B
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 03:35:31 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id z10so59867836edc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 03:35:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=OKm72OBf2FpxYQCv0sB/f+DkBwoP27JOzZaWrwqWFj4=;
-        b=O/F/kABNBuHmPwDVg3PSUcnyGVW0cz2m5CMF7/O0fU5kVCBz/Pc2vsnPc7st1wIkvi
-         qm/BIGSYiHqg/a8h3TApXiQJtKqyRnhGAMz2NqqGMa1RNSSG7AlABr6JCbWvhn+24feX
-         QB2cYDY8uS0FhJ9TMap+c22Atd5FC0rWlZiyvExu1o5SsCggyA2OXWUxFwIzxIVgK91H
-         CWD5fs5EQP8Y8V4JtbZ/6JJ1fiAtsr5EQvuRaKmqHdlDcq0k5uYyPmYTy+ePGJCtInUl
-         /EuI+FB2d0eVEl9y/zfmiaZ/ECbTUFeu8yv5Z6/SGri/mA0YHNyCLK3l/xyWjWsnNgrt
-         q1ZQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=sVHxj0XGH99gC44c3Vz1S9knGo46qZv6E2spfNUHe5g=;
+        b=mX7HCEqkuQCtuWj3YNzIsTotX6VEXPODHRv3JvBKJ789nM95iRfySXWemNh86YTByH
+         ZAl99+t3uxpmY3Grtg5K9KZic5bPZ1o5jNR5dimec82aegTV4Mi4SP3/D7Qyt07HaKEF
+         IJum8Fdq1hkrNU7gzgeQJ51e1/xSFK4uCqNuAvPLIxS7TJevgTB0n30CG4cu5Cxdk+A1
+         02OTbxR3k315wRUnrcdeFjcQKGIL8eH5Jq+1Jnda6L7Z5BinqZMC3CO6Tm75EFiZeExG
+         K1TIHHjcdDddczxE3/KmPTj6OgaoIF7sTPjwl1V3jDD8c7/CE34FrXVLRVUD4pUhY3VD
+         YL/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=OKm72OBf2FpxYQCv0sB/f+DkBwoP27JOzZaWrwqWFj4=;
-        b=njE1iCsLGh3aUr9zU1rizsK56D/3o+lf5sFTq+/FqBHhwvtHsDQKBsVPCnDHdbuLWr
-         mpfFIBx1/Sz5csezA9haGLlJ8yV5Hnyr+146fE1b/zcpU+D28Ca+6VBbTws7vQVH+p3L
-         ywrufyAyjdMtLwTSxcO8mIVxO4gNkGnJtp55Nq6TXCQHFKbzt+0dtJ3ADDpaRJlNG0Eb
-         A0RD8njp7JFcDEreH1OgWXkFB/mM4S+cJO6DhzzeFZMYLkKnRWDtvItDqQGuqYqKadA9
-         fsp3+t7oFtwdgizYP6fZ4iXA1fNKQR0LX63pDjqkPGjW3OGN0yCAwK4PbvmuTBLIvIqN
-         zNZA==
-X-Gm-Message-State: AOAM533ja6o6lF79N5Mk0TM65lxu5jmRRVSqOV3MRXax/TCMGmclPXek
-        o6zYrkbVvCTY0RQnzGza25ZIAK1RgQ/jRhGQmKxNg23qJ7E=
-X-Google-Smtp-Source: ABdhPJzgNg+P77+DN3iCvFUOuqEzCWsgayJFWiSc9f/BHCLia5o5ZFhffvy7YyrzIg41Li3heJK4wrVEoqSiRFGHjBw=
-X-Received: by 2002:a7b:cf10:: with SMTP id l16mr69435166wmg.17.1637062494781;
- Tue, 16 Nov 2021 03:34:54 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=sVHxj0XGH99gC44c3Vz1S9knGo46qZv6E2spfNUHe5g=;
+        b=TPrrmU27isWC/abTPjxvZd4VxXxCD2+hzIPKamXuax9JeZCt5RtIEn0OFChYXdyJgZ
+         MG8ajbfegYxmcdJask0SxaWFVXWeOjG4JQlXeLSkjeVlZOtk9yfC6DhC1uj/1BVBWTUG
+         cMhJuO78svTRxz9u4ptMZdPjZrfDudxssUCPTe0FXIL56f5uSa4WglKu4aKREFPNeiYX
+         mH0nS3plqifxuVf7omsNV3l+gE+xsApc6OkUFM0gfN6vcKU4eMweKHaAzML8fJ2AKtHR
+         pgCdAxGLwCwzKc70qxCp4HVcU6nZTg1uVmgqnn6wDhyiLok9fUbSaSVCJN89NSKFvGCR
+         mGlA==
+X-Gm-Message-State: AOAM530/nNAa/RnFxJ/XrdxLf1mSTtnpPLkmDWkDWNBy9+XrQ/9a5W7+
+        J8jeEa5346hqGA9wRxUa4eU=
+X-Google-Smtp-Source: ABdhPJzc1JhFgKO6ETSBOQkgEtW7aBp3BZaymEYpHi/drLiMrSZCyiBwtcIVTFmI3X5p6vHeyHwGAg==
+X-Received: by 2002:a50:e683:: with SMTP id z3mr9481637edm.206.1637062530030;
+        Tue, 16 Nov 2021 03:35:30 -0800 (PST)
+Received: from localhost.localdomain (host-82-61-38-115.retail.telecomitalia.it. [82.61.38.115])
+        by smtp.gmail.com with ESMTPSA id sd28sm8793071ejc.37.2021.11.16.03.35.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 03:35:29 -0800 (PST)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Marco Elver <elver@google.com>
+Cc:     syzkaller-bugs@googlegroups.com,
+        syzbot <syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com>,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [syzbot] BUG: sleeping function called from invalid context in __might_resched
+Date:   Tue, 16 Nov 2021 12:35:27 +0100
+Message-ID: <5073833.kmqaQDgJIs@localhost.localdomain>
+In-Reply-To: <CANpmjNMNC=3FiBB0aVVP9LXA9-03ug-sE4CqgJu2-sjdxA14TQ@mail.gmail.com>
+References: <0000000000003efce905d0b135e6@google.com> <10635720.r0gBeNIlcX@localhost.localdomain> <CANpmjNMNC=3FiBB0aVVP9LXA9-03ug-sE4CqgJu2-sjdxA14TQ@mail.gmail.com>
 MIME-Version: 1.0
-From:   Sandy Harris <sandyinchina@gmail.com>
-Date:   Tue, 16 Nov 2021 19:34:43 +0800
-Message-ID: <CACXcFmmZUggw8Ze7eoXhcvOtf8cWXJoS51MNwVmMGiK7ggCeOw@mail.gmail.com>
-Subject: [PATCH 5/8] Replace memset() with memzero_explicit()
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace memset(address,0,bytes) which may be optimised
-away with memzero_explicit(address,bytes) which resists
-such optimisation
+On Tuesday, November 16, 2021 11:24:54 AM CET Marco Elver wrote:
+> On Tue, 16 Nov 2021 at 08:57, Fabio M. De Francesco
+> <fmdefrancesco@gmail.com> wrote:
+> [...]
+> > I think that this is more readable and comprehensible.
+> >
+> > Therefore, if I'm not wrong, Marco's "!preemptible()", that is "if (!
+> > (preempt_count() == 0 && !irqs_disabled())", might be rewritten to an 
+easier
+> > to understand "if (preempt_count() || irqs_disabled())".
+> >
+> > Am I wrong? Let's test it...
+> 
+> It's right, but why not use preemptible()? The definition of
+> preemptible() might change and then you'd have to fix the code again.
+> 
+> I actually find (preempt_count() || irqs_disabled()) tells me less of
+> what your intent here is vs. just writing !preemptible().
+> 
+You are right :)
 
----
- crypto/shash.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+If we have a macro, there must be a good reason behind its existence. So 
+let's use it. 
 
-diff --git a/crypto/shash.c b/crypto/shash.c
-index 0a0a50cb694f..f07d06f5da71 100644
---- a/crypto/shash.c
-+++ b/crypto/shash.c
-@@ -112,7 +112,7 @@ static int shash_update_unaligned(struct
-shash_desc *desc, const u8 *data,
+For I didn't know that we have that macro, I had to read its definition. Then 
+I had to understand what means the negation of its parts. It was a bit 
+difficult to understand, so I thought that open coding if we have preemption 
+disabled or irqs disabled was easier to understand.
 
-     memcpy(buf, data, unaligned_len);
-     err = shash->update(desc, buf, unaligned_len);
--    memset(buf, 0, unaligned_len);
-+    memzero_explicit(buf, unaligned_len);
+But now I see that, as said, if we have an API we should use it.
 
-     return err ?:
-            shash->update(desc, data + unaligned_len, len - unaligned_len);
-@@ -156,7 +156,7 @@ static int shash_final_unaligned(struct shash_desc
-*desc, u8 *out)
-     memcpy(out, buf, ds);
+I'm preparing a patch and give you proper credit for suggestions.
 
- out:
--    memset(buf, 0, ds);
-+    memzero_explicit(buf, ds);
-     return err;
- }
+Thanks,
 
--- 
-2.25.1
+Fabio M. De Francesco
+
+
+
+
