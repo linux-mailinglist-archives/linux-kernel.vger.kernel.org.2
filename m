@@ -2,131 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97191452E19
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E540452E1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:36:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233264AbhKPJhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 04:37:17 -0500
-Received: from mailgw01.mediatek.com ([60.244.123.138]:42090 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233267AbhKPJgx (ORCPT
+        id S233180AbhKPJjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 04:39:24 -0500
+Received: from mail-ua1-f49.google.com ([209.85.222.49]:36486 "EHLO
+        mail-ua1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233083AbhKPJjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 04:36:53 -0500
-X-UUID: 04329e55bd3541b3b2a8b663cb736d41-20211116
-X-UUID: 04329e55bd3541b3b2a8b663cb736d41-20211116
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <trevor.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1937280426; Tue, 16 Nov 2021 17:33:49 +0800
-Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Tue, 16 Nov 2021 17:33:48 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb02.mediatek.inc
- (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 16 Nov
- 2021 17:33:48 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 16 Nov 2021 17:33:48 +0800
-Message-ID: <f915d1090abf2b6d188ce27068919a181828e463.camel@mediatek.com>
-Subject: Re: [PATCH 3/4] ASoC: mediatek: mt8195: separate the common code
- from machine driver
-From:   Trevor Wu <trevor.wu@mediatek.com>
-To:     YC Hung <yc.hung@mediatek.com>, Mark Brown <broonie@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-CC:     <devicetree@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <tiwai@suse.com>, <linux-kernel@vger.kernel.org>,
-        <robh+dt@kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <matthias.bgg@gmail.com>, <daniel.baluta@nxp.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Tue, 16 Nov 2021 17:33:48 +0800
-In-Reply-To: <4e876c89ee58cd1408511a34573005e3df359cd0.camel@mediatek.com>
-References: <20211103100040.11933-1-trevor.wu@mediatek.com>
-         <20211103100040.11933-4-trevor.wu@mediatek.com>
-         <YYP+l7tMofYoB+aC@sirena.org.uk>
-         <b4360ea17c3045759e85ee13fa9c001afe73c93c.camel@mediatek.com>
-         <YYVQC7KLZx8oxdXT@sirena.org.uk>
-         <e404d241-0685-643b-4b9d-d85bb8783385@linux.intel.com>
-         <YYVez/V9ocCXhYmg@sirena.org.uk>
-         <4e876c89ee58cd1408511a34573005e3df359cd0.camel@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Tue, 16 Nov 2021 04:39:24 -0500
+Received: by mail-ua1-f49.google.com with SMTP id r15so13815123uao.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 01:36:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E0eR9zkAbihj7HFpbj20+RG8BagR/Ljq9p4NqypyKkY=;
+        b=C/vZhH4l4hrz2Q/i5MAVWMBCPN3PHUotsdYKGvpbeiveJDuPqxgwtk0ALfe9ILZl34
+         w2Gw+zboobr3kFiw5GMnthT99ZsT8SR34QUiABfrn4EOswSH6gWovRpcNrjq3pO2P4e3
+         k89LJaWEHHsRCr6Cx6PwMs1gyEBFZ4ZjkqsP+t4vf7SnMkzvpODD1nzDRbtqQnUdaUH0
+         ySTzIqf27pgSVuq+2N5BCfdCygqYYJLPXbZEGiFy5UpEny+X5A30N7VaAGrrnUfaKIuW
+         Q7ejjzx3ZA87V2skyDqeAhCq+Jjegi3yduZA8K++S/araGWrlkgkznn/Da4m+Q2qNWWB
+         OmqQ==
+X-Gm-Message-State: AOAM531ugSePvHx1451k6USry6pkvIdsdzrlpjj0Kfy8KEKsomQiBlBK
+        luZQJygQ5x/3pNwvt444Ro0AUV4JZNsYTw==
+X-Google-Smtp-Source: ABdhPJz+PfDx7PlzXZMq/GHX4SgVbCIEx+1bUtaAVxmUcoo/tzGhULTgVXLcvYCCBStK2BDC+QrJcw==
+X-Received: by 2002:a05:6102:7b1:: with SMTP id x17mr52912083vsg.13.1637055386805;
+        Tue, 16 Nov 2021 01:36:26 -0800 (PST)
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com. [209.85.222.54])
+        by smtp.gmail.com with ESMTPSA id 15sm9884457vkj.49.2021.11.16.01.36.26
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 01:36:26 -0800 (PST)
+Received: by mail-ua1-f54.google.com with SMTP id b17so41131508uas.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 01:36:26 -0800 (PST)
+X-Received: by 2002:a05:6102:e82:: with SMTP id l2mr52824758vst.37.1637055386105;
+ Tue, 16 Nov 2021 01:36:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK:  N
+References: <20211028061341.1479333-1-andr2000@gmail.com>
+In-Reply-To: <20211028061341.1479333-1-andr2000@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 16 Nov 2021 10:36:15 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXEGtr5Js4QwyGBMLP_LzG8mk0Ovv9PiOpnU2-VVp+7dg@mail.gmail.com>
+Message-ID: <CAMuHMdXEGtr5Js4QwyGBMLP_LzG8mk0Ovv9PiOpnU2-VVp+7dg@mail.gmail.com>
+Subject: Re: [PATCH] xen-pciback: allow compiling on other archs than x86
+To:     Oleksandr Andrushchenko <andr2000@gmail.com>
+Cc:     xen-devel@lists.xenproject.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>, julien@xen.org,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jan Beulich <jbeulich@suse.com>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Anastasiia Lukianenko <anastasiia_lukianenko@epam.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-11-08 at 17:40 +0800, YC Hung wrote:
-> Hi Mark,
-> 
-> I am YC Hung from Mediatek. Let me show our block diagram as the link
-> below for the sound card which support SOF.
-> 
-> 
-https://user-images.githubusercontent.com/62316/132476344-923dfe3a-5305-43e5-9fc8-c63d9ab2c58f.png
-> In this sound card, there are two components , one is SOF based
-> component and another is non-SOF based component(called Normal in the
-> block).
-> We want to reuse some BEs of Normal which can control Mediatek Audio
-> Front End hardware power, clock , and DAI module and still keep some
-> FEs(e.g. DPTX) then we can use it on the same sound card.
-> Therefore, we use late_probe callback function
-> "mt8195_mt6359_rt1019_rt5682_card_late_probe" to add route path from
-> SOF widget to non-SOF BEs.
-> For two patches https://github.com/thesofproject/linux/pull/3217 and 
-> https://github.com/thesofproject/linux/pull/3236, we want to keep FEs
-> of non-SOF components and can reuse them. Please let me know if I am
-> not clear enough.Thanks.
-> 
-> On Fri, 2021-11-05 at 16:41 +0000, Mark Brown wrote:
-> > On Fri, Nov 05, 2021 at 11:16:05AM -0500, Pierre-Louis Bossart
-> > wrote:
-> > > On 11/5/21 10:38 AM, Mark Brown wrote:
-> > > > We shouldn't be requiring people to load completely different
-> > > > drivers
-> > > > based on software configuration, what if a system wants to
-> > > > bypass
-> > > > the
-> > > > DSP in some but not all configurations?  Can we not just have
-> > > > controls
-> > > > allowing users to route round the DSP where appropriate?
-> > > 
-> > > It was my understanding the card relies on separate components
-> > > - a SOF-based component to provide support for DSP-managed
-> > > interfaces
-> > > - a 'non-SOF' component for 'regular' interfaces not handled by
-> > > the
-> > > DSP.
-> > > this was the basis for the changes discussed in
-> > > https://github.com/thesofproject/linux/pull/3217 and
-> > > https://github.com/thesofproject/linux/pull/3236
-> > 
-> > So it's actually supposed to end up as two different cards which
-> > can't
-> > possibly be interlinked?  That doesn't seem to add up entirely
-> > given
-> > that there's stuff being moved out of the current card, and I
-> > thought
-> > these systems had a fairly comprehensive audio muxing capability.
-> > Trevor, could you be a bit more specific about what's actually
-> > going
-> > on
-> > here physically please?+++++++++
-> > 
+Hi Oleksandr,
 
-Hi Mark,
+On Thu, Oct 28, 2021 at 8:15 AM Oleksandr Andrushchenko
+<andr2000@gmail.com> wrote:
+> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+>
+> Xen-pciback driver was designed to be built for x86 only. But it
+> can also be used by other architectures, e.g. Arm.
+>
+> Currently PCI backend implements multiple functionalities at a time,
+> such as:
+> 1. It is used as a database for assignable PCI devices, e.g. xl
+>    pci-assignable-{add|remove|list} manipulates that list. So, whenever
+>    the toolstack needs to know which PCI devices can be passed through
+>    it reads that from the relevant sysfs entries of the pciback.
+> 2. It is used to hold the unbound PCI devices list, e.g. when passing
+>    through a PCI device it needs to be unbound from the relevant device
+>    driver and bound to pciback (strictly speaking it is not required
+>    that the device is bound to pciback, but pciback is again used as a
+>    database of the passed through PCI devices, so we can re-bind the
+>    devices back to their original drivers when guest domain shuts down)
+> 3. Device reset for the devices being passed through
+> 4. Para-virtualised use-cases support
+>
+> The para-virtualised part of the driver is not always needed as some
+> architectures, e.g. Arm or x86 PVH Dom0, are not using backend-frontend
+> model for PCI device passthrough.
+>
+> For such use-cases make the very first step in splitting the
+> xen-pciback driver into two parts: Xen PCI stub and PCI PV backend
+> drivers.
+>
+> For that add new configuration options CONFIG_XEN_PCI_STUB and
+> CONFIG_XEN_PCIDEV_STUB, so the driver can be limited in its
+> functionality, e.g. no support for para-virtualised scenario.
+> x86 platform will continue using CONFIG_XEN_PCIDEV_BACKEND for the
+> fully featured backend driver.
+>
+> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+> Signed-off-by: Anastasiia Lukianenko <anastasiia_lukianenko@epam.com>
+> Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
+> Reviewed-by: Juergen Gross <jgross@suse.com>
 
-Is the reply from YC clear? Any suggestion would be appreciated. If you
-need more information, please let us know. 
+Thanks for your patch, which is now commit a67efff28832a597
+("xen-pciback: allow compiling on other archs than x86")
+in v5.16-rc1.
 
-Additionally, it was my understanding you suggested that DSP routes
-should be configurable in some ways, and we should not just add a new
-driver for SOF in case we need to support some other interface
-combinations in the future. If I'm wrong, please kindly correct me.
+> --- a/drivers/xen/Kconfig
+> +++ b/drivers/xen/Kconfig
+> @@ -181,10 +181,34 @@ config SWIOTLB_XEN
+>         select DMA_OPS
+>         select SWIOTLB
+>
+> +config XEN_PCI_STUB
+> +       bool
+> +
+> +config XEN_PCIDEV_STUB
+> +       tristate "Xen PCI-device stub driver"
+> +       depends on PCI && !X86 && XEN
+> +       depends on XEN_BACKEND
+> +       select XEN_PCI_STUB
+> +       default m
 
-Thanks,
-Trevor
+Please note that this means "default y" if CONFIG_MODULES=n.
+Perhaps this should be "default m if MODULES" instead?
 
+> +       help
+> +         The PCI device stub driver provides limited version of the PCI
+> +         device backend driver without para-virtualized support for guests.
+> +         If you select this to be a module, you will need to make sure no
+> +         other driver has bound to the device(s) you want to make visible to
+> +         other guests.
+> +
+> +         The "hide" parameter (only applicable if backend driver is compiled
+> +         into the kernel) allows you to bind the PCI devices to this module
+> +         from the default device drivers. The argument is the list of PCI BDFs:
+> +         xen-pciback.hide=(03:00.0)(04:00.0)
+> +
+> +         If in doubt, say m.
+> +
+>  config XEN_PCIDEV_BACKEND
+>         tristate "Xen PCI-device backend driver"
+>         depends on PCI && X86 && XEN
+>         depends on XEN_BACKEND
+> +       select XEN_PCI_STUB
+>         default m
+>         help
+>           The PCI device backend driver allows the kernel to export arbitrary
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
