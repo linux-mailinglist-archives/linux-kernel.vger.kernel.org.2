@@ -2,107 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C6D453A6B
+	by mail.lfdr.de (Postfix) with ESMTP id C779F453A6D
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 20:51:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240162AbhKPTwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 14:52:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44153 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229815AbhKPTwQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 14:52:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637092158;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=C3b5knlYZX1AIJ216JlJ+2mMKUoVtkxyIscJTP+T4Ew=;
-        b=AszMuhzJ1vxXqTlTNJfrJY9MpuZSoOI7HOxDY//h2sg3eTzLOCbGdme0Ygq2TL9zE0TcE0
-        g9hjqZfgG+rTNAdFf6+clcPn6o1OA9xKua0qX3veD7J4vLX/OjU7Lj5gTWKaykLV8GhPaN
-        8xEolp+KbEWQqgWU/YnfN6MiirPycKo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-382-N8_baTvXPKWn_z9raQc8Rw-1; Tue, 16 Nov 2021 14:49:13 -0500
-X-MC-Unique: N8_baTvXPKWn_z9raQc8Rw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D498D423B9;
-        Tue, 16 Nov 2021 19:49:11 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 466F960BD8;
-        Tue, 16 Nov 2021 19:49:09 +0000 (UTC)
-Message-ID: <04978d6d-8e1a-404d-b30d-402a7569c1f0@redhat.com>
-Date:   Tue, 16 Nov 2021 20:49:08 +0100
+        id S240170AbhKPTwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 14:52:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229815AbhKPTwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 14:52:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A759861A3A;
+        Tue, 16 Nov 2021 19:49:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637092189;
+        bh=0xPsIHGAGn2xqyjHE7056U7s5RR16eW3bnL05KsI6oQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LURxECjESsJAp/D7kPqchHD+QqlbKiPcSg/NbKG2H5abGY+EAT0icf3pRV5DQ0ijj
+         cfB5mRyRtoDKbbLDuoOlMXdYmmTwPGcUNxXtitXvqvjQ9APyFjOyTXLlIiyRP2sEI5
+         gbpGTD3eHWW/JjZQ5lwYrD+lSE6qMzxNZdihRErs=
+Date:   Tue, 16 Nov 2021 20:49:46 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] kernfs: release kernfs_mutex before the inode
+ allocation
+Message-ID: <YZQLWq7WMSRF2xCM@kroah.com>
+References: <20211116194317.1430399-1-minchan@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: Thoughts of AMX KVM support based on latest kernel
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     "Liu, Jing2" <jing2.liu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Jing Liu <jing2.liu@linux.intel.com>,
-        "Cooper, Andrew" <andrew.cooper3@citrix.com>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>
-References: <BYAPR11MB325685AB8E3DFD245846F854A9939@BYAPR11MB3256.namprd11.prod.outlook.com>
- <87k0h85m65.ffs@tglx> <YZPWsICdDTZ02UDu@google.com> <87ee7g53rp.ffs@tglx>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <87ee7g53rp.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211116194317.1430399-1-minchan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 19:55, Thomas Gleixner wrote:
-> We can do that, but I'm unhappy about this conditional in schedule(). So
-> I was asking for doing a simple KVM only solution first:
+On Tue, Nov 16, 2021 at 11:43:17AM -0800, Minchan Kim wrote:
+> The kernfs implementation has big lock granularity(kernfs_rwsem) so
+> every kernfs-based(e.g., sysfs, cgroup, dmabuf) fs are able to compete
+> the lock. Thus, if one of userspace goes the sleep under holding
+> the lock for a long time, rest of them should wait it. A example is
+> the holder goes direct reclaim with the lock since it needs memory
+> allocation. Let's fix it at common technique that release the lock
+> and then allocate the memory. Fortunately, kernfs looks like have
+> an refcount so I hope it's fine.
 > 
-> vcpu_run()
->          kvm_load_guest_fpu()
->              wrmsrl(XFD, guest_fpstate->xfd);
->              XRSTORS
->            
->          do {
-> 
->             local_irq_disable();
-> 
->             if (test_thread_flag(TIF_NEED_FPU_LOAD))
-> 		switch_fpu_return()
->                    wrmsrl(XFD, guest_fpstate->xfd);
-> 
->             do {
->                  vmenter();              // Guest modifies XFD
->             } while (reenter);
-> 
->             update_xfd_state();          // Restore consistency
-> 
->             local_irq_enable();
-> 
-> and check how bad that is for KVM in terms of overhead on AMX systems.
+> Signed-off-by: Minchan Kim <minchan@kernel.org>
+> ---
+>  fs/kernfs/dir.c             | 14 +++++++++++---
+>  fs/kernfs/inode.c           |  2 +-
+>  fs/kernfs/kernfs-internal.h |  1 +
+>  3 files changed, 13 insertions(+), 4 deletions(-)
 
-I agree, this is how we handle SPEC_CTRL for example and it can be 
-extended to XFD.  We should first do that, then switch to the MSR lists. 
-  Hacking into schedule() should really be the last resort.
+What workload hits this lock to cause it to be noticable?
 
->            local_irq_enable();     <- Problem starts here
-> 
->            preempt_enable();	   <- Becomes wider here
+There was a bunch of recent work in this area to make this much more
+fine-grained, and the theoritical benchmarks that people created (adding
+10s of thousands of scsi disks at boot time) have gotten better.
 
-It doesn't become that much wider because there's always preempt 
-notifiers.  So if it's okay to save XFD in the XSAVES wrapper and in 
-kvm_arch_vcpu_put(), that might be already remove the need to do it 
-schedule().
+But in that work, no one could find a real benchmark or use case that
+anyone could even notice this type of thing.  What do you have that
+shows this?
+thanks,
 
-Paolo
-
+greg k-h
