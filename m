@@ -2,136 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B95B45330E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:42:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8686453316
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:45:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236821AbhKPNpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 08:45:36 -0500
-Received: from pegase2.c-s.fr ([93.17.235.10]:56943 "EHLO pegase2.c-s.fr"
+        id S236801AbhKPNsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 08:48:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236819AbhKPNoE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 08:44:04 -0500
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HtnJf0bH4z9sSJ;
-        Tue, 16 Nov 2021 14:41:06 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id u7mAiaYI_xFI; Tue, 16 Nov 2021 14:41:05 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HtnJd6N0tz9sSH;
-        Tue, 16 Nov 2021 14:41:05 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C51128B77A;
-        Tue, 16 Nov 2021 14:41:05 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Nh3y__qSDvzK; Tue, 16 Nov 2021 14:41:05 +0100 (CET)
-Received: from [192.168.234.8] (unknown [192.168.234.8])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 036078B763;
-        Tue, 16 Nov 2021 14:41:04 +0100 (CET)
-Message-ID: <431fb6da-fe21-c5a6-bfb3-4e26bdc153b4@csgroup.eu>
-Date:   Tue, 16 Nov 2021 14:41:03 +0100
+        id S232201AbhKPNsW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 08:48:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C805F61B48;
+        Tue, 16 Nov 2021 13:45:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637070325;
+        bh=zjvb75GhYGXkCMh7lG6jmWfQfW8RDYm0eKS+88fTxQ0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=stnNGhKS9XDyIXxpa06FQ5bXqlIDk9iHPD725+sol/n9Citlh7EMHkVj7PRZd2q4/
+         AcUiFvsie7IaH0SU0VVImnXYsYJDclOhcq+xuPga5skM9nE19Eoby694MGgW4ushku
+         Zzl3WdhD+LPuUBruD64e+gnOrS4IzSKln9ESFBePSuzOM+dpL9hO16IcYQJNseSPVq
+         3Z9urVZ2okyQET8NcWvFQmr+FeeGcP/e4YLSj+wJLhoyR+v8ILqj+Vw1LmO5ie0Fi/
+         FiEkq4mVCwOcNeQS7p/IzfzbPWrlUwym3TTWulLQQ1HzhkyZHdpw+zh5C4OStKKEg2
+         1K3B5Lc04zMAg==
+Date:   Tue, 16 Nov 2021 05:45:23 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jiri Pirko <jiri@resnulli.us>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@idosch.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        edwin.peer@broadcom.com
+Subject: Re: [PATCH net-next] devlink: Require devlink lock during device
+ reload
+Message-ID: <20211116054523.16e7c01e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YZNW+mtcXe2kjJlY@nanopsycho>
+References: <20211109182427.GJ1740502@nvidia.com>
+        <YY0G90fJpu/OtF8L@nanopsycho>
+        <YY0J8IOLQBBhok2M@unreal>
+        <YY4aEFkVuqR+vauw@nanopsycho>
+        <YZCqVig9GQi/o1iz@unreal>
+        <YZJCdSy+wzqlwrE2@nanopsycho>
+        <20211115125359.GM2105516@nvidia.com>
+        <YZJx8raQt+FkKaeY@nanopsycho>
+        <20211115150931.GA2386342@nvidia.com>
+        <20211115072206.72435d60@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YZNW+mtcXe2kjJlY@nanopsycho>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 3/5] powerpc: Use preemption model accessors
-Content-Language: fr-FR
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kbuild@vger.kernel.org
-Cc:     Marco Elver <elver@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Mike Galbraith <efault@gmx.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>
-References: <20211110202448.4054153-1-valentin.schneider@arm.com>
- <20211110202448.4054153-4-valentin.schneider@arm.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-In-Reply-To: <20211110202448.4054153-4-valentin.schneider@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 10/11/2021 à 21:24, Valentin Schneider a écrit :
-> Per PREEMPT_DYNAMIC, checking CONFIG_PREEMPT doesn't tell you the actual
-> preemption model of the live kernel. Use the newly-introduced accessors
-> instead.
-
-Is that change worth it for now ? As far as I can see powerpc doesn't 
-have DYNAMIC PREEMPT, a lot of work needs to be done before being able 
-to use it:
-- Implement GENERIC_ENTRY
-- Implement STATIC_CALLS (already done on PPC32, to be done on PPC64)
-
+On Tue, 16 Nov 2021 08:00:10 +0100 Jiri Pirko wrote:
+> >> It is not that we care about events in different namespaces, it is
+> >> that rdma, like everything else, doesn't care about namespaces and
+> >> wants events from the netdev no matter where it is located.  
+> >
+> >devlink now allows drivers to be net ns-aware, and they should 
+> >obey if they declare support.  Can we add a flag / capability 
+> >to devlink and make it an explicit opt-in for drivers who care?  
 > 
-> sched_init() -> preempt_dynamic_init() happens way before IRQs are set up,
-> so this should be fine.
+> Looks kind of odd to me. It is also not possible for netdevice to say if
+> it should be net namespace aware or not. The driver should not be the
+> one to decide this.
 
-It looks like you are mixing up interrupts and IRQs (also known as 
-"external interrupts").
-
-ISI (Instruction Storage Interrupt) and DSI (Data Storage Interrupt) for 
-instance are also interrupts. They happen everytime there is a page 
-fault so may happen pretty early.
-
-Traps generated by WARN_ON() are also interrupts that may happen at any 
-time.
-
-> 
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-> ---
->   arch/powerpc/kernel/interrupt.c | 2 +-
->   arch/powerpc/kernel/traps.c     | 2 +-
->   2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
-> index de10a2697258..c56c10b59be3 100644
-> --- a/arch/powerpc/kernel/interrupt.c
-> +++ b/arch/powerpc/kernel/interrupt.c
-> @@ -552,7 +552,7 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs)
->   		/* Returning to a kernel context with local irqs enabled. */
->   		WARN_ON_ONCE(!(regs->msr & MSR_EE));
->   again:
-> -		if (IS_ENABLED(CONFIG_PREEMPT)) {
-> +		if (is_preempt_full()) {
-
-I think the cost of that additionnal test should be analysed. Maybe it's 
-worth not doing the test at all and check _TIF_NEED_RESCHED everytime, 
-unless that recurrent test is changed into a jump label as suggested in 
-patch 2.
-
-
->   			/* Return to preemptible kernel context */
->   			if (unlikely(current_thread_info()->flags & _TIF_NEED_RESCHED)) {
->   				if (preempt_count() == 0)
-> diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
-> index aac8c0412ff9..1cb31bbdc925 100644
-> --- a/arch/powerpc/kernel/traps.c
-> +++ b/arch/powerpc/kernel/traps.c
-> @@ -265,7 +265,7 @@ static int __die(const char *str, struct pt_regs *regs, long err)
->   	printk("%s PAGE_SIZE=%luK%s%s%s%s%s%s %s\n",
->   	       IS_ENABLED(CONFIG_CPU_LITTLE_ENDIAN) ? "LE" : "BE",
->   	       PAGE_SIZE / 1024, get_mmu_str(),
-> -	       IS_ENABLED(CONFIG_PREEMPT) ? " PREEMPT" : "",
-> +	       is_preempt_full() ? " PREEMPT" : "",
->   	       IS_ENABLED(CONFIG_SMP) ? " SMP" : "",
->   	       IS_ENABLED(CONFIG_SMP) ? (" NR_CPUS=" __stringify(NR_CPUS)) : "",
->   	       debug_pagealloc_enabled() ? " DEBUG_PAGEALLOC" : "",
-> 
-
-Would it be interesting as well to know that we are indeed in a DYNAMIC 
-PREEMPT context when dying ?
-
-Christophe
+NETIF_F_NETNS_LOCAL, but yeah, if it can be fixed that's obviously better.
