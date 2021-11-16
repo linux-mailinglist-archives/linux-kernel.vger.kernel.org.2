@@ -2,98 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B184532A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C68264532A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:12:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236582AbhKPNN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 08:13:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:54253 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234211AbhKPNNs (ORCPT
+        id S236595AbhKPNOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 08:14:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232753AbhKPNON (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 08:13:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637068251;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0JTeqDrAw5OSlo519nYzgdogJNVBSL/XQjztENai/vE=;
-        b=MxvaevUL3p6SjtbZZunLWF1sWZGKyF3i2npGgH7BHwZFlvG7HJEmtU71cGl3G021+zaG/9
-        DWudAd4APtGSTYvsCPfV3mNMTicp1I98eafAM0DivzRc/lqVhsrIF4p/ju6snzF/LTmu3k
-        57vTrkvU3LcwIQBXBvLerM7/Tr8d/Vw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-245-FLoWqczMO0y4Kw475UVk_Q-1; Tue, 16 Nov 2021 08:10:45 -0500
-X-MC-Unique: FLoWqczMO0y4Kw475UVk_Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C82A8804140;
-        Tue, 16 Nov 2021 13:10:43 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6640310016F5;
-        Tue, 16 Nov 2021 13:10:41 +0000 (UTC)
-Message-ID: <4e6df304-a5a5-fd33-1b6a-59eec905101f@redhat.com>
-Date:   Tue, 16 Nov 2021 14:10:40 +0100
+        Tue, 16 Nov 2021 08:14:13 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E77C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 05:11:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dl8IoZ6MAGLIhgXEhnN0d3xfaeoF2eUenAyR+CVzOrM=; b=PgGOieImMeqalQ4+tNzV9/H78n
+        eJzGvN9GdWYZ1Dbs3j144iAMAU4UtAQp2sVGa/h8k9heFdjnUaqO2i+lHTyqjiDzI40+t+Fw/OQ2n
+        QojiZB7vf/UvEdg9vekzbiXdVVxPL6f/QzUPejW0Bgnj3PqrR/yrg+Wq+BSEnSfWSv4a1HzmEpXze
+        myb7o4IR5blpM7gbdyRrn8wZEolPt5ov4wCO8hmnSH62xMl0wttWziM+th+oDkDnqShb3v9D5nJIZ
+        W4g42cj8I/5G4Mw6k/au6S5nwIpmXysx+5C2i5UV3ftYFikbGbXiyoEv78XrCL8G40qJF+hQScGFg
+        HQVKoJJg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mmyEw-006lgt-Js; Tue, 16 Nov 2021 13:11:10 +0000
+Date:   Tue, 16 Nov 2021 13:11:10 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>
+Subject: Re: [PATCH RFC v2 2/2] mm: Rework swap handling of zap_pte_range
+Message-ID: <YZOt7qD6yeSXJgv4@casper.infradead.org>
+References: <20211115134951.85286-1-peterx@redhat.com>
+ <20211115134951.85286-3-peterx@redhat.com>
+ <YZJnTKKXDqKWZ6UP@casper.infradead.org>
+ <8a5e44aa-243f-3a9d-e917-09cd3cf6609a@nvidia.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] riscv: kvm: fix non-kernel-doc comment block
-Content-Language: en-US
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Anup Patel <anup.patel@wdc.com>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-References: <20211107034706.30672-1-rdunlap@infradead.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211107034706.30672-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8a5e44aa-243f-3a9d-e917-09cd3cf6609a@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/21 04:47, Randy Dunlap wrote:
-> Don't use "/**" to begin a comment block for a non-kernel-doc comment.
+On Tue, Nov 16, 2021 at 12:51:13AM -0800, John Hubbard wrote:
+> On 11/15/21 05:57, Matthew Wilcox wrote:
+> > On Mon, Nov 15, 2021 at 09:49:51PM +0800, Peter Xu wrote:
+> > > Clean the code up by merging the device private/exclusive swap entry handling
+> > > with the rest, then we merge the pte clear operation too.
+> > > 
+> > > struct* page is defined in multiple places in the function, move it upward.
+> > 
+> > Is that actually a good thing?  There was a time when declaring
 > 
-> Prevents this docs build warning:
-> 
-> vcpu_sbi.c:3: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->   * Copyright (c) 2019 Western Digital Corporation or its affiliates.
-> 
-> Fixes: dea8ee31a039 ("RISC-V: KVM: Add SBI v0.1 support")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Atish Patra <atish.patra@wdc.com>
-> Cc: Anup Patel <anup.patel@wdc.com>
-> Cc: kvm@vger.kernel.org
-> Cc: kvm-riscv@lists.infradead.org
-> Cc: linux-riscv@lists.infradead.org
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Albert Ou <aou@eecs.berkeley.edu>
-> ---
->   arch/riscv/kvm/vcpu_sbi.c |    2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- linux-next-20211106.orig/arch/riscv/kvm/vcpu_sbi.c
-> +++ linux-next-20211106/arch/riscv/kvm/vcpu_sbi.c
-> @@ -1,5 +1,5 @@
->   // SPDX-License-Identifier: GPL-2.0
-> -/**
-> +/*
->    * Copyright (c) 2019 Western Digital Corporation or its affiliates.
->    *
->    * Authors:
-> 
+> Yes. It is a very good thing. Having multiple cases of shadowed variables
+> (in this case I'm using programming language terminology, or what I
+> remember it as, anyway) provides lots of opportunities to create
+> hard-to-spot bugs.
 
-Queued, thanks.
+I think you're misremembering.  These are shadowed variables:
 
-Paolo
+int a;
+
+int b(void)
+{
+	int a;
+	if (c) {
+		int a;
+	}
+}
+
+This is not:
+
+int b(void)
+{
+	if (c) {
+		int a;
+	} else {
+		int a;
+	}
+}
+
+I really wish we could turn on -Wshadow, but we get compilation warnings
+from header files right now.  Or we did last time I checked.
 
