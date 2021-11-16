@@ -2,81 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9F7453388
+	by mail.lfdr.de (Postfix) with ESMTP id D3181453389
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:03:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237047AbhKPOFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 09:05:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35980 "EHLO mail.kernel.org"
+        id S237073AbhKPOFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 09:05:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236984AbhKPOFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 09:05:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD42861BF5;
-        Tue, 16 Nov 2021 14:02:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637071373;
-        bh=i1PyKtc/WMNy+30MKeIuCcVD/sibXDMyViISlxKZz8s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t9QFlSiAPU51qaEMz+RH7/ta9C6TuiCjQLFYowmf/C8ePjn3lwMKT4oscE8xdwgcO
-         YeQrj0AK/mqn0lxkz/UQDTfFbobeP/HFNFHdhRXW0AgROW6bwsgiOnzsp20FWHX8Ma
-         yr+MLiKupFQASA5GoPwuAZJUW3a9e+AZkZ7KvQ6k=
-Date:   Tue, 16 Nov 2021 15:02:51 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH 5.14 000/849] 5.14.19-rc1 review
-Message-ID: <YZO6C1fxSP7dgCUb@kroah.com>
-References: <20211115165419.961798833@linuxfoundation.org>
- <8805071f-e696-c2b1-05dc-c13b00bb95e1@nvidia.com>
+        id S236984AbhKPOFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 09:05:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFE6863210;
+        Tue, 16 Nov 2021 14:02:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637071375;
+        bh=oCd2oAyI2QiyWmWZpaiHJhFs5UwwWvhjHdKfm9Byeqg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=c44/u5pnCMPUsshOVChekqlUMKFxj4wsAXp2yslPBbQTXtGVT0v9bk3NYLBGhi6uv
+         MUSuQnhbGpECaoh+XMeRS7OYHwy68p4UEn7VkMy7LcSi4VUm6KWjXKIbCUS6zUCi8J
+         Tg4cMzThOzpDA9RM6oDQLqaWJOaOgVj1+NQlYFOTlwKree7FeUhhZEbRpqeWct1uFf
+         kWIVZZsXsAHRi1w4n33tC6zcBXOLHAIejjsyu0RcHZcZj9tgRk7CXc6c2xmQIN/B/5
+         W03DZpFbmttX1adp0DzeCap3ijVvyzaHQPnLRg2YUvWw9HUZN6Acn2PRr2XiqO8vct
+         vjsqbzdzM+86Q==
+Date:   Tue, 16 Nov 2021 15:02:52 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mike Galbraith <efault@gmx.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        John Ogness <john.ogness@linutronix.de>,
+        Roman Penyaev <rpenyaev@suse.de>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Jason Baron <jbaron@akamai.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+Subject: [RFC] How to fix eventpoll rwlock based priority inversion on
+ PREEMPT_RT?
+Message-ID: <20211116140252.GA348770@lothringen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8805071f-e696-c2b1-05dc-c13b00bb95e1@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 01:39:37PM +0000, Jon Hunter wrote:
-> Hi Greg,
-> 
-> On 15/11/2021 16:51, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.14.19 release.
-> > There are 849 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 17 Nov 2021 16:52:23 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.19-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
-> > -------------
-> > Pseudo-Shortlog of commits:
-> 
-> ...
-> 
-> > Mikko Perttunen <mperttunen@nvidia.com>
-> >      reset: tegra-bpmp: Handle errors in BPMP response
-> 
-> 
-> The above is causing a regression for HDA audio on Tegra. Please can you
-> drop this from stable for now until we get this sorted out.
+Hi,
 
-Already dropped.  I'll be pushing out some -rc2 releases soon as there's
-been a number of changes for all of these trees.
+I'm iterating again on this topic, this time with the author of
+the patch Cc'ed.
 
-thanks,
+The following commit:
 
-greg k-h
+    a218cc491420 (epoll: use rwlock in order to reduce ep_poll
+                  callback() contention)
+
+has changed the ep->lock into an rwlock. This can cause priority inversion
+on PREEMPT_RT. Here is an example:
+
+
+1) High priority task A waits for events on epoll_wait(), nothing shows up so
+   it goes to sleep for new events in the ep_poll() loop.
+
+2) Lower prio task B brings new events in ep_poll_callback(), waking up A
+   while still holding read_lock(ep->lock)
+
+3) Task A wakes up immediately, tries to grab write_lock(ep->lock) but it has
+   to wait for task B to release read_lock(ep->lock). Unfortunately there is
+   no priority inheritance when write_lock() is called on an rwlock that is
+   already read_lock'ed. So back to task B that may even be preempted by
+   yet another task before releasing read_lock(ep->lock).
+
+
+Now how to solve this? Several possibilities:
+
+
+== Delay the wake up after releasing the read_lock()? ==
+
+That solves part of the problem only. If another event comes up
+concurrently we are back to the original issue.
+
+== Make rwlock more fair ? ==
+
+Currently read_lock() only acquires the rtmutex if the lock is already
+write-held (or write_lock() is waiting to acquire). So if read_lock() happens
+after write_lock(), fairness is observed but if write_lock() happens after
+read_lock(), priority inheritance doesn't happen.
+
+I think there has been attempts to solve this by the past but some issues
+arised (don't know the exact details, comments on rwbase_rt.c bring some clues).
+
+== Convert the rwlock to RCU ? ==
+
+Traditionally, we try to convert rwlocks bringing issues to RCU. I'm not sure the
+situation fits here because the rwlock is used the other way around:
+the epoll consumer does the write_lock() and the producers do read_lock(). Then
+concurrent producers use ad-hoc concurrent list add (see list_add_tail_lockless)
+to handle racy modifications.
+
+There are also list modifications on both side. There are added from the
+producers and read and deleted (even re-added sometimes) on the consumer side.
+
+Perhaps RCU could be used with keeping locking on the consumer side...
+
+== Convert to llist ? ==
+
+It's a possibility but some operations like single element deletion may be
+costly because only llist_add() and llist_del_all() are atomic on llist.
+!CONFIG_PREEMPT_RT might not be happy about it.
+
+== Consider epoll not PREEMPT_RT friendly? ==
+
+A last resort is to simply consider epoll is not RT-friendly and suggest
+using more simple alternatives like poll()....
+
+Any thoughts?
+
+
