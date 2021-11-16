@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4CE445319E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:01:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 978A84531AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:02:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235705AbhKPMEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 07:04:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46138 "EHLO mail.kernel.org"
+        id S235950AbhKPMFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 07:05:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235772AbhKPMCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 07:02:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C9AB61B3D;
+        id S235799AbhKPMDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 07:03:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71CA461B42;
         Tue, 16 Nov 2021 11:59:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1637063977;
-        bh=df14JGKlUeX7NKfDTE3TdiGoz6heYyGKroNP1yFBtO4=;
+        bh=qZJOX053SmKrunGAmrzvW/fb185tiP+HTXee+NpSnAY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UZzeo1UhFOOa0928bZvUC/3yMj6se3/lHq1pgYQo8Ckfx+CejetxuvsZB1hq8hsgQ
-         TJUrwP7YDSZe5kUpgJ5xMwS4G5n/LZsRkk+b6gUqBmw67QD6vH/CiZLvPs3CiHdR3T
-         kBIRDkx8eS0ONAt0joJ5Oj8eu59TABr1k9ohbllOHuRoSfkMi350Upv7b0a3fBPjB8
-         WHXYE6nIor4amBYbq1Yp3lwPYlqgcKZvucOa9NyQxK3WoIxgyWvxWFgEw9TJXeszm4
-         I4Lq0nnMp6P4sG7dja9igjg6/QGXxMknUl5W3/5F3VAL4111h9pphF53Ih46ua8AiU
-         NMMio6kTErE2g==
+        b=u0NmTbkHFNHgTMwVPBGBJiReSLfYUDtsvia+6Oh9HgxkttLjQbFfYrMOO4E9OV0iZ
+         vY0b5mRZ/v08iJbGS/lOc8oJX+2ki+HsSJsgGcUPCetLLcpjGaONBhkc7XWOfGlktr
+         7QQ7SbYYfxpkR+Y1ZCodm9EO0TsvPJlCqqmgqeLYxeHMnquVtXWJ7iZ/u524FD73yv
+         ig5XMOmPeJc3qeL6JIMUYy69G8/OqlPIUPAfOOp7Q2Q2qzbUMCxHAq3aR4je1+xga1
+         9yRfOcbqjkNePodTPjLDEyKr2YkgdsKSRObNopdFPZxoe1Z1lsDU/q4z5kKQCpdZXY
+         U9isT/6xvz66Q==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mmx7e-00A97I-Ei; Tue, 16 Nov 2021 11:59:34 +0000
+        id 1mmx7e-00A97L-FL; Tue, 16 Nov 2021 11:59:34 +0000
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Yu Chen <chenyu56@huawei.com>,
-        John Stultz <john.stultz@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 1/5] dt-bindings: misc: add schema for USB hub on Kirin devices
-Date:   Tue, 16 Nov 2021 11:59:29 +0000
-Message-Id: <7b5de4ad12e3678e891335611cfd2a70758d24bf.1637063775.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 2/5] arm64: dts: HiSilicon: Add support for HiKey 970 PCIe controller hardware
+Date:   Tue, 16 Nov 2021 11:59:30 +0000
+Message-Id: <884b83c1aed70735883e15f032f9668ebfd77a01.1637063775.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <cover.1637063775.git.mchehab+huawei@kernel.org>
 References: <cover.1637063775.git.mchehab+huawei@kernel.org>
@@ -46,117 +46,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Chen <chenyu56@huawei.com>
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-This patch adds binding documentation to support USB HUB and
-USB data role switch of HiSilicon HiKey960 and HiKey970 boards.
+Add DTS bindings for the HiKey 970 board's PCIe hardware.
 
-[mchehab: updated OF schema and added HiKey970 example]
-Signed-off-by: Yu Chen <chenyu56@huawei.com>
-Signed-off-by: John Stultz <john.stultz@linaro.org>
+Co-developed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
 
 To mailbombing on a large number of people, only mailing lists were C/C on the cover.
 See [PATCH 0/5] at: https://lore.kernel.org/all/cover.1637063775.git.mchehab+huawei@kernel.org/
 
- .../bindings/misc/hisilicon,hikey-usb.yaml    | 87 +++++++++++++++++++
- 1 file changed, 87 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml
+ arch/arm64/boot/dts/hisilicon/hi3670.dtsi | 107 ++++++++++++++++++++++
+ 1 file changed, 107 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml b/Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml
-new file mode 100644
-index 000000000000..761ab686121a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml
-@@ -0,0 +1,87 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright 2019 Linaro Ltd.
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/misc/hisilicon,hikey-usb.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+index 636c8817df7e..225dccbcb064 100644
+--- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+@@ -176,6 +176,12 @@ sctrl: sctrl@fff0a000 {
+ 			#clock-cells = <1>;
+ 		};
+ 
++		pmctrl: pmctrl@fff31000 {
++			compatible = "hisilicon,hi3670-pmctrl", "syscon";
++			reg = <0x0 0xfff31000 0x0 0x1000>;
++			#clock-cells = <1>;
++		};
 +
-+title: HiKey960/970 onboard USB GPIO Hub
+ 		iomcu: iomcu@ffd7e000 {
+ 			compatible = "hisilicon,hi3670-iomcu", "syscon";
+ 			reg = <0x0 0xffd7e000 0x0 0x1000>;
+@@ -659,6 +665,107 @@ gpio28: gpio@fff1d000 {
+ 			clock-names = "apb_pclk";
+ 		};
+ 
++		pcie_phy: pcie-phy@fc000000 {
++			compatible = "hisilicon,hi970-pcie-phy";
++			reg = <0x0 0xfc000000 0x0 0x80000>;
 +
-+maintainers:
-+  - John Stultz <john.stultz@linaro.org>
++			phy-supply = <&ldo33>;
 +
-+description: |
-+  Supports the onboard USB GPIO hubs found on HiKey960/970.
-+  Such hubs require a power supply for the USB I/O. Depending on the
-+  exact hub model, after USB I/O is powered up, a reset should be needed.
++			clocks = <&crg_ctrl HI3670_CLK_GATE_PCIEPHY_REF>,
++				 <&crg_ctrl HI3670_CLK_GATE_PCIEAUX>,
++				 <&crg_ctrl HI3670_PCLK_GATE_PCIE_PHY>,
++				 <&crg_ctrl HI3670_PCLK_GATE_PCIE_SYS>,
++				 <&crg_ctrl HI3670_ACLK_GATE_PCIE>;
++			clock-names = "phy_ref", "aux",
++				      "apb_phy", "apb_sys",
++				      "aclk";
 +
-+  It also acts as a role-switch intermediary to detect the state of
-+  the USB-C port, to switch the hub into dual-role USB-C or host mode,
-+  which enables and powers up the onboard USB-A host ports.
++			/* vboost iboost pre post main */
++			hisilicon,eye-diagram-param = <0xffffffff 0xffffffff
++						       0xffffffff 0xffffffff
++						       0xffffffff>;
 +
-+  Schematics about such hubs can be found here:
-+    https://github.com/96boards/documentation/raw/master/consumer/hikey/hikey960/hardware-docs/HiKey960_Schematics.pdf
-+    https://www.96boards.org/documentation/consumer/hikey/hikey970/hardware-docs/files/hikey970-schematics.pdf
++			#phy-cells = <0>;
++		};
 +
-+properties:
-+  compatible:
-+    enum:
-+      - hisilicon,usbhub
++		pcie@f4000000 {
++			compatible = "hisilicon,kirin970-pcie";
++			reg = <0x0 0xf4000000 0x0 0x1000000>,
++			      <0x0 0xfc180000 0x0 0x1000>,
++			      <0x0 0xf5000000 0x0 0x2000>;
++			reg-names = "dbi", "apb", "config";
++			#address-cells = <3>;
++			#size-cells = <2>;
++			device_type = "pci";
++			phys = <&pcie_phy>;
++			ranges = <0x02000000 0x0 0x00000000
++				  0x0 0xf6000000
++				  0x0 0x02000000>;
++			num-lanes = <1>;
++			#interrupt-cells = <1>;
++			interrupts = <GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "msi";
++			interrupt-map-mask = <0 0 0 7>;
++			interrupt-map = <0x0 0 0 1
++					 &gic GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
++					<0x0 0 0 2
++					 &gic GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
++					<0x0 0 0 3
++					 &gic GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
++					<0x0 0 0 4
++					 &gic GIC_SPI 285 IRQ_TYPE_LEVEL_HIGH>;
++			reset-gpios = <&gpio7 0 0>;
++			hisilicon,clken-gpios = <&gpio27 3 0>, <&gpio17 0 0>,
++						<&gpio20 6 0>;
++			pcie@0,0 { // Lane 0: PCIe switch: Bus 1, Device 0
++				reg = <0 0 0 0 0>;
++				compatible = "pciclass,0604";
++				device_type = "pci";
++				#address-cells = <3>;
++				#size-cells = <2>;
++				ranges;
 +
-+  typec-vbus-gpios:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    description: phandle to the typec-vbus gpio
++				pcie@0,0 { // Lane 0: upstream
++					reg = <0 0 0 0 0>;
++					compatible = "pciclass,0604";
++					device_type = "pci";
++					#address-cells = <3>;
++					#size-cells = <2>;
++					ranges;
 +
-+  otg-switch-gpios:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    description: phandle to the otg-switch gpio
++					pcie@1,0 { // Lane 4: M.2
++						reg = <0x0800 0 0 0 0>;
++						compatible = "pciclass,0604";
++						device_type = "pci";
++						reset-gpios = <&gpio3 1 0>;
++						#address-cells = <3>;
++						#size-cells = <2>;
++						ranges;
++					};
 +
-+  hub-reset-en-gpios:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    description: phandle to the hub reset gpio
++					pcie@5,0 { // Lane 5: Mini PCIe
++						reg = <0x2800 0 0 0 0>;
++						compatible = "pciclass,0604";
++						device_type = "pci";
++						reset-gpios = <&gpio27 4 0 >;
++						#address-cells = <3>;
++						#size-cells = <2>;
++						ranges;
++					};
 +
-+  usb-role-switch:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: Support role switch.
++					pcie@7,0 { // Lane 6: Ethernet
++						reg = <0x3800 0 0 0 0>;
++						compatible = "pciclass,0604";
++						device_type = "pci";
++						reset-gpios = <&gpio25 2 0 >;
++						#address-cells = <3>;
++						#size-cells = <2>;
++						ranges;
++					};
++				};
++			};
++		};
 +
-+  hub-vdd-supply:
-+    description: regulator for hub power
-+
-+  port:
-+    description: |
-+      describe hadware connections between USB endpoints.
-+      Two ports are supported: the first being the endpoint that will
-+      be notified by this driver, and the second being the endpoint
-+      that notifies this driver of a role switch.
-+
-+required:
-+  - compatible
-+  - hub-vdd-supply
-+  - port
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    usb-hub {
-+        compatible = "hisilicon,usbhub";
-+        typec-vbus-gpios = <&gpio25 2 GPIO_ACTIVE_HIGH>;
-+        otg-switch-gpios = <&gpio25 6 GPIO_ACTIVE_HIGH>;
-+        hub-reset-en-gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
-+        hub-vdd-supply = <&usb_hub_vdd>;
-+        usb-role-switch;
-+        port {
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+            usb_ep0: endpoint@0 {
-+                reg = <0>;
-+                remote-endpoint = <&dwc3_role_switch>;
-+            };
-+            usb_ep1: endpoint@1 {
-+                reg = <1>;
-+                remote-endpoint = <&rt1711h_ep>;
-+            };
-+        };
-+    };
+ 		/* UFS */
+ 		ufs: ufs@ff3c0000 {
+ 			compatible = "hisilicon,hi3670-ufs", "jedec,ufs-2.1";
 -- 
 2.33.1
 
