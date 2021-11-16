@@ -2,118 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 931734537C0
+	by mail.lfdr.de (Postfix) with ESMTP id DC9D34537C1
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235186AbhKPQjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 11:39:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:20833 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235224AbhKPQjI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:39:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637080571;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fzs/tu22nSIiklxyWhqw5I8HgPrSNduRvkzTjwACmGg=;
-        b=CbBZiUZC8qkT9ia1SOJqC+k5n5AEQKClsAo1qHMg8xaF6UOEuYM+k7eX5QOXqrHj+bIsAn
-        O9AKJbb7iDl/xCxjcJ88zfE8AxL2HcQJRuJpxgmkP4lc53ltBKGj9fF/sMBEBxFWfVjDgv
-        b50W55QlYzL8bXp1kN926tHicDX7xaw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-139-kiLU4MXTPMSt6gKSd-U_OQ-1; Tue, 16 Nov 2021 11:36:08 -0500
-X-MC-Unique: kiLU4MXTPMSt6gKSd-U_OQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 151D6192203A;
-        Tue, 16 Nov 2021 16:36:02 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.40.192.236])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ADD9160C0F;
-        Tue, 16 Nov 2021 16:35:56 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Eduardo Habkost <ehabkost@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>, kvm-ppc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        id S234315AbhKPQjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 11:39:53 -0500
+Received: from mga18.intel.com ([134.134.136.126]:17584 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233055AbhKPQjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 11:39:52 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="220615341"
+X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
+   d="scan'208";a="220615341"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 08:36:54 -0800
+X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
+   d="scan'208";a="735301860"
+Received: from sksekwao-mobl1.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.20.115])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 08:36:53 -0800
+Subject: Re: [PATCH v1 1/1] x86: Skip WBINVD instruction for VM guest
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/6] KVM: x86: Drop arbitraty KVM_SOFT_MAX_VCPUS
-Date:   Tue, 16 Nov 2021 17:34:43 +0100
-Message-Id: <20211116163443.88707-7-vkuznets@redhat.com>
-In-Reply-To: <20211116163443.88707-1-vkuznets@redhat.com>
-References: <20211116163443.88707-1-vkuznets@redhat.com>
+References: <20211116005027.2929297-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YZPbQVwWOJCrAH78@zn.tnic>
+From:   Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <f38216d7-4dcd-8eba-1825-c5bc79b0e1f5@linux.intel.com>
+Date:   Tue, 16 Nov 2021 08:36:53 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <YZPbQVwWOJCrAH78@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KVM_CAP_NR_VCPUS is used to get the "recommended" maximum number of
-VCPUs and arm64/mips/riscv report num_online_cpus(). Powerpc reports
-either num_online_cpus() or num_present_cpus(), s390 has multiple
-constants depending on hardware features. On x86, KVM reports an
-arbitrary value of '710' which is supposed to be the maximum tested
-value but it's possible to test all KVM_MAX_VCPUS even when there are
-less physical CPUs available.
+Hi,
 
-Drop the arbitrary '710' value and return num_online_cpus() on x86 as
-well. The recommendation will match other architectures and will mean
-'no CPU overcommit'.
+On 11/16/21 8:24 AM, Borislav Petkov wrote:
+> On Mon, Nov 15, 2021 at 04:50:27PM -0800, Kuppuswamy Sathyanarayanan wrote:
+>> -#define ACPI_FLUSH_CPU_CACHE()	wbinvd()
+>> +#define ACPI_FLUSH_CPU_CACHE()				\
+>> +do {							\
+>> +	if (!boot_cpu_has(X86_FEATURE_HYPERVISOR))	\
+> 
+> cpu_feature_enabled()
+> 
+> If you wanna query a X86_FEATURE_* bit, from now on, use only this
+> function.
+> 
 
-For reference, QEMU only queries KVM_CAP_NR_VCPUS to print a warning
-when the requested vCPU number exceeds it. The static limit of '710'
-is quite weird as smaller systems with just a few physical CPUs should
-certainly "recommend" less.
+Ok. I will change it in next version.
 
-Suggested-by: Eduardo Habkost <ehabkost@redhat.com>
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/include/asm/kvm_host.h | 1 -
- arch/x86/kvm/x86.c              | 2 +-
- 2 files changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 88fce6ab4bbd..0232a00598f2 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -38,7 +38,6 @@
- #define __KVM_HAVE_ARCH_VCPU_DEBUGFS
- 
- #define KVM_MAX_VCPUS 1024
--#define KVM_SOFT_MAX_VCPUS 710
- 
- /*
-  * In x86, the VCPU ID corresponds to the APIC ID, and APIC IDs
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index ac83d873d65b..18a00a7c23bc 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4137,7 +4137,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 		r = !static_call(kvm_x86_cpu_has_accelerated_tpr)();
- 		break;
- 	case KVM_CAP_NR_VCPUS:
--		r = KVM_SOFT_MAX_VCPUS;
-+		r = min_t(unsigned int, num_online_cpus(), KVM_MAX_VCPUS);
- 		break;
- 	case KVM_CAP_MAX_VCPUS:
- 		r = KVM_MAX_VCPUS;
 -- 
-2.33.1
-
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
