@@ -2,180 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F2F453C9A
+	by mail.lfdr.de (Postfix) with ESMTP id DABAE453C9B
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:13:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232263AbhKPXPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 18:15:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232239AbhKPXPD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 18:15:03 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A095C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 15:12:06 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id g14so1979680edb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 15:12:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+FOQ/sRLLKL2n8D67xhtne1+6QjN4MmxkGWuAPYSYFU=;
-        b=ZSbtVfyHFNCPojkasx6Tp7Wo3H/ofQiL38o5dRfRNGrRB1kyRN8Vd7Z83qaN7FH/n8
-         bL58fwkkH7Ol/VPda6afFVS6M5W80Ga4tJ6MVNCCRr1z2uSibF/FMjiyBj363LW0HgOi
-         DfWaTzKB2Yt7wlaRD5m4LhklSnIP7m7DxMx2dD4CivyXH2Sz9JBJg0T3NyJwBnNdmUJg
-         2nQYNZjx4m8pXYfv5GNtLbh5MjGgVMxRAHdIu2yQYUuB2Jol1gI5NY5PkcI/o3bJAHKV
-         YuFk6Be73lvUEGF3MW1uFaVnPdcgqMPa+KWvSTe7G7zC+HKhrmce4UG2YeON3EfGaewi
-         GZAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+FOQ/sRLLKL2n8D67xhtne1+6QjN4MmxkGWuAPYSYFU=;
-        b=11qHsHQabp0bU5U0dkyVR9PTJyX/dUOn9p5YhjMDj78yoPPJE2xj6qBPukAR8FQptP
-         AgCZxjU84dmo4b04STB9BppwjsN2AZ0sT36n61885o2Ff2eOdBdRCHYB1IUVDsBDLYUw
-         +5Rk7f+esHwigYPuvlxwSwUZmR3fGY/Y61adbJ7Tss33freG+KKEHY7F5zNP2zgcOPuf
-         yD2eFp0mTaNX7T3RBF6F2AS/y6XvRLP1Ps3aDB+FuvJmGX+dihw0j3ggp6d5q+wMT8tR
-         aj/B/xgTwqpdTr3V7hNB3mRLBCY0WXfvoqhg4k7rnD+sO5oAhomKJLu9CSO1zjJ8iIrE
-         G8Wg==
-X-Gm-Message-State: AOAM531hojkdurp7FaavR1M9LwcpLTtG551+szt2Z2b1IZl+NLJsfOXY
-        CSpbzlc0QgM7NAm7b/xtsdjKPIv0Ekhc/l1olivOJg==
-X-Google-Smtp-Source: ABdhPJz2wF5JF1ydPJjyqPEwYlCjMltAxHidsQ4cfpYNY8KosRGi6/KK+aEQfERtYk3HS3Fkv18BPluzzYQrew/QaNI=
-X-Received: by 2002:a17:907:2d20:: with SMTP id gs32mr14959055ejc.270.1637104324599;
- Tue, 16 Nov 2021 15:12:04 -0800 (PST)
+        id S232257AbhKPXPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 18:15:25 -0500
+Received: from foss.arm.com ([217.140.110.172]:50330 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230094AbhKPXPY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 18:15:24 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 728FA6D;
+        Tue, 16 Nov 2021 15:12:26 -0800 (PST)
+Received: from [10.57.82.45] (unknown [10.57.82.45])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E97C63F766;
+        Tue, 16 Nov 2021 15:12:24 -0800 (PST)
+Message-ID: <7096e4d4-d27a-42f5-34d0-11ce7156a8f1@arm.com>
+Date:   Tue, 16 Nov 2021 23:12:19 +0000
 MIME-Version: 1.0
-References: <20211025015156.33133-1-brad@pensando.io> <20211025015156.33133-6-brad@pensando.io>
- <20211028074945.rv2j5kgzk7yc2srr@mobilestation> <CAK9rFnw396xK+u3qUpgbnGNw7WDJPJm0L3o4nPAcFeqQjBDbXg@mail.gmail.com>
- <20211116112907.lbwdcz5pmgxqzv55@mobilestation>
-In-Reply-To: <20211116112907.lbwdcz5pmgxqzv55@mobilestation>
-From:   Brad Larson <brad@pensando.io>
-Date:   Tue, 16 Nov 2021 15:11:53 -0800
-Message-ID: <CAK9rFny7zQRpvGOVK0+01hKQNu7XCMOz8vTfbHPs6gMR10muDw@mail.gmail.com>
-Subject: Re: [PATCH v3 05/11] spi: dw: Add Pensando Elba SoC SPI Controller bindings
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] arm64: clear_page: use stnp non-temporal instruction for
+ performance optimizing
+Content-Language: en-GB
+To:     Guanghui Feng <guanghuifeng@linux.alibaba.com>,
+        catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
+        qperret@google.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     baolin.wang@linux.alibaba.com, zhuo.song@linux.alibaba.com,
+        zhangliguang@linux.alibaba.com
+References: <1637075294-30747-1-git-send-email-guanghuifeng@linux.alibaba.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <1637075294-30747-1-git-send-email-guanghuifeng@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sergey,
+On 2021-11-16 15:08, Guanghui Feng wrote:
+> When clear page mem, there is no need to alloc cache for storing these
+> mem value. And the copy_page.S have used stnp instruction for optimizing.
+> So I rewrite the clear_page.S with stnp. At the same time, I have tested it
+> with stnp instruction which will get about twice the performance improvement.
+> 
+> Signed-off-by: Guanghui Feng <guanghuifeng@linux.alibaba.com>
+> ---
+>   arch/arm64/lib/clear_page.S | 19 ++++++++++++-------
+>   1 file changed, 12 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/arm64/lib/clear_page.S b/arch/arm64/lib/clear_page.S
+> index b84b179..e9dc2d6 100644
+> --- a/arch/arm64/lib/clear_page.S
+> +++ b/arch/arm64/lib/clear_page.S
+> @@ -15,13 +15,18 @@
+>    *	x0 - dest
+>    */
+>   SYM_FUNC_START_PI(clear_page)
+> -	mrs	x1, dczid_el0
+> -	and	w1, w1, #0xf
+> -	mov	x2, #4
+> -	lsl	x1, x2, x1
+> -
+> -1:	dc	zva, x0
+> -	add	x0, x0, x1
+> +	mov	x1, #0
+> +	mov	x2, #0
 
-On Tue, Nov 16, 2021 at 3:29 AM Serge Semin <fancer.lancer@gmail.com> wrote:
->
-> > > AFAICS from the driver-part of the patchset it's not enough. You've
-> > > also got the syscon phandle, which needs to be reflected in the
-> > > bindings. That also makes me thinking that you didn't perform the
-> > > "dtbs_check" on the dts-files you were going to submit, but for some
-> > > reason discarded from this series (btw why?). If you did you would
-> > > have got an error of an unevaluated property detection.
-> >
-> > I ran the checks below and didn't get errors.  Rob provided some info
-> > and I found the server did not have yamllint installed (not flagged by
-> > tool).  Also dt-schema was not the latest.  I'm re-doing this and
-> > including "DT_CHECKER_FLAGS=-m" as that is new with v5.13.
-> >
->
-> > make ARCH=arm64 dtbs_check
-> > DT_SCHEMA_FILES=Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-> > make ARCH=arm64 dtbs_check
-> > DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
-> > make ARCH=arm64 dtbs_check
-> > DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-> > make ARCH=arm64 dtbs_check
-> > DT_SCHEMA_FILES=Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > make ARCH=arm64 dtbs_check
-> > DT_SCHEMA_FILES=Documentation/devicetree/bindings/arm/pensando,elba.yaml
->
-> Hmm, that's weird. Rob, does dtschema tool have the
-> "unevaluatedProperties" property support?
->
-> Brad, anyway you still need to add the syscon-property (pensando,*spics)
-> requirement in the snps,dw-apb-ssi.yaml schema. See the way it's done there
-> for instance for "baikal,bt1-sys-ssi" when it comes to the
-> vendor-specific properties definition in the allOf composition block.
-> You'll need to define a custom phandle property there in case if a
-> DT-node is compatible with you SPI controller.
+Regardless of the bigger question around the architectural intent that 
+DC ZVA is supposed to be the best way to clear memory (sanity check: 
+this wasn't under virtualisation with HCR_EL2.TDZ set, was it?) - out of 
+curiosity, why do this and not just "stnp xzr, xzr, ..."?
 
-Updating and adding only this bindings update to file
-snps,dw-apb-ssi.yaml in 5.16.0-rc1 (next-20211116):
+Note also that this is liable to conflict with the patch for respecting 
+DCZID_EL0.DZP. On which note, is DC {GVA,GZVA} performance also a 
+concern, or does your platform not have MTE? If the performance anomaly 
+does turn out to be platform-specific, maybe it might be better to quirk 
+those platforms to set DZP, rather than changing the code for everyone?
 
-diff --git a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-index d7e08b03e204..99deb587a47b 100644
---- a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-+++ b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-@@ -37,6 +37,21 @@ allOf:
-     else:
-       required:
-         - interrupts
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - pensando,elba-spics
-+    then:
-+      properties:
-+        pensando,spics:
-+          $ref: /schemas/types.yaml#/definitions/phandle
-+          description:
-+            Phandle to the system control device node which provides access to
-+            the spics control register
-+      required:
-+        - pensando,spics
+Robin.
 
- properties:
-   compatible:
-@@ -73,6 +88,8 @@ properties:
-               - renesas,r9a06g032-spi # RZ/N1D
-               - renesas,r9a06g033-spi # RZ/N1S
-           - const: renesas,rzn1-spi   # RZ/N1
-+      - description: Pensando Elba SoC SPI Controller
-+        const: pensando,elba-spics
-
-   reg:
-     minItems: 1
-
-$ make ARCH=arm64 defconfig
-...
-
-$ make DT_CHECKER_FLAGS=-m dt_binding_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-...
-  DTEX    Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dts
-  DTC     Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml
-  CHECK   Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml
-Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml:0:0:
-/example-0/spi@fff00000/flash@1: failed to match any schema with
-compatible: ['spi-nand']
-
-The spi-nand schema match failure happens before I make any change.
-The tool also throws errors for these files which are unrelated
-
-Documentation/devicetree/bindings/net/qcom,ipa.yaml: ignoring, error
-in schema: properties: qcom,smem-state-names
-Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml:
-ignoring, error in schema: patternProperties: ^filter@[0-9]+$:
-properties: st,adc-channel-names
-Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml:
-ignoring, error in schema: properties: qcom,bcm-voter-names
-
-Thanks,
-Brad
+> +1:
+> +	stnp	x1, x2, [x0]
+> +	stnp	x1, x2, [x0, #16]
+> +	stnp	x1, x2, [x0, #32]
+> +	stnp	x1, x2, [x0, #48]
+> +	stnp	x1, x2, [x0, #64]
+> +	stnp	x1, x2, [x0, #80]
+> +	stnp	x1, x2, [x0, #96]
+> +	stnp	x1, x2, [x0, #112]
+> +	add	x0, x0, #128
+>   	tst	x0, #(PAGE_SIZE - 1)
+>   	b.ne	1b
+>   	ret
+> 
