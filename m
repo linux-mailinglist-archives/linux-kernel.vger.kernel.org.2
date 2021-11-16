@@ -2,100 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78E9C452CA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:23:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44AFF452CA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231918AbhKPI0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 03:26:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231859AbhKPI0I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 03:26:08 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96620C061570;
-        Tue, 16 Nov 2021 00:23:11 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id v23so15117186pjr.5;
-        Tue, 16 Nov 2021 00:23:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3+vKQR2yjsr4EpvmyaU72REwMRnHBJTnUozWbZ4+OkE=;
-        b=cBuE7Usu1jQbcBJMZKMLs7FbU7IGjsBMIpTOA2j2S4GoI8Ks0C7VsFzJqeAzPk3S/c
-         gun3rgx7ykHpO2INlKwu5qY6x933MZqNwW/idwm4bI15InCICTmbeB9KL4OUGS+xt6IQ
-         hiYZ2+3xFWnYzXT+dtXst5y/WUx5ZJUVoS1V16BEwiKDIHgimE79zAR4M6up0Yc7xorb
-         CjVYYkymFZAzc5c3lsrKRPu0udULmHG0QylJmywi2ZQRexr3gWjVZQxtZMXanoHlSkiP
-         wOHLT1FJag2QBjKOD9NwfmvomENUzhMIMeJY6sDVCSNkc1ZfpFiRZl9c2Y2+HknyvRAb
-         E5nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3+vKQR2yjsr4EpvmyaU72REwMRnHBJTnUozWbZ4+OkE=;
-        b=P14mQMfB+BzGgwzalj9uviL2u3SPStDfPATCoO5oaj2kouGj99Rfy02gqKp2NYltAa
-         aGrAzVJtFB6HOi1jvvAo3uY0Wzt4PBa33mfF+oPKPcxYVhXWMkwgRBPHzyjv9MINhcLD
-         6OmnIFtc90yox645O0pLeDKWSw/q/U7MwqC1wBo1KKOSLgh2sv9oDqKVQyTVBxwdExQp
-         vZw/1DS6xt1WZs59ZYWMD3+dyBrujtETqiR0ds70SbJwJ9cjKK3m4+hIqWlUTk4lmCTO
-         IVRau86omgeuLk8CSz9hkyp3cfB2Lj6KeOWvQ4KCpTlVaFj8EBjuFDa+14F1IUFikNYL
-         QlVw==
-X-Gm-Message-State: AOAM533arS+PHc31ZHFELHECs/0euktfk6LnKvyV+lAwUTnjBWJ/8pEh
-        4ETn3AIo2AZT2uzkbwu6ge5MOPe1daByv3odboQ=
-X-Google-Smtp-Source: ABdhPJxKZE+MWVQYmW3TQ0WM6WxO4BDm1lvKTnO98Ys/xKMCj83AX9173FQ5v5JK7vIKCh+0yQ0SvV40PcqU1lVdg3w=
-X-Received: by 2002:a17:90b:4b83:: with SMTP id lr3mr73448586pjb.98.1637050991159;
- Tue, 16 Nov 2021 00:23:11 -0800 (PST)
+        id S232002AbhKPI0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 03:26:36 -0500
+Received: from mga06.intel.com ([134.134.136.31]:13253 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231931AbhKPI0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 03:26:34 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="294464954"
+X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
+   d="scan'208";a="294464954"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 00:23:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
+   d="scan'208";a="645389141"
+Received: from kuha.fi.intel.com ([10.237.72.166])
+  by fmsmga001.fm.intel.com with SMTP; 16 Nov 2021 00:23:17 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 16 Nov 2021 10:23:16 +0200
+Date:   Tue, 16 Nov 2021 10:23:16 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Colin Foster <colin.foster@in-advantage.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [RFC PATCH v4 net-next 15/23] device property: add helper
+ function fwnode_get_child_node_count
+Message-ID: <YZNqdLAAYVsMAGm2@kuha.fi.intel.com>
+References: <20211116062328.1949151-1-colin.foster@in-advantage.com>
+ <20211116062328.1949151-16-colin.foster@in-advantage.com>
 MIME-Version: 1.0
-References: <20211115141925.60164-1-paul@crapouillou.net> <20211115141925.60164-3-paul@crapouillou.net>
-In-Reply-To: <20211115141925.60164-3-paul@crapouillou.net>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Tue, 16 Nov 2021 10:22:59 +0200
-Message-ID: <CA+U=DsqGZvCdVcEyTW7YpQOaPG7RMUzziN83d_ChnvNeFv3Paw@mail.gmail.com>
-Subject: Re: [PATCH 02/15] iio: buffer-dma: Remove unused iio_buffer_block struct
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211116062328.1949151-16-colin.foster@in-advantage.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 4:19 PM Paul Cercueil <paul@crapouillou.net> wrote:
->
-> This structure was never used anywhere, so it can safely be dropped.
->
-> It will later be re-introduced as a different structure in a
-> different header.
-
-Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
-
->
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+On Mon, Nov 15, 2021 at 10:23:20PM -0800, Colin Foster wrote:
+> Functions existed for determining the node count by device, but not by
+> fwnode_handle. In the case where a driver could either be defined as a
+> standalone device or a node of a different device, parsing from the root of
+> the device might not make sense. As such, it becomes necessary to parse
+> from a child node instead of the device root node.
+> 
+> Signed-off-by: Colin Foster <colin.foster@in-advantage.com>
 > ---
->  include/linux/iio/buffer-dma.h | 5 -----
->  1 file changed, 5 deletions(-)
->
-> diff --git a/include/linux/iio/buffer-dma.h b/include/linux/iio/buffer-dma.h
-> index d4ed5ff39d44..a65a005c4a19 100644
-> --- a/include/linux/iio/buffer-dma.h
-> +++ b/include/linux/iio/buffer-dma.h
-> @@ -17,11 +17,6 @@ struct iio_dma_buffer_queue;
->  struct iio_dma_buffer_ops;
->  struct device;
->
-> -struct iio_buffer_block {
-> -       u32 size;
-> -       u32 bytes_used;
-> -};
-> -
+>  drivers/base/property.c  | 20 ++++++++++++++++----
+>  include/linux/property.h |  1 +
+>  2 files changed, 17 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/base/property.c b/drivers/base/property.c
+> index f1f35b48ab8b..2ee675e1529d 100644
+> --- a/drivers/base/property.c
+> +++ b/drivers/base/property.c
+> @@ -845,19 +845,31 @@ bool fwnode_device_is_available(const struct fwnode_handle *fwnode)
+>  EXPORT_SYMBOL_GPL(fwnode_device_is_available);
+>  
 >  /**
->   * enum iio_block_state - State of a struct iio_dma_buffer_block
->   * @IIO_BLOCK_STATE_DEQUEUED: Block is not queued
-> --
-> 2.33.0
->
+> - * device_get_child_node_count - return the number of child nodes for device
+> - * @dev: Device to cound the child nodes for
+> + * fwnode_get_child_node_count - return the number of child nodes for the fwnode
+> + * @fwnode: Node to count the childe nodes for
+>   */
+> -unsigned int device_get_child_node_count(struct device *dev)
+> +unsigned int fwnode_get_child_node_count(struct fwnode_handle *fwnode)
+>  {
+>  	struct fwnode_handle *child;
+>  	unsigned int count = 0;
+>  
+> -	device_for_each_child_node(dev, child)
+> +	fwnode_for_each_child_node(fwnode, child)
+>  		count++;
+>  
+>  	return count;
+>  }
+> +EXPORT_SYMBOL_GPL(fwnode_get_child_node_count);
+> +
+> +/**
+> + * device_get_child_node_count - return the number of child nodes for device
+> + * @dev: Device to count the child nodes for
+> + */
+> +unsigned int device_get_child_node_count(struct device *dev)
+> +{
+> +	struct fwnode_handle *fwnode = dev_fwnode(dev);
+> +
+> +	return fwnode_get_child_node_count(fwnode);
+> +}
+>  EXPORT_SYMBOL_GPL(device_get_child_node_count);
+>  
+>  bool device_dma_supported(struct device *dev)
+> diff --git a/include/linux/property.h b/include/linux/property.h
+> index 88fa726a76df..6dc71029cfc5 100644
+> --- a/include/linux/property.h
+> +++ b/include/linux/property.h
+> @@ -122,6 +122,7 @@ void fwnode_handle_put(struct fwnode_handle *fwnode);
+>  
+>  int fwnode_irq_get(const struct fwnode_handle *fwnode, unsigned int index);
+>  
+> +unsigned int fwnode_get_child_node_count(struct fwnode_handle *fwnode);
+>  unsigned int device_get_child_node_count(struct device *dev);
+
+You can now make device_get_child_node_count() an inline function:
+
+static inline unsigned int device_get_child_node_count(struct device *dev)
+{
+	return fwnode_get_child_node_count(dev_fwnode(dev));
+}
+
+thanks,
+
+-- 
+heikki
