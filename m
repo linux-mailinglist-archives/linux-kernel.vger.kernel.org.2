@@ -2,94 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B8E64529A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:25:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 605244529CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:32:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234164AbhKPF16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 00:27:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55338 "EHLO
+        id S234491AbhKPFfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 00:35:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234006AbhKPF0J (ORCPT
+        with ESMTP id S234445AbhKPFec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 00:26:09 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D8AC048CA7;
-        Mon, 15 Nov 2021 18:40:10 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id bf8so39161094oib.6;
-        Mon, 15 Nov 2021 18:40:10 -0800 (PST)
+        Tue, 16 Nov 2021 00:34:32 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66DFDC2D8F3E;
+        Mon, 15 Nov 2021 18:44:14 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id 193so19062208qkh.10;
+        Mon, 15 Nov 2021 18:44:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=J2P6f/Qll54psTzyshVTaRUOsXK9V7Nooaq1sBo16AM=;
-        b=LpJQ9l5eNWhRzMJZ+xAPvmtGeEWSZcsq/EbnPw/xlX1wTgsD4R6fX1SkvGvn5mDWs4
-         U/XDGd2vlLuUKQKTh5LfsTRVv9mleDxVzZNIL2O4wftg7UwDIDGNQxDPRhUPz01P1jpg
-         wkQOekmP//nsHA37J3Q7Zd/+8EcFoV3cS9rN5OkUTxT3xki/jPwxD7UVJyK5ckKJ4hjU
-         tZBoNZbERlVD5xA+nVjRpaJT6b1O+2vQVoTsoDlZ0D+8lggkNKpyRwf/EuvNjSG8d7H6
-         u66OjPV3abPHiaaV8QPd48ug6jDjPRLP6vMjp+jnymNPIYs24eA9bCLu5YY1jHUcur/i
-         6ELQ==
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+IsQBHoFAXBIkB1Kw8WNji5f2haXZUreOBVyURuDYXY=;
+        b=l72T4yHHjmckvxjl/bthixU/FwFfghPSs3EadNJjMWX37Etlj/vn2pNjYgjl+dEV+4
+         YQKDwq6Hl/65E3gKuGjHyRmWm6bE9SYztKS+bGWD5trEp4yVqmVWGia7jT1x2rSCG9Va
+         bAsV/ONCMORPfMlrW4T9/C4ya+OhPhV3+JRxQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=J2P6f/Qll54psTzyshVTaRUOsXK9V7Nooaq1sBo16AM=;
-        b=SJzSFxTkQd9KN+vZhFUVq89NXMLsFFTL7BWRqx4yMVZXRXK8FJ4jXHQ+1KqXcg3cG9
-         uhx1LSNHQ5+d3NSqH1PgbNGfMo76J7VHpH/5ULLR8gQv2Oit/Q+hOeCjbMsLd8C9PFps
-         NRYXezsjBB9mC9OiMXXHh0oc0hHaDYq42SBZLvpRbrSydBEqTbHzsF+vkfkYYHEGs/zS
-         9XWA+qMxwKOrhJY6opObpSGUItECTHCB6oJA2f7QUQFlWN/nKMWcvxapyns5VsYXXAAE
-         lU+jGWvXA5Zbz/byyVxgBmBTMzeKInlvyNJa+s+Wk/5bnijHO5Zau1TImFcX7HPxuLlr
-         fqWA==
-X-Gm-Message-State: AOAM531yGuNfUnJ8Pyi+VyfsRxDN3QH2WCfWRTQNvVA0KPfkBaSAs2Sm
-        trs7RQQ2zseFHZDlUGXJxDA=
-X-Google-Smtp-Source: ABdhPJwrqr/f9zGtFfDhRDzosynmlvgk8Ol+BxnLfPEd/r3UzkWFd2RReMfqAjP0pnoJh/ol2/7uXA==
-X-Received: by 2002:aca:ac8a:: with SMTP id v132mr36254278oie.44.1637030409922;
-        Mon, 15 Nov 2021 18:40:09 -0800 (PST)
-Received: from [172.16.0.2] ([8.48.134.30])
-        by smtp.googlemail.com with ESMTPSA id l9sm2902366oom.4.2021.11.15.18.40.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 18:40:09 -0800 (PST)
-Message-ID: <69706525-65b1-8372-8ef1-1ee12e7bbc26@gmail.com>
-Date:   Mon, 15 Nov 2021 19:40:08 -0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+IsQBHoFAXBIkB1Kw8WNji5f2haXZUreOBVyURuDYXY=;
+        b=PcKjITc5DykR3RtiYctr+5CHbuTg8Pck2/VmBlJFnQbT9ZBf82cEi1XqlH4OLIPfog
+         dRI3nldwUrAHToh//wDfOcnXPgSB4IlIa2RtSQCUstmphkMPka8SbN65KIzuOWen1iBA
+         VZlm2Eh3MvSDO3Sg0MjeKwoec0hnJju3MyZprl/OiS/U2kbV3vY9KgEE0OVDKCpD/Kk7
+         sHcYar9EJayUGsHZ++PsdUJW+1YckvYw2IUENnO97KWD9cscgOfpHbxx+1VYo+80/jgz
+         ZjsQKb1Ujs8WZDwqinep1fa0dz2LJhdNSiXzTNym3cPku4hYCrf3mtUifwSQ0Dm5/S9A
+         hITw==
+X-Gm-Message-State: AOAM532kc7bN7fa/MkeUesvmWdCUIiT6g21qjVtkwrfbLZOPZ/OlYqV2
+        Obfsmjr9po0ayT+qunrUvXTDsb9Ba1PZ+QJbgRQ=
+X-Google-Smtp-Source: ABdhPJwFg2x8AJ1R5syQ8XsYLcOycKjHQkw7M4LD3hkby3taUtS6CF+5GtXIucrImQ59MMWh5GgdKa+ymtIJF4dYXg8=
+X-Received: by 2002:a05:620a:38f:: with SMTP id q15mr3429838qkm.291.1637030653516;
+ Mon, 15 Nov 2021 18:44:13 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Subject: Re: [PATCH net-next] ipv6: don't generate link-local addr in random
- or privacy mode
-Content-Language: en-US
-To:     Rocco Yue <rocco.yue@mediatek.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Rocco.Yue@gmail.com,
-        chao.song@mediatek.com, zhuoliang.zhang@mediatek.com
-References: <de051ecb-0efe-27e2-217c-60a502f4415f@gmail.com>
- <20211116022145.31322-1-rocco.yue@mediatek.com>
-From:   David Ahern <dsahern@gmail.com>
-In-Reply-To: <20211116022145.31322-1-rocco.yue@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20210921043936.468001-1-andrew@aj.id.au> <20210921043936.468001-2-andrew@aj.id.au>
+ <CACRpkdZRWzq_j_UsU+eZurv1wT7muB1V4ktui1-Q0mHV3xw58A@mail.gmail.com>
+In-Reply-To: <CACRpkdZRWzq_j_UsU+eZurv1wT7muB1V4ktui1-Q0mHV3xw58A@mail.gmail.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 16 Nov 2021 02:44:00 +0000
+Message-ID: <CACPK8Xef1hVFFAJS-tHa+fjR0SgNZ7d5W04KwOYi-CvQdpnJww@mail.gmail.com>
+Subject: Re: [PATCH 1/2] leds: pca955x: Make the gpiochip always expose all pins
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Pavel Machek <pavel@ucw.cz>
+Cc:     Andrew Jeffery <andrew@aj.id.au>, linux-leds@vger.kernel.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/21 7:21 PM, Rocco Yue wrote:
-> 
-> Due to I can see this patch from the link below, I'm not sure why this
-> happened, could you kindly tell me what the merge window is, so I can
-> avoid such problem next time.
->   https://lore.kernel.org/netdev/20211113084636.11685-1-rocco.yue@mediatek.com/t/
->   https://lore.kernel.org/lkml/20211113084636.11685-1-rocco.yue@mediatek.com/T/
+Hello Pavel and Arnd,
 
-check patch status here:
-    https://patchwork.kernel.org/project/netdevbpf/list/
+This one has slipped through the cracks. Andrew asked for a follow up
+and Linus sent a review, but we haven't heard from Pavel at all.
 
-check net-next status here:
-    http://vger.kernel.org/~davem/net-next.html
+We've merged device tree changes through the soc tree in v5.16 that
+depend on this patch. Ideally I would like to see it applied to fix
+those device trees, instead of sending reverts for the device trees.
 
+Additionally, I'm now reviewing changes for v5.17 and want to decide
+which direction we should take.
 
+Pavel, are you happy with the change?
+
+If so, would you consider merging it as a fix for v5.16?
+
+Cheers,
+
+Joel
+
+On Tue, 9 Nov 2021 at 11:03, Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Tue, Sep 21, 2021 at 6:40 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+>
+> > The devicetree binding allows specifying which pins are GPIO vs LED.
+> > Limiting the instantiated gpiochip to just these pins as the driver
+> > currently does requires an arbitrary mapping between pins and GPIOs, but
+> > such a mapping is not implemented by the driver. As a result,
+> > specifying GPIOs in such a way that they don't map 1-to-1 to pin indexes
+> > does not function as expected.
+> >
+> > Establishing such a mapping is more complex than not and even if we did,
+> > doing so leads to a slightly hairy userspace experience as the behaviour
+> > of the PCA955x gpiochip would depend on how the pins are assigned in the
+> > devicetree. Instead, always expose all pins via the gpiochip to provide
+> > a stable interface and track which pins are in use.
+> >
+> > Specifying a pin as `type = <PCA955X_TYPE_GPIO>;` in the devicetree
+> > becomes a no-op.
+> >
+> > I've assessed the impact of this change by looking through all of the
+> > affected devicetrees as of the tag leds-5.15-rc1:
+> >
+> > ```
+> > $ git grep -l 'pca955[0123]' $(find . -name dts -type d)
+> > arch/arm/boot/dts/aspeed-bmc-ibm-everest.dts
+> > arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
+> > arch/arm/boot/dts/aspeed-bmc-opp-mihawk.dts
+> > arch/arm/boot/dts/aspeed-bmc-opp-mowgli.dts
+> > arch/arm/boot/dts/aspeed-bmc-opp-swift.dts
+> > arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
+> > arch/arm/boot/dts/aspeed-bmc-opp-witherspoon.dts
+> > ```
+> >
+> > These are all IBM-associated platforms. I've analysed both the
+> > devicetrees and schematics where necessary to determine whether any
+> > systems hit the hazard of the current broken behaviour. For the most
+> > part, the systems specify the pins as either all LEDs or all GPIOs, or
+> > at least do so in a way such that the broken behaviour isn't exposed.
+> >
+> > The main counter-point to this observation is the Everest system whose
+> > devicetree describes a large number of PCA955x devices and in some cases
+> > has pin assignments that hit the hazard. However, there does not seem to
+> > be any use of the affected GPIOs in the userspace associated with
+> > Everest.
+> >
+> > Regardless, any use of the hazardous GPIOs in Everest is already broken,
+> > so let's fix the interface and then fix any already broken userspace
+> > with it.
+> >
+> > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+>
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> Yours,
+> Linus Walleij
