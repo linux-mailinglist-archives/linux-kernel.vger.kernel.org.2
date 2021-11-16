@@ -2,86 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC17F45341F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:26:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D28453424
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbhKPO25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 09:28:57 -0500
-Received: from foss.arm.com ([217.140.110.172]:45848 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230411AbhKPO2y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 09:28:54 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 88B4A6D;
-        Tue, 16 Nov 2021 06:25:57 -0800 (PST)
-Received: from [10.57.82.45] (unknown [10.57.82.45])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BA8BF3F766;
-        Tue, 16 Nov 2021 06:25:55 -0800 (PST)
-Message-ID: <cf539ded-5c9b-38b9-ad8f-a2ea4b28ec37@arm.com>
-Date:   Tue, 16 Nov 2021 14:25:50 +0000
+        id S237417AbhKPO3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 09:29:16 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:37348 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237431AbhKPO3O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 09:29:14 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 71CAD1F45793
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1637072776; bh=p+84Xrz8FSKoixBY/HbQlzfr1EhSOjFp94DGnm3ck9s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gzvw1zoFKC1rg0Aqd8+BHNJ9+lVQod7xo8RIVA05fsafH/RXEx4MEwP/ijt7EjQVw
+         iHlUMYX63I5numKZMXoncjKP50SL+bHXJcf96CdQOJcz5sEzAeUYSo2BLRuAa9wZdP
+         DB2K2Qh3kXEY9F591+fH0OlTlMDzIWgtF+nk6eFfiWmSNbPsW9bXGagQM3UUkBiF8C
+         hZaphzPaA2LoyA1SWDkQ24baK8Sj8tFj1PXSHo++wm/urSqFkAEAiX5M6zK5thK+hw
+         BSqlkTaeXpFty/HgeTR5dtBAhyU4I8zFzs9XS7CyhbRsQgCD0J/wvz6LTp3TWqO5J2
+         DWnwBtrx7c+Jw==
+Received: by earth.universe (Postfix, from userid 1000)
+        id 5B8833C0F95; Tue, 16 Nov 2021 15:26:14 +0100 (CET)
+Date:   Tue, 16 Nov 2021 15:26:14 +0100
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v2] power: reset: ltc2952: Fix use of floating point
+ literals
+Message-ID: <20211116142614.ofqoox6zpn5erlc3@earth.universe>
+References: <20211105152049.2522250-1-nathan@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH 0/5] iommu: Some IOVA code reorganisation
-Content-Language: en-GB
-To:     John Garry <john.garry@huawei.com>, Will Deacon <will@kernel.org>
-Cc:     joro@8bytes.org, mst@redhat.com, jasowang@redhat.com,
-        xieyongji@bytedance.com, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org,
-        virtualization@lists.linux-foundation.org, linuxarm@huawei.com,
-        thunder.leizhen@huawei.com, baolu.lu@linux.intel.com
-References: <1632477717-5254-1-git-send-email-john.garry@huawei.com>
- <20211004114418.GC27373@willie-the-truck>
- <cdb502c5-4896-385b-8872-f4f20e9c7e34@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <cdb502c5-4896-385b-8872-f4f20e9c7e34@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4hhn5uqosuvhtbid"
+Content-Disposition: inline
+In-Reply-To: <20211105152049.2522250-1-nathan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-16 14:21, John Garry wrote:
-> On 04/10/2021 12:44, Will Deacon wrote:
->> On Fri, Sep 24, 2021 at 06:01:52PM +0800, John Garry wrote:
->>> The IOVA domain structure is a bit overloaded, holding:
->>> - IOVA tree management
->>> - FQ control
->>> - IOVA rcache memories
->>>
->>> Indeed only a couple of IOVA users use the rcache, and only dma-iommu.c
->>> uses the FQ feature.
->>>
->>> This series separates out that structure. In addition, it moves the FQ
->>> code into dma-iommu.c . This is not strictly necessary, but it does make
->>> it easier for the FQ domain lookup the rcache domain.
->>>
->>> The rcache code stays where it is, as it may be reworked in future, so
->>> there is not much point in relocating and then discarding.
->>>
->>> This topic was initially discussed and suggested (I think) by Robin 
->>> here:
->>> https://lore.kernel.org/linux-iommu/1d06eda1-9961-d023-f5e7-fe87e768f067@arm.com/ 
->>>
->> It would be useful to have Robin's Ack on patches 2-4. The implementation
->> looks straightforward to me, but the thread above isn't very clear about
->> what is being suggested.
-> 
-> Hi Robin,
-> 
-> Just wondering if you had made any progress on your FQ code rework or 
-> your own re-org?
 
-Hey John - as it happens I started hacking on that in earnest about half 
-an hour ago, aiming to get something out later this week.
+--4hhn5uqosuvhtbid
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Cheers,
-Robin.
+Hi,
 
-> I wasn't planning on progressing 
-> https://lore.kernel.org/linux-iommu/1626259003-201303-1-git-send-email-john.garry@huawei.com/ 
-> until this is done first (and that is still a big issue), even though 
-> not strictly necessary.
-> 
-> Thanks,
-> John
+On Fri, Nov 05, 2021 at 08:20:50AM -0700, Nathan Chancellor wrote:
+> A new commit in LLVM causes an error on the use of 'long double' when
+> '-mno-x87' is used, which the kernel does through an alias,
+> '-mno-80387' (see the LLVM commit below for more details around why it
+> does this).
+>=20
+> drivers/power/reset/ltc2952-poweroff.c:162:28: error: expression requires=
+  'long double' type support, but target 'x86_64-unknown-linux-gnu' does no=
+t support it
+>         data->wde_interval =3D 300L * 1E6L;
+>                                   ^
+> drivers/power/reset/ltc2952-poweroff.c:162:21: error: expression requires=
+  'long double' type support, but target 'x86_64-unknown-linux-gnu' does no=
+t support it
+>         data->wde_interval =3D 300L * 1E6L;
+>                            ^
+> drivers/power/reset/ltc2952-poweroff.c:163:41: error: expression requires=
+  'long double' type support, but target 'x86_64-unknown-linux-gnu' does no=
+t support it
+>         data->trigger_delay =3D ktime_set(2, 500L*1E6L);
+>                                                ^
+> 3 errors generated.
+>=20
+> This happens due to the use of a 'long double' literal. The 'E6' part of
+> '1E6L' causes the literal to be a 'double' then the 'L' suffix promotes
+> it to 'long double'.
+>=20
+> There is no visible reason for floating point values in this driver, as
+> the values are only assigned to integer types. Use NSEC_PER_MSEC, which
+> is the same integer value as '1E6L', to avoid changing functionality but
+> fix the error.
+>=20
+> Fixes: 6647156c00cc ("power: reset: add LTC2952 poweroff driver")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1497
+> Link: https://github.com/llvm/llvm-project/commit/a8083d42b1c346e21623a1d=
+36d1f0cadd7801d83
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+
+Thanks, queued to power-supply's fixes branch.
+
+-- Sebastian
+
+>=20
+> v1 -> v2: https://lore.kernel.org/r/20211104215047.663411-1-nathan@kernel=
+=2Eorg/
+>=20
+> * A separate review pointed out that NSEC_PER_MSEC is a better choice
+>   than USEC_PER_SEC because ktime_t is nanoseconds and the few functions
+>   that take these values work in nanoseconds. The value is the same but
+>   the documentation is better.
+>=20
+> * Pick up Nick's review tag.
+>=20
+>  drivers/power/reset/ltc2952-poweroff.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/power/reset/ltc2952-poweroff.c b/drivers/power/reset=
+/ltc2952-poweroff.c
+> index fbb344353fe4..65d9528cc989 100644
+> --- a/drivers/power/reset/ltc2952-poweroff.c
+> +++ b/drivers/power/reset/ltc2952-poweroff.c
+> @@ -159,8 +159,8 @@ static void ltc2952_poweroff_kill(void)
+> =20
+>  static void ltc2952_poweroff_default(struct ltc2952_poweroff *data)
+>  {
+> -	data->wde_interval =3D 300L * 1E6L;
+> -	data->trigger_delay =3D ktime_set(2, 500L*1E6L);
+> +	data->wde_interval =3D 300L * NSEC_PER_MSEC;
+> +	data->trigger_delay =3D ktime_set(2, 500L * NSEC_PER_MSEC);
+> =20
+>  	hrtimer_init(&data->timer_trigger, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+>  	data->timer_trigger.function =3D ltc2952_poweroff_timer_trigger;
+>=20
+> base-commit: d4439a1189f93d0ac1eaf0197db8e6b3e197d5c7
+> --=20
+> 2.34.0.rc0
+>=20
+
+--4hhn5uqosuvhtbid
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmGTv4EACgkQ2O7X88g7
++pqHdA//Q+mvgq10/Ejyo+07Plky71EpBqEZj/dVjD4lo05aKvXxdcSjH5dR/PaJ
+7tBeQixlwy+XAXu2LkNFTAebTWqQl3u01UPLmYrvfUUxKKCBefYXC9FoUwvEqxJW
+DAnqSj9uKMAzxmN6iTzYi+y+NVZljItFkwIAOkvO9uL81Xdjo7FNccgqJBGzMa/1
+rMXqrdHAaa7mQ2VGawIOOCYW+iltQLdglAOBvDUHfgM9jN/mhozm61rXOGg53X9B
+cckGZqzqx1013mTTinCQ5B6xf2MDasQl8o3Gd7Zwzqun7Zi3N0QcaRU1CGaYdRER
+MOTtlq0JRnFkpwUCaUZTcSEwQlRxl1pwSq81JHkorJC/B/OutJv8JdYz7K10axWm
+I+NLo4oS4HeNTPHZoA+qcANQKXytNFshq3OF4B3glste2co1ro7WLrdRUsLno6Ph
+T1xUH7EycXgZd/pdCyzhM60ig3FxBnv2qHLHkE3O2zA7ZmRkRrIM/Rplu4cgFiZD
+cz5E1fJ6JxcTmDFilJDrllDT7vhI+0/U+/+8yI+Bx2n4zQIfQOlnCIKx1N3zspLm
+eqtWG1P21C+2i4g4IbIchLMN0IbthvsLVcnHJdl/W4mY7EEl6hrFNkBWRTRhmIkA
+0CpH4ft4JhMGmEVlVgmnur58bB3VsPom92UwC73R2yBMkZKNA5c=
+=7Avg
+-----END PGP SIGNATURE-----
+
+--4hhn5uqosuvhtbid--
