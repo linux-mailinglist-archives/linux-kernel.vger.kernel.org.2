@@ -2,321 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC24453568
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:12:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F6545356F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238085AbhKPPPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 10:15:02 -0500
-Received: from mail-eopbgr00074.outbound.protection.outlook.com ([40.107.0.74]:39301
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238004AbhKPPOg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 10:14:36 -0500
+        id S236150AbhKPPPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 10:15:43 -0500
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:12992 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238158AbhKPPPT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 10:15:19 -0500
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AGEG80L013942;
+        Tue, 16 Nov 2021 15:12:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=epUb2VhTnej1alZUn7+1mPcostWw2FEQ4ptnOAQWVrg=;
+ b=V4YgEkLnSWlJFohdtWI2dD+HsmV2ad9pPSaSR4B/VzcN6HkSpi7ioRvcVq5zPU+DSIwK
+ I0fZJF2eBhJJQoPDO9Yv26FBJ531GpWnHfTpJSX7pxF5My+iwckFUzK/W9wHmIb1unvX
+ EFqEumCsQNpQophuhoX6OkNGusx3oxsXr9M0F2FdfNUaFcn0sxrPNi/IUjgj/ElPKDKL
+ l29Es1WMNVQ+6GQL9WCyw0jNhYG0poIVfH/RSivCROEV9SOgfhBqYZCH2BSLySf0L+8o
+ INx4mkKcpal3ui7m39o9vjRPalpTWOQJ6eaF7WlCdmeI7r6D+dg8ZaeYA5NRrd1UJ8yR WQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3cbhv5a3gx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Nov 2021 15:12:08 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AGFAd9I161538;
+        Tue, 16 Nov 2021 15:12:07 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
+        by aserp3020.oracle.com with ESMTP id 3ca565jrwq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Nov 2021 15:12:07 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XCxw4/FQ+jqYjdWk6S5bjO4ANuzWExZdhJzeL90SrPnRAGmBx5B60mOUxkw2sVlfFBZw/nEQiwUF4Ble+PSP7OwWxqoGvDUe+yNG8tY3+OEau8TsMYC2xD0nKPLqGeECPUc4hrKBPFSYbMBCiHfYW5FaEgWjthpRlUGVnybWvgHe5jUDpq/G5SL7c4wXYWXGUt4+Ug6WoCLMzqaVEvgKQP4v9rfRDJg08R7bUPW9dIMX5eTJk4kFp8AYZd3/98Lusm8kssjNUqahuduU2W5MoqrHEGulGwsoqouqM/zdkBauccNsdFsEmYAel9OAzUPfFcWuJapfoFyflzBge1pj5g==
+ b=EHFN9azs3WgRuHEJfkMLKGHYcg40gUtBasjd16XUHrGjSrhEs8BU73i1EMzROTMCi+f96qY5cuHre+GU/0xAEhdTbxKffA/ZkezygMRZG07mPtLQ9fSv3u/DkIYufVVern5eZM628Kqi47XDm4c8BuPXtArd316+Pp/oAHwxQJPS9pcWHsauHdLBuA8nDmQCimEuS5fidf7bKfftXrhvYnmagksGpbd/2rlpw4WBEmPOtvjcNQdTJpvUtkXgoNZiS3Nw8SoAbj6ni/PlLkihcMWO+dCgyPk8jtbH/jUoQisYbKKGPR5+iKrZu1URVob4I/XRxYt4RUVdhfQq+QU+ug==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Oq7791NpKf481DHXXIDn4VCj+OpHzaSrtQ5uu+cjR/4=;
- b=VcxAjTCXIAUtjMPsglazjRAkUsXTIl1YKILCtZo/gx8mFsENxqEgwhpTY1skZTme4SaTq2Hpr1LZUpTH4KyvsG/CBJu+JpgOH+dBDtG/2bkQ73CfTTUJaeoXlcMqETqBT83qSGfiURaCFlqLUL22qJwTbXkJcQN6honPxbnQ9vT4KuWXkDwTuvAG6EMzqQnc+YCsH1gDhCTNIsDNqr48jxAYVJ9zQxLPNpImBP6wOEuOwjyH9cKYgKS7IszzqZ7rZIpOviPHOtQAoPZaUzEBLTzBF6uMUukN2qhcpq4CsjAL2Vvj7KdVtVHRrWIoNgotxV2Z2+IURanUHOoYh4r0fg==
+ bh=epUb2VhTnej1alZUn7+1mPcostWw2FEQ4ptnOAQWVrg=;
+ b=JPJTiznXtglRws/ALXTBbIpek7XFDs8wT9IsBxcxdob4okIHuuRm/mZIybQCPYVdk6GhqPv4uUuUAyIu6Nw8HSB+KbSVkwyM8bTnEJCsn2qFfdZGWHwLyIaNLS7dkycuV6Gc9s4Dsi8FAA6Hzjb27qUOhEUInQkaow+k8W7aS5abfJW/STFveSl02tNsekZB5p9LspeJ2vSqQNNknr7Ge+c97dDINWl/EDzOImDyfjze47PtWIV4cLbG0eRsGb0jR0FPzaLqr+oS7NAxdTQBsAD/GBqvelHaVuFeFfveakwDqWvKNUUD/dhxfnqWca6JDChPfxHB0Q4GrXbQkkxhHg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Oq7791NpKf481DHXXIDn4VCj+OpHzaSrtQ5uu+cjR/4=;
- b=Jq/ZpKJPWwncoV0ZnCZBdNyOm90LmhB7YWuRBxRENo0cFpbJpO+Ygto33dyQvQ3bAvVI0o19mkBpSYfFOTNq/HYGHOVF8yHjKSxHot8d31uE8XJHtVS2Kq+dpqbXcLJFjo5sHTED5SA7eHBbmvtAx6NeJl8Wt05LhuwPc14l8b0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB4688.eurprd04.prod.outlook.com (2603:10a6:803:6a::30)
- by VE1PR04MB6640.eurprd04.prod.outlook.com (2603:10a6:803:122::32) with
- Microsoft SMTP Server (version=TLS1_2,
+ bh=epUb2VhTnej1alZUn7+1mPcostWw2FEQ4ptnOAQWVrg=;
+ b=JGQjQ1wYp7kMDyql7OxByQCU/t+A3qUFsnyRfvYmJR43AyFFn3qCr0O8UAwOU6E2PfK2wIu3rRHLvDVu7vTCgcOAL0CdjVxMmTBv1Ifq38dtjUydHx81ltR2ZTVA89zX0tNbkyQGr8DjHrkKoqV3TkwdW0yLf7zmZG+P40JnZ6w=
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by CO1PR10MB4721.namprd10.prod.outlook.com
+ (2603:10b6:303:9b::7) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Tue, 16 Nov
- 2021 15:11:36 +0000
-Received: from VI1PR04MB4688.eurprd04.prod.outlook.com
- ([fe80::d0eb:49aa:2a9:9fc4]) by VI1PR04MB4688.eurprd04.prod.outlook.com
- ([fe80::d0eb:49aa:2a9:9fc4%4]) with mapi id 15.20.4690.027; Tue, 16 Nov 2021
- 15:11:36 +0000
-Date:   Tue, 16 Nov 2021 17:11:33 +0200
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Abel Vesa <abelvesa@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, kernel-team@android.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-oxnas@groups.io, linux-renesas-soc@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v4 1/2] drivers: bus: simple-pm-bus: Add support for
- probing simple bus only devices
-Message-ID: <YZPKJWtd2VqvufFe@ryzen>
-References: <20210929000735.585237-1-saravanak@google.com>
- <20210929000735.585237-2-saravanak@google.com>
- <YYu4EglV7SBZU2Iy@ryzen>
- <CAGETcx_m3f5JgrKQXZ5DUxDkpGhAau9G8uYm8a0iQ8JbcD0Rtg@mail.gmail.com>
- <CAGETcx_a-d7qQNi3sUce3AzbPcvGJK5JSuiiHm4h4e_q-MT7Dg@mail.gmail.com>
- <YZO5L7BJuLi5YjWr@ryzen>
+ 2021 15:12:05 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4690.016; Tue, 16 Nov 2021
+ 15:12:05 +0000
+Date:   Tue, 16 Nov 2021 18:11:39 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     Zameer Manji <zmanji@gmail.com>, gregkh@linuxfoundation.org,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Michael Straube <straube.linux@gmail.com>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: r8188eu: remove unused defines in wifi.h
+Message-ID: <20211116151139.GJ26989@kadam>
+References: <20211116011451.896714-1-zmanji@gmail.com>
+ <6d2d9c4a-3f05-1d51-42dc-b1ebbb4aefe1@gmail.com>
+ <CABtXzjSPNxe-n9QTujMB7=CmhqPFp8V2e86BXmoErWm+6c5coA@mail.gmail.com>
+ <22a48290-814e-bcae-81e5-c23e6310f8f6@gmail.com>
+ <20211116141838.GI26989@kadam>
+ <a072c468-f9dd-25f4-70fa-535cb7196b13@gmail.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YZO5L7BJuLi5YjWr@ryzen>
-X-ClientProxiedBy: VI1PR07CA0214.eurprd07.prod.outlook.com
- (2603:10a6:802:58::17) To VI1PR04MB4688.eurprd04.prod.outlook.com
- (2603:10a6:803:6a::30)
+In-Reply-To: <a072c468-f9dd-25f4-70fa-535cb7196b13@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JN2P275CA0033.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::21)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-Received: from ryzen (5.12.226.136) by VI1PR07CA0214.eurprd07.prod.outlook.com (2603:10a6:802:58::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.17 via Frontend Transport; Tue, 16 Nov 2021 15:11:35 +0000
+Received: from kadam (102.222.70.114) by JN2P275CA0033.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.25 via Frontend Transport; Tue, 16 Nov 2021 15:11:58 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 39e91164-0610-4554-9d2c-08d9a91361cb
-X-MS-TrafficTypeDiagnostic: VE1PR04MB6640:
-X-Microsoft-Antispam-PRVS: <VE1PR04MB664095A60C5BB6EFC74A9EF0F6999@VE1PR04MB6640.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Office365-Filtering-Correlation-Id: eb1ee596-55fd-4406-7d48-08d9a9137316
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4721:
+X-Microsoft-Antispam-PRVS: <CO1PR10MB4721B1A7688C261363C69A248E999@CO1PR10MB4721.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ry19zhwTvC9rgr5e8cGK+hGa/HiYsMLs97xETSuW4/9UsSz20EtPlL9j+Z7L3o1pc/UQzArNLkSN0p1GM1LRoSPgmZ3UUjGgGdY/o0MAmqnip5mN3tvd0Ms5zz0Bd1IsaX3DivkEYJiU9IbB801wfamuwiGmDHxZR6PwK3gBuWH/MJgW7B733gFYDERoNRak5byw5sXvdgcuHxWOopGvv/QqBZRPJ7HomG2nN3uK7CkgsUetu72msVH/EuHK74ReaFwYq5imNx8hbgeCPU09kuEHD9SZZZw2HtrYYnhp3gI6uw9X262jaZgdg6R97ALMVc3cv30voqHRHYSNppZuXR3/ekvuXV1ZMMzErrHqpJmxVOMlqyJ3Ii7bJinyn7bcPETcbpXChW3jy03B3k7ULgKa5TSMY05DalO1q/hQsV9lUnB5gG/79Z3iNjfKSJN9NsfJ3roRga8wDSCRecHeLglYp1VmoR1ARlwfpd7Hrrda0kcZ1Cj+R6HTfTWsfwy0bNOyFARGemAxfitwyPV36C5HyNiIa0KMUs6mUTdBJ/gaiT4CQV5RgRLSaGHKlBhCq2Lrtk+/jj7tx26ehCNlwNnq00c8GOrF3mcYto/yeN2RdbRflA9vq1VeF4ZbbQ79WIjb9TScx+/nMpzS4iJk/LliJtQ3EVESxoJSxL+G56yg8DMXsX4EHfgnpXApPLuc6fAYFtQtVNvnWZh15pgi5IUDpzIlmsBpFqeAQxFcnyjevy+lYw7ho6ixAfAqtAWRMjs/tjr73NcTp8V+L4dF23BTU/L06tleQCm27G+Tfg1cCTZbyaOo8L3yp2JQcIj58oqn0mJCFOfEnD0lBydz6Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4688.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(26005)(38100700002)(55016002)(86362001)(45080400002)(9686003)(38350700002)(8676002)(8936002)(186003)(7416002)(956004)(508600001)(53546011)(2906002)(4326008)(83380400001)(5660300002)(66476007)(66946007)(54906003)(66556008)(33716001)(52116002)(44832011)(316002)(6916009)(9576002)(6496006)(966005);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: uOIPoi+SpnCUgw2MtE0e+RRu05QmpIjClmHXMzaq0vZuavv1pxOO809Ydnus3UmiB6UCwzf/RiXrrtr93rk5G44ny5Rp5HcHwgSWUhrgFmY5nAMAQUJbamYXMfr8TN+0IlH7gzhY4D4fsWpTtpG+41oTx+ECGHxIJbZLTxm4cVSh/AKTtTOneAi2Rbvc+HF59g+ajlOnn63D5vLJgVj46+eljiz6USXnGpjHi5LyhlndGR8/QU1id244EQQW+8c+nRKkFbLCBJ8PgMPDcYet/OmlbVEWU5NxB9ivkotRO/B+5cU0ZLER0QTOLGcg4+ngYVTYQ304EHz9ZRYVbLrdOcTX5+HnB5YZ4yoNVE4OBD5Jen6M7iGqGSGFO6lHt2tcw6gHI6RBcgMnwIiCzCu66vUL57SZQcKnFYYoJE01XLfeJVqY8Kj1XdllsBtdt4HAXOPL5hkZpIOP4U84cgqcrXUTnqbo2MoVEEbbnL+BKLdBxgnrrZwDfe8SyzK/PQxKVRwoidu4oLrB6C+znYQQF79k1edQWKO5FQDNSGg08Q5RAIPE2KNFqJz9LugWI1TQ8vBtz/6PTWHYLIql+aroirklobGd4Ip1gysY/yIHXblQEu/+xxN6qEpfLMLhWcZhQlo/yAeFQIT4sXAgtmX52yHHIJWWNZ3GTcIFzoOa02elcqkQ4pY/TCYYWkNgq+UVghGT7CRNpVRAURQlcFY44A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(1076003)(53546011)(54906003)(66556008)(66946007)(186003)(6666004)(55016002)(86362001)(956004)(2906002)(9686003)(8676002)(66476007)(44832011)(508600001)(4326008)(33716001)(26005)(33656002)(5660300002)(316002)(38100700002)(38350700002)(9576002)(52116002)(8936002)(6496006)(6916009);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TgvtXc7ifeF9qpxFowyDqzWOWG49Px3hmo9fzZZNDJ6AB7REelFIqGQoJDbT?=
- =?us-ascii?Q?EoXIs/t/YY9wBJjmT7vL/FCiJdm2pkms3xTYGnSiV3t6h/vSoGJKIHH6c7/g?=
- =?us-ascii?Q?IYsZIfuh/eWQEgGvFsFJmJ4G2jg+m/gMLE75CWRsvI1AnxCTsSR9YpL81hSr?=
- =?us-ascii?Q?0VPSJ+46T/LlW97sC0XYiKvpXWD7x5dRgpIFFRgviomkoaTNQlspVfkj12RN?=
- =?us-ascii?Q?IWIHH6W5idCfRtVrhdM8+zOhOAudvBQ0TreikdF39z6+f8pezv06RvYTASys?=
- =?us-ascii?Q?MznjvYCzLEvwRrEMaSVueBp6+wo+7zLkhL50cRW9360XUSaF5ztDjDicAURE?=
- =?us-ascii?Q?1zuPhA7IG60i7WO/U3BSlUkUuoEYX/zL9WlGxKBdHHSkdkcVFBAVK4rxwruJ?=
- =?us-ascii?Q?WzmDJjb6HxiPhTEoXwUjmTdx9PhtaMRr+Xg1+KGkS8AcCgaenSCLjTxz1zIG?=
- =?us-ascii?Q?pbI9xob1WElZluwSe9FOZ+2VuSz93UKh6HA2/Fw13bs2aJd+W2OEIz8vbCUt?=
- =?us-ascii?Q?Y674ObPb3PTLvCbl5E1pA5BCSdEX5daV4VFgMp11hKvG4y0mwuXi1FwwT1Et?=
- =?us-ascii?Q?HmwEIcZJe1uWay4ostGqqH35kK1L/LPgR1M/6kKWr5aU7cfnm8+OYrUWKNBS?=
- =?us-ascii?Q?B3IeMeixNDaiu9Ye5n2AUWOWY762m/2Y3pW9rHDHQtQeDNYgIw3zkmfSLVoH?=
- =?us-ascii?Q?SSCbhM5prWzGsh1nLZTlTVtL2cIuIcaRlEHxFScwNQmz0vVUshBDCOtiQY1P?=
- =?us-ascii?Q?RwVLXxnJNzGrk8+2ivKkWJVX0xAm1zo1A08/KDL9UUoyaszZCueBvXt0p6f/?=
- =?us-ascii?Q?rRMjFI2L92tKcGY5i9tNLXyeuDUF+MJeUqYIPzZO/vYuebThiqingqB2iPFc?=
- =?us-ascii?Q?/QEjKp+c03keYM/Jun6GM8f9crcOQIYYD1dOHQzYBg0ayUZiT0HOdGxg8m0u?=
- =?us-ascii?Q?QtnTDC5ttbbKYW7aiFeTqnOh/MSG9hAJS4lPB4Po+0Ubs/u4nS1kNPqqkVvA?=
- =?us-ascii?Q?DBBRY6NrakFMnqW34CWncPPFh5qDymh6d3nA29yZyJSfsvL70x528cxN09pY?=
- =?us-ascii?Q?cWKwV2qdBY3F9Y1tCfEduJuU7rljLdxfZwy82d3vMefSIvjOy8XDu5lAO8r8?=
- =?us-ascii?Q?6jwCi7DyDj8kDNNa/op7Yn9MTGQwkXN+kdcBFp3+SwX7NIb6Y7dVVktz0lm0?=
- =?us-ascii?Q?ET3FpmcwFJbB118xZhHc/z3lLG8ILif02A+4pSyCy6m/QKio8PBu9mSpD8Cw?=
- =?us-ascii?Q?CeDd0Qm4H1C9KAL+7V+AJu/iJndjTEarASgGL3EWtYGhfSwYjdNVRRWfIAmT?=
- =?us-ascii?Q?xZA9ZeFsfHoak2B+GOAPwKMFQBKwHfgsBLk9OM0/DM0UuatqZoGHbNWHFm+3?=
- =?us-ascii?Q?zq/IqwXodQfgV2zH00l7KpNUbFb0ESKeUcFs6x1/49L4L5OZgTLntMDDaIfI?=
- =?us-ascii?Q?uW4fTT+BByu3KCO+brfTmDbdqn4oM09qfc96mSD89yq2vDLnN6/xXx+J/xKz?=
- =?us-ascii?Q?cFtOOHYyY7uPbUe/kFod19gI9vwUtlMSJp8viqCkRn7tCRz7jtdaetGXjiVi?=
- =?us-ascii?Q?1GRMmFn1XmfA75GZw8M0MoZck9LdypgQychaCnEjl2GHldtj7YMoJgSPWCxF?=
- =?us-ascii?Q?OGeXKP9jpf+X6Pd/me8BacQ=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 39e91164-0610-4554-9d2c-08d9a91361cb
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4688.eurprd04.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cVk4uG7KQFD8nZda2uC5PpEQ2EDFlIOJbDD09NVGrWFXlEp4ei3+A8e5RLWX?=
+ =?us-ascii?Q?KV8G1VqSea4a7zIK/gGQQkw504KDYYnSsSGWOhV/k3aPnblgRwOGuE0CjJWh?=
+ =?us-ascii?Q?llg+8m2YzcLgCCV/pWRyvDgsm3MTpPBmSUdL1Ygc5Z/S1FVfpm1vI7B29o1k?=
+ =?us-ascii?Q?HAlVxs/2m0QOrpzzwpeRbQaaXOIqb71HyA8eYv610KT1ODCYNmHKlTJ3sIaV?=
+ =?us-ascii?Q?gcRIZAf1XznDSjfkChhEIoHaIW506FMD0rcDPbIACOaqzAMX7kkHorE/J+mU?=
+ =?us-ascii?Q?koBNQFzLnrJJCAizssWPrmfj5k3QQcgubHYTAQ8b2wod4cRAmv8K17KjbGSN?=
+ =?us-ascii?Q?TwEhAKj7hLaC3S8n6+Elt1Pehl+NFJV2tHgQZiEjP5qKh5wu2Qyc5CEHAXGo?=
+ =?us-ascii?Q?rWfjnn6xwJgnbFfj5j9Kp7nryg6YHFDbEQDuAidQT+M6IRV1Eq+MCwntPuTJ?=
+ =?us-ascii?Q?iqj/EEVnmgGuJiKAGngIkk8H5y3PHxwz9Ucebu7cuae7c6PThs/8TKx/2r2a?=
+ =?us-ascii?Q?scZdai4lDg21IYQkeLqEjI99AcDpJpHWKncoQ3ErjRAYAKP0fdZh8L6C5YZF?=
+ =?us-ascii?Q?jDOZqHNTkM12SyWWGGooaXvno0mjIUj26yByMmeYxxtqYiVqaF4nJ4cDEG00?=
+ =?us-ascii?Q?dFwCXaUyfaK1HolAvhUlHwM5AV8ef6mXvTHCa+pxH1QHIMoCHtX1R4/jlkXH?=
+ =?us-ascii?Q?RtcyuKp7rsvkgpS4CJRmjLGj13twg62tXW8KojnzyrUpxqiK/TdCNz+BfkaU?=
+ =?us-ascii?Q?mEex7ka5enLydleqLcApdpXIQlMjJLPbiespw3k4Jqe/uqd9eOJrN6P5a93a?=
+ =?us-ascii?Q?EAJ03TFR8loI8y5UjyJ4YHfbCM/v7KTdLdiK7I3oMEnW4D+GfgJfKI4xxwTA?=
+ =?us-ascii?Q?+wkaEwU5Vjd6OOCmea7slphQSRF48SaOhpsJ5E7kzRhTmNgfFylC7TmtzzW/?=
+ =?us-ascii?Q?yKhvslIVVZbGXNFKH6/c9MBFGDNWbtnrDetmfrt+ZNcr+9F/pyYO/mJ37OsP?=
+ =?us-ascii?Q?9yUjlnQ8Aja+rERR1/q8j2b2dqF+hQBaQjSpHOGpb+GN1c6dvoWS+9ZcXPRz?=
+ =?us-ascii?Q?WLbkKHF/b7+tnKXq+Ceg3VfAANcPXUgvpDOo5IGeU2gkR1CleNIlHuPwR/uR?=
+ =?us-ascii?Q?kSMFCUdDatcov2LueqvrUzEhFPXvWOOr1LaRnQgF/PRGJQlVCSpIRCu3jKBr?=
+ =?us-ascii?Q?kNXMWlsOK6kuVPSTe/IdWsl/9HLpjMvpCbNbLz4bZmxf2QGqrXARxvmLWUba?=
+ =?us-ascii?Q?XxhtvX7tfCVLBgL5kEmYRIAjN1HXkxqjVjdon3antUS3cziYaw6k+eYQlhZU?=
+ =?us-ascii?Q?tB94yOXyvCBxo68Akzma5HhHDTCw3fU8zpTwQ4u882YTv8lkWBrtqaQ9xbCL?=
+ =?us-ascii?Q?Q5gZ+qInrAjvF/e0OYv+Yo8+c36YbJL1gxE0AzFacXO18vEROb1+Tih8o7Nh?=
+ =?us-ascii?Q?uNfw15OA/efzY5tTJmIXy/0bm3vmHl2VBZg7530nbHMHpfMABQwpwCS2+7pO?=
+ =?us-ascii?Q?MUn5CixDhd+mF40hH6Gi+mjFbug0eeRo6B12A4/QB1eLJob/eHrtj9+D3RTX?=
+ =?us-ascii?Q?KH4gTZO/FbnIqTdAI8yFPL8r9YrUYZYHldIZjaEi8ooCdkBUaXjPJbEpp0x9?=
+ =?us-ascii?Q?2cWrX3l+oKcq3ZcyFYlH2KzM59a3SCN6CefksRHJTi+l6xZ5dJo2YoSLJ4Vj?=
+ =?us-ascii?Q?WxG32MxlMWHS3dYrSQ844cV5oJg=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eb1ee596-55fd-4406-7d48-08d9a9137316
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 15:11:36.2291
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 15:12:05.1791
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Lw9sxWsXoNwqUJ++8hhR/vK/xjTkY+/EACsJNKn61cRPs4Zid6PpjqbXhRgmJ/PhcS++jlXUhyaDNnAqw1vp0Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6640
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0OS3vz9jF9z5qmrmUk7uWIXWhcn8jFKHdLNMF1Yi6aJqRnzUtPejxKY7NC4oWE/3tm9eGoEmnhrKf0lYSkUrJ6ZGfM01/yilOaPTfW5XJoU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4721
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10169 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0 mlxscore=0
+ spamscore=0 malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111160075
+X-Proofpoint-ORIG-GUID: sY4JLlB3Sb8VS201SAeRWHBt9GEOwHXp
+X-Proofpoint-GUID: sY4JLlB3Sb8VS201SAeRWHBt9GEOwHXp
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-11-16 15:59:11, Abel Vesa wrote:
-> On 21-11-15 12:17:46, Saravana Kannan wrote:
-> > On Wed, Nov 10, 2021 at 12:24 PM Saravana Kannan <saravanak@google.com> wrote:
-> > >
-> > > On Wed, Nov 10, 2021 at 4:16 AM Abel Vesa <abelvesa@kernel.org> wrote:
-> > > >
-> > > > On 21-09-28 17:07:33, Saravana Kannan wrote:
-> > > > > fw_devlink could end up creating device links for bus only devices.
-> > > > > However, bus only devices don't get probed and can block probe() or
-> > > > > sync_state() [1] call backs of other devices. To avoid this, probe these
-> > > > > devices using the simple-pm-bus driver.
-> > > > >
-> > > > > However, there are instances of devices that are not simple buses (they get
-> > > > > probed by their specific drivers) that also list the "simple-bus" (or other
-> > > > > bus only compatible strings) in their compatible property to automatically
-> > > > > populate their child devices. We still want these devices to get probed by
-> > > > > their specific drivers. So, we make sure this driver only probes devices
-> > > > > that are only buses.
-> > > > >
-> > > > > [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
-> > > > > Fixes: c442a0d18744 ("driver core: Set fw_devlink to "permissive" behavior by default")
-> > > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > > > Tested-by: Saravana Kannan <saravanak@google.com>
-> > > > > Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > > > > ---
-> > > > >  drivers/bus/simple-pm-bus.c | 42 ++++++++++++++++++++++++++++++++++---
-> > > > >  1 file changed, 39 insertions(+), 3 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/bus/simple-pm-bus.c b/drivers/bus/simple-pm-bus.c
-> > > > > index 01a3d0cd08ed..6b8d6257ed8a 100644
-> > > > > --- a/drivers/bus/simple-pm-bus.c
-> > > > > +++ b/drivers/bus/simple-pm-bus.c
-> > > > > @@ -13,11 +13,36 @@
-> > > > >  #include <linux/platform_device.h>
-> > > > >  #include <linux/pm_runtime.h>
-> > > > >
-> > > > > -
-> > > > >  static int simple_pm_bus_probe(struct platform_device *pdev)
-> > > > >  {
-> > > > > -     const struct of_dev_auxdata *lookup = dev_get_platdata(&pdev->dev);
-> > > > > -     struct device_node *np = pdev->dev.of_node;
-> > > > > +     const struct device *dev = &pdev->dev;
-> > > > > +     const struct of_dev_auxdata *lookup = dev_get_platdata(dev);
-> > > > > +     struct device_node *np = dev->of_node;
-> > > > > +     const struct of_device_id *match;
-> > > > > +
-> > > > > +     /*
-> > > > > +      * Allow user to use driver_override to bind this driver to a
-> > > > > +      * transparent bus device which has a different compatible string
-> > > > > +      * that's not listed in simple_pm_bus_of_match. We don't want to do any
-> > > > > +      * of the simple-pm-bus tasks for these devices, so return early.
-> > > > > +      */
-> > > > > +     if (pdev->driver_override)
-> > > > > +             return 0;
-> > > > > +
-> > > > > +     match = of_match_device(dev->driver->of_match_table, dev);
-> > > > > +     /*
-> > > > > +      * These are transparent bus devices (not simple-pm-bus matches) that
-> > > > > +      * have their child nodes populated automatically.  So, don't need to
-> > > > > +      * do anything more. We only match with the device if this driver is
-> > > > > +      * the most specific match because we don't want to incorrectly bind to
-> > > > > +      * a device that has a more specific driver.
-> > > > > +      */
-> > > > > +     if (match && match->data) {
-> > > > > +             if (of_property_match_string(np, "compatible", match->compatible) == 0)
-> > > > > +                     return 0;
-> > > > > +             else
-> > > > > +                     return -ENODEV;
-> > > > > +     }
-> > > >
-> > > > This change is breaking the expected behavior for the already existent
-> > > > simple-bus nodes. All the simple-bus compatibles should be replaced now
-> > > > to simple-pm-bus. In my case, on some i.MX8 platforms, without the
-> > > > devlink, the devices suspend sequence changes (and even breaks).
-> > > >
-> > > > To avoid breaking the already existent simple-bus nodes, maybe the logic
-> > > > should've been reversed: keep the simple-bus as is and add another
-> > > > compatible, IDK, something like simple-trasnparent-bus, or something.
-> > >
-> > > The intent of this change IS to affect existing simple-bus nodes (but
-> > > not in the way it's affecting you). But if it's breaking stuff, we
-> > > obviously need to fix it.
-> > >
-> > > I have a hunch on what's going on in your case, but can you point me
-> > > to the specific simple-bus node that's getting affected? I'm expecting
-> > > it to be a simple-bus node that gets added AFTER this driver is
-> > > registered at device_initcall (module_init gets converted to
-> > > device_initcall).
-> > >
-> 
-> Well, for now, I can't pinpoint exactly one specific dts node.
-> My usecase is a little bit more complicated since it's only happening
-> in conjunction with a local change in the imx-mu-irq driver
-> in our local tree. Basically, the local change is forcing a suspend abort by
-> calling pm_system_wake if there is an irq from SCU triggered after the
-> suspend noirq imx-mu-irq driver callback has been called.
-> If we replace all the simple-bus with simple-pm-bus, everything works
-> fine. 
-> 
-> > > Also, can you try this hack patch to see if it helps your case?
-> > > https://lore.kernel.org/lkml/CAGETcx9U130Oq-umrvXME4JhEpO0Wadoki3kNxx=0-YvTR6PtQ@mail.gmail.com/
-> > >
-> 
-> Nope, it doesn't work with this patch either.
-> 
-> And the funny thing is, even if I add the pm_runtime_enable to your patch
-> like this:
-> 
-> diff --git a/drivers/bus/simple-pm-bus.c b/drivers/bus/simple-pm-bus.c
-> index 6b8d6257ed8a..a13324fd700b 100644
-> --- a/drivers/bus/simple-pm-bus.c
-> +++ b/drivers/bus/simple-pm-bus.c
-> @@ -38,9 +38,11 @@ static int simple_pm_bus_probe(struct platform_device *pdev)
->          * a device that has a more specific driver.
->          */
->         if (match && match->data) {
-> -               if (of_property_match_string(np, "compatible", match->compatible) == 0)
-> +               if (of_property_match_string(np, "compatible", match->compatible) == 0) {
-> +                       pm_runtime_enable(&pdev->dev);
-> +                       of_platform_populate(np, NULL, lookup, &pdev->dev);
->                         return 0;
-> -               else
-> +               } else
->                         return -ENODEV;
->         }
-> 
-> I get the following warning:
-> 
-> [    1.009392] ------------[ cut here ]------------
-> [    1.013681] Enabling runtime PM for inactive device (bus@5d000000) with active children
-> [    1.021721] WARNING: CPU: 3 PID: 1 at drivers/base/power/runtime.c:1439 pm_runtime_enable+0xc0/0x100
-> [    1.030794] Modules linked in:                                              
-> [    1.033837] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.15.0-04906-gc0a8c67532b6-dirty #226
-> [    1.042175] Hardware name: Freescale i.MX8QXP MEK (DT)
-> [    1.047302] pstate: 600000c5 (nZCv daIF -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [    1.054248] pc : pm_runtime_enable+0xc0/0x100
-> [    1.058594] lr : pm_runtime_enable+0xc0/0x100
-> [    1.062938] sp : ffff800011e4bb60                                           
-> [    1.066237] x29: ffff800011e4bb60 x28: 0000000000000000 x27: ffff8000119204d0
-> [    1.073361] x26: ffff8000119c1060 x25: ffff8000119c1078 x24: ffff80001190f0a0
-> [    1.080484] x23: 0000000000000000 x22: 0000000000000000 x21: ffff0008006a00f4
-> [    1.087608] x20: 0000000000000000 x19: ffff0008006a0010 x18: 0000000000000030
-> [    1.094732] x17: 6974636120687469 x16: 7720293030303030 x15: 3064354073756228
-> [    1.101856] x14: 2065636976656420 x13: ffff800011c21dc0 x12: 0000000000000246
-> [    1.108981] x11: 00000000000000c2 x10: ffff800011c79dc0 x9 : 00000000fffff000
-> [    1.116103] x8 : ffff800011c21dc0 x7 : ffff800011c79dc0 x6 : 0000000000000000
-> [    1.123227] x5 : 000000000000bff4 x4 : 0000000000000000 x3 : 00000000ffffefff
-> [    1.130351] x2 : ffff800011c21d30 x1 : 6bf7c63081c63600 x0 : 0000000000000000
-> [    1.137478] Call trace:                                                     
-> [    1.139910]  pm_runtime_enable+0xc0/0x100
-> [    1.143903]  simple_pm_bus_probe+0x80/0xf0
-> [    1.147986]  platform_probe+0x6c/0xe0
-> [    1.151637]  really_probe.part.0+0x9c/0x310
-> [    1.155805]  __driver_probe_device+0x98/0x144
-> [    1.160149]  driver_probe_device+0xc8/0x15c
-> [    1.164319]  __driver_attach+0xfc/0x190
-> [    1.168141]  bus_for_each_dev+0x70/0xc0
-> [    1.171964]  driver_attach+0x28/0x3c                                        
-> [    1.175526]  bus_add_driver+0x108/0x1f0
-> [    1.179348]  driver_register+0x7c/0x130
-> [    1.183173]  __platform_driver_register+0x2c/0x40
-> [    1.187862]  simple_pm_bus_driver_init+0x20/0x2c
-> [    1.192466]  do_one_initcall+0x54/0x1bc
-> [    1.196289]  kernel_init_freeable+0x210/0x294
-> [    1.200633]  kernel_init+0x28/0x130                                         
-> [    1.204110]  ret_from_fork+0x10/0x20                                        
-> [    1.207678] ---[ end trace 719a02e69bfeb03f ]---
-> 
-> though it should be behaving exactly like in the case of simple-pm-bus.
-> 
-> Maybe I'm missing something here.
-> 
-> I'll keep digging.
-> 
-
-One more thing.
-
-So basically, your already upstream patch removes the devlinks for all the simple-bus
-nodes.
-
-By adding your hack patch, it also removes devlinks between subnodes of the simple-bus
-node.
-
-> > > I have some thoughts on how I could fix this, but I need to think
-> > > about a few cases.
+On Tue, Nov 16, 2021 at 06:01:42PM +0300, Pavel Skripkin wrote:
+> On 11/16/21 17:18, Dan Carpenter wrote:
+> > > I cannot ack, since I am not the maintainer (or even reviewer) of this
+> > > driver :) I just saw this BIT() definition and decided to say, that it can
+> > > be also removed
 > > 
-> > Hi Abel,
-> > 
-> > Friendly reminder.
+> > Just give a Reviewed-by tag...  No one is appointed as a maintainer, you
+> > just have to start handing our reviewed-by tags until people start to
+> > respect your judgement and then you're a maintainer.
 > > 
 > 
-> Sorry for the late reply.
+> Ok, I will send the R-b tag, since patch looks correct to me as is :)
 > 
-> > -Saravana
+> I think, I misunderstood what "ack" means. I thought Zameer means Acked-by
+> tag, which can sent only by maintainers (Larry and Phillip in case of
+> r8188eu), but I was wrong, I guess...
+
+To me Acked by means you approve the patch so it's like, yeah, normally
+maintainers use it.  But sometimes like people ask for your opinion and
+then you can Ack it.  Or maybe you just want to express joy about a
+feature.  (Please feel joy very sparingly. :P).
+
+regards,
+dan carpenter
+
