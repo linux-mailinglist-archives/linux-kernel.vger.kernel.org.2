@@ -2,86 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E021453C21
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 23:07:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 320A7453C22
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 23:11:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231820AbhKPWK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 17:10:28 -0500
-Received: from mout.gmx.net ([212.227.15.19]:42335 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231370AbhKPWK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 17:10:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1637100441;
-        bh=RIc6Wv7HzTnmQXNy6Xs25l5nQkvi+3gn5IR+o2WfY1Y=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=TL/uTuflJY0VuLaGVXRKwC5fa859R50Bahviv0zgmsU51KHIg5K/PuBAebZh02Fi1
-         jw/fh+bwodN6Gyc3EV8B1s5o7e4tm4x4HYj7iHM/rqKIvRM863s6Y6/njdYnlOrGOM
-         /uc+hqa3mqBQDfWD7H+3Q5gLH9TeB7QygC7Dh00A=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.fritz.box ([62.216.209.243]) by mail.gmx.net
- (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1M8QS2-1miit72sU4-004VZG; Tue, 16 Nov 2021 23:07:21 +0100
-From:   Peter Seiderer <ps.report@gmx.net>
-To:     linux-wireless@vger.kernel.org
-Cc:     ath9k-devel@qca.qualcomm.com,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH v1] ath9k: fix intr_txqs setting
-Date:   Tue, 16 Nov 2021 23:07:20 +0100
-Message-Id: <20211116220720.30145-1-ps.report@gmx.net>
-X-Mailer: git-send-email 2.33.1
+        id S231684AbhKPWOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 17:14:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230484AbhKPWOI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 17:14:08 -0500
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB83FC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 14:11:10 -0800 (PST)
+Received: by mail-qv1-xf2f.google.com with SMTP id s9so559501qvk.12
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 14:11:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=j6hyh4DdZnqVKVPsdX1svAKgMhHegQMvJV2EoDFhpZc=;
+        b=EiWMupfMYjCyDsirMoCIxHeV/JFy4OsBt6ItzFYMW9jW9fknoyNzKzpqjHLjqtCe2i
+         EbHYvZMoTvY+KjyNlGfs0zRt8pIMJ7RfJqez16cxowzO6pdiEd6VV1r/h7U/F8Xy1/vk
+         yyj2/OpW+GRWWoNf+2y/cyIkJXBbBJAj7sHbqLnmsG6T6Qu+5rFtwrDayWVNMz/eeNzG
+         t8dd/xYDIa3MQAEmrXVzQ/bZgEgbAuAxn2lldQcpQ1zODg3/tgldav4sU+RTWLNoHl26
+         PKe+TC+PMrDQ4kUh2UdQCJl8eumKDATvHmO3vdce63GUnyySziAfQmrmqro3Z5VJvwU1
+         myVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=j6hyh4DdZnqVKVPsdX1svAKgMhHegQMvJV2EoDFhpZc=;
+        b=hOUvqfEpOKmZ10vSdr75kWKTXIs+ZpwcsPOy0I01BSuCIrmJnnfTm3dWh6opCYcvMg
+         OCkwDaV8PvUEVcn/JOCFyJNg2sjqR0eycmZ5CX1O1QkLvPvpBLRc6XpzbbiRCvRWrvYS
+         yYO4b701K8rK8cU8VHIN6tTQ3RA7UkSTku3FOrHNE5lGRx3gJPhizJEWXrEwY9gG1fWX
+         A6MgYL6sF6xskkQRI/3xSxmu+/VVH8pOSF1/FaTFtTkk9QvPFhhtYpUzLSr+JUeUIe7j
+         6rUflfqDJKXTZCnY6JNh7nrQCalOKhJiM8X4X0jO7yFrTsP3dKOKmMRJEcvXgKzMAezP
+         CuCQ==
+X-Gm-Message-State: AOAM532COQMVMB07qOZMrXJB5K60/BYM6CT2toJ0lGNCsebc+Gwt+ozu
+        xOZkZZxMbPT+gtp+wWJjHd8qng==
+X-Google-Smtp-Source: ABdhPJyMu2JZNZL43tBoXGFsgvJdf5IwHcPTfRofu5Kkcyu9EH7ioVe/o3AdA8yDRBK8zUcSy+BDmg==
+X-Received: by 2002:ad4:5fcb:: with SMTP id jq11mr23009101qvb.30.1637100669760;
+        Tue, 16 Nov 2021 14:11:09 -0800 (PST)
+Received: from [192.168.0.104] ([66.199.72.44])
+        by smtp.gmail.com with ESMTPSA id g14sm8734705qko.55.2021.11.16.14.11.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 14:11:09 -0800 (PST)
+Subject: Re: [PATCH v5] include: linux: Reorganize timekeeping and ktime
+ headers
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kbuild test robot <lkp@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <b5d4536f-a096-b259-1385-3c1d32754dbf@vt.edu>
+ <095645cd-ce53-a803-cb99-522545a409b8@vt.edu> <YSJP18Z72t0X+xsp@kroah.com>
+ <1c156aca-d0ad-e7e8-2238-5c3d904d171c@vt.edu>
+ <327f5c2f-b996-8aa1-cbbf-3354e01ee1f3@vt.edu>
+ <fb66b935-b498-723a-1f05-f02648f8f580@vt.edu> <YYN78YlFrV0vFPq9@kroah.com>
+From:   Carlos Bilbao <bilbao@vt.edu>
+Message-ID: <ce75dfa1-b51d-1988-9371-ca90ab5e1535@vt.edu>
+Date:   Tue, 16 Nov 2021 17:11:07 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:Box3XGQPFl2JGGKJGy26znZeVn1xoVH/6uzAf3I+fQL/gCYWRzH
- H/YJqr6N3npf3FwTvpblKrwvyCbIRuA5PrciFKR2/lgo85nS8o+9BDD8j6ae3mHXFKIhTcR
- chInRKKxcXZPALlLKcP5mGXki+a72LnCsg0TzbU+518p4MjsHU47rlsP1ydJeo0E64sTNmQ
- jzCWg3KfyQZGHg/f9Akiw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ah2Lq1R+nbg=:6OZywLbYMDRAm9fk4keKvW
- 1z8ZYMX8nskJzE+1FBPXE0bKJl/+CVQUBzUVpdWlpqKm9MJEHwoCeDMmP2gMZKcNGF4r95049
- zzM3RIqGw2y+ijYtRmgvJQRb/rvYWCg7lDpKufLLCEeMdvwV9+UHvjLq6nzUmv3JzxxahrZvz
- 0Dk3sUk4uxd6ZrkH2Urz6fzfuJA3FSDakp0tDhFPBAmJmHmCP3QkRGmiQ2P/ItXLMLsKqTz3G
- F1lrX0eQJk/L6r1viIa6wXLCVF36/HO3KVH59J4BRda5MQcrgeZBJW0ZC/NzVCm9vC8Rit1ZJ
- k0rWxlpom3RkBloWT17kyJcRVnxzNkGTXc1f8qG0QsESs8WdyB9B6uxShxbDPt5FO20CKeAYR
- Nahix/jHET9L+DgWLOOQp6kJxm8i2jg50nV26m/yrlBsPPis+Y46OOdJ3LwqN4LxW1bLL13WO
- VL26RFAf9w+TFyYz5z1lQyOUIhopNMz3KFoThYJCHNV29soY1BBLmAZ4k4w/DdBiv5AVlNG5G
- GQpCH7e485ojoDDk95VgXgSX/sV4xL5UoQo0sfPLx/LH52sBq6dPxSvnIwvNDq8CGIoM23wiF
- P4DJfPcVxOLedZJ+SQDo9ptgSzTwRyHf8B2/X4/xwFPXJqtpBZkLMc9p45KuyQ1BS4VjUkWMB
- 1VNNOE8GCDYfLP9/WbNxVIGEUd9TgjdvZmM2x8z3zF6grBSwi32JFBFYV/0+0UMEodpougoQm
- s1g8cYfHWV12oMnVLkMe8QjnPRil7h9J4uTHP7EQM4DBkm368YddvB4/pYGaD1ZeMviod/6TP
- jhUllgiZi3252XayAHFYd9ofRst2tV3If+0DFA+aYTYvGahNsCk5w66U2P4j3Dg4XiwE5u+AO
- TF56bx4a1gesUM4/4zCr9oUCdsDiv91jKIYLtG5/F26O+E4s3ZaXk1HYZJaWVFIfQ7eXVHqmD
- XzAeyFnAiSDD/U+sbqJTzkcATYS7ex7Uf70pKbaw1XrxqR8U1SZ/B4xUQnMgFSd+/V8MHZv4H
- bPdxMmo/ii+n9T65iMVFYqVTUe+3u2v7pj7nblwbj1Iv495pk2zaNhhwk783SRUj4Bal6XVAM
- uXWqYupX6heC7c=
+In-Reply-To: <YYN78YlFrV0vFPq9@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhlIHN0cnVjdCBhdGhfaHcgbWVtYmVyIGludHJfdHhxcyBpcyBuZXZlciByZXNldC9hc3NpZ25l
-ZCBvdXRzaWRlCm9mIGF0aDlrX2h3X2luaXRfcXVldWVzKCkgYW5kIHdpdGggdGhlIHVzZWQgYml0
-d2lzZS1vciBpbiB0aGUgaW50ZXJydXB0CmhhbmRsaW5nIGFyOTAwMl9od19nZXRfaXNyKCkgYWNj
-dW11bGF0ZXMgYWxsIGV2ZXIgc2V0IGludGVycnVwdCBmbGFncy4KCkZpeCB0aGlzIGJ5IHVzaW5n
-IGEgcHVyZSBhc3NpZ24gaW5zdGVhZCBvZiBiaXR3aXNlLW9yIGZvciB0aGUKZmlyc3QgbGluZSAo
-bm90ZTogaW50cl90eHFzIGlzIG9ubHkgZXZhbHVhdGVkIGluIGNhc2UgQVRIOUtfSU5UX1RYIGJp
-dAppcyBzZXQpLgoKU2lnbmVkLW9mZi1ieTogUGV0ZXIgU2VpZGVyZXIgPHBzLnJlcG9ydEBnbXgu
-bmV0PgotLS0KTm90ZToKICAtIHRoZSBhdGg1a19odyBtZW1iZXIgYWhfdHhxX2lzcl90eG9rX2Fs
-bCBpbiBhdGg1a19od19nZXRfaXNyKCkKICAgIChzZWUgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRo
-L2F0aDVrL2RtYS5jKSBzdWZmZXJlcyBmcm9tIHRoZQogICAgc2FtZSBwcm9ibGVtIGFuZCBjYW4g
-YmUgZml4ZWQgYnkgYW4gYXNzaWdubWVudCB0byB6ZXJvIGJlZm9yZQogICAgZnVyaHRlciB1c2Fn
-ZSAoYnV0IEkgbGFjayBzdWl0YWJsZSBoYXJkd2FyZSBmb3IgdGVzdGluZykKLS0tCiBkcml2ZXJz
-L25ldC93aXJlbGVzcy9hdGgvYXRoOWsvYXI5MDAyX21hYy5jIHwgMiArLQogMSBmaWxlIGNoYW5n
-ZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9u
-ZXQvd2lyZWxlc3MvYXRoL2F0aDlrL2FyOTAwMl9tYWMuYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNz
-L2F0aC9hdGg5ay9hcjkwMDJfbWFjLmMKaW5kZXggY2U5YTBhNTM3NzFlLi5mYmE1YTg0N2MzYmIg
-MTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGg5ay9hcjkwMDJfbWFjLmMK
-KysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDlrL2FyOTAwMl9tYWMuYwpAQCAtMTIw
-LDcgKzEyMCw3IEBAIHN0YXRpYyBib29sIGFyOTAwMl9od19nZXRfaXNyKHN0cnVjdCBhdGhfaHcg
-KmFoLCBlbnVtIGF0aDlrX2ludCAqbWFza2VkLAogCQkJCQkgQVJfSVNSX1RYRU9MKTsKIAkJCX0K
-IAotCQkJYWgtPmludHJfdHhxcyB8PSBNUyhzMF9zLCBBUl9JU1JfUzBfUUNVX1RYT0spOworCQkJ
-YWgtPmludHJfdHhxcyA9IE1TKHMwX3MsIEFSX0lTUl9TMF9RQ1VfVFhPSyk7CiAJCQlhaC0+aW50
-cl90eHFzIHw9IE1TKHMwX3MsIEFSX0lTUl9TMF9RQ1VfVFhERVNDKTsKIAkJCWFoLT5pbnRyX3R4
-cXMgfD0gTVMoczFfcywgQVJfSVNSX1MxX1FDVV9UWEVSUik7CiAJCQlhaC0+aW50cl90eHFzIHw9
-IE1TKHMxX3MsIEFSX0lTUl9TMV9RQ1VfVFhFT0wpOwotLSAKMi4zMy4xCgo=
+Hello again,
+
+On 11/4/21 2:21 AM, Greg KH wrote:
+> On Wed, Nov 03, 2021 at 03:33:52PM -0400, Carlos Bilbao wrote:
+>> Hello everyone,
+>>
+>> Some time ago I sent a small patch to avoid implicit function declaration. 
+>> In particular, timekeeping.h was using ktime_to_ns(), a static function defined 
+>> in a header it does no include, ktime.h. Some maintainers saw this as an 
+>> opportunity to reorganize ktime, and so I did and tested for all architectures.
+>> Now, this patch has fallen into the "limbo of patches", so the original problem
+>> remains unsolved. Please, either take a look at this or check the original
+>> patch for the header dependencies.
+> 
+> Please just resend after 5.16-rc1 is out, there's nothing we can do with
+> this at this point in time.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+
+I think that now it is a good time to send :)
+
+Thanks!
+
+Carlos.
