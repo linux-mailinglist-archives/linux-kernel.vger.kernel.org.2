@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FCB1453AA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:08:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3BD5453AAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:08:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240340AbhKPULW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 15:11:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33544 "EHLO
+        id S239730AbhKPUL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 15:11:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240325AbhKPULE (ORCPT
+        with ESMTP id S240351AbhKPULG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 15:11:04 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD867C061202
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 12:07:59 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id k4so133236plx.8
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 12:07:59 -0800 (PST)
+        Tue, 16 Nov 2021 15:11:06 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91971C06120B
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 12:08:01 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id o6-20020a17090a0a0600b001a64b9a11aeso405796pjo.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 12:08:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=plH00RAHWrUaoDk7ZWe9qkSJhRskMVgl9eoKPnmv1Ls=;
-        b=PKJ1tkbe+EFKv4fXLmzUVqsuS1zwdvwgKdZBeMJiKOcWpxIs30BoE5Jd+bFqCp1cMd
-         AwOiPJBtReIAzQ66lKaPNHP0PZyvJY2Zob31hm2t6rOBE9nelHFumt0Efvwl4dlMZgUZ
-         ZI2Ug3mduH0Tpm1XPkiseMJG93PuWYGqxTMoo=
+        bh=crOTKUCyMhT7agRKo0/8Pkjd+/3KY9pvz/mc1Si+z/Y=;
+        b=nr3nPH6E/UK2DHjnHu0MrbBDICwiEtQpKQypZCoAY9mN3IluH3WzQGBKHY6AyYsTw6
+         VkxtuRt0/80P08P9upngXKgsA3zXW1ac+ZdTxtaC9TJiCkuMVar5H4/zFU7Gpigf6Bkb
+         Jij00vRZJjmaky8FyR9y73W0VeXO2UbGtTSos=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=plH00RAHWrUaoDk7ZWe9qkSJhRskMVgl9eoKPnmv1Ls=;
-        b=IXhuBe0QRppSUzDzH2q+FhjwwzwNTebKuZQVVBc4poz8vYdG/lgDJTiidF/rztkzKl
-         0tZktRoTJI4++YmfAreox7jQnNetJu6a3LtBsTJDvtggBWizX8i/ZkBig2oljqY7Q+VK
-         4Oop/Eq2kQo0AZSdqB2WvK2MXFEEEqDQHsiE2V0cQVHf2g3hltTQg7OZ2BuBOWxr/oM3
-         XpKlm3frXPfE9huvjmdWgvfT//JG+DPjkJC8FSQZJ9wKd2pj/89H7I0pR1MMiebJB3ZR
-         58yBjDUX2XY9FgOFedCb27gyF6Udhoqyi3B/ciywXyhrkNTT5XIkI9eCikIkHQG4qwYj
-         A6UA==
-X-Gm-Message-State: AOAM530mvMp1e9ebNJc0+j8UYMTzslWdiY1qEfANdAepGNwXwhQaGhvZ
-        tQ0PygkbSvnkf6+yTO4g1GoWnQ==
-X-Google-Smtp-Source: ABdhPJyRPJG0Ovy0h1+/Gfnv6J5MOuyixdmQ+Q6c7F60s/VmC8GzBGQ8MVO6lwNf1KWE5z3iEjUHzA==
-X-Received: by 2002:a17:902:be12:b0:142:431f:3d1c with SMTP id r18-20020a170902be1200b00142431f3d1cmr48989370pls.32.1637093279401;
-        Tue, 16 Nov 2021 12:07:59 -0800 (PST)
+        bh=crOTKUCyMhT7agRKo0/8Pkjd+/3KY9pvz/mc1Si+z/Y=;
+        b=Wk/Fh6gyBnWgg5eikxjEWsPdcLAAMKE8tEnlrZx907MDAY7ljpTwDC2YcnQ+1q626Z
+         dI4EytKUnPQ3+kyK+5l2qJd5QGkuh6ZjtppMbZziWLnCQ9EEqd8ymXn7YW4c/KVk6oEk
+         T4iTPLxVq2/N02yxw/pzJq0FANElmy+ieRGzetY+CfPKmntswJJERubHGMH4TBn2jmWt
+         k338He8E6nSk9I4Wu2zBnuw88sE6kWoX/tnmsaLzRzeHk0Vw3aAStXtVQbzF4mpRaUZu
+         McHxdeKllYVP7CVSvVJRxKRxqY7VkqeYk3bJJxRZ1reofCYEAp/w7SttAONWBY31CANA
+         ywMg==
+X-Gm-Message-State: AOAM532WolIEPlHOiRAXJuHtKX0ED9k/akpzEz6CVuYGbU9fNOo3mevu
+        E4UzAFv+ddVZIu/m5P45/by5Gw==
+X-Google-Smtp-Source: ABdhPJyyE/9JCr1MRQS5KZgpYT/vJfotilC7Q6491y/QQJNILtemANaDP/oEBXo2rpgkuS28FKQU1w==
+X-Received: by 2002:a17:90a:4142:: with SMTP id m2mr2336078pjg.80.1637093281134;
+        Tue, 16 Nov 2021 12:08:01 -0800 (PST)
 Received: from localhost ([2620:15c:202:201:54aa:73ab:b480:41e2])
-        by smtp.gmail.com with UTF8SMTPSA id o1sm3040031pjs.30.2021.11.16.12.07.58
+        by smtp.gmail.com with UTF8SMTPSA id y28sm20052235pfa.208.2021.11.16.12.08.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 12:07:59 -0800 (PST)
+        Tue, 16 Nov 2021 12:08:00 -0800 (PST)
 From:   Matthias Kaehlcke <mka@chromium.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Alan Stern <stern@rowland.harvard.edu>,
@@ -63,21 +63,20 @@ Cc:     linux-kernel@vger.kernel.org,
         Ravi Chandra Sadineni <ravisadineni@chromium.org>,
         Bastien Nocera <hadess@hadess.net>,
         Matthias Kaehlcke <mka@chromium.org>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Nishanth Menon <nm@ti.com>, Shawn Guo <shawnguo@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v17 6/7] arm64: defconfig: Explicitly enable USB_XHCI_PLATFORM
-Date:   Tue, 16 Nov 2021 12:07:38 -0800
-Message-Id: <20211116120642.v17.6.Id45138610b749ff775186ac10b3d01c504ddf4f3@changeid>
+        Andrew Lunn <andrew@lunn.ch>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: [PATCH v17 7/7] usb: Specify dependencies on USB_XHCI_PLATFORM with 'depends on'
+Date:   Tue, 16 Nov 2021 12:07:39 -0800
+Message-Id: <20211116120642.v17.7.If248f05613bbb06a44eb0b0909be5d97218f417b@changeid>
 X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
 In-Reply-To: <20211116200739.924401-1-mka@chromium.org>
 References: <20211116200739.924401-1-mka@chromium.org>
@@ -87,47 +86,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dependency of USB_DWC3 on USB_XHCI_PLATFORM is being changed
-from 'select' to 'depends on' by another patch. The defconfig selects
-USB_DWC3 and implicitly USB_DWC3_DUAL_ROLE, to keep this unchanged
-USB_XHCI_PLATFORM now needs to be selected explicitly.
+Some USB controller drivers that depend on the xhci-plat driver
+specify this dependency using 'select' in Kconfig. This is not
+recommended for symbols that have other dependencies as it may
+lead to invalid configurations. Use 'depends on' to specify the
+dependency instead of 'select'.
+
+For dwc3 specify the dependency on USB_XHCI_PLATFORM in
+USB_DWC3_HOST and USB_DWC3_DUAL_ROLE. Also adjust the
+dependencies of USB_DWC3_CORE to make sure that at least one
+of USB_DWC3_HOST, USB_DWC3_GADGET or USB_DWC3_DUAL_ROLE can be
+selected.
 
 Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
 Reviewed-by: Roger Quadros <rogerq@kernel.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 ---
 
 Changes in v17:
-- added 'Reviewed-by' tag from Roger
+- removed explicit dependency on USB from USB_DWC3
+- added 'Reviewed-by' tags from Roger and Doug
 
 Changes in v16:
 - none
 
 Changes in v15:
-- none
+- adjusted dependencies of USB_DWC3_CORE to make sure it can only
+  be enabled when at least one of USB_DWC3_HOST, USB_DWC3_GADGET
+  or USB_DWC3_DUAL_ROLE is selectable
+- updated commit message
 
 Changes in v14:
-- rebased on v5.14-rc1 (with the rest of the series)
-- added 'Reviewed-by' tag from Doug
+- none
 
 Changes in v13:
 - patch added to the series
 
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/cdns3/Kconfig | 2 +-
+ drivers/usb/dwc3/Kconfig  | 5 +++--
+ drivers/usb/host/Kconfig  | 4 ++--
+ 3 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index f2e2b9bdd702..588ab6aef755 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -811,6 +811,7 @@ CONFIG_USB_OTG=y
- CONFIG_USB_XHCI_HCD=y
- CONFIG_USB_XHCI_PCI=m
- CONFIG_USB_XHCI_PCI_RENESAS=m
-+CONFIG_USB_XHCI_PLATFORM=y
- CONFIG_USB_XHCI_TEGRA=y
- CONFIG_USB_EHCI_HCD=y
- CONFIG_USB_EHCI_EXYNOS=y
+diff --git a/drivers/usb/cdns3/Kconfig b/drivers/usb/cdns3/Kconfig
+index b98ca0a1352a..07e12f786d48 100644
+--- a/drivers/usb/cdns3/Kconfig
++++ b/drivers/usb/cdns3/Kconfig
+@@ -1,7 +1,7 @@
+ config USB_CDNS_SUPPORT
+ 	tristate "Cadence USB Support"
+ 	depends on USB_SUPPORT && (USB || USB_GADGET) && HAS_DMA
+-	select USB_XHCI_PLATFORM if USB_XHCI_HCD
++	depends on !USB_XHCI_HCD || USB_XHCI_PLATFORM
+ 	select USB_ROLE_SWITCH
+ 	help
+ 	  Say Y here if your system has a Cadence USBSS or USBSSP
+diff --git a/drivers/usb/dwc3/Kconfig b/drivers/usb/dwc3/Kconfig
+index c483f28b695d..8f08b0724379 100644
+--- a/drivers/usb/dwc3/Kconfig
++++ b/drivers/usb/dwc3/Kconfig
+@@ -2,8 +2,7 @@
+ 
+ config USB_DWC3
+ 	tristate "DesignWare USB3 DRD Core Support"
+-	depends on (USB || USB_GADGET) && HAS_DMA
+-	select USB_XHCI_PLATFORM if USB_XHCI_HCD
++	depends on (USB_XHCI_PLATFORM || USB_GADGET) && HAS_DMA
+ 	select USB_ROLE_SWITCH if USB_DWC3_DUAL_ROLE
+ 	help
+ 	  Say Y or M here if your system has a Dual Role SuperSpeed
+@@ -30,6 +29,7 @@ choice
+ config USB_DWC3_HOST
+ 	bool "Host only mode"
+ 	depends on USB=y || USB=USB_DWC3
++	depends on USB_XHCI_PLATFORM
+ 	help
+ 	  Select this when you want to use DWC3 in host mode only,
+ 	  thereby the gadget feature will be regressed.
+@@ -44,6 +44,7 @@ config USB_DWC3_GADGET
+ config USB_DWC3_DUAL_ROLE
+ 	bool "Dual Role mode"
+ 	depends on ((USB=y || USB=USB_DWC3) && (USB_GADGET=y || USB_GADGET=USB_DWC3))
++	depends on USB_XHCI_PLATFORM
+ 	depends on (EXTCON=y || EXTCON=USB_DWC3)
+ 	help
+ 	  This is the default mode of working of DWC3 controller where
+diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+index d1d926f8f9c2..e5e612f143a1 100644
+--- a/drivers/usb/host/Kconfig
++++ b/drivers/usb/host/Kconfig
+@@ -80,7 +80,7 @@ config USB_XHCI_MTK
+ 
+ config USB_XHCI_MVEBU
+ 	tristate "xHCI support for Marvell Armada 375/38x/37xx"
+-	select USB_XHCI_PLATFORM
++	depends on USB_XHCI_PLATFORM
+ 	depends on HAS_IOMEM
+ 	depends on ARCH_MVEBU || COMPILE_TEST
+ 	help
+@@ -112,9 +112,9 @@ config USB_EHCI_BRCMSTB
+ config USB_BRCMSTB
+ 	tristate "Broadcom STB USB support"
+ 	depends on (ARCH_BRCMSTB && PHY_BRCM_USB) || COMPILE_TEST
++	depends on !USB_XHCI_HCD || USB_XHCI_PLATFORM
+ 	select USB_OHCI_HCD_PLATFORM if USB_OHCI_HCD
+ 	select USB_EHCI_BRCMSTB if USB_EHCI_HCD
+-	select USB_XHCI_PLATFORM if USB_XHCI_HCD
+ 	help
+ 	  Enables support for XHCI, EHCI and OHCI host controllers
+ 	  found in Broadcom STB SoC's.
 -- 
 2.34.0.rc1.387.gb447b232ab-goog
 
