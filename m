@@ -2,53 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7550452E11
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:33:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46386452E17
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:33:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233258AbhKPJgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 04:36:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33658 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233059AbhKPJgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 04:36:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A239C63222;
-        Tue, 16 Nov 2021 09:33:09 +0000 (UTC)
-Date:   Tue, 16 Nov 2021 10:33:06 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Andrea Righi <andrea.righi@canonical.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/seccomp: fix check of fds being assigned
-Message-ID: <20211116093306.wlrtk4p5rbvnrxm7@wittgenstein>
-References: <20211115165227.101124-1-andrea.righi@canonical.com>
+        id S233283AbhKPJgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 04:36:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60179 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233264AbhKPJgd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 04:36:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637055216;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cp+iJp9i4ryXcYEsq7JrwWGaLxc1Aah1uRr7rdH93y0=;
+        b=jF7ysspmqMGRMovvGljrtz58D7vv3N0VXb0S/d4TKmmtbSBILp7MFxYbhPZA4VLMTjpaWJ
+        OTWMFVqMXCmxItI8SH91aq0io08lor/ljvc6EQTIIeljc0k5nXl4jFCEGgzzBMfl3624HA
+        fxBgKWWdFaC5P97ifg4f8tVKac5mCBQ=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-403-14b7v2wjMyKQvkBclD_Gfg-1; Tue, 16 Nov 2021 04:33:35 -0500
+X-MC-Unique: 14b7v2wjMyKQvkBclD_Gfg-1
+Received: by mail-ed1-f70.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso16577280edj.20
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 01:33:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=cp+iJp9i4ryXcYEsq7JrwWGaLxc1Aah1uRr7rdH93y0=;
+        b=7KPkXFuAUwE/z39/e2RkCWIN0oah6e7/HPMK0Tc3W3ubOSOvVEwIhdEb2s+P0ZpvMe
+         g4scb3HPOcrcO30jXDjzJpoJhHFwabG5hNg0VWetGaPhZe/b4f04sIXm8cGw/HPyPViI
+         QZk0SBE41IBWfjOEQXeZmuE2Sgoz9jqzL2RkKAo9g3tMcDgkVzB8jTXXOFdcJ9ieEABg
+         3jKB2dASah+2i2wmBe3TpM6gWlRSLidffpO4F4gU4H+Vk25cija9/reiUhfjhvDrvRLp
+         B3ybKFP1TlVW3Vrlg73KFDs+nqSSa61AySErcJwsyvW9jVug2cAB3tTry/15nJpspuzk
+         iWQA==
+X-Gm-Message-State: AOAM533a64k44wsB8OE5rPBP7Hg7yFiTip0V3eE1NoQj0dS4BeL/dP74
+        EzqXZ4zqaQGnFg+nMEknT0wQgp4eSNeYb6C1QqEnu1G3vcc236gd+XBZDyI97Nrlj7kPX4+mEIf
+        PncbeY4PO35Avh6+PO8TIAAfv
+X-Received: by 2002:aa7:c30e:: with SMTP id l14mr8284335edq.370.1637055214313;
+        Tue, 16 Nov 2021 01:33:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxZQ5qagfzDYQuhUC2t64EV/F/AOPWgKM5JWXb4ICFnVrOvU/v3eiYcU4LF5nMays3/4VeoLw==
+X-Received: by 2002:aa7:c30e:: with SMTP id l14mr8284306edq.370.1637055214132;
+        Tue, 16 Nov 2021 01:33:34 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id ne33sm7972654ejc.6.2021.11.16.01.33.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 01:33:33 -0800 (PST)
+Message-ID: <66fbed75-7b48-6d91-1ef5-5df1c075e91c@redhat.com>
+Date:   Tue, 16 Nov 2021 10:33:32 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211115165227.101124-1-andrea.righi@canonical.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 10/20] power: supply: bq25890: Add
+ bq25890_set_otg_cfg() helper
+Content-Language: en-US
+To:     Yauhen Kharuzhy <jekhor@gmail.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org, Tsuchiya Yuto <kitakar@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-efi@vger.kernel.org
+References: <20211114170335.66994-1-hdegoede@redhat.com>
+ <20211114170335.66994-11-hdegoede@redhat.com>
+ <YZIyQ1BdJ0v8QTtj@jeknote.loshitsa1.net>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <YZIyQ1BdJ0v8QTtj@jeknote.loshitsa1.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 05:52:27PM +0100, Andrea Righi wrote:
-> There might be an arbitrary free open fd slot when we run the addfd
-> sub-test, so checking for progressive numbers of file descriptors
-> starting from memfd is not always a reliable check and we could get the
-> following failure:
-> 
->   #  RUN           global.user_notification_addfd ...
->   # seccomp_bpf.c:3989:user_notification_addfd:Expected listener (18) == nextfd++ (9)
->   # user_notification_addfd: Test terminated by assertion
-> 
-> Simply check if memfd and listener are valid file descriptors and start
-> counting for progressive file checking with the listener fd.
-> 
-> Fixes: 93e720d710df ("selftests/seccomp: More closely track fds being assigned")
-> Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
-> ---
+Hi Yauhen,
 
-Thanks!
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+On 11/15/21 11:11, Yauhen Kharuzhy wrote:
+> On Sun, Nov 14, 2021 at 06:03:25PM +0100, Hans de Goede wrote:
+>> Add a bq25890_set_otg_cfg() helper function, this is a preparation
+>> patch for adding regulator support.
+>>
+>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+>> ---
+>>  drivers/power/supply/bq25890_charger.c | 28 ++++++++++++++------------
+>>  1 file changed, 15 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/drivers/power/supply/bq25890_charger.c b/drivers/power/supply/bq25890_charger.c
+>> index 2bdfb58cda75..3c41fe86b3d3 100644
+>> --- a/drivers/power/supply/bq25890_charger.c
+>> +++ b/drivers/power/supply/bq25890_charger.c
+>> @@ -801,6 +801,17 @@ static int bq25890_power_supply_init(struct bq25890_device *bq)
+>>  	return PTR_ERR_OR_ZERO(bq->charger);
+>>  }
+>>  
+>> +static int bq25890_set_otg_cfg(struct bq25890_device *bq, u8 val)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret = bq25890_field_write(bq, F_OTG_CFG, val);
+>> +	if (ret < 0)
+>> +		dev_err(bq->dev, "Error switching to boost/charger mode: %d\n", ret);
+> 
+> Just a note: if a connected USB device has relative big capacitor
+> at power wires inside, then a starting current pulse may be enough to
+> overload the boost reguator and VBUS will not be powered. I met this
+> at Yoga Book: the firmware set boost current limit to 1.4 A (default
+> value for bq25892) but when USB hub connected, the BOOST_FAULT event
+> appeared.
+> 
+> To avoid this, Lenovo uses following trick in its kernel: set a boost
+> current limit to big value (2.1 A), wait some time (500 ms) and set
+> the current limit to right value (1.4A). This provides enough current to
+> charge capacitors in the connected device but saves desired long-time limit
+> to prevent overloading if the device consumes too much power itself.
+
+Right I saw this in your git repo, but I cannot reproduce the issue (1)
+I was hoping that since you can reproduce this, that you can rebase
+your fix on top of my patch-set ?
+
+Also I'm wondering if this behavior should be the default, I believe
+that the max. boost current may also be dependent on some external
+factors, so maybe we should make this behavior conditional on a
+new device-property ?
+
+Regards,
+
+Hans
+
+
+
+1) I must admit I did not try really hard, I guess I could try an
+USB powered hdd enclosure with a spinning disk
+
+What device are you seeing this with?
+
