@@ -2,113 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D7A453CD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:46:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0686453CCE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:45:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbhKPXsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 18:48:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50047 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232385AbhKPXsi (ORCPT
+        id S231672AbhKPXro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 18:47:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229532AbhKPXrm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 18:48:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637106340;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bJ/IAyLgZBpYGYBxk24oHQkkkW/T4OyBwHNNDKJRRwY=;
-        b=c8RvPF0PXqselxGpvfTKlmIC8ORjStTAd3lJGb7MOkk1km3HVJygfQWVEXKbhdOmmGiNhY
-        rqjFGDmpKjnQ39tKAoN8lm1LMDTcljoK3h4yKlOCjRrXS/kjNdBjl7QGVBFIFGV0CBUtKu
-        by1Qb7nf9h9OjDaGSuzeXWjvepfBkgM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-292-IXuU78zBOMG3JJoKimjfsQ-1; Tue, 16 Nov 2021 18:45:36 -0500
-X-MC-Unique: IXuU78zBOMG3JJoKimjfsQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4FA251922961;
-        Tue, 16 Nov 2021 23:45:35 +0000 (UTC)
-Received: from llong.com (unknown [10.22.18.33])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 068775BB12;
-        Tue, 16 Nov 2021 23:45:33 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Feng Tang <feng.tang@intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Cassio Neri <cassio.neri@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH v2 4/4] clocksource: Add a Kconfig option for WATCHDOG_MAX_SKEW
-Date:   Tue, 16 Nov 2021 18:44:26 -0500
-Message-Id: <20211116234426.837799-5-longman@redhat.com>
-In-Reply-To: <20211116234426.837799-1-longman@redhat.com>
-References: <20211116234426.837799-1-longman@redhat.com>
+        Tue, 16 Nov 2021 18:47:42 -0500
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCFAC061570;
+        Tue, 16 Nov 2021 15:44:44 -0800 (PST)
+Date:   Wed, 17 Nov 2021 00:44:42 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1637106282;
+        bh=tm3TSfY4cAnVraxIAQpho/lmj5Z/rdD/Z5W8p2qmLxo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GLMIqtLK6GYAzsWagI5KaSSAAZZFPSRiSCf5dsOTx7NNHLjb7K7IwUTPVJ0t5UQ8F
+         o3AO6mJgMAxkXPu1a/b8Y4LVDIpeMs0BrUe9YL3iFAPMXiqNNL7V4fYpzwUs2q6qgb
+         CeUDrP2lEo+1dtauTKjpOM9j+FgmOpWtEOF6Ttls=
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Mark Pearson <markpearson@lenovo.com>
+Cc:     linux-pm@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org,
+        Mark Gross <markgross@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+        linux-kernel@vger.kernel.org, linrunner@gmx.net, bberg@redhat.com,
+        hadess@hadess.net, nicolopiazzalunga@gmail.com, njoshi1@lenovo.com,
+        smclt30p@gmail.com
+Subject: Re: [External] [PATCH 4/4] platform/x86: thinkpad_acpi: support
+ inhibit-charge
+Message-ID: <986a547b-67c5-4116-9b2a-d3ba7b2f7847@t-8ch.de>
+References: <20211113104225.141333-1-linux@weissschuh.net>
+ <20211113104225.141333-5-linux@weissschuh.net>
+ <82ec6164-223b-940a-6992-48ccbe47a615@lenovo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <82ec6164-223b-940a-6992-48ccbe47a615@lenovo.com>
+Jabber-ID: thomas@t-8ch.de
+X-Accept: text/plain, text/html;q=0.2, text/*;q=0.1
+X-Accept-Language: en-us, en;q=0.8, de-de;q=0.7, de;q=0.6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A watchdog maximum skew of 100us may still be too small for
-some systems or archs. It may also be too small when some kernel
-debug config options are enabled.  So add a new Kconfig option
-CLOCKSOURCE_WATCHDOG_MAX_SKEW_US to allow kernel builders to have more
-control on the threshold for marking clocksource as unstable.
+Hi Mark,
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/time/Kconfig       | 9 +++++++++
- kernel/time/clocksource.c | 8 +++++++-
- 2 files changed, 16 insertions(+), 1 deletion(-)
+On 2021-11-16 15:52-0500, Mark Pearson wrote:
+> On 2021-11-13 05:42, Thomas Weißschuh wrote:
+> > This adds support for the inhibit-charge charge_behaviour through the
+> > embedded controller of ThinkPads.
+> > 
+> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> > 
+> > ---
+> > 
+> > This patch is based on https://lore.kernel.org/platform-driver-x86/d2808930-5840-6ffb-3a59-d235cdb1fe16@gmail.com/>> ---
+> >  drivers/platform/x86/thinkpad_acpi.c | 55 +++++++++++++++++++++++++++-
+> >  1 file changed, 53 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+> > index e8c98e9aff71..7cd6475240b2 100644
+> > --- a/drivers/platform/x86/thinkpad_acpi.c
+> > +++ b/drivers/platform/x86/thinkpad_acpi.c
+> > @@ -9321,6 +9321,8 @@ static struct ibm_struct mute_led_driver_data = {
+> >  #define SET_STOP	"BCSS"
+> >  #define GET_DISCHARGE	"BDSG"
+> >  #define SET_DISCHARGE	"BDSS"
+> > +#define GET_INHIBIT	"PSSG"
+> > +#define SET_INHIBIT	"BICS"
+> >  
+> >  enum {
+> >  	BAT_ANY = 0,
+> > @@ -9338,6 +9340,7 @@ enum {
+> >  	THRESHOLD_START,
+> >  	THRESHOLD_STOP,
+> >  	FORCE_DISCHARGE,
+> > +	INHIBIT_CHARGE,
+> >  };
+> >  
+> >  struct tpacpi_battery_data {
+> > @@ -9409,6 +9412,13 @@ static int tpacpi_battery_get(int what, int battery, int *ret)
+> >  		/* The force discharge status is in bit 0 */
+> >  		*ret = *ret & 0x01;
+> >  		return 0;
+> > +	case INHIBIT_CHARGE:
+> > +		/* This is actually reading peak shift state, like tpacpi-bat does */
+> > +		if ACPI_FAILURE(tpacpi_battery_acpi_eval(GET_INHIBIT, ret, battery))
+> > +			return -ENODEV;
+> > +		/* The inhibit charge status is in bit 0 */
+> > +		*ret = *ret & 0x01;
+> > +		return 0;
+> >  	default:
+> >  		pr_crit("wrong parameter: %d", what);
+> >  		return -EINVAL;
+> > @@ -9447,6 +9457,22 @@ static int tpacpi_battery_set(int what, int battery, int value)
+> >  			return -ENODEV;
+> >  		}
+> >  		return 0;
+> > +	case INHIBIT_CHARGE:
+> > +		/* When setting inhibit charge, we set a default value of
+> > +		 * always breaking on AC detach and the effective time is set to
+> > +		 * be permanent.
+> > +		 * The battery ID is in bits 4-5, 2 bits,
+> > +		 * the effective time is in bits 8-23, 2 bytes.
+> > +		 * A time of FFFF indicates forever.
+> > +		 */
+> > +		param = value;
+> > +		param |= battery << 4;
+> > +		param |= 0xFFFF << 8;
+> > +		if (ACPI_FAILURE(tpacpi_battery_acpi_eval(SET_INHIBIT, &ret, param))) {
+> > +			pr_err("failed to set inhibit charge on %d", battery);
+> > +			return -ENODEV;
+> > +		}
+> > +		return 0;
+> >  	default:
+> >  		pr_crit("wrong parameter: %d", what);
+> >  		return -EINVAL;
+> > @@ -9467,6 +9493,8 @@ static int tpacpi_battery_probe(int battery)
+> >  	 * 4) Check for support
+> >  	 * 5) Get the current force discharge status
+> >  	 * 6) Check for support
+> > +	 * 7) Get the current inhibit charge status
+> > +	 * 8) Check for support
+> >  	 */
+> >  	if (acpi_has_method(hkey_handle, GET_START)) {
+> >  		if ACPI_FAILURE(tpacpi_battery_acpi_eval(GET_START, &ret, battery)) {
+> > @@ -9513,6 +9541,16 @@ static int tpacpi_battery_probe(int battery)
+> >  			battery_info.batteries[battery].charge_behaviours |=
+> >  				BIT(POWER_SUPPLY_CHARGE_BEHAVIOUR_FORCE_DISCHARGE);
+> >  	}
+> > +	if (acpi_has_method(hkey_handle, GET_INHIBIT)) {
+> > +		if (ACPI_FAILURE(tpacpi_battery_acpi_eval(GET_INHIBIT, &ret, battery))) {
+> > +			pr_err("Error probing battery inhibit charge; %d\n", battery);
+> > +			return -ENODEV;
+> > +		}
+> > +		/* Support is marked in bit 5 */
+> > +		if (ret & BIT(5))
+> > +			battery_info.batteries[battery].charge_behaviours |=
+> > +				BIT(POWER_SUPPLY_CHARGE_BEHAVIOUR_INHIBIT_CHARGE);
+> > +	}
+> >  
+> >  	battery_info.batteries[battery].charge_behaviours |=
+> >  		BIT(POWER_SUPPLY_CHARGE_BEHAVIOUR_AUTO);
+> > @@ -9673,6 +9711,11 @@ static ssize_t charge_behaviour_show(struct device *dev,
+> >  			return -ENODEV;
+> >  		if (ret)
+> >  			active = POWER_SUPPLY_CHARGE_BEHAVIOUR_FORCE_DISCHARGE;
+> > +	} else if (available & BIT(POWER_SUPPLY_CHARGE_BEHAVIOUR_INHIBIT_CHARGE)) {
+> > +		if (tpacpi_battery_get(INHIBIT_CHARGE, battery, &ret))
+> > +			return -ENODEV;
+> > +		if (ret)
+> > +			active = POWER_SUPPLY_CHARGE_BEHAVIOUR_INHIBIT_CHARGE;
+> >  	}
+> >  
+> >  	return power_supply_charge_behaviour_show(dev, available, active, buf);
+> > @@ -9710,12 +9753,20 @@ static ssize_t charge_behaviour_store(struct device *dev,
+> >  	switch (selected) {
+> >  	case POWER_SUPPLY_CHARGE_BEHAVIOUR_AUTO:
+> >  		ret = tpacpi_battery_set(FORCE_DISCHARGE, battery, 0);
+> > -		if (ret < 0)
+> > +		ret = tpacpi_battery_set(INHIBIT_CHARGE, battery, 0) || ret;
+> > +		if (ret)
+> >  			return ret;
+> >  		break;
+> >  	case POWER_SUPPLY_CHARGE_BEHAVIOUR_FORCE_DISCHARGE:
+> >  		ret = tpacpi_battery_set(FORCE_DISCHARGE, battery, 1);
+> > -		if (ret < 0)
+> > +		ret = tpacpi_battery_set(INHIBIT_CHARGE, battery, 0) || ret;
+> > +		if (ret)
+> > +			return ret;
+> > +		break;
+> > +	case POWER_SUPPLY_CHARGE_BEHAVIOUR_INHIBIT_CHARGE:
+> > +		ret = tpacpi_battery_set(FORCE_DISCHARGE, battery, 0);
+> > +		ret = tpacpi_battery_set(INHIBIT_CHARGE, battery, 1) || ret;
+> > +		if (ret)
+> >  			return ret;
+> >  		break;
+> >  	default:
+> > 
+> 
+> I can confirm the bit fields are correct for these calls (as for the
+> previous patch)
 
-diff --git a/kernel/time/Kconfig b/kernel/time/Kconfig
-index 04bfd62f5e5c..27b7868b5c30 100644
---- a/kernel/time/Kconfig
-+++ b/kernel/time/Kconfig
-@@ -181,5 +181,14 @@ config HIGH_RES_TIMERS
- 	  hardware is not capable then this option only increases
- 	  the size of the kernel image.
- 
-+config CLOCKSOURCE_WATCHDOG_MAX_SKEW_US
-+	int "Clocksource watchdog maximum allowable skew (in μs)"
-+	depends on CLOCKSOURCE_WATCHDOG
-+	range 50 1000
-+	default 100
-+	help
-+	  Specify the maximum amount of allowable watchdog skew in
-+	  microseconds before reporting the clocksource to be unstable.
-+
- endmenu
- endif
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index b1813b09fe9b..2cc8d6dc50e2 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -107,7 +107,13 @@ static u64 suspend_start;
-  * This delay could be due to SMIs, NMIs, or to VCPU preemptions.  Used as
-  * a lower bound for cs->uncertainty_margin values when registering clocks.
-  */
--#define WATCHDOG_MAX_SKEW (100 * NSEC_PER_USEC)
-+#ifdef CONFIG_CLOCKSOURCE_WATCHDOG_MAX_SKEW_US
-+#define MAX_SKEW_USEC	CONFIG_CLOCKSOURCE_WATCHDOG_MAX_SKEW_US
-+#else
-+#define MAX_SKEW_USEC	100
-+#endif
-+
-+#define WATCHDOG_MAX_SKEW (MAX_SKEW_USEC * NSEC_PER_USEC)
- static u64 watchdog_max_skew = WATCHDOG_MAX_SKEW;
- 
- /*
--- 
-2.27.0
+Thanks!
 
+Could you doublecheck the behavior for multiple batteries to maybe find a
+reason why BAT1 is not inhibited as reported by Thomas Koch [0]?
+
+> Couple of things to note, based on feedback previously from the FW team
+> that I found when digging thru my battery related emails.
+> 
+> "Lenovo doesn't officially support the use of these calls - they're
+> intended for internal use" (at this point in time - there is some
+> discussion about battery recalibration support but I don't have details
+> I can share there yet).
+> 
+> The FW team also noted that:
+> 
+> "Actual battery charging/discharging behaviors are managed by ECFW. So
+> the request of BDSS/BICS method may be rejected by ECFW for the current
+> battery mode/status. You have to check if the request of the method is
+> actually applied or not"
+> 
+> So for the calls above (and for the BDSS calls in the previous patch) it
+> would be good to do a read back of the setting to ensure it has
+> completed successfully.
+
+I'll add that for v2.
+
+> Hope that helps
+
+It does, thanks!
+
+Thomas
+
+[0] https://lore.kernel.org/platform-driver-x86/9cebba85-f399-a7aa-91f7-237852338dc5@gmx.net/
