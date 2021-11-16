@@ -2,210 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E8F4537FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:46:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31BC3453806
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236141AbhKPQr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 11:47:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234762AbhKPQry (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:47:54 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31163C061746
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 08:44:57 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id h19-20020a9d3e53000000b0056547b797b2so33733553otg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 08:44:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kali.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language
-         :from:to:cc:references:in-reply-to:content-transfer-encoding;
-        bh=tBCEcBxxkWy7DtwDVDc+qef8W0JepmcD0E+LVB3BosQ=;
-        b=Uy90Om181KxRRdPVFAqEwVY1cQErtUa8EITCgxvivESLVtXtTY1e6G03vaKkZpXfAk
-         Bdz35QrEzbnFIqeQ59a6CYd51XM/lt3QvKnl25xUf7dudnhJ0EzHbvAnPY2Z6W3Ljvyl
-         ArJYd2gSQ2HXeWK/MgRecHlg2D3dTpr/zKKqfIhWqrpqcDJJZzMKq5ihyYFe6LDGt+rL
-         DcXWX8tqPMBFXgpeERjpUCwZbRiRxMZRIU982X2jRs/p2UoLKgFY9kcXzuNa19fptvqS
-         iSRYYhg3HHgxZCF7zZvtvvlDJFx/soipskVRgyZvgMt6AawwLl+Bt2urDSkLjGi8tj5a
-         thMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:from:to:cc:references:in-reply-to
-         :content-transfer-encoding;
-        bh=tBCEcBxxkWy7DtwDVDc+qef8W0JepmcD0E+LVB3BosQ=;
-        b=RbhjvA8POqjBsDL/m3X2d+4/hrNjH+iB6p4sccRkOsburhk7HOtgQwtubP4HXpa+9h
-         LTJRnuIbhaw0CsAT3t9QhfGn+grQZAv/pXIs3kEU9IY69fyJ7GscJ67ZFQnPNhz6N0Cw
-         WHFOwm+EoKUsu61dlCtfFEcad5XbAEfyH5PpE0Tr9gnf3TtdEk75hszSMQmBNkJLohn4
-         mZxhCalbUOQPDa0593GYsCN16erJwUdXHUgcInTRLoyg8hEIyZeLnn0FiwesLkJ9dlAN
-         /eepEWV6lMD55IhBT+4oD3TlxJ/coJ71pjnw13DNGP4Fque1cIPzUEry+v8KBiL69T3b
-         TwrA==
-X-Gm-Message-State: AOAM53327nynHca0Iwd6RdsYcRfi8+ASCE+5BmPmIwGvMrQVQs3YJHRD
-        QldIAtJFA5lhYp7V79hDq9KOcg==
-X-Google-Smtp-Source: ABdhPJwGySCvqYJmNIr1doWrqDUI7oorpeACdpXaga0AWv2+EbVhTLdYBgOcu969qUsx8hQjFE/GYw==
-X-Received: by 2002:a9d:5d0b:: with SMTP id b11mr7232399oti.213.1637081096451;
-        Tue, 16 Nov 2021 08:44:56 -0800 (PST)
-Received: from [192.168.11.48] (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
-        by smtp.gmail.com with ESMTPSA id bi20sm4426252oib.29.2021.11.16.08.44.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 08:44:56 -0800 (PST)
-Message-ID: <19991c37-4d05-b464-128b-8e7a767970b1@kali.org>
-Date:   Tue, 16 Nov 2021 10:44:54 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Subject: Re: [PATCH] cpufreq: freq_table: Initialize cpuinfo.max_freq to
- correct max frequency.
+        id S236375AbhKPQtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 11:49:39 -0500
+Received: from mail-bn7nam10on2042.outbound.protection.outlook.com ([40.107.92.42]:3104
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234638AbhKPQti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 11:49:38 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kEN4zDVquybZA+QtxKaudED5Gvo/sVunpMmt8r5pOKffDJJX74zEW+g40mdxTJGvEpzvopF5m7QCx6smF2q8ssHIhVsfUutXfre4iMfvdunHFHM8JNq6Foz5P5ug+/KzqzakSV1uQVh2z+L7Eqa/ACikGz+fn6C1YVpEtTPagUt+2tilLj2e2y8NY6kNX4vh2+QAKk6yzl64nuHQJ31GqpzcDSAsOqQR4HTND1GZLYB2Sv42ZAu3kjCxS1vbhRBTSXF/cuFnp0+FvmskG5Or/I4MDWaz0LI3vJedrAj2Y4UgTcjniBG15zMeCVRBZs8mbdI4QsgnvVFL5RStIJDSYw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VYn5LlKy24RCX6iwfqgJFDGYGpcDrCyB0lnL5D/oSLE=;
+ b=PC8/CbddUVlgn/gAIH5oJfQH8WKVZbJ1j3CNH81sE8JH5p4iIjXqstNXud5vpWgvZgDvHgn2oOnvdZAmUOyt6yDGcoG5JFTqxxfJmetP9Jl0uOLt5Pt5ZiYtxqcgfoga82YhaQvUB5cLxMt4ohooqnFALI60ooPL+MUTOwjyBlZyRgJIrlZ35dXK6YCvF5hoVYSpHvcYxQfIe31pOqypXbw+7dCL42F4K/ES2UHiwcFevSzYaQ/WMnRqlnVahCEi7eN2HFANEbULc1wdqjeWU6VnTtzX5ztJkwwlkPVR9lkjKBEzn3gI7c/jkbzb6TNrdm7A3z6u65G+INMd06R/zQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VYn5LlKy24RCX6iwfqgJFDGYGpcDrCyB0lnL5D/oSLE=;
+ b=AJvmqbd8vxPapoG7P0WmQ/FXLp17W6fPUDrZYHFaTGRwGW1SsYmH5TVnl/a+3VzDNDGh7OH1IzVjcIts6+wubfLYV/c5lgjC4zmtFEUrFeNW2dorA9v2dnaiPZ+mtm56OtM7IKAfPRECT8PsHU/AlFOA35SuELYHWI6tkq9oZas=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3505.namprd12.prod.outlook.com (2603:10b6:408:69::17)
+ by BN6PR12MB1843.namprd12.prod.outlook.com (2603:10b6:404:101::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Tue, 16 Nov
+ 2021 16:46:33 +0000
+Received: from BN8PR12MB3505.namprd12.prod.outlook.com
+ ([fe80::704c:60ed:36f:4e4c]) by BN8PR12MB3505.namprd12.prod.outlook.com
+ ([fe80::704c:60ed:36f:4e4c%7]) with mapi id 15.20.4713.019; Tue, 16 Nov 2021
+ 16:46:33 +0000
+Message-ID: <689f7b71-32b8-ba0e-22ff-c2248662b1e1@amd.com>
+Date:   Tue, 16 Nov 2021 10:46:31 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v2 11/13] perf tools: improve IBS error handling
 Content-Language: en-US
-From:   Steev Klimaszewski <steev@kali.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>, rafael@kernel.org,
-        viresh.kumar@linaro.org, bjorn.andersson@linaro.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20211115195011.52999-1-thara.gopinath@linaro.org>
- <5ae2c644-4743-c62c-b17c-96945a0e6a01@kali.org>
- <1ceb5a9b-817b-a9ef-c378-be3bd0f7ff17@linaro.org>
- <7b440c0f-57eb-e367-bcc7-91c731d360d5@kali.org>
-In-Reply-To: <7b440c0f-57eb-e367-bcc7-91c731d360d5@kali.org>
+To:     Stephane Eranian <eranian@google.com>, linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, acme@redhat.com, jolsa@redhat.com,
+        songliubraving@fb.com, mpe@ellerman.id.au, maddy@linux.ibm.com
+References: <20211111084415.663951-1-eranian@google.com>
+ <20211111084415.663951-12-eranian@google.com>
+From:   Kim Phillips <kim.phillips@amd.com>
+In-Reply-To: <20211111084415.663951-12-eranian@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BL0PR02CA0024.namprd02.prod.outlook.com
+ (2603:10b6:207:3c::37) To BN8PR12MB3505.namprd12.prod.outlook.com
+ (2603:10b6:408:69::17)
+MIME-Version: 1.0
+Received: from [10.236.30.70] (165.204.77.1) by BL0PR02CA0024.namprd02.prod.outlook.com (2603:10b6:207:3c::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11 via Frontend Transport; Tue, 16 Nov 2021 16:46:32 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c3642512-dac4-4373-39b5-08d9a920a5bc
+X-MS-TrafficTypeDiagnostic: BN6PR12MB1843:
+X-Microsoft-Antispam-PRVS: <BN6PR12MB1843277A90D0A3B30187FAFE87999@BN6PR12MB1843.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lczT4DnZvEf2uqWym6PTVt9vUzL8yqOu/l4mengbPfLS6jl4dEBDafKn1gtSDj6GB3huWYkFtx37d/phBZVoaGGAFvWikCoaOlTHKMQO+5HQ743cBYqajXf9xTexBjDU67pAjvPme/e4uGEqYbAEPaBUAmHrVfpFgd+1NwHhwYOed53UOAlM8Angsay6wEqFc8YHlCzYKiZJqAahDgpLODRtpRzNbdLkdPjYy7qBUW3b6VOPR5EuVdexErkCA+CHBhAVbtmAnjF+qOAsgo/SINyotPScgIckX/GDYfbbS7eMfcV12pTIZt4Elb1NMLCtj+9/A+ylekH8cxbwp1/bBWqii6EI8koMbniVKFt0DAzHeW/kLmwxA7B+5y8Z98e/mI1b28STt/cYcC/MfV6ZANoLmFSnARPf3TMDxRYFHsIj2gnIMPMZpc2IxciyMyyJnxUn2TYfHGP5RhT0tLlIx7/9/TIMRP+chXS0Y7M6/Hg+TTGSuKN9FxJkk2wSVQmMgps2RMiZI+Hyg2tCXqpDF/yU+zYxvrvOhf5ArB0+cGW5xPqwld0xJVnWyThwbT8mEpMsPfbQTbUc4C4O+hOAFZQmKo5+D0CX4wEof1HiOzQ1CsntkDdrYHOnW7X5w4xetcNtERIfJdrg2OvR4gb15YWljyPxG07QNpD69C8wGOXoSCPUx7S4reawAItfrmMzCUDn2Dc1sv5rJMqsBi3T+FFXIRQSmAGmQ0r7yIyREN2kDlTxt8JmQkv6oBsofe2wfOqoTMvWDCAxKfl7LAO1dJ5wocXPg8JVIhphhWleDugKF1sbI/2wSP/DiwCPJ1zXuW/iUUvVfO2RJtXmaPh5W8yVpzWsbr5TIOliDWj4drKmihnYmtdQKdyggvDnV4Hc
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3505.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(4326008)(86362001)(53546011)(31686004)(6486002)(36756003)(8936002)(8676002)(16576012)(4744005)(26005)(2906002)(44832011)(66946007)(83380400001)(316002)(508600001)(186003)(66476007)(66556008)(2616005)(31696002)(956004)(38100700002)(966005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OVQwYmVyUEdBT3g5angrNkV6MUMxZGJva3kzaWVJZlQ4a0pmQWloRG81RHVB?=
+ =?utf-8?B?L0dlUjZldGFmOHhDajJaVFU2VEc1T3VxcVFGWkMxU3NEV0Z5Rk1hUFlhM25n?=
+ =?utf-8?B?VkpKWm1jUURodFNwRzdtRlQ0aXZ5R0dTNU5MQTJvRXRlbmtPWHBnN2MzR1Y5?=
+ =?utf-8?B?eDRHR2xvZkpFdjhReWtnV2lNSHFwMU4yYk1BRCtLL3RzTWxsak5saW9DaE82?=
+ =?utf-8?B?M2h4dXJQbXpHMkxoS0xhRlB5RTdGenRFK3ZyUGkvSEx5alBqcFJGSjVqUDV5?=
+ =?utf-8?B?bVhMMEoxc2tIQW80c3F6emovYkloVDdnVGp6NXhFMXFpWXNmYWNWOGxvQTc0?=
+ =?utf-8?B?aXhUL0tKVnQ0d1RWSWlKV2taKzRCVHdTSjg3RVp0M2E2c0s0YXorRTJMZGp0?=
+ =?utf-8?B?eG9RZm8vL0dZZExjWWRtbDRIQndNNTNub0NWWCtyMTFXeHA1amJwRkZ2QlpY?=
+ =?utf-8?B?a2hubDFHRzArWjN2WDFTeVhxSXd4WERCd0RteThlRlV1Tms0VmV2VmovUkMr?=
+ =?utf-8?B?cEN2TUtQWWN5a3ozcnh5UmNBeDNLR0o5ZDQvUFQ1M3l6L3JNei8xbEFkZzA5?=
+ =?utf-8?B?eU1leW1lSUliL2NKbzZsY3hueURlVnVjeXNLRTRIZVQxS2lMVjltbFhYaWxa?=
+ =?utf-8?B?MkJIaGRhV2dOZFhtazlBT1pzK3ZtV3BxVWI3RHJKOW0vNDA2WDNRNm9tYXdv?=
+ =?utf-8?B?QnpnK09NVVlzbHNCN25obTBnSmd2b2FaWHdiNE5LWTE1ZjVkVUxaamxwT29C?=
+ =?utf-8?B?R0RxUCtNUG4rczN5dmNKVEQrY1pMaXJja2RuTzVkbENQbEJaMDBTWUtLRkFT?=
+ =?utf-8?B?WGhFeEdUYWk3VUNwWklWMXIzUm5vMC81Y1daYkxRMkpQeVZkKzVaK3M3SGxQ?=
+ =?utf-8?B?dmVOZ2I5dWRGMGpzL1lrd0ZVNm1tdFhJQS9Fd3BURlJXVk1YQkkza3A0bEdy?=
+ =?utf-8?B?TXl5YkRBSmFtMUl5Ung0M2MrYlZxL2dHbE11MlJXR3JJc210d2NaZ0hoQkxm?=
+ =?utf-8?B?UC9sd1BjWVdGaHBnUW40Q1UwMWt2QjM1NEF0ZzNQOFZaUmFCbFlnSDJNald5?=
+ =?utf-8?B?SmM1ZS9SVGVmb0MvZmdLVVNHYlVrSitiNit2b3p0akxRR25oOGxWZVQyTzIz?=
+ =?utf-8?B?Q1oyWEF6eTRyZzlOS1M4cTdKVlZMNWxPUkI1b01wM0krM21sZWh0eFlVQUlv?=
+ =?utf-8?B?VDR2b2w1bFRicUZMRlZid3M4SE0rNEZoZ0htL3hEZGxTL3hUTkNaeEhTMFZK?=
+ =?utf-8?B?cmRhcWxkTXIyOUZHMkFHdnRXNElrbnZJRUthdlk2a2lyS3FTSnU5emcxTSti?=
+ =?utf-8?B?ek9DMWZJSm9vWUVmQXBxY043V0NXWFJmTkRJUG44V2o2cHU3MVg1bTBzdDRu?=
+ =?utf-8?B?SkRZSjlBUXhkb3Y5dVlYc3A0dHpPS1dsZ0poaWpDK1lNcHdsdUxJLzZLVmVw?=
+ =?utf-8?B?aVJOcUhFdEJ5R3JaM2s0YldtT1dPTzNoNE5OOGtqc3JVb0lPSkZPK3ZsclZ1?=
+ =?utf-8?B?MEZRbFhGdk1TSXJTUmVqSFViZG9xVldUTVRJM21JMnlVK2ZVd0Z3dldONmNV?=
+ =?utf-8?B?YjE4NGx5UklFMzE4T2hLdjRlbE83Skc2UC8ydVUzdFN2bGRwcFZvUmF1OUtm?=
+ =?utf-8?B?VGo5L0gwN2lGTmRUL21FMUxpUUxXdStFZDlmT0FWSWdOckVIbHkrMjViUFJG?=
+ =?utf-8?B?YVIwOERIOVZ0Wk9hb3RWYjV4TFlFNmpsNWxCQ2MrblFIdytLU2ExYWFMbUpw?=
+ =?utf-8?B?MHJ6VW9KODFmTHh2YW0wZERMTFhjWFYxWG5rYmt6MnNRYk1jZGhhS3FWZ09z?=
+ =?utf-8?B?TFhxSGoxT3NaU09UQzVtbVJ3b3BsaXVBUXBocVpHbDhtWGpYdzgxbDNpL21D?=
+ =?utf-8?B?RFB5K3RvOUF4Y1JudmovQTc1czJkUU1XQUdpZ0NlMVp5Vk5zUGFINGltaUd1?=
+ =?utf-8?B?TE4xT3NSaGs2c2ZtNTY3clpreFFQU1lndEV4WGdUelVrZ0VTdVc2NHBEOXVD?=
+ =?utf-8?B?aWE4dll2RnZ4Q2JwMVpTc0VxbS9kU2NPYzhneDg5WnZ4U2VWcTNaRkRrL2x5?=
+ =?utf-8?B?NURIcERHb3RIYnNOTVVpWXA1dUJWRzlDVDQxSGtqMEdnRTMxTDlWbHRsdFZQ?=
+ =?utf-8?B?bWV0cnpHOG9JTjVTRm1FWlJRZlhtemRlVENhVEEvTlQ0bGM1a0RLWExKOUpD?=
+ =?utf-8?Q?J2ergbZjEc0uo2Puh12eyho=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c3642512-dac4-4373-39b5-08d9a920a5bc
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3505.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 16:46:33.5289
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: s5UP/+lbia0pM4vA7JwdbRsxxUmtcfXXt4q7ykbmRyc26tR02MSVjbe4JxwruzG74lUOK9GgIMstFGR/1jHL/g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1843
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/11/21 2:44 AM, Stephane Eranian wrote:
+> From: Kim Phillips <kim.phillips@amd.com>
+> 
+> This patch improves the error message returned on failed perf_event_open() on
+> AMD when using IBS.
+> 
+> Signed-off-by: Kim Phillips <kim.phillips@amd.com>
+> ---
 
-On 11/16/21 10:15 AM, Steev Klimaszewski wrote:
->
-> On 11/16/21 9:31 AM, Thara Gopinath wrote:
->> Hi Steev,
->>
->> Thanks for testing this.
->>
->> On 11/15/21 8:23 PM, Steev Klimaszewski wrote:
->>
->> --- snip
->>>>
->>>> diff --git a/drivers/cpufreq/freq_table.c 
->>>> b/drivers/cpufreq/freq_table.c
->>>> index 67e56cf638ef..6784f94124df 100644
->>>> --- a/drivers/cpufreq/freq_table.c
->>>> +++ b/drivers/cpufreq/freq_table.c
->>>> @@ -35,11 +35,15 @@ int cpufreq_frequency_table_cpuinfo(struct 
->>>> cpufreq_policy *policy,
->>>>       struct cpufreq_frequency_table *pos;
->>>>       unsigned int min_freq = ~0;
->>>>       unsigned int max_freq = 0;
->>>> +    unsigned int cpuinfo_max_freq = 0;
->>>>       unsigned int freq;
->>>>       cpufreq_for_each_valid_entry(pos, table) {
->>>>           freq = pos->frequency;
->>>> +        if (freq > cpuinfo_max_freq)
->>>> +            cpuinfo_max_freq = freq;
->>>> +
->>>>           if (!cpufreq_boost_enabled()
->>>>               && (pos->flags & CPUFREQ_BOOST_FREQ))
->>>>               continue;
->>>> @@ -57,8 +61,8 @@ int cpufreq_frequency_table_cpuinfo(struct 
->>>> cpufreq_policy *policy,
->>>>        * If the driver has set its own cpuinfo.max_freq above 
->>>> max_freq, leave
->>>>        * it as is.
->>>>        */
->>>> -    if (policy->cpuinfo.max_freq < max_freq)
->>>> -        policy->max = policy->cpuinfo.max_freq = max_freq;
->>>> +    if (policy->cpuinfo.max_freq < cpuinfo_max_freq)
->>>> +        policy->cpuinfo.max_freq = cpuinfo_max_freq;
->>>>       if (policy->min == ~0)
->>>>           return -EINVAL;
->>>
->>>
->>> Something still isn't quite right...
->>>
->>> The setup is that I have an rc.local of
->>>
->>> #!/bin/sh
->>>
->>> echo 1 > /sys/devices/system/cpu/cpufreq/boost
->>>
->>> exit 0
->>>
->>>
->>> After booting and logging in:
->>>
->>> steev@limitless:~$ cat 
->>> /sys/devices/system/cpu/cpufreq/policy4/stats/time_in_state
->>> 825600 2499
->>> <snip>
->>> 2649600 38
->>> 2745600 31
->>> 2841600 1473
->>> 2956800 0
->>
->> Did you try debugging this ? As in did you read back boost and 
->> cpuinfo_max_freq at this point to ensure that everything is as 
->> expected ?
->>
->>
-> Hi Thara,
->
-> I did - sorry I forgot to mention that boost does show 1 for enabled 
-> and cpuinfo_max_freq is set to 2956800.  However, scaling_max_freq is 
-> still listed as 2841600 and scaling_available_frequencies still shows 
-> 2841600 as the max available. scaling_boost_freqencies does also list 
-> 2956800.
->
-> steev@limitless:~$ grep . /sys/devices/system/cpu/cpufreq/policy4/*
-> /sys/devices/system/cpu/cpufreq/policy4/affected_cpus:4 5 6 7
-> grep: /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_cur_freq: 
-> Permission denied
-> /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq:2956800
-> /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_min_freq:825600
-> /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_transition_latency:0
-> /sys/devices/system/cpu/cpufreq/policy4/related_cpus:4 5 6 7
-> /sys/devices/system/cpu/cpufreq/policy4/scaling_available_frequencies:825600 
-> 902400 979200 1056000 1209600 1286400 1363200 1459200 1536000 1612800 
-> 1689600 1766400 1843200 1920000 1996800 2092800 2169600 2246400 
-> 2323200 2400000 2476800 2553600 2649600 2745600 2841600
-> /sys/devices/system/cpu/cpufreq/policy4/scaling_available_governors:ondemand 
-> conservative powersave userspace performance schedutil
-> /sys/devices/system/cpu/cpufreq/policy4/scaling_boost_frequencies:2956800
-> /sys/devices/system/cpu/cpufreq/policy4/scaling_cur_freq:1920000
-> /sys/devices/system/cpu/cpufreq/policy4/scaling_driver:qcom-cpufreq-hw
-> /sys/devices/system/cpu/cpufreq/policy4/scaling_governor:schedutil
-> /sys/devices/system/cpu/cpufreq/policy4/scaling_max_freq:2841600
-> /sys/devices/system/cpu/cpufreq/policy4/scaling_min_freq:825600
-> /sys/devices/system/cpu/cpufreq/policy4/scaling_setspeed:<unsupported>
->
-Once it does start working (e.g. I've run echo 0 to turn off boost, and 
-then echo 1 to turn it back one)
+Hi, AFAICT this v2 == v1, i.e., this patch doesn't address the comments
+raised in v1:
 
-steev@limitless:~$ grep . /sys/devices/system/cpu/cpufreq/policy4/*
-/sys/devices/system/cpu/cpufreq/policy4/affected_cpus:4 5 6 7
-grep: /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_cur_freq: 
-Permission denied
-/sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq:2956800
-/sys/devices/system/cpu/cpufreq/policy4/cpuinfo_min_freq:825600
-/sys/devices/system/cpu/cpufreq/policy4/cpuinfo_transition_latency:0
-/sys/devices/system/cpu/cpufreq/policy4/related_cpus:4 5 6 7
-/sys/devices/system/cpu/cpufreq/policy4/scaling_available_frequencies:825600 
-902400 979200 1056000 1209600 1286400 1363200 1459200 1536000 1612800 
-1689600 1766400 1843200 1920000 1996800 2092800 2169600 2246400 2323200 
-2400000 2476800 2553600 2649600 2745600 2841600
-/sys/devices/system/cpu/cpufreq/policy4/scaling_available_governors:ondemand 
-conservative powersave userspace performance schedutil
-/sys/devices/system/cpu/cpufreq/policy4/scaling_boost_frequencies:2956800
-/sys/devices/system/cpu/cpufreq/policy4/scaling_cur_freq:1920000
-/sys/devices/system/cpu/cpufreq/policy4/scaling_driver:qcom-cpufreq-hw
-/sys/devices/system/cpu/cpufreq/policy4/scaling_governor:schedutil
-/sys/devices/system/cpu/cpufreq/policy4/scaling_max_freq:2956800
-/sys/devices/system/cpu/cpufreq/policy4/scaling_min_freq:825600
-/sys/devices/system/cpu/cpufreq/policy4/scaling_setspeed:<unsupported>
+https://lore.kernel.org/lkml/aa40b532-0e95-76c0-6c9c-a91d45bf3468@amd.com/
 
+Arnaldo, orthogonal to this series, it'd be great if you could apply
+these two patches:
 
-Notice that the scaling_max_freq is now 2956800 instead of 2841600 when 
-it isn't working.
+https://lore.kernel.org/lkml/20211004214114.188477-1-kim.phillips@amd.com/T/#mc4c9c582e3816ab31af6d0187e6803de1a98ac84
 
-Sorry for forgetting and sending another mail :(
+Then, Stephane, you could drop this patch and in your next
+version, patch 12/13 of this series would be replaced with
+what's at the end of this email:
 
--- steev
+https://lore.kernel.org/lkml/20211004214114.188477-1-kim.phillips@amd.com/T/#m885ead1f280445357c91cce53c01217913bd017b
 
+Thanks,
+
+Kim
