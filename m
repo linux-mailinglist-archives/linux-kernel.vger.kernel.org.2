@@ -2,52 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCCC452357
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:22:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F5C452362
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:22:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379751AbhKPBYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:24:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233786AbhKPBQU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 20:16:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 438CA60F6E;
-        Tue, 16 Nov 2021 01:13:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637025200;
-        bh=EY96g0UCuL5Xvi/3eOGLMAuCu+ebe0mgcopCcRBtgiM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hoMDYf1u4QigiY2urIxEzheI0nj7DiOd4dy/gXX3z7CUGjYmyy8B2L4RLmjHnUQZy
-         PJSRxjRU+T++rIDVfsI6Cv7FsnP9mhp/mUFnTxy3tiSrH7hNFxpgGxN7G4lNuwiFES
-         CT05qEtt+4vzjTE7CL4zxs4j25WH6WXAkYFehGiob1ePzioXcuYpzwYmbnY/Hg9jkb
-         2DyPg7ptgOJ8oL9mdgTjnoHRq1xh5Lj8j1m0TUvdm9/F/ZkI7pRCeCuVGmzri3EfRS
-         GX7ymFZZk/6DWEHTIddLU8rZXX7a2j06t/1GxbyByQd+QRUI4ZtbXEMMiGBH7hd78V
-         CYRrQFaxOzrCw==
-Date:   Mon, 15 Nov 2021 17:13:19 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jonathan Davies <jonathan.davies@nutanix.com>
-Cc:     Willem de Bruijn <willemb@google.com>, netdev@vger.kernel.org,
-        Florian Schmidt <flosch@nutanix.com>,
-        Thilak Raj Surendra Babu <thilakraj.sb@nutanix.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: virtio_net_hdr_to_skb: count transport header
- in UFO
-Message-ID: <20211115171319.7d2e9f40@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211115151618.126875-1-jonathan.davies@nutanix.com>
-References: <20211115151618.126875-1-jonathan.davies@nutanix.com>
+        id S1379789AbhKPBYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:24:38 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:14747 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348155AbhKPBRc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 20:17:32 -0500
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HtShX30j0zZd5h;
+        Tue, 16 Nov 2021 09:12:12 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 16 Nov 2021 09:14:33 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Tue, 16 Nov 2021 09:14:32 +0800
+Subject: Re: [PATCH 5.10 000/575] 5.10.80-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20211115165343.579890274@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <f0e2e2ba-459a-9bef-573e-96d4416f838a@huawei.com>
+Date:   Tue, 16 Nov 2021 09:14:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021 15:16:17 +0000 Jonathan Davies wrote:
-> +		if (gso_type & SKB_GSO_UDP && skb->len - p_off + thlen > gso_size ||
 
-Compilers don't like mixing && and || without bracketing, and will warn
-here, at least with W=1. Please add explicit brackets.
+
+On 2021/11/16 0:55, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.80 release.
+> There are 575 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 17 Nov 2021 16:52:23 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.80-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+
+Tested on arm64 and x86 for 5.10.80-rc1,
+
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.10.y
+Version: 5.10.80-rc1
+Commit: 498eb27d1093fbde123a46948f9aef0a7dd41950
+Compiler: gcc version 7.3.0 (GCC)
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 9020
+passed: 9020
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 9020
+passed: 9020
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
