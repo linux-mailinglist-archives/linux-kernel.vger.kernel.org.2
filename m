@@ -2,137 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F57453247
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FA49453249
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:35:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236283AbhKPMhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 07:37:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230400AbhKPMhx (ORCPT
+        id S236341AbhKPMiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 07:38:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21351 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236394AbhKPMiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 07:37:53 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F94C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 04:34:56 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id d5so37278023wrc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 04:34:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Xb3TVlaOH3XPJ9Opw87QokeP9OXAVcEgjsjxkjzezIk=;
-        b=yII4nOsmDxHStIDt/LMAfBW6r0LomDLf7g/3dzRmPJR4iUutnLq9RsmLh/vfYOx3ho
-         yu6AzYc2Sz9Su1nXS9jg2VTkavL1rGTD1hpAHmyd/IhdYixUveAepyb7imQz5IJEcIri
-         iOobizAyiFPK2W4rHv2u4BYcXAcWBzv/AVtDv+nqoCqYlxXAumBzcteGMGEiR8sGxTgB
-         8sFPAPavr7UFV5K/UGadTijYNJ9AG7Uku9l15q90sYcDPNivHVrNXZitnWoMzwpaHogq
-         jBa6TvtmfHZq/kVvP7RJzTY3DHDeSl052Kba5ve0gBKS4AM3KV9qeqV3o7ggSiUPRDBJ
-         Lpzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Xb3TVlaOH3XPJ9Opw87QokeP9OXAVcEgjsjxkjzezIk=;
-        b=2xHs4aBtg7vDivXWnQg8hsc7hZevCvxjzzH3MAxzJbMI83NNIG1zgkYcbsNeuhWmiG
-         6wpfM9BtZKtPAG7WCIcYgw+RecbUqGIlBs1Niwx8BatYOjmAKwSvNnGspt/G+MqhNmCG
-         kNIO3grQqD1O9GLIXudGMuO4SsowwfQ0LWtSHETfBynm6nw7G5sVctDuTj2R9a7Pmkyp
-         /ZMkAwLFuMLKQ8mkAhk+QSz5WUjvT8zF7TwWfUN0osfv9+G9BH1QZJpkAH4oQwqvxkQz
-         hHKADh5TeiS5SMevSIOqQpFQcR8LO0jpTnzo3UcBrwZVc5zMXUivJoIakyk08qktplIi
-         cDFQ==
-X-Gm-Message-State: AOAM530HPy+68nE06XUxaQwCVm01TNMSE7FjpQO3iq3RWHCerZw2ydMB
-        n72sKJIwZ8W+m5jlWgECXlq7Fg==
-X-Google-Smtp-Source: ABdhPJxckVDPlqLE9FqD1c+xZBJjVupNMJ9ZfAWX5804dLeeeJcBYcU8Km6M0y9ci5PB0rDYg8ioBA==
-X-Received: by 2002:a05:6000:12c5:: with SMTP id l5mr8829083wrx.173.1637066094887;
-        Tue, 16 Nov 2021 04:34:54 -0800 (PST)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id f12sm2982140wmq.0.2021.11.16.04.34.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 04:34:54 -0800 (PST)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH] genirq/irqdesc: Add state node to show if IRQ is enabled
-Date:   Tue, 16 Nov 2021 12:34:47 +0000
-Message-Id: <20211116123447.23902-1-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
+        Tue, 16 Nov 2021 07:38:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637066125;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nDD8Pw0nMM0sd/mdc/qJwcDjr7sQieU+0fU4PkeGCmc=;
+        b=Cua2wkhFq1yA9LsfRNgnGAgn5aaoNN3yL8tTq8VI8K6QlIEkxMTHS5UMxqBOGNo20DbnW1
+        /QyheqEgv434kNDr/4WqLzdlVpU+fSa8tcYZOOu9IPWWkKbLkpjeQ2Ix92URmSH6nED53Y
+        cy7LK2qofCbD8aLHfX5IARg6FFACqYk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-484-mpXQ5iUKOvmdeF9Oqlmleg-1; Tue, 16 Nov 2021 07:35:22 -0500
+X-MC-Unique: mpXQ5iUKOvmdeF9Oqlmleg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D504101AFA8;
+        Tue, 16 Nov 2021 12:35:21 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 652B55D9DE;
+        Tue, 16 Nov 2021 12:35:17 +0000 (UTC)
+Message-ID: <bd778500-b925-6b5c-7f57-8acd5530df73@redhat.com>
+Date:   Tue, 16 Nov 2021 13:35:12 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 0/6] KVM: SEV: Bug fix, cleanups and enhancements
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Gonda <pgonda@google.com>,
+        Marc Orr <marcorr@google.com>,
+        Nathan Tempelman <natet@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+References: <20211109215101.2211373-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211109215101.2211373-1-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While debugging some issues with SoundWire WakeUp interrupt,
-I did not find a way to figure out if the interrupt is really enabled
-or disabled.
+On 11/9/21 22:50, Sean Christopherson wrote:
+> Bug fix for COPY_ENC_CONTEXT_FROM that IIRC is very belated feedback (git
+> says its been sitting in my local repo since at least early September).
+> 
+> The other patches are tangentially related cleanups and enhancements for
+> the SEV and SEV-ES info, e.g. active flag, ASID, etc...
+> 
+> Booted an SEV guest, otherwise it's effectively all compile-tested only.
+> 
+> Sean Christopherson (6):
+>    KVM: SEV: Disallow COPY_ENC_CONTEXT_FROM if target has created vCPUs
+>    KVM: SEV: Explicitly document that there are no TOCTOU races in copy
+>      ASID
+>    KVM: SEV: Set sev_info.active after initial checks in sev_guest_init()
+>    KVM: SEV: WARN if SEV-ES is marked active but SEV is not
+>    KVM: SEV: Drop a redundant setting of sev->asid during initialization
+>    KVM: SEV: Fix typo in and tweak name of cmd_allowed_from_miror()
+> 
+>   arch/x86/kvm/svm/sev.c | 42 +++++++++++++++++++++++++++---------------
+>   arch/x86/kvm/svm/svm.h |  2 +-
+>   2 files changed, 28 insertions(+), 16 deletions(-)
+> 
 
-So I have added an new state entry in the sysfs to dump the current
-interrupt state.
+Queued all except 2.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
-
-While debugging I found this patch very useful, specially in SoundWire Wakeup
-usecase where we dynamically enable Low Power Wakeup interrupt.
-
-Sending this out, hoping that it will be useful for others as well.
-
---srini
-
-
- Documentation/ABI/testing/sysfs-kernel-irq |  7 +++++++
- kernel/irq/irqdesc.c                       | 16 ++++++++++++++++
- 2 files changed, 23 insertions(+)
-
-diff --git a/Documentation/ABI/testing/sysfs-kernel-irq b/Documentation/ABI/testing/sysfs-kernel-irq
-index 8910d0c4bcd8..d858ed133ba2 100644
---- a/Documentation/ABI/testing/sysfs-kernel-irq
-+++ b/Documentation/ABI/testing/sysfs-kernel-irq
-@@ -58,3 +58,10 @@ KernelVersion:	4.17
- Contact:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
- Description:	The wakeup state of the interrupt. Either the string
- 		'enabled' or 'disabled'.
-+
-+What:		/sys/kernel/irq/<irq>/state
-+Date:		November 2021
-+KernelVersion:	5.16
-+Contact:	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-+Description:	The state of the interrupt. Either the string
-+		'enabled' or 'disabled'.
-diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
-index 2267e6527db3..60c69978ea45 100644
---- a/kernel/irq/irqdesc.c
-+++ b/kernel/irq/irqdesc.c
-@@ -265,6 +265,21 @@ static ssize_t actions_show(struct kobject *kobj,
- }
- IRQ_ATTR_RO(actions);
- 
-+static ssize_t state_show(struct kobject *kobj,
-+			  struct kobj_attribute *attr, char *buf)
-+{
-+	struct irq_desc *desc = container_of(kobj, struct irq_desc, kobj);
-+	ssize_t ret;
-+
-+	raw_spin_lock_irq(&desc->lock);
-+	ret = sprintf(buf, "%s\n",
-+		      irqd_irq_disabled(&desc->irq_data) ? "disabled" : "enabled");
-+	raw_spin_unlock_irq(&desc->lock);
-+
-+	return ret;
-+}
-+IRQ_ATTR_RO(state);
-+
- static struct attribute *irq_attrs[] = {
- 	&per_cpu_count_attr.attr,
- 	&chip_name_attr.attr,
-@@ -273,6 +288,7 @@ static struct attribute *irq_attrs[] = {
- 	&wakeup_attr.attr,
- 	&name_attr.attr,
- 	&actions_attr.attr,
-+	&state_attr.attr,
- 	NULL
- };
- ATTRIBUTE_GROUPS(irq);
--- 
-2.21.0
+Paolo
 
