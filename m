@@ -2,150 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C9B34535F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:39:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3474535F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:39:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238365AbhKPPmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 10:42:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56030 "EHLO
+        id S238380AbhKPPm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 10:42:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231784AbhKPPmG (ORCPT
+        with ESMTP id S234959AbhKPPm1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 10:42:06 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3359C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:39:08 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id f7-20020a1c1f07000000b0032ee11917ceso2755203wmf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:39:08 -0800 (PST)
+        Tue, 16 Nov 2021 10:42:27 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9524C061570;
+        Tue, 16 Nov 2021 07:39:29 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id 200so17965232pga.1;
+        Tue, 16 Nov 2021 07:39:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=8ONwyLBOB69hQK2qwvft0gtEgWs8RDsTXs/OpX4lKrc=;
-        b=CWAfOjkZO32JmYYnPX9zVNj77QIM/0a8llJaM5pg0Fj69pGHYNTQTFo/oVyyxkxF0y
-         LMVGMMxKiloUBcB2/XcuIZms995u3HLEQ3pnGsJ3zerILce3iU4CeyVl4XoR0paGW/f9
-         X/5PhjANneoke2B4TK8HS2ngJWVw+TnUsnHK+k1nnkBeIOndpjb0YyeWrBOpOgFOGuAW
-         9FfTuMr9D4l/xAh7VWLh7br3P004qOMMc6JEYlGTni9fBCoAK3bQZsfYzkWcOTgFcqCr
-         7FKwVNUgthrP+2KbXsKs1N2wjgCOHeUl2LDcmsrgbNod1srkbFXbWoDFRKpFGfaRNZe+
-         DwLw==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ytk8p6TdYJp6Y0bV41yrFTfo+pk8rHAune+7pZw0P98=;
+        b=BXz0KFtLleSQa3skiYw7QDE1dXPqvkgmZsVeu4fLM5Yo+p5BS9ZqK8GmlqMk8KB2Jd
+         MbFA1Sdyl8HeuFhTjRLnnl3I6jVDF41fuFlW3H6A+W4gc2Uds+KPsc9KT7JcuhVGbq/t
+         XAcYRH7ZrHrS/7eajwuW1ku+LBiQ4Qc+oXHnk0LQfeobjP2mtKBjazQ5Ojyz1ZP9PGUs
+         KqRxaCIQx43OP4enShtmT5F7s37Tk9u+0bvcviYRxBqU7AdqBL5xPuBzLRr/J69QC52x
+         9+z78bSAAsg3A9UtUTA6eQyj+jhqQGR/7QgyARigUS1/lv1vKxm9S0dnSLpOzn5YgjJU
+         DsLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=8ONwyLBOB69hQK2qwvft0gtEgWs8RDsTXs/OpX4lKrc=;
-        b=gdHeie9LVhXHgJGizoyMIDpWFj3s3GJWGW/xssKKDEj1uDsThgWkdEgCR2bhC6btmC
-         vFhOTxQBeM/8YbETkuAEjj6iPs1ONnoKmSKZWFcoLGNEdlbqhPvMmmDgZnrjAXltNXBP
-         MQbeG9BFFzrBorLvlIhreI5fPDhRs4NZ8kegvaJlHtCLu6WUI1cC4XugKTYQatFCxIMl
-         INIjG/FEqxjwub63dTT6zHjIuob5EFenZFgs8K+FasUSEDbhlM4JovLHKVWukyk0/gyx
-         F+GmDVC8ytS1kWQmHVNZ36Z3Q2tBAOvfwjgrdsgNPtk85z+xQXh9fGsvSt3ubVY14KlG
-         ht9Q==
-X-Gm-Message-State: AOAM532vZx+4dXwFjzCEHqW2jxFuDCEmV1/T3QIPj1iNLiT3tkRzyRCN
-        MHlhfGSfK6q0aa/u4uVqzFXMew==
-X-Google-Smtp-Source: ABdhPJxUtoaK2Rb2DAn6hpFnPt85zPpn1h1ta78pmSUJtewz5tzMcVQTzPIBYXWfga87FZFD3OHLqQ==
-X-Received: by 2002:a1c:6a13:: with SMTP id f19mr8919919wmc.89.1637077147235;
-        Tue, 16 Nov 2021 07:39:07 -0800 (PST)
-Received: from google.com ([95.148.6.231])
-        by smtp.gmail.com with ESMTPSA id e8sm13847093wrr.26.2021.11.16.07.39.06
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ytk8p6TdYJp6Y0bV41yrFTfo+pk8rHAune+7pZw0P98=;
+        b=ZLcVKwGnspGtceEcGpeDPJORKyliPJ8hDKkWE6QOk83DiNWKS2u3lcWwHsROLptgum
+         WnjYWp50EUZPlL1NUrIGoR/9quP6r5IFzkAqFskWkiOn6fye1K94OGlqHI1j3tuyu5HG
+         uxRI48W06U4qj2JC5yPoA0WfSHG7SCLr0rDJqqzZZch9jLK4JpLpG6dy0nAcs3y6rucL
+         /ueYqGd8NtysaA/qrnDnbTADPSqxKE91YLXK4AkvCNPpdkkLYFIQcbC8QmHOmvyYDrc3
+         6taKyo+hcvfqPrqNF0c11q9RFpD3zA9OhU5n225wC/hswbcB1J+i+ABiZShD3BP+2C1q
+         CA/g==
+X-Gm-Message-State: AOAM5317EGmJMaLbcPRnyWezQ1Im0Kfcsps9EULUV0YJQ61aH8r30vUw
+        mCupLe2IqLsgnd4y7qiJDjI=
+X-Google-Smtp-Source: ABdhPJwz59YenP80sWYPo5tTasO7qod/XFwabISMwdQ71s0CE7pvGan1FvjN3qeawYe/WCw9pDZXgA==
+X-Received: by 2002:a62:5215:0:b0:49f:a996:b724 with SMTP id g21-20020a625215000000b0049fa996b724mr40917927pfb.3.1637077166648;
+        Tue, 16 Nov 2021 07:39:26 -0800 (PST)
+Received: from ubuntu-Virtual-Machine.corp.microsoft.com ([2001:4898:80e8:3:57e4:b776:c854:76dd])
+        by smtp.gmail.com with ESMTPSA id x64sm1981948pfd.151.2021.11.16.07.39.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 07:39:06 -0800 (PST)
-Date:   Tue, 16 Nov 2021 15:39:04 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "Li, Meng" <Meng.Li@windriver.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "thor.thayer@linux.intel.com" <thor.thayer@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mfd: altera-sysmgr: enable raw spinlock feature for
- preempt-rt kernel
-Message-ID: <YZPQmDJ1PI+TlG7C@google.com>
-References: <20211116105424.12685-1-Meng.Li@windriver.com>
- <CAK8P3a241g2vQrfiEf_YcQ0=t5fhN0R0CrzQE5DK7XQgAGxKYg@mail.gmail.com>
- <PH0PR11MB5191FEE6D75B558D629D517AF1999@PH0PR11MB5191.namprd11.prod.outlook.com>
+        Tue, 16 Nov 2021 07:39:25 -0800 (PST)
+From:   Tianyu Lan <ltykernel@gmail.com>
+To:     dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, jgross@suse.com, sstabellini@kernel.org,
+        boris.ostrovsky@oracle.com, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, joro@8bytes.org, will@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, hch@lst.de, m.szyprowski@samsung.com,
+        robin.murphy@arm.com, xen-devel@lists.xenproject.org,
+        michael.h.kelley@microsoft.com
+Cc:     Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        netdev@vger.kernel.org, vkuznets@redhat.com, brijesh.singh@amd.com,
+        konrad.wilk@oracle.com, parri.andrea@gmail.com,
+        thomas.lendacky@amd.com, dave.hansen@intel.com
+Subject: [PATCH 0/5] x86/Hyper-V: Add Hyper-V Isolation VM support(Second part)
+Date:   Tue, 16 Nov 2021 10:39:18 -0500
+Message-Id: <20211116153923.196763-1-ltykernel@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <PH0PR11MB5191FEE6D75B558D629D517AF1999@PH0PR11MB5191.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Nov 2021, Li, Meng wrote:
+From: Tianyu Lan <Tianyu.Lan@microsoft.com>
 
-> 
-> 
-> > -----Original Message-----
-> > From: Arnd Bergmann <arnd@arndb.de>
-> > Sent: Tuesday, November 16, 2021 8:02 PM
-> > To: Li, Meng <Meng.Li@windriver.com>
-> > Cc: thor.thayer@linux.intel.com; Lee Jones <lee.jones@linaro.org>; Arnd
-> > Bergmann <arnd@arndb.de>; Linux Kernel Mailing List <linux-
-> > kernel@vger.kernel.org>
-> > Subject: Re: [PATCH] mfd: altera-sysmgr: enable raw spinlock feature for
-> > preempt-rt kernel
-> > 
-> > [Please note: This e-mail is from an EXTERNAL e-mail address]
-> > 
-> > On Tue, Nov 16, 2021 at 11:54 AM Meng Li <Meng.Li@windriver.com> wrote:
-> > > diff --git a/drivers/mfd/altera-sysmgr.c b/drivers/mfd/altera-sysmgr.c
-> > > index 5d3715a28b28..27271cec5d53 100644
-> > > --- a/drivers/mfd/altera-sysmgr.c
-> > > +++ b/drivers/mfd/altera-sysmgr.c
-> > > @@ -83,6 +83,9 @@ static struct regmap_config altr_sysmgr_regmap_cfg =
-> > {
-> > >         .fast_io = true,
-> > >         .use_single_read = true,
-> > >         .use_single_write = true,
-> > > +#ifdef CONFIG_PREEMPT_RT
-> > > +       .use_raw_spinlock = true,
-> > > +#endif
-> > 
-> > I think you should remove the #ifdef here: if PREEMPT_RT is disabled, the
-> > flag has no effect because spinlock behaves the same way as raw_spinlock. If
-> > anything else starts requiring the use of raw spinlocks, then we probably
-> > want the flag to be set  here as well.
-> > 
-> 
-> Thanks for your suggestion, and I also agree with the spinlock action when PREEMPT_RT is disabled.
-> But please allow me to explain why I keep the "ifdef"
-> 1. although I send this patch to mainline upstream, I only want to fix this issue in RT kernel.
->     Moreover, the commit 67021f25d952("regmap: teach regmap to use raw spinlocks if requested in the config ") is also for RT kernel even if it doesn't use "ifdef CONFIG_PREEMPT_RT" 
->     My ideal is that if this patch is merged into mainline, Linux-rt maintainer will not spend extra effort to focus on this patch. After all, this fixing is more related with driver.
->     In addition, I found out there are other patches with "ifdef CONFIG_PREEMPT_RT" merged by mainline, so I also send this patch to mainline, not Linux-rt.
-> 
-> 2. I check regmap.c code that is related with use_raw_spinlock. If PREEMPT_RT is disabled and use_raw_spinlock is set as true, the else case will not be entered any longer.
->     In other words, in mainline standard kernel, if use_raw_spinlock is set as true, raw spinlock will be used forever, and the code in else case will become useless.
->     I feel it is a little unreasonable. So, I keep the "ifdef"
-> 	if ((bus && bus->fast_io) ||
-> 		    config->fast_io) {
-> 			if (config->use_raw_spinlock) {
-> 				raw_spin_lock_init(&map->raw_spinlock);
-> 				map->lock = regmap_lock_raw_spinlock;
-> 				map->unlock = regmap_unlock_raw_spinlock;
-> 				lockdep_set_class_and_name(&map->raw_spinlock,
-> 							   lock_key, lock_name);
-> 			} else {
-> 				spin_lock_init(&map->spinlock);
-> 				map->lock = regmap_lock_spinlock;
-> 				map->unlock = regmap_unlock_spinlock;
-> 				lockdep_set_class_and_name(&map->spinlock,
-> 							   lock_key, lock_name);
-> 			}
-> 		} else {
-> 			mutex_init(&map->mutex);
-> 			map->lock = regmap_lock_mutex;
-> 			map->unlock = regmap_unlock_mutex;
-> 			map->can_sleep = true;
-> 			lockdep_set_class_and_name(&map->mutex,
-> 						   lock_key, lock_name);
-> 		}
-> 
+Hyper-V provides two kinds of Isolation VMs. VBS(Virtualization-based
+security) and AMD SEV-SNP unenlightened Isolation VMs. This patchset
+is to add support for these Isolation VM support in Linux.
 
-I dislike #ifery as a general rule.  So with that in mind - if it's
-not required, I'd prefer that it's removed.
+The memory of these vms are encrypted and host can't access guest
+memory directly. Hyper-V provides new host visibility hvcall and
+the guest needs to call new hvcall to mark memory visible to host
+before sharing memory with host. For security, all network/storage
+stack memory should not be shared with host and so there is bounce
+buffer requests.
+
+Vmbus channel ring buffer already plays bounce buffer role because
+all data from/to host needs to copy from/to between the ring buffer
+and IO stack memory. So mark vmbus channel ring buffer visible.
+
+For SNP isolation VM, guest needs to access the shared memory via
+extra address space which is specified by Hyper-V CPUID HYPERV_CPUID_
+ISOLATION_CONFIG. The access physical address of the shared memory
+should be bounce buffer memory GPA plus with shared_gpa_boundary
+reported by CPUID.
+
+This patchset is to enable swiotlb bounce buffer for netvsc/storvsc
+in Isolation VM. Add Hyper-V dma ops and provide dma_alloc/free_
+noncontiguous and vmap/vunmap_noncontiguous callback. Allocate
+rx/tx ring via dma_alloc_noncontiguous() and map them into extra
+address space via dma_vmap_noncontiguous().
+
+Tianyu Lan (5):
+  x86/Swiotlb: Add Swiotlb bounce buffer remap function for HV IVM
+  dma-mapping: Add vmap/vunmap_noncontiguous() callback in dma ops
+  hyperv/IOMMU: Enable swiotlb bounce buffer for Isolation VM
+  net: netvsc: Add Isolation VM support for netvsc driver
+  scsi: storvsc: Add Isolation VM support for storvsc driver
+
+ arch/x86/mm/mem_encrypt.c         |   4 +-
+ arch/x86/xen/pci-swiotlb-xen.c    |   3 +-
+ drivers/hv/Kconfig                |   1 +
+ drivers/hv/vmbus_drv.c            |   6 +
+ drivers/iommu/hyperv-iommu.c      | 164 +++++++++++++++++++++++++
+ drivers/net/hyperv/hyperv_net.h   |   5 +
+ drivers/net/hyperv/netvsc.c       | 192 +++++++++++++++++++++++++++---
+ drivers/net/hyperv/rndis_filter.c |   2 +
+ drivers/scsi/storvsc_drv.c        |  37 +++---
+ include/linux/dma-map-ops.h       |   3 +
+ include/linux/hyperv.h            |  17 +++
+ include/linux/swiotlb.h           |   6 +
+ kernel/dma/mapping.c              |  18 ++-
+ kernel/dma/swiotlb.c              |  75 ++++++++++--
+ 14 files changed, 488 insertions(+), 45 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.25.1
+
