@@ -2,98 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710CD452779
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:23:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3224527C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:29:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239568AbhKPCZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 21:25:41 -0500
-Received: from sender3-pp-o92.zoho.com.cn ([124.251.121.251]:25330 "EHLO
-        sender3-pp-o92.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1377521AbhKPCXp (ORCPT
+        id S243321AbhKPCcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 21:32:05 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:36188 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S242639AbhKPC3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 21:23:45 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1637029227; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=WCo8yP/Mp+vvRMy95Mg4v3McsZSGa8270Ye5eoxKFXdIeWpIVcIEoqKNuCoj7nRiSx1BxiS/NXv1CeKgm+7baolAqZz8MsLr1Cp9G5mNSFQvZM1QvJc69ua1fZL7RVr2xtfraWziYXuFzXzSBFhjXFRq69NCVzxLyxGxs94eOOU=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1637029227; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
-        bh=LuIJUeTMH8qUDBjjFztaebboxfRi3dEBuIBUJxcrZaY=; 
-        b=PtbofILqWkQ/6H9sU+RIsfhoabeoue4z2hzfJDKBml2D7b3qyc2HBUn2iZll3TNvsHtMyyNRbQuq97IG78QPmyII7P7heATSRVFCFFxAtxGxP/1JoEWH2WlWGMpzOscPxB0eac4LCmXDP3FMjZaNiGZbZZ4HBqR20ynum1y3318=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1637029227;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=LuIJUeTMH8qUDBjjFztaebboxfRi3dEBuIBUJxcrZaY=;
-        b=buVt17RAg7UqP/iPhB03nDbqZTj2Rv7wmSghkDXknkWeq6tZXaRPP/pGJCnOciiD
-        FfB2CDJhC4uvHAS4GAZZ9K1Z+TG5/pDTmtEJBVdVmqgWe9lf3oOQIV+WUYD7J+t8A3y
-        2WL+PUhkHRYUKmrT65klnp+U3E+ps0x7zYN/eCpM=
-Received: from mail.baihui.com by mx.zoho.com.cn
-        with SMTP id 1637029225424575.2069224539918; Tue, 16 Nov 2021 10:20:25 +0800 (CST)
-Date:   Tue, 16 Nov 2021 10:20:25 +0800
-From:   Chengguang Xu <cgxu519@mykernel.net>
-Reply-To: cgxu519@mykernel.net
-To:     "Miklos Szeredi" <miklos@szeredi.hu>
-Cc:     "Jan Kara" <jack@suse.cz>, "Amir Goldstein" <amir73il@gmail.com>,
-        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
-        "overlayfs" <linux-unionfs@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>
-Message-ID: <17d268ba3ce.1199800543649.1713755891767595962@mykernel.net>
-In-Reply-To: <CAJfpegt4jZpSCXGFk2ieqUXVm3m=ng7QtSzZp2bXVs07bfrbXg@mail.gmail.com>
-References: <20210923130814.140814-1-cgxu519@mykernel.net> <20210923130814.140814-7-cgxu519@mykernel.net>
- <CAJfpeguqj2vst4Zj5EovSktJkXiDSCSWY=X12X0Yrz4M8gPRmQ@mail.gmail.com>
- <17c5aba1fef.c5c03d5825886.6577730832510234905@mykernel.net>
- <CAJfpegtr1NkOiY9YWd1meU1yiD-LFX-aB55UVJs94FrX0VNEJQ@mail.gmail.com> <17c5adfe5ea.12f1be94625921.4478415437452327206@mykernel.net> <CAJfpegt4jZpSCXGFk2ieqUXVm3m=ng7QtSzZp2bXVs07bfrbXg@mail.gmail.com>
-Subject: Re: [RFC PATCH v5 06/10] ovl: implement overlayfs' ->write_inode
- operation
+        Mon, 15 Nov 2021 21:29:35 -0500
+X-UUID: baf703149f4441858234c0962757ad8f-20211116
+X-UUID: baf703149f4441858234c0962757ad8f-20211116
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <rocco.yue@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 380987042; Tue, 16 Nov 2021 10:26:35 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 16 Nov 2021 10:26:34 +0800
+Received: from mbjsdccf07.mediatek.inc (10.15.20.246) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 16 Nov 2021 10:26:33 +0800
+From:   Rocco Yue <rocco.yue@mediatek.com>
+To:     <dsahern@gmail.com>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <Rocco.Yue@gmail.com>,
+        <chao.song@mediatek.com>, <zhuoliang.zhang@mediatek.com>,
+        Rocco Yue <rocco.yue@mediatek.com>
+Subject: Re: [PATCH net-next] ipv6: don't generate link-local addr in random or privacy mode
+Date:   Tue, 16 Nov 2021 10:21:45 +0800
+Message-ID: <20211116022145.31322-1-rocco.yue@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <de051ecb-0efe-27e2-217c-60a502f4415f@gmail.com>
+References: <de051ecb-0efe-27e2-217c-60a502f4415f@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Importance: Medium
-User-Agent: ZohoCN Mail
-X-Mailer: ZohoCN Mail
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E5=9B=9B, 2021-10-07 21:34:19 Miklos Sze=
-redi <miklos@szeredi.hu> =E6=92=B0=E5=86=99 ----
- > On Thu, 7 Oct 2021 at 15:10, Chengguang Xu <cgxu519@mykernel.net> wrote:
- > >  > However that wasn't what I was asking about.  AFAICS ->write_inode(=
-)
- > >  > won't start write back for dirty pages.   Maybe I'm missing somethi=
-ng,
- > >  > but there it looks as if nothing will actually trigger writeback fo=
-r
- > >  > dirty pages in upper inode.
- > >  >
- > >
- > > Actually, page writeback on upper inode will be triggered by overlayfs=
- ->writepages and
- > > overlayfs' ->writepages will be called by vfs writeback function (i.e =
-writeback_sb_inodes).
- >=20
- > Right.
- >=20
- > But wouldn't it be simpler to do this from ->write_inode()?
- >=20
- > I.e. call write_inode_now() as suggested by Jan.
- >=20
- > Also could just call mark_inode_dirty() on the overlay inode
- > regardless of the dirty flags on the upper inode since it shouldn't
- > matter and results in simpler logic.
- >=20
+> On Sun, 2021-11-14 at 00:34 +0800, David Ahern wrote:
+>> On 11/13/21 1:46 AM, Rocco Yue wrote:
+>> 
+>> Gentle ping on this patch. :-)
+>> 
+> 
+> you sent the patch in the merge window; I believe it has been dropped
+> from patchworks.
+>
 
-Hi Miklos=EF=BC=8C
+Hi David,
 
-Sorry for delayed response for this, I've been busy with another project.
+Thanks for your reply.
 
-I agree with your suggesion above and further more how about just mark over=
-lay inode dirty
-when it has upper inode? This approach will make marking dirtiness simple e=
-nough.
+Due to I can see this patch from the link below, I'm not sure why this
+happened, could you kindly tell me what the merge window is, so I can
+avoid such problem next time.
+  https://lore.kernel.org/netdev/20211113084636.11685-1-rocco.yue@mediatek.com/t/
+  https://lore.kernel.org/lkml/20211113084636.11685-1-rocco.yue@mediatek.com/T/
+
+> Also, you did not add v2 (or whatever version this is) with a summary
+> of
+> changes between all versions, and you did not cc all the people who
+> responded to previous versions.
+> 
+
+ok, I will resend a patch that meets the above requirements.
 
 Thanks,
-Chengguang
+
+Rocco
+
