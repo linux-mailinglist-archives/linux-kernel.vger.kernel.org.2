@@ -2,107 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 477CC452AED
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 07:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E121C452B0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 07:37:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbhKPGbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 01:31:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231978AbhKPG3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 01:29:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AA8A614C8;
-        Tue, 16 Nov 2021 06:26:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637044002;
-        bh=AiP1xjR6qcKw8cmJ80lJrFN5bNbs0D2VyefHMyYb3z0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rAdWQ1YQxccyMONofsDbmG5JRlehNbsB99jOPJzaVFcdTRcA4ws39LiNWk3dB7uWb
-         uNAT5/M4GeN3kEnYpwksavGrmR+POUUZtsZDKXx42L9m0V4gGSyQ+y+ecJSg6h7zao
-         wwhvs9UzhWYf/FBFU0d7JfWEdkj/s1ZlCxm2+EV8=
-Date:   Tue, 16 Nov 2021 07:26:28 +0100
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     "Winiarska, Iwona" <iwona.winiarska@intel.com>
-Cc:     "corbet@lwn.net" <corbet@lwn.net>,
-        "jae.hyun.yoo@linux.intel.com" <jae.hyun.yoo@linux.intel.com>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "d.mueller@elsoft.ch" <d.mueller@elsoft.ch>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "olof@lixom.net" <olof@lixom.net>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "zweiss@equinix.com" <zweiss@equinix.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "bp@alien8.de" <bp@alien8.de>, "joel@jms.id.au" <joel@jms.id.au>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>
-Subject: Re: [PATCH v3 06/13] peci: Add device detection
-Message-ID: <YZNPFGPXfCLfJMq3@kroah.com>
-References: <20211115182552.3830849-1-iwona.winiarska@intel.com>
- <20211115182552.3830849-7-iwona.winiarska@intel.com>
- <YZKr1Rqfx6Cmw+Ok@kroah.com>
- <368c990c30c5bacde15ac4bce5db8389aea3ec9c.camel@intel.com>
+        id S234019AbhKPGjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 01:39:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233868AbhKPGh1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 01:37:27 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECFCC0432CC;
+        Mon, 15 Nov 2021 22:27:32 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id x5so6551577pfr.0;
+        Mon, 15 Nov 2021 22:27:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xUihz6cPZv7rYs39OZ9cIRP3xprrR050mWdI6KmmNmo=;
+        b=F4daJEzclFjzRrAWljO2lDAW7Oumn90n0WgJTGEkPieHfnPB5C7AxbIgoaPMI5KaJK
+         Iwypr9DXqwBoIEAyV2u9yHDl38Ly/cL7y2FPaIdXFt7DFLsoqt7OFRPD3hT12J3iWna+
+         l8XNAqddJbiR4bMSjTCP0A1BqZAfrQpPn2oxeKt7PpTLj5Hcj5b4wzRxbH3VN0ORuAJC
+         WUdvVceEUzg8hBlIiUedmFmerIo8YaV36mnPGtkwly0FjqKnaD9kSVwgztQcq8VeNqBQ
+         9BWuTjc7HrPMgwg7S7+xtps4e3AjqJCEPobL8NjEjqMAbVucolELI38lXxHZKmCTbufF
+         1E8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xUihz6cPZv7rYs39OZ9cIRP3xprrR050mWdI6KmmNmo=;
+        b=ymIcOAmKLvgdE/ch7RWii/LuPFT3GAYygb8+yMNXrijuEuTNRYOEYcKovbVE91M/Tc
+         bClzf0vlxy4/cTjUTyHqsZtRo+h/Ny/BHcOMXIz0drp4p141NtgKcENsjKvi9J/bkJWj
+         cfq1QsAaGYdpVAWV3hinnwXo+On5wCOxMnF+ZveGxizvQpQQgD3TfF12Q8obQcFd4r5x
+         sFB1EmoFlbsgRneNFicu06DGk0ivD7hPyAbGqHUPayQRoSTzynV7KZY09iXMq6IYIbAO
+         GGGiaGRlcPlr/S8vQDOsd8RwgxAByIEcF2SCze5pHVb2WjrE1Cu6Gcn4Qi4+McuRjPoc
+         kZRA==
+X-Gm-Message-State: AOAM531Rhk+6kOGovWngvgSSi3IOSD0hbmWuomU0s8TuRacSo7t9u4oV
+        UBWyM7siHcdWd4c1mvQYbQoVShn2sZQ=
+X-Google-Smtp-Source: ABdhPJxZAnlSYRfcdPc+UxhQEFMyuCsfOBYWdrq6so38OF8P/dkezjSelnqcV6b/46C/VfjSkF7Ebw==
+X-Received: by 2002:a63:6a43:: with SMTP id f64mr3199613pgc.393.1637044052172;
+        Mon, 15 Nov 2021 22:27:32 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id e15sm17225884pfv.131.2021.11.15.22.27.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 22:27:31 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: ye.guojin@zte.com.cn
+To:     tony@atomide.com
+Cc:     linux@armlinux.org.uk, linux-arm-kernel@lists.infradead.org,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ye Guojin <ye.guojin@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] ARM: OMAP2+: adjust the location of put_device() call in omapdss_init_of
+Date:   Tue, 16 Nov 2021 06:27:26 +0000
+Message-Id: <20211116062726.154689-1-ye.guojin@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <368c990c30c5bacde15ac4bce5db8389aea3ec9c.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 10:35:23PM +0000, Winiarska, Iwona wrote:
-> On Mon, 2021-11-15 at 19:49 +0100, Greg Kroah-Hartman wrote:
-> > On Mon, Nov 15, 2021 at 07:25:45PM +0100, Iwona Winiarska wrote:
-> > > +void peci_device_destroy(struct peci_device *device)
-> > > +{
-> > > +       bool killed;
-> > > +
-> > > +       device_lock(&device->dev);
-> > > +       killed = kill_device(&device->dev);
-> > 
-> > Eeek, why call this?
-> > 
-> > > +       device_unlock(&device->dev);
-> > > +
-> > > +       if (!killed)
-> > > +               return;
-> > 
-> > What happened if something changed after you unlocked it?
-> 
-> We either killed it, or the other caller killed it.
-> 
-> > 
-> > Why is kill_device() required at all?  That's a very rare function to
-> > call, and one that only one "bus" calls today because it is very
-> > special (i.e. crazy and broken...)
-> 
-> It's used to avoid double-delete in case of races between peci_controller
-> unregister and "manually" removing the device using sysfs (pointed out by Dan in
-> v2). We're calling peci_device_destroy() in both callsites.
-> Other way to solve it would be to just have a peci-specific lock, but
-> kill_device seemed to be well suited for the problem at hand.
-> Do you suggest to remove it and just go with the lock?
+From: Ye Guojin <ye.guojin@zte.com.cn>
 
-Yes please, remove it and use the lock.
+This was found by coccicheck:
+./arch/arm/mach-omap2/display.c, 272, 1-7, ERROR missing put_device;
+call of_find_device_by_node on line 258, but without a corresponding
+object release within this function.
 
-Also, why are you required to have a sysfs file that can remove the
-device?  Who wants that?
+Move the put_device() call before the if judgment.
 
-thanks,
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
+---
+ arch/arm/mach-omap2/display.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-greg k-h
+diff --git a/arch/arm/mach-omap2/display.c b/arch/arm/mach-omap2/display.c
+index 6daaa645ae5d..21413a9b7b6c 100644
+--- a/arch/arm/mach-omap2/display.c
++++ b/arch/arm/mach-omap2/display.c
+@@ -263,9 +263,9 @@ static int __init omapdss_init_of(void)
+ 	}
+ 
+ 	r = of_platform_populate(node, NULL, NULL, &pdev->dev);
++	put_device(&pdev->dev);
+ 	if (r) {
+ 		pr_err("Unable to populate DSS submodule devices\n");
+-		put_device(&pdev->dev);
+ 		return r;
+ 	}
+ 
+-- 
+2.25.1
+
