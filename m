@@ -2,205 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5C745389B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 18:34:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58723453871
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 18:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238921AbhKPRhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 12:37:47 -0500
-Received: from mga04.intel.com ([192.55.52.120]:9713 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233537AbhKPRhq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 12:37:46 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="232468379"
-X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
-   d="scan'208";a="232468379"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 09:19:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
-   d="scan'208";a="454322572"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by orsmga003.jf.intel.com with ESMTP; 16 Nov 2021 09:19:54 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 16 Nov 2021 09:19:53 -0800
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 16 Nov 2021 09:19:53 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Tue, 16 Nov 2021 09:19:53 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.105)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+        id S238686AbhKPRZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 12:25:02 -0500
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:61191 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235906AbhKPRZB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 12:25:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1637083324; x=1668619324;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=3urSEVEYlMPzHLoHIKUm64Js447AfDkp9eo4nrLiwKM=;
+  b=l3SK8KT8QzZ3cVt6IitplkCWlDL3Ben5YV3b6MF/o4XT7QPiEbFeotFp
+   VI/YFGOnX2d5tQMvbDMY2R4fDFGWhn9E2WTYJHyMZQ8bSR+/Oh2G8hrPs
+   mQFr7ajVcKKEvidoLC8Bml+mCJVCGqJIIjDkwjlZf+XcidA182Dzsvo8I
+   8=;
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 16 Nov 2021 09:22:04 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 09:22:03 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Tue, 16 Nov 2021 09:19:53 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d0y7G7Y6Nig1C4smkBP7ZLUa8Hh9+4pe6NulAOX9GVL49B4+xCRiT9tp9lKSUlsSdEHh/5ZgL+oB0P5P5zNUE+mryPPXRryy+Ekqm45nzx4CqPVjwaGzHWdgTuFHqr4ETa88BgpjbnkLB2K/29o3NtfEJEGWINl0Bco9SkYBjSKlk4gMIiuR4aCgRRiubqMSjxvym+X2If5AAZA7gDSgscpiTRr53zFloLft2U3JwuR8Ntceq92ojYgf9mylPirgcWi3GAfobbeiSRpSCbxuj+zOztzIurN/lqqORkCgxhzxyrOGDAmdnKT+3hIfc3EwqTAWW1GdxE2vk8ztWHffhw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=H4+UXQUg7j6boDKH8O5UH6hs3R1YMhMEO8SkirVQTRQ=;
- b=LkUabjJg9dcqPAGsTGgp8/GfHgxzanUL7OtFyjtCLOAWF+ndY45Z/xwgcaukEtY6Wqx1wjg2NgRXegmgcwmYfgKfyS3OcwP+mIktKs9UC3Iwr8pzEYOL3YzRBrygjZhoAsR/n+rkvGh34B1sI/4WDda1g8kc/erCey81QjFYOM3NNYLdi+m0m68BZdp4roQDXyo5iGOBjqD4evyFL77wQriMTRFvV0jRHOb1/yln2S/zgF4RgXAw+iOw2ugyvJuLMvpZQ/CAkQ8NSzXlaniSSinfmAgxGh//6q2MEPSevpva1/OlahqVHIqwbEVx0QlLle2WmWg9ddjZ74IieIqtHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H4+UXQUg7j6boDKH8O5UH6hs3R1YMhMEO8SkirVQTRQ=;
- b=TEiatnZyF77wLzPYktvIR5+leszUcrUTdJPcN8AGdUPn2YTocewLKO9dqh/YGrsOExw1z/nM3rDJqpweaz5THnlESXt+Ku320lJ8fsQJU1SHvN8whgPDcMKh7cTRHU1hygHjnc6BmY2bKJMQ73XuyiG2FdQjSpDAPAklkdrgbH0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB5326.namprd11.prod.outlook.com (2603:10b6:5:391::8) by
- DM6PR11MB4706.namprd11.prod.outlook.com (2603:10b6:5:2a5::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4690.26; Tue, 16 Nov 2021 17:19:52 +0000
-Received: from DM4PR11MB5326.namprd11.prod.outlook.com
- ([fe80::1c89:2776:b68b:6ce5]) by DM4PR11MB5326.namprd11.prod.outlook.com
- ([fe80::1c89:2776:b68b:6ce5%5]) with mapi id 15.20.4690.027; Tue, 16 Nov 2021
- 17:19:52 +0000
-Message-ID: <ce7f36b6-fa4f-f6a4-a055-28893069cfa0@intel.com>
-Date:   Tue, 16 Nov 2021 18:19:46 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.3.0
-Subject: Re: 32bit x86 build broken (was: Re: [GIT PULL] Networking for
- 5.16-rc1)
-Content-Language: en-US
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Daniel Lezcano" <daniel.lezcano@linaro.org>
-CC:     David Miller <davem@davemloft.net>,
-        Netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>,
-        <linux-can@vger.kernel.org>
-References: <20211111163301.1930617-1-kuba@kernel.org>
- <163667214755.13198.7575893429746378949.pr-tracker-bot@kernel.org>
- <20211111174654.3d1f83e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAHk-=wiNEdrLirAbHwJvmp_s2Kjjd5eV680hTZnbBT2gXK4QbQ@mail.gmail.com>
- <20211112063355.16cb9d3b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <9999b559abecea2eeb72b0b6973a31fcd39087c1.camel@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
- 173, 80-298 Gdansk
-In-Reply-To: <9999b559abecea2eeb72b0b6973a31fcd39087c1.camel@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AM6P194CA0106.EURP194.PROD.OUTLOOK.COM
- (2603:10a6:209:8f::47) To DM4PR11MB5326.namprd11.prod.outlook.com
- (2603:10b6:5:391::8)
+ 15.2.922.19; Tue, 16 Nov 2021 09:22:03 -0800
+Received: from khsieh-linux1.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Tue, 16 Nov 2021 09:22:02 -0800
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+To:     <robdclark@gmail.com>, <sean@poorly.run>, <swboyd@chromium.org>,
+        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@linux.ie>,
+        <agross@kernel.org>, <dmitry.baryshkov@linaro.org>,
+        <bjorn.andersson@linaro.org>
+CC:     <quic_abhinavk@quicinc.com>, <aravindh@codeaurora.org>,
+        <quic_khsieh@quicinc.com>, <freedreno@lists.freedesktop.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4] drm/msm/dp:  employ bridge mechanism for display enable and disable
+Date:   Tue, 16 Nov 2021 09:21:54 -0800
+Message-ID: <1637083314-29973-1-git-send-email-quic_khsieh@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Received: from [192.168.100.217] (213.134.175.214) by AM6P194CA0106.EURP194.PROD.OUTLOOK.COM (2603:10a6:209:8f::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend Transport; Tue, 16 Nov 2021 17:19:50 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d19ce72c-2b8f-454e-fb7f-08d9a9254d0c
-X-MS-TrafficTypeDiagnostic: DM6PR11MB4706:
-X-Microsoft-Antispam-PRVS: <DM6PR11MB4706979B477FDFE095BAC2ECCB999@DM6PR11MB4706.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EWi75tC5zG8hBXgvibZ9RSXxglGKIIi7oSqCo3ez+Y8yup8x2j+OFJ24JbVsolMwt5+/o5HWJYGhrTaJuYL5Yoo6pO33S2FtYN328rgeMVN8QPqfAGGwjlTHJtcE98rkP2P8/wLXkEn8iCJfIQxMXopdt8XfrYX6Hdfysr5EWfSQOA8P3qcgoJdunlo/43AJlnhcobvSp0G4yxGT7Bc7gCqpnV6DaAAzm2Uz0YoJqiAfd/lU/1S648WTUdw9DVvpG6aqyhLLBMK2z0fHxZuHNO18ThcunPzohCr6CPgDf2rZzKIKUGYIA5T+L11dWApnjrU+JhSsU/VbsW4D19nKaKSvOJ/QO0gi+Uk+QJVXBAWK7vkuUZemFCJcdpxzut1FDwkUdapvZAjqqyMY7P9GFxMbWftHy9yEYQO7zSkIIJQPcxlrPaom5/BnhTCRgdt6+BtQ9dMFbC+UcxeG82Kgt1L3nUKaLfqnHgBPb/EAz5MZz6T7CNLgLsM8XM9+Nwob8ID2a25lneouqxsdKU9jNJ/D5HxYhFZJkgf7Eg2e27zfdosrTaHTlxlekswCaLaDimZGbMl+Oe66Kcb/0w3iKYfYlZwHmWXfIFiYf/AGLjau7tvTMr6QUkk6z3F0ZucLosnWC0lmwn6B3Vgnm/SnTBgASzusufiHlgZcYNnLLjrcI/WqPDubZXZRiGXgy/EHNHg8WiwG5DLxEY8rsViaGWlJLvm7CsyC23UjFqKF6pM4Y6i/5sXjXiG2wcIZSWa2ZigzO88qVrTgvx50yk+x+Ed1GjPLYfMxALCMbCjcYD366gnsesxAgI4TvBUfrSUg
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5326.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(186003)(316002)(4326008)(5660300002)(7416002)(53546011)(16576012)(8676002)(36756003)(38100700002)(4001150100001)(54906003)(110136005)(31686004)(8936002)(6666004)(956004)(2616005)(86362001)(26005)(66946007)(2906002)(83380400001)(31696002)(966005)(36916002)(508600001)(66556008)(66476007)(6486002)(82960400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bCswNHM4aUM5MEhsWHByZVUzbTJMMHhNWUlVMTNMbElzNHpTZ1dSNGRFTDBL?=
- =?utf-8?B?L0FZT1BSSWJVc21Ba29HOVZjalRTdlFQREpVZ2YzWXY1N0xZWFVWcmhrVXI4?=
- =?utf-8?B?dlkxUktHT0tjdTU2bXV1bkppdEhBb0FTUnJ3eFg0WHgyWGdJU0ZFdHI0Y3Mz?=
- =?utf-8?B?NTlLOTFLeURqNU8rNnZxcVF2NVhudFJUVmxhb2RJb1hwSnd6OG1KWU41RERi?=
- =?utf-8?B?c2RYM1RFNmhKYXlqcUMxRXg0NDAvRUlRbHJHUWJmdlc3Q0pCZENuTkxJOUNu?=
- =?utf-8?B?WVRLRHVBTmNrZmJFY1VLZGw2N1I0RlpVT0tSRVVma3QzNkM3Y08vMVY1L3Vx?=
- =?utf-8?B?VHBkb3orTTV0OWl5YStmV0lWMkhXNGlHeFlRLzI4Z0MxZVJWUkwwUmNzR1Av?=
- =?utf-8?B?QmZ6YUVCZGJ6THVTUHdyYUY0RXl2LytjMUJPcVJPSG4xZzFja20rUVYvbGV1?=
- =?utf-8?B?dzFlbENLMHBlcnVhMUNOeEhMZHh2ZVFVSHNRcW9VTzYzTXVNMHEvQnQ5YUdy?=
- =?utf-8?B?dVhzUkZ4b1FieHRiVTJIcUZoVENTc1VsS3RWd0c1T094dmhyZHJLSml4MDE5?=
- =?utf-8?B?MzU5c1Nib2V4Rkt0VmFJaUg1YjdUVUVUOXZNd1VMVVlIbGNNNzhpKzI1cmJP?=
- =?utf-8?B?bjlQeDZQV1lnZjh1RWt3OVBOODhWL3J4Y0VkUUFrSDU4cDdTL2o0QXhQRE9k?=
- =?utf-8?B?K2N4SU1WNkRGbnl5bkxEb2k3L08zQXdZVzBhQzNuQXR3TDNZTUt5UklZSXJM?=
- =?utf-8?B?Z2tLdE9QWXlTNFNSakozL0JLSStlcWh6cUtQajJDeTFFcjBnSXFBb1ZBU2sr?=
- =?utf-8?B?SDAzMkdzZUxZclFSUEI5eUdyVDVrSG0wU05OeUFvR0sva2tCZk45V1hKTFV1?=
- =?utf-8?B?aXdXcWt4VVNJSW1hUlh3cXV0QnlCWlZBZFdSRUYxMm1tRnNLMDluWDVqeEN0?=
- =?utf-8?B?YndqbG94NldLUU9UMDJ3dTBIYUUvVldWMmEvaWR0MC9MUXVFM2E4MTNuWE1h?=
- =?utf-8?B?OEIvTXhuZG5uOFI4TTV4TDkwb3BlOWdncVhVVXNmSENTODBPNGpYdm9vQ1d1?=
- =?utf-8?B?ME4reWk3eVc3b2lzc01laGtkeFVrWHhCTzN2ZXhzZjlGUHNaUURUMjBMSkJJ?=
- =?utf-8?B?cUxxOHRpUVJnSmhUYVBuMkloR1pPSmlRYWtFend6K1puTDNQV2xoMHFiT1NO?=
- =?utf-8?B?R202d3lXcWRHU2hKeFRZci9FY1Q2V2YxaEZYRXV3ellzbFA4R1A2cHlVZytR?=
- =?utf-8?B?bmFLc2tXV0x6Q0JlZzJOL2o3VFBIS09hUXdXdGFHVDNuR2wxQ000MjBDY3ll?=
- =?utf-8?B?Q2l4dHJrWmh6UjYwaUJsL2VWb2I0MFBKdUtEVGRhSzVIdTZTa1pXMzJVeUh2?=
- =?utf-8?B?akhPUHhCKzlGUDdSRndPVVN0QVAzTUVDNUFsMmZFdW5JWGJraGtEVG92ZXBs?=
- =?utf-8?B?ZUhHYXZIZW1UWFZEN2R2b21nYVlvTzgyVTFrN20xQ0hCWS9zWjVFYlR4cTQ0?=
- =?utf-8?B?ZTJKeElYU3ZkSi9EWGRLNSt4bmdWRkRFeW55ZHhyOUgvSHJwWjNRVS9Fa3Rz?=
- =?utf-8?B?dmplNjBrOE5SL2FHdFJsM2RvZHFicDZRUWd6YStmdXFGbUttd2JlMEpPa2hT?=
- =?utf-8?B?UHB5Vk1aZmQ1RHlGRHRmaWVxK2ZaSm1XY1A5SDEyc1ZoMnkyUFFKMHlCZXRD?=
- =?utf-8?B?Y09rbVlnRXVKMGU2ZXE4L0pIQmhBcnFHVUUrQlZJRzRXMHo1VXJkQnBFcnNH?=
- =?utf-8?B?MEdYTHplN2pUOVZQVE5jN0dER2UxTFlENTZyUzdibkZMWGFCcHdyNm9hNENR?=
- =?utf-8?B?RWk3VlB2SzBFWkwvMmNKZkd0aWVmazgrNXlLUnU3MTFnWDh0WXVFTkFiSEhk?=
- =?utf-8?B?bjJvNGNkOUxwNU9RU0R6ZnpGL1ExVmFpVlJrbWlDcU1XK24rdGxTMDFTTFBW?=
- =?utf-8?B?MGFsVTNlNU9SNmRZRVVZSEJMS0JpNzFzNU1nZXpIMDJKYkhFcXJDcW5YY05m?=
- =?utf-8?B?VE1tcWp5amV2R2lFUDJHUU14eURWa0FYbkNLUTJielFYSUxhdXYyMitQOTR2?=
- =?utf-8?B?bW1QU0wweVc1WHJUaTFrYUp6SGs5VUFQK2ZlbGdUTkpvZVpLOFFkVmtBcm4y?=
- =?utf-8?B?THdKQUo0NnhoSU5HbTA0RlZjOVZPVWsyWk40Y3UwRVhubDBpR3FKSlBJNlUr?=
- =?utf-8?B?cGdVaWdOTm83NWppVGtESnh2OXl5U29uM25ucjRaRmR3Qy9ndEZpUFRaMDJO?=
- =?utf-8?Q?SewpFPfwlnyYy6XP0/yxbNGneXrX5zjR6bBXCuRbc8=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d19ce72c-2b8f-454e-fb7f-08d9a9254d0c
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5326.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 17:19:52.2839
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: obQdnXBFobnqYw+7ujxyhBkIEk0uWVVsEqeOlJeU7Bgbkw5Bq/MDoFU81yaS/G49DnLmri2AvoC9xw/8Ck7lz+bQLzac5/8/+9jxk/eHKTs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4706
-X-OriginatorOrg: intel.com
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/2021 4:04 PM, Srinivas Pandruvada wrote:
-> On Fri, 2021-11-12 at 06:33 -0800, Jakub Kicinski wrote:
->> On Thu, 11 Nov 2021 18:48:43 -0800 Linus Torvalds wrote:
->>> On Thu, Nov 11, 2021 at 5:46 PM Jakub Kicinski <kuba@kernel.org>
->>> wrote:
->>>> Rafael, Srinivas, we're getting 32 bit build failures after pulling
->>>> back
->>>> from Linus today.
->>>>
->>>> make[1]: *** [/home/nipa/net/Makefile:1850: drivers] Error 2
->>>> make: *** [Makefile:219: __sub-make] Error 2
->>>> ../drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c:
->>>> In function ‘send_mbox_cmd’:
->>>> ../drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c:7
->>>> 9:37: error: implicit declaration of function ‘readq’; did you mean
->>>> ‘readl’? [-Werror=implicit-function-declaration]
->>>>     79 |                         *cmd_resp = readq((void __iomem *)
->>>> (proc_priv->mmio_base + MBOX_OFFSET_DATA));
->>>>        |                                     ^~~~~
->>>>        |                                     readl
->>> Gaah.
->>>
->>> The trivial fix is *probably* just a simple
->> To be sure - are you planning to wait for the fix to come via
->> the usual path?  We can hold applying new patches to net on the
->> off chance that you'd apply the fix directly and we can fast
->> forward again :)
->>
->> Not that 32bit x86 matters all that much in practice, it's just
->> for preventing new errors (64b divs, mostly) from sneaking in.
->>
->> I'm guessing Rafeal may be AFK for the independence day weekend.
-> He was off, but not sure if he is back. I requested Daniel to send PULL
-> request for
-> https://lore.kernel.org/lkml/a22a1eeb-c7a0-74c1-46e2-0a7bada73520@infradead.org/T/
->
->
->
-Sorry for the delay, I'd been offline for the last few days.
+Currently the msm_dp_*** functions implement the same sequence which would
+happen when drm_bridge is used. hence get rid of this intermediate layer
+and align with the drm_bridge usage to avoid customized implementation.
 
-I'm back now and I will be picking up the Arnd's patch shortly even 
-though the simple fix is already there.
+Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
 
+Changes in v2:
+-- revise commit text
+-- rename dp_bridge to msm_dp_bridge
+-- delete empty functions
+
+Changes in v3:
+-- replace kzalloc() with devm_kzalloc()
+-- replace __dp_display_enable() with dp_display_enable()
+-- replace __dp_display_disable() with dp_display_disable()
+
+Changes in v4:
+-- msm_dp_bridge_init() called from msm_dp_modeset_init() same as dsi
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 21 -------
+ drivers/gpu/drm/msm/dp/dp_display.c         | 16 +++++-
+ drivers/gpu/drm/msm/dp/dp_display.h         |  1 +
+ drivers/gpu/drm/msm/dp/dp_drm.c             | 86 +++++++++++++++++++++++++++++
+ drivers/gpu/drm/msm/msm_drv.h               | 18 ++++--
+ 5 files changed, 115 insertions(+), 27 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+index 31050aa..c4e08c4 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+@@ -1003,9 +1003,6 @@ static void dpu_encoder_virt_mode_set(struct drm_encoder *drm_enc,
+ 
+ 	trace_dpu_enc_mode_set(DRMID(drm_enc));
+ 
+-	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS)
+-		msm_dp_display_mode_set(dpu_enc->dp, drm_enc, mode, adj_mode);
+-
+ 	list_for_each_entry(conn_iter, connector_list, head)
+ 		if (conn_iter->encoder == drm_enc)
+ 			conn = conn_iter;
+@@ -1181,14 +1178,6 @@ static void dpu_encoder_virt_enable(struct drm_encoder *drm_enc)
+ 
+ 	_dpu_encoder_virt_enable_helper(drm_enc);
+ 
+-	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS) {
+-		ret = msm_dp_display_enable(dpu_enc->dp, drm_enc);
+-		if (ret) {
+-			DPU_ERROR_ENC(dpu_enc, "dp display enable failed: %d\n",
+-				ret);
+-			goto out;
+-		}
+-	}
+ 	dpu_enc->enabled = true;
+ 
+ out:
+@@ -1214,11 +1203,6 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
+ 	/* wait for idle */
+ 	dpu_encoder_wait_for_event(drm_enc, MSM_ENC_TX_COMPLETE);
+ 
+-	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS) {
+-		if (msm_dp_display_pre_disable(dpu_enc->dp, drm_enc))
+-			DPU_ERROR_ENC(dpu_enc, "dp display push idle failed\n");
+-	}
+-
+ 	dpu_encoder_resource_control(drm_enc, DPU_ENC_RC_EVENT_PRE_STOP);
+ 
+ 	for (i = 0; i < dpu_enc->num_phys_encs; i++) {
+@@ -1243,11 +1227,6 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
+ 
+ 	DPU_DEBUG_ENC(dpu_enc, "encoder disabled\n");
+ 
+-	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS) {
+-		if (msm_dp_display_disable(dpu_enc->dp, drm_enc))
+-			DPU_ERROR_ENC(dpu_enc, "dp display disable failed\n");
+-	}
+-
+ 	mutex_unlock(&dpu_enc->enc_lock);
+ }
+ 
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index 2f113ff..89a8d43 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -1571,6 +1571,18 @@ int msm_dp_modeset_init(struct msm_dp *dp_display, struct drm_device *dev,
+ 	}
+ 
+ 	priv->connectors[priv->num_connectors++] = dp_display->connector;
++
++	dp_display->bridge = msm_dp_bridge_init(dp_display, dev, encoder);
++	if (IS_ERR(dp_display->bridge)) {
++		ret = PTR_ERR(dp_display->bridge);
++		DRM_DEV_ERROR(dev->dev,
++			"failed to create dp bridge: %d\n", ret);
++		dp_display->bridge = NULL;
++		return ret;
++	}
++
++	priv->bridges[priv->num_bridges++] = dp_display->bridge;
++
+ 	return 0;
+ }
+ 
+@@ -1674,8 +1686,8 @@ int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder)
+ }
+ 
+ void msm_dp_display_mode_set(struct msm_dp *dp, struct drm_encoder *encoder,
+-				struct drm_display_mode *mode,
+-				struct drm_display_mode *adjusted_mode)
++				const struct drm_display_mode *mode,
++				const struct drm_display_mode *adjusted_mode)
+ {
+ 	struct dp_display_private *dp_display;
+ 
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.h b/drivers/gpu/drm/msm/dp/dp_display.h
+index 76f45f9..2237e80 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.h
++++ b/drivers/gpu/drm/msm/dp/dp_display.h
+@@ -13,6 +13,7 @@
+ struct msm_dp {
+ 	struct drm_device *drm_dev;
+ 	struct device *codec_dev;
++	struct drm_bridge *bridge;
+ 	struct drm_connector *connector;
+ 	struct drm_encoder *encoder;
+ 	struct drm_panel *drm_panel;
+diff --git a/drivers/gpu/drm/msm/dp/dp_drm.c b/drivers/gpu/drm/msm/dp/dp_drm.c
+index f33e315..4c42d8a 100644
+--- a/drivers/gpu/drm/msm/dp/dp_drm.c
++++ b/drivers/gpu/drm/msm/dp/dp_drm.c
+@@ -5,12 +5,21 @@
+ 
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_atomic.h>
++#include <drm/drm_bridge.h>
+ #include <drm/drm_crtc.h>
+ 
+ #include "msm_drv.h"
+ #include "msm_kms.h"
+ #include "dp_drm.h"
+ 
++
++struct msm_dp_bridge {
++	struct drm_bridge bridge;
++	struct msm_dp *dp_display;
++};
++
++#define to_dp_display(x)     container_of((x), struct msm_dp_bridge, bridge)
++
+ struct dp_connector {
+ 	struct drm_connector base;
+ 	struct msm_dp *dp_display;
+@@ -162,3 +171,80 @@ struct drm_connector *dp_drm_connector_init(struct msm_dp *dp_display)
+ 
+ 	return connector;
+ }
++
++static int dp_bridge_attach(struct drm_bridge *drm_bridge,
++				enum drm_bridge_attach_flags flags)
++{
++	return 0;
++}
++
++static void dp_bridge_mode_set(struct drm_bridge *drm_bridge,
++				const struct drm_display_mode *mode,
++				const struct drm_display_mode *adjusted_mode)
++{
++	struct msm_dp_bridge *dp_bridge = to_dp_display(drm_bridge);
++	struct msm_dp *dp_display = dp_bridge->dp_display;
++
++	msm_dp_display_mode_set(dp_display, drm_bridge->encoder, mode, adjusted_mode);
++}
++
++static void dp_bridge_enable(struct drm_bridge *drm_bridge)
++{
++	struct msm_dp_bridge *dp_bridge = to_dp_display(drm_bridge);
++	struct msm_dp *dp_display = dp_bridge->dp_display;
++
++	msm_dp_display_enable(dp_display, drm_bridge->encoder);
++}
++
++static void dp_bridge_disable(struct drm_bridge *drm_bridge)
++{
++	struct msm_dp_bridge *dp_bridge = to_dp_display(drm_bridge);
++	struct msm_dp *dp_display = dp_bridge->dp_display;
++
++	msm_dp_display_pre_disable(dp_display, drm_bridge->encoder);
++}
++
++static void dp_bridge_post_disable(struct drm_bridge *drm_bridge)
++{
++	struct msm_dp_bridge *dp_bridge = to_dp_display(drm_bridge);
++	struct msm_dp *dp_display = dp_bridge->dp_display;
++
++	msm_dp_display_disable(dp_display, drm_bridge->encoder);
++}
++
++static const struct drm_bridge_funcs dp_bridge_ops = {
++	.attach       = dp_bridge_attach,
++	.mode_fixup   = NULL,
++	.pre_enable   = NULL,
++	.enable       = dp_bridge_enable,
++	.disable      = dp_bridge_disable,
++	.post_disable = dp_bridge_post_disable,
++	.mode_set     = dp_bridge_mode_set,
++};
++
++struct drm_bridge *msm_dp_bridge_init(struct msm_dp *dp_display, struct drm_device *dev,
++			struct drm_encoder *encoder)
++{
++	int rc;
++	struct msm_dp_bridge *dp_bridge;
++	struct drm_bridge *bridge;
++
++	dp_bridge = devm_kzalloc(dev->dev, sizeof(*dp_bridge), GFP_KERNEL);
++	if (!dp_bridge)
++		return ERR_PTR(-ENOMEM);
++
++	dp_bridge->dp_display = dp_display;
++
++	bridge = &dp_bridge->bridge;
++	bridge->funcs = &dp_bridge_ops;
++	bridge->encoder = encoder;
++
++	rc = drm_bridge_attach(encoder, bridge, NULL, DRM_BRIDGE_ATTACH_NO_CONNECTOR);
++	if (rc) {
++		DRM_ERROR("failed to attach bridge, rc=%d\n", rc);
++		kfree(dp_bridge);
++		return ERR_PTR(rc);
++	}
++
++	return bridge;
++}
+diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
+index 4bb797e..27c0dd7 100644
+--- a/drivers/gpu/drm/msm/msm_drv.h
++++ b/drivers/gpu/drm/msm/msm_drv.h
+@@ -388,8 +388,12 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder);
+ int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder);
+ int msm_dp_display_pre_disable(struct msm_dp *dp, struct drm_encoder *encoder);
+ void msm_dp_display_mode_set(struct msm_dp *dp, struct drm_encoder *encoder,
+-				struct drm_display_mode *mode,
+-				struct drm_display_mode *adjusted_mode);
++				const struct drm_display_mode *mode,
++				const struct drm_display_mode *adjusted_mode);
++
++struct drm_bridge *msm_dp_bridge_init(struct msm_dp *dp_display,
++					struct drm_device *dev,
++					struct drm_encoder *encoder);
+ void msm_dp_irq_postinstall(struct msm_dp *dp_display);
+ void msm_dp_snapshot(struct msm_disp_state *disp_state, struct msm_dp *dp_display);
+ 
+@@ -426,9 +430,15 @@ static inline int msm_dp_display_pre_disable(struct msm_dp *dp,
+ }
+ static inline void msm_dp_display_mode_set(struct msm_dp *dp,
+ 				struct drm_encoder *encoder,
+-				struct drm_display_mode *mode,
+-				struct drm_display_mode *adjusted_mode)
++				const struct drm_display_mode *mode,
++				const struct drm_display_mode *adjusted_mode)
++{
++}
++static inline int msm_dp_bridge_init(struct msm_dp *dp_display,
++				struct drm_device *dev,
++				struct drm_encoder *encoder)
+ {
++	return -EINVAL;
+ }
+ 
+ static inline void msm_dp_irq_postinstall(struct msm_dp *dp_display)
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
