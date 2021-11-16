@@ -2,81 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 370034534DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD976453541
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:07:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237770AbhKPPHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 10:07:06 -0500
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:11469 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237893AbhKPPFk (ORCPT
+        id S238226AbhKPPJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 10:09:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238049AbhKPPIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 10:05:40 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R651e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=yinan@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UwtpXN6_1637074936;
-Received: from 30.25.250.88(mailfrom:yinan@linux.alibaba.com fp:SMTPD_---0UwtpXN6_1637074936)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 16 Nov 2021 23:02:17 +0800
-Message-ID: <2ff387d4-e7e8-9407-802c-e1cfcb2ca511@linux.alibaba.com>
-Date:   Tue, 16 Nov 2021 23:02:16 +0800
+        Tue, 16 Nov 2021 10:08:18 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B45C4C079787
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:03:18 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id f18so54071492lfv.6
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:03:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=x8Pb1HDChQ0vfcfqFJfrIYfJGgmQhlUPanGxtam9Nxo=;
+        b=hkhpW8Qn2CwoAdqUYRxmConYIy1Qhpj3ZjtGflMaUH06gTJKfZGx5FyLfcbtLVv7Uj
+         1dfMlUWpT34C5P5OZwK7pseUPsnSE0a7178dFPQgLSoM6bHm4BD0pX2APIS4BZFNPfke
+         ReesSCjgm1N2/riiUpesljlmm/3Z+yMO1mlhIQ1qF9tHUHt6TiPq7/Z7/VfsTxoQmViD
+         /iauVULHVgyhfIsfZerw1dvvMjUbsr6V/nQTYe83bjGiOcbvQpujzirQ4ND62xrj+1hd
+         irdGSLG5Dh3uKBAq4yVJHIdD6e2TcBcnZ7e/7wqgOHiFT4nuBYehL4Al9xV0swHTVU7V
+         ykJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=x8Pb1HDChQ0vfcfqFJfrIYfJGgmQhlUPanGxtam9Nxo=;
+        b=uEMAwSa2bhitl3iGARCtzsyF7ND8FDX+B5T40gVM4cBQTqt2ULodgVL8lRGR1dfy6x
+         pJavN29wvHVlkj99Oe14S+eJPI9mmb18/U44zZ87m6YHTQje0j471rtERy9a1Ng1na+4
+         GP0lQhuJ0MX8q0aJieu2jDuUUM7rcKWm3lMKW5mZflx/2DYsq372sPqCfb9DCngSvXYJ
+         E2YLmrXfMUhYwdsrTY5cfRCIohUPyPJivgrDE6QP453FAc3P5Epnk1WuyTSKYX9QUKbn
+         p0hjeUMIuf8IwIghLjxkLtFPNoTMIXV6/IKPWP8BmYGzR8QTw+wp53OucJZmVnLDk0fM
+         o5PA==
+X-Gm-Message-State: AOAM532EtFkigZm86MQGib/uI+Y7dKz/HsN7atS2dzE58DVOGk/himgA
+        RE7hghg6hFmkhkWbhdUBJHU=
+X-Google-Smtp-Source: ABdhPJwzdKU03kzvBzu1kM7rBjmdOhyAr3Yjh/MCEDbeIh7ZWPwbUgj7rWgenPiag7fAneg8CY9ESQ==
+X-Received: by 2002:a05:6512:3ba6:: with SMTP id g38mr7264286lfv.330.1637074997023;
+        Tue, 16 Nov 2021 07:03:17 -0800 (PST)
+Received: from [192.168.1.11] ([94.103.224.112])
+        by smtp.gmail.com with ESMTPSA id b12sm1257799lfb.146.2021.11.16.07.03.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 07:03:16 -0800 (PST)
+Message-ID: <b2a92947-7bb1-849a-e82c-3a505a66989e@gmail.com>
+Date:   Tue, 16 Nov 2021 18:03:13 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Subject: Re: [PATCH v2 2/2] scripts: ftrace - move the nop-processing in
- ftrace_init to compile time
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     mark-pk.tsai@mediatek.com, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-References: <20210911135043.16014-1-yinan@linux.alibaba.com>
- <20211116024942.60644-1-yinan@linux.alibaba.com>
- <20211116024942.60644-3-yinan@linux.alibaba.com>
- <20211116081020.GW174703@worktop.programming.kicks-ass.net>
- <20211116080749.1ef6337f@gandalf.local.home>
-From:   Yinan Liu <yinan@linux.alibaba.com>
-In-Reply-To: <20211116080749.1ef6337f@gandalf.local.home>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] staging: r8188eu: remove unused defines in wifi.h
+Content-Language: en-US
+To:     Zameer Manji <zmanji@gmail.com>, gregkh@linuxfoundation.org
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Michael Straube <straube.linux@gmail.com>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20211116011451.896714-1-zmanji@gmail.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <20211116011451.896714-1-zmanji@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2021/11/16 下午9:07, Steven Rostedt 写道:
-> On Tue, 16 Nov 2021 09:10:20 +0100
-> Peter Zijlstra <peterz@infradead.org> wrote:
+On 11/16/21 04:14, Zameer Manji wrote:
+> None of these defines in wifi.h are used so they
+> can be safely removed.
 > 
->> On Tue, Nov 16, 2021 at 10:49:42AM +0800, Yinan Liu wrote:
->>> In some business scenarios, GCC versions are so old that
->>> optimizations in ftrace cannot be completed, such as
->>> -mrecord-mcount and -mnop-mcount. The recordmCount in the
->>> kernel is actually used. In this case, ftrace_init will
->>> consume a period of time, usually around 9~12ms. Do nop
->>> substitution in recordmcount.c to speed up ftrace_init.
->>
->> I really don't buy this.. if you can build a fresh kernel, you can
->> install a fresh gcc too -- and if you care about performance that's a
->> very good idea anyway.
->>
-> 
-> I'm not sure this is true for all archs, is it? That is, is the nop
-> substitution available in all archs that support mcount updates. Some
-> (most) archs are special, because they have to deal with link registers and
-> such.
-> 
-> And because of that, I'm not sure the patch works for all those archs.
-> 
-> -- Steve
-> 
+> Signed-off-by: Zameer Manji <zmanji@gmail.com>
 
-At present, I have only verified it under x86. In other cases, I am 
-short of arch or scenarios. I am not sure whether the patch is 
-applicable to all the architectures, perhaps adding something to x86?
-Do you think it makes sense?
 
-In fact, many companies cannot upgrade GCC due to online business 
-reasons. This patch will help.
+Reviewed-by: Pavel Skripkin <paskripkin@gmail.com>
 
 
 
 
-Best regards!
---Yinan liu
+With regards,
+Pavel Skripkin
