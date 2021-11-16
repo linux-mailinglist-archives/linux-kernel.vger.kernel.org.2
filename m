@@ -2,101 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55942452981
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:21:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE03452A1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:56:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233602AbhKPFX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 00:23:57 -0500
-Received: from muru.com ([72.249.23.125]:56730 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233571AbhKPFWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 00:22:47 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 31EF8806C;
-        Tue, 16 Nov 2021 05:20:23 +0000 (UTC)
-Date:   Tue, 16 Nov 2021 07:19:43 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Abel Vesa <abelvesa@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, kernel-team@android.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-oxnas@groups.io, linux-renesas-soc@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v4 1/2] drivers: bus: simple-pm-bus: Add support for
- probing simple bus only devices
-Message-ID: <YZM/b2/F8xmK43vr@atomide.com>
-References: <20210929000735.585237-1-saravanak@google.com>
- <20210929000735.585237-2-saravanak@google.com>
- <YYu4EglV7SBZU2Iy@ryzen>
- <CAGETcx_m3f5JgrKQXZ5DUxDkpGhAau9G8uYm8a0iQ8JbcD0Rtg@mail.gmail.com>
- <CAGETcx_a-d7qQNi3sUce3AzbPcvGJK5JSuiiHm4h4e_q-MT7Dg@mail.gmail.com>
+        id S239364AbhKPF7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 00:59:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238889AbhKPF6Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 00:58:16 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93BC2C048F2E;
+        Mon, 15 Nov 2021 21:22:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jFwMkhAr45Koa2OCwczyqw/z6CbwDbfK4wgcBODiv6I=; b=aKX8PwvsFOJW6GP0jcRaN66vOF
+        Csg3E+pZhNxx7ljXSrmY99g2gV05mArmWxCM1GC3O6AF4tDBQCFw+UGHc8pDtkpqhVggRGeHoQjsl
+        3d2ntb7AETAXk0khGqXeymDfilXxI4RGg6TbRdfUJ+cLe32FnhXZ8Xr/7QcRhPEDz2kAhFmgZn2Q3
+        x+KVsO1rT+wbr6XtzsTlTVf3guGnjYLi+/zokSokNUNoPWYbs8aVp0zla1qRfV6fOmxPaclWyeH3x
+        fg+OfGHqqnol2B755jDbPWzDPh7lI8pIBQX1AqWza1fYQ8aFUg/YKOmzbpepSj7Ys+s0hBvEyyyOQ
+        gAAX1A2g==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mmqvE-000IAC-7t; Tue, 16 Nov 2021 05:22:20 +0000
+Date:   Mon, 15 Nov 2021 21:22:20 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jubin Zhong <zhongjubin@huawei.com>
+Cc:     hch@infradead.org, kechengsong@huawei.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, wangfangpeng1@huawei.com
+Subject: Re: [PATCH] fs: Fix truncate never updates m/ctime
+Message-ID: <YZNADLcSbgKp5Znh@infradead.org>
+References: <YZKfr5ZIvNBmKDQI@infradead.org>
+ <1637035090-52547-1-git-send-email-zhongjubin@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGETcx_a-d7qQNi3sUce3AzbPcvGJK5JSuiiHm4h4e_q-MT7Dg@mail.gmail.com>
+In-Reply-To: <1637035090-52547-1-git-send-email-zhongjubin@huawei.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Saravana Kannan <saravanak@google.com> [211115 20:19]:
-> On Wed, Nov 10, 2021 at 12:24 PM Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > On Wed, Nov 10, 2021 at 4:16 AM Abel Vesa <abelvesa@kernel.org> wrote:
-> > >
-> > > On 21-09-28 17:07:33, Saravana Kannan wrote:
-> > > > fw_devlink could end up creating device links for bus only devices.
-> > > > However, bus only devices don't get probed and can block probe() or
-> > > > sync_state() [1] call backs of other devices. To avoid this, probe these
-> > > > devices using the simple-pm-bus driver.
-> > > >
-> > > > However, there are instances of devices that are not simple buses (they get
-> > > > probed by their specific drivers) that also list the "simple-bus" (or other
-> > > > bus only compatible strings) in their compatible property to automatically
-> > > > populate their child devices. We still want these devices to get probed by
-> > > > their specific drivers. So, we make sure this driver only probes devices
-> > > > that are only buses.
-...
-> > >
-> > > This change is breaking the expected behavior for the already existent
-> > > simple-bus nodes. All the simple-bus compatibles should be replaced now
-> > > to simple-pm-bus. In my case, on some i.MX8 platforms, without the
-> > > devlink, the devices suspend sequence changes (and even breaks).
-> > >
-> > > To avoid breaking the already existent simple-bus nodes, maybe the logic
-> > > should've been reversed: keep the simple-bus as is and add another
-> > > compatible, IDK, something like simple-trasnparent-bus, or something.
-> >
-> > The intent of this change IS to affect existing simple-bus nodes (but
-> > not in the way it's affecting you). But if it's breaking stuff, we
-> > obviously need to fix it.
-> >
-> > I have a hunch on what's going on in your case, but can you point me
-> > to the specific simple-bus node that's getting affected? I'm expecting
-> > it to be a simple-bus node that gets added AFTER this driver is
-> > registered at device_initcall (module_init gets converted to
-> > device_initcall).
-> >
-> > Also, can you try this hack patch to see if it helps your case?
-> > https://lore.kernel.org/lkml/CAGETcx9U130Oq-umrvXME4JhEpO0Wadoki3kNxx=0-YvTR6PtQ@mail.gmail.com/
-> >
-> > I have some thoughts on how I could fix this, but I need to think
-> > about a few cases.
+On Tue, Nov 16, 2021 at 11:58:10AM +0800, Jubin Zhong wrote:
+> I work on embedded devices so concern about jffs2/yaffs2/ubifs the most. 
+> If there are any errors in my test program please let me know.
 
-Not sure if this is related.. Some drivers need to be updated from
-builtin_platform_driver_probe() to use builtin_platform_driver() when
-switching to simple-pm-bus because of deferred probe. See more info
-in commit e259c2926c01 ("PCI: pci-dra7xx: Prepare for deferred probe
-with module_platform_driver").
-
-Regards,
-
-Tony
+It seems like you need to fix jffs2 to implement the proper semantics
+in its ->setattr.
