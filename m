@@ -2,90 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 307484533E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F5E4533F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:17:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237273AbhKPOSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 09:18:01 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:36068 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237212AbhKPORz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 09:17:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=3AIZ41+tqVRM1/xAiVsE723Y0TQuUEbBW9w9e6TgV3Y=; b=0s4GLgMY4QwvUzfOUF+u2Ihr84
-        jc983K1vxOEmD4fnmJrC0uj0R3kyx2tRPKr3Zm2tsAtVj5AueuHBkE9xsBbDRwMZhDb9xlBsiWKBK
-        E/KA3aI0x06d+F7CMDIsT8ity6epg/0GJGgaJICwMbVsy+cDpdfS65+BBljBVFdhiJkQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mmzEe-00DesX-NR; Tue, 16 Nov 2021 15:14:56 +0100
-Date:   Tue, 16 Nov 2021 15:14:56 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, g@pengutronix.de,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com,
-        kernel@pengutronix.de, Jakub Kicinski <kuba@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>
-Subject: Re: [RFC PATCH net-next] net: dsa: microchip: implement multi-bridge
- support
-Message-ID: <YZO84IfL87dxg3n+@lunn.ch>
-References: <20211108111034.2735339-1-o.rempel@pengutronix.de>
- <20211110123640.z5hub3nv37dypa6m@skbuf>
- <20211112075823.GJ12195@pengutronix.de>
- <20211115234546.spi7hz2fsxddn4dz@skbuf>
- <20211116083903.GA16121@pengutronix.de>
- <20211116124723.kivonrdbgqdxlryd@skbuf>
- <20211116131657.GC16121@pengutronix.de>
- <YZO0tuMtDUIbRfcC@lunn.ch>
- <20211116135335.j5mmvpnfzw4hfz67@skbuf>
+        id S237342AbhKPOS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 09:18:59 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:37224 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237146AbhKPOSh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 09:18:37 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 330B11F45718
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1637072131; bh=XF191G7jqx54v8b86pNMrwokFonDq6edmtqC06RnQ6s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iUZunm7ALX1sAtYSe40S2jkJg3sTiTYT3Yd/0hmgcu8Zk+5kIjXtah+8vDfqWAivi
+         MRrcg2m9ydK71l0OgKgdw+twNg+yqT+Ei9KVqYoLLp1MoeITVqhop/SP761VmwnfY6
+         1lWl47tTHYzo7a7YIVp/BHtLKYZcDXxAEvsROchA+smeNIwD287JKFcwYbpcwoRBoz
+         drwPhes3dP6mFqFj/hmre7W9suXCq96wADJH8KHuKW/F/31Asp1KgQZNGd9Jd+Xp4O
+         UMDjayJxmB5Ce1Bvy5yEyIR1AwHT3mYLY6fDYNdg3JwyNPJUOpRRBaByeYwe9izzn0
+         qgx69zQdw5SBA==
+Received: by earth.universe (Postfix, from userid 1000)
+        id E03F73C0F95; Tue, 16 Nov 2021 15:15:28 +0100 (CET)
+Date:   Tue, 16 Nov 2021 15:15:28 +0100
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, ~okias/devicetree@lists.sr.ht
+Subject: Re: [PATCH v3] dt-bindings: power: reset: gpio-poweroff: Convert txt
+ bindings to yaml
+Message-ID: <20211116141528.lqpjhkegbpa2i6mo@earth.universe>
+References: <20211028165009.76641-1-david@ixit.cz>
+ <YYF4kXX9HWaef33N@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="v3cccwclzxw4wugx"
 Content-Disposition: inline
-In-Reply-To: <20211116135335.j5mmvpnfzw4hfz67@skbuf>
+In-Reply-To: <YYF4kXX9HWaef33N@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 03:53:35PM +0200, Vladimir Oltean wrote:
-> On Tue, Nov 16, 2021 at 02:40:06PM +0100, Andrew Lunn wrote:
-> > > > What logging noise?
-> > > 
-> > > I get this with current ksz driver:
-> > > [   40.185928] br0: port 2(lan2) entered blocking state
-> > > [   40.190924] br0: port 2(lan2) entered listening state
-> > > [   41.043186] br0: port 2(lan2) entered blocking state
-> > > [   55.512832] br0: port 1(lan1) entered learning state
-> > > [   61.272802] br0: port 2(lan2) neighbor 8000.ae:1b:91:58:77:8b lost
-> > > [   61.279192] br0: port 2(lan2) entered listening state
-> > > [   63.113236] br0: received packet on lan1 with own address as source address (addr:00:0e:cd:00:cd:be, vlan:0)
-> > 
-> > I would guess that transmission from the CPU is broken in this
-> > case. It could be looking up the destination address in the
-> > translation table and not finding an entry. So it floods the packet
-> > out all interfaces, including the CPU. So the CPU receives its own
-> > packet and gives this warning.
-> > 
-> > Flooding should exclude where the frame came from.
-> 
-> I interpret this very differently. If Oleksij is looping lan1 with lan2
-> and he keeps the MAC addresses the way DSA sets them up by default, i.e.
-> equal and inherited from the DSA master, then receiving a packet with a
-> MAC SA (lan2) equal with the address of the receiving interface (lan1)
-> is absolutely natural. What is not natural is that the bridge attempts
-> to learn from this packet (the message is printed from br_fdb_update),
-> which in turn is caused by the fact that the port is allowed to proceed
-> to the LEARNING state despite there being a loop (which is not detected
-> by STP because STP is broken as Oleksij describes).
 
-Ah, yes, that is more likely.
+--v3cccwclzxw4wugx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sorry, should not of jumped in without reading all the context. If STP
-is broken, odd things will happen.
+Hi,
 
-   Andrew
+On Tue, Nov 02, 2021 at 12:42:41PM -0500, Rob Herring wrote:
+> On Thu, 28 Oct 2021 18:50:08 +0200, David Heidelberg wrote:
+> > Convert power-off action connected to the GPIO documentation to the YAM=
+L syntax.
+> >=20
+> > Signed-off-by: David Heidelberg <david@ixit.cz>
+> > ---
+> > v3:
+> >  - incorporated Sebastian notes
+> > v2:
+> >  - remove driver specific note about WARN_ON
+> >=20
+> >  .../bindings/power/reset/gpio-poweroff.txt    | 41 -------------
+> >  .../bindings/power/reset/gpio-poweroff.yaml   | 59 +++++++++++++++++++
+> >  2 files changed, 59 insertions(+), 41 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/power/reset/gpio-=
+poweroff.txt
+> >  create mode 100644 Documentation/devicetree/bindings/power/reset/gpio-=
+poweroff.yaml
+> >=20
+>=20
+> Reviewed-by: Rob Herring <robh@kernel.org>
+
+Thanks, queued.
+
+-- Sebastian
+
+--v3cccwclzxw4wugx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmGTvPsACgkQ2O7X88g7
++pqxNA/+Iix4QVCRfdvenOmF70JUzvJVVRb1RNSzqOeF+dIt7Hg+1tp9/uwYNA9o
+JfTgjPJJYLDHQEf4kPunG/hewM0UU5nrDNY0uNNyM57oPHqf5y+nXQ+eX15u3X7/
+CVQXaKlGteTXSqq/wpF4As7DDpgNTAJ6Pjht/GNNFGZuDMd04LSWBJz5qbx9x02u
+kAnASbagtOYDBVORLpxc4SPlJuhkbkOqelxBIPYlyfirCJhGNouQTo7syrYkkh96
+hEGe8xITeNcz2op3NkjHpTVAcGU2CGI101lsrklDqPip4/1BE6r3ohVB8gVwJ1x6
+6iOtTu6Vck+BQr+KI8J6uys6z/KJYUwwXu6ciHZDjILALbN+Fw2y3GLkqqIEuSv3
+YrIP7QNRsWLi3TqM3bObWcgS8HgYn9HZO3YbEwcAItaz/S5z0Iyobxj5sN9Awqt9
+nZ1AxpPUcNB7KgxU1Js4RXcOFg2uTi9mRDlfa4du8st0376NRm7ZSxfufwGJ1XZ7
+kMVMAAtELcK1mZ1DoLHIqmwG4Rt0bL9El3MkYoNU7MdPI4SRkFdiNOzsZLipDcLa
+DDYw0Q86Ynnjuj5E+3/0wYaOQfU97hcirsWRjzUlDvIHtOEo4lvAit9sfOxIFeJr
+OVOEUcdC4BNlZTgy4UvfdHHg0BjFXyeFW0BE72JWSLsntYYg6cY=
+=rL1W
+-----END PGP SIGNATURE-----
+
+--v3cccwclzxw4wugx--
