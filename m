@@ -2,81 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 113C04534C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 288304534C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:59:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237732AbhKPPCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 10:02:15 -0500
-Received: from todd.t-8ch.de ([159.69.126.157]:35453 "EHLO todd.t-8ch.de"
+        id S237756AbhKPPCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 10:02:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233685AbhKPPCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 10:02:12 -0500
-Date:   Tue, 16 Nov 2021 15:59:11 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1637074752;
-        bh=cb2OUIDphqHIt9Wszcy0dU6ogQaVy9OblEb3njsk/BA=;
+        id S233685AbhKPPCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 10:02:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A60AA61C4F;
+        Tue, 16 Nov 2021 14:59:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637074776;
+        bh=kLgNCOXcOMdbR7IPP44gOExLnRjFLRrAYmTTznSGFas=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B5PlIfWp5E08QiHGOMYxCuLCDfYIbCPJj9eaWw0rLFxzA7H9i21vDwkA0gIAt3OyX
-         S96NinLjfE/a4cPxwZffSsOdNJllUyN1EQrpwBkYWzBRbafCNRsP52kPJBbFjDfkKs
-         CcrSv9y00pONx+RkgMvF1gflACpgp/j6Edjvcj+E=
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Subject: Re: [PATCH] xen/privcmd: make option visible in Kconfig
-Message-ID: <aa39e0f1-77cb-48f9-ae52-2bdbc19fa702@t-8ch.de>
-References: <20211116143323.18866-1-jgross@suse.com>
+        b=PEt18bk582cM292euP4s0OwFA1lx3lzTTclKy3RNrQ4QN2xysp9MJJSw7MGDMM9bH
+         RNX30oV5vCIzcGXZ3oIULBZkWjAC5b0BJPnXeTziRvUR0cL8PUJvgF0msn25RAylB9
+         hg7oPwHtqPsEYP5GG9CzRatQF6/l0DWdeT0Z8iruXDO72CV1FcF9jHuK8zB7nI32Rm
+         0u3tSnLIV6IQ0D2rKkx3Bo8j6mqp7HQxvqzTPG03hT83tt0r9pv5Zk1/ofT6/1hQLi
+         eNXBow7yOCqovGhoca+j4usdpXbcdyElvdv6wvrx74u4+i2pixjcOD3GvttY5KKGkU
+         6EzdhT/s4h7Yw==
+Date:   Tue, 16 Nov 2021 14:59:30 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Trevor Wu <trevor.wu@mediatek.com>
+Cc:     YC Hung <yc.hung@mediatek.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+        tiwai@suse.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+        daniel.baluta@nxp.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 3/4] ASoC: mediatek: mt8195: separate the common code
+ from machine driver
+Message-ID: <YZPHUmDdGF/59XqA@sirena.org.uk>
+References: <20211103100040.11933-1-trevor.wu@mediatek.com>
+ <20211103100040.11933-4-trevor.wu@mediatek.com>
+ <YYP+l7tMofYoB+aC@sirena.org.uk>
+ <b4360ea17c3045759e85ee13fa9c001afe73c93c.camel@mediatek.com>
+ <YYVQC7KLZx8oxdXT@sirena.org.uk>
+ <e404d241-0685-643b-4b9d-d85bb8783385@linux.intel.com>
+ <YYVez/V9ocCXhYmg@sirena.org.uk>
+ <4e876c89ee58cd1408511a34573005e3df359cd0.camel@mediatek.com>
+ <f915d1090abf2b6d188ce27068919a181828e463.camel@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="YuLN/D4BxE4Sko6x"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211116143323.18866-1-jgross@suse.com>
-Jabber-ID: thomas@t-8ch.de
-X-Accept: text/plain, text/html;q=0.2, text/*;q=0.1
-X-Accept-Language: en-us, en;q=0.8, de-de;q=0.7, de;q=0.6
+In-Reply-To: <f915d1090abf2b6d188ce27068919a181828e463.camel@mediatek.com>
+X-Cookie: UNIX enhancements aren't.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks!
 
-On 2021-11-16 15:33+0100, Juergen Gross wrote:
-> This configuration option provides a misc device as an API to userspace.
-> Make this API usable without having to select the module as a transitive
-> dependency.
-> 
-> This also fixes an issue where localyesconfig would select
-> CONFIG_XEN_PRIVCMD=m because it was not visible and defaulted to
-> building as module.
-> 
-> Based-on-patch-by: Thomas Weißschuh <linux@weissschuh.net>
-> Signed-off-by: Juergen Gross <jgross@suse.com>
-> ---
->  drivers/xen/Kconfig | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/xen/Kconfig b/drivers/xen/Kconfig
-> index a1b11c62da9e..a2e91d3ca372 100644
-> --- a/drivers/xen/Kconfig
-> +++ b/drivers/xen/Kconfig
-> @@ -259,9 +259,14 @@ config XEN_SCSI_BACKEND
->  	  if guests need generic access to SCSI devices.
->  
->  config XEN_PRIVCMD
-> -	tristate
-> +	tristate "Xen hypercall passthrough driver"
->  	depends on XEN
->  	default m
-> +	help
-> +	  The hypercall passthrough driver allows user land programs to perform
-> +	  Xen hypercalls. This driver is normally required for systems running
-> +	  as Dom0 to perform privileged operations, but in some disaggregated
-> +	  Xen setups this driver might be needed for other domains, too.
->  
->  config XEN_ACPI_PROCESSOR
->  	tristate "Xen ACPI processor"
-> -- 
-> 2.26.2
+--YuLN/D4BxE4Sko6x
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
+On Tue, Nov 16, 2021 at 05:33:48PM +0800, Trevor Wu wrote:
+
+> Is the reply from YC clear? Any suggestion would be appreciated. If you
+> need more information, please let us know.=20
+
+Not really.  It's super high level and only at the driver level, not
+talking about the hardware much.  As far as I can see it's showing a
+single physical system and even seems to have what looks like it's
+supposed to be two cards connected together which really seems like
+it's a single device.
+
+> Additionally, it was my understanding you suggested that DSP routes
+> should be configurable in some ways, and we should not just add a new
+> driver for SOF in case we need to support some other interface
+> combinations in the future. If I'm wrong, please kindly correct me.
+
+Yes, I'd not expect a separate driver depending on system configuration.
+
+--YuLN/D4BxE4Sko6x
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGTx1EACgkQJNaLcl1U
+h9DQcQf/UeSfcn6HVEpGYxZ8QFiUTj+pbv+kGdokbgKrS0ecwwnxMi4Py7KS5Z+G
+t3FU9D3QiuU1BnHL92LIKT0wdYM7r7yededEPF0t8bnU4+CiO6nJbCRNp9E3jfPA
+wlXwe7J+sTEWqmJ+HUNIX/MVHTBdAPwSIyYHWQmB3CgC2WDX8oLsLwobCOCZyh9n
+7hdw4rjGE5m4P95j+SHERYBB1osAixaTLMrQ4aa59f5epfn0M5iQ0ABQltYIR48u
+DOyGK2ZiJUs524JKVVbHtjz/JY3/SJqlY2DQKIt3vePa/fNNowo5Fjv4oReFJoQS
+uek9HwybelDl1KbN9VhWNQDm2SyfsQ==
+=42uA
+-----END PGP SIGNATURE-----
+
+--YuLN/D4BxE4Sko6x--
