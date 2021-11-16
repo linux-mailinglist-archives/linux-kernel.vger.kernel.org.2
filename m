@@ -2,132 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 197CD45325A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:44:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A3E45325D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:45:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232312AbhKPMrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 07:47:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:25163 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234412AbhKPMrA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 07:47:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637066643;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=EhX57vTRHjQSI9UGDs3HZ8AxGDff1NgicPFZJaWuo1M=;
-        b=TnCZ7n1fO3qoWyQV8id6Byl5ETLj0VZZXjTHg7hbDVkEbkPxDqXyFovzCegzyi8zEgdT1L
-        UQ93LWzP72z7rfwooo/3JP6C5fOlG3JHjbrxY1dhaWPuDudcb2pYioRyl2ffBm93HSpiqo
-        6Lm/t4EYWFsRRAtA5XHK4H5qS65BiUc=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-121-rH7NBu83NtOSvTNc4lwNXw-1; Tue, 16 Nov 2021 07:44:01 -0500
-X-MC-Unique: rH7NBu83NtOSvTNc4lwNXw-1
-Received: by mail-oo1-f71.google.com with SMTP id y9-20020a4a2d09000000b002c600da5eb9so545688ooy.9
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 04:44:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=EhX57vTRHjQSI9UGDs3HZ8AxGDff1NgicPFZJaWuo1M=;
-        b=eiObCrRQRX7CF08CMu8wfQAh/ZvXj+x/xTgRjF/NRyZcOX/tyAcJ8gvnC3y9U2A8t6
-         zfbHgklG/iC6GTn3f+BI36CPjcIhyPecIsap3hMg41vJ8ruYSHV+hTJwl2XmwPPeJR+y
-         epeg4WuY05MehBbxl/Qxb4ejPwXn6+q3R7n0niz4EU6++aIfQi1LM+Tl2YDu23FeaG5s
-         kSMlGJXqYEKMe9BcUodjHDfyH0vLkLshPkRC9hqovBAh0fXP83TGzBUmFJiox+OXK0Di
-         EJsVmM8ROfOASclb6X+0Bp1MDYIfHjWBeQr0LGP9geKXK5AvOWLk5HkE9tEPf9q4wTa7
-         W8kw==
-X-Gm-Message-State: AOAM532w3UhNUiXFOEtX24FgdLnHh0g3cJSO1VmhIzR3G33v6pfrzRm1
-        zGh9rRTVxAAbtsuTwtD3C+YJ4sZW7GI+UBAqFx/blZuWFafVUDbnIpOOLNJH4+Xa5AAaBxs0hyF
-        QzxS5XzHdUtVintB22tU9rPvXdrf1yO1wuSx2muzj
-X-Received: by 2002:a05:6830:4cf:: with SMTP id s15mr5881566otd.219.1637066640920;
-        Tue, 16 Nov 2021 04:44:00 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyPjc2HdrreSOHOSS28//X13YUKP48n6//0MJE7e0iPHrQ6BrIC9XzDyIgy4/3uDWGRs/o8P6kYxnLkEpKPF6w=
-X-Received: by 2002:a05:6830:4cf:: with SMTP id s15mr5881547otd.219.1637066640669;
- Tue, 16 Nov 2021 04:44:00 -0800 (PST)
+        id S236368AbhKPMrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 07:47:47 -0500
+Received: from mail-bn8nam12on2068.outbound.protection.outlook.com ([40.107.237.68]:25793
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234318AbhKPMrn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 07:47:43 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hWy7KuhizoH4p0qAG9KL/7q/4krV2WZ/mMhdg++bLxgkjS4VWDbLOYn8LBgoxTb1uoPqwRf4H3FvQ6iYm03SDHfNLegIMS0mepiXhSl9by/IewL4m5C5psxX72AtTEFbL/qP77MHvJMvwtT29eaD0NttfDRpmtsj1pjOUqETmo7fuZtL3CY2itmafcPIT1iOe0CTUY29nk9ia9ZSPBWK3h28jCmfjBm7j9yij/M4+UkqwN13ABwJ6Jz5r5paDGL2vihlZVgFKoGfcUDt4ns5yjH8msY2VRCnapTlBThLIKWGOjiuHO1+fTV5X0ffeRnGHdrtHnR+FGz/5KEm9E2wLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5jEnXAcBqfr8HD8qnwTbhn+6/Y6odnDfu5vHqlMV6oA=;
+ b=cUwUxA0FhH75Yh3K+kTRG3sAK3l3vDxacXRrxP05+x/Z1lklTCCy1kHX+gGNo+m8yfuDU08bHYo13DiQ9BldbaJNxk56zRpsrsyiJXIv+S6l8BMOffOWqhEW/JWGmvR1L0eNvItun/jniGpfemWZhkl4hzuhGtC+ydRIpcNCO66kXJbMRLpomKZp5gMFm6qWRnwF+LHNeazwH1QKkpzVA95vTIJBQy0W8wSNys6Ug+CGqYcoXUqNZQna0pxSctDvDo9PT+RmaLeK857ZV2bUanCA1shfdlzUCaJD66l2P/UiQp75IhOGkjz267nmiNc4EfKNCAhQpfJU14klXkFujw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5jEnXAcBqfr8HD8qnwTbhn+6/Y6odnDfu5vHqlMV6oA=;
+ b=sLeFn7dNm9/FAK1vr/Ktqx6VZta3UgXC9OpGyIzvrQERIdInwAIqugeTmfpCRrNqKJbqd+E3+Et0xjIsNlpxGlq56b5PKMHztUQ8z1REhsUBFakZCKWSOyk7iH59uO/vmwyKnxAL0pVZ2vRWPp9iYa+RdfiglmMPNIQt5pWYCVDKmJaLhy8ujjRparv6LOILW6n4Q8CZNiuIwAtKj8vXIz0/tiY+VmunYopEhv/gqqGnVMkpxNf3KXIEY2cJRHRwAVGDEaiwvJo7s7WFM453JUq4oEJ7JUVDPbgsOJoLDtMI77wadZXoYV3Zg16qrNhINpXAg7XyqbomljvW2SgQjQ==
+Authentication-Results: resnulli.us; dkim=none (message not signed)
+ header.d=none;resnulli.us; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5141.namprd12.prod.outlook.com (2603:10b6:208:309::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11; Tue, 16 Nov
+ 2021 12:44:44 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::5897:83b2:a704:7909]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::5897:83b2:a704:7909%7]) with mapi id 15.20.4690.027; Tue, 16 Nov 2021
+ 12:44:44 +0000
+Date:   Tue, 16 Nov 2021 08:44:42 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Jiri Pirko <jiri@resnulli.us>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
+        Ido Schimmel <idosch@idosch.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        edwin.peer@broadcom.com
+Subject: Re: [PATCH net-next] devlink: Require devlink lock during device
+ reload
+Message-ID: <20211116124442.GX2105516@nvidia.com>
+References: <20211109182427.GJ1740502@nvidia.com>
+ <YY0G90fJpu/OtF8L@nanopsycho>
+ <YY0J8IOLQBBhok2M@unreal>
+ <YY4aEFkVuqR+vauw@nanopsycho>
+ <YZCqVig9GQi/o1iz@unreal>
+ <YZJCdSy+wzqlwrE2@nanopsycho>
+ <20211115125359.GM2105516@nvidia.com>
+ <YZJx8raQt+FkKaeY@nanopsycho>
+ <20211115150931.GA2386342@nvidia.com>
+ <YZNWRXzzRYMNhUEO@nanopsycho>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZNWRXzzRYMNhUEO@nanopsycho>
+X-ClientProxiedBy: YT3PR01CA0003.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:86::23) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-From:   Bruno Goncalves <bgoncalv@redhat.com>
-Date:   Tue, 16 Nov 2021 13:43:49 +0100
-Message-ID: <CA+QYu4rKUobW5LRKgijLviKjEPAFZ_428Dhin44_Hq2KtWzM+A@mail.gmail.com>
-Subject: Boot issue on x86_64: kernel 5.15.2 - RIP: 0010:__unwind_start+0x10b/0x1e0
-To:     linux-kernel@vger.kernel.org
-Cc:     CKI Project <cki-project@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Received: from mlx.ziepe.ca (206.223.160.26) by YT3PR01CA0003.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:86::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26 via Frontend Transport; Tue, 16 Nov 2021 12:44:44 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mmxpK-00AwdV-Ae; Tue, 16 Nov 2021 08:44:42 -0400
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cd5d21dd-4f77-405b-2eb9-08d9a8fedda1
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5141:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5141A3C718D1E95053ABC110C2999@BL1PR12MB5141.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 60b9uBOTGP+oSMb4JhPy5ymixLO4W+ouXkWqCbcnlGhUJwuy1mDIlrfCMdfDLeEE4fdxFNE8djFEXu/ejxCtZqfbTs41bPSzGyjor71Q5a6oxhGLPCzHY0afa0O8CGnX1XBdsE4GAl8BzMSLuKExDlUCHfEOBGnBOvJ12LoXQZhRKn1jmAiruR/G0acJi5tI36AIdhQSFxgz2roTx8JX75Q9QqD0PhU5uzuvFg441Q0oJl0Yol3YovEapC+K0Tr0Vw4rgVdpzCFGQIphAEG2w7ucZRp59MsvmZCn3limTnHr/O1z6umc6U7TFAXND6zKk0xgjEw4E/9ATjizu3a/cbDczVXSb2qA8abhMe5mezCsfBp8EmkNAoyTqMLi6nDGxk+JOx76kCx/+u9SNpA0SuosyoopVAY3DyraHJFCjWjEWYVYACCT5LvYoHd3lTH6AMNgEd4EVtbCQBk76Ivx0sZAZHcPYzxj8WEFcQs2RSLKNo3TbRHytO2vSTj1SY+Jciq7BQP4No7w4j7rHhbMqJZMknUqKC0olZ1daWopR4ZtNPItTScDb1nxv/ZEtM/huDJkqh+4TYTqffSB7bSsYlF1sGGgeerbAKAoooXbWLGmnXj8JVUah91CG1VaDn9BWtorBXRFfqSX8xqAgUl0oQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(38100700002)(316002)(1076003)(9746002)(66946007)(9786002)(83380400001)(54906003)(8676002)(5660300002)(186003)(2616005)(508600001)(4326008)(86362001)(2906002)(426003)(66476007)(36756003)(6916009)(33656002)(26005)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?wdsloqoW7au7Fyx5HY3rByGYSjYk5vGwYzRR/Zw/zZ0RAXQyx7z5RkSoQvdC?=
+ =?us-ascii?Q?qbqeEeJk8pdkdqkzz2HaCcl3cUIVTJbOnK7h3WdJ9HR4G2p+aXPEyK5I9HdZ?=
+ =?us-ascii?Q?yp7h82Z0YaDZw2uuVZuk7g7w+zR+wR3g9IisQhGOjIo4I4sZwZzJVaQOgxR4?=
+ =?us-ascii?Q?Onh6c8Hu9GEf2D9BRoiOJ1NXJHSPNgm4KQlsvwnThimMysutPBUyTfsFwpN7?=
+ =?us-ascii?Q?qu9w7LDMyIlVf7fQk8QBSxVI4FVJrnK3ql7VCA2CaX4CcTuT50TdBL2YdZBB?=
+ =?us-ascii?Q?VWPTOp3YxJNXfmkfzxWGFh8vk0T8b4rX/Aac3kw5DAyQ9JflZ+++Lp7UhOk0?=
+ =?us-ascii?Q?9t2s4aEIce2M77tZQbE+TBvv/fMe5d9LhNO13/WQ20GUuJnWvbNZuBH66j9h?=
+ =?us-ascii?Q?wd15PZxKgfpyNSJtmbgwKsntf5DNTUXNCFSa8uk2oF0+dxxHB0iP7LO/ilBn?=
+ =?us-ascii?Q?9swZRK9jmlBPpTxnV+SG3fiNxxva32JFdUazJbDzzHtsOGOTW3ummckI1Eea?=
+ =?us-ascii?Q?c+egrb8eUFxNiHa1JrzTPe2TBaPFuCFqUnW9Tn3Ecc1stGpZzmuQ+PpvX1Uw?=
+ =?us-ascii?Q?8TrpQYE201SW/FDGHJISA5wRDK8Ct4n/9d91iFQ2Va+YfaCvaNTgkTGiJizH?=
+ =?us-ascii?Q?3sXy0Q/iu9iTvweZf+j4JJYmipRPDQVoRTNUUKAR7dm6yfsNplYxX0jkWcaD?=
+ =?us-ascii?Q?FVPUmyfbCevAUs2Sv62NyvtUHRJbnO15VkcX2uOKFPQQSfoj33QZwp4+yGCa?=
+ =?us-ascii?Q?rTNohX1W42UuTxSHH162fYMxykYUAh4J7WJ6xqk01jBAcRde6UDNZdd9LL3E?=
+ =?us-ascii?Q?Tu25morYpQCNBkvYKChjegnFOT+3H8rDV13PdENYVjkI5IIZacPCUqNNc8VO?=
+ =?us-ascii?Q?6/+oxvn7afmBkJIfG7b4bagGYxWvfWrlidflBhUNiAtT+TCRO9bvhjrnraP5?=
+ =?us-ascii?Q?f3q8BEX7/SgticIBsy4NSk75LPg0sryWNHKFkigl5iktKu/YUHlcO7t5xCxr?=
+ =?us-ascii?Q?AcYs3SoiH/VjGgTREaZVY5OmtmD3YrRuUBrmzths3HbeSUemJxFnUV2PdU3I?=
+ =?us-ascii?Q?O6YzGO76HypTh/SOAZA1gaiCBRXp1DGqC16U5GUMAiobCLlckwb5iqYsEbKv?=
+ =?us-ascii?Q?3+DbUvemIeXurbOWwxnYLKeQy/OJzYD7r0zWwdeLRaHZKKXaIsC6HlwFxmPR?=
+ =?us-ascii?Q?E38Dy9c1T/74LC4FBNDY1A5c1+OHL8ZaDuxAR+cWKhmYfpKuZBZiMrqPTSn/?=
+ =?us-ascii?Q?zdwcCZiaiRNOaFXmHvOyTCEHUvbdfA8mKF0sUmTsgT/t6o7F/9zJFZAWVt56?=
+ =?us-ascii?Q?74sx6+4FK3q5cvQEFJJ0CXbItZhfo+CuA2bKdOLml2PpMC2fQeKyvT+Gitme?=
+ =?us-ascii?Q?SOu1Uee5pT+mnJUsULOduPr1msIMrQ8AfOFJRvqYyJIOvsZNUF6ABU6/pdPi?=
+ =?us-ascii?Q?7plE4Cm56uKMHAvH594S4Ko70g4Adks51ZFazHkDLJS+akwLY0Gj0gWB3IM9?=
+ =?us-ascii?Q?romTPQ9xnAnZIbsfOzNNE2PNzwYrw5hhtR7AsxEtVzmzPoFhcObsiksLK+0v?=
+ =?us-ascii?Q?40dEnEbVi+XcprD6SXM=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd5d21dd-4f77-405b-2eb9-08d9a8fedda1
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 12:44:44.5224
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NE9qY5qOIH622hNmRKdKBv2opqsq8atJB6301GFwpTftePX9R4L+NHLlzb4tR6ae
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5141
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Nov 16, 2021 at 07:57:09AM +0100, Jiri Pirko wrote:
 
-We've started to see the issue below when booting on x86_64 on recent
-kernel builds from linux-stable-rc. More logs can be found on [1] and
-cki tracker issue [2].
+> >There is only one place in the entire kernel calling the per-ns
+> >register_netdevice_notifier_dev_net() and it is burred inside another
+> >part of mlx5 for some reason..
+> 
+> Yep. I added it there to solve this deadlock.
 
-[   24.006329] zram: Added device: zram0
-[   25.075694] systemd[1]:
-/usr/lib/systemd/system/restraintd.service:8: Standard output type
-syslog+console is obsolete, automatically updating to journal+console.
-Please update your unit file, and consider removing the setting
-altogether.
-[   25.342129] BUG: unable to handle page fault for address: ffffb57143fb7de0
-[   25.376757] #PF: supervisor read access in kernel mode
-[   25.402135] #PF: error_code(0x0000) - not-present page
-[   25.426507] PGD 100000067 P4D 100000067 PUD 1001e2067 PMD 31b1c3067 PTE 0
-[   25.461485] Oops: 0000 [#1] SMP PTI
-[   25.477997] CPU: 4 PID: 1 Comm: systemd Tainted: G          I       5.15.2 #1
-[   25.512982] Hardware name: HP ProLiant SL390s G7/, BIOS P69 07/02/2013
-[   25.548041] RIP: 0010:__unwind_start+0x10b/0x1e0
-[   25.570958] Code: af fb ff 85 c0 75 d2 eb c0 65 48 8b 04 25 c0 bb
-01 00 48 39 c6 0f 84 86 00 00 00 48 8b 86 98 23 00 00 48 8d 78 38 48
-89 7d 38 <48> 8b 50 28 48 89 55 40 48 8b 40 30 48 89 45 48 48 3d 80 43
-00 81
-[   25.668824] RSP: 0018:ffffb5714313bc18 EFLAGS: 00010083
-[   25.695397] RAX: ffffb57143fb7db8 RBX: ffffb57143fb7db8 RCX: 0000000000000000
-[   25.733090] RDX: 0000000000000000 RSI: ffff924d03534d00 RDI: ffffb57143fb7df0
-[   25.769626] RBP: ffffb5714313bc38 R08: 0000000000000040 R09: 0000000000001000
-[   25.808015] R10: 8000000000000000 R11: 0000000000000000 R12: 0000000000000000
-[   25.841524] R13: ffff924d03535974 R14: 0000000000000155 R15: 0000000000000001
-[   25.878031] FS:  00007f49ec409340(0000) GS:ffff924f0ba80000(0000)
-knlGS:0000000000000000
-[   25.916770] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   25.946918] CR2: ffffb57143fb7de0 CR3: 00000001039ae005 CR4: 00000000000206e0
-[   25.988907] Call Trace:
-[   26.001096]  <TASK>
-[   26.013087]  __get_wchan+0x35/0x80
-[   26.031979]  get_wchan+0x65/0x80
-[   26.047218]  do_task_stat+0xcd9/0xde0
-[   26.064584]  proc_single_show+0x4d/0xb0
-[   26.083925]  seq_read_iter+0x120/0x4b0
-[   26.103266]  seq_read+0xed/0x120
-[   26.118507]  ? security_inode_notifysecctx+0x30/0x50
-[   26.142094]  vfs_read+0x95/0x190
-[   26.158829]  ksys_read+0x4f/0xc0
-[   26.175927]  do_syscall_64+0x3b/0x90
-[   26.194142]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[   26.220169] RIP: 0033:0x7f49ecf992e2
-[   26.239468] Code: c0 e9 b2 fe ff ff 50 48 8d 3d ea 2e 0a 00 e8 95
-e9 01 00 0f 1f 44 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75
-10 0f 05 <48> 3d 00 f0 ff ff 77 56 c3 0f 1f 44 00 00 48 83 ec 28 48 89
-54 24
-[   26.336968] RSP: 002b:00007ffc3fedf998 EFLAGS: 00000246 ORIG_RAX:
-0000000000000000
-[   26.376294] RAX: ffffffffffffffda RBX: 000055fd5a6a1f30 RCX: 00007f49ecf992e2
-[   26.410402] RDX: 0000000000000400 RSI: 000055fd5a7f2e90 RDI: 0000000000000010
-[   26.447213] RBP: 00007f49ed06d300 R08: 0000000000000010 R09: 0000000000000001
-[   26.481089] R10: 0000000000001000 R11: 0000000000000246 R12: 00007f49ec4090f8
-[   26.517502] R13: 0000000000000d68 R14: 00007f49ed06c700 R15: 0000000000000d68
-[   26.551484]  </TASK>
-[   26.561812] Modules linked in: zram ip_tables xfs radeon
-i2c_algo_bit drm_ttm_helper ttm drm_kms_helper crct10dif_pclmul
-crc32_pclmul crc32c_intel cec ata_generic ghash_clmulni_intel
-serio_raw drm pata_acpi hpwdt
-[   26.657383] CR2: ffffb57143fb7de0
-[   26.673063] ---[ end trace d486977d124663a0 ]---
+I wonder how it can work safely inside a driver, since when are
+drivers NS aware?
 
+        uplink_priv->bond->nb.notifier_call = mlx5e_rep_esw_bond_netevent;
+        ret = register_netdevice_notifier_dev_net(netdev,
+                                                  &uplink_priv->bond->nb,
+                                                  &uplink_priv->bond->nn);
 
-[1] https://datawarehouse.cki-project.org/kcidb/tests/1872788
-[2] https://datawarehouse.cki-project.org/issue/747
+Doesn't that just loose events when the user moves netdev to another
+namespace?
 
-Thanks,
-Bruno
+> >I believe Parav already looked at using that in rdma and it didn't
+> >work for some reason I've forgotten. 
+> >
+> >It is not that we care about events in different namespaces, it is
+> >that rdma, like everything else, doesn't care about namespaces and
+> >wants events from the netdev no matter where it is located.
+> 
+> Wait, so there is no notion of netnamespaces in rdma? I was under
+> impression rdma supports netnamespaces...
 
+It does, but that doesn't change things, when it is attached to a
+netdev it needs events, without any loss, no matter what NS that
+netdev is in.
+
+Jason
