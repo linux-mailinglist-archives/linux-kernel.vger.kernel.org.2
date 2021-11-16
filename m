@@ -2,98 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B094A452F95
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 11:56:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B36D5452F9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 11:58:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234471AbhKPK7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 05:59:48 -0500
-Received: from foss.arm.com ([217.140.110.172]:43518 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234409AbhKPK7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 05:59:46 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5F3E01FB;
-        Tue, 16 Nov 2021 02:56:49 -0800 (PST)
-Received: from [10.57.82.45] (unknown [10.57.82.45])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3E2673F766;
-        Tue, 16 Nov 2021 02:56:45 -0800 (PST)
-Message-ID: <0b67745c-13dd-1fea-1b8b-d55212bad232@arm.com>
-Date:   Tue, 16 Nov 2021 10:56:39 +0000
+        id S234502AbhKPLBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:01:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48401 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234410AbhKPLBS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 06:01:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637060301;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kY0B8yGVYk8MaOQx8xvl+ZB1I0VF4H2dddqWO+tZ2pc=;
+        b=XdXnV8zWUe2u7QFcfv4ESqCbDuppkxfU1epWwpC2PSo47wtiUx/DtVWrl7z9op9YTmMGYk
+        1LAwpXz85tUV/axlSH2d1HnJk7u1V/6Pg0tRz0LRqEiRwwbdouCIUOcPDIuZ6pAsHTIagW
+        RndFcqnmnhsvSzOsebiw/7pNCQcHXkQ=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-298-CzR9GOTTNT2LEgKF7dzGmA-1; Tue, 16 Nov 2021 05:58:19 -0500
+X-MC-Unique: CzR9GOTTNT2LEgKF7dzGmA-1
+Received: by mail-ed1-f71.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso16767609edj.20
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 02:58:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=kY0B8yGVYk8MaOQx8xvl+ZB1I0VF4H2dddqWO+tZ2pc=;
+        b=SHfnogqaXyjwDkEvqa8RWgoja1GiOJEcqkiKH6ggTEufD0a+eopUPHCP0AvQrpKT2Y
+         w3LSHEdS6SuM+PBnG8SkI1VK5jj/hKkpFgqfW6ULIxC4VGH0+SO5oI+gvrDABVaHn5AW
+         Z+eWLpdJgRWFDLtk04ctw1zncql0CgSe1n5kfqDgCDpmHAXkR0/S3Xpw7Unsmd9MJzsH
+         dmFyq2UiUiCOm5Tq7SuNrRVs5YS9ivoRsn/B5ig6fNKVmenDZ9C8Igy+FcLRs1dSFpW+
+         56WhGeoj3b4cXzq0jYjGRsjPUfL8E2BPyZP7uBnmALMzgrreckTWl1Kl+soz3ecIvZ88
+         njVw==
+X-Gm-Message-State: AOAM532vvTkAyTaeAHwTIldLkQmcjg//bMGLtCrAE1p9Tv/87R0qApdG
+        Mbx6bKd/sd464fkNB3GOZqHnkrrPnLQNR1OgAqL/3gwFvDDkl7mdDuUjEfLfUA6sX9fsqEGEP6N
+        IBQ9AEnxy8o/+Erhd0ufLYwK+
+X-Received: by 2002:a17:907:2d0e:: with SMTP id gs14mr8757043ejc.249.1637060298619;
+        Tue, 16 Nov 2021 02:58:18 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxIEbJVQs6Ie/485xAX3626rJajgjdDhHYqVaN7DlmCbvpayCdiFexQj8i/fiIF/lTRfUn0LQ==
+X-Received: by 2002:a17:907:2d0e:: with SMTP id gs14mr8756992ejc.249.1637060298317;
+        Tue, 16 Nov 2021 02:58:18 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id bo20sm9304943edb.31.2021.11.16.02.58.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 02:58:18 -0800 (PST)
+Message-ID: <09a66da1-1a8b-a668-3179-81670303ea37@redhat.com>
+Date:   Tue, 16 Nov 2021 11:58:16 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH v2 2/6] hwtracing: Add trace function support for
- HiSilicon PCIe Tune and Trace device
-Content-Language: en-GB
-To:     Yicong Yang <yangyicong@hisilicon.com>, gregkh@linuxfoundation.org,
-        helgaas@kernel.org, alexander.shishkin@linux.intel.com,
-        lorenzo.pieralisi@arm.com, will@kernel.org, mark.rutland@arm.com,
-        mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
-        mike.leach@linaro.org, leo.yan@linaro.org,
-        jonathan.cameron@huawei.com, daniel.thompson@linaro.org,
-        joro@8bytes.org, john.garry@huawei.com,
-        shameerali.kolothum.thodi@huawei.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        linux-pci@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        iommu@lists.linux-foundation.org
-Cc:     prime.zeng@huawei.com, linuxarm@huawei.com,
-        zhangshaokun@hisilicon.com, liuqi115@huawei.com
-References: <20211116090625.53702-1-yangyicong@hisilicon.com>
- <20211116090625.53702-3-yangyicong@hisilicon.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20211116090625.53702-3-yangyicong@hisilicon.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 4/4] platform/x86: thinkpad_acpi: support inhibit-charge
+Content-Language: en-US
+To:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
+        linux-pm@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org,
+        Mark Gross <markgross@kernel.org>,
+        Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Cc:     linux-kernel@vger.kernel.org, linrunner@gmx.net, bberg@redhat.com,
+        hadess@hadess.net, markpearson@lenovo.com,
+        nicolopiazzalunga@gmail.com, njoshi1@lenovo.com, smclt30p@gmail.com
+References: <20211113104225.141333-1-linux@weissschuh.net>
+ <20211113104225.141333-5-linux@weissschuh.net>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20211113104225.141333-5-linux@weissschuh.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-16 09:06, Yicong Yang via iommu wrote:
-[...]
-> +/*
-> + * Get RMR address if provided by the firmware.
-> + * Return 0 if the IOMMU doesn't present or the policy of the
-> + * IOMMU domain is passthrough or we get a usable RMR region.
-> + * Otherwise a negative value is returned.
-> + */
-> +static int hisi_ptt_get_rmr(struct hisi_ptt *hisi_ptt)
-> +{
-> +	struct pci_dev *pdev = hisi_ptt->pdev;
-> +	struct iommu_domain *iommu_domain;
-> +	struct iommu_resv_region *region;
-> +	LIST_HEAD(list);
-> +
-> +	/*
-> +	 * Use direct DMA if IOMMU does not present or the policy of the
-> +	 * IOMMU domain is passthrough.
-> +	 */
-> +	iommu_domain = iommu_get_domain_for_dev(&pdev->dev);
-> +	if (!iommu_domain || iommu_domain->type == IOMMU_DOMAIN_IDENTITY)
+Hi Thomas,
+
+Thank you for working on this!
+
+On 11/13/21 11:42, Thomas Weißschuh wrote:
+> This adds support for the inhibit-charge charge_behaviour through the
+> embedded controller of ThinkPads.
+> 
+> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> 
+> ---
+> 
+> This patch is based on https://lore.kernel.org/platform-driver-x86/d2808930-5840-6ffb-3a59-d235cdb1fe16@gmail.com/
+> ---
+>  drivers/platform/x86/thinkpad_acpi.c | 55 +++++++++++++++++++++++++++-
+>  1 file changed, 53 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+> index e8c98e9aff71..7cd6475240b2 100644
+> --- a/drivers/platform/x86/thinkpad_acpi.c
+> +++ b/drivers/platform/x86/thinkpad_acpi.c
+> @@ -9321,6 +9321,8 @@ static struct ibm_struct mute_led_driver_data = {
+>  #define SET_STOP	"BCSS"
+>  #define GET_DISCHARGE	"BDSG"
+>  #define SET_DISCHARGE	"BDSS"
+> +#define GET_INHIBIT	"PSSG"
+> +#define SET_INHIBIT	"BICS"
+>  
+>  enum {
+>  	BAT_ANY = 0,
+> @@ -9338,6 +9340,7 @@ enum {
+>  	THRESHOLD_START,
+>  	THRESHOLD_STOP,
+>  	FORCE_DISCHARGE,
+> +	INHIBIT_CHARGE,
+>  };
+>  
+>  struct tpacpi_battery_data {
+> @@ -9409,6 +9412,13 @@ static int tpacpi_battery_get(int what, int battery, int *ret)
+>  		/* The force discharge status is in bit 0 */
+>  		*ret = *ret & 0x01;
+>  		return 0;
+> +	case INHIBIT_CHARGE:
+> +		/* This is actually reading peak shift state, like tpacpi-bat does */
+> +		if ACPI_FAILURE(tpacpi_battery_acpi_eval(GET_INHIBIT, ret, battery))
+> +			return -ENODEV;
+> +		/* The inhibit charge status is in bit 0 */
+> +		*ret = *ret & 0x01;
 > +		return 0;
-> +
-> +	iommu_get_resv_regions(&pdev->dev, &list);
-> +	list_for_each_entry(region, &list, list)
-> +		if (region->type == IOMMU_RESV_DIRECT &&
-> +		    region->length >= HISI_PTT_TRACE_BUFFER_SIZE) {
-> +			hisi_ptt->trace_ctrl.has_rmr = true;
-> +			hisi_ptt->trace_ctrl.rmr_addr = region->start;
-> +			hisi_ptt->trace_ctrl.rmr_length = region->length;
-> +			break;
+>  	default:
+>  		pr_crit("wrong parameter: %d", what);
+>  		return -EINVAL;
+> @@ -9447,6 +9457,22 @@ static int tpacpi_battery_set(int what, int battery, int value)
+>  			return -ENODEV;
+>  		}
+>  		return 0;
+> +	case INHIBIT_CHARGE:
+> +		/* When setting inhibit charge, we set a default value of
+> +		 * always breaking on AC detach and the effective time is set to
+> +		 * be permanent.
+> +		 * The battery ID is in bits 4-5, 2 bits,
+> +		 * the effective time is in bits 8-23, 2 bytes.
+> +		 * A time of FFFF indicates forever.
+> +		 */
+> +		param = value;
+> +		param |= battery << 4;
+> +		param |= 0xFFFF << 8;
+> +		if (ACPI_FAILURE(tpacpi_battery_acpi_eval(SET_INHIBIT, &ret, param))) {
+> +			pr_err("failed to set inhibit charge on %d", battery);
+> +			return -ENODEV;
 > +		}
-> +
-> +	iommu_put_resv_regions(&pdev->dev, &list);
-> +	return hisi_ptt->trace_ctrl.has_rmr ? 0 : -ENOMEM;
-> +}
+> +		return 0;
+>  	default:
+>  		pr_crit("wrong parameter: %d", what);
+>  		return -EINVAL;
+> @@ -9467,6 +9493,8 @@ static int tpacpi_battery_probe(int battery)
+>  	 * 4) Check for support
+>  	 * 5) Get the current force discharge status
+>  	 * 6) Check for support
+> +	 * 7) Get the current inhibit charge status
+> +	 * 8) Check for support
+>  	 */
+>  	if (acpi_has_method(hkey_handle, GET_START)) {
+>  		if ACPI_FAILURE(tpacpi_battery_acpi_eval(GET_START, &ret, battery)) {
+> @@ -9513,6 +9541,16 @@ static int tpacpi_battery_probe(int battery)
+>  			battery_info.batteries[battery].charge_behaviours |=
+>  				BIT(POWER_SUPPLY_CHARGE_BEHAVIOUR_FORCE_DISCHARGE);
+>  	}
+> +	if (acpi_has_method(hkey_handle, GET_INHIBIT)) {
+> +		if (ACPI_FAILURE(tpacpi_battery_acpi_eval(GET_INHIBIT, &ret, battery))) {
+> +			pr_err("Error probing battery inhibit charge; %d\n", battery);
+> +			return -ENODEV;
+> +		}
+> +		/* Support is marked in bit 5 */
+> +		if (ret & BIT(5))
+> +			battery_info.batteries[battery].charge_behaviours |=
+> +				BIT(POWER_SUPPLY_CHARGE_BEHAVIOUR_INHIBIT_CHARGE);
+> +	}
+>  
+>  	battery_info.batteries[battery].charge_behaviours |=
+>  		BIT(POWER_SUPPLY_CHARGE_BEHAVIOUR_AUTO);
+> @@ -9673,6 +9711,11 @@ static ssize_t charge_behaviour_show(struct device *dev,
+>  			return -ENODEV;
+>  		if (ret)
+>  			active = POWER_SUPPLY_CHARGE_BEHAVIOUR_FORCE_DISCHARGE;
+> +	} else if (available & BIT(POWER_SUPPLY_CHARGE_BEHAVIOUR_INHIBIT_CHARGE)) {
 
-No.
+The use of else-if here seems wrong, this suggests that batterys can never
+support both force-discharge and inhibit-charge behavior, which they can, so this
+means that active can now never get set to BEHAVIOUR_INHIBIT_CHARGE on
+batteries which support both.
 
-The whole point of RMRs is for devices that are already configured to 
-access the given address range in a manner beyond the kernel's control. 
-If you can do this, it proves that you should not have an RMR in the 
-first place.
+So AFAICT the else part of the else if should be dropped here, making this
+a new stand alone if block.
 
-The notion of a kernel driver explicitly configuring its device to DMA 
-into any random RMR that looks big enough is so egregiously wrong that 
-I'm almost lost for words...
+For the other parts of the set lets wait and see what Sebastian has to say.
 
-Robin.
+Regards,
+
+Hans
+
+
+
+> +		if (tpacpi_battery_get(INHIBIT_CHARGE, battery, &ret))
+> +			return -ENODEV;
+> +		if (ret)
+> +			active = POWER_SUPPLY_CHARGE_BEHAVIOUR_INHIBIT_CHARGE;
+>  	}
+>  
+>  	return power_supply_charge_behaviour_show(dev, available, active, buf);
+> @@ -9710,12 +9753,20 @@ static ssize_t charge_behaviour_store(struct device *dev,
+>  	switch (selected) {
+>  	case POWER_SUPPLY_CHARGE_BEHAVIOUR_AUTO:
+>  		ret = tpacpi_battery_set(FORCE_DISCHARGE, battery, 0);
+> -		if (ret < 0)
+> +		ret = tpacpi_battery_set(INHIBIT_CHARGE, battery, 0) || ret;
+> +		if (ret)
+>  			return ret;
+>  		break;
+>  	case POWER_SUPPLY_CHARGE_BEHAVIOUR_FORCE_DISCHARGE:
+>  		ret = tpacpi_battery_set(FORCE_DISCHARGE, battery, 1);
+> -		if (ret < 0)
+> +		ret = tpacpi_battery_set(INHIBIT_CHARGE, battery, 0) || ret;
+> +		if (ret)
+> +			return ret;
+> +		break;
+> +	case POWER_SUPPLY_CHARGE_BEHAVIOUR_INHIBIT_CHARGE:
+> +		ret = tpacpi_battery_set(FORCE_DISCHARGE, battery, 0);
+> +		ret = tpacpi_battery_set(INHIBIT_CHARGE, battery, 1) || ret;
+> +		if (ret)
+>  			return ret;
+>  		break;
+>  	default:
+> 
+
