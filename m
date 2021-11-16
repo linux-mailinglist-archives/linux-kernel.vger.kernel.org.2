@@ -2,172 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C8345316A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A380B45316C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235692AbhKPLyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 06:54:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29796 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235655AbhKPLyV (ORCPT
+        id S235584AbhKPLyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:54:50 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:36846 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235629AbhKPLyj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 06:54:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637063482;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AhivTIOpjPA1rMsW7/cjbVF1w7BJWhc6FOerNF9l7U0=;
-        b=QbcFUndmKu6XV+yLt2+Ew+KG3cExw7CQ+E0A8KQeoMppJvtXAlBg0p9UM0SHwgzB28S5KM
-        cypwZSJHAcflTmRwl1jQeMyiYx+y5stmFH3pBupcO+9fJ+q87YafWtzmJPGBFA1WdCerFi
-        L9IgIkwalI5fdxW/7YX7Dca0pY4T1rM=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-124-S9IozJCTNWKd4Kuemkgb5Q-1; Tue, 16 Nov 2021 06:51:20 -0500
-X-MC-Unique: S9IozJCTNWKd4Kuemkgb5Q-1
-Received: by mail-ed1-f69.google.com with SMTP id i9-20020a508709000000b003dd4b55a3caso16988831edb.19
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 03:51:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=AhivTIOpjPA1rMsW7/cjbVF1w7BJWhc6FOerNF9l7U0=;
-        b=J7cGS3bvqrSwhVht7C/41MFqDOhiJnJAF+Ia2yqJbGUbgYwgXeM3AybQtMTPnVS6z1
-         oPwz4ieSsq9ouw6f80VEaKM7RJ4341nT0Yl89MPjShNkyMY/kJexp6XOdIXM6DTRdJcR
-         5uhL4NtkgKzd61+nfBp/QAlQQ3QIMKysFM/MbGedKqBZH7rYS2kng7oFIhbhqfMt8rg2
-         /tP4wzSJSLDs4A3P9rOMwwCjgpsmdxePqWbrk84OeT3akT2y66XdP2boX1d752408D6b
-         uWpGz5qW/mkDf2cNoo/uzUV7oW/cGhhbdNoUD/75cRKNH4bQYTyvnATNpVj02rRhUnHB
-         QGMQ==
-X-Gm-Message-State: AOAM531UhPZ+PZiUpwkdNpb2SZZf7GA30IgcCQn8DZm9wtnXN87/9+Bp
-        OrrPNuSo5jWWasA+ybR4uQOUVn4cAi4sYToRP0LcBnXXGEQJBzCSSNSyUpiubMxgw+FaugBt5bb
-        IhOkq9eaXdeumbv/ssN7iiwAQ
-X-Received: by 2002:a50:da06:: with SMTP id z6mr9515607edj.50.1637063479403;
-        Tue, 16 Nov 2021 03:51:19 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJziWnZi0A7YtidAFr8ClW2EWX17vgnSRICyshdZ6kN7QttTEebqs+HGy0b0miUzYX8l1w2ccA==
-X-Received: by 2002:a50:da06:: with SMTP id z6mr9515577edj.50.1637063479254;
-        Tue, 16 Nov 2021 03:51:19 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id h10sm6076957edr.95.2021.11.16.03.51.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 03:51:18 -0800 (PST)
-Message-ID: <d5679e3a-7500-7b6b-5421-441de306afb7@redhat.com>
-Date:   Tue, 16 Nov 2021 12:51:18 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 17/20] extcon: intel-cht-wc: Support devs with Micro-B
- / USB-2 only Type-C connectors
-Content-Language: en-US
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Yauhen Kharuzhy <jekhor@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>
-References: <20211114170335.66994-1-hdegoede@redhat.com>
- <20211114170335.66994-18-hdegoede@redhat.com>
- <CAHp75VdXSdhNtPwNdpssnmt+sZb+ZoAUm-cKJu-PqymmHMOpRw@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <CAHp75VdXSdhNtPwNdpssnmt+sZb+ZoAUm-cKJu-PqymmHMOpRw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Tue, 16 Nov 2021 06:54:39 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=rocking@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UwtJaDZ_1637063498;
+Received: from localhost(mailfrom:rocking@linux.alibaba.com fp:SMTPD_---0UwtJaDZ_1637063498)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 16 Nov 2021 19:51:38 +0800
+From:   Peng Wang <rocking@linux.alibaba.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] Add busy loop polling for idle SMT
+Date:   Tue, 16 Nov 2021 19:51:35 +0800
+Message-Id: <cover.1637062971.git.rocking@linux.alibaba.com>
+X-Mailer: git-send-email 2.9.5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Now we have cpu_idle_force_poll which uses cpu_relax() waiting for
+an arriving IPI, while sometimes busy loop on idle cpu is also
+useful to provide consistent pipeline interference for hardware SMT.
 
-On 11/16/21 12:28, Andy Shevchenko wrote:
-> On Sun, Nov 14, 2021 at 7:04 PM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> So far the extcon-intel-cht-wc code has only been tested on devices with
->> a Type-C connector with USB-PD, USB3 (superspeed) and DP-altmode support
->> through a FUSB302 Type-C controller.
->>
->> Some devices with the intel-cht-wc PMIC however come with an USB-micro-B
->> connector, or an USB-2 only Type-C connector without USB-PD.
->>
->> Which device-model we are running on can be identified with the new
->> intel_cht_wc_get_model() helper and on models without a Type-C controller
->> the extcon code must control the Vbus 5V boost converter and the USB role
->> switch depending on the detected cable-type.
-> 
-> ...
-> 
->>  config EXTCON_INTEL_CHT_WC
->>         tristate "Intel Cherrytrail Whiskey Cove PMIC extcon driver"
->> -       depends on INTEL_SOC_PMIC_CHTWC
-> 
->> +       depends on INTEL_SOC_PMIC_CHTWC && USB_SUPPORT
-> 
-> Having these two in one expression sounds a bit alogical to me, can
-> you just add a separate "depends on"?
+When hardware SMT is enabled, the switching between idle and
+busy state of one cpu will cause performance fluctuation of
+other sibling cpus on the same core.
 
-Sure.
+In pay-for-execution-time scenario, cloud service providers prefer
+stable performance data to set stabel price for same workload.
+Different execution time of the same workload caused by different
+idle or busy state of sibling SMT cpus will make different bills, which
+is confused for customers.
 
-> 
->> +       select USB_ROLE_SWITCH
-> 
-> ...
-> 
->> +       if (ext->vbus_boost && ext->vbus_boost_enabled != enable) {
->> +               if (enable)
->> +                       ret = regulator_enable(ext->vbus_boost);
->> +               else
->> +                       ret = regulator_disable(ext->vbus_boost);
-> 
-> Redundant blank line here (but it's up to you)
-> 
->> +               if (ret == 0)
->> +                       ext->vbus_boost_enabled = enable;
->> +               else
->> +                       dev_err(ext->dev, "Error updating Vbus boost regulator: %d\n", ret);
-> 
-> Why not a traditional pattern, i.e. error handling first?
+Since there is no dynamic CPU time scaling based on SMT pipeline interference,
+to coordinate sibling SMT noise no matter whether they are idle or not,
+busy loop in idle state can provide approximately consistent pipeline interference.
 
-As I've mentioned before (to a very similar remark) error handling
-first is not the traditional pattern, at least not for me.
+For example, a workload computing tangent and cotangent will finish in 9071ms when
+sibling SMT cpus are idle, and 13299ms when sibling SMT cpus are computiing other workload.
+This generate 32% performance fluctuation.
 
-Traditionally (to me) the else case is the error case. This
-is just how humans work. E.g. if I need help for something
-saying something like:
+SMT idle polling makes things slower, but we can set bigger cpu quota to make up
+a deficiency. This also increase power consumption by 2.2%, which is acceptable.
 
-"If you have time can you help me with this please? Otherwise
-I'm afraid that I am never going to solve this."
+There may be some other possible solutions, while each has its own problem:
+a) disbale hardware SMT, which means half of SMT is unused and more hardware cost.
+b) busy loop in a userspace thread, but the cpu usage is confusing.
 
-Feels natural, where as saying it like this:
+We propose this patch to discuss the performance fluctuation problem related to SMT
+pipeline interference, and any comments are welcome.
 
-"If you do not have time I'm afraid I am never going to solve
-this, otherwise can you help me with this please ?"
+Peng Wang (1):
+  sched/idle: support busy loop polling on idle SMT cpus
 
-Feels quite unnatural, at least to me.
+ arch/Kconfig         | 10 ++++++
+ kernel/sched/core.c  | 39 ++++++++++++++++++++++
+ kernel/sched/idle.c  | 91 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ kernel/sched/sched.h | 18 +++++++++++
+ 4 files changed, 158 insertions(+)
 
->> +       }
-> 
-> ...
-> 
->> +/* Some boards require controlling the role-sw and vbus based on the id-pin */
-> 
-> Vbus ? VBUS? Here and there the inconsistency of some terms...
-
-"Vbus", I'll try to fix this up everywhere.
-
-Regards,
-
-Hans
+-- 
+2.9.5
 
