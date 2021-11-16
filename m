@@ -2,161 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C798A4529E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:38:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 387904529DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:38:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235361AbhKPFli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 00:41:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59072 "EHLO
+        id S235310AbhKPFkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 00:40:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235362AbhKPFlK (ORCPT
+        with ESMTP id S235244AbhKPFkg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 00:41:10 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76737C0EC8DF
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 18:58:35 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id g19so16770578pfb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 18:58:35 -0800 (PST)
+        Tue, 16 Nov 2021 00:40:36 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4643CC02554F;
+        Mon, 15 Nov 2021 18:57:17 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id w15so18807967ill.2;
+        Mon, 15 Nov 2021 18:57:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xMverpPQHd2aXy11wGVhC6qipjbjdcnBqS5cqjuisVU=;
-        b=Jjz7X7nH6VliHviVpHU2kZanI4d+egfmAeVExFNVO2dAD4F/7297W0pyxkC0zDK3pi
-         t+JeHO0ULvLrWogTa5TSdr6j9r2ri4qe8OYbWIF3MfXckfgyGFPQ0+H+Pkif+dNgWWI5
-         3tJaz0VCAcvniDalXM/Y/IYrvwFGmRi0S8WagX3S/K0FBDSlv1Z8jIIiqE1pobcqR4B8
-         RZ/3zlIoonxPjAw/bW2RAmqtVVjgm8bu8IXVcQWVuJJcQIUHw5KzFz66fcKgE2PBPusp
-         +jD7TyE12hx43fNODKCq2OMGcMh7a3OW2CfibGH3nC3uRWAlRQM1cvY7DCmad5KEvuC9
-         iR5g==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=No4z7La4bhkcQbca89PlomBUUI0KAnWXKTm6YdxA2AA=;
+        b=BsL7Od/o7dLYe0c5YTQGOegr1XgaZrH2zdjLdnSg6Na4+gKwHpPXqAtdZ1rl2RKh6C
+         8z8qAjQCeVU8YlQHtOysvSThNDc5xa7ZQ+DefoFKlmGGeMgVxu06lGfHZpq6CsAcMWDW
+         3ZebIT8sHRW3ATUdrmlM3/ACVKS7F1ujik7tnkcKIl6b6At/dzR3hEUn41U2EMNaItCu
+         JDquG2uBVumxo3y/YFxWhX7NeJBzVwutrINAZPYbvCH4XVoHr3GIHUEDhaaG0tAKhJhC
+         QA+v2ac6/dYz7WvOeUHf1WDVEqh2sQ5B4SH0ckFoIstv9cHlEoVlAvWhr1HNrKsN/+q/
+         CfWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xMverpPQHd2aXy11wGVhC6qipjbjdcnBqS5cqjuisVU=;
-        b=EULmeNXOotP2uULq/Y7TicCz1QsNCfApiLia+xNLO5ubW7B4FlHZIp9ZIH7E3vrlyd
-         rToovi6Eyrc0LkI5sdnJJ+elbQKyE304xShUVV5nleDZUp05xrQIp92qop3zwyaOf2gP
-         GsJfqp8eeegLWW+I6beHYzuoLIFfscF9dROPUBEspD6aM4NVmAFFSsZt3JyWk/YZXiTC
-         ++iSrYNLs/ycjBZUcJ1QPzv1uqPpXw1AGkg2FSFJme6dRL8k7Zt5Ium7O4+DvIW5/Zr/
-         u50AlVLTfPttvBxMXl0gq8yAbSDRTqQU1rOFuy9gctMOoXaAutAR7KIWvZvcuVS+A7pb
-         rasA==
-X-Gm-Message-State: AOAM530WuRsKpVx6EcRq7/jAIluMmnFmE6ue6mqmB+/m4pcrGifS1fPq
-        4jOvosmVfWO1CMM4kNSOfJMMb2gwBpxruRU1
-X-Google-Smtp-Source: ABdhPJxmi8iVxOneNs9XgnuxTHQkUqaQNzRBGtQIA9aNF51QGjVhn6SrO9CDbUYwQ+ovjRUZEqvjmg==
-X-Received: by 2002:a65:4889:: with SMTP id n9mr2602236pgs.303.1637031514834;
-        Mon, 15 Nov 2021 18:58:34 -0800 (PST)
-Received: from [10.2.24.177] ([61.120.150.70])
-        by smtp.gmail.com with ESMTPSA id lt5sm592438pjb.43.2021.11.15.18.58.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 18:58:34 -0800 (PST)
-Subject: Re: Re: [RFC] KVM: x86: SVM: don't expose PV_SEND_IPI feature with
- AVIC
-To:     Wanpeng Li <kernellwp@gmail.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Kele Huang <huangkele@bytedance.com>, chaiwen.cc@bytedance.com,
-        xieyongji@bytedance.com, dengliang.1214@bytedance.com,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20211108095931.618865-1-huangkele@bytedance.com>
- <a991bbb4-b507-a2f6-ec0f-fce23d4379ce@redhat.com>
- <f93612f54a5cde53fd9342f703ccbaf3c9edbc9c.camel@redhat.com>
- <CANRm+Cze_b0PJzOGB4-tPdrz-iHcJj-o7QL1t1Pf1083nJDQKQ@mail.gmail.com>
-From:   zhenwei pi <pizhenwei@bytedance.com>
-Message-ID: <d65fbd73-7612-8348-2fd8-8da0f5e2a3c0@bytedance.com>
-Date:   Tue, 16 Nov 2021 10:56:25 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=No4z7La4bhkcQbca89PlomBUUI0KAnWXKTm6YdxA2AA=;
+        b=IK+Pb60A6Jpf7UWRIpdMJFKoCSoaRqg1Drs43yzuy6Ka+suU+Y9NBsTElu/DsT5/hQ
+         o0lYe8yPO/mmVqrfdcxjSNjokdO2weNmrW70rjT3WR7bA869y0LTxcdY+skLsE1u96cA
+         Hq+dalKA70mK/nmggYP+sZfGeySftu7TEZkYnIHa8x9VXOQG8ApjUhP+KAnbZstk5c8v
+         U2ao2tdR6sCjReonFxemxEM1sOKTIqCE+ICsAd2/atcgXoBg+e+d1tNBGa9tgiIYtXeh
+         z57C/HeHzQ557Nk/nqLD3qw+msTFdOemhj0lNsb2uxnQDHiHc5pi0Y73JnzA+W6YOlDi
+         Zx6Q==
+X-Gm-Message-State: AOAM530IedR7z3uCZ24FJrvoDExLsQzphX/EO6A1TxHQJsuqq6HD4inf
+        5xLJJxaeJbsMz53nqcyCXdLr4zwMrKUYNzkYipA=
+X-Google-Smtp-Source: ABdhPJxbAdYM4R1iQcPHlocus9bYOMmiEF/k+qo4v15iARy7FRDWBlBX+2aDInBc9SdiIiMvm/Psp/os9Wv1kiFSQRM=
+X-Received: by 2002:a05:6e02:1608:: with SMTP id t8mr2417192ilu.25.1637031436743;
+ Mon, 15 Nov 2021 18:57:16 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CANRm+Cze_b0PJzOGB4-tPdrz-iHcJj-o7QL1t1Pf1083nJDQKQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <m3lf36n0d8.fsf@t19.piap.pl>
+In-Reply-To: <m3lf36n0d8.fsf@t19.piap.pl>
+From:   Art Nikpal <email2tema@gmail.com>
+Date:   Tue, 16 Nov 2021 10:57:05 +0800
+Message-ID: <CAKaHn9+OZ7hKf5cMYsp28UFZ_79G5=ksgNjukg2GO2NLj_Un=A@mail.gmail.com>
+Subject: Re: [PATCH v3 REPOST] PCIe: limit Max Read Request Size on i.MX to
+ 512 bytes
+To:     =?UTF-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Richard Zhu <hongxing.zhu@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Still not merged any solution for solve this problem
+same as our solution https://lkml.org/lkml/2021/7/28/1237
 
+May be we can accept any one  ?
 
-On 11/16/21 10:48 AM, Wanpeng Li wrote:
-> On Mon, 8 Nov 2021 at 22:09, Maxim Levitsky <mlevitsk@redhat.com> wrote:
->>
->> On Mon, 2021-11-08 at 11:30 +0100, Paolo Bonzini wrote:
->>> On 11/8/21 10:59, Kele Huang wrote:
->>>> Currently, AVIC is disabled if x2apic feature is exposed to guest
->>>> or in-kernel PIT is in re-injection mode.
->>>>
->>>> We can enable AVIC with options:
->>>>
->>>>     Kmod args:
->>>>     modprobe kvm_amd avic=1 nested=0 npt=1
->>>>     QEMU args:
->>>>     ... -cpu host,-x2apic -global kvm-pit.lost_tick_policy=discard ...
->>>>
->>>> When LAPIC works in xapic mode, both AVIC and PV_SEND_IPI feature
->>>> can accelerate IPI operations for guest. However, the relationship
->>>> between AVIC and PV_SEND_IPI feature is not sorted out.
->>>>
->>>> In logical, AVIC accelerates most of frequently IPI operations
->>>> without VMM intervention, while the re-hooking of apic->send_IPI_xxx
->>>> from PV_SEND_IPI feature masks out it. People can get confused
->>>> if AVIC is enabled while getting lots of hypercall kvm_exits
->>>> from IPI.
->>>>
->>>> In performance, benchmark tool
->>>> https://lore.kernel.org/kvm/20171219085010.4081-1-ynorov@caviumnetworks.com/
->>>> shows below results:
->>>>
->>>>     Test env:
->>>>     CPU: AMD EPYC 7742 64-Core Processor
->>>>     2 vCPUs pinned 1:1
->>>>     idle=poll
->>>>
->>>>     Test result (average ns per IPI of lots of running):
->>>>     PV_SEND_IPI      : 1860
->>>>     AVIC             : 1390
->>>>
->>>> Besides, disscussions in https://lkml.org/lkml/2021/10/20/423
->>>> do have some solid performance test results to this.
->>>>
->>>> This patch fixes this by masking out PV_SEND_IPI feature when
->>>> AVIC is enabled in setting up of guest vCPUs' CPUID.
->>>>
->>>> Signed-off-by: Kele Huang <huangkele@bytedance.com>
->>>
->>> AVIC can change across migration.  I think we should instead use a new
->>> KVM_HINTS_* bit (KVM_HINTS_ACCELERATED_LAPIC or something like that).
->>> The KVM_HINTS_* bits are intended to be changeable across migration,
->>> even though we don't have for now anything equivalent to the Hyper-V
->>> reenlightenment interrupt.
->>
->> Note that the same issue exists with HyperV. It also has PV APIC,
->> which is harmful when AVIC is enabled (that is guest uses it instead
->> of using AVIC, negating AVIC benefits).
->>
->> Also note that Intel recently posted IPI virtualizaion, which
->> will make this issue relevant to APICv too soon.
-> 
-> The recently posted Intel IPI virtualization will accelerate unicast
-> ipi but not broadcast ipis, AMD AVIC accelerates unicast ipi well but
-> accelerates broadcast ipis worse than pv ipis. Could we just handle
-> unicast ipi here?
-> 
->      Wanpeng
-> 
-Depend on the number of target vCPUs, broadcast IPIs gets unstable 
-performance on AVIC, and usually worse than PV Send IPI.
-So agree with Wanpeng's point, is it possible to separate single IPI and 
-broadcast IPI on a hardware acceleration platform?
+On Wed, Oct 6, 2021 at 2:17 PM Krzysztof Ha=C5=82asa <khalasa@piap.pl> wrot=
+e:
+>
+> DWC PCIe controller imposes limits on the Read Request Size that it can
+> handle. For i.MX6 family it's fixed at 512 bytes by default.
+>
+> If a memory read larger than the limit is requested, the CPU responds
+> with Completer Abort (CA) (on i.MX6 Unsupported Request (UR) is returned
+> instead due to a design error).
+>
+> The i.MX6 documentation states that the limit can be changed by writing
+> to the PCIE_PL_MRCCR0 register, however there is a fixed (and
+> undocumented) maximum (CX_REMOTE_RD_REQ_SIZE constant). Tests indicate
+> that values larger than 512 bytes don't work, though.
+>
+> This patch makes the RTL8111 work on i.MX6.
+>
+> Signed-off-by: Krzysztof Ha=C5=82asa <khalasa@piap.pl>
+> ---
+> While ATM needed only on ARM, this version is compiled in on all
+> archs.
+>
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controll=
+er/dwc/pci-imx6.c
+> index 80fc98acf097..225380e75fff 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -1148,6 +1148,7 @@ static int imx6_pcie_probe(struct platform_device *=
+pdev)
+>                 imx6_pcie->vph =3D NULL;
+>         }
+>
+> +       max_pcie_mrrs =3D 512;
+>         platform_set_drvdata(pdev, imx6_pcie);
+>
+>         ret =3D imx6_pcie_attach_pd(dev);
 
--- 
-zhenwei pi
+I think next simple patch will be fine for all our cases
+
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index aacf575c15cf..abeb48a64ee3 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -112,6 +112,8 @@ enum pcie_bus_config_types pcie_bus_config =3D PCIE_B=
+US_PEER2PEER;
+>  enum pcie_bus_config_types pcie_bus_config =3D PCIE_BUS_DEFAULT;
+>  #endif
+>
+> +u16 max_pcie_mrrs =3D 4096; // no limit
+
+max_pcie_mrrs
+> +
+>  /*
+>   * The default CLS is used if arch didn't set CLS explicitly and not
+>   * all pci devices agree on the same value.  Arch can override either
+> @@ -5816,6 +5818,9 @@ int pcie_set_readrq(struct pci_dev *dev, int rq)
+>                         rq =3D mps;
+>         }
+>
+> +       if (rq > max_pcie_mrrs)
+> +               rq =3D max_pcie_mrrs;
+> +
+>         v =3D (ffs(rq) - 8) << 12;
+>
+>         ret =3D pcie_capability_clear_and_set_word(dev, PCI_EXP_DEVCTL,
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index 06ff1186c1ef..2b95a8204819 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -996,6 +996,7 @@ enum pcie_bus_config_types {
+>  };
+>
+>  extern enum pcie_bus_config_types pcie_bus_config;
+> +extern u16 max_pcie_mrrs;
+>
+>  extern struct bus_type pci_bus_type;
+>
+>
+> --
+> Krzysztof "Chris" Ha=C5=82asa
+>
+> Sie=C4=87 Badawcza =C5=81ukasiewicz
+> Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+> Al. Jerozolimskie 202, 02-486 Warszawa
