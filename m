@@ -2,97 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B58D452A57
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 07:06:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10EA9452A5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 07:08:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237455AbhKPGJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 01:09:21 -0500
-Received: from mga06.intel.com ([134.134.136.31]:3868 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232933AbhKPGIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 01:08:36 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="294448235"
-X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
-   d="scan'208";a="294448235"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 22:05:34 -0800
-X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
-   d="scan'208";a="454327607"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.215.107]) ([10.254.215.107])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 22:05:29 -0800
-Message-ID: <c7add816-853a-c31d-6425-464512a2de61@linux.intel.com>
-Date:   Tue, 16 Nov 2021 14:05:27 +0800
+        id S236739AbhKPGLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 01:11:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231587AbhKPGLE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 01:11:04 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 660EBC061570;
+        Mon, 15 Nov 2021 22:08:08 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id i9so19493849qki.3;
+        Mon, 15 Nov 2021 22:08:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I3oQyh1i67EI9sCW3pQlUFVmFFrrPdE1dpx1lb+xR2U=;
+        b=E9OjszSmwpNQ1taXDWq1P1iNQZBuIsSmoMRgF0L3fgDwV+ydKR63vsHfTocvsPlpHU
+         DYTeHToo4XaVlAnMH9jqGnJNBI6qDg9pxEbGd8Z7noiXjXn3jsqqBNKljPRI1Y1YkaXE
+         t0+1CZ0sZ42qgvHtea/vCOFqvA+ArkYy9zFPc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I3oQyh1i67EI9sCW3pQlUFVmFFrrPdE1dpx1lb+xR2U=;
+        b=Lhbm02PxaYf55F3jXND8L9GCdBowbk+otX/KVkBXb36SJhU7kqXr7bcOJjdKiuQi8g
+         szUMaf07FdiLOM2NmQO278djIStD1j1vg620ZDQBU4CfsoVy8DVe0WxS7NosnJY9x0r+
+         EzkzKlRcbMwdX7s7Mi+aLZhBZjU/7B7YIt+JN9hT+nm2Y+UnCwu+TazL6ORE8/vdq9Fq
+         YbwtvGQnTKiut6oUeCEfwOn+Ytdf/wapfByb7B8DVbqCKK9HhWPGjvpjapqYqkhRUdrU
+         synKUY7Q5jVKBD2RgcrSK5K4S9mJJEHinmyNi/MbdwQIDukbCdM9iD7A4BO/VNIMjSkv
+         H7MA==
+X-Gm-Message-State: AOAM531s+cOE356G7g46iE32F4Gr6wJBZouAK9tByCWLTS0gbcZz+ERO
+        Fmy4A+7Sa4uJoK+q9Wj4vba4EYMB5MIQShi4NNc=
+X-Google-Smtp-Source: ABdhPJxg2WkPIsuOSay/GYggygOyktUFgy0Tfd4Ccq6kw0J8FhevHPTHEN5D5sp3cEHRxaqlDRsubd6rTcg2+5hU1BQ=
+X-Received: by 2002:a37:a8e:: with SMTP id 136mr4211384qkk.395.1637042887509;
+ Mon, 15 Nov 2021 22:08:07 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     baolu.lu@linux.intel.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, Will Deacon <will@kernel.org>,
-        rafael@kernel.org, Diana Craciun <diana.craciun@oss.nxp.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Liu Yi L <yi.l.liu@intel.com>,
-        Jacob jun Pan <jacob.jun.pan@intel.com>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        iommu@lists.linux-foundation.org, linux-pci@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211115221747.GA1587608@bhelgaas>
-Content-Language: en-US
-Subject: Re: [PATCH 03/11] PCI: pci_stub: Suppress kernel DMA ownership
- auto-claiming
-In-Reply-To: <20211115221747.GA1587608@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211026200058.2183-1-aladyshev22@gmail.com> <CACPK8Xd5eYpsFNw1jEjv3NaShgzE3zC_Ct29pJM34TfrqRTNtQ@mail.gmail.com>
+ <CACSj6VVTFa0t9WK=R2TucG7eFqUzBsWYFzvsaRt6eXOiFuQORA@mail.gmail.com>
+In-Reply-To: <CACSj6VVTFa0t9WK=R2TucG7eFqUzBsWYFzvsaRt6eXOiFuQORA@mail.gmail.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 16 Nov 2021 06:07:55 +0000
+Message-ID: <CACPK8Xcc6Nem00zZdGmHF=U4T2O90aL+_vKO4YmAqSW9wKeegA@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: aspeed: Add AMD DaytonaX BMC
+To:     Konstantin Aladyshev <aladyshev22@gmail.com>,
+        Patrick Williams <patrick@stwcx.xyz>
+Cc:     Supreeth Venkatesh <supreeth.venkatesh@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        SoC Team <soc@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Andrew Geissler <geissonator@yahoo.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+On Wed, 27 Oct 2021 at 10:59, Konstantin Aladyshev
+<aladyshev22@gmail.com> wrote:
+>
+> Thanks for the comments. Can I ask you some questions about this
+> `device-tree-gpio-naming.md`?
+>
+> 1) First of all in my naming I've tried to use naming scheme the same
+> as the EthanolX CRB DTS currently has
+> (https://github.com/torvalds/linux/blob/d25f27432f80a800a3592db128254c8140bd71bf/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts#L102).
+> Do you want me to change GPIO naming in the EthanolX CRB as well?
 
-On 11/16/21 6:17 AM, Bjorn Helgaas wrote:
-> On Mon, Nov 15, 2021 at 10:05:44AM +0800, Lu Baolu wrote:
->> pci_stub allows the admin to block driver binding on a device and make
->> it permanently shared with userspace. Since pci_stub does not do DMA,
->> it is safe. However the admin must understand that using pci_stub allows
->> userspace to attack whatever device it was bound to.
-> This commit log doesn't say what the patch does.  I think it tells us
-> something about what pci-stub*already*  does ("allows admin to block
-> driver binding") and something about why that is safe ("does not do
-> DMA").
+Yeah, that would make sense.
 
-Yes, you are right. This patch is to keep the pci_stub's existing use
-case ("allows admin to block driver binding") after moving the viable
-check from the vfio to iommu layer (done by this series).
+> 2) Also this naming comes from the signal names in the board
+> schematics. This way it is clear to check schematics vs DTS. If we use
+> this OpenBMC naming style, we will lose that correspondence. Is it
+> really good?
 
-About "safe" (should not be part of this description), there are two
-sides from my understanding:
+This is a good point. The preference is to use human readable names
+over the schematic net. I can see cases where this would be worse, but
+hopefully on balance it results in consistent naming between machines.
 
-#1) The pci_stub driver itself doesn't control the device to do any DMA.
-     So it won't interfere the user space through device DMA.
+> 3) In the initial version of the DTS file I've supplied only a minimal
+> set of GPIO, that are used by OpenBMC. GPIOs for x86-power-control app
+> and led id/fault gpios. With renaming these GPIOs I'm only sure about
+> these GPIOs:
+>
+> FAULT_LED                  - led-fault
+> CHASSIS_ID_BTN        - led-identify
+>
+> What about the rest? For example the document doesn't really state
+> what the *-button postfix states? Is it for asserting or monitoring
+> buttons? How should I name these signals?
+>
+> ASSERT_BMC_READY
+> ASSERT_RST_BTN
+> ASSERT_PWR_BTN
+>
+> MON_P0_RST_BTN
+> MON_P0_PWR_BTN
+> MON_P0_PWR_GOOD
+> MON_PWROK
+>
+> Can you help me with those?
 
-#2) The pci_stub driver doesn't access the PCI bar and doesn't build any
-     device driver state around any value in the bar. So other devices
-     in the same iommu group (assigned to user space) have no means to
-     change the kernel driver consistency via p2p access.
-> 
-> But it doesn't say what this patch changes.  Based on the subject
-> line, I expected something like:
-> 
->    As of ("<commit subject>"), <some function>() marks the iommu_group
->    as containing only devices with kernel drivers that manage DMA.
-> 
->    Avoid this default behavior for pci-stub because it does not program
->    any DMA itself.  This allows <some desirable behavior>.
-> 
+Patrick, do you have thoughts here?
 
-Sure. I will rephrase the description like above.
+>
+> 4) And what should I do to the board GPIO signals that OpenBMC doesn't
+> use? If you look at the EthanolX CRB DTS
+> (https://github.com/torvalds/linux/blob/d25f27432f80a800a3592db128254c8140bd71bf/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts#L102)
+> it has a ton of GPIOs. Should they be renamed to this OpenBMC style as
+> well? Or can they be named exactly like in the schematics?
 
-Best regards,
-baolu
+That's up to you.
+
+>
+> I've also CCed original author of the `device-tree-gpio-naming.md`
+> document Andrew Geissler. Andrew, can you please provide your opinion
+> on the subject?
+
+I've also added Patrick, who is helping review this document.
+
+Cheers,
+
+Joel
+
+>
+> Best regards,
+> Konstantin Aladyshev
+>
+> On Wed, Oct 27, 2021 at 12:03 AM Joel Stanley <joel@jms.id.au> wrote:
+> >
+> > Hello Konstantin,
+> >
+> > On Tue, 26 Oct 2021 at 20:01, Konstantin Aladyshev
+> > <aladyshev22@gmail.com> wrote:
+> > >
+> > > Add initial version of device tree for the BMC in the AMD DaytonaX
+> > > platform.
+> > >
+> > > AMD DaytonaX platform is a customer reference board (CRB) with an
+> > > Aspeed ast2500 BMC manufactured by AMD.
+> > >
+> > > Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
+> >
+> > This looks good. I have one comment about the GPIOs below.
+> >
+> > > +&gpio {
+> > > +       status = "okay";
+> > > +       gpio-line-names =
+> > > +       /*A0-A7*/       "","","FAULT_LED","","","","","",
+> > > +       /*B0-B7*/       "","","","","","","","",
+> > > +       /*C0-C7*/       "CHASSIS_ID_BTN","","","","","","","",
+> > > +       /*D0-D7*/       "","","ASSERT_BMC_READY","","","","","",
+> > > +       /*E0-E7*/       "MON_P0_RST_BTN","ASSERT_RST_BTN","MON_P0_PWR_BTN","ASSERT_PWR_BTN","",
+> > > +                       "MON_P0_PWR_GOOD","MON_PWROK","",
+> >
+> > For systems that will run openbmc, we try to use naming conventions
+> > from this document:
+> >
+> > https://github.com/openbmc/docs/blob/master/designs/device-tree-gpio-naming.md
+> >
+> > If a GPIO is missing from that doc I encourage you to add it.
