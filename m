@@ -2,87 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9924452BC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 08:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C942A452BAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 08:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhKPHmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 02:42:51 -0500
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:32321 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230425AbhKPHmc (ORCPT
+        id S230455AbhKPHlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 02:41:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26780 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230356AbhKPHlo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 02:42:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637048375; x=1668584375;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=TCfnqbUmdUhqnlLBT/Sg3zLbuO4OF3Gri0hto/EcruI=;
-  b=q6hhI+KhHrWm6UmZZ5JVsFTpsyo3ieGcwue0IFV2e+/6mh9Mqx5mVSgq
-   TK2XCDe2QJA8UXe5YB2CpmLSLL4/RBF6aGK9zjbOG2hXxxkWqTrGhtqy0
-   qhEjxgEcLUCdRamH+drJNrv6i7cZs+kTSyPkH0HR0MFnY/+GN3uaoA3vS
-   Q=;
-Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 15 Nov 2021 23:39:08 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg02-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 23:39:07 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Mon, 15 Nov 2021 23:38:35 -0800
-Received: from hu-vamslank-sd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Mon, 15 Nov 2021 23:38:35 -0800
-From:   <quic_vamslank@quicinc.com>
-To:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
-        <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <robh+dt@kernel.org>, <tglx@linutronix.de>, <maz@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <manivannan.sadhasivam@linaro.org>,
-        Vamsi Krishna Lanka <quic_vamslank@quicinc.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v4 6/6] dt-bindings: clock: Introduce pdc bindings for SDX65
-Date:   Mon, 15 Nov 2021 23:38:12 -0800
-Message-ID: <0943c652b09dda026545cc10f44b0c535088072f.1637047731.git.quic_vamslank@quicinc.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <cover.1637047731.git.quic_vamslank@quicinc.com>
-References: <cover.1637047731.git.quic_vamslank@quicinc.com>
+        Tue, 16 Nov 2021 02:41:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637048326;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=++lDESyr6yuN4aQ/v0rHUKTc0CEKFV+XvirR0Pe552k=;
+        b=cBHMBR+8jLW4prohZlmmHRFhAGtXxXtB+LSR6WRI/cRNWgUAzKcLCiXNKF1zhUb9+q20jA
+        kv3LdpM4bUdN9YFVw+Ji2P7fSEBtDJi1GgNcrg9uCpEzrqSIK5F/kPhKJ5RjhDt4upZykd
+        tckunuWv0cE2Drz0jK61nmp0YPf/l6Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-14-EfwjcWvDM8iCt7JQf7QlDQ-1; Tue, 16 Nov 2021 02:38:43 -0500
+X-MC-Unique: EfwjcWvDM8iCt7JQf7QlDQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 353F21851731;
+        Tue, 16 Nov 2021 07:38:41 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C9EA41B42C;
+        Tue, 16 Nov 2021 07:38:35 +0000 (UTC)
+Message-ID: <ce66f713-3d5f-cf3f-8813-d25ee1d2cec7@redhat.com>
+Date:   Tue, 16 Nov 2021 08:38:34 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] KVM: x86: fix cocci warnings
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Vihas Mak <makvihas@gmail.com>, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211114164312.GA28736@makvihas>
+ <YZJH0Hd/ETYWJGTX@hirez.programming.kicks-ass.net>
+ <ab419d8b-3e5d-2879-274c-ee609254890c@redhat.com>
+ <20211115204905.GQ174703@worktop.programming.kicks-ass.net>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211115204905.GQ174703@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
+On 11/15/21 21:49, Peter Zijlstra wrote:
+> On Mon, Nov 15, 2021 at 06:06:08PM +0100, Paolo Bonzini wrote:
+>> On 11/15/21 12:43, Peter Zijlstra wrote:
+>>> On Sun, Nov 14, 2021 at 10:13:12PM +0530, Vihas Mak wrote:
+>>>> change 0 to false and 1 to true to fix following cocci warnings:
+>>>>
+>>>>           arch/x86/kvm/mmu/mmu.c:1485:9-10: WARNING: return of 0/1 in function 'kvm_set_pte_rmapp' with return type bool
+>>>>           arch/x86/kvm/mmu/mmu.c:1636:10-11: WARNING: return of 0/1 in function 'kvm_test_age_rmapp' with return type bool
+>>>
+>>> That script should be deleted, it's absolute garbage.
+>>
+>> Only a Sith deals in absolutes.
+> 
+> Is that a star-wars thingy?
 
-Add compatible for SDX65 pdc.
+Yes, it is.  "If you're not with me, then you're my enemy!" "Only a Sith 
+deals in absolutes". :)
 
-Signed-off-by: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Acked-by: Rob Herring <robh@kernel.org>
----
- .../devicetree/bindings/interrupt-controller/qcom,pdc.txt        | 1 +
- 1 file changed, 1 insertion(+)
+> In C 0 is a valid way to spell false, equally, any non-0 value is a
+> valid way to spell true. Why would this rate a warn?
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.txt b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.txt
-index 98d89e53013d..ce631d853db4 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.txt
-+++ b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.txt
-@@ -23,6 +23,7 @@ Properties:
- 		    - "qcom,sdm845-pdc": For SDM845
- 		    - "qcom,sdm8250-pdc": For SM8250
- 		    - "qcom,sdm8350-pdc": For SM8350
-+		    - "qcom,sdx65-pdc": For SDX65
- 
- - reg:
- 	Usage: required
--- 
-2.33.1
+Because often 0 means success (if -errno means failure).  So if you 
+write false/true consistently for bool and 0 only for int, it's one less 
+thing that one can get wrong.  At least that's the rationale.
+
+Paolo
+
+> In fact, when casting _Bool to integer, you get 0 and 1. When looking at
+> the memory content of the _Bool variable, you'll get 0 and 1. But we're
+> not allowed to write 0 and 1?
+> 
 
