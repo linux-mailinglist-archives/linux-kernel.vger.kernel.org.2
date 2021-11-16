@@ -2,176 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6444533DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:13:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 634BD4533DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:13:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237329AbhKPOQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 09:16:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35968 "EHLO
+        id S237261AbhKPOQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 09:16:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237276AbhKPOQC (ORCPT
+        with ESMTP id S237250AbhKPOQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 09:16:02 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41DBC061202
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 06:13:01 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id n29so37816612wra.11
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 06:13:01 -0800 (PST)
+        Tue, 16 Nov 2021 09:16:06 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5295EC061570;
+        Tue, 16 Nov 2021 06:13:09 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id l22so53578407lfg.7;
+        Tue, 16 Nov 2021 06:13:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Hw7z2DE+F8UBs0gio938IkOrZbQGq0DztTjnNTwE29I=;
-        b=D8fdejX/rCNDBoHiV4LiynBJx18EM/ZjvMMkJpbuoSlDJdlr7b2U39xUO91b7HWq0C
-         8ANdlnsOY0N04/lXVqSO1XMvljvxKTMljsm/omCsmStxLTzIlNGJKDkn4uL4IFDu1O7l
-         yEiDYt4zoE+vkdWBsWn1lKOjOL0NBYRB/nxoyO/vxoLwWT9JMG+hwV7vYZfxwrgpR45D
-         ZbbC8gU0LfHvQKbbZJo5yNirplHMDwvzqTdwVtx3rqZpMh4l1x2kCzfy7E4WBmjTy0RG
-         +3TVBOxOlv1ajb/37JZskVapp3DRMgnhvrWsOTbAkNeybm+Pd5HHVUXmUmRJsilTZf7n
-         jiqA==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=SAFo3rW8eZqicBwfdhly0zJ3f49mYTVHGsP4fwuNE6M=;
+        b=MUBZmLYHsWTdx+5/t1Gnba93NEA1+CzW6up/O8ayTi9yXCkqkPRb5LM7i9iyAOYpdt
+         nQsSmAiVJJJet3zOnm1bL7QX5oW1JHGe7qEqh0eTTXKOqaXGiNG78R6fC+vguErWG0eq
+         McCafKtF0gG6DbNjpp8HukkNDCP7ZJhNa1pjuj2h8SRtDnW1dl3SZS7ZetoxKw2Y9vfM
+         pzzpcVhkTfsypm5ZjYIJ+saBBTJlMUIZVrMNIp3/AcZIxBfkOQsjtrar9q6AU2ccEl5C
+         xjkDM4a4zblFULgbYABH8iDIfvnVr1IAnz0kx+un20/AzvG9dk84Kx9BFp2OEZJ7xyoz
+         qrtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Hw7z2DE+F8UBs0gio938IkOrZbQGq0DztTjnNTwE29I=;
-        b=VoFtFGS94vB/1ZJGkd7/dSRfZP7Q48suNvfdLJXNaaWzKH5ylZPlbzdXMyFB1Wyuqv
-         2mihr3fk10Isu4MHvQEG4nvlq8REn54Kx/6nkQT+0T5Lw2i67PsVm4n+ixW5t3ei4J1N
-         1YzPSVBgRYdZFgefFUkoTzOq28z5+iNC36pCx1Q0gKHL9Er787oj9azKxABOpLcAbiqW
-         KsgByzquZd5qxfsgyI1pqpXYjyUzg15Sqg6ME4hZKagfrar7/e9zgl2B0RrV0qwaVaNp
-         v/nbLRj/3m/dKfEecImA6iQUN9t/rFZicVDlh5efFlVOzOiUeD25cCmVR5CjAc5OcrKS
-         RCQw==
-X-Gm-Message-State: AOAM53388SPIDatKLh/1TCvzMXMxfBrz/EsqHz7cYtSnKLdsqWqhXoZ/
-        4uYznIQQMUQCRzWroHlIkkDHaQPEcM7f6g==
-X-Google-Smtp-Source: ABdhPJx6YJZlTa5B4GfDTwox4+qJjdQGXyHLa50AzCSZZtUd61i17/1U90BHUfQGFlbWjKTqNjS2Kg==
-X-Received: by 2002:a5d:42cc:: with SMTP id t12mr9608486wrr.129.1637071980582;
-        Tue, 16 Nov 2021 06:13:00 -0800 (PST)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id h18sm18751493wre.46.2021.11.16.06.12.59
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=SAFo3rW8eZqicBwfdhly0zJ3f49mYTVHGsP4fwuNE6M=;
+        b=tmjq9ptD5lWWGAlkEQvZR8GrGJREs5lCRQrXjOe6HmGLyMssgf7m/x9TThx+a92TOk
+         vH8Lut4kIScV6pFA9lrtNyZ3950eDJ50C1pn2VTaTNB2EkyeeRB9K0ShBHWt9NNJb30p
+         a1ZM9tzyCfxNDRDv6Pnr1fZjSFa69jGivPv3GnYH9CBYyEEfgzMmtqR3OIamoe3r93nc
+         2LCg4NUf4fXHVMmQPDRTq/CjNuZfgZzBklD4qvZxpmQLmE8CGwFkHFPfVdmJBekm+ejZ
+         UD1s7EidZoSJw0Ln2ktlf2SodIJqTY/9di/i1EYtAM9Tjh7/ux/Ey62lM2Adjfratpk/
+         p43g==
+X-Gm-Message-State: AOAM533iBJtczYyzjctbTawIkT3FvP7PnNWyG7FN81s9p9Y+xSPdd6jX
+        t3vqNkphIx+ewXq1P+2QLYE=
+X-Google-Smtp-Source: ABdhPJwLRyDiXtrBK8Po6LmQf+B7tKRmIG7EcnOt9NFPYmPQI/2U4h1HjQQJf29P0sG7sEqT1WJ3XA==
+X-Received: by 2002:a05:6512:1520:: with SMTP id bq32mr7019710lfb.232.1637071987677;
+        Tue, 16 Nov 2021 06:13:07 -0800 (PST)
+Received: from localhost.localdomain ([94.103.224.112])
+        by smtp.gmail.com with ESMTPSA id bt3sm1770397lfb.132.2021.11.16.06.13.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 06:13:00 -0800 (PST)
-Date:   Tue, 16 Nov 2021 15:12:58 +0100
-From:   LABBE Corentin <clabbe@baylibre.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net
-Subject: Re: [PATCH v3 00/14] staging: media: zoran: fusion in one module
-Message-ID: <YZO8an3L6gay0isM@Red>
-References: <20211026193416.1176797-1-clabbe@baylibre.com>
- <a85c93db-e118-274f-d86a-d127c7399926@xs4all.nl>
- <YYKxTrWI299pvqo7@Red>
- <2bbce7ef-acf8-3c0f-2705-09d34b2d92be@xs4all.nl>
- <YYgAb76mrMb1ERMW@Red>
- <87357802-1723-0471-d963-252ec54ececd@xs4all.nl>
+        Tue, 16 Nov 2021 06:13:07 -0800 (PST)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     kuba@kernel.org, davem@davemloft.net, manishc@marvell.com
+Cc:     netdev@vger.kernel.org, aelior@marvell.com, skalluru@marvell.com,
+        linux-kernel@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH v2] MAINTAINERS: remove GR-everest-linux-l2@marvell.com
+Date:   Tue, 16 Nov 2021 17:13:03 +0300
+Message-Id: <20211116141303.32180-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211116081601.11208-1-palok@marvell.com>
+References: <20211116081601.11208-1-palok@marvell.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87357802-1723-0471-d963-252ec54ececd@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Mon, Nov 08, 2021 at 09:21:22AM +0100, Hans Verkuil a écrit :
-> On 07/11/2021 17:35, LABBE Corentin wrote:
-> > Le Wed, Nov 03, 2021 at 05:29:46PM +0100, Hans Verkuil a écrit :
-> >> On 03/11/2021 16:57, LABBE Corentin wrote:
-> >>> Le Wed, Nov 03, 2021 at 04:21:02PM +0100, Hans Verkuil a écrit :
-> >>>> Hi Corentin,
-> >>>>
-> >>>> On 26/10/2021 21:34, Corentin Labbe wrote:
-> >>>>> Hello
-> >>>>>
-> >>>>> The main change of this serie is to fusion all zoran related modules in
-> >>>>> one.
-> >>>>> This fixes the load order problem when everything is built-in.
-> >>>>
-> >>>> I've been testing this series, and while the module load/unload is now working,
-> >>>> I'm running into a lot of other v4l2 compliance issues.
-> >>>>
-> >>>> I've fixed various issues in some follow-up patches available in my tree:
-> >>>>
-> >>>> https://git.linuxtv.org/hverkuil/media_tree.git/log/?h=zoran
-> >>>>
-> >>>> At least some of the worst offenders are now resolved. Note that the patch
-> >>>> dropping read/write support relies on this patch:
-> >>>>
-> >>>> https://patchwork.linuxtv.org/project/linux-media/patch/4f89b139-13b7-eee6-9662-996626b778b0@xs4all.nl/
-> >>>
-> >>> Hello
-> >>>
-> >>> My test branch already included your "zoran: fix various V4L2 compliance errors"
-> >>> I have quickly checked other patch and I am ok with them.
-> >>> I will add and test with them.
-> >>>
-> >>>>
-> >>>> But there is one really major bug that makes me hesitant to merge this:
-> >>>>
-> >>>> This works:
-> >>>>
-> >>>> v4l2-ctl -v pixelformat=MJPG,width=768,height=576
-> >>>> v4l2-ctl --stream-mmap
-> >>>>
-> >>>> This fails:
-> >>>>
-> >>>> v4l2-ctl -v pixelformat=MJPG,width=768,height=288
-> >>>> v4l2-ctl --stream-mmap
-> >>>>
-> >>>> It's an immediate lock up with nothing to indicate what is wrong.
-> >>>> As soon as the height is 288 or less, this happens.
-> >>>>
-> >>>> Both with my DC30 and DC30D.
-> >>>
-> >>> Just for curiosity, what is the difference between thoses two ?
-> >>
-> >> It's the DC30 variant without an adv7175.
-> >>
-> >>>
-> >>>>
-> >>>> Do you see the same? Any idea what is going on? I would feel much happier
-> >>>> if this is fixed.
-> >>>>
-> >>>> Note that the same problem is present without this patch series, so it's
-> >>>> been there for some time.
-> >>>>
-> >>>
-> >>> I will start on digging this problem and add thoses commands to my CI.
-> >>> And I know there are a huge quantity of problem since origins.
-> >>> A simple example is that just setting MJPEG as default input format does not work.
-> >>>
-> >>> But since it is not related to my serie, can you please merge it.
-> >>
-> >> Before I do that, I would really like to know a bit more about this issue:
-> >> can you reproduce it? Is it DC30 specific or a general problem with zoran?
-> >>
-> >> The problem with this hard hang is that it is hard to do regression testing
-> >> with v4l2-compliance, since it will hang as soon as MJPG pixelformat is
-> >> tested.
-> >>
-> >> I would feel much happier if the hang can be avoided, even if it is just
-> >> with a temporary hack. It will make it much easier going forward.
-> >>
-> > 
-> > I found the bug
-> > 
-> > The null pointer deref was in zoran_reap_stat_com() due to 
-> > buf = zr->inuse[i];
-> > ...
-> > buf->vbuf.vb2_buf.timestamp = ktime_get_ns();
-> > with buf = NULL;
-> > 
-> > It is due to miscalculation of "i".
-> > 
-> > I will resend my serie with the fix for that.
-> 
-> Excellent news! Thank you for tracking this one down.
-> 
-> When you post your series, can you include my patches from
-> https://git.linuxtv.org/hverkuil/media_tree.git/log/?h=zoran as well?
-> 
+I've sent a patch to GR-everest-linux-l2@marvell.com few days ago and
+got a reply from postmaster@marvell.com:
 
-Hello
+	Delivery has failed to these recipients or groups:
 
-Yes, I will include them.
+	gr-everest-linux-l2@marvell.com<mailto:gr-everest-linux-l2@marvell.com>
+	The email address you entered couldn't be found. Please check the
+	recipient's email address and try to resend the message. If the problem
+	continues, please contact your helpdesk.
 
-Regards
+As requested by Alok Prasad, replacing GR-everest-linux-l2@marvell.com
+with Manish Chopra's email address. [0]
+
+Link: https://lore.kernel.org/all/20211116081601.11208-1-palok@marvell.com/ [0]
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+
+Changes in v2:
+	Replaced GR-everest-linux-l2@marvell.com with Manish Chopra's email, as
+	requested by Alok.
+
+---
+ MAINTAINERS | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 7a2345ce8521..10c8ae3a8c73 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3733,7 +3733,7 @@ F:	drivers/scsi/bnx2i/
+ BROADCOM BNX2X 10 GIGABIT ETHERNET DRIVER
+ M:	Ariel Elior <aelior@marvell.com>
+ M:	Sudarsana Kalluru <skalluru@marvell.com>
+-M:	GR-everest-linux-l2@marvell.com
++M:	Manish Chopra <manishc@marvell.com>
+ L:	netdev@vger.kernel.org
+ S:	Supported
+ F:	drivers/net/ethernet/broadcom/bnx2x/
+@@ -15593,7 +15593,7 @@ F:	drivers/scsi/qedi/
+ 
+ QLOGIC QL4xxx ETHERNET DRIVER
+ M:	Ariel Elior <aelior@marvell.com>
+-M:	GR-everest-linux-l2@marvell.com
++M:	Manish Chopra <manishc@marvell.com>
+ L:	netdev@vger.kernel.org
+ S:	Supported
+ F:	drivers/net/ethernet/qlogic/qed/
+-- 
+2.33.1
+
