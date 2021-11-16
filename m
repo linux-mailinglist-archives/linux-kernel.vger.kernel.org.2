@@ -2,133 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D91452FC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2DA7452FCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234704AbhKPLHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 06:07:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234717AbhKPLGF (ORCPT
+        id S234673AbhKPLIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:08:07 -0500
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:42494
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234740AbhKPLH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 06:06:05 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1E7C061206;
-        Tue, 16 Nov 2021 03:03:08 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id w1so19857375edc.6;
-        Tue, 16 Nov 2021 03:03:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9VCk/+4OtpvNSsUc9AvuSmwBzqHKr0DmtUweG20smPg=;
-        b=cRYdNzxSi+MOy01qo+dZP5foqGG0t0hYZMA5lEar9x2lWw2ijEWgp4H42Ybv6WXCke
-         4/bXU1QqxZCtIVTEo3to+OGgeJlvAhm5EuzEk0R0tFJjnd6QZM8KlV+dUke3mLRtCiXZ
-         uCtvKOY7Yut8tqudEPVj1vvNVQMeBUkhBjtLtaJl9akY6lzRGC/L+N8HO55vpe3n/JFp
-         fj5a66lPevFnIGDihiAzzJuRn8DmeZ9zJDgRrnqu6ErAsn+ybnT8q0Ah0qD+8Lan80yS
-         ku3/UmLoguWcoNTFE0JhejqbFnb+akeCuN/u74NBXCjX6g2zmxr0S/unzUxNfXxQ03kD
-         6g1Q==
+        Tue, 16 Nov 2021 06:07:26 -0500
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 7A0493F1AD
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 11:04:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1637060667;
+        bh=bd/U/oRwjQmdvpZocDSS6S8UbyaPfaAFv6cbOhCrjwk=;
+        h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+         In-Reply-To:Content-Type;
+        b=lhJzfvve+52ddVzNah2DKS4ZqG775igkvfgKtHZaqEVBnWDyfxabXJl3l45b6wSeY
+         rbl/RHnACejr1Nb31WjRuXQ6TSCcMnaitN3/yCdCg+ThiMc5c6k6nqNW3R0EBbwEnj
+         quhR3xGrcvNdP4So2vYs8s+39+o3Fp07graFpM/EYlz4Cr6brfgxzl8FlARnsCJe1R
+         1Gxo51YNm+WPRucnuMVTjAbnDJ3gjj4Y/eRceyuqVkiDF/NRdioQfcON3T8ybYUo2H
+         1N4I3mfiy3pYQzwebnMLZMsf47nTd9+T1Ig1qalnwvZtsZP1ZmN9rvOG+Syghnc5zR
+         TjnhKV466/w9A==
+Received: by mail-lf1-f69.google.com with SMTP id x17-20020a0565123f9100b003ff593b7c65so8056923lfa.12
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 03:04:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9VCk/+4OtpvNSsUc9AvuSmwBzqHKr0DmtUweG20smPg=;
-        b=UxaALSaT1LTTnBb7jPNMGD8y/SzPsqshtebX1WIuA8S7tHKA3HR0RPdOorvvgSqebA
-         jb2up7C4qzF9nUslo+2eIFHN/q99W4+gDkzNuJEK3cOYHV0Ifol35CfPxqnTOwlgvvX5
-         Xp2KkBdsIG09FMh96uK4D0a+VxxicsAynsfrLVzm6sLJ4z/n1fSvmGT8riJInI/WCH5n
-         GfCoRgSnrecnGu8lNR3GzOf/jOp+Gljn7YFkq28LtjesuzV0CTZIHxFPoGwCFdbFp9X6
-         3U+Fv0nyVEVZzwvHq1jSMQXpmQ3VQH6w+00ypcznp8trbPvaiZOPwEak6MACsHjaQFmZ
-         X1kg==
-X-Gm-Message-State: AOAM533NM4vPYBnIQtadUdS2Sisf3/5zckli2uaCiAlqYo/yyf8zOwyz
-        WDcrb0D7SZlXd7pSYrULE+kAB6qUzxCeqDB9UfY=
-X-Google-Smtp-Source: ABdhPJwwrplxw2jkBo4qJkPJ5+an40e8hFrzE3p7FIj0dM3gdIpgJvOHdFWjsUPGoR7utqRD3kEiy6MPt+zwu74DiV4=
-X-Received: by 2002:a17:906:ecac:: with SMTP id qh12mr8534661ejb.377.1637060586730;
- Tue, 16 Nov 2021 03:03:06 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=bd/U/oRwjQmdvpZocDSS6S8UbyaPfaAFv6cbOhCrjwk=;
+        b=QPKyDzEtRsT6QzF7RnfpPMaRc/b3Nu+s1rkXUt00hdqvnlzAMd1YLTAuA8XhL7/P5f
+         q5/wqC4ltTXrHdzUFM9EggwkmkPzP02eeYUi3m3t5Ywj9wNERA1fF6/ONw/NTMjfa+aa
+         y7IpUMHbNSvBQEcu5kQXhU7jirBDhDJe5jAm91bXI1Qqtm3KAi2Ple6y9Lu1Zjve8uMJ
+         xhdHFdmVGfKM6fyJUo3NZgZk8x9DKXJsXi2Hex0XDt6kIwX1tnpIF5ioaUKS1UqqEU93
+         kJcKqP01quDiId+a0SKaq6ClehC2wOBXOtDkGvrMfasKRL210reGzjvBhVpS7hkp9HYm
+         GzCw==
+X-Gm-Message-State: AOAM533U2Po8zRqOLP7qt0+x4J2KMXMfEAcY0izuXldLSAjoGl78XJ+K
+        f/1vtHXv4fmsXM3bPrDp8rlLPkiMdBAfIrKCEX6gDb915DOOYZouCRqmaOlhcIxOVTRoeZCj6B+
+        wlKry0g+TIHtG26c6jdq4E7ntJ9JBfYJL4itiGckBRw==
+X-Received: by 2002:a2e:9c58:: with SMTP id t24mr6002333ljj.506.1637060666823;
+        Tue, 16 Nov 2021 03:04:26 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw3ZYxUSFJRJ5iP/OKHvrIDa1zcy8UEUVBHT/gsOdQTDQkeqm/SrTdZ4qxtY7sZdQaUPhlyxA==
+X-Received: by 2002:a2e:9c58:: with SMTP id t24mr6002284ljj.506.1637060666538;
+        Tue, 16 Nov 2021 03:04:26 -0800 (PST)
+Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id b22sm1915106lfv.20.2021.11.16.03.04.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 03:04:26 -0800 (PST)
+Message-ID: <842021c3-b199-8917-6354-93b396c2541a@canonical.com>
+Date:   Tue, 16 Nov 2021 12:04:25 +0100
 MIME-Version: 1.0
-References: <20211114170335.66994-1-hdegoede@redhat.com> <20211114170335.66994-10-hdegoede@redhat.com>
-In-Reply-To: <20211114170335.66994-10-hdegoede@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 16 Nov 2021 13:02:25 +0200
-Message-ID: <CAHp75VdoJ3ZT1EhNGM0wDmWrYJu5ndEwRt4mLZVKeP47xwgXWg@mail.gmail.com>
-Subject: Re: [PATCH v2 09/20] power: supply: bq25890: Drop dev->platform_data
- == NULL check
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Yauhen Kharuzhy <jekhor@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH] riscv: dts: sifive unmatched: Link the tmp451 with its
+ power supply.
+Content-Language: en-US
+To:     Vincent Pelletier <plr.vincent@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
+        Yash Shah <yash.shah@sifive.com>, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Abdurachmanov <david.abdurachmanov@sifive.com>
+References: <f6512cc50dc31a086e00ed59c63ea60d8c148fc4.1637023980.git.plr.vincent@gmail.com>
+ <d04daf5956ad61496188c7aee3d2eb958e34d7d2.1637023980.git.plr.vincent@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <d04daf5956ad61496188c7aee3d2eb958e34d7d2.1637023980.git.plr.vincent@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 14, 2021 at 7:04 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> Drop the "if (!dev->platform_data)" check, this seems to be an attempt
-> for allowing loading the driver on devices without devicetree stemming
-> from the initial commit of the driver (with the presumed intention being
-> the "return -ENODEV" else branch getting replaced with something else).
->
-> With the new "linux,skip-init" and "linux,read-back-settings" properties
-> the driver can actually supports devices without devicetree and this
-> check no longer makes sense.
->
-> While at it also switch to dev_err_probe(), which is already used in
+On 16/11/2021 01:53, Vincent Pelletier wrote:
+> Signed-off-by: Vincent Pelletier <plr.vincent@gmail.com>
 
-"While at it, also ..."
+This needs commit description, explaining what are you doing and why.
 
-> various other places in the driver.
-
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-
->
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 > ---
->  drivers/power/supply/bq25890_charger.c | 13 +++----------
->  1 file changed, 3 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/power/supply/bq25890_charger.c b/drivers/power/supply/bq25890_charger.c
-> index a69a2173e31a..2bdfb58cda75 100644
-> --- a/drivers/power/supply/bq25890_charger.c
-> +++ b/drivers/power/supply/bq25890_charger.c
-> @@ -1017,16 +1017,9 @@ static int bq25890_probe(struct i2c_client *client,
->                 return ret;
->         }
->
-> -       if (!dev->platform_data) {
-> -               ret = bq25890_fw_probe(bq);
-> -               if (ret < 0) {
-> -                       dev_err(dev, "Cannot read device properties: %d\n",
-> -                               ret);
-> -                       return ret;
-> -               }
-> -       } else {
-> -               return -ENODEV;
-> -       }
-> +       ret = bq25890_fw_probe(bq);
-> +       if (ret < 0)
-> +               return dev_err_probe(dev, ret, "reading device properties\n");
->
->         ret = bq25890_hw_init(bq);
->         if (ret < 0) {
-> --
-> 2.31.1
->
+>  arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+> index bd6e90288c8a..73c1e4adf650 100644
+> --- a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+> +++ b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+> @@ -59,6 +59,7 @@ tps544b20@1e {
+>  	temperature-sensor@4c {
+>  		compatible = "ti,tmp451";
+>  		reg = <0x4c>;
+> +		vcc-supply = <&vdd_bpro>;
+>  		interrupt-parent = <&gpio>;
+>  		interrupts = <6 IRQ_TYPE_LEVEL_LOW>;
+>  	};
+> 
 
 
--- 
-With Best Regards,
-Andy Shevchenko
+Best regards,
+Krzysztof
