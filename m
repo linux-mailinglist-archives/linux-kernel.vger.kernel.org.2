@@ -2,121 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE3B84529F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:46:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C08DF4529FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:46:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236220AbhKPFr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 00:47:56 -0500
+        id S236244AbhKPFsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 00:48:37 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236129AbhKPFrl (ORCPT
+        with ESMTP id S236159AbhKPFsK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 00:47:41 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA0EC0432C1;
-        Mon, 15 Nov 2021 19:32:08 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id r5so10440549pgi.6;
-        Mon, 15 Nov 2021 19:32:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=sM9JlZyeOv/O7uoNQWF2VaX9Gxpvdbv8KSMiYaGIkAo=;
-        b=gdeseGBpRtU2p0X04orYBfuEFcosPWbnIR3Bqn4+JWIWZR2u+PEnq/+Xpw0RLtxlX7
-         M2lyMImt1LfM0zpI956EqKo7PjRTYVNpOtY19NWD7DStuDIsHttqmGlj7xpdZLCVuaFQ
-         grjeNVEfOgKoOWzl1NmVc0PMf7IUPgne7cmkfVkKPPuJ9pPbnsElTOPL1TdwT40rJgKv
-         l7H8oZHPsOJ0OhSP6n9GcV8DdAv27hz7thY3SDSjZ8SzpYnT9l7WwYG9z+8itGnOY5/J
-         H3Yjca9A0xPUMz5Z0htAhsu93f4+WGedgDMU2HLLSwuX+dICCCLU/cfnJT6r4TI9nvRY
-         2jWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=sM9JlZyeOv/O7uoNQWF2VaX9Gxpvdbv8KSMiYaGIkAo=;
-        b=IvZZntzUfcWvv2R/3k06Qjd+mNVmvICfPIE6LE1oO7x6kZD8BeTicFoF2wcN9TLlAJ
-         MO2NkGFum3Vy/6X1vzd63wdGGDpQoCTlsc5OivY/rHlRr6FBeq/68hVINkM2yfNE0J6+
-         PQDugigM6X3DlJd5lr8E+my08kjePal9hiCakd/YPVplyZUGpdLdzFpkpyeUK1b8tcwT
-         aBP//dXblI5GPYoM6EQVkpkAobcMAWMCeoE69G3zwzzSNywy4n1SYWi4NeLPpCbxldmu
-         EcATFtHI0ZHHzJDZzKCNXh0A0Kn9ipkUHHoWhno2f4LtrtGypEYVgIJCQK5riDZ248Km
-         lKNQ==
-X-Gm-Message-State: AOAM532Ahl18s/dJku2/XlfPsTdYOeaE1OsBMl56Sx3vTZGAt0YSQw5M
-        p48OjaNp7WNSiJssp76tOIU=
-X-Google-Smtp-Source: ABdhPJyfeEreRKbgOoLOD2svX74KDLr9HasQvC21aYmCAUasAnq11knwRfgItqOgY47wprhZMoQn9w==
-X-Received: by 2002:a62:16c7:0:b0:49f:a6cc:c77d with SMTP id 190-20020a6216c7000000b0049fa6ccc77dmr36718514pfw.23.1637033527731;
-        Mon, 15 Nov 2021 19:32:07 -0800 (PST)
-Received: from [10.230.0.229] ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id c9sm4652645pfm.84.2021.11.15.19.32.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 19:32:06 -0800 (PST)
-Message-ID: <c64fce18-9b31-c8ce-c6ff-7561ba6e90bc@gmail.com>
-Date:   Mon, 15 Nov 2021 19:32:04 -0800
+        Tue, 16 Nov 2021 00:48:10 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA14C0F26E5
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 19:36:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=a8+nzB38YXVlnd3HYFObvlW7g/vak6rnP+u7DlG8bUE=; b=PQmeD7aWOHcH5fQzYeRRCt1vE5
+        dMw0dSv+m5Jw37sjyKtz1JmP2p/UeSSmwp+uI+CPjRnGRCaonQOvhB6ozA7lliQIhmporNAUQshN5
+        3VKqyGP/ZzgCfr740p8vNZrttppoyGBfHMvrQeWxeMAbSZCLE0tTjq+QAUeRqImMGTLI+WVhugRt+
+        Y+O6ePHOkBTRYhFZYTiv72NyA5sfyf7C8YRaRme0nFNQcg1lCgXufJP58XTsbhCpCm47P7Emzz0G7
+        DW32DJUn6pXMXP0Qtyo72Eg4ddFEm4j9fPfKL+StRatSiSBuzlQoGjoIphzL/X/vsMpx32UgEXDsJ
+        xKic7Fzg==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mmpHC-000Dh2-Qq; Tue, 16 Nov 2021 03:36:54 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 1/2 v2] sh: mcount.S: fix build error when PRINTK is not enabled
+Date:   Mon, 15 Nov 2021 19:36:54 -0800
+Message-Id: <20211116033654.9781-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH 5.4 000/355] 5.4.160-rc1 review
-Content-Language: en-US
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org,
-        jonathanh@nvidia.com, stable@vger.kernel.org, pavel@denx.de,
-        akpm@linux-foundation.org, torvalds@linux-foundation.org,
-        linux@roeck-us.net, Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-References: <20211115165313.549179499@linuxfoundation.org>
- <CA+G9fYvxhzL9KUxZcRzMxnbGPK5GKTCtb5kWM3JB09D+-KhVug@mail.gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <CA+G9fYvxhzL9KUxZcRzMxnbGPK5GKTCtb5kWM3JB09D+-KhVug@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix a build error in mcount.S when CONFIG_PRINTK is not enabled.
+Fixes this build error:
 
+sh2-linux-ld: arch/sh/lib/mcount.o: in function `stack_panic':
+(.text+0xec): undefined reference to `dump_stack'
 
-On 11/15/2021 10:00 AM, Naresh Kamboju wrote:
-> On Mon, 15 Nov 2021 at 22:39, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
->>
->> This is the start of the stable review cycle for the 5.4.160 release.
->> There are 355 patches in this series, all will be posted as a response
->> to this one.  If anyone has any issues with these being applied, please
->> let me know.
->>
->> Responses should be made by Wed, 17 Nov 2021 16:52:23 +0000.
->> Anything received after that time might be too late.
->>
->> The whole patch series can be found in one patch at:
->>          https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.160-rc1.gz
->> or in the git tree and branch at:
->>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
->> and the diffstat can be found below.
->>
->> thanks,
->>
->> greg k-h
-> 
-> 
-> Perf build broken due to following errors.
-> 
->> Andrii Nakryiko <andrii@kernel.org>
->>      libbpf: Fix BTF data layout checks and allow empty BTF
-> 
-> 
-> In file included from btf.c:17:
-> btf.c: In function 'btf_parse_hdr':
-> btf.c:104:62: error: 'struct btf' has no member named 'raw_size'; did
-> you mean 'data_size'?
->    104 |                 pr_debug("Invalid BTF total size:%u\n", btf->raw_size);
->        |                                                              ^~~~~~~~
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> 
-> Build log:
-> https://builds.tuxbuild.com/20xsgAxLwf4E60xl2dTdXnNS8FZ/
+Fixes: e460ab27b6c3e ("sh: Fix up stack overflow check with ftrace disabled.")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Rich Felker <dalias@libc.org>
+Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+v2: add PRINTK to STACK_DEBUG dependency (thanks, Geert)
 
-Same here.
--- 
-Florian
+ arch/sh/Kconfig.debug |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- linux-next-20211115.orig/arch/sh/Kconfig.debug
++++ linux-next-20211115/arch/sh/Kconfig.debug
+@@ -15,7 +15,7 @@ config SH_STANDARD_BIOS
+ 
+ config STACK_DEBUG
+ 	bool "Check for stack overflows"
+-	depends on DEBUG_KERNEL
++	depends on DEBUG_KERNEL && PRINTK
+ 	help
+ 	  This option will cause messages to be printed if free stack space
+ 	  drops below a certain limit. Saying Y here will add overhead to
