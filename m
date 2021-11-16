@@ -2,126 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40DD94528E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 04:58:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC799452911
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:18:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237439AbhKPEBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 23:01:23 -0500
-Received: from szxga03-in.huawei.com ([45.249.212.189]:27212 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237195AbhKPEBM (ORCPT
+        id S242989AbhKPEUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 23:20:47 -0500
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:42338 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243649AbhKPETi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 23:01:12 -0500
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HtXL76Jrcz8tvq;
-        Tue, 16 Nov 2021 11:56:31 +0800 (CST)
-Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 16 Nov 2021 11:58:14 +0800
-Received: from use12-sp2.huawei.com (10.67.189.20) by
- dggpemm500007.china.huawei.com (7.185.36.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 16 Nov 2021 11:58:14 +0800
-From:   Jubin Zhong <zhongjubin@huawei.com>
-To:     <hch@infradead.org>
-CC:     <kechengsong@huawei.com>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <viro@zeniv.linux.org.uk>,
-        <wangfangpeng1@huawei.com>, <zhongjubin@huawei.com>
-Subject: Re: [PATCH] fs: Fix truncate never updates m/ctime
-Date:   Tue, 16 Nov 2021 11:58:10 +0800
-Message-ID: <1637035090-52547-1-git-send-email-zhongjubin@huawei.com>
-X-Mailer: git-send-email 1.8.5.6
-In-Reply-To: <YZKfr5ZIvNBmKDQI@infradead.org>
-References: <YZKfr5ZIvNBmKDQI@infradead.org>
+        Mon, 15 Nov 2021 23:19:38 -0500
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 1AG3pk6Z094719;
+        Tue, 16 Nov 2021 11:51:46 +0800 (GMT-8)
+        (envelope-from jammy_huang@aspeedtech.com)
+Received: from [192.168.2.115] (192.168.2.115) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 16 Nov
+ 2021 12:15:24 +0800
+Message-ID: <67e3be3a-7e18-115b-18b7-b3d5419e0992@aspeedtech.com>
+Date:   Tue, 16 Nov 2021 12:15:25 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.189.20]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500007.china.huawei.com (7.185.36.183)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH v4 7/9] media: aspeed: Support aspeed mode to reduce
+ compressed data
+Content-Language: en-US
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+CC:     "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "laurent.pinchart@ideasonboard.com" 
+        <laurent.pinchart@ideasonboard.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20211115074437.28079-1-jammy_huang@aspeedtech.com>
+ <20211115074437.28079-8-jammy_huang@aspeedtech.com>
+ <YZIYIsURV0Gv1bc6@paasikivi.fi.intel.com>
+From:   Jammy Huang <jammy_huang@aspeedtech.com>
+In-Reply-To: <YZIYIsURV0Gv1bc6@paasikivi.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [192.168.2.115]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 1AG3pk6Z094719
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Mon, Nov 15, 2021 at 07:00:18PM +0800, Jubin Zhong wrote:
->> From: zhongjubin <zhongjubin@huawei.com>
->> 
->> Syscall truncate() never updates m/ctime even if the file size is
->> changed. However, this is incorrect according to man file:
->> 
->>   truncate (2):
->>   If  the  size  changed, then the st_ctime and st_mtime fields
->>   (respectively, time of last status change and time of last modification;
->>   see stat(2)) for the file are updated, and the set-user-ID and
->>   set-group-ID mode bits may be cleared.
->> 
->> Check file size before do_truncate() to fix this.
+Hi Sakari,
+
+OK, I will add a patch which uses data in device table to tell the 
+differences between
+SoC to the series. Thanks for your advice.
+
+On 2021/11/15 下午 04:19, Sakari Ailus wrote:
+> Hi Jammy,
 >
-> Please try to actually reproduce your alleged "bug".  And maybe also
-> look at the actual setattr implementations.  Hint: The XFS one even
-> has extensive comments.
+> Thanks for the patch. A few comments below...
+>
+> On Mon, Nov 15, 2021 at 03:44:35PM +0800, Jammy Huang wrote:
+>> @@ -969,35 +1045,70 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
+>>   
+>>   static void aspeed_video_update_regs(struct aspeed_video *video)
+>>   {
+>> -	u32 comp_ctrl = VE_COMP_CTRL_RSVD |
+>> -		FIELD_PREP(VE_COMP_CTRL_DCT_LUM, video->jpeg_quality) |
+>> -		FIELD_PREP(VE_COMP_CTRL_DCT_CHR, video->jpeg_quality | 0x10);
+>> +	u8 jpeg_hq_quality = clamp((int)video->jpeg_hq_quality - 1, 0,
+>> +				   ASPEED_VIDEO_JPEG_NUM_QUALITIES - 1);
+>> +	u32 comp_ctrl =	FIELD_PREP(VE_COMP_CTRL_DCT_LUM, video->jpeg_quality) |
+>> +		FIELD_PREP(VE_COMP_CTRL_DCT_CHR, video->jpeg_quality | 0x10) |
+>> +		FIELD_PREP(VE_COMP_CTRL_EN_HQ, video->hq_mode) |
+>> +		FIELD_PREP(VE_COMP_CTRL_HQ_DCT_LUM, jpeg_hq_quality) |
+>> +		FIELD_PREP(VE_COMP_CTRL_HQ_DCT_CHR, jpeg_hq_quality |
+>> +			   0x10);
+>>   	u32 ctrl = 0;
+>> -	u32 seq_ctrl = VE_SEQ_CTRL_JPEG_MODE;
+>> +	u32 seq_ctrl = 0;
+>>   
+>> -	v4l2_dbg(1, debug, &video->v4l2_dev, "framerate(%d)\n",
+>> -		 video->frame_rate);
+>> -	v4l2_dbg(1, debug, &video->v4l2_dev, "subsample(%s)\n",
+>> +	v4l2_dbg(1, debug, &video->v4l2_dev, "framerate(%d)\n", video->frame_rate);
+>> +	v4l2_dbg(1, debug, &video->v4l2_dev, "jpeg format(%s) subsample(%s)\n",
+>> +		 format_str[video->format],
+>>   		 video->yuv420 ? "420" : "444");
+>> -	v4l2_dbg(1, debug, &video->v4l2_dev, "compression quality(%d)\n",
+>> -		 video->jpeg_quality);
+>> +	v4l2_dbg(1, debug, &video->v4l2_dev, "compression quality(%d) hq(%s) hq_quality(%d)\n",
+>> +		 video->jpeg_quality, video->hq_mode ? "on" : "off",
+>> +		 video->jpeg_hq_quality);
+>> +	v4l2_dbg(1, debug, &video->v4l2_dev, "compression mode(%s)\n",
+>> +		 compress_mode_str[video->compression_mode]);
+>> +
+>> +	if (video->format == VIDEO_FMT_ASPEED)
+>> +		aspeed_video_update(video, VE_BCD_CTRL, 0, VE_BCD_CTRL_EN_BCD);
+>> +	else
+>> +		aspeed_video_update(video, VE_BCD_CTRL, VE_BCD_CTRL_EN_BCD, 0);
+>>   
+>>   	if (video->frame_rate)
+>>   		ctrl |= FIELD_PREP(VE_CTRL_FRC, video->frame_rate);
+>>   
+>> +	if (video->format == VIDEO_FMT_STANDARD) {
+>> +		comp_ctrl &= ~FIELD_PREP(VE_COMP_CTRL_EN_HQ, video->hq_mode);
+>> +		seq_ctrl |= VE_SEQ_CTRL_JPEG_MODE;
+>> +	}
+>> +
+>>   	if (video->yuv420)
+>>   		seq_ctrl |= VE_SEQ_CTRL_YUV420;
+>>   
+>>   	if (video->jpeg.virt)
+>>   		aspeed_video_update_jpeg_table(video->jpeg.virt, video->yuv420);
+>>   
+>> +#ifdef CONFIG_MACH_ASPEED_G4
+> This would be better done based on the device recognised, not the selected
+> compile target. The same goes for the rest of the conditional pre-processor
+> bits.
+>
+>> +	switch (video->compression_mode) {
+>> +	case 0:	//DCT only
+>> +		comp_ctrl |= VE_COMP_CTRL_VQ_DCT_ONLY;
+>> +		break;
+>> +	case 1:	//DCT VQ mix 2-color
+>> +		comp_ctrl &= ~(VE_COMP_CTRL_VQ_4COLOR | VE_COMP_CTRL_VQ_DCT_ONLY);
+>> +		break;
+>> +	case 2:	//DCT VQ mix 4-color
+>> +		comp_ctrl |= VE_COMP_CTRL_VQ_4COLOR;
+>> +		break;
+>> +	}
+>> +#endif
+>> +
 
-Thanks for your advice. I found this problem on yaffs2 in the beginning,
-ftruncate() always works fine but truncate() does not. Now I have done 
-a few more tests and the following are the results:
+-- 
+Best Regards
+Jammy
 
-Test Environmont:
-	kernel: Linux Kernel v5.16
-	hardware: QEMU emulator version 3.1.0
-	arch: vexpress-v2p-ca9
-
-Teset Results:
-	filesystems     m/ctime updated by truncate?
-	jffs2           fail
-	yaffs2          fail
-	ubifs           success
-	ext2            success
-	ext4            success
-	tmpfs           success
-	xfs             success
-
-Test Steps:
-	1. cd /path/to/mnt/point
-	2. dd if=/dev/zero of=test bs=1M count=1
-	3. stat test
-	4. /bin/my_truncate -s 1024 test
-	5. stat test
-	6. compare m/ctime of step 5 with step 3
-
-Program source:
-	#include <stdio.h>
-	#include <stdlib.h>
-	#include <string.h>
-	#include <unistd.h>
-	#include <sys/types.h>
-	int main(int argc, char **argv)
-	{
-		int ret;
-		char file_name[128] = {0};
-		
-		if (argc < 4 || argv == NULL || argv[1] == NULL || argv[2] == NULL || argv[3] == NULL) {
-			return -1;
-		}
-		
-		if (strcmp(argv[1], "-s")) {
-			return -1;
-		}
-		
-		if (realpath(argv[3], file_name) == NULL) {
-			printf("truncate: input file name %s err.\n", argv[3]);
-			return -1;
-		}
-		
-		off_t size = (off_t)strtol(argv[2], 0, 0);
-		ret = truncate(file_name, size);
-		if (ret) {
-			printf("truncate return err %d\n", ret);
-		}   
-		return ret;
-	}   
-
-I work on embedded devices so concern about jffs2/yaffs2/ubifs the most. 
-If there are any errors in my test program please let me know.
-
-Thanks.
