@@ -2,66 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C779F453A6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 20:51:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC6B453A6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 20:51:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240170AbhKPTwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 14:52:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229815AbhKPTwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 14:52:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A759861A3A;
-        Tue, 16 Nov 2021 19:49:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637092189;
-        bh=0xPsIHGAGn2xqyjHE7056U7s5RR16eW3bnL05KsI6oQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LURxECjESsJAp/D7kPqchHD+QqlbKiPcSg/NbKG2H5abGY+EAT0icf3pRV5DQ0ijj
-         cfB5mRyRtoDKbbLDuoOlMXdYmmTwPGcUNxXtitXvqvjQ9APyFjOyTXLlIiyRP2sEI5
-         gbpGTD3eHWW/JjZQ5lwYrD+lSE6qMzxNZdihRErs=
-Date:   Tue, 16 Nov 2021 20:49:46 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] kernfs: release kernfs_mutex before the inode
- allocation
-Message-ID: <YZQLWq7WMSRF2xCM@kroah.com>
-References: <20211116194317.1430399-1-minchan@kernel.org>
+        id S240178AbhKPTwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 14:52:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231550AbhKPTwr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 14:52:47 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24571C061570;
+        Tue, 16 Nov 2021 11:49:50 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id n85so363586pfd.10;
+        Tue, 16 Nov 2021 11:49:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Kv3IYPiX5SnYfnO5a8CoHQzGWqarVJmmBtF2EGunec4=;
+        b=k5zq7Qiwv0sVC50+hDQiqrw4Tbz2EWbNn2UkoGAK1kGG3XGGOvaN5FNSSvKe0pot2H
+         7mH2K4F8xYJJBcDOr8MWaBkwrE02YMFngxvZDW+1eDLGjlLCKl1ogvGFdmW4EeqsGIsN
+         9bAzF6SxpuHWFq9F/0nXxVkBcU7+IQiLj9HJqCchOses3LeI/tYBs7qEstaFGYDCaFCx
+         AGN2vxRNC9jUirj1Yj1CulD9XKSZ7Cm7YJ2OPRZL3Ln7SIfRFjE/4VIDTuJFz/5NG9+h
+         OxtPD0Zda046oicqBpXgMwmZZBU2VIJIU6TC1+dtT2GzGw0K+dBNX4f94HmBZsWtDUMk
+         5Z9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Kv3IYPiX5SnYfnO5a8CoHQzGWqarVJmmBtF2EGunec4=;
+        b=N+YIepe5yDobTBXHEoEzcjCbaAyqCOOPfQ2m3H2o15hLTCiFKGG/HIdSTAFC26euVo
+         kLAmlBzMoGPTzztpnDAy7W7pFPPyCUJXlmOmpfzbGCqcDpHf1dvZd1iDy9V3LxnWOJ2r
+         uga7nqQD00t8+WmRqA0yXxgDJ7fZWfAYLgX2/5a3bTiPDyxKWQqmzBpEItx9hxbz7X6S
+         XeAfm+MB3YGYHAQ5GF80zHH5ziCmpcrk1Q+Bwitlkz1jr9+y25DZ0CLztfGPMK0czpGr
+         6iKAnXKAuGAa6GRbgIQqfJKEJFWV0QulHeg+b4YHHcExQzdxu9UfTHXB0Vx2fSQ0k9bK
+         7sCg==
+X-Gm-Message-State: AOAM531YEqRvZ/LVkabjKdZKxFghu8lMY7jFa14TJ5kc1tujP7sgAN5r
+        oZckHAG3l3m1BRLxFc7qG3nnpBFbxSM=
+X-Google-Smtp-Source: ABdhPJz/299ps5UDV4MwfXmvLFU8iVY0AeCO9Q1Tw5i26ajanZMCI++YiOR+pVK5FZgrFAsPSrpb3A==
+X-Received: by 2002:aa7:888d:0:b0:47c:128b:ee57 with SMTP id z13-20020aa7888d000000b0047c128bee57mr1601114pfe.81.1637092189307;
+        Tue, 16 Nov 2021 11:49:49 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id rj8sm3375066pjb.0.2021.11.16.11.49.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 11:49:48 -0800 (PST)
+Subject: Re: [PATCH 5.10 000/578] 5.10.80-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20211116142545.607076484@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <63702e31-15eb-6c5e-7f9b-96617afefbdb@gmail.com>
+Date:   Tue, 16 Nov 2021 11:49:47 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211116194317.1430399-1-minchan@kernel.org>
+In-Reply-To: <20211116142545.607076484@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 11:43:17AM -0800, Minchan Kim wrote:
-> The kernfs implementation has big lock granularity(kernfs_rwsem) so
-> every kernfs-based(e.g., sysfs, cgroup, dmabuf) fs are able to compete
-> the lock. Thus, if one of userspace goes the sleep under holding
-> the lock for a long time, rest of them should wait it. A example is
-> the holder goes direct reclaim with the lock since it needs memory
-> allocation. Let's fix it at common technique that release the lock
-> and then allocate the memory. Fortunately, kernfs looks like have
-> an refcount so I hope it's fine.
+On 11/16/21 7:00 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.80 release.
+> There are 578 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
-> ---
->  fs/kernfs/dir.c             | 14 +++++++++++---
->  fs/kernfs/inode.c           |  2 +-
->  fs/kernfs/kernfs-internal.h |  1 +
->  3 files changed, 13 insertions(+), 4 deletions(-)
+> Responses should be made by Thu, 18 Nov 2021 14:24:22 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.80-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-What workload hits this lock to cause it to be noticable?
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-There was a bunch of recent work in this area to make this much more
-fine-grained, and the theoritical benchmarks that people created (adding
-10s of thousands of scsi disks at boot time) have gotten better.
-
-But in that work, no one could find a real benchmark or use case that
-anyone could even notice this type of thing.  What do you have that
-shows this?
-thanks,
-
-greg k-h
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
