@@ -2,233 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB96453B49
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEB0453B4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:56:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231656AbhKPU7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 15:59:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbhKPU7T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 15:59:19 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29363C061570;
-        Tue, 16 Nov 2021 12:56:22 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id t21so241586plr.6;
-        Tue, 16 Nov 2021 12:56:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=39cKm0R+i4To7rY6Py1OreUinzGzFnAumMTH2oWu7uA=;
-        b=RluKjMSfVNWNIY1ULO6cDI3US826rVfoKGl22NOHQA2ToaUxhdyohTbOzzvy769pq6
-         WwzksFRe6ch+doZVdm7OOyzkFQbmkuQJQzC31OqD9Gvql6xkIBtPfbqlJfQO5YPuSTXU
-         M5rpfxQjJfqbl5pp5/Esoz9kY/psNLjYWntCON2uf+KebdHWm3rf1/7spkb+vrAbuwzO
-         j8l+RqqQ5Q1zqpfy+8zZRqwEYcNAMjs9/dxRmXXDkshD0zNGkhheavORAYVWGGedkkEQ
-         YgmgaLzUDWxQANKOmSPgtykWzu7k+GbjmAcAedZKv4YkOMBQvVNZQLBfk26cKia34LVc
-         PMag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=39cKm0R+i4To7rY6Py1OreUinzGzFnAumMTH2oWu7uA=;
-        b=4ZCGm8aHJhz+vHYopU4uKema8wOigjosQVKXMPCplofWNPsO3QtZDf6meeZOPkUfiq
-         WECU8/K5X8xF0N8PE/fbJZC17/3XyxIcLDorQNRGXUv+7D5B4Y1fDNvHFO3dNCcom+Oe
-         Spu0VbVBHTjaTy8XSToTsZK/Nghy20Zei3wE2k9gwoyzdTP1xO3Oi7DpDrBxLIfXq3KB
-         flpMq56rlwAKNRx+vNA+DwOOCRSJz4vp8Ml2HYoRcb4zqRt9A+S3JA3yvXAfgzj+kDjK
-         dUseD1NoVOhqwgEWYW+4L6By6EWcss+Y6JLNdSXjdWAEyH+k9j79X2esjVWTZRr0tuE0
-         6b6Q==
-X-Gm-Message-State: AOAM532FpcwzjiUTIx/utUmarNo8m0pobHD6x8fgWDqqJU0Wb8+Pww95
-        84Iw2bdczU/xPun9RHXbB/c=
-X-Google-Smtp-Source: ABdhPJx5KaXiM2+NxvzoCLM78szEDG3QOzTr3lVxWj+HCzTnO0onqeW1/kLTNXXIGldlhcoM346HjA==
-X-Received: by 2002:a17:90a:9dca:: with SMTP id x10mr2648652pjv.170.1637096181623;
-        Tue, 16 Nov 2021 12:56:21 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id e14sm21030999pfv.18.2021.11.16.12.56.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 12:56:21 -0800 (PST)
-Subject: Re: [PATCH v2 1/1] PCI: brcmstb: Use BIT() as __GENMASK() is for
- internal use only
-To:     Rob Herring <robh@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jim Quinlan <jim2101024@gmail.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-References: <20211115112000.23693-1-andriy.shevchenko@linux.intel.com>
- <94d3f4e5-a698-134c-8264-55d31d3eafa6@arm.com>
- <CAHp75VeJ8ZiD=qQVfeahUjGZduFRJJ5683hn8f4810JYEzsCyw@mail.gmail.com>
- <YZJxG7JFAfIqr1/f@smile.fi.intel.com>
- <CAL_JsqJndi-gmenSpPtMVfsb3SrA=w+YBsSh3GigfgXC3rYDeQ@mail.gmail.com>
- <71a90592-99bb-13e1-a671-eb19c2dad3da@broadcom.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <351fa3ec-52fa-58f5-cc57-e92498647d5c@gmail.com>
-Date:   Tue, 16 Nov 2021 12:56:19 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <71a90592-99bb-13e1-a671-eb19c2dad3da@broadcom.com>
-Content-Type: text/plain; charset=utf-8
+        id S231696AbhKPU7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 15:59:34 -0500
+Received: from mail-dm6nam11on2076.outbound.protection.outlook.com ([40.107.223.76]:51040
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229899AbhKPU7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 15:59:32 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VQXi9RjA9QT7Kdzuylnh0/RO3YDuFpNcJQQ3mM4HA52/zlF4lk1LMu+BoOIo04DNDB1lMNwDigqRHrtGZ6NDOKizI69Eq9ZUb2mCIJNeix6+U0R54XzG7jSb17w+EQn3yGx3ddH547fXUplCXxTFw2W2XHQs4xA4VhpsZiJzdBWVhGpefIJ+bju8883K0JW/VieLKihdz/0pBQW5LSDjfh2q5vW6nYd8JY3ohBuyMOZp+ANFoJfVYVSPpXLu+HS5kXjF6bCDHAEAIs9CiXIv67M5gPeyJWK8Tf2Lqs8WEmJB7KAR/wR/f1ewxGcWn+fzoen0eArw/RcAzGfOzyFHkA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CXSSVjhNnlavz0s4G9WV8M+o9gVg4lQbWXboB9BXA7E=;
+ b=SzdRHeSLY9h7MMw2TW+hIHbU/wcq/N+sZKDW0667XCKzjRusFmlzEYmZgErPQcvtwK2qe1Ta36+EwkJA47ITiq5Zsk6x1mqO9qwqbqsJIS2R/rNO373SSMEoOKmtqQHIIiKiH2eP9c0Uw/KYq4n22b/O4gTOcBbPTB5Gh288jhkMCve3i+lrgu7wT/vlbQjqvJW74ATAr+uYpTyyVfF7/U1vDfmpmvqeRzhW/ReGriIiR8Bi1ebyaJKqrEhWRCUQfodFB3CFEHxEfPQNI1557VClP5uGrNIG8xZpwguvIExN9TCNQvuMfAOnDiN2kPIuDGKosMxFH9CP/f2yOOXeDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CXSSVjhNnlavz0s4G9WV8M+o9gVg4lQbWXboB9BXA7E=;
+ b=Fzz+0umZz8Lk/kW4evEDzHcSSrPO2+XQ/VWE/MutsfqWfR66EJNH8NZKue0Q0gWnsF98E9X8OTzgwX34YARz0kK7vh2V19ji8Rhyxb9QcxAST80g9Xy3FbNJ/R9v4nuALyWDvsk9by866a6n0hARv9sONA+Su34gVPDRVUe+pTelIkoFzjEpU6aaxsKFNXZor6X7O1vvYddOVmxFhOmHyi1aVGZSk+ekGFw9crSzO7NuqjKgOZYkRFeHpbkCGRIjsA2NCnlAZ562RjX4mawzhQ9/BlJG2vJw/FAXhxQdgczna1qB8EdEuYdesfE52gt9WsFkffXl0c9WEQfBoyNkVg==
+Received: from BY5PR12MB4209.namprd12.prod.outlook.com (2603:10b6:a03:20d::22)
+ by BYAPR12MB2661.namprd12.prod.outlook.com (2603:10b6:a03:67::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.17; Tue, 16 Nov
+ 2021 20:56:33 +0000
+Received: from BY5PR12MB4209.namprd12.prod.outlook.com
+ ([fe80::b9dc:e444:3941:e034]) by BY5PR12MB4209.namprd12.prod.outlook.com
+ ([fe80::b9dc:e444:3941:e034%7]) with mapi id 15.20.4713.019; Tue, 16 Nov 2021
+ 20:56:33 +0000
+From:   Saeed Mahameed <saeedm@nvidia.com>
+To:     "davidcomponentone@gmail.com" <davidcomponentone@gmail.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "zealci@zte.com.cn" <zealci@zte.com.cn>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Roi Dayan <roid@nvidia.com>,
+        Ariel Levkovich <lariel@nvidia.com>,
+        Paul Blakey <paulb@nvidia.com>,
+        Vlad Buslov <vladbu@nvidia.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Chris Mi <cmi@nvidia.com>, "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "leon@kernel.org" <leon@kernel.org>, Oz Shlomo <ozsh@nvidia.com>,
+        "yang.guang5@zte.com.cn" <yang.guang5@zte.com.cn>
+Subject: Re: [PATCH] net/mlx5: use swap() to make code cleaner
+Thread-Topic: [PATCH] net/mlx5: use swap() to make code cleaner
+Thread-Index: AQHX0RnMjnbed+9b5kWJ8gjf9VlaXKwGtqoA
+Date:   Tue, 16 Nov 2021 20:56:33 +0000
+Message-ID: <b09fae8a2ac505b302047cbb5a17be05d7da3302.camel@nvidia.com>
+References: <20211104011737.1028163-1-yang.guang5@zte.com.cn>
+In-Reply-To: <20211104011737.1028163-1-yang.guang5@zte.com.cn>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.40.4 (3.40.4-2.fc34) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8ea2ba1d-75d6-4eef-ef40-08d9a943925e
+x-ms-traffictypediagnostic: BYAPR12MB2661:
+x-microsoft-antispam-prvs: <BYAPR12MB266149BC150F0EF6CD2E5D58B3999@BYAPR12MB2661.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: B2XWv7kjYRTSRvEyE9lHWSSjgmRrnqHQNUXkyNyse2WrCKRmS9aPEYjL3RNOv4I7Lvw3GGUlpNvjz+U/fOk8DxNADSnpQaMM4jw1FXI3PPg5a5LadhAY8oeSdPylPJa6ydDTZfRikBFUDRSfSUEZELaqHjRYHZ7nqmFB1m5wsm/FZyN/jvWx9vSHJHjNpaATvxS/C7pTIdRYrS79GXwURZRpQzqpnSQ4LvgrjthbD2IZJRXfp4PCl5xLbdGJOBU8WVEckM210KUD35BFL7B71OTBLqYTjyR/QfH919pkLBaSjm/RR5GOFRA4Ss8sD18ZlV3o7r24bNTs2h3SMGHY+5xbJa1cV7g92uU5FIQAP8Z/llzb5jX7cUjhYzHWq1czWwsxm1pBXsUHkIW5W6WsNWErIWD+eTxfOm+O3f96xNa4m/35UwxpTMMge5SF3AVwLccvhPQzrrGs3Hm6L4XAi3NuGbZegu2pm+XWnFsZf5m8ZkXGdnX7eY4/t7lSRDq9dsmx+4gMU/nFWj6k0mu4kd/d62GV8jU8hAN9LTnxaSTtB0svCK+N3UWExQkMGE7tv6utSdTlj2iEBqDeGahas8R07zsEs+SzlBA2IxoHNoXeCMehMlG7y/roI705KuP+1rcg8k+3udtUc64tBjTY4xm0JpXSDb9FPR/nbPyRRNTQOL+i3tni1TjfpU4BSzLUv9Vi3DkkSShws+gPxuO8BA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4209.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(38070700005)(8936002)(6916009)(6512007)(122000001)(4326008)(316002)(5660300002)(71200400001)(36756003)(38100700002)(26005)(8676002)(66946007)(76116006)(83380400001)(508600001)(66476007)(6506007)(6486002)(2616005)(64756008)(66446008)(2906002)(54906003)(186003)(66556008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WThtZlJJNFFRcDJSVDlqbm1WaHRZY1lPL250L09PODlSS1NEc25STnJqcnZh?=
+ =?utf-8?B?bHVTbzdsZTJKaU1PQ2R5Y3k2b2VtbkZSWXU3NzdkTkUrVDgzTTF4T0FOZHVY?=
+ =?utf-8?B?cmxpUHpQUGlRanR5eHRCQzhEUVpEbTh6QTJURFg5V1lyOFozK1dLdFo4Rnoz?=
+ =?utf-8?B?YUI0SEcwMWFZWE93WWZUUjVnT0pVNnFTdDdrd1IydkgzVmdSUHo5bDI5YWp2?=
+ =?utf-8?B?RDRYQzc3eHZ3L0N3SERIOGJteWRtU3d4V2wvcHh2a2hKbjU3LzNvT3V4Mldk?=
+ =?utf-8?B?WHc4UkFLMkZ2dlQrNUVGZlpXNEFZbmFEVWxsWDVCdS9mZUgyU0FpT3VVOG1y?=
+ =?utf-8?B?NWVPcFVNQzhqYnE1SUFwZ3F0SExFaHBIdXBBbzJzZ2hpQm5BaUdzOFVpMXFz?=
+ =?utf-8?B?aDl3M2U1NGtzN1FKdzMxK0dhejVCY255SkdGQVZLblViU29BaElCMFdjQWhQ?=
+ =?utf-8?B?TkQwREV0WVRsZ05DK1FocVpHL3hWOXZKUk1DN1pDSDMwbkdwd0tzRnRCTHJ4?=
+ =?utf-8?B?YVRxNWVJYmFuRkpyQTBYN3VQaHMzVW5SZUJ6ckhRdGxFeXVNT0JKUCs4N2ZP?=
+ =?utf-8?B?WCtoZmZVeWd3VTV6MFp1U05CZTdhaVlBbDBSamlMb1BsZWoraWliUS9QVDJ1?=
+ =?utf-8?B?eTd4M0pNUEtpSkJubzZiakJtK1VtaUNnaDZBcWx0S29nZWF0Q1hVREF2c3V2?=
+ =?utf-8?B?azc2SVpVRTIxcXVNaDVodkxmQ2lNNjFmaVFuZzdRaDRMOFZ2V1RuTytobzdC?=
+ =?utf-8?B?eHd5WmxvWW5xQkpDWVZQeUYzM1VpM0xTN0RWd0RWdmsrUWx5MC9hZlpOSG81?=
+ =?utf-8?B?SG1GelgrcTBRbnIxaGcwTWxNaXNONTd2di85d0p0Y1RNTnN3SGlZQ3lXZW5O?=
+ =?utf-8?B?NW5PL3diNzY4QlBiUU9wakZQUU85T2JxM2kwZUc2OFVvZ1VXTkw0c2hhN0Yy?=
+ =?utf-8?B?SGVDMmtNcnZ3dWdkd3lIZGQrMmVxUitnZDQ3Nmo0Z2Vpckd3UjlEU0h5dEYz?=
+ =?utf-8?B?TThzdllIRExpSytDVmF2TjhRZ25udURlMk9ZVmUxNTBhNW9RMjhOQmhDQTdi?=
+ =?utf-8?B?bzdJRFE2YUZkVDlDWS9Cd01mSnRYZUhhME4wREVNclhIZ2dMWHVHVlRvK3Q3?=
+ =?utf-8?B?ZGEzWkRJanNsNm5zTVdTZ0tkOXZ2R0VOaW1uZXBGRllBME1NNXd5V1loTmdV?=
+ =?utf-8?B?bGxudGUzYTNLaDdMYkUyZUNUSnZOQ0laQlpoTkpjREVsWEtIQWRmRlYrczRj?=
+ =?utf-8?B?dTEzbTVMWk5EeDJqeXV5NGo3ZThNaWc0ZWNMQ0tPUmhjL0tJeUx5MWx4dDFs?=
+ =?utf-8?B?WmlXMGNZQVpuNnJ2RHl3Tkh0ZUpERmIzRTZ1cEkzSnk3NWYwOG1BbVhnQUFl?=
+ =?utf-8?B?dEpQbVRodGk1T281di80dlZZTzc0VVZKOGNrTGhnZTdXYkgzaDFsTHpWbEtw?=
+ =?utf-8?B?MkQ3cVpPT2V6My9SekxlR0poQ0laTU1VWXMwclpzTGlDdGhqVmQxVlM5S0M4?=
+ =?utf-8?B?Mk1mRHk5bmQyc1V5dHRlSEJ4NENiNDhTMkl1RXdBSDQzeGVpekZ5QzhUNERG?=
+ =?utf-8?B?S0ZDanNlVHRqcGJZbFV4VVhUTS9jVVlmT0ZZK2MrelMyMlk0UkVSekRGa29z?=
+ =?utf-8?B?TXUvUlRrcEg1SjhNUUUrZ1ZqUThQcyt2eFVTcHpSME1HaVhEWDl4UUp4NUVY?=
+ =?utf-8?B?VnRaLys1NjhrK3EwRkZHYTJEaG1rRnU0WS9MZ28vaXR3ZW1zNTREczF0U0VI?=
+ =?utf-8?B?ZU1NY1RFRk9GRTVCdUVRZDdpaEp2TGZoYVFnaG1pUk4zWkVZUzFvNHFidlhI?=
+ =?utf-8?B?SnpJMGlUMzVIekpYaWRvWTQyeGFPUTBSVkU4dHg3WDBrcEtLYWZuQWt5MTRE?=
+ =?utf-8?B?NTFGMkhWajVnMnBGS0M1MU8zR2dLaXU0bDY4VkFNVi9makQzbXVtekdvbGxD?=
+ =?utf-8?B?ZUMrdUFadUI5VlZUVlZKRDN2d241Qml3SkN2MUcvNHR0Y29iU2pnOCtibUpJ?=
+ =?utf-8?B?dzQyVzVJYlUycXB4VFA5Z2c1WEk2MkZuWEZIQWNQbWg0VXg4OGFNcXo3V1R2?=
+ =?utf-8?B?NHc1bkUwdjZ6U2hFZkxhSkdrTFhGWmNDZkNkS3VVSHFJOURGbnp3eGx1amFK?=
+ =?utf-8?B?S0FoeS9xeGk4UUVhczQzQ2g2RERYdUZVdGd3L2E2aDVCU0J1dUVMS2k4VFFq?=
+ =?utf-8?Q?EPxqhkB0WGAXW3YpRkHP7i+3gOMoY1HDwnwRR7leU26j?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <5D6730699A52C74D8E7D47DD76626950@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4209.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8ea2ba1d-75d6-4eef-ef40-08d9a943925e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Nov 2021 20:56:33.1133
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: h8lnI1AvHulgfJwhMUrnlijAbiYhkVmDXiIzGlfKZ/QRJ6Eh3snvtSRnJauNjkseHB6f+mM3nwA7ywihbwvBIA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2661
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 12:41 PM, Florian Fainelli wrote:
-> On 11/16/21 10:20 AM, Rob Herring wrote:
->> +Marc Z
->>
->> On Mon, Nov 15, 2021 at 8:39 AM Andy Shevchenko
->> <andriy.shevchenko@linux.intel.com> wrote:
->>>
->>> On Mon, Nov 15, 2021 at 04:14:21PM +0200, Andy Shevchenko wrote:
->>>> On Mon, Nov 15, 2021 at 4:01 PM Robin Murphy <robin.murphy@arm.com> wrote:
->>>>> On 2021-11-15 11:20, Andy Shevchenko wrote:
->>>>>> Use BIT() as __GENMASK() is for internal use only. The rationale
->>>>>> of switching to BIT() is to provide better generated code. The
->>>>>> GENMASK() against non-constant numbers may produce an ugly assembler
->>>>>> code. On contrary the BIT() is simply converted to corresponding shift
->>>>>> operation.
->>>>>
->>>>> FWIW, If you care about code quality and want the compiler to do the
->>>>> obvious thing, why not specify it as the obvious thing:
->>>>>
->>>>>         u32 val = ~0 << msi->legacy_shift;
->>>>
->>>> Obvious and buggy (from the C standard point of view)? :-)
->>>
->>> Forgot to mention that BIT() is also makes it easy to avoid such mistake.
->>>
->>>>> Personally I don't think that abusing BIT() in the context of setting
->>>>> multiple bits is any better than abusing __GENMASK()...
->>>>
->>>> No, BIT() is not abused here, but __GENMASK().
->>>>
->>>> After all it's up to you, folks, consider that as a bug report.
->>
->> Couldn't we get rid of legacy_shift entirely if the legacy case sets
->> up 'hwirq' as 24-31 rather than 0-7? Though the data for the MSI msg
->> uses the hwirq.
-> 
-> I personally find it clearer and easier to reason about with the current
-> code though I suppose that with an appropriate xlate method we could
-> sort of set up the hwirq the way we want them to be to avoid any
-> shifting in brcm_pcie_msi_isr().
-
-Something like the following maybe? Completely untested as I don't
-believe I have a device with that legacy controller available at the moment:
-
-diff --git a/drivers/pci/controller/pcie-brcmstb.c
-b/drivers/pci/controller/pcie-brcmstb.c
-index 1fc7bd49a7ad..41404b268fa3 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -144,6 +144,8 @@
- #define BRCM_INT_PCI_MSI_NR		32
- #define BRCM_INT_PCI_MSI_LEGACY_NR	8
- #define BRCM_INT_PCI_MSI_SHIFT		0
-+#define BRCM_INT_PCI_MSI_MASK		GENMASK(BRCM_INT_PCI_MSI_NR - 1, 0)
-+#define BRCM_INT_PCI_MSI_LEGACY_MASK	GENMASK(31, 32 -
-BRCM_INT_PCI_MSI_LEGACY_NR)
-
- /* MSI target addresses */
- #define BRCM_MSI_TARGET_ADDR_LT_4GB	0x0fffffffcULL
-@@ -269,8 +271,6 @@ struct brcm_msi {
- 	/* used indicates which MSI interrupts have been alloc'd */
- 	unsigned long		used;
- 	bool			legacy;
--	/* Some chips have MSIs in bits [31..24] of a shared register. */
--	int			legacy_shift;
- 	int			nr; /* No. of MSI available, depends on chip */
- 	/* This is the base pointer for interrupt status/set/clr regs */
- 	void __iomem		*intr_base;
-@@ -486,7 +486,6 @@ static void brcm_pcie_msi_isr(struct irq_desc *desc)
- 	dev = msi->dev;
-
- 	status = readl(msi->intr_base + MSI_INT_STATUS);
--	status >>= msi->legacy_shift;
-
- 	for_each_set_bit(bit, &status, msi->nr) {
- 		int ret;
-@@ -516,9 +515,8 @@ static int brcm_msi_set_affinity(struct irq_data
-*irq_data,
- static void brcm_msi_ack_irq(struct irq_data *data)
- {
- 	struct brcm_msi *msi = irq_data_get_irq_chip_data(data);
--	const int shift_amt = data->hwirq + msi->legacy_shift;
-
--	writel(1 << shift_amt, msi->intr_base + MSI_INT_CLR);
-+	writel(BIT(data->hwirq), msi->intr_base + MSI_INT_CLR);
- }
-
-
-@@ -573,9 +571,31 @@ static void brcm_irq_domain_free(struct irq_domain
-*domain,
- 	brcm_msi_free(msi, d->hwirq);
- }
-
-+static int brcm_irq_domain_xlate(struct irq_domain *d,
-+				 struct device_node *node,
-+				 const u32 *intspec, unsigned int intsize,
-+				 unsigned long *out_hwirq,
-+				 unsigned int *out_type)
-+{
-+	struct brcm_msi *msi = d->host_data;
-+
-+	if (WARN_ON(intsize < 1))
-+		return -EINVAL;
-+
-+	if (msi->legacy) {
-+		*out_hwirq = intspec[0] + BRCM_INT_PCI_MSI_SHIFT;
-+		*out_type = IRQ_TYPE_NONE;
-+		return 0;
-+	}
-+
-+	return irq_domain_xlate_onecell(d, node, intspec, intsize,
-+					out_hwirq, out_type);
-+}
-+
- static const struct irq_domain_ops msi_domain_ops = {
- 	.alloc	= brcm_irq_domain_alloc,
- 	.free	= brcm_irq_domain_free,
-+	.xlate	= brcm_irq_domain_xlate,
- };
-
- static int brcm_allocate_domains(struct brcm_msi *msi)
-@@ -619,7 +639,8 @@ static void brcm_msi_remove(struct brcm_pcie *pcie)
-
- static void brcm_msi_set_regs(struct brcm_msi *msi)
- {
--	u32 val = __GENMASK(31, msi->legacy_shift);
-+	u32 val = msi->legacy ? BRCM_INT_PCI_MSI_MASK :
-+				BRCM_INT_PCI_MSI_LEGACY_MASK;
-
- 	writel(val, msi->intr_base + MSI_INT_MASK_CLR);
- 	writel(val, msi->intr_base + MSI_INT_CLR);
-@@ -664,11 +685,9 @@ static int brcm_pcie_enable_msi(struct brcm_pcie *pcie)
- 	if (msi->legacy) {
- 		msi->intr_base = msi->base + PCIE_INTR2_CPU_BASE;
- 		msi->nr = BRCM_INT_PCI_MSI_LEGACY_NR;
--		msi->legacy_shift = 24;
- 	} else {
- 		msi->intr_base = msi->base + PCIE_MSI_INTR2_BASE;
- 		msi->nr = BRCM_INT_PCI_MSI_NR;
--		msi->legacy_shift = 0;
- 	}
-
- 	ret = brcm_allocate_domains(msi);
-
--- 
-Florian
+T24gVGh1LCAyMDIxLTExLTA0IGF0IDA5OjE3ICswODAwLCBkYXZpZGNvbXBvbmVudG9uZUBnbWFp
+bC5jb20gd3JvdGU6DQo+IEZyb206IFlhbmcgR3VhbmcgPHlhbmcuZ3Vhbmc1QHp0ZS5jb20uY24+
+DQo+IA0KPiBVc2UgdGhlIG1hY3JvICdzd2FwKCknIGRlZmluZWQgaW4gJ2luY2x1ZGUvbGludXgv
+bWlubWF4LmgnIHRvIGF2b2lkDQo+IG9wZW5jb2RpbmcgaXQuDQo+IA0KPiBSZXBvcnRlZC1ieTog
+WmVhbCBSb2JvdCA8emVhbGNpQHp0ZS5jb20uY24+DQo+IFNpZ25lZC1vZmYtYnk6IFlhbmcgR3Vh
+bmcgPHlhbmcuZ3Vhbmc1QHp0ZS5jb20uY24+DQo+IC0tLQ0KPiDCoGRyaXZlcnMvbmV0L2V0aGVy
+bmV0L21lbGxhbm94L21seDUvY29yZS9lbi90Y19jdC5jIHwgNSArLS0tLQ0KPiDCoDEgZmlsZSBj
+aGFuZ2VkLCAxIGluc2VydGlvbigrKSwgNCBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZW4vdGNfY3QuYw0KPiBi
+L2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9lbi90Y19jdC5jDQo+IGlu
+ZGV4IGMxYzZlNzRjNzljNC4uOGNlNGI2MTEyMTY5IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL25l
+dC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZW4vdGNfY3QuYw0KPiArKysgYi9kcml2ZXJz
+L25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZW4vdGNfY3QuYw0KPiBAQCAtOTA3LDEy
+ICs5MDcsOSBAQCBtbHg1X3RjX2N0X3NoYXJlZF9jb3VudGVyX2dldChzdHJ1Y3QNCj4gbWx4NV90
+Y19jdF9wcml2ICpjdF9wcml2LA0KPiDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IG1seDVfY3RfdHVw
+bGUgcmV2X3R1cGxlID0gZW50cnktPnR1cGxlOw0KPiDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IG1s
+eDVfY3RfY291bnRlciAqc2hhcmVkX2NvdW50ZXI7DQo+IMKgwqDCoMKgwqDCoMKgwqBzdHJ1Y3Qg
+bWx4NV9jdF9lbnRyeSAqcmV2X2VudHJ5Ow0KPiAtwqDCoMKgwqDCoMKgwqBfX2JlMTYgdG1wX3Bv
+cnQ7DQo+IMKgDQo+IMKgwqDCoMKgwqDCoMKgwqAvKiBnZXQgdGhlIHJldmVyc2VkIHR1cGxlICov
+DQo+IC3CoMKgwqDCoMKgwqDCoHRtcF9wb3J0ID0gcmV2X3R1cGxlLnBvcnQuc3JjOw0KPiAtwqDC
+oMKgwqDCoMKgwqByZXZfdHVwbGUucG9ydC5zcmMgPSByZXZfdHVwbGUucG9ydC5kc3Q7DQo+IC3C
+oMKgwqDCoMKgwqDCoHJldl90dXBsZS5wb3J0LmRzdCA9IHRtcF9wb3J0Ow0KPiArwqDCoMKgwqDC
+oMKgwqBzd2FwKHJldl90dXBsZS5wb3J0LnNyYywgcmV2X3R1cGxlLnBvcnQuZHN0KTsNCj4gwqAN
+Cj4gwqDCoMKgwqDCoMKgwqDCoGlmIChyZXZfdHVwbGUuYWRkcl90eXBlID09IEZMT1dfRElTU0VD
+VE9SX0tFWV9JUFY0X0FERFJTKSB7DQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+X19iZTMyIHRtcF9hZGRyID0gcmV2X3R1cGxlLmlwLnNyY192NDsNCg0KQW4gaWRlbnRpY2FsIHBh
+dGNoIHdhcyBhbHJlYWR5IHN1Ym1pdHRlZCB0aGUgZGF5IGJlZm9yZS4NClRoYW5rcyBmb3IgdGhl
+IGVmZm9ydCAhDQoNCg==
