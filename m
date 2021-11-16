@@ -2,150 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E65E2452A21
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:58:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5018452A4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 07:04:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237769AbhKPGAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 01:00:20 -0500
-Received: from mga12.intel.com ([192.55.52.136]:54311 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238720AbhKPF7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 00:59:37 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="213663289"
-X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
-   d="scan'208";a="213663289"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 21:54:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
-   d="scan'208";a="454324503"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.189])
-  by orsmga006.jf.intel.com with ESMTP; 15 Nov 2021 21:54:10 -0800
-Date:   Tue, 16 Nov 2021 13:54:10 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Denys Vlasenko <dvlasenk@redhat.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>, longman@redhat.com,
-        arnd@arndb.de, akpm@linux-foundation.org, jannh@google.com
-Subject: Re: [RFC PATCH] x86, vmlinux.lds: Add debug option to force all data
- sections aligned
-Message-ID: <20211116055410.GE34844@shbuild999.sh.intel.com>
-References: <1627456900-42743-1-git-send-email-feng.tang@intel.com>
- <20210922185137.ivdp4yoalv4qdbe2@treble>
- <20210923145720.GA28463@shbuild999.sh.intel.com>
- <5ac33795-9402-43e6-9595-d6c07f3250bc@redhat.com>
- <20210927070448.GA78698@shbuild999.sh.intel.com>
+        id S239612AbhKPGFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 01:05:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239749AbhKPGE6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 01:04:58 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADE5C079795;
+        Mon, 15 Nov 2021 21:58:07 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id y68so48875968ybe.1;
+        Mon, 15 Nov 2021 21:58:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vwQbbB+o9iFHKHMMakR4a/9yedm1CycVNM0ARkL4Ywc=;
+        b=HHJqLNdhGHu+SOFMVNqyvbD8fgOVsyNW66mYrrln1ubpoh2hGONrP2k9fs5fyHHp6I
+         hNGfhYyCz61ia8FoMcYNeHgj2re+Zmdmy93DpV3P1wcK+e4NE6eSsFqE3jgcHBu1k6Y3
+         ahQGEstOcGsrGjy8PSNlMshnOQ3TkbDhbam4qscwSao4Z57UbiSxv16W6tC2oZpIUutu
+         SwCS11Lf9nIO6aI9o0CfWLIoH5KVXj8UsSntIh6x7GwVJtSf4LMqHIHN2xVPgZvo3WTo
+         1Y8a+9cXp3qtWXgg6GMJSS4IrX18zMZzA020M1TjQqsLUecSaUu6P9LYLdXZVx9jK2tu
+         iiYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vwQbbB+o9iFHKHMMakR4a/9yedm1CycVNM0ARkL4Ywc=;
+        b=Y0z0Pe1M+Ra+jq1ZomIErq8uLRec/b+hVL3RL6rH0DYdVJB7ShsbDHnnrJRB7E7EAd
+         sUOxI2e5DX9d161KLsJm137K+QHCgA1SriXDaQonQeKiVeLAT7t4ATEaIcP0wNx9e+Zs
+         MZD3RCRThdj5PCxITwbhhGFBDdSji0K1nEox/UPsLAuVosh2Nie+ARNEHctWkJgM4dxB
+         IyKGcRfwYKvSYTZsM4Mc07ZJn1VkMIszvfOcuYiDX85JV8Nl10rD1uGnBc3VnX2id2XD
+         KbgsiG4SWc4oFHgwIw6iyWWsNTzodd9udqXg6SVu6H2RFlVl2QFveGfgvAwR7jEusAcw
+         yzKg==
+X-Gm-Message-State: AOAM533uQ4X2bypRnS4/yVG/piwPe+gV8MBlUpi/iUU60N2fM+iU5KRC
+        XH+k/7vH2CiFpvMznHCPI+rKtbgV2GRJMpwfebI/imEC8rs=
+X-Google-Smtp-Source: ABdhPJy/XFTN66T4NkHoWvK070CLFU0NcH1wCiGJkOEZhzbiEF979SeVeR/laiSwDMifMU6FzmTJNLCvDJgCfJM3q8k=
+X-Received: by 2002:a25:d010:: with SMTP id h16mr5981439ybg.225.1637042286816;
+ Mon, 15 Nov 2021 21:58:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210927070448.GA78698@shbuild999.sh.intel.com>
+References: <20211115165313.549179499@linuxfoundation.org> <CA+G9fYvxhzL9KUxZcRzMxnbGPK5GKTCtb5kWM3JB09D+-KhVug@mail.gmail.com>
+In-Reply-To: <CA+G9fYvxhzL9KUxZcRzMxnbGPK5GKTCtb5kWM3JB09D+-KhVug@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 15 Nov 2021 21:57:55 -0800
+Message-ID: <CAEf4BzZHsbAhA6RJYias+e10PsXWbOD9ekyNMAHKt5PKAGe=Rw@mail.gmail.com>
+Subject: Re: [PATCH 5.4 000/355] 5.4.160-rc1 review
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, f.fainelli@gmail.com,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        jonathanh@nvidia.com, linux- stable <stable@vger.kernel.org>,
+        pavel@denx.de, Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux@roeck-us.net, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 03:04:48PM +0800, Feng Tang wrote:
-[...]  
-> > >For data-alignment, it has huge impact for the size, and occupies more
-> > >cache/TLB, plus it hurts some normal function like dynamic-debug. So
-> > >I'm afraid it can only be used as a debug option.
-> > >
-> > >>On a similar vein I think we should re-explore permanently enabling
-> > >>cacheline-sized function alignment i.e. making something like
-> > >>CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_64B the default.  Ingo did some
-> > >>research on that a while back:
-> > >>
-> > >>    https://lkml.kernel.org/r/20150519213820.GA31688@gmail.com
-> > >
-> > >Thanks for sharing this, from which I learned a lot, and I hope I
-> > >knew this thread when we first check strange regressions in 2019 :)
-> > >
-> > >>At the time, the main reported drawback of -falign-functions=64 was that
-> > >>even small functions got aligned.  But now I think that can be mitigated
-> > >>with some new options like -flimit-function-alignment and/or
-> > >>-falign-functions=64,X (for some carefully-chosen value of X).
-> > 
-> > -falign-functions=64,7 should be about right, I guess.
-[...] 
-> I cannot run it with 0Day's benchmark service right now, but I'm afraid
-> there may be some performance change.
-> 
-> Btw, I'm still interested in the 'selective isolation' method, that
-> chose a few .o files from different kernel modules, add alignment to
-> one function and one global data of the .o file, setting up an
-> isolation buffer that any alignment change caused by the module before
-> this .o will _not_ affect the alignment of all .o files after it.
-> 
-> This will have minimal size cost, for one .o file, the worst waste is
-> 128 bytes, so even we pick 128 .o files, the total cost is 8KB text
-> and 8KB data space.
-> 
-> And surely we need to test if this method can really make kernel
-> performance more stable, one testing method is to pick some reported
-> "strange" performance change case, and check if they are gone with
-> this method. 
+On Mon, Nov 15, 2021 at 10:00 AM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
+>
+> On Mon, 15 Nov 2021 at 22:39, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.4.160 release.
+> > There are 355 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Wed, 17 Nov 2021 16:52:23 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.160-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+>
+>
+> Perf build broken due to following errors.
+>
+> > Andrii Nakryiko <andrii@kernel.org>
+> >     libbpf: Fix BTF data layout checks and allow empty BTF
+>
+>
+> In file included from btf.c:17:
+> btf.c: In function 'btf_parse_hdr':
+> btf.c:104:62: error: 'struct btf' has no member named 'raw_size'; did
+> you mean 'data_size'?
+>   104 |                 pr_debug("Invalid BTF total size:%u\n", btf->raw_size);
+>       |                                                              ^~~~~~~~
+>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>
+> Build log:
+> https://builds.tuxbuild.com/20xsgAxLwf4E60xl2dTdXnNS8FZ/
 
-Some update on the experiments about "selective isolation": I tried
-three code alignment related cases that have been discussed, and
-found the method does help to reduce the performance bump, one is
-cut from 7.5% to 0.1%, and another from 3.1% to 1.3%.
+Greg,
 
-The 3 cases are:
-1. y2038 code cleanup causing +11.7% improvement to 'mmap' test of
-   will-it-scale
-   https://lore.kernel.org/lkml/20200305062138.GI5972@shao2-debian/#r
-2. a hugetlb fix causing +15.9% improvement to 'page_fault3' test of
-   will-it-scale
-   https://lore.kernel.org/lkml/20200114085637.GA29297@shao2-debian/#r
-3. a one-line mm fix causing -30.7% regresson of scheduler test of
-   stress-ng
-   https://lore.kernel.org/lkml/20210427090013.GG32408@xsang-OptiPlex-9020/#r
+c733c19fda7b ("libbpf: Fix BTF data layout checks and allow empty
+BTF") should either be dropped, or fixed like the below:
 
-These cases are old (one or two years old), and case 3 can't be
-reproduced now. Case 1's current performance delta is +3.1%,
-while case 2's is +7.5%, and we tried on case 1/2.
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 3380aadb7465..41daf0fa95b9 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -101,7 +101,7 @@ static int btf_parse_hdr(struct btf *btf)
+        }
 
-The experiment we did is to find what files the patch touches, say
-a.c, then we chose the b.c which follows a.c in Makefile which means
-the b.o will be linked right after a.o (this is for simplicity, that
-there are other factors like special section definitions), and
-make one function of b.c aligned on 4096 bytes.
+        if (meta_left < hdr->str_off + hdr->str_len) {
+-               pr_debug("Invalid BTF total size:%u\n", btf->raw_size);
++               pr_debug("Invalid BTF total size:%u\n", btf->data_size);
+                return -EINVAL;
+        }
 
-For case 2, the bisected commit c77c0a8ac4c only touches hugetlb.c,
-so we made a debug patch for mempolicy.c following it:
+Not sure which one you'd prefer. Both will fix perf build.
 
-  diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-  index 067cf7d3daf5..036c93abdf9b 100644
-  --- a/mm/mempolicy.c
-  +++ b/mm/mempolicy.c
-  @@ -804,7 +804,7 @@ static int mbind_range(struct mm_struct *mm, unsigned long start,
-   }
-   
-   /* Set the process memory policy */
-  -static long do_set_mempolicy(unsigned short mode, unsigned short flags,
-  +static long __attribute__((aligned(4096)))  do_set_mempolicy(unsigned short mode, unsigned short flags,
-  			     nodemask_t *nodes)
-   {
-  	struct mempolicy *new, *old;
-
-with it, the performance delta is reduced from 7.5% to 0.1% 
-
-And for case 2, we tried similar way (add 128B align to several files),
-and saw the performance change is reduced from 3.1% to 1.3%  
-
-So generally, this seems to be helpful for making the kernel performance
-stabler and more controllable. And the cost is not high either, say if
-we pick 32 files to make one of their function 128B aligned, the space
-waste is 8KB for worst case (128KB for 4096 bytes alignment)
-
-Thoughts?
-
-Thanks,
-Feng
-
+>
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
