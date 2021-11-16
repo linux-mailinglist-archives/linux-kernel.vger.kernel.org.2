@@ -2,156 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265A0453B08
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7EB0453B0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbhKPUjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 15:39:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229614AbhKPUjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 15:39:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC0A261AE2;
-        Tue, 16 Nov 2021 20:36:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637095010;
-        bh=EQ2kzAIAp9lGq1yFLf/XWOv9j++al7Pc/NdjyCxIpj4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=oAuJLXaZdwr2YUHe1QH0xqQ9IAydOvLp0KyoSzPQWzRbeWRpPifKHuTftv+BKWerI
-         bWKfFEU+HZUfHjMraXUj6pSgSkSwU8bFMGKSl1vtpDPmvKs5QIOxhALHfdLfuN6g4S
-         mQk2rgZGUqoWeFBKR3DmE9301A0sDFnP8Mu+v2ZDrbZYJdOZv/salYhccVDN4hdgLr
-         +CbNM+voa3h7THotahC1gK2VvqcisU2H499uhxMd/DEhQHZji13FUCBrUHHgJZp+uI
-         bTOjYTwjWa3Jt7ro6cV9rZ/3n5FAyd2pGLtT3ic0mlYo2HgLrSp5qp6vWqDFGJeTT4
-         GtNIWkKoljZjw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 746E45C0433; Tue, 16 Nov 2021 12:36:50 -0800 (PST)
-Date:   Tue, 16 Nov 2021 12:36:50 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Waiman Long <longman@redhat.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Cassio Neri <cassio.neri@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH 1/2] clocksource: Avoid accidental unstable marking of
- clocksources
-Message-ID: <20211116203650.GV641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211111045703.GA15896@shbuild999.sh.intel.com>
- <20211111144311.GK641268@paulmck-ThinkPad-P17-Gen-1>
- <20211112054417.GA29845@shbuild999.sh.intel.com>
- <889b16c6-b6cc-63d7-a6de-8cec42c7d78c@redhat.com>
- <20211114155407.GB641268@paulmck-ThinkPad-P17-Gen-1>
- <20211115020851.GB29845@shbuild999.sh.intel.com>
- <e2d300c4-cc0d-47c4-3e7d-8a1cc3546719@redhat.com>
- <20211115075915.GA34844@shbuild999.sh.intel.com>
- <20211115140709.GG641268@paulmck-ThinkPad-P17-Gen-1>
- <20211116013651.GC34844@shbuild999.sh.intel.com>
+        id S230403AbhKPUlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 15:41:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229614AbhKPUlj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 15:41:39 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BB5C061766;
+        Tue, 16 Nov 2021 12:38:42 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id fv9-20020a17090b0e8900b001a6a5ab1392so491623pjb.1;
+        Tue, 16 Nov 2021 12:38:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=L1Aa3agJEgHTydGbJ+CTp880pElw48GNNKQ4ED3u2vI=;
+        b=VN9XYnxshvs2MoeSJpe+I4y+qT5APEDxU9p7gPKydcBpmlAMWrSagQ6KtJ6XJug2rC
+         xrRDOnk7ctZLJowVIdDBQmQTYJEHY+VMvRkwT80fkUW84oxKYrzgDGx6vv9Kc7cXYma2
+         b5qI0zRYKDA35SMBGd8vm8IU1PfQFB0wcuLEBg7DUCalJfEKWBvwkRt6HvmR9C8eWzF5
+         WQXabB5j4+AhGz7ODVL5hgydZ4ndx7GT6Vp/l3dldBEW/CHxtSTnJmjUGGWCjXk415MG
+         4pzvgG8O0OGJ2AizOAF39o2p6a927CCRZVypu04Mi1ZtDwvIbIlx6wsGQT52RlkZprqY
+         xhJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=L1Aa3agJEgHTydGbJ+CTp880pElw48GNNKQ4ED3u2vI=;
+        b=HyGIzLV65UweX3gXf8+lQaiFZ/QL7teBSJcuiQUlf9Cm0MiSjdhTzYbOMsB1Rk5waU
+         j+46JfmgX7e0sKpAsvdaJSjCclSfkq4dV5fXELSXmhdrztJkj/CAEAh28YszNa3CU96h
+         l9VrPcMApOQP738/618yzpp0G3Oe1TAo3JgKHV2m8iuOvS5G1aa6Ytx1/5PD8dXyJGX2
+         e9W2KZckvXRLuVzjxsphXLH8FZkNd4ErI+cjaflOEwkzTPBQ5CcWKAEBLuPU+C7Fm6FZ
+         lEFdKmwoRvBI/oPNssIfLLEAcZL7ckxdLNhxtGoRkyXiZpdRpsjMp6jgk+i9tD8C7qAj
+         X8dQ==
+X-Gm-Message-State: AOAM5310v0HsSxVnQ7oV2PDUTXkWHW2CY6dZVQiEkgxk1tvSCzU/EA2e
+        zXxBMeCOiesiGQrX0UTcsVA=
+X-Google-Smtp-Source: ABdhPJwtlgGBSK5f9oPOiX8vOtjsppRXs9k2VBvEVSVxBR15HeKTJEG1e0r+PYA+ADSPSFiU3kHlXQ==
+X-Received: by 2002:a17:90b:4b04:: with SMTP id lx4mr2312775pjb.11.1637095121660;
+        Tue, 16 Nov 2021 12:38:41 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id d9sm2729185pjs.2.2021.11.16.12.38.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 12:38:41 -0800 (PST)
+Subject: Re: [PATCH v2 1/1] PCI: brcmstb: Use BIT() as __GENMASK() is for
+ internal use only
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Jim Quinlan <jim2101024@gmail.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+References: <20211115112000.23693-1-andriy.shevchenko@linux.intel.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <41b85802-6118-33a6-692a-043d74b82d8e@gmail.com>
+Date:   Tue, 16 Nov 2021 12:38:39 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211116013651.GC34844@shbuild999.sh.intel.com>
+In-Reply-To: <20211115112000.23693-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 09:36:51AM +0800, Feng Tang wrote:
-> On Mon, Nov 15, 2021 at 06:07:09AM -0800, Paul E. McKenney wrote:
-> > On Mon, Nov 15, 2021 at 03:59:15PM +0800, Feng Tang wrote:
-> > > On Sun, Nov 14, 2021 at 10:24:56PM -0500, Waiman Long wrote:
-> > > > 
-> > > > On 11/14/21 21:08, Feng Tang wrote:
-> > > > > Or did you have something else in mind?
-> > > > > > > > I'm not sure the detail in  Waiman's cases, and in our cases (stress-ng)
-> > > > > > > > the delay between watchdog's (HPET here) read were not linear, that
-> > > > > > > > from debug data, sometimes the 3-2 difference could be bigger or much
-> > > > > > > > bigger than the 2-1 difference.
-> > > > > > > > 
-> > > > > > > > The reason could be the gap between 2 reads depends hugely on the system
-> > > > > > > > pressure at that time that 3 HPET read happens. On our test box (a
-> > > > > > > > 2-Socket Cascade Lake AP server), the 2-1 and 3-2 difference are stably
-> > > > > > > > about 2.5 us,  while under the stress it could be bumped to from 6 us
-> > > > > > > > to 2800 us.
-> > > > > > > > 
-> > > > > > > > So I think checking the 3-2 difference plus increasing the max retries
-> > > > > > > > to 10 may be a simple way, if the watchdog read is found to be
-> > > > > > > > abnormally long, we skip this round of check.
-> > > > > > > On one of the test system, I had measured that normal delay
-> > > > > > > (hpet->tsc->hpet) was normally a bit over 2us. It was a bit more than 4us at
-> > > > > > > bootup time. However, the same system under stress could have a delay of
-> > > > > > > over 200us at bootup time. When I measured the consecutive hpet delay, it
-> > > > > > > was about 180us. So hpet read did dominate the total clocksource read delay.
-> > > > > > Thank you both for the data!
-> > > > > > 
-> > > > > > > I would not suggest increasing the max retries as it may still fail in most
-> > > > > > > cases because the system stress will likely not be going away within a short
-> > > > > > > time. So we are likely just wasting cpu times. I believe we should just skip
-> > > > > > > it if it is the watchdog read that is causing most of the delay.
-> > > > > > If anything, adding that extra read would cause me to -reduce- the number
-> > > > > > of retries to avoid increasing the per-watchdog overhead.
-> > > > > I understand Waiman's concern here, and in our test patch, the 2
-> > > > > consecutive watchdog read delay check is done inside this retrying
-> > > > > loop accompanying the 'cs' read, and once an abnormal delay is found,
-> > > > > the watchdog check is skipped without waiting for the max-retries to
-> > > > > complete.
-> > > > > 
-> > > > > Our test data shows the consecutive delay is not always big even when
-> > > > > the system is much stressed, that's why I suggest to increase the
-> > > > > retries.
-> > > > 
-> > > > If we need a large number of retries to avoid triggering the unstable TSC
-> > > > message, we should consider increase the threshod instead. Right?
-> > > > 
-> > > > That is why my patch 2 makes the max skew value a configurable option so
-> > > > that we can tune it if necessary.
-> > > 
-> > > I'm fine with it, though the ideal case I expected is with carefully
-> > > picked values for max_retries/screw_threshhold, we could save the users
-> > > from configuring these. But given the complexity of all HWs out there,
-> > > it's not an easy goal.
-> > 
-> > That is my goal as well, but I expect that more experience, testing,
-> > and patches will be required to reach that goal.
-> > 
-> > > And I still suggest to put the consecutive watchdog read check inside
-> > > the retry loop, so that it could bail out early when detecting the
-> > > abnormal delay.
-> > 
-> > If the HPET read shows abnormal delay, agreed.  But if the abnormal
-> > delay is only in the clocksource under test (TSC in this case), then
-> > a re-read seems to me to make sense.
-> 
-> Yes, I agree. The retry logic you introeduced does help to filter
-> many false alarms from a watchdog. 
-> 
-> > > Another thing is we may need to set the 'watchdog_reset_pending', as
-> > > under the stress, there could be consecutive many times of "skipping"
-> > > watchdog check, and the saved value of 'cs' and 'watchdog' should be
-> > > reset.
-> > 
-> > My thought was to count a read failure only if the HPET read did not
-> > have excessive delays.  This means that a cache-buster workload could 
-> > indefinitely delay a clock-skew check, which was one reason that I
-> > was thinking in terms of using the actual measured delays to set the
-> > clock-skew check criterion.
-> > 
-> > Either way, something like Waiman's patch checking the HPET delay looks
-> > to me to be valuable.
-> 
-> Yes, and Wainman is working on a new version.
+On 11/15/21 3:20 AM, Andy Shevchenko wrote:
+> Use BIT() as __GENMASK() is for internal use only. The rationale
+> of switching to BIT() is to provide better generated code. The
+> GENMASK() against non-constant numbers may produce an ugly assembler
+> code. On contrary the BIT() is simply converted to corresponding shift
+> operation.
 
-Looking forward to seeing it!
+The code is not necessarily any different on ARMv8 as far as I can tell,
+before:
 
-> btw, here is our easy reproducer (the case you have worked with Oliver
-> Sang), running the stress-ng's case (192 is the CPU number of the test
-> box):
+static void brcm_msi_set_regs(struct brcm_msi *msi)
+{
+        u32 val = __GENMASK(31, msi->legacy_shift);
+      84:       b9406402        ldr     w2, [x0,#100]
+      88:       d2800021        mov     x1, #0x1
+// #1
+      8c:       9ac22021        lsl     x1, x1, x2
+      90:       4b0103e1        neg     w1, w1
+
+
+after:
+
+static void brcm_msi_set_regs(struct brcm_msi *msi)
+{
+        u32 val = ~(BIT(msi->legacy_shift) - 1);
+      84:       b9406402        ldr     w2, [x0,#100]
+      88:       d2800021        mov     x1, #0x1
+// #1
+      8c:       9ac22021        lsl     x1, x1, x2
+      90:       4b0103e1        neg     w1, w1
+
+and the usage of BIT() does not make this any clearer.
+
+How about this instead:
+
+diff --git a/drivers/pci/controller/pcie-brcmstb.c
+b/drivers/pci/controller/pcie-brcmstb.c
+index 1fc7bd49a7ad..f832c07337fa 100644
+--- a/drivers/pci/controller/pcie-brcmstb.c
++++ b/drivers/pci/controller/pcie-brcmstb.c
+@@ -144,6 +144,8 @@
+ #define BRCM_INT_PCI_MSI_NR            32
+ #define BRCM_INT_PCI_MSI_LEGACY_NR     8
+ #define BRCM_INT_PCI_MSI_SHIFT         0
++#define BRCM_INT_PCI_MSI_MASK          GENMASK(BRCM_INT_PCI_MSI_NR - 1, 0)
++#define BRCM_INT_PCI_MSI_LEGACY_MASK   GENMASK(31, 32 -
+BRCM_INT_PCI_MSI_LEGACY_NR)
+
+ /* MSI target addresses */
+ #define BRCM_MSI_TARGET_ADDR_LT_4GB    0x0fffffffcULL
+@@ -619,7 +621,8 @@ static void brcm_msi_remove(struct brcm_pcie *pcie)
+
+ static void brcm_msi_set_regs(struct brcm_msi *msi)
+ {
+-       u32 val = __GENMASK(31, msi->legacy_shift);
++       u32 val = msi->legacy ? BRCM_INT_PCI_MSI_MASK :
++                               BRCM_INT_PCI_MSI_LEGACY_MASK;
+
+        writel(val, msi->intr_base + MSI_INT_MASK_CLR);
+        writel(val, msi->intr_base + MSI_INT_CLR);
+
+
 > 
->  sudo stress-ng --timeout 30 --times --verify --metrics-brief --ioport 192
+> Note, it's the only user of __GENMASK() in the kernel outside of its own realm.
+> 
+> Fixes: 3baec684a531 ("PCI: brcmstb: Accommodate MSI for older chips")
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+> v2: switched to BIT() and elaborated why, hence not included tag
+>  drivers/pci/controller/pcie-brcmstb.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+> index 1fc7bd49a7ad..0c49fc65792c 100644
+> --- a/drivers/pci/controller/pcie-brcmstb.c
+> +++ b/drivers/pci/controller/pcie-brcmstb.c
+> @@ -619,7 +619,7 @@ static void brcm_msi_remove(struct brcm_pcie *pcie)
+>  
+>  static void brcm_msi_set_regs(struct brcm_msi *msi)
+>  {
+> -	u32 val = __GENMASK(31, msi->legacy_shift);
+> +	u32 val = ~(BIT(msi->legacy_shift) - 1);
+>  
+>  	writel(val, msi->intr_base + MSI_INT_MASK_CLR);
+>  	writel(val, msi->intr_base + MSI_INT_CLR);
+> 
 
-Good to know, thank you!
 
-							Thanx, Paul
+-- 
+Florian
