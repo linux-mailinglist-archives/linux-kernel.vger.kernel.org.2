@@ -2,112 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6CA452C58
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:02:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A649452C5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:02:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbhKPIFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 03:05:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22972 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231429AbhKPIFc (ORCPT
+        id S231684AbhKPIFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 03:05:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231429AbhKPIFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 03:05:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637049755;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LCSrynp2laCG1R5XEbg3KqtinIS3fppXUc3OoVzsOks=;
-        b=G7gljdma5ojE2wOjnRpUf8jL2V0t+Pu9Q+0a0wZRt/Mtibzy3BGzeQJqkKbBfsVZhHpJ8+
-        oTnHP00jtYUX9cudhvTHb5MQksy8ibbYM4PfRGaGpFNAYAcNjGIiNSpLcpVOKcuuZjpIsS
-        OB9OiZywpMVVHYN2g21PqVUSYQ4bTPE=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-491-_FyzTaYdNjOU3vh_DjhWFg-1; Tue, 16 Nov 2021 03:02:34 -0500
-X-MC-Unique: _FyzTaYdNjOU3vh_DjhWFg-1
-Received: by mail-wm1-f72.google.com with SMTP id o18-20020a05600c511200b00332fa17a02eso1079477wms.5
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 00:02:33 -0800 (PST)
+        Tue, 16 Nov 2021 03:05:46 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2802C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 00:02:49 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id d10so55026722ybe.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 00:02:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hQBMuNhWC/SXVmRTyZGfwkUJW5a5zHc1KZht6B7VygU=;
+        b=mGjag/Vnno7VAQjIrRpLE8jUjT9qkJJDFyFJVHaXeI/0VhNK7E1VygQD10NTnkZjiL
+         L7eVH0IeL5qfJ9J+SZVHyinp2Lx0QGVnfPLq9YmUfsSP00JQc0cvCES4wlPOo4hpPIbp
+         09+CyBOxTMc3CJCIfphTu21XQmesl4gvCfdibZmD1nzIOFU34Rj/2GAIqLpLrTPCq9MP
+         nLeFX4sH7JUQdtLXFvheLzhTEOEadN7Qh4a4rQnaE6jHybnL2UrY6+IrDXUe29yMVcb3
+         jvJjqZE/O2NS8Ji3vHWZ+MAV+1+qIo15ARym/WMDx6S87cBJgoEPmCq5wapoPrsdkBVK
+         OWXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=LCSrynp2laCG1R5XEbg3KqtinIS3fppXUc3OoVzsOks=;
-        b=fweP+SKewj0OC7Si5D1h7XQ7/hBeq9/KynnzD0TF/JH5/yLNWXUlJHiYcmuNM15wi6
-         +MtP6QRECaIjZJGqwbkhrWAL/2vdPNNdUe55TqoTDD96tjTHVS+nywzo4N0d0WdZuV/t
-         mAb6008UKQmBqJoFRcaXA8SQtx7RIM1T497aQUnZi3roIj68042gotT8XwP/9di9JJXD
-         Dtv56uFPLmp2WQzawxA4aLA+uEUn3Yar/6ySXDcYR00ihBm+tzgg+X8OgHx06eZtm0Tw
-         aM9S/kRLX3Up6sAuf6axOgQ1V/EqTyv9Voj3F9WnTkxi/EhzOLp0m2lnZmP45KyPlFPJ
-         CzjQ==
-X-Gm-Message-State: AOAM533DMcJpsVlIJBN7dCgg3VtLdoUp/rUyiSFEadq1kru/KEqKYnKS
-        ReK3k8Pc0H+aTyD/qZXe7Qq9FxnL0ae5ibhuDxEVe7P1vPd1WBQlBiATpAwTwy6tvyuNGdZNFpI
-        3x7qgBwOb0NvYAF4vvv3uGYEK
-X-Received: by 2002:a5d:6a4d:: with SMTP id t13mr6954073wrw.104.1637049752994;
-        Tue, 16 Nov 2021 00:02:32 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx6Utf7cFwIqmSHQp5zkqSecC4ZA2odmOYlZZgrRcZkRsT04uEEng/kHgOkrk3tTuv1xPPHkQ==
-X-Received: by 2002:a5d:6a4d:: with SMTP id t13mr6954047wrw.104.1637049752784;
-        Tue, 16 Nov 2021 00:02:32 -0800 (PST)
-Received: from [192.168.3.132] (p4ff23d3a.dip0.t-ipconnect.de. [79.242.61.58])
-        by smtp.gmail.com with ESMTPSA id m20sm1745208wmq.11.2021.11.16.00.02.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 00:02:32 -0800 (PST)
-Message-ID: <4289b936-e40c-cde8-eb08-0bd13c44eba3@redhat.com>
-Date:   Tue, 16 Nov 2021 09:02:31 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hQBMuNhWC/SXVmRTyZGfwkUJW5a5zHc1KZht6B7VygU=;
+        b=6xWUy5YTcdEG0wFuYxrKVbcUivek2YLlSfSH4/yS6ZP7kGqI79GoD1u0uduYXnjpf5
+         pNpBMWtTjxfMeMy4gZmNqDda4GE32gTbeHZtXPAbYvYeYHqFMqcllNseiyoS+ivoerOm
+         B1iURtP2TsYPgM6b7bLFtw6Ul5lqxZxd5q8Lld3JjsUKMGPQ3OZB03pHhYVJPen8qbwc
+         T4n2eWKeLeL7KBnOLIYKYC6rVfIsNrT3+wV6BWd+twaG2hiYH0051sZ00A1XfkNGhZJU
+         05L96eoBND1H+dJuOjiD4biPDGXbSavTDH5UcET+vR/AxYEfMP0SPyBbILZk6g16KDVW
+         ZIfw==
+X-Gm-Message-State: AOAM5313F+W2Od2EGI2/eVmPEVJ308fKTW4Nc3/NXSmwZp8g82gsbegW
+        4uqb3M8bMWnGaF/ZOMWqjUyPbHDifWf9shKpk9v3jg==
+X-Google-Smtp-Source: ABdhPJxvj2hNJCrlJfvmL0ijReKS3wSsP5j/cpcemVPIHtGak8pqbEABrU2EH9eT1SeVEmqWj47yK8+27eI9oYLM+24=
+X-Received: by 2002:a25:a427:: with SMTP id f36mr5789998ybi.245.1637049768957;
+ Tue, 16 Nov 2021 00:02:48 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2] proc/vmcore: fix clearing user buffer by properly
- using clear_user()
-Content-Language: en-US
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Baoquan He <bhe@redhat.com>,
-        Dave Young <dyoung@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Philipp Rudo <prudo@redhat.com>, kexec@lists.infradead.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-References: <20211112092750.6921-1-david@redhat.com>
- <20211115140444.bca2b88cfdd992760a413442@linux-foundation.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20211115140444.bca2b88cfdd992760a413442@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211104175120.857087-1-vincent.donnefort@arm.com>
+ <20211115104601.lwcwxoc67ftbf6uh@shindev> <87h7cdqne7.mognet@arm.com>
+In-Reply-To: <87h7cdqne7.mognet@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 16 Nov 2021 09:02:36 +0100
+Message-ID: <CAKfTPtAPaMU343=uRuo-LvoP6HnGwnLhTcEMyFVBisdjnT-Spg@mail.gmail.com>
+Subject: Re: [PATCH] sched/core: Mitigate race cpus_share_cache()/update_top_cache_domain()
+To:     Valentin Schneider <Valentin.Schneider@arm.com>
+Cc:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        Vincent Donnefort <Vincent.Donnefort@arm.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "jing-ting.wu@mediatek.com" <jing-ting.wu@mediatek.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.11.21 23:04, Andrew Morton wrote:
-> On Fri, 12 Nov 2021 10:27:50 +0100 David Hildenbrand <david@redhat.com> wrote:
-> 
->> To clear a user buffer we cannot simply use memset, we have to use
->> clear_user(). With a virtio-mem device that registers a vmcore_cb and has
->> some logically unplugged memory inside an added Linux memory block, I can
->> easily trigger a BUG by copying the vmcore via "cp":
->>
->> ...
->>
->> Some x86-64 CPUs have a CPU feature called "Supervisor Mode Access
->> Prevention (SMAP)", which is used to detect wrong access from the kernel to
->> user buffers like this: SMAP triggers a permissions violation on wrong
->> access. In the x86-64 variant of clear_user(), SMAP is properly
->> handled via clac()+stac().
->>
->> To fix, properly use clear_user() when we're dealing with a user buffer.
->>
-> 
-> I added cc:stable, OK?
-> 
+Hi Shinichiro
 
-I was a bit hesitant because this would (beofe the virtio-mem changes)
-only trigger under XEN and I was wondering why nobody notices under XEN
-so far. But yes, even though it only applies to the kdump kernel,
-cc:stable sounds like the right think to do!
+On Mon, 15 Nov 2021 at 19:34, Valentin Schneider
+<valentin.schneider@arm.com> wrote:
+>
+> On 15/11/21 10:46, Shinichiro Kawasaki wrote:
+> > Oh, this is the exactly same fix as I posted before [1]. It is a little bit sad
+> > that my post did not get reviewed. Anyway, good to see the issue fixed. Thanks.
+> >
+> > [1] https://lore.kernel.org/all/20211029005618.773579-1-shinichiro.kawasaki@wdc.com/
+> >
+>
+> Oh, that sucks, sorry about that. I do try to keep an eye out for sched
+> stuff sent to LKML, but clearly there are some that fall through :(
 
-Thanks Andrew!
+I would advise you to use get_maintainer.pl to make sure to not miss
+to cc someone.
+Like valentin, this patch has been lost in the lkml flow and i haven't
+noticed it
 
--- 
-Thanks,
-
-David / dhildenb
-
+Regards,
+Vincent
+>
+> > --
+> > Best Regards,
+> > Shin'ichiro Kawasaki
