@@ -2,85 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC104453644
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:46:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6EE453646
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:46:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238478AbhKPPsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 10:48:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53638 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238455AbhKPPsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 10:48:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48FA661526;
-        Tue, 16 Nov 2021 15:45:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637077519;
-        bh=8TF7QOfF7+R14bacNbYtsjRF9nV+tpGDEihkxlTXlm0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Hl6K8FSpYKKvecJf34MpSSYi2EKo6dElx9+Ufh/iJ7utquAz/JOkv3/Nq4Bo/qPz2
-         0Lsta+7Bscr1h2RBzBQYLPfhoW+elpJIu1JeQLh0VIPQcIN91C4ElcI6vrI+JSD8Cz
-         NsLKCxbZ3c9szKOxu/xmuUbzO1TERecRAmPTsyXxIbI64fcRyea9oIhI3pDpVO3ty5
-         TmgztPs3q1L91jB7Pc3ZX4V690En+3IKOsk1Qz5+9uhpgVJVhDNUWCC+6dHRK4f0t5
-         nyBozvlfWBwvYM4ftEXb0GSkAJMhwFoyjlm7kL5hDv6pxN698zhzq+SfRynWUqZzLM
-         yZO50VqO46/LA==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] hwmon: (tmp401) Fix clang -Wimplicit-fallthrough in tmp401_is_visible()
-Date:   Tue, 16 Nov 2021 08:44:39 -0700
-Message-Id: <20211116154438.1383290-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.34.0
+        id S237729AbhKPPtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 10:49:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:57495 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238407AbhKPPtB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 10:49:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637077562;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=S5ieD8y2xapJMDpBNxLswvuhHU74jKB1oJVgEzv7nl4=;
+        b=E23+Ar0U5tkAHbprFcq5DwAmtAREs5ZVPRa6YYntQqMK+0lIO0BoPhjyvMB5stIbmuXA1u
+        anycZ6qqPeGtW01ooisiL2/JEc0g0a3lN7mYSF53WggpqLdsfYk3EdL8h9NzlMwpYPR1+b
+        qe8QkBzYmYO+o9lneuyHikFZObRWXHc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-349-QfyiMcWqORqR01RxLfCrew-1; Tue, 16 Nov 2021 10:46:01 -0500
+X-MC-Unique: QfyiMcWqORqR01RxLfCrew-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BB142101F001;
+        Tue, 16 Nov 2021 15:45:59 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6024960C0F;
+        Tue, 16 Nov 2021 15:45:57 +0000 (UTC)
+Message-ID: <2770fc4e-cbb2-07bc-681f-6f4a29827b7d@redhat.com>
+Date:   Tue, 16 Nov 2021 16:45:56 +0100
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 1/1] selftests: KVM: Add /x86_64/sev_migrate_tests to
+ .gitignore
+Content-Language: en-US
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Marc Orr <marcorr@google.com>, Peter Gonda <pgonda@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <YZPIPfvYgRDCZi/w@kernel.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <YZPIPfvYgRDCZi/w@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang warns:
+On 11/16/21 16:03, Arnaldo Carvalho de Melo wrote:
+>    $ git status
+>    nothing to commit, working tree clean
+>    $
+>    $ make -C tools/testing/selftests/kvm/ > /dev/null 2>&1
+>    $ git status
+> 
+>    Untracked files:
+>      (use "git add <file>..." to include in what will be committed)
+>    	tools/testing/selftests/kvm/x86_64/sev_migrate_tests
+> 
+>    nothing added to commit but untracked files present (use "git add" to track)
+>    $
+> 
+> Fixes: 6a58150859fdec76 ("selftest: KVM: Add intra host migration tests")
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Marc Orr <marcorr@google.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Peter Gonda <pgonda@google.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> ---
+>   tools/testing/selftests/kvm/.gitignore | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
+> index d4a8301396833fc8..3763105029fb3b3c 100644
+> --- a/tools/testing/selftests/kvm/.gitignore
+> +++ b/tools/testing/selftests/kvm/.gitignore
+> @@ -23,6 +23,7 @@
+>   /x86_64/platform_info_test
+>   /x86_64/set_boot_cpu_id
+>   /x86_64/set_sregs_test
+> +/x86_64/sev_migrate_tests
+>   /x86_64/smm_test
+>   /x86_64/state_test
+>   /x86_64/svm_vmcall_test
+> 
 
-drivers/hwmon/tmp401.c:526:2: error: unannotated fall-through between switch labels [-Werror,-Wimplicit-fallthrough]
-        default:
-        ^
-drivers/hwmon/tmp401.c:526:2: note: insert 'break;' to avoid fall-through
-        default:
-        ^
-        break;
-1 error generated.
+Queued, thanks.
 
-Clang is a little more pedantic than GCC, which does not warn when
-falling through to a case that is just break or return. Clang's version
-is more in line with the kernel's own stance in deprecated.rst, which
-states that all switch/case blocks must end in either break,
-fallthrough, continue, goto, or return. Add the missing break to silence
-the warning.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/1505
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
-
-Feel free to squash this into the offending commit.
-
- drivers/hwmon/tmp401.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/hwmon/tmp401.c b/drivers/hwmon/tmp401.c
-index f7b6a2c4fbcf..b86d9df7105d 100644
---- a/drivers/hwmon/tmp401.c
-+++ b/drivers/hwmon/tmp401.c
-@@ -523,6 +523,7 @@ static umode_t tmp401_is_visible(const void *data, enum hwmon_sensor_types type,
- 		default:
- 			break;
- 		}
-+		break;
- 	default:
- 		break;
- 	}
-
-base-commit: 82b520da9134a594eb9816759ed66ba6ef44888e
--- 
-2.34.0
+Paolo
 
