@@ -2,111 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64BBB452926
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:30:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBDE6452929
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240163AbhKPEcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 23:32:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54926 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233013AbhKPEb4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 23:31:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66AA16023D;
-        Tue, 16 Nov 2021 04:28:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637036939;
-        bh=rcwRBlCKqfF/fOP7nToqyQtxiDrvbRwb9qhV9pcd3SE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WCkkYmiCsuCs6VTYyStyePuhjavoZznkD15Pfk4kfmFcnpOyhqwefXwCEerdsi5BB
-         gaxqtKh7IVnWz3O+cSAsdJUjs6zKFkagpHyNquC8O99klBS/lKo/7gFtT7CHdCC6ar
-         6K/pSsHI8+2FH3V1I1L7V2qq8dmjNebnK0MyEtDZ/hdrNv4x1IyseRUmNFq3EiZJ7c
-         1oiPRI0DMs2kje0Hvslatdsud/obFQMRW9uHW8NpKk4mIv94ytNZbHvJadN/Nn9YZY
-         tGLIxmhA6nCk6OcdFZAV34UHFuwVplf/2bcz9WsNFmm3THY7N2KypMCnwedbGoDGcy
-         AW5qdaBZVvhpQ==
-Date:   Tue, 16 Nov 2021 09:58:54 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Arnd Bergmann <arnd@arndb.de>, Andy Gross <agross@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Scott Branden <sbranden@broadcom.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        dmaengine@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH 08/11] dmaengine: xilinx_dpdma: stop using slave_id field
-Message-ID: <YZMzhoWX0S5oPI6j@matsya>
-References: <20211115085403.360194-1-arnd@kernel.org>
- <20211115085403.360194-9-arnd@kernel.org>
- <YZIk6cVb7XibrMjf@pendragon.ideasonboard.com>
- <CAK8P3a1Fu11-e0CK2of8u3ebdjom84UKuXhBKi5FUs5ZPPdOVA@mail.gmail.com>
+        id S239961AbhKPEgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 23:36:49 -0500
+Received: from smtprelay0155.hostedemail.com ([216.40.44.155]:52994 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S238459AbhKPEgn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 23:36:43 -0500
+Received: from omf17.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id AE6D98479E;
+        Tue, 16 Nov 2021 04:33:45 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf17.hostedemail.com (Postfix) with ESMTPA id B1937E00035D;
+        Tue, 16 Nov 2021 04:33:38 +0000 (UTC)
+Message-ID: <70cd970d6c39a5ea5e88cbf4b86031c22c5d10d4.camel@perches.com>
+Subject: Re: [PATCH v3 1/3] MAINTAINERS: Update maintainers for paravirt ops
+ and VMware hypervisor interface
+From:   Joe Perches <joe@perches.com>
+To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
+        Sasha Levin <sashal@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, jgross@suse.com,
+        x86@kernel.org, pv-drivers@vmware.com,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        Deep Shah <sdeep@vmware.com>, stable@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, keerthanak@vmware.com,
+        srivatsab@vmware.com, anishs@vmware.com, vithampi@vmware.com,
+        linux-kernel@vger.kernel.org, namit@vmware.com, kuba@kernel.org,
+        rostedt@goodmis.org
+Date:   Mon, 15 Nov 2021 20:33:40 -0800
+In-Reply-To: <20211115223900.GA22267@csail.mit.edu>
+References: <163657479269.84207.13658789048079672839.stgit@srivatsa-dev>
+         <163657487268.84207.5604596767569015608.stgit@srivatsa-dev>
+         <YYy9P7Rjg9hntmm3@kroah.com> <20211111153916.GA7966@csail.mit.edu>
+         <YY1krlfM5R7uEzJF@kroah.com> <20211111194002.GA8739@csail.mit.edu>
+         <YY6hhWtvh+OvOqAl@sashalap> <20211115223900.GA22267@csail.mit.edu>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a1Fu11-e0CK2of8u3ebdjom84UKuXhBKi5FUs5ZPPdOVA@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: B1937E00035D
+X-Spam-Status: No, score=-4.87
+X-Stat-Signature: f98m33wsx4mfc3t3jhbfctk3bb9t83gn
+X-Rspamd-Server: rspamout01
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX187U+B1QyrWtVLRt6ScGYedLRY84IBk+8w=
+X-HE-Tag: 1637037218-641034
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-11-21, 11:21, Arnd Bergmann wrote:
-> On Mon, Nov 15, 2021 at 10:14 AM Laurent Pinchart
-> <laurent.pinchart@ideasonboard.com> wrote:
-> > On Mon, Nov 15, 2021 at 09:54:00AM +0100, Arnd Bergmann wrote:
-> > > @@ -1285,11 +1287,13 @@ static int xilinx_dpdma_config(struct dma_chan *dchan,
-> > >       spin_lock_irqsave(&chan->lock, flags);
-> > >
-> > >       /*
-> > > -      * Abuse the slave_id to indicate that the channel is part of a video
-> > > -      * group.
-> > > +      * Abuse the peripheral_config to indicate that the channel is part
-> >
-> > Is it still an abuse, or is this now the right way to pass custom data
-> > to the DMA engine driver ?
+On Mon, 2021-11-15 at 14:39 -0800, Srivatsa S. Bhat wrote:
+> On Fri, Nov 12, 2021 at 12:16:53PM -0500, Sasha Levin wrote:
+> > Maybe we should just remove MAINTAINERS from stable trees to make it
+> > obvious.
 > 
-> It doesn't make the driver any more portable, but it's now being
-> more explicit about it. As far as I can tell, this is the best way
-> to pass data that cannot be expressed through the regular interfaces
-> in DT and the dmaengine API.
-> 
-> Ideally there would be a generic way to pass this flag, but I couldn't
-> figure out what this is actually doing, or whether there is a better
-> way. Maybe Vinod has an idea.
-> 
-> I'll change s/Abuse/Use/ for the moment until I get a definite answer.
+> I don't think we should go quite that far. Instead, perhaps we can
+> modify get_maintainer.pl (if needed) such that it prints out a warning
+> or reminder to consult the upstream MAINTAINERS file if the script is
+> invoked on an older stable kernel.
 
-I would feel this is still not use for the peripheral_config, but lets
-keep it to get rid of slave_id.
+I don't see how that's feasible.
 
-Also, I would be better if this was moved to DT as the next cell, don't
-recall why that was not done/feasible.
-
--- 
-~Vinod
