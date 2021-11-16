@@ -2,135 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3867D453055
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:22:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6FEA45305C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235024AbhKPLYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 06:24:53 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:8953 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234930AbhKPLYE (ORCPT
+        id S234890AbhKPLZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:25:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234877AbhKPLYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 06:24:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1637061667; x=1668597667;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=IzKN39oOHNC3CK9tz3WGrvZQjLqHyTGav61lvPMp9Bg=;
-  b=i/7fHNstzAYJQFeUGwIoSFbc7giAVSCYPm4epD8LKQZ7MfwjELEOuvKK
-   kfYarJx1TOjtueGQcf7YPe897cPMA09rAp/f5yp6KRpHOBsx8EC6HtDsi
-   BR2CXLrAhFKt+aB0l5D65CRqlvU/3QRBVFA3ZUimYxqU3UXMmtz78rmau
-   sU1OuPAl5IeeyBNc0vNr1/bSZV/1bAOm6YVt/VieLv51H1sqL+8gJhpw6
-   QhHHkJBReNqjqX8ReFa5HeLrJyw32KOX1EQ5tyr/0jyk+8nLGqfFfzFxp
-   uzQx2PgZIKm1P6uZ0d9AU3sLWBPAdH4M/OK+CpfYUIjrVbPYo+wTn8vBt
-   Q==;
-IronPort-SDR: VKKuqCuyUcNCiCN80wBHip317sB00kXuRGeonrJQnv2IFvjjiUmiX6wroEunWGJ4uQfLejH19s
- pWplCng62sowOwenBsynkU+bqaYzu6WaQ4WFRbhCYl5vJxY/uEfFlegEucqDzwjvOI3WmrI9fY
- a7mnqXY2bPV8XUZXORIM/dRHxsTXE8hHnM8O+PI9bCubO4xjD047i70seAWi+UszaQSIHqH9i0
- ealXSuf88TDbd9+iOHfpcnv7ETXeeuNMFhLdift3oC1Q5BdbQ0wXTh0++aMv6+Irppym7eXOnI
- zgPzOHC64GPtfbdtvg4YJNni
-X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
-   d="scan'208";a="144082887"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Nov 2021 04:21:07 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 16 Nov 2021 04:21:07 -0700
-Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Tue, 16 Nov 2021 04:21:04 -0700
-From:   Tudor Ambarus <tudor.ambarus@microchip.com>
-To:     <ludovic.desroches@microchip.com>, <vkoul@kernel.org>,
-        <richard.genoud@gmail.com>, <gregkh@linuxfoundation.org>,
-        <jirislaby@kernel.org>
-CC:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <mripard@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-serial@vger.kernel.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH 07/13] dmaengine: at_xdmac: Fix race for the tx desc callback
-Date:   Tue, 16 Nov 2021 13:20:30 +0200
-Message-ID: <20211116112036.96349-8-tudor.ambarus@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211116112036.96349-1-tudor.ambarus@microchip.com>
-References: <20211116112036.96349-1-tudor.ambarus@microchip.com>
+        Tue, 16 Nov 2021 06:24:24 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95943C061208;
+        Tue, 16 Nov 2021 03:21:13 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id x15so86215408edv.1;
+        Tue, 16 Nov 2021 03:21:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KGUzW8oU278JfYrY7N9IF7tN1n/tXliVYmfQC61IxV8=;
+        b=JQVvA1qWRgODHDOSLlagiGOfAXEHF7KxMNWe7LPWtqGmLHJiWZqhx7wzACas6AONv+
+         CAkZ1x83Da19F69Y4szYWBOdQL+g/VUfY93OJyeul01/oezFSOQ6LE5gLKIoAmzWjqbQ
+         hVScUsbwSOsewMQo+Ag4kVJC8jfz6QxeZbLCzCSqcLtwPFrJf7bcJ3pZZKe4qA20MqHi
+         sRiCruhHwvVNi6VRP7p2jZuDMhj8I8FstuiDEoUUygeq5GN/qbWOoXGHoSCEEMM6U0bb
+         /ZL166tglWsxqa7Wt+md18G3lU0bd8L1nY6Qttagny+96fQKAONUvcRdlWPzyCXM2Xyr
+         NBzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KGUzW8oU278JfYrY7N9IF7tN1n/tXliVYmfQC61IxV8=;
+        b=vqoPQ6a212+uBfrUqbXvhvSTWALBagVy4Q0UZJw0g6iyi/ozzsZYygG8uAL7q2dLLF
+         mONP0E0ftmieg0nfzaH29MtNGSUh3ENbHkGU3WdxYnt+FMLH5AjmwVms2bd5E8D74n8F
+         v2bnWJc3IwPNqwehRJ2wZiFYsUrm5ALowU2SvkhbHYfBY74n1P+m6XXHhLDQ6ZZs89xm
+         /LoWTHdCy0Zh9rzwn7/dkLmFboIo4rKx5Xo5RuOHKX4svq4uPh+62MV6+0IZNazXt8op
+         VzWlVoRR9Z1PtgrTF7Npu/XPp4fMp7euLhCPq/bW8Str+dExviB8K1zLTRjuSqah3xoA
+         o6QA==
+X-Gm-Message-State: AOAM530eb7KbT11M4s7n4xwnh37Ba+CZ3ox3uYnF0fo6rO/krRtqN7Uz
+        ny2hf3MufVsWBc92I9c7q+vXQc/oXYq4FGOHbI8=
+X-Google-Smtp-Source: ABdhPJyKSwdFtfR7TpsDewfi37mChVACwnf+QUTy7V6gWiRnFog2qqdct+xLdwNvdm+Gqux0Kkbtu642mJPn2EzrZQE=
+X-Received: by 2002:a17:906:ecac:: with SMTP id qh12mr8693082ejb.377.1637061672128;
+ Tue, 16 Nov 2021 03:21:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20211114170335.66994-1-hdegoede@redhat.com> <20211114170335.66994-16-hdegoede@redhat.com>
+In-Reply-To: <20211114170335.66994-16-hdegoede@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 16 Nov 2021 13:20:31 +0200
+Message-ID: <CAHp75VfYGmW6kO18BL39ippuzyzebNXuBn0PkEV8WScB2-bN6A@mail.gmail.com>
+Subject: Re: [PATCH v2 15/20] i2c: cht-wc: Make charger i2c-client
+ instantiation board/device-model specific
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Yauhen Kharuzhy <jekhor@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The transfer descriptors were wrongly moved to the free descriptors list
-before calling the tx desc callback. As the DMA engine drivers drop any
-locks before calling the callback function, txd could be taken again,
-resulting in its callback called prematurely.
+On Sun, Nov 14, 2021 at 7:04 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> The i2c-controller on the Cherry Trail - Whiskey Cove PMIC is special
+> in that it is always connected to the I2C charger IC of the board on
+> which the PMIC is used; and the charger IC is not described in ACPI,
+> so the i2c-cht-wc code needs to instantiate an i2c-client for it itself.
+>
+> So far this was hardcoded to instantiate an i2c-client for the
+> bq24292i, with all properties, etc. set to match how this charger
+> is used on the GPD win and GPD pcoket devices.
 
-Fixes: e1f7c9eee707 ("dmaengine: at_xdmac: creation of the atmel eXtended DMA Controller driver")
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
- drivers/dma/at_xdmac.c | 25 ++++++++-----------------
- 1 file changed, 8 insertions(+), 17 deletions(-)
+"pocket" I believe?
 
-diff --git a/drivers/dma/at_xdmac.c b/drivers/dma/at_xdmac.c
-index 4d8476845c20..2cc9af222681 100644
---- a/drivers/dma/at_xdmac.c
-+++ b/drivers/dma/at_xdmac.c
-@@ -1582,20 +1582,6 @@ at_xdmac_tx_status(struct dma_chan *chan, dma_cookie_t cookie,
- 	return ret;
- }
- 
--/* Call must be protected by lock. */
--static void at_xdmac_remove_xfer(struct at_xdmac_chan *atchan,
--				    struct at_xdmac_desc *desc)
--{
--	dev_dbg(chan2dev(&atchan->chan), "%s: desc 0x%p\n", __func__, desc);
--
--	/*
--	 * Remove the transfer from the transfer list then move the transfer
--	 * descriptors into the free descriptors list.
--	 */
--	list_del(&desc->xfer_node);
--	list_splice_init(&desc->descs_list, &atchan->free_descs_list);
--}
--
- static void at_xdmac_advance_work(struct at_xdmac_chan *atchan)
- {
- 	struct at_xdmac_desc	*desc;
-@@ -1704,7 +1690,8 @@ static void at_xdmac_tasklet(struct tasklet_struct *t)
- 
- 		txd = &desc->tx_dma_desc;
- 		dma_cookie_complete(txd);
--		at_xdmac_remove_xfer(atchan, desc);
-+		/* Remove the transfer from the transfer list. */
-+		list_del(&desc->xfer_node);
- 		spin_unlock_irq(&atchan->lock);
- 
- 		if (txd->flags & DMA_PREP_INTERRUPT)
-@@ -1713,6 +1700,8 @@ static void at_xdmac_tasklet(struct tasklet_struct *t)
- 		dma_run_dependencies(txd);
- 
- 		spin_lock_irq(&atchan->lock);
-+		/* Move the xfer descriptors into the free descriptors list. */
-+		list_splice_init(&desc->descs_list, &atchan->free_descs_list);
- 		at_xdmac_advance_work(atchan);
- 		spin_unlock_irq(&atchan->lock);
- 	}
-@@ -1859,8 +1848,10 @@ static int at_xdmac_device_terminate_all(struct dma_chan *chan)
- 		cpu_relax();
- 
- 	/* Cancel all pending transfers. */
--	list_for_each_entry_safe(desc, _desc, &atchan->xfers_list, xfer_node)
--		at_xdmac_remove_xfer(atchan, desc);
-+	list_for_each_entry_safe(desc, _desc, &atchan->xfers_list, xfer_node) {
-+		list_del(&desc->xfer_node);
-+		list_splice_init(&desc->descs_list, &atchan->free_descs_list);
-+	}
- 
- 	clear_bit(AT_XDMAC_CHAN_IS_PAUSED, &atchan->status);
- 	clear_bit(AT_XDMAC_CHAN_IS_CYCLIC, &atchan->status);
+> There is a rudimentary check to make sure the ACPI tables are at least
+> somewhat as expected, but this is far from accurate, leading to
+> a wrong i2c-client being instantiated for the charger on some boards.
+>
+> Switch to the new DMI based intel_cht_wc_get_model() helper which is
+> exported by the MFD driver for the CHT Whiskey Cove PMIC to help PMIC
+> cell drivers like the i2c-cht-wc code reliably detect which board
+> they are running on.
+>
+> And add board_info for the charger ICs as found on the other 2 known
+> boards with a Whisky Cove PMIC.
+>
+> This has been tested on all 3 known boards.
+
+...
+
+> +/********** Lenovo Yogabook YB1-X90F/-X91F/-X91L charger settings **********/
+> +static const char * const lenovo_yb1_bq25892_suppliers[] = {
+> +       "cht_wcove_pwrsrc" };
+
+Something went wrong with indentation...
+
+...
+
+> +       /*
+> +        * The firmware sets everything to the defaults, which leads to a
+> +        * somewhat low charge-current of 2048mA and worse to a batter-voltage
+
+battery?
+
+> +        * of 4.2V instead of 4.35V (when booted without a charger connected).
+> +        * Use our own values instead of "linux,read-back-settings" to fix this.
+> +        */
+
+...
+
+> +       switch (intel_cht_wc_get_model()) {
+> +       case INTEL_CHT_WC_GPD_WIN_POCKET:
+> +               board_info = &gpd_win_board_info;
+> +               break;
+> +       case INTEL_CHT_WC_XIAOMI_MIPAD2:
+> +               board_info = &xiaomi_mipad2_board_info;
+> +               break;
+> +       case INTEL_CHT_WC_LENOVO_YOGABOOK1:
+> +               board_info = &lenovo_yogabook1_board_info;
+> +               break;
+> +       default:
+> +               dev_warn(&pdev->dev, "Unknown model, not instantiating charger device\n");
+
+break;
+
+> +       }
+
 -- 
-2.25.1
-
+With Best Regards,
+Andy Shevchenko
