@@ -2,128 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3064453245
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:34:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F57453247
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:35:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236188AbhKPMg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 07:36:56 -0500
-Received: from mga14.intel.com ([192.55.52.115]:61603 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230400AbhKPMgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 07:36:55 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="233923619"
-X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
-   d="scan'208";a="233923619"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 04:33:57 -0800
-X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
-   d="scan'208";a="506415422"
-Received: from rli9-dbox.sh.intel.com (HELO rli9-dbox) ([10.239.159.142])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 04:33:54 -0800
-Date:   Tue, 16 Nov 2021 20:34:44 +0800
-From:   Philip Li <philip.li@intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     kernel test robot <lkp@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [kbuild-all] Re: drivers/platform/x86/thinkpad_acpi.c:4475:35:
- error: unused variable 'fwbug_cards_ids'
-Message-ID: <YZOlZPna3djQPYsp@rli9-dbox>
-References: <202111141153.mtggZgGq-lkp@intel.com>
- <009706db-230a-1e49-0a42-447a0ff97fbb@redhat.com>
+        id S236283AbhKPMhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 07:37:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230400AbhKPMhx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 07:37:53 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F94C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 04:34:56 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id d5so37278023wrc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 04:34:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Xb3TVlaOH3XPJ9Opw87QokeP9OXAVcEgjsjxkjzezIk=;
+        b=yII4nOsmDxHStIDt/LMAfBW6r0LomDLf7g/3dzRmPJR4iUutnLq9RsmLh/vfYOx3ho
+         yu6AzYc2Sz9Su1nXS9jg2VTkavL1rGTD1hpAHmyd/IhdYixUveAepyb7imQz5IJEcIri
+         iOobizAyiFPK2W4rHv2u4BYcXAcWBzv/AVtDv+nqoCqYlxXAumBzcteGMGEiR8sGxTgB
+         8sFPAPavr7UFV5K/UGadTijYNJ9AG7Uku9l15q90sYcDPNivHVrNXZitnWoMzwpaHogq
+         jBa6TvtmfHZq/kVvP7RJzTY3DHDeSl052Kba5ve0gBKS4AM3KV9qeqV3o7ggSiUPRDBJ
+         Lpzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Xb3TVlaOH3XPJ9Opw87QokeP9OXAVcEgjsjxkjzezIk=;
+        b=2xHs4aBtg7vDivXWnQg8hsc7hZevCvxjzzH3MAxzJbMI83NNIG1zgkYcbsNeuhWmiG
+         6wpfM9BtZKtPAG7WCIcYgw+RecbUqGIlBs1Niwx8BatYOjmAKwSvNnGspt/G+MqhNmCG
+         kNIO3grQqD1O9GLIXudGMuO4SsowwfQ0LWtSHETfBynm6nw7G5sVctDuTj2R9a7Pmkyp
+         /ZMkAwLFuMLKQ8mkAhk+QSz5WUjvT8zF7TwWfUN0osfv9+G9BH1QZJpkAH4oQwqvxkQz
+         hHKADh5TeiS5SMevSIOqQpFQcR8LO0jpTnzo3UcBrwZVc5zMXUivJoIakyk08qktplIi
+         cDFQ==
+X-Gm-Message-State: AOAM530HPy+68nE06XUxaQwCVm01TNMSE7FjpQO3iq3RWHCerZw2ydMB
+        n72sKJIwZ8W+m5jlWgECXlq7Fg==
+X-Google-Smtp-Source: ABdhPJxckVDPlqLE9FqD1c+xZBJjVupNMJ9ZfAWX5804dLeeeJcBYcU8Km6M0y9ci5PB0rDYg8ioBA==
+X-Received: by 2002:a05:6000:12c5:: with SMTP id l5mr8829083wrx.173.1637066094887;
+        Tue, 16 Nov 2021 04:34:54 -0800 (PST)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id f12sm2982140wmq.0.2021.11.16.04.34.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 04:34:54 -0800 (PST)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH] genirq/irqdesc: Add state node to show if IRQ is enabled
+Date:   Tue, 16 Nov 2021 12:34:47 +0000
+Message-Id: <20211116123447.23902-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <009706db-230a-1e49-0a42-447a0ff97fbb@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 11:26:48AM +0100, Hans de Goede wrote:
-> Hi,
-> 
-> On 11/14/21 04:10, kernel test robot wrote:
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > head:   c8c109546a19613d323a319d0c921cb1f317e629
-> > commit: fd96e35ea7b95f1e216277805be89d66e4ae962d platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning
-> > date:   4 weeks ago
-> > config: i386-buildonly-randconfig-r005-20211114 (attached as .config)
-> > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project c3dddeeafb529e769cde87bd29ef6271ac6bfa5c)
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fd96e35ea7b95f1e216277805be89d66e4ae962d
-> >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> >         git fetch --no-tags linus master
-> >         git checkout fd96e35ea7b95f1e216277805be89d66e4ae962d
-> >         # save the attached .config to linux build tree
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=i386 
-> > 
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > 
-> > All errors (new ones prefixed by >>):
-> > 
-> >>> drivers/platform/x86/thinkpad_acpi.c:4475:35: error: unused variable 'fwbug_cards_ids' [-Werror,-Wunused-const-variable]
-> >    static const struct pci_device_id fwbug_cards_ids[] __initconst = {
-> >                                      ^
-> >    1 error generated.
-> 
-> So this *again* has absolutely nothing to do with the:
-> 
-> "platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning"
-> 
-> commit, the problem is that:
-> 
-> 1. the .config does not have CONFIG_PCI set; combined with:
-> 2. include/pci.h using a #define instead of a
->    static inline for pci_dev_present() when this is the case
-> 3. This is a clang WERROR build
-> 
-> I'll submit a fix for 2. upstream which should also fix
-> similar errors in a lot of other drivers.
-> 
-> Again I must say that as a maintainer I'm unhappy about the amount
-> of noise being generated by clang WERROR builds here though,
-> is it really necessary for the kernel test robot to do builds
-> of this type ?
-Sorry Hans for the noise, we will look into this to consider the
-solution. And want to consult, do you specially have concern about
--Wunused-const-variable or all W=1 related build issues?
+While debugging some issues with SoundWire WakeUp interrupt,
+I did not find a way to figure out if the interrupt is really enabled
+or disabled.
 
-Thanks
+So I have added an new state entry in the sysfs to dump the current
+interrupt state.
 
-> 
-> Regards,
-> 
-> Hans
-> 
-> 
-> > 
-> > 
-> > vim +/fwbug_cards_ids +4475 drivers/platform/x86/thinkpad_acpi.c
-> > 
-> > f7db839fccf087 Jiaxun Yang 2019-03-07  4474  
-> > f7db839fccf087 Jiaxun Yang 2019-03-07 @4475  static const struct pci_device_id fwbug_cards_ids[] __initconst = {
-> > f7db839fccf087 Jiaxun Yang 2019-03-07  4476  	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x24F3) },
-> > f7db839fccf087 Jiaxun Yang 2019-03-07  4477  	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x24FD) },
-> > f7db839fccf087 Jiaxun Yang 2019-03-07  4478  	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x2526) },
-> > f7db839fccf087 Jiaxun Yang 2019-03-07  4479  	{}
-> > f7db839fccf087 Jiaxun Yang 2019-03-07  4480  };
-> > f7db839fccf087 Jiaxun Yang 2019-03-07  4481  
-> > f7db839fccf087 Jiaxun Yang 2019-03-07  4482  
-> > 
-> > :::::: The code at line 4475 was first introduced by commit
-> > :::::: f7db839fccf087664e5587966220821289b6a9cb platform/x86: thinkpad_acpi: Disable Bluetooth for some machines
-> > 
-> > :::::: TO: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> > :::::: CC: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > 
-> > ---
-> > 0-DAY CI Kernel Test Service, Intel Corporation
-> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> > 
-> _______________________________________________
-> kbuild-all mailing list -- kbuild-all@lists.01.org
-> To unsubscribe send an email to kbuild-all-leave@lists.01.org
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+
+While debugging I found this patch very useful, specially in SoundWire Wakeup
+usecase where we dynamically enable Low Power Wakeup interrupt.
+
+Sending this out, hoping that it will be useful for others as well.
+
+--srini
+
+
+ Documentation/ABI/testing/sysfs-kernel-irq |  7 +++++++
+ kernel/irq/irqdesc.c                       | 16 ++++++++++++++++
+ 2 files changed, 23 insertions(+)
+
+diff --git a/Documentation/ABI/testing/sysfs-kernel-irq b/Documentation/ABI/testing/sysfs-kernel-irq
+index 8910d0c4bcd8..d858ed133ba2 100644
+--- a/Documentation/ABI/testing/sysfs-kernel-irq
++++ b/Documentation/ABI/testing/sysfs-kernel-irq
+@@ -58,3 +58,10 @@ KernelVersion:	4.17
+ Contact:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+ Description:	The wakeup state of the interrupt. Either the string
+ 		'enabled' or 'disabled'.
++
++What:		/sys/kernel/irq/<irq>/state
++Date:		November 2021
++KernelVersion:	5.16
++Contact:	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
++Description:	The state of the interrupt. Either the string
++		'enabled' or 'disabled'.
+diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
+index 2267e6527db3..60c69978ea45 100644
+--- a/kernel/irq/irqdesc.c
++++ b/kernel/irq/irqdesc.c
+@@ -265,6 +265,21 @@ static ssize_t actions_show(struct kobject *kobj,
+ }
+ IRQ_ATTR_RO(actions);
+ 
++static ssize_t state_show(struct kobject *kobj,
++			  struct kobj_attribute *attr, char *buf)
++{
++	struct irq_desc *desc = container_of(kobj, struct irq_desc, kobj);
++	ssize_t ret;
++
++	raw_spin_lock_irq(&desc->lock);
++	ret = sprintf(buf, "%s\n",
++		      irqd_irq_disabled(&desc->irq_data) ? "disabled" : "enabled");
++	raw_spin_unlock_irq(&desc->lock);
++
++	return ret;
++}
++IRQ_ATTR_RO(state);
++
+ static struct attribute *irq_attrs[] = {
+ 	&per_cpu_count_attr.attr,
+ 	&chip_name_attr.attr,
+@@ -273,6 +288,7 @@ static struct attribute *irq_attrs[] = {
+ 	&wakeup_attr.attr,
+ 	&name_attr.attr,
+ 	&actions_attr.attr,
++	&state_attr.attr,
+ 	NULL
+ };
+ ATTRIBUTE_GROUPS(irq);
+-- 
+2.21.0
+
