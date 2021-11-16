@@ -2,101 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2CC453291
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:06:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E465453293
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:06:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234774AbhKPNJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 08:09:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48862 "EHLO
+        id S236498AbhKPNJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 08:09:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233903AbhKPNJK (ORCPT
+        with ESMTP id S233903AbhKPNJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 08:09:10 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D70C061746
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 05:06:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=7uVlOpOUji2SJ9Y9UfBEabt7H34qj7/TbmpjVFHhAv0=; b=W1Yz2ia9MSdCqGV1MyKN0SfkV1
-        XfdZAh822C38w5hcgcQ9F93YRHjAtIDe7vS8fxTrBBhJqUEnbPimibIYrzqHP5aSK0Cs34rNq6qn/
-        4SXZhJHCo8+kfvMA3BwKiljv/5iAuP4F794CifsRqfp2M+nnf0MghKoe4Op1UbOvJA+wJzJu6Bn4O
-        Kc4fhyXcN8Gw2TW1qL+qbi5DsnKYaw0g6jZNc6GykETQEQuNxTie2Y6XjdLovor3jVa2xPXvKdlVB
-        SzJ12jvkPMojW+pUXXqcBBxS0BE6FDR1Aw6g2dQEg30jyUNkCzY4kS8pxpI03Y5yxPJ+8tSuVNs0t
-        AvnS13tw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mmy9t-00GJmo-Qw; Tue, 16 Nov 2021 13:05:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E69E33001FD;
-        Tue, 16 Nov 2021 14:05:56 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 779F02C3690A6; Tue, 16 Nov 2021 14:05:56 +0100 (CET)
-Date:   Tue, 16 Nov 2021 14:05:56 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Yinan Liu <yinan@linux.alibaba.com>
-Cc:     rostedt@goodmis.org, mark-pk.tsai@mediatek.com, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] scripts: ftrace - move the sort-processing in
- ftrace_init to compile time
-Message-ID: <YZOstJy9mbZvHMUi@hirez.programming.kicks-ass.net>
-References: <20210911135043.16014-1-yinan@linux.alibaba.com>
- <20211116024942.60644-1-yinan@linux.alibaba.com>
- <20211116024942.60644-2-yinan@linux.alibaba.com>
- <20211116080730.GV174703@worktop.programming.kicks-ass.net>
- <edb15f83-ddf9-ae48-6d1e-6ef7802e6f50@linux.alibaba.com>
+        Tue, 16 Nov 2021 08:09:13 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C6C0C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 05:06:16 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id g14so87543489edz.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 05:06:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2Nsrxr85XX1Aed0/RFoj1lSPf2DIWI65u2IkWRBG0XQ=;
+        b=PXP70a1FCsSxPR7meei5DO3Pi/+FO9ZoZaRJGPFw6QcRcX+6zaFaCcxKUgSm048Geb
+         HYPcZV4cp8JbrY+KTSAfJ0f1iYjI3ZKzw1O5alI1SRlM4vqPS2tAGqo7CT3tTcv2kp9a
+         CKsFxb5952TV6ZoQnbxCy0d5/JQwRC/bTXUztkAS/yQE9HDqtaEdnd2tuVbd7pkCmnNh
+         u0JgXmFacVNeF5l55XgQX+jAQZkHIXnU/0oLVTPQbPXGLeNmtFQ6zxOswtT7vlwWKC6Q
+         o7v8/2lSH/Ro+rJ7LCp+wibzX1Gv7CWZoO1EQqJ1WmuSsV48kqv1mj1E3RP10SNxaOL6
+         gTKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2Nsrxr85XX1Aed0/RFoj1lSPf2DIWI65u2IkWRBG0XQ=;
+        b=slukQ7HS9k5cLr4gRYhlXQBcdmqaY46I/v7Yv8sy+Or83D2Ps5w/UvTns9QpP+wHwI
+         ZrhZnH9eW9DbGfRSsitWF/N5ZnBD0QoYalFmj/f5K8sNZxO1XQJofntfK+Bmw4BbeBdS
+         Q1qu3H9gOrqoivBnkMFzbCwoP3PQNPRpxQ0W/U8iDoNVknaDDY/uOE7r9xKUtTc6swqL
+         nZVAmt81xRuec3cTrM8FsINZEeJSgafv1zQaSSmR+NbOKZLAn3uNOg5Qjg3hWtf8Milj
+         /8qILfprjDD2VjmcUrBnMBxfrZgQ0+zW5c2feVHDFaH8Ghzo5VuUNVaohyV7Fhv4+dEr
+         05lQ==
+X-Gm-Message-State: AOAM533Z/f267FI9kQBy2BOUTYG+0AlEAIIWdVUrk+iigWKmi637/T45
+        5c9E4Hl6mBoj0loYbhHnvTtS7r51a4HfrVdn8QoqFw==
+X-Google-Smtp-Source: ABdhPJy+pz9dPeW/ayXhprz/P/s/VMQKtDb26raGgIFBGYK2SnWEM2AjDyq1skAfK545rTYxTzMY2YAw3WZ2I/et0xI=
+X-Received: by 2002:a17:907:7f90:: with SMTP id qk16mr9901106ejc.169.1637067974573;
+ Tue, 16 Nov 2021 05:06:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <edb15f83-ddf9-ae48-6d1e-6ef7802e6f50@linux.alibaba.com>
+References: <20211115165419.961798833@linuxfoundation.org>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 16 Nov 2021 18:36:03 +0530
+Message-ID: <CA+G9fYuTxafx-w_qf2s=-HSrX5oYXMQSSOf=ABNoog2AfxUS_Q@mail.gmail.com>
+Subject: Re: [PATCH 5.14 000/849] 5.14.19-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 08:42:28PM +0800, Yinan Liu wrote:
-> 
-> 
-> 在 2021/11/16 下午4:07, Peter Zijlstra 写道:
-> 
-> > /me hands a bucket of {} your way.
-> 
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -6406,8 +6406,10 @@ static int ftrace_process_locs(struct module *mod,
->         if (!count)
->                 return 0;
-> 
-> -       sort(start, count, sizeof(*start),
-> -            ftrace_cmp_ips, NULL);
-> +       if (mod) {
-> +               sort(start, count, sizeof(*start),
-> +                    ftrace_cmp_ips, NULL);
-> +       }
-> 
-> hi，peter
-> 
-> you mean like this? I hope I'm not mistaken.
+On Mon, 15 Nov 2021 at 23:22, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.14.19 release.
+> There are 849 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 17 Nov 2021 16:52:23 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.14.19-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Exactly.
 
-> 
-> > Also, can't sorttable be ran on modules ?
-> 
-> The .ko file will be relocated after insmod or modprobe.
-> And the mcount redirection in .ko is based on ".text",
-> ".init.text", ".ref.text", ".sched.text", ".spinlock.text",
-> ".irqentry .text", ".softirqentry.text", ".kprobes.text", ".cpuidle.text",
-> ".text.unlikely". These sections‘ loading
-> position are not in definite order.
-> 
-> So sorting this part at compile time doesn't make much sense.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Bah.. I thought the sections would retain relative position at least,
-but alas. if that isn't done you're quite right that sorting seems
-pointless.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+## Build
+* kernel: 5.14.19-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.14.y
+* git commit: f9bb48b60e5a17952d2ad5b43826ffc2ce4b2255
+* git describe: v5.14.18-850-gf9bb48b60e5a
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.14.y/build/v5.14=
+.18-850-gf9bb48b60e5a
+
+## No regressions (compared to v5.14.18-154-g052582294dec)
+
+## No fixes (compared to v5.14.18-154-g052582294dec)
+
+## Test result summary
+total: 95749, pass: 80866, fail: 1066, skip: 12961, xfail: 856
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 290 total, 290 passed, 0 failed
+* arm64: 40 total, 40 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 39 total, 39 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 37 total, 37 passed, 0 failed
+* parisc: 12 total, 12 passed, 0 failed
+* powerpc: 54 total, 48 passed, 6 failed
+* riscv: 24 total, 24 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 24 total, 24 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 40 total, 40 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltsta[
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* perf/Zstd-perf.data-compression
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
