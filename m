@@ -2,120 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA93045292B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:34:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CACA2452930
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:39:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241047AbhKPEg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 23:36:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44938 "EHLO
+        id S244161AbhKPEmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 23:42:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240016AbhKPEgu (ORCPT
+        with ESMTP id S238562AbhKPEmj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 23:36:50 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70830C219381;
-        Mon, 15 Nov 2021 17:37:37 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id t21so15986656plr.6;
-        Mon, 15 Nov 2021 17:37:37 -0800 (PST)
+        Mon, 15 Nov 2021 23:42:39 -0500
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309D3C09A946
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 17:41:17 -0800 (PST)
+Received: by mail-vk1-xa29.google.com with SMTP id t127so10252356vke.13
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 17:41:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5giEjXmFz5wVNw4jTGQLtnYcBIEt2xUkApnMbyHyBfE=;
-        b=YnTyUJ0mN5pZKCVFRp3lOKtS23GA5iSeP+PdfC3fnB5s64f4z+nYvqQvFxsC0LcuBE
-         IaYPTdXFiKztP785jsKenmZuEN4WV7xBrTw4fSEWbTs9iStW07+MlsQh5Yg4VRuiDqgQ
-         ngGNz/ImmiqiCl+9mNQCETcerwdnNtIKHoP7mgCAntK4KB+lUCwCFP68iQM7Da1riJp7
-         uO8otg8eocqFZZLJzhDYhCcCE41+Rc3b5L88DuWtFHM86hHjDWWMjTXE2yjzZi1Iak++
-         c5eBiqqoDHq/E3z0UyN2NM9x7NAVb9yxGWG68yZ1MoQe72rJOwDvbWPEh1C2ALytRdQp
-         ax/w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iMK6uozsodrf5Zmr8QGj3aYlz+vsrKUh1MXjQekIVNk=;
+        b=CjcJLxIUvmhi/Ks6Jh9ofjDmpaPzofIg6TD4d9KDUrQjq9JEVokg1G0wkwvjuCXk8b
+         C8wmxqBWEK9DmvqMeZh4oPUXbpP1KXM+29SZ+yOLFI6HQ3o8yyUGQjizqiFwQ95hq3Md
+         aMAS5h/QvN8SpAD7TIIciyDzhEkSs2qhYQ1oB25nSujhAT9MsbLZnacYLhOgTfapYRPk
+         EbaxkgAXu/rI2s2hAgW4AGOWe3174r2usyZSj6x0iuxB0Q2RGQ1Ob44wSDM1gNSkq+vV
+         uaq0pw4FCLNinKePthDb4mtqDrb5dcnwo6Zdh+nb7QR7HzwlkESa+k/kDVe/Kt3T0MDF
+         CW/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5giEjXmFz5wVNw4jTGQLtnYcBIEt2xUkApnMbyHyBfE=;
-        b=aOCsRBSXEoxBXqbIO1iemGjghWBCfJR6f3uqCv+23ULfdYFj7+eii1Rnj6TNImn3su
-         l99v6a9X5Gdf4+4uZmJ9gFM3Cc4DxBQHY68m7P+TGMIxrH5aFz5Y7E0wJYKzaRbWzHte
-         ZKr9V8it+CeEKIWZxfVg7qMPFDoLWPgNzjkiwZPi7RSL/tCdr6q2JD7Ozz/C1WYnMesA
-         t7RrbhESUpfWy4N5muLD3XD645YcoXiamTnAUfxa3BtXVLsi5STReqtvIkU108htjvX1
-         qUR/4J+2VO1usnNue/p6uqwf0dQl8UOYJrlI1jQKaQ2Sd2LvFc9dOTpwDmD7QjZUQjt/
-         adUA==
-X-Gm-Message-State: AOAM5311Z4puQazS6Gm4poHqgv9LEy07VLUYn84izJyEICbCgEQIcMYC
-        wnsHKRv6MwhxEGXLyvU4VgWhvNDTO2Q=
-X-Google-Smtp-Source: ABdhPJzjv43rOd/qgrJTCbShy+/xS7YfXJVRITn+oLyvCMoVD0IoooCVrsLBYmdDF4idNmav6yilBQ==
-X-Received: by 2002:a17:902:c78a:b0:142:1b7a:930 with SMTP id w10-20020a170902c78a00b001421b7a0930mr40969098pla.8.1637026656267;
-        Mon, 15 Nov 2021 17:37:36 -0800 (PST)
-Received: from [192.168.11.5] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id v19sm484427pju.32.2021.11.15.17.37.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 17:37:35 -0800 (PST)
-Subject: Re: [PATCH] docs: Update Sphinx requirements
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Federico Vaga <federico.vaga@vaga.pv.it>,
-        Alex Shi <alexs@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <2c704ddd-2da2-138b-4928-890e92b66f9f@gmail.com>
- <875ystn40s.fsf@meer.lwn.net>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <550fe790-b18d-f882-4c70-477b596facc7@gmail.com>
-Date:   Tue, 16 Nov 2021 10:37:31 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iMK6uozsodrf5Zmr8QGj3aYlz+vsrKUh1MXjQekIVNk=;
+        b=0GAGUsMCyD7K4ILGPFzKQsdb4K42bf3TbMMx+vGtnKk6GcC/Eo4+qdn/cTZ4nSlTHN
+         VIyNNSM09dZuRn8XH9eMqHuexoQQWOh4elCbPWomPMoH1kB0qn6/OH+H2mNkTznn4xWK
+         KFYQZTpAcaTNiz+uU+gqJCb3RHK7SD89BXtw/B+SaftqKNAwUMudWovkTMR2FMOubgr0
+         XTJ8g3YzSS3EmqqOSWl3Iq6LF5JkLTBSuHLlxOzulZ927yO1MAjioaHL98bevFqMGSTY
+         gJehGi/Qst40V9nTGwePnT4FIUmCUSWb5F7svk41mPwhzUOd//j+ogKavhKg5ytsAAMa
+         tyPw==
+X-Gm-Message-State: AOAM532uFX3RS0d2VspUENqcDWkzpu9xofuApk1Wc1hNIubZwxgGLYj/
+        NMpBHayGhaEAnqS/UYZRkbHEnFfS08oNo0iel0cFeGM/pVfUrBiEmSA=
+X-Google-Smtp-Source: ABdhPJz7BAgIKnAsC5786/plx9fCqKDF1RLoJ2HyTn1rlhc81SCkaeBDGHtZNsruAJF0qz6w/4ER7wj+hcy2Rbp6V+M=
+X-Received: by 2002:a05:6122:20ab:: with SMTP id i43mr66679851vkd.19.1637026876429;
+ Mon, 15 Nov 2021 17:41:16 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <875ystn40s.fsf@meer.lwn.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211114074704.3508622-1-chenhuacai@loongson.cn> <CALAqxLVpTtjFrtKAkcrjDKN9R6FuSdY6LKQw8Mye-3Atqv7kQw@mail.gmail.com>
+In-Reply-To: <CALAqxLVpTtjFrtKAkcrjDKN9R6FuSdY6LKQw8Mye-3Atqv7kQw@mail.gmail.com>
+From:   Huacai Chen <chenhuacai@gmail.com>
+Date:   Tue, 16 Nov 2021 09:41:05 +0800
+Message-ID: <CAAhV-H6Bq63uM-ifkM8KDJGD1uavv42bG9ij_CZBbCpC-AFSjg@mail.gmail.com>
+Subject: Re: [PATCH] time/sched_clock: Allow architecture to override cyc_to_ns()
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021 02:48:19 -0700
-Jonathan Corbet wrote:
-> Akira Yokosawa <akiyks@gmail.com> writes:
-> 
->> Subject: [PATCH] docs: Update Sphinx requirements
->>
->> Commit f546ff0c0c07 ("Move our minimum Sphinx version to 1.7") raised
->> the minimum version to 1.7.
->>
->> For pdfdocs, sphinx_pre_install says:
->>
->>     note: If you want pdf, you need at least Sphinx 2.4.4.
->>
->> , and current requirements.txt installs Sphinx 2.4.4.
->>
->> Update Sphinx versions mentioned in docs and remove a note on earlier
->> Sphinx versions.
-> 
-> It may be time to consider raising the minimum sphinx version
-> overall...
+Hi, John,
 
-There is one thing we need to address (you might well be aware of).
+On Tue, Nov 16, 2021 at 1:27 AM John Stultz <john.stultz@linaro.org> wrote:
+>
+> On Sat, Nov 13, 2021 at 11:47 PM Huacai Chen <chenhuacai@loongson.cn> wrote:
+> >
+> > The current cyc_to_ns() implementation is like this:
+> >
+> > static inline u64 notrace cyc_to_ns(u64 cyc, u32 mult, u32 shift)
+> > {
+> >         return (cyc * mult) >> shift;
+> > }
+> >
+> > But u64*u32 maybe overflow, so introduce ARCH_HAS_CYC_TO_NS to allow
+> > architecture to override it.
+> >
+>
+> If that's the case, it would seem too large a mult/shift pair had been selected.
+We use a 100MHz clock and the counter is 64bit, the mult is ~160M. But
+even if we use a smaller mult, cyc*mult, it can also overflow.
 
-Our Documentation/conf.py is not compatible for hrmldocs with
-the combination sphinx_rtd_theme 1.0.0 and Sphinx >= 3.0.
-This issue is the same as the one reported at:
-    https://github.com/readthedocs/sphinx_rtd_theme/issues/1240
-    "No stylesheet after upgrading to 1.0.0"
+>
+> What sort of cycle range are you considering to be valid here? Can you
+> provide more rationale as to why this needs the ability to be
+> overridden?
+>
+> And what sort of arch-specific logic do you envision, rather than
+> having a common implementation to avoid the overflow?
+u64*u64 can be handled by hardware (store the high bits and low bits
+of result in two registers). So, if we use assembly, we can handle the
+overflow correctly. E.g., LoongArch (and MIPS) can override
+cyc_to_ns() like this:
 
-I tried the fix suggested there (html_css_files option),
-and a stylesheet can be generated.
-But the resulting html pages look quite different from the one
-you see at https://www.kernel.org/doc/html/latest/ with the sans
-font for text and distracting look of monospaced strings.
+static inline u64 notrace cyc_to_ns(u64 cyc, u32 mult, u32 shift)
+{
+        u64 t1, t2, t3;
+        unsigned long long rv;
 
-You can see a screenshot of such a page at
-    https://fars.ee/nkkZ
+        /* 64-bit arithmetic can overflow, so use 128-bit. */
+        __asm__ (
+                "nor            %[t1], $r0, %[shift]    \n\t"
+                "mulh.du        %[t2], %[cyc], %[mult]  \n\t"
+                "mul.d          %[t3], %[cyc], %[mult]  \n\t"
+                "slli.d         %[t2], %[t2], 1         \n\t"
+                "srl.d          %[rv], %[t3], %[shift]  \n\t"
+                "sll.d          %[t1], %[t2], %[t1]     \n\t"
+                "or             %[rv], %[t1], %[rv]     \n\t"
+                : [rv] "=&r" (rv), [t1] "=&r" (t1), [t2] "=&r" (t2),
+[t3] "=&r" (t3)
+                : [cyc] "r" (cyc), [mult] "r" (mult), [shift] "r" (shift)
+                : );
+        return rv;
+}
 
-I guess there should be some knobs of Sphinx for customizing
-the style, but have not figured them out.
-
-Thoughts?
-
-        Thanks, Akira
-
->              meanwhile, though, I've applied this, thanks. 
-> 
-> jon
-> 
+Huacai
+>
+> thanks
+> -john
