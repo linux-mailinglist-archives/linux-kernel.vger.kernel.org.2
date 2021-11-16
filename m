@@ -2,93 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4A34531AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:02:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7934531B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:04:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235979AbhKPMFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 07:05:31 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:57250 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235807AbhKPMDW (ORCPT
+        id S236131AbhKPMHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 07:07:21 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:26318 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235938AbhKPMFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 07:03:22 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 933DD1C0BA4; Tue, 16 Nov 2021 13:00:24 +0100 (CET)
-Date:   Tue, 16 Nov 2021 13:00:23 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 294/575] media: i2c: ths8200 needs V4L2_ASYNC
-Message-ID: <20211116120023.GB24443@amd>
-References: <20211115165343.579890274@linuxfoundation.org>
- <20211115165353.946824789@linuxfoundation.org>
+        Tue, 16 Nov 2021 07:05:03 -0500
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Htl0d64YMzbhrv;
+        Tue, 16 Nov 2021 19:57:05 +0800 (CST)
+Received: from dggpeml500019.china.huawei.com (7.185.36.137) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 16 Nov 2021 20:02:00 +0800
+Received: from [10.174.179.189] (10.174.179.189) by
+ dggpeml500019.china.huawei.com (7.185.36.137) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Tue, 16 Nov 2021 20:01:59 +0800
+Subject: Re: [PATCH v2] scsi: core: use eh_timeout to timeout start_unit
+ command
+To:     brookxu <brookxu.cn@gmail.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>
+CC:     <hch@infradead.org>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1636507412-21678-1-git-send-email-brookxu.cn@gmail.com>
+From:   Wu Bo <wubo40@huawei.com>
+Message-ID: <34b23c4f-65b0-4c01-4148-d536732b3aeb@huawei.com>
+Date:   Tue, 16 Nov 2021 20:01:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="aM3YZ0Iwxop3KEKx"
-Content-Disposition: inline
-In-Reply-To: <20211115165353.946824789@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <1636507412-21678-1-git-send-email-brookxu.cn@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.189]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500019.china.huawei.com (7.185.36.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/11/10 9:23, brookxu wrote:
+> From: Chunguang Xu <brookxu@tencent.com>
+> 
+> In some abnormal scenarios, STU may timeout. The recovery
+> time of 30 seconds is relatively large. Now we need to modify
+> rq_timeout to adjust STU timeout value, but it will affect the
+> actual IO.
+> 
+> commit 9728c0814ecb ("[SCSI] make scsi_eh_try_stu use block
+> timeout") use rq_timeout to timeout the STU command, but after
+> commit 0816c9251a71 ("[SCSI] Allow error handling timeout to
+> be specified") eh_timeout will init to SCSI_DEFAULT_EH_TIMEOUT,
+> so it is more reasonable to use eh_timeout as the timeout value
+> of STU command. In this way, we can uniformly control recovery
+> time through eh_timeout.
+> 
+> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+> ---
+> v2: Update commit log and fix some format issues.
+> 
+>   drivers/scsi/scsi_error.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
+> index a531336..a665318 100644
+> --- a/drivers/scsi/scsi_error.c
+> +++ b/drivers/scsi/scsi_error.c
+> @@ -1404,7 +1404,8 @@ static int scsi_eh_try_stu(struct scsi_cmnd *scmd)
+>   		enum scsi_disposition rtn = NEEDS_RETRY;
+>   
+>   		for (i = 0; rtn == NEEDS_RETRY && i < 2; i++)
+> -			rtn = scsi_send_eh_cmnd(scmd, stu_command, 6, scmd->device->request_queue->rq_timeout, 0);
+> +			rtn = scsi_send_eh_cmnd(scmd, stu_command, 6,
+> +						scmd->device->eh_timeout, 0);
+>   
+>   		if (rtn == SUCCESS)
+>   			return 0;
+> 
 
---aM3YZ0Iwxop3KEKx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Wu Bo <wubo40@huawei.com>
 
-Hi!
->=20
-> [ Upstream commit e4625044d656f3c33ece0cc9da22577bc10ca5d3 ]
->=20
-> Fix the build errors reported by the kernel test robot by
-> selecting V4L2_ASYNC:
->=20
-> mips-linux-ld: drivers/media/i2c/ths8200.o: in function `ths8200_remove':
-> ths8200.c:(.text+0x1ec): undefined reference to `v4l2_async_unregister_su=
-bdev'
-> mips-linux-ld: drivers/media/i2c/ths8200.o: in function `ths8200_probe':
-> ths8200.c:(.text+0x404): undefined reference to
-`v4l2_async_register_subdev'
-
-CONFIG_V4L2_ASYNC is not present in 5.10 kernel, this is should not be
-applied here.
-
-Best regards,
-								Pavel
-
-> +++ b/drivers/media/i2c/Kconfig
-> @@ -595,6 +595,7 @@ config VIDEO_AK881X
->  config VIDEO_THS8200
->  	tristate "Texas Instruments THS8200 video encoder"
->  	depends on VIDEO_V4L2 && I2C
-> +	select V4L2_ASYNC
->  	help
->  	  Support for the Texas Instruments THS8200 video encoder.
-> =20
-
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---aM3YZ0Iwxop3KEKx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmGTnVcACgkQMOfwapXb+vJDCwCeP3cYMN8dSWkFt1LXiG09YUct
-kXcAn0D00fraAMBHM6atroWXdiWx3pyw
-=Dzbo
------END PGP SIGNATURE-----
-
---aM3YZ0Iwxop3KEKx--
+-- 
+Wu Bo
