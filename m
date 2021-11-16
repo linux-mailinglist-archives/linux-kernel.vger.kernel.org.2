@@ -2,69 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9D34537C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:36:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C07644537C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:39:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234315AbhKPQjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 11:39:53 -0500
-Received: from mga18.intel.com ([134.134.136.126]:17584 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233055AbhKPQjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:39:52 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="220615341"
-X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
-   d="scan'208";a="220615341"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 08:36:54 -0800
-X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
-   d="scan'208";a="735301860"
-Received: from sksekwao-mobl1.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.20.115])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 08:36:53 -0800
-Subject: Re: [PATCH v1 1/1] x86: Skip WBINVD instruction for VM guest
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20211116005027.2929297-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YZPbQVwWOJCrAH78@zn.tnic>
-From:   Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <f38216d7-4dcd-8eba-1825-c5bc79b0e1f5@linux.intel.com>
-Date:   Tue, 16 Nov 2021 08:36:53 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S234245AbhKPQmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 11:42:08 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:39186 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233055AbhKPQmH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 11:42:07 -0500
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AG7FClY005416;
+        Tue, 16 Nov 2021 10:39:06 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=ODxpdqxltOMoYVFmvaxZez5QOWprLDG9j92jnhb+qXc=;
+ b=D9tMtazs3USlI5Z+VkvpPmwy4u6n82jUDKMxQCgMDADWtMwyDlndGPTRrj7NkMucdRvQ
+ PiFOSIzi4P4/nMjAr2f8X4UUU4gRayUJ6dnxJi02Li7KjkmUPQ8MrvYnHMfEI3CDY5Gf
+ smPYSqPf9wrJKGz7V0KReTmck23nZURj9UBv3XlLp6v3nBkiu9YBRn+LCxlNvtCC6Kxc
+ gldqf+cLZ7xjW4UEK5s59jlCNZl0sTRNIbaj3AlmUnmAM7nwYM+wQ1iBvGpvtzsF1nww
+ OthxyOwNztBC9nLABlEGvcJJgooncdzuLjBVOIHa+8E9gm3EnhJh2/xq5Au0jowLJcjt 7Q== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3cbdjgt3vp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 16 Nov 2021 10:39:05 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Tue, 16 Nov
+ 2021 16:39:04 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via Frontend
+ Transport; Tue, 16 Nov 2021 16:39:04 +0000
+Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.41])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6789111DC;
+        Tue, 16 Nov 2021 16:39:03 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <broonie@kernel.org>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH v2 0/4] ASoC: cs42l42: Remove redundant code
+Date:   Tue, 16 Nov 2021 16:38:57 +0000
+Message-ID: <20211116163901.45390-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <YZPbQVwWOJCrAH78@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 2VLeUxBwq61BfiO-W2j5z9eEZzE9-mJD
+X-Proofpoint-GUID: 2VLeUxBwq61BfiO-W2j5z9eEZzE9-mJD
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+- Remove field writes in regmap_update_bits() calls where the code
+  intends that the field value is not changed.
 
-On 11/16/21 8:24 AM, Borislav Petkov wrote:
-> On Mon, Nov 15, 2021 at 04:50:27PM -0800, Kuppuswamy Sathyanarayanan wrote:
->> -#define ACPI_FLUSH_CPU_CACHE()	wbinvd()
->> +#define ACPI_FLUSH_CPU_CACHE()				\
->> +do {							\
->> +	if (!boot_cpu_has(X86_FEATURE_HYPERVISOR))	\
-> 
-> cpu_feature_enabled()
-> 
-> If you wanna query a X86_FEATURE_* bit, from now on, use only this
-> function.
-> 
+- Remove unnecessary complexity from reporting jack unplug event
 
-Ok. I will change it in next version.
+- Remove a PLL config value member that was introduced in a bugfix
+  but made redundant by a later bugfix.
+
+Richard Fitzgerald (4):
+  ASoC: cs42l42: Remove redundant writes to DETECT_MODE
+  ASoC: cs42l42: Remove redundant writes to RS_PLUG/RS_UNPLUG masks
+  ASoC: cs42l42: Simplify reporting of jack unplug
+  ASoC: cs42l42: Remove redundant pll_divout member
+
+ sound/soc/codecs/cs42l42.c | 42 +++++++-----------------------------------
+ sound/soc/codecs/cs42l42.h |  1 -
+ 2 files changed, 7 insertions(+), 36 deletions(-)
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.11.0
+
