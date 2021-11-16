@@ -2,92 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7444530F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 828134530EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:36:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235712AbhKPLjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 06:39:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56244 "EHLO
+        id S235332AbhKPLjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:39:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235767AbhKPLiM (ORCPT
+        with ESMTP id S235475AbhKPLiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 06:38:12 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2984EC061226;
-        Tue, 16 Nov 2021 03:33:06 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id z5so26440668edd.3;
-        Tue, 16 Nov 2021 03:33:06 -0800 (PST)
+        Tue, 16 Nov 2021 06:38:06 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4ECC061764;
+        Tue, 16 Nov 2021 03:32:59 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id a9so10695411wrr.8;
+        Tue, 16 Nov 2021 03:32:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tg2qQ+8bY8ufKfe+mg2NqMGPkH16u+/8Lo+azxIiQEM=;
-        b=LNN1eGhJB1qFU175DGhQrq6OtLMKjQIcWWJ6lUVIXvSSJNnoUvLjltdB0Fp6Dllusd
-         vr8Iflxtp3P2wMLXGm90ENGrgVcBKX9WoHe8VxsnrG8abCuQOWHb2OC0agvYcKwsYPui
-         PS715cyhtWvkC1YgXcDs9+d60GDkkvof9d588a6e3z0yVUeBvX7UNnR71oPBo/PxX53Z
-         kNY9nLM2DxOXf3MxVlM12KlgW5VhZaU4DqxsjnXSY43QJGwUqAJqVRpjksH5+RoWwzG2
-         0VKpaWTnXhjElObKzpEqydUSOHu/2TAt3Gf2/EUZqs5DpxsEW13OHA7/A9DM4g66XXrA
-         Pm+A==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=MwLBy7MN9rjOVXhuT6sJXkWqGYnANC26XLE5d8TIP2Q=;
+        b=D00XmI5yrQrfUGaeKyMzsfY8RNjjMt8lkKZ+ONpTApw9XlyRxU9RYC744+12rvK8Ks
+         6JxSFOiWlDSVI3eAFxm8K8caAqtBXetSwMPf3OTWgNNTcGceTAsNkYHcbShp0xv9H6NC
+         gk0W+dWgc5BHF3Qb9XdTNaBjIZx45C2SHpbtmZeEa7HxC0NeoZGHwfY898jNio8jRi4S
+         NuTyLVkhtj9HtFxKAwUbwZD1PhYhS9jv06Rwqx27sIW1k2EvSBbuiWKSU/hHo6vp+6TP
+         0L8zxyx07NO5i6lisAJa56j4yI4kkfMCV2IAiy+ya8DiBvv8gtnMMwRkahQJTbSf+yX/
+         R9kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tg2qQ+8bY8ufKfe+mg2NqMGPkH16u+/8Lo+azxIiQEM=;
-        b=Nl6DCITP4vVKKtU9NJ3DqjG+XljMaNdlQVJKnL8peReRD/cZuEZk6mGSwW3shdpTBb
-         qw3nnSLQtHUiqFQ4mTc2dhmydKm/2WvlhAZViseJ4NuZiks94h+JoyYL1Sx7tbIvTulU
-         a/vpoPonXyrlEB50EC7J7Zy4z70vvv4bgaiTHNaEbBXfM+j6Pe8fKGQpBW6eAEWTGXv6
-         BLF7HSFlW7Gwgot5EeUxhT2NRr8M3MiARlcOtUbbXr0pnv1NSIMzh5GIEKBiEFK2ck8l
-         REeX3mbq/RO+FQ59sbgej8E4ozI5TTmabRMjZfii4mKJQHZn2czrVF36GSMTuZq0j7bd
-         QX3A==
-X-Gm-Message-State: AOAM532hQ5ncdK9hPbeitBbm39uvTAZpFHpEHnrai0cVusLTsOVt1+GW
-        P/5z87oRIm3sGfOunLQE6SfZ6Wd7/wzMIK0Y/Gk=
-X-Google-Smtp-Source: ABdhPJy5CPnYbv9nPe3hG14+wjS55LvjM1FewsoXlmHHMp6kood0np5yecGCwdIvRDNawCS5RGHzr2eW+6sOxbuejI8=
-X-Received: by 2002:a17:906:489b:: with SMTP id v27mr8678631ejq.567.1637062384713;
- Tue, 16 Nov 2021 03:33:04 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=MwLBy7MN9rjOVXhuT6sJXkWqGYnANC26XLE5d8TIP2Q=;
+        b=RTLkZr6ppz6DO84YoteKaazpujfaBG2HYU0tgBZpr166R27R5R/AzngYtREthGVos2
+         E0si9qDRKxVHTY/OYoAjd1PJdYXqyehY4TEDnuP+cX7CT9wtdsYscBtXDxkGzrrVCIee
+         FWxvSqgVBhebgm/Op/T8VaPGjikz71F6VK0DQPKZZyogmnis9SODRGIBe2oyv/iA097i
+         +dtGMiblr+3QMsjHTsed3M9Eo+xEiozX/fp8HvjVD2BMIYwDS6ftzpqFuzXgomkz5sMQ
+         6qr0qVYpzWor7+ee5cDYfRuWIgx4O5cwyIOyq8NNUuwwPEq29k5NCI6dv82ODGwmAXWo
+         CnAA==
+X-Gm-Message-State: AOAM532gvKuIeiGtSOkpi7+DXPEOKicxCnMJgQGsw74eQo7vX2S4coKa
+        qdUv436aOqu8lLa39PU4356DAZj2YIov2dteUhn720VHEdw=
+X-Google-Smtp-Source: ABdhPJwCX3Ef/IG/ZRI/s+QbwYsKKUuA0ClGBt/EsUwqNcFVFeMBhoF37aWTvxiJRh58gue/QXMXnQ+Ho0FldLcxgGU=
+X-Received: by 2002:a05:6000:18ac:: with SMTP id b12mr7799584wri.355.1637062377685;
+ Tue, 16 Nov 2021 03:32:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20211114170335.66994-1-hdegoede@redhat.com> <20211114170335.66994-18-hdegoede@redhat.com>
- <CAHp75VdXSdhNtPwNdpssnmt+sZb+ZoAUm-cKJu-PqymmHMOpRw@mail.gmail.com> <CAHp75VfSwf0SKDHDOG7WO9xY5Q52o1Zw2GPkxi7UnrLhMtiobA@mail.gmail.com>
-In-Reply-To: <CAHp75VfSwf0SKDHDOG7WO9xY5Q52o1Zw2GPkxi7UnrLhMtiobA@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 16 Nov 2021 13:32:23 +0200
-Message-ID: <CAHp75VfTsQTxTSbBDBqncJha0QtOptK0p5k1jy2Ta-HURu63cA@mail.gmail.com>
-Subject: Re: [PATCH v2 17/20] extcon: intel-cht-wc: Support devs with Micro-B
- / USB-2 only Type-C connectors
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Yauhen Kharuzhy <jekhor@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>
+From:   Sandy Harris <sandyinchina@gmail.com>
+Date:   Tue, 16 Nov 2021 19:32:46 +0800
+Message-ID: <CACXcFmmyTXg77Dq1cR+MGCP=DRvcEzM=pCPcKL5u6-O+xofR1Q@mail.gmail.com>
+Subject: [PATCH 4/8] Replace memset() with memzero_explicit()
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 1:31 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Tue, Nov 16, 2021 at 1:28 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Sun, Nov 14, 2021 at 7:04 PM Hans de Goede <hdegoede@redhat.com> wrote:
+Replace memset(address,0,bytes) which may be optimised
+away with memzero_explicit(address,bytes) which resists
+such optimisation
 
-> > Can be also written as
+---
+ crypto/echainiv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Oops, other way around, of course.
+diff --git a/crypto/echainiv.c b/crypto/echainiv.c
+index 69686668625e..6a7321da2fc1 100644
+--- a/crypto/echainiv.c
++++ b/crypto/echainiv.c
+@@ -64,7 +64,7 @@ static int echainiv_encrypt(struct aead_request *req)
 
-Yeah, scratch it. We have nice debugfs which will be missed...
+     memcpy(&nseqno, info + ivsize - 8, 8);
+     seqno = be64_to_cpu(nseqno);
+-    memset(info, 0, ivsize);
++    memzero_explicit(info, ivsize);
 
--- 
-With Best Regards,
-Andy Shevchenko
+     scatterwalk_map_and_copy(info, req->dst, req->assoclen, ivsize, 1);
+
+--
