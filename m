@@ -2,114 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDBB45342A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:28:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15537453430
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:30:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237372AbhKPObR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 09:31:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237310AbhKPObJ (ORCPT
+        id S231286AbhKPOdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 09:33:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50884 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229739AbhKPOdt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 09:31:09 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0ECAC061570
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 06:28:12 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id d27so38014807wrb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 06:28:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HWhPuTZCeYFcjOd58uwQgszWNU0sTCldaG8fba7OiLc=;
-        b=3mFsOvA5uHel7jOb/udYTc1PO/xSN11ULu2UYyqyvZVgkmYk+h2rX4Dh//fvuU255O
-         SHt74aM3iQ/8yLRV6HUUrmWUO72BDRwEYf1Qid72F7RCDK8JDCdTHZ97qDlYLWGn6JMB
-         7lloH7OVo9ZhWc/cSQb/ACWKgYk530kO6bwFAm75TkXIO/wqInG7huqFJq6NXc8Fiw4O
-         kda1+if+KnDlh554y+9JLvCg3V0LEsEx0tHP986b87lU8DgbqGbI8+2HFowf+cuOe1E4
-         wwO7m0t3ylRXqrL8tiT7DkKd3MX1VBD8xfA1cy5HRf0paVKPmrI3K147hTTb2/Q8IFNS
-         pHIw==
+        Tue, 16 Nov 2021 09:33:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637073052;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yGLlb2K1KnZJ8ryHE7dGxeg/3e8ozhLXbMUxWhBTJfg=;
+        b=UudBm6wdgmJ4kALlTz63qQNkziF7kXOINDvQI1UAJwgKuUpPKp8UCT0V4j/208G1BFQYTW
+        ax78ilIVQMdNz0vuXFytnkXa5A4NGB85TQ9m4IjovDiFA9Aa7Gqz8prrUSZtpFcM158iHf
+        ORwfLxA83hvoBIdQKV3VvPNhSyCRc88=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-557-ArEdRfuQNniYOwp8p3EbZA-1; Tue, 16 Nov 2021 09:30:51 -0500
+X-MC-Unique: ArEdRfuQNniYOwp8p3EbZA-1
+Received: by mail-wm1-f72.google.com with SMTP id o10-20020a05600c4fca00b0033312e1ed8bso1567002wmq.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 06:30:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HWhPuTZCeYFcjOd58uwQgszWNU0sTCldaG8fba7OiLc=;
-        b=br099A8g6psy6QkK0VFNU0L+pwqkixvcyI4ObjNitf/mjdjWauDGDrRMZrMyl/V5Oh
-         vtbp3ba1rNWk5mIWDw33aON9IaMdhLNTUXEI6udtAxV2/HafI3gXlyUXMu4/fXlnaaez
-         JCdlmhBqyqTXHjQaKwE2TsWr9kFdTeexgGZWupbWIOZSivcTLwDJMqdY+cEzVet6gAX/
-         LD9DAo1suvP29y5xrKXqfQxt/Ez2v2b6/h2Iz6T3M/tTjp0Z+7EREJ5ZgNDxZh/uzzE8
-         S+oqIYdczyYKrEfyxr9TOBfJ78+/frtYZHmgcfMeMQ8XZ6uzEGcNDe7iFJUWqHPJjBJh
-         tsHw==
-X-Gm-Message-State: AOAM531b+7qngXGM3l34cNmvZbrXfc4JpylCaweUFGLTvZfMSfJoxmTH
-        EzFzvU8CCVflAAxWdwkgVWpbLsHHmpam3voLc+en4Q==
-X-Google-Smtp-Source: ABdhPJyRDHaoLZ0NSJJuQgeeiHMHfW8vt2fxAhUgZNG7UkoYMeWr2Oc6/hMlaDv8BYe/4nla2hhbe+NFAA0JueeQybk=
-X-Received: by 2002:adf:8165:: with SMTP id 92mr10151797wrm.199.1637072891214;
- Tue, 16 Nov 2021 06:28:11 -0800 (PST)
+        bh=yGLlb2K1KnZJ8ryHE7dGxeg/3e8ozhLXbMUxWhBTJfg=;
+        b=J2CGGy89rNjriro8NC4wvmc8NyiEMK8y69aU9NXRk96bLhMe1PsEBGkNrN8XziCcBl
+         sJcMdNrT/NdWSGHiei13Et4Kf3HMAcCmly4CGhYuMQDqNqkplVioyZZj4LWDz+fOGTmh
+         XCqb5nGorPSr2JvklnuxlnBmnEVKGnPhqC9yGcovBrJdo1Uop4wZQCydZFjlyCx9QL5a
+         rKfzy/qFZkTQRB/fG0TDAt1yhJc1weOTVn4atgL6BnTGVvVt+Um2ckrdKUkIplXUhAMr
+         ZL51TBSU2+QK/mxOBSH4btFPh30p3dLj6NzmkEipl+1m2ZzAjSMqq1PQ9UQXuNIuK9u3
+         2CSA==
+X-Gm-Message-State: AOAM5305EGs18v7+qeR68XEAueaxHGB7ECa2drSl2thBXR0JAKRfGqFa
+        J3dYJ9lpnzq55tYtBkbwhCVPN53r5SR2mkZUAnZnDaq6DtzJRkp0NLUEe1RxrbTBJ68GiVTHvJm
+        xnUD0w6tCL3izI0ioPoWr0rAiI6lnW+imUzjx28an
+X-Received: by 2002:a5d:628f:: with SMTP id k15mr10058476wru.363.1637073048898;
+        Tue, 16 Nov 2021 06:30:48 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwwQ9c1DU7hDbd1YcLisoG+/tIlG+wgenks4qBRCL9wz5r2a/gmGwOMoiIhDt4fczvM+rVPkw3QVsAVHXwsGUM=
+X-Received: by 2002:a5d:628f:: with SMTP id k15mr10058457wru.363.1637073048723;
+ Tue, 16 Nov 2021 06:30:48 -0800 (PST)
 MIME-Version: 1.0
-References: <20211103064458.26916-1-zhang.mingyu@zte.com.cn>
-In-Reply-To: <20211103064458.26916-1-zhang.mingyu@zte.com.cn>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Tue, 16 Nov 2021 19:57:59 +0530
-Message-ID: <CAAhSdy3LvzR4H_rYvacER87n7fakU9EzE17vA3D+ASczR24=5g@mail.gmail.com>
-Subject: Re: [PATCH] RISC-V: KVM:Remove unneeded semicolon
-To:     cgel.zte@gmail.com
-Cc:     Anup Patel <anup.patel@wdc.com>, Atish Patra <atish.patra@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        KVM General <kvm@vger.kernel.org>,
-        kvm-riscv@lists.infradead.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Zhang Mingyu <zhang.mingyu@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
+References: <20211115165313.549179499@linuxfoundation.org> <20211115165315.847107930@linuxfoundation.org>
+ <CAHc6FU7a+gTDCZMCE6gOH1EDUW5SghPbQbsbeVtdg4tV1VdGxg@mail.gmail.com>
+ <YZMBVdDZzjE6Pziq@sashalap> <CAHc6FU4cgAXc2GxYw+N=RACPG0xc=urrrqw8Gc3X1Rpr4255pg@mail.gmail.com>
+ <YZO4wIfpjxnzZjuh@kroah.com> <CAHc6FU7BU2-B2x=JV0HtLci6=mGy2XxLNNGh1f4DGtVbeJFcVA@mail.gmail.com>
+ <YZO9Bv3yJC5P92c8@kroah.com>
+In-Reply-To: <YZO9Bv3yJC5P92c8@kroah.com>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Tue, 16 Nov 2021 15:30:37 +0100
+Message-ID: <CAHc6FU74ih7Sk7tWmvMy9OsyO2=f0cO7fUoBREKnFQSKf+zyig@mail.gmail.com>
+Subject: Re: [PATCH 5.4 063/355] powerpc/kvm: Fix kvm_use_magic_page
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Sasha Levin <sashal@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Mathieu Malaterre <malat@debian.org>,
+        Paul Mackerras <paulus@ozlabs.org>, kvm-ppc@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 12:15 PM <cgel.zte@gmail.com> wrote:
+On Tue, Nov 16, 2021 at 3:15 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> On Tue, Nov 16, 2021 at 03:00:19PM +0100, Andreas Gruenbacher wrote:
+> > On Tue, Nov 16, 2021 at 2:57 PM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > > On Tue, Nov 16, 2021 at 02:54:10PM +0100, Andreas Gruenbacher wrote:
+> > > > On Tue, Nov 16, 2021 at 1:54 AM Sasha Levin <sashal@kernel.org> wrote:
+> > > > > On Mon, Nov 15, 2021 at 06:47:41PM +0100, Andreas Gruenbacher wrote:
+> > > > > >Greg,
+> > > > > >
+> > > > > >On Mon, Nov 15, 2021 at 6:10 PM Greg Kroah-Hartman
+> > > > > ><gregkh@linuxfoundation.org> wrote:
+> > > > > >> From: Andreas Gruenbacher <agruenba@redhat.com>
+> > > > > >>
+> > > > > >> commit 0c8eb2884a42d992c7726539328b7d3568f22143 upstream.
+> > > > > >>
+> > > > > >> When switching from __get_user to fault_in_pages_readable, commit
+> > > > > >> 9f9eae5ce717 broke kvm_use_magic_page: like __get_user,
+> > > > > >> fault_in_pages_readable returns 0 on success.
+> > > > > >
+> > > > > >I've not heard back from the maintainers about this patch so far, so
+> > > > > >it would probably be safer to leave it out of stable for now.
+> > > > >
+> > > > > What do you mean exactly? It's upstream.
+> > > >
+> > > > Mathieu Malaterre broke this test in 2018 (commit 9f9eae5ce717) but
+> > > > that wasn't noticed until now (commit 0c8eb2884a42). This means that
+> > > > this fix probably isn't critical, so I shouldn't be backported.
+> > >
+> > > Then why did you tag it to be explicitly backported to all stable
+> > > kernels newer than 4.18?
+> >
+> > Well, sorry for that. What else do you expect me to do in addition to
+> > pointing out the mistake?
 >
-> From: Zhang Mingyu <zhang.mingyu@zte.com.cn>
->
-> Eliminate the following coccinelle check warning:
-> arch/riscv/kvm/vcpu.c:167:2-3
-> arch/riscv/kvm/vcpu.c:204:2-3
->
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Zhang Mingyu <zhang.mingyu@zte.com.cn>
+> Ah, I think we are misunderstanding each other here.  I will go drop it,
+> but in the future maybe "hey, I didn't mean to mark this for stable, can
+> you please drop it?" might be a bit more direct and to the point.
 
-Thanks but this is already fixed by following patch:
-https://www.spinics.net/lists/kvm/msg257614.html
+Yes, the stable Cc was an accident on my side (caused by a script that
+takes a SHA1 and spits out Fixes: and Cc: tags). Sorry and thanks for
+dropping the patch.
 
-Regards,
-Anup
+Andreas
 
-> ---
->  arch/riscv/kvm/vcpu.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
-> index e92ba3e5db8c..e3d3aed46184 100644
-> --- a/arch/riscv/kvm/vcpu.c
-> +++ b/arch/riscv/kvm/vcpu.c
-> @@ -164,7 +164,7 @@ static int kvm_riscv_vcpu_get_reg_config(struct kvm_vcpu *vcpu,
->                 break;
->         default:
->                 return -EINVAL;
-> -       };
-> +       }
->
->         if (copy_to_user(uaddr, &reg_val, KVM_REG_SIZE(reg->id)))
->                 return -EFAULT;
-> @@ -201,7 +201,7 @@ static int kvm_riscv_vcpu_set_reg_config(struct kvm_vcpu *vcpu,
->                 break;
->         default:
->                 return -EINVAL;
-> -       };
-> +       }
->
->         return 0;
->  }
-> --
-> 2.25.1
->
