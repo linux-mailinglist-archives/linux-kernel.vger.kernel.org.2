@@ -2,257 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75BD0452CAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:25:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD177452CB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:26:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231944AbhKPI2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 03:28:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39518 "EHLO mail.kernel.org"
+        id S231983AbhKPI3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 03:29:08 -0500
+Received: from mga04.intel.com ([192.55.52.120]:19551 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231913AbhKPI2b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 03:28:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1C1361B49;
-        Tue, 16 Nov 2021 08:25:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637051134;
-        bh=QAjKaUITJh85DQxjILDk66ZZ2DD739TBS0bdfMMRImI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DPJBN/lM1PeY+qyhBLdcF6kWXbS2ipAsjtHiBhKeiiRdkO8/LzoT8cjKgywvxsjWv
-         lq7LC64jzHBdrb7WJOeQS7q3/CHoGRBzC5CzQb29zbDZaDqlRiK016GJHGuhygMVU1
-         zJTu7Sn+FW63l7jBR8H41mc5G8o63I4TcMMAAgEszeIiH5NinjgOf+TgDXHVHrl+h3
-         A5FS8K9prHO6J0Y8Q1/Ro6enN3ULagpndjDmgmrkbmIoOXxnZ5EmxxmkUVBr2YZOZH
-         XkCd6LJSxEOkei1IcRKmxQPbwDBVVriqlsUblG8R2QbZS4JiqjljFA0xOhR/EJAWg1
-         vUeMKv2g42hNw==
-Date:   Tue, 16 Nov 2021 13:55:29 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     quic_vamslank@quicinc.com
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        tglx@linutronix.de, maz@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, manivannan.sadhasivam@linaro.org
-Subject: Re: [PATCH v4 2/6] clk: qcom: Add LUCID_EVO PLL type for SDX65
-Message-ID: <YZNq+Y07kwhbIboe@matsya>
-References: <cover.1637047731.git.quic_vamslank@quicinc.com>
- <5a048452c128e4b678609bef780e2c1328c482fc.1637047731.git.quic_vamslank@quicinc.com>
+        id S231926AbhKPI3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 03:29:06 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="232369844"
+X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
+   d="scan'208";a="232369844"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 00:26:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
+   d="scan'208";a="454363841"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 16 Nov 2021 00:26:07 -0800
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mmtn4-0000ER-JU; Tue, 16 Nov 2021 08:26:06 +0000
+Date:   Tue, 16 Nov 2021 16:26:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/sgx] BUILD SUCCESS
+ 688542e29fae655a8be25832f6a9959bdd308dd8
+Message-ID: <61936b18.jLamIbLeLrnbPZye%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5a048452c128e4b678609bef780e2c1328c482fc.1637047731.git.quic_vamslank@quicinc.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-11-21, 23:38, quic_vamslank@quicinc.com wrote:
-> From: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
-> 
-> Add a LUCID_EVO PLL type for SDX65 SoC from Qualcomm.
-> 
-> Signed-off-by: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
-> ---
->  drivers/clk/qcom/clk-alpha-pll.c | 171 +++++++++++++++++++++++++++++++
->  drivers/clk/qcom/clk-alpha-pll.h |   3 +
->  2 files changed, 174 insertions(+)
-> 
-> diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
-> index eaedcceb766f..b2dbb8d56773 100644
-> --- a/drivers/clk/qcom/clk-alpha-pll.c
-> +++ b/drivers/clk/qcom/clk-alpha-pll.c
-> @@ -1,5 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
-> + * Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/sgx
+branch HEAD: 688542e29fae655a8be25832f6a9959bdd308dd8  selftests/sgx: Add test for multiple TCS entry
 
-This line should ideally come after the below line..
+elapsed time: 727m
 
->   * Copyright (c) 2015, 2018, The Linux Foundation. All rights reserved.
->   */
->  
-> @@ -139,6 +140,20 @@ const u8 clk_alpha_pll_regs[][PLL_OFF_MAX_REGS] = {
->  		[PLL_OFF_OPMODE] = 0x28,
->  		[PLL_OFF_STATUS] = 0x38,
->  	},
-> +	[CLK_ALPHA_PLL_TYPE_LUCID_EVO] = {
-> +		[PLL_OFF_OPMODE] = 0x04,
-> +		[PLL_OFF_STATUS] = 0x0c,
-> +		[PLL_OFF_L_VAL] = 0x10,
-> +		[PLL_OFF_ALPHA_VAL] = 0x14,
-> +		[PLL_OFF_USER_CTL] = 0x18,
-> +		[PLL_OFF_USER_CTL_U] = 0x1c,
-> +		[PLL_OFF_CONFIG_CTL] = 0x20,
-> +		[PLL_OFF_CONFIG_CTL_U] = 0x24,
-> +		[PLL_OFF_CONFIG_CTL_U1] = 0x28,
-> +		[PLL_OFF_TEST_CTL] = 0x2c,
-> +		[PLL_OFF_TEST_CTL_U] = 0x30,
-> +		[PLL_OFF_TEST_CTL_U1] = 0x34,
-> +        },
->  };
->  EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
->  
-> @@ -175,6 +190,10 @@ EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
->  #define LUCID_5LPE_PLL_LATCH_INPUT	BIT(14)
->  #define LUCID_5LPE_ENABLE_VOTE_RUN	BIT(21)
->  
-> +/* LUCID EVO PLL specific settings and offsets */
-> +#define LUCID_EVO_ENABLE_VOTE_RUN       BIT(25)
-> +#define LUCID_EVO_PLL_L_VAL_MASK        GENMASK(15, 0)
-> +
->  /* ZONDA PLL specific */
->  #define ZONDA_PLL_OUT_MASK	0xf
->  #define ZONDA_STAY_IN_CFA	BIT(16)
-> @@ -1951,3 +1970,155 @@ const struct clk_ops clk_alpha_pll_zonda_ops = {
->  	.set_rate = clk_zonda_pll_set_rate,
->  };
->  EXPORT_SYMBOL(clk_alpha_pll_zonda_ops);
-> +
-> +static int alpha_pll_lucid_evo_enable(struct clk_hw *hw)
-> +{
-> +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> +	struct regmap *regmap = pll->clkr.regmap;
-> +	u32 val;
-> +	int ret;
-> +
-> +	ret = regmap_read(regmap, PLL_USER_CTL(pll), &val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* If in FSM mode, just vote for it */
-> +	if (val & LUCID_EVO_ENABLE_VOTE_RUN) {
-> +		ret = clk_enable_regmap(hw);
-> +		if (ret)
-> +			return ret;
-> +		return wait_for_pll_enable_lock(pll);
-> +	}
-> +
-> +	/* Check if PLL is already enabled */
-> +	ret = trion_pll_is_enabled(pll, regmap);
-> +	if (ret < 0)
-> +		return ret;
-> +	else if (ret) {
-> +		pr_warn("%s PLL is already enabled\n",
-> +				clk_hw_get_name(&pll->clkr.hw));
+configs tested: 189
+configs skipped: 3
 
-this should fit in a single line
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> +		return 0;
-> +	}
-> +
-> +	ret = regmap_update_bits(regmap, PLL_MODE(pll), PLL_RESET_N, PLL_RESET_N);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Set operation mode to RUN */
-> +	regmap_write(regmap, PLL_OPMODE(pll), PLL_RUN);
-> +
-> +	ret = wait_for_pll_enable_lock(pll);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Enable the PLL outputs */
-> +	ret = regmap_update_bits(regmap, PLL_USER_CTL(pll), PLL_OUT_MASK, PLL_OUT_MASK);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Enable the global PLL outputs */
-> +	ret = regmap_update_bits(regmap, PLL_MODE(pll), PLL_OUTCTRL, PLL_OUTCTRL);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Ensure that the write above goes through before returning. */
-> +	mb();
-> +	return ret;
-> +}
-> +
-> +static void alpha_pll_lucid_evo_disable(struct clk_hw *hw)
-> +{
-> +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> +	struct regmap *regmap = pll->clkr.regmap;
-> +	u32 val;
-> +	int ret;
-> +
-> +	ret = regmap_read(regmap, PLL_USER_CTL(pll), &val);
-> +	if (ret)
-> +		return;
-> +
-> +	/* If in FSM mode, just unvote it */
-> +	if (val & LUCID_EVO_ENABLE_VOTE_RUN) {
-> +		clk_disable_regmap(hw);
-> +		return;
-> +	}
-> +
-> +	/* Disable the global PLL output */
-> +	ret = regmap_update_bits(regmap, PLL_MODE(pll), PLL_OUTCTRL, 0);
-> +	if (ret)
-> +		return;
-> +
-> +	/* Disable the PLL outputs */
-> +	ret = regmap_update_bits(regmap, PLL_USER_CTL(pll), PLL_OUT_MASK, 0);
-> +	if (ret)
-> +		return;
-> +
-> +	/* Place the PLL mode in STANDBY */
-> +	regmap_write(regmap, PLL_OPMODE(pll), PLL_STANDBY);
-> +}
-> +
-> +static unsigned long alpha_pll_lucid_evo_recalc_rate(struct clk_hw *hw,
-> +		unsigned long parent_rate)
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211115
+i386                 randconfig-c001-20211116
+m68k                             alldefconfig
+powerpc                 linkstation_defconfig
+ia64                                defconfig
+mips                         db1xxx_defconfig
+mips                malta_qemu_32r6_defconfig
+powerpc                        cell_defconfig
+arm                       omap2plus_defconfig
+sparc                               defconfig
+arm                       cns3420vb_defconfig
+arm                        mini2440_defconfig
+sh                            shmin_defconfig
+powerpc                    adder875_defconfig
+sparc                            alldefconfig
+powerpc                 mpc836x_mds_defconfig
+arm                         nhk8815_defconfig
+arm                         lubbock_defconfig
+sh                             shx3_defconfig
+sh                          lboxre2_defconfig
+arm                       netwinder_defconfig
+powerpc                mpc7448_hpc2_defconfig
+arc                                 defconfig
+m68k                        m5307c3_defconfig
+powerpc                     stx_gp3_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                         cm_x300_defconfig
+m68k                          atari_defconfig
+sh                             espt_defconfig
+arm                        vexpress_defconfig
+h8300                    h8300h-sim_defconfig
+sh                               j2_defconfig
+powerpc                      ppc6xx_defconfig
+mips                          ath25_defconfig
+openrisc                 simple_smp_defconfig
+sh                         ecovec24_defconfig
+m68k                       m5475evb_defconfig
+arm                            xcep_defconfig
+arm                        spear3xx_defconfig
+m68k                       m5208evb_defconfig
+powerpc                     ppa8548_defconfig
+arm                       aspeed_g4_defconfig
+mips                     decstation_defconfig
+sh                         apsh4a3a_defconfig
+sparc64                             defconfig
+m68k                       m5275evb_defconfig
+arm                        magician_defconfig
+mips                           ip22_defconfig
+m68k                            mac_defconfig
+arm                          badge4_defconfig
+sh                           sh2007_defconfig
+powerpc                     ksi8560_defconfig
+powerpc                     kilauea_defconfig
+arm                      tct_hammer_defconfig
+sh                          sdk7780_defconfig
+powerpc                      cm5200_defconfig
+powerpc                   microwatt_defconfig
+mips                       bmips_be_defconfig
+um                               alldefconfig
+arm                     eseries_pxa_defconfig
+powerpc                 xes_mpc85xx_defconfig
+x86_64                           allyesconfig
+powerpc                     taishan_defconfig
+arm                         at91_dt_defconfig
+m68k                         amcore_defconfig
+sh                   sh7770_generic_defconfig
+xtensa                         virt_defconfig
+mips                             allyesconfig
+powerpc                   lite5200b_defconfig
+mips                           ip32_defconfig
+powerpc                     pq2fads_defconfig
+m68k                        mvme16x_defconfig
+arm                         palmz72_defconfig
+powerpc                  iss476-smp_defconfig
+arm                           tegra_defconfig
+h8300                               defconfig
+mips                      maltaaprp_defconfig
+powerpc                    ge_imp3a_defconfig
+sh                          rsk7203_defconfig
+m68k                        m5407c3_defconfig
+sh                        sh7763rdp_defconfig
+mips                         mpc30x_defconfig
+sh                     sh7710voipgw_defconfig
+arm                  randconfig-c002-20211115
+arm                  randconfig-c002-20211116
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+s390                             allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+mips                             allmodconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+powerpc                          allyesconfig
+x86_64               randconfig-a005-20211115
+x86_64               randconfig-a003-20211115
+x86_64               randconfig-a002-20211115
+x86_64               randconfig-a001-20211115
+x86_64               randconfig-a006-20211115
+x86_64               randconfig-a004-20211115
+i386                 randconfig-a006-20211115
+i386                 randconfig-a003-20211115
+i386                 randconfig-a005-20211115
+i386                 randconfig-a001-20211115
+i386                 randconfig-a004-20211115
+i386                 randconfig-a002-20211115
+x86_64               randconfig-a015-20211116
+x86_64               randconfig-a013-20211116
+x86_64               randconfig-a012-20211116
+x86_64               randconfig-a011-20211116
+x86_64               randconfig-a016-20211116
+x86_64               randconfig-a014-20211116
+i386                 randconfig-a014-20211116
+i386                 randconfig-a016-20211116
+i386                 randconfig-a012-20211116
+i386                 randconfig-a013-20211116
+i386                 randconfig-a011-20211116
+i386                 randconfig-a015-20211116
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
 
-pls align this to preceding line open brace
+clang tested configs:
+x86_64               randconfig-c007-20211115
+i386                 randconfig-c001-20211115
+arm                  randconfig-c002-20211115
+riscv                randconfig-c006-20211115
+powerpc              randconfig-c003-20211115
+s390                 randconfig-c005-20211115
+mips                 randconfig-c004-20211115
+x86_64               randconfig-c007-20211116
+i386                 randconfig-c001-20211116
+arm                  randconfig-c002-20211116
+riscv                randconfig-c006-20211116
+powerpc              randconfig-c003-20211116
+s390                 randconfig-c005-20211116
+mips                 randconfig-c004-20211116
+x86_64               randconfig-a005-20211116
+x86_64               randconfig-a003-20211116
+x86_64               randconfig-a001-20211116
+x86_64               randconfig-a002-20211116
+x86_64               randconfig-a006-20211116
+x86_64               randconfig-a004-20211116
+x86_64               randconfig-a015-20211115
+x86_64               randconfig-a013-20211115
+x86_64               randconfig-a011-20211115
+x86_64               randconfig-a012-20211115
+x86_64               randconfig-a016-20211115
+x86_64               randconfig-a014-20211115
+i386                 randconfig-a014-20211115
+i386                 randconfig-a016-20211115
+i386                 randconfig-a012-20211115
+i386                 randconfig-a013-20211115
+i386                 randconfig-a011-20211115
+i386                 randconfig-a015-20211115
+hexagon              randconfig-r045-20211115
+hexagon              randconfig-r041-20211115
+s390                 randconfig-r044-20211115
+riscv                randconfig-r042-20211115
 
-> +{
-> +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> +	struct regmap *regmap = pll->clkr.regmap;
-> +	u32 l, frac;
-> +
-> +	regmap_read(regmap, PLL_L_VAL(pll), &l);
-> +	l &= LUCID_EVO_PLL_L_VAL_MASK;
-> +	regmap_read(regmap, PLL_ALPHA_VAL(pll), &frac);
-> +
-> +	return alpha_pll_calc_rate(parent_rate, l, frac, pll_alpha_width(pll));
-> +}
-
-I think this can use __alpha_pll_trion_set_rate()
-
-> +
-> +static int clk_lucid_evo_pll_postdiv_set_rate(struct clk_hw *hw,
-> +		unsigned long rate, unsigned long parent_rate)
-> +{
-> +	struct clk_alpha_pll_postdiv *pll = to_clk_alpha_pll_postdiv(hw);
-> +	struct regmap *regmap = pll->clkr.regmap;
-> +	int i, val, div, ret;
-> +
-> +	/*
-> +	 * If the PLL is in FSM mode, then treat set_rate callback as a
-> +	 * no-operation.
-> +	 */
-> +	ret = regmap_read(regmap, PLL_USER_CTL(pll), &val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (val & LUCID_EVO_ENABLE_VOTE_RUN)
-> +		return 0;
-> +
-> +	if (!pll->post_div_table) {
-> +		pr_err("Missing the post_div_table for the PLL\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	div = DIV_ROUND_UP_ULL((u64)parent_rate, rate);
-> +	for (i = 0; i < pll->num_post_div; i++) {
-> +		if (pll->post_div_table[i].div == div) {
-> +			val = pll->post_div_table[i].val;
-> +			break;
-> +		}
-> +	}
-> +
-> +	return regmap_update_bits(regmap, PLL_USER_CTL(pll),
-> +			(BIT(pll->width) - 1) << pll->post_div_shift,
-> +			val << pll->post_div_shift);
-> +}
-
-This looks _very_ similar to clk_lucid_5lpe_pll_postdiv_set_rate() maybe
-add a helper which both can use and pass on the
-LUCID_EVO_ENABLE_VOTE_RUN as argument to helper?
-
--- 
-~Vinod
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
