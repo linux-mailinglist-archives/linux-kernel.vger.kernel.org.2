@@ -2,121 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6B74530ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:36:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7444530F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235280AbhKPLjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 06:39:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56128 "EHLO
+        id S235712AbhKPLjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:39:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235379AbhKPLho (ORCPT
+        with ESMTP id S235767AbhKPLiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 06:37:44 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8983AC061198;
-        Tue, 16 Nov 2021 03:32:13 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id c32so52344876lfv.4;
-        Tue, 16 Nov 2021 03:32:13 -0800 (PST)
+        Tue, 16 Nov 2021 06:38:12 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2984EC061226;
+        Tue, 16 Nov 2021 03:33:06 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id z5so26440668edd.3;
+        Tue, 16 Nov 2021 03:33:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0wHfYNBbY8FMdZUkxBiBczwR2At84lrdrMa7+k/uGck=;
-        b=auVex1g5JoqReaZ8JAUPU+QM5e9X+3RnRs59GB02CYvHTyNj+hB8jus9eFhGF2Ogxu
-         q05TZMZ4rTE4AdEml28q6tpAJRWbI+vB+H0fbazMmUoCUqe64K0E682cTMm6clSCbpLW
-         J5w7m9U0j2H5x2Yl+wi7qbtJ0x/M9uc6myC0t0XBq0sZKnVJnBjuP30Dad1itTUSSs8w
-         rfl+5fMZtmSh4QY3LzrTHO9PW+mIIJWKWL+cWjRuFwiDdpNW/a3ytxWgC8EFumjVoH2N
-         sjbEkMVPgDbbEhMOuP2ruhvEMewF1qVYG8+TcTUCyrGFCtJAU2AGVUuSGu4kp2t05uQp
-         Pskg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tg2qQ+8bY8ufKfe+mg2NqMGPkH16u+/8Lo+azxIiQEM=;
+        b=LNN1eGhJB1qFU175DGhQrq6OtLMKjQIcWWJ6lUVIXvSSJNnoUvLjltdB0Fp6Dllusd
+         vr8Iflxtp3P2wMLXGm90ENGrgVcBKX9WoHe8VxsnrG8abCuQOWHb2OC0agvYcKwsYPui
+         PS715cyhtWvkC1YgXcDs9+d60GDkkvof9d588a6e3z0yVUeBvX7UNnR71oPBo/PxX53Z
+         kNY9nLM2DxOXf3MxVlM12KlgW5VhZaU4DqxsjnXSY43QJGwUqAJqVRpjksH5+RoWwzG2
+         0VKpaWTnXhjElObKzpEqydUSOHu/2TAt3Gf2/EUZqs5DpxsEW13OHA7/A9DM4g66XXrA
+         Pm+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0wHfYNBbY8FMdZUkxBiBczwR2At84lrdrMa7+k/uGck=;
-        b=4FYs2RJzzYh+m1fJJMF6C1rw/msaIqVuZRJA7AQahKHLN2924OnLwW5MHN3D+3QpFu
-         xrD3/WLbqGAF8qBdfnKrv0o/3tF7QcN3jJNuxVQR1PwKqaNTUSzu9OkB9oZ2QztLgENK
-         Ve5mNkDjvPZUBtjmZ2gUU7hIzlyxvJnASDDwkYrTuyX6C8bnTa7H5A4XV6xqP45AFLrj
-         9SUQQIqMoCAcU/tsy2IVneO2uIwgayblYhVlmgWtYYfOnmu1HaTvpxDEE8Z3W5Q6ottG
-         OJOoLwk5/EQ5bvXb8AZGyEj13PHE2s5xmzVr6+OiI8Au95o5v5849MQLFUG4aPrGAdru
-         2pGg==
-X-Gm-Message-State: AOAM532Prp3Fjngto0yH5zHedW+dCnDkLxTEQOeY83Qwl5W8TSqEjSI+
-        ipgPrHdX6vWwC7igJt4wHJA=
-X-Google-Smtp-Source: ABdhPJwp4ntrXwEtL8pC4eKsuqTGCFz0FKTnz4Mju7GtHehKLTBxsfvLtIWU8o7nFk5VTBaRaXeTdg==
-X-Received: by 2002:a05:6512:3f8b:: with SMTP id x11mr5750586lfa.486.1637062331999;
-        Tue, 16 Nov 2021 03:32:11 -0800 (PST)
-Received: from mobilestation ([95.79.188.236])
-        by smtp.gmail.com with ESMTPSA id m20sm1726896lfu.241.2021.11.16.03.32.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 03:32:11 -0800 (PST)
-Date:   Tue, 16 Nov 2021 14:32:09 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mark Brown <broonie@kernel.org>,
-        Nandhini Srikandan <nandhini.srikandan@intel.com>,
-        Andy Shevchenko <andy@kernel.org>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 7/7] spi: dw: Define the capabilities in a continuous
- bit-flags set
-Message-ID: <20211116113209.n5njzklgh3fmbwwe@mobilestation>
-References: <20211115181917.7521-1-Sergey.Semin@baikalelectronics.ru>
- <20211115181917.7521-8-Sergey.Semin@baikalelectronics.ru>
- <YZOEM591s7iulPH1@smile.fi.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tg2qQ+8bY8ufKfe+mg2NqMGPkH16u+/8Lo+azxIiQEM=;
+        b=Nl6DCITP4vVKKtU9NJ3DqjG+XljMaNdlQVJKnL8peReRD/cZuEZk6mGSwW3shdpTBb
+         qw3nnSLQtHUiqFQ4mTc2dhmydKm/2WvlhAZViseJ4NuZiks94h+JoyYL1Sx7tbIvTulU
+         a/vpoPonXyrlEB50EC7J7Zy4z70vvv4bgaiTHNaEbBXfM+j6Pe8fKGQpBW6eAEWTGXv6
+         BLF7HSFlW7Gwgot5EeUxhT2NRr8M3MiARlcOtUbbXr0pnv1NSIMzh5GIEKBiEFK2ck8l
+         REeX3mbq/RO+FQ59sbgej8E4ozI5TTmabRMjZfii4mKJQHZn2czrVF36GSMTuZq0j7bd
+         QX3A==
+X-Gm-Message-State: AOAM532hQ5ncdK9hPbeitBbm39uvTAZpFHpEHnrai0cVusLTsOVt1+GW
+        P/5z87oRIm3sGfOunLQE6SfZ6Wd7/wzMIK0Y/Gk=
+X-Google-Smtp-Source: ABdhPJy5CPnYbv9nPe3hG14+wjS55LvjM1FewsoXlmHHMp6kood0np5yecGCwdIvRDNawCS5RGHzr2eW+6sOxbuejI8=
+X-Received: by 2002:a17:906:489b:: with SMTP id v27mr8678631ejq.567.1637062384713;
+ Tue, 16 Nov 2021 03:33:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZOEM591s7iulPH1@smile.fi.intel.com>
+References: <20211114170335.66994-1-hdegoede@redhat.com> <20211114170335.66994-18-hdegoede@redhat.com>
+ <CAHp75VdXSdhNtPwNdpssnmt+sZb+ZoAUm-cKJu-PqymmHMOpRw@mail.gmail.com> <CAHp75VfSwf0SKDHDOG7WO9xY5Q52o1Zw2GPkxi7UnrLhMtiobA@mail.gmail.com>
+In-Reply-To: <CAHp75VfSwf0SKDHDOG7WO9xY5Q52o1Zw2GPkxi7UnrLhMtiobA@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 16 Nov 2021 13:32:23 +0200
+Message-ID: <CAHp75VfTsQTxTSbBDBqncJha0QtOptK0p5k1jy2Ta-HURu63cA@mail.gmail.com>
+Subject: Re: [PATCH v2 17/20] extcon: intel-cht-wc: Support devs with Micro-B
+ / USB-2 only Type-C connectors
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Yauhen Kharuzhy <jekhor@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 12:13:07PM +0200, Andy Shevchenko wrote:
-> On Mon, Nov 15, 2021 at 09:19:17PM +0300, Serge Semin wrote:
-> > Since the DW_SPI_CAP_DWC_HSSI capability has just been replaced with using
-> > the DW SSI IP-core versions interface, the DW SPI capability flags are now
-> > represented with a gap. Let's fix it by redefining the DW_SPI_CAP_DFS32
-> > macro to setting BIT(2) of the capabilities field.
-> > 
-> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> 
+On Tue, Nov 16, 2021 at 1:31 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Tue, Nov 16, 2021 at 1:28 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Sun, Nov 14, 2021 at 7:04 PM Hans de Goede <hdegoede@redhat.com> wrote:
 
-> Fine with me, thanks!
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > Can be also written as
 
-Great! Thanks to you too for very fast responses and thorough review.
+> Oops, other way around, of course.
 
--Sergey
+Yeah, scratch it. We have nice debugfs which will be missed...
 
-> 
-> > ---
-> > 
-> > Changelog v3:
-> > - This is a new patch unpinned from the previous one as of Andy
-> >   suggested.
-> > ---
-> >  drivers/spi/spi-dw.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/spi/spi-dw.h b/drivers/spi/spi-dw.h
-> > index 8334e6b35f89..d5ee5130601e 100644
-> > --- a/drivers/spi/spi-dw.h
-> > +++ b/drivers/spi/spi-dw.h
-> > @@ -32,7 +32,7 @@
-> >  /* DW SPI controller capabilities */
-> >  #define DW_SPI_CAP_CS_OVERRIDE		BIT(0)
-> >  #define DW_SPI_CAP_KEEMBAY_MST		BIT(1)
-> > -#define DW_SPI_CAP_DFS32		BIT(3)
-> > +#define DW_SPI_CAP_DFS32		BIT(2)
-> >  
-> >  /* Register offsets (Generic for both DWC APB SSI and DWC SSI IP-cores) */
-> >  #define DW_SPI_CTRLR0			0x00
-> > -- 
-> > 2.33.0
-> > 
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+-- 
+With Best Regards,
+Andy Shevchenko
