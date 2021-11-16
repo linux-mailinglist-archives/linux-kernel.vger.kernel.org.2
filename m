@@ -2,146 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5E5453420
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BDBB45342A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:28:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237419AbhKPO3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 09:29:03 -0500
-Received: from mga06.intel.com ([134.134.136.31]:30462 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230453AbhKPO3A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 09:29:00 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="294517240"
-X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
-   d="scan'208";a="294517240"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 06:26:02 -0800
-X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
-   d="scan'208";a="494472564"
-Received: from rli9-dbox.sh.intel.com (HELO rli9-dbox) ([10.239.159.142])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 06:26:00 -0800
-Date:   Tue, 16 Nov 2021 22:26:57 +0800
-From:   Philip Li <philip.li@intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     kernel test robot <lkp@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [kbuild-all] Re: drivers/platform/x86/thinkpad_acpi.c:4475:35:
- error: unused variable 'fwbug_cards_ids'
-Message-ID: <YZO/sZfx1k5eRdUx@rli9-dbox>
-References: <202111141153.mtggZgGq-lkp@intel.com>
- <009706db-230a-1e49-0a42-447a0ff97fbb@redhat.com>
- <YZOlZPna3djQPYsp@rli9-dbox>
- <de7f0b11-373b-6d7b-ca34-20d2162a7f70@redhat.com>
+        id S237372AbhKPObR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 09:31:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237310AbhKPObJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 09:31:09 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0ECAC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 06:28:12 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id d27so38014807wrb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 06:28:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HWhPuTZCeYFcjOd58uwQgszWNU0sTCldaG8fba7OiLc=;
+        b=3mFsOvA5uHel7jOb/udYTc1PO/xSN11ULu2UYyqyvZVgkmYk+h2rX4Dh//fvuU255O
+         SHt74aM3iQ/8yLRV6HUUrmWUO72BDRwEYf1Qid72F7RCDK8JDCdTHZ97qDlYLWGn6JMB
+         7lloH7OVo9ZhWc/cSQb/ACWKgYk530kO6bwFAm75TkXIO/wqInG7huqFJq6NXc8Fiw4O
+         kda1+if+KnDlh554y+9JLvCg3V0LEsEx0tHP986b87lU8DgbqGbI8+2HFowf+cuOe1E4
+         wwO7m0t3ylRXqrL8tiT7DkKd3MX1VBD8xfA1cy5HRf0paVKPmrI3K147hTTb2/Q8IFNS
+         pHIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HWhPuTZCeYFcjOd58uwQgszWNU0sTCldaG8fba7OiLc=;
+        b=br099A8g6psy6QkK0VFNU0L+pwqkixvcyI4ObjNitf/mjdjWauDGDrRMZrMyl/V5Oh
+         vtbp3ba1rNWk5mIWDw33aON9IaMdhLNTUXEI6udtAxV2/HafI3gXlyUXMu4/fXlnaaez
+         JCdlmhBqyqTXHjQaKwE2TsWr9kFdTeexgGZWupbWIOZSivcTLwDJMqdY+cEzVet6gAX/
+         LD9DAo1suvP29y5xrKXqfQxt/Ez2v2b6/h2Iz6T3M/tTjp0Z+7EREJ5ZgNDxZh/uzzE8
+         S+oqIYdczyYKrEfyxr9TOBfJ78+/frtYZHmgcfMeMQ8XZ6uzEGcNDe7iFJUWqHPJjBJh
+         tsHw==
+X-Gm-Message-State: AOAM531b+7qngXGM3l34cNmvZbrXfc4JpylCaweUFGLTvZfMSfJoxmTH
+        EzFzvU8CCVflAAxWdwkgVWpbLsHHmpam3voLc+en4Q==
+X-Google-Smtp-Source: ABdhPJyRDHaoLZ0NSJJuQgeeiHMHfW8vt2fxAhUgZNG7UkoYMeWr2Oc6/hMlaDv8BYe/4nla2hhbe+NFAA0JueeQybk=
+X-Received: by 2002:adf:8165:: with SMTP id 92mr10151797wrm.199.1637072891214;
+ Tue, 16 Nov 2021 06:28:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <de7f0b11-373b-6d7b-ca34-20d2162a7f70@redhat.com>
+References: <20211103064458.26916-1-zhang.mingyu@zte.com.cn>
+In-Reply-To: <20211103064458.26916-1-zhang.mingyu@zte.com.cn>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Tue, 16 Nov 2021 19:57:59 +0530
+Message-ID: <CAAhSdy3LvzR4H_rYvacER87n7fakU9EzE17vA3D+ASczR24=5g@mail.gmail.com>
+Subject: Re: [PATCH] RISC-V: KVM:Remove unneeded semicolon
+To:     cgel.zte@gmail.com
+Cc:     Anup Patel <anup.patel@wdc.com>, Atish Patra <atish.patra@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        KVM General <kvm@vger.kernel.org>,
+        kvm-riscv@lists.infradead.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Zhang Mingyu <zhang.mingyu@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 01:40:50PM +0100, Hans de Goede wrote:
-> Hi,
-> 
-> On 11/16/21 13:34, Philip Li wrote:
-> > On Tue, Nov 16, 2021 at 11:26:48AM +0100, Hans de Goede wrote:
-> >> Hi,
-> >>
-> >> On 11/14/21 04:10, kernel test robot wrote:
-> >>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> >>> head:   c8c109546a19613d323a319d0c921cb1f317e629
-> >>> commit: fd96e35ea7b95f1e216277805be89d66e4ae962d platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning
-> >>> date:   4 weeks ago
-> >>> config: i386-buildonly-randconfig-r005-20211114 (attached as .config)
-> >>> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project c3dddeeafb529e769cde87bd29ef6271ac6bfa5c)
-> >>> reproduce (this is a W=1 build):
-> >>>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >>>         chmod +x ~/bin/make.cross
-> >>>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fd96e35ea7b95f1e216277805be89d66e4ae962d
-> >>>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> >>>         git fetch --no-tags linus master
-> >>>         git checkout fd96e35ea7b95f1e216277805be89d66e4ae962d
-> >>>         # save the attached .config to linux build tree
-> >>>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=i386 
-> >>>
-> >>> If you fix the issue, kindly add following tag as appropriate
-> >>> Reported-by: kernel test robot <lkp@intel.com>
-> >>>
-> >>> All errors (new ones prefixed by >>):
-> >>>
-> >>>>> drivers/platform/x86/thinkpad_acpi.c:4475:35: error: unused variable 'fwbug_cards_ids' [-Werror,-Wunused-const-variable]
-> >>>    static const struct pci_device_id fwbug_cards_ids[] __initconst = {
-> >>>                                      ^
-> >>>    1 error generated.
-> >>
-> >> So this *again* has absolutely nothing to do with the:
-> >>
-> >> "platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning"
-> >>
-> >> commit, the problem is that:
-> >>
-> >> 1. the .config does not have CONFIG_PCI set; combined with:
-> >> 2. include/pci.h using a #define instead of a
-> >>    static inline for pci_dev_present() when this is the case
-> >> 3. This is a clang WERROR build
-> >>
-> >> I'll submit a fix for 2. upstream which should also fix
-> >> similar errors in a lot of other drivers.
-> >>
-> >> Again I must say that as a maintainer I'm unhappy about the amount
-> >> of noise being generated by clang WERROR builds here though,
-> >> is it really necessary for the kernel test robot to do builds
-> >> of this type ?
-> > Sorry Hans for the noise, we will look into this to consider the
-> > solution. And want to consult, do you specially have concern about
-> > -Wunused-const-variable or all W=1 related build issues?
-> 
-> Thank you.
-> 
-> W=1 is know to cause many many warnings, so to me it seems that
-> combining W=1 with CONFIG_WERROR=1 is a bad idea.
-> 
-> If it would be possible to avoid that combination then that would
-> be great.
-thanks, got it, we will get this fixed to set WERROR=n for
-all the randconfigs we use.
+On Wed, Nov 3, 2021 at 12:15 PM <cgel.zte@gmail.com> wrote:
+>
+> From: Zhang Mingyu <zhang.mingyu@zte.com.cn>
+>
+> Eliminate the following coccinelle check warning:
+> arch/riscv/kvm/vcpu.c:167:2-3
+> arch/riscv/kvm/vcpu.c:204:2-3
+>
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Zhang Mingyu <zhang.mingyu@zte.com.cn>
 
-> 
-> Regards,
-> 
-> Hans
-> 
-> 
-> 
-> 
-> 
-> 
-> >>> vim +/fwbug_cards_ids +4475 drivers/platform/x86/thinkpad_acpi.c
-> >>>
-> >>> f7db839fccf087 Jiaxun Yang 2019-03-07  4474  
-> >>> f7db839fccf087 Jiaxun Yang 2019-03-07 @4475  static const struct pci_device_id fwbug_cards_ids[] __initconst = {
-> >>> f7db839fccf087 Jiaxun Yang 2019-03-07  4476  	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x24F3) },
-> >>> f7db839fccf087 Jiaxun Yang 2019-03-07  4477  	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x24FD) },
-> >>> f7db839fccf087 Jiaxun Yang 2019-03-07  4478  	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x2526) },
-> >>> f7db839fccf087 Jiaxun Yang 2019-03-07  4479  	{}
-> >>> f7db839fccf087 Jiaxun Yang 2019-03-07  4480  };
-> >>> f7db839fccf087 Jiaxun Yang 2019-03-07  4481  
-> >>> f7db839fccf087 Jiaxun Yang 2019-03-07  4482  
-> >>>
-> >>> :::::: The code at line 4475 was first introduced by commit
-> >>> :::::: f7db839fccf087664e5587966220821289b6a9cb platform/x86: thinkpad_acpi: Disable Bluetooth for some machines
-> >>>
-> >>> :::::: TO: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> >>> :::::: CC: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> >>>
-> >>> ---
-> >>> 0-DAY CI Kernel Test Service, Intel Corporation
-> >>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> >>>
-> >> _______________________________________________
-> >> kbuild-all mailing list -- kbuild-all@lists.01.org
-> >> To unsubscribe send an email to kbuild-all-leave@lists.01.org
-> > 
-> 
+Thanks but this is already fixed by following patch:
+https://www.spinics.net/lists/kvm/msg257614.html
+
+Regards,
+Anup
+
+> ---
+>  arch/riscv/kvm/vcpu.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
+> index e92ba3e5db8c..e3d3aed46184 100644
+> --- a/arch/riscv/kvm/vcpu.c
+> +++ b/arch/riscv/kvm/vcpu.c
+> @@ -164,7 +164,7 @@ static int kvm_riscv_vcpu_get_reg_config(struct kvm_vcpu *vcpu,
+>                 break;
+>         default:
+>                 return -EINVAL;
+> -       };
+> +       }
+>
+>         if (copy_to_user(uaddr, &reg_val, KVM_REG_SIZE(reg->id)))
+>                 return -EFAULT;
+> @@ -201,7 +201,7 @@ static int kvm_riscv_vcpu_set_reg_config(struct kvm_vcpu *vcpu,
+>                 break;
+>         default:
+>                 return -EINVAL;
+> -       };
+> +       }
+>
+>         return 0;
+>  }
+> --
+> 2.25.1
+>
