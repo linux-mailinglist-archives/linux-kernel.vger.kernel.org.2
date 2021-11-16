@@ -2,148 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F25845235A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:22:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBCCC452357
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:22:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245012AbhKPBZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:25:34 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:55321 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244098AbhKPBP1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 20:15:27 -0500
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20211116011226epoutp032213877c3ec8731b7ba4a1bdff662b34~34bJtzMzM0283102831epoutp03y
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 01:12:26 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20211116011226epoutp032213877c3ec8731b7ba4a1bdff662b34~34bJtzMzM0283102831epoutp03y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1637025146;
-        bh=8JRydum/R4RdFUqGlzeiN6SYCDCW1ggDFZyoszTdHJo=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=q4G2O32iCBNEutMrZF/eHatdlcCVD807rXvbHwhqtJcZGhG5LibMC2I9848LrD9p4
-         bEHY6l+x5bnN7VRghqKOk9cNf1g7mSVninVoC76VZjEGe3EebK5+hYCpM4TxffBs//
-         Xn/LhD7j4fE7TrbNTFrMDTVmr8WEQWJlfOqkZsXE=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20211116011225epcas2p1b5d0e237b941eef4d90e74efaa93fa0a~34bJOmHgW0919509195epcas2p1w;
-        Tue, 16 Nov 2021 01:12:25 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.36.100]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4HtShV1SHzz4x9QR; Tue, 16 Nov
-        2021 01:12:10 +0000 (GMT)
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        2B.F7.12141.56503916; Tue, 16 Nov 2021 10:12:05 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
-        20211116011205epcas2p1bb00ede94948a305aba820f418058dbe~34a2TmxYv2468624686epcas2p1R;
-        Tue, 16 Nov 2021 01:12:05 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20211116011205epsmtrp25329047fd36504abbf296e6a755c6851~34a2SzF-70535505355epsmtrp2h;
-        Tue, 16 Nov 2021 01:12:05 +0000 (GMT)
-X-AuditID: b6c32a48-d5dff70000002f6d-fd-6193056510a0
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        DD.81.29871.56503916; Tue, 16 Nov 2021 10:12:05 +0900 (KST)
-Received: from KORCO082417 (unknown [10.229.8.121]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20211116011205epsmtip28a67f81e78b0ae0d47bbf1c5d442f74d~34a2InGwx0690906909epsmtip2j;
-        Tue, 16 Nov 2021 01:12:05 +0000 (GMT)
-From:   "Chanho Park" <chanho61.park@samsung.com>
-To:     "'Sam Protsenko'" <semen.protsenko@linaro.org>,
-        "'Jaewon Kim'" <jaewon02.kim@samsung.com>
-Cc:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@canonical.com>,
-        "'Wolfram Sang'" <wsa@kernel.org>,
-        "'Rob Herring'" <robh+dt@kernel.org>,
-        <linux-samsung-soc@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-In-Reply-To: <CAPLW+4==X+irRBKHiDfgJeAb0oDKkzbcWERFs7Y3=PSOg0+qAw@mail.gmail.com>
-Subject: RE: [PATCH v3 2/2] i2c: exynos5: add support for ExynosAutov9 SoC
-Date:   Tue, 16 Nov 2021 10:12:04 +0900
-Message-ID: <001401d7da86$f7ebd660$e7c38320$@samsung.com>
+        id S1379751AbhKPBYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:24:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40072 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233786AbhKPBQU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 20:16:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 438CA60F6E;
+        Tue, 16 Nov 2021 01:13:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637025200;
+        bh=EY96g0UCuL5Xvi/3eOGLMAuCu+ebe0mgcopCcRBtgiM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hoMDYf1u4QigiY2urIxEzheI0nj7DiOd4dy/gXX3z7CUGjYmyy8B2L4RLmjHnUQZy
+         PJSRxjRU+T++rIDVfsI6Cv7FsnP9mhp/mUFnTxy3tiSrH7hNFxpgGxN7G4lNuwiFES
+         CT05qEtt+4vzjTE7CL4zxs4j25WH6WXAkYFehGiob1ePzioXcuYpzwYmbnY/Hg9jkb
+         2DyPg7ptgOJ8oL9mdgTjnoHRq1xh5Lj8j1m0TUvdm9/F/ZkI7pRCeCuVGmzri3EfRS
+         GX7ymFZZk/6DWEHTIddLU8rZXX7a2j06t/1GxbyByQd+QRUI4ZtbXEMMiGBH7hd78V
+         CYRrQFaxOzrCw==
+Date:   Mon, 15 Nov 2021 17:13:19 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jonathan Davies <jonathan.davies@nutanix.com>
+Cc:     Willem de Bruijn <willemb@google.com>, netdev@vger.kernel.org,
+        Florian Schmidt <flosch@nutanix.com>,
+        Thilak Raj Surendra Babu <thilakraj.sb@nutanix.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: virtio_net_hdr_to_skb: count transport header
+ in UFO
+Message-ID: <20211115171319.7d2e9f40@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211115151618.126875-1-jonathan.davies@nutanix.com>
+References: <20211115151618.126875-1-jonathan.davies@nutanix.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQMJYAnbi/JobnCUuSzxD63N6CCU9gMctf4RAdOLUHUBZYQpI6lvl8Tg
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrJJsWRmVeSWpSXmKPExsWy7bCmmW4q6+REgw/fVSzmHznHarGj4Qir
-        xca3P5gsNj2+xmrR8fcLo8XlXXPYLGac38dk0br3CLvF8z4g6+7+uYwOXB6zGnrZPDat6mTz
-        uHNtD5vH5iX1Hn1bVjF6fN4kF8AWlW2TkZqYklqkkJqXnJ+SmZduq+QdHO8cb2pmYKhraGlh
-        rqSQl5ibaqvk4hOg65aZA3SZkkJZYk4pUCggsbhYSd/Opii/tCRVISO/uMRWKbUgJafAvECv
-        ODG3uDQvXS8vtcTK0MDAyBSoMCE748zFq0wFS7grGq42sTYwTuTsYuTkkBAwkTi09jhLFyMX
-        h5DADkaJe/OXsUI4nxglPsybxQjhfGOUuLFuGjNMy58rW9kgEnsZJT7Oa4Lqf8Eo8evPChaQ
-        KjYBfYmXHdtYQWwRgXiJNad3g3UzC+xgkjjbbQ1icwoESixethSonoNDWMBLYs/8KpAwi4Cq
-        xIzdDUwgNq+ApcTK/9vYIGxBiZMzn7BAjNGWWLbwNdRBChI/ny6DWuUmse1dHyNEjYjE7M42
-        ZpDbJARWckh8vziRCWSXhICLxIl58RC9whKvjm9hh7ClJD6/28sGUd/NKNH66D9UYjWjRGej
-        D4RtL/Fr+hZWkDnMApoS63fpQ4xUljhyC+o0PomOw3/ZIcK8Eh1tQhCN6hIHtk9ngbBlJbrn
-        fGadwKg0C8ljs5A8NgvJA7MQdi1gZFnFKJZaUJybnlpsVGACj+vk/NxNjOA0q+Wxg3H22w96
-        hxiZOBgPMUpwMCuJ8LJET0oU4k1JrKxKLcqPLyrNSS0+xGgKDOqJzFKiyfnARJ9XEm9oYmlg
-        YmZmaG5kamCuJM6bx96XKCSQnliSmp2aWpBaBNPHxMEp1cAUWiCxLDWf41r+8SxZ8b6Opu+J
-        unk/Flxdc1Dv+TbRxsDY5Becz1Q1Mxo+W1pf9Z1jwCjEbrzISf2Sr/HGDwIXVmX0nvI+GP5n
-        ipC0yKGEFaGee64lpX+cx7A96I2tX6XJv6Rr1j9/rslc0flU/edt+8gX75bWrSvJFmFxfxER
-        qD3V6fqTffd2JXDyCcr2i7dG/pPzOSBgJO5+ZKG+ecWdKMv7W7+sYl66b2kd12S+p5bbj7xa
-        +lV5gcOXezPuNBu0rq3f9KbmEkvVHEuGJFUT8dfmH3Xm7g98eea75HuljNhtGyN4T8n/rulw
-        TotXPfYufG/L1+J1zLW11lPeV3dz18R0p2or8Ho+L5y/lFuJpTgj0VCLuag4EQDW00OZPAQA
-        AA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprOIsWRmVeSWpSXmKPExsWy7bCSvG4q6+REg9tP2CzmHznHarGj4Qir
-        xca3P5gsNj2+xmrR8fcLo8XlXXPYLGac38dk0br3CLvF8z4g6+7+uYwOXB6zGnrZPDat6mTz
-        uHNtD5vH5iX1Hn1bVjF6fN4kF8AWxWWTkpqTWZZapG+XwJXx+cI65oJZ3BXvVr5kbWBs5uxi
-        5OSQEDCR+HNlK1sXIxeHkMBuRolzHceZIRKyEs/e7WCHsIUl7rccYYUoesYocX/LEbAiNgF9
-        iZcd21hBbBGBeIndq96AFTEL7GOSaL58Aaqjg0mi58FCFpAqToFAicXLlgLZHBzCAl4Se+ZX
-        gYRZBFQlZuxuYAKxeQUsJVb+38YGYQtKnJz5BKyVWUBbovdhKyOMvWzha6hLFSR+Pl0GdYSb
-        xLZ3fVA1IhKzO9uYJzAKz0IyahaSUbOQjJqFpGUBI8sqRsnUguLc9NxiwwLDvNRyveLE3OLS
-        vHS95PzcTYzguNPS3MG4fdUHvUOMTByMhxglOJiVRHhZoiclCvGmJFZWpRblxxeV5qQWH2KU
-        5mBREue90HUyXkggPbEkNTs1tSC1CCbLxMEp1cBkcHEho36e1fuuWiN9Lz8Ps9tdwnxy1VER
-        uzb1sb/Ur6/n00q8tK266cpnEX9BPbtrFnZLr53ROcifn2gf/DbSMHlfodofZ4uXoh8OP76j
-        NXW9TxuDUrvlyR4OE3eevQIJqo0xa7lXnV16ulXJQyvFfJaVa/DGt/mnF1ok37La61/ct++M
-        hP5Ut442Te085prQfUuuPTJp5278JX2B0UQs9q5Za2ujmM33/EWfLl+IF1q1ICf3atf6pts3
-        z266fvVMbhx76tmlKxiPbbrouli+4MC9Y2EHzD485rvR4fvi+qlJ7n9+7fx6m0lpeZr/4c/O
-        T+4e5w8WK227ueTS8qXb2HNEv2lvPHQ/5+n+o6VKLMUZiYZazEXFiQAFKtQWKgMAAA==
-X-CMS-MailID: 20211116011205epcas2p1bb00ede94948a305aba820f418058dbe
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20211112010603epcas2p339d1a6ef3df7cdbe61c87c8afa541fd0
-References: <CGME20211112010603epcas2p339d1a6ef3df7cdbe61c87c8afa541fd0@epcas2p3.samsung.com>
-        <20211112010137.149174-1-jaewon02.kim@samsung.com>
-        <20211112010137.149174-3-jaewon02.kim@samsung.com>
-        <CAPLW+4==X+irRBKHiDfgJeAb0oDKkzbcWERFs7Y3=PSOg0+qAw@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> With this patch the Exynos850 HSI2C becomes functional. The only nit-pick
-> from my side (just a food for thought): do we want to configure USI
-> related config inside of particular drivers (SPI, I2C, UART)? Or it would
-> be better design to implement some platform driver for that, so we can
-> choose USI configuration (SPI/I2C/UART) in device tree? I think this
-> series is good to be merged as is, but we should probably consider all
-> upsides and downsides of each option, for the future work.
+On Mon, 15 Nov 2021 15:16:17 +0000 Jonathan Davies wrote:
+> +		if (gso_type & SKB_GSO_UDP && skb->len - p_off + thlen > gso_size ||
 
-I'm also considering how to support this USI configuration gracefully.
-Current version of USI is v2 which means there is a v1 version as well. It =
-might be a non-upstream SoC so we don't need to consider it so far.
-But, there is a possibility that the USI hw version can be bumped for futur=
-e SoCs.
-
-As you probably know, earlier version of the product kernel has a USI SoC d=
-river=5B1=5D and it was designed to be configured the USI settings by devic=
-e tree.
-
-Option1) Make a USI driver under soc/samsung/ like =5B1=5D.
-Option2) Use more generic driver such as =22reset driver=22? This might be =
-required to extend the reset core driver.
-Option3) Each USI driver(uart/i2c/spi) has its own USI configurations respe=
-ctively and expose some configurations which can be variable as device tree=
-.
-
-=5B1=5D: https://github.com/ianmacd/d2s/blob/master/drivers/soc/samsung/usi=
-_v2.c
-
-Best Regards,
-Chanho Park
-
+Compilers don't like mixing && and || without bracketing, and will warn
+here, at least with W=1. Please add explicit brackets.
