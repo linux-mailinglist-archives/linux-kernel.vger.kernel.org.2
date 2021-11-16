@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6960A452A09
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:49:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0857452A0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:51:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237539AbhKPFwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 00:52:32 -0500
-Received: from smtpbguseast3.qq.com ([54.243.244.52]:50275 "EHLO
-        smtpbguseast3.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237355AbhKPFvk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 00:51:40 -0500
-X-QQ-mid: bizesmtp52t1637041710t27mpgep
+        id S236197AbhKPFyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 00:54:24 -0500
+Received: from smtpbgsg1.qq.com ([54.254.200.92]:55007 "EHLO smtpbgsg1.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237537AbhKPFyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 00:54:01 -0500
+X-QQ-mid: bizesmtp42t1637041833t56n8jsa
 Received: from localhost.localdomain (unknown [124.126.19.250])
         by esmtp6.qq.com (ESMTP) with 
-        id ; Tue, 16 Nov 2021 13:48:29 +0800 (CST)
+        id ; Tue, 16 Nov 2021 13:50:32 +0800 (CST)
 X-QQ-SSF: 01400000002000B0G000B00A0000000
-X-QQ-FEAT: LXTjUhoj8YOIpxOc2c+cA9X54jxsxsuMIOnqW3Gx2JRXLsog+rFiYyBuew9sf
-        /OPkxz6MCVoHAtapJWMXtbQ0v0XI3q7VWTbP3jmRTjLx/et5teONXAsgY5RBNzcky/qGkbl
-        vQFgIE/HLny44q6RnmRHYFwAmfdj1vtocwTFmJfLqVYyIeIIBXbQjwX8xfy59QpagEFG+oR
-        Fo7LMyJ3qsyQZzjz8HCxRZNCtcEus3JwdgijFxPN+hdAOp35bcHGiMDQP90qUxwLd4Djevg
-        PSOFqiqWtJvOEKY41UZyRHs5fTA3IzVvo/yEsHFVL4h3aY0/T/gOrGSf+z//mqjSQqUxvOq
-        IWp9KUNFD/9Tp80jhrm5zT3drVzwSZSoPLE2As+
+X-QQ-FEAT: 0VgNaGdhy9gMzxiMf1vmpjJbNpQ/R/ZOeZ0tS/XNDElwqgpr4Swqsek2YJaCD
+        cziT7dWpG99gNhZes+Eql5RTGoAx2xSjd1Pw+aU9sSvzp0tiKfo1TQC9GmyO4+8kSKl68Yq
+        TVMAPW/mA0Kb3dMLZXWaa23CFclqHcPBU5QgNKZBDKqWI/+IlJfm3aP0N4H371ykVGAFHgx
+        XgUA1vQtlW9hnw+iVWNZGCygwzL4obN9r36Nmkfk3JSslx52Z3YiRG943brxIHHY+xvUqA6
+        8LSSWRMwlpLowvCePefZimT/O1Ivshy7bwlYLIILabMJrX/ljNh8AXi2ZIvg7LYCuMGq4OS
+        dUS9TRGSjqzWRY3kXUJ20T5WdFyvGQJuyl7Fdu9gfrxxrH+xag=
 X-QQ-GoodBg: 2
 From:   zhaoxiao <zhaoxiao@uniontech.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     zhaoxiao <zhaoxiao@uniontech.com>
+To:     airlied@linux.ie, daniel@ffwll.ch
+Cc:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        zhaoxiao <zhaoxiao@uniontech.com>
 Subject: [PATCH] drm/radeon:WARNING opportunity for max()
-Date:   Tue, 16 Nov 2021 13:48:27 +0800
-Message-Id: <20211116054827.31476-1-zhaoxiao@uniontech.com>
+Date:   Tue, 16 Nov 2021 13:50:31 +0800
+Message-Id: <20211116055031.31621-1-zhaoxiao@uniontech.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
