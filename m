@@ -2,118 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D918452E6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:52:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C123452E65
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:52:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233488AbhKPJyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 04:54:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233606AbhKPJyZ (ORCPT
+        id S233544AbhKPJyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 04:54:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:32939 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233631AbhKPJxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 04:54:25 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 924C6C061227;
-        Tue, 16 Nov 2021 01:50:15 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id u11so16961558plf.3;
-        Tue, 16 Nov 2021 01:50:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LOEo7+eEw7HOmFubNhZ5NIb+kpAjTOtWN/+/owTaRTQ=;
-        b=lg9HAcs2AQJqwWwikf1xHuQykcP79WUH7MT8HXFxMccsym9AafWmijDfhnYN3IoL1n
-         sCpQHuwA5+jhCEoEYCIb+y+unEBRQu3KKD1Dbslf5hQmMxoDMIbutJMfca4UlZcvK41b
-         qes4oeREIyGgdWeqjv3KMc6JFd+E/Pm/pIh/7BG1E5+8SLEBgZ3kDYnzioKkZINroEEG
-         sNxTqo1aqhCYSNWoRDtkavrL3cF1Wt0H+sMunaGS4OoCQIGiC5qCwt02Nn8aUEyCzZNg
-         3tKexTVRSn75VsedToXCGH8ntvBgaDVv5VLWiSBOD1uc/rCiWnwK0Nfr9de4KUQHGeqs
-         17hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LOEo7+eEw7HOmFubNhZ5NIb+kpAjTOtWN/+/owTaRTQ=;
-        b=iD8oLVNne8yiwbJbW0HLfCyHGX1GYFwpEmftgcc3a1MlSjq/I1udEeB3Yi53SOEX3W
-         4is/p22xDke3Ol+pcNPvo1LyOVYklAzlw/3s2XQG66rEGKJaggt85OqBQI63vlxSRghV
-         LSZgrfqEw/zWli0bnbhr/K48s3TctOz1YU/SfYnqte2sXKDca8AS1AY/SFWK+PECbXQ3
-         D9khVmIGcQ670O/BtOZwKMU/nKgIosRcjwChtZpng0etdocl58ykV4rTHH9tVtmS/e/p
-         7XP9oWFcAC1OjMo9HRkowqgpZQbMdmJ7rHwr3biXi+RpvGIF4hbQsNKg0HFqAgHbgSoK
-         fp0A==
-X-Gm-Message-State: AOAM530TyEs8ceYvbjoRgNTduLnYyVjn3orijW2ZQJBWNbRm3G1mTjLX
-        nv5Ho+FgNg5INaOV4rHcdZ0EysPwPSB/3quRo+Q=
-X-Google-Smtp-Source: ABdhPJxjkwFXdhzCHzbozqRCnmGohriRD2ActA2SYX/tVP+evd9ZLHyQZfBC+bl7MpvRwzONNxG00ZpuXMx27S39qkk=
-X-Received: by 2002:a17:902:748c:b0:142:5f2f:1828 with SMTP id
- h12-20020a170902748c00b001425f2f1828mr43623292pll.4.1637056215138; Tue, 16
- Nov 2021 01:50:15 -0800 (PST)
+        Tue, 16 Nov 2021 04:53:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637056242;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WI9gXZd/YfgChvu90tDdTH+mU6xPfdwBKXa4/MoRGbE=;
+        b=eChG63VfA0fRv/+9qAw+Ca3hnTRCR1Da0kmh6gl6yJyn9FzyYcnu7DtB0DHKi655VpHShj
+        cpCyhiGnpja19GMBHLs9TeCNbWZQJRo7akPKH11Z0htpkCjq/gSZS3uJi/n5bXBnlc0ASV
+        IdCyiXmz/ZCupBaB+KisL4r2yhxbBb4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-27-07bi-SnHNwCAibvJlRsw2w-1; Tue, 16 Nov 2021 04:50:39 -0500
+X-MC-Unique: 07bi-SnHNwCAibvJlRsw2w-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9D48D1015DA0;
+        Tue, 16 Nov 2021 09:50:37 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0489D1F41F;
+        Tue, 16 Nov 2021 09:50:33 +0000 (UTC)
+Message-ID: <04b7e240-8e1d-1402-3cef-e65469bd9317@redhat.com>
+Date:   Tue, 16 Nov 2021 10:50:32 +0100
 MIME-Version: 1.0
-References: <20211115141925.60164-1-paul@crapouillou.net> <20211115142243.60605-1-paul@crapouillou.net>
- <20211115142243.60605-2-paul@crapouillou.net>
-In-Reply-To: <20211115142243.60605-2-paul@crapouillou.net>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Tue, 16 Nov 2021 11:50:03 +0200
-Message-ID: <CA+U=DsoJWgifThUwcQ61M6851H7JVKH2s_O3=JJ0CsPeX8wdoA@mail.gmail.com>
-Subject: Re: [PATCH 13/15] iio: core: Add support for cyclic buffers
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] KVM: x86: fix cocci warnings
+Content-Language: en-US
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Vihas Mak <makvihas@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     seanjc@google.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211114164312.GA28736@makvihas> <87o86leo34.fsf@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <87o86leo34.fsf@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 4:22 PM Paul Cercueil <paul@crapouillou.net> wrote:
->
-> Introduce a new flag IIO_BUFFER_DMABUF_CYCLIC in the "flags" field of
-> the iio_dmabuf uapi structure.
->
-> When set, the DMABUF enqueued with the enqueue ioctl will be endlessly
-> repeated on the TX output, until the buffer is disabled.
->
+On 11/15/21 10:59, Vitaly Kuznetsov wrote:
+> One minor remark: 'kvm_set_pte_rmapp()' handler is passed to
+> 'kvm_handle_gfn_range()' which does
+> 
+>          bool ret = false;
+> 
+>          for_each_slot_rmap_range(...)
+>                  ret |= handler(...);
+> 
+> and I find '|=' to not be very natural with booleans. I'm not sure it's
+> worth changing though.
 
-Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+Changing that would be "harder" than it seems because "ret = ret || 
+handler(...)" is wrong, and "|" is even more unnatural than "|=" (so 
+much that clang warns about it).
 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  drivers/iio/industrialio-buffer.c | 5 +++++
->  include/uapi/linux/iio/buffer.h   | 3 ++-
->  2 files changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> index 30910e6c2346..41bc51c88002 100644
-> --- a/drivers/iio/industrialio-buffer.c
-> +++ b/drivers/iio/industrialio-buffer.c
-> @@ -1600,6 +1600,11 @@ static int iio_buffer_enqueue_dmabuf(struct iio_buffer *buffer,
->         if (dmabuf.flags & ~IIO_BUFFER_DMABUF_SUPPORTED_FLAGS)
->                 return -EINVAL;
->
-> +       /* Cyclic flag is only supported on output buffers */
-> +       if ((dmabuf.flags & IIO_BUFFER_DMABUF_CYCLIC) &&
-> +           buffer->direction != IIO_BUFFER_DIRECTION_OUT)
-> +               return -EINVAL;
-> +
->         return buffer->access->enqueue_dmabuf(buffer, &dmabuf);
->  }
->
-> diff --git a/include/uapi/linux/iio/buffer.h b/include/uapi/linux/iio/buffer.h
-> index e4621b926262..2d541d038c02 100644
-> --- a/include/uapi/linux/iio/buffer.h
-> +++ b/include/uapi/linux/iio/buffer.h
-> @@ -7,7 +7,8 @@
->
->  #include <linux/types.h>
->
-> -#define IIO_BUFFER_DMABUF_SUPPORTED_FLAGS      0x00000000
-> +#define IIO_BUFFER_DMABUF_CYCLIC               (1 << 0)
-> +#define IIO_BUFFER_DMABUF_SUPPORTED_FLAGS      0x00000001
->
->  /**
->   * struct iio_dmabuf_alloc_req - Descriptor for allocating IIO DMABUFs
-> --
-> 2.33.0
->
+In fact I wonder if "|=" with a bool might end up warning with clang, 
+which we should check before applying this patch.  It doesn't seem to be 
+in the original commit[1], but better safe than sorry: Nick, does clang 
+intend to warn also about "ret |= fn()" and "ret &= fn()"?  Technically, 
+it is a bitwise operation with side-effects in the RHS.
+
+Paolo
+
+[1] https://github.com/llvm/llvm-project/commit/f59cc9542bfb461
+
