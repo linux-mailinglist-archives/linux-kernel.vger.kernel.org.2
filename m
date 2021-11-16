@@ -2,155 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D28453424
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:26:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5E5453420
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:26:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237417AbhKPO3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 09:29:16 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:37348 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237431AbhKPO3O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 09:29:14 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 71CAD1F45793
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637072776; bh=p+84Xrz8FSKoixBY/HbQlzfr1EhSOjFp94DGnm3ck9s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gzvw1zoFKC1rg0Aqd8+BHNJ9+lVQod7xo8RIVA05fsafH/RXEx4MEwP/ijt7EjQVw
-         iHlUMYX63I5numKZMXoncjKP50SL+bHXJcf96CdQOJcz5sEzAeUYSo2BLRuAa9wZdP
-         DB2K2Qh3kXEY9F591+fH0OlTlMDzIWgtF+nk6eFfiWmSNbPsW9bXGagQM3UUkBiF8C
-         hZaphzPaA2LoyA1SWDkQ24baK8Sj8tFj1PXSHo++wm/urSqFkAEAiX5M6zK5thK+hw
-         BSqlkTaeXpFty/HgeTR5dtBAhyU4I8zFzs9XS7CyhbRsQgCD0J/wvz6LTp3TWqO5J2
-         DWnwBtrx7c+Jw==
-Received: by earth.universe (Postfix, from userid 1000)
-        id 5B8833C0F95; Tue, 16 Nov 2021 15:26:14 +0100 (CET)
-Date:   Tue, 16 Nov 2021 15:26:14 +0100
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v2] power: reset: ltc2952: Fix use of floating point
- literals
-Message-ID: <20211116142614.ofqoox6zpn5erlc3@earth.universe>
-References: <20211105152049.2522250-1-nathan@kernel.org>
+        id S237419AbhKPO3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 09:29:03 -0500
+Received: from mga06.intel.com ([134.134.136.31]:30462 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230453AbhKPO3A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 09:29:00 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="294517240"
+X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
+   d="scan'208";a="294517240"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 06:26:02 -0800
+X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
+   d="scan'208";a="494472564"
+Received: from rli9-dbox.sh.intel.com (HELO rli9-dbox) ([10.239.159.142])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 06:26:00 -0800
+Date:   Tue, 16 Nov 2021 22:26:57 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>, llvm@lists.linux.dev,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [kbuild-all] Re: drivers/platform/x86/thinkpad_acpi.c:4475:35:
+ error: unused variable 'fwbug_cards_ids'
+Message-ID: <YZO/sZfx1k5eRdUx@rli9-dbox>
+References: <202111141153.mtggZgGq-lkp@intel.com>
+ <009706db-230a-1e49-0a42-447a0ff97fbb@redhat.com>
+ <YZOlZPna3djQPYsp@rli9-dbox>
+ <de7f0b11-373b-6d7b-ca34-20d2162a7f70@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4hhn5uqosuvhtbid"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211105152049.2522250-1-nathan@kernel.org>
+In-Reply-To: <de7f0b11-373b-6d7b-ca34-20d2162a7f70@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 16, 2021 at 01:40:50PM +0100, Hans de Goede wrote:
+> Hi,
+> 
+> On 11/16/21 13:34, Philip Li wrote:
+> > On Tue, Nov 16, 2021 at 11:26:48AM +0100, Hans de Goede wrote:
+> >> Hi,
+> >>
+> >> On 11/14/21 04:10, kernel test robot wrote:
+> >>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> >>> head:   c8c109546a19613d323a319d0c921cb1f317e629
+> >>> commit: fd96e35ea7b95f1e216277805be89d66e4ae962d platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning
+> >>> date:   4 weeks ago
+> >>> config: i386-buildonly-randconfig-r005-20211114 (attached as .config)
+> >>> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project c3dddeeafb529e769cde87bd29ef6271ac6bfa5c)
+> >>> reproduce (this is a W=1 build):
+> >>>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >>>         chmod +x ~/bin/make.cross
+> >>>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fd96e35ea7b95f1e216277805be89d66e4ae962d
+> >>>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> >>>         git fetch --no-tags linus master
+> >>>         git checkout fd96e35ea7b95f1e216277805be89d66e4ae962d
+> >>>         # save the attached .config to linux build tree
+> >>>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=i386 
+> >>>
+> >>> If you fix the issue, kindly add following tag as appropriate
+> >>> Reported-by: kernel test robot <lkp@intel.com>
+> >>>
+> >>> All errors (new ones prefixed by >>):
+> >>>
+> >>>>> drivers/platform/x86/thinkpad_acpi.c:4475:35: error: unused variable 'fwbug_cards_ids' [-Werror,-Wunused-const-variable]
+> >>>    static const struct pci_device_id fwbug_cards_ids[] __initconst = {
+> >>>                                      ^
+> >>>    1 error generated.
+> >>
+> >> So this *again* has absolutely nothing to do with the:
+> >>
+> >> "platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning"
+> >>
+> >> commit, the problem is that:
+> >>
+> >> 1. the .config does not have CONFIG_PCI set; combined with:
+> >> 2. include/pci.h using a #define instead of a
+> >>    static inline for pci_dev_present() when this is the case
+> >> 3. This is a clang WERROR build
+> >>
+> >> I'll submit a fix for 2. upstream which should also fix
+> >> similar errors in a lot of other drivers.
+> >>
+> >> Again I must say that as a maintainer I'm unhappy about the amount
+> >> of noise being generated by clang WERROR builds here though,
+> >> is it really necessary for the kernel test robot to do builds
+> >> of this type ?
+> > Sorry Hans for the noise, we will look into this to consider the
+> > solution. And want to consult, do you specially have concern about
+> > -Wunused-const-variable or all W=1 related build issues?
+> 
+> Thank you.
+> 
+> W=1 is know to cause many many warnings, so to me it seems that
+> combining W=1 with CONFIG_WERROR=1 is a bad idea.
+> 
+> If it would be possible to avoid that combination then that would
+> be great.
+thanks, got it, we will get this fixed to set WERROR=n for
+all the randconfigs we use.
 
---4hhn5uqosuvhtbid
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Fri, Nov 05, 2021 at 08:20:50AM -0700, Nathan Chancellor wrote:
-> A new commit in LLVM causes an error on the use of 'long double' when
-> '-mno-x87' is used, which the kernel does through an alias,
-> '-mno-80387' (see the LLVM commit below for more details around why it
-> does this).
->=20
-> drivers/power/reset/ltc2952-poweroff.c:162:28: error: expression requires=
-  'long double' type support, but target 'x86_64-unknown-linux-gnu' does no=
-t support it
->         data->wde_interval =3D 300L * 1E6L;
->                                   ^
-> drivers/power/reset/ltc2952-poweroff.c:162:21: error: expression requires=
-  'long double' type support, but target 'x86_64-unknown-linux-gnu' does no=
-t support it
->         data->wde_interval =3D 300L * 1E6L;
->                            ^
-> drivers/power/reset/ltc2952-poweroff.c:163:41: error: expression requires=
-  'long double' type support, but target 'x86_64-unknown-linux-gnu' does no=
-t support it
->         data->trigger_delay =3D ktime_set(2, 500L*1E6L);
->                                                ^
-> 3 errors generated.
->=20
-> This happens due to the use of a 'long double' literal. The 'E6' part of
-> '1E6L' causes the literal to be a 'double' then the 'L' suffix promotes
-> it to 'long double'.
->=20
-> There is no visible reason for floating point values in this driver, as
-> the values are only assigned to integer types. Use NSEC_PER_MSEC, which
-> is the same integer value as '1E6L', to avoid changing functionality but
-> fix the error.
->=20
-> Fixes: 6647156c00cc ("power: reset: add LTC2952 poweroff driver")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1497
-> Link: https://github.com/llvm/llvm-project/commit/a8083d42b1c346e21623a1d=
-36d1f0cadd7801d83
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
-
-Thanks, queued to power-supply's fixes branch.
-
--- Sebastian
-
->=20
-> v1 -> v2: https://lore.kernel.org/r/20211104215047.663411-1-nathan@kernel=
-=2Eorg/
->=20
-> * A separate review pointed out that NSEC_PER_MSEC is a better choice
->   than USEC_PER_SEC because ktime_t is nanoseconds and the few functions
->   that take these values work in nanoseconds. The value is the same but
->   the documentation is better.
->=20
-> * Pick up Nick's review tag.
->=20
->  drivers/power/reset/ltc2952-poweroff.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/power/reset/ltc2952-poweroff.c b/drivers/power/reset=
-/ltc2952-poweroff.c
-> index fbb344353fe4..65d9528cc989 100644
-> --- a/drivers/power/reset/ltc2952-poweroff.c
-> +++ b/drivers/power/reset/ltc2952-poweroff.c
-> @@ -159,8 +159,8 @@ static void ltc2952_poweroff_kill(void)
-> =20
->  static void ltc2952_poweroff_default(struct ltc2952_poweroff *data)
->  {
-> -	data->wde_interval =3D 300L * 1E6L;
-> -	data->trigger_delay =3D ktime_set(2, 500L*1E6L);
-> +	data->wde_interval =3D 300L * NSEC_PER_MSEC;
-> +	data->trigger_delay =3D ktime_set(2, 500L * NSEC_PER_MSEC);
-> =20
->  	hrtimer_init(&data->timer_trigger, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
->  	data->timer_trigger.function =3D ltc2952_poweroff_timer_trigger;
->=20
-> base-commit: d4439a1189f93d0ac1eaf0197db8e6b3e197d5c7
-> --=20
-> 2.34.0.rc0
->=20
-
---4hhn5uqosuvhtbid
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmGTv4EACgkQ2O7X88g7
-+pqHdA//Q+mvgq10/Ejyo+07Plky71EpBqEZj/dVjD4lo05aKvXxdcSjH5dR/PaJ
-7tBeQixlwy+XAXu2LkNFTAebTWqQl3u01UPLmYrvfUUxKKCBefYXC9FoUwvEqxJW
-DAnqSj9uKMAzxmN6iTzYi+y+NVZljItFkwIAOkvO9uL81Xdjo7FNccgqJBGzMa/1
-rMXqrdHAaa7mQ2VGawIOOCYW+iltQLdglAOBvDUHfgM9jN/mhozm61rXOGg53X9B
-cckGZqzqx1013mTTinCQ5B6xf2MDasQl8o3Gd7Zwzqun7Zi3N0QcaRU1CGaYdRER
-MOTtlq0JRnFkpwUCaUZTcSEwQlRxl1pwSq81JHkorJC/B/OutJv8JdYz7K10axWm
-I+NLo4oS4HeNTPHZoA+qcANQKXytNFshq3OF4B3glste2co1ro7WLrdRUsLno6Ph
-T1xUH7EycXgZd/pdCyzhM60ig3FxBnv2qHLHkE3O2zA7ZmRkRrIM/Rplu4cgFiZD
-cz5E1fJ6JxcTmDFilJDrllDT7vhI+0/U+/+8yI+Bx2n4zQIfQOlnCIKx1N3zspLm
-eqtWG1P21C+2i4g4IbIchLMN0IbthvsLVcnHJdl/W4mY7EEl6hrFNkBWRTRhmIkA
-0CpH4ft4JhMGmEVlVgmnur58bB3VsPom92UwC73R2yBMkZKNA5c=
-=7Avg
------END PGP SIGNATURE-----
-
---4hhn5uqosuvhtbid--
+> 
+> Regards,
+> 
+> Hans
+> 
+> 
+> 
+> 
+> 
+> 
+> >>> vim +/fwbug_cards_ids +4475 drivers/platform/x86/thinkpad_acpi.c
+> >>>
+> >>> f7db839fccf087 Jiaxun Yang 2019-03-07  4474  
+> >>> f7db839fccf087 Jiaxun Yang 2019-03-07 @4475  static const struct pci_device_id fwbug_cards_ids[] __initconst = {
+> >>> f7db839fccf087 Jiaxun Yang 2019-03-07  4476  	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x24F3) },
+> >>> f7db839fccf087 Jiaxun Yang 2019-03-07  4477  	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x24FD) },
+> >>> f7db839fccf087 Jiaxun Yang 2019-03-07  4478  	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x2526) },
+> >>> f7db839fccf087 Jiaxun Yang 2019-03-07  4479  	{}
+> >>> f7db839fccf087 Jiaxun Yang 2019-03-07  4480  };
+> >>> f7db839fccf087 Jiaxun Yang 2019-03-07  4481  
+> >>> f7db839fccf087 Jiaxun Yang 2019-03-07  4482  
+> >>>
+> >>> :::::: The code at line 4475 was first introduced by commit
+> >>> :::::: f7db839fccf087664e5587966220821289b6a9cb platform/x86: thinkpad_acpi: Disable Bluetooth for some machines
+> >>>
+> >>> :::::: TO: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> >>> :::::: CC: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> >>>
+> >>> ---
+> >>> 0-DAY CI Kernel Test Service, Intel Corporation
+> >>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> >>>
+> >> _______________________________________________
+> >> kbuild-all mailing list -- kbuild-all@lists.01.org
+> >> To unsubscribe send an email to kbuild-all-leave@lists.01.org
+> > 
+> 
