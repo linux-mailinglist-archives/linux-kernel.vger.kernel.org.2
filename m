@@ -2,170 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A77EE4539A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 19:55:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E954539A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 19:56:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239631AbhKPS6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 13:58:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45136 "EHLO
+        id S239650AbhKPS6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 13:58:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239624AbhKPS6j (ORCPT
+        with ESMTP id S239632AbhKPS6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 13:58:39 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D058C061570;
+        Tue, 16 Nov 2021 13:58:40 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070DBC061746
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 10:55:43 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id h2so154943ili.11
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 10:55:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MVFNckbP4TBTfql4KrG+4Ukp5cz3YYPgjjkXF4pzcJc=;
+        b=JtPD1BecFV1FEJH0GTNl7174E9A8l550vBQXhFzRj8USVrgQDYjSwRir9Xp8/SHM6+
+         p5DaDEQPL1E7ez44Nw+GXeGsnWZBv4nMeaKLhNMdjoo8ixaJq+lv5I4Oc3GXLCyPFpLU
+         pdfGDhs42bKvzHcxpDXZJQpMfiPWCKfjGnHYrHBVcC3CYaUUDAe6Sr5tNCFLWUtpJS+R
+         affOkx50hu9r2ztdpWGJHQNzorEXr8oZ6ytD95+NcEVboAhNHNVfmRN4Wws3p+MeoeC8
+         OurqThAM+iP3jgMeyeimtHZrKdyQhOV9O53NSlb9TSbSnEiwG/0+XC61qqMSdSNPDsva
+         utGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MVFNckbP4TBTfql4KrG+4Ukp5cz3YYPgjjkXF4pzcJc=;
+        b=3E61Vu52GbqQT8e5f16CDv339mXhpIcTBLXB8vgZbgYssn8J3esQkpVR/Pn42wQFOC
+         kK+2SKg1tXtu0KhxdGj23iEB7foqlCjT0RR2lxSvlNyjIJKkyj5y6qsACIU88E3TpfTx
+         tnpU86jIsh30IJudyPyjpq0e+0V8VU2AmzyMe7W9uh0AreFMcQqu/fihRcVy6Ux0zT8t
+         NGHZQHe+BQuBV3xoLoi6uhJqm2PxeMzYBj1KUbygUEjqabcNjhUgsSm8J3tXygTU0ghI
+         v36jSqJ5MIthLGAGXCYbTDZ0iIhtWmv0REGrqDdOM8PyYilJzvcF1HjKWhu5yx4Gh8Sq
+         vGIQ==
+X-Gm-Message-State: AOAM530XiA67yo7F1ANdV96cgDO0gPuR91mEiw2flFgMGaANFnD0T/jF
+        p4B0Ersevm5bDrNtI9kPGjkSBw==
+X-Google-Smtp-Source: ABdhPJyYe1hgk2fEdouckIqm5RWn3n7q2+/VfPl6eb5Tmuo3m/ZvVuWgcvs1OKTDYNPTQTqaEyU7tA==
+X-Received: by 2002:a05:6e02:180e:: with SMTP id a14mr6156312ilv.313.1637088942271;
+        Tue, 16 Nov 2021 10:55:42 -0800 (PST)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id a20sm12315511ila.22.2021.11.16.10.55.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Tue, 16 Nov 2021 10:55:41 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637088939;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xwfkk8Bsh/ggf2j5AZWfbUH4bToTqxnE38LBF+v1K3E=;
-        b=v69t4Po+46uxaN0amHPEIb5lEFKdNFkA6U6dK2F+qIU1fd+K1WNCSPGcpPM7j+6ZMTfpsb
-        q7u0KtEosf/PlmYK+Mdn9pyvpcerB2FfslVZEFX/j7o6iX1m3SbCGtPPnEVMkqZn9TUJQ0
-        o10720gi+PwWk4aMLw/plmRWbyAvy4gjZVasGArXD4uNe/YY6o5k5EJC3WAhcTlsBPKIUs
-        gMuZ6wx2jwphmbnYLBxhmLtiYnf4caE8tVx9YCgsjVkcAmEKDr6WYtbTzLhtS08JMJW2Hj
-        kT2Xr6Es2GUWaF6NEgHviUwzbkPe9wkOnAAS4//85X3FGHljlZgWVhWmC/1OCw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637088939;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xwfkk8Bsh/ggf2j5AZWfbUH4bToTqxnE38LBF+v1K3E=;
-        b=D25FfPoOg5Y9KftKdW2poBslG6y0tLO1VNaQTMHeJULswzj6SD/1GXetUoPYkTK9PAFsE+
-        4XMQ4es+N8YzIPCA==
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     "Liu, Jing2" <jing2.liu@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Jing Liu <jing2.liu@linux.intel.com>,
-        "Cooper, Andrew" <andrew.cooper3@citrix.com>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Subject: Re: Thoughts of AMX KVM support based on latest kernel
-In-Reply-To: <YZPWsICdDTZ02UDu@google.com>
-References: <BYAPR11MB325685AB8E3DFD245846F854A9939@BYAPR11MB3256.namprd11.prod.outlook.com>
- <87k0h85m65.ffs@tglx> <YZPWsICdDTZ02UDu@google.com>
-Date:   Tue, 16 Nov 2021 19:55:38 +0100
-Message-ID: <87ee7g53rp.ffs@tglx>
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+To:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        Drew DeVault <sir@cmpwn.com>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+References: <20211028080813.15966-1-sir@cmpwn.com>
+ <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
+ <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
+ <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
+ <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
+ <YZP6JSd4h45cyvsy@casper.infradead.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <b97f1b15-fbcc-92a4-96ca-e918c2f6c7a3@kernel.dk>
+Date:   Tue, 16 Nov 2021 11:55:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YZP6JSd4h45cyvsy@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean,
+On 11/16/21 11:36 AM, Matthew Wilcox wrote:
+> On Mon, Nov 15, 2021 at 08:35:30PM -0800, Andrew Morton wrote:
+>> I'd also be interested in seeing feedback from the MM developers.
+> [...]
+>> Subject: Increase default MLOCK_LIMIT to 8 MiB
+> 
+> On the one hand, processes can already allocate at least this much
+> memory that is non-swappable, just by doing things like opening a lot of
+> files (allocating struct file & fdtable), using a lot of address space
+> (allocating page tables), so I don't have a problem with it per se.
+> 
+> On the other hand, 64kB is available on anything larger than an IBM XT.
+> Linux will still boot on machines with 4MB of RAM (eg routers).  For
+> someone with a machine with only, say, 32MB of memory, this allows a
+> process to make a quarter of the memory unswappable, and maybe that's
+> not a good idea.  So perhaps this should scale over a certain range?
+> 
+> Is 8MB a generally useful amount of memory for an iouring user anyway?
+> If you're just playing with it, sure, but if you have, oh i don't know,
+> a database, don't you want to pin the entire cache and allow IO to the
+> whole thing?
 
-On Tue, Nov 16 2021 at 16:05, Sean Christopherson wrote:
-> On Tue, Nov 16, 2021, Thomas Gleixner wrote:
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index 2686f2edb47c..9425fdbb4806 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -9576,6 +9576,8 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->>  	vcpu->arch.last_vmentry_cpu = vcpu->cpu;
->>  	vcpu->arch.last_guest_tsc = kvm_read_l1_tsc(vcpu, rdtsc());
->>  
->> +	kvm_update_guest_xfd_state();
->
-> Is there a reason the XFD switch can't key off TIF_NEED_FPU_LOAD a la the other
-> FPU stuff?  I.e. piggyback this snippet in vcpu_enter_guest():
+8MB is plenty for most casual use cases, which is exactly the ones that
+we want to "just work" without requiring weird system level
+modifications to increase the memlock limit.
 
-TIF_NEED_FPU_LOAD is not set here.
+For db etc server setups, you're going to be mucking with the setup
+anyway, and then I don't see it as a big problem that you'll need to
+increase it further. Because yes, that won't fit within 8MB if you start
+doing registered buffers.
 
-> 	if (test_thread_flag(TIF_NEED_FPU_LOAD))
-> 		switch_fpu_return();
+-- 
+Jens Axboe
 
-Assume guest has control of XFD and XFD writes are not trapped. That
-means on vmexit the XFD state of the guest is unknown.
-
-vcpu_run()
-        kvm_load_guest_fpu()
-            wrmsrl(XFD, guest_fpstate->xfd);
-            XRSTORS
-          
-        do {
-
-           local_irq_disable();
-
-           // Covers the case of softirq usage and preemption
-           if (test_thread_flag(TIF_NEED_FPU_LOAD))
-		switch_fpu_return()
-                  wrmsrl(XFD, guest_fpstate->xfd);
-
-           do {
-                vmenter();              // Guest modifies XFD
-           } while (reenter);
-
-           local_irq_enable();     <- Problem starts here
-
-           preempt_enable();	   <- Becomes wider here
-
-        } while (!breakout);
-
-        kvm_put_guest_fpu();            // Switch back to user FPU state
-
-So we have the following cases:
-
-guest_fpstate.xfd        XFD at vmexit
-
-       0                      0         // consistent state
-       1                      0         // inconsistent state
-       0                      1         // inconsistent state
-       1                      1         // consistent state
-
-Now assume that after reenabling interrupts a interrupt/softirq happens
-which uses FPU. It will save the correct state because XFD is still
-guest state, but the subsequent restore will operate on the stale
-guest_fpstate.xfd value.
-
-Same problem vs schedule after reenabling preemption or if not preempted
-in kvm_put_guest_fpu()
-
-Now you could argue that the interrupt/softirq XSAVES should also read
-the XFD MSR and save it in guest_fpstate.xfd. Same in schedule()
-and kvm_put_guest_fpu(), i.e:
-
-      XSAVES
-      if (fpstate->is_guest) {
-            rdmsrl(XFD, xfd);
-            fpstate->xfd = xfd;
-            __this_cpu_write(..., xfd);
-      }
-
-We can do that, but I'm unhappy about this conditional in schedule(). So
-I was asking for doing a simple KVM only solution first:
-
-vcpu_run()
-        kvm_load_guest_fpu()
-            wrmsrl(XFD, guest_fpstate->xfd);
-            XRSTORS
-          
-        do {
-
-           local_irq_disable();
-
-           if (test_thread_flag(TIF_NEED_FPU_LOAD))
-		switch_fpu_return()
-                  wrmsrl(XFD, guest_fpstate->xfd);
-
-           do {
-                vmenter();              // Guest modifies XFD
-           } while (reenter);
-
-           update_xfd_state();          // Restore consistency
-
-           local_irq_enable();
-
-and check how bad that is for KVM in terms of overhead on AMX systems.
-
-If it really matters we can look at the conditional in XSAVES path.
-
-Thanks,
-
-        tglx
