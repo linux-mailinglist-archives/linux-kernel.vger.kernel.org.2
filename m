@@ -2,108 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 834BC453633
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:43:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C97453637
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238549AbhKPPqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 10:46:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56796 "EHLO
+        id S238491AbhKPPqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 10:46:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238551AbhKPPpT (ORCPT
+        with ESMTP id S238378AbhKPPpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 10:45:19 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98181C061210
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:42:19 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id d27so38490752wrb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:42:19 -0800 (PST)
+        Tue, 16 Nov 2021 10:45:47 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF12C061766
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:42:41 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id z18so2482802iof.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:42:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=MaOSO/5HtReWKBBksqBOQJDhfTRE2n/pBGJORKYgmI8=;
-        b=dpMihBVSiTIhJ8gwEIK/0RaxfyXs2DtvxfMOWHwvsfqgQpUny0lQtED0wIphEPCb6v
-         AEzTzY5KUWh+ZBUlwhm1MKOSsfEKvWzAZN6hA0iVz1ZkNSHET0GNQ7X4qOZ4ru7PoXmg
-         a/08/a6OGQp4ufg1hfyxfYLxOjuSPoP4Iv2indtDuuY25uHOzB4zY/j/Htu2gPPN48F8
-         +FDsCnukvP5bxxuyqV5df/R9Dld2m5MFGmv/6quqjj8jagtwmzBL49QLLLkaiJPMV3TB
-         utBJFccrrLjAw31i2P+rtb2jHXojpAt5V88ehKxTw8pEyulGHnLBAJQgM7JuB/O0nT8J
-         yzQw==
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=qZTHx1FvTHabhubW5uLJTFw9g14LfOUphosZneheXs4=;
+        b=w3QG6GtaZbgUU/+dtPJdAPWmz2QGCSQsvGWcNOjVgJzNUtppuN3BuL6C793MwPsZco
+         vmpfKXeKJF5z9hGpGvKNH8qXEqsKBJa//YA7/NsmjWcI7ePjzc707vdTSfxUa5RRaze5
+         3toFmyOzFAODOhoRXNXy8XE81gD/Au+qO9TNc22HyPGVBXVWCATQQdOuwc6p5jiP16Is
+         FP5Ce9W3ANlg3rjI9JLET3UWo2rETlyvy6UcENgodYMRaZHNJWlwtdwsfmXl3uDpZN13
+         8Ed7vKFVvUydjzwgPptOkIz5BNiPjJ1+CwafmBa/wPySHb5HrIHRnpnmEkmI0ZDscVCv
+         lU3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=MaOSO/5HtReWKBBksqBOQJDhfTRE2n/pBGJORKYgmI8=;
-        b=VAy/QMJS3PTNwk6QXYorSBCtp8A9haNIKahSY1SghCwtoiUsqLJfKm5RpVpdc4h1Mp
-         AyAY43z03P1eV89y6kTqMpEqzovChgHcg3BiGn4RLC7TH/7rXmfKnsqHnu+zT20oaOKs
-         9IFVF6kca8L+LQll51xRxghDV65k5476ixV5XfWMEDr6zrt3fkbIE4TJKCdf58GOt+oO
-         7Y9vVpu6cAJLQbuYFH4BP7zgieTnOkrlufOGfznSbpb+4bKZv1PNDlr0x87lJxqRjibd
-         k1dg59q48MOiObyMvSIZ1GsHjGRXIzofa6SkfhzNoU5WpSW7i6ZfZKOYACIjbNObg2hs
-         Mh+A==
-X-Gm-Message-State: AOAM530HE0DML9crlZy3CYhEy3MM6lBt8/I+mzFmY7TkpbDB7+WH2v35
-        IFKSQ6SmOeUy+soJp5IU5sKVzA==
-X-Google-Smtp-Source: ABdhPJwGazAeHXqWI2KmcXg8HN2YudpmutPJQ1rdklClDDMa6uJ9nc+mW3BEpIrYrJ5e6pEnv6kpCA==
-X-Received: by 2002:a5d:5303:: with SMTP id e3mr10447721wrv.73.1637077337983;
-        Tue, 16 Nov 2021 07:42:17 -0800 (PST)
-Received: from google.com ([95.148.6.231])
-        by smtp.gmail.com with ESMTPSA id q4sm17892469wrs.56.2021.11.16.07.42.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 07:42:17 -0800 (PST)
-Date:   Tue, 16 Nov 2021 15:42:15 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v3 0/9] backlight: qcom-wled: fix and solidify handling
- of enabled-strings
-Message-ID: <YZPRV2jD1EBYGdHL@google.com>
-References: <20211115203459.1634079-1-marijn.suijten@somainline.org>
- <20211116120213.n7qxqfi62lrxhyl7@maple.lan>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qZTHx1FvTHabhubW5uLJTFw9g14LfOUphosZneheXs4=;
+        b=SLbYWqbAwDbttXqjieeVgJQ4AP9+mu6ETC+yH9xis13iFar5DdnxVkDaWk4ITN8NCr
+         xODBE6xaAayBuHpLUI4fL5T5DlppDE2b5r4avvhBrp6kiCC5jzXp0QrEGdnJjvfRwTQX
+         tPpJLiy60IUvAgmT3wa86aBkrsgjWsqWkWu8QHR2rwX1WygxE7zikr4ZrbpccHkyB+Gu
+         U42qEsvHW/gf5XWSJPGxZhTaLvnZ8aAwTqAYRhzQWyOEU10+WjSm2Wu4ENq3p/R0oMUz
+         uHx902ohExow5vzJf7FX5zNayXsZIjpjJyM+8GsC8Iup86KdhQLtoAbQw9z4+eOd9+8T
+         WNxw==
+X-Gm-Message-State: AOAM530iVJJXBKsusU+gEDwVtRp9aiAoORrM6+8RweQD8I5ThH5Fmetq
+        lj8HKbbRjMAYdKiv1fgitDl9FA==
+X-Google-Smtp-Source: ABdhPJyrpIfc2UW9Rx72NBiL5cdgp4TrZ59GyNqn8h8b6TcBQy++Dv52FlJE6Vv7QfaAlwnjezgwfQ==
+X-Received: by 2002:a02:a601:: with SMTP id c1mr6313123jam.114.1637077361081;
+        Tue, 16 Nov 2021 07:42:41 -0800 (PST)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id o10sm9609624ioa.26.2021.11.16.07.42.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 07:42:40 -0800 (PST)
+Subject: Re: [syzbot] INFO: rcu detected stall in __hrtimer_run_queues
+To:     syzbot <syzbot+de9526ade17c659d8336@syzkaller.appspotmail.com>,
+        fweisbec@gmail.com, hch@lst.de, hdanton@sina.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, paulmck@kernel.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+References: <0000000000007ee63e05d0e9c172@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <097631ea-d781-c4e1-aa0e-d921a7a2e69e@kernel.dk>
+Date:   Tue, 16 Nov 2021 08:42:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <0000000000007ee63e05d0e9c172@google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211116120213.n7qxqfi62lrxhyl7@maple.lan>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Nov 2021, Daniel Thompson wrote:
-
-> Hi Lee
+On 11/16/21 8:41 AM, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
 > 
-> On Mon, Nov 15, 2021 at 09:34:50PM +0100, Marijn Suijten wrote:
-> > This patchset fixes WLED's handling of enabled-strings: besides some
-> > cleanup it is now actually possible to specify a non-contiguous array of
-> > enabled strings (not necessarily starting at zero) and the values from
-> > DT are now validated to prevent possible unexpected out-of-bounds
-> > register and array element accesses.
-> > Off-by-one mistakes in the maximum number of strings, also causing
-> > out-of-bounds access, have been addressed as well.
+> commit b60876296847e6cd7f1da4b8b7f0f31399d59aa1
+> Author: Jens Axboe <axboe@kernel.dk>
+> Date:   Fri Oct 15 21:03:52 2021 +0000
 > 
-> They have arrived piecemeal (during v1, v2 and v3) but all patches on
-> the set should now have my R-b: attached to them.
+>     block: improve layout of struct request
 
-I can see that.  Nothing for you to worry about.
-
-I'll apply these when I conduct my next sweep, thanks.
+No functional changes in that patch, so looks like a fluky bisection.
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Jens Axboe
+
