@@ -2,76 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0820645324E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 13:37:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7EEC452FBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:04:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236336AbhKPMkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 07:40:07 -0500
-Received: from tomli.me ([31.220.7.45]:31118 "EHLO tomli.me"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236306AbhKPMkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 07:40:05 -0500
-X-Greylist: delayed 397 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Nov 2021 07:40:03 EST
-Received: from tomli.me (localhost [127.0.0.1])
-        by tomli.me (OpenSMTPD) with ESMTP id 7130ef63;
-        Tue, 16 Nov 2021 12:30:25 +0000 (UTC)
-Authentication-Results: tomli.me; auth=pass (login) smtp.auth=tomli
-Received: from Unknown (HELO work) (221.219.136.22)
- by tomli.me (qpsmtpd/0.96) with ESMTPSA (AEAD-AES256-GCM-SHA384 encrypted); Tue, 16 Nov 2021 12:30:25 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=tomli.me; h=resent-from:resent-date:resent-message-id:resent-to:from:date:subject; s=1490979754; bh=KBfiT1w0XL11Z1fG5BYzBut0m+TzF/AfNmY64Lyh3Tk=; b=yKaAZBFD7DJrTT/M8n6HusL9M1/ruIi790LL/47aMOTz6naAMEwevu+4J2oMBH0hnQwcGwUCmxsuFi9LhLWSYBE9ioqnG5zophlHDLey5TKfO2eexYJqBoW7abP2oRul0tA1mPzZ0S0TwtmxQ9LMTYH9OKy/ouIH/JL24D7LEO6uJIVkT5bsm877OzwANgERr29npLatg3ZSpzOKqoZSI81HrQGkaJz+mYs/6fplWhk4QUekmB2miDlRR+8wLs+fdTku7aq4EL1vMsQVgWgYuBm7fXEDleNy+tUEhGKqgxb6rn9NxE54XDIlnJVhmBc6pTl0XqNemGrjVn9r3zopEw==
-From:   Yifeng Li <tomli@tomli.me>
-Date:   Mon, 15 Nov 2021 14:55:16 +0000
-Subject: [PATCH] PCI: Add func1 DMA quirk for Marvell 88SE9125 SATA controller
-Message-ID: <15293b9898bae404@tomli.me>
-Apparently-To: <tomli@tomli.me>
+        id S234566AbhKPLGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:06:11 -0500
+Received: from smtpout1.mo529.mail-out.ovh.net ([178.32.125.2]:54033 "EHLO
+        smtpout1.mo529.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234637AbhKPLFa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 06:05:30 -0500
+X-Greylist: delayed 1799 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Nov 2021 06:05:30 EST
+Received: from mxplan5.mail.ovh.net (unknown [10.108.4.240])
+        by mo529.mail-out.ovh.net (Postfix) with ESMTPS id E001BCBCDEA1;
+        Tue, 16 Nov 2021 11:27:10 +0100 (CET)
+Received: from kaod.org (37.59.142.101) by DAG4EX1.mxp5.local (172.16.2.31)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Tue, 16 Nov
+ 2021 11:27:10 +0100
+Authentication-Results: garm.ovh; auth=pass (GARM-101G00488e9d7c1-0317-46b2-b738-c13bf1602699,
+                    BFAEB7FE3C4E2C4D96001007C3BA12B7689A693E) smtp.auth=clg@kaod.org
+X-OVh-ClientIp: 82.64.250.170
+Message-ID: <50482eb9-389c-0114-ba21-988f1fce493c@kaod.org>
+Date:   Tue, 16 Nov 2021 11:27:09 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 16/39] irqdomain: Make normal and nomap irqdomains
+ exclusive
+Content-Language: en-US
+To:     Marc Zyngier <maz@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Greg Kurz <groug@kaod.org>
+References: <20210520163751.27325-1-maz@kernel.org>
+ <20210520163751.27325-17-maz@kernel.org>
+ <1fe9d629-0f5f-4807-b97c-77b3b3c7de72@kaod.org>
+ <87a6i48pp5.wl-maz@kernel.org>
+From:   =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
+In-Reply-To: <87a6i48pp5.wl-maz@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [37.59.142.101]
+X-ClientProxiedBy: DAG5EX1.mxp5.local (172.16.2.41) To DAG4EX1.mxp5.local
+ (172.16.2.31)
+X-Ovh-Tracer-GUID: a0750013-07d5-4706-bb9b-93a98d531333
+X-Ovh-Tracer-Id: 9763241045856979750
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvuddrfedvgdduhecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfhfhfgjtgfgihesthejredttdefjeenucfhrhhomhepveorughrihgtpgfnvggpifhorghtvghruceotghlgheskhgrohgurdhorhhgqeenucggtffrrghtthgvrhhnpefhhfelgeeukedtteffvdffueeiuefgkeekleehleetfedtgfetffefheeugeelheenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddruddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphhouhhtpdhhvghlohepmhigphhlrghnhedrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpegtlhhgsehkrghougdrohhrghdprhgtphhtthhopehgrhhouhhgsehkrghougdrohhrgh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
-To:     unlisted-recipients:; (no To-header on input)
 
-Like other SATA controller chips in the Marvell 88SE91xx series, the
-Marvell 88SE9125 has the same DMA requester ID hardware bug that prevents
-it from working under IOMMU. This patch adds its device ID 0x9125 to the
-Function 1 DMA alias quirk list.
+Hello Marc,
 
-This patch should not be confused with an earlier patch, commit 059983790a4c
-("PCI: Add function 1 DMA alias quirk for Marvell 9215 SATA controller"),
-which applies to a different chip with a similar model number, 88SE9215.
+>> This patch is breaking the POWER9/POWER10 XIVE driver (these are not
+>> old PPC systems :) on machines sharing the same LSI HW IRQ. For instance,
+>> a linux KVM guest with a virtio-rng and a virtio-balloon device. In that
+>> case, Linux creates two distinct IRQ mappings which can lead to some
+>> unexpected behavior.
+> 
+> Either the irq domain translates, or it doesn't. If the driver creates
+> a nomap domain, and yet expects some sort of translation to happen,
+> then the driver is fundamentally broken. And even without that: how do
+> you end-up with a single HW interrupt having two mappings?
+> 
+>> A fix to go forward would be to change the XIVE IRQ domain to use a
+>> 'Tree' domain for reverse mapping and not the 'No Map' domain mapping.
+>> I will keep you updated for XIVE.
+> 
+> I bet there is a bit more to it. From what you are saying above,
+> something rather ungodly is happening in the XIVE code.
 
-Without this patch, device initialization fails with DMA errors.
+It's making progress.
 
-    ata8: softreset failed (1st FIS failed)
-    DMAR: DRHD: handling fault status reg 2
-    DMAR: [DMA Write NO_PASID] Request device [03:00.1] fault addr 0xfffc0000 [fault reason 0x02] Present bit in context entry is clear
-    DMAR: DRHD: handling fault status reg 2
-    DMAR: [DMA Read NO_PASID] Request device [03:00.1] fault addr 0xfffc0000 [fault reason 0x02] Present bit in context entry is clear
+This change in irq_find_mapping() is what 'breaks' XIVE :
 
-After applying the patch, the controller can be successfully initialized.
+   +       if (irq_domain_is_nomap(domain)) {
+   +               if (hwirq < domain->revmap_size) {
+   +                      data = irq_domain_get_irq_data(domain, hwirq);
+   +                      if (data && data->hwirq == hwirq)
+   +                               return hwirq;
+   +               }
+   +
+   +               return 0;
 
-    ata8: SATA link up 1.5 Gbps (SStatus 113 SControl 330)
-    ata8.00: ATAPI: PIONEER BD-RW   BDR-207M, 1.21, max UDMA/100
-    ata8.00: configured for UDMA/100
-    scsi 7:0:0:0: CD-ROM            PIONEER  BD-RW   BDR-207M 1.21 PQ: 0 ANSI: 5
 
-Reported-by: sbingner <sam@bingner.com>
-Signed-off-by: Yifeng Li <tomli@tomli.me>
----
- drivers/pci/quirks.c | 3 +++
- 1 file changed, 3 insertions(+)
+With the introduction of IRQ_DOMAIN_FLAG_NO_MAP, the revmap_tree lookup
+is skipped and the previously mapped IRQ is not found. XIVE was relying
+on a side effect of irq_domain_set_mapping() which is not true anymore.
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 003950c73..20a932690 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -4103,6 +4103,9 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MARVELL_EXT, 0x9120,
- 			 quirk_dma_func1_alias);
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MARVELL_EXT, 0x9123,
- 			 quirk_dma_func1_alias);
-+/* https://bugzilla.kernel.org/show_bug.cgi?id=42679#c136 */
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MARVELL_EXT, 0x9125,
-+			 quirk_dma_func1_alias);
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MARVELL_EXT, 0x9128,
- 			 quirk_dma_func1_alias);
- /* https://bugzilla.kernel.org/show_bug.cgi?id=42679#c14 */
--- 
-2.31.1
+I guess the easiest fix for 5.14 and 5.15 (in which was introduced MSI
+domains) is to change the XIVE IRQ domain to a domain tree. Since the HW
+can handle 1MB interrupts, this looks like a better choice for the driver.
+
+Thanks,
+
+C.
