@@ -2,148 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3D04539AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 20:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5843E4539AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 20:00:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239680AbhKPTDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 14:03:35 -0500
-Received: from sonic315-27.consmr.mail.ne1.yahoo.com ([66.163.190.153]:36009
-        "EHLO sonic315-27.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239211AbhKPTDd (ORCPT
+        id S239690AbhKPTDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 14:03:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239682AbhKPTDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 14:03:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1637089236; bh=iKZCNnZA8mKurfY2xcDf1xTfNga+uLdl6MyBXJlz4uc=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=IlCH7UXbsHb3z0KtV0Zi4KsaknBcLvperNnezhGl15qcbrSpimDo2BPd7gXIGNguliYf/M4D0X1AjPtZTJctdwl2U+kd2cp7OZA+hCyrBiLKWjVEBgAAeKgkscCQ4VeaPUaW4OrEFXvVnmBs15uCKVRuErwj1ObCyugITDDdxNZgnOqjmB82Nm/BKF+p60ZCbiChcx7EolKMZ8cbeFI4F0ZHxwdm0zH/ZsIM33XEz2OP68BpuJReaA0apJJaQM7gm+85vO/UpRZlv9XG8aDknpNhP+FzngUfsLzv9byuq1RUPiWVNyMWdaHDQK4i5ZY72A82yaJJngVs2NDDy3OB/A==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1637089236; bh=KakOMrcQOYQF6zPpoNGmpyCyNEzOa7vc472gsuuEvx9=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=aeJjUhU40xCYdNvg8nvLqVqSoO0xFZ4rXoxf2hgziY/Krx0JCEXxnQS6XAF1ZvL8fDnWdU3xAyA+0DTJDfGSW74zCDiI0DeRIu5S57lCyO8wlaja64DrQ+kYkcxR+Bdk8Zn/SO3/U/LgI7ZC+u9x6srlnMv+av371HY5b5uqWtvJ2VHEIxQZcAjOq4hnvcE8oUbNRzyYEKuaXadHLEVpYkcSLX50BxHZAltxjpgVRu8gfVe1gs5AzZ+g5wyBqjFm5Smx+PjtcWJ+4L2/PrBguWMKWjxxFbazCk8dFvr8F12wjy7poaQPu2lAFiw0/PMBNdkioOBliCMhaesXQB2qaw==
-X-YMail-OSG: dfV4KL4VM1kt.GaOicztohoLnrgWtyS2u7sPmOPbByL_RitHu.lxaIsY1XJM0Ez
- mdcuj1dEhSXoO9oU1cBoSLUC6Zt27CBqCzkbx4dIimfdMAa2pyu_Tjvma2w6JddoUFXzusdUcOsn
- 0osUUmRf5W0KMjIEocy_SQmW6d37YsgYK0wUHxvH9ie473oa5X0N3AUy8wD6bd.qQAvqfacokBtp
- UVxbyopGr8SdJHn8p.Psog.4FyHKpeli2J9Sa16JwEcN3beeYXiPRMkaYqd9RfMOQ1S4rOBGa_QY
- yFVY_P603FArpIViHnkM3YhVZ6zQL_.UbrKE_qIgTkM.rX3we9jpGhRejh9bEIQkeZUYR8tashVQ
- ewpN2.bC8uEPuycHdbPCzK_54tKszy51Z58lUSp5wsl0pOLNq91sJO9v51.sC21uQkIHOCRA.t3_
- UrCT7wYwGMJoEOBvDxN.6T0GP0ta6oKz8Co2kf78GsZs3H5B5O7LQUxaNs21sYM9WG1Ub5oytsvJ
- tmF.16CyUDwIG99CzudDrzBRVeu0BTGn2J03_smiqE3mBL84HbFEqNjKOoHYXrxGO1yBG4j_FYYn
- ioBwy8KpvFsHLonOWaEW4LYa6IkzqUtLD86YKd9IIt2DDWcKCSsg_Sgo24eYB6M.FWoM8_eCplzr
- 4w1lGJku1G0zJtQZRGMvXfHGpcxTg24CvPQ23j8ZZ7AM_c5gaOL25gpoVsi399.KhybBfUDIuoNP
- fsaeJ1EQCr3Y1qc1mmy9KkQk1En6sca6v9huAOT5MVzHDk67HbvnLaMhfMOmcKbzvE9TKIZ1BofN
- p4erxAni31xY7WQSAf.TZ1vhqkMYsejVBSous_rmKBmBK8wzZ_6O6chyetspDAVi6nfeSRQXxOqF
- Jvas9RcspTI6AwAsN2LKH9ByoMFOHNRxi0K.MgC1r2AQmI20nkDwrM45jyGaV7egh4cyhhQtU.0E
- 8xSgF7J9.KFzrpNgIo8Uy1SgBJkjds8amBCypHUDG0pn6J3aBUJSE5MHR.S0V02oHbuiFiHsS8wH
- C0z7RQ4W9Izz7nJUIRcGMnfAtuC.0ZmGFxu.Qs.dNjKWUd4oZdRCht_QjlO0OKaptnioNkIF_NQh
- T2DIBSFfMKxpmxrDKtJQn25_vnbu1nzAsXJAfPpXVlCuAe.0Cri0JBTgIZ9BomSjre_wM.kfGOOg
- qm4ZVbdqPYj7PkV8FZkhYgGnHI4I25iDyHyMNakkjsM8MIwrdyWstJKoaHA3mYiI.s4HgLGFqE4E
- nn5WT4SQfFunyou.h.HCoq0Lkzzcqnn.gc7MHxYOqGrrUf25lA0JEkVAgvCt_kCiDnnfaC3AxLT1
- OjSqV0r0w6mcbl_USL5fzd28vp4kc0ePGL5OuMVVaFf8a9kA0nDChaSAxFzd64pnqUg_DoKZGKlF
- Yf26tACFNBYFeegkD.BQJdvZMzk__qgQrOlUQNyc_UREopzbfgsqvoE9lJw5wvV8AUjapuj36ffb
- TC8jQq2o9H6M0H.FerhJMNECzowd4oh1y6XdBc2nkLUtQ1SaJh7dIFBxo8IUQ1pH.ges_xMFVyUy
- aB4DEzUGYmwrTxxlu1ERd18Rx6_YNXym7L4OlLD0NwkQoN8YUX.uUzmiBSbCLutyXO3CFxxDHpZQ
- XrG02UD8KN44_5CKT7EzNEjs0vYSxXESNald3nnJpGq_l9rLOY2C8CMcOrlg5RDM6PZX69pk9WYc
- cHYjA4GDLJQRweZmKFXCqEgsIRRcb0OEJ_EqHEbzOXjA4AntlQr6.UFODumf7wVvBX9e.J0icsnF
- Lp7tNKQUMADr3sWwjUyh7fMOBeJN0mPtLp5Gz2qsJwNiiOa0Gj5hUMCrtDmVKsKyy8C7jcxaeiLn
- mt8N2Z4tpkcpeVJXss6qZrcj8Se9nQZY2C0iDtKgVrzP18lP0ipp1UH7jku0kmW6C2.QUv296xD.
- dBKbXREiJfTkrwhNAGU3oOQf7EAH3GXTuPuSFB8C4tgZ1DYcwwTUW230Qs7rUHXEyx.lTa56GJz6
- _hsATdtKFC1sy5xYkmcPtvVrkNJASjY5nU6anyAct_tiu7tJM2kUdpzRnn.XTcRvShzcdq4qot5k
- n9MZrEpAsGAwDBA.RC1tSUq6y6_F9IU9XDIyWdDX07svYEyrsAxr6Jd6bwYLK9sJ2eMBZCtL0M4M
- Lx91ER7ORK0MDTPpQRbdaqt5Do0LeDuRq8q3217c4.JKP.JtlH5BGL909INx6R8O4mga53VWNUCr
- qjyeFOmSqSq067BWooNhEXr3mJ9PH_9WLz20-
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.ne1.yahoo.com with HTTP; Tue, 16 Nov 2021 19:00:36 +0000
-Received: by kubenode523.mail-prod1.omega.bf1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 16992bd20597bf90782469ca1b8ad7d7;
-          Tue, 16 Nov 2021 19:00:31 +0000 (UTC)
-Message-ID: <fd86a05b-feca-c0a9-c6b0-b2e69c650021@schaufler-ca.com>
-Date:   Tue, 16 Nov 2021 11:00:23 -0800
+        Tue, 16 Nov 2021 14:03:36 -0500
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA986C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 11:00:38 -0800 (PST)
+Received: by mail-oi1-x233.google.com with SMTP id r26so646193oiw.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 11:00:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=SZihyt5308KW2rYcee3G+gbznNj92iM9/GOhpLQbwOk=;
+        b=lv/Z3JAzNlVh9cOuwZ42QWpRROkBiiG/ZCnV3JunqT0ONI9ZVIuntPCjXLaamLT+9n
+         8lzkt7cfVehpVa4P7FLPWQU5zimSMjGOkKdHIOx7U6zU1M634VF370CQDsMUnCDCn/6I
+         BUiT/a3b/lo+LyzoY3bbdyOz+AwkcqHuspyJjH9yU87fQ60fe3SaiGGH6FHK2E3sWBOI
+         dYrJbBCPWhHYJUPtfM00EPplHRnjm+fKe2ofMcTNR/Rc9/QsfZQdHHm7/jWY5ah6V7tc
+         qTikh0zcU3tehgEA3D3C8ABNgXUUdQJaseXFZkyjJXM0WAG0oCXo4DW7UXefvMk/paqS
+         mCeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=SZihyt5308KW2rYcee3G+gbznNj92iM9/GOhpLQbwOk=;
+        b=5ZK26j98wnG21WVp1CeZ/pHWjO2mZ4Ly8jO1OE2h6IfNE5EtElhiw0TMe9bR4DU8tk
+         VaREwT4jiMwDmDAjlQWkKJzqTaIH3bk+hx/m1IjuP2sxGxtPtjIyumTI1zICJ0H727pU
+         emLIPmGemgr+MNzCVV+BWCSnyk9+mEaH3SMeE930o7RL052jOmv+0jG6YG4IPFE6FH93
+         OqeB5G3pHtLNzC0KmA/JtcKJIRa5TX02Vaym/jS3hW1v9tpTWwo481FmJ5RoDIQ07zZP
+         7MzrsKoKldLAW3NO+zdoibV4ZM0H2Xqf1Fr6Gc0bN7qA20Tj88Vu5sI27iJeSz8tWcui
+         eTfg==
+X-Gm-Message-State: AOAM53014pBf7yOfz+dLEwlmBsr3RfXXJCTl14xd5BEK1E+H1z/y81cS
+        Vd4vUvAuV4eaQg03ZSIFzIo8UOEYMJ3up1kHIWgGPw==
+X-Google-Smtp-Source: ABdhPJw7eWObgd2uYvlbAdRg36KHRNAU98h+fYoR0YaKoZ6nSoPKyP/j1J7/CK9iHxmYavd6liXAvESnWsDefzojiwo=
+X-Received: by 2002:a05:6808:d1:: with SMTP id t17mr8257345oic.161.1637089237997;
+ Tue, 16 Nov 2021 11:00:37 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH v2 0/2] Introduce the pkill_on_warn parameter
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>,
-        Alexander Popov <alex.popov@linux.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul McKenney <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Laura Abbott <labbott@kernel.org>,
-        David S Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Scull <ascull@google.com>,
-        Marc Zyngier <maz@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Wang Qing <wangqing@vivo.com>, Mel Gorman <mgorman@suse.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
-        Mathieu Chouquet-Stringer <me@mathieu.digital>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stephen Kitt <steve@sk2.org>, Stephen Boyd <sboyd@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-hardening@vger.kernel.org,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>, notify@kernel.org,
-        main@lists.elisa.tech, safety-architecture@lists.elisa.tech,
-        devel@lists.elisa.tech, Shuah Khan <shuah@kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20211027233215.306111-1-alex.popov@linux.com>
- <ac989387-3359-f8da-23f9-f5f6deca4db8@linux.com>
- <CAHk-=wgRmjkP3+32XPULMLTkv24AkA=nNLa7xxvSg-F0G1sJ9g@mail.gmail.com>
- <77b79f0c-48f2-16dd-1d00-22f3a1b1f5a6@linux.com>
- <CAKXUXMx5Oi-dNVKB+8E-pdrz+ooELMZf=oT_oGXKFrNWejz=fg@mail.gmail.com>
- <20211115110649.4f9cb390@gandalf.local.home>
- <202111151116.933184F716@keescook>
- <59534db5-b251-c0c8-791f-58aca5c00a2b@linux.com>
- <202111161037.7456C981@keescook>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <202111161037.7456C981@keescook>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.19306 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+References: <20211116142631.571909964@linuxfoundation.org> <CA+G9fYvyATAWicFbnKnOTqc=MKUXNrbCBYP6zej3FJJyA31WPQ@mail.gmail.com>
+In-Reply-To: <CA+G9fYvyATAWicFbnKnOTqc=MKUXNrbCBYP6zej3FJJyA31WPQ@mail.gmail.com>
+From:   =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
+Date:   Tue, 16 Nov 2021 13:00:26 -0600
+Message-ID: <CAEUSe7-eCDLo_qcDVUZgvZHVan_igPvE16-PYnXMOh3TZdQ9+w@mail.gmail.com>
+Subject: Re: [PATCH 5.15 000/927] 5.15.3-rc2 review
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/2021 10:41 AM, Kees Cook wrote:
-> On Tue, Nov 16, 2021 at 12:12:16PM +0300, Alexander Popov wrote:
->> What if the Linux kernel had a LSM module responsible for error handling policy?
->> That would require adding LSM hooks to BUG*(), WARN*(), KERN_EMERG, etc.
->> In such LSM policy we can decide immediately how to react on the kernel error.
->> We can even decide depending on the subsystem and things like that.
-> That would solve the "atomicity" issue the WARN tracepoint solution has,
-> and it would allow for very flexible userspace policy.
+Hello!
+
+On Tue, 16 Nov 2021 at 11:18, Naresh Kamboju <naresh.kamboju@linaro.org> wr=
+ote:
 >
-> I actually wonder if the existing panic_on_* sites should serve as a
-> guide for where to put the hooks. The current sysctls could be replaced
-> by the hooks and a simple LSM.
+> On Tue, 16 Nov 2021 at 20:31, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.15.3 release.
+> > There are 927 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Thu, 18 Nov 2021 14:24:22 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patc=
+h-5.15.3-rc2.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git linux-5.15.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+>
+> Regression found on arm64 juno-r2 / qemu-arm64.
+> Following kernel crash reported on stable-rc 5.15
+>
+> metadata:
+>   git branch: linux-5.15.y
+>   git repo: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+>   git commit: cb98d6b416c1a202f89fa1a3cebf05b054c3aa96
+>   git describe: v5.15.2-928-gcb98d6b416c1
+>   make_kernelversion: 5.15.3-rc2
+>   kernel-config: https://builds.tuxbuild.com/210RSpE88PsYvgxZBgc8tYKzSYL/=
+config
+>
+> Kernel crash log:
+> -----------------
+> [    0.368057] kernel BUG at crypto/algapi.c:461!
+> [    0.368438] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
+> [    0.368921] Modules linked in:
+> [    0.369233] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.15.3-rc2 #1
+> [    0.369974] Hardware name: linux,dummy-virt (DT)
+> [    0.370280] pstate: 20400005 (nzCv daif +PAN -UAO -TCO -DIT -SSBS BTYP=
+E=3D--)
+> [    0.370829] pc : crypto_unregister_alg+0x100/0x110
+> [    0.371266] lr : crypto_unregister_alg+0x90/0x110
+> [    0.371699] sp : ffff80001003bce0
+> [    0.372003] x29: ffff80001003bce0 x28: 0000000000000000 x27: ffffb7ae6=
+ee804f8
+> [    0.372643] x26: ffffb7ae6ef51060 x25: 0000000000000006 x24: ffffb7ae6=
+f068344
+> [    0.373291] x23: ffffb7ae6ee6d348 x22: ffffb7ae6fc72728 x21: ffff80001=
+003bd18
+> [    0.373939] x20: ffffb7ae6f93d598 x19: ffff0000c0d6f500 x18: fffffffff=
+fffffff
+> [    0.374582] x17: 6120737265746e75 x16: 6f632037202c7265 x15: ffff80009=
+003b9d7
+> [    0.375225] x14: 0000000000000001 x13: 293635326168732c x12: ffff0000f=
+f7f49e8
+> [    0.375868] x11: 0000000000000010 x10: 00000000000000a5 x9 : ffffb7ae6=
+d74c190
+> [    0.376509] x8 : ffff80001003bcc8 x7 : ffff80001003bcb8 x6 : ffff0000c=
+0d6f510
+> [    0.377325] x5 : ffff80001003bca8 x4 : ffff80001003bcc8 x3 : ffff80001=
+003bca8
+> [    0.377970] x2 : 0000000000000000 x1 : 0000000000000001 x0 : 000000000=
+0000002
+> [    0.378617] Call trace:
+> [    0.378846]  crypto_unregister_alg+0x100/0x110
+> [    0.379260]  crypto_unregister_skcipher+0x20/0x30
+> [    0.379726]  simd_skcipher_free+0x28/0x40
+> [    0.380251]  aes_exit+0x38/0x70
+> [    0.380575]  cpu_feature_match_AES_init+0xac/0xdc
+> [    0.381010]  do_one_initcall+0x50/0x2b0
+> [    0.381348]  kernel_init_freeable+0x250/0x2d8
+> [    0.381747]  kernel_init+0x30/0x140
+> [    0.382068]  ret_from_fork+0x10/0x20
+> [    0.382398] Code: 910ea000 9433fa21 d4210000 17ffffee (d4210000)
+> [    0.382954] ---[ end trace 9a836623ed63b8f4 ]---
+> [    0.383842] Kernel panic - not syncing: Attempted to kill init!
+> exitcode=3D0x0000000b
+> [    0.384527] SMP: stopping secondary CPUs
+> [    0.384904] Kernel Offset: 0x37ae5d200000 from 0xffff800010000000
+> [    0.385452] PHYS_OFFSET: 0x40000000
+> [    0.385771] CPU features: 0x000042c1,23300e42
+> [    0.386169] Memory Limit: none
+> [    0.386451] ---[ end Kernel panic - not syncing: Attempted to kill
+> init! exitcode=3D0x0000000b ]---
+>
+>
+>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>
+> boot log,
+> https://lkft.validation.linaro.org/scheduler/job/3939198#L401
+>
+> build link:
+> -----------
+> https://builds.tuxbuild.com/210RSpE88PsYvgxZBgc8tYKzSYL/build.log
+>
+> build config:
+> -------------
+> https://builds.tuxbuild.com/210RSpE88PsYvgxZBgc8tYKzSYL/config
 
-Do you really want to make error handling a "security" issue?
-If you add security_bug(), security_warn_on() and the like
-you're begging that they be included in SELinux (AppArmor) policy.
-BPF, too, come to think of it. Is that what you want?
+Anders' bisection led to this:
 
+# first bad commit: [f3cb2b65eb9a206007e83679945b082aff1362c9] crypto:
+api - Fix built-in testing dependency failures
+commit f3cb2b65eb9a206007e83679945b082aff1362c9
+Author: Herbert Xu <herbert@gondor.apana.org.au>
+Date:   Fri Sep 17 08:26:19 2021 +0800
+
+    crypto: api - Fix built-in testing dependency failures
+
+Greetings!
+
+Daniel D=C3=ADaz
+daniel.diaz@linaro.org
+
+--
+# bad: [cb98d6b416c1a202f89fa1a3cebf05b054c3aa96] Linux 5.15.3-rc2
+# good: [7cc36c3e14ae0af800a3a5d20cb17d0c168fc956] Linux 5.15.2
+git bisect start 'cb98d6b416c1a202f89fa1a3cebf05b054c3aa96'
+'efcdec78c4504aba664ccd7e1bfe4a6493126c96'
+# bad: [e4c9bb1c1409f4a5f83bf9b859580175789d7e1a] mt76: mt7915: fix
+bit fields for HT rate idx
+git bisect bad e4c9bb1c1409f4a5f83bf9b859580175789d7e1a
+# bad: [21c1a3174ff915ed8d83d4d390d97bcc390a78e4] brcmfmac: Add DMI
+nvram filename quirk for Cyberbook T116 tablet
+git bisect bad 21c1a3174ff915ed8d83d4d390d97bcc390a78e4
+# good: [359fa686d83b7f5410ab48f629f0bbac9286a546] power: supply:
+max17042_battery: Prevent int underflow in set_soc_threshold
+git bisect good 359fa686d83b7f5410ab48f629f0bbac9286a546
+# good: [5b6273aa9d9844b865e2b34857b0f1b155102541] serial: 8250: Fix
+reporting real baudrate value in c_ospeed field
+git bisect good 5b6273aa9d9844b865e2b34857b0f1b155102541
+# good: [0420c03e13550855a7697b8c9eb373696f9ff4b2] mwifiex: Run
+SET_BSS_MODE when changing from P2P to STATION vif-type
+git bisect good 0420c03e13550855a7697b8c9eb373696f9ff4b2
+# bad: [627e09916874a7d944a880f27377ac3039a95702] media: netup_unidvb:
+handle interrupt properly according to the firmware
+git bisect bad 627e09916874a7d944a880f27377ac3039a95702
+# bad: [f2c14d46beb5c26e3e48b2477e0bae1ed48a1914] selftests: net:
+fib_nexthops: Wait before checking reported idle time
+git bisect bad f2c14d46beb5c26e3e48b2477e0bae1ed48a1914
+# good: [5c4480638561e3d49b25747d78e78094b279d6b8] fscrypt: allow
+256-bit master keys with AES-256-XTS
+git bisect good 5c4480638561e3d49b25747d78e78094b279d6b8
+# good: [2164859616e308f031897488558b5460b4dcd96a] drm/amd/display:
+Fix null pointer dereference for encoders
+git bisect good 2164859616e308f031897488558b5460b4dcd96a
+# bad: [f3cb2b65eb9a206007e83679945b082aff1362c9] crypto: api - Fix
+built-in testing dependency failures
+git bisect bad f3cb2b65eb9a206007e83679945b082aff1362c9
+# first bad commit: [f3cb2b65eb9a206007e83679945b082aff1362c9] crypto:
+api - Fix built-in testing dependency failures
+commit f3cb2b65eb9a206007e83679945b082aff1362c9
+Author: Herbert Xu <herbert@gondor.apana.org.au>
+Date:   Fri Sep 17 08:26:19 2021 +0800
+
+    crypto: api - Fix built-in testing dependency failures
+
+    [ Upstream commit adad556efcdd42a1d9e060cbe5f6161cccf1fa28 ]
+
+    When complex algorithms that depend on other algorithms are built
+    into the kernel, the order of registration must be done such that
+    the underlying algorithms are ready before the ones on top are
+    registered.  As otherwise they would fail during the self-test
+    which is required during registration.
+
+    In the past we have used subsystem initialisation ordering to
+    guarantee this.  The number of such precedence levels are limited
+    and they may cause ripple effects in other subsystems.
+
+    This patch solves this problem by delaying all self-tests during
+    boot-up for built-in algorithms.  They will be tested either when
+    something else in the kernel requests for them, or when we have
+    finished registering all built-in algorithms, whichever comes
+    earlier.
+
+    Reported-by: Vladis Dronov <vdronov@redhat.com>
+    Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+    Signed-off-by: Sasha Levin <sashal@kernel.org>
+
+ crypto/algapi.c   | 73 ++++++++++++++++++++++++++++++++++++++-------------=
+----
+ crypto/api.c      | 52 +++++++++++++++++++++++++++++++++++----
+ crypto/internal.h | 10 ++++++++
+ 3 files changed, 108 insertions(+), 27 deletions(-)
