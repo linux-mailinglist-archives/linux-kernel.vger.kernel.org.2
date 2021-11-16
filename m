@@ -2,102 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC384536A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 574B84536A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238759AbhKPQDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 11:03:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238727AbhKPQDb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:03:31 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7292C061200
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 08:00:33 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id d5so38571885wrc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 08:00:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vivvsuH8s0Rlwy3Rc73sEbERCHnOl4u00Z/GA/x3G6g=;
-        b=nbFTZdxqyIjVmvoX+jQEDonrxfsgwvgcbWn7JBcn72B3lmU500wQqiPby9Dwjx4W2N
-         d/VAdkun5xUHfOy/a6s9eW7+76tsriYEsTi85gvFEZTsnIw5NGQyIcan/VvYqbC7bgAH
-         o3N3GMTH5BgniwzuS7AMq0yg+L7Si96FrP5+S7FQlzrfkIzfl0wvCfPKDqYrjrM6cTHx
-         NYEzdTVngxbrDuP9OP9jmPNnNV9QvIgGj8O5R1QafhV6/IBcFgxl3sl8Vxaop2wHGT/O
-         Gj8GjTLPRRh4FzfI+tHd/XpyCg1LbKxtST7/ev9qdQZtx0Tc43wQU0JO0LK+DAk2sS07
-         tqNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vivvsuH8s0Rlwy3Rc73sEbERCHnOl4u00Z/GA/x3G6g=;
-        b=xn+BNBdMPpJpMhCduaVDE2DqMVnA5WXdtB40z6YVEYkrcHkvPDxf/5s7doUVnqKyIn
-         lbCP06CX0mqAH62k6QJPNqSTPg09griWLz0ESeq+Ap+LOy/v8xVik+8PeAxGhxV+UKoG
-         1CBau6iOJc5KmKLjHCxPTgy48RJFowN9+rnMDeY5AIw3TfymQgjPZ1GXsEV1wjEuKw1b
-         edfz46RwN0Rmzs+W0dKp5ijD5QHlujnVuzAPH2rOMOOOjJVByfh6+ityVERwavgVXQ1O
-         +7sWIa294Mnna01Wkgr/aQt52be0u8uzHz3Qu0jIozIRLnXKJKaE0oRRDD26lU+3jzgD
-         MPkQ==
-X-Gm-Message-State: AOAM533tc6JnIMWkQV2MasnGtdGzwFg6WokWllHjFDu32dpG4QOA3xS5
-        FU1Rv62812q4n1lXuJOZlAaZNQ==
-X-Google-Smtp-Source: ABdhPJyZehPq7JhDNNL/XDSuANWvtcj+10R5LKYSSihExPpAqdY0UUojx0svlCksSWQARPLgPwWa5w==
-X-Received: by 2002:adf:f64b:: with SMTP id x11mr10869001wrp.4.1637078431851;
-        Tue, 16 Nov 2021 08:00:31 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:6870:334:c3a9:fed2? ([2a01:e34:ed2f:f020:6870:334:c3a9:fed2])
-        by smtp.googlemail.com with ESMTPSA id h15sm3377964wmq.32.2021.11.16.08.00.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 08:00:30 -0800 (PST)
-Subject: Re: [PATCH 1/2] clocksource: exynos_mct: Refactor resources
- allocation
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-References: <20211101193531.15078-1-semen.protsenko@linaro.org>
- <20211101193531.15078-2-semen.protsenko@linaro.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <f7dd62c9-9c4d-4130-58ee-54ec2b7729f9@linaro.org>
-Date:   Tue, 16 Nov 2021 17:00:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S238767AbhKPQDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 11:03:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238619AbhKPQDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 11:03:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3FFA61C12;
+        Tue, 16 Nov 2021 16:00:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637078436;
+        bh=JwxnYwbgjPGa5I2tARYbozTLXPfvt8vxbd7WNU9JvRA=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=JHqr3wSXUs6/2LCB1i0BwUkEOuft8NUX2nn7LbdnN4RlbtrNAxVbkvnGGuWYDEHaj
+         g+l8IXd4nWozKS4ef3PI7UaSErC/GWw4eQ+I0lrmgayG6SJogWxn34dtnveij05Yw2
+         4mmnn6RLNJx6e/VAkFlN7yaIO7xYcKSgGSEi2+9kplKBoSZ928HsHJP0Sqm4arfD3t
+         /e7854T6dbsJd9ghvbJegay0Uhyp4fVgz4rF/efpAaxTgu7X71UanxgwgyOZY29UJJ
+         CzD6dqtEtonOIzvgCzaqKT5Mf0m2DSZ5v7JepbTROJHvcgncd8HYRVdCPNVjqAZzZO
+         VE/H0jUXQRlqA==
+Message-ID: <eac5f11d7ddcc65d16a9a949c5cf44851bff8f5f.camel@kernel.org>
+Subject: Re: [PATCH v7 00/17] Enroll kernel keys thru MOK
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
+        linux-integrity@vger.kernel.org, zohar@linux.ibm.com,
+        dhowells@redhat.com, dwmw2@infradead.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        jmorris@namei.org, serge@hallyn.com
+Cc:     keescook@chromium.org, torvalds@linux-foundation.org,
+        weiyongjun1@huawei.com, nayna@linux.ibm.com, ebiggers@google.com,
+        ardb@kernel.org, nramas@linux.microsoft.com, lszubowi@redhat.com,
+        jason@zx2c4.com, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-efi@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
+        konrad.wilk@oracle.com
+Date:   Tue, 16 Nov 2021 18:00:34 +0200
+In-Reply-To: <20211116001545.2639333-1-eric.snowberg@oracle.com>
+References: <20211116001545.2639333-1-eric.snowberg@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-In-Reply-To: <20211101193531.15078-2-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/11/2021 20:35, Sam Protsenko wrote:
-> From: Marek Szyprowski <m.szyprowski@samsung.com>
-> 
-> Move interrupts allocation from exynos4_timer_resources() into separate
-> function together with the interrupt number parsing code from
-> mct_init_dt(), so the code for managing interrupts is kept together.
-> While touching exynos4_timer_resources() function, move of_iomap() to it.
-> No functional changes.
-> 
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Reviewed-by: Chanwoo Choi <cw00.choi@samsung.com>
-> Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
-> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
+On Mon, 2021-11-15 at 19:15 -0500, Eric Snowberg wrote:
+> Back in 2013 Linus requested a feature to allow end-users to have the=20
+> ability "to add their own keys and sign modules they trust". This was
+> his *second* order outlined here [1]. There have been many attempts=20
+> over the years to solve this problem, all have been rejected.=C2=A0 Many=
+=20
+> of the failed attempts loaded all preboot firmware keys into the kernel,
+> including the Secure Boot keys. Many distributions carry one of these=20
+> rejected attempts [2], [3], [4]. This series tries to solve this problem=
+=20
+> with a solution that takes into account all the problems brought up in=
+=20
+> the previous attempts.
+>=20
+> On UEFI based systems, this series introduces a new Linux kernel keyring=
+=20
+> containing the Machine Owner Keys (MOK) called machine. It also defines
+> a new MOK variable in shim. This variable allows the end-user to decide=
+=20
+> if they want to load MOK keys into the machine keyring. Mimi has suggeste=
+d=20
+> that only CA keys contained within the MOK be loaded into the machine=20
+> keyring. All other certs will load into the platform keyring instead.
+>=20
+> By default, nothing changes; MOK keys are not loaded into the machine
+> keyring.=C2=A0 They are only loaded after the end-user makes the decision=
+=20
+> themselves.=C2=A0 The end-user would set this through mokutil using a new=
+=20
+> --trust-mok option [5]. This would work similar to how the kernel uses=
+=20
+> MOK variables to enable/disable signature validation as well as use/ignor=
+e=20
+> the db. Any kernel operation that uses either the builtin or secondary=
+=20
+> trusted keys as a trust source shall also reference the new machine=20
+> keyring as a trust source.
+>=20
+> Secure Boot keys will never be loaded into the machine keyring.=C2=A0 The=
+y
+> will always be loaded into the platform keyring.=C2=A0 If an end-user wan=
+ted=20
+> to load one, they would need to enroll it into the MOK.
+>=20
+> Steps required by the end user:
+>=20
+> Sign kernel module with user created key:
+> $ /usr/src/kernels/$(uname -r)/scripts/sign-file sha512 \
+> =C2=A0=C2=A0 machine_signing_key.priv machine_signing_key.x509 my_module.=
+ko
+>=20
+> Import the key into the MOK
+> $ mokutil --import machine_signing_key.x509
+>=20
+> Setup the kernel to load MOK keys into the .machine keyring
+> $ mokutil --trust-mok
+>=20
+> Then reboot, the MokManager will load and ask if you want to trust the
+> MOK key and enroll the MOK into the MOKList.=C2=A0 Afterwards the signed =
+kernel
+> module will load.
+>=20
+> I have included=C2=A0 a link to the mokutil [5] changes I have made to su=
+pport=20
+> this new functionality.=C2=A0 The shim changes have now been accepted
+> upstream [6].
+>=20
+> [1] https://marc.info/?l=3Dlinux-kernel&m=3D136185386310140&w=3D2
+> [2] https://lore.kernel.org/lkml/1479737095.2487.34.camel@linux.vnet.ibm.=
+com/
+> [3] https://lore.kernel.org/lkml/1556221605.24945.3.camel@HansenPartnersh=
+ip.com/
+> [4] https://lore.kernel.org/linux-integrity/1e41f22b1f11784f1e943f32bf620=
+34d4e054cdb.camel@HansenPartnership.com/
+> [5] https://github.com/esnowberg/mokutil/tree/mokvars-v3
+> [6] https://github.com/rhboot/shim/commit/4e513405b4f1641710115780d19dcec=
+130c5208f
+>=20
+> Eric Snowberg (17):
+> =C2=A0 integrity: Introduce a Linux keyring called machine
+> =C2=A0 integrity: Do not allow machine keyring updates following init
+> =C2=A0 KEYS: Create static version of public_key_verify_signature
+> =C2=A0 X.509: Parse Basic Constraints for CA
+> =C2=A0 KEYS: CA link restriction
+> =C2=A0 integrity: restrict INTEGRITY_KEYRING_MACHINE to restrict_link_by_=
+ca
+> =C2=A0 integrity: Fix warning about missing prototypes
+> =C2=A0 integrity: add new keyring handler for mok keys
+> =C2=A0 KEYS: Rename get_builtin_and_secondary_restriction
+> =C2=A0 KEYS: add a reference to machine keyring
+> =C2=A0 KEYS: Introduce link restriction for machine keys
+> =C2=A0 KEYS: integrity: change link restriction to trust the machine keyr=
+ing
+> =C2=A0 KEYS: link secondary_trusted_keys to machine trusted keys
+> =C2=A0 integrity: store reference to machine keyring
+> =C2=A0 efi/mokvar: move up init order
+> =C2=A0 integrity: Trust MOK keys if MokListTrustedRT found
+> =C2=A0 integrity: Only use machine keyring when uefi_check_trust_mok_keys=
+ is
+> =C2=A0=C2=A0=C2=A0 true
+>=20
+> =C2=A0certs/system_keyring.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 | 44 ++++++++++-
+> =C2=A0crypto/asymmetric_keys/restrict.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 43 +++++++++++
+> =C2=A0crypto/asymmetric_keys/x509_cert_parser.c=C2=A0=C2=A0=C2=A0=C2=A0 |=
+=C2=A0 9 +++
+> =C2=A0drivers/firmware/efi/mokvar-table.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 2 +-
+> =C2=A0include/crypto/public_key.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 15 =
+++++
+> =C2=A0include/keys/system_keyring.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 14 ++++
+> =C2=A0security/integrity/Kconfig=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ | 12 +++
+> =C2=A0security/integrity/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=
+=A0 1 +
+> =C2=A0security/integrity/digsig.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 23 =
++++++-
+> =C2=A0security/integrity/integrity.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 17 +++-
+> =C2=A0.../platform_certs/keyring_handler.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 | 18 ++++-
+> =C2=A0.../platform_certs/keyring_handler.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 5 ++
+> =C2=A0security/integrity/platform_certs/load_uefi.c |=C2=A0 4 +-
+> =C2=A0.../platform_certs/machine_keyring.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 | 77 +++++++++++++++++++
+> =C2=A014 files changed, 273 insertions(+), 11 deletions(-)
+> =C2=A0create mode 100644 security/integrity/platform_certs/machine_keyrin=
+g.c
+>=20
+>=20
+> base-commit: fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf
 
-Applied, thx
+Does shim have the necessary features in a release?
 
-[ ... ]
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+/Jarkko
