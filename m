@@ -2,132 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8614529E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:38:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52EA94529E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:39:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235466AbhKPFlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 00:41:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58424 "EHLO
+        id S235558AbhKPFmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 00:42:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235364AbhKPFlK (ORCPT
+        with ESMTP id S235426AbhKPFlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 00:41:10 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A0FC0EC8E1;
-        Mon, 15 Nov 2021 18:58:40 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id x131so16748959pfc.12;
-        Mon, 15 Nov 2021 18:58:40 -0800 (PST)
+        Tue, 16 Nov 2021 00:41:35 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63EAEC0EC8F7;
+        Mon, 15 Nov 2021 18:59:52 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id x10so24139888ioj.9;
+        Mon, 15 Nov 2021 18:59:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7xJyceCwnTp5WWpRcEMQwaxzznJ9LbCDIFxPGA0GsOU=;
-        b=O6HqemF+hZLRFMRVLyLsvbXNxHXQ92M95vr8nVPUBSLL9JrTeFM4wYJAfWFjDgroKS
-         RPqOnf1OyTGxSqZMhoLhH99F6rnjUc4ok9JBWx8Pj83/r23bWeb3ZSAzJiH0LIFysUcU
-         1ZPjZ2lRKapGLTZmbnFMrFdOFkdk3Mjyr0TKpScFvA/+fHhnNvgz65xBhZSIaPqyXOJU
-         5I4djq734KyGA6STUfstxj/3F7w0ivk7GankPRWEzW8tHOLdHVgHgHGITeLMwErERXCH
-         g6hP4yUW6j0Im6VK67Wi+71zXkmv7WVgjMDsF8kTX7BkM0tdCoLzY4GVjKuc02Z4OHr0
-         8lSw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=MjDTtA6DTI6xzB5x2nBzzPrcPt5OZM3EBixaaL8qpWI=;
+        b=N6FKSQHI+zQdfdfVISllSNmjgLMXXkJHY/TiKMgsMt8oYRWnon0pPWUazM3Xs1gY/n
+         BeSt23MOkEdzvltuzyjhA2W1AwzfWBzNLP8JYGN2Eh9yojOQq6HKLPlQqGKz1j9wQTIJ
+         EEQmUVZutLBo6Pl/eGgjo3PlIezigsnF5+A3PLISrBQyklp3/eox9ecKgFYmQtC6PmGi
+         AYEtN9iZHZjdjB7RGdguUDIDHrx6RMtFS4OaPQ8E77JH/UUPMge5otDS0eG7Q2WqW9VH
+         kkMs3moEZNFZe4U2oOqdMxCxdCWf6BZacaafN3t/26AyCh3wwQeDBoVBfiWdkdViIahG
+         1bdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7xJyceCwnTp5WWpRcEMQwaxzznJ9LbCDIFxPGA0GsOU=;
-        b=IaADv3KApyjUiYZAEWNrGa5cbAoSUaw1KMAv84jVdM0KaBDFmIs0OJJ1/g7xlMXmED
-         I+nmhJ5uoNDDL3C/UXDzK+b5WtK9V3fWHC0yv/73Cykq4xMYwG5hwdRkx8EW7jwZ0hNR
-         Kpi4Rxcvd2OPv0Vc6br+3Wn2Ad2xaZD3MX80bu0zMixZfEmtRwjO6sXP52uj4wVRxmHx
-         ZcdZI86ZCcZIB3C7bqG/0N3Ndsqge8wPv/3ALtHKltqN55FjIIlLQtSLs0DZvXnka/8Z
-         bKNKlaDgmD8q1CBfPtRfS+Rpo+nSqahFJFVu1bMtAjc7AYUrBvzrqcs2ESufiOCIujvA
-         APeg==
-X-Gm-Message-State: AOAM530GCKRXNCaOpYDlOx9PycFly/hnwkwxOIeaXEfcEfcw+YFaWmVO
-        4AaA3rgp7BWQ1UY0cs6IzhDN/xGVUUE=
-X-Google-Smtp-Source: ABdhPJylo814/wyoZJZmJWUBYOtJ1heHX8jvPHhnHVMuPyrf//yoad0eMoYVtYDaGjuNzfPEEQ5mfQ==
-X-Received: by 2002:aa7:8717:0:b0:4a2:967c:96b with SMTP id b23-20020aa78717000000b004a2967c096bmr19158419pfo.14.1637031520058;
-        Mon, 15 Nov 2021 18:58:40 -0800 (PST)
-Received: from [192.168.11.5] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id mu4sm632768pjb.8.2021.11.15.18.58.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Nov 2021 18:58:39 -0800 (PST)
-Subject: Re: [PATCH] docs: Update Sphinx requirements
-From:   Akira Yokosawa <akiyks@gmail.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Federico Vaga <federico.vaga@vaga.pv.it>,
-        Alex Shi <alexs@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <2c704ddd-2da2-138b-4928-890e92b66f9f@gmail.com>
- <875ystn40s.fsf@meer.lwn.net>
- <550fe790-b18d-f882-4c70-477b596facc7@gmail.com>
-Message-ID: <e75633f9-3228-dd8f-d8d1-42f8b8046c9e@gmail.com>
-Date:   Tue, 16 Nov 2021 11:58:36 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MjDTtA6DTI6xzB5x2nBzzPrcPt5OZM3EBixaaL8qpWI=;
+        b=LK+J/DyQKqzsYT2de7kkmskhNvKsoykCJN3hhjRgm9Lq0NHtJrUhREcuNx6fvUuAQ7
+         U2uBuF7vm4p6UXJoLRvrPC5on/0mgFWeHq/SlZoLFY6WLpC8ipbwOYBzpzx/B20c1oCy
+         T1Ob6gEJwXR8TpcExApFTklMU3fJEAt3tBvNc9JSe/3RUlTGn429g3Yo0gurOTsAKn3t
+         kqNCDVV0cbwOlGQSzp7r9mje31mvNMCwvjkxWbnJ/i7oHYPBwHq+m50RVpgBBBvpNHCe
+         tNX8NNJ07S+tLDNL3S+S3d7kIMgpKYM00K/ax+4BZWSlGjSUqW2wB4STmLsBu+g6d24m
+         VP3g==
+X-Gm-Message-State: AOAM530DoAMF75KBC9tx05pML4rpsXkJN28Q6CBzUrHkhicmOd9gcfVz
+        bcko5rE+khVx1qzexhyrg4ck9E4oBqPTB7mVfhE=
+X-Google-Smtp-Source: ABdhPJxGpDo22JWP+St++nExricZPROGw5bLAgB0waYE2v6yK5NuFCtHkI7fS9pVeii7gurWxgpSXYliFkDT2TmDNeE=
+X-Received: by 2002:a05:6638:13d5:: with SMTP id i21mr2746797jaj.79.1637031591902;
+ Mon, 15 Nov 2021 18:59:51 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <550fe790-b18d-f882-4c70-477b596facc7@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <m3lf36n0d8.fsf@t19.piap.pl> <AS8PR04MB86766EED807B963F4D9931E68CB29@AS8PR04MB8676.eurprd04.prod.outlook.com>
+In-Reply-To: <AS8PR04MB86766EED807B963F4D9931E68CB29@AS8PR04MB8676.eurprd04.prod.outlook.com>
+From:   Art Nikpal <email2tema@gmail.com>
+Date:   Tue, 16 Nov 2021 10:59:40 +0800
+Message-ID: <CAKaHn9+Mm7ijodyhsGS5FQO+yWnCUL46QtBjcu40TD3K7=U_zg@mail.gmail.com>
+Subject: Re: [PATCH v3 REPOST] PCIe: limit Max Read Request Size on i.MX to
+ 512 bytes
+To:     Richard Zhu <hongxing.zhu@nxp.com>
+Cc:     =?UTF-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Nov 2021 10:37:31 +0900
-Akira Yokosawa wrote:
-> On Mon, 15 Nov 2021 02:48:19 -0700
-> Jonathan Corbet wrote:
->> Akira Yokosawa <akiyks@gmail.com> writes:
->>
->>> Subject: [PATCH] docs: Update Sphinx requirements
->>>
->>> Commit f546ff0c0c07 ("Move our minimum Sphinx version to 1.7") raised
->>> the minimum version to 1.7.
->>>
->>> For pdfdocs, sphinx_pre_install says:
->>>
->>>     note: If you want pdf, you need at least Sphinx 2.4.4.
->>>
->>> , and current requirements.txt installs Sphinx 2.4.4.
->>>
->>> Update Sphinx versions mentioned in docs and remove a note on earlier
->>> Sphinx versions.
->>
->> It may be time to consider raising the minimum sphinx version
->> overall...
-> 
-> There is one thing we need to address (you might well be aware of).
-> 
-> Our Documentation/conf.py is not compatible for hrmldocs with
-> the combination sphinx_rtd_theme 1.0.0 and Sphinx >= 3.0.
-> This issue is the same as the one reported at:
->     https://github.com/readthedocs/sphinx_rtd_theme/issues/1240
->     "No stylesheet after upgrading to 1.0.0"
-> 
-> I tried the fix suggested there (html_css_files option),
-> and a stylesheet can be generated.
-> But the resulting html pages look quite different from the one
-> you see at https://www.kernel.org/doc/html/latest/ with the sans
-> font for text and distracting look of monospaced strings.
-> 
-> You can see a screenshot of such a page at
->     https://fars.ee/nkkZ
+On Fri, Oct 8, 2021 at 3:19 PM Richard Zhu <hongxing.zhu@nxp.com> wrote:
+>
+> > -----Original Message-----
+> > From: Krzysztof Ha=C5=82asa <khalasa@piap.pl>
+> > Sent: Wednesday, October 6, 2021 2:17 PM
+> > To: Bjorn Helgaas <bhelgaas@google.com>
+> > Cc: linux-pci@vger.kernel.org; Artem Lapkin <email2tema@gmail.com>; Nei=
+l
+> > Armstrong <narmstrong@baylibre.com>; Huacai Chen
+> > <chenhuacai@gmail.com>; Rob Herring <robh@kernel.org>; Lorenzo Pieralis=
+i
+> > <lorenzo.pieralisi@arm.com>; Krzysztof Wilczy=C5=84ski <kw@linux.com>; =
+Richard
+> > Zhu <hongxing.zhu@nxp.com>; Lucas Stach <l.stach@pengutronix.de>;
+> > linux-kernel@vger.kernel.org
+> > Subject: [PATCH v3 REPOST] PCIe: limit Max Read Request Size on i.MX to=
+ 512
+> > bytes
+> >
+> > DWC PCIe controller imposes limits on the Read Request Size that it can
+> > handle. For i.MX6 family it's fixed at 512 bytes by default.
+> >
+> > If a memory read larger than the limit is requested, the CPU responds w=
+ith
+> > Completer Abort (CA) (on i.MX6 Unsupported Request (UR) is returned
+> > instead due to a design error).
+> >
+> > The i.MX6 documentation states that the limit can be changed by writing=
+ to
+> > the PCIE_PL_MRCCR0 register, however there is a fixed (and
+> > undocumented) maximum (CX_REMOTE_RD_REQ_SIZE constant). Tests
+> > indicate that values larger than 512 bytes don't work, though.
+> >
+> > This patch makes the RTL8111 work on i.MX6.
+> >
+> > Signed-off-by: Krzysztof Ha=C5=82asa <khalasa@piap.pl>
+> [Richard Zhu] I'm fine with this patch. Acked-by: Richard Zhu <hongxing.z=
+hu@nxp.com>. Thanks.
 
-Having looked at https://sphinx-themes.org/sample-sites/sphinx-rtd-theme/,
-I'm wondering if the screenshot above is exactly what you'd
-expect by using the theme in the first place.
+Same will be fine for us
 
-Hmm??
-
-        Thanks, Akira
-
-> 
-> I guess there should be some knobs of Sphinx for customizing
-> the style, but have not figured them out.
-> 
-> Thoughts?
-> 
->         Thanks, Akira
-> 
->>              meanwhile, though, I've applied this, thanks. 
->>
->> jon
->>
+>
+> Best Regards
+> Richard Zhu
+>
+> > ---
+> > While ATM needed only on ARM, this version is compiled in on all archs.
+> >
+> > diff --git a/drivers/pci/controller/dwc/pci-imx6.c
+> > b/drivers/pci/controller/dwc/pci-imx6.c
+> > index 80fc98acf097..225380e75fff 100644
+> > --- a/drivers/pci/controller/dwc/pci-imx6.c
+> > +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> > @@ -1148,6 +1148,7 @@ static int imx6_pcie_probe(struct platform_device
+> > *pdev)
+> >               imx6_pcie->vph =3D NULL;
+> >       }
+> >
+> > +     max_pcie_mrrs =3D 512;
+> >       platform_set_drvdata(pdev, imx6_pcie);
+> >
+> >       ret =3D imx6_pcie_attach_pd(dev);
+> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c index
+> > aacf575c15cf..abeb48a64ee3 100644
+> > --- a/drivers/pci/pci.c
+> > +++ b/drivers/pci/pci.c
+> > @@ -112,6 +112,8 @@ enum pcie_bus_config_types pcie_bus_config =3D
+> > PCIE_BUS_PEER2PEER;  enum pcie_bus_config_types pcie_bus_config =3D
+> > PCIE_BUS_DEFAULT;  #endif
+> >
+> > +u16 max_pcie_mrrs =3D 4096; // no limit
+> > +
+> >  /*
+> >   * The default CLS is used if arch didn't set CLS explicitly and not
+> >   * all pci devices agree on the same value.  Arch can override either =
+@@
+> > -5816,6 +5818,9 @@ int pcie_set_readrq(struct pci_dev *dev, int rq)
+> >                       rq =3D mps;
+> >       }
+> >
+> > +     if (rq > max_pcie_mrrs)
+> > +             rq =3D max_pcie_mrrs;
+> > +
+> >       v =3D (ffs(rq) - 8) << 12;
+> >
+> >       ret =3D pcie_capability_clear_and_set_word(dev, PCI_EXP_DEVCTL, d=
+iff
+> > --git a/include/linux/pci.h b/include/linux/pci.h index
+> > 06ff1186c1ef..2b95a8204819 100644
+> > --- a/include/linux/pci.h
+> > +++ b/include/linux/pci.h
+> > @@ -996,6 +996,7 @@ enum pcie_bus_config_types {  };
+> >
+> >  extern enum pcie_bus_config_types pcie_bus_config;
+> > +extern u16 max_pcie_mrrs;
+> >
+> >  extern struct bus_type pci_bus_type;
+> >
+> >
+> > --
+> > Krzysztof "Chris" Ha=C5=82asa
+> >
+> > Sie=C4=87 Badawcza =C5=81ukasiewicz
+> > Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP Al. Jerozolim=
+skie 202,
+> > 02-486 Warszawa
