@@ -2,73 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 076A9453BC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 22:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AAD9453BC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 22:39:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230428AbhKPVku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 16:40:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58114 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229605AbhKPVku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 16:40:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D63461263;
-        Tue, 16 Nov 2021 21:37:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1637098672;
-        bh=aut4rZmVSqmvPDGWnVKMPUXMUilpN5ktFpJnFx75cyU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=0cKcHMIi8KdXlMQJmAQdEEfbVfjIlTVsKC0Kx1JFgqNshbstFV1fP76hzsonyFdGs
-         /dGMQBYUTB0DwhJnNblcxR70uOwpNPliVVx0/JfYSKRUI0tjhd6EvqzmZmX25+QaQU
-         jq+DnMujwUeBzPZ1fp2YzvFGPyAGomB+JyiSvtfI=
-Date:   Tue, 16 Nov 2021 13:37:50 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     "Drew DeVault" <sir@cmpwn.com>
-Cc:     "Ammar Faizi" <ammarfaizi2@gnuweeb.org>,
-        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>,
-        "io_uring Mailing List" <io-uring@vger.kernel.org>,
-        "Jens Axboe" <axboe@kernel.dk>,
-        "Pavel Begunkov" <asml.silence@gmail.com>, <linux-mm@kvack.org>
-Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
-Message-Id: <20211116133750.0f625f73a1e4843daf13b8f7@linux-foundation.org>
-In-Reply-To: <CFRGQ58D9IFX.PEH1JI9FGHV4@taiga>
-References: <20211028080813.15966-1-sir@cmpwn.com>
-        <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
-        <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
-        <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
-        <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
-        <CFQZSHV700KV.18Y62SACP8KOO@taiga>
-        <20211116114727.601021d0763be1f1efe2a6f9@linux-foundation.org>
-        <CFRGQ58D9IFX.PEH1JI9FGHV4@taiga>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S230231AbhKPVmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 16:42:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59884 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229733AbhKPVmA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 16:42:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637098742;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iTjW19qZdyUqpVYPyw3O2e3LOsDvSyyIGNuakp97I8M=;
+        b=QkpMX5u/zzzaZYMn03sRnYosFN75E1hLNcuo/R1zwN9s8OUZNIRIqx6wb3mxE48xnhgzcb
+        BMTSlQ+uGk7UImuBHeUAijqVJdUcR7zIFAE7/gythO/+gIG8Iu3mRo/ZvDmYjz+3ylh3i2
+        ORnDg23D09B/E5i90Yd6tPv1sohtH8M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-468-VIIy0NdwMbur5PwILq9BcQ-1; Tue, 16 Nov 2021 16:38:59 -0500
+X-MC-Unique: VIIy0NdwMbur5PwILq9BcQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6258C15721;
+        Tue, 16 Nov 2021 21:38:57 +0000 (UTC)
+Received: from starship (unknown [10.40.194.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1762760BF1;
+        Tue, 16 Nov 2021 21:38:48 +0000 (UTC)
+Message-ID: <f983e2e343f600ab5196aef8389d719bc2ab7308.camel@redhat.com>
+Subject: Re: [PATCH v2 0/6] nSVM optional features
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Shuah Khan <shuah@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Bandan Das <bsd@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wei Huang <wei.huang2@amd.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>
+Date:   Tue, 16 Nov 2021 23:38:47 +0200
+In-Reply-To: <20211101140324.197921-1-mlevitsk@redhat.com>
+References: <20211101140324.197921-1-mlevitsk@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Nov 2021 20:48:48 +0100 "Drew DeVault" <sir@cmpwn.com> wrote:
-
-> On Tue Nov 16, 2021 at 8:47 PM CET, Andrew Morton wrote:
-> > Well, why change the default? Surely anyone who cares is altering it
-> > at runtime anyway. And if they are not, we should encourage them to do
-> > so?
+On Mon, 2021-11-01 at 16:03 +0200, Maxim Levitsky wrote:
+> This is a resend of a few patches that implement few
+> SVM's optional features for nesting.
 > 
-> I addressed this question in the original patch's commit message.
+> I was testing these patches during last few weeks with various nested configurations
+> and I was unable to find any issues.
+> 
+> I also implemented support for nested vGIF in the last patch.
+> 
+> Best regards,
+> 	Maxim Levitsky
+> 
+> Maxim Levitsky (6):
+>   KVM: x86: SVM: add module param to control LBR virtualization
+>   KVM: x86: nSVM: correctly virtualize LBR msrs when L2 is running
+>   KVM: x86: nSVM: implement nested LBR virtualization
+>   KVM: x86: nSVM: implement nested VMLOAD/VMSAVE
+>   KVM: x86: nSVM: support PAUSE filter threshold and count when
+>     cpu_pm=on
+>   KVM: x86: SVM: implement nested vGIF
+> 
+>  arch/x86/kvm/svm/nested.c |  86 ++++++++++++++++++++---
+>  arch/x86/kvm/svm/svm.c    | 140 ++++++++++++++++++++++++++++++++------
+>  arch/x86/kvm/svm/svm.h    |  38 +++++++++--
+>  3 files changed, 228 insertions(+), 36 deletions(-)
+> 
+> -- 
+> 2.26.3
+> 
+> 
+Kind ping on these patches.
 
-Kinda.
-
-We're never going to get this right, are we?  The only person who can
-decide on a system's appropriate setting is the operator of that
-system.  Haphazardly increasing the limit every few years mainly
-reduces incentive for people to get this right.
-
-And people who test their software on 5.17 kernels will later find that
-it doesn't work on 5.16 and earlier, so they still need to tell their
-users to configure their systems appropriately.  Until 5.16 is
-obsolete, by which time we're looking at increasing the default again.
-
-I don't see how this change gets us closer to the desired state:
-getting distros and their users to configure their systems
-appropriately.
+Best regards,
+	Maxim Levitsky
 
