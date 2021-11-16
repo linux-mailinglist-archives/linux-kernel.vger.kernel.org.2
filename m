@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C61DF453969
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 19:30:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7594245396E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 19:32:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239479AbhKPSdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 13:33:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39478 "EHLO
+        id S239509AbhKPSeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 13:34:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235838AbhKPSds (ORCPT
+        with ESMTP id S239500AbhKPSeO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 13:33:48 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55345C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 10:30:51 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id j6-20020a17090a588600b001a78a5ce46aso3055431pji.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 10:30:51 -0800 (PST)
+        Tue, 16 Nov 2021 13:34:14 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E658AC061746
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 10:31:16 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id 200so18429487pga.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 10:31:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GTAAJI0ltdrSWld+SGAvys7taWMA2HrVk1Gbz1jjxAU=;
-        b=G0/YE+xN3GXAlKTirM119NnjTGOanYz5HutU0khmj0xNrDGfLpo9dEXLpI3ayiN/LZ
-         qT6bC9tj6UPCso3JyA38ScZrBB3vr4Nq3iYlU/KXovXqFiI4f3y1KjqvO7kkS07BRaYy
-         jX6akc2uJrqioQ4KSESa6rP9D/FuQQLKHOV7c=
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=j4+lKThDJbbAktRPCq9TfADc/zgUKrnl5njopfzTLfc=;
+        b=VuWKqC5czp8WpX/82MPZmsb/ac+LTU4k32UPSs4eA9SGVjk9IhP3CXgcW7B6JSsvlq
+         10HlxsUAyDVDKtlxjIe5DulrulwjC0oBtVx3TyOx/BX3fAR1Hbc/R2VrEk4E9i7ia++M
+         wrRH6Szu7Dp+nV0qpbNVR9fqT56lYzlYp3OPc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GTAAJI0ltdrSWld+SGAvys7taWMA2HrVk1Gbz1jjxAU=;
-        b=UG05rH1Y1lHRNx7qyh0owMdCmek1YAUikEslt59TW8sVCkjNnRRikYr8kUBpmgzFTv
-         xktYUdmYeSuB1Kyd0L757q9Ls3hmGAwaHZNW1dJHRd9MfQTmiUWiyK5eK+VjmMmpDJ3o
-         o3SylW+6WHji27iE7SqXijEhPU1L3XF5iz1eG7Qm/WOXsMkJLoSc0SdwVmX6yWjA4obx
-         Yy02o9v81Zbv8DbbIyZiOWIFYqhvgQ5X5ptFE1BK4WmGjLwPSBRIZ8UsZFzw14RaIcSD
-         zVLf5O/8whau0olTOzNe7WX/DbKP4f/VcUI9z1jYc2QkCLf01uku9m1B0TYLT3d8+cgm
-         ZGfQ==
-X-Gm-Message-State: AOAM531P8isdDJLJY3BV2UzlqhhVCbdszInjKQW0+FnVYeD/N2fA68Zn
-        BQXOl7Wxz7M5womO6VEmMxFZyw==
-X-Google-Smtp-Source: ABdhPJx/y/oON+xAv+NB14+oceVr4Ex7+YFLLyvs3AGDqKNobo2YB1xxQ6109Jactf8wbpFYJyrjHQ==
-X-Received: by 2002:a17:902:e88a:b0:141:dfde:eed7 with SMTP id w10-20020a170902e88a00b00141dfdeeed7mr47904017plg.17.1637087450846;
-        Tue, 16 Nov 2021 10:30:50 -0800 (PST)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=j4+lKThDJbbAktRPCq9TfADc/zgUKrnl5njopfzTLfc=;
+        b=51BSSiUPkZkIsmvG/mFfmXwSxD1aOqxHOkB7ffM8OuBcrdithjWUmZOImr9gFk4wI3
+         3AoBfdQ3ohqPUy+7pPq0n8Kwpi18sI9iKEdMbQvIBnUTkQIzxw8VN6ngLQHjQU81/awu
+         fTDQioiEX/l+3vPLWb1vYjJS2aEq2j+GKX99wLlxELSDYE/6JnmReGLQ7itgnAAoWL0c
+         E9BPLygDG37+Xg83txYT6Zw8i0l0BHO9KZ9I7fmyq2xhsMoWVCE5DvXti4xcBpPAXM6+
+         Slu0ywiQp+CtUv/KlKL3vZzNw2VksmnAkeBDZab6yB76DnoDCgmGHKhxTRLHowj3PhKg
+         CNqA==
+X-Gm-Message-State: AOAM530JUUwRjXK6LzFY8LJFg0Sl9XUbHi+Juxb6BEfZNyd/nOFSm3wn
+        qnukg41E+TaIcRaolZqH1Rd5zQ==
+X-Google-Smtp-Source: ABdhPJzldjHQEBFnOV/fJJ5FmAa6khPC53toMdW+6DQgWy/6Jd6Pt7BjGFLdYKVnRfo7vywjfN1gQQ==
+X-Received: by 2002:a05:6a00:1a04:b0:4a0:6e3:27b3 with SMTP id g4-20020a056a001a0400b004a006e327b3mr1198608pfv.24.1637087476065;
+        Tue, 16 Nov 2021 10:31:16 -0800 (PST)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z30sm18705960pfg.30.2021.11.16.10.30.50
+        by smtp.gmail.com with ESMTPSA id t8sm15750575pgk.66.2021.11.16.10.31.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 10:30:50 -0800 (PST)
-Date:   Tue, 16 Nov 2021 10:30:49 -0800
+        Tue, 16 Nov 2021 10:31:15 -0800 (PST)
+Date:   Tue, 16 Nov 2021 10:31:15 -0800
 From:   Kees Cook <keescook@chromium.org>
 To:     "Eric W. Biederman" <ebiederm@xmission.com>
 Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
@@ -60,8 +61,8 @@ Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
         Marko =?iso-8859-1?B?TeRrZWzk?= <marko.makela@mariadb.com>,
         linux-api@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 2/3] signal: Requeue signals in the appropriate queue
-Message-ID: <202111161027.C7957C65@keescook>
+Subject: Re: [PATCH 3/3] signal: Requeue ptrace signals
+Message-ID: <202111161031.57764153B@keescook>
 References: <20211101034147.6203-1-khuey@kylehuey.com>
  <877ddqabvs.fsf@disp2133>
  <CAP045AqJVXA60R9RF8Gb2PWGBsK6bZ7tVBkdCcPYYrp6rOkG-Q@mail.gmail.com>
@@ -69,205 +70,111 @@ References: <20211101034147.6203-1-khuey@kylehuey.com>
  <CAP045ApAX725ZfujaK-jJNkfCo5s+oVFpBvNfPJk+DKY8K7d=Q@mail.gmail.com>
  <CAP045AqsstnxfTyXhhCGDSucqGN7BTtfHJ5s6ZxUQC5K-JU56A@mail.gmail.com>
  <87bl2kekig.fsf_-_@email.froward.int.ebiederm.org>
- <87zgq4d5r4.fsf_-_@email.froward.int.ebiederm.org>
+ <87tugcd5p2.fsf_-_@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <87zgq4d5r4.fsf_-_@email.froward.int.ebiederm.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87tugcd5p2.fsf_-_@email.froward.int.ebiederm.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 11:33:19PM -0600, Eric W. Biederman wrote:
+On Mon, Nov 15, 2021 at 11:34:33PM -0600, Eric W. Biederman wrote:
 > 
-> In the event that a tracer changes which signal needs to be delivered
-> and that signal is currently blocked then the signal needs to be
-> requeued for later delivery.
+> Kyle Huey <me@kylehuey.com> writes:
 > 
-> With the advent of CLONE_THREAD the kernel has 2 signal queues per
-> task.  The per process queue and the per task queue.  Update the code
-> so that if the signal is removed from the per process queue it is
-> requeued on the per process queue.  This is necessary to make it
-> appear the signal was never dequeued.
+> > rr, a userspace record and replay debugger[0], uses the recorded register
+> > state at PTRACE_EVENT_EXIT to find the point in time at which to cease
+> > executing the program during replay.
+> >
+> > If a SIGKILL races with processing another signal in get_signal, it is
+> > possible for the kernel to decline to notify the tracer of the original
+> > signal. But if the original signal had a handler, the kernel proceeds
+> > with setting up a signal handler frame as if the tracer had chosen to
+> > deliver the signal unmodified to the tracee. When the kernel goes to
+> > execute the signal handler that it has now modified the stack and registers
+> > for, it will discover the pending SIGKILL, and terminate the tracee
+> > without executing the handler. When PTRACE_EVENT_EXIT is delivered to
+> > the tracer, however, the effects of handler setup will be visible to
+> > the tracer.
+> >
+> > Because rr (the tracer) was never notified of the signal, it is not aware
+> > that a signal handler frame was set up and expects the state of the program
+> > at PTRACE_EVENT_EXIT to be a state that will be reconstructed naturally
+> > by allowing the program to execute from the last event. When that fails
+> > to happen during replay, rr will assert and die.
+> >
+> > The following patches add an explicit check for a newly pending SIGKILL
+> > after the ptracer has been notified and the siglock has been reacquired.
+> > If this happens, we stop processing the current signal and proceed
+> > immediately to handling the SIGKILL. This makes the state reported at
+> > PTRACE_EVENT_EXIT the unmodified state of the program, and also avoids the
+> > work to set up a signal handler frame that will never be used.
+> >
+> > [0] https://rr-project.org/
 > 
-> The rr debugger reasonably believes that the state of the process from
-> the last ptrace_stop it observed until PTRACE_EVENT_EXIT can be recreated
-> by simply letting a process run.  If a SIGKILL interrupts a ptrace_stop
-> this is not true today.
+> The problem is that while the traced process makes it into ptrace_stop,
+> the tracee is killed before the tracer manages to wait for the
+> tracee and discover which signal was about to be delivered.
 > 
-> So return signals to their original queue in ptrace_signal so that
-> signals that are not delivered appear like they were never dequeued.
-
-The only comment I have on this is that it seems like many callers
-totally ignore the result store in "type" (signalfd_dequeue,
-kernel_dequeue_signal, do_sigtimedwait), which would imply a different
-API might be desirable. That said, it's also not a big deal.
-
+> More generally the problem is that while siglock was dropped a signal
+> with process wide effect is short cirucit delivered to the entire
+> process killing it, but the process continues to try and deliver another
+> signal.
 > 
-> Fixes: 794aa320b79d ("[PATCH] sigfix-2.5.40-D6")
+> In general it impossible to avoid all cases where work is performed
+> after the process has been killed.  In particular if the process is
+> killed after get_signal returns the code will simply not know it has
+> been killed until after delivering the signal frame to userspace.
+> 
+> On the other hand when the code has already discovered the process
+> has been killed and taken user space visible action that shows
+> the kernel knows the process has been killed, it is just silly
+> to then write the signal frame to the user space stack.
+> 
+> Instead of being silly detect the process has been killed
+> in ptrace_signal and requeue the signal so the code can pretend
+> it was simply never dequeued for delivery.
+> 
+> To test the process has been killed I use fatal_signal_pending rather
+> than signal_group_exit to match the test in signal_pending_state which
+> is used in schedule which is where ptrace_stop detects the process has
+> been killed.
+> 
+> Requeuing the signal so the code can pretend it was simply never
+> dequeued improves the user space visible behavior that has been
+> present since ebf5ebe31d2c ("[PATCH] signal-fixes-2.5.59-A4").
+> 
+> Kyle Huey verified that this change in behavior and makes rr happy.
+> 
+> Reported-by: Kyle Huey <khuey@kylehuey.com>
+> Reported-by: Marko Mäkelä <marko.makela@mariadb.com>
 > History Tree: https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.gi
 > Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
+Yay pre-git-history! :)
+
 Reviewed-by: Kees Cook <keescook@chromium.org>
 
-
 > ---
->  fs/signalfd.c                |  5 +++--
->  include/linux/sched/signal.h |  7 ++++---
->  kernel/signal.c              | 21 ++++++++++++++-------
->  3 files changed, 21 insertions(+), 12 deletions(-)
+>  kernel/signal.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/signalfd.c b/fs/signalfd.c
-> index 040e1cf90528..74f134cd1ff6 100644
-> --- a/fs/signalfd.c
-> +++ b/fs/signalfd.c
-> @@ -165,11 +165,12 @@ static int signalfd_copyinfo(struct signalfd_siginfo __user *uinfo,
->  static ssize_t signalfd_dequeue(struct signalfd_ctx *ctx, kernel_siginfo_t *info,
->  				int nonblock)
->  {
-> +	enum pid_type type;
->  	ssize_t ret;
->  	DECLARE_WAITQUEUE(wait, current);
->  
->  	spin_lock_irq(&current->sighand->siglock);
-> -	ret = dequeue_signal(current, &ctx->sigmask, info);
-> +	ret = dequeue_signal(current, &ctx->sigmask, info, &type);
->  	switch (ret) {
->  	case 0:
->  		if (!nonblock)
-> @@ -184,7 +185,7 @@ static ssize_t signalfd_dequeue(struct signalfd_ctx *ctx, kernel_siginfo_t *info
->  	add_wait_queue(&current->sighand->signalfd_wqh, &wait);
->  	for (;;) {
->  		set_current_state(TASK_INTERRUPTIBLE);
-> -		ret = dequeue_signal(current, &ctx->sigmask, info);
-> +		ret = dequeue_signal(current, &ctx->sigmask, info, &type);
->  		if (ret != 0)
->  			break;
->  		if (signal_pending(current)) {
-> diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
-> index 23505394ef70..167995d471da 100644
-> --- a/include/linux/sched/signal.h
-> +++ b/include/linux/sched/signal.h
-> @@ -286,17 +286,18 @@ static inline int signal_group_exit(const struct signal_struct *sig)
->  extern void flush_signals(struct task_struct *);
->  extern void ignore_signals(struct task_struct *);
->  extern void flush_signal_handlers(struct task_struct *, int force_default);
-> -extern int dequeue_signal(struct task_struct *task,
-> -			  sigset_t *mask, kernel_siginfo_t *info);
-> +extern int dequeue_signal(struct task_struct *task, sigset_t *mask,
-> +			  kernel_siginfo_t *info, enum pid_type *type);
->  
->  static inline int kernel_dequeue_signal(void)
->  {
->  	struct task_struct *task = current;
->  	kernel_siginfo_t __info;
-> +	enum pid_type __type;
->  	int ret;
->  
->  	spin_lock_irq(&task->sighand->siglock);
-> -	ret = dequeue_signal(task, &task->blocked, &__info);
-> +	ret = dequeue_signal(task, &task->blocked, &__info, &__type);
->  	spin_unlock_irq(&task->sighand->siglock);
->  
->  	return ret;
 > diff --git a/kernel/signal.c b/kernel/signal.c
-> index 986fa69c15c5..43e8b7e362b0 100644
+> index 43e8b7e362b0..621401550f0f 100644
 > --- a/kernel/signal.c
 > +++ b/kernel/signal.c
-> @@ -626,7 +626,8 @@ static int __dequeue_signal(struct sigpending *pending, sigset_t *mask,
->   *
->   * All callers have to hold the siglock.
->   */
-> -int dequeue_signal(struct task_struct *tsk, sigset_t *mask, kernel_siginfo_t *info)
-> +int dequeue_signal(struct task_struct *tsk, sigset_t *mask,
-> +		   kernel_siginfo_t *info, enum pid_type *type)
->  {
->  	bool resched_timer = false;
->  	int signr;
-> @@ -634,8 +635,10 @@ int dequeue_signal(struct task_struct *tsk, sigset_t *mask, kernel_siginfo_t *in
->  	/* We only dequeue private signals from ourselves, we don't let
->  	 * signalfd steal them
->  	 */
-> +	*type = PIDTYPE_PID;
->  	signr = __dequeue_signal(&tsk->pending, mask, info, &resched_timer);
->  	if (!signr) {
-> +		*type = PIDTYPE_TGID;
->  		signr = __dequeue_signal(&tsk->signal->shared_pending,
->  					 mask, info, &resched_timer);
->  #ifdef CONFIG_POSIX_TIMERS
-> @@ -2522,7 +2525,7 @@ static void do_freezer_trap(void)
->  	freezable_schedule();
->  }
->  
-> -static int ptrace_signal(int signr, kernel_siginfo_t *info)
-> +static int ptrace_signal(int signr, kernel_siginfo_t *info, enum pid_type type)
->  {
->  	/*
->  	 * We do not check sig_kernel_stop(signr) but set this marker
-> @@ -2563,7 +2566,7 @@ static int ptrace_signal(int signr, kernel_siginfo_t *info)
+> @@ -2565,7 +2565,8 @@ static int ptrace_signal(int signr, kernel_siginfo_t *info, enum pid_type type)
+>  	}
 >  
 >  	/* If the (new) signal is now blocked, requeue it.  */
->  	if (sigismember(&current->blocked, signr)) {
-> -		send_signal(signr, info, current, PIDTYPE_PID);
-> +		send_signal(signr, info, current, type);
+> -	if (sigismember(&current->blocked, signr)) {
+> +	if (sigismember(&current->blocked, signr) ||
+> +	    fatal_signal_pending(current)) {
+>  		send_signal(signr, info, current, type);
 >  		signr = 0;
 >  	}
->  
-> @@ -2664,6 +2667,7 @@ bool get_signal(struct ksignal *ksig)
->  
->  	for (;;) {
->  		struct k_sigaction *ka;
-> +		enum pid_type type;
->  
->  		/* Has this task already been marked for death? */
->  		if (signal_group_exit(signal)) {
-> @@ -2706,16 +2710,18 @@ bool get_signal(struct ksignal *ksig)
->  		 * so that the instruction pointer in the signal stack
->  		 * frame points to the faulting instruction.
->  		 */
-> +		type = PIDTYPE_PID;
->  		signr = dequeue_synchronous_signal(&ksig->info);
->  		if (!signr)
-> -			signr = dequeue_signal(current, &current->blocked, &ksig->info);
-> +			signr = dequeue_signal(current, &current->blocked,
-> +					       &ksig->info, &type);
->  
->  		if (!signr)
->  			break; /* will return 0 */
->  
->  		if (unlikely(current->ptrace) && (signr != SIGKILL) &&
->  		    !(sighand->action[signr -1].sa.sa_flags & SA_IMMUTABLE)) {
-> -			signr = ptrace_signal(signr, &ksig->info);
-> +			signr = ptrace_signal(signr, &ksig->info, type);
->  			if (!signr)
->  				continue;
->  		}
-> @@ -3540,6 +3546,7 @@ static int do_sigtimedwait(const sigset_t *which, kernel_siginfo_t *info,
->  	ktime_t *to = NULL, timeout = KTIME_MAX;
->  	struct task_struct *tsk = current;
->  	sigset_t mask = *which;
-> +	enum pid_type type;
->  	int sig, ret = 0;
->  
->  	if (ts) {
-> @@ -3556,7 +3563,7 @@ static int do_sigtimedwait(const sigset_t *which, kernel_siginfo_t *info,
->  	signotset(&mask);
->  
->  	spin_lock_irq(&tsk->sighand->siglock);
-> -	sig = dequeue_signal(tsk, &mask, info);
-> +	sig = dequeue_signal(tsk, &mask, info, &type);
->  	if (!sig && timeout) {
->  		/*
->  		 * None ready, temporarily unblock those we're interested
-> @@ -3575,7 +3582,7 @@ static int do_sigtimedwait(const sigset_t *which, kernel_siginfo_t *info,
->  		spin_lock_irq(&tsk->sighand->siglock);
->  		__set_task_blocked(tsk, &tsk->real_blocked);
->  		sigemptyset(&tsk->real_blocked);
-> -		sig = dequeue_signal(tsk, &mask, info);
-> +		sig = dequeue_signal(tsk, &mask, info, &type);
->  	}
->  	spin_unlock_irq(&tsk->sighand->siglock);
->  
 > -- 
 > 2.20.1
 > 
