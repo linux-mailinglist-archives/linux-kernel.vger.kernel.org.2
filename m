@@ -2,117 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC8D4530E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:36:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E19453068
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:25:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235432AbhKPLhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 06:37:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235578AbhKPLfs (ORCPT
+        id S235001AbhKPL17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:27:59 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:26317 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235182AbhKPLZs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 06:35:48 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC96C06121D;
-        Tue, 16 Nov 2021 03:31:48 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id w1so20213977edc.6;
-        Tue, 16 Nov 2021 03:31:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Gm0iaiusdciMrx8928GSRwf0HXjOL1IswPuzIDzix+o=;
-        b=THxRtB5bhZqhV9920ZnZeRAQUoWjdx1qnBW8txpKshjpwevq4Ax/wKdI2YmGkd26Qw
-         dkk6/4XQvUMoWLW3wgFO+yfVmbBBxT2o9p76/W+uF0T90tSRmkeEGf1WXrbdt8F64Gju
-         flITnryzQ+6SFgHfICuXaD43d6Q+rTmYGSTKuqnvyc/VJULeaUifCE408d0P7BWdsKqH
-         quow204qEQQ/QGK1e5grkUyW9DP5p3ygCl2TdlosZj/nv34s1TF6J7bXuiEoMx3CZKNk
-         /JUb8LPy6R43HMWV5mQma5/6MixmSuhk1yAKrq+jZqGKD0p433THtj5z/nDXjMH9Og3c
-         UIjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Gm0iaiusdciMrx8928GSRwf0HXjOL1IswPuzIDzix+o=;
-        b=HRGAvpUKjxgW6P6zXrBRnePO1EJ2WirQovAt/GHCdYdsiqKoLt/LelWthGELAaP/fn
-         5TISOxHVEiN68ZYUDhczE7ihQfiQXANmNd7do38Y0YNeQo9CdV+d6Q1Fq42IpDGrYnkl
-         HF88cy7HQ2WF9CbmGtnpiwwDGcJokyhWo1rRuH+TiyTEsT/zHAyZVh0vDzE5c4JRT2yh
-         L0S8yccDEaH4eIO5hZbjHggEHiBoxsnUEb1egqq6lsY0+DKMnDgh+35PnUgnQ17sDKxx
-         kkDmG2N5uCwhU0p/sICUyQWbDzhQgGNOqvUqOZMCsUGgZGSG1opsxcbsjwYT3uOrZWit
-         iq2w==
-X-Gm-Message-State: AOAM533LrfOxZyL7xVhTSSrD+PHzGUGbsbEkCutiDxAhPuOiXkXntjfB
-        btkdUh5R0gqbvv9J2BGlV9BzbDMxhqkSo8WSv+g=
-X-Google-Smtp-Source: ABdhPJzQfh6CnE+Adt6rJoKUiS8IbAoxCjDjjVO60IzlqtV3MQ7qPZyGGziK9o6lTdlwriGZeqCUvxgSVdNIo4hymlI=
-X-Received: by 2002:a17:907:9196:: with SMTP id bp22mr8705569ejb.69.1637062306909;
- Tue, 16 Nov 2021 03:31:46 -0800 (PST)
+        Tue, 16 Nov 2021 06:25:48 -0500
+Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Htk7Q00s4zbhc5;
+        Tue, 16 Nov 2021 19:17:53 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by dggeme756-chm.china.huawei.com
+ (10.3.19.102) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.20; Tue, 16
+ Nov 2021 19:22:48 +0800
+From:   Zheng Liang <zhengliang6@huawei.com>
+To:     <phillip@squashfs.org.uk>, <linux-kernel@vger.kernel.org>
+CC:     <yi.zhang@huawei.com>, <houtao1@huawei.com>, <miaoxie@huawei.com>
+Subject: [PATCH] squashfs: provides backing_dev_info in order to disable read-ahead
+Date:   Tue, 16 Nov 2021 19:31:41 +0800
+Message-ID: <20211116113141.1391026-1-zhengliang6@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20211114170335.66994-1-hdegoede@redhat.com> <20211114170335.66994-18-hdegoede@redhat.com>
- <CAHp75VdXSdhNtPwNdpssnmt+sZb+ZoAUm-cKJu-PqymmHMOpRw@mail.gmail.com>
-In-Reply-To: <CAHp75VdXSdhNtPwNdpssnmt+sZb+ZoAUm-cKJu-PqymmHMOpRw@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 16 Nov 2021 13:31:05 +0200
-Message-ID: <CAHp75VfSwf0SKDHDOG7WO9xY5Q52o1Zw2GPkxi7UnrLhMtiobA@mail.gmail.com>
-Subject: Re: [PATCH v2 17/20] extcon: intel-cht-wc: Support devs with Micro-B
- / USB-2 only Type-C connectors
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Yauhen Kharuzhy <jekhor@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggeme756-chm.china.huawei.com (10.3.19.102)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 1:28 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Sun, Nov 14, 2021 at 7:04 PM Hans de Goede <hdegoede@redhat.com> wrote:
+the commit c1f6925e1091("mm: put readahead pages in cache earlier")
+causes the read performance of squashfs to deteriorate.Through testing,
+we find that the performance will be back by closing the readahead of
+squashfs. So we want to learn the way of ubifs, provides backing_dev_info
+and disable read-ahead.
 
-...
+--------------------------------------------------------------------
+We tested the following data by fio.
+squashfs image blocksize=128K
+test command:
+fio --name basic --bs=? --filename="/mnt/test_file" --rw=? --iodepth=1 --ioengine=psync --runtime=200 --time_based
 
-> > +       ext->vbus_boost = devm_regulator_get_optional(ext->dev, "vbus");
-> > +       if (IS_ERR(ext->vbus_boost)) {
-> > +               ret = PTR_ERR(ext->vbus_boost);
-> > +               if (ret == -ENODEV)
-> > +                       ret = -EPROBE_DEFER;
-> > +
-> > +               return dev_err_probe(ext->dev, ret, "getting vbus regulator");
->
-> Can be also written as
->
->     if (PTR_ERR(ext->vbus_boost) == -ENODEV ||
-> PTR_ERR(ext->vbus_boost) == -EPROBE_DEFER)
->         return dev_err_probe(ext->dev, -EPROBE_DEFER, "getting vbus regulator");
->
->     return PTR_ERR(ext->vbus_boost);
+turn on squashfs readahead in 5.10 kernel
+bs(k)      read/randread           MB/s
+4            randread              271
+128          randread              231
+1024         randread              246
+4            read                  310
+128          read                  245
+1024         read                  247
 
-Oops, other way around, of course.
+turn off squashfs readahead in 5.10 kernel
+bs(k)      read/randread           MB/s
+4            randread              293
+128          randread              330
+1024         randread              363
+4            read                  338
+128          read                  360
+1024         read                  365
 
-  if (PTR_ERR(ext->vbus_boost) == -ENODEV ||
-      PTR_ERR(ext->vbus_boost) == -EPROBE_DEFER)
-        return -EPROBE_DEFER;
+turn on squashfs readahead and revert the
+commit c1f6925e1091("mm: put readahead
+pages in cache earlier") in 5.10 kernel
+bs(k)      read/randread           MB/s
+4           randread               289
+128         randread               306
+1024        randread               335
+4           read                   337
+128         read                   336
+1024        read                   338
 
-  return dev_err_probe(ext->dev, PTR_ERR(ext->vbus_boost), "getting
-vbus regulator");
+Signed-off-by: Zheng Liang <zhengliang6@huawei.com>
+---
+ fs/squashfs/super.c | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-> but up to you.
->
-> > +       }
-
-
-
+diff --git a/fs/squashfs/super.c b/fs/squashfs/super.c
+index bb44ff4c5cc6..7a4c865fc8e6 100644
+--- a/fs/squashfs/super.c
++++ b/fs/squashfs/super.c
+@@ -29,6 +29,7 @@
+ #include <linux/module.h>
+ #include <linux/magic.h>
+ #include <linux/xattr.h>
++#include <linux/backing-dev.h>
+ 
+ #include "squashfs_fs.h"
+ #include "squashfs_fs_sb.h"
+@@ -112,6 +113,24 @@ static const struct squashfs_decompressor *supported_squashfs_filesystem(
+ 	return decompressor;
+ }
+ 
++static int squashfs_bdi_init(struct super_block *sb)
++{
++	int err;
++	unsigned int major = MAJOR(sb->s_dev);
++	unsigned int minor = MINOR(sb->s_dev);
++
++	bdi_put(sb->s_bdi);
++	sb->s_bdi = &noop_backing_dev_info;
++
++	err = super_setup_bdi_name(sb, "squashfs_%u_%u", major, minor);
++	if (err)
++		return err;
++
++	sb->s_bdi->ra_pages = 0;
++	sb->s_bdi->io_pages = 0;
++
++	return 0;
++}
+ 
+ static int squashfs_fill_super(struct super_block *sb, struct fs_context *fc)
+ {
+@@ -127,6 +146,20 @@ static int squashfs_fill_super(struct super_block *sb, struct fs_context *fc)
+ 
+ 	TRACE("Entered squashfs_fill_superblock\n");
+ 
++	/*
++	 * squashfs provides 'backing_dev_info' in order to disable read-ahead. For
++	 * squashfs, I/O is not deferred, it is done immediately in readpage,
++	 * which means the user would always have to wait their own I/O. So the effect
++	 * of readahead is very weak for squashfs. squashfs_bdi_init will set 
++	 * sb->s_bdi->ra_pages and sb->s_bdi->io_pages to 0 and close readahead for
++	 * squashfs.
++	 */
++	err = squashfs_bdi_init(sb);
++	if (err) {
++		errorf(fc, "squashfs init bdi failed");
++		return err;
++	}
++
+ 	sb->s_fs_info = kzalloc(sizeof(*msblk), GFP_KERNEL);
+ 	if (sb->s_fs_info == NULL) {
+ 		ERROR("Failed to allocate squashfs_sb_info\n");
 -- 
-With Best Regards,
-Andy Shevchenko
+2.31.1
+
