@@ -2,69 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E2B453628
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:43:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C848045362D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:43:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238519AbhKPPpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 10:45:05 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:41704 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238462AbhKPPoN (ORCPT
+        id S238564AbhKPPpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 10:45:22 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:42030 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238645AbhKPPoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 10:44:13 -0500
-Received: by mail-io1-f71.google.com with SMTP id k6-20020a0566022d8600b005e6ff1b6bbaso12980148iow.8
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:41:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=yEoiAOZNXI+7ziHDgUkTx2Lv3WSs9sv/eVLYHQ4c5qs=;
-        b=BrNoaEaGOXcDN2ERNqW7L1nGcpZywPsvQ3yFGAfzaqnBMYVWO3aVksZDDOGdLKUYEH
-         cKlhC+St8S5RVMgolooC+ZW21XBZEDGdguE/fcfNi1Ib7zbK8k8d6Dawg5tUl3bFvNnC
-         K/4uHWQSKvYIZRBzK8nvh0lTnERMFWpKjnWmE7PtR6/xQ9Zv0awZK00jMQJvGKoe7fP5
-         lC0ZfqGGEjIgGkgaJFl3olL4X95AwTrD/NpVqi/ouWxGj4bIbqtLUCwHBJ/wrFqVALAG
-         SQGfYC1nY0Pgrk8KLruJ35nYcqnwAo6ieRbSFDhfqN5iJShqUq+1KDtE0sJRcq68V5AT
-         iNBw==
-X-Gm-Message-State: AOAM530+ekEYjqJjvLA0aXg5VXnf5xxHd3IQY6j4tBdW85KDiLTEkL9h
-        6c+EGN5NPSF+I0GxHAiKbUCOvP45tARGcjB2PoAC+oGcjzVa
-X-Google-Smtp-Source: ABdhPJz2QvP079zeX/CSMbBjUQ4yB0Z21xR5DrHse56nG8ecxlTTNjG5d/4SrtAzw+M2+watkTiawRFrq6/9vJ1WSz68jkvpCbf8
+        Tue, 16 Nov 2021 10:44:37 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id B4738212B9;
+        Tue, 16 Nov 2021 15:41:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637077298; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SAj4/SjslMmi0FzgQn3IjAHWrXahNXXWxcjpgKfHdds=;
+        b=mS6Lug7LWryBurfazjYIzvl0HOhty00lql4VdVYJMRjiwUVzccu8tX58yvjy7hxICqPv/M
+        hWsmYb1OgsMR9GpusOn3ImUAyt9a1X9Z1pfy79MZF9d1u99GzKXdZn/Zx4HWjuuseSk1pc
+        /gzJ2iyaMKTDJBCBiczXOQib8YUN4rc=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 88FCAA3B8B;
+        Tue, 16 Nov 2021 15:41:38 +0000 (UTC)
+Date:   Tue, 16 Nov 2021 16:41:35 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Christoph Lameter <cl@gentwo.de>
+Cc:     Dennis Zhou <dennis@kernel.org>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mm-commits@vger.kernel.org" <mm-commits@vger.kernel.org>,
+        "osalvador@suse.de" <osalvador@suse.de>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "tj@kernel.org" <tj@kernel.org>
+Subject: Re: + mm-fix-panic-in-__alloc_pages.patch added to -mm tree
+Message-ID: <YZPRL7HtQGUUAVG4@dhcp22.suse.cz>
+References: <YYozLsIECu0Jnv0p@dhcp22.suse.cz>
+ <af7ab3ce-fed2-1ffc-13a8-f9acbd201841@redhat.com>
+ <YYpTy9eXZucxuRO/@dhcp22.suse.cz>
+ <YY6wZMcx/BeddUnH@fedora>
+ <YZI5TEW2BkBjOtC1@dhcp22.suse.cz>
+ <B8B7E3FA-6EAB-46B7-95EB-5A31395C8ADE@vmware.com>
+ <YZJZes9Gz9fe7bCC@dhcp22.suse.cz>
+ <ABEDED57-93A9-4601-8EB6-2FF348A0E0BB@vmware.com>
+ <YZMq++inSmJegJmj@fedora>
+ <alpine.DEB.2.22.394.2111161329010.79746@gentwo.de>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1847:: with SMTP id b7mr5243399ilv.102.1637077275827;
- Tue, 16 Nov 2021 07:41:15 -0800 (PST)
-Date:   Tue, 16 Nov 2021 07:41:15 -0800
-In-Reply-To: <00000000000009a2c505bbcaed68@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007ee63e05d0e9c172@google.com>
-Subject: Re: [syzbot] INFO: rcu detected stall in __hrtimer_run_queues
-From:   syzbot <syzbot+de9526ade17c659d8336@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, fweisbec@gmail.com, hch@lst.de, hdanton@sina.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, paulmck@kernel.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2111161329010.79746@gentwo.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Tue 16-11-21 13:30:45, Christoph Lameter wrote:
+> On Mon, 15 Nov 2021, Dennis Zhou wrote:
+> 
+> > I need some clarification here. It sounds like memoryless nodes work on
+> > x86, but hotplug + memoryless nodes isn't a supported use case or you're
+> > introducing it as a new use case?
+> 
+> Could you do that step by step?
+> 
+> First add the new node and ensure everything is ok and that the memory is
+> online.
+> 
+> *After* that is done bring up the new processor and associate the
+> processor with *online* memory.
 
-commit b60876296847e6cd7f1da4b8b7f0f31399d59aa1
-Author: Jens Axboe <axboe@kernel.dk>
-Date:   Fri Oct 15 21:03:52 2021 +0000
+We are discussing that in the original thread -
+http://lkml.kernel.org/r/YZN3ExwL7BiDS5nj@dhcp22.suse.cz
 
-    block: improve layout of struct request
+This patch is a a workaround that problem in the pcp code.
+ 
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=137f2d01b00000
-start commit:   f40ddce88593 Linux 5.11
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e53d04227c52a0df
-dashboard link: https://syzkaller.appspot.com/bug?extid=de9526ade17c659d8336
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17a81012d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1282b6d2d00000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: block: improve layout of struct request
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+-- 
+Michal Hocko
+SUSE Labs
