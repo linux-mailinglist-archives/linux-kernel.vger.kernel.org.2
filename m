@@ -2,308 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB0B453B41
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:53:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1FA6453B43
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231539AbhKPU4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 15:56:04 -0500
-Received: from mail1.bemta23.messagelabs.com ([67.219.246.114]:19940 "EHLO
-        mail1.bemta23.messagelabs.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231510AbhKPU4B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 15:56:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lenovo.com;
-        s=Selector; t=1637095983; i=@lenovo.com;
-        bh=tPA0v+1rxlNKGftCn8CJPkZNF6Rrq/mSTCsdgUDOjjs=;
-        h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-         In-Reply-To:Content-Type:Content-Transfer-Encoding;
-        b=12MwLMvl8QqgXySG426D+8rzLG4pxWx9tfIPVMY4qwQCN5zF5oBIqv8J+KJwLcp0K
-         D7BeyqGigLtxHihBbxUqFtmJQQrU56VQNhWXhcKAEhH3psdSt6x6uRYY2azKdeRPy+
-         dz9FnCNWibuPRtmCG3kNyCk/k6Eq4c9e+pD+Vf88aiOShjlEUD7h7Sa0g3cVcxcdhj
-         wB1+PBZJ/SwinyiL7eSeHGE3a9QUBkcmar2Ak/rkJa+YOdE9TIrnKUnk2Lgnq5cHy+
-         M3y+IdeWENXgDME7Qjr6u0fOGlABp8hvIF19kldsBc9J/uJdMkFqi7rd6WxQy2Bgya
-         ReiNwzHhEuY/g==
-Received: from [100.112.4.164] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
-        by server-3.bemta.az-c.us-east-1.aws.symcld.net id 25/D0-32713-E2A14916; Tue, 16 Nov 2021 20:53:02 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA1VTfUwTZxzmvbter4Syo8B46URNHSwWrlBGlmO
-  4zf2h6WaGi8zMmH14QKWdpZBeibhk0gGSKAzkQxkVFbUMBhqBQrutQBHwC0bcBGZFRhQR+fCL
-  Mc2kju0uh4798+Z5fs/ved7fL3lfApWViOWENtusNRkZgwL3xXTRciWlklcwMZ5+knZfg/TjJ
-  zfE9L2LlQh91vs9Rh/pWUfvG1vA6cGfqnF6/pteQHv/mkTorkOHUdqR1wPoxvYplB4q9wC632
-  Ve76/50fq7WHOqxY1rFhynMY23C2haGvbjGlfNPKJ52DmMa+ZbVmpKCi+IP5RsF+mNyRnZO0Q
-  6ywMPkmmjsv/pnhZbQG74AeBLALIWhc/63IhAToqge9iBCWQBwL8vW1CeyEgrAkfzK3GBuBF4
-  byxXzBNIDgDYWmXn2iSckgHPOdqWLGUI/NntWbJMADjydfuSchPAuZuLOG+Rkm/B07+OYzzGy
-  HDY0DyDCfUAeLlqgsMEEUx+DC2jLA8DyW3Qfm4r34GSIXBk4jjC4yDyAgLbRt/h41HyDIAnZu
-  YA3y8jv4B/no3ge3AyEra2LuB8WUImwJ7p14SYtXCf0ysW8CqY13ZkaZc1cKHkCsq3Q65uqZL
-  wZUjugEWL47iAQ+Fv138RCzgMnh+oxgT8ATwzPyYWrEpujyihbIAPGzqXEiPg6P1NB4HKumxZ
-  67K1rMtmsy6brQZgDeCNZJM+TWdOZ/QGSh0TQ6nVsVQcpY5Xq5gvqRRVFktpGdZMcXQ3q2L3p
-  KcYUlVGrbkFcO8xNRNz/wCGZh+pukEogSiCpS/fKmdk/skZqXt0DKv73JRl0LLdYAVBKKC0xr
-  eCkQWYtGna7J16A/eqn8uQ8FMESSshJ0vZTCad1acJUh+IJw5OHz2JEgeKTnBnWa/LicowY4Z
-  RKw+RPuYNJG/QZRlfxD3/J1dBmDxQCnx8fGR+mVpTut78f30GhBBAESh9FMKl+OmN5he3znAD
-  IdxAYYPl/EBm5j9JbkE2BqhevVSZfzdxTZzpOt6+ZfeAhOjd9nTO9sraqUlXX85HK7aGvqlo7
-  6peN55ZP11ZWk/g+wv2Xtnl05RaN2xUIqL37IO392KqnA1lnk6n6HhJ8Ez+XKG3NDwyr7ZjNO
-  fd8SKR/+vOyA5quqt+tslU2JwSW089vTT0R1Z1se7Oyif13ynTDuObSh7Uxta9Xxrdn7H5k5o
-  kWxPmuBF1t7j2WddniUlJEZ6E1bmhpauic8YmgkpXI1dHnJNmqW3xzk6F3d5jnepwHPXkht2+
-  lXAt0SZ/adf2gmrpt42zzRu3rD/vrd3Q+FU+MEUqovKK3u6enXVcrKgr9jEXfHr/lCsuO/6YA
-  mN1jFqJmljmX4cgBNqiBAAA
-X-Env-Sender: markpearson@lenovo.com
-X-Msg-Ref: server-9.tower-406.messagelabs.com!1637095980!50706!1
-X-Originating-IP: [104.47.26.42]
-X-SYMC-ESS-Client-Auth: mailfrom-relay-check=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.81.5; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 27284 invoked from network); 16 Nov 2021 20:53:01 -0000
-Received: from mail-psaapc01lp2042.outbound.protection.outlook.com (HELO APC01-PSA-obe.outbound.protection.outlook.com) (104.47.26.42)
-  by server-9.tower-406.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 16 Nov 2021 20:53:01 -0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ncX/PGmNfi3GAL9YOsuOZCiz6GvkpO0YtdK45UyGsp7VtXxzYOUrZaLH3quef+MncZJhUhs0TEl8719KY3pIIltd9Y5Bk4pkgyVySm6AaSxTLpz+IfBeS1dkW2cx0ECI+2moPbrXftkbduFe/KFoNHu64Hd2L+VCgXBPU8ZMc5f1PK4AIdi0LQmPTfMmijYud1Ws+h1wgv3L1a/cWiPJw02pLCgYbC2Wlu2QuzQyy0mFUhmLGXoYtTs2tuoXDEyMdPXnXHaqZW1iwuGel8DAseZ20oKQycQtvAzcqcLKVpWlMX+DBxxwP2xd0ShC3ybj/6bbANUXpa8ZZq8pahvTFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tPA0v+1rxlNKGftCn8CJPkZNF6Rrq/mSTCsdgUDOjjs=;
- b=B4lrsWwDhZR4RYvBljWBhhD9tXu9uoJxt35Sr/bg5TBm5KuoiQi947ERgcB36O+RxRlhr6bEb3P0FvvHAXCatuuIu46n/qD1tLu/FciQzoTuXMwd5s39/r9n3lB+xNx0b0JsD9RDhJ22uWPnJMLzPYB7i/sRAfz2mp6SB7JXK3PJhwX4SnDwPgZ7Hvl1G3VTzsAKmzdX2N6CgjcOQImFRi2ALv5bwAS+32Pq+jTRn3rF6A585DNX/52eRmt7GSSghB8W/mhM48/24HJ+2GwVpr17IMFcdjRKB3VtYWoeuQ8PwzuraV8TuClQSGpeXv7nFTKjIYzhTZG++6k3/zPGxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=temperror (sender ip
- is 104.232.225.6) smtp.rcpttodomain=weissschuh.net smtp.mailfrom=lenovo.com;
- dmarc=temperror action=none header.from=lenovo.com; dkim=none (message not
- signed); arc=none
-Received: from SG2PR0302CA0015.apcprd03.prod.outlook.com (2603:1096:3:2::25)
- by SG2PR03MB3959.apcprd03.prod.outlook.com (2603:1096:4:33::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4713.18; Tue, 16 Nov 2021 20:52:58 +0000
-Received: from SG2APC01FT015.eop-APC01.prod.protection.outlook.com
- (2603:1096:3:2:cafe::6f) by SG2PR0302CA0015.outlook.office365.com
- (2603:1096:3:2::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.15 via Frontend
- Transport; Tue, 16 Nov 2021 20:52:58 +0000
-X-MS-Exchange-Authentication-Results: spf=temperror (sender IP is
- 104.232.225.6) smtp.mailfrom=lenovo.com; dkim=none (message not signed)
- header.d=none;dmarc=temperror action=none header.from=lenovo.com;
-Received-SPF: TempError (protection.outlook.com: error in processing during
- lookup of lenovo.com: DNS Timeout)
-Received: from mail.lenovo.com (104.232.225.6) by
- SG2APC01FT015.mail.protection.outlook.com (10.152.250.181) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4690.15 via Frontend Transport; Tue, 16 Nov 2021 20:52:56 +0000
-Received: from reswpmail01.lenovo.com (10.62.32.20) by mail.lenovo.com
- (10.62.123.116) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2308.20; Tue, 16 Nov
- 2021 15:52:54 -0500
-Received: from [10.38.49.20] (10.38.49.20) by reswpmail01.lenovo.com
- (10.62.32.20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2308.20; Tue, 16 Nov
- 2021 15:52:53 -0500
-Message-ID: <82ec6164-223b-940a-6992-48ccbe47a615@lenovo.com>
-Date:   Tue, 16 Nov 2021 15:52:52 -0500
+        id S231563AbhKPU4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 15:56:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51178 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229899AbhKPU4h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 15:56:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8DEA61BBD;
+        Tue, 16 Nov 2021 20:53:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637096020;
+        bh=8m3nAaFXoasIWEhGGU64ODWUIRt/37qCwbTyq8fCwFQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=phYaw4ezt6Dwqx+TmAg58FvPVWI4+69XJ7mBA/TPYMAEFpsTH2eal0Aba60uiGlev
+         wtUkqQBhPqaUHzhfURKKGPRkfgTfJxKUUCMKQXFCo3bS4RSoTNluEm6gkO6MKzW6SY
+         kglzKD+gCe+zB2yrmsiSxusR4bkBCBHYx5+FMdYqKBw0/DuDQM6vRxDj5zS2744isj
+         gJQ0e9V2tnJezCST9HMPUYIECYU/qXaCGVks85czTZph89hNjs1Bps17NU73JgDqYX
+         EQpYtA1E0VY6+NFq5j/77Wtvu7Ng426V1k/IhqZjb4L6qDm0KxKL2mTxAWa9JiC7Ri
+         BxQ5aRj2ywEyg==
+Received: by pali.im (Postfix)
+        id 3C0E388C; Tue, 16 Nov 2021 21:53:37 +0100 (CET)
+Date:   Tue, 16 Nov 2021 21:53:37 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Jim Quinlan <james.quinlan@broadcom.com>,
+        Jim Quinlan <jim2101024@gmail.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Sean V Kelley <sean.v.kelley@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Keith Busch <kbusch@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v8 5/8] PCI/portdrv: add mechanism to turn on subdev
+ regulators
+Message-ID: <20211116205337.ui5sjrsmkef4a53k@pali>
+References: <20211110221456.11977-1-jim2101024@gmail.com>
+ <20211110221456.11977-6-jim2101024@gmail.com>
+ <CAL_Jsq+6g-EhyVCeWTMkjOZmBwsOOVZo2jXpzAkjOXcZaxb2eA@mail.gmail.com>
+ <CA+-6iNxfrOQtH1JDEjAdSZQkENoaw1tUDTfVc5+G7P6BAbSc6g@mail.gmail.com>
+ <CAL_JsqJno4ROQD38buz8Z-tU5aaQL5b_d1R0-D+c9UwnMKYNOw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [External] [PATCH 4/4] platform/x86: thinkpad_acpi: support
- inhibit-charge
-Content-Language: en-US
-To:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
-        <linux-pm@vger.kernel.org>, Sebastian Reichel <sre@kernel.org>,
-        <ibm-acpi-devel@lists.sourceforge.net>,
-        <platform-driver-x86@vger.kernel.org>,
-        Mark Gross <markgross@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-CC:     <linux-kernel@vger.kernel.org>, <linrunner@gmx.net>,
-        <bberg@redhat.com>, <hadess@hadess.net>,
-        <nicolopiazzalunga@gmail.com>, <njoshi1@lenovo.com>,
-        <smclt30p@gmail.com>
-References: <20211113104225.141333-1-linux@weissschuh.net>
- <20211113104225.141333-5-linux@weissschuh.net>
-From:   Mark Pearson <markpearson@lenovo.com>
-In-Reply-To: <20211113104225.141333-5-linux@weissschuh.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.38.49.20]
-X-ClientProxiedBy: reswpmail04.lenovo.com (10.62.32.23) To
- reswpmail01.lenovo.com (10.62.32.20)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0814060b-177a-42bc-d170-08d9a94311ab
-X-MS-TrafficTypeDiagnostic: SG2PR03MB3959:
-X-Microsoft-Antispam-PRVS: <SG2PR03MB3959B03F564CB51C3B384A50C5999@SG2PR03MB3959.apcprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VfoApSh0HKoNK3PLaXIHfYgY+vPBT42rj8r/shEyrRp6M+ymsPI5TMr2403pZqlg58lYENhwMTZkWnZ9fIvbwevdqncMkJETHfTFMLQWpQVW+G04Ml/YIs0Ri9IDJhfIH9JGGDmfVzfX3ccfCRCrDTE9LmeJhhrraUYp39cCmgtzQSbwwHIi7HTgbBXNKk48jdv1uHb/Ptym+/kdFtmANLev08w/VIEAzJaE/kmydEW4bEuEqOZ70jJMKQoVLVNYBKKJv3/xNalKk5WhfF6UVc0cCM3tN9tZ9wv3Dw1LAZ7UMUD1RjtEW6KMf9i54A99ztxKA3RZNn4LeVTgFOAE7GZ4e7jbXKkd92QBrUajJeGV0A7gGMHJe2bThE2CMsH3q8NtuyhMCJtTMNPLxqFIBzT78ZNNrByoaa8ZSc3BxhmvK6jplLm364sk0A5z+x8EBxOsy47jmv3TEA90nPdnzj0dxVtosetJeM2ovTCE8D277xKvx0OvJ5l21d7cqueDM1cQeCZ1yM9A3ZnMKIZtkG/bGIGBHHhoik4bhTJn2A1RyWM8g+0krMxVpVXGg/eeFEmUyP8771+TMGrOhb0yS+XeVkjc0buYz09rmFvtQn7vDzU9PlgbQ9K+o6DXh8xl3nGdrWUwI8d5GKY+TTKh3SBH1Xx1fkLxmpu53ughObSaizOMXFBBkOEVwqMZH+ll80Ryhrc+pTlIOkaeEQHWbfbAXvdXIA0gHupSSyJb1LQGozFQNsi9vgiEGwG04UYnutjSenmHIjz2MRzVwPjD+zq63chqlvwWKv0KbQ4qtHycMtrzc+OwGFfOQHGBi5VKq5T+9C10YSpy718qaR4kf5dEA6p8WXDpbSVreMA1LfS9ghNQqooyY/B/zl/LXKshUOIuilWLFg09ggTpXachLg==
-X-Forefront-Antispam-Report: CIP:104.232.225.6;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.lenovo.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(4326008)(63370400001)(16526019)(186003)(53546011)(966005)(70206006)(83380400001)(426003)(336012)(2616005)(31696002)(356005)(82960400001)(47076005)(7416002)(81166007)(86362001)(66574015)(26005)(70586007)(36860700001)(82310400003)(54906003)(110136005)(36756003)(16576012)(5660300002)(8676002)(36906005)(2906002)(508600001)(316002)(31686004)(8936002)(4001150100001)(63350400001)(3940600001)(43740500002)(2101003)(36900700001);DIR:OUT;SFP:1102;
-X-OriginatorOrg: lenovo.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 20:52:56.8735
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0814060b-177a-42bc-d170-08d9a94311ab
-X-MS-Exchange-CrossTenant-Id: 5c7d0b28-bdf8-410c-aa93-4df372b16203
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5c7d0b28-bdf8-410c-aa93-4df372b16203;Ip=[104.232.225.6];Helo=[mail.lenovo.com]
-X-MS-Exchange-CrossTenant-AuthSource: SG2APC01FT015.eop-APC01.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR03MB3959
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqJno4ROQD38buz8Z-tU5aaQL5b_d1R0-D+c9UwnMKYNOw@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
-
-On 2021-11-13 05:42, Thomas Weißschuh wrote:
-> This adds support for the inhibit-charge charge_behaviour through the
-> embedded controller of ThinkPads.
+On Tuesday 16 November 2021 11:41:22 Rob Herring wrote:
+> +Pali
 > 
-> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> On Mon, Nov 15, 2021 at 2:44 PM Jim Quinlan <james.quinlan@broadcom.com> wrote:
+> >
+> > On Thu, Nov 11, 2021 at 5:57 PM Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Wed, Nov 10, 2021 at 4:15 PM Jim Quinlan <jim2101024@gmail.com> wrote:
+> > > >
+> > > > Adds a mechanism inside the root port device to identify standard PCIe
+> > > > regulators in the DT, allocate them, and turn them on before the rest of
+> > > > the bus is scanned during pci_host_probe().  A root complex driver can
+> > > > leverage this mechanism by setting the pci_ops methods add_bus and
+> > > > remove_bus to pci_subdev_regulators_{add,remove}_bus.
+> > > >
+> > > > The allocated structure that contains the regulators is stored in
+> > > > dev.driver_data.
+> > > >
+> > > > The unabridged reason for doing this is as follows.  We would like the
+> > > > Broadcom STB PCIe root complex driver (and others) to be able to turn
+> > > > off/on regulators[1] that provide power to endpoint[2] devices.  Typically,
+> > > > the drivers of these endpoint devices are stock Linux drivers that are not
+> > > > aware that these regulator(s) exist and must be turned on for the driver to
+> > > > be probed.  The simple solution of course is to turn these regulators on at
+> > > > boot and keep them on.  However, this solution does not satisfy at least
+> > > > three of our usage modes:
+> > > >
+> > > > 1. For example, one customer uses multiple PCIe controllers, but wants the
+> > > > ability to, by script invoking and unbind, turn any or all of them by and
+> > > > their subdevices off to save power, e.g. when in battery mode.
+> > > >
+> > > > 2. Another example is when a watchdog script discovers that an endpoint
+> > > > device is in an unresponsive state and would like to unbind, power toggle,
+> > > > and re-bind just the PCIe endpoint and controller.
+> > > >
+> > > > 3. Of course we also want power turned off during suspend mode.  However,
+> > > > some endpoint devices may be able to "wake" during suspend and we need to
+> > > > recognise this case and veto the nominal act of turning off its regulator.
+> > > > Such is the case with Wake-on-LAN and Wake-on-WLAN support where PCIe
+> > > > end-point device needs to be kept powered on in order to receive network
+> > > > packets and wake-up the system.
+> > > >
+> > > > In all of these cases it is advantageous for the PCIe controller to govern
+> > > > the turning off/on the regulators needed by the endpoint device.  The first
+> > > > two cases can be done by simply unbinding and binding the PCIe controller,
+> > > > if the controller has control of these regulators.
+> > > >
+> > > > [1] These regulators typically govern the actual power supply to the
+> > > >     endpoint chip.  Sometimes they may be a the official PCIe socket
+> > > >     power -- such as 3.3v or aux-3.3v.  Sometimes they are truly
+> > > >     the regulator(s) that supply power to the EP chip.
+> > > >
+> > > > [2] The 99% configuration of our boards is a single endpoint device
+> > > >     attached to the PCIe controller.  I use the term endpoint but it could
+> > > >     possible mean a switch as well.
+> > > >
+> > > > Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+> > > > ---
+> > > >  drivers/pci/bus.c              | 72 ++++++++++++++++++++++++++++++++++
+> > > >  drivers/pci/pci.h              |  8 ++++
+> > > >  drivers/pci/pcie/portdrv_pci.c | 32 +++++++++++++++
+> > > >  3 files changed, 112 insertions(+)
+> > > >
+> > > > diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
+> > > > index 3cef835b375f..c39fdf36b0ad 100644
+> > > > --- a/drivers/pci/bus.c
+> > > > +++ b/drivers/pci/bus.c
+> > > > @@ -419,3 +419,75 @@ void pci_bus_put(struct pci_bus *bus)
+> > > >         if (bus)
+> > > >                 put_device(&bus->dev);
+> > > >  }
+> > > > +
+> > > > +static void *alloc_subdev_regulators(struct device *dev)
+> > > > +{
+> > > > +       static const char * const supplies[] = {
+> > > > +               "vpcie3v3",
+> > > > +               "vpcie3v3aux",
+> > > > +               "vpcie12v",
+> > > > +       };
+> > > > +       const size_t size = sizeof(struct subdev_regulators)
+> > > > +               + sizeof(struct regulator_bulk_data) * ARRAY_SIZE(supplies);
+> > > > +       struct subdev_regulators *sr;
+> > > > +       int i;
+> > > > +
+> > > > +       sr = devm_kzalloc(dev, size, GFP_KERNEL);
+> > > > +
+> > > > +       if (sr) {
+> > > > +               sr->num_supplies = ARRAY_SIZE(supplies);
+> > > > +               for (i = 0; i < ARRAY_SIZE(supplies); i++)
+> > > > +                       sr->supplies[i].supply = supplies[i];
+> > > > +       }
+> > > > +
+> > > > +       return sr;
+> > > > +}
+> > > > +
+> > > > +
+> > > > +int pci_subdev_regulators_add_bus(struct pci_bus *bus)
+> > > > +{
+> > > > +       struct device *dev = &bus->dev;
+> > > > +       struct subdev_regulators *sr;
+> > > > +       int ret;
+> > > > +
+> > > > +       if (!pcie_is_port_dev(bus->self))
+> > > > +               return 0;
+> > > > +
+> > > > +       if (WARN_ON(bus->dev.driver_data))
+> > > > +               dev_err(dev, "multiple clients using dev.driver_data\n");
+> > > > +
+> > > > +       sr = alloc_subdev_regulators(&bus->dev);
+> > > > +       if (!sr)
+> > > > +               return -ENOMEM;
+> > > > +
+> > > > +       bus->dev.driver_data = sr;
+> > > > +       ret = regulator_bulk_get(dev, sr->num_supplies, sr->supplies);
+> > > > +       if (ret)
+> > > > +               return ret;
+> > > > +
+> > > > +       ret = regulator_bulk_enable(sr->num_supplies, sr->supplies);
+> > > > +       if (ret) {
+> > > > +               dev_err(dev, "failed to enable regulators for downstream device\n");
+> > > > +               return ret;
+> > > > +       }
+> > > > +
+> > > > +       return 0;
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(pci_subdev_regulators_add_bus);
+> > >
+> > > Can't these just go in the portdrv probe and remove functions now?
+> > >
+> > > Rob
+> >
+> > Not really.  The idea is that  only when a host controller driver does this
+> >
+> > static struct pci_ops my_pcie_ops = {
+> >     .add_bus = pci_subdev_regulators_add_bus , /* see  note below */
+> >     .remove_bus = pci_subdev_regulators_remove_bus,
+> >     ...
+> > }
+> >
+> > does it explicitly want this feature.  Without doing this, every PCI
+> > port in the world will execute a devm_kzalloc() and
+> > devm_regulator_bulk_get() to (likely) grab nothing, and then there
+> > will be three superfluous lines in the boot log:
 > 
-> ---
+> You can opt-in based on there being a DT node.
 > 
-> This patch is based on https://lore.kernel.org/platform-driver-x86/d2808930-5840-6ffb-3a59-d235cdb1fe16@gmail.com/>> ---
->  drivers/platform/x86/thinkpad_acpi.c | 55 +++++++++++++++++++++++++++-
->  1 file changed, 53 insertions(+), 2 deletions(-)
+> > pci_bus 0001:01: 0001:01 supply vpcie12v not found, using dummy regulator
+> > pci_bus 0001:01: 0001:01 supply vpcie3v3 not found, using dummy regulator
+> > pci_bus 0001:01: 0001:01 supply vpcie3v3aux not found, using dummy regulator
 > 
-> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-> index e8c98e9aff71..7cd6475240b2 100644
-> --- a/drivers/platform/x86/thinkpad_acpi.c
-> +++ b/drivers/platform/x86/thinkpad_acpi.c
-> @@ -9321,6 +9321,8 @@ static struct ibm_struct mute_led_driver_data = {
->  #define SET_STOP	"BCSS"
->  #define GET_DISCHARGE	"BDSG"
->  #define SET_DISCHARGE	"BDSS"
-> +#define GET_INHIBIT	"PSSG"
-> +#define SET_INHIBIT	"BICS"
->  
->  enum {
->  	BAT_ANY = 0,
-> @@ -9338,6 +9340,7 @@ enum {
->  	THRESHOLD_START,
->  	THRESHOLD_STOP,
->  	FORCE_DISCHARGE,
-> +	INHIBIT_CHARGE,
->  };
->  
->  struct tpacpi_battery_data {
-> @@ -9409,6 +9412,13 @@ static int tpacpi_battery_get(int what, int battery, int *ret)
->  		/* The force discharge status is in bit 0 */
->  		*ret = *ret & 0x01;
->  		return 0;
-> +	case INHIBIT_CHARGE:
-> +		/* This is actually reading peak shift state, like tpacpi-bat does */
-> +		if ACPI_FAILURE(tpacpi_battery_acpi_eval(GET_INHIBIT, ret, battery))
-> +			return -ENODEV;
-> +		/* The inhibit charge status is in bit 0 */
-> +		*ret = *ret & 0x01;
-> +		return 0;
->  	default:
->  		pr_crit("wrong parameter: %d", what);
->  		return -EINVAL;
-> @@ -9447,6 +9457,22 @@ static int tpacpi_battery_set(int what, int battery, int value)
->  			return -ENODEV;
->  		}
->  		return 0;
-> +	case INHIBIT_CHARGE:
-> +		/* When setting inhibit charge, we set a default value of
-> +		 * always breaking on AC detach and the effective time is set to
-> +		 * be permanent.
-> +		 * The battery ID is in bits 4-5, 2 bits,
-> +		 * the effective time is in bits 8-23, 2 bytes.
-> +		 * A time of FFFF indicates forever.
-> +		 */
-> +		param = value;
-> +		param |= battery << 4;
-> +		param |= 0xFFFF << 8;
-> +		if (ACPI_FAILURE(tpacpi_battery_acpi_eval(SET_INHIBIT, &ret, param))) {
-> +			pr_err("failed to set inhibit charge on %d", battery);
-> +			return -ENODEV;
-> +		}
-> +		return 0;
->  	default:
->  		pr_crit("wrong parameter: %d", what);
->  		return -EINVAL;
-> @@ -9467,6 +9493,8 @@ static int tpacpi_battery_probe(int battery)
->  	 * 4) Check for support
->  	 * 5) Get the current force discharge status
->  	 * 6) Check for support
-> +	 * 7) Get the current inhibit charge status
-> +	 * 8) Check for support
->  	 */
->  	if (acpi_has_method(hkey_handle, GET_START)) {
->  		if ACPI_FAILURE(tpacpi_battery_acpi_eval(GET_START, &ret, battery)) {
-> @@ -9513,6 +9541,16 @@ static int tpacpi_battery_probe(int battery)
->  			battery_info.batteries[battery].charge_behaviours |=
->  				BIT(POWER_SUPPLY_CHARGE_BEHAVIOUR_FORCE_DISCHARGE);
->  	}
-> +	if (acpi_has_method(hkey_handle, GET_INHIBIT)) {
-> +		if (ACPI_FAILURE(tpacpi_battery_acpi_eval(GET_INHIBIT, &ret, battery))) {
-> +			pr_err("Error probing battery inhibit charge; %d\n", battery);
-> +			return -ENODEV;
-> +		}
-> +		/* Support is marked in bit 5 */
-> +		if (ret & BIT(5))
-> +			battery_info.batteries[battery].charge_behaviours |=
-> +				BIT(POWER_SUPPLY_CHARGE_BEHAVIOUR_INHIBIT_CHARGE);
-> +	}
->  
->  	battery_info.batteries[battery].charge_behaviours |=
->  		BIT(POWER_SUPPLY_CHARGE_BEHAVIOUR_AUTO);
-> @@ -9673,6 +9711,11 @@ static ssize_t charge_behaviour_show(struct device *dev,
->  			return -ENODEV;
->  		if (ret)
->  			active = POWER_SUPPLY_CHARGE_BEHAVIOUR_FORCE_DISCHARGE;
-> +	} else if (available & BIT(POWER_SUPPLY_CHARGE_BEHAVIOUR_INHIBIT_CHARGE)) {
-> +		if (tpacpi_battery_get(INHIBIT_CHARGE, battery, &ret))
-> +			return -ENODEV;
-> +		if (ret)
-> +			active = POWER_SUPPLY_CHARGE_BEHAVIOUR_INHIBIT_CHARGE;
->  	}
->  
->  	return power_supply_charge_behaviour_show(dev, available, active, buf);
-> @@ -9710,12 +9753,20 @@ static ssize_t charge_behaviour_store(struct device *dev,
->  	switch (selected) {
->  	case POWER_SUPPLY_CHARGE_BEHAVIOUR_AUTO:
->  		ret = tpacpi_battery_set(FORCE_DISCHARGE, battery, 0);
-> -		if (ret < 0)
-> +		ret = tpacpi_battery_set(INHIBIT_CHARGE, battery, 0) || ret;
-> +		if (ret)
->  			return ret;
->  		break;
->  	case POWER_SUPPLY_CHARGE_BEHAVIOUR_FORCE_DISCHARGE:
->  		ret = tpacpi_battery_set(FORCE_DISCHARGE, battery, 1);
-> -		if (ret < 0)
-> +		ret = tpacpi_battery_set(INHIBIT_CHARGE, battery, 0) || ret;
-> +		if (ret)
-> +			return ret;
-> +		break;
-> +	case POWER_SUPPLY_CHARGE_BEHAVIOUR_INHIBIT_CHARGE:
-> +		ret = tpacpi_battery_set(FORCE_DISCHARGE, battery, 0);
-> +		ret = tpacpi_battery_set(INHIBIT_CHARGE, battery, 1) || ret;
-> +		if (ret)
->  			return ret;
->  		break;
->  	default:
+> This would be annoying, but not really a reason for how to design this.
 > 
+> > Secondly, our  HW needs to know when the  alloc/get/enable of
+> > regulators is done so that the PCIe link can then be attempted.   This
+> > is pretty much the cornerstone of this patchset.   To do this the brcm
+> > RC driver's call to pci_subdev_regulators_add_bus() is wrapped by
+> > brcm_pcie_add_bus() so that we can do this:
+> >
+> > static struct pci_ops my_pcie_ops = {
+> >     .add_bus = brcm_pcie_add_bus ,   /* calls pci_subdev_regulators_add_bus() */
+> >     .remove_bus = pci_subdev_regulators_remove_bus,
+> 
+> Do add_bus/remove_bus get called during resume/suspend? If not, how do
+> you handle the link during resume?
+> 
+> Maybe there needs to be explicit hooks for link handling. Pali has
+> been looking into this some.
+> 
+> Rob
 
-I can confirm the bit fields are correct for these calls (as for the
-previous patch)
+Yes, I was looking at it... main power (12V/3.3V) and AUX power (3.3V)
+needs to be supplied at the "correct" time during establishing link
+procedure. I wrote it in my RFC email:
+https://lore.kernel.org/linux-pci/20211022183808.jdeo7vntnagqkg7g@pali/
 
-Couple of things to note, based on feedback previously from the FW team
-that I found when digging thru my battery related emails.
+I'm not sure if regulator API is the most suitable for this task in PCI
+core code as there are planty ways how it can be controllers. My idea
+presented in that email was that driver provides power callback and core
+pci code would use it.
 
-"Lenovo doesn't officially support the use of these calls - they're
-intended for internal use" (at this point in time - there is some
-discussion about battery recalibration support but I don't have details
-I can share there yet).
+Because power needs to be enabled at the "correct" time during link up,
+I think that add/remove bus callbacks are unsuitable for this task. This
+would just cause adding another msleep() calls on different places to
+make correct timing of link up...
 
-The FW team also noted that:
-
-"Actual battery charging/discharging behaviors are managed by ECFW. So
-the request of BDSS/BICS method may be rejected by ECFW for the current
-battery mode/status. You have to check if the request of the method is
-actually applied or not"
-
-So for the calls above (and for the BDSS calls in the previous patch) it
-would be good to do a read back of the setting to ensure it has
-completed successfully.
-
-Hope that helps
-Mark
-
-
-
+I think it is needed to implement generic function for establishing link
+in pci core code with all required steps.
