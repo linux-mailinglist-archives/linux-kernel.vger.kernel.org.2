@@ -2,262 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09429452FE1
+	by mail.lfdr.de (Postfix) with ESMTP id E0D15452FE3
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:08:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234499AbhKPLJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 06:09:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234560AbhKPLJQ (ORCPT
+        id S234605AbhKPLKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:10:08 -0500
+Received: from hosting.gsystem.sk ([212.5.213.30]:60586 "EHLO
+        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233438AbhKPLKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 06:09:16 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594D8C061766;
-        Tue, 16 Nov 2021 03:06:19 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id e3so49616303edu.4;
-        Tue, 16 Nov 2021 03:06:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VnCgHIIU7S6lgl53GeRYXIkPs0wK3gPDE9N5/GaJOxI=;
-        b=UTE64Al//jFH0wp6HU98EPGUxyxydBFUlZ8hIMm6lcPbcD2gQZDrZWpHZMb/X82qWl
-         FqNpDvg01n3z3wYANU0ZEAoVfoKdYr/YRXVdEmrEEk2ct+iiRa7w2JQAtsIZYrIm6hL8
-         zVGdtHbN0gLYJ/2eCjAZgQDLBmq/EGJeVoUefIPoJs4VVps62te321gOQro5FfVVGXIW
-         ryHxTbvx9384Gp0LZ5tjD/EGeFODE2ePeWJ+7VuTGP9HOOooRiSvie+z2pLWJKOUmOmg
-         kXxgTrav+anqEU4N0iccN40KdBFLfXutZEeyfxuZ1pAwevULVdkic376xGhn8S/MBIYQ
-         9EcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VnCgHIIU7S6lgl53GeRYXIkPs0wK3gPDE9N5/GaJOxI=;
-        b=lb5+nkg1OgGIELNZ2WPBszOtsGPkAyMvPCKoFwav+hO3Fq75SD6BAhdUenC7F1BOER
-         O9uElNO8SxUV0qOu4a/u6H1R10ZoAvHKxA0Y7s012als44nREMmS4NyukhbdMO1ZrlkS
-         LZoXs3SsiBJHPcz4+ic+dvVOAQpgeI4jdxfCN/0ct9OUUppzR+dTL171IaqNzIguIzXZ
-         J2tWxVYLZF+OHGgx2FpWIPaWyTN3EKoBRxfJWj+B7Fvudw8dDWbgGgdadnARMlpBrd1l
-         4e5oKtbLOmKC3zS9NECeya1iN6IB+az94c43AVKBmHmvM7A6tB3KoeVdz/T8ZqjtpRQR
-         s+UA==
-X-Gm-Message-State: AOAM531zPcZxrwd2gD2nV7lWHgGYLYGl4usxoL6clNyT8HN0t/vb3YJ3
-        TyAYDR5zYAELB6C1EhrqQHoPbwX6yFV+CENaq/E=
-X-Google-Smtp-Source: ABdhPJz7/QGp0U62o+gSjHo/sv/mXAGLAinjrpKMJAdSDaV43g7EeE+oB5T0lS+OQaK4wvi3DyQ5RfaDhgBhCdwjoSc=
-X-Received: by 2002:a50:fb09:: with SMTP id d9mr8672034edq.283.1637060777875;
- Tue, 16 Nov 2021 03:06:17 -0800 (PST)
+        Tue, 16 Nov 2021 06:10:02 -0500
+Received: from [192.168.1.3] (ns.gsystem.sk [62.176.172.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by hosting.gsystem.sk (Postfix) with ESMTPSA id 583E47A032B;
+        Tue, 16 Nov 2021 12:07:03 +0100 (CET)
+From:   Ondrej Zary <linux@zary.sk>
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: Re: [PATCH] hid-multitouch: Fix Iiyama ProLite T1931SAW (0eef:0001 again!)
+Date:   Tue, 16 Nov 2021 12:07:00 +0100
+User-Agent: KMail/1.9.10
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+References: <20211112135511.29573-1-linux@zary.sk> <202111150937.31306.linux@zary.sk> <CAO-hwJ+B3er4PdNh1Nq3iGC+1bC1Gd0NZZ+UkRvGDXocTiXrXg@mail.gmail.com>
+In-Reply-To: <CAO-hwJ+B3er4PdNh1Nq3iGC+1bC1Gd0NZZ+UkRvGDXocTiXrXg@mail.gmail.com>
+X-KMail-QuotePrefix: > 
 MIME-Version: 1.0
-References: <20211114170335.66994-1-hdegoede@redhat.com> <20211114170335.66994-12-hdegoede@redhat.com>
-In-Reply-To: <20211114170335.66994-12-hdegoede@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 16 Nov 2021 13:05:36 +0200
-Message-ID: <CAHp75VciJJvJ95cNDCUKPxCzfTa=+SfN7qoH2wvXjgweauT8ow@mail.gmail.com>
-Subject: Re: [PATCH v2 11/20] power: supply: bq25890: Add support for
- registering the Vbus boost converter as a regulator
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Yauhen Kharuzhy <jekhor@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <202111161207.00633.linux@zary.sk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 14, 2021 at 7:04 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> The bq25890_charger code supports enabling/disabling the boost converter
-> based on usb-phy notifications. But the usb-phy framework is not used on
-> all boards/platforms. At support for registering the Vbus boost converter
-> as a standard regulator when there is no usb-phy on the board.
->
-> Also add support for providing regulator_init_data through platform_data
-> for use on boards where device-tree is not used and the platform code must
-> thus provide the regulator_init_data.
+On Tuesday 16 November 2021, Benjamin Tissoires wrote:
+> On Mon, Nov 15, 2021 at 9:37 AM Ondrej Zary <linux@zary.sk> wrote:
+> >
+> > On Friday 12 November 2021, Benjamin Tissoires wrote:
+> > > Hi Ondrej,
+> > >
+> > > On Fri, Nov 12, 2021 at 3:00 PM Ondrej Zary <linux@zary.sk> wrote:
+> > > >
+> > > > Iiyama ProLite T1931SAW does not work with Linux - input devices are
+> > > > created but cursor does not move.
+> > > >
+> > > > It has the infamous 0eef:0001 ID which has been reused for various
+> > > > devices before.
+> > > >
+> > > > It seems to require export_all_inputs = true.
+> > > > Add it to mt_devices[] as MT_CLS_WIN_8 to fix the problem.
+> > > > Hopefully there are no HID devices using this ID that will break.
+> > > > It should not break non-HID devices (handled by usbtouchscreen).
+> > >
+> > > Hmm, this is worrisome. I am pretty sure there were some eGalax 0001
+> > > devices that were Win 7 compatible and I am not sure if they are
+> > > compatible with Win8...
+> > >
+> > > I guess that if you have to set MT_CLS_WIN_8, the device is not
+> > > detected as such. so how about you use:
+> > > MT_CLS_EXPORT_ALL_INPUTS instead, (to keep MT_CLS_DEFAULT for those
+> > > devices), and restrict the VID/PID matching to the non Win8 devices:
+> >
+> > It works with MT_CLS_EXPORT_ALL_INPUTS.
+> >
+> > > HID_DEVICE(BUS_USB, HID_GROUP_GENERIC, USB_VENDOR_ID_DWAV,
+> > > USB_DEVICE_ID_EGALAX_TOUCHCONTROLLER)
+> >
+> > But does not match HID_GROUP_GENERIC.
+> 
+> Sorry, it should have been HID_GROUP_MULTITOUCH
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+That's exactly how MT_USB_DEVICE is defined:
+#define MT_USB_DEVICE(v, p)     HID_DEVICE(BUS_USB, HID_GROUP_MULTITOUCH, v, p)
 
-One remark below.
+So it's equal to MT_USB_DEVICE(USB_VENDOR_ID_DWAV, USB_DEVICE_ID_EGALAX_TOUCHCONTROLLER)
+Will that match only non-Win8 devices?
+ 
+> Cheers,
+> Benjamin
+> 
+> >
+> > >
+> > > ?
+> > >
+> > > Cheers,
+> > > Benjamin
+> > >
+> > > >
+> > > > Signed-off-by: Ondrej Zary <linux@zary.sk>
+> > > > ---
+> > > >  drivers/hid/hid-multitouch.c | 5 +++++
+> > > >  1 file changed, 5 insertions(+)
+> > > >
+> > > > diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
+> > > > index e1afddb7b33d..099daf590392 100644
+> > > > --- a/drivers/hid/hid-multitouch.c
+> > > > +++ b/drivers/hid/hid-multitouch.c
+> > > > @@ -1888,6 +1888,11 @@ static const struct hid_device_id mt_devices[] = {
+> > > >                 MT_USB_DEVICE(USB_VENDOR_ID_CVTOUCH,
+> > > >                         USB_DEVICE_ID_CVTOUCH_SCREEN) },
+> > > >
+> > > > +       /* eGalax devices (SAW) */
+> > > > +       { .driver_data = MT_CLS_WIN_8,
+> > > > +               MT_USB_DEVICE(USB_VENDOR_ID_DWAV,
+> > > > +                       USB_DEVICE_ID_EGALAX_TOUCHCONTROLLER) },
+> > > > +
+> > > >         /* eGalax devices (resistive) */
+> > > >         { .driver_data = MT_CLS_EGALAX,
+> > > >                 MT_USB_DEVICE(USB_VENDOR_ID_DWAV,
+> > > > --
+> > > > Ondrej Zary
+> > > >
+> > >
+> > >
+> >
+> >
+> >
+> > --
+> > Ondrej Zary
+> >
+> 
+> 
 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
-> Changes in v2:
-> - When the usb-phy framework is not used, turn off the Vboost regulator
->   on shutdown
-> - Some minor code-tweaks based on Andy's review
-> ---
->  drivers/power/supply/bq25890_charger.c | 80 ++++++++++++++++++++++++++
->  include/linux/power/bq25890_charger.h  | 15 +++++
->  2 files changed, 95 insertions(+)
->  create mode 100644 include/linux/power/bq25890_charger.h
->
-> diff --git a/drivers/power/supply/bq25890_charger.c b/drivers/power/supply/bq25890_charger.c
-> index 3c41fe86b3d3..e06ca7b0eb3e 100644
-> --- a/drivers/power/supply/bq25890_charger.c
-> +++ b/drivers/power/supply/bq25890_charger.c
-> @@ -8,7 +8,9 @@
->  #include <linux/module.h>
->  #include <linux/i2c.h>
->  #include <linux/power_supply.h>
-> +#include <linux/power/bq25890_charger.h>
->  #include <linux/regmap.h>
-> +#include <linux/regulator/driver.h>
->  #include <linux/types.h>
->  #include <linux/gpio/consumer.h>
->  #include <linux/interrupt.h>
-> @@ -845,6 +847,45 @@ static int bq25890_usb_notifier(struct notifier_block *nb, unsigned long val,
->         return NOTIFY_OK;
->  }
->
-> +#ifdef CONFIG_REGULATOR
-> +static int bq25890_vbus_enable(struct regulator_dev *rdev)
-> +{
-> +       struct bq25890_device *bq = rdev_get_drvdata(rdev);
-> +
-> +       return bq25890_set_otg_cfg(bq, 1);
-> +}
-> +
-> +static int bq25890_vbus_disable(struct regulator_dev *rdev)
-> +{
-> +       struct bq25890_device *bq = rdev_get_drvdata(rdev);
-> +
-> +       return bq25890_set_otg_cfg(bq, 0);
-> +}
-> +
-> +static int bq25890_vbus_is_enabled(struct regulator_dev *rdev)
-> +{
-> +       struct bq25890_device *bq = rdev_get_drvdata(rdev);
-> +
-> +       return bq25890_field_read(bq, F_OTG_CFG);
-> +}
-> +
-> +static const struct regulator_ops bq25890_vbus_ops = {
-> +       .enable = bq25890_vbus_enable,
-> +       .disable = bq25890_vbus_disable,
-> +       .is_enabled = bq25890_vbus_is_enabled,
-> +};
-> +
-> +static const struct regulator_desc bq25890_vbus_desc = {
-> +       .name = "usb_otg_vbus",
-> +       .of_match = "usb-otg-vbus",
-> +       .type = REGULATOR_VOLTAGE,
-> +       .owner = THIS_MODULE,
-> +       .ops = &bq25890_vbus_ops,
-> +       .fixed_uV = 5000000,
-> +       .n_voltages = 1,
-> +};
-> +#endif
-> +
->  static int bq25890_get_chip_version(struct bq25890_device *bq)
->  {
->         int id, rev;
-> @@ -1044,6 +1085,22 @@ static int bq25890_probe(struct i2c_client *client,
->                 bq->usb_nb.notifier_call = bq25890_usb_notifier;
->                 usb_register_notifier(bq->usb_phy, &bq->usb_nb);
->         }
-> +#ifdef CONFIG_REGULATOR
-> +       else {
-> +               struct bq25890_platform_data *pdata = dev_get_platdata(dev);
-> +               struct regulator_config cfg = { };
-> +               struct regulator_dev *reg;
-> +
-> +               cfg.dev = dev;
-> +               cfg.driver_data = bq;
-> +               if (pdata)
-> +                       cfg.init_data = pdata->regulator_init_data;
-> +
-> +               reg = devm_regulator_register(dev, &bq25890_vbus_desc, &cfg);
-> +               if (IS_ERR(reg))
-> +                       return dev_err_probe(dev, PTR_ERR(reg), "registering regulator");
-> +       }
-> +#endif
-
-I just realized that you may use even
-
-} else {
-#ifdef
-...
-#endif
-}
-
-w/o any compiler warning or so. But it's up to you.
-
->         ret = bq25890_power_supply_init(bq);
->         if (ret < 0) {
-> @@ -1082,6 +1139,28 @@ static int bq25890_remove(struct i2c_client *client)
->         return 0;
->  }
->
-> +static void bq25890_shutdown(struct i2c_client *client)
-> +{
-> +       struct bq25890_device *bq = i2c_get_clientdata(client);
-> +
-> +       /*
-> +        * TODO this if + return should probably be removed, but that would
-> +        * introduce a function change for boards using the usb-phy framework.
-> +        * This needs to be tested on such a board before making this change.
-> +        */
-> +       if (!IS_ERR_OR_NULL(bq->usb_phy))
-> +               return;
-> +
-> +       /*
-> +        * Turn off the 5v Boost regulator which outputs Vbus to the device's
-> +        * Micro-USB or Type-C USB port. Leaving this on drains power and
-> +        * this avoids the PMIC on some device-models seeing this as Vbus
-> +        * getting inserted after shutdown, causing the device to immediately
-> +        * power-up again.
-> +        */
-> +       bq25890_set_otg_cfg(bq, 0);
-> +}
-> +
->  #ifdef CONFIG_PM_SLEEP
->  static int bq25890_suspend(struct device *dev)
->  {
-> @@ -1161,6 +1240,7 @@ static struct i2c_driver bq25890_driver = {
->         },
->         .probe = bq25890_probe,
->         .remove = bq25890_remove,
-> +       .shutdown = bq25890_shutdown,
->         .id_table = bq25890_i2c_ids,
->  };
->  module_i2c_driver(bq25890_driver);
-> diff --git a/include/linux/power/bq25890_charger.h b/include/linux/power/bq25890_charger.h
-> new file mode 100644
-> index 000000000000..c706ddb77a08
-> --- /dev/null
-> +++ b/include/linux/power/bq25890_charger.h
-> @@ -0,0 +1,15 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Platform data for the TI bq25890 battery charger driver.
-> + */
-> +
-> +#ifndef _BQ25890_CHARGER_H_
-> +#define _BQ25890_CHARGER_H_
-> +
-> +struct regulator_init_data;
-> +
-> +struct bq25890_platform_data {
-> +       const struct regulator_init_data *regulator_init_data;
-> +};
-> +
-> +#endif
-> --
-> 2.31.1
->
 
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Ondrej Zary
