@@ -2,203 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B54452C49
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 08:58:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C95452C52
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:01:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231594AbhKPIA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 03:00:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34362 "EHLO
+        id S231639AbhKPIEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 03:04:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbhKPIAu (ORCPT
+        with ESMTP id S231429AbhKPIE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 03:00:50 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C61DC061570
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 23:57:53 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id w1so83983810edd.10
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 23:57:53 -0800 (PST)
+        Tue, 16 Nov 2021 03:04:27 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3DFC061570;
+        Tue, 16 Nov 2021 00:01:30 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id s186so54978228yba.12;
+        Tue, 16 Nov 2021 00:01:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+/xPiZQB+UC7sbKipcx9KJDi05lxsXzCw6EdHSdnEp0=;
-        b=Q483gRu3RrbdaxAZCj32ypARtIQV3z/G7qVS4P+B7wYEpSpVpE26F1KrY3cuHMVNsH
-         hM+phHJM4qX9MQ0yRPVK6Bah04m05vh+EmHDhICsT0f0mfjKLZqcqv6eZuNDvHS5Tdee
-         Ql0DbRCZjP0XkBAz7sNEqtRHxAR4AIXSq6kkLYaszpvF4QEfCndP6w7eNt5wSmGXkYba
-         biHnL4n9NrI8nXo7jNJta+AU4wz+PvpGzJNkFwysThp8r2jlOI9lYtHTFXrBk0SHToqT
-         H24b3QDflL/HwZhO6kM5Y2nNTXhPzZhtWCBOBqPmz/T9qe5ZN0HP7sT5RsNYcBGei0/g
-         Bsnw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+T6XK8FIB+LZn0bxtNBWPmVOIcqiKDktRRtbRmo1oaA=;
+        b=IJsqxnbikTYAjhyFfXUp2P4C0SUzw+nJHTGtgM0wZJUciCU5Gy3ucoA1beymsmWJLE
+         RLMAOG2XvHS+6WYCE/CoQh9sNCuf7sJN52fHLtjjlMNeTR2yn43oggse5rxG1Hab7lc0
+         a5Tz3tJ5v/4ZzhMQ5D/6SV2SNSmprKOUTzjS+Y7w8HF61PqeOmXY70PF3cl7wOGe5bOD
+         pDNVrf9RtoWbvPcJFoHnvAKOLAXFk/CFIK6ABlfJlfwCC6nsCsBbbDTLeNoP7qwfRkFL
+         HNzjqpC+LSvctHt/SSrMQtHJtgo0NxVXn5CUvIUrsG5ecbz7yIu/s8HggxswYam0s65R
+         rfGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+/xPiZQB+UC7sbKipcx9KJDi05lxsXzCw6EdHSdnEp0=;
-        b=Whh5ORFxJZvLgvNTm2FMlR3a2l6NR0IfbxEO/EJTmUOd8jron0NkEwYwUgfuz5ndkj
-         8R77gTh4vKNTsXSCMnMO6qKwasWZ6N28TrzyCb5qWdeICPifCbJD817TT1xY0OVkaTkl
-         TkLPbnvlSUO8FC5oDyM7JIXV29y1k4RUd7GpwiVVCiqqrGWiPgymCpIRCtoCd4I7tpOu
-         27iWvJVfJR9pCcW2oMhgsVyN1KDbvr80JMy2Rryh+7howxZll73vh36kQps9Kfhq4rsh
-         p/jPSgJfjkIK0N2UC9HQA85Mj2x4zWqU/1sN8T5TECAqKhxb7cjROiPrhQDPe6F+JEyS
-         Rtbg==
-X-Gm-Message-State: AOAM531CfrB+nKiC1ImbCKlXyKPOdJnHDNNqUSdVjq34byOsUxv8w7vH
-        Ztv3h2sYn0F0G48RtVUJ4RA=
-X-Google-Smtp-Source: ABdhPJzwYwWCt7XUZ1PKx8YO58KMMLbMrO2BKUbkAGHqkmsvXF2Sd+bdHrz9LB94u4wHfXhHRPK6GA==
-X-Received: by 2002:a05:6402:51c6:: with SMTP id r6mr7442736edd.365.1637049472014;
-        Mon, 15 Nov 2021 23:57:52 -0800 (PST)
-Received: from localhost.localdomain (host-82-61-38-115.retail.telecomitalia.it. [82.61.38.115])
-        by smtp.gmail.com with ESMTPSA id go10sm7796284ejc.115.2021.11.15.23.57.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 23:57:51 -0800 (PST)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     syzkaller-bugs@googlegroups.com,
-        syzbot <syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-kernel@vger.kernel.org, Marco Elver <elver@google.com>
-Subject: Re: [syzbot] BUG: sleeping function called from invalid context in __might_resched
-Date:   Tue, 16 Nov 2021 08:57:49 +0100
-Message-ID: <10635720.r0gBeNIlcX@localhost.localdomain>
-In-Reply-To: <0000000000003efce905d0b135e6@google.com>
-References: <0000000000003efce905d0b135e6@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+T6XK8FIB+LZn0bxtNBWPmVOIcqiKDktRRtbRmo1oaA=;
+        b=4RbZxku70i336aCrNC39Mr5qT9bEj868rjLX/+rEYpt5YssdPrWLjlxR5Dx8hDf6UT
+         B72wYAN2Zf3JkaRApUgDStx85+1N3ubmiBr+3ASNB12A0dqiS6UK958xXrCLH2f1d7Iz
+         0MbEc/CNpltkyGyKVQ5In3NY6KaRjolm1IyWjDGiBh8ov404tk6ruup4FvsU1vqDa+yI
+         rcgYWZFi4QYvfBeHf4DRYyNozPHPVAZyHGDKdvU+CdsL9XkjAylkHu5JlaApK1/DHgmf
+         7LkFQ21USfxjkJGC2es8u5mJUbMHEeCaT9rzkqjX/CZQZmB8GzofGVyCLQwVsK0HvE8I
+         QoMQ==
+X-Gm-Message-State: AOAM530vt7HV1d9x0GVY0HPGdTlMwEsPzPuhOce1kKKZdXmCkxhM95KG
+        Xm2WeHlRNiuOeqVsoWONFHlgl/u1IIcKDRb6qYs=
+X-Google-Smtp-Source: ABdhPJxdu/R2v5T0CToHQSaQwshPblewLn7lsYZk5zCJ0IzLSiis/Hq6uQjzSVekq28rE3E6HMJyNT0J+wR6BF+k4rc=
+X-Received: by 2002:a25:3787:: with SMTP id e129mr5784440yba.91.1637049689367;
+ Tue, 16 Nov 2021 00:01:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="nextPart12407418.tSIYDGc9g1"
-Content-Transfer-Encoding: 7Bit
+References: <20211027233215.306111-1-alex.popov@linux.com> <ac989387-3359-f8da-23f9-f5f6deca4db8@linux.com>
+ <CAHk-=wgRmjkP3+32XPULMLTkv24AkA=nNLa7xxvSg-F0G1sJ9g@mail.gmail.com>
+ <77b79f0c-48f2-16dd-1d00-22f3a1b1f5a6@linux.com> <CAKXUXMx5Oi-dNVKB+8E-pdrz+ooELMZf=oT_oGXKFrNWejz=fg@mail.gmail.com>
+ <22828e84-b34f-7132-c9e9-bb42baf9247b@redhat.com> <cf57fb34-460c-3211-840f-8a5e3d88811a@linux.com>
+In-Reply-To: <cf57fb34-460c-3211-840f-8a5e3d88811a@linux.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Tue, 16 Nov 2021 09:01:17 +0100
+Message-ID: <CAKXUXMzRAkCPQuJJ8b5p1Fi+c-YKgXwP4pU9pUJdWaPpRXbPaQ@mail.gmail.com>
+Subject: Re: [ELISA Safety Architecture WG] [PATCH v2 0/2] Introduce the
+ pkill_on_warn parameter
+To:     Alexander Popov <alex.popov@linux.com>
+Cc:     Gabriele Paoloni <gpaoloni@redhat.com>,
+        Robert Krutsch <krutsch@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul McKenney <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Maciej Rozycki <macro@orcam.me.uk>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jann Horn <jannh@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Laura Abbott <labbott@kernel.org>,
+        David S Miller <davem@davemloft.net>,
+        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Scull <ascull@google.com>,
+        Marc Zyngier <maz@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Wang Qing <wangqing@vivo.com>, Mel Gorman <mgorman@suse.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
+        Mathieu Chouquet-Stringer <me@mathieu.digital>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stephen Kitt <steve@sk2.org>, Stephen Boyd <sboyd@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-hardening@vger.kernel.org,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>, notify@kernel.org,
+        main@lists.elisa.tech, safety-architecture@lists.elisa.tech,
+        devel@lists.elisa.tech, Shuah Khan <shuah@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
+On Tue, Nov 16, 2021 at 8:52 AM Alexander Popov <alex.popov@linux.com> wrote:
+>
+> On 15.11.2021 18:51, Gabriele Paoloni wrote:
+> >
+> >
+> > On 15/11/2021 14:59, Lukas Bulwahn wrote:
+> >> On Sat, Nov 13, 2021 at 7:14 PM Alexander Popov <alex.popov@linux.com> wrote:
+> >>>
+> >>> On 13.11.2021 00:26, Linus Torvalds wrote:
+> >>>> On Fri, Nov 12, 2021 at 10:52 AM Alexander Popov <alex.popov@linux.com> wrote:
+> >>>>>
+> >>>>> Hello everyone!
+> >>>>> Friendly ping for your feedback.
+> >>>>
+> >>>> I still haven't heard a compelling _reason_ for this all, and why
+> >>>> anybody should ever use this or care?
+> >>>
+> >>> Ok, to sum up:
+> >>>
+> >>> Killing the process that hit a kernel warning complies with the Fail-Fast
+> >>> principle [1]. pkill_on_warn sysctl allows the kernel to stop the process when
+> >>> the **first signs** of wrong behavior are detected.
+> >>>
+> >>> By default, the Linux kernel ignores a warning and proceeds the execution from
+> >>> the flawed state. That is opposite to the Fail-Fast principle.
+> >>> A kernel warning may be followed by memory corruption or other negative effects,
+> >>> like in CVE-2019-18683 exploit [2] or many other cases detected by the SyzScope
+> >>> project [3]. pkill_on_warn would prevent the system from the errors going after
+> >>> a warning in the process context.
+> >>>
+> >>> At the same time, pkill_on_warn does not kill the entire system like
+> >>> panic_on_warn. That is the middle way of handling kernel warnings.
+> >>> Linus, it's similar to your BUG_ON() policy [4]. The process hitting BUG_ON() is
+> >>> killed, and the system proceeds to work. pkill_on_warn just brings a similar
+> >>> policy to WARN_ON() handling.
+> >>>
+> >>> I believe that many Linux distros (which don't hit WARN_ON() here and there)
+> >>> will enable pkill_on_warn because it's reasonable from the safety and security
+> >>> points of view.
+> >>>
+> >>> And I'm sure that the ELISA project by the Linux Foundation (Enabling Linux In
+> >>> Safety Applications [5]) would support the pkill_on_warn sysctl.
+> >>> [Adding people from this project to CC]
+> >>>
+> >>> I hope that I managed to show the rationale.
+> >>>
+> >>
+> >> Alex, officially and formally, I cannot talk for the ELISA project
+> >> (Enabling Linux In Safety Applications) by the Linux Foundation and I
+> >> do not think there is anyone that can confidently do so on such a
+> >> detailed technical aspect that you are raising here, and as the
+> >> various participants in the ELISA Project have not really agreed on
+> >> such a technical aspect being one way or the other and I would not see
+> >> that happening quickly. However, I have spent quite some years on the
+> >> topic on "what is the right and important topics for using Linux in
+> >> safety applications"; so here are my five cents:
+> >>
+> >> One of the general assumptions about safety applications and safety
+> >> systems is that the malfunction of a function within a system is more
+> >> critical, i.e., more likely to cause harm to people, directly or
+> >> indirectly, than the unavailability of the system. So, before
+> >> "something potentially unexpected happens"---which can have arbitrary
+> >> effects and hence effects difficult to foresee and control---, it is
+> >> better to just shutdown/silence the system, i.e., design a fail-safe
+> >> or fail-silent system, as the effect of shutdown is pretty easily
+> >> foreseeable during the overall system design and you could think about
+> >> what the overall system does, when the kernel crashes the usual way.
+> >>
+> >> So, that brings us to what a user would expect from the kernel in a
+> >> safety-critical system: Shutdown on any event that is unexpected.
+> >>
+> >> Here, I currently see panic_on_warn as the closest existing feature to
+> >> indicate any event that is unexpected and to shutdown the system. That
+> >> requires two things for the kernel development:
+> >>
+> >> 1. Allow a reasonably configured kernel to boot and run with
+> >> panic_on_warn set. Warnings should only be raised when something is
+> >> not configured as the developers expect it or the kernel is put into a
+> >> state that generally is _unexpected_ and has been exposed little to
+> >> the critical thought of the developer, to testing efforts and use in
+> >> other systems in the wild. Warnings should not be used for something
+> >> informative, which still allows the kernel to continue running in a
+> >> proper way in a generally expected environment. Up to my knowledge,
+> >> there are some kernels in production that run with panic_on_warn; so,
+> >> IMHO, this requirement is generally accepted (we might of course
+> >> discuss the one or other use of warn) and is not too much to ask for.
+> >>
+> >> 2. Really ensure that the system shuts down when it hits warn and
+> >> panic. That requires that the execution path for warn() and panic() is
+> >> not overly complicated (stuffed with various bells and whistles).
+> >> Otherwise, warn() and panic() could fail in various complex ways and
+> >> potentially keep the system running, although it should be shut down.
+> >> Some people in the ELISA Project looked a bit into why they believe
+> >> panic() shuts down a system but I have not seen a good system analysis
+> >> and argument why any third person could be convinced that panic()
+> >> works under all circumstances where it is invoked or that at least,
+> >> the circumstances under which panic really works is properly
+> >> documented. That is a central aspect for using Linux in a
+> >> reasonably-designed safety-critical system. That is possibly also
+> >> relevant for security, as you might see an attacker obtain information
+> >> because it was possible to "block" the kernel shutting down after
+> >> invoking panic() and hence, the attacker could obtain certain
+> >> information that was only possible because 1. the system got into an
+> >> inconsistent state, 2. it was detected by some check leading to warn()
+> >> or panic(), and 3. the system's security engineers assumed that the
+> >> system must have been shutting down at that point, as panic() was
+> >> invoked, and hence, this would be disallowing a lot of further
+> >> operations or some specific operations that the attacker would need to
+> >> trigger in that inconsistent state to obtain information.
+> >>
+> >> To your feature, Alex, I do not see the need to have any refined
+> >> handling of killing a specific process when the kernel warns; stopping
+> >> the whole system is the better and more predictable thing to do. I
+> >> would prefer if systems, which have those high-integrity requirements,
+> >> e.g., in a highly secure---where stopping any unintended information
+> >> flow matters more than availability---or in fail-silent environments
+> >> in safety systems, can use panic_on_warn. That should address your
+> >> concern above of handling certain CVEs as well.
+> >>
+> >> In summary, I am not supporting pkill_on_warn. I would support the
+> >> other points I mentioned above, i.e., a good enforced policy for use
+> >> of warn() and any investigation to understand the complexity of
+> >> panic() and reducing its complexity if triggered by such an
+> >> investigation.
+> >
+> > Hi Alex
+> >
+> > I also agree with the summary that Lukas gave here. From my experience
+> > the safety system are always guarded by an external flow monitor (e.g. a
+> > watchdog) that triggers in case the safety relevant workloads slows down
+> > or block (for any reason); given this condition of use, a system that
+> > goes into the panic state is always safe, since the watchdog would
+> > trigger and drive the system automatically into safe state.
+> > So I also don't see a clear advantage of having pkill_on_warn();
+> > actually on the flip side it seems to me that such feature could
+> > introduce more risk, as it kills only the threads of the process that
+> > caused the kernel warning whereas the other processes are trusted to
+> > run on a weaker Kernel (does killing the threads of the process that
+> > caused the kernel warning always fix the Kernel condition that lead to
+> > the warning?)
+>
+> Lukas, Gabriele, Robert,
+> Thanks for showing this from the safety point of view.
+>
+> The part about believing in panic() functionality is amazing :)
+> Yes, safety critical systems depend on the robust ability to restart.
+>
 
---nextPart12407418.tSIYDGc9g1
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
+Well, there is really a lot of thought and willingness for engineering
+effort to address the fact there must be high confidence that the
+shutdown with panic() really works.
 
-On Saturday, November 13, 2021 9:13:24 PM CET syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    f2e19fd15bd7 Add linux-next specific files for 20211112
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15def132b00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=ba9c83199208e103
-> dashboard link: https://syzkaller.appspot.com/bug?
-extid=5f47a8cea6a12b77a876
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils 
-for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12bdb2c9b00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=109194aab00000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the 
-commit:
-> Reported-by: syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com
-> 
-> BUG: sleeping function called from invalid context at kernel/printk/
-printk.c:2525
-> in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 6529, name: syz-
-executor925
-> preempt_count: 1, expected: 0
-> RCU nest depth: 0, expected: 0
-> 3 locks held by syz-executor925/6529:
->  #0: ffff888018d79098 (&tty->ldisc_sem){++++}-{0:0}, at: 
-tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:252
->  #1: ffff888018d79468 (&tty->flow.lock){....}-{2:2}, at: spin_lock_irq 
-include/linux/spinlock.h:379 [inline]
->  #1: ffff888018d79468 (&tty->flow.lock){....}-{2:2}, at: 
-n_tty_ioctl_helper+0xb6/0x2d0 drivers/tty/tty_ioctl.c:877
->  #2: ffff888018d79098 (&tty->ldisc_sem){++++}-{0:0}, at: 
-tty_ldisc_ref+0x1d/0x80 drivers/tty/tty_ldisc.c:273
-> irq event stamp: 16252
-> hardirqs last  enabled at (16251): [<ffffffff8952dbc0>] 
-__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:151 [inline]
-> hardirqs last  enabled at (16251): [<ffffffff8952dbc0>] 
-_raw_spin_unlock_irqrestore+0x50/0x70 kernel/locking/spinlock.c:194
-> hardirqs last disabled at (16252): [<ffffffff8952d921>] __raw_spin_lock_irq 
-include/linux/spinlock_api_smp.h:117 [inline]
-> hardirqs last disabled at (16252): [<ffffffff8952d921>] 
-_raw_spin_lock_irq+0x41/0x50 kernel/locking/spinlock.c:170
-> softirqs last  enabled at (14452): [<ffffffff812bc45c>] fpu_reset_fpregs 
-arch/x86/kernel/fpu/core.c:601 [inline]
-> softirqs last  enabled at (14452): [<ffffffff812bc45c>] 
-fpu_flush_thread+0x23c/0x390 arch/x86/kernel/fpu/core.c:647
-> softirqs last disabled at (14450): [<ffffffff812bc3eb>] fpstate_reset arch/
-x86/kernel/fpu/core.c:452 [inline]
-> softirqs last disabled at (14450): [<ffffffff812bc3eb>] 
-fpu_flush_thread+0x1cb/0x390 arch/x86/kernel/fpu/core.c:646
-> Preemption disabled at:
-> [<0000000000000000>] 0x0
-> CPU: 0 PID: 6529 Comm: syz-executor925 Not tainted 5.15.0-next-20211112-
-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS 
-Google 01/01/2011
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
->  __might_resched.cold+0x222/0x26b kernel/sched/core.c:9554
->  console_lock+0x17/0x80 kernel/printk/printk.c:2525
->  do_con_write+0x10f/0x1e40 drivers/tty/vt/vt.c:2908
->  con_write+0x21/0x40 drivers/tty/vt/vt.c:3295
->  n_hdlc_send_frames+0x24b/0x490 drivers/tty/n_hdlc.c:290
->  tty_wakeup+0xe1/0x120 drivers/tty/tty_io.c:534
->  __start_tty drivers/tty/tty_io.c:806 [inline]
->  __start_tty+0xfb/0x130 drivers/tty/tty_io.c:799
->  n_tty_ioctl_helper+0x299/0x2d0 drivers/tty/tty_ioctl.c:880
->  n_hdlc_tty_ioctl+0xd2/0x340 drivers/tty/n_hdlc.c:633
->  tty_ioctl+0xc69/0x1670 drivers/tty/tty_io.c:2814
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:874 [inline]
->  __se_sys_ioctl fs/ioctl.c:860 [inline]
->  __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x7f16c8522349
-> Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 
-73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007fff6ccb8b98 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f16c8522349
-> RDX: 0000000000000001 RSI: 000000000000540a RDI: 0000000000000005
-> RBP: 00007f16c84e61d0 R08: 0000000000000000 R09: 0000000000000000
-> R10: 00000000000
+The proper start and restart of the kernel is actually another
+issue... but there various sanity checks are possible before the
+system switches into a mode that could potentially harm people (cause
+physical damage, directly or indirectly).
 
-I think that thanks to Marco Elver we have a solution for this issue.
+Lukas
 
-However I'd propose a transformation on Marco's solution based on one of the 
-De Morgan's laws: !(A && B) <=> !A || !B. 
-
-I think that this is more readable and comprehensible.
-
-Therefore, if I'm not wrong, Marco's "!preemptible()", that is "if (!
-(preempt_count() == 0 && !irqs_disabled())", might be rewritten to an easier 
-to understand "if (preempt_count() || irqs_disabled())". 
-
-Am I wrong? Let's test it...
-
-#syz test:
-git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-
---
-Fabio M. De Francesco
-
-
---nextPart12407418.tSIYDGc9g1
-Content-Disposition: attachment; filename="vt.c.diff"
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/x-patch; charset="UTF-8"; name="vt.c.diff"
-
-diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 7359c3e80d63..a0c6d29eb2a6 100644
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -2902,7 +2902,7 @@ static int do_con_write(struct tty_struct *tty, const unsigned char *buf, int co
- 	struct vt_notifier_param param;
- 	bool rescan;
- 
--	if (in_interrupt())
-+	if (preempt_count() || irqs_disabled())
- 		return count;
- 
- 	console_lock();
-
---nextPart12407418.tSIYDGc9g1--
-
-
-
+> Best regards,
+> Alexander
