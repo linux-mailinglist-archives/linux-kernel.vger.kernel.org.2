@@ -2,86 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD854452916
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:22:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64BBB452926
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:30:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344229AbhKPEZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 23:25:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53678 "EHLO mail.kernel.org"
+        id S240163AbhKPEcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 23:32:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343880AbhKPEYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 23:24:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7955761B30;
-        Tue, 16 Nov 2021 04:21:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1637036509;
-        bh=wwMatGyZhfNZCPaF2wvkt3Y+SqGCuP8mHGMgs8mAL/4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=T2x+VpryqG7dLunHOg0FxA+cB/ng41qGTKGrA388DL79Mj3eHRBK1hI0sYQ8hwGz1
-         +UtyE5qGG9t/Go2NA7CkTZ1dbsPVzkUffu1jQVSE6vQ9r5Ybs5QQIqScZ/fj4rZPkt
-         jLW6Ea+GFqIT/+zaXGcWVPpiRxyANwq4LFHzMopM=
-Date:   Mon, 15 Nov 2021 20:21:46 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     ziy@nvidia.com, shy828301@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] mm: migrate: Correct the hugetlb migration stats
-Message-Id: <20211115202146.473fff2404d7fb200dd48bd3@linux-foundation.org>
-In-Reply-To: <71a4b6c22f208728fe8c78ad26375436c4ff9704.1636275127.git.baolin.wang@linux.alibaba.com>
-References: <cover.1636275127.git.baolin.wang@linux.alibaba.com>
-        <71a4b6c22f208728fe8c78ad26375436c4ff9704.1636275127.git.baolin.wang@linux.alibaba.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233013AbhKPEb4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 23:31:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66AA16023D;
+        Tue, 16 Nov 2021 04:28:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637036939;
+        bh=rcwRBlCKqfF/fOP7nToqyQtxiDrvbRwb9qhV9pcd3SE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WCkkYmiCsuCs6VTYyStyePuhjavoZznkD15Pfk4kfmFcnpOyhqwefXwCEerdsi5BB
+         gaxqtKh7IVnWz3O+cSAsdJUjs6zKFkagpHyNquC8O99klBS/lKo/7gFtT7CHdCC6ar
+         6K/pSsHI8+2FH3V1I1L7V2qq8dmjNebnK0MyEtDZ/hdrNv4x1IyseRUmNFq3EiZJ7c
+         1oiPRI0DMs2kje0Hvslatdsud/obFQMRW9uHW8NpKk4mIv94ytNZbHvJadN/Nn9YZY
+         tGLIxmhA6nCk6OcdFZAV34UHFuwVplf/2bcz9WsNFmm3THY7N2KypMCnwedbGoDGcy
+         AW5qdaBZVvhpQ==
+Date:   Tue, 16 Nov 2021 09:58:54 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Arnd Bergmann <arnd@arndb.de>, Andy Gross <agross@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Scott Branden <sbranden@broadcom.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        dmaengine@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-staging@lists.linux.dev,
+        "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH 08/11] dmaengine: xilinx_dpdma: stop using slave_id field
+Message-ID: <YZMzhoWX0S5oPI6j@matsya>
+References: <20211115085403.360194-1-arnd@kernel.org>
+ <20211115085403.360194-9-arnd@kernel.org>
+ <YZIk6cVb7XibrMjf@pendragon.ideasonboard.com>
+ <CAK8P3a1Fu11-e0CK2of8u3ebdjom84UKuXhBKi5FUs5ZPPdOVA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a1Fu11-e0CK2of8u3ebdjom84UKuXhBKi5FUs5ZPPdOVA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun,  7 Nov 2021 16:57:26 +0800 Baolin Wang <baolin.wang@linux.alibaba.com> wrote:
-
-> Correct the migration stats for hugetlb with using compound_nr() instead
-> of thp_nr_pages(),
-
-It would be helpful to explain why using thp_nr_pages() was wrong.
-And to explain the end user visible effects of this bug so we can
-decide whether -stable backporting is desirable.
-
-> meanwhile change 'nr_failed_pages' to record the
-> number of normal pages failed to migrate, including THP and hugetlb,
-> and 'nr_succeeded' will record the number of normal pages migrated
-> successfully.
+On 15-11-21, 11:21, Arnd Bergmann wrote:
+> On Mon, Nov 15, 2021 at 10:14 AM Laurent Pinchart
+> <laurent.pinchart@ideasonboard.com> wrote:
+> > On Mon, Nov 15, 2021 at 09:54:00AM +0100, Arnd Bergmann wrote:
+> > > @@ -1285,11 +1287,13 @@ static int xilinx_dpdma_config(struct dma_chan *dchan,
+> > >       spin_lock_irqsave(&chan->lock, flags);
+> > >
+> > >       /*
+> > > -      * Abuse the slave_id to indicate that the channel is part of a video
+> > > -      * group.
+> > > +      * Abuse the peripheral_config to indicate that the channel is part
+> >
+> > Is it still an abuse, or is this now the right way to pass custom data
+> > to the DMA engine driver ?
 > 
-> Reviewed-by: Zi Yan <ziy@nvidia.com>
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> ---
->  mm/migrate.c | 17 ++++++++---------
->  1 file changed, 8 insertions(+), 9 deletions(-)
+> It doesn't make the driver any more portable, but it's now being
+> more explicit about it. As far as I can tell, this is the best way
+> to pass data that cannot be expressed through the regular interfaces
+> in DT and the dmaengine API.
 > 
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index 9aafdab..756190b 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -1436,9 +1436,9 @@ static inline int try_split_thp(struct page *page, struct page **page2,
->   * It is caller's responsibility to call putback_movable_pages() to return pages
->   * to the LRU or free list only if ret != 0.
->   *
-> - * Returns the number of {normal page, THP} that were not migrated, or an error code.
-> - * The number of THP splits will be considered as the number of non-migrated THP,
-> - * no matter how many subpages of the THP are migrated successfully.
-> + * Returns the number of {normal page, THP, hugetlb} that were not migrated, or
+> Ideally there would be a generic way to pass this flag, but I couldn't
+> figure out what this is actually doing, or whether there is a better
+> way. Maybe Vinod has an idea.
+> 
+> I'll change s/Abuse/Use/ for the moment until I get a definite answer.
 
-This is a bit confusing.
+I would feel this is still not use for the peripheral_config, but lets
+keep it to get rid of slave_id.
 
-If migrate_pages() failed to migrate one 4k pages then it returns 1,
-yes?
+Also, I would be better if this was moved to DT as the next cell, don't
+recall why that was not done/feasible.
 
-But if migrate_pages() fails to migrate one 2MB hugepage then will it
-return 1 or will it return 512?
-
-And how can the caller actually _use_ this return value without knowing
-the above information?
-
-In other words, perhaps this function should simply return pass/fail?
-
-
+-- 
+~Vinod
