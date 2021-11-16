@@ -2,216 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 807C9453479
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:41:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 808D045347D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:41:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237689AbhKPOnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 09:43:12 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:37636 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbhKPOl4 (ORCPT
+        id S237746AbhKPOns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 09:43:48 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:37170 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237634AbhKPOmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 09:41:56 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id 4959A1F4583D
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637073539; bh=HSCKcs4GqDZJPmsOE6G02KNqo+F2t4JQ0Nka1j8AW8g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M5AJNTCD0sUPGW1cAJ9EM4B/XGC7Wnhzf8TZHBPMGELTUR+btp0i2fm8JaLfRWVaA
-         QXjX2hPpdgFzRQxGRz6IOYIiwfg+viJ8mqSNS9htIcUbOct8mLD80RUGdiTDznPDcF
-         kzYhO3TCHTRbjSfFbnqt3iXsz90WrutfntcdtXUEg0bxe4mWuju0ImOGbwKuWqKhaq
-         bN9KfjwEoIZch9wyclZ+h/UODQdRm1ijQ/PYpa7qBAYs6kWrXJNri84OLFxyJzsmbp
-         sne1IeVBCZpYtk+TnHcGy446wvbZRjxIgs2ScPXuwbSinyhjrTo+I/QQQDZfuixuRB
-         emiU0QBZfiJdw==
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-To:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev
-Cc:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com,
-        Ezequiel Garcia <ezequiel@collabora.com>
-Subject: [PATCH v8 12/12] media: hantro: Support NV12 on the G2 core
-Date:   Tue, 16 Nov 2021 15:38:42 +0100
-Message-Id: <20211116143842.75896-13-andrzej.p@collabora.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211116143842.75896-1-andrzej.p@collabora.com>
-References: <20211116143842.75896-1-andrzej.p@collabora.com>
+        Tue, 16 Nov 2021 09:42:50 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 45AB02171F;
+        Tue, 16 Nov 2021 14:39:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1637073591; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5Emkp3ncKzdkgLkKn49m2PKxs/r574HeH3hwAVh72iw=;
+        b=o6p+tfWoQjEX7Tf0zL7HstYS41Q25rGUCkRxy2fZC57AXkmLEJ5Tp1yv4dDlL3MrmYhWxa
+        lr+rDs7a9JYIQAB0v2IyeOEL2SyguOnJwTfXqzimKwkW/P/AR3iT16pQPRWteQox79HVJt
+        BjPYEMohRiaWxxBn+TeOf0VjwEU7quo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1637073591;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5Emkp3ncKzdkgLkKn49m2PKxs/r574HeH3hwAVh72iw=;
+        b=oSNyWbiaffOLqZbxHTHtqG94j8F5n4l34KDHIN4lglj2R9OkOcY2Z9pHpT1L5Y9TNvidnI
+        qw0SNz5TglyxdkBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9DE7313C25;
+        Tue, 16 Nov 2021 14:39:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 2/UQIrbCk2HhHQAAMHmgww
+        (envelope-from <dkirjanov@suse.de>); Tue, 16 Nov 2021 14:39:50 +0000
+Subject: Re: [PATCH 1/6] vhost: get rid of vhost_poll_flush() wrapper
+To:     Andrey Ryabinin <arbn@yandex-team.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211115153003.9140-1-arbn@yandex-team.com>
+From:   Denis Kirjanov <dkirjanov@suse.de>
+Message-ID: <02b1d549-9c67-7d05-0bb6-4d018106eff5@suse.de>
+Date:   Tue, 16 Nov 2021 17:39:49 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <20211115153003.9140-1-arbn@yandex-team.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: ru
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The G2 decoder block produces NV12 4x4 tiled format (NV12_4L4).
-Enable the G2 post-processor block, in order to produce regular NV12.
 
-The logic in hantro_postproc.c is leveraged to take care of allocating
-the extra buffers and configure the post-processor, which is
-significantly simpler than the one on the G1.
 
-Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
----
- .../staging/media/hantro/hantro_g2_vp9_dec.c  |  6 ++--
- drivers/staging/media/hantro/hantro_hw.h      |  1 +
- .../staging/media/hantro/hantro_postproc.c    | 31 +++++++++++++++++++
- drivers/staging/media/hantro/imx8m_vpu_hw.c   | 11 +++++++
- 4 files changed, 46 insertions(+), 3 deletions(-)
+11/15/21 6:29 PM, Andrey Ryabinin пишет:
+> vhost_poll_flush() is a simple wrapper around vhost_work_dev_flush().
+> It gives wrong impression that we are doing some work over vhost_poll,
+> while in fact it flushes vhost_poll->dev.
+> It only complicate understanding of the code and leads to mistakes
+> like flushing the same vhost_dev several times in a row.
+> 
+> Just remove vhost_poll_flush() and call vhost_work_dev_flush() directly.
 
-diff --git a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c b/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
-index fc55b03a8004..e04242d10fa2 100644
---- a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
-+++ b/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
-@@ -152,7 +152,7 @@ static void config_output(struct hantro_ctx *ctx,
- 	hantro_reg_write(ctx->dev, &g2_out_dis, 0);
- 	hantro_reg_write(ctx->dev, &g2_output_format, 0);
- 
--	luma_addr = vb2_dma_contig_plane_dma_addr(&dst->base.vb.vb2_buf, 0);
-+	luma_addr = hantro_get_dec_buf_addr(ctx, &dst->base.vb.vb2_buf);
- 	hantro_write_addr(ctx->dev, G2_OUT_LUMA_ADDR, luma_addr);
- 
- 	chroma_addr = luma_addr + chroma_offset(ctx, dec_params);
-@@ -191,7 +191,7 @@ static void config_ref(struct hantro_ctx *ctx,
- 	hantro_reg_write(ctx->dev, &ref_reg->hor_scale, (refw << 14) / dst->vp9.width);
- 	hantro_reg_write(ctx->dev, &ref_reg->ver_scale, (refh << 14) / dst->vp9.height);
- 
--	luma_addr = vb2_dma_contig_plane_dma_addr(&buf->base.vb.vb2_buf, 0);
-+	luma_addr = hantro_get_dec_buf_addr(ctx, &buf->base.vb.vb2_buf);
- 	hantro_write_addr(ctx->dev, ref_reg->y_base, luma_addr);
- 
- 	chroma_addr = luma_addr + chroma_offset(ctx, dec_params);
-@@ -236,7 +236,7 @@ static void config_ref_registers(struct hantro_ctx *ctx,
- 	config_ref(ctx, dst, &ref_regs[1], dec_params, dec_params->golden_frame_ts);
- 	config_ref(ctx, dst, &ref_regs[2], dec_params, dec_params->alt_frame_ts);
- 
--	mv_addr = vb2_dma_contig_plane_dma_addr(&mv_ref->base.vb.vb2_buf, 0) +
-+	mv_addr = hantro_get_dec_buf_addr(ctx, &mv_ref->base.vb.vb2_buf) +
- 		  mv_offset(ctx, dec_params);
- 	hantro_write_addr(ctx->dev, G2_REF_MV_ADDR(0), mv_addr);
- 
-diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
-index fe5b51046d33..dbe51303724b 100644
---- a/drivers/staging/media/hantro/hantro_hw.h
-+++ b/drivers/staging/media/hantro/hantro_hw.h
-@@ -310,6 +310,7 @@ extern const struct hantro_variant rk3399_vpu_variant;
- extern const struct hantro_variant sama5d4_vdec_variant;
- 
- extern const struct hantro_postproc_ops hantro_g1_postproc_ops;
-+extern const struct hantro_postproc_ops hantro_g2_postproc_ops;
- 
- extern const u32 hantro_vp8_dec_mc_filter[8][6];
- 
-diff --git a/drivers/staging/media/hantro/hantro_postproc.c b/drivers/staging/media/hantro/hantro_postproc.c
-index 89de43021779..a7774ad4c445 100644
---- a/drivers/staging/media/hantro/hantro_postproc.c
-+++ b/drivers/staging/media/hantro/hantro_postproc.c
-@@ -11,6 +11,7 @@
- #include "hantro.h"
- #include "hantro_hw.h"
- #include "hantro_g1_regs.h"
-+#include "hantro_g2_regs.h"
- 
- #define HANTRO_PP_REG_WRITE(vpu, reg_name, val) \
- { \
-@@ -99,6 +100,21 @@ static void hantro_postproc_g1_enable(struct hantro_ctx *ctx)
- 	HANTRO_PP_REG_WRITE(vpu, display_width, ctx->dst_fmt.width);
- }
- 
-+static void hantro_postproc_g2_enable(struct hantro_ctx *ctx)
-+{
-+	struct hantro_dev *vpu = ctx->dev;
-+	struct vb2_v4l2_buffer *dst_buf;
-+	size_t chroma_offset = ctx->dst_fmt.width * ctx->dst_fmt.height;
-+	dma_addr_t dst_dma;
-+
-+	dst_buf = hantro_get_dst_buf(ctx);
-+	dst_dma = vb2_dma_contig_plane_dma_addr(&dst_buf->vb2_buf, 0);
-+
-+	hantro_write_addr(vpu, G2_RS_OUT_LUMA_ADDR, dst_dma);
-+	hantro_write_addr(vpu, G2_RS_OUT_CHROMA_ADDR, dst_dma + chroma_offset);
-+	hantro_reg_write(vpu, &g2_out_rs_e, 1);
-+}
-+
- void hantro_postproc_free(struct hantro_ctx *ctx)
- {
- 	struct hantro_dev *vpu = ctx->dev;
-@@ -127,6 +143,9 @@ int hantro_postproc_alloc(struct hantro_ctx *ctx)
- 	if (ctx->vpu_src_fmt->fourcc == V4L2_PIX_FMT_H264_SLICE)
- 		buf_size += hantro_h264_mv_size(ctx->dst_fmt.width,
- 						ctx->dst_fmt.height);
-+	else if (ctx->vpu_src_fmt->fourcc == V4L2_PIX_FMT_VP9_FRAME)
-+		buf_size += hantro_vp9_mv_size(ctx->dst_fmt.width,
-+					       ctx->dst_fmt.height);
- 
- 	for (i = 0; i < num_buffers; ++i) {
- 		struct hantro_aux_buf *priv = &ctx->postproc.dec_q[i];
-@@ -152,6 +171,13 @@ static void hantro_postproc_g1_disable(struct hantro_ctx *ctx)
- 	HANTRO_PP_REG_WRITE_S(vpu, pipeline_en, 0x0);
- }
- 
-+static void hantro_postproc_g2_disable(struct hantro_ctx *ctx)
-+{
-+	struct hantro_dev *vpu = ctx->dev;
-+
-+	hantro_reg_write(vpu, &g2_out_rs_e, 0);
-+}
-+
- void hantro_postproc_disable(struct hantro_ctx *ctx)
- {
- 	struct hantro_dev *vpu = ctx->dev;
-@@ -172,3 +198,8 @@ const struct hantro_postproc_ops hantro_g1_postproc_ops = {
- 	.enable = hantro_postproc_g1_enable,
- 	.disable = hantro_postproc_g1_disable,
- };
-+
-+const struct hantro_postproc_ops hantro_g2_postproc_ops = {
-+	.enable = hantro_postproc_g2_enable,
-+	.disable = hantro_postproc_g2_disable,
-+};
-diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-index 455a107ffb02..1a43f6fceef9 100644
---- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
-+++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-@@ -132,6 +132,14 @@ static const struct hantro_fmt imx8m_vpu_dec_fmts[] = {
- 	},
- };
- 
-+static const struct hantro_fmt imx8m_vpu_g2_postproc_fmts[] = {
-+	{
-+		.fourcc = V4L2_PIX_FMT_NV12,
-+		.codec_mode = HANTRO_MODE_NONE,
-+		.postprocessed = true,
-+	},
-+};
-+
- static const struct hantro_fmt imx8m_vpu_g2_dec_fmts[] = {
- 	{
- 		.fourcc = V4L2_PIX_FMT_NV12_4L4,
-@@ -301,6 +309,9 @@ const struct hantro_variant imx8mq_vpu_g2_variant = {
- 	.dec_offset = 0x0,
- 	.dec_fmts = imx8m_vpu_g2_dec_fmts,
- 	.num_dec_fmts = ARRAY_SIZE(imx8m_vpu_g2_dec_fmts),
-+	.postproc_fmts = imx8m_vpu_g2_postproc_fmts,
-+	.num_postproc_fmts = ARRAY_SIZE(imx8m_vpu_g2_postproc_fmts),
-+	.postproc_ops = &hantro_g2_postproc_ops,
- 	.codec = HANTRO_HEVC_DECODER | HANTRO_VP9_DECODER,
- 	.codec_ops = imx8mq_vpu_g2_codec_ops,
- 	.init = imx8mq_vpu_hw_init,
--- 
-2.25.1
+Then you should send the series prefixed with net-next
 
+> 
+> Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
+> ---
+>   drivers/vhost/net.c   |  4 ++--
+>   drivers/vhost/test.c  |  2 +-
+>   drivers/vhost/vhost.c | 12 ++----------
+>   drivers/vhost/vsock.c |  2 +-
+>   4 files changed, 6 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+> index 28ef323882fb..11221f6d11b8 100644
+> --- a/drivers/vhost/net.c
+> +++ b/drivers/vhost/net.c
+> @@ -1375,8 +1375,8 @@ static void vhost_net_stop(struct vhost_net *n, struct socket **tx_sock,
+>   
+>   static void vhost_net_flush_vq(struct vhost_net *n, int index)
+>   {
+> -	vhost_poll_flush(n->poll + index);
+> -	vhost_poll_flush(&n->vqs[index].vq.poll);
+> +	vhost_work_dev_flush(n->poll[index].dev);
+> +	vhost_work_dev_flush(n->vqs[index].vq.poll.dev);
+>   }
+>   
+>   static void vhost_net_flush(struct vhost_net *n)
+> diff --git a/drivers/vhost/test.c b/drivers/vhost/test.c
+> index a09dedc79f68..1a8ab1d8cb1c 100644
+> --- a/drivers/vhost/test.c
+> +++ b/drivers/vhost/test.c
+> @@ -146,7 +146,7 @@ static void vhost_test_stop(struct vhost_test *n, void **privatep)
+>   
+>   static void vhost_test_flush_vq(struct vhost_test *n, int index)
+>   {
+> -	vhost_poll_flush(&n->vqs[index].poll);
+> +	vhost_work_dev_flush(n->vqs[index].poll.dev);
+>   }
+>   
+>   static void vhost_test_flush(struct vhost_test *n)
+> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+> index 59edb5a1ffe2..ca088481da0e 100644
+> --- a/drivers/vhost/vhost.c
+> +++ b/drivers/vhost/vhost.c
+> @@ -245,14 +245,6 @@ void vhost_work_dev_flush(struct vhost_dev *dev)
+>   }
+>   EXPORT_SYMBOL_GPL(vhost_work_dev_flush);
+>   
+> -/* Flush any work that has been scheduled. When calling this, don't hold any
+> - * locks that are also used by the callback. */
+> -void vhost_poll_flush(struct vhost_poll *poll)
+> -{
+> -	vhost_work_dev_flush(poll->dev);
+> -}
+> -EXPORT_SYMBOL_GPL(vhost_poll_flush);
+> -
+>   void vhost_work_queue(struct vhost_dev *dev, struct vhost_work *work)
+>   {
+>   	if (!dev->worker)
+> @@ -663,7 +655,7 @@ void vhost_dev_stop(struct vhost_dev *dev)
+>   	for (i = 0; i < dev->nvqs; ++i) {
+>   		if (dev->vqs[i]->kick && dev->vqs[i]->handle_kick) {
+>   			vhost_poll_stop(&dev->vqs[i]->poll);
+> -			vhost_poll_flush(&dev->vqs[i]->poll);
+> +			vhost_work_dev_flush(dev->vqs[i]->poll.dev);
+>   		}
+>   	}
+>   }
+> @@ -1712,7 +1704,7 @@ long vhost_vring_ioctl(struct vhost_dev *d, unsigned int ioctl, void __user *arg
+>   	mutex_unlock(&vq->mutex);
+>   
+>   	if (pollstop && vq->handle_kick)
+> -		vhost_poll_flush(&vq->poll);
+> +		vhost_work_dev_flush(vq->poll.dev);
+>   	return r;
+>   }
+>   EXPORT_SYMBOL_GPL(vhost_vring_ioctl);
+> diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+> index 938aefbc75ec..b0361ebbd695 100644
+> --- a/drivers/vhost/vsock.c
+> +++ b/drivers/vhost/vsock.c
+> @@ -711,7 +711,7 @@ static void vhost_vsock_flush(struct vhost_vsock *vsock)
+>   
+>   	for (i = 0; i < ARRAY_SIZE(vsock->vqs); i++)
+>   		if (vsock->vqs[i].handle_kick)
+> -			vhost_poll_flush(&vsock->vqs[i].poll);
+> +			vhost_work_dev_flush(vsock->vqs[i].poll.dev);
+>   	vhost_work_dev_flush(&vsock->dev);
+>   }
+>   
+> 
