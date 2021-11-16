@@ -2,175 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF7B453AB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:11:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00BB2453AB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:11:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231561AbhKPUMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 15:12:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33612 "EHLO
+        id S230229AbhKPUNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 15:13:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240264AbhKPUMG (ORCPT
+        with ESMTP id S229607AbhKPUNs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 15:12:06 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DCBFC06120F
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 12:08:55 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id b4so128473pgh.10
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 12:08:55 -0800 (PST)
+        Tue, 16 Nov 2021 15:13:48 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B8CC061570;
+        Tue, 16 Nov 2021 12:10:51 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id x7so412041pjn.0;
+        Tue, 16 Nov 2021 12:10:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dT6i/qZSkcfW3Sm2DrxjWBtaFkbKPAwDsa4TWP0ZGP8=;
-        b=c3xWLP/kE/cbpxDROR/8A7dsnqGQXPN3XeRoShkWVLrHb+Oxk7cq2G++jOqgeqAvsR
-         J+BB2FX6ObPHnRRpf4A4w/MOe3aTWYo0JRvjghCEphalnXusUchV6X5YQ79mAT5bSZQN
-         r0nCJTqAfsKTRVWa3TIX2JclEvqgMRqFyd0j2C1DcZcax55ibCUo1EizAosO8HhUURnC
-         CK7XmEEub08KDSrI5qBq0PaXGKrzTK2bP51TA7Fyhs9elcpRUkAkZyeujc27qAioKQa7
-         9lRyz5K27tgIHNUIWpK2qsPaEXWe5IGAtzV1dWGZJ2TTpqvE3Zn3AlMNimL8lclJblGr
-         gPgw==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KdcGOkW+vODS8YjJzlYB6MaeKscu9R51SItMSFekfDo=;
+        b=Cqakr5q22PEsv1mYPMx5IhDnCTuaT66Pe18hzLQHoYmZrR92ryLCROLAKneNy8qJh9
+         QUvWrcV/B9vrdM5prZY4hgfXebryh8HZ58/Vdt4uD46BlhXlYl4ondn8wglJmH2Dh27M
+         gCl65XqtFMEPRCTemlxChTsILZ+Y0sFbeMQIY2HCqrPPnEOSkHQUU7YVJY4DeGopGMTC
+         W+nRMiZKHU/AWk1rG+3MZMpu6tZ63C+AoIC/OTBv3EZYC+pgbeifdtGV6UrevZVBycQW
+         +s17f5R3eLuxdoj6OUd3Mgb5ogv/UEbUCi/r9FT537lg18KIOLgHq9h9h/IcJl3oe0Fo
+         EfNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dT6i/qZSkcfW3Sm2DrxjWBtaFkbKPAwDsa4TWP0ZGP8=;
-        b=NHam9cVEQDZxXWQG0iVwPDSdpZ72XYwapKYwuEQ0EV4xJqnJBFwet25I0RkZEtjJ5S
-         EP0oj9AYpLcENi2A5jKC1A3MaKLLKgq/tXqVjM7/F1ybGYIi3/BYxYCDmBkRPxPtWBzn
-         A6rolp1Q5BcG48UFIjn3zlYqyX8BLPacpl2eCIurvLoZ9Ahv7VK9+/7fabZyFDHYNPsC
-         2NMr10cloVdfvgON9ZXqpTNox5E73j3cBjhdFMaIrAtjOAoq4mJcH0dp/RD+ryz2hvXX
-         QWABpy5jUrj842XKvOw4LPQYOxbxDW8CAEfeM0InBRc3lIMVZLXsrRJHZFPvq1pei32W
-         gL+w==
-X-Gm-Message-State: AOAM531u+RnH5IokmVvqcBLdoTm8nAl5/VPYqhN9JJ+uKRLES2ClKgEo
-        Hfvmoc/ed5Du8XATURTD4CwW6w==
-X-Google-Smtp-Source: ABdhPJwBsN8U5Krw60xMJJqILBkH8X4VC7je13qIK/kdw/gzDDAA9hIvMF8G/O1BR5V196/SpLhoWQ==
-X-Received: by 2002:a63:354:: with SMTP id 81mr1203571pgd.364.1637093334058;
-        Tue, 16 Nov 2021 12:08:54 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id g21sm20130074pfc.95.2021.11.16.12.08.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 12:08:53 -0800 (PST)
-Date:   Tue, 16 Nov 2021 20:08:49 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Peter Gonda <pgonda@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
- Hypervisor Support
-Message-ID: <YZQP0T5vMiQ/MUOX@google.com>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
- <061ccd49-3b9f-d603-bafd-61a067c3f6fa@intel.com>
- <YY6z5/0uGJmlMuM6@zn.tnic>
- <YY7FAW5ti7YMeejj@google.com>
- <YZJTA1NyLCmVtGtY@work-vm>
- <YZKmSDQJgCcR06nE@google.com>
- <YZOrziJfGWHnBh++@suse.de>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KdcGOkW+vODS8YjJzlYB6MaeKscu9R51SItMSFekfDo=;
+        b=pw3qPX+0rlxBmuYNE/Eu3y6LnkF+Ig5P6e9yDdBgiPr4ZdSWTw6pJ+AkoUARvdPNgc
+         HaU/Bssbd2auxOaufZv50xmrCD4+/g+9vMlFDk8wlUS5xs7z8ftYDVDA2tXc1rmV+6Sg
+         3OwlK9Viw74znJFceWL5CjQCk/tSXu7hOA7jDLiYCsvtiPZrd5U/ghmyg2PQu4oX48i5
+         WRzQTeUy4enGIQqW9u9GThkaHzZJ19HUkdw8fc1sZQB1tQinXK++XnhyL9SBgfxyZHpR
+         sdQQtLxt7w1DA92XZFnV2ITVizhPiE8bk7g+sXmI5f73kqCdJ0/qwFTAy5SDIa+AyEyl
+         UZDQ==
+X-Gm-Message-State: AOAM531gHxyoTT6yFVpOyrC3UOKHv8gbabgWyP/ePfBs8gi4WHnU+bIo
+        qoaxwjf+iz/YhuFVYiqKv8gKSma1Hio=
+X-Google-Smtp-Source: ABdhPJwRUAki6YPlTb9IjyoV07ezFARDZ33fMpjSU6XIOFlfp4/i2KIiwY8dVXgNC1DbFlWLOsA13A==
+X-Received: by 2002:a17:90a:312:: with SMTP id 18mr2345541pje.178.1637093450191;
+        Tue, 16 Nov 2021 12:10:50 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id q10sm2523564pjd.0.2021.11.16.12.10.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 12:10:49 -0800 (PST)
+Subject: Re: [PATCH 5.14 000/857] 5.14.19-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20211116142622.081299270@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <cb957d8a-8afc-0d65-e40d-209781925501@gmail.com>
+Date:   Tue, 16 Nov 2021 12:10:48 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZOrziJfGWHnBh++@suse.de>
+In-Reply-To: <20211116142622.081299270@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021, Joerg Roedel wrote:
-> On Mon, Nov 15, 2021 at 06:26:16PM +0000, Sean Christopherson wrote:
-> > No, because as Andy pointed out, host userspace must already guard against a bad
-> > GPA, i.e. this is just a variant of the guest telling the host to DMA to a GPA
-> > that is completely bogus.  The shared vs. private behavior just means that when
-> > host userspace is doing a GPA=>HVA lookup, it needs to incorporate the "shared"
-> > state of the GPA.  If the host goes and DMAs into the completely wrong HVA=>PFN,
-> > then that is a host bug; that the bug happened to be exploited by a buggy/malicious
-> > guest doesn't change the fact that the host messed up.
+On 11/16/21 7:01 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.14.19 release.
+> There are 857 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> The thing is that the usual checking mechanisms can't be applied to
-> guest-private pages. For user-space the GPA is valid if it fits into the
-> guest memory layout user-space set up before. But whether a page is
-> shared or private is the guests business.
-
-And that's where we fundamentally disagree.  Whether a page is shared or private
-is very much the host's business.  The guest can _ask_ to convert a page, but the
-host ultimately owns the state of a page.  Even in this proposed auto-convert
-approach, the host has final say over the state of the page.
-
-The main difference between auto-converting in the #PF handler and an unmapping
-approach is that, as you note below, the latter requires an explicit action from
-host userspace.  But again, the host kernel has final say over the state of any
-given page.
-
-> And without an expensive reporting/query mechanism user-space doesn't have the
-> information to do the check.
-
-The cost of exiting to userspace isn't all that expensive relative to the cost of
-the RMP update itself, e.g. IIRC updating the RMP is several thousand cycles.
-TDX will have a similar cost to modify S-EPT entries.
-
-Actually updating the backing store (see below) might be relatively expensive, but
-I highly doubt it will be orders of magnitude slower than updating the RMP, or that
-it will have a meaningful impact on guest performance.
-
-> A mechanism to lock pages to shared is also needed, and that creates the
-> next problems:
-
-The most recent proposal for unmapping guest private memory doesn't require new
-locking at the page level.  The high level idea is to treat shared and private
-variations of GPAs as two unrelated addresses from a host memory management
-perspective.  They are only a "single" address in the context of KVM's MMU, i.e.
-the NPT for SNP.
-
-For shared pages, no new locking is required as the PFN associated with a VMA will
-not be freed until all mappings go away.  Any access after all mappings/references
-have been dropped is a nothing more than a use-after-free bug, and the guilty party
-is punished accordingly.
-
-For private pages, the proposed idea is to require that all guest private memory
-be backed by an elightened backing store, e.g. the initial RFC enhances memfd and
-shmem to support sealing the file as guest-only:
-
-  : The new seal is only allowed if there's no pre-existing pages in the fd
-  : and there's no existing mapping of the file. After the seal is set, no
-  : read/write/mmap from userspace is allowed.
-
-It is KVM's responsibility to ensure it doesn't map a shared PFN into a private
-GPA and vice versa, and that TDP entries are unmapped appropriately, e.g. when
-userspace punches a hole in the backing store, but that can all be done using
-existing locks, e.g. KVM's mmu_lock.  No new locking mechanisms are required.
-
-> 	* Who can release the lock, only the process which created it or
-> 	  anyone who has the memory mapped?
+> Responses should be made by Thu, 18 Nov 2021 14:24:22 +0000.
+> Anything received after that time might be too late.
 > 
-> 	* What happens when a process has locked guest regions and then
-> 	  dies with SIGSEGV, will its locks on guest memory be released
-> 	  stay around forever?
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.19-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-> And this is only what comes to mind immediatly, I sure there are more
-> problematic details in such an interface.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-Please read through this proposal/RFC, more eyeballs would certainly be welcome.
-
-https://lkml.kernel.org/r/20211111141352.26311-1-chao.p.peng@linux.intel.com
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
