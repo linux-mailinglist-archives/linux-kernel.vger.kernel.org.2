@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6522452E34
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:39:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E9D452E28
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:39:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233350AbhKPJmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 04:42:33 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:34498 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233401AbhKPJmb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 04:42:31 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: shreeya)
-        with ESMTPSA id 14F8F1F45517
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637055572; bh=UOh/mlQFaw22xo9WHVNz2cr8hTemgxQ+nXiVIok1HPw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Afe9ZJ51KS4elifx7/n+bOnVyhmJK7jOq5CUFObjKRhdmy0Ndso+6JHDS1XCKaks/
-         X1CepfNnomL/PEaWsjgXaLq/Qfbmcm1vyVCIDNdwIh5SkLYEAsAPCQssnXSohdj6x1
-         Yp+hGiz62O7isHYD24/DMzFKIQ1ogsPYRoygP44/XmSmDvPt/nuzLbGP34wXUn8VhC
-         L3MDwWpQQhKOB7uF53FPy4aG13cuyaNDo1UB02LQIaBOEx8PaOltymiixi1YrAfdIO
-         +H50lAfNrK22ST8kOuar5RL4RM5Tj/9DPQlfTPOyj0+Zw2nG4Og8IxFrDS+bP3gcKE
-         s5es24O/InECQ==
-From:   Shreeya Patel <shreeya.patel@collabora.com>
-To:     linus.walleij@linaro.org, andy.shevchenko@gmail.com,
-        bgolaszewski@baylibre.com, wsa@kernel.org
-Cc:     kernel@collabora.com, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        lkp@intel.com, Shreeya Patel <shreeya.patel@collabora.com>
-Subject: [PATCH v4] gpio: Return EPROBE_DEFER if gc->to_irq is NULL
-Date:   Tue, 16 Nov 2021 15:08:33 +0530
-Message-Id: <20211116093833.245542-1-shreeya.patel@collabora.com>
-X-Mailer: git-send-email 2.30.2
+        id S233393AbhKPJmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 04:42:17 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:47936 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233162AbhKPJmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 04:42:12 -0500
+Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mmuvh-00039f-KB; Tue, 16 Nov 2021 10:39:05 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
+        Yash Shah <yash.shah@sifive.com>, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Abdurachmanov <david.abdurachmanov@sifive.com>
+Cc:     Vincent Pelletier <plr.vincent@gmail.com>
+Subject: Re: [PATCH] riscv: dts: sifive unmatched: Name gpio lines.
+Date:   Tue, 16 Nov 2021 10:39:04 +0100
+Message-ID: <11612716.TMCrJ2abzX@diego>
+In-Reply-To: <f6512cc50dc31a086e00ed59c63ea60d8c148fc4.1637023980.git.plr.vincent@gmail.com>
+References: <f6512cc50dc31a086e00ed59c63ea60d8c148fc4.1637023980.git.plr.vincent@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are racing the registering of .to_irq when probing the
-i2c driver. This results in random failure of touchscreen
-devices.
+Hi Vincent,
 
-Following errors could be seen in dmesg logs when gc->to_irq is NULL
+Am Dienstag, 16. November 2021, 01:52:56 CET schrieb Vincent Pelletier:
+> Follow the pin descriptions given in the version 3 of the board schematics.
+> 
+> Signed-off-by: Vincent Pelletier <plr.vincent@gmail.com>
 
-[2.101857] i2c_hid i2c-FTS3528:00: HID over i2c has not been provided an Int IRQ
-[2.101953] i2c_hid: probe of i2c-FTS3528:00 failed with error -22
+when sending a patch series with "git format-patch -6" and friends will
+automcatically generate x/y additions like "[PATCH 1/6]" and so on.
 
-To avoid this situation, defer probing until to_irq is registered.
+Please try to keep them around when sending, as automated tools for patch
+handling like "b4", stumble when they encounter a patch series without them.
 
-This issue has been reported many times in past and people have been
-using workarounds like changing the pinctrl_amd to built-in instead
-of loading it as a module or by adding a softdep for pinctrl_amd into
-the config file.
+In this case a
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=209413
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
+	b4 am f6512cc50dc31a086e00ed59c63ea60d8c148fc4.1637023980.git.plr.vincent@gmail.com
 
----
-Changes in v4
-  - Remove blank line and make the first letter of the sentence
-capital.
+[first patch in the series]
+will actually only retrieve the last patch
 
-Changes in v3
-  - Fix the error reported by kernel test robot.
+	"[PATCH] riscv: dts: sifive unmatched: Link the tmp451 with its power supply."
 
-Changes in v2
-  - Add a condition to check for irq chip to avoid bogus error.
----
- drivers/gpio/gpiolib.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+as it thinks it's a new version of the first one.
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index abfbf546d159..7b3f7f4d1d06 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -3111,6 +3111,16 @@ int gpiod_to_irq(const struct gpio_desc *desc)
- 
- 		return retirq;
- 	}
-+#ifdef CONFIG_GPIOLIB_IRQCHIP
-+	if (gc->irq.chip) {
-+		/*
-+		 * Avoid race condition with other code, which tries to lookup
-+		 * an IRQ before the irqchip has been properly registered,
-+		 * i.e. while gpiochip is still being brought up.
-+		 */
-+		return -EPROBE_DEFER;
-+	}
-+#endif
- 	return -ENXIO;
- }
- EXPORT_SYMBOL_GPL(gpiod_to_irq);
--- 
-2.30.2
+
+Thanks
+Heiko
+
+> ---
+>  arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+> index 4f66919215f6..305a086e5207 100644
+> --- a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+> +++ b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+> @@ -245,4 +245,8 @@ &pwm1 {
+>  
+>  &gpio {
+>  	status = "okay";
+> +	gpio-line-names = "J29.1", "PMICNTB", "PMICSHDN", "J8.1", "J8.3",
+> +		"PCIe_PWREN", "THERM", "UBRDG_RSTN", "PCIe_PERSTN",
+> +		"ULPI_RSTN", "J8.2", "UHUB_RSTN", "GEMGXL_RST", "J8.4",
+> +		"EN_VDD_SD", "SD_CD";
+>  };
+> 
+
+
+
 
