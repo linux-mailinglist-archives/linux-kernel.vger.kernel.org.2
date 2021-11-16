@@ -2,67 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9941D453C35
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 23:23:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4223453C39
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 23:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231874AbhKPW0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 17:26:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36542 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231244AbhKPW0b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 17:26:31 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S232013AbhKPWdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 17:33:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231244AbhKPWdE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 17:33:04 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9483AC061570;
+        Tue, 16 Nov 2021 14:30:06 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF09461B62;
-        Tue, 16 Nov 2021 22:23:33 +0000 (UTC)
-Date:   Tue, 16 Nov 2021 17:23:32 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Beau Belgrave <beaub@linux.microsoft.com>,
-        linux-kernel@vger.kernel.org, Namhyung Kim <namhyung@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>
-Subject: Re: [PATCH 4/5] libtraceevent: Add __rel_loc relative location
- attribute support
-Message-ID: <20211116172332.655bae77@gandalf.local.home>
-In-Reply-To: <163697163637.131454.1385316505107139633.stgit@devnote2>
-References: <163697159970.131454.2661507704362599471.stgit@devnote2>
-        <163697163637.131454.1385316505107139633.stgit@devnote2>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hv12w0kRMz4xbP;
+        Wed, 17 Nov 2021 09:29:59 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1637101800;
+        bh=Xw7trDkD7uY90Smie1IcmfEkVeFAgUDQ41gh0T+Nw/U=;
+        h=Date:From:To:Cc:Subject:From;
+        b=EA7JT3mSR14XgUMj2/qGbJ91bAdcHdTPP11x2oaU/IGmmstuybWDFG9jwALFxiEt7
+         59MibmHOJyO3j8bgiqtqWdLu6bJ9GjJ9HuvZAnixDkT001IGjWZkIZPutTMbYHRiN+
+         GtTk0+sufe1wXE6cPdY9vzlAsgcq12B9KB/IWyVrUHs1cR3DoJxwoXr0P18m+C8d8e
+         QyaduGC8HyS9916dyEHGMHjrhxqRgZlcbKhu0SYGZxmogIcZf41iNpcNjZhlAiNRmf
+         HxawsQEWUNw/EOlHLoy8X079GjmWQMs1+2TVs0xtdV5ns6R9RDzKKcEpT8SBUvyfao
+         131Enj600ZtqA==
+Date:   Wed, 17 Nov 2021 09:29:57 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Ben Skeggs <bskeggs@redhat.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Fangzhi Zuo <Jerry.Zuo@amd.com>,
+        Karol Herbst <kherbst@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Luo Jiaxing <luojiaxing@huawei.com>,
+        Lyude Paul <lyude@redhat.com>
+Subject: linux-next: manual merge of the drm-misc tree with Linus' tree
+Message-ID: <20211117092957.5f2daa9e@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/gEh0b4qnm/AUfoV6WAuGq0u";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021 19:20:36 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+--Sig_/gEh0b4qnm/AUfoV6WAuGq0u
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> Add '__rel_loc' new dynamic data location attribute which encodes
-> the data location from the next to the field itself. This is similar
-> to the '__data_loc' but the location offset is not from the event
-> entry but from the next of the field.
-> 
-> This patch adds '__rel_loc' decoding support in the libtraceevent.
+Hi all,
 
-Note, libtraceevent in the kernel is deprecated.
+Today's linux-next merge of the drm-misc tree got a conflict in:
 
-Care to send a patch against:
+  drivers/gpu/drm/nouveau/dispnv50/disp.c
 
-  https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/
+between commit:
 
-And Cc linux-trace-devel@vger.kernel.org
+  d6c6a76f80a1 ("drm: Update MST First Link Slot Information Based on Encod=
+ing Format")
 
-Thanks!
+from Linus' tree and commit:
 
--- Steve
+  606be062c2e5 ("drm/nouveau/kms/nv50-: Remove several set but not used var=
+iables "ret" in disp.c")
 
-> 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> ---
->  tools/lib/traceevent/event-parse.c  |   14 ++++++++++++++
->  tools/lib/traceevent/event-parse.h  |    1 +
->  tools/lib/traceevent/parse-filter.c |    5 ++++-
->  3 files changed, 19 insertions(+), 1 deletion(-)
+from the drm-misc tree.
 
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/gpu/drm/nouveau/dispnv50/disp.c
+index 8e28403ea9b1,23fa9ecc2296..000000000000
+--- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+@@@ -1411,10 -1413,9 +1413,9 @@@ nv50_mstm_prepare(struct nv50_mstm *mst
+  {
+  	struct nouveau_drm *drm =3D nouveau_drm(mstm->outp->base.base.dev);
+  	struct drm_encoder *encoder;
+- 	int ret;
+ =20
+  	NV_ATOMIC(drm, "%s: mstm prepare\n", mstm->outp->base.base.name);
+- 	ret =3D drm_dp_update_payload_part1(&mstm->mgr, 1);
+ -	drm_dp_update_payload_part1(&mstm->mgr);
+++	drm_dp_update_payload_part1(&mstm->mgr, 1);
+ =20
+  	drm_for_each_encoder(encoder, mstm->outp->base.base.dev) {
+  		if (encoder->encoder_type =3D=3D DRM_MODE_ENCODER_DPMST) {
+
+--Sig_/gEh0b4qnm/AUfoV6WAuGq0u
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGUMOUACgkQAVBC80lX
+0Gy1Vgf+JEOJpbZK0OirBcbUj7sM2euc70VF6iKjHF7s8xnqIEtbwZikq7g98xTX
+6IaVncGZgtMYtYy8gsNk9zBPSQ34uMs2mjst2oqFouCUcgRv3CbV62O8kwisfK4v
+DsRifZtQ3xTsMprHOVWhZ4rQJ0ZZkhG2HceI6JpEydGFKpEk1slidOQGHWq919Rn
+TfSFYJ8DGK50C95Qdh9xbmhh169s0kclRiwkwTQm35ERVQeuu5m07BwgQzG72UZS
+JSGE7D9RPrdX3G2ChgfzeJm+3RMTj+LeVy7uwjcV0h66HsCrIhr958DTVWTBP3HF
+KhuXU566fkYp8+1hU4JcrNvNpdOYZA==
+=KubD
+-----END PGP SIGNATURE-----
+
+--Sig_/gEh0b4qnm/AUfoV6WAuGq0u--
