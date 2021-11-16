@@ -2,153 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F15452F10
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 11:28:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3910452F11
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 11:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234108AbhKPKaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 05:30:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:38181 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234106AbhKPK37 (ORCPT
+        id S234122AbhKPKbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 05:31:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233807AbhKPKan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 05:29:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637058422;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zzfJFFs1yOAsVs8rA5VCSt3swVTOoJ3a9p/d2W4NYtA=;
-        b=BdhkZOFmqdYUhvSqyI/e7yQJnM0RmLgFofqHQTqEi1CXqQ88h45fvyuHC5qk9kWmK6SPEM
-        0Z2g/mgejyYeTz4gQHxHPeNQnLQIO57ZyWo1bAUP9Tv2ZXaHS7Cr74iHwXA9LO6Qal+Cec
-        jQ5gOnCvKlRxt+7JDs6o/ymyue1BQt4=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-121-QjMrVoJIMmKIS_A6x9-JCg-1; Tue, 16 Nov 2021 05:26:51 -0500
-X-MC-Unique: QjMrVoJIMmKIS_A6x9-JCg-1
-Received: by mail-ed1-f71.google.com with SMTP id i19-20020a05640242d300b003e7d13ebeedso4267576edc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 02:26:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=zzfJFFs1yOAsVs8rA5VCSt3swVTOoJ3a9p/d2W4NYtA=;
-        b=nPE9xy9m9kJNlRqv7tZn3dQZ1Ly0FIamAuVywCKnOKd0itnsC7VuisBF7tMoRBMC/L
-         iUQjEFQf5wxitOvgwkzKC/9hWQJwV3JWA674Z9Z6EM1/Psv0jUVKq/G5DUBKO6YPiJhj
-         iHfFQPhgBXMCqB2GGM+aBQ06CZnmlxxBB4RKnGJ6K1vCZJCQjfbclg5n4lU2uMAK/IKR
-         YLNuQuCN4d0sOB0BvfNDlbSx7cq8DarltQr2ulbW8OIuQKXm4bS9Nxp8SZt35Iv5Rko7
-         KYUzmREVPujL8f+xe0P4YbgZ7CPKPWBqGxgjr3WF/E+UICLEzfiHSBMDuT2w7WpGIkzW
-         9wmg==
-X-Gm-Message-State: AOAM5305QnwmWP8n6jU5+xUeCzAjApSa3KwHVOO2kr6xrnPExev844ZY
-        dNolcMQBcw3pA9R0gTyeVcRG99rhd+CJsylO5Hs1KB1x+PFQQ2G6goDS7wT16eYdXVTDSCXevHV
-        RsrVYJXobGB4Hrf27Aluaw9nx
-X-Received: by 2002:a05:6402:2753:: with SMTP id z19mr8678686edd.143.1637058409880;
-        Tue, 16 Nov 2021 02:26:49 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJze7G27h6q4hHPzijH2DQOjmRBhIvl8m2KOckBL3/bxl/7qDqMgG0oYB+v+0OuZPnwC8PE2gA==
-X-Received: by 2002:a05:6402:2753:: with SMTP id z19mr8678666edd.143.1637058409713;
-        Tue, 16 Nov 2021 02:26:49 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id hv17sm8177026ejc.66.2021.11.16.02.26.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 02:26:49 -0800 (PST)
-Message-ID: <009706db-230a-1e49-0a42-447a0ff97fbb@redhat.com>
-Date:   Tue, 16 Nov 2021 11:26:48 +0100
+        Tue, 16 Nov 2021 05:30:43 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F8B1C061766
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 02:27:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AdUF6ViWzscn9og7/mdrngRNLF7M0M71UElmac4YaTA=; b=R+Q26e5a3QYpMyyvSGcRDUNzs8
+        WieN0A72yCBEH51BQwbwnWrN5puSr2mlBqSDLpBvOL+r2UMQqy4k7txViIOqn8P6A94B6rF9+KWOo
+        IwjJiRVWxQGAN7IgRO0x7bl8Sl/70gPLDQ49dthMsTmGtWmvoSmih08pvAKW9lNjxaoCIPFC6bRAD
+        zEAblgj+eis2FuoNmTHiAnRzD1c09s70BfZqGPBhTYpBNof8bUBqJ4ZXoATNh5/ys/mQIojaR4gh4
+        xEoUDnCzO/jr1XFOOdJMBs3oJlxlUtzmLr3WnMsjlkjq2/hMh0N/hf1081TOtU/yqshtMO3x/eg/e
+        chKGBo5Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mmvgh-006fFv-FP; Tue, 16 Nov 2021 10:27:40 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 022CB300093;
+        Tue, 16 Nov 2021 11:27:39 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E6A292D7AEC49; Tue, 16 Nov 2021 11:27:38 +0100 (CET)
+Date:   Tue, 16 Nov 2021 11:27:38 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 7/9] locking/rwlocks: introduce write_lock_nested
+Message-ID: <YZOHmkdTM+oimFe8@hirez.programming.kicks-ass.net>
+References: <20211115185909.3949505-1-minchan@kernel.org>
+ <20211115185909.3949505-8-minchan@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: drivers/platform/x86/thinkpad_acpi.c:4475:35: error: unused
- variable 'fwbug_cards_ids'
-Content-Language: en-US
-To:     kernel test robot <lkp@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>
-References: <202111141153.mtggZgGq-lkp@intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <202111141153.mtggZgGq-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211115185909.3949505-8-minchan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 11/14/21 04:10, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   c8c109546a19613d323a319d0c921cb1f317e629
-> commit: fd96e35ea7b95f1e216277805be89d66e4ae962d platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning
-> date:   4 weeks ago
-> config: i386-buildonly-randconfig-r005-20211114 (attached as .config)
-> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project c3dddeeafb529e769cde87bd29ef6271ac6bfa5c)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fd96e35ea7b95f1e216277805be89d66e4ae962d
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout fd96e35ea7b95f1e216277805be89d66e4ae962d
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=i386 
+On Mon, Nov 15, 2021 at 10:59:07AM -0800, Minchan Kim wrote:
+> In preparation for converting bit_spin_lock to rwlock in zsmalloc
+> so that multiple writers of zspages can run at the same time but
+> those zspages are supposed to be different zspage instance. Thus,
+> it's not deadlock. This patch adds write_lock_nested to support
+> the case for LOCKDEP.
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->>> drivers/platform/x86/thinkpad_acpi.c:4475:35: error: unused variable 'fwbug_cards_ids' [-Werror,-Wunused-const-variable]
->    static const struct pci_device_id fwbug_cards_ids[] __initconst = {
->                                      ^
->    1 error generated.
-
-So this *again* has absolutely nothing to do with the:
-
-"platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning"
-
-commit, the problem is that:
-
-1. the .config does not have CONFIG_PCI set; combined with:
-2. include/pci.h using a #define instead of a
-   static inline for pci_dev_present() when this is the case
-3. This is a clang WERROR build
-
-I'll submit a fix for 2. upstream which should also fix
-similar errors in a lot of other drivers.
-
-Again I must say that as a maintainer I'm unhappy about the amount
-of noise being generated by clang WERROR builds here though,
-is it really necessary for the kernel test robot to do builds
-of this type ?
-
-Regards,
-
-Hans
-
-
-> 
-> 
-> vim +/fwbug_cards_ids +4475 drivers/platform/x86/thinkpad_acpi.c
-> 
-> f7db839fccf087 Jiaxun Yang 2019-03-07  4474  
-> f7db839fccf087 Jiaxun Yang 2019-03-07 @4475  static const struct pci_device_id fwbug_cards_ids[] __initconst = {
-> f7db839fccf087 Jiaxun Yang 2019-03-07  4476  	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x24F3) },
-> f7db839fccf087 Jiaxun Yang 2019-03-07  4477  	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x24FD) },
-> f7db839fccf087 Jiaxun Yang 2019-03-07  4478  	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x2526) },
-> f7db839fccf087 Jiaxun Yang 2019-03-07  4479  	{}
-> f7db839fccf087 Jiaxun Yang 2019-03-07  4480  };
-> f7db839fccf087 Jiaxun Yang 2019-03-07  4481  
-> f7db839fccf087 Jiaxun Yang 2019-03-07  4482  
-> 
-> :::::: The code at line 4475 was first introduced by commit
-> :::::: f7db839fccf087664e5587966220821289b6a9cb platform/x86: thinkpad_acpi: Disable Bluetooth for some machines
-> 
-> :::::: TO: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> :::::: CC: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
+> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Minchan Kim <minchan@kernel.org>
 > ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
+>  include/linux/rwlock.h          |  6 ++++++
+>  include/linux/rwlock_api_smp.h  |  9 +++++++++
+>  include/linux/rwlock_rt.h       |  6 ++++++
+>  include/linux/spinlock_api_up.h |  1 +
+>  kernel/locking/spinlock.c       |  6 ++++++
+>  kernel/locking/spinlock_rt.c    | 12 ++++++++++++
+>  6 files changed, 40 insertions(+)
 
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
