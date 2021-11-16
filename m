@@ -2,91 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1F5453690
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:59:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5024B453697
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232792AbhKPQC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 11:02:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:32751 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238685AbhKPQBt (ORCPT
+        id S238703AbhKPQCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 11:02:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238707AbhKPQCS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:01:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637078332;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FUd95vU2iSWhtX+C2mcdhQw7Dtmpee6Qjpm6zn3irQ4=;
-        b=X+ndoVyIIWNEG01Vl9at+ZEQpZ9Ff42Ovh1Hp3Cyb267HhK42nTGIQtpoaTaKmDqubOPPO
-        a+aX3hJQ31vm3b9rbddGDc+E7aCzOvKcRQyCIBo/qNrGGyH/nALAA8x7mvSbV+eRXd7TCU
-        nc8zsicSZ6D/HoDXPRTHRjiyV9T+Sa8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-175-DnLZkEu7Obyh6mlLOa--nA-1; Tue, 16 Nov 2021 10:58:48 -0500
-X-MC-Unique: DnLZkEu7Obyh6mlLOa--nA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8857E824F8B;
-        Tue, 16 Nov 2021 15:58:45 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D581314104;
-        Tue, 16 Nov 2021 15:58:37 +0000 (UTC)
-Message-ID: <ca25cf55-dcc8-9df4-a286-3c65a26803cd@redhat.com>
-Date:   Tue, 16 Nov 2021 16:58:36 +0100
+        Tue, 16 Nov 2021 11:02:18 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B931CC061767;
+        Tue, 16 Nov 2021 07:59:20 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id b12so38584424wrh.4;
+        Tue, 16 Nov 2021 07:59:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9naSO5r8tQZJvBK4TMPDYz6tlDwHC4XzxH7Ok+hs3N0=;
+        b=im56I/I3rNGeFIuG/hbOWptU7uBt56fr502x72sNSv9QV1KWjvTqVtyhDwXHezl5Uc
+         i0oluNPhwgGg7xdlucKDQJTdnqjFCBGZm93PZm9/VkOLIeg9rs/Lmu1SOVcsFqpD03fz
+         6l73AUMNradKV2xf8hfdZ56UsIqlMvci8ZE444tVeQD28GBi2ALerXudrrmTZnYWlnbM
+         fI8qKezzwjI26GRuQqlG74SewAast6MxAsHo/p3DkUJpv1nPl4zEY/5a3wRtnDuUHsoC
+         YP3AwY4zKD6Xdjg5Qu+T9E6arkiKCsW5pQwz9cBbyzy+uGcJeiOqPg+kClGzwL3z6aCl
+         Xbwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9naSO5r8tQZJvBK4TMPDYz6tlDwHC4XzxH7Ok+hs3N0=;
+        b=OcXRwP9V0yXBI8aatB2opdz5FQre1iKAkd6aNV2MKh5NRcV5uEB9L9/9noeUgaJ5si
+         vpFmCAwJ9ObtMenyv3UCBhP68GAwGqklfNkfR48uaoBiZMtICvJLAOAGPC7EwDdBDbR+
+         syb+uv+y8KQmg4OvFvz4z8CvXHevDbaOVceCuLWojfbfyCXopXotlRFBCFvcLPGOSEZ5
+         lSJFqfAFDo/9rWYIN4ujXf4OBVDxrRyqMaGAavBDft6gndgKoK0KDyT/ur9on4XrP6RN
+         ozvUEua0NfXPF85N/Bvy8pQRt5+wBPSSApETwiOaS9zG6wI64QNzeeLUQMqJAGVm9XZM
+         lCCA==
+X-Gm-Message-State: AOAM530HZq5MzFsTBPJKaoh+MdN3wTe+24BO55FPsSrJF3K3POfx2WuM
+        kjNsMuAo8bmLcpnz8G5sm1Y=
+X-Google-Smtp-Source: ABdhPJxxbHh6aw+ynme2nbX81ydqgm8JRSXnAUANc3S0WflysKuwlLlXTvqS8npcaPMd6OcCQUSxgw==
+X-Received: by 2002:adf:e810:: with SMTP id o16mr10725300wrm.359.1637078359314;
+        Tue, 16 Nov 2021 07:59:19 -0800 (PST)
+Received: from localhost.localdomain ([87.75.40.14])
+        by smtp.googlemail.com with ESMTPSA id g124sm2327650wme.28.2021.11.16.07.59.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 07:59:19 -0800 (PST)
+From:   Iain Hunter <drhunter95@gmail.com>
+Cc:     iain@hunterembedded.co.uk, Iain Hunter <drhunter95@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] Add binding for IIO ADS1018
+Date:   Tue, 16 Nov 2021 15:58:58 +0000
+Message-Id: <20211116155917.304294-1-drhunter95@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 1/5] KVM: arm64: Cap KVM_CAP_NR_VCPUS by KVM_CAP_MAX_VCPUS
-Content-Language: en-US
-To:     Marc Zyngier <maz@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Eduardo Habkost <ehabkost@redhat.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, kvm-ppc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211111162746.100598-1-vkuznets@redhat.com>
- <20211111162746.100598-2-vkuznets@redhat.com>
- <a5cdff6878b7157587e92ebe4d5af362@kernel.org> <875ysxg0s1.fsf@redhat.com>
- <87k0hd8obo.wl-maz@kernel.org>
- <ad3534bc-fe3a-55f5-b022-4dbec5f29798@redhat.com> <87y25onsj6.fsf@redhat.com>
- <875yss859c.wl-maz@kernel.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <875yss859c.wl-maz@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 16:55, Marc Zyngier wrote:
->> - Always kvm_arm_default_max_vcpus to make the output independent on 'if
->>   (kvm)'.
-> This. Between two useless numbers, I prefer the one that doesn't
-> introduce any userspace visible changes.
+v2 has me as suggested maintainer per Daniel's feedback.
 
-Fair enough, I'm not going to override you---but please add a comment 
-that says
+Signed-off-by: Iain Hunter <drhunter95@gmail.com>
+---
+ .../bindings/iio/adc/ti,ads1018.yaml          | 109 ++++++++++++++++++
+ 1 file changed, 109 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,ads1018.yaml
 
-	/*
-	 * arm64 treats KVM_CAP_NR_CPUS different from all other
-	 * architectures, as it does not bound it to num_online_cpus().
-	 * It should not matter much because this is just an advisory
-	 * value.
-	 */
-
-or something like that.
-
-Paolo
+diff --git a/Documentation/devicetree/bindings/iio/adc/ti,ads1018.yaml b/Documentation/devicetree/bindings/iio/adc/ti,ads1018.yaml
+new file mode 100644
+index 000000000000..bd7421f882a8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/adc/ti,ads1018.yaml
+@@ -0,0 +1,109 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/adc/ti,ads1015.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: TI ADS1018 4 channel I2C analog to digital converter
++
++maintainers:
++  - Iain Hunter <iain@hunterembedded.co.uk>
++
++description: |
++  Datasheet at: https://www.ti.com/lit/gpn/ads1018
++  Supports both single ended and differential channels.
++
++properties:
++  compatible:
++    const: ti,ads1018
++
++  reg:
++    maxItems: 1
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 0
++
++  "#io-channel-cells":
++    const: 1
++
++required:
++  - compatible
++  - reg
++  - "#address-cells"
++  - "#size-cells"
++
++additionalProperties: false
++
++patternProperties:
++  "^channel@[0-7]+$":
++    type: object
++    description:
++      Child nodes needed for each channel that the platform uses.
++
++    properties:
++      reg:
++        description: |
++          0: Voltage over AIN0 and AIN1.
++          1: Voltage over AIN0 and AIN3.
++          2: Voltage over AIN1 and AIN3.
++          3: Voltage over AIN2 and AIN3.
++          4: Voltage over AIN0 and GND.
++          5: Voltage over AIN1 and GND.
++          6: Voltage over AIN2 and GND.
++          7: Voltage over AIN3 and GND.
++        items:
++          - minimum: 0
++            maximum: 7
++
++      ti,gain:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        minimum: 0
++        maximum: 5
++        description: |
++          pga is the programmable gain amplifier (values are full scale)
++          0: +/- 6.144 V
++          1: +/- 4.096 V
++          2: +/- 2.048 V (default)
++          3: +/- 1.024 V
++          4: +/- 0.512 V
++          5: +/- 0.256 V
++
++      ti,datarate:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        minimum: 0
++        maximum: 6
++        description: |
++          Data acquisition rate in samples per second
++          0: 128
++          1: 250
++          2: 490
++          3: 920
++          4: 1600 (default)
++          5: 2400
++          6: 3300
++
++    required:
++      - reg
++
++examples:
++  - |
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        adc@1 {
++            compatible = "ti,ads1018";
++            reg = <0x1>;
++            #address-cells = <1>;
++            #size-cells = <0>;
++            channel@4 {
++              reg = <4>;
++              ti,gain = <3>;
++              ti,datarate = <5>;
++            };
++        };
++    };
++...
+-- 
+2.25.1
 
