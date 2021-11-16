@@ -2,154 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E78452E58
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:49:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D918452E6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:52:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233505AbhKPJwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 04:52:40 -0500
-Received: from mailgw01.mediatek.com ([60.244.123.138]:40824 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232326AbhKPJwi (ORCPT
+        id S233488AbhKPJyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 04:54:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233606AbhKPJyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 04:52:38 -0500
-X-UUID: cb298c37100c4f9d9fe4e7b8fef3fb26-20211116
-X-UUID: cb298c37100c4f9d9fe4e7b8fef3fb26-20211116
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-        (envelope-from <jitao.shi@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 454372275; Tue, 16 Nov 2021 17:49:39 +0800
-Received: from MTKMBS34N1.mediatek.inc (172.27.4.172) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Tue, 16 Nov 2021 17:49:37 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS34N1.mediatek.inc
- (172.27.4.172) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 16 Nov
- 2021 17:49:36 +0800
-Received: from mszsdaap41.gcn.mediatek.inc (10.16.6.141) by
- MTKCAS36.mediatek.inc (172.27.4.170) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Tue, 16 Nov 2021 17:49:35 +0800
-From:   Jitao Shi <jitao.shi@mediatek.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-CC:     <linux-mediatek@lists.infradead.org>, <stonea168@163.com>,
-        <huijuan.xie@mediatek.com>, <shuijing.li@mediatek.com>,
-        <liangxu.xu@mediatek.com>, <xinlei.li@mediatek.com>,
-        Jitao Shi <jitao.shi@mediatek.com>
-Subject: [PATCH v3 2/2] drm/mediatek: control panel's power before MIPI LP11
-Date:   Tue, 16 Nov 2021 17:49:30 +0800
-Message-ID: <20211116094930.11470-3-jitao.shi@mediatek.com>
-X-Mailer: git-send-email 2.12.5
-In-Reply-To: <20211116094930.11470-1-jitao.shi@mediatek.com>
-References: <20211116094930.11470-1-jitao.shi@mediatek.com>
+        Tue, 16 Nov 2021 04:54:25 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 924C6C061227;
+        Tue, 16 Nov 2021 01:50:15 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id u11so16961558plf.3;
+        Tue, 16 Nov 2021 01:50:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LOEo7+eEw7HOmFubNhZ5NIb+kpAjTOtWN/+/owTaRTQ=;
+        b=lg9HAcs2AQJqwWwikf1xHuQykcP79WUH7MT8HXFxMccsym9AafWmijDfhnYN3IoL1n
+         sCpQHuwA5+jhCEoEYCIb+y+unEBRQu3KKD1Dbslf5hQmMxoDMIbutJMfca4UlZcvK41b
+         qes4oeREIyGgdWeqjv3KMc6JFd+E/Pm/pIh/7BG1E5+8SLEBgZ3kDYnzioKkZINroEEG
+         sNxTqo1aqhCYSNWoRDtkavrL3cF1Wt0H+sMunaGS4OoCQIGiC5qCwt02Nn8aUEyCzZNg
+         3tKexTVRSn75VsedToXCGH8ntvBgaDVv5VLWiSBOD1uc/rCiWnwK0Nfr9de4KUQHGeqs
+         17hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LOEo7+eEw7HOmFubNhZ5NIb+kpAjTOtWN/+/owTaRTQ=;
+        b=iD8oLVNne8yiwbJbW0HLfCyHGX1GYFwpEmftgcc3a1MlSjq/I1udEeB3Yi53SOEX3W
+         4is/p22xDke3Ol+pcNPvo1LyOVYklAzlw/3s2XQG66rEGKJaggt85OqBQI63vlxSRghV
+         LSZgrfqEw/zWli0bnbhr/K48s3TctOz1YU/SfYnqte2sXKDca8AS1AY/SFWK+PECbXQ3
+         D9khVmIGcQ670O/BtOZwKMU/nKgIosRcjwChtZpng0etdocl58ykV4rTHH9tVtmS/e/p
+         7XP9oWFcAC1OjMo9HRkowqgpZQbMdmJ7rHwr3biXi+RpvGIF4hbQsNKg0HFqAgHbgSoK
+         fp0A==
+X-Gm-Message-State: AOAM530TyEs8ceYvbjoRgNTduLnYyVjn3orijW2ZQJBWNbRm3G1mTjLX
+        nv5Ho+FgNg5INaOV4rHcdZ0EysPwPSB/3quRo+Q=
+X-Google-Smtp-Source: ABdhPJxjkwFXdhzCHzbozqRCnmGohriRD2ActA2SYX/tVP+evd9ZLHyQZfBC+bl7MpvRwzONNxG00ZpuXMx27S39qkk=
+X-Received: by 2002:a17:902:748c:b0:142:5f2f:1828 with SMTP id
+ h12-20020a170902748c00b001425f2f1828mr43623292pll.4.1637056215138; Tue, 16
+ Nov 2021 01:50:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <20211115141925.60164-1-paul@crapouillou.net> <20211115142243.60605-1-paul@crapouillou.net>
+ <20211115142243.60605-2-paul@crapouillou.net>
+In-Reply-To: <20211115142243.60605-2-paul@crapouillou.net>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Tue, 16 Nov 2021 11:50:03 +0200
+Message-ID: <CA+U=DsoJWgifThUwcQ61M6851H7JVKH2s_O3=JJ0CsPeX8wdoA@mail.gmail.com>
+Subject: Re: [PATCH 13/15] iio: core: Add support for cyclic buffers
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"auo,kd101n80-45na" requires the panel's IOVDD take precedence over
-MIPI DATA. Otherwise there is a risk of leakage.
+On Mon, Nov 15, 2021 at 4:22 PM Paul Cercueil <paul@crapouillou.net> wrote:
+>
+> Introduce a new flag IIO_BUFFER_DMABUF_CYCLIC in the "flags" field of
+> the iio_dmabuf uapi structure.
+>
+> When set, the DMABUF enqueued with the enqueue ioctl will be endlessly
+> repeated on the TX output, until the buffer is disabled.
+>
 
-Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
-Change-Id: I2da6179dea7e15bc5a53fe36db200b6c04f4d551
----
- drivers/gpu/drm/mediatek/mtk_dsi.c | 28 ++++++++++++++++++++++------
- 1 file changed, 22 insertions(+), 6 deletions(-)
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
-index 93b40c245f00..9fff0c483139 100644
---- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-@@ -24,7 +24,7 @@
- #include <drm/drm_print.h>
- #include <drm/drm_probe_helper.h>
- #include <drm/drm_simple_kms_helper.h>
--
-+#include <drm/panel_boe_tv101wum_nl6.h>
- #include "mtk_disp_drv.h"
- #include "mtk_drm_ddp_comp.h"
- 
-@@ -185,6 +185,7 @@ struct mtk_dsi {
- 	struct drm_bridge bridge;
- 	struct drm_bridge *next_bridge;
- 	struct drm_connector *connector;
-+	struct drm_panel *panel;
- 	struct phy *phy;
- 
- 	void __iomem *regs;
-@@ -619,10 +620,16 @@ static int mtk_dsi_poweron(struct mtk_dsi *dsi)
- 	dsi->data_rate = DIV_ROUND_UP_ULL(dsi->vm.pixelclock * bit_per_pixel,
- 					  dsi->lanes);
- 
-+	if (dsi->panel) {
-+		if (panel_prepare_power(dsi->panel)) {
-+			DRM_INFO("can't prepare power the panel\n");
-+			goto err_refcount;
-+		}
-+	}
- 	ret = clk_set_rate(dsi->hs_clk, dsi->data_rate);
- 	if (ret < 0) {
- 		dev_err(dev, "Failed to set data rate: %d\n", ret);
--		goto err_refcount;
-+		goto err_prepare_power;
- 	}
- 
- 	phy_power_on(dsi->phy);
-@@ -665,6 +672,11 @@ static int mtk_dsi_poweron(struct mtk_dsi *dsi)
- 	clk_disable_unprepare(dsi->engine_clk);
- err_phy_power_off:
- 	phy_power_off(dsi->phy);
-+err_prepare_power:
-+	if (dsi->panel) {
-+		if (panel_unprepare_power(dsi->panel))
-+			DRM_INFO("Can't unprepare power the panel\n");
-+	}
- err_refcount:
- 	dsi->refcount--;
- 	return ret;
-@@ -698,6 +710,11 @@ static void mtk_dsi_poweroff(struct mtk_dsi *dsi)
- 	clk_disable_unprepare(dsi->digital_clk);
- 
- 	phy_power_off(dsi->phy);
-+
-+	if (dsi->panel) {
-+		if (panel_unprepare_power(dsi->panel))
-+			DRM_INFO("Can't unprepare power the panel\n");
-+	}
- }
- 
- static void mtk_output_dsi_enable(struct mtk_dsi *dsi)
-@@ -1001,7 +1018,6 @@ static int mtk_dsi_probe(struct platform_device *pdev)
- {
- 	struct mtk_dsi *dsi;
- 	struct device *dev = &pdev->dev;
--	struct drm_panel *panel;
- 	struct resource *regs;
- 	int irq_num;
- 	int ret;
-@@ -1019,12 +1035,12 @@ static int mtk_dsi_probe(struct platform_device *pdev)
- 	}
- 
- 	ret = drm_of_find_panel_or_bridge(dev->of_node, 0, 0,
--					  &panel, &dsi->next_bridge);
-+					  &dsi->panel, &dsi->next_bridge);
- 	if (ret)
- 		goto err_unregister_host;
- 
--	if (panel) {
--		dsi->next_bridge = devm_drm_panel_bridge_add(dev, panel);
-+	if (dsi->panel) {
-+		dsi->next_bridge = devm_drm_panel_bridge_add(dev, dsi->panel);
- 		if (IS_ERR(dsi->next_bridge)) {
- 			ret = PTR_ERR(dsi->next_bridge);
- 			goto err_unregister_host;
--- 
-2.12.5
-
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  drivers/iio/industrialio-buffer.c | 5 +++++
+>  include/uapi/linux/iio/buffer.h   | 3 ++-
+>  2 files changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> index 30910e6c2346..41bc51c88002 100644
+> --- a/drivers/iio/industrialio-buffer.c
+> +++ b/drivers/iio/industrialio-buffer.c
+> @@ -1600,6 +1600,11 @@ static int iio_buffer_enqueue_dmabuf(struct iio_buffer *buffer,
+>         if (dmabuf.flags & ~IIO_BUFFER_DMABUF_SUPPORTED_FLAGS)
+>                 return -EINVAL;
+>
+> +       /* Cyclic flag is only supported on output buffers */
+> +       if ((dmabuf.flags & IIO_BUFFER_DMABUF_CYCLIC) &&
+> +           buffer->direction != IIO_BUFFER_DIRECTION_OUT)
+> +               return -EINVAL;
+> +
+>         return buffer->access->enqueue_dmabuf(buffer, &dmabuf);
+>  }
+>
+> diff --git a/include/uapi/linux/iio/buffer.h b/include/uapi/linux/iio/buffer.h
+> index e4621b926262..2d541d038c02 100644
+> --- a/include/uapi/linux/iio/buffer.h
+> +++ b/include/uapi/linux/iio/buffer.h
+> @@ -7,7 +7,8 @@
+>
+>  #include <linux/types.h>
+>
+> -#define IIO_BUFFER_DMABUF_SUPPORTED_FLAGS      0x00000000
+> +#define IIO_BUFFER_DMABUF_CYCLIC               (1 << 0)
+> +#define IIO_BUFFER_DMABUF_SUPPORTED_FLAGS      0x00000001
+>
+>  /**
+>   * struct iio_dmabuf_alloc_req - Descriptor for allocating IIO DMABUFs
+> --
+> 2.33.0
+>
