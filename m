@@ -2,101 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1AAA452E6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC6D452E74
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:53:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233629AbhKPJyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 04:54:35 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:44022 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233640AbhKPJyA (ORCPT
+        id S233417AbhKPJ4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 04:56:16 -0500
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:54858
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233285AbhKPJ4O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 04:54:00 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 8C758218CE;
-        Tue, 16 Nov 2021 09:51:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637056262; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mDFTTIiszcWpxAylcu0QzEP9/NecXrKSzvnEd4lCTY0=;
-        b=GB3lAEhBjkXXAHEs1lirJeNVPqy3z2zGaeeafIHzWzkuIbOBGG4OX3oHnXgOr9R0pmI0q0
-        ppTDCllU68nWvHY5+YoX3fZ5R9V36CN35yD7p+q97lmf7YHaw+olPwwAwNbaPFzq1wkkR/
-        sJu2VJwgGzDfmUbWjT3btCFh7DDIvww=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 16 Nov 2021 04:56:14 -0500
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id F1DC9A3B90;
-        Tue, 16 Nov 2021 09:51:00 +0000 (UTC)
-Date:   Tue, 16 Nov 2021 10:51:00 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     akpm@linux-foundation.org, Alexey Alexandrov <aalexand@google.com>,
-        ccross@google.com, sumit.semwal@linaro.org, dave.hansen@intel.com,
-        keescook@chromium.org, willy@infradead.org,
-        kirill.shutemov@linux.intel.com, vbabka@suse.cz,
-        hannes@cmpxchg.org, corbet@lwn.net, viro@zeniv.linux.org.uk,
-        rdunlap@infradead.org, kaleshsingh@google.com, peterx@redhat.com,
-        rppt@kernel.org, peterz@infradead.org, catalin.marinas@arm.com,
-        vincenzo.frascino@arm.com, chinwen.chang@mediatek.com,
-        axelrasmussen@google.com, aarcange@redhat.com, jannh@google.com,
-        apopple@nvidia.com, jhubbard@nvidia.com, yuzhao@google.com,
-        will@kernel.org, fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        hughd@google.com, feng.tang@intel.com, jgg@ziepe.ca, guro@fb.com,
-        tglx@linutronix.de, krisman@collabora.com, chris.hyser@oracle.com,
-        pcc@google.com, ebiederm@xmission.com, axboe@kernel.dk,
-        legion@kernel.org, eb@emlix.com, gorcunov@gmail.com, pavel@ucw.cz,
-        songmuchun@bytedance.com, viresh.kumar@linaro.org,
-        thomascedeno@google.com, sashal@kernel.org, cxfcosmos@gmail.com,
-        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, kernel-team@android.com
-Subject: Re: [PATCH v11 2/3] mm: add a field to store names for private
- anonymous memory
-Message-ID: <YZN/BMImQqrK4MWm@dhcp22.suse.cz>
-References: <20211019215511.3771969-1-surenb@google.com>
- <20211019215511.3771969-2-surenb@google.com>
- <89664270-4B9F-45E0-AC0B-8A185ED1F531@google.com>
- <CAJuCfpE-fR+M_funJ4Kd+gMK9q0QHyOUD7YK0ES6En4y7E1tjg@mail.gmail.com>
- <CAJuCfpHfnG8b4_RkkGhu+HveF-K_7o9UVGdToVuUCf-qD05Q4Q@mail.gmail.com>
- <CAJuCfpEJuVyRfjEE-NTsVkdCZyd6P09gHu7c+tbZcipk+73rLA@mail.gmail.com>
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 4BA3A3F1A8
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 09:53:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1637056391;
+        bh=4WIA2kLiytpvAuYSWnoOkPVEtpZ6YL0jK44pquUKn9U=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Type:In-Reply-To;
+        b=JTxEm5fIbE/+LyHQkcCx03KZ7Y9ya3fxFLgPpIkmRVUMFRJ4NRoHCFBKVjYyk3QwM
+         JK8j2dSFXbppx3mCKESG9uLkxXJLpwzBBFblpWWh0ZFoaDGxofCLqp+DZ4/V1ZP78G
+         AZr1iI8Usacqr8mOkfjveC69LuD2SDy8xfOapEfW0zcZSKCxR6A243j0TzHLuKYJB4
+         eWF5F8PlgdyxVlGr+qGWiqdOd+A0ZJYorzMrwEU9ouC/OvtVf1xCgqZNLyIGEHbq1n
+         +Pe/SOqTxLM+vDTZ4r/ow0OeEK7CSl5k71MOFA92zIfLLfjEPY9j1lMOAjyBRFszur
+         xTXnt2Hr07Gbg==
+Received: by mail-ed1-f69.google.com with SMTP id n11-20020aa7c68b000000b003e7d68e9874so3431593edq.8
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 01:53:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4WIA2kLiytpvAuYSWnoOkPVEtpZ6YL0jK44pquUKn9U=;
+        b=ZT2ay07fOw8NiK29TnjFNNoXeoVzU09L8d2i6Y0Ps0B1JTjy/VFweIL6v9wXo0SDw6
+         Q5B34oItf0SMZkLw6/7E+xKmL3+YLMWeq6hva8KT9RJA6ZlBOCOcXYH/ig4iY1FyqzM3
+         ThXQzzEUnxr7zkYFScd4jUcltkIHwe0wxhosAlngtoQtX9bpOEqcjZHrQCecpmFvljEd
+         paYY5yY9uNlPqgQWB2utgQCPvMpW1YPgJWFvoaeX1i3xM5sp2xBTgaBnlCHmqDL4OiUL
+         7XMTEXGm4xD9juReBL+tPA/j4Yf7HgT+xuWi3Q7ap0zDT9f1xWGMTlZ/GECw2VJx44i2
+         b4zQ==
+X-Gm-Message-State: AOAM532s0yaPO2KWDfSpD+lGONMFjMd5RYcfayvSpcXGAI+ndnldq1j1
+        ihytrVNn8Of9VAm0mTP5Z71AxTSaS/ySt9xeITxfZSnxeWv2e4ZZ/lwWZZd4U7vvRMC+iHWekRB
+        D8lXboBdt9q4D1EGU8DTO2Tfngk2e9XLr5uwcUSQUNA==
+X-Received: by 2002:a17:907:9056:: with SMTP id az22mr8012873ejc.107.1637056391036;
+        Tue, 16 Nov 2021 01:53:11 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzrJT7mP/4j4szg3ywz8prXacs4YZ5ZqVekOM7AHJOO0O7H4hGmwILwNBcGPVNTpuNL27qf+A==
+X-Received: by 2002:a17:907:9056:: with SMTP id az22mr8012841ejc.107.1637056390838;
+        Tue, 16 Nov 2021 01:53:10 -0800 (PST)
+Received: from localhost ([2001:67c:1560:8007::aac:c1b6])
+        by smtp.gmail.com with ESMTPSA id hd15sm8280157ejc.69.2021.11.16.01.53.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 01:53:10 -0800 (PST)
+Date:   Tue, 16 Nov 2021 10:53:09 +0100
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Wolfram Sang <wsa@kernel.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Phoenix Huang <phoenix@emc.com.tw>, jingle.wu@emc.com.tw,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH] Input: elantech - Fix stack out of bound access
+ in elantech_change_report_id()
+Message-ID: <YZN/hXipFP7Ipb7G@arighi-desktop>
+References: <20211116072223.8746-1-andrea.righi@canonical.com>
+ <YZNsoj7Onbxr68OQ@ninjato>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJuCfpEJuVyRfjEE-NTsVkdCZyd6P09gHu7c+tbZcipk+73rLA@mail.gmail.com>
+In-Reply-To: <YZNsoj7Onbxr68OQ@ninjato>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 15-11-21 10:59:20, Suren Baghdasaryan wrote:
-[...]
-> Hi Andrew,
-> I haven't seen any feedback on my patchset for some time now. I think
-> I addressed all the questions and comments (please correct me if I
-> missed anything).
+On Tue, Nov 16, 2021 at 09:32:34AM +0100, Wolfram Sang wrote:
+> On Tue, Nov 16, 2021 at 08:22:23AM +0100, Andrea Righi wrote:
+> > The array param[] in elantech_change_report_id() must be at least 3
+> > bytes, because elantech_read_reg_params() is calling ps2_command() with
+> > PSMOUSE_CMD_GETINFO, that is going to access 3 bytes from param[], but
+> > it's defined in the stack as an array of 2 bytes, therefore we have a
+> > potential stack out-of-bounds access here, also confirmed by KASAN:
+> 
+> I think a comment in the code why the array size is 3 when only 2 values
+> are defined would be helpful. Like a short summary of the above.
+> 
 
-I believe the strings vs. ids have been mostly hand waved away. The
-biggest argument for the former was convenience for developers to have
-something human readable. There was no actual proposal about the naming
-convention so we are relying on some unwritten rules or knowledge of the
-code to be debugged to make human readable string human understandable
-ones. I believe this has never been properly resolved except for - this
-has been used in Android and working just fine. I am not convinced TBH.
+Good idea, I like it, I'll send a v2 adding such comment.
 
-So in the end we are adding a user interface that brings a runtime and
-resource overhead that will be hard to change in the future. Reference
-counting handles a part of that and that is nice but ids simply do not
-have any of that.
-
-> Can it be accepted as is or is there something I should address
-> further?
-
-Is the above reason to nack it? No, I do not think so. I just do not
-feel like I want to ack it either. Concerns have been expressed and I
-have to say that I would like a minimalistic approach much more. Also
-extending ids into string is always possible. The other way around is
-not possible.
-
--- 
-Michal Hocko
-SUSE Labs
+Thanks!
+-Andrea
