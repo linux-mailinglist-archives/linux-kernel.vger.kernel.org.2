@@ -2,189 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6C6452B80
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 08:22:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1740452B84
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 08:24:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbhKPHZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 02:25:47 -0500
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:34662
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229991AbhKPHZa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 02:25:30 -0500
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id BD7C53F19A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:22:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1637047346;
-        bh=ID3WIsgZl9SDidK2mmKZ24iZuE1jseo2tZCCh1re1Qk=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=e+zIWrQRiLPoSJ9n4BlQxK9L72LSJrqSzVJiRiJhXhGSpYYv4ORbXnOftuP5rMpCi
-         CGuydQ/S0LT5YXv3Bh9iuCkS/TfbdSwNXJbI3hotLHZJ8Ek5ZupjMyYJJ1lxgHXz+A
-         uXYGv8p3f4rGMCPfVGX1EXWJgSlfFJUmWk+BVX/fydajhPEG174cQVl8sUxvG0xw8Q
-         4d8u85F0Du+26F/xUBDp5dPk+tvCqzAN4bHopXC35OwlC/xQY8CPxXpjt0sjalOMv+
-         KWt8fWkp2SAkF3yROKhn7KWOx1uyBtHEbkOybNknh7yJCZfYoZ/Xjt0qsLVrjxNfs+
-         12cseu4UkIbbA==
-Received: by mail-ed1-f72.google.com with SMTP id g3-20020a056402424300b003e2981e1edbso16439149edb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 23:22:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ID3WIsgZl9SDidK2mmKZ24iZuE1jseo2tZCCh1re1Qk=;
-        b=OODCc2y1Kkv5UM2ByoocxpX2JKkdVqNuzYiYB3J4Q8mLFyPXGLiqb1CvIhFeOvEeL7
-         y2lspt3djvGBANr6xT54Qi0VneS9Khx0X0LZ5+DSyqYEccb1mGjyhdtZl3o11fSBaymP
-         KXi2Q1ifq/RgUfm1Y0UVePalR6XDMtUyqDqsbMQZk+SB8fS7dun5TSfbiKl2iOT3Rosb
-         +JCVeMIyv40KFAZXUPLTO0OnGuxtfmm7g+7LSlpr7+cNtC2e1RL4odLACXecO2UtYT5I
-         6Uk0DfCImR7K4yVJ8nvopLWQ65ulVMxanUyIOgZzPHay/jUWaJA2TZ/hP6CLh+PaZQpW
-         emJA==
-X-Gm-Message-State: AOAM530FFeIzHA0MLAO6LUtMoPFwq/Fs4T7r1tUY4cul1Yrw00JsIpNv
-        vQsVYHSbLFV7poKf0r/hCMcMvmJ5ykqRMBBklFXbcC7IauWAh8oPEzXR7WoN8ryKVAUEosX/Dk1
-        Sax46tZ9PoL2ea48LXxtlGT/22gQSm/5RmBmIMy259A==
-X-Received: by 2002:a05:6402:51cf:: with SMTP id r15mr7201991edd.385.1637047346358;
-        Mon, 15 Nov 2021 23:22:26 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxwi/yw3HU2W0dpyGW2EVXWzMiKTzntrWr8o/ghsFIkb446UplTOif+7ApQSLGjFfcP/1Ztug==
-X-Received: by 2002:a05:6402:51cf:: with SMTP id r15mr7201950edd.385.1637047346070;
-        Mon, 15 Nov 2021 23:22:26 -0800 (PST)
-Received: from arighi-desktop.homenet.telecomitalia.it ([2001:67c:1560:8007::aac:c1b6])
-        by smtp.gmail.com with ESMTPSA id m16sm79776edd.58.2021.11.15.23.22.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 23:22:25 -0800 (PST)
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Phoenix Huang <phoenix@emc.com.tw>, Wolfram Sang <wsa@kernel.org>,
-        jingle.wu@emc.com.tw,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH] Input: elantech - Fix stack out of bound access in elantech_change_report_id()
-Date:   Tue, 16 Nov 2021 08:22:23 +0100
-Message-Id: <20211116072223.8746-1-andrea.righi@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        id S230252AbhKPH1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 02:27:05 -0500
+Received: from mail-co1nam11on2075.outbound.protection.outlook.com ([40.107.220.75]:25281
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229991AbhKPH0H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 02:26:07 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UooMVD27SXWvAy6f1CL0Yhb3QoSQ6lRAb7RIvr63koNdnwLPyY/mFtN01CXLNIPyHO3QceLSnlzF8kq91hnHPre5d3RBwcNwfejhy15ZBHA08ltT3P2PkfU2yuszY+RM6eQRFjZ1O4RIufP13Sy495S+CNaVoAf5z+vTg2ueA57QG9ioSjMxqEACTYHVYYVzYn1ulLll8I0vHGFHZBv/eESJrtnJZ3p/1h9lXNSoQVZa7Kd46j2QTyMRVgKcgwXLQgrMbDqJ5LfX3hnQsXpac6f4UkGs2Y+hTnuLfUALx+cT/RWhEjBIIFEQSKnWx40+ymkxHWbTJXwIHj/fNmAmtA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jqiC2ULqezkOWSiKcEHOWgDdgDpZSEjOeDuEA23VbRI=;
+ b=WqD1fLTunLICcUy2vzb6KzoY6FKD8yViarUnz8yfounGmWddo1TRxpM0uWNP4N2P7aTU9xxTNiNfxsqOBiUSydUeEtuZ3VlWDZwHDivPv6CDpgVV6qUfFE9zUxNuv3vizN+k2OWJCynb9q/ZyqVOFvxKLWSZIbrWWe069JYxdTIC5lUDiE3RfQ5iBqKqqj2GBGd1AFvBOxnQpUdudR5aOUHK73TKgLNTjIpvAkcx0NzTYu95OOhlVya8sMlJmOUquI/nr+HtjMXP8w60SUe19tp+3Q7ZRZ4Fs5KH9Sd3OWZTXLqbfMzWwd9yV5AMzIP3V7rW3SGEjzQWLb9HtUbi4A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jqiC2ULqezkOWSiKcEHOWgDdgDpZSEjOeDuEA23VbRI=;
+ b=amvU7aJ95Axp6Y7rvvmrTFeMSN7euO3LiN1aS+0SYYEvolaTxlbsCXjVNOMX90ARUxFCWkKq2MSdj+yj0wfhg9G1Ug480AJrYIou0EVA4xwHGSckdaCSuQ5mm9WE2cYHT0G5SwTYovx1uYh1PblEV3UE7nCj9BWxoD+vzNe5YWc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MWHPR1201MB0192.namprd12.prod.outlook.com
+ (2603:10b6:301:5a::14) by MW3PR12MB4412.namprd12.prod.outlook.com
+ (2603:10b6:303:58::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Tue, 16 Nov
+ 2021 07:23:04 +0000
+Received: from MWHPR1201MB0192.namprd12.prod.outlook.com
+ ([fe80::2d02:26e7:a2d0:3769]) by MWHPR1201MB0192.namprd12.prod.outlook.com
+ ([fe80::2d02:26e7:a2d0:3769%5]) with mapi id 15.20.4690.027; Tue, 16 Nov 2021
+ 07:23:04 +0000
+Subject: Re: [PATCH] drm/radeon:WARNING opportunity for max()
+To:     zhaoxiao <zhaoxiao@uniontech.com>, airlied@linux.ie,
+        daniel@ffwll.ch
+Cc:     alexander.deucher@amd.com, Xinhui.Pan@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20211116055031.31621-1-zhaoxiao@uniontech.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <3dafeeed-dfab-a7c0-315d-62f74f90d839@amd.com>
+Date:   Tue, 16 Nov 2021 08:22:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <20211116055031.31621-1-zhaoxiao@uniontech.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: AM4PR0302CA0031.eurprd03.prod.outlook.com
+ (2603:10a6:205:2::44) To MWHPR1201MB0192.namprd12.prod.outlook.com
+ (2603:10b6:301:5a::14)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from [192.168.178.21] (87.176.183.123) by AM4PR0302CA0031.eurprd03.prod.outlook.com (2603:10a6:205:2::44) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.19 via Frontend Transport; Tue, 16 Nov 2021 07:23:02 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 78ec027e-a1a2-4de3-1bdd-08d9a8d1ee15
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4412:
+X-Microsoft-Antispam-PRVS: <MW3PR12MB4412840EB208270EBF6C3A7983999@MW3PR12MB4412.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NlZEK0ZhPal40gt5nrzas0uBr6vdvHw10lpxzVWo3aZ02pxz1dLWNVnALHVT4wuqD93Omy4y+ef6L+OU6hY2iB5ydEnKVJOa1EYllZ8cTjcW/i9EGHSpWmW98ynNOzEw4FgbQT02yBGTbA0egqmJt4v4Ny0Ts0qv7iVPEBdaTstcn2/qsgbr+zODGSLPVKGu1ksdOa7Sw7lilmzLFIIIFD2TwpbRCdfaOo4B4kTjeQYxnkJEFBJWj9U/Bu2b/D98SuuQACprXDRq9uTeU2HAClp/TelXmMHH3BUKLRWEoI+4b+BFRgZItwuprKHgoegHS6HxORpfYVcpewy15l1XmZuyGclsaJXQzSGmMpnVlw9RpD2DdX5JEIPD2j4CqOJ7soT+mGa8SoyDFM4u+0kqWgojO9MALQS/NcuAlySfuwbHqX2lo1YQiFRRaciOaF2XVyX4NaozGsU+ov0E/ILGTcsb2SRiqz9dDaMonlHCtQyY6sjL7LQaDOpBwODVo21PZXY7sbl3TIjrdynNrRjeOm2JmYkB9jLS7+d0PS+mdkU/wDDoH4YA9Qvda+x7cZ3qtGUS4/uGFYaDxQJh15djJzCktKjKN8kUwZAtx/jOtAdfY1DTniZdtSEkZe9bpc+UrPUQPqdl1YDqn0tQu264RTrMtxQcOGM5PMDhiC+75cYvUkHZ1cgc96EgoFFJorxeZs0gG1PXQcyrctV4i0gwIJYGF7FUjF4/6XckxFMZdYQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB0192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(16576012)(8936002)(6486002)(86362001)(4326008)(83380400001)(31696002)(8676002)(956004)(2616005)(38100700002)(36756003)(31686004)(26005)(66476007)(66556008)(508600001)(6666004)(2906002)(5660300002)(66946007)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NVdlOXJuVTU5NTB3QjFzSTI2Nkt3TWtvc25wSmNTNmJCUXFGQ0pwNCtrY3Vs?=
+ =?utf-8?B?S0ZVOGV2b3pkd2FLYzQ4MlZoUFJsUG4zSllTL0E0MlQyMEVuQmZHWHR1dnlD?=
+ =?utf-8?B?ak55WFU5QTdseWIxSmkzdnJOSWJON0EvVEx2MnZ3dUZqZzUrYWhEK1JFTWtY?=
+ =?utf-8?B?UDEvZDZkNTJlemx4NGFWZkszUjBieWdjSGFSb3N5RDU3UVZQRGU0blJJSUFV?=
+ =?utf-8?B?UlRKdG0zVHFzWlNXdVJ0R0VlcnhrYnd0QkVVYmx2QUgyWWg4a2o3SlBIQWRX?=
+ =?utf-8?B?T1dQUnhuL2NveC9MUHhjcGNNbnBkellHY2VpdUpzRUtmaVY3aVNlZnlEY3RR?=
+ =?utf-8?B?ZlRhTHpLYm9yQ1ZTTmdRakFKa3dpZllYR3BOZmtIMGVreVQxYzNWNExxK0p1?=
+ =?utf-8?B?WjN1cXY4bnNLaFFsL2txSkljNDYvcVA4YlRCc3E0VzdHNXJ0am1Mc1YxSEZE?=
+ =?utf-8?B?RlJuNUNKNmN5cy81WjM2UXZkdlNxUzdpR0Vja080U2J6Z0hyVXNncEZ0ZEhX?=
+ =?utf-8?B?TklHNy9IUGx5TG5IS1RYYzNTWjdjdGRCYnIra2lQS01mMXFsUnp4VHp0Nnp3?=
+ =?utf-8?B?dzZITWpZc2tqVldkZGd0YVRnZnJudHFrSkliQVNENEJ0V2w5NU12bG1nSkVj?=
+ =?utf-8?B?dUszaHFGekhkT2llRWJJOTRtaVlNaEJML2tnMi81N3ZMY09pZEF0TmI4VmMy?=
+ =?utf-8?B?cVIwY1FIaVNnQkRoS2JzVWk3ckhrTE5JODREaUxlMkY0Y21rM0NpZHllbkIx?=
+ =?utf-8?B?MWNyd2JENW1rUU9EQ1B5Y1JHR1FlTWVmMG1JSTI3Yk80cjYrVFkrRC9FZkdu?=
+ =?utf-8?B?dUpITVM4VEcwVVZjb3E4QmlLTURsL0IvM3FVcXc3T0FCckt1TGVUaklOWHNz?=
+ =?utf-8?B?cWV3NG43dy9BcGJFYVVmV2p5ajJxd1ZaMUJPNzdua3pFOTgxaWlpSG1xcGs3?=
+ =?utf-8?B?SXNOL283WXliWjdseXE0RGUvcUw5OWl2bjBMMXh5clVFTUR6UG9jSXdTSFNv?=
+ =?utf-8?B?MVJyM1owb004eFFPTjVoNm5EcjF5OGwxY3lSSytpK2dhTThmYko5VnN1WHRM?=
+ =?utf-8?B?VW96am9sTEo3dHNKeUhrNlJ1M0Y4Wk9kTUxEMG9nS2dKRGVqVG15dUdlWGZh?=
+ =?utf-8?B?SjZ1S0dSUWF4U3JYWDdpNVB2ODU3YjNiTmdCN3Iva0xqRWhJUythRS9ydTBh?=
+ =?utf-8?B?ZGZUcTQ1a1FiVGo0bzRocE5uNVJIZTRNUU0xekU0VjRNQTJaRnBNdUdQVmQ0?=
+ =?utf-8?B?N2NVUnF1TzV2cWYrSldSMFhzbE9sTTV5WTNwTTE1dDVGQ2ZkQ2s3LzMxQ1h2?=
+ =?utf-8?B?Vk1EVTJzcGNOTmEyK3BSellsQ0NQVnQwUktKdWVaMVJycTZhd3RldXp6SVRn?=
+ =?utf-8?B?RHBTMEluenQ0YlNhZHU4NjY3MHN5VzY3MzFQWkF6U2RLODQvNVlxUExkUnFn?=
+ =?utf-8?B?WDA3U29YNXJSUndxb1E3WHpJbS96b0VBN0JENnlWdENRL2o4ams0L3gyR1Bq?=
+ =?utf-8?B?MTd3elRFVS83UDdQWEduMndVWFJOMzI0eExGWUFWZGNtbTZ3M0VDdEVGOEw0?=
+ =?utf-8?B?Y0RzL3kyelFobTBlUDRlTGhEVnZsUzErckU5NCt2dlNNbXBkWVhTQ3hheDFp?=
+ =?utf-8?B?cW9rMnMweDZnKzQ1R1dJZ0hmbEE1aEFjSzdzQzUwSFlPTUxUTlpWMmF1MEd6?=
+ =?utf-8?B?ZFlyUXRmREJtRE02VXVsUjFYa2xYMGJZR05iWEZ3VWQwYnQ4UTJtYlQ2czE2?=
+ =?utf-8?B?UEl2eW9rdklvaU4vV2dodFpLS2xjL1FaeDh1aWxCN25MSzR1bXJTMXlLNzNK?=
+ =?utf-8?B?NkE0b3RlVTR5bWE5MGNNaUZGd1dFdWFBcUF3VTNNN3lLRkZ1YXJaRFNLKzcr?=
+ =?utf-8?B?L2M3SkFTbm5LUUpEaWIzeno0eG94S2djYmFkYi9TS0hZb25IM3pLUmJMNWlE?=
+ =?utf-8?B?UFVJUGw2dkNndXBNcFpGbDlPbDNZOUFSdUczTmxjRWJaUElBa1JwUXNHdlA0?=
+ =?utf-8?B?TG5Ia1FOMWU0aDRVeUE5L2dPQUV5Y1dMQ2U3ZWdVTmxjTXhKcUdCNFFaekJI?=
+ =?utf-8?B?b3VqYUhmWVY0NHdaQnh2akhsNHBFZGo5M2kvQ05MR2lxT2RGcWlwc1pvWG83?=
+ =?utf-8?Q?W3FA=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78ec027e-a1a2-4de3-1bdd-08d9a8d1ee15
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB0192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 07:23:04.6937
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GD5Q0OXxhfOY3fiKFfqNMmiXMHoTyhA7ALkZRqVN9rs4t5k1TSpl7PCoijP1HV2U
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4412
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The array param[] in elantech_change_report_id() must be at least 3
-bytes, because elantech_read_reg_params() is calling ps2_command() with
-PSMOUSE_CMD_GETINFO, that is going to access 3 bytes from param[], but
-it's defined in the stack as an array of 2 bytes, therefore we have a
-potential stack out-of-bounds access here, also confirmed by KASAN:
+Am 16.11.21 um 06:50 schrieb zhaoxiao:
+> Fix following coccicheck warning:
+> drivers/gpu/drm/radeon/r100.c:3450:26-27: WARNING opportunity for max()
+> drivers/gpu/drm/radeon/r100.c:2812:23-24: WARNING opportunity for max()
+>
+> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
 
-[    6.512374] BUG: KASAN: stack-out-of-bounds in __ps2_command+0x372/0x7e0
-[    6.512397] Read of size 1 at addr ffff8881024d77c2 by task kworker/2:1/118
+In general feel free to add my Acked-by, but I'm not sure if we want 
+such cleanups in a driver which is only in maintenance mode.
 
-[    6.512416] CPU: 2 PID: 118 Comm: kworker/2:1 Not tainted 5.13.0-22-generic #22+arighi20211110
-[    6.512428] Hardware name: LENOVO 20T8000QGE/20T8000QGE, BIOS R1AET32W (1.08 ) 08/14/2020
-[    6.512436] Workqueue: events_long serio_handle_event
-[    6.512453] Call Trace:
-[    6.512462]  show_stack+0x52/0x58
-[    6.512474]  dump_stack+0xa1/0xd3
-[    6.512487]  print_address_description.constprop.0+0x1d/0x140
-[    6.512502]  ? __ps2_command+0x372/0x7e0
-[    6.512516]  __kasan_report.cold+0x7d/0x112
-[    6.512527]  ? _raw_write_lock_irq+0x20/0xd0
-[    6.512539]  ? __ps2_command+0x372/0x7e0
-[    6.512552]  kasan_report+0x3c/0x50
-[    6.512564]  __asan_load1+0x6a/0x70
-[    6.512575]  __ps2_command+0x372/0x7e0
-[    6.512589]  ? ps2_drain+0x240/0x240
-[    6.512601]  ? dev_printk_emit+0xa2/0xd3
-[    6.512612]  ? dev_vprintk_emit+0xc5/0xc5
-[    6.512621]  ? __kasan_check_write+0x14/0x20
-[    6.512634]  ? mutex_lock+0x8f/0xe0
-[    6.512643]  ? __mutex_lock_slowpath+0x20/0x20
-[    6.512655]  ps2_command+0x52/0x90
-[    6.512670]  elantech_ps2_command+0x4f/0xc0 [psmouse]
-[    6.512734]  elantech_change_report_id+0x1e6/0x256 [psmouse]
-[    6.512799]  ? elantech_report_trackpoint.constprop.0.cold+0xd/0xd [psmouse]
-[    6.512863]  ? ps2_command+0x7f/0x90
-[    6.512877]  elantech_query_info.cold+0x6bd/0x9ed [psmouse]
-[    6.512943]  ? elantech_setup_ps2+0x460/0x460 [psmouse]
-[    6.513005]  ? psmouse_reset+0x69/0xb0 [psmouse]
-[    6.513064]  ? psmouse_attr_set_helper+0x2a0/0x2a0 [psmouse]
-[    6.513122]  ? phys_pmd_init+0x30e/0x521
-[    6.513137]  elantech_init+0x8a/0x200 [psmouse]
-[    6.513200]  ? elantech_init_ps2+0xf0/0xf0 [psmouse]
-[    6.513249]  ? elantech_query_info+0x440/0x440 [psmouse]
-[    6.513296]  ? synaptics_send_cmd+0x60/0x60 [psmouse]
-[    6.513342]  ? elantech_query_info+0x440/0x440 [psmouse]
-[    6.513388]  ? psmouse_try_protocol+0x11e/0x170 [psmouse]
-[    6.513432]  psmouse_extensions+0x65d/0x6e0 [psmouse]
-[    6.513476]  ? psmouse_try_protocol+0x170/0x170 [psmouse]
-[    6.513519]  ? mutex_unlock+0x22/0x40
-[    6.513526]  ? ps2_command+0x7f/0x90
-[    6.513536]  ? psmouse_probe+0xa3/0xf0 [psmouse]
-[    6.513580]  psmouse_switch_protocol+0x27d/0x2e0 [psmouse]
-[    6.513624]  psmouse_connect+0x272/0x530 [psmouse]
-[    6.513669]  serio_driver_probe+0x55/0x70
-[    6.513679]  really_probe+0x190/0x720
-[    6.513689]  driver_probe_device+0x160/0x1f0
-[    6.513697]  device_driver_attach+0x119/0x130
-[    6.513705]  ? device_driver_attach+0x130/0x130
-[    6.513713]  __driver_attach+0xe7/0x1a0
-[    6.513720]  ? device_driver_attach+0x130/0x130
-[    6.513728]  bus_for_each_dev+0xfb/0x150
-[    6.513738]  ? subsys_dev_iter_exit+0x10/0x10
-[    6.513748]  ? _raw_write_unlock_bh+0x30/0x30
-[    6.513757]  driver_attach+0x2d/0x40
-[    6.513764]  serio_handle_event+0x199/0x3d0
-[    6.513775]  process_one_work+0x471/0x740
-[    6.513785]  worker_thread+0x2d2/0x790
-[    6.513794]  ? process_one_work+0x740/0x740
-[    6.513802]  kthread+0x1b4/0x1e0
-[    6.513809]  ? set_kthread_struct+0x80/0x80
-[    6.513816]  ret_from_fork+0x22/0x30
+If you do this as part of a general and automated cleanup then it is 
+probably ok.
 
-[    6.513832] The buggy address belongs to the page:
-[    6.513838] page:00000000bc35e189 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1024d7
-[    6.513847] flags: 0x17ffffc0000000(node=0|zone=2|lastcpupid=0x1fffff)
-[    6.513860] raw: 0017ffffc0000000 dead000000000100 dead000000000122 0000000000000000
-[    6.513867] raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-[    6.513872] page dumped because: kasan: bad access detected
+Regards,
+Christian.
 
-[    6.513879] addr ffff8881024d77c2 is located in stack of task kworker/2:1/118 at offset 34 in frame:
-[    6.513887]  elantech_change_report_id+0x0/0x256 [psmouse]
-
-[    6.513941] this frame has 1 object:
-[    6.513947]  [32, 34) 'param'
-
-[    6.513956] Memory state around the buggy address:
-[    6.513962]  ffff8881024d7680: f2 f2 f2 f2 f2 00 00 f3 f3 00 00 00 00 00 00 00
-[    6.513969]  ffff8881024d7700: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[    6.513976] >ffff8881024d7780: 00 00 00 00 f1 f1 f1 f1 02 f3 f3 f3 00 00 00 00
-[    6.513982]                                            ^
-[    6.513988]  ffff8881024d7800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[    6.513995]  ffff8881024d7880: 00 f1 f1 f1 f1 03 f2 03 f2 03 f3 f3 f3 00 00 00
-[    6.514000] ==================================================================
-
-Define param[] in elantech_change_report_id() as an array of 3 bytes to
-prevent the out-of-bounds access in the stack.
-
-Fixes: e4c9062717fe ("Input: elantech - fix protocol errors for some trackpoints in SMBus mode")
-BugLink: https://bugs.launchpad.net/bugs/1945590
-Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
----
- drivers/input/mouse/elantech.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/input/mouse/elantech.c b/drivers/input/mouse/elantech.c
-index 2d0bc029619f..172a3c5db58f 100644
---- a/drivers/input/mouse/elantech.c
-+++ b/drivers/input/mouse/elantech.c
-@@ -1575,7 +1575,7 @@ static const struct dmi_system_id no_hw_res_dmi_table[] = {
-  */
- static int elantech_change_report_id(struct psmouse *psmouse)
- {
--	unsigned char param[2] = { 0x10, 0x03 };
-+	unsigned char param[3] = { 0x10, 0x03 };
- 
- 	if (elantech_write_reg_params(psmouse, 0x7, param) ||
- 	    elantech_read_reg_params(psmouse, 0x7, param) ||
--- 
-2.32.0
+> ---
+>   drivers/gpu/drm/radeon/r100.c | 10 ++--------
+>   1 file changed, 2 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/r100.c b/drivers/gpu/drm/radeon/r100.c
+> index 2dd85ba1faa2..c65ee6f44af2 100644
+> --- a/drivers/gpu/drm/radeon/r100.c
+> +++ b/drivers/gpu/drm/radeon/r100.c
+> @@ -2809,10 +2809,7 @@ void r100_vram_init_sizes(struct radeon_device *rdev)
+>   		if (rdev->mc.aper_size > config_aper_size)
+>   			config_aper_size = rdev->mc.aper_size;
+>   
+> -		if (config_aper_size > rdev->mc.real_vram_size)
+> -			rdev->mc.mc_vram_size = config_aper_size;
+> -		else
+> -			rdev->mc.mc_vram_size = rdev->mc.real_vram_size;
+> +		rdev->mc.mc_vram_size = max(config_aper_size, rdev->mc.real_vram_size);
+>   	}
+>   }
+>   
+> @@ -3447,10 +3444,7 @@ void r100_bandwidth_update(struct radeon_device *rdev)
+>   	mc_latency_mclk.full += disp_latency_overhead.full + cur_latency_mclk.full;
+>   	mc_latency_sclk.full += disp_latency_overhead.full + cur_latency_sclk.full;
+>   
+> -	if (mc_latency_mclk.full > mc_latency_sclk.full)
+> -		disp_latency.full = mc_latency_mclk.full;
+> -	else
+> -		disp_latency.full = mc_latency_sclk.full;
+> +	disp_latency.full = max(mc_latency_mclk.full, mc_latency_sclk.full);
+>   
+>   	/* setup Max GRPH_STOP_REQ default value */
+>   	if (ASIC_IS_RV100(rdev))
 
