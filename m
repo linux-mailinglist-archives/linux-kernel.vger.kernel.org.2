@@ -2,82 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C4A452D45
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B530E452D21
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:49:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232637AbhKPI6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 03:58:04 -0500
-Received: from elvis.franken.de ([193.175.24.41]:52944 "EHLO elvis.franken.de"
+        id S232488AbhKPIwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 03:52:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232502AbhKPI55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 03:57:57 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mmuF0-0006gG-02; Tue, 16 Nov 2021 09:54:58 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 0657CC2D9C; Tue, 16 Nov 2021 09:46:33 +0100 (CET)
-Date:   Tue, 16 Nov 2021 09:46:33 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        linux-mips@vger.kernel.org, John Crispin <john@phrozen.org>,
-        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH] mips: lantiq: add support for clk_get_parent()
-Message-ID: <20211116084633.GC21168@alpha.franken.de>
-References: <20211115012051.16302-1-rdunlap@infradead.org>
+        id S232161AbhKPIvu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 03:51:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CEAA561101;
+        Tue, 16 Nov 2021 08:48:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637052533;
+        bh=egbGIYFi4v7cS2x4F9uQ5GOy67VTqb9Lor5GYwZqQg0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RIT3UCz6MSHfBlhXrQ1JxWe6CFiGH/GMV0/KGuFuM9tIeE+clcqeCI+sZmwgKr0uL
+         oYmGz2WtAodo028GvwCXbXHmOuZ/atP2MNrAEoG/GIwX6ML2thkSXXyAg1cGvCKMlu
+         WxpKH1vT5dlBTuwszq1poSFjXpdoLai39CW0Ljg8=
+Date:   Tue, 16 Nov 2021 09:48:51 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Vladis Dronov <vdronov@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: Re: [PATCH 5.15 000/917] 5.15.3-rc1 review
+Message-ID: <YZNwcylQcKVlZDlO@kroah.com>
+References: <20211115165428.722074685@linuxfoundation.org>
+ <CA+G9fYtFOnKQ4=3-4rUTfVM-fPno1KyTga1ZAFA2OoqNvcnAUg@mail.gmail.com>
+ <CA+G9fYuF1F-9TAwgR9ik_qjFqQvp324FJwFJbYForA_iRexZjg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211115012051.16302-1-rdunlap@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CA+G9fYuF1F-9TAwgR9ik_qjFqQvp324FJwFJbYForA_iRexZjg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 14, 2021 at 05:20:51PM -0800, Randy Dunlap wrote:
-> Provide a simple implementation of clk_get_parent() in the
-> lantiq subarch so that callers of it will build without errors.
+On Tue, Nov 16, 2021 at 02:09:44PM +0530, Naresh Kamboju wrote:
+> On Tue, 16 Nov 2021 at 12:06, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> >
+> > On Tue, 16 Nov 2021 at 00:03, Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > This is the start of the stable review cycle for the 5.15.3 release.
+> > > There are 917 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > >
+> > > Responses should be made by Wed, 17 Nov 2021 16:52:23 +0000.
+> > > Anything received after that time might be too late.
+> > >
+> > > The whole patch series can be found in one patch at:
+> > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.3-rc1.gz
+> > > or in the git tree and branch at:
+> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> > > and the diffstat can be found below.
+> > >
+> > > thanks,
+> > >
+> > > greg k-h
+> >
+> >
 > 
-> Fixes this build error:
-> ERROR: modpost: "clk_get_parent" [drivers/iio/adc/ingenic-adc.ko] undefined!
+> Regression found on arm64 juno-r2 / qemu.
+> Following kernel crash reported on stable-rc 5.15.
 > 
-> Fixes: 171bb2f19ed6 ("MIPS: Lantiq: Add initial support for Lantiq SoCs")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Suggested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> Cc: linux-mips@vger.kernel.org
-> Cc: John Crispin <john@phrozen.org>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: linux-iio@vger.kernel.org
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-> ---
->  arch/mips/lantiq/clk.c |    6 ++++++
->  1 file changed, 6 insertions(+)
+> Anders bisected this kernel crash and found the first bad commit,
 > 
-> --- linux-next-20211112.orig/arch/mips/lantiq/clk.c
-> +++ linux-next-20211112/arch/mips/lantiq/clk.c
-> @@ -158,6 +158,12 @@ void clk_deactivate(struct clk *clk)
->  }
->  EXPORT_SYMBOL(clk_deactivate);
->  
-> +struct clk *clk_get_parent(struct clk *clk)
-> +{
-> +	return NULL;
-> +}
-> +EXPORT_SYMBOL(clk_get_parent);
-> +
->  static inline u32 get_counter_resolution(void)
->  {
->  	u32 res;
+> Herbert Xu <herbert@gondor.apana.org.au>
+>    crypto: api - Fix built-in testing dependency failures
 
-applied to mips-fixes.
+Is this also an issue on 5.16-rc1?
 
-Thomas.
+thanks,
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+greg k-h
