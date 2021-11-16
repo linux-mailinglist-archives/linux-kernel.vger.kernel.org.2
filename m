@@ -2,102 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9864529FC
+	by mail.lfdr.de (Postfix) with ESMTP id D0F184529FE
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:46:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236312AbhKPFtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 00:49:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60178 "EHLO
+        id S236345AbhKPFtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 00:49:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236357AbhKPFsV (ORCPT
+        with ESMTP id S236431AbhKPFs2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 00:48:21 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC636C110F00;
-        Mon, 15 Nov 2021 19:43:06 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id r23so518240pgu.13;
-        Mon, 15 Nov 2021 19:43:06 -0800 (PST)
+        Tue, 16 Nov 2021 00:48:28 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD21C06BA94;
+        Mon, 15 Nov 2021 19:54:07 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so1631721pjb.4;
+        Mon, 15 Nov 2021 19:54:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
+        h=message-id:date:from:in-reply-to:subject:to:cc
          :content-transfer-encoding;
-        bh=aJdSZ6OMshOYDRFetJsmDqIzbFQ+ncYaLLKX863U+rQ=;
-        b=B/CbNxsiIl7LssZg4EyhZONZdhuiglG3Ns6FHvUEvyxHktTtEQpWk3ItIVlUOJy+28
-         5+CWyXihGpWO2qhfaLmKrstargsJXGdSFWmswJrUIhqwXnVyFuaj4ioAH7i6CTtcrAfo
-         Pd7X1oAsXA/esTme3MVoMG8pLw64zVvNtOo6ZvhetUlozk6dOEmNC0Ek262+QuKFiaXE
-         EyxPB1NWBLWeuRsfqi3crzkG0yic02KHjbXMv5OSD1yOTZCtXBFNphKt6Ldxl0dsbyog
-         Fd73Kk34nsdeJhnG459ynTlx97YduFFXOvcPWMVOVk9turZtbHukLWoubstS1QSUl0gq
-         uVFA==
+        bh=uXbfw/izal149Gz5yqwKVpenNb0MrLQ7PVdG9ilARhI=;
+        b=Lu/wvcRI5AXNv6tsBujJhaL/4L2p9/BLilOlq2zJyp5Gst02OMemQYFNKJn5C+AoyF
+         iiJsLcczKZHir7jVHsiZmw/EQLNT3PXaes8OeX5ox2S9s0T0HGV1bZoTYvbl0XfwViDg
+         p+9BwpIpDnQI2WH38MpDOpZun3GNaVY/xXZ3fVXjv3D6U7Gwe4yOfoBJ5MygWnRHMjjf
+         8QYyewUgmhYqzsL4NuH3d6E3a2XxKTxrxY9zIHTcR1ljNw/Lo2WF/qp7ZEyRyPIgrN7Q
+         yZH9v/S0CzTB79mVJ548ElH3drHEjTdkxlFKgnMFqCGdadjUrx9YXSCz7ljUihr6jEpt
+         6j5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
          :content-transfer-encoding;
-        bh=aJdSZ6OMshOYDRFetJsmDqIzbFQ+ncYaLLKX863U+rQ=;
-        b=EuVR+9Xo8fbm6jecsWSJyFRzynEubQh2ujdNu6KXv0Xs5UKwwh2BTrkk4hy1ScGYhD
-         1EsIeRkatSclqL/uyBX5EcVY81+gV4W4Pc28d652rZgODj1v+wYfDIgPiT2sXywxY62t
-         VMrF4nxQoVI6XviL1QVvr8mRqvKt2DiWyUsAtpPLTgeBerXtQtktaNYFDC+FANIM6yFu
-         S39/d5obPmz05lzT+MSG0JG4cLHrxd6DX0gRFleEgkHX9o0ejQE+Xh3Tvwn5yGFufor4
-         l7s8UO8utlzXX9i4bkkfht8uRppiD03k36nAlEKIO0CBsI4HFs79H9wWhfulKT7OCBlR
-         MZSw==
-X-Gm-Message-State: AOAM530D/E3525CvNf7/LBc4EyIgGYaJhdJXigdhYOAluCd4B1NhbXIx
-        KDdYP4OCNJc+zc3SSZyzwWw=
-X-Google-Smtp-Source: ABdhPJytN+BCbSo2XoyZL1yfqHBrcw+TjawhXqhoEKScx4RJiH1ISdxQt/lwduHlzaaIdqWLbWSy6w==
-X-Received: by 2002:a63:be4e:: with SMTP id g14mr2895099pgo.194.1637034186344;
-        Mon, 15 Nov 2021 19:43:06 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id q13sm18861701pfj.26.2021.11.15.19.43.03
+        bh=uXbfw/izal149Gz5yqwKVpenNb0MrLQ7PVdG9ilARhI=;
+        b=aM4NJk9Q/H1u8dp/dMm2Xnl1MqY78fQ6FXC1FozT+lmVKZ/DsQM8aeGZs1tb7HO44a
+         dtMtpOyIwln82TSm66dvCYITiN7+A0J+1ouHdrrfWg7nI1COuPeAStlqkh5h+nTArLR7
+         5dZok1xuxM14GZ/RnDx/SZoqf4hdUaSXdmkgZTMK6uymYsYPKsQthy/TCwl6WjCAXY+c
+         3rW6M2YNFHu+rw1d0/J2a7ReE/i7tWqgrSOOJ2xi8+kDQCEHY30NKXl6xFPdnXW/QdOn
+         /vq4mIscojjnJWbSsuonWKFYu0ThQ4Ux3jNu8/jZP1gxx4Ug3xQ5vj0wl/oCFWr0+mJQ
+         itQA==
+X-Gm-Message-State: AOAM5336/XrSYlOQo0OKYdykWQp3XIbE0BxmUxPCrd4HNSlCnbM9ci6w
+        84t8psHZY4VQ2htnk1W03/69Uam80FSqbC9pd4Q=
+X-Google-Smtp-Source: ABdhPJymZx6pXQY24wSlQVstcliQQQBRNaUYIOsBenM2qkd8z5cfw7qK0Un+zHO12V0ANPtye45Meg==
+X-Received: by 2002:a17:90a:b105:: with SMTP id z5mr68883616pjq.64.1637034846642;
+        Mon, 15 Nov 2021 19:54:06 -0800 (PST)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
+        by smtp.gmail.com with ESMTPSA id i67sm16628105pfg.189.2021.11.15.19.54.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 19:43:05 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: chi.minghao@zte.com.cn
-To:     peterz@infradead.org
-Cc:     mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, chiminghao <chi.minghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] tools:perf: Remove Unneeded variable
-Date:   Tue, 16 Nov 2021 03:42:53 +0000
-Message-Id: <20211116034253.154422-1-chi.minghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 15 Nov 2021 19:54:05 -0800 (PST)
+Message-ID: <61932b5d.1c69fb81.d235.1c67@mx.google.com>
+Date:   Mon, 15 Nov 2021 19:54:05 -0800 (PST)
+X-Google-Original-Date: Tue, 16 Nov 2021 03:53:59 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
+Subject: RE: [PATCH 5.14 000/849] 5.14.19-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: chiminghao <chi.minghao@zte.com.cn>
+On Mon, 15 Nov 2021 17:51:23 +0100, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.14.19 release.
+> There are 849 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 17 Nov 2021 16:52:23 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.19-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Fix the following coccicheck review:
-./tools/perf/builtin-trace.c: Remove Unneeded variable
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: chiminghao <chi.minghao@zte.com.cn>
----
- tools/perf/builtin-trace.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-index 624ea12ce5ca..4d5106877fcd 100644
---- a/tools/perf/builtin-trace.c
-+++ b/tools/perf/builtin-trace.c
-@@ -2967,7 +2967,6 @@ static int trace__process_sample(struct perf_tool *tool,
- {
- 	struct trace *trace = container_of(tool, struct trace, tool);
- 	struct thread *thread;
--	int err = 0;
- 
- 	tracepoint_handler handler = evsel->handler;
- 
-@@ -2983,7 +2982,7 @@ static int trace__process_sample(struct perf_tool *tool,
- 	}
- out:
- 	thread__put(thread);
--	return err;
-+	return 0;
- }
- 
- static int trace__record(struct trace *trace, int argc, const char **argv)
--- 
-2.25.1
+5.14.19-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
