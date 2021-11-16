@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FBB1453A03
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 20:18:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F32D8453A16
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 20:21:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239944AbhKPTVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 14:21:06 -0500
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:45880 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239898AbhKPTVB (ORCPT
+        id S239464AbhKPTX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 14:23:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234139AbhKPTX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 14:21:01 -0500
-Received: by mail-oi1-f177.google.com with SMTP id 7so662623oip.12;
-        Tue, 16 Nov 2021 11:18:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TTvFtjePqYy8/bWJfKa4DKuObvTrDIUpJzc+4i5mPdA=;
-        b=ijJOTy66ik9RLn342zlGMn80178UfvFsv1KF4vW/7kLtj2aPZPZs42sAlOU1lMPr5U
-         2xgM4+q2eW7wRrncmf2U19RhlUzXgE/sOeayEAAgJK9DvCvNwbzWIVNqmVBIU5SXbrR4
-         gnVh+6RHxFG3qU+ZE8wmcL17hJIBrDN7EQNpGN1n41XUCZQh9WTMnWeBnUBEi0bkOssq
-         d58v7txzgjfU3CGdVq8YwNCbDCnRqGrZ56am9QUy8Mih+TV6ZRVJfiq8ck8h3FNXTqRn
-         v9ygf5MaGaPnKT7dmTUwEb4mXbJ8C1Hb3ISRZDY3XTUeIIhPrLeR7vsY0nnMTvGI6wm8
-         /DQg==
-X-Gm-Message-State: AOAM530S0RnfRuGjnnPhXpeYfR6SBRQNH32pn8PZzPQ2z1lC78rP4Uxt
-        YZTW46z7YYlXZhWXNrPCwJR5B3eNxRIo6ZpPvNs=
-X-Google-Smtp-Source: ABdhPJxYO+zq1DAU1AR3tPlnB/PzNYlAUBmjsYAsFucF3Qi06b/Ww8KfCP3VOpFHMSVyJ6uYzvInk4F+Gr1Ld0QeoDM=
-X-Received: by 2002:a05:6808:14c2:: with SMTP id f2mr8602093oiw.154.1637090283239;
- Tue, 16 Nov 2021 11:18:03 -0800 (PST)
+        Tue, 16 Nov 2021 14:23:26 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8BA6C061570;
+        Tue, 16 Nov 2021 11:20:28 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637090427;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=x2KWQ8Oh4UH2l0tA32LVkIco7cmGVqFYP1+iJVEZMQk=;
+        b=fFTNJ/UnPNXRkW6L0YNh0bsgC1/GpXsTcYElUEFwvRHb344/6pOAFoyJMtPzJiRxgz0h90
+        g+XMTUiBBiiFz0/2KlBvh7Ev81nylKGFRDYgGkute/LlUXMKX67KNx+fuW43VVeLUND3yG
+        K3Zlam875GEsnIjBTKLtb5c8ZqH4TJzo+3bO6ZFuunmKwvFdBW22YgvNrwm/fIi9s5GPsQ
+        87Oh1HUfewZ6J62EVzd57XAPi2eGqBtgC0dff8vMoMj+69lNndSHUKEpvGf+APHPRT5M91
+        9PhVFNqzpimzpzeQR5lThkfWXjtnokjz82L3Y1PVvwRVOl2ydP3C7kkDnS/K0A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637090427;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=x2KWQ8Oh4UH2l0tA32LVkIco7cmGVqFYP1+iJVEZMQk=;
+        b=Xpl12LGwuHl3RybY25Mwu0A6n2v0Ju5ZQQ70YqAGTVwEzyeR1eo1YZ/lHWYqwDt8YfJ5je
+        uR3oeT3JZVZB7GBg==
+To:     "Liu, Jing2" <jing2.liu@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Jing Liu <jing2.liu@linux.intel.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "Cooper, Andrew" <andrew.cooper3@citrix.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>
+Subject: Re: Thoughts of AMX KVM support based on latest kernel
+In-Reply-To: <BYAPR11MB325685AB8E3DFD245846F854A9939@BYAPR11MB3256.namprd11.prod.outlook.com>
+References: <BYAPR11MB325685AB8E3DFD245846F854A9939@BYAPR11MB3256.namprd11.prod.outlook.com>
+Date:   Tue, 16 Nov 2021 20:20:26 +0100
+Message-ID: <878rxn6h6t.ffs@tglx>
 MIME-Version: 1.0
-References: <20211108111347.3928294-1-arnd@kernel.org>
-In-Reply-To: <20211108111347.3928294-1-arnd@kernel.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 16 Nov 2021 20:17:52 +0100
-Message-ID: <CAJZ5v0iXCRMF+reCUy_OJRuYuxuJ=YOf5r_cozBg-BxZVfRtqQ@mail.gmail.com>
-Subject: Re: [PATCH] thermal/drivers/int340x: limit Kconfig to 64-bit
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 8, 2021 at 12:13 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> 32-bit processors cannot generally access 64-bit MMIO registers
-> atomically, and it is unknown in which order the two halves of
-> this registers would need to be read:
->
-> drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c: In function 'send_mbox_cmd':
-> drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c:79:37: error: implicit declaration of function 'readq'; did you mean 'readl'? [-Werror=implicit-function-declaration]
->    79 |                         *cmd_resp = readq((void __iomem *) (proc_priv->mmio_base + MBOX_OFFSET_DATA));
->       |                                     ^~~~~
->       |                                     readl
->
-> The driver already does not build for anything other than x86,
-> so limit it further to x86-64.
->
-> Fixes: aeb58c860dc5 ("thermal/drivers/int340x: processor_thermal: Suppot 64 bit RFIM responses")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/thermal/intel/int340x_thermal/Kconfig | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/thermal/intel/int340x_thermal/Kconfig b/drivers/thermal/intel/int340x_thermal/Kconfig
-> index 45c31f3d6054..5d046de96a5d 100644
-> --- a/drivers/thermal/intel/int340x_thermal/Kconfig
-> +++ b/drivers/thermal/intel/int340x_thermal/Kconfig
-> @@ -5,12 +5,12 @@
->
->  config INT340X_THERMAL
->         tristate "ACPI INT340X thermal drivers"
-> -       depends on X86 && ACPI && PCI
-> +       depends on X86_64 && ACPI && PCI
->         select THERMAL_GOV_USER_SPACE
->         select ACPI_THERMAL_REL
->         select ACPI_FAN
->         select INTEL_SOC_DTS_IOSF_CORE
-> -       select PROC_THERMAL_MMIO_RAPL if X86_64 && POWERCAP
-> +       select PROC_THERMAL_MMIO_RAPL if POWERCAP
->         help
->           Newer laptops and tablets that use ACPI may have thermal sensors and
->           other devices with thermal control capabilities outside the core
-> --
+Jing,
 
-Applied as 5.16-rc2 material, thanks!
+On Wed, Nov 10 2021 at 13:01, Liu, Jing2 wrote:
+
+more thoughts.
+
+> Once we start passthrough the XFD MSR, we need to save/restore
+> them at VM exit/entry time. If we immediately resume the guest
+> without enabling interrupts/preemptions (exit fast-path), we have no
+> issues. We don't need to save the MSR.
+
+Correct.
+
+> The question is how the host XFD MSR is restored while control is in
+> KVM.
+>
+> The XSAVE(S) instruction saves the (guest) state component[x] as 0 or
+> doesn't save when XFD[x] != 0. Accordingly, XRSTOR(S) cannot restore
+> that (guest state). And it is possible that XFD != 0 and the guest is using
+> extended feature at VM exit;
+
+You mean on creative guests which just keep AMX state alive and set
+XFD[AMX] = 1 to later restore it to XFD[AMX] = 0?
+
+> we can check the XINUSE state-component bitmap by XGETBV(1). By adding
+> more meaning to the existing field: fpstate->in_use, it can be useful
+> for KVM to set the XINUSE value.
+
+As I pointed out to Sean, the problem is inconsistent state. Checking
+XGETBV(1) cannot make that go away. And I have no idea how you want to
+abuse fpstate->in_use for anything related to the XINUSE bitmap. It's a
+single bit for a particular purpose and has absolutely nothing to do
+with XINUSE. Trying to overload that is just wrong.
+
+If XFD is not trapped then you have exactly three options:
+
+   1) Make it an autosave MSR and grab the guest XFD value from that
+      memory to update fpstate and the shadow memory before reenabling
+      interrupts
+
+   2) Do the MSR read how I suggested before reenabling interrupts
+
+   3) Conditionally post XSAVES when fpstate->is_guest == true
+
+Anything else wont work.
+
+Thanks,
+
+        tglx
