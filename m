@@ -2,86 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C123452E65
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:52:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5AAB452E72
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:52:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233544AbhKPJyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 04:54:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:32939 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233631AbhKPJxl (ORCPT
+        id S233502AbhKPJzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 04:55:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233658AbhKPJzT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 04:53:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637056242;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WI9gXZd/YfgChvu90tDdTH+mU6xPfdwBKXa4/MoRGbE=;
-        b=eChG63VfA0fRv/+9qAw+Ca3hnTRCR1Da0kmh6gl6yJyn9FzyYcnu7DtB0DHKi655VpHShj
-        cpCyhiGnpja19GMBHLs9TeCNbWZQJRo7akPKH11Z0htpkCjq/gSZS3uJi/n5bXBnlc0ASV
-        IdCyiXmz/ZCupBaB+KisL4r2yhxbBb4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-27-07bi-SnHNwCAibvJlRsw2w-1; Tue, 16 Nov 2021 04:50:39 -0500
-X-MC-Unique: 07bi-SnHNwCAibvJlRsw2w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9D48D1015DA0;
-        Tue, 16 Nov 2021 09:50:37 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0489D1F41F;
-        Tue, 16 Nov 2021 09:50:33 +0000 (UTC)
-Message-ID: <04b7e240-8e1d-1402-3cef-e65469bd9317@redhat.com>
-Date:   Tue, 16 Nov 2021 10:50:32 +0100
+        Tue, 16 Nov 2021 04:55:19 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87CD0C0432DF;
+        Tue, 16 Nov 2021 01:50:50 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so1744225pjc.4;
+        Tue, 16 Nov 2021 01:50:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jbl1bKB28ZQInN+16uM3WF1uI4nnrdBSKaIDe4FDIn4=;
+        b=NczuZoG9lJzIkj+khBgbYgrCnlf/dviLGHYxxjBvLZqdX3qYA8iMv51JgOHt0AbHSJ
+         i8vVjtkhFLiVROY5Cq3hxHvFZWODNrlxIUPm2/Ux4G4h2oTOGtPy6xmP/leu9oyI5yhW
+         YJDsKLi1482S1NFJaNCVtV0NaKmHYhV0vzw2SAHlaTmPQ3lBjcc+4BCnOCgLTvH15G9T
+         8Qh+vFs+AM70fyR+tS52pq3WG/LyD6v5e06PK6rjmgek5L+dR4IuhntQIYVpbvyBXUFP
+         Y2jR1djZSSTrGPex0XjKwTrPtyC1/BOvUeMh7p+OtUDfJPAUGGRrQHW+VGdIUxfDTh3k
+         5tTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jbl1bKB28ZQInN+16uM3WF1uI4nnrdBSKaIDe4FDIn4=;
+        b=wgpOdm0v2lBRlwXxneHfJa0Dgyi+8Qvxm+asNuI7fKoGWxUyc3YB/jwDBvkvk2EZ5s
+         bGCjmR0BIXizxzyn9UOX/6XKmHz7kypg0zEDszO0gohFynG8mqUfp9IlbJrpPIP5S0Oh
+         5FLjNcJBbC7AYoY28ZcS4l+Zd6i7M3EBtQ5RQb6imNVdhFD+cwA/GYChpaeVuA7kXKmV
+         8hO+aOTtwSMEsr+j9nJKNCP4FvDI4IYhBPgZgYeGe/ruNpwiguihLDaUn97d9O3Qd0vH
+         SSvSvTauH7McIbuC24brHBVJqHb5/Ft9nvUnu8tZQVVyiFEJ8nUrvSC0QxJHJnEzOtTA
+         CA9w==
+X-Gm-Message-State: AOAM530yy/cY2ecNVM6SluK/szgapU2H23N1GyaScdJazakXOCEj+lAv
+        XPIGgNDoAP8H5ZZMk8l33UrKAxq1SDeYdkGLaOc=
+X-Google-Smtp-Source: ABdhPJx0v8IzfnU05ejmdXMqJmDMXeb3PF++qh8Md5OR3XMUslrUChQ77cv06uovViNWiQhcy4Q3KXk00wiWecHoznA=
+X-Received: by 2002:a17:90a:e54c:: with SMTP id ei12mr73525634pjb.81.1637056250074;
+ Tue, 16 Nov 2021 01:50:50 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] KVM: x86: fix cocci warnings
-Content-Language: en-US
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Vihas Mak <makvihas@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     seanjc@google.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211114164312.GA28736@makvihas> <87o86leo34.fsf@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <87o86leo34.fsf@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20211115141925.60164-1-paul@crapouillou.net> <20211115142243.60605-1-paul@crapouillou.net>
+ <20211115142243.60605-3-paul@crapouillou.net>
+In-Reply-To: <20211115142243.60605-3-paul@crapouillou.net>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Tue, 16 Nov 2021 11:50:38 +0200
+Message-ID: <CA+U=Dsp4P_q6gS9-iS1BujGfhia=uEjBZFy_VEZqFwT-rCOXQQ@mail.gmail.com>
+Subject: Re: [PATCH 14/15] iio: buffer-dmaengine: Add support for cyclic buffers
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/21 10:59, Vitaly Kuznetsov wrote:
-> One minor remark: 'kvm_set_pte_rmapp()' handler is passed to
-> 'kvm_handle_gfn_range()' which does
-> 
->          bool ret = false;
-> 
->          for_each_slot_rmap_range(...)
->                  ret |= handler(...);
-> 
-> and I find '|=' to not be very natural with booleans. I'm not sure it's
-> worth changing though.
+On Mon, Nov 15, 2021 at 4:23 PM Paul Cercueil <paul@crapouillou.net> wrote:
+>
+> Handle the IIO_BUFFER_DMABUF_CYCLIC flag to support cyclic buffers.
+>
 
-Changing that would be "harder" than it seems because "ret = ret || 
-handler(...)" is wrong, and "|" is even more unnatural than "|=" (so 
-much that clang warns about it).
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
 
-In fact I wonder if "|=" with a bool might end up warning with clang, 
-which we should check before applying this patch.  It doesn't seem to be 
-in the original commit[1], but better safe than sorry: Nick, does clang 
-intend to warn also about "ret |= fn()" and "ret &= fn()"?  Technically, 
-it is a bitwise operation with side-effects in the RHS.
-
-Paolo
-
-[1] https://github.com/llvm/llvm-project/commit/f59cc9542bfb461
-
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  drivers/iio/buffer/industrialio-buffer-dma.c      |  1 +
+>  .../iio/buffer/industrialio-buffer-dmaengine.c    | 15 ++++++++++++---
+>  include/linux/iio/buffer-dma.h                    |  3 +++
+>  3 files changed, 16 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/iio/buffer/industrialio-buffer-dma.c b/drivers/iio/buffer/industrialio-buffer-dma.c
+> index fb39054d8c15..6658f103ee17 100644
+> --- a/drivers/iio/buffer/industrialio-buffer-dma.c
+> +++ b/drivers/iio/buffer/industrialio-buffer-dma.c
+> @@ -933,6 +933,7 @@ int iio_dma_buffer_enqueue_dmabuf(struct iio_buffer *buffer,
+>         }
+>
+>         dma_block->bytes_used = iio_dmabuf->bytes_used ?: dma_block->size;
+> +       dma_block->cyclic = iio_dmabuf->flags & IIO_BUFFER_DMABUF_CYCLIC;
+>
+>         switch (dma_block->state) {
+>         case IIO_BLOCK_STATE_QUEUED:
+> diff --git a/drivers/iio/buffer/industrialio-buffer-dmaengine.c b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
+> index 57a8b2e4ba3c..952e2160a11e 100644
+> --- a/drivers/iio/buffer/industrialio-buffer-dmaengine.c
+> +++ b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
+> @@ -81,9 +81,18 @@ static int iio_dmaengine_buffer_submit_block(struct iio_dma_buffer_queue *queue,
+>         if (!block->bytes_used || block->bytes_used > max_size)
+>                 return -EINVAL;
+>
+> -       desc = dmaengine_prep_slave_single(dmaengine_buffer->chan,
+> -               block->phys_addr, block->bytes_used, dma_dir,
+> -               DMA_PREP_INTERRUPT);
+> +       if (block->cyclic) {
+> +               desc = dmaengine_prep_dma_cyclic(dmaengine_buffer->chan,
+> +                                                block->phys_addr,
+> +                                                block->size,
+> +                                                block->bytes_used,
+> +                                                dma_dir, 0);
+> +       } else {
+> +               desc = dmaengine_prep_slave_single(dmaengine_buffer->chan,
+> +                                                  block->phys_addr,
+> +                                                  block->bytes_used, dma_dir,
+> +                                                  DMA_PREP_INTERRUPT);
+> +       }
+>         if (!desc)
+>                 return -ENOMEM;
+>
+> diff --git a/include/linux/iio/buffer-dma.h b/include/linux/iio/buffer-dma.h
+> index 85e55fe35282..27639fdf7b54 100644
+> --- a/include/linux/iio/buffer-dma.h
+> +++ b/include/linux/iio/buffer-dma.h
+> @@ -42,6 +42,7 @@ enum iio_block_state {
+>   * @phys_addr: Physical address of the blocks memory
+>   * @queue: Parent DMA buffer queue
+>   * @state: Current state of the block
+> + * @cyclic: True if this is a cyclic buffer
+>   * @fileio: True if this buffer is used for fileio mode
+>   * @dmabuf: Underlying DMABUF object
+>   */
+> @@ -65,6 +66,8 @@ struct iio_dma_buffer_block {
+>          */
+>         enum iio_block_state state;
+>
+> +       bool cyclic;
+> +
+>         bool fileio;
+>         struct dma_buf *dmabuf;
+>  };
+> --
+> 2.33.0
+>
