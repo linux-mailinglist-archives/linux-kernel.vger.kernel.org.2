@@ -2,122 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1EF453796
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0CD45379F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:35:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233889AbhKPQgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 11:36:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233804AbhKPQgw (ORCPT
+        id S234005AbhKPQh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 11:37:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31644 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233465AbhKPQh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:36:52 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BFDC061746;
-        Tue, 16 Nov 2021 08:33:55 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id t23so12342425oiw.3;
-        Tue, 16 Nov 2021 08:33:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LlxygBrGDQWQgkQKbo6h1xP90fhPlZPtnoixKFIvswQ=;
-        b=U8ynJPhYmZw4y3AgDjF9X0Ro+obiOWxglyAJvQg7el3E0ruoO48xC/osRtFqclOzUB
-         MqZ5kQD65fNb7DnxE8JggTGx2VbBdktyKmjpK3sFYNnMQh/v3h29IBdO97fadhIgtUrq
-         m/q+M2JvTyMjU5/5b/O5lzGj7dS28mDV7I1AELbgsvepIsD7NPkUk8Oh3q57jA3KvoOQ
-         B6flAySP81AWiXv8J6tlAEB5B3TyQiatTPGKiiQSDk4a3ame7lUMU9t5UiUm5XucB0kH
-         oYkS+GKoffdvD/dN2NaNsQCJFo99WdldgMKFZ9N6IwgxExKzmRFmuhXcw4tz0oqXgMQe
-         yBnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LlxygBrGDQWQgkQKbo6h1xP90fhPlZPtnoixKFIvswQ=;
-        b=PSmhtVow04/ZUS8saFAXmvatfUoEizzHEOs3/mVffOsHQRNdZCpR3CQ7CMdsnUkLdN
-         RjW2SZ22fyiyFcPXp+wcy+s/UdjexjDFhWk3MrH+Zy7saDtQxRci5Ts3P2Y8ISliqroI
-         T1Z1QcABef9CVL2D6gIwhQvl29aPihkPw2Ak6+MfnUa8hsBgR7lIJ3iqbQHuBLpQRgBr
-         oRc0bD1I6qe0pjTcEiyKcYsd5687B+JpP2efOttH07kvcezC978wQPd9vCo9bZyNXd3N
-         FXf2JqdvxW8LUHgAw9TH+Jd0+sa35mRqsfo0yEmNztxpAdFPh0jwKS4oYYnNrv6uv/SP
-         a4Vw==
-X-Gm-Message-State: AOAM531SmnLNm7U9Ovq2reYCkNE60ZuOFBNMgTjpvUS/j6epDODLDirV
-        sWNhkfpOdARVWXO1JIa05o0=
-X-Google-Smtp-Source: ABdhPJyeXYp7WX+skGLcooZeHeigxd0zf6FS/5WhEKsAlyLurKL+PWXivzNtvn3iVP6E9K/1bCMLUQ==
-X-Received: by 2002:aca:1204:: with SMTP id 4mr50102134ois.136.1637080434814;
-        Tue, 16 Nov 2021 08:33:54 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q9sm3603638oti.32.2021.11.16.08.33.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 08:33:54 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] hwmon: (tmp401) Fix clang -Wimplicit-fallthrough in
- tmp401_is_visible()
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-References: <20211116154438.1383290-1-nathan@kernel.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <34038273-3d00-a8e0-d6dc-4317fe56c0d1@roeck-us.net>
-Date:   Tue, 16 Nov 2021 08:33:52 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 16 Nov 2021 11:37:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637080498;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=H98AZZt3YXueDbe06DAd9PZXKaVwBHPevQBi7cG9ec0=;
+        b=SjtkIolLEgV7lKmBleWj6ywL8gfGj7pxKDC1SbCp2HOes1Xxu4lDZghiDH3p9ZmlJo0v52
+        A2rW2Z4R/3unFzxA24qZ8z/BkC1HSBVkbxtAeAdrSpfjtviTdXjDBog5fmyRMJtJIPNmud
+        xleeygg78msnKD1H4oA0bXIBaxEJP40=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-334-FaBZdD75OCuo2_pGh_WFDw-1; Tue, 16 Nov 2021 11:34:55 -0500
+X-MC-Unique: FaBZdD75OCuo2_pGh_WFDw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B5B8487D544;
+        Tue, 16 Nov 2021 16:34:52 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.40.192.236])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0AE0C60C7F;
+        Tue, 16 Nov 2021 16:34:44 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>, kvm-ppc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/6] KVM: Cap KVM_CAP_NR_VCPUS by KVM_CAP_MAX_VCPUS and re-purpose it on x86
+Date:   Tue, 16 Nov 2021 17:34:37 +0100
+Message-Id: <20211116163443.88707-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20211116154438.1383290-1-nathan@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 7:44 AM, Nathan Chancellor wrote:
-> Clang warns:
-> 
-> drivers/hwmon/tmp401.c:526:2: error: unannotated fall-through between switch labels [-Werror,-Wimplicit-fallthrough]
->          default:
->          ^
-> drivers/hwmon/tmp401.c:526:2: note: insert 'break;' to avoid fall-through
->          default:
->          ^
->          break;
-> 1 error generated.
-> 
-> Clang is a little more pedantic than GCC, which does not warn when
-> falling through to a case that is just break or return. Clang's version
-> is more in line with the kernel's own stance in deprecated.rst, which
-> states that all switch/case blocks must end in either break,
-> fallthrough, continue, goto, or return. Add the missing break to silence
-> the warning.
-> 
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1505
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> ---
-> 
-> Feel free to squash this into the offending commit.
+Changes since v1:
+- PATCH6 for s390 added.
+- On ARM64, do not make KVM_CAP_NR_VCPUS return value dependent on whether
+  it is a system-wide ioctl or a per-VM one [Marc Zyngier].
 
-Done, thanks a lot for the feedback.
+Original description:
 
-Guenter
+This is a continuation of "KVM: x86: Drop arbitraty KVM_SOFT_MAX_VCPUS"
+(https://lore.kernel.org/kvm/20211111134733.86601-1-vkuznets@redhat.com/)
+work.
 
-> 
->   drivers/hwmon/tmp401.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/hwmon/tmp401.c b/drivers/hwmon/tmp401.c
-> index f7b6a2c4fbcf..b86d9df7105d 100644
-> --- a/drivers/hwmon/tmp401.c
-> +++ b/drivers/hwmon/tmp401.c
-> @@ -523,6 +523,7 @@ static umode_t tmp401_is_visible(const void *data, enum hwmon_sensor_types type,
->   		default:
->   			break;
->   		}
-> +		break;
->   	default:
->   		break;
->   	}
-> 
-> base-commit: 82b520da9134a594eb9816759ed66ba6ef44888e
-> 
+1) Enforce KVM_CAP_NR_VCPUS <= KVM_CAP_MAX_VCPUS rule on all 
+ architectures. [Sean Christopherson]
+2) Make KVM_CAP_NR_VCPUS return num_online_cpus() and not an arbitrary
+ value of '710' on x86.
+
+Everything but x86 was only 'eyeball tested', the change is trivial
+but sorry in advance if I screwed up)
+
+Vitaly Kuznetsov (6):
+  KVM: arm64: Cap KVM_CAP_NR_VCPUS by kvm_arm_default_max_vcpus()
+  KVM: MIPS: Cap KVM_CAP_NR_VCPUS by KVM_CAP_MAX_VCPUS
+  KVM: PPC: Cap KVM_CAP_NR_VCPUS by KVM_CAP_MAX_VCPUS
+  KVM: RISC-V: Cap KVM_CAP_NR_VCPUS by KVM_CAP_MAX_VCPUS
+  KVM: s390: Cap KVM_CAP_NR_VCPUS by num_online_cpus()
+  KVM: x86: Drop arbitraty KVM_SOFT_MAX_VCPUS
+
+ arch/arm64/kvm/arm.c            | 9 ++++++++-
+ arch/mips/kvm/mips.c            | 2 +-
+ arch/powerpc/kvm/powerpc.c      | 4 ++--
+ arch/riscv/kvm/vm.c             | 2 +-
+ arch/s390/kvm/kvm-s390.c        | 2 ++
+ arch/x86/include/asm/kvm_host.h | 1 -
+ arch/x86/kvm/x86.c              | 2 +-
+ 7 files changed, 15 insertions(+), 7 deletions(-)
+
+-- 
+2.33.1
 
