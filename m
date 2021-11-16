@@ -2,145 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FB4452D03
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:39:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D15452D06
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:40:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232333AbhKPImJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 03:42:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43802 "EHLO
+        id S232392AbhKPInA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 03:43:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232125AbhKPImE (ORCPT
+        with ESMTP id S232091AbhKPImx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 03:42:04 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24ED2C061746
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 00:39:08 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mmtzc-0001T6-Oi; Tue, 16 Nov 2021 09:39:04 +0100
-Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mmtzb-0008FT-5m; Tue, 16 Nov 2021 09:39:03 +0100
-Date:   Tue, 16 Nov 2021 09:39:03 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Vladimir Oltean <olteanv@gmail.com>, g@pengutronix.de
-Cc:     Woojung Huh <woojung.huh@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com,
-        kernel@pengutronix.de, Jakub Kicinski <kuba@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>
-Subject: Re: [RFC PATCH net-next] net: dsa: microchip: implement multi-bridge
- support
-Message-ID: <20211116083903.GA16121@pengutronix.de>
-References: <20211108111034.2735339-1-o.rempel@pengutronix.de>
- <20211110123640.z5hub3nv37dypa6m@skbuf>
- <20211112075823.GJ12195@pengutronix.de>
- <20211115234546.spi7hz2fsxddn4dz@skbuf>
+        Tue, 16 Nov 2021 03:42:53 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F5CC061746
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 00:39:56 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id m14so84589586edd.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 00:39:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=29oqjmL46qhcPK7GumgLq+DG8d/OcnmM7sBa267LNJc=;
+        b=HONPxPc4fpua+nyA5KACQL975ArZH3/eBZ5dZY+p2HgPVPrzmmke+3HJWO2fCuuPVf
+         l6f/AdcurSlwQitjA8g/mqh5lMP6Ad7Y2yKDZ3KPIDSx/M9xUBEV1QmMbD9uzAlXdMnm
+         2Pq6zA92NLyZGraUjpKEnUeaXM8JEomRJRcxIk3CjGNzoDdCiIAeukpjfz5e9+dKV+1c
+         y0luK2d9szpkwic7PL+e/BbeLQ3eEvF2IkQeSyDfW6u4WlVuDTNraMytYMqlRCrUgZwX
+         LHmEkcCL8WrLlzzguwmU1M1g+DuVFytZ6yvWZ9Fyz1Mm+5z2F+fz+/KOCsQkakBVfK4r
+         /1Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=29oqjmL46qhcPK7GumgLq+DG8d/OcnmM7sBa267LNJc=;
+        b=BxKiQJ0n/bGVU2cLUrYYI+B/1tGsCE+eUdCAqbs++QiXEeDoKKguSKBHC+tCLYoAXp
+         shwA8sj1/PdClrxBGqjb7FfYzBg/XcldoWKfSM9Ty7mqLRPiWdNmu1X/mrSmreI6Gfm4
+         kHUeM+ICMEXH2zy87s+lj+t2gYVraaUpwTrfeb0XcbE9PXABQNWy2nJYY9yyCSs6ry7f
+         QeuJV8+eYrV7Xk91/T2K+suqGL1feVZY2MzOq8YBkkuLFzsJAsFYoBDDMs/uTV7fgaXA
+         tdwmWpEwctz4UdxJhoDPNegurILC5LYsEcoSR6ty4pLID87jsL+6x/qUx0t9iijjGGa+
+         H7MA==
+X-Gm-Message-State: AOAM530grSgE2OYVb31la463Gu5MakuZcqMkKPIRnk1WODT9V5rJixx0
+        fsKbqKbaGw07An7GFhQ+qUqawQeoewF9vHuwvbgaCg==
+X-Google-Smtp-Source: ABdhPJzw2cpdURyncHf4l37gZdIW9qTyoDRpERcWbGarQ+ldN+Qh5JZMa2Mv6dpFTys9HHv83+R10ncImdIENaH1IUM=
+X-Received: by 2002:a17:906:7955:: with SMTP id l21mr8006801ejo.6.1637051995253;
+ Tue, 16 Nov 2021 00:39:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211115234546.spi7hz2fsxddn4dz@skbuf>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 05:38:52 up 271 days,  8:02, 107 users,  load average: 0.04, 0.14,
- 0.13
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20211115165428.722074685@linuxfoundation.org> <CA+G9fYtFOnKQ4=3-4rUTfVM-fPno1KyTga1ZAFA2OoqNvcnAUg@mail.gmail.com>
+In-Reply-To: <CA+G9fYtFOnKQ4=3-4rUTfVM-fPno1KyTga1ZAFA2OoqNvcnAUg@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 16 Nov 2021 14:09:44 +0530
+Message-ID: <CA+G9fYuF1F-9TAwgR9ik_qjFqQvp324FJwFJbYForA_iRexZjg@mail.gmail.com>
+Subject: Re: [PATCH 5.15 000/917] 5.15.3-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Vladis Dronov <vdronov@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 01:45:46AM +0200, Vladimir Oltean wrote:
+On Tue, 16 Nov 2021 at 12:06, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>
+> On Tue, 16 Nov 2021 at 00:03, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.15.3 release.
+> > There are 917 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Wed, 17 Nov 2021 16:52:23 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.3-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+>
+>
 
-.....
+Regression found on arm64 juno-r2 / qemu.
+Following kernel crash reported on stable-rc 5.15.
 
-> > > Why != DISABLED? I expect that dev_ops->cfg_port_member() affects only
-> > > data packet forwarding, not control packet forwarding, right?
-> > 
-> > No. According to the KSZ9477S datasheet:
-> > "The processor should program the “Static MAC Table” with the entries that it
-> > needs to receive (for example, BPDU packets). The “overriding” bit should be set
-> > so that the switch will forward those specific packets to the processor. The
-> > processor may send packets to the port(s) in this state. Address learning is
-> > disabled on the port in this state."
-> > 
-> > This part is not implemented.
-> > 
-> > In current driver implementation (before or after this patch), all
-> > packets are forwarded. It looks like, current STP implementation in this driver
-> > is not complete. If I create a loop, the bridge will permanently toggle one of
-> > ports between blocking and listening. 
-> > 
-> > Currently I do not know how to proceed with it. Remove stp callback and
-> > make proper, straightforward bride_join/leave? Implement common soft STP
-> > for all switches without HW STP support?
-> 
-> What does "soft STP" mean?
+Anders bisected this kernel crash and found the first bad commit,
 
-Some HW seems to provide configuration bits for ports STP states. For
-example by enabling it, I can just set listening state and it will only pass
-BPDU packets without need to program static MAC table. (At least, this
-would be my expectation)
+Herbert Xu <herbert@gondor.apana.org.au>
+   crypto: api - Fix built-in testing dependency failures
 
-For example like this:
-https://elixir.bootlin.com/linux/v5.16-rc1/source/drivers/net/dsa/mt7530.c#L1121
 
-If this HW really exist and works as expected, how should I name it?
+>
+> metadata:
+>   git branch: linux-5.15.y
+>   git repo: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+>   git commit: ff5232812521d01d1ddfd8f36559a9cf83fea928
+>   git describe: v5.15.2-918-gff5232812521
+>   make_kernelversion: 5.15.3-rc1
+>   kernel-config: https://builds.tuxbuild.com/20yUV5tYmCSzjklEffg3Dhkbdzi/config
+>
+> Kernel crash log:
+> -----------------
+> [    1.178361] kvm [1]: Hyp mode initialized successfully
+> [    1.184780] Unable to handle kernel NULL pointer dereference at
+> virtual address 000000000000019b
+> [    1.193599] Mem abort info:
+> [    1.196394]   ESR = 0x96000044
+> [    1.199458]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [    1.204786]   SET = 0, FnV = 0
+> [    1.207848]   EA = 0, S1PTW = 0
+> [    1.210998]   FSC = 0x04: level 0 translation fault
+> [    1.215889] Data abort info:
+> [    1.218777]   ISV = 0, ISS = 0x00000044
+> [    1.222623]   CM = 0, WnR = 1
+> [    1.225605] [000000000000019b] user address but active_mm is swapper
+> [    1.231979] Internal error: Oops: 96000044 [#1] PREEMPT SMP
+> [    1.237559] Modules linked in:
+> [    1.240617] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.15.3-rc1 #1
+> [    1.246894] Hardware name: ARM Juno development board (r2) (DT)
+> [    1.252820] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> [    1.259793] pc : crypto_register_alg+0x88/0xe4
+> [    1.264246] lr : crypto_register_alg+0x78/0xe4
+> [    1.268694] sp : ffff800012b9bce0
+> [    1.272008] x29: ffff800012b9bce0 x28: 0000000000000000 x27: ffff800012644c80
+> [    1.279162] x26: ffff000820d95480 x25: ffff000820d96000 x24: ffff800012644d3a
+> [    1.286313] x23: ffff800012644cba x22: 0000000000000000 x21: ffff800012742518
+> [    1.293463] x20: 0000000000000000 x19: ffffffffffffffef x18: ffffffffffffffff
+> [    1.300614] x17: 000000000000003f x16: 0000000000000010 x15: ffff000800844a1c
+> [    1.307765] x14: 0000000000000001 x13: 293635326168732c x12: 2973656128636263
+> [    1.314916] x11: 0000000000000010 x10: 0101010101010101 x9 : ffff80001054b5a8
+> [    1.322066] x8 : 7f7f7f7f7f7f7f7f x7 : fefefefefeff6462 x6 : 0000808080808080
+> [    1.329217] x5 : 0000000000000000 x4 : 8080808080800000 x3 : 0000000000000000
+> [    1.336367] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff800012742518
+> [    1.343517] Call trace:
+> [    1.345962]  crypto_register_alg+0x88/0xe4
+> [    1.350062]  crypto_register_skcipher+0x80/0x9c
+> [    1.354600]  simd_skcipher_create_compat+0x19c/0x1d0
+> [    1.359572]  cpu_feature_match_AES_init+0x9c/0xdc
+> [    1.364284]  do_one_initcall+0x50/0x2b0
+> [    1.368125]  kernel_init_freeable+0x250/0x2d8
+> [    1.372488]  kernel_init+0x30/0x140
+> [    1.375981]  ret_from_fork+0x10/0x20
+> [    1.379562] Code: 2a0003f6 710002df aa1503e0 1a9fd7e1 (3906b261)
+> [    1.385667] ---[ end trace a032e96fc9ec202d ]---
+> [    1.390350] Kernel panic - not syncing: Attempted to kill init!
+> exitcode=0x0000000b
+> [    1.398018] SMP: stopping secondary CPUs
+> [    1.401947] Kernel Offset: disabled
+> [    1.405434] CPU features: 0x10001871,00000846
+> [    1.409794] Memory Limit: none
+> [    1.412849] ---[ end Kernel panic - not syncing: Attempted to kill
+> init! exitcode=0x0000000b ]---
+>
+>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>
+> build link:
+> -----------
+> https://builds.tuxbuild.com/20yUV5tYmCSzjklEffg3Dhkbdzi/build.log
+>
+> build config:
+> -------------
+> https://builds.tuxbuild.com/20yUV5tYmCSzjklEffg3Dhkbdzi/config
 
-> You need to have a port state in which data  plane packets are blocked,
-> but BPDUs can pass.
-
-ack.
-
-> Unless you trap all packets to the CPU and make the selection in software
-> (therefore, including the forwarding, I don't know if that is so desirable),
-
-Yes, this is my point, on plain linux bridge with two simple USB ethernet
-adapters, I'm able to use STP without any HW offloading.
-
-If my HW do not provide straightforward way to trap BPDU packets to CPU,
-i should be able to reuse functionality already provided by the linux
-bridge. Probably I need to signal it some how from dsa driver, to let linux
-bridge make proper decision and reduce logging noise.
-
-For example:
-- Have flag like: ds->sta_without_bpdu_trap = true;
-- If no .port_mdb_add/.port_fdb_add callbacks are implemented, handle
-  all incoming packet by the linux bridge without making lots of noise,
-  and use .port_bridge_join/.port_bridge_leave to separate ports.
-- If .port_mdb_add/.port_fdb_add are implemented, program the static MAC table.
-
-> you don't have much of a choice except to do what you've said above, program
-> the static MAC table with entries for 01-80-c2-00-00-0x which trap those
-> link-local multicast addresses to the CPU and set the STP state override
-> bit for them and for them only.
-
-Hm... Microchip documentation do not describes it as STP state override. Only
-as "port state override". And since STP state is not directly configurable
-on this switch, it probably means receive/transmit enable state of the port.
-So, packets with matching MAC should be forwarded even if port is in the
-receive disabled state. Correct?
-
-> BTW, see the "bridge link set" section in "man bridge" for a list of
-> what you should do in each STP state.
-
-ack. Thank you.
-
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+- Naresh
