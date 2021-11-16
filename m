@@ -2,121 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF444528E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:00:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 221884528E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239304AbhKPEDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 23:03:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
+        id S240897AbhKPEEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 23:04:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236088AbhKPEC6 (ORCPT
+        with ESMTP id S240703AbhKPED7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 23:02:58 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B95C1F44AA
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 16:49:20 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id o14so15920067plg.5
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 16:49:20 -0800 (PST)
+        Mon, 15 Nov 2021 23:03:59 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 198FEC04E23C
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 16:51:34 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id k1so18555502ilo.7
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 16:51:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=yJN/gap7KdAy16hYzWg/TQ53YhYMDXXVj0aBb/U2j/w=;
-        b=ikqo5RKRgOuCWb/tE5Wsu6/Lbpz7tcMIObAYBIERj2KzOwVpFwpieRXXUvMaX7XwT2
-         k8oMEES4I07wBo8L4PPK+0ha0Ba+0KC/fVNmtjIkcag841l3Zdh53YX0XHAUtFLqwgU4
-         xry7HOSDO25dm/KDW4U7zjUNdHYx47YgH0Ulk=
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TSclHLrBNCF8VIuFqDxcZ5UEW2NzjIPFuKLGSBG18YU=;
+        b=GLSXZtD5heqG5ktceM06gqQ/SYsPFaCcHBhkkdkC2+o9U6RhF5veqIgy2lSLc7f1u+
+         gFwopBlMkhF3yxWXJxVfLzUL8KosFj/neq+x1O+F7+aEr/H/ogyTMuCNp+MFK6lciblg
+         eiDj6hXoEZVUhOkOV/Adjou2RIi2Nx19DfngU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=yJN/gap7KdAy16hYzWg/TQ53YhYMDXXVj0aBb/U2j/w=;
-        b=LlhL9+xi9a4NGX3nzLU5tb3PLqrKAgys9+ex1TtbJWvN+V8Ei4z26CCkAA2cRdXkKB
-         ufpO7JM4H7ZRbgppaqjCsy+nSTl7zQskLSTL2LmO159Gs02kNulO5d69Feq0Hl1o2F0y
-         zd7f5MwSZI5LmmUpOVrnqDOGalJOZhFcRS9tgmmlUIP0pVXewbcEaYA50LtbLwZF4m8G
-         ARLjF0xQTLwRDNmXZAC89eMYtCBzkg32wpgHk6kfe0lMQ/yOFKiAuW5SLdHib8LRLF3G
-         MpHEL/xmjXxXEFIZbG3q9m8HtfRqs21TllaWycRUmbwK99UD3K9KVS/Mbi8fERVEtF2V
-         +4CA==
-X-Gm-Message-State: AOAM530IyQ7tHN7zyRbcMpotde7wbk+o5yspmwJPGn7fp0nRWrDaW5b3
-        a9hvJ6hHC84eKNjlH1L+KZfbbw==
-X-Google-Smtp-Source: ABdhPJzft+ivC/MlWDFI2hxkz8qHExc3R4XStEq5YjNU9NTrcs/Epfe1Egcz95hubrvaUXp3X8CJnw==
-X-Received: by 2002:a17:903:1d2:b0:142:24f1:1213 with SMTP id e18-20020a17090301d200b0014224f11213mr40756726plh.81.1637023759622;
-        Mon, 15 Nov 2021 16:49:19 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g9sm165302pfj.160.2021.11.15.16.49.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 16:49:18 -0800 (PST)
-Date:   Mon, 15 Nov 2021 16:49:18 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Tony Luck <tony.luck@intel.com>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] pstore/blk: Use "%lu" to format unsigned long
-Message-ID: <202111151648.0498D0AE@keescook>
-References: <20210629103700.1935012-1-geert@linux-m68k.org>
- <162500112137.438178.14586324457676666976.b4-ty@chromium.org>
- <CAMuHMdWwDK0bB2B7iFXqMhkZrmw26vKDFZEv+z+mYYTavp5-Eg@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TSclHLrBNCF8VIuFqDxcZ5UEW2NzjIPFuKLGSBG18YU=;
+        b=3YtRa9BTFeCA+yMfaJhXwIg5WUtIUQCdihzGVqdmO/uM3B6P/KJlwPJHt4NUvO63b7
+         bVYU03vMjjlstWk4Cbuc13TGOB2W2xRkno/Uvnpd5f2PHk9eGa54LvajDvFhwq3nOgaN
+         YuSQnKJAi2XTtnHyDACTqp9oAR7RpbstVJz4n3G0aeIj/WY5hwEjiI74e1jmLA0j8y7X
+         Br4EEIWZNoR9b9Zx07Ui9oEeFIA1FhB2LHee4OocqXXRrcJQ1BcBIqX35HHmyZd1ntMY
+         7bCHO9YrjmcfwZokNyUL1lv/KBQAtg8BRVtRUj6D08s5m0s2RBF5/wipT9d1otxaA7+W
+         yMag==
+X-Gm-Message-State: AOAM530dhOOC1EFiAkPPnIXAH8TX6Mmrm0nGI1eFbaZ/RrBmgH4UaeT1
+        exp9lM3eyyIIe1HD8c1H6DS4QQ==
+X-Google-Smtp-Source: ABdhPJxBCZfhEPjyXW3ftiplmfF2h4dZbzU+e1V1uZ3ZbLxdF92ea2IDCN+eTWCoUSMYRj3QWgVxXw==
+X-Received: by 2002:a05:6e02:180b:: with SMTP id a11mr1960614ilv.82.1637023893373;
+        Mon, 15 Nov 2021 16:51:33 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id h14sm9739413ils.75.2021.11.15.16.51.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Nov 2021 16:51:33 -0800 (PST)
+Subject: Re: [PATCH 5.15 000/917] 5.15.3-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <04199ba2-ec4a-5bf8-0a99-3f00cc4fe7db@linuxfoundation.org>
+Date:   Mon, 15 Nov 2021 17:51:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdWwDK0bB2B7iFXqMhkZrmw26vKDFZEv+z+mYYTavp5-Eg@mail.gmail.com>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 08:58:51AM +0100, Geert Uytterhoeven wrote:
-> Hi Kees,
+On 11/15/21 9:51 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.3 release.
+> There are 917 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> On Tue, Jun 29, 2021 at 11:12 PM Kees Cook <keescook@chromium.org> wrote:
-> > On Tue, 29 Jun 2021 12:37:00 +0200, Geert Uytterhoeven wrote:
-> > > On 32-bit:
-> > >
-> > >     fs/pstore/blk.c: In function ‘__best_effort_init’:
-> > >     include/linux/kern_levels.h:5:18: warning: format ‘%zu’ expects argument of type ‘size_t’, but argument 3 has type ‘long unsigned int’ [-Wformat=]
-> > >       5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
-> > >         |                  ^~~~~~
-> > >     include/linux/kern_levels.h:14:19: note: in expansion of macro ‘KERN_SOH’
-> > >        14 | #define KERN_INFO KERN_SOH "6" /* informational */
-> > >         |                   ^~~~~~~~
-> > >     include/linux/printk.h:373:9: note: in expansion of macro ‘KERN_INFO’
-> > >       373 |  printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
-> > >         |         ^~~~~~~~~
-> > >     fs/pstore/blk.c:314:3: note: in expansion of macro ‘pr_info’
-> > >       314 |   pr_info("attached %s (%zu) (no dedicated panic_write!)\n",
-> > >         |   ^~~~~~~
-> >
-> > Applied to for-next/pstore, thanks!
+> Responses should be made by Wed, 17 Nov 2021 16:52:23 +0000.
+> Anything received after that time might be too late.
 > 
-> Thanks!
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.3-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
 > 
-> > [1/1] pstore/blk: Use "%lu" to format unsigned long
-> >       https://git.kernel.org/kees/c/c5d4fb2539ca
+> thanks,
 > 
-> Looks like this still hasn't made upstream, although it has been in
-> linux-next since the end of June?  The issue is still present (and
-> now an error with -Werror), but hidden due to commit d07f3b081ee63226
-> ("mark pstore-blk as broken").
+> greg k-h
+> 
 
-Argh, I didn't notice that d07f3b081ee63226 actually landed upstream. It
-was not supposed to land since pstore-blk got fixed before the merge
-window. Bleh. I will try to get this all sorted out.
+Compiled and booted on my test system. No dmesg regressions.
 
--Kees
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
-
--- 
-Kees Cook
+thanks,
+-- Shuah
