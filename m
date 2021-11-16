@@ -2,145 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312C6452DA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:12:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95885452DA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:12:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232887AbhKPJPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 04:15:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:25623 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232770AbhKPJOw (ORCPT
+        id S232909AbhKPJPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 04:15:31 -0500
+Received: from mail-wr1-f42.google.com ([209.85.221.42]:36476 "EHLO
+        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232764AbhKPJPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 04:14:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637053914;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cKKKPjRmVQQMXFBw4I5WdeXLUXv1of0/lTkYOZVFM6o=;
-        b=K2rKkN8dtl+/6CGhHLeVe3OLW1zqYdDYk839rahSWcst/5z17Aye/ApxSOMbZXlKSa+Dny
-        mwmPNJwnq8iNglSj7C09bi3oqnLCiWEOQS9hZEJpAV2Lwgut+xVRFsg/2qJ7JRq5bFLtKk
-        yXePMHiF4vCgYX5xFQPowY97i74z/hQ=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-369-i1WlrEjxNoi1Lh3lC2erkQ-1; Tue, 16 Nov 2021 04:11:52 -0500
-X-MC-Unique: i1WlrEjxNoi1Lh3lC2erkQ-1
-Received: by mail-pj1-f72.google.com with SMTP id a12-20020a17090aa50cb0290178fef5c227so610766pjq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 01:11:52 -0800 (PST)
+        Tue, 16 Nov 2021 04:15:22 -0500
+Received: by mail-wr1-f42.google.com with SMTP id s13so36195422wrb.3;
+        Tue, 16 Nov 2021 01:12:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cKKKPjRmVQQMXFBw4I5WdeXLUXv1of0/lTkYOZVFM6o=;
-        b=k5B93pvASUwzy3kN98E7m83Q2gIxGX1W6350XTfkqQJmvnOfGsy2jmc7na3wECqeTO
-         oMBzn26X/TlrXm21UhMfCkfs33d8IyVswlPaKpHrkyqcCtvhzj/tKyS6qXjoWVmnszzV
-         86rfgVAQCNL+ADatiEIZPYqUFF281q3r5t8Doiu6Q0xZXSQvuyRVNUM3m6LBKdK89ltU
-         IGpz/jKVPdzhiD7d6RaJNz+HQWcCSuXOcqBvWO9ekCmmXDFLSXOCDvvTjL2kfsWKJksi
-         Qd6DQp8cU+Iy7LL2fOYUqgXH/vX5IgHfensUHm3lVJZjfy4LMFjfdIKingj3uncSMWdF
-         XvPw==
-X-Gm-Message-State: AOAM530xVg7A2r9SCQVMeYoeVIshCoPhl1mm3TRNFMLUg2rM2AeyJKOS
-        +kaWbJxsQzL8r9XedsQ0uVvO8HKOjSKyatyAsuWpTBKIvg2sAw1KhLV5YlJ8yt9tOkbBx+k9DmO
-        gv/3E7BSEBh7DmU+eA63QSXT6mF675fWUOXALdFgv
-X-Received: by 2002:a17:902:6acb:b0:142:76c3:d35f with SMTP id i11-20020a1709026acb00b0014276c3d35fmr43033844plt.89.1637053911526;
-        Tue, 16 Nov 2021 01:11:51 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxdIhzemi1V7+z3ke5bwP8cY8U1AZOOOEYZgffpWrUno8OAT6qpNQ+lsidETLKrDsyjbci9wDcYTqkgxnEneB0=
-X-Received: by 2002:a17:902:6acb:b0:142:76c3:d35f with SMTP id
- i11-20020a1709026acb00b0014276c3d35fmr43033819plt.89.1637053911310; Tue, 16
- Nov 2021 01:11:51 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:reply-to
+         :subject:content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=fmDWsP6HIgDPZm0jsUsVahurpJpoutIi09vI45Vo0Wc=;
+        b=DLZBj9CxGdBdst0XrxoHuh8eHAS1Xo9ffnOi1dW3aI71J9xK4p6n+1OYe/vJ7552Q7
+         WP/OnSnvp+h7EmLbfXoMZa2OYEZfIU3dT9dPBJySPOgfc+TwLt6g6GTxvJwB5PoG0A1O
+         KKvcIP0gAqujBwVpM4s2hXg3c9QuzDpyyLQMfjWSBPtHp3TtvkcUvVd5TpclHvOy5Zuu
+         3/Ib+PeSdCZMCrOCLzXZ1NSWEoljsCvfnssD1I/aEvtzupBo0uXSIOgVhTavT7QVNyTI
+         U5V8zeoB87Jo9DdQmtKDj4DxV6J3xf+cflyFiJpoSZ+qyZkl6srgqd1hEcAYazcI7ZyF
+         uDgg==
+X-Gm-Message-State: AOAM532QRameECK8OYq3eod6S1tlxrXS3xwU0pwmJ9mJks1KbboxGCG9
+        pFhgUZjPnDK4VLXU9oSohzI=
+X-Google-Smtp-Source: ABdhPJxepms+HgoLFwnuhBFNqrvUhvNh4mcd7Wey0CxKrcVKLj1+P9n2pR6lZtm0ajXnCX83PK/xuw==
+X-Received: by 2002:adf:d4c2:: with SMTP id w2mr7481224wrk.225.1637053944102;
+        Tue, 16 Nov 2021 01:12:24 -0800 (PST)
+Received: from [10.9.0.26] ([46.166.133.199])
+        by smtp.gmail.com with ESMTPSA id o3sm1995591wms.10.2021.11.16.01.12.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 01:12:23 -0800 (PST)
+Message-ID: <59534db5-b251-c0c8-791f-58aca5c00a2b@linux.com>
+Date:   Tue, 16 Nov 2021 12:12:16 +0300
 MIME-Version: 1.0
-References: <20211112135511.29573-1-linux@zary.sk> <CAO-hwJLZ8roXUxnB5Umyjd_22KFGbFMouxdVM0GLSSLrktteAg@mail.gmail.com>
- <202111150937.31306.linux@zary.sk>
-In-Reply-To: <202111150937.31306.linux@zary.sk>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Tue, 16 Nov 2021 10:11:40 +0100
-Message-ID: <CAO-hwJ+B3er4PdNh1Nq3iGC+1bC1Gd0NZZ+UkRvGDXocTiXrXg@mail.gmail.com>
-Subject: Re: [PATCH] hid-multitouch: Fix Iiyama ProLite T1931SAW (0eef:0001 again!)
-To:     Ondrej Zary <linux@zary.sk>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Reply-To: alex.popov@linux.com
+Subject: Re: [PATCH v2 0/2] Introduce the pkill_on_warn parameter
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul McKenney <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Maciej Rozycki <macro@orcam.me.uk>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jann Horn <jannh@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Laura Abbott <labbott@kernel.org>,
+        David S Miller <davem@davemloft.net>,
+        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Scull <ascull@google.com>,
+        Marc Zyngier <maz@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Wang Qing <wangqing@vivo.com>, Mel Gorman <mgorman@suse.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
+        Mathieu Chouquet-Stringer <me@mathieu.digital>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stephen Kitt <steve@sk2.org>, Stephen Boyd <sboyd@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-hardening@vger.kernel.org,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>, notify@kernel.org,
+        main@lists.elisa.tech, safety-architecture@lists.elisa.tech,
+        devel@lists.elisa.tech, Shuah Khan <shuah@kernel.org>
+References: <20211027233215.306111-1-alex.popov@linux.com>
+ <ac989387-3359-f8da-23f9-f5f6deca4db8@linux.com>
+ <CAHk-=wgRmjkP3+32XPULMLTkv24AkA=nNLa7xxvSg-F0G1sJ9g@mail.gmail.com>
+ <77b79f0c-48f2-16dd-1d00-22f3a1b1f5a6@linux.com>
+ <CAKXUXMx5Oi-dNVKB+8E-pdrz+ooELMZf=oT_oGXKFrNWejz=fg@mail.gmail.com>
+ <20211115110649.4f9cb390@gandalf.local.home>
+ <202111151116.933184F716@keescook>
+From:   Alexander Popov <alex.popov@linux.com>
+In-Reply-To: <202111151116.933184F716@keescook>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 9:37 AM Ondrej Zary <linux@zary.sk> wrote:
->
-> On Friday 12 November 2021, Benjamin Tissoires wrote:
-> > Hi Ondrej,
-> >
-> > On Fri, Nov 12, 2021 at 3:00 PM Ondrej Zary <linux@zary.sk> wrote:
-> > >
-> > > Iiyama ProLite T1931SAW does not work with Linux - input devices are
-> > > created but cursor does not move.
-> > >
-> > > It has the infamous 0eef:0001 ID which has been reused for various
-> > > devices before.
-> > >
-> > > It seems to require export_all_inputs = true.
-> > > Add it to mt_devices[] as MT_CLS_WIN_8 to fix the problem.
-> > > Hopefully there are no HID devices using this ID that will break.
-> > > It should not break non-HID devices (handled by usbtouchscreen).
-> >
-> > Hmm, this is worrisome. I am pretty sure there were some eGalax 0001
-> > devices that were Win 7 compatible and I am not sure if they are
-> > compatible with Win8...
-> >
-> > I guess that if you have to set MT_CLS_WIN_8, the device is not
-> > detected as such. so how about you use:
-> > MT_CLS_EXPORT_ALL_INPUTS instead, (to keep MT_CLS_DEFAULT for those
-> > devices), and restrict the VID/PID matching to the non Win8 devices:
->
-> It works with MT_CLS_EXPORT_ALL_INPUTS.
->
-> > HID_DEVICE(BUS_USB, HID_GROUP_GENERIC, USB_VENDOR_ID_DWAV,
-> > USB_DEVICE_ID_EGALAX_TOUCHCONTROLLER)
->
-> But does not match HID_GROUP_GENERIC.
+On 16.11.2021 01:06, Kees Cook wrote:
+> Hmm, yes. What it originally boiled down to, which is why Linus first
+> objected to BUG(), was that we don't know what other parts of the system
+> have been disrupted. The best example is just that of locking: if we
+> BUG() or do_exit() in the middle of holding a lock, we'll wreck whatever
+> subsystem that was attached to. Without a deterministic system state
+> unwinder, there really isn't a "safe" way to just stop a kernel thread.
+> 
+> With this pkill_on_warn, we avoid the BUG problem (since the thread of
+> execution continues and stops at an 'expected' place: the signal
+> handler).
+> 
+> However, now we have the newer objection from Linus, which is one of
+> attribution: the WARN might be hit during an "unrelated" thread of
+> execution and "current" gets blamed, etc. And beyond that, if we take
+> down a portion of userspace, what in userspace may be destabilized? In
+> theory, we get a case where any required daemons would be restarted by
+> init, but that's not "known".
+> 
+> The safest version of this I can think of is for processes to opt into
+> this mitigation. That would also cover the "special cases" we've seen
+> exposed too. i.e. init and kthreads would not opt in.
+> 
+> However, that's a lot to implement when Marco's tracing suggestion might
+> be sufficient and policy could be entirely implemented in userspace. It
+> could be as simple as this (totally untested):
 
-Sorry, it should have been HID_GROUP_MULTITOUCH
+I don't think that this userspace warning handling can work as pkill_on_warn.
 
-Cheers,
-Benjamin
+1. The kernel code execution continues after WARN_ON(), it will not wait some 
+userspace daemon that is polling trace events. That's not different from 
+ignoring and having all negative effects after WARN_ON().
 
->
-> >
-> > ?
-> >
-> > Cheers,
-> > Benjamin
-> >
-> > >
-> > > Signed-off-by: Ondrej Zary <linux@zary.sk>
-> > > ---
-> > >  drivers/hid/hid-multitouch.c | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > >
-> > > diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
-> > > index e1afddb7b33d..099daf590392 100644
-> > > --- a/drivers/hid/hid-multitouch.c
-> > > +++ b/drivers/hid/hid-multitouch.c
-> > > @@ -1888,6 +1888,11 @@ static const struct hid_device_id mt_devices[] = {
-> > >                 MT_USB_DEVICE(USB_VENDOR_ID_CVTOUCH,
-> > >                         USB_DEVICE_ID_CVTOUCH_SCREEN) },
-> > >
-> > > +       /* eGalax devices (SAW) */
-> > > +       { .driver_data = MT_CLS_WIN_8,
-> > > +               MT_USB_DEVICE(USB_VENDOR_ID_DWAV,
-> > > +                       USB_DEVICE_ID_EGALAX_TOUCHCONTROLLER) },
-> > > +
-> > >         /* eGalax devices (resistive) */
-> > >         { .driver_data = MT_CLS_EGALAX,
-> > >                 MT_USB_DEVICE(USB_VENDOR_ID_DWAV,
-> > > --
-> > > Ondrej Zary
-> > >
-> >
-> >
->
->
->
-> --
-> Ondrej Zary
->
+2. This userspace policy will miss WARN_ON_ONCE(), WARN_ONCE() and 
+WARN_TAINT_ONCE() after the first hit.
 
+
+Oh, wait...
+I got a crazy idea that may bring more consistency in the error handling mess.
+
+What if the Linux kernel had a LSM module responsible for error handling policy?
+That would require adding LSM hooks to BUG*(), WARN*(), KERN_EMERG, etc.
+In such LSM policy we can decide immediately how to react on the kernel error.
+We can even decide depending on the subsystem and things like that.
+
+(idea for brainstorming)
+
+Best regards,
+Alexander
