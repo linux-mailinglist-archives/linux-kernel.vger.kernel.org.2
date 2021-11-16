@@ -2,119 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3DC453980
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 19:41:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E35453984
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 19:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239585AbhKPSop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 13:44:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41942 "EHLO
+        id S239613AbhKPSov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 13:44:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233361AbhKPSon (ORCPT
+        with ESMTP id S239590AbhKPSor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 13:44:43 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19035C061570;
-        Tue, 16 Nov 2021 10:41:46 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id v15so614587ljc.0;
-        Tue, 16 Nov 2021 10:41:45 -0800 (PST)
+        Tue, 16 Nov 2021 13:44:47 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD14C061767
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 10:41:50 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id o4so182131pfp.13
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 10:41:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=Ev+Z8GofAuShA+6MSPbZsEyMexTvzjpgK5iAE8RYcEo=;
-        b=WP6JjhxLaDgeIKB3Oaah0awO6eNzClvs20jJHLQ4Uhm9yqz4hM9gHJ8mH1nQJacF9o
-         lpaMm6uMdq3YLjCO2MNAT2W9GOpC3c5KVDXSW0Xu/VsyXIV7LZx7AXoojNM7pRxT3b5A
-         Img5LjlfTYCoYRqFEccV6Z8AhFIctVXFl0gy67lBTFwCWFRDYVXqaEDPrkJGeSn5o1wV
-         bvWYykjXvB6VK+LZnbzlq8YbfRXSDjIXE8ABWl4ktk4RUvYUXIilP85DJTFI1YdFoBHk
-         OCtSucHG//VoN2Q8k2s+QQwqProlEESCn4/Jp9GwGW8o5RM2U5RknKIFA0Uo3Fq0gGD8
-         17ZA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rpZo5Ukhloxpo3t6te7xJnWQRrow3d4oIhzJ9wNY//s=;
+        b=VSNC43P14WmPSZmUrPilJ+DgGj5eVm+rYneRkINAieo4BCqCLBy5QiE+yxx4dMJHrP
+         ofgb/NWCMtHijcLBbRJZt2srQLA+UEZ3FYMnXTi4zhVU59bazntvLi1ZB9x1FOAMm3MU
+         zC1NqI7P7FvTEoA0kb6E30B9MNDZ7w/u4TNWQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Ev+Z8GofAuShA+6MSPbZsEyMexTvzjpgK5iAE8RYcEo=;
-        b=SfxhXloDNU++kDpLGMV+0yxfB4NM5L92Q64LSXY00nN9l/MKhHPT5zFGA32+N9jJgY
-         hdKL/vkNu6+QkSXyN73CnDJQTgKFCCvMx8fkDO8jxEHK1nfgRwsOE1RItZ+6rZgVhjmu
-         AlICnz8cXajya+wNnJpKjyiQwV1LeELnF7EBya9nvgwit7U6CZ86p6hCg02pmph3YDVW
-         WaPljZA+0ttwwBp4IuDiopd0H1kzH+8rDz2PVMJJQZ+abcSKkLI1deqoRmZn483YPKrC
-         fZ9/bll/Vas1lab/XHvw0SXWkXpFSRvZNAIbgR6tifZEx9VtVTm+Rakr7YjDxvOnHhRz
-         040w==
-X-Gm-Message-State: AOAM530VWDiOoaUP6KiJNL3+jswRbaGUkvTR+pwEUFBX5SXp0tnu8kAz
-        l3NAiYQ7uPayo/mKtE82SBo=
-X-Google-Smtp-Source: ABdhPJwy7gnyina6AmEtdTgTI8tN+0APz/lr3dAPSGSO7jRZEGujy4FJ3mEu9Kb8MKhcScMinhw4ug==
-X-Received: by 2002:a05:651c:11cf:: with SMTP id z15mr1349209ljo.30.1637088104403;
-        Tue, 16 Nov 2021 10:41:44 -0800 (PST)
-Received: from ?IPV6:2001:14ba:16ee:fa00::4? (dc73szyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16ee:fa00::4])
-        by smtp.gmail.com with ESMTPSA id n7sm1924466ljg.113.2021.11.16.10.41.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 10:41:44 -0800 (PST)
-Message-ID: <50c260a1-c6d0-1a0b-45da-ab1a2d1379c3@gmail.com>
-Date:   Tue, 16 Nov 2021 20:41:42 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH RESEND 0/4] Drop ROHM BD70528 support
-Content-Language: en-US
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        devicetree <devicetree@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rpZo5Ukhloxpo3t6te7xJnWQRrow3d4oIhzJ9wNY//s=;
+        b=Ab9jK27gj4q1P/mHqxpqTQclsUCl57j0f/eYgbAlF0x25R0SycVT93OvAjP8FCfYgZ
+         Vwh1m7+BJjYSHsqssKx5NcDK7pW4ODHUD+YdI3O0/uTjcsjoIzKl5+aSu4Mv9yUQUPVY
+         8zWpjt+8RSmTRpL/ekjON7gjvjsWFxWRiZ3ReY4VZqKjegtkoD4kpaYQtpHw9M06Ci1W
+         qLNxEZjE2s5GvZAhn7hb3TchwWHLdJDtScXYeHUeDXWd329BA40LTNur9CAZBFm7NUEY
+         TTtqIdbQkuon/VK0F8Y4+SPy+28j9nIMKC1WC9T5IaRJ5VZDsT1KxTevw1NXiAm6legG
+         11dg==
+X-Gm-Message-State: AOAM533slL+DnR1vvwgwcQrJNpSQPwHNj0slvVIWr2/+70r9z9cEKvfH
+        6q1VWWx1eN2av9aEiLcMrZ1W2w==
+X-Google-Smtp-Source: ABdhPJwwvQRQ7H1L7erOMj0WCwxaWTV8d2CBQFnkm/BoZWo9AQPZdRvAdBwwSZAEqBBMD7kMUEk6Tw==
+X-Received: by 2002:a63:b502:: with SMTP id y2mr798068pge.214.1637088110275;
+        Tue, 16 Nov 2021 10:41:50 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id m6sm14550926pgc.17.2021.11.16.10.41.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 10:41:49 -0800 (PST)
+Date:   Tue, 16 Nov 2021 10:41:49 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Alexander Popov <alex.popov@linux.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul McKenney <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Maciej Rozycki <macro@orcam.me.uk>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jann Horn <jannh@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Laura Abbott <labbott@kernel.org>,
+        David S Miller <davem@davemloft.net>,
+        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Scull <ascull@google.com>,
+        Marc Zyngier <maz@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Wang Qing <wangqing@vivo.com>, Mel Gorman <mgorman@suse.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
+        Mathieu Chouquet-Stringer <me@mathieu.digital>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stephen Kitt <steve@sk2.org>, Stephen Boyd <sboyd@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-hardening@vger.kernel.org,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>
-References: <cover.1637066805.git.matti.vaittinen@fi.rohmeurope.com>
- <CAHp75Ve_qS0Qc8XLHLwFnWEPzQtgNfEeVr8q9L4gK2m5a-By0A@mail.gmail.com>
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <CAHp75Ve_qS0Qc8XLHLwFnWEPzQtgNfEeVr8q9L4gK2m5a-By0A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>, notify@kernel.org,
+        main@lists.elisa.tech, safety-architecture@lists.elisa.tech,
+        devel@lists.elisa.tech, Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH v2 0/2] Introduce the pkill_on_warn parameter
+Message-ID: <202111161037.7456C981@keescook>
+References: <20211027233215.306111-1-alex.popov@linux.com>
+ <ac989387-3359-f8da-23f9-f5f6deca4db8@linux.com>
+ <CAHk-=wgRmjkP3+32XPULMLTkv24AkA=nNLa7xxvSg-F0G1sJ9g@mail.gmail.com>
+ <77b79f0c-48f2-16dd-1d00-22f3a1b1f5a6@linux.com>
+ <CAKXUXMx5Oi-dNVKB+8E-pdrz+ooELMZf=oT_oGXKFrNWejz=fg@mail.gmail.com>
+ <20211115110649.4f9cb390@gandalf.local.home>
+ <202111151116.933184F716@keescook>
+ <59534db5-b251-c0c8-791f-58aca5c00a2b@linux.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <59534db5-b251-c0c8-791f-58aca5c00a2b@linux.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 18:10, Andy Shevchenko wrote:
-> On Tue, Nov 16, 2021 at 2:52 PM Matti Vaittinen
-> <matti.vaittinen@fi.rohmeurope.com> wrote:
->>
->> Drop ROHM BD70528 support
->>
->> Unfortunately there has not been a big demand for ROHM BD70528
->> IC. The few users I know control PMIC from separate M4-core,
->> which is not running Linux. I am not aware of any users of this
->> Linux driver.
->>
->> While I did really like this IC and writing the drivers for it,
->> seems like these drivers are becoming useless burden. So, I see
->> no point in maintaining them. Let's just drop the drivers if
->> there is no objections to this series. :(
->>
->> The regulator, WDG and power-supply drivers were already dropped.
->>
->> The RTC and clk drivers remain in use by few other ROHM IC drivers.
->> Nevertheless, they are already converted to not depend the BD70528
->> defines during previous cycle.
->>
->> This series cleans the remaining pieces, GPIO, MFD, dt-bindings and
->> MAINTAINER entries. The GPIO code uses defines from MFD - but the GPIO
->> part is also depending on MFD KConfig entry - so there should be no
->> breakages even if the patches were applied to respective subsystem trees
->> and were not carried via single tree.
-> 
-> FWIW, no objections from me.
+On Tue, Nov 16, 2021 at 12:12:16PM +0300, Alexander Popov wrote:
+> What if the Linux kernel had a LSM module responsible for error handling policy?
+> That would require adding LSM hooks to BUG*(), WARN*(), KERN_EMERG, etc.
+> In such LSM policy we can decide immediately how to react on the kernel error.
+> We can even decide depending on the subsystem and things like that.
 
-Thanks Andy!
+That would solve the "atomicity" issue the WARN tracepoint solution has,
+and it would allow for very flexible userspace policy.
 
-I see acks from Andu, Bartosz, Lee and Rob. It'd be nice to see ack from 
-Linus W too - but other than that - I guess this is good to go. Any 
-preferences regarding the tree(s) that could carry the patches? All via 
-MFD or each patch merged to the subsystem it fits the best?
+I actually wonder if the existing panic_on_* sites should serve as a
+guide for where to put the hooks. The current sysctls could be replaced
+by the hooks and a simple LSM.
 
-Best Regards
-	Matti Vaittinen
+-- 
+Kees Cook
