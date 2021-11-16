@@ -2,96 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1428452EED
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 11:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E69C452EE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 11:21:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234093AbhKPKYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 05:24:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234035AbhKPKY1 (ORCPT
+        id S233959AbhKPKYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 05:24:14 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:60018 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233859AbhKPKXJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 05:24:27 -0500
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F04AC061766;
-        Tue, 16 Nov 2021 02:21:30 -0800 (PST)
-Received: by mail-ua1-x929.google.com with SMTP id ay21so41211137uab.12;
-        Tue, 16 Nov 2021 02:21:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hUo41dA8J9XxTRrnTRH8PmjQf1ZA/nli+HzNQ39/Nrw=;
-        b=mfvlRT+G+C0joXUKIQIV1pisFDOl6ozAExFYU0X57hIxjfPz26ZfvvaaIfzp2JZUZi
-         jGYt3BI5NEuAk4ounMGlvrod4Q0UzR+XHlib+6/71AistsL+bQAXagjjcSHW/iWsbuRa
-         QhxSeMQJQH1NmH1U5FUEgG5aWEcS4kH78oLzdGMOKdPPdHJr5YaUwOEJ2Z6mj6HxT1NC
-         3XowRYcPBDAGvAYMM4txOqoBTPM36NXmfU9J+wPGhpeZtM6jZV9EtNmw27h0MyWH9gUw
-         lYcieDrZRmLPiP+hjrP9eNQ4aRi5wOw0OivT+w6/oCmW+S0ZbbGIc/mWux6BudJNdOso
-         de0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hUo41dA8J9XxTRrnTRH8PmjQf1ZA/nli+HzNQ39/Nrw=;
-        b=YqQ3S4lWyL6HQtK4LsEIQAlawaHvsibsf51O2VczYkBFFMK9umdEt153wrj8SbheLB
-         w4u7UjHb3ULFguknbsJanjXEqz1RoOAmwTEwy7BA7UcZTpbWtpOW9o1znrx4RGcvLqpN
-         ml7Q7i5DtUsZjXNcBSCpF58xLznDDx/chyuctFD+LDeG0N0ExJn08TLMxwlFSyhab4JU
-         iy7QmyLAw2wNFoEtjdrX2Ll0KZBcuDyYGftBIHCDrG/tJjjg08GzyiHn79u1luVyCkJf
-         ES/Pi9meYphXmzLJK7+P444DrSYdxVVvPNAvL8/8tUhj3NvpYlCRT832zze1YkvVR38/
-         VqXA==
-X-Gm-Message-State: AOAM532a1OWqxiQYgUG9HmpvpHsMihFjW598kunTXmWm4zG22p6DwjM5
-        E2gGqBzpHOZfd2PH008kiu5F+NL0R4Glhi444Q==
-X-Google-Smtp-Source: ABdhPJw0BIDe3UgX4EYtJQwZmqUk7ZARIQehiSa5nAZZi5z6pOodwsCQENmcw5LDkYTf4QVmDrKhzsb4P+ypLdBhAz4=
-X-Received: by 2002:ab0:2498:: with SMTP id i24mr9317458uan.18.1637058089320;
- Tue, 16 Nov 2021 02:21:29 -0800 (PST)
+        Tue, 16 Nov 2021 05:23:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1637058012; x=1668594012;
+  h=date:from:to:subject:message-id:references:mime-version:
+   in-reply-to;
+  bh=m8W15a1kB0nLYDdrfk+rvxEdZSKbZUupLWjYQM6oGUE=;
+  b=VM+COGe2aRAO+p3jbrT7ZTDFYx4tolhOoknZHwLoxf4VZjsOFN/R/fps
+   AbOoTm4i9o13laE9y+zRetq0bZM0PFWLsoK6lkeph0MAYeVMqA9/7MIRq
+   ueujY1dyRd2g16rLzEgI9YfaM7HcaBD7Bkc7+cqgwyMmFA2GVtUG+GJdQ
+   QUL3IOuOQWEgMhZofOLDE3pKG74443qU6KhEPnI/WNx4Hi8qWCxaWqLHy
+   uti+eWlaw7pLxqQhHwXC0eeOq2ZSj3MeOuxaZHQsoPqEk4q34vVKgcPFr
+   8apTlk1Opluwxd3Vxl0mKRb8dg6aZG4VC4167gPyqpNhHAiEcFdYop5r2
+   A==;
+IronPort-SDR: 4n34fcCSukz9vWI6Hp+XCvNkuvIzQyTCpcm7aUJcq/KRkRR/m3L8Dc/7X5E+Pki48BULritxaq
+ S8SfBWOvJXsL7B6RmeFHE560et+BiYa4xmrDIkV0l8sNABP5FV3ffBjj+uL4PvEPjOWPcDJ832
+ QxGKyIlx92FSc040oCzA3vJN91kBdtClXmI8Fcf0tXP5K8UbotLgWy0Ll+zWOUSAUHvBwgWZK6
+ kCSmbhU1DAKlFejG29dQVYyxdVkw7bPh36SneMWd2/cZaPhBU5fGWVo63rb+BAh7HnpoMneW9E
+ LKzi3L5vfJ2Cp6yQkWvwsfIk
+X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
+   d="scan'208";a="136710789"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Nov 2021 03:20:08 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Tue, 16 Nov 2021 03:20:05 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Tue, 16 Nov 2021 03:20:05 -0700
+Date:   Tue, 16 Nov 2021 11:21:51 +0100
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <kishon@ti.com>, <vkoul@kernel.org>, <robh+dt@kernel.org>,
+        <andrew@lunn.ch>, <alexandre.belloni@bootlin.com>,
+        <kuba@kernel.org>, <linux-phy@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH resend v4 0/3] phy: Add driver for lan966x Serdes driver
+Message-ID: <20211116102151.k3evnn4f2rwsi5nk@soft-dev3-1.localhost>
+References: <20211116100818.1615762-1-horatiu.vultur@microchip.com>
 MIME-Version: 1.0
-References: <20211104180130.3825416-1-maz@kernel.org> <87ilx64ued.ffs@tglx>
-In-Reply-To: <87ilx64ued.ffs@tglx>
-From:   Rui Salvaterra <rsalvaterra@gmail.com>
-Date:   Tue, 16 Nov 2021 10:21:18 +0000
-Message-ID: <CALjTZvag6ex6bhAgJ_rJOfai8GgZQfWesdV=FiMrwEaXhVVVeQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2] PCI: MSI: Deal with devices lying about their masking capability
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        kernel-team@android.com, stable@vger.kernel.org,
-        gregkh@linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20211116100818.1615762-1-horatiu.vultur@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Thomas,
+The 11/16/2021 11:08, Horatiu Vultur wrote:
 
-On Fri, 5 Nov 2021 at 13:14, Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> On Thu, Nov 04 2021 at 18:01, Marc Zyngier wrote:
-> > Rui reported[1] that his Nvidia ION system stopped working with 5.15,
-> > with the AHCI device failing to get any MSI. A rapid investigation
-> > revealed that although the device doesn't advertise MSI masking, it
-> > actually needs it. Quality hardware indeed.
-> >
-> > Anyway, the couple of patches below are an attempt at dealing with the
-> > issue in a more or less generic way.
-> >
-> > [1] https://lore.kernel.org/r/CALjTZvbzYfBuLB+H=fj2J+9=DxjQ2Uqcy0if_PvmJ-nU-qEgkg@mail.gmail.com
-> >
-> > Marc Zyngier (2):
-> >   PCI: MSI: Deal with devices lying about their MSI mask capability
-> >   PCI: Add MSI masking quirk for Nvidia ION AHCI
-> >
-> >  drivers/pci/msi.c    | 3 +++
-> >  drivers/pci/quirks.c | 6 ++++++
-> >  include/linux/pci.h  | 2 ++
-> >  3 files changed, 11 insertions(+)
->
-> Groan.
->
-> Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+Hi Kison, Vinod,
 
-Just a reminder, to make sure this doesn't fall through the cracks.
-It's already in 5.16, but needs to be backported to 5.15. I'm not
-seeing it in Greg's 5.15 stable queue yet.
+Can you let me know if you have more comments to this patch series?
+Otherwise can you ack on it? Because I would like to have the patches
+merged via netdev if that is OK for you.
 
-Thanks,
-Rui
+Thanks
+
+
+> This patch serie adds support for Microchip lan966x serdes. The lan966x
+> device contains 7 interfaces, consisting of 2 copper transceivers,
+> 3 Serdes and 2 RGMII interfaces. Two of the Serdes support QSGMII.
+> The driver also adds the functionality of "muxing" the interfaces to
+> different logical ports.
+> 
+> The following table shows which interfaces can be supported by the port.
+> 
+> PortNumber    Max Speed    Ethernet interface options
+>     0            1Gbps       CuPHY, 1G SGMII or QSGMII
+>     1            1Gbps       CuPHY, 1G SGMII or QSGMII
+>     2          2.5Gbps       2.5G SGMII, QSGMII, RGMII
+>     3          2.5Gbps       2.5G SGMII, QSGMII, RGMII
+>     4          2.5Gbps       2.5G SGMII, QSGMII
+>     5            1Gbps       QSGMII, RGMII
+>     6            1Gbps       QSGMII, RGMII
+>     7            1Gbps       QSGMII
+> 
+> v3->v4:
+> - update description of the driver
+> - removed unused registers
+> - use bitfield operations in the registers
+> - add macros for PLL configuration
+> - move macros and structs at the top of the file
+> 
+> v2->v3:
+> - remove unused includes
+> - add missing '...' in microchip,lan966x-serdes.yaml
+> - rename lan966x-serdes.h to phy-lan966x-serdes.h
+> - Rename CU->PHY and RG->RGMII
+> - update commit message for PATCH 2
+> 
+> v1->v2:
+> - replace the regmap with iomem
+> - update DT bindings
+> 
+> Horatiu Vultur (3):
+>   dt-bindings: phy: Add lan966x-serdes binding
+>   dt-bindings: phy: Add constants for lan966x serdes
+>   phy: Add lan966x ethernet serdes PHY driver
+> 
+>  .../phy/microchip,lan966x-serdes.yaml         |  59 ++
+>  drivers/phy/microchip/Kconfig                 |   8 +
+>  drivers/phy/microchip/Makefile                |   1 +
+>  drivers/phy/microchip/lan966x_serdes.c        | 548 ++++++++++++++++++
+>  drivers/phy/microchip/lan966x_serdes_regs.h   | 209 +++++++
+>  include/dt-bindings/phy/phy-lan966x-serdes.h  |  14 +
+>  6 files changed, 839 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/phy/microchip,lan966x-serdes.yaml
+>  create mode 100644 drivers/phy/microchip/lan966x_serdes.c
+>  create mode 100644 drivers/phy/microchip/lan966x_serdes_regs.h
+>  create mode 100644 include/dt-bindings/phy/phy-lan966x-serdes.h
+> 
+> -- 
+> 2.33.0
+> 
+
+-- 
+/Horatiu
