@@ -2,82 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A216D453C91
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F2F453C9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:13:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232237AbhKPXOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 18:14:33 -0500
-Received: from smtprelay0024.hostedemail.com ([216.40.44.24]:38858 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229704AbhKPXOc (ORCPT
+        id S232263AbhKPXPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 18:15:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232239AbhKPXPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 18:14:32 -0500
-Received: from omf13.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id E5D631829912D;
-        Tue, 16 Nov 2021 23:11:32 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf13.hostedemail.com (Postfix) with ESMTPA id F396A2000266;
-        Tue, 16 Nov 2021 23:11:24 +0000 (UTC)
-Message-ID: <d4e9430989b427e95448ef57b22605d1f4dbc499.camel@perches.com>
-Subject: Re: [PATCH v3 1/3] MAINTAINERS: Update maintainers for paravirt ops
- and VMware hypervisor interface
-From:   Joe Perches <joe@perches.com>
-To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>, jgross@suse.com,
-        x86@kernel.org, pv-drivers@vmware.com,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        Deep Shah <sdeep@vmware.com>, stable@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, keerthanak@vmware.com,
-        srivatsab@vmware.com, anishs@vmware.com, vithampi@vmware.com,
-        linux-kernel@vger.kernel.org, namit@vmware.com, kuba@kernel.org,
-        rostedt@goodmis.org
-Date:   Tue, 16 Nov 2021 15:11:28 -0800
-In-Reply-To: <20211116181837.GA24696@csail.mit.edu>
-References: <163657479269.84207.13658789048079672839.stgit@srivatsa-dev>
-         <163657487268.84207.5604596767569015608.stgit@srivatsa-dev>
-         <YYy9P7Rjg9hntmm3@kroah.com> <20211111153916.GA7966@csail.mit.edu>
-         <YY1krlfM5R7uEzJF@kroah.com> <20211111194002.GA8739@csail.mit.edu>
-         <YY6hhWtvh+OvOqAl@sashalap> <20211115223900.GA22267@csail.mit.edu>
-         <70cd970d6c39a5ea5e88cbf4b86031c22c5d10d4.camel@perches.com>
-         <20211116181837.GA24696@csail.mit.edu>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+        Tue, 16 Nov 2021 18:15:03 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A095C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 15:12:06 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id g14so1979680edb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 15:12:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pensando.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+FOQ/sRLLKL2n8D67xhtne1+6QjN4MmxkGWuAPYSYFU=;
+        b=ZSbtVfyHFNCPojkasx6Tp7Wo3H/ofQiL38o5dRfRNGrRB1kyRN8Vd7Z83qaN7FH/n8
+         bL58fwkkH7Ol/VPda6afFVS6M5W80Ga4tJ6MVNCCRr1z2uSibF/FMjiyBj363LW0HgOi
+         DfWaTzKB2Yt7wlaRD5m4LhklSnIP7m7DxMx2dD4CivyXH2Sz9JBJg0T3NyJwBnNdmUJg
+         2nQYNZjx4m8pXYfv5GNtLbh5MjGgVMxRAHdIu2yQYUuB2Jol1gI5NY5PkcI/o3bJAHKV
+         YuFk6Be73lvUEGF3MW1uFaVnPdcgqMPa+KWvSTe7G7zC+HKhrmce4UG2YeON3EfGaewi
+         GZAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+FOQ/sRLLKL2n8D67xhtne1+6QjN4MmxkGWuAPYSYFU=;
+        b=11qHsHQabp0bU5U0dkyVR9PTJyX/dUOn9p5YhjMDj78yoPPJE2xj6qBPukAR8FQptP
+         AgCZxjU84dmo4b04STB9BppwjsN2AZ0sT36n61885o2Ff2eOdBdRCHYB1IUVDsBDLYUw
+         +5Rk7f+esHwigYPuvlxwSwUZmR3fGY/Y61adbJ7Tss33freG+KKEHY7F5zNP2zgcOPuf
+         yD2eFp0mTaNX7T3RBF6F2AS/y6XvRLP1Ps3aDB+FuvJmGX+dihw0j3ggp6d5q+wMT8tR
+         aj/B/xgTwqpdTr3V7hNB3mRLBCY0WXfvoqhg4k7rnD+sO5oAhomKJLu9CSO1zjJ8iIrE
+         G8Wg==
+X-Gm-Message-State: AOAM531hojkdurp7FaavR1M9LwcpLTtG551+szt2Z2b1IZl+NLJsfOXY
+        CSpbzlc0QgM7NAm7b/xtsdjKPIv0Ekhc/l1olivOJg==
+X-Google-Smtp-Source: ABdhPJz2wF5JF1ydPJjyqPEwYlCjMltAxHidsQ4cfpYNY8KosRGi6/KK+aEQfERtYk3HS3Fkv18BPluzzYQrew/QaNI=
+X-Received: by 2002:a17:907:2d20:: with SMTP id gs32mr14959055ejc.270.1637104324599;
+ Tue, 16 Nov 2021 15:12:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.90
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: F396A2000266
-X-Stat-Signature: fopgi45mrrmohs63mm8zh3mmrq316zpw
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18gfxLs9Ei5ua9isHj0ybElXINBrGjr1+s=
-X-HE-Tag: 1637104284-88717
+References: <20211025015156.33133-1-brad@pensando.io> <20211025015156.33133-6-brad@pensando.io>
+ <20211028074945.rv2j5kgzk7yc2srr@mobilestation> <CAK9rFnw396xK+u3qUpgbnGNw7WDJPJm0L3o4nPAcFeqQjBDbXg@mail.gmail.com>
+ <20211116112907.lbwdcz5pmgxqzv55@mobilestation>
+In-Reply-To: <20211116112907.lbwdcz5pmgxqzv55@mobilestation>
+From:   Brad Larson <brad@pensando.io>
+Date:   Tue, 16 Nov 2021 15:11:53 -0800
+Message-ID: <CAK9rFny7zQRpvGOVK0+01hKQNu7XCMOz8vTfbHPs6gMR10muDw@mail.gmail.com>
+Subject: Re: [PATCH v3 05/11] spi: dw: Add Pensando Elba SoC SPI Controller bindings
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Olof Johansson <olof@lixom.net>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-11-16 at 10:18 -0800, Srivatsa S. Bhat wrote:
-> On Mon, Nov 15, 2021 at 08:33:40PM -0800, Joe Perches wrote:
-> > On Mon, 2021-11-15 at 14:39 -0800, Srivatsa S. Bhat wrote:
-> > > On Fri, Nov 12, 2021 at 12:16:53PM -0500, Sasha Levin wrote:
-> > > > Maybe we should just remove MAINTAINERS from stable trees to make it
-> > > > obvious.
-> > > 
-> > > I don't think we should go quite that far. Instead, perhaps we can
-> > > modify get_maintainer.pl (if needed) such that it prints out a warning
-> > > or reminder to consult the upstream MAINTAINERS file if the script is
-> > > invoked on an older stable kernel.
-> > 
-> > I don't see how that's feasible.
-> > 
-> 
-> Not that I'm pushing for this change, but isn't it straight-forward to
-> distinguish upstream and stable kernel releases based on their
-> versioning schemes? The SUBLEVEL in the Makefile is always 0 for
-> upstream, and positive for stable versions (ignoring ancient kernels
-> like v2.6.32, of course). Since stable kernels are behind mainline by
-> definition, anytime the get_maintainer.pl script is invoked on a
-> kernel with a positive SUBLEVEL value, we can print out the said
-> warning/reminder (if it is considered useful).
+Hi Sergey,
 
-checkpatch doesn't work on trees, it works on patches.
+On Tue, Nov 16, 2021 at 3:29 AM Serge Semin <fancer.lancer@gmail.com> wrote:
+>
+> > > AFAICS from the driver-part of the patchset it's not enough. You've
+> > > also got the syscon phandle, which needs to be reflected in the
+> > > bindings. That also makes me thinking that you didn't perform the
+> > > "dtbs_check" on the dts-files you were going to submit, but for some
+> > > reason discarded from this series (btw why?). If you did you would
+> > > have got an error of an unevaluated property detection.
+> >
+> > I ran the checks below and didn't get errors.  Rob provided some info
+> > and I found the server did not have yamllint installed (not flagged by
+> > tool).  Also dt-schema was not the latest.  I'm re-doing this and
+> > including "DT_CHECKER_FLAGS=-m" as that is new with v5.13.
+> >
+>
+> > make ARCH=arm64 dtbs_check
+> > DT_SCHEMA_FILES=Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
+> > make ARCH=arm64 dtbs_check
+> > DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+> > make ARCH=arm64 dtbs_check
+> > DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> > make ARCH=arm64 dtbs_check
+> > DT_SCHEMA_FILES=Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > make ARCH=arm64 dtbs_check
+> > DT_SCHEMA_FILES=Documentation/devicetree/bindings/arm/pensando,elba.yaml
+>
+> Hmm, that's weird. Rob, does dtschema tool have the
+> "unevaluatedProperties" property support?
+>
+> Brad, anyway you still need to add the syscon-property (pensando,*spics)
+> requirement in the snps,dw-apb-ssi.yaml schema. See the way it's done there
+> for instance for "baikal,bt1-sys-ssi" when it comes to the
+> vendor-specific properties definition in the allOf composition block.
+> You'll need to define a custom phandle property there in case if a
+> DT-node is compatible with you SPI controller.
 
+Updating and adding only this bindings update to file
+snps,dw-apb-ssi.yaml in 5.16.0-rc1 (next-20211116):
+
+diff --git a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+index d7e08b03e204..99deb587a47b 100644
+--- a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
++++ b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+@@ -37,6 +37,21 @@ allOf:
+     else:
+       required:
+         - interrupts
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - pensando,elba-spics
++    then:
++      properties:
++        pensando,spics:
++          $ref: /schemas/types.yaml#/definitions/phandle
++          description:
++            Phandle to the system control device node which provides access to
++            the spics control register
++      required:
++        - pensando,spics
+
+ properties:
+   compatible:
+@@ -73,6 +88,8 @@ properties:
+               - renesas,r9a06g032-spi # RZ/N1D
+               - renesas,r9a06g033-spi # RZ/N1S
+           - const: renesas,rzn1-spi   # RZ/N1
++      - description: Pensando Elba SoC SPI Controller
++        const: pensando,elba-spics
+
+   reg:
+     minItems: 1
+
+$ make ARCH=arm64 defconfig
+...
+
+$ make DT_CHECKER_FLAGS=-m dt_binding_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+...
+  DTEX    Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dts
+  DTC     Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml
+  CHECK   Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml
+Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml:0:0:
+/example-0/spi@fff00000/flash@1: failed to match any schema with
+compatible: ['spi-nand']
+
+The spi-nand schema match failure happens before I make any change.
+The tool also throws errors for these files which are unrelated
+
+Documentation/devicetree/bindings/net/qcom,ipa.yaml: ignoring, error
+in schema: properties: qcom,smem-state-names
+Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml:
+ignoring, error in schema: patternProperties: ^filter@[0-9]+$:
+properties: st,adc-channel-names
+Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml:
+ignoring, error in schema: properties: qcom,bcm-voter-names
+
+Thanks,
+Brad
