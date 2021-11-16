@@ -2,58 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACEDE453A7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4412453A8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234090AbhKPUEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 15:04:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38920 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240149AbhKPUED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 15:04:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68B0F61A89;
-        Tue, 16 Nov 2021 20:01:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1637092866;
-        bh=Ynrka1yWhfVCzAzmYhDHu5sH4g5cHmPDLnKJdmLK8YI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=neNhS1h886Kaixhsht7yeAo+QVmkAcGP146mL0ESM3aLhv0bPcohQlUcklu+xYXSZ
-         pDigaSrgfzJUvk5++ARPT7jG3aBZGwmAVL+R4s6QTMMS3XdKc1H5guX1L+I9LXIBzA
-         jgTm+dOC+xySpqtPVapKWQX/qR0KXaObnsN6Jk4s=
-Date:   Tue, 16 Nov 2021 12:01:04 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>, gladkov.alexey@gmail.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 0/4] remove PDE_DATA()
-Message-Id: <20211116120104.f96b7f21a333c2c8d140e015@linux-foundation.org>
-In-Reply-To: <CAMZfGtX+GkVf_7D8G+Ss32+wYy1bcMgDpT5FJDA=a9gdjW36-w@mail.gmail.com>
-References: <20211101093518.86845-1-songmuchun@bytedance.com>
-        <20211115210917.96f681f0a75dfe6e1772dc6d@linux-foundation.org>
-        <CAMZfGtX+GkVf_7D8G+Ss32+wYy1bcMgDpT5FJDA=a9gdjW36-w@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S240201AbhKPUJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 15:09:20 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:44542 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233079AbhKPUJS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 15:09:18 -0500
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.1)
+ id 51b55b9c7d7e3a71; Tue, 16 Nov 2021 21:06:19 +0100
+Received: from kreacher.localnet (unknown [213.134.175.214])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 4909D66AAED;
+        Tue, 16 Nov 2021 21:06:18 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: [PATCH] ACPI: PM: Emit debug messages when enabling/disabling wakeup power
+Date:   Tue, 16 Nov 2021 21:06:17 +0100
+Message-ID: <5517426.DvuYhMxLoT@kreacher>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.175.214
+X-CLIENT-HOSTNAME: 213.134.175.214
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvuddrfedvgddufedtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpefhgedtffejheekgeeljeevvedtuefgffeiieejuddutdekgfejvdehueejjeetvdenucfkphepvddufedrudefgedrudejhedrvddugeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddujeehrddvudegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Nov 2021 16:26:12 +0800 Muchun Song <songmuchun@bytedance.com> wrote:
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-> >
-> > because new instances are sure to turn up during the development cycle.
-> >
-> > But I can handle that by staging the patch series after linux-next and
-> > reminding myself to grep for new PDE_DATA instances prior to
-> > upstreaming.
-> 
-> I'd be happy if you could replace PDE_DATA() with inode->i_private.
-> In this case, should I still introduce pde_data() and perform the above
-> things to make this series smaller?
+Print additional debug messages when enabling and disabling wakeup
+power for an ACPI device object to facilitate more fine-grained
+debugging of problems in that area.
 
-I do tend to think that pde_data() would be better than open-coding
-inode->i_private everywhere.  More explanatory, easier if we decide to
-change it again in the future.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/power.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+Index: linux-pm/drivers/acpi/power.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/power.c
++++ linux-pm/drivers/acpi/power.c
+@@ -716,6 +716,9 @@ int acpi_enable_wakeup_device_power(stru
+ 
+ 	mutex_lock(&acpi_device_lock);
+ 
++	dev_dbg(&dev->dev, "Enabling wakeup power (count %d)\n",
++		dev->wakeup.prepare_count);
++
+ 	if (dev->wakeup.prepare_count++)
+ 		goto out;
+ 
+@@ -734,8 +737,11 @@ int acpi_enable_wakeup_device_power(stru
+ 	if (err) {
+ 		acpi_power_off_list(&dev->wakeup.resources);
+ 		dev->wakeup.prepare_count = 0;
++		goto out;
+ 	}
+ 
++	dev_dbg(&dev->dev, "Wakeup power enabled\n");
++
+  out:
+ 	mutex_unlock(&acpi_device_lock);
+ 	return err;
+@@ -757,6 +763,9 @@ int acpi_disable_wakeup_device_power(str
+ 
+ 	mutex_lock(&acpi_device_lock);
+ 
++	dev_dbg(&dev->dev, "Disabling wakeup power (count %d)\n",
++		dev->wakeup.prepare_count);
++
+ 	/* Do nothing if wakeup power has not been enabled for this device. */
+ 	if (dev->wakeup.prepare_count <= 0)
+ 		goto out;
+@@ -782,8 +791,11 @@ int acpi_disable_wakeup_device_power(str
+ 	if (err) {
+ 		dev_err(&dev->dev, "Cannot turn off wakeup power resources\n");
+ 		dev->wakeup.flags.valid = 0;
++		goto out;
+ 	}
+ 
++	dev_dbg(&dev->dev, "Wakeup power disabled\n");
++
+  out:
+ 	mutex_unlock(&acpi_device_lock);
+ 	return err;
+
+
 
