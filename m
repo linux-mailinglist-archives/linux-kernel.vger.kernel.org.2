@@ -2,77 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B81FD452CF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F4A452CF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232417AbhKPIjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 03:39:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232515AbhKPIiT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 03:38:19 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FF9C061200;
-        Tue, 16 Nov 2021 00:35:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=sU/4DH/+XhhXpbKXlYS/Eskb40hxc9he/91nSaQu5vc=; b=Y7f/Wtw7YpekMwuS6LpLvp6DQR
-        UIdcXo4qyYBlCUOQ7Si4ZT2z/HVHtgCMt53XCGCe5/oxxEkTG0eoR0Cmbz33MVVB/UiOVJ6PKb9eG
-        BKeVj6jdxbpZXDR+p0xI1pE1oCb0R9sls3t1gK4IzcEdii8MHE0HrCUxi6pHsVrDKaqKwTaXXmDQs
-        0pvXFektuXsBSuM0r2kRphRqBqP+HPaeDGSBSFEue1WZdplqmBNn9/xwUccN0QXgO8JAw2yt4VxOq
-        3DKEbOaz8uNaWHOKeTYhISiAR5MCH2qOXNtyEA9EiuQWwXFmzJ2q+8a2mLHwq4TXPffRHtmVYd9i0
-        6VCCPi8g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mmtva-006ab5-K8; Tue, 16 Nov 2021 08:34:55 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D370498651D; Tue, 16 Nov 2021 09:34:54 +0100 (CET)
-Date:   Tue, 16 Nov 2021 09:34:54 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Kajol Jain <kjain@linux.ibm.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, acme@kernel.org,
-        songliubraving@fb.com, andrii@kernel.org, kafai@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, davem@davemloft.net, kpsingh@kernel.org,
-        hawk@kernel.org, kuba@kernel.org, maddy@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com, linux-perf-users@vger.kernel.org,
-        rnsastry@linux.ibm.com
-Subject: Re: [PATCH] bpf: Enable bpf support for reading branch records in
- powerpc
-Message-ID: <20211116083454.GY174703@worktop.programming.kicks-ass.net>
-References: <20211115044437.12047-1-kjain@linux.ibm.com>
- <5a185d6b-7090-23f0-1ec9-140a31ee5fb4@iogearbox.net>
+        id S232397AbhKPIjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 03:39:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42522 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232658AbhKPIih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 03:38:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B1DC61546;
+        Tue, 16 Nov 2021 08:35:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637051741;
+        bh=6UEMniBpaAJ5Dwl9raOQlbq9LAMjWxCnyAv1eqCVkkQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qFkl9MdzfQJtkABQ98KJ9v6c09S5lcIhSnEMyfbuc/CK/oKcBfXQSQ2AfsHOgXOSz
+         vJAcrv71St/nAQu5Mbg5OVAPtcfyw5gXBdOsw+acBgHW0GR8xY7oQ1LPkaqIuwObEr
+         BW/nnRenlEzH8mliKRk7zXTN2e2EN9WJLJI7G307fI7m8PpNr+h+9ehiT5VCq70zQ7
+         5PXVE9TW2PeFptS6rtV+2GzZB+qxxHNRKGkV+KgXsdelpKNq8DTnBaN2D6AgHpM0zY
+         TUjelo8fToLgE8o3XGueJAnHl/I6UkBucaA0oI4nDLjKlogCiVnkDJzfLZJVziR59f
+         LpN3QXuU4isaA==
+Date:   Tue, 16 Nov 2021 14:05:36 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     quic_vamslank@quicinc.com
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        tglx@linutronix.de, maz@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, manivannan.sadhasivam@linaro.org
+Subject: Re: [PATCH v4 5/6] clk: qcom: Add support for SDX65 RPMh clocks
+Message-ID: <YZNtWHRGNYBRukyw@matsya>
+References: <cover.1637047731.git.quic_vamslank@quicinc.com>
+ <1a5ef6e6c9b2e232ff328bb4d68faf1242678f43.1637047731.git.quic_vamslank@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5a185d6b-7090-23f0-1ec9-140a31ee5fb4@iogearbox.net>
+In-Reply-To: <1a5ef6e6c9b2e232ff328bb4d68faf1242678f43.1637047731.git.quic_vamslank@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 12:30:07AM +0100, Daniel Borkmann wrote:
-
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index fdd14072fc3b..2b7343b64bb7 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -1245,7 +1245,7 @@ static const struct bpf_func_proto bpf_perf_prog_read_value_proto = {
-> >   BPF_CALL_4(bpf_read_branch_records, struct bpf_perf_event_data_kern *, ctx,
-> >   	   void *, buf, u32, size, u64, flags)
-> >   {
-> > -#ifndef CONFIG_X86
-> > +#if !(defined(CONFIG_X86) || defined(CONFIG_PPC64))
+On 15-11-21, 23:38, quic_vamslank@quicinc.com wrote:
+> From: Vamsi krishna Lanka <quic_vamslank@quicinc.com>
 > 
-> Can this really be enabled generically? Looking at 3925f46bb590 ("powerpc/perf: Enable
-> branch stack sampling framework") it says POWER8 [and beyond]. Should there be a generic
-> Kconfig symbol like ARCH_HAS_BRANCH_RECORDS that can be selected by archs instead?
+> Add support for clocks maintained by RPMh in SDX65 SoCs.
 
-I conplained about it before as well. I'd just take it out entirely.
+Reviewed-by: Vinod Koul <vkoul@kernel.org>
 
-If perf_snapshot_branch_stack isn't implemnted it'll return 0 and then
-we'll -Esomething anyway.
+> 
+> Signed-off-by: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
+> Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>  drivers/clk/qcom/clk-rpmh.c | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+> 
+> diff --git a/drivers/clk/qcom/clk-rpmh.c b/drivers/clk/qcom/clk-rpmh.c
+> index 441d7a20e6f3..30b26fb96514 100644
+> --- a/drivers/clk/qcom/clk-rpmh.c
+> +++ b/drivers/clk/qcom/clk-rpmh.c
+> @@ -556,6 +556,30 @@ static const struct clk_rpmh_desc clk_rpmh_sm6350 = {
+>  	.num_clks = ARRAY_SIZE(sm6350_rpmh_clocks),
+>  };
+>  
+> +DEFINE_CLK_RPMH_VRM(sdx65, ln_bb_clk1, ln_bb_clk1_ao, "lnbclka1", 4);
+> +
+> +static struct clk_hw *sdx65_rpmh_clocks[] = {
+> +	[RPMH_CXO_CLK]          = &sc7280_bi_tcxo.hw,
+> +	[RPMH_CXO_CLK_A]        = &sc7280_bi_tcxo_ao.hw,
+> +	[RPMH_LN_BB_CLK1]       = &sdx65_ln_bb_clk1.hw,
+> +	[RPMH_LN_BB_CLK1_A]     = &sdx65_ln_bb_clk1_ao.hw,
+> +	[RPMH_RF_CLK1]          = &sdm845_rf_clk1.hw,
+> +	[RPMH_RF_CLK1_A]        = &sdm845_rf_clk1_ao.hw,
+> +	[RPMH_RF_CLK2]          = &sdm845_rf_clk2.hw,
+> +	[RPMH_RF_CLK2_A]        = &sdm845_rf_clk2_ao.hw,
+> +	[RPMH_RF_CLK3]          = &sdm845_rf_clk3.hw,
+> +	[RPMH_RF_CLK3_A]        = &sdm845_rf_clk3_ao.hw,
+> +	[RPMH_RF_CLK4]          = &sm8350_rf_clk4.hw,
+> +	[RPMH_RF_CLK4_A]        = &sm8350_rf_clk4_ao.hw,
+> +	[RPMH_IPA_CLK]          = &sdm845_ipa.hw,
+> +	[RPMH_QPIC_CLK]         = &sdx55_qpic_clk.hw,
+> +};
+> +
+> +static const struct clk_rpmh_desc clk_rpmh_sdx65 = {
+> +	.clks = sdx65_rpmh_clocks,
+> +	.num_clks = ARRAY_SIZE(sdx65_rpmh_clocks),
+> +};
+> +
+>  static struct clk_hw *of_clk_rpmh_hw_get(struct of_phandle_args *clkspec,
+>  					 void *data)
+>  {
+> @@ -643,6 +667,7 @@ static const struct of_device_id clk_rpmh_match_table[] = {
+>  	{ .compatible = "qcom,sc8180x-rpmh-clk", .data = &clk_rpmh_sc8180x},
+>  	{ .compatible = "qcom,sdm845-rpmh-clk", .data = &clk_rpmh_sdm845},
+>  	{ .compatible = "qcom,sdx55-rpmh-clk",  .data = &clk_rpmh_sdx55},
+> +	{ .compatible = "qcom,sdx65-rpmh-clk",  .data = &clk_rpmh_sdx65},
+>  	{ .compatible = "qcom,sm6350-rpmh-clk", .data = &clk_rpmh_sm6350},
+>  	{ .compatible = "qcom,sm8150-rpmh-clk", .data = &clk_rpmh_sm8150},
+>  	{ .compatible = "qcom,sm8250-rpmh-clk", .data = &clk_rpmh_sm8250},
+> -- 
+> 2.33.1
 
-
+-- 
+~Vinod
