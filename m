@@ -2,158 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7024533B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:08:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 497944533B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:10:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237136AbhKPOK5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 16 Nov 2021 09:10:57 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:59986 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237032AbhKPOKu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 09:10:50 -0500
-Received: from smtpclient.apple (p4fefc15c.dip0.t-ipconnect.de [79.239.193.92])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 65929CECD7;
-        Tue, 16 Nov 2021 15:07:52 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
-Subject: Re: [PATCH v2 1/2] Bluetooth: Send device found event on name resolve
- failure
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20211115171726.v2.1.Id7366eb14b6f48173fcbf17846ace59479179c7c@changeid>
-Date:   Tue, 16 Nov 2021 15:07:51 +0100
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <44A01538-D569-464C-B716-24DC00D92907@holtmann.org>
-References: <20211115171726.v2.1.Id7366eb14b6f48173fcbf17846ace59479179c7c@changeid>
-To:     Archie Pusaka <apusaka@google.com>
-X-Mailer: Apple Mail (2.3693.20.0.1.32)
+        id S237142AbhKPONW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 09:13:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233147AbhKPONV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 09:13:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C082161391;
+        Tue, 16 Nov 2021 14:10:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637071824;
+        bh=IZkKjcpHoScKEqUYfhPgfrSltD9+8CAGgglwa0nTCaY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JBCA6sAkjX4JbHish7k4V3FdqW0KwrnC8uko4TIWeBo5ntIyMR4YfhGGrs5Nkst/6
+         RxurOuHZdfOeqNKuICDl7RV3D4dPJ/QeOYaVujnGlayVLgYQ3Vb4vLSvR1d0BdtacZ
+         SxPTDt90u8H3wVvGKbG6DsooziHQA+2RW3+CPOq8=
+Date:   Tue, 16 Nov 2021 15:10:22 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.15 228/917] media: videobuf2: rework vb2_mem_ops API
+Message-ID: <YZO7zobODuFxHxqJ@kroah.com>
+References: <20211115165428.722074685@linuxfoundation.org>
+ <20211115165436.520296731@linuxfoundation.org>
+ <YZMH3DJ7FbNZbx0G@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZMH3DJ7FbNZbx0G@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Archie,
+On Tue, Nov 16, 2021 at 10:22:36AM +0900, Sergey Senozhatsky wrote:
+> On (21/11/15 17:55), Greg Kroah-Hartman wrote:
+> > From: Sergey Senozhatsky <senozhatsky@chromium.org>
+> > 
+> > [ Upstream commit a4b83deb3e76fb9385ca58e2c072a145b3a320d6 ]
+> > 
+> > With the new DMA API we need an extension of the videobuf2 API.
+> > Previously, videobuf2 core would set the non-coherent DMA bit
+> > in the vb2_queue dma_attr field (if user-space would pass a
+> > corresponding memory hint); the vb2 core then would pass the
+> > vb2_queue dma_attrs to the vb2 allocators. The vb2 allocator
+> > would use the queue's dma_attr and the DMA API would allocate
+> > either coherent or non-coherent memory.
+> > 
+> > But we cannot do this anymore, since there is no corresponding DMA
+> > attr flag and, hence, there is no way for the allocator to become
+> > aware of what type of allocation user-space has requested. So we
+> > need to pass more context from videobuf2 core to the allocators.
+> > 
+> > Fix this by changing the call_ptr_memop() macro to pass the
+> > vb2 pointer to the corresponding op callbacks.
+> > 
+> > Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> > Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> 
+> Hello Greg, Sasha,
+> 
+> This patch needs two fix up patches to be applied.
+> 
+> The first one is in Linus's tree (media: videobuf2: always set buffer vb2 pointer)
+> 67f85135c57c8ea20b5417b28ae65e53dc2ec2c3
 
-> Introducing CONFIRM_NAME_FAILED flag that will be sent together with
-> device found event on name resolve failure. This will provide the
-> userspace with an information so it can decide not to resolve the
-> name for these devices in the future.
-> 
-> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-> 
-> ---
-> Hi maintainers,
-> 
-> This is the patch series for remote name request as was discussed here.
-> https://patchwork.kernel.org/project/bluetooth/patch/20211028191805.1.I35b7f3a496f834de6b43a32f94b6160cb1467c94@changeid/
-> Please also review the corresponding userspace change.
-> 
-> Thanks,
-> Archie
-> 
-> Changes in v2:
-> * Remove the part which accepts DONT_CARE flag in MGMT_OP_CONFIRM_NAME
-> * Rename MGMT constant to conform with the docs
-> 
-> include/net/bluetooth/mgmt.h |  1 +
-> net/bluetooth/hci_event.c    | 11 ++++-------
-> net/bluetooth/mgmt.c         | 11 ++++++++---
-> 3 files changed, 13 insertions(+), 10 deletions(-)
-> 
-> diff --git a/include/net/bluetooth/mgmt.h b/include/net/bluetooth/mgmt.h
-> index 23a0524061b7..3cda081ed6d0 100644
-> --- a/include/net/bluetooth/mgmt.h
-> +++ b/include/net/bluetooth/mgmt.h
-> @@ -940,6 +940,7 @@ struct mgmt_ev_auth_failed {
-> #define MGMT_DEV_FOUND_LEGACY_PAIRING  0x02
-> #define MGMT_DEV_FOUND_NOT_CONNECTABLE 0x04
-> #define MGMT_DEV_FOUND_INITIATED_CONN  0x08
-> +#define MGMT_DEV_FOUND_NAME_REQUEST_FAILED 0x10
+Now applied, thanks.
 
-please indent the other defines to match this one.
+> The second one isn't yet (media: videobuf2-dma-sg: Fix buf->vb NULL pointer dereference)
+> https://lore.kernel.org/all/20211101145355.533704-1-hdegoede@redhat.com/raw
 
-> 
-> #define MGMT_EV_DEVICE_FOUND		0x0012
-> struct mgmt_ev_device_found {
-> diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-> index d4b75a6cfeee..2de3080659f9 100644
-> --- a/net/bluetooth/hci_event.c
-> +++ b/net/bluetooth/hci_event.c
-> @@ -2175,13 +2175,10 @@ static void hci_check_pending_name(struct hci_dev *hdev, struct hci_conn *conn,
-> 		return;
-> 
-> 	list_del(&e->list);
-> -	if (name) {
-> -		e->name_state = NAME_KNOWN;
-> -		mgmt_remote_name(hdev, bdaddr, ACL_LINK, 0x00,
-> -				 e->data.rssi, name, name_len);
-> -	} else {
-> -		e->name_state = NAME_NOT_KNOWN;
-> -	}
-> +
-> +	e->name_state = name ? NAME_KNOWN : NAME_NOT_KNOWN;
-> +	mgmt_remote_name(hdev, bdaddr, ACL_LINK, 0x00, e->data.rssi,
-> +			 name, name_len);
-> 
-> 	if (hci_resolve_next_name(hdev))
-> 		return;
-> diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
-> index 06384d761928..0d77c010b391 100644
-> --- a/net/bluetooth/mgmt.c
-> +++ b/net/bluetooth/mgmt.c
-> @@ -9615,7 +9615,8 @@ void mgmt_remote_name(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 link_type,
-> {
-> 	struct mgmt_ev_device_found *ev;
-> 	char buf[sizeof(*ev) + HCI_MAX_NAME_LENGTH + 2];
-> -	u16 eir_len;
-> +	u16 eir_len = 0;
-> +	u32 flags = 0;
-> 
-> 	ev = (struct mgmt_ev_device_found *) buf;
-> 
-> @@ -9625,10 +9626,14 @@ void mgmt_remote_name(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 link_type,
-> 	ev->addr.type = link_to_bdaddr(link_type, addr_type);
-> 	ev->rssi = rssi;
-> 
-> -	eir_len = eir_append_data(ev->eir, 0, EIR_NAME_COMPLETE, name,
-> -				  name_len);
-> +	if (name)
-> +		eir_len = eir_append_data(ev->eir, 0, EIR_NAME_COMPLETE, name,
-> +					  name_len);
-> +	else
-> +		flags |= MGMT_DEV_FOUND_NAME_REQUEST_FAILED;
+I've grabbed this from linux-next now.
 
-So instead of initializing a variable, I prefer to set them where they are used.
+thanks,
 
-	if (name) {
-		eir_len = eir_..
-		flags = 0;
-	} else {
-		eir_len = 0;
-		flags = MGMT_DEV_FOUND_NAME_REQUEST_FAILED;
-	}
-
-This way, the compiler will complain loudly if we change things and forget to set any of these two variables.
-
-> 
-> 	ev->eir_len = cpu_to_le16(eir_len);
-> +	ev->flags = cpu_to_le32(flags);
-> 
-> 	mgmt_event(MGMT_EV_DEVICE_FOUND, hdev, ev, sizeof(*ev) + eir_len, NULL);
-> }
-> -- 
-
-Regards
-
-Marcel
-
+greg k-h
