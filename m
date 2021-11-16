@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9744B453988
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 19:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE417453991
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 19:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239599AbhKPSqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 13:46:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239449AbhKPSqx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 13:46:53 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F605C061746
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 10:43:56 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id e8so133893ilu.9
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 10:43:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+1IV/aieggyIrL6/Q01qnvaTCtM2v0mp9FZfzb4qNUY=;
-        b=KYeUJ8z5tFt1d8r8q0t95j7+UHyN5cwkUymBRTuIQeh53FMWDlgng0xcfqSKUf9Y6w
-         FMEIOEquOExyXS1om3+3RwjIIt0cTmTwenjy78HiCFD0wYbQPZJtkyiL+cjZwHN7ksVn
-         YxhSNeNfCG1s5EzP3btj45Gy1vPj1T3CzcGXM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+1IV/aieggyIrL6/Q01qnvaTCtM2v0mp9FZfzb4qNUY=;
-        b=a7AIas8rFNm1T0cutAwD32jL1KeiMVMQzIAC8J3gXov+yayo/OEGwzTJL+F5b3MzS1
-         uOKr/rxvCKnyMQzQdmoUMKrA1qBqH8ZWYxHGA38oIvfaWSOkGojYF0oKwoJpjZ3oThVs
-         oA0a8tV/xJ4g6cU6STcN1ASFpgxHWdEYNZLrL0OgA3gGCd9qLip/TRWRiT/nlTpTKn8+
-         zwlrS9EQ6eHEL3X9Lhc7ll9xLtpH6tjmcTeDhXWJjxxn+vAXL713uRt3GrpTekU2wFGq
-         nEz+gMZN4+LRYjno4m8lJbsilIKBZmqH4FlMA61gwj8X0fC6opASbNljSOel1H+gELLn
-         ZeSw==
-X-Gm-Message-State: AOAM530OvCNTqznKsfgwMhmmDEcPN7Dftr+LYM7B28YBWBObJ+piK+zN
-        D+zd33cZ+L/H8eK55FyLmrTXKA==
-X-Google-Smtp-Source: ABdhPJwv5CfwGvMRwqiJUlsDdzLqWOGuqEqhdcJivfGpuUbB67n7Zd82raJ7v/H/gxz8NEjMxB4LaQ==
-X-Received: by 2002:a05:6e02:1aaf:: with SMTP id l15mr6336339ilv.318.1637088235980;
-        Tue, 16 Nov 2021 10:43:55 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id d10sm11471278iog.25.2021.11.16.10.43.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 10:43:55 -0800 (PST)
-Subject: Re: [PATCH 5.15 000/927] 5.15.3-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20211116142631.571909964@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <2e113685-9ce5-2bf6-a6af-fd53f5c0c316@linuxfoundation.org>
-Date:   Tue, 16 Nov 2021 11:43:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S239451AbhKPSrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 13:47:41 -0500
+Received: from out1.migadu.com ([91.121.223.63]:27632 "EHLO out1.migadu.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229539AbhKPSre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 13:47:34 -0500
 MIME-Version: 1.0
-In-Reply-To: <20211116142631.571909964@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cmpwn.com; s=key1;
+        t=1637088271;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XQ2XwIGTrPQqjukfYu8yG6Mr/vLUXkMcbZOfyR81sGQ=;
+        b=Bz4DH332idjMiD26xYTJdvS+LwwwruKBZwnEFlp9MSVS2lBWnoIvL8+JityyEPhyftO/xx
+        FB4ysT4dl1BYiQB2u+E+szQhcrJJkwaio1qIp1GZO+qcaR8lieIC+yWx2k6WmU8MkAyJEP
+        AnaIDlt7RxekiQWwrpXGZtdJ9ZQb3MvvZlUZK7SasmlyD2b83ZMTiVoYJBhLvlylmceHhM
+        B/xziRcTUVtNN4tNR6Kfx0e2XYWBrEaqsXxKm6PZ/15YYEIdQvPv+jMpbJK3racigRFx/2
+        Tj3h9eADFud69HoTX3cPWWgHGSBE4KtlEiwqSn1z2wy/N2Iq8zjXix/1DBLFgw==
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 16 Nov 2021 19:44:27 +0100
+Message-Id: <CFRFCVQRMLRH.1Y7JHSFSRFKMH@taiga>
+Cc:     "Ammar Faizi" <ammarfaizi2@gnuweeb.org>,
+        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>,
+        "io_uring Mailing List" <io-uring@vger.kernel.org>,
+        "Jens Axboe" <axboe@kernel.dk>,
+        "Pavel Begunkov" <asml.silence@gmail.com>, <linux-mm@kvack.org>
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   "Drew DeVault" <sir@cmpwn.com>
+To:     "Matthew Wilcox" <willy@infradead.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>
+References: <20211028080813.15966-1-sir@cmpwn.com>
+ <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
+ <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
+ <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
+ <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
+ <YZP6JSd4h45cyvsy@casper.infradead.org>
+In-Reply-To: <YZP6JSd4h45cyvsy@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 8:01 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.3 release.
-> There are 927 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 18 Nov 2021 14:24:22 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.3-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Tue Nov 16, 2021 at 7:36 PM CET, Matthew Wilcox wrote:
+> On the one hand, processes can already allocate at least this much
+> memory that is non-swappable, just by doing things like opening a lot of
+> files (allocating struct file & fdtable), using a lot of address space
+> (allocating page tables), so I don't have a problem with it per se.
+>
+> On the other hand, 64kB is available on anything larger than an IBM XT.
+> Linux will still boot on machines with 4MB of RAM (eg routers). For
+> someone with a machine with only, say, 32MB of memory, this allows a
+> process to make a quarter of the memory unswappable, and maybe that's
+> not a good idea. So perhaps this should scale over a certain range?
 
-Compiled and booted on my test system. No dmesg regressions.
+I feel like most of the uber-small machines which are still relevant are
+not running arbitrary user code, so, something about an airtight hatch
+goes here. On the other hand, consider your other hand: you can probably
+find a way to allocate this much stuff anyway.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+> Is 8MB a generally useful amount of memory for an iouring user anyway?
+> If you're just playing with it, sure, but if you have, oh i don't know,
+> a database, don't you want to pin the entire cache and allow IO to the
+> whole thing?
 
-thanks,
--- Shuah
+If you're a databse, you're probably running as a daemon with some
+integration with the service manager, most of which have provisions for
+tuning the ulimits as necessary.
+
+The purpose of this change is to provide an amount which is more useful
+for end-user programs, which usually cannot adjust their ulimits by any
+similarly convenient means. 8 MiB is not a lot, but it is enough to
+allocate a modest handful of read/write buffers for a video game, mail
+client, or something else along those lines of thought, perhaps
+specifically narrowing in on the areas which demand the most
+performance.
+
+We could certainly go higher and find an even more useful (but still
+realistic) value, but I felt it best to err on the side of a more
+conservative improvements. Honestly, this number could go as high as we
+want it to and applications would happily take it.
