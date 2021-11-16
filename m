@@ -2,111 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8C14528CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 04:52:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8347B4528D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 04:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235677AbhKPDzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 22:55:40 -0500
-Received: from mail-qt1-f169.google.com ([209.85.160.169]:35603 "EHLO
-        mail-qt1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235601AbhKPDz1 (ORCPT
+        id S236096AbhKPD55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 22:57:57 -0500
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:58639 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236043AbhKPD5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 22:55:27 -0500
-Received: by mail-qt1-f169.google.com with SMTP id j17so17763319qtx.2;
-        Mon, 15 Nov 2021 19:52:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=sj4fYm8wH0mARg8fNOIlD4wglN2W+wSR5DAgTtuz+CU=;
-        b=gjNSF8pyKHxLus6/dIoT+x4B51rRVnSJzHAFiyEH3Anzr80c5MgMCFBVvrZ5NcJs9c
-         Tx17ZOPlvryFu+Hsie8bueXhzc2usoR7s7mBo/nL/8CPjAURlNG5vHK3EALtkO8ng1mM
-         EYKt8VAOu1SSQnwBYi8cUvBHXWNa1h9jFOK4cnUWGkq6mAMPIGTSkIELWIowgEErUxTx
-         gV3m+j7Dtg3sFYhURdj/28v83Ga1nKr8qVUS2DBW3zVn51+F4vcEq/MRUfhMzlojHndU
-         YCofNHBbbuleDI9BMyXQ9v/+fDkmr7b6WW82yLOhL+baGvO1EZofw8MzBw/RH4na7XzM
-         40FA==
-X-Gm-Message-State: AOAM530boIqWgVOyXt0jlzb3+BfPiCkqUKZpdV1UXrL/lW7mnvjwf147
-        cGoUybIcUxmq2l0vD/tWRYOypXjdNYWO2Q==
-X-Google-Smtp-Source: ABdhPJwXmtUWJ/7Sg2GoLUIiLu/a5A3ymF2qf/Bz6mAKJO6LIoVPl3N6gDd3uetkHbzqujSQ7nxqTg==
-X-Received: by 2002:a05:622a:30a:: with SMTP id q10mr4321501qtw.267.1637034749735;
-        Mon, 15 Nov 2021 19:52:29 -0800 (PST)
-Received: from fedora (pool-173-68-57-129.nycmny.fios.verizon.net. [173.68.57.129])
-        by smtp.gmail.com with ESMTPSA id v21sm6882916qta.0.2021.11.15.19.52.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 19:52:29 -0800 (PST)
-Date:   Mon, 15 Nov 2021 22:52:27 -0500
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Alexey Makhalov <amakhalov@vmware.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "cl@linux.com" <cl@linux.com>,
-        "mm-commits@vger.kernel.org" <mm-commits@vger.kernel.org>,
-        "osalvador@suse.de" <osalvador@suse.de>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "tj@kernel.org" <tj@kernel.org>
-Subject: Re: + mm-fix-panic-in-__alloc_pages.patch added to -mm tree
-Message-ID: <YZMq++inSmJegJmj@fedora>
-References: <20211108205031.UxDPHBZWa%akpm@linux-foundation.org>
- <YYozLsIECu0Jnv0p@dhcp22.suse.cz>
- <af7ab3ce-fed2-1ffc-13a8-f9acbd201841@redhat.com>
- <YYpTy9eXZucxuRO/@dhcp22.suse.cz>
- <YY6wZMcx/BeddUnH@fedora>
- <YZI5TEW2BkBjOtC1@dhcp22.suse.cz>
- <B8B7E3FA-6EAB-46B7-95EB-5A31395C8ADE@vmware.com>
- <YZJZes9Gz9fe7bCC@dhcp22.suse.cz>
- <ABEDED57-93A9-4601-8EB6-2FF348A0E0BB@vmware.com>
+        Mon, 15 Nov 2021 22:57:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1637034898; x=1668570898;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=cJiWH8DuB9KsnVg18puSuj5NIH9G1wk8fKMRlG0VdLM=;
+  b=M56mj7gDZ4t8wLbgHUYlJYW+foimgZ+KfZtWW8GVbuYipVdubJ1My6Qg
+   CNwSFgLd+QahVKEH0mvrTsD/K2MfMybGcxn3OBuns+8G5R1aYI6ZEpB5y
+   47Qd9XX119QFCUPY69mx20owM5Rc1mow/O0MlCp9300ehVlBNF7otCH2P
+   U=;
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 15 Nov 2021 19:54:58 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 19:54:57 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Mon, 15 Nov 2021 19:54:57 -0800
+Received: from qian-HP-Z2-SFF-G5-Workstation (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Mon, 15 Nov 2021 19:54:56 -0800
+Date:   Mon, 15 Nov 2021 22:54:54 -0500
+From:   Qian Cai <quic_qiancai@quicinc.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] software node: Skip duplicated software_node sysfs
+Message-ID: <YZMrjqhYYNGMP84x@qian-HP-Z2-SFF-G5-Workstation>
+References: <20211101200346.16466-1-quic_qiancai@quicinc.com>
+ <CAHp75VcrWPdR8EVGpcsniQedT0J4X700N7thFs6+srTP1MTgwQ@mail.gmail.com>
+ <52df4a97-1132-d594-0180-132d0ca714d5@quicinc.com>
+ <CAHp75VebOnrce-XZjOnZiivQPz-Cdgq6mor5oiLxK8Y49GiNNg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ABEDED57-93A9-4601-8EB6-2FF348A0E0BB@vmware.com>
+In-Reply-To: <CAHp75VebOnrce-XZjOnZiivQPz-Cdgq6mor5oiLxK8Y49GiNNg@mail.gmail.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 11:11:44PM +0000, Alexey Makhalov wrote:
+On Fri, Nov 05, 2021 at 09:39:42PM +0200, Andy Shevchenko wrote:
+> > Anyway, what's the "upper layer"? Is that "struct device" or "struct
+> > swnode"? I suppose you meant:
 > 
+> struct device here.
 > 
-> > On Nov 15, 2021, at 4:58 AM, Michal Hocko <mhocko@suse.com> wrote:
-> > 
-> > On Mon 15-11-21 11:04:16, Alexey Makhalov wrote:
-> >> Hi Michal,
-> >> 
-> >>> 
-> >>> I have asked several times for details about the specific setup that has
-> >>> led to the reported crash. Without much success so far. Reproduction
-> >>> steps would be the first step. That would allow somebody to work on this
-> >>> at least if Alexey doesn't have time to dive into this deeper.
-> >>> 
-> >> 
-> >> I didn’t know that repro steps are still not clear.
-> >> 
-> >> To reproduce the panic you need to have a system, where you can hot add
-> >> the CPU that belongs to memoryless NUMA node which is not present and onlined
-> >> yet. In other words, by hot adding CPU, you will add both CPU and NUMA node
-> >> at the same time.
-> > 
-> > There seems to be something different in your setup because memory less
-> > nodes have reportedly worked on x86. I suspect something must be
-> > different in your setup. Maybe it is that you are adding a cpu that is
-> > outside of possible cpus intialized during boot time. Those should have
-> > their nodes initialized properly - at least per init_cpu_to_node. Your
-> > report doesn't really explain how the cpu is hotadded. Maybe you are
-> > trying to do something that has never been supported on x86.
-> Memoryless nodes are supported by x86. But hot add of such nodes not quite
-> done.
+> > - Remove "secondary" field from "struct fwnode_handle".
+> > - Replace "fwnode" from "upper layer" with
+> >   "struct list_head fwnode_head;".
+> > - Modify all functions in "software_node_ops" to use "fwnode_head".
+> >
+> > Is that correct?
 > 
+> Yes.
+> 
+> It might be a bit complicated taking into account how much fwnode is
+> spreaded in the kernel... Basically, you need to fix all direct
+> accesses to the dev->fwnode first.
+> Besides that you need to check that fwnode, which is used out of the
+> device scope, like in IRQ domains, doesn't use secondary pointer(s).
+> 
+> This nevertheless adds a lot of flexibility and we may add whatever
+> type of fwnodes and mix them together.
 
-I need some clarification here. It sounds like memoryless nodes work on
-x86, but hotplug + memoryless nodes isn't a supported use case or you're
-introducing it as a new use case?
+Okay, here is my plan until someone still has an idea to avoid a
+redesign.
 
-If this is a new use case, then I'm inclined to say this patch should
-NOT go in and a proper fix should be implemented on hotplug's side. I
-don't want to be in the business of having/seeing this conversation
-reoccur because we just papered over this issue in percpu.
+Frist, fixes all dev->fwnode / dev.fwnode to use dev_fwnode(). This
+could be a standalone tree-wide patchset going out to avoid
+heavy-lifting later.
 
-Thanks,
-Dennis
+Then, we can create another patchset on top. I have audited
+"irq_domain" but not seen any "secondary" leakage. Struct
+"cht_int33fe_data" does have some need to fix.
+
+Rename set_secondary_fwnode() to insert_secondary_fwnode(). Fix things
+in drivers/base/core.c, swnode.c etc to use the new fwnode_head and
+anything I can't think of right now.
+
+Since we will have multiple "software_node" (secondary fwnode:s) for a
+single "device". What would be the usual way to deal with a
+linked-list in the sysfs? I can think of just let "software_node"
+become a directory to host a list of symlinks named from
+swnode->id. Thoughts?
