@@ -2,108 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC54452CBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:27:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E526E452CB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:26:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232045AbhKPIaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 03:30:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40888 "EHLO
+        id S232036AbhKPI3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 03:29:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232065AbhKPI3t (ORCPT
+        with ESMTP id S231924AbhKPI31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 03:29:49 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BDDC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 00:26:52 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id d10so55192240ybe.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 00:26:52 -0800 (PST)
+        Tue, 16 Nov 2021 03:29:27 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 875C0C061570;
+        Tue, 16 Nov 2021 00:26:30 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id 188so16940932pgb.7;
+        Tue, 16 Nov 2021 00:26:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zKTpTAX3CYcAD+IfMc5iTmWOWQYhJZdkd6G9+skmKnQ=;
-        b=gMmx7dgxqaA7QTjdaKaFPvDJxy1ssDsKXV7f/rOMTRbVk7zXCTwG0IYULnNVxmhfuW
-         /Az0pi37GxMZLFvhhc/08M9TSqUupI6qbq9NLM7ppj5thNPBv5H2kJjWDnNkiF93In5H
-         RBvfO1u19+aOjUBmwGj+kbMkWgFUPHnyxlgRKI+eKN/nS84Zn5Jkg99t1M+slP9GkPAV
-         7tw0j1+J31k5zF6730r+kAdfo7CyskLxypKXKyQYRW+KNxlxL+zn4IavkIlKnvebHhex
-         p2/Pdmg1+Cl7bAc3QO4eeTg+lTMj6KIpx/GwMMVbPZ6zEQ14NYAt2sNkxUjjh9KF4yDi
-         h1nw==
+        bh=rUkyXCVCQcML8mU+bt8DD4FB+5QBSOVSc/yYB2EHpFc=;
+        b=Vv3cuUmrlkKpggK0A4S5Fw/fpL1GdDa4UJDK9d/JH7khq5ddZBUjqjkf8N5ZohL3Bd
+         sAeX5g08DfWLVDHOZN1gI0lAl5hlJmyNHOnCdrtKGqpD3rPmJvMDIA2fc9Nprx7ZL4fo
+         M+fTefDtyvEPGq5XrnzrqEdg2bfwTvRxEEoXCBEZyspVzL/DanuBVDQxpUjoRQMIMenv
+         IZTf1yqUPxj5XYcVeqcHWToOgHOWTR/D5iSLSk/8+qufzQ+s3ljX+q6084X9q9POjYFR
+         XwBjJE4Mchaxh7QcPq1ZTvd5IhqqT9GRJwLqaN/FT5RNMSmsE/75A5Xg7W0F9D5lUb+O
+         eBkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zKTpTAX3CYcAD+IfMc5iTmWOWQYhJZdkd6G9+skmKnQ=;
-        b=gz7CG3GJJxIFBjPMnM6Vp8MnuK5wZCP5qdCVKHk0SGkhoy/m2rtBIo7daezXTSLIbv
-         0/Mco7+5vDhcnm8U/x4B2AV9TMR0kV0F4BI+i6z/CrI68waMskKMSKqj6gwSEZ33a4Ra
-         ei71Zhs7rx1xQraF8I+Rzq07EzzvqNzAunt4wRZb3LE7INYd7t3byxl3YjB7626cg4pI
-         zvEfBlJrT53H5AEw0uoPC3qyg75a5g+tYlj4z2zfcBqIiDgzMr6O/oBosLLPQcTYF1oF
-         McSdYsROSPL259GPZxscxB6+8O+xoPY8w1n+P0MHBWPUK7rScZJSPQGwsBstMP6BjU4d
-         AgEg==
-X-Gm-Message-State: AOAM5308ZJeX2KXsV9HXdwpi/kfm5Mk7UEg7nZl5auZC4s3VFz+4KsTm
-        9TW68GEq2erxaHB9cmM0nVqv4ai8B+4wyWArS1Y2Uw==
-X-Google-Smtp-Source: ABdhPJyuPf9385jYLaCNMzCNlglLQO7CWM0XIyiQcDFli3VOF9khrUAzVZ+ZPBI+xkwVw4LGnbWd5CowLLzCjVixjp0=
-X-Received: by 2002:a25:d15:: with SMTP id 21mr6055391ybn.141.1637051211812;
- Tue, 16 Nov 2021 00:26:51 -0800 (PST)
+        bh=rUkyXCVCQcML8mU+bt8DD4FB+5QBSOVSc/yYB2EHpFc=;
+        b=65faLpNjrtKkIzk0+hug3lkPB0a5InX/5qIbWbrt+HQF4/pFhqPq0qkGk2dAm3SDCS
+         vfloOnilkSg/D0vjgffcUhueOyNbFLIf0l0c+3B8GJ6MjvUGUVw3czuQD12BA5gDW6Z5
+         vReo2XIKb01BHrb84r7gGOaoZR+46LQXwSAEOU7tEiCjYh8JDzjiWR2ioc5htwxQZxLz
+         0YthcReztEOVTDe3AmTfKGHpq53V3zKiJN1YZx9gDl3DZkIsTE6ufXIsIPCxXACz0Oko
+         h4GC2sYKeoxSxi1jji+WeqEmMuCVq4fYBKAPvZbG3iKAyT0d64vmpYhcsv4mnw0MLFMe
+         pxCQ==
+X-Gm-Message-State: AOAM533fFK70Bv15y17AHmvlWITp54GQdnQT2n4H77lH8soUEnHM/Dc5
+        HqmgjP7wNjWZiV6kfDo/1PYeKjpr6bilcBAd36I=
+X-Google-Smtp-Source: ABdhPJxgfh6Xgrp/tq7DgShkG7qFpZU22bNGSqLPVGAEnulBw2EuhE/eTEwyZUerfoJCNVCNPaICArCt8bkbPVRtYK4=
+X-Received: by 2002:a63:4a63:: with SMTP id j35mr221510pgl.409.1637051190106;
+ Tue, 16 Nov 2021 00:26:30 -0800 (PST)
 MIME-Version: 1.0
-References: <20211101093518.86845-1-songmuchun@bytedance.com> <20211115210917.96f681f0a75dfe6e1772dc6d@linux-foundation.org>
-In-Reply-To: <20211115210917.96f681f0a75dfe6e1772dc6d@linux-foundation.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 16 Nov 2021 16:26:12 +0800
-Message-ID: <CAMZfGtX+GkVf_7D8G+Ss32+wYy1bcMgDpT5FJDA=a9gdjW36-w@mail.gmail.com>
-Subject: Re: [PATCH 0/4] remove PDE_DATA()
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>, gladkov.alexey@gmail.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20211115141925.60164-1-paul@crapouillou.net> <20211115141925.60164-4-paul@crapouillou.net>
+In-Reply-To: <20211115141925.60164-4-paul@crapouillou.net>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Tue, 16 Nov 2021 10:26:18 +0200
+Message-ID: <CA+U=DsrCPQhe4pqC4RReDFno1pazJYq9D89wuMnsLubUz-ytTw@mail.gmail.com>
+Subject: Re: [PATCH 03/15] iio: buffer-dma: Use round_down() instead of rounddown()
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 1:09 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+On Mon, Nov 15, 2021 at 4:19 PM Paul Cercueil <paul@crapouillou.net> wrote:
 >
-> On Mon,  1 Nov 2021 17:35:14 +0800 Muchun Song <songmuchun@bytedance.com> wrote:
+> We know that the buffer's alignment will always be a power of two;
+> therefore, we can use the faster round_down() macro.
 >
-> > I found a bug [1] some days ago, which is because we want to use
-> > inode->i_private to pass user private data. However, this is wrong
-> > on proc fs. We provide a specific function PDE_DATA() to get user
-> > private data. Actually, we can hide this detail by storing
-> > PDE()->data into inode->i_private and removing PDE_DATA() completely.
-> > The user could use inode->i_private to get user private data just
-> > like debugfs does. This series is trying to remove PDE_DATA().
->
-> Why can't we do
->
-> /*
->  * comment goes here
->  */
-> static inline void *PDE_DATA(struct inode *inode)
-> {
->         return inode->i_private;
-> }
->
-> to abstract things a bit and to reduce the patch size?
->
-> otoh, that upper-case thing needs to go, so the patch size remains the
-> same anyway.
->
-> And perhaps we should have a short-term
->
-> #define PDE_DATA(i) pde_data(i)
 
-Right. This way is the easiest way to reduce the patch size.
-Actually, I want to make all PDE_DATA() go away, which
-makes this patch series go big.
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  drivers/iio/buffer/industrialio-buffer-dmaengine.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> because new instances are sure to turn up during the development cycle.
+> diff --git a/drivers/iio/buffer/industrialio-buffer-dmaengine.c b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
+> index 1ac94c4e9792..f8ce26a24c57 100644
+> --- a/drivers/iio/buffer/industrialio-buffer-dmaengine.c
+> +++ b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
+> @@ -67,7 +67,7 @@ static int iio_dmaengine_buffer_submit_block(struct iio_dma_buffer_queue *queue,
+>         dma_cookie_t cookie;
 >
-> But I can handle that by staging the patch series after linux-next and
-> reminding myself to grep for new PDE_DATA instances prior to
-> upstreaming.
-
-I'd be happy if you could replace PDE_DATA() with inode->i_private.
-In this case, should I still introduce pde_data() and perform the above
-things to make this series smaller?
-
-Thanks.
+>         block->bytes_used = min(block->size, dmaengine_buffer->max_size);
+> -       block->bytes_used = rounddown(block->bytes_used,
+> +       block->bytes_used = round_down(block->bytes_used,
+>                         dmaengine_buffer->align);
+>
+>         desc = dmaengine_prep_slave_single(dmaengine_buffer->chan,
+> --
+> 2.33.0
+>
