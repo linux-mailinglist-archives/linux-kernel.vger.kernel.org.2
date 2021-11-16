@@ -2,126 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B9AF4536DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:06:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E724536E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238814AbhKPQHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 11:07:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:27918 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238813AbhKPQHx (ORCPT
+        id S238864AbhKPQJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 11:09:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238874AbhKPQIH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:07:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637078695;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IQYqrYWzH5LMm02dblZ0VbWUHvwdTF0Rr46Metf8L3g=;
-        b=Uav/75OcjYp1prq8/9vVfTUWRowJnEHXveMJr+pPhWCl2ZGZZCpoA2FoxTZagOEczEUpai
-        UkctwNSE+c4FS1+M1aL82M15mI7niOYIQ+EdyWQ3bMHi/asP1c2hiiINRqLq1dz5g8LbI/
-        Aq1xKdBTBbWKYMVF5TJDuN+ocpqpl8g=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-155-TIG5Qg_fOxSz4AnMTltXcA-1; Tue, 16 Nov 2021 11:04:54 -0500
-X-MC-Unique: TIG5Qg_fOxSz4AnMTltXcA-1
-Received: by mail-qt1-f200.google.com with SMTP id g2-20020ac87d02000000b002b277218d03so9993690qtb.16
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 08:04:54 -0800 (PST)
+        Tue, 16 Nov 2021 11:08:07 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37739C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 08:05:09 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id i12so1619753pfd.6
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 08:05:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=deqGK3yKMLsBufstVPiHWoHpV0QbG75PNlw5AN12k/U=;
+        b=W6XWgmoOR0nc3wCDhUnBqEhxtHPEjLOcuwSSU01/0n8B4OfWJqNQxd4cX3T6UJbokv
+         ZD6jfaU/4/rF1aOToTIyQBPlqasw/bLjwOfwP6l8f+T6zKYX+SJjhkcq+K48n2KzjLrn
+         evjj4NWZmJ0SGNoouR1m+oUR8ADMImRqHMIvbsrZ6uMXfilheVvC3PsLYdN0MntyZE9l
+         mE4s7hOxVa94PSZGuhuMZDjX8NmhdgalP9B6nJB8SWnqA+NSmo4xn15BUF23cotvKCrq
+         OMweaQEPtBUGfsFAV57qs7IdC5I5UKon307eCVe3n1HXG8iPQCYwi7sL/+ywLt/1YkMB
+         JgIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=IQYqrYWzH5LMm02dblZ0VbWUHvwdTF0Rr46Metf8L3g=;
-        b=eUcnVKomN9oIGYmN6XwOFTgFPnMHN5s67u87h4r77rUXA4iR9bB/bDyN0MNL4QP+oa
-         iu480ly97l6HYrRyBOxlzux/97giEQ7Sx4z/wAjTlUMBVVpogGCqHK35N8CfkYWO2bZV
-         5+6doPpmbmYhwSxAK5pbOvFDrOtENO8nMbAtqDO5HWm5FKNpneb1Pp1DEJmqLvKn5tPY
-         6RLS3VtC6Oxscbi9EkyavIlrJ7MlNn3kx/Ry16FMftRQCrUW4LOl/sUNmhPBRnJThWGs
-         VAuIfIw4LU9JYJARnnVwjvBfCsxgikhObVn1rvjEGzqbioCDbH5nGwFb5/XpNuNeBF4p
-         H2sg==
-X-Gm-Message-State: AOAM532XH7zv6hO6didnyH7WqpSLi7IMXsr9T55wv5H/cuJYXGnETiVg
-        xLkTlGxZJa4d9Xm4lfQHDwKXMIymp3TK15RiWCRmfQI5tkIaOj4ishD1jFQXrSpIxTxusCKnFSK
-        u+zQT8ABq89uW+O/pknojDL5S
-X-Received: by 2002:ac8:5787:: with SMTP id v7mr8755674qta.79.1637078693510;
-        Tue, 16 Nov 2021 08:04:53 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx1VmixXkHPd8zrvy0yn0CKnKhyT/INH+jtxoy7BwJ1qOemuevJEj2WkOO1YOifT68fo90R1Q==
-X-Received: by 2002:ac8:5787:: with SMTP id v7mr8755630qta.79.1637078693258;
-        Tue, 16 Nov 2021 08:04:53 -0800 (PST)
-Received: from bfoster (c-24-61-119-116.hsd1.ma.comcast.net. [24.61.119.116])
-        by smtp.gmail.com with ESMTPSA id f18sm8939102qko.34.2021.11.16.08.04.52
+        bh=deqGK3yKMLsBufstVPiHWoHpV0QbG75PNlw5AN12k/U=;
+        b=WTlqVufyMK1jIgqZMQ9ioaM0H1q28xq1wUp8n2XCmu2i1BSRVRrmYJURfZiQATfETo
+         X2I3FCrPnfAxqJPjQhPcaCxGwu4SASN2PxLxvovHnqQjhBnxXi3J60Oa8FZ/tzxHKYvr
+         fCi3141EMiYlEXRlo8l40wXBUq6uo3QTg94s78ifaPpEZ9wxYhR3qX3OjGfJRe3O9O3x
+         5Ze8MF1nMDW0k93LSVTxAbzWtHCw3fFyiYMA/ECghYmJgUrP5DZgtBSlf8GzmHhgl9gc
+         Jy28p5RLaDevu0q6bAyj71Io9agJZenjDR7PUcSgVs1TucnayyotRuFK6+MZJpx8Emf6
+         NAog==
+X-Gm-Message-State: AOAM531M+6pZp+vBX1E8G5i+Aq2l07sIyrZRc3IGSt1XH1pj+pPx98jb
+        FgaugE9bAQBE9HS0zpnldUpeQg==
+X-Google-Smtp-Source: ABdhPJyCe4SDrcnQD4hUJWiTClXh0x7fVaPYRsR6Spm56yWJv6UODIw7xs8/6PBtC4BCCx3F+pC3SA==
+X-Received: by 2002:a63:7e48:: with SMTP id o8mr5491970pgn.157.1637078708619;
+        Tue, 16 Nov 2021 08:05:08 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id np1sm3037810pjb.22.2021.11.16.08.05.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 08:04:52 -0800 (PST)
-Date:   Tue, 16 Nov 2021 11:04:50 -0500
-From:   Brian Foster <bfoster@redhat.com>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Dave Chinner <david@fromorbit.com>, Ian Kent <raven@themaw.net>,
-        xfs <linux-xfs@vger.kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] xfs: make sure link path does not go away at access
-Message-ID: <YZPWoj6mM/N2reKz@bfoster>
-References: <163660195990.22525.6041281669106537689.stgit@mickey.themaw.net>
- <163660197073.22525.11235124150551283676.stgit@mickey.themaw.net>
- <20211112003249.GL449541@dread.disaster.area>
- <CAJfpegvHDM_Mtc8+ASAcmNLd6RiRM+KutjBOoycun_Oq2=+p=w@mail.gmail.com>
- <20211114231834.GM449541@dread.disaster.area>
- <CAJfpegu4BwJD1JKngsrzUs7h82cYDGpxv0R1om=WGhOOb6pZ2Q@mail.gmail.com>
- <20211115222417.GO449541@dread.disaster.area>
- <f8425d1270fe011897e7e14eaa6ba8a77c1ed077.camel@themaw.net>
- <20211116030120.GQ449541@dread.disaster.area>
- <CAJfpegsvL6SjNZdk=J9N-gYWZK0uhg_bT579WRHyVisW1sGZ=Q@mail.gmail.com>
+        Tue, 16 Nov 2021 08:05:08 -0800 (PST)
+Date:   Tue, 16 Nov 2021 16:05:04 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     "Liu, Jing2" <jing2.liu@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Jing Liu <jing2.liu@linux.intel.com>,
+        "Cooper, Andrew" <andrew.cooper3@citrix.com>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>
+Subject: Re: Thoughts of AMX KVM support based on latest kernel
+Message-ID: <YZPWsICdDTZ02UDu@google.com>
+References: <BYAPR11MB325685AB8E3DFD245846F854A9939@BYAPR11MB3256.namprd11.prod.outlook.com>
+ <87k0h85m65.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJfpegsvL6SjNZdk=J9N-gYWZK0uhg_bT579WRHyVisW1sGZ=Q@mail.gmail.com>
+In-Reply-To: <87k0h85m65.ffs@tglx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 11:12:13AM +0100, Miklos Szeredi wrote:
-> On Tue, 16 Nov 2021 at 04:01, Dave Chinner <david@fromorbit.com> wrote:
+On Tue, Nov 16, 2021, Thomas Gleixner wrote:
+> > One of potential drawbacks of the Option 2 might be additional 
+> > checks in the host, although we can minimize the impact by having
+> > CONFIG_KVM_TBD. We believe that the case
+> > "XFD != 0 and XINUSE != 0" should be very infrequent.
 > 
-> > I *think* that just zeroing the buffer means the race condition
-> > means the link resolves as either wholly intact, partially zeroed
-> > with trailing zeros in the length, wholly zeroed or zero length.
-> > Nothing will crash, the link string is always null terminated even
-> > if the length is wrong, and so nothing bad should happen as a result
-> > of zeroing the symlink buffer when it gets evicted from the VFS
-> > inode cache after unlink.
+> I really don't like the idea of having an extra check in switch_to().
 > 
-> That's my thinking.  However, modifying the buffer while it is being
-> processed does seem pretty ugly, and I have to admit that I don't
-> understand why this needs to be done in either XFS or EXT4.
-> 
-
-Agreed. I'm also not following what problem this is intended to solve..?
-
-Hmm.. it looks to me that the ext4 code zeroes the symlink to
-accommodate its own truncate/teardown code because it will access the
-field via a structure to interpret it as a (empty?) data mapping. IOW,
-it doesn't seem to have anything to do with the vfs or path
-walks/lookups but rather is an internal implementation detail of ext4.
-It would probably be best if somebody who knows ext4 better could
-comment on that before we take anything from it. Of course, there is the
-fact that ext4 doing this seemingly doesn't disturb/explode the vfs, but
-really neither does the current XFS code so it's kind of hard to say
-whether one approach is any more or less correct purely based on the
-fact that the code exists.
-
-Brian
-
-> > The root cause is "allowing an inode to be reused without waiting
-> > for an RCU grace period to expire". This might seem pedantic, but
-> > "without waiting for an rcu grace period to expire" is the important
-> > part of the problem (i.e. the bug), not the "allowing an inode to be
-> > reused" bit.
-> 
-> Yes.
+> Can we start simple and do something like the uncompiled below and see
+> how much overhead it creates?
 > 
 > Thanks,
-> Miklos
 > 
+>         tglx
+> ---
 
+...
+
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 2686f2edb47c..9425fdbb4806 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -9576,6 +9576,8 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>  	vcpu->arch.last_vmentry_cpu = vcpu->cpu;
+>  	vcpu->arch.last_guest_tsc = kvm_read_l1_tsc(vcpu, rdtsc());
+>  
+> +	kvm_update_guest_xfd_state();
+
+Is there a reason the XFD switch can't key off TIF_NEED_FPU_LOAD a la the other
+FPU stuff?  I.e. piggyback this snippet in vcpu_enter_guest():
+
+	if (test_thread_flag(TIF_NEED_FPU_LOAD))
+		switch_fpu_return();
+> +
+>  	vcpu->mode = OUTSIDE_GUEST_MODE;
+>  	smp_wmb();
+>  
+> 
+> 
