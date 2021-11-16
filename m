@@ -2,199 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D44452E83
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E94A1452E8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:58:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233572AbhKPJ7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 04:59:08 -0500
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:40102
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233481AbhKPJ7A (ORCPT
+        id S233654AbhKPKBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 05:01:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50921 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233481AbhKPKBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 04:59:00 -0500
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id A217E3F19A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 09:56:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1637056562;
-        bh=SZ+OcybNTND/+wyEBAooY0m2sdEIK+P9plT3Nt4zRew=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=Bq9atkDm+kwBVZFQi/Lu10/i6xAjWRBDsIglOy/gxlLDjCz0BxLK6c7DXFfXSvZmr
-         o/EPnDmgMOigOthS7OTWnGj7sPKzWz5L6dtJ04xRybabPzAy8koTbGqcff/s9gHf4B
-         gAmTk5u6yFOm1Y4FM8aLZlEFIaRPk5HIy2kssmCX5MPghIf66BCG3Gapk6l90tfkBj
-         5z7Elj+rXDq/0O8iVam/MS8G4CPY+CF1Ps6B+cUMPkAC4nmniR654FFeTSDKOvTZwH
-         1bvhF9WCAxIbrhI4kOwZI9rDcuausk6cdgDyY2QM6MYNJKcPdVtpjSzLUACQom+0c8
-         5Zh9lWgbOPp1A==
-Received: by mail-ed1-f72.google.com with SMTP id a3-20020a05640213c300b003e7d12bb925so4260624edx.9
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 01:56:02 -0800 (PST)
+        Tue, 16 Nov 2021 05:01:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637056696;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=umA4f+vJW0zyTGsWrJBUN9j1q7sKdThBrgx1FzBDGv0=;
+        b=PXHmFhZ/9S75y/9/sH6Qt4iz6ug+diUn7R7WW77RUW41nnu/tD1B1USuVpJZD/KgITq2ZM
+        HhkCvwaiwxwzRzyuKrge0pgRLtaiGM/1UbJFvBQfSFu9kNwOWtE95e3PSpBNQpfhl+Ej/p
+        DUN70mc+gxjRgW+K0zroSLGMWUBkW4g=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441-k9fw6cOQMkevPevMFvienw-1; Tue, 16 Nov 2021 04:58:12 -0500
+X-MC-Unique: k9fw6cOQMkevPevMFvienw-1
+Received: by mail-ed1-f71.google.com with SMTP id l15-20020a056402124f00b003e57269ab87so10056933edw.6
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 01:58:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=SZ+OcybNTND/+wyEBAooY0m2sdEIK+P9plT3Nt4zRew=;
-        b=n2WsPgJvhPSNIK4z7S46ZyL2L77y5RM/rPxxkIawCJE0pq+DHaGyYnxHbpHpQcH0GV
-         4v0ssJuOHOhCq+7fyox0+rydp+S1wqX+scT8FTmvfOOTFis7DSNacEzes00WwFxLkXVg
-         BHtRvPSUW4ucM8PtYd2YxPAdL4Hjg0JNdt/jr+g8Z9iMGKT3uvn+uML96wRt/PoO/2Ju
-         QO3kAl8tFQ07y7XClqREvwP8LME23X5vKQbN8JWFbvZKdeoT/2Bu5ah8GOBHEG4QhJZB
-         5l3I5MK0HqCDyu0PTrc/bt9dQaoHh5YAhva5VE+57SnhEz3Uf/J1m3wUp8WEJwnxTzic
-         nyCA==
-X-Gm-Message-State: AOAM533uJfUSsdkrXb4caw6TY6zlTJIsAWXAZVR62qY4y34j9XQcWux9
-        Ok4iKfgwQryQ03QaJ05r+bWHCF4CykNJ+5GIbWT6h53JXLoSzjNVTRgQ8v9iNBqeY6usCNllYJj
-        Gn8Q4nmCO99rRyYcIy5ofgKwprT7Vj12VWiU7k5Hjxg==
-X-Received: by 2002:a17:906:fcc8:: with SMTP id qx8mr7897273ejb.370.1637056562336;
-        Tue, 16 Nov 2021 01:56:02 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxeyYnrV7Bs1EC6BA52gAawGn6emgmOPekkwtX7rg769AzZR72cmrw7JKGD4cNaQiWtl+AtDQ==
-X-Received: by 2002:a17:906:fcc8:: with SMTP id qx8mr7897237ejb.370.1637056562070;
-        Tue, 16 Nov 2021 01:56:02 -0800 (PST)
-Received: from arighi-desktop.homenet.telecomitalia.it ([2001:67c:1560:8007::aac:c1b6])
-        by smtp.gmail.com with ESMTPSA id hr17sm7958741ejc.57.2021.11.16.01.56.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 01:56:01 -0800 (PST)
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Phoenix Huang <phoenix@emc.com.tw>, Wolfram Sang <wsa@kernel.org>,
-        jingle.wu@emc.com.tw,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] Input: elantech - Fix stack out of bound access in elantech_change_report_id()
-Date:   Tue, 16 Nov 2021 10:55:58 +0100
-Message-Id: <20211116095559.24395-1-andrea.righi@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        bh=umA4f+vJW0zyTGsWrJBUN9j1q7sKdThBrgx1FzBDGv0=;
+        b=fd3aNoVB3ge0AznxOVB/aGm2Whpwi247fFKp0qQgr+idFl3Mb6/jAY65DBJ7Arjhfh
+         PCKNKR4OwrceEVshQoKtXvBynZjCOqwIhu3w8mU9EMO4OX97fBkrkFNqQbwm2RFcwPhV
+         DeU8ij4GFbKmWydXI9E4epU47BlKs2u2nkO65/HTvUglezvxYmmBOGnURjvX9iM8iwy1
+         pIjJitoDJUVXgYwS+q5IF7/xzr+gRDAQEwKh6hnovuaVBpP8wvFi307E6FlMq8h76GrV
+         eXKHJngqmM374nQDxnbPhJI9uwJwsYBhW6pVn3ryqYAKcGvz9IND5g9n61pDrJu5+0SZ
+         7osA==
+X-Gm-Message-State: AOAM530rCZo9KNPXh+jY8MNHGne52ylAwT35J9kOWt2huEYbKzeP1Z5b
+        u/sOfoXv4Zpcf+UeWLW5eAxcOwBbpZ7JqcK1IxSJMr58r8SklDuAsychMq4AHj7whzUJz3dHAj8
+        3PbxCxw9JbAeog3NCPoBltSmH
+X-Received: by 2002:a17:906:82c5:: with SMTP id a5mr8126322ejy.127.1637056691204;
+        Tue, 16 Nov 2021 01:58:11 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJze1x4oh8Tr55x5uOf6rXfHjA4u3JukbOVstW3waT/M4djmyJB4ls5QQXUf666jJk02I+nw4Q==
+X-Received: by 2002:a17:906:82c5:: with SMTP id a5mr8126300ejy.127.1637056691067;
+        Tue, 16 Nov 2021 01:58:11 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id f17sm4156745edq.39.2021.11.16.01.58.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 01:58:10 -0800 (PST)
+Message-ID: <ca1cd8a1-f584-854e-23a5-546392c92d5a@redhat.com>
+Date:   Tue, 16 Nov 2021 10:58:09 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] platform/x86: samsung-laptop: Fix typo in a comment
+Content-Language: en-US
+To:     Jason Wang <wangborong@cdjrlc.com>
+Cc:     corentin.chary@gmail.com, markgross@kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211113054827.199517-1-wangborong@cdjrlc.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20211113054827.199517-1-wangborong@cdjrlc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The array param[] in elantech_change_report_id() must be at least 3
-bytes, because elantech_read_reg_params() is calling ps2_command() with
-PSMOUSE_CMD_GETINFO, that is going to access 3 bytes from param[], but
-it's defined in the stack as an array of 2 bytes, therefore we have a
-potential stack out-of-bounds access here, also confirmed by KASAN:
+Hi,
 
-[    6.512374] BUG: KASAN: stack-out-of-bounds in __ps2_command+0x372/0x7e0
-[    6.512397] Read of size 1 at addr ffff8881024d77c2 by task kworker/2:1/118
+On 11/13/21 06:48, Jason Wang wrote:
+> The double `it' is repeated in a comment, therefore one of them
+> is removed.
+> 
+> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
 
-[    6.512416] CPU: 2 PID: 118 Comm: kworker/2:1 Not tainted 5.13.0-22-generic #22+arighi20211110
-[    6.512428] Hardware name: LENOVO 20T8000QGE/20T8000QGE, BIOS R1AET32W (1.08 ) 08/14/2020
-[    6.512436] Workqueue: events_long serio_handle_event
-[    6.512453] Call Trace:
-[    6.512462]  show_stack+0x52/0x58
-[    6.512474]  dump_stack+0xa1/0xd3
-[    6.512487]  print_address_description.constprop.0+0x1d/0x140
-[    6.512502]  ? __ps2_command+0x372/0x7e0
-[    6.512516]  __kasan_report.cold+0x7d/0x112
-[    6.512527]  ? _raw_write_lock_irq+0x20/0xd0
-[    6.512539]  ? __ps2_command+0x372/0x7e0
-[    6.512552]  kasan_report+0x3c/0x50
-[    6.512564]  __asan_load1+0x6a/0x70
-[    6.512575]  __ps2_command+0x372/0x7e0
-[    6.512589]  ? ps2_drain+0x240/0x240
-[    6.512601]  ? dev_printk_emit+0xa2/0xd3
-[    6.512612]  ? dev_vprintk_emit+0xc5/0xc5
-[    6.512621]  ? __kasan_check_write+0x14/0x20
-[    6.512634]  ? mutex_lock+0x8f/0xe0
-[    6.512643]  ? __mutex_lock_slowpath+0x20/0x20
-[    6.512655]  ps2_command+0x52/0x90
-[    6.512670]  elantech_ps2_command+0x4f/0xc0 [psmouse]
-[    6.512734]  elantech_change_report_id+0x1e6/0x256 [psmouse]
-[    6.512799]  ? elantech_report_trackpoint.constprop.0.cold+0xd/0xd [psmouse]
-[    6.512863]  ? ps2_command+0x7f/0x90
-[    6.512877]  elantech_query_info.cold+0x6bd/0x9ed [psmouse]
-[    6.512943]  ? elantech_setup_ps2+0x460/0x460 [psmouse]
-[    6.513005]  ? psmouse_reset+0x69/0xb0 [psmouse]
-[    6.513064]  ? psmouse_attr_set_helper+0x2a0/0x2a0 [psmouse]
-[    6.513122]  ? phys_pmd_init+0x30e/0x521
-[    6.513137]  elantech_init+0x8a/0x200 [psmouse]
-[    6.513200]  ? elantech_init_ps2+0xf0/0xf0 [psmouse]
-[    6.513249]  ? elantech_query_info+0x440/0x440 [psmouse]
-[    6.513296]  ? synaptics_send_cmd+0x60/0x60 [psmouse]
-[    6.513342]  ? elantech_query_info+0x440/0x440 [psmouse]
-[    6.513388]  ? psmouse_try_protocol+0x11e/0x170 [psmouse]
-[    6.513432]  psmouse_extensions+0x65d/0x6e0 [psmouse]
-[    6.513476]  ? psmouse_try_protocol+0x170/0x170 [psmouse]
-[    6.513519]  ? mutex_unlock+0x22/0x40
-[    6.513526]  ? ps2_command+0x7f/0x90
-[    6.513536]  ? psmouse_probe+0xa3/0xf0 [psmouse]
-[    6.513580]  psmouse_switch_protocol+0x27d/0x2e0 [psmouse]
-[    6.513624]  psmouse_connect+0x272/0x530 [psmouse]
-[    6.513669]  serio_driver_probe+0x55/0x70
-[    6.513679]  really_probe+0x190/0x720
-[    6.513689]  driver_probe_device+0x160/0x1f0
-[    6.513697]  device_driver_attach+0x119/0x130
-[    6.513705]  ? device_driver_attach+0x130/0x130
-[    6.513713]  __driver_attach+0xe7/0x1a0
-[    6.513720]  ? device_driver_attach+0x130/0x130
-[    6.513728]  bus_for_each_dev+0xfb/0x150
-[    6.513738]  ? subsys_dev_iter_exit+0x10/0x10
-[    6.513748]  ? _raw_write_unlock_bh+0x30/0x30
-[    6.513757]  driver_attach+0x2d/0x40
-[    6.513764]  serio_handle_event+0x199/0x3d0
-[    6.513775]  process_one_work+0x471/0x740
-[    6.513785]  worker_thread+0x2d2/0x790
-[    6.513794]  ? process_one_work+0x740/0x740
-[    6.513802]  kthread+0x1b4/0x1e0
-[    6.513809]  ? set_kthread_struct+0x80/0x80
-[    6.513816]  ret_from_fork+0x22/0x30
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-[    6.513832] The buggy address belongs to the page:
-[    6.513838] page:00000000bc35e189 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1024d7
-[    6.513847] flags: 0x17ffffc0000000(node=0|zone=2|lastcpupid=0x1fffff)
-[    6.513860] raw: 0017ffffc0000000 dead000000000100 dead000000000122 0000000000000000
-[    6.513867] raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-[    6.513872] page dumped because: kasan: bad access detected
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
 
-[    6.513879] addr ffff8881024d77c2 is located in stack of task kworker/2:1/118 at offset 34 in frame:
-[    6.513887]  elantech_change_report_id+0x0/0x256 [psmouse]
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
 
-[    6.513941] this frame has 1 object:
-[    6.513947]  [32, 34) 'param'
+Regards,
 
-[    6.513956] Memory state around the buggy address:
-[    6.513962]  ffff8881024d7680: f2 f2 f2 f2 f2 00 00 f3 f3 00 00 00 00 00 00 00
-[    6.513969]  ffff8881024d7700: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[    6.513976] >ffff8881024d7780: 00 00 00 00 f1 f1 f1 f1 02 f3 f3 f3 00 00 00 00
-[    6.513982]                                            ^
-[    6.513988]  ffff8881024d7800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[    6.513995]  ffff8881024d7880: 00 f1 f1 f1 f1 03 f2 03 f2 03 f3 f3 f3 00 00 00
-[    6.514000] ==================================================================
+Hans
 
-Define param[] in elantech_change_report_id() as an array of 3 bytes to
-prevent the out-of-bounds access in the stack.
 
-Fixes: e4c9062717fe ("Input: elantech - fix protocol errors for some trackpoints in SMBus mode")
-BugLink: https://bugs.launchpad.net/bugs/1945590
-Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
----
-
-Changes in v2:
- - add a comment to explain why the size of param[] must be 3
-
- drivers/input/mouse/elantech.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/input/mouse/elantech.c b/drivers/input/mouse/elantech.c
-index 956d9cd34796..ece97f8c6a3e 100644
---- a/drivers/input/mouse/elantech.c
-+++ b/drivers/input/mouse/elantech.c
-@@ -1588,7 +1588,13 @@ static const struct dmi_system_id no_hw_res_dmi_table[] = {
-  */
- static int elantech_change_report_id(struct psmouse *psmouse)
- {
--	unsigned char param[2] = { 0x10, 0x03 };
-+	/*
-+	 * NOTE: the code is expecting to receive param[] as an array of 3
-+	 * items (see __ps2_command()), even if in this case only 2 are
-+	 * actually needed. Make sure the array size is 3 to avoid potential
-+	 * stack out-of-bound accesses.
-+	 */
-+	unsigned char param[3] = { 0x10, 0x03 };
- 
- 	if (elantech_write_reg_params(psmouse, 0x7, param) ||
- 	    elantech_read_reg_params(psmouse, 0x7, param) ||
--- 
-2.32.0
+> ---
+>  drivers/platform/x86/samsung-laptop.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/platform/x86/samsung-laptop.c b/drivers/platform/x86/samsung-laptop.c
+> index 7ee010aa740a..c1d9ed9b7b67 100644
+> --- a/drivers/platform/x86/samsung-laptop.c
+> +++ b/drivers/platform/x86/samsung-laptop.c
+> @@ -152,7 +152,7 @@ struct sabi_config {
+>  
+>  static const struct sabi_config sabi_configs[] = {
+>  	{
+> -		/* I don't know if it is really 2, but it it is
+> +		/* I don't know if it is really 2, but it is
+>  		 * less than 3 anyway */
+>  		.sabi_version = 2,
+>  
+> 
 
