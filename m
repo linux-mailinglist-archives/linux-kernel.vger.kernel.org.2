@@ -2,232 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 935AA453CC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:39:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E27F5453CC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:41:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232342AbhKPXmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 18:42:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbhKPXmg (ORCPT
+        id S229632AbhKPXoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 18:44:02 -0500
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:31981 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229532AbhKPXoC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 18:42:36 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE6CC061570
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 15:39:39 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id m25so862976qtq.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 15:39:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hk4Dbn/innUSCH+I6h6DAlFwWf85a++ijfHQHPk3pZc=;
-        b=wSQbPP7+bD4t3D2iHXusqt+NZpOVq7Q9u71SBDttaTlzBgnS28Dl3imYWdXa8ogSV3
-         Lx/AsyYjqvmjN1YkhPPl+2djJLjnL4l35qFxK7m/M9Y2Xlu3KZMJ5WeUya2zWTHFndBF
-         iZ+fyLpKtlc11o7Ly3eeAa+IxpQZdoxTzzYYcg1EddrAfTZy4z7G2KMA2CPE+qF3gKZX
-         e6RR28XP1bOj1rscsgT467X0APpFo9a4jtv2RXZba2724CwoxSiFcjD+JF/Yl+bxzwxe
-         +ndbYzmSLJx5mwF1MKAsSprHQaYQ9ZxQUm5GDtv4/oOHALTUB91c4W5k3oLw2pygRWJq
-         7aKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hk4Dbn/innUSCH+I6h6DAlFwWf85a++ijfHQHPk3pZc=;
-        b=HUdkx5p+mYJsaskHJyyJTkdUDie6s67D9bM2z4hh7PKa6w05OYOcrh5khDeetLs0ff
-         mFhthAvzO7LLBTpikJw1GNoqhbsosBXkKlDJIaIRPZouFRTqCYOtsd/s8Vs3Hzp+zr+c
-         yiin+9hXjNNdvtVgs0pdyaJOyr/+HmbNSGaLtX6/W7CoUSaWW9crJY60o0ATzyyjGNg3
-         M13RH92l/8a6yUtNB2Vc4rOfeVmlqtClQCPYqZy34SlFs2k2Wf9CfEQ/88zl9LkKdVSK
-         yMKhckO2neRtLzKg0hcsVwT4MLEkZ3y3K/Icj9gXvEvMI8tZxWD0L/gBa4tysXGPmlKL
-         vTGw==
-X-Gm-Message-State: AOAM530hZVQ3K//r3tvNG0s2pDLhLiQYPRpiWfSMatxgPnkHom0ZDkXz
-        5j0Kif78Hyeg3CNNuuRxzgZAdQ==
-X-Google-Smtp-Source: ABdhPJyq33+tLo2GsctywFh4hfhQQyOuGaVp+HTVNZ0G2m4RGbLujdyL98xaqu+7zPgBuFCsz69mWA==
-X-Received: by 2002:ac8:7d83:: with SMTP id c3mr12356950qtd.359.1637105978136;
-        Tue, 16 Nov 2021 15:39:38 -0800 (PST)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id d11sm7480775qtj.4.2021.11.16.15.39.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 15:39:37 -0800 (PST)
-Subject: Re: [PATCH v4 1/5] arch_topology: Introduce thermal pressure update
- function
-To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, steev@kali.org,
-        sudeep.holla@arm.com, will@kernel.org, catalin.marinas@arm.com,
-        linux@armlinux.org.uk, gregkh@linuxfoundation.org,
-        rafael@kernel.org, viresh.kumar@linaro.org, amitk@kernel.org,
-        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
-        bjorn.andersson@linaro.org, agross@kernel.org
-References: <20211109195714.7750-1-lukasz.luba@arm.com>
- <20211109195714.7750-2-lukasz.luba@arm.com>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <5de717f7-dd64-5584-540a-e0b86a431dde@linaro.org>
-Date:   Tue, 16 Nov 2021 18:39:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 16 Nov 2021 18:44:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1637106064; x=1668642064;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ev+2wVhbaz0dqm95xJZP6RcPucLU+FM+XzatSFIxj7Y=;
+  b=WzCr8uZotrYCipidNK/8ijzBW5bUD/zUyUF4eSrLWboCEbrqj8G6pSx6
+   LMBF3HYfPp8zwe1JsyOX9z5aztgArYZ20vnbtlqwL1koGJW5aq6za53d/
+   w/vzZ9M0BN/KZXdRF5ADm5/Pr9ENIbft1+6W531227TkdKWSVMw1GsFsq
+   eNpwh/QnNHWQc26vB+APns528k//c+m6tG5zJN4XSmQZXB33zbmcbCqmD
+   7ud8fph/Vbeoqza+ajd5RQ2nXetNViQbHL0QEOxVOpXue7U33FZ5G1/z5
+   lz2qLO2TVlerEh11ZuaD5vIgdJSATDaUoySuVeOXEfpTqnvmcu5gFIG0Z
+   g==;
+X-IronPort-AV: E=Sophos;i="5.87,239,1631548800"; 
+   d="scan'208";a="297603731"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 17 Nov 2021 07:41:02 +0800
+IronPort-SDR: w/l2LBCJKZg+TSD2apsIaIDxpYmNziuTVxCtO1b+i1jRiRgSiDXMW4eMP62XOpAWMFPk/6/tEx
+ npflyWSHnRBhftHjq5G6MlLdHfrNEFEuT7Cs6lJyB4bzTfOWdL6BRw116Z84euTpskV3aH3n/W
+ UHNr9DvfEJOilJx/YxX5zA7o4tyqwRSkLJa4puNiTcWOT5A2XNu4ZVsQOilfdmd5hnqwPJapvo
+ RmP+SRoz7/N5Kb1py3KMQW3n84xZAd8hSAX4/QQrh8QU8dzswKTwcWQVtPHRkuhlEJNZFXV+zW
+ jW6fhsp45Q/cb0WGVhZ2enbT
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 15:14:32 -0800
+IronPort-SDR: Dx0Akj4zyzOkHsDpEy8BYt1htgbb6Vpp/PXBa71V4ADStr68+5WrgVOzve6YC/hmyTPrpA9i5o
+ JQMzQDVnFrI46eWOvTHeo3ZDEsa5cFSUEGvMVVeodVZVicocFwH1jU4zMREXFqPqJ2ySjASaEN
+ r7mv1bUUXLXh1IBJX7iNapX/1Pos60OAEl+Q1V4SBha7P6L49zE6Qj9bkxMp6u9U55Ui7s4pq8
+ s0dFWuTNM9IJ42bldfzBY8vwUGXmp8Ajp/iMWztPP0yL2LtuwCo3CROK3pOEJo+0STnb33BAWA
+ Xuo=
+WDCIronportException: Internal
+Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
+  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 15:41:02 -0800
+Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4Hv2ct24svz1RtVx
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 15:41:02 -0800 (PST)
+Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)"
+        header.d=opensource.wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+        opensource.wdc.com; h=content-transfer-encoding:content-type
+        :in-reply-to:organization:from:references:to:content-language
+        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
+        1637106061; x=1639698062; bh=ev+2wVhbaz0dqm95xJZP6RcPucLU+FM+Xza
+        tSFIxj7Y=; b=gt+4qiE3oNsiI5gIqzNhGTpKbPVTCMvJPX6KZ94nPTuvLk4aFj5
+        87FlemEX3MtkdCukf0AKNPbZxMFAbAxi8Cr08wTSTqlAfYXxk+8siKI/wowsTMfe
+        C3kwxKl4ozBV8LCORYvbxooIkxwYFpUG4P95eHGoi++pWA0qeoBNGPq5vu7ignZt
+        uz/qhdMrQD5ACluQR/QkRhxOThcvKD+D/HBnPRBF8MCB3YhhzIxIOuIDKijst8zq
+        dtAgYYFUW3bIr1Oq3wuOrQpZmzlGsC92a+gqMZiRCzOBln1pxbHGp/BfvGJ4ev9l
+        sUr3gehE16adH9Wt6ZZ4gO6/RpGXPA2yt/w==
+X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
+Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
+        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id NNYFdRwg-8OQ for <linux-kernel@vger.kernel.org>;
+        Tue, 16 Nov 2021 15:41:01 -0800 (PST)
+Received: from [10.225.54.48] (unknown [10.225.54.48])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4Hv2cq69f8z1RtVl;
+        Tue, 16 Nov 2021 15:40:59 -0800 (PST)
+Message-ID: <26826c5d-2fa6-9719-be2a-5a22d1e9abc0@opensource.wdc.com>
+Date:   Wed, 17 Nov 2021 08:40:58 +0900
 MIME-Version: 1.0
-In-Reply-To: <20211109195714.7750-2-lukasz.luba@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.1
+Subject: Re: Kernel 5.15 doesn't detect SATA drive on boot
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+To:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>
+Cc:     Yuji Nakao <contact@yujinakao.com>, linux-kernel@vger.kernel.org,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        ". Bjorn Helgaas" <bhelgaas@google.com>,
+        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Sasha Levin <sashal@kernel.org>
+References: <87h7ccw9qc.fsf@yujinakao.com>
+ <8951152e-12d7-0ebe-6f61-7d3de7ef28cb@opensource.wdc.com>
+ <YZQ+GhRR+CPbQ5dX@rocinante>
+From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Organization: Western Digital
+In-Reply-To: <YZQ+GhRR+CPbQ5dX@rocinante>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/11/17 8:26, Krzysztof Wilczy=C5=84ski wrote:
+> [+CC Arnd, Bjorn, Marc and Sasha for visibility]
+>=20
+> Hello Damien and Yuji,
+>=20
+> [...]
+>>> I'm using Arch Linux on MacBook Air 2010. I updated `linux` package[1=
+]
+>>> from v5.14.16 to v5.15.2 the other day, and the boot process stalled
+>>> with the following message.
+>>>
+>>> ```shell
+>>> :: running early hook [udev]
+>>> Starting version 249.6-3-arch
+>>> :: running hook [udev]
+>>> :: Triggering uevents...
+>>> Waiting 10 seconds for device /dev/sda3 ...
+>>> ERROR: device '/dev/sda3' not found. Skipping fsck.
+>>> :: mounting '/dev/sda' on real root
+>>> mount: /new_root: no filesystem type specified.
+>>> You are now being dropped into an emergency shell.
+>>> sh: can't access tty; job control turned off
+>>> [rootfs ]#
+>>> ```
+>>>
+>>> In the emergency shell there's no `sda` devices when I type `$ ls
+>>> /dev/`. By downgrading the kernel, boot process works properly.
+>>>
+>>> See also Arch Linux bug tracker[2]. There are similar reports on
+>>> Apple devices.
+>>>
+>>> `dmesg` output in the emergency shell is attached. I guess this issue=
+ is
+>>> related to libata, so CCed to Damien Le Moal.
+>>
+>> I think that this problem is due to recent PCI subsystem changes which=
+ broke Mac
+>> support. The problem show up as the interrupts not being delivered, wh=
+ich in
+>> turn result in the kernel assuming that the drive is not working (see =
+the
+>> timeout error messages in your dmesg output). Hence your boot drive de=
+tection
+>> fails and no rootfs to mount.
+>>
+>> Adding linux-pci list.
+>>
+>>
+>>
+>>>
+>>> Regards.
+>>>
+>>> [1] https://archlinux.org/packages/core/x86_64/linux/
+>>> [2] https://bugs.archlinux.org/task/72734
+>=20
+
+Krzysztof,
+
+> The error in the dmesg output (see [2] where the log file is attached)
+> looks similar to the problem reported a week or so ago, as per:
+>=20
+>   https://lore.kernel.org/linux-pci/ee3884db-da17-39e3-4010-bcc8f878e2f=
+6@xenosoft.de/
+
+Thanks. I searched this thread but could not find it in the archive.
+Early morning, need more coffee :)
+
+>=20
+> The problematic commits where reverted by Bjorn and the Pull Request th=
+at
+> did it was accepted, as per:
+>=20
+>   https://lore.kernel.org/linux-pci/20211111195040.GA1345641@bhelgaas/
+>=20
+> Thus, this would made its way into 5.16-rc1, I suppose.  We might have =
+to
+> back-port this to the stable and long-term kernels.
+
+Yes, I think the fix needs to go in 5.15, which is latest stable and LTS.
+
+>=20
+> Yuji, could you, if you have some time to spare, try the 5.16-rc1 to se=
+e if
+> this have gotten better on your system?
+>=20
+> 	Krzysztof
+>=20
 
 
-On 11/9/21 2:57 PM, Lukasz Luba wrote:
-> The thermal pressure is a mechanism which is used for providing
-> information about reduced CPU performance to the scheduler. Usually code
-> has to convert the value from frequency units into capacity units,
-> which are understandable by the scheduler. Create a common conversion code
-> which can be just used via a handy API.
-> 
-> Internally, the topology_update_thermal_pressure() operates on frequency
-> in MHz and max CPU frequency is taken from 'freq_factor' (per-cpu).
-> 
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-
-Reviewed-by: Thara Gopinath <thara.gopinath@linaro.org>
-
--- 
-Warm Regards
-Thara (She/Her/Hers)
-
-> ---
->   arch/arm/include/asm/topology.h   |  1 +
->   arch/arm64/include/asm/topology.h |  1 +
->   drivers/base/arch_topology.c      | 43 ++++++++++++++++++++++++++++++-
->   include/linux/arch_topology.h     |  3 +++
->   include/linux/sched/topology.h    |  7 +++++
->   5 files changed, 54 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/include/asm/topology.h b/arch/arm/include/asm/topology.h
-> index 470299ee2fba..f1eafacc9a30 100644
-> --- a/arch/arm/include/asm/topology.h
-> +++ b/arch/arm/include/asm/topology.h
-> @@ -24,6 +24,7 @@
->   /* Replace task scheduler's default thermal pressure API */
->   #define arch_scale_thermal_pressure topology_get_thermal_pressure
->   #define arch_set_thermal_pressure   topology_set_thermal_pressure
-> +#define arch_update_thermal_pressure	topology_update_thermal_pressure
->   
->   #else
->   
-> diff --git a/arch/arm64/include/asm/topology.h b/arch/arm64/include/asm/topology.h
-> index ec2db3419c41..7a421cbc99ed 100644
-> --- a/arch/arm64/include/asm/topology.h
-> +++ b/arch/arm64/include/asm/topology.h
-> @@ -33,6 +33,7 @@ void update_freq_counters_refs(void);
->   /* Replace task scheduler's default thermal pressure API */
->   #define arch_scale_thermal_pressure topology_get_thermal_pressure
->   #define arch_set_thermal_pressure   topology_set_thermal_pressure
-> +#define arch_update_thermal_pressure	topology_update_thermal_pressure
->   
->   #include <asm-generic/topology.h>
->   
-> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> index fc0836f460fb..bed7d502c9a1 100644
-> --- a/drivers/base/arch_topology.c
-> +++ b/drivers/base/arch_topology.c
-> @@ -25,6 +25,7 @@
->   static DEFINE_PER_CPU(struct scale_freq_data __rcu *, sft_data);
->   static struct cpumask scale_freq_counters_mask;
->   static bool scale_freq_invariant;
-> +static DEFINE_PER_CPU(u32, freq_factor) = 1;
->   
->   static bool supports_scale_freq_counters(const struct cpumask *cpus)
->   {
-> @@ -168,6 +169,47 @@ void topology_set_thermal_pressure(const struct cpumask *cpus,
->   }
->   EXPORT_SYMBOL_GPL(topology_set_thermal_pressure);
->   
-> +/**
-> + * topology_update_thermal_pressure() - Update thermal pressure for CPUs
-> + * @cpus        : The related CPUs for which capacity has been reduced
-> + * @capped_freq : The maximum allowed frequency that CPUs can run at
-> + *
-> + * Update the value of thermal pressure for all @cpus in the mask. The
-> + * cpumask should include all (online+offline) affected CPUs, to avoid
-> + * operating on stale data when hot-plug is used for some CPUs. The
-> + * @capped_freq reflects the currently allowed max CPUs frequency due to
-> + * thermal capping. It might be also a boost frequency value, which is bigger
-> + * than the internal 'freq_factor' max frequency. In such case the pressure
-> + * value should simply be removed, since this is an indication that there is
-> + * no thermal throttling. The @capped_freq must be provided in kHz.
-> + */
-> +void topology_update_thermal_pressure(const struct cpumask *cpus,
-> +				      unsigned long capped_freq)
-> +{
-> +	unsigned long max_capacity, capacity;
-> +	u32 max_freq;
-> +	int cpu;
-> +
-> +	cpu = cpumask_first(cpus);
-> +	max_capacity = arch_scale_cpu_capacity(cpu);
-> +	max_freq = per_cpu(freq_factor, cpu);
-> +
-> +	/* Convert to MHz scale which is used in 'freq_factor' */
-> +	capped_freq /= 1000;
-> +
-> +	/*
-> +	 * Handle properly the boost frequencies, which should simply clean
-> +	 * the thermal pressure value.
-> +	 */
-> +	if (max_freq <= capped_freq)
-> +		capacity = max_capacity;
-> +	else
-> +		capacity = mult_frac(max_capacity, capped_freq, max_freq);
-> +
-> +	arch_set_thermal_pressure(cpus, max_capacity - capacity);
-> +}
-> +EXPORT_SYMBOL_GPL(topology_update_thermal_pressure);
-> +
->   static ssize_t cpu_capacity_show(struct device *dev,
->   				 struct device_attribute *attr,
->   				 char *buf)
-> @@ -220,7 +262,6 @@ static void update_topology_flags_workfn(struct work_struct *work)
->   	update_topology = 0;
->   }
->   
-> -static DEFINE_PER_CPU(u32, freq_factor) = 1;
->   static u32 *raw_capacity;
->   
->   static int free_raw_capacity(void)
-> diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
-> index b97cea83b25e..ace1e5dcf773 100644
-> --- a/include/linux/arch_topology.h
-> +++ b/include/linux/arch_topology.h
-> @@ -59,6 +59,9 @@ static inline unsigned long topology_get_thermal_pressure(int cpu)
->   void topology_set_thermal_pressure(const struct cpumask *cpus,
->   				   unsigned long th_pressure);
->   
-> +void topology_update_thermal_pressure(const struct cpumask *cpus,
-> +				      unsigned long capped_freq);
-> +
->   struct cpu_topology {
->   	int thread_id;
->   	int core_id;
-> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-> index c07bfa2d80f2..6e89a8e43aa7 100644
-> --- a/include/linux/sched/topology.h
-> +++ b/include/linux/sched/topology.h
-> @@ -273,6 +273,13 @@ void arch_set_thermal_pressure(const struct cpumask *cpus,
->   { }
->   #endif
->   
-> +#ifndef arch_update_thermal_pressure
-> +static __always_inline
-> +void arch_update_thermal_pressure(const struct cpumask *cpus,
-> +				  unsigned long capped_frequency)
-> +{ }
-> +#endif
-> +
->   static inline int task_node(const struct task_struct *p)
->   {
->   	return cpu_to_node(task_cpu(p));
-> 
-
-
+--=20
+Damien Le Moal
+Western Digital Research
