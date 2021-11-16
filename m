@@ -2,125 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C99452F2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 11:34:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD71452F2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 11:34:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234231AbhKPKgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 05:36:36 -0500
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:41608
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234205AbhKPKgE (ORCPT
+        id S234198AbhKPKh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 05:37:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234103AbhKPKhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 05:36:04 -0500
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 27CEA3F1A2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 10:33:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1637058787;
-        bh=9Le9vThg2zYYZ4FT+Lsh8JZmnjsCqwGI+kiP40c27ZQ=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=R+54iYerD3XUe0bho3L2AEPDUBTwpTJsRvL6Z6hVfdLPKVFfNNx+nwjDgYZ8qqF51
-         C/t2i2mIeYEdtMDPfn8RSPLirEuDuWpMH8NDwLVfy5ruPaWMJkFZCaqEl1ZnDxQEmI
-         DFrEt+qf7QxWGzp9Lq8TMgyplU/0q/CJPxU5UxX4Pn1wGow1Wg8ga+HKcogj1g8592
-         h3hQET6ea2/zIHQmZFI8ovCP3lMdkkqMNplheIUiEselpNUHUAqOduSkeA4HN6F2oe
-         yNefAGATRZgQSG0X8i8JbDmn4DM1lbBKy9d2LqrNGWqoF0jRNk9iGsdBhCRkd+cQ+I
-         ulzqdtH+P7FWw==
-Received: by mail-lf1-f71.google.com with SMTP id bp10-20020a056512158a00b0040376f60e35so8026383lfb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 02:33:07 -0800 (PST)
+        Tue, 16 Nov 2021 05:37:21 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C93C061570;
+        Tue, 16 Nov 2021 02:34:24 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id v23so15380157pjr.5;
+        Tue, 16 Nov 2021 02:34:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9sbnnlZw+9ULD6WGIrHh2ju30Rwtd48avD7994Ytg28=;
+        b=NRYpPIKC1HXpt0VN7zdUNuWrXbRE2Jwe/iQInn/3ItqXN0IW8LQRQ0CNujo2nfOIrc
+         TQdXxf9lESW9dkBWtYu/UUuijBtqZCZQu0xVjyM0IbJZ0CtHXOXeek0whBjwTM/CsJTJ
+         yeJhO+0W0xWJ0rlvJPqvNdlvI0agwdWXPzYJaW5oTc4QZH0o27nKry3M+UDNHvnfa185
+         R55ftwZDgEpijHF5TDOmzWZOq0gyp3X2mEaSs/fw82nSP8iXPCI0BnsXLCLEbMkKlEj7
+         5bTthjKORcMfKuVONDtu72gBbUzaRZZm5XwU4wbyTvzyAnga8UUfqQF04884vUH8gFWY
+         LFNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=9Le9vThg2zYYZ4FT+Lsh8JZmnjsCqwGI+kiP40c27ZQ=;
-        b=GBYQ5MOyq5BCnHcJq3NiMbTuZoM6cgJN5XAM3XGXavs+Zvy2U6uHJdQLlfohFk3M1X
-         psBLQf+T2zRkhrmy5wJoZL+Bhq4oKUc7uiNLjflZmaYKU3XEoKE8bBacn/yKovllYu80
-         F8B7F9OnnpLdTTs0u9+0AfKlsRJY56sgc3sg9lAG4wGbFvy21PbBnxsmiLx7bXLcS6hV
-         JDkBZI/rSaqy9YCxnF6BHsYCSdFAz3HAJ9rAZiyW5OkngjTo+vTNATkBJtGgHaoYq+K/
-         hCRLDgyxUwPc4ePplTVA5azrnNObMBfTj2yDLqVVuF0upP24RAsObvwAMMUSEhDu63Tu
-         3vWA==
-X-Gm-Message-State: AOAM532cQBZkGZsdaxwKw4DrF1sy7ILM31YFck6QVWiEsXGTZjvThJxP
-        2r1ogKoZv51h8IYTp1mcMJKsN3r9agFt2pnEMGqohwZj5qrKxsTjaSvJDAWbRYGcrxMsndBt2NM
-        aeq/O51xjEXynfb2EOgPZYUnb58Ln/rcq0x5flg+E2w==
-X-Received: by 2002:ac2:5dc2:: with SMTP id x2mr5601479lfq.228.1637058786581;
-        Tue, 16 Nov 2021 02:33:06 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxPHWqAmG6+W2LmzevHiirWdaFqHMhmEygAsdCaVQYS7N7sZyD1DqEoJyS2ahO2I8igQ/Bl5w==
-X-Received: by 2002:ac2:5dc2:: with SMTP id x2mr5601460lfq.228.1637058786409;
-        Tue, 16 Nov 2021 02:33:06 -0800 (PST)
-Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id p3sm1717385lft.66.2021.11.16.02.33.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 02:33:06 -0800 (PST)
-Message-ID: <a8b126e6-62e7-7979-01cb-b7a1ce4ae8d1@canonical.com>
-Date:   Tue, 16 Nov 2021 11:33:05 +0100
+        bh=9sbnnlZw+9ULD6WGIrHh2ju30Rwtd48avD7994Ytg28=;
+        b=lZOP1lucxGmfiYeMshbcpleGS0oHphRfSL2NBCMuew3ZfuBQ1f+m5Q7fQc57BQ/ARc
+         VLTngQUcwUdT/v9/NP0LAvTwB9EpPVkm7zMUIJUhM1t+F+1AyL4Oi0I/NN4C6s9g+dFt
+         NUCl585HI4S+RZrXMe72Dyu76BdjQ12ZrJmiBve3bLEUrlBaJxvodsb8JHup9Ntfk9Px
+         zAH27Nr8Hr2gCccwUqOzyw3HXxw4T9kKnsdUhTWSgUm50N+Ezn0CghuuUVkdyes0h3mz
+         liII5hN17XAUNZt/OwY/1elFEpLqcatsjZ/kmu8pGy4v9a6MVjV4+q8KuNU2l6bH2ST6
+         IkRw==
+X-Gm-Message-State: AOAM532NQ5lEiRVXOlsUm7ITWV8+Li8EhFy0ad9CHP0scOQCtkmIU6+K
+        qNiBj6hJdZZkSl0xdIm6hkWzs1rRnnw=
+X-Google-Smtp-Source: ABdhPJzo+L7IMl9q9krDr5jLPHcBamRuFmBfCW8NSdiRVQ2inXGr+ShTGKTWo4Hu9Wc2JRVnkSQzDg==
+X-Received: by 2002:a17:90b:3ec2:: with SMTP id rm2mr73366796pjb.1.1637058864095;
+        Tue, 16 Nov 2021 02:34:24 -0800 (PST)
+Received: from fedora.. ([157.34.191.12])
+        by smtp.gmail.com with ESMTPSA id z7sm7407301pfe.77.2021.11.16.02.34.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 02:34:23 -0800 (PST)
+From:   Sahil Patidar <sahilpatidar4051@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sahil Patidar <sahilpatidar4051@gmail.com>
+Subject: [PATCH] tty: serial: jsm: jsm_neo: fixed a conditional statement coding style issue
+Date:   Tue, 16 Nov 2021 16:04:11 +0530
+Message-Id: <20211116103411.71987-1-sahilpatidar4051@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v2 0/7] Add SPI Multi I/O Bus Controller support for
- RZ/G2L
-Content-Language: en-US
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-References: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2021 22:56, Lad Prabhakar wrote:
-> Hi All,
-> 
-> This patch series adds a couple of fixes for rpc-if driver and
-> adds support for RZ/G2L SoC, where the SPI Multi I/O Bus Controller
-> is identical to the RPC-IF block found on R-Car Gen3 SoC's.
-> 
-> Cheers,
-> Prabhakar
-> 
-> Changes for v2:
-> * Rebased the patches on linux-next
-> * Split patch 5 from v1
-> * Included RB tags
-> * Fixed review comments pointed by Wolfram
-> 
-> v1:
-> https://patchwork.kernel.org/project/linux-renesas-soc/cover/
-> 20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
-> 
-> Lad Prabhakar (7):
->   dt-bindings: memory: renesas,rpc-if: Add support for the R9A07G044
->   dt-bindings: memory: renesas,rpc-if: Add optional interrupts property
->   spi: spi-rpc-if: Check return value of rpcif_sw_init()
->   mtd: hyperbus: rpc-if: Check return value of rpcif_sw_init()
->   memory: renesas-rpc-if: Return error in case devm_ioremap_resource()
->     fails
->   memory: renesas-rpc-if: Drop usage of RPCIF_DIRMAP_SIZE macro
->   memory: renesas-rpc-if: Add support for RZ/G2L
-> 
+Fixed a coding style issue
 
-Applied parts 1, 2, 5 and 6. I think 7 is going to have a new version
-due to Wolfram's comments?
+Signed-off-by: Sahil Patidar <sahilpatidar4051@gmail.com>
+---
+ drivers/tty/serial/jsm/jsm_neo.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
+diff --git a/drivers/tty/serial/jsm/jsm_neo.c b/drivers/tty/serial/jsm/jsm_neo.c
+index c6f927a76c3b..9b828989d13f 100644
+--- a/drivers/tty/serial/jsm/jsm_neo.c
++++ b/drivers/tty/serial/jsm/jsm_neo.c
+@@ -668,8 +668,7 @@ static void neo_flush_uart_read(struct jsm_channel *ch)
+ 			jsm_dbg(IOCTL, &ch->ch_bd->pci_dev,
+ 				"Still flushing RX UART... i: %d\n", i);
+ 			udelay(10);
+-		}
+-		else
++		} else
+ 			break;
+ 	}
+ }
+-- 
+2.33.1
 
-Best regards,
-Krzysztof
