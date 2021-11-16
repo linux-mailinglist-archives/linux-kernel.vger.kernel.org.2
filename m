@@ -2,83 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327D54537DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:42:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A942C4537F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:44:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235806AbhKPQoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 11:44:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53350 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235700AbhKPQoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:44:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA604617E4;
-        Tue, 16 Nov 2021 16:41:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637080875;
-        bh=wYaKRXAw4iovjmksMjsNHyHt51/EkpwyzwQOTxNSERg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=laVXp186WyFjbhdICmOej4HlVdTCCIXhsqR/2dOlUXzMCTA2sZlJWpMX6KGAw9nbG
-         aBqXUcjhqGIZOe241yXN+QRmdObFEz4MVCaKq5nlX3/7EOMFBdhAYpisySoEnmU+Vm
-         dkOWMkT5y/H68Y1mslCKB1E7/QRh9JoamBZDlRqjM8tHX4fKqHhvBSHq9wwlHQspcq
-         V1/2kdtuFR2CNpfrofQkUOhmpZjTmJgAcR+lEKxgM5iTovdW4ZILV572Us10SKB9Qk
-         tu0ccPIaJps5eshTKzvnOfubR5JpS+UriONEKTZUa1EV4io4aC5Jb9ToPHi/rMhWTp
-         JIYnwAh19s7cQ==
-Date:   Tue, 16 Nov 2021 16:41:10 +0000
-From:   Mark Brown <broonie@kernel.org>
+        id S235436AbhKPQqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 11:46:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235333AbhKPQqF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 11:46:05 -0500
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F2EC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 08:43:08 -0800 (PST)
+Received: by mail-qv1-xf2e.google.com with SMTP id b17so14176356qvl.9
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 08:43:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OBIcYw/n23OIMpLRX1RLZiL+IY8T96dnmnSnvlhsflc=;
+        b=TtFCINNE69WzBO0cqgKxZHBKmIiAxvzSwJk5NoyKhCQXH705c/RZ6+6xrJtJifBLBr
+         YsoWmaeKiQ4qHX6EBJLe7Rg+kwmYPUFn51JY8J7HM4fL35k1qR7lCrYJHJAzyvGDMMs2
+         5qTD+23czcmaL0jyyrpQbj57BrJcozvOnBUTRx1P6kNT0c62xiFCJRaVMpudnR2dnl2o
+         FVyPCt8kFVM8MlZdZgTCYNslXa6QV2kDbNAP/0G85oBtOtfEeVzmqmJzRTG3BIHO74r7
+         hgKYzsCCqkkkViIRAQP8iEWyhT3u1ryREdsRvrucdXnkjwL+DXVNPgUtIPwD1+zymT+j
+         /R4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OBIcYw/n23OIMpLRX1RLZiL+IY8T96dnmnSnvlhsflc=;
+        b=RljBNXLTB9TNjyBxctChKJtUP6+/dYiJ0tN7Oc8YFjLgGXaRPADnX77dffz9fbh55l
+         iA9pRh+yE3bK36i8iRGDfqMKaJYfIYAz9OgHYfS507AtFYRZ++M3nzUJ31cAnZhCvnSq
+         GtMjm7OVm5VW59lwUSIfuXqK+HacbYjNp7hohP4Bc8KDHyjYm6nR8Q1IfcuMveF4IPhI
+         AQTnpSQBZ54IICcSIOuIKQfz2xDrmv5q3+BLcJZkIVdaNivGQchAOnHkx6HEuCjrR4yV
+         RhS9cYHCFdmlqmzispXt7gf2jmBLyZMYvYcECLpOvQguYBX4cM7YV4YwA+1F1KN/q7Zq
+         d1kQ==
+X-Gm-Message-State: AOAM533S4DKYZYTHlRhcWW0Yvj/4rdX+tyyPOGKb4SZx11OAEc2HhBup
+        92QN8yiBa0jXcRWKaIi+m6w=
+X-Google-Smtp-Source: ABdhPJxFwaTkqqf3jm0Z7Z04/7P7173dQIuvHfqSj4tlnmr1yAikdUMYKd9CGj5pxL+lutqFIgMBFg==
+X-Received: by 2002:ad4:446f:: with SMTP id s15mr46781867qvt.1.1637080987588;
+        Tue, 16 Nov 2021 08:43:07 -0800 (PST)
+Received: from shaak (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id 16sm7146497qty.2.2021.11.16.08.43.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 08:43:07 -0800 (PST)
+Date:   Tue, 16 Nov 2021 11:43:05 -0500
+From:   Liam Beguin <liambeguin@gmail.com>
 To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] spi: spi-geni-qcom: Add support for GPI dma
-Message-ID: <YZPfJtkvo3bsfaCg@sirena.org.uk>
-References: <20211020060954.1531783-1-vkoul@kernel.org>
- <CAD=FV=VDjqQsnGVOf0FPsk74xgP87iBnk3MznEi1TjTKHP0Ldw@mail.gmail.com>
- <YZPVB84Eq9Dn3Znv@matsya>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-phy@lists.infradead.org, Roger Quadros <rogerq@ti.com>,
+        Liam Beguin <lvb@xiphos.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/6] phy: ti: omap-usb2: Fix the kernel-doc style
+Message-ID: <YZPfmXPAnsK8TH0m@shaak>
+References: <20211116103951.34482-1-vkoul@kernel.org>
+ <20211116103951.34482-5-vkoul@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6VBpWUIJltEBJBZk"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YZPVB84Eq9Dn3Znv@matsya>
-X-Cookie: UNIX enhancements aren't.
+In-Reply-To: <20211116103951.34482-5-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Vinod,
 
---6VBpWUIJltEBJBZk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Tue, Nov 16, 2021 at 04:09:50PM +0530, Vinod Koul wrote:
+> The documentation uses incorrect style, so fix that.
+> 
+> drivers/phy/ti/phy-omap-usb2.c:102: warning: Function parameter or member 'comparator' not described in 'omap_usb2_set_comparator'
+> 
+> While at it, use a single line for function description
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
 
-On Tue, Nov 16, 2021 at 09:27:59PM +0530, Vinod Koul wrote:
-> On 03-11-21, 14:17, Doug Anderson wrote:
+Minor nit below.
 
-> > if (result->residue) {
-> >   dev_err(...);
-> >   return;
-> > }
-> > spi_finalize_current_transfer(...);
+Reviewed-by: Liam Beguin <liambeguin@gmail.com>
 
-> Should we always call spi_finalize_current_transfer() ? This way we
-> timeout... What is the way to signal error has occurred..?
+> ---
+>  drivers/phy/ti/phy-omap-usb2.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/phy/ti/phy-omap-usb2.c b/drivers/phy/ti/phy-omap-usb2.c
+> index ebceb1520ce8..2102b7f73ffa 100644
+> --- a/drivers/phy/ti/phy-omap-usb2.c
+> +++ b/drivers/phy/ti/phy-omap-usb2.c
+> @@ -89,9 +89,9 @@ static inline void omap_usb_writel(void __iomem *addr, unsigned int offset,
+>  }
+>  
+>  /**
+> - * omap_usb2_set_comparator - links the comparator present in the system with
+> - *	this phy
+> - * @comparator - the companion phy(comparator) for this phy
+> + * omap_usb2_set_comparator - links the comparator present in the system with this phy
+> + *
+> + * @comparator:  the companion phy(comparator) for this phy
 
-Yes, set an error in the transfer and then finalize it.
+There's an extra space after the colon here.
 
---6VBpWUIJltEBJBZk
-Content-Type: application/pgp-signature; name="signature.asc"
+Cheers,
+Liam
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGT3yYACgkQJNaLcl1U
-h9AS3wgAgrgBnS/enGXVKvoU8xbx7KmkI3YCPuNwbGja6IeJcvd7EE97mhkMhJwO
-PYV9jEdnP5K9ROCSlPa8+ZoYqCRA2x3k5GC+LuvRa3jnI/C9czrMf6m7fq1a0nol
-wPy/WPpIJV8VaDr8uM8/nEK3vyAWNqpL9HU2HndALcKKHT1PhKvZ0rYb2ZpWsIII
-K3tEjPQPZqQnzRbNtHvjYscD95GdjKaHa3UzX3fIT/Rf+qf9SqkDSqrlO999l5sp
-mtASwgwzU3NECGryWy/ZcBFAfyWy0F0LXghL67lcUiuSVZtKDCle4vDOtvxZBQ8h
-kI250I8ocYg2A6R+lom1IWT5x0tFSw==
-=gmvG
------END PGP SIGNATURE-----
-
---6VBpWUIJltEBJBZk--
+>   *
+>   * The phy companion driver should call this API passing the phy_companion
+>   * filled with set_vbus and start_srp to be used by usb phy.
+> -- 
+> 2.31.1
+> 
+> 
+> -- 
+> linux-phy mailing list
+> linux-phy@lists.infradead.org
+> https://lists.infradead.org/mailman/listinfo/linux-phy
