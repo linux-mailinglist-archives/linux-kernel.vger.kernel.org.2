@@ -2,70 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C4D452EBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 11:12:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B38452EC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 11:12:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233887AbhKPKPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 05:15:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21000 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233943AbhKPKOU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 05:14:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637057483;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=H4RvIoRAtvsLubuSMgFD8o5tLMCcJ+TlvzT8p++BAnk=;
-        b=WMnjjMrtP4xr4s9BKo1fR8sljWc+FB2uHEF5oWvFDSfhpnPSvNMC1E1IQ0u0MYMad4YMeP
-        /jiMzgsFzsf4lL9Gu5EHcLzsmMLiTjSZ4NIZFme7OUVSCRsuoSmRub/J56oz46soJYQ8ON
-        tSbOS9zpxazCRG6aF+wcBZEdcQJDgX0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-216-O7CpqKlgMmWE0mCFdCH9tA-1; Tue, 16 Nov 2021 05:11:19 -0500
-X-MC-Unique: O7CpqKlgMmWE0mCFdCH9tA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1B5B41006AA8;
-        Tue, 16 Nov 2021 10:11:19 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (unknown [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CF3985D9DE;
-        Tue, 16 Nov 2021 10:11:18 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [PATCH] KVM: MMU: update comment on the number of page role combinations
-Date:   Tue, 16 Nov 2021 05:11:14 -0500
-Message-Id: <20211116101114.665451-1-pbonzini@redhat.com>
+        id S233880AbhKPKPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 05:15:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42220 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233869AbhKPKOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 05:14:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E57A26187F;
+        Tue, 16 Nov 2021 10:11:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637057512;
+        bh=PfADZY/p3JqYuaRUK9dg8fuh6I4K/kUrlJWAr+qv9Aw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lzoIyIpbNKLj45yhnUIxQT2nm1rj7G63vFjn/W1rcuCXPXR91ceS3WOOdM2blZVe5
+         EeQ2+WUsSad0OOiNb7h43HaxImiPfbDX1soAaTueFchYf4N2dQ6xz5Gp6G8qatxVrY
+         KMSPYlMQnwLQ698UZx9Ju9Ggd/3fM7yMHsJHaotWUu931jsyxYIeQTFV9L9Cf1BEL8
+         xvOF/tSk2ske5ompc4AqcP7k70MmAreeKGYiY9t2Er6ZbLtZlJgExFINM//M4EcrbM
+         l/I1pJy7aXzY8QhIDbN6vhZnmz4NgyqVMSAcGuJlgzKFN2KZ/BWlqBNCgaf0W4BPBw
+         9+f+BdqmT+txQ==
+Date:   Tue, 16 Nov 2021 10:11:47 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        chinwen.chang@mediatek.com, nicholas.tang@mediatek.com,
+        james.hsu@mediatek.com, linux-arm-kernel@lists.infradead.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, mark.rutland@arm.com
+Subject: Re: [PATCH] arm64: update compiler option for PAC
+Message-ID: <20211116101147.GB9851@willie-the-truck>
+References: <20211115031810.29701-1-Kuan-Ying.Lee@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211115031810.29701-1-Kuan-Ying.Lee@mediatek.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/include/asm/kvm_host.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Mon, Nov 15, 2021 at 11:18:08AM +0800, Kuan-Ying Lee wrote:
+> We pass -mbranch-protection=pac-ret+leaf to support PAC
+> when we use GCC 9 or later.
+> 
+> Before GCC 9, we pass -msign-return-address=all to support
+> PAC.
+> 
+> Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+> ---
+>  Documentation/arm64/pointer-authentication.rst | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/arm64/pointer-authentication.rst b/Documentation/arm64/pointer-authentication.rst
+> index f127666ea3a8..055d08b0d42d 100644
+> --- a/Documentation/arm64/pointer-authentication.rst
+> +++ b/Documentation/arm64/pointer-authentication.rst
+> @@ -54,8 +54,10 @@ virtual address size configured by the kernel. For example, with a
+>  virtual address size of 48, the PAC is 7 bits wide.
+>  
+>  Recent versions of GCC can compile code with APIAKey-based return
+> -address protection when passed the -msign-return-address option. This
+> -uses instructions in the HINT space (unless -march=armv8.3-a or higher
+> +address protection when passed compiler option as following.
+> +Pass -msign-return-address when we use GCC 7, 8.
+> +Pass -mbranch-protection when we use GCC 9 or later.
+> +This uses instructions in the HINT space (unless -march=armv8.3-a or higher
+>  is also passed), and such code can run on systems without the pointer
+>  authentication extension.
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index e977634333d4..354fd2a918d5 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -291,9 +291,9 @@ struct kvm_kernel_irq_routing_entry;
-  * the number of unique SPs that can theoretically be created is 2^n, where n
-  * is the number of bits that are used to compute the role.
-  *
-- * But, even though there are 18 bits in the mask below, not all combinations
-+ * But, even though there are 20 bits in the mask below, not all combinations
-  * of modes and flags are possible.  The maximum number of possible upper-level
-- * shadow pages for a single gfn is in the neighborhood of 2^13.
-+ * shadow pages for a single gfn is in the neighborhood of 2^15.
-  *
-  *   - invalid shadow pages are not accounted.
-  *   - level is effectively limited to four combinations, not 16 as the number
--- 
-2.27.0
+I think I'd be more inclined to delete this paragraph altogether. It doesn't
+really document anything to do with the kernel, and trying to document the
+behaviour of "recent" versions of GCC is futile.
 
+Will
