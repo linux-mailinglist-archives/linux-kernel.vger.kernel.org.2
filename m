@@ -2,245 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A8B452297
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:13:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F25845235A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 02:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378361AbhKPBO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 20:14:27 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:33415 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351651AbhKPBGh (ORCPT
+        id S245012AbhKPBZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 20:25:34 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:55321 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244098AbhKPBP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 20:06:37 -0500
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 0DBC75C0293;
-        Mon, 15 Nov 2021 20:03:40 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Mon, 15 Nov 2021 20:03:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm1; bh=
-        MHqYZ+/pY21LiNPsE1W8Nl4Z9s0SLcvd4Wu8FaBLrTY=; b=h9gQawdtob5PGFAi
-        FkIgJPgPZyLSs/NIcbuyTXdDb3y/ue1B4yXkmcOzTe/hzey2WEc8MFzcGIhVuBIt
-        FpZby1+BTyJrQV6yWVwxtII0ACj1xjp4t9PAA5/UnvlvYk7meKQYckiavuqv9yez
-        edjlPMigtFWm0++8ivSaZrewqk1FnHNg/NckZo4FTokBUAwNs50yAJL878bVZaaH
-        8F1CaeIrPirdOYFFclBH19tczBFEvzHxg+ZcDxxh+C20DJGqN/WNzOVC0haPInQY
-        1eui5pl9busojVtCrn5k7GbYh21ivlxsMTtvtlQ1YOxhdpWyDQhZFHzJNWcuHDhJ
-        3+m+Rg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=MHqYZ+/pY21LiNPsE1W8Nl4Z9s0SLcvd4Wu8FaBLr
-        TY=; b=Aw9s2+9jw0Ct6Ia2acnXc7ubFLYaapwmRhkvRs0bCGciemwl5AEvqblS8
-        pmhvbCXKlU0u1HXBzaTy2ql4KSszriCdwVv7ky6wEs5K6+1UfbTzP2KMMC5YoUA+
-        5240p0iDkdXcLvdq5NalOP1qKUAB/6eXtDOPCldG92Hr8f75zAx83vd2/rwOrWJM
-        ta1wjMehu6Kdq6rQxfHzsNJTNVlpyY7seJ6hNuhE7dAte9h2cUNeMg+5CAjd06UN
-        5qmA89/jBjFmhUUNbJUmNfK2iS/4ph7nF0rbaHcyqkJ/7FSUyiaN+7J//Btm9gyL
-        p1zFxh3yI3T+sAcgjrzkF8qLIsdUw==
-X-ME-Sender: <xms:awOTYVRQzyRkFjOxUvDk4IGu79tIsdBVhykQkxek_VC6KFplLTUl3w>
-    <xme:awOTYezH1hvHWOJSypV3xPJ6jmR54gswKM9LY41qQlPe1-XZQZrBs0TzXCDrCxRkG
-    61XGwxymBSo>
-X-ME-Received: <xmr:awOTYa1_Ab-9Bt2g0JDqPPShIxkyCPcbNkHOCi5puN2X61tvW3RL6px0I-pCDDg8J0LAxGU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfedugddviecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkuffhvfffjghftggfggfgsehtkeertddtreejnecuhfhrohhmpefkrghnucfm
-    vghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnhepgf
-    elleekteehleegheeujeeuudfhueffgfelhefgvedthefhhffhhfdtudfgfeehnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnhesth
-    hhvghmrgifrdhnvght
-X-ME-Proxy: <xmx:awOTYdA2uKoAWLp7GJ4rGgJibbBT0XFh55X05sXgJmdpdZRMuK5S3Q>
-    <xmx:awOTYej6sVUiyWNdrRWwfXERg28S92ki_Bg_9d7jA7Fobrw3r4yJdA>
-    <xmx:awOTYRrh-mKG6D_fISCcgCGV3IBx4xdnr-a-But6jZGy04nkPAZ5WA>
-    <xmx:bAOTYZVywYgqj5qXJlqGRbVwpwhyPshTMr7c0Mp5Ocnm26WHqQjtPQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 15 Nov 2021 20:03:36 -0500 (EST)
-Message-ID: <f8425d1270fe011897e7e14eaa6ba8a77c1ed077.camel@themaw.net>
-Subject: Re: [PATCH 2/2] xfs: make sure link path does not go away at access
-From:   Ian Kent <raven@themaw.net>
-To:     Dave Chinner <david@fromorbit.com>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Cc:     xfs <linux-xfs@vger.kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Brian Foster <bfoster@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Tue, 16 Nov 2021 09:03:31 +0800
-In-Reply-To: <20211115222417.GO449541@dread.disaster.area>
-References: <163660195990.22525.6041281669106537689.stgit@mickey.themaw.net>
-         <163660197073.22525.11235124150551283676.stgit@mickey.themaw.net>
-         <20211112003249.GL449541@dread.disaster.area>
-         <CAJfpegvHDM_Mtc8+ASAcmNLd6RiRM+KutjBOoycun_Oq2=+p=w@mail.gmail.com>
-         <20211114231834.GM449541@dread.disaster.area>
-         <CAJfpegu4BwJD1JKngsrzUs7h82cYDGpxv0R1om=WGhOOb6pZ2Q@mail.gmail.com>
-         <20211115222417.GO449541@dread.disaster.area>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Mon, 15 Nov 2021 20:15:27 -0500
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20211116011226epoutp032213877c3ec8731b7ba4a1bdff662b34~34bJtzMzM0283102831epoutp03y
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 01:12:26 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20211116011226epoutp032213877c3ec8731b7ba4a1bdff662b34~34bJtzMzM0283102831epoutp03y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1637025146;
+        bh=8JRydum/R4RdFUqGlzeiN6SYCDCW1ggDFZyoszTdHJo=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=q4G2O32iCBNEutMrZF/eHatdlcCVD807rXvbHwhqtJcZGhG5LibMC2I9848LrD9p4
+         bEHY6l+x5bnN7VRghqKOk9cNf1g7mSVninVoC76VZjEGe3EebK5+hYCpM4TxffBs//
+         Xn/LhD7j4fE7TrbNTFrMDTVmr8WEQWJlfOqkZsXE=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20211116011225epcas2p1b5d0e237b941eef4d90e74efaa93fa0a~34bJOmHgW0919509195epcas2p1w;
+        Tue, 16 Nov 2021 01:12:25 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.36.100]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4HtShV1SHzz4x9QR; Tue, 16 Nov
+        2021 01:12:10 +0000 (GMT)
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        2B.F7.12141.56503916; Tue, 16 Nov 2021 10:12:05 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+        20211116011205epcas2p1bb00ede94948a305aba820f418058dbe~34a2TmxYv2468624686epcas2p1R;
+        Tue, 16 Nov 2021 01:12:05 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20211116011205epsmtrp25329047fd36504abbf296e6a755c6851~34a2SzF-70535505355epsmtrp2h;
+        Tue, 16 Nov 2021 01:12:05 +0000 (GMT)
+X-AuditID: b6c32a48-d5dff70000002f6d-fd-6193056510a0
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        DD.81.29871.56503916; Tue, 16 Nov 2021 10:12:05 +0900 (KST)
+Received: from KORCO082417 (unknown [10.229.8.121]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20211116011205epsmtip28a67f81e78b0ae0d47bbf1c5d442f74d~34a2InGwx0690906909epsmtip2j;
+        Tue, 16 Nov 2021 01:12:05 +0000 (GMT)
+From:   "Chanho Park" <chanho61.park@samsung.com>
+To:     "'Sam Protsenko'" <semen.protsenko@linaro.org>,
+        "'Jaewon Kim'" <jaewon02.kim@samsung.com>
+Cc:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@canonical.com>,
+        "'Wolfram Sang'" <wsa@kernel.org>,
+        "'Rob Herring'" <robh+dt@kernel.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <CAPLW+4==X+irRBKHiDfgJeAb0oDKkzbcWERFs7Y3=PSOg0+qAw@mail.gmail.com>
+Subject: RE: [PATCH v3 2/2] i2c: exynos5: add support for ExynosAutov9 SoC
+Date:   Tue, 16 Nov 2021 10:12:04 +0900
+Message-ID: <001401d7da86$f7ebd660$e7c38320$@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQMJYAnbi/JobnCUuSzxD63N6CCU9gMctf4RAdOLUHUBZYQpI6lvl8Tg
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrJJsWRmVeSWpSXmKPExsWy7bCmmW4q6+REgw/fVSzmHznHarGj4Qir
+        xca3P5gsNj2+xmrR8fcLo8XlXXPYLGac38dk0br3CLvF8z4g6+7+uYwOXB6zGnrZPDat6mTz
+        uHNtD5vH5iX1Hn1bVjF6fN4kF8AWlW2TkZqYklqkkJqXnJ+SmZduq+QdHO8cb2pmYKhraGlh
+        rqSQl5ibaqvk4hOg65aZA3SZkkJZYk4pUCggsbhYSd/Opii/tCRVISO/uMRWKbUgJafAvECv
+        ODG3uDQvXS8vtcTK0MDAyBSoMCE748zFq0wFS7grGq42sTYwTuTsYuTkkBAwkTi09jhLFyMX
+        h5DADkaJe/OXsUI4nxglPsybxQjhfGOUuLFuGjNMy58rW9kgEnsZJT7Oa4Lqf8Eo8evPChaQ
+        KjYBfYmXHdtYQWwRgXiJNad3g3UzC+xgkjjbbQ1icwoESixethSonoNDWMBLYs/8KpAwi4Cq
+        xIzdDUwgNq+ApcTK/9vYIGxBiZMzn7BAjNGWWLbwNdRBChI/ny6DWuUmse1dHyNEjYjE7M42
+        ZpDbJARWckh8vziRCWSXhICLxIl58RC9whKvjm9hh7ClJD6/28sGUd/NKNH66D9UYjWjRGej
+        D4RtL/Fr+hZWkDnMApoS63fpQ4xUljhyC+o0PomOw3/ZIcK8Eh1tQhCN6hIHtk9ngbBlJbrn
+        fGadwKg0C8ljs5A8NgvJA7MQdi1gZFnFKJZaUJybnlpsVGACj+vk/NxNjOA0q+Wxg3H22w96
+        hxiZOBgPMUpwMCuJ8LJET0oU4k1JrKxKLcqPLyrNSS0+xGgKDOqJzFKiyfnARJ9XEm9oYmlg
+        YmZmaG5kamCuJM6bx96XKCSQnliSmp2aWpBaBNPHxMEp1cAUWiCxLDWf41r+8SxZ8b6Opu+J
+        unk/Flxdc1Dv+TbRxsDY5Becz1Q1Mxo+W1pf9Z1jwCjEbrzISf2Sr/HGDwIXVmX0nvI+GP5n
+        ipC0yKGEFaGee64lpX+cx7A96I2tX6XJv6Rr1j9/rslc0flU/edt+8gX75bWrSvJFmFxfxER
+        qD3V6fqTffd2JXDyCcr2i7dG/pPzOSBgJO5+ZKG+ecWdKMv7W7+sYl66b2kd12S+p5bbj7xa
+        +lV5gcOXezPuNBu0rq3f9KbmEkvVHEuGJFUT8dfmH3Xm7g98eea75HuljNhtGyN4T8n/rulw
+        TotXPfYufG/L1+J1zLW11lPeV3dz18R0p2or8Ho+L5y/lFuJpTgj0VCLuag4EQDW00OZPAQA
+        AA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprOIsWRmVeSWpSXmKPExsWy7bCSvG4q6+REg9tP2CzmHznHarGj4Qir
+        xca3P5gsNj2+xmrR8fcLo8XlXXPYLGac38dk0br3CLvF8z4g6+7+uYwOXB6zGnrZPDat6mTz
+        uHNtD5vH5iX1Hn1bVjF6fN4kF8AWxWWTkpqTWZZapG+XwJXx+cI65oJZ3BXvVr5kbWBs5uxi
+        5OSQEDCR+HNlK1sXIxeHkMBuRolzHceZIRKyEs/e7WCHsIUl7rccYYUoesYocX/LEbAiNgF9
+        iZcd21hBbBGBeIndq96AFTEL7GOSaL58Aaqjg0mi58FCFpAqToFAicXLlgLZHBzCAl4Se+ZX
+        gYRZBFQlZuxuYAKxeQUsJVb+38YGYQtKnJz5BKyVWUBbovdhKyOMvWzha6hLFSR+Pl0GdYSb
+        xLZ3fVA1IhKzO9uYJzAKz0IyahaSUbOQjJqFpGUBI8sqRsnUguLc9NxiwwLDvNRyveLE3OLS
+        vHS95PzcTYzguNPS3MG4fdUHvUOMTByMhxglOJiVRHhZoiclCvGmJFZWpRblxxeV5qQWH2KU
+        5mBREue90HUyXkggPbEkNTs1tSC1CCbLxMEp1cBkcHEho36e1fuuWiN9Lz8Ps9tdwnxy1VER
+        uzb1sb/Ur6/n00q8tK266cpnEX9BPbtrFnZLr53ROcifn2gf/DbSMHlfodofZ4uXoh8OP76j
+        NXW9TxuDUrvlyR4OE3eevQIJqo0xa7lXnV16ulXJQyvFfJaVa/DGt/mnF1ok37La61/ct++M
+        hP5Ut442Te085prQfUuuPTJp5278JX2B0UQs9q5Za2ujmM33/EWfLl+IF1q1ICf3atf6pts3
+        z266fvVMbhx76tmlKxiPbbrouli+4MC9Y2EHzD485rvR4fvi+qlJ7n9+7fx6m0lpeZr/4c/O
+        T+4e5w8WK227ueTS8qXb2HNEv2lvPHQ/5+n+o6VKLMUZiYZazEXFiQAFKtQWKgMAAA==
+X-CMS-MailID: 20211116011205epcas2p1bb00ede94948a305aba820f418058dbe
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20211112010603epcas2p339d1a6ef3df7cdbe61c87c8afa541fd0
+References: <CGME20211112010603epcas2p339d1a6ef3df7cdbe61c87c8afa541fd0@epcas2p3.samsung.com>
+        <20211112010137.149174-1-jaewon02.kim@samsung.com>
+        <20211112010137.149174-3-jaewon02.kim@samsung.com>
+        <CAPLW+4==X+irRBKHiDfgJeAb0oDKkzbcWERFs7Y3=PSOg0+qAw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-11-16 at 09:24 +1100, Dave Chinner wrote:
-> On Mon, Nov 15, 2021 at 10:21:03AM +0100, Miklos Szeredi wrote:
-> > On Mon, 15 Nov 2021 at 00:18, Dave Chinner <david@fromorbit.com>
-> > wrote:
-> > > I just can't see how this race condition is XFS specific and why
-> > > fixing it requires XFS to sepcifically handle it while we ignore
-> > > similar theoretical issues in other filesystems...
-> > 
-> > It is XFS specific, because all other filesystems RCU free the in-
-> > core
-> > inode after eviction.
-> > 
-> > XFS is the only one that reuses the in-core inode object and that
-> > is
-> > very much different from anything the other filesystems do and what
-> > the VFS expects.
-> 
-> Sure, but I was refering to the xfs_ifree issue that the patch
-> addressed, not the re-use issue that the *first patch addressed*.
-> 
-> > I don't see how clearing the quick link buffer in
-> > ext4_evict_inode()
-> > could do anything bad.  The contents are irrelevant, the lookup
-> > will
-> > be restarted anyway, the important thing is that the buffer is not
-> > freed and that it's null terminated, and both hold for the ext4,
-> > AFAICS.
-> 
-> You miss the point (which, admittedly, probably wasn't clear).
-> 
-> I suggested just zeroing the buffer in xfs_ifree instead of zeroing
-> it, which you seemed to suggest wouldn't work and we should move the
-> XFS functionality to .free_inode. That's what I was refering to as
-> "not being XFS specific" - if it is safe for ext4 to zero the link
-> buffer in .evict while lockless lookups can still be accessing the
-> link buffer, it is safe for XFS to do the same thing in .destroy
-> context.
+> With this patch the Exynos850 HSI2C becomes functional. The only nit-pick
+> from my side (just a food for thought): do we want to configure USI
+> related config inside of particular drivers (SPI, I2C, UART)? Or it would
+> be better design to implement some platform driver for that, so we can
+> choose USI configuration (SPI/I2C/UART) in device tree? I think this
+> series is good to be merged as is, but we should probably consider all
+> upsides and downsides of each option, for the future work.
 
-I'll need to think about that for a while.
+I'm also considering how to support this USI configuration gracefully.
+Current version of USI is v2 which means there is a v1 version as well. It =
+might be a non-upstream SoC so we don't need to consider it so far.
+But, there is a possibility that the USI hw version can be bumped for futur=
+e SoCs.
 
-Zeroing the buffer while it's being used seems like a problem to
-me and was what this patch was trying to avoid.
+As you probably know, earlier version of the product kernel has a USI SoC d=
+river=5B1=5D and it was designed to be configured the USI settings by devic=
+e tree.
 
-I thought all that would be needed for this to happen is for a
-dentry drop to occur while the link walk was happening after
-->get_link() had returned the pointer.
+Option1) Make a USI driver under soc/samsung/ like =5B1=5D.
+Option2) Use more generic driver such as =22reset driver=22? This might be =
+required to extend the reset core driver.
+Option3) Each USI driver(uart/i2c/spi) has its own USI configurations respe=
+ctively and expose some configurations which can be variable as device tree=
+.
 
-What have I got wrong in that thinking?
+=5B1=5D: https://github.com/ianmacd/d2s/blob/master/drivers/soc/samsung/usi=
+_v2.c
 
-> 
-> If it isn't safe for ext4 to do that, then we have a general
-> pathwalk problem, not an XFS issue. But, as you say, it is safe to
-> do this zeroing, so the fix to xfs_ifree() is to zero the link
-> buffer instead of freeing it, just like ext4 does.
-> 
-> As a side issue, we really don't want to move what XFS does in
-> .destroy_inode to .free_inode because that then means we need to add
-> synchronise_rcu() calls everywhere in XFS that might need to wait on
-> inodes being inactivated and/or reclaimed. And because inode reclaim
-> uses lockless rcu lookups, there's substantial danger of adding rcu
-> callback related deadlocks to XFS here. That's just not a direction
-> we should be moving in.
-
-Another reason I decided to use the ECHILD return instead is that
-I thought synchronise_rcu() might add an unexpected delay.
-
-Since synchronise_rcu() will only wait for processes that currently
-have the rcu read lock do you think that could actually be a problem
-in this code path?
-
-> 
-> I'll also point out that this would require XFS inodes to pass
-> through *two* rcu grace periods before the memory they hold could be
-> freed because, as I mentioned, xfs inode reclaim uses rcu protected
-> inode lookups and so relies on inodes to be freed by rcu callback...
-> 
-> > I tend to agree with Brian and Ian at this point: return -ECHILD
-> > from
-> > xfs_vn_get_link_inline() until xfs's inode resue vs. rcu walk
-> > implications are fully dealt with.  No way to fix this from VFS
-> > alone.
-> 
-> I disagree from a fundamental process POV - this is just sweeping
-> the issue under the table and leaving it for someone else to solve
-> because the root cause of the inode re-use issue has not been
-> identified. But to the person who architected the lockless XFS inode
-> cache 15 years ago, it's pretty obvious, so let's just solve it now.
-
-Sorry, I don't understand what you mean by the root cause not
-being identified?
-
-Until lockless path walking was introduced this wasn't a problem
-because references were held during walks so there could never be
-a final dput() to trigger freeing process during a walk. And a lot
-of code probably still makes that assumption. And code that does
-make that assumption should return -ECHILD in cases like this so
-that the VFS can either legitimize the struct path (by taking
-references) or restart the walk in ref-walk mode.
-
-Can you elaborate please?
-
-> 
-> With the xfs_ifree() problem solved by zeroing rather than freeing,
-> then the only other problem is inode reuse *within an rcu grace
-> period*. Immediate inode reuse tends to be rare, (we can actually
-> trace occurrences to validate this assertion), and implementation
-> wise reuse is isolated to a single function: xfs_iget_recycle().
-> 
-> xfs_iget_recycle() drops the rcu_read_lock() inode lookup context
-> that found the inode marks it as being reclaimed (preventing other
-> lookups from finding it), then re-initialises the inode. This is
-> what makes .get_link change in the middle of pathwalk - we're
-> reinitialising the inode without waiting for the RCU grace period to
-> expire.
-
-Ok, good to know that, there's a lot of icache code to look
-through, ;)
-
-At this point I come back to thinking the original patch might
-be sufficient. But then that's only for xfs and excludes
-potential problems with other file systems so I'll not go
-there.
-
-> 
-> The obvious thing to do here is that after we drop the RCU read
-> context, we simply call synchronize_rcu() before we start
-> re-initialising the inode to wait for the current grace period to
-> expire. This ensures that any pathwalk that may have found that
-> inode has seen the sequence number change and droppped out of
-> lockless mode and is no longer trying to access that inode.  Then we
-> can safely reinitialise the inode as it has passed through a RCU
-> grace period just like it would have if it was freed and
-> reallocated.
-
-Sounds right to me, as long as it is ok to call synchronize_rcu()
-here.
-
-> 
-> This completely removes the entire class of "reused inodes race with
-> VFS level RCU walks" bugs from the XFS inode cache implementation,
-> hence XFS inodes behave the same as all other filesystems w.r.t RCU
-> grace period expiry needing to occur before a VFS inode is reused.
-> 
-> So, it looks like three patches to fix this entirely:
-> 
-> 1. the pathwalk link sequence check fix
-> 2. zeroing the inline link buffer in xfs_ifree()
-
-I'm sorry but I'm really having trouble understanding how this is
-ok. If some process is using the buffer to walk a link path how
-can zeroing the contents of the buffer be ok?
-
-> 3. adding synchronize_rcu() (or some variant) to xfs_iget_recycle()
-> 
-> Cheers,
-> 
-> Dave.
-
+Best Regards,
+Chanho Park
 
