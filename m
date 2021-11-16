@@ -2,155 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B7B452EDE
+	by mail.lfdr.de (Postfix) with ESMTP id D28EA452EDF
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 11:17:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233964AbhKPKUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 05:20:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233875AbhKPKUO (ORCPT
+        id S234016AbhKPKUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 05:20:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:41074 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233917AbhKPKUU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 05:20:14 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D21C061746;
-        Tue, 16 Nov 2021 02:17:16 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id g18so17720379pfk.5;
-        Tue, 16 Nov 2021 02:17:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bK/sBg1C1mqhkenG14RiC+8MTOJxXLOUrcmyZaUVyW4=;
-        b=fO6qLwGdeF5+TEv117IqCHwmxC6wAcvUAmkScjX8pIPgSOWX7lZXnzKtt9/0DJQzf7
-         guxUyJk3eZXcPtWEU38OBSKX7PSliXkdE882G/uW4iL7TP/snLRrDeP4058Hwlogwwra
-         bfVV/UaE7brD+/lCt0ibdRLOlVUMwFoCxnS2becACEJ1nLFryZG/MxXD+jiCwNcucmH0
-         iU1j7qzfoRwuNi0+aDLXBarYqIoZAUi2CSgK+Z+ol76b0L5lFnhEr2CRoiXHyrxPI5gh
-         vjSn1tgkeOmaVb3fJWXN95OEgQmcqs23fVbSmSy6Wch6ZSVTf9xmz8Emon3Nm7zMw9/C
-         +p/w==
+        Tue, 16 Nov 2021 05:20:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637057843;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wHDw3qbaHSdo+my0Y7JfI4dnG9qTgWZ7WAXsbYKfhUk=;
+        b=a9sTBexYmq2uamtxgqtOASw1hfhNPK8h2fdmaMDjKvZqy3eNlzt4X1lYpZmJcJjw1QE/i6
+        JC9uwVvG2xFZ+iYBLoQc2SG1bMX13+LrC5HD1IY+kQueAjJVyU59m7sSnTPQdr6eif9oR0
+        n2nWORJK7nk4lAQE50WQfT59IjrwSHE=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-327-p8c8l305NN2BAIHjasnJqw-1; Tue, 16 Nov 2021 05:17:22 -0500
+X-MC-Unique: p8c8l305NN2BAIHjasnJqw-1
+Received: by mail-ed1-f70.google.com with SMTP id i19-20020a05640242d300b003e7d13ebeedso4246558edc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 02:17:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bK/sBg1C1mqhkenG14RiC+8MTOJxXLOUrcmyZaUVyW4=;
-        b=W8ByzpIKEFFr5Bwco4XdonEl5SJsBaNtfx1EJjT3ANNrU7WqR4Di1GK66dPc+D2gkR
-         epklyLKrhOROuNUqTVResJUQh/+8zr/H+4NXrR/4MfUpslJnGKmsxRk6lXQGlk4tX0S1
-         T02+0XOt9nDay181ufJzVV0y7tvrjTOqdAuYAYWOdYiX8uWE1lwPo+10dkksXyoMGW7s
-         MYH18jEZ53K7+6oD0TlALhj77Y7HoKWAHWzBKDpri7Ut/GzgubgTizyMsc9gsniJMyxA
-         zljxoM4hvz6Brr4nDNbZQtaPiCTZ+MJ+s9XW1BWHinShBRUTZQal1/rG5HR9G5KgEtGe
-         ZcJQ==
-X-Gm-Message-State: AOAM533RhVgI6rhOYylH2FaihdO0LqrnqQHfaH5Nn9Rx/TUjQQMSGXak
-        z+7Gt5cfvt6ayBRxfp93naw=
-X-Google-Smtp-Source: ABdhPJwcPgRjL6cWhG7a5Aah8i0pQlt+CeWTnvNnrq5EfYPd9UdjMvWVAjqqcMK7Dt73jhnKjln5Ig==
-X-Received: by 2002:a05:6a00:a8e:b0:480:ab08:1568 with SMTP id b14-20020a056a000a8e00b00480ab081568mr39520666pfl.28.1637057836076;
-        Tue, 16 Nov 2021 02:17:16 -0800 (PST)
-Received: from localhost.lan (p4899162-ipngn25301marunouchi.tokyo.ocn.ne.jp. [122.18.9.162])
-        by smtp.gmail.com with ESMTPSA id lp12sm2350797pjb.24.2021.11.16.02.17.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 02:17:15 -0800 (PST)
-Received: from localhost (localhost [IPv6:::1])
-        by localhost.lan (Postfix) with ESMTPSA id 7B272900949;
-        Tue, 16 Nov 2021 10:17:13 +0000 (GMT)
-Date:   Tue, 16 Nov 2021 10:17:13 +0000
-From:   Vincent Pelletier <plr.vincent@gmail.com>
-To:     Heiko =?UTF-8?B?U3TDvGJuZXI=?= <heiko@sntech.de>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        David Abdurachmanov <david.abdurachmanov@sifive.com>
-Subject: Re: [PATCH] riscv: dts: sifive unmatched: Name gpio lines.
-Message-ID: <20211116101713.77a0df69@gmail.com>
-In-Reply-To: <11612716.TMCrJ2abzX@diego>
-References: <f6512cc50dc31a086e00ed59c63ea60d8c148fc4.1637023980.git.plr.vincent@gmail.com>
-        <11612716.TMCrJ2abzX@diego>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=wHDw3qbaHSdo+my0Y7JfI4dnG9qTgWZ7WAXsbYKfhUk=;
+        b=thVdxrH6AArWZ75OWwc2QxGHeAIDRfemJ6R+3bob8RuteVmonPvAHrdEwXKp2msSZV
+         HIPm+chM9Myt27Jl1F6qSJp70M/6x4E6u2xj+36Fll4VZWrufcK/4GWixDo5wiRaW/LL
+         XNvURH91wotd656AnMGV/8yRFEtN2x/N2EdyvBQfmDbMTIl89c4t42noZQcHsu9cnANQ
+         BVqkC3S41r4rTdtOA6lxdAEsbxrOsiXHI2zCcuwR9n9pTOPeuzyfXQ0BKyBbVNAjksXT
+         /00ToszR0Ecfve5HjaXU+naVsN5y8+6/cqV5JvJPuCxatQqutRIONcRh2UbgHsFBU6pi
+         N7hw==
+X-Gm-Message-State: AOAM533OiF8PC+1hoCAeB1KepuaIY6XQxyXkWCMhBxsztkPbRYc4rny3
+        3XeGLhBuwCJkCYgXI0iFwskwHYIHprrPRQM2J/MYijzu9GopStwmh5Q7qOR4Wx/j/b9BewHaN7U
+        HsZMDbXkTfZxHLPvcMcwkFibV
+X-Received: by 2002:a17:906:489a:: with SMTP id v26mr8366245ejq.305.1637057840768;
+        Tue, 16 Nov 2021 02:17:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxh2xl7BPwc9XZiVht4ez681MUFWegeEqdXpxCbhK6FrTWxsBfmETytBnfoIVqhakSOuDDylQ==
+X-Received: by 2002:a17:906:489a:: with SMTP id v26mr8366225ejq.305.1637057840606;
+        Tue, 16 Nov 2021 02:17:20 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id cs12sm7897172ejc.15.2021.11.16.02.17.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 02:17:20 -0800 (PST)
+Message-ID: <5b2c4f59-deaf-a084-e9fa-d63ffa316452@redhat.com>
+Date:   Tue, 16 Nov 2021 11:17:19 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: drivers/platform/x86/thinkpad_acpi.c:918:30: error: unused
+ variable 'dispatch_proc_ops'
+Content-Language: en-US
+To:     kernel test robot <lkp@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>
+References: <202111140045.CyDFTOZZ-lkp@intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <202111140045.CyDFTOZZ-lkp@intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-On Tue, 16 Nov 2021 10:39:04 +0100, Heiko St=C3=BCbner <heiko@sntech.de> wr=
-ote:
-> Hi Vincent,
->=20
-> Am Dienstag, 16. November 2021, 01:52:56 CET schrieb Vincent Pelletier:
-> > Follow the pin descriptions given in the version 3 of the board schemat=
-ics.
-> >=20
-> > Signed-off-by: Vincent Pelletier <plr.vincent@gmail.com> =20
->=20
-> when sending a patch series with "git format-patch -6" and friends will
-> automcatically generate x/y additions like "[PATCH 1/6]" and so on.
->=20
-> Please try to keep them around when sending, as automated tools for patch
-> handling like "b4", stumble when they encounter a patch series without th=
-em.
+On 11/13/21 17:44, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   66f4beaa6c1d28161f534471484b2daa2de1dce0
+> commit: fd96e35ea7b95f1e216277805be89d66e4ae962d platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning
+> date:   4 weeks ago
+> config: i386-buildonly-randconfig-r002-20211109 (attached as .config)
+> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 63ef0e17e28827eae53133b3467bdac7d9729318)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fd96e35ea7b95f1e216277805be89d66e4ae962d
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout fd96e35ea7b95f1e216277805be89d66e4ae962d
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=i386 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>>> drivers/platform/x86/thinkpad_acpi.c:918:30: error: unused variable 'dispatch_proc_ops' [-Werror,-Wunused-const-variable]
+>    static const struct proc_ops dispatch_proc_ops = {
+>                                 ^
+>    1 error generated.
 
-Actually my intent was to not make this a series, as in my understanding
-independent patches should/may be submitted separately from each other.
-They just happen to be stacked, and in this order, in my working copy,
-but should not functionally have any dependency on one another (I
-believe they should even apply cleanly in any order).
+So this has absolutely nothing to do with the:
 
-It is only after sending that I realised that
-  git send-email --no-thread [...] v5.16-rc1..riscv_for_upstream
-still decided to thread the emails...
-Which indeed makes my use of "--no-numbered" a mistake. Sorry for not
-checking --dry-run output more closely.
+"platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning"
 
-> In this case a
->=20
-> 	b4 am f6512cc50dc31a086e00ed59c63ea60d8c148fc4.1637023980.git.plr.vincen=
-t@gmail.com
->=20
-> [first patch in the series]
-> will actually only retrieve the last patch
->=20
-> 	"[PATCH] riscv: dts: sifive unmatched: Link the tmp451 with its power su=
-pply."
->=20
-> as it thinks it's a new version of the first one.
->=20
->=20
-> Thanks
-> Heiko
->=20
-> > ---
-> >  arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >=20
-> > diff --git a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts b/arch=
-/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-> > index 4f66919215f6..305a086e5207 100644
-> > --- a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-> > +++ b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-> > @@ -245,4 +245,8 @@ &pwm1 {
-> > =20
-> >  &gpio {
-> >  	status =3D "okay";
-> > +	gpio-line-names =3D "J29.1", "PMICNTB", "PMICSHDN", "J8.1", "J8.3",
-> > +		"PCIe_PWREN", "THERM", "UBRDG_RSTN", "PCIe_PERSTN",
-> > +		"ULPI_RSTN", "J8.2", "UHUB_RSTN", "GEMGXL_RST", "J8.4",
-> > +		"EN_VDD_SD", "SD_CD";
-> >  };
-> >  =20
->=20
->=20
->=20
->=20
+commit, the problem is that:
+
+1. the .config does not have CONFIG_PROC_FS set; combined with:
+2. include/linux/proc_fs.h using a #define instead of a
+   static inline for proc_create_data() when this is the case
+3. This is a clang WERROR build
+
+The thinkpad_acpi code cannot really function without procfs
+support anyways (it will error out on probe if proc_create_data()
+returns NULL) so I will shortly submit a fix adding a
+depends on PROC_FS to fix this.
+
+I must say that as a maintainer I'm unhappy about the amount
+of noise being generated by clang WERROR builds here though,
+is it really necessary for the kernel test robot to do builds
+of this type ?
+
+Regards,
+
+Hans
 
 
 
 
---=20
-Vincent Pelletier
-GPG fingerprint 983A E8B7 3B91 1598 7A92 3845 CAC9 3691 4257 B0C1
+
+> 
+> 
+> vim +/dispatch_proc_ops +918 drivers/platform/x86/thinkpad_acpi.c
+> 
+> ^1da177e4c3f41 drivers/acpi/ibm_acpi.c              Linus Torvalds  2005-04-16  917  
+> 97a32539b9568b drivers/platform/x86/thinkpad_acpi.c Alexey Dobriyan 2020-02-03 @918  static const struct proc_ops dispatch_proc_ops = {
+> 97a32539b9568b drivers/platform/x86/thinkpad_acpi.c Alexey Dobriyan 2020-02-03  919  	.proc_open	= dispatch_proc_open,
+> 97a32539b9568b drivers/platform/x86/thinkpad_acpi.c Alexey Dobriyan 2020-02-03  920  	.proc_read	= seq_read,
+> 97a32539b9568b drivers/platform/x86/thinkpad_acpi.c Alexey Dobriyan 2020-02-03  921  	.proc_lseek	= seq_lseek,
+> 97a32539b9568b drivers/platform/x86/thinkpad_acpi.c Alexey Dobriyan 2020-02-03  922  	.proc_release	= single_release,
+> 97a32539b9568b drivers/platform/x86/thinkpad_acpi.c Alexey Dobriyan 2020-02-03  923  	.proc_write	= dispatch_proc_write,
+> 887965e6576a78 drivers/platform/x86/thinkpad_acpi.c Alexey Dobriyan 2009-12-15  924  };
+> 887965e6576a78 drivers/platform/x86/thinkpad_acpi.c Alexey Dobriyan 2009-12-15  925  
+> 
+> :::::: The code at line 918 was first introduced by commit
+> :::::: 97a32539b9568bb653683349e5a76d02ff3c3e2c proc: convert everything to "struct proc_ops"
+> 
+> :::::: TO: Alexey Dobriyan <adobriyan@gmail.com>
+> :::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
+
