@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381504527F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:48:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 166234527EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 03:48:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357270AbhKPCux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 21:50:53 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:37338 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357221AbhKPCsu (ORCPT
+        id S1351894AbhKPCum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 21:50:42 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:59368 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1356876AbhKPCsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 21:48:50 -0500
+        Mon, 15 Nov 2021 21:48:35 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DCE7C1FD67;
-        Tue, 16 Nov 2021 02:45:52 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 398F321910;
+        Tue, 16 Nov 2021 02:45:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1637030752; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1637030735; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=SCPnWzrli9uhGf5cSQnA2kslw6w9vTsO2ZaI10TRMW0=;
-        b=pZE6Mn45OybuBUV0fFOy6OA0abrIA0AR+Fglj1GmFirEaWFtVDkCDYxp+ocPMp60lDJ7N2
-        TaWmdEQKPcqYIl2pmPRYlaKiDIw7u0icJyyQk2e/fKk1Mzsv1R0v4/yvnKIgkZCWcNlf83
-        VqbAdkFTRkcWYEkojriQxOzGfTp73+4=
+        bh=1/BSIu6f8h3udxg/DtgGyKIFrkiRDq54LWgglD0VugE=;
+        b=IplAxp1y0sekl7XcljUnG5z89tZMSeqbWmLOhyGMm6vG+6I7vAkuytzPBU64O7NA+Eh0fk
+        y+rZNiyqm9YhWdNNwTYf9+lssWL3iGI3wRyd2yNX3uVMn7sAg6KKFp4i0ZFKbsZRwsO1P4
+        /BP+n7Jkn6O9I+qUqUoTwbwVKb1J6QE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1637030752;
+        s=susede2_ed25519; t=1637030735;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=SCPnWzrli9uhGf5cSQnA2kslw6w9vTsO2ZaI10TRMW0=;
-        b=8qHcqlPn9r3KPsRJ2cy06JSUnxN3MrXeqxOuPnS8oTruMA9u3t2SC7iQhU5U1gJPcf5I7b
-        3IWDw2sfjb9aJ/Cg==
+        bh=1/BSIu6f8h3udxg/DtgGyKIFrkiRDq54LWgglD0VugE=;
+        b=AWlfzuqouIRw64bl6P8ib6Gos4ML2cOYA82dE/tQ3Wp7jzocfC+UdQnkeEIwOpvnqpyzwP
+        R2e+lzQOcjNzc6Bw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 84C4713B70;
-        Tue, 16 Nov 2021 02:45:49 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D80E713B70;
+        Tue, 16 Nov 2021 02:45:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id AYUoLF0bk2HZCAAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 16 Nov 2021 02:45:49 +0000
-Subject: [PATCH 03/13] MM: reclaim mustn't enter FS for swap-over-NFS
+        id 1wlgJUwbk2G+CAAAMHmgww
+        (envelope-from <neilb@suse.de>); Tue, 16 Nov 2021 02:45:32 +0000
+Subject: [PATCH 01/13] NFS: move generic_write_checks() call from
+ nfs_file_direct_write() to nfs_file_write()
 From:   NeilBrown <neilb@suse.de>
 To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
         Anna Schumaker <anna.schumaker@netapp.com>,
@@ -56,7 +57,7 @@ To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
 Cc:     linux-nfs@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
 Date:   Tue, 16 Nov 2021 13:44:04 +1100
-Message-ID: <163703064452.25805.16932817889703270242.stgit@noble.brown>
+Message-ID: <163703064449.25805.2687706207398048223.stgit@noble.brown>
 In-Reply-To: <163702956672.25805.16457749992977493579.stgit@noble.brown>
 References: <163702956672.25805.16457749992977493579.stgit@noble.brown>
 User-Agent: StGit/0.23
@@ -67,46 +68,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If swap-out is using filesystem operations (SWP_FS_OPS), then it is not
-safe to enter the FS for reclaim.
-So only down-grade the requirement for swap pages to __GFP_IO after
-checking that SWP_FS_OPS are not being used.
+generic_write_checks() is not needed for swap-out writes, and fails if
+they are attempted.
+nfs_file_direct_write() currently calls generic_write_checks() and is in
+turn called from:
+  nfs_direct_IO  - only for swap-out
+  nfs_file_write - for normal O_DIRECT write
 
+So move the generic_write_checks() call into nfs_file_write().  This
+allows NFS swap-out writes to complete.
+
+Fixes: dc617f29dbe5 ("vfs: don't allow writes to swap files")
 Signed-off-by: NeilBrown <neilb@suse.de>
 ---
- mm/vmscan.c |   12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ fs/nfs/direct.c |    5 +----
+ fs/nfs/file.c   |    6 +++++-
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index fb9584641ac7..049ff4494081 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1513,8 +1513,14 @@ static unsigned int shrink_page_list(struct list_head *page_list,
- 		if (!sc->may_unmap && page_mapped(page))
- 			goto keep_locked;
+diff --git a/fs/nfs/direct.c b/fs/nfs/direct.c
+index 9cff8709c80a..1e80d243ba25 100644
+--- a/fs/nfs/direct.c
++++ b/fs/nfs/direct.c
+@@ -905,10 +905,7 @@ ssize_t nfs_file_direct_write(struct kiocb *iocb, struct iov_iter *iter)
+ 	dfprintk(FILE, "NFS: direct write(%pD2, %zd@%Ld)\n",
+ 		file, iov_iter_count(iter), (long long) iocb->ki_pos);
  
-+		/* ->flags can be updated non-atomicially (scan_swap_map_slots),
-+		 * but that will never affect SWP_FS_OPS, so the data_race
-+		 * is safe.
-+		 */
- 		may_enter_fs = (sc->gfp_mask & __GFP_FS) ||
--			(PageSwapCache(page) && (sc->gfp_mask & __GFP_IO));
-+			(PageSwapCache(page) &&
-+			 !data_race(page_swap_info(page)->flags & SWP_FS_OPS) &&
-+			 (sc->gfp_mask & __GFP_IO));
+-	result = generic_write_checks(iocb, iter);
+-	if (result <= 0)
+-		return result;
+-	count = result;
++	count = iov_iter_count(iter);
+ 	nfs_add_stats(mapping->host, NFSIOS_DIRECTWRITTENBYTES, count);
  
- 		/*
- 		 * The number of dirty pages determines if a node is marked
-@@ -1682,7 +1688,9 @@ static unsigned int shrink_page_list(struct list_head *page_list,
- 						goto activate_locked_split;
- 				}
+ 	pos = iocb->ki_pos;
+diff --git a/fs/nfs/file.c b/fs/nfs/file.c
+index 24e7dccce355..45d8180b7be3 100644
+--- a/fs/nfs/file.c
++++ b/fs/nfs/file.c
+@@ -615,8 +615,12 @@ ssize_t nfs_file_write(struct kiocb *iocb, struct iov_iter *from)
+ 	if (result)
+ 		return result;
  
--				may_enter_fs = true;
-+				if ((sc->gfp_mask & __GFP_FS) ||
-+				    !data_race(page_swap_info(page)->flags & SWP_FS_OPS))
-+					may_enter_fs = true;
+-	if (iocb->ki_flags & IOCB_DIRECT)
++	if (iocb->ki_flags & IOCB_DIRECT) {
++		result = generic_write_checks(iocb, from);
++		if (result <= 0)
++			return result;
+ 		return nfs_file_direct_write(iocb, from);
++	}
  
- 				/* Adding to swap updated mapping */
- 				mapping = page_mapping(page);
+ 	dprintk("NFS: write(%pD2, %zu@%Ld)\n",
+ 		file, iov_iter_count(from), (long long) iocb->ki_pos);
 
 
