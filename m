@@ -2,153 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806264530CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:32:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C8E4530D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:33:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235199AbhKPLer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 06:34:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233065AbhKPLcb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 06:32:31 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2396C061570;
-        Tue, 16 Nov 2021 03:29:33 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id g14so22612013edb.8;
-        Tue, 16 Nov 2021 03:29:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tmE5I+KwN9wX/3DI+6oAR1as1MTfdlvqvq7gy6oaBLw=;
-        b=SMlhMM1pNbxAB1nu2cCyGH/LuM8ogF4FG0KvbeYoYZtw9HP3tp4vTmdss7+cN3o8zf
-         WMHzFTd8k4E0aXJf6qaXoZa4qNQn2LCHzLkx2VkEyn5O6mGc8xwK9HNjvdcgGBZIkvIY
-         i9ll/nEFIKMzg/MZQWv/hs6d6zplgo6eAIpr1H/PhIUmmuSPYRslGW7GWVQu7y43H9UO
-         DhLuPQWIGgWLilpdysSUIQ9qu88mOdsU/qE+D935KScIy0yHJk5mGOnp0dj4s+D+Mgy7
-         Wxpx0y0zINoZ0Vhgl3Q/0U+fbzgs9lk7ilIucLXEJ9+EqVye+m6JWWuEjldIWXIWrYol
-         ElPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tmE5I+KwN9wX/3DI+6oAR1as1MTfdlvqvq7gy6oaBLw=;
-        b=NP+a1gAqn+DaxI1E+G5EyTL4g0gV6PKEFNFRed3b1T0C1psRFjXz2vBW8Hc5gySZpk
-         KbVoxVBqzLrM6kInH1tN/SYKqeQwURD7nCVknaCKAhWbGb0DLcEia8Jvsxo2MqSfxo0t
-         gq9iubKmVTpQwzAZ5VN0kdVqlqwU8/PGI+eilUjdpWGGarNEYu01pqOxPl4Ju1BXUFjB
-         ltqBSF0ZqZPLfW+tYR53A4R6y+fZl4r+TzywkgQv1aAiJLR1rrSGQFLvYAlhBhsuBocL
-         4eh3/3aza8Pt526HGkrzsCW0apfJB9ay9N5SgCegGXUZa20AvNfeGJV5qZ1AhbcJK/Cz
-         anLg==
-X-Gm-Message-State: AOAM531g5UDGOJztu2r3q30+9xmy0K81qxia5Sf1ltM1XFlmb5bjcWlz
-        AadADppbzD+gAY3gXlVi1gCT5DGk0YTR7xiT9/vWyyzE7IH6yA==
-X-Google-Smtp-Source: ABdhPJxAn5qrLYWqOD8UPTRedV2AQCbwEPm4K81wyq0r1N3LJLLy2Xx52b3zNNu3oO4Xmo0O2+MJa3+vAOZJ2uKpYZM=
-X-Received: by 2002:a50:fd16:: with SMTP id i22mr9250032eds.224.1637062172295;
- Tue, 16 Nov 2021 03:29:32 -0800 (PST)
-MIME-Version: 1.0
-References: <20211114170335.66994-1-hdegoede@redhat.com> <20211114170335.66994-18-hdegoede@redhat.com>
-In-Reply-To: <20211114170335.66994-18-hdegoede@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 16 Nov 2021 13:28:51 +0200
-Message-ID: <CAHp75VdXSdhNtPwNdpssnmt+sZb+ZoAUm-cKJu-PqymmHMOpRw@mail.gmail.com>
-Subject: Re: [PATCH v2 17/20] extcon: intel-cht-wc: Support devs with Micro-B
- / USB-2 only Type-C connectors
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Yauhen Kharuzhy <jekhor@gmail.com>,
+        id S235515AbhKPLgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:36:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35198 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235208AbhKPLco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 06:32:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B962863236;
+        Tue, 16 Nov 2021 11:29:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637062149;
+        bh=+eQUm8YlELY5QQ8VHElpip3gm5F0shsJO9PkjxNiU08=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=awTY3xFaTehKYBeVdMT4/GAk05+j5HqrxRM9tU5ovD6Uztfozc7HLJbMKVS4+KMFc
+         DM4nP53BZUm4JifHPeJGa24HtGMxRq1wpOJyCwIlELn2bnhU6j8zX/SfWU/TVz/TbO
+         8vfAdbNU/1fGlK6GZ27cj7UJVgY10HmmrkQr4J8AdFr5iuR820tqOIlniMmvtxpM29
+         utzpQVe/4O12ORyMjq6vmbbTcYG578GsLuh/m/gaNesMvsc5QpfD6Vjv7WambRjl3A
+         /QgwR9ivxlhyrzYLumVFvcYYKUZfmBckVut6tY0phnZJeO58ZY53tT9Ai7gkJGCjPr
+         t2PqY31FKR38A==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mmwe9-008Qfa-Gx; Tue, 16 Nov 2021 11:29:05 +0000
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Deepak R Varma <drv@mailo.com>,
+        Ding Xiang <dingxiang@cmss.chinamobile.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Martiros Shakhzadyan <vrzh@vrzh.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
         Tsuchiya Yuto <kitakar@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Yang Li <abaci-bugfix@linux.alibaba.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: [PATCH 10/23] media: atomisp: drop #ifdef SH_CSS_ENABLE_PER_FRAME_PARAMS
+Date:   Tue, 16 Nov 2021 11:28:51 +0000
+Message-Id: <cf9d37dbae4b3673ce0e6573fb2cab5e1ec00cfe.1637061474.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <cover.1637061474.git.mchehab+huawei@kernel.org>
+References: <cover.1637061474.git.mchehab+huawei@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 14, 2021 at 7:04 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> So far the extcon-intel-cht-wc code has only been tested on devices with
-> a Type-C connector with USB-PD, USB3 (superspeed) and DP-altmode support
-> through a FUSB302 Type-C controller.
->
-> Some devices with the intel-cht-wc PMIC however come with an USB-micro-B
-> connector, or an USB-2 only Type-C connector without USB-PD.
->
-> Which device-model we are running on can be identified with the new
-> intel_cht_wc_get_model() helper and on models without a Type-C controller
-> the extcon code must control the Vbus 5V boost converter and the USB role
-> switch depending on the detected cable-type.
+This is enabled for the firmware we're using. So, just drop
+the if's.
 
-...
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
 
->  config EXTCON_INTEL_CHT_WC
->         tristate "Intel Cherrytrail Whiskey Cove PMIC extcon driver"
-> -       depends on INTEL_SOC_PMIC_CHTWC
+To mailbombing on a large number of people, only mailing lists were C/C on the cover.
+See [PATCH 00/23] at: https://lore.kernel.org/all/cover.1637061474.git.mchehab+huawei@kernel.org/
 
-> +       depends on INTEL_SOC_PMIC_CHTWC && USB_SUPPORT
+ drivers/staging/media/atomisp/pci/sh_css.c      |  4 ----
+ .../staging/media/atomisp/pci/sh_css_internal.h |  2 --
+ .../staging/media/atomisp/pci/sh_css_params.c   | 17 -----------------
+ drivers/staging/media/atomisp/pci/sh_css_sp.c   |  2 --
+ .../staging/media/atomisp/pci/system_global.h   |  3 ---
+ 5 files changed, 28 deletions(-)
 
-Having these two in one expression sounds a bit alogical to me, can
-you just add a separate "depends on"?
-
-> +       select USB_ROLE_SWITCH
-
-...
-
-> +       if (ext->vbus_boost && ext->vbus_boost_enabled != enable) {
-> +               if (enable)
-> +                       ret = regulator_enable(ext->vbus_boost);
-> +               else
-> +                       ret = regulator_disable(ext->vbus_boost);
-
-Redundant blank line here (but it's up to you)
-
-> +               if (ret == 0)
-> +                       ext->vbus_boost_enabled = enable;
-> +               else
-> +                       dev_err(ext->dev, "Error updating Vbus boost regulator: %d\n", ret);
-
-Why not a traditional pattern, i.e. error handling first?
-
-> +       }
-
-...
-
-> +/* Some boards require controlling the role-sw and vbus based on the id-pin */
-
-Vbus ? VBUS? Here and there the inconsistency of some terms...
-
-...
-
-> +       ext->vbus_boost = devm_regulator_get_optional(ext->dev, "vbus");
-> +       if (IS_ERR(ext->vbus_boost)) {
-> +               ret = PTR_ERR(ext->vbus_boost);
-> +               if (ret == -ENODEV)
-> +                       ret = -EPROBE_DEFER;
-> +
-> +               return dev_err_probe(ext->dev, ret, "getting vbus regulator");
-
-Can be also written as
-
-    if (PTR_ERR(ext->vbus_boost) == -ENODEV ||
-PTR_ERR(ext->vbus_boost) == -EPROBE_DEFER)
-        return dev_err_probe(ext->dev, -EPROBE_DEFER, "getting vbus regulator");
-
-    return PTR_ERR(ext->vbus_boost);
-
-but up to you.
-
-> +       }
-
+diff --git a/drivers/staging/media/atomisp/pci/sh_css.c b/drivers/staging/media/atomisp/pci/sh_css.c
+index 3a347b72e4bd..6d3c4a0558e1 100644
+--- a/drivers/staging/media/atomisp/pci/sh_css.c
++++ b/drivers/staging/media/atomisp/pci/sh_css.c
+@@ -4154,14 +4154,12 @@ ia_css_pipe_enqueue_buffer(struct ia_css_pipe *pipe,
+ 		return_err = ia_css_bufq_enqueue_buffer(thread_id,
+ 							queue_id,
+ 							(uint32_t)h_vbuf->vptr);
+-#if defined(SH_CSS_ENABLE_PER_FRAME_PARAMS)
+ 		if (!return_err &&
+ 		    buf_type == IA_CSS_BUFFER_TYPE_OUTPUT_FRAME) {
+ 			IA_CSS_LOG("pfp: enqueued OF %d to q %d thread %d",
+ 				   ddr_buffer.payload.frame.frame_data,
+ 				   queue_id, thread_id);
+ 		}
+-#endif
+ 	}
+ 
+ 	if (!return_err) {
+@@ -4364,12 +4362,10 @@ ia_css_pipe_dequeue_buffer(struct ia_css_pipe *pipe,
+ 					    sh_css_sp_get_binary_copy_size();
+ #endif
+ 				}
+-#if defined(SH_CSS_ENABLE_PER_FRAME_PARAMS)
+ 				if (buf_type == IA_CSS_BUFFER_TYPE_OUTPUT_FRAME) {
+ 					IA_CSS_LOG("pfp: dequeued OF %d with config id %d thread %d",
+ 						   frame->data, frame->isp_config_id, thread_id);
+ 				}
+-#endif
+ 
+ 				ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE,
+ 						    "ia_css_pipe_dequeue_buffer() buf_type=%d, data(DDR address)=0x%x\n",
+diff --git a/drivers/staging/media/atomisp/pci/sh_css_internal.h b/drivers/staging/media/atomisp/pci/sh_css_internal.h
+index f26df3f44a7a..87ac3ea15dfc 100644
+--- a/drivers/staging/media/atomisp/pci/sh_css_internal.h
++++ b/drivers/staging/media/atomisp/pci/sh_css_internal.h
+@@ -536,9 +536,7 @@ struct sh_css_sp_pipeline {
+ 		ia_css_ptr    cont_buf; /* Address of continuous buffer */
+ 	} metadata;
+ #endif
+-#if defined(SH_CSS_ENABLE_PER_FRAME_PARAMS)
+ 	u32	output_frame_queue_id;
+-#endif
+ 	union {
+ 		struct {
+ 			u32	bytes_available;
+diff --git a/drivers/staging/media/atomisp/pci/sh_css_params.c b/drivers/staging/media/atomisp/pci/sh_css_params.c
+index b3ef6b4c3225..448b07162382 100644
+--- a/drivers/staging/media/atomisp/pci/sh_css_params.c
++++ b/drivers/staging/media/atomisp/pci/sh_css_params.c
+@@ -731,13 +731,11 @@ sh_css_set_global_isp_config_on_pipe(
+     const struct ia_css_isp_config *config,
+     struct ia_css_pipe *pipe);
+ 
+-#if defined(SH_CSS_ENABLE_PER_FRAME_PARAMS)
+ static int
+ sh_css_set_per_frame_isp_config_on_pipe(
+     struct ia_css_stream *stream,
+     const struct ia_css_isp_config *config,
+     struct ia_css_pipe *pipe);
+-#endif
+ 
+ static int
+ sh_css_update_uds_and_crop_info_based_on_zoom_region(
+@@ -1905,11 +1903,9 @@ ia_css_stream_set_isp_config_on_pipe(
+ 
+ 	IA_CSS_ENTER("stream=%p, config=%p, pipe=%p", stream, config, pipe);
+ 
+-#if defined(SH_CSS_ENABLE_PER_FRAME_PARAMS)
+ 	if (config->output_frame)
+ 		err = sh_css_set_per_frame_isp_config_on_pipe(stream, config, pipe);
+ 	else
+-#endif
+ 		err = sh_css_set_global_isp_config_on_pipe(stream->pipes[0], config, pipe);
+ 
+ 	IA_CSS_LEAVE_ERR(err);
+@@ -1930,11 +1926,9 @@ ia_css_pipe_set_isp_config(struct ia_css_pipe *pipe,
+ 
+ 	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE, "config=%p\n", config);
+ 
+-#if defined(SH_CSS_ENABLE_PER_FRAME_PARAMS)
+ 	if (config->output_frame)
+ 		err = sh_css_set_per_frame_isp_config_on_pipe(pipe->stream, config, pipe);
+ 	else
+-#endif
+ 		err = sh_css_set_global_isp_config_on_pipe(pipe, config, pipe_in);
+ 	IA_CSS_LEAVE_ERR(err);
+ 	return err;
+@@ -1969,7 +1963,6 @@ sh_css_set_global_isp_config_on_pipe(
+ 	return err;
+ }
+ 
+-#if defined(SH_CSS_ENABLE_PER_FRAME_PARAMS)
+ static int
+ sh_css_set_per_frame_isp_config_on_pipe(
+     struct ia_css_stream *stream,
+@@ -2039,7 +2032,6 @@ sh_css_set_per_frame_isp_config_on_pipe(
+ 	IA_CSS_LEAVE_ERR_PRIVATE(err);
+ 	return err;
+ }
+-#endif
+ 
+ static int
+ sh_css_init_isp_params_from_config(struct ia_css_pipe *pipe,
+@@ -3253,15 +3245,10 @@ sh_css_param_update_isp_params(struct ia_css_pipe *curr_pipe,
+ 		isp_pipe_version = ia_css_pipe_get_isp_pipe_version(pipe);
+ 		ia_css_pipeline_get_sp_thread_id(pipe_num, &thread_id);
+ 
+-#if defined(SH_CSS_ENABLE_PER_FRAME_PARAMS)
+ 		ia_css_query_internal_queue_id(params->output_frame
+ 					       ? IA_CSS_BUFFER_TYPE_PER_FRAME_PARAMETER_SET
+ 					       : IA_CSS_BUFFER_TYPE_PARAMETER_SET,
+ 					       thread_id, &queue_id);
+-#else
+-		ia_css_query_internal_queue_id(IA_CSS_BUFFER_TYPE_PARAMETER_SET, thread_id,
+-					       &queue_id);
+-#endif
+ 		if (!sh_css_sp_is_running()) {
+ 			/* SP is not running. The queues are not valid */
+ 			err = -EBUSY;
+@@ -3357,12 +3344,10 @@ sh_css_param_update_isp_params(struct ia_css_pipe *curr_pipe,
+ 		err = ia_css_bufq_enqueue_buffer(thread_id, queue_id, (uint32_t)cpy);
+ 		if (err) {
+ 			free_ia_css_isp_parameter_set_info(cpy);
+-#if defined(SH_CSS_ENABLE_PER_FRAME_PARAMS)
+ 			IA_CSS_LOG("pfp: FAILED to add config id %d for OF %d to q %d on thread %d",
+ 				   isp_params_info.isp_parameters_id,
+ 				   isp_params_info.output_frame_ptr,
+ 				   queue_id, thread_id);
+-#endif
+ 			break;
+ 		} else {
+ 			/* TMP: check discrepancy between nr of enqueued
+@@ -3384,12 +3369,10 @@ sh_css_param_update_isp_params(struct ia_css_pipe *curr_pipe,
+ 			    (uint8_t)thread_id,
+ 			    (uint8_t)queue_id,
+ 			    0);
+-#if defined(SH_CSS_ENABLE_PER_FRAME_PARAMS)
+ 			IA_CSS_LOG("pfp: added config id %d for OF %d to q %d on thread %d",
+ 				   isp_params_info.isp_parameters_id,
+ 				   isp_params_info.output_frame_ptr,
+ 				   queue_id, thread_id);
+-#endif
+ 		}
+ 		/* clean-up old copy */
+ 		ia_css_dequeue_param_buffers(/*pipe_num*/);
+diff --git a/drivers/staging/media/atomisp/pci/sh_css_sp.c b/drivers/staging/media/atomisp/pci/sh_css_sp.c
+index ff7c2c5fd94d..4a0206f564c9 100644
+--- a/drivers/staging/media/atomisp/pci/sh_css_sp.c
++++ b/drivers/staging/media/atomisp/pci/sh_css_sp.c
+@@ -1319,14 +1319,12 @@ sh_css_sp_init_pipeline(struct ia_css_pipeline *me,
+ 	(void)md_info;
+ #endif
+ 
+-#if defined(SH_CSS_ENABLE_PER_FRAME_PARAMS)
+ 	sh_css_sp_group.pipe[thread_id].output_frame_queue_id = (uint32_t)SH_CSS_INVALID_QUEUE_ID;
+ 	if (pipe_id != IA_CSS_PIPE_ID_COPY) {
+ 		ia_css_query_internal_queue_id(IA_CSS_BUFFER_TYPE_OUTPUT_FRAME, thread_id,
+ 					       (enum sh_css_queue_id *)(
+ 						   &sh_css_sp_group.pipe[thread_id].output_frame_queue_id));
+ 	}
+-#endif
+ 
+ 	IA_CSS_LOG("pipe_id %d port_config %08x",
+ 		   pipe_id, sh_css_sp_group.pipe[thread_id].inout_port_config);
+diff --git a/drivers/staging/media/atomisp/pci/system_global.h b/drivers/staging/media/atomisp/pci/system_global.h
+index 9b22b8c168be..060b924023ec 100644
+--- a/drivers/staging/media/atomisp/pci/system_global.h
++++ b/drivers/staging/media/atomisp/pci/system_global.h
+@@ -25,9 +25,6 @@
+  * N.B. the 3 input formatters are of 2 different classess
+  */
+ 
+-/* per-frame parameter handling support */
+-#define SH_CSS_ENABLE_PER_FRAME_PARAMS
+-
+ #define DMA_DDR_TO_VAMEM_WORKAROUND
+ #define DMA_DDR_TO_HMEM_WORKAROUND
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.33.1
+
