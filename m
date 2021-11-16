@@ -2,86 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D811453405
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:21:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B7C45340F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 15:22:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237388AbhKPOYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 09:24:25 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4100 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237387AbhKPOYO (ORCPT
+        id S237360AbhKPOZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 09:25:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55606 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237338AbhKPOZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 09:24:14 -0500
-Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Htp6h1wrjz67ybx;
-        Tue, 16 Nov 2021 22:17:32 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 16 Nov 2021 15:21:14 +0100
-Received: from [10.47.82.31] (10.47.82.31) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.20; Tue, 16 Nov
- 2021 14:21:13 +0000
-Subject: Re: [PATCH 0/5] iommu: Some IOVA code reorganisation
-To:     Will Deacon <will@kernel.org>, <robin.murphy@arm.com>
-CC:     <joro@8bytes.org>, <mst@redhat.com>, <jasowang@redhat.com>,
-        <xieyongji@bytedance.com>, <linux-kernel@vger.kernel.org>,
-        <iommu@lists.linux-foundation.org>,
-        <virtualization@lists.linux-foundation.org>, <linuxarm@huawei.com>,
-        <thunder.leizhen@huawei.com>, <baolu.lu@linux.intel.com>
-References: <1632477717-5254-1-git-send-email-john.garry@huawei.com>
- <20211004114418.GC27373@willie-the-truck>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <cdb502c5-4896-385b-8872-f4f20e9c7e34@huawei.com>
-Date:   Tue, 16 Nov 2021 14:21:09 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Tue, 16 Nov 2021 09:25:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637072532;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=j4fQpNyu2pGaDoE12djfDxdstokOhujexoT8EXQgWW4=;
+        b=MDh2837kAD9lR1n8pxrc86fG8xxKqTIVJO1VV6ZnX3JepKTy010meP70hO+AIMEojteJXZ
+        ZBLeQI2xNJonFRZn4mrbYQVyGQ3jdFRjD91m4X4Pmr0feOiMVsek1OYvgkDrZCbqoQQ0JW
+        zpLvE5Hf5+T7V496OoQGAq4iCyy9rdg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-170-2cDFxo97N3-XE4B677b26A-1; Tue, 16 Nov 2021 09:22:07 -0500
+X-MC-Unique: 2cDFxo97N3-XE4B677b26A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 226A3100CD00;
+        Tue, 16 Nov 2021 14:22:06 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A368A5F4EF;
+        Tue, 16 Nov 2021 14:22:05 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     jgross@suse.com, Sean Christopherson <seanjc@google.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] KVM: x86: Use a stable condition around all VT-d PI paths
+Date:   Tue, 16 Nov 2021 09:22:05 -0500
+Message-Id: <20211116142205.719375-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20211004114418.GC27373@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.82.31]
-X-ClientProxiedBy: lhreml706-chm.china.huawei.com (10.201.108.55) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/10/2021 12:44, Will Deacon wrote:
-> On Fri, Sep 24, 2021 at 06:01:52PM +0800, John Garry wrote:
->> The IOVA domain structure is a bit overloaded, holding:
->> - IOVA tree management
->> - FQ control
->> - IOVA rcache memories
->>
->> Indeed only a couple of IOVA users use the rcache, and only dma-iommu.c
->> uses the FQ feature.
->>
->> This series separates out that structure. In addition, it moves the FQ
->> code into dma-iommu.c . This is not strictly necessary, but it does make
->> it easier for the FQ domain lookup the rcache domain.
->>
->> The rcache code stays where it is, as it may be reworked in future, so
->> there is not much point in relocating and then discarding.
->>
->> This topic was initially discussed and suggested (I think) by Robin here:
->> https://lore.kernel.org/linux-iommu/1d06eda1-9961-d023-f5e7-fe87e768f067@arm.com/
-> It would be useful to have Robin's Ack on patches 2-4. The implementation
-> looks straightforward to me, but the thread above isn't very clear about
-> what is being suggested.
+Currently, checks for whether VT-d PI can be used refer to the current
+status of the feature in the current vCPU; or they more or less pick
+vCPU 0 in case a specific vCPU is not available.
 
-Hi Robin,
+However, these checks do not attempt to synchronize with changes to
+the IRTE.  In particular, there is no path that updates the IRTE when
+APICv is re-activated on vCPU 0; and there is no path to wakeup a CPU
+that has APICv disabled, if the wakeup occurs because of an IRTE
+that points to a posted interrupt.
 
-Just wondering if you had made any progress on your FQ code rework or 
-your own re-org?
+To fix this, always go through the VT-d PI path as long as there are
+assigned devices and APICv is available on both the host and the VM side.
+Since the relevant condition was copied over three times, take the hint
+and factor it into a separate function.
 
-I wasn't planning on progressing 
-https://lore.kernel.org/linux-iommu/1626259003-201303-1-git-send-email-john.garry@huawei.com/ 
-until this is done first (and that is still a big issue), even though 
-not strictly necessary.
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/vmx/posted_intr.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-Thanks,
-John
+diff --git a/arch/x86/kvm/vmx/posted_intr.c b/arch/x86/kvm/vmx/posted_intr.c
+index 5f81ef092bd4..b64dd1374ed9 100644
+--- a/arch/x86/kvm/vmx/posted_intr.c
++++ b/arch/x86/kvm/vmx/posted_intr.c
+@@ -5,6 +5,7 @@
+ #include <asm/cpu.h>
+ 
+ #include "lapic.h"
++#include "irq.h"
+ #include "posted_intr.h"
+ #include "trace.h"
+ #include "vmx.h"
+@@ -77,13 +78,18 @@ void vmx_vcpu_pi_load(struct kvm_vcpu *vcpu, int cpu)
+ 		pi_set_on(pi_desc);
+ }
+ 
++static bool vmx_can_use_vtd_pi(struct kvm *kvm)
++{
++	return kvm_arch_has_assigned_device(kvm) &&
++		irq_remapping_cap(IRQ_POSTING_CAP) &&
++		irqchip_in_kernel(kvm) && enable_apicv;
++}
++
+ void vmx_vcpu_pi_put(struct kvm_vcpu *vcpu)
+ {
+ 	struct pi_desc *pi_desc = vcpu_to_pi_desc(vcpu);
+ 
+-	if (!kvm_arch_has_assigned_device(vcpu->kvm) ||
+-		!irq_remapping_cap(IRQ_POSTING_CAP)  ||
+-		!kvm_vcpu_apicv_active(vcpu))
++	if (!vmx_can_use_vtd_pi(vcpu->kvm))
+ 		return;
+ 
+ 	/* Set SN when the vCPU is preempted */
+@@ -141,9 +147,7 @@ int pi_pre_block(struct kvm_vcpu *vcpu)
+ 	struct pi_desc old, new;
+ 	struct pi_desc *pi_desc = vcpu_to_pi_desc(vcpu);
+ 
+-	if (!kvm_arch_has_assigned_device(vcpu->kvm) ||
+-		!irq_remapping_cap(IRQ_POSTING_CAP)  ||
+-		!kvm_vcpu_apicv_active(vcpu))
++	if (!vmx_can_use_vtd_pi(vcpu->kvm))
+ 		return 0;
+ 
+ 	WARN_ON(irqs_disabled());
+@@ -270,9 +274,7 @@ int pi_update_irte(struct kvm *kvm, unsigned int host_irq, uint32_t guest_irq,
+ 	struct vcpu_data vcpu_info;
+ 	int idx, ret = 0;
+ 
+-	if (!kvm_arch_has_assigned_device(kvm) ||
+-	    !irq_remapping_cap(IRQ_POSTING_CAP) ||
+-	    !kvm_vcpu_apicv_active(kvm->vcpus[0]))
++	if (!vmx_can_use_vtd_pi(kvm))
+ 		return 0;
+ 
+ 	idx = srcu_read_lock(&kvm->irq_srcu);
+-- 
+2.27.0
+
