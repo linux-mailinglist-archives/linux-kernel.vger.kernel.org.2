@@ -2,80 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2173E45310B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:41:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B22AE45310A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 12:41:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235547AbhKPLoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 06:44:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235638AbhKPLn2 (ORCPT
+        id S235286AbhKPLoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 06:44:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:43527 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235612AbhKPLn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 06:43:28 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51FFC06120E;
-        Tue, 16 Nov 2021 03:39:57 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id a9so10733331wrr.8;
-        Tue, 16 Nov 2021 03:39:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=0lnIW5bIuasV3MVGJulBjO6erZ6NZCFpVTL6XPkUY7g=;
-        b=UTENRlvJv4CKfNdhgLfetOkofGUZ4Zvf1hW/NurNT5vUDxHNNIb/33acvpw1+D77OS
-         RvrwY+3Da+G0yn/wpX2PwmfBo2Fw11YM+9pTZpZB2NuProGgpT6TKugrcGdEc5KqCvZM
-         vwZGV7OG+wZjz4KAAFS/IJEIQE8bnRXLsjgD12Rjg/T/Tv4+5tQ+iq3zPs9/o4E+e8q/
-         5nYBR5MlANoH56B+5qlZj/z0S69ytkHHKgHOiE26ae3ghN4rQFiT77yWuG761QL5piO1
-         eMsLFG2qCR+MHRs1nd5AaLNE2C3n98hbtjeATSRPY+BCdMQI49O9ghgOKjy7lkBTyI4V
-         Y+xg==
+        Tue, 16 Nov 2021 06:43:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637062829;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q2yhddqwOIyYZPL3FhXeGjYy0DQgznm+v+3hij7ERdE=;
+        b=NVaV+fApsyINJgLaHkxx3KOlDh/E0PX8Ak4LCme/X5Q0drbuR+uhbu1DgG86EZznxixv3e
+        SZ9fb78uBBXHSNf+ip5VF+o3ru2PQo4HyRklxHpiYnxq4jNZrOGhpx1L8vBvbTCo4lajGf
+        9WS5mt0H58jt1rI3ogMhh/8TpLb5xcE=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-123-pFi0kpDjMLaw0j991Gno2w-1; Tue, 16 Nov 2021 06:40:28 -0500
+X-MC-Unique: pFi0kpDjMLaw0j991Gno2w-1
+Received: by mail-ed1-f71.google.com with SMTP id g3-20020a056402424300b003e2981e1edbso17035095edb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 03:40:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=0lnIW5bIuasV3MVGJulBjO6erZ6NZCFpVTL6XPkUY7g=;
-        b=eF8AGFFV9D2JJ3F+kZg3buGiSs0YF0sUY6dwqFlp6aAbsmg4Bj0FaoG5+HZkPnkRNx
-         6gyPJD7nuUBO5JE2wdiIQzR9fwXlO1ZgmLnUMIf21EYtSb7MYw79e8GlVMWOBJZ0yh+T
-         dsVg7pdlsmo9V9LrSy2CcNDdpftC5eeMdPKplTOjQ4TJPdfnxNBW6zqLJW8dk6Ms7Xa2
-         znr3XI7xpKx8LEYpvuxjeYDWPknmFNUvgJ5gKNoT5ergwGNe5vSVWRBCs2RnJi+lv2NJ
-         +LaVRVzFwnflocIlaxBzb401H+4gNh04orqkxXFmUVl+nUax6i/pXxjvcrQxadkEM4pf
-         m1xQ==
-X-Gm-Message-State: AOAM530XkfLr33q6W5ZCfUsLVW5VrUHCOPvESOiW43Hoj2qIDZ0nBRW+
-        fn5OM3e6k32A9MXQLKESdGN1zxPzVIi1+pnpZD0y6NaFQ4o=
-X-Google-Smtp-Source: ABdhPJxdqnHy+l4gg9zlNJwBz43z7HVYBhCmcU6R3AaNMLjruGuDQXNbnm08ViAsE3fyjpx103quBwNYR6jNnV3NPwE=
-X-Received: by 2002:a05:6000:52:: with SMTP id k18mr8294124wrx.192.1637062796271;
- Tue, 16 Nov 2021 03:39:56 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=q2yhddqwOIyYZPL3FhXeGjYy0DQgznm+v+3hij7ERdE=;
+        b=z+3BKlI9i4eVzICD9vmB6R0mjPqsIL3NV0XfDQuPmkBy0XpbQy5l/uQMsV4hVlddHN
+         McFV7Xc0DqVnShbyly52AIEk16bzR9+3FNxGZaS52vJDgCTZP1EATqDF6co5Mngj4QOJ
+         9s2F9o1Ko2QuwZexQyNtZWEAEYsWTch7tEiraKGNoTFmXQ/dkViN8CXeaJDPKh8vuy/a
+         /q2aMAO3+HamFKWNHuYFuiNX4DBqjwxsot2E6Da/6zWkI6kuogn3lhBVd1sp6dTDZ3K1
+         Qe4047GcMsV5kcmJMSvZGZ2AG2UbQu8GP40vXa6YyHrVU0+kBaYZX1I2QqL50oIjAY+l
+         bd0g==
+X-Gm-Message-State: AOAM5326sS1mjpMw+Ul5+khUSgiA4jpAkQ6cGAF9h9mwMjoyB/7ZFT5+
+        qGGduCooYN/RMg3s/SaaRHuEC0UiXf0ub2D/ulqeLDABulV2OU3FtsOorCfj69I6d0wrevM9nrT
+        DtcDWr3+c4ZAe9aiHed24Bp8C
+X-Received: by 2002:a50:bf01:: with SMTP id f1mr9258004edk.102.1637062827601;
+        Tue, 16 Nov 2021 03:40:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJymU6yKouEKafBLdercgexA8Y6Lq4DD1sfYwW1qjfS7Zl1Y82tULN5DbCIDyJTLShnlIyoCVQ==
+X-Received: by 2002:a50:bf01:: with SMTP id f1mr9257958edk.102.1637062827380;
+        Tue, 16 Nov 2021 03:40:27 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id gs17sm8188492ejc.28.2021.11.16.03.40.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 03:40:26 -0800 (PST)
+Message-ID: <b592e94f-5bff-0f9e-7297-94f7ad646fb7@redhat.com>
+Date:   Tue, 16 Nov 2021 12:40:26 +0100
 MIME-Version: 1.0
-From:   Sandy Harris <sandyinchina@gmail.com>
-Date:   Tue, 16 Nov 2021 19:39:44 +0800
-Message-ID: <CACXcFmnYNSLvjNfyvWXq4VSxoreKTC27E+hotcFz-AQ0FCDT5w@mail.gmail.com>
-Subject: [PATCH 8/8] Replace memset() with memzero_explicit()
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 13/20] power: supply: bq25890: Support higher charging
+ voltages through Pump Express+ protocol
+Content-Language: en-US
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Yauhen Kharuzhy <jekhor@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>
+References: <20211114170335.66994-1-hdegoede@redhat.com>
+ <20211114170335.66994-14-hdegoede@redhat.com>
+ <CAHp75VceeV634BPm4X8vgKCFG7CFSnApPrB-uxG8-F+hgXXMvA@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <CAHp75VceeV634BPm4X8vgKCFG7CFSnApPrB-uxG8-F+hgXXMvA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace memset(address,0,bytes) which may be optimised
-away with memzero_explicit(address,bytes) which resists
-such optimisation
+Hi,
 
----
- crypto/rmd160.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 11/16/21 12:14, Andy Shevchenko wrote:
+> On Sun, Nov 14, 2021 at 7:04 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> From: Yauhen Kharuzhy <jekhor@gmail.com>
+>>
+>> Add a "linux,pump-express-vbus-max" property which indicates if the Pump
+>> Express+ protocol should be used to increase the charging protocol.
+>>
+>> If this new property is set and a DCP charger is detected then request
+>> a higher charging voltage through the Pump Express+ protocol.
+>>
+>> So far this new property is only used on X86/ACPI (non devicetree) devs,
+>> IOW it is not used in actual devicetree files. The devicetree-bindings
+>> maintainers have requested properties like these to not be added to the
+>> devicetree-bindings, so the new property is deliberately not added
+>> to the existing devicetree-bindings.
+>>
+>> Changes by Hans de Goede:
+>> - Port to my bq25890 patch-series + various cleanups
+>> - Make behavior configurable through a new "linux,pump-express-vbus-max"
+>>   device-property
+>> - Sleep 1 second before re-checking the Vbus voltage after requesting
+>>   it to be raised, to ensure that the ADC has time to sampled the new Vbus
+>> - Add VBUSV bq25890_tables[] entry and use it in bq25890_get_vbus_voltage()
+>> - Tweak commit message
+> 
+> ...
+> 
+>> +#define PUMP_EXPRESS_START_DELAY       (5 * HZ)
+>> +#define PUMP_EXPRESS_MAX_TRIES         6
+>> +#define PUMP_EXPRESS_VBUS_MARGIN       1000000
+> 
+> Units? Perhaps "_uV"?
+> 
+> ...
+> 
+>> +               dev_dbg(bq->dev, "input voltage = %d mV\n", voltage);
+> 
+> Just to be sure, is it indeed "mV" and not "uV"?
 
-diff --git a/crypto/rmd160.c b/crypto/rmd160.c
-index c5fe4034b153..a80f783d5a4f 100644
---- a/crypto/rmd160.c
-+++ b/crypto/rmd160.c
-@@ -329,7 +329,7 @@ static int rmd160_final(struct shash_desc *desc, u8 *out)
-         dst[i] = cpu_to_le32p(&rctx->state[i]);
+It is uV, will fix for the next version.
 
-     /* Wipe context */
--    memset(rctx, 0, sizeof(*rctx));
-+    memzero_explicit(rctx, sizeof(*rctx));
+> 
+> ...
+> 
+>> +               while (bq25890_field_read(bq, F_PUMPX_UP) == 1)
+>> +                       msleep(100);
+> 
+> Infinite loop?
+> 
+> Sounds like a good candidate to switch to read_poll_timeout() // note> it accepts any type of (op) with a variadic number of args.
 
-     return 0;
- }
---
+Good catch, will fix.
+
+> 
+> ...
+> 
+>> +error:
+> 
+> error_print: ?
+> 
+>> +       dev_err(bq->dev, "Failed to request hi-voltage charging\n");
+> 
+> ...
+> 
+>> +       ret = device_property_read_u32(bq->dev, "linux,pump-express-vbus-max",
+>> +                                      &bq->pump_express_vbus_max);
+>> +       if (ret < 0)
+>> +               bq->pump_express_vbus_max = 0;
+> 
+> Isn't it 0 by default?
+> 
+> Anyway, for all optional properties one may use
+> 
+> bq->...property... = $default;
+> device_property_read_u32(bq->dev, "linux,...property...", &bq->...property...);
+> 
+> I.e. no conditional needed.
+
+Ack, will fix.
+
+Regards,
+
+Hans
+
