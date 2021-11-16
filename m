@@ -2,170 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10EA9452A5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 07:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 104AD452A67
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 07:17:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236739AbhKPGLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 01:11:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231587AbhKPGLE (ORCPT
+        id S233803AbhKPGSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 01:18:02 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:51762 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232504AbhKPGR7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 01:11:04 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 660EBC061570;
-        Mon, 15 Nov 2021 22:08:08 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id i9so19493849qki.3;
-        Mon, 15 Nov 2021 22:08:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I3oQyh1i67EI9sCW3pQlUFVmFFrrPdE1dpx1lb+xR2U=;
-        b=E9OjszSmwpNQ1taXDWq1P1iNQZBuIsSmoMRgF0L3fgDwV+ydKR63vsHfTocvsPlpHU
-         DYTeHToo4XaVlAnMH9jqGnJNBI6qDg9pxEbGd8Z7noiXjXn3jsqqBNKljPRI1Y1YkaXE
-         t0+1CZ0sZ42qgvHtea/vCOFqvA+ArkYy9zFPc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I3oQyh1i67EI9sCW3pQlUFVmFFrrPdE1dpx1lb+xR2U=;
-        b=Lhbm02PxaYf55F3jXND8L9GCdBowbk+otX/KVkBXb36SJhU7kqXr7bcOJjdKiuQi8g
-         szUMaf07FdiLOM2NmQO278djIStD1j1vg620ZDQBU4CfsoVy8DVe0WxS7NosnJY9x0r+
-         EzkzKlRcbMwdX7s7Mi+aLZhBZjU/7B7YIt+JN9hT+nm2Y+UnCwu+TazL6ORE8/vdq9Fq
-         YbwtvGQnTKiut6oUeCEfwOn+Ytdf/wapfByb7B8DVbqCKK9HhWPGjvpjapqYqkhRUdrU
-         synKUY7Q5jVKBD2RgcrSK5K4S9mJJEHinmyNi/MbdwQIDukbCdM9iD7A4BO/VNIMjSkv
-         H7MA==
-X-Gm-Message-State: AOAM531s+cOE356G7g46iE32F4Gr6wJBZouAK9tByCWLTS0gbcZz+ERO
-        Fmy4A+7Sa4uJoK+q9Wj4vba4EYMB5MIQShi4NNc=
-X-Google-Smtp-Source: ABdhPJxg2WkPIsuOSay/GYggygOyktUFgy0Tfd4Ccq6kw0J8FhevHPTHEN5D5sp3cEHRxaqlDRsubd6rTcg2+5hU1BQ=
-X-Received: by 2002:a37:a8e:: with SMTP id 136mr4211384qkk.395.1637042887509;
- Mon, 15 Nov 2021 22:08:07 -0800 (PST)
+        Tue, 16 Nov 2021 01:17:59 -0500
+X-UUID: a1e427dce47a4814bc3357c6a9c8530c-20211116
+X-UUID: a1e427dce47a4814bc3357c6a9c8530c-20211116
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <rocco.yue@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 271601239; Tue, 16 Nov 2021 14:14:58 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Tue, 16 Nov 2021 14:14:57 +0800
+Received: from mbjsdccf07.mediatek.inc (10.15.20.246) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 16 Nov 2021 14:14:54 +0800
+From:   Rocco Yue <rocco.yue@mediatek.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <Rocco.Yue@gmail.com>,
+        <chao.song@mediatek.com>, <yanjie.jiang@mediatek.com>,
+        <kuohong.wang@mediatek.com>, <zhuoliang.zhang@mediatek.com>,
+        <lorenzo@google.com>, <maze@google.com>, <markzzzsmith@gmail.com>,
+        Rocco Yue <rocco.yue@mediatek.com>
+Subject: [PATCH net-next v2] ipv6: don't generate link-local addr in random or privacy mode
+Date:   Tue, 16 Nov 2021 14:09:59 +0800
+Message-ID: <20211116060959.32746-1-rocco.yue@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <20211026200058.2183-1-aladyshev22@gmail.com> <CACPK8Xd5eYpsFNw1jEjv3NaShgzE3zC_Ct29pJM34TfrqRTNtQ@mail.gmail.com>
- <CACSj6VVTFa0t9WK=R2TucG7eFqUzBsWYFzvsaRt6eXOiFuQORA@mail.gmail.com>
-In-Reply-To: <CACSj6VVTFa0t9WK=R2TucG7eFqUzBsWYFzvsaRt6eXOiFuQORA@mail.gmail.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Tue, 16 Nov 2021 06:07:55 +0000
-Message-ID: <CACPK8Xcc6Nem00zZdGmHF=U4T2O90aL+_vKO4YmAqSW9wKeegA@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: aspeed: Add AMD DaytonaX BMC
-To:     Konstantin Aladyshev <aladyshev22@gmail.com>,
-        Patrick Williams <patrick@stwcx.xyz>
-Cc:     Supreeth Venkatesh <supreeth.venkatesh@amd.com>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        SoC Team <soc@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Andrew Geissler <geissonator@yahoo.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021 at 10:59, Konstantin Aladyshev
-<aladyshev22@gmail.com> wrote:
->
-> Thanks for the comments. Can I ask you some questions about this
-> `device-tree-gpio-naming.md`?
->
-> 1) First of all in my naming I've tried to use naming scheme the same
-> as the EthanolX CRB DTS currently has
-> (https://github.com/torvalds/linux/blob/d25f27432f80a800a3592db128254c8140bd71bf/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts#L102).
-> Do you want me to change GPIO naming in the EthanolX CRB as well?
+In the 3GPP TS 29.061, here is a description as follows:
+"In order to avoid any conflict between the link-local address
+of the MS and that of the GGSN, the Interface-Identifier used by
+the MS to build its link-local address shall be assigned by the
+GGSN. The GGSN ensures the uniqueness of this Interface-Identifier.
+The MT shall then enforce the use of this Interface-Identifier by
+the TE"
 
-Yeah, that would make sense.
+In other words, in the cellular network, GGSN determines whether
+to reply a solicited RA message by identifying the bottom 64 bits
+of the source address of the received RS message. Therefore,
+cellular network device's ipv6 link-local address should be set
+as the format of fe80::(GGSN assigned IID).
 
-> 2) Also this naming comes from the signal names in the board
-> schematics. This way it is clear to check schematics vs DTS. If we use
-> this OpenBMC naming style, we will lose that correspondence. Is it
-> really good?
+To meet the above spec requirement, this patch adds two new
+addr_gen_mode:
 
-This is a good point. The preference is to use human readable names
-over the schematic net. I can see cases where this would be worse, but
-hopefully on balance it results in consistent naming between machines.
+1) IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA, this mode is suitable
+for cellular networks that support RFC7217. In this mode, the
+kernel doesn't generate a link-local address for the cellular
+NIC, and generates an ipv6 stable privacy global address after
+receiving the RA message.
 
-> 3) In the initial version of the DTS file I've supplied only a minimal
-> set of GPIO, that are used by OpenBMC. GPIOs for x86-power-control app
-> and led id/fault gpios. With renaming these GPIOs I'm only sure about
-> these GPIOs:
->
-> FAULT_LED                  - led-fault
-> CHASSIS_ID_BTN        - led-identify
->
-> What about the rest? For example the document doesn't really state
-> what the *-button postfix states? Is it for asserting or monitoring
-> buttons? How should I name these signals?
->
-> ASSERT_BMC_READY
-> ASSERT_RST_BTN
-> ASSERT_PWR_BTN
->
-> MON_P0_RST_BTN
-> MON_P0_PWR_BTN
-> MON_P0_PWR_GOOD
-> MON_PWROK
->
-> Can you help me with those?
+2) IN6_ADDR_GEN_MODE_RANDOM_NO_LLA, in this mode, the kernel
+doesn't generate a link-local address for the cellular NIC,
+and will use the bottom 64 bits of the link-local address(same
+as the IID assigned by GGSN) to form an ipv6 global address
+after receiveing the RA message.
 
-Patrick, do you have thoughts here?
+Signed-off-by: Rocco Yue <rocco.yue@mediatek.com>
+---
+v1->v2: Add new addr_gen_mode instead of adding a separate sysctl.
 
->
-> 4) And what should I do to the board GPIO signals that OpenBMC doesn't
-> use? If you look at the EthanolX CRB DTS
-> (https://github.com/torvalds/linux/blob/d25f27432f80a800a3592db128254c8140bd71bf/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts#L102)
-> it has a ton of GPIOs. Should they be renamed to this OpenBMC style as
-> well? Or can they be named exactly like in the schematics?
+v1 link:
+https://patchwork.kernel.org/patch/12353465
 
-That's up to you.
+---
+ include/uapi/linux/if_link.h       |  2 ++
+ net/ipv6/addrconf.c                | 22 ++++++++++++++++------
+ tools/include/uapi/linux/if_link.h |  2 ++
+ 3 files changed, 20 insertions(+), 6 deletions(-)
 
->
-> I've also CCed original author of the `device-tree-gpio-naming.md`
-> document Andrew Geissler. Andrew, can you please provide your opinion
-> on the subject?
+diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
+index eebd3894fe89..9c5695744c7d 100644
+--- a/include/uapi/linux/if_link.h
++++ b/include/uapi/linux/if_link.h
+@@ -428,6 +428,8 @@ enum in6_addr_gen_mode {
+ 	IN6_ADDR_GEN_MODE_NONE,
+ 	IN6_ADDR_GEN_MODE_STABLE_PRIVACY,
+ 	IN6_ADDR_GEN_MODE_RANDOM,
++	IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA,
++	IN6_ADDR_GEN_MODE_RANDOM_NO_LLA,
+ };
+ 
+ /* Bridge section */
+diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
+index 3445f8017430..0045de10f4b5 100644
+--- a/net/ipv6/addrconf.c
++++ b/net/ipv6/addrconf.c
+@@ -392,7 +392,8 @@ static struct inet6_dev *ipv6_add_dev(struct net_device *dev)
+ 	timer_setup(&ndev->rs_timer, addrconf_rs_timer, 0);
+ 	memcpy(&ndev->cnf, dev_net(dev)->ipv6.devconf_dflt, sizeof(ndev->cnf));
+ 
+-	if (ndev->cnf.stable_secret.initialized)
++	if (ndev->cnf.stable_secret.initialized &&
++	    ndev->cnf.addr_gen_mode != IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA)
+ 		ndev->cnf.addr_gen_mode = IN6_ADDR_GEN_MODE_STABLE_PRIVACY;
+ 
+ 	ndev->cnf.mtu6 = dev->mtu;
+@@ -2578,7 +2579,8 @@ static void manage_tempaddrs(struct inet6_dev *idev,
+ static bool is_addr_mode_generate_stable(struct inet6_dev *idev)
+ {
+ 	return idev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_STABLE_PRIVACY ||
+-	       idev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_RANDOM;
++	       idev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_RANDOM ||
++	       idev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA;
+ }
+ 
+ int addrconf_prefix_rcv_add_addr(struct net *net, struct net_device *dev,
+@@ -3331,6 +3333,8 @@ static void addrconf_addr_gen(struct inet6_dev *idev, bool prefix_route)
+ 					      0, 0, GFP_KERNEL);
+ 		break;
+ 	case IN6_ADDR_GEN_MODE_NONE:
++	case IN6_ADDR_GEN_MODE_RANDOM_NO_LLA:
++	case IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA:
+ 	default:
+ 		/* will not add any link local address */
+ 		break;
+@@ -5798,7 +5802,9 @@ static int check_addr_gen_mode(int mode)
+ 	if (mode != IN6_ADDR_GEN_MODE_EUI64 &&
+ 	    mode != IN6_ADDR_GEN_MODE_NONE &&
+ 	    mode != IN6_ADDR_GEN_MODE_STABLE_PRIVACY &&
+-	    mode != IN6_ADDR_GEN_MODE_RANDOM)
++	    mode != IN6_ADDR_GEN_MODE_RANDOM &&
++	    mode != IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA &&
++	    mode != IN6_ADDR_GEN_MODE_RANDOM_NO_LLA)
+ 		return -EINVAL;
+ 	return 1;
+ }
+@@ -6428,15 +6434,19 @@ static int addrconf_sysctl_stable_secret(struct ctl_table *ctl, int write,
+ 		for_each_netdev(net, dev) {
+ 			struct inet6_dev *idev = __in6_dev_get(dev);
+ 
+-			if (idev) {
++			if (idev && idev->cnf.addr_gen_mode !=
++			    IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA) {
+ 				idev->cnf.addr_gen_mode =
+ 					IN6_ADDR_GEN_MODE_STABLE_PRIVACY;
+ 			}
+ 		}
+ 	} else {
+ 		struct inet6_dev *idev = ctl->extra1;
+-
+-		idev->cnf.addr_gen_mode = IN6_ADDR_GEN_MODE_STABLE_PRIVACY;
++		if (idev->cnf.addr_gen_mode !=
++		    IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA) {
++			idev->cnf.addr_gen_mode =
++				IN6_ADDR_GEN_MODE_STABLE_PRIVACY;
++		}
+ 	}
+ 
+ out:
+diff --git a/tools/include/uapi/linux/if_link.h b/tools/include/uapi/linux/if_link.h
+index b3610fdd1fee..fb69137aea89 100644
+--- a/tools/include/uapi/linux/if_link.h
++++ b/tools/include/uapi/linux/if_link.h
+@@ -241,6 +241,8 @@ enum in6_addr_gen_mode {
+ 	IN6_ADDR_GEN_MODE_NONE,
+ 	IN6_ADDR_GEN_MODE_STABLE_PRIVACY,
+ 	IN6_ADDR_GEN_MODE_RANDOM,
++	IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA,
++	IN6_ADDR_GEN_MODE_RANDOM_NO_LLA,
+ };
+ 
+ /* Bridge section */
+-- 
+2.18.0
 
-I've also added Patrick, who is helping review this document.
-
-Cheers,
-
-Joel
-
->
-> Best regards,
-> Konstantin Aladyshev
->
-> On Wed, Oct 27, 2021 at 12:03 AM Joel Stanley <joel@jms.id.au> wrote:
-> >
-> > Hello Konstantin,
-> >
-> > On Tue, 26 Oct 2021 at 20:01, Konstantin Aladyshev
-> > <aladyshev22@gmail.com> wrote:
-> > >
-> > > Add initial version of device tree for the BMC in the AMD DaytonaX
-> > > platform.
-> > >
-> > > AMD DaytonaX platform is a customer reference board (CRB) with an
-> > > Aspeed ast2500 BMC manufactured by AMD.
-> > >
-> > > Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
-> >
-> > This looks good. I have one comment about the GPIOs below.
-> >
-> > > +&gpio {
-> > > +       status = "okay";
-> > > +       gpio-line-names =
-> > > +       /*A0-A7*/       "","","FAULT_LED","","","","","",
-> > > +       /*B0-B7*/       "","","","","","","","",
-> > > +       /*C0-C7*/       "CHASSIS_ID_BTN","","","","","","","",
-> > > +       /*D0-D7*/       "","","ASSERT_BMC_READY","","","","","",
-> > > +       /*E0-E7*/       "MON_P0_RST_BTN","ASSERT_RST_BTN","MON_P0_PWR_BTN","ASSERT_PWR_BTN","",
-> > > +                       "MON_P0_PWR_GOOD","MON_PWROK","",
-> >
-> > For systems that will run openbmc, we try to use naming conventions
-> > from this document:
-> >
-> > https://github.com/openbmc/docs/blob/master/designs/device-tree-gpio-naming.md
-> >
-> > If a GPIO is missing from that doc I encourage you to add it.
