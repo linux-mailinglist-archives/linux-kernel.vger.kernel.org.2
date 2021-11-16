@@ -2,168 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3371A452A40
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 07:00:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB67452A4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 07:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238919AbhKPGC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 01:02:57 -0500
-Received: from so254-9.mailgun.net ([198.61.254.9]:53289 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239757AbhKPGCR (ORCPT
+        id S239724AbhKPGFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 01:05:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240202AbhKPGFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 01:02:17 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1637042351; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: From: References: Cc: To: Subject: MIME-Version: Date:
- Message-ID: Sender; bh=mfaGGc9Z/93V1SAUCYag5AJsRAW8ssnfhJC7pEfuuos=; b=mtN5C4NHEHDqurkTzC64WOlADAQMwzh79Lj3QlGORGnvkQR9ci6839pqxWGLeByPl/zh1mgt
- r338cuLGE5y3Y8Gg3UitPXybTJkoTPGot63ACQkIaazZiFY+Dk96WyleJl0i3n3dQfVgTHjd
- hA1VU8Ep2ZorIQB+TZDbBz6W+Ds=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 619348abb3d5cb1f556601ca (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Nov 2021 05:59:07
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 17AB3C43460; Tue, 16 Nov 2021 05:59:07 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.3 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.5] (unknown [59.89.226.177])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 47E4FC4338F;
-        Tue, 16 Nov 2021 05:58:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 47E4FC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Message-ID: <32e0798f-37b5-e255-7e1d-fab3af4858b0@codeaurora.org>
-Date:   Tue, 16 Nov 2021 11:28:57 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH 2/2] drm/msm: Restore error return on invalid fence
-Content-Language: en-US
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Rob Clark <robdclark@chromium.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, Sean Paul <sean@poorly.run>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-References: <20211111192457.747899-1-robdclark@gmail.com>
- <20211111192457.747899-3-robdclark@gmail.com>
- <36c9f669-c2d2-8a63-db96-31165caeeffb@codeaurora.org>
- <CAF6AEGvMf2pQO9LmUanOGzWgU34=gO3ZPPH=6dea=AvfavWTVg@mail.gmail.com>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-In-Reply-To: <CAF6AEGvMf2pQO9LmUanOGzWgU34=gO3ZPPH=6dea=AvfavWTVg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Tue, 16 Nov 2021 01:05:02 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93124C061198;
+        Mon, 15 Nov 2021 22:00:52 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id k4so16432765plx.8;
+        Mon, 15 Nov 2021 22:00:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=kcXMO9KgPhHRO0NDx1KZ3LZgnwUMECRLdbdAhSLAVkQ=;
+        b=G43gAKWYiY1jpf2bJUu9171dMLBkEZXhuhWEtFJBMloggdNPGLFqRGYNDz0Q1KYa32
+         EGokNtSKlzZ9RA6rOqmGKnA2ri4K5OJgZhf+MeXmiANECWc+fSjsMfXIv8bQ/OkEAGIZ
+         rJG/8AAwaXTXeYhHlP+XoE/gJiXrllzI1aFpjXbvrK6+jZLRKNxm7Opyp8xxeQhkQiBP
+         YsFqQZ6DyVcCVC2ztSVx6zHx1aGqZXwy2B4X9mk0W44ppP3tmWxOw2jOfgMEaaciPCg1
+         Y2zVddQNMaFjKT3GzpacD3UjTqRjoGFciRCKxsZNsjQUwlrSbuSYpbydVMoVr0XgtPbA
+         fGgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=kcXMO9KgPhHRO0NDx1KZ3LZgnwUMECRLdbdAhSLAVkQ=;
+        b=3Fto1Agj+h1TN4PGEbj6beBcBF7pH4rH39UVP8WZcqnxYCZ7N59S08Gby9gwEwUKWF
+         bUYVk3nlv7O5K4qUPo7IFKS3zynV50wrVmzK5QvHDldZLNvD3WKpBJrXwtOxkKg3wwGx
+         I9EDM1kiiVYfUN//nf05PbiVOoi0eIXEFfSn1VbtVvl6tvLj1/NcjTRj89RaCTVrtk60
+         5MP9N72gdn5R/I7N5KuyFoSJliZWej8ZkOkDCvirw4LPaCad+HINVhUoHWR4fe/xkSTw
+         ocymNnAN6qLQCrw7Hht8xYsUsfuofxh58Rl9aDK82JJb/ijbj+GbAJVnlazFIjIc1M3R
+         FO1Q==
+X-Gm-Message-State: AOAM533ds8W3DeT6MBh///JLlo6MnYSJqH4npKpFP+f/nZ8UO1KEC0bU
+        DpiTYbI+x3RIcn3cfdy+4UqfVVdkJgAg0GB5scE=
+X-Google-Smtp-Source: ABdhPJxmmVoDrU7DIUhmhHoqDz0KUQ9dgdkr9KkqGJH/Hdvka/V8r9vvUU9cx8S2RUB0jyh7vr5SoA==
+X-Received: by 2002:a17:902:d4d0:b0:141:c13d:6c20 with SMTP id o16-20020a170902d4d000b00141c13d6c20mr42457577plg.44.1637042451573;
+        Mon, 15 Nov 2021 22:00:51 -0800 (PST)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id w17sm13302775pfu.58.2021.11.15.22.00.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 22:00:51 -0800 (PST)
+Message-ID: <61934913.1c69fb81.cc6cc.6e89@mx.google.com>
+Date:   Mon, 15 Nov 2021 22:00:51 -0800 (PST)
+X-Google-Original-Date: Tue, 16 Nov 2021 06:00:49 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+Subject: RE: [PATCH 5.15 000/917] 5.15.3-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/2021 10:26 PM, Rob Clark wrote:
-> On Mon, Nov 15, 2021 at 6:43 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
->>
->> On 11/12/2021 12:54 AM, Rob Clark wrote:
->>> From: Rob Clark <robdclark@chromium.org>
->>>
->>> When converting to use an idr to map userspace fence seqno values back
->>> to a dma_fence, we lost the error return when userspace passes seqno
->>> that is larger than the last submitted fence.  Restore this check.
->>>
->>> Reported-by: Akhil P Oommen <akhilpo@codeaurora.org>
->>> Fixes: a61acbbe9cf8 ("drm/msm: Track "seqno" fences by idr")
->>> Signed-off-by: Rob Clark <robdclark@chromium.org>
->>> ---
->>> Note: I will rebase "drm/msm: Handle fence rollover" on top of this,
->>> to simplify backporting this patch to stable kernels
->>>
->>>    drivers/gpu/drm/msm/msm_drv.c        | 6 ++++++
->>>    drivers/gpu/drm/msm/msm_gem_submit.c | 1 +
->>>    drivers/gpu/drm/msm/msm_gpu.h        | 3 +++
->>>    3 files changed, 10 insertions(+)
->>>
->>> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
->>> index cb14d997c174..56500eb5219e 100644
->>> --- a/drivers/gpu/drm/msm/msm_drv.c
->>> +++ b/drivers/gpu/drm/msm/msm_drv.c
->>> @@ -967,6 +967,12 @@ static int wait_fence(struct msm_gpu_submitqueue *queue, uint32_t fence_id,
->>>        struct dma_fence *fence;
->>>        int ret;
->>>
->>> +     if (fence_id > queue->last_fence) {
->>
->> But fence_id can wrap around and then this check won't be valid.
+On Mon, 15 Nov 2021 17:51:35 +0100, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.15.3 release.
+> There are 917 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> that is correct, but see my note about rebasing "drm/msm: Handle fence
-> rollover" on top of this patch, so this patch could be more easily
-> cherry-picked to stable/lts branches
+> Responses should be made by Wed, 17 Nov 2021 16:52:23 +0000.
+> Anything received after that time might be too late.
 > 
-> BR,
-> -R
-
-Missed that. Thanks.
-
-Reviewed-by: Akhil P Oommen <akhilpo@codeaurora.org>
-
--Akhil.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.3-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
 > 
->> -Akhil.
->>
->>> +             DRM_ERROR_RATELIMITED("waiting on invalid fence: %u (of %u)\n",
->>> +                                   fence_id, queue->last_fence);
->>> +             return -EINVAL;
->>> +     }
->>> +
->>>        /*
->>>         * Map submitqueue scoped "seqno" (which is actually an idr key)
->>>         * back to underlying dma-fence
->>> diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
->>> index 151d19e4453c..a38f23be497d 100644
->>> --- a/drivers/gpu/drm/msm/msm_gem_submit.c
->>> +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
->>> @@ -911,6 +911,7 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
->>>        drm_sched_entity_push_job(&submit->base, queue->entity);
->>>
->>>        args->fence = submit->fence_id;
->>> +     queue->last_fence = submit->fence_id;
->>>
->>>        msm_reset_syncobjs(syncobjs_to_reset, args->nr_in_syncobjs);
->>>        msm_process_post_deps(post_deps, args->nr_out_syncobjs,
->>> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
->>> index bd4e0024033e..e73a5bb03544 100644
->>> --- a/drivers/gpu/drm/msm/msm_gpu.h
->>> +++ b/drivers/gpu/drm/msm/msm_gpu.h
->>> @@ -376,6 +376,8 @@ static inline int msm_gpu_convert_priority(struct msm_gpu *gpu, int prio,
->>>     * @ring_nr:   the ringbuffer used by this submitqueue, which is determined
->>>     *             by the submitqueue's priority
->>>     * @faults:    the number of GPU hangs associated with this submitqueue
->>> + * @last_fence: the sequence number of the last allocated fence (for error
->>> + *             checking)
->>>     * @ctx:       the per-drm_file context associated with the submitqueue (ie.
->>>     *             which set of pgtables do submits jobs associated with the
->>>     *             submitqueue use)
->>> @@ -391,6 +393,7 @@ struct msm_gpu_submitqueue {
->>>        u32 flags;
->>>        u32 ring_nr;
->>>        int faults;
->>> +     uint32_t last_fence;
->>>        struct msm_file_private *ctx;
->>>        struct list_head node;
->>>        struct idr fence_idr;
->>>
->>
+> thanks,
+> 
+> greg k-h
+> 
+
+5.15.3-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
