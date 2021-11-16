@@ -2,134 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8962452948
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:54:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B486452956
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:01:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238498AbhKPEyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 23:54:50 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20268 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1343883AbhKPExP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 23:53:15 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AG2BavA012616;
-        Tue, 16 Nov 2021 04:49:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=Y0lsPQ3de1hi0HT1iJbp1UbGiO/7GnkeYOUpwVeKUTE=;
- b=PQvpSol6UNcDi1QJSEOZ0lFcva06toSMTCN58cvEz73Ow/NAQWfTZ+BWh/7XLH/l18sV
- BUhdyMDy+m1uKiRfkgEgxlpeim3RH0jD8YtV/r2lMRKdxv+XEqyAzoCVVymVtXVk0OAS
- OVlTuRvOFbD4fkDJ3LFIWf9DrCcZizE+dr7RzsILAtxVJtzcMi77SIgvIj0bZTEP4oIB
- 23fU/zhj48ofcxSBAvTcFHc2s9P/yA8debW5/wLBQQfXPvpNedwW8rSGk99AJqPJAQFz
- YaCliRyA91lFcy6zA3BsDSW7CPUYU1GsQPR8digmGgfVtFKiIUDsJKbSIgYoA0cHhXfY Dw== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3cc3mwa71m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Nov 2021 04:49:56 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AG4gLgr004220;
-        Tue, 16 Nov 2021 04:49:54 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 3ca509u8gu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Nov 2021 04:49:54 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AG4npPZ5505774
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Nov 2021 04:49:51 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 96D4F42045;
-        Tue, 16 Nov 2021 04:49:51 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 57F7F42042;
-        Tue, 16 Nov 2021 04:49:47 +0000 (GMT)
-Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com.com (unknown [9.43.127.103])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 16 Nov 2021 04:49:47 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
-        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, dan.j.williams@intel.com,
-        ira.weiny@intel.com, vishal.l.verma@intel.com
-Cc:     santosh@fossix.org, maddy@linux.ibm.com, rnsastry@linux.ibm.com,
-        aneesh.kumar@linux.ibm.com, atrajeev@linux.vnet.ibm.com,
-        vaibhav@linux.ibm.com, kjain@linux.ibm.com
-Subject: [RESEND PATCH v5 4/4] docs: ABI: sysfs-bus-nvdimm: Document sysfs event format entries for nvdimm pmu
-Date:   Tue, 16 Nov 2021 10:19:04 +0530
-Message-Id: <20211116044904.48718-5-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211116044904.48718-1-kjain@linux.ibm.com>
-References: <20211116044904.48718-1-kjain@linux.ibm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: lCwhRwkvqrmLidgb8ru73xsJLZpTLSne
-X-Proofpoint-ORIG-GUID: lCwhRwkvqrmLidgb8ru73xsJLZpTLSne
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-15_16,2021-11-15_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- spamscore=0 clxscore=1015 malwarescore=0 bulkscore=0 suspectscore=0
- adultscore=0 phishscore=0 lowpriorityscore=0 impostorscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111160023
+        id S237193AbhKPFEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 00:04:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36876 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230482AbhKPFDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 00:03:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A2DB61BF9;
+        Tue, 16 Nov 2021 05:00:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637038848;
+        bh=gOA/DqIuHnoyIPWhMKi35OEWm99vzDEl2z9BCaXYPCE=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=ECWHdIsa9raOte0ivRlaX5zUraoSDor3mhLn1LjGpJmCqjYI1EL+gpvDrx51IJ+rm
+         +VCi4FdIKlSWHpgaEdNEQV9GW/Q6hYPrNlCJ2abLV6ATrA2YigItSgj5TBy2V5fO2G
+         UfpxP0B4WrsVqdOqqwvc/bU5yC+z6EmeuKc7ksM6E0E7WdQllMHu0iCXw0FRQEWVdX
+         vSd/QjOvM6oFcsozrooiosqzbozOtI2QCeIAlzNhdOPJGQ31YEiKlcVi+ZCxgKD2Nm
+         OXynOhjRjnUgUJLXJgDY7Fq78lnkYKQBkQJw/ZG0Osa20kL+HV/7DKPP7IQ9m/IB0f
+         bmuicnUuWNX0A==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 13AC227C0054;
+        Tue, 16 Nov 2021 00:00:45 -0500 (EST)
+Received: from imap48 ([10.202.2.98])
+  by compute6.internal (MEProxy); Tue, 16 Nov 2021 00:00:45 -0500
+X-ME-Sender: <xms:-zqTYTkmpastpk7xioLaZBSRJao9k-n9qE52sPvZxvCjyuYGPlTm3w>
+    <xme:-zqTYW2YKmgXBYjbSSfdL9g_gq7srYrbJqCH19hxDrrnQws_r-JGvfTr0Lcd2j7EN
+    0VC-b49C8sYHIRPYNE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfedugdejhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepfdetnhgu
+    hicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenucggtf
+    frrghtthgvrhhnpedvleehjeejvefhuddtgeegffdtjedtffegveethedvgfejieevieeu
+    feevuedvteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedukeeh
+    ieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugi
+    drlhhuthhordhush
+X-ME-Proxy: <xmx:-zqTYZos8aDErUYGtevu8zo8GpOSWHNJPRa1OlMpwA96D1xkSAP0ug>
+    <xmx:-zqTYbnFnSNboyysvQdEXnREdxw3kOK-5xGg3xzoovnZyffzwRl1qg>
+    <xmx:-zqTYR0qodo9tm-jUVoP1wGLE_O8e5kUf7g046VWPo_h0_kuu8zlhg>
+    <xmx:_TqTYb0twwIFSsfD0VdncnhPVDfBQfN2ipRE5-969-HzkGQC1p3h7YV7F0A>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 781AA21E006E; Tue, 16 Nov 2021 00:00:43 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1371-g2296cc3491-fm-20211109.003-g2296cc34
+Mime-Version: 1.0
+Message-Id: <40c1794a-104e-4bcd-add5-2096aefc23e1@www.fastmail.com>
+In-Reply-To: <CAA03e5E3Rvx0t8_ZrbNMZwBkjPivGKOg5HCShSFYwfkKDDHWtA@mail.gmail.com>
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
+ <061ccd49-3b9f-d603-bafd-61a067c3f6fa@intel.com> <YY6z5/0uGJmlMuM6@zn.tnic>
+ <YY7FAW5ti7YMeejj@google.com> <YZJTA1NyLCmVtGtY@work-vm>
+ <YZKmSDQJgCcR06nE@google.com>
+ <CAA03e5E3Rvx0t8_ZrbNMZwBkjPivGKOg5HCShSFYwfkKDDHWtA@mail.gmail.com>
+Date:   Mon, 15 Nov 2021 21:00:23 -0800
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Marc Orr" <marcorr@google.com>,
+        "Sean Christopherson" <seanjc@google.com>
+Cc:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        "Borislav Petkov" <bp@alien8.de>,
+        "Dave Hansen" <dave.hansen@intel.com>,
+        "Peter Gonda" <pgonda@google.com>,
+        "Brijesh Singh" <brijesh.singh@amd.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "kvm list" <kvm@vger.kernel.org>, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org,
+        "Linux Crypto Mailing List" <linux-crypto@vger.kernel.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, "Joerg Roedel" <jroedel@suse.de>,
+        "Tom Lendacky" <Thomas.Lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Ard Biesheuvel" <ardb@kernel.org>,
+        "Paolo Bonzini" <pbonzini@redhat.com>,
+        "Vitaly Kuznetsov" <vkuznets@redhat.com>,
+        "Wanpeng Li" <wanpengli@tencent.com>,
+        "Jim Mattson" <jmattson@google.com>,
+        "Dave Hansen" <dave.hansen@linux.intel.com>,
+        "Sergio Lopez" <slp@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Srinivas Pandruvada" <srinivas.pandruvada@linux.intel.com>,
+        "David Rientjes" <rientjes@google.com>,
+        "Dov Murik" <dovmurik@linux.ibm.com>,
+        "Tobin Feldman-Fitzthum" <tobin@ibm.com>,
+        "Michael Roth" <Michael.Roth@amd.com>,
+        "Vlastimil Babka" <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        "Andi Kleen" <ak@linux.intel.com>,
+        "Tony Luck" <tony.luck@intel.com>,
+        "Sathyanarayanan Kuppuswamy" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP) Hypervisor
+ Support
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Details are added for the event, cpumask and format attributes
-in the ABI documentation.
 
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
----
- Documentation/ABI/testing/sysfs-bus-nvdimm | 35 ++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-nvdimm b/Documentation/ABI/testing/sysfs-bus-nvdimm
-index bff84a16812a..64004d5e4840 100644
---- a/Documentation/ABI/testing/sysfs-bus-nvdimm
-+++ b/Documentation/ABI/testing/sysfs-bus-nvdimm
-@@ -6,3 +6,38 @@ Description:
- 
- The libnvdimm sub-system implements a common sysfs interface for
- platform nvdimm resources. See Documentation/driver-api/nvdimm/.
-+
-+What:           /sys/bus/event_source/devices/nmemX/format
-+Date:           September 2021
-+KernelVersion:  5.16
-+Contact:        Kajol Jain <kjain@linux.ibm.com>
-+Description:	(RO) Attribute group to describe the magic bits
-+		that go into perf_event_attr.config for a particular pmu.
-+		(See ABI/testing/sysfs-bus-event_source-devices-format).
-+
-+		Each attribute under this group defines a bit range of the
-+		perf_event_attr.config. Supported attribute is listed
-+		below::
-+		  event  = "config:0-4"  - event ID
-+
-+		For example::
-+			ctl_res_cnt = "event=0x1"
-+
-+What:           /sys/bus/event_source/devices/nmemX/events
-+Date:           September 2021
-+KernelVersion:  5.16
-+Contact:        Kajol Jain <kjain@linux.ibm.com>
-+Description:	(RO) Attribute group to describe performance monitoring events
-+                for the nvdimm memory device. Each attribute in this group
-+                describes a single performance monitoring event supported by
-+                this nvdimm pmu.  The name of the file is the name of the event.
-+                (See ABI/testing/sysfs-bus-event_source-devices-events). A
-+                listing of the events supported by a given nvdimm provider type
-+                can be found in Documentation/driver-api/nvdimm/$provider.
-+
-+What:          /sys/bus/event_source/devices/nmemX/cpumask
-+Date:          September 2021
-+KernelVersion:  5.16
-+Contact:        Kajol Jain <kjain@linux.ibm.com>
-+Description:	(RO) This sysfs file exposes the cpumask which is designated to
-+		to retrieve nvdimm pmu event counter data.
--- 
-2.26.2
+On Mon, Nov 15, 2021, at 10:41 AM, Marc Orr wrote:
+> On Mon, Nov 15, 2021 at 10:26 AM Sean Christopherson <seanjc@google.co=
+m> wrote:
+>>
+>> On Mon, Nov 15, 2021, Dr. David Alan Gilbert wrote:
+>> > * Sean Christopherson (seanjc@google.com) wrote:
+>> > > On Fri, Nov 12, 2021, Borislav Petkov wrote:
+>> > > > On Fri, Nov 12, 2021 at 09:59:46AM -0800, Dave Hansen wrote:
+>> > > > > Or, is there some mechanism that prevent guest-private memory=
+ from being
+>> > > > > accessed in random host kernel code?
+>> > >
+>> > > Or random host userspace code...
+>> > >
+>> > > > So I'm currently under the impression that random host->guest a=
+ccesses
+>> > > > should not happen if not previously agreed upon by both.
+>> > >
+>> > > Key word "should".
+>> > >
+>> > > > Because, as explained on IRC, if host touches a private guest p=
+age,
+>> > > > whatever the host does to that page, the next time the guest ru=
+ns, it'll
+>> > > > get a #VC where it will see that that page doesn't belong to it=
+ anymore
+>> > > > and then, out of paranoia, it will simply terminate to protect =
+itself.
+>> > > >
+>> > > > So cloud providers should have an interest to prevent such rand=
+om stray
+>> > > > accesses if they wanna have guests. :)
+>> > >
+>> > > Yes, but IMO inducing a fault in the guest because of _host_ bug =
+is wrong.
+>> >
+>> > Would it necessarily have been a host bug?  A guest telling the hos=
+t a
+>> > bad GPA to DMA into would trigger this wouldn't it?
+>>
+>> No, because as Andy pointed out, host userspace must already guard ag=
+ainst a bad
+>> GPA, i.e. this is just a variant of the guest telling the host to DMA=
+ to a GPA
+>> that is completely bogus.  The shared vs. private behavior just means=
+ that when
+>> host userspace is doing a GPA=3D>HVA lookup, it needs to incorporate =
+the "shared"
+>> state of the GPA.  If the host goes and DMAs into the completely wron=
+g HVA=3D>PFN,
+>> then that is a host bug; that the bug happened to be exploited by a b=
+uggy/malicious
+>> guest doesn't change the fact that the host messed up.
+>
+> "If the host goes and DMAs into the completely wrong HVA=3D>PFN, then
+> that is a host bug; that the bug happened to be exploited by a
+> buggy/malicious guest doesn't change the fact that the host messed
+> up."
+> ^^^
+> Again, I'm flabbergasted that you are arguing that it's OK for a guest
+> to exploit a host bug to take down host-side processes or the host
+> itself, either of which could bring down all other VMs on the machine.
+>
+> I'm going to repeat -- this is not OK! Period.
 
+I don=E2=80=99t understand the point you=E2=80=99re trying to make. If t=
+he host _kernel_has a bug that allows a guest to trigger invalid host me=
+mory access, this is bad. We want to know about it and fix it, abcs the =
+security folks want to minimize the chance that such a bug exists.
+
+If host _userspace_ such a bug, the kernel should not crash if it=E2=80=99=
+s exploited.
