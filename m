@@ -2,165 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C719453CC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:39:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 935AA453CC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 00:39:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231966AbhKPXme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 18:42:34 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:55802 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbhKPXme (ORCPT
+        id S232342AbhKPXmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 18:42:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229532AbhKPXmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 18:42:34 -0500
-Date:   Tue, 16 Nov 2021 23:39:33 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637105975;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6+FaXmNPmjRJ5fC7niCX2y+F85puwbi9kxfPQuleBPw=;
-        b=RuuphIXegNmeubGVnXHBprPAq1L9+2UWiX/jOMKIXTDJHWSeKzPjbHjpVLkD+Y3yQ1y9pK
-        7evpI4Eq1HsfiwUdVS2qcZnkL/4XrSJsTFF6Gw9l7wrfJIlTjIIY6+d00yq5THBCHKmvT6
-        4Xqo/vYLevGrI1TRcD58ci6+JC9rSvl9UB7TeScCylA33BAHFCww4RVZ0Vyu+zwMSTRK0K
-        pZmzzvgJSC2pcMNL0eLhrFefMNfdS4IxuY5i2mLfVvJWSej2TQ+tObR102bDXeVSzskxBo
-        Cl3ihHUEL9juVDYCy7pF/Z0wB3W4vCwDJvP2W3gYyF0/39iwfVRqJZK6bYzxVw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637105975;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6+FaXmNPmjRJ5fC7niCX2y+F85puwbi9kxfPQuleBPw=;
-        b=Zf8rYNfgb6/cAc3GZicDdIJWPPuQrktSR0nyhEMfSGQ6SjakWbZT3+LOVnrl9RTQ7uSAO+
-        Ud2FaF6fKIuWmICw==
-From:   "tip-bot2 for Reinette Chatre" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sgx] x86/sgx: SGX documentation fixes
-Cc:     Reinette Chatre <reinette.chatre@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3Cab99a87368eef69e3fb96f073368becff3eff874=2E16355?=
- =?utf-8?q?29506=2Egit=2Ereinette=2Echatre=40intel=2Ecom=3E?=
-References: =?utf-8?q?=3Cab99a87368eef69e3fb96f073368becff3eff874=2E163552?=
- =?utf-8?q?9506=2Egit=2Ereinette=2Echatre=40intel=2Ecom=3E?=
+        Tue, 16 Nov 2021 18:42:36 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE6CC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 15:39:39 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id m25so862976qtq.13
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 15:39:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hk4Dbn/innUSCH+I6h6DAlFwWf85a++ijfHQHPk3pZc=;
+        b=wSQbPP7+bD4t3D2iHXusqt+NZpOVq7Q9u71SBDttaTlzBgnS28Dl3imYWdXa8ogSV3
+         Lx/AsyYjqvmjN1YkhPPl+2djJLjnL4l35qFxK7m/M9Y2Xlu3KZMJ5WeUya2zWTHFndBF
+         iZ+fyLpKtlc11o7Ly3eeAa+IxpQZdoxTzzYYcg1EddrAfTZy4z7G2KMA2CPE+qF3gKZX
+         e6RR28XP1bOj1rscsgT467X0APpFo9a4jtv2RXZba2724CwoxSiFcjD+JF/Yl+bxzwxe
+         +ndbYzmSLJx5mwF1MKAsSprHQaYQ9ZxQUm5GDtv4/oOHALTUB91c4W5k3oLw2pygRWJq
+         7aKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hk4Dbn/innUSCH+I6h6DAlFwWf85a++ijfHQHPk3pZc=;
+        b=HUdkx5p+mYJsaskHJyyJTkdUDie6s67D9bM2z4hh7PKa6w05OYOcrh5khDeetLs0ff
+         mFhthAvzO7LLBTpikJw1GNoqhbsosBXkKlDJIaIRPZouFRTqCYOtsd/s8Vs3Hzp+zr+c
+         yiin+9hXjNNdvtVgs0pdyaJOyr/+HmbNSGaLtX6/W7CoUSaWW9crJY60o0ATzyyjGNg3
+         M13RH92l/8a6yUtNB2Vc4rOfeVmlqtClQCPYqZy34SlFs2k2Wf9CfEQ/88zl9LkKdVSK
+         yMKhckO2neRtLzKg0hcsVwT4MLEkZ3y3K/Icj9gXvEvMI8tZxWD0L/gBa4tysXGPmlKL
+         vTGw==
+X-Gm-Message-State: AOAM530hZVQ3K//r3tvNG0s2pDLhLiQYPRpiWfSMatxgPnkHom0ZDkXz
+        5j0Kif78Hyeg3CNNuuRxzgZAdQ==
+X-Google-Smtp-Source: ABdhPJyq33+tLo2GsctywFh4hfhQQyOuGaVp+HTVNZ0G2m4RGbLujdyL98xaqu+7zPgBuFCsz69mWA==
+X-Received: by 2002:ac8:7d83:: with SMTP id c3mr12356950qtd.359.1637105978136;
+        Tue, 16 Nov 2021 15:39:38 -0800 (PST)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id d11sm7480775qtj.4.2021.11.16.15.39.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 15:39:37 -0800 (PST)
+Subject: Re: [PATCH v4 1/5] arch_topology: Introduce thermal pressure update
+ function
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, steev@kali.org,
+        sudeep.holla@arm.com, will@kernel.org, catalin.marinas@arm.com,
+        linux@armlinux.org.uk, gregkh@linuxfoundation.org,
+        rafael@kernel.org, viresh.kumar@linaro.org, amitk@kernel.org,
+        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
+        bjorn.andersson@linaro.org, agross@kernel.org
+References: <20211109195714.7750-1-lukasz.luba@arm.com>
+ <20211109195714.7750-2-lukasz.luba@arm.com>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <5de717f7-dd64-5584-540a-e0b86a431dde@linaro.org>
+Date:   Tue, 16 Nov 2021 18:39:36 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Message-ID: <163710597339.28908.4197151114476408668.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20211109195714.7750-2-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/sgx branch of tip:
 
-Commit-ID:     c4d61a51f055928021af32f34853eba8a05be41d
-Gitweb:        https://git.kernel.org/tip/c4d61a51f055928021af32f34853eba8a05=
-be41d
-Author:        Reinette Chatre <reinette.chatre@intel.com>
-AuthorDate:    Fri, 29 Oct 2021 10:49:56 -07:00
-Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Tue, 16 Nov 2021 13:45:14 -08:00
 
-x86/sgx: SGX documentation fixes
+On 11/9/21 2:57 PM, Lukasz Luba wrote:
+> The thermal pressure is a mechanism which is used for providing
+> information about reduced CPU performance to the scheduler. Usually code
+> has to convert the value from frequency units into capacity units,
+> which are understandable by the scheduler. Create a common conversion code
+> which can be just used via a handy API.
+> 
+> Internally, the topology_update_thermal_pressure() operates on frequency
+> in MHz and max CPU frequency is taken from 'freq_factor' (per-cpu).
+> 
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
 
-SGX documentation fixes are:
+Reviewed-by: Thara Gopinath <thara.gopinath@linaro.org>
 
- * Remove capitalization from regular words in the middle of a sentence.
- * Remove punctuation found in the middle of a sentence.
- * Fix name of SGX daemon to consistently be ksgxd.
- * Fix typo of SGX instruction: ENIT -> EINIT
+-- 
+Warm Regards
+Thara (She/Her/Hers)
 
-Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Link: https://lkml.kernel.org/r/ab99a87368eef69e3fb96f073368becff3eff874.1635=
-529506.git.reinette.chatre@intel.com
----
- Documentation/x86/sgx.rst | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+> ---
+>   arch/arm/include/asm/topology.h   |  1 +
+>   arch/arm64/include/asm/topology.h |  1 +
+>   drivers/base/arch_topology.c      | 43 ++++++++++++++++++++++++++++++-
+>   include/linux/arch_topology.h     |  3 +++
+>   include/linux/sched/topology.h    |  7 +++++
+>   5 files changed, 54 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/include/asm/topology.h b/arch/arm/include/asm/topology.h
+> index 470299ee2fba..f1eafacc9a30 100644
+> --- a/arch/arm/include/asm/topology.h
+> +++ b/arch/arm/include/asm/topology.h
+> @@ -24,6 +24,7 @@
+>   /* Replace task scheduler's default thermal pressure API */
+>   #define arch_scale_thermal_pressure topology_get_thermal_pressure
+>   #define arch_set_thermal_pressure   topology_set_thermal_pressure
+> +#define arch_update_thermal_pressure	topology_update_thermal_pressure
+>   
+>   #else
+>   
+> diff --git a/arch/arm64/include/asm/topology.h b/arch/arm64/include/asm/topology.h
+> index ec2db3419c41..7a421cbc99ed 100644
+> --- a/arch/arm64/include/asm/topology.h
+> +++ b/arch/arm64/include/asm/topology.h
+> @@ -33,6 +33,7 @@ void update_freq_counters_refs(void);
+>   /* Replace task scheduler's default thermal pressure API */
+>   #define arch_scale_thermal_pressure topology_get_thermal_pressure
+>   #define arch_set_thermal_pressure   topology_set_thermal_pressure
+> +#define arch_update_thermal_pressure	topology_update_thermal_pressure
+>   
+>   #include <asm-generic/topology.h>
+>   
+> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> index fc0836f460fb..bed7d502c9a1 100644
+> --- a/drivers/base/arch_topology.c
+> +++ b/drivers/base/arch_topology.c
+> @@ -25,6 +25,7 @@
+>   static DEFINE_PER_CPU(struct scale_freq_data __rcu *, sft_data);
+>   static struct cpumask scale_freq_counters_mask;
+>   static bool scale_freq_invariant;
+> +static DEFINE_PER_CPU(u32, freq_factor) = 1;
+>   
+>   static bool supports_scale_freq_counters(const struct cpumask *cpus)
+>   {
+> @@ -168,6 +169,47 @@ void topology_set_thermal_pressure(const struct cpumask *cpus,
+>   }
+>   EXPORT_SYMBOL_GPL(topology_set_thermal_pressure);
+>   
+> +/**
+> + * topology_update_thermal_pressure() - Update thermal pressure for CPUs
+> + * @cpus        : The related CPUs for which capacity has been reduced
+> + * @capped_freq : The maximum allowed frequency that CPUs can run at
+> + *
+> + * Update the value of thermal pressure for all @cpus in the mask. The
+> + * cpumask should include all (online+offline) affected CPUs, to avoid
+> + * operating on stale data when hot-plug is used for some CPUs. The
+> + * @capped_freq reflects the currently allowed max CPUs frequency due to
+> + * thermal capping. It might be also a boost frequency value, which is bigger
+> + * than the internal 'freq_factor' max frequency. In such case the pressure
+> + * value should simply be removed, since this is an indication that there is
+> + * no thermal throttling. The @capped_freq must be provided in kHz.
+> + */
+> +void topology_update_thermal_pressure(const struct cpumask *cpus,
+> +				      unsigned long capped_freq)
+> +{
+> +	unsigned long max_capacity, capacity;
+> +	u32 max_freq;
+> +	int cpu;
+> +
+> +	cpu = cpumask_first(cpus);
+> +	max_capacity = arch_scale_cpu_capacity(cpu);
+> +	max_freq = per_cpu(freq_factor, cpu);
+> +
+> +	/* Convert to MHz scale which is used in 'freq_factor' */
+> +	capped_freq /= 1000;
+> +
+> +	/*
+> +	 * Handle properly the boost frequencies, which should simply clean
+> +	 * the thermal pressure value.
+> +	 */
+> +	if (max_freq <= capped_freq)
+> +		capacity = max_capacity;
+> +	else
+> +		capacity = mult_frac(max_capacity, capped_freq, max_freq);
+> +
+> +	arch_set_thermal_pressure(cpus, max_capacity - capacity);
+> +}
+> +EXPORT_SYMBOL_GPL(topology_update_thermal_pressure);
+> +
+>   static ssize_t cpu_capacity_show(struct device *dev,
+>   				 struct device_attribute *attr,
+>   				 char *buf)
+> @@ -220,7 +262,6 @@ static void update_topology_flags_workfn(struct work_struct *work)
+>   	update_topology = 0;
+>   }
+>   
+> -static DEFINE_PER_CPU(u32, freq_factor) = 1;
+>   static u32 *raw_capacity;
+>   
+>   static int free_raw_capacity(void)
+> diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
+> index b97cea83b25e..ace1e5dcf773 100644
+> --- a/include/linux/arch_topology.h
+> +++ b/include/linux/arch_topology.h
+> @@ -59,6 +59,9 @@ static inline unsigned long topology_get_thermal_pressure(int cpu)
+>   void topology_set_thermal_pressure(const struct cpumask *cpus,
+>   				   unsigned long th_pressure);
+>   
+> +void topology_update_thermal_pressure(const struct cpumask *cpus,
+> +				      unsigned long capped_freq);
+> +
+>   struct cpu_topology {
+>   	int thread_id;
+>   	int core_id;
+> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+> index c07bfa2d80f2..6e89a8e43aa7 100644
+> --- a/include/linux/sched/topology.h
+> +++ b/include/linux/sched/topology.h
+> @@ -273,6 +273,13 @@ void arch_set_thermal_pressure(const struct cpumask *cpus,
+>   { }
+>   #endif
+>   
+> +#ifndef arch_update_thermal_pressure
+> +static __always_inline
+> +void arch_update_thermal_pressure(const struct cpumask *cpus,
+> +				  unsigned long capped_frequency)
+> +{ }
+> +#endif
+> +
+>   static inline int task_node(const struct task_struct *p)
+>   {
+>   	return cpu_to_node(task_cpu(p));
+> 
 
-diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
-index a608f66..265568a 100644
---- a/Documentation/x86/sgx.rst
-+++ b/Documentation/x86/sgx.rst
-@@ -10,7 +10,7 @@ Overview
- Software Guard eXtensions (SGX) hardware enables for user space applications
- to set aside private memory regions of code and data:
-=20
--* Privileged (ring-0) ENCLS functions orchestrate the construction of the.
-+* Privileged (ring-0) ENCLS functions orchestrate the construction of the
-   regions.
- * Unprivileged (ring-3) ENCLU functions allow an application to enter and
-   execute inside the regions.
-@@ -91,7 +91,7 @@ In addition to the traditional compiler and linker build pr=
-ocess, SGX has a
- separate enclave =E2=80=9Cbuild=E2=80=9D process.  Enclaves must be built be=
-fore they can be
- executed (entered). The first step in building an enclave is opening the
- **/dev/sgx_enclave** device.  Since enclave memory is protected from direct
--access, special privileged instructions are Then used to copy data into encl=
-ave
-+access, special privileged instructions are then used to copy data into encl=
-ave
- pages and establish enclave page permissions.
-=20
- .. kernel-doc:: arch/x86/kernel/cpu/sgx/ioctl.c
-@@ -126,13 +126,13 @@ the need to juggle signal handlers.
- ksgxd
- =3D=3D=3D=3D=3D
-=20
--SGX support includes a kernel thread called *ksgxwapd*.
-+SGX support includes a kernel thread called *ksgxd*.
-=20
- EPC sanitization
- ----------------
-=20
- ksgxd is started when SGX initializes.  Enclave memory is typically ready
--For use when the processor powers on or resets.  However, if SGX has been in
-+for use when the processor powers on or resets.  However, if SGX has been in
- use since the reset, enclave pages may be in an inconsistent state.  This mi=
-ght
- occur after a crash and kexec() cycle, for instance.  At boot, ksgxd
- reinitializes all enclave pages so that they can be allocated and re-used.
-@@ -147,7 +147,7 @@ Page reclaimer
-=20
- Similar to the core kswapd, ksgxd, is responsible for managing the
- overcommitment of enclave memory.  If the system runs out of enclave memory,
--*ksgxwapd* =E2=80=9Cswaps=E2=80=9D enclave memory to normal memory.
-+*ksgxd* =E2=80=9Cswaps=E2=80=9D enclave memory to normal memory.
-=20
- Launch Control
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-@@ -156,7 +156,7 @@ SGX provides a launch control mechanism. After all enclav=
-e pages have been
- copied, kernel executes EINIT function, which initializes the enclave. Only =
-after
- this the CPU can execute inside the enclave.
-=20
--ENIT function takes an RSA-3072 signature of the enclave measurement.  The f=
-unction
-+EINIT function takes an RSA-3072 signature of the enclave measurement.  The =
-function
- checks that the measurement is correct and signature is signed with the key
- hashed to the four **IA32_SGXLEPUBKEYHASH{0, 1, 2, 3}** MSRs representing the
- SHA256 of a public key.
-@@ -184,7 +184,7 @@ CPUs starting from Icelake use Total Memory Encryption (T=
-ME) in the place of
- MEE. TME-based SGX implementations do not have an integrity Merkle tree, whi=
-ch
- means integrity and replay-attacks are not mitigated.  B, it includes
- additional changes to prevent cipher text from being returned and SW memory
--aliases from being Created.
-+aliases from being created.
-=20
- DMA to enclave memory is blocked by range registers on both MEE and TME syst=
-ems
- (SDM section 41.10).
+
