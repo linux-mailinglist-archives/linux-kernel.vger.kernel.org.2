@@ -2,272 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39884536A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:01:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C6B4536AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:03:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238776AbhKPQEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 11:04:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60956 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238799AbhKPQEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:04:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FAEB63214;
-        Tue, 16 Nov 2021 16:01:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637078481;
-        bh=0PSG+6xaIQ+J2U2x+fg7elsNbRPYWLx/o3TGsveFJWU=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Sqj0xvR4s7y9f5KYvL0zyv6XxHfQsQy6es91TIbTX/FJrSBMb6B6sH12cg2zk6glL
-         zNSTUw7tJg4IrsXhWbh2d13I/1VF9f8DOF3rMwKtcsQN+clGvh04ixESa2oMDeaqIj
-         cvuOVghNgwpJz5WI94XkCyVTXRQAakxBWskhl4o/eiSZlpfd31wNbH39zDq27X0o9w
-         uSDzky93CvDQ/CWx91Z+eSolAbdSI4qD/VT9/MiabILIiuLWgEq0rZ/X/kIIGX82ur
-         nS+2o/ZexIyob3ZSQxIhHEjL8NdIxxuK+UHse5S0H4RJ9q/1qr9whzTBbYGFQpDtlJ
-         W3ukyvR3hrMDQ==
-Message-ID: <3f3467f0213dad19200c9485151956f630db6f60.camel@kernel.org>
-Subject: Re: [PATCH V3] x86/sgx: Fix free page accounting
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Reinette Chatre <reinette.chatre@intel.com>,
-        dave.hansen@linux.intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, linux-sgx@vger.kernel.org, x86@kernel.org
-Cc:     seanjc@google.com, tony.luck@intel.com, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Date:   Tue, 16 Nov 2021 18:01:19 +0200
-In-Reply-To: <a95a40743bbd3f795b465f30922dde7f1ea9e0eb.1637004094.git.reinette.chatre@intel.com>
-References: <a95a40743bbd3f795b465f30922dde7f1ea9e0eb.1637004094.git.reinette.chatre@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.40.4-1 
+        id S238748AbhKPQFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 11:05:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238705AbhKPQF3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 11:05:29 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8EA1C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 08:02:31 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id p18so8095954wmq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 08:02:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=wR86pjAKDcIIUjt4g0ysng9Tddgdb2GO7C//iSJkn0k=;
+        b=FftBZOyVFz0PYRsL59Z0G8+qAi7RSjGedwAPQPPtbfF5SsCowVTzSBy3p0mssJB21z
+         Cadco0sNSqDTxiKuvu8X3O5kJSAu1Ihr2jIxiQJnP3rroZAp6sXuoluwDXsq2xPShhsj
+         D1QoP4+qDRLuNWU8JoSwUas/UnXTDhsXeVDJQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=wR86pjAKDcIIUjt4g0ysng9Tddgdb2GO7C//iSJkn0k=;
+        b=YdbvRLDlnHy6RV2xho8vNPbCnjSPXVEKh3V2XGJ3nGNDjHbgtteOURUj7N2VS4oeDI
+         WMVe4u3Qs7FhyQWfE/U1vJQl1SoS47cw4BOAHumG394DEQG3A7vwNZbKonyG0Z+4q60Z
+         OjfLDmNrnV1GutmetxrktAK7lQuUcZoln/ZIAG15KI/i5I8oW7sOiMLfidkS9jrF1/Vp
+         xcjRQzY7tfzivz2rTzG2mEh/ZtcE/dmrDEfrnfGA0761fLpf/qH7jDPXCcGENFQQV59j
+         bRBgmhC14WaE/+o0VD9rMGByYEU8eP1KC4rMPtmPOigZ06DAbDsgxIVjh7FiLcAurk+z
+         eLwA==
+X-Gm-Message-State: AOAM530snR0vR2a0tzzujJrkkfscZun0rgif0W/Xeu0MDxsZTPawURpC
+        oIefhZLSmxQt7/JFeP3xEDfxLg==
+X-Google-Smtp-Source: ABdhPJxVC3Ayf3ujyTs1tnzW1O0d4iFKas9hSskyyJx1LFP+DqbDyiOzSuzf3vWlKhxoGmALSZFsHQ==
+X-Received: by 2002:a1c:20cc:: with SMTP id g195mr70520481wmg.42.1637078548445;
+        Tue, 16 Nov 2021 08:02:28 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id u2sm20799672wrs.17.2021.11.16.08.02.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 08:02:27 -0800 (PST)
+Date:   Tue, 16 Nov 2021 17:02:25 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        linaro-mm-sig@lists.linaro.org,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH 00/15] iio: buffer-dma: write() and new DMABUF based API
+Message-ID: <YZPWEU2zRCY0En4l@phenom.ffwll.local>
+Mail-Followup-To: Paul Cercueil <paul@crapouillou.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        linaro-mm-sig@lists.linaro.org,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        linux-media@vger.kernel.org
+References: <20211115141925.60164-1-paul@crapouillou.net>
+ <YZJwnPbgCOdeKq6S@phenom.ffwll.local>
+ <18CM2R.6UYFWJDX5UQD@crapouillou.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <18CM2R.6UYFWJDX5UQD@crapouillou.net>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-11-15 at 11:29 -0800, Reinette Chatre wrote:
-> The SGX driver maintains a single global free page counter,
-> sgx_nr_free_pages, that reflects the number of free pages available
-> across all NUMA nodes. Correspondingly, a list of free pages is
-> associated with each NUMA node and sgx_nr_free_pages is updated
-> every time a page is added or removed from any of the free page
-> lists. The main usage of sgx_nr_free_pages is by the reclaimer
-> that runs when it (sgx_nr_free_pages) goes below a watermark
-> to ensure that there are always some free pages available to, for
-> example, support efficient page faults.
->=20
-> With sgx_nr_free_pages accessed and modified from a few places
-> it is essential to ensure that these accesses are done safely but
-> this is not the case. sgx_nr_free_pages is read without any
-> protection and updated with inconsistent protection by any one
-> of the spin locks associated with the individual NUMA nodes.
-> For example:
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 CPU_A=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 CPU_B
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -----=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 -----
-> =C2=A0spin_lock(&nodeA->lock);=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_lock(&nodeB->lock);
-> =C2=A0...=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
-> =C2=A0sgx_nr_free_pages--;=C2=A0 /* NOT SAFE */=C2=A0 sgx_nr_free_pages--=
-;
->=20
-> =C2=A0spin_unlock(&nodeA->lock);=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_unlock(&nodeB->lock);
->=20
-> Since sgx_nr_free_pages may be protected by different spin locks
-> while being modified from different CPUs, the following scenario
-> is possible:
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 CPU_A=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- CPU_B
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -----=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- -----
-> {sgx_nr_free_pages =3D 100}
-> =C2=A0spin_lock(&nodeA->lock);=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_lock(&nodeB->lock);
-> =C2=A0sgx_nr_free_pages--;=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sgx_nr_free_pages=
---;
-> =C2=A0/* LOAD sgx_nr_free_pages =3D 100 */=C2=A0=C2=A0=C2=A0 /* LOAD sgx_=
-nr_free_pages =3D 100 */
-> =C2=A0/* sgx_nr_free_pages--=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 */=C2=A0=C2=A0=C2=A0 /* sgx_nr_free_pages--=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> =C2=A0/* STORE sgx_nr_free_pages =3D 99 */=C2=A0=C2=A0=C2=A0 /* STORE sgx=
-_nr_free_pages =3D 99 */
-> =C2=A0spin_unlock(&nodeA->lock);=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_unlock(&nodeB->lock);
->=20
-> In the above scenario, sgx_nr_free_pages is decremented from two CPUs
-> but instead of sgx_nr_free_pages ending with a value that is two less
-> than it started with, it was only decremented by one while the number
-> of free pages were actually reduced by two. The consequence of
-> sgx_nr_free_pages not being protected is that its value may not
-> accurately reflect the actual number of free pages on the system,
-> impacting the availability of free pages in support of many flows.
->=20
-> The problematic scenario is when the reclaimer does not run because it
-> believes there to be sufficient free pages while any attempt to allocate
-> a page fails because there are no free pages available. In the SGX driver
-> the reclaimer's watermark is only 32 pages so after encountering the
-> above example scenario 32 times a user space hang is possible when there
-> are no more free pages because of repeated page faults caused by no
-> free pages made available.
->=20
-> The following flow was encountered:
-> asm_exc_page_fault
-> =C2=A0...
-> =C2=A0=C2=A0 sgx_vma_fault()
-> =C2=A0=C2=A0=C2=A0=C2=A0 sgx_encl_load_page()
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sgx_encl_eldu() // Encrypted page ne=
-eds to be loaded from backing
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 // storage int=
-o newly allocated SGX memory page
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sgx_alloc_epc_page() // =
-Allocate a page of SGX memory
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __sgx_alloc_=
-epc_page() // Fails, no free SGX memory
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (sgx_shou=
-ld_reclaim(SGX_NR_LOW_PAGES)) // Wake reclaimer
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-wake_up(&ksgxd_waitq);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EBUS=
-Y; // Return -EBUSY giving reclaimer time to run
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EBUSY;
-> =C2=A0=C2=A0=C2=A0=C2=A0 return -EBUSY;
-> =C2=A0=C2=A0 return VM_FAULT_NOPAGE;
->=20
-> The reclaimer is triggered in above flow with the following code:
->=20
-> static bool sgx_should_reclaim(unsigned long watermark)
-> {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return sgx_nr_free_pages < wat=
-ermark &&
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 !list_empty(&sgx_active_page_list);
-> }
->=20
-> In the problematic scenario there were no free pages available yet the
-> value of sgx_nr_free_pages was above the watermark. The allocation of
-> SGX memory thus always failed because of a lack of free pages while no
-> free pages were made available because the reclaimer is never started
-> because of sgx_nr_free_pages' incorrect value. The consequence was that
-> user space kept encountering VM_FAULT_NOPAGE that caused the same
-> address to be accessed repeatedly with the same result.
->=20
-> Change the global free page counter to an atomic type that
-> ensures simultaneous updates are done safely. While doing so, move
-> the updating of the variable outside of the spin lock critical
-> section to which it does not belong.
->=20
-> Cc: stable@vger.kernel.org
-> Fixes: 901ddbb9ecf5 ("x86/sgx: Add a basic NUMA allocation scheme to sgx_=
-alloc_epc_page()")
-> Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
-> ---
-> Changes since V2:
-> - V2:
-> https://lore.kernel.org/lkml/b2e69e9febcae5d98d331de094d9cc7ce3217e66.163=
-6487172.git.reinette.chatre@intel.com/
-> - Update changelog to provide example of unsafe variable modification (Ja=
-rkko).
->=20
-> Changes since V1:
-> - V1:
-> =C2=A0 https://lore.kernel.org/lkml/373992d869cd356ce9e9afe43ef4934b70d60=
-4fd.1636049678.git.reinette.chatre@intel.com/
-> - Add static to definition of sgx_nr_free_pages (Tony).
-> - Add Tony's signature.
-> - Provide detail about error scenario in changelog (Jarkko).
->=20
-> =C2=A0arch/x86/kernel/cpu/sgx/main.c | 12 ++++++------
-> =C2=A01 file changed, 6 insertions(+), 6 deletions(-)
->=20
-> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/mai=
-n.c
-> index 63d3de02bbcc..8471a8b9b48e 100644
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -28,8 +28,7 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
-> =C2=A0static LIST_HEAD(sgx_active_page_list);
-> =C2=A0static DEFINE_SPINLOCK(sgx_reclaimer_lock);
-> =C2=A0
-> -/* The free page list lock protected variables prepend the lock. */
-> -static unsigned long sgx_nr_free_pages;
-> +static atomic_long_t sgx_nr_free_pages =3D ATOMIC_LONG_INIT(0);
-> =C2=A0
-> =C2=A0/* Nodes with one or more EPC sections. */
-> =C2=A0static nodemask_t sgx_numa_mask;
-> @@ -403,14 +402,15 @@ static void sgx_reclaim_pages(void)
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0spin_lock(&node->lock);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0list_add_tail(&epc_page->list, &node->free_page_lis=
-t);
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0sgx_nr_free_pages++;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0spin_unlock(&node->lock);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0atomic_long_inc(&sgx_nr_free_pages);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> =C2=A0}
-> =C2=A0
-> =C2=A0static bool sgx_should_reclaim(unsigned long watermark)
-> =C2=A0{
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return sgx_nr_free_pages < wat=
-ermark && !list_empty(&sgx_active_page_list);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return atomic_long_read(&sgx_n=
-r_free_pages) < watermark &&
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 !list_empty(&sgx_active_page_list);
-> =C2=A0}
-> =C2=A0
-> =C2=A0static int ksgxd(void *p)
-> @@ -471,9 +471,9 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from=
-_node(int nid)
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0page =3D list_first_entry=
-(&node->free_page_list, struct sgx_epc_page, list);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0list_del_init(&page->list=
-);
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0sgx_nr_free_pages--;
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0spin_unlock(&node->lock);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0atomic_long_dec(&sgx_nr_free_p=
-ages);
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return page;
-> =C2=A0}
-> @@ -625,9 +625,9 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0spin_lock(&node->lock);
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0list_add_tail(&page->list=
-, &node->free_page_list);
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0sgx_nr_free_pages++;
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0spin_unlock(&node->lock);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0atomic_long_inc(&sgx_nr_free_p=
-ages);
-> =C2=A0}
-> =C2=A0
-> =C2=A0static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
+On Mon, Nov 15, 2021 at 02:57:37PM +0000, Paul Cercueil wrote:
+> Hi Daniel,
+> 
+> Le lun., nov. 15 2021 at 15:37:16 +0100, Daniel Vetter <daniel@ffwll.ch> a
+> écrit :
+> > On Mon, Nov 15, 2021 at 02:19:10PM +0000, Paul Cercueil wrote:
+> > >  Hi Jonathan,
+> > > 
+> > >  This patchset introduces a new userspace interface based on DMABUF
+> > >  objects, to complement the existing fileio based API.
+> > > 
+> > >  The advantage of this DMABUF based interface vs. the fileio
+> > >  interface, is that it avoids an extra copy of the data between the
+> > >  kernel and userspace. This is particularly userful for high-speed
+> > >  devices which produce several megabytes or even gigabytes of data
+> > > per
+> > >  second.
+> > > 
+> > >  The first few patches [01/15] to [03/15] are not really related, but
+> > >  allow to reduce the size of the patches that introduce the new API.
+> > > 
+> > >  Patch [04/15] to [06/15] enables write() support to the buffer-dma
+> > >  implementation of the buffer API, to continue the work done by
+> > >  Mihail Chindris.
+> > > 
+> > >  Patches [07/15] to [12/15] introduce the new DMABUF based API.
+> > > 
+> > >  Patches [13/15] and [14/15] add support for cyclic buffers, only
+> > > through
+> > >  the new API. A cyclic buffer will be repeated on the output until
+> > > the
+> > >  buffer is disabled.
+> > > 
+> > >  Patch [15/15] adds documentation about the new API.
+> > > 
+> > >  For now, the API allows you to alloc DMABUF objects and mmap() them
+> > > to
+> > >  read or write the samples. It does not yet allow to import DMABUFs
+> > >  parented to other subsystems, but that should eventually be possible
+> > >  once it's wired.
+> > > 
+> > >  This patchset is inspired by the "mmap interface" that was
+> > > previously
+> > >  submitted by Alexandru Ardelean and Lars-Peter Clausen, so it would
+> > > be
+> > >  great if I could get a review from you guys. Alexandru's commit was
+> > >  signed with his @analog.com address but he doesn't work at ADI
+> > > anymore,
+> > >  so I believe I'll need him to sign with a new email.
+> > 
+> > Why dma-buf? dma-buf looks like something super generic and useful,
+> > until
+> > you realize that there's a metric ton of gpu/accelerator bagage piled
+> > in.
+> > So unless buffer sharing with a gpu/video/accel/whatever device is the
+> > goal here, and it's just for a convenient way to get at buffer handles,
+> > this doesn't sound like a good idea.
+> 
+> Good question. The first reason is that a somewhat similar API was intented
+> before[1], but refused upstream as it was kind of re-inventing the wheel.
+> 
+> The second reason, is that we want to be able to share buffers too, not with
+> gpu/video but with the network (zctap) and in the future with USB
+> (functionFS) too.
+> 
+> [1]: https://lore.kernel.org/linux-iio/20210217073638.21681-1-alexandru.ardelean@analog.com/T/
 
-Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+Hm is that code merged already in upstream already?
 
-/Jarkko
+I know that dma-buf looks really generic, but like I said if there's no
+need ever to interface with any of the gpu buffer sharing it might be
+better to use something else (like get_user_pages maybe, would that work?).
 
+> > Also if the idea is to this with gpus/accelerators then I'd really like
+> > to
+> > see the full thing, since most likely at that point you also want
+> > dma_fence. And once we talk dma_fence things get truly horrible from a
+> > locking pov :-( Or well, just highly constrained and I get to review
+> > what
+> > iio is doing with these buffers to make sure it all fits.
+> 
+> There is some dma_fence action in patch #10, which is enough for the
+> userspace apps to use the API.
+> 
+> What "horribleness" are we talking about here? It doesn't look that scary to
+> me, but I certainly don't have the complete picture.
+
+You need to annotate all the code involved in signalling that dma_fence
+using dma_fence_begin/end_signalling, and then enable full lockdep and
+everything.
+
+You can safely assume you'll find bugs, because we even have bugs about
+this in gpu drivers (where that annotation isn't fully rolled out yet).
+
+The tldr is that you can allocate memory in there. And a pile of other
+restrictions, but not being able to allocate memory (well GFP_ATOMIC is
+ok, but that can fail) is a very serious restriction.
+-Daniel
+
+
+> 
+> Cheers,
+> -Paul
+> 
+> > Cheers, Daniel
+> > 
+> > > 
+> > >  Cheers,
+> > >  -Paul
+> > > 
+> > >  Alexandru Ardelean (1):
+> > >    iio: buffer-dma: split iio_dma_buffer_fileio_free() function
+> > > 
+> > >  Paul Cercueil (14):
+> > >    iio: buffer-dma: Get rid of incoming/outgoing queues
+> > >    iio: buffer-dma: Remove unused iio_buffer_block struct
+> > >    iio: buffer-dma: Use round_down() instead of rounddown()
+> > >    iio: buffer-dma: Enable buffer write support
+> > >    iio: buffer-dmaengine: Support specifying buffer direction
+> > >    iio: buffer-dmaengine: Enable write support
+> > >    iio: core: Add new DMABUF interface infrastructure
+> > >    iio: buffer-dma: Use DMABUFs instead of custom solution
+> > >    iio: buffer-dma: Implement new DMABUF based userspace API
+> > >    iio: buffer-dma: Boost performance using write-combine cache
+> > > setting
+> > >    iio: buffer-dmaengine: Support new DMABUF based userspace API
+> > >    iio: core: Add support for cyclic buffers
+> > >    iio: buffer-dmaengine: Add support for cyclic buffers
+> > >    Documentation: iio: Document high-speed DMABUF based API
+> > > 
+> > >   Documentation/driver-api/dma-buf.rst          |   2 +
+> > >   Documentation/iio/dmabuf_api.rst              |  94 +++
+> > >   Documentation/iio/index.rst                   |   2 +
+> > >   drivers/iio/adc/adi-axi-adc.c                 |   3 +-
+> > >   drivers/iio/buffer/industrialio-buffer-dma.c  | 670
+> > > ++++++++++++++----
+> > >   .../buffer/industrialio-buffer-dmaengine.c    |  42 +-
+> > >   drivers/iio/industrialio-buffer.c             |  49 ++
+> > >   include/linux/iio/buffer-dma.h                |  43 +-
+> > >   include/linux/iio/buffer-dmaengine.h          |   5 +-
+> > >   include/linux/iio/buffer_impl.h               |   8 +
+> > >   include/uapi/linux/iio/buffer.h               |  30 +
+> > >   11 files changed, 783 insertions(+), 165 deletions(-)
+> > >   create mode 100644 Documentation/iio/dmabuf_api.rst
+> > > 
+> > >  --
+> > >  2.33.0
+> > > 
+> > 
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
+> 
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
