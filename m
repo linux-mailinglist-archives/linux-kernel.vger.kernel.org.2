@@ -2,183 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E999F453826
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA48E45382D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 17:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236571AbhKPRAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 12:00:17 -0500
-Received: from mout.gmx.net ([212.227.15.19]:37155 "EHLO mout.gmx.net"
+        id S236780AbhKPRC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 12:02:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230103AbhKPRAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 12:00:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1637081805;
-        bh=M+95GG9pOYr+sggZ23h8a1YVbdAtpertOAKkIz3RoPU=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=BPK1gM/+x29dXwIb4VTJ0wuqARu0SlJvHSd1htQ9OyB8V2hvsp+3LnI8zIebc6DWZ
-         Q59+RrPKfrKrCK4ajxRyWN1ZTdeW1hRHOQLUZeXMbEmvBgLlyEEhH+XRXoq8Ct9S+J
-         1+yscgOvUiZtkCkWgsDHgXNetdwEzqYU46+pF/Qg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [10.135.7.100] ([87.123.191.145]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N95iH-1mZslu1CeV-0163ef; Tue, 16
- Nov 2021 17:56:45 +0100
-Subject: Re: [PATCH 0/4] power: supply: add charge_behaviour property
- (force-discharge, inhibit-charge)
-To:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
-        linux-pm@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org,
-        Mark Gross <markgross@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-Cc:     linux-kernel@vger.kernel.org, bberg@redhat.com, hadess@hadess.net,
-        markpearson@lenovo.com, nicolopiazzalunga@gmail.com,
-        njoshi1@lenovo.com, smclt30p@gmail.com
-References: <20211113104225.141333-1-linux@weissschuh.net>
-From:   Thomas Koch <linrunner@gmx.net>
-Message-ID: <9cebba85-f399-a7aa-91f7-237852338dc5@gmx.net>
-Date:   Tue, 16 Nov 2021 17:56:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S229509AbhKPRCX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 12:02:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1114961A58;
+        Tue, 16 Nov 2021 16:59:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637081966;
+        bh=eYhpC/5NRDdhuLBSPEn68PsA9Mk4jADp5x4tp5pA254=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wNxno9PoeKJPdgFbXx9Ve7zE6Xdkqc5A+xG/HD3LOBDqkKwhKVjrhHW33hMRW16FM
+         FLL5SdLlKN+m5F9+kKQnkWmDb00JG636wkxQM9zD/SClTvEbS2CFcVKufRO8V8Vq1Z
+         sGJNEeE19vuUrEeWSBX9ks7jcb5DCa5FGN4XuFRA=
+Date:   Tue, 16 Nov 2021 17:59:24 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        David Sterba <dsterba@suse.com>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        nick black <dankamongmen@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com,
+        Marco Elver <elver@google.com>
+Subject: Re: [PATCH] vt: Fix sleeping functions called from atomic context
+Message-ID: <YZPjbI/uCNtugFJZ@kroah.com>
+References: <20211116144937.19035-1-fmdefrancesco@gmail.com>
+ <YZPHJE2R4VCQ20Za@kroah.com>
+ <2524108.PJBYKFOWIp@localhost.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20211113104225.141333-1-linux@weissschuh.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:x0ju+oRwoPkuyA8uflSr94bEewFh4Xtgfzb+77evOag2GA29Kam
- kQYZF+ptmlGuEkmDsU5plA8urpKQH+2YvpfkSQaaCfNCJ0+lfwzJ1slypCodsFEbwtORK2v
- EUFBmsq6OfNVpRp0YudFpTMdE7Rt1/1jUqEzouFZrokKFr2UPDWN6AzTLVVTdICVcIcZRme
- ts3BcJnQiauwNaXlmROsw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:btgV3Qyhq+4=:5T9pn9zDZK6OHVY98O34Xi
- c5VEwyrxQvqhdymO51ZIqR9XwTjWBS09/8q35zoQQY/sYPiFRYXM8DHHocsoiGOGyQU+y2Wqj
- 2k6mygFxFydYyJOK2GbNg3uL1CqW06FrurmISMcM2is+Qbyes4cMcPgXVoIidZ2ktf+LKlOm2
- sqd722LcJFOAxueHVtsBzKqggbEYg6bVKdn79Jh0rx01qAi8v01aQ+Ln1+D4JQacyUEcb3gaM
- ax50mwB7AkuITzhi4kso0ywthcpsFNvbZCTq1FOelGqV4KikNYRMfRws5r0nJsFj5fhuqamo3
- LdfnhnzK9IJEgdcDtApzT+JDHB5n3VO0W0qqYNRf8Ym6KsdqEBNF7fJEPpFbJTo2dIV9DwCyc
- dts/BXzWyKspbN6v6vuPYOkdi69LVwVfvrlZqj2ZMZ9vQmn8qdP7HEPFItwEut9pZ6C/f90rm
- gDu6xOyBuAyYmibZ6f5qz+0LqU0LsA1yRRdZ8E0TiGP8CUBNQZECwViC5uUGE5Q09wx9WRJse
- m9mqeobCW8rVuW9IH34zlJN9vkLd9DcWEks2QSGAwrjABhBiS3TMUmtCjf6rHhJ6hzjGJZU+a
- V0pAULg6/UvBSQRaD0SQXUQiJ7oI0wRdD/WdrOrEE6OnmQuxBip0Zxpb3bOC3ibdmETJueInS
- Di50UmFXDbR/mzTiufH9wt+a4DYFBLTuJnMbpRgCabAR1E+6FcycmtzSUZGl688obbiLShzGk
- Iy8R93Y519AQBU4L1AQHVFPCjz8yq1Agb84IhYzmjKljXCqIAjXIMXIhj6/+zay7ug6Fe8BzW
- nHBOSotN4UNj/HvLwMHoPBQEysIVZgKb/MF5mnaIB+Ui1WImbgiFj/FMQO2QFJNRQRkAhauk9
- xHWwvAV9LDnOXWZKa6R+0TqrOaoNI7kOF9kU+mQjwt6JiiONADi/UninmskYlIMm6b3eyOD5/
- 4LlJemCvu3USdi7HffKiqe1o5QHwqlNpf3MSLoFPd5zqnPH7OIdWnRWlFqMb0/FJ4IISIWfnY
- rrP1URkUBe+Ty+kcw6jJeq0ZiXh3SMppDQzf8hBdSkJaHM/POjKOBlsKZEGvrJ4cNziqXTa2e
- wVKlmYh112NEz4=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2524108.PJBYKFOWIp@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On Tue, Nov 16, 2021 at 04:35:07PM +0100, Fabio M. De Francesco wrote:
+> On Tuesday, November 16, 2021 3:58:44 PM CET Greg Kroah-Hartman wrote:
+> > On Tue, Nov 16, 2021 at 03:49:37PM +0100, Fabio M. De Francesco wrote:
+> > > Fix two sleeping functions called from atomic context by doing immediate
+> > > return to the caller if !preemptible() evaluates 'true'. Remove two
+> > > in_interrupt() tests because they are not suited for being used here.
+> > > 
+> > > Since functions do_con_write() and con_flush_chars() might sleep in
+> > > console_lock(), it must be assured that they are never executed in
+> > > atomic contexts.
+> > > 
+> > > This issue is reported by Syzbot which notices that they are executed
+> > > while holding spinlocks and with interrupts disabled. Actually Syzbot
+> > > emits a first report and then, after fixing do_con_write(), a second
+> > > report for the same problem in con_flush_chars() because these functions
+> > > are called one after the other by con_write().
+> > > 
+> > > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> > > Reported-by: syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com
+> > > Suggested-by: Marco Elver <elver@google.com>
+> > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > > ---
+> > >  drivers/tty/vt/vt.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+> > > index 7359c3e80d63..508f8a56d361 100644
+> > > --- a/drivers/tty/vt/vt.c
+> > > +++ b/drivers/tty/vt/vt.c
+> > > @@ -2902,7 +2902,7 @@ static int do_con_write(struct tty_struct *tty, 
+> const unsigned char *buf, int co
+> > >  	struct vt_notifier_param param;
+> > >  	bool rescan;
+> > >  
+> > > -	if (in_interrupt())
+> > > +	if (!preemptible())
+> > >  		return count;
+> > 
+> > Very odd, what code is calling these functions to trigger this check?
+> 
+> This is the call trace reported by Syzbot (https://syzkaller.appspot.com/bug?
+> id=fe5a4d5a2482bd73064db5de5d28e024f1e2a387):
+> 
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:88 [inline]
+>  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+>  __might_resched.cold+0x222/0x26b kernel/sched/core.c:9539
+>  console_lock+0x17/0x80 kernel/printk/printk.c:2522
+>  do_con_write+0x10f/0x1e40 drivers/tty/vt/vt.c:2908
+>  con_write+0x21/0x40 drivers/tty/vt/vt.c:3295
+>  n_hdlc_send_frames+0x24b/0x490 drivers/tty/n_hdlc.c:290
+>  tty_wakeup+0xe1/0x120 drivers/tty/tty_io.c:534
+>  __start_tty drivers/tty/tty_io.c:806 [inline]
+>  __start_tty+0xfb/0x130 drivers/tty/tty_io.c:799
+>  n_tty_ioctl_helper+0x299/0x2d0 drivers/tty/tty_ioctl.c:880
+> 
+> 	^^^^^^^^^^
+> n_tty_ioctl_helper() disabled interrupts via spin_lock_irq(&tty->flow.lock).
+> 
+>  n_hdlc_tty_ioctl+0xd2/0x340 drivers/tty/n_hdlc.c:633
+>  tty_ioctl+0xc69/0x1670 drivers/tty/tty_io.c:2814
+>  vfs_ioctl fs/ioctl.c:51 [inline]
+>  __do_sys_ioctl fs/ioctl.c:874 [inline]
+>  __se_sys_ioctl fs/ioctl.c:860 [inline]
+>  __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> > Shouldn't the caller be fixed instead?
+> 
+> Maybe that the caller has no need to disable IRQs, but I cannot yet answer to 
+> this particular question.
+> 
+> > What changed to suddenly cause this to show up?
+> 
+> Commit c545b66c6922 ("tty: Serialize tcflow() with other tty flow control 
+> changes") introduced a call to spin_lock_irq() for command "TCOON", just 
+> before calling __start_tty().
 
-thank you very much for working on this. It is high time that we leave
-external kernel modules for ThinkPads behind us.
+That commit happened in 2014.  Why is this suddenly an issue now that no
+one ever saw before?
 
-On 13.11.21 11:42, Thomas Wei=C3=9Fschuh wrote:
-> Hi,
->
-> this series adds support for the charge_behaviour property to the power
-> subsystem and thinkpad_acpi driver.
->
-> As thinkpad_acpi has to use the 'struct power_supply' created by the gen=
-eric
-> ACPI driver it has to rely on custom sysfs attributes instead of proper
-> power_supply properties to implement this property.
->
-> Patch 1: Adds the power_supply documentation and basic public API
-> Patch 2: Adds helpers to power_supply core to help drivers implement the
->    charge_behaviour attribute
-> Patch 3: Adds support for force-discharge to thinkpad_acpi.
-> Patch 4: Adds support for inhibit-discharge to thinkpad_acpi.
->
-> Patch 3 and 4 are largely taken from other patches and adapted to the ne=
-w API.
-> (Links are in the patch trailer)
->
-> Ognjen Galic, Nicolo' Piazzalunga, Thomas Koch:
->
-> Your S-o-b is on the original inhibit_charge and force_discharge patches=
-.
-> I would like to add you as Co-developed-by but to do that it will also r=
-equire
-> your S-o-b. Could you give your sign-offs for the new patches, so you ca=
-n be
-> properly attributed?
-S-o-b/Co-developed-by/Tested-by is fine with me.
+I am worried you are not actually fixing the real issue here by just
+making syzbot be quiet.  Can you work to figure out what the real issue
+is please?
 
-I tested your patches.
+thanks,
 
-Hardware:
-
-- ThinkPad X220, BAT0
-- ThinkPad T450s, BAT0+BAT1
-- ThinkPad X1C6, BAT0
-
-Test Results:
-
-1. force-discharge
-
-Everythings works as expected
-- Writing including disengaging w/ "auto" : OK
-- Reading: OK
-
-- Battery discharging: OK
-- Disengaging with "auto": OK
-
-2. inhibit-charge
-
-Works as expected:
-- Writing: OK
-
-- Disengaging with "auto": OK
-
-
-Discrepancies:
-- Battery charge inhibited: BAT0 OK, BAT1 no effect e.g. continues chargin=
-g
-- Reading: always returns "auto"
-
-Note: the reading discrepancy may be related to Hans' remarks [1].
-
-[1]
-https://lore.kernel.org/all/09a66da1-1a8b-a668-3179-81670303ea37@redhat.co=
-m/
-
->
-> Sebastian Reichel:
->
-> Currently the series does not actually support the property as a proper
-> powersupply property handled fully by power_supply_sysfs.c because there=
- would
-> be no user for this property.
->
-> Previous discussions about the API:
->
-> https://lore.kernel.org/platform-driver-x86/20211108192852.357473-1-linu=
-x@weissschuh.net/
-> https://lore.kernel.org/platform-driver-x86/21569a89-8303-8573-05fb-c2fe=
-c29983d1@gmail.com/
->
-> Thomas Wei=C3=9Fschuh (4):
->    power: supply: add charge_behaviour attributes
->    power: supply: add helpers for charge_behaviour sysfs
->    platform/x86: thinkpad_acpi: support force-discharge
->    platform/x86: thinkpad_acpi: support inhibit-charge
->
->   Documentation/ABI/testing/sysfs-class-power |  14 ++
->   drivers/platform/x86/thinkpad_acpi.c        | 154 +++++++++++++++++++-
->   drivers/power/supply/power_supply_sysfs.c   |  51 +++++++
->   include/linux/power_supply.h                |  16 ++
->   4 files changed, 231 insertions(+), 4 deletions(-)
->
->
-> base-commit: 66f4beaa6c1d28161f534471484b2daa2de1dce0
->
-=2D-
-Freundliche Gr=C3=BC=C3=9Fe / Kind regards,
-Thomas Koch
-
-Mail : linrunner@gmx.net
-Web  : https://linrunner.de/tlp
+greg k-h
