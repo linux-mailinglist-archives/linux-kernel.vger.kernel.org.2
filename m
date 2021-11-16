@@ -2,133 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C5A452C68
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:06:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D23452C6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231755AbhKPIJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 03:09:25 -0500
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:41309 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231731AbhKPIJL (ORCPT
+        id S231731AbhKPIKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 03:10:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231466AbhKPIKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 03:09:11 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R731e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UwpX9kf_1637049971;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UwpX9kf_1637049971)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 16 Nov 2021 16:06:12 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH] fs: Eliminate compilation warnings for misc
-Date:   Tue, 16 Nov 2021 16:06:11 +0800
-Message-Id: <20211116080611.31199-1-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0
+        Tue, 16 Nov 2021 03:10:43 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B738AC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 00:07:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=u/XuvxSsL02/ksp9AlMhOom/3HnZ4/vMd+hnB5J+MWo=; b=mogVjwudK8w/ux7vAbMeuULvN7
+        2daqpLc5ynYkqm6NKJrsMP14IiLq7qTqVUUySuKSXr5HHtKwVwe2SceJGMJBno6AIX+MfG0HfS7Sy
+        X0s/SFQodQIr/kkT6BY3pZ4xP7rvnCufdFrN/vE93AdYBN40QywxVsz2jnTQx4pzU+653+LjfDWQL
+        ZzufJkDk9XelCEhXiMfBA9GCd4/VeLbdai4XfGKpV4fv3nUmuYOTeCp4YkePHzBlkyo819ZqXzrRR
+        8Jbtyp87McNScH7E7n+torVZuj3URjfVGWycl/MSNU5/rab/sW9jJHNmo4tJMHZQN+SXMaNhAW0oJ
+        SmeOzz+g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mmtV4-006ZTU-HZ; Tue, 16 Nov 2021 08:07:31 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3F6A598651D; Tue, 16 Nov 2021 09:07:30 +0100 (CET)
+Date:   Tue, 16 Nov 2021 09:07:30 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Yinan Liu <yinan@linux.alibaba.com>
+Cc:     rostedt@goodmis.org, mark-pk.tsai@mediatek.com, mingo@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] scripts: ftrace - move the sort-processing in
+ ftrace_init to compile time
+Message-ID: <20211116080730.GV174703@worktop.programming.kicks-ass.net>
+References: <20210911135043.16014-1-yinan@linux.alibaba.com>
+ <20211116024942.60644-1-yinan@linux.alibaba.com>
+ <20211116024942.60644-2-yinan@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211116024942.60644-2-yinan@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the following clang compilation warnings by adding or
-fixing function comment:
+On Tue, Nov 16, 2021 at 10:49:41AM +0800, Yinan Liu wrote:
 
-  fs/file.c:655: warning: Function parameter or member 'fdt' not described in 'last_fd'
-  fs/file.c:655: warning: Excess function parameter 'cur_fds' description in 'last_fd'
-  fs/file.c:703: warning: Function parameter or member 'flags' not described in '__close_range'
+> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> index 30bc880c3849..c776a2956237 100644
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -6406,8 +6406,9 @@ static int ftrace_process_locs(struct module *mod,
+>  	if (!count)
+>  		return 0;
+>  
+> -	sort(start, count, sizeof(*start),
+> -	     ftrace_cmp_ips, NULL);
+> +	if (mod)
+> +		sort(start, count, sizeof(*start),
+> +		     ftrace_cmp_ips, NULL);
+>  
 
-  fs/fs_context.c:202: warning: Function parameter or member 'fc' not described in 'generic_parse_monolithic'
-  fs/fs_context.c:202: warning: Excess function parameter 'ctx' description in 'generic_parse_monolithic'
-  fs/fs_context.c:386: warning: Function parameter or member 'log' not described in 'logfc'
-  fs/fs_context.c:386: warning: Function parameter or member 'prefix' not described in 'logfc'
-  fs/fs_context.c:386: warning: Function parameter or member 'level' not described in 'logfc'
-  fs/fs_context.c:386: warning: Excess function parameter 'fc' description in 'logfc'
+/me hands a bucket of {} your way. Also, can't sorttable be ran on
+modules ?
 
-  fs/namei.c:1044: warning: Function parameter or member 'inode' not described in 'may_follow_link'
+> @@ -376,5 +466,20 @@ static int do_sort(Elf_Ehdr *ehdr,
+>  		}
+>  	}
+>  #endif
+> +	if (mcount_sort_thread) {
+> +		void *retval = NULL;
+> +		/* wait for mcount sort done */
+> +		rc = pthread_join(mcount_sort_thread, &retval);
+> +		if (rc)
+> +			fprintf(stderr,
+> +				"pthread_join failed '%s': %s\n",
+> +				strerror(errno), fname);
 
-  fs/read_write.c:88: warning: Function parameter or member 'maxsize' not described in 'generic_file_llseek_size'
-  fs/read_write.c:88: warning: Excess function parameter 'size' description in 'generic_file_llseek_size'
+Use some here too :-)
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
----
- fs/file.c       | 3 ++-
- fs/fs_context.c | 6 ++++--
- fs/namei.c      | 1 +
- fs/read_write.c | 2 +-
- 4 files changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/fs/file.c b/fs/file.c
-index 8627dacfc424..ab3b635b0c86 100644
---- a/fs/file.c
-+++ b/fs/file.c
-@@ -645,7 +645,7 @@ EXPORT_SYMBOL(close_fd); /* for ksys_close() */
- 
- /**
-  * last_fd - return last valid index into fd table
-- * @cur_fds: files struct
-+ * @fdt: fdtable struct
-  *
-  * Context: Either rcu read lock or files_lock must be held.
-  *
-@@ -695,6 +695,7 @@ static inline void __range_close(struct files_struct *cur_fds, unsigned int fd,
-  *
-  * @fd:     starting file descriptor to close
-  * @max_fd: last file descriptor to close
-+ * @flags:  close range flags
-  *
-  * This closes a range of file descriptors. All file descriptors
-  * from @fd up to and including @max_fd are closed.
-diff --git a/fs/fs_context.c b/fs/fs_context.c
-index b7e43a780a62..e94fb7f19d3f 100644
---- a/fs/fs_context.c
-+++ b/fs/fs_context.c
-@@ -189,7 +189,7 @@ EXPORT_SYMBOL(vfs_parse_fs_string);
- 
- /**
-  * generic_parse_monolithic - Parse key[=val][,key[=val]]* mount data
-- * @ctx: The superblock configuration to fill in.
-+ * @fc: filesystem context
-  * @data: The data to parse
-  *
-  * Parse a blob of data that's in key[=val][,key[=val]]* form.  This can be
-@@ -379,7 +379,9 @@ EXPORT_SYMBOL(vfs_dup_fs_context);
- 
- /**
-  * logfc - Log a message to a filesystem context
-- * @fc: The filesystem context to log to.
-+ * @log: The filesystem context to log to.
-+ * @prefix: The log prefix.
-+ * @level: The log level.
-  * @fmt: The format of the buffer.
-  */
- void logfc(struct fc_log *log, const char *prefix, char level, const char *fmt, ...)
-diff --git a/fs/namei.c b/fs/namei.c
-index 1f9d2187c765..3bc73b4f39c9 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -1028,6 +1028,7 @@ int sysctl_protected_regular __read_mostly;
- /**
-  * may_follow_link - Check symlink following for unsafe situations
-  * @nd: nameidata pathwalk data
-+ * @inode: inode to check
-  *
-  * In the case of the sysctl_protected_symlinks sysctl being enabled,
-  * CAP_DAC_OVERRIDE needs to be specifically ignored if the symlink is
-diff --git a/fs/read_write.c b/fs/read_write.c
-index 0074afa7ecb3..d7b0f8528930 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -71,7 +71,7 @@ EXPORT_SYMBOL(vfs_setpos);
-  * @file:	file structure to seek on
-  * @offset:	file offset to seek to
-  * @whence:	type of seek
-- * @size:	max size of this file in file system
-+ * @maxsize:	max size of this file in file system
-  * @eof:	offset used for SEEK_END position
-  *
-  * This is a variant of generic_file_llseek that allows passing in a custom
--- 
-2.32.0
-
+> +		else if (retval) {
+> +			rc = -1;
+> +			fprintf(stderr,
+> +				"failed to sort mcount '%s': %s\n",
+> +				(char *)retval, fname);
+> +		}
+> +	}
+>  	return rc;
+>  }
