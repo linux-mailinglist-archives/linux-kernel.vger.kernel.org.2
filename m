@@ -2,164 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C554535C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:28:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A89C94535CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:29:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238169AbhKPPaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 10:30:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238078AbhKPPad (ORCPT
+        id S238267AbhKPPbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 10:31:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:45658 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238273AbhKPPbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 10:30:33 -0500
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E04C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:27:35 -0800 (PST)
-Received: by mail-qv1-xf31.google.com with SMTP id b17so13983767qvl.9
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:27:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aIR+6SGDsBIdvPmIidBVFrt2gkfBA8dAwyBdKNZqHWw=;
-        b=XdAq18HqT3EbhBXUlxrtfVFuucegkjZpFGAHqIihs50oSdNtQ6OtlkfjqUkt8Jn5I8
-         nzcWUYJALeVwCDOjAJKF+duSnwblNR+u39AuwLi17ZJ4XJUYUy6V6k3XJ/y/ejcNzRls
-         +8/orDG4K+ljPKryCqwqblcJ+N2Irb7XrQxZK9mFgUDN3WNy0ZdUf74VhD/k84omYfl0
-         iZROc1uFpGIoZcU7KE1mEzZ65/dVX/U2rHicw2MXcxWs6BbPY20Xj5GS6bHs0SK48Gha
-         ipR1sx3sCjJtDa2ZVbRCwo/pEmQmwHzGMbv27Bq5hPsIEkjTAcQ8VDelYcKqA2qxQ/NU
-         ToqQ==
+        Tue, 16 Nov 2021 10:31:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637076518;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UYQN9I70gjsFE5Naqa2HU/h8w6OlAwkKbYGsjtVq6nA=;
+        b=R8p1twqzTE5iLARiqESHX3fIUTIP8adtUDlWe9ztw5DCV1jHty/jmDdNtpIGK6l/lF5nl5
+        0yNEphXttKWBU2OgmB33y8TPrhgALM5wOW+rWrmtSYUTlfLOXHprkEfiD4rd/X6yypQV5I
+        ZPiiP5GX7o7AgQEPmw4l0Tj/htOuUYE=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-305-_X-VpFSGMd-VWNBt4GeM8w-1; Tue, 16 Nov 2021 10:28:37 -0500
+X-MC-Unique: _X-VpFSGMd-VWNBt4GeM8w-1
+Received: by mail-wm1-f72.google.com with SMTP id 145-20020a1c0197000000b0032efc3eb9bcso1377287wmb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 07:28:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=aIR+6SGDsBIdvPmIidBVFrt2gkfBA8dAwyBdKNZqHWw=;
-        b=MFOsrPKRhLS6q0CXD4oSvEvnhgTCieqiRxKWWecdzSCgz5AudWhzvv9FocVkeWVynk
-         QegNFQgWpuPw2idH6q6tl/XDu8qVmYYe1v1jHaiMt917FgrmM/bCS0W/oYtFfSvJuiXi
-         G4zjdW91JKGDUNM8vjwzCDZpuzQ80T08l709LAIkpqYSF/tZtBlHrnODsnIKK6ZUbFbP
-         9kjxs16UBQzmQPmll/5gBeE8f4P25ScATZDUxlmPmltTfBRPrhV2UE8IhAwcTUE9DRfy
-         45syAg2cYi1vM1ss8ZxcFShxhcKU5e2AMTymbOmIeCplClfuVsxF9LVEAG1nT7KKV4qP
-         Otug==
-X-Gm-Message-State: AOAM533SCwoNmw78Paxbcu1zJOsRaEseE+By8BW7MZUu3KRXLtqPr+fS
-        VG+pG3+6yyUNY8MFWzgye0xStQ==
-X-Google-Smtp-Source: ABdhPJzPGtn8z2/uvb42fjIpYlSwhf/BFtetEKiM5RTkPesV1zDtM7BTk53pbcVTRx78B2tpvRp/PQ==
-X-Received: by 2002:a05:6214:29c3:: with SMTP id gh3mr19606948qvb.30.1637076454395;
-        Tue, 16 Nov 2021 07:27:34 -0800 (PST)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id c13sm9524138qtx.51.2021.11.16.07.27.33
+        bh=UYQN9I70gjsFE5Naqa2HU/h8w6OlAwkKbYGsjtVq6nA=;
+        b=WdX2JLHpKylsbpTa5FVjrQywsR2Awq9LyI4EDEM92dXkn15EmHIU0Iy/baz0JbPjuz
+         pylLRwhSMw3Qu1zuuWLX2fzV84A1tXWT7G3QNs+0Nunb5nR1QVMtIEhUGR/k1eNWVmNb
+         Mw/Q5A7pTykb0eZeUOe7Rk23VHLVwNDN7t70EI2xpv6ZNorZth220JpozdXZ8GBtHTTC
+         BqR06VJmCC9OgXbm5IsriOOKIHREERBQP3oQTkvXHD4X5Dy6zEqoKDSnsr9BwYlUJ6aH
+         itBXE2jKnnko76V+wgDAUp5ao+KZOE15enLVxOSxIV2gLGRZ0i/8FQm3vDsXa/oUyCqX
+         UWhA==
+X-Gm-Message-State: AOAM531Iap9bdWyQ1pZojbURotxBuBHfL2Avp8rQDRVZNenMSJ6WPuBC
+        PzzXX6LYHCoydChz5Jlz1BXVDKXNoh3wriPITu6BJsd3iiDv5U93YstBYknY8ubE09u/ni+wItp
+        Ct2oYUEjfJzYFP5WHoufZLozU
+X-Received: by 2002:adf:e2c5:: with SMTP id d5mr10551311wrj.338.1637076516087;
+        Tue, 16 Nov 2021 07:28:36 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyF815fmFuY8bG7dsEGyu346D4qU2PxLAXuM2xLKBP7NcVm/OObn1MwERjTAqvhG73N6sbKbg==
+X-Received: by 2002:adf:e2c5:: with SMTP id d5mr10551281wrj.338.1637076515927;
+        Tue, 16 Nov 2021 07:28:35 -0800 (PST)
+Received: from [192.168.1.36] (62.red-83-57-168.dynamicip.rima-tde.net. [83.57.168.62])
+        by smtp.gmail.com with ESMTPSA id f12sm3586100wmq.0.2021.11.16.07.28.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 07:27:33 -0800 (PST)
-Subject: Re: [PATCH] cpufreq: freq_table: Initialize cpuinfo.max_freq to
- correct max frequency.
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Steev Klimaszewski <steev@kali.org>
-Cc:     rafael@kernel.org, bjorn.andersson@linaro.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20211115195011.52999-1-thara.gopinath@linaro.org>
- <5ae2c644-4743-c62c-b17c-96945a0e6a01@kali.org>
- <20211116035935.wmazontuznhys6qu@vireshk-i7>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <fd153d84-411a-c843-eab9-2dc66940a3d3@linaro.org>
-Date:   Tue, 16 Nov 2021 10:27:33 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 16 Nov 2021 07:28:35 -0800 (PST)
+Message-ID: <2ced2fae-2ffd-3a70-f02c-175662baf7bc@redhat.com>
+Date:   Tue, 16 Nov 2021 16:28:34 +0100
 MIME-Version: 1.0
-In-Reply-To: <20211116035935.wmazontuznhys6qu@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] fw_cfg: Fix memory leak in fw_cfg_register_file
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+To:     Miaoqian Lin <linmq006@gmail.com>, Qiushi Wu <wu000273@umn.edu>
+Cc:     qemu-devel@nongnu.org, linux-kernel@vger.kernel.org,
+        Gabriel Somlo <somlo@cmu.edu>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+References: <20211116114233.29462-1-linmq006@gmail.com>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@redhat.com>
+In-Reply-To: <20211116114233.29462-1-linmq006@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/15/21 10:59 PM, Viresh Kumar wrote:
-> On 15-11-21, 19:23, Steev Klimaszewski wrote:
->> Hi Thara,
->>
->> On 11/15/21 1:50 PM, Thara Gopinath wrote:
->>> cpuinfo.max_freq reflects the maximum supported frequency of cpus in a
->>> cpufreq policy. When cpus support boost frequency and if boost is disabled
->>> during boot up (which is the default), cpuinfo.max_freq does not reflect
->>> boost frequency as the maximum supported frequency till boost is explicitly
->>> enabled via sysfs interface later. This also means that policy reports two
->>> different cpuinfo.max_freq before and after turning on boost.  Fix this by
->>> separating out setting of policy->max and cpuinfo.max_freq in
->>> cpufreq_frequency_table_cpuinfo.
->>>
->>> e.g. of the problem. Qualcomm sdm845 supports boost frequency for gold
->>> cluster (cpus 4-7). After boot up (boost disabled),
->>>
->>> 1.  cat /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq 2649600
->>> <- This is wrong because boost frequency is
->>>
->>> 2.  echo 1 > /sys/devices/system/cpu/cpufreq/boost  <- Enable boost cat
->>> /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq 2803200	<-
->>> max freq reflects boost freq.
->>>
->>> 3.  echo 0 > /sys/devices/system/cpu/cpufreq/boost <- Disable boost cat
->>> /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq 2803200	<-
->>> Discrepancy with step 1 as in both cases boost is disabled.
->>>
->>> Note that the other way to fix this is to set cpuinfo.max_freq in Soc
->>> cpufreq driver during initialization. Fixing it in
->>> cpufreq_frequency_table_cpuinfo seems more generic solution
->>>
->>> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
->>> ---
->>>    drivers/cpufreq/freq_table.c | 8 ++++++--
->>>    1 file changed, 6 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/cpufreq/freq_table.c b/drivers/cpufreq/freq_table.c
->>> index 67e56cf638ef..6784f94124df 100644
->>> --- a/drivers/cpufreq/freq_table.c
->>> +++ b/drivers/cpufreq/freq_table.c
->>> @@ -35,11 +35,15 @@ int cpufreq_frequency_table_cpuinfo(struct cpufreq_policy *policy,
->>>    	struct cpufreq_frequency_table *pos;
->>>    	unsigned int min_freq = ~0;
->>>    	unsigned int max_freq = 0;
->>> +	unsigned int cpuinfo_max_freq = 0;
->>>    	unsigned int freq;
->>>    	cpufreq_for_each_valid_entry(pos, table) {
->>>    		freq = pos->frequency;
->>> +		if (freq > cpuinfo_max_freq)
->>> +			cpuinfo_max_freq = freq;
->>> +
->>>    		if (!cpufreq_boost_enabled()
->>>    		    && (pos->flags & CPUFREQ_BOOST_FREQ))
->>>    			continue;
->>> @@ -57,8 +61,8 @@ int cpufreq_frequency_table_cpuinfo(struct cpufreq_policy *policy,
->>>    	 * If the driver has set its own cpuinfo.max_freq above max_freq, leave
->>>    	 * it as is.
->>>    	 */
->>> -	if (policy->cpuinfo.max_freq < max_freq)
->>> -		policy->max = policy->cpuinfo.max_freq = max_freq;
->>> +	if (policy->cpuinfo.max_freq < cpuinfo_max_freq)
->>> +		policy->cpuinfo.max_freq = cpuinfo_max_freq;
-> 
-> You need to keep the check of policy->max here and update policy->max,
-> else you will never run at boost freq. I think this is what Steev
-> reported as well ?
-
-Hi Viresh,
-	policy->max is unconditionally set to max_freq in the line before "if 
-(policy->cpuinfo.max_freq < max_freq)". So this is not the issue Steev 
-is reporting.
-	policy->max = max_freq
-
-
-> 
-> So basically something like this:
-> 
-> 	if (policy->max < max_freq)
-> 		policy->max = max_freq;
-> 
-> 	if (policy->cpuinfo.max_freq < cpuinfo_max_freq)
-> 		policy->cpuinfo.max_freq = cpuinfo_max_freq;
+On 11/16/21 12:42, Miaoqian Lin wrote:
+> When kobject_init_and_add() fails, entry should be freed just like
+> when sysfs_create_bin_file() fails.
 > 
 
--- 
-Warm Regards
-Thara (She/Her/Hers)
+Fixes: fe3c60684377 ("firmware: Fix a reference count leak.")
+Reviewed-by: Philippe Mathieu-Daudé <philmd@redhat.com>
+
+> Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
+> ---
+>  drivers/firmware/qemu_fw_cfg.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/firmware/qemu_fw_cfg.c b/drivers/firmware/qemu_fw_cfg.c
+> index 172c751a4f6c..0f404777f016 100644
+> --- a/drivers/firmware/qemu_fw_cfg.c
+> +++ b/drivers/firmware/qemu_fw_cfg.c
+> @@ -608,6 +608,7 @@ static int fw_cfg_register_file(const struct fw_cfg_file *f)
+>  				   fw_cfg_sel_ko, "%d", entry->select);
+>  	if (err) {
+>  		kobject_put(&entry->kobj);
+> +		kfree(entry);
+>  		return err;
+>  	}
+>  
+> 
+
