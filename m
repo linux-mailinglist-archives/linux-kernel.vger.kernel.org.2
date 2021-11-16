@@ -2,154 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E334532DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:30:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3774532E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:30:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236718AbhKPNcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 08:32:53 -0500
-Received: from pegase2.c-s.fr ([93.17.235.10]:58253 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230471AbhKPNcw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 08:32:52 -0500
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Htn3j6dQLz9sSJ;
-        Tue, 16 Nov 2021 14:29:53 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id US9XL2ibzr6x; Tue, 16 Nov 2021 14:29:53 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Htn3j50jLz9sSH;
-        Tue, 16 Nov 2021 14:29:53 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 95FD48B77A;
-        Tue, 16 Nov 2021 14:29:53 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id f2Vdc5Ovhuop; Tue, 16 Nov 2021 14:29:53 +0100 (CET)
-Received: from [192.168.234.8] (unknown [192.168.234.8])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id BFA358B763;
-        Tue, 16 Nov 2021 14:29:52 +0100 (CET)
-Message-ID: <2f22c57d-9bf0-3cc1-f0f1-61ecdf5dfa52@csgroup.eu>
-Date:   Tue, 16 Nov 2021 14:29:51 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 2/5] preempt/dynamic: Introduce preempt mode accessors
-Content-Language: fr-FR
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kbuild@vger.kernel.org
-Cc:     Marco Elver <elver@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
+        id S236785AbhKPNdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 08:33:21 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:38282 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236752AbhKPNdP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 08:33:15 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8D75C1FCA1;
+        Tue, 16 Nov 2021 13:30:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1637069417; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EhqKr+rTsEmqBNBggfpFhbL56OGP4vni1d1wCyRo57Y=;
+        b=rymaTROeGH/pyQVBNtUZZ4A6YEQsJKKm+0bgDaoQGMCYvLX7XUoYzjqrwrxNZRXMlycuKW
+        kdpu86PEQXgubdrvCNjfcToCW8pVmFutyMOLv1SGR8sAXmhwNYUQLSg0hi6G//+PoidWXe
+        FAUM2/Ga6iYi4jGiMfPn16Rhtomldz4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1637069417;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EhqKr+rTsEmqBNBggfpFhbL56OGP4vni1d1wCyRo57Y=;
+        b=hhlqvIWuVv9L8+jAEaQkXrsPBgFTZnECcR35/rNdP5aQ3UWSvxsUQ94dXiwi6cVs2zSxDE
+        8K5I5/v9+eLSFOAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 417BB13C1B;
+        Tue, 16 Nov 2021 13:30:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id u3/dDWiyk2HWfAAAMHmgww
+        (envelope-from <jroedel@suse.de>); Tue, 16 Nov 2021 13:30:16 +0000
+Date:   Tue, 16 Nov 2021 14:30:14 +0100
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Marc Orr <marcorr@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Peter Gonda <pgonda@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Mike Galbraith <efault@gmx.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>
-References: <20211110202448.4054153-1-valentin.schneider@arm.com>
- <20211110202448.4054153-3-valentin.schneider@arm.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-In-Reply-To: <20211110202448.4054153-3-valentin.schneider@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <Michael.Roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Quentin Perret <qperret@google.com>
+Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
+ Hypervisor Support
+Message-ID: <YZOyZhSbMK/mfnXA@suse.de>
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
+ <061ccd49-3b9f-d603-bafd-61a067c3f6fa@intel.com>
+ <YY6z5/0uGJmlMuM6@zn.tnic>
+ <YY7FAW5ti7YMeejj@google.com>
+ <YZJTA1NyLCmVtGtY@work-vm>
+ <YZKmSDQJgCcR06nE@google.com>
+ <CAA03e5E3Rvx0t8_ZrbNMZwBkjPivGKOg5HCShSFYwfkKDDHWtA@mail.gmail.com>
+ <YZKxuxZurFW6BVZJ@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YZKxuxZurFW6BVZJ@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 15, 2021 at 07:15:07PM +0000, Sean Christopherson wrote:
+> It creates a new attack surface, e.g. if the guest mishandles the #VC and does
+> PVALIDATE on memory that it previously accepted, then userspace can attack the
+> guest by accessing guest private memory to coerce the guest into consuming corrupted
+> data.
 
+If a guest can be tricked into a double PVALIDATE or otherwise
+misbehaves on a #VC exception, then it is a guest bug and needs to be
+fixed there.
 
-Le 10/11/2021 Ã  21:24, Valentin Schneider a Ã©critÂ :
-> CONFIG_PREEMPT{_NONE, _VOLUNTARY} designate either:
-> o The build-time preemption model when !PREEMPT_DYNAMIC
-> o The default boot-time preemption model when PREEMPT_DYNAMIC
-> 
-> IOW, using those on PREEMPT_DYNAMIC kernels is meaningless - the actual
-> model could have been set to something else by the "preempt=foo" cmdline
-> parameter.
-> 
-> Introduce a set of helpers to determine the actual preemption mode used by
-> the live kernel.
-> 
-> Suggested-by: Marco Elver <elver@google.com>
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-> ---
->   include/linux/sched.h | 16 ++++++++++++++++
->   kernel/sched/core.c   | 11 +++++++++++
->   2 files changed, 27 insertions(+)
-> 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 5f8db54226af..0640d5622496 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -2073,6 +2073,22 @@ static inline void cond_resched_rcu(void)
->   #endif
->   }
->   
-> +#ifdef CONFIG_PREEMPT_DYNAMIC
-> +
-> +extern bool is_preempt_none(void);
-> +extern bool is_preempt_voluntary(void);
-> +extern bool is_preempt_full(void);
+It is a core requirement to the #VC handler that it can not be tricked
+that way.
 
-Those are trivial tests supposed to be used in fast pathes. They should 
-be static inlines in order to minimise the overhead.
+Regards,
 
-> +
-> +#else
-> +
-> +#define is_preempt_none() IS_ENABLED(CONFIG_PREEMPT_NONE)
-> +#define is_preempt_voluntary() IS_ENABLED(CONFIG_PREEMPT_VOLUNTARY)
-> +#define is_preempt_full() IS_ENABLED(CONFIG_PREEMPT)
+-- 
+Jörg Rödel
+jroedel@suse.de
 
-Would be better to use static inlines here as well instead of macros.
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5
+90409 Nürnberg
+Germany
+ 
+(HRB 36809, AG Nürnberg)
+Geschäftsführer: Ivo Totev
 
-> +
-> +#endif
-> +
-> +#define is_preempt_rt() IS_ENABLED(CONFIG_PREEMPT_RT)
-> +
->   /*
->    * Does a critical section need to be broken due to another
->    * task waiting?: (technically does not depend on CONFIG_PREEMPTION,
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 97047aa7b6c2..9db7f77e53c3 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -6638,6 +6638,17 @@ static void __init preempt_dynamic_init(void)
->   	}
->   }
->   
-> +#define PREEMPT_MODE_ACCESSOR(mode) \
-> +	bool is_preempt_##mode(void)						 \
-> +	{									 \
-> +		WARN_ON_ONCE(preempt_dynamic_mode == preempt_dynamic_undefined); \
-
-Not sure using WARN_ON is a good idea here, as it may be called very 
-early, see comment on powerpc patch.
-
-> +		return preempt_dynamic_mode == preempt_dynamic_##mode;		 \
-> +	}
-
-I'm not sure that's worth a macro. You only have 3 accessors, 2 lines of 
-code each. Just define all 3 in plain text.
-
-CONFIG_PREEMPT_DYNAMIC is based on using strategies like static_calls in 
-order to minimise the overhead. For those accessors you should use the 
-same kind of approach and use things like jump_labels in order to not 
-redo the test at each time and minimise overhead as much as possible.
-
-> +
-> +PREEMPT_MODE_ACCESSOR(none)
-> +PREEMPT_MODE_ACCESSOR(voluntary)
-> +PREEMPT_MODE_ACCESSOR(full)
-> +
->   #else /* !CONFIG_PREEMPT_DYNAMIC */
->   
->   static inline void preempt_dynamic_init(void) { }
-> 
