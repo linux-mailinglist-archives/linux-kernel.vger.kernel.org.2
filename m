@@ -2,139 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE56F452E05
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A181452E07
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:32:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233144AbhKPJdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 04:33:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60479 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233121AbhKPJdb (ORCPT
+        id S233156AbhKPJdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 04:33:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233126AbhKPJdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 04:33:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637055033;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mSJuWcsoneSy8n7p/CMH5CiBgKa6pj13KM6UjkRVYgQ=;
-        b=ZNuw90pTNo8VJXxz7jytgIOtMXeoDb4DbUHAGdahSP8vRwHAmGwfZGKZBZwHU/MeHpkhZ/
-        xNSSa13UmHXu20euuyTvHp1oK2pcwzIz4pX49X2ZgQUrlJBPk1I53JXypZDih8s43l3jBX
-        je44eTgQy+Yl+yCqbLiqHFpaMNaHcPk=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-288-HpwkiycQPOSzgtzoNbLrGw-1; Tue, 16 Nov 2021 04:30:32 -0500
-X-MC-Unique: HpwkiycQPOSzgtzoNbLrGw-1
-Received: by mail-wm1-f70.google.com with SMTP id n16-20020a05600c3b9000b003331973fdbbso1210434wms.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 01:30:32 -0800 (PST)
+        Tue, 16 Nov 2021 04:33:50 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB1A2C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 01:30:53 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id q74so55601783ybq.11
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 01:30:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yNyi2RRQSAsxPbeJbzxrhSJQkKoSMh4ynwDBEELejP0=;
+        b=f99TQ1VVzWFQfFEnJgH3L2TQl9Z9An6MytDZirJ0JiIsz36VVssawVRykd4oGEyMAe
+         kT/zq60ajJZ6idJMMdBfzYsxk2S3MKX5qc4wKOy8rfre/mZfeAQpC8HDy0Yj7ygd3KxT
+         2gLs0opM8la+MfuHIZrHpNoOgjPijf7N3M5HrjjChF93KffCpGXj3vTShsUbRO28a+CW
+         OBfMxZ2avEJCgIdL/3kVv8v76yJ0wGSAN+DS/q+GdCReWGRR3j5O05IqXQ52lcesT+kz
+         3qLzOhT3tdts3RUCPltIvZG3B9nRk8GEh5y1UMRdgd9HLi7hevrwo0qi/+s24hwDw44d
+         v15Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=mSJuWcsoneSy8n7p/CMH5CiBgKa6pj13KM6UjkRVYgQ=;
-        b=O+rFkdw9TzdfxumnUzRiujs+66JtSP/jkFqrlrBYYyA+Q6+h836CJeogRglC/Qi8K3
-         OB4yfalYsxKNuMVGnZOCgSCnzkCypjvqlEGHU8f1Hs6NqY4rfHGgd4eD8uTJh5Oct53M
-         ku2oKsMt3CFzdlyhU9hZ7NfnlIWg0/kYgAdzoyEWjzSj3OLiG6KqQ3O31H21BD0BFsCS
-         0jih3N9PEN+CepWagGqcozpBycPqtrUpCle0W9FCRtqElPqA7KT426mR1SysQ7B3LrkQ
-         a+eSieWJIWI8mfuoHZGque1CyklsoF1HtZvfENwyMUTC2gXCUiTHit3YAn2o42+oexVL
-         6ytg==
-X-Gm-Message-State: AOAM53336qz6B+PGpLo/wvYwm63QALFkiGMgiSz58hxl0PMqHXk6leg6
-        Dlpbu829HFC3hu2Zt+Wa4iOsvqwrj1yoDA2YcBza7azFIwF02i45f3Y86DtKsb0GPagZUqaASDJ
-        YVCAPOG0ExXXHHdWA7h55TfrH
-X-Received: by 2002:adf:a389:: with SMTP id l9mr7555784wrb.121.1637055031192;
-        Tue, 16 Nov 2021 01:30:31 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxgwiZj0DgXvYqrW2sWMV/yCu3WNu9rReMDFw4j3A00MnBKJ5k23ydvxJPOILvWBidIQ2S8/A==
-X-Received: by 2002:adf:a389:: with SMTP id l9mr7555735wrb.121.1637055030865;
-        Tue, 16 Nov 2021 01:30:30 -0800 (PST)
-Received: from [192.168.1.102] (91.pool90-171-47.dynamic.orange.es. [90.171.47.91])
-        by smtp.gmail.com with ESMTPSA id p2sm1944790wmq.23.2021.11.16.01.30.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Nov 2021 01:30:30 -0800 (PST)
-Message-ID: <579a584a-68af-d5c9-0547-30cb1592d46f@redhat.com>
-Date:   Tue, 16 Nov 2021 10:30:23 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yNyi2RRQSAsxPbeJbzxrhSJQkKoSMh4ynwDBEELejP0=;
+        b=rHWGSXRsHQw8fn2DvpvgrlyLxiEZc992Xh9ldgRp0aWyoVIEbCZez1i3dAa8LuUEgH
+         fcqT0U9vMhM/WHaFXISBljjWkiVVS7Uzahj/u02+YTviX6W3Z8nlx7cBkid/D8JZrO4g
+         p4/W8RBeSxE9rCGlUbBMun3wuKKE3Jx97cpBBLWBtndB6wRPXAhqb0jaqyNZ2RvnRXb9
+         60aVqygOlOq6AlUXVXW4qq+Q7IvKydMAEHYyrSpGneHDX9XjOgoYwodAoHqepl0zsqmS
+         OaVvjAnJ6tQvJ0jS4mybgUAJiqEpRH2SIHPXzssX0fZ1ouJ8lORiYtukuAh0GRlDoRpj
+         +tKw==
+X-Gm-Message-State: AOAM532Q+w/vAY8ZA1VhFSkpdIIiDk6e0ngSVcDY3uelXniEBNOR+HcN
+        CbRJhcm5vRWMLJocQ57J7KRwG8Gqo+94fTtNG2RVfQ==
+X-Google-Smtp-Source: ABdhPJxF0F/WNM1NIUSbBqToQA0eVY5Gza1NTnyqGsuoEAtnDmo8yd+xw0l223mIxhw6kLlEm42Gqj30Ws/VRE79H9Y=
+X-Received: by 2002:a25:f20e:: with SMTP id i14mr6942380ybe.366.1637055053123;
+ Tue, 16 Nov 2021 01:30:53 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2] fbdev: Prevent probing generic drivers if a FB is
- already registered
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Peter Jones <pjones@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ilya Trukhanov <lahvuun@gmail.com>,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        Borislav Petkov <bp@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20211111111120.1344613-1-javierm@redhat.com>
- <CAMuHMdWA2V_KDpcpMw3yRKmN+6YDjmysJoz6D-6JjJs-3+XYTQ@mail.gmail.com>
-From:   Javier Martinez Canillas <javierm@redhat.com>
-In-Reply-To: <CAMuHMdWA2V_KDpcpMw3yRKmN+6YDjmysJoz6D-6JjJs-3+XYTQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211108095931.618865-1-huangkele@bytedance.com>
+ <a991bbb4-b507-a2f6-ec0f-fce23d4379ce@redhat.com> <f93612f54a5cde53fd9342f703ccbaf3c9edbc9c.camel@redhat.com>
+ <CANRm+Cze_b0PJzOGB4-tPdrz-iHcJj-o7QL1t1Pf1083nJDQKQ@mail.gmail.com>
+ <d65fbd73-7612-8348-2fd8-8da0f5e2a3c0@bytedance.com> <20211116090604.GA12758@gao-cwp>
+In-Reply-To: <20211116090604.GA12758@gao-cwp>
+From:   =?UTF-8?B?6buE56eR5LmQ?= <huangkele@bytedance.com>
+Date:   Tue, 16 Nov 2021 17:30:40 +0800
+Message-ID: <CAKUug90-FaD7ufOkn2E0D-nP3=YqgnbhXLDjFyfCHUN2O5AuCg@mail.gmail.com>
+Subject: Re: [External] Re: Re: [RFC] KVM: x86: SVM: don't expose PV_SEND_IPI
+ feature with AVIC
+To:     Chao Gao <chao.gao@intel.com>
+Cc:     zhenwei pi <pizhenwei@bytedance.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, chaiwen.cc@bytedance.com,
+        xieyongji@bytedance.com, dengliang.1214@bytedance.com,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Geert,
+> The recently posted Intel IPI virtualization will accelerate unicast
+> ipi but not broadcast ipis, AMD AVIC accelerates unicast ipi well but
+> accelerates broadcast ipis worse than pv ipis. Could we just handle
+> unicast ipi here?
 
-On 11/15/21 17:20, Geert Uytterhoeven wrote:
+Thanks for the explanation! It is true that AVIC does not always perform better
+than PV IPI, actually not even swx2apic.
 
-[snip]
+> So agree with Wanpeng's point, is it possible to separate single IPI and
+> broadcast IPI on a hardware acceleration platform?
 
->> @@ -351,6 +351,17 @@ static int efifb_probe(struct platform_device *dev)
->>         char *option = NULL;
->>         efi_memory_desc_t md;
->>
->> +       /*
->> +        * Generic drivers must not be registered if a framebuffer exists.
->> +        * If a native driver was probed, the display hardware was already
->> +        * taken and attempting to use the system framebuffer is dangerous.
->> +        */
->> +       if (num_registered_fb > 0) {
-> 
-> Who says this registered fbdev is driving the same hardware as efifb?
-> This might be e.g. a small external display connected to i2c or spi.
-> 
->> +               dev_err(&dev->dev,
->> +                       "efifb: a framebuffer is already registered\n");
->> +               return -EINVAL;
->> +       }
->> +
 
-That's true, although I wonder if the {efi,simple}fb drivers should even be
-probed in that case. As I see it, these are always a best effort that are
-only useful for earlycon or if there isn't another display driver supported.
+> how about just correcting the logic for xapic:
 
-Since there may be other conditions needed in order for these to work. For
-example, when using the u-boot EFI stub in most cases the unused clocks and
-power domains can't be gated or otherwise the firmware frame buffer could go
-away (e.g: will need to boot with "clk_ignore_unused" and "pd_ignore_unused").
+> From 13447b221252b64cd85ed1329f7d917afa54efc8 Mon Sep 17 00:00:00 2001
+> From: Jiaqing Zhao <jiaqing.zhao@intel.com>
+> Date: Fri, 9 Apr 2021 13:53:39 +0800
+> Subject: [PATCH 1/2] x86/apic/flat: Add specific send IPI logic
 
-Same for the simplefb driver, if the DT node is missing resources that are
-needed by the display controller to continue working (clocks, regulators,
-power domains), the firmware setup framebuffer will go away at some point.
+> Currently, apic_flat.send_IPI() uses default_send_IPI_single(), which
+> is a wrapper of apic->send_IPI_mask(). Since commit aaffcfd1e82d
+> ("KVM: X86: Implement PV IPIs in linux guest"), KVM PV IPI driver will
+> override apic->send_IPI_mask(), and may cause unwated side effects.
 
-So this is already a fragile solution and $SUBJECT doesn't make things worse
-IMO. Since not having something like this can lead to issues as reported by:
+> This patch removes such side effects by creating a specific send_IPI
+> method.
 
-https://lore.kernel.org/all/20211110200253.rfudkt3edbd3nsyj@lahvuun/
+> Signed-off-by: Jiaqing Zhao <jiaqing.zhao@intel.com>
 
-We could probably do some smarter here by providing a function that checks
-if the registered fbdev drivers matches the aperture base. But I'm unsure
-if that's worth it. After all, fbdev drivers are likely to be disabled by
-most distros soon now that we have the simpledrm driver.
-
+Actually, I think this issue is more about how to sort out the relationship
+between AVIC and PV IPI. As far as I understand, currently, no matter
+the option from userspace or the determination made in kernel works
+in some way, but not in the migration scenario. For instance, migration with
+AVIC feature changes can make guests lose the PV IPI feature needlessly.
+Besides, the current patch is not consistent with
+KVM_CAP_ENFORCE_PV_FEATURE_CPUID.
+Paolo's advice about using a new hint shall work well. Currently try
+working on it.
 Best regards,
--- 
-Javier Martinez Canillas
-Linux Engineering
-Red Hat
+Kele
 
+On Tue, Nov 16, 2021 at 4:56 PM Chao Gao <chao.gao@intel.com> wrote:
+>
+> On Tue, Nov 16, 2021 at 10:56:25AM +0800, zhenwei pi wrote:
+> >
+> >
+> >On 11/16/21 10:48 AM, Wanpeng Li wrote:
+> >> On Mon, 8 Nov 2021 at 22:09, Maxim Levitsky <mlevitsk@redhat.com> wrote:
+> >> >
+> >> > On Mon, 2021-11-08 at 11:30 +0100, Paolo Bonzini wrote:
+> >> > > On 11/8/21 10:59, Kele Huang wrote:
+> >> > > > Currently, AVIC is disabled if x2apic feature is exposed to guest
+> >> > > > or in-kernel PIT is in re-injection mode.
+> >> > > >
+> >> > > > We can enable AVIC with options:
+> >> > > >
+> >> > > >     Kmod args:
+> >> > > >     modprobe kvm_amd avic=1 nested=0 npt=1
+> >> > > >     QEMU args:
+> >> > > >     ... -cpu host,-x2apic -global kvm-pit.lost_tick_policy=discard ...
+> >> > > >
+> >> > > > When LAPIC works in xapic mode, both AVIC and PV_SEND_IPI feature
+> >> > > > can accelerate IPI operations for guest. However, the relationship
+> >> > > > between AVIC and PV_SEND_IPI feature is not sorted out.
+> >> > > >
+> >> > > > In logical, AVIC accelerates most of frequently IPI operations
+> >> > > > without VMM intervention, while the re-hooking of apic->send_IPI_xxx
+> >> > > > from PV_SEND_IPI feature masks out it. People can get confused
+> >> > > > if AVIC is enabled while getting lots of hypercall kvm_exits
+> >> > > > from IPI.
+> >> > > >
+> >> > > > In performance, benchmark tool
+> >> > > > https://lore.kernel.org/kvm/20171219085010.4081-1-ynorov@caviumnetworks.com/
+> >> > > > shows below results:
+> >> > > >
+> >> > > >     Test env:
+> >> > > >     CPU: AMD EPYC 7742 64-Core Processor
+> >> > > >     2 vCPUs pinned 1:1
+> >> > > >     idle=poll
+> >> > > >
+> >> > > >     Test result (average ns per IPI of lots of running):
+> >> > > >     PV_SEND_IPI      : 1860
+> >> > > >     AVIC             : 1390
+> >> > > >
+> >> > > > Besides, disscussions in https://lkml.org/lkml/2021/10/20/423
+> >> > > > do have some solid performance test results to this.
+> >> > > >
+> >> > > > This patch fixes this by masking out PV_SEND_IPI feature when
+> >> > > > AVIC is enabled in setting up of guest vCPUs' CPUID.
+> >> > > >
+> >> > > > Signed-off-by: Kele Huang <huangkele@bytedance.com>
+> >> > >
+> >> > > AVIC can change across migration.  I think we should instead use a new
+> >> > > KVM_HINTS_* bit (KVM_HINTS_ACCELERATED_LAPIC or something like that).
+> >> > > The KVM_HINTS_* bits are intended to be changeable across migration,
+> >> > > even though we don't have for now anything equivalent to the Hyper-V
+> >> > > reenlightenment interrupt.
+> >> >
+> >> > Note that the same issue exists with HyperV. It also has PV APIC,
+> >> > which is harmful when AVIC is enabled (that is guest uses it instead
+> >> > of using AVIC, negating AVIC benefits).
+> >> >
+> >> > Also note that Intel recently posted IPI virtualizaion, which
+> >> > will make this issue relevant to APICv too soon.
+> >>
+> >> The recently posted Intel IPI virtualization will accelerate unicast
+> >> ipi but not broadcast ipis, AMD AVIC accelerates unicast ipi well but
+> >> accelerates broadcast ipis worse than pv ipis. Could we just handle
+> >> unicast ipi here?
+> >>
+> >>      Wanpeng
+> >>
+> >Depend on the number of target vCPUs, broadcast IPIs gets unstable
+> >performance on AVIC, and usually worse than PV Send IPI.
+> >So agree with Wanpeng's point, is it possible to separate single IPI and
+> >broadcast IPI on a hardware acceleration platform?
+>
+> Actually, this is how kernel works in x2apic mode: use PV interface
+> (hypercall) to send multi-cast IPIs and write ICR MSR directly to send
+> unicast IPIs.
+>
+> But if guest works in xapic mode, both unicast and multi-cast are issued
+> via PV interface. It is a side-effect introduced by commit aaffcfd1e82d.
+>
+> how about just correcting the logic for xapic:
+>
+> From 13447b221252b64cd85ed1329f7d917afa54efc8 Mon Sep 17 00:00:00 2001
+> From: Jiaqing Zhao <jiaqing.zhao@intel.com>
+> Date: Fri, 9 Apr 2021 13:53:39 +0800
+> Subject: [PATCH 1/2] x86/apic/flat: Add specific send IPI logic
+>
+> Currently, apic_flat.send_IPI() uses default_send_IPI_single(), which
+> is a wrapper of apic->send_IPI_mask(). Since commit aaffcfd1e82d
+> ("KVM: X86: Implement PV IPIs in linux guest"), KVM PV IPI driver will
+> override apic->send_IPI_mask(), and may cause unwated side effects.
+>
+> This patch removes such side effects by creating a specific send_IPI
+> method.
+>
+> Signed-off-by: Jiaqing Zhao <jiaqing.zhao@intel.com>
+> ---
+>  arch/x86/kernel/apic/apic_flat_64.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kernel/apic/apic_flat_64.c b/arch/x86/kernel/apic/apic_flat_64.c
+> index 8f72b4351c9f..3196bf220230 100644
+> --- a/arch/x86/kernel/apic/apic_flat_64.c
+> +++ b/arch/x86/kernel/apic/apic_flat_64.c
+> @@ -64,6 +64,13 @@ static void flat_send_IPI_mask(const struct cpumask *cpumask, int vector)
+>         _flat_send_IPI_mask(mask, vector);
+>  }
+>
+> +static void flat_send_IPI_single(int cpu, int vector)
+> +{
+> +       unsigned long mask = cpumask_bits(cpumask_of(cpu))[0];
+> +
+> +       _flat_send_IPI_mask(mask, vector);
+> +}
+> +
+>  static void
+>  flat_send_IPI_mask_allbutself(const struct cpumask *cpumask, int vector)
+>  {
+> @@ -132,7 +139,7 @@ static struct apic apic_flat __ro_after_init = {
+>
+>         .calc_dest_apicid               = apic_flat_calc_apicid,
+>
+> -       .send_IPI                       = default_send_IPI_single,
+> +       .send_IPI                       = flat_send_IPI_single,
+>         .send_IPI_mask                  = flat_send_IPI_mask,
+>         .send_IPI_mask_allbutself       = flat_send_IPI_mask_allbutself,
+>         .send_IPI_allbutself            = default_send_IPI_allbutself,
+> --
+> 2.27.0
+>
