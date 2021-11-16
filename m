@@ -2,127 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41AD9453B05
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:36:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 265A0453B08
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 21:37:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbhKPUjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 15:39:04 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:54912 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhKPUjD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 15:39:03 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637094964;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7XMMD+98XQDTijC1O0p6zbcme1OE0jdwczk1KLw1JOs=;
-        b=dDyO7+EvG86gufOoXYubDHjIlCmeX7/aFLtNX3uXfQ1QgrHOH5HvpJLGXPsXXe0fUD+Onq
-        7RmcbsX/Qt+hpjVjXGMhXV80UXqyICDbKlG87iWP0ByR12OI9gBglVlGtiO3LUGWOIVRi0
-        2pYJ4y69bIT1hhgxLPggZfPiw3Z0pIOYUFnCm4/T+pQ70/Xw1uOeGjop3eExghq19xVfwt
-        ZI6O0KspUX0/PVsJZtc5uF+Dbw4tpb+7wG+d2DUlxx6jwnPcpPWsPQa/wHaKK6ebGGPs5S
-        81qwR9jhkxuNQiKEwaFhHyaWs/18T0yCsC3mPwE3749CgqcgOQwGNbBUMCB2Jg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637094964;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7XMMD+98XQDTijC1O0p6zbcme1OE0jdwczk1KLw1JOs=;
-        b=YoB9wfk7mpwxAgN6yqjfyuMAPnyAegQGDqaIuBzPmClN9HKGYOc7Vud2LI7/EsYUrPvD74
-        UpMa4UPU8vDDBrDg==
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     "Liu, Jing2" <jing2.liu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Jing Liu <jing2.liu@linux.intel.com>,
-        "Cooper, Andrew" <andrew.cooper3@citrix.com>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Subject: Re: Thoughts of AMX KVM support based on latest kernel
-In-Reply-To: <04978d6d-8e1a-404d-b30d-402a7569c1f0@redhat.com>
-References: <BYAPR11MB325685AB8E3DFD245846F854A9939@BYAPR11MB3256.namprd11.prod.outlook.com>
- <87k0h85m65.ffs@tglx> <YZPWsICdDTZ02UDu@google.com> <87ee7g53rp.ffs@tglx>
- <04978d6d-8e1a-404d-b30d-402a7569c1f0@redhat.com>
-Date:   Tue, 16 Nov 2021 21:36:03 +0100
-Message-ID: <87zgq34z4c.ffs@tglx>
+        id S230132AbhKPUjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 15:39:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50612 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229614AbhKPUjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 15:39:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC0A261AE2;
+        Tue, 16 Nov 2021 20:36:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637095010;
+        bh=EQ2kzAIAp9lGq1yFLf/XWOv9j++al7Pc/NdjyCxIpj4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=oAuJLXaZdwr2YUHe1QH0xqQ9IAydOvLp0KyoSzPQWzRbeWRpPifKHuTftv+BKWerI
+         bWKfFEU+HZUfHjMraXUj6pSgSkSwU8bFMGKSl1vtpDPmvKs5QIOxhALHfdLfuN6g4S
+         mQk2rgZGUqoWeFBKR3DmE9301A0sDFnP8Mu+v2ZDrbZYJdOZv/salYhccVDN4hdgLr
+         +CbNM+voa3h7THotahC1gK2VvqcisU2H499uhxMd/DEhQHZji13FUCBrUHHgJZp+uI
+         bTOjYTwjWa3Jt7ro6cV9rZ/3n5FAyd2pGLtT3ic0mlYo2HgLrSp5qp6vWqDFGJeTT4
+         GtNIWkKoljZjw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 746E45C0433; Tue, 16 Nov 2021 12:36:50 -0800 (PST)
+Date:   Tue, 16 Nov 2021 12:36:50 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Waiman Long <longman@redhat.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Cassio Neri <cassio.neri@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH 1/2] clocksource: Avoid accidental unstable marking of
+ clocksources
+Message-ID: <20211116203650.GV641268@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211111045703.GA15896@shbuild999.sh.intel.com>
+ <20211111144311.GK641268@paulmck-ThinkPad-P17-Gen-1>
+ <20211112054417.GA29845@shbuild999.sh.intel.com>
+ <889b16c6-b6cc-63d7-a6de-8cec42c7d78c@redhat.com>
+ <20211114155407.GB641268@paulmck-ThinkPad-P17-Gen-1>
+ <20211115020851.GB29845@shbuild999.sh.intel.com>
+ <e2d300c4-cc0d-47c4-3e7d-8a1cc3546719@redhat.com>
+ <20211115075915.GA34844@shbuild999.sh.intel.com>
+ <20211115140709.GG641268@paulmck-ThinkPad-P17-Gen-1>
+ <20211116013651.GC34844@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211116013651.GC34844@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paolo,
+On Tue, Nov 16, 2021 at 09:36:51AM +0800, Feng Tang wrote:
+> On Mon, Nov 15, 2021 at 06:07:09AM -0800, Paul E. McKenney wrote:
+> > On Mon, Nov 15, 2021 at 03:59:15PM +0800, Feng Tang wrote:
+> > > On Sun, Nov 14, 2021 at 10:24:56PM -0500, Waiman Long wrote:
+> > > > 
+> > > > On 11/14/21 21:08, Feng Tang wrote:
+> > > > > Or did you have something else in mind?
+> > > > > > > > I'm not sure the detail in  Waiman's cases, and in our cases (stress-ng)
+> > > > > > > > the delay between watchdog's (HPET here) read were not linear, that
+> > > > > > > > from debug data, sometimes the 3-2 difference could be bigger or much
+> > > > > > > > bigger than the 2-1 difference.
+> > > > > > > > 
+> > > > > > > > The reason could be the gap between 2 reads depends hugely on the system
+> > > > > > > > pressure at that time that 3 HPET read happens. On our test box (a
+> > > > > > > > 2-Socket Cascade Lake AP server), the 2-1 and 3-2 difference are stably
+> > > > > > > > about 2.5 us,  while under the stress it could be bumped to from 6 us
+> > > > > > > > to 2800 us.
+> > > > > > > > 
+> > > > > > > > So I think checking the 3-2 difference plus increasing the max retries
+> > > > > > > > to 10 may be a simple way, if the watchdog read is found to be
+> > > > > > > > abnormally long, we skip this round of check.
+> > > > > > > On one of the test system, I had measured that normal delay
+> > > > > > > (hpet->tsc->hpet) was normally a bit over 2us. It was a bit more than 4us at
+> > > > > > > bootup time. However, the same system under stress could have a delay of
+> > > > > > > over 200us at bootup time. When I measured the consecutive hpet delay, it
+> > > > > > > was about 180us. So hpet read did dominate the total clocksource read delay.
+> > > > > > Thank you both for the data!
+> > > > > > 
+> > > > > > > I would not suggest increasing the max retries as it may still fail in most
+> > > > > > > cases because the system stress will likely not be going away within a short
+> > > > > > > time. So we are likely just wasting cpu times. I believe we should just skip
+> > > > > > > it if it is the watchdog read that is causing most of the delay.
+> > > > > > If anything, adding that extra read would cause me to -reduce- the number
+> > > > > > of retries to avoid increasing the per-watchdog overhead.
+> > > > > I understand Waiman's concern here, and in our test patch, the 2
+> > > > > consecutive watchdog read delay check is done inside this retrying
+> > > > > loop accompanying the 'cs' read, and once an abnormal delay is found,
+> > > > > the watchdog check is skipped without waiting for the max-retries to
+> > > > > complete.
+> > > > > 
+> > > > > Our test data shows the consecutive delay is not always big even when
+> > > > > the system is much stressed, that's why I suggest to increase the
+> > > > > retries.
+> > > > 
+> > > > If we need a large number of retries to avoid triggering the unstable TSC
+> > > > message, we should consider increase the threshod instead. Right?
+> > > > 
+> > > > That is why my patch 2 makes the max skew value a configurable option so
+> > > > that we can tune it if necessary.
+> > > 
+> > > I'm fine with it, though the ideal case I expected is with carefully
+> > > picked values for max_retries/screw_threshhold, we could save the users
+> > > from configuring these. But given the complexity of all HWs out there,
+> > > it's not an easy goal.
+> > 
+> > That is my goal as well, but I expect that more experience, testing,
+> > and patches will be required to reach that goal.
+> > 
+> > > And I still suggest to put the consecutive watchdog read check inside
+> > > the retry loop, so that it could bail out early when detecting the
+> > > abnormal delay.
+> > 
+> > If the HPET read shows abnormal delay, agreed.  But if the abnormal
+> > delay is only in the clocksource under test (TSC in this case), then
+> > a re-read seems to me to make sense.
+> 
+> Yes, I agree. The retry logic you introeduced does help to filter
+> many false alarms from a watchdog. 
+> 
+> > > Another thing is we may need to set the 'watchdog_reset_pending', as
+> > > under the stress, there could be consecutive many times of "skipping"
+> > > watchdog check, and the saved value of 'cs' and 'watchdog' should be
+> > > reset.
+> > 
+> > My thought was to count a read failure only if the HPET read did not
+> > have excessive delays.  This means that a cache-buster workload could 
+> > indefinitely delay a clock-skew check, which was one reason that I
+> > was thinking in terms of using the actual measured delays to set the
+> > clock-skew check criterion.
+> > 
+> > Either way, something like Waiman's patch checking the HPET delay looks
+> > to me to be valuable.
+> 
+> Yes, and Wainman is working on a new version.
 
-On Tue, Nov 16 2021 at 20:49, Paolo Bonzini wrote:
-> On 11/16/21 19:55, Thomas Gleixner wrote:
->> We can do that, but I'm unhappy about this conditional in schedule(). So
->> I was asking for doing a simple KVM only solution first:
->> 
->> vcpu_run()
->>          kvm_load_guest_fpu()
->>              wrmsrl(XFD, guest_fpstate->xfd);
->>              XRSTORS
->>            
->>          do {
->> 
->>             local_irq_disable();
->> 
->>             if (test_thread_flag(TIF_NEED_FPU_LOAD))
->> 		switch_fpu_return()
->>                    wrmsrl(XFD, guest_fpstate->xfd);
->> 
->>             do {
->>                  vmenter();              // Guest modifies XFD
->>             } while (reenter);
->> 
->>             update_xfd_state();          // Restore consistency
->> 
->>             local_irq_enable();
->> 
->> and check how bad that is for KVM in terms of overhead on AMX systems.
->
-> I agree, this is how we handle SPEC_CTRL for example and it can be 
-> extended to XFD.
+Looking forward to seeing it!
 
-SPEC_CTRL is different because it's done right after each VMEXIT.
+> btw, here is our easy reproducer (the case you have worked with Oliver
+> Sang), running the stress-ng's case (192 is the CPU number of the test
+> box):
+> 
+>  sudo stress-ng --timeout 30 --times --verify --metrics-brief --ioport 192
 
-XFD can be done lazy when breaking out of the exit fastpath loop before
-enabling interrupts.
+Good to know, thank you!
 
-> We should first do that, then switch to the MSR lists. 
->   Hacking into schedule() should really be the last resort.
->
->>            local_irq_enable();     <- Problem starts here
->> 
->>            preempt_enable();	   <- Becomes wider here
->
-> It doesn't become that much wider because there's always preempt 
-> notifiers.  So if it's okay to save XFD in the XSAVES wrapper and in 
-> kvm_arch_vcpu_put(), that might be already remove the need to do it 
-> schedule().
-
-Did not think about preemption notifiers. Probably because I hate
-notifiers with a passion since I had to deal with the CPU hotplug
-notifier trainwreck.
-
-But yes that would work. So the places to do that would be:
-
-1) kvm_sched_out() -> kvm_arch_vcpu_put()
-2) kernel_fpu_begin_mask()
-3) kvm_put_guest_fpu()
-
-But I really would start with the trivial version I suggested because
-that's already in the slow path and not at every VMEXIT.
-
-I'd be really surprised if that RDMSR is truly noticeable within all the
-other crud this path is doing.
-
-Thanks,
-
-        tglx
+							Thanx, Paul
