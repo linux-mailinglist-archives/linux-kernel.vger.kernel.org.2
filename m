@@ -2,251 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8785C452CBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:27:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC54452CBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:27:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232149AbhKPIaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 03:30:24 -0500
-Received: from mga09.intel.com ([134.134.136.24]:45084 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232112AbhKPIaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 03:30:08 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="233483350"
-X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
-   d="scan'208";a="233483350"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 00:27:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
-   d="scan'208";a="506333986"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 16 Nov 2021 00:27:07 -0800
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mmto2-0000Eg-Kz; Tue, 16 Nov 2021 08:27:06 +0000
-Date:   Tue, 16 Nov 2021 16:26:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars:testing/cast-function-type] BUILD SUCCESS
- 552a23a0e5d0a84cecd4687043d8030673981d30
-Message-ID: <61936b23.oZWzmxK5Vr7sqE6/%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S232045AbhKPIaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 03:30:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232065AbhKPI3t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 03:29:49 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BDDC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 00:26:52 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id d10so55192240ybe.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 00:26:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zKTpTAX3CYcAD+IfMc5iTmWOWQYhJZdkd6G9+skmKnQ=;
+        b=gMmx7dgxqaA7QTjdaKaFPvDJxy1ssDsKXV7f/rOMTRbVk7zXCTwG0IYULnNVxmhfuW
+         /Az0pi37GxMZLFvhhc/08M9TSqUupI6qbq9NLM7ppj5thNPBv5H2kJjWDnNkiF93In5H
+         RBvfO1u19+aOjUBmwGj+kbMkWgFUPHnyxlgRKI+eKN/nS84Zn5Jkg99t1M+slP9GkPAV
+         7tw0j1+J31k5zF6730r+kAdfo7CyskLxypKXKyQYRW+KNxlxL+zn4IavkIlKnvebHhex
+         p2/Pdmg1+Cl7bAc3QO4eeTg+lTMj6KIpx/GwMMVbPZ6zEQ14NYAt2sNkxUjjh9KF4yDi
+         h1nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zKTpTAX3CYcAD+IfMc5iTmWOWQYhJZdkd6G9+skmKnQ=;
+        b=gz7CG3GJJxIFBjPMnM6Vp8MnuK5wZCP5qdCVKHk0SGkhoy/m2rtBIo7daezXTSLIbv
+         0/Mco7+5vDhcnm8U/x4B2AV9TMR0kV0F4BI+i6z/CrI68waMskKMSKqj6gwSEZ33a4Ra
+         ei71Zhs7rx1xQraF8I+Rzq07EzzvqNzAunt4wRZb3LE7INYd7t3byxl3YjB7626cg4pI
+         zvEfBlJrT53H5AEw0uoPC3qyg75a5g+tYlj4z2zfcBqIiDgzMr6O/oBosLLPQcTYF1oF
+         McSdYsROSPL259GPZxscxB6+8O+xoPY8w1n+P0MHBWPUK7rScZJSPQGwsBstMP6BjU4d
+         AgEg==
+X-Gm-Message-State: AOAM5308ZJeX2KXsV9HXdwpi/kfm5Mk7UEg7nZl5auZC4s3VFz+4KsTm
+        9TW68GEq2erxaHB9cmM0nVqv4ai8B+4wyWArS1Y2Uw==
+X-Google-Smtp-Source: ABdhPJyuPf9385jYLaCNMzCNlglLQO7CWM0XIyiQcDFli3VOF9khrUAzVZ+ZPBI+xkwVw4LGnbWd5CowLLzCjVixjp0=
+X-Received: by 2002:a25:d15:: with SMTP id 21mr6055391ybn.141.1637051211812;
+ Tue, 16 Nov 2021 00:26:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20211101093518.86845-1-songmuchun@bytedance.com> <20211115210917.96f681f0a75dfe6e1772dc6d@linux-foundation.org>
+In-Reply-To: <20211115210917.96f681f0a75dfe6e1772dc6d@linux-foundation.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 16 Nov 2021 16:26:12 +0800
+Message-ID: <CAMZfGtX+GkVf_7D8G+Ss32+wYy1bcMgDpT5FJDA=a9gdjW36-w@mail.gmail.com>
+Subject: Re: [PATCH 0/4] remove PDE_DATA()
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>, gladkov.alexey@gmail.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/cast-function-type
-branch HEAD: 552a23a0e5d0a84cecd4687043d8030673981d30  Makefile: Enable -Wcast-function-type
+On Tue, Nov 16, 2021 at 1:09 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Mon,  1 Nov 2021 17:35:14 +0800 Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> > I found a bug [1] some days ago, which is because we want to use
+> > inode->i_private to pass user private data. However, this is wrong
+> > on proc fs. We provide a specific function PDE_DATA() to get user
+> > private data. Actually, we can hide this detail by storing
+> > PDE()->data into inode->i_private and removing PDE_DATA() completely.
+> > The user could use inode->i_private to get user private data just
+> > like debugfs does. This series is trying to remove PDE_DATA().
+>
+> Why can't we do
+>
+> /*
+>  * comment goes here
+>  */
+> static inline void *PDE_DATA(struct inode *inode)
+> {
+>         return inode->i_private;
+> }
+>
+> to abstract things a bit and to reduce the patch size?
+>
+> otoh, that upper-case thing needs to go, so the patch size remains the
+> same anyway.
+>
+> And perhaps we should have a short-term
+>
+> #define PDE_DATA(i) pde_data(i)
 
-elapsed time: 727m
+Right. This way is the easiest way to reduce the patch size.
+Actually, I want to make all PDE_DATA() go away, which
+makes this patch series go big.
 
-configs tested: 189
-configs skipped: 3
+>
+> because new instances are sure to turn up during the development cycle.
+>
+> But I can handle that by staging the patch series after linux-next and
+> reminding myself to grep for new PDE_DATA instances prior to
+> upstreaming.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I'd be happy if you could replace PDE_DATA() with inode->i_private.
+In this case, should I still introduce pde_data() and perform the above
+things to make this series smaller?
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20211115
-i386                 randconfig-c001-20211116
-m68k                             alldefconfig
-powerpc                 linkstation_defconfig
-ia64                                defconfig
-mips                         db1xxx_defconfig
-mips                malta_qemu_32r6_defconfig
-powerpc                        cell_defconfig
-arm                       omap2plus_defconfig
-sparc                               defconfig
-arm                       cns3420vb_defconfig
-arm                        mini2440_defconfig
-sh                            shmin_defconfig
-powerpc                    adder875_defconfig
-sparc                            alldefconfig
-powerpc                 mpc836x_mds_defconfig
-arm                         nhk8815_defconfig
-arm                         lubbock_defconfig
-sh                             shx3_defconfig
-sh                          lboxre2_defconfig
-arm                       netwinder_defconfig
-powerpc                mpc7448_hpc2_defconfig
-arc                                 defconfig
-m68k                        m5307c3_defconfig
-powerpc                     stx_gp3_defconfig
-powerpc                 mpc85xx_cds_defconfig
-arm                         cm_x300_defconfig
-m68k                          atari_defconfig
-sh                             espt_defconfig
-arm                        vexpress_defconfig
-h8300                    h8300h-sim_defconfig
-sh                               j2_defconfig
-powerpc                      ppc6xx_defconfig
-mips                          ath25_defconfig
-openrisc                 simple_smp_defconfig
-sh                         ecovec24_defconfig
-m68k                       m5475evb_defconfig
-arm                            xcep_defconfig
-arm                        spear3xx_defconfig
-m68k                       m5208evb_defconfig
-powerpc                     ppa8548_defconfig
-arm                       aspeed_g4_defconfig
-mips                     decstation_defconfig
-sh                         apsh4a3a_defconfig
-sparc64                             defconfig
-m68k                       m5275evb_defconfig
-arm                        magician_defconfig
-mips                           ip22_defconfig
-m68k                            mac_defconfig
-arm                          badge4_defconfig
-sh                           sh2007_defconfig
-powerpc                     ksi8560_defconfig
-powerpc                     kilauea_defconfig
-arm                      tct_hammer_defconfig
-sh                          sdk7780_defconfig
-powerpc                      cm5200_defconfig
-powerpc                   microwatt_defconfig
-mips                       bmips_be_defconfig
-um                               alldefconfig
-arm                     eseries_pxa_defconfig
-powerpc                 xes_mpc85xx_defconfig
-x86_64                           allyesconfig
-powerpc                     taishan_defconfig
-arm                         at91_dt_defconfig
-m68k                         amcore_defconfig
-sh                   sh7770_generic_defconfig
-xtensa                         virt_defconfig
-mips                             allyesconfig
-powerpc                   lite5200b_defconfig
-mips                           ip32_defconfig
-powerpc                     pq2fads_defconfig
-m68k                        mvme16x_defconfig
-arm                         palmz72_defconfig
-powerpc                  iss476-smp_defconfig
-arm                           tegra_defconfig
-h8300                               defconfig
-mips                      maltaaprp_defconfig
-powerpc                    ge_imp3a_defconfig
-sh                          rsk7203_defconfig
-m68k                        m5407c3_defconfig
-sh                        sh7763rdp_defconfig
-mips                         mpc30x_defconfig
-sh                     sh7710voipgw_defconfig
-arm                  randconfig-c002-20211115
-arm                  randconfig-c002-20211116
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-h8300                            allyesconfig
-xtensa                           allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-s390                             allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-mips                             allmodconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-powerpc                          allyesconfig
-x86_64               randconfig-a005-20211115
-x86_64               randconfig-a003-20211115
-x86_64               randconfig-a002-20211115
-x86_64               randconfig-a001-20211115
-x86_64               randconfig-a006-20211115
-x86_64               randconfig-a004-20211115
-i386                 randconfig-a006-20211115
-i386                 randconfig-a003-20211115
-i386                 randconfig-a005-20211115
-i386                 randconfig-a001-20211115
-i386                 randconfig-a004-20211115
-i386                 randconfig-a002-20211115
-x86_64               randconfig-a015-20211116
-x86_64               randconfig-a013-20211116
-x86_64               randconfig-a012-20211116
-x86_64               randconfig-a011-20211116
-x86_64               randconfig-a016-20211116
-x86_64               randconfig-a014-20211116
-i386                 randconfig-a014-20211116
-i386                 randconfig-a016-20211116
-i386                 randconfig-a012-20211116
-i386                 randconfig-a013-20211116
-i386                 randconfig-a011-20211116
-i386                 randconfig-a015-20211116
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-c007-20211115
-i386                 randconfig-c001-20211115
-arm                  randconfig-c002-20211115
-riscv                randconfig-c006-20211115
-powerpc              randconfig-c003-20211115
-s390                 randconfig-c005-20211115
-mips                 randconfig-c004-20211115
-x86_64               randconfig-c007-20211116
-i386                 randconfig-c001-20211116
-arm                  randconfig-c002-20211116
-riscv                randconfig-c006-20211116
-powerpc              randconfig-c003-20211116
-s390                 randconfig-c005-20211116
-mips                 randconfig-c004-20211116
-x86_64               randconfig-a005-20211116
-x86_64               randconfig-a003-20211116
-x86_64               randconfig-a001-20211116
-x86_64               randconfig-a002-20211116
-x86_64               randconfig-a006-20211116
-x86_64               randconfig-a004-20211116
-x86_64               randconfig-a015-20211115
-x86_64               randconfig-a013-20211115
-x86_64               randconfig-a011-20211115
-x86_64               randconfig-a012-20211115
-x86_64               randconfig-a016-20211115
-x86_64               randconfig-a014-20211115
-i386                 randconfig-a014-20211115
-i386                 randconfig-a016-20211115
-i386                 randconfig-a012-20211115
-i386                 randconfig-a013-20211115
-i386                 randconfig-a011-20211115
-i386                 randconfig-a015-20211115
-hexagon              randconfig-r045-20211115
-hexagon              randconfig-r041-20211115
-s390                 randconfig-r044-20211115
-riscv                randconfig-r042-20211115
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks.
