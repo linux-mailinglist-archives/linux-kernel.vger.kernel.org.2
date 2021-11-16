@@ -2,119 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD24D4532D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:24:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB7714532D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:29:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236711AbhKPN0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 08:26:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44528 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236705AbhKPN01 (ORCPT
+        id S236672AbhKPNc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 08:32:27 -0500
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:50904 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230471AbhKPNcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 08:26:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637069010;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7QB9Djd7unSuWFppJ6ryGSoufF2SRnNHGOPyI0tESn4=;
-        b=ZIstAnW0E0rBi5YPmzUSbyRKpnq0DuO6PR50Jh4JD3q9SQe/gbMGDETnNGnz20QqQ7PKKd
-        6kLe4ilGFg11hvIySMDKfQ88SS7dHDVNQTQcFU6i/jqtJpfB9fYTj10LmjIGH7yr0JoyvK
-        vf7oU3SyUiZQX2B1YsEZQD29hSCh41c=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-579-FxIFk6D0MG2caOT_jDHOzQ-1; Tue, 16 Nov 2021 08:23:29 -0500
-X-MC-Unique: FxIFk6D0MG2caOT_jDHOzQ-1
-Received: by mail-wm1-f69.google.com with SMTP id 201-20020a1c04d2000000b003335bf8075fso6484614wme.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 05:23:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=7QB9Djd7unSuWFppJ6ryGSoufF2SRnNHGOPyI0tESn4=;
-        b=22Y9DnTPW+T+pecLLyDFUE7J9/eTZxYC/HDCDRX/N5VkFNbjfl9UQ2ksjWW6m+4HwW
-         4mdZsVl13JU2ieQNgSErAhWCRUfr/lk/IWS3QUQYKg26PPFkhgnsg0VggyyTVP6h+MIs
-         7I9ehR5DFeWX9lmupUDQOL6a7ULW3ovB8btCnuf5oPRJAbayfxxHoSShy8L7ZhL6aVKU
-         AEO5URrVHDLV0OTAfnwFb2OowXiyQSbL4KIattMxGdrQ60gQ/yurKzaJbL/soCJYrC4x
-         AiQcVHMqpDubl059q1QY9MZtMC0TPK5FTz746cp5EgYfNkJLb88QbwXZ3JFc7aYK++p7
-         WuaQ==
-X-Gm-Message-State: AOAM532Pk5KlhNkuJH7uW8x7u8CnqWdEHSeWig3zU4rEU8wAGYbelftf
-        imJTudd4lGwXD5ZagH70eryd+Kb4PAUodjWF5BJETf+m737YT8H2I5XrxkwXRSCE4Yge7rwMUkf
-        /vxF+v+NOtsAM2XyCsp8G4BzquI50yF0sez++vgq0WsoVNcK4JRhdw/0ROU7ColhPgC3+wiUHlN
-        Ju
-X-Received: by 2002:adf:fd90:: with SMTP id d16mr9035263wrr.385.1637069007901;
-        Tue, 16 Nov 2021 05:23:27 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJypb9wLmwBU+C8U60E20ALWxdPmsGCyP6NgX66fxkM73bNsY5mStZduwVGh4q0guawc8+jIEQ==
-X-Received: by 2002:adf:fd90:: with SMTP id d16mr9035209wrr.385.1637069007612;
-        Tue, 16 Nov 2021 05:23:27 -0800 (PST)
-Received: from fedora (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id n7sm17311363wro.68.2021.11.16.05.23.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 05:23:27 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>
-Cc:     kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Eduardo Habkost <ehabkost@redhat.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, kvm-ppc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] KVM: arm64: Cap KVM_CAP_NR_VCPUS by KVM_CAP_MAX_VCPUS
-In-Reply-To: <ad3534bc-fe3a-55f5-b022-4dbec5f29798@redhat.com>
-References: <20211111162746.100598-1-vkuznets@redhat.com>
- <20211111162746.100598-2-vkuznets@redhat.com>
- <a5cdff6878b7157587e92ebe4d5af362@kernel.org> <875ysxg0s1.fsf@redhat.com>
- <87k0hd8obo.wl-maz@kernel.org>
- <ad3534bc-fe3a-55f5-b022-4dbec5f29798@redhat.com>
-Date:   Tue, 16 Nov 2021 14:23:25 +0100
-Message-ID: <87y25onsj6.fsf@redhat.com>
+        Tue, 16 Nov 2021 08:32:25 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UwtzyaM_1637069366;
+Received: from localhost(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0UwtzyaM_1637069366)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 16 Nov 2021 21:29:26 +0800
+Date:   Tue, 16 Nov 2021 21:29:21 +0800
+From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, wei.yang1@linux.alibaba.com
+Subject: Re: [PATCH] vhost-vdpa: clean irqs before reseting vdpa device
+Message-ID: <20211116132921.GA15534@L-PF27918B-1352.localdomain>
+Reply-To: Wu Zongyong <wuzongyong@linux.alibaba.com>
+References: <a2cb60cf73be9da5c4e6399242117d8818f975ae.1636946171.git.wuzongyong@linux.alibaba.com>
+ <20211115055336-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211115055336-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paolo Bonzini <pbonzini@redhat.com> writes:
+On Mon, Nov 15, 2021 at 05:56:17AM -0500, Michael S. Tsirkin wrote:
+> On Mon, Nov 15, 2021 at 11:16:42AM +0800, Wu Zongyong wrote:
+> > Vdpa devices should be reset after unseting irqs of virtqueues, or we
+> > will get errors when killing qemu process:
+> > 
+> > >> pi_update_irte: failed to update PI IRTE
+> > >> irq bypass consumer (token 0000000065102a43) unregistration fails: -22
+> > 
+> > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
+> 
+> 
+> A Fixes flag might be appropriate here.  2cf1ba9a4d15c ?
 
-> On 11/12/21 15:02, Marc Zyngier wrote:
->>> I'd like KVM to be consistent across architectures and have the same
->>> (similar) meaning for KVM_CAP_NR_VCPUS.
->> Sure, but this is a pretty useless piece of information anyway. As
->> Andrew pointed out, the information is available somewhere else, and
->> all we need to do is to cap it to the number of supported vcpus, which
->> is effectively a KVM limitation.
->> 
->> Also, we are talking about representing the architecture to userspace.
->> No amount of massaging is going to make an arm64 box look like an x86.
->
-> Not sure what you mean?  The API is about providing a piece of 
-> information independent of the architecture, while catering for a ppc 
-> weirdness.  Yes it's mostly useless if you don't care about ppc, but 
-> it's not about making arm64 look like x86 or ppc; it's about not having 
-> to special case ppc in userspace.
->
-> If anything, if KVM_CAP_NR_VCPUS returns the same for kvm and !kvm, then 
-> *that* is making an arm64 box look like an x86.  On ARM the max vCPUs 
-> depends on VM's GIC configuration, so KVM_CAP_NR_VCPUS should take that 
-> into account.
+Yes.
 
-(I'm about to send v2 as we have s390 sorted out.)
+> 
+> Also, remind me of commit 97f854be203883b61d24f230445bd533bbdf770c
+> vhost_vdpa: unset vq irq before freeing irq - what's the difference
+> in scenarios?
 
-So what do we decide about ARM? 
-- Current approach (kvm->arch.max_vcpus/kvm_arm_default_max_vcpus()
- depending on 'if (kvm)') - that would be my preference.
-- Always kvm_arm_default_max_vcpus to make the output independent on 'if
- (kvm)'.
-- keep the status quo (drop the patch).
-
-Please advise)
-
--- 
-Vitaly
-
+The issue fixed by the two patches is the same actually.
+The commit you mentioned above takes effect when users unset the status
+bit VIRTIO_CONFIG_S_DRIVER_OK. And this patch takes effect when the file
+descriptor of vhost vdpa device is closed without unseting the status
+bit VIRTIO_CONFIG_S_DRIVER_OK, for example, we send SIGKILL to qemu
+process.
+> 
+> 
+> > ---
+> >  drivers/vhost/vdpa.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> > index 01c59ce7e250..29cced1cd277 100644
+> > --- a/drivers/vhost/vdpa.c
+> > +++ b/drivers/vhost/vdpa.c
+> > @@ -1014,12 +1014,12 @@ static int vhost_vdpa_release(struct inode *inode, struct file *filep)
+> >  
+> >  	mutex_lock(&d->mutex);
+> >  	filep->private_data = NULL;
+> > +	vhost_vdpa_clean_irq(v);
+> >  	vhost_vdpa_reset(v);
+> >  	vhost_dev_stop(&v->vdev);
+> >  	vhost_vdpa_iotlb_free(v);
+> >  	vhost_vdpa_free_domain(v);
+> >  	vhost_vdpa_config_put(v);
+> > -	vhost_vdpa_clean_irq(v);
+> >  	vhost_dev_cleanup(&v->vdev);
+> >  	kfree(v->vdev.vqs);
+> >  	mutex_unlock(&d->mutex);
+> > -- 
+> > 2.31.1
