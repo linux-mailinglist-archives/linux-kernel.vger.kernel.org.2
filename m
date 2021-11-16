@@ -2,66 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBDE6452929
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:34:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0B445292E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 05:36:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239961AbhKPEgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Nov 2021 23:36:49 -0500
-Received: from smtprelay0155.hostedemail.com ([216.40.44.155]:52994 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S238459AbhKPEgn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Nov 2021 23:36:43 -0500
-Received: from omf17.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id AE6D98479E;
-        Tue, 16 Nov 2021 04:33:45 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf17.hostedemail.com (Postfix) with ESMTPA id B1937E00035D;
-        Tue, 16 Nov 2021 04:33:38 +0000 (UTC)
-Message-ID: <70cd970d6c39a5ea5e88cbf4b86031c22c5d10d4.camel@perches.com>
-Subject: Re: [PATCH v3 1/3] MAINTAINERS: Update maintainers for paravirt ops
- and VMware hypervisor interface
-From:   Joe Perches <joe@perches.com>
-To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        Sasha Levin <sashal@kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, jgross@suse.com,
-        x86@kernel.org, pv-drivers@vmware.com,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        Deep Shah <sdeep@vmware.com>, stable@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, keerthanak@vmware.com,
-        srivatsab@vmware.com, anishs@vmware.com, vithampi@vmware.com,
-        linux-kernel@vger.kernel.org, namit@vmware.com, kuba@kernel.org,
-        rostedt@goodmis.org
-Date:   Mon, 15 Nov 2021 20:33:40 -0800
-In-Reply-To: <20211115223900.GA22267@csail.mit.edu>
-References: <163657479269.84207.13658789048079672839.stgit@srivatsa-dev>
-         <163657487268.84207.5604596767569015608.stgit@srivatsa-dev>
-         <YYy9P7Rjg9hntmm3@kroah.com> <20211111153916.GA7966@csail.mit.edu>
-         <YY1krlfM5R7uEzJF@kroah.com> <20211111194002.GA8739@csail.mit.edu>
-         <YY6hhWtvh+OvOqAl@sashalap> <20211115223900.GA22267@csail.mit.edu>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
-MIME-Version: 1.0
+        id S238862AbhKPEjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Nov 2021 23:39:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56534 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239023AbhKPEi3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Nov 2021 23:38:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EFEC61C12;
+        Tue, 16 Nov 2021 04:35:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1637037332;
+        bh=wq2Hk1CCwWeZtVWFL6tXwVQVKRV2RGmHT3DEnrbzvd4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lIppLQ/19jJhPK6DKRdz0j/o4l4/w3roGokUnL+pR0KbfIovwlVJ6/exh0z0sYpfX
+         3bPcBXlAuhZqSAu39Q4pjmqlpFuha5tEHZopYmc20HbToOipEVpmQ+4X5IXMnD5jht
+         Tp9w+X1fadqmS238FVm7noO/9YEtZ8t0+PhBztQ4=
+Date:   Mon, 15 Nov 2021 20:35:30 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Ammar Faizi <ammarfaizi2@gnuweeb.org>
+Cc:     Drew DeVault <sir@cmpwn.com>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+Message-Id: <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
+In-Reply-To: <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
+References: <20211028080813.15966-1-sir@cmpwn.com>
+        <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
+        <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
+        <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: B1937E00035D
-X-Spam-Status: No, score=-4.87
-X-Stat-Signature: f98m33wsx4mfc3t3jhbfctk3bb9t83gn
-X-Rspamd-Server: rspamout01
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX187U+B1QyrWtVLRt6ScGYedLRY84IBk+8w=
-X-HE-Tag: 1637037218-641034
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-11-15 at 14:39 -0800, Srivatsa S. Bhat wrote:
-> On Fri, Nov 12, 2021 at 12:16:53PM -0500, Sasha Levin wrote:
-> > Maybe we should just remove MAINTAINERS from stable trees to make it
-> > obvious.
-> 
-> I don't think we should go quite that far. Instead, perhaps we can
-> modify get_maintainer.pl (if needed) such that it prints out a warning
-> or reminder to consult the upstream MAINTAINERS file if the script is
-> invoked on an older stable kernel.
+On Sat, 6 Nov 2021 14:12:45 +0700 Ammar Faizi <ammarfaizi2@gnuweeb.org> wrote:
 
-I don't see how that's feasible.
+> On 11/6/21 2:05 PM, Drew DeVault wrote:
+> > Should I send a v2 or is this email sufficient:
+> > 
+> > Signed-off-by: Drew DeVault <sir@cmpwn.com>
+> 
+> Oops, I missed akpm from the CC list. Added Andrew.
+> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Ref: https://lore.kernel.org/io-uring/CFII8LNSW5XH.3OTIVFYX8P65Y@taiga/
+
+Let's cc linux-mm as well.
+
+
+Unfortunately I didn't know about this until Nov 4, which was formally
+too late for 5.16.  I guess I could try to sneak it past Linus if
+someone were to send me some sufficiently convincing words explaining
+the urgency.
+
+I'd also be interested in seeing feedback from the MM developers.
+
+And a question: rather than messing around with a constant which will
+need to be increased again in a couple of years, can we solve this one
+and for all?  For example, permit root to set the system-wide
+per-process max mlock size and depend upon initscripts to do this
+appropriately.
+
+
+
+
+From: Drew DeVault <sir@cmpwn.com>
+Subject: Increase default MLOCK_LIMIT to 8 MiB
+
+This limit has not been updated since 2008, when it was increased to 64
+KiB at the request of GnuPG.  Until recently, the main use-cases for this
+feature were (1) preventing sensitive memory from being swapped, as in
+GnuPG's use-case; and (2) real-time use-cases.  In the first case, little
+memory is called for, and in the second case, the user is generally in a
+position to increase it if they need more.
+
+The introduction of IOURING_REGISTER_BUFFERS adds a third use-case:
+preparing fixed buffers for high-performance I/O.  This use-case will take
+as much of this memory as it can get, but is still limited to 64 KiB by
+default, which is very little.  This increases the limit to 8 MB, which
+was chosen fairly arbitrarily as a more generous, but still conservative,
+default value.
+
+It is also possible to raise this limit in userspace.  This is easily
+done, for example, in the use-case of a network daemon: systemd, for
+instance, provides for this via LimitMEMLOCK in the service file; OpenRC
+via the rc_ulimit variables.  However, there is no established userspace
+facility for configuring this outside of daemons: end-user applications do
+not presently have access to a convenient means of raising their limits.
+
+The buck, as it were, stops with the kernel.  It's much easier to address
+it here than it is to bring it to hundreds of distributions, and it can
+only realistically be relied upon to be high-enough by end-user software
+if it is more-or-less ubiquitous.  Most distros don't change this
+particular rlimit from the kernel-supplied default value, so a change here
+will easily provide that ubiquity.
+
+Link: https://lkml.kernel.org/r/20211028080813.15966-1-sir@cmpwn.com
+Signed-off-by: Drew DeVault <sir@cmpwn.com>
+Acked-by: Jens Axboe <axboe@kernel.dk>
+Acked-by: Cyril Hrubis <chrubis@suse.cz>
+Cc: Pavel Begunkov <asml.silence@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/uapi/linux/resource.h |   13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+--- a/include/uapi/linux/resource.h~increase-default-mlock_limit-to-8-mib
++++ a/include/uapi/linux/resource.h
+@@ -66,10 +66,17 @@ struct rlimit64 {
+ #define _STK_LIM	(8*1024*1024)
+ 
+ /*
+- * GPG2 wants 64kB of mlocked memory, to make sure pass phrases
+- * and other sensitive information are never written to disk.
++ * Limit the amount of locked memory by some sane default:
++ * root can always increase this limit if needed.
++ *
++ * The main use-cases are (1) preventing sensitive memory
++ * from being swapped; (2) real-time operations; (3) via
++ * IOURING_REGISTER_BUFFERS.
++ *
++ * The first two don't need much. The latter will take as
++ * much as it can get. 8MB is a reasonably sane default.
+  */
+-#define MLOCK_LIMIT	((PAGE_SIZE > 64*1024) ? PAGE_SIZE : 64*1024)
++#define MLOCK_LIMIT	((PAGE_SIZE > 8*1024*1024) ? PAGE_SIZE : 8*1024*1024)
+ 
+ /*
+  * Due to binary compatibility, the actual resource numbers
+_
 
