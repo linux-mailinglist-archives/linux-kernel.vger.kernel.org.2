@@ -2,74 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2396945358B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9EA245359B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:19:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238058AbhKPPVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 10:21:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38746 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237778AbhKPPVB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 10:21:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3636761BF9;
-        Tue, 16 Nov 2021 15:18:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637075884;
-        bh=u9SX2DemwNFaZqmFy59yqo9oEg0cChgWWEB6OGLB9B8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=suJJZDR37V7bf1Km41/8+po9hiQyBQu6v8pz7aiayZKgaP4YGrH6GwX8QmljT3IJs
-         t7zEBsESPRI8iYKvRHbFCAFhBIRcW5UMKRsAgoNGP2DsB9RqYztqx0IMnR5k+1b+C+
-         b7lB3HwqJ4CM3vUstnx9ibvx8a7YSloLbtWnAVTsIcQmnMrfdZ5plrzflInS1UmWr4
-         yIBBEJwHZBSRrLw4LU6JPpt474HOcwFgtEJnkZjnXclzFXkAsE0z1ZmspLFIRPT36S
-         GGJb/sL5J3OZdconz+Y5OZXdbIq8x0p+R/kIZ9SEFdA2AWhIICo0hkP8kBEuLcaTCE
-         tzQq2wXYKsUbA==
-Date:   Tue, 16 Nov 2021 08:17:59 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-fbdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-omap@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] omapfb: add one more "fallthrough" statement
-Message-ID: <YZPLpxGXVyaaKZsm@archlinux-ax161>
-References: <20211116092204.4116587-1-arnd@kernel.org>
+        id S238088AbhKPPWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 10:22:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237827AbhKPPWr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 10:22:47 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B442C061570;
+        Tue, 16 Nov 2021 07:19:50 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id w1so89618060edd.10;
+        Tue, 16 Nov 2021 07:19:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JmBWvXQj8znoaNlP/XJEaiijvOo6PBGp1wWsFw5sd+Y=;
+        b=dHKt+qxBxbb/Rv6TLuF27ll6/vi/79PRdmfilrqAAdoy78Zib/N8o3KpEJvaZLBza1
+         8Cpdi36wDvKg9pqXXhjVliG4WJfPYlEkTw7qx8Tqv/KYAZay8Thq5fj+XPcVC2zNTY3O
+         LsAs1JuSfg5m8eNCCVi78V0i4Y4+O1D7AE2511ss6/JwumN4jOPAG7nNT/EQOH4TgCyQ
+         xLW7K1XNkDmNAtwRuIGRn/0G9uTYVB8m6aGRcQbyX5pqMAfAFnbMzNKqO9ovd8Ks64aU
+         JLC9LugV7CO8n/7+gnbPknr9e4qhN1F7pAeBElMxhGy1hdtRdSB9S0N295uvkBesTq0O
+         BP5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JmBWvXQj8znoaNlP/XJEaiijvOo6PBGp1wWsFw5sd+Y=;
+        b=uFHXRgOq2NCRGW9PQ53EMFq0m5fPtape47SPPn+HkSSQusViBTwIxVNQ6UTZgE55u1
+         TI3hvV1nprf9xTPFPRscDEmXEDJsYLXLvVFAfVqdiJan2H/ZRb7pUd5E6AYyhpwR5KD4
+         wr2huv+a7eGKmPIj+fzKjdo/DCSMu/E+BMXZBlLrR0StyN/0l8ds+XWvIl7PubVvFmGC
+         6nAGtaqhVoMPgbqT7ZnLww6BxstKK6nS48tYEHCGgE0BB3fdhfcohVIAAV8tANHBMQSp
+         mgAC6akBgcOgGH23uFu/XoCsohCKukxrHwzWXgazlR9MqmTR2dOcQLRaYjeCgq3cvIKD
+         D5aw==
+X-Gm-Message-State: AOAM533xnscUr8lD27ULjTb04vUbtd+3wj6KM91casoa1oE4q6xLDL+u
+        FApCkNwdqLktORNOMKQzr5i4QVm5s0ykpIABjfmzx0ojJT4=
+X-Google-Smtp-Source: ABdhPJxyPvxtL5u41BdFRCmpus5JQskyeQT/k/mvLjEvqbLp9EodkDIsgxUvTRaAyeaG4TXjaUVO/qDhhLGfrls95CU=
+X-Received: by 2002:a17:907:9196:: with SMTP id bp22mr10768857ejb.69.1637075988577;
+ Tue, 16 Nov 2021 07:19:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211116092204.4116587-1-arnd@kernel.org>
+References: <20211114170335.66994-1-hdegoede@redhat.com> <20211114170335.66994-20-hdegoede@redhat.com>
+In-Reply-To: <20211114170335.66994-20-hdegoede@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 16 Nov 2021 17:19:07 +0200
+Message-ID: <CAHp75Vd2ytGkaSDZXuKNLihsK5JYrFv5ezkTAd73o2xFjoNDHQ@mail.gmail.com>
+Subject: Re: [PATCH v2 19/20] extcon: intel-cht-wc: Add support for
+ registering a power_supply class-device
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Yauhen Kharuzhy <jekhor@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 10:21:54AM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> clang warns about one missing fallthrough that gcc ignores:
-> 
-> drivers/video/fbdev/omap/omapfb_main.c:1558:2: error: unannotated fall-through between switch labels [-Werror,-Wimplicit-fallthrough]
-> 
-> Add it here as well.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Sun, Nov 14, 2021 at 7:05 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> The bq25890 used on the Yogabook YB1-X90 / -X91 models relies on
+> the extcon-driver's BC-1.2 charger detection, and the bq25890 driver
+> expect this info to be  available through a parent power_supply
+> class-device which models the detected charger (idem to how the Type-C
+> TCPM code registers a power_supply classdev for the connected charger).
+>
+> Add support for registering the power_supply class-device expected
+> by this setup.
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+...
 
-> ---
->  drivers/video/fbdev/omap/omapfb_main.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/video/fbdev/omap/omapfb_main.c b/drivers/video/fbdev/omap/omapfb_main.c
-> index 3d090d2d9ed9..a6a8404d1462 100644
-> --- a/drivers/video/fbdev/omap/omapfb_main.c
-> +++ b/drivers/video/fbdev/omap/omapfb_main.c
-> @@ -1555,6 +1555,7 @@ static void omapfb_free_resources(struct omapfb_device *fbdev, int state)
->  	case 1:
->  		dev_set_drvdata(fbdev->dev, NULL);
->  		kfree(fbdev);
-> +		fallthrough;
->  	case 0:
->  		/* nothing to free */
->  		break;
-> -- 
-> 2.29.2
-> 
+> +       struct cht_wc_extcon_data *ext = power_supply_get_drvdata(psy);
+
+> +       int ret = 0;
+
+Not needed.
+
+> +       switch (psp) {
+> +       case POWER_SUPPLY_PROP_USB_TYPE:
+> +               val->intval = ext->usb_type;
+> +               break;
+> +       case POWER_SUPPLY_PROP_ONLINE:
+> +               val->intval = ext->usb_type ? 1 : 0;
+> +               break;
+> +       default:
+
+> +               ret = -EINVAL;
+> +               break;
+
+return -EINVAL;
+
+> +       }
+> +
+> +       return ret;
+
+return 0;
+
+> +}
+
+P.S. And here you have a "break", which is nice!
+
+-- 
+With Best Regards,
+Andy Shevchenko
