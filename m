@@ -2,100 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D094532E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:33:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3EF4532F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:36:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235890AbhKPNgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 08:36:03 -0500
-Received: from lithium.sammserver.com ([168.119.122.30]:49106 "EHLO
-        lithium.sammserver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232895AbhKPNf6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 08:35:58 -0500
-Received: from mail.sammserver.com (sammserver.wg [10.32.40.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by lithium.sammserver.com (Postfix) with ESMTPS id AEBD13115D1B;
-        Tue, 16 Nov 2021 14:33:00 +0100 (CET)
-Received: from fastboi.localdomain (fastboi.wg [10.32.40.5])
-        by mail.sammserver.com (Postfix) with ESMTP id 3BF2E2534D;
-        Tue, 16 Nov 2021 14:32:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cavoj.net; s=email;
-        t=1637069580; bh=rsBoRUnLkAEXPVbzZQ/EmyVepqJ2ugaPXO0wds7juOs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pmqtAhN0PjzmJnp5Ads5EPwiG0Da0AWI9vRxkfs/9FYiwOjJ0cfLMr7sjnOxNX29y
-         0IFa/YtCuoowxkDtJc4CpvUosq3gThzCg4FFqlK1L0E1CWhczN4i16DSWn1VK62GgW
-         uU9qp+WVFue/mJ4spMXpIRLzZKRBmqFX5vAPPWVQ=
-Received: by fastboi.localdomain (Postfix, from userid 1000)
-        id 268DD1421378; Tue, 16 Nov 2021 14:32:59 +0100 (CET)
-Date:   Tue, 16 Nov 2021 14:32:59 +0100
-From:   Samuel =?utf-8?B?xIxhdm9q?= <samuel@cavoj.net>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Leo Li <sunpeng.li@amd.com>, Roman Li <Roman.Li@amd.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>
-Subject: Re: Backlight control broken on UM325 (OLED) on 5.15 (bisected)
-Message-ID: <20211116133259.svayrqaiivaubkjp@fastboi.localdomain>
-References: <20211114105657.b57pjojiv72iopg5@fastboi.localdomain>
- <CADnq5_NF++xE6Jj32Wy2ZGALo4pOGt3yTCoj5HU37tKO3Ce=Fg@mail.gmail.com>
+        id S236604AbhKPNja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 08:39:30 -0500
+Received: from mail.hallyn.com ([178.63.66.53]:42656 "EHLO mail.hallyn.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232201AbhKPNj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 08:39:29 -0500
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+        id 8F708546; Tue, 16 Nov 2021 07:36:28 -0600 (CST)
+Date:   Tue, 16 Nov 2021 07:36:28 -0600
+From:   "Serge E. Hallyn" <serge@hallyn.com>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     'Alistair Delva' <adelva@google.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Serge Hallyn <serge@hallyn.com>, Jens Axboe <axboe@kernel.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux Stable maillist <stable@vger.kernel.org>,
+        john.johansen@canonical.com, James Morris <jmorris@namei.org>,
+        Christian Brauner <christian@brauner.io>,
+        Tycho Andersen <tycho@tycho.ws>
+Subject: Re: [PATCH] block: Check ADMIN before NICE for IOPRIO_CLASS_RT
+Message-ID: <20211116133628.GA6728@mail.hallyn.com>
+References: <20211115173850.3598768-1-adelva@google.com>
+ <CAFqZXNvVHv8Oje-WV6MWMF96kpR6epTsbc-jv-JF+YJw=55i1w@mail.gmail.com>
+ <CANDihLEFZAz8DwkkMGiDJnDMjxiUuSCanYsJtkRwa9RoyruLFA@mail.gmail.com>
+ <43aeb7451621474ea0d7bee6b99039c3@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADnq5_NF++xE6Jj32Wy2ZGALo4pOGt3yTCoj5HU37tKO3Ce=Fg@mail.gmail.com>
-X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED,URIBL_ZEN_BLOCKED_OPENDNS autolearn=unavailable
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on sammserver.tu
+In-Reply-To: <43aeb7451621474ea0d7bee6b99039c3@AcuMS.aculab.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
-
-thank you for your response.
-
-On 15.11.2021 10:43, Alex Deucher wrote:
-> [...]
->
-> That patch adds support for systems with multiple backlights.  Do you
-> have multiple backlight devices now?  If so, does the other one work?
-
-No, there is still only one backlight device -- amdgpu_bl0.
+On Tue, Nov 16, 2021 at 09:30:12AM +0000, David Laight wrote:
+> From: Alistair Delva
+> > Sent: 15 November 2021 19:09
+> ...
+> > > > -                       if (!capable(CAP_SYS_NICE) && !capable(CAP_SYS_ADMIN))
+> > > > +                       if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_NICE))
+> > > >                                 return -EPERM;
 > 
-> Can you also try this patch?
+> Isn't the real problem that you actually want to test:
+> 		if (!capable(CAP_SYS_NICE | CAP_SYS_ADMIN))
+> 			return -EPERM;
+> so that you only get the fail 'splat' when neither is set.
 > 
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-> b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-> index 4811b0faafd9..67163c9d49e6 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-> @@ -854,8 +854,8 @@ int amdgpu_acpi_init(struct amdgpu_device *adev)
->                 if (amdgpu_device_has_dc_support(adev)) {
->  #if defined(CONFIG_DRM_AMD_DC)
->                         struct amdgpu_display_manager *dm = &adev->dm;
-> -                       if (dm->backlight_dev[0])
-> -                               atif->bd = dm->backlight_dev[0];
-> +                       if (dm->backlight_dev[1])
-> +                               atif->bd = dm->backlight_dev[1];
->  #endif
->                 } else {
->                         struct drm_encoder *tmp;
+> This will be true whenever more than one capability enables something.
 > 
+> Possibly this needs something like:
+> int capabale_or(unsigned int, ...);
+> #define capabale_or(...) capabable_or(__VA_LIST__, ~0u)
+> 
+> 	David
 
-There is no difference in behaviour after applying the patch.
+Right, that's what i was suggesting yesterday.  We do this in other
+places, where we split off a more fine-grained version of a gross
+capability.  If we care enough about the audit messages, then we
+probably do need a new primitive.
 
-Samuel
-
-> 
-> Alex
-> 
-> >
-> > Regards,
-> > Samuel Čavoj
-> >
-> > [0]: https://www.reddit.com/r/AMDLaptops/comments/qst0fm/after_updating_to_linux_515_my_brightness/
+-serge
