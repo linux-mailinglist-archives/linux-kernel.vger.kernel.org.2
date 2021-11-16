@@ -2,126 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 029C04538E7
+	by mail.lfdr.de (Postfix) with ESMTP id C578B4538E9
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 18:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239154AbhKPR5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 12:57:15 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:49476 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239144AbhKPR5M (ORCPT
+        id S239163AbhKPR5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 12:57:33 -0500
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:41640 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239156AbhKPR5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 12:57:12 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E4F61212C3;
-        Tue, 16 Nov 2021 17:54:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637085252; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AQ4Vs3Ue9V/rPlPCCX2Ku26e9rOXlRcNGXZau4L0nns=;
-        b=WWKIaz/W38nsYFEg/zCDoNaH0kIwA0H6XZ/FTs4KYO6YXn8PB48U92vHHzY8eCaYtbXNAw
-        0bDRV5xqAZCLG+pNMxZJqK3emAMALV9Jw4J7trsryDzNOGA1ZVp1riAEmChz92M0DHw1cB
-        L/4UkS3yo+5VogH9yJjdHpqz3Sx7RAE=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B374513BA0;
-        Tue, 16 Nov 2021 17:54:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id JaE7K0Twk2G0cQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 16 Nov 2021 17:54:12 +0000
-Date:   Tue, 16 Nov 2021 18:54:11 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: Re: [PATCH v8 5/6] cgroup/cpuset: Update description of
- cpuset.cpus.partition in cgroup-v2.rst
-Message-ID: <20211116175411.GA50019@blackbody.suse.cz>
-References: <20211018143619.205065-1-longman@redhat.com>
- <20211018143619.205065-6-longman@redhat.com>
- <20211115193122.GA16798@blackbody.suse.cz>
- <8f68692b-bd8f-33fd-44ae-f6f83bf2dc00@redhat.com>
+        Tue, 16 Nov 2021 12:57:31 -0500
+Received: by mail-ot1-f48.google.com with SMTP id o15-20020a9d410f000000b0055c942cc7a0so34911874ote.8;
+        Tue, 16 Nov 2021 09:54:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pXDt0RkwKybhTwND35SQv0CCA/kyIjvi5ZotU+2B+iw=;
+        b=RB/OOsZf9QrqwMik09uQPvhVAmmKBlmwKGGG7UZNBPH9ysqCOQUOfWpPx98KLYywjr
+         mVgVg3wfJn9tq3f9g19WUrISv6pB0CUrKEf7xUSNMpguIyqzhyVB7Gp6Oht1xlfLM2ax
+         7IMg3imNwbNWxUvUauXIgK2oH2XlK3DVbt83ffFaFM04rIipcwv7JlLJut9sYb6lg0q5
+         DZKuCL92g0euHqgDTa+keCFDahv4W944W+zdmLvKUvVwwxvszBMfLwExah8F0JtXm9Mb
+         luVFtxPXnLVan4z8A6q1cnCELZk4/M55zkzfD+DJs4AJ0LqbV215SmR6cZjuVeo1Y4Nk
+         ukfA==
+X-Gm-Message-State: AOAM533FDuh/+D2ExDkksVojeKbdytlEqLO17/JjJwB/UyK1YPSvYZZj
+        6vA/7N/jQE42+5he44xZ5c0XeAXQEgzObPy5qUk=
+X-Google-Smtp-Source: ABdhPJy1DkExIrQjiTLjLjJg6/hbOSAx87vK3ScdMsV3WD+Pi1mfvVPTHei+w8y9IGVs5oNOL+A2MScqrvZYfli0sW8=
+X-Received: by 2002:a05:6830:348f:: with SMTP id c15mr7792422otu.254.1637085273341;
+ Tue, 16 Nov 2021 09:54:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8f68692b-bd8f-33fd-44ae-f6f83bf2dc00@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211029122359.1.I1e23f382fbd8beb19fe1c06d70798b292012c57a@changeid>
+ <CAE=gft4MRvq-VCBW4EX4dGfPi4s7Lco8h6Z_ejRH5A1e-K2-yA@mail.gmail.com>
+In-Reply-To: <CAE=gft4MRvq-VCBW4EX4dGfPi4s7Lco8h6Z_ejRH5A1e-K2-yA@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 16 Nov 2021 18:54:22 +0100
+Message-ID: <CAJZ5v0hsGFHxcTb8PUkGSm9oas1wdquB=euofS19zriRc1CXYw@mail.gmail.com>
+Subject: Re: [PATCH] PM / hibernate: Fix snapshot partial write lengths
+To:     Evan Green <evgreen@chromium.org>
+Cc:     Pavel Machek <pavel@ucw.cz>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 04:10:29PM -0500, Waiman Long <longman@redhat.com> wrote:
-> > On Mon, Oct 18, 2021 at 10:36:18AM -0400, Waiman Long <longman@redhat.com> wrote:
-> > > +	scheduler.  Tasks in such a partition must be explicitly bound
-> > > +	to each individual CPU.
-> [...]
-> 
-> It can be a problem when one is trying to move from one cgroup to another
-> cgroup with non-overlapping cpus laterally. However, if a task is initially
-> from a parent cgroup with affinity mask that include cpus in the isolated
-> child cgroup, I believe it should be able to move to the isolated child
-> cgroup without problem. Otherwise, it is a bug that needs to be fixed.
+On Mon, Nov 15, 2021 at 6:13 PM Evan Green <evgreen@chromium.org> wrote:
+>
+> Gentle bump.
+>
+>
+> On Fri, Oct 29, 2021 at 12:24 PM Evan Green <evgreen@chromium.org> wrote:
+> >
+> > snapshot_write() is inappropriately limiting the amount of data that can
+> > be written in cases where a partial page has already been written. For
+> > example, one would expect to be able to write 1 byte, then 4095 bytes to
+> > the snapshot device, and have both of those complete fully (since now
+> > we're aligned to a page again). But what ends up happening is we write 1
+> > byte, then 4094/4095 bytes complete successfully.
+> >
+> > The reason is that simple_write_to_buffer()'s second argument is the
+> > total size of the buffer, not the size of the buffer minus the offset.
+> > Since simple_write_to_buffer() accounts for the offset in its
+> > implementation, snapshot_write() can just pass the full page size
+> > directly down.
+> >
+> > Signed-off-by: Evan Green <evgreen@chromium.org>
+> > ---
+> >
+> >  kernel/power/user.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/power/user.c b/kernel/power/user.c
+> > index 740723bb388524..ad241b4ff64c58 100644
+> > --- a/kernel/power/user.c
+> > +++ b/kernel/power/user.c
+> > @@ -177,7 +177,7 @@ static ssize_t snapshot_write(struct file *filp, const char __user *buf,
+> >                 if (res <= 0)
+> >                         goto unlock;
+> >         } else {
+> > -               res = PAGE_SIZE - pg_offp;
+> > +               res = PAGE_SIZE;
+> >         }
+> >
+> >         if (!data_of(data->handle)) {
+> > --
 
-app_root	cpuset.cpus=0-3
-`- non_rt	cpuset.cpus=0-1	cpuset.cpus.partition=member
-`- rt		cpuset.cpus=2-3	cpuset.cpus.partition=isolated
-
-The app_root would have cpuset.cpus.effective=0-1 so even the task in
-app_root can't sched_setaffinity() to cpus 2-3.
-But AFAICS, the migration calls set_cpus_allowed_ptr() anyway, so the
-task in the isolated partition needn't to bind explicitly with
-sched_setaffinity(). (It'd have two cpus available, so one more
-sched_setaffinity() or migration into a single-cpu list is desirable.)
-
-All in all, I think the behavior is OK and the explicit binding of tasks
-in an isolated cpuset is optional (not a must as worded currently).
-
-
-> I think the wording may be confusing. What I meant is none of the requested
-> cpu can be granted. So if there is at least one granted, the effective cpus
-> won't be empty.
-
-Ack.
-
-> You currently cannot make change to cpuset.cpus that violates the cpu
-> exclusivity rule. The above constraints will not disallow you to make the
-> change. They just affect the validity of the partition root.
-
-Sibling exclusivity should be a validity condition regardless of whether
-transition is allowed or not. (At least it looks simpler to me.)
-
-
-> > > +        Changing a partition root to "member" is always allowed.
-> > > +        If there are child partition roots underneath it, however,
-> > > +        they will be forced to be switched back to "member" too and
-> > > +        lose their partitions. So care must be taken to double check
-> > > +        for this condition before disabling a partition root.
-> > (Or is this how delegation is intended?) However, AFAICS, parent still
-> > can't remove cpuset.cpus even when the child is a "member". Otherwise,
-> > I agree with the back-switch.
-> There are only 2 possibilities here. Either we force the child partitions to
-> be become members or invalid partition root.
-
-My point here was mostly about preempting the cpus (as a v2 specific
-feature). (I'm rather indifferent whether children turn into invalid
-roots or members.)
-
-Thanks,
-Michal
+Do you actually see this problem in practice?
