@@ -2,98 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD820452E54
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:46:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F265452E56
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 10:49:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233495AbhKPJtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 04:49:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:59483 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232326AbhKPJtl (ORCPT
+        id S233459AbhKPJwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 04:52:37 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:39378 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232326AbhKPJwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 04:49:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637056004;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fc0gngviw+IZIFxYalZL+iadKVgfg2lYYkw0vHrMjNs=;
-        b=QbR1ciX3tLM6g4dkKlMBaTjICIk+VuCNgHLSFY4UaMfwAC3KipC009sa+puyjvfhd9eRnb
-        kRRZR6kVTYPs5UUbpOFkoRtlOc3KhBHrNTfagj9V1Xy1ciDlckdbYstpndMgwCobGXnybE
-        KvRb/7IM1ul/XUMtcFyz5lSTirrD6yg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-177-vYO4E3Y2OJOwOt0j00Id4g-1; Tue, 16 Nov 2021 04:46:39 -0500
-X-MC-Unique: vYO4E3Y2OJOwOt0j00Id4g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1BD291923769;
-        Tue, 16 Nov 2021 09:46:37 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 69C385DF5D;
-        Tue, 16 Nov 2021 09:46:30 +0000 (UTC)
-Message-ID: <1f7c6347-368b-0959-d506-a938f2585591@redhat.com>
-Date:   Tue, 16 Nov 2021 10:46:29 +0100
+        Tue, 16 Nov 2021 04:52:36 -0500
+X-UUID: cd9c244e7e0f4913898cfe75c63eaddc-20211116
+X-UUID: cd9c244e7e0f4913898cfe75c63eaddc-20211116
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <jitao.shi@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2124132109; Tue, 16 Nov 2021 17:49:36 +0800
+Received: from MTKMBS34N1.mediatek.inc (172.27.4.172) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 16 Nov 2021 17:49:35 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS34N1.mediatek.inc
+ (172.27.4.172) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 16 Nov
+ 2021 17:49:34 +0800
+Received: from mszsdaap41.gcn.mediatek.inc (10.16.6.141) by
+ MTKCAS36.mediatek.inc (172.27.4.170) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Tue, 16 Nov 2021 17:49:33 +0800
+From:   Jitao Shi <jitao.shi@mediatek.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     <linux-mediatek@lists.infradead.org>, <stonea168@163.com>,
+        <huijuan.xie@mediatek.com>, <shuijing.li@mediatek.com>,
+        <liangxu.xu@mediatek.com>, <xinlei.li@mediatek.com>,
+        Jitao Shi <jitao.shi@mediatek.com>
+Subject: [PATCH v3 0/2] seperate panel power control from panel prepare/unprepare
+Date:   Tue, 16 Nov 2021 17:49:28 +0800
+Message-ID: <20211116094930.11470-1-jitao.shi@mediatek.com>
+X-Mailer: git-send-email 2.12.5
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] KVM: Fix steal time asm constraints in 32-bit mode
-Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>,
-        kernel test robot <lkp@intel.com>, kvm <kvm@vger.kernel.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>, karahmed@amazon.com
-References: <202111141550.hY7mszt8-lkp@intel.com>
- <89bf72db1b859990355f9c40713a34e0d2d86c98.camel@infradead.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <89bf72db1b859990355f9c40713a34e0d2d86c98.camel@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/14/21 09:59, David Woodhouse wrote:
-> From: David Woodhouse <dwmw@amazon.co.uk>
-> 
-> In 64-bit mode, x86 instruction encoding allows us to use the low 8 bits
-> of any GPR as an 8-bit operand. In 32-bit mode, however, we can only use
-> the [abcd] registers. For which, GCC has the "q" constraint instead of
-> the less restrictive "r".
-> 
-> Fixes: 7e2175ebd695 ("KVM: x86: Fix recording of guest steal time / preempted status")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> ---
->   arch/x86/kvm/x86.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 8f156905ae38..0a689bb62e9e 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -3307,7 +3307,7 @@ static void record_steal_time(struct kvm_vcpu *vcpu)
->   			     "xor %1, %1\n"
->   			     "2:\n"
->   			     _ASM_EXTABLE_UA(1b, 2b)
-> -			     : "+r" (st_preempted),
-> +			     : "+q" (st_preempted),
->   			       "+&r" (err)
->   			     : "m" (st->preempted));
->   		if (err)
-> 
+Changes since v2:
+ - Panel driver panel-boe-tv101wum-nl6.c provides the power sequence apis.
+ - The apis are called before dsi poweron and after dsi poweroff.
 
-Queued with the addition of the "m" -> "+m" change, thanks.
+Changes since v1:
+ - Fix null point when dsi next bridge isn't a panel.
+ - "dsi mmsys reset" is implement by
+   https://patchwork.kernel.org/project/linux-mediatek/list/?series=515355
 
-Paolo
+Jitao Shi (2):
+  drm/panel: panel-boe-tv101wum-nl6: tune the power sequence to avoid
+    leakage
+  drm/mediatek: control panel's power before MIPI LP11
+
+ drivers/gpu/drm/mediatek/mtk_dsi.c             | 28 ++++++--
+ drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c | 88 +++++++++++++++++++-------
+ include/drm/panel_boe_tv101wum_nl6.h           | 28 ++++++++
+ 3 files changed, 116 insertions(+), 28 deletions(-)
+ create mode 100644 include/drm/panel_boe_tv101wum_nl6.h
+
+-- 
+2.12.5
 
