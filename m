@@ -2,174 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816464539ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 20:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 425A14539F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 20:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239841AbhKPTSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 14:18:25 -0500
-Received: from hosting.gsystem.sk ([212.5.213.30]:40548 "EHLO
-        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232659AbhKPTSW (ORCPT
+        id S239301AbhKPTSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 14:18:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229934AbhKPTSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 14:18:22 -0500
-Received: from gsql.ggedos.sk (off-20.infotel.telecom.sk [212.5.213.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by hosting.gsystem.sk (Postfix) with ESMTPSA id 1FB547A0222;
-        Tue, 16 Nov 2021 20:15:24 +0100 (CET)
-From:   Ondrej Zary <linux@zary.sk>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] v5.10 backport of x86/iopl: Fake iopl(3) CLI/STI usage
-Date:   Tue, 16 Nov 2021 20:15:14 +0100
-Message-Id: <20211116191514.17854-1-linux@zary.sk>
-X-Mailer: git-send-email 2.20.1
+        Tue, 16 Nov 2021 14:18:45 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91CAAC061570;
+        Tue, 16 Nov 2021 11:15:47 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id u3so291210lfl.2;
+        Tue, 16 Nov 2021 11:15:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iJ4UbTyx0xYSrKsT+KZw01D3yr4wr+sTORIlc74dG70=;
+        b=ja1oJQhqa5HUt1YVG8UHgCiHcm4d5EFjjWyeL7uQgxXe1YDxtRqhZH6QKja9YG2Eym
+         CysYq8oh1qOI1rDy7F7m9qxFN+1Xkzg4/lqwk44bm2X4uzoLScRiaQhSNV8e4THA8Q26
+         j4usJhgmSAc6/agSiN4nQxWCGWX6+jditUjlJ26O1mcomHTRysG63avm5wYsKTlI/UtU
+         jt/3vFFEf2KVxLR5MMU+4lGHbGAtFVwUI0cQ0wraZkEIckzg4EXxuP3N0fJGB1ri2FmU
+         dZqCLJZPPxrxNkHFs3RheiR/5Zoxfu/9Zzye6sz5bUmFDRfNsSvW4H1QyVEfNCHmAGMQ
+         JWhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iJ4UbTyx0xYSrKsT+KZw01D3yr4wr+sTORIlc74dG70=;
+        b=NGkpoI5qtf6R4lXiM9H1MUfNTalKiTcjtG/qpbwAVJnZmj6EZMoUGZcAyXESQUwS3K
+         AWShdOxWgo9NBsamTEtIQ4f9hxSmAz7ICE+yuTVM8ZkzE1bc/UuYSwhDNXwe+dAi3T/k
+         HQQTwXU12wCBsYhPSWtifU2BDbokqOHzwxT9QgQy+X/9EGp064sFJSx81Mvb/zAaKG9u
+         rutieRpdezrkdEIvTyj2hWyQnvNN43eUx2omNQ+Ss6YpAdY+6Yg8uwUbWNNWHZgWdOgw
+         JYwDz14rqDH5HrT0Olf/er+9MA12i1H1fEKfvMMquEGBPzuna1CnLCbKNzpFyWETaYPP
+         U8nA==
+X-Gm-Message-State: AOAM532I5SPwUEhnewt93nxY6UFLv7I7fQ3IiudsKM6xRDVrXxiplF7z
+        jHTr7XRjM6yjvtjSqAs7YjHsJ3PlCymiaw==
+X-Google-Smtp-Source: ABdhPJxa5RKZ5XwYDB5GwzjUJhlvOMfUgZb5AjfmGpIEAgIILxJAfOIDxpYXKsecBXtc0Aq7HGp9LA==
+X-Received: by 2002:a05:6512:1382:: with SMTP id p2mr1943501lfa.403.1637090145862;
+        Tue, 16 Nov 2021 11:15:45 -0800 (PST)
+Received: from mobilestation ([95.79.188.236])
+        by smtp.gmail.com with ESMTPSA id q6sm1928399ljh.1.2021.11.16.11.15.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 11:15:45 -0800 (PST)
+Date:   Tue, 16 Nov 2021 22:15:42 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Mark Brown <broonie@kernel.org>, nandhini.srikandan@intel.com
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        robh+dt@kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        mgross@linux.intel.com, kris.pan@intel.com,
+        kenchappa.demakkanavar@intel.com, furong.zhou@intel.com,
+        mallikarjunappa.sangannavar@intel.com, mahesh.r.vaidya@intel.com,
+        rashmi.a@intel.com
+Subject: Re: [PATCH v3 3/5] spi: dw: Add support for master mode selection
+ for DWC SSI controller
+Message-ID: <20211116191542.vc42cxvflzn66ien@mobilestation>
+References: <20211111065201.10249-1-nandhini.srikandan@intel.com>
+ <20211111065201.10249-4-nandhini.srikandan@intel.com>
+ <YY0lpZkIsJih+g2o@sirena.org.uk>
+ <20211111145246.dj4gogl4rlbem6qc@mobilestation>
+ <YY0zUjjVobtg85o6@sirena.org.uk>
+ <20211111160627.fcgrvj2k7x3lwtkp@mobilestation>
+ <YY1D3tM4fg8h6mmj@sirena.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YY1D3tM4fg8h6mmj@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Backport of the following patch for 5.10-stable:
+On Thu, Nov 11, 2021 at 04:25:02PM +0000, Mark Brown wrote:
+> On Thu, Nov 11, 2021 at 07:06:27PM +0300, Serge Semin wrote:
+> > On Thu, Nov 11, 2021 at 03:14:26PM +0000, Mark Brown wrote:
+> 
+> > > Given that people seem to frequently customise these IPs when
+> > > integrating them I wouldn't trust people not to have added some other
+> > > control into that reserved bit doing some magic stuff that's useful in
+> > > their system.
+> 
+> > In that case the corresponding platform code would have needed to have
+> > that peculiarity properly handled and not to use a generic compatibles
+> > like "snps,dwc-ssi-1.01a" or "snps,dw-apb-ssi", which are supposed to
+> > be utilized for the default IP-core configs only. For the sake of the
+> > code simplification I'd stick to setting that flag for each generic
+> > DWC SSI-compatible device. That will be also helpful for DWC SSIs
+> > which for some reason have the slave-mode enabled by default.
+> 
 
->>From b968e84b509da593c50dc3db679e1d33de701f78 Mon Sep 17 00:00:00 2001
-From: Peter Zijlstra <peterz@infradead.org>
-Date: Fri, 17 Sep 2021 11:20:04 +0200
+> That's easier right up until the point where it explodes - I'd prefer to
+> be more conservative here.  Fixing things up after the fact gets painful
+> when people end up only finding the bug in released kernels, especially
+> if it's distro end users or similar rather than developers.
 
-Since commit c8137ace5638 ("x86/iopl: Restrict iopl() permission
-scope") it's possible to emulate iopl(3) using ioperm(), except for
-the CLI/STI usage.
+Since IP-core and components versions is now supported that will easy
+to implement. Thanks for merging the corresponding series in BTW.
 
-Userspace CLI/STI usage is very dubious (read broken), since any
-exception taken during that window can lead to rescheduling anyway (or
-worse). The IOPL(2) manpage even states that usage of CLI/STI is highly
-discouraged and might even crash the system.
+> 
+> > Alternatively the driver could read the IP-core version from the
+> > DW_SPI_VERSION register, parse it (since it's in ASCII) and then use
+> > it in the conditional Master mode activation here. But that could have
+> > been a better solution in case if the older IP-cores would have used
+> > that bit for something special, while Nandhini claims it was reserved.
+> > So in this case I would stick with a simpler approach until we get to
+> > face any problem in this matter, especially seeing we already pocking
+> > the reserved bits of the CTRL0 register in this driver in the
+> > spi_hw_init() method when it comes to the DFS field width detection.
+> 
+> If the device has a version register checking that seems ideal - the
+> infrastructure will most likely be useful in future anyway.  A bit of a
+> shame that it's an ASCII string though.
 
-Of course, that won't stop people and HP has the dubious honour of
-being the first vendor to be found using this in their hp-health
-package.
+That's what the patchset has been implemented for in the first place
+https://lore.kernel.org/linux-spi/20211115181917.7521-1-Sergey.Semin@baikalelectronics.ru/
 
-In order to enable this 'software' to still 'work', have the #GP treat
-the CLI/STI instructions as NOPs when iopl(3). Warn the user that
-their program is doing dubious things.
+Nandhini, Mark has just merged in the series that adds the IP-core
+versions infrastructure support to the DW SSI driver.  So now you can
+easily convert this patch to be using that new interface like this:
+-               if (dws->caps & DW_SPI_CAP_KEEMBAY_MST)
+-                       cr0 |= DWC_SSI_CTRLR0_KEEMBAY_MST;
++               /* CTRLR0[31] MST */
++		if (dw_spi_ver_is_ge(dws, HSSI, 102A))
++       	        cr0 |= DWC_HSSI_CTRLR0_MST;
 
-Fixes: a24ca9976843 ("x86/iopl: Remove legacy IOPL option")
-Reported-by: Ondrej Zary <linux@zary.sk>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/20210918090641.GD5106@worktop.programming.kicks-ass.net
-Signed-off-by: Ondrej Zary <linux@zary.sk>
----
- arch/x86/include/asm/insn-eval.h |  1 +
- arch/x86/include/asm/processor.h |  1 +
- arch/x86/kernel/process.c        |  1 +
- arch/x86/kernel/traps.c          | 34 ++++++++++++++++++++++++++++++++
- arch/x86/lib/insn-eval.c         |  2 +-
- 5 files changed, 38 insertions(+), 1 deletion(-)
+Please don't forget to convert the DWC_SSI_CTRLR0_KEEMBAY_MST name to
+something like DWC_HSSI_CTRLR0_MST and place it at the top of the DWC
+HSSI CTRLR0 register macros list.
 
-diff --git a/arch/x86/include/asm/insn-eval.h b/arch/x86/include/asm/insn-eval.h
-index 98b4dae5e8bc..c1438f9239e4 100644
---- a/arch/x86/include/asm/insn-eval.h
-+++ b/arch/x86/include/asm/insn-eval.h
-@@ -21,6 +21,7 @@ int insn_get_modrm_rm_off(struct insn *insn, struct pt_regs *regs);
- int insn_get_modrm_reg_off(struct insn *insn, struct pt_regs *regs);
- unsigned long insn_get_seg_base(struct pt_regs *regs, int seg_reg_idx);
- int insn_get_code_seg_params(struct pt_regs *regs);
-+unsigned long insn_get_effective_ip(struct pt_regs *regs);
- int insn_fetch_from_user(struct pt_regs *regs,
- 			 unsigned char buf[MAX_INSN_SIZE]);
- int insn_fetch_from_user_inatomic(struct pt_regs *regs,
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 50d02db72317..d428d611a43a 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -534,6 +534,7 @@ struct thread_struct {
- 	 */
- 	unsigned long		iopl_emul;
- 
-+	unsigned int		iopl_warn:1;
- 	unsigned int		sig_on_uaccess_err:1;
- 
- 	/* Floating point and extended processor state */
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 145a7ac0c19a..0aa1baf9a3af 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -138,6 +138,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
- 	frame->ret_addr = (unsigned long) ret_from_fork;
- 	p->thread.sp = (unsigned long) fork_frame;
- 	p->thread.io_bitmap = NULL;
-+	p->thread.iopl_warn = 0;
- 	memset(p->thread.ptrace_bps, 0, sizeof(p->thread.ptrace_bps));
- 
- #ifdef CONFIG_X86_64
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index 143fcb8af38f..2d4ecd50e69b 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -523,6 +523,37 @@ static enum kernel_gp_hint get_kernel_gp_address(struct pt_regs *regs,
- 
- #define GPFSTR "general protection fault"
- 
-+static bool fixup_iopl_exception(struct pt_regs *regs)
-+{
-+	struct thread_struct *t = &current->thread;
-+	unsigned char byte;
-+	unsigned long ip;
-+
-+	if (!IS_ENABLED(CONFIG_X86_IOPL_IOPERM) || t->iopl_emul != 3)
-+		return false;
-+
-+	ip = insn_get_effective_ip(regs);
-+	if (!ip)
-+		return false;
-+
-+	if (get_user(byte, (const char __user *)ip))
-+		return false;
-+
-+	if (byte != 0xfa && byte != 0xfb)
-+		return false;
-+
-+	if (!t->iopl_warn && printk_ratelimit()) {
-+		pr_err("%s[%d] attempts to use CLI/STI, pretending it's a NOP, ip:%lx",
-+		       current->comm, task_pid_nr(current), ip);
-+		print_vma_addr(KERN_CONT " in ", ip);
-+		pr_cont("\n");
-+		t->iopl_warn = 1;
-+	}
-+
-+	regs->ip += 1;
-+	return true;
-+}
-+
- DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
- {
- 	char desc[sizeof(GPFSTR) + 50 + 2*sizeof(unsigned long) + 1] = GPFSTR;
-@@ -548,6 +579,9 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
- 	tsk = current;
- 
- 	if (user_mode(regs)) {
-+		if (fixup_iopl_exception(regs))
-+			goto exit;
-+
- 		tsk->thread.error_code = error_code;
- 		tsk->thread.trap_nr = X86_TRAP_GP;
- 
-diff --git a/arch/x86/lib/insn-eval.c b/arch/x86/lib/insn-eval.c
-index bb0b3fe1e0a0..c6a19c88af54 100644
---- a/arch/x86/lib/insn-eval.c
-+++ b/arch/x86/lib/insn-eval.c
-@@ -1415,7 +1415,7 @@ void __user *insn_get_addr_ref(struct insn *insn, struct pt_regs *regs)
- 	}
- }
- 
--static unsigned long insn_get_effective_ip(struct pt_regs *regs)
-+unsigned long insn_get_effective_ip(struct pt_regs *regs)
- {
- 	unsigned long seg_base = 0;
- 
--- 
-2.20.1
+-Sergey
 
