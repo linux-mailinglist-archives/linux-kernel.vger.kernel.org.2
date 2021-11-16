@@ -2,73 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E553445365D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:50:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 755E2453664
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:51:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238493AbhKPPxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 10:53:02 -0500
-Received: from mail-wr1-f52.google.com ([209.85.221.52]:36850 "EHLO
-        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238315AbhKPPwy (ORCPT
+        id S238598AbhKPPyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 10:54:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56151 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238600AbhKPPxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 10:52:54 -0500
-Received: by mail-wr1-f52.google.com with SMTP id s13so38543760wrb.3;
-        Tue, 16 Nov 2021 07:49:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=nCgBiR9vUhtX7XcnvMRDbpeYdH3tPMJwSClwcRonSqk=;
-        b=QwwbYc2ZnA8Cd4YjMZwMdE9lJLl2zw6W5OgzKywDEkeRNTc/1ho4Ol3228eHsLaBd7
-         uOe7jDPDzmVNBOZHUVlxaudENb96VDIxTzdvcxRDzN9IwbjzO+Aw0hG9JK2QsG45i8im
-         X38jza6Jel4vr1tWxKYAc7+wV1aWxXBAB45r2Z5cMLpyqkKTAEhf7p+RPNCR/IusAecS
-         G2dQg7+bSYp54jKItcgR6DV04fimmXmbqSR+c8J4B8jKk/PPj1+bcp9RNQcmyko33l/F
-         LUG3pZdIskZmUFdbqt36YuY3xQsotlOCv/EDyMrXrsgS7ZzPUVv+9A5RVLHUI7hxr5cZ
-         MLkw==
-X-Gm-Message-State: AOAM530Nc4vemPO1DIJ7w8w72sgoWmJNEHTxemGVMRCWFJemkBVQM/Kr
-        ViDEWP/DMC08khiSPTpFEAU=
-X-Google-Smtp-Source: ABdhPJzJCT0lf3p02QTe+lsbmXVDtD8y6vhM47jd4v2u35SCkebBwgJSwqYIDa7xcwYzfkSbdCJ21g==
-X-Received: by 2002:a05:6000:1a88:: with SMTP id f8mr10578652wry.54.1637077796521;
-        Tue, 16 Nov 2021 07:49:56 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id f15sm3691270wmg.30.2021.11.16.07.49.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 07:49:55 -0800 (PST)
-Date:   Tue, 16 Nov 2021 16:49:54 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Yifeng Li <tomli@tomli.me>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] PCI: Add func1 DMA quirk for Marvell 88SE9125 SATA
- controller
-Message-ID: <YZPTIllU1KKPviHU@rocinante>
-References: <YZPA+gSsGWI6+xBP@work>
+        Tue, 16 Nov 2021 10:53:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637077857;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YptFOrP2nGZgxL0dz3Uz+MV2Fy+UJLC/xUWIe94Zh90=;
+        b=LPelSyupXiBaw5GJnbQkcCT1pfgLxk4KfsyqAOX5OJMnZySnbxQykAW11IZuAeUk2XAZ1G
+        28OjaoOetiJkZ+67UATuE9u4xduIFk0PLkhV7rsEpttJi38s/8owzj3xTuUBpVJyKgyWS/
+        +mN2Jf904ZuXt5G6fRFYsl1yBqmz048=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-581-IOu4GPwSPZ2JF_vyWL4whw-1; Tue, 16 Nov 2021 10:50:53 -0500
+X-MC-Unique: IOu4GPwSPZ2JF_vyWL4whw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1F1B815721;
+        Tue, 16 Nov 2021 15:50:51 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DA1605D6BA;
+        Tue, 16 Nov 2021 15:50:24 +0000 (UTC)
+Message-ID: <ebfa56a6-d444-e82e-bf0d-946765c7f8ae@redhat.com>
+Date:   Tue, 16 Nov 2021 16:50:23 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YZPA+gSsGWI6+xBP@work>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 1/5] KVM: arm64: Cap KVM_CAP_NR_VCPUS by KVM_CAP_MAX_VCPUS
+Content-Language: en-US
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, kvm-ppc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211111162746.100598-1-vkuznets@redhat.com>
+ <20211111162746.100598-2-vkuznets@redhat.com>
+ <a5cdff6878b7157587e92ebe4d5af362@kernel.org> <875ysxg0s1.fsf@redhat.com>
+ <87k0hd8obo.wl-maz@kernel.org>
+ <ad3534bc-fe3a-55f5-b022-4dbec5f29798@redhat.com> <87y25onsj6.fsf@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <87y25onsj6.fsf@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 11/16/21 14:23, Vitaly Kuznetsov wrote:
+> (I'm about to send v2 as we have s390 sorted out.)
+> 
+> So what do we decide about ARM?
+> - Current approach (kvm->arch.max_vcpus/kvm_arm_default_max_vcpus()
+>   depending on 'if (kvm)') - that would be my preference.
 
-Thank you for sending the patch over to fix this!
+That would be mine too.
 
-> Like other SATA controller chips in the Marvell 88SE91xx series, the
-> Marvell 88SE9125 has the same DMA requester ID hardware bug that prevents
-> it from working under IOMMU. This patch adds its device ID 0x9125 to the
-> Function 1 DMA alias quirk list.
+Paolo
 
-[...]
-> Reported-by: sbingner <sam@bingner.com>
-> Tested-by: sbingner <sam@bingner.com>
+> - Always kvm_arm_default_max_vcpus to make the output independent on 'if
+>   (kvm)'.
+> - keep the status quo (drop the patch).
 
-Both of these tags would require a proper full name, if possible, rather
-than a name that is abbreviated and/or a username.
-
-Reviewed-by: Krzysztof Wilczyński <kw@liunx.com>
-
-	Krzysztof
