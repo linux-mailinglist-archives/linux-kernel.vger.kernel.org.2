@@ -2,118 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6B8453974
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 19:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE3E453977
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 19:36:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239523AbhKPSjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 13:39:12 -0500
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:45970 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239518AbhKPSjM (ORCPT
+        id S239535AbhKPSje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 13:39:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239526AbhKPSja (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 13:39:12 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AGIa84N093057;
-        Tue, 16 Nov 2021 12:36:08 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1637087768;
-        bh=kLxpBAPPzpG7Ic/v/YIsNbcHV9SUcEJevmIVMESsK/g=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=CvD0OVkElgfloMpK9SIFH3azs9wfLLovSXB0PS/PqxjtxGRNafMxft5Yhwys1v7y4
-         TH0ZjL6Mg/Sogb9UmWclPQbZoRsqoWQfUNYp7RWCfEWtM4z1GotSFfFHUhsJBXaRGk
-         zN9O/vJqIYs063np+dfx99AQD8aVO3vvGWBVLVQQ=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AGIa8ai074142
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 16 Nov 2021 12:36:08 -0600
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 16
- Nov 2021 12:36:07 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 16 Nov 2021 12:36:07 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AGIa7Gn073808;
-        Tue, 16 Nov 2021 12:36:07 -0600
-Date:   Wed, 17 Nov 2021 00:06:06 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>
-CC:     <Alexander.Stein@tq-group.com>, <michael@walle.cc>,
-        <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] mtd: spi-nor: Fix shift-out-of-bounds
-Message-ID: <20211116183604.otbvfiqlkowmidxr@ti.com>
-References: <20211106075616.95401-1-tudor.ambarus@microchip.com>
- <20211106075616.95401-2-tudor.ambarus@microchip.com>
+        Tue, 16 Nov 2021 13:39:30 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E89DC061570;
+        Tue, 16 Nov 2021 10:36:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JEcbbh/dVkVptbrXWN3GozTnEzbwvPLEPedTKPD53aQ=; b=mA5jxu3sy0X3+aUkFrrjpR47Fj
+        yYqwQI9T6Ct8fWvCTg/mhpbbeRlReFVm5x70No48tHenfs0ppYqqxUB0OhHKJ2vhlKysqZ57QFdfB
+        58s/AbXaqmJ66Nqmz4ZAe6ail5OntA13nZguCvb42BNFXbXJ8vU/HeSKif5EpDd7f2KrVMTEmc8SH
+        ekTDgTEbWUOsUI1ao1wB3XtqxrvQaNz9Ko3z62Djdav9mdd1Jf/ePybJZaQiKedJ0YViBu+Rz12ej
+        qXQp9Rg0Dno9l6+/WqIfA4k+z5gtTWG5hydwvXQrySsfqFjlfiym9+S2/SpXu2lk4LngSb+8Un1Ne
+        McvVQPgQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mn3Jd-006zsT-HT; Tue, 16 Nov 2021 18:36:21 +0000
+Date:   Tue, 16 Nov 2021 18:36:21 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        Drew DeVault <sir@cmpwn.com>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+Message-ID: <YZP6JSd4h45cyvsy@casper.infradead.org>
+References: <20211028080813.15966-1-sir@cmpwn.com>
+ <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
+ <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
+ <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
+ <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211106075616.95401-2-tudor.ambarus@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/11/21 09:56AM, Tudor Ambarus wrote:
-> When paring SFDP we may choose to mask out an erase type, passing
-> an erase size of zero to spi_nor_set_erase_type().
-> Fix shift-out-of-bounds and just clear the erase params when
-> passing zero for erase size.
-> While here avoid a superfluous dereference and use 'size' directly.
-> 
-> UBSAN: shift-out-of-bounds in drivers/mtd/spi-nor/core.c:2237:24
-> shift exponent 4294967295 is too large for 32-bit type 'int'
-> 
-> Fixes: 5390a8df769e ("mtd: spi-nor: add support to non-uniform SFDP SPI NOR flash memories")
-> Reported-by: Alexander Stein <Alexander.Stein@tq-group.com>
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> ---
->  drivers/mtd/spi-nor/core.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 3d97c189c332..a1b5d5432f41 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -2230,8 +2230,13 @@ void spi_nor_set_erase_type(struct spi_nor_erase_type *erase, u32 size,
->  	erase->size = size;
->  	erase->opcode = opcode;
->  	/* JEDEC JESD216B Standard imposes erase sizes to be power of 2. */
+On Mon, Nov 15, 2021 at 08:35:30PM -0800, Andrew Morton wrote:
+> I'd also be interested in seeing feedback from the MM developers.
+[...]
+> Subject: Increase default MLOCK_LIMIT to 8 MiB
 
-The change itself looks fine to me. So,
+On the one hand, processes can already allocate at least this much
+memory that is non-swappable, just by doing things like opening a lot of
+files (allocating struct file & fdtable), using a lot of address space
+(allocating page tables), so I don't have a problem with it per se.
 
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+On the other hand, 64kB is available on anything larger than an IBM XT.
+Linux will still boot on machines with 4MB of RAM (eg routers).  For
+someone with a machine with only, say, 32MB of memory, this allows a
+process to make a quarter of the memory unswappable, and maybe that's
+not a good idea.  So perhaps this should scale over a certain range?
 
-But I wonder if this code is doing the right thing. If a flash is 
-setting an incorrect erase size, shouldn't we fail loudly to make sure 
-the error is corrected, instead of working around it silently?
+Is 8MB a generally useful amount of memory for an iouring user anyway?
+If you're just playing with it, sure, but if you have, oh i don't know,
+a database, don't you want to pin the entire cache and allow IO to the
+whole thing?
 
-If you don't want to return an error here, how about:
-
-	WARN_ON(ffs(size) != fls(size))
-
-or even a dev_warn() print so the programmer is aware of this.
-
-> -	erase->size_shift = ffs(erase->size) - 1;
-> -	erase->size_mask = (1 << erase->size_shift) - 1;
-> +	if (size) {
-> +		erase->size_shift = ffs(size) - 1;
-> +		erase->size_mask = (1 << erase->size_shift) - 1;
-> +	} else {
-> +		erase->size_shift = 0;
-> +		erase->size_mask = 0;
-> +	}
->  }
->  
->  /**
-> -- 
-> 2.25.1
-> 
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
