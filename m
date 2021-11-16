@@ -2,74 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B73453340
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C3A453346
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 14:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236851AbhKPNzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 08:55:53 -0500
-Received: from foss.arm.com ([217.140.110.172]:45518 "EHLO foss.arm.com"
+        id S236640AbhKPN4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 08:56:38 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:35988 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231753AbhKPNzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 08:55:52 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71BB26D;
-        Tue, 16 Nov 2021 05:52:55 -0800 (PST)
-Received: from [10.57.76.160] (unknown [10.57.76.160])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2FD7F3F766;
-        Tue, 16 Nov 2021 05:52:54 -0800 (PST)
-Message-ID: <c716be29-4f0c-b516-c0bf-dc89ba466885@arm.com>
-Date:   Tue, 16 Nov 2021 13:52:52 +0000
+        id S229908AbhKPN4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 08:56:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=Nh8cmk8Fo0ciQF/jP1Q2J8McTirBtCHFTSJnjGjcRZs=; b=GdJ+O7q5EGokkRf1qskAURyOyp
+        PyUsl1xesLQBhFnHs2xFvaw5EYOkHTTXqd7hC5iItNv0x4BHQRVcXoG1n1AWLmI2PNp21oBhG9omS
+        2fvi3wuijYMLm/X0cvGymXVVrnfvHrretdw219jJyKsZkPJdwDX8ebdr0AA89Hmmh3YY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mmytx-00DeeU-FT; Tue, 16 Nov 2021 14:53:33 +0100
+Date:   Tue, 16 Nov 2021 14:53:33 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     hnagalla@ti.com
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, geet.modi@ti.com,
+        vikram.sharma@ti.com, grygorii.strashko@ti.com
+Subject: Re: [PATCH net-next] net: phy: add support for TI DP83561-SP phy
+Message-ID: <YZO33aidzEwo3YFC@lunn.ch>
+References: <20211116102015.15495-1-hnagalla@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Subject: Re: [PATCH v1 0/4] coresight: etm: Correct (virtual) contextID
- tracing for namespace
-To:     Leo Yan <leo.yan@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211031144214.237879-1-leo.yan@linaro.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20211031144214.237879-1-leo.yan@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211116102015.15495-1-hnagalla@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo
+On Tue, Nov 16, 2021 at 04:20:15AM -0600, hnagalla@ti.com wrote:
+> From: Hari Nagalla <hnagalla@ti.com>
+> 
+> Add support for the TI DP83561-SP Gigabit ethernet phy device.
+> 
+> The dp83561-sp is a high reliability gigabit ethernet PHY designed for
 
+Does anybody manufacture low reliability devices? Please avoid
+meaningless Marketing.
 
-On 31/10/2021 14:42, Leo Yan wrote:
-> If a profiling program runs in a non-root PID namespace, if CoreSight
-> driver enables contextID tracing, it can lead to mismatching issue
-> between the context ID in hardware trace data and the allocated PID in
-> the non-root namespace.
-> 
-> CoreSight driver has tried to address this issue for the contextID
-> related interfaces under sysfs, but it misses other parts: it doesn't
-> prevent user to set VMID (virtual contextID) for kernel runs in EL2 with
-> VHE, and furthermore, it misses to handle the perf mode when the
-> profiling tool (e.g. perf) doesn't run in root PID namespace.
-> 
-> For this reason, this patch series is to correct contextID tracing for
-> non-root namespace.
-> 
-> Patch 01 is to use spinlock to protect reading virtual context ID
-> comparator.
-> 
-> Patch 02 corrects the virtual contextID tracing for non-root PID
-> namespace.
-> 
-> Patch 03/04 are used to fix the contextID tracing for perf mode.
-> 
-> I only verified this patch series on Juno board in the root PID
-> namespace and confirmed the patches don't introduce any regression for
-> root PID namespace.
-> 
+Please add my Reviewed-by: Andrew Lunn <andrew@lunn.ch> to version 2.
 
-I have finished reviewing the set.
-
-Suzuki
+    Andrew
