@@ -2,178 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B486452956
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:01:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A3F45295B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 06:04:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237193AbhKPFEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 00:04:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230482AbhKPFDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 00:03:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A2DB61BF9;
-        Tue, 16 Nov 2021 05:00:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637038848;
-        bh=gOA/DqIuHnoyIPWhMKi35OEWm99vzDEl2z9BCaXYPCE=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=ECWHdIsa9raOte0ivRlaX5zUraoSDor3mhLn1LjGpJmCqjYI1EL+gpvDrx51IJ+rm
-         +VCi4FdIKlSWHpgaEdNEQV9GW/Q6hYPrNlCJ2abLV6ATrA2YigItSgj5TBy2V5fO2G
-         UfpxP0B4WrsVqdOqqwvc/bU5yC+z6EmeuKc7ksM6E0E7WdQllMHu0iCXw0FRQEWVdX
-         vSd/QjOvM6oFcsozrooiosqzbozOtI2QCeIAlzNhdOPJGQ31YEiKlcVi+ZCxgKD2Nm
-         OXynOhjRjnUgUJLXJgDY7Fq78lnkYKQBkQJw/ZG0Osa20kL+HV/7DKPP7IQ9m/IB0f
-         bmuicnUuWNX0A==
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 13AC227C0054;
-        Tue, 16 Nov 2021 00:00:45 -0500 (EST)
-Received: from imap48 ([10.202.2.98])
-  by compute6.internal (MEProxy); Tue, 16 Nov 2021 00:00:45 -0500
-X-ME-Sender: <xms:-zqTYTkmpastpk7xioLaZBSRJao9k-n9qE52sPvZxvCjyuYGPlTm3w>
-    <xme:-zqTYW2YKmgXBYjbSSfdL9g_gq7srYrbJqCH19hxDrrnQws_r-JGvfTr0Lcd2j7EN
-    0VC-b49C8sYHIRPYNE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfedugdejhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepfdetnhgu
-    hicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenucggtf
-    frrghtthgvrhhnpedvleehjeejvefhuddtgeegffdtjedtffegveethedvgfejieevieeu
-    feevuedvteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedukeeh
-    ieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugi
-    drlhhuthhordhush
-X-ME-Proxy: <xmx:-zqTYZos8aDErUYGtevu8zo8GpOSWHNJPRa1OlMpwA96D1xkSAP0ug>
-    <xmx:-zqTYbnFnSNboyysvQdEXnREdxw3kOK-5xGg3xzoovnZyffzwRl1qg>
-    <xmx:-zqTYR0qodo9tm-jUVoP1wGLE_O8e5kUf7g046VWPo_h0_kuu8zlhg>
-    <xmx:_TqTYb0twwIFSsfD0VdncnhPVDfBQfN2ipRE5-969-HzkGQC1p3h7YV7F0A>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 781AA21E006E; Tue, 16 Nov 2021 00:00:43 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1371-g2296cc3491-fm-20211109.003-g2296cc34
-Mime-Version: 1.0
-Message-Id: <40c1794a-104e-4bcd-add5-2096aefc23e1@www.fastmail.com>
-In-Reply-To: <CAA03e5E3Rvx0t8_ZrbNMZwBkjPivGKOg5HCShSFYwfkKDDHWtA@mail.gmail.com>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
- <061ccd49-3b9f-d603-bafd-61a067c3f6fa@intel.com> <YY6z5/0uGJmlMuM6@zn.tnic>
- <YY7FAW5ti7YMeejj@google.com> <YZJTA1NyLCmVtGtY@work-vm>
- <YZKmSDQJgCcR06nE@google.com>
- <CAA03e5E3Rvx0t8_ZrbNMZwBkjPivGKOg5HCShSFYwfkKDDHWtA@mail.gmail.com>
-Date:   Mon, 15 Nov 2021 21:00:23 -0800
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Marc Orr" <marcorr@google.com>,
-        "Sean Christopherson" <seanjc@google.com>
-Cc:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        "Borislav Petkov" <bp@alien8.de>,
-        "Dave Hansen" <dave.hansen@intel.com>,
-        "Peter Gonda" <pgonda@google.com>,
-        "Brijesh Singh" <brijesh.singh@amd.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "kvm list" <kvm@vger.kernel.org>, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org,
-        "Linux Crypto Mailing List" <linux-crypto@vger.kernel.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Joerg Roedel" <jroedel@suse.de>,
-        "Tom Lendacky" <Thomas.Lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Ard Biesheuvel" <ardb@kernel.org>,
-        "Paolo Bonzini" <pbonzini@redhat.com>,
-        "Vitaly Kuznetsov" <vkuznets@redhat.com>,
-        "Wanpeng Li" <wanpengli@tencent.com>,
-        "Jim Mattson" <jmattson@google.com>,
-        "Dave Hansen" <dave.hansen@linux.intel.com>,
-        "Sergio Lopez" <slp@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Srinivas Pandruvada" <srinivas.pandruvada@linux.intel.com>,
-        "David Rientjes" <rientjes@google.com>,
-        "Dov Murik" <dovmurik@linux.ibm.com>,
-        "Tobin Feldman-Fitzthum" <tobin@ibm.com>,
-        "Michael Roth" <Michael.Roth@amd.com>,
-        "Vlastimil Babka" <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        "Andi Kleen" <ak@linux.intel.com>,
-        "Tony Luck" <tony.luck@intel.com>,
-        "Sathyanarayanan Kuppuswamy" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP) Hypervisor
- Support
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S236070AbhKPFFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 00:05:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239742AbhKPFEY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 00:04:24 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 627F0C0AD869
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 18:05:33 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id v15so39828448ljc.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Nov 2021 18:05:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zjekXk1Y41NYMAjRs/JND+2NT7LCcjfE8WzW5/92qDk=;
+        b=gDD7yPuK8kPTByYLflBxcwsTCAOAFeX3g6bupkv5mZu/FP/k4B0JLQMi0mlODE9IJF
+         fMnzgefPp0Up8C1bWfQvQk3URRt/paGRrnO332QCf0Fq6XZFhaNfkP7aPp0SSf+NX5Ct
+         X4BGvLrY3QV933k8o09sy+7Y5TTX2EuMyet94nN6KuCJEy449klzfvOaSVgC02SH7heF
+         siWjQAvsASpYpCP6etvtT5kITXLDVYjIk0I8oNlUIr8L7cJLV6pJQ7D0JuXKJxKaJWJ4
+         Edo1PVgcv+kZ1za9OyAK6fCBD+5WUuJJW26xaATP4jN3Iw7PjYFkdIb+UEqBnocNAIac
+         0pDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zjekXk1Y41NYMAjRs/JND+2NT7LCcjfE8WzW5/92qDk=;
+        b=rOXw/oMTybk8v5+ae+gnt9nPwes9ZteMw4LR5A2wQyfClhT/lFFaCsR4ZrAnqRb/eq
+         ZVM933AIZVTmmlbIQ7/zPslxPWDEdZ2z7vKpM1WChNf+pBqoOTUamtu+x/MSP6olmGDa
+         Wqu/6uow1liQjhVdrdSA2bUgOmhEpAIbY7BBlY+N0osHLRGZ4OZ0Z1aUG5Ttd6FpVUVJ
+         FR/mO6pckpG15CqWhO1wOUCw8TQI57o96tZBn9F9W7UCe0BmuqtTB87iwl82lj5dLTMc
+         xk2A5Ek2kDdzwrIy0EQEgGynZfZ5tkYJT5E8nkAbTe2KC/ytjRiqE6qc1sOwejgvL1cv
+         n7DA==
+X-Gm-Message-State: AOAM531AwWm4xxfeSZ7WjOzygBm8R7W6b3qLeHZMLXW6rMBNUw/tV64A
+        +R078G90J7xB8CE5pvLJ6/wt2oB6Cu8tVoYAmWUiHg==
+X-Google-Smtp-Source: ABdhPJy/B4sMOnqWRZ9agdkanbVGNULTfsri2o9UkQ9qJsXgk03SXIlzoY5wNhbMMbHZaf3ZaSlFnE7+0A7qt120lEw=
+X-Received: by 2002:a2e:1646:: with SMTP id 6mr3308759ljw.492.1637028331759;
+ Mon, 15 Nov 2021 18:05:31 -0800 (PST)
+MIME-Version: 1.0
+References: <20211114074704.3508622-1-chenhuacai@loongson.cn>
+ <CALAqxLVpTtjFrtKAkcrjDKN9R6FuSdY6LKQw8Mye-3Atqv7kQw@mail.gmail.com> <CAAhV-H6Bq63uM-ifkM8KDJGD1uavv42bG9ij_CZBbCpC-AFSjg@mail.gmail.com>
+In-Reply-To: <CAAhV-H6Bq63uM-ifkM8KDJGD1uavv42bG9ij_CZBbCpC-AFSjg@mail.gmail.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Mon, 15 Nov 2021 18:05:20 -0800
+Message-ID: <CALAqxLWkXu-rpn6Bu8Y92z3c8yPasCUrZY44GVM9dxxcViDorA@mail.gmail.com>
+Subject: Re: [PATCH] time/sched_clock: Allow architecture to override cyc_to_ns()
+To:     Huacai Chen <chenhuacai@gmail.com>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Mon, Nov 15, 2021, at 10:41 AM, Marc Orr wrote:
-> On Mon, Nov 15, 2021 at 10:26 AM Sean Christopherson <seanjc@google.co=
-m> wrote:
->>
->> On Mon, Nov 15, 2021, Dr. David Alan Gilbert wrote:
->> > * Sean Christopherson (seanjc@google.com) wrote:
->> > > On Fri, Nov 12, 2021, Borislav Petkov wrote:
->> > > > On Fri, Nov 12, 2021 at 09:59:46AM -0800, Dave Hansen wrote:
->> > > > > Or, is there some mechanism that prevent guest-private memory=
- from being
->> > > > > accessed in random host kernel code?
->> > >
->> > > Or random host userspace code...
->> > >
->> > > > So I'm currently under the impression that random host->guest a=
-ccesses
->> > > > should not happen if not previously agreed upon by both.
->> > >
->> > > Key word "should".
->> > >
->> > > > Because, as explained on IRC, if host touches a private guest p=
-age,
->> > > > whatever the host does to that page, the next time the guest ru=
-ns, it'll
->> > > > get a #VC where it will see that that page doesn't belong to it=
- anymore
->> > > > and then, out of paranoia, it will simply terminate to protect =
-itself.
->> > > >
->> > > > So cloud providers should have an interest to prevent such rand=
-om stray
->> > > > accesses if they wanna have guests. :)
->> > >
->> > > Yes, but IMO inducing a fault in the guest because of _host_ bug =
-is wrong.
->> >
->> > Would it necessarily have been a host bug?  A guest telling the hos=
-t a
->> > bad GPA to DMA into would trigger this wouldn't it?
->>
->> No, because as Andy pointed out, host userspace must already guard ag=
-ainst a bad
->> GPA, i.e. this is just a variant of the guest telling the host to DMA=
- to a GPA
->> that is completely bogus.  The shared vs. private behavior just means=
- that when
->> host userspace is doing a GPA=3D>HVA lookup, it needs to incorporate =
-the "shared"
->> state of the GPA.  If the host goes and DMAs into the completely wron=
-g HVA=3D>PFN,
->> then that is a host bug; that the bug happened to be exploited by a b=
-uggy/malicious
->> guest doesn't change the fact that the host messed up.
+On Mon, Nov 15, 2021 at 5:41 PM Huacai Chen <chenhuacai@gmail.com> wrote:
 >
-> "If the host goes and DMAs into the completely wrong HVA=3D>PFN, then
-> that is a host bug; that the bug happened to be exploited by a
-> buggy/malicious guest doesn't change the fact that the host messed
-> up."
-> ^^^
-> Again, I'm flabbergasted that you are arguing that it's OK for a guest
-> to exploit a host bug to take down host-side processes or the host
-> itself, either of which could bring down all other VMs on the machine.
+> Hi, John,
 >
-> I'm going to repeat -- this is not OK! Period.
+> On Tue, Nov 16, 2021 at 1:27 AM John Stultz <john.stultz@linaro.org> wrote:
+> >
+> > On Sat, Nov 13, 2021 at 11:47 PM Huacai Chen <chenhuacai@loongson.cn> wrote:
+> > >
+> > > The current cyc_to_ns() implementation is like this:
+> > >
+> > > static inline u64 notrace cyc_to_ns(u64 cyc, u32 mult, u32 shift)
+> > > {
+> > >         return (cyc * mult) >> shift;
+> > > }
+> > >
+> > > But u64*u32 maybe overflow, so introduce ARCH_HAS_CYC_TO_NS to allow
+> > > architecture to override it.
+> > >
+> >
+> > If that's the case, it would seem too large a mult/shift pair had been selected.
+> We use a 100MHz clock and the counter is 64bit, the mult is ~160M. But
+> even if we use a smaller mult, cyc*mult, it can also overflow.
 
-I don=E2=80=99t understand the point you=E2=80=99re trying to make. If t=
-he host _kernel_has a bug that allows a guest to trigger invalid host me=
-mory access, this is bad. We want to know about it and fix it, abcs the =
-security folks want to minimize the chance that such a bug exists.
+Well, yes, any simple multiplication could overflow. My point is that
+the mult/shift pair is usually calculated for an expected interval
+range via clocks_calc_mult_shift(), where the max interval for
+sched_clock is set to an hour.  So any interval length under an hour
+should not overflow in a simple multiplication.
 
-If host _userspace_ such a bug, the kernel should not crash if it=E2=80=99=
-s exploited.
+What I'm trying to understand is what is the case you have where your
+interval length is longer than an hour?
+As that might break other assumptions going on in the code.
+
+> > What sort of cycle range are you considering to be valid here? Can you
+> > provide more rationale as to why this needs the ability to be
+> > overridden?
+> >
+> > And what sort of arch-specific logic do you envision, rather than
+> > having a common implementation to avoid the overflow?
+> u64*u64 can be handled by hardware (store the high bits and low bits
+> of result in two registers). So, if we use assembly, we can handle the
+> overflow correctly. E.g., LoongArch (and MIPS) can override
+> cyc_to_ns() like this:
+>
+> static inline u64 notrace cyc_to_ns(u64 cyc, u32 mult, u32 shift)
+> {
+>         u64 t1, t2, t3;
+>         unsigned long long rv;
+>
+>         /* 64-bit arithmetic can overflow, so use 128-bit. */
+>         __asm__ (
+>                 "nor            %[t1], $r0, %[shift]    \n\t"
+>                 "mulh.du        %[t2], %[cyc], %[mult]  \n\t"
+>                 "mul.d          %[t3], %[cyc], %[mult]  \n\t"
+>                 "slli.d         %[t2], %[t2], 1         \n\t"
+>                 "srl.d          %[rv], %[t3], %[shift]  \n\t"
+>                 "sll.d          %[t1], %[t2], %[t1]     \n\t"
+>                 "or             %[rv], %[t1], %[rv]     \n\t"
+>                 : [rv] "=&r" (rv), [t1] "=&r" (t1), [t2] "=&r" (t2),
+> [t3] "=&r" (t3)
+>                 : [cyc] "r" (cyc), [mult] "r" (mult), [shift] "r" (shift)
+>                 : );
+>         return rv;
+> }
+
+But then isn't the mul_u64_u32_shr() the right abstraction for such a
+custom implementation?
+
+Then potentially implement a generic cyc_to_ns() implementation that
+uses that instead?
+
+thanks
+-john
