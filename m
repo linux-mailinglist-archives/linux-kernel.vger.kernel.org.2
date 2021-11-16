@@ -2,124 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F16452C8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:16:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B128452C90
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 09:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231816AbhKPITN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 03:19:13 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:47244 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231405AbhKPITM (ORCPT
+        id S231855AbhKPIV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 03:21:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231405AbhKPIV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 03:19:12 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AG7KZHF024383;
-        Tue, 16 Nov 2021 08:15:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=CfrWYVK/WWUx2FkE6O2ernHb54WT2Dsdlt0HTCGPt+w=;
- b=f0TBohjdWu+iuJrqMrr3R+j6zBNzfqH8j7EEQO7V49x7A5Pll0a6HHEijwy/4eZuLrFF
- BRG1zq9QewkxR7PY0vPizivDqBVB5z/vmi7CeXawPgV8W/+NyMraum4+4EL5L9CB/0Cn
- vqSJl8S6UVr9bF790zrEpVgBMEM2e7zZM3e0OPBsW378Js0iJBKmQCex5bVPzHItEyzl
- 0kUGt8FgsE5FX2e+9nZPgGPCqPsiguv8V8dBj9k60QN3JLBf678bdC1CaDVgGIeBPugb
- BwJzbTdm1liutRvChFPAxtost/N44Cs2Qh5ozJqgYILooTJ5aWLsY2Y/HWWqGHPh8Ki1 ZA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cc4j2mu6r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Nov 2021 08:15:51 +0000
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AG7c4OW006712;
-        Tue, 16 Nov 2021 08:15:51 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cc4j2mu5p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Nov 2021 08:15:51 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AG8C17h001896;
-        Tue, 16 Nov 2021 08:15:48 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 3ca50avrcx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Nov 2021 08:15:48 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AG8FirP4522606
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Nov 2021 08:15:44 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AC33E52054;
-        Tue, 16 Nov 2021 08:15:44 +0000 (GMT)
-Received: from [9.171.18.51] (unknown [9.171.18.51])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 588DA52051;
-        Tue, 16 Nov 2021 08:15:43 +0000 (GMT)
-Message-ID: <d7547cab-88d6-18a9-8307-bf2cc5d61163@de.ibm.com>
-Date:   Tue, 16 Nov 2021 09:15:43 +0100
+        Tue, 16 Nov 2021 03:21:28 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D78FC061570;
+        Tue, 16 Nov 2021 00:18:30 -0800 (PST)
+Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1mmtfe-0006Cp-Tz; Tue, 16 Nov 2021 09:18:26 +0100
+Message-ID: <70a875d0-7162-d149-dbc1-c2f5e1a8e701@leemhuis.info>
+Date:   Tue, 16 Nov 2021 09:18:26 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.2.0
-Subject: Re: [PATCH 0/5] KVM: Cap KVM_CAP_NR_VCPUS by KVM_CAP_MAX_VCPUS and
- re-purpose it on x86
-Content-Language: en-US
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Eduardo Habkost <ehabkost@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, kvm-ppc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-References: <20211111162746.100598-1-vkuznets@redhat.com>
- <4a3c7be7-12fa-6e47-64eb-02e6c5be5dbc@redhat.com>
- <ecd55383-7089-b3cd-30cc-3f9feb7eadb4@de.ibm.com> <877dd9pfri.fsf@redhat.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-In-Reply-To: <877dd9pfri.fsf@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: LcLtdeI1wcxvnUw1x1mtWpHDxGmneBxm
-X-Proofpoint-ORIG-GUID: q5QSO4swu95OL1X3UIEGk2E0NE9OQf1Y
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-15_16,2021-11-15_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- adultscore=0 clxscore=1015 priorityscore=1501 phishscore=0 malwarescore=0
- mlxscore=0 mlxlogscore=999 suspectscore=0 lowpriorityscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111160041
+Content-Language: en-BS
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+        Johan Hedberg <johan.hedberg@intel.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc:     Orlando Chamberlain <redecorating@protonmail.com>,
+        Daniel Winkler <danielwinkler@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+        Sonny Sasaka <sonnysasaka@chromium.org>,
+        Aditya Garg <gargaditya08@live.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+References: <4970a940-211b-25d6-edab-21a815313954@protonmail.com>
+ <20210930063106.19881-1-redecorating@protonmail.com>
+ <20210930141256.19943-1-redecorating@protonmail.com>
+ <FA02CDD7-CFEC-4481-9940-BA95D81FD3F3@holtmann.org>
+ <275acce4-9eab-9cba-7145-5a75a69ca530@protonmail.com>
+ <20211001083412.3078-1-redecorating@protonmail.com>
+ <CABBYNZLjSfcG_KqTEbL6NOSvHhA5-b1t_S=3FQP4=GwW21kuzg@mail.gmail.com>
+ <972034A8-4B22-4FEE-9B37-C0A7C7ADD60C@live.com> <YYZr14zwHnd52rQ7@kroah.com>
+ <829A2DF8-818E-4AF1-84F9-49B5822F9146@live.com> <YYePw07y2DzEPSBR@kroah.com>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: Re: [PATCHv2] Bluetooth: quirk disabling LE Read Transmit Power
+In-Reply-To: <YYePw07y2DzEPSBR@kroah.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1637050711;63614f9b;
+X-HE-SMSGID: 1mmtfe-0006Cp-Tz
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, this is your Linux kernel regression tracker speaking. To make this
+easy and quick to read for everyone I for once rely on top-posting:
 
+Bluetooth maintainers, what's the status here? The proposed patch is
+fixing a regression. It's not a recent one (it afaics was introduced in
+v5.11-rc1). Nevertheless it would be good to get this finally resolved.
+But this thread seems inactive for more than a week now. Or was progress
+made, but is only visible somewhere else?
 
-Am 15.11.21 um 17:04 schrieb Vitaly Kuznetsov:
-[...]
-> or cap KVM_CAP_MAX_VCPUS value with num_online_cpus(), e.g.
+Ciao, Thorsten (carrying his Linux kernel regression tracker hat)
+
+P.S.: As a Linux kernel regression tracker I'm getting a lot of reports
+on my table. I can only look briefly into most of them. Therefore I
+unfortunately will get things wrong or miss something important. I hope
+that's not the case here; if you think it is, don't hesitate to tell me
+about it in a public reply. That's in everyone's interest, as what I
+wrote above might be misleading to everyone reading this, which is
+something I'd like to avoid.
+
+BTW, I have no personal interest in this issue, which is tracked using
+regzbot, my Linux kernel regression tracking bot
+(https://linux-regtracking.leemhuis.info/regzbot/). I'm only posting
+this mail to hopefully get things rolling again and hence don't need to
+be CC on all further activities wrt to this regression. Also feel free
+to ignore the following lines, they are meant for regzbot:
+
+#regzbot poke
+
+On 07.11.21 09:35, Greg KH wrote:
+> On Sat, Nov 06, 2021 at 05:27:27PM +0000, Aditya Garg wrote:
+>>> On 06-Nov-2021, at 5:19 PM, Greg KH <gregkh@linuxfoundation.org> wrote:
+>>> On Sat, Nov 06, 2021 at 09:41:28AM +0000, Aditya Garg wrote:
+>>>>> On 06-Nov-2021, at 3:17 AM, Luiz Augusto von Dentz <luiz.dentz@gmail.com> wrote:
+>>>>> On Fri, Oct 1, 2021 at 1:56 AM Orlando Chamberlain
+>>>>> <redecorating@protonmail.com> wrote:
+>>>>>>
+>>>>>> The LE Read Transmit Power command is Advertised on some Broadcom
+>>>>>> controlers, but not supported. Using this command breaks Bluetooth
+>>>>>> on the MacBookPro16,1 and iMac20,1. Added a quirk disabling LE Read
+>>>>>> Transmit Power for these devices, based off their common chip id 150.
+>>>>>>
+>>>>>> Link: https://lore.kernel.org/r/4970a940-211b-25d6-edab-21a815313954@protonmail.com
+>>>>>> Signed-off-by: Orlando Chamberlain <redecorating@protonmail.com>
+>>>>>> ---
+>>>>>> v1->v2: Clarified quirk description
+>>>>>>
+>>>>>> drivers/bluetooth/btbcm.c   |  4 ++++
+>>>>>> include/net/bluetooth/hci.h | 11 +++++++++++
+>>>>>> net/bluetooth/hci_core.c    |  3 ++-
+>>>>>> 3 files changed, 17 insertions(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/drivers/bluetooth/btbcm.c b/drivers/bluetooth/btbcm.c
+>>>>>> index e4182acee488..4ecc50d93107 100644
+>>>>>> --- a/drivers/bluetooth/btbcm.c
+>>>>>> +++ b/drivers/bluetooth/btbcm.c
+>>>>>> @@ -353,6 +353,10 @@ static int btbcm_read_info(struct hci_dev *hdev)
+>>>>>>               return PTR_ERR(skb);
+>>>>>>
+>>>>>>       bt_dev_info(hdev, "BCM: chip id %u", skb->data[1]);
+>>>>>> +
+>>>>>> +       if (skb->data[1] == 150)
+>>>>>> +               set_bit(HCI_QUIRK_BROKEN_READ_TRANSMIT_POWER, &hdev->quirks);
+>>>>>> +
+>>>>>>       kfree_skb(skb);
+>>>>>>
+>>>>>>       /* Read Controller Features */
+>>>>>> diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
+>>>>>> index b80415011dcd..6da9bd6b7259 100644
+>>>>>> --- a/include/net/bluetooth/hci.h
+>>>>>> +++ b/include/net/bluetooth/hci.h
+>>>>>> @@ -246,6 +246,17 @@ enum {
+>>>>>>        * HCI after resume.
+>>>>>>        */
+>>>>>>       HCI_QUIRK_NO_SUSPEND_NOTIFIER,
+>>>>>> +
+>>>>>> +       /* When this quirk is set, LE Read Transmit Power is disabled.
+>>>>>> +        * This is mainly due to the fact that the HCI LE Read Transmit
+>>>>>> +        * Power command is advertised, but not supported; these
+>>>>>> +        * controllers often reply with unknown command and need a hard
+>>>>>> +        * reset.
+>>>>>> +        *
+>>>>>> +        * This quirk can be set before hci_register_dev is called or
+>>>>>> +        * during the hdev->setup vendor callback.
+>>>>>> +        */
+>>>>>> +       HCI_QUIRK_BROKEN_READ_TRANSMIT_POWER,
+>>>>>> };
+>>>>>>
+>>>>>> /* HCI device flags */
+>>>>>> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+>>>>>> index 8a47a3017d61..9a23fe7c8d67 100644
+>>>>>> --- a/net/bluetooth/hci_core.c
+>>>>>> +++ b/net/bluetooth/hci_core.c
+>>>>>> @@ -742,7 +742,8 @@ static int hci_init3_req(struct hci_request *req, unsigned long opt)
+>>>>>>                       hci_req_add(req, HCI_OP_LE_READ_ADV_TX_POWER, 0, NULL);
+>>>>>>               }
+>>>>>>
+>>>>>> -               if (hdev->commands[38] & 0x80) {
+>>>>>> +               if (hdev->commands[38] & 0x80 &&
+>>>>>> +                       !test_bit(HCI_QUIRK_BROKEN_READ_TRANSMIT_POWER, &hdev->quirks)) {
+>>>>>>                       /* Read LE Min/Max Tx Power*/
+>>>>>>                       hci_req_add(req, HCI_OP_LE_READ_TRANSMIT_POWER,
+>>>>>>                                   0, NULL);
+>>>>>> --
+>>>>>> 2.33.0
+>>>>>
+>>>>> Nowadays it is possible to treat errors such like this on a per
+>>>>> command basis (assuming it is not essential for the init sequence):
+>>>>>
+>>>>> diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
+>>>>> index 979da5179ff4..f244f42cc609 100644
+>>>>> --- a/include/net/bluetooth/hci.h
+>>>>> +++ b/include/net/bluetooth/hci.h
+>>>>> @@ -551,6 +551,7 @@ enum {
+>>>>> #define HCI_LK_AUTH_COMBINATION_P256   0x08
+>>>>>
+>>>>> /* ---- HCI Error Codes ---- */
+>>>>> +#define HCI_ERROR_UNKNOWN_CMD          0x01
+>>>>> #define HCI_ERROR_UNKNOWN_CONN_ID      0x02
+>>>>> #define HCI_ERROR_AUTH_FAILURE         0x05
+>>>>> #define HCI_ERROR_PIN_OR_KEY_MISSING   0x06
+>>>>> diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
+>>>> This diff cannot be applied to stable 5.15. Could you provide a patch capable of being applied to stable.
+>>>
+>>> That is not needed until a patch is in Linus's tree.  Why do you need it
+>>> earlier?
+>>>
+>> Well not an emergency, but the issue of Bluetooth not working on some Apple Macs has been there for a long time. BTW, will this patch be there in Linus’s tree in the coming days?
 > 
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index 6a6dd5e1daf6..1cfe36f6432e 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -585,6 +585,8 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->                          r = KVM_MAX_VCPUS;
->                  else if (sclp.has_esca && sclp.has_64bscao)
->                          r = KVM_S390_ESCA_CPU_SLOTS;
-> +               if (ext == KVM_CAP_NR_VCPUS)
-> +                       r = min_t(unsigned int, num_online_cpus(), r);
->                  break;
->          case KVM_CAP_S390_COW:
->                  r = MACHINE_HAS_ESOP;
-
-Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
-
-
-I think this is the better variant. Thanks.
+> That is up to the bluetooth maintainers, they have to accept it first.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+> 
