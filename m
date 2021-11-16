@@ -2,172 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7F6545356F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:12:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F79453576
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Nov 2021 16:15:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236150AbhKPPPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 10:15:43 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:12992 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238158AbhKPPPT (ORCPT
+        id S233469AbhKPPSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 10:18:10 -0500
+Received: from out03.mta.xmission.com ([166.70.13.233]:58930 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231739AbhKPPSJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 10:15:19 -0500
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AGEG80L013942;
-        Tue, 16 Nov 2021 15:12:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=epUb2VhTnej1alZUn7+1mPcostWw2FEQ4ptnOAQWVrg=;
- b=V4YgEkLnSWlJFohdtWI2dD+HsmV2ad9pPSaSR4B/VzcN6HkSpi7ioRvcVq5zPU+DSIwK
- I0fZJF2eBhJJQoPDO9Yv26FBJ531GpWnHfTpJSX7pxF5My+iwckFUzK/W9wHmIb1unvX
- EFqEumCsQNpQophuhoX6OkNGusx3oxsXr9M0F2FdfNUaFcn0sxrPNi/IUjgj/ElPKDKL
- l29Es1WMNVQ+6GQL9WCyw0jNhYG0poIVfH/RSivCROEV9SOgfhBqYZCH2BSLySf0L+8o
- INx4mkKcpal3ui7m39o9vjRPalpTWOQJ6eaF7WlCdmeI7r6D+dg8ZaeYA5NRrd1UJ8yR WQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3cbhv5a3gx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Nov 2021 15:12:08 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AGFAd9I161538;
-        Tue, 16 Nov 2021 15:12:07 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
-        by aserp3020.oracle.com with ESMTP id 3ca565jrwq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Nov 2021 15:12:07 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EHFN9azs3WgRuHEJfkMLKGHYcg40gUtBasjd16XUHrGjSrhEs8BU73i1EMzROTMCi+f96qY5cuHre+GU/0xAEhdTbxKffA/ZkezygMRZG07mPtLQ9fSv3u/DkIYufVVern5eZM628Kqi47XDm4c8BuPXtArd316+Pp/oAHwxQJPS9pcWHsauHdLBuA8nDmQCimEuS5fidf7bKfftXrhvYnmagksGpbd/2rlpw4WBEmPOtvjcNQdTJpvUtkXgoNZiS3Nw8SoAbj6ni/PlLkihcMWO+dCgyPk8jtbH/jUoQisYbKKGPR5+iKrZu1URVob4I/XRxYt4RUVdhfQq+QU+ug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=epUb2VhTnej1alZUn7+1mPcostWw2FEQ4ptnOAQWVrg=;
- b=JPJTiznXtglRws/ALXTBbIpek7XFDs8wT9IsBxcxdob4okIHuuRm/mZIybQCPYVdk6GhqPv4uUuUAyIu6Nw8HSB+KbSVkwyM8bTnEJCsn2qFfdZGWHwLyIaNLS7dkycuV6Gc9s4Dsi8FAA6Hzjb27qUOhEUInQkaow+k8W7aS5abfJW/STFveSl02tNsekZB5p9LspeJ2vSqQNNknr7Ge+c97dDINWl/EDzOImDyfjze47PtWIV4cLbG0eRsGb0jR0FPzaLqr+oS7NAxdTQBsAD/GBqvelHaVuFeFfveakwDqWvKNUUD/dhxfnqWca6JDChPfxHB0Q4GrXbQkkxhHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=epUb2VhTnej1alZUn7+1mPcostWw2FEQ4ptnOAQWVrg=;
- b=JGQjQ1wYp7kMDyql7OxByQCU/t+A3qUFsnyRfvYmJR43AyFFn3qCr0O8UAwOU6E2PfK2wIu3rRHLvDVu7vTCgcOAL0CdjVxMmTBv1Ifq38dtjUydHx81ltR2ZTVA89zX0tNbkyQGr8DjHrkKoqV3TkwdW0yLf7zmZG+P40JnZ6w=
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by CO1PR10MB4721.namprd10.prod.outlook.com
- (2603:10b6:303:9b::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Tue, 16 Nov
- 2021 15:12:05 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4690.016; Tue, 16 Nov 2021
- 15:12:05 +0000
-Date:   Tue, 16 Nov 2021 18:11:39 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Zameer Manji <zmanji@gmail.com>, gregkh@linuxfoundation.org,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Michael Straube <straube.linux@gmail.com>,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: remove unused defines in wifi.h
-Message-ID: <20211116151139.GJ26989@kadam>
-References: <20211116011451.896714-1-zmanji@gmail.com>
- <6d2d9c4a-3f05-1d51-42dc-b1ebbb4aefe1@gmail.com>
- <CABtXzjSPNxe-n9QTujMB7=CmhqPFp8V2e86BXmoErWm+6c5coA@mail.gmail.com>
- <22a48290-814e-bcae-81e5-c23e6310f8f6@gmail.com>
- <20211116141838.GI26989@kadam>
- <a072c468-f9dd-25f4-70fa-535cb7196b13@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a072c468-f9dd-25f4-70fa-535cb7196b13@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JN2P275CA0033.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::21)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        Tue, 16 Nov 2021 10:18:09 -0500
+Received: from in01.mta.xmission.com ([166.70.13.51]:51344)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mn0Aw-00BYWg-TH; Tue, 16 Nov 2021 08:15:10 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:37576 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mn0Av-00DBF6-NZ; Tue, 16 Nov 2021 08:15:10 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Junio C Hamano <junio@pobox.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Git List Mailing <git@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Linux API <linux-api@vger.kernel.org>
+References: <878ry512iv.fsf@disp2133>
+        <CAHk-=wivLcb3ELGSf=fM0u=PxP5m1=jRrVXDOr0+QJZRZggaHg@mail.gmail.com>
+        <871r3uy2vw.fsf@disp2133>
+        <CAHk-=wh8v4OC=9rjFs-QH0evVrGQu+wCVL5gE8Y-uTvqh42XNA@mail.gmail.com>
+        <xmqqbl2nmemx.fsf@gitster.g>
+        <87pmr2k68f.fsf@email.froward.int.ebiederm.org>
+        <xmqq8rxobj1k.fsf@gitster.g>
+Date:   Tue, 16 Nov 2021 09:14:32 -0600
+In-Reply-To: <xmqq8rxobj1k.fsf@gitster.g> (Junio C. Hamano's message of "Tue,
+        16 Nov 2021 00:29:11 -0800")
+Message-ID: <87lf1ob09z.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Received: from kadam (102.222.70.114) by JN2P275CA0033.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.25 via Frontend Transport; Tue, 16 Nov 2021 15:11:58 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: eb1ee596-55fd-4406-7d48-08d9a9137316
-X-MS-TrafficTypeDiagnostic: CO1PR10MB4721:
-X-Microsoft-Antispam-PRVS: <CO1PR10MB4721B1A7688C261363C69A248E999@CO1PR10MB4721.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uOIPoi+SpnCUgw2MtE0e+RRu05QmpIjClmHXMzaq0vZuavv1pxOO809Ydnus3UmiB6UCwzf/RiXrrtr93rk5G44ny5Rp5HcHwgSWUhrgFmY5nAMAQUJbamYXMfr8TN+0IlH7gzhY4D4fsWpTtpG+41oTx+ECGHxIJbZLTxm4cVSh/AKTtTOneAi2Rbvc+HF59g+ajlOnn63D5vLJgVj46+eljiz6USXnGpjHi5LyhlndGR8/QU1id244EQQW+8c+nRKkFbLCBJ8PgMPDcYet/OmlbVEWU5NxB9ivkotRO/B+5cU0ZLER0QTOLGcg4+ngYVTYQ304EHz9ZRYVbLrdOcTX5+HnB5YZ4yoNVE4OBD5Jen6M7iGqGSGFO6lHt2tcw6gHI6RBcgMnwIiCzCu66vUL57SZQcKnFYYoJE01XLfeJVqY8Kj1XdllsBtdt4HAXOPL5hkZpIOP4U84cgqcrXUTnqbo2MoVEEbbnL+BKLdBxgnrrZwDfe8SyzK/PQxKVRwoidu4oLrB6C+znYQQF79k1edQWKO5FQDNSGg08Q5RAIPE2KNFqJz9LugWI1TQ8vBtz/6PTWHYLIql+aroirklobGd4Ip1gysY/yIHXblQEu/+xxN6qEpfLMLhWcZhQlo/yAeFQIT4sXAgtmX52yHHIJWWNZ3GTcIFzoOa02elcqkQ4pY/TCYYWkNgq+UVghGT7CRNpVRAURQlcFY44A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(1076003)(53546011)(54906003)(66556008)(66946007)(186003)(6666004)(55016002)(86362001)(956004)(2906002)(9686003)(8676002)(66476007)(44832011)(508600001)(4326008)(33716001)(26005)(33656002)(5660300002)(316002)(38100700002)(38350700002)(9576002)(52116002)(8936002)(6496006)(6916009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cVk4uG7KQFD8nZda2uC5PpEQ2EDFlIOJbDD09NVGrWFXlEp4ei3+A8e5RLWX?=
- =?us-ascii?Q?KV8G1VqSea4a7zIK/gGQQkw504KDYYnSsSGWOhV/k3aPnblgRwOGuE0CjJWh?=
- =?us-ascii?Q?llg+8m2YzcLgCCV/pWRyvDgsm3MTpPBmSUdL1Ygc5Z/S1FVfpm1vI7B29o1k?=
- =?us-ascii?Q?HAlVxs/2m0QOrpzzwpeRbQaaXOIqb71HyA8eYv610KT1ODCYNmHKlTJ3sIaV?=
- =?us-ascii?Q?gcRIZAf1XznDSjfkChhEIoHaIW506FMD0rcDPbIACOaqzAMX7kkHorE/J+mU?=
- =?us-ascii?Q?koBNQFzLnrJJCAizssWPrmfj5k3QQcgubHYTAQ8b2wod4cRAmv8K17KjbGSN?=
- =?us-ascii?Q?TwEhAKj7hLaC3S8n6+Elt1Pehl+NFJV2tHgQZiEjP5qKh5wu2Qyc5CEHAXGo?=
- =?us-ascii?Q?rWfjnn6xwJgnbFfj5j9Kp7nryg6YHFDbEQDuAidQT+M6IRV1Eq+MCwntPuTJ?=
- =?us-ascii?Q?iqj/EEVnmgGuJiKAGngIkk8H5y3PHxwz9Ucebu7cuae7c6PThs/8TKx/2r2a?=
- =?us-ascii?Q?scZdai4lDg21IYQkeLqEjI99AcDpJpHWKncoQ3ErjRAYAKP0fdZh8L6C5YZF?=
- =?us-ascii?Q?jDOZqHNTkM12SyWWGGooaXvno0mjIUj26yByMmeYxxtqYiVqaF4nJ4cDEG00?=
- =?us-ascii?Q?dFwCXaUyfaK1HolAvhUlHwM5AV8ef6mXvTHCa+pxH1QHIMoCHtX1R4/jlkXH?=
- =?us-ascii?Q?RtcyuKp7rsvkgpS4CJRmjLGj13twg62tXW8KojnzyrUpxqiK/TdCNz+BfkaU?=
- =?us-ascii?Q?mEex7ka5enLydleqLcApdpXIQlMjJLPbiespw3k4Jqe/uqd9eOJrN6P5a93a?=
- =?us-ascii?Q?EAJ03TFR8loI8y5UjyJ4YHfbCM/v7KTdLdiK7I3oMEnW4D+GfgJfKI4xxwTA?=
- =?us-ascii?Q?+wkaEwU5Vjd6OOCmea7slphQSRF48SaOhpsJ5E7kzRhTmNgfFylC7TmtzzW/?=
- =?us-ascii?Q?yKhvslIVVZbGXNFKH6/c9MBFGDNWbtnrDetmfrt+ZNcr+9F/pyYO/mJ37OsP?=
- =?us-ascii?Q?9yUjlnQ8Aja+rERR1/q8j2b2dqF+hQBaQjSpHOGpb+GN1c6dvoWS+9ZcXPRz?=
- =?us-ascii?Q?WLbkKHF/b7+tnKXq+Ceg3VfAANcPXUgvpDOo5IGeU2gkR1CleNIlHuPwR/uR?=
- =?us-ascii?Q?kSMFCUdDatcov2LueqvrUzEhFPXvWOOr1LaRnQgF/PRGJQlVCSpIRCu3jKBr?=
- =?us-ascii?Q?kNXMWlsOK6kuVPSTe/IdWsl/9HLpjMvpCbNbLz4bZmxf2QGqrXARxvmLWUba?=
- =?us-ascii?Q?XxhtvX7tfCVLBgL5kEmYRIAjN1HXkxqjVjdon3antUS3cziYaw6k+eYQlhZU?=
- =?us-ascii?Q?tB94yOXyvCBxo68Akzma5HhHDTCw3fU8zpTwQ4u882YTv8lkWBrtqaQ9xbCL?=
- =?us-ascii?Q?Q5gZ+qInrAjvF/e0OYv+Yo8+c36YbJL1gxE0AzFacXO18vEROb1+Tih8o7Nh?=
- =?us-ascii?Q?uNfw15OA/efzY5tTJmIXy/0bm3vmHl2VBZg7530nbHMHpfMABQwpwCS2+7pO?=
- =?us-ascii?Q?MUn5CixDhd+mF40hH6Gi+mjFbug0eeRo6B12A4/QB1eLJob/eHrtj9+D3RTX?=
- =?us-ascii?Q?KH4gTZO/FbnIqTdAI8yFPL8r9YrUYZYHldIZjaEi8ooCdkBUaXjPJbEpp0x9?=
- =?us-ascii?Q?2cWrX3l+oKcq3ZcyFYlH2KzM59a3SCN6CefksRHJTi+l6xZ5dJo2YoSLJ4Vj?=
- =?us-ascii?Q?WxG32MxlMWHS3dYrSQ844cV5oJg=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eb1ee596-55fd-4406-7d48-08d9a9137316
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 15:12:05.1791
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0OS3vz9jF9z5qmrmUk7uWIXWhcn8jFKHdLNMF1Yi6aJqRnzUtPejxKY7NC4oWE/3tm9eGoEmnhrKf0lYSkUrJ6ZGfM01/yilOaPTfW5XJoU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4721
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10169 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0 mlxscore=0
- spamscore=0 malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111160075
-X-Proofpoint-ORIG-GUID: sY4JLlB3Sb8VS201SAeRWHBt9GEOwHXp
-X-Proofpoint-GUID: sY4JLlB3Sb8VS201SAeRWHBt9GEOwHXp
+Content-Type: text/plain
+X-XM-SPF: eid=1mn0Av-00DBF6-NZ;;;mid=<87lf1ob09z.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18ihlHc2DLTLJ2wnwtlhHPHI9iBIj2iM+M=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.1 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubMetaSxObfu_03,
+        XMSubMetaSx_00 autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4959]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.0 XMSubMetaSx_00 1+ Sexy Words
+        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
+X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Junio C Hamano <junio@pobox.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 631 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 4.1 (0.6%), b_tie_ro: 2.9 (0.5%), parse: 0.76
+        (0.1%), extract_message_metadata: 10 (1.5%), get_uri_detail_list: 2.4
+        (0.4%), tests_pri_-1000: 7 (1.1%), tests_pri_-950: 1.15 (0.2%),
+        tests_pri_-900: 0.82 (0.1%), tests_pri_-90: 219 (34.7%), check_bayes:
+        211 (33.4%), b_tokenize: 8 (1.3%), b_tok_get_all: 7 (1.1%),
+        b_comp_prob: 2.4 (0.4%), b_tok_touch_all: 190 (30.1%), b_finish: 0.68
+        (0.1%), tests_pri_0: 376 (59.6%), check_dkim_signature: 0.41 (0.1%),
+        check_dkim_adsp: 2.1 (0.3%), poll_dns_idle: 0.09 (0.0%), tests_pri_10:
+        2.7 (0.4%), tests_pri_500: 7 (1.2%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [GIT PULL] per signal_struct coredumps
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 06:01:42PM +0300, Pavel Skripkin wrote:
-> On 11/16/21 17:18, Dan Carpenter wrote:
-> > > I cannot ack, since I am not the maintainer (or even reviewer) of this
-> > > driver :) I just saw this BIT() definition and decided to say, that it can
-> > > be also removed
-> > 
-> > Just give a Reviewed-by tag...  No one is appointed as a maintainer, you
-> > just have to start handing our reviewed-by tags until people start to
-> > respect your judgement and then you're a maintainer.
-> > 
-> 
-> Ok, I will send the R-b tag, since patch looks correct to me as is :)
-> 
-> I think, I misunderstood what "ack" means. I thought Zameer means Acked-by
-> tag, which can sent only by maintainers (Larry and Phillip in case of
-> r8188eu), but I was wrong, I guess...
+Junio C Hamano <junio@pobox.com> writes:
 
-To me Acked by means you approve the patch so it's like, yeah, normally
-maintainers use it.  But sometimes like people ask for your opinion and
-then you can Ack it.  Or maybe you just want to express joy about a
-feature.  (Please feel joy very sparingly. :P).
+> Junio C Hamano <gitster@pobox.com> writes:
+>
+>> make that a "merge".  If it is "fake", I guess that any random point
+>> in Linus's history would do, but I can understand that the maintainer
+>> would complain about such a seemingly unnecessary (back) merge.
+>
+> Having thought about it a bit more, I am not sure if these merges
+> are truly "fake", or just a normal part of distributed development.
+>
+> As a degenerated case, first I'd imagine you have a patch series
+> that focuses on a single "theme".  You perfect the patches, you fork
+> a topic branch from an appropriate "public" commit of your upstream
+> (e.g. the last stable release from Linus), you add a signed tag at
+> the tip of that topic branch, and you ask a (subsystem) maintainer
+> to pull from you.  The subsystem maintainer's tree will have series
+> of merges to collect work from other people working in the subsystem
+> ('x'), and the pull from you will create a merge whose first parent
+> is one of these 'x' (i.e. the work by the maintainer so far), and
+> the second parent of it is the tip of your work.  The merge commit M
+> gives a detailed description of what happend on the side branch and
+> its mergetag header carries the contents of the tag you created for
+> the pull request.
+>
+>       \   \
+>     ---x---x---M
+>               / Subsystem maintainer pulls from you
+>              /
+>   ...---o---o (your work)
+>
+> Your next topic, which is a chunk of the same larger theme, may
+> depend on what you did in the commits in this initial series 'o'.
+>
+>
+>       \   \       \   \
+>     ---x---x---M---x---x---N
+>               /           / Subsystem maintainer pulls from you again
+>              /           /
+>   ...---o---o---p---p---p (your second batch)
+>
+>
+> Eventually, this will be pulled into Linus's tree when the subsystem
+> maintainer is ready to send the whole thing.
+>
+>                               Y--- (Linus's tree)
+>                              / Linus pulls from subsystem maintainer
+>       \   \       \   \     /
+>     ---x---x---M---x---x---N (Subsystem maintainer's tree)
+>               /           /
+>              /           /
+>   ...---o---o---p---p---p (Your tree)
+>
+> The above picture only depicts two topics, one directly building on
+> top of the other, from you, but that is simplified merely for
+> illustration purposes.  The real history may have more topics, some
+> are dependent on others, while some are independent.
+>
+> Now, if you have many related but more or less independent topic
+> branches that will support a larger theme, it would be quite natural
+> if you acted as your own "subsystem" maintainer, in other words, in
+> the above picture:
+>
+>  . you are in control of not just the bottom line, but in the middle
+>    line of development;
+>
+>  . you do not have 'x' that merges from other people;
+>
+>  . but you do have M and N, and use these merges just like a
+>    subsystem maintainer would use to describe the work done in the
+>    side branches.
+>
+> and offer 'N' as the tip of a "larger" topic that has internal
+> structure, not just a single strand of pearls, by adding a signed
+> tag on 'N' and throwing a pull request at Linus (or whoever is
+> immediately above your level).
+>
+> Is that what happened (as I said, I lack context)?  If so, I do not
+> see much problem in the situation.  But this assumes that these so
+> called "fake" merges are merging into right first parents.
 
-regards,
-dan carpenter
+Yes.  I write and post the patches with my developer hat on,
+and I merge them with my maintainer hat on, then ultimately I send
+them to Linus with the same maintainer hat on.
+
+
+The full email conversation is at:
+https://lore.kernel.org/all/878ry512iv.fsf@disp2133/T/#u
+
+Here is where Linus merged the change:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a602285ac11b019e9ce7c3907328e9f95f4967f0
+
+In this specific case it is a very degenerate case as there was only one
+set of changes.
+
+
+The one difference from my work flow and the one you described
+is that I haven't reach the point of signing my pull requests.
+
+
+In general and especially this cycle I intend to have multiple
+changesets each with their own merge commit delineating them.  Short of
+being informed of a better way to work.
+
+
+I suspect the conversation is simply because the pull request was
+sufficiently degenerate that things just looked really weird.  But I am
+open to learning otherwise.
+
+Eric
+
+
+
 
