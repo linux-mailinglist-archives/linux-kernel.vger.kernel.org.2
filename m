@@ -2,109 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB0C455099
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCA3F4550A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241375AbhKQWgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 17:36:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43022 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241389AbhKQWgf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:36:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0FE561B5F;
-        Wed, 17 Nov 2021 22:33:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637188415;
-        bh=TK+XD16u7cr6iJKdvQMk7Axtk7gXReM6Z3titsT9zzQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DnEfdCTQCBa3GoPL5SGFdkvuuk/fnSgNAY1+uftL8bCXiIO9ibhSoqw1EWk1xLWMx
-         8dGYXHKAFKQRLIUhXlsQCunI6e3cyfDj61hUXPMWBajKoG0vdeqPp34mTuf992fBMx
-         stNTJbQ9CrCKsm6mjmLZaWJ6qsncrCvTgaDrwIzvmUqsuJxqT75S3jVQGmGstc6s1Y
-         ouN8vfBSJxpP6D41sQY71YxXKceqvI2lniokhMuKuwpVVQyXE1kGkwMKUiKEU0vHMw
-         ESCr6ianwNcymVkvHzkLEPLlfHgDk6rImTHzf+en5f1KAbMu8kT/enn2er/w82U3GZ
-         yH7wZzg5J+HTg==
-Date:   Wed, 17 Nov 2021 22:33:30 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: regmap: allow to define reg_update_bits for no bus configuration
-Message-ID: <YZWDOidBOssP10yS@sirena.org.uk>
-References: <20211117210451.26415-1-ansuelsmth@gmail.com>
- <20211117210451.26415-2-ansuelsmth@gmail.com>
- <YZV/GYJXKTE4RaEj@sirena.org.uk>
- <61958011.1c69fb81.31272.2dd5@mx.google.com>
+        id S241329AbhKQWlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 17:41:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241260AbhKQWlF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 17:41:05 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D762AC061766
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:38:06 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id w15so4449150ill.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:38:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JUpr14WULbylEmtF7t956SPZXS+VuuZpnqfZu1X3c5o=;
+        b=XovnTv5J+ql5NGvS2VHagQDr5MzDYW2wzrdNHzt+pM0O1uc9Y7m66mLBrS6Eb8XdFh
+         ctOxYw0O6dU8eAZ2n3iXfnBjSLYy0SvSjcm7Iw61g4xawTQtMYZKquHcllOB8QPoeBgK
+         Ax7TGJln9rVvc7kOqw9IsuP1KFBhKatULyfVE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JUpr14WULbylEmtF7t956SPZXS+VuuZpnqfZu1X3c5o=;
+        b=xVeD4+ChO6Wh0Si0dC2ugYtG8uuWQy/0z/4RrvZXQu+LhVooP+vyC137biphXFEQ8/
+         9k7Ih89v+E+mwuqxLvmZA6N2Pdyrktm7KDWjkBRdaB7fhC3+DOfBaedQ2tNj1FwaS0ol
+         6yfOcEgYf1IpmSrc0MsHpsWGRqTrIQXJHXcf2RCo4qXuBix06NlOvTJJhv0RK/O61HZW
+         vX67fnu4XbOlTH0r8mDKFSc5W1R92v7kDB3sLm5OcXexpAk33tQfAf1nGoRJRxXmMtGt
+         8WvEoldEmvQQNndRNnsH4U90Von1GZHvYdsl7MbwTHws32WKQ4n1vuj+x1k32QhOoifk
+         pUMQ==
+X-Gm-Message-State: AOAM532fDRoVna+yahzsjsYrjBEzliok9DuWUWTjEqmdZv8nmwgQlHOc
+        08y/zFUpvE8SDymPAK9WpQPMun4LQXKOGQ==
+X-Google-Smtp-Source: ABdhPJwjPLgriD+JqnSHec4MFuI4jJOmbwQWb2A5gdPyCe/2sT83HQ8lVPfyQo5+w6+0ZFd5zUHtig==
+X-Received: by 2002:a05:6e02:1886:: with SMTP id o6mr12924868ilu.13.1637188685827;
+        Wed, 17 Nov 2021 14:38:05 -0800 (PST)
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com. [209.85.166.52])
+        by smtp.gmail.com with ESMTPSA id d4sm687197ilq.76.2021.11.17.14.38.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 14:38:05 -0800 (PST)
+Received: by mail-io1-f52.google.com with SMTP id m9so5484870iop.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:38:05 -0800 (PST)
+X-Received: by 2002:a05:6602:8ce:: with SMTP id h14mr13375797ioz.177.1637188684807;
+ Wed, 17 Nov 2021 14:38:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Bp6B0V8vyfWbpphh"
-Content-Disposition: inline
-In-Reply-To: <61958011.1c69fb81.31272.2dd5@mx.google.com>
-X-Cookie: I smell a wumpus.
+References: <20211117133110.2682631-1-vkoul@kernel.org> <20211117133110.2682631-3-vkoul@kernel.org>
+In-Reply-To: <20211117133110.2682631-3-vkoul@kernel.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 17 Nov 2021 14:37:52 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=U8Ac0MY9yG7qdqunX4C592_Zrc_Lh-tf-OAVKDi0YOKw@mail.gmail.com>
+Message-ID: <CAD=FV=U8Ac0MY9yG7qdqunX4C592_Zrc_Lh-tf-OAVKDi0YOKw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] spi: qcom: geni: handle timeout for gpi mode
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Matthias Kaehlcke <mka@chromium.org>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---Bp6B0V8vyfWbpphh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Wed, Nov 17, 2021 at 5:31 AM Vinod Koul <vkoul@kernel.org> wrote:
+>
+> We missed adding handle_err for gpi mode, so add a new function
+> spi_geni_handle_err() which would call handle_fifo_timeout() or newly
+> added handle_gpi_timeout() based on mode
+>
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  drivers/spi/spi-geni-qcom.c | 26 +++++++++++++++++++++++++-
+>  1 file changed, 25 insertions(+), 1 deletion(-)
 
-On Wed, Nov 17, 2021 at 11:19:39PM +0100, Ansuel Smith wrote:
-> On Wed, Nov 17, 2021 at 10:15:53PM +0000, Mark Brown wrote:
+Fixes: b59c122484ec ("spi: spi-geni-qcom: Add support for GPI dma")
+Reported-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-> > I've applied this already?  If it's needed by something in another tree
-> > let me know and I'll make a signed tag for it.
 
-> Yes, I posted this in this series as net-next still doesn't have this
-> commit. Don't really know how to hanle this kind of corner
-> case. Do you have some hint about that and how to proceed?
+> diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
+> index b9769de1f5f0..5b6e9a6643d8 100644
+> --- a/drivers/spi/spi-geni-qcom.c
+> +++ b/drivers/spi/spi-geni-qcom.c
+> @@ -164,6 +164,30 @@ static void handle_fifo_timeout(struct spi_master *spi,
+>         }
+>  }
+>
+> +static void handle_gpi_timeout(struct spi_master *spi, struct spi_message *msg)
+> +{
+> +       struct spi_geni_master *mas = spi_master_get_devdata(spi);
+> +
+> +       dmaengine_terminate_sync(mas->tx);
+> +       dmaengine_terminate_sync(mas->rx);
+> +}
+> +
+> +static void spi_geni_handle_err(struct spi_master *spi, struct spi_message *msg)
+> +{
+> +       struct spi_geni_master *mas = spi_master_get_devdata(spi);
+> +
+> +       switch (mas->cur_xfer_mode) {
+> +       case GENI_SE_FIFO:
+> +               handle_fifo_timeout(spi, msg);
+> +               break;
+> +       case GENI_GPI_DMA:
+> +               handle_gpi_timeout(spi, msg);
 
-Ask for a tag like I said in the message you're replying to:
+Slight nit that maybe you should call it handle_gpi_err() instead of
+handle_gpi_timeout(). As I understand it this function will get called
+for _all_ errors, including errors reported by
+spi_gsi_callback_result(). So basically if you have residue then
+you'll immediately finalize the transfer with -EIO in the status and
+then spi_geni_handle_err() will get called. It seems a little strange
+that it then goes and calls a function whose name makes it sound as if
+it's only called for "timeout". (For the FIFO case we actually only
+hit this for timeouts since we don't currently terminate transfers
+early for errors, so the FIFO name is actually OK).
 
-The following changes since commit fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf:
-
-  Linux 5.16-rc1 (2021-11-14 13:56:52 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git tags/regmap-no-bus-update-bits
-
-for you to fetch changes up to 02d6fdecb9c38de19065f6bed8d5214556fd061d:
-
-  regmap: allow to define reg_update_bits for no bus configuration (2021-11-15 13:27:13 +0000)
-
-----------------------------------------------------------------
-regmap: Allow regmap_update_bits() to be offloaded with no bus
-
-Some hardware can do this so let's use that capability.
-
-----------------------------------------------------------------
-Ansuel Smith (1):
-      regmap: allow to define reg_update_bits for no bus configuration
-
- drivers/base/regmap/regmap.c | 1 +
- include/linux/regmap.h       | 7 +++++++
- 2 files changed, 8 insertions(+)
-
---Bp6B0V8vyfWbpphh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGVgzoACgkQJNaLcl1U
-h9BOEgf/aFW4fBTWA2tY0O4vTXJz7IhnZSL1UEwHyCOH4W5rIu4zGJxoNq2OZnij
-LjdheZTu63J9sjMkgIvFMrLE597/z6QEqQMS6fG0961xJBAXJZIPiBLeCnUw7PY5
-fnPzHbbQtYfL4QFEr+hRRAuwFjZP4tLEpqBNWREQdPS3C4sfZJWP/RnfVodqYF7H
-6fI87LEehosQA34P8kyTKmf4yFi6Pu1wGo/yucfwUDPOoZOZzvr6Ywi+abBEZ1Cu
-DkAaWNvJCpacvaRW4QjZLR3E5yt/X3xJcF7q+Sk1j2FpN+2/dFuK4+Dat23XEQOL
-LyMrUjUhwzvhvOkqxLYZzruitHC+Hw==
-=7vmY
------END PGP SIGNATURE-----
-
---Bp6B0V8vyfWbpphh--
+-Doug
