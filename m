@@ -2,107 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0262A453FF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 06:22:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5BF45402F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 06:26:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231715AbhKQFYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 00:24:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230470AbhKQFYr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 00:24:47 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6418C061570;
-        Tue, 16 Nov 2021 21:21:49 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id t23so3860545oiw.3;
-        Tue, 16 Nov 2021 21:21:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bqNOr2tcjMGEh27YaG51I8jTVanWEeuncxzB9qiBcBs=;
-        b=bl+IKYslLDCVHLv4sY58rETgjZyYSivbPHaVb5YuVLBH3xd/N1qr5SYwLP+v06AE6f
-         syIIZwhV4mjmNlK2sApSFLjXs+ctX2T4HY8bkhFdljdQPlnFes1nuis6AQOQwIiBLmJB
-         7ux6fi+0FFnGI10X5OAuCl3M6P4Yz289NL1Mge59h9Bad3J+mbJpu+Grl6OT7fX9snFu
-         n4t4NFWjrKAcHma8xtmY56nHDn76Kf0sEbHIhUHrDyMwVSHEiKmekKzCMFWsugsSM6LZ
-         j6SnvOFD0pQt91yTR0Pao7tbyRwxC5iCpflzP2tNLDUbJIhPnZe16guNUlzke8bIESsh
-         MqTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=bqNOr2tcjMGEh27YaG51I8jTVanWEeuncxzB9qiBcBs=;
-        b=x0TZaqr+gTucJaQPAMrnoXt9AzrkdbM7TJcQFu4AYlBMm1R8sKU2L2QCbeoDAZShxy
-         aT9Vf8gs4EjlBX+60BbMzQwdV7lfw1QQCUuH6k7x4pOf91SmFoN6j2WAGSJu1Bx/dxWx
-         9OUdObatBKJV5MQHDu1KwE+2R76dwxbYb2uSHQkVNMG7+7W5mF+9YrcHoVvjO99b1c5u
-         GJgavMkYEyWsdM3166Mm9amq2wJY74Eg8wIxH0AlFOgee9Krch+8LRYdG5i0WJahX4bi
-         7UD8Mxc8Zdlk/2ay00Dbog6PmN5qYHouNZP+Paq7ntv+BKYZfIg78GIdrDARDYPOKasp
-         C2Jw==
-X-Gm-Message-State: AOAM530AdYkmUTkoPYtzqEq8Ynmoevn8RKFqzn/vzj/AGhmbE+py6Ljq
-        A/vrDFC56FDaJiXMP72Gvjo=
-X-Google-Smtp-Source: ABdhPJyZzZnS6l7no0N3RdxSUIklHfaadp2OLTJVskClufO2YOsIfTJ7lpXEpo1Eer2g/smNFmW81w==
-X-Received: by 2002:aca:d07:: with SMTP id 7mr11526403oin.92.1637126509331;
-        Tue, 16 Nov 2021 21:21:49 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z14sm3977894otk.36.2021.11.16.21.21.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 21:21:48 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 16 Nov 2021 21:21:47 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Artem Lapkin <email2tema@gmail.com>
-Cc:     narmstrong@baylibre.com, wim@linux-watchdog.org,
-        khilman@baylibre.com, jbrunet@baylibre.com,
-        christianshewitt@gmail.com, martin.blumenstingl@googlemail.com,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        art@khadas.com, nick@khadas.com, gouwa@khadas.com
-Subject: Re: [PATCH] watchdog: meson_gxbb_wdt: remove stop_on_reboot
-Message-ID: <20211117052147.GC215087@roeck-us.net>
-References: <20211110022518.1676834-1-art@khadas.com>
+        id S233207AbhKQF3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 00:29:50 -0500
+Received: from mga09.intel.com ([134.134.136.24]:49283 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229585AbhKQF3t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 00:29:49 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="233717991"
+X-IronPort-AV: E=Sophos;i="5.87,240,1631602800"; 
+   d="scan'208";a="233717991"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 21:26:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,240,1631602800"; 
+   d="scan'208";a="494772632"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.118]) ([10.239.159.118])
+  by orsmga007.jf.intel.com with ESMTP; 16 Nov 2021 21:26:46 -0800
+Cc:     baolu.lu@linux.intel.com, Christoph Hellwig <hch@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Chaitanya Kulkarni <kch@nvidia.com>, kvm@vger.kernel.org,
+        rafael@kernel.org, linux-pci@vger.kernel.org,
+        Cornelia Huck <cohuck@redhat.com>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Jacob jun Pan <jacob.jun.pan@intel.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 01/11] iommu: Add device dma ownership set/release
+ interfaces
+To:     Jason Gunthorpe <jgg@nvidia.com>
+References: <20211115020552.2378167-1-baolu.lu@linux.intel.com>
+ <20211115020552.2378167-2-baolu.lu@linux.intel.com>
+ <YZJdJH4AS+vm0j06@infradead.org>
+ <cc7ce6f4-b1ec-49ef-e245-ab6c330154c2@linux.intel.com>
+ <20211116134603.GA2105516@nvidia.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <d79acc01-eeaf-e6ac-0415-af498c355a00@linux.intel.com>
+Date:   Wed, 17 Nov 2021 13:22:19 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211110022518.1676834-1-art@khadas.com>
+In-Reply-To: <20211116134603.GA2105516@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 10:25:18AM +0800, Artem Lapkin wrote:
-> Remove watchdog_stop_on_reboot()
-> 
-> The Meson platform still has some hardware drivers problems for some
-> configurations which can freeze devices on shutdown/reboot.
-> 
-> Remove watchdog_stop_on_reboot() to catch this situation and ensure that
-> the reboot happens anyway. Users who still want to stop the watchdog on
-> reboot can still do so using the watchdog.stop_on_reboot=1 module
-> parameter.
-> 
-> https://lore.kernel.org/linux-watchdog/20210729072308.1908904-1-art@khadas.com/T/#t
-> 
-> Signed-off-by: Artem Lapkin <art@khadas.com>
+Hi Jason,
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+On 11/16/21 9:46 PM, Jason Gunthorpe wrote:
+> On Tue, Nov 16, 2021 at 09:57:30AM +0800, Lu Baolu wrote:
+>> Hi Christoph,
+>>
+>> On 11/15/21 9:14 PM, Christoph Hellwig wrote:
+>>> On Mon, Nov 15, 2021 at 10:05:42AM +0800, Lu Baolu wrote:
+>>>> +enum iommu_dma_owner {
+>>>> +	DMA_OWNER_NONE,
+>>>> +	DMA_OWNER_KERNEL,
+>>>> +	DMA_OWNER_USER,
+>>>> +};
+>>>> +
+>>>
+>>>> +	enum iommu_dma_owner dma_owner;
+>>>> +	refcount_t owner_cnt;
+>>>> +	struct file *owner_user_file;
+>>>
+>>> I'd just overload the ownership into owner_user_file,
+>>>
+>>>    NULL			-> no owner
+>>>    (struct file *)1UL)	-> kernel
+>>>    real pointer		-> user
+>>>
+>>> Which could simplify a lot of the code dealing with the owner.
+>>>
+>>
+>> Yeah! Sounds reasonable. I will make this in the next version.
+> 
+> It would be good to figure out how to make iommu_attach_device()
+> enforce no other driver binding as a kernel user without a file *, as
+> Robin pointed to, before optimizing this.
+> 
+> This fixes an existing bug where iommu_attach_device() only checks the
+> group size and is vunerable to a hot plug increasing the group size
+> after it returns. That check should be replaced by this series's logic
+> instead.
 
-> ---
->  drivers/watchdog/meson_gxbb_wdt.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/watchdog/meson_gxbb_wdt.c b/drivers/watchdog/meson_gxbb_wdt.c
-> index 5a9ca10fbcfa..3f86530c33b0 100644
-> --- a/drivers/watchdog/meson_gxbb_wdt.c
-> +++ b/drivers/watchdog/meson_gxbb_wdt.c
-> @@ -186,7 +186,6 @@ static int meson_gxbb_wdt_probe(struct platform_device *pdev)
->  
->  	meson_gxbb_wdt_set_timeout(&data->wdt_dev, data->wdt_dev.timeout);
->  
-> -	watchdog_stop_on_reboot(&data->wdt_dev);
->  	return devm_watchdog_register_device(dev, &data->wdt_dev);
->  }
->  
-> -- 
-> 2.25.1
-> 
+As my my understanding, the essence of this problem is that only the
+user owner of the iommu_group could attach an UNMANAGED domain to it.
+If I understand it right, how about introducing a new interface to
+allocate a user managed domain and storing the user file pointer in it.
+
+--- a/include/linux/iommu.h
++++ b/include/linux/iommu.h
+@@ -94,6 +94,7 @@ struct iommu_domain {
+         void *handler_token;
+         struct iommu_domain_geometry geometry;
+         struct iommu_dma_cookie *iova_cookie;
++       struct file *owner_user_file;
+  };
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -1902,6 +1902,18 @@ struct iommu_domain *iommu_domain_alloc(struct 
+bus_type *bus)
+  }
+  EXPORT_SYMBOL_GPL(iommu_domain_alloc);
+
++struct iommu_domain *iommu_domain_alloc_user(struct bus_type *bus,
++                                            struct file *filep)
++{
++       struct iommu_domain *domain;
++
++       domain = __iommu_domain_alloc(bus, IOMMU_DOMAIN_UNMANAGED);
++       if (domain)
++               domain->owner_user_file = filep;
++
++       return domain;
++}
+
+When attaching a domain to an user-owned iommu_group, both group and
+domain should have matched user fd.
+
+Does above help here?
+
+Best regards,
+baolu
