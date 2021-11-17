@@ -2,120 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A599C45453D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 11:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA62454542
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 11:58:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236582AbhKQK4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 05:56:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35554 "EHLO
+        id S236588AbhKQLBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 06:01:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231591AbhKQK4C (ORCPT
+        with ESMTP id S232746AbhKQLBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 05:56:02 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF6DC061570;
-        Wed, 17 Nov 2021 02:53:03 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id o4so5452716oia.10;
-        Wed, 17 Nov 2021 02:53:03 -0800 (PST)
+        Wed, 17 Nov 2021 06:01:32 -0500
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 467D9C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 02:58:33 -0800 (PST)
+Received: by mail-ua1-x935.google.com with SMTP id r15so4969840uao.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 02:58:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wIIT6/ePIyMUBZgvwPlMAbfK34sVLGh7GgquvsLE084=;
-        b=cSytHkCzD13jEuMPLeN1fKQZoR/1NY3pe/zNd5KzepItAPyUCztHvPyI/Bhm0FwBBP
-         MSj+jfDd2fxU0th/ADKVbG2l09WgyUc/8UosqhaB6PtljhAHtAnpPuGUfI0mpJTLVbrZ
-         n2CDYNwNZihCC5BKwmiFdamPVvUkm/xceZwZ1JRTbA0dlRn/g6s81oVQxxYmg6yR/uow
-         eX2SDlMwz5u2bDwFhEWFJlhzqTDfAK7c0CpCsUz58qtbX/exHHflmqVLFUxGLtwK6UmX
-         701WHdKsG5+f5o9/RU07CiAolx/W39PgpdPoOfG4WbelnlOwe9DyioY3z+gI3Yo9ZqUi
-         VJPw==
+        d=vanguardiasur-com-ar.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GL2vVTwkDGaxnJKnzTpSFsHa3YcDS/lACsSvbC/mwqI=;
+        b=7yAOmEZtKssLDy+Mi1v2A8a/1edO5rzt+1q7QWK/blFKaXK8ebDMcY7nc+YOTG8Kjd
+         ZiCyRY3v5vfuTHYoj5MVj6n6cTVNYKXbwF3zZW3xHkWSl5sOjIwMkBKLHjm+rXuKokps
+         buf1CnkCaSMhGEjqACdor1ActX5fzLq7ADgXGorAAqqAK9yUJ0rWjiF7t7Ze5CY9Zs1M
+         BW/fHP84yKPphZ8yQPiQhDQPHK3ITuznYGa/j2WKeH/BZX95BJI/1/4IVHS6tvl5/dc/
+         7f0LvQNZKCxT9FZSexm3uxQ8dn8ZkCks7bJKZRDetCQdaQR+Y2hEmQ5tc9QQyxD7+CgA
+         AX3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wIIT6/ePIyMUBZgvwPlMAbfK34sVLGh7GgquvsLE084=;
-        b=Kv4rHmihqjgqQi24LUfGzi9P2kblIOiphGJ3HwUeMWa0EZtgBoT8hoHdooM36qliK8
-         WkR3P+LnT7qvrV0l//UM7u5ODoT4wLhGupGjBbOcN4Wv93t7uuD7hp81GCutc4qQmtQo
-         ZgN6XiTBLsr98/Rh1uGPamTalVZS8CoufChBpW3eU89aMmHRzGoQl/CxLiLSIhEahgmj
-         L/pIhUGkRGYKl2XWyNAbsQ76WDNCRGjLv575+Y0dMiHVHdiNSlhN3zG1lQpUdSSWDLZ3
-         bTf5Cdtn5QcG9dOnInChUi2S3hvKSYUyfr/873ldapCePC0N4eEgYp4o25yXkqXc+0QK
-         qmUQ==
-X-Gm-Message-State: AOAM530M3zdjBkZJKZielZPIFoelvXrWYeSYJ4M3qWLxKzYw1NAjgPZN
-        rjjdZ7U2JRsnAoS4vCYDNZuPajim12zPowhuGMk=
-X-Google-Smtp-Source: ABdhPJxlARpq3W7ryl+eHHGyYfKPeP0uoWKZGjdn3QYa+VuCU6DhRnPI/OTqygHbwGKYA4ZRJK0EPjK6nt7LBA+wRas=
-X-Received: by 2002:aca:bb45:: with SMTP id l66mr13523131oif.51.1637146383235;
- Wed, 17 Nov 2021 02:53:03 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GL2vVTwkDGaxnJKnzTpSFsHa3YcDS/lACsSvbC/mwqI=;
+        b=f+XAid7fvFgaRrC5zz1qJVanAWGeMxHUbUkFHDiyfJXSf4lX6hFkXkEofygfT1zrwG
+         cBBbk1VV1jRSm63TzrN8YW8MiSvn/hI8qVvIemQCgzGiKIvulRIyvVzpPOOt1uNPSBZU
+         yNgSn4ei6er6u0BMEmyLXoVTUfzzzlAlMQNir4Vfnf9MR1lU0uV8zfVgHEDm4siJnQKs
+         wfVBCNOMm4CSLP/U3wpaqK2ZR8V3/rX4X6LkIBspXnEedHTf7Gvl5DQKOBnSgWTEy6qm
+         q4icZjWgwkqbHiNpcPw1T9ILOvIj7xSb9iklCCfRD50I9L6477vuUE7hhzTfAuR0X2wv
+         xszQ==
+X-Gm-Message-State: AOAM531YDU0ypo5ZseT3LHTaD93wJzgAYkELtMektatF+XEajrkflFDd
+        2rrUoZSWWpaIe10afbEPjnt6RQ==
+X-Google-Smtp-Source: ABdhPJx0rFYEn6Y1Kc0Vuh2EfsmgisCwK03nysfYsSX7F1YoD/nOk5rKQZ75zS/TNfM4/Zj8NiZlHw==
+X-Received: by 2002:a05:6102:dc7:: with SMTP id e7mr66274552vst.21.1637146712303;
+        Wed, 17 Nov 2021 02:58:32 -0800 (PST)
+Received: from eze-laptop ([186.122.18.126])
+        by smtp.gmail.com with ESMTPSA id r20sm11672009vkq.15.2021.11.17.02.58.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 02:58:31 -0800 (PST)
+Date:   Wed, 17 Nov 2021 07:58:23 -0300
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To:     James Cowgill <james.cowgill@blaize.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiko Stuebner <heiko@sntech.de>, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] media: hantro: Avoid global variable for jpeg
+ quantization tables
+Message-ID: <YZTgT3Gt8GVQqJtm@eze-laptop>
+References: <20211111220108.1873947-1-james.cowgill@blaize.com>
 MIME-Version: 1.0
-References: <1637133726-6581-1-git-send-email-u0084500@gmail.com>
-In-Reply-To: <1637133726-6581-1-git-send-email-u0084500@gmail.com>
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-Date:   Wed, 17 Nov 2021 18:52:52 +0800
-Message-ID: <CAE+NS37eLbnTZtv5pO59XWrWVKEJEA+J8DE=H1NwZr+u71WwfQ@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: leds: Replace moonlight with indicator in
- mt6360 example
-To:     cy_huang <u0084500@gmail.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, wilma.wu@mediatek.com,
-        benjamin.chao@mediatek.com, ChiYuan Huang <cy_huang@richtek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211111220108.1873947-1-james.cowgill@blaize.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cy_huang <u0084500@gmail.com> =E6=96=BC 2021=E5=B9=B411=E6=9C=8817=E6=97=A5=
- =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=883:22=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> From: ChiYuan Huang <cy_huang@richtek.com>
->
-> Replace moonlight with indicator in mt6360 example to prevent the below
-> build error:
->
-> Error: Documentation/devicetree/bindings/leds/leds-mt6360.example.dts:114=
-.24-25
-> syntax error
-> FATAL ERROR: Unable to parse input tree
-> make[1]: *** [scripts/Makefile.lib:385:
-> Documentation/devicetree/bindings/leds/leds-mt6360.example.dt.yaml]
-> Error 1
->
-> Link: https://lore.kernel.org/lkml/CAL_JsqJRMVE163LaHTbtFARc4f_qg33bfQx+s=
-D3ukce_xQF+gA@mail.gmail.com/
-> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> ---
-> Hi, Gene:
->
-> I saw you have removed LED_FUNCTION_MOONLIGHT in v14.
-> But you may forget to remove it from the binding example.
->
-> Please help to review this change.
-> ---
->  Documentation/devicetree/bindings/leds/leds-mt6360.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/devicetree/bindings/leds/leds-mt6360.yaml b/Do=
-cumentation/devicetree/bindings/leds/leds-mt6360.yaml
-> index 2353155..b2fe6eb 100644
-> --- a/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
-> +++ b/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
-> @@ -133,7 +133,7 @@ examples:
->       };
->       led@3 {
->         reg =3D <3>;
-> -       function =3D LED_FUNCTION_MOONLIGHT;
-> +       function =3D LED_FUNCTION_INDICATOR;
->         color =3D <LED_COLOR_ID_WHITE>;
->         led-max-microamp =3D <150000>;
->       };
-> --
-> 2.7.4
->
+Hi James,
 
-Reviewed-by: Gene Chen <gene_chen@richtek.com>
-Thanks
+Thanks for the patch.
+
+On Thu, Nov 11, 2021 at 10:01:08PM +0000, James Cowgill wrote:
+> On a system with multiple encoders present, it's possible for two
+> encoders to write to the global luma and chroma quantization tables at
+> the same time if they both submit a JPEG frame to be encoded. Avoid
+> this race by moving the tables into the `jpeg_ctx` structure which is
+> stored on the stack.
+> 
+> Signed-off-by: James Cowgill <james.cowgill@blaize.com>
+
+Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
