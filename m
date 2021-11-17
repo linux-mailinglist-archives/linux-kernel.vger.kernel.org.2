@@ -2,76 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14278454A20
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:39:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BEB7454A23
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:39:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235417AbhKQPmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 10:42:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43068 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235478AbhKQPmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 10:42:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 333E1613D3;
-        Wed, 17 Nov 2021 15:39:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637163550;
-        bh=122fOvw9CUtf9DMpUlmBgs1ys/g+EKIv9w4Gu3hFMU8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fGX/Yg3tsK0vHq3Fgji6Ji40gQ4hwmTyzhnnA7XKyGnSZQFxUQZbMYti64elxM80d
-         8D3BnNOhLYTTJ0m2yj5GL36xi4G9LjdUe5c3P5Wgl/WAr4QP3203d/nGtxVtVNyO5W
-         xe/mIPPLPy30PSzAzz9vnUbhcf7F4zAc2zNFJosxdUnpeCyQPuEfqhf7pbz+4JOiGC
-         53DU1X32OYNQGVS+2ZfttLDlJZQPhHTKFpVgKtsVaxsQHOZSz9yuAiHq7ycWqlBmq2
-         DbIBhcMoQHkh2EdQLaxQmbKLf+wVDrtHnDelfeeib4+/F5WE26u7ZWlMxb6ndG6DSN
-         Kuq3Llh4x8zQw==
-Date:   Wed, 17 Nov 2021 15:39:02 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, aou@eecs.berkeley.edu,
-        borntraeger@de.ibm.com, bp@alien8.de, catalin.marinas@arm.com,
-        dave.hansen@linux.intel.com, gor@linux.ibm.com, hca@linux.ibm.com,
-        linux-kernel@vger.kernel.org, madvenka@linux.microsoft.com,
-        mhiramat@kernel.org, mingo@redhat.com, mpe@ellerman.id.au,
-        palmer@dabbelt.com, paul.walmsley@sifive.com, peterz@infradead.org,
-        rostedt@goodmis.org, tglx@linutronix.de, will@kernel.org
-Subject: Re: [PATCH 9/9] arm64: Make some stacktrace functions private
-Message-ID: <YZUiFr80mokTT7EO@sirena.org.uk>
-References: <20211117140737.44420-1-mark.rutland@arm.com>
- <20211117140737.44420-10-mark.rutland@arm.com>
+        id S237525AbhKQPms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 10:42:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235214AbhKQPmm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 10:42:42 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58446C061570;
+        Wed, 17 Nov 2021 07:39:43 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 67-20020a1c1946000000b0030d4c90fa87so2464112wmz.2;
+        Wed, 17 Nov 2021 07:39:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=AuJQYHplLClloH34kEvglpfeOlJKdLUFL/faIlnURqs=;
+        b=QFpzzjG2UpBSWHUyfseU0Y3i3+rS/0FUnXv8ZUH+iNTzAW9gISyuCz9WmHgP1QenyM
+         hEsUZ5IIvWEwr89kK3BSurRix+yYdgF7rsilPtO43ZaXJPw9kq95OK5LGfq8JTm8FgDh
+         6URuV8ZQweV7PTpPCCOjZszm82Z6BtQTapxpRKwim2Z/zD6+6WDJbnsItmVLAX+/gZ9v
+         1sSIG9ax/YBAI0UR1Xn425LsSNOo9GhO508FkdnCTsm8bt7ODoGXFSUDEwgHwjJgw1jE
+         vdG94jXeSmyPNdxqEMr28+7w/5xUjSYwCrpmVMfDIt6jLelpUSCJRr+LecdN78R993s7
+         vT+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=AuJQYHplLClloH34kEvglpfeOlJKdLUFL/faIlnURqs=;
+        b=KiGh/5zAhbvtuBPfQPYGLGXYU/wgGirbhPPa35yo2vblxGwXzjpgRz3jpCAE9bU1ln
+         xnpQpmaN7OFMK4TNsU5g03MvZdWBB2MaQ+aXnDTCRxwPG4/OL/veCMePfB8nU/02zSoO
+         mRdOXu6V+QBGV3AR2cY7TssgkEfsgH+227NdR+gG6X1YV7Vqcwl/pYtMRX+3fmjFujJi
+         AFFYqHMD2o3GuAcsvmZgiSQkeqxppDD5Mq/Y61VKbhJyz+vNikPAjWU/GE45B5I8qGDD
+         nc0lxu01nI7Uhj52QtDQ0jzpT4SrcTNMCvkH7TUK7Aoyt+cQIgXUcSwVpwPmGQz2rgLn
+         lwNw==
+X-Gm-Message-State: AOAM533R/LRoCoQ+vYux9htQyzOJuww+UVGqxhysX+lUjJNsNXqYvllo
+        wNIx2888ooQRr0em+l+d1Q4=
+X-Google-Smtp-Source: ABdhPJxt436RYGl1PlAoi3XeorePlbRfnavbllNp8/73UeAo6VoKeGKr4Dm912w/JIxVDxO3qD/40g==
+X-Received: by 2002:a1c:19c5:: with SMTP id 188mr651161wmz.145.1637163581900;
+        Wed, 17 Nov 2021 07:39:41 -0800 (PST)
+Received: from [192.168.0.18] (static-160-219-86-188.ipcom.comunitel.net. [188.86.219.160])
+        by smtp.gmail.com with ESMTPSA id c4sm220035wrr.37.2021.11.17.07.39.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 07:39:41 -0800 (PST)
+Message-ID: <138878d2-e346-931b-69ee-54277fa5647b@gmail.com>
+Date:   Wed, 17 Nov 2021 16:39:40 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="MfZatu15GQtRTZZk"
-Content-Disposition: inline
-In-Reply-To: <20211117140737.44420-10-mark.rutland@arm.com>
-X-Cookie: One Bell System - it sometimes works.
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 2/3] usb: xhci-mtk: add support ip-sleep wakeup for mt8195
+Content-Language: en-US
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>
+Cc:     linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211102060049.1843-1-chunfeng.yun@mediatek.com>
+ <20211102060049.1843-2-chunfeng.yun@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+In-Reply-To: <20211102060049.1843-2-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---MfZatu15GQtRTZZk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Wed, Nov 17, 2021 at 02:07:37PM +0000, Mark Rutland wrote:
-> Now that open-coded stack unwinds have been converted to
-> arch_stack_walk(), we no longer need to expose any of unwind_frame(),
-> walk_stackframe(), or start_backtrace() outside of stacktrace.c.
+On 02/11/2021 07:00, Chunfeng Yun wrote:
+> Add support ip-sleep wakeup for mt8195, it's a specific revision for
+> each USB controller, and not following IPM rule.
+> 
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 
-Reviewed-by: Mark Brown <broonie@kernel.org>
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
 
---MfZatu15GQtRTZZk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGVIhYACgkQJNaLcl1U
-h9BLeQf/eYc0WN/W68AGQuDmNzR0UTlZ3g3Az0DjwdvKpb7fxJU9DRpVRpzj2h1c
-bryn5CLy5opItd4mr5ULEIqncgh2zl+KtdiIgN6X1Wnfo7bHqcWQCaVq6x5yxBQL
-d/GjwDkOkGx6O0Chmb80jEllVAAWa9RghOpX95Y3TYA3qEtS0CmiCEH2k7x0LwkN
-yxcyUeczfcy0YShebYFtr1KkoM7vYRcyUnfc1Ahhmiy0YQDvnH/QPTYlBMLA5+VI
-wUstOaAKuZ0DrjpHDS5/xUaQEMuI/qmAiXnhdryTKkBwtnd1aaPNDsT23pBbvg9J
-OxkR76uy/ZVun21gllLs0Z7cL4VE6A==
-=mHa5
------END PGP SIGNATURE-----
-
---MfZatu15GQtRTZZk--
+> ---
+>   drivers/usb/host/xhci-mtk.c | 37 +++++++++++++++++++++++++++++++++++++
+>   1 file changed, 37 insertions(+)
+> 
+> diff --git a/drivers/usb/host/xhci-mtk.c b/drivers/usb/host/xhci-mtk.c
+> index c53f6f276d5c..63f4b6984667 100644
+> --- a/drivers/usb/host/xhci-mtk.c
+> +++ b/drivers/usb/host/xhci-mtk.c
+> @@ -95,6 +95,19 @@
+>   #define WC0_SSUSB0_CDEN		BIT(6)
+>   #define WC0_IS_SPM_EN		BIT(1)
+>   
+> +/* mt8195 */
+> +#define PERI_WK_CTRL0_8195	0x04
+> +#define WC0_IS_P_95		BIT(30)	/* polarity */
+> +#define WC0_IS_C_95(x)		((u32)(((x) & 0x7) << 27))
+> +#define WC0_IS_EN_P3_95		BIT(26)
+> +#define WC0_IS_EN_P2_95		BIT(25)
+> +#define WC0_IS_EN_P1_95		BIT(24)
+> +
+> +#define PERI_WK_CTRL1_8195	0x20
+> +#define WC1_IS_C_95(x)		((u32)(((x) & 0xf) << 28))
+> +#define WC1_IS_P_95		BIT(12)
+> +#define WC1_IS_EN_P0_95		BIT(6)
+> +
+>   /* mt2712 etc */
+>   #define PERI_SSUSB_SPM_CTRL	0x0
+>   #define SSC_IP_SLEEP_EN	BIT(4)
+> @@ -105,6 +118,10 @@ enum ssusb_uwk_vers {
+>   	SSUSB_UWK_V2,
+>   	SSUSB_UWK_V1_1 = 101,	/* specific revision 1.01 */
+>   	SSUSB_UWK_V1_2,		/* specific revision 1.2 */
+> +	SSUSB_UWK_V1_3,		/* mt8195 IP0 */
+> +	SSUSB_UWK_V1_4,		/* mt8195 IP1 */
+> +	SSUSB_UWK_V1_5,		/* mt8195 IP2 */
+> +	SSUSB_UWK_V1_6,		/* mt8195 IP3 */
+>   };
+>   
+>   /*
+> @@ -307,6 +324,26 @@ static void usb_wakeup_ip_sleep_set(struct xhci_hcd_mtk *mtk, bool enable)
+>   		msk = WC0_SSUSB0_CDEN | WC0_IS_SPM_EN;
+>   		val = enable ? msk : 0;
+>   		break;
+> +	case SSUSB_UWK_V1_3:
+> +		reg = mtk->uwk_reg_base + PERI_WK_CTRL1_8195;
+> +		msk = WC1_IS_EN_P0_95 | WC1_IS_C_95(0xf) | WC1_IS_P_95;
+> +		val = enable ? (WC1_IS_EN_P0_95 | WC1_IS_C_95(0x1)) : 0;
+> +		break;
+> +	case SSUSB_UWK_V1_4:
+> +		reg = mtk->uwk_reg_base + PERI_WK_CTRL0_8195;
+> +		msk = WC0_IS_EN_P1_95 | WC0_IS_C_95(0x7) | WC0_IS_P_95;
+> +		val = enable ? (WC0_IS_EN_P1_95 | WC0_IS_C_95(0x1)) : 0;
+> +		break;
+> +	case SSUSB_UWK_V1_5:
+> +		reg = mtk->uwk_reg_base + PERI_WK_CTRL0_8195;
+> +		msk = WC0_IS_EN_P2_95 | WC0_IS_C_95(0x7) | WC0_IS_P_95;
+> +		val = enable ? (WC0_IS_EN_P2_95 | WC0_IS_C_95(0x1)) : 0;
+> +		break;
+> +	case SSUSB_UWK_V1_6:
+> +		reg = mtk->uwk_reg_base + PERI_WK_CTRL0_8195;
+> +		msk = WC0_IS_EN_P3_95 | WC0_IS_C_95(0x7) | WC0_IS_P_95;
+> +		val = enable ? (WC0_IS_EN_P3_95 | WC0_IS_C_95(0x1)) : 0;
+> +		break;
+>   	case SSUSB_UWK_V2:
+>   		reg = mtk->uwk_reg_base + PERI_SSUSB_SPM_CTRL;
+>   		msk = SSC_IP_SLEEP_EN | SSC_SPM_INT_EN;
+> 
