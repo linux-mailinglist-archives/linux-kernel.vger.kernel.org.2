@@ -2,149 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F02A453E83
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 03:39:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C03453E85
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 03:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232417AbhKQCk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 21:40:59 -0500
-Received: from mga03.intel.com ([134.134.136.65]:57589 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231998AbhKQCk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 21:40:57 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="233813562"
-X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
-   d="scan'208";a="233813562"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 18:38:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
-   d="scan'208";a="494730832"
-Received: from shbuild999.sh.intel.com ([10.239.146.189])
-  by orsmga007.jf.intel.com with ESMTP; 16 Nov 2021 18:37:56 -0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     paulmck@kernel.org, rui.zhang@intel.com, andi.kleen@intel.com,
-        len.brown@intel.com, tim.c.chen@intel.com,
-        Feng Tang <feng.tang@intel.com>
-Subject: [PATCH v3 2/2] x86/tsc: skip tsc watchdog checking for qualified platforms
-Date:   Wed, 17 Nov 2021 10:37:51 +0800
-Message-Id: <20211117023751.24190-2-feng.tang@intel.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211117023751.24190-1-feng.tang@intel.com>
-References: <20211117023751.24190-1-feng.tang@intel.com>
+        id S232419AbhKQCnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 21:43:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229889AbhKQCny (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 21:43:54 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEBA6C061570;
+        Tue, 16 Nov 2021 18:40:56 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id n15-20020a17090a160f00b001a75089daa3so3946445pja.1;
+        Tue, 16 Nov 2021 18:40:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f343OJ6pfdz3dDo4eVAerEx0dQYlehCylZAHl53zawM=;
+        b=M9cCoIqSluVZTlTUPfAo0F2nLn6ZjpSRHbwY1krT0UZxmJ78EXGjtR4IgUyPyQNE80
+         x7tYwzX7srvOAub+iQBVimw5niOXiXqiBEZ+opcUOl6CdUyUrHZi7s3tnpw+8XNDMSVX
+         GLgbxvEG9x9n0+TuzBc0X533GnDM3dTdOQHYR0OKFpaA8hzk7rhvdnrPYda0DYyqnRC4
+         2HltOiR+fIKoZCnUO9T3nXz9Lo3lVOiQWkuUoeZvOVefP/tKYKQA1bED9La2Yq4Xkhwi
+         mqJYvCeiiS2eQowbKrcQlTCqJTG9wtGucuaFK2+mEaheDQ6jVmNmuHxSiJWkFA5RouGr
+         8gWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:from:to:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=f343OJ6pfdz3dDo4eVAerEx0dQYlehCylZAHl53zawM=;
+        b=5LthtySH0XivSJObgp+ZD21qYJbHJJvU0nHa601GKLkRNMQ79Ve2Rhj8xSsSYhW6Og
+         C94jFadcO+gE81S5rMZapSfhVHZmLIRgvwx3TqiIHX/5aEcd+E+FCmWce3d/0hVSmTwU
+         whnBrWluTBhMpZx+XHTsyJYrbuFwxgzFQGkH49vkCDrknEMcdPCUHngnaOcWwWrav8zG
+         ZYE0Edkx3fLOiOaPqP4R/YT2URDJtFGOmRmnnTRhKgS3GHidyuYwtBo/+3UIz73aBj3N
+         HCEEl0Z1FTHqKY/mADp7i8x1AV8WUNopQxX3lOIC2PuI933+tSyDrZ87Rsk9Yvkf2sdb
+         Juzg==
+X-Gm-Message-State: AOAM533HvC6KiJY6QR4iRr73bAo0mgFiIwCD9HQ0mynr7PDblrVK0ke+
+        THtWezUKpVvhb76Y789lyKQ=
+X-Google-Smtp-Source: ABdhPJxPPx9RO4qBzU1PKCScKfVrtwHza6JAQQGsL0c7j6BgKGD7KV6XzAXhQJIhAc9s1SpA1b4oOA==
+X-Received: by 2002:a17:902:ec04:b0:143:b9b8:827e with SMTP id l4-20020a170902ec0400b00143b9b8827emr35045471pld.54.1637116855932;
+        Tue, 16 Nov 2021 18:40:55 -0800 (PST)
+Received: from localhost (220-135-95-34.hinet-ip.hinet.net. [220.135.95.34])
+        by smtp.gmail.com with ESMTPSA id hg4sm3459598pjb.1.2021.11.16.18.40.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 18:40:55 -0800 (PST)
+Sender: AceLan Kao <acelan@gmail.com>
+From:   AceLan Kao <acelan.kao@canonical.com>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        SophieHu <sophiehu@aaeon.com.tw>
+Subject: [PATCH] watchdog: f71808e_wdt: Add F81966 support
+Date:   Wed, 17 Nov 2021 10:40:52 +0800
+Message-Id: <20211117024052.2427539-1-acelan.kao@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are cases that tsc clocksources are wrongly judged as unstable by
-clocksource watchdogs like hpet, acpi_pm or 'refined-jiffies'. While
-there is hardly a general reliable way to check the validity of a
-watchdog, and to protect the innocent tsc, Thomas Gleixner proposed [1]:
+From: AaeonIot <sophiehu@aaeon.com.tw>
 
-"I'm inclined to lift that requirement when the CPU has:
+This adds watchdog support the Fintek F81966 Super I/O chip.
+Testing was done on the Aaeon SSE-OPTI
 
-    1) X86_FEATURE_CONSTANT_TSC
-    2) X86_FEATURE_NONSTOP_TSC
-    3) X86_FEATURE_NONSTOP_TSC_S3
-    4) X86_FEATURE_TSC_ADJUST
-    5) At max. 4 sockets
-
- After two decades of horrors we're finally at a point where TSC seems
- to be halfway reliable and less abused by BIOS tinkerers. TSC_ADJUST
- was really key as we can now detect even small modifications reliably
- and the important point is that we can cure them as well (not pretty
- but better than all other options)."
-
-As feature #3 X86_FEATURE_NONSTOP_TSC_S3 only exists on several generations
-of Atom processor, and is always coupled with X86_FEATURE_CONSTANT_TSC
-and X86_FEATURE_NONSTOP_TSC, skip checking it, and also be more defensive
-to use maxim of 2 sockets.
-
-The check is done inside tsc_init() before registering 'tsc-early' and
-'tsc' clocksources, as there were cases that both of them had been
-wrongly judged as unreliable.
-
-For more background of tsc/watchdog, there is a good summary in [2]
-
-[1]. https://lore.kernel.org/lkml/87eekfk8bd.fsf@nanos.tec.linutronix.de/
-[2]. https://lore.kernel.org/lkml/87a6pimt1f.ffs@nanos.tec.linutronix.de/
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Feng Tang <feng.tang@intel.com>
+Signed-off-by: AaeonIot <sophiehu@aaeon.com.tw>
+Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
 ---
-Change log:
+ drivers/watchdog/f71808e_wdt.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-  v3:
-    * rebased against 5.16-rc1
-    * refine commit log
-
-  v2:
-    * Directly skip watchdog check without messing flag
-      'tsc_clocksource_reliable' (Thomas)
-
- arch/x86/kernel/tsc.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-index 2e076a459a0c..389511f59101 100644
---- a/arch/x86/kernel/tsc.c
-+++ b/arch/x86/kernel/tsc.c
-@@ -1180,6 +1180,12 @@ void mark_tsc_unstable(char *reason)
+diff --git a/drivers/watchdog/f71808e_wdt.c b/drivers/watchdog/f71808e_wdt.c
+index ee90c5f943f9..7f59c680de25 100644
+--- a/drivers/watchdog/f71808e_wdt.c
++++ b/drivers/watchdog/f71808e_wdt.c
+@@ -49,6 +49,7 @@
+ #define SIO_F81803_ID		0x1210	/* Chipset ID */
+ #define SIO_F81865_ID		0x0704	/* Chipset ID */
+ #define SIO_F81866_ID		0x1010	/* Chipset ID */
++#define SIO_F81966_ID		0x1502  /* F81804 chipset ID, same for f81966 */
  
- EXPORT_SYMBOL_GPL(mark_tsc_unstable);
+ #define F71808FG_REG_WDO_CONF		0xf0
+ #define F71808FG_REG_WDT_CONF		0xf5
+@@ -105,7 +106,7 @@ MODULE_PARM_DESC(start_withtimeout, "Start watchdog timer on module load with"
+ 	" given initial timeout. Zero (default) disables this feature.");
  
-+static void __init tsc_skip_watchdog_verify(void)
-+{
-+	clocksource_tsc_early.flags &= ~CLOCK_SOURCE_MUST_VERIFY;
-+	clocksource_tsc.flags &= ~CLOCK_SOURCE_MUST_VERIFY;
-+}
-+
- static void __init check_system_tsc_reliable(void)
- {
- #if defined(CONFIG_MGEODEGX1) || defined(CONFIG_MGEODE_LX) || defined(CONFIG_X86_GENERIC)
-@@ -1196,6 +1202,17 @@ static void __init check_system_tsc_reliable(void)
- #endif
- 	if (boot_cpu_has(X86_FEATURE_TSC_RELIABLE))
- 		tsc_clocksource_reliable = 1;
-+
-+	/*
-+	 * Ideally the socket number should be checked, but this is called
-+	 * by tsc_init() which is in early boot phase and the socket numbers
-+	 * may not be available. Use 'nr_online_nodes' as a fallback solution
-+	 */
-+	if (boot_cpu_has(X86_FEATURE_CONSTANT_TSC) &&
-+	    boot_cpu_has(X86_FEATURE_NONSTOP_TSC) &&
-+	    boot_cpu_has(X86_FEATURE_TSC_ADJUST) &&
-+	    nr_online_nodes <= 2)
-+		tsc_skip_watchdog_verify();
- }
+ enum chips { f71808fg, f71858fg, f71862fg, f71868, f71869, f71882fg, f71889fg,
+-	     f81803, f81865, f81866};
++	     f81803, f81865, f81866, f81966};
  
- /*
-@@ -1387,9 +1404,6 @@ static int __init init_tsc_clocksource(void)
- 	if (tsc_unstable)
- 		goto unreg;
+ static const char * const fintek_wdt_names[] = {
+ 	"f71808fg",
+@@ -118,6 +119,7 @@ static const char * const fintek_wdt_names[] = {
+ 	"f81803",
+ 	"f81865",
+ 	"f81866",
++	"f81966"
+ };
  
--	if (tsc_clocksource_reliable || no_tsc_watchdog)
--		clocksource_tsc.flags &= ~CLOCK_SOURCE_MUST_VERIFY;
--
- 	if (boot_cpu_has(X86_FEATURE_NONSTOP_TSC_S3))
- 		clocksource_tsc.flags |= CLOCK_SOURCE_SUSPEND_NONSTOP;
+ /* Super-I/O Function prototypes */
+@@ -347,6 +349,7 @@ static int fintek_wdt_start(struct watchdog_device *wdd)
+ 		break;
  
-@@ -1527,7 +1541,7 @@ void __init tsc_init(void)
- 	}
+ 	case f81866:
++	case f81966:
+ 		/*
+ 		 * GPIO1 Control Register when 27h BIT3:2 = 01 & BIT0 = 0.
+ 		 * The PIN 70(GPIO15/WDTRST) is controlled by 2Ch:
+@@ -373,7 +376,7 @@ static int fintek_wdt_start(struct watchdog_device *wdd)
+ 	superio_select(wd->sioaddr, SIO_F71808FG_LD_WDT);
+ 	superio_set_bit(wd->sioaddr, SIO_REG_ENABLE, 0);
  
- 	if (tsc_clocksource_reliable || no_tsc_watchdog)
--		clocksource_tsc_early.flags &= ~CLOCK_SOURCE_MUST_VERIFY;
-+		tsc_skip_watchdog_verify();
- 
- 	clocksource_register_khz(&clocksource_tsc_early, tsc_khz);
- 	detect_art();
+-	if (wd->type == f81865 || wd->type == f81866)
++	if (wd->type == f81865 || wd->type == f81866 || wd->type == f81966)
+ 		superio_set_bit(wd->sioaddr, F81865_REG_WDO_CONF,
+ 				F81865_FLAG_WDOUT_EN);
+ 	else
+@@ -580,6 +583,9 @@ static int __init fintek_wdt_find(int sioaddr)
+ 	case SIO_F81866_ID:
+ 		type = f81866;
+ 		break;
++	case SIO_F81966_ID:
++		type = f81966;
++		break;
+ 	default:
+ 		pr_info("Unrecognized Fintek device: %04x\n",
+ 			(unsigned int)devid);
 -- 
-2.27.0
+2.25.1
 
