@@ -2,80 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE0E454E02
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C9A454E04
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240581AbhKQTi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 14:38:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42866 "EHLO
+        id S239627AbhKQTkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 14:40:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240658AbhKQThz (ORCPT
+        with ESMTP id S231272AbhKQTkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 14:37:55 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8C2C06120C;
-        Wed, 17 Nov 2021 11:34:43 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id g91-20020a9d12e4000000b0055ae68cfc3dso6573523otg.9;
-        Wed, 17 Nov 2021 11:34:43 -0800 (PST)
+        Wed, 17 Nov 2021 14:40:10 -0500
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 978BAC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 11:37:11 -0800 (PST)
+Received: by mail-ot1-x332.google.com with SMTP id w6-20020a9d77c6000000b0055e804fa524so6611886otl.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 11:37:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=fKgROiTnocpd07KSckUqHL0oP7FUhobr1NuqsBnlJ7k=;
-        b=OckgS1Ml1G8zKBzp/7G1jNUmwj2Acasrksgsp4unQwH51Gw2x5A83pjHl9fjdiZPXW
-         4Dp2C/u4g/HqQRYKw6Cst3RgTjzzSuGWRKCy8YUdnp5Wnj3qL+v/rfXN+iepPNRR9wnS
-         UYL9oopPx+/CmkQDq6HO028yfmyETbcZdc+Q+ou3KYDAHDKanU3cx0etQLQfy0Z8J3/U
-         Yx4Xkq2F/ItRrOZM9S0KTZLsJ8HYsV81CXPdlC6v+w89Txr+oQQ80NsIoFhfU30oUurY
-         M8SOK8Zu8rHq/Onz8sCqxlFQZeKFjPDcEaQ7T/37zuUbGxRxC5EowWhsWwbwNLM0cuvj
-         ssjQ==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nlKPRUTcJm+bOUCWbAkUY1Qe6bsanAizXJtTl9a9Ch8=;
+        b=oCh6mOUdCmKpUE3mzwPRgOo830TBXHM2t5qvaaMsGNG/XjgSdZXCPdY166iX0ccX/X
+         DGxiNDQJDeTrfbCcBMe0owj9C/NiBzR9UHv8k6OG1Jne8uIgo/i2K0PwW9QtPQpznIOO
+         N88hIazbPsLO6O7LPIxakMuNrN2qsrNLJf8J8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=fKgROiTnocpd07KSckUqHL0oP7FUhobr1NuqsBnlJ7k=;
-        b=4700ZPS58WTrYDLh9HnYpxZcBv6jM+SBx72VppkXCw+arrq8X8R+oHsU46lZMD7YrS
-         idEmqW8wE5BXhfuFYysgQ5otOOcMaNl37xvy9vEFtWBtpC18p75FILKuS3PD2sfmja9t
-         ZFWbIAhnw+54/F2BopNEgM+3efgHfHaXrgsDHq+wjLEG+1dKyLM1Hz5uQS0fRs2z62Ah
-         og0s2q5PDK6lSXhe4sT/QG8sKCoFiSd6Zt178CXIYevhxkV1sZLcyv/lwM+lbvjQVj12
-         i2xZ6eJclwsvKghWBCtUdWD2tJ6Fo47Vfx0SbOQCnx0fyQ3NnvrzH20XqHdMFDx/ctQT
-         2v9A==
-X-Gm-Message-State: AOAM5331IsQ47ghUNqIRy82pS6WpRRRIeoYb2xH6I1GlAZJuKKkpG1ko
-        Q9M05qr5mydclQ9W2Izj+jk=
-X-Google-Smtp-Source: ABdhPJwIv96O+pZ0HD0fwdLNgLNXaLHxOcX9zSHrlHezQG0C1fxasXeMFvqxNJctOw292EGvY48GuA==
-X-Received: by 2002:a9d:6641:: with SMTP id q1mr15936411otm.323.1637177682815;
-        Wed, 17 Nov 2021 11:34:42 -0800 (PST)
-Received: from [172.16.0.2] ([8.48.134.30])
-        by smtp.googlemail.com with ESMTPSA id o2sm184062oiv.32.2021.11.17.11.34.42
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nlKPRUTcJm+bOUCWbAkUY1Qe6bsanAizXJtTl9a9Ch8=;
+        b=eMmEw2ZR8bCc+O0RNbbqZia+tvdc69+RzHRd996DgAG/4b4fQuSWb2/HJYs8/2F7u4
+         o3OwLBP/CPJRrwSiZhr+e+aByL7IRKIF1JXpMWqx6lqZ7H0E7TH83sHJcPb6hb2S09jv
+         LiSqUE0Y/g/jG5eK2HyL+lhLeOAHUF418lv0kWeMGRXVdcRw2yKsziE4d2Mpmm9Sxnzl
+         E16rzb+FCAc/B7GJMfl+jkJdQOmmerhTjLB11JHwYTSZVOjr0bPl1+wbkaink29fn32H
+         h4Hh5+jJoqiA33qiHQotfBFRl7z/JtCyUT70N870jQpcYaBHCOGyNk+X4Ant1etUY2G1
+         kB9A==
+X-Gm-Message-State: AOAM530sF8Mxd4R982VwSqIONIKv3YTC44P9n1JBOoZ6a6dE4W+cOiXK
+        ToqFoTrWSyR2EARj8QcsAEUBf5Wf5NdAjQ==
+X-Google-Smtp-Source: ABdhPJz51B8ttHWKUYp/7aAImLjqgsNSGLmm9zQhRzPi4/rkRImBX5wAe6bfdq6Shu8fWAbCnGm8YA==
+X-Received: by 2002:a05:6830:4d:: with SMTP id d13mr16437056otp.45.1637177830368;
+        Wed, 17 Nov 2021 11:37:10 -0800 (PST)
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com. [209.85.210.45])
+        by smtp.gmail.com with ESMTPSA id m2sm126534oop.12.2021.11.17.11.37.08
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 11:34:42 -0800 (PST)
-Message-ID: <a15db099-a83f-69bd-2cbb-420055087904@gmail.com>
-Date:   Wed, 17 Nov 2021 12:34:41 -0700
+        Wed, 17 Nov 2021 11:37:09 -0800 (PST)
+Received: by mail-ot1-f45.google.com with SMTP id h16-20020a9d7990000000b0055c7ae44dd2so6586732otm.10
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 11:37:08 -0800 (PST)
+X-Received: by 2002:a05:6830:20d3:: with SMTP id z19mr15840988otq.3.1637177828401;
+ Wed, 17 Nov 2021 11:37:08 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.1
-Subject: Re: [PATCH net-next] neigh: introduce __neigh_confirm() for __ipv{4,
- 6}_confirm_neigh
-Content-Language: en-US
-To:     Yajun Deng <yajun.deng@linux.dev>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211117120215.30209-1-yajun.deng@linux.dev>
-From:   David Ahern <dsahern@gmail.com>
-In-Reply-To: <20211117120215.30209-1-yajun.deng@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211103234018.4009771-1-briannorris@chromium.org>
+ <20211103164002.2.Ie6c485320b35b89fd49e15a73f0a68e3bb49eef9@changeid> <CAKMK7uHGNrgqjQh3DX4gChpNt+xhB_39sVrhdA3BFqnoW-ue2w@mail.gmail.com>
+In-Reply-To: <CAKMK7uHGNrgqjQh3DX4gChpNt+xhB_39sVrhdA3BFqnoW-ue2w@mail.gmail.com>
+From:   Brian Norris <briannorris@chromium.org>
+Date:   Wed, 17 Nov 2021 11:36:56 -0800
+X-Gmail-Original-Message-ID: <CA+ASDXPtWsZRTUmrGQKY2Sc-yaeg=e47QpkYWA=KpN5iYGafjQ@mail.gmail.com>
+Message-ID: <CA+ASDXPtWsZRTUmrGQKY2Sc-yaeg=e47QpkYWA=KpN5iYGafjQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] drm/self_refresh: Disable self-refresh on input events
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        David Airlie <airlied@linux.ie>,
+        linux-rockchip@lists.infradead.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Doug Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/21 5:02 AM, Yajun Deng wrote:
-> -		unsigned long now = jiffies;
-> -
-> -		/* avoid dirtying neighbour */
-> -		if (READ_ONCE(n->confirmed) != now)
-> -			WRITE_ONCE(n->confirmed, now);
+On Wed, Nov 17, 2021 at 11:12 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> Can you pls resend with dri-devel on cc? scripts/get_maintainers.pl
+> should pick this up, you have all the maintainers but not the list.
 
-Just move this part to neigh_confirm and leave the rest as it is. That
-READ_ONCE, WRITE_ONCE pair exists in other places that could use the
-neigh_confirm style helper.
+Oops, I don't know how that happened. I guess I sometimes have to trim
+get_maintainer output, since it likes to hoover up a bunch of
+barely-relevant previous committers. I must have been too aggressive.
+
+I'll plan on sending v2 to dri-devel, but let me know (privately if
+you'd like) if you'd prefer a pure RESEND of v1.
+
+Brian
