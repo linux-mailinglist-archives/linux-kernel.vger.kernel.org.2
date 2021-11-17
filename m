@@ -2,82 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC3E4543BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 053024543BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:28:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235227AbhKQJbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 04:31:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235206AbhKQJal (ORCPT
+        id S235213AbhKQJbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 04:31:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:25711 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235154AbhKQJbC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 04:30:41 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98591C061570;
-        Wed, 17 Nov 2021 01:27:43 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id gf14-20020a17090ac7ce00b001a7a2a0b5c3so4732416pjb.5;
-        Wed, 17 Nov 2021 01:27:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=1+VHYM+VQHC92EZ7E24FJNE6AIhzR8b240RPsn1FAO0=;
-        b=F8FM+HKa2pLRQjWM2YjJ1PViS7VgIORwkDHOfqgHbMcINwuzPEmoR/Ic/kYtKcXPKo
-         WJVyQXswO+SWnMAouAtsv7XS/TxXHLLXIjUOJUdJ+bG3mkeWr7M8AVhHiBr1NFI4SuNf
-         tGhWWsVcAHlu3yWC8mfvQ8IEcib9fXMaxbXdFolTSVJfdI/AwgageVfS2eNEVicbK9Dc
-         EcYiQUba0KqDMZVM37RumlLfulYXuws1wm15jTi/vEjZZB9C2AEPdnO+fbDyOfAvCmfc
-         yuw3Vvgc3cuScdkzAIVWUYvX0GUWQIRa3O9Zo7Oh7WsR8dNKtZYwpk6rFDFgODWOk4mH
-         xZ9A==
+        Wed, 17 Nov 2021 04:31:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637141284;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GW74lTKeqcDtN2h/mSP5w/i30xPY127lVyVN1Tm0gaY=;
+        b=Ata4857YmDi2Gi3GwHXEcG79s6zEOL5GBkdICMaZoKo/RoMeNsX+rd8bB1ElWnt5bNyJ7E
+        gHA8udtyyVuCyLRTYUlkTxyPRMxWpZtioUmGwtIRDE/lKsm5AbdmtQVCaDCZ69h0c1grqJ
+        JJ3XyO/TxVEOzYrkRgUCknPvQ5HHP30=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-155-QgdPZ7YNN4-NgvcOhvJWtQ-1; Wed, 17 Nov 2021 04:28:02 -0500
+X-MC-Unique: QgdPZ7YNN4-NgvcOhvJWtQ-1
+Received: by mail-wr1-f70.google.com with SMTP id q17-20020adfcd91000000b0017bcb12ad4fso237693wrj.12
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 01:28:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=1+VHYM+VQHC92EZ7E24FJNE6AIhzR8b240RPsn1FAO0=;
-        b=oogFvcDVUWsL2D3xCtgcptWcuOXsGqegWfPEVTLAb4egqdjYC6Mu7OQY1czmePFzat
-         oyeO/io0dpvTytQ6cnOnEyoIytKBOIzAlRQeZ7DmULQee50d+OOnQsXeLNEtCmU7Zozr
-         zS4RT3auQm1icVgcgqZg6FuiIl9VqaP/pLPjT/akVIeBOz/1BFSJ+MOomNhIUxWA/mju
-         HN62e3oOAe0Iq+4afhMocd3u4AcvzZyP6VYk0xucCm2UTdJNVSpiAZN0K5nhVKoddXOD
-         9rxFwqO8CP3x3lVfoID3djDQ38DGsVvThdUVOaTIu2D8iP46PUi8dnLpO+zN/Gli3ESx
-         PHgQ==
-X-Gm-Message-State: AOAM532Q8QaChq0KRC2Wm4Ei23WmRdJ9q2Sb09ye5m+DEB7CNkhHmh61
-        Eoix1JM9G6g4hG9mEBqKi0Q/LpNtOunjsmUi4Yk=
-X-Google-Smtp-Source: ABdhPJyg6z0h9SCC5Z9siGVhLUvDQI7//1UF/wwQ/k8fUMLWbJXpL3po8R8A0G2lhNY3oltqaWJYXw==
-X-Received: by 2002:a17:90a:3d41:: with SMTP id o1mr8005394pjf.215.1637141262828;
-        Wed, 17 Nov 2021 01:27:42 -0800 (PST)
-Received: from mraturi-mbp.jnpr.net ([116.197.184.13])
-        by smtp.gmail.com with ESMTPSA id y8sm22894917pfi.56.2021.11.17.01.27.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 01:27:42 -0800 (PST)
-Date:   Wed, 17 Nov 2021 14:57:35 +0530
-From:   Manish <manraturi25@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: AER Errors
-Message-ID: <YZTIGBSFTeAdMWPj@mraturi-mbp.jnpr.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GW74lTKeqcDtN2h/mSP5w/i30xPY127lVyVN1Tm0gaY=;
+        b=fI68WtD9X+BCXxDHfqm7Vu/R9+QrWyY6SWhhxpE4NkOWVDdqdSJ+0rx0ulHVbsEj73
+         wYKAnAg3WRMzsHPJr5UqKazhYgX+eil0nPHZXuksdOClEcqehh1r8H+2ybGBJw//etiC
+         6UNig18RC0VoLL65weh8XfsTybaw3go0sTyd2eZU5XJoDdBXfUCohymsSLQb7Rd/p9p5
+         zF4DxNQpJRvK1lwbtG5yr/UUL1PlhZLxYT1WoFRDI/XC4r5nDduLz/awla1YER/iGob0
+         3x08emZRIhyG2GgBk+S5CKXkxkgIf4ilPqULMa+GWxM5ZDY7LgyA4GzSMyTWwrgwWDYi
+         Hx+Q==
+X-Gm-Message-State: AOAM530uPtkSEtv+tSo6vNiwNtYij3Z5pFnQzFFIdsueXK3H3fragDTa
+        E/gl0AS4mW8tOhcfcy17S/uswMpmm8eqhmdFQmc+sHrM6HNegp4al18Qvft10F/1atvVW/AYlR+
+        88+fEgOv4QBORhEo+33aR0VIddFonystspi2GtBpD
+X-Received: by 2002:a05:600c:1f19:: with SMTP id bd25mr15829318wmb.75.1637141281264;
+        Wed, 17 Nov 2021 01:28:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxaDTV+6aHsMLuzIDY2bbJIxOX2vm9dyzDJhrihA4osfWwyGWumuLEHjZwhC1n8gEki1v7Dn61uRsHRD9iWZm8=
+X-Received: by 2002:a05:600c:1f19:: with SMTP id bd25mr15829291wmb.75.1637141281059;
+ Wed, 17 Nov 2021 01:28:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <720dcf79314acca1a78fae56d478cc851952149d.1637084492.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <720dcf79314acca1a78fae56d478cc851952149d.1637084492.git.christophe.leroy@csgroup.eu>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Wed, 17 Nov 2021 10:27:49 +0100
+Message-ID: <CAHc6FU7AWwpmbMQZu-RQ3B1+i3=ZRDTRgLaue53yz0rd2NiuNw@mail.gmail.com>
+Subject: Re: [PATCH] gup: Avoid multiple user access locking/unlocking in fault_in_{read/write}able
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Nov 16, 2021 at 6:50 PM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
+> fault_in_readable() and fault_in_writeable() perform __get_user()
+> and __put_user() in a loop, implying multiple user access
+> locking/unlocking.
+>
+> To avoid that, use user access blocks.
+>
+> Cc: Andreas Gruenbacher <agruenba@redhat.com>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-Could someone please explain the meaning of these strings:
+Reviewed-by: Andreas Gruenbacher <agruenba@redhat.com>
 
-static const char *aer_agent_string[] = {
-"Receiver ID",
-"Requester ID",
-"Completer ID",
-"Transmitter ID"
-};
+> ---
+>  mm/gup.c | 18 ++++++++++--------
+>  1 file changed, 10 insertions(+), 8 deletions(-)
+>
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 2c51e9748a6a..be2a41feec7d 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -1672,21 +1672,22 @@ size_t fault_in_writeable(char __user *uaddr, size_t size)
+>
+>         if (unlikely(size == 0))
+>                 return 0;
+> +       if (!user_write_access_begin(uaddr, size))
+> +               return size;
+>         if (!PAGE_ALIGNED(uaddr)) {
+> -               if (unlikely(__put_user(0, uaddr) != 0))
+> -                       return size;
+> +               unsafe_put_user(0, uaddr, out);
+>                 uaddr = (char __user *)PAGE_ALIGN((unsigned long)uaddr);
+>         }
+>         end = (char __user *)PAGE_ALIGN((unsigned long)start + size);
+>         if (unlikely(end < start))
+>                 end = NULL;
+>         while (uaddr != end) {
+> -               if (unlikely(__put_user(0, uaddr) != 0))
+> -                       goto out;
+> +               unsafe_put_user(0, uaddr, out);
+>                 uaddr += PAGE_SIZE;
+>         }
+>
+>  out:
+> +       user_write_access_end();
+>         if (size > uaddr - start)
+>                 return size - (uaddr - start);
+>         return 0;
+> @@ -1771,21 +1772,22 @@ size_t fault_in_readable(const char __user *uaddr, size_t size)
+>
+>         if (unlikely(size == 0))
+>                 return 0;
+> +       if (!user_read_access_begin(uaddr, size))
+> +               return size;
+>         if (!PAGE_ALIGNED(uaddr)) {
+> -               if (unlikely(__get_user(c, uaddr) != 0))
+> -                       return size;
+> +               unsafe_get_user(c, uaddr, out);
+>                 uaddr = (const char __user *)PAGE_ALIGN((unsigned long)uaddr);
+>         }
+>         end = (const char __user *)PAGE_ALIGN((unsigned long)start + size);
+>         if (unlikely(end < start))
+>                 end = NULL;
+>         while (uaddr != end) {
+> -               if (unlikely(__get_user(c, uaddr) != 0))
+> -                       goto out;
+> +               unsafe_get_user(c, uaddr, out);
+>                 uaddr += PAGE_SIZE;
+>         }
+>
+>  out:
+> +       user_read_access_end();
+>         (void)c;
+>         if (size > uaddr - start)
+>                 return size - (uaddr - start);
+> --
+> 2.31.1
+>
 
-Like if we are receiving the below error:
-
-[  957.912490] pci 0000:30:00.0: AER: PCIe Bus Error:
-severity=Uncorrected (Non-Fatal), type=Transaction Layer, (Requester
-ID)
-
-
-Then does it mean the error is received by port 30:00.0 or it is
-generated by this port.
-
-Thanks for the help.
