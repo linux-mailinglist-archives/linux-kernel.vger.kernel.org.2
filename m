@@ -2,103 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81498454499
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 11:04:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 483FD45449F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 11:05:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235306AbhKQKHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 05:07:16 -0500
-Received: from mail-vk1-f178.google.com ([209.85.221.178]:39862 "EHLO
-        mail-vk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233163AbhKQKHP (ORCPT
+        id S233163AbhKQKID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 05:08:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231603AbhKQKID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 05:07:15 -0500
-Received: by mail-vk1-f178.google.com with SMTP id 84so1286247vkc.6;
-        Wed, 17 Nov 2021 02:04:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u2KwZ2nxmh1qFKKfRQctgNhN3BE0/LT7YSD8syEjPEM=;
-        b=MZHslUmEqf2Ng26iwlYBYBwtefv9fX/jqaDwDSeV94WOur9GrZK2lRtRmSqS4htBJv
-         EKfSahnH8VuYRtC6wg3vZJ4DQYrDhQ6TWjTIPTuSW9PkitgbAQ54PunvrQjCCPYzTR/N
-         XqZ81feiS/tJ9UzDYJj8MimY68e3qC0wyKMVSHEIS6vD2SHGs6fUywUD4RQrUQvMszy0
-         +XoqlQ59qxunjgleNJNQ8i+aVcWRS7qYrFeEalua+qtO4VHem+ofrz53hxQR6WdbJKks
-         dLQbVw0cGKj5eDSL6p1+KWRCxlAcYChGvSEYhbqctD3cYer7jvbYU08Yxjji9sp/9i+h
-         T/gA==
-X-Gm-Message-State: AOAM5310jtlybVUYh2hnJvMhf66H+ACZW99JQWXEyum9cpoa35GVLQty
-        7kpVQhyy+ZuXFYU1KGT1sY1vsHzJLztddA==
-X-Google-Smtp-Source: ABdhPJyKKPPIsoojqddbmDkWUTu7ImA2o26RsTqHB1meaAuSTKcNE68DhX4zh5zeBbYfkaTch2rbGQ==
-X-Received: by 2002:a05:6122:98d:: with SMTP id g13mr86720612vkd.15.1637143456252;
-        Wed, 17 Nov 2021 02:04:16 -0800 (PST)
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com. [209.85.221.181])
-        by smtp.gmail.com with ESMTPSA id t189sm12086227vsb.13.2021.11.17.02.04.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 02:04:15 -0800 (PST)
-Received: by mail-vk1-f181.google.com with SMTP id d130so1328673vke.0;
-        Wed, 17 Nov 2021 02:04:15 -0800 (PST)
-X-Received: by 2002:a05:6122:7d4:: with SMTP id l20mr85285079vkr.26.1637143455269;
- Wed, 17 Nov 2021 02:04:15 -0800 (PST)
+        Wed, 17 Nov 2021 05:08:03 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56E0C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 02:05:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9xc3t/i++I6ZSvgabyN8b1xNPjuadKnTYzFKCHa2W98=; b=kDQL48/1Or/EEQ7xgm6UWU9cIT
+        oZf7XWgbuA2H59eFP5qbPJYEc55FK96oxCfwkF9ocigyZVRvOjLXG/aYyqzwsF7XVaLiElhFF03yZ
+        mnCRLTMoSqiph7YZzvnGzQiS4KuH6nRjDmKJIUARK8FTx6yCytI8JbDvS7ru7qpdQdczadcfkhpeB
+        BAANC4jrLTMFowrXL15LjELzMrfKogiQxGHlo3DWDAo5eRlpZDfiixQxYAPiRMNW3Dp4LhWkyVSsP
+        PQhgvPkPZcJeRTWIRPWDuezeU32/gtF0YNDZcE76BWJ03cIM7FM5oQcpn5G8EIw/skWRe3a54G5bB
+        wkO+F60A==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mnHoG-004OST-KF; Wed, 17 Nov 2021 10:04:56 +0000
+Date:   Wed, 17 Nov 2021 02:04:56 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Georgi Djakov <quic_c_gdjako@quicinc.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, robdclark@gmail.com,
+        arnd@arndb.de, sean@poorly.run, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, maz@kernel.org,
+        robin.murphy@arm.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC 1/2] arm64: Add support for system cache memory type
+Message-ID: <YZTTyErX4bb+dlEV@infradead.org>
+References: <1637104560-37432-1-git-send-email-quic_c_gdjako@quicinc.com>
 MIME-Version: 1.0
-References: <20211117135800.0b7072cd@canb.auug.org.au> <268ae204-efae-3081-a5dd-44fc07d048ba@infradead.org>
- <CAMuHMdUdA6cJkWWKypvn7nGQw+u=gW_oRNWB-=G8g2T3VixJFQ@mail.gmail.com>
- <CANn89iLXQWR_F6v39guPftY=jhs4XHsERifhZPOTjR3zDNkJyg@mail.gmail.com>
- <CAMuHMdXHo5boecN7Y81auC0y=_xWyNXO6tq8+U4AJq-z17F1nw@mail.gmail.com>
- <CANn89iKSZKvySL6+-gk7UGCowRoApJQmvUpYfiKChSSbxr=LYw@mail.gmail.com> <CANn89iLAu9QAgqS_qzZYSHLmmPdL_2uD0RSmtrq4mPgkWzV8hQ@mail.gmail.com>
-In-Reply-To: <CANn89iLAu9QAgqS_qzZYSHLmmPdL_2uD0RSmtrq4mPgkWzV8hQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 17 Nov 2021 11:04:03 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUy1ua+KB4XKh89huRg7a5CoNbZNZWbBRmQhzWsYF+FrA@mail.gmail.com>
-Message-ID: <CAMuHMdUy1ua+KB4XKh89huRg7a5CoNbZNZWbBRmQhzWsYF+FrA@mail.gmail.com>
-Subject: Re: linux-next: Tree for Nov 17 (uml, no IPV6)
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1637104560-37432-1-git-send-email-quic_c_gdjako@quicinc.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+On Tue, Nov 16, 2021 at 03:15:59PM -0800, Georgi Djakov wrote:
+>  include/linux/dma-map-ops.h      | 8 ++++++++
 
-On Wed, Nov 17, 2021 at 10:56 AM Eric Dumazet <edumazet@google.com> wrote:
-> On Wed, Nov 17, 2021 at 1:50 AM Eric Dumazet <edumazet@google.com> wrote:
-> > I don't know, apparently on UM, csum_ipv6_magic() is only found in
-> > arch/x86/um/asm/checksum_32.h,
-> > no idea why...
-> >
->
-> Oh, maybe this is the missing part :
->
-> diff --git a/include/net/gro.h b/include/net/gro.h
-> index d0e7df691a807410049508355230a4523af590a1..9c22a010369cb89f9511d78cc322be56170d7b20
-> 100644
-> --- a/include/net/gro.h
-> +++ b/include/net/gro.h
-> @@ -6,6 +6,7 @@
->  #include <linux/indirect_call_wrapper.h>
->  #include <linux/ip.h>
->  #include <linux/ipv6.h>
-> +#include <net/ip6_checksum.h>
->  #include <linux/skbuff.h>
->  #include <net/udp.h>
-
-Thanks, that fixes the ARCH=m68k m5272c3_defconfig issue for me.
-
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Your forgot to CC the maintainer.  Also don't try to ever hide DMA
+core changes in arch specific patches ever again.
