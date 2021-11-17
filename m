@@ -2,94 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 549EB45485E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:18:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B0645485F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238334AbhKQOVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 09:21:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54392 "EHLO
+        id S238338AbhKQOWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 09:22:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234203AbhKQOVN (ORCPT
+        with ESMTP id S234203AbhKQOWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 09:21:13 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C82DC061570;
-        Wed, 17 Nov 2021 06:18:14 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id v64so8017758ybi.5;
-        Wed, 17 Nov 2021 06:18:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YKmu7HqClDPfAW/KPYXmYV7MKJHnHVcWDjB0/hF1xw8=;
-        b=PBeVZDrOlwkuTprP+rnTkf9goyQlSrzdgEhfE8/fqQofrGbWlExJnsG1/wvTYFsrCR
-         YtBBMFY4ezgL2Du9NufECbBuYv++ofZbTrwu5bVhCe/FgpWmYLRFkDhxUSY2VJ4j5gZP
-         kzj0Ybc4NxIYWwWJgIYOogyR7twDQlWwdduF1zNmGy8BBnrTFqr70vE+UMdshIoYo25B
-         rukBhaZYY0SySYBlK8NxcZRjrk5/7dhWeWuci7XpV1Gx39vnVMkIQ18aKFu7Wady4AQg
-         n0nYKbNsoNzBNcPIkSwdXYKNO6iQ+oi3NxW1353fVdHCM9veFWtSYR+FrwevD9c9cW2P
-         lsPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YKmu7HqClDPfAW/KPYXmYV7MKJHnHVcWDjB0/hF1xw8=;
-        b=7KudRnuWwSegrnsuy5kLTrR8kUibtrQ5DMFnc7lYAMjszozzvK5LOAhBu2GzMYM6/n
-         vwPx15Kygz0Wkx55M0x+WYaGuAfeKL8QafNH2oWZ8EwET+aMGDfhg8pzIOgX2qIDeBCY
-         oenOoehSJBK6pO6WAuIneph0nqGTICdaD3890A2VTp0IX6SJylRKF5Or+8CfPGC+48SB
-         E4lHkySSnCGW+VclAHMzgoNSh4+hcQ8dA+nqktB0AOpovVlsnDdz5eK/5H26KFpzIzUJ
-         vZtf3EFGmQN0LMqqjpwGTT/+mii3O40Am4G+n7chU8WjmkUDe7dmVRY6SfnER4JsgRnr
-         ND3g==
-X-Gm-Message-State: AOAM532zKW/68GTPhgW1Kh6SqjhFBvMXQ55cgf/rWrAgeXjUqsidqm6C
-        gKhCLSVoMo2fnHp+TL53zXmKGGvaACuHl28KOcs=
-X-Google-Smtp-Source: ABdhPJyzrfXj737b4n0md6i/+FpCUd9X5qky5KKOjDVUy1T1FiOVGc6U7lj1/OYEg51bksg+1Qype+wmNWUV+K21wII=
-X-Received: by 2002:a25:dc4d:: with SMTP id y74mr17393513ybe.422.1637158693784;
- Wed, 17 Nov 2021 06:18:13 -0800 (PST)
+        Wed, 17 Nov 2021 09:22:23 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D500C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 06:19:25 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: hector@marcansoft.com)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 478FC419B4;
+        Wed, 17 Nov 2021 14:19:20 +0000 (UTC)
+From:   Hector Martin <marcan@marcan.st>
+To:     Marc Zyngier <maz@kernel.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hector Martin <marcan@marcan.st>
+Subject: [PATCH] PCI: apple: Enable clock gating
+Date:   Wed, 17 Nov 2021 23:19:16 +0900
+Message-Id: <20211117141916.197192-1-marcan@marcan.st>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20211117010527.27365-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20211117010527.27365-2-prabhakar.mahadev-lad.rj@bp.renesas.com> <YZT7suWucdD+FU6k@sirena.org.uk>
-In-Reply-To: <YZT7suWucdD+FU6k@sirena.org.uk>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Wed, 17 Nov 2021 14:17:47 +0000
-Message-ID: <CA+V-a8u1xb2A3RZX2-VCM10m3htpzzyDzhoLX1dkFnjFFGMVhA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dt-bindings: spi: renesas,rspi: Document RZ/G2L SoC
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+These pokes are not required to make the PCIe port work, but it sounds
+like this should save some power at least.
 
-Thank you for the review.
+Signed-off-by: Hector Martin <marcan@marcan.st>
+---
+ drivers/pci/controller/pcie-apple.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-On Wed, Nov 17, 2021 at 12:55 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Wed, Nov 17, 2021 at 01:05:25AM +0000, Lad Prabhakar wrote:
-> > Add RSPI binding documentation for Renesas RZ/G2L SoC.
-> >
-> > RSPI block is identical to one found on RZ/A, so no driver changes are
-> > required the fallback compatible string "renesas,rspi-rz" will be used
-> > on RZ/G2L
->
-> Please submit patches using subject lines reflecting the style for the
-> subsystem, this makes it easier for people to identify relevant patches.
-> Look at what existing commits in the area you're changing are doing and
-> make sure your subject lines visually resemble what they're doing.
-> There's no need to resubmit to fix this alone.
+diff --git a/drivers/pci/controller/pcie-apple.c b/drivers/pci/controller/pcie-apple.c
+index 420c291a5c68..03bfe977c579 100644
+--- a/drivers/pci/controller/pcie-apple.c
++++ b/drivers/pci/controller/pcie-apple.c
+@@ -553,6 +553,9 @@ static int apple_pcie_setup_port(struct apple_pcie *pcie,
+ 		return ret;
+ 	}
+ 
++	rmw_clear(PORT_REFCLK_CGDIS, port->base + PORT_REFCLK);
++	rmw_clear(PORT_APPCLK_CGDIS, port->base + PORT_APPCLK);
++
+ 	ret = apple_pcie_port_setup_irq(port);
+ 	if (ret)
+ 		return ret;
+-- 
+2.33.0
 
-My bad will update it to "spi: dt-bindings: renesas,rspi: Document
-RZ/G2L SoC" and re-send a v2 along with the review commented by Geert.
-
-Cheers,
-Prabhakar
