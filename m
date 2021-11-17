@@ -2,185 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE07455070
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:28:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3794145507E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:30:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241245AbhKQWbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 17:31:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50606 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241210AbhKQWbg (ORCPT
+        id S241289AbhKQWdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 17:33:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241271AbhKQWdF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:31:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637188117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=m5qu5e0Bmyi2YyXsZTCJ7FvtB46vdD6fod/tQPP96Gw=;
-        b=RR2VKKS2NxijkPYqJoaRomlbhJGhRaoIS6J7hMXMvNffgvt021N3LA/EgVVpOYspZBuDIt
-        ex1GeB/5qsPfkEzVM+C/GYUP+Tyys9rIcEa++QpXtjwY9awj9rp2aciFhe7tqUfllEAi1D
-        xexoCjWKeLJ1M8/0WrzRfuoQdFZ/2tI=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-268-CFg90o70PEWCI4narohPug-1; Wed, 17 Nov 2021 17:28:35 -0500
-X-MC-Unique: CFg90o70PEWCI4narohPug-1
-Received: by mail-ed1-f72.google.com with SMTP id b15-20020aa7c6cf000000b003e7cf0f73daso3409124eds.22
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:28:35 -0800 (PST)
+        Wed, 17 Nov 2021 17:33:05 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F002C061766
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:30:06 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id t5so18080480edd.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:30:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kylehuey.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/dbCdpFMMa63XSMKyMFWQhocelYW9Pi1PBQWlvxTsug=;
+        b=ObaRcTnhtplTRGzScpGB7fdNOCVwBaZbweGKJhnPwOQoppmt4/L7czLDRFB2DwTnM/
+         K0TzYgu2fGU3JYykOTCWKC5KTZ/BHnjhsvVRk8JLyk+hJuM06wi6fkXTAaX99/JyyCEY
+         w4fCnQ3yJNoZssKTgpIGcylSmmOK07bBT8XmkR2IaWIZHQmy61xLFzlvQzesMqaK15qw
+         0Kho8hyS91sJwuZsUR07r+3cFmc56FSI8IMt2XQnvgp+JopZ5zUP4BoVssqhnsP7+her
+         0WSXatbzrhFaPt1NSFZoNcHXtA5Azwm2VsVqEAH0v4NSOXzgetIJg0oPJwUTOkG7JqEF
+         QZ2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=m5qu5e0Bmyi2YyXsZTCJ7FvtB46vdD6fod/tQPP96Gw=;
-        b=bnARGc7Ek/2Ue7tOPe12/8D3nIcWgFZ0sqjwekIO9vcp+gYyKOmXtiXoAFNVhZfAfx
-         JQ1PbH37bcb5FQcFoljqgrn/FPAglypYEDAm8sOKYIfsPg1KxrviRQInyYUzzPXiCHaR
-         8auC2sADzdMh2CFYt+AzYKlJGwXa6dAypP/vuestFsLKghQod1g+S+AZAhnFcKcVTfrz
-         SjC3rCBVRdwSRberdKu3ffJwJlpIOCA8azR8mYTiThRtZeNOhhNCnVi5p7FvQ1bmPeIb
-         4rH2ap/wImCVLDxV1P7P8xMrxZ+WMgXyazYFdH4yZvk9oReI17E57r/7AuscWrB5NYiA
-         BCdg==
-X-Gm-Message-State: AOAM531vZL8PA+sSL07SwJvihpt21cLIeY0y8bSEZr7R+NmMBGeKqL0q
-        INml/sBNfhD2B1SOYkVpqX2YO8eKCDkpLKx8SzgI1wCQAyZmV+0XwYEwxAcQ8f7MlzTRrqup+UV
-        CkmRQIBs77irv98fyczRe+wxt
-X-Received: by 2002:a17:907:7b9b:: with SMTP id ne27mr26058730ejc.79.1637188114564;
-        Wed, 17 Nov 2021 14:28:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxXCOz8zE8sIXG+OzU8g75Ytk28xPrlKauEFcoiDMkcnmuf5MV+OAPoN5sFp5ENv9D9sTpHgQ==
-X-Received: by 2002:a17:907:7b9b:: with SMTP id ne27mr26058685ejc.79.1637188114280;
-        Wed, 17 Nov 2021 14:28:34 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id q14sm617090edj.42.2021.11.17.14.28.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 14:28:33 -0800 (PST)
-Message-ID: <380053ee-4a4a-963c-4f70-6b9dcfef1b98@redhat.com>
-Date:   Wed, 17 Nov 2021 23:28:32 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/dbCdpFMMa63XSMKyMFWQhocelYW9Pi1PBQWlvxTsug=;
+        b=KTHD2PiigY1zPRvUOJ646CfVjk6kEBiDRIh1IbR7vbVVrVnqZf/vXsnxGVs+AJQGZv
+         wsPZbSciRMPhkbXV1Pv76aD7i5eUo2rzSYzGP1WSiFPwK44pdUxnZCMpPWyENUWtvQEj
+         aiVtIZLE+eQ+nya/swWMFlcjnQuVgMtVGFvCC+JdZ9FKr3n1meiYpRb23ff9fp2cGWss
+         u6Cw/mmLL87KmNAQTNbtLH9K+wUSgvwJxTCarkug2bGnG0Qvap6gHMRbYlrviwVibt+M
+         zqOrkLC4oNra8j4jVpaGbX9E0fof6ur9X/xTlSLyuI1qmSjLza4Awx+mDHcuPPRep1q0
+         +b9g==
+X-Gm-Message-State: AOAM5311yyijjzYfrmVUSFEPLbfW7KZ6UYKjfH1FhuKE/oQB8xei7tAP
+        BtFr2NAVCYWlwNyrbrl8OyNck1JDCVlDgtfmniCobg==
+X-Google-Smtp-Source: ABdhPJyn59BQm41DfYh6GNKdmsbDn3XuE6GIPwQRfQZe7cJQlxXegYj155Z4J3iyTzG3Diq+flRBzAbqWrZKJ6F/Gfc=
+X-Received: by 2002:a50:e608:: with SMTP id y8mr3389833edm.39.1637188204599;
+ Wed, 17 Nov 2021 14:30:04 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 16/20] extcon: intel-cht-wc: Use new
- intel_cht_wc_get_model() helper
-Content-Language: en-US
-To:     Chanwoo Choi <cwchoi00@gmail.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        Yauhen Kharuzhy <jekhor@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-efi@vger.kernel.org
-References: <20211114170335.66994-1-hdegoede@redhat.com>
- <20211114170335.66994-17-hdegoede@redhat.com>
- <5653c424-e12a-e889-1ae5-14a768dcf221@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <5653c424-e12a-e889-1ae5-14a768dcf221@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
+ <202111171049.3F9C5F1@keescook> <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
+ <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com> <87k0h6334w.fsf@email.froward.int.ebiederm.org>
+In-Reply-To: <87k0h6334w.fsf@email.froward.int.ebiederm.org>
+From:   Kyle Huey <me@kylehuey.com>
+Date:   Wed, 17 Nov 2021 14:29:53 -0800
+Message-ID: <CAP045AqeXdZpSicKmQ_VU0SkA-igJ-VKM0E=VF+-gzgNS=ckdw@mail.gmail.com>
+Subject: Re: [REGRESSION] 5.16rc1: SA_IMMUTABLE breaks debuggers
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, bpf@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Robert O'Callahan" <rocallahan@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Nov 17, 2021 at 1:05 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> Kyle Huey <me@kylehuey.com> writes:
+>
+> > On Wed, Nov 17, 2021 at 11:05 AM Kyle Huey <me@kylehuey.com> wrote:
+> >>
+> >> On Wed, Nov 17, 2021 at 10:51 AM Kees Cook <keescook@chromium.org> wrote:
+> >> >
+> >> > On Wed, Nov 17, 2021 at 10:47:13AM -0800, Kyle Huey wrote:
+> >> > > rr, a userspace record and replay debugger[0], is completely broken on
+> >> > > 5.16rc1. I bisected this to 00b06da29cf9dc633cdba87acd3f57f4df3fd5c7.
+> >> > >
+> >> > > That patch makes two changes, it blocks sigaction from changing signal
+> >> > > handlers once the kernel has decided to force the program to take a
+> >> > > signal and it also stops notifying ptracers of the signal in the same
+> >> > > circumstances. The latter behavior is just wrong. There's no reason
+> >> > > that ptrace should not be able to observe and even change
+> >> > > (non-SIGKILL) forced signals.  It should be reverted.
+> >> > >
+> >> > > This behavior change is also observable in gdb. If you take a program
+> >> > > that sets SIGSYS to SIG_IGN and then raises a SIGSYS via
+> >> > > SECCOMP_RET_TRAP and run it under gdb on a good kernel gdb will stop
+> >> > > when the SIGSYS is raised, let you inspect program state, etc. After
+> >> > > the SA_IMMUTABLE change gdb won't stop until the program has already
+> >> > > died of SIGSYS.
+> >> >
+> >> > Ah, hm, this was trying to fix the case where a program trips
+> >> > SECCOMP_RET_KILL (which is a "fatal SIGSYS"), and had been unobservable
+> >> > before. I guess the fix was too broad...
+> >>
+> >> Perhaps I don't understand precisely what you mean by this, but gdb's
+> >> behavior for a program that is SECCOMP_RET_KILLed was not changed by
+> >> this patch (the SIGSYS is not observed until after program exit before
+> >> or after this change).
+> >
+> > Ah, maybe that behavior changed in 5.15 (my "before" here is a 5.14
+> > kernel).  I would argue that the debugger seeing the SIGSYS for
+> > SECCOMP_RET_KILL is desirable though ...
+>
+> This is definitely worth discussing, and probably in need of fixing (aka
+> something in rr seems to have broken).
 
-On 11/17/21 07:47, Chanwoo Choi wrote:
-> On 21. 11. 15. 오전 2:03, Hans de Goede wrote:
->> The CHT_WC_VBUS_GPIO_CTLO GPIO actually driving an external 5V Vboost
->> converter for Vbus depends on the board on which the Cherry Trail -
->> Whiskey Cove PMIC is actually used.
->>
->> Since the information about the exact PMIC setup is necessary in other
->> places too, the drivers/mfd/intel_soc_pmic_chtwc.c code now has a new
->> intel_cht_wc_get_model() helper.
->>
->> Only poke the CHT_WC_VBUS_GPIO_CTLO GPIO if this new helper returns
->> INTEL_CHT_WC_GPD_WIN_POCKET, which indicates the Type-C (with PD and
->> DP-altmode) setup used on the GPD pocket and GPD win; and on which
->> this GPIO actually controls an external 5V Vboost converter.
->>
->> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
->> ---
->>   drivers/extcon/extcon-intel-cht-wc.c | 35 +++++++++++++++++-----------
->>   1 file changed, 21 insertions(+), 14 deletions(-)
->>
->> diff --git a/drivers/extcon/extcon-intel-cht-wc.c b/drivers/extcon/extcon-intel-cht-wc.c
->> index 771f6f4cf92e..a5aeeecc44fb 100644
->> --- a/drivers/extcon/extcon-intel-cht-wc.c
->> +++ b/drivers/extcon/extcon-intel-cht-wc.c
->> @@ -14,6 +14,7 @@
->>   #include <linux/module.h>
->>   #include <linux/mod_devicetable.h>
->>   #include <linux/platform_device.h>
->> +#include <linux/property.h>
->>   #include <linux/regmap.h>
->>   #include <linux/slab.h>
->>   @@ -358,20 +359,26 @@ static int cht_wc_extcon_probe(struct platform_device *pdev)
->>       if (IS_ERR(ext->edev))
->>           return PTR_ERR(ext->edev);
->>   -    /*
->> -     * When a host-cable is detected the BIOS enables an external 5v boost
->> -     * converter to power connected devices there are 2 problems with this:
->> -     * 1) This gets seen by the external battery charger as a valid Vbus
->> -     *    supply and it then tries to feed Vsys from this creating a
->> -     *    feedback loop which causes aprox. 300 mA extra battery drain
->> -     *    (and unless we drive the external-charger-disable pin high it
->> -     *    also tries to charge the battery causing even more feedback).
->> -     * 2) This gets seen by the pwrsrc block as a SDP USB Vbus supply
->> -     * Since the external battery charger has its own 5v boost converter
->> -     * which does not have these issues, we simply turn the separate
->> -     * external 5v boost converter off and leave it off entirely.
->> -     */
->> -    cht_wc_extcon_set_5v_boost(ext, false);
->> +    switch (intel_cht_wc_get_model()) {
-> 
-> intel_cht_wc_get_model() is defined in driver/mfd/intel_soc_pmic_chtwc.c
-> 
-> Usually, mfd drivers share the data structure such as struct intel_soc_pmic. But, didn't call the exported function for only
-> specific driver between linux kernel framework (extcon vs. mfd).
-> 
-> So that I think that you better to update the mode information
-> to 'struct intel_soc_pmic' data structure and then use it
-> instead of using the exported function which may make the confusion.
+I mean this in the nicest possible way: fixing this is not optional.
 
-That is a good idea, thanks.
+> We definitely need protection against the race with sigaction.
 
-I've implemented this suggestion for the upcoming v3 of the patch-set.
+Sure, no argument here, and that doesn't cause any problems for us.
 
-Regards,
+> The fundamental question becomes does it make sense and is it safe
+> to allow a debugger to stop at, and possibly change these signals.
 
-Hans
+And the answer is yes, because at least some of these signals are
+generated by actions of the debugger (e.g. setting a breakpoint).
 
+> Stopping at something SA_IMMUTABLE as long as the signal is allowed to
+> continue and kill the process when PTRACE_CONT happens seems harmless.
+>
+> Allowing the debugger to change the signal, or change it's handling
+> I don't know.
 
-> 
->> +    case INTEL_CHT_WC_GPD_WIN_POCKET:
->> +        /*
->> +         * When a host-cable is detected the BIOS enables an external 5v boost
->> +         * converter to power connected devices there are 2 problems with this:
->> +         * 1) This gets seen by the external battery charger as a valid Vbus
->> +         *    supply and it then tries to feed Vsys from this creating a
->> +         *    feedback loop which causes aprox. 300 mA extra battery drain
->> +         *    (and unless we drive the external-charger-disable pin high it
->> +         *    also tries to charge the battery causing even more feedback).
->> +         * 2) This gets seen by the pwrsrc block as a SDP USB Vbus supply
->> +         * Since the external battery charger has its own 5v boost converter
->> +         * which does not have these issues, we simply turn the separate
->> +         * external 5v boost converter off and leave it off entirely.
->> +         */
->> +        cht_wc_extcon_set_5v_boost(ext, false);
->> +        break;
->> +    default:
->> +        break;
->> +    }
->>         /* Enable sw control */
->>       ret = cht_wc_extcon_sw_control(ext, true);
->>
-> 
-> 
+This is required to support breakpoints.
 
+> All of this is channeled through the following function.
+>
+> > static int
+> > force_sig_info_to_task(struct kernel_siginfo *info, struct task_struct *t, bool sigdfl)
+> > {
+> >       unsigned long int flags;
+> >       int ret, blocked, ignored;
+> >       struct k_sigaction *action;
+> >       int sig = info->si_signo;
+> >
+> >       spin_lock_irqsave(&t->sighand->siglock, flags);
+> >       action = &t->sighand->action[sig-1];
+> >       ignored = action->sa.sa_handler == SIG_IGN;
+> >       blocked = sigismember(&t->blocked, sig);
+> >       if (blocked || ignored || sigdfl) {
+> >               action->sa.sa_handler = SIG_DFL;
+> >               action->sa.sa_flags |= SA_IMMUTABLE;
+> >               if (blocked) {
+> >                       sigdelset(&t->blocked, sig);
+> >                       recalc_sigpending_and_wake(t);
+> >               }
+> >       }
+> >       /*
+> >        * Don't clear SIGNAL_UNKILLABLE for traced tasks, users won't expect
+> >        * debugging to leave init killable.
+> >        */
+> >       if (action->sa.sa_handler == SIG_DFL && !t->ptrace)
+> >               t->signal->flags &= ~SIGNAL_UNKILLABLE;
+> >       ret = send_signal(sig, info, t, PIDTYPE_PID);
+> >       spin_unlock_irqrestore(&t->sighand->siglock, flags);
+> >
+> >       return ret;
+> > }
+>
+> Right now we have 3 conditions that trigger SA_IMMUTABLE.
+> - The sigdfl parameter is passed asking that userspace not be able to
+>   change the handling of the signal.
+>
+> - A synchronous exception is taken and the signal is blocked.
+>
+> - A synchronous exception is taken and the signal is ignored.
+
+Delivering signals to a ptracee in the latter two cases is simply not
+optional. As it stands with your change, a program that blocks SIGTRAP
+or sets its SIGTRAP handler to SIG_IGN becomes undebuggable.  If a
+debugger injects a breakpoint or uses PTRACE_SINGLESTEP on a tracee
+the delivery of that signal can't be controlled by the tracee's signal
+state.
+
+> Today because of how things are implemented the code most change the
+> userspace state to allow the signal to kill the process.  I really want
+> to get rid of that, because that has other side effects.  As part of
+> getting rid of changing the state it is my plan to get rid of
+> SA_IMMUTABLE as well.  If I don't have to allow the debugger to stop and
+> observe what is happening with the signal that change is much easier to
+> implement.
+>
+> The classic trigger of sigdfl is a recursive SIGSEGV.
+>
+> However we have other cases like SECCOMP_RET_KILL where the kernel
+> has never allowed userspace to intercept the killing of the
+> process.  Things that have messages like: "seccomp tried to change
+> syscall nr or ip"
+>
+> My brain is drawing a blank on how to analyze those.
+>
+> Kees I am back to asking the question I had before I figured out
+> SA_IMMUTABLE.  Are there security concerns with debuggers intercepting
+> SECCOMP_RET_KILL.
+>
+> I think I can modify dequeue_synchronous_signal so that we can perform
+> the necessary logic in get_signal rather than hack up the signal
+> handling state in force_sig_info_to_task.
+>
+> Except for the cases like SECCOMP_RET_KILL where the kernel has never
+> allowed userspace to intercept the handling.  I don't see any
+> fundamental reason why ptrace could not intercept the signal.  The
+> handling is overriden to force the process to die, because the way
+> userspace is currently configured to handle the signal does not work so
+> it is necessary to kill the process.
+>
+> I think there are cases where the userspace state is known to be
+> sufficiently wrong that the kernel can not safely allow anything more
+> than inspecting the state.
+>
+> I can revisit the code to see if the kernel will get confused if
+> something more is allowed.  Still I really like the current semantics of
+> SA_IMMUTABLE because these are cases where something wrong.  If someone
+> miscalculates how things are wrong it could result in the kernel getting
+> confused and doing the wrong thing.  Allowing the debugger to intercept
+> the signal requires we risk miscalculating what is wrong.
+>
+> Kyle how exactly is rr broken?  Certainly a historical usage does not
+> work.  How does this affect actual real world debugging sessions?
+
+rr is broken across the board because of specific things related to
+its handling of exit_group (namely we first block all signals in the
+tracee, so that we don't catch a signal during our handling of it,
+then we hijack the tracee to do some cleanup before exit_group is
+really allowed to execute, and we use e.g. PTRACE_SINGLESTEP that
+expects to punch through the signal blocking). But even if I fixed
+that, I expect there would be other issues. The expectation that these
+signals will be delivered is deeply embedded.
+
+> You noticed this and bisected the change quickly so I fully expect
+> this does affect real world debugging sessions.  I just want to know
+> exactly how so that exactly what is wrong can be fixed.
+
+I noticed this because we have a test suite we run against new kernel
+releases precisely to catch regressions like this.
+
+You don't need rr to reproduce the underlying issue though.  Compile
+the following
+
+```
+#include <signal.h>
+#include <stdio.h>
+
+int main() {
+  signal(SIGTRAP, SIG_IGN);
+  printf("Hello World\n");
+  return 0;
+}
+```
+
+And try to break on the printf under gdb.  After you fix that (and the
+equivalent where SIGTRAP is blocked) rr should be fine.
+
+- Kyle
+
+> As far as I can tell SA_IMMUTABLE has only been backported to v5.15.x
+> where in cleaning things up I made SECCOMP_RET_KILL susceptible to races
+> with sigaction, and ptrace.  Those races need to be closed or we need to
+> decide that we don't actually care if the debugger does things.
+>
+> Eric
