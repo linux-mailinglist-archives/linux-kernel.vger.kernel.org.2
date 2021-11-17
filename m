@@ -2,68 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C9DD454C15
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:37:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B06454C19
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:38:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239488AbhKQRkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 12:40:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
+        id S233230AbhKQRlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 12:41:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239479AbhKQRkB (ORCPT
+        with ESMTP id S229554AbhKQRls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 12:40:01 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48290C061570;
-        Wed, 17 Nov 2021 09:37:02 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id d64so860342pgc.7;
-        Wed, 17 Nov 2021 09:37:02 -0800 (PST)
+        Wed, 17 Nov 2021 12:41:48 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36FAEC061570;
+        Wed, 17 Nov 2021 09:38:49 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id w29so6151453wra.12;
+        Wed, 17 Nov 2021 09:38:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tJhnrf74q/jH7xONckSlHbxsu26bF8IfZRrOkBk3520=;
-        b=bd6dNnz3rWuvW49USLmvm1mxRnWOK2Z8Re3hjGYRMxXERcydK4/DXfJw12hMMSJjNh
-         Q8PFqKeosskRJFSXMnNJHEFVXPPjhVXYrX+hgEktLJcGmXONH7Kaxuy05YDmEXM6r8Si
-         Q6cuHAaDiAsCPAF3vY+lBPTdkYMG4tzkTmXgfAIDTBpys4y2abNE+XFoOUxWzDe0EWDh
-         DhgY5/jN/IYDZKMsSg4XMwdQcSmrI05sNP7CTkOz6Vg1CJqVjMWIWZm3i+hJcXlzMdPI
-         SCENrU7+VL0yGM3GjVfFwmbmyBmAvotc2tA9PHT1KpmO2gbf1exupjIEr3t9rpjKi6qQ
-         2AHw==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=hlapG0bGMUbnY0IcRNw2GRZiC2RrS20AwBZINoQ1tJI=;
+        b=FlYJwh30onWWJi7PWGlWug9KmlF1oYb5LxQW9kZLQ6GndUsLfnUFNqF20a8yqe2qj2
+         Kqsx4SNZ8T6QpgMyRQXEm/YkWoEaTX74pz0iDFhMhDaEYqwwTMvQpH3qZGbQnSfkeVto
+         CU6XeM6O/zSG0Guh0ygESppvQ1WELJYjyoQ3j+9z4zK+mI772iZcjxebsKMPnShXxcXG
+         GrI3/7bMP/mpaC6hYFL0eSB3LjRrjMtlntjymcWVMVZczWIJDPlyeSC0kmxyOxF0t9P4
+         578lq0yKFVg/L2kY087vjoYMXbeCqF/5szuBJf5ii+zgFLuhxID5nHQbpLmvzGbHpxXV
+         BGjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=tJhnrf74q/jH7xONckSlHbxsu26bF8IfZRrOkBk3520=;
-        b=vPFhJBa36caT622VlYg7bYZzeb232/0/GuTAesPDtcL8ktX2fV89RbQ5Ee0f8Y2/MW
-         mNDqd0XsIZi4SDXKOMU4lanM5ekmonkgqzZ5/UIh2tcpH78CTNn/AFGvu33rWKbWWXCD
-         HKmTulTSZrCoExA+Bgnh2VkOgS9rKT7B6icJfGe37GsbXUw+Cz8SCst8WpGpQD0x4qgK
-         0UJiEjyLPNqWSBv85p7UuBXodivjwcFCOx329jTJjla/sklGE96nOTawKEPRtmcKjO+g
-         xlHTknuEpyAqyLXDBmaKwLuMk3kDAGeiBCcOmhUx4Qf9W9UbKrto0qhu9FFh2RHWUhEV
-         lZyg==
-X-Gm-Message-State: AOAM533ubmiiTgoN2IvA5iA56aziIlWUGrwPHwf0dCuFR43gKJ7Rzuhq
-        HH5FL8vpGXHso0IihFlBQxeoXLX1KO8=
-X-Google-Smtp-Source: ABdhPJxmz0Hx1ZicfrwrQ+uSOWs7iI0wCgkeGPzqeHzuulM7nqZdaJDktR9r2Bmr4NZ0d34e6qDQ1g==
-X-Received: by 2002:a63:f74b:: with SMTP id f11mr6225896pgk.403.1637170621617;
-        Wed, 17 Nov 2021 09:37:01 -0800 (PST)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id e23sm260852pgg.68.2021.11.17.09.37.00
+        bh=hlapG0bGMUbnY0IcRNw2GRZiC2RrS20AwBZINoQ1tJI=;
+        b=pVZ4IHvNLp/AyKdJuqCgzjnVypaZprviTmL5VUkhorj1HRqS2BJHMkN3dv/ZCgm3Yc
+         xsLvel2q8PqOVPlxQgU8vaXQ+MtgeadOiX4owL64pYYeyixdwBKe3v/o2bAUIwVkDJ5r
+         PHpG+VCF9r+sXH4SeMMrYJds4ZS/rDCAPg1wzN1BZJz3TElF1tr35xOrpdjqolfISfk6
+         YJQzs0iJ8N8QFnqTaCFyUmbdbbdTKyfln+jkqdnmFOFjAGX+NDwB5zt6k1vBUlFQGzRh
+         G+RDPazQuhM4ZYseiTVh10IXFOOs6f3kWR5BFtfmZyTjq8CPTsEGsIpRzk99MmTXZPbO
+         gOBg==
+X-Gm-Message-State: AOAM531dopF/0Y+FFDr6qgtKcOl+meDgpXZF/0Q0xfFkh08Qws058KK4
+        N2C5SOI1aiHsMv8s9C6tU6Wz7UIxqVk=
+X-Google-Smtp-Source: ABdhPJz9P7PAxxJxRNPwbmIJF2yzDhzodKzDZn0xydOi7d/tAEMhYPpoY24kgJ6m5JiWQvvvjsWUrA==
+X-Received: by 2002:a5d:530e:: with SMTP id e14mr22175831wrv.12.1637170727724;
+        Wed, 17 Nov 2021 09:38:47 -0800 (PST)
+Received: from [192.168.0.18] (static-160-219-86-188.ipcom.comunitel.net. [188.86.219.160])
+        by smtp.gmail.com with ESMTPSA id c16sm455341wrx.96.2021.11.17.09.38.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 09:37:01 -0800 (PST)
-Subject: Re: [PATCH net-next] neigh: introduce __neigh_confirm() for __ipv{4,
- 6}_confirm_neigh
-To:     Yajun Deng <yajun.deng@linux.dev>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211117120215.30209-1-yajun.deng@linux.dev>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <8696b472-efee-7801-8480-dd0a5ebf173b@gmail.com>
-Date:   Wed, 17 Nov 2021 09:36:59 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 17 Nov 2021 09:38:47 -0800 (PST)
+Message-ID: <3171bb96-21c7-c629-4833-27618d4b2551@gmail.com>
+Date:   Wed, 17 Nov 2021 18:38:46 +0100
 MIME-Version: 1.0
-In-Reply-To: <20211117120215.30209-1-yajun.deng@linux.dev>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v3 1/7] arm64: dts: mt8183: jacuzzi: remove unused
+ ddc-i2c-bus
 Content-Language: en-US
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211110063118.3412564-1-hsinyi@chromium.org>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+In-Reply-To: <20211110063118.3412564-1-hsinyi@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -71,9 +73,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 11/17/21 4:02 AM, Yajun Deng wrote:
-> Those __ipv4_confirm_neigh(), __ipv6_confirm_neigh() and __ipv6_confirm_neigh_stub()
-> functions have similar code. introduce __neigh_confirm() for it.
+On 10/11/2021 07:31, Hsin-Yi Wang wrote:
+> EDID is read from bridge, so the ddc-i2c-bus is unused.
 > 
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 
-At first glance, this might add an indirect call ?
+Whole series now applied to v5.16-next/dts64
+
+Thanks!
+
+> ---
+>   arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
+> index d8826c82bcda29..8f7bf33f607da2 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
+> @@ -9,7 +9,6 @@ / {
+>   	panel: panel {
+>   		compatible = "auo,b116xw03";
+>   		power-supply = <&pp3300_panel>;
+> -		ddc-i2c-bus = <&i2c4>;
+>   		backlight = <&backlight_lcd0>;
+>   
+>   		port {
+> 
