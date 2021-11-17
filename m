@@ -2,167 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99BC1454E2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B290454E39
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240619AbhKQTxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 14:53:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46524 "EHLO
+        id S240624AbhKQT7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 14:59:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240050AbhKQTxe (ORCPT
+        with ESMTP id S231530AbhKQT7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 14:53:34 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01880C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 11:50:35 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id y16so4799317ioc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 11:50:34 -0800 (PST)
+        Wed, 17 Nov 2021 14:59:22 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B98C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 11:56:17 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id w22so4877880ioa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 11:56:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=87/aCIYRViE4sqAqPWWehJIW8qss9o3shFfDpFVgLYk=;
-        b=fp2OhtiS0fXO2pOUqVzeeQXECteP/WGOKq2Vv2DaHOcupDqecq6vkULti9AEHtuGz2
-         3oE5AMlLykZjhKgcyXVDh99m/ylPGzuAIN7B7BPiagMntY8aN7GIds+frKyYN1GvslJM
-         Y9e0EERuBpDsvC/ULXf1jy/PImABK53n0jVxAjQr4h/s1YGqRI3qgjM0rK7OO90QBr0G
-         vnqxkGAwG7KgsvXZjNQGMmIUQuP1kad/KxyFqy1wJeMFy4/gmsLcBpAAv0pfhMNiVOL5
-         7uOiHaUFuuK6AvD3s3Dn2+FWcIqUxEc3dSseWVE1WACU9gSNEHFsoACw12ltrmju3nGx
-         uYgA==
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=5VBfPESdcXTL80+DWpyXFkbq5atbMeJcpA3NDVqVEho=;
+        b=X6KFt1hJmRksijS0mwdT5x5R5Cb4kdgmuOI69Q5aRlP/NMidCD9mNur25QLLju7p+1
+         pUnRfFzKJkXdvMArbfV9m/Xw/xwRBpAk9betoF/jo7wwqhUGkvGBQ+KYG1ZXNJ4TZ0Yw
+         kyzV3zPSieN/NrE6lVrQ4epovmEKfDuAtowsj8PTOykl8nIfQqKjNbF3h074mrzZAeVT
+         e3M4RDoRtYs1LnC1QctSZCQIe5V4+udBfbKLFPnA6qc5adbm9r9zdQmHzGiP3aBxIK+3
+         myvsCAz7qgWVp4mb/EbX+4ze2Rdvz74wnd8ziPhECnzVkuNNjGYJUe0KgB/kCJbbCI9K
+         IynQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=87/aCIYRViE4sqAqPWWehJIW8qss9o3shFfDpFVgLYk=;
-        b=3rouv16SR3antxM5IZIzW1kkVursOtLscy86V2MTOEk8zsS2X2obQz/5eikqFmMa6o
-         6QoHOYG4L9PQKuclT/qncuxBvzXEj7ZVfQEeobnwLuOfCSz8UtJjkq9w+LELix19Pqc+
-         UPeN5fO7NtCZm+eDXSPc4Lq1xV1O+y/AZLAfbWayOk9LdyHaY3WSlJaB4a1NWRkwtVfl
-         l7ASjP7TWf76WtOQ7rAO70Auh4KytnqV8VJs2NCp94y9oLWyGXah6vtpxhXXodYlvza9
-         QxtjmWvBHMWjGLTegV8ogrz+kzcP2FNWpNJKar5crxsT7vHYZIoikQtpqO6Uas1C5JGt
-         NxTg==
-X-Gm-Message-State: AOAM530OEQfPazTjrD/h+5m46LLX580VM5Xq1q05ubqlmvyYYK0vey96
-        qvwk/VfxE4NJe1A9WT2vuCkGtgTrMdbC5uuto0dUcQ==
-X-Google-Smtp-Source: ABdhPJwKxkjTGO1T/S5ZPZGTSMMo0deomcO62FYkNj+OiRO2YyBIWst5MD6HCKGcbYrw5W9Rpjt5YbQ/PdpE1YSDBGs=
-X-Received: by 2002:a05:6638:160c:: with SMTP id x12mr15414855jas.60.1637178634261;
- Wed, 17 Nov 2021 11:50:34 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=5VBfPESdcXTL80+DWpyXFkbq5atbMeJcpA3NDVqVEho=;
+        b=MKfVgtuPTDIupCvu+8neZtnrCBROy11pmqdu8609IkYDTwZ0DwD5slYQvc4nXDbjZo
+         +ECEVHBEfBWUuVJF75Ywro+x7zYPlLNMO4A16eCVuU/27dNcT6zm9cd7hECl2+YaXmL7
+         xHVWB/PjCA4vfxFpxPSSYlh6ej1hA2HGxYL1JZgT6pNX5DbmJoKQItDGB5T2MbCydV7+
+         M/eYkjcZLrGN+jl9+idaPvK3q3T0fIGHEe4lPFixvdcb6zkXOcTkJPlcn1uGJzEdVgxL
+         I8yiBOgRPKMyrO9OzTPKRy0MOra+I5FuH3XfRQl6Ib04EmliQZQ2tG3Iure5du5JNXDp
+         cFkQ==
+X-Gm-Message-State: AOAM533uodBoOavDel8Ua4wznqU0gSmVu9P5irCgW4eyl7P/kv81GZgw
+        Xk5bXoFpC8MyvUwogKPLme82GXdRWJTfDw==
+X-Google-Smtp-Source: ABdhPJy5ZbbuIX+vxu7l+x9G0lL52knByhCJwD3rbmlDMi+PygF6+8Dkj/nbTl0tF87B33FoT5E2KA==
+X-Received: by 2002:a05:6638:238b:: with SMTP id q11mr15391858jat.43.1637178976751;
+        Wed, 17 Nov 2021 11:56:16 -0800 (PST)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id d2sm577088ilg.77.2021.11.17.11.56.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 11:56:16 -0800 (PST)
+Message-ID: <07e228eb-676a-bdb1-c2ec-a96f691f5a18@linaro.org>
+Date:   Wed, 17 Nov 2021 13:56:14 -0600
 MIME-Version: 1.0
-References: <20211107235754.1395488-1-almasrymina@google.com>
- <YYtuqsnOSxA44AUX@t490s> <CAHS8izP9zJYfqmDouA1otnD-CsQtWJSta0KhOQq81qLSTOHB4Q@mail.gmail.com>
- <YY4bFPkfUhlpUqvo@xz-m1.local> <CAHS8izP7_BBH9NGz3XoL2=xVniH6REor=biqDSZ4wR=NaFS-8A@mail.gmail.com>
- <YZMQbiV9JQWd0EM+@xz-m1.local>
-In-Reply-To: <YZMQbiV9JQWd0EM+@xz-m1.local>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Wed, 17 Nov 2021 11:50:23 -0800
-Message-ID: <CAHS8izPwQidVLAEApJ4vnERwwK6iJ8phfedA0d4_NPwumzRFcw@mail.gmail.com>
-Subject: Re: [PATCH v4] mm: Add PM_HUGE_THP_MAPPING to /proc/pid/pagemap
-To:     Peter Xu <peterx@redhat.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Paul E . McKenney" <paulmckrcu@fb.com>,
-        Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <florian.schmidt@nutanix.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [greybus-dev] [PATCH] staging: greybus: Add missing rwsem around
+ snd_ctl_remove() calls
+Content-Language: en-US
+To:     Takashi Iwai <tiwai@suse.de>, greybus-dev@lists.linaro.org
+Cc:     Alex Elder <elder@kernel.org>, Johan Hovold <johan@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20211116072027.18466-1-tiwai@suse.de>
+From:   Alex Elder <elder@linaro.org>
+In-Reply-To: <20211116072027.18466-1-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 5:41 PM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Wed, 10 Nov 2021 14:11:20 -0800 Mina Almasry <almasrymina@google.com> wrote:
->
-> > Add PM_HUGE_THP MAPPING to allow userspace to detect whether a given virt
-> > address is currently mapped by a transparent huge page or not.  Example
-> > use case is a process requesting THPs from the kernel (via a huge tmpfs
-> > mount for example), for a performance critical region of memory.  The
-> > userspace may want to query whether the kernel is actually backing this
-> > memory by hugepages or not.
-> >
-> > PM_HUGE_THP_MAPPING bit is set if the virt address is mapped at the PMD
-> > level and the underlying page is a transparent huge page.
-> >
-> > A few options were considered:
-> > 1. Add /proc/pid/pageflags that exports the same info as
-> >    /proc/kpageflags.  This is not appropriate because many kpageflags are
-> >    inappropriate to expose to userspace processes.
-> > 2. Simply get this info from the existing /proc/pid/smaps interface.
-> >    There are a couple of issues with that:
-> >    1. /proc/pid/smaps output is human readable and unfriendly to
-> >       programatically parse.
-> >    2. /proc/pid/smaps is slow.  The cost of reading /proc/pid/smaps into
-> >       userspace buffers is about ~800us per call, and this doesn't
-> >       include parsing the output to get the information you need. The
-> >       cost of querying 1 virt address in /proc/pid/pagemaps however is
-> >       around 5-7us.
-> >
-> > Tested manually by adding logging into transhuge-stress, and by
-> > allocating THP and querying the PM_HUGE_THP_MAPPING flag at those
-> > virtual addresses.
-> >
-> > --- a/tools/testing/selftests/vm/transhuge-stress.c
-> > +++ b/tools/testing/selftests/vm/transhuge-stress.c
-> > @@ -16,6 +16,12 @@
-> >  #include <string.h>
-> >  #include <sys/mman.h>
-> >
-> > +/*
-> > + * We can use /proc/pid/pagemap to detect whether the kernel was able to find
-> > + * hugepages or no. This can be very noisy, so is disabled by default.
-> > + */
-> > +#define NO_DETECT_HUGEPAGES
-> > +
-> >
-> > ...
-> >
-> > +#ifndef NO_DETECT_HUGEPAGES
-> > +             if (!PAGEMAP_THP(ent[0]))
-> > +                     fprintf(stderr, "WARNING: detected non THP page\n");
-> > +#endif
->
-> This looks like a developer thing.  Is there any point in leaving it in
-> the mainline code?
+On 11/16/21 1:20 AM, Takashi Iwai wrote:
+> snd_ctl_remove() has to be called with card->controls_rwsem held (when
+> called after the card instantiation).  This patch adds the missing
+> rwsem calls around it.
 
-I used this to test locally and I thought it may be useful, but on
-second thought probably not worth it. Removed in v6 I just sent.
+I see the comment above snd_ctl_remove() that says you must hold
+the write lock.  And given that, this seems correct to me.
 
-On Mon, Nov 15, 2021 at 5:59 PM Peter Xu <peterx@redhat.com> wrote:
->
-> On Mon, Nov 15, 2021 at 02:50:26PM -0800, Mina Almasry wrote:
-> > PM_THP_MAPPED sounds good to me.
-> >
-> > TBH I think I still prefer this approach because it's a very simple 2
-> > line patch which addresses the concrete use case I have well. I'm not
-> > too familiar with the smaps code to be honest but I think adding a
-> > range-based smaps API will be a sizeable patch to add a syscall,
-> > handle a stable interface, and handle cases where the memory range
-> > doesn't match a VMA boundary. I'm not sure the performance benefit
-> > would justify this patch and I'm not sure the extra info from smaps
-> > would be widely useful. However if you insist and folks believe this
-> > is the better approach I can prototype a range-based smaps and test
-> > its performance to see if it works for us as well, just let me know
-> > what kind of API you're envisioning.
->
-> Yeah indeed I haven't yet thought enough on such a new interface, it's just
-> that I think it'll be something that solves a broader range of requests
-> including the thp-aware issue, so I raised it up.
->
-> That shouldn't require a lot code change either afaiu, as smap_gather_stats()
-> already takes a "start" and I think what's missing is another end where we just
-> pass in 0 when we want the default vma->vm_end as the end of range.
->
-> I don't have a solid clue on other use case to ask for that more generic
-> interface, so please feel free to move on with it.  If you'll need a repost to
-> address the comment from Andrew on removing the debugging lines, please also
-> consider using the shorter PM_THP_MAPPED then it looks good to me too.
->
+I understand why you want to take the lock just once, rather
+than each time snd_ctl_remove() is called.
 
-Awesome, thanks! PM_THP_MAPPED sounds good to me and I just sent v6
-with these changes.
+However I believe the acquisition and release of the lock
+belongs inside gbaudio_remove_controls(), not in its caller.
 
-> Thanks!
->
-> --
-> Peter Xu
->
+If you disagree, can you please explain why?
+
+Otherwise, will you please submit version two, taking the
+lock inside gbaudio_remove_controls()?
+
+Thanks.
+
+					-Alex
+
+> Fixes: 510e340efe0c ("staging: greybus: audio: Add helper APIs for dynamic audio modules")
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>   drivers/staging/greybus/audio_helper.c | 8 ++++++--
+>   1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/greybus/audio_helper.c b/drivers/staging/greybus/audio_helper.c
+> index 1ed4772d2771..843760675876 100644
+> --- a/drivers/staging/greybus/audio_helper.c
+> +++ b/drivers/staging/greybus/audio_helper.c
+> @@ -192,7 +192,11 @@ int gbaudio_remove_component_controls(struct snd_soc_component *component,
+>   				      unsigned int num_controls)
+>   {
+>   	struct snd_card *card = component->card->snd_card;
+> +	int err;
+>   
+> -	return gbaudio_remove_controls(card, component->dev, controls,
+> -				       num_controls, component->name_prefix);
+> +	down_write(&card->controls_rwsem);
+> +	err = gbaudio_remove_controls(card, component->dev, controls,
+> +				      num_controls, component->name_prefix);
+> +	up_write(&card->controls_rwsem);
+> +	return err;
+>   }
+> 
+
