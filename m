@@ -2,112 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10188454698
+	by mail.lfdr.de (Postfix) with ESMTP id D2D4745469A
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 13:50:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237275AbhKQMvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 07:51:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236872AbhKQMvb (ORCPT
+        id S237283AbhKQMv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 07:51:58 -0500
+Received: from mail-0301.mail-europe.com ([188.165.51.139]:48129 "EHLO
+        mail-0301.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236872AbhKQMv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 07:51:31 -0500
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4213C061570;
-        Wed, 17 Nov 2021 04:48:32 -0800 (PST)
-Received: by mail-ua1-x92b.google.com with SMTP id p2so5544638uad.11;
-        Wed, 17 Nov 2021 04:48:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C9ZeoZcuM1SFs0ycmV8j+Ly+rX5e3huJuu4Pm4Ap/7E=;
-        b=cDMCcPD0iSAiG8zkz1Qjy09UlUjlXYc07J57n5MLgD2rZ5o0ZBIb4gROWlQXntoP6X
-         fDmfYtFGq+QaIc7LbDhzaQHq9efIiUkbWxblT2lbgaPsQqjib/dGeJnUdwnJSL/7T7Rl
-         a53w8M+FB/gp5MVZGukOwXgqQYrEOIT9WWAcIruCUTdhsBBQyugGn03MC5mLnuLRMmAK
-         EGnbVYd+V3aQd5Ugr/NQiUHuS41jPKYjt4PjjFzVDK0Jya7pZlya8xi4SqNXXFx78XCF
-         cAYSXGCHFZNltcw6WpvxSaN/TxaW0bd70TsGN4ye7JkAWTiZIT7Ol6+L4Lym2a0CuMZW
-         beyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C9ZeoZcuM1SFs0ycmV8j+Ly+rX5e3huJuu4Pm4Ap/7E=;
-        b=eV2sMFWzUnQowva1gzAZaMYge2UUgXWdQ8tV8lX1b+7bjAjl63386ut/2j9IueeXho
-         YBqlOlTJ/wP9ZP8hJ7X3ZYwf9nLTeQAph29VyT24WUntecs3R8BfDA5LCl5bbAQflswb
-         stZWuvSoaNmhOeLRCuB80dIpUkmwytpghLPUrVfAMzb1c8AkMajIYNE5lSqXi/BRjpN3
-         KJbPawaE32tO1WcXO9nrCfJ+yN41BGVdJioY8Os8HVka2pUnXW0p0b8srtQOfijdsDUr
-         3ev8oNGjKR2Xct9GaiKyX/ONMBoHoBcHNCpesHF0ar8L+TRuUhJZ7ZT5pcD5RCc3eO0h
-         7FWg==
-X-Gm-Message-State: AOAM531qySxRPUJKxrCV0pUeH6x4o1wkYIV8cola5hITd8jehWJh3ND0
-        h/k+6a46lAabAY6ursKRzfvU5M8LwXRA2N9K3qQ=
-X-Google-Smtp-Source: ABdhPJxXCcMsvAYMIJ6kUEI1Et7ijT/DNk5p7WaE2MPC0BwC177Ktar5VCPS7gdhcTdjefP7Tyebx6idpP5iAZ/YyO8=
-X-Received: by 2002:a05:6102:3a11:: with SMTP id b17mr68559905vsu.28.1637153312056;
- Wed, 17 Nov 2021 04:48:32 -0800 (PST)
+        Wed, 17 Nov 2021 07:51:56 -0500
+Date:   Wed, 17 Nov 2021 12:48:36 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1637153332;
+        bh=hKAEO8wqej3KZQNjrchrQxBV8gKMyvgjcZ5+i1Y8nTA=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=O8l2xGlDEwSDNbCu7+KxAu9dcztjHCCcPAAWzGzw+Mi5KwGYx/bsbAydrM3J0RE4E
+         3fMKWSeEow0hlCn8eoBwBv0K/9t89TzeFQB6XQ6e/rC6cYfisQDTk/Cxts/06k0Hfa
+         mRlTxOCwZPadWuYU5URhKGAQGJgJjAp7vcszIlcc=
+To:     regressions@leemhuis.info
+From:   Orlando Chamberlain <redecorating@protonmail.com>
+Cc:     danielwinkler@google.com, gargaditya08@live.com,
+        gregkh@linuxfoundation.org, johan.hedberg@intel.com,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luiz.dentz@gmail.com, marcel@holtmann.org,
+        redecorating@protonmail.com, regressions@lists.linux.dev,
+        sonnysasaka@chromium.org
+Reply-To: Orlando Chamberlain <redecorating@protonmail.com>
+Subject: Re: [PATCHv2] Bluetooth: quirk disabling LE Read Transmit Power
+Message-ID: <20211117124717.12352-1-redecorating@protonmail.com>
+In-Reply-To: <8919a36b-e485-500a-2722-529ffa0d2598@leemhuis.info>
+References: <20211001083412.3078-1-redecorating@protonmail.com> <YYePw07y2DzEPSBR@kroah.com> <70a875d0-7162-d149-dbc1-c2f5e1a8e701@leemhuis.info> <20211116090128.17546-1-redecorating@protonmail.com> <e75bf933-9b93-89d2-d73f-f85af65093c8@leemhuis.info> <3B8E16FA-97BF-40E5-9149-BBC3E2A245FE@live.com> <YZSuWHB6YCtGclLs@kroah.com> <52DEDC31-EEB2-4F39-905F-D5E3F2BBD6C0@live.com> <8919a36b-e485-500a-2722-529ffa0d2598@leemhuis.info>
 MIME-Version: 1.0
-References: <20211115070809.15529-1-sergio.paracuellos@gmail.com> <20211117124120.GA9336@alpha.franken.de>
-In-Reply-To: <20211117124120.GA9336@alpha.franken.de>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Wed, 17 Nov 2021 13:48:20 +0100
-Message-ID: <CAMhs-H_V03ZE8AkdccrmUb+48HDhbDM5i-9G-hhnuHwRq20H3A@mail.gmail.com>
-Subject: Re: [PATCH 0/5] PCI: mt7621: remove specific MIPS code from driver
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-pci <linux-pci@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        John Crispin <john@phrozen.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 1:41 PM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
->
-> On Mon, Nov 15, 2021 at 08:08:04AM +0100, Sergio Paracuellos wrote:
-> > Hi all,
-> >
-> > MIPS specific code can be removed from driver and put into ralink mt7621
-> > instead which is a more accurate place to do this. To make this possible
-> > we need to have access to 'bridge->windows' in 'pcibios_root_bridge_prepare()'
-> > which has been implemented for ralink mt7621 platform (there is no real
-> > need to implement this for any other platforms since those ones haven't got
-> > I/O coherency units). This also allow us to properly enable this driver to
-> > completely be enabled for COMPILE_TEST. This patchset appoarch:
-> > - Move windows list splice in 'pci_register_host_bridge()' after function
-> >   'pcibios_root_bridge_prepare()' is called.
-> > - Implement 'pcibios_root_bridge_prepare()' for ralink mt7621.
-> > - Avoid custom MIPs code in pcie-mt7621 driver.
-> > - Add missing 'MODULE_LICENSE()' to pcie-mt7621 driver to avoid compile test
-> >   module compilation to complain (already sent patch from Yanteng Si that
-> >   I have rewrite commit message and long description a bit.
-> > - Remove MIPS conditional code from Kconfig.
-> >
-> > This patchset also fix some errors reported by Kernel Test Robot about
-> > implicit mips functions used in driver code and fix errors in driver when
-> > is compiled as a module [1] (mips:allmodconfig).
-> >
-> > There was an ongoing discussion about this here [0] but I preferred to send
-> > my proposal for better review and understanding:
->
-> so what's the plan with this patchset ? Going in as fix, probably via
-> pci tree ? Or is material for next release ? If the latter can we first
-> fix the allmodconfig by making the Kconfig symbol bool ?
+> So if this just affects two macs, why can't the fix be realized as a
+> quirk that is only enabled on those two systems? Or are they impossible
+> to detect clearly via DMI data or something like that?
 
-If the approach is considered valid I guess it should go as a fix to
-avoid changing first to 'bool' the Kconfig symbol. If it is not a
-valid approach I will send patches with a possible new requested
-approach or just making the symbol bool and adding specific mips
-includes to driver code to avoid mips implicit functions errors.
+I think we should be able to quirk based off the acpi _CID "apple-uart-blth=
+"
+or _HID "BCM2E7C". Marcel suggested quirking based of the acpi table here
+https://lore.kernel.org/linux-bluetooth/1D2217A9-EA73-4D93-8D0B-5BC2718D478=
+8@holtmann.org/
 
-Best regards,
-    Sergio Paracuellos
->
-> Thomas.
->
-> --
-> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-> good idea.                                                [ RFC1925, 2.3 ]
+This would catch some unaffected Macs, but they don't support the LE Read
+Transmit Power command anyway (the affected macs were released after it
+was added to the Bluetooth spec, while the unaffected Macs were released
+before it was added to the spec, and thus don't support it).
+
+I'm not sure how to go about applying a quirk based off this, there are
+quirks in drivers/bluetooth/hci_bcm.c (no_early_set_baudrate and
+drive_rts_on_open), but they don't seem to be based off acpi ids.
+
+It might be simpler to make it ignore the Unknown Command error, like
+in this patch https://lore.kernel.org/linux-bluetooth/CABBYNZLjSfcG_KqTEbL6=
+NOSvHhA5-b1t_S=3D3FQP4=3DGwW21kuzg@mail.gmail.com/
+however that only applies on bluetooth-next and needed the status it
+checks for to be -56, not 0x01.
+
+--
+Thanks,
+Orlando
+
