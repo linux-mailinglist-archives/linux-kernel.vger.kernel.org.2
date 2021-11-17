@@ -2,226 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 306824550B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:47:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BCAE4550BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:49:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241432AbhKQWt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 17:49:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49482 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241317AbhKQWty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:49:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7F0761BD4;
-        Wed, 17 Nov 2021 22:46:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637189215;
-        bh=o873rE9e1QuD81xkSB+mD5gzqmQzgM1i0CnzNUpRM2U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nlO6j6YBhZmcLmKFf5lapNc/k+60YGYeRqi6z1Hv49QPhQxRax+vo/8za45kiHxUW
-         us5CEw9dqyWzkUFV/BcnCs9sJQUOV86Tq6uUP2jw2Lb4fUEuIfteLlQrV3XArvR0UM
-         HOtHv+138KzYzUVncprqiUWVYd6H6bMUG9r/Rh5MqVQRdp6Dg8AcD5nqVHVtj/Fuz5
-         JvO4BEEv6xO7Alh+aWhHaIVz95C7TShR/5EhHrrOlA1r1NFJ7e5Z7L7XAZOA4RBBB1
-         nUHVIWZcveIUbsjFHWiT6Dd/m7+QQUKA0UDWOVf//o0+rVsYJeoPTFpO8xrcp6uium
-         ZJx8e1/QWj+TQ==
-Received: by mail-qt1-f175.google.com with SMTP id l8so4241539qtk.6;
-        Wed, 17 Nov 2021 14:46:55 -0800 (PST)
-X-Gm-Message-State: AOAM532FtJNjAxiIZLenDcGT0ZaMWAE17NLXv+0NONdfbbl1h4xBy87z
-        b79rN8q1w+RWzDX10bFD9bW/kyqPNcjWYJa2kw==
-X-Google-Smtp-Source: ABdhPJz92a0xTUBFxafDyj3yeyzY2HyiybbHf4pcSglmICdS3ozN3VsNu0bM6dYbR37MoFyKKdtVhN0KHBEfMxAFIyE=
-X-Received: by 2002:a05:622a:44a:: with SMTP id o10mr20531125qtx.212.1637189214741;
- Wed, 17 Nov 2021 14:46:54 -0800 (PST)
+        id S241459AbhKQWwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 17:52:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241434AbhKQWwH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 17:52:07 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CCCC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:49:06 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id q17so3469665plr.11
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:49:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rpv3ppQp4AdrKrqKBlCi3lv1TW7GOvkKLKXPxTB7n5Y=;
+        b=CmCe9x1evLqmgJ2tkD2ei5zZtVLnugfocj/BWL7RE6407XI6b4ZrG/ZlsrU08i+PTk
+         U6Xo63RXOuh7ZShFvqCihtigQwrvJUIoqc93GEZiSpBCmuFKYsC8uC+WQWJo0s7PUjfD
+         6cYU9y1AbXPsd0nSfQYWeT7eD3QkH//b5Sods=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rpv3ppQp4AdrKrqKBlCi3lv1TW7GOvkKLKXPxTB7n5Y=;
+        b=HRfNbnwQv+pXdgrHg/2YWltTcqXkX3fGgxFT+1BOXE8NoOzDJMJwSY4+OdYFFWPTTU
+         WUzueFi7riritpY1FdDH2HhX144xMI2vbJ1QBDsXqn7dh+uksSesInY4p4v3FnZev6ZE
+         izggIBKPHIwt7ehfBrtWoYU033FKfiV4YwWg6NipOL1DfHj/hWlzL6XylsClTYMekX7T
+         tJQ2YD3YrARWhyQjJRBr3JHq208UVyoRGqWfja3PTTEfRjaoM1XnQ5zLbf7beTVSs9nd
+         ZY/Rx6pqsVLms+5U9EQUjMy3PfzhdWzL1P0Rfcjb5E2lJOUyBGB+6g0qtFAwL9M/GGGZ
+         Bs3A==
+X-Gm-Message-State: AOAM532gYwDUEY3wXioI8g5MtmNRbdS+TK/LYE8Z9dxi8G9eGi4U2vs4
+        uXsR2UKcS3i+GY82SypNATND1g==
+X-Google-Smtp-Source: ABdhPJyLA0GlFJYLVXLkAb23Pd6HZXVzIX/Db1U2jnd4GET4hbncySrNQFQD8cVcGqeHii1Rq+eQxw==
+X-Received: by 2002:a17:90a:2843:: with SMTP id p3mr4320482pjf.176.1637189345652;
+        Wed, 17 Nov 2021 14:49:05 -0800 (PST)
+Received: from localhost ([2620:15c:202:201:896b:df38:4eae:c568])
+        by smtp.gmail.com with UTF8SMTPSA id w189sm620772pfd.164.2021.11.17.14.49.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 14:49:05 -0800 (PST)
+From:   Brian Norris <briannorris@chromium.org>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     "Kristian H . Kristensen" <hoegsberg@google.com>,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Doug Anderson <dianders@chromium.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Rob Clark <robdclark@gmail.com>, linux-input@vger.kernel.org,
+        Rob Clark <robdclark@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org,
+        Brian Norris <briannorris@chromium.org>
+Subject: [PATCH v2 0/2] drm: Support input-boosted panel self-refresh exit
+Date:   Wed, 17 Nov 2021 14:48:39 -0800
+Message-Id: <20211117224841.3442482-1-briannorris@chromium.org>
+X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
 MIME-Version: 1.0
-References: <20211115112000.23693-1-andriy.shevchenko@linux.intel.com>
- <94d3f4e5-a698-134c-8264-55d31d3eafa6@arm.com> <CAHp75VeJ8ZiD=qQVfeahUjGZduFRJJ5683hn8f4810JYEzsCyw@mail.gmail.com>
- <YZJxG7JFAfIqr1/f@smile.fi.intel.com> <CAL_JsqJndi-gmenSpPtMVfsb3SrA=w+YBsSh3GigfgXC3rYDeQ@mail.gmail.com>
- <71a90592-99bb-13e1-a671-eb19c2dad3da@broadcom.com> <351fa3ec-52fa-58f5-cc57-e92498647d5c@gmail.com>
-In-Reply-To: <351fa3ec-52fa-58f5-cc57-e92498647d5c@gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 17 Nov 2021 16:46:42 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJHBv9LrYH51iw_Quwub2qnZiv86ikd=ZMxGurxWrKHPw@mail.gmail.com>
-Message-ID: <CAL_JsqJHBv9LrYH51iw_Quwub2qnZiv86ikd=ZMxGurxWrKHPw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] PCI: brcmstb: Use BIT() as __GENMASK() is for
- internal use only
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jim Quinlan <jim2101024@gmail.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 2:56 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
->
-> On 11/16/21 12:41 PM, Florian Fainelli wrote:
-> > On 11/16/21 10:20 AM, Rob Herring wrote:
-> >> +Marc Z
-> >>
-> >> On Mon, Nov 15, 2021 at 8:39 AM Andy Shevchenko
-> >> <andriy.shevchenko@linux.intel.com> wrote:
-> >>>
-> >>> On Mon, Nov 15, 2021 at 04:14:21PM +0200, Andy Shevchenko wrote:
-> >>>> On Mon, Nov 15, 2021 at 4:01 PM Robin Murphy <robin.murphy@arm.com> wrote:
-> >>>>> On 2021-11-15 11:20, Andy Shevchenko wrote:
-> >>>>>> Use BIT() as __GENMASK() is for internal use only. The rationale
-> >>>>>> of switching to BIT() is to provide better generated code. The
-> >>>>>> GENMASK() against non-constant numbers may produce an ugly assembler
-> >>>>>> code. On contrary the BIT() is simply converted to corresponding shift
-> >>>>>> operation.
-> >>>>>
-> >>>>> FWIW, If you care about code quality and want the compiler to do the
-> >>>>> obvious thing, why not specify it as the obvious thing:
-> >>>>>
-> >>>>>         u32 val = ~0 << msi->legacy_shift;
-> >>>>
-> >>>> Obvious and buggy (from the C standard point of view)? :-)
-> >>>
-> >>> Forgot to mention that BIT() is also makes it easy to avoid such mistake.
-> >>>
-> >>>>> Personally I don't think that abusing BIT() in the context of setting
-> >>>>> multiple bits is any better than abusing __GENMASK()...
-> >>>>
-> >>>> No, BIT() is not abused here, but __GENMASK().
-> >>>>
-> >>>> After all it's up to you, folks, consider that as a bug report.
-> >>
-> >> Couldn't we get rid of legacy_shift entirely if the legacy case sets
-> >> up 'hwirq' as 24-31 rather than 0-7? Though the data for the MSI msg
-> >> uses the hwirq.
-> >
-> > I personally find it clearer and easier to reason about with the current
-> > code though I suppose that with an appropriate xlate method we could
-> > sort of set up the hwirq the way we want them to be to avoid any
-> > shifting in brcm_pcie_msi_isr().
->
-> Something like the following maybe? Completely untested as I don't
-> believe I have a device with that legacy controller available at the moment:
->
-> diff --git a/drivers/pci/controller/pcie-brcmstb.c
-> b/drivers/pci/controller/pcie-brcmstb.c
-> index 1fc7bd49a7ad..41404b268fa3 100644
-> --- a/drivers/pci/controller/pcie-brcmstb.c
-> +++ b/drivers/pci/controller/pcie-brcmstb.c
-> @@ -144,6 +144,8 @@
->  #define BRCM_INT_PCI_MSI_NR            32
->  #define BRCM_INT_PCI_MSI_LEGACY_NR     8
->  #define BRCM_INT_PCI_MSI_SHIFT         0
-> +#define BRCM_INT_PCI_MSI_MASK          GENMASK(BRCM_INT_PCI_MSI_NR - 1, 0)
-> +#define BRCM_INT_PCI_MSI_LEGACY_MASK   GENMASK(31, 32 -
-> BRCM_INT_PCI_MSI_LEGACY_NR)
->
->  /* MSI target addresses */
->  #define BRCM_MSI_TARGET_ADDR_LT_4GB    0x0fffffffcULL
-> @@ -269,8 +271,6 @@ struct brcm_msi {
->         /* used indicates which MSI interrupts have been alloc'd */
->         unsigned long           used;
->         bool                    legacy;
-> -       /* Some chips have MSIs in bits [31..24] of a shared register. */
-> -       int                     legacy_shift;
->         int                     nr; /* No. of MSI available, depends on chip */
+A variety of applications have found it useful to listen to
+user-initiated input events to make decisions within a DRM driver, given
+that input events are often the first sign that we're going to start
+doing latency-sensitive activities:
 
-Can get rid of this too I think.
+ * Panel self-refresh: software-directed self-refresh (e.g., with
+   Rockchip eDP) is especially latency sensitive. In some cases, it can
+   take 10s of milliseconds for a panel to exit self-refresh, which can
+   be noticeable. Rockchip RK3399 Chrome OS systems have always shipped
+   with an input_handler boost, that preemptively exits self-refresh
+   whenever there is input activity.
 
->         /* This is the base pointer for interrupt status/set/clr regs */
->         void __iomem            *intr_base;
-> @@ -486,7 +486,6 @@ static void brcm_pcie_msi_isr(struct irq_desc *desc)
->         dev = msi->dev;
->
->         status = readl(msi->intr_base + MSI_INT_STATUS);
-> -       status >>= msi->legacy_shift;
->
->         for_each_set_bit(bit, &status, msi->nr) {
+ * GPU drivers: on GPU-accelerated desktop systems, we may need to
+   render new frames immediately after user activity. Powering up the
+   GPU can take enough time that it is worthwhile to start this process
+   as soon as there is input activity. Many Chrome OS systems also ship
+   with an input_handler boost that powers up the GPU.
 
-'nr' needs to be 32 here.
+I implement the first bullet in this series, and I also compared with
+some out-of-tree patches for the second, to ensure this could be useful
+there too.
 
->                 int ret;
-> @@ -516,9 +515,8 @@ static int brcm_msi_set_affinity(struct irq_data
-> *irq_data,
->  static void brcm_msi_ack_irq(struct irq_data *data)
->  {
->         struct brcm_msi *msi = irq_data_get_irq_chip_data(data);
-> -       const int shift_amt = data->hwirq + msi->legacy_shift;
->
-> -       writel(1 << shift_amt, msi->intr_base + MSI_INT_CLR);
-> +       writel(BIT(data->hwirq), msi->intr_base + MSI_INT_CLR);
->  }
->
->
-> @@ -573,9 +571,31 @@ static void brcm_irq_domain_free(struct irq_domain
-> *domain,
->         brcm_msi_free(msi, d->hwirq);
->  }
->
-> +static int brcm_irq_domain_xlate(struct irq_domain *d,
-> +                                struct device_node *node,
-> +                                const u32 *intspec, unsigned int intsize,
-> +                                unsigned long *out_hwirq,
-> +                                unsigned int *out_type)
-> +{
-> +       struct brcm_msi *msi = d->host_data;
-> +
-> +       if (WARN_ON(intsize < 1))
-> +               return -EINVAL;
-> +
-> +       if (msi->legacy) {
-> +               *out_hwirq = intspec[0] + BRCM_INT_PCI_MSI_SHIFT;
-> +               *out_type = IRQ_TYPE_NONE;
-> +               return 0;
-> +       }
-> +
-> +       return irq_domain_xlate_onecell(d, node, intspec, intsize,
-> +                                       out_hwirq, out_type);
+Past work on upstreaming a variety of Chromebook display patches got
+held up for this particular feature, as there was some desire to make it
+a bit more generic, for one. See the latest here:
 
-When would xlate get called? You don't have an intspec from DT.
-Wouldn't it be enough to set bits 0-23 in 'used' bitmap so that only
-24-31 can be allocated?
+  https://lore.kernel.org/all/20180405095000.9756-25-enric.balletbo@collabora.com/
+  [PATCH v6 24/30] drm/rockchip: Disable PSR on input events
 
-I'm not really sure though with how all the MSI stuff works.
+I significantly rewrote this to adapt it to the new common
+drm_self_refresh_helpers and to add a new drm_input_helper thin library,
+so I only carry my own authorship on this series.
 
-> +}
-> +
->  static const struct irq_domain_ops msi_domain_ops = {
->         .alloc  = brcm_irq_domain_alloc,
->         .free   = brcm_irq_domain_free,
-> +       .xlate  = brcm_irq_domain_xlate,
->  };
->
->  static int brcm_allocate_domains(struct brcm_msi *msi)
-> @@ -619,7 +639,8 @@ static void brcm_msi_remove(struct brcm_pcie *pcie)
->
->  static void brcm_msi_set_regs(struct brcm_msi *msi)
->  {
-> -       u32 val = __GENMASK(31, msi->legacy_shift);
-> +       u32 val = msi->legacy ? BRCM_INT_PCI_MSI_MASK :
-> +                               BRCM_INT_PCI_MSI_LEGACY_MASK;
+Admittedly, this "drm_input_helper" library is barely DRM-specific at
+all, except that all display- and GPU-related input-watchers are likely
+to want to watch similar device behavior (unlike, say, rfkill or led
+input_handler code). The approximate consensus so far seems to be that
+(a) this isn't much code; if we need it for other subsystems (like,
+    cpufreq-boost), it's easy to implement similar logic
+(b) input subsystem maintainers think the existing input_handler
+    abstraction is good enough
+So, I keep the thin input helper in drivers/gpu/drm/.
 
-Perhaps just change legacy to a mask.
+v1: https://lore.kernel.org/all/20211103234018.4009771-1-briannorris@chromium.org/
 
->
->         writel(val, msi->intr_base + MSI_INT_MASK_CLR);
->         writel(val, msi->intr_base + MSI_INT_CLR);
-> @@ -664,11 +685,9 @@ static int brcm_pcie_enable_msi(struct brcm_pcie *pcie)
->         if (msi->legacy) {
->                 msi->intr_base = msi->base + PCIE_INTR2_CPU_BASE;
->                 msi->nr = BRCM_INT_PCI_MSI_LEGACY_NR;
-> -               msi->legacy_shift = 24;
->         } else {
->                 msi->intr_base = msi->base + PCIE_MSI_INTR2_BASE;
->                 msi->nr = BRCM_INT_PCI_MSI_NR;
-> -               msi->legacy_shift = 0;
->         }
->
->         ret = brcm_allocate_domains(msi);
->
-> --
-> Florian
+Changes in v2:
+ - Honor CONFIG_INPUT dependency, via new CONFIG_DRM_INPUT_HELPER
+ - Remove void*; users should use container_of()
+ - Document the callback context
+ - Delay PSR re-entry, when already disabled
+ - Allow default configuration via Kconfig and modparam
+ - really CC dri-devel@lists.freedesktop.org (oops!)
+
+Brian Norris (2):
+  drm/input_helper: Add new input-handling helper
+  drm/self_refresh: Disable self-refresh on input events
+
+ drivers/gpu/drm/Kconfig                   |  22 ++++
+ drivers/gpu/drm/Makefile                  |   2 +
+ drivers/gpu/drm/drm_input_helper.c        | 143 ++++++++++++++++++++++
+ drivers/gpu/drm/drm_self_refresh_helper.c |  98 ++++++++++++---
+ include/drm/drm_input_helper.h            |  41 +++++++
+ 5 files changed, 292 insertions(+), 14 deletions(-)
+ create mode 100644 drivers/gpu/drm/drm_input_helper.c
+ create mode 100644 include/drm/drm_input_helper.h
+
+-- 
+2.34.0.rc1.387.gb447b232ab-goog
+
