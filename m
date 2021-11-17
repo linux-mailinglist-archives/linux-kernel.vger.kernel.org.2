@@ -2,91 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D60B45508C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:31:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF1B455091
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:33:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241388AbhKQWek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 17:34:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42038 "EHLO mail.kernel.org"
+        id S241306AbhKQWgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 17:36:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241317AbhKQWee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:34:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A219361B6F;
-        Wed, 17 Nov 2021 22:31:33 +0000 (UTC)
+        id S241240AbhKQWgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 17:36:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BDD861B5F;
+        Wed, 17 Nov 2021 22:33:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637188295;
-        bh=Z+MeT6LT5Kb9JkETeAPAoQPtL76Z5bYCfF+s92dnR40=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=rN8HDXYymUxaa8b0YMukBak1XAWQF82pA3DESm2D0B7qCbDzJt0qVu1K6HE1LbwDU
-         SvRaDSunpkf7B0Te5m0t3cHpLhNlQG9mv1lFwXlxHfGPljxQyNlzZnQJBZJEdxagQT
-         EtZPEpkuhlI5VFGzga+DWwT3NFxaLENq0uerKEbICOEIs10l/ebc800ExBhoulxZAW
-         06Ax/ND55Vt15qV+KjWZbcX/JmnctVOROtNhJ04eW8Xixq+KJZrhFB2v+Y+lpyBiV/
-         //hJRelwxWMRUMdCBU4wYoTHTzM6fl/GbLBOsa0b6AZrTQC+hf5RweAt6vZQlzU9oK
-         eG1D2TYwjuSEQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
-        peter.ujfalusi@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, kai.vehmanen@linux.intel.com,
-        alsa-devel@alsa-project.org, daniel.baluta@gmail.com,
-        lgirdwood@gmail.com, daniel.baluta@nxp.com,
-        pierre-louis.bossart@linux.intel.com,
-        ranjani.sridharan@linux.intel.com
-In-Reply-To: <20211116152137.52129-1-daniel.baluta@oss.nxp.com>
-References: <20211116152137.52129-1-daniel.baluta@oss.nxp.com>
-Subject: Re: [PATCH 0/4] New debug feature: IPC message injector
-Message-Id: <163718829340.136850.578880691226569719.b4-ty@kernel.org>
-Date:   Wed, 17 Nov 2021 22:31:33 +0000
+        s=k20201202; t=1637188393;
+        bh=Za4aGPkejDq0o/6QqRhlCJedGEST9Mp+SMRC9Eoz14U=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=hHSvuEf3undC2JEDL5u3w9AoT+L5bc86RYooFwz/oWHXJezpOcNhEXsrde/u2df8T
+         nEZILf7fzuZZZi3WWJ74F7iEQIaf78S09PVSLjDBCuyfB74VBqMh2QiWozQE773+m+
+         Dol9+fNQf5lKvcyb8fUWfFN/NWLucz9oAdLnx9V0zvda8Dxl4WJrZAFqwN/yZyK17P
+         HLv8XmGnODrwbVh11TZh4icR+nCRK6dm2YbO4lg7RTeqSZbK0aNxLwwK3GP+wflomx
+         gvgjsetEpO4DiEhVxrSH+PC/f6e7GL6dYOh6LNADwwoNeyOUthvYefEDo4kUCsFFMy
+         hIsFtpk3lIS/w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 6BB835C06BA; Wed, 17 Nov 2021 14:33:13 -0800 (PST)
+Date:   Wed, 17 Nov 2021 14:33:13 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 5/6] rcu/nocb: Allow empty "rcu_nocbs" kernel parameter
+Message-ID: <20211117223313.GR641268@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211117155637.363706-1-frederic@kernel.org>
+ <20211117155637.363706-6-frederic@kernel.org>
+ <20211117194605.GL641268@paulmck-ThinkPad-P17-Gen-1>
+ <20211117220230.GC365507@lothringen>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211117220230.GC365507@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Nov 2021 17:21:33 +0200, Daniel Baluta wrote:
-> From: Daniel Baluta <daniel.baluta@nxp.com>
+On Wed, Nov 17, 2021 at 11:02:30PM +0100, Frederic Weisbecker wrote:
+> On Wed, Nov 17, 2021 at 11:46:05AM -0800, Paul E. McKenney wrote:
+> > On Wed, Nov 17, 2021 at 04:56:36PM +0100, Frederic Weisbecker wrote:
+> > > If a user wants to boot without any CPU in offloaded mode initially but
+> > > with the possibility to offload them later using cpusets, provide a way
+> > > to simply pass an empty "rcu_nocbs" kernel parameter which will enforce
+> > > the creation of dormant nocb kthreads.
+> > > 
+> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > > Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> > > Cc: Boqun Feng <boqun.feng@gmail.com>
+> > > Cc: Uladzislau Rezki <urezki@gmail.com>
+> > > Cc: Josh Triplett <josh@joshtriplett.org>
+> > > Cc: Joel Fernandes <joel@joelfernandes.org>
+> > > ---
+> > >  kernel/rcu/tree_nocb.h | 10 ++++++----
+> > 
+> > Could you please also update kernel-parameters.txt?
 > 
-> With the new SND_SOC_SOF_DEBUG_IPC_MSG_INJECTOR it is going to be
-> possible to inject arbitrary messages via the debugfs/sof/ipc_msg_inject
-> file and get the reply from the same file as a binary.
+> Ah right!
 > 
-> The main use of this feature is to stress test the firmware's robustness
-> against maliciously (or erroneous) crafted messages.
-> We also receive firmware crash reports with only a binary of the sent
-> message which caused the firmware crash.
+> > 
+> > >  1 file changed, 6 insertions(+), 4 deletions(-)
+> > > 
+> > > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > > index 1871f15b8472..3845f1885ffc 100644
+> > > --- a/kernel/rcu/tree_nocb.h
+> > > +++ b/kernel/rcu/tree_nocb.h
+> > > @@ -66,14 +66,16 @@ static bool rcu_nocb_is_setup;
+> > >  static int __init rcu_nocb_setup(char *str)
+> > >  {
+> > >  	alloc_bootmem_cpumask_var(&rcu_nocb_mask);
+> > > -	if (cpulist_parse(str, rcu_nocb_mask)) {
+> > > -		pr_warn("rcu_nocbs= bad CPU range, all CPUs set\n");
+> > > -		cpumask_setall(rcu_nocb_mask);
+> > > +	if (*str == '=') {
+> > > +		if (cpulist_parse(++str, rcu_nocb_mask)) {
+> > > +			pr_warn("rcu_nocbs= bad CPU range, all CPUs set\n");
+> > > +			cpumask_setall(rcu_nocb_mask);
+> > > +		}
+> > 
+> > Wouldn't "*str == '='" indicate that the parameter passed in was of
+> > the form "rcu_nocbs==8"?
+> > 
+> > Or am I misreading the next_arg() function in lib/cmdline.c?
+> > 
+> > If I am reading it correctly, doesn't the test instead want to be
+> > something of the form "if (str && *str)"?
+> > 
+> > 							Thanx, Paul
+> > 
+> > >  	}
+> > >  	rcu_nocb_is_setup = true;
+> > >  	return 1;
+> > >  }
+> > > -__setup("rcu_nocbs=", rcu_nocb_setup);
+> > > +__setup("rcu_nocbs", rcu_nocb_setup);
 > 
-> [...]
+> Don't miss that line, that should probably answer your above question, if
+> I didn't miss something from my end (which is not unlikely...)
 
-Applied to
+My next step would be to add a printk() and try booting with different
+rcu_nocbs parameter settings.  ;-)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+							Thanx, Paul
 
-Thanks!
-
-[1/4] ASoC: SOF: utils: Add generic function to get the reply for a tx message
-      commit: 8ae77801c81d16a09f6b67a6f8d91255d34f5f2c
-[2/4] ASoC: SOF: imx: Use the generic helper to get the reply
-      commit: 18c45f270352fb76c8b5b133b3ae3971769f8a22
-[3/4] ASoC: SOF: intel: Use the generic helper to get the reply
-      commit: 0bd2891bda4550774946abbfac88443a16c15d5a
-[4/4] ASoC: SOF: debug: Add support for IPC message injection
-      commit: 2f0b1b013bbc5d6f4c7c386e12f423d6b4ef3245
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+> > >  static int __init parse_rcu_nocb_poll(char *arg)
+> > >  {
+> > > -- 
+> > > 2.25.1
+> > > 
