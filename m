@@ -2,219 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BE5454555
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 12:03:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3938645455A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 12:06:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236640AbhKQLFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 06:05:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37780 "EHLO
+        id S236651AbhKQLIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 06:08:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236629AbhKQLFt (ORCPT
+        with ESMTP id S232489AbhKQLIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 06:05:49 -0500
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD72CC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 03:02:50 -0800 (PST)
-Received: by mail-ua1-x936.google.com with SMTP id n6so5019947uak.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 03:02:50 -0800 (PST)
+        Wed, 17 Nov 2021 06:08:51 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0765AC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 03:05:53 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id m14so2310530pfc.9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 03:05:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xD4jSD9o0m9VWMMQNYtIoSApMPXuTCerJ7ps5HrGPyg=;
-        b=blT1eGbVnvRYqzUNVw9bSeQHG/9OJnZ9O/3Pb9sESMd3ykf6x7RgtWV2oHzX3ci/wi
-         Q8chAmyd7ur9C/Sci0vhOxY2CbLt2EVwRtul1YiHoekJYTUeu7vZms1lDINpBYa+RaT8
-         HDnUw4+Dn0BfjrL5jBtNUgPvIZ577D57l2KF8X79TlkiQIkGt19EwdH4KCjxleqd04x5
-         6CKxkke8qVvg4G1j/kKGTfybN0rw2Ob4ulqXJKyKv0caV5UPCudi1rNMOuUa4u5V6Zpt
-         Kwdd2qrVcHIkq/N0+sM16QjRbvHgSM2hMxSIsIIz+L6gJdyDRAQG7UxAX74in9t8EZ3V
-         1yTw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uAoFzagV7gWXAixrMiTySrbSBzXa2SFBHBG+ypqEFjI=;
+        b=kBoTNJL92pUfigY0UCb+uuH3lxTq0/UryseOdWAsdO+6uRoC4WBg9kCYHX+uQynEK8
+         HSLeoxHQ1mU8ouZAVPP0ndHIzMiCJJ/p8kl8WSrBrF/vDFN9Vx/hduAkVzFJYicr3ojl
+         XyAAx9AIpSMqU3osiFu9DhLqsz0ojKglsBjN01mXdyhsRL23BcukhatIjcVE2ZSMnMs0
+         THwgh2XVAsPtHFodwCa8tAthOPMgg3Tctv0QHXmncZ+FwaMvj3n5tJanQortURL1nuEs
+         3MFd5AeBLyTCXK7lJhG8GTQwgs/8ktfJAQqiXNCtWpO98vR8h9EQaWWdp7IoiBjS0YlP
+         L4ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xD4jSD9o0m9VWMMQNYtIoSApMPXuTCerJ7ps5HrGPyg=;
-        b=Do4OdRA26I5apaVsU33I+afaeG6R+hORCHoEfsNklYNENB5c2zDY4853IlTiFeVa1F
-         sVIdfR0+yBnCtIfvLZfBMZTEUEoCcZ/+TUoLY7jMjM2YoBfbKDoK9X+QFtyMBh2e+H7H
-         v2quHZy7PGGaJ21s2AFzetMkaYsF2IfV1D11U+hgicAJCb1UV6xHvlKYYJOAJ4wRDBja
-         aB3pFE/vGYdgXd19z2WjZCY+XhUpgOSmr/RMi5Wo5kDUIZlgkfmdCPsmxlh/LuMeV5zq
-         FQySla9vY2yCOXi8POvTrBT2EGIPojxoZ6uDcOUHNw/r/D2UarKGSneM8NBvOznkWuIS
-         qgOQ==
-X-Gm-Message-State: AOAM5331bs9n4oOvBfmswnFymKhuUEIqFqyMmbqOfywghO8r69T9E/7+
-        qVuMkG7T37ytGNILDNk3t6qZwA==
-X-Google-Smtp-Source: ABdhPJw1GsVPwwYHkvpb1r006heaI+l5ljDUmAz1MjejjViCZ+UI6X+4Ovr/EM2O2Dx8y9RTxJjODg==
-X-Received: by 2002:ab0:3359:: with SMTP id h25mr22083214uap.59.1637146968530;
-        Wed, 17 Nov 2021 03:02:48 -0800 (PST)
-Received: from eze-laptop ([186.122.18.126])
-        by smtp.gmail.com with ESMTPSA id s2sm12502206uap.7.2021.11.17.03.02.43
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uAoFzagV7gWXAixrMiTySrbSBzXa2SFBHBG+ypqEFjI=;
+        b=0nq/BpCg+PKCZhJ4Lig9EOp7F6CI+sYBWz/M5MraY1YEJapA5NYsaCMEHY8fuG+7vv
+         iyvbcsPyeq5y92vYsU9LU7N9hiU9QACIeXbQ1GK0cht8Kn6dqBNF6OaHWKw8LxVac4cs
+         vSUSLEk7S8qEoEQWYw4x8SWLw29MuJXxupaIqIj1s0vtwaEWrUkTMy8rhZbhwzXrW91u
+         qxOvxC0Nc7CIMhGYFqs907k9GpJD/+MKG3uzuVMAdMG91+pTPb8V0Gfy9wGRYkDvUdAj
+         MKNP91aWz5brkmjC6PXH4WAcYHAHwBN85/WD6Gv0QXRGN53bs6hRxBfm9+QdsjDV9i9P
+         2I2Q==
+X-Gm-Message-State: AOAM531egECvyY6YD3YRToAroRlGSAI0AUbcmZIq4uAhR1IipfZqdDag
+        HO1Uwaq2I98J5MdsFFFxwYXPNw==
+X-Google-Smtp-Source: ABdhPJxlwNDhZaoL0pZXHiFAOaEf2U5hfBagTMYxieA1/2Vzl6q+2mKoWYonIDKXlk903PFtUWI9iw==
+X-Received: by 2002:aa7:96b7:0:b0:49f:df90:e4ae with SMTP id g23-20020aa796b7000000b0049fdf90e4aemr47563610pfk.24.1637147152387;
+        Wed, 17 Nov 2021 03:05:52 -0800 (PST)
+Received: from localhost.localdomain.name ([122.161.53.25])
+        by smtp.gmail.com with ESMTPSA id j1sm6339510pfu.47.2021.11.17.03.05.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 03:02:47 -0800 (PST)
-Date:   Wed, 17 Nov 2021 08:02:39 -0300
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com
-Subject: Re: [PATCH v8 08/12] media: hantro: Rename registers
-Message-ID: <YZThT9kRyoGu2IkU@eze-laptop>
-References: <20211116143842.75896-1-andrzej.p@collabora.com>
- <20211116143842.75896-9-andrzej.p@collabora.com>
+        Wed, 17 Nov 2021 03:05:51 -0800 (PST)
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+To:     netdev@vger.kernel.org
+Cc:     vkoul@kernel.org, bhupesh.sharma@linaro.org,
+        bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH net-next] net: stmmac: dwmac-qcom-ethqos: add platform level clocks management
+Date:   Wed, 17 Nov 2021 16:35:38 +0530
+Message-Id: <20211117110538.204948-1-bhupesh.sharma@linaro.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211116143842.75896-9-andrzej.p@collabora.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 03:38:38PM +0100, Andrzej Pietrasiewicz wrote:
-> Add more consistency in the way registers are named.
-> 
-> Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Split clocks settings from init callback into clks_config callback,
+which could support platform level clock management.
 
-Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: David S. Miller <davem@davemloft.net>
+Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+---
+ .../stmicro/stmmac/dwmac-qcom-ethqos.c        | 26 ++++++++++++++++---
+ 1 file changed, 23 insertions(+), 3 deletions(-)
 
-> ---
->  .../staging/media/hantro/hantro_g2_hevc_dec.c | 40 +++++++++----------
->  drivers/staging/media/hantro/hantro_g2_regs.h | 28 ++++++-------
->  2 files changed, 34 insertions(+), 34 deletions(-)
-> 
-> diff --git a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-> index 76a921163b9a..abae36f9b418 100644
-> --- a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-> +++ b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-> @@ -448,9 +448,9 @@ static int set_ref(struct hantro_ctx *ctx)
->  		if (dpb[i].rps == V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR)
->  			dpb_longterm_e |= BIT(V4L2_HEVC_DPB_ENTRIES_NUM_MAX - 1 - i);
->  
-> -		hantro_write_addr(vpu, G2_REG_ADDR_REF(i), luma_addr);
-> -		hantro_write_addr(vpu, G2_REG_CHR_REF(i), chroma_addr);
-> -		hantro_write_addr(vpu, G2_REG_DMV_REF(i), mv_addr);
-> +		hantro_write_addr(vpu, G2_REF_LUMA_ADDR(i), luma_addr);
-> +		hantro_write_addr(vpu, G2_REF_CHROMA_ADDR(i), chroma_addr);
-> +		hantro_write_addr(vpu, G2_REF_MV_ADDR(i), mv_addr);
->  	}
->  
->  	luma_addr = hantro_hevc_get_ref_buf(ctx, decode_params->pic_order_cnt_val);
-> @@ -460,20 +460,20 @@ static int set_ref(struct hantro_ctx *ctx)
->  	chroma_addr = luma_addr + cr_offset;
->  	mv_addr = luma_addr + mv_offset;
->  
-> -	hantro_write_addr(vpu, G2_REG_ADDR_REF(i), luma_addr);
-> -	hantro_write_addr(vpu, G2_REG_CHR_REF(i), chroma_addr);
-> -	hantro_write_addr(vpu, G2_REG_DMV_REF(i++), mv_addr);
-> +	hantro_write_addr(vpu, G2_REF_LUMA_ADDR(i), luma_addr);
-> +	hantro_write_addr(vpu, G2_REF_CHROMA_ADDR(i), chroma_addr);
-> +	hantro_write_addr(vpu, G2_REF_MV_ADDR(i++), mv_addr);
->  
-> -	hantro_write_addr(vpu, G2_ADDR_DST, luma_addr);
-> -	hantro_write_addr(vpu, G2_ADDR_DST_CHR, chroma_addr);
-> -	hantro_write_addr(vpu, G2_ADDR_DST_MV, mv_addr);
-> +	hantro_write_addr(vpu, G2_OUT_LUMA_ADDR, luma_addr);
-> +	hantro_write_addr(vpu, G2_OUT_CHROMA_ADDR, chroma_addr);
-> +	hantro_write_addr(vpu, G2_OUT_MV_ADDR, mv_addr);
->  
->  	hantro_hevc_ref_remove_unused(ctx);
->  
->  	for (; i < V4L2_HEVC_DPB_ENTRIES_NUM_MAX; i++) {
-> -		hantro_write_addr(vpu, G2_REG_ADDR_REF(i), 0);
-> -		hantro_write_addr(vpu, G2_REG_CHR_REF(i), 0);
-> -		hantro_write_addr(vpu, G2_REG_DMV_REF(i), 0);
-> +		hantro_write_addr(vpu, G2_REF_LUMA_ADDR(i), 0);
-> +		hantro_write_addr(vpu, G2_REF_CHROMA_ADDR(i), 0);
-> +		hantro_write_addr(vpu, G2_REF_MV_ADDR(i), 0);
->  	}
->  
->  	hantro_reg_write(vpu, &g2_refer_lterm_e, dpb_longterm_e);
-> @@ -499,7 +499,7 @@ static void set_buffers(struct hantro_ctx *ctx)
->  	src_len = vb2_get_plane_payload(&src_buf->vb2_buf, 0);
->  	src_buf_len = vb2_plane_size(&src_buf->vb2_buf, 0);
->  
-> -	hantro_write_addr(vpu, G2_ADDR_STR, src_dma);
-> +	hantro_write_addr(vpu, G2_STREAM_ADDR, src_dma);
->  	hantro_reg_write(vpu, &g2_stream_len, src_len);
->  	hantro_reg_write(vpu, &g2_strm_buffer_len, src_buf_len);
->  	hantro_reg_write(vpu, &g2_strm_start_offset, 0);
-> @@ -508,12 +508,12 @@ static void set_buffers(struct hantro_ctx *ctx)
->  	/* Destination (decoded frame) buffer. */
->  	dst_dma = hantro_get_dec_buf_addr(ctx, &dst_buf->vb2_buf);
->  
-> -	hantro_write_addr(vpu, G2_RASTER_SCAN, dst_dma);
-> -	hantro_write_addr(vpu, G2_RASTER_SCAN_CHR, dst_dma + cr_offset);
-> -	hantro_write_addr(vpu, G2_ADDR_TILE_SIZE, ctx->hevc_dec.tile_sizes.dma);
-> -	hantro_write_addr(vpu, G2_TILE_FILTER, ctx->hevc_dec.tile_filter.dma);
-> -	hantro_write_addr(vpu, G2_TILE_SAO, ctx->hevc_dec.tile_sao.dma);
-> -	hantro_write_addr(vpu, G2_TILE_BSD, ctx->hevc_dec.tile_bsd.dma);
-> +	hantro_write_addr(vpu, G2_RS_OUT_LUMA_ADDR, dst_dma);
-> +	hantro_write_addr(vpu, G2_RS_OUT_CHROMA_ADDR, dst_dma + cr_offset);
-> +	hantro_write_addr(vpu, G2_TILE_SIZES_ADDR, ctx->hevc_dec.tile_sizes.dma);
-> +	hantro_write_addr(vpu, G2_TILE_FILTER_ADDR, ctx->hevc_dec.tile_filter.dma);
-> +	hantro_write_addr(vpu, G2_TILE_SAO_ADDR, ctx->hevc_dec.tile_sao.dma);
-> +	hantro_write_addr(vpu, G2_TILE_BSD_ADDR, ctx->hevc_dec.tile_bsd.dma);
->  }
->  
->  static void prepare_scaling_list_buffer(struct hantro_ctx *ctx)
-> @@ -563,7 +563,7 @@ static void prepare_scaling_list_buffer(struct hantro_ctx *ctx)
->  			for (k = 0; k < 8; k++)
->  				*p++ = sc->scaling_list_32x32[i][8 * k + j];
->  
-> -	hantro_write_addr(vpu, HEVC_SCALING_LIST, ctx->hevc_dec.scaling_lists.dma);
-> +	hantro_write_addr(vpu, G2_HEVC_SCALING_LIST_ADDR, ctx->hevc_dec.scaling_lists.dma);
->  }
->  
->  static void hantro_g2_check_idle(struct hantro_dev *vpu)
-> diff --git a/drivers/staging/media/hantro/hantro_g2_regs.h b/drivers/staging/media/hantro/hantro_g2_regs.h
-> index bb22fa921914..24b18f839ff8 100644
-> --- a/drivers/staging/media/hantro/hantro_g2_regs.h
-> +++ b/drivers/staging/media/hantro/hantro_g2_regs.h
-> @@ -177,20 +177,20 @@
->  #define G2_REG_CONFIG_DEC_CLK_GATE_E		BIT(16)
->  #define G2_REG_CONFIG_DEC_CLK_GATE_IDLE_E	BIT(17)
->  
-> -#define G2_ADDR_DST		(G2_SWREG(65))
-> -#define G2_REG_ADDR_REF(i)	(G2_SWREG(67)  + ((i) * 0x8))
-> -#define G2_ADDR_DST_CHR		(G2_SWREG(99))
-> -#define G2_REG_CHR_REF(i)	(G2_SWREG(101) + ((i) * 0x8))
-> -#define G2_ADDR_DST_MV		(G2_SWREG(133))
-> -#define G2_REG_DMV_REF(i)	(G2_SWREG(135) + ((i) * 0x8))
-> -#define G2_ADDR_TILE_SIZE	(G2_SWREG(167))
-> -#define G2_ADDR_STR		(G2_SWREG(169))
-> -#define HEVC_SCALING_LIST	(G2_SWREG(171))
-> -#define G2_RASTER_SCAN		(G2_SWREG(175))
-> -#define G2_RASTER_SCAN_CHR	(G2_SWREG(177))
-> -#define G2_TILE_FILTER		(G2_SWREG(179))
-> -#define G2_TILE_SAO		(G2_SWREG(181))
-> -#define G2_TILE_BSD		(G2_SWREG(183))
-> +#define G2_OUT_LUMA_ADDR		(G2_SWREG(65))
-> +#define G2_REF_LUMA_ADDR(i)		(G2_SWREG(67)  + ((i) * 0x8))
-> +#define G2_OUT_CHROMA_ADDR		(G2_SWREG(99))
-> +#define G2_REF_CHROMA_ADDR(i)		(G2_SWREG(101) + ((i) * 0x8))
-> +#define G2_OUT_MV_ADDR			(G2_SWREG(133))
-> +#define G2_REF_MV_ADDR(i)		(G2_SWREG(135) + ((i) * 0x8))
-> +#define G2_TILE_SIZES_ADDR		(G2_SWREG(167))
-> +#define G2_STREAM_ADDR			(G2_SWREG(169))
-> +#define G2_HEVC_SCALING_LIST_ADDR	(G2_SWREG(171))
-> +#define G2_RS_OUT_LUMA_ADDR		(G2_SWREG(175))
-> +#define G2_RS_OUT_CHROMA_ADDR		(G2_SWREG(177))
-> +#define G2_TILE_FILTER_ADDR		(G2_SWREG(179))
-> +#define G2_TILE_SAO_ADDR		(G2_SWREG(181))
-> +#define G2_TILE_BSD_ADDR		(G2_SWREG(183))
->  
->  #define g2_strm_buffer_len	G2_DEC_REG(258, 0, 0xffffffff)
->  #define g2_strm_start_offset	G2_DEC_REG(259, 0, 0xffffffff)
-> -- 
-> 2.25.1
-> 
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+index 5c74b6279d69..8fea48e477e6 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+@@ -447,6 +447,24 @@ static void ethqos_fix_mac_speed(void *priv, unsigned int speed)
+ 	ethqos_configure(ethqos);
+ }
+ 
++static int ethqos_clks_config(void *priv, bool enabled)
++{
++	struct qcom_ethqos *ethqos = priv;
++	int ret = 0;
++
++	if (enabled) {
++		ret = clk_prepare_enable(ethqos->rgmii_clk);
++		if (ret) {
++			dev_err(&ethqos->pdev->dev, "rgmii_clk enable failed\n");
++			return ret;
++		}
++	} else {
++		clk_disable_unprepare(ethqos->rgmii_clk);
++	}
++
++	return ret;
++}
++
+ static int qcom_ethqos_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+@@ -466,6 +484,8 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
+ 		return PTR_ERR(plat_dat);
+ 	}
+ 
++	plat_dat->clks_config = ethqos_clks_config;
++
+ 	ethqos = devm_kzalloc(&pdev->dev, sizeof(*ethqos), GFP_KERNEL);
+ 	if (!ethqos) {
+ 		ret = -ENOMEM;
+@@ -489,7 +509,7 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
+ 		goto err_mem;
+ 	}
+ 
+-	ret = clk_prepare_enable(ethqos->rgmii_clk);
++	ret = ethqos_clks_config(ethqos, true);
+ 	if (ret)
+ 		goto err_mem;
+ 
+@@ -512,7 +532,7 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
+ 	return ret;
+ 
+ err_clk:
+-	clk_disable_unprepare(ethqos->rgmii_clk);
++	ethqos_clks_config(ethqos, false);
+ 
+ err_mem:
+ 	stmmac_remove_config_dt(pdev, plat_dat);
+@@ -530,7 +550,7 @@ static int qcom_ethqos_remove(struct platform_device *pdev)
+ 		return -ENODEV;
+ 
+ 	ret = stmmac_pltfr_remove(pdev);
+-	clk_disable_unprepare(ethqos->rgmii_clk);
++	ethqos_clks_config(ethqos, false);
+ 
+ 	return ret;
+ }
+-- 
+2.31.1
+
