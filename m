@@ -2,105 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9328E453F1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 04:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F137453F1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 04:47:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232791AbhKQDr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 22:47:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhKQDr5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 22:47:57 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA62C061570;
-        Tue, 16 Nov 2021 19:44:59 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id x5so1400809pfr.0;
-        Tue, 16 Nov 2021 19:44:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P9e5mA6KGfTBnuJHny5iXGo3h9f1H7d32VJPydHg12U=;
-        b=DgD1MfTHZ1NfgjFdYzKihABAqTvbfmw3tX48zC+inXwpnmvFT1ZgxhU1a/RdAJeHW5
-         o9xLRNn7a69rnK697tDpdcX4B1nLs1iWxLe7l+1z+S4REr5FXLbIcSPzb1Mqnv3Wfsm9
-         OfU6Z+e95d5sfYLhvdlkiHtGL7C0RcKWJ3lycwSLGnaJNs4eUFiQdtj7rNI6Y7lverAs
-         vN02lzLhjMdrjNha+4AsB+AGjSuZCMU2heZNFwRazbvUwXbj7pskRdd07arR+ZgMEAvt
-         VSlD6IGXQ8Ayao0H8bY362iBZ+xOBv4xjzuFJgT+b7MVzPTOQRLu7MBqIzYjmhGQnT1K
-         awjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P9e5mA6KGfTBnuJHny5iXGo3h9f1H7d32VJPydHg12U=;
-        b=Xv1hVdJoPEDxIkuxp8HjKvp71gN8bWYgH1Dst1Lsw5PXUWtvAESZD9VUg0iKj4YG/7
-         r2H5BpgvbfKCA0iAvOtD73fzQoTaYJ81owZG50+C8Qu0d9cLI1Ss2OrPB+faZ0XrIUdb
-         8UJy8pm1KYQtQSPrPWPxGpJJqut/nnnY+AvvJd890I9/R1Pt5KPZuygNdASPoxGjSDbJ
-         r5TGyO4QGrSx2UotTlC1EFKKNAecJEvKdq1Q2U6zZ588D5bQ3JrncJqqsK+KNAmvwL68
-         NEmQwu7C6jz9Q7YilMBEkoAbr0LimMbEUkkraTtfOLpr2zjyYT+Qmudn2l4bl64fIV5N
-         rSmg==
-X-Gm-Message-State: AOAM5315UxfC4Fu1TT4of8TgPZURVkDDX7XA+Mr9UAXiCercPpNwGwJK
-        YGBGJlFqlEToPXxSzl0VZ4c=
-X-Google-Smtp-Source: ABdhPJxwiQcoKhjko7/VD4nK2tqGCfdukMEEtBbHkk6annOYvrUGkIzPMstbcBDrF/r/eOn6HZd6FA==
-X-Received: by 2002:a65:56c5:: with SMTP id w5mr3146791pgs.184.1637120699376;
-        Tue, 16 Nov 2021 19:44:59 -0800 (PST)
-Received: from localhost ([219.142.138.170])
-        by smtp.gmail.com with ESMTPSA id co4sm3646772pjb.2.2021.11.16.19.44.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 19:44:58 -0800 (PST)
-From:   Teng Qi <starmiku1207184332@gmail.com>
-To:     yisen.zhuang@huawei.com, salil.mehta@huawei.com,
-        davem@davemloft.net, kuba@kernel.org, lipeng321@huawei.com,
-        huangguangbin2@huawei.com, zhengyongjun3@huawei.com,
-        liuyonglong@huawei.com, shenyang39@huawei.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        baijiaju1990@gmail.com, islituo@gmail.com,
-        Teng Qi <starmiku1207184332@gmail.com>,
-        TOTE Robot <oslab@tsinghua.edu.cn>
-Subject: [PATCH] ethernet: hisilicon: hns: hns_dsaf_misc: fix a possible array overflow in hns_dsaf_ge_srst_by_port()
-Date:   Wed, 17 Nov 2021 11:44:53 +0800
-Message-Id: <20211117034453.28963-1-starmiku1207184332@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S232720AbhKQDuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 22:50:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229614AbhKQDuE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 22:50:04 -0500
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B58E5619EA;
+        Wed, 17 Nov 2021 03:47:05 +0000 (UTC)
+Date:   Tue, 16 Nov 2021 22:47:03 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     kernel-team@android.com, mhiramat@kernel.org, zanussi@kernel.org,
+        kernel test robot <oliver.sang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tracing/histogram: Fix UAF in destroy_hist_field()
+Message-ID: <20211116224703.133f1750@rorschach.local.home>
+In-Reply-To: <20211117021223.2137117-1-kaleshsingh@google.com>
+References: <20211117021223.2137117-1-kaleshsingh@google.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The if statement:
-  if (port >= DSAF_GE_NUM)
-        return;
+On Tue, 16 Nov 2021 18:12:22 -0800
+Kalesh Singh <kaleshsingh@google.com> wrote:
 
-limits the value of port less than DSAF_GE_NUM (i.e., 8).
-However, if the value of port is 6 or 7, an array overflow could occur:
-  port_rst_off = dsaf_dev->mac_cb[port]->port_rst_off;
+> Calling destroy_hist_field() on an expression will recursively free
+> any operands associated with the expression. If during expression
+> parsing the operands of the expression are already set when an error
+> is encountered, there is no need to explicity free the operands. Doing
+> so will result in destroy_hist_field() being called twice for the
+> operands and lead to a use-after-free (UAF) error.
+> 
+> Fix this by only calling destroy_hist_field() for the expression if the
+> operands are already set.
+> 
+> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+> Fixes: 8b5d46fd7a38 ("tracing/histogram: Optimize division by constants")
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> ---
+>  kernel/trace/trace_events_hist.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+> index 5ea2c9ec54a6..e3856eaf2ac3 100644
+> --- a/kernel/trace/trace_events_hist.c
+> +++ b/kernel/trace/trace_events_hist.c
+> @@ -2669,7 +2669,7 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
+>  		if (!divisor) {
+>  			hist_err(file->tr, HIST_ERR_DIVISION_BY_ZERO, errpos(str));
+>  			ret = -EDOM;
+> -			goto free;
+> +			goto free_expr;
+>  		}
+>  
+>  		/*
+> @@ -2709,7 +2709,7 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
+>  		expr->type = kstrdup_const(operand1->type, GFP_KERNEL);
+>  		if (!expr->type) {
+>  			ret = -ENOMEM;
+> -			goto free;
+> +			goto free_expr;
+>  		}
+>  
+>  		expr->name = expr_str(expr, 0);
+> @@ -2719,6 +2719,7 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
+>  free:
+>  	destroy_hist_field(operand1, 0);
+>  	destroy_hist_field(operand2, 0);
+> +free_expr:
+>  	destroy_hist_field(expr, 0);
+>  
+>  	return ERR_PTR(ret);
+> 
+> base-commit: 8ab774587903771821b59471cc723bba6d893942
 
-because the length of dsaf_dev->mac_cb is DSAF_MAX_PORT_NUM (i.e., 6).
+Wouldn't this be a simpler and more robust fix?
 
-To fix this possible array overflow, we first check port and if it is
-greater than or equal to DSAF_MAX_PORT_NUM, the function returns.
-
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Teng Qi <starmiku1207184332@gmail.com>
----
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_misc.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_misc.c b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_misc.c
-index 23d9cbf262c3..740850b64aff 100644
---- a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_misc.c
-+++ b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_misc.c
-@@ -400,6 +400,10 @@ static void hns_dsaf_ge_srst_by_port(struct dsaf_device *dsaf_dev, u32 port,
- 		return;
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index 5ea2c9ec54a6..aab69b4ffe11 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -2717,8 +2717,10 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
  
- 	if (!HNS_DSAF_IS_DEBUG(dsaf_dev)) {
-+		/* DSAF_MAX_PORT_NUM is 6, but DSAF_GE_NUM is 8.
-+		   We need check to prevent array overflow */
-+		if (port >= DSAF_MAX_PORT_NUM)
-+			return;
- 		reg_val_1  = 0x1 << port;
- 		port_rst_off = dsaf_dev->mac_cb[port]->port_rst_off;
- 		/* there is difference between V1 and V2 in register.*/
--- 
-2.25.1
+ 	return expr;
+ free:
+-	destroy_hist_field(operand1, 0);
+-	destroy_hist_field(operand2, 0);
++	if (!expr || expr->operand[0] != operand1)
++		destroy_hist_field(operand1, 0);
++	if (!expr || expr->operand[1] != operand2)
++		destroy_hist_field(operand2, 0);
+ 	destroy_hist_field(expr, 0);
+ 
+ 	return ERR_PTR(ret);
 
+
+I'm worried about the complexity of having to know where to free what,
+and not just figuring it out at the end.
+
+-- Steve
