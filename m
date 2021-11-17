@@ -2,263 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AB24454CA6
+	by mail.lfdr.de (Postfix) with ESMTP id C4F1A454CA7
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:57:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239787AbhKQSAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 13:00:47 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:46792 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239770AbhKQSAn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S239815AbhKQSAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 13:00:53 -0500
+Received: from todd.t-8ch.de ([159.69.126.157]:55613 "EHLO todd.t-8ch.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239783AbhKQSAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 17 Nov 2021 13:00:43 -0500
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AHE9Jup025138;
-        Wed, 17 Nov 2021 18:57:41 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : subject : to
- : cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=4HIUPeHNHnT2ABWApLlxzCPqPmI2sh9D1w9nWA/LeDA=;
- b=lHkfaEE66Rg2UOcBB3K79s4XEBg61gOSQYK4xuk1Y7zBRtztfptRbWGy9T7UTZuo96uQ
- qBHGIdE9PGvYkoKnPp9BJ2ruFUmPlX6W4yM/w7WUU+5fXKA2GLtBWs7s7PiglwDr3Dbr
- hEi3aKHjT3ebFybTEse8eFxsRIPkBGKfe1VPy/hkBHBLChZNHRkDBwzQBNnsei1ZomGw
- NuV5Tw6Stzo8ZUq8R9A0zPHgq75TA4VouyChQ9YEKaLWPe7wi/g+/XB1uTuDDsaKYx5r
- 8D67lhdrMuvU/RuvQXDZrEdk+ZpcomHHwy/emut9FKTVJApRnzVbz0aOoCYmCfWcXDkt +g== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ccxypk0t6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Nov 2021 18:57:41 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4B84510002A;
-        Wed, 17 Nov 2021 18:57:40 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 42EA32C41F2;
-        Wed, 17 Nov 2021 18:57:40 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.44) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.26; Wed, 17 Nov
- 2021 18:57:39 +0100
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Subject: Re: [RFC PATCH v2 1/1] rpmsg: add syslog driver
-To:     Christian Gmeiner <christian.gmeiner@gmail.com>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-References: <20211109083926.32052-1-christian.gmeiner@gmail.com>
- <20211109083926.32052-2-christian.gmeiner@gmail.com>
- <YYq4tjyv0qh+Zpqe@ripper> <30de037d-3acd-8e9d-979c-b3d0c1c84002@foss.st.com>
- <CAH9NwWdy9WsaXW+XE06=yA9pGXGs_Ye6kRiNPMfM5D=Jd1rSGg@mail.gmail.com>
-Message-ID: <90704c5c-75fa-8eb1-ef2c-19073a5a8ac9@foss.st.com>
-Date:   Wed, 17 Nov 2021 18:57:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+Date:   Wed, 17 Nov 2021 18:57:40 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1637171860;
+        bh=9R7AiZBy616DlRSyvvUAZa85pJwmHl/hFx0sLaYBnrE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QQRIr+rud2ZHtAmqjM3aJHv2sNaOGDKzwcHigcwdd7rHiRoIj6NJZXYSyCWcAfeFL
+         LhYdH77hIeK8wY7vtuiCwEJ2FwFdjMFxDFrAo2mbKbumrL2zSi+dHCnbC/eYoQ0YVe
+         jFjuInzlS0hyy59AX0VmJOE2riu0S0rV3O14fEU8=
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Thomas Koch <linrunner@gmx.net>
+Cc:     linux-pm@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org,
+        Mark Gross <markgross@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+        linux-kernel@vger.kernel.org, bberg@redhat.com, hadess@hadess.net,
+        markpearson@lenovo.com, nicolopiazzalunga@gmail.com,
+        njoshi1@lenovo.com, smclt30p@gmail.com
+Subject: Re: [PATCH 0/4] power: supply: add charge_behaviour property
+ (force-discharge, inhibit-charge)
+Message-ID: <d1bc62e9-a5da-4c23-b31f-8ba718faf4a3@t-8ch.de>
+References: <20211113104225.141333-1-linux@weissschuh.net>
+ <9cebba85-f399-a7aa-91f7-237852338dc5@gmx.net>
 MIME-Version: 1.0
-In-Reply-To: <CAH9NwWdy9WsaXW+XE06=yA9pGXGs_Ye6kRiNPMfM5D=Jd1rSGg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-17_06,2021-11-17_01,2020-04-07_01
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9cebba85-f399-a7aa-91f7-237852338dc5@gmx.net>
+Jabber-ID: thomas@t-8ch.de
+X-Accept: text/plain, text/html;q=0.2, text/*;q=0.1
+X-Accept-Language: en-us, en;q=0.8, de-de;q=0.7, de;q=0.6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian,
+On 2021-11-16 17:56+0100, Thomas Koch wrote:
+> thank you very much for working on this. It is high time that we leave
+> external kernel modules for ThinkPads behind us.
+> 
+> On 13.11.21 11:42, Thomas Weißschuh wrote:
+> > Hi,
+> > 
+> > this series adds support for the charge_behaviour property to the power
+> > subsystem and thinkpad_acpi driver.
+> > 
+> > As thinkpad_acpi has to use the 'struct power_supply' created by the generic
+> > ACPI driver it has to rely on custom sysfs attributes instead of proper
+> > power_supply properties to implement this property.
+> > 
+> > Patch 1: Adds the power_supply documentation and basic public API
+> > Patch 2: Adds helpers to power_supply core to help drivers implement the
+> >    charge_behaviour attribute
+> > Patch 3: Adds support for force-discharge to thinkpad_acpi.
+> > Patch 4: Adds support for inhibit-discharge to thinkpad_acpi.
+> > 
+> > Patch 3 and 4 are largely taken from other patches and adapted to the new API.
+> > (Links are in the patch trailer)
+> > 
+> > Ognjen Galic, Nicolo' Piazzalunga, Thomas Koch:
+> > 
+> > Your S-o-b is on the original inhibit_charge and force_discharge patches.
+> > I would like to add you as Co-developed-by but to do that it will also require
+> > your S-o-b. Could you give your sign-offs for the new patches, so you can be
+> > properly attributed?
+> S-o-b/Co-developed-by/Tested-by is fine with me.
+> 
+> I tested your patches.
+> 
+> Hardware:
+> 
+> - ThinkPad X220, BAT0
+> - ThinkPad T450s, BAT0+BAT1
+> - ThinkPad X1C6, BAT0
+> 
+> Test Results:
+> 
+> 1. force-discharge
+> 
+> Everythings works as expected
+> - Writing including disengaging w/ "auto" : OK
+> - Reading: OK
+> 
+> - Battery discharging: OK
+> - Disengaging with "auto": OK
+> 
+> 2. inhibit-charge
+> 
+> Works as expected:
+> - Writing: OK
+> 
+> - Disengaging with "auto": OK
+> 
+> 
+> Discrepancies:
+> - Battery charge inhibited: BAT0 OK, BAT1 no effect e.g. continues charging
+> - Reading: always returns "auto"
 
-On 11/11/21 11:29 AM, Christian Gmeiner wrote:
-> Hi Arnaud
-> 
->>
->> On 11/9/21 7:06 PM, Bjorn Andersson wrote:
->>> On Tue 09 Nov 00:39 PST 2021, Christian Gmeiner wrote:
->>>
->>>> Allows the remote firmware to log into syslog.
->>>>
->>
->> For you information a similar patch has been sent few years ago:
->> https://www.spinics.net/lists/kernel/msg3045824.html
->>
-> 
-> Interesting - do you know why the patch was not taken?
+I tested it on a T460s with two batteries and there inhibit-charge works
+fine for both batteries.
+What does not work is setting force-discharge for both batteries at the same
+time.
+This makes somewhat sense as on a physical level probably only one of them can
+be used at a time.
 
-I don't know. It might be worthwhile to contact Xiang Xiao for more details.
+Mark Pearson: Could you confirm that this is the intended behaviour?
 
-> 
->> The suspend /resume mechanism seems interesting to manage the low power use case.
->>
-> 
-> Yeah .. nothing I thought about.
-> 
->>>
->>> This allows the remote firmware to print log messages in the kernel log,
->>> not the syslog (although your system might inject the kernel log into
->>> the syslog as well)
->>>
->>>> Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
->>>> ---
->>>>  drivers/rpmsg/Kconfig        |  8 +++++
->>>>  drivers/rpmsg/Makefile       |  1 +
->>>>  drivers/rpmsg/rpmsg_syslog.c | 65 ++++++++++++++++++++++++++++++++++++
->>>
->>> drivers/rpmsg is for rpmsg bus and transport drivers. Client drivers
->>> should live elsewhere.
->>>
->>> But perhaps, rather than having a driver for this, you could simply use
->>> rpmsg_char and a userspace tool; if you want to get the remote processor
->>> logs into syslog, instead of the kernel log?
->>
->> This is also a question that comes to me while looking at the patch.
->> rpmsg_tty service (if available in 5.16) could be another alternative.
->>
-> 
-> I thought about it too but I do not see how the syslog/journald can read the log
-> messages from this tty device without an extra user space component.
-> 
-> With a syslog redirection rpmsg service this happens automatically without any
-> extra user space daemon that reads from tty and writes to syslog.
-> 
-> Maybe I am missing something.
+In my changes queued for v2 of the series[0] I added validation of the written
+settings and an EIO is now reported if the settings were not applied, so this
+should help userspace handle this situatoin.
 
-That's true, this is one constraint. I suppose that you already have user code
-to start the remoteproc. In this case it could also launch a deamon which could
-redirects and/or perhaps analyzes traces to detect errors...
+The plan is to submit v2 after the first round of review for the core PM
+changes.
 
-That said it is my point of view, working on a general purpose platform
-(stm32mp15), I guess other people have other feedbacks.
-
-A last question: Do you manage the traces enable/disable and trace level during
-runtime?
-
-Regards,
-Arnaud
-
-> 
->> Regards,
->> Arnaud
->>
->>>
->>>>  3 files changed, 74 insertions(+)
->>>>  create mode 100644 drivers/rpmsg/rpmsg_syslog.c
->>>>
->>>> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
->>>> index 0b4407abdf13..801f9956ec21 100644
->>>> --- a/drivers/rpmsg/Kconfig
->>>> +++ b/drivers/rpmsg/Kconfig
->>>> @@ -73,4 +73,12 @@ config RPMSG_VIRTIO
->>>>      select RPMSG_NS
->>>>      select VIRTIO
->>>>
->>>> +config RPMSG_SYSLOG
->>>> +    tristate "SYSLOG device interface"
->>>> +    depends on RPMSG
->>>> +    help
->>>> +      Say Y here to export rpmsg endpoints as device files, usually found
->>>> +      in /dev. They make it possible for user-space programs to send and
->>>> +      receive rpmsg packets.
->>>> +
->>>>  endmenu
->>>> diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
->>>> index 8d452656f0ee..75b2ec7133a5 100644
->>>> --- a/drivers/rpmsg/Makefile
->>>> +++ b/drivers/rpmsg/Makefile
->>>> @@ -9,3 +9,4 @@ obj-$(CONFIG_RPMSG_QCOM_GLINK_RPM) += qcom_glink_rpm.o
->>>>  obj-$(CONFIG_RPMSG_QCOM_GLINK_SMEM) += qcom_glink_smem.o
->>>>  obj-$(CONFIG_RPMSG_QCOM_SMD)        += qcom_smd.o
->>>>  obj-$(CONFIG_RPMSG_VIRTIO)  += virtio_rpmsg_bus.o
->>>> +obj-$(CONFIG_RPMSG_SYSLOG)  += rpmsg_syslog.o
->>>> diff --git a/drivers/rpmsg/rpmsg_syslog.c b/drivers/rpmsg/rpmsg_syslog.c
->>>> new file mode 100644
->>>> index 000000000000..b3fdae495fd9
->>>> --- /dev/null
->>>> +++ b/drivers/rpmsg/rpmsg_syslog.c
->>>> @@ -0,0 +1,65 @@
->>>> +// SPDX-License-Identifier: GPL-2.0
->>>> +
->>>> +#include <linux/kernel.h>
->>>> +#include <linux/module.h>
->>>> +#include <linux/rpmsg.h>
->>>> +
->>>> +static int rpmsg_syslog_cb(struct rpmsg_device *rpdev, void *data, int len,
->>>> +                       void *priv, u32 src)
->>>> +{
->>>> +    const char *buffer = data;
->>>> +
->>>> +    switch (buffer[0]) {
->>>> +    case 'e':
->>>> +            dev_err(&rpdev->dev, "%s", buffer + 1);
->>>> +            break;
->>>> +    case 'w':
->>>> +            dev_warn(&rpdev->dev, "%s", buffer + 1);
->>>> +            break;
->>>> +    case 'i':
->>>> +            dev_info(&rpdev->dev, "%s", buffer + 1);
->>>> +            break;
->>>> +    default:
->>>> +            dev_info(&rpdev->dev, "%s", buffer);
->>>> +            break;
->>>> +    }
->>>> +
->>>> +    return 0;
->>>> +}
->>>> +
->>>> +static int rpmsg_syslog_probe(struct rpmsg_device *rpdev)
->>>> +{
->>>> +    struct rpmsg_endpoint *syslog_ept;
->>>> +    struct rpmsg_channel_info syslog_chinfo = {
->>>> +            .src = 42,
->>>> +            .dst = 42,
->>>> +            .name = "syslog",
->>>> +    };
->>>> +
->>>> +    /*
->>>> +     * Create the syslog service endpoint associated to the RPMsg
->>>> +     * device. The endpoint will be automatically destroyed when the RPMsg
->>>> +     * device will be deleted.
->>>> +     */
->>>> +    syslog_ept = rpmsg_create_ept(rpdev, rpmsg_syslog_cb, NULL, syslog_chinfo);
->>>
->>> The rpmsg_device_id below should cause the device to probe on the
->>> presence of a "syslog" channel announcement, so why are you creating a
->>> new endpoint with the same here?
->>>
->>> Why aren't you just specifying the callback of the driver?
->>>
->>>> +    if (!syslog_ept) {
->>>> +            dev_err(&rpdev->dev, "failed to create the syslog ept\n");
->>>> +            return -ENOMEM;
->>>> +    }
->>>> +    rpdev->ept = syslog_ept;
->>>> +
->>>> +    return 0;
->>>> +}
->>>> +
->>>> +static struct rpmsg_device_id rpmsg_driver_syslog_id_table[] = {
->>>> +    { .name = "syslog" },
->>>> +    { },
->>>> +};
->>>> +MODULE_DEVICE_TABLE(rpmsg, rpmsg_driver_syslog_id_table);
->>>> +
->>>> +static struct rpmsg_driver rpmsg_syslog_client = {
->>>> +    .drv.name       = KBUILD_MODNAME,
->>>> +    .id_table       = rpmsg_driver_syslog_id_table,
->>>> +    .probe          = rpmsg_syslog_probe,
->>>> +};
->>>> +module_rpmsg_driver(rpmsg_syslog_client);
->>>
->>> I would expect that building this as a module gives you complaints about
->>> lacking MODULE_LICENSE().
->>>
->>> Regards,
->>> Bjorn
->>>
->>>> --
->>>> 2.33.1
->>>>
-> 
-> 
-> 
+[0] https://git.sr.ht/~t-8ch/linux/tree/charge-control
