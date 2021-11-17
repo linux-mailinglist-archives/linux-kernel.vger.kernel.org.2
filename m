@@ -2,76 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8A6454C71
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C822454C76
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:48:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239629AbhKQRuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 12:50:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46516 "EHLO
+        id S239643AbhKQRv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 12:51:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239624AbhKQRum (ORCPT
+        with ESMTP id S239619AbhKQRv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 12:50:42 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B53DFC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 09:47:43 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id z6so1627660plk.6
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 09:47:43 -0800 (PST)
+        Wed, 17 Nov 2021 12:51:26 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D39FC061570;
+        Wed, 17 Nov 2021 09:48:27 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id x15so14812605edv.1;
+        Wed, 17 Nov 2021 09:48:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qwSTsWKREBd0j1OPxgShIGxpysANOcsMn/XRkTtpEHE=;
-        b=F/j/ko2lWx+RLWuivdYMCWp8SCc94lKtTOBlvbRq9MU9ZxmZ4fr17+lqzPhFfE2zTs
-         9LmZ8JDDiho3dgt1lwT0LRtseEqUCE0nNa2Wh2idE4y74SbgOnfwOqcbkNSdXykARnob
-         diD0ZZs04Nydp98DDRfttmnQPlMrtUpcnzLMuD9dFzTQJ3hgbXU+QBXcqy/repz3Ki5a
-         6DC8WAepwBICqmFRqGnpnk0D6ryApUtMBDjsZcNVJLPtqgNII95ibYGDH4GFrXg9r/ws
-         ZpEJgrrVSLSjlhMuaJwXA5RHv8ekuldQ3gVpipQ2JO39Fu3STOuRS6hSRSXonts9OawM
-         sfSg==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yZjOXRFe4kBHeHpuMhDtkr/g9/szioJdpeaJnfZ4kbQ=;
+        b=F8R+uJ3fc4fFkn5jwhW2fdO+lATwUDuRWeIjB0BW6ubv0DQtKO6LzirZrw4DhgBYGg
+         2Z0baDB+gQctNSyPOOwgmm+V6+09YSTbwUFvmYssUJtz2EzYnwakqPvKb9IZm/o1wAgI
+         n99CDdOwMSpu/5fa2uz1Vl08Wf79RFNQrF74q2Yr+BQ2pvD2VyaQ/q0vErB5tab8W6Ng
+         RIbzWt3HFFeZBHhgtc18saTKKrmfaKk2qtGSZ8i/iEfePqSF135ZSjvae4ddlu17KC28
+         3cAf5VowCXr60ydlI7vqY7IvMjOlsBABjG8kPK3piT/u+iGfoFjxOIqVnDFZQPuinDsg
+         0DHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qwSTsWKREBd0j1OPxgShIGxpysANOcsMn/XRkTtpEHE=;
-        b=YpT46V2Fhe5Bo3O6pzW7naqgmJar/uu0aBpGg2T6PsOtZfLzVflWZM/2XTOfAOZjxl
-         LXEYFfy0WqSY9Ldxqw5DYyCCkqK5LFRLunkfhkWOp0dhj1XrDpHxIpK3h2yBPc4qz3Kn
-         pbic/eKEEyfJNZoHaZgSrbLU4+rgyJSLnx4WTnJnbjfoXapWg1LmZxZb+ec1oCU1d+dJ
-         O4HOaXBRTo0pjaFjKTOTBxfWcG+f59D1IMHJ2tKgjdA3Mh5SWTUHR2lUUNyL3Y+2e0At
-         FI+brkGiixxaT7FlIdIyavQqbindGI1hHkypLM10CtivZEnL5X6/KAUVd5nNy0lOP9bD
-         r4aA==
-X-Gm-Message-State: AOAM532Sz7p38RhkTouFYPCu1Z3nZTI56nItQWF82vTiSfO1bMxSjYhw
-        CLQ5czbM7hzyS+KkSwBjtgsIGiWMePkA0hx2qz8nxQ==
-X-Google-Smtp-Source: ABdhPJzbaDw8BTsyna8LfzocHNBbcTgEWn0dMfdtuOafOJTEG6dZIOm8878lO/uZDHmQDRsRtP1ZTi/L/syebrv9oPs=
-X-Received: by 2002:a17:902:db07:b0:141:ea12:218b with SMTP id
- m7-20020a170902db0700b00141ea12218bmr58724450plx.46.1637171263009; Wed, 17
- Nov 2021 09:47:43 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yZjOXRFe4kBHeHpuMhDtkr/g9/szioJdpeaJnfZ4kbQ=;
+        b=aDJqBpuk0UQ/DoiZTN7jr/3QP8rfx7I+fs8zZo8a7dfYNgWBnQ7QgUTaza33mBpE4I
+         Weukk1on5jvDTitQYp5QN4m2uCSfTdalaRZnuCZSufTogpsZxrzngqwdwmjMovvOtpNr
+         mKMIOazQ9KWtQQDZP41p/+3wijHCK8c1kY5vMUSK8k+lPqGd/g+Ey3cQZE+RTvoWF3P4
+         4f+8Hj8pckkIdcWxVdy9n4gfrO7EBLOZJk5lDW8j6wp4OUK3wCX/wUcsLYzdLdW25AwL
+         ycYr8H2Ditv5HROTT1mPuB1arY3QHg8h+W3tCLuP+8N+/TaSpQM/VRjOC55KuyDW8Fjg
+         4G3Q==
+X-Gm-Message-State: AOAM53205ACiteOx3ojNkksdNqIl5u9gUAH+Mkwe7ICiORm/SqKmH1k5
+        EYPcEjrjWs6sGM3USYj1E01XfLwQs5XysQ==
+X-Google-Smtp-Source: ABdhPJw+qL1QPzZ5AdE2opgq04rudnPWXFWVMorBLzCbct64V52ZFe3zXCWxuEt5RIeKDZAlTdSpHA==
+X-Received: by 2002:a05:6402:1914:: with SMTP id e20mr762999edz.96.1637171306150;
+        Wed, 17 Nov 2021 09:48:26 -0800 (PST)
+Received: from localhost.localdomain ([82.78.89.185])
+        by smtp.gmail.com with ESMTPSA id go10sm253902ejc.115.2021.11.17.09.48.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 09:48:25 -0800 (PST)
+From:   Ilie Halip <ilie.halip@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ilie Halip <ilie.halip@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Mete Durlu <meted@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        linux-s390@vger.kernel.org, llvm@lists.linux.dev
+Subject: [PATCH] s390/test_unwind: use raw opcode instead of invalid instruction
+Date:   Wed, 17 Nov 2021 19:48:21 +0200
+Message-Id: <20211117174822.3632412-1-ilie.halip@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211117163809.1441845-1-pbonzini@redhat.com> <20211117163809.1441845-4-pbonzini@redhat.com>
-In-Reply-To: <20211117163809.1441845-4-pbonzini@redhat.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Wed, 17 Nov 2021 10:47:32 -0700
-Message-ID: <CAMkAt6o8HUBogtWmXVqzkeoXn9Tfb19yQnhUHb0Rp7bLjA6vkA@mail.gmail.com>
-Subject: Re: [PATCH 3/4] KVM: SEV: cleanup locking for KVM_CAP_VM_MOVE_ENC_CONTEXT_FROM
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        seanjc@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 9:38 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> Encapsulate the handling of the migration_in_progress flag for both VMs in
-> two functions sev_lock_two_vms and sev_unlock_two_vms.  It does not matter
-> if KVM_CAP_VM_MOVE_ENC_CONTEXT_FROM locks the source struct kvm a bit
-> earlier, and this change 1) keeps the cleanup chain of labels smaller 2)
-> makes it possible for KVM_CAP_VM_COPY_ENC_CONTEXT_FROM to reuse the logic.
->
-> Cc: Peter Gonda <pgonda@google.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Building with clang & LLVM_IAS=1 leads to an error:
+    arch/s390/lib/test_unwind.c:179:4: error: invalid register pair
+                        "       mvcl    %%r1,%%r1\n"
+                        ^
 
-Acked-by: Peter Gonda <pgonda@google.com>
+The test creates an invalid instruction that would trap at runtime, but the
+LLVM inline assembler tries to validate it at compile time too.
 
-I like the cleanup thanks Paolo.
+Use the raw instruction opcode instead.
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/1421
+Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Ilie Halip <ilie.halip@gmail.com>
+---
+ arch/s390/lib/test_unwind.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/s390/lib/test_unwind.c b/arch/s390/lib/test_unwind.c
+index cfc5f5557c06..d342bc884b94 100644
+--- a/arch/s390/lib/test_unwind.c
++++ b/arch/s390/lib/test_unwind.c
+@@ -176,7 +176,7 @@ static noinline int unwindme_func4(struct unwindme *u)
+ 		 * trigger specification exception
+ 		 */
+ 		asm volatile(
+-			"	mvcl	%%r1,%%r1\n"
++			"	.insn e,0x0e11\n"	/* mvcl	%%r1,%%r1" */
+ 			"0:	nopr	%%r7\n"
+ 			EX_TABLE(0b, 0b)
+ 			:);
+-- 
+2.25.1
+
