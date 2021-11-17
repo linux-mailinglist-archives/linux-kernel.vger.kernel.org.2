@@ -2,777 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BA5454550
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 12:02:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56BE5454555
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 12:03:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236633AbhKQLFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 06:05:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37608 "EHLO
+        id S236640AbhKQLFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 06:05:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236631AbhKQLFD (ORCPT
+        with ESMTP id S236629AbhKQLFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 06:05:03 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43303C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 03:02:05 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id z10so9119968edc.11
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 03:02:05 -0800 (PST)
+        Wed, 17 Nov 2021 06:05:49 -0500
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD72CC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 03:02:50 -0800 (PST)
+Received: by mail-ua1-x936.google.com with SMTP id n6so5019947uak.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 03:02:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XbSobQJguiKJW+igGGY2aO5wXaVPms17XsQACeckilg=;
-        b=BFuHGV2jcMMJoQYoB2LxdMfluf3/capewTcY3bgtxmVU8G4t0f1A3cHKrSWHGLlOUL
-         10j6QqnbbNiMCd+ccI4xd2OLGOs6z5AgsrlysjqIhm6TJSjNpV9+n/iZcr7EamQM8B0Q
-         2gGpLCH8DZv6DtyNrLHUP2faRpgL489ZRburIZPriD19AIMMDwRnZ8gwd20fUwmRdH7k
-         7Hk6/zYA8MpmSgtc8fuvarx/PMYel6YVZXCtwhCZ2l8J/WIV1wrY2qBSb4oey/mKnlz+
-         qc54Tjd5FSBYMVgkTOnqtXmnXZwtVAiWYxywBkxkeDp+7Ljpf9dWp42jNhcJdioKOHM2
-         dVAg==
+        d=vanguardiasur-com-ar.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xD4jSD9o0m9VWMMQNYtIoSApMPXuTCerJ7ps5HrGPyg=;
+        b=blT1eGbVnvRYqzUNVw9bSeQHG/9OJnZ9O/3Pb9sESMd3ykf6x7RgtWV2oHzX3ci/wi
+         Q8chAmyd7ur9C/Sci0vhOxY2CbLt2EVwRtul1YiHoekJYTUeu7vZms1lDINpBYa+RaT8
+         HDnUw4+Dn0BfjrL5jBtNUgPvIZ577D57l2KF8X79TlkiQIkGt19EwdH4KCjxleqd04x5
+         6CKxkke8qVvg4G1j/kKGTfybN0rw2Ob4ulqXJKyKv0caV5UPCudi1rNMOuUa4u5V6Zpt
+         Kwdd2qrVcHIkq/N0+sM16QjRbvHgSM2hMxSIsIIz+L6gJdyDRAQG7UxAX74in9t8EZ3V
+         1yTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XbSobQJguiKJW+igGGY2aO5wXaVPms17XsQACeckilg=;
-        b=DODus6P0RjKaqyohQIkBj3QXf17IXULiSOxTXByebFZYQKg7+SZwE8nFaav6b2cTiq
-         fyZ2gd2A+PHlji9YYj9dCYH2lPFsCrUd7h/Mdv5dA/8SCR2+LhUM6MZJBvoilvAkPrmq
-         lKUmntswDqh+VCcDV7MWILxyZmrwMyiIqjlpjYGw64noMEU4mg3olcoPme60xCbu4Thb
-         FWDc09VV+5phyXMkQphgcM9ITq7jIrXMR2EgyqZsW78q88d4OnGbhdwHpDM7vT43nLeR
-         NEFzJOZVaZpuHZ8lHasfxnE33E46r3dhbiGxNpezQ/Tn3Hwv+ImO0wEYYryAAhYB62uB
-         SYVA==
-X-Gm-Message-State: AOAM532bs2oNYbYbOvQKZRsT4GSWrR2rv/ammRlhiT/5V0g7cpSqWLae
-        5IVUqfROT4SSmAMMgDBUwUYgsk4XdUoxzSh0xBGqAw==
-X-Google-Smtp-Source: ABdhPJyOiDZCh4chGbyK2Ni6PdBi6woJIzMSv6fFoKwInqEpSv4BpEEjBP3GmwZjE8l4pb9+BMHcI6NwFZ3qxkspvAk=
-X-Received: by 2002:a17:906:a08d:: with SMTP id q13mr20324743ejy.465.1637146923196;
- Wed, 17 Nov 2021 03:02:03 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xD4jSD9o0m9VWMMQNYtIoSApMPXuTCerJ7ps5HrGPyg=;
+        b=Do4OdRA26I5apaVsU33I+afaeG6R+hORCHoEfsNklYNENB5c2zDY4853IlTiFeVa1F
+         sVIdfR0+yBnCtIfvLZfBMZTEUEoCcZ/+TUoLY7jMjM2YoBfbKDoK9X+QFtyMBh2e+H7H
+         v2quHZy7PGGaJ21s2AFzetMkaYsF2IfV1D11U+hgicAJCb1UV6xHvlKYYJOAJ4wRDBja
+         aB3pFE/vGYdgXd19z2WjZCY+XhUpgOSmr/RMi5Wo5kDUIZlgkfmdCPsmxlh/LuMeV5zq
+         FQySla9vY2yCOXi8POvTrBT2EGIPojxoZ6uDcOUHNw/r/D2UarKGSneM8NBvOznkWuIS
+         qgOQ==
+X-Gm-Message-State: AOAM5331bs9n4oOvBfmswnFymKhuUEIqFqyMmbqOfywghO8r69T9E/7+
+        qVuMkG7T37ytGNILDNk3t6qZwA==
+X-Google-Smtp-Source: ABdhPJw1GsVPwwYHkvpb1r006heaI+l5ljDUmAz1MjejjViCZ+UI6X+4Ovr/EM2O2Dx8y9RTxJjODg==
+X-Received: by 2002:ab0:3359:: with SMTP id h25mr22083214uap.59.1637146968530;
+        Wed, 17 Nov 2021 03:02:48 -0800 (PST)
+Received: from eze-laptop ([186.122.18.126])
+        by smtp.gmail.com with ESMTPSA id s2sm12502206uap.7.2021.11.17.03.02.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 03:02:47 -0800 (PST)
+Date:   Wed, 17 Nov 2021 08:02:39 -0300
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com
+Subject: Re: [PATCH v8 08/12] media: hantro: Rename registers
+Message-ID: <YZThT9kRyoGu2IkU@eze-laptop>
+References: <20211116143842.75896-1-andrzej.p@collabora.com>
+ <20211116143842.75896-9-andrzej.p@collabora.com>
 MIME-Version: 1.0
-References: <20211103094752.1263442-1-anders.roxell@linaro.org> <CAKwvOdkq9k7ceyvnDWNN6m-vYOx41a6BBZwHy_0eDRfx5B4KnQ@mail.gmail.com>
-In-Reply-To: <CAKwvOdkq9k7ceyvnDWNN6m-vYOx41a6BBZwHy_0eDRfx5B4KnQ@mail.gmail.com>
-From:   Anders Roxell <anders.roxell@linaro.org>
-Date:   Wed, 17 Nov 2021 12:01:52 +0100
-Message-ID: <CADYN=9+_UU9qZX56uahGXxz00iayqJLRAaQrRXh1CMXTvwSbAg@mail.gmail.com>
-Subject: Re: [PATCHv2] selftests: kselftest.h: mark functions with 'noreturn'
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     fenghua.yu@intel.com, reinette.chatre@intel.com,
-        john.stultz@linaro.org, tglx@linutronix.de,
-        akpm@linux-foundation.org, nathan@kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211116143842.75896-9-andrzej.p@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Nov 2021 at 19:38, Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> On Wed, Nov 3, 2021 at 2:47 AM Anders Roxell <anders.roxell@linaro.org> wrote:
-> >
-> > When building kselftests/capabilities the following warning shows up:
-> >
-> > clang -O2 -g -std=gnu99 -Wall    test_execve.c -lcap-ng -lrt -ldl -o test_execve
-> > test_execve.c:121:13: warning: variable 'have_outer_privilege' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
-> >         } else if (unshare(CLONE_NEWUSER | CLONE_NEWNS) == 0) {
-> >                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > test_execve.c:136:9: note: uninitialized use occurs here
-> >         return have_outer_privilege;
-> >                ^~~~~~~~~~~~~~~~~~~~
-> > test_execve.c:121:9: note: remove the 'if' if its condition is always true
-> >         } else if (unshare(CLONE_NEWUSER | CLONE_NEWNS) == 0) {
-> >                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > test_execve.c:94:27: note: initialize the variable 'have_outer_privilege' to silence this warning
-> >         bool have_outer_privilege;
-> >                                  ^
-> >                                   = false
-> >
-> > Rework so all the ksft_exit_*() functions have attribue
-> > '__attribute__((noreturn))' so the compiler knows that there wont be
-> > any return from the function. That said, without
-> > '__attribute__((noreturn))' the compiler warns about the above issue
-> > since it thinks that it will get back from the ksft_exit_skip()
-> > function, which it wont.
-> > Cleaning up the callers that rely on ksft_exit_*() return code, since
-> > the functions ksft_exit_*() have never returned anything.
-> >
-> > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
-> > ---
-> >  tools/testing/selftests/clone3/clone3.c              |  4 +++-
-> >  .../testing/selftests/clone3/clone3_clear_sighand.c  |  2 +-
-> >  tools/testing/selftests/clone3/clone3_set_tid.c      |  4 +++-
-> >  tools/testing/selftests/ipc/msgque.c                 | 10 +++++-----
-> >  tools/testing/selftests/kcmp/kcmp_test.c             |  2 +-
-> >  tools/testing/selftests/kselftest.h                  | 12 ++++++------
-> >  .../membarrier/membarrier_test_multi_thread.c        |  2 +-
-> >  .../membarrier/membarrier_test_single_thread.c       |  2 +-
-> >  tools/testing/selftests/pidfd/pidfd_fdinfo_test.c    |  2 +-
-> >  tools/testing/selftests/pidfd/pidfd_open_test.c      |  4 +++-
-> >  tools/testing/selftests/pidfd/pidfd_poll_test.c      |  2 +-
-> >  tools/testing/selftests/pidfd/pidfd_test.c           |  2 +-
-> >  tools/testing/selftests/resctrl/resctrl_tests.c      |  6 +++---
-> >  tools/testing/selftests/sync/sync_test.c             |  2 +-
-> >  tools/testing/selftests/timers/adjtick.c             |  4 ++--
-> >  tools/testing/selftests/timers/alarmtimer-suspend.c  |  4 ++--
-> >  tools/testing/selftests/timers/change_skew.c         |  4 ++--
-> >  tools/testing/selftests/timers/clocksource-switch.c  |  4 ++--
-> >  tools/testing/selftests/timers/freq-step.c           |  4 ++--
-> >  tools/testing/selftests/timers/inconsistency-check.c |  4 ++--
-> >  tools/testing/selftests/timers/leap-a-day.c          | 10 +++++-----
-> >  tools/testing/selftests/timers/leapcrash.c           |  4 ++--
-> >  tools/testing/selftests/timers/mqueue-lat.c          |  4 ++--
-> >  tools/testing/selftests/timers/nanosleep.c           |  4 ++--
-> >  tools/testing/selftests/timers/nsleep-lat.c          |  4 ++--
-> >  tools/testing/selftests/timers/posix_timers.c        | 12 ++++++------
-> >  tools/testing/selftests/timers/raw_skew.c            |  6 +++---
-> >  tools/testing/selftests/timers/set-2038.c            |  4 ++--
-> >  tools/testing/selftests/timers/set-tai.c             |  4 ++--
-> >  tools/testing/selftests/timers/set-timer-lat.c       |  4 ++--
-> >  tools/testing/selftests/timers/set-tz.c              |  4 ++--
-> >  tools/testing/selftests/timers/skew_consistency.c    |  4 ++--
-> >  tools/testing/selftests/timers/threadtest.c          |  2 +-
-> >  tools/testing/selftests/timers/valid-adjtimex.c      |  6 +++---
-> >  tools/testing/selftests/vm/madv_populate.c           |  2 +-
-> >  35 files changed, 80 insertions(+), 74 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/clone3/clone3.c b/tools/testing/selftests/clone3/clone3.c
-> > index 42be3b925830..ede5da0c67b4 100644
-> > --- a/tools/testing/selftests/clone3/clone3.c
-> > +++ b/tools/testing/selftests/clone3/clone3.c
-> > @@ -191,5 +191,7 @@ int main(int argc, char *argv[])
-> >         test_clone3(CLONE_NEWPID, getpagesize() + 8, -E2BIG,
-> >                         CLONE3_ARGS_NO_TEST);
-> >
-> > -       return !ksft_get_fail_cnt() ? ksft_exit_pass() : ksft_exit_fail();
-> > +       if (ksft_get_fail_cnt())
-> > +               ksft_exit_fail();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/clone3/clone3_clear_sighand.c b/tools/testing/selftests/clone3/clone3_clear_sighand.c
-> > index 47a8c0fc3676..dcd9448eaeec 100644
-> > --- a/tools/testing/selftests/clone3/clone3_clear_sighand.c
-> > +++ b/tools/testing/selftests/clone3/clone3_clear_sighand.c
-> > @@ -124,5 +124,5 @@ int main(int argc, char **argv)
-> >
-> >         test_clone3_clear_sighand();
-> >
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/clone3/clone3_set_tid.c b/tools/testing/selftests/clone3/clone3_set_tid.c
-> > index 0229e9ebb995..a755fcd3af89 100644
-> > --- a/tools/testing/selftests/clone3/clone3_set_tid.c
-> > +++ b/tools/testing/selftests/clone3/clone3_set_tid.c
-> > @@ -393,5 +393,7 @@ int main(int argc, char *argv[])
-> >  out:
-> >         ret = 0;
-> >
-> > -       return !ret ? ksft_exit_pass() : ksft_exit_fail();
-> > +       if (ret)
-> > +               ksft_exit_fail();
-> > +       ksft_exit_pass();
->
-> This case is weird (pre-existing-ly) and looks broken.  The assignment
-> to ret should probably occur _before_ the out: label.  Honestly, I'd
-> remove the use of goto from this function and just call either
-> ksft_exit_pass() or ksft_exit_fail().
+On Tue, Nov 16, 2021 at 03:38:38PM +0100, Andrzej Pietrasiewicz wrote:
+> Add more consistency in the way registers are named.
+> 
+> Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
 
-I can do that in a followup patch.
+Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 
->  Rest of the patch looks good.
-> Thanks for sending. (I did not check that this is every case of
-> `return ksft_exit_{pass|fail};`).
->
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
-Thank you for the review Nick.
-
-Shuah, will you pick up this patch ?
-
-Cheers,
-Anders
-
->
-> >  }
-> > diff --git a/tools/testing/selftests/ipc/msgque.c b/tools/testing/selftests/ipc/msgque.c
-> > index 656c43c24044..21dd6af76b21 100644
-> > --- a/tools/testing/selftests/ipc/msgque.c
-> > +++ b/tools/testing/selftests/ipc/msgque.c
-> > @@ -198,13 +198,13 @@ int main(int argc, char **argv)
-> >         struct msgque_data msgque;
-> >
-> >         if (getuid() != 0)
-> > -               return ksft_exit_skip(
-> > +               ksft_exit_skip(
-> >                                 "Please run the test as root - Exiting.\n");
-> >
-> >         msgque.key = ftok(argv[0], 822155650);
-> >         if (msgque.key == -1) {
-> >                 printf("Can't make key: %d\n", -errno);
-> > -               return ksft_exit_fail();
-> > +               ksft_exit_fail();
-> >         }
-> >
-> >         msgque.msq_id = msgget(msgque.key, IPC_CREAT | IPC_EXCL | 0666);
-> > @@ -243,13 +243,13 @@ int main(int argc, char **argv)
-> >                 printf("Failed to test queue: %d\n", err);
-> >                 goto err_out;
-> >         }
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >
-> >  err_destroy:
-> >         if (msgctl(msgque.msq_id, IPC_RMID, NULL)) {
-> >                 printf("Failed to destroy queue: %d\n", -errno);
-> > -               return ksft_exit_fail();
-> > +               ksft_exit_fail();
-> >         }
-> >  err_out:
-> > -       return ksft_exit_fail();
-> > +       ksft_exit_fail();
-> >  }
-> > diff --git a/tools/testing/selftests/kcmp/kcmp_test.c b/tools/testing/selftests/kcmp/kcmp_test.c
-> > index 6ea7b9f37a41..4e0776c044d1 100644
-> > --- a/tools/testing/selftests/kcmp/kcmp_test.c
-> > +++ b/tools/testing/selftests/kcmp/kcmp_test.c
-> > @@ -162,5 +162,5 @@ int main(int argc, char **argv)
-> >
-> >         waitpid(pid2, &status, P_ALL);
-> >
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/kselftest.h b/tools/testing/selftests/kselftest.h
-> > index 8d50483fe204..e47f634bf5c0 100644
-> > --- a/tools/testing/selftests/kselftest.h
-> > +++ b/tools/testing/selftests/kselftest.h
-> > @@ -207,13 +207,13 @@ static inline void ksft_test_result_error(const char *msg, ...)
-> >         va_end(args);
-> >  }
-> >
-> > -static inline int ksft_exit_pass(void)
-> > +static inline void __attribute__((noreturn)) ksft_exit_pass(void)
-> >  {
-> >         ksft_print_cnts();
-> >         exit(KSFT_PASS);
-> >  }
-> >
-> > -static inline int ksft_exit_fail(void)
-> > +static inline void __attribute__((noreturn)) ksft_exit_fail(void)
-> >  {
-> >         ksft_print_cnts();
-> >         exit(KSFT_FAIL);
-> > @@ -231,7 +231,7 @@ static inline int ksft_exit_fail(void)
-> >                 ksft_exit_fail();       \
-> >         } while (0)
-> >
-> > -static inline int ksft_exit_fail_msg(const char *msg, ...)
-> > +static inline void __attribute__((noreturn)) ksft_exit_fail_msg(const char *msg, ...)
-> >  {
-> >         int saved_errno = errno;
-> >         va_list args;
-> > @@ -246,19 +246,19 @@ static inline int ksft_exit_fail_msg(const char *msg, ...)
-> >         exit(KSFT_FAIL);
-> >  }
-> >
-> > -static inline int ksft_exit_xfail(void)
-> > +static inline void __attribute__((noreturn)) ksft_exit_xfail(void)
-> >  {
-> >         ksft_print_cnts();
-> >         exit(KSFT_XFAIL);
-> >  }
-> >
-> > -static inline int ksft_exit_xpass(void)
-> > +static inline void __attribute__((noreturn)) ksft_exit_xpass(void)
-> >  {
-> >         ksft_print_cnts();
-> >         exit(KSFT_XPASS);
-> >  }
-> >
-> > -static inline int ksft_exit_skip(const char *msg, ...)
-> > +static inline void __attribute__((noreturn)) ksft_exit_skip(const char *msg, ...)
-> >  {
-> >         int saved_errno = errno;
-> >         va_list args;
-> > diff --git a/tools/testing/selftests/membarrier/membarrier_test_multi_thread.c b/tools/testing/selftests/membarrier/membarrier_test_multi_thread.c
-> > index ac5613e5b0eb..b055625e4eb5 100644
-> > --- a/tools/testing/selftests/membarrier/membarrier_test_multi_thread.c
-> > +++ b/tools/testing/selftests/membarrier/membarrier_test_multi_thread.c
-> > @@ -69,5 +69,5 @@ int main(int argc, char **argv)
-> >         /* Multi-threaded */
-> >         test_mt_membarrier();
-> >
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/membarrier/membarrier_test_single_thread.c b/tools/testing/selftests/membarrier/membarrier_test_single_thread.c
-> > index c1c963902854..daec48e0b6f2 100644
-> > --- a/tools/testing/selftests/membarrier/membarrier_test_single_thread.c
-> > +++ b/tools/testing/selftests/membarrier/membarrier_test_single_thread.c
-> > @@ -20,5 +20,5 @@ int main(int argc, char **argv)
-> >
-> >         test_membarrier_success();
-> >
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/pidfd/pidfd_fdinfo_test.c b/tools/testing/selftests/pidfd/pidfd_fdinfo_test.c
-> > index 22558524f71c..d6c5cfd1c4c6 100644
-> > --- a/tools/testing/selftests/pidfd/pidfd_fdinfo_test.c
-> > +++ b/tools/testing/selftests/pidfd/pidfd_fdinfo_test.c
-> > @@ -292,5 +292,5 @@ int main(int argc, char **argv)
-> >         test_pidfd_fdinfo_nspid();
-> >         test_pidfd_dead_fdinfo();
-> >
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/pidfd/pidfd_open_test.c b/tools/testing/selftests/pidfd/pidfd_open_test.c
-> > index 8a59438ccc78..c62564c264b1 100644
-> > --- a/tools/testing/selftests/pidfd/pidfd_open_test.c
-> > +++ b/tools/testing/selftests/pidfd/pidfd_open_test.c
-> > @@ -159,5 +159,7 @@ int main(int argc, char **argv)
-> >         if (pidfd >= 0)
-> >                 close(pidfd);
-> >
-> > -       return !ret ? ksft_exit_pass() : ksft_exit_fail();
-> > +       if (ret)
-> > +               ksft_exit_fail();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/pidfd/pidfd_poll_test.c b/tools/testing/selftests/pidfd/pidfd_poll_test.c
-> > index 610811275357..55d74a50358f 100644
-> > --- a/tools/testing/selftests/pidfd/pidfd_poll_test.c
-> > +++ b/tools/testing/selftests/pidfd/pidfd_poll_test.c
-> > @@ -112,5 +112,5 @@ int main(int argc, char **argv)
-> >         }
-> >
-> >         ksft_test_result_pass("pidfd poll test: pass\n");
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/pidfd/pidfd_test.c b/tools/testing/selftests/pidfd/pidfd_test.c
-> > index 529eb700ac26..4a4ab7e25796 100644
-> > --- a/tools/testing/selftests/pidfd/pidfd_test.c
-> > +++ b/tools/testing/selftests/pidfd/pidfd_test.c
-> > @@ -569,5 +569,5 @@ int main(int argc, char **argv)
-> >         test_pidfd_send_signal_exited_fail();
-> >         test_pidfd_send_signal_recycled_pid_fail();
-> >
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
-> > index 973f09a66e1e..e1cf5a73571b 100644
-> > --- a/tools/testing/selftests/resctrl/resctrl_tests.c
-> > +++ b/tools/testing/selftests/resctrl/resctrl_tests.c
-> > @@ -205,7 +205,7 @@ int main(int argc, char **argv)
-> >          * 2. We execute perf commands
-> >          */
-> >         if (geteuid() != 0)
-> > -               return ksft_exit_fail_msg("Not running as root, abort testing.\n");
-> > +               ksft_exit_fail_msg("Not running as root, abort testing.\n");
-> >
-> >         /* Detect AMD vendor */
-> >         detect_amd();
-> > @@ -235,7 +235,7 @@ int main(int argc, char **argv)
-> >         sprintf(bm_type, "fill_buf");
-> >
-> >         if (!check_resctrlfs_support())
-> > -               return ksft_exit_fail_msg("resctrl FS does not exist\n");
-> > +               ksft_exit_fail_msg("resctrl FS does not exist\n");
-> >
-> >         filter_dmesg();
-> >
-> > @@ -255,5 +255,5 @@ int main(int argc, char **argv)
-> >
-> >         umount_resctrlfs();
-> >
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/sync/sync_test.c b/tools/testing/selftests/sync/sync_test.c
-> > index 414a617db993..aec7057696de 100644
-> > --- a/tools/testing/selftests/sync/sync_test.c
-> > +++ b/tools/testing/selftests/sync/sync_test.c
-> > @@ -110,5 +110,5 @@ int main(void)
-> >                                         err, ksft_test_num());
-> >
-> >         /* need this return to keep gcc happy */
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/timers/adjtick.c b/tools/testing/selftests/timers/adjtick.c
-> > index 54d8d87f36b3..594c59497015 100644
-> > --- a/tools/testing/selftests/timers/adjtick.c
-> > +++ b/tools/testing/selftests/timers/adjtick.c
-> > @@ -205,7 +205,7 @@ int main(int argv, char **argc)
-> >         adjtimex(&tx1);
-> >
-> >         if (err)
-> > -               return ksft_exit_fail();
-> > +               ksft_exit_fail();
-> >
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/timers/alarmtimer-suspend.c b/tools/testing/selftests/timers/alarmtimer-suspend.c
-> > index 4da09dbf83ba..9ac0c098b20f 100644
-> > --- a/tools/testing/selftests/timers/alarmtimer-suspend.c
-> > +++ b/tools/testing/selftests/timers/alarmtimer-suspend.c
-> > @@ -173,6 +173,6 @@ int main(void)
-> >                 timer_delete(tm1);
-> >         }
-> >         if (final_ret)
-> > -               return ksft_exit_fail();
-> > -       return ksft_exit_pass();
-> > +               ksft_exit_fail();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/timers/change_skew.c b/tools/testing/selftests/timers/change_skew.c
-> > index c4eab7124990..89c97c8b8e91 100644
-> > --- a/tools/testing/selftests/timers/change_skew.c
-> > +++ b/tools/testing/selftests/timers/change_skew.c
-> > @@ -89,8 +89,8 @@ int main(int argv, char **argc)
-> >
-> >         if (ret) {
-> >                 printf("[FAIL]");
-> > -               return ksft_exit_fail();
-> > +               ksft_exit_fail();
-> >         }
-> >         printf("[OK]");
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/timers/clocksource-switch.c b/tools/testing/selftests/timers/clocksource-switch.c
-> > index ef8eb3604595..ba4c7f66959b 100644
-> > --- a/tools/testing/selftests/timers/clocksource-switch.c
-> > +++ b/tools/testing/selftests/timers/clocksource-switch.c
-> > @@ -163,6 +163,6 @@ int main(int argv, char **argc)
-> >         change_clocksource(orig_clk);
-> >
-> >         if (status)
-> > -               return ksft_exit_fail();
-> > -       return ksft_exit_pass();
-> > +               ksft_exit_fail();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/timers/freq-step.c b/tools/testing/selftests/timers/freq-step.c
-> > index 4b76450d78d1..73b636f89fdc 100644
-> > --- a/tools/testing/selftests/timers/freq-step.c
-> > +++ b/tools/testing/selftests/timers/freq-step.c
-> > @@ -257,7 +257,7 @@ int main(int argc, char **argv)
-> >         set_frequency(0.0);
-> >
-> >         if (fails)
-> > -               return ksft_exit_fail();
-> > +               ksft_exit_fail();
-> >
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/timers/inconsistency-check.c b/tools/testing/selftests/timers/inconsistency-check.c
-> > index 022d3ffe3fbf..71362be52dc8 100644
-> > --- a/tools/testing/selftests/timers/inconsistency-check.c
-> > +++ b/tools/testing/selftests/timers/inconsistency-check.c
-> > @@ -186,8 +186,8 @@ int main(int argc, char *argv[])
-> >                 if (!clock_gettime(clockid, &ts)) {
-> >                         printf("Consistent %-30s ", clockstring(clockid));
-> >                         if (consistency_test(clockid, runtime))
-> > -                               return ksft_exit_fail();
-> > +                               ksft_exit_fail();
-> >                 }
-> >         }
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/timers/leap-a-day.c b/tools/testing/selftests/timers/leap-a-day.c
-> > index 23eb398c8140..986abbdb1521 100644
-> > --- a/tools/testing/selftests/timers/leap-a-day.c
-> > +++ b/tools/testing/selftests/timers/leap-a-day.c
-> > @@ -268,7 +268,7 @@ int main(int argc, char **argv)
-> >                 if (ret < 0) {
-> >                         printf("Error: Problem setting STA_INS/STA_DEL!: %s\n",
-> >                                                         time_state_str(ret));
-> > -                       return ksft_exit_fail();
-> > +                       ksft_exit_fail();
-> >                 }
-> >
-> >                 /* Validate STA_INS was set */
-> > @@ -277,7 +277,7 @@ int main(int argc, char **argv)
-> >                 if (tx.status != STA_INS && tx.status != STA_DEL) {
-> >                         printf("Error: STA_INS/STA_DEL not set!: %s\n",
-> >                                                         time_state_str(ret));
-> > -                       return ksft_exit_fail();
-> > +                       ksft_exit_fail();
-> >                 }
-> >
-> >                 if (tai_time) {
-> > @@ -295,7 +295,7 @@ int main(int argc, char **argv)
-> >                 se.sigev_value.sival_int = 0;
-> >                 if (timer_create(CLOCK_REALTIME, &se, &tm1) == -1) {
-> >                         printf("Error: timer_create failed\n");
-> > -                       return ksft_exit_fail();
-> > +                       ksft_exit_fail();
-> >                 }
-> >                 its1.it_value.tv_sec = next_leap;
-> >                 its1.it_value.tv_nsec = 0;
-> > @@ -366,7 +366,7 @@ int main(int argc, char **argv)
-> >                 if (error_found) {
-> >                         printf("Errors observed\n");
-> >                         clear_time_state();
-> > -                       return ksft_exit_fail();
-> > +                       ksft_exit_fail();
-> >                 }
-> >                 printf("\n");
-> >                 if ((iterations != -1) && !(--iterations))
-> > @@ -374,5 +374,5 @@ int main(int argc, char **argv)
-> >         }
-> >
-> >         clear_time_state();
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/timers/leapcrash.c b/tools/testing/selftests/timers/leapcrash.c
-> > index f70802c5dd0d..8fd065eec904 100644
-> > --- a/tools/testing/selftests/timers/leapcrash.c
-> > +++ b/tools/testing/selftests/timers/leapcrash.c
-> > @@ -87,7 +87,7 @@ int main(void)
-> >                 tv.tv_usec = 0;
-> >                 if (settimeofday(&tv, NULL)) {
-> >                         printf("Error: You're likely not running with proper (ie: root) permissions\n");
-> > -                       return ksft_exit_fail();
-> > +                       ksft_exit_fail();
-> >                 }
-> >                 tx.modes = 0;
-> >                 adjtimex(&tx);
-> > @@ -104,5 +104,5 @@ int main(void)
-> >                 fflush(stdout);
-> >         }
-> >         printf("[OK]\n");
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/timers/mqueue-lat.c b/tools/testing/selftests/timers/mqueue-lat.c
-> > index 7916cf5cc6ff..f3179a605bba 100644
-> > --- a/tools/testing/selftests/timers/mqueue-lat.c
-> > +++ b/tools/testing/selftests/timers/mqueue-lat.c
-> > @@ -107,8 +107,8 @@ int main(int argc, char **argv)
-> >         ret = mqueue_lat_test();
-> >         if (ret < 0) {
-> >                 printf("[FAILED]\n");
-> > -               return ksft_exit_fail();
-> > +               ksft_exit_fail();
-> >         }
-> >         printf("[OK]\n");
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/timers/nanosleep.c b/tools/testing/selftests/timers/nanosleep.c
-> > index 71b5441c2fd9..40ff3d710d66 100644
-> > --- a/tools/testing/selftests/timers/nanosleep.c
-> > +++ b/tools/testing/selftests/timers/nanosleep.c
-> > @@ -153,7 +153,7 @@ int main(int argc, char **argv)
-> >                         }
-> >                         if (ret < 0) {
-> >                                 printf("[FAILED]\n");
-> > -                               return ksft_exit_fail();
-> > +                               ksft_exit_fail();
-> >                         }
-> >                         length *= 100;
-> >                 }
-> > @@ -161,5 +161,5 @@ int main(int argc, char **argv)
-> >  next:
-> >                 ret = 0;
-> >         }
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/timers/nsleep-lat.c b/tools/testing/selftests/timers/nsleep-lat.c
-> > index eb3e79ed7b4a..4c201a06cb94 100644
-> > --- a/tools/testing/selftests/timers/nsleep-lat.c
-> > +++ b/tools/testing/selftests/timers/nsleep-lat.c
-> > @@ -172,9 +172,9 @@ int main(int argc, char **argv)
-> >                 }
-> >                 if (ret < 0) {
-> >                         printf("[FAILED]\n");
-> > -                       return ksft_exit_fail();
-> > +                       ksft_exit_fail();
-> >                 }
-> >                 printf("[OK]\n");
-> >         }
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/timers/posix_timers.c b/tools/testing/selftests/timers/posix_timers.c
-> > index 0ba500056e63..337424c5c987 100644
-> > --- a/tools/testing/selftests/timers/posix_timers.c
-> > +++ b/tools/testing/selftests/timers/posix_timers.c
-> > @@ -194,16 +194,16 @@ int main(int argc, char **argv)
-> >         printf("based timers if other threads run on the CPU...\n");
-> >
-> >         if (check_itimer(ITIMER_VIRTUAL) < 0)
-> > -               return ksft_exit_fail();
-> > +               ksft_exit_fail();
-> >
-> >         if (check_itimer(ITIMER_PROF) < 0)
-> > -               return ksft_exit_fail();
-> > +               ksft_exit_fail();
-> >
-> >         if (check_itimer(ITIMER_REAL) < 0)
-> > -               return ksft_exit_fail();
-> > +               ksft_exit_fail();
-> >
-> >         if (check_timer_create(CLOCK_THREAD_CPUTIME_ID) < 0)
-> > -               return ksft_exit_fail();
-> > +               ksft_exit_fail();
-> >
-> >         /*
-> >          * It's unfortunately hard to reliably test a timer expiration
-> > @@ -215,7 +215,7 @@ int main(int argc, char **argv)
-> >          * find a better solution.
-> >          */
-> >         if (check_timer_create(CLOCK_PROCESS_CPUTIME_ID) < 0)
-> > -               return ksft_exit_fail();
-> > +               ksft_exit_fail();
-> >
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/timers/raw_skew.c b/tools/testing/selftests/timers/raw_skew.c
-> > index b41d8dd0c40c..b58639a7d19d 100644
-> > --- a/tools/testing/selftests/timers/raw_skew.c
-> > +++ b/tools/testing/selftests/timers/raw_skew.c
-> > @@ -138,11 +138,11 @@ int main(int argv, char **argc)
-> >                 if (tx1.offset || tx2.offset ||
-> >                     tx1.freq != tx2.freq || tx1.tick != tx2.tick) {
-> >                         printf("        [SKIP]\n");
-> > -                       return ksft_exit_skip("The clock was adjusted externally. Shutdown NTPd or other time sync daemons\n");
-> > +                       ksft_exit_skip("The clock was adjusted externally. Shutdown NTPd or other time sync daemons\n");
-> >                 }
-> >                 printf("        [FAILED]\n");
-> > -               return ksft_exit_fail();
-> > +               ksft_exit_fail();
-> >         }
-> >         printf("        [OK]\n");
-> > -       return  ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/timers/set-2038.c b/tools/testing/selftests/timers/set-2038.c
-> > index 688cfd81b531..f7d978721b9e 100644
-> > --- a/tools/testing/selftests/timers/set-2038.c
-> > +++ b/tools/testing/selftests/timers/set-2038.c
-> > @@ -128,6 +128,6 @@ int main(int argc, char *argv[])
-> >         /* restore clock */
-> >         settime(start);
-> >         if (ret)
-> > -               return ksft_exit_fail();
-> > -       return ksft_exit_pass();
-> > +               ksft_exit_fail();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/timers/set-tai.c b/tools/testing/selftests/timers/set-tai.c
-> > index 8c4179ee2ca2..5b67462efcd6 100644
-> > --- a/tools/testing/selftests/timers/set-tai.c
-> > +++ b/tools/testing/selftests/timers/set-tai.c
-> > @@ -61,9 +61,9 @@ int main(int argc, char **argv)
-> >                 ret = get_tai();
-> >                 if (ret != i) {
-> >                         printf("[FAILED] expected: %i got %i\n", i, ret);
-> > -                       return ksft_exit_fail();
-> > +                       ksft_exit_fail();
-> >                 }
-> >         }
-> >         printf("[OK]\n");
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/timers/set-timer-lat.c b/tools/testing/selftests/timers/set-timer-lat.c
-> > index 50da45437daa..7ce240c89b21 100644
-> > --- a/tools/testing/selftests/timers/set-timer-lat.c
-> > +++ b/tools/testing/selftests/timers/set-timer-lat.c
-> > @@ -278,6 +278,6 @@ int main(void)
-> >                 ret |= do_timer_oneshot(clock_id, 0);
-> >         }
-> >         if (ret)
-> > -               return ksft_exit_fail();
-> > -       return ksft_exit_pass();
-> > +               ksft_exit_fail();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/timers/set-tz.c b/tools/testing/selftests/timers/set-tz.c
-> > index 62bd33eb16f0..20daaf1782b7 100644
-> > --- a/tools/testing/selftests/timers/set-tz.c
-> > +++ b/tools/testing/selftests/timers/set-tz.c
-> > @@ -102,9 +102,9 @@ int main(int argc, char **argv)
-> >         printf("[OK]\n");
-> >
-> >         set_tz(min, dst);
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >
-> >  err:
-> >         set_tz(min, dst);
-> > -       return ksft_exit_fail();
-> > +       ksft_exit_fail();
-> >  }
-> > diff --git a/tools/testing/selftests/timers/skew_consistency.c b/tools/testing/selftests/timers/skew_consistency.c
-> > index 8066be9aff11..bfeaac8d870d 100644
-> > --- a/tools/testing/selftests/timers/skew_consistency.c
-> > +++ b/tools/testing/selftests/timers/skew_consistency.c
-> > @@ -70,8 +70,8 @@ int main(int argv, char **argc)
-> >
-> >         if (ret) {
-> >                 printf("[FAILED]\n");
-> > -               return ksft_exit_fail();
-> > +               ksft_exit_fail();
-> >         }
-> >         printf("[OK]\n");
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/timers/threadtest.c b/tools/testing/selftests/timers/threadtest.c
-> > index 80aed4bf06fb..76b38e41d9c7 100644
-> > --- a/tools/testing/selftests/timers/threadtest.c
-> > +++ b/tools/testing/selftests/timers/threadtest.c
-> > @@ -189,5 +189,5 @@ int main(int argc, char **argv)
-> >         /* die */
-> >         if (ret)
-> >                 ksft_exit_fail();
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/timers/valid-adjtimex.c b/tools/testing/selftests/timers/valid-adjtimex.c
-> > index 5397de708d3c..48804223eb4d 100644
-> > --- a/tools/testing/selftests/timers/valid-adjtimex.c
-> > +++ b/tools/testing/selftests/timers/valid-adjtimex.c
-> > @@ -321,10 +321,10 @@ int validate_set_offset(void)
-> >  int main(int argc, char **argv)
-> >  {
-> >         if (validate_freq())
-> > -               return ksft_exit_fail();
-> > +               ksft_exit_fail();
-> >
-> >         if (validate_set_offset())
-> > -               return ksft_exit_fail();
-> > +               ksft_exit_fail();
-> >
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/vm/madv_populate.c b/tools/testing/selftests/vm/madv_populate.c
-> > index 3ee0e8275600..5f2f8ad32248 100644
-> > --- a/tools/testing/selftests/vm/madv_populate.c
-> > +++ b/tools/testing/selftests/vm/madv_populate.c
-> > @@ -325,5 +325,5 @@ int main(int argc, char **argv)
-> >         if (err)
-> >                 ksft_exit_fail_msg("%d out of %d tests failed\n",
-> >                                    err, ksft_test_num());
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > --
-> > 2.33.0
-> >
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
+> ---
+>  .../staging/media/hantro/hantro_g2_hevc_dec.c | 40 +++++++++----------
+>  drivers/staging/media/hantro/hantro_g2_regs.h | 28 ++++++-------
+>  2 files changed, 34 insertions(+), 34 deletions(-)
+> 
+> diff --git a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
+> index 76a921163b9a..abae36f9b418 100644
+> --- a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
+> +++ b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
+> @@ -448,9 +448,9 @@ static int set_ref(struct hantro_ctx *ctx)
+>  		if (dpb[i].rps == V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR)
+>  			dpb_longterm_e |= BIT(V4L2_HEVC_DPB_ENTRIES_NUM_MAX - 1 - i);
+>  
+> -		hantro_write_addr(vpu, G2_REG_ADDR_REF(i), luma_addr);
+> -		hantro_write_addr(vpu, G2_REG_CHR_REF(i), chroma_addr);
+> -		hantro_write_addr(vpu, G2_REG_DMV_REF(i), mv_addr);
+> +		hantro_write_addr(vpu, G2_REF_LUMA_ADDR(i), luma_addr);
+> +		hantro_write_addr(vpu, G2_REF_CHROMA_ADDR(i), chroma_addr);
+> +		hantro_write_addr(vpu, G2_REF_MV_ADDR(i), mv_addr);
+>  	}
+>  
+>  	luma_addr = hantro_hevc_get_ref_buf(ctx, decode_params->pic_order_cnt_val);
+> @@ -460,20 +460,20 @@ static int set_ref(struct hantro_ctx *ctx)
+>  	chroma_addr = luma_addr + cr_offset;
+>  	mv_addr = luma_addr + mv_offset;
+>  
+> -	hantro_write_addr(vpu, G2_REG_ADDR_REF(i), luma_addr);
+> -	hantro_write_addr(vpu, G2_REG_CHR_REF(i), chroma_addr);
+> -	hantro_write_addr(vpu, G2_REG_DMV_REF(i++), mv_addr);
+> +	hantro_write_addr(vpu, G2_REF_LUMA_ADDR(i), luma_addr);
+> +	hantro_write_addr(vpu, G2_REF_CHROMA_ADDR(i), chroma_addr);
+> +	hantro_write_addr(vpu, G2_REF_MV_ADDR(i++), mv_addr);
+>  
+> -	hantro_write_addr(vpu, G2_ADDR_DST, luma_addr);
+> -	hantro_write_addr(vpu, G2_ADDR_DST_CHR, chroma_addr);
+> -	hantro_write_addr(vpu, G2_ADDR_DST_MV, mv_addr);
+> +	hantro_write_addr(vpu, G2_OUT_LUMA_ADDR, luma_addr);
+> +	hantro_write_addr(vpu, G2_OUT_CHROMA_ADDR, chroma_addr);
+> +	hantro_write_addr(vpu, G2_OUT_MV_ADDR, mv_addr);
+>  
+>  	hantro_hevc_ref_remove_unused(ctx);
+>  
+>  	for (; i < V4L2_HEVC_DPB_ENTRIES_NUM_MAX; i++) {
+> -		hantro_write_addr(vpu, G2_REG_ADDR_REF(i), 0);
+> -		hantro_write_addr(vpu, G2_REG_CHR_REF(i), 0);
+> -		hantro_write_addr(vpu, G2_REG_DMV_REF(i), 0);
+> +		hantro_write_addr(vpu, G2_REF_LUMA_ADDR(i), 0);
+> +		hantro_write_addr(vpu, G2_REF_CHROMA_ADDR(i), 0);
+> +		hantro_write_addr(vpu, G2_REF_MV_ADDR(i), 0);
+>  	}
+>  
+>  	hantro_reg_write(vpu, &g2_refer_lterm_e, dpb_longterm_e);
+> @@ -499,7 +499,7 @@ static void set_buffers(struct hantro_ctx *ctx)
+>  	src_len = vb2_get_plane_payload(&src_buf->vb2_buf, 0);
+>  	src_buf_len = vb2_plane_size(&src_buf->vb2_buf, 0);
+>  
+> -	hantro_write_addr(vpu, G2_ADDR_STR, src_dma);
+> +	hantro_write_addr(vpu, G2_STREAM_ADDR, src_dma);
+>  	hantro_reg_write(vpu, &g2_stream_len, src_len);
+>  	hantro_reg_write(vpu, &g2_strm_buffer_len, src_buf_len);
+>  	hantro_reg_write(vpu, &g2_strm_start_offset, 0);
+> @@ -508,12 +508,12 @@ static void set_buffers(struct hantro_ctx *ctx)
+>  	/* Destination (decoded frame) buffer. */
+>  	dst_dma = hantro_get_dec_buf_addr(ctx, &dst_buf->vb2_buf);
+>  
+> -	hantro_write_addr(vpu, G2_RASTER_SCAN, dst_dma);
+> -	hantro_write_addr(vpu, G2_RASTER_SCAN_CHR, dst_dma + cr_offset);
+> -	hantro_write_addr(vpu, G2_ADDR_TILE_SIZE, ctx->hevc_dec.tile_sizes.dma);
+> -	hantro_write_addr(vpu, G2_TILE_FILTER, ctx->hevc_dec.tile_filter.dma);
+> -	hantro_write_addr(vpu, G2_TILE_SAO, ctx->hevc_dec.tile_sao.dma);
+> -	hantro_write_addr(vpu, G2_TILE_BSD, ctx->hevc_dec.tile_bsd.dma);
+> +	hantro_write_addr(vpu, G2_RS_OUT_LUMA_ADDR, dst_dma);
+> +	hantro_write_addr(vpu, G2_RS_OUT_CHROMA_ADDR, dst_dma + cr_offset);
+> +	hantro_write_addr(vpu, G2_TILE_SIZES_ADDR, ctx->hevc_dec.tile_sizes.dma);
+> +	hantro_write_addr(vpu, G2_TILE_FILTER_ADDR, ctx->hevc_dec.tile_filter.dma);
+> +	hantro_write_addr(vpu, G2_TILE_SAO_ADDR, ctx->hevc_dec.tile_sao.dma);
+> +	hantro_write_addr(vpu, G2_TILE_BSD_ADDR, ctx->hevc_dec.tile_bsd.dma);
+>  }
+>  
+>  static void prepare_scaling_list_buffer(struct hantro_ctx *ctx)
+> @@ -563,7 +563,7 @@ static void prepare_scaling_list_buffer(struct hantro_ctx *ctx)
+>  			for (k = 0; k < 8; k++)
+>  				*p++ = sc->scaling_list_32x32[i][8 * k + j];
+>  
+> -	hantro_write_addr(vpu, HEVC_SCALING_LIST, ctx->hevc_dec.scaling_lists.dma);
+> +	hantro_write_addr(vpu, G2_HEVC_SCALING_LIST_ADDR, ctx->hevc_dec.scaling_lists.dma);
+>  }
+>  
+>  static void hantro_g2_check_idle(struct hantro_dev *vpu)
+> diff --git a/drivers/staging/media/hantro/hantro_g2_regs.h b/drivers/staging/media/hantro/hantro_g2_regs.h
+> index bb22fa921914..24b18f839ff8 100644
+> --- a/drivers/staging/media/hantro/hantro_g2_regs.h
+> +++ b/drivers/staging/media/hantro/hantro_g2_regs.h
+> @@ -177,20 +177,20 @@
+>  #define G2_REG_CONFIG_DEC_CLK_GATE_E		BIT(16)
+>  #define G2_REG_CONFIG_DEC_CLK_GATE_IDLE_E	BIT(17)
+>  
+> -#define G2_ADDR_DST		(G2_SWREG(65))
+> -#define G2_REG_ADDR_REF(i)	(G2_SWREG(67)  + ((i) * 0x8))
+> -#define G2_ADDR_DST_CHR		(G2_SWREG(99))
+> -#define G2_REG_CHR_REF(i)	(G2_SWREG(101) + ((i) * 0x8))
+> -#define G2_ADDR_DST_MV		(G2_SWREG(133))
+> -#define G2_REG_DMV_REF(i)	(G2_SWREG(135) + ((i) * 0x8))
+> -#define G2_ADDR_TILE_SIZE	(G2_SWREG(167))
+> -#define G2_ADDR_STR		(G2_SWREG(169))
+> -#define HEVC_SCALING_LIST	(G2_SWREG(171))
+> -#define G2_RASTER_SCAN		(G2_SWREG(175))
+> -#define G2_RASTER_SCAN_CHR	(G2_SWREG(177))
+> -#define G2_TILE_FILTER		(G2_SWREG(179))
+> -#define G2_TILE_SAO		(G2_SWREG(181))
+> -#define G2_TILE_BSD		(G2_SWREG(183))
+> +#define G2_OUT_LUMA_ADDR		(G2_SWREG(65))
+> +#define G2_REF_LUMA_ADDR(i)		(G2_SWREG(67)  + ((i) * 0x8))
+> +#define G2_OUT_CHROMA_ADDR		(G2_SWREG(99))
+> +#define G2_REF_CHROMA_ADDR(i)		(G2_SWREG(101) + ((i) * 0x8))
+> +#define G2_OUT_MV_ADDR			(G2_SWREG(133))
+> +#define G2_REF_MV_ADDR(i)		(G2_SWREG(135) + ((i) * 0x8))
+> +#define G2_TILE_SIZES_ADDR		(G2_SWREG(167))
+> +#define G2_STREAM_ADDR			(G2_SWREG(169))
+> +#define G2_HEVC_SCALING_LIST_ADDR	(G2_SWREG(171))
+> +#define G2_RS_OUT_LUMA_ADDR		(G2_SWREG(175))
+> +#define G2_RS_OUT_CHROMA_ADDR		(G2_SWREG(177))
+> +#define G2_TILE_FILTER_ADDR		(G2_SWREG(179))
+> +#define G2_TILE_SAO_ADDR		(G2_SWREG(181))
+> +#define G2_TILE_BSD_ADDR		(G2_SWREG(183))
+>  
+>  #define g2_strm_buffer_len	G2_DEC_REG(258, 0, 0xffffffff)
+>  #define g2_strm_start_offset	G2_DEC_REG(259, 0, 0xffffffff)
+> -- 
+> 2.25.1
+> 
