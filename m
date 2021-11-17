@@ -2,143 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EACAF454ACE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:19:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F29BC454AD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238260AbhKQQWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 11:22:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54078 "EHLO
+        id S238298AbhKQQW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 11:22:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238319AbhKQQVx (ORCPT
+        with ESMTP id S231442AbhKQQWz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 11:21:53 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10CA1C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:18:54 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id b1so10893020lfs.13
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:18:53 -0800 (PST)
+        Wed, 17 Nov 2021 11:22:55 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44785C061570;
+        Wed, 17 Nov 2021 08:19:56 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id bu18so11337375lfb.0;
+        Wed, 17 Nov 2021 08:19:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hjfveKxN4psxRyRP8zJoBweMn3Lw5e9A8i8e9HabaRs=;
-        b=cXjpncGlEQy9G8NpNYHDYVtOJkGz521GTmJVE57ZM0X2szXjsRlzDZEsZ+m1aXdvK0
-         dzpNvOScqheMzWgLTD16c9o0OQguM3khzsmUbuXbYfR3IH0qBY4x0lwt4fj95BZRJPZr
-         ITkpEe8wAVFFGl+nJwzc6NFW0wtvVrlsFttHgKVGKisY4oPQ34rjRrkDlpFJ4Xs0/WtM
-         WX5qNX7U1+aCUCGqe9Tnp4wsQ7MzzWN3iW5QBj6Bvue4g6smVhOrkk+OCZ0AT0KaFz1A
-         Q73cLusyby0LimYJpi/M5wlcpcJA04bAinoV2RuaUYQO7RYnZoJis5Pspt+8+i2q9/eW
-         MiGQ==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=slbKKxQ/rurVnSEI57eisp+SX8JJlPjNvxx5V40UNkE=;
+        b=LPsSelLRXOQ7hXG/tGo1OT5PsrkKtigvlerFF01UNiGw0JbdtWtE7K/cRew90F6eIX
+         6dgo8N8lCplnzkxHPN8XOh3nzbfLlAlsucENgGpvIu4f5tOCEZ2CwdJj91kOTRiYFmT+
+         4hkT/UqDSayWKkllMAjcfAhQqCdMdVQItwOdIXOSZcrUYAFIQ4NYJyDr2Mw8dQamhJVJ
+         51S3H5wZT7aAP2mpukvg2mtyHnSc+cPvVZzdFYXzRwpXeDxGOvB0xGVWlRCHls1e6FgT
+         CIiLVIkBvpw4Nvvjfqa1IexQaqXU3RChbVEV+Z3nGjCm+u3nlYHqo3Rl+pNkoKzS8BWB
+         22tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hjfveKxN4psxRyRP8zJoBweMn3Lw5e9A8i8e9HabaRs=;
-        b=NG5NR9JtsMqF8gDExAoVyqLYiVru+VyC+Zw3nwaDJJGf1JteyXHAmRVdaXJOgcrdWj
-         1XuAiTQQarQRyOGb5HNOzhINhdiVYcLHq64Dyb/6Gy8/CWmuNGfETFONOhlHSB27Zq7A
-         yPSNdiC1xwRs2RGaI9ZArCgANParTEMIq4DMRcX+J1g036GLUO2j6SWFAkT6EQDKd1/9
-         ihF9XbPpVUJmSEFTlbTYDrqjUQHkqtsiZxu6dwlxiBxmUMp2D1T3KLe+9Qbxk15k+z74
-         7hL5rstiIJFjfkLXDhd88nIG8uhQQlPw+yBsSvtwH/SoLTSoOAqfLXGOGP0HmFMxx1QM
-         IcxQ==
-X-Gm-Message-State: AOAM5309YwZFCGCob9lr9fvU9EXtLS/WmLrJQl2ah2bDH7gcHQCrJOky
-        IUS4yXztUZ8Hsuj3MFWm8+pj/A==
-X-Google-Smtp-Source: ABdhPJwWRYcEtdPjEAb+4OfDZCDouPSQyXhoKDINlkwSw0H/GA/dD5/+QFpznR4L0nyAbi3RgXlxvw==
-X-Received: by 2002:a05:651c:1257:: with SMTP id h23mr9003910ljh.17.1637165931841;
-        Wed, 17 Nov 2021 08:18:51 -0800 (PST)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id i18sm23235lfe.186.2021.11.17.08.18.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 08:18:51 -0800 (PST)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id C62D9103122; Wed, 17 Nov 2021 19:18:55 +0300 (+03)
-Date:   Wed, 17 Nov 2021 19:18:55 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] sound updates for 5.16-rc1
-Message-ID: <20211117161855.m45mxcqszkfcetai@box.shutemov.name>
-References: <s5hwnlpmt9x.wl-tiwai@suse.de>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=slbKKxQ/rurVnSEI57eisp+SX8JJlPjNvxx5V40UNkE=;
+        b=tgXtcmvEryEGukIS4Fq6PhKRajlkOlsTLYZ3PuClDLOmeaEPIbf1cwcc2b1sNbmF9U
+         i6xEFyemuIiaM6UWNHUEJe5igN0Zvi2cGmRO9gfWdHDs+Qs5wJwXhsuci/ez1C4W2Ney
+         GiuagJpnGD/AkT3l9quTNFNIe2VpGJpGGTE8Gs6wdCOUGabgHX7F24aF27/dKMAprKw1
+         CxvAThXTKdTLLoPsNOko+Qn2RXvl4hfZWwj3Oyzzd1KCcAMEJ+97B+9XfY1G4JyKArTl
+         xYCJngWpXXsSgGykC0xvZ8ssyGQ3J9xwFEG36B4ozmtD1dT0iXFuc9wvr3BbyJCIE+Cu
+         H7xw==
+X-Gm-Message-State: AOAM531516sYc9oqh+eaVP1OFluXEoyY1n2d3XEkURYJoWTk/ZtNmeCr
+        Kg4MxtE6soc3YeGQ2ZYDA0u+NAE1lEM=
+X-Google-Smtp-Source: ABdhPJyfq1oyCehVK/MehD7wcDla30T+6xOUXDqwqeTSENy6xeLdvMcR4ZoYf1tizTWRd8K1lJ7mmw==
+X-Received: by 2002:a2e:7216:: with SMTP id n22mr8926810ljc.44.1637165994488;
+        Wed, 17 Nov 2021 08:19:54 -0800 (PST)
+Received: from [192.168.2.145] (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
+        by smtp.googlemail.com with ESMTPSA id m11sm32535ljc.108.2021.11.17.08.19.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 08:19:54 -0800 (PST)
+Subject: Re: [PATCH v1 1/3] media: staging: tegra-vde: Support reference
+ picture marking
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Anton Bambura <jenneron@protonmail.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211114222353.22435-1-digetx@gmail.com>
+ <20211114222353.22435-2-digetx@gmail.com>
+ <42b24cd0-ac37-3cfe-1fb2-d6292015318a@gmail.com>
+ <20211115124402.GE26989@kadam>
+ <e4b9d596-d206-71d1-6ec5-1a41af579836@gmail.com>
+ <20211115154858.GG27562@kadam>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <89166c20-6b05-ed4b-ed45-451f4f1e10bc@gmail.com>
+Date:   Wed, 17 Nov 2021 19:19:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5hwnlpmt9x.wl-tiwai@suse.de>
+In-Reply-To: <20211115154858.GG27562@kadam>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 11:24:10AM +0100, Takashi Iwai wrote:
-> Linus,
+15.11.2021 18:48, Dan Carpenter пишет:
+> On Mon, Nov 15, 2021 at 05:34:47PM +0300, Dmitry Osipenko wrote:
+>> 15.11.2021 15:44, Dan Carpenter пишет:
+>>> On Mon, Nov 15, 2021 at 01:34:18AM +0300, Dmitry Osipenko wrote:
+>>>> 15.11.2021 01:23, Dmitry Osipenko пишет:
+>>>>> +	vde->secure_bo = tegra_vde_alloc_bo(vde, DMA_FROM_DEVICE, 4096);
+>>>>> +	if (!vde->secure_bo) {
+>>>>> +		dev_err(dev, "Failed to allocate secure BO\n");
+>>>>> +		goto err_pm_runtime;
+>>>>> +	}
+>>>>
+>>>> My eye just caught that by accident err variable isn't assigned to
+>>>> -ENOMEM here. I'll make v2 shortly.
+>>>
+>>> Smatch has a check for this so we would have caught it.  :)
+>>
+>> Whish smatch was built-in into kernel and I could simply run "make
+>> smatch". On the other hand, I know that you're periodically checking
+>> upstream with smatch and patching the found bugs, so maybe it's fine
+>> as-is.
 > 
-> please pull sound updates for v5.16-rc1 from:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.16-rc1
-> 
-> The topmost commit is df0380b9539b04c1ae8854a984098da06d5f1e67
-> 
-> ----------------------------------------------------------------
-> 
-> sound updates for 5.16-rc1
-> 
-> Lots of code development have been see in ASoC side as usual, while
-> the continued development on memalloc helper and USB-audio low-
-> latency support are found in the rest.  Note that a few changes in the
-> unusual places like arch/sh are included, which are a part of ASoC DAI
-> format cleanups.
-> 
-> ALSA core:
-> - Continued memallloc helper updates and cleanups, now supporting
->   non-coherent and non-contiguous pages
-> - Fixes for races in mixer OSS layer
-> 
-> ASoC:
-> - A new version of the audio graph card which supports a wider range
->   of systems
-> - Several conversions to YAML DT bindings
-> - Continuing cleanups to the SOF and Intel code
-> - Move of the Cirrus DSP framework into drivers/firmware to allow for
->   future use by non-audio DSPs
-> - An overhaul of the cs42l42 driver, correcting many problems
-> - DAI format terminology conversions over many drivers for cleanups
-> - Support for AMD Vangogh and Yelow Cap, Cirrus CS35L41, Maxim
->   MAX98520 and MAX98360A, Mediatek MT8195, Nuvoton NAU8821, nVidia
->   Tegra210, NXP i.MX8ULP, Qualcomm AudioReach, Realtek ALC5682I-VS,
->   RT5682S, and RT9120 and Rockchip RV1126 and RK3568
-> 
-> USB-audio:
-> - Continued improvements on low-latency playback
-> - Quirks for Pioneer devices, Line6 HX-Stomp XL, Audient iD14
-> 
-> HD-audio:
-> - Reduce excessive udelay() calls on Intel platforms; this should
->   reduce the CPU load with PulseAudio
-> - Quirks for HP and Clevo laptops
-> 
-> FireWire:
-> - Support for meter information on MOTU
-> 
+> I run it every day, and it's integrated into the zero day bot and Mauro
+> runs it.  So someone would have caught it.
 
-...
-
-> Takashi Iwai (29):
->       ALSA: hda: Reduce udelay() at SKL+ position reporting
->       ALSA: hda: Use position buffer for SKL+ again
->       ALSA: usb-audio: Restrict rates for the shared clocks
->       ALSA: usb-audio: Fix possible race at sync of urb completions
->       ALSA: usb-audio: Rename early_playback_start flag with lowlatency_playback
->       ALSA: usb-audio: Disable low-latency playback for free-wheel mode
->       ALSA: usb-audio: Disable low-latency mode for implicit feedback sync
->       ALSA: usb-audio: Check available frames for the next packet size
->       ALSA: usb-audio: Add spinlock to stop_urbs()
->       ALSA: usb-audio: Improved lowlatency playback support
-
-This commit breaks audio playback for me. The sample plays for fraction of
-a second than stops.
-
-I use SMSL SA300. Let me know what ifo is needed to track it down.
-
-Also I can test potential fixups if needed.
-
--- 
- Kirill A. Shutemov
+Very nice, I haven't noticed that 0-day runs smatch. I assume the smatch
+reports from the bots are private to you and Mauro since I never saw
+them in my inbox and on LKML, correct?
