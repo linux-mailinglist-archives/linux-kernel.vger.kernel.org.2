@@ -2,84 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DEDF453E79
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 03:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BEF3453E7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 03:27:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232221AbhKQCaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 21:30:14 -0500
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:39906 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229984AbhKQCaM (ORCPT
+        id S232417AbhKQCaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 21:30:16 -0500
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:34502 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230411AbhKQCaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 21:30:12 -0500
-Received: by mail-ot1-f48.google.com with SMTP id r10-20020a056830080a00b0055c8fd2cebdso1927322ots.6;
-        Tue, 16 Nov 2021 18:27:14 -0800 (PST)
+        Tue, 16 Nov 2021 21:30:14 -0500
+Received: by mail-oi1-f176.google.com with SMTP id t19so2984420oij.1;
+        Tue, 16 Nov 2021 18:27:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=GiBxOtk/fw1zoy+M3sDTAnUOqTDqO1s7zdGfWtlfDXA=;
-        b=NpIiegWmXS3paBcpitxIF6nhMINprMs+75gXVU2SD7uQlfIeJjqnlAv1N9rhtA3u5W
-         WXZjVUc5rvdSCzJQQYmHCUlfnWwO3AHFJp5vVUohIjFzQe/o7S0/Snv9Lt+YCKrHE+Cn
-         OhHfkIQ6IccAhla0L0cc031iaBGWPcKR+N+eohD7dqcnuKvUWC0kV5ajiFWscMfIPrea
-         jkRGkelFOT/oo4/fpTwqh/C/YgoXoyO9lFEmuGOqkOYaIlUco4zRM9UUAmJDg0Ja64+Z
-         bBPwYroSUMf1zQ3S0uRbTCYTJ8orqGFzogtHfE+h6Jkp3Jw2YATGu6SXninVsUsQVWAV
-         mfsw==
-X-Gm-Message-State: AOAM531Kp52etETacnGOGESd5UrdKUpt8gsLRkRq1pXEafQb2kx13MMp
-        eHihuz8IVB8r8eS77n30Dw==
-X-Google-Smtp-Source: ABdhPJxXsvLSjYWoB892y4XGG05NWc805nrkX5neFLH0Yh5DguvAoddR4LohY0Q3CkwFpiD01RYcIg==
-X-Received: by 2002:a9d:4e93:: with SMTP id v19mr10480309otk.146.1637116034592;
-        Tue, 16 Nov 2021 18:27:14 -0800 (PST)
+        bh=/rart4BznLTgp+5QgTKxLDy9zh72t7U0cB9dGv2y30E=;
+        b=mw8ETxVT3ciwnrQF0bd6GR1JsJnd3X8DDXKnvUHoGQICHMnxc+e/efVjFnPhS+M9gp
+         AWwGOr9X2Qr/1jm3AauqWlJnQMCyUTdjDeLwOUVxU9tcYCHObXR4qKaZov0w/X90KvUs
+         VeW3UrcATddFxNRhXpB1W91l30Qa2dp/pyVcfNjDIq4MS2IuH6roq6bLGnlP+9TomDGH
+         JT9kVNWa3jC73h/70XT+g/c6J2AU+cyfH5D0OauGzMHYzNjqq/jIVQc5maENPRTUisXW
+         MusYdshO6JML6SdSksuDoj+7UXAhTb2kEA2+trM3Gwie6pXH6HIT1PhnBfiDReFKCl5o
+         xLEg==
+X-Gm-Message-State: AOAM533ISU6fv4o8OiXHr3rg0Z1U4tl9ED7qW5uugL+hUbHm11NpbJJf
+        Ugjid+CzYi+cNOoRg0IWKQmVGEbkcw==
+X-Google-Smtp-Source: ABdhPJyEGt6gNqiofKP2GdyaFo30VM6OCh/c6FkbUlTbt900tC790jErIISvrBp3/6snwpxK+9wZGg==
+X-Received: by 2002:a54:4584:: with SMTP id z4mr57334546oib.158.1637116035971;
+        Tue, 16 Nov 2021 18:27:15 -0800 (PST)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id w4sm1188076oiv.37.2021.11.16.18.27.13
+        by smtp.gmail.com with ESMTPSA id 16sm4303322oix.46.2021.11.16.18.27.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 18:27:14 -0800 (PST)
-Received: (nullmailer pid 1207280 invoked by uid 1000);
+        Tue, 16 Nov 2021 18:27:15 -0800 (PST)
+Received: (nullmailer pid 1207282 invoked by uid 1000);
         Wed, 17 Nov 2021 02:27:10 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-tegra@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        devicetree@vger.kernel.org,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20211116155413.164242-1-jonathanh@nvidia.com>
-References: <20211116155413.164242-1-jonathanh@nvidia.com>
-Subject: Re: [PATCH V2 1/2] dt-bindings: Add YAML bindings for NVENC and NVJPG
+To:     Iain Hunter <drhunter95@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        iain@hunterembedded.co.uk, linux-iio@vger.kernel.org
+In-Reply-To: <20211116155917.304294-1-drhunter95@gmail.com>
+References: <20211116155917.304294-1-drhunter95@gmail.com>
+Subject: Re: [PATCH v2 1/2] Add binding for IIO ADS1018
 Date:   Tue, 16 Nov 2021 20:27:10 -0600
-Message-Id: <1637116030.331789.1207279.nullmailer@robh.at.kernel.org>
+Message-Id: <1637116030.343220.1207281.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Nov 2021 15:54:12 +0000, Jon Hunter wrote:
-> Add YAML device tree bindings for the Tegra NVENC and NVJPG Host1x
-> engines.
+On Tue, 16 Nov 2021 15:58:58 +0000, Iain Hunter wrote:
+> v2 has me as suggested maintainer per Daniel's feedback.
 > 
-> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+> Signed-off-by: Iain Hunter <drhunter95@gmail.com>
 > ---
-> Changes since V1:
-> - Fixed errors reported by Rob's bot
-> 
->  .../gpu/host1x/nvidia,tegra210-nvenc.yaml     | 135 ++++++++++++++++++
->  .../gpu/host1x/nvidia,tegra210-nvjpg.yaml     |  94 ++++++++++++
->  2 files changed, 229 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpu/host1x/nvidia,tegra210-nvenc.yaml
->  create mode 100644 Documentation/devicetree/bindings/gpu/host1x/nvidia,tegra210-nvjpg.yaml
+>  .../bindings/iio/adc/ti,ads1018.yaml          | 109 ++++++++++++++++++
+>  1 file changed, 109 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,ads1018.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/gpu/host1x/nvidia,tegra210-nvenc.yaml:103:10: [warning] wrong indentation: expected 10 but found 9 (indentation)
-./Documentation/devicetree/bindings/gpu/host1x/nvidia,tegra210-nvenc.yaml:104:13: [warning] wrong indentation: expected 11 but found 12 (indentation)
 
 dtschema/dtc warnings/errors:
+./Documentation/devicetree/bindings/iio/adc/ti,ads1018.yaml: $id: relative path/filename doesn't match actual path or filename
+	expected: http://devicetree.org/schemas/iio/adc/ti,ads1018.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/ti,ads1015.yaml: duplicate '$id' value 'http://devicetree.org/schemas/iio/adc/ti,ads1015.yaml#'
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1555900
+See https://patchwork.ozlabs.org/patch/1555907
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
