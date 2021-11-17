@@ -2,160 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2757B454C04
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6136454C06
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:33:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239420AbhKQRf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 12:35:58 -0500
-Received: from mail-eopbgr20082.outbound.protection.outlook.com ([40.107.2.82]:49222
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237812AbhKQRf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 12:35:57 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hXyTiDWl6jDImhk9fiP73NcAYx4m0uD8HKUfGOHS0NnWYP2X8DBtxAjtSOhCsO1YS9H0fkjj/lmXR7LkbfH9xPmVMoDh0SbVozMmeMscMohnF/EmvvL8h19vNTPlW5gamWf0Ktwq6Cs0+xn1l6hQgS1L+zE9AV8sQoxSU56fFLvi07vdWyMCfbiV7VbkPzzapmnp5eXELKp9naXcGy7hKrRqJ6+Z1RM4gVA9d23+9yPBz0/aOubyt0iGpvGFB9TbykxhWNq8yj921jz9N6liasYZj8AREOr8VmT+1f3OHxUjGsQvAN+Gs9WVK9h49sX7x4oRN4R3Q5arioy2iMTivQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BskLdVInD9LmlsTw0QplaX+Eq+pNiNJCsdBUkeuPCKk=;
- b=cq4fekgNFmsvA2hP3Y6y6AUzxGRgEjQRUWQuwHb8DbPkGRmK7lXUB7+IykTGuv8Q5d04dxt6VzIBxG0aipbKenZ+mPAP7NMcB8w3oQjPrXkl0aYoL++arDlYX0C8hwGdrh1TRUuIMpZzSStSmhqsgom+czD0ZnS7qYr+szu68edioJd2erE75OMIEO1JBpFmKbsiQSTjeLEVuTAbp+SfAgcElXcvLIQryC7P+V1ZQ1CxSoiWQTHigQdcr9jrcLavH3klOz4uRUIe7DUH+xFFN2Mic9altPW+Q4OVfWDL9YpQsXxaGSloWgL9tA0rDM/o9MHEUgJqxggqnP+N+jjrAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BskLdVInD9LmlsTw0QplaX+Eq+pNiNJCsdBUkeuPCKk=;
- b=DGZc7eAW7jR/jsueV8qJbZRjPhbCTpha+aOxMmKMih4EABgzxH8/InTB3BbbjijCSxhv3OwwnSe4Inh+GDSfc/QvZdtZHFFOeYKpAWD4iwU1r1v0BcIhwVymHmbI4MCnYGTzCvDkpP5d/08UzFGBA0v1cbgRG4wJKQ2HXfekzCI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
- by VI1PR04MB6829.eurprd04.prod.outlook.com (2603:10a6:803:13b::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Wed, 17 Nov
- 2021 17:32:56 +0000
-Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
- ([fe80::85af:f8be:aa99:ba5f]) by VI1PR04MB5151.eurprd04.prod.outlook.com
- ([fe80::85af:f8be:aa99:ba5f%3]) with mapi id 15.20.4690.027; Wed, 17 Nov 2021
- 17:32:56 +0000
-Subject: Re: [PATCH 16/21] ASoC: SOF: topology: Add support for Mediatek AFE
- DAI
-To:     Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@oss.nxp.com>
-Cc:     alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
-        lgirdwood@gmail.com, daniel.baluta@gmail.com,
-        AjitKumar.Pandey@amd.com, Balakishore.pati@amd.com,
-        vsreddy@amd.com, Julian.Schroeder@amd.com,
-        vishnuvardhanrao.ravulapati@amd.com, linux-kernel@vger.kernel.org,
-        yc.hung@mediatek.com, linux-mediatek@lists.infradead.org,
-        =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-References: <20211117093734.17407-1-daniel.baluta@oss.nxp.com>
- <20211117093734.17407-17-daniel.baluta@oss.nxp.com>
- <YZU75B2JHbYHy40l@sirena.org.uk>
-From:   Daniel Baluta <daniel.baluta@nxp.com>
-Message-ID: <e918b4c4-dc85-dcf5-2781-5edfcd1bf1a5@nxp.com>
-Date:   Wed, 17 Nov 2021 19:32:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <YZU75B2JHbYHy40l@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: AM3PR05CA0148.eurprd05.prod.outlook.com
- (2603:10a6:207:3::26) To VI1PR04MB5151.eurprd04.prod.outlook.com
- (2603:10a6:803:61::28)
+        id S239438AbhKQRgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 12:36:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237812AbhKQRgW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 12:36:22 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90BC6C061764;
+        Wed, 17 Nov 2021 09:33:23 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 77-20020a1c0450000000b0033123de3425so5467853wme.0;
+        Wed, 17 Nov 2021 09:33:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=IljrZVfmkKHCxYMQbSMY/43208uZSuA4ajkMssOxNXQ=;
+        b=UkX9HvcjswTCpEGvE9k2l62gZ9bzRtTGZnJ+UvXI/wXyMFPZYVz36qYAjECtfU2hHO
+         h+nXjrXpvJ9nMIQWwkomKiFnAW5JUnzts/f09XRfzqCGfzPImZWPuJtAEvPLYOKbzReJ
+         Tmsq0881b+2g3bYZF/45cTHRomS1zLKddwYP61ZJw5Cyg+s5itiexEkgO2U+k2qLx7+D
+         Eoy/U0709VyJjvYcI5U4HYNpjhPJHwqXnPeO35SwFyeSKbswMxHiEMVLqNVWxRWNnlr6
+         HySzjGHuo+jWsZT6Ja8qG9ATuZ4n4R8e2KqnTvsm9rJErjmzyXoSpcveecInY/4NVNWl
+         YsOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=IljrZVfmkKHCxYMQbSMY/43208uZSuA4ajkMssOxNXQ=;
+        b=SVIIAPVBhZhmdvtrcigtLHzdxnNDcpGXaEot9C2SIK3+YMJxY7yvTWPu0pR9VniVHJ
+         Uju2d8tFmA5BtkZPLU02CSJYNFY4UIMujsHytX+1pPbHaCeBpocsrzWPX1Mg/gZwP2qR
+         zWXkPlGk4kDq4RrYUYBvnQv8HgvSinRSk+inHw6qf0+nDiBLcn387ZntvztyPY74w+cD
+         u/0G8C+WAo+zU3LAxd5tyvXRg8lfzPxFc2b0eq66ifqn01+ptmQToCf3th6QgyeYyIP/
+         zv1vqKsg+01WCohHWXZ8asJDyzgcryeF/ArctyFfobyAD2CKfrwWNx36dl9XrzzyBiqu
+         kFbw==
+X-Gm-Message-State: AOAM5332PITVBIExxYyPC6ss3EwN6JsFr4mn+xzFEf8O5JREE4oMAcgl
+        yIZBk0zSqrI8wWwCIOKG67o=
+X-Google-Smtp-Source: ABdhPJwYSeSfo4vw2gAZcvsGMBvnN2B4NTBwCxzZ7Q//nD5+9c0AjD9FINSwBsfYdYXqAK9BJssh/g==
+X-Received: by 2002:a7b:c1d5:: with SMTP id a21mr1657801wmj.14.1637170402185;
+        Wed, 17 Nov 2021 09:33:22 -0800 (PST)
+Received: from [192.168.0.18] (static-160-219-86-188.ipcom.comunitel.net. [188.86.219.160])
+        by smtp.gmail.com with ESMTPSA id l11sm474771wrp.61.2021.11.17.09.33.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 09:33:21 -0800 (PST)
+Message-ID: <03de9880-1f1a-b07b-6ec3-279945e08cea@gmail.com>
+Date:   Wed, 17 Nov 2021 18:33:20 +0100
 MIME-Version: 1.0
-Received: from [IPv6:2a02:2f08:5706:b700:22bb:b216:ffff:73e1] (2a02:2f08:5706:b700:22bb:b216:ffff:73e1) by AM3PR05CA0148.eurprd05.prod.outlook.com (2603:10a6:207:3::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend Transport; Wed, 17 Nov 2021 17:32:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c4a83e5c-3240-4b37-e5b6-08d9a9f04abe
-X-MS-TrafficTypeDiagnostic: VI1PR04MB6829:
-X-Microsoft-Antispam-PRVS: <VI1PR04MB6829F7E9AC468F959A82CAD8F99A9@VI1PR04MB6829.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RjvLkBCOHmhlycjX17tx9Ko8+e7YP9QCywGEbej7/AqKaTnnxfw1bqC22b2q2MaGCTRaHYCEvMvNtyPHEvgEHVEksen/oiLIfz38KGQXPDA//ksxGkjTqCsQqMmkn3CneCgPHtXRoPjcNRXG7tE8Nk1y2xEY3+QdrCeCIzfPi+HI6i289+hqBwux7A8Ny4+NJQVxbzRJO9Q4XDtdSxY0ioiuObP3d3Qf0nMGsNDqDRAPfksw0QIMURylFMaRVOTa2CevvDnr7fySGoHPQO+vcGOuYXiJfkH6ecUc+8dCi35P7Q0eSN/hBWg444kTSJux+Ati53HZcrxELC1aRLOxDZI9eAtll8+nMyj6IIcNhhTRchv3GuNqWkm75THhlnIsV6jKHgPvVaN2W1aGevJtTj1bcAFdCZ7fXUXB4uYti4hDjcGw9Cw+b1+zJ1m6WaM1Y1HlwmtGpTKZOo8gHpzSBUkDP2C8B5aRirTeyllabnpRCSzdUqzKmAUBxY9BEn/xGJcC9T+fl/MpGtHNcqRA0QI0Y3bU/MqD4HH5LwVs+65qXdQxmv2XoHhlAlysWbfwweUPt8dxX4WTfO7oBz6/K2VLWgSwQt6LmqhYF29ni84cO7NVS15qwrd6Dzw5aEb1u2RamkHmf2VSClgKW+OTaiUaAtPtLhDfJtVMIj6JoVRyrYM6Xbgmd8QmgHhVG6v0eRcgJKPQNEl9BfkiAlMYdKSZce9Rr/UwDNWtdgUYn3Q=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5151.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(31686004)(31696002)(7416002)(8936002)(110136005)(186003)(66946007)(54906003)(86362001)(83380400001)(8676002)(2906002)(6486002)(36756003)(4326008)(52116002)(53546011)(508600001)(2616005)(44832011)(316002)(38100700002)(6666004)(5660300002)(66556008)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?Windows-1252?Q?/COlH7rRjMXjxDXndk+td7TN2Bo/pZncI0oQtrg37S6Zs2s3ehPCNiWF?=
- =?Windows-1252?Q?uawNuD7KkpWEJTu7KYi1x7ab8HOFD/04NGbGjWXYfA3cV1oMHQKL/8fm?=
- =?Windows-1252?Q?SeyEowT/fe3CKmRtda1stpnmPLajFWb5ZSkDia9WtieKgWtVXC1wp4vW?=
- =?Windows-1252?Q?tw7eLlFNGiqmcdOjlBpLnq0rxDlpoHrCYc66OMjcy+sFsmUzHFQeIadE?=
- =?Windows-1252?Q?bLcE1LaGKwxF9xK/S2ks7jcqgFmsFPWYSGaJUdixhS7uyUpbpwp4IGYJ?=
- =?Windows-1252?Q?arkOeqmib3bajmEZFlKDCs+YcSS4eteYkyjO3XKUQ9rU+rZtiaMaZluM?=
- =?Windows-1252?Q?R/911aA17CGcxOzVlmQCkLd3InqarsNalWVuCyeEY8Judfzs+H+vxwuV?=
- =?Windows-1252?Q?D3G9xe1QOZ/tWAtfMjLpy0GgvNLQ9D4e/W/BkPeXxg/XkBe5dvk5GtsX?=
- =?Windows-1252?Q?anXU+DyllZZg7l0Cx51WMSAxiuKWTghGgd+DlKB6XQ1i0zd61s7tzNdR?=
- =?Windows-1252?Q?uwcKUh/5MKu/iXdz6wBfZQua4vseceocxbefD2tOt3CqaKkJr9XETK91?=
- =?Windows-1252?Q?HNxI4WhWmM6XAWkfYp10VlOFYSEV17D4XxIXI5j+JELemSNUKrpH92FX?=
- =?Windows-1252?Q?LDRze2Whzai4BmZ9mtdUT8fHJMzKnfkxy8+dc7f/rLIGPymrsV52ubup?=
- =?Windows-1252?Q?cnJ9LQkGYvvB8r/k1JxatthT/j4TT9VaFO5UVLgwQ6cUYf0a3nA9Voli?=
- =?Windows-1252?Q?pT+wWkTriFAdpSP6NDPGohNDuxrFcywO5wv4LgpaTwahDJh1jYM8iWL2?=
- =?Windows-1252?Q?3vaCc9uAC/ScAd6mES64tyspcvfMIANDpIkAIDJJzpdNwcoubW+9Bodg?=
- =?Windows-1252?Q?G4mLrRvzdRqGgJGHCC2YHAMPbrgH2uzJXjMv+40n9qLBpyn3yjK+epdU?=
- =?Windows-1252?Q?Yuh/kW57LmrisKsnAyOyYIKag/ULr6EReRgqmTdtNYx4zduCYi8y2sUM?=
- =?Windows-1252?Q?id+LgICopzMV4ZLAivxjcWvTEAAYfbZVBzIvsvUtJLf3JWpbfZCwT9TW?=
- =?Windows-1252?Q?h4ImPg/OPe4Xmo0ycFYvuLctk3UR5dttAJjMg6s5D3+ZBYT7UJhb3mYY?=
- =?Windows-1252?Q?m/+ZTe6y47LhQID7lVGzyo5y3RUfmSS0Ik92IKi9RkHTkW9vgWlnYfFr?=
- =?Windows-1252?Q?pdHQnrIELxZcXJWbu7RFYrll73OdJtfbizKWobgC9Et5cJPkr5NwObeR?=
- =?Windows-1252?Q?s54n/tmfSCBwNWQZ6fofVMEpslfeiUtNaKgr+1YnYZBmKt/kQ0pWCk35?=
- =?Windows-1252?Q?C7J8DE9bdJ513LSVfR+LEYWZ+HxZ5mcClpM0OfE+tGkVzYgI+9hJQRrd?=
- =?Windows-1252?Q?ekitaNm64thFcWHJZdAxaWbEaPqUKZBHfqlUCgz7FuJmX6QH3a9Ys5UX?=
- =?Windows-1252?Q?MqkrXi8YjPe+hrTdebNxpaPadREC559kfOsA+6MromIeytbI5WO4Mg68?=
- =?Windows-1252?Q?XY/xuW0DkMRSRiXDUGQGh7z1EN9O1dngMQDS7U+1Ceuvv9x0DBmwGFS/?=
- =?Windows-1252?Q?WRfx3my7ybf2Q7dsCXaxqjdaHP2CVQT9xN4DPxGZDu++An6hpT61lsiD?=
- =?Windows-1252?Q?3x/cmbeBfJiqv3pKfKqDy+M/+cOGi/niCBoq08Ey+HSNoSIxcVRj++J0?=
- =?Windows-1252?Q?DLQNXWpmMN8h0UPI1mEljL3LiCuJ6T2CdXprnnfVc1BVTOolbGQmt9bM?=
- =?Windows-1252?Q?vms9W6MPLeuj4MggugMytrKw57h80AnJVqVv9y786jTvhHMx4W6ViXeH?=
- =?Windows-1252?Q?m/IPiOjyAPdisQ1wLjFf/LjqDX4=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4a83e5c-3240-4b37-e5b6-08d9a9f04abe
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2021 17:32:56.2884
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2TlbgliCoj2OVwjXNsjcGMEmvxTUNr38miIOavckEq0LRt9lv9vlw9mT8GKVGlBR3YuZoaFGWO2ZPlJDypKz2A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6829
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 1/3] arm64: dts: mt8183: add dpi node to mt8183
+Content-Language: en-US
+To:     Fabien Parent <fparent@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Pi-Hsun Shih <pihsun@chromium.org>,
+        Jitao Shi <jitao.shi@mediatek.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211110192417.4177741-1-fparent@baylibre.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+In-Reply-To: <20211110192417.4177741-1-fparent@baylibre.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 11/17/21 7:29 PM, Mark Brown wrote:
-> On Wed, Nov 17, 2021 at 11:37:29AM +0200, Daniel Baluta wrote:
->> From: YC Hung <yc.hung@mediatek.com>
->>
->> Add new sof dai and config to pass topology file configuration
->> to SOF firmware running on Mediatek platform DSP core.
->> Add mediatek audio front end(AFE) to the list of supported sof_dais
-> This breaks an x86 allmodconfig build:
->
-> /mnt/kernel/sound/soc/sof/mediatek/mt8195/mt8195.c: In function 'mt8195_run':
-> /mnt/kernel/sound/soc/sof/mediatek/mt8195/mt8195.c:207:2: error: implicit declaration of function 'sof_hifixdsp_boot_sequence' [-Werror=implicit-function-declaration]
->    207 |  sof_hifixdsp_boot_sequence(sdev, adsp_bootup_addr);
->        |  ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> At top level:
-> /mnt/kernel/sound/soc/sof/mediatek/mt8195/mt8195.c:201:12: error: 'mt8195_run' defined but not used [-Werror=unused-function]
->    201 | static int mt8195_run(struct snd_sof_dev *sdev)
->        |            ^~~~~~~~~~
-> cc1: all warnings being treated as errors
->
-> _boot_sequence is added in "ASoC: SOF: mediatek: Add fw loader and
-> mt8195 dsp ops to load firmware" which is later in the series.
->
-> mt8195_run should be either global, a static inline or not declared in
-> the header at all.
+
+On 10/11/2021 20:24, Fabien Parent wrote:
+> From: Pi-Hsun Shih <pihsun@chromium.org>
+> 
+> Add dpi node to mt8183.
+> 
+> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+> Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+> ---
+>   arch/arm64/boot/dts/mediatek/mt8183.dtsi | 11 +++++++++++
+>   1 file changed, 11 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> index ba4584faca5a..7c283c0b68b5 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> @@ -1443,6 +1443,17 @@ dsi0: dsi@14014000 {
+>   			phy-names = "dphy";
+>   		};
+>   
+> +		dpi0: dpi@14015000 {
+> +			compatible = "mediatek,mt8183-dpi";
+> +			reg = <0 0x14015000 0 0x1000>;
+> +			interrupts = <GIC_SPI 237 IRQ_TYPE_LEVEL_LOW>;
+> +			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
+> +			clocks = <&mmsys CLK_MM_DPI_IF>,
+> +				 <&mmsys CLK_MM_DPI_MM>,
+> +				 <&apmixedsys CLK_APMIXED_TVDPLL>;
+> +			clock-names = "pixel", "engine", "pll";
 
 
-YC,
+We are missing the output port node, don't we?
 
-Please send a fix for this on top of topic/sof-dev. I will take care of 
-the squash and resend.
+Regards,
+Matthias
 
-
-
+> +		};
+> +
+>   		mutex: mutex@14016000 {
+>   			compatible = "mediatek,mt8183-disp-mutex";
+>   			reg = <0 0x14016000 0 0x1000>;
+> 
