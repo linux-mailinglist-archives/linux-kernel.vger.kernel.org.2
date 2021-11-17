@@ -2,58 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B3B454B57
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:49:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C574D454B59
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233455AbhKQQwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 11:52:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32892 "EHLO mail.kernel.org"
+        id S239273AbhKQQwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 11:52:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239260AbhKQQvy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 11:51:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFD8661360;
-        Wed, 17 Nov 2021 16:48:54 +0000 (UTC)
+        id S231639AbhKQQwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 11:52:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 43A246137E;
+        Wed, 17 Nov 2021 16:49:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637167735;
-        bh=8sDlGbeAeXlFYtUmwsi6Q/cW6sg9DnvV8KfzR8I1JaY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=EyWsMmnWC8EWl02dqwlEPy9xDkhtTK9VXmTzeV4oacRzUIypG/bQAnTBFWz2NZ6wh
-         /dkerR9m4424BmSfrkLZXdKXQCUfQRQ6Fz6wcE9mnBUb58TqrHGaNNxvEuB7Si85Lh
-         7X4Uep6U4X24ZfbqN1BoRXjKvmnu4/e1+tQ88DuCQ1qI+gqIgovhkaWpvAZRVSIwOj
-         S4g7+Bcbaxjt+h1+u//3JFs5XJISOUYejGmQLfJmK+4PQp0wJ77tETSMV1JZ749bSt
-         p7CRyNnZsjLoxiU+DroVwLfOm5Di8IgycR0Xj9QMkZj1CBQiP7YaXKvxqV8rHhNLlK
-         810u/s/5jFqdA==
-Date:   Wed, 17 Nov 2021 08:48:54 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jamal Hadi Salim <jhs@mojatatu.com>
-Cc:     Davide Caratti <dcaratti@redhat.com>,
-        Li Zhijian <zhijianx.li@intel.com>, shuah@kernel.org,
-        linux-kselftest@vger.kernel.org, lizhijian@cn.fujitsu.com,
-        linux-kernel@vger.kernel.org, lkp@intel.com, philip.li@intel.com
-Subject: Re: [PATCH v2 1/3] selftests/tc-testing: add exit code
-Message-ID: <20211117084854.0d44d64b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <4ed23cd5-f4a1-aa70-183f-fbea407c19ee@mojatatu.com>
-References: <20211117054517.31847-1-zhijianx.li@intel.com>
-        <YZTDcjv4ZPXv8Oaz@dcaratti.users.ipa.redhat.com>
-        <20211117060535.1d47295a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <4ed23cd5-f4a1-aa70-183f-fbea407c19ee@mojatatu.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=k20201202; t=1637167746;
+        bh=AAfzw2zGlr3QImhF5utGKNVpW4kvwxxjFSW7Q1F0A8I=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=GLpJ7d1DuoFAFbnb9SoA0ixrTfzgIPRObijX8P8GO/PIiJTpzMlIts8zjSamXKXjZ
+         VKcQ2a4QJG+EZ5phe/tKrydUTzse3G8RihioXl1AwFN2sUeJmjYLNgP6RZWEU+JHvR
+         kslKfzBaqFDbdshl3ZolsqXmrgixVq9dO7mLZOat60qY+CTzzqUAIjfMuhEWk8Jp9n
+         lp/JuVm4nmV0fjFcdwZCYtk78EsF5L4A7egSdaTtATFMFDxIN8MiAPy7PLWQrUNyla
+         p7gMyu+FTvtQmDG8qXh9XnTfD/DokEaNjaDoZXuSlq/YijJEStUBlifwIScwRu5WqQ
+         tkTnMHSB64Ilw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 375E860A94;
+        Wed, 17 Nov 2021 16:49:06 +0000 (UTC)
+Subject: Re: [GIT PULL] Hyper-V fixes for 5.16-rc2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20211117114810.favtd35s5gra7lli@liuwe-devbox-debian-v2>
+References: <20211117114810.favtd35s5gra7lli@liuwe-devbox-debian-v2>
+X-PR-Tracked-List-Id: <linux-hyperv.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211117114810.favtd35s5gra7lli@liuwe-devbox-debian-v2>
+X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20211117
+X-PR-Tracked-Commit-Id: f3e613e72f66226b3bea1046c1b864f67a3000a4
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: ee1703cda8dc777e937dec172da55beaf1a74919
+Message-Id: <163716774616.2428.17924057447912417998.pr-tracker-bot@kernel.org>
+Date:   Wed, 17 Nov 2021 16:49:06 +0000
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        kys@microsoft.com, sthemmin@microsoft.com, haiyangz@microsoft.com,
+        Michael Kelley <mikelley@microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Nov 2021 11:41:18 -0500 Jamal Hadi Salim wrote:
-> Did you mean adding a maintainer for tdc or just generally point
-> who/what to involve when making changes? Typically the mailing list
-> should be sufficient. Outside the list, at the moment, any outstanding
-> issues on tdc are discussed/resolved in the monthly TC meetups (where
-> all the stake holders show up)...
+The pull request you sent on Wed, 17 Nov 2021 11:48:10 +0000:
 
-I'm mostly interested in the code review and merging part.
+> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20211117
 
-Would be great to have a MAINTAINERS entry with a set of folks
-who can review patches, so that get_maintainers.pl can do its job.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/ee1703cda8dc777e937dec172da55beaf1a74919
 
-At the very least to make sure netdev is CCed.
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
