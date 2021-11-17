@@ -2,81 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B074D4544AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 11:05:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C663D4544AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 11:06:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236076AbhKQKIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 05:08:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55232 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236057AbhKQKIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 05:08:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1353C61AED;
-        Wed, 17 Nov 2021 10:05:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637143542;
-        bh=q+JjnaZW4YhiIxjh69UWx1tFsJdMHJxlhuR/u0OyNqE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NQ9TzlhGqpwZ/AVvZrrRbslrKmzuMBzBeUJgFzDfXtpLVr3jB2DARc5OOpmMFj7pK
-         FjGG1njwiiboZXTwA3EyCAjGKM6tqWTi71z+MT7tr40Ajei7hFXgHXf4WDZ1yYTdiA
-         VKCem4jxfm+CDU7iNHZYSQ74RghSgtu2hITy4MIMfnaP79bb7FHmAQCnJokR/iCOpN
-         fo55L/qXttJjzWjtOdueb2QxbAPFqMDgGjLwTNOJUOgEM2fEgGrQoMd+Tub8MUeb3T
-         Bj1oGlD/JDO58R2byPaOOJ2y+gGCuzhUUG8s2sYTqsbF7kBr3inmm3qpaQdm2R7kZC
-         jAYwNgx8T50Ig==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mnHoi-0001KY-QH; Wed, 17 Nov 2021 11:05:24 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Ilia Sergachev <silia@ethz.ch>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Stafford Horne <shorne@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH v2 3/3] serial: liteuart: relax compile-test dependencies
-Date:   Wed, 17 Nov 2021 11:05:12 +0100
-Message-Id: <20211117100512.5058-4-johan@kernel.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211117100512.5058-1-johan@kernel.org>
-References: <20211117100512.5058-1-johan@kernel.org>
+        id S236107AbhKQKJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 05:09:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236055AbhKQKJD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 05:09:03 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D246C061746;
+        Wed, 17 Nov 2021 02:06:05 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id q74so5784373ybq.11;
+        Wed, 17 Nov 2021 02:06:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=Ae53HUdIl8LFz+bBsVHItIqLX490EPHb3zwvtgS/7Bw=;
+        b=QsVzAHjv00Jmu6STYR6irh4zaeW8vZFKlBlyKnCGjQpXPHZr59Wvpp3g5LnOIzZDIL
+         fT/drg/fbge7K2fK+W9W+0NnKTLIorrlWXn0hH1tgMAIXIEudNMT6jwlMdCm8w4yZ4XT
+         cm/cLlPMGzsh+TidWmGT3SK0JFysCzIDlxtP0+QfA5KjKU4hJPsfPm2Gi/nNyyJsN7q/
+         GV9ujcFxIpGewMW0eCJusPqBjOICGJ5Y+Pj/6dv/C4D0GlW3VFc79jwHcJTHeiyC+Rw1
+         Wuy30Yi33T9XBxEitlsjrS1DYBADbwxxB726C073E1MQmyIEaHbESNS8OqzGcnvjDDut
+         D0jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=Ae53HUdIl8LFz+bBsVHItIqLX490EPHb3zwvtgS/7Bw=;
+        b=SmESWmXTpIrcFa/jnncGJneXmCAsfngBIFLYf8pbSF4+9eOpDyjB2JIu1VIejcrrj2
+         9+7CKBST0I3Q9ue15AYGueImqfmPf2eVbF5tF/PLTU9LpiJN2Ulsxq67909EfIhdnzHY
+         KWodghWu+BsC9iAvtIhoFD5ImOFwCpTFIWTjLoyhWnywnUqF7CXHldU6pSUlWPH8p6V7
+         zy59X9Rh1zvjF6E3prQ2ZGiLMPRBBnVyIVSCvBjCc6ORL01N5Gb5D53rkZSOd3rIea8E
+         k8NS/V+lLy6of6QsXQpV/0pJZweBCwQWEgXL/z8pYRmO6Zscc4k1piel6gjH3DT8OR5q
+         RhSQ==
+X-Gm-Message-State: AOAM533PPnSbK5jNmiDgQ0K6fOkmq9eYPebotWp6pDbcj4zauxORT0Ni
+        JkNG2+EKnHExiernI/a/oxgc94IQJa+JzK1eZoY=
+X-Google-Smtp-Source: ABdhPJzU1BgAUSR7puZxQLDS+Mr79o55Z4vi4pUEiUI2aegBc0O9017bjF5iDE9lWxfrX9RSWbDJoldTysHQCHYYZGs=
+X-Received: by 2002:a25:e016:: with SMTP id x22mr15764494ybg.534.1637143564337;
+ Wed, 17 Nov 2021 02:06:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Wed, 17 Nov 2021 11:05:53 +0100
+Message-ID: <CAKXUXMzqgyNGEnxAMQqZiXJYSK-X8uB-nxHWwPg41H6yS0GWNg@mail.gmail.com>
+Subject: Reference to the non-existing kconfig symbol SND_SOC_AC97_BUS_NEW
+To:     Robert Jarzmik <robert.jarzmik@free.fr>
+Cc:     Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        alsa-devel@alsa-project.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The LITEX symbol is neither a build or runtime dependency for the
-liteuart serial driver.
+Dear Robert,
 
-LITEX is selected by the "LiteX SoC Controller" driver, which does a
-probe-time register-access sanity check and panics if the SoC has not
-been configured correctly. That driver's Kconfig entry asserts that any
-LiteX driver using the LiteX register accessors should depend on LITEX,
-but currently only the serial driver complies.
+In commit 1c8bc7b3de5e ("ASoC: pxa: switch to new ac97 bus support"),
+you changed the select in config SND_PXA2XX_SOC_AC97 from
+SND_SOC_AC97_BUS to the non-existing symbol SND_SOC_AC97_BUS_NEW.
 
-Relax this LITEX "dependency" in order to make it easier to compile test
-the driver.
+Hence, since then, ./scripts/checkkconfigsymbols.py is reporting this
+invalid reference:
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/tty/serial/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  SND_SOC_AC97_BUS_NEW
+  Referencing files: sound/soc/pxa/Kconfig
 
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 6ff94cfcd9db..fc543ac97c13 100644
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -1533,7 +1533,7 @@ config SERIAL_LITEUART
- 	tristate "LiteUART serial port support"
- 	depends on HAS_IOMEM
- 	depends on OF || COMPILE_TEST
--	depends on LITEX
-+	depends on LITEX || COMPILE_TEST
- 	select SERIAL_CORE
- 	help
- 	  This driver is for the FPGA-based LiteUART serial controller from LiteX
--- 
-2.32.0
+Robert, it seems that you were already informed in the past and
+already acknowledged that some work is required to fix this in this
+email response:
+https://lore.kernel.org/all/878skf1zmp.fsf@belgarion.home/
 
+As of next-20211117, this issue is still unaddressed, though. Are you
+going to address this issue? Is this patch just pending somewhere?
+
+Best regards,
+
+Lukas
