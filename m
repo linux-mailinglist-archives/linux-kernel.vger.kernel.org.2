@@ -2,141 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3938645455A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 12:06:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25FE145455F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 12:09:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236651AbhKQLIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 06:08:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38470 "EHLO
+        id S236658AbhKQLM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 06:12:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232489AbhKQLIv (ORCPT
+        with ESMTP id S232489AbhKQLMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 06:08:51 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0765AC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 03:05:53 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id m14so2310530pfc.9
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 03:05:53 -0800 (PST)
+        Wed, 17 Nov 2021 06:12:25 -0500
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BFFC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 03:09:26 -0800 (PST)
+Received: by mail-wm1-x34a.google.com with SMTP id 145-20020a1c0197000000b0032efc3eb9bcso2686122wmb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 03:09:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uAoFzagV7gWXAixrMiTySrbSBzXa2SFBHBG+ypqEFjI=;
-        b=kBoTNJL92pUfigY0UCb+uuH3lxTq0/UryseOdWAsdO+6uRoC4WBg9kCYHX+uQynEK8
-         HSLeoxHQ1mU8ouZAVPP0ndHIzMiCJJ/p8kl8WSrBrF/vDFN9Vx/hduAkVzFJYicr3ojl
-         XyAAx9AIpSMqU3osiFu9DhLqsz0ojKglsBjN01mXdyhsRL23BcukhatIjcVE2ZSMnMs0
-         THwgh2XVAsPtHFodwCa8tAthOPMgg3Tctv0QHXmncZ+FwaMvj3n5tJanQortURL1nuEs
-         3MFd5AeBLyTCXK7lJhG8GTQwgs/8ktfJAQqiXNCtWpO98vR8h9EQaWWdp7IoiBjS0YlP
-         L4ww==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=9taf4pcDDL8ZRr8QtehQRp327fUKjZJHKOwSYb8Gk0w=;
+        b=sBRFbICWZPYUZ50hE5OAaZtyFLxiooBBZ0pFKbWrkqhO2PngGbFIFfGNSsWBxOxNL9
+         GKnU14KQ6vv06Pg4qGp4oye/2kHN+ZuyhnJUBTWfZ5cf+506nJMxZq3KOMsFX1QZRnzC
+         AqS4WMFTLT5Oq05Du2T883L6PEE6psSeTSCcIRuiXXAWfYG8m7MzHt1Rb8dJVzm2pomJ
+         ZlYtSiLmEYu7ePYTe+j9t57XXvDZhnxIBJ8S9M3jDLrc8XCJp/vHFYRCnztiDmhUy2kx
+         fPwmZTwpv1rYw3rypnFUKo0Qk5D2mRWNkUCLdRSY1j9/zajVcCDfPFXYqqdBDCMWgWAb
+         BOLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uAoFzagV7gWXAixrMiTySrbSBzXa2SFBHBG+ypqEFjI=;
-        b=0nq/BpCg+PKCZhJ4Lig9EOp7F6CI+sYBWz/M5MraY1YEJapA5NYsaCMEHY8fuG+7vv
-         iyvbcsPyeq5y92vYsU9LU7N9hiU9QACIeXbQ1GK0cht8Kn6dqBNF6OaHWKw8LxVac4cs
-         vSUSLEk7S8qEoEQWYw4x8SWLw29MuJXxupaIqIj1s0vtwaEWrUkTMy8rhZbhwzXrW91u
-         qxOvxC0Nc7CIMhGYFqs907k9GpJD/+MKG3uzuVMAdMG91+pTPb8V0Gfy9wGRYkDvUdAj
-         MKNP91aWz5brkmjC6PXH4WAcYHAHwBN85/WD6Gv0QXRGN53bs6hRxBfm9+QdsjDV9i9P
-         2I2Q==
-X-Gm-Message-State: AOAM531egECvyY6YD3YRToAroRlGSAI0AUbcmZIq4uAhR1IipfZqdDag
-        HO1Uwaq2I98J5MdsFFFxwYXPNw==
-X-Google-Smtp-Source: ABdhPJxlwNDhZaoL0pZXHiFAOaEf2U5hfBagTMYxieA1/2Vzl6q+2mKoWYonIDKXlk903PFtUWI9iw==
-X-Received: by 2002:aa7:96b7:0:b0:49f:df90:e4ae with SMTP id g23-20020aa796b7000000b0049fdf90e4aemr47563610pfk.24.1637147152387;
-        Wed, 17 Nov 2021 03:05:52 -0800 (PST)
-Received: from localhost.localdomain.name ([122.161.53.25])
-        by smtp.gmail.com with ESMTPSA id j1sm6339510pfu.47.2021.11.17.03.05.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 03:05:51 -0800 (PST)
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-To:     netdev@vger.kernel.org
-Cc:     vkoul@kernel.org, bhupesh.sharma@linaro.org,
-        bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH net-next] net: stmmac: dwmac-qcom-ethqos: add platform level clocks management
-Date:   Wed, 17 Nov 2021 16:35:38 +0530
-Message-Id: <20211117110538.204948-1-bhupesh.sharma@linaro.org>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=9taf4pcDDL8ZRr8QtehQRp327fUKjZJHKOwSYb8Gk0w=;
+        b=sJJJj4ggVLmbbx5y9gj6EXH5YU4dyx9BWzpMTbyMyr2qfsNCz9d+MuSqVgyxJ5LkEM
+         ZfO8qvLk8ttqr1ayFnSeTvtKxKBb3QPMnoX+e8QEom/5Gcps57XyWpSQzQPAB9ntsZFq
+         NQsrCU0++ixSyVoll/xzjx90jv6lkPCab9U6XyY+cpVkJK3TVoAt4JkLni7wrCjP0p1q
+         AuCmjFXmtY3NQ3ebOMR/EHRWT8HZ6KrzQ/cR6qy52v8FP12utR6jlq/62RlUnVtL3Zer
+         uVThqt4iycdiRoN+jXg+XDo46JRZ4Bhp7rv9T4vGxrv8YV0O619bXUy1qCyNI6vkhzZq
+         AD8A==
+X-Gm-Message-State: AOAM5301EL/KjxFiceC/o2TKm5JTiKhpj0ruUQma4ezs1ifXDVrPCsCd
+        4K7EweIH+w5SfmGwiDZVAMG2Gben9Q==
+X-Google-Smtp-Source: ABdhPJyDoLkrFyRZ+xSL7lowBi50Bs7Xbn6xBWOipL4CkZhKDFfQld24YCcWtJPZ+VYkOkwh9kiQnGMQOw==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:80aa:59e4:a6a7:e11e])
+ (user=elver job=sendgmr) by 2002:a1c:9dc6:: with SMTP id g189mr16624727wme.87.1637147365103;
+ Wed, 17 Nov 2021 03:09:25 -0800 (PST)
+Date:   Wed, 17 Nov 2021 12:09:16 +0100
+Message-Id: <20211117110916.97944-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+Subject: [PATCH] kasan: test: add globals left-out-of-bounds test
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Kaiwan N Billimoria <kaiwan.billimoria@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Split clocks settings from init callback into clks_config callback,
-which could support platform level clock management.
+Add a test checking that KASAN generic can also detect out-of-bounds
+accesses to the left of globals.
 
-Cc: David S. Miller <davem@davemloft.net>
-Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Unfortunately it seems that GCC doesn't catch this (tested GCC 10, 11).
+The main difference between GCC's globals redzoning and Clang's is that
+GCC relies on using increased alignment to producing padding, where
+Clang's redzoning implementation actually adds real data after the
+global and doesn't rely on alignment to produce padding. I believe this
+is the main reason why GCC can't reliably catch globals out-of-bounds in
+this case.
+
+Given this is now a known issue, to avoid failing the whole test suite,
+skip this test case with GCC.
+
+Reported-by: Kaiwan N Billimoria <kaiwan.billimoria@gmail.com>
+Signed-off-by: Marco Elver <elver@google.com>
 ---
- .../stmicro/stmmac/dwmac-qcom-ethqos.c        | 26 ++++++++++++++++---
- 1 file changed, 23 insertions(+), 3 deletions(-)
+ lib/test_kasan.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-index 5c74b6279d69..8fea48e477e6 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-@@ -447,6 +447,24 @@ static void ethqos_fix_mac_speed(void *priv, unsigned int speed)
- 	ethqos_configure(ethqos);
+diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+index 67ed689a0b1b..69c32c91420b 100644
+--- a/lib/test_kasan.c
++++ b/lib/test_kasan.c
+@@ -700,7 +700,7 @@ static void kmem_cache_bulk(struct kunit *test)
+ 
+ static char global_array[10];
+ 
+-static void kasan_global_oob(struct kunit *test)
++static void kasan_global_oob_right(struct kunit *test)
+ {
+ 	/*
+ 	 * Deliberate out-of-bounds access. To prevent CONFIG_UBSAN_LOCAL_BOUNDS
+@@ -723,6 +723,19 @@ static void kasan_global_oob(struct kunit *test)
+ 	KUNIT_EXPECT_KASAN_FAIL(test, *(volatile char *)p);
  }
  
-+static int ethqos_clks_config(void *priv, bool enabled)
++static void kasan_global_oob_left(struct kunit *test)
 +{
-+	struct qcom_ethqos *ethqos = priv;
-+	int ret = 0;
++	char *volatile array = global_array;
++	char *p = array - 3;
 +
-+	if (enabled) {
-+		ret = clk_prepare_enable(ethqos->rgmii_clk);
-+		if (ret) {
-+			dev_err(&ethqos->pdev->dev, "rgmii_clk enable failed\n");
-+			return ret;
-+		}
-+	} else {
-+		clk_disable_unprepare(ethqos->rgmii_clk);
-+	}
-+
-+	return ret;
++	/*
++	 * GCC is known to fail this test, skip it.
++	 */
++	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_CC_IS_CLANG);
++	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_KASAN_GENERIC);
++	KUNIT_EXPECT_KASAN_FAIL(test, *(volatile char *)p);
 +}
 +
- static int qcom_ethqos_probe(struct platform_device *pdev)
+ /* Check that ksize() makes the whole object accessible. */
+ static void ksize_unpoisons_memory(struct kunit *test)
  {
- 	struct device_node *np = pdev->dev.of_node;
-@@ -466,6 +484,8 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
- 		return PTR_ERR(plat_dat);
- 	}
- 
-+	plat_dat->clks_config = ethqos_clks_config;
-+
- 	ethqos = devm_kzalloc(&pdev->dev, sizeof(*ethqos), GFP_KERNEL);
- 	if (!ethqos) {
- 		ret = -ENOMEM;
-@@ -489,7 +509,7 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
- 		goto err_mem;
- 	}
- 
--	ret = clk_prepare_enable(ethqos->rgmii_clk);
-+	ret = ethqos_clks_config(ethqos, true);
- 	if (ret)
- 		goto err_mem;
- 
-@@ -512,7 +532,7 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
- 	return ret;
- 
- err_clk:
--	clk_disable_unprepare(ethqos->rgmii_clk);
-+	ethqos_clks_config(ethqos, false);
- 
- err_mem:
- 	stmmac_remove_config_dt(pdev, plat_dat);
-@@ -530,7 +550,7 @@ static int qcom_ethqos_remove(struct platform_device *pdev)
- 		return -ENODEV;
- 
- 	ret = stmmac_pltfr_remove(pdev);
--	clk_disable_unprepare(ethqos->rgmii_clk);
-+	ethqos_clks_config(ethqos, false);
- 
- 	return ret;
- }
+@@ -1160,7 +1173,8 @@ static struct kunit_case kasan_kunit_test_cases[] = {
+ 	KUNIT_CASE(kmem_cache_oob),
+ 	KUNIT_CASE(kmem_cache_accounted),
+ 	KUNIT_CASE(kmem_cache_bulk),
+-	KUNIT_CASE(kasan_global_oob),
++	KUNIT_CASE(kasan_global_oob_right),
++	KUNIT_CASE(kasan_global_oob_left),
+ 	KUNIT_CASE(kasan_stack_oob),
+ 	KUNIT_CASE(kasan_alloca_oob_left),
+ 	KUNIT_CASE(kasan_alloca_oob_right),
 -- 
-2.31.1
+2.34.0.rc2.393.gf8c9666880-goog
 
