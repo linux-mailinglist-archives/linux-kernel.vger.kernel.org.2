@@ -2,91 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD46454A44
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF55B454A46
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:47:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237577AbhKQPtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 10:49:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238768AbhKQPs2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 10:48:28 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F0EC061570;
-        Wed, 17 Nov 2021 07:45:29 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id np6-20020a17090b4c4600b001a90b011e06so2919587pjb.5;
-        Wed, 17 Nov 2021 07:45:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=jRWOIgdwNKjUOncp0Boswtyyoo/ED5REIZEfVjwOOxM=;
-        b=AffhQ37eX0tpXpIsFMUOCmh0Pejq4xvJr4opADrW2VohyoEK7qROUP6IyTiaKT3z+R
-         Q/6TZvyQCNO13R/6c6YPZnIfyKP0JjnnwE8/zLQQ2prc74kGlsALZOd35I5UgGmRvrHH
-         T7z9a6j8KH7IKfQWAcb3nxEPA1St4idTkViaaes481XU4wbWYU4MguNrYDDErT8gdjjd
-         vKb00kjekuNownXt0dg0krT2uoBtTcda9IFskwBgjh4zXWHkeQDvIiu+R9lVajqCb457
-         o2n3cN96OEHDJkLxOYOgWN+ac3peZaf4xNXycFTlyLihzE6tsBJ3cYKuiUzUHZity+J6
-         iU5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=jRWOIgdwNKjUOncp0Boswtyyoo/ED5REIZEfVjwOOxM=;
-        b=GuEMpp0VpUZhCBeAS9QllWG0iOLbnOYkDmANth34u0Kol/T86LY6aSHHYM6zEPn1/C
-         DwPAOOWLV1b7XF4FNCJiSNpfnvti+fHhToQ0dXY9DtMsdOWMnLuCRxJzM30y+QgBWF18
-         t5dQvOQlOT3ejO82mqPINXveNLoFLwcrRYt8fPcBgTGNv6Nxq+7P3k5U6CnK9nhUZ3A1
-         OqY1ZrlDwVRq40yzhnOBAnutBmyYGgmgIHj+4KCS/rSEk5wLhJmrYvQWyEWdCnRhRifh
-         +pFQ5+c32w0Y19G63JmES7gTPECDXRbubqC6qISmImB1q24OXPF6srhCKMXAA5a1vIZG
-         smOA==
-X-Gm-Message-State: AOAM5323Shd/OPawqpJd3oCR7kI+FSBANfB+2edj2peZWcr10SXbo83l
-        hocf9DTykU83aFVIS9yO6SchxVBoS1LdSzCVb5g=
-X-Google-Smtp-Source: ABdhPJwRNBU4IfR5Dv9ALDO0MzdFP5SAauAREUovfnwSmDH6CT82yOxRRDpG64lolcGJS0yIIeaAuw==
-X-Received: by 2002:a17:90a:4a06:: with SMTP id e6mr761298pjh.228.1637163928418;
-        Wed, 17 Nov 2021 07:45:28 -0800 (PST)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id lw1sm5639647pjb.38.2021.11.17.07.45.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 07:45:27 -0800 (PST)
-Message-ID: <61952397.1c69fb81.db822.015c@mx.google.com>
-Date:   Wed, 17 Nov 2021 07:45:27 -0800 (PST)
-X-Google-Original-Date: Wed, 17 Nov 2021 15:45:27 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20211117101457.890809587@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 000/577] 5.10.80-rc3 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
+        id S238764AbhKQPuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 10:50:06 -0500
+Received: from foss.arm.com ([217.140.110.172]:59394 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229644AbhKQPuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 10:50:05 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1A2261FB;
+        Wed, 17 Nov 2021 07:47:07 -0800 (PST)
+Received: from [10.57.24.78] (unknown [10.57.24.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 62F7D3F5A1;
+        Wed, 17 Nov 2021 07:47:05 -0800 (PST)
+Subject: Re: [PATCH] base: arch_topology: Use policy->max to calculate
+ freq_factor
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Thara Gopinath <thara.gopinath@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+References: <20211115201010.68567-1-thara.gopinath@linaro.org>
+ <CAJZ5v0gezoJZVH69Y7fDwa-uLhE0PaqFrzM=0bequxpE_749zg@mail.gmail.com>
+ <8f7397e3-4e92-c84d-9168-087967f4d683@arm.com>
+ <CAJZ5v0iRDtr5yae5UndwU2SmVL4cak=BN0irVGbgNzQiS8K3mA@mail.gmail.com>
+ <7f077790-da4c-35b8-0eea-cbdc630f9d2a@arm.com>
+ <CAJZ5v0gtkQYfeEELLrNjRQmywkxrtqzVZp1Kb-f9JPsqEckevw@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <04a9a7e5-30c3-3a65-de19-ce2319d68260@arm.com>
+Date:   Wed, 17 Nov 2021 15:47:03 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <CAJZ5v0gtkQYfeEELLrNjRQmywkxrtqzVZp1Kb-f9JPsqEckevw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Nov 2021 11:16:12 +0100, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.80 release.
-> There are 577 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+
+
+On 11/17/21 3:17 PM, Rafael J. Wysocki wrote:
+> On Wed, Nov 17, 2021 at 4:08 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>>
+>>
+>> On 11/17/21 12:49 PM, Rafael J. Wysocki wrote:
+>>> On Wed, Nov 17, 2021 at 11:46 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>>
+>>>> Hi Rafael,
+>>>>
+>>>> On 11/16/21 7:05 PM, Rafael J. Wysocki wrote:
+>>>>> On Mon, Nov 15, 2021 at 9:10 PM Thara Gopinath
+>>>>> <thara.gopinath@linaro.org> wrote:
+>>>>>>
+>>>>>> cpuinfo.max_freq can reflect boost frequency if enabled during boot.  Since
+>>>>>> we don't consider boost frequencies while calculating cpu capacities, use
+>>>>>> policy->max to populate the freq_factor during boot up.
+>>>>>
+>>>>> I'm not sure about this.  schedutil uses cpuinfo.max_freq as the max frequency.
+>>>>
+>>>> Agree it's tricky how we treat the boost frequencies and also combine
+>>>> them with thermal pressure.
+>>>> We probably would have consider these design bits:
+>>>> 1. Should thermal pressure include boost frequency?
+>>>
+>>> Well, I guess so.
+>>>
+>>> Running at a boost frequency certainly increases thermal pressure.
+>>>
+>>>> 2. Should max capacity 1024 be a boost frequency so scheduler
+>>>>       would see it explicitly?
+>>>
+>>> That's what it is now if cpuinfo.max_freq is a boost frequency.
+>>>
+>>>> - if no, then schedutil could still request boost freq thanks to
+>>>>      map_util_perf() where we add 25% to the util and then
+>>>>      map_util_freq() would return a boost freq when util was > 1024
+>>>>
+>>>>
+>>>> I can see in schedutil only one place when cpuinfo.max_freq is used:
+>>>> get_next_freq(). If the value stored in there is a boost,
+>>>> then don't we get a higher freq value for the same util?
+>>>
+>>> Yes. we do, which basically is my point.
+>>>
+>>> The schedutil's response is proportional to cpuinfo.max_freq and that
+>>> needs to be taken into account for the results to be consistent.
+>>>
+>>
+>> This boost thing wasn't an issue for us, because we didn't have
+>> platforms which come with it (till recently). I've checked that you have
+>> quite a few CPUs which support huge boost freq, e.g. 5GHz vs. 3.6GHz
+>> nominal max freq [1]. Am I reading this correctly as kernel boost freq?
 > 
-> Responses should be made by Fri, 19 Nov 2021 10:11:34 +0000.
-> Anything received after that time might be too late.
+> That actually depends on the driver.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.80-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
+> For instance, intel_pstate can be run with turbo (== boost) enabled or
+> disabled.  If turbo is enabled, cpuinfo.max_freq is the max turbo
+> frequency.
 > 
-> thanks,
+> In acpi_cpufreq things are sort of weird, because the highest bin in
+> there is a turbo frequency, but not the max one and it is used to
+> enable the entire turbo range.  The driver sets cpuinfo.max_freq to
+> this one if boost is enabled IIRC.
 > 
-> greg k-h
+>> Do you represent this 5GHz as 1024 capacity?
+> 
+> Yes (but see above).
+> 
+>>   From this schedutil get_next_freq() I would guess yes.
+>>
+>> I cannot find if you use thermal pressure, could you help me with this,
+>> please?
+> 
+> It is not used on x86 AFAICS.
 > 
 
-5.10.80-rc3 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+Thank you Rafael for all these information. We will have to re-visit
+many places on our platform and how this boost should work. It looks
+for the first glance that its a full-time task for one of our
+team members. We would have to organize this investigation
+internally to get better understanding of all affected places.
 
+While this patch change is easy, since the policy->max should
+contain the nominal max freq at this setup time (which is what
+we want for calculating capacity), the schedutil usage of
+cpuinfo.max_freq is not easy to judge and solve. Currently,
+on our platforms we stick to the design where nominal max freq
+is 1024 capacity, but I don't know if that would hold for long...
