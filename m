@@ -2,186 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12772454BA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:09:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 778BB454BAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:10:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239112AbhKQRMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 12:12:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233179AbhKQRMl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 12:12:41 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B0BC061570;
-        Wed, 17 Nov 2021 09:09:42 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id k37-20020a05600c1ca500b00330cb84834fso5370056wms.2;
-        Wed, 17 Nov 2021 09:09:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=0B+N0FA61IWnA1l5AfQzrBop1ZHsqAbfOO+sgyYzC58=;
-        b=Ks1SXb180c0C9y2x2MA1wxqwqNhxfF1eIbBVXQ/pLIUBawraenmhHjlLtFqYaP5rRM
-         JD99zoH+3g8POKfTifx0n5M9w/xP9atLflYx35pxWWgJzIcz9Ll4qhRRDSHODLp36Tte
-         ztIbX8l0EsVjCP7get9NWkhCrC8fkXfYz/yRWEz/C7M8oOOnleGUUMwiep+6unGy6Lok
-         j6e8qtJKTanvbHhlgdguDdZXc3hTYNVDjRlYLFxtIdilrFj2Vf4QiO4A8bBrq56mm6wR
-         +4uV01kPmJhbAtICFVFWMOPdOL2/uCbbKJdkztnSBCb0+Dy3zAppcdWqKWeV3ZcCNazr
-         KmFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=0B+N0FA61IWnA1l5AfQzrBop1ZHsqAbfOO+sgyYzC58=;
-        b=bEgONa681ED8RQZlD92zS5vmr1SZ3vhsT331o4FylhTyLd5Dd/A27iKOzjUMwSKdq2
-         k8rHwexs/Y+WTxqKi+P1wGB1dG7H1LkWVPXNEhZcE0XdY9cijaV4mbbRBZBIE0zsBuzt
-         Bo2Zv6N5DzaDswwtZX7O+DaHKFHzvOchZnvsTVnlDntChZpSEeL98ZYXFugXXqdR2K9N
-         K5DlnzRW4hVPSdIgYOjadJFE1kUCwI8TuizNVFuPMq3BDLOKbfssWRC/6sw8qSctOJIy
-         nl0KhPIEx317YPJe3KmkVH5kX8/z8A5rjM9hisKp0SpRTTp3Qd8i7I/EJkVieVi/x/Zu
-         WEbA==
-X-Gm-Message-State: AOAM530no5cNDwbKFZPv+1SS5qc5IFJaFE1YtY2iYfdL7ltTGIlXYdDN
-        tPFvkSqvED/TiWwVN7jtMP0QkER6o4w=
-X-Google-Smtp-Source: ABdhPJxGcBEQhtQFfbKcOJuuOam7iLbD22APsVdCohpJtRkkAnBdMxBD3SvwJTW07cLtCktLxwczaw==
-X-Received: by 2002:a7b:ce8c:: with SMTP id q12mr1396307wmj.91.1637168981409;
-        Wed, 17 Nov 2021 09:09:41 -0800 (PST)
-Received: from [192.168.0.18] (static-160-219-86-188.ipcom.comunitel.net. [188.86.219.160])
-        by smtp.gmail.com with ESMTPSA id m17sm432110wrz.22.2021.11.17.09.09.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 09:09:40 -0800 (PST)
-Message-ID: <acf4a474-7abf-49e5-aa4e-a25d101fb3d8@gmail.com>
-Date:   Wed, 17 Nov 2021 18:09:39 +0100
+        id S239276AbhKQRNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 12:13:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239189AbhKQRNx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 12:13:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72085619EA;
+        Wed, 17 Nov 2021 17:10:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637169054;
+        bh=KGmd4dlCzXTx0ktWJ7d3n0IoBMN+qSH6lMejQB+vFeQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HaAukoFgPTm520Wo37EMhEZoim660Vzl505RvlYVrSMqH3eVj1m+12QYnMPogZl7w
+         lpAMVk77T0a7687qJaOSJ/v0+dgMBdbCnKMGZfkDqtQKAHrGC9R+4hR+KMDLVRbm9/
+         +jPKXJs25lfC39vud1TDMDcnQoVbjGsG+oJb9A1H8Wnv/uiRPJyazmEg2YVfNcjHkI
+         oiuWqJGbwHfW71l+PMBMKt6ltT7hYQTYKVgeRwNKHY7Ga9dmt+i42o0sA5mkR5Oyvx
+         7681GGSvolROElW0yPKndjVZcW+Ftv6fs6CwhNFS6pKAdeGuHdBfqMXDwcd1rNLvlU
+         BWI4LxeHk3QxA==
+Date:   Wed, 17 Nov 2021 09:10:54 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2 20/28] iomap: Convert iomap_write_begin() and
+ iomap_write_end() to folios
+Message-ID: <20211117171054.GX24307@magnolia>
+References: <20211108040551.1942823-1-willy@infradead.org>
+ <20211108040551.1942823-21-willy@infradead.org>
+ <20211117043127.GK24307@magnolia>
+ <YZUSPga7V797gY4Z@casper.infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v3 4/4] arm64: dts: mediatek: mt8192: fix i2c node names
-Content-Language: en-US
-To:     Fabien Parent <fparent@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211110194959.20611-1-fparent@baylibre.com>
- <20211110194959.20611-4-fparent@baylibre.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-In-Reply-To: <20211110194959.20611-4-fparent@baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZUSPga7V797gY4Z@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/11/2021 20:49, Fabien Parent wrote:
-> Fix the i2c node names to be compliant to the YAML schema. The
-> I2C node name should match the following pattern: "^i2c@[0-9a-f]+$".
+On Wed, Nov 17, 2021 at 02:31:26PM +0000, Matthew Wilcox wrote:
+> On Tue, Nov 16, 2021 at 08:31:27PM -0800, Darrick J. Wong wrote:
+> > > @@ -764,16 +761,17 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
+> > >  			break;
+> > >  		}
+> > >  
+> > > -		status = iomap_write_begin(iter, pos, bytes, &page);
+> > > +		status = iomap_write_begin(iter, pos, bytes, &folio);
+> > >  		if (unlikely(status))
+> > >  			break;
+> > >  
+> > > +		page = folio_file_page(folio, pos >> PAGE_SHIFT);
+> > >  		if (mapping_writably_mapped(iter->inode->i_mapping))
+> > >  			flush_dcache_page(page);
+> > >  
+> > >  		copied = copy_page_from_iter_atomic(page, offset, bytes, i);
+> > 
+> > Hrmm.  In principle (or I guess even a subsequent patch), if we had
+> > multi-page folios, could we simply loop the pages in the folio instead
+> > of doing a single page and then calling back into iomap_write_begin to
+> > get (probably) the same folio?
+> > 
+> > This looks like a fairly straightforward conversion, but I was wondering
+> > about that one little point...
 > 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+> Theoretically, yes, we should be able to do that.  But all of this code
+> is pretty subtle ("What if we hit a page fault?  What if we're writing
+> to part of this folio from an mmap of a different part of this folio?
+> What if it's !Uptodate?  What if we hit this weird ARM super-mprotect
+> memory tag thing?  What if ...") and, frankly, I got scared.  So I've
+> left that as future work; someone else can try to wrap their brain around
+> all of this.
 
-Applied to v5.16-next/dts64
+<nod> That's roughly the same conclusion I came to -- conceptually we
+could keep walking pages until we hit /any/ problem or other difference
+with the first page that we don't feel like dealing with, and pass that
+count to iomap_end... but no need to try that right this second.
 
-Thanks
+Just checking that I grokked what's going on in this series. :)
 
-> ---
-> 
-> v3: rebased
-> v2: new patch
-> 
->   arch/arm64/boot/dts/mediatek/mt8192.dtsi | 20 ++++++++++----------
->   1 file changed, 10 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> index c7c7d4e017ae..53d790c335f9 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> @@ -479,7 +479,7 @@ audsys: clock-controller@11210000 {
->   			#clock-cells = <1>;
->   		};
->   
-> -		i2c3: i2c3@11cb0000 {
-> +		i2c3: i2c@11cb0000 {
->   			compatible = "mediatek,mt8192-i2c";
->   			reg = <0 0x11cb0000 0 0x1000>,
->   			      <0 0x10217300 0 0x80>;
-> @@ -498,7 +498,7 @@ imp_iic_wrap_e: clock-controller@11cb1000 {
->   			#clock-cells = <1>;
->   		};
->   
-> -		i2c7: i2c7@11d00000 {
-> +		i2c7: i2c@11d00000 {
->   			compatible = "mediatek,mt8192-i2c";
->   			reg = <0 0x11d00000 0 0x1000>,
->   			      <0 0x10217600 0 0x180>;
-> @@ -511,7 +511,7 @@ i2c7: i2c7@11d00000 {
->   			status = "disabled";
->   		};
->   
-> -		i2c8: i2c8@11d01000 {
-> +		i2c8: i2c@11d01000 {
->   			compatible = "mediatek,mt8192-i2c";
->   			reg = <0 0x11d01000 0 0x1000>,
->   			      <0 0x10217780 0 0x180>;
-> @@ -524,7 +524,7 @@ i2c8: i2c8@11d01000 {
->   			status = "disabled";
->   		};
->   
-> -		i2c9: i2c9@11d02000 {
-> +		i2c9: i2c@11d02000 {
->   			compatible = "mediatek,mt8192-i2c";
->   			reg = <0 0x11d02000 0 0x1000>,
->   			      <0 0x10217900 0 0x180>;
-> @@ -543,7 +543,7 @@ imp_iic_wrap_s: clock-controller@11d03000 {
->   			#clock-cells = <1>;
->   		};
->   
-> -		i2c1: i2c1@11d20000 {
-> +		i2c1: i2c@11d20000 {
->   			compatible = "mediatek,mt8192-i2c";
->   			reg = <0 0x11d20000 0 0x1000>,
->   			      <0 0x10217100 0 0x80>;
-> @@ -556,7 +556,7 @@ i2c1: i2c1@11d20000 {
->   			status = "disabled";
->   		};
->   
-> -		i2c2: i2c2@11d21000 {
-> +		i2c2: i2c@11d21000 {
->   			compatible = "mediatek,mt8192-i2c";
->   			reg = <0 0x11d21000 0 0x1000>,
->   			      <0 0x10217180 0 0x180>;
-> @@ -569,7 +569,7 @@ i2c2: i2c2@11d21000 {
->   			status = "disabled";
->   		};
->   
-> -		i2c4: i2c4@11d22000 {
-> +		i2c4: i2c@11d22000 {
->   			compatible = "mediatek,mt8192-i2c";
->   			reg = <0 0x11d22000 0 0x1000>,
->   			      <0 0x10217380 0 0x180>;
-> @@ -588,7 +588,7 @@ imp_iic_wrap_ws: clock-controller@11d23000 {
->   			#clock-cells = <1>;
->   		};
->   
-> -		i2c5: i2c5@11e00000 {
-> +		i2c5: i2c@11e00000 {
->   			compatible = "mediatek,mt8192-i2c";
->   			reg = <0 0x11e00000 0 0x1000>,
->   			      <0 0x10217500 0 0x80>;
-> @@ -607,7 +607,7 @@ imp_iic_wrap_w: clock-controller@11e01000 {
->   			#clock-cells = <1>;
->   		};
->   
-> -		i2c0: i2c0@11f00000 {
-> +		i2c0: i2c@11f00000 {
->   			compatible = "mediatek,mt8192-i2c";
->   			reg = <0 0x11f00000 0 0x1000>,
->   			      <0 0x10217080 0 0x80>;
-> @@ -620,7 +620,7 @@ i2c0: i2c0@11f00000 {
->   			status = "disabled";
->   		};
->   
-> -		i2c6: i2c6@11f01000 {
-> +		i2c6: i2c@11f01000 {
->   			compatible = "mediatek,mt8192-i2c";
->   			reg = <0 0x11f01000 0 0x1000>,
->   			      <0 0x10217580 0 0x80>;
-> 
+--D
