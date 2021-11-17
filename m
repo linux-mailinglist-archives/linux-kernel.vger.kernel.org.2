@@ -2,162 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0B6454479
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D02B745447B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235804AbhKQKCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 05:02:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235754AbhKQKC3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 05:02:29 -0500
-Received: from lb1-smtp-cloud9.xs4all.net (lb1-smtp-cloud9.xs4all.net [IPv6:2001:888:0:108::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48977C061570;
-        Wed, 17 Nov 2021 01:59:31 -0800 (PST)
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id nHirmNgQd1HGJnHiumpHcJ; Wed, 17 Nov 2021 10:59:29 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1637143169; bh=Q57bTarpphqLLfnykx8xjliEzWZFY1oyWctGEoHcx4c=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=MoB2V/5js2Vzzg6hnXQTnSWGihk1rbOrBzXqUlU/qoXelomDUu1MMkbtSui95NMMk
-         TAQCevcQ2IZ6gwaWgRGSCYirBOa4FalCkpT2q6m5Zh3EV+vCeTFJfizWcJu/jc+HYz
-         z634GrynK8HBFVh8VI5hqoenE8ly0adrtVu33dKJb1hUhbly+swJ5EjttzpBu9DM2s
-         +zu2Mvy5uJGGu+ST+/0jWy5XMkymp7xpFphT3yKbLTUTHLOHWlYYj0Ovw8NdilpdGK
-         jK2PfyHZ8GAri7PeUhHGgGVri4FDywsmN1RY2DRQom4DOd64ntdOnMWlO0EpQ3NpDT
-         zieXyq1vQlW6Q==
-Subject: Re: [PATCH v7 00/11] VP9 codec V4L2 control interface
-To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev
-Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com
-References: <20210929160439.6601-1-andrzej.p@collabora.com>
- <9db47ebc-cb95-872d-feb4-d6432a74f2cb@xs4all.nl>
- <29f27bad-28ae-12ff-eed6-79902bd5b722@collabora.com>
- <b8f8ee2e-ea98-4700-f4ca-f0af68c9de5c@xs4all.nl>
- <cdbbe5e6-0811-1276-1f62-fc7ad2628a30@collabora.com>
- <4da113ef-7b12-3729-0186-f746901c892a@xs4all.nl>
- <69f16bb0-4b5a-18b3-e244-60deb029d239@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <2cd7a7f0-72d6-1a0e-b5d2-87ff809c2acd@xs4all.nl>
-Date:   Wed, 17 Nov 2021 10:59:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <69f16bb0-4b5a-18b3-e244-60deb029d239@collabora.com>
-Content-Type: text/plain; charset=utf-8
+        id S235890AbhKQKCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 05:02:37 -0500
+Received: from mail-bo1ind01olkn0177.outbound.protection.outlook.com ([104.47.101.177]:10961
+        "EHLO IND01-BO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235849AbhKQKCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 05:02:35 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CPfYYop0MOB/kLtvd29yesdif/cBz2LLHIRIB9PSs6hEDfDVTRndtFgUgzjQRO3y0V83OD99Q1VtIM3U6T6cgJhUQQm2rcFDMHTaUhh0ubsKyXqQHTTGwd2LN13DD+HfS0CRAF7mb+BB/c1Z5vsiblxkwMfBfo8YVGTADqmGd3IYSAmWP7VBse/qT2pnZeTGs401lElS8pngtgdf/EUYwdHw3NKGujG4KyvxCMKqAPsdzr+gobw+ITF5v9AV70zby/WCZLT8XSv9kFGpZx2Mp/0DcHOTOZ9sNOtwEqMfR1vL8EmDD/aShdRz2ucgZezB7zHUK4u7o9a+4uk/SF0H2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NOcIhiLPBmkrhtuYNAPHqhlu7mjE0u2B8nT02pKl4ME=;
+ b=b8teu8QWW7X/PKzuQlD4JDZhHB9wxf/x54znUB1MaIvMNQtZZIhlMNAzVAHujn1j0h17Jp5EDXfcruUtcHMW6i2ivP5nNjgSIkYtI77O51oSaefqtAsJZN/GCd7sbgOgAisrUSV1jJZ7tzVFKIGoxYbSCHEiOfw+TwUi0RfskAbY9IAUGMx8xxt+8vflsG9l95QQ9jx4WmHOkmWAbpp25oD7zxGWsT5OL6LHa+QZkJZHQWTXXZs+j4yHxRgY+FxsX5am6VmJ0TT86H06A+IHak3u2pxyFVpXtJbgmwGi+lDzRH8PuwgVojUM7Tq5CBNE3HYrRViTLRLCeug6488AFw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=live.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NOcIhiLPBmkrhtuYNAPHqhlu7mjE0u2B8nT02pKl4ME=;
+ b=FeZoq36l98oXuRG8AVnuD36MI18/XT2NeVpTz/9WmroX8rccicmCXa1yLpPxT40QDCufR7Uj4BdYmZsYAI7PxU/6MOfus28ZTACySQ5msgZSiCpsoqJ5C4pB5gPW0VM13t22wdeXJf88CMvzZS3AHeI/55jraiS659olPBHwMEcfP/aDx4h4+sIlq8OcFFQW8ndMxGxf3BlimTv1xEM9dyBAK9iwrrFet4tFa06idkjJ8oo6NJOfljwqRX+lK1zOs9HztzV2mHKDKaqdcJmwjT1EI/t3FfdowmPKFSbyuunSQrQfRmZcSva0dtY2WiptBo99vhXaKoWxvKQpeNkITg==
+Received: from PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:1b::13)
+ by PN3PR01MB6072.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:6f::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.27; Wed, 17 Nov
+ 2021 09:59:31 +0000
+Received: from PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM
+ ([fe80::cdc4:def5:dc73:28f7]) by PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM
+ ([fe80::cdc4:def5:dc73:28f7%7]) with mapi id 15.20.4690.026; Wed, 17 Nov 2021
+ 09:59:31 +0000
+From:   Aditya Garg <gargaditya08@live.com>
+To:     Thorsten Leemhuis <regressions@leemhuis.info>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        Orlando Chamberlain <redecorating@protonmail.com>,
+        Daniel Winkler <danielwinkler@google.com>,
+        Johan Hedberg <johan.hedberg@intel.com>,
+        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+        Sonny Sasaka <sonnysasaka@chromium.org>
+Subject: Re: [PATCHv2] Bluetooth: quirk disabling LE Read Transmit Power
+Thread-Topic: [PATCHv2] Bluetooth: quirk disabling LE Read Transmit Power
+Thread-Index: AQHX0vJ15A6zQVMGfEiNGmUN6kF0hKv3vuGAgA4gSACAAAxJAIAABrOAgAEuUwCAAEInAIAAIdSAgAAEmwCAAASpgA==
+Date:   Wed, 17 Nov 2021 09:59:31 +0000
+Message-ID: <7E546B37-E7DE-454B-8AD2-F54F9C8C690D@live.com>
+References: <20211001083412.3078-1-redecorating@protonmail.com>
+ <CABBYNZLjSfcG_KqTEbL6NOSvHhA5-b1t_S=3FQP4=GwW21kuzg@mail.gmail.com>
+ <972034A8-4B22-4FEE-9B37-C0A7C7ADD60C@live.com> <YYZr14zwHnd52rQ7@kroah.com>
+ <829A2DF8-818E-4AF1-84F9-49B5822F9146@live.com> <YYePw07y2DzEPSBR@kroah.com>
+ <70a875d0-7162-d149-dbc1-c2f5e1a8e701@leemhuis.info>
+ <20211116090128.17546-1-redecorating@protonmail.com>
+ <e75bf933-9b93-89d2-d73f-f85af65093c8@leemhuis.info>
+ <3B8E16FA-97BF-40E5-9149-BBC3E2A245FE@live.com> <YZSuWHB6YCtGclLs@kroah.com>
+ <52DEDC31-EEB2-4F39-905F-D5E3F2BBD6C0@live.com>
+ <8919a36b-e485-500a-2722-529ffa0d2598@leemhuis.info>
+In-Reply-To: <8919a36b-e485-500a-2722-529ffa0d2598@leemhuis.info>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfJfoI4N+VQeaXH3/XH5UsnvheyRxmRBR+FkxY+czh5yv1C5Bw3BQJm94bvBkiLAIy5gW2fB5PqOM//YNmZMfKRK9FpVOCe7+BSPBpf25mylyVsFFfknS
- q7MB71BmvNKuVBxkxU86PXjxtG+hAyggsUFRECUt4JEe9z0CFbMh5lQ0YhhW1toItPrJHbaZ+asxItagcq4namTUFNtMi9hRfJ+F1cW2qD60Mmccu7thd9PL
- TGJjFABdepRojBLVIz1zK70tQx+HKYa7ad7m0JuO8muAH4OnqgoI5NrU6Pw+YGwdlAOoy6iVaO6kw/+PDqMUrtmzbu7xfa5asa0FOaXxcc667q7lmfsNtuwp
- fwPxeffRqurCj/PH2q3+ns48PGkPXyqSws3IRCxNSz3d63E0qsuKDnDNJGs/bepYf27FYU7kHp7sowcuUVHgLn3mkijuMD8IvEUbNnsu2iBXN+Ukn0BUzziQ
- qwhaJzeGaX+RFYfjSZExFnFquIV+6KFUf+x/uKK3Hu4gvmyRVy8RVn1tSg+etGgqKZm59NIbSF39zajF39LiDIr9XblIergyEG232PhjJooXETzNLg2W3kTm
- bTBqFGycSsXIZe5OVjYRlUxHyyu7JyLPjzDFzVtbF5uHvBJ0ZozRvxwy/mrlpPDzog+b70Tvmpn1rBccscpdKEa5afszo2BaQRaDsSf05jvexJMMHd3mPQ3Z
- rJAWEsAhPzvlAv1173jln8TXMejkLKAut2xWgpvMo3rFftXmSSgbdS/GgkAnPXSxO3VzyMPHDcseL3LvHgrXhV/MnB9vnENVsHHB4d7ztGhacja2zorj+VEf
- FJ6K7gDuUtm483T3PJ0p/l/PLY92gUKBCTUQmFuwfDh3zrzuWQSpkxmUDJlyRh/b0zHNQwRm+7ZTwz8FE3VTxsdaSB48fdo4wKDQDoNFdbq7fQjftNHl8s5H
- eL6NHxm75mk3T5JP8JFvUGTyrGQ=
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-tmn:  [SiGeCAhLGl/HKpfcDlGkZ+7zUB5WN7CEbol7Rl4jAoNGSOqtH9AfS7KoLDqO2v0n]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 79bc1699-9edb-41d9-221a-08d9a9b0f388
+x-ms-traffictypediagnostic: PN3PR01MB6072:
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pkg80UaUO1f98ZO7bxb2NB9hxnqJ1IVms8MLngHueHquokqkkTBnL9LHckhhQ6R5na1BXm7US3Z4XGHNQy+MpeBDiSicRhpAKdPks2BY39s9ExNJ3LTRRmnuvcKy5QEFuIqmf9CA5Egw4dWRfzl3m+yP+7yz78O73HHJbD9Hu4aH9bZhp03A/RNdLDCa0PBnfezwv7xrhksqFTEXnJaAKN9RoJyI77A6TgDqbaqBE3ruEQYayI+A77iDTBa6zciAZndDRPLkFffwPzN24MDko0Myvt4Maafws2aHkLx2wpUkNnEkoZzx4hCOl1geyyJx9yu24aY7JFBxM2bYCn65xBzqgsBM21G1Gbj5p1ThTqwqhb+frd+Z++IWPydOyDXQfVTGefmNN0WF7XMUjff2a7Qma3xlmykWMkp8AMI7bRVlKSlAlmLSM5RrXeraYm2y13abK5oX+rGDb8AYw0VNJbm4gKd5bC79AtKs3X/gLHS3+lk5TadKE24UoA4jAdfCdWRgWt4q0CVu/UTBC6HZwOYK3M1TwboEh/eI9w0G0Ak=
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: PzzXgghB5WiqDTr1y9E650wa2uFF11NGlXn/KpxEuW/LNz0x1xcCz/yG3Xtyt+oZr+1KTkPjfWtgbiDNOucpjoOTmufV9Mu9lyF85c56rWFkLGWL9V+4GRhRh0Q4NZ7/TVw3+27X0dE+qykd9+BX98XxFSQR6faxXpL5k+7eLNDH2YfMLX2UQNgBTD/8glhDJ9EkU/7qZq0u/pMiMxHbkHWcGGIq0fshHeGQ3ccwMAL53jJ/m6EYRag9l1QAkYc8mVPU9eMHgt72RTV2YeggJh5Djl1SH5I6A+dCERycGN/KxW84PaaqHD5Ao29uNFj8tztkp8Yb+bjYw75F1NLHGgCgI3GDin1UDhov5xi+vIR+K/kgfIdsVCkZZDS42Y+EMzYYUnPowOfSjpQYS4W75lSYHZ6LbEFNuMPOLvpv9MyGJ1IgqasNRulnyyAyzNRVrTF+vUkJqmkeb7El9IkxNrXw6CEGz+NgyIIEpIMDd22vY1L8HQEc35U1MgRuqpZH+G/LTWCYM+DyKDON5YRmWEG8buuU0+4HyXSEv8I/yav8EMGZgw+XzPALHutzCs530ocBkc+Lop+UBE+JqT6ZobIniqaYltA0TQL0QdPqkc2DcudckLFn5sc9RJ1IhcJRzpYaqKJIe8SHVGNYp8zvQSAPHFZ4W/48pc7ink+zGVKuqfoETFtm2Qtutk+q8ql8+H6eBzqBfvKXJzVqaKG8VV11wwNUYdby7EOAddEYxc/o5RBUv+hI5plPCpul39rWGX3iuZQuSAfjXAfzaOREPA==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <5CF54B4536923045AE94DF5F3ADD2FF2@INDPRD01.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: sct-15-20-3174-20-msonline-outlook-a1a1a.templateTenant
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 79bc1699-9edb-41d9-221a-08d9a9b0f388
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Nov 2021 09:59:31.3813
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN3PR01MB6072
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2021 14:14, Andrzej Pietrasiewicz wrote:
-> Hi,
-> 
-> W dniu 16.11.2021 o 09:21, Hans Verkuil pisze:
->> On 16/11/2021 09:09, Andrzej Pietrasiewicz wrote:
->>> Hi Hans,
->>>
->>> W dniu 15.11.2021 o 22:16, Hans Verkuil pisze:
->>>> On 15/11/2021 18:14, Andrzej Pietrasiewicz wrote:
->>>>> Hi Hans,
->>>>>
->>>>> W dniu 15.11.2021 o 16:07, Hans Verkuil pisze:
->>>>>> Andrzej,
->>>>>>
->>>>>> Can you rebase this series on top of the master branch of
->>>>>> https://git.linuxtv.org/media_stage.git/ ? Unfortunately this v7 no longer
->>>>>> applies. Specifically "rkvdec: Add the VP9 backend" failed in a non-trivial
->>>>>> manner.
->>>>>
->>>>> This is a branch for you:
->>>>>
->>>>> https://gitlab.collabora.com/linux/for-upstream/-/tree/vp9-uapi
->>>>
->>>> I'm getting a bunch of sparse/smatch warnings:
->>>>
->>>
->>> Thanks for finding this, I will re-create the branch and let you know on irc.
->>> Some of the below are "false positives, namely:
->>>
->>> drivers/media/platform/omap3isp/omap3isp.h
->>> drivers/media/platform/qcom/venus/core.h
->>
->> Ah, sorry, I though I had filtered those out. Obviously you can ignore those.
->>
->> Please post a v8. That way the series is archived on lore. And it works better
->> with patchwork.
-> 
-> Sure, no problem. Also please see below.
-> 
->>
->> Regards,
->>
->> 	Hans
->>
->>>
->>> which are not touched by the series.
->>>
->>> Regards,
->>>
->>> Andrzej
->>>
->>>> sparse:
->>>> rkvdec/rkvdec-vp9.c:190:43: warning: variable 'dec_params' set but not used [-Wunused-but-set-variable]
->>>> rkvdec/rkvdec-vp9.c:245:43: warning: variable 'dec_params' set but not used [-Wunused-but-set-variable]
->>>> SPARSE:hantro/hantro_postproc.c hantro/hantro_postproc.c:37:35: warning: symbol 'hantro_g1_postproc_regs' was not declared. Should it be static?
->>>>
->>>> smatch:
->>>> rkvdec/rkvdec-vp9.c:190:43: warning: variable 'dec_params' set but not used [-Wunused-but-set-variable]
->>>> rkvdec/rkvdec-vp9.c:245:43: warning: variable 'dec_params' set but not used [-Wunused-but-set-variable]
->>>> rkvdec/rkvdec-vp9.c: rkvdec/rkvdec-vp9.c:236 init_intra_only_probs() error: buffer overflow 'ptr' 90 <= 91
-> 
-> this looks a false positive.
-> 
-> A portion of memory pointed to by ptr is indexed with i * 23 + m,
-> where i ranges from 0 to 3, inclusive, and m ranges from 0 to 22,
-> inclusive if i < 3, otherwise m ranges from 0 to 20, inclusive.
-> So the largest index value we compute equals 89 (3 * 23 + 20).
-> Because ptr points to something that is at least 90 bytes large,
-> 89 is a valid index and no greater index will be ever computed.
 
-But we do need to get rid of this smatch warning, otherwise it will pollute the
-list of smatch warnings.
 
-I was looking at the code and wonder if it wouldn't make more sense to
-move writing to rkprobs->intra_mode[i].uv_mode[] into a separate for loop:
+> On 17-Nov-2021, at 3:12 PM, Thorsten Leemhuis <regressions@leemhuis.info>=
+ wrote:
+>=20
+> On 17.11.21 10:26, Aditya Garg wrote:
+>>> On 17-Nov-2021, at 12:55 PM, Greg KH <gregkh@linuxfoundation.org> wrote=
+:
+>>> On Wed, Nov 17, 2021 at 03:28:29AM +0000, Aditya Garg wrote:
+>>>>> On 16-Nov-2021, at 2:56 PM, Thorsten Leemhuis <regressions@leemhuis.i=
+nfo> wrote:
+>>>>> On 16.11.21 10:02, Orlando Chamberlain wrote:
+>>>>>>> Bluetooth maintainers, what's the status here? The proposed patch i=
+s
+>>>>>>> fixing a regression. It's not a recent one (it afaics was introduce=
+d in
+>>>>>>> v5.11-rc1). Nevertheless it would be good to get this finally resol=
+ved.
+>>>>>>> But this thread seems inactive for more than a week now. Or was pro=
+gress
+>>>>>>> made, but is only visible somewhere else?
+>>>>>>=20
+>>>>>> I think the best solution is getting broadcom to update their firmwa=
+re,
+>>>>>> I've just sent them a message through a form on their website, I cou=
+ldn't
+>>>>>> seem to get it to tell me "Your message has been sent", so it's poss=
+ible
+>>>>>> that it didn't submit (more likely I've sent the same message severa=
+l times).
+>>>>>>=20
+>>>>>> If I hear back from them I'll send something here.
+>>>>>=20
+>>>>> Thx for that. But FWIW: from the point of the regression tracker that=
+'s
+>>>>> not the best solution, as according to your report this is a regressi=
+on.
+>>>>> IOW: we deal with something that used to up to a certain kernel versi=
+on
+>>>>> and was broken by a change to the kernel. That is something frown upo=
+n
+>>>>> in Linux kernel development, hence changes introducing regression are
+>>>>> often quickly reverted, if they can't get fixed by follow up change q=
+uickly.
+>>>>>=20
+>>>>> That sentence has two "quickly", as we want to prevent more people
+>>>>> running into the issue, resulting in a loss of trust. But that's what
+>>>>> will happen if we wait for a firmware update to get developed, tested=
+,
+>>>>> published, and rolled out. And even then we can't expect users to hav=
+e
+>>>>> the latest firmware installed when they switch to a new kernel.
+>>>>>=20
+>>>>> Hence the best solution *afaics* might be: fix this in the kernel
+>>>>> somehow now with a workaround; once the firmware update is out, chang=
+e
+>>>>> the kernel again to only apply the workaround if the old firmware is =
+in use.
+>>>> I have an idea. Can we make LE Read Transmit Power as a module paramet=
+er and users can turn it off if it is causing trouble. I have a patch for t=
+he same but haven't tested it yet.
+>>>=20
+>>> Module parameters are for the 1990's, please never add new ones as they
+>>> modify code, not data, and you want to do something like this on a
+>>> per-device basis, not on "all devices in the system", right?
+>>=20
+>> Exactly. Since the issue affects only a few Macs and not all devices.
+>> In fact I have spotted just 2 Macs yet affected with this issue.
+> When Greg said "per-device basis", he afaics meant: per-device in a
+> system, as a module parameter would also affect a second bluetooth
+> controller if there was one (say one connected via USB) -- and that
+> shouldn't happen.
+>=20
+> And FWIW: it's still a regression if something that used to work
+> suddenly requires a module parameter to get working.
+>=20
+> So if this just affects two macs, why can't the fix be realized as a
+> quirk that is only enabled on those two systems? Or are they impossible
+> to detect clearly via DMI data or something like that?
 
-        for (i = 0; i < ARRAY_SIZE(v4l2_vp9_kf_uv_mode_prob); i++)
-                rkprobs->intra_mode[i / 23].uv_mode[i % 23] = v4l2_vp9_kf_uv_mode_prob[i];
+<RESENDING AS PLAIN TEXT>
 
-Wouldn't that do the same as the current code? It looks simpler as well.
+A part of the output of dmidecode is below :-
 
-Regards,
+Handle 0x0005, DMI type 1, 27 bytes
+System Information
+	Manufacturer: Apple Inc.
+	Product Name: MacBookPro16,1
+	Version: 1.0
+	Serial Number: <Removed for Privacy>
+	UUID: <Removed for Privacy>
+	Wake-up Type: Power Switch
+	SKU Number: =20
+	Family: MacBook Pro
 
-	Hans
+Handle 0x0006, DMI type 2, 17 bytes
+Base Board Information
+	Manufacturer: Apple Inc.
+	Product Name: Mac-E1008331FDC96864
+	Version: MacBookPro16,1
+	Serial Number: <Removed for Privacy>
+	Asset Tag: =20
+	Features:
+		Board is a hosting board
+	Location In Chassis: =20
+	Chassis Handle: 0x0007
+	Type: Motherboard
+	Contained Object Handles: 0
+
+The product name, MacBookPro16,1 in my case, is unique for each model. If p=
+ossible a quirk to disable LE Read Transmit Power can be made on this basis=
+.
+
+>=20
+> Ciao, Thorsten
+
