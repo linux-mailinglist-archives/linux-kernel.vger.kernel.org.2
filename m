@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF71345508A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43FCA45508B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:31:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241337AbhKQWei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 17:34:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41986 "EHLO mail.kernel.org"
+        id S241360AbhKQWej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 17:34:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241348AbhKQWea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:34:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FC9C61B5F;
-        Wed, 17 Nov 2021 22:31:29 +0000 (UTC)
+        id S241356AbhKQWec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 17:34:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6783F61B51;
+        Wed, 17 Nov 2021 22:31:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637188291;
-        bh=0EBn4iFas/lVt0Plr8qx6oSNvIZ4IcS+xI8hMFa4Mu8=;
+        s=k20201202; t=1637188293;
+        bh=82ceyM9vLIZ5d639AKquHRPRlsJyYThu0VLcLZrUCsQ=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=i93whKvlivBz1M3F37Lm2fKtFcC/L3usl/3SoZR5qIISZp0IZLXlSVwKP5U69V7vt
-         9Fnrim3Io2Ri3J8PgEAaGY+kz1egw3swHcvZ29vzLK39OrA6mMvEPUS+8M2/aoU5KD
-         SbQD1kCbxMJ75FxITmFrng+GoxCslLNJmKooNzN65+xIIetVPA8bIh3jCGZbX9MKfV
-         Sc0Oa3PLP0Fb112VxoTS+vNhhhq0MPTlsSR8bSKme7h+XLMyk1LcN7mXngoLaWeAXb
-         FHOktjxeBs162nyB1EqA0UvMnm7v9WD3NUDqn69c/bZV2r7Ewla0ZJE+TJlHkmLl+T
-         rnzIbUfAiwtgA==
+        b=J3RSmq8f5DtAtBMTpQuFXsUkdjHMe8QUYV+p3x5v+xz796JdL3g8Uv2Nhdw+lwCo6
+         C73plujiJiR6fLtvWWbGALyLIZBTrT5w1+nkAiehFjvKxBKKHBuQDRT4NSC+JFO4s8
+         A14gNpycG6xF8KXIjYVL36OCwe5J//tayhYUdcNvnpTWFozdzZkIhS/j2N9hXV1RQc
+         Vits96ivmEMqmFFtvXAuJdr3crlKtSIezTZFNjebb2eCfjCl/PQwCoxunQRc+qYbly
+         iGdOHWMJNN/CtwamBhT+R2pI5n1hLncm7Bf2C9juyZF0lPF89DUK/EPJyzgfgwru5f
+         +IB1LYwt8JUQg==
 From:   Mark Brown <broonie@kernel.org>
-To:     alsa-devel@alsa-project.org,
-        Daniel Baluta <daniel.baluta@oss.nxp.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        daniel.baluta@gmail.com, lgirdwood@gmail.com, yc.hung@mediatek.com,
-        AjitKumar.Pandey@amd.com, daniel.baluta@nxp.com,
-        pierre-louis.bossart@linux.intel.com, Balakishore.pati@amd.com,
-        vishnuvardhanrao.ravulapati@amd.com, vsreddy@amd.com,
-        Julian.Schroeder@amd.com
-In-Reply-To: <20211117093734.17407-1-daniel.baluta@oss.nxp.com>
-References: <20211117093734.17407-1-daniel.baluta@oss.nxp.com>
-Subject: Re: [PATCH 00/21] ASoC: SOF: Platform updates for AMD and Mediatek
-Message-Id: <163718828906.136850.1487051712790530066.b4-ty@kernel.org>
-Date:   Wed, 17 Nov 2021 22:31:29 +0000
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        patches@opensource.cirrus.com
+In-Reply-To: <20211116163901.45390-1-rf@opensource.cirrus.com>
+References: <20211116163901.45390-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH v2 0/4] ASoC: cs42l42: Remove redundant code
+Message-Id: <163718829216.136850.12619030505977686878.b4-ty@kernel.org>
+Date:   Wed, 17 Nov 2021 22:31:32 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -44,16 +39,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Nov 2021 11:37:13 +0200, Daniel Baluta wrote:
-> From: Daniel Baluta <daniel.baluta@nxp.com>
+On Tue, 16 Nov 2021 16:38:57 +0000, Richard Fitzgerald wrote:
+> - Remove field writes in regmap_update_bits() calls where the code
+>   intends that the field value is not changed.
 > 
-> This patchseries adds Renoir ACP HW support and Mediatek MT8195
-> platform.
+> - Remove unnecessary complexity from reporting jack unplug event
 > 
-> Notes:
-> - I first send the meditatek support in a previous emails but it failed
->   to apply because there are some dependencies on AMD patches related to
->   DAI ids.
+> - Remove a PLL config value member that was introduced in a bugfix
+>   but made redundant by a later bugfix.
 > 
 > [...]
 
@@ -63,48 +56,14 @@ Applied to
 
 Thanks!
 
-[01/21] ASoC: SOF: amd: Add Renoir ACP HW support
-        commit: 846aef1d7cc05651e27c17c3b4e2b5ce5cdec97b
-[02/21] ASoC: SOF: amd: Add helper callbacks for ACP's DMA configuration
-        commit: 0e44572a28a49109eae23af1545c658b86c4bf00
-[03/21] ASoC: SOF: amd: Add fw loader and renoir dsp ops to load firmware
-        commit: 7e51a9e38ab204eba2844b8773486392d7444435
-[04/21] ASoC: SOF: amd: Add IPC support for ACP IP block
-        commit: 738a2b5e2cc9fd63d48faac11c8d60a5a2313a9d
-[05/21] ASoC: SOF: amd: Add dai driver dsp ops callback for Renoir
-        commit: bda93076d184ad80a8cab09bf29ace7692de18f7
-[06/21] ASoC: SOF: amd: Add PCM stream callback for Renoir dai's
-        commit: e8afccf8fb75bae9c3292a0e51593af92839415e
-[07/21] ASoC: amd: Add module to determine ACP configuration
-        commit: f1bdd8d385a803565024c8feeedc17bf86aac4f5
-[08/21] ASoC: SOF: amd: Add machine driver dsp ops for Renoir platform
-        commit: 11ddd4e371810017faf7ff7cb2349f321e50d1d3
-[09/21] ASoC: SOF: amd: Add Renoir PCI driver interface
-        commit: ec25a3b14261fcb05568a1fec15ca68152e9d208
-[10/21] ASoC: amd: acp-config: Remove legacy acpi based machine struct
-        commit: 63fba90fc88b6cee9f8bead761a419169ecda6cc
-[11/21] ASoC: SOF: topology: Add support for AMD ACP DAIs
-        commit: efb931cdc4b94a0f7ed17a76844f08cef1bdffe5
-[12/21] ASoC: SOF: amd: Add trace logger support
-        commit: 4627421fb883928af5220c66a304bed1f9b77e8d
-[13/21] ASoC: SOF: amd: Add support for SOF firmware authentication
-        commit: f063eba3e7a6aeec8e2abb00469e70c51432453b
-[14/21] ASoC: SOF: mediatek: Add mt8195 hardware support
-        (no commit info)
-[15/21] ASoC: SOF: tokens: add token for Mediatek AFE
-        (no commit info)
-[16/21] ASoC: SOF: topology: Add support for Mediatek AFE DAI
-        (no commit info)
-[17/21] ASoC: SOF: mediatek: Add fw loader and mt8195 dsp ops to load firmware
-        (no commit info)
-[18/21] ASoC: SOF: Add mt8195 device descriptor
-        (no commit info)
-[19/21] ASoC: SOF: mediatek: Add dai driver dsp ops callback for mt8195
-        (no commit info)
-[20/21] ASoC: SOF: mediatek: Add mt8195 dsp clock support
-        (no commit info)
-[21/21] ASoC: SOF: mediatek: Add DSP system PM callback for mt8195
-        (no commit info)
+[1/4] ASoC: cs42l42: Remove redundant writes to DETECT_MODE
+      commit: 976001b10fa4441917f216452e70fd8c5aeccd94
+[2/4] ASoC: cs42l42: Remove redundant writes to RS_PLUG/RS_UNPLUG masks
+      commit: f2dfbaaa5404cadf70213146a5b4b89b647d9092
+[3/4] ASoC: cs42l42: Simplify reporting of jack unplug
+      commit: 3edde6de090617adea18f2068489086c0d8087e3
+[4/4] ASoC: cs42l42: Remove redundant pll_divout member
+      commit: bbf0e1d36519a5cd2c08dc1348f997cd5240eb2e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
