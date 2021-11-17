@@ -2,249 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9017454992
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:07:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6067E454994
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231966AbhKQPKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 10:10:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231697AbhKQPKi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 10:10:38 -0500
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1220C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 07:07:39 -0800 (PST)
-Received: by mail-oi1-x233.google.com with SMTP id o4so6973020oia.10
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 07:07:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Z0+UqyGpQ62LM9RtAj0or8WWQ/siounJCEOYzLQDOkk=;
-        b=YLcYHWrIJOaS7iK9pYFb/D5PXKMb4E3y6MD2zFcy6tehGQkF2pPfq3b7S1QozI/2JU
-         vBT3vvw8gjOelj0qQsg5bMeMESJqYMXaMsbb5UaMNep+WShNOZ9C3Jqdc6ISywXhXaIu
-         oSzLem9sCi7auuYLwIPBM9UfTgigyVs7iMS5mNUk6tGsbL7PgCEidfnH4KuszDmtQLci
-         vRdsffBHZlyurrcbVomlASoYaBZKFAbcFd0lzJDWX9nHh3ih/XUyg5A5UMkJFpxp8nef
-         UP3fHHjsZ48u9Qul/dEi1HDAhrYYGNkGArHMb2Dh6cF0ubxFS/YMDEEY4bE18GGSByvC
-         AIXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Z0+UqyGpQ62LM9RtAj0or8WWQ/siounJCEOYzLQDOkk=;
-        b=gRKGX0hojYVmlDG0sa6rYNFfXuWXkrHhFBQnDnKcPOap/GKXSUx92ESlwth0G1rLpU
-         VPXKdn/r/JMzEcsEySBvYbjTzwRbdtCXZppi+7zcqYqKj0WVYs0Cg65WCoa7GVpn5+mm
-         5doOVobI+Ufdy55Qe42QjqiFAuFazi0X7vwVKgT+HUYJf3k4sBTseA31MQDrk46NHp8S
-         B8iKwKpIVZXpy8kO0jO8FDk0xA1N3iXQNCALIXrHf2yfwWiRiacck9CIwT0owkCD9Dqa
-         g4OokqArn4PUvD8YouNFFmwJbOkOhSZboLB61iQ1SDYHicJVgj+l67CQNbcl0uN1QBDo
-         zhAQ==
-X-Gm-Message-State: AOAM533n8SyIca1ZWz5EkAnESQPUeLZHPsZMO+iUOdzRRS5gDSoUKtpf
-        tQFs4YQZFagxO5npIMbDNx5Un1a5iO69rw==
-X-Google-Smtp-Source: ABdhPJw9k3akfafs/Y87evainVodJJH+j6/xhjf01cL8P5BLZz7L5LV2Gw6upDL3kOCD5gA59zCVAQ==
-X-Received: by 2002:aca:4307:: with SMTP id q7mr294739oia.3.1637161658796;
-        Wed, 17 Nov 2021 07:07:38 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id w10sm23376ott.46.2021.11.17.07.07.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 07:07:38 -0800 (PST)
-Date:   Wed, 17 Nov 2021 09:07:33 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Christian Gmeiner <christian.gmeiner@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org
-Subject: Re: [RFC PATCH v2 1/1] rpmsg: add syslog driver
-Message-ID: <YZUatUlg72DQb8ui@builder.lan>
-References: <20211109083926.32052-1-christian.gmeiner@gmail.com>
- <20211109083926.32052-2-christian.gmeiner@gmail.com>
- <YYq4tjyv0qh+Zpqe@ripper>
- <CAH9NwWcyKyaGrTZ1=N73gA+zjO0wH_oMzLG_zi2TUc3dN69SNg@mail.gmail.com>
+        id S232135AbhKQPLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 10:11:09 -0500
+Received: from foss.arm.com ([217.140.110.172]:58506 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231697AbhKQPLH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 10:11:07 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6CFBE1FB;
+        Wed, 17 Nov 2021 07:08:08 -0800 (PST)
+Received: from [10.57.24.78] (unknown [10.57.24.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BAD593F5A1;
+        Wed, 17 Nov 2021 07:08:06 -0800 (PST)
+Subject: Re: [PATCH] base: arch_topology: Use policy->max to calculate
+ freq_factor
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Thara Gopinath <thara.gopinath@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+References: <20211115201010.68567-1-thara.gopinath@linaro.org>
+ <CAJZ5v0gezoJZVH69Y7fDwa-uLhE0PaqFrzM=0bequxpE_749zg@mail.gmail.com>
+ <8f7397e3-4e92-c84d-9168-087967f4d683@arm.com>
+ <CAJZ5v0iRDtr5yae5UndwU2SmVL4cak=BN0irVGbgNzQiS8K3mA@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <7f077790-da4c-35b8-0eea-cbdc630f9d2a@arm.com>
+Date:   Wed, 17 Nov 2021 15:08:04 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAH9NwWcyKyaGrTZ1=N73gA+zjO0wH_oMzLG_zi2TUc3dN69SNg@mail.gmail.com>
+In-Reply-To: <CAJZ5v0iRDtr5yae5UndwU2SmVL4cak=BN0irVGbgNzQiS8K3mA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 11 Nov 04:36 CST 2021, Christian Gmeiner wrote:
 
-> Hi Bjorn
+
+On 11/17/21 12:49 PM, Rafael J. Wysocki wrote:
+> On Wed, Nov 17, 2021 at 11:46 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>> Hi Rafael,
+>>
+>> On 11/16/21 7:05 PM, Rafael J. Wysocki wrote:
+>>> On Mon, Nov 15, 2021 at 9:10 PM Thara Gopinath
+>>> <thara.gopinath@linaro.org> wrote:
+>>>>
+>>>> cpuinfo.max_freq can reflect boost frequency if enabled during boot.  Since
+>>>> we don't consider boost frequencies while calculating cpu capacities, use
+>>>> policy->max to populate the freq_factor during boot up.
+>>>
+>>> I'm not sure about this.  schedutil uses cpuinfo.max_freq as the max frequency.
+>>
+>> Agree it's tricky how we treat the boost frequencies and also combine
+>> them with thermal pressure.
+>> We probably would have consider these design bits:
+>> 1. Should thermal pressure include boost frequency?
 > 
+> Well, I guess so.
 > 
-> > > Allows the remote firmware to log into syslog.
-> > >
-> >
-> > This allows the remote firmware to print log messages in the kernel log,
-> > not the syslog (although your system might inject the kernel log into
-> > the syslog as well)
-> >
+> Running at a boost frequency certainly increases thermal pressure.
 > 
-> Correct.
+>> 2. Should max capacity 1024 be a boost frequency so scheduler
+>>      would see it explicitly?
 > 
-> > > Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
-> > > ---
-> > >  drivers/rpmsg/Kconfig        |  8 +++++
-> > >  drivers/rpmsg/Makefile       |  1 +
-> > >  drivers/rpmsg/rpmsg_syslog.c | 65 ++++++++++++++++++++++++++++++++++++
-> >
-> > drivers/rpmsg is for rpmsg bus and transport drivers. Client drivers
-> > should live elsewhere.
-> >
+> That's what it is now if cpuinfo.max_freq is a boost frequency.
 > 
-> Ahh .. yes.
+>> - if no, then schedutil could still request boost freq thanks to
+>>     map_util_perf() where we add 25% to the util and then
+>>     map_util_freq() would return a boost freq when util was > 1024
+>>
+>>
+>> I can see in schedutil only one place when cpuinfo.max_freq is used:
+>> get_next_freq(). If the value stored in there is a boost,
+>> then don't we get a higher freq value for the same util?
 > 
-> > But perhaps, rather than having a driver for this, you could simply use
-> > rpmsg_char and a userspace tool; if you want to get the remote processor
-> > logs into syslog, instead of the kernel log?
-> >
+> Yes. we do, which basically is my point.
 > 
-> I thought about that too (also regarding the rpmsg tty driver) but that means I
-> need to start/supervise a user space tool.
-> 
-> > >  3 files changed, 74 insertions(+)
-> > >  create mode 100644 drivers/rpmsg/rpmsg_syslog.c
-> > >
-> > > diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
-> > > index 0b4407abdf13..801f9956ec21 100644
-> > > --- a/drivers/rpmsg/Kconfig
-> > > +++ b/drivers/rpmsg/Kconfig
-> > > @@ -73,4 +73,12 @@ config RPMSG_VIRTIO
-> > >       select RPMSG_NS
-> > >       select VIRTIO
-> > >
-> > > +config RPMSG_SYSLOG
-> > > +     tristate "SYSLOG device interface"
-> > > +     depends on RPMSG
-> > > +     help
-> > > +       Say Y here to export rpmsg endpoints as device files, usually found
-> > > +       in /dev. They make it possible for user-space programs to send and
-> > > +       receive rpmsg packets.
-> > > +
-> > >  endmenu
-> > > diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
-> > > index 8d452656f0ee..75b2ec7133a5 100644
-> > > --- a/drivers/rpmsg/Makefile
-> > > +++ b/drivers/rpmsg/Makefile
-> > > @@ -9,3 +9,4 @@ obj-$(CONFIG_RPMSG_QCOM_GLINK_RPM) += qcom_glink_rpm.o
-> > >  obj-$(CONFIG_RPMSG_QCOM_GLINK_SMEM) += qcom_glink_smem.o
-> > >  obj-$(CONFIG_RPMSG_QCOM_SMD) += qcom_smd.o
-> > >  obj-$(CONFIG_RPMSG_VIRTIO)   += virtio_rpmsg_bus.o
-> > > +obj-$(CONFIG_RPMSG_SYSLOG)   += rpmsg_syslog.o
-> > > diff --git a/drivers/rpmsg/rpmsg_syslog.c b/drivers/rpmsg/rpmsg_syslog.c
-> > > new file mode 100644
-> > > index 000000000000..b3fdae495fd9
-> > > --- /dev/null
-> > > +++ b/drivers/rpmsg/rpmsg_syslog.c
-> > > @@ -0,0 +1,65 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +
-> > > +#include <linux/kernel.h>
-> > > +#include <linux/module.h>
-> > > +#include <linux/rpmsg.h>
-> > > +
-> > > +static int rpmsg_syslog_cb(struct rpmsg_device *rpdev, void *data, int len,
-> > > +                        void *priv, u32 src)
-> > > +{
-> > > +     const char *buffer = data;
-> > > +
-> > > +     switch (buffer[0]) {
-> > > +     case 'e':
-> > > +             dev_err(&rpdev->dev, "%s", buffer + 1);
-> > > +             break;
-> > > +     case 'w':
-> > > +             dev_warn(&rpdev->dev, "%s", buffer + 1);
-> > > +             break;
-> > > +     case 'i':
-> > > +             dev_info(&rpdev->dev, "%s", buffer + 1);
-> > > +             break;
-> > > +     default:
-> > > +             dev_info(&rpdev->dev, "%s", buffer);
-> > > +             break;
-> > > +     }
-> > > +
-> > > +     return 0;
-> > > +}
-> > > +
-> > > +static int rpmsg_syslog_probe(struct rpmsg_device *rpdev)
-> > > +{
-> > > +     struct rpmsg_endpoint *syslog_ept;
-> > > +     struct rpmsg_channel_info syslog_chinfo = {
-> > > +             .src = 42,
-> > > +             .dst = 42,
-> > > +             .name = "syslog",
-> > > +     };
-> > > +
-> > > +     /*
-> > > +      * Create the syslog service endpoint associated to the RPMsg
-> > > +      * device. The endpoint will be automatically destroyed when the RPMsg
-> > > +      * device will be deleted.
-> > > +      */
-> > > +     syslog_ept = rpmsg_create_ept(rpdev, rpmsg_syslog_cb, NULL, syslog_chinfo);
-> >
-> > The rpmsg_device_id below should cause the device to probe on the
-> > presence of a "syslog" channel announcement, so why are you creating a
-> > new endpoint with the same here?
-> >
-> > Why aren't you just specifying the callback of the driver?
-> >
-> 
-> Good question. I think I was happy that I got work working somehow. I
-> also want to send out
-> a documentation update as it is not up to date with the current API.
+> The schedutil's response is proportional to cpuinfo.max_freq and that
+> needs to be taken into account for the results to be consistent.
 > 
 
-I'd be happy to take any documentation updates - or perhaps we should
-reduce the duplication between the kerneldoc and Documentation/*...
+This boost thing wasn't an issue for us, because we didn't have
+platforms which come with it (till recently). I've checked that you have
+quite a few CPUs which support huge boost freq, e.g. 5GHz vs. 3.6GHz
+nominal max freq [1]. Am I reading this correctly as kernel boost freq?
+Do you represent this 5GHz as 1024 capacity?
+ From this schedutil get_next_freq() I would guess yes.
 
-> > > +     if (!syslog_ept) {
-> > > +             dev_err(&rpdev->dev, "failed to create the syslog ept\n");
-> > > +             return -ENOMEM;
-> > > +     }
-> > > +     rpdev->ept = syslog_ept;
-> > > +
-> > > +     return 0;
-> > > +}
-> > > +
-> > > +static struct rpmsg_device_id rpmsg_driver_syslog_id_table[] = {
-> > > +     { .name = "syslog" },
-> > > +     { },
-> > > +};
-> > > +MODULE_DEVICE_TABLE(rpmsg, rpmsg_driver_syslog_id_table);
-> > > +
-> > > +static struct rpmsg_driver rpmsg_syslog_client = {
-> > > +     .drv.name       = KBUILD_MODNAME,
-> > > +     .id_table       = rpmsg_driver_syslog_id_table,
-> > > +     .probe          = rpmsg_syslog_probe,
-> > > +};
-> > > +module_rpmsg_driver(rpmsg_syslog_client);
-> >
-> > I would expect that building this as a module gives you complaints about
-> > lacking MODULE_LICENSE().
-> >
-> 
-> Yeah .. I never built it as a module.
-> 
-> The biggest question I have: do you see any possibility to get such a
-> redirection
-> driver into mainline? At the moment I have not heard a big no.
-> 
+I cannot find if you use thermal pressure, could you help me with this,
+please?
 
-My feeling is "do we really need a dedicated driver for it", but I do
-recognize that it solves a problem for you.
 
-The only "objection" I have is that I personally wouldn't want all the
-firmware logs mixed up with the kernel logs. Somehow getting this into
-journald separately seems more useful.
-
-Regards,
-Bjorn
-
-> -- 
-> greets
-> --
-> Christian Gmeiner, MSc
-> 
-> https://christian-gmeiner.info/privacypolicy
+[1] 
+https://ark.intel.com/content/www/us/en/ark/products/186605/intel-core-i99900k-processor-16m-cache-up-to-5-00-ghz.html
