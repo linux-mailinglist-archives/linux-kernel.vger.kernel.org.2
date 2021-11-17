@@ -2,102 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B4D454633
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 13:12:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 720B945463A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 13:14:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236040AbhKQMPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 07:15:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:44971 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233484AbhKQMPK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 07:15:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637151131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qW1Ag/nVqux59E+nwE+CUidv8LwOpqfdLxGb0nVtHYk=;
-        b=GkIN2pnUp42j1fC0liUR6f8gnyLzEVgHJ6hFK47gxN7n8tvsCsROpV2kNj6x/lro6rt4qX
-        3vJYu03CkHdo0PLmPwGOAtYvEXHBPKsGgwhiHA7ewjoMYCYIiZ0bMcf5+WNHqiRwftXIB9
-        aMkZhdhD9lzGTWd6fV6AbovJ5AHKAfw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-215-pNbwtZJUMga-oNgrbu54tA-1; Wed, 17 Nov 2021 07:12:08 -0500
-X-MC-Unique: pNbwtZJUMga-oNgrbu54tA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2C4B88030D2;
-        Wed, 17 Nov 2021 12:12:06 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AA24C60C0F;
-        Wed, 17 Nov 2021 12:12:01 +0000 (UTC)
-Message-ID: <7cd420c0-4fe5-7c37-5eb8-da82b277ff60@redhat.com>
-Date:   Wed, 17 Nov 2021 13:12:00 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 6/6] KVM: x86: Drop arbitraty KVM_SOFT_MAX_VCPUS
-Content-Language: en-US
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Eduardo Habkost <ehabkost@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>, kvm-ppc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        id S237211AbhKQMRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 07:17:31 -0500
+Received: from mga18.intel.com ([134.134.136.126]:45535 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233484AbhKQMR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 07:17:29 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="220821100"
+X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
+   d="scan'208";a="220821100"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 04:14:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
+   d="scan'208";a="506895679"
+Received: from mylly.fi.intel.com (HELO [10.237.72.56]) ([10.237.72.56])
+  by orsmga008.jf.intel.com with ESMTP; 17 Nov 2021 04:14:28 -0800
+Subject: Re: [PATCH net 0/4] Fix bit timings for m_can_pci (Elkhart Lake)
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Felipe Balbi (Intel)" <balbi@kernel.org>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20211116163443.88707-1-vkuznets@redhat.com>
- <20211116163443.88707-7-vkuznets@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211116163443.88707-7-vkuznets@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <cover.1636967198.git.matthias.schiffer@ew.tq-group.com>
+ <e38eb4ca0a03c60c8bbeccbd8126ffc5bf97d490.camel@ew.tq-group.com>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <72489ea7-cf81-2446-3620-06a98f53ce54@linux.intel.com>
+Date:   Wed, 17 Nov 2021 14:14:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <e38eb4ca0a03c60c8bbeccbd8126ffc5bf97d490.camel@ew.tq-group.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 17:34, Vitaly Kuznetsov wrote:
-> KVM_CAP_NR_VCPUS is used to get the "recommended" maximum number of
-> VCPUs and arm64/mips/riscv report num_online_cpus(). Powerpc reports
-> either num_online_cpus() or num_present_cpus(), s390 has multiple
-> constants depending on hardware features. On x86, KVM reports an
-> arbitrary value of '710' which is supposed to be the maximum tested
-> value but it's possible to test all KVM_MAX_VCPUS even when there are
-> less physical CPUs available.
+Hi
+
+On 11/16/21 3:58 PM, Matthias Schiffer wrote:
+> I just noticed that m_can_pci is completely broken on 5.15.2, while
+> it's working fine on 5.14.y.
 > 
-> Drop the arbitrary '710' value and return num_online_cpus() on x86 as
-> well. The recommendation will match other architectures and will mean
-> 'no CPU overcommit'.
+Hmm.. so that may explain why I once saw candump received just zeroes on 
+v5.15-rc something but earlier kernels were ok. What's odd then next 
+time v5.15-rc was ok so went blaming sun spots instead of bisecting.
+
+> I assume something simliar to [1] will be necessary in m_can_pci as
+> well, however I'm not really familiar with the driver. There is no
+> "mram_base" in m_can_plat_pci, only "base". Is using "base" with
+> iowrite32/ioread32 + manual increment the correct solution here?
 > 
-> For reference, QEMU only queries KVM_CAP_NR_VCPUS to print a warning
-> when the requested vCPU number exceeds it. The static limit of '710'
-> is quite weird as smaller systems with just a few physical CPUs should
-> certainly "recommend" less.
 > 
-> Suggested-by: Eduardo Habkost<ehabkost@redhat.com>
-> Signed-off-by: Vitaly Kuznetsov<vkuznets@redhat.com>
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=99d173fbe8944861a00ebd1c73817a1260d21e60
+> 
+If your test case after 5.15 reliably fails are you able to bisect or 
+check does the regression originate from the same commit?
 
-Given that KVM_SOFT_MAX_VCPUS has already been dropped in 5.16, I 
-changed the commit message to
-
-     KVM: x86: Cap KVM_CAP_NR_VCPUS by KVM_CAP_MAX_VCPUS
-
-     It doesn't make sense to return the recommended maximum number of
-     vCPUs which exceeds the maximum possible number of vCPUs.
-
-Paolo
-
+Jarkko
