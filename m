@@ -2,107 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D890454BBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:13:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C08D454BC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:14:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239318AbhKQRQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 12:16:05 -0500
-Received: from marcansoft.com ([212.63.210.85]:33428 "EHLO mail.marcansoft.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231313AbhKQRQE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 12:16:04 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: hector@marcansoft.com)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 586F441F12;
-        Wed, 17 Nov 2021 17:13:02 +0000 (UTC)
-From:   Hector Martin <marcan@marcan.st>
-To:     Sven Peter <sven@svenpeter.dev>, Will Deacon <will@kernel.org>
-Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Hector Martin <marcan@marcan.st>
-Subject: [PATCH] iommu/io-pgtable-arm: Fix table descriptor paddr formatting
-Date:   Thu, 18 Nov 2021 02:12:13 +0900
-Message-Id: <20211117171213.243584-1-marcan@marcan.st>
-X-Mailer: git-send-email 2.33.0
+        id S239321AbhKQRRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 12:17:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232978AbhKQRRf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 12:17:35 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF31C061570;
+        Wed, 17 Nov 2021 09:14:36 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id y12so14212760eda.12;
+        Wed, 17 Nov 2021 09:14:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hUu3vxHWsDQg639aiNLE2xiOomzS21tmbZdfXQFwxnQ=;
+        b=oLiP4Dyxkp8Wjwp+tKQBjVRNXPYgoObkG4yHWiNcxcYWtgha3Zs4XRRgCloMjca0HD
+         siJaUu1CjmF7uVqmCNLABGxqb4HSoKJP++MzZOL+vhJwMnXcerMyUvWnF1vwehB8pmGD
+         xN5p5ZgXLMS4JuISg9yy7AJ4Q5HFBMz9ipYL/DqSLpcbO6L8EqhNoUBpa1FnFgoCJboO
+         sun5vxuJzfAJ/zV/DLyDW2ufAOYbvMJImjGOpT6LcN2ptjaJqlWCw7zlkPdP7gbaP+0P
+         tdL4/2h7aMXK72i41LU/QSFpZbAon8SpxuOEh6/iKiF4e9bpb2OLtHLxbYZc2FI0wJpx
+         Qw/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hUu3vxHWsDQg639aiNLE2xiOomzS21tmbZdfXQFwxnQ=;
+        b=Jz4IiSvyvTCLStkLhpBEfg8STMyUkA5Z5+8IdsB+hp+wNB42f/Y4LRKrLqwBSNgyxL
+         G49LBn5Lz5q0iBFm3glth36c0Z3oOd7rMnRFIe1AjQ7rcBH78X3npqJS6ofMoNUL+kUW
+         jrvPn3BMm5uKFUK9U8L9JTddQ1NhMcA/AnnTsWbtXJauXhc1sz5ET7rX2vXFxxFe7Ald
+         kPDpzSYVasLEmB3uCr8XOYVfn3833RkfZDZnHF3Q0HyDCqpQKT/g4kXjifWrShjC3uMA
+         hveWjbsWv7NATBMSmk6zTem41r3wCJcFOqmchBq3xEPOZC5MGFBsRsykyJknYHF7FD4C
+         xqrA==
+X-Gm-Message-State: AOAM530dG+xL1ZbU03Eh8og9Wrc8FGJVVKk9bTyTnMBbMkGlJWyMWnNG
+        tf+lW2MwHUA0oFqIBGCz8IhhPj+Mn5qDt556dD4=
+X-Google-Smtp-Source: ABdhPJxPNGb7sIRKkHf64pq/IAE1bvXx3ymCyjWU2B39T+ktVLR//khn4aikRDT7vXZyvylhOgqAv7DkJHF0Q0UFY3Q=
+X-Received: by 2002:a50:9ec9:: with SMTP id a67mr365143edf.238.1637169275100;
+ Wed, 17 Nov 2021 09:14:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211117161028.11775-1-anand.ashok.dumbre@xilinx.com>
+In-Reply-To: <20211117161028.11775-1-anand.ashok.dumbre@xilinx.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 17 Nov 2021 19:13:54 +0200
+Message-ID: <CAHp75VdkGHvauZG7Nw4dDEb4+ZeVS4Pt2x05EiOiVCBVv8s10w@mail.gmail.com>
+Subject: Re: [PATCH v10 0/5] Add Xilinx AMS Driver
+To:     Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio <linux-iio@vger.kernel.org>, git <git@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Table descriptors were being installed without properly formatting the
-address using paddr_to_iopte, which does not match up with the
-iopte_deref in __arm_lpae_map. This is incorrect for the LPAE pte
-format, as it does not handle the high bits properly.
+On Wed, Nov 17, 2021 at 6:46 PM Anand Ashok Dumbre
+<anand.ashok.dumbre@xilinx.com> wrote:
+>
+> Add Xilinx AMS driver which is used for Xilinx's ZynqMP AMS controller.
+> This AMS driver is used to report various interface voltages and temperatures
+> across the system.
+> This driver will be used by iio-hwmon to repport voltages and temperatures
+> across the system by using various channel interfaces.
+> This driver handles AMS module including PS-Sysmon & PL-Sysmon. The binding
+> documentation is added for understanding of AMS, PS, PL Sysmon Channels.
 
-This was found on Apple T6000 DARTs, which require a new pte format
-(different shift); adding support for that to
-paddr_to_iopte/iopte_to_paddr caused it to break badly, as even <48-bit
-addresses would end up incorrect in that case.
+Thanks and wait a bit, please. No need to send patches so often. We
+haven't settled down yet on v9. Here you effectively ignored my
+comment given again patch 5/5. Why?
 
-Signed-off-by: Hector Martin <marcan@marcan.st>
----
- drivers/iommu/io-pgtable-arm.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+...
 
-diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
-index dd9e47189d0d..b636e2737607 100644
---- a/drivers/iommu/io-pgtable-arm.c
-+++ b/drivers/iommu/io-pgtable-arm.c
-@@ -315,12 +315,12 @@ static int arm_lpae_init_pte(struct arm_lpae_io_pgtable *data,
- static arm_lpae_iopte arm_lpae_install_table(arm_lpae_iopte *table,
- 					     arm_lpae_iopte *ptep,
- 					     arm_lpae_iopte curr,
--					     struct io_pgtable_cfg *cfg)
-+					     struct arm_lpae_io_pgtable *data)
- {
- 	arm_lpae_iopte old, new;
- 
--	new = __pa(table) | ARM_LPAE_PTE_TYPE_TABLE;
--	if (cfg->quirks & IO_PGTABLE_QUIRK_ARM_NS)
-+	new = paddr_to_iopte(__pa(table), data) | ARM_LPAE_PTE_TYPE_TABLE;
-+	if (data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_NS)
- 		new |= ARM_LPAE_PTE_NSTABLE;
- 
- 	/*
-@@ -332,11 +332,11 @@ static arm_lpae_iopte arm_lpae_install_table(arm_lpae_iopte *table,
- 
- 	old = cmpxchg64_relaxed(ptep, curr, new);
- 
--	if (cfg->coherent_walk || (old & ARM_LPAE_PTE_SW_SYNC))
-+	if (data->iop.cfg.coherent_walk || (old & ARM_LPAE_PTE_SW_SYNC))
- 		return old;
- 
- 	/* Even if it's not ours, there's no point waiting; just kick it */
--	__arm_lpae_sync_pte(ptep, 1, cfg);
-+	__arm_lpae_sync_pte(ptep, 1, &data->iop.cfg);
- 	if (old == curr)
- 		WRITE_ONCE(*ptep, new | ARM_LPAE_PTE_SW_SYNC);
- 
-@@ -380,7 +380,7 @@ static int __arm_lpae_map(struct arm_lpae_io_pgtable *data, unsigned long iova,
- 		if (!cptep)
- 			return -ENOMEM;
- 
--		pte = arm_lpae_install_table(cptep, ptep, 0, cfg);
-+		pte = arm_lpae_install_table(cptep, ptep, 0, data);
- 		if (pte)
- 			__arm_lpae_free_pages(cptep, tblsz, cfg);
- 	} else if (!cfg->coherent_walk && !(pte & ARM_LPAE_PTE_SW_SYNC)) {
-@@ -592,7 +592,7 @@ static size_t arm_lpae_split_blk_unmap(struct arm_lpae_io_pgtable *data,
- 		__arm_lpae_init_pte(data, blk_paddr, pte, lvl, 1, &tablep[i]);
- 	}
- 
--	pte = arm_lpae_install_table(tablep, ptep, blk_pte, cfg);
-+	pte = arm_lpae_install_table(tablep, ptep, blk_pte, data);
- 	if (pte != blk_pte) {
- 		__arm_lpae_free_pages(tablep, tablesz, cfg);
- 		/*
+> Changes in v10:
+>         - Fixed licence in zynqmp.dtsi.
+>         - Changed the macros to use BIT().
+>         - Realign some code to fit within 100 chars.
+>         - Modified readl_poll_timeout usage.
+
+>         - Usage of array_size() instead of check_mul_overflow().
+
+Why? I have asked you why you haven't used kcalloc there as well.
+
+>         - Usage of dev_err_probe() instead of dev_err().
+>         - Usage of kcalloc instead of kzalloc()
+
 -- 
-2.33.0
-
+With Best Regards,
+Andy Shevchenko
