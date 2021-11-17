@@ -2,102 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 273CE45446D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11654454477
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:58:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235839AbhKQKA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 05:00:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35328 "EHLO mail.kernel.org"
+        id S235792AbhKQKBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 05:01:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235776AbhKQJ74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 04:59:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EC4B63247;
-        Wed, 17 Nov 2021 09:56:57 +0000 (UTC)
+        id S235754AbhKQKBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 05:01:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64A13610CA;
+        Wed, 17 Nov 2021 09:58:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637143017;
-        bh=M77l7JR0ZRZt9vKWubCd/o4WeZjQYjs7iLZi1U0Zpgo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LudD0ixE4UvfuZSZhnu283TcAUIgmTYQKEQulTEvxgF0C0dXCvg/0IMI95vGWaLoI
-         YtYL9pTPDqVYVF0jmp0Qqe+yNEreBVtrZpcnjy3Qgsgt0fAxyDOoCCyga5i9inYBsS
-         7O3oC6us+4mIJJfpX+4hCXVTRSkpiFXdCUOJz9/30YGvxXGcnNgkVg8ByWNNwdFI2w
-         xSBox+L+mZ4THT0u1N+/KcMq5FxYKvGX/pR+Csr5NM1baKLlmGugmTbZicbMdCGF+/
-         lMNwSopShCqkRs949Rj9SUrNXJD96BhAzfT313THImzwRD6tBAsLPuz9Xj36JV56H8
-         LiefApBe7qALg==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mnHgV-00DIUz-AF; Wed, 17 Nov 2021 09:56:55 +0000
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Deepak R Varma <drv@mailo.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: [PATCH v2 12/12] media: atomisp: sh_css_sp: better support the current firmware
-Date:   Wed, 17 Nov 2021 09:56:54 +0000
-Message-Id: <f2616ee88150b1fce581ac0349fb6c51f0f817b3.1637142905.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <cover.1637142905.git.mchehab+huawei@kernel.org>
-References: <cover.1637142905.git.mchehab+huawei@kernel.org>
+        s=k20201202; t=1637143131;
+        bh=i7DSm+rL3kUoLwWZ/2x8CUFNAELOEBapiSNXn8u8kNo=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=ao3D8rYNp7SkSueiXxH7iyjfTvMw4pF4oVu87DmUZDt7P5DOXzjSslkFRwmJ/BCwI
+         R44xvhtZpi3P4IrfGGk4JavOVBe4jBnt2Hs8g6RtOrsxljHFBlPWcgXIusFqud9e43
+         5X0pSOI2aOl5cDHsoEz5d8Tz8Vcxia1IpCYsZxFOWpK7goushOwPO+wOQyBXyCgZjd
+         yphSz4tudaz2eIhw4xXIIZ3n5733GhbnuwBWmGnAeF5/THBowCsCG5gPo6ShmVC9Cb
+         OY2nlpbBECUdrF65BPRgU4wRLwfcFrf4NOS2PR0ODXTSniK8fhqydv88mSPX3BK6VU
+         EwxEAK3mzVrWQ==
+Received: by mail-ot1-f52.google.com with SMTP id r10-20020a056830080a00b0055c8fd2cebdso3743582ots.6;
+        Wed, 17 Nov 2021 01:58:51 -0800 (PST)
+X-Gm-Message-State: AOAM532AVUyf/tXjPcuSz03TYgHMgiq3DOno52nv3YtnN+HkEJBRNhJ5
+        O/aAT7lKKqV1fuUWnclo6IFLmfpEsKxGbBldmzw=
+X-Google-Smtp-Source: ABdhPJzkTx0Ti045S+OUp7bX0P3vYAjLTDbDy35SYYLaLHJyIhLjY6bOcAA6Cs9vcnTqFOMjaorzLT8U0Hs2o0Jmd6c=
+X-Received: by 2002:a9d:6653:: with SMTP id q19mr12476293otm.116.1637143130723;
+ Wed, 17 Nov 2021 01:58:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+Received: by 2002:ac9:4448:0:0:0:0:0 with HTTP; Wed, 17 Nov 2021 01:58:50
+ -0800 (PST)
+In-Reply-To: <2865530.e9J7NaK4W3@natalenko.name>
+References: <5831447.lOV4Wx5bFT@natalenko.name> <CAKYAXd-KmxMeYWP8z6RYYK6za-Sj81Qtb3RO=oG+Yy3kXDaLjg@mail.gmail.com>
+ <2865530.e9J7NaK4W3@natalenko.name>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Wed, 17 Nov 2021 18:58:50 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd9wKDTE5WPQWcBZ_mHfaAOOY+pDj7=yndi17gf2KqWpwg@mail.gmail.com>
+Message-ID: <CAKYAXd9wKDTE5WPQWcBZ_mHfaAOOY+pDj7=yndi17gf2KqWpwg@mail.gmail.com>
+Subject: Re: ksmbd: Unsupported addition info
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steve French <sfrench@samba.org>,
+        Hyunchul Lee <hyc.lee@gmail.com>, linux-cifs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As we're using Intel Aero firmware, make the code closer to the
-driver for such device.
+2021-11-17 16:00 GMT+09:00, Oleksandr Natalenko <oleksandr@natalenko.name>:
+> Hello.
+>
+> On st=C5=99eda 17. listopadu 2021 0:36:53 CET Namjae Jeon wrote:
+>> 2021-11-17 6:44 GMT+09:00, Oleksandr Natalenko
+>> <oleksandr@natalenko.name>:
+>> > With the latest ksmbd from the next branch I have an issue with wife's
+>> > Windows
+>> > 10 laptop while copying/removing files from the network share. On her
+>> > client it
+>> > looks like copy operation (server -> laptop) reaches 99% and then
+>> > stalls,
+>> > and
+>> > on the server side there's this in the kernel log:
+>> >
+>> > ```
+>> > ksmbd: Unsupported addition info: 0xf)
+>> > ksmbd: Unsupported addition info: 0x20)
+>> > ```
+>> >
+>> > repeated multiple times. I must note that in fact the file gets copied
+>> > to
+>> > her
+>> > laptop, but Windows copy dialog just hangs.
+>> >
+>> > Any idea what it could be and how to avoid it? This also happened
+>> > before
+>> > (I'm
+>> > a pretty early ksmbd adopter), but I'm reporting it just now because I
+>> > na=C3=AFvely
+>> > hoped it would be fixed automagically :). This never happened to me
+>> > with
+>> > userspace Samba though.
+>> >
+>> > This is my smb.conf:
+>> >
+>> > ```
+>> > [global]
+>> > workgroup =3D KANAPKA
+>> > server string =3D ksmbd server %v
+>> > netbios name =3D defiant
+>> > valid users =3D __guest
+>> >
+>> > [Shared]
+>> > valid users =3D __guest
+>> > path =3D /mnt/shared
+>> > force user =3D _shared
+>> > force group =3D _shared
+>> > browsable =3D no
+>> > writeable =3D yes
+>> > veto files =3D /lost+found/
+>> > ```
+>> >
+>> > Appreciate your time and looking forward to your response.
+>>
+>> Thanks for your report, I have seen same symptom before, I thought it
+>> was a windows issue as it is also reproduced against samba. If you
+>> wait for a few minutes, does not the 99% message window close?
+>
+> Eventually it does close on its own in a minute or so. Also, it may close
+> after clicking the "X" (close) button, but not instantly.
+As I remember, The X button will delete the file you copied. Could you
+please give me packet dump(tcpdump) on problem situation ? and It
+would be nice to give a dump also for a successful copy. I will try to
+compare the two.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
-
-To avoid mailbombing on a large number of people, only mailing lists were C/C on the cover.
-See [PATCH v2 00/12] at: https://lore.kernel.org/all/cover.1637142905.git.mchehab+huawei@kernel.org/
-
- drivers/staging/media/atomisp/pci/sh_css_sp.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/staging/media/atomisp/pci/sh_css_sp.c b/drivers/staging/media/atomisp/pci/sh_css_sp.c
-index 778639f391cb..299e1071f837 100644
---- a/drivers/staging/media/atomisp/pci/sh_css_sp.c
-+++ b/drivers/staging/media/atomisp/pci/sh_css_sp.c
-@@ -1001,6 +1001,7 @@ sh_css_sp_init_stage(struct ia_css_binary *binary,
- 	/* Make sure binary name is smaller than allowed string size */
- 	assert(strlen(binary_name) < SH_CSS_MAX_BINARY_NAME - 1);
- 	strscpy(sh_css_isp_stage.binary_name, binary_name, SH_CSS_MAX_BINARY_NAME);
-+	sh_css_isp_stage.binary_name[SH_CSS_MAX_BINARY_NAME - 1] = 0;
- 	sh_css_isp_stage.mem_initializers = *isp_mem_if;
- 
- 	/*
-@@ -1032,16 +1033,14 @@ sh_css_sp_init_stage(struct ia_css_binary *binary,
- 		return err;
- 
- #ifdef ISP2401
--	if (stage == 0) {
--		pipe = find_pipe_by_num(sh_css_sp_group.pipe[thread_id].pipe_num);
--		if (!pipe)
--			return -EINVAL;
-+	pipe = find_pipe_by_num(sh_css_sp_group.pipe[thread_id].pipe_num);
-+	if (!pipe)
-+		return -EINVAL;
- 
--		if (args->in_frame)
--			ia_css_get_crop_offsets(pipe, &args->in_frame->info);
--		else
--			ia_css_get_crop_offsets(pipe, &binary->in_frame_info);
--	}
-+	if (args->in_frame)
-+		ia_css_get_crop_offsets(pipe, &args->in_frame->info);
-+	else if (&binary->in_frame_info)
-+		ia_css_get_crop_offsets(pipe, &binary->in_frame_info);
- #else
- 	(void)pipe; /*avoid build warning*/
- #endif
--- 
-2.33.1
-
+Thanks!
+>
+> --
+> Oleksandr Natalenko (post-factum)
+>
+>
+>
