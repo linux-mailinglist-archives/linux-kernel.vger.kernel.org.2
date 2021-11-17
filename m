@@ -2,122 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04EE44540AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 07:13:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B504540CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 07:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231392AbhKQGOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 01:14:47 -0500
-Received: from sender3-pp-o92.zoho.com.cn ([124.251.121.251]:25328 "EHLO
-        sender3-pp-o92.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229632AbhKQGOp (ORCPT
+        id S233156AbhKQGUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 01:20:42 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48160 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232918AbhKQGUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 01:14:45 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1637129490; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=mxk3aax3nsywqc5mT59ijhnvyxe0SGv9swJ+Ij8uZiGWX3VtVXQav5YFykTJS5TSf/jqX8tdiGXEINV1g3EEBgSLPfo6TQl15QcWZkXWchiy2zjeZko/yk7nfxPKSh1MSAI69ArodTtVuJ9MHxe4/wq/Mydd9JUtlgKmyR09YY8=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1637129490; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
-        bh=rfxVLTH3564AhzBpdXSLlUU2L9D17YJOYA+HFb4ouvw=; 
-        b=hfL+PRXqKOtQJ6ohcayTXzhPFh0hlaa4TOAiyZAI21cGnZ5/LbMVHJWUNQeL9szSKWUrm1MY5HMouYSZFFbhTV0P0Sh762Yb2iWLoYPinoJhywecK0w+VDU3nCQ/g0WJgygjIM8e2usviYGAXFH9z1geO48IqNrooBmRfN4owIY=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1637129490;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=rfxVLTH3564AhzBpdXSLlUU2L9D17YJOYA+HFb4ouvw=;
-        b=VBo1wrw2RvH4FjSyhldbTQ9LUE18HTagC6XlwQ1KA/GF5BVPxi8ZFxOOmdSSwvAR
-        aPDY9jOXjk5U3kkIC2tAlB2E5/1uXnR41FkKFlVPs1Zv2xZRVj6g7PL15mRGfoouelv
-        F0j9lAb9Sb34DpPr2g8e21H2yAQml68dZh/XRIwE=
-Received: from mail.baihui.com by mx.zoho.com.cn
-        with SMTP id 163712948978472.95351357724451; Wed, 17 Nov 2021 14:11:29 +0800 (CST)
-Date:   Wed, 17 Nov 2021 14:11:29 +0800
-From:   Chengguang Xu <cgxu519@mykernel.net>
-Reply-To: cgxu519@mykernel.net
-To:     "Miklos Szeredi" <miklos@szeredi.hu>
-Cc:     "Jan Kara" <jack@suse.cz>, "Amir Goldstein" <amir73il@gmail.com>,
-        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
-        "overlayfs" <linux-unionfs@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>
-Message-ID: <17d2c858d76.d8a27d876510.8802992623030721788@mykernel.net>
-In-Reply-To: <CAJfpegttQreuuD_jLgJmrYpsLKBBe2LmB5NSj6F5dHoTzqPArw@mail.gmail.com>
-References: <20210923130814.140814-1-cgxu519@mykernel.net> <20210923130814.140814-7-cgxu519@mykernel.net>
- <CAJfpeguqj2vst4Zj5EovSktJkXiDSCSWY=X12X0Yrz4M8gPRmQ@mail.gmail.com>
- <17c5aba1fef.c5c03d5825886.6577730832510234905@mykernel.net>
- <CAJfpegtr1NkOiY9YWd1meU1yiD-LFX-aB55UVJs94FrX0VNEJQ@mail.gmail.com>
- <17c5adfe5ea.12f1be94625921.4478415437452327206@mykernel.net>
- <CAJfpegt4jZpSCXGFk2ieqUXVm3m=ng7QtSzZp2bXVs07bfrbXg@mail.gmail.com> <17d268ba3ce.1199800543649.1713755891767595962@mykernel.net> <CAJfpegttQreuuD_jLgJmrYpsLKBBe2LmB5NSj6F5dHoTzqPArw@mail.gmail.com>
-Subject: Re: [RFC PATCH v5 06/10] ovl: implement overlayfs' ->write_inode
- operation
+        Wed, 17 Nov 2021 01:20:41 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AH67dDG002885;
+        Wed, 17 Nov 2021 06:17:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=smJOSVium3d6C14sPyr6rq3vtLfqVfytj8v6BcCQ3Ig=;
+ b=Q2XvYBE8MXtIbOApvoqT8AhRZooKfzY1AKmGUJgX1VuuzftC+d50fQzdkrcMufsrDVWq
+ KaLp3qFiqCb9pN2IPQH4WdSemv8aFPq1tuhv43rEoIlhyNROyc/Oj9usDqad+ul8hvpO
+ a15jUx4zNxtciFvkPoj7DYg65z3yKilTMKUrZAeo4hbMoX/wXA2qbBJsxYqNP0JQknQL
+ p4CYVvJi9SmPORRpMtrCfCl9wf6eK95n5CQcWtfLde6KHY5XP6kJd7hNqLdg2bo9F3/p
+ Ph1Sm6pcbXaPOJp/xTsF4Z2HEP60dYyiSpqTHouCDqgo0pBAZl15dhrMYXOJJC9kwtYo hw== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3ccuvr8b59-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Nov 2021 06:17:15 +0000
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AH5wJJ0027967;
+        Wed, 17 Nov 2021 06:17:13 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma01fra.de.ibm.com with ESMTP id 3ca509w0hs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Nov 2021 06:17:13 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AH6H9cM57672138
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Nov 2021 06:17:09 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1182642054;
+        Wed, 17 Nov 2021 06:17:09 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6FC7242041;
+        Wed, 17 Nov 2021 06:17:05 +0000 (GMT)
+Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com (unknown [9.43.2.55])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 17 Nov 2021 06:17:05 +0000 (GMT)
+Subject: Re: [RESEND PATCH v5 0/4] Add perf interface to expose nvdimm
+To:     LEROY Christophe <christophe.leroy@csgroup.eu>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>
+Cc:     "santosh@fossix.org" <santosh@fossix.org>,
+        "maddy@linux.ibm.com" <maddy@linux.ibm.com>,
+        "rnsastry@linux.ibm.com" <rnsastry@linux.ibm.com>,
+        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
+        "atrajeev@linux.vnet.ibm.com" <atrajeev@linux.vnet.ibm.com>,
+        "vaibhav@linux.ibm.com" <vaibhav@linux.ibm.com>
+References: <20211116044904.48718-1-kjain@linux.ibm.com>
+ <8bc3f62b-881f-d919-8726-95610d1bc133@csgroup.eu>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <8a989060-0be5-0e50-e824-c18d67874863@linux.ibm.com>
+Date:   Wed, 17 Nov 2021 11:47:04 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <8bc3f62b-881f-d919-8726-95610d1bc133@csgroup.eu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: fASwfLnI_kx8olk5V8UFP1VKra5h0nst
+X-Proofpoint-ORIG-GUID: fASwfLnI_kx8olk5V8UFP1VKra5h0nst
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Importance: Medium
-User-Agent: ZohoCN Mail
-X-Mailer: ZohoCN Mail
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-17_01,2021-11-16_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ impostorscore=0 suspectscore=0 mlxlogscore=999 malwarescore=0 phishscore=0
+ priorityscore=1501 spamscore=0 lowpriorityscore=0 adultscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111170029
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=BA=8C, 2021-11-16 20:35:55 Miklos Sze=
-redi <miklos@szeredi.hu> =E6=92=B0=E5=86=99 ----
- > On Tue, 16 Nov 2021 at 03:20, Chengguang Xu <cgxu519@mykernel.net> wrote=
-:
- > >
- > >  ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E5=9B=9B, 2021-10-07 21:34:19 Miklo=
-s Szeredi <miklos@szeredi.hu> =E6=92=B0=E5=86=99 ----
- > >  > On Thu, 7 Oct 2021 at 15:10, Chengguang Xu <cgxu519@mykernel.net> w=
-rote:
- > >  > >  > However that wasn't what I was asking about.  AFAICS ->write_i=
-node()
- > >  > >  > won't start write back for dirty pages.   Maybe I'm missing so=
-mething,
- > >  > >  > but there it looks as if nothing will actually trigger writeba=
-ck for
- > >  > >  > dirty pages in upper inode.
- > >  > >  >
- > >  > >
- > >  > > Actually, page writeback on upper inode will be triggered by over=
-layfs ->writepages and
- > >  > > overlayfs' ->writepages will be called by vfs writeback function =
-(i.e writeback_sb_inodes).
- > >  >
- > >  > Right.
- > >  >
- > >  > But wouldn't it be simpler to do this from ->write_inode()?
- > >  >
- > >  > I.e. call write_inode_now() as suggested by Jan.
- > >  >
- > >  > Also could just call mark_inode_dirty() on the overlay inode
- > >  > regardless of the dirty flags on the upper inode since it shouldn't
- > >  > matter and results in simpler logic.
- > >  >
- > >
- > > Hi Miklos=EF=BC=8C
- > >
- > > Sorry for delayed response for this, I've been busy with another proje=
-ct.
- > >
- > > I agree with your suggesion above and further more how about just mark=
- overlay inode dirty
- > > when it has upper inode? This approach will make marking dirtiness sim=
-ple enough.
- >=20
- > Are you suggesting that all non-lower overlay inodes should always be di=
-rty?
- >=20
- > The logic would be simple, no doubt, but there's the cost to walking
- > those overlay inodes which don't have a dirty upper inode, right? =20
 
-That's true.
 
- > Can you quantify this cost with a benchmark?  Can be totally synthetic,
- > e.g. lookup a million upper files without modifying them, then call
- > syncfs.
- >=20
+On 11/16/21 8:29 PM, LEROY Christophe wrote:
+> Hi
+> 
+> Le 16/11/2021 à 05:49, Kajol Jain a écrit :
+>> Patchset adds performance stats reporting support for nvdimm.
+>> Added interface includes support for pmu register/unregister
+>> functions. A structure is added called nvdimm_pmu to be used for
+>> adding arch/platform specific data such as cpumask, nvdimm device
+>> pointer and pmu event functions like event_init/add/read/del.
+>> User could use the standard perf tool to access perf events
+>> exposed via pmu.
+>>
+>> Interface also defines supported event list, config fields for the
+>> event attributes and their corresponding bit values which are exported
+>> via sysfs. Patch 3 exposes IBM pseries platform nmem* device
+>> performance stats using this interface.
+> 
+> You resending your v5 series ? Is there any news since your submittion 
+> last month that's awaiting in patchwork here at 
+> https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=264422 ?
 
-No problem, I'll do some tests for the performance.
+Hi Christophe,
+      There is no code side changes from the last v5 version. Since, I
+am looking for reviews, again posted this patchset with RESEND tag.
 
 Thanks,
-Chengguang
+Kajol Jain
+
+> 
+> Christophe
+> 
+> 
+>>
+>> Result from power9 pseries lpar with 2 nvdimm device:
+>>
+>> Ex: List all event by perf list
+>>
+>> command:# perf list nmem
+>>
+>>    nmem0/cache_rh_cnt/                                [Kernel PMU event]
+>>    nmem0/cache_wh_cnt/                                [Kernel PMU event]
+>>    nmem0/cri_res_util/                                [Kernel PMU event]
+>>    nmem0/ctl_res_cnt/                                 [Kernel PMU event]
+>>    nmem0/ctl_res_tm/                                  [Kernel PMU event]
+>>    nmem0/fast_w_cnt/                                  [Kernel PMU event]
+>>    nmem0/host_l_cnt/                                  [Kernel PMU event]
+>>    nmem0/host_l_dur/                                  [Kernel PMU event]
+>>    nmem0/host_s_cnt/                                  [Kernel PMU event]
+>>    nmem0/host_s_dur/                                  [Kernel PMU event]
+>>    nmem0/med_r_cnt/                                   [Kernel PMU event]
+>>    nmem0/med_r_dur/                                   [Kernel PMU event]
+>>    nmem0/med_w_cnt/                                   [Kernel PMU event]
+>>    nmem0/med_w_dur/                                   [Kernel PMU event]
+>>    nmem0/mem_life/                                    [Kernel PMU event]
+>>    nmem0/poweron_secs/                                [Kernel PMU event]
+>>    ...
+>>    nmem1/mem_life/                                    [Kernel PMU event]
+>>    nmem1/poweron_secs/                                [Kernel PMU event]
+>>
+>> Patch1:
+>>          Introduces the nvdimm_pmu structure
+>> Patch2:
+>>          Adds common interface to add arch/platform specific data
+>>          includes nvdimm device pointer, pmu data along with
+>>          pmu event functions. It also defines supported event list
+>>          and adds attribute groups for format, events and cpumask.
+>>          It also adds code for cpu hotplug support.
+>> Patch3:
+>>          Add code in arch/powerpc/platform/pseries/papr_scm.c to expose
+>>          nmem* pmu. It fills in the nvdimm_pmu structure with pmu name,
+>>          capabilities, cpumask and event functions and then registers
+>>          the pmu by adding callbacks to register_nvdimm_pmu.
+>> Patch4:
+>>          Sysfs documentation patch
+>>
+>> Changelog
+>> ---
+>> v4 -> v5:
+>> - Remove multiple variables defined in nvdimm_pmu structure include
+>>    name and pmu functions(event_int/add/del/read) as they are just
+>>    used to copy them again in pmu variable. Now we are directly doing
+>>    this step in arch specific code as suggested by Dan Williams.
+>>
+>> - Remove attribute group field from nvdimm pmu structure and
+>>    defined these attribute groups in common interface which
+>>    includes format, event list along with cpumask as suggested by
+>>    Dan Williams.
+>>    Since we added static defination for attrbute groups needed in
+>>    common interface, removes corresponding code from papr.
+>>
+>> - Add nvdimm pmu event list with event codes in the common interface.
+>>
+>> - Remove Acked-by/Reviewed-by/Tested-by tags as code is refactored
+>>    to handle review comments from Dan.
+>>
+>> - Make nvdimm_pmu_free_hotplug_memory function static as reported
+>>    by kernel test robot, also add corresponding Reported-by tag.
+>>
+>> - Link to the patchset v4: https://lkml.org/lkml/2021/9/3/45
+>>
+>> v3 -> v4
+>> - Rebase code on top of current papr_scm code without any logical
+>>    changes.
+>>
+>> - Added Acked-by tag from Peter Zijlstra and Reviewed by tag
+>>    from Madhavan Srinivasan.
+>>
+>> - Link to the patchset v3: https://lkml.org/lkml/2021/6/17/605
+>>
+>> v2 -> v3
+>> - Added Tested-by tag.
+>>
+>> - Fix nvdimm mailing list in the ABI Documentation.
+>>
+>> - Link to the patchset v2: https://lkml.org/lkml/2021/6/14/25
+>>
+>> v1 -> v2
+>> - Fix hotplug code by adding pmu migration call
+>>    incase current designated cpu got offline. As
+>>    pointed by Peter Zijlstra.
+>>
+>> - Removed the retun -1 part from cpu hotplug offline
+>>    function.
+>>
+>> - Link to the patchset v1: https://lkml.org/lkml/2021/6/8/500
+>>
+>> Kajol Jain (4):
+>>    drivers/nvdimm: Add nvdimm pmu structure
+>>    drivers/nvdimm: Add perf interface to expose nvdimm performance stats
+>>    powerpc/papr_scm: Add perf interface support
+>>    docs: ABI: sysfs-bus-nvdimm: Document sysfs event format entries for
+>>      nvdimm pmu
+>>
+>>   Documentation/ABI/testing/sysfs-bus-nvdimm |  35 +++
+>>   arch/powerpc/include/asm/device.h          |   5 +
+>>   arch/powerpc/platforms/pseries/papr_scm.c  | 225 ++++++++++++++
+>>   drivers/nvdimm/Makefile                    |   1 +
+>>   drivers/nvdimm/nd_perf.c                   | 328 +++++++++++++++++++++
+>>   include/linux/nd.h                         |  41 +++
+>>   6 files changed, 635 insertions(+)
+>>   create mode 100644 drivers/nvdimm/nd_perf.c
