@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6BA454830
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:08:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13884454831
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:08:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238210AbhKQOLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 09:11:04 -0500
-Received: from foss.arm.com ([217.140.110.172]:57252 "EHLO foss.arm.com"
+        id S238234AbhKQOLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 09:11:08 -0500
+Received: from foss.arm.com ([217.140.110.172]:57286 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238207AbhKQOLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 09:11:01 -0500
+        id S238172AbhKQOLF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 09:11:05 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C0C61396;
-        Wed, 17 Nov 2021 06:08:03 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9378D13A1;
+        Wed, 17 Nov 2021 06:08:06 -0800 (PST)
 Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AD6FD3F70D;
-        Wed, 17 Nov 2021 06:08:00 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0F5333F70D;
+        Wed, 17 Nov 2021 06:08:03 -0800 (PST)
 From:   Mark Rutland <mark.rutland@arm.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     aou@eecs.berkeley.edu, borntraeger@de.ibm.com, bp@alien8.de,
@@ -27,9 +27,9 @@ Cc:     aou@eecs.berkeley.edu, borntraeger@de.ibm.com, bp@alien8.de,
         mpe@ellerman.id.au, palmer@dabbelt.com, paul.walmsley@sifive.com,
         peterz@infradead.org, rostedt@goodmis.org, tglx@linutronix.de,
         will@kernel.org
-Subject: [PATCH 4/9] arm64: Make perf_callchain_kernel() use arch_stack_walk()
-Date:   Wed, 17 Nov 2021 14:07:32 +0000
-Message-Id: <20211117140737.44420-5-mark.rutland@arm.com>
+Subject: [PATCH 5/9] arm64: Make __get_wchan() use arch_stack_walk()
+Date:   Wed, 17 Nov 2021 14:07:33 +0000
+Message-Id: <20211117140737.44420-6-mark.rutland@arm.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20211117140737.44420-1-mark.rutland@arm.com>
 References: <20211117140737.44420-1-mark.rutland@arm.com>
@@ -44,73 +44,96 @@ substantially rework arm64's unwinding code. As part of this, we want to
 minimize the set of unwind interfaces we expose, and avoid open-coding
 of unwind logic outside of stacktrace.c.
 
-Currently perf_callchain_kernel() walks the stack of an interrupted
-context by calling start_backtrace() with the context's PC and FP, and
-iterating unwind steps using walk_stackframe(). This is functionally
-equivalent to calling arch_stack_walk() with the interrupted context's
-pt_regs, which will start with the PC and FP from the regs.
+Currently, __get_wchan() walks the stack of a blocked task by calling
+start_backtrace() with the task's saved PC and FP values, and iterating
+unwind steps using unwind_frame(). The initialization is functionally
+equivalent to calling arch_stack_walk() with the blocked task, which
+will start with the task's saved PC and FP values.
 
-Make perf_callchain_kernel() use arch_stack_walk(). This simplifies
-perf_callchain_kernel(), and in future will alow us to make
-walk_stackframe() private to stacktrace.c.
+Currently __get_wchan() always performs an initial unwind step, which
+will stkip __switch_to(), but as this is now marked as a __sched
+function, this no longer needs special handling and will be skipped in
+the same way as other sched functions.
 
-At the same time, we update the callchain_trace() callback to check the
-return value of perf_callchain_store(), which indicates whether there is
-space for any further entries. When a non-zero value is returned,
-further calls will be ignored, and are redundant, so we can stop the
-unwind at this point.
+Make __get_wchan() use arch_stack_walk(). This simplifies __get_wchan(),
+and in future will alow us to make unwind_frame() private to
+stacktrace.c. At the same time, we can simplify the try_get_task_stack()
+check and avoid the unnecessary `stack_page` variable.
 
-We also remove the stale and confusing comment for callchain_trace.
+The change to the skipping logic means we may terminate one frame
+earlier than previously where there are an excessive number of sched
+functions in the trace, but this isn't seen in practice, and wchan is
+best-effort anyway, so this should not be a problem.
 
-There should be no functional change as a result of this patch.
+Other than the above, there should be no functional change as a result
+of this patch.
 
 Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
-Tested-by: Mark Rutland <mark.rutland@arm.com>
-Reviewed-by: Mark Brown <broonie@kernel.org>
-Reviewed-by: Mark Rutland <mark.rutland@arm.com>
-[Mark: elaborate commit message, remove comment]
+[Mark: rebase atop wchan changes, simplify, elaborate commit message]
 Signed-off-by: Mark Rutland <mark.rutland@arm.com>
 ---
- arch/arm64/kernel/perf_callchain.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ arch/arm64/kernel/process.c | 41 ++++++++++++++++++++++++-----------------
+ 1 file changed, 24 insertions(+), 17 deletions(-)
 
-diff --git a/arch/arm64/kernel/perf_callchain.c b/arch/arm64/kernel/perf_callchain.c
-index 4a72c2727309..2160a53272b7 100644
---- a/arch/arm64/kernel/perf_callchain.c
-+++ b/arch/arm64/kernel/perf_callchain.c
-@@ -132,30 +132,21 @@ void perf_callchain_user(struct perf_callchain_entry_ctx *entry,
- 	}
+diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+index 980cad7292af..2410ef046232 100644
+--- a/arch/arm64/kernel/process.c
++++ b/arch/arm64/kernel/process.c
+@@ -529,30 +529,37 @@ struct task_struct *__switch_to(struct task_struct *prev,
+ 	return last;
  }
  
--/*
-- * Gets called by walk_stackframe() for every stackframe. This will be called
-- * whist unwinding the stackframe and is like a subroutine return so we use
-- * the PC.
-- */
- static bool callchain_trace(void *data, unsigned long pc)
- {
- 	struct perf_callchain_entry_ctx *entry = data;
--	perf_callchain_store(entry, pc);
--	return true;
-+	return perf_callchain_store(entry, pc) == 0;
- }
- 
- void perf_callchain_kernel(struct perf_callchain_entry_ctx *entry,
- 			   struct pt_regs *regs)
++struct wchan_info {
++	unsigned long	pc;
++	int		count;
++};
++
++static bool get_wchan_cb(void *arg, unsigned long pc)
++{
++	struct wchan_info *wchan_info = arg;
++
++	if (!in_sched_functions(pc)) {
++		wchan_info->pc = pc;
++		return false;
++	}
++	return wchan_info->count++ < 16;
++}
++
+ unsigned long __get_wchan(struct task_struct *p)
  {
 -	struct stackframe frame;
--
- 	if (perf_guest_cbs && perf_guest_cbs->is_in_guest()) {
- 		/* We don't support guest os callchain now */
- 		return;
- 	}
+-	unsigned long stack_page, ret = 0;
+-	int count = 0;
++	struct wchan_info wchan_info = {
++		.pc = 0,
++		.count = 0,
++	};
  
--	start_backtrace(&frame, regs->regs[29], regs->pc);
--	walk_stackframe(current, &frame, callchain_trace, entry);
-+	arch_stack_walk(callchain_trace, entry, current, regs);
+-	stack_page = (unsigned long)try_get_task_stack(p);
+-	if (!stack_page)
++	if (!try_get_task_stack(p))
+ 		return 0;
+ 
+-	start_backtrace(&frame, thread_saved_fp(p), thread_saved_pc(p));
+-
+-	do {
+-		if (unwind_frame(p, &frame))
+-			goto out;
+-		if (!in_sched_functions(frame.pc)) {
+-			ret = frame.pc;
+-			goto out;
+-		}
+-	} while (count++ < 16);
++	arch_stack_walk(get_wchan_cb, &wchan_info, p, NULL);
+ 
+-out:
+ 	put_task_stack(p);
+-	return ret;
++
++	return wchan_info.pc;
  }
  
- unsigned long perf_instruction_pointer(struct pt_regs *regs)
+ unsigned long arch_align_stack(unsigned long sp)
 -- 
 2.11.0
 
