@@ -2,116 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30C7453E67
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 03:20:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 288A0453E6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 03:21:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232640AbhKQCXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 21:23:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229544AbhKQCXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 21:23:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7ACB361A02;
-        Wed, 17 Nov 2021 02:20:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637115645;
-        bh=iDWosObnHm99i06fmmb/ibxReLZuqcaTJgnFQrMovjI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GQsgwu9bKobTRau2zYYHf2QuET4megCLNghaVvKhsR1XO57RRlK8hgRlaf4Wjw+Wg
-         WcC6YTeiUXrq64iW2J0QZgAx3ERmSkP0H6Kp2ee3VryzZWTEmNAoKOp2zfOTgY1pZz
-         6DKG/KETf3imixg4+WTwCNXYDPy21lL2RRRSspGZRz2gJ5HSUu0+X6g9PU1EElsjbq
-         JcRzq6B8Vvg/0r6jJY7lTdC93kd+Bcfi5b68Pzu3MLYa3SKTh8jblaNxOqe6T06dGB
-         eqy0mpnI/xUcOW+ftqfHUxOmkqTuj+UpGYPKE+RVvCRc1IvcGH2SHVUBFgnkKmTK8V
-         GxYeZvPJawdbQ==
-Date:   Tue, 16 Nov 2021 18:20:45 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v2 12/28] iomap: Add iomap_invalidate_folio
-Message-ID: <20211117022045.GI24307@magnolia>
-References: <20211108040551.1942823-1-willy@infradead.org>
- <20211108040551.1942823-13-willy@infradead.org>
+        id S231814AbhKQCYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 21:24:44 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:54207 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S229944AbhKQCYn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 21:24:43 -0500
+Received: (qmail 158965 invoked by uid 1000); 16 Nov 2021 21:21:44 -0500
+Date:   Tue, 16 Nov 2021 21:21:44 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Peter Chen <peter.chen@kernel.org>, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH v17 7/7] usb: Specify dependencies on USB_XHCI_PLATFORM
+ with 'depends on'
+Message-ID: <20211117022144.GA158646@rowland.harvard.edu>
+References: <20211116200739.924401-1-mka@chromium.org>
+ <20211116120642.v17.7.If248f05613bbb06a44eb0b0909be5d97218f417b@changeid>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211108040551.1942823-13-willy@infradead.org>
+In-Reply-To: <20211116120642.v17.7.If248f05613bbb06a44eb0b0909be5d97218f417b@changeid>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 04:05:35AM +0000, Matthew Wilcox (Oracle) wrote:
-> Keep iomap_invalidatepage around as a wrapper for use in address_space
-> operations.
+On Tue, Nov 16, 2021 at 12:07:39PM -0800, Matthias Kaehlcke wrote:
+> Some USB controller drivers that depend on the xhci-plat driver
+> specify this dependency using 'select' in Kconfig. This is not
+> recommended for symbols that have other dependencies as it may
+> lead to invalid configurations. Use 'depends on' to specify the
+> dependency instead of 'select'.
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-
-Looks good to me,
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-
---D
-
+> For dwc3 specify the dependency on USB_XHCI_PLATFORM in
+> USB_DWC3_HOST and USB_DWC3_DUAL_ROLE. Also adjust the
+> dependencies of USB_DWC3_CORE to make sure that at least one
+> of USB_DWC3_HOST, USB_DWC3_GADGET or USB_DWC3_DUAL_ROLE can be
+> selected.
+> 
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> Reviewed-by: Roger Quadros <rogerq@kernel.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 > ---
->  fs/iomap/buffered-io.c | 20 ++++++++++++--------
->  include/linux/iomap.h  |  1 +
->  2 files changed, 13 insertions(+), 8 deletions(-)
 > 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 49f96fdadcb4..b7cbe4d202d8 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -468,23 +468,27 @@ iomap_releasepage(struct page *page, gfp_t gfp_mask)
->  }
->  EXPORT_SYMBOL_GPL(iomap_releasepage);
->  
-> -void
-> -iomap_invalidatepage(struct page *page, unsigned int offset, unsigned int len)
-> +void iomap_invalidate_folio(struct folio *folio, size_t offset, size_t len)
->  {
-> -	struct folio *folio = page_folio(page);
-> -
-> -	trace_iomap_invalidatepage(page->mapping->host, offset, len);
-> +	trace_iomap_invalidatepage(folio->mapping->host, offset, len);
->  
->  	/*
->  	 * If we're invalidating the entire page, clear the dirty state from it
->  	 * and release it to avoid unnecessary buildup of the LRU.
->  	 */
-> -	if (offset == 0 && len == PAGE_SIZE) {
-> -		WARN_ON_ONCE(PageWriteback(page));
-> -		cancel_dirty_page(page);
-> +	if (offset == 0 && len == folio_size(folio)) {
-> +		WARN_ON_ONCE(folio_test_writeback(folio));
-> +		folio_cancel_dirty(folio);
->  		iomap_page_release(folio);
->  	}
->  }
-> +EXPORT_SYMBOL_GPL(iomap_invalidate_folio);
-> +
-> +void iomap_invalidatepage(struct page *page, unsigned int offset,
-> +		unsigned int len)
-> +{
-> +	iomap_invalidate_folio(page_folio(page), offset, len);
-> +}
->  EXPORT_SYMBOL_GPL(iomap_invalidatepage);
->  
->  #ifdef CONFIG_MIGRATION
-> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-> index 6d1b08d0ae93..29491fb9c5ba 100644
-> --- a/include/linux/iomap.h
-> +++ b/include/linux/iomap.h
-> @@ -225,6 +225,7 @@ void iomap_readahead(struct readahead_control *, const struct iomap_ops *ops);
->  int iomap_is_partially_uptodate(struct page *page, unsigned long from,
->  		unsigned long count);
->  int iomap_releasepage(struct page *page, gfp_t gfp_mask);
-> +void iomap_invalidate_folio(struct folio *folio, size_t offset, size_t len);
->  void iomap_invalidatepage(struct page *page, unsigned int offset,
->  		unsigned int len);
->  #ifdef CONFIG_MIGRATION
-> -- 
-> 2.33.0
+> Changes in v17:
+> - removed explicit dependency on USB from USB_DWC3
+> - added 'Reviewed-by' tags from Roger and Doug
 > 
+> Changes in v16:
+> - none
+> 
+> Changes in v15:
+> - adjusted dependencies of USB_DWC3_CORE to make sure it can only
+>   be enabled when at least one of USB_DWC3_HOST, USB_DWC3_GADGET
+>   or USB_DWC3_DUAL_ROLE is selectable
+> - updated commit message
+> 
+> Changes in v14:
+> - none
+> 
+> Changes in v13:
+> - patch added to the series
+
+> diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+> index d1d926f8f9c2..e5e612f143a1 100644
+> --- a/drivers/usb/host/Kconfig
+> +++ b/drivers/usb/host/Kconfig
+> @@ -80,7 +80,7 @@ config USB_XHCI_MTK
+>  
+>  config USB_XHCI_MVEBU
+>  	tristate "xHCI support for Marvell Armada 375/38x/37xx"
+> -	select USB_XHCI_PLATFORM
+> +	depends on USB_XHCI_PLATFORM
+>  	depends on HAS_IOMEM
+>  	depends on ARCH_MVEBU || COMPILE_TEST
+>  	help
+> @@ -112,9 +112,9 @@ config USB_EHCI_BRCMSTB
+>  config USB_BRCMSTB
+>  	tristate "Broadcom STB USB support"
+>  	depends on (ARCH_BRCMSTB && PHY_BRCM_USB) || COMPILE_TEST
+> +	depends on !USB_XHCI_HCD || USB_XHCI_PLATFORM
+>  	select USB_OHCI_HCD_PLATFORM if USB_OHCI_HCD
+>  	select USB_EHCI_BRCMSTB if USB_EHCI_HCD
+> -	select USB_XHCI_PLATFORM if USB_XHCI_HCD
+>  	help
+>  	  Enables support for XHCI, EHCI and OHCI host controllers
+>  	  found in Broadcom STB SoC's.
+
+It should be pointed out that this now requires people with xHCI systems 
+to actively turn on CONFIG_USB_XHCI_PLATFORM before they can enable 
+CONFIG_USB_BRCMSTB.  Before, that was not necessary.  Some users might 
+get confused and not realize what is needed.  Perhaps something should 
+be added to the "help" text.
+
+Alan Stern
