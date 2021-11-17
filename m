@@ -2,203 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F0D454BCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:17:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C93AF454BCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239350AbhKQRU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 12:20:27 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:40248 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbhKQRUZ (ORCPT
+        id S239341AbhKQRUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 12:20:16 -0500
+Received: from h2.fbrelay.privateemail.com ([131.153.2.43]:59763 "EHLO
+        h2.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229585AbhKQRUP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 12:20:25 -0500
-Received: from pendragon.ideasonboard.com (85-76-75-165-nat.elisa-mobile.fi [85.76.75.165])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4372651D;
-        Wed, 17 Nov 2021 18:17:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1637169444;
-        bh=Cjf4AGr9RDOWFSbLypnkcR8vi1nf8X1AM+PsijSaGeY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HPHqgJQGZy1adWL0s5cAhEHuFxEUUR5M53LH6Pwbe6BCMUQh7Iwp2APpaai/bKLpq
-         v/6vX3bN0D0OVW5GqGqXRzHtSkgHXegjx9CObuIxrfi88XDTY6L+ISmSFH2ig/MX/M
-         IgJyMI0Vv3i6sjv2oDBpV4DJ4LnyTq/SuVlYBhzM=
-Date:   Wed, 17 Nov 2021 19:16:59 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Rui Miguel Silva <rmfrfs@gmail.com>
-Cc:     Martin Kepplinger <martin.kepplinger@puri.sm>, mchehab@kernel.org,
-        robh@kernel.org, shawnguo@kernel.org, kernel@pengutronix.de,
-        kernel@puri.sm, linux-imx@nxp.com, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] media: imx: imx7-media-csi: add support for imx8mq
-Message-ID: <YZU5C0E3WBd7VLS2@pendragon.ideasonboard.com>
-References: <20211117092710.3084034-1-martin.kepplinger@puri.sm>
- <CFS51AQQ7SCD.7FK8RLAWLXRH@arch-thunder>
+        Wed, 17 Nov 2021 12:20:15 -0500
+Received: from MTA-13-4.privateemail.com (mta-13-1.privateemail.com [198.54.122.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by h1.fbrelay.privateemail.com (Postfix) with ESMTPS id 5946A80AFB;
+        Wed, 17 Nov 2021 12:17:15 -0500 (EST)
+Received: from mta-13.privateemail.com (localhost [127.0.0.1])
+        by mta-13.privateemail.com (Postfix) with ESMTP id 8557F18000A1;
+        Wed, 17 Nov 2021 12:17:13 -0500 (EST)
+Received: from localhost.localdomain (unknown [10.20.151.206])
+        by mta-13.privateemail.com (Postfix) with ESMTPA id 10EA918000AB;
+        Wed, 17 Nov 2021 12:17:11 -0500 (EST)
+From:   Jordy Zomer <jordy@pwning.systems>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jordy Zomer <jordy@pwning.systems>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH] nfc: st21nfca: Fix potential buffer overflows in EVT_TRANSACTION
+Date:   Wed, 17 Nov 2021 18:17:03 +0100
+Message-Id: <20211117171706.2731410-1-jordy@pwning.systems>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CFS51AQQ7SCD.7FK8RLAWLXRH@arch-thunder>
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 02:51:48PM +0000, Rui Miguel Silva wrote:
-> Hi Martin,
-> Thanks for the patch.
-> 
-> On Wed Nov 17, 2021 at 9:27 AM WET, Martin Kepplinger wrote:
-> 
-> > Modeled after the NXP driver mx6s_capture.c that this driver is based on,
-> > imx8mq needs different settings for the baseaddr_switch mechanism. Define
-> > the needed bits and set that for imx8mq.
-> >
-> > Without these settings, the system will "sometimes" hang completely when
-> > starting to stream (the interrupt will never be called).
+It appears that there are some buffer overflows in EVT_TRANSACTION.
+This happens because the length parameters that are passed to memcpy
+come directly from skb->data and are not guarded in any way.
 
-Do we know why ? Are all the bits that you set required ?
+It would be nice if someone can review and test this patch because
+I don't own the hardware :)
 
-> > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> > ---
-> >  drivers/staging/media/imx/imx7-media-csi.c | 34 ++++++++++++++++++++--
-> >  1 file changed, 32 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/staging/media/imx/imx7-media-csi.c b/drivers/staging/media/imx/imx7-media-csi.c
-> > index 2288dadb2683..8619cf2fc694 100644
-> > --- a/drivers/staging/media/imx/imx7-media-csi.c
-> > +++ b/drivers/staging/media/imx/imx7-media-csi.c
-> > @@ -12,6 +12,7 @@
-> >  #include <linux/interrupt.h>
-> >  #include <linux/mfd/syscon.h>
-> >  #include <linux/module.h>
-> > +#include <linux/of_device.h>
-> >  #include <linux/of_graph.h>
-> >  #include <linux/pinctrl/consumer.h>
-> >  #include <linux/platform_device.h>
-> > @@ -122,6 +123,10 @@
-> >  #define BIT_DATA_FROM_MIPI		BIT(22)
-> >  #define BIT_MIPI_YU_SWAP		BIT(21)
-> >  #define BIT_MIPI_DOUBLE_CMPNT		BIT(20)
-> > +#define BIT_MASK_OPTION_FIRST_FRAME	(0 << 18)
-> > +#define BIT_MASK_OPTION_CSI_EN		(1 << 18)
-> > +#define BIT_MASK_OPTION_SECOND_FRAME	(2 << 18)
-> > +#define BIT_MASK_OPTION_ON_DATA		(3 << 18)
-> >  #define BIT_BASEADDR_CHG_ERR_EN		BIT(9)
-> >  #define BIT_BASEADDR_SWITCH_SEL		BIT(5)
-> >  #define BIT_BASEADDR_SWITCH_EN		BIT(4)
-> > @@ -154,6 +159,12 @@
-> >  #define CSI_CSICR18			0x48
-> >  #define CSI_CSICR19			0x4c
-> >  
-> > +enum imx_soc {
-> > +	IMX6UL = 0,
-> > +	IMX7,
-> > +	IMX8MQ,
-> 
-> maybe instead of this enum we could use a bool in structure...
+Signed-off-by: Jordy Zomer <jordy@pwning.systems>
+---
+ drivers/nfc/st21nfca/se.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-An enum would be more extensible, but we shouldn't define different
-values for IMX6UL and IMX7 if they're compatible. Maybe an enum
-imx_csi_model with two values (IMX_CSI_IMX7 and IMX_CSI_IMX8MQ ?).
-
-Are there other SoCs in the i.MX8 family that require this ? The BSP
-driver sets the baseaddr switch mechanism for i.MX8MM too, but it seems
-to work fine without it.
-
-> >+};
-> > +
-> >  struct imx7_csi {
-> >  	struct device *dev;
-> >  	struct v4l2_subdev sd;
-> > @@ -189,6 +200,8 @@ struct imx7_csi {
-> >  	bool is_csi2;
-> >  
-> >  	struct completion last_eof_completion;
-> > +
-> > +	enum imx_soc type;
-> 
-> here, bool is_imx8mq?
-> 
-> >  };
-> >  
-> >  static struct imx7_csi *
-> > @@ -537,6 +550,16 @@ static void imx7_csi_deinit(struct imx7_csi *csi,
-> >  	clk_disable_unprepare(csi->mclk);
-> >  }
-> >  
-> > +static void imx8mq_baseaddr_switch(struct imx7_csi *csi)
-> 
-> I think this function needs a better name. First add the imx7_csi
-> prefix that all functions have, and also you are setting it specific
-> to second frame and the function should not be specific to imx8.
-> 
-> maybe something:
-> 
-> imx7_csi_write_on_second_frame_enable, maybe?
-> 
-> > +{
-> > +	u32 cr18 = imx7_csi_reg_read(csi, CSI_CSICR18);
-> > +
-> > +	cr18 |= BIT_BASEADDR_SWITCH_EN | BIT_BASEADDR_SWITCH_SEL |
-> > +		BIT_BASEADDR_CHG_ERR_EN;
-> > +	cr18 |= BIT_MASK_OPTION_SECOND_FRAME;
-> > +	imx7_csi_reg_write(csi, cr18, CSI_CSICR18);
-> > +}
-> > +
-> >  static void imx7_csi_enable(struct imx7_csi *csi)
-> >  {
-> >  	/* Clear the Rx FIFO and reflash the DMA controller. */
-> > @@ -551,7 +574,11 @@ static void imx7_csi_enable(struct imx7_csi *csi)
-> >  
-> >  	/* Enable the RxFIFO DMA and the CSI. */
-> >  	imx7_csi_dmareq_rff_enable(csi);
-> > +
-> 
-> unrelated new line.
-> 
-> >  	imx7_csi_hw_enable(csi);
-> > +
-> > +	if (csi->type == IMX8MQ)
-> > +		imx8mq_baseaddr_switch(csi);
-> 
-> change this to new types and names?
-> 
-> >  }
-> >  
-> >  static void imx7_csi_disable(struct imx7_csi *csi)
-> > @@ -1155,6 +1182,8 @@ static int imx7_csi_probe(struct platform_device *pdev)
-> >  	if (IS_ERR(csi->regbase))
-> >  		return PTR_ERR(csi->regbase);
-> >  
-> > +	csi->type = (enum imx_soc)of_device_get_match_data(&pdev->dev);
-> 
-> here something:
->         csi->is_imx8mq = of_device_is_compatible(np, "fsl,imx8mq-csi");
->
-> > +
-> >  	spin_lock_init(&csi->irqlock);
-> >  	mutex_init(&csi->lock);
-> >  
-> > @@ -1249,8 +1278,9 @@ static int imx7_csi_remove(struct platform_device *pdev)
-> >  }
-> >  
-> >  static const struct of_device_id imx7_csi_of_match[] = {
-> > -	{ .compatible = "fsl,imx7-csi" },
-> > -	{ .compatible = "fsl,imx6ul-csi" },
-> > +	{ .compatible = "fsl,imx8mq-csi", .data = (void *)IMX8MQ },
-> 
-> and with the above you should not need to add the data field here.
-
-I like match data personally (especially if we keep a device model
-enum). This is exactly what match data has been designed for, to avoid
-is_compatible() checks.
-
-> > +	{ .compatible = "fsl,imx7-csi", .data = (void *)IMX7 },
-> > +	{ .compatible = "fsl,imx6ul-csi", .data = (void *)IMX6UL },
-> >  	{ },
-> >  };
-> >  MODULE_DEVICE_TABLE(of, imx7_csi_of_match);
-
+diff --git a/drivers/nfc/st21nfca/se.c b/drivers/nfc/st21nfca/se.c
+index a43fc4117fa5..e3483aca3280 100644
+--- a/drivers/nfc/st21nfca/se.c
++++ b/drivers/nfc/st21nfca/se.c
+@@ -316,6 +316,11 @@ int st21nfca_connectivity_event_received(struct nfc_hci_dev *hdev, u8 host,
+ 			return -ENOMEM;
+ 
+ 		transaction->aid_len = skb->data[1];
++
++		// Checking if the length of the AID is valid
++		if (transaction->aid_len > sizeof(transaction->aid))
++			return -EINVAL;
++
+ 		memcpy(transaction->aid, &skb->data[2],
+ 		       transaction->aid_len);
+ 
+@@ -325,6 +330,14 @@ int st21nfca_connectivity_event_received(struct nfc_hci_dev *hdev, u8 host,
+ 			return -EPROTO;
+ 
+ 		transaction->params_len = skb->data[transaction->aid_len + 3];
++
++		// check if the length of the parameters is valid
++		// we can't use sizeof(transaction->params) because it's
++		// a flexible array member so we have to check if params_len
++		// is bigger than the space allocated for the array
++		if (transaction->params_len > ((skb->len - 2) - sizeof(struct nfc_evt_transaction)))
++			return -EINVAL;
++
+ 		memcpy(transaction->params, skb->data +
+ 		       transaction->aid_len + 4, transaction->params_len);
+ 
 -- 
-Regards,
+2.27.0
 
-Laurent Pinchart
