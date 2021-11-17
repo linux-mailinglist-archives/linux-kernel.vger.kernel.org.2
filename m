@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3616B453E82
+	by mail.lfdr.de (Postfix) with ESMTP id 7F02A453E83
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 03:39:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231814AbhKQCky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 21:40:54 -0500
+        id S232417AbhKQCk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 21:40:59 -0500
 Received: from mga03.intel.com ([134.134.136.65]:57589 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229632AbhKQCkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 21:40:53 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="233813560"
+        id S231998AbhKQCk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 21:40:57 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="233813562"
 X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
-   d="scan'208";a="233813560"
+   d="scan'208";a="233813562"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 18:37:56 -0800
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 18:38:00 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
-   d="scan'208";a="494730824"
+   d="scan'208";a="494730832"
 Received: from shbuild999.sh.intel.com ([10.239.146.189])
-  by orsmga007.jf.intel.com with ESMTP; 16 Nov 2021 18:37:52 -0800
+  by orsmga007.jf.intel.com with ESMTP; 16 Nov 2021 18:37:56 -0800
 From:   Feng Tang <feng.tang@intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -31,97 +31,120 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
 Cc:     paulmck@kernel.org, rui.zhang@intel.com, andi.kleen@intel.com,
         len.brown@intel.com, tim.c.chen@intel.com,
         Feng Tang <feng.tang@intel.com>
-Subject: [PATCH v3 1/2] x86/tsc: add a timer to make sure tsc_adjust is always checked
-Date:   Wed, 17 Nov 2021 10:37:50 +0800
-Message-Id: <20211117023751.24190-1-feng.tang@intel.com>
+Subject: [PATCH v3 2/2] x86/tsc: skip tsc watchdog checking for qualified platforms
+Date:   Wed, 17 Nov 2021 10:37:51 +0800
+Message-Id: <20211117023751.24190-2-feng.tang@intel.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20211117023751.24190-1-feng.tang@intel.com>
+References: <20211117023751.24190-1-feng.tang@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Normally the tsc_sync will get checked every time system enters idle state,
-but Thomas Gleixner mentioned there is still a caveat that a system won't
-enter idle [1], either because it's too busy or configured purposely to not
-enter idle. Setup a periodic timer (every 10 minitues) to make sure the
-check is always on.
+There are cases that tsc clocksources are wrongly judged as unstable by
+clocksource watchdogs like hpet, acpi_pm or 'refined-jiffies'. While
+there is hardly a general reliable way to check the validity of a
+watchdog, and to protect the innocent tsc, Thomas Gleixner proposed [1]:
 
-[1]. https://lore.kernel.org/lkml/875z286xtk.fsf@nanos.tec.linutronix.de/
+"I'm inclined to lift that requirement when the CPU has:
+
+    1) X86_FEATURE_CONSTANT_TSC
+    2) X86_FEATURE_NONSTOP_TSC
+    3) X86_FEATURE_NONSTOP_TSC_S3
+    4) X86_FEATURE_TSC_ADJUST
+    5) At max. 4 sockets
+
+ After two decades of horrors we're finally at a point where TSC seems
+ to be halfway reliable and less abused by BIOS tinkerers. TSC_ADJUST
+ was really key as we can now detect even small modifications reliably
+ and the important point is that we can cure them as well (not pretty
+ but better than all other options)."
+
+As feature #3 X86_FEATURE_NONSTOP_TSC_S3 only exists on several generations
+of Atom processor, and is always coupled with X86_FEATURE_CONSTANT_TSC
+and X86_FEATURE_NONSTOP_TSC, skip checking it, and also be more defensive
+to use maxim of 2 sockets.
+
+The check is done inside tsc_init() before registering 'tsc-early' and
+'tsc' clocksources, as there were cases that both of them had been
+wrongly judged as unreliable.
+
+For more background of tsc/watchdog, there is a good summary in [2]
+
+[1]. https://lore.kernel.org/lkml/87eekfk8bd.fsf@nanos.tec.linutronix.de/
+[2]. https://lore.kernel.org/lkml/87a6pimt1f.ffs@nanos.tec.linutronix.de/
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Feng Tang <feng.tang@intel.com>
 ---
 Change log:
 
   v3:
-     * rebase against 5.16-rc1
-     * small change to code comments and commit log
-  
+    * rebased against 5.16-rc1
+    * refine commit log
+
   v2:
-     * skip timer setup when tsc_clocksource_reliabe==1 (Thomas)
-     * refine comment and code format (Thomas) 
+    * Directly skip watchdog check without messing flag
+      'tsc_clocksource_reliable' (Thomas)
 
- arch/x86/kernel/tsc_sync.c | 41 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+ arch/x86/kernel/tsc.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kernel/tsc_sync.c b/arch/x86/kernel/tsc_sync.c
-index 50a4515fe0ad..911df742145f 100644
---- a/arch/x86/kernel/tsc_sync.c
-+++ b/arch/x86/kernel/tsc_sync.c
-@@ -30,6 +30,7 @@ struct tsc_adjust {
- };
+diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+index 2e076a459a0c..389511f59101 100644
+--- a/arch/x86/kernel/tsc.c
++++ b/arch/x86/kernel/tsc.c
+@@ -1180,6 +1180,12 @@ void mark_tsc_unstable(char *reason)
  
- static DEFINE_PER_CPU(struct tsc_adjust, tsc_adjust);
-+static struct timer_list tsc_sync_check_timer;
+ EXPORT_SYMBOL_GPL(mark_tsc_unstable);
  
- /*
-  * TSC's on different sockets may be reset asynchronously.
-@@ -77,6 +78,46 @@ void tsc_verify_tsc_adjust(bool resume)
- 	}
++static void __init tsc_skip_watchdog_verify(void)
++{
++	clocksource_tsc_early.flags &= ~CLOCK_SOURCE_MUST_VERIFY;
++	clocksource_tsc.flags &= ~CLOCK_SOURCE_MUST_VERIFY;
++}
++
+ static void __init check_system_tsc_reliable(void)
+ {
+ #if defined(CONFIG_MGEODEGX1) || defined(CONFIG_MGEODE_LX) || defined(CONFIG_X86_GENERIC)
+@@ -1196,6 +1202,17 @@ static void __init check_system_tsc_reliable(void)
+ #endif
+ 	if (boot_cpu_has(X86_FEATURE_TSC_RELIABLE))
+ 		tsc_clocksource_reliable = 1;
++
++	/*
++	 * Ideally the socket number should be checked, but this is called
++	 * by tsc_init() which is in early boot phase and the socket numbers
++	 * may not be available. Use 'nr_online_nodes' as a fallback solution
++	 */
++	if (boot_cpu_has(X86_FEATURE_CONSTANT_TSC) &&
++	    boot_cpu_has(X86_FEATURE_NONSTOP_TSC) &&
++	    boot_cpu_has(X86_FEATURE_TSC_ADJUST) &&
++	    nr_online_nodes <= 2)
++		tsc_skip_watchdog_verify();
  }
  
-+/*
-+ * Normally the tsc_sync will be checked every time system enters idle
-+ * state, but there is still caveat that a system won't enter idle,
-+ * either because it's too busy or configured purposely to not enter
-+ * idle.
-+ *
-+ * So setup a periodic timer (every 10 minutes) to make sure the check
-+ * is always on.
-+ */
-+
-+#define SYNC_CHECK_INTERVAL		(HZ * 600)
-+
-+static void tsc_sync_check_timer_fn(struct timer_list *unused)
-+{
-+	int next_cpu;
-+
-+	tsc_verify_tsc_adjust(false);
-+
-+	/* Run the check for all onlined CPUs in turn */
-+	next_cpu = cpumask_next(raw_smp_processor_id(), cpu_online_mask);
-+	if (next_cpu >= nr_cpu_ids)
-+		next_cpu = cpumask_first(cpu_online_mask);
-+
-+	tsc_sync_check_timer.expires += SYNC_CHECK_INTERVAL;
-+	add_timer_on(&tsc_sync_check_timer, next_cpu);
-+}
-+
-+static int __init start_sync_check_timer(void)
-+{
-+	if (!boot_cpu_has(X86_FEATURE_TSC_ADJUST) || tsc_clocksource_reliable)
-+		return 0;
-+
-+	timer_setup(&tsc_sync_check_timer, tsc_sync_check_timer_fn, 0);
-+	tsc_sync_check_timer.expires = jiffies + SYNC_CHECK_INTERVAL;
-+	add_timer(&tsc_sync_check_timer);
-+
-+	return 0;
-+}
-+late_initcall(start_sync_check_timer);
-+
- static void tsc_sanitize_first_cpu(struct tsc_adjust *cur, s64 bootval,
- 				   unsigned int cpu, bool bootcpu)
- {
+ /*
+@@ -1387,9 +1404,6 @@ static int __init init_tsc_clocksource(void)
+ 	if (tsc_unstable)
+ 		goto unreg;
+ 
+-	if (tsc_clocksource_reliable || no_tsc_watchdog)
+-		clocksource_tsc.flags &= ~CLOCK_SOURCE_MUST_VERIFY;
+-
+ 	if (boot_cpu_has(X86_FEATURE_NONSTOP_TSC_S3))
+ 		clocksource_tsc.flags |= CLOCK_SOURCE_SUSPEND_NONSTOP;
+ 
+@@ -1527,7 +1541,7 @@ void __init tsc_init(void)
+ 	}
+ 
+ 	if (tsc_clocksource_reliable || no_tsc_watchdog)
+-		clocksource_tsc_early.flags &= ~CLOCK_SOURCE_MUST_VERIFY;
++		tsc_skip_watchdog_verify();
+ 
+ 	clocksource_register_khz(&clocksource_tsc_early, tsc_khz);
+ 	detect_art();
 -- 
 2.27.0
 
