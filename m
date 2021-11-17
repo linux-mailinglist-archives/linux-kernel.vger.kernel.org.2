@@ -2,101 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3F8A454E5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 21:19:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2032454E9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 21:34:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240645AbhKQUWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 15:22:15 -0500
-Received: from mail-ua1-f49.google.com ([209.85.222.49]:36354 "EHLO
-        mail-ua1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239661AbhKQUWK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 15:22:10 -0500
-Received: by mail-ua1-f49.google.com with SMTP id r15so8701956uao.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 12:19:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kKWUf574lUCz4mhkC+epdrPctSRHiHVlt/y3bwC9aKY=;
-        b=tIdYhAArPDD63mkfwG7Ycrj7wFnkP+bJbDeHrxK7OEwPKEaWqOsPtsps4fWCkYdxYq
-         zytQ3NU+NT85chnXgCiiOH2Iei3L9PwuxtlUU5JxxnyA9CAnid7k6BSU0wZ8PfUxVCrq
-         SZf6TSmQfGjWKn/BvcFJRv2jUDoevRL/JSi/LHQTfybINfJnuV6JZ80kMetMtXxDHaoy
-         BODpOM9Z/7HE0iexOik1w4gc4QVNsQJNcdwzsA7rLJd5v8rN9S7USvTkcVjzOCqDeSIN
-         xlm8fT9Rfy8ZEjWiwPN+8CkqNiQkl7veOPO/7Q2cJYugxVNoGfBe87fv7RkbzD/Va+bs
-         w7ng==
-X-Gm-Message-State: AOAM530L3FKNdhLeeCA+ktAMpmGzL47fkxj848U53zAvKLIRw2ZvOb/i
-        n3h4VnebzV8BA17tdfhUvmPbJGJ/pMrvdw==
-X-Google-Smtp-Source: ABdhPJzgsjW4F60Hb7os3O8U9T9khwTKooNouI26RXtD545m4VmmI60hz8g352egoVe3/q7mBVF//Q==
-X-Received: by 2002:a67:cd8b:: with SMTP id r11mr73268590vsl.27.1637180350766;
-        Wed, 17 Nov 2021 12:19:10 -0800 (PST)
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com. [209.85.222.51])
-        by smtp.gmail.com with ESMTPSA id b129sm555117vsc.5.2021.11.17.12.19.09
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 12:19:10 -0800 (PST)
-Received: by mail-ua1-f51.google.com with SMTP id l24so8686153uak.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 12:19:09 -0800 (PST)
-X-Received: by 2002:a67:c38f:: with SMTP id s15mr72611029vsj.50.1637180349098;
- Wed, 17 Nov 2021 12:19:09 -0800 (PST)
+        id S232274AbhKQUgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 15:36:54 -0500
+Received: from ofcsgdbm.dwd.de ([141.38.3.245]:55253 "EHLO ofcsgdbm.dwd.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229998AbhKQUgx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 15:36:53 -0500
+X-Greylist: delayed 503 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Nov 2021 15:36:53 EST
+Received: from localhost (localhost [127.0.0.1])
+        by ofcsg2dn1.dwd.de (Postfix) with ESMTP id 4HvZDn3G3bz1xn8
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 20:25:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dwd.de; h=
+        content-type:content-type:mime-version:references:message-id
+        :in-reply-to:subject:subject:from:from:date:date:received
+        :received:received:received:received:received:received:received;
+         s=dwd-csg20210107; t=1637180729; x=1638390330; bh=absRaF0AyRWFE
+        rHHsQuG9VvtLc2L1whYYXeUbE+o7Nw=; b=A1mtS6CwpNO6DQuPl21c1uIJIvXP6
+        A7BmbJP6FgHWWdNpO8VWfB785wOS3V6QrgwSbvUIJynOAxVdQr7pBZz8jmwGEO8e
+        xllbwbV0zWi49zrd9BjRM88/CUZ3fcIXZis3Dx3gNaWJKGdh5AdrpbO6wKqkSPVX
+        JQM488WlKUadwdZmpTMfYkXO8PueYn+j+OASd8JPiEHDiiLN+pwJNLeKdwozlXIL
+        NrnhSum9VkWl7ojLJGthKFRv/4uHi5qIXA8wiItvG/QabyLHdmEt1UoyRJmf4TWZ
+        gcMC2QXasu1FTE9DYZtqdjCdyE+E2rYPRxNjVdELVlPWj5tzv5+vrr2sA==
+X-Virus-Scanned: by amavisd-new at csg.dwd.de
+Received: from ofcsg2cteh1.dwd.de ([172.30.232.65])
+        by localhost (ofcsg2dn1.dwd.de [172.30.232.24]) (amavisd-new, port 10024)
+        with ESMTP id 6D9_AdDYL8MJ for <linux-kernel@vger.kernel.org>;
+        Wed, 17 Nov 2021 20:25:29 +0000 (UTC)
+Received: from ofcsg2cteh1.dwd.de (unknown [127.0.0.1])
+        by DDEI (Postfix) with SMTP id 3FB36C902594
+        for <root@ofcsg2dn1.dwd.de>; Wed, 17 Nov 2021 20:25:29 +0000 (UTC)
+Received: from ofcsg2cteh1.dwd.de (unknown [127.0.0.1])
+        by DDEI (Postfix) with ESMTP id 82B75C90257D
+        for <root@ofcsg2dn1.dwd.de>; Wed, 17 Nov 2021 20:25:13 +0000 (UTC)
+X-DDEI-TLS-USAGE: Unused
+Received: from ofcsgdbm.dwd.de (unknown [172.30.232.24])
+        by ofcsg2cteh1.dwd.de (Postfix) with ESMTP
+        for <root@ofcsg2dn1.dwd.de>; Wed, 17 Nov 2021 20:25:13 +0000 (UTC)
+Received: from ofcsgdbm.dwd.de by localhost (Postfix XFORWARD proxy);
+ Wed, 17 Nov 2021 20:25:13 -0000
+Received: from ofcsg2dvf2.dwd.de (ofcsg2dvf2.dwd.de [172.30.232.11])
+        by ofcsg2dn1.dwd.de (Postfix) with ESMTPS id 4HvZDT3PVjz1xn8;
+        Wed, 17 Nov 2021 20:25:13 +0000 (UTC)
+Received: from ofmailhub.dwd.de (ofmailhub.dwd.de [141.38.39.196])
+        by ofcsg2dvf2.dwd.de  with ESMTP id 1AHKPCI1009217-1AHKPCI2009217;
+        Wed, 17 Nov 2021 20:25:12 GMT
+Received: from diagnostix.dwd.de (diagnostix.dwd.de [141.38.44.45])
+        by ofmailhub.dwd.de (Postfix) with ESMTP id CA467E27A3;
+        Wed, 17 Nov 2021 20:25:12 +0000 (UTC)
+Date:   Wed, 17 Nov 2021 20:25:12 +0000 (GMT)
+From:   Holger Kiehl <Holger.Kiehl@dwd.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.15 000/923] 5.15.3-rc3 review
+In-Reply-To: <20211117101657.463560063@linuxfoundation.org>
+Message-ID: <413ef3-c782-be14-da3-da86ed14a210@diagnostix.dwd.de>
+References: <20211117101657.463560063@linuxfoundation.org>
 MIME-Version: 1.0
-References: <CAHk-=wjF=JzLkCi2wV+G=f8OWa5rNjPsZd2RMFG5MHwKZPgYvw@mail.gmail.com>
- <20211115045616.GA1012538@roeck-us.net> <CAHk-=whca4JrEExUZCf+iGhP+mV-_D2uyqiFHnaYqnfCOKyEVg@mail.gmail.com>
- <652edea7-28a0-70d9-c63f-d910b5942454@roeck-us.net> <87a6i4miwu.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87a6i4miwu.fsf@mpe.ellerman.id.au>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 17 Nov 2021 21:18:56 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVrpQJKKzpxrKKCCD_2+DzAvgFW+jsjPdR9JhBYeRgvNw@mail.gmail.com>
-Message-ID: <CAMuHMdVrpQJKKzpxrKKCCD_2+DzAvgFW+jsjPdR9JhBYeRgvNw@mail.gmail.com>
-Subject: Re: Linux 5.16-rc1
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        linux-ntfs-dev@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+X-FE-Policy-ID: 2:2:1:SYSTEM
+X-TMASE-Version: DDEI-5.1-8.6.1018-26536.002
+X-TMASE-Result: 10--7.389900-10.000000
+X-TMASE-MatchedRID: VfovoVrt/oaWfDtBOz4q26HggtOWAEvR69aS+7/zbj9lEv6AItKWF3YY
+        S0IdBFk7zEIp4VT5Da6LQ60xZ6J3CUQb08eHfFUFMy+jMkhCdFZ02ZC6RJyIuLqq6rvK6xTaDNE
+        KwYdREu7kLeKnzPvnhtj/F/70C6zbgl5Rdh8uTQFi8FpcLW8dYAD4keG7QhHm5k47RFlilVSETM
+        jf6aTOJ0XgvWQOMaft4c9hRRd5/qT4kBiMXhevoceuFL5UpINxV447DNvw38bNmo0PmpP6e56ba
+        /D5x6cp4vM1YF6AJbYUBfgS1SLQ+AtuKBGekqUpIG4YlbCDECtruV6hT84yE1iwJprBIi4pPo4F
+        3xl8padOoNGWodxsd8Pw8mkzWoCMdp34Uj9JQqN+3BndfXUhXQ==
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-TMASE-INERTIA: 0-0;;;;
+X-DDEI-PROCESSED-RESULT: Safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+Hello,
 
-On Tue, Nov 16, 2021 at 12:39 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
-> Guenter Roeck <linux@roeck-us.net> writes:
-> > fs/ntfs/aops.c: In function 'ntfs_write_mst_block':
-> > fs/ntfs/aops.c:1311:1: error: the frame size of 2240 bytes is larger than 2048 bytes
-> >
-> > Bisect points to commit f22969a6604 ("powerpc/64s: Default to 64K pages for
-> > 64 bit book3s"), and reverting that commit does fix the problem.
-> > The problem is
-> >       ntfs_inode *locked_nis[PAGE_SIZE / NTFS_BLOCK_SIZE];
-> >
-> > I don't see the problem in next-20211115, but I don't immediately see how it was fixed there.
->
-> I still see it in next.
->
-> I don't know what to do about it though. The NTFS folks presumably don't
-> want to rewrite their code to avoid a warning on powerpc, we have no
-> real interest in NTFS, and definitely no expertise in the NTFS code. We
-> don't want to revert the 64K change, and even if we did the warning
-> would still be there for other 64K page configs.
+On Wed, 17 Nov 2021, Greg Kroah-Hartman wrote:
 
-Do you have a pointer to that discussion? I couldn't find it.
+> This is the start of the stable review cycle for the 5.15.3 release.
+> There are 923 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 19 Nov 2021 10:14:52 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.3-rc3.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+> 
+On a Deskmini X300 with a AMD APU 5700G this does not boot (rc1+rc2 also
+do not boot). As Scott Bruce already noticed, if one removes
+c3fc9d9e8f2dc518a8ce3c77f833a11b47865944 "x86: Fix __get_wchan() for
+!STACKTRACE" it boots.
 
-Why does the ntfs code have a need to allocate an array
-(regardless whether it's on the stack or not) with a size related to
-PAGE_SIZE? Shouldn't the array's size be related to a parameter of
-the file system on the storage device, instead of a parameter of the
-system it is running on?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Holger
