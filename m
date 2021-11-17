@@ -2,104 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0530453E2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 03:06:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 881E4453E31
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 03:06:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232090AbhKQCHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 21:07:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57104 "EHLO
+        id S232302AbhKQCIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 21:08:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhKQCHb (ORCPT
+        with ESMTP id S229632AbhKQCIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 21:07:31 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC27DC061570;
-        Tue, 16 Nov 2021 18:04:32 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id y8so812378plg.1;
-        Tue, 16 Nov 2021 18:04:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YYMHnZa4Fp6R7ZiPAO18RAWUjsp4BQMceKJYPJ4DltQ=;
-        b=S4pi1LL4pavZLpbNUg3TolR1Y5PKk1BGAAQRh+PuCponARsSOaQnduNZofi/d+vR+r
-         Dv3wZwQ4EcXb7DhRxdarSyFUdR/Rab9PfB91bhb/VtkQFVYbEHqn85UCQ6ZkC8eZ/5Yl
-         vu6nF7sy0u1pZM1uHTF6SsO32NVbS8kwfJP1fT3qjuNDgWzhqZhNDJQ7AXS1Mm2XWYQK
-         yhyrK+ZKlAYSeBdzaLLhRBov7z9gLT2/Y3Fb1CmrZXP1JDfP0H3rf0wzXjTSPkhdbTKf
-         740JXdmysFzBvYCKu3lmBslOnPUyd1+ri5oy2clN9E51BNeTdBhjplQ/io+8qX4rPCZ1
-         ohgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YYMHnZa4Fp6R7ZiPAO18RAWUjsp4BQMceKJYPJ4DltQ=;
-        b=UQ3jN1ecsXPLWnsgNwpXNBkY8FOj/gqpq+8pkQILuvYCI6+dsdyLbiVGm/zU4dLvCo
-         Jf3BQ5Qg/HOatNwdfg9tndXJuVqvEB2daVqJVqT/++56m8k2KyUNXfvlZgNgZFD8VvVc
-         Hm7HegyKO25lhEqo05j2fz0UgvhPBdSdimuTG+44d9LUEarXAUnL9BSp5vA2v6QnTC7m
-         bGmxVb5NK+yEFUdrEB+uwL33g8wMBiJMq2Nk1W0QsQcW5sUpTMzSa/eUsFcshMqBJhUR
-         Xfsjxq5BfeTsnVw6rxQzW/Il0rD2dYk/hNuEMexW7QjT8wxscIUqbwpbL4Hoc7NV1cM6
-         thUw==
-X-Gm-Message-State: AOAM530LekqQJGh4KJdfIi0EsWczSLonWEL83e5oKAipon1/s4/ZGNO5
-        j2o9D0dqzyVxETIMZrXAKO0=
-X-Google-Smtp-Source: ABdhPJzyh5zPVtB9+tCMvKMv8KGMLDWWuGOrzRHDdHi7r5uLZ18d0EzrEbh2jUwr2gI1LVaE+YHEsg==
-X-Received: by 2002:a17:903:1103:b0:143:a593:dc41 with SMTP id n3-20020a170903110300b00143a593dc41mr49644868plh.5.1637114672465;
-        Tue, 16 Nov 2021 18:04:32 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id g1sm19586851pfm.25.2021.11.16.18.04.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 18:04:32 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: deng.changcheng@zte.com.cn
-To:     thierry.reding@gmail.com
-Cc:     u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
-        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        ludovic.desroches@microchip.com, linux-pwm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] pwm: Use div64_ul instead of do_div
-Date:   Wed, 17 Nov 2021 02:04:26 +0000
-Message-Id: <20211117020426.159242-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Tue, 16 Nov 2021 21:08:47 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A51FEC061570;
+        Tue, 16 Nov 2021 18:05:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=4tWYtMZGixA+wvOSftKSlvk/VgodDRuuv8NOVBgK9qA=; b=Adq4v/KWTEM2FdczXpvjs80tIS
+        X+RI8WudlJAsHrDPGPuCobzpS7CFDimDgP4hUO57ijSq+gK2r7RjaX+5aWCUI+kHE5HNNvxAiArb8
+        MS2goqmoJTX+p9hyEsHktic/NtZxDWhf2p4O9b5k/d/KvN0wUtcmJsD2XP8KiNZU8zHfrCWygGZbf
+        8nS638cYMetvY08LkJYRSgyJFQ4rl780l7P9YO3hEfXv1iAyk81Ac9opUIOH1J54gT/anfierRXVH
+        MxYlvXhSFH2WpfGppH4xw+r0EETjY+4Yny/3LELXc9fz8PIP5eqaU39lCpGtN1ivyUo+nWcfxcO6p
+        5wtu7BXA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mnAKU-0035bi-Ao; Wed, 17 Nov 2021 02:05:44 +0000
+Subject: Re: Build regressions/improvements in v5.16-rc1
+To:     Nick Terrell <terrelln@fb.com>, Helge Deller <deller@gmx.de>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Hector Martin <marcan@marcan.st>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+References: <20211115155105.3797527-1-geert@linux-m68k.org>
+ <CAMuHMdUCsyUxaEf1Lz7+jMnur4ECwK+JoXQqmOCkRKqXdb1hTQ@mail.gmail.com>
+ <fcdead1c-2e26-b8ca-9914-4b3718d8f6d4@gmx.de>
+ <480CE37B-FE60-44EE-B9D2-59A88FDFE809@fb.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <78b2d093-e06c-ba04-9890-69f948bfb937@infradead.org>
+Date:   Tue, 16 Nov 2021 18:05:40 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <480CE37B-FE60-44EE-B9D2-59A88FDFE809@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changcheng Deng <deng.changcheng@zte.com.cn>
+On 11/16/21 5:59 PM, Nick Terrell wrote:
+> 
+> 
+>> On Nov 15, 2021, at 8:44 AM, Helge Deller <deller@gmx.de> wrote:
+>>
+>> On 11/15/21 17:12, Geert Uytterhoeven wrote:
+>>> On Mon, Nov 15, 2021 at 4:54 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>>>> Below is the list of build error/warning regressions/improvements in
+>>>> v5.16-rc1[1] compared to v5.15[2].
+>>>>
+>>>> Summarized:
+>>>>   - build errors: +20/-13
+>>>>   - build warnings: +3/-28
+>>>>
+>>>> Happy fixing! ;-)
+>>>>
+>>>> Thanks to the linux-next team for providing the build service.
+>>>>
+>>>> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf/  (all 90 configs)
+>>>> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/8bb7eca972ad531c9b149c0a51ab43a417385813/  (all 90 configs)
+>>>>
+>>>>
+>>>> *** ERRORS ***
+>>>>
+>>>> 20 error regressions:
+>>>>   + /kisskb/src/arch/parisc/include/asm/jump_label.h: error: expected ':' before '__stringify':  => 33:4, 18:4
+>>>>   + /kisskb/src/arch/parisc/include/asm/jump_label.h: error: label 'l_yes' defined but not used [-Werror=unused-label]:  => 38:1, 23:1
+>>>
+>>>     due to static_branch_likely() in crypto/api.c
+>>>
+>>> parisc-allmodconfig
+>>
+>> fixed now in the parisc for-next git tree.
+>>
+>>
+>>>>   + /kisskb/src/drivers/gpu/drm/msm/msm_drv.h: error: "COND" redefined [-Werror]:  => 531
+>>>>   + /kisskb/src/lib/zstd/compress/zstd_double_fast.c: error: the frame size of 3252 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 47:1
+>>>>   + /kisskb/src/lib/zstd/compress/zstd_double_fast.c: error: the frame size of 3360 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 499:1
+>>>>   + /kisskb/src/lib/zstd/compress/zstd_double_fast.c: error: the frame size of 5344 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 334:1
+>>>>   + /kisskb/src/lib/zstd/compress/zstd_double_fast.c: error: the frame size of 5380 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 354:1
+>>>>   + /kisskb/src/lib/zstd/compress/zstd_fast.c: error: the frame size of 1824 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 372:1
+>>>>   + /kisskb/src/lib/zstd/compress/zstd_fast.c: error: the frame size of 2224 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 204:1
+>>>>   + /kisskb/src/lib/zstd/compress/zstd_fast.c: error: the frame size of 3800 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 476:1
+>>>
+>>> parisc-allmodconfig
+>>
+>> parisc needs much bigger frame sizes, so I'm not astonished here.
+>> During the v5.15 cycl I increased it to 1536 (from 1280), so I'm simply tempted to
+>> increase it this time to 4096, unless someone has a better idea....
+> 
+> This patch set should fix the zstd stack size warnings [0]. I’ve
+> verified the fix using the same tooling: gcc-8-hppa-linux-gnu.
+> 
+> I’ll send the PR to Linus tomorrow. I’ve been informed that it
+> isn't strictly necessary to send the patches to the mailing list
+> for bug fixes, but its already done, so I’ll wait and see if there
+> is any feedback.
 
-do_div() does a 64-by-32 division. If the divisor is unsigned long, using
-div64_ul can avoid truncation to 32-bit.
+IMO several (or many more) people would disagree with that.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
----
- drivers/pwm/pwm-atmel-hlcdc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+"strictly?"  OK, it's probably possible that almost any patch
+could be merged without being on a mailing list, but it's not
+desirable (except in the case of "security" patches).
 
-diff --git a/drivers/pwm/pwm-atmel-hlcdc.c b/drivers/pwm/pwm-atmel-hlcdc.c
-index a43b2babc809..1ae3d73b9832 100644
---- a/drivers/pwm/pwm-atmel-hlcdc.c
-+++ b/drivers/pwm/pwm-atmel-hlcdc.c
-@@ -60,7 +60,7 @@ static int atmel_hlcdc_pwm_apply(struct pwm_chip *c, struct pwm_device *pwm,
- 				return -EINVAL;
- 
- 			clk_period_ns = (u64)NSEC_PER_SEC * 256;
--			do_div(clk_period_ns, clk_freq);
-+			div64_ul(clk_period_ns, clk_freq);
- 		}
- 
- 		/* Errata: cannot use slow clk on some IP revisions */
-@@ -72,7 +72,7 @@ static int atmel_hlcdc_pwm_apply(struct pwm_chip *c, struct pwm_device *pwm,
- 				return -EINVAL;
- 
- 			clk_period_ns = (u64)NSEC_PER_SEC * 256;
--			do_div(clk_period_ns, clk_freq);
-+			div64_ul(clk_period_ns, clk_freq);
- 		}
- 
- 		for (pres = 0; pres <= ATMEL_HLCDC_PWMPS_MAX; pres++) {
 -- 
-2.25.1
-
+~Randy
