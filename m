@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C08D454BC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A207B454BC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:16:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239321AbhKQRRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 12:17:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232978AbhKQRRf (ORCPT
+        id S233324AbhKQRTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 12:19:36 -0500
+Received: from h4.fbrelay.privateemail.com ([131.153.2.45]:33104 "EHLO
+        h4.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229585AbhKQRTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 12:17:35 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF31C061570;
-        Wed, 17 Nov 2021 09:14:36 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id y12so14212760eda.12;
-        Wed, 17 Nov 2021 09:14:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hUu3vxHWsDQg639aiNLE2xiOomzS21tmbZdfXQFwxnQ=;
-        b=oLiP4Dyxkp8Wjwp+tKQBjVRNXPYgoObkG4yHWiNcxcYWtgha3Zs4XRRgCloMjca0HD
-         siJaUu1CjmF7uVqmCNLABGxqb4HSoKJP++MzZOL+vhJwMnXcerMyUvWnF1vwehB8pmGD
-         xN5p5ZgXLMS4JuISg9yy7AJ4Q5HFBMz9ipYL/DqSLpcbO6L8EqhNoUBpa1FnFgoCJboO
-         sun5vxuJzfAJ/zV/DLyDW2ufAOYbvMJImjGOpT6LcN2ptjaJqlWCw7zlkPdP7gbaP+0P
-         tdL4/2h7aMXK72i41LU/QSFpZbAon8SpxuOEh6/iKiF4e9bpb2OLtHLxbYZc2FI0wJpx
-         Qw/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hUu3vxHWsDQg639aiNLE2xiOomzS21tmbZdfXQFwxnQ=;
-        b=Jz4IiSvyvTCLStkLhpBEfg8STMyUkA5Z5+8IdsB+hp+wNB42f/Y4LRKrLqwBSNgyxL
-         G49LBn5Lz5q0iBFm3glth36c0Z3oOd7rMnRFIe1AjQ7rcBH78X3npqJS6ofMoNUL+kUW
-         jrvPn3BMm5uKFUK9U8L9JTddQ1NhMcA/AnnTsWbtXJauXhc1sz5ET7rX2vXFxxFe7Ald
-         kPDpzSYVasLEmB3uCr8XOYVfn3833RkfZDZnHF3Q0HyDCqpQKT/g4kXjifWrShjC3uMA
-         hveWjbsWv7NATBMSmk6zTem41r3wCJcFOqmchBq3xEPOZC5MGFBsRsykyJknYHF7FD4C
-         xqrA==
-X-Gm-Message-State: AOAM530dG+xL1ZbU03Eh8og9Wrc8FGJVVKk9bTyTnMBbMkGlJWyMWnNG
-        tf+lW2MwHUA0oFqIBGCz8IhhPj+Mn5qDt556dD4=
-X-Google-Smtp-Source: ABdhPJxPNGb7sIRKkHf64pq/IAE1bvXx3ymCyjWU2B39T+ktVLR//khn4aikRDT7vXZyvylhOgqAv7DkJHF0Q0UFY3Q=
-X-Received: by 2002:a50:9ec9:: with SMTP id a67mr365143edf.238.1637169275100;
- Wed, 17 Nov 2021 09:14:35 -0800 (PST)
+        Wed, 17 Nov 2021 12:19:33 -0500
+Received: from MTA-13-4.privateemail.com (mta-13-1.privateemail.com [198.54.122.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by h3.fbrelay.privateemail.com (Postfix) with ESMTPS id C302F80BFE;
+        Wed, 17 Nov 2021 12:16:31 -0500 (EST)
+Received: from mta-13.privateemail.com (localhost [127.0.0.1])
+        by mta-13.privateemail.com (Postfix) with ESMTP id E888518000A1;
+        Wed, 17 Nov 2021 12:16:29 -0500 (EST)
+Received: from localhost.localdomain (unknown [10.20.151.211])
+        by mta-13.privateemail.com (Postfix) with ESMTPA id 0322F18000A8;
+        Wed, 17 Nov 2021 12:16:27 -0500 (EST)
+From:   Jordy Zomer <jordy@pwning.systems>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jordy Zomer <jordy@pwning.systems>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        wengjianfeng <wengjianfeng@yulong.com>, netdev@vger.kernel.org
+Subject: [PATCH] nfc: st-nci: Fix potential buffer overflows in EVT_TRANSACTION
+Date:   Wed, 17 Nov 2021 18:15:51 +0100
+Message-Id: <20211117171554.2731340-1-jordy@pwning.systems>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20211117161028.11775-1-anand.ashok.dumbre@xilinx.com>
-In-Reply-To: <20211117161028.11775-1-anand.ashok.dumbre@xilinx.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 17 Nov 2021 19:13:54 +0200
-Message-ID: <CAHp75VdkGHvauZG7Nw4dDEb4+ZeVS4Pt2x05EiOiVCBVv8s10w@mail.gmail.com>
-Subject: Re: [PATCH v10 0/5] Add Xilinx AMS Driver
-To:     Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio <linux-iio@vger.kernel.org>, git <git@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 6:46 PM Anand Ashok Dumbre
-<anand.ashok.dumbre@xilinx.com> wrote:
->
-> Add Xilinx AMS driver which is used for Xilinx's ZynqMP AMS controller.
-> This AMS driver is used to report various interface voltages and temperatures
-> across the system.
-> This driver will be used by iio-hwmon to repport voltages and temperatures
-> across the system by using various channel interfaces.
-> This driver handles AMS module including PS-Sysmon & PL-Sysmon. The binding
-> documentation is added for understanding of AMS, PS, PL Sysmon Channels.
+It appears that there are some buffer overflows in EVT_TRANSACTION.
+This happens because the length parameters that are passed to memcpy
+come directly from skb->data and are not guarded in any way.
 
-Thanks and wait a bit, please. No need to send patches so often. We
-haven't settled down yet on v9. Here you effectively ignored my
-comment given again patch 5/5. Why?
+It would be nice if someone can review and test this patch because
+I don't own the hardware :)
 
-...
+Signed-off-by: Jordy Zomer <jordy@pwning.systems>
+---
+ drivers/nfc/st-nci/se.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-> Changes in v10:
->         - Fixed licence in zynqmp.dtsi.
->         - Changed the macros to use BIT().
->         - Realign some code to fit within 100 chars.
->         - Modified readl_poll_timeout usage.
-
->         - Usage of array_size() instead of check_mul_overflow().
-
-Why? I have asked you why you haven't used kcalloc there as well.
-
->         - Usage of dev_err_probe() instead of dev_err().
->         - Usage of kcalloc instead of kzalloc()
-
+diff --git a/drivers/nfc/st-nci/se.c b/drivers/nfc/st-nci/se.c
+index 7764b1a4c3cf..0d22853925d8 100644
+--- a/drivers/nfc/st-nci/se.c
++++ b/drivers/nfc/st-nci/se.c
+@@ -335,6 +335,12 @@ static int st_nci_hci_connectivity_event_received(struct nci_dev *ndev,
+ 			return -ENOMEM;
+ 
+ 		transaction->aid_len = skb->data[1];
++
++		// Checking if the length of the AID is valid
++		if (transaction->aid_len > sizeof(transaction->aid))
++			return -EINVAL;
++
++
+ 		memcpy(transaction->aid, &skb->data[2], transaction->aid_len);
+ 
+ 		/* Check next byte is PARAMETERS tag (82) */
+@@ -343,6 +349,15 @@ static int st_nci_hci_connectivity_event_received(struct nci_dev *ndev,
+ 			return -EPROTO;
+ 
+ 		transaction->params_len = skb->data[transaction->aid_len + 3];
++
++		// check if the length of the parameters is valid
++		// we can't use sizeof(transaction->params) because it's
++		// a flexible array member so we have to check if params_len
++		// is bigger than the space allocated for the array
++		if (transaction->params_len > ((skb->len - 2) - sizeof(struct nfc_evt_transaction)))
++			return -EINVAL;
++
++
+ 		memcpy(transaction->params, skb->data +
+ 		       transaction->aid_len + 4, transaction->params_len);
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.27.0
+
