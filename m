@@ -2,69 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A238454974
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CFC2454979
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:00:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238402AbhKQPCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 10:02:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238287AbhKQPCP (ORCPT
+        id S238346AbhKQPDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 10:03:03 -0500
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:58691 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238232AbhKQPDA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 10:02:15 -0500
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5E2C0613B9
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 06:59:16 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: hector@marcansoft.com)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id A0E3941F28;
-        Wed, 17 Nov 2021 14:59:12 +0000 (UTC)
-From:   Hector Martin <marcan@marcan.st>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Hector Martin <marcan@marcan.st>
-Subject: [PATCH 3/3] drm/simpledrm: Enable XRGB2101010 format
-Date:   Wed, 17 Nov 2021 23:58:29 +0900
-Message-Id: <20211117145829.204360-4-marcan@marcan.st>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211117145829.204360-1-marcan@marcan.st>
-References: <20211117145829.204360-1-marcan@marcan.st>
+        Wed, 17 Nov 2021 10:03:00 -0500
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 1AHExUEG025783
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 23:59:30 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 1AHExUEG025783
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1637161171;
+        bh=J8i3NpRpaKfGQtvzORCBEFDJAvllsZKJSM1zjCIXB5w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jeZ139xNuuPKkkBUiVdLxtv34imOmLcJaG4ph4URV81TzdJFj4X76/RpweJmZBAmM
+         CIBUPGW9d1Gau1m2axIHjJtZD2dY1F/D8KbPO4ggLJXnGQ2MdJCI04gGlZEKkvqfbp
+         PaRRl6nZUErOvK1LGpQFPdt5f9hCYQuGeRF2Yb1aZ/h91UegiD1s+4y4qIUgLoYkm/
+         6LrMXtoMjNEu6mA5DjpSb/1+6q5a8d9wAxGFC6p2jLvw9StrCqM19/luxjUFCEEra3
+         wficM9zShtFj7o5oXsGh9ZNGLpkx/cAbBPBOczaHHKXEr3+fcNPV/2S96atJ79qGkL
+         VoewliR8+igsg==
+X-Nifty-SrcIP: [209.85.210.178]
+Received: by mail-pf1-f178.google.com with SMTP id g19so2908159pfb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 06:59:30 -0800 (PST)
+X-Gm-Message-State: AOAM530gYI4pnvrXsX8Zp3mdVVE2qBDUDp44U59HqdbIthRfSZiih3U+
+        n4zOiMI1fvoAZyzJNsDlojCiib9sbTowfsx25LY=
+X-Google-Smtp-Source: ABdhPJxhF60oVNSvNyG0OLv0f0qLGXdDOSidaYAxE6cIOA4VDzi+zys+8JZrgsEmaWa77j9NdikoixTwUYB+0s2ZSbg=
+X-Received: by 2002:a65:530d:: with SMTP id m13mr5678027pgq.128.1637161170000;
+ Wed, 17 Nov 2021 06:59:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211109185015.615517-1-masahiroy@kernel.org> <0cdd39b2-73f8-e0c1-bfa2-7940d4b788f0@csgroup.eu>
+In-Reply-To: <0cdd39b2-73f8-e0c1-bfa2-7940d4b788f0@csgroup.eu>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 17 Nov 2021 23:58:52 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ4KD4zG2Me7RhsJNOXrMqDOHpd2YNoSPH4CZ63HXtqpQ@mail.gmail.com>
+Message-ID: <CAK7LNAQ4KD4zG2Me7RhsJNOXrMqDOHpd2YNoSPH4CZ63HXtqpQ@mail.gmail.com>
+Subject: Re: [PATCH] powerpc: clean vdso32 and vdso64 directories
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the format used by the bootloader framebuffer on Apple ARM64
-platforms, and is already supported by simplefb. This avoids regressing
-on these platforms when simpledrm is enabled and replaces simplefb.
+On Wed, Nov 17, 2021 at 12:38 AM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
+>
+> Hi Masahiro,
+>
+> Le 09/11/2021 =C3=A0 19:50, Masahiro Yamada a =C3=A9crit :
+> > Since commit bce74491c300 ("powerpc/vdso: fix unnecessary rebuilds of
+> > vgettimeofday.o"), "make ARCH=3Dpowerpc clean" does not clean up the
+> > arch/powerpc/kernel/{vdso32,vdso64} directories.
+> >
+> > Use the subdir- trick to let "make clean" descend into them.
+> >
+> > Fixes: bce74491c300 ("powerpc/vdso: fix unnecessary rebuilds of vgettim=
+eofday.o")
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> >   arch/powerpc/kernel/Makefile | 3 +++
+> >   1 file changed, 3 insertions(+)
+> >
+> > diff --git a/arch/powerpc/kernel/Makefile b/arch/powerpc/kernel/Makefil=
+e
+> > index 0e3640e14eb1..5fa68c2ef1f8 100644
+> > --- a/arch/powerpc/kernel/Makefile
+> > +++ b/arch/powerpc/kernel/Makefile
+> > @@ -196,3 +196,6 @@ clean-files :=3D vmlinux.lds
+> >   # Force dependency (incbin is bad)
+> >   $(obj)/vdso32_wrapper.o : $(obj)/vdso32/vdso32.so.dbg
+> >   $(obj)/vdso64_wrapper.o : $(obj)/vdso64/vdso64.so.dbg
+> > +
+> > +# for cleaning
+> > +subdir- +=3D vdso32 vdso64
+> >
+>
+> This patch make me think about one thing I would have liked to do, but I
+> don't know Makefiles well enough to be able to do it. You could probably
+> help me with it.
+>
+> vdso32 and vdso64 contain a lot of redundant sources. I would like to
+> merge them into a new single directory, let say 'vdso', and use the
+> files in that directory to build both vdso32.so and vdso64.so. I have a
+> feeling that x86 is doing it that way, but I've not been able to figure
+> out how to build two objects using the same C/S files.
+>
+> Thanks
+> Christophe
 
-Signed-off-by: Hector Martin <marcan@marcan.st>
----
- drivers/gpu/drm/tiny/simpledrm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changing the code as follows might work.
 
-diff --git a/drivers/gpu/drm/tiny/simpledrm.c b/drivers/gpu/drm/tiny/simpledrm.c
-index 2c84f2ea1fa2..b4b69f3a7e79 100644
---- a/drivers/gpu/drm/tiny/simpledrm.c
-+++ b/drivers/gpu/drm/tiny/simpledrm.c
-@@ -571,7 +571,7 @@ static const uint32_t simpledrm_default_formats[] = {
- 	//DRM_FORMAT_XRGB1555,
- 	//DRM_FORMAT_ARGB1555,
- 	DRM_FORMAT_RGB888,
--	//DRM_FORMAT_XRGB2101010,
-+	DRM_FORMAT_XRGB2101010,
- 	//DRM_FORMAT_ARGB2101010,
- };
- 
--- 
-2.33.0
+$(obj-vdso32): %-32.o: %.S FORCE
+          $(call if_changed_dep,vdso32as)
 
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
