@@ -2,116 +2,391 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BD145429B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 09:27:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E9B45429D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 09:28:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234506AbhKQIau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 03:30:50 -0500
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:50168
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229944AbhKQIat (ORCPT
+        id S234517AbhKQIbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 03:31:08 -0500
+Received: from mout.kundenserver.de ([212.227.126.133]:53455 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229944AbhKQIbH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 03:30:49 -0500
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 005CD40016
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:27:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1637137669;
-        bh=P95dsz5DnmdjZd6IIMhwxlUD+8WIlKXIhjrCFJuQBiY=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=bR9erVziguuB4GK69yq32UCG9AstcMTmwaywevrKKmO819sWct6ckvFyNuNRwdZwQ
-         zcOjw6kTJD75FncufTx9J6mK4R2hwIyxoj1e2o0RJge7HkxopMgnu9KTh+F4/toVAK
-         6BR3Fl137YFVpn4N923Zd5SbOTbW03lTsVdOzXrRuOwxIDctv5Jng3OiD1Di+rRMHp
-         eX04UJGLgzmbzYqDD2UR6+UtZKkmoUK53jGdYZknCuZ5a4t+C/C07+7bQ9mkXFuS84
-         +E6c4rj6WqSgCgBHpkLWrhb4U2gx9oeTzqNe15J6+pBtJM27VdCcgcxCpFOWUagjbs
-         XrJDqyrfMOOVw==
-Received: by mail-lf1-f72.google.com with SMTP id z1-20020a056512308100b003ff78e6402bso985628lfd.4
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 00:27:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=P95dsz5DnmdjZd6IIMhwxlUD+8WIlKXIhjrCFJuQBiY=;
-        b=Mgmk3gvBpvdAcd/kP/o2QqyGy7tud5cw2nFutWJ0u+X6RJ97O1keoMn9hNCyB300lO
-         Fx7kdG4uOAAqv26KlaVd/IjdHk5ExSmms+0xZAEehIIR6nlSjI5wzYu5WO3was+ZSYRG
-         MpNC0gIKudJ5dyeVLgT80aCP7OOP5Zgp7kqhdn/FA8CBuYMyWOHDikDOpa6gGo4YQoNG
-         EVZPRl01gWJE8EodA5Z9I5QiT5EjLBcR3Or/RS9uOY9KwE8O6m3aLxwncpZvetT3Ku63
-         QDhIiXyoFUPnA850KvHrOMsp2Yt8efJ1DfDPq5cBcsMoQNE8U/cMCPyVo8Pe/O+XggRl
-         lsSg==
-X-Gm-Message-State: AOAM5331X1Q7aaKEJPRRgnkNEb9QbGc2lrUkrpFZTUTVUWTliW6loL3c
-        /S3HCMguxFOVZWtayp05l9jYEDP29b4+QoXaF89LlglLVewPFpKV1Ot00fyj+I9bthMFlklc9dQ
-        LJHOSMQR7RjxNlHABJMCu/U6FIk57/criwbIIYoFHbA==
-X-Received: by 2002:a05:6512:308b:: with SMTP id z11mr13039261lfd.177.1637137668142;
-        Wed, 17 Nov 2021 00:27:48 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzdracRFgDN5bjVOqJs9kEp8rGYLeXyKT3Z97paO0yilkiZKv3mOw7ITb5/C3y0gQHc7iq+FQ==
-X-Received: by 2002:a05:6512:308b:: with SMTP id z11mr13039238lfd.177.1637137667915;
-        Wed, 17 Nov 2021 00:27:47 -0800 (PST)
-Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id k5sm2085654lja.34.2021.11.17.00.27.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 00:27:47 -0800 (PST)
-Message-ID: <e448d7b7-0a7d-7c88-271f-75ed5ac7e13a@canonical.com>
-Date:   Wed, 17 Nov 2021 09:27:46 +0100
+        Wed, 17 Nov 2021 03:31:07 -0500
+Received: from mail-wr1-f48.google.com ([209.85.221.48]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MmDVA-1mMgzP2bXU-00iAuC; Wed, 17 Nov 2021 09:28:07 +0100
+Received: by mail-wr1-f48.google.com with SMTP id b12so3021188wrh.4;
+        Wed, 17 Nov 2021 00:28:07 -0800 (PST)
+X-Gm-Message-State: AOAM530X8XxS1T53Wm4MyTMC7XLIE/8m0pXHuEj3RkEFeKhTvRL4Kz+J
+        mIhtfAgoVLs3f10gZS+5qpa4jXaDWBnIAAy8TzI=
+X-Google-Smtp-Source: ABdhPJyIzSToz4iS4tQyg9PKewmO+gE7p4znEHxKvXQjW5L3BHwKhCGPcxE2sX7lHNMQMYX5VAHSDbXYwe0agLyk6W8=
+X-Received: by 2002:adf:efc6:: with SMTP id i6mr18157408wrp.428.1637137686985;
+ Wed, 17 Nov 2021 00:28:06 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [krzk-mem-ctrl:for-v5.17/renesas-rpc 5/5]
- drivers/memory/renesas-rpc-if.c:253:14: warning: cast to smaller integer type
- 'enum rpcif_type' from 'const void *'
-Content-Language: en-US
-To:     kernel test robot <lkp@intel.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Wolfram Sang <wsa-dev@sang-engineering.com>
-References: <202111171118.XlLOUQ87-lkp@intel.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <202111171118.XlLOUQ87-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <1637131687-23000-1-git-send-email-tony.huang@sunplus.com> <1637131687-23000-3-git-send-email-tony.huang@sunplus.com>
+In-Reply-To: <1637131687-23000-3-git-send-email-tony.huang@sunplus.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 17 Nov 2021 09:27:50 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3saiuh8i_PNmfyeCnkTqbONbJ3AeTwa0K6f5Q=saZBBg@mail.gmail.com>
+Message-ID: <CAK8P3a3saiuh8i_PNmfyeCnkTqbONbJ3AeTwa0K6f5Q=saZBBg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] misc: Add iop driver for Sunplus SP7021
+To:     Tony Huang <tonyhuang.sunplus@gmail.com>
+Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, derek.kiernan@xilinx.com,
+        dragan.cvetic@xilinx.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org, wells.lu@sunplus.com,
+        Tony Huang <tony.huang@sunplus.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:ru1oxqHN4q5/gckyMFzi4GKLk/58hyGyDppaWu30kRK/XzFcGMk
+ xw065mERuaXu7jcyh67LsCqL8LQvmy4aQhvCN9m5GycnjbLU8dmb1qJhcuHgClFqZZI2Ej7
+ 4t7waLIKTz5fgBuuGiDI2aXNLEPdOzE6zf9AMIQAiYI+DrKZECAIImTAZ49OOzoyxCK7cm4
+ j+4pf+hLPhnLXZZdC9UBQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:uFldS96UqqM=:3qdmjolCCTfuD5dayDg9gr
+ vyyoNZu23KDpysGQEFrLGR+Y37DnGbnSupYaXKJ/Ir8cUvHiW6beUfn9PGXKEQSp2j/WDivt0
+ gylfTCGh7c0duOUDvSQLvsaYQAKAb0Af4pELEgxB6pYki0D/t+WqKoG9yFMmQX3DhCn7WnEQf
+ vUZfr/0MRe0+aEaOTGl8XJd+NK+lAoAnzXOJA+jYyStJZSs6CADjSr1qijxGn96zLHYTW1tlH
+ p3BEUPdk4GqoqV068M6XtKOCMIt7pl6obYBWHjQfCzxGW+b7liAKIEDUgPbOLsL66v3hWJZCu
+ icgsoUMi+ZgfM+asdh0JbYI2BVeY25AtqwZ3d8Zx9/1M8Ec+em0sWcY2RfAkyXykaqv30lDqh
+ 4Pn97TdqmrCrdYms3OaR3+YW4xpTzbMnkfWYqHfjh/krLQupbp8dqcrSueNftTE9mxS1bFIam
+ iHaC6tRIcAvejw9suwEQoZGQFNHUh1Zu7jqoPO268ASdbqlcu5QI3o3xlP9icaorh/fkqqS3B
+ rlXNGpCNFvTFukTBANU1UojNAffdeRntyO5f62+csECQMQa/BsONhhz2kZPLZWGTVGiRJ7Wf3
+ ZyezIDCjMp2PqRvN0wt90RJedEHN1iHiRcUenSape+22EEMPgUBO1sFD9FVGUjnVNDrY8/11+
+ fozTYMz+aGbr7gwbbopUTdS8Q+pzOEsj2MgZeDNeF5aeuC8w09J1zCLNEY4j2bPt6uvn2BnVs
+ 6UJuOFBXebdiPeAAtWY2wUXq3ykWOR38sK+9paQu219K6vO2J+9Eh/08UMTLPmGLwkh+RJs8w
+ ue6G8mYy/7P3b7XoWd23hzMZo4OH6YlZ4vxOFlCAOXLoPjs+EitqHs8/seJbey4xdv9uKAm
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/11/2021 04:56, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git for-v5.17/renesas-rpc
-> head:   b04cc0d912eb80d3c438b11d96ca847c3e77e8ab
-> commit: b04cc0d912eb80d3c438b11d96ca847c3e77e8ab [5/5] memory: renesas-rpc-if: Add support for RZ/G2L
-> config: x86_64-buildonly-randconfig-r002-20211116 (attached as .config)
-> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 4c2cf3a314d9131b1b288e7c8ab0c75ac1b2be1d)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git/commit/?id=b04cc0d912eb80d3c438b11d96ca847c3e77e8ab
->         git remote add krzk-mem-ctrl https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git
->         git fetch --no-tags krzk-mem-ctrl for-v5.17/renesas-rpc
->         git checkout b04cc0d912eb80d3c438b11d96ca847c3e77e8ab
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=x86_64 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
->>> drivers/memory/renesas-rpc-if.c:253:14: warning: cast to smaller integer type 'enum rpcif_type' from 'const void *' [-Wvoid-pointer-to-enum-cast]
->            rpc->type = (enum rpcif_type)of_device_get_match_data(dev);
->                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    1 warning generated.
-> 
+On Wed, Nov 17, 2021 at 7:48 AM Tony Huang <tonyhuang.sunplus@gmail.com> wrote:
+>
+> Add iop driver for Sunplus SP7021
+>
+> Signed-off-by: Tony Huang <tony.huang@sunplus.com>
 
-I am afraid several drivers repeat this pattern and will be affected as
-well on clang. GCC does not complain (apparently cast is enough for
-GCC), but still this has to be fixed. Maybe cast via  uintptr_t would
-quite it?
+A driver like this needs a long description of multiple paragraphs
+to explain what it does, why you need a custom user space interface
+etc.
 
-Let me know when I can expect the fix.
+> +config SUNPLUS_IOP
+> +       tristate "Sunplus IOP support"
+> +       default ARCH_SUNPLUS
+> +       help
+> +         Sunplus I/O processor (8051) driver.
+> +         Processor for I/O control, RTC wake-up proceduce management,
+> +         and cooperation with CPU&PMC in power management.
+> +         Need Install DQ8051, The DQ8051 bin file generated by keil C.
+> diff --git a/drivers/misc/iop/Makefile b/drivers/misc/iop/Makefile
+> new file mode 100644
+> index 0000000..cb67634
+> --- /dev/null
+> +++ b/drivers/misc/iop/Makefile
+> @@ -0,0 +1,13 @@
+> +#
+> +# Makefile for the IOP module drivers.
+> +#
+> +
+> +       # call from kernel build system
+> +
+> +       obj-$(CONFIG_SUNPLUS_IOP) += sunplus_iop.o
+> +       obj-$(CONFIG_SUNPLUS_IOP) += hal_iop.o
+> +       obj-$(CONFIG_SUNPLUS_IOP) += iopnormal.o
+> +       obj-$(CONFIG_SUNPLUS_IOP) += iopstandby.o
 
-Best regards,
-Krzysztof
+Remove the extra whitespace here
+
+> +clean:
+> +       rm -rf *.o *~ core .depend .*.cmd *.ko *.mod.c .tmp_versions
+> \ No newline at end of file
+
+Replace the explicit 'rm' command with Kbuild listings for these files.
+Most of the files are already covered by the regular 'clean' target,
+so you should only need special handling for stuff you build separately
+as well.
+
+> diff --git a/drivers/misc/iop/hal_iop.c b/drivers/misc/iop/hal_iop.c
+> new file mode 100644
+> index 0000000..6a72c8b
+> --- /dev/null
+> +++ b/drivers/misc/iop/hal_iop.c
+> @@ -0,0 +1,495 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +#include <linux/delay.h>
+> +#include <linux/io.h>
+> +#include "hal_iop.h"
+
+One fundamental rule for Linux kernel drivers is that we assume that we
+know which OS we are running on, so there is no need for abstracting the
+operating system away from the driver. Please fold your 'hal' into the
+top-level driver accordingly and remove any unneded indirections between
+the two. I suppose you could have everything in one file if after
+you remove the firmware from the driver, and no longer require any headers.
+
+> +//#define DEBUG_MESSAGE
+> +//#define early_printk
+> +
+> +#define IOP_KDBG_INFO
+> +#define IOP_FUNC_DEBUG
+> +#define IOP_KDBG_ERR
+> +#ifdef IOP_KDBG_INFO
+> +       #define FUNC_DEBUG()    pr_info("K_IOP: %s(%d)\n", __func__, __LINE__)
+> +#else
+> +       #define FUNC_DEBUG()
+> +#endif
+> +
+> +#ifdef IOP_FUNC_DEBUG
+> +#define DBG_INFO(fmt, args ...)        pr_info("K_IOP: " fmt, ## args)
+> +#else
+> +#define DBG_INFO(fmt, args ...)
+> +#endif
+> +
+> +#ifdef IOP_KDBG_ERR
+> +#define DBG_ERR(fmt, args ...) pr_err("K_IOP: " fmt, ## args)
+> +#else
+> +#define DBG_ERR(fmt, args ...)
+> +#endif
+
+These should all go away, try using dev_dbg() / dev_info() / dev_err()
+preferably.
+
+> +void hal_iop_init(void __iomem *iopbase)
+> +{
+> +       struct regs_iop_t *pIopReg = (struct regs_iop_t *)iopbase;
+> +       unsigned long *IOP_base_for_normal = (unsigned long *)SP_IOP_RESERVE_BASE;
+> +       unsigned char *IOP_kernel_base;
+> +       unsigned int reg;
+> +
+> +       IOP_kernel_base = (unsigned char *)ioremap((unsigned long)IOP_base_for_normal,
+> +               NORMAL_CODE_MAX_SIZE);
+> +
+> +       memset((unsigned char *)IOP_kernel_base, 0, NORMAL_CODE_MAX_SIZE);
+> +       memcpy((unsigned char *)IOP_kernel_base, IopNormalCode, NORMAL_CODE_MAX_SIZE);
+> +       writel(0x00100010, (void __iomem *)(B_SYSTEM_BASE + 32*4*0 + 4*1));
+
+All the type casts should be removed after you use the correct types:
+'void __iomem *'
+for MMIO tokens, and 'void *' for addressable memory. You can use the
+'sparse' tool
+by running 'make C=1' to check for any mismatched __iomem annotations.
+
+To write to an __iomem area, you can use memcpy_to_io() and memset_io()
+
+> diff --git a/drivers/misc/iop/hal_iop.h b/drivers/misc/iop/hal_iop.h
+> new file mode 100644
+> index 0000000..d83f9ea
+> --- /dev/null
+> +++ b/drivers/misc/iop/hal_iop.h
+> @@ -0,0 +1,34 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later*/
+> +
+> +#ifndef __IOP_HAL_H__
+> +#define __IOP_HAL_H__
+> +
+> +#include <linux/types.h>
+> +#include <linux/module.h>
+> +#include "reg_iop.h"
+> +
+> +void hal_iop_init(void __iomem *iopbase);
+> +void hal_iop_load_normal_code(void __iomem *iopbase);
+> +void hal_iop_load_standby_code(void __iomem *iopbase);
+> +void hal_iop_normalmode(void __iomem *iopbase);
+> +void hal_iop_standbymode(void __iomem *iopbase);
+> +void hal_iop_get_iop_data(void __iomem *iopbase);
+> +void hal_iop_set_iop_data(void __iomem *iopbase, unsigned int num, unsigned int value);
+> +void hal_gpio_init(void __iomem *iopbase, unsigned char gpio_number);
+> +void hal_iop_suspend(void __iomem *iopbase, void __iomem *ioppmcbase);
+> +void hal_iop_shutdown(void __iomem *iopbase, void __iomem *ioppmcbase);
+> +void hal_iop_S1mode(void __iomem *iopbase);
+> +void hal_iop_set_reserve_base(void __iomem *iopbase);
+> +void hal_iop_set_reserve_size(void __iomem *iopbase);
+
+When you fold those into the actual driver but decide to keep the functions
+separate, try to always pass a pointer to the device instance as the first
+argument. This is the way we do object oriented programming in the kernel.
+
+> +#define NORMAL_CODE_MAX_SIZE 0X10000
+> +#define STANDBY_CODE_MAX_SIZE 0x4000
+> +extern const unsigned char IopNormalCode[];
+> +extern const unsigned char IopStandbyCode[];
+> +extern bool iop_code_mode;
+> +extern unsigned long SP_IOP_RESERVE_BASE;
+> +extern unsigned long SP_IOP_RESERVE_SIZE;
+> +extern unsigned int RECEIVE_CODE_SIZE;
+> +extern unsigned char NormalCode[];
+> +extern unsigned char StandbyCode[];
+> +#endif /* __IOP_HAL_H__ */
+
+There should generally be no global variables. Instead, these should go
+into per-instance structures.
+
+Regarding the naming, avoid CamelCase and use e.g. 'iop_standby_code'
+instead of 'IopStandbyCode'.
+
+> diff --git a/drivers/misc/iop/iop_ioctl.h b/drivers/misc/iop/iop_ioctl.h
+> new file mode 100644
+> index 0000000..195388b
+> --- /dev/null
+> +++ b/drivers/misc/iop/iop_ioctl.h
+> @@ -0,0 +1,24 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later*/
+> +/*
+> + *
+> + *iop_ioctl.h
+> + *
+> + */
+> +
+> +#ifndef _IOP_IOCTL_H
+> +#define _IOP_IOCTL_H
+> +
+> +#include <linux/ioctl.h>
+> +
+> +struct ioctl_cmd {
+> +               unsigned int reg;
+> +               unsigned int offset;
+> +               unsigned int val;
+> +};
+> +
+> +#define IOC_MAGIC 'i'
+> +
+> +#define IOCTL_VALSET _IOW(IOC_MAGIC, 1, struct ioctl_cmd)
+> +#define IOCTL_VALGET _IOR(IOC_MAGIC, 2, struct ioctl_cmd)
+> +
+> +#endif
+
+ioctl interfaces are usually the hardest part of a driver, the best way
+to do this is to completely avoid inventing your own interfaces and using
+what the kernel already has, extending the existing interfaces if possible.
+
+If you end up having to add your own ioctls, do high-level functions
+rather than low-level register access, and create a separate ioctl
+command for each action.
+
+> diff --git a/drivers/misc/iop/iopnormal.c b/drivers/misc/iop/iopnormal.c
+> new file mode 100644
+> index 0000000..a49a376
+> --- /dev/null
+> +++ b/drivers/misc/iop/iopnormal.c
+> @@ -0,0 +1,4106 @@
+> +const unsigned char IopNormalCode[] = {
+> +0x02, 0x1E, 0x00, 0x02, 0xFF, 0xFF, 0x2E, 0x05, 0x02, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xB0, 0x05,
+> +0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x02, 0xFF, 0xFF, 0xFF, 0x08, 0x75, 0xCD, 0x05,
+> +0x00, 0x09, 0x75, 0x04, 0x02, 0x8F, 0x81, 0x75, 0x52, 0x78, 0x73, 0x04, 0x13, 0xEF, 0xFF, 0xE6,
+
+As I understand, this is the binary firmware that gets loaded into the iop.
+
+The way we normally handle firmware loading in the kernel is to use the
+'request_firmware()' interface from the driver to load the binary
+from a file in the root file system.
+
+
+> diff --git a/drivers/misc/iop/reg_iop.h b/drivers/misc/iop/reg_iop.h
+> new file mode 100644
+> index 0000000..829aa76
+> --- /dev/null
+> +++ b/drivers/misc/iop/reg_iop.h
+> @@ -0,0 +1,93 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later*/
+> +#ifndef __REG_IOP_H__
+> +#define __REG_IOP_H__
+> +#ifdef CONFIG_SOC_SP7021
+> +#include <mach/io_map.h>
+> +#endif
+
+There should not be any conditional on the type of the SOC here, the driver
+object needs to work in a kernel that includes support for multiple SoCs.
+
+Note that there are no mach/*.h headers for modern SoCs any more, so the
+platform code needs to be updated accordingly. In particular, any MMIO
+register locations need to come from the devicetree, not from a hardcoded
+header.
+
+> +struct regs_iop_moon0_t {
+> +       unsigned int stamp;/* 00 */
+> +       unsigned int clken[10];/* 01~10 */
+> +       unsigned int gclken[10];/* 11~20 */
+> +       unsigned int reset[10];/* 21~30 */
+> +       unsigned int sfg_cfg_mode;/* 31 */
+> +};
+
+Drop the '_t' suffix on the structure names, those are commonly associated
+with names for typedefs, not structures.
+
+Most driver writers find it easier to define register indexes as macros
+rather than structure definitions, but if all registers are 32-bit wide,
+then this works as well.
+
+Using 'u32' as the type instead of 'unsigned int' would make this more explicit.
+
+> +#ifdef IOP_KDBG_INFO
+> +#define FUNC_DEBUG()   pr_info("K_IOP: %s(%d)\n", __func__, __LINE__)
+> +#else
+> +#define FUNC_DEBUG()
+> +#endif
+> +
+> +#ifdef IOP_FUNC_DEBUG
+> +#define DBG_INFO(fmt, args ...)        pr_info("K_IOP: " fmt, ## args)
+> +#else
+> +#define DBG_INFO(fmt, args ...)
+> +#endif
+> +
+> +#ifdef IOP_KDBG_ERR
+> +#define DBG_ERR(fmt, args ...) pr_err("K_IOP: " fmt, ## args)
+> +#else
+> +#define DBG_ERR(fmt, args ...)
+> +#endif
+> +/* ---------------------------------------------------------------------------------------------- */
+> +#define IOP_REG_NAME           "iop"
+> +#define IOP_PMC_REG_NAME          "iop_pmc"
+> +
+> +#define DEVICE_NAME                    "sunplus,sp7021-iop"
+
+Remove all those and open-code the correct contents in the users.
+
+> +static ssize_t setgpio_store(struct device *dev, struct device_attribute *attr,
+> +       const char *buf, size_t count)
+> +{
+> +       int ret = count;
+> +       unsigned char num[1];
+> +       unsigned int setnum;
+> +       unsigned long val;
+> +       ssize_t status;
+> +
+> +       DBG_INFO("iop_store_setgpio\n");
+> +       num[0] = buf[0];
+> +       status = kstrtoul(buf, 16, &val);
+> +       if (status)
+> +               return status;
+> +       setnum = val;
+> +       DBG_INFO("set gpio number = %x\n", IOP_GPIO);
+> +       hal_gpio_init(iop->iop_regs, IOP_GPIO);
+> +       return ret;
+> +}
+
+GPIO access should be handled through the gpio subsystem by creating an
+instance of a gpio_chip, which provides interfaces for both in-kernel
+and user-space users.
+
+> +static ssize_t S1mode_show(struct device *dev, struct device_attribute *attr,
+> +       char *buf)
+> +{
+> +       ssize_t len = 0;
+> +
+> +       hal_iop_standbymode(iop->iop_regs);
+> +       mdelay(10);//Need time to update iop_data
+> +       hal_iop_S1mode(iop->iop_regs);
+> +       return len;
+> +}
+> +
+> +static ssize_t S1mode_store(struct device *dev, struct device_attribute *attr,
+> +       const char *buf, size_t count)
+> +{
+> +       ssize_t len = 0;
+> +
+> +       return len;
+> +}
+
+Each new device attribute needs to be documented in Documentation/ABI/
+
+       Arnd
