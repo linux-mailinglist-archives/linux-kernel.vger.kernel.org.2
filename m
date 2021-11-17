@@ -2,107 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09325455060
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:24:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E95AC455062
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:24:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241149AbhKQW1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 17:27:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235955AbhKQW06 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:26:58 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E32C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:23:59 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id 136so3550016pgc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:23:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6kd6WqCCmeR9MuK0TQwMByDorfN1e8bV41MA9R0/MZU=;
-        b=AZxPaoj298KXds9snPihwfvUBGF8/mUwvRoR9MG89whM5rHyPDDabNf+uveS1xQhh/
-         vVA2+lp3CCv/f8IC62Kv2jxZnnb71c24gllDboNpUJWe795A+3jxmYKp8az3lsHBWOgk
-         xcGRbvWVe45CUIL9OEDaTp9RzvaroliditIxzCNNploCvCMNoHFPEZzXrecd8aC14r/l
-         2RDIaBpyyGRb+GbUJhX79OYwpvXulFnchtGtaUmKCeEi5YZUqN66ys7Pa/Yfwf3PXybe
-         GYLYbiS3xIW6C/zogm4y6YIjCOrGyrRaZxtd+IOU2XajkdSS08LShVNw+YnTku03J+A5
-         qXNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=6kd6WqCCmeR9MuK0TQwMByDorfN1e8bV41MA9R0/MZU=;
-        b=2P/VYL3wl3T1SuT4x6IQ5aIFeMDJpl+U8tYdupodCCSEIGFoA1H1ce7F4KUW+GG0e6
-         0kbFQX3tjWipfWTv3YCeZYWWppN3tZmfuYjVPXRNQmMEgIBmuUJ6NzVUgi1HaAPWIvDZ
-         dMOnbPceK95WjJecvTEa2Mwnyf1NNFTlednjq8tkXkPhcc+XSQH6/K3HZg3Zx32HUR8N
-         xEjmfpWzevTEDDcjfn8azgXIZexhxPpW9d/PpSGRDBS6tYg4lbHnG+52fT2OxgpcuhFo
-         8A/xtJPNgMkkjuPwgWdRKxGKWpQWhNCJb0DbikVKKcCurhO9uDBRTGLDZCBjU92G7n9I
-         IH9A==
-X-Gm-Message-State: AOAM533O9IbUSNgUjFhyXpQf40u9bhxxwEjvoFHFkcaNGTOEDD2kUJot
-        8mVARvm47fM67bGZxg0WX0k=
-X-Google-Smtp-Source: ABdhPJzqWMt/RppXNxopIecR7BPpR3g8UofY3tK2jnmmb+FA0qE31cADzS1/eKfbukRvpbitH9QD6A==
-X-Received: by 2002:a63:5f02:: with SMTP id t2mr7801545pgb.452.1637187838561;
-        Wed, 17 Nov 2021 14:23:58 -0800 (PST)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id h196sm599203pfe.216.2021.11.17.14.23.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 14:23:58 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 17 Nov 2021 12:23:55 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] kernfs: release kernfs_mutex before the inode
- allocation
-Message-ID: <YZWA+8B1xQOKCMnS@slm.duckdns.org>
-References: <20211116194317.1430399-1-minchan@kernel.org>
- <YZQLWq7WMSRF2xCM@kroah.com>
- <YZQkQcrldGFwqV/r@google.com>
- <YZSk3DECnnknOu5T@kroah.com>
- <YZSu/HiHDZxo9Wpa@google.com>
- <YZV4CtJnH+ngOcxi@slm.duckdns.org>
- <YZV+j5LivK+9Dt50@google.com>
+        id S241192AbhKQW1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 17:27:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39504 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231985AbhKQW1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 17:27:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4636E613AC;
+        Wed, 17 Nov 2021 22:24:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637187888;
+        bh=Q+KEmuQT8gFLMsVZlcLv0RXAotQG9DNePeryWAiTisI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AroQHy2p8b1E9ZMSk3/OElw90PYM9oZSn12o0lA8/awN+ISe+0qcck4ex1mHerkIn
+         GYmQ7SXSa70M2CTKqk88Yiq54dKaUX8v2FJlOFU8hlezF/eQ2oaPO1dvED4NgGpmP4
+         nACYKNqZXiPTxe4J4QkU1BlwwmsXu+Y4xgrbHRRzYFVrlexyCoyQCTyJHFbBLoQ70h
+         w1ACzNKuzp9v6f2DuHMwwlqDK8TtYcm+teMPO3UdcUxSb9IyWBJf2r6tr+tvJnTeIV
+         G1cLo1fpyGBh+8i54/efOLMZyMx2GFkEC2QzJBTMxQmMZ9KyqwaerPr5FeLy9RxWE5
+         fPv6iYxSR6fjQ==
+Date:   Wed, 17 Nov 2021 22:24:43 +0000
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Tsuchiya Yuto <kitakar@gmail.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Nable <nable.maininbox@googlemail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        "andrey.i.trufanov" <andrey.i.trufanov@gmail.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 04/17] media: atomisp: pci: do not use err var when
+ checking port validity for ISP2400
+Message-ID: <20211117222443.3d050caa@sal.lan>
+In-Reply-To: <20211111183812.0f33fdaa@sal.lan>
+References: <20211017161958.44351-1-kitakar@gmail.com>
+        <20211017161958.44351-5-kitakar@gmail.com>
+        <20211026092637.196447aa@sal.lan>
+        <1a295721fd1f1e512cd54a659a250aef162bfb6f.camel@gmail.com>
+        <20211028123944.66c212c1@sal.lan>
+        <af7cdf9de020171567c2e75b713deb2ed073e4e3.camel@gmail.com>
+        <20211101141058.36ea2c8e@sal.lan>
+        <ab48bd8c69273e8b18ff652f3615b2698a777092.camel@gmail.com>
+        <20211111183812.0f33fdaa@sal.lan>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZV+j5LivK+9Dt50@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi 
+Em Thu, 11 Nov 2021 18:38:12 +0000
+Mauro Carvalho Chehab <mchehab@kernel.org> escreveu:
 
-On Wed, Nov 17, 2021 at 02:13:35PM -0800, Minchan Kim wrote:
-> > So, one really low hanging fruit here would be using a separate rwsem per
-> > superblock. Nothing needs synchronization across different users of kernfs
-> > and the locking is shared just because nobody bothered to separate them out
-> > while generalizing it from sysfs.
+> > The `ifdef ISP2401` was the result of merging two different version of
+> > driver, added on the initial commit of upstreamed atomisp. And for the
+> > `ifdef ISP2401`, I confirmed I can remove (almost [1]) all of them against
+> > the initial commit of atomisp [2][3]
+> > 
+> > [1] here are the three exceptions:
+> >     ("NOTE: ifdef ISP2400/ISP2401 usage in aero-atomisp")
+> >     https://github.com/kitakar5525/linux-kernel/commit/1a8488cdd31ad38a3805824700b29d1e5213d3f2
+> > 
+> > [2] ("atomisp: pci: css2400: remove ISP2401 ifdefs")
+> >     https://github.com/kitakar5525/linux-kernel/commit/dd6723fc5b9fe040e33b227b509a7e004243edce
+> > [3] ("atomisp: pci: remove ISP2401 ifdefs for main pci driver")
+> >     https://github.com/kitakar5525/linux-kernel/commit/1734341f84a96945af7635f6fff061db910f746f  
 > 
-> That's really what I wanted but had a question whether we can access
-> superblock from the kernfs_node all the time since there are some
-> functions to access the kernfs_rwsem without ionde, sb context.
-> 
-> Is it doable to get the superblock from the kernfs_node all the time?
+> Ok, if there are more if/ifdef ISP2401 that, if reverted will keep the
+> driver running with the firmware we're using, I'm all for it. Just send
+> the patches ;-)
 
-Ah, right, kernfs_node doesn't point back to kernfs_root. I guess it can go
-one of three ways:
+I went ahead and solved several INPUT_SYSTEM related ifdefs on a way
+that it is compatible with Intel Aero firmware for the sh_css* files.
+Except if I made any mistake, the ifdefs that are related to the
+input system were already addressed.
 
-a. Follow parent until root kernfs_node and make that guy point to
-   kernfs_root through its parent field. This isn't great but the hotter
-   paths all have sb / inode already, I think, so if we do this only in the
-   really cold paths, it likely isn't too bad.
+I didn't notice any changes when running camorama on the PREVIEW
+node. 
 
-b. Change the interface so that the callers have to provide kernfs_root. I
-   don't think this is gonna be a huge problem. There are a few users of
-   kernfs and they always know their roots.
+Please test. Feel free to submit fixup patches if needed.
 
-c. Add a field to kernfs_node so that we can always find kernfs_root.
-
-I think b is likely the cheapest && cleanest.
-
-Thanks.
-
--- 
-tejun
+Regards,
+Mauro
