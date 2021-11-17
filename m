@@ -2,569 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 648CF4541A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 08:13:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A499F4541AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 08:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234090AbhKQHQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 02:16:17 -0500
-Received: from polaris.svanheule.net ([84.16.241.116]:47892 "EHLO
-        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbhKQHQQ (ORCPT
+        id S234107AbhKQHTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 02:19:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229843AbhKQHTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 02:16:16 -0500
-Received: from [IPv6:2a02:a03f:eafe:c901:2ed3:16a8:890:57ba] (unknown [IPv6:2a02:a03f:eafe:c901:2ed3:16a8:890:57ba])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id 4F20A272D33;
-        Wed, 17 Nov 2021 08:13:16 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1637133196;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RPtN9KWmCTKIhJVtKQvA5gFcS3PPMjBhF5AU1sII3Cs=;
-        b=HyashZKsCbkMTqchA40NFsmU7LmSvq3hKJq1mpfLBmVPqyqJEElebZS3vQL2dSUjK7jX74
-        6l0bwPjwKzYftj4uDF+fBKPOZy7jra7zOCTIyf1C975scJwoOYgg7sZy0rf4lgjfMD8MUm
-        5WRpJqfE4DgXvJXkmeQz9r7OGsFUT/rjUrt8vK/sV6UP4bOS2y8b8lqrm3G+vDMCi22SxB
-        RW9kH0HvKm3BpFWXMmmepT9k1h2STkkvGl0Rfmlw1eTL3sA4EtrBXfVPfBw6aDwqk2BvOH
-        gjLxgTaei9tX22SQ8ZSlhPoxRgi3QhUA8P+AyhTCcKZRKOQKuxMlyKF14KmqKg==
-Message-ID: <787cfd2ab58fb7f1d841f0ced261213f9c2050ae.camel@svanheule.net>
-Subject: Re: [PATCH v3 2/2] watchdog: Add Realtek Otto watchdog timer
-From:   Sander Vanheule <sander@svanheule.net>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
-Date:   Wed, 17 Nov 2021 08:13:15 +0100
-In-Reply-To: <20211117052054.GA215087@roeck-us.net>
-References: <cover.1636018117.git.sander@svanheule.net>
-         <2dbf0c6e0eebf523008c15794434d2d1a9b1260e.1636018117.git.sander@svanheule.net>
-         <20211117052054.GA215087@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
+        Wed, 17 Nov 2021 02:19:03 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE323C061570;
+        Tue, 16 Nov 2021 23:16:05 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id b13so1370687plg.2;
+        Tue, 16 Nov 2021 23:16:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rIrkP0DhReUnuC45R3StNf8dVDdMxxV3+wuwmqd5zGA=;
+        b=YhedbSwQuIunJGK0+bpJydFa6uMjQxX6SvMswYXaFUV7VzSJOKakUhVORTWNi+CoeP
+         x5ATidWzhP5TcxX/M81ZRxCkeY0b6NAXTIVeoR8v92p6AbTtWrvxJNahwIUCRbQLhqNI
+         ongHZAU2yXW4wHn5J7Uv1nXV70DWoDtBfaUZKNZM3D73TOQyzKCLu+1MhcakCRm+IbRC
+         1D6gselZo/oIvfs1XmSslYEpgdn7eSQCVesE6Z0aW/MbHKmgScpulpOk/IrfQuPMLEdi
+         sBiPl0C6lRjSQRFHHBroK5z8yFwQikOmzh7R9C8hNHIebJErzNyYa+SoRQNdxJFiipDk
+         9KqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rIrkP0DhReUnuC45R3StNf8dVDdMxxV3+wuwmqd5zGA=;
+        b=5IS908UBXwIB031nK7xUQCgrCf3+CNplFzOX6H/D3p1GQvUIkJx7xs+3l0qZu+DjzO
+         /SNZ0fD3ODydPdGnZhuwI8zdqaYzSnN83xp1gMTQLzhi9KpcgIalLA46zQXNhy+/hPOQ
+         qagfzQXnm5YuMLwqhm8nzwhCkZk/dLSLc2XPDBCsVcbkax7k31gQMIG7IWNDXjtjlz1L
+         UB9708D0o0wQVRHfZXd4/WrSjJG1eQgPMZJnCDgGyr6hKh4+QfKjD2VsZTXElMNYDyVL
+         tMgikyb60nU9k+h1t0C3Z6P4UTPZCKiRyXhi6nscARkb13lz9qPPCWg+j4OntZcWpPiq
+         gDcg==
+X-Gm-Message-State: AOAM531ujJYb1yN2qbYzozkTCtCD/FqUB0yvxsbyezaFzxuKQVXrOgzx
+        iD69xaKGp8/rt1Hh9Je/Bsod/5BrYvk=
+X-Google-Smtp-Source: ABdhPJxQoHG0o9y0cEa3j9C/XHz9ohnWloI1n996YG+5JQ1EDhe8ucwfq/DSgh0jRYXgJAptuDMZMg==
+X-Received: by 2002:a17:90b:4a81:: with SMTP id lp1mr6903896pjb.204.1637133364664;
+        Tue, 16 Nov 2021 23:16:04 -0800 (PST)
+Received: from [172.30.1.2] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id bf19sm4268688pjb.6.2021.11.16.23.15.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Nov 2021 23:16:03 -0800 (PST)
+Subject: Re: [PATCH v2 18/20] extcon: intel-cht-wc: Refactor
+ cht_wc_extcon_get_charger()
+To:     Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        Yauhen Kharuzhy <jekhor@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-efi@vger.kernel.org
+References: <20211114170335.66994-1-hdegoede@redhat.com>
+ <20211114170335.66994-19-hdegoede@redhat.com>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <f84e2060-f6b7-64f9-78cd-e8ad8776ab2d@gmail.com>
+Date:   Wed, 17 Nov 2021 16:15:58 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <20211114170335.66994-19-hdegoede@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
+Hello,
 
-On Tue, 2021-11-16 at 21:20 -0800, Guenter Roeck wrote:
-> On Thu, Nov 04, 2021 at 10:32:13AM +0100, Sander Vanheule wrote:
-> > Realtek MIPS SoCs (platform name Otto) have a watchdog timer with
-> > pretimeout notifitication support. The WDT can (partially) hard reset,
-> > or soft reset the SoC.
-> > 
-> > This driver implements all features as described in the devicetree
-> > binding, except the phase2 interrupt, and also functions as a restart
-> > handler. The cpu reset mode is considered to be a "warm" restart, since
-> > this mode does not reset all peripherals. Being an embedded system
-> > though, the "cpu" and "software" modes will still cause the bootloader
-> > to run on restart.
-> > 
-> > It is not known how a forced system reset can be disabled on the
-> > supported platforms. This means that the phase2 interrupt will only fire
-> > at the same time as reset, so implementing phase2 is of little use.
-> > 
-> > Signed-off-by: Sander Vanheule <sander@svanheule.net>
+I think that you need to squash it with patch21
+I'm not sure that this patch is either atomic or not because
+you remove the 'return EXTCON_CHG_USB_SDP/EXTCON_CHG_USB_SDP'
+without explaining why it is no problem. Just mention that
+pass the role to next 'switch' cases. But, before this change,
+there were any reason to return the type of charger cable
+before switch statement.
+
+According to your patch description, you don't need
+to make the separate patch of it. Please squash it with patch21.
+
+On 21. 11. 15. 오전 2:03, Hans de Goede wrote:
+> Refactor cht_wc_extcon_get_charger() to have all the returns are in
+> the "switch (usbsrc)" cases.
 > 
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
-Thank you for the review! In the meantime, I was preparing a v4 of this series with some
-small changes (see inline below). Could you let me know if I can keep your Reviewed-by
-with those changes?
-
+> This is a preparation patch for adding support for registering
+> a power_supply class device.
 > 
-> > 
-> > --
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+>   drivers/extcon/extcon-intel-cht-wc.c | 15 ++++++++-------
+>   1 file changed, 8 insertions(+), 7 deletions(-)
 > 
-> Note for the future: Change log should be after '---'.
-
-Will do!
-
+> diff --git a/drivers/extcon/extcon-intel-cht-wc.c b/drivers/extcon/extcon-intel-cht-wc.c
+> index 119b83793123..f2b93a99a625 100644
+> --- a/drivers/extcon/extcon-intel-cht-wc.c
+> +++ b/drivers/extcon/extcon-intel-cht-wc.c
+> @@ -153,14 +153,15 @@ static int cht_wc_extcon_get_charger(struct cht_wc_extcon_data *ext,
+>   	} while (time_before(jiffies, timeout));
+>   
+>   	if (status != CHT_WC_USBSRC_STS_SUCCESS) {
+> -		if (ignore_errors)
+> -			return EXTCON_CHG_USB_SDP; /* Save fallback */
+> +		if (!ignore_errors) {
+> +			if (status == CHT_WC_USBSRC_STS_FAIL)
+> +				dev_warn(ext->dev, "Could not detect charger type\n");
+> +			else
+> +				dev_warn(ext->dev, "Timeout detecting charger type\n");
+> +		}
+>   
+> -		if (status == CHT_WC_USBSRC_STS_FAIL)
+> -			dev_warn(ext->dev, "Could not detect charger type\n");
+> -		else
+> -			dev_warn(ext->dev, "Timeout detecting charger type\n");
+> -		return EXTCON_CHG_USB_SDP; /* Save fallback */
+> +		/* Save fallback */
+> +		usbsrc = CHT_WC_USBSRC_TYPE_SDP << CHT_WC_USBSRC_TYPE_SHIFT;
+>   	}
+>   
+>   	usbsrc = (usbsrc & CHT_WC_USBSRC_TYPE_MASK) >> CHT_WC_USBSRC_TYPE_SHIFT;
 > 
-> > v2 -> v3:
-> > - fix off-by-one error in PRESCALE assignment
-> > 
-> > v1 -> v2:
-> > - drop raw_spinlock, locking is not required
-> > - replace devm_free_irq with disable_irq
-> > - use max_hw_heartbeat_ms instead of max_timeout
-> > - drop redundant timeout value checks
-> > - replace ROUND_CLOSEST by ROUND_UP for tick counts, and flooring
-> >   division for timeout values
-> > - change COMMON_CLK 'select' into 'depends on'
-> > - add MODULE_DEVICE_TABLE for OF ID table
-> > - add realtek,rtl9300 compatible
-> > - drop phase2 irq
-> > ---
-> >  MAINTAINERS                         |   7 +
-> >  drivers/watchdog/Kconfig            |  13 +
-> >  drivers/watchdog/Makefile           |   1 +
-> >  drivers/watchdog/realtek_otto_wdt.c | 361 ++++++++++++++++++++++++++++
-> >  4 files changed, 382 insertions(+)
-> >  create mode 100644 drivers/watchdog/realtek_otto_wdt.c
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 2c9070aeba2a..54c8f788d3e5 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -15991,6 +15991,13 @@ S:     Maintained
-> >  F:     include/sound/rt*.h
-> >  F:     sound/soc/codecs/rt*
-> >  
-> > +REALTEK OTTO WATCHDOG
-> > +M:     Sander Vanheule <sander@svanheule.net>
-> > +L:     linux-watchdog@vger.kernel.org
-> > +S:     Maintained
-> > +F:     Documentation/devicetree/bindings/watchdog/realtek,otto-wdt.yaml
-> > +F:     driver/watchdog/realtek_otto_wdt.c
-> > +
-> >  REALTEK RTL83xx SMI DSA ROUTER CHIPS
-> >  M:     Linus Walleij <linus.walleij@linaro.org>
-> >  S:     Maintained
-> > diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-> > index bf59faeb3de1..d308e13a9aa1 100644
-> > --- a/drivers/watchdog/Kconfig
-> > +++ b/drivers/watchdog/Kconfig
-> > @@ -954,6 +954,19 @@ config RTD119X_WATCHDOG
-> >           Say Y here to include support for the watchdog timer in
-> >           Realtek RTD1295 SoCs.
-> >  
-> > +config REALTEK_OTTO_WDT
-> > +       tristate "Realtek Otto MIPS watchdog support"
-> > +       depends on MACH_REALTEK_RTL || COMPILE_TEST
-> > +       depends on COMMON_CLK
-> > +       select WATCHDOG_CORE
-> > +       default MACH_REALTEK_RTL
-> > +       help
-> > +         Say Y here to include support for the watchdog timer on Realtek
-> > +         RTL838x, RTL839x, RTL930x SoCs. This watchdog has pretimeout
-> > +         notifications and system reset on timeout.
-> > +
-> > +         When built as a module this will be called realtek_otto_wdt.
-> > +
-> >  config SPRD_WATCHDOG
-> >         tristate "Spreadtrum watchdog support"
-> >         depends on ARCH_SPRD || COMPILE_TEST
-> > diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
-> > index 1bd2d6f37c53..a8dccf819163 100644
-> > --- a/drivers/watchdog/Makefile
-> > +++ b/drivers/watchdog/Makefile
-> > @@ -171,6 +171,7 @@ obj-$(CONFIG_IMGPDC_WDT) += imgpdc_wdt.o
-> >  obj-$(CONFIG_MT7621_WDT) += mt7621_wdt.o
-> >  obj-$(CONFIG_PIC32_WDT) += pic32-wdt.o
-> >  obj-$(CONFIG_PIC32_DMT) += pic32-dmt.o
-> > +obj-$(CONFIG_REALTEK_OTTO_WDT) += realtek_otto_wdt.o
-> >  
-> >  # PARISC Architecture
-> >  
-> > diff --git a/drivers/watchdog/realtek_otto_wdt.c b/drivers/watchdog/realtek_otto_wdt.c
-> > new file mode 100644
-> > index 000000000000..48bc8dfefc25
-> > --- /dev/null
-> > +++ b/drivers/watchdog/realtek_otto_wdt.c
-> > @@ -0,0 +1,361 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +
-> > +/*
-> > + * Realtek Otto MIPS platform watchdog
-> > + *
-> > + * Watchdog timer that will reset the system after timeout, using the selected
-> > + * reset mode.
-> > + *
-> > + * Counter scaling and timeouts:
-> > + * - Base prescale of (2 << 25), providing tick duration T_0: 168ms @ 200MHz
-> > + * - PRESCALE: logarithmic prescaler adding a factor of {1, 2, 4, 8}
-> > + * - Phase 1: Times out after (PHASE1 + 1) × PRESCALE × T_0
-> > + *   Generates an interrupt, WDT cannot be stopped after phase 1
-> > + * - Phase 2: starts after phase 1, times out after (PHASE2 + 1) × PRESCALE × T_0
-> > + *   Resets the system according to RST_MODE
-> > + */
-> > +
-> > +#include <linux/bits.h>
-> > +#include <linux/bitfield.h>
-> > +#include <linux/clk.h>
-> > +#include <linux/delay.h>
-> > +#include <linux/interrupt.h>
-> > +#include <linux/io.h>
-> > +#include <linux/math.h>
-> > +#include <linux/minmax.h>
-> > +#include <linux/module.h>
-> > +#include <linux/mod_devicetable.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/property.h>
-> > +#include <linux/reboot.h>
-> > +#include <linux/watchdog.h>
-> > +
-> > +#define OTTO_WDT_REG_CNTR              0x0
-> > +#define OTTO_WDT_CNTR_PING             BIT(31)
-> > +
-> > +#define OTTO_WDT_REG_INTR              0x4
-> > +#define OTTO_WDT_INTR_PHASE_1          BIT(31)
-> > +#define OTTO_WDT_INTR_PHASE_2          BIT(30)
-> > +
-> > +#define OTTO_WDT_REG_CTRL              0x8
-> > +#define OTTO_WDT_CTRL_ENABLE           BIT(31)
-> > +#define OTTO_WDT_CTRL_PRESCALE         GENMASK(30, 29)
-> > +#define OTTO_WDT_CTRL_PHASE1           GENMASK(26, 22)
-> > +#define OTTO_WDT_CTRL_PHASE2           GENMASK(19, 15)
-> > +#define OTTO_WDT_CTRL_RST_MODE         GENMASK(1, 0)
-> > +#define OTTO_WDT_MODE_SOC              0
-> > +#define OTTO_WDT_MODE_CPU              1
-> > +#define OTTO_WDT_MODE_SOFTWARE         2
-> > +#define OTTO_WDT_CTRL_DEFAULT          OTTO_WDT_MODE_CPU
-> > +
-> > +#define OTTO_WDT_PRESCALE_MAX          3
-> > +
-> > +/*
-> > + * One higher than the max values contained in PHASE{1,2}, since a value of 0
-> > + * corresponds to one tick.
-> > + */
-> > +#define OTTO_WDT_PHASE_TICKS_MAX       32
-> > +
-> > +/*
-> > + * The maximum reset delay is actually 2×32 ticks, but that would require large
-> > + * pretimeout values for timeouts longer than 32 ticks. Limit the maximum timeout
-> > + * to 32 + 1 to ensure small pretimeout values can be configured as expected.
-> > + */
-> > +#define OTTO_WDT_TIMEOUT_TICKS_MAX     (OTTO_WDT_PHASE_TICKS_MAX + 1)
-> > +
-> > +struct otto_wdt_ctrl {
-> > +       struct watchdog_device wdev;
-> > +       struct device *dev;
-> > +       void __iomem *base;
-> > +       struct clk *clk;
-> > +       int irq_phase1;
-> > +};
-> > +
-> > +static int otto_wdt_start(struct watchdog_device *wdev)
-> > +{
-> > +       struct otto_wdt_ctrl *ctrl = watchdog_get_drvdata(wdev);
-> > +       u32 v;
-> > +
-> > +       v = ioread32(ctrl->base + OTTO_WDT_REG_CTRL);
-> > +       v |= OTTO_WDT_CTRL_ENABLE;
-> > +       iowrite32(v, ctrl->base + OTTO_WDT_REG_CTRL);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int otto_wdt_stop(struct watchdog_device *wdev)
-> > +{
-> > +       struct otto_wdt_ctrl *ctrl = watchdog_get_drvdata(wdev);
-> > +       u32 v;
-> > +
-> > +       v = ioread32(ctrl->base + OTTO_WDT_REG_CTRL);
-> > +       v &= ~OTTO_WDT_CTRL_ENABLE;
-> > +       iowrite32(v, ctrl->base + OTTO_WDT_REG_CTRL);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int otto_wdt_ping(struct watchdog_device *wdev)
-> > +{
-> > +       struct otto_wdt_ctrl *ctrl = watchdog_get_drvdata(wdev);
-> > +
-> > +       iowrite32(OTTO_WDT_CNTR_PING, ctrl->base + OTTO_WDT_REG_CNTR);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int otto_wdt_tick_ms(struct otto_wdt_ctrl *ctrl, int prescale)
-> > +{
-> > +       unsigned int rate_khz = clk_get_rate(ctrl->clk) / 1000;
-> > +
-> > +       if (!rate_khz)
-> > +               return 0;
-> > +
-> > +       return DIV_ROUND_CLOSEST(1 << (25 + prescale), rate_khz);
-> > +}
-> > +
-> > +/*
-> > + * The timer asserts the PHASE1/PHASE2 IRQs when the number of ticks exceeds
-> > + * the value stored in those fields. This means each phase will run for at least
-> > + * one tick, so small values need to be clamped to correctly reflect the timeout.
-> > + */
-> > +static inline unsigned int div_round_ticks(unsigned int val, unsigned int
-> > tick_duration,
-> > +               unsigned int min_ticks)
-> > +{
-> > +       return max(min_ticks, DIV_ROUND_UP(val, tick_duration));
-> > +}
-> > +
-> > +static int otto_wdt_determine_timeouts(struct watchdog_device *wdev, unsigned int
-> > timeout,
-> > +               unsigned int pretimeout)
-> > +{
-> > +       struct otto_wdt_ctrl *ctrl = watchdog_get_drvdata(wdev);
-> > +       unsigned int pretimeout_ms = pretimeout * 1000;
-> > +       unsigned int timeout_ms = timeout * 1000;
-> > +       unsigned int prescale_next = 0;
-> > +       unsigned int phase1_ticks;
-> > +       unsigned int phase2_ticks;
-> > +       unsigned int total_ticks;
-> > +       unsigned int prescale;
-> > +       unsigned int tick_ms;
-> > +       u32 v;
-> > +
-> > +       do {
-> > +               prescale = prescale_next;
-> > +               if (prescale > OTTO_WDT_PRESCALE_MAX)
-> > +                       return -EINVAL;
-> > +
-> > +               tick_ms = otto_wdt_tick_ms(ctrl, prescale);
-> > +               total_ticks = div_round_ticks(timeout_ms, tick_ms, 2);
-> > +               phase1_ticks = div_round_ticks(timeout_ms - pretimeout_ms, tick_ms, 1);
-> > +               phase2_ticks = total_ticks - phase1_ticks;
-> > +
-> > +               prescale_next++;
-> > +       } while (phase1_ticks > OTTO_WDT_PHASE_TICKS_MAX
-> > +               || phase2_ticks > OTTO_WDT_PHASE_TICKS_MAX);
-> > +
-> > +       v = ioread32(ctrl->base + OTTO_WDT_REG_CTRL);
-> > +
-> > +       v &= ~(OTTO_WDT_CTRL_PRESCALE | OTTO_WDT_CTRL_PHASE1 | OTTO_WDT_CTRL_PHASE2);
-> > +       v |= FIELD_PREP(OTTO_WDT_CTRL_PHASE1, phase1_ticks - 1);
-> > +       v |= FIELD_PREP(OTTO_WDT_CTRL_PHASE2, phase2_ticks - 1);
-> > +       v |= FIELD_PREP(OTTO_WDT_CTRL_PRESCALE, prescale);
-> > +
-> > +       iowrite32(v, ctrl->base + OTTO_WDT_REG_CTRL);
-> > +
-> > +       timeout_ms = total_ticks * tick_ms;
-> > +       ctrl->wdev.timeout = timeout_ms / 1000;
-> > +
-> > +       pretimeout_ms = phase2_ticks * tick_ms;
-> > +       ctrl->wdev.pretimeout = pretimeout_ms / 1000;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int otto_wdt_set_timeout(struct watchdog_device *wdev, unsigned int val)
-> > +{
-> > +       return otto_wdt_determine_timeouts(wdev, val, min(wdev->pretimeout, val - 1));
-> > +}
-> > +
-> > +static int otto_wdt_set_pretimeout(struct watchdog_device *wdev, unsigned int val)
-> > +{
-> > +       return otto_wdt_determine_timeouts(wdev, wdev->timeout, val);
-> > +}
-> > +
-> > +static int otto_wdt_restart(struct watchdog_device *wdev, unsigned long reboot_mode,
-> > +               void *data)
-> > +{
-> > +       struct otto_wdt_ctrl *ctrl = watchdog_get_drvdata(wdev);
-> > +       u32 reset_mode;
-> > +       u32 v;
-> > +
-> > +       disable_irq(ctrl->irq_phase1);
-> > +
-> > +       switch (reboot_mode) {
-> > +       case REBOOT_SOFT:
-> > +               reset_mode = OTTO_WDT_MODE_SOFTWARE;
-> > +               break;
-> > +       case REBOOT_WARM:
-> > +               reset_mode = OTTO_WDT_MODE_CPU;
-> > +               break;
-> > +       default:
-> > +               reset_mode = OTTO_WDT_MODE_SOC;
-> > +               break;
-> > +       }
-> > +
-> > +       /* Configure for shortest timeout and wait for reset to occur */
-> > +       v = FIELD_PREP(OTTO_WDT_CTRL_RST_MODE, reset_mode) | OTTO_WDT_CTRL_ENABLE;
-> > +       iowrite32(v, ctrl->base + OTTO_WDT_REG_CTRL);
-> > +
-> > +       mdelay(3 * otto_wdt_tick_ms(ctrl, 0));
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static irqreturn_t otto_wdt_phase1_isr(int irq, void *dev_id)
-> > +{
-> > +       struct otto_wdt_ctrl *ctrl = dev_id;
-> > +
-> > +       iowrite32(OTTO_WDT_INTR_PHASE_1, ctrl->base + OTTO_WDT_REG_INTR);
-> > +       dev_crit(ctrl->dev, "phase 1 timeout\n");
-> > +       watchdog_notify_pretimeout(&ctrl->wdev);
-> > +
-> > +       return IRQ_HANDLED;
-> > +}
-> > +
-> > +static const struct watchdog_ops otto_wdt_ops = {
-> > +       .owner = THIS_MODULE,
-> > +       .start = otto_wdt_start,
-> > +       .stop = otto_wdt_stop,
-> > +       .ping = otto_wdt_ping,
-> > +       .set_timeout = otto_wdt_set_timeout,
-> > +       .set_pretimeout = otto_wdt_set_pretimeout,
-> > +       .restart = otto_wdt_restart,
-> > +};
-> > +
-> > +static const struct watchdog_info otto_wdt_info = {
-> > +       .identity = "Realtek Otto watchdog timer",
-> > +       .options = WDIOF_KEEPALIVEPING |
-> > +               WDIOF_MAGICCLOSE |
-> > +               WDIOF_SETTIMEOUT |
-> > +               WDIOF_PRETIMEOUT,
-> > +};
-> > +
-> > +static int otto_wdt_probe_reset_mode(struct otto_wdt_ctrl *ctrl)
-> > +{
-> > +       static const char *mode_property = "realtek,reset-mode";
-> > +       const struct fwnode_handle *node = ctrl->dev->fwnode;
-> > +       int mode_count;
-> > +       u32 mode;
-> > +       u32 v;
-> > +
-> > +       if (!node)
-> > +               return -ENXIO;
-> > +
-> > +       mode_count = fwnode_property_string_array_count(node, mode_property);
-> > +       if (mode_count < 0)
-> > +               return mode_count;
-> > +       else if (mode_count == 0)
-> > +               return 0;
-> > +       else if (mode_count != 1)
-> > +               return -EINVAL;
-> > +
-> > +       if (fwnode_property_match_string(node, mode_property, "soc") == 0)
-> > +               mode = OTTO_WDT_MODE_SOC;
-> > +       else if (fwnode_property_match_string(node, mode_property, "cpu") == 0)
-> > +               mode = OTTO_WDT_MODE_CPU;
-> > +       else if (fwnode_property_match_string(node, mode_property, "software") == 0)
-> > +               mode = OTTO_WDT_MODE_SOFTWARE;
-> > +       else
-> > +               return -EINVAL;
-> > +
-> > +       v = ioread32(ctrl->base + OTTO_WDT_REG_CTRL);
-> > +       v &= ~OTTO_WDT_CTRL_RST_MODE;
-> > +       v |= FIELD_PREP(OTTO_WDT_CTRL_RST_MODE, mode);
-> > +       iowrite32(v, ctrl->base + OTTO_WDT_REG_CTRL);
-> > +
-> > +       return 0;
-> > +}
-> > +
-
-This is the first time I'm using the clocks framework. Since I'm currently using a fixed-
-clock node in my DTS, I guess this clock is just 'always on'. As I understand, I should
-also use clock_{prepare_enable,disable_unprepare}.
-
-I would add the following small function...
-
--- >8 --
-+static void otto_wdt_clock_action(void *data)
-+{
-+       clk_disable_unprepare(data);
-+}
-+
--- 8< --
-
-> > +static int otto_wdt_probe(struct platform_device *pdev)
-> > +{
-> > +       struct device *dev = &pdev->dev;
-> > +       struct otto_wdt_ctrl *ctrl;
-> > +       unsigned int max_tick_ms;
-> > +       int ret;
-> > +
-> > +       ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
-> > +       if (!ctrl)
-> > +               return -ENOMEM;
-> > +
-> > +       ctrl->dev = dev;
-> > +       ctrl->base = devm_platform_ioremap_resource(pdev, 0);
-> > +       if (IS_ERR(ctrl->base))
-> > +               return PTR_ERR(ctrl->base);
-> > +
-> > +       /* Clear any old interrupts and reset initial state */
-> > +       iowrite32(OTTO_WDT_INTR_PHASE_1 | OTTO_WDT_INTR_PHASE_2,
-> > +                       ctrl->base + OTTO_WDT_REG_INTR);
-> > +       iowrite32(OTTO_WDT_CTRL_DEFAULT, ctrl->base + OTTO_WDT_REG_CTRL);
-> > +
-> > +       ctrl->clk = devm_clk_get(dev, NULL);
-> > +       if (IS_ERR(ctrl->clk))
-> > +               return dev_err_probe(dev, PTR_ERR(ctrl->clk), "Failed to get clock\n");
-
-... and these checks when probing:
-
--- >8 --
-+       ret = clk_prepare_enable(ctrl->clk);
-+       if (ret)
-+               return dev_err_probe(dev, ret, "Failed to enable clock\n");
-+
-+       ret = devm_add_action_or_reset(dev, otto_wdt_clock_action, ctrl->clk);
-+       if (ret)
-+               return ret;
--- 8< --
 
 
-Best,
-Sander
-
-> > +
-> > +       ctrl->irq_phase1 = platform_get_irq_byname(pdev, "phase1");
-> > +       if (ctrl->irq_phase1 < 0)
-> > +               return dev_err_probe(dev, ctrl->irq_phase1, "phase1 IRQ not found\n");
-> > +
-> > +       ret = devm_request_irq(dev, ctrl->irq_phase1, otto_wdt_phase1_isr, 0,
-> > +                       "realtek-otto-wdt", ctrl);
-> > +       if (ret)
-> > +               return dev_err_probe(dev, ret, "Failed to get IRQ for phase1\n");
-> > +
-> > +       ret = otto_wdt_probe_reset_mode(ctrl);
-> > +       if (ret)
-> > +               return dev_err_probe(dev, ret, "Invalid reset mode specified\n");
-> > +
-> > +       ctrl->wdev.parent = dev;
-> > +       ctrl->wdev.info = &otto_wdt_info;
-> > +       ctrl->wdev.ops = &otto_wdt_ops;
-> > +
-> > +       /*
-> > +        * Since pretimeout cannot be disabled, min. timeout is twice the
-> > +        * subsystem resolution. max. timeout is ca. 43s at a bus clock of 200MHz.
-> > +        */
-> > +       ctrl->wdev.min_timeout = 2;
-> > +       max_tick_ms = otto_wdt_tick_ms(ctrl, OTTO_WDT_PRESCALE_MAX);
-> > +       ctrl->wdev.max_hw_heartbeat_ms = max_tick_ms * OTTO_WDT_TIMEOUT_TICKS_MAX;
-> > +       ctrl->wdev.timeout = min(30U, ctrl->wdev.max_hw_heartbeat_ms / 1000);
-> > +
-> > +       watchdog_set_drvdata(&ctrl->wdev, ctrl);
-> > +       watchdog_init_timeout(&ctrl->wdev, 0, dev);
-> > +       watchdog_stop_on_reboot(&ctrl->wdev);
-> > +       watchdog_set_restart_priority(&ctrl->wdev, 128);
-> > +
-> > +       ret = otto_wdt_determine_timeouts(&ctrl->wdev, ctrl->wdev.timeout, 1);
-> > +       if (ret)
-> > +               return dev_err_probe(dev, ret, "Failed to set timeout\n");
-> > +
-> > +       return devm_watchdog_register_device(dev, &ctrl->wdev);
-> > +}
-> > +
-> > +static const struct of_device_id otto_wdt_ids[] = {
-> > +       { .compatible = "realtek,rtl8380-wdt" },
-> > +       { .compatible = "realtek,rtl8390-wdt" },
-> > +       { .compatible = "realtek,rtl9300-wdt" },
-> > +       { }
-> > +};
-> > +MODULE_DEVICE_TABLE(of, otto_wdt_ids);
-> > +
-> > +static struct platform_driver otto_wdt_driver = {
-> > +       .probe = otto_wdt_probe,
-> > +       .driver = {
-> > +               .name = "realtek-otto-watchdog",
-> > +               .of_match_table = otto_wdt_ids,
-> > +       },
-> > +};
-> > +module_platform_driver(otto_wdt_driver);
-> > +
-> > +MODULE_LICENSE("GPL v2");
-> > +MODULE_AUTHOR("Sander Vanheule <sander@svanheule.net>");
-> > +MODULE_DESCRIPTION("Realtek Otto watchdog timer driver");
-> > -- 
-> > 2.31.1
-> > 
-
+-- 
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
