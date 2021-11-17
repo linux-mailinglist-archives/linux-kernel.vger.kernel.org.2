@@ -2,80 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667E54549F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:36:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2A7E454A1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:39:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237389AbhKQPjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 10:39:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233227AbhKQPjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 10:39:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2842761360;
-        Wed, 17 Nov 2021 15:36:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637163386;
-        bh=YvjXcsSuhsAf6y4O7zY+m8TVErrrok6R9QiWzFbSH4I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OyJ0Qb57fcJ6SKjqleNdyn3YWnNRDHocNdYO8qWFEKGmF5e9+RbasS7uD4CO8Dmm5
-         j5SWRPhcOIvz0uum1C0hsdQXFyDehSerqbFuvAwxpv0WjJ8vrpZrxa9bj46pMHsJzD
-         1CZMBv/R1CR7pWJZvJZISUims27ghGRTTP5K2PHTNyZp3WkpAh9YyGcuHfgGWgV8O6
-         tAHWz6redusWtEV4yoZJl7T8EYLA96Ua/SjBGJl7Yjk7rbEWSvc8vE4KtSXTFMHPMj
-         cBHNEl6f4LkC5rP+s9XiNv3yN+CThfu7PgPJSLncoWWdSDTTCTALrpbelWdR+fU6Co
-         yEPx8FDQjtsfw==
-Date:   Wed, 17 Nov 2021 15:36:20 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, aou@eecs.berkeley.edu,
-        borntraeger@de.ibm.com, bp@alien8.de, catalin.marinas@arm.com,
-        dave.hansen@linux.intel.com, gor@linux.ibm.com, hca@linux.ibm.com,
-        linux-kernel@vger.kernel.org, madvenka@linux.microsoft.com,
-        mhiramat@kernel.org, mingo@redhat.com, mpe@ellerman.id.au,
-        palmer@dabbelt.com, paul.walmsley@sifive.com, peterz@infradead.org,
-        rostedt@goodmis.org, tglx@linutronix.de, will@kernel.org
-Subject: Re: [PATCH 8/9] arm64: Make dump_backtrace() use arch_stack_walk()
-Message-ID: <YZUhdHl9vC+fxuOi@sirena.org.uk>
-References: <20211117140737.44420-1-mark.rutland@arm.com>
- <20211117140737.44420-9-mark.rutland@arm.com>
+        id S233302AbhKQPmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 10:42:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231844AbhKQPmB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 10:42:01 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6843DC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 07:39:02 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id y13so12823288edd.13
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 07:39:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/TcUJQTDYWocWle3f9+mogG0dpTJDH1Ke5aeq+Kuctw=;
+        b=joPwOVbt1twtXo/4m3BpjAd0tmFyGp+4+AQ7dd3n37c7Fcg8XMqZbwCcm2lzNMKK0U
+         iFrBcyuCqSsEiN7nK0VnOyLs0FEbawStKzliiT1aSsl+FDLkeK2p+GmbIQy1yPkhKNIh
+         QFIfsanQg3QCCkRIOu3Mf/0tQVC0tVfHpix4n/p399+SBT1hTDO833ZiAZjlS3pbnpmC
+         1gTf4IuuU4yZd3WLQ4IiA4AB0+rK8v+57QR0qI02JZXflknZjDBoBlKAaFtdYte439Zg
+         Wno2xib9gbE/+xoo+HToxeUscFbz0XqARcOrBxG/eozBG/PUGsfVGY40vZ9gubHTaqCP
+         puJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/TcUJQTDYWocWle3f9+mogG0dpTJDH1Ke5aeq+Kuctw=;
+        b=hGOAI7j/aFcfKI8oQQ9g6r9ryqeXyAnDKh27gN/overnrAKeo0e5WqPdlHbloHfra1
+         NMVz5+/LxF02eKXjFJztmR7SXqxPk/zJ1w7wTQX/ytE7J/SAaNjHchVEsgngbzcnChnW
+         YPiRKN+YSkM99L6vhwRr+5a86OoDks2Y2og6lqylUsNuy6TdEybZ/ZGBUhCGJaTQcWS+
+         6KMv7WcnXMw/xDMxLOUn6IR8r1cY7HkCgcNfweE12MeRMBmMhc7shWia2zPy28iWlVs6
+         rTBsxCZzXk96kN6BPvqGYyxVowvVIyIEzrHc05uX/HiztXlQw1dYXifeX+4/xWa68May
+         QwiA==
+X-Gm-Message-State: AOAM530S+7RS5IdAvR5nBY2ojIKtmunm11rzpJ3cGyl6+Uhx5OdQIyab
+        2yWC9KZJgQ2tv1t7Q8fpXzlHOvxBXHaVmHRCwNEFtw==
+X-Google-Smtp-Source: ABdhPJxbO9oM7lYebEc5d09CygmBuYbwNSeVKmi4BSitEspHl+XiObU1tYWWHIftk13/zbdiQ0us7Zx6BT6sQbCaRDU=
+X-Received: by 2002:a17:907:3c16:: with SMTP id gh22mr22098760ejc.344.1637163540895;
+ Wed, 17 Nov 2021 07:39:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7QeFBRH6dWZOq1W3"
-Content-Disposition: inline
-In-Reply-To: <20211117140737.44420-9-mark.rutland@arm.com>
-X-Cookie: One Bell System - it sometimes works.
+References: <20211117142115.694316-1-anders.roxell@linaro.org> <YZUY69vfq/RrVWMw@archlinux-ax161>
+In-Reply-To: <YZUY69vfq/RrVWMw@archlinux-ax161>
+From:   Anders Roxell <anders.roxell@linaro.org>
+Date:   Wed, 17 Nov 2021 16:38:50 +0100
+Message-ID: <CADYN=9J9L+nY1vMSnPGeam5+KSm-tH37_j1CYokp8etHOP1evA@mail.gmail.com>
+Subject: Re: [PATCH] soc/tegra: fuse: fix bitwice vs. logical warning
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
+        ndesaulniers@google.com, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 17 Nov 2021 at 16:00, Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> On Wed, Nov 17, 2021 at 03:21:15PM +0100, Anders Roxell wrote:
+> > When building with clang-13 the compiler warns about:
+> >
+> > drivers/soc/tegra/fuse/speedo-tegra20.c:72:9: warning: use of bitwise '|' with boolean operands [-Wbitwise-instead-of-logical]
+> >                 reg = tegra_fuse_read_spare(i) |
+> >                       ^~~~~~~~~~~~~~~~~~~~~~~~~~
+> >                                                ||
+> >
+> > This should be a logical OR so change it to fix the warning.
+> >
+> > Fixes: 7e939de1b2bb ("soc/tegra: fuse: Unify Tegra20 and Tegra30 drivers")
+> > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+>
+> I sent the same patch a couple of weeks ago (but it was right before the
+> merge window so I am sure nobody was really paying attention):
+>
+> https://lore.kernel.org/r/20211021214500.2388146-1-nathan@kernel.org/
+>
+> I do not particularly care which one gets merged (although I think mine
+> explains the warning a little bit better).
 
---7QeFBRH6dWZOq1W3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I missed that, sorry.
+I agree I think your changlog explains the warning better.
 
-On Wed, Nov 17, 2021 at 02:07:36PM +0000, Mark Rutland wrote:
-> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->=20
-> To enable RELIABLE_STACKTRACE and LIVEPATCH on arm64, we need to
-> substantially rework arm64's unwinding code. As part of this, we want to
-> minimize the set of unwind interfaces we expose, and avoid open-coding
-> of unwind logic.
+Cheers,
+Anders
 
-Reviewed-by: Mark Brown <broonie@kernel.org>
-
---7QeFBRH6dWZOq1W3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGVIXMACgkQJNaLcl1U
-h9BXuwf/eHflyQt1F7NjcLV+HWiiFg445T/uHzE7nV0gVOdJRQr6He8Gdjkhq0VH
-JNIszq2DA9eN1eHrM9g6z9Y0Ww5lk7BHIunj3Dtncs4V8yA83DlF31yXrxewO5u6
-iYCzl+pYKF46ihlGoXOGK+qYXFMrJnCDEx07TcysJSY6B0KVMbjMGotumriBMsLD
-7SsVHGe8sktlfRi43GuSWc3QzaDGrA6lBHbB+TMHaQcfSX4CZtfQUW85YjJUJk10
-FdFgoIl6BB51k9oci7yjv7Aflu1mU8E2nIHvPyESAIH1bDzw4iyEofwxSyOWJMLA
-ewyRL2i5IgDskwa11qxB+jKb/TS7ow==
-=kk4+
------END PGP SIGNATURE-----
-
---7QeFBRH6dWZOq1W3--
+>
+> I am not sure your fixes tag is right, I would expect it to be:
+>
+> Fixes: 25cd5a391478 ("ARM: tegra: Add speedo-based process identification")
+>
+> With that fixed:
+>
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+>
+> > ---
+> >  drivers/soc/tegra/fuse/speedo-tegra20.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/soc/tegra/fuse/speedo-tegra20.c b/drivers/soc/tegra/fuse/speedo-tegra20.c
+> > index 2546bddbab93..4984246605ae 100644
+> > --- a/drivers/soc/tegra/fuse/speedo-tegra20.c
+> > +++ b/drivers/soc/tegra/fuse/speedo-tegra20.c
+> > @@ -69,7 +69,7 @@ void __init tegra20_init_speedo_data(struct tegra_sku_info *sku_info)
+> >
+> >       val = 0;
+> >       for (i = CPU_SPEEDO_MSBIT; i >= CPU_SPEEDO_LSBIT; i--) {
+> > -             reg = tegra_fuse_read_spare(i) |
+> > +             reg = tegra_fuse_read_spare(i) ||
+> >                       tegra_fuse_read_spare(i + CPU_SPEEDO_REDUND_OFFS);
+> >               val = (val << 1) | (reg & 0x1);
+> >       }
+> > @@ -84,7 +84,7 @@ void __init tegra20_init_speedo_data(struct tegra_sku_info *sku_info)
+> >
+> >       val = 0;
+> >       for (i = SOC_SPEEDO_MSBIT; i >= SOC_SPEEDO_LSBIT; i--) {
+> > -             reg = tegra_fuse_read_spare(i) |
+> > +             reg = tegra_fuse_read_spare(i) ||
+> >                       tegra_fuse_read_spare(i + SOC_SPEEDO_REDUND_OFFS);
+> >               val = (val << 1) | (reg & 0x1);
+> >       }
+> > --
+> > 2.33.0
+> >
