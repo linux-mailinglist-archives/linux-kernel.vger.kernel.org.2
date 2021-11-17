@@ -2,52 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483FD45449F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 11:05:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF2894544A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 11:05:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233163AbhKQKID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 05:08:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231603AbhKQKID (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 05:08:03 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56E0C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 02:05:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9xc3t/i++I6ZSvgabyN8b1xNPjuadKnTYzFKCHa2W98=; b=kDQL48/1Or/EEQ7xgm6UWU9cIT
-        oZf7XWgbuA2H59eFP5qbPJYEc55FK96oxCfwkF9ocigyZVRvOjLXG/aYyqzwsF7XVaLiElhFF03yZ
-        mnCRLTMoSqiph7YZzvnGzQiS4KuH6nRjDmKJIUARK8FTx6yCytI8JbDvS7ru7qpdQdczadcfkhpeB
-        BAANC4jrLTMFowrXL15LjELzMrfKogiQxGHlo3DWDAo5eRlpZDfiixQxYAPiRMNW3Dp4LhWkyVSsP
-        PQhgvPkPZcJeRTWIRPWDuezeU32/gtF0YNDZcE76BWJ03cIM7FM5oQcpn5G8EIw/skWRe3a54G5bB
-        wkO+F60A==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mnHoG-004OST-KF; Wed, 17 Nov 2021 10:04:56 +0000
-Date:   Wed, 17 Nov 2021 02:04:56 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Georgi Djakov <quic_c_gdjako@quicinc.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, robdclark@gmail.com,
-        arnd@arndb.de, sean@poorly.run, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, maz@kernel.org,
-        robin.murphy@arm.com, linux-arm-kernel@lists.infradead.org
-Subject: Re: [RFC 1/2] arm64: Add support for system cache memory type
-Message-ID: <YZTTyErX4bb+dlEV@infradead.org>
-References: <1637104560-37432-1-git-send-email-quic_c_gdjako@quicinc.com>
+        id S235862AbhKQKIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 05:08:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55196 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233117AbhKQKIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 05:08:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0380161544;
+        Wed, 17 Nov 2021 10:05:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637143542;
+        bh=WtEqVvnF6PYsfAPJLjI1r45NxQMfJMCjFvcdXXCzEgY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jipiOISPKxlz0WYAJnCrrQZUs/BpEjnctloVN9vemAxQB6jgCRCozGhLZ0PKB6kJT
+         2G50jnzON4dtEvJWd/pJAuB+8xO2L11h/wngdC1gcWsR5Gl3hUZIYDoa+x9s5JZJal
+         DdLpFWeOG56+pBULA4BTXV6JG6/VQL18ErpYTJ7Nsp7woYIneF4la1yuugfn6PQ02a
+         pxFE+ztOa8nAUdxjsJHs/Ysx2o59UbWV3d77pH73rCmwJb+J7yALihUjBbPcInd/ak
+         3orZVPYYyyZogwJPJuvP+5zld9Zw5eCkvLFDBwj98zW0nlYd7mh7JX8S8mK4wLX1sb
+         Y0W4xHQjraELQ==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mnHoi-0001KS-HR; Wed, 17 Nov 2021 11:05:24 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Ilia Sergachev <silia@ethz.ch>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH v2 0/3] serial: liteuart: fix driver unbind
+Date:   Wed, 17 Nov 2021 11:05:09 +0100
+Message-Id: <20211117100512.5058-1-johan@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1637104560-37432-1-git-send-email-quic_c_gdjako@quicinc.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 03:15:59PM -0800, Georgi Djakov wrote:
->  include/linux/dma-map-ops.h      | 8 ++++++++
+Ilia Sergachev noted that the liteuart remove() function would trigger a
+NULL-pointer dereference if it was ever called since the driver data
+pointer was never initialised.
 
-Your forgot to CC the maintainer.  Also don't try to ever hide DMA
-core changes in arch specific patches ever again.
+Turns out there are more bugs in this part of the driver which clearly
+has never been tested.
+
+Also relax the Kconfig dependencies so that the driver can be
+compile-tested without first enabling a seemingly unrelated SoC
+controller driver.
+
+Note that this series depends on the fix by Ilia:
+
+        https://lore.kernel.org/r/20211115031808.7ab632ef@dtkw
+
+Johan
+
+
+Changes in v2
+ - allow compile testing without CONFIG_OF (Andy)
+ - reword commit message to clarify that LITEX is neither a build or
+   runtime dependency and that the change only makes it easier to
+   compile test the driver
+ - move the Kconfig patch last in the series
+ - add Stafford's reviewed by tags to the two unmodified patches
+
+
+Johan Hovold (3):
+  serial: liteuart: fix use-after-free and memleak on unbind
+  serial: liteuart: fix minor-number leak on probe errors
+  serial: liteuart: relax compile-test dependencies
+
+ drivers/tty/serial/Kconfig    |  2 +-
+ drivers/tty/serial/liteuart.c | 18 +++++++++++++++---
+ 2 files changed, 16 insertions(+), 4 deletions(-)
+
+-- 
+2.32.0
+
