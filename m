@@ -2,105 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0651545443F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C455B454443
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:54:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235652AbhKQJzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 04:55:35 -0500
-Received: from mail-vk1-f172.google.com ([209.85.221.172]:37681 "EHLO
-        mail-vk1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235627AbhKQJze (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 04:55:34 -0500
-Received: by mail-vk1-f172.google.com with SMTP id e64so1274204vke.4;
-        Wed, 17 Nov 2021 01:52:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DaTH6dG+9OWuk5kLfq7Obj05Cb3d8CS7ODxUbCSsHLY=;
-        b=hehaOcivLeOZdPbXAUg/kY+nfhCojFZMe0c6M69o03c3uv8qcZnwFWp4IOgi1l2vt7
-         UBA7qhewIqoXF65TbLxYUt0wu/fJocko09gIk1cv+6W5CWKBEaKU4lgvKphRB+H4CPtO
-         ymmCmpCOxapu5msM5ZWnBk8FGJy6H0Z7SW38cHvQxPBS097I5hovy+IrLnumlvm8IL0p
-         mRhPJEYOnw3hD1QKyzODDbLDSJywakOeaspcDHimCRL3oLHTrJIJVfM0guZXpnFoxhzQ
-         xGQbGwB8FJvPuSOzDUKJ5493f4wUgLrMj0RQRsoniRfuqFvnrIuphrBhvdhVamyCkQAM
-         nyIA==
-X-Gm-Message-State: AOAM531VjGmBN0Q5SnBJW3xHrVUD+kCul7nmBo0TPepYRRLju62p/dKN
-        GUF44W7PiXotyGI2lcW055/eVwzdnuY42g==
-X-Google-Smtp-Source: ABdhPJxssKJnTS7lyevwjlZazaFRI63UxBqJV9h9WuFWesZ19yrFdAj3a41H0urJq5N56aVs1v0HBg==
-X-Received: by 2002:a05:6122:1696:: with SMTP id 22mr86804241vkl.2.1637142755296;
-        Wed, 17 Nov 2021 01:52:35 -0800 (PST)
-Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com. [209.85.222.43])
-        by smtp.gmail.com with ESMTPSA id y22sm12106344vsy.33.2021.11.17.01.52.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 01:52:34 -0800 (PST)
-Received: by mail-ua1-f43.google.com with SMTP id ay21so4488549uab.12;
-        Wed, 17 Nov 2021 01:52:34 -0800 (PST)
-X-Received: by 2002:a05:6102:2910:: with SMTP id cz16mr66332901vsb.9.1637142754433;
- Wed, 17 Nov 2021 01:52:34 -0800 (PST)
+        id S235661AbhKQJ5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 04:57:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57902 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235406AbhKQJ5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 04:57:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4514661504;
+        Wed, 17 Nov 2021 09:54:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637142847;
+        bh=+zxN20/5znRjh88KZaCtOQPVCBZVkwSroT6dfnYe1i0=;
+        h=Date:From:Cc:Subject:In-Reply-To:References:From;
+        b=WJmvs5m3diIYeiS80EbsAN/hYPtl79aihs2COBEUw2F1RnDerxz2i/FPdayv3SMNL
+         Sr5OZ1Dff5CUk110BjWreZdI2v94K7Tg5D4GdTmrZWWb2d8Y5nL/e71fCDphYMKuVp
+         wYtTy3xvQAJQqlr8B9Q2eyQf96d1kl5274pKJBiOcrFCP9P5DBhDeOWxtrWJWFWmyH
+         sB55A/odaIUTfYpA/4kCwJtG/niIBm60JPfEZnXR9/itlZqu20pNHxnaQs5xiBNYDH
+         57/xG9oASpEcEWKDjMpUFYFZ7woIAyF7oAUFCBEKvH68atkRYYuyGF+1J9H0tLyIov
+         Omx31+yG257pA==
+Date:   Wed, 17 Nov 2021 09:54:02 +0000
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH 12/13] media: atomisp: fix a bug when applying the
+ binning factor
+Message-ID: <20211117095402.2b6cd0df@sal.lan>
+In-Reply-To: <8d41e31e14941b8a0352bd1e2a8c6c5e11c273ca.1637140900.git.mchehab+huawei@kernel.org>
+References: <cover.1637140900.git.mchehab+huawei@kernel.org>
+        <8d41e31e14941b8a0352bd1e2a8c6c5e11c273ca.1637140900.git.mchehab+huawei@kernel.org>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20211108040551.1942823-1-willy@infradead.org> <20211108040551.1942823-2-willy@infradead.org>
- <YYozKaEXemjKwEar@infradead.org> <YZKCx1cwBXOZcTA4@casper.infradead.org>
- <YZNQnd887/TcPH7H@infradead.org> <YZQnWU9ABBlXJKa5@casper.infradead.org>
-In-Reply-To: <YZQnWU9ABBlXJKa5@casper.infradead.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 17 Nov 2021 10:52:23 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXhUbMK8Sp1Zj-cNMSK2Tq1bZ3egX_LXihQpmHULkBk_Q@mail.gmail.com>
-Message-ID: <CAMuHMdXhUbMK8Sp1Zj-cNMSK2Tq1bZ3egX_LXihQpmHULkBk_Q@mail.gmail.com>
-Subject: Re: [PATCH v2 01/28] csky,sparc: Declare flush_dcache_folio()
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 2:22 AM Matthew Wilcox <willy@infradead.org> wrote:
-> On Mon, Nov 15, 2021 at 10:33:01PM -0800, Christoph Hellwig wrote:
-> > I see how this works no, but it is pretty horrible.  Why not something
-> > simple like the patch below?  If/when an architecture actually
-> > wants to override flush_dcache_folio we can find out how to best do
-> > it:
->
-> I'll stick this one into -next and see if anything blows up:
->
-> From 14f55de74c68a3eb058cfdbf81414148b9bdaac7 Mon Sep 17 00:00:00 2001
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> Date: Sat, 6 Nov 2021 17:13:35 -0400
-> Subject: [PATCH] Add linux/cacheflush.h
->
-> Many architectures do not include asm-generic/cacheflush.h, so turn
-> the includes on their head and add linux/cacheflush.h which includes
-> asm/cacheflush.h.
->
-> Move the flush_dcache_folio() declaration from asm-generic/cacheflush.h
-> to linux/cacheflush.h and change linux/highmem.h to include
-> linux/cacheflush.h instead of asm/cacheflush.h so that all necessary
-> places will see flush_dcache_folio().
->
-> More functions should have their default implementations moved in the
-> future, but those are for follow-on patches.  This fixes csky, sparc and
-> sparc64 which were missed in the commit which added flush_dcache_folio().
->
-> Fixes: 08b0b0059bf1 ("mm: Add flush_dcache_folio()")
-> Suggested-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Em Wed, 17 Nov 2021 09:25:37 +0000
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
 
->  arch/m68k/include/asm/cacheflush_mm.h |  1 -
+> The binning factor is actually a shift value, where 0 means
+> to not touch the value. This is propagated from the sensors'
+> properties:
+> 
+> 	.bin_factor_x
+> 	.bin_factor_y
+> 
+> At their resolution setting tables.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+It turns that this actually not a bug. It is just that I reverted
+the logic on patch 08/13.
 
-Gr{oetje,eeting}s,
+So, I'll merge this one there and re-send this series.
 
-                        Geert
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> ---
+> 
+> To avoid mailbombing on a large number of people, only mailing lists were C/C on the cover.
+> See [PATCH 00/13] at: https://lore.kernel.org/all/cover.1637140900.git.mchehab+huawei@kernel.org/
+> 
+>  .../staging/media/atomisp/pci/sh_css_param_shading.c   | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/staging/media/atomisp/pci/sh_css_param_shading.c b/drivers/staging/media/atomisp/pci/sh_css_param_shading.c
+> index 90b5f9014c5e..005b0ab41588 100644
+> --- a/drivers/staging/media/atomisp/pci/sh_css_param_shading.c
+> +++ b/drivers/staging/media/atomisp/pci/sh_css_param_shading.c
+> @@ -283,16 +283,16 @@ prepare_shading_table(const struct ia_css_shading_table *in_table,
+>  	 * by cropping the non-binned part of the shading table and then
+>  	 * increasing the size of a grid cell with this same binning factor.
+>  	 */
+> -	input_width   *= sensor_binning;
+> -	input_height  *= sensor_binning;
+> +	input_width   <<= sensor_binning;
+> +	input_height  <<= sensor_binning;
+>  	/*
+>  	 * We also scale the padding by the same binning factor. This will
+>  	 * make it much easier later on to calculate the padding of the
+>  	 * shading table.
+>  	 */
+> -	left_padding  *= sensor_binning;
+> -	right_padding *= sensor_binning;
+> -	top_padding   *= sensor_binning;
+> +	left_padding  <<= sensor_binning;
+> +	right_padding <<= sensor_binning;
+> +	top_padding   <<= sensor_binning;
+>  
+>  	/*
+>  	 * during simulation, the used resolution can exceed the sensor
