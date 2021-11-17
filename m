@@ -2,119 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B290454E39
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:57:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 475DA454E3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:57:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240624AbhKQT7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 14:59:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231530AbhKQT7W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 14:59:22 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B98C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 11:56:17 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id w22so4877880ioa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 11:56:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=5VBfPESdcXTL80+DWpyXFkbq5atbMeJcpA3NDVqVEho=;
-        b=X6KFt1hJmRksijS0mwdT5x5R5Cb4kdgmuOI69Q5aRlP/NMidCD9mNur25QLLju7p+1
-         pUnRfFzKJkXdvMArbfV9m/Xw/xwRBpAk9betoF/jo7wwqhUGkvGBQ+KYG1ZXNJ4TZ0Yw
-         kyzV3zPSieN/NrE6lVrQ4epovmEKfDuAtowsj8PTOykl8nIfQqKjNbF3h074mrzZAeVT
-         e3M4RDoRtYs1LnC1QctSZCQIe5V4+udBfbKLFPnA6qc5adbm9r9zdQmHzGiP3aBxIK+3
-         myvsCAz7qgWVp4mb/EbX+4ze2Rdvz74wnd8ziPhECnzVkuNNjGYJUe0KgB/kCJbbCI9K
-         IynQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=5VBfPESdcXTL80+DWpyXFkbq5atbMeJcpA3NDVqVEho=;
-        b=MKfVgtuPTDIupCvu+8neZtnrCBROy11pmqdu8609IkYDTwZ0DwD5slYQvc4nXDbjZo
-         +ECEVHBEfBWUuVJF75Ywro+x7zYPlLNMO4A16eCVuU/27dNcT6zm9cd7hECl2+YaXmL7
-         xHVWB/PjCA4vfxFpxPSSYlh6ej1hA2HGxYL1JZgT6pNX5DbmJoKQItDGB5T2MbCydV7+
-         M/eYkjcZLrGN+jl9+idaPvK3q3T0fIGHEe4lPFixvdcb6zkXOcTkJPlcn1uGJzEdVgxL
-         I8yiBOgRPKMyrO9OzTPKRy0MOra+I5FuH3XfRQl6Ib04EmliQZQ2tG3Iure5du5JNXDp
-         cFkQ==
-X-Gm-Message-State: AOAM533uodBoOavDel8Ua4wznqU0gSmVu9P5irCgW4eyl7P/kv81GZgw
-        Xk5bXoFpC8MyvUwogKPLme82GXdRWJTfDw==
-X-Google-Smtp-Source: ABdhPJy5ZbbuIX+vxu7l+x9G0lL52knByhCJwD3rbmlDMi+PygF6+8Dkj/nbTl0tF87B33FoT5E2KA==
-X-Received: by 2002:a05:6638:238b:: with SMTP id q11mr15391858jat.43.1637178976751;
-        Wed, 17 Nov 2021 11:56:16 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id d2sm577088ilg.77.2021.11.17.11.56.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 11:56:16 -0800 (PST)
-Message-ID: <07e228eb-676a-bdb1-c2ec-a96f691f5a18@linaro.org>
-Date:   Wed, 17 Nov 2021 13:56:14 -0600
+        id S240634AbhKQUAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 15:00:18 -0500
+Received: from mga02.intel.com ([134.134.136.20]:37251 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231530AbhKQUAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 15:00:16 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10171"; a="221255409"
+X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
+   d="scan'208";a="221255409"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 11:57:17 -0800
+X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
+   d="scan'208";a="536419498"
+Received: from jausmus-mobl3.amr.corp.intel.com (HELO [10.212.219.192]) ([10.212.219.192])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 11:57:16 -0800
+Subject: Re: [PATCH] x86/paravirt: Fix build PARAVIRT_XXL=y without XEN_PV
+To:     Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>
+References: <20211117181439.4368-1-kirill.shutemov@linux.intel.com>
+ <YZVLVfd5E6d6YQig@hirez.programming.kicks-ass.net>
+ <20211117184225.6e257nfpdd2qhrj4@box.shutemov.name>
+ <4824bf30-851e-c927-a50f-87fa2a429b2a@linux.intel.com>
+ <YZVOfGtHyiZg1pIP@zn.tnic>
+ <980ceab6-6686-c8f3-72b8-5743ca517bdf@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
+ 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
+ K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
+ VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
+ e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
+ ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
+ kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
+ rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
+ f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
+ mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
+ UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
+ sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
+ 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
+ cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
+ UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
+ db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
+ lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
+ kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
+ gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
+ AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
+ XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
+ e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
+ pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
+ YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
+ lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
+ M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
+ 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
+ 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
+ OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
+ ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
+ z5cecg==
+Message-ID: <0f0b9784-1902-1526-2796-7d1a7ab17fb6@intel.com>
+Date:   Wed, 17 Nov 2021 11:57:15 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [greybus-dev] [PATCH] staging: greybus: Add missing rwsem around
- snd_ctl_remove() calls
+In-Reply-To: <980ceab6-6686-c8f3-72b8-5743ca517bdf@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Takashi Iwai <tiwai@suse.de>, greybus-dev@lists.linaro.org
-Cc:     Alex Elder <elder@kernel.org>, Johan Hovold <johan@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20211116072027.18466-1-tiwai@suse.de>
-From:   Alex Elder <elder@linaro.org>
-In-Reply-To: <20211116072027.18466-1-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 1:20 AM, Takashi Iwai wrote:
-> snd_ctl_remove() has to be called with card->controls_rwsem held (when
-> called after the card instantiation).  This patch adds the missing
-> rwsem calls around it.
+> TDX has a requirement to use HLT paravirt calls (which is currently
+> listed under PARAVIRT_XXL). Once we submit a patch to move it
+> under CONFIG_PARAVIRT, we will drop this dependency.
 
-I see the comment above snd_ctl_remove() that says you must hold
-the write lock.  And given that, this seems correct to me.
+Taking a step back...
 
-I understand why you want to take the lock just once, rather
-than each time snd_ctl_remove() is called.
+The basic requirement here is murky.  Why does TDX need to use these
+paravirt hooks in the first place?  Why does TDX have "a requirement to
+use HLT paravirt calls"?
 
-However I believe the acquisition and release of the lock
-belongs inside gbaudio_remove_controls(), not in its caller.
-
-If you disagree, can you please explain why?
-
-Otherwise, will you please submit version two, taking the
-lock inside gbaudio_remove_controls()?
-
-Thanks.
-
-					-Alex
-
-> Fixes: 510e340efe0c ("staging: greybus: audio: Add helper APIs for dynamic audio modules")
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->   drivers/staging/greybus/audio_helper.c | 8 ++++++--
->   1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/greybus/audio_helper.c b/drivers/staging/greybus/audio_helper.c
-> index 1ed4772d2771..843760675876 100644
-> --- a/drivers/staging/greybus/audio_helper.c
-> +++ b/drivers/staging/greybus/audio_helper.c
-> @@ -192,7 +192,11 @@ int gbaudio_remove_component_controls(struct snd_soc_component *component,
->   				      unsigned int num_controls)
->   {
->   	struct snd_card *card = component->card->snd_card;
-> +	int err;
->   
-> -	return gbaudio_remove_controls(card, component->dev, controls,
-> -				       num_controls, component->name_prefix);
-> +	down_write(&card->controls_rwsem);
-> +	err = gbaudio_remove_controls(card, component->dev, controls,
-> +				      num_controls, component->name_prefix);
-> +	up_write(&card->controls_rwsem);
-> +	return err;
->   }
-> 
-
+If it really is just about idle, perhaps Peter's suggestion warrants
+investigation.  But, we need to know the root cause instead of simply
+tossing around "requirements".
