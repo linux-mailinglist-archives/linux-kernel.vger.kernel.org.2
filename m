@@ -2,84 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3B4454DEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:33:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55880454DF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:34:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240490AbhKQTf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 14:35:58 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:57906 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240487AbhKQTfx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 14:35:53 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 38EAE2114D;
-        Wed, 17 Nov 2021 19:32:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1637177572; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=FF7UCsojzx3IaFcpe06QskS6C/FUMgVa9wc/j/zbQpI=;
-        b=wFh+tS38p135YLWS+v9cM8nb3RACUC+QIMgsWQ3zv3tl5+Qo0YipkVWqOFEUV6x1f3q6ug
-        CG8IQDvpFPpK8Grl4253ezKmzJmHqqRrSnYtcdvRyVSyyIeRXHm4GfV1DCsbwbFKKuAbrG
-        3zYYbKrlnBMAFAtagFc8LW+nJkVi8LY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1637177572;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=FF7UCsojzx3IaFcpe06QskS6C/FUMgVa9wc/j/zbQpI=;
-        b=4nNnpszVTKbNOhb2TehHMDxIVLnmC5IJs3YAIgWkedIRDZAFUNZWGAf/s9brtdUQfzvSwn
-        hf1O3Nx6bZ3Cj/Ag==
-Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
-        by relay2.suse.de (Postfix) with ESMTP id 26EC9A3B85;
-        Wed, 17 Nov 2021 19:32:52 +0000 (UTC)
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Dinh Nguyen <dinguyen@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Ivan T . Ivanov" <iivanov@suse.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: socfpga: Fix crash with CONFIG_FORTIRY_SOURCE
-Date:   Wed, 17 Nov 2021 20:32:44 +0100
-Message-Id: <20211117193244.31162-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
+        id S240519AbhKQThP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 14:37:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45386 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229554AbhKQThJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 14:37:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99CC960EC0;
+        Wed, 17 Nov 2021 19:34:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637177650;
+        bh=jMlKOq75JKI6mQX7Vkxy7abjzXkoN9hP1je25Y0LlS4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=d+mk+LXmGvla5lkPux/RfA83vIVfe988HZQOQCglO7C1b732wK7A2ZmCdaiV4NQPU
+         9tw4oeSIJDZvI+AZo7EdJ1+CMoYCCjzNNpmnytk2N7z/kEhYci83ejaO4V9yqDjSpo
+         FlBPfSzndA2EGeAJ9IKH7kctg8InHkBO3B0u5Gxk8kXT+TTCFKrDz+nNmq/1didz5v
+         atfwHAEa321Ms2r54jvyI6HtV4dOPiGA4w9m9qzlZ0LTplcABwrIKWRtuPW2TFlsot
+         lUsh9b364IjtIX1bpnmtk/gOj57ssILrx3P/v62TXgw3pG8o6miRxEjXDRfsOG6WBT
+         TBafJZ21mgyJw==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mnQh6-00DXHZ-0f; Wed, 17 Nov 2021 19:34:08 +0000
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: [PATCH 0/8] media: atomisp: sync the remaining code with Aero firmware
+Date:   Wed, 17 Nov 2021 19:33:58 +0000
+Message-Id: <cover.1637177402.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_FORTIFY_SOURCE is set, memcpy() checks the potential
-buffer overflow and panics.  The code in sofcpga bootstrapping
-contains the memcpy() calls are mistakenly translated as the shorter
-size, hence it triggers a panic as if it were overflowing.
+There are still a couple of things that are aiming firmware versions newer
+or different than Intel Aero firmware:
+    https://github.com/intel-aero/meta-intel-aero-base/blob/master/recipes-kernel/linux/linux-yocto/shisp_2401a0_v21.bin
 
-This patch adds the __NO_FORTIFY define for avoiding the
-false-positive crash.
+As the code should be in sync with the firmware, change the remaining
+code to be compatible with the firmware.
 
-Buglink: https://bugzilla.suse.com/show_bug.cgi?id=1192473
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
+After this series, except if some mistakes were made, the atomisp code
+is now in sync with the Aero firmware.
 
-I took an easier path for now, as the attempt with a foced cast
-failed.  If there is a better way to handle, let me know, I'd happily
-resubmit.  Thanks!
+Mauro Carvalho Chehab (8):
+  media: atomisp: atomisp_cmd: make it more compatible with firmware
+  media: atomisp: get rid of set pipe version custom ctrl
+  media: atomisp: simplify binary.c
+  media: atomisp: binary.c: drop logic incompatible with firmware
+  media: atomisp: pipe_binarydesc: drop logic incompatible with firmware
+  media: atomisp: frame.c: drop a now-unused function
+  media: atomisp: add YUVPP at __atomisp_get_pipe() logic
+  media: atomisp: cleanup qbuf logic
 
- arch/arm/mach-socfpga/platsmp.c | 3 +++
- 1 file changed, 3 insertions(+)
+ .../staging/media/atomisp/pci/atomisp_cmd.c   |  20 +-
+ .../media/atomisp/pci/atomisp_compat_css20.c  |   9 -
+ .../staging/media/atomisp/pci/atomisp_ioctl.c |  19 -
+ .../media/atomisp/pci/atomisp_subdev.c        |  23 -
+ .../media/atomisp/pci/atomisp_subdev.h        |   1 -
+ .../pci/camera/pipe/src/pipe_binarydesc.c     |  18 +-
+ .../atomisp/pci/runtime/binary/src/binary.c   | 489 +-----------------
+ .../runtime/frame/interface/ia_css_frame.h    |  19 -
+ .../atomisp/pci/runtime/frame/src/frame.c     |  70 ---
+ 9 files changed, 27 insertions(+), 641 deletions(-)
 
-diff --git a/arch/arm/mach-socfpga/platsmp.c b/arch/arm/mach-socfpga/platsmp.c
-index fbb80b883e5d..d46b1af96a8a 100644
---- a/arch/arm/mach-socfpga/platsmp.c
-+++ b/arch/arm/mach-socfpga/platsmp.c
-@@ -5,6 +5,9 @@
-  * Based on platsmp.c, Copyright (C) 2002 ARM Ltd.
-  * Copyright (C) 2012 Altera Corporation
-  */
-+
-+#define __NO_FORTIFY /* need to avoid the crash with memcpy() calls */
-+
- #include <linux/delay.h>
- #include <linux/init.h>
- #include <linux/smp.h>
 -- 
-2.26.2
+2.33.1
+
 
