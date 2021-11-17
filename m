@@ -2,172 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91377454BA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:08:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4C5454BA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:08:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233113AbhKQRLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 12:11:18 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:33403 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S232677AbhKQRLR (ORCPT
+        id S236824AbhKQRLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 12:11:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233179AbhKQRLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 12:11:17 -0500
-Received: (qmail 176265 invoked by uid 1000); 17 Nov 2021 12:08:17 -0500
-Date:   Wed, 17 Nov 2021 12:08:17 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     David Niklas <Hgntkwis@vfemail.net>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-input@vger.kernel.org
-Subject: Re: I need advice with UPS connection. (ping)
-Message-ID: <20211117170817.GD172151@rowland.harvard.edu>
-References: <20201109220000.2ae98fa5@Phenom-II-x6.niklas.com>
- <20211114144842.72463ccc@Zen-II-x12.niklas.com>
- <20211114211435.GA87082@rowland.harvard.edu>
- <20211114220222.31755871@Zen-II-x12.niklas.com>
- <20211115160918.GB109771@rowland.harvard.edu>
- <20211117002359.03b36ec6@Zen-II-x12.niklas.com>
+        Wed, 17 Nov 2021 12:11:31 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4335C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 09:08:32 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id h23so3505548ila.4
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 09:08:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=bopc4YbzmQZhCYY8YFa/3OaWvDHSSoSrrq2peGFOJqc=;
+        b=Kxn3ndqI3eyku+Zq9as9n+Wanz+5gfmv5jKztQ9Xr+NRVik/NPxhKPuDv+a8eCtkNX
+         gspeM9OkYAUcV/XIohh2AKTNvcdAIYs/VjOqIhRvNM7+6iphiSehqHsqueIxtDv4KiyK
+         px/IixqmOWIZ46aFxmFPXtd86oglSTw4djH5J/IgaqPiE9VuZMxx80oKuWNAunZ3cvkx
+         7z6abRxkYk/XeEbBaGWlS7Q/rzAcwnXL09vF1y4Ls0GJxgolKDpqQ1OZPQ18MtpZyXYt
+         UAzbQdudeAlpdfYBdupsTDGeBhJZxU2H6lueXPTutbTE5H+WCRQJNRN/iok2U4pNfvp4
+         1rlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=bopc4YbzmQZhCYY8YFa/3OaWvDHSSoSrrq2peGFOJqc=;
+        b=nfLNpY+HK7p90sfa4kQy5XvN3RToh3h0JAHForJcvQuYmvbXmEimFhEjpHNDqtj7Km
+         2zlpqBQIEq7/J87mkoe2b6/oOCiLahbc1Mlc5NX8u/F5Ux0bB6GJ3IIxiVpc7TDbYqkB
+         MfMOZAPBTMHmQwil0LLly+RZsceLTLx18wPgQpDMdeqqQDmUmRVRcLECWQpb0IeOTJ9h
+         JQ3YLOCSgjdkVL2sAMFvyMPBC2ZvNSRrCs/Y/npGpZDDDqmAHnUlxgEKz2Z6gESuLEgM
+         0hoW8XT2/UEiL2XsxmXUKHIfsY+ZYNlSYy55vDZEr3adMt7jq2jq26hkqFbC+ehmCRfl
+         o24w==
+X-Gm-Message-State: AOAM531pJmNiC2Rtk9uEI6jGNt198ItKnZQp+I112bSshidp/5CrTJkJ
+        aoWJK+bb9VVKNiNbMu24RwjnNezRXSQi4Ni3lf8=
+X-Google-Smtp-Source: ABdhPJyeU06oNL4SdXbIBwbVh+cTWB91sYvQaPUqQPNeGhwPTMZhOCDmIbuasf8yfwFNVfXmKzWbXuQsh9bdcN5mjFQ=
+X-Received: by 2002:a05:6e02:174a:: with SMTP id y10mr11206050ill.68.1637168911997;
+ Wed, 17 Nov 2021 09:08:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211117002359.03b36ec6@Zen-II-x12.niklas.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a02:5185:0:0:0:0:0 with HTTP; Wed, 17 Nov 2021 09:08:31
+ -0800 (PST)
+Reply-To: msbelinaya892@gmail.com
+From:   msbelinaya <icc271zeidan@gmail.com>
+Date:   Wed, 17 Nov 2021 17:08:31 +0000
+Message-ID: <CAA_Fbjsc6KzEzkn8LzoMxs-mnwxXWjn2K6tV9HNC_GznPYEBrA@mail.gmail.com>
+Subject: indyk
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 12:23:59AM -0500, David Niklas wrote:
-> On Mon, 15 Nov 2021 11:09:18 -0500
-> stern@rowland.harvard.edu wrote:
-> <snip>
-> > You can test the theory by patching the kernel, if you want.  The code 
-> > to change is in the source file drivers/hid/usbhid/hid-core.c, and the 
-> > function in question is hid_set_idle() located around line 659 in the 
-> > file.  Just change the statement:
-> > 
-> > 	return usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
-> > 		HID_REQ_SET_IDLE, USB_TYPE_CLASS | USB_RECIP_INTERFACE,
-> > (idle << 8) | report, ifnum, NULL, 0, USB_CTRL_SET_TIMEOUT);
-> > 
-> > to:
-> > 
-> > 	return 0;
-> >
-> > to prevent the Set-Idle request from being sent.  If the device still 
-> > insists on disconnecting then we'll know that this wasn't the reason.
-> > 
-> 
-> Ok, so I changed out the line above with "__panic(2);" and now my PC just
-> reboots....    Teasing :D
-> That didn't seem to change anything. I'll attach another dump just in
-> case it reveals more.
+Ich biete meine Freundschaft an und glaube, dass Sie mich mit gutem
+Herzen akzeptieren werden. Ich wurde gedr=C3=A4ngt, Sie zu kontaktieren und
+zu sehen, wie wir einander am besten unterst=C3=BCtzen k=C3=B6nnen. Ich bin=
+ Frau
+Kodjovi Hegbor aus der T=C3=BCrkei und arbeite als Divisionsleiterin f=C3=
+=BCr
+Operationen bei der StandardBNP bank limited Turkey . Ich glaube, es
+ist der Wille Gottes, dass ich Ihnen jetzt begegnen werde. Ich habe
+ein wichtiges gesch=C3=A4ftliches Gespr=C3=A4ch, das ich mit Ihnen teilen
+m=C3=B6chte, von dem ich glaube, dass es Sie interessiert, da es mit Ihrem
+Nachnamen in Verbindung steht und Sie davon profitieren werden.
 
-It doesn't.  :-(  The Set-Idle request does not appear to be related to 
-the problem.
+ Im Jahr 2006 hat ein B=C3=BCrger Ihres Landes ein Nicht-Residentenkonto
+f=C3=BCr 36 Monate des Kalenders im Wert von =C2=A38.400.000,00 bei meiner =
+Bank
+eingerichtet. Das Ablaufdatum f=C3=BCr diesen Depotvertrag war der 16.
+Januar 2009. Leider starb er w=C3=A4hrend einer Gesch=C3=A4ftsreise bei ein=
+em
+t=C3=B6dlichen Erdbeben am 12. Mai 2008 in Sichuan, China, bei dem
+mindestens 68.000 Menschen ums Leben kamen.
 
-> > Also, if you have another system (say, one running Windows) which the 
-> > UPS does work properly with, you could try collecting the equivalent of 
-> > a usbmon trace from that system for purposes of comparison.  (On 
-> > Windows, I believe you can use Wireshark to trace USB communications.)
-> > 
-> 
-> Limitations of SW:
-> Wireshark works if you have windows in a virtual environment, but I don't
-> actually own... I mean license, any windowz products. I'm a straight
-> Luser.
-> So borrowed a windowz machine and plugged in the UPS. I then used USBPcap
-> to capture the data after installing the drivers. It has 4 things it can't
-> detect:
-> 
-> Bus states (Suspended, Power ON, Power OFF, Reset, High Speed Detection
-> Handshake)
-> Packet ID (PID)
-> Split transactions (CSPLIT, SSPLIT)
-> Duration of bus state and time used to transfer packet over the wire
-> Transfer speed (Low Speed, Full Speed, High Speed)
-> 
-> I'm 100% certain the last 2 we don't care about. IDK about the others.
+Das Management meiner Bank hat noch nichts von seinem Tod erfahren,
+ich wusste davon, weil er mein Freund war und ich sein Kontof=C3=BChrer
+war, als das Konto vor meiner Bef=C3=B6rderung er=C3=B6ffnet wurde. Jedoch =
+Herr
+ erw=C3=A4hnte bei der Kontoer=C3=B6ffnung keine n=C3=A4chsten Verwandten/E=
+rben, und
+er war nicht verheiratet und hatte keine Kinder. Letzte Woche hat
+meine Bankdirektion mich gebeten, Anweisungen zu geben, was mit seinen
+Geldern zu tun ist, wenn der Vertrag verl=C3=A4ngert werden soll.
 
-I don't think they matter.  In principle the time delays might be 
-important, but I rather doubt it.
+Ich wei=C3=9F, dass dies passieren wird, und deshalb habe ich nach einem
+Mittel gesucht, um mit der Situation umzugehen, denn wenn meine
+Bankdirektoren wissen, dass sie tot sind und keinen Erben haben,
+werden sie das Geld f=C3=BCr ihren pers=C3=B6nlichen Gebrauch nehmen, also =
+Ich
+m=C3=B6chte nicht, dass so etwas passiert. Als ich Ihren Nachnamen sah, war
+ich gl=C3=BCcklich und suche jetzt Ihre Mitarbeit, um Sie als Next of
+Kin/Erbe des Kontos zu pr=C3=A4sentieren, da Sie den gleichen Nachnamen wie
+er haben und meine Bankzentrale das Konto freigeben wird f=C3=BCr dich. Es
+besteht kein Risiko; die Transaktion wird im Rahmen einer legitimen
+Vereinbarung ausgef=C3=BChrt, die Sie vor Rechtsverletzungen sch=C3=BCtzt.
 
-> Notes:
-> Here's the product page of my UPS.
-> https://www.newegg.com/opti-ups-ts2250b/p/N82E16842107014
-> The main webpage for USBPcap is here:
-> https://desowin.org/usbpcap/index.html
-> I can also try and use SnoopyPro and busdog if the output is undesirable.
-> USBPcap spits out a pcap file which can be analyzed by wireshark
-> using dissectors -- somehow (I really should practice using wireshark.)
+Es ist besser, dass wir das Geld beanspruchen, als es den
+Bankdirektoren zu erlauben, es zu nehmen, sie sind bereits reich. Ich
+bin kein gieriger Mensch, daher schlage ich vor, dass wir das Geld zu
+gleichen Teilen teilen, 50/50% auf beide Parteien. Mein Anteil wird
+mir helfen, mein eigenes Unternehmen zu gr=C3=BCnden und den Erl=C3=B6s f=
+=C3=BCr
+wohlt=C3=A4tige Zwecke zu verwenden, was mein Traum war.
 
-Wireshark on my system has no trouble reading your pcap file.
-
-> Test and capture procedure:
-> When I installed the drivers it asked me where to look for the UPS. I
-> didn't tell it the USB port until after I started USBPcap and then
-> plugged in the UPS. Then the GUI opened up and I could see a lot of cool
-> controls like the battery power, loading, etc. The loading was 132W and
-> the battery was at 100%. Then I ran a self test (There's a button in the
-> GUI) and it worked fine. Then I unplugged the UPS and it crashed. Then I
-> plugged it back in. All --100%-- of this is in the pcap file.
-
-I'm just concentrating on the first part, up to the point where the 
-unwanted disconnects occurred with Linux.  So far as I can see, there 
-are only two significant differences between the usbmon and wireshark 
-traces:
-
-	The Windows system doesn't transfer any of the string 
-	descriptors during initial enumeration, whereas the Linux
-	system does.  While this might be relevant, I don't think it is.
-
-	When the Windows system requests the HID report descriptor from 
-	the device, it asks for 1060 bytes of data.  The Linux system
-	asks for only 996 bytes.  (Note: The descriptor is exactly
-	996 bytes long, and that's how much data the device sends in
-	either case.)
-
-It's entirely possible that this second discrepancy is somehow causing 
-the problem.  You can test this guess by applying the following patch:
-
---- usb-devel.orig/drivers/hid/usbhid/hid-core.c
-+++ usb-devel/drivers/hid/usbhid/hid-core.c
-@@ -667,13 +667,16 @@ static int hid_get_class_descriptor(stru
- 		unsigned char type, void *buf, int size)
- {
- 	int result, retries = 4;
-+	int size2 = size;
- 
-+	if (size == 996)
-+		size2 = 1060;
- 	memset(buf, 0, size);
- 
- 	do {
- 		result = usb_control_msg(dev, usb_rcvctrlpipe(dev, 0),
- 				USB_REQ_GET_DESCRIPTOR, USB_RECIP_INTERFACE | USB_DIR_IN,
--				(type << 8), ifnum, buf, size, USB_CTRL_GET_TIMEOUT);
-+				(type << 8), ifnum, buf, size2, USB_CTRL_GET_TIMEOUT);
- 		retries--;
- 	} while (result < size && retries);
- 	return result;
-
-This will cause the kernel to ask for 1060 bytes rather than 996.  (It's 
-also potentially dangerous, because it asks for 1060 bytes to be stored 
-into a 996-byte buffer; if the device sends more data than expected then 
-the excess will be written beyond the end of the buffer.)
-
-Please send a usbmon trace showing what happens with this patch applied.  
-And you might as well put the Set-Idle request back in, because now we 
-know Windows does send that request.
-
-> Results of:
-> After unplugging the UPS it's battery dropped to 22% and then it turned
-> off. My UPS is 2y and 5m old. It has a 3Y parts warranty. I guess I'll
-> see if they'll honor it.
-> 
-> 
-> 
-> 
-> I'm still interested in talking to it via my Linux PC, of course.
-
-Let's see if the patch will avert the disconnect.
-
-Alan Stern
+Teilen Sie mir Ihre Meinung zu meinem Vorschlag mit, bitte, ich
+brauche wirklich Ihre Hilfe bei dieser Transaktion. Ich habe Sie
+ausgew=C3=A4hlt, um mir zu helfen, nicht durch mein eigenes Tun, mein
+Lieber, sondern bei Gott wollte ich, dass Sie wissen, dass ich mir
+Zeit zum Beten genommen habe =C3=BCber diese Mitteilung, bevor ich Sie
+jemals kontaktiert habe, teilen Sie mir Ihre Meinung dazu mit und
+behandeln Sie diese Informationen bitte als STRENG GEHEIM. Nach Erhalt
+Ihrer Antwort, ausschlie=C3=9Flich =C3=BCber meine pers=C3=B6nliche E-Mail-=
+Adresse,
+msbelinaya892@gmail.com
+gibt Ihnen Details zur Transaktion. Und eine Kopie der
+Einlagenbescheinigung des Fonds sowie die Gr=C3=BCndungsurkunde der
+Gesellschaft, die den Fonds erstellt hat.
+Gott segne, in Erwartung Ihrer dringenden Antwort
+Mit freundlichen Gr=C3=BC=C3=9Fen
+Frau Kodjovi Hegbor
+msbelinaya892@gmail.com
