@@ -2,159 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05BFD454F9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 22:54:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D989B455003
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 22:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240840AbhKQV5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 16:57:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46044 "EHLO
+        id S241061AbhKQWAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 17:00:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbhKQV5P (ORCPT
+        with ESMTP id S241055AbhKQV7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 16:57:15 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3501EC061766
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:54:16 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id o6-20020a17090a0a0600b001a64b9a11aeso3752609pjo.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:54:16 -0800 (PST)
+        Wed, 17 Nov 2021 16:59:16 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64BCFC06122E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:55:09 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id j28so4342138ila.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:55:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TyflncBo4THYgrqhCPbCdrMH0wmAnukogB9h7+aZLPc=;
-        b=LD3wx/0WsV+K5ZaVvJGk4B58b755LoG9yNHQCbOtNiqYXf1JDa0B+6STmSNAX7UiAb
-         a3bbZGG3lI8FB7Pl+jZRC+07aI4FLb75KMMbKB0dR/ZKgf6bHAM460JE2ur0VB+b1BaR
-         zFUCpk6hp28mvlZ/CRH8MbCstWvltcN1qAWsc=
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=Hxr69O3bJrzYefrTxgVZfC16APa+v16lfxoy3u13P1s=;
+        b=QpE3KxMjhsnLmogPyVojs8AgoyXiIlugpWIViPAv7oiK1aXt5F2T46PeR0VJXEnpCz
+         m7v3Ao9VxhEIBD60di2CRpisiRPQNSoPF7NcpFHnujXABezOdIK1zP/UY9sj+8ofWpQT
+         gcfhUceItvGTYjnCGDFe9ChfLskStZ6AucPz6AQ+TpywDW+h3lfvuU/oh+zGlhfY8Xee
+         taBiu6Od2l3Sywgqnhj8ycQdLaQItwJjpk72zE2va7G3BseM3BIPpHYt/sXHv+8ODP3Q
+         Xo1YHwiRjmv3aiuHJPhguGEg/ziKpQTxdHOvsFEumpzmy8th51zMlS3/uyPTpk2C0vXU
+         a49A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TyflncBo4THYgrqhCPbCdrMH0wmAnukogB9h7+aZLPc=;
-        b=CGolbobJWp6HeLS5KBYvERkBL/ScKjZYdeYvJyCBBGgDEekyfr3A/IVf5sBOzlFQLr
-         LDjajL3EKbbuJzD3rrq38SZhaOc1bIgV7iC1uJRWA5uKKm2XsDjG5fG8wvnr7ahyVD2+
-         QIvX3EWq+AZ9WSm/vQjKL0KyEAbvtJWAehtCiiNQhrpCEFUtTgZLu0lzYgMbGVLe1EXw
-         mWp0jqnz6Ui7dqftOMRbU8WA36D2KaOB7uCWP21FdS5+n5PevbPX0pj7JwWY5dm3JPk2
-         064p4ECeYFcv2Iu769NLFldCq4v/humj6zpTsoRNiIoEaDOr7jP3CfZT59hvp/ee1l2e
-         6pzQ==
-X-Gm-Message-State: AOAM532LvpAzY8QtEM30rdeoKq8AhNFlIQg/e5e2dgpYB2b9ea7lNpib
-        MIn7dVSgPu2DU8u6xn0bI0PNbg==
-X-Google-Smtp-Source: ABdhPJzcvx+Omftengr4Y3I++Ne+CRyHy9ruaviogn9sbmiRhSOCY96nnx7Ca6k41hOfhn1CeyD3VQ==
-X-Received: by 2002:a17:90b:4f45:: with SMTP id pj5mr3890617pjb.70.1637186055666;
-        Wed, 17 Nov 2021 13:54:15 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id oc10sm6963920pjb.26.2021.11.17.13.54.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 13:54:15 -0800 (PST)
-Date:   Wed, 17 Nov 2021 13:54:14 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Kyle Huey <me@kylehuey.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Robert O'Callahan <rocallahan@gmail.com>
-Subject: Re: [REGRESSION] 5.16rc1: SA_IMMUTABLE breaks debuggers
-Message-ID: <202111171341.41053845C3@keescook>
-References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
- <202111171049.3F9C5F1@keescook>
- <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
- <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
- <87k0h6334w.fsf@email.froward.int.ebiederm.org>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=Hxr69O3bJrzYefrTxgVZfC16APa+v16lfxoy3u13P1s=;
+        b=0s+ZsgqZqe89wyKzDD7wu4W14SGD9zvkNhYGwjojH3JeibR44445mCJXAlknI3iVI9
+         HpjCiF80hIhp3bWGo4JyvW0orrS+eMkHnT7l64V03Ua77j07XLq+LRtgtES8tN9uUs6P
+         NnNQGaGYwFJ28dChz/akchJXFqoZqQWO/N/Yk+wjXw/5nnLqeihLhsShWhps5UmnpqcF
+         /PIioPzzSVEgZBwZpJueLw0IMAbfbewxxH/37pWpcLN2MaAuJqFYSPPB+vvmXF4GN3FD
+         W0iAdC2fjFCF3ClzZJ0xWD7aOdZVMBpModqIWa2mOe5lNqTxDIQBgrS6EY2oL9prVHie
+         thvA==
+X-Gm-Message-State: AOAM532cu2MUEI3dlEUL6KqOnCBNpKtG9NW4rI46tZk4SUUuJ6GyY002
+        9SRdo45gpVZbzwJJSdTcyWEPSA==
+X-Google-Smtp-Source: ABdhPJziRfbgGvt+zj01L3LXVaTAP4Q1xpUA/9+Eb4Zh/hXWLeCX1sMr0sPVc/gYLkSCCicB08Nz4Q==
+X-Received: by 2002:a92:c5cc:: with SMTP id s12mr12752085ilt.239.1637186108709;
+        Wed, 17 Nov 2021 13:55:08 -0800 (PST)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id a25sm588238ioa.24.2021.11.17.13.55.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 13:55:07 -0800 (PST)
+Message-ID: <b0d2b643-214a-07c5-96b7-4845c54cba72@linaro.org>
+Date:   Wed, 17 Nov 2021 15:55:06 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87k0h6334w.fsf@email.froward.int.ebiederm.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [greybus-dev] [PATCH] staging: greybus: Add missing rwsem around
+ snd_ctl_remove() calls
+Content-Language: en-US
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     greybus-dev@lists.linaro.org, Alex Elder <elder@kernel.org>,
+        Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org
+References: <20211116072027.18466-1-tiwai@suse.de>
+ <07e228eb-676a-bdb1-c2ec-a96f691f5a18@linaro.org>
+ <s5h5ysqlcm8.wl-tiwai@suse.de>
+From:   Alex Elder <elder@linaro.org>
+In-Reply-To: <s5h5ysqlcm8.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 03:04:31PM -0600, Eric W. Biederman wrote:
-> Kyle Huey <me@kylehuey.com> writes:
+On 11/17/21 3:02 PM, Takashi Iwai wrote:
+> On Wed, 17 Nov 2021 20:56:14 +0100,
+> Alex Elder wrote:
+>>
+>> On 11/16/21 1:20 AM, Takashi Iwai wrote:
+>>> snd_ctl_remove() has to be called with card->controls_rwsem held (when
+>>> called after the card instantiation).  This patch adds the missing
+>>> rwsem calls around it.
+>>
+>> I see the comment above snd_ctl_remove() that says you must hold
+>> the write lock.  And given that, this seems correct to me.
+>>
+>> I understand why you want to take the lock just once, rather
+>> than each time snd_ctl_remove() is called.
+>>
+>> However I believe the acquisition and release of the lock
+>> belongs inside gbaudio_remove_controls(), not in its caller.
+>>
+>> If you disagree, can you please explain why?
 > 
-> > On Wed, Nov 17, 2021 at 11:05 AM Kyle Huey <me@kylehuey.com> wrote:
-> >>
-> >> On Wed, Nov 17, 2021 at 10:51 AM Kees Cook <keescook@chromium.org> wrote:
-> >> >
-> >> > On Wed, Nov 17, 2021 at 10:47:13AM -0800, Kyle Huey wrote:
-> >> > > rr, a userspace record and replay debugger[0], is completely broken on
-> >> > > 5.16rc1. I bisected this to 00b06da29cf9dc633cdba87acd3f57f4df3fd5c7.
-> >> > >
-> >> > > That patch makes two changes, it blocks sigaction from changing signal
-> >> > > handlers once the kernel has decided to force the program to take a
-> >> > > signal and it also stops notifying ptracers of the signal in the same
-> >> > > circumstances. The latter behavior is just wrong. There's no reason
-> >> > > that ptrace should not be able to observe and even change
-> >> > > (non-SIGKILL) forced signals.  It should be reverted.
-> >> > >
-> >> > > This behavior change is also observable in gdb. If you take a program
-> >> > > that sets SIGSYS to SIG_IGN and then raises a SIGSYS via
-> >> > > SECCOMP_RET_TRAP and run it under gdb on a good kernel gdb will stop
-> >> > > when the SIGSYS is raised, let you inspect program state, etc. After
-> >> > > the SA_IMMUTABLE change gdb won't stop until the program has already
-> >> > > died of SIGSYS.
-> >> >
-> >> > Ah, hm, this was trying to fix the case where a program trips
-> >> > SECCOMP_RET_KILL (which is a "fatal SIGSYS"), and had been unobservable
-> >> > before. I guess the fix was too broad...
-> >>
-> >> Perhaps I don't understand precisely what you mean by this, but gdb's
-> >> behavior for a program that is SECCOMP_RET_KILLed was not changed by
-> >> this patch (the SIGSYS is not observed until after program exit before
-> >> or after this change).
+> In general if the function returns an error and has a loop inside,
+> taking a lock in the caller side avoids the forgotten unlock.
 
-The SA_IMMUTABLE change was to deal with failures seen in the seccomp
-test suite after the recent fatal signal refactoring. Mainly that a
-process that should have effectively performed do_exit() was suddenly
-visible to the tracer.
+But taking the lock in the called function makes the
+caller not need to take the lock (which would be even
+more valuable if there were more than one caller).
 
-> > Ah, maybe that behavior changed in 5.15 (my "before" here is a 5.14
-> > kernel).  I would argue that the debugger seeing the SIGSYS for
-> > SECCOMP_RET_KILL is desirable though ...
+I prefer having the lock acquisition in the called
+function.  Please send version 2, as I suggested.
+
+					-Alex
+
+> Takashi
 > 
-> This is definitely worth discussing, and probably in need of fixing (aka
-> something in rr seems to have broken).
 > 
-> We definitely need protection against the race with sigaction.
-> 
-> The fundamental question becomes does it make sense and is it safe
-> to allow a debugger to stop at, and possibly change these signals.
+>> Otherwise, will you please submit version two, taking the
+>> lock inside gbaudio_remove_controls()?
+>>
+>> Thanks.
+>>
+>> 					-Alex
+>>
+>>> Fixes: 510e340efe0c ("staging: greybus: audio: Add helper APIs for dynamic audio modules")
+>>> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+>>> ---
+>>>    drivers/staging/greybus/audio_helper.c | 8 ++++++--
+>>>    1 file changed, 6 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/staging/greybus/audio_helper.c b/drivers/staging/greybus/audio_helper.c
+>>> index 1ed4772d2771..843760675876 100644
+>>> --- a/drivers/staging/greybus/audio_helper.c
+>>> +++ b/drivers/staging/greybus/audio_helper.c
+>>> @@ -192,7 +192,11 @@ int gbaudio_remove_component_controls(struct snd_soc_component *component,
+>>>    				      unsigned int num_controls)
+>>>    {
+>>>    	struct snd_card *card = component->card->snd_card;
+>>> +	int err;
+>>>    -	return gbaudio_remove_controls(card, component->dev, controls,
+>>> -				       num_controls, component->name_prefix);
+>>> +	down_write(&card->controls_rwsem);
+>>> +	err = gbaudio_remove_controls(card, component->dev, controls,
+>>> +				      num_controls, component->name_prefix);
+>>> +	up_write(&card->controls_rwsem);
+>>> +	return err;
+>>>    }
+>>>
+>>
 
-I have no problem with a debugger getting notified about a fatal
-(SECCOMP_RET_KILL*-originated) SIGSYS. But whatever happens, the kernel
-needs to make sure the process does not continue. (i.e. signal can't be
-changed/removed/etc.)
-
-> Stopping at something SA_IMMUTABLE as long as the signal is allowed to
-> continue and kill the process when PTRACE_CONT happens seems harmless.
-> 
-> Allowing the debugger to change the signal, or change it's handling
-> I don't know.
-
-Right -- I'm fine with a visibility change (the seccomp test suite is
-just checking for various expected state machine changes across the
-various signal/death cases: as long as it _dies_, that's what we want.
-If a extra notification appears before it dies, that's okay, it just
-needs the test suite to change).
-
-> [...]
-> Kees I am back to asking the question I had before I figured out
-> SA_IMMUTABLE.  Are there security concerns with debuggers intercepting
-> SECCOMP_RET_KILL.
-
-I see no problem with allowing a tracer to observe the signal, but the
-signalled process must have no way to continue running. If we end up in
-such a state, then a seccomp process with access to clone() and
-ptrace() can escape the seccomp sandbox. This is why seccomp had been
-using the big do_exit() hammer -- I really want to absolutely never have
-a bug manifest with a bypassed SECCOMP_RET_KILL: having a completely
-unavoidable "dying" state is needed.
-
--- 
-Kees Cook
