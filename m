@@ -2,100 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5F2453E8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 03:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AEF6453E92
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 03:49:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232569AbhKQCqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 21:46:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37426 "EHLO
+        id S232642AbhKQCw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 21:52:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbhKQCqU (ORCPT
+        with ESMTP id S229889AbhKQCw2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 21:46:20 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9300C061570;
-        Tue, 16 Nov 2021 18:43:22 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id 28so871088pgq.8;
-        Tue, 16 Nov 2021 18:43:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3bBAKF0rXpsZjZFTjDb9z1siKN7G6tFghunlSlXiQ9I=;
-        b=ovKK6pdy7X3TMzw5Id05nYQcyaFRpS/LtqyZtASwum9k/xccxDLSorMGT5CbnftqxA
-         XEhfa1wfnXic0oKCUH7/RkE/RJjsgNbHVKkd4lTVYANvjVfhhGa19FPjCea8vf7QCIlF
-         /EonpBfWyD8G+dhIyqjKr1fnd1WBHQAljcgK2FcmRmNAan9fxKJ0b9aSgTEgguFNK5ip
-         99il3POCWICmIum9u/iXbkwlpRREzFRbdQNAO9Ruz2eL1QtbqniepRyCbCmqV9OkPkcb
-         OhCccYd4f0OMkASdHiEh2o5OStlRZY5SGpFY8rdlqUkUA/AZ+7TG6zY29OfIpFca7B0b
-         Lp0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=3bBAKF0rXpsZjZFTjDb9z1siKN7G6tFghunlSlXiQ9I=;
-        b=YVnzmngak0JqKRE2rU/44oFQovc3AKsOC7sjGzA4gbjCamzFVfk2t4Rpsj/D9P6Ueq
-         rDBY7vWxoVgV3iifTYF174zC0JHPOY0xt6VuuqKcZjrS35CUYYZSFs7UJaQJ59HRQrfC
-         G+MdIv9zJm12HYTxaeVumv+i89+2Ua71EGH2Gt/PurBYpuSZ7y+yCZ9YTfdfgc7PkX2I
-         MymBqRnDkcuzx7h506JxgTIWav/ORoqR73RC1w+9QiJ/5iiKQiMCT9J3/sSu2as+n3SX
-         rb/LaknnvSGKYZKAXmR3g/RHedtpXRWiRxMIkJv/9tPT0FyUfh/W0u2LB0y4vHoUSChx
-         TViw==
-X-Gm-Message-State: AOAM530dfKqwVMMPbKvAtqSqXuJfNLlUuAkYjO8K9qQJj+8X/UgdkPWS
-        Ztiwu2ykPcsufpaiegfAZQDyv8/p0FY=
-X-Google-Smtp-Source: ABdhPJwsu3lOa8+LnXL+RdutnbP+/ngMRwtx2zSdGeySsV+9gWGvLuqtUTSKRijJpH7R4X5439B87w==
-X-Received: by 2002:a63:c00b:: with SMTP id h11mr2774774pgg.207.1637117002335;
-        Tue, 16 Nov 2021 18:43:22 -0800 (PST)
-Received: from localhost (220-135-95-34.hinet-ip.hinet.net. [220.135.95.34])
-        by smtp.gmail.com with ESMTPSA id k5sm2909900pgt.49.2021.11.16.18.43.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 18:43:21 -0800 (PST)
-Sender: AceLan Kao <acelan@gmail.com>
-From:   AceLan Kao <acelan.kao@canonical.com>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        SophieHu <sophiehu@aaeon.com.tw>
-Subject: [PATCH] hwmon: f71882fg: Add F81966 support
-Date:   Wed, 17 Nov 2021 10:43:20 +0800
-Message-Id: <20211117024320.2428144-1-acelan.kao@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 16 Nov 2021 21:52:28 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E14C061570;
+        Tue, 16 Nov 2021 18:49:30 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hv6pH2JnFz4xbH;
+        Wed, 17 Nov 2021 13:49:27 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1637117367;
+        bh=6dE0/f/XWAyAwX7t19FAMH6J/SSu+5CqZOEJTvTMsFE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=nAOc0kThOwDPLBC17cxuOoV2rkpgWfNqAgk4Ec1D+Ll4d6AP7LMe9zZa3D/xuS3aK
+         u3hDzzw740bXyyuPC5mscIszWu6W/GXF5yx88gum1yp0nVyS/ftLp27S6Bts8qOE5A
+         w/p20tPn9jDQaLJqo73lOt2ZfzppyLksCq6G80CkLjqcibfagqxKdOX3ILZcKXRYvH
+         rRhu3+sG6jlz3X8LbwD3CaLaSJ/6bDcP9GYfNK01OlpwmI6Q9yicJg7kKgqXuTL3VJ
+         HasxQ+Nc0cpWWtiSvFQcyxYZUi/tA3Ays5f7aKN3/pXBFSy2rzRZnYbvVW6/l4nEJ4
+         jb7XDRFzRLgiQ==
+Date:   Wed, 17 Nov 2021 13:49:26 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the drm-misc tree
+Message-ID: <20211117134926.1d339d71@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/nGT7HMzE=uumvIefyvH.E03";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menghui Wu <Menghui_Wu@aaeon.com.tw>
+--Sig_/nGT7HMzE=uumvIefyvH.E03
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This adds hardware monitor support the Fintek F81966 Super I/O chip.
-Testing was done on the Aaeon SSE-IPTI
+Hi all,
 
-Signed-off-by: Menghui Wu <Menghui_Wu@aaeon.com.tw>
-Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
----
- drivers/hwmon/f71882fg.c | 2 ++
- 1 file changed, 2 insertions(+)
+After merging the drm-misc tree, today's linux-next build (htmldocs)
+produced this warning:
 
-diff --git a/drivers/hwmon/f71882fg.c b/drivers/hwmon/f71882fg.c
-index 4673d403759a..938a8b9ec70d 100644
---- a/drivers/hwmon/f71882fg.c
-+++ b/drivers/hwmon/f71882fg.c
-@@ -49,6 +49,7 @@
- #define SIO_F81768D_ID		0x1210	/* Chipset ID */
- #define SIO_F81865_ID		0x0704	/* Chipset ID */
- #define SIO_F81866_ID		0x1010	/* Chipset ID */
-+#define SIO_F81966_ID		0x1502	/* Chipset ID */
- 
- #define REGION_LENGTH		8
- #define ADDR_REG_OFFSET		5
-@@ -2672,6 +2673,7 @@ static int __init f71882fg_find(int sioaddr, struct f71882fg_sio_data *sio_data)
- 		sio_data->type = f81865f;
- 		break;
- 	case SIO_F81866_ID:
-+	case SIO_F81966_ID:
- 		sio_data->type = f81866a;
- 		break;
- 	default:
--- 
-2.25.1
+include/drm/gpu_scheduler.h:316: warning: Function parameter or member 'wor=
+k' not described in 'drm_sched_job'
 
+Introduced by commit
+
+  542cff7893a3 ("drm/sched: Avoid lockdep spalt on killing a processes")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/nGT7HMzE=uumvIefyvH.E03
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGUbbYACgkQAVBC80lX
+0GwxdAf8C8568o1CK6RwcuYtmAGqfiH119S/ovG0HGttngtMI3jRWzQYmFcG0kBn
+6Dqa8hOZn0xP4OVwIHXqeNW1pxO5ef/99KtHIlyXlOuTv8VSdOo7blmbGWY+x43e
+TDzskqsQnPTcMjoMYlmP/9Vjj663GjL+l6R35pNMvvJvR6K8WPS1HHqbkSL51hXs
+kXP+KG+FyjgpY2iZ3Wv8HBGPBD8W/b8v3Ui3xcD0nqZBASY4K/01BprhNsOouMPU
+VB+WDGW+ZcAaD3JzR1IV0TFnH0ro+UZchR90j7utJxNR9jj17ETdv5RRe+vd/9jT
+0liW8UgnwmvZV8RmadEkyk6iYXfHPw==
+=fTz5
+-----END PGP SIGNATURE-----
+
+--Sig_/nGT7HMzE=uumvIefyvH.E03--
