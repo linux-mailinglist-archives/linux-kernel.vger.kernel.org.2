@@ -2,119 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C834455065
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4740F455068
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241211AbhKQW24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 17:28:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39782 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241198AbhKQW2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:28:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB11E613AC;
-        Wed, 17 Nov 2021 22:25:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637187954;
-        bh=DnYSKHOkm9gdi0PmOtNKL8tZsnPt/yobbPx3e8MpO2g=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=KJGsqUg5Y0562AeNrcBjEdNKsNtaPqPEoJdyRIg5FViEqPl/k9atXSl74EBeYAAWE
-         xkNz2/sUhKLb7tB8kYypIh6Ohnrx5DkEVuAvtrvW7gbj/Va8W3aMcUjNbFcBzzMUsy
-         FBmy+r5/1YvvUCPylIfKroSOeU7uCc99FOHa+Yi+qPRcSRn19muq8uzal9baPHwdvX
-         NJPTC4uYzrKbhyRPlTXUagR/MSiOBnxTifKBM5I96U3M60y73bASMp6gF04gxxirMW
-         kOlAoNZMKcw8uuE6lirLesNkNG0uCPY/cW7pd3U3USJKsLExtuIqV3RMyL39RtZbIc
-         DsrobjmAHrC3w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8DD4B5C06BA; Wed, 17 Nov 2021 14:25:54 -0800 (PST)
-Date:   Wed, 17 Nov 2021 14:25:54 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 1/6] rcu/nocb: Remove rdp from nocb list when de-offloaded
-Message-ID: <20211117222554.GP641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211117155637.363706-1-frederic@kernel.org>
- <20211117155637.363706-2-frederic@kernel.org>
- <20211117185341.GJ641268@paulmck-ThinkPad-P17-Gen-1>
- <20211117214750.GA365507@lothringen>
+        id S241209AbhKQW3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 17:29:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241210AbhKQW31 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 17:29:27 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5503C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:26:27 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id i9so4255323qki.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:26:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fIFSYR5oDtZ1H7mQhwPY7SO4mu/8yyQ4jYLgc+T4ALA=;
+        b=eSOuZnJjuMjK36y5fHVBBRDur2pOngcl3oSYSzJMrOHfXx6JnF3zo/hWBpR5MWuRfX
+         VcLUVzEXV9XWMlXji0pDX4CugICZoX8ncXoqctAGFFO5fyZkXWaE+oa7U1TZ0p3xY4L2
+         1iqQRXllHjS5NhjPpF2vGlFKm/F3YLUCGH0MrC+8XgPR/2asfBfKBMzRtbvZzIRqzAks
+         nyvIlQKljHI8Tvl5rIUOWdfzoaseOW1DGzgUrCiNzbg2yCv1XvsII8zGgBObdWrlXRSR
+         kefZpsRk2f7Kbec1QwfwtdCsCEk1jtOdUGiyyYx1UOu7wCg49/N0trID4GMq74oxrZFM
+         RXhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fIFSYR5oDtZ1H7mQhwPY7SO4mu/8yyQ4jYLgc+T4ALA=;
+        b=yrMUNyjxf4ADFPyxOnF0+JBl8FI7UuNhXCagu93s/bVKuppvyo7S2i29bJpmLzI7XC
+         0qIj58K0142bT9v3dpENxOjoUIgeUrjya7d/r4xL3+WdvELnMvR2pHg3RmdYrglWUDPQ
+         OTPiOH6rk7g2iRPryXnpUXF8AdKO9YkMEWfbcZNM9rvz9GjRA9I6hmd2c9VcFieaN+0e
+         jjPaIpIixvulnqkM8PwCg42MuOxNfZ8IeC7GpFR8y3KmxDs8KhUeX1pTYzSAhwCb4lRf
+         Nx5greCwUHxr5RTTxgcFpJSHnRG0gcBAjh9aQg1mlQeSVxcoL0dVRA9fLM+QWUV1l+Ug
+         HYFg==
+X-Gm-Message-State: AOAM532m+EOVyWLDObW5sKpC8LfzNfhHEw6mEOaqVHJ0fNdyCGULn/3+
+        dJ09zOuCBz6c806VRAKOW8BY6Q==
+X-Google-Smtp-Source: ABdhPJwrJwV+j4r6Zh2jHJONUfkSMV0uwfBez4JbCEa+YqYEe6r92h01GGVXtnJ5TgtQ8o2dRre9Jw==
+X-Received: by 2002:a05:620a:208c:: with SMTP id e12mr5459888qka.445.1637187987082;
+        Wed, 17 Nov 2021 14:26:27 -0800 (PST)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id c24sm687479qkp.43.2021.11.17.14.26.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 14:26:26 -0800 (PST)
+Date:   Wed, 17 Nov 2021 17:26:25 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        Drew DeVault <sir@cmpwn.com>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+Message-ID: <YZWBkZHdsh5LtWSG@cmpxchg.org>
+References: <20211028080813.15966-1-sir@cmpwn.com>
+ <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
+ <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
+ <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
+ <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211117214750.GA365507@lothringen>
+In-Reply-To: <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 10:47:50PM +0100, Frederic Weisbecker wrote:
-> On Wed, Nov 17, 2021 at 10:53:41AM -0800, Paul E. McKenney wrote:
-> > On Wed, Nov 17, 2021 at 04:56:32PM +0100, Frederic Weisbecker wrote:
-> > >  	pr_info("Offloading %d\n", rdp->cpu);
-> > > +
-> > > +	/*
-> > > +	 * Iterate this CPU on nocb_gp_wait(). We do it before locking nocb_gp_lock,
-> > > +	 * resetting nocb_gp_sleep and waking up the related "rcuog". Since nocb_gp_wait()
-> > > +	 * in turn locks nocb_gp_lock before setting nocb_gp_sleep again, we are guaranteed
-> > > +	 * to iterate this new rdp before "rcuog" goes to sleep again.
+On Mon, Nov 15, 2021 at 08:35:30PM -0800, Andrew Morton wrote:
+> On Sat, 6 Nov 2021 14:12:45 +0700 Ammar Faizi <ammarfaizi2@gnuweeb.org> wrote:
+> 
+> > On 11/6/21 2:05 PM, Drew DeVault wrote:
+> > > Should I send a v2 or is this email sufficient:
+> > > 
+> > > Signed-off-by: Drew DeVault <sir@cmpwn.com>
 > > 
-> > Just to make sure that I understand...
+> > Oops, I missed akpm from the CC list. Added Andrew.
 > > 
-> > The ->nocb_entry_rdp list is RCU-protected, with an odd flavor of RCU.
-> > The list_add_tail_rcu() handles list insertion.  For list deletion,
-> > on the one hand, the rcu_data structures are never freed, so their
-> > lifetime never ends.  But one could be removed during an de-offloading
-> > operation, then re-added by a later offloading operation.  It would be
-> > bad if a reader came along for that ride because that reader would end
-> > up skipping all the rcu_data structures that were in the list after the
-> > initial position of the one that was removed and added back.
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Ref: https://lore.kernel.org/io-uring/CFII8LNSW5XH.3OTIVFYX8P65Y@taiga/
 > 
-> How did I miss that :-(
+> Let's cc linux-mm as well.
 > 
-> > 
-> > The trick seems to be that the de-offloading process cannot complete
-> > until the relevant rcuog kthread has acknowledged the de-offloading,
-> > which it cannot do until it has completed the list_for_each_entry_rcu()
-> > loop.  And the rcuog kthread is the only thing that traverses the list,
-> > except for the show_rcu_nocb_state() function, more on which later.
-> > 
-> > Therefore, it is not possible for the rcuog kthread to come along for
-> > that ride.
 > 
-> Actually it's worse than that: the node is removed _after_ the kthread
-> acknowledges deoffloading and added _before_ the kthread acknowledges
-> offloading. So a single rcuog loop can well run through a deletion/re-add
-> pair altogether.
+> Unfortunately I didn't know about this until Nov 4, which was formally
+> too late for 5.16.  I guess I could try to sneak it past Linus if
+> someone were to send me some sufficiently convincing words explaining
+> the urgency.
 > 
-> Now since we force another loop with the new add guaranteed visible, the new
-> loop should handle the missed rdp's that went shortcut by the race.
+> I'd also be interested in seeing feedback from the MM developers.
 > 
-> Let's hope I'm not missing something else... And yes that definetly needs
-> a fat comment.
-> 
-> > 
-> > On to show_rcu_nocb_state()...
-> > 
-> > This does not actually traverse the list, but instead looks at the ->cpu
-> > field of the next structure.  Because the ->next pointer is never NULLed,
-> > the worst that can happen is that a confusing ->cpu field is printed,
-> > for example, the one that was in effect prior to the de-offloading
-> > operation.  But that number would have been printed anyway had the
-> > show_rcu_nocb_state() function not been delayed across the de-offloading
-> > and offloading.
-> > 
-> > So no harm done.
-> 
-> Exactly, that part is racy by nature.
-> 
-> > 
-> > Did I get it right?  If so, the comment might need help.  If not,
-> > what am I missing?
-> 
-> You got it right!
+> And a question: rather than messing around with a constant which will
+> need to be increased again in a couple of years, can we solve this one
+> and for all?  For example, permit root to set the system-wide
+> per-process max mlock size and depend upon initscripts to do this
+> appropriately.
 
-Next question...  What things are the two of us put together missing?  ;-)
+My take is that as long as the kernel sets some limit per default on
+this at all, it should be one that works for common workloads. Today
+this isn't the case.
 
-							Thanx, Paul
+We've recently switched our initscripts at FB to set the default to
+0.1% of total RAM. The impetus for this was a subtle but widespread
+issue where we failed to mmap the PERF_COUNT_SW_TASK_CLOCK event
+counter (perf event mmap also uses RLIMIT_MEMLOCK!) and silently fell
+back to the much less efficient clock_gettime() syscall.
+
+Because the failure mode was subtle and annoying, we didn't just want
+to raise the limit, but raise it so that no reasonable application
+would run into it, and only buggy or malicious ones would.
+
+And IMO, that's really what rlimits should be doing: catching clearly
+bogus requests, not trying to do fine-grained resource control. For
+more reasonable overuse that ends up causing memory pressure, the OOM
+killer will do the right thing since the pages still belong to tasks.
+
+So 0.1% of the machine seemed like a good default formula for
+that. And it would be a bit more future proof too.
+
+On my 32G desktop machine, that would be 32M. For comparison, the
+default process rlimit on that machine is ~120k, which comes out to
+~2G worth of kernel stack, which also isn't reclaimable without OOM...
+
+> From: Drew DeVault <sir@cmpwn.com>
+> Subject: Increase default MLOCK_LIMIT to 8 MiB
+> 
+> This limit has not been updated since 2008, when it was increased to 64
+> KiB at the request of GnuPG.  Until recently, the main use-cases for this
+> feature were (1) preventing sensitive memory from being swapped, as in
+> GnuPG's use-case; and (2) real-time use-cases.  In the first case, little
+> memory is called for, and in the second case, the user is generally in a
+> position to increase it if they need more.
+> 
+> The introduction of IOURING_REGISTER_BUFFERS adds a third use-case:
+> preparing fixed buffers for high-performance I/O.  This use-case will take
+> as much of this memory as it can get, but is still limited to 64 KiB by
+> default, which is very little.  This increases the limit to 8 MB, which
+> was chosen fairly arbitrarily as a more generous, but still conservative,
+> default value.
+> 
+> It is also possible to raise this limit in userspace.  This is easily
+> done, for example, in the use-case of a network daemon: systemd, for
+> instance, provides for this via LimitMEMLOCK in the service file; OpenRC
+> via the rc_ulimit variables.  However, there is no established userspace
+> facility for configuring this outside of daemons: end-user applications do
+> not presently have access to a convenient means of raising their limits.
+> 
+> The buck, as it were, stops with the kernel.  It's much easier to address
+> it here than it is to bring it to hundreds of distributions, and it can
+> only realistically be relied upon to be high-enough by end-user software
+> if it is more-or-less ubiquitous.  Most distros don't change this
+> particular rlimit from the kernel-supplied default value, so a change here
+> will easily provide that ubiquity.
+> 
+> Link: https://lkml.kernel.org/r/20211028080813.15966-1-sir@cmpwn.com
+> Signed-off-by: Drew DeVault <sir@cmpwn.com>
+> Acked-by: Jens Axboe <axboe@kernel.dk>
+> Acked-by: Cyril Hrubis <chrubis@suse.cz>
+> Cc: Pavel Begunkov <asml.silence@gmail.com>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+
+As per above, I think basing it off of RAM size would be better, but
+this increase is overdue given all the new users beyond mlock(), and
+8M is much better than the current value.
