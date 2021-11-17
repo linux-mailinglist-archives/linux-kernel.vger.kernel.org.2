@@ -2,136 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22CDF454AE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:24:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46226454AEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:24:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239001AbhKQQ11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 11:27:27 -0500
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:52827 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238476AbhKQQ10 (ORCPT
+        id S239006AbhKQQ1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 11:27:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238476AbhKQQ1o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 11:27:26 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id A828A5C02A7;
-        Wed, 17 Nov 2021 11:24:27 -0500 (EST)
-Received: from imap44 ([10.202.2.94])
-  by compute5.internal (MEProxy); Wed, 17 Nov 2021 11:24:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=BxgWljCO9iWSFwR2i7hIe4GXp2Gld1dyRvcvcgoOH
-        MU=; b=Bnpx2e9VSEw49a2vBXxiGlXpnnsiDhWiEqJ0MEHtr6QKZ0nDq/hn2xURy
-        EMakTIV9SoTjN9a5Q8pC6DkilhmVlajjyvnKtDL8BzmSe/QKzojmIWrMjmgqG0NL
-        km93hJQ/C8hbmpBo3M+nbVz9aifDLRAQCQKsd8OyV1JJE/InFFg87YaWS0GL0Uqp
-        5Vq1LLDMf4ckXPEtJwQ0lqlUmFj4dZA9de9L6RhZUjz7aQHdrmiFdf3mwMNMd+Oi
-        g9Qv5XaT+CjEf0xHtV+CYwRchDhsQecMd1XIf63D0UvrObckz0aRa39fjw9r8ZYg
-        O26uIzXvV/MrTmQdf4RfFX5GTWglQ==
-X-ME-Sender: <xms:uyyVYSOI0ujxNzNGB8C_mxxXLWvmS47hEt5tDu3zTEuw8Vm_A-vWZQ>
-    <xme:uyyVYQ-FLWrZ5VYx6UrCRCgUgI05CAmk1nueguVI93YgJgK6aBUwoLHP_59fDy79V
-    fCJwx-UrpWoAzIVuw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeeggdekvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepfdflvghr
-    vghmhicuufholhhlvghrfdcuoehjvghrvghmhiesshihshhtvghmjeeirdgtohhmqeenuc
-    ggtffrrghtthgvrhhnpefggeejleffkedtieehgefhteetgeejhffhfefgueejffdtheev
-    leefhfegkeehgfenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrh
-    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhgvrhgvmhihsehshihsthgv
-    mhejiedrtghomh
-X-ME-Proxy: <xmx:uyyVYZR5Ib601l9ZgD2HnJSP19p4Js4bUFZa5ocKka9S9bhS1UXTLg>
-    <xmx:uyyVYSsoz7jdzxjx9DUIn-Y6BJgD5swYFZB53ei7HP31gC9d6t0xsQ>
-    <xmx:uyyVYaeAMlyohsJH_6-QAlCAKH-Q2IiFQSWRVmjfI7a4EORaZ3jjvg>
-    <xmx:uyyVYSQ8zj0RXvbErYKKTiKS9ukQocGC5dwrvUNcEkZuGdOwUdSNFg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 1637BFA0AA6; Wed, 17 Nov 2021 11:24:27 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1371-g2296cc3491-fm-20211109.003-g2296cc34
-Mime-Version: 1.0
-Message-Id: <a13f0106-a2b2-430d-8143-86eb03e7a667@www.fastmail.com>
-In-Reply-To: <YZREq6jQOhyKIHk0@rocinante>
-References: <87h7ccw9qc.fsf@yujinakao.com>
- <8951152e-12d7-0ebe-6f61-7d3de7ef28cb@opensource.wdc.com>
- <YZQ+GhRR+CPbQ5dX@rocinante>
- <26826c5d-2fa6-9719-be2a-5a22d1e9abc0@opensource.wdc.com>
- <YZREq6jQOhyKIHk0@rocinante>
-Date:   Wed, 17 Nov 2021 09:24:06 -0700
-From:   "Jeremy Soller" <jeremy@system76.com>
-To:     =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        "Damien Le Moal" <damien.lemoal@opensource.wdc.com>
-Cc:     "Yuji Nakao" <contact@yujinakao.com>, linux-kernel@vger.kernel.org,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        ". Bjorn Helgaas" <bhelgaas@google.com>,
-        "Marc Zyngier" <maz@kernel.org>, "Arnd Bergmann" <arnd@arndb.de>,
-        "Sasha Levin" <sashal@kernel.org>
-Subject: Re: Kernel 5.15 doesn't detect SATA drive on boot
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Wed, 17 Nov 2021 11:27:44 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D76C061767
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:24:45 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id z10so13538255edc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:24:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kylehuey.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6L7OzfiQyE8rpmiPr/U7sB3ARsNEEIc6tTD5oicXGL0=;
+        b=hjd3Pimoe+P7d5tptv4JTo8OA3iG9q7DU2Doq7WpwF7l0aoAGcK+/89tB/gcnNdI92
+         FaGnxL+8gGSC5pnNtHTd0OZ0EfguhnPojMU/C4VvWZTSIGasqzq29eFx7LJC8IbFChFz
+         B/DMMLHBZn6w/jp/A49LC/WWQT73kArPDeGJlHwVXU8Uq6Eo9zYCOLfBCn/r0Ly3diA8
+         7pqDcyi08x3k75HXd12ShA81zNh8H8Qw7fS3CQKdQbY7W1FsdTPatJx/hb8xATI7JdJY
+         Y68O8gFOGY9yYHFpP0XqWbGP1wIPjs7fBA4kw+ufzhtb93NJ4CeH8/zsk9tIv0q1l5Nd
+         xLKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6L7OzfiQyE8rpmiPr/U7sB3ARsNEEIc6tTD5oicXGL0=;
+        b=fGiflwxppW6EwtDoaFkUcUwPBqXSnfDj9116fTAhP8JH7QX2kSOfYNjX+cf2wpE0Jl
+         gR/27Y2/nr4u8dTZV3z+WZo2CCMdAubAFOaXHJEln8037l2vEYd5zr9cm//cYh8VVaK3
+         1EdlEtE+LabTfGfrnRSds3+2ev2pcuKCX7jOgm2V/l7zZ2ZHWQMmMCwZFR45OS4MHOIF
+         apF1r31FSL2jSa5DpIPJGoOKSBACUlj36jsUAWb+DnlcmwkRgTJlq9ynsQzee37OSyAA
+         QGIGqc00oBeupiC6Q+O21/5YbN8ffZ6AAurX5KZsfsI5hUxTKwJQx0uBKGFJ2sff/dr1
+         3tlw==
+X-Gm-Message-State: AOAM531CEWuIdRBNX9fY/KRIAp8mr7PFKWMR8somM+wTD1xKH4wrYkxA
+        WFBZ90IPiR1YMgiNEhgkEnm5oYMfI8ZSrwTuSg1jt6c7MwqC2A==
+X-Google-Smtp-Source: ABdhPJxN4dep9XHoIjRro5Ir3uqB0g0J9nm8BMDTkfWlumxT02fFkgvvytQPmhRKRbMfIjnY1liQge88sHUi9qllTmk=
+X-Received: by 2002:a17:907:94c6:: with SMTP id dn6mr23197212ejc.490.1637166283657;
+ Wed, 17 Nov 2021 08:24:43 -0800 (PST)
+MIME-Version: 1.0
+References: <20211101034147.6203-1-khuey@kylehuey.com> <877ddqabvs.fsf@disp2133>
+ <CAP045AqJVXA60R9RF8Gb2PWGBsK6bZ7tVBkdCcPYYrp6rOkG-Q@mail.gmail.com>
+ <87fsse8maf.fsf@disp2133> <CAP045ApAX725ZfujaK-jJNkfCo5s+oVFpBvNfPJk+DKY8K7d=Q@mail.gmail.com>
+ <CAP045AqsstnxfTyXhhCGDSucqGN7BTtfHJ5s6ZxUQC5K-JU56A@mail.gmail.com> <87bl2kekig.fsf_-_@email.froward.int.ebiederm.org>
+In-Reply-To: <87bl2kekig.fsf_-_@email.froward.int.ebiederm.org>
+From:   Kyle Huey <me@kylehuey.com>
+Date:   Wed, 17 Nov 2021 08:24:28 -0800
+Message-ID: <CAP045AqSKv8hAz79ntbj6ZoGiO-v7M0UBuQF2hwJdXqqL7oxWA@mail.gmail.com>
+Subject: Re: [PATCH 0/3] signal: requeuing undeliverable signals
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marco Elver <elver@google.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        "Robert O'Callahan" <rocallahan@gmail.com>,
+        =?UTF-8?B?TWFya28gTcOka2Vsw6Q=?= <marko.makela@mariadb.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are using 5.15.2 right now on Pop!_OS 21.10 but have not seen SATA is=
-sues yet. I'll look into this,
-and hope it makes it into a 5.15 release soon!
+On Mon, Nov 15, 2021 at 9:31 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+>
+> Kyle Huey recently reported[1] that rr gets confused if SIGKILL prevents
+> ptrace_signal from delivering a signal, as the kernel setups up a signal
+> frame for a signal that rr did not have a chance to observe with ptrace.
+>
+> In looking into it I found a couple of bugs and a quality of
+> implementation issue.
+>
+> - The test for signal_group_exit should be inside the for loop in get_signal.
+> - Signals should be requeued on the same queue they were dequeued from.
+> - When a fatal signal is pending ptrace_signal should not return another
+>   signal for delivery.
+>
+> Kyle Huey has verified[2] an earlier version of this change.
+>
+> I have reworked things one more time to completely fix the issues
+> raised, and to keep the code maintainable long term.
+>
+> I have smoke tested this code and combined with a careful review I
+> expect this code to work fine.  Kyle if you can double check that
+> my last round of changes still works for rr I would appreciate it.
 
---=20
-  Jeremy Soller
-  System76
-  Principal Engineer
-  jeremy@system76.com
+This still fixes the race we reported.
 
-On Tue, Nov 16, 2021, at 4:54 PM, Krzysztof Wilczy=C5=84ski wrote:
-> [+CC Adding Jeremy for visibility]
+Tested-by: Kyle Huey <khuey@kylehuey.com>
+
+- Kyle
+
+> Eric W. Biederman (3):
+>       signal: In get_signal test for signal_group_exit every time through the loop
+>       signal: Requeue signals in the appropriate queue
+>       signal: Requeue ptrace signals
 >
-> Hi Damien,
+>  fs/signalfd.c                |  5 +++--
+>  include/linux/sched/signal.h |  7 ++++---
+>  kernel/signal.c              | 44 ++++++++++++++++++++++++++------------------
+>  3 files changed, 33 insertions(+), 23 deletions(-)
 >
-> [...]
->> > The error in the dmesg output (see [2] where the log file is attach=
-ed)
->> > looks similar to the problem reported a week or so ago, as per:
->> >=20
->> >   https://lore.kernel.org/linux-pci/ee3884db-da17-39e3-4010-bcc8f87=
-8e2f6@xenosoft.de/
->>=20
->> Thanks. I searched this thread but could not find it in the archive.
->> Early morning, need more coffee :)
+> [1] https://lkml.kernel.org/r/20211101034147.6203-1-khuey@kylehuey.com
+> [2] https://lkml.kernel.org/r/CAP045ApAX725ZfujaK-jJNkfCo5s+oVFpBvNfPJk+DKY8K7d=Q@mail.gmail.com
 >
-> No worries!  Got you covered!
->
->      )))
->     (((
->   +-----+
->   |     |]
->   `-----'
->
-> Enjoy!
->
->>=20
->> >=20
->> > The problematic commits where reverted by Bjorn and the Pull Reques=
-t that
->> > did it was accepted, as per:
->> >=20
->> >   https://lore.kernel.org/linux-pci/20211111195040.GA1345641@bhelga=
-as/
->> >=20
->> > Thus, this would made its way into 5.16-rc1, I suppose.  We might h=
-ave to
->> > back-port this to the stable and long-term kernels.
->>=20
->> Yes, I think the fix needs to go in 5.15, which is latest stable and =
-LTS.
->
-> On the plus side, not everyone is on 5.15 yet, but those who are using=
- it would
-> have some issues.  Albeit, with it being an LTS release, the adoption =
-might
-> increase rapidly.
->
-> For instance, I believe that Pop!_OS already ships kernels that are ve=
-ry close
-> to the upstream, which would hit their current user base.
->
-> 	Krzysztof
+> Eric
