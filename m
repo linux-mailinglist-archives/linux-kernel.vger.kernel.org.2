@@ -2,113 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E800454EDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 22:02:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB5CD454EE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 22:03:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239964AbhKQVFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 16:05:24 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:38432 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237879AbhKQVFX (ORCPT
+        id S240086AbhKQVF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 16:05:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231750AbhKQVFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 16:05:23 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id C1D001FD29;
-        Wed, 17 Nov 2021 21:02:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1637182943; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=f0dTyNA6tM9d482fDoLe3J6N6rsxYoJzYFp/3XEYQmc=;
-        b=qZtDiXgODB3bu0olnFOEtBN6nSbdCrouXjZMmjeBL2LAUlnv6gtoOX5KrwTZqRwUt5gI9A
-        E59O3l9gI8vKTuyzN4LFbLD26nR+nBHNjlSlMRv8CMGzA4TRiV+JiT+9X3J//86sGCvYZh
-        MmnB3pJ608zW2aJYfwoaorFIstMynno=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1637182943;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=f0dTyNA6tM9d482fDoLe3J6N6rsxYoJzYFp/3XEYQmc=;
-        b=nDnnEbpTK4b21fHx7ls3/Hrl9aCPA5bGRQYFWU5UjGu3Wdtnt3+XznY+0cXna9TTh213um
-        wmOtD8qlNGZea+Bw==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
-        by relay2.suse.de (Postfix) with ESMTP id B86B4A3B83;
-        Wed, 17 Nov 2021 21:02:23 +0000 (UTC)
-Date:   Wed, 17 Nov 2021 22:02:23 +0100
-Message-ID: <s5h5ysqlcm8.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Alex Elder <elder@linaro.org>
-Cc:     Takashi Iwai <tiwai@suse.de>, greybus-dev@lists.linaro.org,
-        Alex Elder <elder@kernel.org>, Johan Hovold <johan@kernel.org>,
+        Wed, 17 Nov 2021 16:05:53 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4779C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:02:54 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id y16so5072414ioc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:02:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=p79Xp/FScKBOK1DdTtLvla9LFFi0dfV8yzNPcgUoSpM=;
+        b=j6L7E/2VhafB3YXISK9ewKC/k9fDgMmotC9DnNaIsabuf5oNYRY2ZY74tsDOG8O/xV
+         WqXLeKKwtApPTYcuXDG+sBngFLTWRAOjn2v4ejgsPCf+VmUf8jlgrSwEJe6N4zn0Dcdr
+         zE8D6GBcXGlv/T3wzdGeVv8ZeuvbIcrexi0UMc5YPpt4ntOCke6Z62fvfbgCmXOg8LLo
+         UD+uZbQMIOoUVVXkSKNv/pB11cMaiZeyAsxm7ShFwJYjJQvzApdqcot+Y4HtKHWuF42R
+         K5G+9AYVsooj41o6fe5UvPNRQrrv4+nrg/dU308YJvjVJLQVZz2n4yZY0EoQz6vgt6/w
+         hoxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=p79Xp/FScKBOK1DdTtLvla9LFFi0dfV8yzNPcgUoSpM=;
+        b=Yx3Qsp2fOoQcMmIHlKHUZqTolkPbIdVgf2vOBNBoPXrZ+pBX5TfT2GFY+ClmSl1YWy
+         Yi6joMskLOiu3EAErExXFnj8SciZ9d5uDaLw64xEBZC44ILyeKKkXa5pgjZHp4dh+QZx
+         BH39btnQxIy2ucPZoOTh8UH+sKPnt58NIopQZOrTdmZkBve5x39aG6iwH2pIEsqIBd4x
+         A2GmnbjYwOrkkEG+c4SKqFG/KGmNjqYTC6m6ZX322mNx2IcJYnLqs5MhR9KcA2Wt2MMK
+         0swljOv3h6xaFoGYKkk4NHN9tDUqcZaQjU4crPjSiy4q2HZvjStI33ZQypq632RtVzMo
+         izGQ==
+X-Gm-Message-State: AOAM530xpImfOkwuucHAC45HKuqrBeTHV7eRDIJq5g+BagOADWpuMNzs
+        WHqV/8AcU7MUjpTctK+D5amZletN2Tw=
+X-Google-Smtp-Source: ABdhPJzK+gmT9BDpz8B35ahmycSSF4ahpfZFK+xkZ39Qi9EXzfnKIHYxZY9mSBUbq9OgM0K1xGomwA==
+X-Received: by 2002:a6b:5c05:: with SMTP id z5mr13115639ioh.181.1637182974292;
+        Wed, 17 Nov 2021 13:02:54 -0800 (PST)
+Received: from localhost.localdomain (node-17-161.flex.volo.net. [76.191.17.161])
+        by smtp.googlemail.com with ESMTPSA id b4sm535226iot.45.2021.11.17.13.02.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 13:02:54 -0800 (PST)
+From:   Noah Goldstein <goldstein.w.n@gmail.com>
+Cc:     goldstein.w.n@gmail.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, luto@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [greybus-dev] [PATCH] staging: greybus: Add missing rwsem around snd_ctl_remove() calls
-In-Reply-To: <07e228eb-676a-bdb1-c2ec-a96f691f5a18@linaro.org>
-References: <20211116072027.18466-1-tiwai@suse.de>
-        <07e228eb-676a-bdb1-c2ec-a96f691f5a18@linaro.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+Subject: [PATCH v4] arch/x86: Improve 'rep movs{b|q}' usage in memmove_64.S
+Date:   Wed, 17 Nov 2021 15:02:45 -0600
+Message-Id: <20211117210245.843374-1-goldstein.w.n@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211101044955.2295495-1-goldstein.w.n@gmail.com>
+References: <20211101044955.2295495-1-goldstein.w.n@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Nov 2021 20:56:14 +0100,
-Alex Elder wrote:
-> 
-> On 11/16/21 1:20 AM, Takashi Iwai wrote:
-> > snd_ctl_remove() has to be called with card->controls_rwsem held (when
-> > called after the card instantiation).  This patch adds the missing
-> > rwsem calls around it.
-> 
-> I see the comment above snd_ctl_remove() that says you must hold
-> the write lock.  And given that, this seems correct to me.
-> 
-> I understand why you want to take the lock just once, rather
-> than each time snd_ctl_remove() is called.
-> 
-> However I believe the acquisition and release of the lock
-> belongs inside gbaudio_remove_controls(), not in its caller.
-> 
-> If you disagree, can you please explain why?
+Add check for "short distance movsb" for forwards FSRM usage and
+entirely remove backwards 'rep movsq'. Both of these usages hit "slow
+modes" that are an order of magnitude slower than usual.
 
-In general if the function returns an error and has a loop inside,
-taking a lock in the caller side avoids the forgotten unlock.
+'rep movsb' has some noticeable VERY slow modes that the current
+implementation is either 1) not checking for or 2) intentionally
+using.
 
+All times are in cycles and measuring the throughput of copying 1024
+bytes.
 
-Takashi
+1. For FSRM, when 'dst - src' is in (1, 63] or (4GB, 4GB + 63] it is
+   an order of magnitude slower than normal and much slower than a 4x
+   'movq' loop.
 
+    FSRM forward (dst - src == 32)   -> 1113.156
+    FSRM forward (dst - src == 64)   -> 120.669
 
-> Otherwise, will you please submit version two, taking the
-> lock inside gbaudio_remove_controls()?
-> 
-> Thanks.
-> 
-> 					-Alex
-> 
-> > Fixes: 510e340efe0c ("staging: greybus: audio: Add helper APIs for dynamic audio modules")
-> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > ---
-> >   drivers/staging/greybus/audio_helper.c | 8 ++++++--
-> >   1 file changed, 6 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/staging/greybus/audio_helper.c b/drivers/staging/greybus/audio_helper.c
-> > index 1ed4772d2771..843760675876 100644
-> > --- a/drivers/staging/greybus/audio_helper.c
-> > +++ b/drivers/staging/greybus/audio_helper.c
-> > @@ -192,7 +192,11 @@ int gbaudio_remove_component_controls(struct snd_soc_component *component,
-> >   				      unsigned int num_controls)
-> >   {
-> >   	struct snd_card *card = component->card->snd_card;
-> > +	int err;
-> >   -	return gbaudio_remove_controls(card, component->dev, controls,
-> > -				       num_controls, component->name_prefix);
-> > +	down_write(&card->controls_rwsem);
-> > +	err = gbaudio_remove_controls(card, component->dev, controls,
-> > +				      num_controls, component->name_prefix);
-> > +	up_write(&card->controls_rwsem);
-> > +	return err;
-> >   }
-> >
-> 
+    ERMS forward (dst - src == 32)   -> 209.326
+    ERMS forward (dst - src == 64)   -> 118.22
+
+2. For both FSRM and ERMS backwards 'rep movsb' is always slow. Both
+   of the times below are with dst % 256 == src % 256 which mirrors
+   the usage of the previous implementation.
+
+    FSRM backward                    -> 1196.039
+    ERMS backward                    -> 1191.873
+
+As a reference this is how a 4x 'movq' performances:
+
+    4x Forward (dst - src == 32)     -> 128.273
+    4x Backward                      -> 130.183
+
+Signed-off-by: Noah Goldstein <goldstein.w.n@gmail.com>
+---
+ arch/x86/lib/memmove_64.S | 38 +++++++++++++-------------------------
+ 1 file changed, 13 insertions(+), 25 deletions(-)
+
+diff --git a/arch/x86/lib/memmove_64.S b/arch/x86/lib/memmove_64.S
+index 64801010d312..910b963388b1 100644
+--- a/arch/x86/lib/memmove_64.S
++++ b/arch/x86/lib/memmove_64.S
+@@ -28,6 +28,8 @@ SYM_FUNC_START_WEAK(memmove)
+ SYM_FUNC_START(__memmove)
+ 
+ 	mov %rdi, %rax
++	cmp $0x20, %rdx
++	jb 1f
+ 
+ 	/* Decide forward/backward copy mode */
+ 	cmp %rdi, %rsi
+@@ -39,7 +41,17 @@ SYM_FUNC_START(__memmove)
+ 
+ 	/* FSRM implies ERMS => no length checks, do the copy directly */
+ .Lmemmove_begin_forward:
+-	ALTERNATIVE "cmp $0x20, %rdx; jb 1f", "", X86_FEATURE_FSRM
++	/*
++	 * Don't use FSRM 'rep movsb' if 'dst - src' in (0, 63] or (4GB, 4GB +
++	 * 63]. It hits a slow case which is an order of magnitude slower.
++	 */
++	ALTERNATIVE "	\
++                mov %edi, %ecx;	\
++                sub %esi, %ecx;	\
++                cmp $63, %ecx;	\
++                jbe 3f	\
++                ", "", X86_FEATURE_FSRM
++
+ 	ALTERNATIVE "", "movq %rdx, %rcx; rep movsb; retq", X86_FEATURE_ERMS
+ 
+ 	/*
+@@ -89,35 +101,11 @@ SYM_FUNC_START(__memmove)
+ 	jmp 13f
+ .Lmemmove_end_forward:
+ 
+-	/*
+-	 * Handle data backward by movsq.
+-	 */
+-	.p2align 4
+-7:
+-	movq %rdx, %rcx
+-	movq (%rsi), %r11
+-	movq %rdi, %r10
+-	leaq -8(%rsi, %rdx), %rsi
+-	leaq -8(%rdi, %rdx), %rdi
+-	shrq $3, %rcx
+-	std
+-	rep movsq
+-	cld
+-	movq %r11, (%r10)
+-	jmp 13f
+-
+ 	/*
+ 	 * Start to prepare for backward copy.
+ 	 */
+ 	.p2align 4
+ 2:
+-	cmp $0x20, %rdx
+-	jb 1f
+-	cmp $680, %rdx
+-	jb 6f
+-	cmp %dil, %sil
+-	je 7b
+-6:
+ 	/*
+ 	 * Calculate copy position to tail.
+ 	 */
+-- 
+2.25.1
+
