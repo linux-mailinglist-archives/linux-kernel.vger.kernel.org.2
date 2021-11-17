@@ -2,115 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3623A454D58
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:45:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA484454D53
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240170AbhKQSsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 13:48:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59806 "EHLO
+        id S240151AbhKQSpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 13:45:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235305AbhKQSsB (ORCPT
+        with ESMTP id S240139AbhKQSpa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 13:48:01 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06874C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:45:03 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id w6-20020a9d77c6000000b0055e804fa524so6356099otl.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:45:02 -0800 (PST)
+        Wed, 17 Nov 2021 13:45:30 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D97C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:42:31 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id n12so13166274lfe.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:42:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xMwG57gRfhGvfx3bsDRgnJ+lC91dyaKgwcL6O6NADCg=;
-        b=bJY06TjEuEzBnei7QjerBZN/1ksqFWHyKXL5pm5sxptQa7m+l/ok/BVkK/Uw2vekW5
-         VIav0aHERuBwOTK/lDVT3QeGPFjnz59tSD824VTVn8odKVwl2w8sQKQy2un2aeRMQ8//
-         KXriJulpdalysaLauw+DTWngzeYooAdSBTcPU=
+        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HfMlVQj/b/ItsrHiY5LHVXy3Fn9KXtVbV9FK+lbwcIQ=;
+        b=iRbB+3Qbw4iLpYL83sTx1BCy8qg9s3S4Y9izzD9sSNwupZ6aIw6HzqXRe1moYU235o
+         9RD7XBS9Kv52fUvdkMKGwarBaSx2DOqH54zRP1VC+1h4UNF33kf9d/DVxcyhwGnxGfqH
+         Vt8gBjQ3yOKi1R4DjoczNP2E8D7DqJM+At0Lqa2gUSO64JGGdo+FDHvN/PpgrDnmd6nb
+         +McnF3XhoEs5gQgYE7eYp0QNW/Y/po9zqXG1jmOCV+qfs0YxBkTK7AFtagEm85oCJVz3
+         0BS+hd9kCCv4rc7Hc6MI5kDT7FxQfBvQafYA0NVnTMGQn4s9PDhen5mb+NjxO2WOh8nZ
+         3d8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xMwG57gRfhGvfx3bsDRgnJ+lC91dyaKgwcL6O6NADCg=;
-        b=Z570x9J2/ZIWBzrjHcanyQwRdQhn+nJv/kMJTRPKlXX3LNihcA9O8l9f2im1JRJbf3
-         rdy4kzo7SD0M7svkfuAnGFAGOrt5oxxJ8kqmqcOSrsWWNFxRLHoVLh+n0gsRFDXI8O6B
-         sDEKJrEQC1Gn+VdZ2g7wdrxY/FUuNKzmtzPFzcvExS6bNwmeoo1aHAjp/54mxF6LpMwL
-         WTUZ5l27/9oZK/fXkdL61s1EhPIJrx5JPQueFPNrQym059Ol3wIViXUx4aYezWvwAF1l
-         om6M1FpK0+HbcxEuyo40bWLexYSrBjLoEpYwljGxlGDB9B0W9iHpR2DHPKo/lxNjr1CN
-         3i8A==
-X-Gm-Message-State: AOAM530j2l0S/PRzDYxDfPjrC7iC39AIIgBfBpCKxODRB1T2gowrjWMD
-        4S8TQ3L8/GrwxMGMf3NBcfW20Vn2SltOfg==
-X-Google-Smtp-Source: ABdhPJyyRYHy/yPTOCFtmkUUkyUQpWnAjMZox7yWLlc+43KlkhJlIL+K6Mjb4jMe1fo3ppj7wIXNvA==
-X-Received: by 2002:a9d:60c:: with SMTP id 12mr15220436otn.94.1637174701847;
-        Wed, 17 Nov 2021 10:45:01 -0800 (PST)
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com. [209.85.167.171])
-        by smtp.gmail.com with ESMTPSA id n19sm128756otq.11.2021.11.17.10.45.01
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 10:45:01 -0800 (PST)
-Received: by mail-oi1-f171.google.com with SMTP id q25so8569715oiw.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:45:01 -0800 (PST)
-X-Received: by 2002:a05:6808:1811:: with SMTP id bh17mr1707744oib.105.1637174349813;
- Wed, 17 Nov 2021 10:39:09 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HfMlVQj/b/ItsrHiY5LHVXy3Fn9KXtVbV9FK+lbwcIQ=;
+        b=l5N9uT7ytAONqwF2D3hK6V1KXPgHjIolaTKwjq2tDtN7TO/oymQCFiyOHKAOG/Db8h
+         uRqFVkrzfo9CL25KmcfWr3zttoMx+Ws+5OfwJ0Ix8JjCtBMyAcU/8MJFuXwZfIut3lx3
+         0uHyt8PRGhWAx8b7JEprnKLM5UNtBN8j1rRrIowSgORqy7X0XJo6l9KFMuIzw/fSiEwf
+         4uvkO04UPyjmwEcNzrRTrwA7Zmkyvd4zbr3ZfI2xJtCxWD7bjOMvD0tGEmmvPJTOG45a
+         0FLSr2tz7pSlcAAMiH9oM6lfgxU7ghsZUSaBwjJoPz52kT1SPZCZp+MdopME+8ZNT3QS
+         lzAw==
+X-Gm-Message-State: AOAM531V41Ri10dXlmYvDwrrAUh6kPMUxhr4h5dVzDGH9mmfZURAPTpN
+        lW9iIisn9BVoT8LRPYrFh+z3KXkP/dP/HMOi
+X-Google-Smtp-Source: ABdhPJwoQv2k94M2Z+aUt6nQE/hf5CcENNGR0Ll4pCUUNMKDMdINSGcKugN7cL4ksljF7ocxoMp6iw==
+X-Received: by 2002:a05:6512:332f:: with SMTP id l15mr16884857lfe.309.1637174550041;
+        Wed, 17 Nov 2021 10:42:30 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id m8sm63903lfg.140.2021.11.17.10.42.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 10:42:29 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id CD884103139; Wed, 17 Nov 2021 21:42:25 +0300 (+03)
+Date:   Wed, 17 Nov 2021 21:42:25 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>
+Subject: Re: [PATCH] x86/paravirt: Fix build PARAVIRT_XXL=y without XEN_PV
+Message-ID: <20211117184225.6e257nfpdd2qhrj4@box.shutemov.name>
+References: <20211117181439.4368-1-kirill.shutemov@linux.intel.com>
+ <YZVLVfd5E6d6YQig@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20211103234018.4009771-1-briannorris@chromium.org>
- <20211103164002.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid> <CAD=FV=XOda7vwUPY+WpGLzMwwrbrhQ9RqBQw4LhPwD6Sqhf7vw@mail.gmail.com>
-In-Reply-To: <CAD=FV=XOda7vwUPY+WpGLzMwwrbrhQ9RqBQw4LhPwD6Sqhf7vw@mail.gmail.com>
-From:   Brian Norris <briannorris@chromium.org>
-Date:   Wed, 17 Nov 2021 10:38:58 -0800
-X-Gmail-Original-Message-ID: <CA+ASDXMvZCjn+X98JccyJiLQ0ggq-t-HqnM5SKYMbiQFqZDhGQ@mail.gmail.com>
-Message-ID: <CA+ASDXMvZCjn+X98JccyJiLQ0ggq-t-HqnM5SKYMbiQFqZDhGQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] drm/input_helper: Add new input-handling helper
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        linux-rockchip@lists.infradead.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZVLVfd5E6d6YQig@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 4:52 PM Doug Anderson <dianders@chromium.org> wrote:
+On Wed, Nov 17, 2021 at 07:35:01PM +0100, Peter Zijlstra wrote:
+> On Wed, Nov 17, 2021 at 09:14:39PM +0300, Kirill A. Shutemov wrote:
+> > TDX is going to use CONFIG_PARAVIRT_XXL
+> 
+> *AARGGHHH*. srlsy? We were trying to cut back on that insanity, not
+> proliferate it.
 
-(Snip other comments; they seem reasonable, and I'll factor them into
-the next version)
+It is a way to minimize amount of changes needed for getting TDX
+functinal. We will remove the dependency later on.
 
-> I guess one random thought I had is whether there would be an
-> appropriate place to put this that _wasn't_ in DRM. I still wonder
-> whether we'll ever try to upstream something like the cpufreq boost
-> driver that we're carrying around and using in Chrome OS. If so, it
-> would want to use these same helpers and it'd be pretty awkward for it
-> to have to reach into DRM. ...any chance we could just land these
-> helpers somewhere more generic?
-
-Yeah, I was torn on what to do here as well. I'd rather land something
-than nothing, and when reading past conversations, it sounded like
-Dmitry didn't want this kind of thing in drivers/input/ [1]. I'd love
-to be wrong here though.
-
-I'm not sure where else this would belong though -- either in the
-producing subsystem (input) or the consuming one(s) (drm, cpufreq). We
-could make up some odd middle ground I suppose (lib/?), but that seems
-pretty artificial.
-
-I guess one question is, what is this abstracting, and is that
-abstraction actually a shared need for multiple subsystems? I think
-the abstraction is, "impending user activity; <component X> should
-prepare itself". That general need is exactly the same for the cases
-I'm aware of. And if there is any tuning needed (e.g., ignore input
-device Y; or turn the whole thing off, because we're ignoring input
-for now), that would also seem to be a shared need.
-
-Anyway, back to my first paragraph: I'll plan on keeping this as-is
-(as a DRM helper) unless I hear otherwise from input folks.
-
-Brian
-
-[1] https://lore.kernel.org/all/20180416174117.GA77055@dtor-ws/
+-- 
+ Kirill A. Shutemov
