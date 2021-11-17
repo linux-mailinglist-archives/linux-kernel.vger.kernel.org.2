@@ -2,119 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76367454ED5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 21:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C8BC454ED9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 21:57:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239367AbhKQU7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 15:59:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32984 "EHLO
+        id S239563AbhKQVAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 16:00:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239083AbhKQU7f (ORCPT
+        with ESMTP id S239083AbhKQVAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 15:59:35 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F394C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 12:56:36 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id y16so5050897ioc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 12:56:36 -0800 (PST)
+        Wed, 17 Nov 2021 16:00:05 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A51A1C061766
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 12:57:06 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id v19so3268027plo.7
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 12:57:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GrJlquQSFqb7ld9Q1DR8e4oNe3prEb84z5HAh4ed2AM=;
-        b=afsCAKBCIKIWX+vyZFbo/xeVsnQkBNdGAnYp5lte88IGZuNV1unaZOpAeDtT+h0+Ej
-         Tq3pI2l1Pe+Hgk3/TKgpj3VlGYqS2WMGNugnCJXykWAKETOQrPFvP1Fhd5M02xckbaNe
-         ym0nvf2IhGcGdrO251KeqW+vtjto4q1Rvc8fA=
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GKI+SD1yDpNp3ocje9HX9BSZ/X8pxcrXv2y7exF4+pE=;
+        b=ep7ZJDg5FFOSlfdhSeiTQ3Unj2LmsS+WN52k01x4OhN+54b+P7IQkuQoQs5li5hWW3
+         PnYytnyVUanmzvSxu4fu3+4DAfmXGEjzQCYacTvvHSz69eQ/U+PBgQpSWysqHsZiSpn/
+         lZZowSFloCKYyCwFB57cWfUZRfQze7N4KfyIR/KUijyjWARRIT91v1jRdC+Rl7/5xkaS
+         p6IDPlgMM9hfQ3Gff+6c6Q83SbUxVgtFoG3T3WOiirkjpdGVHmpQso6N1niEigbneEkZ
+         qUFSdvNIRlEaIWga5+kJHYHo2hbmHTKKD5MIL1PqiiFwr4qlsyNMcHUAb4kmLaPZvsJb
+         mg3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GrJlquQSFqb7ld9Q1DR8e4oNe3prEb84z5HAh4ed2AM=;
-        b=F/bSQpwjIgOyfkbXRrG9QV3HcZusMuFjmUb3DcnIiumPtALERMy7D266yu8NBOLuKg
-         4UlSiY4mJsBsG9E0HN3Z4FO25VBOX0CCrN1Y4Q+YFc+wGBROXd0XB9nuJmFf47V4jzvz
-         hnnmAIDkU/eMQ9uzd9DrN1fUx5TPpQeOPA/00YiqHWWh8dMMLUT4TLTit2sLhiUl9wbM
-         90/wSCAXwTGBdyuFaiOwyR5nNl7prK/oe/VK+0XzK/WJmCKmdXBQ2+Z7T+6H2WPiSDBI
-         HAot9feieiS8DSA8gpRe2Zz5oV7jJUV3mSQn8qKqYaQY2ykql5rgHejCPme6Hrl16sOs
-         xupQ==
-X-Gm-Message-State: AOAM531ZWz+9Ckb2vhPjQQR/Zl9RdonK+XIu+iBmkyeZI/GIPsfHTT9R
-        lNGVbUHz420taO73+GHSLtYr9mW/MlmAEQ==
-X-Google-Smtp-Source: ABdhPJynfLgHFuD1vrvqcRGyDVf2FSl0BCi/uj/M36tek2fU5u2LTsE4mut/N2wByDQ3/aB0bmX9DA==
-X-Received: by 2002:a6b:b4cc:: with SMTP id d195mr13334555iof.0.1637182595123;
-        Wed, 17 Nov 2021 12:56:35 -0800 (PST)
-Received: from mail-il1-f178.google.com (mail-il1-f178.google.com. [209.85.166.178])
-        by smtp.gmail.com with ESMTPSA id g1sm699441iov.23.2021.11.17.12.56.34
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 12:56:34 -0800 (PST)
-Received: by mail-il1-f178.google.com with SMTP id j28so4195156ila.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 12:56:34 -0800 (PST)
-X-Received: by 2002:a05:6e02:18ce:: with SMTP id s14mr11662640ilu.142.1637182593782;
- Wed, 17 Nov 2021 12:56:33 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GKI+SD1yDpNp3ocje9HX9BSZ/X8pxcrXv2y7exF4+pE=;
+        b=uYKCwtub/mqE7gFR+Xm3p06sGh1i2sGUIr+y9J7tQJfVW4p5Dh4KLl35MiNkXLIlcU
+         p+5pEqN52d/yaAAGLGm/dcwOCi8wliLS5/K0lxdw9mlwQiN0E/E56TqtA95+YI9DLVQ6
+         bU3D/7vUOEDfgumWKIQmXUurG8ModxrO7Zza8yls6Hofo+DRQn8TfJfZkxZHLpDxijRQ
+         w9GJSKr04dfWCac9kQ1iLT5XvChGMksLMuvDUTSd6VfTg+7vukKqK4IF5vOpia++u6av
+         e3QHYFn9+/kMh8OuAcKv5L9KbLsyCdtxjn1D+muMRGJhCE4P9Qs8UZxdXROTRf3tp5TT
+         EhyQ==
+X-Gm-Message-State: AOAM532MZ99jYcCmMEH/6B/xaw1j6FVGQxAS2xD1ES0l1BvREWLw5vVH
+        cw047+/6dcC1VYPcdHdy/xPZuQ==
+X-Google-Smtp-Source: ABdhPJx59Vr421W/zCHcwsvCtDFut5od/byYarMtrpHYrCQWNjA56F+rM3W0dWLlOVqJOYrXy37b6A==
+X-Received: by 2002:a17:90a:46c9:: with SMTP id x9mr3393896pjg.183.1637182625920;
+        Wed, 17 Nov 2021 12:57:05 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id u23sm488409pfl.185.2021.11.17.12.57.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 12:57:05 -0800 (PST)
+Date:   Wed, 17 Nov 2021 20:57:01 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v3 4/4] x86/kvm: add boot parameter for setting max
+ number of vcpus per guest
+Message-ID: <YZVsnZ8e7cXls2P2@google.com>
+References: <20211116141054.17800-1-jgross@suse.com>
+ <20211116141054.17800-5-jgross@suse.com>
 MIME-Version: 1.0
-References: <20211103234018.4009771-1-briannorris@chromium.org>
- <20211103164002.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
- <CAD=FV=XOda7vwUPY+WpGLzMwwrbrhQ9RqBQw4LhPwD6Sqhf7vw@mail.gmail.com>
- <CA+ASDXMvZCjn+X98JccyJiLQ0ggq-t-HqnM5SKYMbiQFqZDhGQ@mail.gmail.com> <YZVqbZpAPHOBG6bL@google.com>
-In-Reply-To: <YZVqbZpAPHOBG6bL@google.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 17 Nov 2021 12:56:21 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=Wx581Oq9Jg=bqtWtWU1nrtUUo5YJG2zaf1tDEJ88J5Dg@mail.gmail.com>
-Message-ID: <CAD=FV=Wx581Oq9Jg=bqtWtWU1nrtUUo5YJG2zaf1tDEJ88J5Dg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] drm/input_helper: Add new input-handling helper
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Brian Norris <briannorris@chromium.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        linux-rockchip@lists.infradead.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211116141054.17800-5-jgross@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Nov 16, 2021, Juergen Gross wrote:
+> Today the maximum number of vcpus of a kvm guest is set via a #define
+> in a header file.
+> 
+> In order to support higher vcpu numbers for guests without generally
+> increasing the memory consumption of guests on the host especially on
+> very large systems add a boot parameter for specifying the number of
+> allowed vcpus for guests.
+> 
+> The default will still be the current setting of 1024. The value 0 has
+> the special meaning to limit the number of possible vcpus to the
+> number of possible cpus of the host.
+> 
+> Signed-off-by: Juergen Gross <jgross@suse.com>
+> ---
+> V3:
+> - rebase
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 7 +++++++
+>  arch/x86/include/asm/kvm_host.h                 | 5 ++++-
+>  arch/x86/kvm/x86.c                              | 9 ++++++++-
+>  3 files changed, 19 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index e269c3f66ba4..409a72c2d91b 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -2445,6 +2445,13 @@
+>  			feature (tagged TLBs) on capable Intel chips.
+>  			Default is 1 (enabled)
+>  
+> +	kvm.max_vcpus=	[KVM,X86] Set the maximum allowed numbers of vcpus per
+> +			guest. The special value 0 sets the limit to the number
+> +			of physical cpus possible on the host (including not
+> +			yet hotplugged cpus). Higher values will result in
+> +			slightly higher memory consumption per guest.
+> +			Default: 1024
 
-On Wed, Nov 17, 2021 at 12:47 PM Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
->
-> On Wed, Nov 17, 2021 at 10:38:58AM -0800, Brian Norris wrote:
-> > On Fri, Nov 12, 2021 at 4:52 PM Doug Anderson <dianders@chromium.org> wrote:
-> >
-> > (Snip other comments; they seem reasonable, and I'll factor them into
-> > the next version)
-> >
-> > > I guess one random thought I had is whether there would be an
-> > > appropriate place to put this that _wasn't_ in DRM. I still wonder
-> > > whether we'll ever try to upstream something like the cpufreq boost
-> > > driver that we're carrying around and using in Chrome OS. If so, it
-> > > would want to use these same helpers and it'd be pretty awkward for it
-> > > to have to reach into DRM. ...any chance we could just land these
-> > > helpers somewhere more generic?
-> >
-> > Yeah, I was torn on what to do here as well. I'd rather land something
-> > than nothing, and when reading past conversations, it sounded like
-> > Dmitry didn't want this kind of thing in drivers/input/ [1]. I'd love
-> > to be wrong here though.
->
-> I simply feel that input_handler is already a very simple abstraction
-> and trying to specialize it to simplify users further is not productive.
+Rather than makes this a module param, I would prefer to start with the below
+patch (originally from TDX pre-enabling) and then wire up a way for userspace to
+_lower_ the max on a per-VM basis, e.g. add a capability.
 
-I guess, if nothing else, it would be nice to avoid the tables that
-we'd have to copy between DRM and cpufreq: the set of input devices
-that are likely a sign that the user is interacting with the device.
-It always seemed weird to copy that from place to place and if there's
-ever a new input device to add it would be annoying to have to update
-it everywhere.
+VMs largely fall into two categories: (1) the max number of vCPUs is known prior
+to VM creation, or (2) the max number of vCPUs is unbounded (up to KVM's hard
+limit), e.g. for container-style use cases where "vCPUs" are created on-demand in
+response to the "guest" creating a new task.
 
-It would be nice to avoid some of the other boilerplate code here
-connecting things together when all we need is a callback, but I agree
-that if those were copied it wouldn't be the end of the world.
+For #1, a per-VM control lets userspace lower the limit to the bare minimum.  For
+#2, neither the module param nor the per-VM control is likely to be useful, but
+a per-VM control does let mixed environments (both #1 and #2 VMs) lower the limits
+for compatible VMs, whereas a module param must be set to the max of any potential VM.
 
--Doug
+From 0593cb4f73a6c3f0862f9411f0e14f00671f59ae Mon Sep 17 00:00:00 2001
+From: Sean Christopherson <sean.j.christopherson@intel.com>
+Date: Fri, 2 Jul 2021 15:04:27 -0700
+Subject: [PATCH] KVM: Add max_vcpus field in common 'struct kvm'
+
+Move arm's per-VM max_vcpus field into the generic "struct kvm", and use
+it to check vcpus_created in the generic code instead of checking only
+the hardcoded absolute KVM-wide max.  x86 TDX guests will reuse the
+generic check verbatim, as the max number of vCPUs for a TDX guest is
+user defined at VM creation and immutable thereafter.
+
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/arm64/include/asm/kvm_host.h | 3 ---
+ arch/arm64/kvm/arm.c              | 7 ++-----
+ arch/arm64/kvm/vgic/vgic-init.c   | 6 +++---
+ include/linux/kvm_host.h          | 1 +
+ virt/kvm/kvm_main.c               | 3 ++-
+ 5 files changed, 8 insertions(+), 12 deletions(-)
+
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+index 4be8486042a7..b51e1aa6ae27 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -108,9 +108,6 @@ struct kvm_arch {
+ 	/* VTCR_EL2 value for this VM */
+ 	u64    vtcr;
+
+-	/* The maximum number of vCPUs depends on the used GIC model */
+-	int max_vcpus;
+-
+ 	/* Interrupt controller */
+ 	struct vgic_dist	vgic;
+
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index f5490afe1ebf..97c3b83235b4 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -153,7 +153,7 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+ 	kvm_vgic_early_init(kvm);
+
+ 	/* The maximum number of VCPUs is limited by the host's GIC model */
+-	kvm->arch.max_vcpus = kvm_arm_default_max_vcpus();
++	kvm->max_vcpus = kvm_arm_default_max_vcpus();
+
+ 	set_default_spectre(kvm);
+
+@@ -228,7 +228,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+ 	case KVM_CAP_MAX_VCPUS:
+ 	case KVM_CAP_MAX_VCPU_ID:
+ 		if (kvm)
+-			r = kvm->arch.max_vcpus;
++			r = kvm->max_vcpus;
+ 		else
+ 			r = kvm_arm_default_max_vcpus();
+ 		break;
+@@ -304,9 +304,6 @@ int kvm_arch_vcpu_precreate(struct kvm *kvm, unsigned int id)
+ 	if (irqchip_in_kernel(kvm) && vgic_initialized(kvm))
+ 		return -EBUSY;
+
+-	if (id >= kvm->arch.max_vcpus)
+-		return -EINVAL;
+-
+ 	return 0;
+ }
+
+diff --git a/arch/arm64/kvm/vgic/vgic-init.c b/arch/arm64/kvm/vgic/vgic-init.c
+index 0a06d0648970..906aee52f2bc 100644
+--- a/arch/arm64/kvm/vgic/vgic-init.c
++++ b/arch/arm64/kvm/vgic/vgic-init.c
+@@ -97,11 +97,11 @@ int kvm_vgic_create(struct kvm *kvm, u32 type)
+ 	ret = 0;
+
+ 	if (type == KVM_DEV_TYPE_ARM_VGIC_V2)
+-		kvm->arch.max_vcpus = VGIC_V2_MAX_CPUS;
++		kvm->max_vcpus = VGIC_V2_MAX_CPUS;
+ 	else
+-		kvm->arch.max_vcpus = VGIC_V3_MAX_CPUS;
++		kvm->max_vcpus = VGIC_V3_MAX_CPUS;
+
+-	if (atomic_read(&kvm->online_vcpus) > kvm->arch.max_vcpus) {
++	if (atomic_read(&kvm->online_vcpus) > kvm->max_vcpus) {
+ 		ret = -E2BIG;
+ 		goto out_unlock;
+ 	}
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 60a35d9fe259..5f56516e2f5a 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -566,6 +566,7 @@ struct kvm {
+ 	 * and is accessed atomically.
+ 	 */
+ 	atomic_t online_vcpus;
++	int max_vcpus;
+ 	int created_vcpus;
+ 	int last_boosted_vcpu;
+ 	struct list_head vm_list;
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 3f6d450355f0..e509b963651c 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1052,6 +1052,7 @@ static struct kvm *kvm_create_vm(unsigned long type)
+ 	rcuwait_init(&kvm->mn_memslots_update_rcuwait);
+
+ 	INIT_LIST_HEAD(&kvm->devices);
++	kvm->max_vcpus = KVM_MAX_VCPUS;
+
+ 	BUILD_BUG_ON(KVM_MEM_SLOTS_NUM > SHRT_MAX);
+
+@@ -3599,7 +3600,7 @@ static int kvm_vm_ioctl_create_vcpu(struct kvm *kvm, u32 id)
+ 		return -EINVAL;
+
+ 	mutex_lock(&kvm->lock);
+-	if (kvm->created_vcpus == KVM_MAX_VCPUS) {
++	if (kvm->created_vcpus >= kvm->max_vcpus) {
+ 		mutex_unlock(&kvm->lock);
+ 		return -EINVAL;
+ 	}
+--
+2.34.0.rc1.387.gb447b232ab-goog
