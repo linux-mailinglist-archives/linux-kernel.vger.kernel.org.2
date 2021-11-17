@@ -2,82 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D484546E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 14:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDDC34546EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 14:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237498AbhKQNKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 08:10:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:46258 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237440AbhKQNKI (ORCPT
+        id S237524AbhKQNKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 08:10:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237460AbhKQNKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 08:10:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637154428;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0LTZQNPdeqRQ2yT5OTn224BgKxkqswLX71q3wqkNfeM=;
-        b=NXeddxlYd+9MY7j9RWEm8DEYoolbeA8oFr2zmWIIdkt5H/Ny3T/3aI+MOqcHh8hYj7bFBJ
-        GurZjSMlwhTe3txtJ+PQNTVA48pkTHDjTUdiuadNHg+1FYqFTFCiahGNYpl8V/wCan/64U
-        wrBJbejmioP5YnIho1+Y3hbiAMvgL88=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-87-EP4QXOF9Nx-sCzxb3JKZfg-1; Wed, 17 Nov 2021 08:07:05 -0500
-X-MC-Unique: EP4QXOF9Nx-sCzxb3JKZfg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A7EB58799E0;
-        Wed, 17 Nov 2021 13:07:03 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EB88160657;
-        Wed, 17 Nov 2021 13:07:00 +0000 (UTC)
-Message-ID: <5148de60-4a9d-67ef-ca64-5c6461034c0c@redhat.com>
-Date:   Wed, 17 Nov 2021 14:06:59 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 2/2] KVM: SVM: Extend host physical APIC ID field to
- support more than 8-bit
-Content-Language: en-US
-To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org
-Cc:     joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, peterz@infradead.org, hpa@zytor.com,
-        thomas.lendacky@amd.com, jon.grimm@amd.com
-References: <20211110101805.16343-1-suravee.suthikulpanit@amd.com>
- <20211110101805.16343-3-suravee.suthikulpanit@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211110101805.16343-3-suravee.suthikulpanit@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Wed, 17 Nov 2021 08:10:18 -0500
+Received: from mail-ed1-x54a.google.com (mail-ed1-x54a.google.com [IPv6:2a00:1450:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19F8C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 05:07:19 -0800 (PST)
+Received: by mail-ed1-x54a.google.com with SMTP id f4-20020a50e084000000b003db585bc274so2036531edl.17
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 05:07:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=tN9I+pAFJlbUYxyB1icCBjOYc97BjdaVLmTiDNjOPV8=;
+        b=ndheOzfsOhhGUnLhlVmbUSUNSnEs7pnEZJdypfUNkwG1z1XiwKopap42PBQY8Y3qZX
+         KqiGXPpRY2dvL1oOkjvSv9D+HFZ7gltYL0VmQUBSap8yBIs6oZspP/CZlWFQBmr2f6lB
+         LELRE1sINCB5DtaNdyDHW1yoxO9Acr5JYRBtBsNgMHDBE4tdVGzcrk/y+QbZ3coz735N
+         AccInz+RZp2i3Az5kGaJkFnTf+tBj6+5E9hnxQTMNYmUHhPxhNuVO8Hl0yC8mn9en/MA
+         y7+SJ5Cliab2QztOZbPHHKVbuJYZXcga44wfTJbnaWsdPHdldky5O6Me6RyLaTtYnoxe
+         UwcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=tN9I+pAFJlbUYxyB1icCBjOYc97BjdaVLmTiDNjOPV8=;
+        b=AnUAIQw/3w1LiCc1Bc4BqWVJOLkWUFJDLwphwN+6Eh999Ccd24psLkcksV74UVFqSX
+         05d6gnuXa5pUHcAEQVqs+xbWLWkcTrU/NncuLfcxwY3qTEC6YYPRXSuCvzOcyBHQR2FL
+         YMkVUdFXzzdHmejmAcVo1AMc7ZxAl+Tl1+RP587yPGVwWX4swmlnkqncOZv/w1Vj19Ho
+         MGBlAw7AnbA8/bf4jpYugiE7/Pj8PCOLBpsOeOU9IfY14b7OlZMfIz87qXGZLKgZ03bZ
+         w4kP0jVJiv/6/SDFuIuHegT/6f+8mqH9gr6AhvgH1+tW/SbfFGUy7Ii6I17ATQFsuYtg
+         41+w==
+X-Gm-Message-State: AOAM530mLCFvJ7WdsI6Jnuao1STUgcTRadQnqJcpw93p5/JQpuLe5www
+        bV7J/oAm2sL4OsvOl3A/AEu94ah2fA==
+X-Google-Smtp-Source: ABdhPJyTKq/cx1Q/EX6DBKd8VJ5ppuqmM+IryDyYf0h9dWQbd+9nBOngWc6+zwYj5U64Z00pAfTCRkBcLQ==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:80aa:59e4:a6a7:e11e])
+ (user=elver job=sendgmr) by 2002:a17:907:1c97:: with SMTP id
+ nb23mr21669634ejc.488.1637154438173; Wed, 17 Nov 2021 05:07:18 -0800 (PST)
+Date:   Wed, 17 Nov 2021 14:07:14 +0100
+Message-Id: <20211117130714.135656-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+Subject: [PATCH v2] kasan: test: add globals left-out-of-bounds test
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Kaiwan N Billimoria <kaiwan.billimoria@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/21 11:18, Suravee Suthikulpanit wrote:
-> +	if (level_type != 2 || !x2apic_mode) {
-> +		avic_host_physical_id_mask = 0xffULL;
-> +		goto out;
-> +	}
-> +
-> +	core_mask_width = eax & 0xF;
-> +
-> +	max_phys_mask_width = get_count_order(apic_get_max_phys_apicid());
-> +
-> +	/*
-> +	 * Sanity check to ensure core_mask_width for a processor does not
-> +	 * exceed the calculated mask.
-> +	 */
-> +	if (WARN_ON(core_mask_width > max_phys_mask_width))
-> +		return -EINVAL;
+Add a test checking that KASAN generic can also detect out-of-bounds
+accesses to the left of globals.
 
-Can it just use apic_get_max_phys_apicid() in x2apic mode, and 0xff in 
-!x2apic mode?  I'm not sure why you need to check CPUID[0xb,0x1].
+Unfortunately it seems that GCC doesn't catch this (tested GCC 10, 11).
+The main difference between GCC's globals redzoning and Clang's is that
+GCC relies on using increased alignment to producing padding, where
+Clang's redzoning implementation actually adds real data after the
+global and doesn't rely on alignment to produce padding. I believe this
+is the main reason why GCC can't reliably catch globals out-of-bounds in
+this case.
 
-Paolo
+Given this is now a known issue, to avoid failing the whole test suite,
+skip this test case with GCC.
+
+Reported-by: Kaiwan N Billimoria <kaiwan.billimoria@gmail.com>
+Signed-off-by: Marco Elver <elver@google.com>
+Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+---
+v2:
+* Add bugzilla link.
+---
+ lib/test_kasan.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+index 67ed689a0b1b..40f7274297c1 100644
+--- a/lib/test_kasan.c
++++ b/lib/test_kasan.c
+@@ -700,7 +700,7 @@ static void kmem_cache_bulk(struct kunit *test)
+ 
+ static char global_array[10];
+ 
+-static void kasan_global_oob(struct kunit *test)
++static void kasan_global_oob_right(struct kunit *test)
+ {
+ 	/*
+ 	 * Deliberate out-of-bounds access. To prevent CONFIG_UBSAN_LOCAL_BOUNDS
+@@ -723,6 +723,20 @@ static void kasan_global_oob(struct kunit *test)
+ 	KUNIT_EXPECT_KASAN_FAIL(test, *(volatile char *)p);
+ }
+ 
++static void kasan_global_oob_left(struct kunit *test)
++{
++	char *volatile array = global_array;
++	char *p = array - 3;
++
++	/*
++	 * GCC is known to fail this test, skip it.
++	 * See https://bugzilla.kernel.org/show_bug.cgi?id=215051.
++	 */
++	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_CC_IS_CLANG);
++	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_KASAN_GENERIC);
++	KUNIT_EXPECT_KASAN_FAIL(test, *(volatile char *)p);
++}
++
+ /* Check that ksize() makes the whole object accessible. */
+ static void ksize_unpoisons_memory(struct kunit *test)
+ {
+@@ -1160,7 +1174,8 @@ static struct kunit_case kasan_kunit_test_cases[] = {
+ 	KUNIT_CASE(kmem_cache_oob),
+ 	KUNIT_CASE(kmem_cache_accounted),
+ 	KUNIT_CASE(kmem_cache_bulk),
+-	KUNIT_CASE(kasan_global_oob),
++	KUNIT_CASE(kasan_global_oob_right),
++	KUNIT_CASE(kasan_global_oob_left),
+ 	KUNIT_CASE(kasan_stack_oob),
+ 	KUNIT_CASE(kasan_alloca_oob_left),
+ 	KUNIT_CASE(kasan_alloca_oob_right),
+-- 
+2.34.0.rc2.393.gf8c9666880-goog
 
