@@ -2,84 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 285544541CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 08:25:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 897314541C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 08:25:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233087AbhKQH2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 02:28:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233055AbhKQH2V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 02:28:21 -0500
-Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2363CC061746
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 23:25:23 -0800 (PST)
-Received: by mail-vk1-xa2d.google.com with SMTP id s17so1080804vka.5
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 23:25:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b0xmgwHrlv9ktwSdQ/JfjWjQenm8x9ltoihTIjxaBNQ=;
-        b=JbyabcOFwg9RA8CfJQXEnNtK9YqVVxIwGdThHqLv6dHnkGsNYKDELnCxw9iNTyQQq1
-         ND0s1vozfYnSAaFzlOjtmE45CCNh7SfCWUerukqPpadmxSr8L11WvEHCkf1hqI7AWD4o
-         SHgdlnvP9G148VHCq2BYTYSJuFE8cd/T9YjIA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b0xmgwHrlv9ktwSdQ/JfjWjQenm8x9ltoihTIjxaBNQ=;
-        b=ovQYjdatkNCQgCvPDu9HNXS4eJDOXWxK6Ndq7SWpsHaco19kdWgQg9wsesbSUPNPL5
-         xkU0GR/JoJCG9hRNubtNuO7aNYy2EPehiHhHbzILQaWknoiQpHQYQW+KbOPc8ME5fBnG
-         AAtMjNyL+sefenFz+YnLPZB8f8HILZKLDcMOKMASeaMRhUCOcYlh/e4/15XyJhvma674
-         EBECBD2hkgCJsPV0zqPMMATQSnwDWMksMgSpNzXZ83xJm/rmQlyH5gpmqNMmWTQCo3MS
-         ZkYJ6sC7xMuvwTlM/U3yyxsTjiO4XTo1i4e3/76lFUYHXfe/o9szgZu7It09OyUWkBXI
-         Ui3g==
-X-Gm-Message-State: AOAM530VP9JgiMcY5H2liCQJU0+8AVU4089D6xFoh9oFnVulN+hckezE
-        AzSspMJ+T4HpWEXWzUEScZZ3jYv4qqi2yaeHaP5gRg==
-X-Google-Smtp-Source: ABdhPJzBvilmkHXZGOjRkylsNfzWJ2cgYh6bVMxxcy/fEjHQEuzR5KbV/So04CzbtfXGK/uCfPDqT/fqDVC+3jwDADY=
-X-Received: by 2002:a05:6122:1350:: with SMTP id f16mr41382809vkp.10.1637133922290;
- Tue, 16 Nov 2021 23:25:22 -0800 (PST)
+        id S233000AbhKQH2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 02:28:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37418 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232674AbhKQH2N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 02:28:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 699D063215;
+        Wed, 17 Nov 2021 07:25:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637133914;
+        bh=Tz8Q0T4hS7DypzRr8M0WEK+KGrSDlGMLdT3MX7wDdps=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JwjMyLOPhedKBqTHsrXmY+skZd9VGyLwpGKyBvAsu6jOGJ+1ulq+768f5BBUOHZ5T
+         S1BlnANV7zZ5xIFzeZ/tECf7I6YkXBaTG6iiAqSa5u+x3Zy7MtyIUHzkMx/HAQHFr1
+         587LY3q8lmShZzILcz/4GzPG4xxhLX3C6LFVUYJ8=
+Date:   Wed, 17 Nov 2021 08:25:12 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Aditya Garg <gargaditya08@live.com>
+Cc:     Thorsten Leemhuis <regressions@leemhuis.info>,
+        Orlando Chamberlain <redecorating@protonmail.com>,
+        Daniel Winkler <danielwinkler@google.com>,
+        Johan Hedberg <johan.hedberg@intel.com>,
+        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+        Sonny Sasaka <sonnysasaka@chromium.org>
+Subject: Re: [PATCHv2] Bluetooth: quirk disabling LE Read Transmit Power
+Message-ID: <YZSuWHB6YCtGclLs@kroah.com>
+References: <20211001083412.3078-1-redecorating@protonmail.com>
+ <CABBYNZLjSfcG_KqTEbL6NOSvHhA5-b1t_S=3FQP4=GwW21kuzg@mail.gmail.com>
+ <972034A8-4B22-4FEE-9B37-C0A7C7ADD60C@live.com>
+ <YYZr14zwHnd52rQ7@kroah.com>
+ <829A2DF8-818E-4AF1-84F9-49B5822F9146@live.com>
+ <YYePw07y2DzEPSBR@kroah.com>
+ <70a875d0-7162-d149-dbc1-c2f5e1a8e701@leemhuis.info>
+ <20211116090128.17546-1-redecorating@protonmail.com>
+ <e75bf933-9b93-89d2-d73f-f85af65093c8@leemhuis.info>
+ <3B8E16FA-97BF-40E5-9149-BBC3E2A245FE@live.com>
 MIME-Version: 1.0
-References: <000000000000c93bd505bf3646ed@google.com> <00000000000006b5b205d0f55d49@google.com>
-In-Reply-To: <00000000000006b5b205d0f55d49@google.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 17 Nov 2021 08:25:11 +0100
-Message-ID: <CAJfpegtASmSmbNakuCYcgaF0Cy8kY=wu-w9_imiJnsCJngnR=A@mail.gmail.com>
-Subject: Re: [syzbot] WARNING in inc_nlink (2)
-To:     syzbot <syzbot+1c8034b9f0e640f9ba45@syzkaller.appspotmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3B8E16FA-97BF-40E5-9149-BBC3E2A245FE@live.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Nov 2021 at 06:32, syzbot
-<syzbot+1c8034b9f0e640f9ba45@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit 97f044f690bac2b094bfb7fb2d177ef946c85880
-> Author: Miklos Szeredi <mszeredi@redhat.com>
-> Date:   Fri Oct 22 15:03:02 2021 +0000
->
->     fuse: don't increment nlink in link()
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10563ac9b00000
-> start commit:   1da38549dd64 Merge tag 'nfsd-5.15-3' of git://git.kernel.o..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=e2ffb281e6323643
-> dashboard link: https://syzkaller.appspot.com/bug?extid=1c8034b9f0e640f9ba45
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11f16d57300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15758d57300000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
+On Wed, Nov 17, 2021 at 03:28:29AM +0000, Aditya Garg wrote:
+> 
+> 
+> > On 16-Nov-2021, at 2:56 PM, Thorsten Leemhuis <regressions@leemhuis.info> wrote:
+> > 
+> > On 16.11.21 10:02, Orlando Chamberlain wrote:
+> >>> Bluetooth maintainers, what's the status here? The proposed patch is
+> >>> fixing a regression. It's not a recent one (it afaics was introduced in
+> >>> v5.11-rc1). Nevertheless it would be good to get this finally resolved.
+> >>> But this thread seems inactive for more than a week now. Or was progress
+> >>> made, but is only visible somewhere else?
+> >> 
+> >> I think the best solution is getting broadcom to update their firmware,
+> >> I've just sent them a message through a form on their website, I couldn't
+> >> seem to get it to tell me "Your message has been sent", so it's possible
+> >> that it didn't submit (more likely I've sent the same message several times).
+> >> 
+> >> If I hear back from them I'll send something here.
+> > 
+> > Thx for that. But FWIW: from the point of the regression tracker that's
+> > not the best solution, as according to your report this is a regression.
+> > IOW: we deal with something that used to up to a certain kernel version
+> > and was broken by a change to the kernel. That is something frown upon
+> > in Linux kernel development, hence changes introducing regression are
+> > often quickly reverted, if they can't get fixed by follow up change quickly.
+> > 
+> > That sentence has two "quickly", as we want to prevent more people
+> > running into the issue, resulting in a loss of trust. But that's what
+> > will happen if we wait for a firmware update to get developed, tested,
+> > published, and rolled out. And even then we can't expect users to have
+> > the latest firmware installed when they switch to a new kernel.
+> > 
+> > Hence the best solution *afaics* might be: fix this in the kernel
+> > somehow now with a workaround; once the firmware update is out, change
+> > the kernel again to only apply the workaround if the old firmware is in use.
+> I have an idea. Can we make LE Read Transmit Power as a module parameter and users can turn it off if it is causing trouble. I have a patch for the same but haven't tested it yet.
 
-Highly unlikely: the original report was for sysvfs and the fix is for fuse.
+Module parameters are for the 1990's, please never add new ones as they
+modify code, not data, and you want to do something like this on a
+per-device basis, not on "all devices in the system", right?
 
-Thanks,
-Miklos
+thanks,
+
+greg k-h
