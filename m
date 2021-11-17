@@ -2,99 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C1BF4546B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 13:55:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D264546BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 13:55:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236052AbhKQM6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 07:58:19 -0500
-Received: from mga12.intel.com ([192.55.52.136]:8054 "EHLO mga12.intel.com"
+        id S236605AbhKQM6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 07:58:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234855AbhKQM6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 07:58:17 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="213972000"
-X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
-   d="scan'208";a="213972000"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 04:55:19 -0800
-X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
-   d="scan'208";a="494906876"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 04:55:17 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mnKSy-007nIj-1i;
-        Wed, 17 Nov 2021 14:55:08 +0200
-Date:   Wed, 17 Nov 2021 14:55:07 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Li Wang <liwang@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v1 1/1] radix-tree: Replace kernel.h with the necessary
- inclusions
-Message-ID: <YZT7q+Eo9mudqOLF@smile.fi.intel.com>
-References: <20211027150528.80003-1-andriy.shevchenko@linux.intel.com>
- <CAEemH2edgtA+XOY8WjgwFD-50qcw_MGFSgjjBjgKVi_dAwtR6w@mail.gmail.com>
+        id S235135AbhKQM6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 07:58:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7575861B7D;
+        Wed, 17 Nov 2021 12:55:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637153719;
+        bh=8JLZmI9VYjUjkTwlKzaUB2jGVugQsQHRSvVyCU0a5gw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RxmGFuA1QFLoIvddFpnX7yipA/mGAdKzmsjvyEiKjXm9AlhP4Jm40fSsDB+C58J0f
+         JSpE3v1vBgdfgxtHUCajhN+2uejc0wKibHMeQ+lTiuC0l11SrnZZ8BKyMFMifU9Xw2
+         2T9z9eYkgX7r1uBoZz3vGLdqjOMZ8ZIrFdl7BuG8jyow1HHIwPrjJRsMJ3un3FGmJt
+         IsWaY5AkeCZAhOyaKAtSTsOjDfonpHAHi9/yOTRhX/rAcNPs3D0vgrH3nlD1SUUEor
+         3n4hTvksnXK6NwvrJQM+KrXq6CrFzZrzhzvGu00g5XTr/m5xMF2FNX2gA+2PXYoZGE
+         rEGQM9dmkvJqA==
+Date:   Wed, 17 Nov 2021 12:55:14 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-spi@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH 1/3] dt-bindings: spi: renesas,rspi: Document RZ/G2L SoC
+Message-ID: <YZT7suWucdD+FU6k@sirena.org.uk>
+References: <20211117010527.27365-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20211117010527.27365-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dTY+a439r+UjD8cz"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEemH2edgtA+XOY8WjgwFD-50qcw_MGFSgjjBjgKVi_dAwtR6w@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20211117010527.27365-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Cookie: One Bell System - it sometimes works.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 03:01:12PM +0800, Li Wang wrote:
 
-Thanks for the report! And do not top post next time, please.
+--dTY+a439r+UjD8cz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> This patch breaks the radix tree test building.
+On Wed, Nov 17, 2021 at 01:05:25AM +0000, Lad Prabhakar wrote:
+> Add RSPI binding documentation for Renesas RZ/G2L SoC.
+>=20
+> RSPI block is identical to one found on RZ/A, so no driver changes are
+> required the fallback compatible string "renesas,rspi-rz" will be used
+> on RZ/G2L
 
-Yes and no. The dirty tricks with kernel headers that tools/ do is what has
-been revealed by this patch.
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
-> # make -C tools/testing/radix-tree/
-> make: Entering directory '/root/linux-5.16-rc1/tools/testing/radix-tree'
-> cc -I. -I../../include -g -Og -Wall -D_LGPL_SOURCE -fsanitize=address
-> -fsanitize=undefined   -c -o main.o main.c
-> In file included from ./linux/../../../../include/linux/radix-tree.h:14,
->                  from ./linux/radix-tree.h:5,
->                  from main.c:10:
-> ./linux/lockdep.h:7:38: error: unknown type name ‘spinlock_t’; did you mean
-> ‘clock_t’?
->     7 | static inline void lockdep_set_class(spinlock_t *lock,
->       |                                      ^~~~~~~~~~
->       |                                      clock_t
-> In file included from ./linux/radix-tree.h:5,
->                  from main.c:10:
-> ./linux/../../../../include/linux/radix-tree.h:15:10: fatal error:
-> linux/math.h: No such file or directory
->    15 | #include <linux/math.h>
->       |          ^~~~~~~~~~~~~~
-> compilation terminated.
-> make: *** [<builtin>: main.o] Error 1
-> make: Leaving directory '/root/linux-5.16-rc1/tools/testing/radix-tree'
+--dTY+a439r+UjD8cz
+Content-Type: application/pgp-signature; name="signature.asc"
 
-So, add that header to the bunch of others in the tools/
+-----BEGIN PGP SIGNATURE-----
 
-Something like this? (not even compile-tested)
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGU+7EACgkQJNaLcl1U
+h9BdtAf/VmkMMGhu3XIzeaXgRoqE0g29SY/hGvaybxu0nXF+m0MZrbbpS83fNEe6
+EffVbR0u5hsbdNCQtvOE4mf/saXqtnKMNetoxmYYZZMB5Lc1aPkk/pT2I1GtMd1Y
+P2qI2S9PxpJfHQhe22ziN9N14ZBONPWoX50YojMVbOGpbxUTjctDZca6h++8hNcZ
+xe2Z55pKMTWGalEMeoXpVLPIXxh+53wnr1r/bgFxtO2xPwYMPv9QhZIz9XPSLdHV
+kmq/QavqBPe+baiwog+QzaFx44hf8Kgz2ynAA7km6aMwXXtxsE6xWwObNdVz+gTx
+eKPdt55LNZaxQDJhWsSVyq3uUNQx1g==
+=IzaT
+-----END PGP SIGNATURE-----
 
-diff --git a/tools/testing/radix-tree/Makefile b/tools/testing/radix-tree/Makefile
-index aa6abfe0749c..fa66853416d5 100644
---- a/tools/testing/radix-tree/Makefile
-+++ b/tools/testing/radix-tree/Makefile
-@@ -40,6 +40,7 @@ $(OFILES): Makefile *.h */*.h generated/map-shift.h \
- 	../../include/asm/*.h \
- 	../../../include/linux/xarray.h \
- 	../../../include/linux/radix-tree.h \
-+	../../../include/linux/math.h \
- 	../../../include/linux/idr.h
- 
- radix-tree.c: ../../../lib/radix-tree.c
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+--dTY+a439r+UjD8cz--
