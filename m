@@ -2,95 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062F2454359
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:13:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F8145435D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:14:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234848AbhKQJQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 04:16:21 -0500
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:51624
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234836AbhKQJQU (ORCPT
+        id S234871AbhKQJQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 04:16:47 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:30678 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234864AbhKQJQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 04:16:20 -0500
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id A484D3F1A7
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 09:13:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1637140401;
-        bh=+Pz5oV0vIps7oI4JF77ZcmfNUeLTZeUmUwPk7qQg3Ok=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version:Content-Type;
-        b=px6A4Poyx1kTV9UbeMDR4BxowtM9C6eAZ7bxGteZkjwLnbeCwZXm6pTBpU7EsWUrb
-         SGKS3cLdQA0ePxgHQWserhEDvpGSFAVRj2mKFWONAaxD2pvUH8B+Gs21TMwIvJ+0SD
-         G8R7krS5GgR8TLLi+UIuKtj2A8NF7Z5ixhyq9CZ7kTBp1N/AKWame5AyROmwbuNenU
-         Xi1k2QMu0AL8+9oMrvy4fU8kq3aCcPnHaJ/HeAV31ALBf7Ii+2hk55aZt+qju+be8W
-         5rXV0IKkISM+hF0TyztQedK+3QAFVqsfY2s9t8qVIVHms5SQ0EctfSqKq3sgScavbs
-         Bax//iGbMqpxg==
-Received: by mail-lf1-f69.google.com with SMTP id m2-20020a056512014200b0041042b64791so1027646lfo.6
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 01:13:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+Pz5oV0vIps7oI4JF77ZcmfNUeLTZeUmUwPk7qQg3Ok=;
-        b=fNxmgig0LqFdpaEsPEuQjGdbWkHpIH+P6xLF/ObCXuRlwOEhvg2KqGZaDPSc5GRPDW
-         4dcI3rhwV02kLzXLIeOxVr7glkPCXoI2gcylZdv2ilFA1f8MD7LPJg2PDBwHW4fW/9Eg
-         wQDURwHl98AhFtTtQ+rWuliBOsge+7ZprB4WOOZZCRpi5thWsKXjbAQeeMuZwwjLCl5x
-         NFWkBNFJJabQ/xx7zE++QrUb0EAx9peyV3yyySz3LrthlHRmtUTTKU14dXc7oAlBxHzC
-         7Qj49XK5HbmtdFqgJtnMJrP8P+RJSO9HBo4wYDtViEpWv7+npa7yguOsHJxm4XZFvUV8
-         hV7A==
-X-Gm-Message-State: AOAM530HaNi1uilA/kdkAnHFkW9DN+60wEyA1+ks5PTHTD2B4poX9XbA
-        O4CxpABXE8SWizRj+Su/EYnFcXLdbiPxC7fwjE0pKJv/4iYvETzjwHVyVQw6M4ygzcb/8Kf10Wp
-        CLaZ3yGY3HvsbUlexjw7Xxf+vTEr+h97llO0RM+kvLw==
-X-Received: by 2002:a05:6512:23a7:: with SMTP id c39mr13970891lfv.655.1637140401130;
-        Wed, 17 Nov 2021 01:13:21 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyB0/kdXvyj/H5Xa+AJHrAoJOSiARTtsCV8oXv7g7kGvUkY60FM5ArXRjc+t4GWkAdYC5p7Ww==
-X-Received: by 2002:a05:6512:23a7:: with SMTP id c39mr13970848lfv.655.1637140400852;
-        Wed, 17 Nov 2021 01:13:20 -0800 (PST)
-Received: from krzk-bin.lan (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id o10sm2091331ljd.30.2021.11.17.01.13.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 01:13:20 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     devicetree@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>, Li Yang <leoyang.li@nxp.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH v3 0/2] convert ifc binding to yaml and drop "simple-bus"
-Date:   Wed, 17 Nov 2021 10:13:18 +0100
-Message-Id: <163714039332.51047.16522971360424993848.b4-ty@canonical.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211116211846.16335-1-leoyang.li@nxp.com>
-References: <20211116211846.16335-1-leoyang.li@nxp.com>
+        Wed, 17 Nov 2021 04:16:46 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AH8VVb9005900;
+        Wed, 17 Nov 2021 09:13:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=XrJAd1Pc49/Lad5PPGd9f+XWGaw1OjLz1leQG8ywM9Q=;
+ b=OfnK771qeIQINL/6wd7vJGqOW1NcnkMoiweohV3OyAadYiTFyQIGWUWngpAt0ZPRGme+
+ j9ZBBqZ7WlMRo/SO/MD/M1t4sDOjTBfrLZWzPyX0ro/PE219jod70mrjnVwhhqxswquf
+ CH9/2E4iQn0K+1yuqMOU5bG1AFR+jcX9VyN2ObJXVT5DAj1o5DTT9bI4KwlYXq2CGBum
+ TYVEH9ptx2yQh7RpWd7cwAF/Q+MJWuE531+b5M0Ke6d765boHoEOi0vQYuc7k7/xZbml
+ /ocgfzkI3NOI1nqtk9Q8SagdG0H5Hgm/m7Lm5OetBkDEoISGrPhc7ZRHyPoHyLVanzhl Hg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ccxa3rq7w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Nov 2021 09:13:31 +0000
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AH99oFW016306;
+        Wed, 17 Nov 2021 09:13:30 GMT
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ccxa3rq7e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Nov 2021 09:13:30 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AH9DAAR014194;
+        Wed, 17 Nov 2021 09:13:29 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 3ca4mjywds-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Nov 2021 09:13:28 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AH9DQ4q2818716
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Nov 2021 09:13:26 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6D79DA4080;
+        Wed, 17 Nov 2021 09:13:26 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 327D1A406D;
+        Wed, 17 Nov 2021 09:13:26 +0000 (GMT)
+Received: from osiris (unknown [9.145.92.52])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 17 Nov 2021 09:13:26 +0000 (GMT)
+Date:   Wed, 17 Nov 2021 10:13:24 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiri Olsa <jolsa@redhat.com>
+Subject: Re: [PATCH 0/2] ftrace/samples: fix ftrace direct multi config
+ option + s390 support
+Message-ID: <YZTHtFCam6V8bJ4D@osiris>
+References: <20211115195614.3173346-1-hca@linux.ibm.com>
+ <20211116174533.28f4b8ea@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211116174533.28f4b8ea@gandalf.local.home>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 4VW95jkOUvKOme20ls250iYDLg7XX82A
+X-Proofpoint-GUID: UrDTqA45PgUEw-3lr7OcLPY9Cjh_yQdE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-17_03,2021-11-16_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ suspectscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 clxscore=1015
+ lowpriorityscore=0 bulkscore=0 adultscore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111170045
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Nov 2021 15:18:44 -0600, Li Yang wrote:
-> Convert the ifc binding to yaml schema, in the mean while remove the
-> "simple-bus" compatible from the binding to make sure ifc device probes
-> before any of the child devices.  Update the driver accordingly.
+On Tue, Nov 16, 2021 at 05:45:33PM -0500, Steven Rostedt wrote:
+> > two patches for ftrace direct multi sample:
+> > 
+> > - fix ftrace direct multi sample config option handling, required
+> >   because of an incorrect merge resolution proposed by me.
+> > 
+> > - add s390 support for ftrace direct multi sample
+> > 
+> > If you are happy with them, I could carry with the s390 tree and
+> > target for rc2, or you could pick them up. Whatever you prefer.
 > 
-> DTS changes should be submitted after binding/driver changes are merged.
-> 
-> Changes in v3:
-> - Rebased to v5.16-rc1
-> 
-> [...]
+> I'm good with you taking them through your tree. I acked the first patch as
+> it touches my code. And the second belongs to you anyway, but I would still
+> ask you to add some description to the change log.
 
-Applied, thanks!
+Will do, and I'll add to the s390 tree.
 
-[1/2] dt-bindings: memory: fsl: convert ifc binding to yaml schema
-      commit: f91d84e2ed0d661132fc0f46758daca866dfa55b
-[2/2] memory: fsl_ifc: populate child devices without relying on simple-bus
-      commit: 98f1323959b8d717fbb090f22bdcc5ad768c6dc6
-
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Thanks!
