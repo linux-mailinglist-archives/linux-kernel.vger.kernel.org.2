@@ -2,167 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89577454940
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:52:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 127EF454953
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229921AbhKQOzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 09:55:02 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:60398 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236104AbhKQOy6 (ORCPT
+        id S231217AbhKQO5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 09:57:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229818AbhKQO5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 09:54:58 -0500
-Date:   Wed, 17 Nov 2021 14:51:57 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637160718;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Z39UcslXnmosc0Rg0xECpGYLAgsrv7cYapEjCFYu3g=;
-        b=ENldEUDp1OsQYRlrv4Jz6hf8Xo2mZWs4CGdz7ETYNnlOBMxUgY8h8fO+wNoeSxv22Ts4kC
-        Bo/EIMt0GwdB3aFQLexHcqD/aeIc3TPwaDtuew/bdR4qyTqShAeO069QICxWccbFgfAgQM
-        RXMP8ehc8pnACU8cYopGkaNBhNjGEh/dTSnNWsPLIoriZDLV3BgVwl7JGfboHcX+cOrytx
-        GjgjzOgrhoH+yDppUFRPRzD3995lZlv/0Vfp7d92PzAEoaH/tHTsaa1fxSEt1PeqR3FuL7
-        fFhkHnsuBMpGhAUihXY6LLT1ZDzkYvUWt4YfrKnyx419W+EhUJ2rmJf3GloH6g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637160718;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Z39UcslXnmosc0Rg0xECpGYLAgsrv7cYapEjCFYu3g=;
-        b=2GCX7/EnpdwBQK14SwpVfGCVgyqaIKCriSabCUv7ln/h76R0vcDuCzPvayB0GILLxj2n/p
-        ZvTifNOR0n5yUdBg==
-From:   "tip-bot2 for Reinette Chatre" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sgx] x86/sgx: Fix minor documentation issues
-Cc:     Reinette Chatre <reinette.chatre@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3Cab99a87368eef69e3fb96f073368becff3eff874=2E16355?=
- =?utf-8?q?29506=2Egit=2Ereinette=2Echatre=40intel=2Ecom=3E?=
-References: =?utf-8?q?=3Cab99a87368eef69e3fb96f073368becff3eff874=2E163552?=
- =?utf-8?q?9506=2Egit=2Ereinette=2Echatre=40intel=2Ecom=3E?=
+        Wed, 17 Nov 2021 09:57:20 -0500
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D56C061570;
+        Wed, 17 Nov 2021 06:54:22 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id r10-20020a056830080a00b0055c8fd2cebdso5154630ots.6;
+        Wed, 17 Nov 2021 06:54:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mRIERqiL2aQ0BoDY3j7j+k2cL8eLVgdknTW4xHUEnr0=;
+        b=Rl9BjezFX12nDSvg2bkfLnCeXHPBEAPUn9WxUHFo0nRh6SGni1K5qiyr99QIrs1bpe
+         62aTpfICjg8Zsy5H5suUAXLWE75zJuO9A0wdIJcQTIKS1mLrv1V8Lb5Pvph4lukM2tuW
+         stIGposKu27fTj7KF1LFqc9fl8AUKDczr3lnJiylKhWI4eu6ITs0ZHTWrojVBZzZ703A
+         fyYqv7QqQ7IXATM2gD0EYM5CewndvPZk4pgjWwRwm40Zgx6uMBJBKHx5iDW1EK1dmEsk
+         4OGN6tOoGul+wS6IaV9nFOaxpOFO0kvMm7cPa5sjtmCyhIs3bkmks+iH79SSiphuU+NI
+         Aciw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=mRIERqiL2aQ0BoDY3j7j+k2cL8eLVgdknTW4xHUEnr0=;
+        b=lcXggMXd1o7uFHWKhw7er0qsieyedmvVXznqbzMOwrnadvyNfaMozY4eAOCgqxwv7v
+         kypPGs9Fxg6kG1N/vdNBvFzDP8Ny3lfibzpN92rGju+nWuluiqT/pJiS/oILsXy9BIra
+         GtCn2QQyohDHAcYXr8FzsULAmLGsuskoxtPJdc+T93ybOMADEnAC5188a9DiSwjtBVUp
+         YITg2X61rFaqnTtkRW5rWTGjNYNx+LnEqdA4D2iHTtHztLRHZpHEhnAP2j+YLYvwEG3w
+         5MFY/UugdYhMcSsyxYQJoWaUaJ60QFS7DXyltETXptmC5ubnSmwFegxOym5Gh8c8qAKU
+         8E/Q==
+X-Gm-Message-State: AOAM532mRfGscpIBNbE4Li4b4LJH0GRdmmU8XtH1xGFNYdt1l9telrBG
+        5RwIOeZQgP9FGG10A8MkWMlpTlbScaE=
+X-Google-Smtp-Source: ABdhPJxos1r2c7kQ8c2sS0mxFVpaldjdGE5gduJRoQP8vchF15SfaN3/MRPiPT+pg75C1rJWMycU8g==
+X-Received: by 2002:a9d:7a8c:: with SMTP id l12mr13790271otn.84.1637160861487;
+        Wed, 17 Nov 2021 06:54:21 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id bl33sm1889210oib.47.2021.11.17.06.54.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 06:54:20 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 17 Nov 2021 06:54:19 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.15 000/923] 5.15.3-rc3 review
+Message-ID: <20211117145419.GA189081@roeck-us.net>
+References: <20211117101657.463560063@linuxfoundation.org>
+ <81192f2a-afe7-1eee-847a-f8103a6d7cd1@roeck-us.net>
+ <YZUVKX0KraPWiXx1@kroah.com>
 MIME-Version: 1.0
-Message-ID: <163716071746.11128.8446441679647063855.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZUVKX0KraPWiXx1@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/sgx branch of tip:
+On Wed, Nov 17, 2021 at 03:43:53PM +0100, Greg Kroah-Hartman wrote:
+> On Wed, Nov 17, 2021 at 06:13:47AM -0800, Guenter Roeck wrote:
+> > On 11/17/21 2:19 AM, Greg Kroah-Hartman wrote:
+> > > This is the start of the stable review cycle for the 5.15.3 release.
+> > > There are 923 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > > 
+> > > Responses should be made by Fri, 19 Nov 2021 10:14:52 +0000.
+> > > Anything received after that time might be too late.
+> > > 
+> > 
+> > Build is still broken for m68k.
+> > 
+> > drivers/block/ataflop.c: In function 'atari_cleanup_floppy_disk':
+> > drivers/block/ataflop.c:2050:17: error: implicit declaration of function 'blk_cleanup_disk'
+> > drivers/block/ataflop.c: In function 'atari_floppy_init':
+> > drivers/block/ataflop.c:2065:15: error: implicit declaration of function '__register_blkdev'
+> > 
+> > Are you sure you want to carry that patch series into v5.10.y ? I had to revert
+> > pretty much everything to get it to compile. It seems to me that someone should
+> > provide a working backport if the series is needed/wanted in v5.10.y.
+> 
+> Wow, I dropped the wrong patch :(
+> 
+... and I replied to the wrong announcement. Yes, this was for 5.10.y.
+Sorry, and thanks for catching.
 
-Commit-ID:     379e4de9e140850cf699dd390f21ea4b923c955d
-Gitweb:        https://git.kernel.org/tip/379e4de9e140850cf699dd390f21ea4b923=
-c955d
-Author:        Reinette Chatre <reinette.chatre@intel.com>
-AuthorDate:    Fri, 29 Oct 2021 10:49:56 -07:00
-Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Wed, 17 Nov 2021 06:36:09 -08:00
+Guenter
 
-x86/sgx: Fix minor documentation issues
-
-The SGX documentation has a few repeated or one-off issues:
-
- * Remove capitalization from regular words in the middle of a sentence.
- * Remove punctuation found in the middle of a sentence.
- * Fix name of SGX daemon to consistently be ksgxd.
- * Fix typo of SGX instruction: ENIT -> EINIT
-
-[ dhansen: tweaked subject and changelog ]
-
-Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Link: https://lkml.kernel.org/r/ab99a87368eef69e3fb96f073368becff3eff874.1635=
-529506.git.reinette.chatre@intel.com
----
- Documentation/x86/sgx.rst | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
-index a608f66..265568a 100644
---- a/Documentation/x86/sgx.rst
-+++ b/Documentation/x86/sgx.rst
-@@ -10,7 +10,7 @@ Overview
- Software Guard eXtensions (SGX) hardware enables for user space applications
- to set aside private memory regions of code and data:
-=20
--* Privileged (ring-0) ENCLS functions orchestrate the construction of the.
-+* Privileged (ring-0) ENCLS functions orchestrate the construction of the
-   regions.
- * Unprivileged (ring-3) ENCLU functions allow an application to enter and
-   execute inside the regions.
-@@ -91,7 +91,7 @@ In addition to the traditional compiler and linker build pr=
-ocess, SGX has a
- separate enclave =E2=80=9Cbuild=E2=80=9D process.  Enclaves must be built be=
-fore they can be
- executed (entered). The first step in building an enclave is opening the
- **/dev/sgx_enclave** device.  Since enclave memory is protected from direct
--access, special privileged instructions are Then used to copy data into encl=
-ave
-+access, special privileged instructions are then used to copy data into encl=
-ave
- pages and establish enclave page permissions.
-=20
- .. kernel-doc:: arch/x86/kernel/cpu/sgx/ioctl.c
-@@ -126,13 +126,13 @@ the need to juggle signal handlers.
- ksgxd
- =3D=3D=3D=3D=3D
-=20
--SGX support includes a kernel thread called *ksgxwapd*.
-+SGX support includes a kernel thread called *ksgxd*.
-=20
- EPC sanitization
- ----------------
-=20
- ksgxd is started when SGX initializes.  Enclave memory is typically ready
--For use when the processor powers on or resets.  However, if SGX has been in
-+for use when the processor powers on or resets.  However, if SGX has been in
- use since the reset, enclave pages may be in an inconsistent state.  This mi=
-ght
- occur after a crash and kexec() cycle, for instance.  At boot, ksgxd
- reinitializes all enclave pages so that they can be allocated and re-used.
-@@ -147,7 +147,7 @@ Page reclaimer
-=20
- Similar to the core kswapd, ksgxd, is responsible for managing the
- overcommitment of enclave memory.  If the system runs out of enclave memory,
--*ksgxwapd* =E2=80=9Cswaps=E2=80=9D enclave memory to normal memory.
-+*ksgxd* =E2=80=9Cswaps=E2=80=9D enclave memory to normal memory.
-=20
- Launch Control
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-@@ -156,7 +156,7 @@ SGX provides a launch control mechanism. After all enclav=
-e pages have been
- copied, kernel executes EINIT function, which initializes the enclave. Only =
-after
- this the CPU can execute inside the enclave.
-=20
--ENIT function takes an RSA-3072 signature of the enclave measurement.  The f=
-unction
-+EINIT function takes an RSA-3072 signature of the enclave measurement.  The =
-function
- checks that the measurement is correct and signature is signed with the key
- hashed to the four **IA32_SGXLEPUBKEYHASH{0, 1, 2, 3}** MSRs representing the
- SHA256 of a public key.
-@@ -184,7 +184,7 @@ CPUs starting from Icelake use Total Memory Encryption (T=
-ME) in the place of
- MEE. TME-based SGX implementations do not have an integrity Merkle tree, whi=
-ch
- means integrity and replay-attacks are not mitigated.  B, it includes
- additional changes to prevent cipher text from being returned and SW memory
--aliases from being Created.
-+aliases from being created.
-=20
- DMA to enclave memory is blocked by range registers on both MEE and TME syst=
-ems
- (SDM section 41.10).
+> No, I don't want to carry that series, let me go rip out everything for
+> ataflop.c now.  If someone cares about this for 5.10.y, I'll take a
+> backport series, but really, they should just go use 5.15.y instead.
+> 
+> I'll push out a -rc4 now.
+> 
+> thanks,
+> 
+> greg k-h
