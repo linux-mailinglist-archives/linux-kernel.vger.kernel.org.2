@@ -2,238 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4AE454C4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:42:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6949C454C64
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:46:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239568AbhKQRpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 12:45:30 -0500
-Received: from comms.puri.sm ([159.203.221.185]:50464 "EHLO comms.puri.sm"
+        id S239591AbhKQRtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 12:49:39 -0500
+Received: from foss.arm.com ([217.140.110.172]:33122 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238079AbhKQRpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 12:45:23 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id AF9BEE00C2;
-        Wed, 17 Nov 2021 09:42:23 -0800 (PST)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id KDr3y4KgU4uJ; Wed, 17 Nov 2021 09:42:22 -0800 (PST)
-Message-ID: <77aa25f26ad9bfcf5d87dc23c8f9b82e1fc549b9.camel@puri.sm>
-Subject: Re: [PATCH 1/2] media: imx: imx7-media-csi: add support for imx8mq
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Rui Miguel Silva <rmfrfs@gmail.com>
-Cc:     mchehab@kernel.org, robh@kernel.org, shawnguo@kernel.org,
-        kernel@pengutronix.de, kernel@puri.sm, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Wed, 17 Nov 2021 18:41:55 +0100
-In-Reply-To: <YZU5C0E3WBd7VLS2@pendragon.ideasonboard.com>
-References: <20211117092710.3084034-1-martin.kepplinger@puri.sm>
-         <CFS51AQQ7SCD.7FK8RLAWLXRH@arch-thunder>
-         <YZU5C0E3WBd7VLS2@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        id S232034AbhKQRti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 12:49:38 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CCE52D6E;
+        Wed, 17 Nov 2021 09:46:39 -0800 (PST)
+Received: from [10.57.82.45] (unknown [10.57.82.45])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 85D453F5A1;
+        Wed, 17 Nov 2021 09:46:38 -0800 (PST)
+Message-ID: <a2b45243-7e0a-a2ac-4e14-5256a3e7abb4@arm.com>
+Date:   Wed, 17 Nov 2021 17:46:33 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH] iommu/io-pgtable-arm: Fix table descriptor paddr
+ formatting
+Content-Language: en-GB
+To:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
+        Will Deacon <will@kernel.org>
+Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20211117171213.243584-1-marcan@marcan.st>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20211117171213.243584-1-marcan@marcan.st>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, dem 17.11.2021 um 19:16 +0200 schrieb Laurent Pinchart:
-> On Wed, Nov 17, 2021 at 02:51:48PM +0000, Rui Miguel Silva wrote:
-> > Hi Martin,
-> > Thanks for the patch.
-> > 
-> > On Wed Nov 17, 2021 at 9:27 AM WET, Martin Kepplinger wrote:
-> > 
-> > > Modeled after the NXP driver mx6s_capture.c that this driver is
-> > > based on,
-> > > imx8mq needs different settings for the baseaddr_switch
-> > > mechanism. Define
-> > > the needed bits and set that for imx8mq.
-> > > 
-> > > Without these settings, the system will "sometimes" hang
-> > > completely when
-> > > starting to stream (the interrupt will never be called).
+On 2021-11-17 17:12, Hector Martin wrote:
+> Table descriptors were being installed without properly formatting the
+> address using paddr_to_iopte, which does not match up with the
+> iopte_deref in __arm_lpae_map. This is incorrect for the LPAE pte
+> format, as it does not handle the high bits properly.
+
+Oh, I guess whatever system it was tested on can't have exercised it all
+that thoroughly. IIRC I couldn't test it myself since at the time none
+of the Fast Model builds with SMMUs actually implemented any memory
+above 48 bits.
+
+> This was found on Apple T6000 DARTs, which require a new pte format
+> (different shift); adding support for that to
+> paddr_to_iopte/iopte_to_paddr caused it to break badly, as even <48-bit
+> addresses would end up incorrect in that case.
+
+...I look forward to not wanting to look at that patch :)
+
+> Signed-off-by: Hector Martin <marcan@marcan.st>
+> ---
+>   drivers/iommu/io-pgtable-arm.c | 14 +++++++-------
+>   1 file changed, 7 insertions(+), 7 deletions(-)
 > 
-> Do we know why ? Are all the bits that you set required ?
+> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+> index dd9e47189d0d..b636e2737607 100644
+> --- a/drivers/iommu/io-pgtable-arm.c
+> +++ b/drivers/iommu/io-pgtable-arm.c
+> @@ -315,12 +315,12 @@ static int arm_lpae_init_pte(struct arm_lpae_io_pgtable *data,
+>   static arm_lpae_iopte arm_lpae_install_table(arm_lpae_iopte *table,
+>   					     arm_lpae_iopte *ptep,
+>   					     arm_lpae_iopte curr,
+> -					     struct io_pgtable_cfg *cfg)
+> +					     struct arm_lpae_io_pgtable *data)
+>   {
 
-tbh I don't know much more details about why. I debugged this quite a
-while and yes, from what I saw I need all these bits set.
+Please just define a local "cfg" variable here like in most other
+places, to avoid the rest of the churn in this function. Other than
+that,
 
-rx fifo overflow should be taken care of by the underrun buffer, but
-since imx8mq has an erratum that hangs the system in such case, see
-below, can it in any way be one reason for this to be needed?
+Acked-by: Robin Murphy <robin.murphy@arm.com>
 
-https://community.nxp.com/t5/i-MX-Processors/IMX8MQ-MIPI-CSI2-Base-address-switching-change-error/m-p/1216509/highlight/true#M167970
+Also,
 
-intuitively I'd say it's unrelated though.
+Fixes: 6c89928ff7a0 ("iommu/io-pgtable-arm: Support 52-bit physical address")
 
+Thanks,
+Robin.
+(currently elbow-deep in other parts of io-pgtable-arm...)
+
+>   	arm_lpae_iopte old, new;
+>   
+> -	new = __pa(table) | ARM_LPAE_PTE_TYPE_TABLE;
+> -	if (cfg->quirks & IO_PGTABLE_QUIRK_ARM_NS)
+> +	new = paddr_to_iopte(__pa(table), data) | ARM_LPAE_PTE_TYPE_TABLE;
+> +	if (data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_NS)
+>   		new |= ARM_LPAE_PTE_NSTABLE;
+>   
+>   	/*
+> @@ -332,11 +332,11 @@ static arm_lpae_iopte arm_lpae_install_table(arm_lpae_iopte *table,
+>   
+>   	old = cmpxchg64_relaxed(ptep, curr, new);
+>   
+> -	if (cfg->coherent_walk || (old & ARM_LPAE_PTE_SW_SYNC))
+> +	if (data->iop.cfg.coherent_walk || (old & ARM_LPAE_PTE_SW_SYNC))
+>   		return old;
+>   
+>   	/* Even if it's not ours, there's no point waiting; just kick it */
+> -	__arm_lpae_sync_pte(ptep, 1, cfg);
+> +	__arm_lpae_sync_pte(ptep, 1, &data->iop.cfg);
+>   	if (old == curr)
+>   		WRITE_ONCE(*ptep, new | ARM_LPAE_PTE_SW_SYNC);
+>   
+> @@ -380,7 +380,7 @@ static int __arm_lpae_map(struct arm_lpae_io_pgtable *data, unsigned long iova,
+>   		if (!cptep)
+>   			return -ENOMEM;
+>   
+> -		pte = arm_lpae_install_table(cptep, ptep, 0, cfg);
+> +		pte = arm_lpae_install_table(cptep, ptep, 0, data);
+>   		if (pte)
+>   			__arm_lpae_free_pages(cptep, tblsz, cfg);
+>   	} else if (!cfg->coherent_walk && !(pte & ARM_LPAE_PTE_SW_SYNC)) {
+> @@ -592,7 +592,7 @@ static size_t arm_lpae_split_blk_unmap(struct arm_lpae_io_pgtable *data,
+>   		__arm_lpae_init_pte(data, blk_paddr, pte, lvl, 1, &tablep[i]);
+>   	}
+>   
+> -	pte = arm_lpae_install_table(tablep, ptep, blk_pte, cfg);
+> +	pte = arm_lpae_install_table(tablep, ptep, blk_pte, data);
+>   	if (pte != blk_pte) {
+>   		__arm_lpae_free_pages(tablep, tablesz, cfg);
+>   		/*
 > 
-> > > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> > > ---
-> > >  drivers/staging/media/imx/imx7-media-csi.c | 34
-> > > ++++++++++++++++++++--
-> > >  1 file changed, 32 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/staging/media/imx/imx7-media-csi.c
-> > > b/drivers/staging/media/imx/imx7-media-csi.c
-> > > index 2288dadb2683..8619cf2fc694 100644
-> > > --- a/drivers/staging/media/imx/imx7-media-csi.c
-> > > +++ b/drivers/staging/media/imx/imx7-media-csi.c
-> > > @@ -12,6 +12,7 @@
-> > >  #include <linux/interrupt.h>
-> > >  #include <linux/mfd/syscon.h>
-> > >  #include <linux/module.h>
-> > > +#include <linux/of_device.h>
-> > >  #include <linux/of_graph.h>
-> > >  #include <linux/pinctrl/consumer.h>
-> > >  #include <linux/platform_device.h>
-> > > @@ -122,6 +123,10 @@
-> > >  #define BIT_DATA_FROM_MIPI             BIT(22)
-> > >  #define BIT_MIPI_YU_SWAP               BIT(21)
-> > >  #define BIT_MIPI_DOUBLE_CMPNT          BIT(20)
-> > > +#define BIT_MASK_OPTION_FIRST_FRAME    (0 << 18)
-> > > +#define BIT_MASK_OPTION_CSI_EN         (1 << 18)
-> > > +#define BIT_MASK_OPTION_SECOND_FRAME   (2 << 18)
-> > > +#define BIT_MASK_OPTION_ON_DATA                (3 << 18)
-> > >  #define BIT_BASEADDR_CHG_ERR_EN                BIT(9)
-> > >  #define BIT_BASEADDR_SWITCH_SEL                BIT(5)
-> > >  #define BIT_BASEADDR_SWITCH_EN         BIT(4)
-> > > @@ -154,6 +159,12 @@
-> > >  #define CSI_CSICR18                    0x48
-> > >  #define CSI_CSICR19                    0x4c
-> > >  
-> > > +enum imx_soc {
-> > > +       IMX6UL = 0,
-> > > +       IMX7,
-> > > +       IMX8MQ,
-> > 
-> > maybe instead of this enum we could use a bool in structure...
-> 
-> An enum would be more extensible, but we shouldn't define different
-> values for IMX6UL and IMX7 if they're compatible. Maybe an enum
-> imx_csi_model with two values (IMX_CSI_IMX7 and IMX_CSI_IMX8MQ ?).
-> 
-> Are there other SoCs in the i.MX8 family that require this ? The BSP
-> driver sets the baseaddr switch mechanism for i.MX8MM too, but it
-> seems
-> to work fine without it.
-
-I'm looking at
-https://source.codeaurora.org/external/imx/linux-imx/tree/drivers/media/platform/mxc/capture/mx6s_capture.c?h=imx_5.4.70_2.3.0
-for the comparison that is not explicitly targeting imx8mm, right?
-
-Anyway it looks like we need these bits on imx8mq only. Sorry, but
-maybe somebody from NXP could tell us more about the reasons?
-
-thanks a lot for reviewing, I'll queue a v2.
-
-> 
-> > > +};
-> > > +
-> > >  struct imx7_csi {
-> > >         struct device *dev;
-> > >         struct v4l2_subdev sd;
-> > > @@ -189,6 +200,8 @@ struct imx7_csi {
-> > >         bool is_csi2;
-> > >  
-> > >         struct completion last_eof_completion;
-> > > +
-> > > +       enum imx_soc type;
-> > 
-> > here, bool is_imx8mq?
-> > 
-> > >  };
-> > >  
-> > >  static struct imx7_csi *
-> > > @@ -537,6 +550,16 @@ static void imx7_csi_deinit(struct imx7_csi
-> > > *csi,
-> > >         clk_disable_unprepare(csi->mclk);
-> > >  }
-> > >  
-> > > +static void imx8mq_baseaddr_switch(struct imx7_csi *csi)
-> > 
-> > I think this function needs a better name. First add the imx7_csi
-> > prefix that all functions have, and also you are setting it
-> > specific
-> > to second frame and the function should not be specific to imx8.
-> > 
-> > maybe something:
-> > 
-> > imx7_csi_write_on_second_frame_enable, maybe?
-> > 
-> > > +{
-> > > +       u32 cr18 = imx7_csi_reg_read(csi, CSI_CSICR18);
-> > > +
-> > > +       cr18 |= BIT_BASEADDR_SWITCH_EN | BIT_BASEADDR_SWITCH_SEL
-> > > |
-> > > +               BIT_BASEADDR_CHG_ERR_EN;
-> > > +       cr18 |= BIT_MASK_OPTION_SECOND_FRAME;
-> > > +       imx7_csi_reg_write(csi, cr18, CSI_CSICR18);
-> > > +}
-> > > +
-> > >  static void imx7_csi_enable(struct imx7_csi *csi)
-> > >  {
-> > >         /* Clear the Rx FIFO and reflash the DMA controller. */
-> > > @@ -551,7 +574,11 @@ static void imx7_csi_enable(struct imx7_csi
-> > > *csi)
-> > >  
-> > >         /* Enable the RxFIFO DMA and the CSI. */
-> > >         imx7_csi_dmareq_rff_enable(csi);
-> > > +
-> > 
-> > unrelated new line.
-> > 
-> > >         imx7_csi_hw_enable(csi);
-> > > +
-> > > +       if (csi->type == IMX8MQ)
-> > > +               imx8mq_baseaddr_switch(csi);
-> > 
-> > change this to new types and names?
-> > 
-> > >  }
-> > >  
-> > >  static void imx7_csi_disable(struct imx7_csi *csi)
-> > > @@ -1155,6 +1182,8 @@ static int imx7_csi_probe(struct
-> > > platform_device *pdev)
-> > >         if (IS_ERR(csi->regbase))
-> > >                 return PTR_ERR(csi->regbase);
-> > >  
-> > > +       csi->type = (enum imx_soc)of_device_get_match_data(&pdev-
-> > > >dev);
-> > 
-> > here something:
-> >         csi->is_imx8mq = of_device_is_compatible(np, "fsl,imx8mq-
-> > csi");
-> > 
-> > > +
-> > >         spin_lock_init(&csi->irqlock);
-> > >         mutex_init(&csi->lock);
-> > >  
-> > > @@ -1249,8 +1278,9 @@ static int imx7_csi_remove(struct
-> > > platform_device *pdev)
-> > >  }
-> > >  
-> > >  static const struct of_device_id imx7_csi_of_match[] = {
-> > > -       { .compatible = "fsl,imx7-csi" },
-> > > -       { .compatible = "fsl,imx6ul-csi" },
-> > > +       { .compatible = "fsl,imx8mq-csi", .data = (void *)IMX8MQ
-> > > },
-> > 
-> > and with the above you should not need to add the data field here.
-> 
-> I like match data personally (especially if we keep a device model
-> enum). This is exactly what match data has been designed for, to
-> avoid
-> is_compatible() checks.
-> 
-> > > +       { .compatible = "fsl,imx7-csi", .data = (void *)IMX7 },
-> > > +       { .compatible = "fsl,imx6ul-csi", .data = (void *)IMX6UL
-> > > },
-> > >         { },
-> > >  };
-> > >  MODULE_DEVICE_TABLE(of, imx7_csi_of_match);
-> 
-
-
