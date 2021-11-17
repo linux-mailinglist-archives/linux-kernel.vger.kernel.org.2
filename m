@@ -2,107 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5202D454F7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 22:40:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E2C454F84
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 22:41:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbhKQVnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 16:43:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231839AbhKQVnl (ORCPT
+        id S240720AbhKQVoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 16:44:01 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:33460 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240640AbhKQVnz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 16:43:41 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2777C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:40:42 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id u74so9365174oie.8
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:40:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=80qrjaKuckfIxKf3DLVTv6a7iYoyD9Sd1U/A6GrtV40=;
-        b=AjM9ULmodQVC58Cu0Dno9jz4ysnFH2WEnIivupLTuRkk7hn0LPaYS477qAkjYt4T76
-         4L9um1lijnyvYCMUp3vkHhHEDwwL/1CjaDGhIxJcnnL+2upS7hXM90dXhFInZVc4fUTG
-         ZOwqBRuF+Js5dkKZXWrqx2eXCoY7ZJNxokKNSmIKfQKUma6a8m2ue84OLVluZsP0qKlQ
-         vIYnpkWXh70s1glTHAWmfwHfJwIUmkDDjM2dKUKeRnIEbSnMTK0WtHlJV0cuB4KAtI5t
-         qsIwC5bSbizogJ/rE5xWK/vJwUecbWTGUe64Q0bawFbMB1+1hZ5mf3M0zO8tDfQIhLtu
-         bQYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=80qrjaKuckfIxKf3DLVTv6a7iYoyD9Sd1U/A6GrtV40=;
-        b=5AMU0gxU0hH+0js9hHC2d1oT6zSnziMYB6g+ALoCPqCU36dOYg+XydfkObqn8crcku
-         oEs4G0tTIbK6OvlcH9LCIpaOM98o7KW3HkTVtkul7LlGpfvXfveCyehyxaJcyGZn5XJR
-         XFleK40rd4L4ZBy7HsuKVxzLV9P9E3YEtCPDFhyWknT6pO5FB0NsN2tlVFRED1bYoPZO
-         zgPkqGus8Y3lAOBdzSAfvVN2Plzg4QqHSGMEDgd3YtlZ8QT+EF/LxEgWWGSnCYc7ECrq
-         EJux5vYm52Uji1SDwXUMi19T4cxtjXh2Qavdq1O2g3Q2P9/ZmMc9dJ8tn0p+f1F/jET+
-         MURg==
-X-Gm-Message-State: AOAM533heyzZW9vkucGRg1vIy/1nuEWt3PQyOCurMqvzl08pA5j37Jz9
-        2BKHAULhrWxeNiU3j37WiQNF8j7009hyY9eV3k0=
-X-Google-Smtp-Source: ABdhPJxrs7xTtPn1zFRtZ5i3FY/8UZ/DJotfsZ7+hYwxZMxL6ar5KwSQnPGsPX0qTiwORjQm6ItE+gRSOvERV7I704w=
-X-Received: by 2002:aca:3f87:: with SMTP id m129mr2809816oia.5.1637185242017;
- Wed, 17 Nov 2021 13:40:42 -0800 (PST)
+        Wed, 17 Nov 2021 16:43:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1637185256; x=1668721256;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=27nbSQ7gN1tPViPmDsvKhjsUvLmCDX41GQ6XMHIbi4o=;
+  b=FY5TSpJFEwmzPWsZUgbtzqP8dc+DflCs4isOoyyZ4/wtuU5418IjkHxt
+   FW4W0it+Io7Fr6tyOTiQQcRh2X2OzefVgxzo5YEFRm9b1YBOH82k4vvbd
+   Bi9S2YhxYOYc40pPHLGDFB26cGLRWCJP4kqjdUP/LKyDMhRmW25o+PWH4
+   3Ql3WyDHsa2zP/Gmglupvm/pKaSnhX1bLwnWlUtAr6YBNQM4HLTF2xlRO
+   zYfOHcinQp5sf0MyT0YerrtEfu2YGjafDIEBHyji1IR+IeEUD9uavDkNa
+   5KtxlV9+ghnRWJYaYbZYmzT3lCO6ucksOtn+Dv4632PKG/OZT0eES3tkb
+   w==;
+IronPort-SDR: CB+195Istl/ha0rjIkv51y1sHkrscSKmAn7T9Z4K7u1l8NX/Ag4OmpTchx8L+RCWnmtz9yahPw
+ VziwOGjsAgNJPGF+zAdi0kakrIAHkhCHWrmeYj2tHEHU8KboZyyfkQdwsWt7CE6NqgHGefFOba
+ S8LUaDAWAu1Ph9xAvWWouOby+A5Fkdw2lJEv6jx/dFzYfNawwD30JcVsO40Nf7uOYMyqiPRSIb
+ tio8aLW1umykkiHnNBvj91tDum2Gb2yJdi6UHGzpdf50LPR6KIWeOi4lZj7aaWYCo/BDVgevdS
+ FwVi9ZgSQs4GsGEA0pzKkgL9
+X-IronPort-AV: E=Sophos;i="5.87,243,1631602800"; 
+   d="scan'208";a="76789820"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Nov 2021 14:40:54 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Wed, 17 Nov 2021 14:40:44 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Wed, 17 Nov 2021 14:40:44 -0700
+Date:   Wed, 17 Nov 2021 22:42:31 +0100
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Philipp Zabel <p.zabel@pengutronix.de>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <robh+dt@kernel.org>,
+        <linux@armlinux.org.uk>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 2/5] net: lan966x: add the basic lan966x driver
+Message-ID: <20211117214231.yiv2s6nxl6yx4klq@soft-dev3-1.localhost>
+References: <20211117091858.1971414-1-horatiu.vultur@microchip.com>
+ <20211117091858.1971414-3-horatiu.vultur@microchip.com>
+ <9ab98fba364f736b267dbd5e1d305d3e8426e877.camel@pengutronix.de>
 MIME-Version: 1.0
-References: <1636963819-19726-1-git-send-email-yang.lee@linux.alibaba.com>
-In-Reply-To: <1636963819-19726-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 17 Nov 2021 16:40:31 -0500
-Message-ID: <CADnq5_O+h4J5hYrnODix4_bdMgyZMt-wcUsSWr6DGrWwUkJFog@mail.gmail.com>
-Subject: Re: [PATCH -next] drm/amd/display: check top_pipe_to_program pointer
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, Dave Airlie <airlied@linux.ie>,
-        llvm@lists.linux.dev,
-        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Christian Koenig <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <9ab98fba364f736b267dbd5e1d305d3e8426e877.camel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+The 11/17/2021 10:52, Philipp Zabel wrote:
+> 
+> Hi Horatio,
 
-On Mon, Nov 15, 2021 at 3:10 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
->
-> Clang static analysis reports this error
->
-> drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:2870:7: warning:
-> Dereference of null pointer [clang-analyzer-core.NullDereference]
->                 if
-> (top_pipe_to_program->stream_res.tg->funcs->lock_doublebuffer_enable) {
->                     ^
->
-> top_pipe_to_program being NULL is caught as an error
-> But then it is used to report the error.
->
-> So add a check before using it.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  drivers/gpu/drm/amd/display/dc/core/dc.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
-> index 39ad385..34382d0 100644
-> --- a/drivers/gpu/drm/amd/display/dc/core/dc.c
-> +++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
-> @@ -2867,7 +2867,8 @@ static void commit_planes_for_stream(struct dc *dc,
->  #endif
->
->         if ((update_type != UPDATE_TYPE_FAST) && stream->update_flags.bits.dsc_changed)
-> -               if (top_pipe_to_program->stream_res.tg->funcs->lock_doublebuffer_enable) {
-> +               if (top_pipe_to_program &&
-> +                       top_pipe_to_program->stream_res.tg->funcs->lock_doublebuffer_enable) {
->                         if (should_use_dmub_lock(stream->link)) {
->                                 union dmub_hw_lock_flags hw_locks = { 0 };
->                                 struct dmub_hw_lock_inst_flags inst_flags = { 0 };
-> --
-> 1.8.3.1
->
+Hi Phillip,
+
+> 
+> On Wed, 2021-11-17 at 10:18 +0100, Horatiu Vultur wrote:
+> > +static int lan966x_reset_switch(struct lan966x *lan966x)
+> > +{
+> > +     struct reset_control *reset;
+> > +     int val = 0;
+> > +     int ret;
+> > +
+> > +     reset = devm_reset_control_get_shared(lan966x->dev, "switch");
+> > +     if (IS_ERR(reset))
+> > +             dev_warn(lan966x->dev, "Could not obtain switch reset: %ld\n",
+> > +                      PTR_ERR(reset));
+> > +     else
+> > +             reset_control_reset(reset);
+> 
+> According to the device tree bindings, both resets are required.
+> I'd expect this to return on error.
+> Is there any chance of the device working with out the switch reset
+> being triggered?
+
+The only case that I see is if the bootloader triggers this switch
+reset and then when bootloader starts the kernel and doesn't set back
+the switch in reset. Is this a valid scenario or is a bug in the
+bootloader?
+
+> 
+> > +
+> > +     reset = devm_reset_control_get_shared(lan966x->dev, "phy");
+> > +     if (IS_ERR(reset)) {
+> > +             dev_warn(lan966x->dev, "Could not obtain phy reset: %ld\n",
+> > +                      PTR_ERR(reset));
+> > +     } else {
+> > +             reset_control_reset(reset);
+> > +     }
+> 
+> Same as above.
+> Consider printing errors with %pe or dev_err_probe().
+> 
+> > +     lan_wr(SYS_RESET_CFG_CORE_ENA_SET(0), lan966x, SYS_RESET_CFG);
+> > +     lan_wr(SYS_RAM_INIT_RAM_INIT_SET(1), lan966x, SYS_RAM_INIT);
+> > +     ret = readx_poll_timeout(lan966x_ram_init, lan966x,
+> > +                              val, (val & BIT(1)) == 0, READL_SLEEP_US,
+> > +                              READL_TIMEOUT_US);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     lan_wr(SYS_RESET_CFG_CORE_ENA_SET(1), lan966x, SYS_RESET_CFG);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static int lan966x_probe(struct platform_device *pdev)
+> > +{
+> > +     struct fwnode_handle *ports, *portnp;
+> > +     struct lan966x *lan966x;
+> > +     int err, i;
+> > +
+> > +     lan966x = devm_kzalloc(&pdev->dev, sizeof(*lan966x), GFP_KERNEL);
+> > +     if (!lan966x)
+> > +             return -ENOMEM;
+> > +
+> > +     platform_set_drvdata(pdev, lan966x);
+> > +     lan966x->dev = &pdev->dev;
+> > +
+> > +     ports = device_get_named_child_node(&pdev->dev, "ethernet-ports");
+> > +     if (!ports) {
+> > +             dev_err(&pdev->dev, "no ethernet-ports child not found\n");
+> > +             err = -ENODEV;
+> > +             goto out;
+> 
+> No need to goto as long as there's just a "return err;" after the out:
+> label.
+
+True, I will udate this.
+
+> 
+> > +     }
+> > +
+> > +     err = lan966x_create_targets(pdev, lan966x);
+> > +     if (err)
+> > +             goto out;
+> > +
+> > +     if (lan966x_reset_switch(lan966x)) {
+> > +             err = -EINVAL;
+> 
+> This should propagate the error returned from lan966x_reset_switch()
+> instead.
+
+I will fix it in the next version.
+
+> 
+> > +             goto out;
+> > +     }
+> > +
+> > +     i = 0;
+> > +     fwnode_for_each_available_child_node(ports, portnp)
+> > +             ++i;
+> > +
+> > +     lan966x->num_phys_ports = i;
+> > +     lan966x->ports = devm_kcalloc(&pdev->dev, lan966x->num_phys_ports,
+> > +                                   sizeof(struct lan966x_port *),
+> > +                                   GFP_KERNEL);
+> 
+>         if (!lan966x->ports)
+>                 return -ENOMEM;
+
+Good catch.
+
+> 
+> regards
+> Philipp
+
+-- 
+/Horatiu
