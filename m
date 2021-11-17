@@ -2,151 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37547454F6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 22:35:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B99D8454F72
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 22:37:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240209AbhKQVi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 16:38:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41782 "EHLO
+        id S240478AbhKQVkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 16:40:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239950AbhKQVi1 (ORCPT
+        with ESMTP id S233762AbhKQVkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 16:38:27 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B0AC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:35:28 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id e3so17296105edu.4
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:35:28 -0800 (PST)
+        Wed, 17 Nov 2021 16:40:16 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A02C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:37:17 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id 7so9312256oip.12
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:37:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oE/PpLF33Bzsi0HnoSd2D3IwGwaXk2bQ1kvpSMCx344=;
-        b=QXKVrGtTrCFY3/MBy6Ae0VTxlonw/DRAwSMtioyfsFpu2GcapCZk8ECLNgHzTseKvw
-         z4a+aYv43SjZNW9uCZfhmS17j+f8gCgthROz70Lx0hFYnFUcRSvmoInMeC07P6JZ0h3V
-         Xr+RAhPlvzJYcKexb/aQuT9t9+/L4FZKUWiptUjyDUslFUoqctzOgri6mtkQcbbZTtvA
-         npV5JkOzQTIeSfkzvp74QKTJGPdVK/AX9ysyEayMfOemtar8e6uJ3fKQWAITwhXv9fZr
-         jEHJWh4QDMrx2m8a5nMPQ7jXzh/j7+IFYmXyz3+PXKz7B21vPoOBG9YEk3lVpfjvf/z4
-         HMow==
+         :cc:content-transfer-encoding;
+        bh=6s2y1fTtS8lf6NP+/c4Jj61w5cSCKIlT27IH4NZh8QY=;
+        b=IzY64stNZSLG1jDnQarZT7E46remPFZ029D4S/vqqHEmD8VdCjr14Z3AcNv2AxIn3/
+         UERbzYUIueJ9g5p26p7z0J3l+NTHYiB5wqouskDkVQwIiK5CmEbFy52Z03/rSc2qNf5K
+         A94sZTzv9jrfUD7eoRjbvyInwpfHa6D7BngkfpgHy1JLKEVSgdKTFmVMaBUgEjUQHVB1
+         Mcm04hz14NnzO0qzLtGwBbhU8lm9QS+OB5Liz6wnjs9mrtbpNmjmiZGJoqWQ9xO5FrPy
+         hhokYy/HmWtCnnp/5TbMPAu/rnpucLtLbRC7flysMbBdBbpsATf1RHMgS1Ja7QGU4x4d
+         vVPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oE/PpLF33Bzsi0HnoSd2D3IwGwaXk2bQ1kvpSMCx344=;
-        b=754t/vT1Z+T28nw5v7b7CgZ8il6SpAu+iv9SrSyx+QJaOPy+p+fNqyCoL9d4rqwnGh
-         1UEKad5briTruTt87jHVCUoKOqPoQ46aiP+t3Y+VH3++ycra44TbrprMUcPiZsecckrY
-         WrYE/v+ro/E0Nef0fzNIBl+T80sPuf9JpmPRf2WEXTUEienIk+23UV7dHhhlWZZJ7IB6
-         IQn7qD2ZcdNoaGOkt5DO2y9S2BsqSdNbrZf9YSk2S18DOX2FudxVH4sqZyCwytRYIEyl
-         x6sxOyfiWKv7ZoMAcmRd2J5W3pQcv/+qpwr3/odZVs4iBuIgtJcCszQwQSNfrnq5xZ9p
-         cWIw==
-X-Gm-Message-State: AOAM530MBJkZDFWbA7JR/B3zKRwAO5muSPfCFrGlKTFxEUKpLbIO+S2U
-        NV/kgVARIYM764DE5eQbpMTuK+/SXUDBp4ZWE2H+DA==
-X-Google-Smtp-Source: ABdhPJzr0FWsxLkdp+GqPycs6CHrFza83kIvQ058rw/43FF71YpE2yK7ii3nVMCgEOTvhGBAP0KBWaoOOVwD5hfSdFQ=
-X-Received: by 2002:a17:907:9487:: with SMTP id dm7mr26958236ejc.95.1637184926827;
- Wed, 17 Nov 2021 13:35:26 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6s2y1fTtS8lf6NP+/c4Jj61w5cSCKIlT27IH4NZh8QY=;
+        b=LyAj+caFUdo5xGchZOJOkvOJJIayiPNj/HJKcw5EcUPHCnrQIrZ+M7TrV73nXCM1Ke
+         lAMWRc1ctDNcs6x8cCl0zUKISRLJfEmXAFsR91q8KotcIoSY4pEPscQ3kmIUWMuK3xvZ
+         FqJPWY7x2MSTMoTGLTQey9cz4nmWCZ9fi169McFMRRekPztpEswsc20kLvFcI1/MVkWV
+         wms9Ckgbcw+26BovMXwybj0WKf2jADKO2HUofMewEo84CGB+c9T1RyOjEI9OXURt/V/j
+         TK6Wg7HI10fpx9yUDpQN7jMvgqg3MRe3oUwwBCzGC4k6MEdCuojR9th39q6reRjxkhBG
+         uzBg==
+X-Gm-Message-State: AOAM530S7DjxWpfy2Md9idDf0C3S7Rx4gz4WqGFq0DUY0Vy2fQs7hqlb
+        8CpWuSBY2A01ptp6jzHLezdTJHEVgMGS9RX8xtE=
+X-Google-Smtp-Source: ABdhPJxRBhq8/gv8eMPKGOit+nrmHWfUJX84g36vbajBhRrGeBC4A7eR2tqOn3eN842fWjlV1756/kPkDXA0fJuG49E=
+X-Received: by 2002:a05:6808:44:: with SMTP id v4mr2874414oic.123.1637185036704;
+ Wed, 17 Nov 2021 13:37:16 -0800 (PST)
 MIME-Version: 1.0
-References: <20211025015156.33133-1-brad@pensando.io> <20211025015156.33133-6-brad@pensando.io>
- <20211028074945.rv2j5kgzk7yc2srr@mobilestation> <CAK9rFnw396xK+u3qUpgbnGNw7WDJPJm0L3o4nPAcFeqQjBDbXg@mail.gmail.com>
- <20211116112907.lbwdcz5pmgxqzv55@mobilestation> <CAK9rFny7zQRpvGOVK0+01hKQNu7XCMOz8vTfbHPs6gMR10muDw@mail.gmail.com>
- <20211117081922.nnqsr5zzzydurq5t@mobilestation>
-In-Reply-To: <20211117081922.nnqsr5zzzydurq5t@mobilestation>
-From:   Brad Larson <brad@pensando.io>
-Date:   Wed, 17 Nov 2021 13:35:15 -0800
-Message-ID: <CAK9rFnzJ4scTXF7pVGDuerp873K+qN_2D9C3X6pdo_TzhyE=ZQ@mail.gmail.com>
-Subject: Re: [PATCH v3 05/11] spi: dw: Add Pensando Elba SoC SPI Controller bindings
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211116013438.26517-1-bernard@vivo.com> <88328288-ef1f-ef8b-987f-43dc8dc69ee7@gmail.com>
+In-Reply-To: <88328288-ef1f-ef8b-987f-43dc8dc69ee7@gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 17 Nov 2021 16:37:05 -0500
+Message-ID: <CADnq5_O+A8WaZv_+avrmvzt9Jjr7vwkYqnZx7-wkNtzRx0pc9A@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: cleanup the code a bit
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
+Cc:     Bernard Zhao <bernard@vivo.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sergey,
+Applied.  Thanks!
 
-On Wed, Nov 17, 2021 at 12:19 AM Serge Semin <fancer.lancer@gmail.com> wrote:
+On Tue, Nov 16, 2021 at 4:19 AM Christian K=C3=B6nig
+<ckoenig.leichtzumerken@gmail.com> wrote:
 >
-> I was wrong using that construction here (fixup patch would be very
-> welcome) seeing the "snps,dw-apb-ssi" doesn't permit having a generic
-> "snps,dw*" compatible string. So just const-compatible property should
-> be enough:
+> Am 16.11.21 um 02:34 schrieb Bernard Zhao:
+> > In function dc_sink_destruct, kfree will check pointer, no need
+> > to check again.
+> > This change is to cleanup the code a bit.
+> >
+> > Signed-off-by: Bernard Zhao <bernard@vivo.com>
 >
-> +        compatible:
-> +          const: pensando,elba-spics
+> This one and the other patch are Acked-by: Christian K=C3=B6nig
+> <christian.koenig@amd.com>
 >
+> > ---
+> >   drivers/gpu/drm/amd/display/dc/core/dc_sink.c | 10 +---------
+> >   1 file changed, 1 insertion(+), 9 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_sink.c b/drivers/gp=
+u/drm/amd/display/dc/core/dc_sink.c
+> > index a249a0e5edd0..4b5e4d8e7735 100644
+> > --- a/drivers/gpu/drm/amd/display/dc/core/dc_sink.c
+> > +++ b/drivers/gpu/drm/amd/display/dc/core/dc_sink.c
+> > @@ -33,14 +33,6 @@
+> >    * Private functions
+> >    ********************************************************************=
+**********/
+> >
+> > -static void dc_sink_destruct(struct dc_sink *sink)
+> > -{
+> > -     if (sink->dc_container_id) {
+> > -             kfree(sink->dc_container_id);
+> > -             sink->dc_container_id =3D NULL;
+> > -     }
+> > -}
+> > -
+> >   static bool dc_sink_construct(struct dc_sink *sink, const struct dc_s=
+ink_init_data *init_params)
+> >   {
+> >
+> > @@ -75,7 +67,7 @@ void dc_sink_retain(struct dc_sink *sink)
+> >   static void dc_sink_free(struct kref *kref)
+> >   {
+> >       struct dc_sink *sink =3D container_of(kref, struct dc_sink, refco=
+unt);
+> > -     dc_sink_destruct(sink);
+> > +     kfree(sink->dc_container_id);
+> >       kfree(sink);
+> >   }
+> >
 >
-> > +    then:
-> > +      properties:
-> > +        pensando,spics:
-> > +          $ref: /schemas/types.yaml#/definitions/phandle
-> > +          description:
-> > +            Phandle to the system control device node which provides access to
-> > +            the spics control register
-> > +      required:
->
-> > +        - pensando,spics
->
-> Please note, I've asked to be more specific in this property naming.
-> Something like this should be fine
-> "pensando,elba-syscon-spics"/"pensando,syscon-spics".
-
-I would have avoided a typo in the last reply if the spics property
-was more specific.  Based on needed construction like this?
-
-DT:
-                spi0: spi@2800 {
-                        compatible = "pensando,elba-spi";
-                        reg = <0x0 0x2800 0x0 0x100>;
-                        pensando,elba-syscon-spics = <&mssoc 0x2468>;
-                        clocks = <&ahb_clk>;
-                        interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
-                        #address-cells = <1>;
-                        #size-cells = <0>;
-                        num-cs = <2>;
-                        status = "disabled";
-                };
-
-Binding:
---- a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-+++ b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-@@ -37,6 +37,15 @@ allOf:
-     else:
-       required:
-         - interrupts
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - pensando,elba-spi
-+    then:
-+      required:
-+        - pensando,elba-syscon-spics
-
- properties:
-   compatible:
-@@ -73,6 +82,8 @@ properties:
-               - renesas,r9a06g032-spi # RZ/N1D
-               - renesas,r9a06g033-spi # RZ/N1S
-           - const: renesas,rzn1-spi   # RZ/N1
-+      - description: Pensando Elba SoC SPI Controller
-+        const: pensando,elba-spi
-
-   reg:
-     minItems: 1
-
-Thanks,
-Brad
