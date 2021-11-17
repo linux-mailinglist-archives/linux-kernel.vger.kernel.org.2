@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267834547E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 14:59:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 013544547F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:00:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238003AbhKQOCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 09:02:43 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:60052 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhKQOCm (ORCPT
+        id S236106AbhKQODn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 09:03:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238021AbhKQOCx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 09:02:42 -0500
-Date:   Wed, 17 Nov 2021 13:59:41 -0000
+        Wed, 17 Nov 2021 09:02:53 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A2FC061767;
+        Wed, 17 Nov 2021 05:59:55 -0800 (PST)
+Date:   Wed, 17 Nov 2021 13:59:52 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637157583;
+        s=2020; t=1637157593;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VYadU3Kg1g1lNdX5uJHY3PWZX0/y+a4Ub353ejOUNpc=;
-        b=U8cybTrW6MtJSQ46oqDmj5upDUrk8IY0wh6dX2+86JZOHYMA/crpINKbz8T7ivKfn7s6w8
-        0WWYDuXlAOPacJv7/A1F4/ilgqhThhs0PtlRdyQazjPTpcFfZXnY+EbTBVZRk2X/CbodOL
-        CU1oboFHVFUcm5ljhR67zteupIsWGIvD0kY4U7CoF9RQpKbs+4DoYKzfC2pFmrS8GjAzcs
-        HD3g4DLghUqkYLUFoxSR68ozwqS+y/XYtj+9xAsatbOAFJ+Uc2zMmxpt+jhf8mNNjH0sQg
-        53vyjfUC0hqrW4FyJ4tmk1WpuOlz40OI7SgKWV51A7YeuDHBONn9PirA/zz22g==
+        bh=ThXd8Y+0vCwmSnOgY3TSnmt2AK6kV5fLGBFYQ27AAWw=;
+        b=X+3q9g8vctBP5McYpA1towwhH/uizrtgc59N3DOOgbDmMmp+Bc8OBJHBiZ8KFlmhajH3V+
+        hfaJwYba1lA03YMrip9plRlE0XuD37ea1p4bvSegivxgdpDV/yYGKf+7cBG8YxppzLmLRC
+        RLBJO5w/EtymJwysuJPjrjzceokeAbJo1tPjdsuPkthnG05DDT1ToSDLYKDVg4Ur4GotRU
+        5DRdBHGoOhsih4Yr0yYdo7FvtrJP/3eNJbWAwUWMmIv4oSXm9XMvc2bhi6s/P4AtIvaPB9
+        a9Xap/1iluWUBaR0/2N52pGOYG9XaCwMk9VZRw/E51ymgvsygPaOCuVxRcYJpA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637157583;
+        s=2020e; t=1637157593;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VYadU3Kg1g1lNdX5uJHY3PWZX0/y+a4Ub353ejOUNpc=;
-        b=1rQX4anMcy65BLo1DUPxyUBb1xr8vO1KVRaa4U5Vb93HAMdZK/PdpRl4aIVOoDEcIk+2P3
-        qBFwkO4iP3vcG/Dw==
-From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
+        bh=ThXd8Y+0vCwmSnOgY3TSnmt2AK6kV5fLGBFYQ27AAWw=;
+        b=Hl6VDhl+AErKyCMxXguA4WNXYuqufVowCY4JFbtu1d4+zpMAU4hN+0pI4wKDVSN8VHgB1x
+        yrQzHJBgykY12TAA==
+From:   "tip-bot2 for Song Liu" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] kernel/locking: Use a pointer in ww_mutex_trylock().
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+Subject: [tip: perf/urgent] x86/perf: Fix snapshot_branch_stack warning in VM
+Cc:     Song Liu <songliubraving@fb.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Like Xu <likexu@tencent.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20211104122706.frk52zxbjorso2kv@linutronix.de>
-References: <20211104122706.frk52zxbjorso2kv@linutronix.de>
+In-Reply-To: <20211112054510.2667030-1-songliubraving@fb.com>
+References: <20211112054510.2667030-1-songliubraving@fb.com>
 MIME-Version: 1.0
-Message-ID: <163715758187.11128.891998814032181051.tip-bot2@tip-bot2>
+Message-ID: <163715759202.11128.17805416809718536710.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -56,37 +60,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+The following commit has been merged into the perf/urgent branch of tip:
 
-Commit-ID:     2202e15b2b1a946ce760d96748cd7477589701ab
-Gitweb:        https://git.kernel.org/tip/2202e15b2b1a946ce760d96748cd7477589701ab
-Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-AuthorDate:    Thu, 04 Nov 2021 13:27:06 +01:00
+Commit-ID:     f3fd84a3b7754b60df67ebfe64e1d90623895111
+Gitweb:        https://git.kernel.org/tip/f3fd84a3b7754b60df67ebfe64e1d90623895111
+Author:        Song Liu <songliubraving@fb.com>
+AuthorDate:    Thu, 11 Nov 2021 21:45:10 -08:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 17 Nov 2021 14:48:49 +01:00
+CommitterDate: Wed, 17 Nov 2021 14:48:43 +01:00
 
-kernel/locking: Use a pointer in ww_mutex_trylock().
+x86/perf: Fix snapshot_branch_stack warning in VM
 
-mutex_acquire_nest() expects a pointer, pass the pointer.
+When running in VM intel_pmu_snapshot_branch_stack triggers WRMSR warning
+like:
 
-Fixes: 12235da8c80a1 ("kernel/locking: Add context to ww_mutex_trylock()")
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+ [ ] unchecked MSR access error: WRMSR to 0x3f1 (tried to write 0x0000000000000000) at rIP: 0xffffffff81011a5b (intel_pmu_snapshot_branch_stack+0x3b/0xd0)
+
+This can be triggered with BPF selftests:
+
+  tools/testing/selftests/bpf/test_progs -t get_branch_snapshot
+
+This warning is caused by __intel_pmu_pebs_disable_all() in the VM.
+Since it is not necessary to disable PEBS for LBR, remove it from
+intel_pmu_snapshot_branch_stack and intel_pmu_snapshot_arch_branch_stack.
+
+Fixes: c22ac2a3d4bd ("perf: Enable branch record for software events")
+Signed-off-by: Song Liu <songliubraving@fb.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20211104122706.frk52zxbjorso2kv@linutronix.de
+Tested-by: Like Xu <likexu@tencent.com>
+Link: https://lore.kernel.org/r/20211112054510.2667030-1-songliubraving@fb.com
 ---
- kernel/locking/ww_rt_mutex.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/events/intel/core.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/kernel/locking/ww_rt_mutex.c b/kernel/locking/ww_rt_mutex.c
-index 0e00205..d1473c6 100644
---- a/kernel/locking/ww_rt_mutex.c
-+++ b/kernel/locking/ww_rt_mutex.c
-@@ -26,7 +26,7 @@ int ww_mutex_trylock(struct ww_mutex *lock, struct ww_acquire_ctx *ww_ctx)
- 
- 	if (__rt_mutex_trylock(&rtm->rtmutex)) {
- 		ww_mutex_set_context_fastpath(lock, ww_ctx);
--		mutex_acquire_nest(&rtm->dep_map, 0, 1, ww_ctx->dep_map, _RET_IP_);
-+		mutex_acquire_nest(&rtm->dep_map, 0, 1, &ww_ctx->dep_map, _RET_IP_);
- 		return 1;
- 	}
- 
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 42cf01e..ec6444f 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -2211,7 +2211,6 @@ intel_pmu_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int 
+ 	/* must not have branches... */
+ 	local_irq_save(flags);
+ 	__intel_pmu_disable_all(false); /* we don't care about BTS */
+-	__intel_pmu_pebs_disable_all();
+ 	__intel_pmu_lbr_disable();
+ 	/*            ... until here */
+ 	return __intel_pmu_snapshot_branch_stack(entries, cnt, flags);
+@@ -2225,7 +2224,6 @@ intel_pmu_snapshot_arch_branch_stack(struct perf_branch_entry *entries, unsigned
+ 	/* must not have branches... */
+ 	local_irq_save(flags);
+ 	__intel_pmu_disable_all(false); /* we don't care about BTS */
+-	__intel_pmu_pebs_disable_all();
+ 	__intel_pmu_arch_lbr_disable();
+ 	/*            ... until here */
+ 	return __intel_pmu_snapshot_branch_stack(entries, cnt, flags);
