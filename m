@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A0B453ED5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 04:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C10453ED4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 04:10:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232877AbhKQDNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 22:13:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41622 "EHLO mail.kernel.org"
+        id S232822AbhKQDNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 22:13:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229757AbhKQDNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232582AbhKQDNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 16 Nov 2021 22:13:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4F82C61BF9;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 589DD6108D;
         Wed, 17 Nov 2021 03:10:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1637118609;
-        bh=KeKZK4NfFw+XeRWvxZTjeXhn5HYOELRMB9po1qn1lMM=;
+        bh=xR9m/FtANsZ7vZKOTPo8FP0ZrO4PaxGSzQzYlQx8odI=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=J+fTHaItsvbom3Nj+/6L/2oTw/0giXjhkVGSYDxVhYVJ8DZ2nhJ+6a7nM2ZOS0nQx
-         fSkh9U7v4VnstEYArtTWDGDfqupwOmIuZc7WsrFcnuhkzo5zeIzstdfpdbFE5zTCgu
-         Bbv5/wX+dFfSZNUEd1rGclc++KgitOL6+OW+g8Y9z/e0WISs4eh5QFvZHsF+1ck5h6
-         ioesIAiI7kjFr3KzpNYifJb2ohhvWvJ9dvwanzGnDnG4UjBvI/FogFFD3xVYlip8pN
-         0mClcaZ60Wo7L3PzSBAbU9yH8V6W2bV6DueYqa5UBp6ZUn0Ivi+PbHpXBD32GdkAtT
-         jjsXHKG7iUK8w==
+        b=NdRK8TWMUfoDyrXzzOOJWvKV1uiG5mbZcl/1/iCiOaBymBaJViCF7j9IVvz0J/GOB
+         T/O50pZPgbEGoQohVHBX2RC3tM/ikE0mARAqnTWBTUVMEMwXqA8J34EL4ovIZCT0gY
+         6nfkYr459AhvTj9LQx0GcAxLkgF/xaf7x/uhfzJvOMBB9b/5KzOIGIy8lW5eY1UZtq
+         35eMy+C4ApNzFy1UsAoqgdOSKptYDkwA/K3zmv1z3gtBYm3R8YlqSB7lQ3yI4etsvU
+         xu2LrRTIYNdiXykxhlPTobpcit/sJkX3mkKH5gA31MaLctUHWyRUJ/CXXP6nRdzZ/V
+         ndPGU4yiGKLgw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 40F3660A0C;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4CD8560A4E;
         Wed, 17 Nov 2021 03:10:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [net: PATCH] net: mvmdio: fix compilation warning
+Subject: Re: [PATCH v2] MAINTAINERS: remove GR-everest-linux-l2@marvell.com
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163711860926.28737.8115206647292837561.git-patchwork-notify@kernel.org>
+Message-Id: <163711860931.28737.12115069166861317347.git-patchwork-notify@kernel.org>
 Date:   Wed, 17 Nov 2021 03:10:09 +0000
-References: <20211115153024.209083-1-mw@semihalf.com>
-In-Reply-To: <20211115153024.209083-1-mw@semihalf.com>
-To:     Marcin Wojtas <mw@semihalf.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, upstream@semihalf.com,
-        lkp@intel.com
+References: <20211116141303.32180-1-paskripkin@gmail.com>
+In-Reply-To: <20211116141303.32180-1-paskripkin@gmail.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, manishc@marvell.com,
+        netdev@vger.kernel.org, aelior@marvell.com, skalluru@marvell.com,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -48,20 +48,22 @@ Hello:
 This patch was applied to netdev/net.git (master)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Mon, 15 Nov 2021 16:30:24 +0100 you wrote:
-> The kernel test robot reported a following issue:
+On Tue, 16 Nov 2021 17:13:03 +0300 you wrote:
+> I've sent a patch to GR-everest-linux-l2@marvell.com few days ago and
+> got a reply from postmaster@marvell.com:
 > 
-> >> drivers/net/ethernet/marvell/mvmdio.c:426:36: warning:
-> unused variable 'orion_mdio_acpi_match' [-Wunused-const-variable]
->    static const struct acpi_device_id orion_mdio_acpi_match[] = {
->                                       ^
->    1 warning generated.
+> 	Delivery has failed to these recipients or groups:
+> 
+> 	gr-everest-linux-l2@marvell.com<mailto:gr-everest-linux-l2@marvell.com>
+> 	The email address you entered couldn't be found. Please check the
+> 	recipient's email address and try to resend the message. If the problem
+> 	continues, please contact your helpdesk.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net:] net: mvmdio: fix compilation warning
-    https://git.kernel.org/netdev/net/c/2460386bef0b
+  - [v2] MAINTAINERS: remove GR-everest-linux-l2@marvell.com
+    https://git.kernel.org/netdev/net/c/0a83f96f8709
 
 You are awesome, thank you!
 -- 
