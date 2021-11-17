@@ -2,110 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8095453F9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 05:34:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D96453FA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 05:36:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233189AbhKQEhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 23:37:47 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:43862 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233165AbhKQEhp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 23:37:45 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9C811212C8;
-        Wed, 17 Nov 2021 04:34:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1637123686; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Vm8JBp7sP6WtAAmJStkzdnz/sawLE2jCkHB8Ojd5L/A=;
-        b=eZpHCda9NuCjoxUGmTxiuJxjS3VxByuKXyrdy+cpVIsK5whls1Rsst9E0G2eoIpsc1OmXO
-        mp+veGGLnmMndg6en3pwSzub8fvu63zawG6nStFduUfWZQZntB28lpylZTtBLtOY/A/lmp
-        JSIHupPgTZLrzCK8MOUZsVIHInKsOJg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1637123686;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Vm8JBp7sP6WtAAmJStkzdnz/sawLE2jCkHB8Ojd5L/A=;
-        b=+nakQQ+EbqBUsv14dgbSkyN/kCCGNSv0+h+BdaVAwB06FWnyE4/v4T1dQQGu22o3dRObzd
-        c3yzTOuu8dj36HCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 44BE913BCD;
-        Wed, 17 Nov 2021 04:34:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id BSFIAWWGlGFYGQAAMHmgww
-        (envelope-from <neilb@suse.de>); Wed, 17 Nov 2021 04:34:45 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        id S233183AbhKQEif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 23:38:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42532 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230113AbhKQEie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 23:38:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6ECDC619F6;
+        Wed, 17 Nov 2021 04:35:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637123736;
+        bh=lLK2m/g/rYAh3Vwa+4eN/Dmc3Z5OsRkwB51PHxhEq2Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N82HhoRa8kcepZBKLTx9GoDdDDXlla6C9aIVXQ3zMn78m4l7ubK/20Uoq7PwPKEsV
+         xnQnVUVv5rvXTe1mugpEvbw28erlgDOVcG2YQ3ZeAcK1I299R+lMh5LLVBEAnLs87L
+         x8aLB9X0AnYbPPBWEkP4JIDqlwoe2z1lYY/x05EY71G/1Iro/XB0A0qqQn5iH9SZ8N
+         8jyuOPTvH2WlBdtWFj+jBYXVWdu/D/h4KyPRQtYrb/AcqWsuU2H1u6AYwc5FQZ0qc7
+         xzXxwCcBZYpD7pzjre6eEvoio1xoutP+Xulse5fqLoKuQ0CWkNKw2RZFo8bBXYKg/d
+         VZWsgErXvGsww==
+Date:   Tue, 16 Nov 2021 20:35:36 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v2 07/28] fs/buffer: Convert __block_write_begin_int() to
+ take a folio
+Message-ID: <20211117043536.GM24307@magnolia>
+References: <20211108040551.1942823-1-willy@infradead.org>
+ <20211108040551.1942823-8-willy@infradead.org>
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>
-Cc:     reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] reiserfs: don't use congestion_wait()
-Date:   Wed, 17 Nov 2021 15:34:42 +1100
-Message-id: <163712368225.13692.3419908086400748349@noble.neil.brown.name>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211108040551.1942823-8-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 08, 2021 at 04:05:30AM +0000, Matthew Wilcox (Oracle) wrote:
+> There are no plans to convert buffer_head infrastructure to use multi-page
+> folios, but __block_write_begin_int() is called from iomap, and it's
+> more convenient and less error-prone if we pass in a folio from iomap.
+> It also has a nice saving of almost 200 bytes of code from removing
+> repeated calls to compound_head().
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Block devices do not, in general, report congestion any more, so this
-congestion_wait() is effectively just a sleep.
+Pretty straightforward,
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-It isn't entirely clear what is being waited for, but as we only wait
-when j_async_throttle is elevated, it seems reasonable to stop waiting
-when j_async_throttle becomes zero - or after the same timeout.
+--D
 
-So change to use wait_event_event_timeout() for waiting, and
-wake_up_var() to signal an end to waiting.
-
-Signed-off-by: NeilBrown <neilb@suse.de>
----
-
-I have no idea who might take this.... Jens and Jan have both landed
-reiserfs patches recently...
-
-Thanks,
-NeilBrown
-
- fs/reiserfs/journal.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/fs/reiserfs/journal.c b/fs/reiserfs/journal.c
-index 0834b101c316..a3e21160b634 100644
---- a/fs/reiserfs/journal.c
-+++ b/fs/reiserfs/journal.c
-@@ -951,7 +951,9 @@ static int reiserfs_async_progress_wait(struct super_bloc=
-k *s)
- 		int depth;
-=20
- 		depth =3D reiserfs_write_unlock_nested(s);
--		congestion_wait(BLK_RW_ASYNC, HZ / 10);
-+		wait_var_event_timeout(&j->j_async_throttle,
-+				       atomic_read(&j->j_async_throttle) =3D=3D 0,
-+				       HZ / 10);
- 		reiserfs_write_lock_nested(s, depth);
- 	}
-=20
-@@ -1058,7 +1060,8 @@ static int flush_commit_list(struct super_block *s,
- 			put_bh(tbh) ;
- 		}
- 	}
--	atomic_dec(&journal->j_async_throttle);
-+	if (atomic_dec_and_test(&journal->j_async_throttle))
-+		wake_up_var(&journal->j_async_throttle);
-=20
- 	for (i =3D 0; i < (jl->j_len + 1); i++) {
- 		bn =3D SB_ONDISK_JOURNAL_1st_BLOCK(s) +
---=20
-2.33.1
-
+> ---
+>  fs/buffer.c            | 22 +++++++++++-----------
+>  fs/internal.h          |  2 +-
+>  fs/iomap/buffered-io.c |  7 +++++--
+>  3 files changed, 17 insertions(+), 14 deletions(-)
+> 
+> diff --git a/fs/buffer.c b/fs/buffer.c
+> index 46bc589b7a03..b1d722b26fe9 100644
+> --- a/fs/buffer.c
+> +++ b/fs/buffer.c
+> @@ -1969,34 +1969,34 @@ iomap_to_bh(struct inode *inode, sector_t block, struct buffer_head *bh,
+>  	}
+>  }
+>  
+> -int __block_write_begin_int(struct page *page, loff_t pos, unsigned len,
+> +int __block_write_begin_int(struct folio *folio, loff_t pos, unsigned len,
+>  		get_block_t *get_block, const struct iomap *iomap)
+>  {
+>  	unsigned from = pos & (PAGE_SIZE - 1);
+>  	unsigned to = from + len;
+> -	struct inode *inode = page->mapping->host;
+> +	struct inode *inode = folio->mapping->host;
+>  	unsigned block_start, block_end;
+>  	sector_t block;
+>  	int err = 0;
+>  	unsigned blocksize, bbits;
+>  	struct buffer_head *bh, *head, *wait[2], **wait_bh=wait;
+>  
+> -	BUG_ON(!PageLocked(page));
+> +	BUG_ON(!folio_test_locked(folio));
+>  	BUG_ON(from > PAGE_SIZE);
+>  	BUG_ON(to > PAGE_SIZE);
+>  	BUG_ON(from > to);
+>  
+> -	head = create_page_buffers(page, inode, 0);
+> +	head = create_page_buffers(&folio->page, inode, 0);
+>  	blocksize = head->b_size;
+>  	bbits = block_size_bits(blocksize);
+>  
+> -	block = (sector_t)page->index << (PAGE_SHIFT - bbits);
+> +	block = (sector_t)folio->index << (PAGE_SHIFT - bbits);
+>  
+>  	for(bh = head, block_start = 0; bh != head || !block_start;
+>  	    block++, block_start=block_end, bh = bh->b_this_page) {
+>  		block_end = block_start + blocksize;
+>  		if (block_end <= from || block_start >= to) {
+> -			if (PageUptodate(page)) {
+> +			if (folio_test_uptodate(folio)) {
+>  				if (!buffer_uptodate(bh))
+>  					set_buffer_uptodate(bh);
+>  			}
+> @@ -2016,20 +2016,20 @@ int __block_write_begin_int(struct page *page, loff_t pos, unsigned len,
+>  
+>  			if (buffer_new(bh)) {
+>  				clean_bdev_bh_alias(bh);
+> -				if (PageUptodate(page)) {
+> +				if (folio_test_uptodate(folio)) {
+>  					clear_buffer_new(bh);
+>  					set_buffer_uptodate(bh);
+>  					mark_buffer_dirty(bh);
+>  					continue;
+>  				}
+>  				if (block_end > to || block_start < from)
+> -					zero_user_segments(page,
+> +					folio_zero_segments(folio,
+>  						to, block_end,
+>  						block_start, from);
+>  				continue;
+>  			}
+>  		}
+> -		if (PageUptodate(page)) {
+> +		if (folio_test_uptodate(folio)) {
+>  			if (!buffer_uptodate(bh))
+>  				set_buffer_uptodate(bh);
+>  			continue; 
+> @@ -2050,14 +2050,14 @@ int __block_write_begin_int(struct page *page, loff_t pos, unsigned len,
+>  			err = -EIO;
+>  	}
+>  	if (unlikely(err))
+> -		page_zero_new_buffers(page, from, to);
+> +		page_zero_new_buffers(&folio->page, from, to);
+>  	return err;
+>  }
+>  
+>  int __block_write_begin(struct page *page, loff_t pos, unsigned len,
+>  		get_block_t *get_block)
+>  {
+> -	return __block_write_begin_int(page, pos, len, get_block, NULL);
+> +	return __block_write_begin_int(page_folio(page), pos, len, get_block, NULL);
+>  }
+>  EXPORT_SYMBOL(__block_write_begin);
+>  
+> diff --git a/fs/internal.h b/fs/internal.h
+> index cdd83d4899bb..afc13443392b 100644
+> --- a/fs/internal.h
+> +++ b/fs/internal.h
+> @@ -37,7 +37,7 @@ static inline int emergency_thaw_bdev(struct super_block *sb)
+>  /*
+>   * buffer.c
+>   */
+> -int __block_write_begin_int(struct page *page, loff_t pos, unsigned len,
+> +int __block_write_begin_int(struct folio *folio, loff_t pos, unsigned len,
+>  		get_block_t *get_block, const struct iomap *iomap);
+>  
+>  /*
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index 1753c26c8e76..4e09ea823148 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -597,6 +597,7 @@ static int iomap_write_begin(const struct iomap_iter *iter, loff_t pos,
+>  	const struct iomap_page_ops *page_ops = iter->iomap.page_ops;
+>  	const struct iomap *srcmap = iomap_iter_srcmap(iter);
+>  	struct page *page;
+> +	struct folio *folio;
+>  	int status = 0;
+>  
+>  	BUG_ON(pos + len > iter->iomap.offset + iter->iomap.length);
+> @@ -618,11 +619,12 @@ static int iomap_write_begin(const struct iomap_iter *iter, loff_t pos,
+>  		status = -ENOMEM;
+>  		goto out_no_page;
+>  	}
+> +	folio = page_folio(page);
+>  
+>  	if (srcmap->type == IOMAP_INLINE)
+>  		status = iomap_write_begin_inline(iter, page);
+>  	else if (srcmap->flags & IOMAP_F_BUFFER_HEAD)
+> -		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
+> +		status = __block_write_begin_int(folio, pos, len, NULL, srcmap);
+>  	else
+>  		status = __iomap_write_begin(iter, pos, len, page);
+>  
+> @@ -954,11 +956,12 @@ EXPORT_SYMBOL_GPL(iomap_truncate_page);
+>  static loff_t iomap_page_mkwrite_iter(struct iomap_iter *iter,
+>  		struct page *page)
+>  {
+> +	struct folio *folio = page_folio(page);
+>  	loff_t length = iomap_length(iter);
+>  	int ret;
+>  
+>  	if (iter->iomap.flags & IOMAP_F_BUFFER_HEAD) {
+> -		ret = __block_write_begin_int(page, iter->pos, length, NULL,
+> +		ret = __block_write_begin_int(folio, iter->pos, length, NULL,
+>  					      &iter->iomap);
+>  		if (ret)
+>  			return ret;
+> -- 
+> 2.33.0
+> 
