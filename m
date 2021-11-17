@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D6645405D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 06:47:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F73C454062
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 06:47:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233320AbhKQFtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 00:49:21 -0500
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:54177 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233236AbhKQFtS (ORCPT
+        id S233421AbhKQFth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 00:49:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233393AbhKQFtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 00:49:18 -0500
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1AH5LlxS034569;
-        Wed, 17 Nov 2021 13:21:47 +0800 (GMT-8)
-        (envelope-from tommy_huang@aspeedtech.com)
-Received: from tommy0527-VirtualBox.aspeedtech.com (192.168.2.141) by
- TWMBX02.aspeed.com (192.168.0.24) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 17 Nov 2021 13:45:29 +0800
-From:   tommy-huang <tommy_huang@aspeedtech.com>
-To:     <joel@jms.id.au>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <robh+dt@kernel.org>, <andrew@aj.id.au>,
-        <linux-aspeed@lists.ozlabs.org>, <dri-devel@lists.freedesktop.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [PATCH v3 4/4] drm/aspeed: Add AST2600 chip support
-Date:   Wed, 17 Nov 2021 13:45:18 +0800
-Message-ID: <20211117054518.3555-5-tommy_huang@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211117054518.3555-1-tommy_huang@aspeedtech.com>
-References: <20211117054518.3555-1-tommy_huang@aspeedtech.com>
+        Wed, 17 Nov 2021 00:49:36 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABF8C061746;
+        Tue, 16 Nov 2021 21:46:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=FfkD+q87eHWGTXiAr2sBn0a4XKYgLxkUZ91bqq+Qj7I=; b=f0IaqUKiZEGLG0LZzJADOdJIdw
+        0pJknKD7fnMGb6un+ujetf2mhKSonM9EAiBWj2v75CglUCSD7yox0oIQ1U4ntRT/V/cIXH/fSURs5
+        jneLPWyTj9kQGoUnlckLP/WAqNN2v1NES0jCoAK0WfoURgcVHBjBKDP5A3zd6GSYxf2iORlZFnkDE
+        NMKJsA5vJYuUsXprmJWBXDlLzjVujZfp3FeQKyAZfOplAZGdZw5EjOm0uiT1/N0rndWTgNF+Ln1hc
+        CXFx+dArgN1ArnG4ckBCpMTfyLGESQz2JNkg3Mum4Hp8o+03QaO9n8+owAfNNncGFr8ol27fA/l56
+        NFJynLXQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mnDmF-003MgV-V5; Wed, 17 Nov 2021 05:46:36 +0000
+Subject: Re: linux-next: Tree for Nov 17 (uml, no IPV6)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20211117135800.0b7072cd@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <268ae204-efae-3081-a5dd-44fc07d048ba@infradead.org>
+Date:   Tue, 16 Nov 2021 21:46:35 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.2.141]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1AH5LlxS034569
+In-Reply-To: <20211117135800.0b7072cd@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add AST2600 chip support and setting.
+On 11/16/21 6:58 PM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Changes since 20211116:
+> 
 
-Signed-off-by: tommy-huang <tommy_huang@aspeedtech.com>
----
- drivers/gpu/drm/aspeed/aspeed_gfx_drv.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ARCH=um SUBARCH=x86_64:
+# CONFIG_IPV6 is not set
 
-diff --git a/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c b/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
-index d4b56b3c7597..d10246b1d1c2 100644
---- a/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
-+++ b/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
-@@ -82,9 +82,18 @@ static const struct aspeed_gfx_config ast2500_config = {
- 	.scan_line_max = 128,
- };
- 
-+static const struct aspeed_gfx_config ast2600_config = {
-+	.dac_reg = 0xc0,
-+	.int_clear_reg = 0x68,
-+	.vga_scratch_reg = 0x50,
-+	.throd_val = CRT_THROD_LOW(0x50) | CRT_THROD_HIGH(0x70),
-+	.scan_line_max = 128,
-+};
-+
- static const struct of_device_id aspeed_gfx_match[] = {
- 	{ .compatible = "aspeed,ast2400-gfx", .data = &ast2400_config },
- 	{ .compatible = "aspeed,ast2500-gfx", .data = &ast2500_config },
-+	{ .compatible = "aspeed,ast2600-gfx", .data = &ast2600_config },
- 	{ },
- };
- MODULE_DEVICE_TABLE(of, aspeed_gfx_match);
+
+In file included from ../net/ethernet/eth.c:62:0:
+../include/net/gro.h: In function ‘ip6_gro_compute_pseudo’:
+../include/net/gro.h:413:22: error: implicit declaration of function ‘csum_ipv6_magic’; did you mean ‘csum_tcpudp_magic’? [-Werror=implicit-function-declaration]
+   return ~csum_unfold(csum_ipv6_magic(&iph->saddr, &iph->daddr,
+                       ^~~~~~~~~~~~~~~
+                       csum_tcpudp_magic
+
+
+After I made ip6_gro_compute_pseudo() conditional on CONFIG_IPV6,
+I got this build error:
+
+In file included from ../net/ipv6/tcpv6_offload.c:10:0:
+../net/ipv6/tcpv6_offload.c: In function ‘tcp6_gro_receive’:
+../net/ipv6/tcpv6_offload.c:22:11: error: implicit declaration of function ‘ip6_gro_compute_pseudo’; did you mean ‘inet_gro_compute_pseudo’? [-Werror=implicit-function-declaration]
+            ip6_gro_compute_pseudo)) {
+            ^
+../include/net/gro.h:235:5: note: in definition of macro ‘__skb_gro_checksum_validate’
+      compute_pseudo(skb, proto));  \
+      ^~~~~~~~~~~~~~
+../net/ipv6/tcpv6_offload.c:21:6: note: in expansion of macro ‘skb_gro_checksum_validate’
+       skb_gro_checksum_validate(skb, IPPROTO_TCP,
+       ^~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+This is UML x86_64 defconfig:
+
+$ make ARCH=um SUBARCH=x86_64 defconfig all
+
+
 -- 
-2.17.1
-
+~Randy
