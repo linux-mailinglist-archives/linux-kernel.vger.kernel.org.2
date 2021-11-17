@@ -2,151 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484F0454962
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:56:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B8C454964
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:57:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbhKQO72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 09:59:28 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:50294 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230376AbhKQO72 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 09:59:28 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1DA9D1FD29;
-        Wed, 17 Nov 2021 14:56:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1637160988; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ULWNdZT5zgP0fGwSkrNsSz9dUlbgfDC0raAB8lnTGyI=;
-        b=dXap3i/LQ8rKcslEtGg3eDHrpA+kh2arhleCPnxMCEFMEmJvxZPtc5Y4hXuMOOsVjWeQrZ
-        SwSNDvGpdRaedbk2swj1E7/RoMp7JhsITJc6Zq8A57tsONAIvqlBEllGKFb7Z+1FwEAS5n
-        iwB3Yi7aRJWknEbNMafeXKrZgkIjYBI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1637160988;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ULWNdZT5zgP0fGwSkrNsSz9dUlbgfDC0raAB8lnTGyI=;
-        b=XBZz+jynCQc4WHLxeddgiEnZnFQCoHNbVvuxARUyir+hA0eFAvujhJLphALvrv8Dw3AxuE
-        luduUBUnHChlnlAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DF74313AAD;
-        Wed, 17 Nov 2021 14:56:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id pGqBNRsYlWHDAgAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Wed, 17 Nov 2021 14:56:27 +0000
-Message-ID: <926ff1f6-2255-4e94-3a24-4fc78260f27d@suse.de>
-Date:   Wed, 17 Nov 2021 15:56:27 +0100
+        id S232310AbhKQPAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 10:00:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33686 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230376AbhKQPAb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 10:00:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 211EC61B1E;
+        Wed, 17 Nov 2021 14:57:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637161052;
+        bh=HktchAsyHIdoZdrHkEAvVXEdpnzu5xzjV5j19JFCzes=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LMt7AwVAUCGADPBPzusyAqFmHpLz12BeUn/wDOdvRLncxx14zibCWlrgCXIThddYA
+         0VJUzhtokj6YRES/xZUSLv7UgQvdiAJ2M8CoTqE1aLxKzF/Q9+xrcK7Qnltn6WzxDy
+         yygznJviBHffoUvzjrKqn484KXTjiX09HndxfxO3Ir78oSzHLe+xGSnIH3s1cxpVBs
+         sqXLj765x/7FOT9J5zH2YlZuYDY3Ei+kqZK+a5QECq6ialqGGoh2upt230CBc9v9Ge
+         haY493ajBhgqdgLAYAYSwObF5Dx0r+ow8eZG4Ij2Ln3rCPw5vxdhkJGWiy05roO+N4
+         rfijEDhmFk/Lg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D3B524088E; Wed, 17 Nov 2021 11:57:28 -0300 (-03)
+Date:   Wed, 17 Nov 2021 11:57:28 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Shunsuke Nakamura <nakamura.shun@fujitsu.com>,
+        peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
+        robh@kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] libperf: Move perf_counts_values__scale to
+ tools/lib/perf
+Message-ID: <YZUYWAiI6HIWPhYj@kernel.org>
+References: <20211109085831.3770594-1-nakamura.shun@fujitsu.com>
+ <20211109085831.3770594-2-nakamura.shun@fujitsu.com>
+ <YZE3Ia3UpHPx2/gh@krava>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] drm/format-helper: Fix dst computation in
- drm_fb_xrgb8888_to_rgb888_dstclip()
-Content-Language: en-US
-To:     Hector Martin <marcan@marcan.st>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20211117142206.197575-1-marcan@marcan.st>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <20211117142206.197575-1-marcan@marcan.st>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------8vBjnha6aQYVQUWNP8QSQK2i"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZE3Ia3UpHPx2/gh@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------8vBjnha6aQYVQUWNP8QSQK2i
-Content-Type: multipart/mixed; boundary="------------WtMvvewvWP9vwKls04kxjvwh";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Hector Martin <marcan@marcan.st>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@linux.ie>,
- Daniel Vetter <daniel@ffwll.ch>
-Cc: stable@vger.kernel.org, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org
-Message-ID: <926ff1f6-2255-4e94-3a24-4fc78260f27d@suse.de>
-Subject: Re: [PATCH] drm/format-helper: Fix dst computation in
- drm_fb_xrgb8888_to_rgb888_dstclip()
-References: <20211117142206.197575-1-marcan@marcan.st>
-In-Reply-To: <20211117142206.197575-1-marcan@marcan.st>
+Em Sun, Nov 14, 2021 at 05:19:45PM +0100, Jiri Olsa escreveu:
+> On Tue, Nov 09, 2021 at 05:58:29PM +0900, Shunsuke Nakamura wrote:
+> > Move perf_counts_values__scale from tools/perf/util to tools/lib/perf
+> > so that it can be used with libperf.
+> > 
+> > Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
+> > ---
+> >  tools/lib/perf/evsel.c              | 19 +++++++++++++++++++
+> >  tools/lib/perf/include/perf/evsel.h |  4 ++++
+> >  tools/lib/perf/libperf.map          |  1 +
+> >  tools/perf/util/evsel.c             | 19 -------------------
+> >  tools/perf/util/evsel.h             |  3 ---
+> >  5 files changed, 24 insertions(+), 22 deletions(-)
+> > 
+> > diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
+> > index 8441e3e1aaac..5097aadea37a 100644
+> > --- a/tools/lib/perf/evsel.c
+> > +++ b/tools/lib/perf/evsel.c
+> > @@ -431,3 +431,22 @@ void perf_evsel__free_id(struct perf_evsel *evsel)
+> >  	zfree(&evsel->id);
+> >  	evsel->ids = 0;
+> >  }
+> > +
+> > +void perf_counts_values__scale(struct perf_counts_values *count,
+> > +			       bool scale, s8 *pscaled)
+> > +{
+> > +	s8 scaled = 0;
+> > +
+> > +	if (scale) {
+> > +		if (count->run == 0) {
+> > +			scaled = -1;
+> > +			count->val = 0;
+> > +		} else if (count->run < count->ena) {
+> > +			scaled = 1;
+> > +			count->val = (u64)((double)count->val * count->ena / count->run);
+> > +		}
+> > +	}
+> > +
+> > +	if (pscaled)
+> > +		*pscaled = scaled;
+> > +}
+> > diff --git a/tools/lib/perf/include/perf/evsel.h b/tools/lib/perf/include/perf/evsel.h
+> > index 60eae25076d3..9013d73af22d 100644
+> > --- a/tools/lib/perf/include/perf/evsel.h
+> > +++ b/tools/lib/perf/include/perf/evsel.h
+> > @@ -4,6 +4,8 @@
+> >  
+> >  #include <stdint.h>
+> >  #include <perf/core.h>
+> > +#include <stdbool.h>
+> > +#include <linux/types.h>
+> >  
+> >  struct perf_evsel;
+> >  struct perf_event_attr;
+> > @@ -39,5 +41,7 @@ LIBPERF_API int perf_evsel__disable_cpu(struct perf_evsel *evsel, int cpu);
+> >  LIBPERF_API struct perf_cpu_map *perf_evsel__cpus(struct perf_evsel *evsel);
+> >  LIBPERF_API struct perf_thread_map *perf_evsel__threads(struct perf_evsel *evsel);
+> >  LIBPERF_API struct perf_event_attr *perf_evsel__attr(struct perf_evsel *evsel);
+> > +LIBPERF_API void perf_counts_values__scale(struct perf_counts_values *count,
+> > +					   bool scale, s8 *pscaled);
+> 
+> not sure if we should use __s8 for pscaled now when it's exported?
+> it's just we use it everywhere else with '__' prefix, I forgot what's
+> the difference actually ;-)
 
---------------WtMvvewvWP9vwKls04kxjvwh
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+I'm moving this to be __s8, following what is being used in
+tools/lib/bpf/bpf.h.
+ 
+> but other that all looks good, for the patchset:
+> 
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
+> 
+> thanks,
+> jirka
+> 
+> 
+> >  
+> >  #endif /* __LIBPERF_EVSEL_H */
+> > diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
+> > index 71468606e8a7..5979bf92d98f 100644
+> > --- a/tools/lib/perf/libperf.map
+> > +++ b/tools/lib/perf/libperf.map
+> > @@ -50,6 +50,7 @@ LIBPERF_0.0.1 {
+> >  		perf_mmap__read_init;
+> >  		perf_mmap__read_done;
+> >  		perf_mmap__read_event;
+> > +		perf_counts_values__scale;
+> >  	local:
+> >  		*;
+> >  };
+> > diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> > index dbfeceb2546c..49e4d0bdd7cc 100644
+> > --- a/tools/perf/util/evsel.c
+> > +++ b/tools/perf/util/evsel.c
+> > @@ -1457,25 +1457,6 @@ void evsel__compute_deltas(struct evsel *evsel, int cpu, int thread,
+> >  	count->run = count->run - tmp.run;
+> >  }
+> >  
+> > -void perf_counts_values__scale(struct perf_counts_values *count,
+> > -			       bool scale, s8 *pscaled)
+> > -{
+> > -	s8 scaled = 0;
+> > -
+> > -	if (scale) {
+> > -		if (count->run == 0) {
+> > -			scaled = -1;
+> > -			count->val = 0;
+> > -		} else if (count->run < count->ena) {
+> > -			scaled = 1;
+> > -			count->val = (u64)((double) count->val * count->ena / count->run);
+> > -		}
+> > -	}
+> > -
+> > -	if (pscaled)
+> > -		*pscaled = scaled;
+> > -}
+> > -
+> >  static int evsel__read_one(struct evsel *evsel, int cpu, int thread)
+> >  {
+> >  	struct perf_counts_values *count = perf_counts(evsel->counts, cpu, thread);
+> > diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+> > index 1f7edfa8568a..8a6a4182c5fd 100644
+> > --- a/tools/perf/util/evsel.h
+> > +++ b/tools/perf/util/evsel.h
+> > @@ -190,9 +190,6 @@ static inline int evsel__nr_cpus(struct evsel *evsel)
+> >  	return evsel__cpus(evsel)->nr;
+> >  }
+> >  
+> > -void perf_counts_values__scale(struct perf_counts_values *count,
+> > -			       bool scale, s8 *pscaled);
+> > -
+> >  void evsel__compute_deltas(struct evsel *evsel, int cpu, int thread,
+> >  			   struct perf_counts_values *count);
+> >  
+> > -- 
+> > 2.27.0
+> > 
 
-SGkNCg0KQW0gMTcuMTEuMjEgdW0gMTU6MjIgc2NocmllYiBIZWN0b3IgTWFydGluOg0KPiBU
-aGUgZHN0IHBvaW50ZXIgd2FzIGJlaW5nIGFkdmFuY2VkIGJ5IHRoZSBjbGlwIHdpZHRoLCBu
-b3QgdGhlIGZ1bGwgbGluZQ0KPiBzdHJpZGUsIHJlc3VsdGluZyBpbiBjb3JydXB0aW9uLiBU
-aGUgY2xpcCBvZmZzZXQgd2FzIGFsc28gY2FsY3VsYXRlZA0KPiBpbmNvcnJlY3RseS4NCj4g
-DQo+IENjOiBzdGFibGVAdmdlci5rZXJuZWwub3JnDQo+IFNpZ25lZC1vZmYtYnk6IEhlY3Rv
-ciBNYXJ0aW4gPG1hcmNhbkBtYXJjYW4uc3Q+DQoNClRoYW5rcyBmb3IgeW91ciBwYXRjaCwg
-YnV0IHlvdSdyZSBwcm9iYWJseSBvbiB0aGUgd3JvbmcgYnJhbmNoLiBXZSANCnJld3JvdGUg
-dGhpcyBjb2RlIHJlY2VudGx5IGFuZCBmaXhlZCB0aGUgaXNzdWUgaW4gZHJtLW1pc2MtbmV4
-dC4gWzFdWzJdDQoNCklmIGFueXRoaW5nLCB0aGlzIHBhdGNoIGNvdWxkIGdvIGludG8gc3Rh
-YmxlLiBJZiBhbnlvbmUgd2FudHMgdG8gbWVyZ2UgDQppdCB0aGVyZSwgdGhlbg0KDQpBY2tl
-ZC1ieTogVGhvbWFzIFppbW1lcm1hbm4gPHR6aW1tZXJtYW5uQHN1c2UuZGU+DQoNCkJlc3Qg
-cmVnYXJkcw0KVGhvbWFzDQoNClsxXSANCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2RyaS1k
-ZXZlbC8yMDIxMTExMDEwMzcwMi4zNzQtNS10emltbWVybWFubkBzdXNlLmRlLw0KWzJdIA0K
-aHR0cHM6Ly9jZ2l0LmZyZWVkZXNrdG9wLm9yZy9kcm0vZHJtLW1pc2MvY29tbWl0Lz9pZD01
-M2JjMjA5OGQyYjZjY2ZmMjVmZTEzZjkzNDVjYmI1YzBlZjM0YTk5DQoNCj4gLS0tDQo+ICAg
-ZHJpdmVycy9ncHUvZHJtL2RybV9mb3JtYXRfaGVscGVyLmMgfCA0ICsrLS0NCj4gICAxIGZp
-bGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9kcm1fZm9ybWF0X2hlbHBlci5jIGIvZHJpdmVy
-cy9ncHUvZHJtL2RybV9mb3JtYXRfaGVscGVyLmMNCj4gaW5kZXggZTY3NjkyMTQyMmI4Li4x
-MmJjNmI0NWU5NWIgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9kcm1fZm9ybWF0
-X2hlbHBlci5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9kcm1fZm9ybWF0X2hlbHBlci5j
-DQo+IEBAIC0zNjYsMTIgKzM2NiwxMiBAQCB2b2lkIGRybV9mYl94cmdiODg4OF90b19yZ2I4
-ODhfZHN0Y2xpcCh2b2lkIF9faW9tZW0gKmRzdCwgdW5zaWduZWQgaW50IGRzdF9waXRjaA0K
-PiAgIAkJcmV0dXJuOw0KPiAgIA0KPiAgIAl2YWRkciArPSBjbGlwX29mZnNldChjbGlwLCBm
-Yi0+cGl0Y2hlc1swXSwgc2l6ZW9mKHUzMikpOw0KPiAtCWRzdCArPSBjbGlwX29mZnNldChj
-bGlwLCBkc3RfcGl0Y2gsIHNpemVvZih1MTYpKTsNCj4gKwlkc3QgKz0gY2xpcF9vZmZzZXQo
-Y2xpcCwgZHN0X3BpdGNoLCAzKTsNCj4gICAJZm9yICh5ID0gMDsgeSA8IGxpbmVzOyB5Kysp
-IHsNCj4gICAJCWRybV9mYl94cmdiODg4OF90b19yZ2I4ODhfbGluZShkYnVmLCB2YWRkciwg
-bGluZXBpeGVscyk7DQo+ICAgCQltZW1jcHlfdG9pbyhkc3QsIGRidWYsIGRzdF9sZW4pOw0K
-PiAgIAkJdmFkZHIgKz0gZmItPnBpdGNoZXNbMF07DQo+IC0JCWRzdCArPSBkc3RfbGVuOw0K
-PiArCQlkc3QgKz0gZHN0X3BpdGNoOw0KPiAgIAl9DQo+ICAgDQo+ICAgCWtmcmVlKGRidWYp
-Ow0KPiANCg0KLS0gDQpUaG9tYXMgWmltbWVybWFubg0KR3JhcGhpY3MgRHJpdmVyIERldmVs
-b3Blcg0KU1VTRSBTb2Z0d2FyZSBTb2x1dGlvbnMgR2VybWFueSBHbWJIDQpNYXhmZWxkc3Ry
-LiA1LCA5MDQwOSBOw7xybmJlcmcsIEdlcm1hbnkNCihIUkIgMzY4MDksIEFHIE7DvHJuYmVy
-ZykNCkdlc2Now6RmdHNmw7xocmVyOiBJdm8gVG90ZXYNCg==
+-- 
 
---------------WtMvvewvWP9vwKls04kxjvwh--
-
---------------8vBjnha6aQYVQUWNP8QSQK2i
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmGVGBsFAwAAAAAACgkQlh/E3EQov+AH
-CQ//fGP23yvUugjceBxuGQTRrE2FzitmwCqi11IDCu/rVArqcX2nJdY8lplyHCxEGhOBFmaWGCmw
-qbrklvJLXNrsTtbgwt7ErQfhOiopH8cJ9jHwT2DgFHQWb1Qfvuua8cfD19c1mG30uG6j+jah/RkI
-1zd6V3w5LpjDxx8eP7B0yq0lLjvzlwAmk0RPFoj8Eq/CC6SDKF56Tb4K3J6tLkS7wE4CeTmDEauq
-0iwBgvbKpW034NoSaX7sh3HaTUyZD0JUa98vaA1QH4NRbJfTo0qBf6V+/xVw2wBSn2nbj429j/AH
-71s5/vcYXoBEMGu5JiTpeaFYDHNV6j8gfPXFjWSq8/pi32/eppH8pcxMUmQyfyLVrn1Wu8FX73v8
-2dipo/FLrpW1pUyCFNhR6qvISTw+mmTVvRZxqPPh++YNGys7CUuwJCW58LPVytAmBMH1TZZXyObr
-4U06vN9URHHpq7M4cNCq0JaobS+mRdEpqPn7BWIjPGcTUXCRfDJAGsGKE3AJvIlMtJciiQSr/lVB
-F//XUam1NqgLla+WXrJHOTzlOxbI2E/DzwCl3u3DSObaaWdw8P0OeswM9/qx1FTjp3ZRGXSa4KRL
-hMBbeLso8cRyhxaN/V/pNL5+O8Yze3brwCT4k+OQK1q4LJhpLZ0Hr6PCGcv9vQkVevC48aIukiKb
-D7U=
-=V3eb
------END PGP SIGNATURE-----
-
---------------8vBjnha6aQYVQUWNP8QSQK2i--
+- Arnaldo
