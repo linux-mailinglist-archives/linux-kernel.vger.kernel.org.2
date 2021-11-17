@@ -2,137 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B3B453ED0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 04:09:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A0B453ED5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 04:10:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232672AbhKQDMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 22:12:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbhKQDMd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 22:12:33 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D42C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 19:09:35 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so1223523pjb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 19:09:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VmvoAeCR/cKpJy/KpIWyHW81p5clb62jAM8yRialPxQ=;
-        b=oFgww1crxVsH/qa57ET49g0LduNTCft2RWnzvOSTkxtJ9WZSxBR0ap7dD7ziGHqYgW
-         BwIwaHyKN2BbF1is/Z//5ShHQMTZKIch5suEfGBBkZNQPNn+k7JRUEZhYU3iny2mEN6Y
-         t4+cuRhc975g9+wbMR7nuy+YWQ3DVMH/kklcc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VmvoAeCR/cKpJy/KpIWyHW81p5clb62jAM8yRialPxQ=;
-        b=zF4Cc4W9rCjMZwmRpP5hDLUxGIG9vLZZ/cPINjayNzdx1RbipTrVT/kA0/yXBjqJSM
-         3GRfqQZyC/aNmE0jYMx4vPkYThG4MYOogUqoKtyFnuk8Aj3vxDZmDuM02lEBIORk0oEz
-         grGaUT2ezTKLbwGPe17t2v9PbmoyeBtnTIjGl03bdbCsrXJlRJS4Z42PCKdks3//i35z
-         Ko67KKCO+pAWYyTIZOLEXb7VxjjPwQlr8ZavGutcTOaEda+VBnyLX4st021aDOeo4tpv
-         yexp4iEfi7EnFq/JW11xVBGPzlxHGqDOiD8SthuUt8B6fSaPpyRleRYTw+3U/BBTPdCN
-         PS4w==
-X-Gm-Message-State: AOAM531tIrtNKnFZjGwBNtlcvmemGLXCqkNIOtTTQ+ZeGoaP6Ja6gxvP
-        RssQEi0npF7kj0yP7dtqWjJGFw==
-X-Google-Smtp-Source: ABdhPJynfDNe4qWqH8XSUQUD1rfM+xr+HUqXvJyGSGhPIm9fjkLSWuvgf0RE+Y2w+jUwtgPQdEDeXQ==
-X-Received: by 2002:a17:902:6a8a:b0:143:905f:aec7 with SMTP id n10-20020a1709026a8a00b00143905faec7mr52238085plk.8.1637118575504;
-        Tue, 16 Nov 2021 19:09:35 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:bcd2:b839:9ed:baea])
-        by smtp.gmail.com with ESMTPSA id v13sm21743523pfu.38.2021.11.16.19.09.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 19:09:34 -0800 (PST)
-Date:   Tue, 16 Nov 2021 19:09:32 -0800
-From:   Brian Norris <briannorris@chromium.org>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Sandeep Maheswaram <quic_c_sanm@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_pkondeti@quicinc.com,
-        quic_ppratap@quicinc.com
-Subject: Re: [PATCH v9 2/5] usb: dwc3: core: Host wake up support from system
- suspend
-Message-ID: <YZRybAkx1YLiVvfl@google.com>
-References: <1635753224-23975-1-git-send-email-quic_c_sanm@quicinc.com>
- <1635753224-23975-3-git-send-email-quic_c_sanm@quicinc.com>
- <YZRMoNEZTy8XimIx@google.com>
- <YZRXZs5B08SaBqMx@google.com>
+        id S232877AbhKQDNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 22:13:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229757AbhKQDNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 22:13:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4F82C61BF9;
+        Wed, 17 Nov 2021 03:10:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637118609;
+        bh=KeKZK4NfFw+XeRWvxZTjeXhn5HYOELRMB9po1qn1lMM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=J+fTHaItsvbom3Nj+/6L/2oTw/0giXjhkVGSYDxVhYVJ8DZ2nhJ+6a7nM2ZOS0nQx
+         fSkh9U7v4VnstEYArtTWDGDfqupwOmIuZc7WsrFcnuhkzo5zeIzstdfpdbFE5zTCgu
+         Bbv5/wX+dFfSZNUEd1rGclc++KgitOL6+OW+g8Y9z/e0WISs4eh5QFvZHsF+1ck5h6
+         ioesIAiI7kjFr3KzpNYifJb2ohhvWvJ9dvwanzGnDnG4UjBvI/FogFFD3xVYlip8pN
+         0mClcaZ60Wo7L3PzSBAbU9yH8V6W2bV6DueYqa5UBp6ZUn0Ivi+PbHpXBD32GdkAtT
+         jjsXHKG7iUK8w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 40F3660A0C;
+        Wed, 17 Nov 2021 03:10:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZRXZs5B08SaBqMx@google.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [net: PATCH] net: mvmdio: fix compilation warning
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163711860926.28737.8115206647292837561.git-patchwork-notify@kernel.org>
+Date:   Wed, 17 Nov 2021 03:10:09 +0000
+References: <20211115153024.209083-1-mw@semihalf.com>
+In-Reply-To: <20211115153024.209083-1-mw@semihalf.com>
+To:     Marcin Wojtas <mw@semihalf.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org, upstream@semihalf.com,
+        lkp@intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 05:14:14PM -0800, Matthias Kaehlcke wrote:
-> On Tue, Nov 16, 2021 at 04:28:16PM -0800, Brian Norris wrote:
-> > On Mon, Nov 01, 2021 at 01:23:41PM +0530, Sandeep Maheswaram wrote:
-> > > +		if (!PMSG_IS_AUTO(msg) && !device_may_wakeup(&dwc->xhci->dev)) {
-> > 
-> > I still find it odd to use device_may_wakeup(), since that's something
-> > controlled by user space (sysfs) and doesn't fully factor in hardware
-> > support. But that's what xhci-plat.c is doing, so I guess I see why
-> > you're imitating it...
-> > ...still, feels wrong to me. But so does a lot of how dwc3 works.
+Hello:
+
+This patch was applied to netdev/net.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Mon, 15 Nov 2021 16:30:24 +0100 you wrote:
+> The kernel test robot reported a following issue:
 > 
-> device_may_wakeup() actually factors in hardware support, at least if the
-> driver does the right thing (TM).
-
-Well in theory, maybe. But the latter half of the sentence is the key :)
-
-In particular, xhci-plat does the Wrong Thing before this series:
-
-	device_set_wakeup_capable(&pdev->dev, true);
-
-i.e., it doesn't factor any "capability" in at all; it just assumes it.
-
-And per your thoughts below, it's still Wrong after this series.
-
-> The (current) implementation is:
+> >> drivers/net/ethernet/marvell/mvmdio.c:426:36: warning:
+> unused variable 'orion_mdio_acpi_match' [-Wunused-const-variable]
+>    static const struct acpi_device_id orion_mdio_acpi_match[] = {
+>                                       ^
+>    1 warning generated.
 > 
-> static inline bool device_may_wakeup(struct device *dev)
-> {
-> 	return dev->power.can_wakeup && !!dev->power.wakeup;
-> }
-> 
-> '.can_wakeup' should describe the hardware capability to wake up and the
-> other flag whether wakeup is enabled (which can be altered by userspace).
-> 
-> What this series currently does with the .can_wakeup flag is still wrong
-> though IMO. Patch "[1/5] usb: host: xhci: plat: Add suspend quirk for dwc3
-> controller" [1] dynamically sets the flag with a value that depends on what
-> is connected to the bus, so it doesn't specify any longer whether the
-> hardware supports wakeup or not.
-> 
-> [1] https://patchwork.kernel.org/project/linux-usb/patch/1635753224-23975-2-git-send-email-quic_c_sanm@quicinc.com/
+> [...]
 
-I'm not sure either your patch nor Sandeep's patch really get at the
-heart of my problem here, which is that neither dwc3 nor xhci-plat are
-trying to reflect wakeup capability of the host controller at all. (And
-if the host controller doesn't suppor wakeup, it doesn't really matter
-what any of its children think.) It seems that
-drivers/usb/dwc3/dwc3-imx8mp.c is the only one that actually sets the
-correct wakeup flag at the level that we _really_ know what's up -- the
-platform/"glue" driver.
+Here is the summary with links:
+  - [net:] net: mvmdio: fix compilation warning
+    https://git.kernel.org/netdev/net/c/2460386bef0b
 
-Maybe we need to do a little of both: teach the glue drivers (e.g.,
-dwc3-qcom.c) to reflect their wakeup capability properly, and then look
-at *that* capability (as well as any children, recursively, but only if
-the glue driver supports it) when trying to make wakeup decisions.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-It still feels wrong that there are 3 separate "can wakeup"
-determinations for the host controller though: 1 dwc3-{glue}, 1
-dwc3(core), and 1 xhci-plat. But maybe we have to hold our noses on that
-one.
 
-Brian
