@@ -2,220 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2534445493E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89577454940
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234951AbhKQOyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 09:54:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231788AbhKQOyv (ORCPT
+        id S229921AbhKQOzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 09:55:02 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:60398 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236104AbhKQOy6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 09:54:51 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B7FC061570;
-        Wed, 17 Nov 2021 06:51:52 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id y196so2472111wmc.3;
-        Wed, 17 Nov 2021 06:51:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
-         :from:to:references:in-reply-to;
-        bh=jJ51ZlH+2lE8rLSSFCiYjXjBtLDKQFWHhyS+Y+x5rso=;
-        b=EJFSm/6QhkB5EwLlV7ulH4Kv0lZPoeIvlf0+dl+5Jp+1HqbXIpUP5HhYNmgBJTDzO1
-         Ru88IiQiRV4eAqbzcsN0QPoiohfoPuCd+Pn567jxPVnPEzOtHeiyILKzTlbP01ReR2Uc
-         bp/vHtQd5g7rNOpIDNE9T5x+2qx4sfmOOzndY6n9YRO0tU0PNAbS5F1DegSTiz9aoB1r
-         m2hgskZZ6+ErJq7hzDY7vX20m5q5Fhh90CVb6Elal0oGxqSLQkkgUWQ+9RQki3zdt7E/
-         lzh4nddM7Ai4INJscIUq1q58SIDV4qIm3cEqTJ4aSzavScQ68dDinTTimRTZQPhmVLw/
-         uvtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:date
-         :message-id:cc:subject:from:to:references:in-reply-to;
-        bh=jJ51ZlH+2lE8rLSSFCiYjXjBtLDKQFWHhyS+Y+x5rso=;
-        b=LK1az/klk8Kbu0PcbA5v0yHTaAk2g/2FenEWy64dQDJXiLQTGyIFhOUzuFiGL2cPYU
-         jI8e4QdhOrig79JPvBCQKUK8aF55vkhAY2DEVXxPf7wjhkzlLanZiIE9+Q+9W8k3gF1j
-         1bp0PxN0nmtwkeAp/rPfih6lUQuVCkA/02jTwTpNGnqQ3nKoGYssOp1R6ZX4qRUzAxHR
-         6L40be+iTFc+DSjCnLSlG+MRq16Yj+C03rr39m/Ly0AfVwcqPAhrvLiFclUtKyEydZTg
-         OHG3nahoogptS1/fyzUtFC7ruS4arPqbb0kj4es2McAmfKxmXz4ug0AgPx1Ik0WuMz5J
-         osJQ==
-X-Gm-Message-State: AOAM532THfOMvpNpkvNL8Mu3Kg3fo7/Tn7e9cC44Mma3Jzw9npm/sf2t
-        EZUlL/DZ6BagnRLxeMslp4c=
-X-Google-Smtp-Source: ABdhPJzHtEsTAdKaqa4gQxikWsbXFcywF/SZtl1a+gJCxhuR5b8+1mx7mQYYZoC5FJl1qFAIBeS3iQ==
-X-Received: by 2002:a05:600c:21d6:: with SMTP id x22mr265604wmj.194.1637160711086;
-        Wed, 17 Nov 2021 06:51:51 -0800 (PST)
-Received: from localhost (a109-49-33-111.cpe.netcabo.pt. [109.49.33.111])
-        by smtp.gmail.com with ESMTPSA id m34sm6599446wms.25.2021.11.17.06.51.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 06:51:50 -0800 (PST)
-Mime-Version: 1.0
+        Wed, 17 Nov 2021 09:54:58 -0500
+Date:   Wed, 17 Nov 2021 14:51:57 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637160718;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7Z39UcslXnmosc0Rg0xECpGYLAgsrv7cYapEjCFYu3g=;
+        b=ENldEUDp1OsQYRlrv4Jz6hf8Xo2mZWs4CGdz7ETYNnlOBMxUgY8h8fO+wNoeSxv22Ts4kC
+        Bo/EIMt0GwdB3aFQLexHcqD/aeIc3TPwaDtuew/bdR4qyTqShAeO069QICxWccbFgfAgQM
+        RXMP8ehc8pnACU8cYopGkaNBhNjGEh/dTSnNWsPLIoriZDLV3BgVwl7JGfboHcX+cOrytx
+        GjgjzOgrhoH+yDppUFRPRzD3995lZlv/0Vfp7d92PzAEoaH/tHTsaa1fxSEt1PeqR3FuL7
+        fFhkHnsuBMpGhAUihXY6LLT1ZDzkYvUWt4YfrKnyx419W+EhUJ2rmJf3GloH6g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637160718;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7Z39UcslXnmosc0Rg0xECpGYLAgsrv7cYapEjCFYu3g=;
+        b=2GCX7/EnpdwBQK14SwpVfGCVgyqaIKCriSabCUv7ln/h76R0vcDuCzPvayB0GILLxj2n/p
+        ZvTifNOR0n5yUdBg==
+From:   "tip-bot2 for Reinette Chatre" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/sgx] x86/sgx: Fix minor documentation issues
+Cc:     Reinette Chatre <reinette.chatre@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: =?utf-8?q?=3Cab99a87368eef69e3fb96f073368becff3eff874=2E16355?=
+ =?utf-8?q?29506=2Egit=2Ereinette=2Echatre=40intel=2Ecom=3E?=
+References: =?utf-8?q?=3Cab99a87368eef69e3fb96f073368becff3eff874=2E163552?=
+ =?utf-8?q?9506=2Egit=2Ereinette=2Echatre=40intel=2Ecom=3E?=
+MIME-Version: 1.0
+Message-ID: <163716071746.11128.8446441679647063855.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 17 Nov 2021 14:51:48 +0000
-Message-Id: <CFS51AQQ7SCD.7FK8RLAWLXRH@arch-thunder>
-Cc:     <kernel@pengutronix.de>, <kernel@puri.sm>, <linux-imx@nxp.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] media: imx: imx7-media-csi: add support for imx8mq
-From:   "Rui Miguel Silva" <rmfrfs@gmail.com>
-To:     "Martin Kepplinger" <martin.kepplinger@puri.sm>,
-        <laurent.pinchart@ideasonboard.com>, <mchehab@kernel.org>,
-        <robh@kernel.org>, <shawnguo@kernel.org>
-References: <20211117092710.3084034-1-martin.kepplinger@puri.sm>
-In-Reply-To: <20211117092710.3084034-1-martin.kepplinger@puri.sm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
-Thanks for the patch.
+The following commit has been merged into the x86/sgx branch of tip:
 
-On Wed Nov 17, 2021 at 9:27 AM WET, Martin Kepplinger wrote:
+Commit-ID:     379e4de9e140850cf699dd390f21ea4b923c955d
+Gitweb:        https://git.kernel.org/tip/379e4de9e140850cf699dd390f21ea4b923=
+c955d
+Author:        Reinette Chatre <reinette.chatre@intel.com>
+AuthorDate:    Fri, 29 Oct 2021 10:49:56 -07:00
+Committer:     Dave Hansen <dave.hansen@linux.intel.com>
+CommitterDate: Wed, 17 Nov 2021 06:36:09 -08:00
 
-> Modeled after the NXP driver mx6s_capture.c that this driver is based on,
-> imx8mq needs different settings for the baseaddr_switch mechanism. Define
-> the needed bits and set that for imx8mq.
->
-> Without these settings, the system will "sometimes" hang completely when
-> starting to stream (the interrupt will never be called).
->
-> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> ---
->  drivers/staging/media/imx/imx7-media-csi.c | 34 ++++++++++++++++++++--
->  1 file changed, 32 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/staging/media/imx/imx7-media-csi.c b/drivers/staging=
-/media/imx/imx7-media-csi.c
-> index 2288dadb2683..8619cf2fc694 100644
-> --- a/drivers/staging/media/imx/imx7-media-csi.c
-> +++ b/drivers/staging/media/imx/imx7-media-csi.c
-> @@ -12,6 +12,7 @@
->  #include <linux/interrupt.h>
->  #include <linux/mfd/syscon.h>
->  #include <linux/module.h>
-> +#include <linux/of_device.h>
->  #include <linux/of_graph.h>
->  #include <linux/pinctrl/consumer.h>
->  #include <linux/platform_device.h>
-> @@ -122,6 +123,10 @@
->  #define BIT_DATA_FROM_MIPI		BIT(22)
->  #define BIT_MIPI_YU_SWAP		BIT(21)
->  #define BIT_MIPI_DOUBLE_CMPNT		BIT(20)
-> +#define BIT_MASK_OPTION_FIRST_FRAME	(0 << 18)
-> +#define BIT_MASK_OPTION_CSI_EN		(1 << 18)
-> +#define BIT_MASK_OPTION_SECOND_FRAME	(2 << 18)
-> +#define BIT_MASK_OPTION_ON_DATA		(3 << 18)
->  #define BIT_BASEADDR_CHG_ERR_EN		BIT(9)
->  #define BIT_BASEADDR_SWITCH_SEL		BIT(5)
->  #define BIT_BASEADDR_SWITCH_EN		BIT(4)
-> @@ -154,6 +159,12 @@
->  #define CSI_CSICR18			0x48
->  #define CSI_CSICR19			0x4c
-> =20
-> +enum imx_soc {
-> +	IMX6UL =3D 0,
-> +	IMX7,
-> +	IMX8MQ,
+x86/sgx: Fix minor documentation issues
 
-maybe instead of this enum we could use a bool in structure...
->
->+};
-> +
->  struct imx7_csi {
->  	struct device *dev;
->  	struct v4l2_subdev sd;
-> @@ -189,6 +200,8 @@ struct imx7_csi {
->  	bool is_csi2;
-> =20
->  	struct completion last_eof_completion;
-> +
-> +	enum imx_soc type;
+The SGX documentation has a few repeated or one-off issues:
 
-here, bool is_imx8mq?
+ * Remove capitalization from regular words in the middle of a sentence.
+ * Remove punctuation found in the middle of a sentence.
+ * Fix name of SGX daemon to consistently be ksgxd.
+ * Fix typo of SGX instruction: ENIT -> EINIT
 
->  };
-> =20
->  static struct imx7_csi *
-> @@ -537,6 +550,16 @@ static void imx7_csi_deinit(struct imx7_csi *csi,
->  	clk_disable_unprepare(csi->mclk);
->  }
-> =20
-> +static void imx8mq_baseaddr_switch(struct imx7_csi *csi)
+[ dhansen: tweaked subject and changelog ]
 
-I think this function needs a better name. First add the imx7_csi
-prefix that all functions have, and also you are setting it specific
-to second frame and the function should not be specific to imx8.
+Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Link: https://lkml.kernel.org/r/ab99a87368eef69e3fb96f073368becff3eff874.1635=
+529506.git.reinette.chatre@intel.com
+---
+ Documentation/x86/sgx.rst | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-maybe something:
-
-imx7_csi_write_on_second_frame_enable, maybe?
-
-> +{
-> +	u32 cr18 =3D imx7_csi_reg_read(csi, CSI_CSICR18);
-> +
-> +	cr18 |=3D BIT_BASEADDR_SWITCH_EN | BIT_BASEADDR_SWITCH_SEL |
-> +		BIT_BASEADDR_CHG_ERR_EN;
-> +	cr18 |=3D BIT_MASK_OPTION_SECOND_FRAME;
-> +	imx7_csi_reg_write(csi, cr18, CSI_CSICR18);
-> +}
-> +
->  static void imx7_csi_enable(struct imx7_csi *csi)
->  {
->  	/* Clear the Rx FIFO and reflash the DMA controller. */
-> @@ -551,7 +574,11 @@ static void imx7_csi_enable(struct imx7_csi *csi)
-> =20
->  	/* Enable the RxFIFO DMA and the CSI. */
->  	imx7_csi_dmareq_rff_enable(csi);
-> +
-
-unrelated new line.
-
->  	imx7_csi_hw_enable(csi);
-> +
-> +	if (csi->type =3D=3D IMX8MQ)
-> +		imx8mq_baseaddr_switch(csi);
-
-change this to new types and names?
-
->  }
-> =20
->  static void imx7_csi_disable(struct imx7_csi *csi)
-> @@ -1155,6 +1182,8 @@ static int imx7_csi_probe(struct platform_device *p=
-dev)
->  	if (IS_ERR(csi->regbase))
->  		return PTR_ERR(csi->regbase);
-> =20
-> +	csi->type =3D (enum imx_soc)of_device_get_match_data(&pdev->dev);
-
-here something:
-        csi->is_imx8mq =3D of_device_is_compatible(np, "fsl,imx8mq-csi");
-> +
->  	spin_lock_init(&csi->irqlock);
->  	mutex_init(&csi->lock);
-> =20
-> @@ -1249,8 +1278,9 @@ static int imx7_csi_remove(struct platform_device *=
-pdev)
->  }
-> =20
->  static const struct of_device_id imx7_csi_of_match[] =3D {
-> -	{ .compatible =3D "fsl,imx7-csi" },
-> -	{ .compatible =3D "fsl,imx6ul-csi" },
-> +	{ .compatible =3D "fsl,imx8mq-csi", .data =3D (void *)IMX8MQ },
-
-and with the above you should not need to add the data field here.
-
-------
-Cheers,
-     Rui
-
-> +	{ .compatible =3D "fsl,imx7-csi", .data =3D (void *)IMX7 },
-> +	{ .compatible =3D "fsl,imx6ul-csi", .data =3D (void *)IMX6UL },
->  	{ },
->  };
->  MODULE_DEVICE_TABLE(of, imx7_csi_of_match);
-> --=20
-> 2.30.2
-
-
-
+diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
+index a608f66..265568a 100644
+--- a/Documentation/x86/sgx.rst
++++ b/Documentation/x86/sgx.rst
+@@ -10,7 +10,7 @@ Overview
+ Software Guard eXtensions (SGX) hardware enables for user space applications
+ to set aside private memory regions of code and data:
+=20
+-* Privileged (ring-0) ENCLS functions orchestrate the construction of the.
++* Privileged (ring-0) ENCLS functions orchestrate the construction of the
+   regions.
+ * Unprivileged (ring-3) ENCLU functions allow an application to enter and
+   execute inside the regions.
+@@ -91,7 +91,7 @@ In addition to the traditional compiler and linker build pr=
+ocess, SGX has a
+ separate enclave =E2=80=9Cbuild=E2=80=9D process.  Enclaves must be built be=
+fore they can be
+ executed (entered). The first step in building an enclave is opening the
+ **/dev/sgx_enclave** device.  Since enclave memory is protected from direct
+-access, special privileged instructions are Then used to copy data into encl=
+ave
++access, special privileged instructions are then used to copy data into encl=
+ave
+ pages and establish enclave page permissions.
+=20
+ .. kernel-doc:: arch/x86/kernel/cpu/sgx/ioctl.c
+@@ -126,13 +126,13 @@ the need to juggle signal handlers.
+ ksgxd
+ =3D=3D=3D=3D=3D
+=20
+-SGX support includes a kernel thread called *ksgxwapd*.
++SGX support includes a kernel thread called *ksgxd*.
+=20
+ EPC sanitization
+ ----------------
+=20
+ ksgxd is started when SGX initializes.  Enclave memory is typically ready
+-For use when the processor powers on or resets.  However, if SGX has been in
++for use when the processor powers on or resets.  However, if SGX has been in
+ use since the reset, enclave pages may be in an inconsistent state.  This mi=
+ght
+ occur after a crash and kexec() cycle, for instance.  At boot, ksgxd
+ reinitializes all enclave pages so that they can be allocated and re-used.
+@@ -147,7 +147,7 @@ Page reclaimer
+=20
+ Similar to the core kswapd, ksgxd, is responsible for managing the
+ overcommitment of enclave memory.  If the system runs out of enclave memory,
+-*ksgxwapd* =E2=80=9Cswaps=E2=80=9D enclave memory to normal memory.
++*ksgxd* =E2=80=9Cswaps=E2=80=9D enclave memory to normal memory.
+=20
+ Launch Control
+ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+@@ -156,7 +156,7 @@ SGX provides a launch control mechanism. After all enclav=
+e pages have been
+ copied, kernel executes EINIT function, which initializes the enclave. Only =
+after
+ this the CPU can execute inside the enclave.
+=20
+-ENIT function takes an RSA-3072 signature of the enclave measurement.  The f=
+unction
++EINIT function takes an RSA-3072 signature of the enclave measurement.  The =
+function
+ checks that the measurement is correct and signature is signed with the key
+ hashed to the four **IA32_SGXLEPUBKEYHASH{0, 1, 2, 3}** MSRs representing the
+ SHA256 of a public key.
+@@ -184,7 +184,7 @@ CPUs starting from Icelake use Total Memory Encryption (T=
+ME) in the place of
+ MEE. TME-based SGX implementations do not have an integrity Merkle tree, whi=
+ch
+ means integrity and replay-attacks are not mitigated.  B, it includes
+ additional changes to prevent cipher text from being returned and SW memory
+-aliases from being Created.
++aliases from being created.
+=20
+ DMA to enclave memory is blocked by range registers on both MEE and TME syst=
+ems
+ (SDM section 41.10).
