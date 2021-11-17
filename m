@@ -2,79 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E669454B5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:49:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CE7454B5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:50:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234554AbhKQQwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 11:52:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59614 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239260AbhKQQwS (ORCPT
+        id S234969AbhKQQxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 11:53:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231478AbhKQQw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 11:52:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637167759;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5r31ohO67CMQ07xbtqMClO0q3GCnOKbm6lne2ReCfu4=;
-        b=EH6p7qSn6RzHpqvBzthqZEMfjxj6mJ9lrZkFH6JVP9g/FMC2fCFBmwit6U73/lo1/pb2sc
-        zFA1AmOmC0zIGsux7s3n2h9xpc39b828t5maHiSyi7fdjUK2uWX+ALhaun7iPprNAoNeBY
-        SLUGXN1kMwUxBYTFoe9Hd08hf7z0NDs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-598-FhPu6gN2MEi6jY6JEq2JfQ-1; Wed, 17 Nov 2021 11:49:17 -0500
-X-MC-Unique: FhPu6gN2MEi6jY6JEq2JfQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AD1FA87D541;
-        Wed, 17 Nov 2021 16:49:16 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A7BF560C13;
-        Wed, 17 Nov 2021 16:49:15 +0000 (UTC)
-Message-ID: <20eddd70-7abb-e1a8-a003-62ed08fc1cac@redhat.com>
-Date:   Wed, 17 Nov 2021 17:49:14 +0100
+        Wed, 17 Nov 2021 11:52:56 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30129C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:49:58 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id v23so4023163iom.12
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:49:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=81zghY8ilRWKTudyGP6JsOkrppbpNH0CaOi9j8PUljw=;
+        b=oLkzkYBuHoPUuoqD3iFsTInCMvKmSNBQa6shdWUG+EiqyJjtKk3ZohZ2+6L7h4YxLy
+         CoXyJfD+sriT5aNAHjkwBBTMqUvnp63+rFblrFZ1M0uoYKRx8EAiSMwcbMOEWYHo2alw
+         zQcypyVDn8l2+FyM3FVFUYp7TRvhTTFkrkLR4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=81zghY8ilRWKTudyGP6JsOkrppbpNH0CaOi9j8PUljw=;
+        b=gDPAl4poMHUbcBCFgDzJA7GvJYcHlsNr4Cdegpc3LS+oZzV1N61CQURDUzypdT1qBG
+         TCP1bzJ1cHEbhZc55muiRaxAxtOciYdY7Ddy5AcF4YPmlgUIu6RR0q0GXbDDTyVbJNtG
+         3IOPZseAGom8d64o1lXpsPmlvyit4dJWKiSfEazoPHfSxZUP+r7Q85Az8Fqr196A2TQi
+         BS5BP/nysrfN6dOJQ1BOhuo+JPIVMwypmIxV9pJG20JVoaeQILY4XRuiIt1M7IBNbX2b
+         ztA8JtUFaOSUFJGjhOhI9/XlgmtSi8x7Vi6vmcCNSyJ0z+zQ6wMk+4EnEBdMUCk2c3iU
+         PQLg==
+X-Gm-Message-State: AOAM532SRkoexOVYb6rPOPYe3S3aNNR6Ydw5kd9OkNVrgthh4pyL4S37
+        q7QxxWw3ac0jmsr/OtDT71gC1Ty6WLC9QQ==
+X-Google-Smtp-Source: ABdhPJxUo9Qe32AemYN0XRxsg422x5RvaYgVDTecNajphv+CQLS+oe6Zc5kxLYLYI6B+FBm7slTdyQ==
+X-Received: by 2002:a02:734d:: with SMTP id a13mr14643437jae.113.1637167797298;
+        Wed, 17 Nov 2021 08:49:57 -0800 (PST)
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com. [209.85.166.41])
+        by smtp.gmail.com with ESMTPSA id c9sm176618iom.9.2021.11.17.08.49.55
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 08:49:55 -0800 (PST)
+Received: by mail-io1-f41.google.com with SMTP id z18so4054065iof.5
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:49:55 -0800 (PST)
+X-Received: by 2002:a05:6602:2d84:: with SMTP id k4mr12229047iow.168.1637167794919;
+ Wed, 17 Nov 2021 08:49:54 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: There is a null-ptr-deref bug in kvm_dirty_ring_get in
- virt/kvm/dirty_ring.c
-Content-Language: en-US
-To:     "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "butterflyhuangxx@gmail.com" <butterflyhuangxx@gmail.com>
-Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <CAFcO6XOmoS7EacN_n6v4Txk7xL7iqRa2gABg3F7E3Naf5uG94g@mail.gmail.com>
- <9eb83cdd-9314-0d1f-0d4b-0cf4432e1e84@redhat.com>
- <4b739ed0ce31e459eb8af9f5b0e2b1516d8e4517.camel@amazon.co.uk>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <4b739ed0ce31e459eb8af9f5b0e2b1516d8e4517.camel@amazon.co.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20211117163239.529781-1-kieran.bingham+renesas@ideasonboard.com>
+In-Reply-To: <20211117163239.529781-1-kieran.bingham+renesas@ideasonboard.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 17 Nov 2021 08:49:43 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=VM9H8Fow49V2eLs2Jfv6DmPYpDGNyHicc_802RksTZYQ@mail.gmail.com>
+Message-ID: <CAD=FV=VM9H8Fow49V2eLs2Jfv6DmPYpDGNyHicc_802RksTZYQ@mail.gmail.com>
+Subject: Re: [PATCH] gpu: drm: panel-edp: Fix edp_panel_entry documentation
+To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/21 10:46, Woodhouse, David wrote:
->> The remaining
->> option would be just "do not mark the page as dirty if the ring buffer
->> is active".  This is feasible because userspace itself has passed the
->> shared info gfn; but again, it's ugly...
-> I think I am coming to quite like that 'remaining option' as long as we
-> rephrase it as follows:
-> 
->   KVM does not mark the shared_info page as dirty, and userspace is
->   expected to*assume*  that it is dirty at all times. It's used for
->   delivering event channel interrupts and the overhead of marking it
->   dirty each time is just pointless.
+Hi,
 
-For the case of dirty-bitmap, one solution could be to only set a bool 
-and actually mark the page dirty lazily, at the time of 
-KVM_GET_DIRTY_LOG.  For dirty-ring, I agree that it's easiest if 
-userspace just "knows" the page is dirty.
+On Wed, Nov 17, 2021 at 8:32 AM Kieran Bingham
+<kieran.bingham+renesas@ideasonboard.com> wrote:
+>
+> The edp_panel_entry members 'delay' and 'name' are documented, but
+> without the correct syntax for kernel doc.
+>
+> This generates the following warnings:
+>
+> drivers/gpu/drm/panel/panel-edp.c:204: warning: Function parameter or member 'delay' not described in 'edp_panel_entry'
+> drivers/gpu/drm/panel/panel-edp.c:204: warning: Function parameter or member 'name' not described in 'edp_panel_entry'
+>
+> Fix them accordingly.
+>
+> Fixes: 5540cf8f3e8d ("drm/panel-edp: Implement generic "edp-panel"s probed by EDID")
+> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> ---
+>  drivers/gpu/drm/panel/panel-edp.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Paolo
+Thanks! Pushed to drm-misc-next (though technically it's a fix, it
+didn't seem urgent enough to go through -fixes. Hopefully this is OK).
 
+1e66f04c14ab gpu: drm: panel-edp: Fix edp_panel_entry documentation
+
+-Doug
