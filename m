@@ -2,103 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE08B454422
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C913454429
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235502AbhKQJtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 04:49:35 -0500
-Received: from smtp-fw-80007.amazon.com ([99.78.197.218]:32605 "EHLO
-        smtp-fw-80007.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231895AbhKQJtd (ORCPT
+        id S235538AbhKQJuU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Nov 2021 04:50:20 -0500
+Received: from mail-ua1-f50.google.com ([209.85.222.50]:39478 "EHLO
+        mail-ua1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232917AbhKQJuK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 04:49:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
-  s=amazon201209; t=1637142395; x=1668678395;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-id:mime-version:content-transfer-encoding:subject;
-  bh=LEmI6WBXYcxTJDRa9KaSwTD+aAFNr6PKPnhicl5YcUU=;
-  b=BN9Leuvx/5S2DtA0b/WNW7fEChkhjWJUwl5+tD8FqOFokgYnX/6ChiNH
-   /y2joDLg5FMHkS4Ypj/jCzuSTeFpvmw2vJv3hDtzEdBxSmw9owhQLrcay
-   jE21EGvIzxHaW1PTbFd5KWNPmbQOxRou8nQ30ieXBv2+tOAJ34Cw/uyw/
-   k=;
-X-IronPort-AV: E=Sophos;i="5.87,241,1631577600"; 
-   d="scan'208";a="42073659"
-Subject: Re: There is a null-ptr-deref bug in kvm_dirty_ring_get in
- virt/kvm/dirty_ring.c
-Thread-Topic: There is a null-ptr-deref bug in kvm_dirty_ring_get in virt/kvm/dirty_ring.c
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2c-72dc3927.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP; 17 Nov 2021 09:46:19 +0000
-Received: from EX13MTAUEE002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-2c-72dc3927.us-west-2.amazon.com (Postfix) with ESMTPS id 7722541591;
-        Wed, 17 Nov 2021 09:46:19 +0000 (UTC)
-Received: from EX13D08UEE003.ant.amazon.com (10.43.62.118) by
- EX13MTAUEE002.ant.amazon.com (10.43.62.24) with Microsoft SMTP Server (TLS)
- id 15.0.1497.26; Wed, 17 Nov 2021 09:46:19 +0000
-Received: from EX13D08UEE001.ant.amazon.com (10.43.62.126) by
- EX13D08UEE003.ant.amazon.com (10.43.62.118) with Microsoft SMTP Server (TLS)
- id 15.0.1497.26; Wed, 17 Nov 2021 09:46:18 +0000
-Received: from EX13D08UEE001.ant.amazon.com ([10.43.62.126]) by
- EX13D08UEE001.ant.amazon.com ([10.43.62.126]) with mapi id 15.00.1497.026;
- Wed, 17 Nov 2021 09:46:18 +0000
-From:   "Woodhouse, David" <dwmw@amazon.co.uk>
-To:     "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "butterflyhuangxx@gmail.com" <butterflyhuangxx@gmail.com>
-CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Thread-Index: AQHXxreOTE1P+MiJT0+87zK1gaBo/KwHon+A
-Date:   Wed, 17 Nov 2021 09:46:18 +0000
-Message-ID: <4b739ed0ce31e459eb8af9f5b0e2b1516d8e4517.camel@amazon.co.uk>
-References: <CAFcO6XOmoS7EacN_n6v4Txk7xL7iqRa2gABg3F7E3Naf5uG94g@mail.gmail.com>
-         <9eb83cdd-9314-0d1f-0d4b-0cf4432e1e84@redhat.com>
-In-Reply-To: <9eb83cdd-9314-0d1f-0d4b-0cf4432e1e84@redhat.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.61.150]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <2DE2CA63E476C446BBD868BFDE90C188@amazon.com>
+        Wed, 17 Nov 2021 04:50:10 -0500
+Received: by mail-ua1-f50.google.com with SMTP id i6so4535037uae.6;
+        Wed, 17 Nov 2021 01:47:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qXMkSa7k9ktPcVYQslXgieF2A8pEJy/mpadnxUjxBtc=;
+        b=qoh++g2zFW/mAnxhIXv90qNflNHZJV5RcEU34FpjfQTDl9MDB50w/sk/VJbJKL2GzQ
+         6B2G+w/0Ee6gblYOcBvTPhfjGhCKXzN/M+/mydViYOoctp8HVhGoBhOaEWp2f9Ut1UW9
+         U8NktVmWPEt8Y8ZGF/2lVoZI9IjkSWs89P0AGT0QxHf0F1GpV1YXuNMlgrS1G4t7vxP0
+         fZ5VeoIPhvk6Pvzz+Rfiiq8737S32JedfYhA8NDyxLnAlIXVNZc/Yj+/WygWcbs2A3Ec
+         oD3SoniJPINg3ElOrooP1XQV8U++ir/qoNlIFcgBaSFFJLE8Dw8MXECB3pwqki+XhPl3
+         norg==
+X-Gm-Message-State: AOAM531CHLRlyy06jIIKPaP16s7vq5D13H9fQqJ04AvkZeY4B6O37b4V
+        JcZ3aKuO0Jc+Jid6lbkE5iVp3pJ+JVAsKw==
+X-Google-Smtp-Source: ABdhPJyBOmlb+BVCOxdc/T1LfYiuigM2yK/niRdh8sGJVheonsdwUz+3WjtnMUdlH3B4ZvG2SR/E1g==
+X-Received: by 2002:a05:6102:38d4:: with SMTP id k20mr67071396vst.42.1637142431727;
+        Wed, 17 Nov 2021 01:47:11 -0800 (PST)
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com. [209.85.222.52])
+        by smtp.gmail.com with ESMTPSA id r20sm11603951vkq.15.2021.11.17.01.47.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 01:47:11 -0800 (PST)
+Received: by mail-ua1-f52.google.com with SMTP id p2so4468449uad.11;
+        Wed, 17 Nov 2021 01:47:11 -0800 (PST)
+X-Received: by 2002:a9f:2431:: with SMTP id 46mr21560983uaq.114.1637142430958;
+ Wed, 17 Nov 2021 01:47:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+References: <20211117135800.0b7072cd@canb.auug.org.au> <268ae204-efae-3081-a5dd-44fc07d048ba@infradead.org>
+ <CAMuHMdUdA6cJkWWKypvn7nGQw+u=gW_oRNWB-=G8g2T3VixJFQ@mail.gmail.com> <CANn89iLXQWR_F6v39guPftY=jhs4XHsERifhZPOTjR3zDNkJyg@mail.gmail.com>
+In-Reply-To: <CANn89iLXQWR_F6v39guPftY=jhs4XHsERifhZPOTjR3zDNkJyg@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 17 Nov 2021 10:46:59 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXHo5boecN7Y81auC0y=_xWyNXO6tq8+U4AJq-z17F1nw@mail.gmail.com>
+Message-ID: <CAMuHMdXHo5boecN7Y81auC0y=_xWyNXO6tq8+U4AJq-z17F1nw@mail.gmail.com>
+Subject: Re: linux-next: Tree for Nov 17 (uml, no IPV6)
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTEwLTIxIGF0IDIyOjA4ICswMjAwLCBQYW9sbyBCb256aW5pIHdyb3RlOg0K
-PiBPbiAxOC8xMC8yMSAxOToxNCwgYnV0dDNyZmx5aDRjayB3cm90ZToNCj4gPiB7DQo+ID4gc3Ry
-dWN0IGt2bV92Y3B1ICp2Y3B1ID0ga3ZtX2dldF9ydW5uaW5nX3ZjcHUoKTsgIC8vLS0tLS0tLT4g
-aW52b2tlDQo+ID4ga3ZtX2dldF9ydW5uaW5nX3ZjcHUoKSB0byBnZXQgYSB2Y3B1Lg0KPiA+IA0K
-PiA+IFdBUk5fT05fT05DRSh2Y3B1LT5rdm0gIT0ga3ZtKTsgWzFdDQo+ID4gDQo+ID4gcmV0dXJu
-ICZ2Y3B1LT5kaXJ0eV9yaW5nOw0KPiA+IH0NCj4gPiBgYGANCj4gPiBidXQgd2UgaGFkIG5vdCBj
-YWxsZWQgS1ZNX0NSRUFURV9WQ1BVIGlvY3RsIHRvIGNyZWF0ZSBhIGt2bV92Y3B1IHNvDQo+ID4g
-dmNwdSBpcyBOVUxMLg0KPiANCj4gSXQncyBub3QganVzdCBiZWNhdXNlIHRoZXJlIHdhcyBubyBj
-YWxsIHRvIEtWTV9DUkVBVEVfVkNQVTsgaW4gZ2VuZXJhbA0KPiBrdm0tPmRpcnR5X3Jpbmdfc2l6
-ZSBvbmx5IHdvcmtzIGlmIGFsbCB3cml0ZXMgYXJlIGFzc29jaWF0ZWQgdG8gYQ0KPiBzcGVjaWZp
-YyB2Q1BVLCB3aGljaCBpcyBub3QgdGhlIGNhc2UgZm9yIHRoZSBvbmUgb2YNCj4ga3ZtX3hlbl9z
-aGFyZWRfaW5mb19pbml0Lg0KPiANCj4gRGF2aWQsIHdoYXQgZG8geW91IHRoaW5rPyAgTWFraW5n
-IGRpcnR5LXBhZ2UgcmluZyBidWZmZXIgaW5jb21wYXRpYmxlDQo+IHdpdGggWGVuIGlzIHVnbHkg
-YW5kIEknZCByYXRoZXIgYXZvaWQgaXQ7IHRha2luZyB0aGUgbXV0ZXggZm9yIHZjcHUgMCBpcw0K
-PiBub3QgYW4gb3B0aW9uIGJlY2F1c2UsIGFzIHRoZSByZXBvcnRlciBzYWlkLCB5b3UgbWlnaHQg
-bm90IGhhdmUgZXZlbg0KPiBjcmVhdGVkIGEgdkNQVSB5ZXQgd2hlbiB5b3UgY2FsbCBLVk1fWEVO
-X0hWTV9TRVRfQVRUUi4gIFRoZSByZW1haW5pbmcNCj4gb3B0aW9uIHdvdWxkIGJlIGp1c3QgImRv
-IG5vdCBtYXJrIHRoZSBwYWdlIGFzIGRpcnR5IGlmIHRoZSByaW5nIGJ1ZmZlcg0KPiBpcyBhY3Rp
-dmUiLiAgVGhpcyBpcyBmZWFzaWJsZSBiZWNhdXNlIHVzZXJzcGFjZSBpdHNlbGYgaGFzIHBhc3Nl
-ZCB0aGUNCj4gc2hhcmVkIGluZm8gZ2ZuOyBidXQgYWdhaW4sIGl0J3MgdWdseS4uLg0KDQpJIHRo
-aW5rIEkgYW0gY29taW5nIHRvIHF1aXRlIGxpa2UgdGhhdCAncmVtYWluaW5nIG9wdGlvbicgYXMg
-bG9uZyBhcyB3ZQ0KcmVwaHJhc2UgaXQgYXMgZm9sbG93czoNCg0KIEtWTSBkb2VzIG5vdCBtYXJr
-IHRoZSBzaGFyZWRfaW5mbyBwYWdlIGFzIGRpcnR5LCBhbmQgdXNlcnNwYWNlIGlzDQogZXhwZWN0
-ZWQgdG8gKmFzc3VtZSogdGhhdCBpdCBpcyBkaXJ0eSBhdCBhbGwgdGltZXMuIEl0J3MgdXNlZCBm
-b3INCiBkZWxpdmVyaW5nIGV2ZW50IGNoYW5uZWwgaW50ZXJydXB0cyBhbmQgdGhlIG92ZXJoZWFk
-IG9mIG1hcmtpbmcgaXQNCiBkaXJ0eSBlYWNoIHRpbWUgaXMganVzdCBwb2ludGxlc3MuDQoNCkkn
-dmUgbWVyZ2VkIHRoZSBwYXRjaCBJIHNlbnQgeWVzdGVyZGF5IGludG8gbXkgcGZuY2FjaGUgc2Vy
-aWVzIGJlY2F1c2UNCkkgcmVhbGlzZWQgd2UgbmVlZGVkIHRoZSBzYW1lIHRoZXJlLCBidXQgSSds
-bCBsb29rIGF0IG1ha2luZyB0aGUgWGVuDQpjb2RlICpub3QqIG1hcmsgdGhlIHNoaW5mbyBwYWdl
-IGRpcnR5IHdoZW4gaXQgd3JpdGVzIHRoZSBjbG9jayBkYXRhDQp0aGVyZS4NCgoKCkFtYXpvbiBE
-ZXZlbG9wbWVudCBDZW50cmUgKExvbmRvbikgTHRkLiBSZWdpc3RlcmVkIGluIEVuZ2xhbmQgYW5k
-IFdhbGVzIHdpdGggcmVnaXN0cmF0aW9uIG51bWJlciAwNDU0MzIzMiB3aXRoIGl0cyByZWdpc3Rl
-cmVkIG9mZmljZSBhdCAxIFByaW5jaXBhbCBQbGFjZSwgV29yc2hpcCBTdHJlZXQsIExvbmRvbiBF
-QzJBIDJGQSwgVW5pdGVkIEtpbmdkb20uCgoK
+Hi Eric,
 
+On Wed, Nov 17, 2021 at 10:38 AM Eric Dumazet <edumazet@google.com> wrote:
+> On Wed, Nov 17, 2021 at 12:44 AM Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+> > On Wed, Nov 17, 2021 at 6:49 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> > > On 11/16/21 6:58 PM, Stephen Rothwell wrote:
+> > > > Changes since 20211116:
+> > >
+> > > ARCH=um SUBARCH=x86_64:
+> > > # CONFIG_IPV6 is not set
+> >
+> > It doesn't always happen with CONFIG_IPV6=n, so I guess that's why
+> > it wasn't detected before.
+>
+> Thanks for letting me know
+>
+> I guess the following addition would fix the issue ?
+>
+> diff --git a/arch/x86/um/asm/checksum_64.h b/arch/x86/um/asm/checksum_64.h
+> index 7b6cd1921573c97361b8d486bbba3e8870d53ad6..4f0c15a61925c46b261f87fa319e6aff28f4cfce
+> 100644
+> --- a/arch/x86/um/asm/checksum_64.h
+> +++ b/arch/x86/um/asm/checksum_64.h
+
+Are you sure that's the right fix?
+That won't fix the issue with m5272c3_defconfig.
+
+> > > In file included from ../net/ethernet/eth.c:62:0:
+> > > ../include/net/gro.h: In function ‘ip6_gro_compute_pseudo’:
+> > > ../include/net/gro.h:413:22: error: implicit declaration of function ‘csum_ipv6_magic’; did you mean ‘csum_tcpudp_magic’? [-Werror=implicit-function-declaration]
+> > >    return ~csum_unfold(csum_ipv6_magic(&iph->saddr, &iph->daddr,
+> > >                        ^~~~~~~~~~~~~~~
+> > >                        csum_tcpudp_magic
+> > >
+> > >
+> > > After I made ip6_gro_compute_pseudo() conditional on CONFIG_IPV6,
+> > > I got this build error:
+> > >
+> > > In file included from ../net/ipv6/tcpv6_offload.c:10:0:
+> > > ../net/ipv6/tcpv6_offload.c: In function ‘tcp6_gro_receive’:
+> > > ../net/ipv6/tcpv6_offload.c:22:11: error: implicit declaration of function ‘ip6_gro_compute_pseudo’; did you mean ‘inet_gro_compute_pseudo’? [-Werror=implicit-function-declaration]
+> > >             ip6_gro_compute_pseudo)) {
+> > >             ^
+> > > ../include/net/gro.h:235:5: note: in definition of macro ‘__skb_gro_checksum_validate’
+> > >       compute_pseudo(skb, proto));  \
+> > >       ^~~~~~~~~~~~~~
+> > > ../net/ipv6/tcpv6_offload.c:21:6: note: in expansion of macro ‘skb_gro_checksum_validate’
+> > >        skb_gro_checksum_validate(skb, IPPROTO_TCP,
+> > >        ^~~~~~~~~~~~~~~~~~~~~~~~~
+> > >
+> > >
+> > >
+> > > This is UML x86_64 defconfig:
+> > >
+> > > $ make ARCH=um SUBARCH=x86_64 defconfig all
+> >
+> > noreply@ellerman.id.au reported the same issue for m5272c3_defconfig,
+> > and I've bisected the failure to commit 4721031c3559db8e ("net:
+> > move gro definitions to include/net/gro.h").
+
+arch/m68k/include/asm/checksum.h defines csum_ipv6_magic()
+unconditionally, so it looks like just a missing #include.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
