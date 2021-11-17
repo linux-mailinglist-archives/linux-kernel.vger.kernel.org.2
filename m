@@ -2,184 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C0C4543EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:40:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3024543EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:40:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235705AbhKQJmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 04:42:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46726 "EHLO
+        id S235493AbhKQJmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 04:42:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235538AbhKQJl7 (ORCPT
+        with ESMTP id S235488AbhKQJl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 04:41:59 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A27AC061766
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 01:38:41 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id d24so3463756wra.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 01:38:41 -0800 (PST)
+        Wed, 17 Nov 2021 04:41:58 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB70C061225
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 01:38:36 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id x7so1931646pjn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 01:38:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=q2rKwboKgAw3nRRaCfD7SefQvnMKY/KTAzFoQdfeqaU=;
-        b=OO+6saCBlkO2KPQ5TxJjjigN9pHFCb8KDGZLaabpCFOYooTI+01Q2Im1MhLUXoBdFf
-         bf7Xriu1UCJR+ymitnwQ8BtJGDrCh5vctFZNgeZft0mEQWSEvd1ChSg9RSRKt6gcf4E/
-         IUL26Mn07+nVzUa3WLIgKVGk46tzsogB5zCVtFOidR7Tve7jLK40HYN5Ty7TpPxhhvUk
-         4FK55sgUkzOs02YZRMVUcRAEmoxqp5tQLPjTVRZacct8DEVC3BO/+e2i6qD1W/nK1AOy
-         ztaZq/NmhNGtmIzkae4XkVqufVUaQRRd2TlVuaV6mqUZX7TGOrkYBSZNfFimRAQyWIGo
-         /Uog==
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=p06wr/b9VeViK5RbDBA5PUJzTOvramSvm+dxu+M4rTE=;
+        b=pJGIqKsu10BvKRKG5LtiH7UHz0X1hSFCiqUjPWpHUJt6M3NXtqXLX3w1K/XCaEbfeH
+         tGZb/fYkxPOSnUN+cL89VU35pyfFzwzlTAoyXHIxOAvsvejjA8YZYZUhr52WdpLZ1/pQ
+         z4Ba4NOBonROMMr5b/sI+2v6mDMArk9/YyngfrsYv6bU6f7RkLjFM4n7OZg9G74Ikann
+         AKLqDY47KXHuvL8YlMz6dcnZ3WSawa1h5V4BEmqPN38nLhdd2pgLhXEvT5qrmwu/StrG
+         +X8hKLuDb47CIIkBtb3EGYT1KpBtWngdUmYluyk7wRwVG+NQA+3WAqD9X1GlL8Tq/kkb
+         DZqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=q2rKwboKgAw3nRRaCfD7SefQvnMKY/KTAzFoQdfeqaU=;
-        b=A0/KoAStTvRv13TFdNl5ovkmqHvOH2LTx+A3VEQL+AnHzvwVgA4vUwjHr77ILH+MHJ
-         ihI2srRz24kOv9xLsIHdhCRPki4sKYprEhajPLIP7E82/+ugW92LxD0XXcMPuie63/ow
-         S5p5WhUyblU42XfACwga+eyBRZD5SfhJg2/h+fIpD5hHb0a3T7Ww60Fy9iNGnhVFp7iu
-         BBpcC+znwo8m6HTgnScyYbVbUc2p1BRLcKPmOUXBC3pArJAXAt8y9T8HjD83knZg/5MP
-         M1TTIuPURSASlWHarA+iqP6rPV4Hs/beAuqlr6RmVbKTIBc0mmoCGXN8S9j2OOJ2xjPv
-         fr9w==
-X-Gm-Message-State: AOAM5333kVR1T9MckkRU8D+ggExbKf/2KXdRNMISfFRfylYtPd17uJNX
-        6XiUaZ3+p0bSnxRribwdIf7XRW7v+kfMb2sIMCvm0g==
-X-Google-Smtp-Source: ABdhPJygAy0isU1aGl66wBzprRc9u7qmQ4gQiO3MTlAlwKzYcPAZgC5J2vn32NzEw2fj+ggFTr8dkuvXrxV5nCddxBE=
-X-Received: by 2002:adf:e387:: with SMTP id e7mr18490666wrm.412.1637141919407;
- Wed, 17 Nov 2021 01:38:39 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=p06wr/b9VeViK5RbDBA5PUJzTOvramSvm+dxu+M4rTE=;
+        b=gHTsVgYhninU+IEKbfbs6bBc6hTzO1Q3fAcJS1PqX4dFphZ11CYEKwkH2MSe7e+Sw0
+         Wl4LEgsdLmvuOXAoYB/ykHO7TeARi949YqhYBi+hZ9VtDK4vn0Ltrmy/ohcvZ2a06FV9
+         yiJA8Pe0OUvol/kYdnLL0fUttMjl6lgGORmUyHnv7cfXFJi5KnGhwOo7W0gMDqEjbTy1
+         lBcApRgIeOXGRE2JCzI3tL1Atn4Aw8tF7dDqCRM+VJKBLtgpXXTqO5KFQaLLQmkz9yel
+         FIcM+xDypIbut5HmfK85s9S3wWmfa6Ga+uHYt+zowuvVcsI9dlJDK0hqV2oPuTTrBp5f
+         FefA==
+X-Gm-Message-State: AOAM533FXJscdx9D8jqFVi1koN6zLzj19MHuDn2VT3slQyIMiMHx41Rq
+        apHUrfAQcYAIfU4l1RMLppWjg4ftubSZhQ==
+X-Google-Smtp-Source: ABdhPJxPHQRyK4iq9ZP4EhzdB2xf9ry2tIJHPSDhqUSMZ/ugxhgyKB/rglfReIByiMgp7XdeUr8heA==
+X-Received: by 2002:a17:90a:9f93:: with SMTP id o19mr7998523pjp.136.1637141915812;
+        Wed, 17 Nov 2021 01:38:35 -0800 (PST)
+Received: from [10.76.43.192] ([61.120.150.76])
+        by smtp.gmail.com with ESMTPSA id w20sm23657053pfu.146.2021.11.17.01.38.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 01:38:35 -0800 (PST)
+Message-ID: <816cb511-446d-11eb-ae4a-583c5a7102c4@bytedance.com>
+Date:   Wed, 17 Nov 2021 17:38:28 +0800
 MIME-Version: 1.0
-References: <20211117135800.0b7072cd@canb.auug.org.au> <268ae204-efae-3081-a5dd-44fc07d048ba@infradead.org>
- <CAMuHMdUdA6cJkWWKypvn7nGQw+u=gW_oRNWB-=G8g2T3VixJFQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdUdA6cJkWWKypvn7nGQw+u=gW_oRNWB-=G8g2T3VixJFQ@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 17 Nov 2021 01:38:27 -0800
-Message-ID: <CANn89iLXQWR_F6v39guPftY=jhs4XHsERifhZPOTjR3zDNkJyg@mail.gmail.com>
-Subject: Re: linux-next: Tree for Nov 17 (uml, no IPV6)
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.1
+Subject: Re: Re: Re: Re: Re: Re: Re: [PATCH v1] sched/numa: add per-process
+ numa_balancing
+Content-Language: en-US
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-api@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org
+References: <20211028153028.GP3891@suse.de>
+ <b884ad7d-48d3-fcc8-d199-9e7643552a9a@bytedance.com>
+ <20211029083751.GR3891@suse.de>
+ <CAMx52ARF1fVH9=YLQMjE=8ckKJ=q3X2-ovtKuQcoTyo564mQnQ@mail.gmail.com>
+ <20211109091951.GW3891@suse.de>
+ <7de25e1b-e548-b8b5-dda5-6a2e001f3c1a@bytedance.com>
+ <20211109121222.GX3891@suse.de>
+ <117d5b88-b62b-f50b-32ff-1a9fe35b9e2e@bytedance.com>
+ <20211109162647.GY3891@suse.de>
+ <08e95d68-7ba9-44d0-da85-41dc244b4c99@bytedance.com>
+ <20211117082952.GA3301@suse.de>
+From:   Gang Li <ligang.bdlg@bytedance.com>
+In-Reply-To: <20211117082952.GA3301@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 12:44 AM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
->
-> Hi Randy,
->
-> On Wed, Nov 17, 2021 at 6:49 AM Randy Dunlap <rdunlap@infradead.org> wrot=
-e:
-> > On 11/16/21 6:58 PM, Stephen Rothwell wrote:
-> > > Changes since 20211116:
-> >
-> > ARCH=3Dum SUBARCH=3Dx86_64:
-> > # CONFIG_IPV6 is not set
->
-> It doesn't always happen with CONFIG_IPV6=3Dn, so I guess that's why
-> it wasn't detected before.
+On 11/17/21 4:29 PM, Mel Gorman wrote:
+> 
+> It's a bit vague but if you wanted to put together the outline, I'd read
+> over it. Note that this was all in the context of trying to introduce an
 
-Thanks for letting me know
+Sorry, maybe I shouldn't propose new feature in this context.
 
-I guess the following addition would fix the issue ?
+> API like
+> 
+> Disable/enable per-process numa balancing:
+>          prctl(PR_NUMA_BALANCING, PR_SET_NUMA_BALANCING, 0/1);
+> 
+> i.e. one that controlled both enabling and disabling. You also have
+> the option of introducing the NUMAB equivalent of PR_SET_THP_DISABLE --
+> an API that is explicitly about disabling *only*.
+> 
 
-diff --git a/arch/x86/um/asm/checksum_64.h b/arch/x86/um/asm/checksum_64.h
-index 7b6cd1921573c97361b8d486bbba3e8870d53ad6..4f0c15a61925c46b261f87fa319=
-e6aff28f4cfce
-100644
---- a/arch/x86/um/asm/checksum_64.h
-+++ b/arch/x86/um/asm/checksum_64.h
-@@ -14,6 +14,30 @@ static inline unsigned add32_with_carry(unsigned a,
-unsigned b)
-         return a;
- }
+If those APIs are ok with you, I will send v2 soon.
 
-+#define _HAVE_ARCH_IPV6_CSUM
-+static inline __sum16
-+csum_ipv6_magic(const struct in6_addr *saddr,
-+               const struct in6_addr *daddr,
-+               __u32 len, __u8 proto, __wsum sum)
-+{
-+       __u64 rest, sum64;
-+
-+       rest =3D (__force __u64)htonl(len) + (__force __u64)htons(proto) +
-+               (__force __u64)sum;
-+
-+       asm("   addq (%[saddr]),%[sum]\n"
-+           "   adcq 8(%[saddr]),%[sum]\n"
-+           "   adcq (%[daddr]),%[sum]\n"
-+           "   adcq 8(%[daddr]),%[sum]\n"
-+           "   adcq $0,%[sum]\n"
-+
-+           : [sum] "=3Dr" (sum64)
-+           : "[sum]" (rest), [saddr] "r" (saddr), [daddr] "r" (daddr));
-+
-+       return csum_fold(
-+              (__force __wsum)add32_with_carry(sum64 & 0xffffffff, sum64>>=
-32));
-+}
-+
- extern __sum16 ip_compute_csum(const void *buff, int len);
+1. prctl(PR_NUMA_BALANCING, PR_SET_THP_DISABLE);
+2. prctl(PR_NUMA_BALANCING, PR_SET_THP_ENABLE);
+3. prctl(PR_NUMA_BALANCING, PR_GET_THP);
 
- #endif
+IIUC, "THP" means "this process" or "the process".
 
 
->
-> > In file included from ../net/ethernet/eth.c:62:0:
-> > ../include/net/gro.h: In function =E2=80=98ip6_gro_compute_pseudo=E2=80=
-=99:
-> > ../include/net/gro.h:413:22: error: implicit declaration of function =
-=E2=80=98csum_ipv6_magic=E2=80=99; did you mean =E2=80=98csum_tcpudp_magic=
-=E2=80=99? [-Werror=3Dimplicit-function-declaration]
-> >    return ~csum_unfold(csum_ipv6_magic(&iph->saddr, &iph->daddr,
-> >                        ^~~~~~~~~~~~~~~
-> >                        csum_tcpudp_magic
-> >
-> >
-> > After I made ip6_gro_compute_pseudo() conditional on CONFIG_IPV6,
-> > I got this build error:
-> >
-> > In file included from ../net/ipv6/tcpv6_offload.c:10:0:
-> > ../net/ipv6/tcpv6_offload.c: In function =E2=80=98tcp6_gro_receive=E2=
-=80=99:
-> > ../net/ipv6/tcpv6_offload.c:22:11: error: implicit declaration of funct=
-ion =E2=80=98ip6_gro_compute_pseudo=E2=80=99; did you mean =E2=80=98inet_gr=
-o_compute_pseudo=E2=80=99? [-Werror=3Dimplicit-function-declaration]
-> >             ip6_gro_compute_pseudo)) {
-> >             ^
-> > ../include/net/gro.h:235:5: note: in definition of macro =E2=80=98__skb=
-_gro_checksum_validate=E2=80=99
-> >       compute_pseudo(skb, proto));  \
-> >       ^~~~~~~~~~~~~~
-> > ../net/ipv6/tcpv6_offload.c:21:6: note: in expansion of macro =E2=80=98=
-skb_gro_checksum_validate=E2=80=99
-> >        skb_gro_checksum_validate(skb, IPPROTO_TCP,
-> >        ^~~~~~~~~~~~~~~~~~~~~~~~~
-> >
-> >
-> >
-> > This is UML x86_64 defconfig:
-> >
-> > $ make ARCH=3Dum SUBARCH=3Dx86_64 defconfig all
->
-> noreply@ellerman.id.au reported the same issue for m5272c3_defconfig,
-> and I've bisected the failure to commit 4721031c3559db8e ("net:
-> move gro definitions to include/net/gro.h").
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
-8k.org
->
-> In personal conversations with technical people, I call myself a hacker. =
-But
-> when I'm talking to journalists I just say "programmer" or something like=
- that.
->                                 -- Linus Torvalds
