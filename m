@@ -2,60 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0AA454B5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E669454B5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:49:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233688AbhKQQwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 11:52:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32964 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233179AbhKQQwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 11:52:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 00A1F61360;
-        Wed, 17 Nov 2021 16:49:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637167753;
-        bh=dJgr49md2/DJwvQ4nf8T3TAiN7Q3mQ/A2us7fsZdIZc=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=DPeydbZgNAXY3VJGvIQ4Qxti+uU+YMdXY+hdpdisyilkIqzomMv8iG+MhDFsleIhH
-         rTrv87corY+sE1yy46gmOaBXn6tp2jOY+A3GxR5u2ycOp7kmfH37q9R2HxIAOi92y/
-         ucBZFPcxNuvYU2/Xyw05CnB2OZnBUPhbDuMXlri+N8yM4z9hoAQJ4wwSODVEcLUPF0
-         UvIMLDjB0KONYAwaNKgY7GXMauIJ2xe393g0qK2ghACfS15MKoeGg+byDhvKuy5S0U
-         aanE5Z88eXVzosvQw7Fd3YfwBAYWl+HGHUVrFfYaEhlXhU1kiYt87mI+LDvVRHrrjP
-         Cxo3oLkKmhNbQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EE73160A3A;
-        Wed, 17 Nov 2021 16:49:12 +0000 (UTC)
-Subject: Re: [GIT PULL] nfsd bugfix for 5.16
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211116015332.GJ23884@fieldses.org>
-References: <20211116015332.GJ23884@fieldses.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211116015332.GJ23884@fieldses.org>
-X-PR-Tracked-Remote: git://linux-nfs.org/~bfields/linux.git tags/nfsd-5.16-1
-X-PR-Tracked-Commit-Id: c0019b7db1d7ac62c711cda6b357a659d46428fe
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ef1d8dda23e7df10b48c90f86b12c9b4c62da1ab
-Message-Id: <163716775296.2428.13725518141872334049.pr-tracker-bot@kernel.org>
-Date:   Wed, 17 Nov 2021 16:49:12 +0000
-To:     "J. Bruce Fields" <bfields@fieldses.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        Chuck Lever <chuck.lever@oracle.com>
+        id S234554AbhKQQwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 11:52:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59614 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239260AbhKQQwS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 11:52:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637167759;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5r31ohO67CMQ07xbtqMClO0q3GCnOKbm6lne2ReCfu4=;
+        b=EH6p7qSn6RzHpqvBzthqZEMfjxj6mJ9lrZkFH6JVP9g/FMC2fCFBmwit6U73/lo1/pb2sc
+        zFA1AmOmC0zIGsux7s3n2h9xpc39b828t5maHiSyi7fdjUK2uWX+ALhaun7iPprNAoNeBY
+        SLUGXN1kMwUxBYTFoe9Hd08hf7z0NDs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-598-FhPu6gN2MEi6jY6JEq2JfQ-1; Wed, 17 Nov 2021 11:49:17 -0500
+X-MC-Unique: FhPu6gN2MEi6jY6JEq2JfQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AD1FA87D541;
+        Wed, 17 Nov 2021 16:49:16 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A7BF560C13;
+        Wed, 17 Nov 2021 16:49:15 +0000 (UTC)
+Message-ID: <20eddd70-7abb-e1a8-a003-62ed08fc1cac@redhat.com>
+Date:   Wed, 17 Nov 2021 17:49:14 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: There is a null-ptr-deref bug in kvm_dirty_ring_get in
+ virt/kvm/dirty_ring.c
+Content-Language: en-US
+To:     "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "butterflyhuangxx@gmail.com" <butterflyhuangxx@gmail.com>
+Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <CAFcO6XOmoS7EacN_n6v4Txk7xL7iqRa2gABg3F7E3Naf5uG94g@mail.gmail.com>
+ <9eb83cdd-9314-0d1f-0d4b-0cf4432e1e84@redhat.com>
+ <4b739ed0ce31e459eb8af9f5b0e2b1516d8e4517.camel@amazon.co.uk>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <4b739ed0ce31e459eb8af9f5b0e2b1516d8e4517.camel@amazon.co.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 15 Nov 2021 20:53:32 -0500:
+On 11/17/21 10:46, Woodhouse, David wrote:
+>> The remaining
+>> option would be just "do not mark the page as dirty if the ring buffer
+>> is active".  This is feasible because userspace itself has passed the
+>> shared info gfn; but again, it's ugly...
+> I think I am coming to quite like that 'remaining option' as long as we
+> rephrase it as follows:
+> 
+>   KVM does not mark the shared_info page as dirty, and userspace is
+>   expected to*assume*  that it is dirty at all times. It's used for
+>   delivering event channel interrupts and the overhead of marking it
+>   dirty each time is just pointless.
 
-> git://linux-nfs.org/~bfields/linux.git tags/nfsd-5.16-1
+For the case of dirty-bitmap, one solution could be to only set a bool 
+and actually mark the page dirty lazily, at the time of 
+KVM_GET_DIRTY_LOG.  For dirty-ring, I agree that it's easiest if 
+userspace just "knows" the page is dirty.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ef1d8dda23e7df10b48c90f86b12c9b4c62da1ab
+Paolo
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
