@@ -2,192 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F3D45467C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 13:38:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B96645467E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 13:39:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232592AbhKQMlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 07:41:20 -0500
-Received: from mx0a-0064b401.pphosted.com ([205.220.166.238]:4454 "EHLO
-        mx0a-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229563AbhKQMlT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 07:41:19 -0500
-Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AHCH35x001500;
-        Wed, 17 Nov 2021 04:37:51 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=PPS06212021;
- bh=Q4AZ1veJgFNAK4rCMDxSk5INFm4LgzDXCrsWkgIlTMs=;
- b=suL5Z9c2F4lKYaKhNSzCPJD1yYGyP/R4hPN19VRg2V7KKmszOt++9ndALd5SoFrZ7NYc
- mkb80phPBg5fchcsmQ+nSYaYRVOW7YienDIJfjhX+6T0+J1s3K9TdPfm++qv0VynbQJE
- S4XYp0gkk9eC6VPozsM6+bO6yZvLPwEQuQx3rRXCrDXuQmVxBN2NA25TkhW+DIwx4XbI
- ugdMoj+i6lrOoycVcxzXrjzYpAHkY82yVXNvZsVlNfUvK5EyaF1zpt8+MrjjjDvI6Qh9
- Y6lg2Ru2VNmu9wadXfRj/o9Ow1DRgNYPmuIea7d1mo+baU+P946vBHzkHJ8dkz5nJogJ OQ== 
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2048.outbound.protection.outlook.com [104.47.51.48])
-        by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3ccww005x8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Nov 2021 04:37:50 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GJnuJWALt82742h9K9wpcDhhG8x81bs77U/yjO/HfWLYnVPcB2G9L1FCNt5rwwps72iscqPdchx0C1aL1gxZGUsBAjZ7Ja6MAeaPZAFFg0AgOt53MEQu0Xp/DLwYAXD7VWbuwW7I+DqU3WI1sui6/cpa6sfHqgH4aRiKjzjy+4oFxollGaoIUoZMuAHD5j/7n/1QYjgFkG0bd8dOuhIM08Gl6Rdqa8E9rxMWUsK7MqPslWa1BYxgX7Ot/X1wBBOspV3lE7m3LjnP9kssq1wIgJzVp6mFb9yCqqxQlV2vIcmqo/nYqWOamXzNB0GYupy9D3hWuJG87g9KBp14CFzKMA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Q4AZ1veJgFNAK4rCMDxSk5INFm4LgzDXCrsWkgIlTMs=;
- b=gkmla/q8hkp+1ZHqGo6xSiquw7p+Ca+ecaB/K2qQKjqZVvW9idzKd9TRbKL2mCGJiADoZLHOU+rmazeUV8y66Vs6FWjMWU4okgmC2Z+gHtb375TPCn2ZOU0juL+73Ivp7ydwXPU5BN14OrMryltP8FIOa7xEUD8Q2/W4Nn30ZGCguoXxPeEXnPobwT4ncgwiVmwafZmG6CIf80Jt6zQiORsL7QvqjTxnlasMXdUDSLn3tP0/e5K2mCMoRNRbNLf+F8rKtfBeZOKUxXEar8Tte/Qz+ohgb5I966AzXCgDeBJBghv7wPfh2NbVQJ3pZpSTWpcUMVeveXj/kTR9qf7/uA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Received: from DM8PR11MB5686.namprd11.prod.outlook.com (2603:10b6:8:21::11) by
- DM4PR11MB5536.namprd11.prod.outlook.com (2603:10b6:5:39b::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4690.26; Wed, 17 Nov 2021 12:37:46 +0000
-Received: from DM8PR11MB5686.namprd11.prod.outlook.com
- ([fe80::c439:a54b:3935:964b]) by DM8PR11MB5686.namprd11.prod.outlook.com
- ([fe80::c439:a54b:3935:964b%4]) with mapi id 15.20.4713.021; Wed, 17 Nov 2021
- 12:37:46 +0000
-From:   "Xue, Ying" <Ying.Xue@windriver.com>
-To:     Tadeusz Struk <tadeusz.struk@linaro.org>,
-        "davem@davemloft.net" <davem@davemloft.net>
-CC:     Jon Maloy <jmaloy@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "tipc-discussion@lists.sourceforge.net" 
-        <tipc-discussion@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>
-Subject: RE: [PATCH v2] tipc: check for null after calling kmemdup
-Thread-Topic: [PATCH v2] tipc: check for null after calling kmemdup
-Thread-Index: AQHX2jotl85lhMqGjkuUe5aW5Kh/4KwHq1xQ
-Date:   Wed, 17 Nov 2021 12:37:46 +0000
-Message-ID: <DM8PR11MB56865CBD8366FFFE28E0A6D6849A9@DM8PR11MB5686.namprd11.prod.outlook.com>
-References: <20211115160143.5099-1-tadeusz.struk@linaro.org>
-In-Reply-To: <20211115160143.5099-1-tadeusz.struk@linaro.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 30ed7933-edfa-42f1-d25f-08d9a9c70efd
-x-ms-traffictypediagnostic: DM4PR11MB5536:
-x-microsoft-antispam-prvs: <DM4PR11MB55360188959923D22B97BDB3849A9@DM4PR11MB5536.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4Rs4Qgw7YJx76i8TeJP34cyOgpElZ1JNkjRBQWmDTJnyCWLyaRKl4qPf2VaaT2LX4L1AemjUczwm3wr+2PUIncq0sPEUsxk3hJshrZX0Ej3yxw94hK6dkLe0W788ImpDVtT6o60hFvgkoJQJxRFGhYK1oGwt9AGSkmfx31MGOF1tx7kiV7YSEJw3YNHEC2eN8KcmBtM/FiC+HihxqkqRstvfgWOcFS0DjRY0C5ynI4OLo0UdwI52z2OuG3zZa+WGwApNVV9asLUuqWYZhJkuaClhyjPvd9XcUbNAh+wIl0F8dpeT7MZm7vD/UGOkG6UZ51BC2VDAXT7tsnLelXx9Rrcir8eWEAyUoaFJk518HdyDtgkaGza6RdczJkkGdbjaJ5cW8DsEyiRJqpTOmE6ocg7zSVZ8tPl4c36sd/4z+QRCxpj3CxXeQKACurBW7tXGHHBImIZUeVeQ14gNKbD4hlnTxxtgqg0u0TALCxk/MYN0FsIvBQVcTwtzCJ0vR0droobIaK9vkjFqEpFQIuCY/Xv5QBvIBI3wH3TKya6UT3mRdnxhWss6JYWkzYIOhQaY3KNaZb/IPMPg5V+GdiIiPHJw4TXSEjurh9AAGtFn50j5LQ4tzvn96hFwCt+qVaq5LtCqzIIfwXBb+6s8YISjaD18OtqFreoeE7TwGm4M6fOaAtmX/7I61fHaDW8gQaCyFGoc/LGz+zImjLJ8FjVj2nA0HLEgCpdC+qdjczfizviyobzMzF6ads8Q2gTVwU2jOyKSc6ik42qtLOsD9k8GFxSo7xW6RKtW+pcVkOPPiwDTPt1Xqmw5NSqEW/ajh982
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR11MB5686.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(5660300002)(64756008)(66556008)(8676002)(7696005)(122000001)(66446008)(33656002)(110136005)(38070700005)(508600001)(966005)(55016002)(54906003)(4326008)(2906002)(186003)(52536014)(53546011)(66946007)(76116006)(86362001)(316002)(9686003)(8936002)(26005)(83380400001)(66476007)(71200400001)(6506007)(99710200001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?IxYmxlOT30KeGrISUcE/YRNCw72+G5mskxrpPM2K7f9i77FiT2RckV0tbLOr?=
- =?us-ascii?Q?Ha1WlW0v9UQRQf79yE09QtJLCDI5NwlN5n4yFaibImx2WaP3OA6GFhNPOtfv?=
- =?us-ascii?Q?geBdNFO3vqcAdenX0QUqeTRkgD07iaBAazNqIuuAOEJ38s1dKzdDEKBhZHdS?=
- =?us-ascii?Q?KRomsmMG64CzqnBqmzMxiiyjUnfq+BzuCFKBQZUvLy8ROO8HJo6bM8yOvgg+?=
- =?us-ascii?Q?25+k9RxqpjegSRz2W5gn32OzTIv5gUo5Fv8WChSb1OA/79wbD4klDSpaqcLx?=
- =?us-ascii?Q?jagRyvBHxpRAFrmOXEteWgk9XT0GY6LfLTzrHuxR37AiUAK/Hh6QBUKEYdUu?=
- =?us-ascii?Q?hXFmJO1pFvW9Ag5KcJn/l82XaLNd78bWlAP2qBbrrDBavZPmAUMoIw98GaUy?=
- =?us-ascii?Q?Q7c1S1qxLaKiMi3K7QPpHlhN2WlEI/WOUdG53Y4Gx45CaCyGe7rPtd+yLqxX?=
- =?us-ascii?Q?xiIZmRMLglZRZz4msx/Vx3r8BDvsyydiIj30NQnQ0ikymIgeyR0tI8IVq6M0?=
- =?us-ascii?Q?f2+qly9Fo6S3OwpMkLjM00nvdGWqxpeaGUQI5reehW1nnUWCum/L9wUIavuo?=
- =?us-ascii?Q?opQj0JCxlRizhNBbdu60eHwAxkPWhw8P/u08Y5G2WowtYWjZBLfpGO4aOlJD?=
- =?us-ascii?Q?VK0bbMnvvgGdu8AnNTBfhwJPNk5/fbA5SKccDh8WVcdFsB9pYDU3vGo+LT0F?=
- =?us-ascii?Q?uAk1nMlsDFqiFk+Md3rJUokJ/AYMboYcx09dIyzJOv1i6WHwF3zKupwjVDuD?=
- =?us-ascii?Q?g45oMLRHvrncAVi6Ddy4psGLs7Yo2hpTmitMtXHYIetBvD0PBtZACoi1p+Fl?=
- =?us-ascii?Q?lGatfFHcJZueA920z4NE3VX6dP40q1QgOVo3R9ZNi0V17ot+tNNXJiwOmMKE?=
- =?us-ascii?Q?oLjnii2CJfOR6rsphhwFdeKwNbMe+PsImk+Akjin4/kLYwAvUTiPDQYrrM4q?=
- =?us-ascii?Q?7yP75JHDhNjReJU9Ozzwi66e55ravfPsCqyrjnRXUjwVWpN/yB4ePw8CoaRA?=
- =?us-ascii?Q?eKwaN5o3B6qk59eQ1TozA0Sxaj10X9TRe80omn7ErvpVAkgV4SAAZXAoeVuk?=
- =?us-ascii?Q?RUwZpF4XZwzJhdYOodBkKTptQ07iVJJenIi4fyX/c8u6g/yO5MRiLoUMBg5T?=
- =?us-ascii?Q?qE+zAc2NmjROswEaayOOvOBuKKa7aQCRuHdiOhTgMUlv9saEB4wn/+LoHn8x?=
- =?us-ascii?Q?tIbAjL8lSEdsIw1Z9IPavMa7Q7OmuH3UWTK2rY7oBQwZhUCKxv19SnBwqe01?=
- =?us-ascii?Q?xsUcdWmPPf84grjWSlOz8O6+MMd8nNVeWl8RDCJDl4C3JlGFjuno29wNtnrA?=
- =?us-ascii?Q?MW2N4MMH+mF0xJfqncUnidXKunmbpewnRKQPnZfo/TnhdXo6kr700QQAEwYp?=
- =?us-ascii?Q?NOtu+t8tdWYWmpBM36JKAP4QqQjFvz7ljmkGYr9u4BRMTTcWIZ5DVhyWDh6n?=
- =?us-ascii?Q?I8wnLpalNgYNWCA2GHPtXAZjdPxF3CLmNJQn+f0oa0NJ4T48IDV6FVoPA351?=
- =?us-ascii?Q?WjNGvjWDjZQQP1d/+nyaYzwUKWTErZ+baU/ZoBx6cyy2rvKXheQLC66BraZ1?=
- =?us-ascii?Q?hNraXokjoKxXTOlcAtjd6oQpNMZAKlRlXWyYZA3fdySYDTFo2yThgWg6TtxI?=
- =?us-ascii?Q?rj1M23kwDEfqOI5gzl9stKo=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S235250AbhKQMlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 07:41:40 -0500
+Received: from mga06.intel.com ([134.134.136.31]:48388 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233191AbhKQMlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 07:41:39 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="294754472"
+X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
+   d="scan'208";a="294754472"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 04:38:40 -0800
+X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
+   d="scan'208";a="604717454"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 04:38:38 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mnKCs-007n5y-F1;
+        Wed, 17 Nov 2021 14:38:30 +0200
+Date:   Wed, 17 Nov 2021 14:38:30 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Hans de Goede <hdegoede@redhat.com>, sakari.ailus@linux.intel.com
+Cc:     Daniel Scally <djrscally@gmail.com>,
+        kernel test robot <oliver.sang@intel.com>, lkp@lists.01.org,
+        lkp@intel.com, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, rafael@kernel.org
+Subject: Re: [device property] 995fe757ec:
+ BUG:kernel_NULL_pointer_dereference,address
+Message-ID: <YZT3xvN9x9KDqoN7@smile.fi.intel.com>
+References: <20211116074104.GC32102@xsang-OptiPlex-9020>
+ <f54546b1-b0dc-c2bc-3a5f-bcdaf35297fc@redhat.com>
+ <YZPjf1GfZHR2ZjpD@smile.fi.intel.com>
+ <606a6bf2-e971-ddfe-74b0-cbc2b76935ba@gmail.com>
+ <e465d9b9-4d95-72a0-7a34-6893ddd78daa@redhat.com>
 MIME-Version: 1.0
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR11MB5686.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 30ed7933-edfa-42f1-d25f-08d9a9c70efd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Nov 2021 12:37:46.2875
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vQo+ZeRgbl/ZR24w4/ZvlutBsdg4lbA/eoqZ2H3BSdJ/expCjd9GU0qJsTv61eMSwGps1dXZzjxFTqFgtxpI9Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5536
-X-Proofpoint-ORIG-GUID: DwA_ecA-iwYtgBB-yXfNLcgn-NoFsin5
-X-Proofpoint-GUID: DwA_ecA-iwYtgBB-yXfNLcgn-NoFsin5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-17_04,2021-11-17_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- lowpriorityscore=0 mlxlogscore=999 malwarescore=0 clxscore=1011
- impostorscore=0 priorityscore=1501 adultscore=0 spamscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111170065
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e465d9b9-4d95-72a0-7a34-6893ddd78daa@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acked-by: Ying Xue <ying.xue@windriver.com>
+Just realized we are discussing this w/o Sakari involved.
 
------Original Message-----
-From: Tadeusz Struk <tadeusz.struk@linaro.org>=20
-Sent: Tuesday, November 16, 2021 12:02 AM
-To: davem@davemloft.net
-Cc: Tadeusz Struk <tadeusz.struk@linaro.org>; Jon Maloy <jmaloy@redhat.com>=
-; Xue, Ying <Ying.Xue@windriver.com>; Jakub Kicinski <kuba@kernel.org>; net=
-dev@vger.kernel.org; tipc-discussion@lists.sourceforge.net; linux-kernel@vg=
-er.kernel.org; stable@vger.kernel.org; Dmitry Vyukov <dvyukov@google.com>
-Subject: [PATCH v2] tipc: check for null after calling kmemdup
+On Wed, Nov 17, 2021 at 12:54:51PM +0100, Hans de Goede wrote:
+> On 11/17/21 01:10, Daniel Scally wrote:
+> > On 16/11/2021 16:59, Andy Shevchenko wrote:
+> >> On Tue, Nov 16, 2021 at 03:55:00PM +0100, Hans de Goede wrote:
+> >>> On 11/16/21 08:41, kernel test robot wrote:
+> >>>> FYI, we noticed the following commit (built with gcc-9):
+> >>>>
+> >>>> commit: 995fe757ecaeac44e023458af64d27655f9dbf73 ("[PATCH] device property: Check fwnode->secondary when finding properties")
+> >>>> url: https://github.com/0day-ci/linux/commits/Daniel-Scally/device-property-Check-fwnode-secondary-when-finding-properties/20211114-044259
+> >>>> base: https://git.kernel.org/cgit/linux/kernel/git/gregkh/driver-core.git b5013d084e03e82ceeab4db8ae8ceeaebe76b0eb
+> >>>> patch link: https://lore.kernel.org/lkml/20211113204141.520924-1-djrscally@gmail.com
+> >>>>
+> >>>> in testcase: boot
+> >>>>
+> >>>> on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 4G
+> >>>>
+> >>>> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> >>>>
+> >>>>
+> >>>> +---------------------------------------------+------------+------------+
+> >>>> |                                             | b5013d084e | 995fe757ec |
+> >>>> +---------------------------------------------+------------+------------+
+> >>>> | boot_successes                              | 23         | 0          |
+> >>>> | boot_failures                               | 0          | 22         |
+> >>>> | BUG:kernel_NULL_pointer_dereference,address | 0          | 22         |
+> >>>> | Oops:#[##]                                  | 0          | 22         |
+> >>>> | EIP:fwnode_property_get_reference_args      | 0          | 22         |
+> >>>> | Kernel_panic-not_syncing:Fatal_exception    | 0          | 22         |
+> >>>> +---------------------------------------------+------------+------------+
+> >>>>
+> >>>>
+> >>>> If you fix the issue, kindly add following tag
+> >>>> Reported-by: kernel test robot <oliver.sang@intel.com>
+> >>> Ok, so this patch likely needs a v2 which changes the if to this:
+> >>>
+> >>>         if (ret == -EINVAL && !IS_ERR_OR_NULL(fwnode) &&
+> >>>             !IS_ERR_OR_NULL(fwnode->secondary))
+> >>>                 ret = fwnode_call_int_op(fwnode->secondary, get_reference_args,
+> >>>                                          prop, nargs_prop, nargs, index, args);
+> >>>
+> >>>
+> >>> So that we check fwnode before dereferencing it, note this also changes the
+> >>> (ret < 0) check to (ret == -EINVAL), this makes the secondary node handling
+> >>> identical to fwnode_property_read_int_array() and
+> >>> fwnode_property_read_string_array()
+> >>>
+> >>> Danny, can you send a v2 with this change please?
+> >> Hmm... So, you are suggesting that we need to check it only for EINVAL and
+> >> ENOENT in this case the one that brings us to the NULL pointer dereference.
+> >> But I don't understand what's the difference here.
+> > 
+> > 
+> > Sticking point; the ACPI version of .get_reference_args() returns
+> > -ENOENT (converted from -EINVAL [1]) if the property you ask for doesn't
+> > exist against that fwnode, which unless I'm missing something means this
+> > won't work in our use case. This confused me for a while because we
+> > definitely call fwnode_property_read_int_array() in sensor driver probes
+> > through v4l2_fwnode_endpoint_alloc_parse(), but it turns out the ACPI
+> > version of _that_ operation has no matching conversion of the error
+> > code, so when that fails to find the property it sends back -EINVAL and
+> > so the form that exists in fwnode_property_read_int_array() currently
+> > works fine.
+> > 
+> > 
+> > We could align them all to if (ret < 0 && !IS_ERR_OR_NULL(fwnode) &&
+> > !IS_ERR_OR_NULL(fwnode->secondary)). This is probably my preferred
+> > option, because I can't really see why we'd only want to do the
+> > secondary check on -EINVAL anyway - but maybe I miss something here.
+> > Alternatively we can take Hans suggestion so they all match the existing
+> > code, but this means we have to handle that conversion first - I
+> > couldn't see from a cursory look that any of the direct callers check
+> > the value of the return beyond "is it 0?", but of course it could be
+> > done somewhere in calls to the fwnode->ops->get_reference_args()
+> > callback instead.
+> > 
+> > 
+> > Thoughts?
+> 
+> I missed that just checking for -EINVAL will not work for the ipu3 case
+> (I did not test) in that case I think using "ret < 0" as check instead
+> is probably fine for this patch.
+> 
+> As for modifying the existing 2 code paths, IMHO it does make sense 
+> to try and preserve the error code (and not try the secondary fwnode)
+> when the error is an error other then the one indicating the property
+> is not there.
+> 
+> So keeping those as -EINVAL is probably best and maybe for the
+> the fwnode_find_reference instead of (ret < 0) use:
+> (ret == -EINVAL || ret == -ENOENT)  ?
 
-kmemdup can return a null pointer so need to check for it, otherwise the nu=
-ll key will be dereferenced later in tipc_crypto_key_xmit as can be seen in=
- the trace [1].
 
-Cc: Jon Maloy <jmaloy@redhat.com>
-Cc: Ying Xue <ying.xue@windriver.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org
-Cc: tipc-discussion@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org # 5.15, 5.14, 5.10
+Last time Sakari did a great job of error code alignments between DT, ACPI,
+and SW nodes. Not sure why the above slipped through the fingers.
 
-[1] https://syzkaller.appspot.com/bug?id=3Dbca180abb29567b189efdbdb34cbf7ba=
-851c2a58
+> >>>> [   17.327851][    T7] BUG: kernel NULL pointer dereference, address: 00000000
+> >>>> [   17.329758][    T7] #PF: supervisor read access in kernel mode
+> >>>> [   17.331371][    T7] #PF: error_code(0x0000) - not-present page
+> >>>> [   17.332992][    T7] *pde = 00000000
+> >>>> [   17.334107][    T7] Oops: 0000 [#1] PREEMPT
+> >>>> [   17.335310][    T7] CPU: 0 PID: 7 Comm: kworker/u2:0 Tainted: G S                5.15.0-11191-g995fe757ecae #1
+> >>>> [   17.338036][    T7] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+> >>>> [   17.340544][    T7] Workqueue: events_unbound deferred_probe_work_func
+> >>>> [ 17.342291][ T7] EIP: fwnode_property_get_reference_args (drivers/base/property.c:486 (discriminator 1)) 
+> >>>> [ 17.344051][ T7] Code: 8b 45 0c 50 8b 45 08 50 89 d8 89 55 f4 ff d6 83 c4 0c 89 c6 85 c0 78 55 8d 65 f8 89 f0 5b 5e 5d c3 8d 74 26 00 be fa ff ff ff <8b> 03 85 c0 74 e8 3d 00 f0 ff ff 77 e1 8b 58 04 85 db 74 37 8b 5b
+> >>>> All code
+> >>>> ========
+> >>>>    0:	8b 45 0c             	mov    0xc(%rbp),%eax
+> >>>>    3:	50                   	push   %rax
+> >>>>    4:	8b 45 08             	mov    0x8(%rbp),%eax
+> >>>>    7:	50                   	push   %rax
+> >>>>    8:	89 d8                	mov    %ebx,%eax
+> >>>>    a:	89 55 f4             	mov    %edx,-0xc(%rbp)
+> >>>>    d:	ff d6                	callq  *%rsi
+> >>>>    f:	83 c4 0c             	add    $0xc,%esp
+> >>>>   12:	89 c6                	mov    %eax,%esi
+> >>>>   14:	85 c0                	test   %eax,%eax
+> >>>>   16:	78 55                	js     0x6d
+> >>>>   18:	8d 65 f8             	lea    -0x8(%rbp),%esp
+> >>>>   1b:	89 f0                	mov    %esi,%eax
+> >>>>   1d:	5b                   	pop    %rbx
+> >>>>   1e:	5e                   	pop    %rsi
+> >>>>   1f:	5d                   	pop    %rbp
+> >>>>   20:	c3                   	retq   
+> >>>>   21:	8d 74 26 00          	lea    0x0(%rsi,%riz,1),%esi
+> >>>>   25:	be fa ff ff ff       	mov    $0xfffffffa,%esi
+> >>>>   2a:*	8b 03                	mov    (%rbx),%eax		<-- trapping instruction
+> >>>>   2c:	85 c0                	test   %eax,%eax
+> >>>>   2e:	74 e8                	je     0x18
+> >>>>   30:	3d 00 f0 ff ff       	cmp    $0xfffff000,%eax
+> >>>>   35:	77 e1                	ja     0x18
+> >>>>   37:	8b 58 04             	mov    0x4(%rax),%ebx
+> >>>>   3a:	85 db                	test   %ebx,%ebx
+> >>>>   3c:	74 37                	je     0x75
+> >>>>   3e:	8b                   	.byte 0x8b
+> >>>>   3f:	5b                   	pop    %rbx
+> >>>>
+> >>>> Code starting with the faulting instruction
+> >>>> ===========================================
+> >>>>    0:	8b 03                	mov    (%rbx),%eax
+> >>>>    2:	85 c0                	test   %eax,%eax
+> >>>>    4:	74 e8                	je     0xffffffffffffffee
+> >>>>    6:	3d 00 f0 ff ff       	cmp    $0xfffff000,%eax
+> >>>>    b:	77 e1                	ja     0xffffffffffffffee
+> >>>>    d:	8b 58 04             	mov    0x4(%rax),%ebx
+> >>>>   10:	85 db                	test   %ebx,%ebx
+> >>>>   12:	74 37                	je     0x4b
+> >>>>   14:	8b                   	.byte 0x8b
+> >>>>   15:	5b                   	pop    %rbx
+> >>>> [   17.350847][    T7] EAX: 00000000 EBX: 00000000 ECX: 00000000 EDX: c37cd6d8
+> >>>> [   17.352783][    T7] ESI: ffffffea EDI: f5b5a400 EBP: c4cffd24 ESP: c4cffd14
+> >>>> [   17.354673][    T7] DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 0068 EFLAGS: 00010246
+> >>>> [   17.362075][    T7] CR0: 80050033 CR2: 00000000 CR3: 04206000 CR4: 00000690
+> >>>> [   17.363993][    T7] Call Trace:
+> >>>> [ 17.365018][ T7] fwnode_find_reference (drivers/base/property.c:514) 
+> >>>> [ 17.366430][ T7] ? __this_cpu_preempt_check (lib/smp_processor_id.c:67) 
+> >>>> [ 17.367825][ T7] ? lockdep_init_map_type (kernel/locking/lockdep.c:4813) 
+> >>>> [ 17.369325][ T7] ? phylink_run_resolve+0x20/0x20 
+> >>>> [ 17.370897][ T7] ? init_timer_key (kernel/time/timer.c:818) 
+> >>>> [ 17.372228][ T7] fwnode_get_phy_node (drivers/net/phy/phy_device.c:2986) 
+> >>>> [ 17.373574][ T7] phylink_fwnode_phy_connect (drivers/net/phy/phylink.c:1180 drivers/net/phy/phylink.c:1166) 
+> >>>> [ 17.375014][ T7] phylink_of_phy_connect (drivers/net/phy/phylink.c:1152) 
+> >>>> [ 17.376373][ T7] dsa_slave_create (net/dsa/slave.c:1889 net/dsa/slave.c:2036) 
+> >>>> [ 17.377765][ T7] dsa_tree_setup_switches (net/dsa/dsa2.c:477 net/dsa/dsa2.c:977) 
+> >>>> [ 17.379282][ T7] dsa_register_switch (net/dsa/dsa2.c:1065 net/dsa/dsa2.c:1565 net/dsa/dsa2.c:1579) 
+> >>>> [ 17.380762][ T7] dsa_loop_drv_probe (drivers/net/dsa/dsa_loop.c:333) 
+> >>>> [ 17.382137][ T7] mdio_probe (drivers/net/phy/mdio_device.c:157) 
 
-Reported-by: Dmitry Vyukov <dvyukov@google.com>
-Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
----
-Changed in v2:
-- use tipc_aead_free() to free all crytpo tfm instances
-  that might have been allocated before the fail.
----
- net/tipc/crypto.c | 4 ++++
- 1 file changed, 4 insertions(+)
+-- 
+With Best Regards,
+Andy Shevchenko
 
-diff --git a/net/tipc/crypto.c b/net/tipc/crypto.c index dc60c32bb70d..d293=
-614d5fc6 100644
---- a/net/tipc/crypto.c
-+++ b/net/tipc/crypto.c
-@@ -597,6 +597,10 @@ static int tipc_aead_init(struct tipc_aead **aead, str=
-uct tipc_aead_key *ukey,
- 	tmp->cloned =3D NULL;
- 	tmp->authsize =3D TIPC_AES_GCM_TAG_SIZE;
- 	tmp->key =3D kmemdup(ukey, tipc_aead_key_size(ukey), GFP_KERNEL);
-+	if (!tmp->key) {
-+		tipc_aead_free(&tmp->rcu);
-+		return -ENOMEM;
-+	}
- 	memcpy(&tmp->salt, ukey->key + keylen, TIPC_AES_GCM_SALT_SIZE);
- 	atomic_set(&tmp->users, 0);
- 	atomic64_set(&tmp->seqno, 0);
---
-2.33.1
 
