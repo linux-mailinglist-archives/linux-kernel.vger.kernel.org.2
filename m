@@ -2,86 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B585C453FB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 05:47:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A23453FBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 05:48:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233057AbhKQEuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 23:50:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231356AbhKQEuy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 23:50:54 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45434C061746
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 20:47:56 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id b1so3623100lfs.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 20:47:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8U2582OS1JaBUff58dtaXUBiFj+EMR4BTAPwq+0xIaw=;
-        b=Ja0Ly8463jJKuAdQpWA9GcfTz/Daj29Uu2xpAl1NWvznw8nGJu/8idwsv+h7nsS0d7
-         sbeZ7SxYetg0OxoD1VJAouul5fHz8PZ8Y+WymnSq10XoGlkkBjnWXb0NY8jeSOtSQW3r
-         NulV4ePey2/k2Hd5WlTG3cQOSTOZj8Wh2UDkavPJsLslIU20/gedLTDWYxsZAaKt34N6
-         WS5sQkUMcWWXNMLjhv3n0pg66FCkN7QCUZjzDUF7xQ33AMyqSkOQ+Co1ellV6tw7Z+OU
-         pPFessNFKq7IMJtSvyHelqGXb085MkRXli8fd/Z0FLR54PilmMiSct7p4NMczpCyoZjr
-         /vMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8U2582OS1JaBUff58dtaXUBiFj+EMR4BTAPwq+0xIaw=;
-        b=mZWs3pmrrZk58zeS0q5BwD1a19idvbD2NrSX6t8ps9SmI2HR/7IkgFwBtpCvAdN9Jo
-         LaF/vw07Lcf/j9AjvrGBlVsU/34plbEcTx7/pY0PUlMO6AfSUGOv9JBOYN9gFJvS4fAe
-         sgS2GaOgBxRvnN0mxuvxJcZNJaw4tbCNHOR2m5/5fWV8se62mCxvWQT6oaYb/NiFMKzH
-         B+gs25d2IMoJeFtjio6tzZgKwt0vJG+xylyUgXdNNJ3eIphRzCM08WgN5HHKP70WOTXZ
-         EEEfHe2jk3TNkA2Xav0neUtxbdu2IEu+Gou0e/Csxvy0/9/yLmPVmn0S7Jn1Hr+whU+O
-         Y3yQ==
-X-Gm-Message-State: AOAM532Bk6yAkRgEGP0eUQk+qH/jJNJXTheSBnMPgRamdWMTURUPJV06
-        3ntkkEfViRrqPWWFS2do9s+KJwn2CJ8tqJfTEBRexQ==
-X-Google-Smtp-Source: ABdhPJyldWMENzlShuXN8AJQein9+ZsGwLrHFzyV/qsCAWzPwXoeo0B6vnn8tzVqsZ6DlJyqFYmqFXnBQniUo774f18=
-X-Received: by 2002:a19:c105:: with SMTP id r5mr12116791lff.661.1637124474573;
- Tue, 16 Nov 2021 20:47:54 -0800 (PST)
+        id S233142AbhKQEvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 23:51:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50156 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231356AbhKQEvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 23:51:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8258061507;
+        Wed, 17 Nov 2021 04:48:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637124490;
+        bh=GdnaMj2YI3JO2s0r4LO9LvGuvXD0/qHXCK4v0JlMbDA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ukzGZAO4BEk4QO+P3SYZe+TWcN/89duFJxnK7uYVvk/wjrmqoVZkP+e85LjOsIp6x
+         PNfaGjop7Gf7xemtQgMjKOXvSgBmBYXl5+m/F1FcjMwfZtXWGy1FaWR6uUrTzg3sWs
+         n8Ep+POEuQ7ctIlw+sxC2KeRKAhqSRnVQqC6kY1XEr8qFzlzM3L2/xjTaF5I8XXsgl
+         MEB0l2UHzqUabtYEUoALwymNxTauZ1COTny3I+VVTRjPrcvI6OTSIAXYO+RZDxsPMV
+         9UbPjTFCp3QYXxwjq9V2xzlhFSHZLOjP9ecIIVsh6ItGUXfPRgTNITKWBEeG8uaCoH
+         sOb3O1C3lR6zg==
+Date:   Tue, 16 Nov 2021 20:48:10 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2 05/28] block: Add bio_add_folio()
+Message-ID: <20211117044810.GP24307@magnolia>
+References: <20211108040551.1942823-1-willy@infradead.org>
+ <20211108040551.1942823-6-willy@infradead.org>
 MIME-Version: 1.0
-References: <20211117020724.2647769-1-pcc@google.com>
-In-Reply-To: <20211117020724.2647769-1-pcc@google.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Tue, 16 Nov 2021 20:47:43 -0800
-Message-ID: <CALAqxLWn67emfDPcMGrjVag0zCCrNF2=rEiHKQgr2eJ8AotCPg@mail.gmail.com>
-Subject: Re: [PATCH] lontium-lt9611: check a different register bit for HDMI sensing
-To:     Peter Collingbourne <pcc@google.com>
-Cc:     Robert Foss <robert.foss@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Anibal Limon <anibal.limon@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211108040551.1942823-6-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 6:07 PM Peter Collingbourne <pcc@google.com> wrote:
->
-> It has been observed that with certain monitors such as the HP Z27n,
-> the register 0x825e reads a value of 0x79 when the HDMI cable is
-> connected and 0x78 when it is disconnected, i.e. bit 0 appears
-> to correspond to the HDMI connection status and bit 2 is never
-> set. Therefore, change the driver to check bit 0 instead of bit 2.
->
-> Signed-off-by: Peter Collingbourne <pcc@google.com>
-> Link: https://linux-review.googlesource.com/id/I7e76411127e1ce4988a3f6d0c8ba5f1c3d880c23
+On Mon, Nov 08, 2021 at 04:05:28AM +0000, Matthew Wilcox (Oracle) wrote:
+> This is a thin wrapper around bio_add_page().  The main advantage here
+> is the documentation that folios larger than 2GiB are not supported.
+> It's not currently possible to allocate folios that large, but if it
+> ever becomes possible, this function will fail gracefully instead of
+> doing I/O to the wrong bytes.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Jens Axboe <axboe@kernel.dk>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+
+Looks ok,
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+
+--D
+
 > ---
-> N.B. I don't currently have easy access to a monitor that works
-> with the existing driver, so it would be great if people with
-> monitors that currently work could test this patch to make sure
-> that it doesn't introduce any regressions. Otherwise I will change
-> it to check both bits.
-
-So very interesting! I gave this a spin with my monitors and it works fine.
-
-Vinod: Can you check the datasheet to see if the wrong bit is being used here?
-
-thanks
--john
+>  block/bio.c         | 22 ++++++++++++++++++++++
+>  include/linux/bio.h |  3 ++-
+>  2 files changed, 24 insertions(+), 1 deletion(-)
+> 
+> diff --git a/block/bio.c b/block/bio.c
+> index 15ab0d6d1c06..4b3087e20d51 100644
+> --- a/block/bio.c
+> +++ b/block/bio.c
+> @@ -1033,6 +1033,28 @@ int bio_add_page(struct bio *bio, struct page *page,
+>  }
+>  EXPORT_SYMBOL(bio_add_page);
+>  
+> +/**
+> + * bio_add_folio - Attempt to add part of a folio to a bio.
+> + * @bio: BIO to add to.
+> + * @folio: Folio to add.
+> + * @len: How many bytes from the folio to add.
+> + * @off: First byte in this folio to add.
+> + *
+> + * Filesystems that use folios can call this function instead of calling
+> + * bio_add_page() for each page in the folio.  If @off is bigger than
+> + * PAGE_SIZE, this function can create a bio_vec that starts in a page
+> + * after the bv_page.  BIOs do not support folios that are 4GiB or larger.
+> + *
+> + * Return: Whether the addition was successful.
+> + */
+> +bool bio_add_folio(struct bio *bio, struct folio *folio, size_t len,
+> +		   size_t off)
+> +{
+> +	if (len > UINT_MAX || off > UINT_MAX)
+> +		return 0;
+> +	return bio_add_page(bio, &folio->page, len, off) > 0;
+> +}
+> +
+>  void __bio_release_pages(struct bio *bio, bool mark_dirty)
+>  {
+>  	struct bvec_iter_all iter_all;
+> diff --git a/include/linux/bio.h b/include/linux/bio.h
+> index fe6bdfbbef66..a783cac49978 100644
+> --- a/include/linux/bio.h
+> +++ b/include/linux/bio.h
+> @@ -409,7 +409,8 @@ extern void bio_uninit(struct bio *);
+>  extern void bio_reset(struct bio *);
+>  void bio_chain(struct bio *, struct bio *);
+>  
+> -extern int bio_add_page(struct bio *, struct page *, unsigned int,unsigned int);
+> +int bio_add_page(struct bio *, struct page *, unsigned len, unsigned off);
+> +bool bio_add_folio(struct bio *, struct folio *, size_t len, size_t off);
+>  extern int bio_add_pc_page(struct request_queue *, struct bio *, struct page *,
+>  			   unsigned int, unsigned int);
+>  int bio_add_zone_append_page(struct bio *bio, struct page *page,
+> -- 
+> 2.33.0
+> 
