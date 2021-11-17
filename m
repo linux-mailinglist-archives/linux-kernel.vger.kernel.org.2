@@ -2,79 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 988844541C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 08:24:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 285544541CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 08:25:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232950AbhKQH1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 02:27:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43998 "EHLO
+        id S233087AbhKQH2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 02:28:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232831AbhKQH1G (ORCPT
+        with ESMTP id S233055AbhKQH2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 02:27:06 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBD81C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 23:24:08 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id m24so1350465pls.10
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 23:24:08 -0800 (PST)
+        Wed, 17 Nov 2021 02:28:21 -0500
+Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2363CC061746
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 23:25:23 -0800 (PST)
+Received: by mail-vk1-xa2d.google.com with SMTP id s17so1080804vka.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 23:25:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kji+SUoneEhDpvHW6mGuFpq4rQ8F1rfzbU8c63R1UU4=;
-        b=fzMiVi/GNYynU/MBd7H+eL91mogPSBPffkoMBm+U76lHfMjnvkn8SjAunSOiW+HvQ6
-         knYQkQVFVXs5jLX3h9rkiSpB90rehqMUjpggSN/8oOlvJogd/KFrSvExH4hZ0Gllmzih
-         Pl6YaoJh9exMYNHviALVwKTk6VHsW49ea7Ci3gmwAuEm1Ppv8ahwYcThFCIOxXVI7YHM
-         xYB1um6fYsbWdOE/k3T1o+gMxx/+8gaDSGy/uPta+2eGOQWSjVxHCtrFleGfI4IsH3/h
-         gvB4ureSX2G/SViPiL+B5P+tOIYLZ18bMZhv4LO22OGQww5S+LVwfRIkmsa7hbvzNlF0
-         Z9OA==
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b0xmgwHrlv9ktwSdQ/JfjWjQenm8x9ltoihTIjxaBNQ=;
+        b=JbyabcOFwg9RA8CfJQXEnNtK9YqVVxIwGdThHqLv6dHnkGsNYKDELnCxw9iNTyQQq1
+         ND0s1vozfYnSAaFzlOjtmE45CCNh7SfCWUerukqPpadmxSr8L11WvEHCkf1hqI7AWD4o
+         SHgdlnvP9G148VHCq2BYTYSJuFE8cd/T9YjIA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kji+SUoneEhDpvHW6mGuFpq4rQ8F1rfzbU8c63R1UU4=;
-        b=fhyHor6pRlAIPshjlX1f4aIMX/LAeiDXVuRi9kEZynvXE2i1Zidl1FxKL0nCwJYuVA
-         a8HVHai5Np4V6H7D947BDw9Ia64J5yWg08GhDWGzL4chbtuW9jegb53KjBQ2P5ZxoENr
-         YtrgP76KYasbu66sFHlSHITJFRek0HZxa8O3fD1Qbg+rRmFnXmvtPiHYu9vRRQVohKMy
-         aNTyfeDiRErXjMvwfCPfaWtAgLeKBDEmwp504XrSILo+N18F6ZXIW/Lumigy8P35oGlN
-         DA1jd64/39/274t0WCE1ktqwuEs68SbXwYyCOkLv4+2vjH57jyaear+y/sRqw3mrk7uj
-         qcNw==
-X-Gm-Message-State: AOAM530DMVVIXdR6RQvlaspH1VQ45fHkxA8c7jiqiqVD0/nzLaWYA1Im
-        j49ODUWGsRxlGSWyIgEWUNZUPw==
-X-Google-Smtp-Source: ABdhPJydpmGz72MxmCjoi6KzlOeAtz2KJzNgrhdhdAk7RLpBL3S4vMRwMhLcw17gnChIA2zHhp/Elw==
-X-Received: by 2002:a17:902:780f:b0:13a:3919:e365 with SMTP id p15-20020a170902780f00b0013a3919e365mr53356829pll.63.1637133848491;
-        Tue, 16 Nov 2021 23:24:08 -0800 (PST)
-Received: from localhost ([122.181.57.99])
-        by smtp.gmail.com with ESMTPSA id q11sm22237671pfk.192.2021.11.16.23.24.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 23:24:07 -0800 (PST)
-Date:   Wed, 17 Nov 2021 12:54:05 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     Steev Klimaszewski <steev@kali.org>, rafael@kernel.org,
-        bjorn.andersson@linaro.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH] cpufreq: freq_table: Initialize cpuinfo.max_freq to
- correct max frequency.
-Message-ID: <20211117072405.yqrn23ria4snrjda@vireshk-i7>
-References: <20211115195011.52999-1-thara.gopinath@linaro.org>
- <5ae2c644-4743-c62c-b17c-96945a0e6a01@kali.org>
- <20211116035935.wmazontuznhys6qu@vireshk-i7>
- <fd153d84-411a-c843-eab9-2dc66940a3d3@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b0xmgwHrlv9ktwSdQ/JfjWjQenm8x9ltoihTIjxaBNQ=;
+        b=ovQYjdatkNCQgCvPDu9HNXS4eJDOXWxK6Ndq7SWpsHaco19kdWgQg9wsesbSUPNPL5
+         xkU0GR/JoJCG9hRNubtNuO7aNYy2EPehiHhHbzILQaWknoiQpHQYQW+KbOPc8ME5fBnG
+         AAtMjNyL+sefenFz+YnLPZB8f8HILZKLDcMOKMASeaMRhUCOcYlh/e4/15XyJhvma674
+         EBECBD2hkgCJsPV0zqPMMATQSnwDWMksMgSpNzXZ83xJm/rmQlyH5gpmqNMmWTQCo3MS
+         ZkYJ6sC7xMuvwTlM/U3yyxsTjiO4XTo1i4e3/76lFUYHXfe/o9szgZu7It09OyUWkBXI
+         Ui3g==
+X-Gm-Message-State: AOAM530VP9JgiMcY5H2liCQJU0+8AVU4089D6xFoh9oFnVulN+hckezE
+        AzSspMJ+T4HpWEXWzUEScZZ3jYv4qqi2yaeHaP5gRg==
+X-Google-Smtp-Source: ABdhPJzBvilmkHXZGOjRkylsNfzWJ2cgYh6bVMxxcy/fEjHQEuzR5KbV/So04CzbtfXGK/uCfPDqT/fqDVC+3jwDADY=
+X-Received: by 2002:a05:6122:1350:: with SMTP id f16mr41382809vkp.10.1637133922290;
+ Tue, 16 Nov 2021 23:25:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fd153d84-411a-c843-eab9-2dc66940a3d3@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <000000000000c93bd505bf3646ed@google.com> <00000000000006b5b205d0f55d49@google.com>
+In-Reply-To: <00000000000006b5b205d0f55d49@google.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 17 Nov 2021 08:25:11 +0100
+Message-ID: <CAJfpegtASmSmbNakuCYcgaF0Cy8kY=wu-w9_imiJnsCJngnR=A@mail.gmail.com>
+Subject: Re: [syzbot] WARNING in inc_nlink (2)
+To:     syzbot <syzbot+1c8034b9f0e640f9ba45@syzkaller.appspotmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-11-21, 10:27, Thara Gopinath wrote:
-> 	policy->max is unconditionally set to max_freq in the line before "if
-> (policy->cpuinfo.max_freq < max_freq)".
+On Wed, 17 Nov 2021 at 06:32, syzbot
+<syzbot+1c8034b9f0e640f9ba45@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit 97f044f690bac2b094bfb7fb2d177ef946c85880
+> Author: Miklos Szeredi <mszeredi@redhat.com>
+> Date:   Fri Oct 22 15:03:02 2021 +0000
+>
+>     fuse: don't increment nlink in link()
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10563ac9b00000
+> start commit:   1da38549dd64 Merge tag 'nfsd-5.15-3' of git://git.kernel.o..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=e2ffb281e6323643
+> dashboard link: https://syzkaller.appspot.com/bug?extid=1c8034b9f0e640f9ba45
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11f16d57300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15758d57300000
+>
+> If the result looks correct, please mark the issue as fixed by replying with:
 
-So the current code is not correct then :)
+Highly unlikely: the original report was for sysvfs and the fix is for fuse.
 
--- 
-viresh
+Thanks,
+Miklos
