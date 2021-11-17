@@ -2,139 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B50453FA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 05:36:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A645453FA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 05:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233214AbhKQEjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 23:39:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42926 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231650AbhKQEjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 23:39:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E4DC61057;
-        Wed, 17 Nov 2021 04:36:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637123780;
-        bh=E1RMQyQ1o278jtKYWl02xaL/o/kpGIsOvWkEkyEhar0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cqEexBgInBaGptBCHf607kGYoapKMJD3H0ONHzuyKdXOyWcyOfmY3UkeFMzQCjNlu
-         VFW0oVtSzxVC/gvN8924aUiNHOuzk1AgmiJ21C9pTdl/7nnQjwUu/jH2zAxmDORdCC
-         gPhsxqscFrhtBaJxfKjlymSlyV5xNG5V62tqbcKhs9AMSgbTgJhf19hCe2bzpJYTvy
-         XWPEmKkS2A78mHsX66CBI4Vrg8FCQNW3JT/nzlWioI9zF5eaGIuXdNUDQiIcJJ9r4J
-         pMvaQg+hkW0eZvEmUFdpOnRDb0MyautszWgKIW12aTqlbvKUwg9Bts3PTkQRU+OGA0
-         rTuC5PmqDXkVw==
-Date:   Tue, 16 Nov 2021 20:36:19 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v2 03/28] fs: Remove FS_THP_SUPPORT
-Message-ID: <20211117043619.GN24307@magnolia>
-References: <20211108040551.1942823-1-willy@infradead.org>
- <20211108040551.1942823-4-willy@infradead.org>
+        id S232982AbhKQEkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 23:40:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230013AbhKQEkW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 23:40:22 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4813EC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 20:37:24 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id m15so1091668pgu.11
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 20:37:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CkWPTiS/0euPMX9GKx6w6gxcLFcldMolJRQ5Svdh770=;
+        b=SRhmUPamj+GO/ZstAD9i/lcJR/dCNub/E7KP0ghYz4KeQLR0Zh5g9b1y4HoZ+Ac2HA
+         UQG9ycBdwELzLcE2YBI94hHUuMPJ20oW16n9YKm7kmLEcAPButM/sa7a1qVgbRVefWyd
+         vupANS55zkoGIWwXtIAqvZK1y/c2qeAKYQgIY/0MUB0IlsKlNJcfzbPgfopy7xJ4JynI
+         UD+hTmzy3yJ/5qsA6tLI0mAb2koXzT7a9s+mw5AkzaRipRvt5G8aQm7bp4Xqlk0/NYF0
+         VTAe5lyaLxOmvPKKB9TDp8a9N+ncA7LH+XVqB8yCeXgtMikZMgEDBGqO+MF0WL9OEpDr
+         mdRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CkWPTiS/0euPMX9GKx6w6gxcLFcldMolJRQ5Svdh770=;
+        b=NBctC1IfwFGDf+z4riQQ9tRh/ui399f29MxJTlMMX1FAHYL7gKOUSADV+to9T38Rnv
+         LePWkRAYFzVaAdqHo4onelIkMN5reJzv2MlNpVH93UKjotCB6qqrSU0aD2RoZ7pttHop
+         FG7jPwFWKnmnwPLLcfZySBmJm5NMcIYbeT7cgh1kzlhzSi1qwtYyfv+Is4Ic1ATpd4RG
+         oL6hQFg7VYSMi+L1raII20JT6CgTpaBws8CqLJzEUD4GjlB6QPUqgy7EKjXnKWNuRrvk
+         M+zegQKbLbUJdI1ocbiQd7/kDAmDzUnfZBMY8LcgKoPDrIBoZjEPaeWuP475R4/XDAhS
+         k9bg==
+X-Gm-Message-State: AOAM530N+RwxHJ1KTmHTkDFfZhveh3wsaarT7Zl4p7hp0yOX52e+7vB1
+        FQApUYemsF2qyYUBYAP+zhSSI6NNtzxdBvxPzZenwQ==
+X-Google-Smtp-Source: ABdhPJwIVaqEzvWbw7T8WcswxeJQ6zhkiiR+KSYj4uklSY7HjnOOOBKh/QUl1rX70mDf6grbTWSfe3XgsJou56pe9Qs=
+X-Received: by 2002:a05:6a00:b4c:b0:481:2a:f374 with SMTP id
+ p12-20020a056a000b4c00b00481002af374mr4569987pfo.60.1637123843514; Tue, 16
+ Nov 2021 20:37:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211108040551.1942823-4-willy@infradead.org>
+References: <20211117021223.2137117-1-kaleshsingh@google.com> <20211116224703.133f1750@rorschach.local.home>
+In-Reply-To: <20211116224703.133f1750@rorschach.local.home>
+From:   Kalesh Singh <kaleshsingh@google.com>
+Date:   Tue, 16 Nov 2021 20:37:12 -0800
+Message-ID: <CAC_TJveGzESpuzGWhyF+31=c4iLJ=TdNeivJyVf_Et-cyQUX3w@mail.gmail.com>
+Subject: Re: [PATCH] tracing/histogram: Fix UAF in destroy_hist_field()
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     kernel-team@android.com, mhiramat@kernel.org, zanussi@kernel.org,
+        kernel test robot <oliver.sang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 04:05:26AM +0000, Matthew Wilcox (Oracle) wrote:
-> Instead of setting a bit in the fs_flags to set a bit in the
-> address_space, set the bit in the address_space directly.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+On Tue, Nov 16, 2021 at 7:47 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Tue, 16 Nov 2021 18:12:22 -0800
+> Kalesh Singh <kaleshsingh@google.com> wrote:
+>
+> > Calling destroy_hist_field() on an expression will recursively free
+> > any operands associated with the expression. If during expression
+> > parsing the operands of the expression are already set when an error
+> > is encountered, there is no need to explicity free the operands. Doing
+> > so will result in destroy_hist_field() being called twice for the
+> > operands and lead to a use-after-free (UAF) error.
+> >
+> > Fix this by only calling destroy_hist_field() for the expression if the
+> > operands are already set.
+> >
+> > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+> > Fixes: 8b5d46fd7a38 ("tracing/histogram: Optimize division by constants")
+> > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > ---
+> >  kernel/trace/trace_events_hist.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+> > index 5ea2c9ec54a6..e3856eaf2ac3 100644
+> > --- a/kernel/trace/trace_events_hist.c
+> > +++ b/kernel/trace/trace_events_hist.c
+> > @@ -2669,7 +2669,7 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
+> >               if (!divisor) {
+> >                       hist_err(file->tr, HIST_ERR_DIVISION_BY_ZERO, errpos(str));
+> >                       ret = -EDOM;
+> > -                     goto free;
+> > +                     goto free_expr;
+> >               }
+> >
+> >               /*
+> > @@ -2709,7 +2709,7 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
+> >               expr->type = kstrdup_const(operand1->type, GFP_KERNEL);
+> >               if (!expr->type) {
+> >                       ret = -ENOMEM;
+> > -                     goto free;
+> > +                     goto free_expr;
+> >               }
+> >
+> >               expr->name = expr_str(expr, 0);
+> > @@ -2719,6 +2719,7 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
+> >  free:
+> >       destroy_hist_field(operand1, 0);
+> >       destroy_hist_field(operand2, 0);
+> > +free_expr:
+> >       destroy_hist_field(expr, 0);
+> >
+> >       return ERR_PTR(ret);
+> >
+> > base-commit: 8ab774587903771821b59471cc723bba6d893942
+>
+> Wouldn't this be a simpler and more robust fix?
+>
+> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+> index 5ea2c9ec54a6..aab69b4ffe11 100644
+> --- a/kernel/trace/trace_events_hist.c
+> +++ b/kernel/trace/trace_events_hist.c
+> @@ -2717,8 +2717,10 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
+>
+>         return expr;
+>  free:
+> -       destroy_hist_field(operand1, 0);
+> -       destroy_hist_field(operand2, 0);
+> +       if (!expr || expr->operand[0] != operand1)
+> +               destroy_hist_field(operand1, 0);
+> +       if (!expr || expr->operand[1] != operand2)
+> +               destroy_hist_field(operand2, 0);
+>         destroy_hist_field(expr, 0);
 
-Makes sense,
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Hi Steve,
 
---D
+Agreed. What you suggested is simpler to work with. I'll respin a new version.
 
-> ---
->  fs/inode.c              |  2 --
->  include/linux/fs.h      |  1 -
->  include/linux/pagemap.h | 16 ++++++++++++++++
->  mm/shmem.c              |  3 ++-
->  4 files changed, 18 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/inode.c b/fs/inode.c
-> index 9abc88d7959c..d6386b6d5a6e 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -180,8 +180,6 @@ int inode_init_always(struct super_block *sb, struct inode *inode)
->  	mapping->a_ops = &empty_aops;
->  	mapping->host = inode;
->  	mapping->flags = 0;
-> -	if (sb->s_type->fs_flags & FS_THP_SUPPORT)
-> -		__set_bit(AS_THP_SUPPORT, &mapping->flags);
->  	mapping->wb_err = 0;
->  	atomic_set(&mapping->i_mmap_writable, 0);
->  #ifdef CONFIG_READ_ONLY_THP_FOR_FS
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 4137a9bfae7a..3c2fcabf9d12 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -2518,7 +2518,6 @@ struct file_system_type {
->  #define FS_USERNS_MOUNT		8	/* Can be mounted by userns root */
->  #define FS_DISALLOW_NOTIFY_PERM	16	/* Disable fanotify permission events */
->  #define FS_ALLOW_IDMAP         32      /* FS has been updated to handle vfs idmappings. */
-> -#define FS_THP_SUPPORT		8192	/* Remove once all fs converted */
->  #define FS_RENAME_DOES_D_MOVE	32768	/* FS will handle d_move() during rename() internally. */
->  	int (*init_fs_context)(struct fs_context *);
->  	const struct fs_parameter_spec *parameters;
-> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-> index db2c3e3eb1cf..471f0c422831 100644
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@ -126,6 +126,22 @@ static inline void mapping_set_gfp_mask(struct address_space *m, gfp_t mask)
->  	m->gfp_mask = mask;
->  }
->  
-> +/**
-> + * mapping_set_large_folios() - Indicate the file supports multi-page folios.
-> + * @mapping: The file.
-> + *
-> + * The filesystem should call this function in its inode constructor to
-> + * indicate that the VFS can use multi-page folios to cache the contents
-> + * of the file.
-> + *
-> + * Context: This should not be called while the inode is active as it
-> + * is non-atomic.
-> + */
-> +static inline void mapping_set_large_folios(struct address_space *mapping)
-> +{
-> +	__set_bit(AS_THP_SUPPORT, &mapping->flags);
-> +}
-> +
->  static inline bool mapping_thp_support(struct address_space *mapping)
->  {
->  	return test_bit(AS_THP_SUPPORT, &mapping->flags);
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 23c91a8beb78..54422933fa2d 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -2303,6 +2303,7 @@ static struct inode *shmem_get_inode(struct super_block *sb, const struct inode
->  		INIT_LIST_HEAD(&info->swaplist);
->  		simple_xattrs_init(&info->xattrs);
->  		cache_no_acl(inode);
-> +		mapping_set_large_folios(inode->i_mapping);
->  
->  		switch (mode & S_IFMT) {
->  		default:
-> @@ -3920,7 +3921,7 @@ static struct file_system_type shmem_fs_type = {
->  	.parameters	= shmem_fs_parameters,
->  #endif
->  	.kill_sb	= kill_litter_super,
-> -	.fs_flags	= FS_USERNS_MOUNT | FS_THP_SUPPORT,
-> +	.fs_flags	= FS_USERNS_MOUNT,
->  };
->  
->  int __init shmem_init(void)
-> -- 
-> 2.33.0
-> 
+Thanks,
+Kalesh
+
+>
+>         return ERR_PTR(ret);
+>
+>
+> I'm worried about the complexity of having to know where to free what,
+> and not just figuring it out at the end.
+>
+> -- Steve
