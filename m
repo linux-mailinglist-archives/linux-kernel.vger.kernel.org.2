@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA314544AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 11:05:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B074D4544AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 11:05:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236103AbhKQKIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 05:08:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55216 "EHLO mail.kernel.org"
+        id S236076AbhKQKIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 05:08:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236056AbhKQKIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236057AbhKQKIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 17 Nov 2021 05:08:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EEB161BF4;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1353C61AED;
         Wed, 17 Nov 2021 10:05:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1637143542;
-        bh=CX8OUhMnhHykIog+bQcI6spbJp9/XgWWj4zovXpY2h8=;
+        bh=q+JjnaZW4YhiIxjh69UWx1tFsJdMHJxlhuR/u0OyNqE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gQrmuTT0TNAlG2gyDmRnQ1kBWulVLGbtZe7WruT61eVdP+mZ/ufyTGSkn5zOpdx94
-         W9ADluPRDV2+FwNaMPBwCi4EgbyKvIhtP8CoJbPLvaJpeqJIOTLqtI1YQXoObUc1lI
-         zFTSk1O5t8CkMYiqrZb1SIcKfHtxlsBnoDX72Fu5PNVv56v2B7NN0czYPsLFdZb3Zi
-         y34w4jI91HYDEUoNUo7MpdF4UTq6ysofDmVsPgWcEyy8ewvN1MzaN26fvbS1PGy9aL
-         S2KYYBDC1gU0cIpCwzzP9OWvTVJPQ9Wbr3sZ128mtLgHeImkoqekDOs0r6n76JlMFz
-         J8w3B5Wbi3qfg==
+        b=NQ9TzlhGqpwZ/AVvZrrRbslrKmzuMBzBeUJgFzDfXtpLVr3jB2DARc5OOpmMFj7pK
+         FjGG1njwiiboZXTwA3EyCAjGKM6tqWTi71z+MT7tr40Ajei7hFXgHXf4WDZ1yYTdiA
+         VKCem4jxfm+CDU7iNHZYSQ74RghSgtu2hITy4MIMfnaP79bb7FHmAQCnJokR/iCOpN
+         fo55L/qXttJjzWjtOdueb2QxbAPFqMDgGjLwTNOJUOgEM2fEgGrQoMd+Tub8MUeb3T
+         Bj1oGlD/JDO58R2byPaOOJ2y+gGCuzhUUG8s2sYTqsbF7kBr3inmm3qpaQdm2R7kZC
+         jAYwNgx8T50Ig==
 Received: from johan by xi.lan with local (Exim 4.94.2)
         (envelope-from <johan@kernel.org>)
-        id 1mnHoi-0001KW-O3; Wed, 17 Nov 2021 11:05:24 +0100
+        id 1mnHoi-0001KY-QH; Wed, 17 Nov 2021 11:05:24 +0100
 From:   Johan Hovold <johan@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Ilia Sergachev <silia@ethz.ch>,
@@ -34,11 +34,10 @@ Cc:     Ilia Sergachev <silia@ethz.ch>,
         Stafford Horne <shorne@gmail.com>,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
         linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>, stable@vger.kernel.org,
-        Filip Kokosinski <fkokosinski@antmicro.com>
-Subject: [PATCH v2 2/3] serial: liteuart: fix minor-number leak on probe errors
-Date:   Wed, 17 Nov 2021 11:05:11 +0100
-Message-Id: <20211117100512.5058-3-johan@kernel.org>
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH v2 3/3] serial: liteuart: relax compile-test dependencies
+Date:   Wed, 17 Nov 2021 11:05:12 +0100
+Message-Id: <20211117100512.5058-4-johan@kernel.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211117100512.5058-1-johan@kernel.org>
 References: <20211117100512.5058-1-johan@kernel.org>
@@ -48,54 +47,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make sure to release the allocated minor number before returning on
-probe errors.
+The LITEX symbol is neither a build or runtime dependency for the
+liteuart serial driver.
 
-Fixes: 1da81e5562fa ("drivers/tty/serial: add LiteUART driver")
-Cc: stable@vger.kernel.org      # 5.11
-Cc: Filip Kokosinski <fkokosinski@antmicro.com>
-Cc: Mateusz Holenko <mholenko@antmicro.com>
-Reviewed-by: Stafford Horne <shorne@gmail.com>
+LITEX is selected by the "LiteX SoC Controller" driver, which does a
+probe-time register-access sanity check and panics if the SoC has not
+been configured correctly. That driver's Kconfig entry asserts that any
+LiteX driver using the LiteX register accessors should depend on LITEX,
+but currently only the serial driver complies.
+
+Relax this LITEX "dependency" in order to make it easier to compile test
+the driver.
+
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/tty/serial/liteuart.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ drivers/tty/serial/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/liteuart.c b/drivers/tty/serial/liteuart.c
-index da792d0df790..2941659e5274 100644
---- a/drivers/tty/serial/liteuart.c
-+++ b/drivers/tty/serial/liteuart.c
-@@ -270,8 +270,10 @@ static int liteuart_probe(struct platform_device *pdev)
- 
- 	/* get membase */
- 	port->membase = devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
--	if (IS_ERR(port->membase))
--		return PTR_ERR(port->membase);
-+	if (IS_ERR(port->membase)) {
-+		ret = PTR_ERR(port->membase);
-+		goto err_erase_id;
-+	}
- 
- 	/* values not from device tree */
- 	port->dev = &pdev->dev;
-@@ -287,7 +289,16 @@ static int liteuart_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, port);
- 
--	return uart_add_one_port(&liteuart_driver, &uart->port);
-+	ret = uart_add_one_port(&liteuart_driver, &uart->port);
-+	if (ret)
-+		goto err_erase_id;
-+
-+	return 0;
-+
-+err_erase_id:
-+	xa_erase(&liteuart_array, uart->id);
-+
-+	return ret;
- }
- 
- static int liteuart_remove(struct platform_device *pdev)
+diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+index 6ff94cfcd9db..fc543ac97c13 100644
+--- a/drivers/tty/serial/Kconfig
++++ b/drivers/tty/serial/Kconfig
+@@ -1533,7 +1533,7 @@ config SERIAL_LITEUART
+ 	tristate "LiteUART serial port support"
+ 	depends on HAS_IOMEM
+ 	depends on OF || COMPILE_TEST
+-	depends on LITEX
++	depends on LITEX || COMPILE_TEST
+ 	select SERIAL_CORE
+ 	help
+ 	  This driver is for the FPGA-based LiteUART serial controller from LiteX
 -- 
 2.32.0
 
