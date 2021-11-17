@@ -2,85 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACDE1454D41
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:32:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFB2F454D43
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:35:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240090AbhKQSfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 13:35:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:36658 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233890AbhKQSfr (ORCPT
+        id S232589AbhKQSi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 13:38:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231389AbhKQSiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 13:35:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637173968;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y/veQ2/16dN3v+kYCtByKkIi6t7D2etplr3VDnS6swM=;
-        b=G81B2s6r7BISOOIDTQjZEKsx9b0upNqvIdRZW79a1sf+PId6QzcGezYLsYkWoMGGoJpwqe
-        +Es6P9THmw5ZoXwjpiQqE0HPjavLfxKL8uAT2+5lsXpSZ6bfJutUnpSinUIEZZ+CDBEDIb
-        VzAuSoL7FF2xaGQG1NL4fP3UjcxzNKM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-27-PjXVD03KNVumiIGzdSE9Pw-1; Wed, 17 Nov 2021 13:32:45 -0500
-X-MC-Unique: PjXVD03KNVumiIGzdSE9Pw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 69C331069401;
-        Wed, 17 Nov 2021 18:32:43 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9303160657;
-        Wed, 17 Nov 2021 18:32:25 +0000 (UTC)
-Message-ID: <e642702a-4455-9c1e-ac29-ba5809a2139c@redhat.com>
-Date:   Wed, 17 Nov 2021 19:32:24 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 2/2] KVM: x86/mmu: Pass parameter flush as false in
- kvm_tdp_mmu_zap_collapsible_sptes()
-Content-Language: en-US
-To:     Ben Gardon <bgardon@google.com>,
-        Hou Wenlong <houwenlong93@linux.alibaba.com>
-Cc:     kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Wed, 17 Nov 2021 13:38:25 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A023AC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:35:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jJvkS8r5o1AyR1YgZkApy8/O4Nbq/ZCO+OvQEiK8wHA=; b=SFokFvocv88lS0yYpjm3lCcEQN
+        lEzojFvqJrIro8ggJ/xEt3w5kJ+huKvbt8LHF61SRtvnlzATyeDA1PuY8iAjSWM9TmNNzctrGa/Qo
+        gguuYXyWcw11moICHwexINPuQBXoJAtkYqhzTuh/2OPg26r26sMGS3MPHLpBvTrLla6YCJRLSwTxz
+        lCpwfq3fZoc9dmKXIFB7R083LojgbMjgHW2JtA2lW9mqtaEZDdH6La8UjpiJ4eJdYTFeJvC5W7DrT
+        WApJPaBp7tBSXbvcY9Sn2epW7JiZ1QWVc7LevH2Ga3bEUwOPlhFTniLJxYmLLpYNH6oerujVNAv+j
+        QyHpkZ5A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mnPlu-007qXK-L0; Wed, 17 Nov 2021 18:35:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EC77D300093;
+        Wed, 17 Nov 2021 19:35:01 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DAF6E2C8F4FF0; Wed, 17 Nov 2021 19:35:01 +0100 (CET)
+Date:   Wed, 17 Nov 2021 19:35:01 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-References: <5e16546e228877a4d974f8c0e448a93d52c7a5a9.1637140154.git.houwenlong93@linux.alibaba.com>
- <21453a1d2533afb6e59fb6c729af89e771ff2e76.1637140154.git.houwenlong93@linux.alibaba.com>
- <CANgfPd_=M-8r8H5uoaPz_VTXZpmX6XD+QGAdBdz4PERUoqE1OA@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <CANgfPd_=M-8r8H5uoaPz_VTXZpmX6XD+QGAdBdz4PERUoqE1OA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>
+Subject: Re: [PATCH] x86/paravirt: Fix build PARAVIRT_XXL=y without XEN_PV
+Message-ID: <YZVLVfd5E6d6YQig@hirez.programming.kicks-ass.net>
+References: <20211117181439.4368-1-kirill.shutemov@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211117181439.4368-1-kirill.shutemov@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/21 18:50, Ben Gardon wrote:
->> Since tlb flush has been done for legacy MMU before
->> kvm_tdp_mmu_zap_collapsible_sptes(), so the parameter flush
->> should be false for kvm_tdp_mmu_zap_collapsible_sptes().
->>
->> Fixes: e2209710ccc5d ("KVM: x86/mmu: Skip rmap operations if rmaps not allocated")
->> Signed-off-by: Hou Wenlong<houwenlong93@linux.alibaba.com>
-> Haha, I'm glad we're thinking along similar lines. I just sent a patch
-> yesterday to remove the flush parameter from that function entirely:
-> https://lore.kernel.org/lkml/20211115234603.2908381-2-bgardon@google.com/
-> I'll CC you on that patch.
-> 
+On Wed, Nov 17, 2021 at 09:14:39PM +0300, Kirill A. Shutemov wrote:
+> TDX is going to use CONFIG_PARAVIRT_XXL
 
-And actually I had applied that before reading Sean's answer, so his 
-follow up is not needed anymore.
-
-Paolo
+*AARGGHHH*. srlsy? We were trying to cut back on that insanity, not
+proliferate it.
 
