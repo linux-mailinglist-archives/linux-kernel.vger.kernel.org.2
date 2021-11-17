@@ -2,191 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B84F453E50
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 03:17:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35466453E57
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 03:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232592AbhKQCUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 21:20:47 -0500
-Received: from mail-bn8nam11on2057.outbound.protection.outlook.com ([40.107.236.57]:22240
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229910AbhKQCUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 21:20:45 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h4YofAnF4eSIIyUHDVoWqvuxeta9DBaLEt7yWLNM0pFf8T4iZbBsZGUG5bCh7S68sfRmM7MbkmYMpekHsFd8yynxu1S1huZpKC7rIAU/SatD9HNPrFBYp1u5InMjcHpkbP513WSFJj+GAVbPnZ0yxwOtLSz9PP9KaQkwbzIwfaHVy+0B60OXys6Bv1xO70JgRrs6QQaPQitnl7jiqky0T/RmZ6W6uwS8kOUcQjAT61Drv00AANIRkQWyczFNhGc3vBZEbTbMVc9GBgsMTffqrpI6wijaEza93Z1V5dUEAzChW8wSv/nqyS9ZSFL3ruydtP7BE9UHXmYXY1EovtbCEw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=w8JNqI5fPVPygsOUum8tZJfpF8L43Cxn5mSJBJ/wrYQ=;
- b=ihew3l8Sii1pQMKJ70epCPGd7IJNMK1Aqe7ta7lXOdBkIIqfZQGQECzgHT4jUzQ8pq1tVhAlnZnf0JEEEBMseEjbyjx86HAjT8GkIEw95FJimbcQz6OcJqqb/X3hsm2jvi9nEBLvVNhTiwf1rECfN44VmtlMYZ2Df5cTidL1OVN4ECiSSHlr9Diktqu2mlT9S0DlFYsI4ZJlRTlvvlaZXo5/BIDXq071xLNwoIB1ZlFjeFVRJP8uuSkNlqZhAW0HT4Rp3qZGBhe7JEmmzKEJpjFWNHtbQja1FtZ40We1c+46sdY3oJ/BL3LPF8020xfMiU7NW0dCItwRbEYXF/gD6Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w8JNqI5fPVPygsOUum8tZJfpF8L43Cxn5mSJBJ/wrYQ=;
- b=rxtGd3BQ0I7541QyvRMcWx8hMFBy70+JcERwc6qPdGzWeF3zGwF7UP8Ridnbh/YLProNBIokOCcxaY3obsmJsPdaVw4ljWocvFa5tsteFiJynN4v0qDTP0yhoLioF/E6q7L1DnZAFXW6xTvg0YcXeXNERkL4EpVnOi67tMkiqQo=
-Received: from MN2PR05MB6624.namprd05.prod.outlook.com (2603:10b6:208:d8::18)
- by MN2PR05MB6174.namprd05.prod.outlook.com (2603:10b6:208:c2::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.15; Wed, 17 Nov
- 2021 02:17:44 +0000
-Received: from MN2PR05MB6624.namprd05.prod.outlook.com
- ([fe80::4975:27e1:d774:269c]) by MN2PR05MB6624.namprd05.prod.outlook.com
- ([fe80::4975:27e1:d774:269c%3]) with mapi id 15.20.4713.019; Wed, 17 Nov 2021
- 02:17:44 +0000
-From:   Zack Rusin <zackr@vmware.com>
-To:     "srivatsa@csail.mit.edu" <srivatsa@csail.mit.edu>
-CC:     "jgross@suse.com" <jgross@suse.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Pv-drivers <Pv-drivers@vmware.com>,
-        Nadav Amit <namit@vmware.com>,
-        Vivek Thampi <vithampi@vmware.com>,
-        Vishal Bhakta <vbhakta@vmware.com>,
-        Ronak Doshi <doshir@vmware.com>,
-        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        Deep Shah <sdeep@vmware.com>,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        Keerthana Kalyanasundaram <keerthanak@vmware.com>,
-        Srivatsa Bhat <srivatsab@vmware.com>,
-        Anish Swaminathan <anishs@vmware.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "joe@perches.com" <joe@perches.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>
-Subject: Re: [PATCH v4 3/3] MAINTAINERS: Mark VMware mailing list entries as
- email aliases
-Thread-Topic: [PATCH v4 3/3] MAINTAINERS: Mark VMware mailing list entries as
- email aliases
-Thread-Index: AQHX2zqYqFtbOHqV2kyNKuj91cnaBKwG/CIA
-Date:   Wed, 17 Nov 2021 02:17:44 +0000
-Message-ID: <A5154685-6AE4-46DC-9EE1-A9CFF1BD096C@vmware.com>
-References: <163710239472.123451.5004514369130059881.stgit@csail.mit.edu>
- <163710245724.123451.10205809430483374831.stgit@csail.mit.edu>
-In-Reply-To: <163710245724.123451.10205809430483374831.stgit@csail.mit.edu>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.100.0.2.22)
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vmware.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5685153f-d0a3-4dc9-003c-08d9a970711f
-x-ms-traffictypediagnostic: MN2PR05MB6174:
-x-ld-processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
-x-microsoft-antispam-prvs: <MN2PR05MB6174E3D0AC9C1ABE493E8C40CE9A9@MN2PR05MB6174.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: dKEKp8zYEH66uygQMkYnCXndjBCxtXggSnRAwjUHOSzCeByCwVpfnec6oPVHWnh2YA2NkR11aZWpt+HrVXReInJot01Xq2qiQ/TuPt9fJnKkqD9qt9t1ZxoIBnle95e+xeF1zo/CtlalITK+TXLBo5UaEoQJPUfC5Gc+B+CoDDAano+7LGt8unFCKfBtT2/Yac9Y6f69+NZ7pxa7MxwrTAVlRdcGKYYVw8yr2I6mwG3jfF8EaozQq/UmhjR+tP8hVoSWU6/fFYVXfHHCNIX1wTUUIf6MGdcnhIiOsPFyLf42oforBoH+GHlHMF8ToCbeAs/PgR0wCgs6XpsB0ysYp5puUNFxs9vudlNkROllG2QQOMuy25ijtRuykEeoWC7gRa4Lt+blHQgM3ww6prO1ANdsFEbXMS6pGjOgq8vH5pKfeaH3oznw7L6CKS4KAEOP7GIbhR23lUNiGLgrygyYgUtATPoZFfVSgvdu8WSZ0UTFqLlr4GSSZ5Bb1kijgm6gpgj14Ku/Rm9dQYdWBESK0Ub8LelQd5yBj/qzRItzZvuvnpmJpaB5Hqky0hGH25jH99siPWD7szaWT/n1Ll8XM+B9ilfs1S92UEHusVy9HW/fFUTcQJZ1C3lwbfsB4pNttgOSbSB7KBlkd2kTQQxe2fV9Be8iiY0AoIkffHMwO8aYv+6nPDi8bistiUTlXkADlC96QNKtZUvTxWkfeTz4FJ4ziDpyoF69HzaUxcChKCY36/7LW7uRfpixn9ZDeRcmF0zbwBJWYSY5sh2qKBp/zwiXKt4Lw+NbA7RzAFInsYA=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR05MB6624.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6512007)(7416002)(6486002)(33656002)(2616005)(316002)(6916009)(38070700005)(76116006)(8936002)(83380400001)(26005)(86362001)(36756003)(2906002)(66556008)(71200400001)(6506007)(53546011)(508600001)(5660300002)(122000001)(38100700002)(4326008)(64756008)(66446008)(54906003)(66946007)(66476007)(8676002)(186003)(45980500001)(223123001)(130980200001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?G25Z+2HWP9EjL8dJOmaKT+fv6U5I3Pqx0mnMx6LhhyXMbKCxuU07Fbn3Gxpt?=
- =?us-ascii?Q?G7OBvMT9dqFxDBbS/hZy/yjfHdZPDE62lVQ/G3zCtZt9iEuIHpsQ/pMdvTxh?=
- =?us-ascii?Q?2XMuY3DRkC3vKKspJ3vpubH3wrBxG0CY9yhRYsrEMx2kEvSCBwvJlmemllDZ?=
- =?us-ascii?Q?hiAH+sthklIYKF+NkJiWfQTfWm+ysYJDDViSU0karpJAagdJb7KWeyq/1/cp?=
- =?us-ascii?Q?dM3R8rC9Po9SQlLRZBpyBaE64CX3QL82STdLgkYLoCMoRp1BTsad0DQfn6UF?=
- =?us-ascii?Q?Pl9G7fTCBynSyhnSm7yBg1Du88CXkHSLQkGK00AIYoh+PPh9zmiPsCVbRNMV?=
- =?us-ascii?Q?TSaUzBj38oxnPKGlSKq/wnTs424TYAc/7h1Bge4K/UKFRHYHTUqsCYvV2Jp1?=
- =?us-ascii?Q?vHK4gUzzrZjid5c70DNibHNxIkP/IaGb3BMV4x53Pyhc6G55AOBv2lpy5oGV?=
- =?us-ascii?Q?Jl7fal92aHonZbWf0NwvNbWUKPdxZBvJno4aeavGCWyTuCZ58VX8bP+lPeSA?=
- =?us-ascii?Q?UIGc5V4en7ynv5Vrca1pExDR55aCuK70WGWR6+oa8lipS2QCyGHoNUSqCrYP?=
- =?us-ascii?Q?dya7NW+kT2pU5k/4+qv6bf1KLBDdVm9ZkbHh/B9tJgolEc/Hbe8ERRgWWT7J?=
- =?us-ascii?Q?fT0/5P/SVJawHu6Ytqo0pfoL/MJnda3s/+00pXGZC5oI6YKLsUWd0GqeJ1wY?=
- =?us-ascii?Q?JdicAdPxnQ2XIK3wQ3OkNbhAGCrTncQ4MaiwvtMlSvmafnRIbGu6cQ/idAgi?=
- =?us-ascii?Q?T2f5QB5FMRshli5o7wNX3ZrYOvr+9XY7+qdbKWzKssE+2JpPcjr1sPQuU1m1?=
- =?us-ascii?Q?tPl4pdVRYHhjy1ZN4nUVahamZ9HP3ebU/Razey5z4CLFepCr0jwegjLhKcMW?=
- =?us-ascii?Q?3eCsUblE4mRU5iOk5v8FEcM5g68SpfLY3MbSmG4g6fk1/J2oetUxcw1FTe20?=
- =?us-ascii?Q?R6Gw6gBi0RMWwzAPP9QyG3ryEUMZRLX0r5o09pw5UVljcHUUTa3BpzBp4IRv?=
- =?us-ascii?Q?rDg3AQ7ZoKgqmg1FzxbRf1u0lVhSCAZ3y+5pRNKYKycuxML/uKkDoiTmvtxf?=
- =?us-ascii?Q?kWKthqgAgsEizNm4ZA+x8g+b2eH1Z+zrqV2nRPFi/xcaOQ1ida0Dm5KWjIaV?=
- =?us-ascii?Q?bdtKeBIP78zGkKrXgk0NXlJfXhIAYQf5RzYZHjnNZ+o+IY1vyiy5QJ43y3VY?=
- =?us-ascii?Q?GRWZ0kl50ltmEaTGGL9WmBucL9cDXRoKw2ImQzYzH0UYrhhLxtCO1jvwhYvo?=
- =?us-ascii?Q?sfryKb+pJxKfGRZVMURjL5R9YM0m9nbTPM476c3/uhxZWFsbVpw8UXtsMFOS?=
- =?us-ascii?Q?2uWSdcFC8gA8YRPNgUrv+/Xgc8xHX7UqRhmzNotWQgjaWW4u07HIfUrS3MCK?=
- =?us-ascii?Q?l3GGjTt/AC+zjsfsx7PG1DKUur+J+H7yZF96BbRkFcSG8gXcb80MB0c07akb?=
- =?us-ascii?Q?9YDJmWrs5xco7KSKMNszeUc5YWYvunxTsICXd6r+UCyezKPyNh6rpU5lkMJG?=
- =?us-ascii?Q?izkCrI+meAcmvnOHuQSj6azbTCyiUTCnJw6kJM5NxTTMGlakquzzB3NNLqCJ?=
- =?us-ascii?Q?1ezvOKEHu6AlhT6yBpECydWtR5TZ+Qi2q22xZJ62fZ93mF6UhwthDqdIO3Pt?=
- =?us-ascii?Q?p3tzcNF8nLDwgfrumpXZ0Ig=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <60C24D22FDBA4F4BAADDAB0ABFA96A5E@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S232656AbhKQCV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 21:21:58 -0500
+Received: from sonic316-27.consmr.mail.ne1.yahoo.com ([66.163.187.153]:37203
+        "EHLO sonic316-27.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232568AbhKQCV4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 21:21:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1637115538; bh=LBCU/Wrng7m0g5Np3uQ3TMPlgTx2v6ooyRRAvU2g4mc=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=n9y7wt1UEynNBEwN2WJI7Ttbj5hN2gObT54jgM3m8xDYMXGF+aKhuN14mtyjju5F6Oa8Vw3qpOj4rOdMBe4C4qBYC+1cSE1W2C3iNZNifO0Mog+cB8WfCgWjQBmnytYJAieldNvJ8MDp6TAUdOTDHhGEQ83yIWpkjIUH9tl8RRURkMk2afCOTvPmUY+ENPFptIAlyxrEG6PQ/KTI4ibpSF3h0hnuizZs8/N4rYEpmVGjTT4u4pbcoAqwnqGlAIiueFD0aRY218RlW/vj/QoP+eDJaOf3aiGY+DCxqUUcYOiDM098jq/JR8lCWzuGgeU9nsJt6EoiuKbZRYkBG8kTlg==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1637115538; bh=+osq1U5N8+WLLdjfpq9IvXR7KdNo/B62D19ppqU6H9s=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=AT7EAA0r2oZJh3KKRYQkWCCuy62lk+llrJh8Of1RtbvX1ceftkrRD6LQnLbfQPuKoXSl2vX0HU3sGYaR4ZiblfWAyRXtTOoVL3qAaQQ9fFLXTK0ylHzkTRJNKxcQP0SkRUd8nuwz5JvMF4YxT9LDTbnMhPS8gyeWhAOiSr4H8FkikkKV1TDSrBpd2Vhf/4EV8170WxMNYrZUM8Cjtl4JBACNNZOnKDK1FxWG/8BQSMkMXCGlUySg7qpQ5wqEfWkp/ZRqNIKON8XWhw1o/GzIHtVf2YI1aZG01gCPRrOQ1ueEnoobFsw1IWLa4iP7VQqSV1qCgO+rMtMS12MqhMqIAQ==
+X-YMail-OSG: 514IMmgVM1nq1_johHH4f9TN5a_uzkZa1TNcnjjLOrh.ZVfXIFVjzBDtEOt1.F1
+ 4VA5GGFALP_DASzF.LR9TmXVWGLk7GpwPsj0ZzTx9mbZN9OYkl4Nsy_78Px4rpvgbyVItuNPWT4r
+ FcXIEJ3h8PhhlylrETonxJ8gaWLMRLr.laydI_kfSMAvPFz0HOo591svBb1VuZqA.75h6BT7v1TD
+ CYEK61WH10HtebVexKqhagWPbuPjiRf5goAMYqi5H5qv6iljGQQw_KcltPV0ILMMRvV2ZZU.qaiJ
+ gtyelnnSipByLlJcBQdGHvrzjBve5X1c5x7zKwqMPhIRrCvTE1UrCNhgOXuCtkXOu3qO.IOMOn7m
+ M9koWeSnyEZBoxN.6aTjh087jRc8v52CLbkH8c.5yiwx3muW31Lr7pDiiFD9qM4TIb.Lze4CVR5b
+ yiA3wVkKYqJnLDelmUjpiQNTg.4nYQB9e2Vyuwtly0wxdHI09XHIbxf5KaIqVzLyFj2WV9lCDKif
+ 1alcfcb41EdOJA5ysBuhVvVptpHnXemSPi4JSz7.Gz0ySG.c9ZnrE5T.zUbGIREq0hCumF0BGYDZ
+ TZOX2oCa6ILyD8Rse7e.9HVKxy1I1bwnsbuiFqXZK9P4hzgSpREnXgY4YEuOobmZ5.fpaXgjPRf_
+ WGB4t_Xh2r6DOgXekLlukuEcAZ.RaTaZ7YQfdolUrHFO_5AXOYv49qpOHGX0XKl42ebeF5ieHTxJ
+ JuPAvByJfBlVGRfqFGTttntc3g1w.ErouRg.3_Dt7A9UFJW4urnH2Cx5jWxCkFEoOJo01ewwSTxQ
+ bTGCODBINW8FCU5YD.GqThE6myol1sZnnTcZw_teDKwM7Xz57LkOxbSsfmY8w.476Q6DfUJSJ9kT
+ .vJqPKAIBb9Jeg3QIZJYh6X2XKUH2D1FEXyNPUgGLLFTl.xQAnevBnDWJDo4bZOrrzeaEK7roLF1
+ z4Mq7FYtM.LlM.a4PIHxYC_ugATec1oMIo7m8ROmPC96qJux0RY1jxi9f29UINpKngXdjzDaIudg
+ RFwfahsTytlRWAOa8_aaxrjEViVDgUhX4UyKEweZSP25kkbgw7pYz.Cw6QEMSzmj5hdBBCjMTa0c
+ 6pt6g_fBmmJkqtxmbHvXHSFJvNzUIqE5FYnWzlFww2uFxoszokPgEn3Pg9qNuNGVL3EUBjQyXsdv
+ HNxPwANj5J6TvyLYeggg8kwv4TLMlKWf60Ve94tlJXkEN8nymstl5o8DPETPbwO2o3Plr7YFJm7x
+ G24R.7TJeq0S8uaDsIAYEbbs4vV1EQq1VPM4.qBk8ChmZV18YlSKIbbqcyVuqDqYpdVwwN9yjxpb
+ LBs5RS3rwzA7wdZpF7FQCnfguIavhSGORrKLKnwzPQ2wWtKMsVUXoKQuzYwHt.yVzJNC9XiwhBzu
+ g.Zri29hcUDLaTW.GKSClUX5PKzqWjtfTNi5czbHD3xNsNfA2CT0sJXhbsTOBkYUN.oRDUiaCpgF
+ h2VCFy6j0kbs3wHvfqBiWx8gqvIPXzXPQo_ZZT3niFriVxlQa_H00.yaoJ.xFL2m23Ma.lpwTbm7
+ SgC6oNPQTahqTrTTVaEx7tI_EXy73xY8t3OJ._A50qEgJSykbUKdrjHsWsesvIupuOQK4_OFKUN8
+ He6kMUrQwqhTFLdj1WpyCVHvYEQdTmKRFHG7auAzZvl6bn4hKxna8rhqE6J6c.fb5mxMgvM0DKR_
+ US7XpyKFzSM3yz9as1Rnaey59feedVZUoNOWoik0iyTC33YR7aSor6IYeLBzhlMacqjAPttwyg4V
+ tDwCif6o6w.n5ULtvUG7_DgzLClA1V55aO_7jeOdWCHsxM3eiFqkOdq52eLDT4.Hmft5_YodrgWQ
+ .EfqcvIK3Arfjl6jv09RYLYnY6DranVbUwOnC9GLB7vXLYirGmIX1hMMyypWrt8VRcxTRS0doQvr
+ 3tLqvk2.ezGYy4JBZvjRdwBZFN7uyR26caUhQZ2TT_KoS6ifuBeIiboYUpvBb9Up4P4726VF.pAC
+ q7t6BWLRw1p7LNE1m1BqpGx7DK3g7AHVkXq0iDlBDaufsmdqtWRJ4HTDSW.D2Tc3ZCJB9BnM5dIw
+ VD97p3pBjQ7IE0DkboMJWpJ.jFUsWA91SMvHAuHmIDk.Z_4.J7mefR3CaW9ys5WzrznE5mmk6yb5
+ O1aWcPkfCF.WCLvjNw531oxZsuJOqBv3tcfgrm6R2aOdurJXC3HiSgFSNpacM8QtwGTmlwEK9u1q
+ Cw14LbRnSszNbdBvSzH2R9Gu.l3WWZzB47vk9jSwV.27P
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Wed, 17 Nov 2021 02:18:58 +0000
+Received: by kubenode522.mail-prod1.omega.bf1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 4e09b8843f28c89cb8b5731a4dace074;
+          Wed, 17 Nov 2021 02:18:57 +0000 (UTC)
+Message-ID: <a64aa4af-67b1-536c-9bd0-7b34e6cc1abe@schaufler-ca.com>
+Date:   Tue, 16 Nov 2021 18:18:53 -0800
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR05MB6624.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5685153f-d0a3-4dc9-003c-08d9a970711f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Nov 2021 02:17:44.7185
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2PN1tdk8GUCjY3YIrkLyxEs5Ub8Pr2RwbMee38i/3YPuC9w4umqNCi9aZzUmvYIwGIy/mY9p4R67Z/Zym4ZQmw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR05MB6174
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH v19 0/4] overlayfs override_creds=off & nested get xattr
+ fix
+Content-Language: en-US
+To:     David Anderson <dvander@google.com>
+Cc:     Mark Salyzyn <salyzyn@android.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        John Stultz <john.stultz@linaro.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        linux-security-module@vger.kernel.org, kernel-team@android.com,
+        selinux@vger.kernel.org, paulmoore@microsoft.com,
+        Luca.Boccassi@microsoft.com,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20211117015806.2192263-1-dvander@google.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <20211117015806.2192263-1-dvander@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.19306 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/16/2021 5:58 PM, David Anderson wrote:
+> Mark Salyzyn (3):
+>    Add flags option to get xattr method paired to __vfs_getxattr
+>    overlayfs: handle XATTR_NOSECURITY flag for get xattr method
+>    overlayfs: override_creds=off option bypass creator_cred
+>
+> Mark Salyzyn + John Stultz (1):
+>    overlayfs: inode_owner_or_capable called during execv
+>
+> The first three patches address fundamental security issues that should
+> be solved regardless of the override_creds=off feature.
+>
+> The fourth adds the feature depends on these other fixes.
+>
+> By default, all access to the upper, lower and work directories is the
+> recorded mounter's MAC and DAC credentials.  The incoming accesses are
+> checked against the caller's credentials.
 
+This isn't very clear. Are you saying that the security attributes
+of the upper, lower, and work directories are determined by the
+attributes of the process that mounted the filesystem? What is an
+"incoming access"? I'm sure that means something if you're steeped
+in the lore of overlayfs, but it isn't obvious to me.
 
-> On Nov 16, 2021, at 17:41, Srivatsa S. Bhat <srivatsa@csail.mit.edu> wrot=
-e:
->=20
-> From: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
->=20
-> VMware mailing lists in the MAINTAINERS file are private lists meant
-> for VMware-internal review/notification for patches to the respective
-> subsystems. Anyone can post to these addresses, but there is no public
-> read access like open mailing lists, which makes them more like email
-> aliases instead (to reach out to reviewers).
->=20
-> So update all the VMware mailing list references in the MAINTAINERS
-> file to mark them as such, using "R: email-alias@vmware.com".
->=20
-> Signed-off-by: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
-> Cc: Zack Rusin <zackr@vmware.com>
-> Cc: Nadav Amit <namit@vmware.com>
-> Cc: Vivek Thampi <vithampi@vmware.com>
-> Cc: Vishal Bhakta <vbhakta@vmware.com>
-> Cc: Ronak Doshi <doshir@vmware.com>
-> Cc: pv-drivers@vmware.com
-> Cc: linux-graphics-maintainer@vmware.com
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-rdma@vger.kernel.org
-> Cc: linux-scsi@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-input@vger.kernel.org
-> Acked-by: Juergen Gross <jgross@suse.com>
+> If the principles of least privilege are applied for sepolicy, the
+> mounter's credentials might not overlap the credentials of the caller's
+> when accessing the overlayfs filesystem.
+
+I'm sorry, but I've tried pretty hard, and can't puzzle that one out.
+
+>    For example, a file that a
+> lower DAC privileged caller can execute, is MAC denied to the
+> generally higher DAC privileged mounter, to prevent an attack vector.
+
+DAC privileges are not hierarchical. This doesn't make any sense.
+
+> We add the option to turn off override_creds in the mount options; all
+> subsequent operations after mount on the filesystem will be only the
+> caller's credentials.
+
+I think I might have figured that one out, but in order to do so
+I have to make way too many assumptions about the earlier paragraph.
+Could you please try to explain what you're doing with more context?
+
+>    The module boolean parameter and mount option
+> override_creds is also added as a presence check for this "feature",
+> existence of /sys/module/overlay/parameters/overlay_creds
+>
+> Signed-off-by: Mark Salyzyn <salyzyn@android.com>
+> Signed-off-by: David Anderson <dvander@google.com>
+> Cc: Miklos Szeredi <miklos@szeredi.hu>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Vivek Goyal <vgoyal@redhat.com>
+> Cc: Eric W. Biederman <ebiederm@xmission.com>
+> Cc: Amir Goldstein <amir73il@gmail.com>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Stephen Smalley <sds@tycho.nsa.gov>
+> Cc: John Stultz <john.stultz@linaro.org>
+> Cc: linux-doc@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-fsdevel@vger.kernel.org
+> Cc: linux-unionfs@vger.kernel.org
+> Cc: linux-security-module@vger.kernel.org
+> Cc: kernel-team@android.com
+> Cc: selinux@vger.kernel.org
+> Cc: paulmoore@microsoft.com
+> Cc: Luca.Boccassi@microsoft.com
+>
 > ---
->=20
-> MAINTAINERS |   22 +++++++++++-----------
-> 1 file changed, 11 insertions(+), 11 deletions(-)
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 01c7d1498c56..9b18fca73371 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -6223,8 +6223,8 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
-> F:	drivers/gpu/drm/vboxvideo/
->=20
-> DRM DRIVER FOR VMWARE VIRTUAL GPU
-> -M:	"VMware Graphics" <linux-graphics-maintainer@vmware.com>
-> M:	Zack Rusin <zackr@vmware.com>
-> +R:	VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>
-> L:	dri-devel@lists.freedesktop.org
-> S:	Supported
-> T:	git git://anongit.freedesktop.org/drm/drm-misc
-
-
-Acked-by: Zack Rusin <zackr@vmware.com>
-
-z
+>
+> v19
+> - rebase.
+>
+> v18
+> - rebase + fix minor cut and paste error for inode argument in __vfs_getxattr
+>
+> v17
+> - correct some zero-day build failures.
+> - fix up documentation
+>
+> v16
+> - rebase and merge of two patches.
+> - add adjustment to deal with execv when overrides is off.
+>
+> v15
+> - Revert back to v4 with fixes from on the way from v5-v14. The single
+>    structure argument passing to address the complaints about too many
+>    arguments was rejected by the community.
+> - Drop the udner discussion fix for an additional CAP_DAC_READ_SEARCH
+>    check. Can address that independently.
+> - ToDo: upstream test frame for thes security fixes (currently testing
+>    is all in Android).
+>
+> v14:
+> - Rejoin, rebase and a few adjustments.
+>
+> v13:
+> - Pull out first patch and try to get it in alone feedback, some
+>    Acks, and then <crickets> because people forgot why we were doing i.
+>
+> v12:
+> - Restore squished out patch 2 and 3 in the series,
+>    then change algorithm to add flags argument.
+>    Per-thread flag is a large security surface.
+>
+> v11:
+> - Squish out v10 introduced patch 2 and 3 in the series,
+>    then and use per-thread flag instead for nesting.
+> - Switch name to ovl_do_vds_getxattr for __vds_getxattr wrapper.
+> - Add sb argument to ovl_revert_creds to match future work.
+>
+> v10:
+> - Return NULL on CAP_DAC_READ_SEARCH
+> - Add __get xattr method to solve sepolicy logging issue
+> - Drop unnecessary sys_admin sepolicy checking for administrative
+>    driver internal xattr functions.
+>
+> v6:
+> - Drop CONFIG_OVERLAY_FS_OVERRIDE_CREDS.
+> - Do better with the documentation, drop rationalizations.
+> - pr_warn message adjusted to report consequences.
+>
+> v5:
+> - beefed up the caveats in the Documentation
+> - Is dependent on
+>    "overlayfs: check CAP_DAC_READ_SEARCH before issuing exportfs_decode_fh"
+>    "overlayfs: check CAP_MKNOD before issuing vfs_whiteout"
+> - Added prwarn when override_creds=off
+>
+> v4:
+> - spelling and grammar errors in text
+>
+> v3:
+> - Change name from caller_credentials / creator_credentials to the
+>    boolean override_creds.
+> - Changed from creator to mounter credentials.
+> - Updated and fortified the documentation.
+> - Added CONFIG_OVERLAY_FS_OVERRIDE_CREDS
+>
+> v2:
+> - Forward port changed attr to stat, resulting in a build error.
+> - altered commit message.
+>
+> David Anderson (4):
+>    Add flags option to get xattr method paired to __vfs_getxattr
+>    overlayfs: handle XATTR_NOSECURITY flag for get xattr method
+>    overlayfs: override_creds=off option bypass creator_cred
+>    overlayfs: inode_owner_or_capable called during execv
+>
+>   Documentation/filesystems/locking.rst   |  2 +-
+>   Documentation/filesystems/overlayfs.rst | 26 ++++++++++++++-
+>   fs/9p/acl.c                             |  3 +-
+>   fs/9p/xattr.c                           |  3 +-
+>   fs/afs/xattr.c                          | 10 +++---
+>   fs/attr.c                               |  2 +-
+>   fs/btrfs/xattr.c                        |  3 +-
+>   fs/ceph/xattr.c                         |  3 +-
+>   fs/cifs/xattr.c                         |  2 +-
+>   fs/ecryptfs/inode.c                     |  6 ++--
+>   fs/ecryptfs/mmap.c                      |  5 +--
+>   fs/erofs/xattr.c                        |  3 +-
+>   fs/ext2/xattr_security.c                |  2 +-
+>   fs/ext2/xattr_trusted.c                 |  2 +-
+>   fs/ext2/xattr_user.c                    |  2 +-
+>   fs/ext4/xattr_hurd.c                    |  2 +-
+>   fs/ext4/xattr_security.c                |  2 +-
+>   fs/ext4/xattr_trusted.c                 |  2 +-
+>   fs/ext4/xattr_user.c                    |  2 +-
+>   fs/f2fs/xattr.c                         |  4 +--
+>   fs/fuse/xattr.c                         |  4 +--
+>   fs/gfs2/xattr.c                         |  3 +-
+>   fs/hfs/attr.c                           |  2 +-
+>   fs/hfsplus/xattr.c                      |  3 +-
+>   fs/hfsplus/xattr_security.c             |  3 +-
+>   fs/hfsplus/xattr_trusted.c              |  3 +-
+>   fs/hfsplus/xattr_user.c                 |  3 +-
+>   fs/inode.c                              |  7 +++--
+>   fs/internal.h                           |  3 +-
+>   fs/jffs2/security.c                     |  3 +-
+>   fs/jffs2/xattr_trusted.c                |  3 +-
+>   fs/jffs2/xattr_user.c                   |  3 +-
+>   fs/jfs/xattr.c                          |  5 +--
+>   fs/kernfs/inode.c                       |  3 +-
+>   fs/nfs/nfs4proc.c                       |  9 ++++--
+>   fs/ntfs3/xattr.c                        |  2 +-
+>   fs/ocfs2/xattr.c                        |  9 ++++--
+>   fs/open.c                               |  2 +-
+>   fs/orangefs/xattr.c                     |  3 +-
+>   fs/overlayfs/copy_up.c                  |  2 +-
+>   fs/overlayfs/dir.c                      | 17 +++++-----
+>   fs/overlayfs/file.c                     | 25 ++++++++-------
+>   fs/overlayfs/inode.c                    | 29 ++++++++---------
+>   fs/overlayfs/namei.c                    |  6 ++--
+>   fs/overlayfs/overlayfs.h                |  7 +++--
+>   fs/overlayfs/ovl_entry.h                |  1 +
+>   fs/overlayfs/readdir.c                  |  8 ++---
+>   fs/overlayfs/super.c                    | 34 ++++++++++++++++----
+>   fs/overlayfs/util.c                     | 13 ++++++--
+>   fs/posix_acl.c                          |  2 +-
+>   fs/reiserfs/xattr_security.c            |  3 +-
+>   fs/reiserfs/xattr_trusted.c             |  3 +-
+>   fs/reiserfs/xattr_user.c                |  3 +-
+>   fs/squashfs/xattr.c                     |  2 +-
+>   fs/ubifs/xattr.c                        |  3 +-
+>   fs/xattr.c                              | 42 +++++++++++++------------
+>   fs/xfs/xfs_xattr.c                      |  3 +-
+>   include/linux/lsm_hook_defs.h           |  3 +-
+>   include/linux/security.h                |  6 ++--
+>   include/linux/xattr.h                   |  6 ++--
+>   include/uapi/linux/xattr.h              |  7 +++--
+>   mm/shmem.c                              |  3 +-
+>   net/socket.c                            |  3 +-
+>   security/commoncap.c                    | 11 ++++---
+>   security/integrity/evm/evm_main.c       | 13 +++++---
+>   security/security.c                     |  5 +--
+>   security/selinux/hooks.c                | 19 ++++++-----
+>   security/smack/smack_lsm.c              | 18 ++++++-----
+>   68 files changed, 289 insertions(+), 167 deletions(-)
+>
