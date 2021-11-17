@@ -2,99 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B025A45502D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:13:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72DE0455033
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237669AbhKQWQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 17:16:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231929AbhKQWQh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:16:37 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 539FDC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:13:38 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id h24so3468541pjq.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:13:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XJzPff/I1wt0Bz0gGyXgys1xHsyQRTHzmNqo0bWyeQI=;
-        b=AMUtcfuUU10pH4Yz18a/3pqkfityc7BKdtnAVSHR5IRTh3DUXYGzDHmZahgwMovAlp
-         1RpaUVNkORCZxMSxnGQNIO1oYEV7bmRq31kSkfRw7u0DYgkzTzRuK7fTMGexhWJaSt8O
-         T07nPAINupblyLyXxyiu+AiBBAggIoYVZlg7vV8ddLzIhYwHyx/akKZ7EugS6gZJCmLW
-         dFLfN+ATtGjF7fmW2LYqG1K1LqF3HwO9YT3OqWsOq6f9OdsmtC6JQRr8sQ61oShYk/P9
-         vvJ9zA39tBt1wLWo3A2hpIusLA74fOINnm9tcojpw50lmdx2t4lXBX5PlC9zrQIe+GOB
-         PWjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=XJzPff/I1wt0Bz0gGyXgys1xHsyQRTHzmNqo0bWyeQI=;
-        b=VlUmm/TM7PRHaf1PBFJlVM6RPW11/zL8UQyCn8W3ulDM0GhNMwswCoPt8+1KFnr1QE
-         +xHH4Q/X+omuqRE3qtmRNYcRGVLHWot4If6wMH0mrsisR7/nQcXKyNzVetuBDpERldfx
-         Pd2ZcV94coSpMF+O7vnpdYYLvErI+kj5Jj1NMCGEnXR9fGSvsh5i9IP/KXd3W0wlhbZM
-         3NgUjTNK4IQyJBxZPLKznzx0w4qI1iEbNeXiq3wUbVUK/WB+5IDT0NU+MBoAjne3npFy
-         lUAYtzcmKfX36vQ3mr76RzOs+BlB7WzIJXkMlk8yJrOFx44AltSifTfZduQd28FHurOL
-         2hTQ==
-X-Gm-Message-State: AOAM530WuFvgoBqqMO369kvtIL8SU04aY+LjBWUidMkPEY+mWWmQPNYA
-        +UUzlTna37WsZGczWbULoAA=
-X-Google-Smtp-Source: ABdhPJywahKjrYQv17xG9oe+WLa2Il1Y70sEYpO25SkmqzkjGk1aXviCiEudDIegWM6px4hvdgJnxQ==
-X-Received: by 2002:a17:90a:4a06:: with SMTP id e6mr4099468pjh.228.1637187217747;
-        Wed, 17 Nov 2021 14:13:37 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:ac60:a5b:b800:3af7])
-        by smtp.gmail.com with ESMTPSA id p3sm560013pfb.205.2021.11.17.14.13.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 14:13:37 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 17 Nov 2021 14:13:35 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] kernfs: release kernfs_mutex before the inode
- allocation
-Message-ID: <YZV+j5LivK+9Dt50@google.com>
-References: <20211116194317.1430399-1-minchan@kernel.org>
- <YZQLWq7WMSRF2xCM@kroah.com>
- <YZQkQcrldGFwqV/r@google.com>
- <YZSk3DECnnknOu5T@kroah.com>
- <YZSu/HiHDZxo9Wpa@google.com>
- <YZV4CtJnH+ngOcxi@slm.duckdns.org>
+        id S241098AbhKQWS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 17:18:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241020AbhKQWS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 17:18:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D854F61B3E;
+        Wed, 17 Nov 2021 22:15:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637187359;
+        bh=18kkfrg4AgOIt1mZK6Dedmf6SMs42bal/deXI6yPuLA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vKhNq7Uk0AGaKm34w3Qhgetrs5Bq+0eEZlXqFRkOII8l0t70tvC4u2PLYKEIpai9o
+         VaKqVCE68b9yLAIsZTJHLMe6S02IOuSUTCgLFXYCIveWbto1504Q7TEIKpRU9UN0pp
+         BcVUtHlOCylmgbimSFqYTWdjcUooZKc8vSdqVV94OvSZ/OtOVZW/yyq9hffR/A/jpF
+         JV+D+9futCUOGj3UUrXnf0yyNaWPQNJOTVvQebjxkapUd82om6Z0aD3+RAhVJVmXF8
+         Oku+vfruHMaVoWBJ5vKel1NpjDcEW+2fMfl5l7CDjsBXSOBwKC/0FDQKF9ICyFXYJ6
+         sG81BcVMUNFCg==
+Date:   Wed, 17 Nov 2021 22:15:53 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: regmap: allow to define reg_update_bits for no bus configuration
+Message-ID: <YZV/GYJXKTE4RaEj@sirena.org.uk>
+References: <20211117210451.26415-1-ansuelsmth@gmail.com>
+ <20211117210451.26415-2-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/Q9YqCthrNTTr8b+"
 Content-Disposition: inline
-In-Reply-To: <YZV4CtJnH+ngOcxi@slm.duckdns.org>
+In-Reply-To: <20211117210451.26415-2-ansuelsmth@gmail.com>
+X-Cookie: I smell a wumpus.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tejun,
 
-On Wed, Nov 17, 2021 at 11:45:46AM -1000, Tejun Heo wrote:
-> Hello,
-> 
-> On Tue, Nov 16, 2021 at 11:27:56PM -0800, Minchan Kim wrote:
-> > A app launching involves dma_buf exports which creates kobject
-> > and add it to the kernfs with down_write - kernfs_add_one.
-> > 
-> > At the same time in other CPU, a random process was accessing
-> > sysfs and the kernfs_iop_lookup was already hoding the kernfs_rwsem
-> > and ran under direct reclaim patch due to alloc_inode in
-> > kerfs_get_inode.
-> > 
-> > Therefore, the app is stuck on the lock and lose frames so enduser
-> > sees the jank.
-> 
-> So, one really low hanging fruit here would be using a separate rwsem per
-> superblock. Nothing needs synchronization across different users of kernfs
-> and the locking is shared just because nobody bothered to separate them out
-> while generalizing it from sysfs.
+--/Q9YqCthrNTTr8b+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-That's really what I wanted but had a question whether we can access
-superblock from the kernfs_node all the time since there are some
-functions to access the kernfs_rwsem without ionde, sb context.
+On Wed, Nov 17, 2021 at 10:04:33PM +0100, Ansuel Smith wrote:
+> Some device requires a special handling for reg_update_bits and can't use
+> the normal regmap read write logic. An example is when locking is
+> handled by the device and rmw operations requires to do atomic operations.
+> Allow to declare a dedicated function in regmap_config for
+> reg_update_bits in no bus configuration.
+>=20
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> Link: https://lore.kernel.org/r/20211104150040.1260-1-ansuelsmth@gmail.com
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+>  drivers/base/regmap/regmap.c | 1 +
+>  include/linux/regmap.h       | 7 +++++++
+>  2 files changed, 8 insertions(+)
 
-Is it doable to get the superblock from the kernfs_node all the time?
+I've applied this already?  If it's needed by something in another tree
+let me know and I'll make a signed tag for it.
+
+--/Q9YqCthrNTTr8b+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGVfxkACgkQJNaLcl1U
+h9Cu5Af/Zw71VW8AU+geoTpjR5nlUgdZQBHtrqEucSzknp7TE6Bb4IGYEwAmxfJ8
+k62rok0LG6hGrkiujUd2TRBhGAEvoCOiwnnRzirGD++i+vl3sqYIyBr1kASLMppv
+iL3vcGpgq/dtc71EEziurFzFPQy1pOe8MH2IVLB7FxAEFn3zZc0NlxYsDjKsFSZA
+GymChTVLiQfyiKvVwR4QBPgpLiZLeW0BfFPqhWtydKuGxltnKH8A83Z5kPP/KBLA
+9P4W1BSLXPXI2whoDyEGXl4ewJf4CzcwVjMDVZL/U3WirB2wJgdc42rtvMmho5Pk
+gf8u47l9pDNPPTRVMJ0LTQQYLrtsqw==
+=vOjt
+-----END PGP SIGNATURE-----
+
+--/Q9YqCthrNTTr8b+--
