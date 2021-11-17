@@ -2,93 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08E52454C08
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:34:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AEF4454C10
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239437AbhKQRhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 12:37:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42920 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232047AbhKQRhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 12:37:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9C6C61221;
-        Wed, 17 Nov 2021 17:34:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637170456;
-        bh=r20T7LV+HUaSF0Dn1BF3aWqv86caf8MokLQAx7gSDLQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=jxNh3HSfb1y8hZW1NhdBHBdYBOe+l/+3COgf5dxqTexY60CGJniqoBC3q3tuavr4/
-         /3r0IbUu5weJGH4vuzj6tzs+YvSV9oZ9cP1dqDhoLGvusA3quHU4EaZQBBMbTVtSj5
-         5Trq0tein6sbOLSHITw2slrb32RQV7LJM7O9hbnss2GmyGKvUgJIk6xDryTs0lWXiM
-         mztYowx2dA7uLK4eycnc2okSGyu/OD2GtjmilV5KjBcsyN5oMuoQ69AEI5OfkBcJxD
-         shaqLY0d+YcanDetD1tjBacvw4DZK3daGVvPz+XHVC/1Lma5Kx+frwL6AKlUJu8grw
-         XYj1gTNrBDqnw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 491124088E; Wed, 17 Nov 2021 14:34:13 -0300 (-03)
-Date:   Wed, 17 Nov 2021 14:34:13 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        coresight@lists.linaro.org
-Subject: [FYI][PATCH 1/1] tools build: Fix removal of
- feature-sync-compare-and-swap feature detection
-Message-ID: <YZU9Fe0sgkHSXeC2@kernel.org>
+        id S239465AbhKQRjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 12:39:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232047AbhKQRjb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 12:39:31 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333A0C061570;
+        Wed, 17 Nov 2021 09:36:33 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id gt5so2925464pjb.1;
+        Wed, 17 Nov 2021 09:36:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=29Rmx8DNucNaV/O5h3+ze87UeXRGQizoKrqkXB/wnKs=;
+        b=L+tXqFx6v3RMA5EJy5wqOYro16Hbwhddv3N6Fyq20UykDSytRd5B3kge8Dplrt5NpO
+         qUK1GRsbG6euqPYMbCAFI0kRBjv9f5Rxv6OJWpXq60gmSWFqJ6catLnOz2u2sCVR/tkh
+         OA22/6GlyrDinFzL/BW7a9J+O3ZHHvEOxfeS1bMowIlPdRgq21RO4I/AXCIJYwBbbPFf
+         bq5GXavUHBq3MNhGzvZeSsBQKsbiD63dyG0Oq9Ml9vn1y3jWB5ob4hImZkwvurbR1GLg
+         IvcOtvfE3Np2rUa6EUYTG6WmU1hf8eH0C5fPdoIttPV5Sr1UwSqW8SoqCgz3XBfSYjvD
+         ygBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=29Rmx8DNucNaV/O5h3+ze87UeXRGQizoKrqkXB/wnKs=;
+        b=kZravSMOYYhZv3aQG3+pJuGxkCCqaf1sE54wvhtNgmyiBc3c08bkxvyhY6dd2bjmZf
+         Od5vcGmXVRtHCR5/F3JRJ3Mbpp+VgN7kdL3gXD5rLp6rpLpyzJPefooPOiGxygJUh4mx
+         bVKJHKxUavFnszrT2Fdfs/jRTWEJO4kwM46nJJMKIpONEp+utvwMcpmsUB7Li/jYd8W4
+         +/E17Jtc8I0aahKiEHWtbjxssQGYGzpHRZnIzZlCaT4aua+O+oZJC10G42VKG9eSS238
+         x2CzhaFZhVbk3ERxevuB3AlODiQ0ljnNxHjDORz9idi51BZwOXd/GiZMzOZvOps//aOH
+         zJOQ==
+X-Gm-Message-State: AOAM5331lxqftBuG8wbiRuJCR/p8tCVgBCo84sV/igOiAfrnmdXANaJ0
+        sW4/RWclQuOL129VinkpLWf8yhe/NOg=
+X-Google-Smtp-Source: ABdhPJyhYj3ig9G6O1tcNZk7fddyL2FNgrquaK7YmQ9OK18CO8mIQ0EA1mM/CgS0i1UMqyDwH2Le2A==
+X-Received: by 2002:a17:90a:6e41:: with SMTP id s1mr1709580pjm.166.1637170592276;
+        Wed, 17 Nov 2021 09:36:32 -0800 (PST)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id g7sm263092pfv.159.2021.11.17.09.36.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 09:36:31 -0800 (PST)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next] net: mdio: Replaced BUG_ON() with WARN()
+Date:   Wed, 17 Nov 2021 09:36:29 -0800
+Message-Id: <20211117173629.2734752-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patch removing the feature-sync-compare-and-swap feature detection
-didn't remove the call to main_test_sync_compare_and_swap(), making the
-'test-all' case fail an all the feature tests to be performed
-individually:
+Killing the kernel because a certain MDIO bus object is not in the
+desired state at various points in the registration or unregistration
+paths is excessive and is not helping in troubleshooting or fixing
+issues. Replace the BUG_ON() with WARN() and print out the MDIO bus name
+to facilitate debugging.
 
-  $ cat /tmp/build/perf/feature/test-all.make.output
-  In file included from test-all.c:18:
-  test-libpython-version.c:5:10: error: #error
-      5 |         #error
-        |          ^~~~~
-  test-all.c: In function ‘main’:
-  test-all.c:203:9: error: implicit declaration of function ‘main_test_sync_compare_and_swap’ [-Werror=implicit-function-declaration]
-    203 |         main_test_sync_compare_and_swap(argc, argv);
-        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  cc1: all warnings being treated as errors
-  $
-
-Fix it, now to figure out what is that test-libpython-version.c
-problem...
-
-Fixes: 60fa754b2a5a4e0c ("tools: Remove feature-sync-compare-and-swap feature detection")
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- tools/build/feature/test-all.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/net/phy/mdio_bus.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/tools/build/feature/test-all.c b/tools/build/feature/test-all.c
-index 9204395272912c13..0b243ce842be3383 100644
---- a/tools/build/feature/test-all.c
-+++ b/tools/build/feature/test-all.c
-@@ -200,7 +200,6 @@ int main(int argc, char *argv[])
- 	main_test_timerfd();
- 	main_test_stackprotector_all();
- 	main_test_libdw_dwarf_unwind();
--	main_test_sync_compare_and_swap(argc, argv);
- 	main_test_zlib();
- 	main_test_pthread_attr_setaffinity_np();
- 	main_test_pthread_barrier();
+diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+index c204067f1890..9b6f2df07211 100644
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -176,9 +176,11 @@ static void mdiobus_release(struct device *d)
+ {
+ 	struct mii_bus *bus = to_mii_bus(d);
+ 
+-	BUG_ON(bus->state != MDIOBUS_RELEASED &&
+-	       /* for compatibility with error handling in drivers */
+-	       bus->state != MDIOBUS_ALLOCATED);
++	WARN(bus->state != MDIOBUS_RELEASED &&
++	     /* for compatibility with error handling in drivers */
++	     bus->state != MDIOBUS_ALLOCATED,
++	     "%s: not in RELEASED or ALLOCATED state\n",
++	     bus->id);
+ 	kfree(bus);
+ }
+ 
+@@ -529,8 +531,9 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
+ 		bus->parent->of_node->fwnode.flags |=
+ 					FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD;
+ 
+-	BUG_ON(bus->state != MDIOBUS_ALLOCATED &&
+-	       bus->state != MDIOBUS_UNREGISTERED);
++	WARN(bus->state != MDIOBUS_ALLOCATED &&
++	     bus->state != MDIOBUS_UNREGISTERED,
++	     "%s: not in ALLOCATED or UNREGISTERED state\n", bus->id);
+ 
+ 	bus->owner = owner;
+ 	bus->dev.parent = bus->parent;
+@@ -658,7 +661,8 @@ void mdiobus_free(struct mii_bus *bus)
+ 		return;
+ 	}
+ 
+-	BUG_ON(bus->state != MDIOBUS_UNREGISTERED);
++	WARN(bus->state != MDIOBUS_UNREGISTERED,
++	     "%s: not in UNREGISTERED state\n", bus->id);
+ 	bus->state = MDIOBUS_RELEASED;
+ 
+ 	put_device(&bus->dev);
 -- 
-2.31.1
+2.25.1
 
