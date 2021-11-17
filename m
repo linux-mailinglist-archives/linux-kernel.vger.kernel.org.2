@@ -2,96 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66296454D81
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:56:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59275454D84
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:56:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240276AbhKQS7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 13:59:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbhKQS7S (ORCPT
+        id S240289AbhKQS70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 13:59:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:40982 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240279AbhKQS7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 13:59:18 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E13AC061570;
+        Wed, 17 Nov 2021 13:59:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637175382;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Vxkdfj9JEAJ/LK1YWoTa70cHi7v/Kw2W+r/qMs1q6ps=;
+        b=WigOILrdVEbpDRqOqydmB8LZhUrhx4M0XC5EmHgfWCjhzT+oB6lbCk/RThaNie3JiOuveZ
+        dBUpPMsYW9RasbE4r8bRvbi04sBXmCdx36GsY33jMS8vkIz8GWytmFSnJiEWasablBI1HP
+        wnDuEfIAMFUZOXIFHY6D6ZiyGawMDKY=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-173-FesrCxbVNjGhG4vlj9lr8A-1; Wed, 17 Nov 2021 13:56:21 -0500
+X-MC-Unique: FesrCxbVNjGhG4vlj9lr8A-1
+Received: by mail-qk1-f198.google.com with SMTP id v13-20020a05620a440d00b00468380f4407so2666680qkp.17
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:56:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Vxkdfj9JEAJ/LK1YWoTa70cHi7v/Kw2W+r/qMs1q6ps=;
+        b=GrlRyBo7mkxiswkHn4tVSJF+FL43KTU1QEHJg+qVs2pu8t0cfADI2YM6f39/+rmRMl
+         bukgT1zh0kYhAbjUFKhvb3l0INkJakcUQSpkt6PP85SeQ6ZTg3TqXu5AlEFWyF2QjX57
+         Fy6L9GQWvIooxShrJlCV17OLPSsCx+ZQ+WZ0wqFRWISNTEqAoPGSMf0ETK3scd/8potn
+         o+Ra0PDtF0CBplA6ZLBo1Zxwn5oAvXeoSfPY6ti10bb22h9t3RrtlJJaxo/ecCj5Ys4j
+         HOp/lDEn4rIM+ZTtU8t4IdVCLVI+qBioCrK8C2+/+pBazcvIFGymlu4pHrd3VcmmGxOE
+         zHjA==
+X-Gm-Message-State: AOAM532IK3wGEbM6eQkOZwbpsX/srUXGV36DpXHut4l9xfFWs3ThFhXJ
+        bKiaXytU7n3Y58tNM1NtD+bcTtODMGqDnb2jAmfDyFLF6sRwoQ4TZ08CWXatnTUzxQcpdbISL6D
+        L3FBZXlphgugRf+pOVz9lC3I+
+X-Received: by 2002:ac8:590a:: with SMTP id 10mr19262636qty.186.1637175380485;
+        Wed, 17 Nov 2021 10:56:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxgmIgb+WOecaMJGBYjEmk1D98xPws7O0jLA83WP0lJ5dXbARz40eq0F3oz8jvsYAcBKi1PUg==
+X-Received: by 2002:ac8:590a:: with SMTP id 10mr19262593qty.186.1637175380136;
+        Wed, 17 Nov 2021 10:56:20 -0800 (PST)
+Received: from bfoster (c-24-61-119-116.hsd1.ma.comcast.net. [24.61.119.116])
+        by smtp.gmail.com with ESMTPSA id u10sm381268qkp.104.2021.11.17.10.56.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 17 Nov 2021 10:56:19 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 9B4F01F4504E
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637175377; bh=pfW3r//hiTUpNl3AaVc51NsLpL5CHDHjWkEcoprBN2c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bbnJLmmNnqvWvLr9wHaL1mfpbN4RShrjRtTXKJVBBAo5YO6XNFtiN5ZbGsQ6/aW/G
-         fiAL9oiaawS8DOwJW0P6GJAdXDbU43Yl5zumMeMZAqauBrDkqo+VAqoB2mg2DuMbOm
-         q9fsb9WuE9mkjLxTOmNM3Wkv1uG72cekwaHb1yVfB4YQrW0FKo+4bLoxUQi2NPTo8g
-         KLcpLCo0ISj5xa3IaUuIPyBxhReiowDNustCg1ob3qr8UYUK/oCRJc8coRs6OtlH5v
-         VQXMwVzSAYwln00ZTW4i33Ea+MW3ExfWUp4qw/YcKKMJXM8uNL8ERIiltYwgzU5lZ4
-         oUbBMnM6c7frw==
-Received: by earth.universe (Postfix, from userid 1000)
-        id F17313C0F9E; Wed, 17 Nov 2021 19:56:15 +0100 (CET)
-Date:   Wed, 17 Nov 2021 19:56:15 +0100
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org, Yauhen Kharuzhy <jekhor@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-efi@vger.kernel.org
-Subject: Re: [PATCH v2 00/20] power-suppy/i2c/extcon: Fix charger setup on
- Xiaomi Mi Pad 2 and Lenovo Yogabook
-Message-ID: <20211117185615.iqln2hhvkq5utefb@earth.universe>
-References: <20211114170335.66994-1-hdegoede@redhat.com>
+Date:   Wed, 17 Nov 2021 13:56:17 -0500
+From:   Brian Foster <bfoster@redhat.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Ian Kent <raven@themaw.net>, Miklos Szeredi <miklos@szeredi.hu>,
+        xfs <linux-xfs@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] xfs: make sure link path does not go away at access
+Message-ID: <YZVQUSCWWgOs+cRB@bfoster>
+References: <163660197073.22525.11235124150551283676.stgit@mickey.themaw.net>
+ <20211112003249.GL449541@dread.disaster.area>
+ <CAJfpegvHDM_Mtc8+ASAcmNLd6RiRM+KutjBOoycun_Oq2=+p=w@mail.gmail.com>
+ <20211114231834.GM449541@dread.disaster.area>
+ <CAJfpegu4BwJD1JKngsrzUs7h82cYDGpxv0R1om=WGhOOb6pZ2Q@mail.gmail.com>
+ <20211115222417.GO449541@dread.disaster.area>
+ <f8425d1270fe011897e7e14eaa6ba8a77c1ed077.camel@themaw.net>
+ <20211116030120.GQ449541@dread.disaster.area>
+ <YZPVSTDIWroHNvFS@bfoster>
+ <20211117002251.GR449541@dread.disaster.area>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jv4e474pzdvgweet"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211114170335.66994-1-hdegoede@redhat.com>
+In-Reply-To: <20211117002251.GR449541@dread.disaster.area>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 17, 2021 at 11:22:51AM +1100, Dave Chinner wrote:
+> On Tue, Nov 16, 2021 at 10:59:05AM -0500, Brian Foster wrote:
+> > On Tue, Nov 16, 2021 at 02:01:20PM +1100, Dave Chinner wrote:
+> > > On Tue, Nov 16, 2021 at 09:03:31AM +0800, Ian Kent wrote:
+> > > > On Tue, 2021-11-16 at 09:24 +1100, Dave Chinner wrote:
+> > > > > If it isn't safe for ext4 to do that, then we have a general
+> > > > > pathwalk problem, not an XFS issue. But, as you say, it is safe
+> > > > > to do this zeroing, so the fix to xfs_ifree() is to zero the
+> > > > > link buffer instead of freeing it, just like ext4 does.
+> > > > > 
+> > > > > As a side issue, we really don't want to move what XFS does in
+> > > > > .destroy_inode to .free_inode because that then means we need to
+> > > > > add synchronise_rcu() calls everywhere in XFS that might need to
+> > > > > wait on inodes being inactivated and/or reclaimed. And because
+> > > > > inode reclaim uses lockless rcu lookups, there's substantial
+> > > > > danger of adding rcu callback related deadlocks to XFS here.
+> > > > > That's just not a direction we should be moving in.
+> > > > 
+> > > > Another reason I decided to use the ECHILD return instead is that
+> > > > I thought synchronise_rcu() might add an unexpected delay.
+> > > 
+> > > It depends where you put the synchronise_rcu() call. :)
+> > > 
+> > > > Since synchronise_rcu() will only wait for processes that
+> > > > currently have the rcu read lock do you think that could actually
+> > > > be a problem in this code path?
+> > > 
+> > > No, I don't think it will.  The inode recycle case in XFS inode
+> > > lookup can trigger in two cases:
+> > > 
+> > > 1. VFS cache eviction followed by immediate lookup
+> > > 2. Inode has been unlinked and evicted, then free and reallocated by
+> > > the filesytsem.
+> > > 
+> > > In case #1, that's a cold cache lookup and hence delays are
+> > > acceptible (e.g. a slightly longer delay might result in having to
+> > > fetch the inode from disk again). Calling synchronise_rcu() in this
+> > > case is not going to be any different from having to fetch the inode
+> > > from disk...
+> > > 
+> > > In case #2, there's a *lot* of CPU work being done to modify
+> > > metadata (inode btree updates, etc), and so the operations can block
+> > > on journal space, metadata IO, etc. Delays are acceptible, and could
+> > > be in the order of hundreds of milliseconds if the transaction
+> > > subsystem is bottlenecked. waiting for an RCU grace period when we
+> > > reallocate an indoe immediately after freeing it isn't a big deal.
+> > > 
+> > > IOWs, if synchronize_rcu() turns out to be a problem, we can
+> > > optimise that separately - we need to correct the inode reuse
+> > > behaviour w.r.t. VFS RCU expectations, then we can optimise the
+> > > result if there are perf problems stemming from correct behaviour.
+> > > 
+> > 
+> > FWIW, with a fairly crude test on a high cpu count system, it's not that
+> > difficult to reproduce an observable degradation in inode allocation
+> > rate with a synchronous grace period in the inode reuse path, caused
+> > purely by a lookup heavy workload on a completely separate filesystem.
+> >
+> > The following is a 5m snapshot of the iget stats from a filesystem doing
+> > allocs/frees with an external/heavy lookup workload (which not included
+> > in the stats), with and without a sync grace period wait in the reuse
+> > path:
+> > 
+> > baseline:	ig 1337026 1331541 4 5485 0 5541 1337026
+> > sync_rcu_test:	ig 2955 2588 0 367 0 383 2955
+> 
+> The alloc/free part of the workload is a single threaded
+> create/unlink in a tight loop, yes?
+> 
+> This smells like a side effect of agressive reallocation of
+> just-freed XFS_IRECLAIMABLE inodes from the finobt that haven't had
+> their unlink state written back to disk yet. i.e. this is a corner
+> case in #2 above where a small set of inodes is being repeated
+> allocated and freed by userspace and hence being agressively reused
+> and never needing to wait for IO. i.e. a tempfile workload
+> optimisation...
+> 
 
---jv4e474pzdvgweet
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yes, that was the point of the test.. to stress inode reuse against
+known rcu activity.
 
-Hi,
+> > I think this is kind of the nature of RCU and why I'm not sure it's a
+> > great idea to rely on update side synchronization in a codepath that
+> > might want to scale/perform in certain workloads.
+> 
+> The problem here is not update side synchronisation. Root cause is
+> aggressive reallocation of recently freed VFS inodes via physical
+> inode allocation algorithms. Unfortunately, the RCU grace period
+> requirements of the VFS inode life cycle dictate that we can't
+> aggressively re-allocate and reuse freed inodes like this. i.e.
+> reallocation of a just-freed inode also has to wait for an RCU grace
+> period to pass before the in memory inode can be re-instantiated as
+> a newly allocated inode.
+> 
 
-On Sun, Nov 14, 2021 at 06:03:15PM +0100, Hans de Goede wrote:
-> This is version 2 of my series previously titled:
-> "[PATCH 00/13] power-suppy/i2c/extcon: Add support for cht-wc PMIC
-> without USB-PD support". [...]
+I'm just showing that insertion of an synchronous rcu grace period wait
+in the iget codepath is not without side effect, because that was the
+proposal.
 
-Apart from the already pointed out things the power-supply changes LGTM.
+> (Hmmmm - I wonder if of the other filesystems might have similar
+> problems with physical inode reallocation inside a RCU grace period?
+> i.e. without inode instance re-use, the VFS could potentially see
+> multiple in-memory instances of the same physical inode at the same
+> time.)
+> 
+> > I'm not totally sure
+> > if this will be a problem for real users running real workloads or not,
+> > or if this can be easily mitigated, whether it's all rcu or a cascading
+> > effect, etc. This is just a quick test so that all probably requires
+> > more test and analysis to discern.
+> 
+> This looks like a similar problem to what busy extents address - we
+> can't reuse a newly freed extent until the transaction containing
+> the EFI/EFD hit stable storage (and the discard operation on the
+> range is complete). Hence while a newly freed extent is
+> marked free in the allocbt, they can't be reused until they are
+> released from the busy extent tree.
+> 
+> I can think of several ways to address this, but let me think on it
+> a bit more.  I suspect there's a trick we can use to avoid needing
+> synchronise_rcu() completely by using the spare radix tree tag and
+> rcu grace period state checks with get_state_synchronize_rcu() and
+> poll_state_synchronize_rcu() to clear the radix tree tags via a
+> periodic radix tree tag walk (i.e. allocation side polling for "can
+> we use this inode" rather than waiting for the grace period to
+> expire once an inode has been selected and allocated.)
+> 
 
--- Sebastian
+Yeah, and same. It's just a matter of how to break things down. I can
+sort of see where you're going with the above, though I'm not totally
+convinced that rcu gp polling is an advantage over explicit use of
+existing infrastructure/apis. It seems more important that we avoid
+overly crude things like sync waits in the alloc path vs. optimize away
+potentially multiple async grace periods in the free path. Of course,
+it's worth thinking about options regardless.
 
---jv4e474pzdvgweet
-Content-Type: application/pgp-signature; name="signature.asc"
+That said, is deferred inactivation still a thing? If so, then we've
+already decided to defer/batch inactivations from the point the vfs
+calls our ->destroy_inode() based on our own hueristic (which is likely
+longer than a grace period already in most cases, making this even less
+of an issue). That includes deferral of the physical free and inobt
+updates, which means inode reuse can't occur until the inactivation
+workqueue task runs. Only a single grace period is required to cover
+(from the rcuwalk perspective) the entire set of inodes queued for
+inactivation. That leaves at least a few fairly straightforward options:
 
------BEGIN PGP SIGNATURE-----
+1. Use queue_rcu_work() to schedule the inactivation task. We'd probably
+have to isolate the list to process first from the queueing context
+rather than from workqueue context to ensure we don't process recently
+added inodes that haven't sat for a grace period.
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmGVUEMACgkQ2O7X88g7
-+prLXQ/+M0HVd3+zx/Indeo+CsPNaNrCsjPQPMmXpWCFv+D+60jX1xElNK2MOdRY
-4nb82ca24uvIsawx85gUXPQJv0DAB0KQiqa3I7d7L/AswNarxha6bDcC8d6TlD85
-Kg/55YNaKB2mjqxGK7nZ7lAOYQMHQGgiJ19br2kVwlJiBywMHvso8lPSBHA0cR3f
-eJc57hpLvliqpW/1l7XzDMgdR1U+TUG7vICuC6uyV3DwWb0XdakFFJvQQvE14U1v
-to9otcNL1E2Wt2I0sQV52Je+/a3tP6qlWMR1AigfeNbLXTl/POcWIhbjSbxChgT2
-N3HVqKcN/JnBXAwRmSr+K5LVPJWEKiM6wLhD+Ua2ncXX51mcxABnA1pXiXuXBqZ6
-eIni/tmerqPcbLLmqGtvx/rD7m4Gcudu+66BrhplkgMEpDs+oZ2qIZMdPO/e+JTS
-rhwowA9g2ujDON5JeM/IBImnzJ/ggKUkba80GKbqGVQq5vpzjNuq4wIy1uMiNS3Q
-/LbrJnk+zun2i4ZNWsGBDymPMXeXkJ12JF3NFv2HsuAzHKjLMNpwvGpFn3UnntK0
-98yUoQkD8UqlXf/0BJ5hi4ACVdBTZQ88Z4ry/G0/ii2HNvgHfO7z2p7DmXa1QClu
-ZCzHvKRatNnEgs/bm8KHyoda4DNua9TFOlsiDwa3g/cIT/sPV28=
-=SyNY
------END PGP SIGNATURE-----
+2. Drop a synchronize_rcu() in the workqueue task before it starts
+processing items.
 
---jv4e474pzdvgweet--
+3. Incorporate something like the above with an rcu grace period cookie
+to selectively process inodes (or batches thereof).
+
+Options 1 and 2 both seem rather simple and unlikely to noticeably
+impact behavior/performance. Option 3 seems a bit overkill to me, but is
+certainly an option if the previous assertion around performance doesn't
+hold true (particularly if we keep the tracking simple, such as
+recording/enforcing the most recent gp of the set). Thoughts?
+
+Brian
+
+> > > > 
+> > > > Sorry, I don't understand what you mean by the root cause not
+> > > > being identified?
+> > > 
+> > > The whole approach of "we don't know how to fix the inode reuse case
+> > > so disable it" implies that nobody has understood where in the reuse
+> > > case the problem lies. i.e. "inode reuse" by itself is not the root
+> > > cause of the problem.
+> > > 
+> > 
+> > I don't think anybody suggested to disable inode reuse.
+> 
+> Nobody did, so that's not what I was refering to. I was refering to
+> the patches for and comments advocating disabling .get_link for RCU
+> pathwalk because of the apparently unsolved problems stemming from
+> inode reuse...
+> 
+> > > The root cause is "allowing an inode to be reused without waiting
+> > > for an RCU grace period to expire". This might seem pedantic, but
+> > > "without waiting for an rcu grace period to expire" is the important
+> > > part of the problem (i.e. the bug), not the "allowing an inode to be
+> > > reused" bit.
+> > > 
+> > > Once the RCU part of the problem is pointed out, the solution
+> > > becomes obvious. As nobody had seen the obvious (wait for an RCU
+> > > grace period when recycling an inode) it stands to reason that
+> > > nobody really understood what the root cause of the inode reuse
+> > > problem.
+> > > 
+> > 
+> > The synchronize_rcu() approach was one of the first options discussed in
+> > the bug report once a reproducer was available.
+> 
+> What bug report would that be? :/
+> 
+> It's not one that I've read, and I don't recall seeing a pointer to
+> it anywhere in the path posting. IOWs, whatever discussion happened
+> in a private distro bug report can't be assumed as "general
+> knowledge" in an upstream discussion...
+> 
+> > AIUI, this is not currently a reproducible problem even before patch 1,
+> > which reduces the race window even further. Given that and the nak on
+> > the current patch (the justification for which I don't really
+> > understand), I'm starting to agree with Ian's earlier statement that
+> > perhaps it is best to separate this one so we can (hopefully) move patch
+> > 1 along on its own merit..
+> 
+> *nod*
+> 
+> The problem seems pretty rare, the pathwalk patch makes it
+> even rarer, so I think they can be separated just fine.
+> 
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
+> 
+
