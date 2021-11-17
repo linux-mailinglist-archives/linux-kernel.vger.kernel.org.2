@@ -2,131 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D7C454DB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:11:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17020454DB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240378AbhKQTOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 14:14:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39776 "EHLO mail.kernel.org"
+        id S240389AbhKQTOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 14:14:37 -0500
+Received: from mga02.intel.com ([134.134.136.20]:33215 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239360AbhKQTOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 14:14:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C518D61AFD;
-        Wed, 17 Nov 2021 19:11:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637176265;
-        bh=VlfW1BcHNt7n+eRSHpnpMG24e4a0jUh1X6foZIcr3u4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aHS71tzbkiDvTdlyBNCpbMebkSYR1vnMqSGMUtQZRyz6PMfsIeDOl5dK2ce6G8PeT
-         Q8rPXMxfOPMx7zs0g1bWjYZHCgGykLmU8wC2rdJ6u9faYgLw5VR1A+g/foricb2rS2
-         efGcik9cQapXk97QHck7ghLaysvrP8w65AC1Ur+NrJjQ0X/2a7T+TqhkI+YI9HrKyx
-         Z9e2hoUcxWwXlYsbkHpBiM2E2LP50mY+qDrYawSnCdBvHiL7abnE1hVQH+9yB17q2W
-         CNSOMOI3l0lbcNv9TgaVva/l8isa8lbaUFKKEemv1FmTFC0EI6l5fVmJ3ke94DcqGT
-         CliLhoNr5p1tw==
-Date:   Wed, 17 Nov 2021 11:11:03 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>
-Cc:     herbert@gondor.apana.org.au, Jarkko Sakkinen <jarkko@kernel.org>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings <keyrings@vger.kernel.org>, simo@redhat.com
-Subject: Re: [PATCH v3 2/4] crypto: add SP800-108 counter key derivation
- function
-Message-ID: <YZVTx01YyvCsPc9i@gmail.com>
-References: <2589009.vuYhMxLoTh@positron.chronox.de>
- <3412396.dWV9SEqChM@positron.chronox.de>
+        id S239360AbhKQTOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 14:14:32 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10171"; a="221247359"
+X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
+   d="scan'208";a="221247359"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 11:11:32 -0800
+X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
+   d="scan'208";a="536408528"
+Received: from jausmus-mobl3.amr.corp.intel.com (HELO [10.212.219.192]) ([10.212.219.192])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 11:11:32 -0800
+Subject: Re: [PATCH] x86/paravirt: Fix build PARAVIRT_XXL=y without XEN_PV
+To:     Borislav Petkov <bp@alien8.de>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>
+References: <20211117181439.4368-1-kirill.shutemov@linux.intel.com>
+ <YZVLVfd5E6d6YQig@hirez.programming.kicks-ass.net>
+ <20211117184225.6e257nfpdd2qhrj4@box.shutemov.name>
+ <4824bf30-851e-c927-a50f-87fa2a429b2a@linux.intel.com>
+ <YZVOfGtHyiZg1pIP@zn.tnic>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <b867f002-bb62-94b0-1e13-f2b8520011e6@intel.com>
+Date:   Wed, 17 Nov 2021 11:11:31 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <YZVOfGtHyiZg1pIP@zn.tnic>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <3412396.dWV9SEqChM@positron.chronox.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 09:43:13AM +0100, Stephan Müller wrote:
-> SP800-108 defines three KDFs - this patch provides the counter KDF
-> implementation.
+On 11/17/21 10:48 AM, Borislav Petkov wrote:
+> On Wed, Nov 17, 2021 at 10:46:30AM -0800, Sathyanarayanan Kuppuswamy wrote:
+>> TDX has a requirement to use HLT paravirt calls (which is currently
+>> listed under PARAVIRT_XXL). Once we submit a patch to move it
+>> under CONFIG_PARAVIRT, we will drop this dependency.
+> You already have this patch in some set:
 > 
-> The KDF is implemented as a service function where the caller has to
-> maintain the hash / HMAC state. Apart from this hash/HMAC state, no
-> additional state is required to be maintained by either the caller or
-> the KDF implementation.
+> https://lore.kernel.org/r/20211009053747.1694419-2-sathyanarayanan.kuppuswamy@linux.intel.com
 > 
-> The key for the KDF is set with the crypto_kdf108_setkey function which
-> is intended to be invoked before the caller requests a key derivation
-> operation via crypto_kdf108_ctr_generate.
-> 
-> SP800-108 allows the use of either a HMAC or a hash as crypto primitive
-> for the KDF. When a HMAC primtive is intended to be used,
-> crypto_kdf108_setkey must be used to set the HMAC key. Otherwise, for a
-> hash crypto primitve crypto_kdf108_ctr_generate can be used immediately
-> after allocating the hash handle.
-> 
-> Signed-off-by: Stephan Mueller <smueller@chronox.de>
-> ---
->  crypto/Kconfig                |   7 ++
->  crypto/Makefile               |   5 ++
->  crypto/kdf_sp800108.c         | 149 ++++++++++++++++++++++++++++++++++
->  include/crypto/kdf_sp800108.h |  61 ++++++++++++++
->  4 files changed, 222 insertions(+)
->  create mode 100644 crypto/kdf_sp800108.c
->  create mode 100644 include/crypto/kdf_sp800108.h
-> 
-> diff --git a/crypto/Kconfig b/crypto/Kconfig
-> index 285f82647d2b..09c393a57b58 100644
-> --- a/crypto/Kconfig
-> +++ b/crypto/Kconfig
-> @@ -1845,6 +1845,13 @@ config CRYPTO_JITTERENTROPY
->  	  random numbers. This Jitterentropy RNG registers with
->  	  the kernel crypto API and can be used by any caller.
->  
-> +config CRYPTO_KDF800108_CTR
-> +	tristate "Counter KDF (SP800-108)"
-> +	select CRYPTO_HASH
-> +	help
-> +	  Enable the key derivation function in counter mode compliant to
-> +	  SP800-108.
+> So what's this churn for?
 
-These are just some library functions, so they shouldn't be user-selectable.
+The churn is my doing.  It occurred to me that we could toss the
+aforementioned patch out of the set by using:
 
-> +/*
-> + * The seeding of the KDF
-> + */
-> +int crypto_kdf108_setkey(struct crypto_shash *kmd,
-> +			 const u8 *key, size_t keylen,
-> +			 const u8 *ikm, size_t ikmlen)
-> +{
-> +	unsigned int ds = crypto_shash_digestsize(kmd);
-> +
-> +	/* SP800-108 does not support IKM */
-> +	if (ikm || ikmlen)
-> +		return -EINVAL;
+	depends on PARAVIRT_XXL
 
-Why have the ikm parameter if it's not supported?
+instead of:
 
-> +	/*
-> +	 * We require that we operate on a MAC -- if we do not operate on a
-> +	 * MAC, this function returns an error.
-> +	 */
-> +	return crypto_shash_setkey(kmd, key, keylen);
-> +}
-> +EXPORT_SYMBOL(crypto_kdf108_setkey);
+	depends on PARAVIRT
 
-Well, crypto_shash_setkey() will succeed if the hash algorithm takes a "key".
-That doesn't necessarily mean that it's a MAC.	It could be crc32 or xxhash64,
-for example; those interpret the "key" as the initial value.
+Especially since PARAVIRT_XXL seems pretty common in distro kernels.
+But, I didn't realize quite how reviled PARAVIRT_XXL was.
 
-> +static int __init crypto_kdf108_init(void)
-> +{
-> +	int ret = kdf_test(&kdf_ctr_hmac_sha256_tv_template[0], "hmac(sha256)",
-> +			   crypto_kdf108_setkey, crypto_kdf108_ctr_generate);
-> +
-> +	if (ret)
-> +		pr_warn("alg: self-tests for CTR-KDF (hmac(sha256)) failed (rc=%d)\n",
-> +			ret);
+So, first of all, _this_ patch is a proper cleanup.  We should merge it
+or something like it either way.
 
-This should be a WARN() since it indicates a kernel bug.
-
-- Eric
+As for TDX, my preference (obviously) is to keep the "depends on
+PARAVIRT_XXL", reviled as it may be.  It's the literal truth at this
+point: TDX guest support depends on PARAVIRT_XXL functionality.  There
+is no shortage of ways to remove that dependency (expand PARAVIRT or
+custom idle), which makes me very confident that we are not painting
+ourselves into a corner here.
