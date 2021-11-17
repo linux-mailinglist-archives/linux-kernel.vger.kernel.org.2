@@ -2,158 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 820CB455084
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B6A455086
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241324AbhKQWeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 17:34:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48226 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241294AbhKQWeA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:34:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637188260;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WTt9sUP3lJ68FegjO9GjX+kEi71roNPt0xleys8iI08=;
-        b=MQgvTlLKeh867oPUD0SY4u3zq0MEZR+1Cfgen4Vo7bfal1GGulPddVTu/cbchWcyAv+SrP
-        0AbkVkYsoTsPWoAeumRXmnOVExX+SQNf1OtUKkWXjLKWkCwyGiftU7pV1Re6D28kt1JUVw
-        kO8wTRFvXgvgGsLYOffhfX9KFgu2mA4=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-120-BBlkOX9FMUSXkzBii_hLwA-1; Wed, 17 Nov 2021 17:30:59 -0500
-X-MC-Unique: BBlkOX9FMUSXkzBii_hLwA-1
-Received: by mail-ed1-f71.google.com with SMTP id r16-20020a056402019000b003e6cbb77ed2so3463294edv.10
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:30:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=WTt9sUP3lJ68FegjO9GjX+kEi71roNPt0xleys8iI08=;
-        b=GNbS+XygN7hJDYuTEThUuFDgYXpV0i+iG+ILlot4AS8PNuAjSuwcryXAP7Y/QIfBVa
-         L9wF4Z2dcK8qtB0nZYOHNQcHStAWyUa7vHeuABWgP88hCGhW5NnICPtitdL+90Jg0oPm
-         v84e092bbz6z3AxxvD2b7a1V4q7RXkn5kLqOXACMXRTCnOjfjTgGMPEYiVDL0983geSF
-         3AfSuZm1FOXZ/FNdZ5vLrD5/O3H6Ge9lUz5BpxDEGhht6vxcB0qBp04waqo57UNyn914
-         Yhwpri08e90PSdNTaruyo6TRFnOvZhxrkrnmndyP3Ppr+LF316XCOlFCPWazqwUXx/3n
-         U9zg==
-X-Gm-Message-State: AOAM530kHoeCqGVJ2tDn2PcqhUgy0QQxUOJ+syQOQxkCNXCF5u2TOc2/
-        TWOax+jq/X3Tboe8woPBuK8kglio+pMNdQ8DqiCzswFXvsloSFYM6ovo91KeeWef7TOWoa9V9JV
-        EzHSpuLaA+Fvlido4BTgoTXQx
-X-Received: by 2002:a05:6402:1a4d:: with SMTP id bf13mr3516587edb.101.1637188257641;
-        Wed, 17 Nov 2021 14:30:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz3kwytgat9SSbRxbQmqPU+zzuWWa6GBBPKDDWtWcCSnT7hIqf+Y247AjSB9BSn3oMXwtaYbA==
-X-Received: by 2002:a05:6402:1a4d:: with SMTP id bf13mr3516553edb.101.1637188257483;
-        Wed, 17 Nov 2021 14:30:57 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id b2sm591632edv.73.2021.11.17.14.30.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 14:30:57 -0800 (PST)
-Message-ID: <662623cd-c70b-63e6-499e-7c24b5d3e342@redhat.com>
-Date:   Wed, 17 Nov 2021 23:30:56 +0100
+        id S241300AbhKQWeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 17:34:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41800 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241339AbhKQWeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 17:34:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27DC861B51;
+        Wed, 17 Nov 2021 22:31:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637188281;
+        bh=uU2qHnUEljTCEgcQnVLhefzFnphaBzkPX4DWASgLNyg=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=ijHAK4jp/W3+yP3SjYIwyudnH1gsROgiOIUR6o3QBOWhju89RKd1Nf+EzfqVJ3y5G
+         D8aXK9pihpRlXkeH0IzZydkb/bpVeLKzxye4sWYcMLTfA0psDu9HFDc4Hw+oVfhapc
+         ZhTthq0YfMMAIdzXhZ44ZMjKWO5PhEIg6kz8ql7L6npP+CosNDQIPdqPfUDAOjIVVE
+         xx1uJ4aUU3/35gP2rNnUlDBknO10Q7Wf3CqG5aptbx1I1IrtpOoBkXHnK7EJkp8esd
+         aoIsottl3SoS4aYhuL6HOepm20J6JVlkg3G29pDprOFW8l0o3oBhnkazG89fTUjoUp
+         6ur/vZ+GudlnA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20211117104404.3832-1-olivier.moysan@foss.st.com>
+References: <20211117104404.3832-1-olivier.moysan@foss.st.com>
+Subject: Re: [PATCH] ASoC: stm32: i2s: fix 32 bits channel length without mclk
+Message-Id: <163718827890.136789.10813827893934217729.b4-ty@kernel.org>
+Date:   Wed, 17 Nov 2021 22:31:18 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 18/20] extcon: intel-cht-wc: Refactor
- cht_wc_extcon_get_charger()
-Content-Language: en-US
-To:     Chanwoo Choi <cwchoi00@gmail.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        Yauhen Kharuzhy <jekhor@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-efi@vger.kernel.org
-References: <20211114170335.66994-1-hdegoede@redhat.com>
- <20211114170335.66994-19-hdegoede@redhat.com>
- <f84e2060-f6b7-64f9-78cd-e8ad8776ab2d@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <f84e2060-f6b7-64f9-78cd-e8ad8776ab2d@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 11/17/21 08:15, Chanwoo Choi wrote:
-> Hello,
+On Wed, 17 Nov 2021 11:44:04 +0100, Olivier Moysan wrote:
+> Fix divider calculation in the case of 32 bits channel
+> configuration, when no master clock is used.
 > 
-> I think that you need to squash it with patch21
-> I'm not sure that this patch is either atomic or not because
-> you remove the 'return EXTCON_CHG_USB_SDP/EXTCON_CHG_USB_SDP'
-> without explaining why it is no problem. Just mention that
-> pass the role to next 'switch' cases. But, before this change,
-> there were any reason to return the type of charger cable
-> before switch statement.
-
-The setting of usbsrc to "CHT_WC_USBSRC_TYPE_SDP << CHT_WC_USBSRC_TYPE_SHIFT"
-will make the following switch-case return EXTCON_CHG_USB_SDP
-just as before, so there is no functional change.
-
-> According to your patch description, you don't need
-> to make the separate patch of it. Please squash it with patch21.
-
-Having this refactoring in a separate patch makes it easier
-to see what is going on in patch 21. So I'm going to keep this
-as a separate patch for v3 of this series.
-
-Thanks & Regards,
-
-Hans
-
-
-
-> On 21. 11. 15. 오전 2:03, Hans de Goede wrote:
->> Refactor cht_wc_extcon_get_charger() to have all the returns are in
->> the "switch (usbsrc)" cases.
->>
->> This is a preparation patch for adding support for registering
->> a power_supply class device.
->>
->> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
->> ---
->>   drivers/extcon/extcon-intel-cht-wc.c | 15 ++++++++-------
->>   1 file changed, 8 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/extcon/extcon-intel-cht-wc.c b/drivers/extcon/extcon-intel-cht-wc.c
->> index 119b83793123..f2b93a99a625 100644
->> --- a/drivers/extcon/extcon-intel-cht-wc.c
->> +++ b/drivers/extcon/extcon-intel-cht-wc.c
->> @@ -153,14 +153,15 @@ static int cht_wc_extcon_get_charger(struct cht_wc_extcon_data *ext,
->>       } while (time_before(jiffies, timeout));
->>         if (status != CHT_WC_USBSRC_STS_SUCCESS) {
->> -        if (ignore_errors)
->> -            return EXTCON_CHG_USB_SDP; /* Save fallback */
->> +        if (!ignore_errors) {
->> +            if (status == CHT_WC_USBSRC_STS_FAIL)
->> +                dev_warn(ext->dev, "Could not detect charger type\n");
->> +            else
->> +                dev_warn(ext->dev, "Timeout detecting charger type\n");
->> +        }
->>   -        if (status == CHT_WC_USBSRC_STS_FAIL)
->> -            dev_warn(ext->dev, "Could not detect charger type\n");
->> -        else
->> -            dev_warn(ext->dev, "Timeout detecting charger type\n");
->> -        return EXTCON_CHG_USB_SDP; /* Save fallback */
->> +        /* Save fallback */
->> +        usbsrc = CHT_WC_USBSRC_TYPE_SDP << CHT_WC_USBSRC_TYPE_SHIFT;
->>       }
->>         usbsrc = (usbsrc & CHT_WC_USBSRC_TYPE_MASK) >> CHT_WC_USBSRC_TYPE_SHIFT;
->>
+> Fixes: e4e6ec7b127c ("ASoC: stm32: Add I2S driver")
 > 
 > 
 
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
+
+Thanks!
+
+[1/1] ASoC: stm32: i2s: fix 32 bits channel length without mclk
+      commit: 424fe7edbed18d47f7b97f7e1322a6f8969b77ae
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
