@@ -2,116 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 599EA455151
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 00:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D582455154
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 00:56:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241717AbhKQX5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 18:57:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232011AbhKQX5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 18:57:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45AE561BC1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 23:54:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637193263;
-        bh=J1GPu/7DId0gFFkAF/P1ZlWlsNgfqyTW7Xxtk5MAF78=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=eglD8/Ff5UExZHvtAFulo93AlGR43TOwdfXGjlTXeh6JfTwcn4YQkqkcchR7fPxJB
-         aoqrwRBeUbGzum0m3nLLSoyn5kXZhD25QcjZlxiTcRijP/DvTdofvA0cr3YglS5jhc
-         mmlBqRys0LBvZfYYJrMbZ9ouFRLM7xF90zzWpy6dAnLaisMP6vswM/F/Sgguxp3Rr5
-         LI6S+ntLyY96hMIphcQSpg0wqHjgjvGAMfQUml9oCwcAbDXpBY1EoamjfA1mgBBmgN
-         JxkqlRJK+SmWafGVDHo9lqO+mFuo8OYK157544WRjNQneSPsBEY3Sueglp8fABMgPl
-         w/Rucl0ER6DYg==
-Received: by mail-ed1-f49.google.com with SMTP id t5so18830988edd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 15:54:23 -0800 (PST)
-X-Gm-Message-State: AOAM530LgvCkrp3TbI7LLiE7s+wJoGU8UVsGNJgQ2ZEYRYg0/Zp7z62Q
-        HR5778GCACO/CgJ8ClDAyzBmm6Czyve62Mu6kw==
-X-Google-Smtp-Source: ABdhPJwDL01kt5145UOy/pd+bJ15+XrqohhADaSRLR5cZZfZhmsCH9yL9NqWbY7R0W20QsYKqPS3G6fDF3LYKeGoFVI=
-X-Received: by 2002:a17:906:7955:: with SMTP id l21mr28765790ejo.6.1637193261641;
- Wed, 17 Nov 2021 15:54:21 -0800 (PST)
+        id S241722AbhKQX7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 18:59:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233088AbhKQX7T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 18:59:19 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F61DC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 15:56:10 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id l25so2114148eda.11
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 15:56:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LWnFI7xMunJXtYruzgWcAa9iAQiJ7OsPSH6QXO/CtU4=;
+        b=OQI2q46Lp4GqTHRqt+KyClJ5MB+HeDG6T3Xqtq33QiXxoBAQp68mIMlj0FEhOLRvp/
+         Z2UxkMWedJ/2jMVGsty1OxtzG8w9BhibPrcpBAo0xUzcnXpDlA7ARYRpx2ZFY8kA3E2O
+         7Vn4GpRI1OkA8Yi+5AGWSqStni1vzLHzNBJ3E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LWnFI7xMunJXtYruzgWcAa9iAQiJ7OsPSH6QXO/CtU4=;
+        b=H8qAFjx9xYndI8+ei6RowK5HCe3L0/zv4+hsSYoJJ4b/zDRd4XKP9QQjeDUydiMRNl
+         J7y1nR8eU1UDKtgVUtHBBJqTF2ZL0+7j1fz67FTE8ZCigHQTTSgIvOsnGxmyJOJNaxCC
+         KXyaJAGyGrd1WKa0qMRDGipXeuDfXxfvykGm1jdo65+GUsz4wEAI7TTJxrSBWYYG/P38
+         pVDVSDBKb2B3d5k/qCCMgTiZDn4c7vX9wiAyMl4LBYW14W+LqxWZobYVz4QpAQTHtemJ
+         GQEaLW8JEYkd8hwyMgOzgZ9/ziii14UUaroElHG8d0SkqQrMczWekCA333vk02zIgCmS
+         fAfQ==
+X-Gm-Message-State: AOAM53344Y1YmgJ1aq9L1EVWqRkYHWwyFkkITPww0wNuB5UP2Moz7jUB
+        WNIRhupU4mJ1iUjoUEjylv+WfKYCIYUpYqxS
+X-Google-Smtp-Source: ABdhPJy+YECs1DPbanGsAze/8GvsZOysmaTwD1y0/4hi3mKGqmTrbzyHn/svZ28x24wDbLYfA3NLSg==
+X-Received: by 2002:a17:906:dc93:: with SMTP id cs19mr27479110ejc.21.1637193368815;
+        Wed, 17 Nov 2021 15:56:08 -0800 (PST)
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com. [209.85.128.45])
+        by smtp.gmail.com with ESMTPSA id ar4sm564454ejc.52.2021.11.17.15.56.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 15:56:08 -0800 (PST)
+Received: by mail-wm1-f45.google.com with SMTP id f7-20020a1c1f07000000b0032ee11917ceso3429109wmf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 15:56:08 -0800 (PST)
+X-Received: by 2002:a1c:7405:: with SMTP id p5mr4358090wmc.152.1637193368169;
+ Wed, 17 Nov 2021 15:56:08 -0800 (PST)
 MIME-Version: 1.0
-References: <20211028101912.4624-1-jason-jh.lin@mediatek.com>
-In-Reply-To: <20211028101912.4624-1-jason-jh.lin@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 18 Nov 2021 07:54:10 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__ZbHGef_nVA9N0cXNN5xNwdVGE9DCSo04KZvDiowbgww@mail.gmail.com>
-Message-ID: <CAAOTY__ZbHGef_nVA9N0cXNN5xNwdVGE9DCSo04KZvDiowbgww@mail.gmail.com>
-Subject: Re: [PATCH v6 0/5] CMDQ refinement of Mediatek DRM driver
-To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Fei Shao <fshao@chromium.org>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com
+References: <20211117233656.77861-1-agruenba@redhat.com>
+In-Reply-To: <20211117233656.77861-1-agruenba@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 17 Nov 2021 15:55:52 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgx=75CTbsK3NzVhNVihw-P+U2gLekNJW-p-Tm2qc9_nQ@mail.gmail.com>
+Message-ID: <CAHk-=wgx=75CTbsK3NzVhNVihw-P+U2gLekNJW-p-Tm2qc9_nQ@mail.gmail.com>
+Subject: Re: [GIT PULL] gfs2 fixes for v5.16-rc2
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     cluster-devel <cluster-devel@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jason:
+On Wed, Nov 17, 2021 at 3:37 PM Andreas Gruenbacher <agruenba@redhat.com> wrote:
+>
+> We have a choice here between the proper fix in iomap_write_iter and
+> generic_perform_write and this patch, which is just a workaround.  I've tried
+> to get your feedback on this before:
 
-For this series except [v6,3/6] drm/mediatek: Detect CMDQ execution
-timeout (I pick v5), applied to mediatek-drm-next [1], thanks.
+Well, you did get Catalin's feedback, and I didn't have any strong
+opinions on it, so..
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-next
+I do think that iomap_write_iter() should be fixed, but I also agree
+with your "by now too late", so I've pulled your gfs2 workaround.
 
-Regards,
-Chun-Kuang.
-
-jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B410=E6=9C=88=
-28=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=886:19=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> Change in v6:
-> 1. Drop the redundant checking of cmdq_vblank_cnt .
-> 2. fix the indent.
->
-> Change in v5:
-> 1. Move mbox_free_channel to a independent patch.
->
-> Change in v4:
-> 1. Add cmdq_vblank_cnt initial value to 3.
-> 2. Move mtk_drm_cmdq_pkt_create to the same define scope with
->    mtk_drm_cmdq_pkt_destroy.
->
-> Change in v3:
-> 1. Revert "drm/mediatek: clear pending flag when cmdq packet is done"
->    and add it after the CMDQ refinement patches.
-> 2. Change the remove of struct cmdq_client to remove the pointer of
->    struct cmdq_client.
-> 3. Fix pkt buf alloc once but free many times.
->
-> Changes in v2:
-> 1. Define mtk_drm_cmdq_pkt_create() and mtk_drm_cmdq_pkt_destroy()
->    when CONFIG_MTK_CMDQ is reachable.
->
-> Chun-Kuang Hu (4):
->   drm/mediatek: Use mailbox rx_callback instead of cmdq_task_cb
->   drm/mediatek: Remove the pointer of struct cmdq_client
->   drm/mediatek: Detect CMDQ execution timeout
->   drm/mediatek: Add cmdq_handle in mtk_crtc
->
-> Yongqiang Niu (1):
->   drm/mediatek: Clear pending flag when cmdq packet is done
->
-> jason-jh.lin (1):
->   drm/mediatek: Add mbox_free_channel in mtk_drm_crtc_destroy
->
->  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 175 ++++++++++++++++++++----
->  1 file changed, 151 insertions(+), 24 deletions(-)
->
-> --
-> 2.18.0
->
+          Linus
