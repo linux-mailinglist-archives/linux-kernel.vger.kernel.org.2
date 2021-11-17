@@ -2,95 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FFE4541F9
+	by mail.lfdr.de (Postfix) with ESMTP id 4B61B4541F8
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 08:38:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234192AbhKQHlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 02:41:15 -0500
-Received: from mout.kundenserver.de ([212.227.17.24]:40833 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231718AbhKQHlN (ORCPT
+        id S234188AbhKQHlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 02:41:07 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:43680 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231718AbhKQHlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 02:41:13 -0500
-Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MJW5G-1n77p020xE-00JpgD for <linux-kernel@vger.kernel.org>; Wed, 17 Nov
- 2021 08:38:14 +0100
-Received: by mail-wr1-f45.google.com with SMTP id u1so2700875wru.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 23:38:14 -0800 (PST)
-X-Gm-Message-State: AOAM532k44KuPi7pKmvPjDXa3h1sUdWfTMGfNytYRFxhJ1IcbqBZbDC8
-        87z1Sx+KQ5vgUY5XUDw0FbFZ2d/5mhGUtavve8g=
-X-Google-Smtp-Source: ABdhPJyDzFzUZ26UQ9WxGi2mM9RgY/r6prCrnT92LA3jbLR4805/P5X5Rjrcv3jyDIe0oztp/vyy6t17ke0ttd8f6lw=
-X-Received: by 2002:adf:d1c2:: with SMTP id b2mr17637588wrd.369.1637134694103;
- Tue, 16 Nov 2021 23:38:14 -0800 (PST)
-MIME-Version: 1.0
-References: <1637104560-37432-1-git-send-email-quic_c_gdjako@quicinc.com> <1637104560-37432-2-git-send-email-quic_c_gdjako@quicinc.com>
-In-Reply-To: <1637104560-37432-2-git-send-email-quic_c_gdjako@quicinc.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 17 Nov 2021 08:37:58 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3W13wb5B_FMSCEp0JTUFrPk=Fp8N59oa58wxn+WeTroA@mail.gmail.com>
-Message-ID: <CAK8P3a3W13wb5B_FMSCEp0JTUFrPk=Fp8N59oa58wxn+WeTroA@mail.gmail.com>
-Subject: Re: [RFC 2/2] drm/msm/gem: Make use of the system cache
-To:     Georgi Djakov <quic_c_gdjako@quicinc.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:ziVZN41oBhBj++miuebYLVne5FL6WXUo4Y7o+r0/eUt1s6M4oUM
- TItpLDQCb7FcaqzJa+YLWxtwNvZb216g1wQ7bJJ6Aa+EEmdJ/LTjO7BTQ7jy0gL0sTs2Tw5
- DJ829eh6pqbWFb8pU4jhZC5qkl6nbMr+BhrHEdwFlJnm4wokhVOtxG5jU8KuVaqtf9xslie
- z54JKYY27bPOx+4ivGFgw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6LnhbJqQ9fE=:tBnWqB6S1i+Mc+87JJKCLe
- IzyY2+/WLcx65v6ZKKe/EQPtKFslmxW33hkwhQMpFzG/Dx38SJBJlH3gIWyMMFqDxrKMe2KA4
- zNnQSamfZP/N9IRdhqv+AD1u2LP2fdtSdi8uPUVlA/XoxHQdDP+onmJZOh7sVWAGhii92JV2h
- 1WlKLTJEBSGQZXDHi+NuxV8/BTNEYWUd4puKrl533+FY/LOPyAHG7dX4GIg6dA5P9b5PG77XU
- TTru9sSX7+q9EifwP7/NYmaY95ZfnacHuDJwP/cBXzHOEQIBHEgvnyYBWDNGEouTeI3ztZzsT
- C1sIrsrg7GE2PNLxsIoEENlY22kR/7ueSQ/MckOMcDIWqyzwfYCR0rxb3Mrn+I82HFXcdcPQV
- VSJAkeqczCXdwbNkpJXmybwi63xUeLtrdyWmQya1K+dqrUToM/0UwY2v1FBdzw5iOB03UhgNZ
- zCL6gPGWvVQWwEjksabMjGyRx2kjL0LQyvwo+bQRsE6m5ADUNGIZ+/9QUTT1druF+N7KigzzT
- jsdFVkEDDbn9sk+t0RbXHKawOdZwBBsmU9sLZ+4Kx6WLRR3HFT/rhgHl7Z5trAVYE3blp/h2c
- qt0Q1p+CuxpDTX7Jqrpl1j2Sqq21Kfv8SY8bntd99pLz2y8LecPRpHHIeixR/uw7T7M3tmmF9
- ERhGYxvMnUODb/vIhPGT6FstHvWK6TYjKWYQly/bS/UPU4G3fxauQuw0ubS42325zbjU=
+        Wed, 17 Nov 2021 02:41:05 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Ux0WGiI_1637134683;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Ux0WGiI_1637134683)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 17 Nov 2021 15:38:05 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     john.johansen@canonical.com
+Cc:     jmorris@namei.org, serge@hallyn.com, nathan@kernel.org,
+        ndesaulniers@google.com, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH -next] apparmor: Fix kernel-doc
+Date:   Wed, 17 Nov 2021 15:37:58 +0800
+Message-Id: <1637134678-81292-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 12:16 AM Georgi Djakov
-<quic_c_gdjako@quicinc.com> wrote:
->
-> Instead of writing to WC cmdstream buffers that go all the way to the main
-> memory, let's use the system cache to improve the performance.
->
-> Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
-> ---
->  drivers/gpu/drm/msm/msm_gem.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
-> index 104fdfc14027..921a1c24721e 100644
-> --- a/drivers/gpu/drm/msm/msm_gem.c
-> +++ b/drivers/gpu/drm/msm/msm_gem.c
-> @@ -214,7 +214,7 @@ void msm_gem_put_pages(struct drm_gem_object *obj)
->  static pgprot_t msm_gem_pgprot(struct msm_gem_object *msm_obj, pgprot_t prot)
->  {
->         if (msm_obj->flags & (MSM_BO_WC|MSM_BO_UNCACHED))
-> -               return pgprot_writecombine(prot);
-> +               return pgprot_syscached(prot);
->         return prot;
->  }
+Fix function name in security/apparmor/label.c, policy.c, procattr.c
+kernel-doc comment to remove some warnings found by clang(make W=1 LLVM=1).
 
-Based on the definition in patch 1, doesn't this mean that 32-bit
-kernels degrade
-from writecombined to uncached, making them a lot slower?
+security/apparmor/label.c:499: warning: expecting prototype for
+aa_label_next_not_in_set(). Prototype was for
+__aa_label_next_not_in_set() instead
+security/apparmor/label.c:2147: warning: expecting prototype for
+__aa_labelset_udate_subtree(). Prototype was for
+__aa_labelset_update_subtree() instead
 
-My feeling about this series is that there should be a clearer
-definition of what
-exactly happens on systems with and without system cache.
+security/apparmor/policy.c:434: warning: expecting prototype for
+aa_lookup_profile(). Prototype was for aa_lookupn_profile() instead
 
-         Arnd
+security/apparmor/procattr.c:101: warning: expecting prototype for
+aa_setprocattr_chagnehat(). Prototype was for aa_setprocattr_changehat()
+instead
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ security/apparmor/label.c    | 4 ++--
+ security/apparmor/policy.c   | 2 +-
+ security/apparmor/procattr.c | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/security/apparmor/label.c b/security/apparmor/label.c
+index 0b0265d..e8ada60 100644
+--- a/security/apparmor/label.c
++++ b/security/apparmor/label.c
+@@ -485,7 +485,7 @@ int aa_label_next_confined(struct aa_label *label, int i)
+ }
+ 
+ /**
+- * aa_label_next_not_in_set - return the next profile of @sub not in @set
++ * __aa_label_next_not_in_set - return the next profile of @sub not in @set
+  * @I: label iterator
+  * @set: label to test against
+  * @sub: label to if is subset of @set
+@@ -2136,7 +2136,7 @@ static void __labelset_update(struct aa_ns *ns)
+ }
+ 
+ /**
+- * __aa_labelset_udate_subtree - update all labels with a stale component
++ * __aa_labelset_update_subtree - update all labels with a stale component
+  * @ns: ns to start update at (NOT NULL)
+  *
+  * Requires: @ns lock be held
+diff --git a/security/apparmor/policy.c b/security/apparmor/policy.c
+index b0cbc4906..8357f4a 100644
+--- a/security/apparmor/policy.c
++++ b/security/apparmor/policy.c
+@@ -422,7 +422,7 @@ static struct aa_profile *__lookup_profile(struct aa_policy *base,
+ }
+ 
+ /**
+- * aa_lookup_profile - find a profile by its full or partial name
++ * aa_lookupn_profile - find a profile by its full or partial name
+  * @ns: the namespace to start from (NOT NULL)
+  * @hname: name to do lookup on.  Does not contain namespace prefix (NOT NULL)
+  * @n: size of @hname
+diff --git a/security/apparmor/procattr.c b/security/apparmor/procattr.c
+index fde332e..86ad26e 100644
+--- a/security/apparmor/procattr.c
++++ b/security/apparmor/procattr.c
+@@ -90,7 +90,7 @@ static char *split_token_from_name(const char *op, char *args, u64 *token)
+ }
+ 
+ /**
+- * aa_setprocattr_chagnehat - handle procattr interface to change_hat
++ * aa_setprocattr_changehat - handle procattr interface to change_hat
+  * @args: args received from writing to /proc/<pid>/attr/current (NOT NULL)
+  * @size: size of the args
+  * @flags: set of flags governing behavior
+-- 
+1.8.3.1
+
