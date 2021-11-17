@@ -2,96 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC32454D9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:03:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42DFA454DA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:06:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240323AbhKQTGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 14:06:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35690 "EHLO
+        id S240329AbhKQTJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 14:09:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240306AbhKQTFx (ORCPT
+        with ESMTP id S240319AbhKQTJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 14:05:53 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8093C061570;
-        Wed, 17 Nov 2021 11:02:54 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so6025205pjc.4;
-        Wed, 17 Nov 2021 11:02:54 -0800 (PST)
+        Wed, 17 Nov 2021 14:09:07 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BDEC0613B9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 11:06:08 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id r11so15595621edd.9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 11:06:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rMY8qG0cTAr/XL80xfJt/iFlXy7f1UseUxBfTLe6U/I=;
-        b=AxatOd3X7fIQqikggpApX3VZvXK9NrVQUsi/0FyMN1kcaN4maODrlMWOaPp7wBtnRV
-         ZFvFK3U2Hoxt6oYePxn244HPdoEMVprC/lp3oPXNg/k4YgfkX8fbTtZovudLc5NXP+c5
-         25u4e7XAQwYUC/BJuM/GqqSbc9noNq1NFDozRyxHdEvzhWIA0F5pajiG/fM203zB7kmw
-         zLUxeEv13oCs3UfZmqgz0WXhjXa0M9ojIc7uXzo8EG3duBJZE164lYmY/9jqJ8HI+Xpp
-         Vnz6r99PN8pcL99JdAFUCAWSUFmKHNH3wHdf0LWxVvaM5uPW7KmiAKIX8TKkyuE32Tz7
-         wcrg==
+        d=kylehuey.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6F06jbeyt9mOtQ/ejGOdNSiaeOgainiDjsIp/GYxA8k=;
+        b=Gbvyge049vFVIpoykKRpTf08urXrlJlaXoMyMCZAPDYfeFcVS6KIJKOKWEPRHtT8Gc
+         pYdbbmJq98pqqk3639W6LrIb7iZ5bCQ3ybAeoYT1+zY6EnzIU5IJRlC1O/ZJdDSWlebe
+         Hs8sVftP80dj2Wse/RxMYNv20bC/un1qSZ4to9bt1+q8GFuq8MnGnC7aPtUIHO6uu+4j
+         twY1VhWYCnhP6JXqCI0VSKlS7I+Nc7CLzHJO2MWHevisbz0UAagNXGScIVdY4Zzr4h1i
+         OJvaVh1b2hYbFzwIo4TJyLmGrQNaCD1nKQh4urU/Y90yIZdR3f3/MMX/XHJT8Egt1/yj
+         YOCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rMY8qG0cTAr/XL80xfJt/iFlXy7f1UseUxBfTLe6U/I=;
-        b=Pd/JLiZBcyUA8KU2n2hEEO7nzlNc7f5a2iDx/RotQFOsUw85xk5NNaVTl0Kw5Nc2Be
-         0z5J7Bl9vg71zVUGnYct9SLPeKsasX7UYM765Vf4O1OILtJXCFjNieaUZwJjU1HfqSmW
-         Wocfi+PN5MMsq7cVZe4k49twXUd3X9zwcn3InUNoJnbO0HK2CYP20zAaaSs09g7aE7WG
-         kpd/mKsAoGhzHk9QOXQqpc8ZHO9AtXDN1lJgCoN53WFPTezDI3YUSdE/9vZyYNj5DN/s
-         W2abexPO62dd/eTmV8ba3oq2hcQfnHM6/gauFh+lAuo2PJx232jCiJRSqSvEdL33h5id
-         4vFA==
-X-Gm-Message-State: AOAM531q9vijvYZ6aB+AfSq7sdwkA0F1xfWdJVxcQMuZx70dGTI+1WQj
-        NwDeTKBgzH3t8BzNEje1t1Wfx6VZGGY=
-X-Google-Smtp-Source: ABdhPJwomMbvuPw79ubWdCN2tNq4Exc56IOz3PPUglHowPI1WBefwmzRIIifJ1/0x7spBJSQotygdQ==
-X-Received: by 2002:a17:90a:8a82:: with SMTP id x2mr2323528pjn.187.1637175773867;
-        Wed, 17 Nov 2021 11:02:53 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id fs21sm5047629pjb.1.2021.11.17.11.02.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 11:02:53 -0800 (PST)
-Subject: Re: [PATCH 5.10 000/569] 5.10.80-rc4 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20211117144602.341592498@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <0f0a5139-ee4a-d30c-630b-55254e6537d1@gmail.com>
-Date:   Wed, 17 Nov 2021 11:02:51 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6F06jbeyt9mOtQ/ejGOdNSiaeOgainiDjsIp/GYxA8k=;
+        b=VSSS08NfK8zahl9CwpsqY+uMbz6ZLhqAjoVkly7PQkQzao0/7+0kybjqH4uR5wbmod
+         K2cy6KrSzXAyFIGaGRfc4xUODRaBUIZehj90J7ekunsHT08IbU7a7vN7OxP0wfxJ9q9k
+         6cKF6ZFZrrgNsLMaeekG2uFgxINZeMbtwtqKMtKmaJRftIeagWOz93z3ji+IkdhYK8Wk
+         t1Zv1cTDbxxny9oXcmAZGAhcrGX/5mpIZpA8Jmqfmsp0DkuheXjKB1xIAWScZ0ZlwYTO
+         46GxpJ+Nojlua9x6+RF3xMVJckzwOYEz0BAg/bsTmpLgxa+Q6x0ZigGbDE3iZ3ZvU8r9
+         rvHQ==
+X-Gm-Message-State: AOAM5327h6tfzNKPxV5QLBW7kVUnVU/bO4afyYE0Xamv9lITkT0RDrmi
+        HqdfbVzz7Y6CUpH6a44J7Kg8OrRC4g2+ZEcfygR+cw==
+X-Google-Smtp-Source: ABdhPJxWlFOYJ0DB220x9oOZG7JB4Dhm+0+i6l+k2Fo8gixNzexi1o1ISJkCnmAF6U2ntzqhoR7b5XKlCilOASfM8tk=
+X-Received: by 2002:a17:906:140b:: with SMTP id p11mr24651600ejc.116.1637175966957;
+ Wed, 17 Nov 2021 11:06:06 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211117144602.341592498@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
+ <202111171049.3F9C5F1@keescook>
+In-Reply-To: <202111171049.3F9C5F1@keescook>
+From:   Kyle Huey <me@kylehuey.com>
+Date:   Wed, 17 Nov 2021 11:05:51 -0800
+Message-ID: <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
+Subject: Re: [REGRESSION] 5.16rc1: SA_IMMUTABLE breaks debuggers
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, bpf@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Robert O'Callahan" <rocallahan@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/21 6:46 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.80 release.
-> There are 569 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 19 Nov 2021 14:44:50 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.80-rc4.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On Wed, Nov 17, 2021 at 10:51 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Wed, Nov 17, 2021 at 10:47:13AM -0800, Kyle Huey wrote:
+> > rr, a userspace record and replay debugger[0], is completely broken on
+> > 5.16rc1. I bisected this to 00b06da29cf9dc633cdba87acd3f57f4df3fd5c7.
+> >
+> > That patch makes two changes, it blocks sigaction from changing signal
+> > handlers once the kernel has decided to force the program to take a
+> > signal and it also stops notifying ptracers of the signal in the same
+> > circumstances. The latter behavior is just wrong. There's no reason
+> > that ptrace should not be able to observe and even change
+> > (non-SIGKILL) forced signals.  It should be reverted.
+> >
+> > This behavior change is also observable in gdb. If you take a program
+> > that sets SIGSYS to SIG_IGN and then raises a SIGSYS via
+> > SECCOMP_RET_TRAP and run it under gdb on a good kernel gdb will stop
+> > when the SIGSYS is raised, let you inspect program state, etc. After
+> > the SA_IMMUTABLE change gdb won't stop until the program has already
+> > died of SIGSYS.
+>
+> Ah, hm, this was trying to fix the case where a program trips
+> SECCOMP_RET_KILL (which is a "fatal SIGSYS"), and had been unobservable
+> before. I guess the fix was too broad...
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+Perhaps I don't understand precisely what you mean by this, but gdb's
+behavior for a program that is SECCOMP_RET_KILLed was not changed by
+this patch (the SIGSYS is not observed until after program exit before
+or after this change).
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+- Kyle
