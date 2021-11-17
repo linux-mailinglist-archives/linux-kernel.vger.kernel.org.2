@@ -2,163 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B534549BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:17:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28FD94549C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:18:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236337AbhKQPT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 10:19:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38386 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232882AbhKQPT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 10:19:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 710E96187F;
-        Wed, 17 Nov 2021 15:16:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637162218;
-        bh=pB4lqAVRZNRN8LRv8NoZj6l+hjrOltxbzFUUVGLwVHM=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=MTv2p4kqocm87m2JKh2hfvl5D93Bqgl53WOhUadPuzNbOXCM21BATp6Np4+qMDgx7
-         n8bizARoMEx77vlUUjssiYNeKLYFStBZ2e/WhX9V6vuE/KMbZakVifhqlzKpeHIrOd
-         5r6dAcfDpQ6FjTWgZVoYM4Q5MeIDo4Y823IV/skp4T1htTeQQLOLDwmzn1NXvYkVPo
-         76AC08BM78Otf3l0WoCiik4hrVBlVKPwSpAfg7o7bCLBjC1uyVXzOX824GvN4uJkWR
-         6kpw8rq9krXPInOwstx6hgyW4X74qdAr2W6lGPXsD5BqR1g9scCULLrfyTdQp93KS3
-         uGa3c4dFFf8vg==
-Message-ID: <a28ca53e-f356-baa5-b5c2-968620e81b43@kernel.org>
-Date:   Wed, 17 Nov 2021 23:16:54 +0800
+        id S236260AbhKQPVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 10:21:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231338AbhKQPVJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 10:21:09 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F479C061764;
+        Wed, 17 Nov 2021 07:18:10 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id e3so12752037edu.4;
+        Wed, 17 Nov 2021 07:18:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5b1ArDlfRpWUYORBp6mYD8zbRzEon0uoWQaodJhZwNk=;
+        b=MfaVlhQjC9PO09u2u7ItaF6y7A83+pOX/2MQzK6+blwt6zezPz20GTTgWJZa9R1LPJ
+         uhABCkeFaTySkNKDEeKD0A5KbbvwY80xHw0BMj0Y6xi0+T7k3hfjrz6q1yyGX7h0asv8
+         vSf87Jk3tMhMoq32iBlMy7Za1I2j/AbGxv6fMa2gXiD5EQQo3mPIzMN4dthqWM89/eIx
+         8gcNIefuw7VP8Fw9/xj/WSWgiMCLxROKLICIBU7Abvfkbg4yDNA7SqNW162ECLC7EM8x
+         4xXxxI/uibn4iMwIW5WL5eawsgclDnQ1IUY9TPDAa1VchGiln/xDy2xDNNLFhH7rNxhZ
+         XBsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5b1ArDlfRpWUYORBp6mYD8zbRzEon0uoWQaodJhZwNk=;
+        b=o51wEKKbhx3i42UyijvpJ7xbEnH1okZwDOuB6lTFXxxRHYO/+4rvvIO/l0JC3GCyI9
+         IOq3nQyr/WwfUmfF3ujSpDpvrzeaihn+iRtsec1oDg4Z6X74/TRfau33iBsW/S8yNc2v
+         ZZwazXFagIeA6jdjMvmfJxEvQCtlnU+DtwAhsKHH+vMrX2TTc+Ey98UgAxRLtQn++aZM
+         Yaw7FpndpOwZARYtlZxGzw0jWdUVZ70niVoWTovEQnVhU7jXIL+Vf531cCjWOGuDKmMp
+         WujTuxrUnJiTSAGDzazWwJc/pQksUe7TnWh4q8u9jc+mZdf6N5cma/YdR/7h0hyxqvQA
+         /iXw==
+X-Gm-Message-State: AOAM533+qBKKdTsnUi5MXdlRHwHlYgQUv5hOgzfJQrUnYBZPxLhG1+kN
+        kGq7aXxS7cvamK6uEg6CZ8txd21lfJGx/aBiRPU=
+X-Google-Smtp-Source: ABdhPJxJH/O8kiyGhcKjVIHY/SHj73yt3zclF7y+pZOCKVew4WTgYCKXC67lXUlbd1Utw5bJqcwm7qk3CRjWNxZV/7M=
+X-Received: by 2002:a17:906:489b:: with SMTP id v27mr22321628ejq.567.1637162289058;
+ Wed, 17 Nov 2021 07:18:09 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [f2fs-dev] [PATCH 2/6] f2fs: do not expose unwritten blocks to
- user by DIO
-Content-Language: en-US
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20211116214510.2934905-1-jaegeuk@kernel.org>
- <20211116214510.2934905-2-jaegeuk@kernel.org>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <20211116214510.2934905-2-jaegeuk@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211116150842.1051-1-anand.ashok.dumbre@xilinx.com>
+ <20211116150842.1051-6-anand.ashok.dumbre@xilinx.com> <YZPtW5igA8RBYLWv@smile.fi.intel.com>
+ <BY5PR02MB69168A6537474DF8948C3D0BA99A9@BY5PR02MB6916.namprd02.prod.outlook.com>
+In-Reply-To: <BY5PR02MB69168A6537474DF8948C3D0BA99A9@BY5PR02MB6916.namprd02.prod.outlook.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 17 Nov 2021 17:17:28 +0200
+Message-ID: <CAHp75VdaO4+DxMn2eJx7t0_UFgrHGV2vgzXvRB=qwZi-ZpMaOA@mail.gmail.com>
+Subject: Re: [PATCH v9 5/5] MAINTAINERS: Add maintainer for xilinx-ams
+To:     Anand Ashok Dumbre <ANANDASH@xilinx.com>,
+        Joe Perches <joe@perches.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jic23@kernel.org" <jic23@kernel.org>,
+        "lars@metafoo.de" <lars@metafoo.de>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        git <git@xilinx.com>, Michal Simek <michals@xilinx.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/11/17 5:45, Jaegeuk Kim wrote:
-> DIO preallocates physical blocks before writing data, but if an error occurrs
-> or power-cut happens, we can see block contents from the disk. This patch tries
-> to fix it by 1) turning to buffered writes for DIO into holes, 2) truncating
-> unwritten blocks from error or power-cut.
-> 
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> ---
->   fs/f2fs/data.c |  5 ++++-
->   fs/f2fs/f2fs.h |  5 +++++
->   fs/f2fs/file.c | 24 +++++++++++++++++++++++-
->   3 files changed, 32 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index 3b27fb7daa8b..7ac1a39fcad2 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -1543,8 +1543,11 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
->   					flag != F2FS_GET_BLOCK_DIO);
->   				err = __allocate_data_block(&dn,
->   							map->m_seg_type);
-> -				if (!err)
-> +				if (!err) {
-> +					if (flag == F2FS_GET_BLOCK_PRE_DIO)
-> +						file_need_truncate(inode);
+On Wed, Nov 17, 2021 at 5:00 PM Anand Ashok Dumbre <ANANDASH@xilinx.com> wrote:
+> > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Sent: Tuesday 16 November 2021 5:42 PM
+> > On Tue, Nov 16, 2021 at 03:08:42PM +0000, Anand Ashok Dumbre wrote:
+> > > Add maintaner entry for xilinx-ams driver.
+> >
+> > Have you run checkpatch?
+>
+> Yes I did.
+> I don't see any error on this.
 
-We will leave FADVISE_TRUNC_BIT flag in below call path, is this as expected?
+Hmm... Perhaps it needs an unobvious parameter?
+Joe, X is definitely after M, any idea why checkpatch hasn't caught this up?
 
-- fallocate
-  - expand_inode_data
-   - f2fs_map_blocks(F2FS_GET_BLOCK_PRE_DIO)
+> > >  S: Maintained
+> > >  F: drivers/net/ethernet/xilinx/xilinx_axienet*
+> >
+> > X...
+> >
+> >
+> > > +XILINX AMS DRIVER
+> >
+> > M...
+> >
+> > > +M: Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
+> > > +L: linux-iio@vger.kernel.org
+> > > +S: Maintained
+> > > +F: Documentation/devicetree/bindings/iio/adc/xlnx,zynqmp-ams.yaml
+> > > +F: drivers/iio/adc/xilinx-ams.c
 
-Thanks,
-
->   					set_inode_flag(inode, FI_APPEND_WRITE);
-> +				}
->   			}
->   			if (err)
->   				goto sync_out;
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index be871a79c634..14bea669f87e 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -654,6 +654,7 @@ enum {
->   #define FADVISE_KEEP_SIZE_BIT	0x10
->   #define FADVISE_HOT_BIT		0x20
->   #define FADVISE_VERITY_BIT	0x40
-> +#define FADVISE_TRUNC_BIT	0x80
->   
->   #define FADVISE_MODIFIABLE_BITS	(FADVISE_COLD_BIT | FADVISE_HOT_BIT)
->   
-> @@ -681,6 +682,10 @@ enum {
->   #define file_is_verity(inode)	is_file(inode, FADVISE_VERITY_BIT)
->   #define file_set_verity(inode)	set_file(inode, FADVISE_VERITY_BIT)
->   
-> +#define file_should_truncate(inode)	is_file(inode, FADVISE_TRUNC_BIT)
-> +#define file_need_truncate(inode)	set_file(inode, FADVISE_TRUNC_BIT)
-> +#define file_dont_truncate(inode)	clear_file(inode, FADVISE_TRUNC_BIT)
-> +
->   #define DEF_DIR_LEVEL		0
->   
->   enum {
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index 4bf77a5bf998..ec8de0662437 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -960,10 +960,21 @@ int f2fs_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
->   		down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
->   		filemap_invalidate_lock(inode->i_mapping);
->   
-> +		/*
-> +		 * Truncate stale preallocated blocks used by the previous DIO.
-> +		 */
-> +		if (file_should_truncate(inode)) {
-> +			err = f2fs_truncate(inode);
-> +			if (err)
-> +				goto out_unlock;
-> +			file_dont_truncate(inode);
-> +		}
-> +
->   		truncate_setsize(inode, attr->ia_size);
->   
->   		if (attr->ia_size <= old_size)
->   			err = f2fs_truncate(inode);
-> +out_unlock:
->   		/*
->   		 * do not trim all blocks after i_size if target size is
->   		 * larger than i_size.
-> @@ -4257,6 +4268,13 @@ static int f2fs_preallocate_blocks(struct kiocb *iocb, struct iov_iter *iter)
->   	/* If it will be an out-of-place direct write, don't bother. */
->   	if (dio && f2fs_lfs_mode(sbi))
->   		return 0;
-> +	/*
-> +	 * Don't preallocate holes aligned to DIO_SKIP_HOLES which turns into
-> +	 * buffered IO, if DIO meets any holes.
-> +	 */
-> +	if (dio && i_size_read(inode) &&
-> +		(F2FS_BYTES_TO_BLK(pos) < F2FS_BLK_ALIGN(i_size_read(inode))))
-> +		return 0;
->   
->   	/* No-wait I/O can't allocate blocks. */
->   	if (iocb->ki_flags & IOCB_NOWAIT)
-> @@ -4366,10 +4384,14 @@ static ssize_t f2fs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
->   		if (preallocated > 0 && i_size_read(inode) < target_size) {
->   			down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
->   			filemap_invalidate_lock(inode->i_mapping);
-> -			f2fs_truncate(inode);
-> +			if (!f2fs_truncate(inode))
-> +				file_dont_truncate(inode);
->   			filemap_invalidate_unlock(inode->i_mapping);
->   			up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-> +		} else {
-> +			file_dont_truncate(inode);
->   		}
-> +
->   		clear_inode_flag(inode, FI_PREALLOCATED_ALL);
->   
->   		if (ret > 0)
-> 
+-- 
+With Best Regards,
+Andy Shevchenko
