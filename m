@@ -2,62 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68FC9454E49
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 21:08:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23049454E4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 21:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232984AbhKQUL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 15:11:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50472 "EHLO
+        id S235463AbhKQULb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 15:11:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhKQUL1 (ORCPT
+        with ESMTP id S229546AbhKQULa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 15:11:27 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45240C061570;
-        Wed, 17 Nov 2021 12:08:28 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id 200so3260839pga.1;
-        Wed, 17 Nov 2021 12:08:28 -0800 (PST)
+        Wed, 17 Nov 2021 15:11:30 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 241E5C061570;
+        Wed, 17 Nov 2021 12:08:31 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id 28so3224962pgq.8;
+        Wed, 17 Nov 2021 12:08:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=easNv7ldUg0wyKCSvoNE0jPZ5GtQFsUnAPEr3FcOTYU=;
-        b=idgI18SAqNrFuU5tc1SkAAUsAvBnxCnlwn3kEH3Awfg08ACcOsHolDVH3uP/FhBYH4
-         2ERC/r/iVQoTgghFjUNTDo26yjDw+MaNt7P9bw6a17u+ICbGJGtiXt/5fdWFOt3TgZEM
-         /W0lg/uby4txXbmEWpwgLzkfs6Wiln+Dxhs0HmaZyk65jYJuty7EP8MemX2CtMR+tJcT
-         xPKRMO0/U5cXYefsxYT4DDk285Uah7K9LbOSqkaFkPv7Nk8z7A01JMo7lz/k1cjR3eIr
-         IAS08h+pO5a+srTPL8G/w/V3iBrEI5+YUGb9ozncCXeIDnZfnkMO+qpFnEw35FL9XpgL
-         daXA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=/GuvZ+/5l3VJBNbmV09LhQ5oeDNCPaizJNAWc37b2H8=;
+        b=cYdsQubanS/IiExq+eRSmm0WQ8TRkxUoF/o9zXQzMEP1Fc15w3Y9Wb2DXEwKIkDe71
+         s5sV+kY5vSBJROp/fJl9iBgPmJEWMrTLpymwtnxiJG6gyA6fpRAzrBgZ5rTtb0146VIj
+         aidnJTSfesX64akyXwdla8N+9IakL/OG3HG/uN1Fld3zYb73evjmFdiSzl2hY/F2ZJMJ
+         eyZIWmLl4TmvWGHlA6uOSRYtAn3vq92eFsnbQfJkh/kEnDK3L6yjzYlBZnOitdWRT/HQ
+         ZHdxkPqhdiTx+++FP6KbJDUt2NudDiQj+T8gnWYYSHzgm05lC340djzbQbgDJJ6Lsshk
+         RqTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=easNv7ldUg0wyKCSvoNE0jPZ5GtQFsUnAPEr3FcOTYU=;
-        b=mhlj/1DWlAtY5QnZK4kQNlWuAVWLnj5PS80T5qSIxfWS8ZywjYV0Jlvke3saxgwwiA
-         6V9i/XV0i0s6s9+idt3cUJjLNE9YH3cs+oAxfgL4JKWKEVZF6QsCJTe0sbM0iA9fhuPZ
-         j7r9F78/lsctef0QIhiUhuPt+JlQERkcn9ow42XbpZpAE0EZDC0qo2QXXVHHlSrI04lF
-         zS5lrh/PbLqXYuFIiwNhewfyRDpTm5hTfh6PNneaaeeByqY2XBaBOUVbnm8WHHyitSUu
-         YdwNh19IV2mWGnGH0DN6Wu1luxt/KRmKyrYG58L9gYLRZfBQzDK8V8wBCB1B3Fn/BHMx
-         yz7g==
-X-Gm-Message-State: AOAM533GxlOnJ9QPJVK1JIIiwWYynsBdg8OrJ91uzW7kMWz9zYkMEBVs
-        cdNL0QFCn16h+fBdzrAV914=
-X-Google-Smtp-Source: ABdhPJwE5EHKi+VDEKpnkjFocdG51dZZ9hVmJ70xs2RPYrPD/RyOkKH2U316Ko/czdyS0igRKI4xGg==
-X-Received: by 2002:a63:334d:: with SMTP id z74mr7137924pgz.468.1637179707472;
-        Wed, 17 Nov 2021 12:08:27 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=/GuvZ+/5l3VJBNbmV09LhQ5oeDNCPaizJNAWc37b2H8=;
+        b=6i3h0pTM0WMF0ugAcMY0i+scyJT9D/VK6+1rMh3n0NXYbIU1Uh6Hh01ey2NkRjElGp
+         Y1HsQdVL2NG8zNv8gheArEKnQuG7WhL7jRa42aU8LHNxsv5SZy7e8J7eNPg2v3UpCGnM
+         q4c6cfN1CtOID0bw/CrTQOnRNF9gkP8NI7suTcSpoTYUL5yhFlNKPJ69ktm+6n00hPD+
+         nYBsxAnD1bfqjcORKbGPgFwjmXTLfdY0IzSfIQuoPodG56RnSWvOT5kwGjkWMUir4diS
+         2boRF3N7OZ0fVA24YNJuulkb2wuweCQDDAU32fFgoLNqSUih9cSylGCfuteOjfetLb75
+         1T4g==
+X-Gm-Message-State: AOAM531HeEzKb8pg+8yEAJPRAEnIdl2vd6OShEzwdGgIa0DBQN0KvJKs
+        HJP8EyTfFHxyzsy9AEJTu2c=
+X-Google-Smtp-Source: ABdhPJwXIjI722DqhISpgR/HES79leb7TJn8tU65FQeA8OBrIvYgWAK6TuWNF9Vn/MWcEc7RfIV0tw==
+X-Received: by 2002:a05:6a00:a8b:b0:44d:ef7c:94b9 with SMTP id b11-20020a056a000a8b00b0044def7c94b9mr9578061pfl.36.1637179710502;
+        Wed, 17 Nov 2021 12:08:30 -0800 (PST)
 Received: from nickserv.localdomain (c-98-35-167-56.hsd1.ca.comcast.net. [98.35.167.56])
-        by smtp.gmail.com with ESMTPSA id rm1sm6511050pjb.3.2021.11.17.12.08.26
+        by smtp.gmail.com with ESMTPSA id rm1sm6511050pjb.3.2021.11.17.12.08.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 12:08:27 -0800 (PST)
+        Wed, 17 Nov 2021 12:08:30 -0800 (PST)
 From:   Nick Terrell <nickrterrell@gmail.com>
 To:     Nick Terrell <terrelln@fb.com>
 Cc:     linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
         Helge Deller <deller@gmx.de>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH v2 0/3] Fix stack usage on parisc & improve code size bloat
-Date:   Wed, 17 Nov 2021 12:14:56 -0800
-Message-Id: <20211117201459.1194876-1-nickrterrell@gmail.com>
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v2 1/3] lib: zstd: Fix unused variable warning
+Date:   Wed, 17 Nov 2021 12:14:57 -0800
+Message-Id: <20211117201459.1194876-2-nickrterrell@gmail.com>
 X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211117201459.1194876-1-nickrterrell@gmail.com>
+References: <20211117201459.1194876-1-nickrterrell@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -66,52 +69,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nick Terrell <terrelln@fb.com>
 
-I'll be sending these patches to Linus through my tree. Just submitting them
-for comment before I do so. I'm somewhat unsure of the correct workflow for
-patches I submit myself, so let me know if there is something different I
-should do.
+The variable `litLengthSum` is only used by an `assert()`, so when
+asserts are disabled the compiler doesn't see any usage and warns.
 
-This patch set contains 3 commits:
-1. Fixes a minor unused variable warning reported by Kernel test robot [0].
-2. Improves the reported code bloat (-88KB / 374KB) [1] by outlining
-   some functions that are unlikely to be used in performance sensitive
-   workloads.
-3. Fixes the reported excess stack usage on parisc [2] by removing -O3
-   from zstd's compilation flags. -O3 triggered bugs in the hppa-linux-gnu
-   gcc-8 compiler. -O2 performance is acceptable: neutral compression,
-   about -1% decompression speed. We also reduce code bloat
-   (-105KB / 374KB).
+This issue is already fixed upstream by PR #2838 [0]. It was reported
+by the Kernel test robot in [1].
 
-After this commit our code bloat is cut from 374KB to 105KB with gcc-11.
-If we wanted to cut the remaining 105KB we'd likely have to trade
-signicant performance, so I want to say that this is enough for now.
+Another approach would be to change zstd's disabled `assert()`
+definition to use the argument in a disabled branch, instead of
+ignoring the argument. I've avoided this approach because there are
+some small changes necessary to get zstd to build, and I would
+want to thoroughly re-test for performance, since that is slightly
+changing the code in every function in zstd. It seems like a
+trivial change, but some functions are pretty sensitive to small
+changes. However, I think it is a valid approach that I would
+like to see upstream take, so I've opened Issue #2868 to attempt
+this upstream.
 
-We should be able to get further gains without sacrificing speed, but
-that will take some significant optimization effort, and isn't suitable
-for a quick fix. I've opened an upstream issue [3] to track the code size,
-and try to avoid future regressions, and improve it in the long term.
+[0] https://github.com/facebook/zstd/pull/2838
+[1] https://lore.kernel.org/linux-mm/202111120312.833wII4i-lkp@intel.com/T/
+[2] https://github.com/facebook/zstd/issues/2868
 
-[0] https://lore.kernel.org/linux-mm/202111120312.833wII4i-lkp@intel.com/T/
-[1] https://lkml.org/lkml/2021/11/15/710
-[2] https://lkml.org/lkml/2021/11/14/189
-[3] https://github.com/facebook/zstd/issues/2867
-
+Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Nick Terrell <terrelln@fb.com>
+---
+ lib/zstd/compress/zstd_compress_superblock.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-v1 -> v2:
-* (1/3) Update commit message & add a comment.
-
-Nick Terrell (3):
-  lib: zstd: Fix unused variable warning
-  lib: zstd: Don't inline functions in zstd_opt.c
-  lib: zstd: Don't add -O3 to cflags
-
- lib/zstd/Makefile                            |  2 --
- lib/zstd/common/compiler.h                   |  7 +++++++
- lib/zstd/compress/zstd_compress_superblock.c |  2 ++
- lib/zstd/compress/zstd_opt.c                 | 14 +++++++++++++-
- 4 files changed, 22 insertions(+), 3 deletions(-)
-
---
+diff --git a/lib/zstd/compress/zstd_compress_superblock.c b/lib/zstd/compress/zstd_compress_superblock.c
+index ee03e0aedb03..b0610b255653 100644
+--- a/lib/zstd/compress/zstd_compress_superblock.c
++++ b/lib/zstd/compress/zstd_compress_superblock.c
+@@ -411,6 +411,8 @@ static size_t ZSTD_seqDecompressedSize(seqStore_t const* seqStore, const seqDef*
+     const seqDef* sp = sstart;
+     size_t matchLengthSum = 0;
+     size_t litLengthSum = 0;
++    /* Only used by assert(), suppress unused variable warnings in production. */
++    (void)litLengthSum;
+     while (send-sp > 0) {
+         ZSTD_sequenceLength const seqLen = ZSTD_getSequenceLength(seqStore, sp);
+         litLengthSum += seqLen.litLength;
+-- 
 2.33.1
 
