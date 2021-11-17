@@ -2,185 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC470454537
+	by mail.lfdr.de (Postfix) with ESMTP id D94BE454535
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 11:51:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236556AbhKQKyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 05:54:13 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:47338 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231777AbhKQKyM (ORCPT
+        id S236561AbhKQKyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 05:54:18 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:63844 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234721AbhKQKyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 05:54:12 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id 28B251F45D5B
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637146272; bh=F8kJsKyO3eNjl+hyFQQSyGJyEnjC26LZMm295j7R78w=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=Tvn80Aby5gCkhmtEN9nfr7LcgoNlBfw1cLIvGsVAkalU/ruW9O41li8Qbc4IBJIRe
-         QRaq9lp1xkF5bkNWQIqUKBI5xUHfQqyT0o4ZG960Hbvo0dT/egkpgx8f05aeTiYpr7
-         zSukR28HiY6i2x7FnM1MFTFUJflU/6WOwgXkH8UtTNu/VPtk/CWfjEIlBdsqzpL5tQ
-         iO58QPhMYl+pJBqD9um9knZKKfbDgDsJvBI1KE0ZZh03TJnsmux0mknnwxPCFvn1GZ
-         sHxWBVFKgRLALmGnabagIjem07uoLpsfG3M7e9PpJmsGG9akSU7mC/mESDNtIXiWKU
-         ldAjx0VMlCiIg==
-Subject: Re: [PATCH v7 00/11] VP9 codec V4L2 control interface
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev
-Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com
-References: <20210929160439.6601-1-andrzej.p@collabora.com>
- <9db47ebc-cb95-872d-feb4-d6432a74f2cb@xs4all.nl>
- <29f27bad-28ae-12ff-eed6-79902bd5b722@collabora.com>
- <b8f8ee2e-ea98-4700-f4ca-f0af68c9de5c@xs4all.nl>
- <cdbbe5e6-0811-1276-1f62-fc7ad2628a30@collabora.com>
- <4da113ef-7b12-3729-0186-f746901c892a@xs4all.nl>
- <69f16bb0-4b5a-18b3-e244-60deb029d239@collabora.com>
- <2cd7a7f0-72d6-1a0e-b5d2-87ff809c2acd@xs4all.nl>
- <63429780-9e39-f8ab-40c2-0f1b57553850@collabora.com>
-Message-ID: <ccc29c1f-e2a1-f7c9-77ad-6e9fc1a57c95@collabora.com>
-Date:   Wed, 17 Nov 2021 11:51:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 17 Nov 2021 05:54:16 -0500
+Received: from fsav116.sakura.ne.jp (fsav116.sakura.ne.jp [27.133.134.243])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 1AHApGKT068206;
+        Wed, 17 Nov 2021 19:51:16 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav116.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav116.sakura.ne.jp);
+ Wed, 17 Nov 2021 19:51:16 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav116.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 1AHApGO6068201
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 17 Nov 2021 19:51:16 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Message-ID: <df266c83-88df-4d1a-5c7e-ea0214f3de3b@i-love.sakura.ne.jp>
+Date:   Wed, 17 Nov 2021 19:51:13 +0900
 MIME-Version: 1.0
-In-Reply-To: <63429780-9e39-f8ab-40c2-0f1b57553850@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH] vt: Fix sleeping functions called from atomic context
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Peter Hurley <peter@hurleysoftware.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        David Sterba <dsterba@suse.com>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        nick black <dankamongmen@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com,
+        Marco Elver <elver@google.com>
+References: <20211116144937.19035-1-fmdefrancesco@gmail.com>
+ <2524108.PJBYKFOWIp@localhost.localdomain> <YZPjbI/uCNtugFJZ@kroah.com>
+ <1851530.LmWsTuDv9j@localhost.localdomain> <YZTDY/h8HcEkq7mO@kroah.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+In-Reply-To: <YZTDY/h8HcEkq7mO@kroah.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi again,
+On 2021/11/17 17:54, Greg Kroah-Hartman wrote:
+> Great, you have a reproducer, so you should be able to duplicate this
+> locally to figure out what is really happening here.
 
-W dniu 17.11.2021 o 11:49, Andrzej Pietrasiewicz pisze:
-> Hi,
-> 
-> W dniu 17.11.2021 o 10:59, Hans Verkuil pisze:
->> On 16/11/2021 14:14, Andrzej Pietrasiewicz wrote:
->>> Hi,
->>>
->>> W dniu 16.11.2021 o 09:21, Hans Verkuil pisze:
->>>> On 16/11/2021 09:09, Andrzej Pietrasiewicz wrote:
->>>>> Hi Hans,
->>>>>
->>>>> W dniu 15.11.2021 o 22:16, Hans Verkuil pisze:
->>>>>> On 15/11/2021 18:14, Andrzej Pietrasiewicz wrote:
->>>>>>> Hi Hans,
->>>>>>>
->>>>>>> W dniu 15.11.2021 o 16:07, Hans Verkuil pisze:
->>>>>>>> Andrzej,
->>>>>>>>
->>>>>>>> Can you rebase this series on top of the master branch of
->>>>>>>> https://git.linuxtv.org/media_stage.git/ ? Unfortunately this v7 no longer
->>>>>>>> applies. Specifically "rkvdec: Add the VP9 backend" failed in a non-trivial
->>>>>>>> manner.
->>>>>>>
->>>>>>> This is a branch for you:
->>>>>>>
->>>>>>> https://gitlab.collabora.com/linux/for-upstream/-/tree/vp9-uapi
->>>>>>
->>>>>> I'm getting a bunch of sparse/smatch warnings:
->>>>>>
->>>>>
->>>>> Thanks for finding this, I will re-create the branch and let you know on irc.
->>>>> Some of the below are "false positives, namely:
->>>>>
->>>>> drivers/media/platform/omap3isp/omap3isp.h
->>>>> drivers/media/platform/qcom/venus/core.h
->>>>
->>>> Ah, sorry, I though I had filtered those out. Obviously you can ignore those.
->>>>
->>>> Please post a v8. That way the series is archived on lore. And it works better
->>>> with patchwork.
->>>
->>> Sure, no problem. Also please see below.
->>>
->>>>
->>>> Regards,
->>>>
->>>>     Hans
->>>>
->>>>>
->>>>> which are not touched by the series.
->>>>>
->>>>> Regards,
->>>>>
->>>>> Andrzej
->>>>>
->>>>>> sparse:
->>>>>> rkvdec/rkvdec-vp9.c:190:43: warning: variable 'dec_params' set but not 
->>>>>> used [-Wunused-but-set-variable]
->>>>>> rkvdec/rkvdec-vp9.c:245:43: warning: variable 'dec_params' set but not 
->>>>>> used [-Wunused-but-set-variable]
->>>>>> SPARSE:hantro/hantro_postproc.c hantro/hantro_postproc.c:37:35: warning: 
->>>>>> symbol 'hantro_g1_postproc_regs' was not declared. Should it be static?
->>>>>>
->>>>>> smatch:
->>>>>> rkvdec/rkvdec-vp9.c:190:43: warning: variable 'dec_params' set but not 
->>>>>> used [-Wunused-but-set-variable]
->>>>>> rkvdec/rkvdec-vp9.c:245:43: warning: variable 'dec_params' set but not 
->>>>>> used [-Wunused-but-set-variable]
->>>>>> rkvdec/rkvdec-vp9.c: rkvdec/rkvdec-vp9.c:236 init_intra_only_probs() 
->>>>>> error: buffer overflow 'ptr' 90 <= 91
->>>
->>> this looks a false positive.
->>>
->>> A portion of memory pointed to by ptr is indexed with i * 23 + m,
->>> where i ranges from 0 to 3, inclusive, and m ranges from 0 to 22,
->>> inclusive if i < 3, otherwise m ranges from 0 to 20, inclusive.
->>> So the largest index value we compute equals 89 (3 * 23 + 20).
->>> Because ptr points to something that is at least 90 bytes large,
->>> 89 is a valid index and no greater index will be ever computed.
->>
->> But we do need to get rid of this smatch warning, otherwise it will pollute the
->> list of smatch warnings.
->>
->> I was looking at the code and wonder if it wouldn't make more sense to
->> move writing to rkprobs->intra_mode[i].uv_mode[] into a separate for loop:
->>
->>          for (i = 0; i < ARRAY_SIZE(v4l2_vp9_kf_uv_mode_prob); i++)
->>                  rkprobs->intra_mode[i / 23].uv_mode[i % 23] = 
->> v4l2_vp9_kf_uv_mode_prob[i];
->>
->> Wouldn't that do the same as the current code? It looks simpler as well.
->>
-> 
-> I think it would, but I would slightly change the loop:
->
->      for (i = 0; i < ARRAY_SIZE(v4l2_vp9_kf_uv_mode_prob); i++) {
+Until commit ac751efa6a0d70f2 ("console: rename acquire/release_console_sem() to
+console_lock/unlock()"), do_con_write() was surely designed to be able to sleep.
 
-actually, sizeof(v4l2_vp9_kf_uv_mode_prob)
+$ git blame ac751efa6a0d7~1 drivers/tty/vt/vt.c
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2122) /* acquires console_sem */
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2123) static int do_con_write(struct tty_struct *tty, const unsigned char *buf, int count)
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2124) {
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2125) #ifdef VT_BUF_VRAM_ONLY
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2126) #define FLUSH do { } while(0);
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2127) #else
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2128) #define FLUSH if (draw_x >= 0) { \
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2129)  vc->vc_sw->con_putcs(vc, (u16 *)draw_from, (u16 *)draw_to - (u16 *)draw_from, vc->vc_y, draw_x); \
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2130)  draw_x = -1; \
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2131)  }
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2132) #endif
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2133)
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2134)  int c, tc, ok, n = 0, draw_x = -1;
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2135)  unsigned int currcons;
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2136)  unsigned long draw_from = 0, draw_to = 0;
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2137)  struct vc_data *vc;
+2f1a2ccb9c0de drivers/char/vt.c   (Egmont Koblinger    2007-05-08 00:30:37 -0700 2138)  unsigned char vc_attr;
+0341a4d0fdd2a drivers/char/vt.c   (Karl Dahlke         2008-04-28 02:14:25 -0700 2139)  struct vt_notifier_param param;
+2f1a2ccb9c0de drivers/char/vt.c   (Egmont Koblinger    2007-05-08 00:30:37 -0700 2140)  uint8_t rescan;
+2f1a2ccb9c0de drivers/char/vt.c   (Egmont Koblinger    2007-05-08 00:30:37 -0700 2141)  uint8_t inverse;
+2f1a2ccb9c0de drivers/char/vt.c   (Egmont Koblinger    2007-05-08 00:30:37 -0700 2142)  uint8_t width;
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2143)  u16 himask, charmask;
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2144)
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2145)  if (in_interrupt())
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2146)          return count;
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2147)
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2148)  might_sleep();
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2149)
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2150)  acquire_console_sem();
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2151)  vc = tty->driver_data;
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2152)  if (vc == NULL) {
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2153)          printk(KERN_ERR "vt: argh, driver_data is NULL !\n");
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2154)          release_console_sem();
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2155)          return 0;
+^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds      2005-04-16 15:20:36 -0700 2156)  }
 
+Until that commit, n_hdlc_send_frames() was prepared for being interrupted by signal
+while sleeping.
 
+$ git blame ac751efa6a0d7~1 drivers/tty/n_hdlc.c
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  379) /**
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  380)  * n_hdlc_send_frames - send frames on pending send buffer list
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  381)  * @n_hdlc - pointer to ldisc instance data
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  382)  * @tty - pointer to tty instance data
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  383)  *
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  384)  * Send frames on pending send buffer list until the driver does not accept a
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  385)  * frame (busy) this function is called after adding a frame to the send buffer
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  386)  * list and by the tty wakeup callback.
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  387)  */
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  388) static void n_hdlc_send_frames(struct n_hdlc *n_hdlc, struct tty_struct *tty)
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  389) {
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  390)    register int actual;
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  391)    unsigned long flags;
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  392)    struct n_hdlc_buf *tbuf;
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  393)
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  394)    if (debuglevel >= DEBUG_LEVEL_INFO)
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  395)            printk("%s(%d)n_hdlc_send_frames() called\n",__FILE__,__LINE__);
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  396)  check_again:
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  397)
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  398)    spin_lock_irqsave(&n_hdlc->tx_buf_list.spinlock, flags);
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  399)    if (n_hdlc->tbusy) {
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  400)            n_hdlc->woke_up = 1;
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  401)            spin_unlock_irqrestore(&n_hdlc->tx_buf_list.spinlock, flags);
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  402)            return;
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  403)    }
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  404)    n_hdlc->tbusy = 1;
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  405)    n_hdlc->woke_up = 0;
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  406)    spin_unlock_irqrestore(&n_hdlc->tx_buf_list.spinlock, flags);
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  407)
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  408)    /* get current transmit buffer or get new transmit */
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  409)    /* buffer from list of pending transmit buffers */
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  410)
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  411)    tbuf = n_hdlc->tbuf;
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  412)    if (!tbuf)
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  413)            tbuf = n_hdlc_buf_get(&n_hdlc->tx_buf_list);
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  414)
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  415)    while (tbuf) {
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  416)            if (debuglevel >= DEBUG_LEVEL_INFO)
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  417)                    printk("%s(%d)sending frame %p, count=%d\n",
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  418)                            __FILE__,__LINE__,tbuf,tbuf->count);
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  419)
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  420)            /* Send the next block of data to device */
+^1da177e4c3f4 drivers/char/n_hdlc.c (Linus Torvalds  2005-04-16 15:20:36 -0700  421)            tty->flags |= (1 << TTY_DO_WRITE_WAKEUP);
+f34d7a5b7010b drivers/char/n_hdlc.c (Alan Cox        2008-04-30 00:54:13 -0700  422)            actual = tty->ops->write(tty, tbuf->buf, tbuf->count);
+b0fed3140f57c drivers/char/n_hdlc.c (Jiri Slaby      2007-07-15 23:40:12 -0700  423)
+b0fed3140f57c drivers/char/n_hdlc.c (Jiri Slaby      2007-07-15 23:40:12 -0700  424)            /* rollback was possible and has been done */
+b0fed3140f57c drivers/char/n_hdlc.c (Jiri Slaby      2007-07-15 23:40:12 -0700  425)            if (actual == -ERESTARTSYS) {
+b0fed3140f57c drivers/char/n_hdlc.c (Jiri Slaby      2007-07-15 23:40:12 -0700  426)                    n_hdlc->tbuf = tbuf;
+b0fed3140f57c drivers/char/n_hdlc.c (Jiri Slaby      2007-07-15 23:40:12 -0700  427)                    break;
+b0fed3140f57c drivers/char/n_hdlc.c (Jiri Slaby      2007-07-15 23:40:12 -0700  428)            }
 
->          const u8 *ptr = (const u8 *)v4l2_vp9_kf_uv_mode_prob;
-> 
->          rkprobs->intra_mode[i / 23].uv_mode[i % 23] = ptr[i];
->      }
-> 
-> because v4l2_vp9_kf_uv_mode_prob is actually a u8[10][9].
-> 
-> I will make such a change locally and test whether it causes regressions.
-> 
-> Once I confirm it works (and I expect I will) would you like me to post a v9,
-> only reply to the changed patch with its updated version or do you want to make 
-> this change yourself?
-> 
-> Andrzej
+But as of commit c545b66c6922b002 ("tty: Serialize tcflow() with other tty flow
+control changes"), start_tty() was already holding spinlock.
 
+$ git blame c545b66c6922b002~1 drivers/tty/tty_io.c
+f9e053dcfc02b drivers/tty/tty_io.c  (Peter Hurley              2014-09-10 15:06:31 -0400  965) void start_tty(struct tty_struct *tty)
+f9e053dcfc02b drivers/tty/tty_io.c  (Peter Hurley              2014-09-10 15:06:31 -0400  966) {
+f9e053dcfc02b drivers/tty/tty_io.c  (Peter Hurley              2014-09-10 15:06:31 -0400  967)  unsigned long flags;
+f9e053dcfc02b drivers/tty/tty_io.c  (Peter Hurley              2014-09-10 15:06:31 -0400  968)
+f9e053dcfc02b drivers/tty/tty_io.c  (Peter Hurley              2014-09-10 15:06:31 -0400  969)  spin_lock_irqsave(&tty->flow_lock, flags);
+f9e053dcfc02b drivers/tty/tty_io.c  (Peter Hurley              2014-09-10 15:06:31 -0400  970)  __start_tty(tty);
+f9e053dcfc02b drivers/tty/tty_io.c  (Peter Hurley              2014-09-10 15:06:31 -0400  971)  spin_unlock_irqrestore(&tty->flow_lock, flags);
+f9e053dcfc02b drivers/tty/tty_io.c  (Peter Hurley              2014-09-10 15:06:31 -0400  972) }
+
+Actually, it is commit f9e053dcfc02b0ad ("tty: Serialize tty flow control changes
+with flow_lock") that started calling tty->ops->start(tty) from atomic context.
+
+$ git blame f9e053dcfc02b~1 drivers/tty/tty_io.c
+^1da177e4c3f4 drivers/char/tty_io.c (Linus Torvalds            2005-04-16 15:20:36 -0700  959) void start_tty(struct tty_struct *tty)
+^1da177e4c3f4 drivers/char/tty_io.c (Linus Torvalds            2005-04-16 15:20:36 -0700  960) {
+04f378b198da2 drivers/char/tty_io.c (Alan Cox                  2008-04-30 00:53:29 -0700  961)  unsigned long flags;
+04f378b198da2 drivers/char/tty_io.c (Alan Cox                  2008-04-30 00:53:29 -0700  962)  spin_lock_irqsave(&tty->ctrl_lock, flags);
+04f378b198da2 drivers/char/tty_io.c (Alan Cox                  2008-04-30 00:53:29 -0700  963)  if (!tty->stopped || tty->flow_stopped) {
+04f378b198da2 drivers/char/tty_io.c (Alan Cox                  2008-04-30 00:53:29 -0700  964)          spin_unlock_irqrestore(&tty->ctrl_lock, flags);
+^1da177e4c3f4 drivers/char/tty_io.c (Linus Torvalds            2005-04-16 15:20:36 -0700  965)          return;
+04f378b198da2 drivers/char/tty_io.c (Alan Cox                  2008-04-30 00:53:29 -0700  966)  }
+^1da177e4c3f4 drivers/char/tty_io.c (Linus Torvalds            2005-04-16 15:20:36 -0700  967)  tty->stopped = 0;
+^1da177e4c3f4 drivers/char/tty_io.c (Linus Torvalds            2005-04-16 15:20:36 -0700  968)  if (tty->link && tty->link->packet) {
+^1da177e4c3f4 drivers/char/tty_io.c (Linus Torvalds            2005-04-16 15:20:36 -0700  969)          tty->ctrl_status &= ~TIOCPKT_STOP;
+^1da177e4c3f4 drivers/char/tty_io.c (Linus Torvalds            2005-04-16 15:20:36 -0700  970)          tty->ctrl_status |= TIOCPKT_START;
+4b19449db074e drivers/char/tty_io.c (Davide Libenzi            2009-03-31 15:24:24 -0700  971)          wake_up_interruptible_poll(&tty->link->read_wait, POLLIN);
+^1da177e4c3f4 drivers/char/tty_io.c (Linus Torvalds            2005-04-16 15:20:36 -0700  972)  }
+04f378b198da2 drivers/char/tty_io.c (Alan Cox                  2008-04-30 00:53:29 -0700  973)  spin_unlock_irqrestore(&tty->ctrl_lock, flags);
+f34d7a5b7010b drivers/char/tty_io.c (Alan Cox                  2008-04-30 00:54:13 -0700  974)  if (tty->ops->start)
+f34d7a5b7010b drivers/char/tty_io.c (Alan Cox                  2008-04-30 00:54:13 -0700  975)          (tty->ops->start)(tty);
+^1da177e4c3f4 drivers/char/tty_io.c (Linus Torvalds            2005-04-16 15:20:36 -0700  976)  /* If we have a running line discipline it may need kicking */
+^1da177e4c3f4 drivers/char/tty_io.c (Linus Torvalds            2005-04-16 15:20:36 -0700  977)  tty_wakeup(tty);
+^1da177e4c3f4 drivers/char/tty_io.c (Linus Torvalds            2005-04-16 15:20:36 -0700  978) }
+
+Therefore, I think that bisection will reach f9e053dcfc02b0ad, and I guess that
+this bug was not noticed simply because little people tested n_hdlc driver.
+
+Well, how to fix? Introduce a new flag for indicating "starting" state (like drivers/block/loop.c uses Lo_* state) ?
