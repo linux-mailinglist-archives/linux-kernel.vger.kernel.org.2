@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB824540FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 07:40:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FAC9454102
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 07:40:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233718AbhKQGnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 01:43:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33556 "EHLO
+        id S233745AbhKQGnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 01:43:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233697AbhKQGnB (ORCPT
+        with ESMTP id S233771AbhKQGnM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 01:43:01 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A6CAC061570;
-        Tue, 16 Nov 2021 22:40:03 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id np3so1524940pjb.4;
-        Tue, 16 Nov 2021 22:40:03 -0800 (PST)
+        Wed, 17 Nov 2021 01:43:12 -0500
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA8A5C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 22:40:14 -0800 (PST)
+Received: by mail-oi1-x22d.google.com with SMTP id n66so4186838oia.9
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 22:40:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=23DZ3iIdGzk1P10uRoetsQDReb8uo3ZlcyfurCNqrqM=;
-        b=Zi3Zi6fkCm+QZWqHotNyg6YSMQViNCC1dBI3ht0vmyocCNJwulFxLNtmYpOBWn1I8m
-         7IvSWT1UdTQ9AifM0OLHxWdbdQdrn7kJrWnYH7Eobwtmsp/S5nO7Pp6l+tllViThTFdP
-         PtOSrFfOeTJjAQPduQDBBwFoSfplWkke2AFsKFWiobdbrwbL/0loIa8aLuRfOM3mDGz2
-         ycMpWlZoWxYRWxDvhHYQJyLbLlfOvQCqnZ5wu0K5u+QDAfXCv7QxzICXJatVbgYTBLUG
-         FtFB3+QVD1s/u+cAdjPjr8f5SiwbhPTkyKDn8itTYGyfjWVRJY0zPUjJ6GUNYCcZ5pvK
-         mtBQ==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=sTIAMjYbIgPw9BtP6BK0EtEhZfFJG39339XpbTQz4q8=;
+        b=A0tibesQgJVPgiCl6aeIuALbSS6lrs8f6fPC/c+D8Wf1ORiIDWJ+s1ln7Shzh1GpRD
+         ro3/eplCp9UgHmCgISTLEFDSSv+2L/qNZBmCOztatF3fMnZQRQs/fCX/uDFgzO+5BbFn
+         7jbYp3FaKRjgdElxiI9IpgGIo3racyC4WLSiI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=23DZ3iIdGzk1P10uRoetsQDReb8uo3ZlcyfurCNqrqM=;
-        b=FEwiM1wpBOeTdzhfAD7t3HF6Z+3ZlnD9ZhfQf5OkFB87KNbuK97LgiaOq5497vcR/q
-         VhFO9kHocIDMWTTI58sVusfPnKtHPN/Cg9dxCwTZsHRFHxCP89vSXji6Sm8mlbHQM4UH
-         zGpRx+Up2keBtQHx84WYoLJg2KPRm19OPGD+sun6L0ImrMH9cO6+XuupKhBYrpQP+B3+
-         mz4ogZnsqT7jrIr/gqygzYIwl0vO1A/chu1DUkh9+m8Y4ca/C1CltmP3fJ5MNSMtppit
-         Awh0zVqC6/MSzRAxekcyPB4boSGE8QqB28hNjLqFAVTXaNw5MjdKy8bbBD52tyLZaIZH
-         x5Ag==
-X-Gm-Message-State: AOAM533Gc1XSXq/B0r1hcw0GOMCtgNhO4dNkzbrSiXlbLvgj/xcaKa4Q
-        P42zjlqjD2sk6LVGyLZzLoI=
-X-Google-Smtp-Source: ABdhPJyfueaTOQAqOYDuFul8c8Io6QnyMkAffJZN7aZo9EnFF2VfGsLS8Dd//Lo0wTMrKy8dAx3f+w==
-X-Received: by 2002:a17:90b:33cf:: with SMTP id lk15mr6587997pjb.85.1637131202636;
-        Tue, 16 Nov 2021 22:40:02 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id l4sm22889435pfc.121.2021.11.16.22.40.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 22:40:02 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: ye.guojin@zte.com.cn
-To:     mst@redhat.com
-Cc:     jasowang@redhat.com, pbonzini@redhat.com, stefanha@redhat.com,
-        axboe@kernel.dk, virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ye Guojin <ye.guojin@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] virtio-blk: modify the value type of num in virtio_queue_rq()
-Date:   Wed, 17 Nov 2021 06:39:55 +0000
-Message-Id: <20211117063955.160777-1-ye.guojin@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=sTIAMjYbIgPw9BtP6BK0EtEhZfFJG39339XpbTQz4q8=;
+        b=kvlTeohkwHV3wW53bmQ8Pu0FST0GeP3hY52uDf6K9v2IAVy1CCr00yGp3L+tqKjVqp
+         xbRgBV57lru1Gea6dTb6i9wWKmzog6KfMLxq/Um4aPqyc4lKDR1bBR+dTzw8jrrkEX5f
+         m2ubjE5qofgAbZOEpGfhlFaXMXA3msVHS4SFbnn1KoKoUfeXqp5q7OmHaHX+1b7+q3D7
+         NqvyjSWINA4JQzyUASBa13IGB5z/XYQJj/j/LCSkv2ROs9N1P1WDvzwsqUprJ2qNYPsz
+         Je1/4nHT98AF1kuV94VLaVhZd1U0/hFTG6CvGOGUxZP1/QEnatuidRI31nzJShHErjwK
+         r/Zg==
+X-Gm-Message-State: AOAM530p/1QBmbssWYfivttLKXta98wHIwMtGjChw6E35/swAAtVmK7J
+        uV3IwraiKbmCB5p7bGok+2ZduI5cy12jXAW3b09wuQ==
+X-Google-Smtp-Source: ABdhPJwL9sejHW2saSeYc0Y8yMtZq0mvyD1HM5tD4KfGOegNHF0M+D7BAXpiycc0GG7yCK/vgooZobtV5T5yDPezdgU=
+X-Received: by 2002:a54:4506:: with SMTP id l6mr58766242oil.32.1637131214191;
+ Tue, 16 Nov 2021 22:40:14 -0800 (PST)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 16 Nov 2021 22:40:13 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <88a5219e-c82a-87fa-6af3-578238d6027b@quicinc.com>
+References: <1635896673-5841-1-git-send-email-quic_khsieh@quicinc.com>
+ <CAE-0n53ArJSYEAtLbc5dFrPspKhi3Kv=hpu=wS1TMsOWcmz6pw@mail.gmail.com> <88a5219e-c82a-87fa-6af3-578238d6027b@quicinc.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 16 Nov 2021 22:40:13 -0800
+Message-ID: <CAE-0n53cbEAXgE6+9b+pqxGFayhB-2evhnzQatfoCc2h1r5VmA@mail.gmail.com>
+Subject: Re: [PATCH v3] arm64: dts: qcom: sc7280: Add Display Port node
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>, agross@kernel.org,
+        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
+        robdclark@gmail.com, robh+dt@kernel.org, sean@poorly.run,
+        vkoul@kernel.org
+Cc:     quic_abhinavk@quicinc.com, aravindh@codeaurora.org,
+        quic_sbillaka@quicinc.com, quic_mkrishn@quicinc.com,
+        quic_kalyant@quicinc.coml, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kuogee Hsieh <khsieh@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ye Guojin <ye.guojin@zte.com.cn>
+Quoting Kuogee Hsieh (2021-11-16 08:43:38)
+>
+> On 11/15/2021 3:39 PM, Stephen Boyd wrote:
+>
+>     Quoting Kuogee Hsieh (2021-11-02 16:44:33)
+>
+>         From: Kuogee Hsieh <khsieh@codeaurora.org>
+>
+>         Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+>         ---
+>
+>     What tree is this based on? I don't see edp_phy upstream for sc7280
+>
+> this patch is depend on=C2=A0 --> [PATCH v2 4/4] arm64: dts: qcom: sc7280=
+: add edp
+> display dt nodes
+>
+> it had completed reviewed.
+>
+> https://mail.codeaurora.org/?_task=3Dmail&_caps=3D
+> pdf%3D1%2Cflash%3D0%2Ctiff%3D0%2Cwebp%3D1&_uid=3D1789&_mbox=3DINBOX&_acti=
+on=3Dshow
+>
 
-This was found by coccicheck:
-./drivers/block/virtio_blk.c, 334, 14-17, WARNING Unsigned expression
-compared with zero  num < 0
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
----
- drivers/block/virtio_blk.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-index 97bf051a50ce..eed1666eff31 100644
---- a/drivers/block/virtio_blk.c
-+++ b/drivers/block/virtio_blk.c
-@@ -316,7 +316,7 @@ static blk_status_t virtio_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	struct request *req = bd->rq;
- 	struct virtblk_req *vbr = blk_mq_rq_to_pdu(req);
- 	unsigned long flags;
--	unsigned int num;
-+	int num;
- 	int qid = hctx->queue_num;
- 	bool notify = false;
- 	blk_status_t status;
--- 
-2.25.1
-
+That email link doesn't work for anyone besides you.
