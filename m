@@ -2,119 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46226454AEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:24:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2740A454AE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:24:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239006AbhKQQ1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 11:27:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238476AbhKQQ1o (ORCPT
+        id S239031AbhKQQ1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 11:27:34 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:55262 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238476AbhKQQ12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 11:27:44 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D76C061767
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:24:45 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id z10so13538255edc.11
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:24:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6L7OzfiQyE8rpmiPr/U7sB3ARsNEEIc6tTD5oicXGL0=;
-        b=hjd3Pimoe+P7d5tptv4JTo8OA3iG9q7DU2Doq7WpwF7l0aoAGcK+/89tB/gcnNdI92
-         FaGnxL+8gGSC5pnNtHTd0OZ0EfguhnPojMU/C4VvWZTSIGasqzq29eFx7LJC8IbFChFz
-         B/DMMLHBZn6w/jp/A49LC/WWQT73kArPDeGJlHwVXU8Uq6Eo9zYCOLfBCn/r0Ly3diA8
-         7pqDcyi08x3k75HXd12ShA81zNh8H8Qw7fS3CQKdQbY7W1FsdTPatJx/hb8xATI7JdJY
-         Y68O8gFOGY9yYHFpP0XqWbGP1wIPjs7fBA4kw+ufzhtb93NJ4CeH8/zsk9tIv0q1l5Nd
-         xLKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6L7OzfiQyE8rpmiPr/U7sB3ARsNEEIc6tTD5oicXGL0=;
-        b=fGiflwxppW6EwtDoaFkUcUwPBqXSnfDj9116fTAhP8JH7QX2kSOfYNjX+cf2wpE0Jl
-         gR/27Y2/nr4u8dTZV3z+WZo2CCMdAubAFOaXHJEln8037l2vEYd5zr9cm//cYh8VVaK3
-         1EdlEtE+LabTfGfrnRSds3+2ev2pcuKCX7jOgm2V/l7zZ2ZHWQMmMCwZFR45OS4MHOIF
-         apF1r31FSL2jSa5DpIPJGoOKSBACUlj36jsUAWb+DnlcmwkRgTJlq9ynsQzee37OSyAA
-         QGIGqc00oBeupiC6Q+O21/5YbN8ffZ6AAurX5KZsfsI5hUxTKwJQx0uBKGFJ2sff/dr1
-         3tlw==
-X-Gm-Message-State: AOAM531CEWuIdRBNX9fY/KRIAp8mr7PFKWMR8somM+wTD1xKH4wrYkxA
-        WFBZ90IPiR1YMgiNEhgkEnm5oYMfI8ZSrwTuSg1jt6c7MwqC2A==
-X-Google-Smtp-Source: ABdhPJxN4dep9XHoIjRro5Ir3uqB0g0J9nm8BMDTkfWlumxT02fFkgvvytQPmhRKRbMfIjnY1liQge88sHUi9qllTmk=
-X-Received: by 2002:a17:907:94c6:: with SMTP id dn6mr23197212ejc.490.1637166283657;
- Wed, 17 Nov 2021 08:24:43 -0800 (PST)
-MIME-Version: 1.0
-References: <20211101034147.6203-1-khuey@kylehuey.com> <877ddqabvs.fsf@disp2133>
- <CAP045AqJVXA60R9RF8Gb2PWGBsK6bZ7tVBkdCcPYYrp6rOkG-Q@mail.gmail.com>
- <87fsse8maf.fsf@disp2133> <CAP045ApAX725ZfujaK-jJNkfCo5s+oVFpBvNfPJk+DKY8K7d=Q@mail.gmail.com>
- <CAP045AqsstnxfTyXhhCGDSucqGN7BTtfHJ5s6ZxUQC5K-JU56A@mail.gmail.com> <87bl2kekig.fsf_-_@email.froward.int.ebiederm.org>
-In-Reply-To: <87bl2kekig.fsf_-_@email.froward.int.ebiederm.org>
-From:   Kyle Huey <me@kylehuey.com>
-Date:   Wed, 17 Nov 2021 08:24:28 -0800
-Message-ID: <CAP045AqSKv8hAz79ntbj6ZoGiO-v7M0UBuQF2hwJdXqqL7oxWA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] signal: requeuing undeliverable signals
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marco Elver <elver@google.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        "Robert O'Callahan" <rocallahan@gmail.com>,
-        =?UTF-8?B?TWFya28gTcOka2Vsw6Q=?= <marko.makela@mariadb.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
+        Wed, 17 Nov 2021 11:27:28 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 0E1D81FD33;
+        Wed, 17 Nov 2021 16:24:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1637166269; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=o8doZTT49JlK7L/+VA+3AKYvGX/ll0aLRCLGAKbF4ys=;
+        b=U9svX3tmbG6xa1AZ7xy7L1HrKaV+ESNPBNsvA4TnQAoSPpHSc8/V3F/i8B3gGH5pwKt5Ok
+        wjTi3LtsOkl7P0aFxeIiMfZe9SvJK+B/fG1oNhje8FaOBoWrf9/rucz1RqMNkhwV++j1kY
+        rGjlQKla3K0tyMgKLaNwa9EU+iNc+ZY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1637166269;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=o8doZTT49JlK7L/+VA+3AKYvGX/ll0aLRCLGAKbF4ys=;
+        b=D39Vy1QXdA+R6161R9qxn5vVhPuIxu1DvN+Ny9SOPN0v7EeLFaK7QXybTaOvBt4sKKryVF
+        rKT/2hYDQ7Q4YwCQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 015EDA3B83;
+        Wed, 17 Nov 2021 16:24:29 +0000 (UTC)
+Date:   Wed, 17 Nov 2021 17:24:28 +0100
+Message-ID: <s5hmtm2lphf.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Takashi Iwai <tiwai@suse.de>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] sound updates for 5.16-rc1
+In-Reply-To: <20211117161855.m45mxcqszkfcetai@box.shutemov.name>
+References: <s5hwnlpmt9x.wl-tiwai@suse.de>
+        <20211117161855.m45mxcqszkfcetai@box.shutemov.name>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 9:31 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
->
-> Kyle Huey recently reported[1] that rr gets confused if SIGKILL prevents
-> ptrace_signal from delivering a signal, as the kernel setups up a signal
-> frame for a signal that rr did not have a chance to observe with ptrace.
->
-> In looking into it I found a couple of bugs and a quality of
-> implementation issue.
->
-> - The test for signal_group_exit should be inside the for loop in get_signal.
-> - Signals should be requeued on the same queue they were dequeued from.
-> - When a fatal signal is pending ptrace_signal should not return another
->   signal for delivery.
->
-> Kyle Huey has verified[2] an earlier version of this change.
->
-> I have reworked things one more time to completely fix the issues
-> raised, and to keep the code maintainable long term.
->
-> I have smoke tested this code and combined with a careful review I
-> expect this code to work fine.  Kyle if you can double check that
-> my last round of changes still works for rr I would appreciate it.
+On Wed, 17 Nov 2021 17:18:55 +0100,
+Kirill A. Shutemov wrote:
+> 
+> On Wed, Nov 03, 2021 at 11:24:10AM +0100, Takashi Iwai wrote:
+> > Linus,
+> > 
+> > please pull sound updates for v5.16-rc1 from:
+> > 
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.16-rc1
+> > 
+> > The topmost commit is df0380b9539b04c1ae8854a984098da06d5f1e67
+> > 
+> > ----------------------------------------------------------------
+> > 
+> > sound updates for 5.16-rc1
+> > 
+> > Lots of code development have been see in ASoC side as usual, while
+> > the continued development on memalloc helper and USB-audio low-
+> > latency support are found in the rest.  Note that a few changes in the
+> > unusual places like arch/sh are included, which are a part of ASoC DAI
+> > format cleanups.
+> > 
+> > ALSA core:
+> > - Continued memallloc helper updates and cleanups, now supporting
+> >   non-coherent and non-contiguous pages
+> > - Fixes for races in mixer OSS layer
+> > 
+> > ASoC:
+> > - A new version of the audio graph card which supports a wider range
+> >   of systems
+> > - Several conversions to YAML DT bindings
+> > - Continuing cleanups to the SOF and Intel code
+> > - Move of the Cirrus DSP framework into drivers/firmware to allow for
+> >   future use by non-audio DSPs
+> > - An overhaul of the cs42l42 driver, correcting many problems
+> > - DAI format terminology conversions over many drivers for cleanups
+> > - Support for AMD Vangogh and Yelow Cap, Cirrus CS35L41, Maxim
+> >   MAX98520 and MAX98360A, Mediatek MT8195, Nuvoton NAU8821, nVidia
+> >   Tegra210, NXP i.MX8ULP, Qualcomm AudioReach, Realtek ALC5682I-VS,
+> >   RT5682S, and RT9120 and Rockchip RV1126 and RK3568
+> > 
+> > USB-audio:
+> > - Continued improvements on low-latency playback
+> > - Quirks for Pioneer devices, Line6 HX-Stomp XL, Audient iD14
+> > 
+> > HD-audio:
+> > - Reduce excessive udelay() calls on Intel platforms; this should
+> >   reduce the CPU load with PulseAudio
+> > - Quirks for HP and Clevo laptops
+> > 
+> > FireWire:
+> > - Support for meter information on MOTU
+> > 
+> 
+> ...
+> 
+> > Takashi Iwai (29):
+> >       ALSA: hda: Reduce udelay() at SKL+ position reporting
+> >       ALSA: hda: Use position buffer for SKL+ again
+> >       ALSA: usb-audio: Restrict rates for the shared clocks
+> >       ALSA: usb-audio: Fix possible race at sync of urb completions
+> >       ALSA: usb-audio: Rename early_playback_start flag with lowlatency_playback
+> >       ALSA: usb-audio: Disable low-latency playback for free-wheel mode
+> >       ALSA: usb-audio: Disable low-latency mode for implicit feedback sync
+> >       ALSA: usb-audio: Check available frames for the next packet size
+> >       ALSA: usb-audio: Add spinlock to stop_urbs()
+> >       ALSA: usb-audio: Improved lowlatency playback support
+> 
+> This commit breaks audio playback for me. The sample plays for fraction of
+> a second than stops.
+> 
+> I use SMSL SA300. Let me know what ifo is needed to track it down.
+> 
+> Also I can test potential fixups if needed.
 
-This still fixes the race we reported.
+Could you give alsa-info.sh output with the device?  Run the script
+with --no-upload option, and attach the output.
+Also /proc/asound/card*/stream* file for that usb device, too,
+please.
 
-Tested-by: Kyle Huey <khuey@kylehuey.com>
+And, which environment are you testing, more exactly?  Which platform,
+and with PulseAudio, pipewire, JACK, or direct ALSA device use?
 
-- Kyle
+For checking the behavior, we'd need to check hw_params in
+/proc/asound/card*/pcm*/sub*/* for the corresponding device during
+playback/capture operations.
 
-> Eric W. Biederman (3):
->       signal: In get_signal test for signal_group_exit every time through the loop
->       signal: Requeue signals in the appropriate queue
->       signal: Requeue ptrace signals
->
->  fs/signalfd.c                |  5 +++--
->  include/linux/sched/signal.h |  7 ++++---
->  kernel/signal.c              | 44 ++++++++++++++++++++++++++------------------
->  3 files changed, 33 insertions(+), 23 deletions(-)
->
-> [1] https://lkml.kernel.org/r/20211101034147.6203-1-khuey@kylehuey.com
-> [2] https://lkml.kernel.org/r/CAP045ApAX725ZfujaK-jJNkfCo5s+oVFpBvNfPJk+DKY8K7d=Q@mail.gmail.com
->
-> Eric
+
+Takashi
