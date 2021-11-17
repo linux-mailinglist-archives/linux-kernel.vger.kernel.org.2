@@ -2,120 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07460454D05
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:21:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E338454D0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239956AbhKQSYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 13:24:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54422 "EHLO
+        id S239957AbhKQS1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 13:27:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239969AbhKQSYY (ORCPT
+        with ESMTP id S231303AbhKQS1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 13:24:24 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5675C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:21:25 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id y16so4438546ioc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:21:25 -0800 (PST)
+        Wed, 17 Nov 2021 13:27:49 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF47C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:24:50 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id m6so8332245oim.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:24:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/514pVJuhGBgB+naKDe4+5FaP9UvAeZZSiSl87FUgn4=;
-        b=eL0dwCK6ziyZzcwuQXHzmpinmO5UjdRB7IoboPXUGZ8Xc9C0Ec3kQX8T5xGEcyMxeB
-         XO8SGF/30sobsodc1SC3AoTN+IV5JfnE9D0a3FeRkvNWh1vFSFjmt8zLVywbbl3OjNFf
-         TlrRCfgFSb4tieNHEOHO2sHe5iAVChQjEnK78shF8WzIaF2jEdrWGk7Iddh/hFRkR+i5
-         Gg7pGTNqkKQjl/DqMRo8MiyrlrkTPH5TWrfI9pS3wfQIKd26rm5+e4oN/apNDejgHqCG
-         KD3pNiZW3v9lGalUPk8kKP2t12bbCc9+AD0M8LmOV0x8e/TfsIHZxUU1HRxH2VxwtPqs
-         iDuw==
+        bh=lQ6/wfGxlq62JVYF2E32Rlz6vPrZMUyQROpg1BnR6yc=;
+        b=iJ4RM1d7x7IyjFcBbZxyPp3mTGbPzfcdiC4ayejMerwTaE6kvxxQNbdNI3IW1UANOm
+         L2bIw3wpFdnpwXCZvzOso5Y2Tw2uj0aczx4iy4lh3dpCRZYjxEJ9kg7rh1JGFJg2ajvc
+         5fTgGT4YGyt4SaCS/fIbIeHouKL9x3aQ0F26E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/514pVJuhGBgB+naKDe4+5FaP9UvAeZZSiSl87FUgn4=;
-        b=VVTUKTXw89MAdHZayHoEGNWPcN5vAc9x6JZ5m/8voIIWVN5QJrIfmAQqiyIYWHQvjI
-         quSlbVIPMMRvfJ3laTxPidD+hj45Cu09Be2U02PlStIbXZG+EqHJFlhs355rUYTh6mGQ
-         3h6cTLGNUuKOJKRBZvY2/jtTT/9X6MuowmDjDSbYheWQ3+RaVOAyROfgCCZT5t1MtgWR
-         3nkF8rkyJDdf/sTnxymIYDb3k1T81nyQiKhKFFKLm+Y3IFbBLVJ58Hm5fw+Tx2laXn9R
-         WeIUYqvDrl21WNGiV0mSfkntKEf/vZuuQlA0u+mDyWNGb71qoIOrBom3m/dh+08WGwu/
-         5Ikg==
-X-Gm-Message-State: AOAM532nAeVsIsljzhRAIkoYUTsfqpix86+HltEB9K2VT6QHW67v3QDG
-        6vODJg7kyIlrl3jO5zlCQ3qpyIsgSs/4jYv2mt2q0PH2QsLm4g==
-X-Google-Smtp-Source: ABdhPJysqh5Di5WFqKQVOoC48CzH0iNkcxGKDYyaq6sVkIrW4Qsn7B9RB7B60DlLNZXUcm5UKxq7B87l830Tyw+lzag=
-X-Received: by 2002:a05:6602:164a:: with SMTP id y10mr12459615iow.123.1637173285060;
- Wed, 17 Nov 2021 10:21:25 -0800 (PST)
+        bh=lQ6/wfGxlq62JVYF2E32Rlz6vPrZMUyQROpg1BnR6yc=;
+        b=BYLYzs9z0dupkmiKZFxVzsyUl6nSnLyniHlEU5+EQ34D8mUNwCuywKlyKbiNXvN+Oz
+         ynngWiLV93yQwMp+q4G3rx/VsMnLxgQnEi8jvwfIRO9mCHqQ+e6NDKffBggAXmIcTFdh
+         puaGzsjy2hk5EbJ3WP+gOLF0CVLL7H0vun3TnroJ4USiWmBqlSj4OeJ58QegqsnCe1Qq
+         1u34BhkpFAWvrS5H0q1Hvlh63ZypspJ3cVU2BDQEF1jNu89K+wsdOvCBE6uvC1R9lPhw
+         D7Obdci2+dDhzyc0mZmanxqTikyjnV09lZEV03mcVHnKRudiACbzEyPzoFpVw7IflP8T
+         tJWg==
+X-Gm-Message-State: AOAM5318bPnqaVJhpAFRY9K3b8u+zOKRqdwRCSc20yTBAwOK2IG+wV0f
+        4bnocptQoYMwyScLV6Rgdt60dw38rOyYKw==
+X-Google-Smtp-Source: ABdhPJymA4Ev9jw/aMElTqQWz45jitPDvt+sSgBDu9jFgVXfTq+W2HbtjUefDw4Omb4MOjnrgwtySQ==
+X-Received: by 2002:aca:ac8a:: with SMTP id v132mr1785229oie.44.1637173488679;
+        Wed, 17 Nov 2021 10:24:48 -0800 (PST)
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com. [209.85.210.45])
+        by smtp.gmail.com with ESMTPSA id x16sm117730ott.8.2021.11.17.10.24.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 10:24:47 -0800 (PST)
+Received: by mail-ot1-f45.google.com with SMTP id w6-20020a9d77c6000000b0055e804fa524so6258105otl.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:24:46 -0800 (PST)
+X-Received: by 2002:a9d:4b19:: with SMTP id q25mr14987933otf.186.1637173485758;
+ Wed, 17 Nov 2021 10:24:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20211110192417.4177741-1-fparent@baylibre.com> <03de9880-1f1a-b07b-6ec3-279945e08cea@gmail.com>
-In-Reply-To: <03de9880-1f1a-b07b-6ec3-279945e08cea@gmail.com>
-From:   Fabien Parent <fparent@baylibre.com>
-Date:   Wed, 17 Nov 2021 19:21:14 +0100
-Message-ID: <CAOwMV_wmyFiSxdU7BZ-u+OLfStp+4jrwmmo-QaNvZn0HBH7Q1g@mail.gmail.com>
-Subject: Re: [PATCH 1/3] arm64: dts: mt8183: add dpi node to mt8183
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Jitao Shi <jitao.shi@mediatek.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20211103234018.4009771-1-briannorris@chromium.org>
+ <20211103164002.2.Ie6c485320b35b89fd49e15a73f0a68e3bb49eef9@changeid> <CAD=FV=WDRDHVSiFW+yxaR=Z+mNdKnUY_eF_CFqKeQhcKmdag5g@mail.gmail.com>
+In-Reply-To: <CAD=FV=WDRDHVSiFW+yxaR=Z+mNdKnUY_eF_CFqKeQhcKmdag5g@mail.gmail.com>
+From:   Brian Norris <briannorris@chromium.org>
+Date:   Wed, 17 Nov 2021 10:24:34 -0800
+X-Gmail-Original-Message-ID: <CA+ASDXOiwU-r5ZGes-ZNxZSuMgbidz=+SdAX8phoYcvexUmU=w@mail.gmail.com>
+Message-ID: <CA+ASDXOiwU-r5ZGes-ZNxZSuMgbidz=+SdAX8phoYcvexUmU=w@mail.gmail.com>
+Subject: Re: [PATCH 2/2] drm/self_refresh: Disable self-refresh on input events
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        David Airlie <airlied@linux.ie>,
+        linux-rockchip@lists.infradead.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias,
+Hi Doug,
 
+On Fri, Nov 12, 2021 at 4:52 PM Doug Anderson <dianders@chromium.org> wrote:
+> On Wed, Nov 3, 2021 at 4:40 PM Brian Norris <briannorris@chromium.org> wrote:
+...
+> > Leverage a new drm_input_helper library to get easy access to
+> > likely-relevant input event callbacks.
+>
+> So IMO this is a really useful thing and I'm in support of it landing.
+> It's not much code and it clearly gives a big benefit. However, I
+> would request a CONFIG option to control this so that if someone
+> really finds some use case where it isn't needed or if they find a
+> good way to do this in userspace without latency problems then they
+> can turn it off. Does that sound reasonable?
 
-On Wed, Nov 17, 2021 at 6:33 PM Matthias Brugger <matthias.bgg@gmail.com> wrote:
->
->
->
-> On 10/11/2021 20:24, Fabien Parent wrote:
-> > From: Pi-Hsun Shih <pihsun@chromium.org>
-> >
-> > Add dpi node to mt8183.
-> >
-> > Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
-> > Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
-> > Signed-off-by: Fabien Parent <fparent@baylibre.com>
+Sure, I think so. This feature is unfortunately on the borderline of
+"policy" (which we normally avoid baking into the kernel), so having
+some control over it is probably a good idea -- e.g., module
+parameter, CONFIG_*, or both.
+
+I suppose that would make sense to be a "self_refresh"-level control,
+and not a "drm_input_helper"-level control? Because different
+applications (PSR, GPU boost, etc.) may have different characteristics
+and reasons for leveraging this or not.
+
+> > Inspired-by: Kristian H. Kristensen <hoegsberg@google.com>
+> > Signed-off-by: Brian Norris <briannorris@chromium.org>
 > > ---
-> >   arch/arm64/boot/dts/mediatek/mt8183.dtsi | 11 +++++++++++
-> >   1 file changed, 11 insertions(+)
+> > This was in part picked up from:
 > >
-> > diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> > index ba4584faca5a..7c283c0b68b5 100644
-> > --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> > +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> > @@ -1443,6 +1443,17 @@ dsi0: dsi@14014000 {
-> >                       phy-names = "dphy";
-> >               };
+> >   https://lore.kernel.org/all/20180405095000.9756-25-enric.balletbo@collabora.com/
+> >   [PATCH v6 24/30] drm/rockchip: Disable PSR on input events
 > >
-> > +             dpi0: dpi@14015000 {
-> > +                     compatible = "mediatek,mt8183-dpi";
-> > +                     reg = <0 0x14015000 0 0x1000>;
-> > +                     interrupts = <GIC_SPI 237 IRQ_TYPE_LEVEL_LOW>;
-> > +                     power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
-> > +                     clocks = <&mmsys CLK_MM_DPI_IF>,
-> > +                              <&mmsys CLK_MM_DPI_MM>,
-> > +                              <&apmixedsys CLK_APMIXED_TVDPLL>;
-> > +                     clock-names = "pixel", "engine", "pll";
+> > with significant rewrites/reworks:
+> >
+> >  - moved to common drm_input_helper and drm_self_refresh_helper
+> >    implementation
+> >  - track state only through crtc->state->self_refresh_active
+> >
+> > Note that I'm relatively unfamiliar with DRM locking expectations, but I
+> > believe access to drm_crtc->state (which helps us track redundant
+> > transitions) is OK under the locking provided by
+> > drm_atomic_get_crtc_state().
 >
->
-> We are missing the output port node, don't we?
+> Yeah, I'm no expert here either. I gave a review a shot anyway since
+> it's been all quiet, but adult supervision is probably required...
 
-The output port node is defined in: [PATCH 2/3] arm64: dts: mediatek:
-mt8183-pumpkin: add HDMI support
-Unlike MT8173, there is no HDMI IP in the MT8183 SoC.
+Thanks ;)
 
+> I can believe that you are safe from corrupting things, but I think
+> you still have locking problems, don't you? What about this:
 >
-> Regards,
-> Matthias
+> 1. PSR is _not_ active but we're 1 microsecond away from entering PSR
 >
-> > +             };
-> > +
-> >               mutex: mutex@14016000 {
-> >                       compatible = "mediatek,mt8183-disp-mutex";
-> >                       reg = <0 0x14016000 0 0x1000>;
-> >
+> 2. Input event comes through.
+>
+> 3. Start executing drm_self_refresh_transition(false).
+>
+> 4. PSR timer expires and starts executing drm_self_refresh_transition(true).
+>
+> 5. Input event "wins the race" but sees that PSR is already disabled => noop
+>
+> 6. PSR timer gets the lock now. Starts PSR transition.
+>
+> Wouldn't it be better to cancel / reschedule any PSR entry as soon as
+> you see the input event?
+
+I did think about that option (calling mod_timer to delay the next PSR
+entry), but thought it was a bit excessive, at least in terms of
+calling it a "race" -- the race between steps #5 and #6 are
+essentially equivalent to the natural (unsolvable) race between #1 and
+#2 (we can't really read the future about input events).
+
+But rereading your explanation and thinking again, I see that you're
+pointing out less of a "race" in the traditional sense, and more of a
+missing part of this feature: I think what you're really saying is
+that input events should not only exit PSR, but they should delay PSR
+(re)entry for some time. With my current patch, input events only
+enforce any delay time window if we were already in PSR.
+
+I'll try to factor that into the next version. Thanks!
+
+Brian
