@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 493A845482F
+	by mail.lfdr.de (Postfix) with ESMTP id BF6BA454830
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:08:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238191AbhKQOLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 09:11:00 -0500
-Received: from foss.arm.com ([217.140.110.172]:57214 "EHLO foss.arm.com"
+        id S238210AbhKQOLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 09:11:04 -0500
+Received: from foss.arm.com ([217.140.110.172]:57252 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238179AbhKQOK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 09:10:58 -0500
+        id S238207AbhKQOLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 09:11:01 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DEF2F11B3;
-        Wed, 17 Nov 2021 06:07:59 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C0C61396;
+        Wed, 17 Nov 2021 06:08:03 -0800 (PST)
 Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 538DB3F70D;
-        Wed, 17 Nov 2021 06:07:57 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AD6FD3F70D;
+        Wed, 17 Nov 2021 06:08:00 -0800 (PST)
 From:   Mark Rutland <mark.rutland@arm.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     aou@eecs.berkeley.edu, borntraeger@de.ibm.com, bp@alien8.de,
@@ -27,9 +27,9 @@ Cc:     aou@eecs.berkeley.edu, borntraeger@de.ibm.com, bp@alien8.de,
         mpe@ellerman.id.au, palmer@dabbelt.com, paul.walmsley@sifive.com,
         peterz@infradead.org, rostedt@goodmis.org, tglx@linutronix.de,
         will@kernel.org
-Subject: [PATCH 3/9] arm64: Mark __switch_to() as __sched
-Date:   Wed, 17 Nov 2021 14:07:31 +0000
-Message-Id: <20211117140737.44420-4-mark.rutland@arm.com>
+Subject: [PATCH 4/9] arm64: Make perf_callchain_kernel() use arch_stack_walk()
+Date:   Wed, 17 Nov 2021 14:07:32 +0000
+Message-Id: <20211117140737.44420-5-mark.rutland@arm.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20211117140737.44420-1-mark.rutland@arm.com>
 References: <20211117140737.44420-1-mark.rutland@arm.com>
@@ -37,51 +37,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unlike most architectures (and only in keeping with powerpc), arm64 has
-a non __sched() function on the path to our cpu_switch_to() assembly
-function.
+From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
 
-It is expected that for a blocked task, in_sched_functions() can be used
-to skip all functions between the raw context switch assembly and the
-scheduler functions that call into __switch_to(). This is the behaviour
-expected by stack_trace_consume_entry_nosched(), and the behaviour we'd
-like to have such that we an simplify arm64's __get_wchan()
-implementation to use arch_stack_walk().
+To enable RELIABLE_STACKTRACE and LIVEPATCH on arm64, we need to
+substantially rework arm64's unwinding code. As part of this, we want to
+minimize the set of unwind interfaces we expose, and avoid open-coding
+of unwind logic outside of stacktrace.c.
 
-This patch mark's arm64's __switch_to as __sched. This *will not* change
-the behaviour of arm64's current __get_wchan() implementation, which
-always performs an initial unwind step which skips __switch_to(). This
-*will* change the behaviour of stack_trace_consume_entry_nosched() and
-stack_trace_save_tsk() to match their expected behaviour on blocked
-tasks, skipping all scheduler-internal functions including
-__switch_to().
+Currently perf_callchain_kernel() walks the stack of an interrupted
+context by calling start_backtrace() with the context's PC and FP, and
+iterating unwind steps using walk_stackframe(). This is functionally
+equivalent to calling arch_stack_walk() with the interrupted context's
+pt_regs, which will start with the PC and FP from the regs.
 
-Other than the above, there should be no functional change as a result
-of this patch.
+Make perf_callchain_kernel() use arch_stack_walk(). This simplifies
+perf_callchain_kernel(), and in future will alow us to make
+walk_stackframe() private to stacktrace.c.
 
+At the same time, we update the callchain_trace() callback to check the
+return value of perf_callchain_store(), which indicates whether there is
+space for any further entries. When a non-zero value is returned,
+further calls will be ignored, and are redundant, so we can stop the
+unwind at this point.
+
+We also remove the stale and confusing comment for callchain_trace.
+
+There should be no functional change as a result of this patch.
+
+Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
+Tested-by: Mark Rutland <mark.rutland@arm.com>
+Reviewed-by: Mark Brown <broonie@kernel.org>
+Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+[Mark: elaborate commit message, remove comment]
 Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Will Deacon <will@kernel.org>
 ---
- arch/arm64/kernel/process.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm64/kernel/perf_callchain.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
-diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index aacf2f5559a8..980cad7292af 100644
---- a/arch/arm64/kernel/process.c
-+++ b/arch/arm64/kernel/process.c
-@@ -490,7 +490,8 @@ void update_sctlr_el1(u64 sctlr)
- /*
-  * Thread switching.
-  */
--__notrace_funcgraph struct task_struct *__switch_to(struct task_struct *prev,
-+__notrace_funcgraph __sched
-+struct task_struct *__switch_to(struct task_struct *prev,
- 				struct task_struct *next)
+diff --git a/arch/arm64/kernel/perf_callchain.c b/arch/arm64/kernel/perf_callchain.c
+index 4a72c2727309..2160a53272b7 100644
+--- a/arch/arm64/kernel/perf_callchain.c
++++ b/arch/arm64/kernel/perf_callchain.c
+@@ -132,30 +132,21 @@ void perf_callchain_user(struct perf_callchain_entry_ctx *entry,
+ 	}
+ }
+ 
+-/*
+- * Gets called by walk_stackframe() for every stackframe. This will be called
+- * whist unwinding the stackframe and is like a subroutine return so we use
+- * the PC.
+- */
+ static bool callchain_trace(void *data, unsigned long pc)
  {
- 	struct task_struct *last;
+ 	struct perf_callchain_entry_ctx *entry = data;
+-	perf_callchain_store(entry, pc);
+-	return true;
++	return perf_callchain_store(entry, pc) == 0;
+ }
+ 
+ void perf_callchain_kernel(struct perf_callchain_entry_ctx *entry,
+ 			   struct pt_regs *regs)
+ {
+-	struct stackframe frame;
+-
+ 	if (perf_guest_cbs && perf_guest_cbs->is_in_guest()) {
+ 		/* We don't support guest os callchain now */
+ 		return;
+ 	}
+ 
+-	start_backtrace(&frame, regs->regs[29], regs->pc);
+-	walk_stackframe(current, &frame, callchain_trace, entry);
++	arch_stack_walk(callchain_trace, entry, current, regs);
+ }
+ 
+ unsigned long perf_instruction_pointer(struct pt_regs *regs)
 -- 
 2.11.0
 
