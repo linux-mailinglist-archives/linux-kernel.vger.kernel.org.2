@@ -2,100 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E001454DA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:07:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA09A454DA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:08:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240348AbhKQTKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 14:10:15 -0500
-Received: from mout.gmx.net ([212.227.17.22]:55857 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240338AbhKQTKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 14:10:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1637176023;
-        bh=xwC46mm+72ZQCm15/bVMv9FqczPa4aPsJ4i0DvPIWMk=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To:References;
-        b=i12xtPkFKEY1+mpcKCogQScdYhgI+IYXZkFxUcF0ao65ieV4/YGR8rse32G5Qc+34
-         WEXazWe9mh77eUHevZbllrlqdiEZ+S4b8vDsZV/S6TmxXcNySHfepAo6Wu00Jaj6AQ
-         n7HsoCOC/vymcOjF+mLk8X2QCXJrMrVv3uxrlB5I=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost ([62.216.209.243]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N0XD2-1mQNZS433k-00wRzg; Wed, 17
- Nov 2021 20:07:03 +0100
-Date:   Wed, 17 Nov 2021 20:07:01 +0100
-From:   Peter Seiderer <ps.report@gmx.net>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     linux-wireless@vger.kernel.org, ath9k-devel@qca.qualcomm.com,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH v1] ath9k: fix intr_txqs setting
-Message-ID: <20211117200701.02e5ea74@gmx.net>
-In-Reply-To: <163713885373.10263.4223864617658431026.kvalo@codeaurora.org>
-References: <20211116220720.30145-1-ps.report@gmx.net>
-        <163713885373.10263.4223864617658431026.kvalo@codeaurora.org>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-suse-linux-gnu)
+        id S240354AbhKQTLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 14:11:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239371AbhKQTLh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 14:11:37 -0500
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 988ADC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 11:08:38 -0800 (PST)
+Received: by mail-qt1-x834.google.com with SMTP id m25so3627601qtq.13
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 11:08:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=malainey-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MOL7eE0Q3hd+mhUI/Nv+APzSnGBoeLeug1fw2QweSqs=;
+        b=lTpBRs5Fko+5HFhoU48vQs6A91Aga9+/RZ3u3JMiswwTpn8u5p7dtepmKp1T/pPgba
+         LtKhwXCKA9zbIWkE57tESkzODhvJ1kg/9jMvAiOM98KZrxCSsYWr4cqRzhbAo8xbomyu
+         +2waHDLtiUlinGJ1MTGlwXbJIHOoizFaBEm0yrsBOv0Q6UNyEvzkio0D0tqciIHCzwtN
+         BXq1B9474U4CWs6eSLVJgbD/G7TuiWw+DRL+f8gqTjNS0kaF7fNgt3PJFUarzDacd3lL
+         /RxjnloLGlu+hbuIejZslZo5k2sYbykK082Ng102G0hHJHJMmLmlGOAWsVvAAKSlc69A
+         pg0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MOL7eE0Q3hd+mhUI/Nv+APzSnGBoeLeug1fw2QweSqs=;
+        b=ZzywYhx9dssAN7FiNSQLnU7bKatr6PrwNj6Ekp4A0v0wRRceA30z9DczMJWJFpu1XP
+         LLiDutlm019B9uRhx19LtK+dul3Tp3Y5hiUMkWv6D9GJ5MOWDKGwFuuEN/A857rkKXnN
+         X9YJ9dMqcuTg44zEqKTBaKrEzwB4130sVpiqoo+F+WaaDy7BYgV9EPJZ3JK71KzPuo7G
+         XIIYacSNRY5xNFSdyOlrhPdqLBJyJTtl9f4FLvhQUTZFDAQQo1smiTNxaRYbTbRKLsHV
+         X4H1W2xcCQiCyXgnRIqRd0wuRzoaXCHyBeYF27kC8pQlSLK4Olmy+bbxhBkpSL/TcS7I
+         FApQ==
+X-Gm-Message-State: AOAM533JqRAwWhZXQwCyM391+5vRLeEPV7UKK+SSpRjyNcLkt0OYob6J
+        6PWXqgR76vXeO8K6RDpzk4Myrpre9DgJ1yT0KgZwTw==
+X-Google-Smtp-Source: ABdhPJzUTQf2EfT3mISSLE1AKgA4ZDITTxHqjY57ZZ3iS/egKUACEDVR/p3j8oww9pvC2iWcdwpTzIcJ4zDA4qDasKg=
+X-Received: by 2002:a05:622a:610:: with SMTP id z16mr19642336qta.184.1637176117615;
+ Wed, 17 Nov 2021 11:08:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:SibizoRZJF31qU3eUhQNOByzzifqIF8NTHeCJISvjhg5Hcd/Yet
- vqvGlaKb2uym8hIX53IUZcE63C5Ix41O42jiyZjzrXnw9YQ8tjhqUdBKQzLmTt8KtfE9QcR
- IEsX4rJOkXVodq2sg/VpDg1VLMm4FQAF+zuh8+gcNUZIWDcEKd2oGXEOKw/NUAtiqcWwgo8
- 4gSfl+sFLjdkpbIII9fSg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:u9+Oh2e9Z1Y=:2xBJYOoe2TPdXM0kpjeLVB
- n4TBfwZRaCt+r0+p5hVFc+gH0Ju2sZU7pPJsQiqQEnZYWkvkV45jzrgBaiXCA7h0uEEZKVZw1
- 9G7h7mBWkWx6NkoyIbm/idsjMBoLQupXB3mN1zOyT7gNybKgby7eTI+QEwLIR2xcTopDo0DxN
- L8f8f3wCua0OL0v8sqq08eWiMAgpWXCVm8l0ITzh0rWjYgjbkYykTz6Oik+OV6v03xR46nEpH
- 2QRigaGI56nFzym4G+Fh4n6Ie+Z+/CM1vr8cGh1QZlrtOym1nFTJUXbxwERWnkWA3lgrqCfux
- 7qjAuDkOkHAVCrLcvjOCaiMdsERrkJC80JATdAbvvKl+bSq3jWiBimli1uicY1C0imqTeo+vz
- d5F4eOlLn5nMTUNpmo6V/eN2ucbVzL+dtkRLEkLMgwP4oLKqniQdwebPeWVCZ8t4sg5sHxcQk
- 8lEagZgemnLmoJoiLuNfRAb4QknWRTllPSVflmXZrE+K5XzYuiKZX1hD2pyKLnIXqMHoHAayU
- x/Z+SVzkh7MdlF0IxSuKOkBTZAs3aC6ca5lpEqDtkTBeCtIa8Lhl1oFVPPVQ7kM852G5gTUsf
- CyfPDW14DH0gJo7JfMoT+sM6HNaEKat39y9AMWL94UwxKWjWjsepYnFe8GCGffOOrQuxCFTL+
- uBpeQGvwZDL7dYnICRB3K2TB222K1xo59DQ0TGMYHkEdw/KZQLyand36tGDQorGUVlruovr+g
- NGYEUqPsGtHKSaiGVuGUU+ZrARPVy0rl2eaBGSS2Amml76+GfNRqJPgw2g89W79zgBzDBlzkT
- JnS50SiSEfjK0zbAVHNsammQMai5Ma4NKmOAbb9uRswEMJU8mSb1L4Mwrawwz5W2M7jZ6TF4u
- VjE8oQ9UOwoaiIP1Tde+lVZu1fdf5UfRFy32XPdzNmgtoeeNs7tj3oyRLVSJ3eWBojCAMPqST
- TVN6bE3pvddl8J9lNIT8PCO3Rl5LQdivppjTBbMp+QyAV+wQ259Z/Sj9DCAdv4eTiqknhTasO
- 7tMvu00BxvVNP6Nc9Z8pwjk+t94lLYtECR8+Ma7LcY9iHc6nDYv/VzmbS4oQm4GUxYWnj7ibG
- nPXjExW9YWk3uk=
+References: <20211117093734.17407-1-daniel.baluta@oss.nxp.com> <20211117093734.17407-14-daniel.baluta@oss.nxp.com>
+In-Reply-To: <20211117093734.17407-14-daniel.baluta@oss.nxp.com>
+From:   Curtis Malainey <curtis@malainey.com>
+Date:   Wed, 17 Nov 2021 11:08:26 -0800
+Message-ID: <CABkGCGd47cq92tPgDK-m+guTSvc9BsdPaSGCPPoEHB2uczuXcQ@mail.gmail.com>
+Subject: Re: [PATCH 13/21] ASoC: SOF: amd: Add support for SOF firmware authentication
+To:     Daniel Baluta <daniel.baluta@oss.nxp.com>
+Cc:     broonie@kernel.org, alsa-devel@alsa-project.org,
+        pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
+        daniel.baluta@nxp.com, daniel.baluta@gmail.com,
+        AjitKumar.Pandey@amd.com, Balakishore.pati@amd.com,
+        vsreddy@amd.com, Julian.Schroeder@amd.com,
+        vishnuvardhanrao.ravulapati@amd.com, linux-kernel@vger.kernel.org,
+        yc.hung@mediatek.com, linux-mediatek@lists.infradead.org,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Kalle,
-
-On Wed, 17 Nov 2021 08:47:40 +0000 (UTC), Kalle Valo <kvalo@codeaurora.org=
-> wrote:
-
-> Peter Seiderer <ps.report@gmx.net> wrote:
+On Wed, Nov 17, 2021 at 1:38 AM Daniel Baluta <daniel.baluta@oss.nxp.com> wrote:
 >
-> > The struct ath_hw member intr_txqs is never reset/assigned outside
-> > of ath9k_hw_init_queues() and with the used bitwise-or in the interrup=
-t
-> > handling ar9002_hw_get_isr() accumulates all ever set interrupt flags.
-> >
-> > Fix this by using a pure assign instead of bitwise-or for the
-> > first line (note: intr_txqs is only evaluated in case ATH9K_INT_TX bit
-> > is set).
-> >
-> > Signed-off-by: Peter Seiderer <ps.report@gmx.net>
-> > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> From: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
 >
-> How did you test this? I'm getting way too many ath9k patches which have=
- not
-> been tested on a real device.
+> Add callback to notify PSP after loading firmware on DSP. PSP will
+> validate the loaded firmware and set qualifier bit to run firmware
+> on secured AMD systems.
 >
+> Signed-off-by: Julian Schroeder <Julian.Schroeder@amd.com>
+> Signed-off-by: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Reviewed-by: Curtis Malainey <curtis@malainey.com>
 
-Did test it with an Compex WLE200NX 7A card (AR9280) running IBSS mode
-against one older (madwifi) and one newer (ath10k) Atheros card using
-ping and iperf traffic (investigating some performance degradation
-compared to two older cards...., but getting better with the latest
-rc80211_minstrel/rc80211_minstrel_ht changes), checked via printk
-debugging intr_txqs is not cleared when entering ar9002_hw_get_isr(),
-and checked wifi is still working after the change...., can provide more
-info and/or debug traces if needed...
+Sorry github must be attached to the wrong email, please use
 
-Regards,
-Peter
+Reviewed-by: Curtis Malainey <cujomalainey@chromium.org>
+
+> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+> ---
+>  sound/soc/sof/amd/acp-dsp-offset.h |  4 ++
+>  sound/soc/sof/amd/acp.c            | 66 +++++++++++++++++++++++++++++-
+>  sound/soc/sof/amd/acp.h            | 21 ++++++++++
+>  sound/soc/sof/amd/pci-rn.c         |  5 +++
+>  4 files changed, 95 insertions(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/sof/amd/acp-dsp-offset.h b/sound/soc/sof/amd/acp-dsp-offset.h
+> index 1d11e9d69dce..63f13c111b24 100644
+> --- a/sound/soc/sof/amd/acp-dsp-offset.h
+> +++ b/sound/soc/sof/amd/acp-dsp-offset.h
+> @@ -54,6 +54,9 @@
+>  #define ACP_PGFSM_STATUS                       0x1420
+>
+>  /* Registers from ACP_INTR block */
+> +#define ACP_EXTERNAL_INTR_ENB                  0x1800
+> +#define ACP_EXTERNAL_INTR_CNTL                 0x1804
+> +#define ACP_EXTERNAL_INTR_STAT                 0x1808
+>  #define ACP_DSP_SW_INTR_CNTL                   0x1814
+>  #define ACP_DSP_SW_INTR_STAT                    0x1818
+>  #define ACP_SW_INTR_TRIG                        0x181C
+> @@ -68,6 +71,7 @@
+>  #define ACP_SHA_DMA_CMD_STS                    0x1CC0
+>  #define ACP_SHA_DMA_ERR_STATUS                 0x1CC4
+>  #define ACP_SHA_TRANSFER_BYTE_CNT              0x1CC8
+> +#define ACP_SHA_PSP_ACK                         0x1C74
+>
+>  #define ACP_SCRATCH_REG_0                      0x10000
+>
+> diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
+> index 74ede28aa8d8..4c5550e8d364 100644
+> --- a/sound/soc/sof/amd/acp.c
+> +++ b/sound/soc/sof/amd/acp.c
+> @@ -20,6 +20,22 @@
+>  #include "acp.h"
+>  #include "acp-dsp-offset.h"
+>
+> +static int smn_write(struct pci_dev *dev, u32 smn_addr, u32 data)
+> +{
+> +       pci_write_config_dword(dev, 0x60, smn_addr);
+> +       pci_write_config_dword(dev, 0x64, data);
+> +
+> +       return 0;
+> +}
+> +
+> +static int smn_read(struct pci_dev *dev, u32 smn_addr, u32 *data)
+> +{
+> +       pci_write_config_dword(dev, 0x60, smn_addr);
+> +       pci_read_config_dword(dev, 0x64, data);
+> +
+> +       return 0;
+> +}
+> +
+>  static void configure_acp_groupregisters(struct acp_dev_data *adata)
+>  {
+>         struct snd_sof_dev *sdev = adata->dev;
+> @@ -135,6 +151,25 @@ int configure_and_run_dma(struct acp_dev_data *adata, unsigned int src_addr,
+>         return ret;
+>  }
+>
+> +static int psp_fw_validate(struct acp_dev_data *adata)
+> +{
+> +       struct snd_sof_dev *sdev = adata->dev;
+> +       int timeout;
+> +       u32 data;
+> +
+> +       smn_write(adata->smn_dev, MP0_C2PMSG_26_REG, MBOX_ACP_SHA_DMA_COMMAND);
+> +
+> +       for (timeout = ACP_PSP_TIMEOUT_COUNTER; timeout > 0; timeout--) {
+> +               msleep(20);
+> +               smn_read(adata->smn_dev, MP0_C2PMSG_26_REG, &data);
+> +               if (data & MBOX_READY_MASK)
+> +                       return 0;
+> +       }
+> +
+> +       dev_err(sdev->dev, "FW validation timedout: status %x\n", data & MBOX_STATUS_MASK);
+> +       return -ETIMEDOUT;
+> +}
+> +
+>  int configure_and_run_sha_dma(struct acp_dev_data *adata, void *image_addr,
+>                               unsigned int start_addr, unsigned int dest_addr,
+>                               unsigned int image_length)
+> @@ -174,7 +209,9 @@ int configure_and_run_sha_dma(struct acp_dev_data *adata, void *image_addr,
+>                 return ret;
+>         }
+>
+> -       snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SHA_DSP_FW_QUALIFIER, DSP_FW_RUN_ENABLE);
+> +       ret = psp_fw_validate(adata);
+> +       if (ret)
+> +               return ret;
+>
+>         fw_qualifier = snd_sof_dsp_read(sdev, ACP_DSP_BAR, ACP_SHA_DSP_FW_QUALIFIER);
+>         if (!(fw_qualifier & DSP_FW_RUN_ENABLE)) {
+> @@ -238,6 +275,13 @@ static irqreturn_t acp_irq_thread(int irq, void *context)
+>         struct snd_sof_dev *sdev = context;
+>         unsigned int val;
+>
+> +       val = snd_sof_dsp_read(sdev, ACP_DSP_BAR, ACP_EXTERNAL_INTR_STAT);
+> +       if (val & ACP_SHA_STAT) {
+> +               /* Clear SHA interrupt raised by PSP */
+> +               snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_EXTERNAL_INTR_STAT, val);
+> +               return IRQ_HANDLED;
+> +       }
+> +
+>         val = snd_sof_dsp_read(sdev, ACP_DSP_BAR, ACP_DSP_SW_INTR_STAT);
+>         if (val & ACP_DSP_TO_HOST_IRQ) {
+>                 sof_ops(sdev)->irq_thread(irq, sdev);
+> @@ -326,6 +370,7 @@ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
+>  {
+>         struct pci_dev *pci = to_pci_dev(sdev->dev);
+>         struct acp_dev_data *adata;
+> +       const struct sof_amd_acp_desc *chip;
+>         unsigned int addr;
+>         int ret;
+>
+> @@ -346,18 +391,32 @@ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
+>
+>         sdev->pdata->hw_pdata = adata;
+>
+> +       chip = get_chip_info(sdev->pdata);
+> +       if (!chip) {
+> +               dev_err(sdev->dev, "no such device supported, chip id:%x\n", pci->device);
+> +               return -EIO;
+> +       }
+> +
+> +       adata->smn_dev = pci_get_device(PCI_VENDOR_ID_AMD, chip->host_bridge_id, NULL);
+> +       if (!adata->smn_dev) {
+> +               dev_err(sdev->dev, "Failed to get host bridge device\n");
+> +               return -ENODEV;
+> +       }
+> +
+>         sdev->ipc_irq = pci->irq;
+>         ret = request_threaded_irq(sdev->ipc_irq, acp_irq_handler, acp_irq_thread,
+>                                    IRQF_SHARED, "AudioDSP", sdev);
+>         if (ret < 0) {
+>                 dev_err(sdev->dev, "failed to register IRQ %d\n",
+>                         sdev->ipc_irq);
+> +               pci_dev_put(adata->smn_dev);
+>                 return ret;
+>         }
+>
+>         ret = acp_init(sdev);
+>         if (ret < 0) {
+>                 free_irq(sdev->ipc_irq, sdev);
+> +               pci_dev_put(adata->smn_dev);
+>                 return ret;
+>         }
+>
+> @@ -371,6 +430,11 @@ EXPORT_SYMBOL_NS(amd_sof_acp_probe, SND_SOC_SOF_AMD_COMMON);
+>
+>  int amd_sof_acp_remove(struct snd_sof_dev *sdev)
+>  {
+> +       struct acp_dev_data *adata = sdev->pdata->hw_pdata;
+> +
+> +       if (adata->smn_dev)
+> +               pci_dev_put(adata->smn_dev);
+> +
+>         if (sdev->ipc_irq)
+>                 free_irq(sdev->ipc_irq, sdev);
+>
+> diff --git a/sound/soc/sof/amd/acp.h b/sound/soc/sof/amd/acp.h
+> index fd923f72a01a..a2f8e4219066 100644
+> --- a/sound/soc/sof/amd/acp.h
+> +++ b/sound/soc/sof/amd/acp.h
+> @@ -52,6 +52,15 @@
+>
+>  #define ACP_DSP_TO_HOST_IRQ                    0x04
+>
+> +#define HOST_BRIDGE_CZN                                0x1630
+> +#define ACP_SHA_STAT                           0x8000
+> +#define ACP_PSP_TIMEOUT_COUNTER                        5
+> +#define ACP_EXT_INTR_ERROR_STAT                        0x20000000
+> +#define MP0_C2PMSG_26_REG                      0x03810570
+> +#define MBOX_ACP_SHA_DMA_COMMAND               0x330000
+> +#define MBOX_READY_MASK                                0x80000000
+> +#define MBOX_STATUS_MASK                       0xFFFF
+> +
+>  struct  acp_atu_grp_pte {
+>         u32 low;
+>         u32 high;
+> @@ -140,6 +149,7 @@ struct acp_dev_data {
+>         struct dma_descriptor dscr_info[ACP_MAX_DESC];
+>         struct acp_dsp_stream stream_buf[ACP_MAX_STREAM];
+>         struct acp_dsp_stream *dtrace_stream;
+> +       struct pci_dev *smn_dev;
+>  };
+>
+>  void memcpy_to_scratch(struct snd_sof_dev *sdev, u32 offset, unsigned int *src, size_t bytes);
+> @@ -202,4 +212,15 @@ int snd_amd_acp_find_config(struct pci_dev *pci);
+>  /* Trace */
+>  int acp_sof_trace_init(struct snd_sof_dev *sdev, u32 *stream_tag);
+>  int acp_sof_trace_release(struct snd_sof_dev *sdev);
+> +
+> +struct sof_amd_acp_desc {
+> +       unsigned int host_bridge_id;
+> +};
+> +
+> +static inline const struct sof_amd_acp_desc *get_chip_info(struct snd_sof_pdata *pdata)
+> +{
+> +       const struct sof_dev_desc *desc = pdata->desc;
+> +
+> +       return desc->chip_info;
+> +}
+>  #endif
+> diff --git a/sound/soc/sof/amd/pci-rn.c b/sound/soc/sof/amd/pci-rn.c
+> index 3c379a5ef231..392ffbdf6417 100644
+> --- a/sound/soc/sof/amd/pci-rn.c
+> +++ b/sound/soc/sof/amd/pci-rn.c
+> @@ -43,12 +43,17 @@ static const struct resource renoir_res[] = {
+>         },
+>  };
+>
+> +static const struct sof_amd_acp_desc renoir_chip_info = {
+> +       .host_bridge_id = HOST_BRIDGE_CZN,
+> +};
+> +
+>  static const struct sof_dev_desc renoir_desc = {
+>         .machines               = snd_soc_acpi_amd_sof_machines,
+>         .resindex_lpe_base      = 0,
+>         .resindex_pcicfg_base   = -1,
+>         .resindex_imr_base      = -1,
+>         .irqindex_host_ipc      = -1,
+> +       .chip_info              = &renoir_chip_info,
+>         .default_fw_path        = "amd/sof",
+>         .default_tplg_path      = "amd/sof-tplg",
+>         .default_fw_filename    = "sof-rn.ri",
+> --
+> 2.27.0
+>
