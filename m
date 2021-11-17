@@ -2,153 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2847454EE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 22:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00BE2454EE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 22:03:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240195AbhKQVG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 16:06:29 -0500
-Received: from mga14.intel.com ([192.55.52.115]:52739 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230433AbhKQVGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 16:06:25 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10171"; a="234294690"
-X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
-   d="scan'208";a="234294690"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 13:03:26 -0800
-X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
-   d="scan'208";a="536439178"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 13:03:24 -0800
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 2EF7C2030F;
-        Wed, 17 Nov 2021 23:03:22 +0200 (EET)
-Date:   Wed, 17 Nov 2021 23:03:22 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Eugen.Hristev@microchip.com
-Cc:     leonl@leopardimaging.com, linux-media@vger.kernel.org,
-        skomatineni@nvidia.com, luca@lucaceresoli.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: i2c: imx274: fix s_frame_interval runtime resume
- not requested
-Message-ID: <YZVuGrkKTrvQC/Qm@paasikivi.fi.intel.com>
-References: <20211117154009.261787-1-eugen.hristev@microchip.com>
- <YZUptcn1isWQuCdq@paasikivi.fi.intel.com>
- <97fbf01c-6cfb-7ab9-f045-383a1e4053c2@microchip.com>
+        id S240295AbhKQVGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 16:06:37 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:46979 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240218AbhKQVGc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 16:06:32 -0500
+Received: by mail-il1-f199.google.com with SMTP id a5-20020a92c545000000b0026b54ead1b1so2632919ilj.13
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:03:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=OGp6KUtBMIM47aOKsKERcrrE6R12+QeT9a+JtvCK008=;
+        b=pewDZaQqoYFVM3Ccf+IWaNyTnsVgm0P5gvmE3V0txVpeypNp9XTOISGFvYp3+Bu/Jo
+         DlSN6KnxGOMVmmaitDe81cV3Bj76pnO7oUVbMPSUpB+IQ5egiHK6yFAj3J8GSYzoZTcM
+         2LRBZbeBCLe9bktyHbLXja13W5jeAGBOixjecyrc8uHnxpf4KdxQ3QX6N/XBVnhqKk35
+         3JZoYJW9ns4vPhuo7fvnOXtmom1/Xy52ywVMCC6LQxSbgVmp8okKKKutdsKVEYPNkwMs
+         tX44zZD/VAVESrWbfg4HLdE82weWRf7mUWMFQsT1uugKXrHlhW1papIG2bwERk72e++v
+         Yqug==
+X-Gm-Message-State: AOAM531vHav38sOq5qJI1sVrwFhqkRR7A+wwQgPZnEz8mKTOxJrcHKtI
+        U2pghsuSLZpJMLkwzabiTcXqLZZas2K6LysS9bG0lwnAaVKj
+X-Google-Smtp-Source: ABdhPJwNdZe6+qo53JlVRrxhqJySuOTEqlqXFcCq44RtHvRPe0HMiRBWpEd8lLF1+jKzRkaP6P0dH7MwcM5Q+eeXEncTstYvikEP
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <97fbf01c-6cfb-7ab9-f045-383a1e4053c2@microchip.com>
+X-Received: by 2002:a05:6e02:190f:: with SMTP id w15mr12753585ilu.197.1637183012212;
+ Wed, 17 Nov 2021 13:03:32 -0800 (PST)
+Date:   Wed, 17 Nov 2021 13:03:32 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e016c205d1025f4c@google.com>
+Subject: [syzbot] INFO: task hung in io_uring_cancel_generic (2)
+From:   syzbot <syzbot+21e6887c0be14181206d@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eugen,
+Hello,
 
-On Wed, Nov 17, 2021 at 04:52:40PM +0000, Eugen.Hristev@microchip.com wrote:
-> On 11/17/21 6:11 PM, Sakari Ailus wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > Hi Eugen,
-> > 
-> > On Wed, Nov 17, 2021 at 05:40:09PM +0200, Eugen Hristev wrote:
-> >> pm_runtime_resume_and_get should be called when the s_frame_interval
-> >> is called.
-> >>
-> >> The driver will try to access device registers to configure VMAX, coarse
-> >> time and exposure.
-> >>
-> >> Currently if the runtime is not resumed, this fails:
-> >>   # media-ctl -d /dev/media0 --set-v4l2 '"IMX274 1-001a":0[fmt:SRGGB10_1X10/3840x2
-> >> 160@1/10]'
-> >>
-> >> IMX274 1-001a: imx274_binning_goodness: ask 3840x2160, size 3840x2160, goodness 0
-> >> IMX274 1-001a: imx274_binning_goodness: ask 3840x2160, size 1920x1080, goodness -3000
-> >> IMX274 1-001a: imx274_binning_goodness: ask 3840x2160, size 1280x720, goodness -4000
-> >> IMX274 1-001a: imx274_binning_goodness: ask 3840x2160, size 1280x540, goodness -4180
-> >> IMX274 1-001a: __imx274_change_compose: selected 1x1 binning
-> >> IMX274 1-001a: imx274_set_frame_interval: input frame interval = 1 / 10
-> >> IMX274 1-001a: imx274_read_mbreg : addr 0x300e, val=0x1 (2 bytes)
-> >> IMX274 1-001a: imx274_set_frame_interval : register SVR = 1
-> >> IMX274 1-001a: imx274_read_mbreg : addr 0x30f6, val=0x6a8 (2 bytes)
-> >> IMX274 1-001a: imx274_set_frame_interval : register HMAX = 1704
-> >> IMX274 1-001a: imx274_set_frame_length : input length = 2112
-> >> IMX274 1-001a: imx274_write_mbreg : i2c bulk write failed, 30f8 = 884 (3 bytes)
-> >> IMX274 1-001a: imx274_set_frame_length error = -121
-> >> IMX274 1-001a: imx274_set_frame_interval error = -121
-> >> Unable to setup formats: Remote I/O error (121)
-> >>
-> >> The device is not resumed thus the remote I/O error.
-> >>
-> >> Setting the frame interval works at streaming time, because
-> >> pm_runtime_resume_and_get is called at s_stream time before sensor setup.
-> >> The failure happens when only the s_frame_interval is called separately
-> >> independently on streaming time.
-> >>
-> >> Fixes: ad97bc37426c ("media: i2c: imx274: Add IMX274 power on and off sequence"
-> >> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-> >> ---
-> >>   drivers/media/i2c/imx274.c | 5 +++++
-> >>   1 file changed, 5 insertions(+)
-> >>
-> >> diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
-> >> index e89ef35a71c5..6e63fdcc5e46 100644
-> >> --- a/drivers/media/i2c/imx274.c
-> >> +++ b/drivers/media/i2c/imx274.c
-> >> @@ -1420,6 +1420,10 @@ static int imx274_s_frame_interval(struct v4l2_subdev *sd,
-> >>        int min, max, def;
-> >>        int ret;
-> >>
-> >> +     ret = pm_runtime_resume_and_get(&imx274->client->dev);
-> >> +     if (ret < 0)
-> >> +             return ret;
-> >> +
-> >>        mutex_lock(&imx274->lock);
-> >>        ret = imx274_set_frame_interval(imx274, fi->interval);
-> >>
-> >> @@ -1451,6 +1455,7 @@ static int imx274_s_frame_interval(struct v4l2_subdev *sd,
-> >>
-> >>   unlock:
-> >>        mutex_unlock(&imx274->lock);
-> >> +     pm_runtime_put(&imx274->client->dev);
-> >>
-> >>        return ret;
-> >>   }
-> > 
-> > If the device is powered off in the end, could you instead not power it on
-> > in the first place? I.e. see how this works for the s_ctrl() callback.
-> 
-> 
-> Hi Sakari,
-> 
-> I tried this initially, as in s_ctrl,
-> 
->          if (!pm_runtime_get_if_in_use(&imx274->client->dev)) 
-> 
->                  return 0;
-> 
-> 
-> However, if the device is powered off, the s_frame_interval does not do 
-> anything (return 0), and the frame interval is not changed. Not even the 
-> internal structure frame_interval is updated (as this is updated after 
-> configuring the actual device).
-> And in consequence media-ctl -p will still print the old frame interval.
-> 
-> So either we power on the device to set everything, or, things have to 
-> be set in the software struct and written once streaming starts.
-> I am in favor of the first option (hence the patch), to avoid having 
-> configuration that was requested but not written to the device itself.
-> The second option would require some rework to move the software part 
-> before the hardware part, and to assume that the hardware part never 
-> fails in bounds or by other reason (or the software part would be no 
-> longer consistent)
-> 
-> What do you think ?
+syzbot found the following issue on:
 
-Seems reasonable, but the driver is hardly doing this in an exemplary way.
-Still the rework might not worth the small gain. I'll take this one then.
+HEAD commit:    8ab774587903 Merge tag 'trace-v5.16-5' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12b2344eb00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6d3b8fd1977c1e73
+dashboard link: https://syzkaller.appspot.com/bug?extid=21e6887c0be14181206d
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
--- 
-Kind regards,
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Sakari Ailus
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+21e6887c0be14181206d@syzkaller.appspotmail.com
+
+INFO: task syz-executor.1:1474 blocked for more than 143 seconds.
+      Not tainted 5.16.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.1  state:D stack:26328 pid: 1474 ppid:  6663 flags:0x00024004
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:4972 [inline]
+ __schedule+0xa9a/0x4940 kernel/sched/core.c:6253
+ schedule+0xd2/0x260 kernel/sched/core.c:6326
+ io_uring_cancel_generic+0x53d/0x690 fs/io_uring.c:9846
+ io_uring_files_cancel include/linux/io_uring.h:16 [inline]
+ do_exit+0x60c/0x2b40 kernel/exit.c:787
+ do_group_exit+0x125/0x310 kernel/exit.c:929
+ get_signal+0x47d/0x2220 kernel/signal.c:2830
+ arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:868
+ handle_signal_work kernel/entry/common.c:148 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+ exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:207
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fd09b5fbae9
+RSP: 002b:00007fd098b71218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 00007fd09b70ef68 RCX: 00007fd09b5fbae9
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007fd09b70ef68
+RBP: 00007fd09b70ef60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007fd09b70ef6c
+R13: 00007fd09bc42b2f R14: 00007fd098b71300 R15: 0000000000022000
+ </TASK>
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/27:
+ #0: ffffffff8bb83a60 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6458
+1 lock held by in:imklog/6233:
+ #0: ffff8880208d7270 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:990
+2 locks held by kworker/u4:7/9581:
+
+=============================================
+
+NMI backtrace for cpu 1
+CPU: 1 PID: 27 Comm: khungtaskd Not tainted 5.16.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ nmi_cpu_backtrace.cold+0x47/0x144 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1ae/0x220 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
+ watchdog+0xc1d/0xf50 kernel/hung_task.c:295
+ kthread+0x405/0x4f0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ </TASK>
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 2969 Comm: systemd-journal Not tainted 5.16.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__lock_acquire+0x8fe/0x54a0 kernel/locking/lockdep.c:5000
+Code: 03 38 d0 7c 08 84 d2 0f 85 d7 48 00 00 8b 0d a9 a5 ef 0e 85 c9 0f 84 05 07 00 00 49 8d 85 50 0a 00 00 48 89 c2 48 89 44 24 68 <48> b8 00 00 00 00 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 73 37
+RSP: 0018:ffffc900020bfa38 EFLAGS: 00000047
+RAX: ffff88807ad2c450 RBX: 0000000000000000 RCX: ffffffff815cab4a
+RDX: ffff88807ad2c450 RSI: 0000000000000008 RDI: ffffffff8ff76a00
+RBP: ffff88807ad2c482 R08: 0000000000000000 R09: ffffffff8ff76a07
+R10: fffffbfff1feed40 R11: 0000000000000000 R12: ffff88807ad2c460
+R13: ffff88807ad2ba00 R14: 0000000000000000 R15: 0000000000000002
+FS:  00007f19aca9d8c0(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f19a99a0028 CR3: 000000001cdbc000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ lock_acquire kernel/locking/lockdep.c:5637 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5602
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:162
+ __debug_object_init+0xb1/0xd10 lib/debugobjects.c:569
+ debug_object_init lib/debugobjects.c:620 [inline]
+ debug_object_activate+0x32c/0x3e0 lib/debugobjects.c:706
+ debug_rcu_head_queue kernel/rcu/rcu.h:176 [inline]
+ __call_rcu kernel/rcu/tree.c:2969 [inline]
+ call_rcu+0x2c/0x740 kernel/rcu/tree.c:3065
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:207
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f19ac02c840
+Code: 73 01 c3 48 8b 0d 68 77 20 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 83 3d 89 bb 20 00 00 75 10 b8 02 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 1e f6 ff ff 48 89 04 24
+RSP: 002b:00007fffa9120ee8 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
+RAX: fffffffffffffffe RBX: 00007fffa91211f0 RCX: 00007f19ac02c840
+RDX: 00000000000001a0 RSI: 0000000000080042 RDI: 00005590b7443010
+RBP: 000000000000000d R08: 0000000000000000 R09: 00000000ffffffff
+R10: 0000000000000069 R11: 0000000000000246 R12: 00000000ffffffff
+R13: 00005590b7436040 R14: 00007fffa91211b0 R15: 00005590b7442e30
+ </TASK>
+----------------
+Code disassembly (best guess):
+   0:	03 38                	add    (%rax),%edi
+   2:	d0 7c 08 84          	sarb   -0x7c(%rax,%rcx,1)
+   6:	d2 0f                	rorb   %cl,(%rdi)
+   8:	85 d7                	test   %edx,%edi
+   a:	48 00 00             	rex.W add %al,(%rax)
+   d:	8b 0d a9 a5 ef 0e    	mov    0xeefa5a9(%rip),%ecx        # 0xeefa5bc
+  13:	85 c9                	test   %ecx,%ecx
+  15:	0f 84 05 07 00 00    	je     0x720
+  1b:	49 8d 85 50 0a 00 00 	lea    0xa50(%r13),%rax
+  22:	48 89 c2             	mov    %rax,%rdx
+  25:	48 89 44 24 68       	mov    %rax,0x68(%rsp)
+* 2a:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax <-- trapping instruction
+  31:	fc ff df
+  34:	48 c1 ea 03          	shr    $0x3,%rdx
+  38:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+  3c:	0f                   	.byte 0xf
+  3d:	85 73 37             	test   %esi,0x37(%rbx)
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
