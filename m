@@ -2,115 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6DE454836
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:08:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7489445483E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238292AbhKQOLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 09:11:25 -0500
-Received: from foss.arm.com ([217.140.110.172]:57424 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238233AbhKQOLS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 09:11:18 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A86661474;
-        Wed, 17 Nov 2021 06:08:19 -0800 (PST)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 24B403F70D;
-        Wed, 17 Nov 2021 06:08:17 -0800 (PST)
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     aou@eecs.berkeley.edu, borntraeger@de.ibm.com, bp@alien8.de,
-        broonie@kernel.org, catalin.marinas@arm.com,
-        dave.hansen@linux.intel.com, gor@linux.ibm.com, hca@linux.ibm.com,
-        linux-kernel@vger.kernel.org, madvenka@linux.microsoft.com,
-        mark.rutland@arm.com, mhiramat@kernel.org, mingo@redhat.com,
-        mpe@ellerman.id.au, palmer@dabbelt.com, paul.walmsley@sifive.com,
-        peterz@infradead.org, rostedt@goodmis.org, tglx@linutronix.de,
-        will@kernel.org
-Subject: [PATCH 9/9] arm64: Make some stacktrace functions private
-Date:   Wed, 17 Nov 2021 14:07:37 +0000
-Message-Id: <20211117140737.44420-10-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20211117140737.44420-1-mark.rutland@arm.com>
-References: <20211117140737.44420-1-mark.rutland@arm.com>
+        id S238244AbhKQOMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 09:12:52 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:50778 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234227AbhKQOMv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 09:12:51 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id 64AD81F46217
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1637158191; bh=8jGdqijZ7q4/yAvbc1vyzx8rEXr6SdlAgU/wrMeMGyU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ZYUm3dSpuLo3m4ldKc6vQ+dw9LItM0E+Zh+WN9cwPB4dQlUrVqLKkJ/8mhCY1kUhQ
+         n0ahswTWMYi9xPzKycAWKux6bysNN1fATzi79F897ZXUILZjeABg/2F2Aml+i/V1uv
+         OFJ1ldFCD70lK+fps9CNQ722WSvCuG+fRJ04lEN6NCwSRvexCG46BnHniFzOhmEIwC
+         4DxirUboKEloDChAb0lw9pUGgTc7wurQXJ5CdRtE2U6hUdmdPT6GmKnsnLouhnEVdA
+         nfGnuGAHtF65PN2FTGQUWzAX5vYJbyPwg7TxbQPFGhb3+FMdr9aEQN6XWrYzplopJy
+         cJbQhWEYUuCzQ==
+Subject: Re: [PATCH] drm/msm/devfreq: Insert missing null check in
+ msm_devfreq_idle
+To:     Marijn Suijten <marijn.suijten@somainline.org>,
+        phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20211117111134.315709-1-marijn.suijten@somainline.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Message-ID: <969a8521-4eff-ddd2-4971-4990a7ba0fef@collabora.com>
+Date:   Wed, 17 Nov 2021 15:09:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20211117111134.315709-1-marijn.suijten@somainline.org>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that open-coded stack unwinds have been converted to
-arch_stack_walk(), we no longer need to expose any of unwind_frame(),
-walk_stackframe(), or start_backtrace() outside of stacktrace.c.
+Il 17/11/21 12:11, Marijn Suijten ha scritto:
+> msm_devfreq_init only initializes the idle_work hrtimer when it succeeds
+> to create a devfreq instance (devfreq support is optional), yet
+> msm_devfreq_idle is called unconditionally from retire_submit and queues
+> work on it.  We're seeing:
+> 
+>      [    2.005265] adreno 1c00000.gpu: [drm:msm_devfreq_init] *ERROR* Couldn't initialize GPU devfreq
+> 
+> Followed by a pagefault in:
+> 
+>      [   16.650316] pc : hrtimer_start_range_ns+0x64/0x360
+>      [   16.650336] lr : msm_hrtimer_queue_work+0x18/0x2c
+> 
+> Moments later.  Just like msm_devfreq_active, check if the devfreq
+> instance is not NULL before proceeding.
+> 
+> Fixes: 658f4c829688 ("drm/msm/devfreq: Add 1ms delay before clamping freq")
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
 
-Make those functions private to stacktrace.c, removing their prototypes
-from <asm/stacktrace.h> and marking them static.
-
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
-Cc: Mark Brown <broonie@kernel.org>
----
- arch/arm64/include/asm/stacktrace.h |  6 ------
- arch/arm64/kernel/stacktrace.c      | 12 +++++++-----
- 2 files changed, 7 insertions(+), 11 deletions(-)
-
-diff --git a/arch/arm64/include/asm/stacktrace.h b/arch/arm64/include/asm/stacktrace.h
-index 686731b9df05..3a15d376ab36 100644
---- a/arch/arm64/include/asm/stacktrace.h
-+++ b/arch/arm64/include/asm/stacktrace.h
-@@ -63,9 +63,6 @@ struct stackframe {
- #endif
- };
- 
--extern int unwind_frame(struct task_struct *tsk, struct stackframe *frame);
--extern void walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
--			    bool (*fn)(void *, unsigned long), void *data);
- extern void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk,
- 			   const char *loglvl);
- 
-@@ -150,7 +147,4 @@ static inline bool on_accessible_stack(const struct task_struct *tsk,
- 	return false;
- }
- 
--void start_backtrace(struct stackframe *frame, unsigned long fp,
--		     unsigned long pc);
--
- #endif	/* __ASM_STACKTRACE_H */
-diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index 9fc771a05306..0fb58fed54cb 100644
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -33,8 +33,8 @@
-  */
- 
- 
--void start_backtrace(struct stackframe *frame, unsigned long fp,
--		     unsigned long pc)
-+static void start_backtrace(struct stackframe *frame, unsigned long fp,
-+			    unsigned long pc)
- {
- 	frame->fp = fp;
- 	frame->pc = pc;
-@@ -63,7 +63,8 @@ void start_backtrace(struct stackframe *frame, unsigned long fp,
-  * records (e.g. a cycle), determined based on the location and fp value of A
-  * and the location (but not the fp value) of B.
-  */
--int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
-+static int notrace unwind_frame(struct task_struct *tsk,
-+				struct stackframe *frame)
- {
- 	unsigned long fp = frame->fp;
- 	struct stack_info info;
-@@ -141,8 +142,9 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
- }
- NOKPROBE_SYMBOL(unwind_frame);
- 
--void notrace walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
--			     bool (*fn)(void *, unsigned long), void *data)
-+static void notrace walk_stackframe(struct task_struct *tsk,
-+				    struct stackframe *frame,
-+				    bool (*fn)(void *, unsigned long), void *data)
- {
- 	while (1) {
- 		int ret;
--- 
-2.11.0
-
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
