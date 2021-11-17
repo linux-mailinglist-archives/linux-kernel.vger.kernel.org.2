@@ -2,53 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7689945489A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 710FA45489C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238454AbhKQO0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 09:26:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44730 "EHLO mail.kernel.org"
+        id S238563AbhKQO0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 09:26:31 -0500
+Received: from marcansoft.com ([212.63.210.85]:48524 "EHLO mail.marcansoft.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238463AbhKQOZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 09:25:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A266561A79;
-        Wed, 17 Nov 2021 14:22:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637158921;
-        bh=trOnlmJVc6C5eM46BUv9h3Tt463jIqPF9cnVUIlmBwg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=h4X+Yfr5oksj4iFHUZ5rwGWusA9e1RbGddzXrw96deYMDP3ZLE/X5zNoV664V3yOh
-         FcJhxy97Goc/2K1haque6budAaw/0Jr01TAzgEcXIwyJRkrH9bWr1T4AIPMA0Asb8V
-         0vB7gY+W/f9dmodDmOKYm2fmlyGf4uVKns6+gjzOQMM2c4J8Ujgun4mN6bMI1PHiwh
-         Vt4VVadvZfTy6cH1YqnmASlwaOz0tNQlsdvt0d2fGyxVzCtfBZ67oJdMYoiDe2R6OG
-         cJCun3tHfPEB3xoCWSAf7SU8kFMV8NKKKFY9ERBhjilM30ZJhxEEJUUeLTB8zyuquj
-         gRNCnW0onARsQ==
-Date:   Wed, 17 Nov 2021 06:22:00 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     syzbot <syzbot+6f8ddb9f2ff4adf065cb@syzkaller.appspotmail.com>,
-        davem@davemloft.net, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] WARNING: refcount bug in __linkwatch_run_queue
-Message-ID: <20211117062200.1851f425@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211117142012.GB6276@1wt.eu>
-References: <000000000000e4810705d0e479d5@google.com>
-        <20211117081907.GA6276@1wt.eu>
-        <20211117061548.63c25223@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20211117142012.GB6276@1wt.eu>
+        id S238401AbhKQOZP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 09:25:15 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: hector@marcansoft.com)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id E295B419B4;
+        Wed, 17 Nov 2021 14:22:11 +0000 (UTC)
+From:   Hector Martin <marcan@marcan.st>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Hector Martin <marcan@marcan.st>, stable@vger.kernel.org
+Subject: [PATCH] drm/format-helper: Fix dst computation in drm_fb_xrgb8888_to_rgb888_dstclip()
+Date:   Wed, 17 Nov 2021 23:22:06 +0900
+Message-Id: <20211117142206.197575-1-marcan@marcan.st>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Nov 2021 15:20:12 +0100 Willy Tarreau wrote:
-> > The ref leak could come from anywhere, tho. Like:
-> > 
-> > https://lore.kernel.org/all/87a6i3t2zg.fsf@nvidia.com/  
-> 
-> OK thanks for the link, so better wait for this part to clarify itself
-> and see if the issue magically disappears ?
+The dst pointer was being advanced by the clip width, not the full line
+stride, resulting in corruption. The clip offset was also calculated
+incorrectly.
 
-Yeah, that's my thinking.
+Cc: stable@vger.kernel.org
+Signed-off-by: Hector Martin <marcan@marcan.st>
+---
+ drivers/gpu/drm/drm_format_helper.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_format_helper.c b/drivers/gpu/drm/drm_format_helper.c
+index e676921422b8..12bc6b45e95b 100644
+--- a/drivers/gpu/drm/drm_format_helper.c
++++ b/drivers/gpu/drm/drm_format_helper.c
+@@ -366,12 +366,12 @@ void drm_fb_xrgb8888_to_rgb888_dstclip(void __iomem *dst, unsigned int dst_pitch
+ 		return;
+ 
+ 	vaddr += clip_offset(clip, fb->pitches[0], sizeof(u32));
+-	dst += clip_offset(clip, dst_pitch, sizeof(u16));
++	dst += clip_offset(clip, dst_pitch, 3);
+ 	for (y = 0; y < lines; y++) {
+ 		drm_fb_xrgb8888_to_rgb888_line(dbuf, vaddr, linepixels);
+ 		memcpy_toio(dst, dbuf, dst_len);
+ 		vaddr += fb->pitches[0];
+-		dst += dst_len;
++		dst += dst_pitch;
+ 	}
+ 
+ 	kfree(dbuf);
+-- 
+2.33.0
+
