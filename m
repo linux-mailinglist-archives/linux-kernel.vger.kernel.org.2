@@ -2,185 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18167454B25
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:38:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA3B454B2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:41:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239202AbhKQQlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 11:41:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:53617 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239148AbhKQQlQ (ORCPT
+        id S235258AbhKQQn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 11:43:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231874AbhKQQn4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 11:41:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637167097;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4dH3cPS/yoiWi5drVaWJXM5kdVu5sv4EBn9jLGlBRRE=;
-        b=Xp5UmpZZtRop939+sYhSzSaIFdUpPHYU5CCtUOYGYaprDHdDAtUAnOQ9yTzQAOhB+/4l1O
-        aduGM+IZwI20EWU/SHP2L7nASmf0YV/ocEmfxpklsEsLqAMMDcHEdzu2eP++ZiyD8wjLzn
-        Vhot7R9McKGE50G3mqU87OYON03MuKo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-337-eW84R2ukN2qeqRbZ6V1GgQ-1; Wed, 17 Nov 2021 11:38:13 -0500
-X-MC-Unique: eW84R2ukN2qeqRbZ6V1GgQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B179D18125C0;
-        Wed, 17 Nov 2021 16:38:12 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 54358604CC;
-        Wed, 17 Nov 2021 16:38:12 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     pgonda@google.com, seanjc@google.com
-Subject: [PATCH 4/4] KVM: SEV: Do COPY_ENC_CONTEXT_FROM with both VMs locked
-Date:   Wed, 17 Nov 2021 11:38:09 -0500
-Message-Id: <20211117163809.1441845-5-pbonzini@redhat.com>
-In-Reply-To: <20211117163809.1441845-1-pbonzini@redhat.com>
-References: <20211117163809.1441845-1-pbonzini@redhat.com>
+        Wed, 17 Nov 2021 11:43:56 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E43C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:40:57 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id v64so9314643ybi.5
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:40:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DYlBsPKAPVXTMCSSRYpxvxa312Osfwo6gnshzLQC9yc=;
+        b=Xh9gnW8FLSerztZnfVAUkGclmjUKWvuCoh2whMWxIc8E9WBIFIE87JFx1fAVNqHSIZ
+         70TUmoTS7U/eo6T2/3KUotOntzcQgGBdYt3OAMRy8mBCsvXDF2phPsVHMOXdG2nXiz2q
+         0k6rs/arLTscrBuLNW+IQSC1a9RdPi8NXG+C2uKiDu+Tubl248BqzKzkc6xFaE/+BGTP
+         HCgOK2QqOyGbCSdnslSYlbo/EfbZSyKTIb5La0YvxMAIlPhkMbPVUVbfAFSvdWlVITOF
+         zbf61Z+/51kKQkuCWP0cV/Q6U8J8Dyd3CP4Gd8sphjsyGY2bJqYhriacBeREan9DYayG
+         YUHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DYlBsPKAPVXTMCSSRYpxvxa312Osfwo6gnshzLQC9yc=;
+        b=YHQTCVnBtBV8O5eKeizHnV5cg3aquzutqr4LP9R+lcZU6HaxN7OHBKq0o8F2YUL8KI
+         xXWu6azhQlC231To0g8XYrU869Py0dE9YqcTq/4hZnUHaXcJ2EzOGYcXN0z76IQYw34T
+         7TXrDTtoW/CwhGs4cFuY6iW1ugqFZjvHZ8czihqcwDWnwy3xEpVlgSqjKY1LfaIlqf6K
+         e+V8LeT2jnviQI1Z3XqofYwDRt3oMTBEb8/GhLpAvC/2ADsuwvn3xRDydt0T9wXE7e/u
+         JzDQx6uS4TDc7uTFtZWhQBHoBxrZjUcB80wFgJlvKcPGSO1/qkrJBJc0GQ63k2K5paFM
+         iaQg==
+X-Gm-Message-State: AOAM531S9f+lpoGwL4UUtrZssjbu21do+rht+8COP9YIUpDkWLDDb/Jp
+        dugPfmRlUWrh0VEoMH40j/cK/R4RDaznQroMLVX8ag==
+X-Google-Smtp-Source: ABdhPJwaS+UKQMzGWKVRqtVydCW6VlVne8hctqcgFWdTtobB/CBbAvE6GQ3cnONw1umcyKYspr8Brg9i5yW6giVTGR8=
+X-Received: by 2002:a25:69cc:: with SMTP id e195mr19784770ybc.456.1637167256692;
+ Wed, 17 Nov 2021 08:40:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20211117113532.3895208-1-maz@kernel.org>
+In-Reply-To: <20211117113532.3895208-1-maz@kernel.org>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Wed, 17 Nov 2021 08:40:45 -0800
+Message-ID: <CABCJKucEkjnYf4aEXccoc8Yk=dm07HfqiPBBmw_tFsnbHM5vSA@mail.gmail.com>
+Subject: Re: [PATCH] clocksource/drivers/arm_arch_timer: Force inlining of erratum_set_next_event_generic()
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel-team@android.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have a facility to lock two VMs with deadlock
-protection, use it for the creation of mirror VMs as well.  One of
-COPY_ENC_CONTEXT_FROM(dst, src) and COPY_ENC_CONTEXT_FROM(src, dst)
-would always fail, so the combination is nonsensical and it is okay to
-return -EBUSY if it is attempted.
+On Wed, Nov 17, 2021 at 3:35 AM Marc Zyngier <maz@kernel.org> wrote:
+>
+> With some specific kernel configuration and Clang, the kernel fails
+> to like with something like:
+>
+> ld.lld: error: undefined symbol: __compiletime_assert_200
+> >>> referenced by arch_timer.h:156 (./arch/arm64/include/asm/arch_timer.h:156)
+> >>>               clocksource/arm_arch_timer.o:(erratum_set_next_event_generic) in archive drivers/built-in.a
+>
+> ld.lld: error: undefined symbol: __compiletime_assert_197
+> >>> referenced by arch_timer.h:133 (./arch/arm64/include/asm/arch_timer.h:133)
+> >>>               clocksource/arm_arch_timer.o:(erratum_set_next_event_generic) in archive drivers/built-in.a
+> make: *** [Makefile:1161: vmlinux] Error 1
+>
+> These are due to the BUILD_BUG() macros contained in the low-level
+> accessors (arch_timer_reg_{write,read}_cp15) being emitted, as the
+> access type wasn't known at compile time.
+>
+> Fix this by making erratum_set_next_event_generic() __force_inline,
+> resulting in the 'access' parameter to be resolved at compile time,
+> similarly to what is already done for set_next_event().
+>
+> Fixes: 4775bc63f880 ("Add build-time guards for unhandled register accesses")
+> Reported-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: Sami Tolvanen <samitolvanen@google.com>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+>  drivers/clocksource/arm_arch_timer.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 
-This sidesteps the question of what happens if a VM is
-MOVE_ENC_CONTEXT_FROM'd at the same time as it is
-COPY_ENC_CONTEXT_FROM'd: the locking prevents that from
-happening.
+Thanks, Marc. I can confirm that this fixes the build issue for me.
 
-Cc: Peter Gonda <pgonda@google.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/svm/sev.c | 68 ++++++++++++++++--------------------------
- 1 file changed, 26 insertions(+), 42 deletions(-)
+Tested-by: Sami Tolvanen <samitolvanen@google.com>
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index f9256ba269e6..47d54df7675c 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -1548,6 +1548,9 @@ static int sev_lock_two_vms(struct kvm *dst_kvm, struct kvm *src_kvm)
- 	struct kvm_sev_info *dst_sev = &to_kvm_svm(dst_kvm)->sev_info;
- 	struct kvm_sev_info *src_sev = &to_kvm_svm(src_kvm)->sev_info;
- 
-+	if (dst_kvm == src_kvm)
-+		return -EINVAL;
-+
- 	/*
- 	 * Bail if these VMs are already involved in a migration to avoid
- 	 * deadlock between two VMs trying to migrate to/from each other.
-@@ -1951,76 +1954,57 @@ int svm_vm_copy_asid_from(struct kvm *kvm, unsigned int source_fd)
- {
- 	struct file *source_kvm_file;
- 	struct kvm *source_kvm;
--	struct kvm_sev_info source_sev, *mirror_sev;
-+	struct kvm_sev_info *source_sev, *mirror_sev;
- 	int ret;
- 
- 	source_kvm_file = fget(source_fd);
- 	if (!file_is_kvm(source_kvm_file)) {
- 		ret = -EBADF;
--		goto e_source_put;
-+		goto e_source_fput;
- 	}
- 
- 	source_kvm = source_kvm_file->private_data;
--	mutex_lock(&source_kvm->lock);
--
--	if (!sev_guest(source_kvm)) {
--		ret = -EINVAL;
--		goto e_source_unlock;
--	}
-+	ret = sev_lock_two_vms(kvm, source_kvm);
-+	if (ret)
-+		goto e_source_fput;
- 
--	/* Mirrors of mirrors should work, but let's not get silly */
--	if (is_mirroring_enc_context(source_kvm) || source_kvm == kvm) {
-+	/*
-+	 * Mirrors of mirrors should work, but let's not get silly.  Also
-+	 * disallow out-of-band SEV/SEV-ES init if the target is already an
-+	 * SEV guest, or if vCPUs have been created.  KVM relies on vCPUs being
-+	 * created after SEV/SEV-ES initialization, e.g. to init intercepts.
-+	 */
-+	if (sev_guest(kvm) || !sev_guest(source_kvm) ||
-+	    is_mirroring_enc_context(source_kvm) || kvm->created_vcpus) {
- 		ret = -EINVAL;
--		goto e_source_unlock;
-+		goto e_unlock;
- 	}
- 
--	memcpy(&source_sev, &to_kvm_svm(source_kvm)->sev_info,
--	       sizeof(source_sev));
--
- 	/*
- 	 * The mirror kvm holds an enc_context_owner ref so its asid can't
- 	 * disappear until we're done with it
- 	 */
-+	source_sev = &to_kvm_svm(source_kvm)->sev_info;
- 	kvm_get_kvm(source_kvm);
- 
--	fput(source_kvm_file);
--	mutex_unlock(&source_kvm->lock);
--	mutex_lock(&kvm->lock);
--
--	/*
--	 * Disallow out-of-band SEV/SEV-ES init if the target is already an
--	 * SEV guest, or if vCPUs have been created.  KVM relies on vCPUs being
--	 * created after SEV/SEV-ES initialization, e.g. to init intercepts.
--	 */
--	if (sev_guest(kvm) || kvm->created_vcpus) {
--		ret = -EINVAL;
--		goto e_mirror_unlock;
--	}
--
- 	/* Set enc_context_owner and copy its encryption context over */
- 	mirror_sev = &to_kvm_svm(kvm)->sev_info;
- 	mirror_sev->enc_context_owner = source_kvm;
- 	mirror_sev->active = true;
--	mirror_sev->asid = source_sev.asid;
--	mirror_sev->fd = source_sev.fd;
--	mirror_sev->es_active = source_sev.es_active;
--	mirror_sev->handle = source_sev.handle;
-+	mirror_sev->asid = source_sev->asid;
-+	mirror_sev->fd = source_sev->fd;
-+	mirror_sev->es_active = source_sev->es_active;
-+	mirror_sev->handle = source_sev->handle;
-+	ret = 0;
- 	/*
- 	 * Do not copy ap_jump_table. Since the mirror does not share the same
- 	 * KVM contexts as the original, and they may have different
- 	 * memory-views.
- 	 */
- 
--	mutex_unlock(&kvm->lock);
--	return 0;
--
--e_mirror_unlock:
--	mutex_unlock(&kvm->lock);
--	kvm_put_kvm(source_kvm);
--	return ret;
--e_source_unlock:
--	mutex_unlock(&source_kvm->lock);
--e_source_put:
-+e_unlock:
-+	sev_unlock_two_vms(kvm, source_kvm);
-+e_source_fput:
- 	if (source_kvm_file)
- 		fput(source_kvm_file);
- 	return ret;
--- 
-2.27.0
-
+Sami
