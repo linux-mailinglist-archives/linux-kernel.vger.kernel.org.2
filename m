@@ -2,88 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9CB454549
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 12:01:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF9A45454C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 12:01:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236607AbhKQLEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 06:04:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37340 "EHLO
+        id S236612AbhKQLEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 06:04:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232746AbhKQLEA (ORCPT
+        with ESMTP id S235805AbhKQLEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 06:04:00 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20FC4C061570;
-        Wed, 17 Nov 2021 03:01:02 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HvKjL3ZBfz4xbH;
-        Wed, 17 Nov 2021 22:00:53 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1637146856;
-        bh=RtfnGt8HIvX8gJjNg0RB+qEpTL+Cr6T2c8qv8d5pI0Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rti8rBfiUmCqx+F+bXUB2rB3TRL2dB570+jVuAxbpi4Z+yyuYuEhBfpe8PfI7A7H7
-         lRjY5HZrPzrS/C9OxpuXxvVFf1rb9FfbwKDD3UER/YR8v7Rjml5Krq7R+V8fjTTppm
-         RX3sqN8EoecqWVro0ygsuZ1FnN1dDa1iAyN3Sor41Ty3pk1CDk0shsxV3F2GjgbAAV
-         1/PzreNP0kpvZQIlaEbdIrqUQFwNeAGVCJt7OOJwZ/yR+17jSfylCXC8Bg24JpWsoz
-         eWc/9auugoUONJ6lv+UXED91ZfKWwqAgB4SNlNoKWW4kK7E3tDkgnA1guNDHUc/Chi
-         2sv3GkVUdj99w==
-Date:   Wed, 17 Nov 2021 22:00:53 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        thomas.hellstrom@linux.intel.com, intel-gfx@lists.freedesktop.org
-Subject: Re: linux-next: build failure after merge of the drm-intel-gt tree
-Message-ID: <20211117220053.179a82e4@canb.auug.org.au>
-In-Reply-To: <163714535048.4529.4694769143307309201@jlahtine-mobl.ger.corp.intel.com>
-References: <20211117100223.52c7460a@canb.auug.org.au>
-        <163714535048.4529.4694769143307309201@jlahtine-mobl.ger.corp.intel.com>
+        Wed, 17 Nov 2021 06:04:36 -0500
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC828C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 03:01:37 -0800 (PST)
+Received: by mail-ua1-x92b.google.com with SMTP id p2so4875916uad.11
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 03:01:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vanguardiasur-com-ar.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=czk1gMWNKXWl8chfFRRwl73Bh8CMWwWD2CpmdeQ3Jb4=;
+        b=4ocR6khZ7SMJBnmoPmytAiz4Pbd+lZ8NL6T/RvZSPS0K2vzKwCGWLWjhWVEemeD25R
+         A0eBsX2Ibnb0SIECwwiCRtEp9Oe72SC7a12h/B5PhV96vZwIHj2Wk8v6cDi7BsCN5eyP
+         j2TmaBb/HML3Nu1CvDX2Sbhl2viHSVNVo36mAxztD8M9ecDs/tLtFCN6HyTX1d+/DwrR
+         LH3ILZyLRiiwO58/qPEI7owfmQyb5sBtSU6Wk8xVB2gnsThBRBPn7QB1Lzm8MckDgW1P
+         5sWNO0/3iZYMCyatS6QxiM4gVHGoSg/Nci8CaUAFu1fekATNHdb+jpSHvBCkSFitJAjw
+         wtog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=czk1gMWNKXWl8chfFRRwl73Bh8CMWwWD2CpmdeQ3Jb4=;
+        b=WJLSMGacFYvV15O8alpoYLWkmSG9LqM820YxtvuIa/JojvhKupnpwbP0NUgTl9bC39
+         2khMdDYDGbqLYTygHD7SAlCxQqrhj7r88DymiiWsfwpC+p79pbPnTEfqn/SZuk+DeULR
+         JDaEwFYJPCgYyEg+3EaFhprSbwd8RY0zxS1eQCUnq1p2NiOLNMm8fyyML4b+IEj8SPBm
+         faB2hU7ICYvPz8oVcmzfSrYmYqmpz7kYEUEn+WzYWl6Jezsxe1oESAD3RhDFWRGxCrYA
+         EkhMyYnQ+780OkUDXDfAj2Uu412Dvi8MWPPcZxhizjPsoMvcOJhkFkb6QuCW8BF5dVsR
+         6sjQ==
+X-Gm-Message-State: AOAM532jlPUCmbHBq80uHbSNQAqaG8xNPxPHBvGJouvfcH2C7WYcKRtx
+        BPlwyeaXRH9b6622+giSaGjbxg==
+X-Google-Smtp-Source: ABdhPJwPYB21ayTea+GyZOeZYIv+kUpZQDhZWKYMm0kaZ2x1ybUNAdz8Pgc+NVlaA8KYMpC0o8jccw==
+X-Received: by 2002:a67:fa0f:: with SMTP id i15mr65495172vsq.16.1637146896937;
+        Wed, 17 Nov 2021 03:01:36 -0800 (PST)
+Received: from eze-laptop ([186.122.18.126])
+        by smtp.gmail.com with ESMTPSA id y22sm11422513vkn.42.2021.11.17.03.01.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 03:01:35 -0800 (PST)
+Date:   Wed, 17 Nov 2021 08:01:28 -0300
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com
+Subject: Re: [PATCH v8 11/12] media: hantro: Staticize a struct in
+ postprocessor code
+Message-ID: <YZThCK6+/jA+P/v8@eze-laptop>
+References: <20211116143842.75896-1-andrzej.p@collabora.com>
+ <20211116143842.75896-12-andrzej.p@collabora.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/WpZm5acPgFKXFiIr8uVD1kW";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211116143842.75896-12-andrzej.p@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/WpZm5acPgFKXFiIr8uVD1kW
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Nov 16, 2021 at 03:38:41PM +0100, Andrzej Pietrasiewicz wrote:
+> The struct is not used outside this file, so it can be static.
+> 
+> Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
 
-Hi Joonas,
+Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 
-On Wed, 17 Nov 2021 12:35:50 +0200 Joonas Lahtinen <joonas.lahtinen@linux.i=
-ntel.com> wrote:
->
-> + intel-gfx mailing list (Stephen, can you include this going forward?)
-
-I have added that to my contacts for this tree (so, yes :-)).
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/WpZm5acPgFKXFiIr8uVD1kW
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGU4OUACgkQAVBC80lX
-0Gwtwgf/QNDmqkupa9pHTublHJve4GjVHVX+cQ0FNkZ6ZVlfXI8eM9lspa3PNcna
-+3/e8s30k0xEUPsEgJw+tWM1aRQsSY4VcK2dR9doJJCwWnYWldjL8Kod+4jsslmQ
-80Cz8sBIUwzI+GQADbAddiQtjQh0KKnhN5nSmgmieh0elip7UJxh/CGhHGIaMlIb
-k6nC2u/NRaaRmA10+pZlJX7Bp0V5sblPdZAuxAnj83J37Y7TngyxCfq82MGmMHkr
-qMWzawgN3CsMCaUxHTSU4V34yMqxuBAK2I8eKBf1rCmWfP/uG1a43UE3xgTrVMOP
-jiooGKH7xjADdEBiDnvSM2aTuvnnPw==
-=FIHS
------END PGP SIGNATURE-----
-
---Sig_/WpZm5acPgFKXFiIr8uVD1kW--
+> ---
+>  drivers/staging/media/hantro/hantro_postproc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/media/hantro/hantro_postproc.c b/drivers/staging/media/hantro/hantro_postproc.c
+> index 4549aec08feb..89de43021779 100644
+> --- a/drivers/staging/media/hantro/hantro_postproc.c
+> +++ b/drivers/staging/media/hantro/hantro_postproc.c
+> @@ -33,7 +33,7 @@
+>  #define VPU_PP_OUT_RGB			0x0
+>  #define VPU_PP_OUT_YUYV			0x3
+>  
+> -const struct hantro_postproc_regs hantro_g1_postproc_regs = {
+> +static const struct hantro_postproc_regs hantro_g1_postproc_regs = {
+>  	.pipeline_en = {G1_REG_PP_INTERRUPT, 1, 0x1},
+>  	.max_burst = {G1_REG_PP_DEV_CONFIG, 0, 0x1f},
+>  	.clk_gate = {G1_REG_PP_DEV_CONFIG, 1, 0x1},
+> -- 
+> 2.25.1
+> 
