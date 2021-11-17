@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93AF454BCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 435B7454BD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:19:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239341AbhKQRUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 12:20:16 -0500
-Received: from h2.fbrelay.privateemail.com ([131.153.2.43]:59763 "EHLO
-        h2.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229585AbhKQRUP (ORCPT
+        id S239353AbhKQRWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 12:22:41 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:40290 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229585AbhKQRWi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 12:20:15 -0500
-Received: from MTA-13-4.privateemail.com (mta-13-1.privateemail.com [198.54.122.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by h1.fbrelay.privateemail.com (Postfix) with ESMTPS id 5946A80AFB;
-        Wed, 17 Nov 2021 12:17:15 -0500 (EST)
-Received: from mta-13.privateemail.com (localhost [127.0.0.1])
-        by mta-13.privateemail.com (Postfix) with ESMTP id 8557F18000A1;
-        Wed, 17 Nov 2021 12:17:13 -0500 (EST)
-Received: from localhost.localdomain (unknown [10.20.151.206])
-        by mta-13.privateemail.com (Postfix) with ESMTPA id 10EA918000AB;
-        Wed, 17 Nov 2021 12:17:11 -0500 (EST)
-From:   Jordy Zomer <jordy@pwning.systems>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jordy Zomer <jordy@pwning.systems>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH] nfc: st21nfca: Fix potential buffer overflows in EVT_TRANSACTION
-Date:   Wed, 17 Nov 2021 18:17:03 +0100
-Message-Id: <20211117171706.2731410-1-jordy@pwning.systems>
-X-Mailer: git-send-email 2.27.0
+        Wed, 17 Nov 2021 12:22:38 -0500
+Received: from pendragon.ideasonboard.com (85-76-75-165-nat.elisa-mobile.fi [85.76.75.165])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 52CF1E7;
+        Wed, 17 Nov 2021 18:19:37 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1637169578;
+        bh=i85HkmfsVufd/ppr7LYU9Ftt+cP5kKVfCIqqo3Ckf1I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KQ3Uw0AtZuJXpID7xp3NjydkJfLwjlOej/d0InW72YeBX9229aUV0oopeULzOzTFx
+         qz2qahSgV++DFvG56+k68h7YAqVHfdqn8I29Ncaggw79MezSkrLCZbkydcG+D4fYV/
+         KV/3BQNIrTPAPajhW+3H8HXi3y1m3IBqUpDUaJRY=
+Date:   Wed, 17 Nov 2021 19:19:12 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     rmfrfs@gmail.com, mchehab@kernel.org, robh@kernel.org,
+        shawnguo@kernel.org, kernel@pengutronix.de, kernel@puri.sm,
+        linux-imx@nxp.com, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] dt-bindings: media: document imx8mq support for
+ imx7-csi
+Message-ID: <YZU5kEmHGV9JWqZc@pendragon.ideasonboard.com>
+References: <20211117092710.3084034-1-martin.kepplinger@puri.sm>
+ <20211117092710.3084034-2-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211117092710.3084034-2-martin.kepplinger@puri.sm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It appears that there are some buffer overflows in EVT_TRANSACTION.
-This happens because the length parameters that are passed to memcpy
-come directly from skb->data and are not guarded in any way.
+Hi Martin,
 
-It would be nice if someone can review and test this patch because
-I don't own the hardware :)
+Thank you for the patch.
 
-Signed-off-by: Jordy Zomer <jordy@pwning.systems>
----
- drivers/nfc/st21nfca/se.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+On Wed, Nov 17, 2021 at 10:27:10AM +0100, Martin Kepplinger wrote:
+> Add the fsl,imx8mq-csi compatible string to the bindings for nxp,imx7-csi
+> since the driver explicitly handles that now.
 
-diff --git a/drivers/nfc/st21nfca/se.c b/drivers/nfc/st21nfca/se.c
-index a43fc4117fa5..e3483aca3280 100644
---- a/drivers/nfc/st21nfca/se.c
-+++ b/drivers/nfc/st21nfca/se.c
-@@ -316,6 +316,11 @@ int st21nfca_connectivity_event_received(struct nfc_hci_dev *hdev, u8 host,
- 			return -ENOMEM;
- 
- 		transaction->aid_len = skb->data[1];
-+
-+		// Checking if the length of the AID is valid
-+		if (transaction->aid_len > sizeof(transaction->aid))
-+			return -EINVAL;
-+
- 		memcpy(transaction->aid, &skb->data[2],
- 		       transaction->aid_len);
- 
-@@ -325,6 +330,14 @@ int st21nfca_connectivity_event_received(struct nfc_hci_dev *hdev, u8 host,
- 			return -EPROTO;
- 
- 		transaction->params_len = skb->data[transaction->aid_len + 3];
-+
-+		// check if the length of the parameters is valid
-+		// we can't use sizeof(transaction->params) because it's
-+		// a flexible array member so we have to check if params_len
-+		// is bigger than the space allocated for the array
-+		if (transaction->params_len > ((skb->len - 2) - sizeof(struct nfc_evt_transaction)))
-+			return -EINVAL;
-+
- 		memcpy(transaction->params, skb->data +
- 		       transaction->aid_len + 4, transaction->params_len);
- 
+The commit message should describe why a different compatible string is
+needed, without mentioning the driver, as DT bindings are not
+driver-dependent.
+
+With that fixed,
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> ---
+>  Documentation/devicetree/bindings/media/nxp,imx7-csi.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/nxp,imx7-csi.yaml b/Documentation/devicetree/bindings/media/nxp,imx7-csi.yaml
+> index 5922a2795167..4f7b78265336 100644
+> --- a/Documentation/devicetree/bindings/media/nxp,imx7-csi.yaml
+> +++ b/Documentation/devicetree/bindings/media/nxp,imx7-csi.yaml
+> @@ -17,6 +17,7 @@ properties:
+>    compatible:
+>      oneOf:
+>        - enum:
+> +          - fsl,imx8mq-csi
+>            - fsl,imx7-csi
+>            - fsl,imx6ul-csi
+>        - items:
+
 -- 
-2.27.0
+Regards,
 
+Laurent Pinchart
