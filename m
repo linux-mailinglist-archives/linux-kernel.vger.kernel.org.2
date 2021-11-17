@@ -2,127 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F1A454CA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:57:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89FF1454CAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:59:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239815AbhKQSAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 13:00:53 -0500
-Received: from todd.t-8ch.de ([159.69.126.157]:55613 "EHLO todd.t-8ch.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239783AbhKQSAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 13:00:43 -0500
-Date:   Wed, 17 Nov 2021 18:57:40 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1637171860;
-        bh=9R7AiZBy616DlRSyvvUAZa85pJwmHl/hFx0sLaYBnrE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QQRIr+rud2ZHtAmqjM3aJHv2sNaOGDKzwcHigcwdd7rHiRoIj6NJZXYSyCWcAfeFL
-         LhYdH77hIeK8wY7vtuiCwEJ2FwFdjMFxDFrAo2mbKbumrL2zSi+dHCnbC/eYoQ0YVe
-         jFjuInzlS0hyy59AX0VmJOE2riu0S0rV3O14fEU8=
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Thomas Koch <linrunner@gmx.net>
-Cc:     linux-pm@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org,
-        Mark Gross <markgross@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-        linux-kernel@vger.kernel.org, bberg@redhat.com, hadess@hadess.net,
-        markpearson@lenovo.com, nicolopiazzalunga@gmail.com,
-        njoshi1@lenovo.com, smclt30p@gmail.com
-Subject: Re: [PATCH 0/4] power: supply: add charge_behaviour property
- (force-discharge, inhibit-charge)
-Message-ID: <d1bc62e9-a5da-4c23-b31f-8ba718faf4a3@t-8ch.de>
-References: <20211113104225.141333-1-linux@weissschuh.net>
- <9cebba85-f399-a7aa-91f7-237852338dc5@gmx.net>
+        id S238154AbhKQSCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 13:02:18 -0500
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:44906 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229678AbhKQSCP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 13:02:15 -0500
+Received: by mail-ot1-f51.google.com with SMTP id u18-20020a9d7212000000b00560cb1dc10bso6080027otj.11;
+        Wed, 17 Nov 2021 09:59:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aoxl3U29QPybXdTn3lCAkC7wxqpVbVrgb5RkC9VtBC8=;
+        b=0EwGqwdSgelFkUmigHBTGFrVKd7SP5DmbxsMrZM5rqAcx8TSDD4InqXG2ZizZn1qNC
+         8GNQLqS47of8gsALGTyWkeQnYgeoovIx8CpIIso5gtXj9JUYy1lfWgBL/uV4zZa0poPZ
+         /c34hOeEIFG2PZv1OGh+Fx9KHqDLZG+tqqjqMENRPNqbwB7C1HZBCCYFtU7A3D+lqjC6
+         UDZ2YSTF41CDBlzfIIGkCrKyIYYGlotWoNXPA5oC6YpqOhgfoOLXEMyJCGU/MBaqzkhT
+         UGFD6naa3SS/Hf5egwH12qvRgV7AYuOScfksILtXlW75a8ENheDhfBEXleLSJtXPuXzd
+         vbRA==
+X-Gm-Message-State: AOAM531k0eByW1jDiGdIbtTLLNA1c+6dUxk8vdAKqYy3AKgtiW9zAVVD
+        ejaKhc+QyXAqbget1wyKfQOyp5W4LRqWZouKzFe3SiD3slo=
+X-Google-Smtp-Source: ABdhPJxgrNHEcIl1QbZvbdkU44kPdvatZwekdY2SihVSNjlbfys7UZ3YEy61+fdkmJjVlMfC6Ap5ScQ6f/pN8aOYGAY=
+X-Received: by 2002:a9d:a64:: with SMTP id 91mr15229416otg.198.1637171956227;
+ Wed, 17 Nov 2021 09:59:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9cebba85-f399-a7aa-91f7-237852338dc5@gmx.net>
-Jabber-ID: thomas@t-8ch.de
-X-Accept: text/plain, text/html;q=0.2, text/*;q=0.1
-X-Accept-Language: en-us, en;q=0.8, de-de;q=0.7, de;q=0.6
+References: <20211115201010.68567-1-thara.gopinath@linaro.org>
+ <CAJZ5v0gezoJZVH69Y7fDwa-uLhE0PaqFrzM=0bequxpE_749zg@mail.gmail.com>
+ <8f7397e3-4e92-c84d-9168-087967f4d683@arm.com> <CAJZ5v0iRDtr5yae5UndwU2SmVL4cak=BN0irVGbgNzQiS8K3mA@mail.gmail.com>
+ <af59de78-49b0-d2e6-4bf0-7c897c2fccb1@linaro.org>
+In-Reply-To: <af59de78-49b0-d2e6-4bf0-7c897c2fccb1@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 17 Nov 2021 18:59:05 +0100
+Message-ID: <CAJZ5v0h3O_rSR38X4fV1FC2O2DYQnxzeLbxcSqh1vpnE65Nd+A@mail.gmail.com>
+Subject: Re: [PATCH] base: arch_topology: Use policy->max to calculate freq_factor
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-16 17:56+0100, Thomas Koch wrote:
-> thank you very much for working on this. It is high time that we leave
-> external kernel modules for ThinkPads behind us.
-> 
-> On 13.11.21 11:42, Thomas Weißschuh wrote:
-> > Hi,
-> > 
-> > this series adds support for the charge_behaviour property to the power
-> > subsystem and thinkpad_acpi driver.
-> > 
-> > As thinkpad_acpi has to use the 'struct power_supply' created by the generic
-> > ACPI driver it has to rely on custom sysfs attributes instead of proper
-> > power_supply properties to implement this property.
-> > 
-> > Patch 1: Adds the power_supply documentation and basic public API
-> > Patch 2: Adds helpers to power_supply core to help drivers implement the
-> >    charge_behaviour attribute
-> > Patch 3: Adds support for force-discharge to thinkpad_acpi.
-> > Patch 4: Adds support for inhibit-discharge to thinkpad_acpi.
-> > 
-> > Patch 3 and 4 are largely taken from other patches and adapted to the new API.
-> > (Links are in the patch trailer)
-> > 
-> > Ognjen Galic, Nicolo' Piazzalunga, Thomas Koch:
-> > 
-> > Your S-o-b is on the original inhibit_charge and force_discharge patches.
-> > I would like to add you as Co-developed-by but to do that it will also require
-> > your S-o-b. Could you give your sign-offs for the new patches, so you can be
-> > properly attributed?
-> S-o-b/Co-developed-by/Tested-by is fine with me.
-> 
-> I tested your patches.
-> 
-> Hardware:
-> 
-> - ThinkPad X220, BAT0
-> - ThinkPad T450s, BAT0+BAT1
-> - ThinkPad X1C6, BAT0
-> 
-> Test Results:
-> 
-> 1. force-discharge
-> 
-> Everythings works as expected
-> - Writing including disengaging w/ "auto" : OK
-> - Reading: OK
-> 
-> - Battery discharging: OK
-> - Disengaging with "auto": OK
-> 
-> 2. inhibit-charge
-> 
-> Works as expected:
-> - Writing: OK
-> 
-> - Disengaging with "auto": OK
-> 
-> 
-> Discrepancies:
-> - Battery charge inhibited: BAT0 OK, BAT1 no effect e.g. continues charging
-> - Reading: always returns "auto"
+On Wed, Nov 17, 2021 at 6:01 PM Thara Gopinath
+<thara.gopinath@linaro.org> wrote:
+>
+> Hi,
+>
+> On 11/17/21 7:49 AM, Rafael J. Wysocki wrote:
+> > On Wed, Nov 17, 2021 at 11:46 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+> >>
+> >> Hi Rafael,
+> >>
+> >> On 11/16/21 7:05 PM, Rafael J. Wysocki wrote:
+> >>> On Mon, Nov 15, 2021 at 9:10 PM Thara Gopinath
+> >>> <thara.gopinath@linaro.org> wrote:
+> >>>>
+> >>>> cpuinfo.max_freq can reflect boost frequency if enabled during boot.  Since
+> >>>> we don't consider boost frequencies while calculating cpu capacities, use
+> >>>> policy->max to populate the freq_factor during boot up.
+> >>>
+> >>> I'm not sure about this.  schedutil uses cpuinfo.max_freq as the max frequency.
+> >>
+> >> Agree it's tricky how we treat the boost frequencies and also combine
+> >> them with thermal pressure.
+> >> We probably would have consider these design bits:
+> >> 1. Should thermal pressure include boost frequency?
+> >
+> > Well, I guess so.
+> >
+> > Running at a boost frequency certainly increases thermal pressure.
+> >
+> >> 2. Should max capacity 1024 be a boost frequency so scheduler
+> >>      would see it explicitly?
+> >
+> > That's what it is now if cpuinfo.max_freq is a boost frequency.
+> >
+> >> - if no, then schedutil could still request boost freq thanks to
+> >>     map_util_perf() where we add 25% to the util and then
+> >>     map_util_freq() would return a boost freq when util was > 1024
+> >>
+> >>
+> >> I can see in schedutil only one place when cpuinfo.max_freq is used:
+> >> get_next_freq(). If the value stored in there is a boost,
+> >> then don't we get a higher freq value for the same util?
+> >
+> > Yes. we do, which basically is my point.
+> >
+> > The schedutil's response is proportional to cpuinfo.max_freq and that
+> > needs to be taken into account for the results to be consistent.
+>
+> So IIUC, cpuinfo.max_freq is always supposed to be the highest supported
+> frequency of a cpu, irrespective of whether boost is enabled or not.
+> Where as policy->max is the currently available maximum cpu frequency
+> which can be equal to cpuinfo.max_freq or lower (depending on whether
+> boost is enabled, whether there is a constraint on policy->max placed by
+> thermal etc).
 
-I tested it on a T460s with two batteries and there inhibit-charge works
-fine for both batteries.
-What does not work is setting force-discharge for both batteries at the same
-time.
-This makes somewhat sense as on a physical level probably only one of them can
-be used at a time.
+It may also depend on the limit set by user space.
 
-Mark Pearson: Could you confirm that this is the intended behaviour?
+> So in this case isn't it better for schedutil to consider
+> policy->max instead of cpuinfo.max ?
 
-In my changes queued for v2 of the series[0] I added validation of the written
-settings and an EIO is now reported if the settings were not applied, so this
-should help userspace handle this situatoin.
+Not really.
 
-The plan is to submit v2 after the first round of review for the core PM
-changes.
+In that case setting policy->max to 1/2 of cpuinfo.max_freq would
+cause schedutil to choose 1/4 of cpuinfo.max_freq for 50% utilization
+which would be rather unexpected.
 
-[0] https://git.sr.ht/~t-8ch/linux/tree/charge-control
+policy->max is a cap, not the current maximum capacity.
+
+> Like you mentioned above same
+> utilization will relate to different frequencies depending on the
+> maximum frequency.
+
+Which is not how it is expected (and defined) to work, though.
+
+If you really want to play with the current maximum capacity, you need
+to change it whenever boost is disabled or enabled - and there is a
+mechanism for updating cpufinfo.max_freq in such cases.
