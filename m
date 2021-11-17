@@ -2,141 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 140B845402A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 06:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8AE8454034
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 06:27:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233132AbhKQF1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 00:27:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbhKQF1s (ORCPT
+        id S233243AbhKQFaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 00:30:13 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:26328 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229585AbhKQFaM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 00:27:48 -0500
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A97E9C061570;
-        Tue, 16 Nov 2021 21:24:50 -0800 (PST)
-Received: by mail-oo1-xc32.google.com with SMTP id v30-20020a4a315e000000b002c52d555875so615522oog.12;
-        Tue, 16 Nov 2021 21:24:50 -0800 (PST)
+        Wed, 17 Nov 2021 00:30:12 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pzND+g9ePgCLKa8kP/JODvmaRY06knIDXo8zBx6RHwg=;
-        b=Qrp1cdZLIW0wk6S9Au0xuw9JzbL3uO6HXNORkqQTLO8BXzEKVKVwjQTCpq6RkWTXns
-         MBW1UUwZXr7aIToYUTcNn/CSrc9Vzi7zuZmfS1MKddS5NmWm9W7j+PErLkGiXf7A1QYx
-         VrtOyI1f5jmghaXd5BTfrzAHR1cSP6sws9YkdJMM+WVBJYyDBLJhbqlHu9G3JlAFQHE6
-         HsdXzGyN1cRF/K7XhHfw9jcSRl/B1GesjJfiggwdjsoVNEjeLED4RdzJPK2do0sPGu8A
-         pamouxVBeRtNfnzgoVEY5Yz2jwQXEacOJoSrXWYJ/TcbY6O7hD1xuC/pANlLh84S2phK
-         PSgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=pzND+g9ePgCLKa8kP/JODvmaRY06knIDXo8zBx6RHwg=;
-        b=lZaKypxGO7/EZQSeYi0xJx/mYkFmRjGrd9u68izBlD/JhvMWoA0lFbiBXEwY9v4kND
-         CzLKH1MfNd/Wt5Ym9FDwjK61SnhF27N2iezRc8DL6c69BLOXjk5sjok5QfhtJBJ3M+GD
-         iqiiTiUFzhbbr+G9ZDbcJ1zxZdER2uLY8VbsZPgv1nj7R6RNYw+Fg8+bxHIjTn5qNjNK
-         x98ne46T3I+/5hC+j5R2cAln1SZvMLrIZ6EMISfuuVr61TOiG10GSF5Cc6KsZO6JOZ1T
-         hGke6YyuMauof+0m5YezW0FR0YJHylKgbyuXwjGytVhwSVaAFmHh1j3be99PxpPO91xG
-         Kteg==
-X-Gm-Message-State: AOAM5327My0//DSU1upkCF2bo900YbBDLu5O5mtGZJlKmqvLflqh2Xe/
-        6ptJZLPFPM0aTJjUgoUuyVXSAfITEto=
-X-Google-Smtp-Source: ABdhPJyd3I6kwvSW2vAkn9kC3Yf7QNDBQrka8GdDVF7Q949feqkLgm1/rQliEHjiD3vLG/IAktZuUg==
-X-Received: by 2002:a4a:e096:: with SMTP id w22mr6982384oos.14.1637126690034;
-        Tue, 16 Nov 2021 21:24:50 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j187sm4379804oih.5.2021.11.16.21.24.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 21:24:49 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 16 Nov 2021 21:24:48 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     AceLan Kao <acelan.kao@canonical.com>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        SophieHu <sophiehu@aaeon.com.tw>
-Subject: Re: [PATCH] watchdog: f71808e_wdt: Add F81966 support
-Message-ID: <20211117052448.GE215087@roeck-us.net>
-References: <20211117024052.2427539-1-acelan.kao@canonical.com>
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1637126835; x=1668662835;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=AlwB3RTtcb0Bby2mku2EUrYuvZDnavBskw+PSx+KDLg=;
+  b=n0dUYteZk29ZEoactV8qimzU3E3Zyi77xoxD2Di629Ai4ohnKv4vunRW
+   qKvUKYUMr8jNnrwVY9B2tXjzglPZJc4VoXw62EDcWiv8T57FVU6uraH8b
+   qEJymsoYbNSNlDZ7KqRR5QaPDM8Sve7BCVBGu/XhyrL5IIfEVrkLPgAyX
+   E=;
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 16 Nov 2021 21:27:14 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 21:27:13 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Tue, 16 Nov 2021 21:27:12 -0800
+Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Tue, 16 Nov 2021 21:27:07 -0800
+Date:   Wed, 17 Nov 2021 10:57:03 +0530
+From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
+To:     Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+CC:     Rob Herring <robh@kernel.org>, Andy Gross <agross@kernel.org>,
+        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        "Matthias Kaehlcke" <mka@chromium.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: usb: usb-xhci: Add bindings for
+ usb-skip-phy-init property
+Message-ID: <20211117052703.GA6511@hu-pkondeti-hyd.qualcomm.com>
+References: <1636353710-25582-1-git-send-email-quic_c_sanm@quicinc.com>
+ <1636353710-25582-2-git-send-email-quic_c_sanm@quicinc.com>
+ <YY7vAzxj9aR/zBSB@robh.at.kernel.org>
+ <3e02ae12-660b-8cf5-d6f8-3a8d1a2abc4e@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20211117024052.2427539-1-acelan.kao@canonical.com>
+In-Reply-To: <3e02ae12-660b-8cf5-d6f8-3a8d1a2abc4e@quicinc.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 10:40:52AM +0800, AceLan Kao wrote:
-> From: AaeonIot <sophiehu@aaeon.com.tw>
-> 
-> This adds watchdog support the Fintek F81966 Super I/O chip.
-> Testing was done on the Aaeon SSE-OPTI
-> 
-> Signed-off-by: AaeonIot <sophiehu@aaeon.com.tw>
-> Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
+Hi Sandeep,
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+On Tue, Nov 16, 2021 at 04:11:30PM +0530, Sandeep Maheswaram wrote:
+> 
+> On 11/13/2021 4:17 AM, Rob Herring wrote:
+> >On Mon, Nov 08, 2021 at 12:11:48PM +0530, Sandeep Maheswaram wrote:
+> >>Adding bindings for usb-skip-phy-init property.
+> >>Runtime suspend of phy drivers was failing from DWC3 driver as
+> >>runtime usage value is 2 because the phy is initialized from
+> >>DWC3 core and HCD core.
+> >>Some controllers like DWC3 and CDNS3 manage phy in their core drivers.
+> >>This property can be set to avoid phy initialization in HCD core.
+> >You already know if you have a DWC3 and CDNS3 controller, so you don't
+> >need more data in DT.
+> 
+> We don't have a device tree node for xhci platform device and create xhci
+> platform device from dwc3/host.c
+> 
+> So we want to pass this property to check in xhci-plat.c and skip phy
+> initialization.
+> 
 
-> ---
->  drivers/watchdog/f71808e_wdt.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/watchdog/f71808e_wdt.c b/drivers/watchdog/f71808e_wdt.c
-> index ee90c5f943f9..7f59c680de25 100644
-> --- a/drivers/watchdog/f71808e_wdt.c
-> +++ b/drivers/watchdog/f71808e_wdt.c
-> @@ -49,6 +49,7 @@
->  #define SIO_F81803_ID		0x1210	/* Chipset ID */
->  #define SIO_F81865_ID		0x0704	/* Chipset ID */
->  #define SIO_F81866_ID		0x1010	/* Chipset ID */
-> +#define SIO_F81966_ID		0x1502  /* F81804 chipset ID, same for f81966 */
->  
->  #define F71808FG_REG_WDO_CONF		0xf0
->  #define F71808FG_REG_WDT_CONF		0xf5
-> @@ -105,7 +106,7 @@ MODULE_PARM_DESC(start_withtimeout, "Start watchdog timer on module load with"
->  	" given initial timeout. Zero (default) disables this feature.");
->  
->  enum chips { f71808fg, f71858fg, f71862fg, f71868, f71869, f71882fg, f71889fg,
-> -	     f81803, f81865, f81866};
-> +	     f81803, f81865, f81866, f81966};
->  
->  static const char * const fintek_wdt_names[] = {
->  	"f71808fg",
-> @@ -118,6 +119,7 @@ static const char * const fintek_wdt_names[] = {
->  	"f81803",
->  	"f81865",
->  	"f81866",
-> +	"f81966"
->  };
->  
->  /* Super-I/O Function prototypes */
-> @@ -347,6 +349,7 @@ static int fintek_wdt_start(struct watchdog_device *wdd)
->  		break;
->  
->  	case f81866:
-> +	case f81966:
->  		/*
->  		 * GPIO1 Control Register when 27h BIT3:2 = 01 & BIT0 = 0.
->  		 * The PIN 70(GPIO15/WDTRST) is controlled by 2Ch:
-> @@ -373,7 +376,7 @@ static int fintek_wdt_start(struct watchdog_device *wdd)
->  	superio_select(wd->sioaddr, SIO_F71808FG_LD_WDT);
->  	superio_set_bit(wd->sioaddr, SIO_REG_ENABLE, 0);
->  
-> -	if (wd->type == f81865 || wd->type == f81866)
-> +	if (wd->type == f81865 || wd->type == f81866 || wd->type == f81966)
->  		superio_set_bit(wd->sioaddr, F81865_REG_WDO_CONF,
->  				F81865_FLAG_WDOUT_EN);
->  	else
-> @@ -580,6 +583,9 @@ static int __init fintek_wdt_find(int sioaddr)
->  	case SIO_F81866_ID:
->  		type = f81866;
->  		break;
-> +	case SIO_F81966_ID:
-> +		type = f81966;
-> +		break;
->  	default:
->  		pr_info("Unrecognized Fintek device: %04x\n",
->  			(unsigned int)devid);
-> -- 
-> 2.25.1
-> 
+Would not the below condition from your other patch [1] work here too?
+
+if (of_device_is_compatible(dev->parent->of_node, "snps,dwc3"))
+
+[1] https://lore.kernel.org/linux-usb/1635753224-23975-2-git-send-email-quic_c_sanm@quicinc.com/
+
+Thanks,
+Pavan
+
