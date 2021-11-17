@@ -2,70 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CE7454B5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE21454B64
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:50:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234969AbhKQQxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 11:53:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33168 "EHLO
+        id S235412AbhKQQxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 11:53:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbhKQQw4 (ORCPT
+        with ESMTP id S233145AbhKQQxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 11:52:56 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30129C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:49:58 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id v23so4023163iom.12
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:49:58 -0800 (PST)
+        Wed, 17 Nov 2021 11:53:47 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2C8C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:50:48 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id s14so3425415ilv.10
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:50:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=81zghY8ilRWKTudyGP6JsOkrppbpNH0CaOi9j8PUljw=;
-        b=oLkzkYBuHoPUuoqD3iFsTInCMvKmSNBQa6shdWUG+EiqyJjtKk3ZohZ2+6L7h4YxLy
-         CoXyJfD+sriT5aNAHjkwBBTMqUvnp63+rFblrFZ1M0uoYKRx8EAiSMwcbMOEWYHo2alw
-         zQcypyVDn8l2+FyM3FVFUYp7TRvhTTFkrkLR4=
+        bh=jLYkMtFnDmV7z5mlviZaA8HEm3Bspty3ASVJh0ASF+0=;
+        b=a3S9Zdzy3vVzknJ2+MHEl7tGolYPQfJtco92MsePu1QameG4aar+6NG8EaO27mYF5Z
+         ZmXJl913QfJWkppAjJFBObbxLFbQcPWz03bylfP1u6elDT7gvVP06/iicHQBbHg3OrKv
+         BT3bDdw9OgsRnmKwfL9qUvicbYLejYZH/f6RQRlWfo9ke4vnkpeyY8iAj+oJf9Bv/rgv
+         SmmRrxajfQ+l2ylCDENTpMOKpMg6IYevTI/DoAA3OL5vZs4BRjHfSCpKgxooL1LvwBx5
+         KS7xc5YiqBBxkPGILVUw2uysiZcrNYzDkx3pPMRdWviyGmbh5iLnLTb3hgwxHA/dYtoi
+         B+PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=81zghY8ilRWKTudyGP6JsOkrppbpNH0CaOi9j8PUljw=;
-        b=gDPAl4poMHUbcBCFgDzJA7GvJYcHlsNr4Cdegpc3LS+oZzV1N61CQURDUzypdT1qBG
-         TCP1bzJ1cHEbhZc55muiRaxAxtOciYdY7Ddy5AcF4YPmlgUIu6RR0q0GXbDDTyVbJNtG
-         3IOPZseAGom8d64o1lXpsPmlvyit4dJWKiSfEazoPHfSxZUP+r7Q85Az8Fqr196A2TQi
-         BS5BP/nysrfN6dOJQ1BOhuo+JPIVMwypmIxV9pJG20JVoaeQILY4XRuiIt1M7IBNbX2b
-         ztA8JtUFaOSUFJGjhOhI9/XlgmtSi8x7Vi6vmcCNSyJ0z+zQ6wMk+4EnEBdMUCk2c3iU
-         PQLg==
-X-Gm-Message-State: AOAM532SRkoexOVYb6rPOPYe3S3aNNR6Ydw5kd9OkNVrgthh4pyL4S37
-        q7QxxWw3ac0jmsr/OtDT71gC1Ty6WLC9QQ==
-X-Google-Smtp-Source: ABdhPJxUo9Qe32AemYN0XRxsg422x5RvaYgVDTecNajphv+CQLS+oe6Zc5kxLYLYI6B+FBm7slTdyQ==
-X-Received: by 2002:a02:734d:: with SMTP id a13mr14643437jae.113.1637167797298;
-        Wed, 17 Nov 2021 08:49:57 -0800 (PST)
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com. [209.85.166.41])
-        by smtp.gmail.com with ESMTPSA id c9sm176618iom.9.2021.11.17.08.49.55
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 08:49:55 -0800 (PST)
-Received: by mail-io1-f41.google.com with SMTP id z18so4054065iof.5
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:49:55 -0800 (PST)
-X-Received: by 2002:a05:6602:2d84:: with SMTP id k4mr12229047iow.168.1637167794919;
- Wed, 17 Nov 2021 08:49:54 -0800 (PST)
+        bh=jLYkMtFnDmV7z5mlviZaA8HEm3Bspty3ASVJh0ASF+0=;
+        b=xD4Fa6V3JHMQDlfC0OtOyLy0SHMIBtY+YWpFLTQlKmXxjTmLbYHKcF3T+JIqc4d0Px
+         zKpHBcTZXnRSwlVhLk6+WkwNRoO3l+5l4DQhhQ2ZPDTaFey529KPE7y4h38DWrYw4CzX
+         m66RK3ePfygYgFoICzSJU2K+ZFo2Ks/TuZRuaId3o8Xr/KlE6thTjt0vyMJjGalq+9oL
+         2ZWhYop59z0N3+NOkKATPEaUfcJtujLNP0+2n9tteQR6FU8XQXpGMVWlV8HG10C5hdTN
+         jiEkuJMyL4L87QguBVO+0ZL5HrXpzdFdK1vtKNnV84vP7/pgzOQBmmWQTuxVtGKQsGea
+         hWsw==
+X-Gm-Message-State: AOAM533tMcE90TOBi3G0fHv68jI3D4EFUXw7VzM+OOLqPY6AQdtPjDIq
+        UVgvJjq897OhFOahAUiSzW8QeYwXprgbSRrgnq/45Q==
+X-Google-Smtp-Source: ABdhPJyHO2KLqbPMiL7hCboUwfUWjOcp+fzSzCmfoiGYW7MY2QXlhJC/3FBFB/CsoleOuaxPymfWFzGOKO4POP7mF+8=
+X-Received: by 2002:a05:6e02:144e:: with SMTP id p14mr11313033ilo.180.1637167847569;
+ Wed, 17 Nov 2021 08:50:47 -0800 (PST)
 MIME-Version: 1.0
-References: <20211117163239.529781-1-kieran.bingham+renesas@ideasonboard.com>
-In-Reply-To: <20211117163239.529781-1-kieran.bingham+renesas@ideasonboard.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 17 Nov 2021 08:49:43 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VM9H8Fow49V2eLs2Jfv6DmPYpDGNyHicc_802RksTZYQ@mail.gmail.com>
-Message-ID: <CAD=FV=VM9H8Fow49V2eLs2Jfv6DmPYpDGNyHicc_802RksTZYQ@mail.gmail.com>
-Subject: Re: [PATCH] gpu: drm: panel-edp: Fix edp_panel_entry documentation
-To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20211112084302.2447931-1-yangcong5@huaqin.corp-partner.google.com>
+ <CAD=FV=XWdA5kC5VpRPNWzCQDJjmDg5s7bP=sa7yVuqnRcxWf+w@mail.gmail.com>
+In-Reply-To: <CAD=FV=XWdA5kC5VpRPNWzCQDJjmDg5s7bP=sa7yVuqnRcxWf+w@mail.gmail.com>
+From:   Doug Anderson <dianders@google.com>
+Date:   Wed, 17 Nov 2021 08:50:36 -0800
+Message-ID: <CAD=FV=XirCUp3t8sM_zXwZJ_x5-zbXzLQCdHHyor=5q2jr8ZrA@mail.gmail.com>
+Subject: Re: [PATCH] drm/bridge: parade-ps8640: Fix additional suspend/resume
+ at bootup
+To:     yangcong <yangcong5@huaqin.corp-partner.google.com>
+Cc:     swboyd@chromium.org, robert.foss@linaro.org,
+        narmstrong@baylibre.com, laurent.pinchart@ideasonboard.com,
+        jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@linux.ie,
+        daniel@ffwll.ch, a.hajda@samsung.com, philipchen@chromium.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -73,28 +67,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On Wed, Nov 17, 2021 at 8:32 AM Kieran Bingham
-<kieran.bingham+renesas@ideasonboard.com> wrote:
+On Fri, Nov 12, 2021 at 8:32 AM Doug Anderson <dianders@google.com> wrote:
 >
-> The edp_panel_entry members 'delay' and 'name' are documented, but
-> without the correct syntax for kernel doc.
+> Hi,
 >
-> This generates the following warnings:
+> On Fri, Nov 12, 2021 at 12:43 AM yangcong
+> <yangcong5@huaqin.corp-partner.google.com> wrote:
+> >
+> > Through log and waveform, we can see that there will be additional
+> > suspend/resume when booting. This timing does not meet the ps8640 spec.
+> > It seems that the delay of 500ms does not satisfied drm_panel_get_modes.
+> > I increased it to 900ms and it seems that this problem can be solved.
+> > To be safe, I'd just round up to a full 1000.
 >
-> drivers/gpu/drm/panel/panel-edp.c:204: warning: Function parameter or member 'delay' not described in 'edp_panel_entry'
-> drivers/gpu/drm/panel/panel-edp.c:204: warning: Function parameter or member 'name' not described in 'edp_panel_entry'
+> Do be clear: I'm still not convinced that the old 500 ms actually
+> causes any real problems. I think someone is just measuring with a
+> scope and upset that they see the device power on and then power off
+> again. In any case, if we can avoid an extra power cycle at boot then
+> that seems sane to me. Since this is a tiny change, I'll plan to merge
+> it some time next week unless someone yells.
 >
-> Fix them accordingly.
->
-> Fixes: 5540cf8f3e8d ("drm/panel-edp: Implement generic "edp-panel"s probed by EDID")
-> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> ---
->  drivers/gpu/drm/panel/panel-edp.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-Thanks! Pushed to drm-misc-next (though technically it's a fix, it
-didn't seem urgent enough to go through -fixes. Hopefully this is OK).
+Pushed to drm-misc-next:
 
-1e66f04c14ab gpu: drm: panel-edp: Fix edp_panel_entry documentation
-
--Doug
+aa70a0996b0e drm/bridge: parade-ps8640: Fix additional suspend/resume at bootup
