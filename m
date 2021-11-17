@@ -2,156 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A39C454F89
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 22:44:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C1E454F8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 22:45:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240753AbhKQVrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 16:47:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232906AbhKQVq5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 16:46:57 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E86AC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:43:58 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id 200so3449510pga.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:43:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5T2nom9Esjej6HKGPgAWyV4F4hvg29G5YwUNx6pcuos=;
-        b=cOPUYrifftIgrAwzA/Pr9dYvgKGDx/5dsgFXRW4/nW0bmc/fy41txA+SxulvOmYSrB
-         5I+FghIzYLF7uOCpGMGykxOLanc00IB05MAmo193mlZjSB6oELkbf9QNXgOtn0lofE7S
-         P/9xErveQCYoHm4hpWZ7ao21FMSM4GOH/1ecTT+Ii9BgztfPG/Bd3393gncwag29s7/Z
-         m0gWlxjGHQ4RMeFr4fKr/2XUSm59aIHadWtCdeaVvtD22N1TOSKoa6uIwrWOv0nIa6GJ
-         qRW8wnwl/RsjX2gzRxbca1OMhVPfiV8CxjnDcABvALEZNKtLPrxp+nlQHAhrjLi4MXKL
-         YGNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=5T2nom9Esjej6HKGPgAWyV4F4hvg29G5YwUNx6pcuos=;
-        b=qSSAuINJxxz4mEbLj4bselVP/+ogYIDLjpsy0gT8VNK+5jzY9YI2q517FpxN/lpljG
-         bA2gVlx5skbI+oHxamuMszCTSMIAjqSPT1DIdQTvg2wALeBACaYGSN6MbIePJwhRh2cJ
-         MANAzHHOVvSpqqBriy/QGOcOZ6r1BJ3DwCJLjMEEHK+42qTXw5pJhNKj5WLnphJJpgH3
-         nbHIqAlbYfob+SvDQU4uADfZSmAxrbrjs5rkRGQHp8k+FxmZ0RnrEgASskT+TmBfwCfi
-         AgYBc5F70a5Xa58zePDVC1pUdHj2Fc64de79YtrHz4D62unIi2SCjjBr/7oVyq8AnmU4
-         TNFg==
-X-Gm-Message-State: AOAM533jm6KrU4tmHOnI6psmkOdGofNkhhrVkzcz5aq1WM5+oYq+CG9f
-        R4UAKjHNX5XVpriDWUkTHReZFNSZwpc=
-X-Google-Smtp-Source: ABdhPJyiN5++DPsVLunMTWbpJ/vhK+J9kl6cIDiBIDVUFnD/I7s3gg6QeK1Muf/x/u8xhWdPXEBoLg==
-X-Received: by 2002:a65:6a56:: with SMTP id o22mr7730067pgu.249.1637185437553;
-        Wed, 17 Nov 2021 13:43:57 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:ac60:a5b:b800:3af7])
-        by smtp.gmail.com with ESMTPSA id a12sm5994549pjq.16.2021.11.17.13.43.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 13:43:56 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 17 Nov 2021 13:43:55 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        hridya@google.com
-Subject: Re: [RFC PATCH] kernfs: release kernfs_mutex before the inode
- allocation
-Message-ID: <YZV3m1O6x3yQk/DZ@google.com>
-References: <20211116194317.1430399-1-minchan@kernel.org>
- <YZQLWq7WMSRF2xCM@kroah.com>
- <YZQkQcrldGFwqV/r@google.com>
- <YZSk3DECnnknOu5T@kroah.com>
- <YZSu/HiHDZxo9Wpa@google.com>
- <YZSxwM8ucqGsY1hq@kroah.com>
+        id S240775AbhKQVsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 16:48:37 -0500
+Received: from mga02.intel.com ([134.134.136.20]:46590 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232906AbhKQVsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 16:48:36 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10171"; a="221276007"
+X-IronPort-AV: E=Sophos;i="5.87,243,1631602800"; 
+   d="scan'208";a="221276007"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 13:45:37 -0800
+X-IronPort-AV: E=Sophos;i="5.87,243,1631602800"; 
+   d="scan'208";a="586836016"
+Received: from ankushj1-mobl.amr.corp.intel.com ([10.251.8.192])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 13:45:36 -0800
+Date:   Wed, 17 Nov 2021 13:45:35 -0800 (PST)
+From:   Mat Martineau <mathew.j.martineau@linux.intel.com>
+To:     =?ISO-8859-15?Q?Stephan_M=FCller?= <smueller@chronox.de>
+cc:     herbert@gondor.apana.org.au, ebiggers@kernel.org,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        keyrings <keyrings@vger.kernel.org>, simo@redhat.com
+Subject: Re: [PATCH v3 4/4] security: DH - use KDF implementation from crypto
+ API
+In-Reply-To: <9271627.eNJFYEL58v@positron.chronox.de>
+Message-ID: <1a332942-c5ec-b317-ceac-a48dcdf45e46@linux.intel.com>
+References: <2589009.vuYhMxLoTh@positron.chronox.de> <9271627.eNJFYEL58v@positron.chronox.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZSxwM8ucqGsY1hq@kroah.com>
+Content-Type: multipart/mixed; boundary="0-1506706538-1637185536=:51702"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 08:39:44AM +0100, Greg Kroah-Hartman wrote:
-> On Tue, Nov 16, 2021 at 11:27:56PM -0800, Minchan Kim wrote:
-> > On Wed, Nov 17, 2021 at 07:44:44AM +0100, Greg Kroah-Hartman wrote:
-> > > On Tue, Nov 16, 2021 at 01:36:01PM -0800, Minchan Kim wrote:
-> > > > On Tue, Nov 16, 2021 at 08:49:46PM +0100, Greg Kroah-Hartman wrote:
-> > > > > On Tue, Nov 16, 2021 at 11:43:17AM -0800, Minchan Kim wrote:
-> > > > > > The kernfs implementation has big lock granularity(kernfs_rwsem) so
-> > > > > > every kernfs-based(e.g., sysfs, cgroup, dmabuf) fs are able to compete
-> > > > > > the lock. Thus, if one of userspace goes the sleep under holding
-> > > > > > the lock for a long time, rest of them should wait it. A example is
-> > > > > > the holder goes direct reclaim with the lock since it needs memory
-> > > > > > allocation. Let's fix it at common technique that release the lock
-> > > > > > and then allocate the memory. Fortunately, kernfs looks like have
-> > > > > > an refcount so I hope it's fine.
-> > > > > > 
-> > > > > > Signed-off-by: Minchan Kim <minchan@kernel.org>
-> > > > > > ---
-> > > > > >  fs/kernfs/dir.c             | 14 +++++++++++---
-> > > > > >  fs/kernfs/inode.c           |  2 +-
-> > > > > >  fs/kernfs/kernfs-internal.h |  1 +
-> > > > > >  3 files changed, 13 insertions(+), 4 deletions(-)
-> > > > > 
-> > > > > What workload hits this lock to cause it to be noticable?
-> > > > 
-> > > > A app launching since it was dropping the frame since the
-> > > > latency was too long.
-> > > 
-> > > How does running a program interact with kernfs filesystems?  Which
-> > > one(s)?
-> > 
-> > A app launching involves dma_buf exports which creates kobject
-> > and add it to the kernfs with down_write - kernfs_add_one.
-> 
-> I thought the "create a dma_buf kobject" kernel change was fixed up to
-> not do that anymore as that was a known performance issue.
-> 
-> Creating kobjects should NOT be on a fast path, if they are, that needs
-> to be fixed.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Ccing Hridya
-I also already mentioned before but it's the as-is.
-It would be great to be fixed but kernfs still has the problem
-regardless of the dmabuf.
+--0-1506706538-1637185536=:51702
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 8BIT
 
-For example, process A hold the lock as read-side and try to
-allocate memory and entered the reclaim. process B try to
-hold the lock as writes-side(e.g., kernfs_iop_setattr) but
-he should wait until process A completes. Next, processs C is
-also stuck on the lock as read-side when it tries to access
-sysfs since the process B spent a threahold timeout in rwsem.
-Here, process C could be critical role to contribute the jank.
-What it was doing is just access sysfs but was stuck.
+On Mon, 15 Nov 2021, Stephan Müller wrote:
 
-> 
-> > At the same time in other CPU, a random process was accessing
-> > sysfs and the kernfs_iop_lookup was already hoding the kernfs_rwsem
-> > and ran under direct reclaim patch due to alloc_inode in
-> > kerfs_get_inode.
-> 
-> What program is constantly hitting sysfs?  sysfs is not for
-> performance-critical things, right?
+> The kernel crypto API provides the SP800-108 counter KDF implementation.
+> Thus, the separate implementation provided as part of the keys subsystem
+> can be replaced with calls to the KDF offered by the kernel crypto API.
+>
+> The keys subsystem uses the counter KDF with a hash primitive. Thus,
+> it only uses the call to crypto_kdf108_ctr_generate.
+>
+> Signed-off-by: Stephan Mueller <smueller@chronox.de>
+> ---
+> security/keys/Kconfig |  2 +-
+> security/keys/dh.c    | 97 +++++++------------------------------------
+> 2 files changed, 15 insertions(+), 84 deletions(-)
+>
+> diff --git a/security/keys/Kconfig b/security/keys/Kconfig
+> index 64b81abd087e..969122c7b92f 100644
+> --- a/security/keys/Kconfig
+> +++ b/security/keys/Kconfig
+> @@ -109,7 +109,7 @@ config KEY_DH_OPERATIONS
+>        bool "Diffie-Hellman operations on retained keys"
+>        depends on KEYS
+>        select CRYPTO
+> -       select CRYPTO_HASH
+> +       select CRYPTO_KDF800108_CTR
+>        select CRYPTO_DH
+>        help
+> 	 This option provides support for calculating Diffie-Hellman
+> diff --git a/security/keys/dh.c b/security/keys/dh.c
+> index 56e12dae4534..46fa442b81ec 100644
+> --- a/security/keys/dh.c
+> +++ b/security/keys/dh.c
+> @@ -11,6 +11,7 @@
+> #include <crypto/hash.h>
+> #include <crypto/kpp.h>
+> #include <crypto/dh.h>
+> +#include <crypto/kdf_sp800108.h>
+> #include <keys/user-type.h>
+> #include "internal.h"
+>
+> @@ -79,16 +80,9 @@ static void dh_crypto_done(struct crypto_async_request *req, int err)
+> 	complete(&compl->completion);
+> }
+>
+> -struct kdf_sdesc {
+> -	struct shash_desc shash;
+> -	char ctx[];
+> -};
+> -
+> -static int kdf_alloc(struct kdf_sdesc **sdesc_ret, char *hashname)
+> +static int kdf_alloc(struct crypto_shash **hash, char *hashname)
+> {
+> 	struct crypto_shash *tfm;
+> -	struct kdf_sdesc *sdesc;
+> -	int size;
+> 	int err;
+>
+> 	/* allocate synchronous hash */
+> @@ -102,14 +96,7 @@ static int kdf_alloc(struct kdf_sdesc **sdesc_ret, char *hashname)
+> 	if (crypto_shash_digestsize(tfm) == 0)
+> 		goto out_free_tfm;
 
-Constantly hitting sysfs itself is no problem since they need
-to read telemetry data from sysfs and it's not latency sensitive.
-Here, problem is the reading kernfs could make trouble others who
-want to access once the rwsem is involved with exclusive lock mode.
-Please look at above scenario.
+With the sdesc allocation failure path removed below, there's only one use 
+of the 'err' variable and the out_free_tfm code path. I suggest furthering 
+the cleanup by removing err and the goto path, and moving the 
+crypto_free_shash() and return -EINVAL here (where the goto currently is).
 
-> 
-> > Therefore, the app is stuck on the lock and lose frames so enduser
-> > sees the jank.
-> 
-> But how does this patch work around it?  It seems like you are
-> special-casing the kobject creation path only.
+-Mat
 
-It's true. If other path also has the memory allocation with holding
-kernfs_rwsem, it could make trouble.
 
-> 
-> And is this the case really on 5.15?  I thought the kernfs locks were
-> broken up again to not cause this problem in 5.14 or so.
+>
+> -	err = -ENOMEM;
+> -	size = sizeof(struct shash_desc) + crypto_shash_descsize(tfm);
+> -	sdesc = kmalloc(size, GFP_KERNEL);
+> -	if (!sdesc)
+> -		goto out_free_tfm;
+> -	sdesc->shash.tfm = tfm;
+> -
+> -	*sdesc_ret = sdesc;
+> +	*hash = tfm;
+>
+> 	return 0;
+>
+> @@ -118,76 +105,20 @@ static int kdf_alloc(struct kdf_sdesc **sdesc_ret, char *hashname)
+> 	return err;
+> }
+>
+> -static void kdf_dealloc(struct kdf_sdesc *sdesc)
+> -{
+> -	if (!sdesc)
+> -		return;
+> -
+> -	if (sdesc->shash.tfm)
+> -		crypto_free_shash(sdesc->shash.tfm);
+> -
+> -	kfree_sensitive(sdesc);
+> -}
+> -
+> -/*
+> - * Implementation of the KDF in counter mode according to SP800-108 section 5.1
+> - * as well as SP800-56A section 5.8.1 (Single-step KDF).
+> - *
+> - * SP800-56A:
+> - * The src pointer is defined as Z || other info where Z is the shared secret
+> - * from DH and other info is an arbitrary string (see SP800-56A section
+> - * 5.8.1.2).
+> - *
+> - * 'dlen' must be a multiple of the digest size.
+> - */
+> -static int kdf_ctr(struct kdf_sdesc *sdesc, const u8 *src, unsigned int slen,
+> -		   u8 *dst, unsigned int dlen)
+> +static void kdf_dealloc(struct crypto_shash *hash)
+> {
+> -	struct shash_desc *desc = &sdesc->shash;
+> -	unsigned int h = crypto_shash_digestsize(desc->tfm);
+> -	int err = 0;
+> -	u8 *dst_orig = dst;
+> -	__be32 counter = cpu_to_be32(1);
+> -
+> -	while (dlen) {
+> -		err = crypto_shash_init(desc);
+> -		if (err)
+> -			goto err;
+> -
+> -		err = crypto_shash_update(desc, (u8 *)&counter, sizeof(__be32));
+> -		if (err)
+> -			goto err;
+> -
+> -		if (src && slen) {
+> -			err = crypto_shash_update(desc, src, slen);
+> -			if (err)
+> -				goto err;
+> -		}
+> -
+> -		err = crypto_shash_final(desc, dst);
+> -		if (err)
+> -			goto err;
+> -
+> -		dlen -= h;
+> -		dst += h;
+> -		counter = cpu_to_be32(be32_to_cpu(counter) + 1);
+> -	}
+> -
+> -	return 0;
+> -
+> -err:
+> -	memzero_explicit(dst_orig, dlen);
+> -	return err;
+> +	if (hash)
+> +		crypto_free_shash(hash);
+> }
+>
+> -static int keyctl_dh_compute_kdf(struct kdf_sdesc *sdesc,
+> +static int keyctl_dh_compute_kdf(struct crypto_shash *hash,
+> 				 char __user *buffer, size_t buflen,
+> 				 uint8_t *kbuf, size_t kbuflen)
+> {
+> +	struct kvec kbuf_iov = { .iov_base = kbuf, .iov_len = kbuflen };
+> 	uint8_t *outbuf = NULL;
+> 	int ret;
+> -	size_t outbuf_len = roundup(buflen,
+> -				    crypto_shash_digestsize(sdesc->shash.tfm));
+> +	size_t outbuf_len = roundup(buflen, crypto_shash_digestsize(hash));
+>
+> 	outbuf = kmalloc(outbuf_len, GFP_KERNEL);
+> 	if (!outbuf) {
+> @@ -195,7 +126,7 @@ static int keyctl_dh_compute_kdf(struct kdf_sdesc *sdesc,
+> 		goto err;
+> 	}
+>
+> -	ret = kdf_ctr(sdesc, kbuf, kbuflen, outbuf, outbuf_len);
+> +	ret = crypto_kdf108_ctr_generate(hash, &kbuf_iov, 1, outbuf, outbuf_len);
+> 	if (ret)
+> 		goto err;
+>
+> @@ -224,7 +155,7 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
+> 	struct kpp_request *req;
+> 	uint8_t *secret;
+> 	uint8_t *outbuf;
+> -	struct kdf_sdesc *sdesc = NULL;
+> +	struct crypto_shash *hash = NULL;
+>
+> 	if (!params || (!buffer && buflen)) {
+> 		ret = -EINVAL;
+> @@ -257,7 +188,7 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
+> 		}
+>
+> 		/* allocate KDF from the kernel crypto API */
+> -		ret = kdf_alloc(&sdesc, hashname);
+> +		ret = kdf_alloc(&hash, hashname);
+> 		kfree(hashname);
+> 		if (ret)
+> 			goto out1;
+> @@ -367,7 +298,7 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
+> 			goto out6;
+> 		}
+>
+> -		ret = keyctl_dh_compute_kdf(sdesc, buffer, buflen, outbuf,
+> +		ret = keyctl_dh_compute_kdf(hash, buffer, buflen, outbuf,
+> 					    req->dst_len + kdfcopy->otherinfolen);
+> 	} else if (copy_to_user(buffer, outbuf, req->dst_len) == 0) {
+> 		ret = req->dst_len;
+> @@ -386,7 +317,7 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
+> out2:
+> 	dh_free_data(&dh_inputs);
+> out1:
+> -	kdf_dealloc(sdesc);
+> +	kdf_dealloc(hash);
+> 	return ret;
+> }
+>
+> -- 
+> 2.33.1
+>
+>
+>
+>
+>
 
-It happened on 5.10 but the path I mentioned were still vulnerable path
-with rwsem so it could happen on 5.15, too.
+--
+Mat Martineau
+Intel
+--0-1506706538-1637185536=:51702--
