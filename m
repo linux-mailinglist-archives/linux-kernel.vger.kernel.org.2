@@ -2,82 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47481454373
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5D0454376
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:18:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234927AbhKQJUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 04:20:35 -0500
-Received: from mswedge2.sunplus.com ([60.248.182.106]:36028 "EHLO
-        mg.sunplus.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230077AbhKQJUe (ORCPT
+        id S234937AbhKQJUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 04:20:53 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:1237 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230077AbhKQJUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 04:20:34 -0500
-X-MailGates: (flag:3,DYNAMIC,RELAY,NOHOST:PASS)(compute_score:DELIVER,40
-        ,3)
-Received: from 172.17.9.202
-        by mg02.sunplus.com with MailGates ESMTP Server V5.0(23395:0:AUTH_RELAY)
-        (envelope-from <tony.huang@sunplus.com>); Wed, 17 Nov 2021 17:17:39 +0800 (CST)
-Received: from sphcmbx02.sunplus.com.tw (172.17.9.112) by
- sphcmbx01.sunplus.com.tw (172.17.9.202) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Wed, 17 Nov 2021 17:17:33 +0800
-Received: from sphcmbx02.sunplus.com.tw ([::1]) by sphcmbx02.sunplus.com.tw
- ([fe80::f8bb:bd77:a854:5b9e%14]) with mapi id 15.00.1497.023; Wed, 17 Nov
- 2021 17:17:34 +0800
-From:   =?big5?B?VG9ueSBIdWFuZyC2wMNoq3A=?= <tony.huang@sunplus.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Tony Huang <tonyhuang.sunplus@gmail.com>
-CC:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
-        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        =?big5?B?V2VsbHMgTHUgp2aq2sTL?= <wells.lu@sunplus.com>
-Subject: RE: [PATCH 2/2] misc: Add iop driver for Sunplus SP7021
-Thread-Topic: [PATCH 2/2] misc: Add iop driver for Sunplus SP7021
-Thread-Index: AQHX238mhlfgsNm33Ee3rATIDuuJJqwG5BIAgACK7QA=
-Date:   Wed, 17 Nov 2021 09:17:34 +0000
-Message-ID: <b7c8ac630615417cbf3e62e165067918@sphcmbx02.sunplus.com.tw>
-References: <1637131687-23000-1-git-send-email-tony.huang@sunplus.com>
- <1637131687-23000-3-git-send-email-tony.huang@sunplus.com>
- <YZTDCG6bTjh7BoUH@kroah.com>
-In-Reply-To: <YZTDCG6bTjh7BoUH@kroah.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [172.25.108.54]
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+        Wed, 17 Nov 2021 04:20:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1637140673; x=1668676673;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=J+I72B2PR5lV6ZvwttahWxWaIqt+EPaSWT8Cp4zOtLU=;
+  b=yZrVDrTPggTMt4EBZAFOLuPZtETPnOYLg4CUE0BXe16kcoYyg9TAiEDZ
+   dQ+dcqgsDWp9YSbUoXAe78tp/910eXzfMd26YALqCfi4yQsgbfLIB8LsL
+   eUr9ZCSO1Gmv241W3CIHLgUe/Ry+T/24sD5Som1a2PP/+uVD1Yk4DO5mT
+   LI8GOcp0tE1MwjOI8BymvR6/slz7C07lBsl3Lbet0zAMP0xfI4g5ecUm6
+   SG2XGaMnop7ARyOaqlUNP0511FJ462Etzf51r8uKXsmeO0/2P/Winf8H5
+   tGJwUXPdqXsdkzcwbh6zsLeWxlhhmgGSn9eoE3/ixnmlsQnvu2IURZHuI
+   g==;
+IronPort-SDR: VGGArQUpKP/6NM/TSsBtQ5KOxgidw04xrL8pfnnJ1bMVby9L7F6ljq8jDuNPBs23oOhUdzLmrj
+ BKRb2Home8mf1ynNQEde9HHXYGSkhwoZZ83T5wCrpGfqp+hr9ZeR/KMGOUFmUgmJi+Kqn/0Pmi
+ mRWiqjYzrYoAvY7lqVyj+FdBfUZWlgfjjkTG8Vlsdn3JXiaNNNp69q4/fiqLXZiU7FH9wGVjpl
+ tUEAni8Fo/S5b6DY50lI53bQMRLLvoUCGv6lg1rdbnwEREN5hv4RijwlenLKyvncXXm1Sw2lv2
+ wmhNo+1MyG9vlzxI6ihuxr5h
+X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
+   d="scan'208";a="76705735"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Nov 2021 02:17:52 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Wed, 17 Nov 2021 02:17:51 -0700
+Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Wed, 17 Nov 2021 02:17:50 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <robh+dt@kernel.org>,
+        <p.zabel@pengutronix.de>, <linux@armlinux.org.uk>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH net-next 0/5] net: lan966x: Add lan966x switch driver
+Date:   Wed, 17 Nov 2021 10:18:53 +0100
+Message-ID: <20211117091858.1971414-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RGVhciBncmVnIGstaDoNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBH
-cmVnIEtIIDxncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZz4NCj4gU2VudDogV2VkbmVzZGF5LCBO
-b3ZlbWJlciAxNywgMjAyMSA0OjUzIFBNDQo+IFRvOiBUb255IEh1YW5nIDx0b255aHVhbmcuc3Vu
-cGx1c0BnbWFpbC5jb20+DQo+IENjOiByb2JoK2R0QGtlcm5lbC5vcmc7IGRldmljZXRyZWVAdmdl
-ci5rZXJuZWwub3JnOw0KPiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBkZXJlay5raWVy
-bmFuQHhpbGlueC5jb207DQo+IGRyYWdhbi5jdmV0aWNAeGlsaW54LmNvbTsgYXJuZEBhcm5kYi5k
-ZTsgV2VsbHMgTHUgp2aq2sTLDQo+IDx3ZWxscy5sdUBzdW5wbHVzLmNvbT47IFRvbnkgSHVhbmcg
-tsDDaKtwIDx0b255Lmh1YW5nQHN1bnBsdXMuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIDIv
-Ml0gbWlzYzogQWRkIGlvcCBkcml2ZXIgZm9yIFN1bnBsdXMgU1A3MDIxDQo+IA0KPiBPbiBXZWQs
-IE5vdiAxNywgMjAyMSBhdCAwMjo0ODowN1BNICswODAwLCBUb255IEh1YW5nIHdyb3RlOg0KPiA+
-IEFkZCBpb3AgZHJpdmVyIGZvciBTdW5wbHVzIFNQNzAyMQ0KPiA+DQo+ID4gU2lnbmVkLW9mZi1i
-eTogVG9ueSBIdWFuZyA8dG9ueS5odWFuZ0BzdW5wbHVzLmNvbT4NCj4gDQo+IEFsb25nIHdpdGgg
-ZXZlcnl0aGluZyB0aGF0IEFybmQgc2FpZCwgb25lIG1vcmUgdGhpbmc6DQo+IA0KPiA+ICsjZGVm
-aW5lIElPUF9LREJHX0lORk8NCj4gPiArI2RlZmluZSBJT1BfRlVOQ19ERUJVRw0KPiA+ICsjZGVm
-aW5lIElPUF9LREJHX0VSUg0KPiA+ICsjaWZkZWYgSU9QX0tEQkdfSU5GTw0KPiA+ICsJI2RlZmlu
-ZSBGVU5DX0RFQlVHKCkJcHJfaW5mbygiS19JT1A6ICVzKCVkKVxuIiwgX19mdW5jX18sIF9fTElO
-RV9fKQ0KPiA+ICsjZWxzZQ0KPiA+ICsJI2RlZmluZSBGVU5DX0RFQlVHKCkNCj4gPiArI2VuZGlm
-DQo+IA0KPiBUaGlzIHNob3VsZCBqdXN0IGJlIGRlbGV0ZWQgZW50aXJlbHksIHVzZSBmdHJhY2Ug
-aWYgeW91IHdhbnQgdG8gc2VlIHdoYXQgeW91cg0KPiBrZXJuZWwgZHJpdmVyIGlzIGRvaW5nLg0K
-DQpPSywgSSB3aWxsIGRlbGV0ZSBpdC4NCg0KPiANCj4gTm8gc2luZ2xlIGRyaXZlciBzaG91bGQg
-aGF2ZSBzcGVjaWFsIGRlYnVnZ2luZyBtYWNyb3MgbGlrZSB0aGlzLCB1c2UgdGhlDQo+IGtlcm5l
-bC13aWRlIHN5c3RlbSBwbGVhc2UuDQo+IA0KPiBUaGlzIGRyaXZlciBjb2RlIGNhbiBnZXQgYSBs
-b3Qgc21hbGxlciBhZnRlciB5b3UgbWFrZSB0aGVzZSBjbGVhbnVwcy4NCj4gQWxzbyBiZSBzdXJl
-IHRvIHVzZSBzY3JpcHRzL2NoZWNrcGF0Y2gucGwgdG8gcmVtb3ZlIHRoZSBpc3N1ZXMgdGhhdCBp
-dCBwb2ludHMgb3V0DQo+IHNvIHdlIGRvbid0IGhhdmUgdG8gc2F5IHRoZSBzYW1lIHRoaW5nLg0K
-PiANCj4gdGhhbmtzLA0KPiANCj4gZ3JlZyBrLWgNCg==
+This patch series add support for Microchip lan966x driver
+
+The lan966x switch is a multi-port Gigabit AVB/TSN Ethernet Switch with
+two integrated 10/100/1000Base-T PHYs. In addition to the integrated PHYs,
+it supports up to 2RGMII/RMII, up to 3BASE-X/SERDES/2.5GBASE-X and up to
+2 Quad-SGMII/Quad-USGMII interfaces.
+
+Intially it adds support only for the ports to behave as simple
+NIC cards. In the future patches it would be extended with other
+functionality like Switchdev, PTP, Frame DMA, VCAP, etc.
+
+Horatiu Vultur (5):
+  dt-bindings: net: lan966x: Add lan966x-switch bindings
+  net: lan966x: add the basic lan966x driver
+  net: lan966x: add port module support
+  net: lan966x: add mactable support
+  net: lan966x: add ethtool configuration and statistics
+
+ .../net/microchip,lan966x-switch.yaml         | 149 +++
+ drivers/net/ethernet/microchip/Kconfig        |   1 +
+ drivers/net/ethernet/microchip/Makefile       |   1 +
+ .../net/ethernet/microchip/lan966x/Kconfig    |   7 +
+ .../net/ethernet/microchip/lan966x/Makefile   |   9 +
+ .../microchip/lan966x/lan966x_ethtool.c       | 664 ++++++++++++
+ .../ethernet/microchip/lan966x/lan966x_ifh.h  | 173 ++++
+ .../ethernet/microchip/lan966x/lan966x_mac.c  |  95 ++
+ .../ethernet/microchip/lan966x/lan966x_main.c | 950 ++++++++++++++++++
+ .../ethernet/microchip/lan966x/lan966x_main.h | 205 ++++
+ .../microchip/lan966x/lan966x_phylink.c       | 116 +++
+ .../ethernet/microchip/lan966x/lan966x_port.c | 472 +++++++++
+ .../ethernet/microchip/lan966x/lan966x_regs.h | 730 ++++++++++++++
+ 13 files changed, 3572 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/microchip,lan966x-switch.yaml
+ create mode 100644 drivers/net/ethernet/microchip/lan966x/Kconfig
+ create mode 100644 drivers/net/ethernet/microchip/lan966x/Makefile
+ create mode 100644 drivers/net/ethernet/microchip/lan966x/lan966x_ethtool.c
+ create mode 100644 drivers/net/ethernet/microchip/lan966x/lan966x_ifh.h
+ create mode 100644 drivers/net/ethernet/microchip/lan966x/lan966x_mac.c
+ create mode 100644 drivers/net/ethernet/microchip/lan966x/lan966x_main.c
+ create mode 100644 drivers/net/ethernet/microchip/lan966x/lan966x_main.h
+ create mode 100644 drivers/net/ethernet/microchip/lan966x/lan966x_phylink.c
+ create mode 100644 drivers/net/ethernet/microchip/lan966x/lan966x_port.c
+ create mode 100644 drivers/net/ethernet/microchip/lan966x/lan966x_regs.h
+
+-- 
+2.33.0
+
