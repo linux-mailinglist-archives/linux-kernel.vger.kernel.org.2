@@ -2,74 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 850AF454217
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 08:50:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 503D3454215
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 08:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234292AbhKQHxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 02:53:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234240AbhKQHxf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 02:53:35 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F3C4C061570;
-        Tue, 16 Nov 2021 23:50:37 -0800 (PST)
-Date:   Wed, 17 Nov 2021 08:50:33 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637135434;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ax+O+TbFMKVdZPHia3nwdzGuCjCQzBuzpJRZNmRTT1M=;
-        b=ljqHTGg9ES5+OAAYE8gtsu5iv/dszn+jGNbi+u6GbhfSA6MIrFszUK/2v2BUmSnD5F5EUM
-        YkH9xM5MYjvqtGtDHq8GBpbZcHNuW/s+iM0mS4nPTmnGeK9BG3R74Ln6DAW3KxS5b/8hdY
-        caFU5xYtwwly00TA5Y9DTPx0VUodACZmYjySXddRE3i11JKwuntUV8VgXMwn8UL+mRFG1d
-        wtiUwSVbIfMp75VKRgdK+bf+VWuzi51j4jR3ap+qpEjJmyFzg6OjK62/pubkpQyMfstgrK
-        xiCe4ZhPdm7Mnu3SiQztXwYvb8WxU8zzh5zHLMTtctROqFMW/zAFRG7IkcU5UA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637135434;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ax+O+TbFMKVdZPHia3nwdzGuCjCQzBuzpJRZNmRTT1M=;
-        b=gnMWDv+9tZsoyv8AOmlnky4MMUxsmWRmNILpO6wb/uXWFtQcL+pxE4g79SDWnYtThmZkuk
-        Zv4uS8lpKB4Hk3Cw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     martin.petersen@oracle.com, jejb@linux.ibm.com, hare@suse.de,
-        tglx@linutronix.de, linux-scsi@vger.kernel.org,
-        linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH 2/3] scsi/fcoe: Add a local_lock to fcoe_percpu
-Message-ID: <20211117075033.hdqb7wvpz2r2jla7@linutronix.de>
-References: <20211117025956.79616-1-dave@stgolabs.net>
- <20211117025956.79616-3-dave@stgolabs.net>
+        id S234248AbhKQHxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 02:53:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42534 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232915AbhKQHxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 02:53:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F13C361BD2;
+        Wed, 17 Nov 2021 07:50:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637135436;
+        bh=yQY9R0lrcyoB7swIATJ2qgVM1QwPaUY/bwGkzyWzf8o=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=CG89rB9WFnNZQ2FJ4DaQ81FyG0DEkn0fnW4Y25UINXiGfEvq7s9BN7oCK7ncXIP4X
+         ekg7NdN9ETKoDjr+/P+6rT3TvH/aWrwev33yMMPFRSEP3DVY4WAEmSTV8kyjcrtxps
+         /CHNGB53jrt22BZE2sTtk4MpOvA2iPYOn1pND5NFiOz3jQy6QEFjQAMdVrf+X6AD2R
+         UED/q6YKAXV+F7xO+xGtvlln3PgQYIguDIWuskjME2RcJnv34MD+mZgvioWZyhmC1g
+         tsY/5sAIGGgGBr74tKuSf0VKhtNQ1ExBg3+AGs/fnTdVucxMJnK806hUsPXZUNv405
+         SexUNgmrzN33A==
+Message-ID: <8fcadcf2a5da5118fb7f9caea0a61440525a67b2.camel@kernel.org>
+Subject: Re: [PATCH v7 00/17] Enroll kernel keys thru MOK
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
+        linux-integrity@vger.kernel.org, zohar@linux.ibm.com,
+        dhowells@redhat.com, dwmw2@infradead.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
+        torvalds@linux-foundation.org, weiyongjun1@huawei.com,
+        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
+        nramas@linux.microsoft.com, lszubowi@redhat.com, jason@zx2c4.com,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-security-module@vger.kernel.org,
+        James.Bottomley@HansenPartnership.com, pjones@redhat.com
+Date:   Wed, 17 Nov 2021 09:50:33 +0200
+In-Reply-To: <YZPevFtTucji7gIm@0xbeefdead.lan>
+References: <20211116001545.2639333-1-eric.snowberg@oracle.com>
+         <eac5f11d7ddcc65d16a9a949c5cf44851bff8f5f.camel@kernel.org>
+         <YZPZww0bafYEQ0VS@0xbeefdead.lan>
+         <f30a1399208a88257b3ff25b369088cf88a96367.camel@kernel.org>
+         <YZPevFtTucji7gIm@0xbeefdead.lan>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211117025956.79616-3-dave@stgolabs.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-16 18:59:55 [-0800], Davidlohr Bueso wrote:
-> fcoe_get_paged_crc_eof() relies on the caller having preemption
-> disabled to ensure the per-CPU fcoe_percpu context remains valid
-> throughout the call. This is done by either holding spinlocks
-> (such as bnx2fc_global_lock or qedf_global_lock) or the get_cpu()
-> from fcoe_alloc_paged_crc_eof(). This last one breaks PREEMPT_RT
-> semantics as there can be memory allocation and end up sleeping
-> in atomic contexts.
-> 
-> Introduce a local_lock_t to struct fcoe_percpu that will keep the
-> non-RT case the same, mapping to preempt_disable/enable, while
-> RT will use a per-CPU spinlock allowing the region to be preemptible
-> but still maintain CPU locality. The other users of fcoe_percpu
-> are already safe in this regard and do not require local_lock()ing.
-> 
-> Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+On Tue, 2021-11-16 at 11:39 -0500, Konrad Rzeszutek Wilk wrote:
+> On Tue, Nov 16, 2021 at 06:24:52PM +0200, Jarkko Sakkinen wrote:
+> > On Tue, 2021-11-16 at 11:18 -0500, Konrad Rzeszutek Wilk wrote:
+> > > > > I have included=C2=A0 a link to the mokutil [5] changes I have ma=
+de to support=20
+> > > > > this new functionality.=C2=A0 The shim changes have now been acce=
+pted
+> > > > > upstream [6].
+> > >=20
+> > > ..snip..
+> > > > > [6] https://github.com/rhboot/shim/commit/4e513405b4f164171011578=
+0d19dcec130c5208f
+> > >=20
+> > > ..snip..
+> > > >=20
+> > > > Does shim have the necessary features in a release?
+> > >=20
+> > > Hi!
+> > >=20
+> > > It has been accepted in the upstream shim. If you are looking
+> > > for a distribution having rolled out a shim with this feature (so sig=
+ned
+> > > by MSF) I fear that distributions are not that fast with shim release=
+s.
+         ~~~
 
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Should that be MS, or what does MSF mean?
 
-Sebastian
+> > >=20
+> > > Also these:
+> > > https://github.com/rhboot/shim/pulls
+> > > https://github.com/rhboot/shim/issues
+> > >=20
+> > > do mean some extra work would need to go in before an official
+> > > release is cut.
+> > >=20
+> > > Hope this helps?
+> >=20
+> > Yes. I'll hold with this up until there is an official release. Thank y=
+ou.
+>=20
+> Not sure I understand - but what are the concerns you have with shim
+> code that has been accepted?
+
+Maybe my concern is that none of the patches have a tested-by?
+
+Probably would be easier to get a test coverage, e.g. for people like
+me who do not even know how to self-compile Shim, how to setup user
+space using the product and so forth.
+
+I don't demand a release, if the changes have been accepted, but 17
+patches do need to be tested.
+
+/Jarkko
+
+
