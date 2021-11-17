@@ -2,58 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A2A454821
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:07:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36671454828
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:07:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237040AbhKQOIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 09:08:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60992 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229678AbhKQOIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 09:08:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DCED619F6;
-        Wed, 17 Nov 2021 14:05:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637157936;
-        bh=o5d3JLc2FU8DoP61c0YcvTWGhjj6PXVQXE0nUI90jxQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=H2B54rkrMOChaToC9xIv3hAEjGQH8jV3N1M5uEwjIrlWETa8bDCE4sU5VqoJb7ytH
-         1T2WvPHUBsuWRHWa5uSgl9rgqEQVY5EVXamOJg5G+W2aENR+tCs3PSPDooEN+gFngj
-         i6Kf2WONBuEeq1QC3GzyxTIOlrxcNqYmaKqyhBaSIUG6mo3dwj67Q/A+g03RmfIZog
-         RARSyRoFOYZuF37TjSSiHSdWymMuGYE1h9sk39hxN1C13Y9KAC3FFJzUeJqKKKDW8E
-         7KrZlTfXtzCmY6A+HZx5ifaQ455K23jaoCAQVIoq8MTtiZy8vTiTrf1jrnOSWVfFtB
-         3PyCVfKxW7MyQ==
-Date:   Wed, 17 Nov 2021 06:05:35 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Davide Caratti <dcaratti@redhat.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>
-Cc:     Li Zhijian <zhijianx.li@intel.com>, shuah@kernel.org,
-        linux-kselftest@vger.kernel.org, lizhijian@cn.fujitsu.com,
-        linux-kernel@vger.kernel.org, lkp@intel.com, philip.li@intel.com
-Subject: Re: [PATCH v2 1/3] selftests/tc-testing: add exit code
-Message-ID: <20211117060535.1d47295a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YZTDcjv4ZPXv8Oaz@dcaratti.users.ipa.redhat.com>
-References: <20211117054517.31847-1-zhijianx.li@intel.com>
-        <YZTDcjv4ZPXv8Oaz@dcaratti.users.ipa.redhat.com>
+        id S233738AbhKQOKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 09:10:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229678AbhKQOKB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 09:10:01 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 485E8C061570;
+        Wed, 17 Nov 2021 06:07:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mWEYaeuenYjOK9SZVevVvi0N1QEaT81uieLufHXvInk=; b=bQrKFGAFn6L4WxVofpzkB2mUig
+        8YtxqxrqhUrMuON2r0d2oDw7GU6VPlbDI3q30KAs7jzBotUaMlBm0uS8U37jj1o/74gvRlLb196Fh
+        0P8p6B2Z0+jYxObVa9UM62bKBP3q5P3qBWojKCMRuiLG78DyH5yLogSdMBrl54WvDHXTP9wpDRBLU
+        DYzMYYXUz8VAzDvjQRSRFiUbW/WqiU/+M2SiyQuo3Q0Cpamd0gyZCER3aXtvj6yub3xNIPYVxD5tk
+        Qk/LCKFPZ1WTXxijrYLQqRZWv2U9YnNoGYsFamZs4hcGU2UuUbMjETneLNTcX83KNUpkhnXF96sFQ
+        HW2b+h5Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mnLaW-007esQ-9T; Wed, 17 Nov 2021 14:07:00 +0000
+Date:   Wed, 17 Nov 2021 14:07:00 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v2 02/28] mm: Add functions to zero portions of a folio
+Message-ID: <YZUMhDDHott2Q4W+@casper.infradead.org>
+References: <20211108040551.1942823-1-willy@infradead.org>
+ <20211108040551.1942823-3-willy@infradead.org>
+ <20211117044527.GO24307@magnolia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211117044527.GO24307@magnolia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Nov 2021 09:55:14 +0100 Davide Caratti wrote:
-> On Wed, Nov 17, 2021 at 01:45:15PM +0800, Li Zhijian wrote:
-> > Mark the summary result as FAIL to prevent from confusing the selftest
-> > framework if some of them are failed.
-> > 
-> > Previously, the selftest framework always treats it as *ok* even though
-> > some of them are failed actually. That's because the script tdc.sh always
-> > return 0.  
+On Tue, Nov 16, 2021 at 08:45:27PM -0800, Darrick J. Wong wrote:
+> > +/**
+> > + * folio_zero_segment() - Zero a byte range in a folio.
+> > + * @folio: The folio to write to.
+> > + * @start: The first byte to zero.
+> > + * @end: One more than the last byte in the first range.
+> > + */
+> > +static inline void folio_zero_segment(struct folio *folio,
+> > +		size_t start, size_t end)
+> > +{
+> > +	zero_user_segments(&folio->page, start, end, 0, 0);
+> > +}
+> > +
+> > +/**
+> > + * folio_zero_range() - Zero a byte range in a folio.
+> > + * @folio: The folio to write to.
+> > + * @start: The first byte to zero.
+> > + * @length: The number of bytes to zero.
+> > + */
+> > +static inline void folio_zero_range(struct folio *folio,
+> > +		size_t start, size_t length)
+> > +{
+> > +	zero_user_segments(&folio->page, start, start + length, 0, 0);
 > 
-> yes, also tdc was lacking support for KSFT_SKIP for a long time.
+> At first I thought "Gee, this is wrong, end should be start+length-1!"
+> 
+> Then I looked at zero_user_segments and realized that despite the
+> parameter name "endi1", it really wants you to tell it the next byte.
+> Not the end byte of the range you want to zero.
+> 
+> Then I looked at the other two new functions and saw that you documented
+> this, and now I get why Linus ranted about this some time ago.
+> 
+> The code looks right, but the "end" names rankle me.  Can we please
+> change them all?  Or at least in the new functions, if you all already
+> fought a flamewar over this that I'm not aware of?
 
-Should this go via netdev? Is the risk of conflicts low enough 
-so it doesn't matter?
-
-We should probably add a MAINTAINERS entry for tdc. Adding Jamal.
+Change them to what?  I tend to use 'end' to mean 'excluded end' and
+'max' to mean 'included end'.  What would you call the excluded end?
