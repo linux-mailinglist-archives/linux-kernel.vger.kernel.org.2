@@ -2,108 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D2F454B4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B8F454B53
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:47:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239230AbhKQQtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 11:49:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60478 "EHLO
+        id S239247AbhKQQup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 11:50:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239219AbhKQQtM (ORCPT
+        with ESMTP id S231639AbhKQQup (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 11:49:12 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76EC8C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:46:13 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id z10so13826963edc.11
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:46:13 -0800 (PST)
+        Wed, 17 Nov 2021 11:50:45 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2201BC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:47:46 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id y13so13768364edd.13
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:47:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=soleen.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ET0tmIiYHyvEMKlBP8oDqKG/hNfHTYYovrhLrY7mVM4=;
-        b=gVSQ2J9OLPLCHzVVSOZFyLxcFnUjeNKwWFMMHgPvy2CzMqGKqoDu86Klbd8K/onXqm
-         xFADHCD9yHfkiuNtwgvt8f1v4R1b9+0xB9hlDvXQhyaoeAlLAXApR036UKKrHEjGWd9F
-         +JCiHyuT3OE7Firp5lwTbk7rdXmugnSjOMr8w=
+        bh=ScuePVig2+6JEGtMxOXcRDUBeyhJaT5Z7Na+LqxWaRI=;
+        b=OuPAkQjhwu1zOCBjeWzGpGZPYHqv1O5iU93TRNAUDap1urYSr4crwZ85VM/LJ45Lq9
+         RTd5nQ/dt0pvO6Q6ECsB1sVB1p2zfFSCMramPV2SHAVV7jZVSP2Bj5H+0t7D4HI7ir1P
+         RA/OHuxebKX94zZLVe6OAKGRtLcxbqxqkK4yrBnJ1W2OWwN+o3SWasHe4uQspSxq5tyO
+         xgvcqhB55OC1h5WEqEoYVeDlP/CHBzUtjmnZ1jaMjdslEhoD9VP2I+i8NyGFHOKw/jdy
+         n0QJdCqjMEoKoWHkY9qY3uNcFY6omoPIItWhQEWdlK3V2rFUPkCBoSoD67vofLnFwgDF
+         tbRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ET0tmIiYHyvEMKlBP8oDqKG/hNfHTYYovrhLrY7mVM4=;
-        b=BU4IyAyoxR6IYzaS5viyIVkL2oc+ZwrdPZCpi0RympVPioiuFA9tF3K6jsYQmNW/qS
-         Bj4cOhUnPoW566AFEJTIP7A2qZmls4LIv1Cf122ckZhdYk8DJ7sxUNuinwQ20xsvbp8f
-         4yuMmZt7Eb5KCRYp0DdNFUlAd4yFGaijCPtibCW8s849DY7rgcCYIYHk/3zmUOa1EiH2
-         bzuIzD0XNUZAbzWASiioyBvwVW0EaIFrwNehK3dli7D/MshrT146Z9zQjTdvU2V79tvt
-         Rr6N9Lyfh/oIbTQffvqu2/yaEdHiZMvL0+K6h4eX4bW3BJaa+DwBHdEGl1HUGwd/eI1s
-         L8Zg==
-X-Gm-Message-State: AOAM533t+IWlVRpfzKTfd0IgO2rwrrJi+sUVH8urjsp88Y67wMfl3nJp
-        NBcyzpXSHJkgXnsPgz5WP4NMlrYIUfeT3KUZ
-X-Google-Smtp-Source: ABdhPJwYbA3epTpTu0ycxh4Hv1DOUrksv5wW7r/PEF1BWaVgdZhLvtIV0hGMpgVOWNVJrbk+jnNKLQ==
-X-Received: by 2002:aa7:cac2:: with SMTP id l2mr87786edt.168.1637167571769;
-        Wed, 17 Nov 2021 08:46:11 -0800 (PST)
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com. [209.85.128.43])
-        by smtp.gmail.com with ESMTPSA id qf9sm249933ejc.18.2021.11.17.08.46.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 08:46:11 -0800 (PST)
-Received: by mail-wm1-f43.google.com with SMTP id f7-20020a1c1f07000000b0032ee11917ceso2656790wmf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:46:10 -0800 (PST)
-X-Received: by 2002:a7b:c005:: with SMTP id c5mr1212849wmb.155.1637167570617;
- Wed, 17 Nov 2021 08:46:10 -0800 (PST)
+        bh=ScuePVig2+6JEGtMxOXcRDUBeyhJaT5Z7Na+LqxWaRI=;
+        b=dvB7/Iyw8CPlDFohyKlmW+KSlZSyWovvascfcxBZ3qOZ7WKLR1PqZZt39eZ0cKzbNI
+         9LzVxM6CIY/k/vwA6BZomodeRcVHb+xvTg6GRALA8koR0gA2zjDMbW9DZLOIvfUDgqQM
+         mhuue2dWl6SVk28K7eDNwW17XfFUOZAyFre6fwQaiJbbi8WBHx25UpfbDAhlBOIrHFEn
+         hLaBTIWJBhPKh8xM48QpBFwcgSseJT29ySXwIkHGnX8+06w4Dhe0rnjjKUkqJ4HyBVY4
+         6WClsoqTJ99lqygsgJxYIw4jdHXQP3BpSbuVTtIfCUe87bm/WNTrrg4vZdqICWSUGZDx
+         GJhg==
+X-Gm-Message-State: AOAM530QqKhrAzVFShTFrhYnH7sRa/ct/IJ4H1aCkOQV/FBBeAEfoGlY
+        KXyhiPv1E9H8rvwWa4Oe3/mDuoGEvvUpxrKtnQ6sDXrU0S4=
+X-Google-Smtp-Source: ABdhPJyAGNTWz9a3U4XU4978MbGu9P5P8hAtsQiHg+kzEeQtvN6JAJ7Sc1+xsI1+tr2jObUZ6jHciI3iHnf6pYUC2aA=
+X-Received: by 2002:a50:c212:: with SMTP id n18mr6606edf.211.1637167664600;
+ Wed, 17 Nov 2021 08:47:44 -0800 (PST)
 MIME-Version: 1.0
-References: <20211117014949.1169186-1-nickrterrell@gmail.com> <20211117014949.1169186-2-nickrterrell@gmail.com>
-In-Reply-To: <20211117014949.1169186-2-nickrterrell@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 17 Nov 2021 08:45:54 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wibYLDep=BPrUaw_wuZRDXnq5BVtG-6gLuBq6+3fdMhOQ@mail.gmail.com>
-Message-ID: <CAHk-=wibYLDep=BPrUaw_wuZRDXnq5BVtG-6gLuBq6+3fdMhOQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] lib: zstd: Fix unused variable warning
-To:     Nick Terrell <nickrterrell@gmail.com>
-Cc:     Nick Terrell <terrelln@fb.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-parisc <linux-parisc@vger.kernel.org>,
-        Helge Deller <deller@gmx.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        kernel test robot <lkp@intel.com>
+References: <20211116220038.116484-1-pasha.tatashin@soleen.com>
+ <20211116220038.116484-3-pasha.tatashin@soleen.com> <878rxngq6g.fsf@meer.lwn.net>
+In-Reply-To: <878rxngq6g.fsf@meer.lwn.net>
+From:   Pasha Tatashin <pasha.tatashin@soleen.com>
+Date:   Wed, 17 Nov 2021 11:47:08 -0500
+Message-ID: <CA+CK2bCwHeodpyfHqSzqQWFTrJEYyYFeythYoMAD2eYw7BfNKg@mail.gmail.com>
+Subject: Re: [RFC 2/3] mm: page table check
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Paul Turner <pjt@google.com>, weixugc@google.com,
+        Greg Thelen <gthelen@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>, masahiroy@kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        frederic@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 5:43 PM Nick Terrell <nickrterrell@gmail.com> wrote:
+> >  Documentation/vm/page_table_check.rst |  53 ++++++
 >
-> From: Nick Terrell <terrelln@fb.com>
+> Thanks for documenting this feature!  When you add a new RST file,
+> though, you need to add it to the index.rst file as well so that it is
+> included in the docs build.
+
+I will add the index.rst changes.
+
 >
-> Backport the fix from upstream PR #2838 [0]. Found by the Kernel test
-> robot in [1].
+> >  MAINTAINERS                           |   9 +
+> >  arch/Kconfig                          |   3 +
+> >  include/linux/page_table_check.h      | 147 ++++++++++++++
+> >  mm/Kconfig.debug                      |  24 +++
+> >  mm/Makefile                           |   1 +
+> >  mm/page_alloc.c                       |   4 +
+> >  mm/page_ext.c                         |   4 +
+> >  mm/page_table_check.c                 | 264 ++++++++++++++++++++++++++
+> >  9 files changed, 509 insertions(+)
+> >  create mode 100644 Documentation/vm/page_table_check.rst
+> >  create mode 100644 include/linux/page_table_check.h
+> >  create mode 100644 mm/page_table_check.c
+> >
+> > diff --git a/Documentation/vm/page_table_check.rst b/Documentation/vm/page_table_check.rst
+> > new file mode 100644
+> > index 000000000000..41435a45869f
+> > --- /dev/null
+> > +++ b/Documentation/vm/page_table_check.rst
+> > @@ -0,0 +1,53 @@
+> > +.. SPDX-License-Identifier: GPL-2.0
+> > +
+> > +.. _page_table_check:
+>
+> Do you need this label for anything?  As-is it's just added visual
+> clutter and could come out.
 
-Ugh. Mind having a better commit message?
+Sure, I will remove it
 
-This just tells you that it's a backport. It doesn't actually talk
-about what it fixes.
+>
+> > +================
+> > +Page Table Check
+> > +================
+> > +
+> > +Page table check allows to hardern the kernel by ensuring that some types of
+> > +memory corruptions are prevented.
+> > +
+> > +Page table check performs extra verifications at the time when new pages become
+> > +accessible from userspace by getting their page table entries (PTEs PMDs etc.)
+> > +added into the table.
+> > +
+> > +In case of detected corruption, the kernel is crashed. There is a small
+> > +performance and memory overhead associated with page table check. Thereofre, it
+> > +is disabled by default but can be optionally enabled on systems where extra
+> > +hardening outweighs the costs. Also, because page table check is synchronous, it
+> > +can help with debugging double map memory corruption issues, by crashing kernel
+> > +at the time wrong mapping occurs instead of later which is often the case with
+> > +memory corruptions bugs.
+> > +
+> > +==============================
+> > +Double mapping detection logic
+> > +==============================
+>
+> I'd use subsection markup (single "==========" line underneath) for the
+> subsections.
 
-Yes, the summary line says "Fix unused variable warning", but it
-doesn't talk about why that variable is unused and why it's not
-removed entirely.
+I will change to subsection.
 
-And it's not obvious in the diff either, because the context isn't
-sufficiently large.
+Thanks,
+Pasha
 
-So a comment along the lines of "the variable is only used by an
-'assert()', so when asserts are disabled the compiler sees no use at
-all" or similar would be appreciated.
-
-Of course, the alternative would be to make the backup definition of
-'assert()' actually evaluate the argument. That's not what the
-standard assert() is supposed to do, but whatever, and the zstd use
-doesn't care.
-
-So using
-
-    #define assert(condition) ((void)(condition))
-
-instead would also fix the warning at least in kernel use (but not
-necessarily outside the kernel - the standard C 'assert.h' is just
-evil).
-
-                  Linus
+On Wed, Nov 17, 2021 at 3:08 AM Jonathan Corbet <corbet@lwn.net> wrote:
+>
+> Pasha Tatashin <pasha.tatashin@soleen.com> writes:
+>
+> > Check user page table entries at the time they are added and removed.
+> >
+> > Allows to synchronously catch memory corruption issues related to
+> > double mapping.
+> >
+> > When a pte for an anonymous page is added into page table, we verify
+> > that this pte does not already point to a file backed page, and vice
+> > versa if this is a file backed page that is being added we verify that
+> > this page does not have an anonymous mapping
+> >
+> > We also enforce that read-only sharing for anonymous pages is allowed
+> > (i.e. cow after fork). All other sharing must be for file pages.
+> >
+> > Page table check allows to protect and debug cases where "struct page"
+> > metadata became corrupted for some reason. For example, when refcnt or
+> > mapcount become invalid.
+> >
+> > Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+> > ---
+> >  Documentation/vm/page_table_check.rst |  53 ++++++
+>
+> Thanks for documenting this feature!  When you add a new RST file,
+> though, you need to add it to the index.rst file as well so that it is
+> included in the docs build.
+>
+> >  MAINTAINERS                           |   9 +
+> >  arch/Kconfig                          |   3 +
+> >  include/linux/page_table_check.h      | 147 ++++++++++++++
+> >  mm/Kconfig.debug                      |  24 +++
+> >  mm/Makefile                           |   1 +
+> >  mm/page_alloc.c                       |   4 +
+> >  mm/page_ext.c                         |   4 +
+> >  mm/page_table_check.c                 | 264 ++++++++++++++++++++++++++
+> >  9 files changed, 509 insertions(+)
+> >  create mode 100644 Documentation/vm/page_table_check.rst
+> >  create mode 100644 include/linux/page_table_check.h
+> >  create mode 100644 mm/page_table_check.c
+> >
+> > diff --git a/Documentation/vm/page_table_check.rst b/Documentation/vm/page_table_check.rst
+> > new file mode 100644
+> > index 000000000000..41435a45869f
+> > --- /dev/null
+> > +++ b/Documentation/vm/page_table_check.rst
+> > @@ -0,0 +1,53 @@
+> > +.. SPDX-License-Identifier: GPL-2.0
+> > +
+> > +.. _page_table_check:
+>
+> Do you need this label for anything?  As-is it's just added visual
+> clutter and could come out.
+>
+> > +================
+> > +Page Table Check
+> > +================
+> > +
+> > +Page table check allows to hardern the kernel by ensuring that some types of
+> > +memory corruptions are prevented.
+> > +
+> > +Page table check performs extra verifications at the time when new pages become
+> > +accessible from userspace by getting their page table entries (PTEs PMDs etc.)
+> > +added into the table.
+> > +
+> > +In case of detected corruption, the kernel is crashed. There is a small
+> > +performance and memory overhead associated with page table check. Thereofre, it
+> > +is disabled by default but can be optionally enabled on systems where extra
+> > +hardening outweighs the costs. Also, because page table check is synchronous, it
+> > +can help with debugging double map memory corruption issues, by crashing kernel
+> > +at the time wrong mapping occurs instead of later which is often the case with
+> > +memory corruptions bugs.
+> > +
+> > +==============================
+> > +Double mapping detection logic
+> > +==============================
+>
+> I'd use subsection markup (single "==========" line underneath) for the
+> subsections.
+>
+> > ++-------------------+-------------------+-------------------+------------------+
+> > +| Current Mapping   | New mapping       | Permissions       | Rule             |
+> > ++===================+===================+===================+==================+
+> > +| Anonymous         | Anonymous         | Read              | Allow            |
+> > ++-------------------+-------------------+-------------------+------------------+
+> > +| Anonymous         | Anonymous         | Read / Write      | Prohibit         |
+> > ++-------------------+-------------------+-------------------+------------------+
+> > +| Anonymous         | Named             | Any               | Prohibit         |
+> > ++-------------------+-------------------+-------------------+------------------+
+> > +| Named             | Anonymous         | Any               | Prohibit         |
+> > ++-------------------+-------------------+-------------------+------------------+
+> > +| Named             | Named             | Any               | Allow            |
+> > ++-------------------+-------------------+-------------------+------------------+
+> > +
+> > +=========================
+> > +Enabling Page Table Check
+> > +=========================
+> > +
+> > +Build kernel with:
+> > +
+> > +- PAGE_TABLE_CHECK=y
+> > +Note, it can only be enabled on platforms where ARCH_SUPPORTS_PAGE_TABLE_CHECK
+> > +is available.
+> > +- Boot with 'page_table_check=on' kernel parameter.
+> > +
+> > +Optionally, build kernel with PAGE_TABLE_CHECK_ENFORCED in order to have page
+> > +table support without extra kernel parameter.
+>
+> Thanks,
+>
+> jon
