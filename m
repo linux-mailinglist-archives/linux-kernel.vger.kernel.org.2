@@ -2,89 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72DE0455033
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 832ED45504B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:18:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241098AbhKQWS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 17:18:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241020AbhKQWS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:18:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D854F61B3E;
-        Wed, 17 Nov 2021 22:15:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637187359;
-        bh=18kkfrg4AgOIt1mZK6Dedmf6SMs42bal/deXI6yPuLA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vKhNq7Uk0AGaKm34w3Qhgetrs5Bq+0eEZlXqFRkOII8l0t70tvC4u2PLYKEIpai9o
-         VaKqVCE68b9yLAIsZTJHLMe6S02IOuSUTCgLFXYCIveWbto1504Q7TEIKpRU9UN0pp
-         BcVUtHlOCylmgbimSFqYTWdjcUooZKc8vSdqVV94OvSZ/OtOVZW/yyq9hffR/A/jpF
-         JV+D+9futCUOGj3UUrXnf0yyNaWPQNJOTVvQebjxkapUd82om6Z0aD3+RAhVJVmXF8
-         Oku+vfruHMaVoWBJ5vKel1NpjDcEW+2fMfl5l7CDjsBXSOBwKC/0FDQKF9ICyFXYJ6
-         sG81BcVMUNFCg==
-Date:   Wed, 17 Nov 2021 22:15:53 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: regmap: allow to define reg_update_bits for no bus configuration
-Message-ID: <YZV/GYJXKTE4RaEj@sirena.org.uk>
-References: <20211117210451.26415-1-ansuelsmth@gmail.com>
- <20211117210451.26415-2-ansuelsmth@gmail.com>
+        id S241137AbhKQWVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 17:21:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241100AbhKQWVM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 17:21:12 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB12C061570;
+        Wed, 17 Nov 2021 14:18:13 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id y12so17611523eda.12;
+        Wed, 17 Nov 2021 14:18:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=uwaJGhx917BJGzmEA12X6fG6XxZWYSzTmRZkffjSJ9A=;
+        b=boPWvSAdRPsQcp1xrzCbOVLo6NvHJXRgB/uBhddLwm4vOztoJbDBHUFAg+9qNx/mIl
+         5OnQdDVbzgCYRSnSIuTxyCnZR6yzDB+FAsoJQ7wytbT94AKMT8QsIEoiittY3nve0oRI
+         Md1xWZhxdISj/QA5eSDWrsvjRfI5EWP06wQHaAIEAu628KxflvuzG3/LYfAKj+WHgeWc
+         JXhEtOyDJKkl59yXejYAPuPVMfpTdNcOHOr8vWMqCjU29TlhQLKh/Ks2fYN3OaagZftI
+         gYVt59QWip+XUyWuRfleqWbamEt1GeRWPuAlo8ur/kXLQX9GE3vyt572oGKLzaPFlHuz
+         hLrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=uwaJGhx917BJGzmEA12X6fG6XxZWYSzTmRZkffjSJ9A=;
+        b=HGpIlCZmuzvQrhoKUqMH2xxvfDZ2RT153ubEAlv2Zb11U0QmJ3Y9MQ6kxTOz9XTsoW
+         GZqvaHuiUVlrEj7uxEJbbY5XTQn128J+ZE2EWgtleQxe5D2YbmEeCdEwgbeVKj/7li9r
+         LsiHG5wyrzcYBNP6lieSw+TRpswOuLYKD17pLTDDQigcC8OkYd4LaJ4M93n+5jh1cX+W
+         wHd1WnfcywAXFzNU4fD7naq4AZvmeT3iQ5e7X6ndsZQGPRl8YEdqMSZqlCffWakjOeFS
+         ohHcV6wKhZ5exMYRnOdidtkbRj8yPqYnNqGwlVp3/pVuWr2BEinypuir7MkmePSkamxt
+         fV6g==
+X-Gm-Message-State: AOAM532KcP90tR51B0dN4Hi8FjEktp/FEAvsVnwGRuD/AY0nqOpIPo3H
+        jWjMN+RhPv3WarTuti9Qt5I=
+X-Google-Smtp-Source: ABdhPJy52mXAuwaFzuszO3cNDfb51dXVqQPAC0VHCpaWesxHmfSAxn9hxqCLxBnU1pZl/C/9iG28LQ==
+X-Received: by 2002:a05:6402:35d2:: with SMTP id z18mr3416427edc.188.1637187492003;
+        Wed, 17 Nov 2021 14:18:12 -0800 (PST)
+Received: from ?IPv6:2a02:ab88:368f:2080:eab:126a:947d:3008? ([2a02:ab88:368f:2080:eab:126a:947d:3008])
+        by smtp.gmail.com with ESMTPSA id mp5sm522733ejc.68.2021.11.17.14.18.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 14:18:11 -0800 (PST)
+Message-ID: <9ee9584833d948188347414991a117ca86edfaaf.camel@gmail.com>
+Subject: Re: [PATCH v3 2/2] i2c: exynos5: add support for ExynosAutov9 SoC
+From:   David Virag <virag.david003@gmail.com>
+To:     Chanho Park <chanho61.park@samsung.com>,
+        'Sam Protsenko' <semen.protsenko@linaro.org>,
+        'Jaewon Kim' <jaewon02.kim@samsung.com>
+Cc:     'Krzysztof Kozlowski' <krzysztof.kozlowski@canonical.com>,
+        'Wolfram Sang' <wsa@kernel.org>,
+        'Rob Herring' <robh+dt@kernel.org>,
+        linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Date:   Wed, 17 Nov 2021 23:17:55 +0100
+In-Reply-To: <001401d7da86$f7ebd660$e7c38320$@samsung.com>
+References: <CGME20211112010603epcas2p339d1a6ef3df7cdbe61c87c8afa541fd0@epcas2p3.samsung.com>
+         <20211112010137.149174-1-jaewon02.kim@samsung.com>
+         <20211112010137.149174-3-jaewon02.kim@samsung.com>
+         <CAPLW+4==X+irRBKHiDfgJeAb0oDKkzbcWERFs7Y3=PSOg0+qAw@mail.gmail.com>
+         <001401d7da86$f7ebd660$e7c38320$@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/Q9YqCthrNTTr8b+"
-Content-Disposition: inline
-In-Reply-To: <20211117210451.26415-2-ansuelsmth@gmail.com>
-X-Cookie: I smell a wumpus.
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> Current version of USI is v2 which means there is a v1 version as well.
+> It might be a non-upstream SoC so we don't need to consider it so far.
 
---/Q9YqCthrNTTr8b+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The Exynos7885 I'm working on has USI v1. It doesn't seem to be heavily
+used as the SoC has just 3 USI blocks if I didn't miss anything.
 
-On Wed, Nov 17, 2021 at 10:04:33PM +0100, Ansuel Smith wrote:
-> Some device requires a special handling for reg_update_bits and can't use
-> the normal regmap read write logic. An example is when locking is
-> handled by the device and rmw operations requires to do atomic operations.
-> Allow to declare a dedicated function in regmap_config for
-> reg_update_bits in no bus configuration.
->=20
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> Link: https://lore.kernel.org/r/20211104150040.1260-1-ansuelsmth@gmail.com
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
->  drivers/base/regmap/regmap.c | 1 +
->  include/linux/regmap.h       | 7 +++++++
->  2 files changed, 8 insertions(+)
+The most obvious difference I saw was instead of having 3 modes (SPI,
+UART, and HSI2C) It has:
+ - SPI
+ - HSI2C0 (meaning I2C pins are connected to the first 2 pins out of
+the 4 if I understand it correctly)
+ - HSI2C1 (connected to last 2 pins)
+ - HSI2C0_HSI2C1 (2 I2C devices connected to first 2 and last 2 pins)
+ - UART
+ - UART_HSI2C1 (first 2 pins are UART, rest is I2C)
 
-I've applied this already?  If it's needed by something in another tree
-let me know and I'll make a signed tag for it.
+Also there doesn't seem to be any USI_CON or USI_OPTION registers in
+SPI, UART, or I2C. It seems like it's just the USI driver doing all the
+work (just setting up the SYSREG) and the I2C driver writing values to
+the SYSREG at suspend/resume for some reason. 
 
---/Q9YqCthrNTTr8b+
-Content-Type: application/pgp-signature; name="signature.asc"
+From the looks of it, it doesn't look like it'd be hard to add this to
+USI v2 drivers when needed. (USI driver (if that's the way it will go)
+would just need minor modifications to add v1 modes and UART/SPI/I2C
+drivers may just work with non-USI compatibles/would only need SoC
+specific data added).
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGVfxkACgkQJNaLcl1U
-h9Cu5Af/Zw71VW8AU+geoTpjR5nlUgdZQBHtrqEucSzknp7TE6Bb4IGYEwAmxfJ8
-k62rok0LG6hGrkiujUd2TRBhGAEvoCOiwnnRzirGD++i+vl3sqYIyBr1kASLMppv
-iL3vcGpgq/dtc71EEziurFzFPQy1pOe8MH2IVLB7FxAEFn3zZc0NlxYsDjKsFSZA
-GymChTVLiQfyiKvVwR4QBPgpLiZLeW0BfFPqhWtydKuGxltnKH8A83Z5kPP/KBLA
-9P4W1BSLXPXI2whoDyEGXl4ewJf4CzcwVjMDVZL/U3WirB2wJgdc42rtvMmho5Pk
-gf8u47l9pDNPPTRVMJ0LTQQYLrtsqw==
-=vOjt
------END PGP SIGNATURE-----
-
---/Q9YqCthrNTTr8b+--
+Best Regards,
+David
