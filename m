@@ -2,80 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E745453EC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 04:06:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63EE4453ECA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 04:07:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232141AbhKQDIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 22:08:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230490AbhKQDIk (ORCPT
+        id S232344AbhKQDKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 22:10:25 -0500
+Received: from smtpbg703.qq.com ([203.205.195.89]:55506 "EHLO
+        smtpproxy21.qq.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230267AbhKQDKX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 22:08:40 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CBCEC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 19:05:42 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id g191-20020a1c9dc8000000b0032fbf912885so922380wme.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 19:05:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UKZ6GaRD6run3c1PJPskqzhUzQy+wsAa2zgVKl5+4u8=;
-        b=IGaA7Fhphxaznr+UYSLE09+pej6AmCx0QFzafA1J3gvETz6n84x/7uHPT1goftadgz
-         oH1n8NH12lL+ny/jzQmx1GwD7lR4vo8+Tz6ypBlpSz0jTJbfMBgIif3OllUWjsecLwIn
-         Y2V6Ay2vZomXg9PdU6QKQjspKTkKuJGSaXiUtm8df0ILGg9Cniit0xgQtJ4qfwk2rbXp
-         CxK7IeP5YkznIOYHdUvbz/wRs04z573RbStv1lHuDsL8M5zdx+g0Ce+ntYHLFj0Qf3J9
-         4uwQhWkVo2XpVC5ZdIBUP4A+abKzMAxb1yrUP2npWS+ptewmSl8KoburFWIaVeMbz9BO
-         E8Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UKZ6GaRD6run3c1PJPskqzhUzQy+wsAa2zgVKl5+4u8=;
-        b=1yx0rJqDckXjXVlYcv0CmI4ZWyjbFBxhVmrRapX+80HnkEJwRMwpFx4FXvkV3VqJsi
-         4HyRTiD/ekx5fgEiBp26hwrQeETa9TX0MBXIbO1Jxgk4GD517jaD+doBKTS4tEfASmlw
-         aElrekH9eX+f5oDyA73Oz5lptDDsSHdgTxAPawuOFdvObf3ziu9TY2s/zCR6hzw3dC0c
-         fvPnbZiHFRVt5JhaO2/ilhsktzWclcL3kWzHaETpuLkVJw6gxF0MOsQuTjZriC7E3TW7
-         FiMQNzSFbHZaTgs/wmEeFFch8q9tj4FHFfmDGtsMSRU+S+/HKLOhyioCB9pn+iYXdpqn
-         kcAg==
-X-Gm-Message-State: AOAM530o7uOn5gMLYXqvt749kkcWqVSceAKwsDoD+jtDly/B2cpDut7B
-        pmCzDwN0qSnufiB2JJHbQGkrLOJTTiD1DchVlsHBdg==
-X-Google-Smtp-Source: ABdhPJy4vo81ZBn+uQt56I0zEdMolI+WBTQ4qIs/blKZxO0eNUos1D3u/BgeLEce8BEwH2HAjPDjKINMSft8z1bJbG0=
-X-Received: by 2002:a05:600c:3ba3:: with SMTP id n35mr14188808wms.88.1637118340213;
- Tue, 16 Nov 2021 19:05:40 -0800 (PST)
+        Tue, 16 Nov 2021 22:10:23 -0500
+X-QQ-mid: bizesmtp45t1637118419tjhgm2pv
+Received: from localhost.localdomain (unknown [124.126.19.250])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Wed, 17 Nov 2021 11:06:58 +0800 (CST)
+X-QQ-SSF: 01400000002000B0G000B00A0000000
+X-QQ-FEAT: 3PKW8dpHG1uxsM0STKbxz3PvRuJYsjCOYrW7FJkPsypT4SmoJ74mrkloWIU5W
+        Py3+85MlgYGphqtZ0odHuXtprpjoIbpzDa7ia2ET8OMOlBbBF+ieDOymuq6bmLDUnc2MKM9
+        lAYs8GMDwinUpzqoI7eycGH+9O6f6hA1hhh7ixuT+1KSz2alJXRLA/nu2mOlL20WR9GE/Ho
+        E1CVfKx7Yf7rTXFSCIuqL4Wpn03LJjEhI1ZmqeeHyBs0+2shjV0O3R0YGnI6HpwI8cH6Sdu
+        XdgQ7pEw/n52ldJZ4DBQGF9VDbTEef4npxDGKufqMxIez2ymv6UTgLu9aVb01iyDI74cqoY
+        Fv66eW9L8I0eFawRrD6xDeabzONAjvbqEL5SA60F4SDpW7G898=
+X-QQ-GoodBg: 2
+From:   zhaoxiao <zhaoxiao@uniontech.com>
+To:     mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhaoxiao <zhaoxiao@uniontech.com>
+Subject: [PATCH] media: dib9000: Fix the warning by min()
+Date:   Wed, 17 Nov 2021 11:06:56 +0800
+Message-Id: <20211117030656.14984-1-zhaoxiao@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20211117135510.0307294e@canb.auug.org.au>
-In-Reply-To: <20211117135510.0307294e@canb.auug.org.au>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 16 Nov 2021 19:05:28 -0800
-Message-ID: <CANn89iL=gHkZg5YUVYmPMB79xA_d5eDXjQLS_85Ks_NU6q97HA@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of the net-next tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign5
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 6:55 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> After merging the net-next tree, today's linux-next build (htmldocs)
-> produced this warning:
->
-> include/net/sock.h:540: warning: Function parameter or member 'defer_list' not described in 'sock'
->
-> Introduced by commit
->
->   f35f821935d8 ("tcp: defer skb freeing after socket lock is released")
->
-> --
-> Cheers,
-> Stephen Rothwell
+Fix following coccicheck warning:
+drivers/media/dvb-frontends/dib9000.c:261:10-11: WARNING opportunity for min()
+drivers/media/dvb-frontends/dib9000.c:345:10-11: WARNING opportunity for min()
 
-Thanks for the report, I thought we got rid of these htmldocs for sock already.
+Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+---
+ drivers/media/dvb-frontends/dib9000.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/dvb-frontends/dib9000.c b/drivers/media/dvb-frontends/dib9000.c
+index 04d92d614279..914ca820c174 100644
+--- a/drivers/media/dvb-frontends/dib9000.c
++++ b/drivers/media/dvb-frontends/dib9000.c
+@@ -258,7 +258,7 @@ static int dib9000_read16_attr(struct dib9000_state *state, u16 reg, u8 *b, u32
+ 		state->i2c_write_buffer[0] |= (1 << 4);
+ 
+ 	do {
+-		l = len < chunk_size ? len : chunk_size;
++		l = min(len, chunk_size);
+ 		state->msg[1].len = l;
+ 		state->msg[1].buf = b;
+ 		ret = i2c_transfer(state->i2c.i2c_adap, state->msg, 2) != 2 ? -EREMOTEIO : 0;
+@@ -342,7 +342,7 @@ static int dib9000_write16_attr(struct dib9000_state *state, u16 reg, const u8 *
+ 		state->i2c_write_buffer[0] |= (1 << 4);
+ 
+ 	do {
+-		l = len < chunk_size ? len : chunk_size;
++		l = min(len, chunk_size);
+ 		state->msg[0].len = l + 2;
+ 		memcpy(&state->i2c_write_buffer[2], buf, l);
+ 
+-- 
+2.20.1
+
+
+
