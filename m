@@ -2,80 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A747D455089
+	by mail.lfdr.de (Postfix) with ESMTP id 31389455088
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:31:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241366AbhKQWeg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Nov 2021 17:34:36 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:29270 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241328AbhKQWe2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:34:28 -0500
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-275-_Tp0z3ELP4CvBamUzus0mQ-1; Wed, 17 Nov 2021 22:31:22 +0000
-X-MC-Unique: _Tp0z3ELP4CvBamUzus0mQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.26; Wed, 17 Nov 2021 22:31:21 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.026; Wed, 17 Nov 2021 22:31:21 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Noah Goldstein' <goldstein.w.n@gmail.com>
-CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4] arch/x86: Improve 'rep movs{b|q}' usage in
- memmove_64.S
-Thread-Topic: [PATCH v4] arch/x86: Improve 'rep movs{b|q}' usage in
- memmove_64.S
-Thread-Index: AQHX2/aBIpegHmlt3EiJPKc4pU+GYawITRxw
-Date:   Wed, 17 Nov 2021 22:31:21 +0000
-Message-ID: <bc0297a1b97a4b129fa3ea1b155f6062@AcuMS.aculab.com>
-References: <20211101044955.2295495-1-goldstein.w.n@gmail.com>
- <20211117210245.843374-1-goldstein.w.n@gmail.com>
-In-Reply-To: <20211117210245.843374-1-goldstein.w.n@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S241352AbhKQWeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 17:34:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41912 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241317AbhKQWe0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 17:34:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A10461882;
+        Wed, 17 Nov 2021 22:31:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637188287;
+        bh=jn1cqoJ3XZaDqZgqyRQKukXK0FQ0EKQh7jJIum/8OaQ=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=hoTkBKgwg3wNI7wPETWtWKDEHpOczYSpXY7Fd7OfCnJaUCcB8havj6RGTOwsoLH90
+         2jZSxxaMytPyaN2Wh7GIYQbsW7a7Jrrpq4Z5ckeblOBBiaua2ngMNUOISCM5IVsapE
+         Hkt3bv7MBSB0so6oKFS1OQswjxfsPUx4jZPoK+MQiMRQeUoGUwKLbIqhqoJYXw4t2Y
+         ITEgt9B4ELBvXWLwnovHZW/TiBIQZiCv1B7Imrjr9Zcx+Zo4vBMKA1FMnXao9feAfF
+         AbLz8UFBxVi9O46VMrpU9ujlPm0QQaFoq8n6PzMaZmC7eryaQ27NJ2j9QW/lSChkdY
+         wV5NXrh5OD5ww==
+From:   Mark Brown <broonie@kernel.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org,
+        Olivier Moysan <olivier.moysan@st.com>,
+        linux-stm32@st-md-mailman.stormreply.com
+In-Reply-To: <20211117110031.19345-1-olivier.moysan@foss.st.com>
+References: <20211117110031.19345-1-olivier.moysan@foss.st.com>
+Subject: Re: [PATCH] ASoC: stm32: sai: increase channels_max limit
+Message-Id: <163718828521.136850.8228648734064724171.b4-ty@kernel.org>
+Date:   Wed, 17 Nov 2021 22:31:25 +0000
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Noah Goldstein
-> Sent: 17 November 2021 21:03
+On Wed, 17 Nov 2021 12:00:31 +0100, Olivier Moysan wrote:
+> From: Olivier Moysan <olivier.moysan@st.com>
 > 
-> Add check for "short distance movsb" for forwards FSRM usage and
-> entirely remove backwards 'rep movsq'. Both of these usages hit "slow
-> modes" that are an order of magnitude slower than usual.
+> The SAI peripheral supports up to 16 channels in TDM mode (8L+8R).
+> The driver currently supports TDM over two channels.
+> Increase SAI DAI playback/record channels_max,
+> to also allow up to 16 channels in TDM mode.
 > 
-> 'rep movsb' has some noticeable VERY slow modes that the current
-> implementation is either 1) not checking for or 2) intentionally
-> using.
+> [...]
 
-How does this relate to the decision that glibc made a few years
-ago to use backwards 'rep movs' for non-overlapping copies?
+Applied to
 
-Did they find a different corner case??
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-	David
+Thanks!
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+[1/1] ASoC: stm32: sai: increase channels_max limit
+      commit: 7fabe7fed182498cac568100d8e28d4b95f8a80e
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
