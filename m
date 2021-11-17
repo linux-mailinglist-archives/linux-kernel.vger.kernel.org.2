@@ -2,126 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC1C45474F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 14:32:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E7645475B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 14:34:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237642AbhKQNfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 08:35:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43422 "EHLO
+        id S237654AbhKQNg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 08:36:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232814AbhKQNfZ (ORCPT
+        with ESMTP id S232410AbhKQNgx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 08:35:25 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE3CC061570;
-        Wed, 17 Nov 2021 05:32:26 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id gf14-20020a17090ac7ce00b001a7a2a0b5c3so5241989pjb.5;
-        Wed, 17 Nov 2021 05:32:26 -0800 (PST)
+        Wed, 17 Nov 2021 08:36:53 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2721DC061570;
+        Wed, 17 Nov 2021 05:33:55 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id x43-20020a056830246b00b00570d09d34ebso4775842otr.2;
+        Wed, 17 Nov 2021 05:33:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=zR3oNRYhTYJUZxaoak8qMlUuBunZjm5m9hqskt3h3S4=;
-        b=ggvPHm4xgldOYNuvLAK0wCZC8fi4QdT92wt9aO0Z1D+A8KeOi+P1P1JWtXkWduE+Ch
-         r6ou4FvXsNhepLE8E70VqGkz+/lDwWv7enCCiPmHwIBtd8kf2It6TjK/tqJvLKuShbGK
-         0bql4MAv8/pbMx8YyG0cDh/0zTFZMrBCBap5FVuQdaMLz170KD8tA2xrwcyOnV2CGSaU
-         XC9McvnV4rtzWcYyCt8336Tl0rj1KT9TWDrtW7oGGCWhI41aW30RYAShzVcOFPieXpQ2
-         2szScJ98dW1z6BZ6y4Px5EjFn8WqTBG7cb5V8p7izkymWXTEpGK00GSfEtG9CuZzRkDF
-         KZTw==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=h8IGQMb0erjUKL1xjZe1XLR4Mk4lsb3qRDwWaS0JiAA=;
+        b=CLuF6ak2zCfniZ+XBAvWakd6bCiw3JYVB3OHJjMXzNF+Nxp/8ley1FBdqq4G/rHaI8
+         6t54ZzCSgNqKNf2hRyK57l2GBIJJXwdeFNKQDCZ0skPjsSJrv99PDbkSTy+pw06+7lch
+         UPh1cJbMK6JdR3c8T645K5FgXHEKeJpyIF+mfshfyO+Z0O5V6sT5VYYvxDLMpTEcAw4m
+         IqitOxZsooRATydzULtCrJk7LvRWEYREno4DMHHUJuu/Q0HPzIleV6UFlPJVZXQpVCMi
+         6GMdL2PW5on9BgQc4OlqjbbjrHAry2dKGrNDR7YNR/G7AnQizusT4lCq6Lyg33JDjKX/
+         XnOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=zR3oNRYhTYJUZxaoak8qMlUuBunZjm5m9hqskt3h3S4=;
-        b=Bo70UPaDpuKqXPdkCLD4hIxGsoZ9ov6Skbxan7ghjroDGPwLtV4RdV40T0ybBfHSSi
-         11pTZCDHFNqfghkJ+CNvWZyl55kC2E+cKGGYouVJK0c7/ivT0bd9lHJvQ7huE6dQLuE1
-         0hFAJhcQXGAW8jz1/aflFPBnr52pYtFC6Lc3L8uWgpw9S0VySh61qsKBOSWIEmQyUsGU
-         zBh0tYvF5zk4tscJHwMiegrx8Xa5VuPzLqNBn3BDbcYFcW711cO1oFshV6cTvI0Tnn/m
-         45rE1mw0QwrnQP6oDER8ZI1aURvNdtfOQ7982rJpZFjenzVvHBfs8aykD96xlEEyVBt+
-         msOw==
-X-Gm-Message-State: AOAM5324Mn9w+WcXllL4TU8hHswJ/3uJ4k7uk3wRiM3lZHA8su92G4Zl
-        7pQeJcFnkBbbiOfSZ8yRrmE=
-X-Google-Smtp-Source: ABdhPJzUpe9LLZVlH0z5E35okJoiJmMYQnfNMpmq8a9kmB7F5FUzY6wGExQKYAIJCpzqgtl9+SISaw==
-X-Received: by 2002:a17:90a:ab17:: with SMTP id m23mr9499872pjq.194.1637155946398;
-        Wed, 17 Nov 2021 05:32:26 -0800 (PST)
-Received: from ?IPV6:2404:f801:0:5:8000::50b? ([2404:f801:9000:1a:efea::50b])
-        by smtp.gmail.com with ESMTPSA id y28sm23237747pfa.208.2021.11.17.05.32.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 05:32:26 -0800 (PST)
-Message-ID: <0ab42ae0-9323-9297-c2c8-1cfc1ebada08@gmail.com>
-Date:   Wed, 17 Nov 2021 21:32:13 +0800
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=h8IGQMb0erjUKL1xjZe1XLR4Mk4lsb3qRDwWaS0JiAA=;
+        b=Uvxs09hy1YAi46ZY2aFMMExZz94KcVpkfr2KkzhE6oyG+lUKUYkfX4JVWVtUfZIb0f
+         LcwzYjNCTN/Eof9EI3Pq+mbhYHLNOeJogXkrpXxYuRVbhWeP+rBNxiECSDNjV76h5Pzf
+         4p6sFTw66C7n7pOqRUs5iTOk2zCZNR/rlnjGAvX8yBjGx6G0XH+RRplNapd8NJxRBDPN
+         F6AcLdMp2kafnNFEF+rBuotGwoe5M8/uf/FAr7zwD1wW45BdakocomjP8kTojKeCrPTN
+         ogN7/GYETZv4qEbdGAl89OQeDfDAKLqe6QWQGfDLRta5sjenrXkbI1BW3M8XxwXvxxhc
+         IN+w==
+X-Gm-Message-State: AOAM533Q98bV+45LWlvOk4X2s5FbrEN2nQRCByNO4AHYlGb2GCE+U2de
+        6IyN7Aeg1Urd+v27NbNQXX0=
+X-Google-Smtp-Source: ABdhPJxLazLcFA1HX/Su+OgejZxVktBZJPe+o+ukEQMjpwMXoCMe7IJUu1T7GJVhgYbEEq3lZ5nXaA==
+X-Received: by 2002:a9d:61ce:: with SMTP id h14mr13760606otk.303.1637156034573;
+        Wed, 17 Nov 2021 05:33:54 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n189sm4474594oif.33.2021.11.17.05.33.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 05:33:54 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 17 Nov 2021 05:33:51 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH v3 01/12] dt-bindings: watchdog: Require
+ samsung,syscon-phandle for Exynos7
+Message-ID: <20211117133351.GA2435591@roeck-us.net>
+References: <20211107202943.8859-1-semen.protsenko@linaro.org>
+ <20211107202943.8859-2-semen.protsenko@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH 1/5] x86/Swiotlb: Add Swiotlb bounce buffer remap function
- for HV IVM
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, jgross@suse.com, sstabellini@kernel.org,
-        boris.ostrovsky@oracle.com, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, joro@8bytes.org, will@kernel.org,
-        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, m.szyprowski@samsung.com,
-        robin.murphy@arm.com, xen-devel@lists.xenproject.org,
-        michael.h.kelley@microsoft.com,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, vkuznets@redhat.com, brijesh.singh@amd.com,
-        konrad.wilk@oracle.com, parri.andrea@gmail.com,
-        thomas.lendacky@amd.com, dave.hansen@intel.com
-References: <20211116153923.196763-1-ltykernel@gmail.com>
- <20211116153923.196763-2-ltykernel@gmail.com> <20211117095953.GA10330@lst.de>
-From:   Tianyu Lan <ltykernel@gmail.com>
-In-Reply-To: <20211117095953.GA10330@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211107202943.8859-2-semen.protsenko@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph:
-       Thanks for your review.
-
-On 11/17/2021 5:59 PM, Christoph Hellwig wrote:
-> The subject is wrong, nothing x86-specific here.  Please use
-> "swiotlb: " as the prefix
-
-OK. Will update. Thanks.
-
+On Sun, Nov 07, 2021 at 10:29:32PM +0200, Sam Protsenko wrote:
+> Exynos7 watchdog driver is clearly indicating that its dts node must
+> define syscon phandle property. That was probably forgotten, so add it.
 > 
->> + * @vaddr:	The vaddr of the swiotlb memory pool. The swiotlb
->> + *		memory pool may be remapped in the memory encrypted case and store
-> 
-> Please avoid the overly long line. >
->> +	/*
->> +	 * With swiotlb_unencrypted_base setting, swiotlb bounce buffer will
->> +	 * be remapped in the swiotlb_update_mem_attributes() and return here
->> +	 * directly.
->> +	 */
-> 
-> I'd word this as:
-> 
-> 	/*
-> 	 * If swiotlb_unencrypted_base is set, the bounce buffer memory will
-> 	 * be remapped and cleared in swiotlb_update_mem_attributes.
-> 	 */
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> Fixes: 2b9366b66967 ("watchdog: s3c2410_wdt: Add support for Watchdog device on Exynos7")
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-Thanks for suggestion. Will update. Thanks.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-
->> +	ret = swiotlb_init_io_tlb_mem(mem, __pa(tlb), nslabs, false);
->> +	if (ret) {
->> +		memblock_free(mem->slots, alloc_size);
->> +		return ret;
->> +	}
+> ---
+> Changes in v3:
+>   - Added R-b tag by Rob Herring
 > 
-> With the latest update swiotlb_init_io_tlb_mem will always return 0,
-> so no need for the return value change or error handling here.
+> Changes in v2:
+>   - Added R-b tag by Krzysztof Kozlowski
+>   - Added "Fixes" tag
 > 
-
-OK. Will revert the change.
+>  Documentation/devicetree/bindings/watchdog/samsung-wdt.yaml | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/watchdog/samsung-wdt.yaml b/Documentation/devicetree/bindings/watchdog/samsung-wdt.yaml
+> index 76cb9586ee00..93cd77a6e92c 100644
+> --- a/Documentation/devicetree/bindings/watchdog/samsung-wdt.yaml
+> +++ b/Documentation/devicetree/bindings/watchdog/samsung-wdt.yaml
+> @@ -39,8 +39,8 @@ properties:
+>    samsung,syscon-phandle:
+>      $ref: /schemas/types.yaml#/definitions/phandle
+>      description:
+> -      Phandle to the PMU system controller node (in case of Exynos5250
+> -      and Exynos5420).
+> +      Phandle to the PMU system controller node (in case of Exynos5250,
+> +      Exynos5420 and Exynos7).
+>  
+>  required:
+>    - compatible
+> @@ -58,6 +58,7 @@ allOf:
+>              enum:
+>                - samsung,exynos5250-wdt
+>                - samsung,exynos5420-wdt
+> +              - samsung,exynos7-wdt
+>      then:
+>        required:
+>          - samsung,syscon-phandle
+> -- 
+> 2.30.2
+> 
