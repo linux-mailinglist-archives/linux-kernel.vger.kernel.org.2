@@ -2,123 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E653454D36
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:29:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6AD7454D3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:31:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238806AbhKQSch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 13:32:37 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:33262 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233890AbhKQScg (ORCPT
+        id S240019AbhKQSek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 13:34:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233890AbhKQSej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 13:32:36 -0500
-Date:   Wed, 17 Nov 2021 18:29:35 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637173776;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nOVhcHgI8g7zN42nh4pVJOp1nfrcdr3b6IpdBIKlais=;
-        b=wE04mu2twkM9aqGqNMRzVKtlPXqFt3ClWwGohclTHZfDA2MNNMLnRZNV2s9x4OV92LxIac
-        BhrI2veE/e3x8SGBZY9Ht9ycTYhPGSr4Cre6a2MVjbjBO1G9Uawdn6x4zErhaL93iqgjDu
-        SsaLHgNdsFPjb3HDwFcneyx4zLSzGS4qy/cud3tkWDNoToNH5YGC2oT0YrXb7Lfe6DNH/3
-        7XXiGSNyA7xfv6H4buTK4tUoBobeeY/eeiaubiPfxBoN0uytd29mA/3+iqILEt3QG/5d/M
-        txPUtWP+jr485POmM0VJVi/djWi4MV9rUTudVCkIBmsIrZBk7SbjM929d8GpLw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637173776;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nOVhcHgI8g7zN42nh4pVJOp1nfrcdr3b6IpdBIKlais=;
-        b=jdh+M2kvkP1kXilkcOPbajYPMrg/W94s0Rf+t3tLFMZbCDK5ChAiafjT9/ZN5J/Ll0OW0R
-        +XW5G5OHWfzJaPAg==
-From:   "tip-bot2 for Noah Goldstein" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fpu] x86/fpu: Correct AVX512 state tracking
-Cc:     Noah Goldstein <goldstein.w.n@gmail.com>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210920053951.4093668-1-goldstein.w.n@gmail.com>
-References: <20210920053951.4093668-1-goldstein.w.n@gmail.com>
-MIME-Version: 1.0
-Message-ID: <163717377532.11128.15112806017937850586.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+        Wed, 17 Nov 2021 13:34:39 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6706C061570;
+        Wed, 17 Nov 2021 10:31:40 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id n85so3450844pfd.10;
+        Wed, 17 Nov 2021 10:31:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=/+smvqogmwFFh079mSXlcWbcElYUTcAGYiv6vxh7vWU=;
+        b=RZHPDN7ZzOuSG1gjqmuXZCbJc3cM0Xx+00/iDp7i1v0p8ASNcqa4TP+bo5S8FLeplz
+         4N45E1DqbFTfylWGUg0b+YcfbZ0sm701M3T57WjnxcluYTOq2PK5e4Vw7FJtL64Om4+W
+         O5VT9IjAX8NoFecJYIsWzDhmyWokSumZ/saM7zHaQ9ekChQU7c3ww+VuLyEb2YxqVeOk
+         OpInvNd/jOq4ttfkPm46yLogpqnmN2tYmEvwZgvh53r85FOYm24z2Y5lhSDzR533940D
+         kgZVMf5mVeKx0iwL9AxJrRTAOE/2Q8+kAjrFL/g/FISfZvHQb2/hP3qT3lQQGghldQwX
+         4mEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=/+smvqogmwFFh079mSXlcWbcElYUTcAGYiv6vxh7vWU=;
+        b=4oBc3IFsw2elyaGzAVI2V2UtKIl387XhdgEk+RCucAA+pP+DZ2LlY/Q3hqMItE5ht7
+         16vWn5IE4aTqn04MnY9Ch+COgl/Imeg1MnHfC5w3KN8irZdimlJGExTizpS0e7/rrCeA
+         G5Q7rxAl9rN3PTAxx3tnzIdlYVw/Mmc7bQY0/t7kyDaQg7TxcEvhsQuejuAFEJcLLgMy
+         OvpHEnSAETEDWj5Ct8q/H7rnIwNHD8FddPnkO5yZPmu84MOg+N1W+3umyqjG/HqOYsEx
+         XZd9dkDSzIoxwJ9nvjLR1ifpkOTjZLiIX0Iy+L3fJVCYc2RBq7bAQB/o/dZHgVGi0SIx
+         7qSw==
+X-Gm-Message-State: AOAM530e82+0XDbQl1fIe29RYYeh3QxpmV9s3gc8XIf6g9NtfNRmQ5E5
+        sGpW0XhjRwb1zVdQgIoakXLnXtjx99N1yLmP8lg=
+X-Google-Smtp-Source: ABdhPJw33DMLO5nhruTe39EwtFqoN0p5ChHNjNStSIgB2mfKMWYOMWgmszZ9gVZGv8u/G8ePecunCg==
+X-Received: by 2002:aa7:808e:0:b0:493:f071:274f with SMTP id v14-20020aa7808e000000b00493f071274fmr8956959pff.37.1637173899691;
+        Wed, 17 Nov 2021 10:31:39 -0800 (PST)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id t4sm366581pfj.13.2021.11.17.10.31.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 10:31:39 -0800 (PST)
+Message-ID: <61954a8b.1c69fb81.d860b.1c4b@mx.google.com>
+Date:   Wed, 17 Nov 2021 10:31:39 -0800 (PST)
+X-Google-Original-Date: Wed, 17 Nov 2021 18:31:37 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20211117144602.341592498@linuxfoundation.org>
+Subject: RE: [PATCH 5.10 000/569] 5.10.80-rc4 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/fpu branch of tip:
+On Wed, 17 Nov 2021 15:46:44 +0100, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.10.80 release.
+> There are 569 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 19 Nov 2021 14:44:50 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.80-rc4.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Commit-ID:     0fe4ff885f8a50082d9dc241b657472894caba16
-Gitweb:        https://git.kernel.org/tip/0fe4ff885f8a50082d9dc241b657472894caba16
-Author:        Noah Goldstein <goldstein.w.n@gmail.com>
-AuthorDate:    Tue, 16 Nov 2021 17:14:21 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 16 Nov 2021 17:19:41 +01:00
+5.10.80-rc4 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
-x86/fpu: Correct AVX512 state tracking
-
-Add a separate, local mask for tracking AVX512 usage which does not
-include the opmask xfeature set. Opmask registers usage does not cause
-frequency throttling so it is a completely unnecessary false positive.
-
-While at it, carve it out into a separate function to keep that
-abomination extracted out.
-
- [ bp: Rediff and cleanup ontop of 5.16-rc1. ]
-
-Signed-off-by: Noah Goldstein <goldstein.w.n@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lore.kernel.org/r/20210920053951.4093668-1-goldstein.w.n@gmail.com
----
- arch/x86/kernel/fpu/core.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
-
-diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index 8ea306b..dd3777a 100644
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -99,6 +99,19 @@ bool irq_fpu_usable(void)
- EXPORT_SYMBOL(irq_fpu_usable);
- 
- /*
-+ * Track AVX512 state use because it is known to slow the max clock
-+ * speed of the core.
-+ */
-+static void update_avx_timestamp(struct fpu *fpu)
-+{
-+
-+#define AVX512_TRACKING_MASK	(XFEATURE_MASK_ZMM_Hi256 | XFEATURE_MASK_Hi16_ZMM)
-+
-+	if (fpu->fpstate->regs.xsave.header.xfeatures & AVX512_TRACKING_MASK)
-+		fpu->avx512_timestamp = jiffies;
-+}
-+
-+/*
-  * Save the FPU register state in fpu->fpstate->regs. The register state is
-  * preserved.
-  *
-@@ -116,13 +129,7 @@ void save_fpregs_to_fpstate(struct fpu *fpu)
- {
- 	if (likely(use_xsave())) {
- 		os_xsave(fpu->fpstate);
--
--		/*
--		 * AVX512 state is tracked here because its use is
--		 * known to slow the max clock speed of the core.
--		 */
--		if (fpu->fpstate->regs.xsave.header.xfeatures & XFEATURE_MASK_AVX512)
--			fpu->avx512_timestamp = jiffies;
-+		update_avx_timestamp(fpu);
- 		return;
- 	}
- 
