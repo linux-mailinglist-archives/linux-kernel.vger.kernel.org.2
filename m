@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24F2454089
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 07:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B015245408E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 07:03:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233433AbhKQGDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 01:03:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52830 "EHLO
+        id S233473AbhKQGEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 01:04:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233260AbhKQGDB (ORCPT
+        with ESMTP id S230044AbhKQGEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 01:03:01 -0500
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C2DBC061746
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 22:00:03 -0800 (PST)
-Received: by mail-oi1-x233.google.com with SMTP id be32so3932699oib.11
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 22:00:03 -0800 (PST)
+        Wed, 17 Nov 2021 01:04:43 -0500
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43997C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 22:01:45 -0800 (PST)
+Received: by mail-oi1-x229.google.com with SMTP id s139so3921092oie.13
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 22:01:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=daynix-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kSGc4ZU3kMNV4pDWr3dTCqenmyUswpL++6XUnwpYb58=;
-        b=7c7d9HtTbjMh1xMFTx5QGxIrdsXn1JI9YRElbu+ZqHFJsqK2AF17sH/DWoIcAvgO1L
-         FUKjZ6HlMNIsRREeVQH86AcW1VL8HH3mT/9F8Fw09xBw1/cNGqBKlV01Zk9PYpIITM/n
-         1PA5O0SPFyvEnx44UPrNPp2GJyX9kB7wvCzdxZpz/V8DwrCAhaa9ixkAWLRYejYpPfoO
-         hxxvH37k+OMXfLmA5IKJV5bqUhY2ZXlEQsj0KUYy2nxapOOtl3keoGl6u+6R+amyebt4
-         UAdiaraI25ZMwqbwnNvzH+IG/64wWtPcPfRSUuMuePLek4E3SJ+i2cmlWrgQP6M5Hxd1
-         bjQg==
+        bh=VlZH+SjArM/+ypAkd0GkqnF+/8X0/LANVS817tn/Z6M=;
+        b=uh8qtTLsquh/EZx+E9fM9iwATsMXMExVvsfTsH2Dx4lGVp8ngZnDfySMn+twM2jJyZ
+         I/M5mWXJDABMPKRcDGW69gLwYu4xB6BTxQayphm/gDensbt5NojFMj9o6A9mnvkL1M11
+         hHOPCtglWmO/FgubeQ/StiOjmeZ/xeXsHBbyXCBEcyBlqIyYjc3mqTaMLjK+svLedqG6
+         r0PMecG3kbB4CQMkJSoP4CIQtNyKHdU/Sn8GfvPsP0sDnY05RejHXZbg4i4Xin67Dzlc
+         DhRvSYl1Ti/HtCpwOT3vAtg4SAKzYqOEEbfWk7fHDHwPHkdE7Dn18d5xMdzfTDIEHNCB
+         h2yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kSGc4ZU3kMNV4pDWr3dTCqenmyUswpL++6XUnwpYb58=;
-        b=u8wsvYCnvI2AplZmlGx7/U6VifGpG8nKvEPlIxWknXEik1gcfqeBZjmVTnI2Y1GYyW
-         KgslzNLns1a0Ke97G6K/sRgnzKa/grzQVnsqUreEX5tniKiQeQJduyprqXcZjwpb1yyo
-         NdBnyU0+z6E82MLhqOTmEncqbuQ4+09PdZ9jgfJEU8xxHB1xaGLvHmUu3tshPlUg0a3S
-         hwu8+zEpNBKpQQd2PxC4/Px6mB+VhjSKqjBN5ln1paDFF0rA95WXIuY66nW+QwpXPjAb
-         gbdJ4SatBve8G7JGbcBL5NYUrb/txDTQypFEl9SUHi0eu7YHpR0B98jzh/vfG9bJGVeK
-         hs4A==
-X-Gm-Message-State: AOAM531bws51FqKgSFDbFvDH2uvWKJ9bJjwuNhxv1soV81IshDtP7SP/
-        KuR2uXqsv1QPPNKCNtwg+vwzetams2QCkRHoEeNprA==
-X-Google-Smtp-Source: ABdhPJyY/WqLFoKyV7MDHc0Omfxi30xLTaWZemyxDXwUFuCZxXL/MS1QKFZhNHj9aUUnq4wuTADld82ehMllqGmhACk=
-X-Received: by 2002:a54:4f8f:: with SMTP id g15mr11417825oiy.169.1637128802620;
- Tue, 16 Nov 2021 22:00:02 -0800 (PST)
+        bh=VlZH+SjArM/+ypAkd0GkqnF+/8X0/LANVS817tn/Z6M=;
+        b=WHGejmLRlBhdrHLK8hPXG/VGiNBoH88fMCKwwp6uhSIkKNX06k7iINNTv8hUkYyDiX
+         nP7Puvc5ECT2mwSXYFLqnGq7DI3/Ku0PRl9sZp6K48jwq6UWF4WRK9G3K7//CKNASBvf
+         8s6LVugKJG+mAntgS5rO2HhA1jZpB0LzVTwH5jzxo4MW+tJlB+lbpwiZh9ZxFdgNaCWX
+         L9I8qZMKJN7xZ8Ff8A0s0rVV0wQAugHPZL2RvcgvMMW3z+dH9UEHm3Kl3Q7kZDOn6oYh
+         gKxXbIm5uLz3m7J4bDF5RP98aOCEHywXiuiKCExSXyIh123R5RkoPVptQT2U1oe20YeP
+         hZ1Q==
+X-Gm-Message-State: AOAM530ZIwOwFO0/iciVSacGYgiOQ3LD3x+xmAr1bgdijdgh73uZDxE7
+        Va0jsV+z28QyXs3Jhbd3SQVbMw73TSLzBSHDE176xQ==
+X-Google-Smtp-Source: ABdhPJzRwMxi5Vhil0B4DEUfMMuTRi3VY7MLIEvgxCf9w8HuketPjUr+oWOSEK3nH61Fv5xXVvtfGeDjDQDbTozG4bM=
+X-Received: by 2002:a05:6808:171c:: with SMTP id bc28mr58754765oib.18.1637128904727;
+ Tue, 16 Nov 2021 22:01:44 -0800 (PST)
 MIME-Version: 1.0
-References: <20211031045959.143001-1-andrew@daynix.com> <20211031045959.143001-3-andrew@daynix.com>
- <20211101044051-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20211101044051-mutt-send-email-mst@kernel.org>
+References: <20211031045959.143001-1-andrew@daynix.com> <20211031045959.143001-2-andrew@daynix.com>
+ <20211101043723-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20211101043723-mutt-send-email-mst@kernel.org>
 From:   Andrew Melnichenko <andrew@daynix.com>
 Date:   Wed, 17 Nov 2021 08:00:00 +0200
-Message-ID: <CABcq3pGuM6tD3P+zfBE6SZ3y7uxV5wYUZZ6GVqRsydtHkeTM2Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/4] drivers/net/virtio_net: Changed mergeable buffer
- length calculation.
+Message-ID: <CABcq3pH8PCJwDQyusjQbW4Ds08YMjn8NSRM+Cf6NjA0hZHHMtw@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/4] drivers/net/virtio_net: Fixed vheader to use v1.
 To:     "Michael S. Tsirkin" <mst@redhat.com>
 Cc:     Jason Wang <jasowang@redhat.com>, davem@davemloft.net,
         kuba@kernel.org, virtualization@lists.linux-foundation.org,
@@ -64,66 +63,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 10:44 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+On Mon, Nov 1, 2021 at 10:40 AM Michael S. Tsirkin <mst@redhat.com> wrote:
 >
-> On Sun, Oct 31, 2021 at 06:59:57AM +0200, Andrew Melnychenko wrote:
-> > Now minimal virtual header length is may include the entire v1 header
-> > if the hash report were populated.
+> On Sun, Oct 31, 2021 at 06:59:56AM +0200, Andrew Melnychenko wrote:
+> > The header v1 provides additional info about RSS.
+> > Added changes to computing proper header length.
+> > In the next patches, the header may contain RSS hash info
+> > for the hash population.
 > >
 > > Signed-off-by: Andrew Melnychenko <andrew@daynix.com>
->
-> subject isn't really descriptive. changed it how?
->
-> And I couldn't really decypher what this log entry means either.
->
-
-I'll change it in the next patch.
-So, I've tried to ensure that the v1 header with the hash report will
-be available if required in new patches.
-
 > > ---
-> >  drivers/net/virtio_net.c | 8 +++++---
-> >  1 file changed, 5 insertions(+), 3 deletions(-)
+> >  drivers/net/virtio_net.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
 > >
 > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > index b72b21ac8ebd..abca2e93355d 100644
+> > index 4ad25a8b0870..b72b21ac8ebd 100644
 > > --- a/drivers/net/virtio_net.c
 > > +++ b/drivers/net/virtio_net.c
-> > @@ -393,7 +393,9 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
-> >       hdr_p = p;
+> > @@ -240,13 +240,13 @@ struct virtnet_info {
+> >  };
 > >
-> >       hdr_len = vi->hdr_len;
-> > -     if (vi->mergeable_rx_bufs)
-> > +     if (vi->has_rss_hash_report)
-> > +             hdr_padded_len = sizeof(struct virtio_net_hdr_v1_hash);
-> > +     else if (vi->mergeable_rx_bufs)
-> >               hdr_padded_len = sizeof(*hdr);
-> >       else
-> >               hdr_padded_len = sizeof(struct padded_vnet_hdr);
-> > @@ -1252,7 +1254,7 @@ static unsigned int get_mergeable_buf_len(struct receive_queue *rq,
-> >                                         struct ewma_pkt_len *avg_pkt_len,
-> >                                         unsigned int room)
-> >  {
-> > -     const size_t hdr_len = sizeof(struct virtio_net_hdr_mrg_rxbuf);
-> > +     const size_t hdr_len = ((struct virtnet_info *)(rq->vq->vdev->priv))->hdr_len;
-> >       unsigned int len;
+> >  struct padded_vnet_hdr {
+> > -     struct virtio_net_hdr_mrg_rxbuf hdr;
+> > +     struct virtio_net_hdr_v1_hash hdr;
+> >       /*
+> >        * hdr is in a separate sg buffer, and data sg buffer shares same page
+> >        * with this header sg. This padding makes next sg 16 byte aligned
+> >        * after the header.
+> >        */
+> > -     char padding[4];
+> > +     char padding[12];
+> >  };
 > >
-> >       if (room)
+> >  static bool is_xdp_frame(void *ptr)
 >
-> Is this pointer chasing the best we can do?
+>
+> This is not helpful as a separate patch, just reserving extra space.
+> better squash with the patches making use of the change.
 
-I'll change that.
+Ok.
+
 
 >
-> > @@ -2817,7 +2819,7 @@ static void virtnet_del_vqs(struct virtnet_info *vi)
-> >   */
-> >  static unsigned int mergeable_min_buf_len(struct virtnet_info *vi, struct virtqueue *vq)
-> >  {
-> > -     const unsigned int hdr_len = sizeof(struct virtio_net_hdr_mrg_rxbuf);
-> > +     const unsigned int hdr_len = vi->hdr_len;
-> >       unsigned int rq_size = virtqueue_get_vring_size(vq);
-> >       unsigned int packet_len = vi->big_packets ? IP_MAX_MTU : vi->dev->max_mtu;
-> >       unsigned int buf_len = hdr_len + ETH_HLEN + VLAN_HLEN + packet_len;
+> > @@ -1636,7 +1636,7 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
+> >       const unsigned char *dest = ((struct ethhdr *)skb->data)->h_dest;
+> >       struct virtnet_info *vi = sq->vq->vdev->priv;
+> >       int num_sg;
+> > -     unsigned hdr_len = vi->hdr_len;
+> > +     unsigned int hdr_len = vi->hdr_len;
+> >       bool can_push;
+>
+>
+> if we want this, pls make it a separate patch.
+
+Ok. I've added that change after checkpatch warnings. Technically,
+checkpatch should not fail on the patch without that line.
+
+>
+>
+> >
+> >       pr_debug("%s: xmit %p %pM\n", vi->dev->name, skb, dest);
 > > --
 > > 2.33.1
 >
