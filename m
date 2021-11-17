@@ -2,90 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40554550C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A464550DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 00:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241449AbhKQWxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 17:53:18 -0500
-Received: from gandalf.ozlabs.org ([150.107.74.76]:49009 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241472AbhKQWxR (ORCPT
+        id S235932AbhKQXCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 18:02:55 -0500
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:38115 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233251AbhKQXCx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:53:17 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HvdRs0XzYz4xdP;
-        Thu, 18 Nov 2021 09:50:17 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1637189417;
-        bh=KsW1X1kk5evjD+0HUEWlOicftXKq0rW0zrC8rFhc0Uc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ufAmuKL/DB/PZcZ53Kyy4qrmhWXUfKutHEBnUQU1wwG6l5vD8MOhtK74jfNoufE/9
-         CVWDOaVlP2Y/S/yxdyYTgV0Ee2aNDR4aWINYjZ1VKoSvLlHsClkMU5bE4RuIqzDt9t
-         hPwVj8I4V0e5pR64NFEQLKuE3DxPCS+aOGoJpTjXQqRVXdQLjXLVxN1I8FOkcCXXqu
-         tLCS2HUw1HBjSbmirwjWiUrsmrSIRbjSqAQ3NTYl55wFaPyVihbqMmSbmEuZYpWddq
-         6PmJ8FaKjAMRfDV5pKHMWCO71s6IuPA3vE2yitkAAFzcIaqmRFjI2AgklEMgFxepru
-         VWiaKctRA3x/Q==
-Date:   Thu, 18 Nov 2021 09:50:14 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Roman Li <Roman.Li@amd.com>,
-        Jasdeep Dhillon <Jasdeep.Dhillon@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the amdgpu tree
-Message-ID: <20211118095014.5210b292@canb.auug.org.au>
+        Wed, 17 Nov 2021 18:02:53 -0500
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 230876000D;
+        Wed, 17 Nov 2021 22:59:51 +0000 (UTC)
+Date:   Wed, 17 Nov 2021 23:59:51 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
+Cc:     robh+dt@kernel.org, linus.walleij@linaro.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com
+Subject: Re: [PATCH 2/2] pinctrl: ocelot: Extend support for lan966x
+Message-ID: <YZWJZzCuzXTVzIJ+@piout.net>
+References: <20211029092703.18886-1-kavyasree.kotagiri@microchip.com>
+ <20211029092703.18886-3-kavyasree.kotagiri@microchip.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/LV=l.5akw6_SaGoFtbsJnex";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211029092703.18886-3-kavyasree.kotagiri@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/LV=l.5akw6_SaGoFtbsJnex
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello Kavya,
 
-Hi all,
+On 29/10/2021 14:57:03+0530, Kavyasree Kotagiri wrote:
+> +	LAN966X_PIN(76),
+> +	LAN966X_PIN(77),
+> +};
+> +
+> +
 
-In commit
+One blank line should be removed
 
-  e2ec2136832f ("drm/amd/display: Fix OLED brightness control on eDP")
+>  static int ocelot_get_functions_count(struct pinctrl_dev *pctldev)
+>  {
+>  	return ARRAY_SIZE(ocelot_function_names);
+> @@ -709,6 +1056,9 @@ static int ocelot_pin_function_idx(struct ocelot_pinctrl *info,
+>  	for (i = 0; i < OCELOT_FUNC_PER_PIN; i++) {
+>  		if (function == p->functions[i])
+>  			return i;
+> +
+> +		if (function == p->a_functions[i])
+> +			return i + OCELOT_FUNC_PER_PIN;
+>  	}
+>  
+>  	return -1;
+> @@ -744,6 +1094,36 @@ static int ocelot_pinmux_set_mux(struct pinctrl_dev *pctldev,
+>  	return 0;
+>  }
+>  
+> +static int lan966x_pinmux_set_mux(struct pinctrl_dev *pctldev,
+> +				  unsigned int selector, unsigned int group)
+> +{
+> +	struct ocelot_pinctrl *info = pinctrl_dev_get_drvdata(pctldev);
+> +	struct ocelot_pin_caps *pin = info->desc->pins[group].drv_data;
+> +	unsigned int p = pin->pin % 32;
+> +	int f;
+> +
+> +	f = ocelot_pin_function_idx(info, group, selector);
+> +	if (f < 0)
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * f is encoded on three bits.
+> +	 * bit 0 of f goes in BIT(pin) of ALT[0], bit 1 of f goes in BIT(pin) of
+> +	 * ALT[1], bit 2 of f goes in BIT(pin) of ALT[2]
+> +	 * This is racy because both registers can't be updated at the same time
 
-Fixes tag
+That's three registers, not two so I guess this sentence should be
+reworked.
 
-  Fixes: 7fd13baeb7a3a4 ("drm/amd/display: add support for multiple backlig=
-hts")
+> +	 * but it doesn't matter much for now.
+> +	 * Note: ALT0/ALT1/ALT2 are organized specially for 78 gpio targets
+> +	 */
+> +	regmap_update_bits(info->map, REG_ALT(0, info, pin->pin),
+> +			   BIT(p), f << p);
+> +	regmap_update_bits(info->map, REG_ALT(1, info, pin->pin),
+> +			   BIT(p), (f >> 1) << p);
+> +	regmap_update_bits(info->map, REG_ALT(2, info, pin->pin),
+> +			   BIT(p), (f >> 2) << p);
+> +
 
-has these problem(s):
+I would have thought the hardware would be fixed because you now have 78
+pins and this probably will get worse over time. This is really a poor
+choice of interface as now you will get two transient states instead of
+one.
 
-  - Subject does not match target commit subject
-    Just use
-	git log -1 --format=3D'Fixes: %h ("%s")'
+> +	return 0;
+> +}
+> +
+>  #define REG(r, info, p) ((r) * (info)->stride + (4 * ((p) / 32)))
+>  
+>  static int ocelot_gpio_set_direction(struct pinctrl_dev *pctldev,
+> @@ -774,6 +1154,23 @@ static int ocelot_gpio_request_enable(struct pinctrl_dev *pctldev,
+>  	return 0;
+>  }
+>  
+> +static int lan966x_gpio_request_enable(struct pinctrl_dev *pctldev,
+> +				       struct pinctrl_gpio_range *range,
+> +				       unsigned int offset)
+> +{
+> +	struct ocelot_pinctrl *info = pinctrl_dev_get_drvdata(pctldev);
+> +	unsigned int p = offset % 32;
+> +
+> +	regmap_update_bits(info->map, REG_ALT(0, info, offset),
+> +			   BIT(p), 0);
+> +	regmap_update_bits(info->map, REG_ALT(1, info, offset),
+> +			   BIT(p), 0);
+> +	regmap_update_bits(info->map, REG_ALT(2, info, offset),
+> +			   BIT(p), 0);
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct pinmux_ops ocelot_pmx_ops = {
+>  	.get_functions_count = ocelot_get_functions_count,
+>  	.get_function_name = ocelot_get_function_name,
+> @@ -783,6 +1180,15 @@ static const struct pinmux_ops ocelot_pmx_ops = {
+>  	.gpio_request_enable = ocelot_gpio_request_enable,
+>  };
+>  
+> +static const struct pinmux_ops lan966x_pmx_ops = {
+> +	.get_functions_count = ocelot_get_functions_count,
+> +	.get_function_name = ocelot_get_function_name,
+> +	.get_function_groups = ocelot_get_function_groups,
+> +	.set_mux = lan966x_pinmux_set_mux,
+> +	.gpio_set_direction = ocelot_gpio_set_direction,
+> +	.gpio_request_enable = lan966x_gpio_request_enable,
+> +};
+> +
+>  static int ocelot_pctl_get_groups_count(struct pinctrl_dev *pctldev)
+>  {
+>  	struct ocelot_pinctrl *info = pinctrl_dev_get_drvdata(pctldev);
+> @@ -1074,6 +1480,14 @@ static struct pinctrl_desc sparx5_desc = {
+>  	.npins = ARRAY_SIZE(sparx5_pins),
+>  	.pctlops = &ocelot_pctl_ops,
+>  	.pmxops = &ocelot_pmx_ops,
+> +};
+> +
+> +static struct pinctrl_desc lan966x_desc = {
+> +	.name = "lan966x-pinctrl",
+> +	.pins = lan966x_pins,
+> +	.npins = ARRAY_SIZE(lan966x_pins),
+> +	.pctlops = &ocelot_pctl_ops,
+> +	.pmxops = &lan966x_pmx_ops,
+>  	.confops = &ocelot_confops,
+>  	.owner = THIS_MODULE,
+>  };
+> @@ -1114,6 +1528,7 @@ static int ocelot_create_group_func_map(struct device *dev,
+>  	return 0;
+>  }
+>  
+> +
 
-Also, please keep all the commit message tags toether at the end of the
-commit message.
+Useless blank line
 
---=20
-Cheers,
-Stephen Rothwell
+>  static int ocelot_pinctrl_register(struct platform_device *pdev,
+>  				   struct ocelot_pinctrl *info)
+>  {
+> @@ -1337,6 +1752,7 @@ static const struct of_device_id ocelot_pinctrl_of_match[] = {
+>  	{ .compatible = "mscc,ocelot-pinctrl", .data = &ocelot_desc },
+>  	{ .compatible = "mscc,jaguar2-pinctrl", .data = &jaguar2_desc },
+>  	{ .compatible = "microchip,sparx5-pinctrl", .data = &sparx5_desc },
+> +	{ .compatible = "microchip,lan966x-pinctrl", .data = &lan966x_desc },
+>  	{},
+>  };
+>  
+> -- 
+> 2.17.1
+> 
 
---Sig_/LV=l.5akw6_SaGoFtbsJnex
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGVhyYACgkQAVBC80lX
-0GyBOwf+INbtaK1gAC7H7fLZpSLEz0voAbvoLrrZGfYbhY1BmJi9AJan/F5+SdiG
-aq/ELMO/1QurG/3HYIJ8Eqq8mCAYj1eg2jUO1O7Nhc5jVlL/SXNUpdSa+PQ5DsfG
-Tr+QRhRKuDVgwH0Hb8fz80PV32z0jQzTeN6LPQbEhfYuvxMflq13b66Icjzm414e
-tH+OfoKropiRTLfEr9uysXpgmcR36RnddKx6wrcKrTTNG1rH6dPcQvTXv9TD4z71
-nYV455yk+6AXQ+WILQSCblj+RWWUTCfSdcb+aj8+w6fcjOfyjALoUzCJ4K2q7zq5
-94sUWneHAvZhHsK6l6wjF7YFGqvOmQ==
-=CEG7
------END PGP SIGNATURE-----
-
---Sig_/LV=l.5akw6_SaGoFtbsJnex--
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
