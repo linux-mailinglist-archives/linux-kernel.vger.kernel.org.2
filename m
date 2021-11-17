@@ -2,171 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4740F455068
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA1045505C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:22:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241209AbhKQW3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 17:29:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53338 "EHLO
+        id S241172AbhKQWZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 17:25:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241210AbhKQW31 (ORCPT
+        with ESMTP id S235955AbhKQWZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:29:27 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5503C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:26:27 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id i9so4255323qki.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:26:27 -0800 (PST)
+        Wed, 17 Nov 2021 17:25:43 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 955FDC061570;
+        Wed, 17 Nov 2021 14:22:44 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id d72-20020a1c1d4b000000b00331140f3dc8so3273047wmd.1;
+        Wed, 17 Nov 2021 14:22:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fIFSYR5oDtZ1H7mQhwPY7SO4mu/8yyQ4jYLgc+T4ALA=;
-        b=eSOuZnJjuMjK36y5fHVBBRDur2pOngcl3oSYSzJMrOHfXx6JnF3zo/hWBpR5MWuRfX
-         VcLUVzEXV9XWMlXji0pDX4CugICZoX8ncXoqctAGFFO5fyZkXWaE+oa7U1TZ0p3xY4L2
-         1iqQRXllHjS5NhjPpF2vGlFKm/F3YLUCGH0MrC+8XgPR/2asfBfKBMzRtbvZzIRqzAks
-         nyvIlQKljHI8Tvl5rIUOWdfzoaseOW1DGzgUrCiNzbg2yCv1XvsII8zGgBObdWrlXRSR
-         kefZpsRk2f7Kbec1QwfwtdCsCEk1jtOdUGiyyYx1UOu7wCg49/N0trID4GMq74oxrZFM
-         RXhg==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mwlYRnJRhyUd0Ty1gYVfbTyggiaaMRX+fkzIV9N7tT8=;
+        b=bFGtBekwIyD0wNwcj+WiwwQ7uWKNSgUvW1qT+CSRBd63xgOJFEjNsm07rav7dRniM4
+         1PzMwAzqXtiYNOyGDMpWCg0ex30Illk0HaJWME11/Lxc0MfOnyla9jsanpwgjuKojdSr
+         +MLxVRtU4HWF3fOI63ZcKvzYzEr/Q2Sy86OefzZW9fRzHemi+SnLqU8CrVnh6BzRs87H
+         1eADtA1FKHnP8fuMs3MoITt6Zkqfr0JPAf/54rHjT3Htab8tXOC3BL4Z8W+CJkGIeKWd
+         gmlph2ZJ6KVKoZ8DMInwjG9xMcXpMwsTcQEzOWS9K5L++tqqFZ+sm3rhIirnCRd9nhTD
+         q9DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fIFSYR5oDtZ1H7mQhwPY7SO4mu/8yyQ4jYLgc+T4ALA=;
-        b=yrMUNyjxf4ADFPyxOnF0+JBl8FI7UuNhXCagu93s/bVKuppvyo7S2i29bJpmLzI7XC
-         0qIj58K0142bT9v3dpENxOjoUIgeUrjya7d/r4xL3+WdvELnMvR2pHg3RmdYrglWUDPQ
-         OTPiOH6rk7g2iRPryXnpUXF8AdKO9YkMEWfbcZNM9rvz9GjRA9I6hmd2c9VcFieaN+0e
-         jjPaIpIixvulnqkM8PwCg42MuOxNfZ8IeC7GpFR8y3KmxDs8KhUeX1pTYzSAhwCb4lRf
-         Nx5greCwUHxr5RTTxgcFpJSHnRG0gcBAjh9aQg1mlQeSVxcoL0dVRA9fLM+QWUV1l+Ug
-         HYFg==
-X-Gm-Message-State: AOAM532m+EOVyWLDObW5sKpC8LfzNfhHEw6mEOaqVHJ0fNdyCGULn/3+
-        dJ09zOuCBz6c806VRAKOW8BY6Q==
-X-Google-Smtp-Source: ABdhPJwrJwV+j4r6Zh2jHJONUfkSMV0uwfBez4JbCEa+YqYEe6r92h01GGVXtnJ5TgtQ8o2dRre9Jw==
-X-Received: by 2002:a05:620a:208c:: with SMTP id e12mr5459888qka.445.1637187987082;
-        Wed, 17 Nov 2021 14:26:27 -0800 (PST)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id c24sm687479qkp.43.2021.11.17.14.26.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 14:26:26 -0800 (PST)
-Date:   Wed, 17 Nov 2021 17:26:25 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Ammar Faizi <ammarfaizi2@gnuweeb.org>,
-        Drew DeVault <sir@cmpwn.com>, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org,
-        io_uring Mailing List <io-uring@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
-Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
-Message-ID: <YZWBkZHdsh5LtWSG@cmpxchg.org>
-References: <20211028080813.15966-1-sir@cmpwn.com>
- <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
- <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
- <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
- <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mwlYRnJRhyUd0Ty1gYVfbTyggiaaMRX+fkzIV9N7tT8=;
+        b=fW3QcRtWWmpXumm0IbGAhjrBCi2GVEy6IfGaXgPZ5InWELRiEO98fQoZ/6hfXFb8aF
+         WNpIa5ONT8aSTztSuQr77Tqb2qX4TYMR707+vyiPE6J4wgAeNVaZpmSoVNQiUvsbjZ3C
+         wh7WgGpXi1VRp7dloclJnIa75Y+naQLygOEeslK9BBgPTJMesoRVi9GePJ94OdR3O/U1
+         zGT/lsyjWQyBe2L8Y9jJutIFnb+KoiJSwYOpoTirl3SzVAqcj/QXfkCqX9ruyMREhlGc
+         8FVoszbUdso5khsPs4vG+dAVmnuuOcOoJgCQv+JSO3tMssB64o5pXiCBPCEEg4mPnFJx
+         RgUQ==
+X-Gm-Message-State: AOAM5330NPqGo1V9ZevnXbWB1oB5jfJtlQFt4RF80WUM656kaqKAW9Fk
+        /JyUTZ5wi+WCkpiSZtppzGF9yGw580gQVtCq7NU=
+X-Google-Smtp-Source: ABdhPJz8mhkdwzrUhNDhYZ+5LsBGHu8usMBbpvRQFUY3sKEpdkbf/e2ABAowrlGzo9nz4Y5f/AstdH0/wy05kI904Lg=
+X-Received: by 2002:a05:600c:4e51:: with SMTP id e17mr3954574wmq.127.1637187763032;
+ Wed, 17 Nov 2021 14:22:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
+References: <20211103234018.4009771-1-briannorris@chromium.org>
+ <20211103164002.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid> <CAD=FV=XOda7vwUPY+WpGLzMwwrbrhQ9RqBQw4LhPwD6Sqhf7vw@mail.gmail.com>
+In-Reply-To: <CAD=FV=XOda7vwUPY+WpGLzMwwrbrhQ9RqBQw4LhPwD6Sqhf7vw@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Wed, 17 Nov 2021 14:27:47 -0800
+Message-ID: <CAF6AEGt6CdoXsuKgfoUYUuq1V7_besLCEkmfGQRZD3hdr-ym7Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] drm/input_helper: Add new input-handling helper
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Brian Norris <briannorris@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-input@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 08:35:30PM -0800, Andrew Morton wrote:
-> On Sat, 6 Nov 2021 14:12:45 +0700 Ammar Faizi <ammarfaizi2@gnuweeb.org> wrote:
-> 
-> > On 11/6/21 2:05 PM, Drew DeVault wrote:
-> > > Should I send a v2 or is this email sufficient:
-> > > 
-> > > Signed-off-by: Drew DeVault <sir@cmpwn.com>
-> > 
-> > Oops, I missed akpm from the CC list. Added Andrew.
-> > 
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Ref: https://lore.kernel.org/io-uring/CFII8LNSW5XH.3OTIVFYX8P65Y@taiga/
-> 
-> Let's cc linux-mm as well.
-> 
-> 
-> Unfortunately I didn't know about this until Nov 4, which was formally
-> too late for 5.16.  I guess I could try to sneak it past Linus if
-> someone were to send me some sufficiently convincing words explaining
-> the urgency.
-> 
-> I'd also be interested in seeing feedback from the MM developers.
-> 
-> And a question: rather than messing around with a constant which will
-> need to be increased again in a couple of years, can we solve this one
-> and for all?  For example, permit root to set the system-wide
-> per-process max mlock size and depend upon initscripts to do this
-> appropriately.
+On Fri, Nov 12, 2021 at 4:52 PM Doug Anderson <dianders@chromium.org> wrote:
+>
+> Hi,
+>
+> On Wed, Nov 3, 2021 at 4:40 PM Brian Norris <briannorris@chromium.org> wrote:
+> >
+> > A variety of applications have found it useful to listen to
+> > user-initiated input events to make decisions within a DRM driver, given
+> > that input events are often the first sign that we're going to start
+> > doing latency-sensitive activities:
+> >
+> >  * Panel self-refresh: software-directed self-refresh (e.g., with
+> >    Rockchip eDP) is especially latency sensitive. In some cases, it can
+> >    take 10s of milliseconds for a panel to exit self-refresh, which can
+> >    be noticeable. Rockchip RK3399 Chrome OS systems have always shipped
+> >    with an input_handler boost, that preemptively exits self-refresh
+> >    whenever there is input activity.
+> >
+> >  * GPU drivers: on GPU-accelerated desktop systems, we may need to
+> >    render new frames immediately after user activity. Powering up the
+> >    GPU can take enough time that it is worthwhile to start this process
+> >    as soon as there is input activity. Many Chrome OS systems also ship
+> >    with an input_handler boost that powers up the GPU.
+> >
+> > This patch provides a small helper library that abstracts some of the
+> > input-subsystem details around picking which devices to listen to, and
+> > some other boilerplate. This will be used in the next patch to implement
+> > the first bullet: preemptive exit for panel self-refresh.
+> >
+> > Bits of this are adapted from code the Android and/or Chrome OS kernels
+> > have been carrying for a while.
+> >
+> > Signed-off-by: Brian Norris <briannorris@chromium.org>
+> > ---
+> >
+> >  drivers/gpu/drm/Makefile           |   3 +-
+> >  drivers/gpu/drm/drm_input_helper.c | 143 +++++++++++++++++++++++++++++
+> >  include/drm/drm_input_helper.h     |  22 +++++
+> >  3 files changed, 167 insertions(+), 1 deletion(-)
+> >  create mode 100644 drivers/gpu/drm/drm_input_helper.c
+> >  create mode 100644 include/drm/drm_input_helper.h
+> >
+> > diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
+> > index 0dff40bb863c..378761685b47 100644
+> > --- a/drivers/gpu/drm/Makefile
+> > +++ b/drivers/gpu/drm/Makefile
+> > @@ -49,7 +49,8 @@ drm_kms_helper-y := drm_bridge_connector.o drm_crtc_helper.o drm_dp_helper.o \
+> >                 drm_scdc_helper.o drm_gem_atomic_helper.o \
+> >                 drm_gem_framebuffer_helper.o \
+> >                 drm_atomic_state_helper.o drm_damage_helper.o \
+> > -               drm_format_helper.o drm_self_refresh_helper.o
+> > +               drm_format_helper.o drm_self_refresh_helper.o \
+> > +               drm_input_helper.o
+>
+> Note that the Makefile part conflicts with drm-misc-next right now.
+> It's not very hard to resolve, but since this would likely land there
+> maybe it'd be nice to resolve?
+>
+> Other than that, this seems sane to me and much better than copying
+> this between places, so assuming that the build problems get resolved
+> then I'm happy.
+>
+> I guess one random thought I had is whether there would be an
+> appropriate place to put this that _wasn't_ in DRM. I still wonder
+> whether we'll ever try to upstream something like the cpufreq boost
+> driver that we're carrying around and using in Chrome OS. If so, it
+> would want to use these same helpers and it'd be pretty awkward for it
+> to have to reach into DRM. ...any chance we could just land these
+> helpers somewhere more generic?
+>
 
-My take is that as long as the kernel sets some limit per default on
-this at all, it should be one that works for common workloads. Today
-this isn't the case.
+One of the problems with cpu input boost is the cooldown period
+(anti-spacebar-heater) aspect vs relatively short boost period.. in
+that it is short enough that you need to consider that certain keys
+(ie. modifier keys) should boost on key-release instead of key-press.
 
-We've recently switched our initscripts at FB to set the default to
-0.1% of total RAM. The impetus for this was a subtle but widespread
-issue where we failed to mmap the PERF_COUNT_SW_TASK_CLOCK event
-counter (perf event mmap also uses RLIMIT_MEMLOCK!) and silently fell
-back to the much less efficient clock_gettime() syscall.
+That isn't really an issue for triggers to exit PSR, or what we use
+input-boost for downstream in drm/msm (where it isn't really boost,
+just an early trigger to start powering up the GPU if it is suspended)
 
-Because the failure mode was subtle and annoying, we didn't just want
-to raise the limit, but raise it so that no reasonable application
-would run into it, and only buggy or malicious ones would.
-
-And IMO, that's really what rlimits should be doing: catching clearly
-bogus requests, not trying to do fine-grained resource control. For
-more reasonable overuse that ends up causing memory pressure, the OOM
-killer will do the right thing since the pages still belong to tasks.
-
-So 0.1% of the machine seemed like a good default formula for
-that. And it would be a bit more future proof too.
-
-On my 32G desktop machine, that would be 32M. For comparison, the
-default process rlimit on that machine is ~120k, which comes out to
-~2G worth of kernel stack, which also isn't reclaimable without OOM...
-
-> From: Drew DeVault <sir@cmpwn.com>
-> Subject: Increase default MLOCK_LIMIT to 8 MiB
-> 
-> This limit has not been updated since 2008, when it was increased to 64
-> KiB at the request of GnuPG.  Until recently, the main use-cases for this
-> feature were (1) preventing sensitive memory from being swapped, as in
-> GnuPG's use-case; and (2) real-time use-cases.  In the first case, little
-> memory is called for, and in the second case, the user is generally in a
-> position to increase it if they need more.
-> 
-> The introduction of IOURING_REGISTER_BUFFERS adds a third use-case:
-> preparing fixed buffers for high-performance I/O.  This use-case will take
-> as much of this memory as it can get, but is still limited to 64 KiB by
-> default, which is very little.  This increases the limit to 8 MB, which
-> was chosen fairly arbitrarily as a more generous, but still conservative,
-> default value.
-> 
-> It is also possible to raise this limit in userspace.  This is easily
-> done, for example, in the use-case of a network daemon: systemd, for
-> instance, provides for this via LimitMEMLOCK in the service file; OpenRC
-> via the rc_ulimit variables.  However, there is no established userspace
-> facility for configuring this outside of daemons: end-user applications do
-> not presently have access to a convenient means of raising their limits.
-> 
-> The buck, as it were, stops with the kernel.  It's much easier to address
-> it here than it is to bring it to hundreds of distributions, and it can
-> only realistically be relied upon to be high-enough by end-user software
-> if it is more-or-less ubiquitous.  Most distros don't change this
-> particular rlimit from the kernel-supplied default value, so a change here
-> will easily provide that ubiquity.
-> 
-> Link: https://lkml.kernel.org/r/20211028080813.15966-1-sir@cmpwn.com
-> Signed-off-by: Drew DeVault <sir@cmpwn.com>
-> Acked-by: Jens Axboe <axboe@kernel.dk>
-> Acked-by: Cyril Hrubis <chrubis@suse.cz>
-> Cc: Pavel Begunkov <asml.silence@gmail.com>
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-
-As per above, I think basing it off of RAM size would be better, but
-this increase is overdue given all the new users beyond mlock(), and
-8M is much better than the current value.
+BR,
+-R
