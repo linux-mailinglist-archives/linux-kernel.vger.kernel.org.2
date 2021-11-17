@@ -2,127 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B015245408E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 07:03:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 232E5454092
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 07:03:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233473AbhKQGEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 01:04:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbhKQGEn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 01:04:43 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43997C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 22:01:45 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id s139so3921092oie.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 22:01:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VlZH+SjArM/+ypAkd0GkqnF+/8X0/LANVS817tn/Z6M=;
-        b=uh8qtTLsquh/EZx+E9fM9iwATsMXMExVvsfTsH2Dx4lGVp8ngZnDfySMn+twM2jJyZ
-         I/M5mWXJDABMPKRcDGW69gLwYu4xB6BTxQayphm/gDensbt5NojFMj9o6A9mnvkL1M11
-         hHOPCtglWmO/FgubeQ/StiOjmeZ/xeXsHBbyXCBEcyBlqIyYjc3mqTaMLjK+svLedqG6
-         r0PMecG3kbB4CQMkJSoP4CIQtNyKHdU/Sn8GfvPsP0sDnY05RejHXZbg4i4Xin67Dzlc
-         DhRvSYl1Ti/HtCpwOT3vAtg4SAKzYqOEEbfWk7fHDHwPHkdE7Dn18d5xMdzfTDIEHNCB
-         h2yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VlZH+SjArM/+ypAkd0GkqnF+/8X0/LANVS817tn/Z6M=;
-        b=WHGejmLRlBhdrHLK8hPXG/VGiNBoH88fMCKwwp6uhSIkKNX06k7iINNTv8hUkYyDiX
-         nP7Puvc5ECT2mwSXYFLqnGq7DI3/Ku0PRl9sZp6K48jwq6UWF4WRK9G3K7//CKNASBvf
-         8s6LVugKJG+mAntgS5rO2HhA1jZpB0LzVTwH5jzxo4MW+tJlB+lbpwiZh9ZxFdgNaCWX
-         L9I8qZMKJN7xZ8Ff8A0s0rVV0wQAugHPZL2RvcgvMMW3z+dH9UEHm3Kl3Q7kZDOn6oYh
-         gKxXbIm5uLz3m7J4bDF5RP98aOCEHywXiuiKCExSXyIh123R5RkoPVptQT2U1oe20YeP
-         hZ1Q==
-X-Gm-Message-State: AOAM530ZIwOwFO0/iciVSacGYgiOQ3LD3x+xmAr1bgdijdgh73uZDxE7
-        Va0jsV+z28QyXs3Jhbd3SQVbMw73TSLzBSHDE176xQ==
-X-Google-Smtp-Source: ABdhPJzRwMxi5Vhil0B4DEUfMMuTRi3VY7MLIEvgxCf9w8HuketPjUr+oWOSEK3nH61Fv5xXVvtfGeDjDQDbTozG4bM=
-X-Received: by 2002:a05:6808:171c:: with SMTP id bc28mr58754765oib.18.1637128904727;
- Tue, 16 Nov 2021 22:01:44 -0800 (PST)
+        id S233491AbhKQGFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 01:05:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53398 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233538AbhKQGEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 01:04:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5709A613A3;
+        Wed, 17 Nov 2021 06:01:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637128917;
+        bh=gfX116bxT6Kmb5OIElWbXiP6Js2wUjVHW/NaDgV7ROo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c3PR1BTSPOR5c8cxKgOsV1Mzxw5nXrdOVSzYdUmpdTvNFV/ksYmWD/TA/kBVzhG7u
+         eD4xa/KWzYDc/SMhIHOCZACMjD8J9lHwczlEEZjyLkEn19v0cAHu1p5IdXpZxqmMVl
+         0aH696CfBclS8HgkuKyNmoLU/x/hmclAr2j7Cbao=
+Date:   Wed, 17 Nov 2021 07:01:45 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sandy Harris <sandyinchina@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: Re: [PATCH 1/8] Replace memset() with memzero_explicit()
+Message-ID: <YZSaybga3KV/fimg@kroah.com>
+References: <CACXcFm=kwziZ5Etdevu0uq_t5qy0NbGY753WfLvnwkMqtU9Tvg@mail.gmail.com>
+ <YZObImtJITs1ZfUc@kroah.com>
+ <CACXcFm=bPdoLqYHEUpeZEQEULVGW6ej4ESHX+vMdeGfvjc51tg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211031045959.143001-1-andrew@daynix.com> <20211031045959.143001-2-andrew@daynix.com>
- <20211101043723-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20211101043723-mutt-send-email-mst@kernel.org>
-From:   Andrew Melnichenko <andrew@daynix.com>
-Date:   Wed, 17 Nov 2021 08:00:00 +0200
-Message-ID: <CABcq3pH8PCJwDQyusjQbW4Ds08YMjn8NSRM+Cf6NjA0hZHHMtw@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/4] drivers/net/virtio_net: Fixed vheader to use v1.
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Jason Wang <jasowang@redhat.com>, davem@davemloft.net,
-        kuba@kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yuri Benditovich <yuri.benditovich@daynix.com>,
-        Yan Vugenfirer <yan@daynix.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACXcFm=bPdoLqYHEUpeZEQEULVGW6ej4ESHX+vMdeGfvjc51tg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 10:40 AM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> On Sun, Oct 31, 2021 at 06:59:56AM +0200, Andrew Melnychenko wrote:
-> > The header v1 provides additional info about RSS.
-> > Added changes to computing proper header length.
-> > In the next patches, the header may contain RSS hash info
-> > for the hash population.
-> >
-> > Signed-off-by: Andrew Melnychenko <andrew@daynix.com>
-> > ---
-> >  drivers/net/virtio_net.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > index 4ad25a8b0870..b72b21ac8ebd 100644
-> > --- a/drivers/net/virtio_net.c
-> > +++ b/drivers/net/virtio_net.c
-> > @@ -240,13 +240,13 @@ struct virtnet_info {
-> >  };
-> >
-> >  struct padded_vnet_hdr {
-> > -     struct virtio_net_hdr_mrg_rxbuf hdr;
-> > +     struct virtio_net_hdr_v1_hash hdr;
-> >       /*
-> >        * hdr is in a separate sg buffer, and data sg buffer shares same page
-> >        * with this header sg. This padding makes next sg 16 byte aligned
-> >        * after the header.
-> >        */
-> > -     char padding[4];
-> > +     char padding[12];
-> >  };
-> >
-> >  static bool is_xdp_frame(void *ptr)
->
->
-> This is not helpful as a separate patch, just reserving extra space.
-> better squash with the patches making use of the change.
+On Wed, Nov 17, 2021 at 11:08:45AM +0800, Sandy Harris wrote:
+> On Tue, Nov 16, 2021 at 7:51 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> 
+> > Have you looked at the output of the compiler to see if this really is
+> > needed or not?
+> 
+> No. To do that right you'd need to look at (at least) gcc & clang,
+> multiple architectures (cross-compiled & native) & various levels
+> of optimisation. I just looked at the C code.
 
-Ok.
+You should at least look, right?
 
+> > And what exactly are you zeroing out that could be read afterward
+> > somehow?
+> 
+> Whatever it is, the person who wrote the code thought it was
+> worth zeroing out with memset(). The only question is whether
+> it is safer to use memzero_explicit().
+> 
+> Granted in many cases this will not matter unless the kernel
+> is compiled at some optimisation level that does cross-function
+> analysis so it might be "smart" enough to optimise out the
+> memset(). Also granted it does not matter unless an attacker
+> can look inside the running kernel & if  he or she has that
+> level of privilege, then you have much else to worry about.
 
->
-> > @@ -1636,7 +1636,7 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
-> >       const unsigned char *dest = ((struct ethhdr *)skb->data)->h_dest;
-> >       struct virtnet_info *vi = sq->vq->vdev->priv;
-> >       int num_sg;
-> > -     unsigned hdr_len = vi->hdr_len;
-> > +     unsigned int hdr_len = vi->hdr_len;
-> >       bool can_push;
->
->
-> if we want this, pls make it a separate patch.
+As Ard said, there should not be any such "optimization" as this is not
+something that any non-broken compiler should do.
 
-Ok. I've added that change after checkpatch warnings. Technically,
-checkpatch should not fail on the patch without that line.
+> Still, it seemed safer to me to use memzero_explicit() in
+> these cases.
 
->
->
-> >
-> >       pr_debug("%s: xmit %p %pM\n", vi->dev->name, skb, dest);
-> > --
-> > 2.33.1
->
+I do not see why these cases are any different than any other call to
+memset() is, because this data is not on the stack so nothing should be
+removed by the compiler, right?
+
+thanks,
+
+greg k-h
