@@ -2,109 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127EF454953
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:54:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1834454955
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbhKQO5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 09:57:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34608 "EHLO
+        id S232320AbhKQO53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 09:57:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbhKQO5U (ORCPT
+        with ESMTP id S231857AbhKQO51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 09:57:20 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D56C061570;
-        Wed, 17 Nov 2021 06:54:22 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id r10-20020a056830080a00b0055c8fd2cebdso5154630ots.6;
-        Wed, 17 Nov 2021 06:54:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mRIERqiL2aQ0BoDY3j7j+k2cL8eLVgdknTW4xHUEnr0=;
-        b=Rl9BjezFX12nDSvg2bkfLnCeXHPBEAPUn9WxUHFo0nRh6SGni1K5qiyr99QIrs1bpe
-         62aTpfICjg8Zsy5H5suUAXLWE75zJuO9A0wdIJcQTIKS1mLrv1V8Lb5Pvph4lukM2tuW
-         stIGposKu27fTj7KF1LFqc9fl8AUKDczr3lnJiylKhWI4eu6ITs0ZHTWrojVBZzZ703A
-         fyYqv7QqQ7IXATM2gD0EYM5CewndvPZk4pgjWwRwm40Zgx6uMBJBKHx5iDW1EK1dmEsk
-         4OGN6tOoGul+wS6IaV9nFOaxpOFO0kvMm7cPa5sjtmCyhIs3bkmks+iH79SSiphuU+NI
-         Aciw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=mRIERqiL2aQ0BoDY3j7j+k2cL8eLVgdknTW4xHUEnr0=;
-        b=lcXggMXd1o7uFHWKhw7er0qsieyedmvVXznqbzMOwrnadvyNfaMozY4eAOCgqxwv7v
-         kypPGs9Fxg6kG1N/vdNBvFzDP8Ny3lfibzpN92rGju+nWuluiqT/pJiS/oILsXy9BIra
-         GtCn2QQyohDHAcYXr8FzsULAmLGsuskoxtPJdc+T93ybOMADEnAC5188a9DiSwjtBVUp
-         YITg2X61rFaqnTtkRW5rWTGjNYNx+LnEqdA4D2iHTtHztLRHZpHEhnAP2j+YLYvwEG3w
-         5MFY/UugdYhMcSsyxYQJoWaUaJ60QFS7DXyltETXptmC5ubnSmwFegxOym5Gh8c8qAKU
-         8E/Q==
-X-Gm-Message-State: AOAM532mRfGscpIBNbE4Li4b4LJH0GRdmmU8XtH1xGFNYdt1l9telrBG
-        5RwIOeZQgP9FGG10A8MkWMlpTlbScaE=
-X-Google-Smtp-Source: ABdhPJxos1r2c7kQ8c2sS0mxFVpaldjdGE5gduJRoQP8vchF15SfaN3/MRPiPT+pg75C1rJWMycU8g==
-X-Received: by 2002:a9d:7a8c:: with SMTP id l12mr13790271otn.84.1637160861487;
-        Wed, 17 Nov 2021 06:54:21 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id bl33sm1889210oib.47.2021.11.17.06.54.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 06:54:20 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 17 Nov 2021 06:54:19 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.15 000/923] 5.15.3-rc3 review
-Message-ID: <20211117145419.GA189081@roeck-us.net>
-References: <20211117101657.463560063@linuxfoundation.org>
- <81192f2a-afe7-1eee-847a-f8103a6d7cd1@roeck-us.net>
- <YZUVKX0KraPWiXx1@kroah.com>
+        Wed, 17 Nov 2021 09:57:27 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D6AC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 06:54:29 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mnMKQ-00016X-SK; Wed, 17 Nov 2021 15:54:26 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mnMKN-000MiE-Mf; Wed, 17 Nov 2021 15:54:22 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mnMKM-0004NQ-FT; Wed, 17 Nov 2021 15:54:22 +0100
+Date:   Wed, 17 Nov 2021 15:54:19 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     cgel.zte@gmail.com
+Cc:     alexandre.belloni@bootlin.com, deng.changcheng@zte.com.cn,
+        lee.jones@linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
+        ludovic.desroches@microchip.com, nicolas.ferre@microchip.com,
+        thierry.reding@gmail.com, zealci@zte.com.cn
+Subject: Re: [PATCH V2] pwm: Use div64_ul instead of do_div
+Message-ID: <20211117145419.b4wb6zp42rjdpgn5@pengutronix.de>
+References: <20211117112400.bkscb2pyavonpfsn@pengutronix.de>
+ <20211117124653.161699-1-deng.changcheng@zte.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="bnfcbwayrcwki5lr"
 Content-Disposition: inline
-In-Reply-To: <YZUVKX0KraPWiXx1@kroah.com>
+In-Reply-To: <20211117124653.161699-1-deng.changcheng@zte.com.cn>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 03:43:53PM +0100, Greg Kroah-Hartman wrote:
-> On Wed, Nov 17, 2021 at 06:13:47AM -0800, Guenter Roeck wrote:
-> > On 11/17/21 2:19 AM, Greg Kroah-Hartman wrote:
-> > > This is the start of the stable review cycle for the 5.15.3 release.
-> > > There are 923 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> > > 
-> > > Responses should be made by Fri, 19 Nov 2021 10:14:52 +0000.
-> > > Anything received after that time might be too late.
-> > > 
-> > 
-> > Build is still broken for m68k.
-> > 
-> > drivers/block/ataflop.c: In function 'atari_cleanup_floppy_disk':
-> > drivers/block/ataflop.c:2050:17: error: implicit declaration of function 'blk_cleanup_disk'
-> > drivers/block/ataflop.c: In function 'atari_floppy_init':
-> > drivers/block/ataflop.c:2065:15: error: implicit declaration of function '__register_blkdev'
-> > 
-> > Are you sure you want to carry that patch series into v5.10.y ? I had to revert
-> > pretty much everything to get it to compile. It seems to me that someone should
-> > provide a working backport if the series is needed/wanted in v5.10.y.
-> 
-> Wow, I dropped the wrong patch :(
-> 
-... and I replied to the wrong announcement. Yes, this was for 5.10.y.
-Sorry, and thanks for catching.
 
-Guenter
+--bnfcbwayrcwki5lr
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> No, I don't want to carry that series, let me go rip out everything for
-> ataflop.c now.  If someone cares about this for 5.10.y, I'll take a
-> backport series, but really, they should just go use 5.15.y instead.
-> 
-> I'll push out a -rc4 now.
-> 
-> thanks,
-> 
-> greg k-h
+On Wed, Nov 17, 2021 at 12:46:53PM +0000, cgel.zte@gmail.com wrote:
+> From: Changcheng Deng <deng.changcheng@zte.com.cn>
+>=20
+> do_div() does a 64-by-32 division. If the divisor is unsigned long, using
+> div64_ul can avoid truncation to 32-bit.
+>=20
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+> ---
+>  drivers/pwm/pwm-atmel-hlcdc.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/pwm/pwm-atmel-hlcdc.c b/drivers/pwm/pwm-atmel-hlcdc.c
+> index a43b2babc809..1ae3d73b9832 100644
+> --- a/drivers/pwm/pwm-atmel-hlcdc.c
+> +++ b/drivers/pwm/pwm-atmel-hlcdc.c
+> @@ -60,7 +60,7 @@ static int atmel_hlcdc_pwm_apply(struct pwm_chip *c, st=
+ruct pwm_device *pwm,
+>  				return -EINVAL;
+> =20
+>  			clk_period_ns =3D (u64)NSEC_PER_SEC * 256;
+> -			do_div(clk_period_ns, clk_freq);
+> +			clk_period_ns =3D div64_ul(clk_period_ns, clk_freq);
+>  		}
+> =20
+>  		/* Errata: cannot use slow clk on some IP revisions */
+> @@ -72,7 +72,7 @@ static int atmel_hlcdc_pwm_apply(struct pwm_chip *c, st=
+ruct pwm_device *pwm,
+>  				return -EINVAL;
+> =20
+>  			clk_period_ns =3D (u64)NSEC_PER_SEC * 256;
+> -			do_div(clk_period_ns, clk_freq);
+> +			clk_period_ns =3D div64_ul(clk_period_ns, clk_freq);
+
+The code change is good now, the commit log is as confusing as in v1.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--bnfcbwayrcwki5lr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGVF5gACgkQwfwUeK3K
+7AnjUggAhXaPzpoPxrVPzZgvAUNVH3kKTY6crrPcmxxN/YCnf/+fOb+dQzKUwe+G
+rt9eIvjGKgWqphuhVYfMImD9+QLzLLeiSOOjddPPE4W30QuKYegeB/8nG/IJHXgg
+vlRwZ3FOKJBPelEJ1W3QFl4gvuuM2U+ucjkx840f1jln0A0Oz+Vhn3yvqZ7Ct1x8
+GgzUpS9x3BcB2XBIyPjpDWEUeAp0gZazAsfLi5UEE40RQ8l6OimhLsTghA8Z0hQF
+ldgzW7bvNr5LHEqYhCXcfBWSwIhMkkhUO/CSqt1GH1qXYx89VV5FawQvzW+Fk9iI
+ilWpkClvveRUCuUxAqc4iCcKhEeFJg==
+=i0MT
+-----END PGP SIGNATURE-----
+
+--bnfcbwayrcwki5lr--
