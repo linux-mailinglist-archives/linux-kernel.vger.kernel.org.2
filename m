@@ -2,82 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B6A455086
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:31:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A747D455089
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:31:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241300AbhKQWeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 17:34:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241339AbhKQWeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:34:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27DC861B51;
-        Wed, 17 Nov 2021 22:31:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637188281;
-        bh=uU2qHnUEljTCEgcQnVLhefzFnphaBzkPX4DWASgLNyg=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=ijHAK4jp/W3+yP3SjYIwyudnH1gsROgiOIUR6o3QBOWhju89RKd1Nf+EzfqVJ3y5G
-         D8aXK9pihpRlXkeH0IzZydkb/bpVeLKzxye4sWYcMLTfA0psDu9HFDc4Hw+oVfhapc
-         ZhTthq0YfMMAIdzXhZ44ZMjKWO5PhEIg6kz8ql7L6npP+CosNDQIPdqPfUDAOjIVVE
-         xx1uJ4aUU3/35gP2rNnUlDBknO10Q7Wf3CqG5aptbx1I1IrtpOoBkXHnK7EJkp8esd
-         aoIsottl3SoS4aYhuL6HOepm20J6JVlkg3G29pDprOFW8l0o3oBhnkazG89fTUjoUp
-         6ur/vZ+GudlnA==
-From:   Mark Brown <broonie@kernel.org>
-To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Olivier Moysan <olivier.moysan@foss.st.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20211117104404.3832-1-olivier.moysan@foss.st.com>
-References: <20211117104404.3832-1-olivier.moysan@foss.st.com>
-Subject: Re: [PATCH] ASoC: stm32: i2s: fix 32 bits channel length without mclk
-Message-Id: <163718827890.136789.10813827893934217729.b4-ty@kernel.org>
-Date:   Wed, 17 Nov 2021 22:31:18 +0000
+        id S241366AbhKQWeg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Nov 2021 17:34:36 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:29270 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241328AbhKQWe2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 17:34:28 -0500
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-275-_Tp0z3ELP4CvBamUzus0mQ-1; Wed, 17 Nov 2021 22:31:22 +0000
+X-MC-Unique: _Tp0z3ELP4CvBamUzus0mQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.26; Wed, 17 Nov 2021 22:31:21 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.026; Wed, 17 Nov 2021 22:31:21 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Noah Goldstein' <goldstein.w.n@gmail.com>
+CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v4] arch/x86: Improve 'rep movs{b|q}' usage in
+ memmove_64.S
+Thread-Topic: [PATCH v4] arch/x86: Improve 'rep movs{b|q}' usage in
+ memmove_64.S
+Thread-Index: AQHX2/aBIpegHmlt3EiJPKc4pU+GYawITRxw
+Date:   Wed, 17 Nov 2021 22:31:21 +0000
+Message-ID: <bc0297a1b97a4b129fa3ea1b155f6062@AcuMS.aculab.com>
+References: <20211101044955.2295495-1-goldstein.w.n@gmail.com>
+ <20211117210245.843374-1-goldstein.w.n@gmail.com>
+In-Reply-To: <20211117210245.843374-1-goldstein.w.n@gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Nov 2021 11:44:04 +0100, Olivier Moysan wrote:
-> Fix divider calculation in the case of 32 bits channel
-> configuration, when no master clock is used.
+From: Noah Goldstein
+> Sent: 17 November 2021 21:03
 > 
-> Fixes: e4e6ec7b127c ("ASoC: stm32: Add I2S driver")
+> Add check for "short distance movsb" for forwards FSRM usage and
+> entirely remove backwards 'rep movsq'. Both of these usages hit "slow
+> modes" that are an order of magnitude slower than usual.
 > 
-> 
+> 'rep movsb' has some noticeable VERY slow modes that the current
+> implementation is either 1) not checking for or 2) intentionally
+> using.
 
-Applied to
+How does this relate to the decision that glibc made a few years
+ago to use backwards 'rep movs' for non-overlapping copies?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
+Did they find a different corner case??
 
-Thanks!
+	David
 
-[1/1] ASoC: stm32: i2s: fix 32 bits channel length without mclk
-      commit: 424fe7edbed18d47f7b97f7e1322a6f8969b77ae
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
