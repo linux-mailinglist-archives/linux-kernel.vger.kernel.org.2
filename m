@@ -2,59 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C4B4543B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:28:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC3E4543BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:28:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235141AbhKQJam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 04:30:42 -0500
-Received: from comms.puri.sm ([159.203.221.185]:51406 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235107AbhKQJad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 04:30:33 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 5B7B5DF734;
-        Wed, 17 Nov 2021 01:27:35 -0800 (PST)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Oa6fksCSCQFO; Wed, 17 Nov 2021 01:27:34 -0800 (PST)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     rmfrfs@gmail.com, laurent.pinchart@ideasonboard.com,
-        mchehab@kernel.org, robh@kernel.org, shawnguo@kernel.org
-Cc:     kernel@pengutronix.de, kernel@puri.sm, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: [PATCH 2/2] dt-bindings: media: document imx8mq support for imx7-csi
-Date:   Wed, 17 Nov 2021 10:27:10 +0100
-Message-Id: <20211117092710.3084034-2-martin.kepplinger@puri.sm>
-In-Reply-To: <20211117092710.3084034-1-martin.kepplinger@puri.sm>
-References: <20211117092710.3084034-1-martin.kepplinger@puri.sm>
+        id S235227AbhKQJbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 04:31:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235206AbhKQJal (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 04:30:41 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98591C061570;
+        Wed, 17 Nov 2021 01:27:43 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id gf14-20020a17090ac7ce00b001a7a2a0b5c3so4732416pjb.5;
+        Wed, 17 Nov 2021 01:27:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=1+VHYM+VQHC92EZ7E24FJNE6AIhzR8b240RPsn1FAO0=;
+        b=F8FM+HKa2pLRQjWM2YjJ1PViS7VgIORwkDHOfqgHbMcINwuzPEmoR/Ic/kYtKcXPKo
+         WJVyQXswO+SWnMAouAtsv7XS/TxXHLLXIjUOJUdJ+bG3mkeWr7M8AVhHiBr1NFI4SuNf
+         tGhWWsVcAHlu3yWC8mfvQ8IEcib9fXMaxbXdFolTSVJfdI/AwgageVfS2eNEVicbK9Dc
+         EcYiQUba0KqDMZVM37RumlLfulYXuws1wm15jTi/vEjZZB9C2AEPdnO+fbDyOfAvCmfc
+         yuw3Vvgc3cuScdkzAIVWUYvX0GUWQIRa3O9Zo7Oh7WsR8dNKtZYwpk6rFDFgODWOk4mH
+         xZ9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=1+VHYM+VQHC92EZ7E24FJNE6AIhzR8b240RPsn1FAO0=;
+        b=oogFvcDVUWsL2D3xCtgcptWcuOXsGqegWfPEVTLAb4egqdjYC6Mu7OQY1czmePFzat
+         oyeO/io0dpvTytQ6cnOnEyoIytKBOIzAlRQeZ7DmULQee50d+OOnQsXeLNEtCmU7Zozr
+         zS4RT3auQm1icVgcgqZg6FuiIl9VqaP/pLPjT/akVIeBOz/1BFSJ+MOomNhIUxWA/mju
+         HN62e3oOAe0Iq+4afhMocd3u4AcvzZyP6VYk0xucCm2UTdJNVSpiAZN0K5nhVKoddXOD
+         9rxFwqO8CP3x3lVfoID3djDQ38DGsVvThdUVOaTIu2D8iP46PUi8dnLpO+zN/Gli3ESx
+         PHgQ==
+X-Gm-Message-State: AOAM532Q8QaChq0KRC2Wm4Ei23WmRdJ9q2Sb09ye5m+DEB7CNkhHmh61
+        Eoix1JM9G6g4hG9mEBqKi0Q/LpNtOunjsmUi4Yk=
+X-Google-Smtp-Source: ABdhPJyg6z0h9SCC5Z9siGVhLUvDQI7//1UF/wwQ/k8fUMLWbJXpL3po8R8A0G2lhNY3oltqaWJYXw==
+X-Received: by 2002:a17:90a:3d41:: with SMTP id o1mr8005394pjf.215.1637141262828;
+        Wed, 17 Nov 2021 01:27:42 -0800 (PST)
+Received: from mraturi-mbp.jnpr.net ([116.197.184.13])
+        by smtp.gmail.com with ESMTPSA id y8sm22894917pfi.56.2021.11.17.01.27.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 01:27:42 -0800 (PST)
+Date:   Wed, 17 Nov 2021 14:57:35 +0530
+From:   Manish <manraturi25@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: AER Errors
+Message-ID: <YZTIGBSFTeAdMWPj@mraturi-mbp.jnpr.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the fsl,imx8mq-csi compatible string to the bindings for nxp,imx7-csi
-since the driver explicitly handles that now.
+Hi,
 
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
----
- Documentation/devicetree/bindings/media/nxp,imx7-csi.yaml | 1 +
- 1 file changed, 1 insertion(+)
+Could someone please explain the meaning of these strings:
 
-diff --git a/Documentation/devicetree/bindings/media/nxp,imx7-csi.yaml b/Documentation/devicetree/bindings/media/nxp,imx7-csi.yaml
-index 5922a2795167..4f7b78265336 100644
---- a/Documentation/devicetree/bindings/media/nxp,imx7-csi.yaml
-+++ b/Documentation/devicetree/bindings/media/nxp,imx7-csi.yaml
-@@ -17,6 +17,7 @@ properties:
-   compatible:
-     oneOf:
-       - enum:
-+          - fsl,imx8mq-csi
-           - fsl,imx7-csi
-           - fsl,imx6ul-csi
-       - items:
--- 
-2.30.2
+static const char *aer_agent_string[] = {
+"Receiver ID",
+"Requester ID",
+"Completer ID",
+"Transmitter ID"
+};
 
+Like if we are receiving the below error:
+
+[  957.912490] pci 0000:30:00.0: AER: PCIe Bus Error:
+severity=Uncorrected (Non-Fatal), type=Transaction Layer, (Requester
+ID)
+
+
+Then does it mean the error is received by port 30:00.0 or it is
+generated by this port.
+
+Thanks for the help.
