@@ -2,132 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6949C454C64
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:46:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F02454C69
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239591AbhKQRtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 12:49:39 -0500
-Received: from foss.arm.com ([217.140.110.172]:33122 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232034AbhKQRti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 12:49:38 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CCE52D6E;
-        Wed, 17 Nov 2021 09:46:39 -0800 (PST)
-Received: from [10.57.82.45] (unknown [10.57.82.45])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 85D453F5A1;
-        Wed, 17 Nov 2021 09:46:38 -0800 (PST)
-Message-ID: <a2b45243-7e0a-a2ac-4e14-5256a3e7abb4@arm.com>
-Date:   Wed, 17 Nov 2021 17:46:33 +0000
+        id S239604AbhKQRuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 12:50:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239594AbhKQRuB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 12:50:01 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE67C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 09:47:02 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id fv9-20020a17090b0e8900b001a6a5ab1392so3238108pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 09:47:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HSLtB6Q7QNH9F1W7qlW0Hp58Qwigu0M5uYUCRsiHwC8=;
+        b=i91S0zxnZ2YjxCPE0ezujuZtsD9n0tH0L43A/22KOp7ipN94InVR2Wn0r3oyPNEke2
+         9U36PmooJOjzVOMUgdHQUrGD+/HUbs9bDIUbqrIcPIucW/CT/hXC4E17CNHwGF9gsA6Q
+         n39tnJHoumxIa4IUC5lQqVHghzCUZb8Gj1I7JRn0oqu+yFbTDItRaizjIVARrMXsV9zx
+         29QUfojA+FKZBQoT/AQVPGKHXn5tHivqH8FxcTMyPpg5YR9McwJz/iPoRol57/V5xgAd
+         2TE7zpV127mIdx4KGSDkFbt6yuGtMMp9ytLEjLtJJR3x2TRLd7mBU5e10xqBtV7TOTFx
+         pr5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HSLtB6Q7QNH9F1W7qlW0Hp58Qwigu0M5uYUCRsiHwC8=;
+        b=NlsqpgVnhG9Z07tIY3H4G9Ie4Pidr+4YE5q4Q1mWCHs/zsMlCceVlh9pi7CtpYwuHZ
+         zHLa0lVAy85mRfV5MZjqrhJt7Et9bQz44Bm1VS/lGmx0bfVTr/TaplMwOXz3BIqOKdu5
+         +9XQYYaAWGtutVMS81w7gOTlnvd+T5nHF9YjH1Tmk2Rv3tFnn+nXb88NLX8fMhcKBS/1
+         e4mfza5MTqvoatzOOkBk36aMU9NmvHh6NvEgIgeNBdN9FJbEDDo/2MM3oI2QLwOdnpxr
+         OjMqTAgBHCaFND7p+Hqz5vYF0q1Xh/WFPh+GkG1UJGv1c+8BTwnuKFq8TokAQrN6VHxB
+         CWMg==
+X-Gm-Message-State: AOAM530KJXJo3DDabGpqS1P4c2TDehVf79TcWyfCKq/h21o8aKvASkfH
+        Ht0NgHCmJ7OBoGyJMTRJ6Ek6QhnYNIY7CK7ZiAWCqQ==
+X-Google-Smtp-Source: ABdhPJzuoVg8TZNtBfzM3itZiL5K5WGkgTiWXW2BerW+z4FhVVCEGPuw+dKwS7itfZfVHqVMZTme1WDz3avKyVVCez4=
+X-Received: by 2002:a17:90a:b88d:: with SMTP id o13mr1693460pjr.39.1637171221769;
+ Wed, 17 Nov 2021 09:47:01 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH] iommu/io-pgtable-arm: Fix table descriptor paddr
- formatting
-Content-Language: en-GB
-To:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
-        Will Deacon <will@kernel.org>
-Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20211117171213.243584-1-marcan@marcan.st>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20211117171213.243584-1-marcan@marcan.st>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211117163809.1441845-1-pbonzini@redhat.com> <20211117163809.1441845-5-pbonzini@redhat.com>
+In-Reply-To: <20211117163809.1441845-5-pbonzini@redhat.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Wed, 17 Nov 2021 10:46:48 -0700
+Message-ID: <CAMkAt6odbAGZ-LgK7yefnNRgoAAs3ekvR2_sZpjTiv_6mfwRKg@mail.gmail.com>
+Subject: Re: [PATCH 4/4] KVM: SEV: Do COPY_ENC_CONTEXT_FROM with both VMs locked
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        seanjc@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-17 17:12, Hector Martin wrote:
-> Table descriptors were being installed without properly formatting the
-> address using paddr_to_iopte, which does not match up with the
-> iopte_deref in __arm_lpae_map. This is incorrect for the LPAE pte
-> format, as it does not handle the high bits properly.
+On Wed, Nov 17, 2021 at 9:38 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> Now that we have a facility to lock two VMs with deadlock
+> protection, use it for the creation of mirror VMs as well.  One of
+> COPY_ENC_CONTEXT_FROM(dst, src) and COPY_ENC_CONTEXT_FROM(src, dst)
+> would always fail, so the combination is nonsensical and it is okay to
+> return -EBUSY if it is attempted.
+>
+> This sidesteps the question of what happens if a VM is
+> MOVE_ENC_CONTEXT_FROM'd at the same time as it is
+> COPY_ENC_CONTEXT_FROM'd: the locking prevents that from
+> happening.
+>
+> Cc: Peter Gonda <pgonda@google.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 
-Oh, I guess whatever system it was tested on can't have exercised it all
-that thoroughly. IIRC I couldn't test it myself since at the time none
-of the Fast Model builds with SMMUs actually implemented any memory
-above 48 bits.
+Acked-by: Peter Gonda <pgonda@google.com>
 
-> This was found on Apple T6000 DARTs, which require a new pte format
-> (different shift); adding support for that to
-> paddr_to_iopte/iopte_to_paddr caused it to break badly, as even <48-bit
-> addresses would end up incorrect in that case.
-
-...I look forward to not wanting to look at that patch :)
-
-> Signed-off-by: Hector Martin <marcan@marcan.st>
 > ---
->   drivers/iommu/io-pgtable-arm.c | 14 +++++++-------
->   1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
-> index dd9e47189d0d..b636e2737607 100644
-> --- a/drivers/iommu/io-pgtable-arm.c
-> +++ b/drivers/iommu/io-pgtable-arm.c
-> @@ -315,12 +315,12 @@ static int arm_lpae_init_pte(struct arm_lpae_io_pgtable *data,
->   static arm_lpae_iopte arm_lpae_install_table(arm_lpae_iopte *table,
->   					     arm_lpae_iopte *ptep,
->   					     arm_lpae_iopte curr,
-> -					     struct io_pgtable_cfg *cfg)
-> +					     struct arm_lpae_io_pgtable *data)
->   {
+>  arch/x86/kvm/svm/sev.c | 68 ++++++++++++++++--------------------------
+>  1 file changed, 26 insertions(+), 42 deletions(-)
+>
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index f9256ba269e6..47d54df7675c 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -1548,6 +1548,9 @@ static int sev_lock_two_vms(struct kvm *dst_kvm, struct kvm *src_kvm)
+>         struct kvm_sev_info *dst_sev = &to_kvm_svm(dst_kvm)->sev_info;
+>         struct kvm_sev_info *src_sev = &to_kvm_svm(src_kvm)->sev_info;
+>
+> +       if (dst_kvm == src_kvm)
+> +               return -EINVAL;
+> +
 
-Please just define a local "cfg" variable here like in most other
-places, to avoid the rest of the churn in this function. Other than
-that,
+Worth adding a migrate/mirror from self fails tests in
+test_sev_(migrate|mirror)_parameters()? I guess it's already covered
+by "the source cannot be SEV enabled" test cases.
 
-Acked-by: Robin Murphy <robin.murphy@arm.com>
-
-Also,
-
-Fixes: 6c89928ff7a0 ("iommu/io-pgtable-arm: Support 52-bit physical address")
-
-Thanks,
-Robin.
-(currently elbow-deep in other parts of io-pgtable-arm...)
-
->   	arm_lpae_iopte old, new;
->   
-> -	new = __pa(table) | ARM_LPAE_PTE_TYPE_TABLE;
-> -	if (cfg->quirks & IO_PGTABLE_QUIRK_ARM_NS)
-> +	new = paddr_to_iopte(__pa(table), data) | ARM_LPAE_PTE_TYPE_TABLE;
-> +	if (data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_NS)
->   		new |= ARM_LPAE_PTE_NSTABLE;
->   
->   	/*
-> @@ -332,11 +332,11 @@ static arm_lpae_iopte arm_lpae_install_table(arm_lpae_iopte *table,
->   
->   	old = cmpxchg64_relaxed(ptep, curr, new);
->   
-> -	if (cfg->coherent_walk || (old & ARM_LPAE_PTE_SW_SYNC))
-> +	if (data->iop.cfg.coherent_walk || (old & ARM_LPAE_PTE_SW_SYNC))
->   		return old;
->   
->   	/* Even if it's not ours, there's no point waiting; just kick it */
-> -	__arm_lpae_sync_pte(ptep, 1, cfg);
-> +	__arm_lpae_sync_pte(ptep, 1, &data->iop.cfg);
->   	if (old == curr)
->   		WRITE_ONCE(*ptep, new | ARM_LPAE_PTE_SW_SYNC);
->   
-> @@ -380,7 +380,7 @@ static int __arm_lpae_map(struct arm_lpae_io_pgtable *data, unsigned long iova,
->   		if (!cptep)
->   			return -ENOMEM;
->   
-> -		pte = arm_lpae_install_table(cptep, ptep, 0, cfg);
-> +		pte = arm_lpae_install_table(cptep, ptep, 0, data);
->   		if (pte)
->   			__arm_lpae_free_pages(cptep, tblsz, cfg);
->   	} else if (!cfg->coherent_walk && !(pte & ARM_LPAE_PTE_SW_SYNC)) {
-> @@ -592,7 +592,7 @@ static size_t arm_lpae_split_blk_unmap(struct arm_lpae_io_pgtable *data,
->   		__arm_lpae_init_pte(data, blk_paddr, pte, lvl, 1, &tablep[i]);
->   	}
->   
-> -	pte = arm_lpae_install_table(tablep, ptep, blk_pte, cfg);
-> +	pte = arm_lpae_install_table(tablep, ptep, blk_pte, data);
->   	if (pte != blk_pte) {
->   		__arm_lpae_free_pages(tablep, tablesz, cfg);
->   		/*
-> 
+>         /*
+>          * Bail if these VMs are already involved in a migration to avoid
+>          * deadlock between two VMs trying to migrate to/from each other.
+> @@ -1951,76 +1954,57 @@ int svm_vm_copy_asid_from(struct kvm *kvm, unsigned int source_fd)
+>  {
+>         struct file *source_kvm_file;
+>         struct kvm *source_kvm;
+> -       struct kvm_sev_info source_sev, *mirror_sev;
+> +       struct kvm_sev_info *source_sev, *mirror_sev;
+>         int ret;
+>
+>         source_kvm_file = fget(source_fd);
+>         if (!file_is_kvm(source_kvm_file)) {
+>                 ret = -EBADF;
+> -               goto e_source_put;
+> +               goto e_source_fput;
+>         }
+>
+>         source_kvm = source_kvm_file->private_data;
+> -       mutex_lock(&source_kvm->lock);
+> -
+> -       if (!sev_guest(source_kvm)) {
+> -               ret = -EINVAL;
+> -               goto e_source_unlock;
+> -       }
+> +       ret = sev_lock_two_vms(kvm, source_kvm);
+> +       if (ret)
+> +               goto e_source_fput;
+>
+> -       /* Mirrors of mirrors should work, but let's not get silly */
+> -       if (is_mirroring_enc_context(source_kvm) || source_kvm == kvm) {
+> +       /*
+> +        * Mirrors of mirrors should work, but let's not get silly.  Also
+> +        * disallow out-of-band SEV/SEV-ES init if the target is already an
+> +        * SEV guest, or if vCPUs have been created.  KVM relies on vCPUs being
+> +        * created after SEV/SEV-ES initialization, e.g. to init intercepts.
+> +        */
+> +       if (sev_guest(kvm) || !sev_guest(source_kvm) ||
+> +           is_mirroring_enc_context(source_kvm) || kvm->created_vcpus) {
+>                 ret = -EINVAL;
+> -               goto e_source_unlock;
+> +               goto e_unlock;
+>         }
+>
+> -       memcpy(&source_sev, &to_kvm_svm(source_kvm)->sev_info,
+> -              sizeof(source_sev));
+> -
+>         /*
+>          * The mirror kvm holds an enc_context_owner ref so its asid can't
+>          * disappear until we're done with it
+>          */
+> +       source_sev = &to_kvm_svm(source_kvm)->sev_info;
+>         kvm_get_kvm(source_kvm);
+>
+> -       fput(source_kvm_file);
+> -       mutex_unlock(&source_kvm->lock);
+> -       mutex_lock(&kvm->lock);
+> -
+> -       /*
+> -        * Disallow out-of-band SEV/SEV-ES init if the target is already an
+> -        * SEV guest, or if vCPUs have been created.  KVM relies on vCPUs being
+> -        * created after SEV/SEV-ES initialization, e.g. to init intercepts.
+> -        */
+> -       if (sev_guest(kvm) || kvm->created_vcpus) {
+> -               ret = -EINVAL;
+> -               goto e_mirror_unlock;
+> -       }
+> -
+>         /* Set enc_context_owner and copy its encryption context over */
+>         mirror_sev = &to_kvm_svm(kvm)->sev_info;
+>         mirror_sev->enc_context_owner = source_kvm;
+>         mirror_sev->active = true;
+> -       mirror_sev->asid = source_sev.asid;
+> -       mirror_sev->fd = source_sev.fd;
+> -       mirror_sev->es_active = source_sev.es_active;
+> -       mirror_sev->handle = source_sev.handle;
+> +       mirror_sev->asid = source_sev->asid;
+> +       mirror_sev->fd = source_sev->fd;
+> +       mirror_sev->es_active = source_sev->es_active;
+> +       mirror_sev->handle = source_sev->handle;
+> +       ret = 0;
+>         /*
+>          * Do not copy ap_jump_table. Since the mirror does not share the same
+>          * KVM contexts as the original, and they may have different
+>          * memory-views.
+>          */
+>
+> -       mutex_unlock(&kvm->lock);
+> -       return 0;
+> -
+> -e_mirror_unlock:
+> -       mutex_unlock(&kvm->lock);
+> -       kvm_put_kvm(source_kvm);
+> -       return ret;
+> -e_source_unlock:
+> -       mutex_unlock(&source_kvm->lock);
+> -e_source_put:
+> +e_unlock:
+> +       sev_unlock_two_vms(kvm, source_kvm);
+> +e_source_fput:
+>         if (source_kvm_file)
+>                 fput(source_kvm_file);
+>         return ret;
+> --
+> 2.27.0
+>
