@@ -2,115 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C234549BE
+	by mail.lfdr.de (Postfix) with ESMTP id 97B534549BF
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:17:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235569AbhKQPT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 10:19:56 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21516 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232882AbhKQPTx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 10:19:53 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AHF4I2F026628;
-        Wed, 17 Nov 2021 15:16:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=Pdz6EcI3HLQgoDL16do0wFLbHIcHaNdtEDqRgcx1CaA=;
- b=VOJsA9eOXos9wRlklVvDS+O8D30uzNDHYztddMM7qX83ne2QP/faD2zKmFgQdfl/eKio
- Nu3dwrcLIO8i/0XmbGruonIyHiV5dn+gkl33T5Lqo4soqEGL5G8Ru+Ttbe5rT5wH4QpO
- 8aCn4gJytsqfCYQAYzw3j2aWMDVMBZe5jD9nL4k0Sv6PLhiUBF3G4j1y+Jqu4nDTfRPh
- R6bRi0+BiKb05vjI7WmuWOX+Hr3gznOO7n8VTk8xKXt6i32bY0zPpT7SZgzVU+GCGwAF
- RrCcSwNgHVLg3+BA1H9yKetqxEqaPSR68n7dylKSnxp0WNvTvA/Jq01SYVjAH9kRsayy 3Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cd2ed2ymn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Nov 2021 15:16:33 +0000
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AHF6N1G006026;
-        Wed, 17 Nov 2021 15:16:32 GMT
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cd2ed2ykq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Nov 2021 15:16:32 +0000
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AHEqsQJ005654;
-        Wed, 17 Nov 2021 15:16:28 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04fra.de.ibm.com with ESMTP id 3ca50cj1re-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Nov 2021 15:16:28 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AHFGPWT5177946
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Nov 2021 15:16:25 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B4E564C05A;
-        Wed, 17 Nov 2021 15:16:25 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B64B94C062;
-        Wed, 17 Nov 2021 15:16:22 +0000 (GMT)
-Received: from sig-9-65-64-222.ibm.com (unknown [9.65.64.222])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 17 Nov 2021 15:16:22 +0000 (GMT)
-Message-ID: <17ce63cca47d7cc146ab9c5012c7429b1eacf3b4.camel@linux.ibm.com>
-Subject: Re: [PATCH v7 07/17] integrity: Fix warning about missing prototypes
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
-        linux-integrity@vger.kernel.org, dhowells@redhat.com,
-        dwmw2@infradead.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, jarkko@kernel.org, jmorris@namei.org,
-        serge@hallyn.com
-Cc:     keescook@chromium.org, torvalds@linux-foundation.org,
-        weiyongjun1@huawei.com, nayna@linux.ibm.com, ebiggers@google.com,
-        ardb@kernel.org, nramas@linux.microsoft.com, lszubowi@redhat.com,
-        jason@zx2c4.com, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
-        konrad.wilk@oracle.com
-Date:   Wed, 17 Nov 2021 10:16:22 -0500
-In-Reply-To: <20211116001545.2639333-8-eric.snowberg@oracle.com>
-References: <20211116001545.2639333-1-eric.snowberg@oracle.com>
-         <20211116001545.2639333-8-eric.snowberg@oracle.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
+        id S236337AbhKQPT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 10:19:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38386 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232882AbhKQPT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 10:19:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 710E96187F;
+        Wed, 17 Nov 2021 15:16:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637162218;
+        bh=pB4lqAVRZNRN8LRv8NoZj6l+hjrOltxbzFUUVGLwVHM=;
+        h=Date:Subject:To:References:From:In-Reply-To:From;
+        b=MTv2p4kqocm87m2JKh2hfvl5D93Bqgl53WOhUadPuzNbOXCM21BATp6Np4+qMDgx7
+         n8bizARoMEx77vlUUjssiYNeKLYFStBZ2e/WhX9V6vuE/KMbZakVifhqlzKpeHIrOd
+         5r6dAcfDpQ6FjTWgZVoYM4Q5MeIDo4Y823IV/skp4T1htTeQQLOLDwmzn1NXvYkVPo
+         76AC08BM78Otf3l0WoCiik4hrVBlVKPwSpAfg7o7bCLBjC1uyVXzOX824GvN4uJkWR
+         6kpw8rq9krXPInOwstx6hgyW4X74qdAr2W6lGPXsD5BqR1g9scCULLrfyTdQp93KS3
+         uGa3c4dFFf8vg==
+Message-ID: <a28ca53e-f356-baa5-b5c2-968620e81b43@kernel.org>
+Date:   Wed, 17 Nov 2021 23:16:54 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [f2fs-dev] [PATCH 2/6] f2fs: do not expose unwritten blocks to
+ user by DIO
+Content-Language: en-US
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+References: <20211116214510.2934905-1-jaegeuk@kernel.org>
+ <20211116214510.2934905-2-jaegeuk@kernel.org>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <20211116214510.2934905-2-jaegeuk@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: HfmPQ5Ep0dKfngIGkYv3ffjaBYUliVec
-X-Proofpoint-ORIG-GUID: RJG6mAjCvo3K2Ruc7rc7YsKIiHkDElo3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-17_05,2021-11-17_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 mlxscore=0 malwarescore=0 spamscore=0 lowpriorityscore=0
- priorityscore=1501 adultscore=0 bulkscore=0 phishscore=0 clxscore=1015
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111170074
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
-
-On Mon, 2021-11-15 at 19:15 -0500, Eric Snowberg wrote:
-> make W=1 generates the following warning in keyring_handler.c
+On 2021/11/17 5:45, Jaegeuk Kim wrote:
+> DIO preallocates physical blocks before writing data, but if an error occurrs
+> or power-cut happens, we can see block contents from the disk. This patch tries
+> to fix it by 1) turning to buffered writes for DIO into holes, 2) truncating
+> unwritten blocks from error or power-cut.
 > 
-> security/integrity/platform_certs/keyring_handler.c:71:30: warning: no previous prototype for get_handler_for_db [-Wmissing-prototypes]
->  __init efi_element_handler_t get_handler_for_db(const efi_guid_t *sig_type)
->                               ^~~~~~~~~~~~~~~~~~
-> security/integrity/platform_certs/keyring_handler.c:82:30: warning: no previous prototype for get_handler_for_dbx [-Wmissing-prototypes]
->  __init efi_element_handler_t get_handler_for_dbx(const efi_guid_t *sig_type)
->                               ^~~~~~~~~~~~~~~~~~~
-> Add the missing prototypes by including keyring_handler.h.
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+>   fs/f2fs/data.c |  5 ++++-
+>   fs/f2fs/f2fs.h |  5 +++++
+>   fs/f2fs/file.c | 24 +++++++++++++++++++++++-
+>   3 files changed, 32 insertions(+), 2 deletions(-)
 > 
-> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index 3b27fb7daa8b..7ac1a39fcad2 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -1543,8 +1543,11 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
+>   					flag != F2FS_GET_BLOCK_DIO);
+>   				err = __allocate_data_block(&dn,
+>   							map->m_seg_type);
+> -				if (!err)
+> +				if (!err) {
+> +					if (flag == F2FS_GET_BLOCK_PRE_DIO)
+> +						file_need_truncate(inode);
 
-These sorts of fixes, which aren't really dependent on the patch set,
-could be moved to the begining of the patch set.
+We will leave FADVISE_TRUNC_BIT flag in below call path, is this as expected?
 
-Reviewed-by:  Mimi Zohar <zohar@linux.ibm.com>
+- fallocate
+  - expand_inode_data
+   - f2fs_map_blocks(F2FS_GET_BLOCK_PRE_DIO)
 
+Thanks,
+
+>   					set_inode_flag(inode, FI_APPEND_WRITE);
+> +				}
+>   			}
+>   			if (err)
+>   				goto sync_out;
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index be871a79c634..14bea669f87e 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -654,6 +654,7 @@ enum {
+>   #define FADVISE_KEEP_SIZE_BIT	0x10
+>   #define FADVISE_HOT_BIT		0x20
+>   #define FADVISE_VERITY_BIT	0x40
+> +#define FADVISE_TRUNC_BIT	0x80
+>   
+>   #define FADVISE_MODIFIABLE_BITS	(FADVISE_COLD_BIT | FADVISE_HOT_BIT)
+>   
+> @@ -681,6 +682,10 @@ enum {
+>   #define file_is_verity(inode)	is_file(inode, FADVISE_VERITY_BIT)
+>   #define file_set_verity(inode)	set_file(inode, FADVISE_VERITY_BIT)
+>   
+> +#define file_should_truncate(inode)	is_file(inode, FADVISE_TRUNC_BIT)
+> +#define file_need_truncate(inode)	set_file(inode, FADVISE_TRUNC_BIT)
+> +#define file_dont_truncate(inode)	clear_file(inode, FADVISE_TRUNC_BIT)
+> +
+>   #define DEF_DIR_LEVEL		0
+>   
+>   enum {
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index 4bf77a5bf998..ec8de0662437 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -960,10 +960,21 @@ int f2fs_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
+>   		down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+>   		filemap_invalidate_lock(inode->i_mapping);
+>   
+> +		/*
+> +		 * Truncate stale preallocated blocks used by the previous DIO.
+> +		 */
+> +		if (file_should_truncate(inode)) {
+> +			err = f2fs_truncate(inode);
+> +			if (err)
+> +				goto out_unlock;
+> +			file_dont_truncate(inode);
+> +		}
+> +
+>   		truncate_setsize(inode, attr->ia_size);
+>   
+>   		if (attr->ia_size <= old_size)
+>   			err = f2fs_truncate(inode);
+> +out_unlock:
+>   		/*
+>   		 * do not trim all blocks after i_size if target size is
+>   		 * larger than i_size.
+> @@ -4257,6 +4268,13 @@ static int f2fs_preallocate_blocks(struct kiocb *iocb, struct iov_iter *iter)
+>   	/* If it will be an out-of-place direct write, don't bother. */
+>   	if (dio && f2fs_lfs_mode(sbi))
+>   		return 0;
+> +	/*
+> +	 * Don't preallocate holes aligned to DIO_SKIP_HOLES which turns into
+> +	 * buffered IO, if DIO meets any holes.
+> +	 */
+> +	if (dio && i_size_read(inode) &&
+> +		(F2FS_BYTES_TO_BLK(pos) < F2FS_BLK_ALIGN(i_size_read(inode))))
+> +		return 0;
+>   
+>   	/* No-wait I/O can't allocate blocks. */
+>   	if (iocb->ki_flags & IOCB_NOWAIT)
+> @@ -4366,10 +4384,14 @@ static ssize_t f2fs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>   		if (preallocated > 0 && i_size_read(inode) < target_size) {
+>   			down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+>   			filemap_invalidate_lock(inode->i_mapping);
+> -			f2fs_truncate(inode);
+> +			if (!f2fs_truncate(inode))
+> +				file_dont_truncate(inode);
+>   			filemap_invalidate_unlock(inode->i_mapping);
+>   			up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+> +		} else {
+> +			file_dont_truncate(inode);
+>   		}
+> +
+>   		clear_inode_flag(inode, FI_PREALLOCATED_ALL);
+>   
+>   		if (ret > 0)
+> 
