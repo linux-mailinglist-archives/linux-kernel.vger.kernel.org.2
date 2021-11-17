@@ -2,105 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C622D454DD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:25:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 656DD454DD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:26:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239290AbhKQT2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 14:28:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40784 "EHLO
+        id S240448AbhKQT3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 14:29:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230400AbhKQT2a (ORCPT
+        with ESMTP id S230400AbhKQT3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 14:28:30 -0500
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3392FC061570;
-        Wed, 17 Nov 2021 11:25:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Content-Type:
-        References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID
-        :Content-Description; bh=YkneOjORI6FrURlrv+SQ8OZvWiyxno4QJH7uReiSLO0=; b=HRPU
-        UV3UU6dZ5n+4q/WD/aPWIiGQmVE4t6PMHzULIJ79eVqN9ZMaVVErqIyFvpOzm43wRPyCoamzndAEE
-        /mmFWCiwiWSpJPQMzdren2qSaeSLFUEXZAR+XxzU2i42a7q4sK/67/G8AyAqJgSTINiYXFRRUk/5y
-        ROr2fC9HxHy+XAvp78j8PiqN9LCO2Djhqtee5u7bQWaqr8hAjCQYNXcaxs54ImhaN/KXXAt45J6bB
-        AXie7FmEWXNSYeovhRXLm3M4qcgviDIRAy10AxAgSzLqDJnpmR8x1T0GLoaYviu7psFgfqH11UV3W
-        lHnNfsgxwpZKxz6Ej9+avQSWie51xw==;
-Received: from [81.174.171.191] (helo=donbot)
-        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <john@metanate.com>)
-        id 1mnQYb-0004T4-FQ; Wed, 17 Nov 2021 19:25:21 +0000
-Date:   Wed, 17 Nov 2021 19:25:20 +0000
-From:   John Keeping <john@metanate.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] PM: runtime: avoid priority inversion on PREEMPT_RT
-Message-ID: <20211117192520.6b085a1e.john@metanate.com>
-In-Reply-To: <CAJZ5v0hgL6O6mCA4wf5NtmWi7kzA0Lyop4wH0TGDLMricdpiqA@mail.gmail.com>
-References: <20211117183709.1832925-1-john@metanate.com>
-        <CAJZ5v0hgL6O6mCA4wf5NtmWi7kzA0Lyop4wH0TGDLMricdpiqA@mail.gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        Wed, 17 Nov 2021 14:29:07 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D64C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 11:26:08 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id gf14-20020a17090ac7ce00b001a7a2a0b5c3so6071472pjb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 11:26:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=o00hN7MYHRpbM1Hv9SEJY2YSEXemX+i/2bGeSGVdp1w=;
+        b=q3/qEKp7vmZl2Cl4mwb+pWTBMmWTAgURQsBjnglAFmfiL14bi2G0OnV5mLo6gfCYXL
+         5Q23JPhlU5GEFsskmqN6w828H9DFgETKFnbfYXUOLlynXRUY348OpLFhwlUi+bbRHLBI
+         1iBwFe9QD6JOwoi3PlPzCjtKWKqLt6H4+WLtL/8JdrIZfyCRo1art9kMCmJ4zeTWLtKY
+         cqCFdAoSpwwX4hTuvCDHHHWgg4pw0sBLAm1sMuRiqpfN7ft1NFIQFS+zAD0brMgm7QtU
+         phX+EenXax5RjSs22ogWD4u9I0kraZrJkoDiJcYDwK/j2qAuF8feK7+fsUgCfFU5CI80
+         4JVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=o00hN7MYHRpbM1Hv9SEJY2YSEXemX+i/2bGeSGVdp1w=;
+        b=JWl3pbIz2EuY8SEAQdNlaReo8yj0swAItty2hwLTmwfoU8J+vTj3MXLX9+Pos80UQq
+         FaO5IiXhSJOeVetSxAuoPAZ9201n+OTUqt2XlE+l6ovLGEEvcv4FWZErryWDASTEasYs
+         3To1ymJCCHyOs2KXY4w+DF5BMgEjJCH8Bhpchb2/yD/UE8iHuEbVkpunk2YoVeX/Nqrh
+         nynp94ypdGn7FMt4/mizDe4lBGmYm64VNcG0inunPG0QI8Io1LOtKWOnuuudfC7u4bH3
+         EElQd8H4WVv05Q6PVj2OpbbDHGTZPJAFX6YTZotUR73nWJdXus3m8QFZMsIUXNDMcnHy
+         hwrQ==
+X-Gm-Message-State: AOAM5312Q2o1Yw1vf19qNgaVpDE24Q0louJvuKkFsmEDJLtg5WeeEOk7
+        XyWe56kpI2lPDDdJpPFLJVg=
+X-Google-Smtp-Source: ABdhPJwIRMnWmBIHxvO56GOIDUR4lY2QdmERu+Xi+mtxSi4aMcgtHgdCKhzEB7yqvaG7g+7KGKP0GQ==
+X-Received: by 2002:a17:90b:3e84:: with SMTP id rj4mr2465932pjb.199.1637177168405;
+        Wed, 17 Nov 2021 11:26:08 -0800 (PST)
+Received: from makvihas ([103.85.10.92])
+        by smtp.gmail.com with ESMTPSA id i185sm403942pfg.80.2021.11.17.11.26.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 11:26:08 -0800 (PST)
+Date:   Thu, 18 Nov 2021 00:56:05 +0530
+From:   Vihas Mak <makvihas@gmail.com>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org
+Cc:     hpa@zytor.com, linux-kernel@vger.kernel.org, makvihas@gmail.com
+Subject: [PATCH] arch: x86: use swap()
+Message-ID: <20211117192605.GA774211@makvihas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Authenticated: YES
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Nov 2021 19:53:47 +0100
-"Rafael J. Wysocki" <rafael@kernel.org> wrote:
+Cocci gives following warning:
 
-> On Wed, Nov 17, 2021 at 7:37 PM John Keeping <john@metanate.com> wrote:
-> >
-> > With PREEMPT_RT the cpu_relax() loops in rpm_suspend and rpm_resume can
-> > cause unbounded latency if they preempt an asynchronous suspend.  The
-> > main scenario where this can happen is when a realtime thread resumes a
-> > device while it is asynchronously suspending on a worker thread.
-> >
-> > I'm not convinced this can actually happen in the rpm_suspend case, or
-> > at least it's a lot less likely for a synchronous suspend to run at the
-> > same time as an asynchronous suspend, but both functions are updated
-> > here for symmetry.
-> >
-> > For devices setting power.irq_safe, it is possible that RPM functions
-> > will be called with a spinlock held (for example in
-> > pl330_issue_pending()).  This means a normal call to schedule() can't be
-> > used, but to avoid the priority inversion it is necessary to wait and
-> > schedule.  schedule_rtlock() is only available when CONFIG_PREEMPT_RT is
-> > defined, so even though the logic is correct without any preprocessor
-> > guards around schedule_rtlock(), they are necessary for compilation.
-> >
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > Cc: Ingo Molnar <mingo@kernel.org>
-> > Signed-off-by: John Keeping <john@metanate.com>
-> > ---
-> > Changes since v1:
-> > - Use schedule_rtlock() instead of schedule() for PREEMPT_RT & irq_safe
-> > - Rewritten commit description
-> >
-> >  drivers/base/power/runtime.c | 18 ++++++++++++++----
-> >  1 file changed, 14 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-> > index f3de7bfc7f5b..fdf461bfae8c 100644
-> > --- a/drivers/base/power/runtime.c
-> > +++ b/drivers/base/power/runtime.c
-> > @@ -596,7 +596,7 @@ static int rpm_suspend(struct device *dev, int rpmflags)
-> >                         goto out;
-> >                 }
-> >
-> > -               if (dev->power.irq_safe) {
-> > +               if (dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT)) {  
-> 
-> Please add a helper to avoid code duplication related to this (even
-> though there is a small amount of it).
+	arch/x86/kernel/unwind_orc.c:212:19-20: WARNING opportunity for swap()
 
-Ack.  I'd like some feedback on the schedule_rtlock() approach from the
-scheduler & RT people, so I'll wait a bit before sending a v3.
+Fix this by using swap() macro.
+
+Signed-off-by: Vihas Mak <makvihas@gmail.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+---
+ arch/x86/kernel/unwind_orc.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+index a1202536f..a7aaf6bcf 100644
+--- a/arch/x86/kernel/unwind_orc.c
++++ b/arch/x86/kernel/unwind_orc.c
+@@ -196,7 +196,6 @@ static struct orc_entry *cur_orc_table = __start_orc_unwind;
+ static void orc_sort_swap(void *_a, void *_b, int size)
+ {
+ 	struct orc_entry *orc_a, *orc_b;
+-	struct orc_entry orc_tmp;
+ 	int *a = _a, *b = _b, tmp;
+ 	int delta = _b - _a;
+ 
+@@ -208,9 +207,7 @@ static void orc_sort_swap(void *_a, void *_b, int size)
+ 	/* Swap the corresponding .orc_unwind entries: */
+ 	orc_a = cur_orc_table + (a - cur_orc_ip_table);
+ 	orc_b = cur_orc_table + (b - cur_orc_ip_table);
+-	orc_tmp = *orc_a;
+-	*orc_a = *orc_b;
+-	*orc_b = orc_tmp;
++	swap(*orc_a, *orc_b);
+ }
+ 
+ static int orc_sort_cmp(const void *_a, const void *_b)
+-- 
+2.25.1
+
