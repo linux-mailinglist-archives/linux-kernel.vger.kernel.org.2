@@ -2,77 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4CED4540ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 07:36:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 899104540F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 07:37:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233651AbhKQGjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 01:39:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60858 "EHLO
+        id S233669AbhKQGj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 01:39:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233135AbhKQGjB (ORCPT
+        with ESMTP id S233135AbhKQGjZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 01:39:01 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD42C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 22:36:03 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id s139so4099950oie.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 22:36:03 -0800 (PST)
+        Wed, 17 Nov 2021 01:39:25 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C57C061570;
+        Tue, 16 Nov 2021 22:36:27 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id u11so1283030plf.3;
+        Tue, 16 Nov 2021 22:36:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to;
-        bh=Y7Xd9ph0fDKSywYa55tSEaM+V4r5UmEcGXjx4Q25R9U=;
-        b=IVNXIAUC3KPwl7El8I+MErQQuN/F/XfPk53PIjPrOfAPwYM9iy+krBHSX9GaWxWKMc
-         WTEMjd1T2A/DbZfgSuLgNo9STwMgWK3EzF6QtPQIji/5G9ofFvmUCr3oTt3amP8C+i1W
-         loGy4CdWVsn2L5pDG+uJ8fahpxyuakmmT/fn4=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Lk2g9E/UqZh2uMhoLR6EkK47x8ZuyfZNR/2euLyi71Y=;
+        b=mKTrdafpDhDezv5nTtvQwcErLpJmmsBBzk6i+kGnHq6O05J8gQqq984hvR3eD8nOEc
+         1VzD0Vja007MaUAPWwl8Pgm6LfWb6Jf4rNtT6tAEufm7XR/l65qa6XvH9BvEHcrNmEm+
+         62WAZmAOAf2gjrJtoLrpjCu+7KFM8s+3AoR8V5hEihZ2C/xQjYjRMf5X7eVqoYTXRe9+
+         1kZWgREZgSWfkcF/hluNXdatATVMkSFDgZ8awpEAk0K6e58zb2e62kBt6ZPxN1IFKuUe
+         epf9sTRkmeOel+ct0jCgiT2A1vJTN7tYXQ4VQFocgu4cY7F1mt55Oah/QUpRLFsffsA3
+         Ka9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to;
-        bh=Y7Xd9ph0fDKSywYa55tSEaM+V4r5UmEcGXjx4Q25R9U=;
-        b=YxQxXr9V+T/BVSQKksPYVzn7R+h7mjFsTUk37C+mcxtDZCGlsgS5lNPjX1GAi3lIMs
-         NmV4MneYDKPVfZzOSSJKmpdfhQ2xy8uLZ2R3NakUNTCNPXQJZIWoDyoJH+CzLfE8lGuB
-         a0/xHhDjUNTViLsU5BpBtUTbrQM/bsNPCvh+a1YfRqCyRE7q9JT6OKupw1Bd4dGzq0Mg
-         FLP5PXXNTy84DgqCnkiCv9mKuez8rnN1GYewBN5ClWBfXiqmkU1RuArpZT22Kq6qp+QD
-         xqcbSHKnt6HdrX8x1D4rrgFbIxzFULA67cJ6FXlWqUDpSluPv5QXwR/s40BlFeJilbij
-         SQJQ==
-X-Gm-Message-State: AOAM530A3I11JxX3t2DzxR11F62j5Z9d0K//ma4g58THgcBe+ihINfo5
-        GpGzoaPd1ZgAfdCdxU2H4rav/Y8ntv9T4J5Y5Jv/2Q==
-X-Google-Smtp-Source: ABdhPJx/a4FT1Q2CNnTcgMnNb5L2pkUu10+8GtECVUHin1lv4ihG7qvYSPB8yEOF66UrI6B266m6Eh3GlLfMnkyDLjo=
-X-Received: by 2002:a54:4506:: with SMTP id l6mr58749014oil.32.1637130963025;
- Tue, 16 Nov 2021 22:36:03 -0800 (PST)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 16 Nov 2021 22:36:02 -0800
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Lk2g9E/UqZh2uMhoLR6EkK47x8ZuyfZNR/2euLyi71Y=;
+        b=jBW4DkrBfDAnLpNUhMdyVXi939GbujJfsNVBGWuYio3rvhag1clYkW0cahM4Dki98p
+         yZ6T/T9TcG+WxxpCYssrpmtAvb7emYp6EtsGsdQLefmTZJd1tb3SF2Vf8gmDWOw+78+c
+         A1MrTT5gwY+ukMaFYZwAf5KJR14UD4v+ncA/ovg9pBJHGmnxy6hlPXV0OajNtVC8F8qM
+         bdKL7zeF4WFrV5UtHoCAAMh6fkY7thrXgJHX0aALz0NaWH5Bfs0ZgbE3fn4WNwMZXJjC
+         fE/EezSona4DPTpvbh5vOj3uf8QMu9YaLq7w5ZZ+h7veUOSGekODB1nL84I0DzvKfpBW
+         Qs8g==
+X-Gm-Message-State: AOAM533ff2eNaJWwOCXE6PCBqFE6xEvyh4+1Y5sqrmGC8QXBZ+PFktQr
+        b0uZdoyEIS2nRHATJkC7JVk=
+X-Google-Smtp-Source: ABdhPJwM/otgjYa51boTGlRd/bCVd+iUUdLif+7FKr0HaIK6a7VZkY6Y3r5V+VQz67NUBz5e33Fcsw==
+X-Received: by 2002:a17:902:b588:b0:143:b732:834 with SMTP id a8-20020a170902b58800b00143b7320834mr39033212pls.22.1637130987270;
+        Tue, 16 Nov 2021 22:36:27 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id b10sm22225515pfl.200.2021.11.16.22.36.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 22:36:26 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: ye.guojin@zte.com.cn
+To:     luciano.coelho@intel.com
+Cc:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        miriam.rachel.korenblit@intel.com, ye.guojin@zte.com.cn,
+        johannes.berg@intel.com, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] iwlwifi: rs: fixup the return value type of iwl_legacy_rate_to_fw_idx()
+Date:   Wed, 17 Nov 2021 06:36:21 +0000
+Message-Id: <20211117063621.160695-1-ye.guojin@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <1637060508-30375-4-git-send-email-pmaliset@codeaurora.org>
-References: <1637060508-30375-1-git-send-email-pmaliset@codeaurora.org> <1637060508-30375-4-git-send-email-pmaliset@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 16 Nov 2021 22:36:02 -0800
-Message-ID: <CAE-0n50UkMbgEOE9ckbqRfNCr6Pu9ieptUNkpkne1Z-J6HbOAg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] arm64: dts: qcom: Fix 'interrupt-map' parent
- address cells
-To:     Prasad Malisetty <pmaliset@codeaurora.org>, agross@kernel.org,
-        bhelgaas@google.com, bjorn.andersson@linaro.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lorenzo.pieralisi@arm.com,
-        manivannan.sadhasivam@linaro.org, mka@chromium.org,
-        robh+dt@kernel.org, svarbanov@mm-sol.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Prasad Malisetty (2021-11-16 03:01:48)
-> Update interrupt-map parent address cells for sc7280
-> Similar to existing Qcom SoCs.
->
-> Fixes: 92e0ee9f8 ("arm64: dts: qcom: sc7280: Add PCIe and PHY related nodes")
->
+From: Ye Guojin <ye.guojin@zte.com.cn>
 
-There shouldn't be a newline between Fixes and SoB
+This was found by coccicheck:
+./drivers/net/wireless/intel/iwlwifi/fw/rs.c, 147, 10-21, WARNING
+Unsigned expression compared with zero legacy_rate < 0
 
-> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
-> ---
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
+---
+ drivers/net/wireless/intel/iwlwifi/fw/api/rs.h | 2 +-
+ drivers/net/wireless/intel/iwlwifi/fw/rs.c     | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+diff --git a/drivers/net/wireless/intel/iwlwifi/fw/api/rs.h b/drivers/net/wireless/intel/iwlwifi/fw/api/rs.h
+index a09081d7ed45..7794cd6d289d 100644
+--- a/drivers/net/wireless/intel/iwlwifi/fw/api/rs.h
++++ b/drivers/net/wireless/intel/iwlwifi/fw/api/rs.h
+@@ -710,7 +710,7 @@ struct iwl_lq_cmd {
+ 
+ u8 iwl_fw_rate_idx_to_plcp(int idx);
+ u32 iwl_new_rate_from_v1(u32 rate_v1);
+-u32 iwl_legacy_rate_to_fw_idx(u32 rate_n_flags);
++int iwl_legacy_rate_to_fw_idx(u32 rate_n_flags);
+ const struct iwl_rate_mcs_info *iwl_rate_mcs(int idx);
+ const char *iwl_rs_pretty_ant(u8 ant);
+ const char *iwl_rs_pretty_bw(int bw);
+diff --git a/drivers/net/wireless/intel/iwlwifi/fw/rs.c b/drivers/net/wireless/intel/iwlwifi/fw/rs.c
+index a21c3befd93b..3850881210e6 100644
+--- a/drivers/net/wireless/intel/iwlwifi/fw/rs.c
++++ b/drivers/net/wireless/intel/iwlwifi/fw/rs.c
+@@ -142,7 +142,7 @@ u32 iwl_new_rate_from_v1(u32 rate_v1)
+ 		}
+ 	/* if legacy format */
+ 	} else {
+-		u32 legacy_rate = iwl_legacy_rate_to_fw_idx(rate_v1);
++		int legacy_rate = iwl_legacy_rate_to_fw_idx(rate_v1);
+ 
+ 		WARN_ON(legacy_rate < 0);
+ 		rate_v2 |= legacy_rate;
+@@ -172,7 +172,7 @@ u32 iwl_new_rate_from_v1(u32 rate_v1)
+ }
+ IWL_EXPORT_SYMBOL(iwl_new_rate_from_v1);
+ 
+-u32 iwl_legacy_rate_to_fw_idx(u32 rate_n_flags)
++int iwl_legacy_rate_to_fw_idx(u32 rate_n_flags)
+ {
+ 	int rate = rate_n_flags & RATE_LEGACY_RATE_MSK_V1;
+ 	int idx;
+-- 
+2.25.1
+
