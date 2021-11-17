@@ -2,113 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84437454DD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:24:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C622D454DD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237795AbhKQT1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 14:27:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230400AbhKQT1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 14:27:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACFB261AFF;
-        Wed, 17 Nov 2021 19:24:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637177088;
-        bh=LC222xu+7xfflnayL11gn1WvsJC/DZjkauLm9wox4QU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OBGaQK89STeJBz76SH+6SWvGWgf6ur9C78zONVOmuDdNTzX14Xd0xdQVLdwKDnhxI
-         4okbhqg9ZeiRum+gdX+m6DCVj5aaJLIhiLPeWfCfXDNSwgz4F7kiGznidJY44IgFFe
-         ApuZRh7SyXXSotY8sYiMvUIay7T9cnSyhfbFvwVZM1u6bqXXEItKfO3m18tiFa/A5P
-         2buoD8IJoVaR3md2/IFBfS1XxdZWHL7RJDP4G9c2fBPXtcKMiuSMrEPbxmFmohKl0c
-         4mrbb9CH877/VDN4GgUaXPxgKAOCESY0bi2n01mPZX+Q1gkLKOrhYG2yLJ+uELhrYI
-         hvZB+n7pe8exw==
-Date:   Wed, 17 Nov 2021 12:24:43 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-team@android.com,
+        id S239290AbhKQT2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 14:28:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230400AbhKQT2a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 14:28:30 -0500
+Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3392FC061570;
+        Wed, 17 Nov 2021 11:25:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Content-Type:
+        References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID
+        :Content-Description; bh=YkneOjORI6FrURlrv+SQ8OZvWiyxno4QJH7uReiSLO0=; b=HRPU
+        UV3UU6dZ5n+4q/WD/aPWIiGQmVE4t6PMHzULIJ79eVqN9ZMaVVErqIyFvpOzm43wRPyCoamzndAEE
+        /mmFWCiwiWSpJPQMzdren2qSaeSLFUEXZAR+XxzU2i42a7q4sK/67/G8AyAqJgSTINiYXFRRUk/5y
+        ROr2fC9HxHy+XAvp78j8PiqN9LCO2Djhqtee5u7bQWaqr8hAjCQYNXcaxs54ImhaN/KXXAt45J6bB
+        AXie7FmEWXNSYeovhRXLm3M4qcgviDIRAy10AxAgSzLqDJnpmR8x1T0GLoaYviu7psFgfqH11UV3W
+        lHnNfsgxwpZKxz6Ej9+avQSWie51xw==;
+Received: from [81.174.171.191] (helo=donbot)
+        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <john@metanate.com>)
+        id 1mnQYb-0004T4-FQ; Wed, 17 Nov 2021 19:25:21 +0000
+Date:   Wed, 17 Nov 2021 19:25:20 +0000
+From:   John Keeping <john@metanate.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Len Brown <len.brown@intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH] clocksource/drivers/arm_arch_timer: Force inlining of
- erratum_set_next_event_generic()
-Message-ID: <YZVW+/4nbDtcU85h@archlinux-ax161>
-References: <20211117113532.3895208-1-maz@kernel.org>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] PM: runtime: avoid priority inversion on PREEMPT_RT
+Message-ID: <20211117192520.6b085a1e.john@metanate.com>
+In-Reply-To: <CAJZ5v0hgL6O6mCA4wf5NtmWi7kzA0Lyop4wH0TGDLMricdpiqA@mail.gmail.com>
+References: <20211117183709.1832925-1-john@metanate.com>
+        <CAJZ5v0hgL6O6mCA4wf5NtmWi7kzA0Lyop4wH0TGDLMricdpiqA@mail.gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211117113532.3895208-1-maz@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 11:35:32AM +0000, Marc Zyngier wrote:
-> With some specific kernel configuration and Clang, the kernel fails
-> to like with something like:
+On Wed, 17 Nov 2021 19:53:47 +0100
+"Rafael J. Wysocki" <rafael@kernel.org> wrote:
 
-Specifically, CONFIG_CFI_CLANG=y from what I could tell from looking
-into this: https://github.com/ClangBuiltLinux/linux/issues/1503
-
-> ld.lld: error: undefined symbol: __compiletime_assert_200
-> >>> referenced by arch_timer.h:156 (./arch/arm64/include/asm/arch_timer.h:156)
-> >>>               clocksource/arm_arch_timer.o:(erratum_set_next_event_generic) in archive drivers/built-in.a
+> On Wed, Nov 17, 2021 at 7:37 PM John Keeping <john@metanate.com> wrote:
+> >
+> > With PREEMPT_RT the cpu_relax() loops in rpm_suspend and rpm_resume can
+> > cause unbounded latency if they preempt an asynchronous suspend.  The
+> > main scenario where this can happen is when a realtime thread resumes a
+> > device while it is asynchronously suspending on a worker thread.
+> >
+> > I'm not convinced this can actually happen in the rpm_suspend case, or
+> > at least it's a lot less likely for a synchronous suspend to run at the
+> > same time as an asynchronous suspend, but both functions are updated
+> > here for symmetry.
+> >
+> > For devices setting power.irq_safe, it is possible that RPM functions
+> > will be called with a spinlock held (for example in
+> > pl330_issue_pending()).  This means a normal call to schedule() can't be
+> > used, but to avoid the priority inversion it is necessary to wait and
+> > schedule.  schedule_rtlock() is only available when CONFIG_PREEMPT_RT is
+> > defined, so even though the logic is correct without any preprocessor
+> > guards around schedule_rtlock(), they are necessary for compilation.
+> >
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > Cc: Ingo Molnar <mingo@kernel.org>
+> > Signed-off-by: John Keeping <john@metanate.com>
+> > ---
+> > Changes since v1:
+> > - Use schedule_rtlock() instead of schedule() for PREEMPT_RT & irq_safe
+> > - Rewritten commit description
+> >
+> >  drivers/base/power/runtime.c | 18 ++++++++++++++----
+> >  1 file changed, 14 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+> > index f3de7bfc7f5b..fdf461bfae8c 100644
+> > --- a/drivers/base/power/runtime.c
+> > +++ b/drivers/base/power/runtime.c
+> > @@ -596,7 +596,7 @@ static int rpm_suspend(struct device *dev, int rpmflags)
+> >                         goto out;
+> >                 }
+> >
+> > -               if (dev->power.irq_safe) {
+> > +               if (dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT)) {  
 > 
-> ld.lld: error: undefined symbol: __compiletime_assert_197
-> >>> referenced by arch_timer.h:133 (./arch/arm64/include/asm/arch_timer.h:133)
-> >>>               clocksource/arm_arch_timer.o:(erratum_set_next_event_generic) in archive drivers/built-in.a
-> make: *** [Makefile:1161: vmlinux] Error 1
-> 
-> These are due to the BUILD_BUG() macros contained in the low-level
-> accessors (arch_timer_reg_{write,read}_cp15) being emitted, as the
-> access type wasn't known at compile time.
-> 
-> Fix this by making erratum_set_next_event_generic() __force_inline,
-> resulting in the 'access' parameter to be resolved at compile time,
-> similarly to what is already done for set_next_event().
-> 
-> Fixes: 4775bc63f880 ("Add build-time guards for unhandled register accesses")
+> Please add a helper to avoid code duplication related to this (even
+> though there is a small amount of it).
 
-It looks like the prefix was removed? Shouldn't it be:
-
-Fixes: 4775bc63f880 ("clocksource/arm_arch_timer: Add build-time guards for unhandled register accesses")
-
-> Reported-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Sami Tolvanen <samitolvanen@google.com>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-
-> ---
->  drivers/clocksource/arm_arch_timer.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-> index 9a04eacc4412..1ecd52f903b8 100644
-> --- a/drivers/clocksource/arm_arch_timer.c
-> +++ b/drivers/clocksource/arm_arch_timer.c
-> @@ -394,8 +394,13 @@ EXPORT_SYMBOL_GPL(timer_unstable_counter_workaround);
->  
->  static atomic_t timer_unstable_counter_workaround_in_use = ATOMIC_INIT(0);
->  
-> -static void erratum_set_next_event_generic(const int access, unsigned long evt,
-> -						struct clock_event_device *clk)
-> +/*
-> + * Force the inlining of this function so that the register accesses
-> + * can be themselves correctly inlined.
-> + */
-> +static __always_inline
-> +void erratum_set_next_event_generic(const int access, unsigned long evt,
-> +				    struct clock_event_device *clk)
->  {
->  	unsigned long ctrl;
->  	u64 cval;
-> -- 
-> 2.30.2
-> 
+Ack.  I'd like some feedback on the schedule_rtlock() approach from the
+scheduler & RT people, so I'll wait a bit before sending a v3.
