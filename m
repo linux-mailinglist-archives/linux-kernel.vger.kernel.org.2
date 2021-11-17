@@ -2,102 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F8145435D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:14:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B1745435B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:13:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234871AbhKQJQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 04:16:47 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:30678 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234864AbhKQJQq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 04:16:46 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AH8VVb9005900;
-        Wed, 17 Nov 2021 09:13:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=XrJAd1Pc49/Lad5PPGd9f+XWGaw1OjLz1leQG8ywM9Q=;
- b=OfnK771qeIQINL/6wd7vJGqOW1NcnkMoiweohV3OyAadYiTFyQIGWUWngpAt0ZPRGme+
- j9ZBBqZ7WlMRo/SO/MD/M1t4sDOjTBfrLZWzPyX0ro/PE219jod70mrjnVwhhqxswquf
- CH9/2E4iQn0K+1yuqMOU5bG1AFR+jcX9VyN2ObJXVT5DAj1o5DTT9bI4KwlYXq2CGBum
- TYVEH9ptx2yQh7RpWd7cwAF/Q+MJWuE531+b5M0Ke6d765boHoEOi0vQYuc7k7/xZbml
- /ocgfzkI3NOI1nqtk9Q8SagdG0H5Hgm/m7Lm5OetBkDEoISGrPhc7ZRHyPoHyLVanzhl Hg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ccxa3rq7w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Nov 2021 09:13:31 +0000
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AH99oFW016306;
-        Wed, 17 Nov 2021 09:13:30 GMT
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ccxa3rq7e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Nov 2021 09:13:30 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AH9DAAR014194;
-        Wed, 17 Nov 2021 09:13:29 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06ams.nl.ibm.com with ESMTP id 3ca4mjywds-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Nov 2021 09:13:28 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AH9DQ4q2818716
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Nov 2021 09:13:26 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6D79DA4080;
-        Wed, 17 Nov 2021 09:13:26 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 327D1A406D;
-        Wed, 17 Nov 2021 09:13:26 +0000 (GMT)
-Received: from osiris (unknown [9.145.92.52])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 17 Nov 2021 09:13:26 +0000 (GMT)
-Date:   Wed, 17 Nov 2021 10:13:24 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiri Olsa <jolsa@redhat.com>
-Subject: Re: [PATCH 0/2] ftrace/samples: fix ftrace direct multi config
- option + s390 support
-Message-ID: <YZTHtFCam6V8bJ4D@osiris>
-References: <20211115195614.3173346-1-hca@linux.ibm.com>
- <20211116174533.28f4b8ea@gandalf.local.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211116174533.28f4b8ea@gandalf.local.home>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 4VW95jkOUvKOme20ls250iYDLg7XX82A
-X-Proofpoint-GUID: UrDTqA45PgUEw-3lr7OcLPY9Cjh_yQdE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-17_03,2021-11-16_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
- suspectscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 clxscore=1015
- lowpriorityscore=0 bulkscore=0 adultscore=0 impostorscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111170045
+        id S234862AbhKQJQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 04:16:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53652 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234864AbhKQJQ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 04:16:29 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32E2563214;
+        Wed, 17 Nov 2021 09:13:31 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mnH0T-00624e-5Z; Wed, 17 Nov 2021 09:13:29 +0000
+Date:   Wed, 17 Nov 2021 09:13:28 +0000
+Message-ID: <871r3f87rb.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] arm64: cpufeature: fix CPU features mismatch message
+In-Reply-To: <20211116215922.2021550-1-dmitry.baryshkov@linaro.org>
+References: <20211116215922.2021550-1-dmitry.baryshkov@linaro.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: dmitry.baryshkov@linaro.org, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 05:45:33PM -0500, Steven Rostedt wrote:
-> > two patches for ftrace direct multi sample:
-> > 
-> > - fix ftrace direct multi sample config option handling, required
-> >   because of an incorrect merge resolution proposed by me.
-> > 
-> > - add s390 support for ftrace direct multi sample
-> > 
-> > If you are happy with them, I could carry with the s390 tree and
-> > target for rc2, or you could pick them up. Whatever you prefer.
+On Tue, 16 Nov 2021 21:59:22 +0000,
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
 > 
-> I'm good with you taking them through your tree. I acked the first patch as
-> it touches my code. And the second belongs to you anyway, but I would still
-> ask you to add some description to the change log.
+> Fix cpp magic involved in ARM64_FTR_REG/ARM64_FTR_REG_OVERRIDE macros.
+> Currently ARM64_FTR_REG parameters are expanded early, resulting in
+> cryptic debug messages:
+> 
+> [    0.071123] CPU features: SANITY CHECK: Unexpected variation in (((3) << 19) | ((0) << 16) | ((0) << 12) | ((7) << 8) | ((0) << 5)). Boot CPU: 0x00022200101022, CPU4: 0x00022200101122
+> 
+> Make ARM64_FTR_REG to be expanded before parameters, resulting in proper
+> debug log:
+> 
+> [    0.071163] CPU features: SANITY CHECK: Unexpected variation in SYS_ID_AA64MMFR0_EL1. Boot CPU: 0x00022200101022, CPU4: 0x00022200101122
+> 
+> Fixes: 8f266a5d878a ("arm64: cpufeature: Add global feature override facility")
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+>  arch/arm64/kernel/cpufeature.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> index 6ec7036ef7e1..72e3e3819eb4 100644
+> --- a/arch/arm64/kernel/cpufeature.c
+> +++ b/arch/arm64/kernel/cpufeature.c
+> @@ -573,15 +573,17 @@ static const struct arm64_ftr_bits ftr_raz[] = {
+>  	ARM64_FTR_END,
+>  };
+>  
+> -#define ARM64_FTR_REG_OVERRIDE(id, table, ovr) {		\
+> +#define __ARM64_FTR_REG(id, _name, table, ovr) {		\
+>  		.sys_id = id,					\
+>  		.reg = 	&(struct arm64_ftr_reg){		\
+> -			.name = #id,				\
+> +			.name = _name,				\
+>  			.override = (ovr),			\
+>  			.ftr_bits = &((table)[0]),		\
+>  	}}
+>  
+> -#define ARM64_FTR_REG(id, table) ARM64_FTR_REG_OVERRIDE(id, table, &no_override)
+> +#define ARM64_FTR_REG_OVERRIDE(id, table, ovr) __ARM64_FTR_REG(id, #id, table, ovr)
+> +
+> +#define ARM64_FTR_REG(id, table) __ARM64_FTR_REG(id, #id, table, &no_override)
+>  
+>  struct arm64_ftr_override __ro_after_init id_aa64mmfr1_override;
+>  struct arm64_ftr_override __ro_after_init id_aa64pfr1_override;
 
-Will do, and I'll add to the s390 tree.
+Please see commit 9dc232a8ab18 ("arm64: arm64_ftr_reg->name may not be
+a human-readable string").
 
-Thanks!
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
