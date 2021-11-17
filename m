@@ -2,65 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E63454D5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:46:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6576454D61
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:46:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233280AbhKQStW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 13:49:22 -0500
-Received: from smtprelay0221.hostedemail.com ([216.40.44.221]:53172 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232446AbhKQStV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 13:49:21 -0500
-Received: from omf01.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 1D727180A6DE5;
-        Wed, 17 Nov 2021 18:46:22 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf01.hostedemail.com (Postfix) with ESMTPA id 11699D0369DC;
-        Wed, 17 Nov 2021 18:46:21 +0000 (UTC)
+        id S240214AbhKQSth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 13:49:37 -0500
+Received: from mga03.intel.com ([134.134.136.65]:63761 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240192AbhKQStf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 13:49:35 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10171"; a="233973487"
+X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
+   d="scan'208";a="233973487"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 10:46:32 -0800
+X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
+   d="scan'208";a="672497290"
+Received: from kkempf-mobl2.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.255.92.124])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 10:46:31 -0800
+Subject: Re: [PATCH] x86/paravirt: Fix build PARAVIRT_XXL=y without XEN_PV
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>
+References: <20211117181439.4368-1-kirill.shutemov@linux.intel.com>
+ <YZVLVfd5E6d6YQig@hirez.programming.kicks-ass.net>
+ <20211117184225.6e257nfpdd2qhrj4@box.shutemov.name>
+From:   Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <4824bf30-851e-c927-a50f-87fa2a429b2a@linux.intel.com>
+Date:   Wed, 17 Nov 2021 10:46:30 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Date:   Wed, 17 Nov 2021 10:46:20 -0800
-From:   Joe Perches <joe@perches.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Anand Ashok Dumbre <ANANDASH@xilinx.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, jic23@kernel.org, lars@metafoo.de,
-        linux-iio@vger.kernel.org, git <git@xilinx.com>,
-        Michal Simek <michals@xilinx.com>, gregkh@linuxfoundation.org,
-        rafael@kernel.org, linux-acpi@vger.kernel.org,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH v9 5/5] MAINTAINERS: Add maintainer for xilinx-ams
-In-Reply-To: <CAHp75VfJBwCcFwbv6fgvwf=Q1UdFXwgNex-4GqKLcf=ZhuqGjw@mail.gmail.com>
-References: <20211116150842.1051-1-anand.ashok.dumbre@xilinx.com>
- <20211116150842.1051-6-anand.ashok.dumbre@xilinx.com>
- <YZPtW5igA8RBYLWv@smile.fi.intel.com>
- <BY5PR02MB69168A6537474DF8948C3D0BA99A9@BY5PR02MB6916.namprd02.prod.outlook.com>
- <CAHp75VdaO4+DxMn2eJx7t0_UFgrHGV2vgzXvRB=qwZi-ZpMaOA@mail.gmail.com>
- <cf7ad8715a02f3a0e4fe0cd8a270585dcf84bb3a.camel@perches.com>
- <CAHp75VfJBwCcFwbv6fgvwf=Q1UdFXwgNex-4GqKLcf=ZhuqGjw@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <164612d20b252a28dda74f5058e0aacb@perches.com>
-X-Sender: joe@perches.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20211117184225.6e257nfpdd2qhrj4@box.shutemov.name>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.40
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 11699D0369DC
-X-Stat-Signature: pwqybmz3msuwrzbe7kcqhpz786jiu5g9
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19Equ3MWUfwHRKCWKBCS6WzzQz1LGmZMIc=
-X-HE-Tag: 1637174781-75152
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-17 09:08, Andy Shevchenko wrote:
-> On Wed, Nov 17, 2021 at 6:05 PM Joe Perches <joe@perches.com> wrote:
 
->> What do you think checkpatch is supposed to find?
 
-> To me AMS should precede AXI and not the other way around. Agree?
+On 11/17/21 10:42 AM, Kirill A. Shutemov wrote:
+> On Wed, Nov 17, 2021 at 07:35:01PM +0100, Peter Zijlstra wrote:
+>> On Wed, Nov 17, 2021 at 09:14:39PM +0300, Kirill A. Shutemov wrote:
+>>> TDX is going to use CONFIG_PARAVIRT_XXL
+>>
+>> *AARGGHHH*. srlsy? We were trying to cut back on that insanity, not
+>> proliferate it.
+> 
+> It is a way to minimize amount of changes needed for getting TDX
+> functinal. We will remove the dependency later on.
+> 
 
-Sure but checkpatch just looks at patches and doesn't inspect the 
-patched file, apply the patch then look at the result. The patch itself 
-looks fine.
+TDX has a requirement to use HLT paravirt calls (which is currently
+listed under PARAVIRT_XXL). Once we submit a patch to move it
+under CONFIG_PARAVIRT, we will drop this dependency.
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
