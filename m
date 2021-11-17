@@ -2,126 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11654454477
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:58:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0B6454479
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235792AbhKQKBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 05:01:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235754AbhKQKBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 05:01:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64A13610CA;
-        Wed, 17 Nov 2021 09:58:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637143131;
-        bh=i7DSm+rL3kUoLwWZ/2x8CUFNAELOEBapiSNXn8u8kNo=;
-        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
-        b=ao3D8rYNp7SkSueiXxH7iyjfTvMw4pF4oVu87DmUZDt7P5DOXzjSslkFRwmJ/BCwI
-         R44xvhtZpi3P4IrfGGk4JavOVBe4jBnt2Hs8g6RtOrsxljHFBlPWcgXIusFqud9e43
-         5X0pSOI2aOl5cDHsoEz5d8Tz8Vcxia1IpCYsZxFOWpK7goushOwPO+wOQyBXyCgZjd
-         yphSz4tudaz2eIhw4xXIIZ3n5733GhbnuwBWmGnAeF5/THBowCsCG5gPo6ShmVC9Cb
-         OY2nlpbBECUdrF65BPRgU4wRLwfcFrf4NOS2PR0ODXTSniK8fhqydv88mSPX3BK6VU
-         EwxEAK3mzVrWQ==
-Received: by mail-ot1-f52.google.com with SMTP id r10-20020a056830080a00b0055c8fd2cebdso3743582ots.6;
-        Wed, 17 Nov 2021 01:58:51 -0800 (PST)
-X-Gm-Message-State: AOAM532AVUyf/tXjPcuSz03TYgHMgiq3DOno52nv3YtnN+HkEJBRNhJ5
-        O/aAT7lKKqV1fuUWnclo6IFLmfpEsKxGbBldmzw=
-X-Google-Smtp-Source: ABdhPJzkTx0Ti045S+OUp7bX0P3vYAjLTDbDy35SYYLaLHJyIhLjY6bOcAA6Cs9vcnTqFOMjaorzLT8U0Hs2o0Jmd6c=
-X-Received: by 2002:a9d:6653:: with SMTP id q19mr12476293otm.116.1637143130723;
- Wed, 17 Nov 2021 01:58:50 -0800 (PST)
+        id S235804AbhKQKCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 05:02:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235754AbhKQKC3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 05:02:29 -0500
+Received: from lb1-smtp-cloud9.xs4all.net (lb1-smtp-cloud9.xs4all.net [IPv6:2001:888:0:108::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48977C061570;
+        Wed, 17 Nov 2021 01:59:31 -0800 (PST)
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id nHirmNgQd1HGJnHiumpHcJ; Wed, 17 Nov 2021 10:59:29 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1637143169; bh=Q57bTarpphqLLfnykx8xjliEzWZFY1oyWctGEoHcx4c=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=MoB2V/5js2Vzzg6hnXQTnSWGihk1rbOrBzXqUlU/qoXelomDUu1MMkbtSui95NMMk
+         TAQCevcQ2IZ6gwaWgRGSCYirBOa4FalCkpT2q6m5Zh3EV+vCeTFJfizWcJu/jc+HYz
+         z634GrynK8HBFVh8VI5hqoenE8ly0adrtVu33dKJb1hUhbly+swJ5EjttzpBu9DM2s
+         +zu2Mvy5uJGGu+ST+/0jWy5XMkymp7xpFphT3yKbLTUTHLOHWlYYj0Ovw8NdilpdGK
+         jK2PfyHZ8GAri7PeUhHGgGVri4FDywsmN1RY2DRQom4DOd64ntdOnMWlO0EpQ3NpDT
+         zieXyq1vQlW6Q==
+Subject: Re: [PATCH v7 00/11] VP9 codec V4L2 control interface
+To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev
+Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Fabio Estevam <festevam@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com
+References: <20210929160439.6601-1-andrzej.p@collabora.com>
+ <9db47ebc-cb95-872d-feb4-d6432a74f2cb@xs4all.nl>
+ <29f27bad-28ae-12ff-eed6-79902bd5b722@collabora.com>
+ <b8f8ee2e-ea98-4700-f4ca-f0af68c9de5c@xs4all.nl>
+ <cdbbe5e6-0811-1276-1f62-fc7ad2628a30@collabora.com>
+ <4da113ef-7b12-3729-0186-f746901c892a@xs4all.nl>
+ <69f16bb0-4b5a-18b3-e244-60deb029d239@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <2cd7a7f0-72d6-1a0e-b5d2-87ff809c2acd@xs4all.nl>
+Date:   Wed, 17 Nov 2021 10:59:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
 MIME-Version: 1.0
-Received: by 2002:ac9:4448:0:0:0:0:0 with HTTP; Wed, 17 Nov 2021 01:58:50
- -0800 (PST)
-In-Reply-To: <2865530.e9J7NaK4W3@natalenko.name>
-References: <5831447.lOV4Wx5bFT@natalenko.name> <CAKYAXd-KmxMeYWP8z6RYYK6za-Sj81Qtb3RO=oG+Yy3kXDaLjg@mail.gmail.com>
- <2865530.e9J7NaK4W3@natalenko.name>
-From:   Namjae Jeon <linkinjeon@kernel.org>
-Date:   Wed, 17 Nov 2021 18:58:50 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd9wKDTE5WPQWcBZ_mHfaAOOY+pDj7=yndi17gf2KqWpwg@mail.gmail.com>
-Message-ID: <CAKYAXd9wKDTE5WPQWcBZ_mHfaAOOY+pDj7=yndi17gf2KqWpwg@mail.gmail.com>
-Subject: Re: ksmbd: Unsupported addition info
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steve French <sfrench@samba.org>,
-        Hyunchul Lee <hyc.lee@gmail.com>, linux-cifs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <69f16bb0-4b5a-18b3-e244-60deb029d239@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfJfoI4N+VQeaXH3/XH5UsnvheyRxmRBR+FkxY+czh5yv1C5Bw3BQJm94bvBkiLAIy5gW2fB5PqOM//YNmZMfKRK9FpVOCe7+BSPBpf25mylyVsFFfknS
+ q7MB71BmvNKuVBxkxU86PXjxtG+hAyggsUFRECUt4JEe9z0CFbMh5lQ0YhhW1toItPrJHbaZ+asxItagcq4namTUFNtMi9hRfJ+F1cW2qD60Mmccu7thd9PL
+ TGJjFABdepRojBLVIz1zK70tQx+HKYa7ad7m0JuO8muAH4OnqgoI5NrU6Pw+YGwdlAOoy6iVaO6kw/+PDqMUrtmzbu7xfa5asa0FOaXxcc667q7lmfsNtuwp
+ fwPxeffRqurCj/PH2q3+ns48PGkPXyqSws3IRCxNSz3d63E0qsuKDnDNJGs/bepYf27FYU7kHp7sowcuUVHgLn3mkijuMD8IvEUbNnsu2iBXN+Ukn0BUzziQ
+ qwhaJzeGaX+RFYfjSZExFnFquIV+6KFUf+x/uKK3Hu4gvmyRVy8RVn1tSg+etGgqKZm59NIbSF39zajF39LiDIr9XblIergyEG232PhjJooXETzNLg2W3kTm
+ bTBqFGycSsXIZe5OVjYRlUxHyyu7JyLPjzDFzVtbF5uHvBJ0ZozRvxwy/mrlpPDzog+b70Tvmpn1rBccscpdKEa5afszo2BaQRaDsSf05jvexJMMHd3mPQ3Z
+ rJAWEsAhPzvlAv1173jln8TXMejkLKAut2xWgpvMo3rFftXmSSgbdS/GgkAnPXSxO3VzyMPHDcseL3LvHgrXhV/MnB9vnENVsHHB4d7ztGhacja2zorj+VEf
+ FJ6K7gDuUtm483T3PJ0p/l/PLY92gUKBCTUQmFuwfDh3zrzuWQSpkxmUDJlyRh/b0zHNQwRm+7ZTwz8FE3VTxsdaSB48fdo4wKDQDoNFdbq7fQjftNHl8s5H
+ eL6NHxm75mk3T5JP8JFvUGTyrGQ=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021-11-17 16:00 GMT+09:00, Oleksandr Natalenko <oleksandr@natalenko.name>:
-> Hello.
->
-> On st=C5=99eda 17. listopadu 2021 0:36:53 CET Namjae Jeon wrote:
->> 2021-11-17 6:44 GMT+09:00, Oleksandr Natalenko
->> <oleksandr@natalenko.name>:
->> > With the latest ksmbd from the next branch I have an issue with wife's
->> > Windows
->> > 10 laptop while copying/removing files from the network share. On her
->> > client it
->> > looks like copy operation (server -> laptop) reaches 99% and then
->> > stalls,
->> > and
->> > on the server side there's this in the kernel log:
->> >
->> > ```
->> > ksmbd: Unsupported addition info: 0xf)
->> > ksmbd: Unsupported addition info: 0x20)
->> > ```
->> >
->> > repeated multiple times. I must note that in fact the file gets copied
->> > to
->> > her
->> > laptop, but Windows copy dialog just hangs.
->> >
->> > Any idea what it could be and how to avoid it? This also happened
->> > before
->> > (I'm
->> > a pretty early ksmbd adopter), but I'm reporting it just now because I
->> > na=C3=AFvely
->> > hoped it would be fixed automagically :). This never happened to me
->> > with
->> > userspace Samba though.
->> >
->> > This is my smb.conf:
->> >
->> > ```
->> > [global]
->> > workgroup =3D KANAPKA
->> > server string =3D ksmbd server %v
->> > netbios name =3D defiant
->> > valid users =3D __guest
->> >
->> > [Shared]
->> > valid users =3D __guest
->> > path =3D /mnt/shared
->> > force user =3D _shared
->> > force group =3D _shared
->> > browsable =3D no
->> > writeable =3D yes
->> > veto files =3D /lost+found/
->> > ```
->> >
->> > Appreciate your time and looking forward to your response.
+On 16/11/2021 14:14, Andrzej Pietrasiewicz wrote:
+> Hi,
+> 
+> W dniu 16.11.2021 o 09:21, Hans Verkuil pisze:
+>> On 16/11/2021 09:09, Andrzej Pietrasiewicz wrote:
+>>> Hi Hans,
+>>>
+>>> W dniu 15.11.2021 o 22:16, Hans Verkuil pisze:
+>>>> On 15/11/2021 18:14, Andrzej Pietrasiewicz wrote:
+>>>>> Hi Hans,
+>>>>>
+>>>>> W dniu 15.11.2021 o 16:07, Hans Verkuil pisze:
+>>>>>> Andrzej,
+>>>>>>
+>>>>>> Can you rebase this series on top of the master branch of
+>>>>>> https://git.linuxtv.org/media_stage.git/ ? Unfortunately this v7 no longer
+>>>>>> applies. Specifically "rkvdec: Add the VP9 backend" failed in a non-trivial
+>>>>>> manner.
+>>>>>
+>>>>> This is a branch for you:
+>>>>>
+>>>>> https://gitlab.collabora.com/linux/for-upstream/-/tree/vp9-uapi
+>>>>
+>>>> I'm getting a bunch of sparse/smatch warnings:
+>>>>
+>>>
+>>> Thanks for finding this, I will re-create the branch and let you know on irc.
+>>> Some of the below are "false positives, namely:
+>>>
+>>> drivers/media/platform/omap3isp/omap3isp.h
+>>> drivers/media/platform/qcom/venus/core.h
 >>
->> Thanks for your report, I have seen same symptom before, I thought it
->> was a windows issue as it is also reproduced against samba. If you
->> wait for a few minutes, does not the 99% message window close?
->
-> Eventually it does close on its own in a minute or so. Also, it may close
-> after clicking the "X" (close) button, but not instantly.
-As I remember, The X button will delete the file you copied. Could you
-please give me packet dump(tcpdump) on problem situation ? and It
-would be nice to give a dump also for a successful copy. I will try to
-compare the two.
+>> Ah, sorry, I though I had filtered those out. Obviously you can ignore those.
+>>
+>> Please post a v8. That way the series is archived on lore. And it works better
+>> with patchwork.
+> 
+> Sure, no problem. Also please see below.
+> 
+>>
+>> Regards,
+>>
+>> 	Hans
+>>
+>>>
+>>> which are not touched by the series.
+>>>
+>>> Regards,
+>>>
+>>> Andrzej
+>>>
+>>>> sparse:
+>>>> rkvdec/rkvdec-vp9.c:190:43: warning: variable 'dec_params' set but not used [-Wunused-but-set-variable]
+>>>> rkvdec/rkvdec-vp9.c:245:43: warning: variable 'dec_params' set but not used [-Wunused-but-set-variable]
+>>>> SPARSE:hantro/hantro_postproc.c hantro/hantro_postproc.c:37:35: warning: symbol 'hantro_g1_postproc_regs' was not declared. Should it be static?
+>>>>
+>>>> smatch:
+>>>> rkvdec/rkvdec-vp9.c:190:43: warning: variable 'dec_params' set but not used [-Wunused-but-set-variable]
+>>>> rkvdec/rkvdec-vp9.c:245:43: warning: variable 'dec_params' set but not used [-Wunused-but-set-variable]
+>>>> rkvdec/rkvdec-vp9.c: rkvdec/rkvdec-vp9.c:236 init_intra_only_probs() error: buffer overflow 'ptr' 90 <= 91
+> 
+> this looks a false positive.
+> 
+> A portion of memory pointed to by ptr is indexed with i * 23 + m,
+> where i ranges from 0 to 3, inclusive, and m ranges from 0 to 22,
+> inclusive if i < 3, otherwise m ranges from 0 to 20, inclusive.
+> So the largest index value we compute equals 89 (3 * 23 + 20).
+> Because ptr points to something that is at least 90 bytes large,
+> 89 is a valid index and no greater index will be ever computed.
 
-Thanks!
->
-> --
-> Oleksandr Natalenko (post-factum)
->
->
->
+But we do need to get rid of this smatch warning, otherwise it will pollute the
+list of smatch warnings.
+
+I was looking at the code and wonder if it wouldn't make more sense to
+move writing to rkprobs->intra_mode[i].uv_mode[] into a separate for loop:
+
+        for (i = 0; i < ARRAY_SIZE(v4l2_vp9_kf_uv_mode_prob); i++)
+                rkprobs->intra_mode[i / 23].uv_mode[i % 23] = v4l2_vp9_kf_uv_mode_prob[i];
+
+Wouldn't that do the same as the current code? It looks simpler as well.
+
+Regards,
+
+	Hans
