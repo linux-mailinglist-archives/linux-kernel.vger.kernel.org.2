@@ -2,105 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB60454723
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 14:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D62454729
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 14:25:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237544AbhKQN0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 08:26:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237535AbhKQN0f (ORCPT
+        id S237535AbhKQN2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 08:28:42 -0500
+Received: from mail-lf1-f50.google.com ([209.85.167.50]:34683 "EHLO
+        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232627AbhKQN2k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 08:26:35 -0500
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5176CC061570;
-        Wed, 17 Nov 2021 05:23:37 -0800 (PST)
-Received: by mail-ot1-x332.google.com with SMTP id r10-20020a056830080a00b0055c8fd2cebdso4682054ots.6;
-        Wed, 17 Nov 2021 05:23:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JpcC4e4rsVEA5qZKmhjIiquAG4OB5LHCYUwoQQFuZ4A=;
-        b=m8ga3yPVjpLMru7uIOlFGHmtHhRnr8H0Uhtv5FaKKEMEcG95rnmjYRlyfz2Tz5U46V
-         2GKztYNF75qBOvIrQ9DHchA0rh/oPr2fJVfQJpaZomBVSm6CKDAKpIbeUqkstHZTdqo2
-         5GIfvBvCdYO42rufAxILnl763GKwx1ZpB5zfCwikDEgB69i35QvBtdXFLi/r69lrFZ2V
-         6XWJ8oQlvD7NSANJRwOgTMemNiuQ8Vem3xoHoy89VjOYO70fjJZHfoE27gtHbP2d+iwF
-         uV+DLGheXyuiok/dzlw6nsX6OrvmD/cENO+sPn+Kq5NbxhI65m6kQE9iuLL9CcQ3ZNSO
-         vq1w==
+        Wed, 17 Nov 2021 08:28:40 -0500
+Received: by mail-lf1-f50.google.com with SMTP id n12so8511190lfe.1;
+        Wed, 17 Nov 2021 05:25:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=JpcC4e4rsVEA5qZKmhjIiquAG4OB5LHCYUwoQQFuZ4A=;
-        b=7Wafpi+GvoQJYjvAtNnqoQvEbxXNA8HMz5KAGPz8kDWMnHgjw3cVpGFl74YGpDNRyk
-         nHS2clr4Oh4HjHMwJuxHVBjglkyRFq0v45YtUiRsQUOJshBpNpI1aP2qMYGx1nhZ4ner
-         iInZ0gwu4n0KgV3qOXPyBktjc8P2SuC7jGKmKf7kBxiJKANk+/YFS9Ssb8Oc/+FjqbIc
-         RdxqsiUCdkwvkdkoTHmchR0/z5ePql1Et2YAKlYLS7neWCi+MpNdDyyGPgnyGd2hlDND
-         8df4Ax2PtLUXuW+bjZBnOuwNrCI3xOz/PeSZP9ZOvekQTWHC0/lhwwna7oT1mL+FLqff
-         OGyw==
-X-Gm-Message-State: AOAM531F29oMD/hl6f3D0rc016LQxrmq5q2gZcu27a3Jy7qf90JlFrAZ
-        W06d84sPrT5/MhYcDqOt5sCrRtBy8RE=
-X-Google-Smtp-Source: ABdhPJw9CgQHgVoa1QsXkrAKBbafuxM2CW9sqaBc7ooky0XvJo9UWHzs5X9QzwruC3gOfvJdGjbLaA==
-X-Received: by 2002:a9d:6855:: with SMTP id c21mr13936653oto.357.1637155416727;
-        Wed, 17 Nov 2021 05:23:36 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r24sm4256009otc.12.2021.11.17.05.23.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 05:23:35 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 17 Nov 2021 05:23:33 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     AceLan Kao <acelan.kao@canonical.com>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, SophieHu <sophiehu@aaeon.com.tw>
-Subject: Re: [PATCH] hwmon: f71882fg: Add F81966 support
-Message-ID: <20211117132333.GA2201569@roeck-us.net>
-References: <20211117024320.2428144-1-acelan.kao@canonical.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=ktgvYN1PoD/4uPIKFT1eS+g9vqs5gmujrNkL090jjTA=;
+        b=5HYurOLfyJc4xwBC3PKYmtFnLychZr3iM0HCIN4s31rPZmDfzcIT4UPRHQHjaAZ1ls
+         xfykQ55hvs+/4866urWnMQJoNkx+dKLVkqMaJ3wRZj4lnBDJxadFIEu7Ntn7aOlNfP9S
+         bcKa/MFGeXs3wEDX1y8BuZ+IEGeF0ZEcxuOmHzp4nXD8H5pFpa/TtvqAoCHp99tXCg7P
+         ybf5kEgnWa5DzjR7ddn1o1mN5nYe3U9Q1JIlavjHZqrWXdF9dYpB0Jl3bOZX+4ZMjqfq
+         SuL1pxwwKpWCXqdykxytL121EqpBvy8ARbwX/YAsl2XXZjBzHGEGper+ws0CI1KsLpAe
+         jRDw==
+X-Gm-Message-State: AOAM5334rzCerS9RfUO9c9PGGQTc+CvzP2zqEMyXiA5U6kcsXPj5J2hk
+        U6aVAXIlm6d9w4R8DwKOpZo=
+X-Google-Smtp-Source: ABdhPJyvhhpGPikx//laywZPo+7A3uM4GU4myRTkPh+RkSLCta75O3gDxYpSyAQsN6XZgWfabhKnWA==
+X-Received: by 2002:a2e:8143:: with SMTP id t3mr7783494ljg.18.1637155540527;
+        Wed, 17 Nov 2021 05:25:40 -0800 (PST)
+Received: from [10.68.32.40] (broadband-109-173-81-86.ip.moscow.rt.ru. [109.173.81.86])
+        by smtp.gmail.com with ESMTPSA id x12sm2117971lfa.243.2021.11.17.05.25.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 05:25:39 -0800 (PST)
+Message-ID: <0d05bdd9-b962-2f63-c0d8-b87ab593ea1b@linux.com>
+Date:   Wed, 17 Nov 2021 16:25:39 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211117024320.2428144-1-acelan.kao@canonical.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] floppy: Add max size check for user space request
+Content-Language: en-US
+To:     sxwjean@me.com, axboe@kernel.dk, linux-block@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
+References: <20211116131033.27685-1-sxwjean@me.com>
+From:   Denis Efremov <efremov@linux.com>
+In-Reply-To: <20211116131033.27685-1-sxwjean@me.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 10:43:20AM +0800, AceLan Kao wrote:
-> From: Menghui Wu <Menghui_Wu@aaeon.com.tw>
+Hi,
+
+On 11/16/21 16:10, sxwjean@me.com wrote:
+> From: Xiongwei Song <sxwjean@gmail.com>
 > 
-> This adds hardware monitor support the Fintek F81966 Super I/O chip.
-> Testing was done on the Aaeon SSE-IPTI
+> We need to check the max request size that is from user space before
+> allocating pages. If the request size exceeds the limit, return -EINVAL.
+> This check can avoid the warning below from page allocator.
+
+Thank you for the patch. Applied,
+https://github.com/evdenis/linux-floppy/commit/3c2d8686849713e3267b972038bb649c8f093345
+
+I will send it to Jens by the of the week.
+
+Regards,
+Denis
+
 > 
-> Signed-off-by: Menghui Wu <Menghui_Wu@aaeon.com.tw>
-> Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
-
-Applied to hwmon-next.
-
-Thanks,
-Guenter
-
+> WARNING: CPU: 3 PID: 16525 at mm/page_alloc.c:5344 current_gfp_context include/linux/sched/mm.h:195 [inline]
+> WARNING: CPU: 3 PID: 16525 at mm/page_alloc.c:5344 __alloc_pages+0x45d/0x500 mm/page_alloc.c:5356
+> Modules linked in:
+> CPU: 3 PID: 16525 Comm: syz-executor.3 Not tainted 5.15.0-syzkaller #0
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+> RIP: 0010:__alloc_pages+0x45d/0x500 mm/page_alloc.c:5344
+> Code: be c9 00 00 00 48 c7 c7 20 4a 97 89 c6 05 62 32 a7 0b 01 e8 74 9a 42 07 e9 6a ff ff ff 0f 0b e9 a0 fd ff ff 40 80 e5 3f eb 88 <0f> 0b e9 18 ff ff ff 4c 89 ef 44 89 e6 45 31 ed e8 1e 76 ff ff e9
+> RSP: 0018:ffffc90023b87850 EFLAGS: 00010246
+> RAX: 0000000000000000 RBX: 1ffff92004770f0b RCX: dffffc0000000000
+> RDX: 0000000000000000 RSI: 0000000000000033 RDI: 0000000000010cc1
+> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000001
+> R10: ffffffff81bb4686 R11: 0000000000000001 R12: ffffffff902c1960
+> R13: 0000000000000033 R14: 0000000000000000 R15: ffff88804cf64a30
+> FS:  0000000000000000(0000) GS:ffff88802cd00000(0063) knlGS:00000000f44b4b40
+> CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+> CR2: 000000002c921000 CR3: 000000004f507000 CR4: 0000000000150ee0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  alloc_pages+0x1a7/0x300 mm/mempolicy.c:2191
+>  __get_free_pages+0x8/0x40 mm/page_alloc.c:5418
+>  raw_cmd_copyin drivers/block/floppy.c:3113 [inline]
+>  raw_cmd_ioctl drivers/block/floppy.c:3160 [inline]
+>  fd_locked_ioctl+0x12e5/0x2820 drivers/block/floppy.c:3528
+>  fd_ioctl drivers/block/floppy.c:3555 [inline]
+>  fd_compat_ioctl+0x891/0x1b60 drivers/block/floppy.c:3869
+>  compat_blkdev_ioctl+0x3b8/0x810 block/ioctl.c:662
+>  __do_compat_sys_ioctl+0x1c7/0x290 fs/ioctl.c:972
+>  do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+>  __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
+>  do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:203
+>  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+> 
+> Reported-by: syzbot+23a02c7df2cf2bc93fa2@syzkaller.appspotmail.com
+> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
 > ---
->  drivers/hwmon/f71882fg.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  drivers/block/floppy.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/hwmon/f71882fg.c b/drivers/hwmon/f71882fg.c
-> index 4673d403759a..938a8b9ec70d 100644
-> --- a/drivers/hwmon/f71882fg.c
-> +++ b/drivers/hwmon/f71882fg.c
-> @@ -49,6 +49,7 @@
->  #define SIO_F81768D_ID		0x1210	/* Chipset ID */
->  #define SIO_F81865_ID		0x0704	/* Chipset ID */
->  #define SIO_F81866_ID		0x1010	/* Chipset ID */
-> +#define SIO_F81966_ID		0x1502	/* Chipset ID */
+> diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
+> index c4267da716fe..52112ed59dd0 100644
+> --- a/drivers/block/floppy.c
+> +++ b/drivers/block/floppy.c
+> @@ -3081,6 +3081,8 @@ static void raw_cmd_free(struct floppy_raw_cmd **ptr)
+>  	}
+>  }
 >  
->  #define REGION_LENGTH		8
->  #define ADDR_REG_OFFSET		5
-> @@ -2672,6 +2673,7 @@ static int __init f71882fg_find(int sioaddr, struct f71882fg_sio_data *sio_data)
->  		sio_data->type = f81865f;
->  		break;
->  	case SIO_F81866_ID:
-> +	case SIO_F81966_ID:
->  		sio_data->type = f81866a;
->  		break;
->  	default:
+> +#define MAX_LEN (1UL << MAX_ORDER << PAGE_SHIFT)
+> +
+>  static int raw_cmd_copyin(int cmd, void __user *param,
+>  				 struct floppy_raw_cmd **rcmd)
+>  {
+> @@ -3108,7 +3110,7 @@ static int raw_cmd_copyin(int cmd, void __user *param,
+>  	ptr->resultcode = 0;
+>  
+>  	if (ptr->flags & (FD_RAW_READ | FD_RAW_WRITE)) {
+> -		if (ptr->length <= 0)
+> +		if (ptr->length <= 0 || ptr->length >= MAX_LEN)
+>  			return -EINVAL;
+>  		ptr->kernel_data = (char *)fd_dma_mem_alloc(ptr->length);
+>  		fallback_on_nodma_alloc(&ptr->kernel_data, ptr->length);
+> 
