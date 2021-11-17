@@ -2,159 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A0145501C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:02:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3A445501D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240960AbhKQWEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 17:04:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240974AbhKQWEv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:04:51 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 463E6C061200
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:01:52 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id q12so3461158pgh.5
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:01:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NrftdzRJB+iZXhfybj3wXjLC5DBwV9iU14DUg7paL24=;
-        b=eBLjeWMGVqkF82f+ZTunl/5cPTL6s9LC1GIM2m29eHFzvFNKcBpgZYcng81TfXgUyt
-         2Sk/PCTAChxnm4vANMcdfsEayCJ2EUOmPIIkJEwV2q67UPGWVq+c14pvSbyxVvy9LbPV
-         FdxyxiAIRDJF4rof3OAUXlmdML5i9wTxnKiSw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NrftdzRJB+iZXhfybj3wXjLC5DBwV9iU14DUg7paL24=;
-        b=Wnq5bENjyAr8vNUeASALmLUFl+VLFM608NwWQqqmJE2lBsMPKlWZPaucPs4DsNJ5/B
-         dFaFB6JYDUGnCxK3cDMZ9/3aUvGVvUIn35GExHOKtI2Hn5+gbL9xMsEDyqWQhlycK96z
-         IxDrc00ZJ6EiwLdxoSA7Ig2L/I7wV0sLFCFysbHVm4LBIQmr8XGdVqohpyZbE0urEYLr
-         8jAlNOwSUMYmr3nXdI16ScvBjnjxtNgm2Lieb8NHM7pPCtjgLfRAYZitZYlh3wg/Vm6H
-         doCDufhwvpTm0ToceUtmnIJdaRQ5Zpywu30QfK23s+1U3l1aNtllDrYODRvoZgiKyVxi
-         RNqA==
-X-Gm-Message-State: AOAM532JYXcXbme/6XhAHhjWxVZnXoDqayZiqCYsLDpu2xTd2dorbB3s
-        teCoXq34UBB7uQuyZKCQwumTJQ==
-X-Google-Smtp-Source: ABdhPJytb4QuGhE0Dp5hS2yGoJ5gdfGFvXD2UKBYYQ+FwETV1QxzSJKBdU6XMk2BDAY7E94T1Ku81w==
-X-Received: by 2002:a63:1125:: with SMTP id g37mr7864577pgl.118.1637186511589;
-        Wed, 17 Nov 2021 14:01:51 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q18sm605060pfj.46.2021.11.17.14.01.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 14:01:51 -0800 (PST)
-Date:   Wed, 17 Nov 2021 14:01:50 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Dinh Nguyen <dinguyen@kernel.org>,
-        "Ivan T . Ivanov" <iivanov@suse.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] ARM: socfpga: Fix crash with CONFIG_FORTIRY_SOURCE
-Message-ID: <202111171400.618456DCE9@keescook>
-References: <20211117193244.31162-1-tiwai@suse.de>
+        id S241006AbhKQWFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 17:05:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60702 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240924AbhKQWFd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 17:05:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A47D961391;
+        Wed, 17 Nov 2021 22:02:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637186553;
+        bh=agPCdfUMdXmLJijUm0fmxnkREeo4h0TbK6v9CxxyyKE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jLIxUESkUy8PetDemyzEEE0dcZn0SYqZg+HMR8bJwIJ7iBC7WoHnHx8nDgZgKBwW4
+         jx1mA6RdmPR8nOfbvlYgt/wG5db9dlKiyuHNuO+ueiCXQ20TqLbGJbWZTkrnZqjxqG
+         5/8czlvnR/71lc3Ux7Du/M4bJAuAh79lrZZ7942UjK30CgLas4upVa9GJWiorJULDj
+         Bdv94TZ9PQ1qTvk+PQya9qd4KWYhwUtn81vWQC2D0Bg7GR2DiFDfU6IvQUZ87OjT21
+         VwRQpUMqzaP5QWXYOrxAMPXDEKJnA99Lc09Gv1Wqe4b3uxYZEm6lA5q1mA5JLYk0ZX
+         xjOSxBlrHKJdA==
+Date:   Wed, 17 Nov 2021 23:02:30 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 5/6] rcu/nocb: Allow empty "rcu_nocbs" kernel parameter
+Message-ID: <20211117220230.GC365507@lothringen>
+References: <20211117155637.363706-1-frederic@kernel.org>
+ <20211117155637.363706-6-frederic@kernel.org>
+ <20211117194605.GL641268@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211117193244.31162-1-tiwai@suse.de>
+In-Reply-To: <20211117194605.GL641268@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 08:32:44PM +0100, Takashi Iwai wrote:
-> When CONFIG_FORTIFY_SOURCE is set, memcpy() checks the potential
-> buffer overflow and panics.  The code in sofcpga bootstrapping
-> contains the memcpy() calls are mistakenly translated as the shorter
-> size, hence it triggers a panic as if it were overflowing.
+On Wed, Nov 17, 2021 at 11:46:05AM -0800, Paul E. McKenney wrote:
+> On Wed, Nov 17, 2021 at 04:56:36PM +0100, Frederic Weisbecker wrote:
+> > If a user wants to boot without any CPU in offloaded mode initially but
+> > with the possibility to offload them later using cpusets, provide a way
+> > to simply pass an empty "rcu_nocbs" kernel parameter which will enforce
+> > the creation of dormant nocb kthreads.
+> > 
+> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> > Cc: Boqun Feng <boqun.feng@gmail.com>
+> > Cc: Uladzislau Rezki <urezki@gmail.com>
+> > Cc: Josh Triplett <josh@joshtriplett.org>
+> > Cc: Joel Fernandes <joel@joelfernandes.org>
+> > ---
+> >  kernel/rcu/tree_nocb.h | 10 ++++++----
 > 
-> This patch adds the __NO_FORTIFY define for avoiding the
-> false-positive crash.
-> 
-> Buglink: https://bugzilla.suse.com/show_bug.cgi?id=1192473
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
-> 
-> I took an easier path for now, as the attempt with a foced cast
-> failed.  If there is a better way to handle, let me know, I'd happily
-> resubmit.  Thanks!
-> 
+> Could you please also update kernel-parameters.txt?
 
-The way these have been fixed in the past is to declare these as char
-arrays (see include/asm-generic/sections.h). I'd prefer something like
-this (totally untested):
+Ah right!
 
-diff --git a/arch/arm/mach-socfpga/core.h b/arch/arm/mach-socfpga/core.h
-index fc2608b18a0d..18f01190dcfd 100644
---- a/arch/arm/mach-socfpga/core.h
-+++ b/arch/arm/mach-socfpga/core.h
-@@ -33,7 +33,7 @@ extern void __iomem *sdr_ctl_base_addr;
- u32 socfpga_sdram_self_refresh(u32 sdr_base);
- extern unsigned int socfpga_sdram_self_refresh_sz;
- 
--extern char secondary_trampoline, secondary_trampoline_end;
-+extern char secondary_trampoline[], secondary_trampoline_end[];
- 
- extern unsigned long socfpga_cpu1start_addr;
- 
-diff --git a/arch/arm/mach-socfpga/platsmp.c b/arch/arm/mach-socfpga/platsmp.c
-index fbb80b883e5d..201191cf68f3 100644
---- a/arch/arm/mach-socfpga/platsmp.c
-+++ b/arch/arm/mach-socfpga/platsmp.c
-@@ -20,14 +20,14 @@
- 
- static int socfpga_boot_secondary(unsigned int cpu, struct task_struct *idle)
- {
--	int trampoline_size = &secondary_trampoline_end - &secondary_trampoline;
-+	int trampoline_size = secondary_trampoline_end - secondary_trampoline;
- 
- 	if (socfpga_cpu1start_addr) {
- 		/* This will put CPU #1 into reset. */
- 		writel(RSTMGR_MPUMODRST_CPU1,
- 		       rst_manager_base_addr + SOCFPGA_RSTMGR_MODMPURST);
- 
--		memcpy(phys_to_virt(0), &secondary_trampoline, trampoline_size);
-+		memcpy(phys_to_virt(0), secondary_trampoline, trampoline_size);
- 
- 		writel(__pa_symbol(secondary_startup),
- 		       sys_manager_base_addr + (socfpga_cpu1start_addr & 0x000000ff));
-@@ -45,12 +45,12 @@ static int socfpga_boot_secondary(unsigned int cpu, struct task_struct *idle)
- 
- static int socfpga_a10_boot_secondary(unsigned int cpu, struct task_struct *idle)
- {
--	int trampoline_size = &secondary_trampoline_end - &secondary_trampoline;
-+	int trampoline_size = secondary_trampoline_end - secondary_trampoline;
- 
- 	if (socfpga_cpu1start_addr) {
- 		writel(RSTMGR_MPUMODRST_CPU1, rst_manager_base_addr +
- 		       SOCFPGA_A10_RSTMGR_MODMPURST);
--		memcpy(phys_to_virt(0), &secondary_trampoline, trampoline_size);
-+		memcpy(phys_to_virt(0), secondary_trampoline, trampoline_size);
- 
- 		writel(__pa_symbol(secondary_startup),
- 		       sys_manager_base_addr + (socfpga_cpu1start_addr & 0x00000fff));
-
->  arch/arm/mach-socfpga/platsmp.c | 3 +++
->  1 file changed, 3 insertions(+)
 > 
-> diff --git a/arch/arm/mach-socfpga/platsmp.c b/arch/arm/mach-socfpga/platsmp.c
-> index fbb80b883e5d..d46b1af96a8a 100644
-> --- a/arch/arm/mach-socfpga/platsmp.c
-> +++ b/arch/arm/mach-socfpga/platsmp.c
-> @@ -5,6 +5,9 @@
->   * Based on platsmp.c, Copyright (C) 2002 ARM Ltd.
->   * Copyright (C) 2012 Altera Corporation
->   */
-> +
-> +#define __NO_FORTIFY /* need to avoid the crash with memcpy() calls */
-> +
->  #include <linux/delay.h>
->  #include <linux/init.h>
->  #include <linux/smp.h>
-> -- 
-> 2.26.2
+> >  1 file changed, 6 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > index 1871f15b8472..3845f1885ffc 100644
+> > --- a/kernel/rcu/tree_nocb.h
+> > +++ b/kernel/rcu/tree_nocb.h
+> > @@ -66,14 +66,16 @@ static bool rcu_nocb_is_setup;
+> >  static int __init rcu_nocb_setup(char *str)
+> >  {
+> >  	alloc_bootmem_cpumask_var(&rcu_nocb_mask);
+> > -	if (cpulist_parse(str, rcu_nocb_mask)) {
+> > -		pr_warn("rcu_nocbs= bad CPU range, all CPUs set\n");
+> > -		cpumask_setall(rcu_nocb_mask);
+> > +	if (*str == '=') {
+> > +		if (cpulist_parse(++str, rcu_nocb_mask)) {
+> > +			pr_warn("rcu_nocbs= bad CPU range, all CPUs set\n");
+> > +			cpumask_setall(rcu_nocb_mask);
+> > +		}
 > 
+> Wouldn't "*str == '='" indicate that the parameter passed in was of
+> the form "rcu_nocbs==8"?
+> 
+> Or am I misreading the next_arg() function in lib/cmdline.c?
+> 
+> If I am reading it correctly, doesn't the test instead want to be
+> something of the form "if (str && *str)"?
+> 
+> 							Thanx, Paul
+> 
+> >  	}
+> >  	rcu_nocb_is_setup = true;
+> >  	return 1;
+> >  }
+> > -__setup("rcu_nocbs=", rcu_nocb_setup);
+> > +__setup("rcu_nocbs", rcu_nocb_setup);
 
--- 
-Kees Cook
+Don't miss that line, that should probably answer your above question, if
+I didn't miss something from my end (which is not unlikely...)
+
+> >  
+> >  static int __init parse_rcu_nocb_poll(char *arg)
+> >  {
+> > -- 
+> > 2.25.1
+> > 
