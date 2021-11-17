@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94716454A67
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:57:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9304454A6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:00:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238910AbhKQQAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 11:00:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238883AbhKQP74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 10:59:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66CA360EE4;
-        Wed, 17 Nov 2021 15:56:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637164618;
-        bh=UnQvcvpPch96ILO10ZHnFKIO+yVSOutunoWjIkOFA1g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rPvqisjuThazQPe7EUG2iNiuD5783uw0xMpJRJLzkvdPJWuDv+Xmrysyaj7ZNQcUo
-         FBbeirrADbEWeVWr35Z3FUKW3T7kSPYtuppqKs4dX1T46KId1G/lybhjp7M4KsfnnS
-         a0oHKf7pncos/p2GtoZ2amtsl/6DiX8deKFA2TeTOeUWnt6fvozi4r4vQUdqwtf5M8
-         hlkFoQSsQeQStaJMFoY1UOyh4+F/Z2D1F/NdALYWeM+jtyvvbP8FcOsfuV0OiT7OmV
-         8dyu7H23fbmuGyj5HjDLn1wUmophLQEazmrvAV/Ax0cIZlkew3uSSCN9XE2K6UzCww
-         0Vrk18N7Goe6A==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: [PATCH 6/6] rcu/nocb: Merge rcu_spawn_cpu_nocb_kthread() and rcu_spawn_one_nocb_kthread()
-Date:   Wed, 17 Nov 2021 16:56:37 +0100
-Message-Id: <20211117155637.363706-7-frederic@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211117155637.363706-1-frederic@kernel.org>
-References: <20211117155637.363706-1-frederic@kernel.org>
+        id S238836AbhKQQDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 11:03:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230315AbhKQQDF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 11:03:05 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2884C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:00:06 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id d24so5720109wra.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:00:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pT4qZN+otEOp9NMbVkyGI+t8qf+gp/bjSr+EEcpc+qY=;
+        b=a1HnUlYAMQ53OdlHDqoKq15Xxmd2IMeYI7OblQGavX1XLR7ALsre4TIaNbHpxrmewy
+         TrlDwzuka8xIwNbUxjXkTwsRJKLIFZhGoxE1HsfvGXtZHIceOc9o07cadzt9t6xAIpCl
+         q9uXp3KXH94nEwtpPeX+VOdNVaMSxedSN/jPMa2wEExsn4NDJZUnVtN6KYL4aAz77KHJ
+         YQ1lYG3Ic0feOv/osj5o8rHRP6mbixtE6yWo/i/8YMg07JCsigSGAgEpVjM0jqSseT3Y
+         8YIruI6vXfinNpiCc8VhiQpKd33FueGXgDiA5ElggX0k4YhLKcySLrnl/3PXkqba7FJ3
+         RHMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pT4qZN+otEOp9NMbVkyGI+t8qf+gp/bjSr+EEcpc+qY=;
+        b=SHS3+2Ar2fD02WW3HAFTxAiGVEuLrY/o7aGZ1Bzb5Y2EkKHV9I1XhgV4lFvoTCk7KD
+         CHRqjUl59yH/oi1qJBMLFQY4uQCeHXboczALrwCsQ5SVEOvpzXc7md9eO0CRRxnlnJjC
+         wuo6mlJARLYVL7pm3kAO2K6pUnkX7ylk/MgDQzbzmwtra43440hB3rSCkQLF6zgdkgiy
+         v9HmBleplkN8zttoqozavzgiMtAOqojlYbN0WSWN6PTu2C5mwqgTTDMU5m6MnM6+X4KX
+         0cjItbOCGzpdCR1eS7szh1HnDbu5M22gL34vOCA/cRT+5OSAac3hbyqhxnbjUWiZ9HUq
+         smYw==
+X-Gm-Message-State: AOAM533TXB7ayjg1JlKTSdPNgwNWiCPycROVliQj+6t7bE5O7g6Fy44g
+        4P943mC1o7JidCCbK/rc4+2Nr8pZs9YrQHV3BWzJNA==
+X-Google-Smtp-Source: ABdhPJzPHMvLDdvlzwIuUsfIgZhSFqd3lWj6Bl2uefwiTnm3ZI4o66LnjNX5/C/BKLJHusY8qtE6WUMu7AigEgQYIEk=
+X-Received: by 2002:adf:e387:: with SMTP id e7mr21743098wrm.412.1637164805103;
+ Wed, 17 Nov 2021 08:00:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211117152917.3739-1-alexandr.lobakin@intel.com>
+In-Reply-To: <20211117152917.3739-1-alexandr.lobakin@intel.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 17 Nov 2021 07:59:53 -0800
+Message-ID: <CANn89iJFjAOw=5fvC1jrgDrV=0c6bCt16NqgySgd4DxR6Yz+PA@mail.gmail.com>
+Subject: Re: [PATCH net-next] stmmac: fix build due to brainos in trans_start changes
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-rcu_spawn_one_nocb_kthread() is only called by
-rcu_spawn_cpu_nocb_kthread(). Don't bother with two separate functions
-and merge them.
+On Wed, Nov 17, 2021 at 7:29 AM Alexander Lobakin
+<alexandr.lobakin@intel.com> wrote:
+>
+> txq_trans_cond_update() takes netdev_tx_queue *nq,
+> not nq->trans_start.
+>
+> Fixes: 5337824f4dc4 ("net: annotate accesses to queue->trans_start")
+> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+> ---
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Uladzislau Rezki <urezki@gmail.com>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Joel Fernandes <joel@joelfernandes.org>
----
- kernel/rcu/tree_nocb.h | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+Thanks !
 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 3845f1885ffc..248b90333b08 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -1217,12 +1217,15 @@ static void __init rcu_boot_init_nocb_percpu_data(struct rcu_data *rdp)
-  * rcuo CB kthread, spawn it.  Additionally, if the rcuo GP kthread
-  * for this CPU's group has not yet been created, spawn it as well.
-  */
--static void rcu_spawn_one_nocb_kthread(int cpu)
-+static void rcu_spawn_cpu_nocb_kthread(int cpu)
- {
- 	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
- 	struct rcu_data *rdp_gp;
- 	struct task_struct *t;
- 
-+	if (!rcu_scheduler_fully_active || !rcu_nocb_is_setup)
-+		return;
-+
- 	/* If it already has an rcuo kthread, then nothing to do. */
- 	if (rdp->nocb_cb_kthread)
- 		return;
-@@ -1246,16 +1249,6 @@ static void rcu_spawn_one_nocb_kthread(int cpu)
- 	WRITE_ONCE(rdp->nocb_gp_kthread, rdp_gp->nocb_gp_kthread);
- }
- 
--/*
-- * If the specified CPU is a no-CBs CPU that does not already have its
-- * rcuo kthread, spawn it.
-- */
--static void rcu_spawn_cpu_nocb_kthread(int cpu)
--{
--	if (rcu_scheduler_fully_active && rcu_nocb_is_setup)
--		rcu_spawn_one_nocb_kthread(cpu);
--}
--
- /*
-  * Once the scheduler is running, spawn rcuo kthreads for all online
-  * no-CBs CPUs.  This assumes that the early_initcall()s happen before
--- 
-2.25.1
-
+Reviewed-by: Eric Dumazet <edumazet@google.com>
