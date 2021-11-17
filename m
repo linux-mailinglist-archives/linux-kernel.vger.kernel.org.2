@@ -2,94 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F73C454062
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 06:47:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB67B45406C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 06:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233421AbhKQFth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 00:49:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49764 "EHLO
+        id S233408AbhKQFwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 00:52:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233393AbhKQFtg (ORCPT
+        with ESMTP id S230082AbhKQFwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 00:49:36 -0500
+        Wed, 17 Nov 2021 00:52:40 -0500
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABF8C061746;
-        Tue, 16 Nov 2021 21:46:38 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F1CC061570;
+        Tue, 16 Nov 2021 21:49:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=FfkD+q87eHWGTXiAr2sBn0a4XKYgLxkUZ91bqq+Qj7I=; b=f0IaqUKiZEGLG0LZzJADOdJIdw
-        0pJknKD7fnMGb6un+ujetf2mhKSonM9EAiBWj2v75CglUCSD7yox0oIQ1U4ntRT/V/cIXH/fSURs5
-        jneLPWyTj9kQGoUnlckLP/WAqNN2v1NES0jCoAK0WfoURgcVHBjBKDP5A3zd6GSYxf2iORlZFnkDE
-        NMKJsA5vJYuUsXprmJWBXDlLzjVujZfp3FeQKyAZfOplAZGdZw5EjOm0uiT1/N0rndWTgNF+Ln1hc
-        CXFx+dArgN1ArnG4ckBCpMTfyLGESQz2JNkg3Mum4Hp8o+03QaO9n8+owAfNNncGFr8ol27fA/l56
-        NFJynLXQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mnDmF-003MgV-V5; Wed, 17 Nov 2021 05:46:36 +0000
-Subject: Re: linux-next: Tree for Nov 17 (uml, no IPV6)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <20211117135800.0b7072cd@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <268ae204-efae-3081-a5dd-44fc07d048ba@infradead.org>
-Date:   Tue, 16 Nov 2021 21:46:35 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=iEufQItznMuE7/EKoKGX4vRELYAFxyh15c7XENTRZno=; b=UNWr528FoOJiy9z0OkAsmpZ32m
+        UMul8BbbAOiHrOPKiGq/ZolB25Q2p++XnqWkNtSlnenIhYoHZSH4Vaqyw/KYq+YsExfGZPlNpw7Xd
+        nHaXX4vuuM63Ti8WnysHMH07GBRiRJOaM7QHuvozj4tL5LwFj+L1e78reMBXL2GSPAl3TMNRe/roo
+        bjafKgX0MJCGBqGZbIdpibzTFEHlnbcp38V1+uEjR5zUAf9aMw+Wo5uxkifmmbVPivEqY4t/Rlg9a
+        h/rfAWRf0TOZJayqDFUornH7xL5BMokfQI/bdx7YNk5DIgGT58C9cYAHMxHkSkNnu62qvlNA083kw
+        LCrn2g1Q==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mnDpA-003NnN-9J; Wed, 17 Nov 2021 05:49:36 +0000
+Date:   Tue, 16 Nov 2021 21:49:36 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@suse.de>, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH 02/13] NFS: do not take i_rwsem for swap IO
+Message-ID: <YZSX8C+2mxQ0NaSq@infradead.org>
+References: <163702956672.25805.16457749992977493579.stgit@noble.brown>
+ <163703064452.25805.5738767545414940042.stgit@noble.brown>
+ <YZNjLtYKnQ/RFpxR@infradead.org>
+ <163709941227.13692.8504638930849686895@noble.neil.brown.name>
 MIME-Version: 1.0
-In-Reply-To: <20211117135800.0b7072cd@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163709941227.13692.8504638930849686895@noble.neil.brown.name>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 6:58 PM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Changes since 20211116:
-> 
+On Wed, Nov 17, 2021 at 08:50:12AM +1100, NeilBrown wrote:
+> This would be David Howells' "mm: Use DIO for swap and fix NFS
+> swapfiles" series?
 
-ARCH=um SUBARCH=x86_64:
-# CONFIG_IPV6 is not set
+Yes.
 
+> I'd be very happy to work with that once it lands.
+> I might try it out and see how two work together.
 
-In file included from ../net/ethernet/eth.c:62:0:
-../include/net/gro.h: In function ‘ip6_gro_compute_pseudo’:
-../include/net/gro.h:413:22: error: implicit declaration of function ‘csum_ipv6_magic’; did you mean ‘csum_tcpudp_magic’? [-Werror=implicit-function-declaration]
-   return ~csum_unfold(csum_ipv6_magic(&iph->saddr, &iph->daddr,
-                       ^~~~~~~~~~~~~~~
-                       csum_tcpudp_magic
-
-
-After I made ip6_gro_compute_pseudo() conditional on CONFIG_IPV6,
-I got this build error:
-
-In file included from ../net/ipv6/tcpv6_offload.c:10:0:
-../net/ipv6/tcpv6_offload.c: In function ‘tcp6_gro_receive’:
-../net/ipv6/tcpv6_offload.c:22:11: error: implicit declaration of function ‘ip6_gro_compute_pseudo’; did you mean ‘inet_gro_compute_pseudo’? [-Werror=implicit-function-declaration]
-            ip6_gro_compute_pseudo)) {
-            ^
-../include/net/gro.h:235:5: note: in definition of macro ‘__skb_gro_checksum_validate’
-      compute_pseudo(skb, proto));  \
-      ^~~~~~~~~~~~~~
-../net/ipv6/tcpv6_offload.c:21:6: note: in expansion of macro ‘skb_gro_checksum_validate’
-       skb_gro_checksum_validate(skb, IPPROTO_TCP,
-       ^~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
-This is UML x86_64 defconfig:
-
-$ make ARCH=um SUBARCH=x86_64 defconfig all
-
-
--- 
-~Randy
+Dave: is it ok if Neil takes over the swap vs NFS work given that he's
+working on a customer requirement?
