@@ -2,125 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721C8454E52
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 21:11:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20339454E55
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 21:12:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238089AbhKQUOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 15:14:32 -0500
-Received: from dcvr.yhbt.net ([64.71.152.64]:50250 "EHLO dcvr.yhbt.net"
+        id S239415AbhKQUPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 15:15:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231429AbhKQUOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 15:14:31 -0500
-Received: from localhost (dcvr.yhbt.net [127.0.0.1])
-        by dcvr.yhbt.net (Postfix) with ESMTP id 5FAAC1F953;
-        Wed, 17 Nov 2021 20:11:32 +0000 (UTC)
-Date:   Wed, 17 Nov 2021 20:11:32 +0000
-From:   Eric Wong <e@80x24.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mike Galbraith <efault@gmx.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        John Ogness <john.ogness@linutronix.de>,
-        Roman Penyaev <rpenyaev@suse.de>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Jason Baron <jbaron@akamai.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [RFC] How to fix eventpoll rwlock based priority inversion on
- PREEMPT_RT?
-Message-ID: <20211117201132.M259904@dcvr>
-References: <20211116140252.GA348770@lothringen>
+        id S231429AbhKQUPq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 15:15:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA21661A02;
+        Wed, 17 Nov 2021 20:12:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637179967;
+        bh=904k1QZHkAzDkH8p/NTXmVnMiM16fjvDv4rwfiAd0tw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=pYV1mCKBdiYayyLyQDWR03NiyHn3HA1Xwise2m/GJf78mXdAd5GEOlXgRmc29Tygj
+         3vSrP/lOQRxJaUQfS5do0gP14yjoBPEwqRByWLXTQ8610bx3JDgbEqPAn8QfH+dNp8
+         44KU0J0LvraiTm45Gz/GJFIdYpRWqOSMveaUbbp8Zvw3IcrHLRyhARHXE2T5aztIBh
+         jUJEZBezcBXULMao2/KT6+XUXwqti/7sgnW6piccaz5mfkolDwORsYY5r3zU2psiD7
+         oV9uS+lL5vFIx2ptQpgiGfwjxpsGagR96QehVWQZbQ9Wb/GoS0SXL0sbsyBpXir2eZ
+         xdlh+ZexkKOYA==
+Date:   Wed, 17 Nov 2021 14:12:45 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, kernel-team@android.com,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Subject: Re: [PATCH] PCI: apple: Reset the port for 100ms on probe
+Message-ID: <20211117201245.GA1768803@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211116140252.GA348770@lothringen>
+In-Reply-To: <20211117160053.232158-1-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Frederic Weisbecker <frederic@kernel.org> wrote:
-> Hi,
-> 
-> I'm iterating again on this topic, this time with the author of
-> the patch Cc'ed.
-> 
-> The following commit:
-> 
->     a218cc491420 (epoll: use rwlock in order to reduce ep_poll
->                   callback() contention)
-> 
-> has changed the ep->lock into an rwlock. This can cause priority inversion
-> on PREEMPT_RT. Here is an example:
-> 
-> 
-> 1) High priority task A waits for events on epoll_wait(), nothing shows up so
->    it goes to sleep for new events in the ep_poll() loop.
-> 
-> 2) Lower prio task B brings new events in ep_poll_callback(), waking up A
->    while still holding read_lock(ep->lock)
-> 
-> 3) Task A wakes up immediately, tries to grab write_lock(ep->lock) but it has
->    to wait for task B to release read_lock(ep->lock). Unfortunately there is
->    no priority inheritance when write_lock() is called on an rwlock that is
->    already read_lock'ed. So back to task B that may even be preempted by
->    yet another task before releasing read_lock(ep->lock).
-> 
-> 
-> Now how to solve this? Several possibilities:
-> 
-> == Delay the wake up after releasing the read_lock()? ==
-> 
-> That solves part of the problem only. If another event comes up
-> concurrently we are back to the original issue.
-> 
-> == Make rwlock more fair ? ==
-> 
-> Currently read_lock() only acquires the rtmutex if the lock is already
-> write-held (or write_lock() is waiting to acquire). So if read_lock() happens
-> after write_lock(), fairness is observed but if write_lock() happens after
-> read_lock(), priority inheritance doesn't happen.
-> 
-> I think there has been attempts to solve this by the past but some issues
-> arised (don't know the exact details, comments on rwbase_rt.c bring some clues).
-> 
-> == Convert the rwlock to RCU ? ==
-> 
-> Traditionally, we try to convert rwlocks bringing issues to RCU. I'm not sure the
-> situation fits here because the rwlock is used the other way around:
-> the epoll consumer does the write_lock() and the producers do read_lock(). Then
-> concurrent producers use ad-hoc concurrent list add (see list_add_tail_lockless)
-> to handle racy modifications.
-> 
-> There are also list modifications on both side. There are added from the
-> producers and read and deleted (even re-added sometimes) on the consumer side.
-> 
-> Perhaps RCU could be used with keeping locking on the consumer side...
+[+cc Pali]
 
-+CC linux-fsdevel and Mathieu Desnoyers
-
-I proposed using wfcqueue many years ago, but ran out of
-time/hardware/funding to work on it:
-
-  https://yhbt.net/lore/lkml/20130401183118.GA9968@dcvr.yhbt.net/
-
-wfcqueue is used internally by Userspace-RCU, but wfcqueue
-itself doesn't rely on RCU.  I'm not sure if wfcqueue helps
-PREEMPT_RT, but Mathieu + Paul might.
-
-> == Convert to llist ? ==
+On Wed, Nov 17, 2021 at 04:00:53PM +0000, Marc Zyngier wrote:
+> While the Apple PCIe driver works correctly when directly booted
+> from the firmware, it fails to initialise when the kernel is booted
+> from a bootloader using PCIe such as u-boot.
 > 
-> It's a possibility but some operations like single element deletion may be
-> costly because only llist_add() and llist_del_all() are atomic on llist.
-> !CONFIG_PREEMPT_RT might not be happy about it.
+> That's beacuse we're missing a proper reset of the port (we only
+> clear the reset, but never assert it).
+
+s/beacuse/because/
+
+> Bring the port back to life by wiggling the #PERST pin for 100ms
+> (as per the spec).
+
+I cc'd Pali because I think he's interested in consolidating or
+somehow rationalizing delays like this.
+
+If we have a specific spec reference here, I think it would help that
+effort.  I *think* it's PCIe r5.0, sec 6.6.1, which mentions the 100ms
+along with some additional constraints, like waiting 100ms after Link
+training completes for ports that support > 5.0 GT/s, whether
+Readiness Notifications are used, and CRS Software Visiblity.
+
+> Fixes: 1e33888fbe44 ("PCI: apple: Add initial hardware bring-up")
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> Cc: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> ---
+>  drivers/pci/controller/pcie-apple.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> == Consider epoll not PREEMPT_RT friendly? ==
+> diff --git a/drivers/pci/controller/pcie-apple.c b/drivers/pci/controller/pcie-apple.c
+> index 1bf4d75b61be..bbea5f6e0a68 100644
+> --- a/drivers/pci/controller/pcie-apple.c
+> +++ b/drivers/pci/controller/pcie-apple.c
+> @@ -543,6 +543,9 @@ static int apple_pcie_setup_port(struct apple_pcie *pcie,
+>  	if (ret < 0)
+>  		return ret;
+>  
+> +	/* Hold #PERST for 100ms as per the spec */
+> +	gpiod_set_value(reset, 0);
+> +	msleep(100);
+>  	rmw_set(PORT_PERST_OFF, port->base + PORT_PERST);
+>  	gpiod_set_value(reset, 1);
+>  
+> -- 
+> 2.30.2
 > 
-> A last resort is to simply consider epoll is not RT-friendly and suggest
-> using more simple alternatives like poll()....
-> 
-> Any thoughts?
