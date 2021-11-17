@@ -2,78 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7CB454712
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 14:20:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BF545471C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 14:23:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237475AbhKQNXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 08:23:32 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:46046 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232270AbhKQNXa (ORCPT
+        id S237510AbhKQNZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 08:25:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232163AbhKQNZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 08:23:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1637155232; x=1668691232;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=r/F5RXTxpA+0lZWVSNUoYs6ScKboHBx/VoX/iobMa7Y=;
-  b=LJhPKb/NKOrevp0vJ/hDeiZMhOiESfVxIwd4dlYadm0gNIovcR/8Cgd9
-   YJYAjIXY4GiLoUxbTnea0lI/+kTKquCtwvtLCKYx0z1F2a+CWTqh2DBnG
-   ShQk2IkArMMJl1VcGfTAiNZTxcCROKokYjrfcBPSyCQL6sxpla9x//qTr
-   HkjifijEsov6tnetlt5haJ2BeRGTMYfLpi3ibFAMo+A3rf3egMzP9QHbH
-   mCM0L5EmyN3pgFZXPfQiVwf1cX8HbB/GkTSGFQ3Xoo1U3XFoRZrHMahGd
-   WygO1ADZw0NGL55Zwx5UIFJq8DZvv0e28d7HXk8JQAolkQ1ktVDmVDHVU
-   A==;
-IronPort-SDR: W76uNzB3a1rKhexxb2FdjlT45PiVYDMgNXU5+0Qqfh+CM4eeqyMhcaCmTubCWc8QLISc5OhkPY
- 3p9Vq5gd/Y+etArLCV6q2HDa8/7JChIInrCqTmAfZvLSdaLAEABqWqpUtrMXDTRUP3iTSVQOUp
- 3Hx3jhT9SMl6CkjppLJBsegiJyJFCfAzn/H2gR9DTTlBypTP/zyq6ckB9hPZQ/edWcwQG08vAm
- F2P4glXo1rU4KSz7brpL0DiLkHMNWNwAtBQcBN7kjheplfJodvTBPaJd7tBV+ESZIcSmL0N+ml
- vJDtfl5KrQmmuDKbLrjhsDzY
-X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
-   d="scan'208";a="139427487"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Nov 2021 06:20:31 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Wed, 17 Nov 2021 06:20:30 -0700
-Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Wed, 17 Nov 2021 06:20:28 -0700
-From:   Tudor Ambarus <tudor.ambarus@microchip.com>
-To:     Pratyush Yadav <p.yadav@ti.com>
-CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        <linux-mtd@lists.infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        "Miquel Raynal" <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-kernel@vger.kernel.org>, Michael Walle <michael@walle.cc>
-Subject: Re: [PATCH] MAINTAINERS: Add myself as the SPI NOR co-maintainer
-Date:   Wed, 17 Nov 2021 15:20:26 +0200
-Message-ID: <163715510294.4949.12245796211168827045.b4-ty@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211029181157.20623-1-p.yadav@ti.com>
-References: <20211029181157.20623-1-p.yadav@ti.com>
+        Wed, 17 Nov 2021 08:25:39 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4810C061570;
+        Wed, 17 Nov 2021 05:22:40 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id 28so2232919pgq.8;
+        Wed, 17 Nov 2021 05:22:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=n7Jf+5/Jh7KOEFSs12H1gnleHX5Ul1EJihf5cWALbbw=;
+        b=NMtrHwlhumZZGG7ACQ5UZwJN7rtTqhVOALh7ylXTR9G6Y8zmsKtbGjwSxvzwVD314V
+         mFlCILMpoJPcOxUNV38QoEdCs8zz43HlJK1GNiNc4P2QVifmYL23tPn/GqSDrxCGPg16
+         bvAIjKJA0lzwI5sAj/KKF7Bc8fhHe/9Wx28bmwIGJrkCjDmdcCDuD5dw7cCpuvtFoqub
+         iSkzJKRMidoqCXXQSY0sUPKp3Cs63451CNuN8JlBUt7M7BBJqI/PFOoctzgC3YAkmPjZ
+         yOWSQXVn3LZwrWkLZBlx3QxZWWBmdX22onr58Glga9JdD2AAQeBuO5o77eDt6FelUOw8
+         iVxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=n7Jf+5/Jh7KOEFSs12H1gnleHX5Ul1EJihf5cWALbbw=;
+        b=b9UyN0TiiyTrrUM5mEVW0SLXg+DC3fOTfUw4UTOuK/YxkehoAr9f6NSymOWOyBqOCw
+         ZP/wzZEt0UizfGSypZaR5lD2XT/ZI19sJx/zX0Pda6CY93KZL5jSyTngq6TDoDmcN0o6
+         Gw8qnnpoZl7W8FvZ3XCnIV31/N5IrQE0M0sA4N5VomOGcZTXqA9xoXB4UQBUGcns37h9
+         vM1R+zFAj3tR1DSoo821Zfw1D/HCw/3y4+fscstgFsiT1pC1M0UcwdOFhrdjVqk/MbZS
+         8OG8xhSOFBDVTaeMzO/7Fr6GBa8W8b5DpsyjzOl5UrjyXCQ9J6XDWaqGDQNYOWqpM+XC
+         Lv/g==
+X-Gm-Message-State: AOAM532Kmw5b5iLYFPgryVggLtRMLp0ZCft1Kg2ILRAx9cHtwmA4swM8
+        Hlj8fOcvkwa1WS7nEfL5Vy0=
+X-Google-Smtp-Source: ABdhPJwYIet5fq/8KowjGXs7GPhnQ/zbG+7NtQHLznln3NXsAVsDB6ZMleQEQVqBwkPH6jdcXK5meg==
+X-Received: by 2002:a05:6a00:2146:b0:44c:2922:8abf with SMTP id o6-20020a056a00214600b0044c29228abfmr48946221pfk.27.1637155360284;
+        Wed, 17 Nov 2021 05:22:40 -0800 (PST)
+Received: from ?IPV6:2404:f801:0:5:8000::50b? ([2404:f801:9000:18:efec::50b])
+        by smtp.gmail.com with ESMTPSA id t40sm23310231pfg.107.2021.11.17.05.22.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 05:22:39 -0800 (PST)
+Message-ID: <fb9809f5-a830-733e-745b-aa1b1d2671f5@gmail.com>
+Date:   Wed, 17 Nov 2021 21:22:27 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH 3/5] hyperv/IOMMU: Enable swiotlb bounce buffer for
+ Isolation VM
+Content-Language: en-US
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        hpa@zytor.com, jgross@suse.com, sstabellini@kernel.org,
+        boris.ostrovsky@oracle.com, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, joro@8bytes.org, will@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, hch@lst.de, m.szyprowski@samsung.com,
+        robin.murphy@arm.com, xen-devel@lists.xenproject.org,
+        michael.h.kelley@microsoft.com,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        netdev@vger.kernel.org, vkuznets@redhat.com, brijesh.singh@amd.com,
+        konrad.wilk@oracle.com, parri.andrea@gmail.com,
+        thomas.lendacky@amd.com, dave.hansen@intel.com
+References: <20211116153923.196763-1-ltykernel@gmail.com>
+ <20211116153923.196763-4-ltykernel@gmail.com> <YZQCp6WWKAdOCbh8@zn.tnic>
+From:   Tianyu Lan <ltykernel@gmail.com>
+In-Reply-To: <YZQCp6WWKAdOCbh8@zn.tnic>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 23:41:57 +0530, Pratyush Yadav wrote:
-> I have been reviewing patches and contributing for over a year. I would
-> like to help maintain the subsystem as well.
 
-Stripped "the" from the commit subject, added Richard Acked-by
-tag as agreed on irc, and applied to spi-nor/next.
 
-Pratyush, welcome and good luck!
+On 11/17/2021 3:12 AM, Borislav Petkov wrote:
+> What you should do, instead, is add an isol. VM specific
+> hv_cc_platform_has() just like amd_cc_platform_has() and handle
+> the cc_attrs there for your platform, like return false for
+> CC_ATTR_GUEST_MEM_ENCRYPT and then you won't need to add that hv_* thing
+> everywhere.
+> 
+> And then fix it up in __set_memory_enc_dec() too.
+>
 
-[1/1] MAINTAINERS: Add myself as the SPI NOR co-maintainer
-      https://git.kernel.org/mtd/c/228e80459960
+Yes, agree. Will add hv cc_attrs and check via cc_platform_has().
 
-Best regards,
--- 
-Tudor Ambarus <tudor.ambarus@microchip.com>
+
