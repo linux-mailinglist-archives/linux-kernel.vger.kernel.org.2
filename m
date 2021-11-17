@@ -2,197 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9B4453DAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 02:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7AA453DB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 02:25:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232755AbhKQBZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 20:25:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47454 "EHLO
+        id S230081AbhKQB2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 20:28:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232803AbhKQBYx (ORCPT
+        with ESMTP id S229568AbhKQB23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 20:24:53 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5D4C061231
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 17:21:53 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id r11so3073903edd.9
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 17:21:53 -0800 (PST)
+        Tue, 16 Nov 2021 20:28:29 -0500
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98480C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 17:25:31 -0800 (PST)
+Received: by mail-pj1-x1049.google.com with SMTP id gx17-20020a17090b125100b001a6f72e2dbdso400666pjb.7
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 17:25:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M0DL4Z+z7lD4X8gzZ0br5lXdNaFuU3WYYnUldjpHc2U=;
-        b=nwq+nix4pOQgFe2cQDcY0ONGPbpxJ8sYMy/yq7her6nK8IAaY2rNQ3/k8ehU7eMZuc
-         BZHmd+0AWLJceWNi/O1CPHLx4uT4KZq0v5u8cRnw9uGsUiBzDqZk/ninenAMx52mId9J
-         57cXo85nb5SzFi1ufwA9w5fSFx7vpsSJjFmrlhb72RHqgDuyFlDrnjLEBhBJ2sP7og5o
-         pqa6mqzGcg6w0zAxvbBhNRYx7ySeq1E/LFCO1Sa4+OFj8Pk4f9D+nDkLsevVN2iwA/3w
-         UgkZT03wrnhv4U1re89+eWg263xXyl874+2ECrp1/IaYe1NM2h0Aas1G2dM8F/HaRfY8
-         vF/g==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=jzis9D6fqTyyLA02o3dSfzs5yeXW2O0+Qf+DxR2EUps=;
+        b=bTiS7jnTXeCNNkiePPmzv8eI5F02AN9TpuuVmOQmReiT1bttmG112fOlQa2HVmv7iK
+         vaqEBALepUgjzMRx6MtkCQ/yMlvPV+V2UB1XXSG42pyi/mkcKk80NE7oG3E2Er2By4Iw
+         aA2rTyz5rOvRZONXeD3K1GdbBbHYBjDKxA3B+jegyj3qAfQxakwKdwSnGzCAZZKr9D8S
+         0i88cUzVgCzmVzhpLpqul3o6ducwtkzVXjgo4n6eevI3iq7iorMJ2yGjjECmT5hbNF1q
+         tnOB6GZDkgwU89OAMty7oTApkK18b7Qs4fVGCcYFL2InhDBPtToim1uW5H5sFycHfOx0
+         yLHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M0DL4Z+z7lD4X8gzZ0br5lXdNaFuU3WYYnUldjpHc2U=;
-        b=iMFFNeUteRVg/rCOFG5AUNct/MTA64GV0Z+PU4xn2Iv/8PNLARueGB4JjlA85K2VOf
-         ZHRbe3n9YbGvVT+mrPIaHV7JKWuIvvnJqBsyfcLIZxDMPPCki8JjOAEnBYDD2b4pKTpV
-         qHWbAa3agtqwWsZlHeN2hmVmrLCCzgF+/21iZKso3UZurQNhgakzjSzinPaqzg5cFSve
-         azT9Xyivq9MrOvOJXGEFTq9q8924cs5QA/vqUixn1FqZ62K8FT20ENrO0ToYCmYhSZyK
-         5bHx+8jSh/s3yFnGNxz2h0h5OTwkps9ylz87BzHfowWwnfDYqAIhqe0mU+E9wqSSq+WY
-         VIfA==
-X-Gm-Message-State: AOAM532y1FVrOGbKs/cInycbylOanTBUSnSnt5QECgSOas3zyLIwNXEt
-        tHWuRyvGdz336Zlu9F7RN3Qnh/Vh1W6dfSmVeD+RAg==
-X-Google-Smtp-Source: ABdhPJz+Zpnh28paqLB4qDHLzR3XVq2bt0ht3aoYvckA16R5n/koE3WziQ9CnstPTiZ+BYY0ZXMPZLKJl704orREtZg=
-X-Received: by 2002:a17:907:d89:: with SMTP id go9mr16600378ejc.330.1637112112433;
- Tue, 16 Nov 2021 17:21:52 -0800 (PST)
-MIME-Version: 1.0
-References: <20211025015156.33133-1-brad@pensando.io> <20211025015156.33133-4-brad@pensando.io>
- <YXhErvvSfKIBvHae@robh.at.kernel.org>
-In-Reply-To: <YXhErvvSfKIBvHae@robh.at.kernel.org>
-From:   Brad Larson <brad@pensando.io>
-Date:   Tue, 16 Nov 2021 17:21:41 -0800
-Message-ID: <CAK9rFnyk=gW_ZRZUci3byu=DNwdrmKBb30HQgxK0iWJuVVPbfQ@mail.gmail.com>
-Subject: Re: [PATCH v3 03/11] dt-bindings: mmc: Add Pensando Elba SoC binding
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=jzis9D6fqTyyLA02o3dSfzs5yeXW2O0+Qf+DxR2EUps=;
+        b=XzpTOwrN7ZjfAeLZMO2X9caAvOuGLrRtC65RKNkyIQKr7XxvxQyssVvVtR9qRjP3Oc
+         Oav6yJPKa5jQXCku36bErKuJRAppjv8Nf8kqTU9GcBSLv/qbEOEt7Pab3pkIPXZa9eX4
+         CElulU09R07ezpGAH4BxfvaigSUuuYGbogelQmNr0v3F9ivmcQX+X10j4ks6HqF9A+lr
+         rjppX06Oq9ESMXE1TQin2q9z7ldRmbWZCApNFXpUf+cIIv6zsFGZaTU9sYT5yBi7GSkn
+         YGHP4yv7Xpu6mvK8u9MYJTp6JLOPo66+/vn6bdZLrQxe0bFlvXICkFI2Ei7DiUlvUoJb
+         31Ow==
+X-Gm-Message-State: AOAM530vyipRSmENQ4kZhH4OQWpmifyl13jbVRVjf1kgL3vAH4kag1Fs
+        5yXl2Q5/xyzU6e0YtSJ/9an9b3g=
+X-Google-Smtp-Source: ABdhPJxKbny7Hyg+azjy336lJqICWE1jEiVwfA8cEngT+yLZ0bq0tdD7vltBF4qoJcDK4j3FUxDsi/A=
+X-Received: from wak-linux.svl.corp.google.com ([2620:15c:2c5:13:784a:d347:659f:f1f3])
+ (user=wak job=sendgmr) by 2002:a17:903:18b:b0:141:eda2:d5fa with SMTP id
+ z11-20020a170903018b00b00141eda2d5famr50271146plg.63.1637112331084; Tue, 16
+ Nov 2021 17:25:31 -0800 (PST)
+Date:   Tue, 16 Nov 2021 17:25:12 -0800
+Message-Id: <20211117012512.1081593-1-wak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
+Subject: [PATCH] ARM: dts: nuvoton: Fix FIU reg definition
+From:   "William A. Kennington III" <wak@google.com>
+To:     robh+dt@kernel.org, mark.rutland@arm.com, avifishman70@gmail.com,
+        tali.perry1@gmail.com
+Cc:     joel@jms.id.au, openbmc@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        "William A. Kennington III" <wak@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+The current definitions have a reg-name for "memory", but no
+corresponding reg space defined. These values were taken from the
+NPCM7xx documentation and tested on real hardware.
 
-On Tue, Oct 26, 2021 at 11:10 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Sun, Oct 24, 2021 at 06:51:48PM -0700, Brad Larson wrote:
-> > Pensando Elba ARM 64-bit SoC is integrated with this IP and
-> > explicitly controls byte-lane enables resulting in an additional
-> > reg property resource.
-> >
-> > Signed-off-by: Brad Larson <brad@pensando.io>
-> > ---
-> >  .../devicetree/bindings/mmc/cdns,sdhci.yaml         | 13 ++++++++-----
-> >  1 file changed, 8 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml b/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-> > index af7442f73881..6c68b7b5abec 100644
-> > --- a/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-> > +++ b/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-> > @@ -15,13 +15,16 @@ allOf:
-> >
-> >  properties:
-> >    compatible:
-> > -    items:
-> > -      - enum:
-> > -          - socionext,uniphier-sd4hc
-> > -      - const: cdns,sd4hc
-> > +    oneOf:
-> > +      - items:
-> > +        - enum:
-> > +            - socionext,uniphier-sd4hc
-> > +            - pensando,elba-emmc
-> > +        - const: cdns,sd4hc
-> >
-> >    reg:
-> > -    maxItems: 1
-> > +    minItems: 1
-> > +    maxItems: 2
->
-> If there is more than 1, then you need to describe what each entry is.
+Without this definition, the FIU driver does not take advantage of
+direct read support.
 
-The dtschema update and yamllint install shows the errors your bot
-reported.  With the updated cdns,sdhci.yaml to add the description for
-Elba's two reg items this is what I'm getting with in 5.16.0-rc1
-(next-20211116):
+Signed-off-by: William A. Kennington III <wak@google.com>
+---
+ arch/arm/boot/dts/nuvoton-common-npcm7xx.dtsi | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-b/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-index 4207fed62dfe..c01a7283c468 100644
---- a/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-+++ b/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-@@ -12,17 +12,44 @@ maintainers:
+diff --git a/arch/arm/boot/dts/nuvoton-common-npcm7xx.dtsi b/arch/arm/boot/dts/nuvoton-common-npcm7xx.dtsi
+index aca0e0e390d8..c164ec9fc96f 100644
+--- a/arch/arm/boot/dts/nuvoton-common-npcm7xx.dtsi
++++ b/arch/arm/boot/dts/nuvoton-common-npcm7xx.dtsi
+@@ -181,7 +181,7 @@ fiu0: spi@fb000000 {
+ 			compatible = "nuvoton,npcm750-fiu";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+-			reg = <0xfb000000 0x1000>;
++			reg = <0xfb000000 0x1000>, <0x80000000 0x10000000>;
+ 			reg-names = "control", "memory";
+ 			clocks = <&clk NPCM7XX_CLK_SPI0>;
+ 			clock-names = "clk_spi0";
+@@ -192,7 +192,7 @@ fiu3: spi@c0000000 {
+ 			compatible = "nuvoton,npcm750-fiu";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+-			reg = <0xc0000000 0x1000>;
++			reg = <0xc0000000 0x1000>, <0xa0000000 0x20000000>;
+ 			reg-names = "control", "memory";
+ 			clocks = <&clk NPCM7XX_CLK_SPI3>;
+ 			clock-names = "clk_spi3";
+@@ -265,7 +265,7 @@ fiux: spi@fb001000 {
+ 			compatible = "nuvoton,npcm750-fiu";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+-			reg = <0xfb001000 0x1000>;
++			reg = <0xfb001000 0x1000>, <0xf8000000 0x2000000>;
+ 			reg-names = "control", "memory";
+ 			clocks = <&clk NPCM7XX_CLK_SPIX>;
+ 			clock-names = "clk_spix";
+-- 
+2.34.0.rc1.387.gb447b232ab-goog
 
- allOf:
-   - $ref: mmc-controller.yaml
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - socionext,uniphier-sd4hc
-+    then:
-+      properties:
-+        reg:
-+          maxItems: 1
-+          items:
-+            - description: SDHCI CDNS HRS registers
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - pensando,elba-emmc
-+    then:
-+      properties:
-+        reg:
-+          maxItems: 2
-+          items:
-+            - description: SDHCI CDNS HRS registers
-+            - description: Byte lane control register
-
- properties:
-   compatible:
--    items:
--      - enum:
--          - microchip,mpfs-sd4hc
--          - socionext,uniphier-sd4hc
--      - const: cdns,sd4hc
-+    oneOf:
-+      - items:
-+          - enum:
-+              - socionext,uniphier-sd4hc
-+              - pensando,elba-emmc
-+          - const: cdns,sd4hc
-
-   reg:
--    maxItems: 1
-+    minItems: 1
-+    maxItems: 2
-
-   interrupts:
-     maxItems: 1
-
-$ make DT_CHECKER_FLAGS=-m dt_binding_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-  LINT    Documentation/devicetree/bindings
-  CHKDT   Documentation/devicetree/bindings/processed-schema-examples.json
-  SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
-...
-  DTEX    Documentation/devicetree/bindings/mmc/cdns,sdhci.example.dts
-  DTC     Documentation/devicetree/bindings/mmc/cdns,sdhci.example.dt.yaml
-  CHECK   Documentation/devicetree/bindings/mmc/cdns,sdhci.example.dt.yaml
-
-These errors are reported for unrelated files not on DT_SCHEMA_FILES
-
-bindings/net/qcom,ipa.yaml: ignoring, error in schema: properties:
-qcom,smem-state-names
-bindings/iio/adc/st,stm32-dfsdm-adc.yaml: ignoring, error in schema:
-patternProperties: ^filter@[0-9]+$: properties: st,adc-channel-names
-bindings/interconnect/qcom,rpmh.yaml: ignoring, error in schema:
-properties: qcom,bcm-voter-names
-
-Thanks,
-Brad
