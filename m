@@ -2,80 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D582455154
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 00:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A716455157
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 00:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241722AbhKQX7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 18:59:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233088AbhKQX7T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 18:59:19 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F61DC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 15:56:10 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id l25so2114148eda.11
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 15:56:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LWnFI7xMunJXtYruzgWcAa9iAQiJ7OsPSH6QXO/CtU4=;
-        b=OQI2q46Lp4GqTHRqt+KyClJ5MB+HeDG6T3Xqtq33QiXxoBAQp68mIMlj0FEhOLRvp/
-         Z2UxkMWedJ/2jMVGsty1OxtzG8w9BhibPrcpBAo0xUzcnXpDlA7ARYRpx2ZFY8kA3E2O
-         7Vn4GpRI1OkA8Yi+5AGWSqStni1vzLHzNBJ3E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LWnFI7xMunJXtYruzgWcAa9iAQiJ7OsPSH6QXO/CtU4=;
-        b=H8qAFjx9xYndI8+ei6RowK5HCe3L0/zv4+hsSYoJJ4b/zDRd4XKP9QQjeDUydiMRNl
-         J7y1nR8eU1UDKtgVUtHBBJqTF2ZL0+7j1fz67FTE8ZCigHQTTSgIvOsnGxmyJOJNaxCC
-         KXyaJAGyGrd1WKa0qMRDGipXeuDfXxfvykGm1jdo65+GUsz4wEAI7TTJxrSBWYYG/P38
-         pVDVSDBKb2B3d5k/qCCMgTiZDn4c7vX9wiAyMl4LBYW14W+LqxWZobYVz4QpAQTHtemJ
-         GQEaLW8JEYkd8hwyMgOzgZ9/ziii14UUaroElHG8d0SkqQrMczWekCA333vk02zIgCmS
-         fAfQ==
-X-Gm-Message-State: AOAM53344Y1YmgJ1aq9L1EVWqRkYHWwyFkkITPww0wNuB5UP2Moz7jUB
-        WNIRhupU4mJ1iUjoUEjylv+WfKYCIYUpYqxS
-X-Google-Smtp-Source: ABdhPJy+YECs1DPbanGsAze/8GvsZOysmaTwD1y0/4hi3mKGqmTrbzyHn/svZ28x24wDbLYfA3NLSg==
-X-Received: by 2002:a17:906:dc93:: with SMTP id cs19mr27479110ejc.21.1637193368815;
-        Wed, 17 Nov 2021 15:56:08 -0800 (PST)
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com. [209.85.128.45])
-        by smtp.gmail.com with ESMTPSA id ar4sm564454ejc.52.2021.11.17.15.56.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 15:56:08 -0800 (PST)
-Received: by mail-wm1-f45.google.com with SMTP id f7-20020a1c1f07000000b0032ee11917ceso3429109wmf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 15:56:08 -0800 (PST)
-X-Received: by 2002:a1c:7405:: with SMTP id p5mr4358090wmc.152.1637193368169;
- Wed, 17 Nov 2021 15:56:08 -0800 (PST)
+        id S241727AbhKRAAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 19:00:49 -0500
+Received: from mga03.intel.com ([134.134.136.65]:22562 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241721AbhKRAAr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 19:00:47 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10171"; a="234023778"
+X-IronPort-AV: E=Sophos;i="5.87,243,1631602800"; 
+   d="scan'208";a="234023778"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 15:57:11 -0800
+X-IronPort-AV: E=Sophos;i="5.87,243,1631602800"; 
+   d="scan'208";a="454834492"
+Received: from rsyep-mobl2.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.251.140.227])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 15:57:10 -0800
+Subject: Re: [PATCH] x86/paravirt: Fix build PARAVIRT_XXL=y without XEN_PV
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>
+References: <20211117181439.4368-1-kirill.shutemov@linux.intel.com>
+ <YZVLVfd5E6d6YQig@hirez.programming.kicks-ass.net>
+ <20211117184225.6e257nfpdd2qhrj4@box.shutemov.name>
+ <4824bf30-851e-c927-a50f-87fa2a429b2a@linux.intel.com>
+ <YZVOfGtHyiZg1pIP@zn.tnic>
+ <980ceab6-6686-c8f3-72b8-5743ca517bdf@linux.intel.com>
+ <0f0b9784-1902-1526-2796-7d1a7ab17fb6@intel.com>
+ <21f1325d-d97e-1bb7-ea87-d84e44089ab4@linux.intel.com>
+ <YZVvdyHhPTzzZbiu@zn.tnic>
+ <d826f932-a6a4-de7d-b0ea-f8e1f9bfe012@linux.intel.com>
+ <20211117232329.GD174703@worktop.programming.kicks-ass.net>
+From:   Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <ea41adcc-aeb4-136a-c723-077454ae2390@linux.intel.com>
+Date:   Wed, 17 Nov 2021 15:57:09 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211117233656.77861-1-agruenba@redhat.com>
-In-Reply-To: <20211117233656.77861-1-agruenba@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 17 Nov 2021 15:55:52 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgx=75CTbsK3NzVhNVihw-P+U2gLekNJW-p-Tm2qc9_nQ@mail.gmail.com>
-Message-ID: <CAHk-=wgx=75CTbsK3NzVhNVihw-P+U2gLekNJW-p-Tm2qc9_nQ@mail.gmail.com>
-Subject: Re: [GIT PULL] gfs2 fixes for v5.16-rc2
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     cluster-devel <cluster-devel@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211117232329.GD174703@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 3:37 PM Andreas Gruenbacher <agruenba@redhat.com> wrote:
->
-> We have a choice here between the proper fix in iomap_write_iter and
-> generic_perform_write and this patch, which is just a workaround.  I've tried
-> to get your feedback on this before:
 
-Well, you did get Catalin's feedback, and I didn't have any strong
-opinions on it, so..
 
-I do think that iomap_write_iter() should be fixed, but I also agree
-with your "by now too late", so I've pulled your gfs2 workaround.
+On 11/17/21 3:23 PM, Peter Zijlstra wrote:
+> On Wed, Nov 17, 2021 at 03:04:11PM -0800, Sathyanarayanan Kuppuswamy wrote:
+> 
+>> We need PV support to handle halt() and safe_halt() cases.
+>>
+>> HLT instruction is generally used in cases like reboot, idle and
+>> exception fixup handlers.
+> 
+> Which exception calls hlt? Because idle and reboot can easily be done.
 
-          Linus
+It is called in early_fixup_exception().
+
+> 
+>> In TDX guest, to support HLT instruction, it has to be emulated using
+>> a hypercall (aka TDVMCALL).
+>>
+>> We have the following three ways to emulate the HLT instruction:
+>>
+>> 1. Directly substitute TDVMCALLs in places where we require emulation.
+>> 2. Use #VE exception handler to emulate it (In TDX guest, executing HLT
+>>     will lead to #VE exception).
+>> 3. Emulate it using pv_ops
+>>
+>> Since option#1 is not a scalable approach, it can be ignored. Option #2
+>> is also not preferred because, we cannot differentiate between safe
+>> halt and normal halt use cases in the exception handler.
+> 
+> Would not regs->flags & IF provide clue? I know STI normally has a
+> shadow, but wouldn't a trap in that shadow still get the flag straight?
+> I'm sure there's fun bugs around this, but surely TDX is new and doesn't
+> have these bugs.
+
+We have attempted this approach, but it failed some performance tests.
+
+Yes, if we use option # 2, for safe_halt() use case, STI will leave the
+interrupts in the desired state. But, between the STI instruction and
+the actual emulation of the HLT instruction, interrupts will be left in
+the enabled state. So any interrupt that happen in that window will
+delay the HLT operation for a long time.
+
+With above consideration, we thought PV ops is error free and a simpler
+solution.
+
+> 
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
