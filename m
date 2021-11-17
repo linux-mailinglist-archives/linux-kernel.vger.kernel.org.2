@@ -2,106 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D574542C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 09:37:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 643C24542D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 09:44:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232911AbhKQIj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 03:39:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231787AbhKQIj4 (ORCPT
+        id S233664AbhKQIrx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Nov 2021 03:47:53 -0500
+Received: from mail-ua1-f48.google.com ([209.85.222.48]:41855 "EHLO
+        mail-ua1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231722AbhKQIrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 03:39:56 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38513C061746
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 00:36:58 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id d27so3051086wrb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 00:36:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WrPEvEbWf6Wc0DXft8xWpwNHryeVDMkAQS+5Bf1seZQ=;
-        b=Rd51I7u6tzAIugOkmci8FtxptCl14VCBCDb6jJFoovrmWDH0iwZXNjmaPZnEmwGHB7
-         w72ZBxf27jaCOtqb58DxUYnlcqiVFDRteNX2hZjDkqikexdq9zY8qFmJL60i0CYki3QD
-         X9AUTtQ7351p7c+fOqHxRmC9YJy6mOquiKUw6didobc2+/sMQSG35P0qyqB1PAPtnYu6
-         lniKzdhUFjxVi2BurMR1evX1WltkWpjTQHo60fKPgciofbGIRdLywt8znfsPKg9Q/OAC
-         A/zLFZV3heNlL2xnW+IVAZjbMw9m+vYJXrcyDLH9/h1WCxh44tFaiO0oG38pzlCK9LII
-         q+mg==
+        Wed, 17 Nov 2021 03:47:52 -0500
+Received: by mail-ua1-f48.google.com with SMTP id p37so4216439uae.8;
+        Wed, 17 Nov 2021 00:44:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WrPEvEbWf6Wc0DXft8xWpwNHryeVDMkAQS+5Bf1seZQ=;
-        b=kB0B8KTDjL+ThVlpYiAf7+pI/Y6BQpSJaGoOlYJdcUfExU5BVy2yyveEAo8YHybc7e
-         BcvleF5Bo0BvgssCZsaX0LwuAZMwG/A4JWQRwm/D47SMr3Osii9JZUBzRJ9wNBot5SpM
-         +lPNSb1CJOL5/gTBojBvsbTTjJioapjb9S2VI/bXXRXYr+0w1uMoUqwzzIPTfLwkw2GZ
-         +LtIRzUIEaSvbcdPnZGF1/+bRfKzo2r/WxyB3LDISI9gs14HWOAgftJb1XVJSsBDp+qA
-         uwYWNyvjzvAkMbTz4wh1l6KyywXGNzf6QIdoOsPxiPlvl1VoCYJyq9dQhRwkyt1AR+d5
-         PVSA==
-X-Gm-Message-State: AOAM5312P6VNOyJH4xMGkQGfb/sgMt1mrOiCfYSW8FdX42aSoZXLph45
-        3bX4dP6YAi3ujpLjUifcSQQeQIXIPx3gAhJPcRLoUQ==
-X-Google-Smtp-Source: ABdhPJyttg1bVl2qBGNNhXrWHmcwegsT28FZnB6NKWXtHkaTk8EOWeGGvP1WXHR4QqR/ZZ1eg9EHTJJxDmxDy6c+SF4=
-X-Received: by 2002:a5d:6d07:: with SMTP id e7mr17009629wrq.311.1637138216539;
- Wed, 17 Nov 2021 00:36:56 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PtFuRAKCbQv7OgOp1yQSUJGB5Sn4NN8paohWKNbQv30=;
+        b=vPS13aSQNXSQEynlIySsYOBHpE91h2cSHuS5EO/xQ3PZFFbG58yFNGPUk/HHgtbgqe
+         rE1EtCvpA26tcDDxLp4gtw1gGfT3hI08psYOmqW6qE5B948UaML9W/2qcn+Nv9Q69CzQ
+         Y1gy2jXAyBQtvLfppcIAgGBVK+Ko+jYYhuAih2SnrlEAoDtLjVp16ePmFuO5jVZqHzGE
+         mrpwwR5IoeIVgpERDlnnnHPqZMCgUnwhI6C8BPPHL3P5rS7GyFtoijvOw89bKY8SQvwf
+         wJpGeYHEOWfMB4nMqEbnEvHJOqYed3BxK8itJocAgkcrgJ3EhjrS60YnZ226dBJPaiZV
+         G33w==
+X-Gm-Message-State: AOAM532Z57Fwt60gYyZSXeZeYMT9G4YQ+XOj9b320dSumJnNRDAm2Q9q
+        LVLw6E1SpPKrcMK0aZL1wSDRpnrkkfnblw==
+X-Google-Smtp-Source: ABdhPJzs1R2BHkuKQdVAXcjLlXhSc7xpfFHEqcObzkzqKPaCK8R2f7uewJLTBf4xXRjLsmCTuMfFJQ==
+X-Received: by 2002:ab0:6d8c:: with SMTP id m12mr21521550uah.105.1637138693321;
+        Wed, 17 Nov 2021 00:44:53 -0800 (PST)
+Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com. [209.85.222.44])
+        by smtp.gmail.com with ESMTPSA id y22sm12052339vsy.33.2021.11.17.00.44.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 00:44:52 -0800 (PST)
+Received: by mail-ua1-f44.google.com with SMTP id t13so4187609uad.9;
+        Wed, 17 Nov 2021 00:44:52 -0800 (PST)
+X-Received: by 2002:a05:6102:2910:: with SMTP id cz16mr65726189vsb.9.1637138692315;
+ Wed, 17 Nov 2021 00:44:52 -0800 (PST)
 MIME-Version: 1.0
-References: <CAKD1Yr02W-WuLx8ouvP+wTtkxeyTBW_dp1deo9sim7wfLA2LXQ@mail.gmail.com>
- <20211117071732.7455-1-rocco.yue@mediatek.com>
-In-Reply-To: <20211117071732.7455-1-rocco.yue@mediatek.com>
-From:   Lorenzo Colitti <lorenzo@google.com>
-Date:   Wed, 17 Nov 2021 17:36:44 +0900
-Message-ID: <CAKD1Yr3CMPWMmNNU6YvpBiaXVttS9T8qGVgmddijYfLSfK-Rog@mail.gmail.com>
-Subject: Re: [PATCH net-next] ipv6: don't generate link-local addr in random
- or privacy mode
-To:     Rocco Yue <rocco.yue@mediatek.com>
-Cc:     dsahern@gmail.com, "David S . Miller" <davem@davemloft.net>,
+References: <20211117135800.0b7072cd@canb.auug.org.au> <268ae204-efae-3081-a5dd-44fc07d048ba@infradead.org>
+In-Reply-To: <268ae204-efae-3081-a5dd-44fc07d048ba@infradead.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 17 Nov 2021 09:44:41 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUdA6cJkWWKypvn7nGQw+u=gW_oRNWB-=G8g2T3VixJFQ@mail.gmail.com>
+Message-ID: <CAMuHMdUdA6cJkWWKypvn7nGQw+u=gW_oRNWB-=G8g2T3VixJFQ@mail.gmail.com>
+Subject: Re: linux-next: Tree for Nov 17 (uml, no IPV6)
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        David Miller <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, rocco.yue@gmail.com,
-        chao.song@mediatek.com, yanjie.jiang@mediatek.com,
-        kuohong.wang@mediatek.com, Zhuoliang.Zhang@mediatek.com,
-        maze@google.com, markzzzsmith@gmail.com
+        Eric Dumazet <edumazet@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 4:22 PM Rocco Yue <rocco.yue@mediatek.com> wrote:
-> Disabling the kernel's automatic link-local address generation
-> doesn't mean that it violates RFC 4291, because an appropriate
-> link-local addr can be added to the cellulal NIC through ioctl.
+Hi Randy,
 
-Well, it would mean that the kernel requires additional work from
-userspace to respect the RFC.
+On Wed, Nov 17, 2021 at 6:49 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> On 11/16/21 6:58 PM, Stephen Rothwell wrote:
+> > Changes since 20211116:
+>
+> ARCH=um SUBARCH=x86_64:
+> # CONFIG_IPV6 is not set
 
-> The method you mentioned can also solve the current problem, but it
-> seems to introduce more logic:
->   (1) set the cellular interface addr_gen_mode to RANDOM_LL_TOKEN or PRIVACY_LL_TOKEN;
->   (2) set the cellular interface up;
->   (3) disable ipv6 first;
+It doesn't always happen with CONFIG_IPV6=n, so I guess that's why
+it wasn't detected before.
 
-I don't think you need to set the interface up to disable IPv6. Also I
-think that if the interface is down autoconf won't run so you don't
-actually need to do this.
+> In file included from ../net/ethernet/eth.c:62:0:
+> ../include/net/gro.h: In function ‘ip6_gro_compute_pseudo’:
+> ../include/net/gro.h:413:22: error: implicit declaration of function ‘csum_ipv6_magic’; did you mean ‘csum_tcpudp_magic’? [-Werror=implicit-function-declaration]
+>    return ~csum_unfold(csum_ipv6_magic(&iph->saddr, &iph->daddr,
+>                        ^~~~~~~~~~~~~~~
+>                        csum_tcpudp_magic
+>
+>
+> After I made ip6_gro_compute_pseudo() conditional on CONFIG_IPV6,
+> I got this build error:
+>
+> In file included from ../net/ipv6/tcpv6_offload.c:10:0:
+> ../net/ipv6/tcpv6_offload.c: In function ‘tcp6_gro_receive’:
+> ../net/ipv6/tcpv6_offload.c:22:11: error: implicit declaration of function ‘ip6_gro_compute_pseudo’; did you mean ‘inet_gro_compute_pseudo’? [-Werror=implicit-function-declaration]
+>             ip6_gro_compute_pseudo)) {
+>             ^
+> ../include/net/gro.h:235:5: note: in definition of macro ‘__skb_gro_checksum_validate’
+>       compute_pseudo(skb, proto));  \
+>       ^~~~~~~~~~~~~~
+> ../net/ipv6/tcpv6_offload.c:21:6: note: in expansion of macro ‘skb_gro_checksum_validate’
+>        skb_gro_checksum_validate(skb, IPPROTO_TCP,
+>        ^~~~~~~~~~~~~~~~~~~~~~~~~
+>
+>
+>
+> This is UML x86_64 defconfig:
+>
+> $ make ARCH=um SUBARCH=x86_64 defconfig all
 
->   (4) set token addr through netlink;
+noreply@ellerman.id.au reported the same issue for m5272c3_defconfig,
+and I've bisected the failure to commit 4721031c3559db8e ("net:
+move gro definitions to include/net/gro.h").
 
-Can't 4 be the same as 3? The same netlink message can configure both
-the addr_gen_mode and the token, no?
+Gr{oetje,eeting}s,
 
-It seems to me that the following should work, and would be much simpler.
+                        Geert
 
-1. Bring the interface down. All addresses are deleted.
-2. Send a netlink request to set addr_gen_mode RANDOM_LL_TOKEN or
-PRIVACY_LL_TOKEN and set the token.
-3. Bring the interface up. Autoconf runs. The link-local address is
-generated from the token. An RS is sent. When the RA is received, the
-global address is generated using RFC 7217 or randomly.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Cheers,
-Lorenzo
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
