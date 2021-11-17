@@ -2,110 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 629734544B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 11:10:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE844544BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 11:11:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236110AbhKQKNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 05:13:17 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:56600 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235992AbhKQKNN (ORCPT
+        id S236055AbhKQKNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 05:13:55 -0500
+Received: from mail-ua1-f44.google.com ([209.85.222.44]:37814 "EHLO
+        mail-ua1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236071AbhKQKNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 05:13:13 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C3E99212CC;
-        Wed, 17 Nov 2021 10:10:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1637143812; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mhmJLrVhVIw+GLz9j0MpAB8YGPGJGnv5SXbaFK+Gc38=;
-        b=XYP3U/Mpbh/hBbiTpSeUdKXWaJyZFBtfvo7BZvfcR9WaGpitiiTVQ/H9AAn5GlJGoOfWcd
-        n6zIHdUIsGgweIMyeGwlmExXn9vQh2AB6wY4b12yNF1Jt7pTM6f9MJdENBq3JMa6aF/e4m
-        thPlfI270FoAN+qCE1FiCqWxyDVB7hg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1637143812;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mhmJLrVhVIw+GLz9j0MpAB8YGPGJGnv5SXbaFK+Gc38=;
-        b=JFPWMr0zJZBSRfVCV3s+phhItvmsiWmJXNjfkQnnwocGhgek68agiFfCK3HBemnqgy9iIO
-        XVCpn6miAs51VVBg==
-Received: from suse.de (unknown [10.163.43.106])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 90F83A3B8A;
-        Wed, 17 Nov 2021 10:10:10 +0000 (UTC)
-Date:   Wed, 17 Nov 2021 10:10:08 +0000
-From:   Mel Gorman <mgorman@suse.de>
-To:     Gang Li <ligang.bdlg@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-api@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: Re: Re: Re: Re: Re: Re: [PATCH v1] sched/numa: add per-process
- numa_balancing
-Message-ID: <20211117101008.GB3301@suse.de>
-References: <20211029083751.GR3891@suse.de>
- <CAMx52ARF1fVH9=YLQMjE=8ckKJ=q3X2-ovtKuQcoTyo564mQnQ@mail.gmail.com>
- <20211109091951.GW3891@suse.de>
- <7de25e1b-e548-b8b5-dda5-6a2e001f3c1a@bytedance.com>
- <20211109121222.GX3891@suse.de>
- <117d5b88-b62b-f50b-32ff-1a9fe35b9e2e@bytedance.com>
- <20211109162647.GY3891@suse.de>
- <08e95d68-7ba9-44d0-da85-41dc244b4c99@bytedance.com>
- <20211117082952.GA3301@suse.de>
- <816cb511-446d-11eb-ae4a-583c5a7102c4@bytedance.com>
+        Wed, 17 Nov 2021 05:13:53 -0500
+Received: by mail-ua1-f44.google.com with SMTP id o1so4706394uap.4;
+        Wed, 17 Nov 2021 02:10:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qevdWOqC+tLNVkrAWY5Ram6wKwTTrGq6c/WGLRh1MTs=;
+        b=JHeDgYBoobloEOzmS4UsTslPHFV5UL8l84pQoXJowfSE7B1ycW9Vif7aX3DbyGEa+6
+         jdSnvJUVrCsqqWwWjaVHxlB1oDkXkK765o9RQnT7vIGPjoJ1I4OT7tlqliQBA8SZU8bp
+         kV2jxkKASgk9PiQ6XCf/DXfGVK77qHT/HRdqkzc+Q6rz1ZRAi8KAw01cyEZNVFVqGAfk
+         KB4raA+Z2UnDuATLq2LKqioYwb/Rbu4yxib00IiKHqCyy7q7yqErsueD9L6enpTQVN4R
+         aPpTIHSX20MDYBQgDfVOQuGnTu6BWdoqpq2121VFXO6s9Uk3507HpJlC20joqosl3YsD
+         ZJOw==
+X-Gm-Message-State: AOAM531HdK9XcQJ5UGm7lTDOAuQO4myOpDMQlMBA5NQXRuixBBWmadF0
+        6JPWbrIJ4VLM7WNOlbkNP8CyFBxMdZvktQ==
+X-Google-Smtp-Source: ABdhPJz2IKejb+wBnv4SXliW3evzzzQtJ688e1/e9Ys3/LihZNn1vJlFel5SHVKVIQBiKdbm24OO1g==
+X-Received: by 2002:a67:d61d:: with SMTP id n29mr67070534vsj.52.1637143854405;
+        Wed, 17 Nov 2021 02:10:54 -0800 (PST)
+Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com. [209.85.221.175])
+        by smtp.gmail.com with ESMTPSA id l24sm11528127vkk.37.2021.11.17.02.10.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 02:10:54 -0800 (PST)
+Received: by mail-vk1-f175.google.com with SMTP id e64so1300450vke.4;
+        Wed, 17 Nov 2021 02:10:54 -0800 (PST)
+X-Received: by 2002:a05:6122:20ab:: with SMTP id i43mr86278652vkd.19.1637143853825;
+ Wed, 17 Nov 2021 02:10:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <816cb511-446d-11eb-ae4a-583c5a7102c4@bytedance.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211117011247.27621-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20211117011247.27621-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20211117011247.27621-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 17 Nov 2021 11:10:42 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVbd4e=Z4+s3VOTCSwitdG=wYV8M+MotWBiK=HwhwuopA@mail.gmail.com>
+Message-ID: <CAMuHMdVbd4e=Z4+s3VOTCSwitdG=wYV8M+MotWBiK=HwhwuopA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: dts: renesas: rzg2l-smarc: Enable RSPI1 on
+ carrier board
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 05:38:28PM +0800, Gang Li wrote:
-> On 11/17/21 4:29 PM, Mel Gorman wrote:
-> > 
-> > It's a bit vague but if you wanted to put together the outline, I'd read
-> > over it. Note that this was all in the context of trying to introduce an
-> 
-> Sorry, maybe I shouldn't propose new feature in this context.
-> 
-> > API like
-> > 
-> > Disable/enable per-process numa balancing:
-> >          prctl(PR_NUMA_BALANCING, PR_SET_NUMA_BALANCING, 0/1);
-> > 
-> > i.e. one that controlled both enabling and disabling. You also have
-> > the option of introducing the NUMAB equivalent of PR_SET_THP_DISABLE --
-> > an API that is explicitly about disabling *only*.
-> > 
-> 
-> If those APIs are ok with you, I will send v2 soon.
-> 
-> 1. prctl(PR_NUMA_BALANCING, PR_SET_THP_DISABLE);
+Hi Prabhakar,
 
-It would be (PR_SET_NUMAB_DISABLE, 1) 
+On Wed, Nov 17, 2021 at 2:12 AM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> RSPI1 (SPI1) interface is available on PMOD0 connector (J1) on carrier
+> board, This patch adds pinmux and spi1 node to carrier board dtsi file.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-> 2. prctl(PR_NUMA_BALANCING, PR_SET_THP_ENABLE);
+Thanks for your patch!
 
-An enable prctl will have the same problems as
-prctl(PR_NUMA_BALANCING, PR_SET_NUMA_BALANCING, 0/1) -- it should have
-meaning if the numa_balancing sysctl is disabled.
+> --- a/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi
+> @@ -31,6 +31,7 @@
+>                 i2c0 = &i2c0;
+>                 i2c1 = &i2c1;
+>                 i2c3 = &i2c3;
+> +               spi1 = &spi1;
 
-> 3. prctl(PR_NUMA_BALANCING, PR_GET_THP);
-> 
+Do you mind if I drop this while applying?
 
-PR_GET_NUMAB_DISABLE
+>         };
+>
+>         chosen {
 
--- 
-Mel Gorman
-SUSE Labs
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.17.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
