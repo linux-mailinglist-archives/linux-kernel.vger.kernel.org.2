@@ -2,126 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE054549E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:27:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFF74549E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:29:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236358AbhKQPau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 10:30:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40150 "EHLO mail.kernel.org"
+        id S237444AbhKQPcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 10:32:39 -0500
+Received: from mga14.intel.com ([192.55.52.115]:19452 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229721AbhKQPat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 10:30:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82FEC6112D;
-        Wed, 17 Nov 2021 15:27:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637162870;
-        bh=enZ2QdOp/6F2W+MIAIGWqVYhk1KVAOIrZCV9SVd4z0g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I8jnLVJCv/ZOaNpPeYbJQtKfHHuJBpntnU/Z8cMzKvW8Jw5YIj+mDyDSY9hxMKh6e
-         KEvyi0cY4jnCTRYzXKGwM1/dC1PemC7C9LOXbxDIFV5qEjsiWxmwdY4fNK60AI+Dgs
-         ZIMYLFMy2S9vrvw7G/S78NqEy8XIzsPAShLgZM0rsXhToB6jxSmSKI/rH66QlEsxmR
-         BxOau/jNmVKddydJPoVQVf7s69OfaMrm/4/eVch4xiDgucuIRSpO5U9Kcqjt7+l3tx
-         02QwqylJ6Lt85Iz4nj62qUpdnkNRPwk0PTRV7n7SDTjg57iuLC0maGe0ylT6NXiEhB
-         t1DAFu7+oF5Xg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5B1AA4088E; Wed, 17 Nov 2021 12:27:48 -0300 (-03)
-Date:   Wed, 17 Nov 2021 12:27:48 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     German Gomez <german.gomez@arm.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/1] perf arm-spe: Inject SPE samples in perf-inject
-Message-ID: <YZUfdLsoQJ5Unq1z@kernel.org>
-References: <20211105104130.28186-1-german.gomez@arm.com>
- <20211105104130.28186-2-german.gomez@arm.com>
- <5163f41f-2337-6557-ca91-fb2c66738872@arm.com>
+        id S237048AbhKQPcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 10:32:35 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="234203472"
+X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
+   d="scan'208";a="234203472"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 07:29:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
+   d="scan'208";a="586680506"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by FMSMGA003.fm.intel.com with ESMTP; 17 Nov 2021 07:29:33 -0800
+Received: from alobakin-mobl.ger.corp.intel.com (alobakin-mobl.ger.corp.intel.com [10.237.140.117])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1AHFTWOf004941;
+        Wed, 17 Nov 2021 15:29:32 GMT
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] stmmac: fix build due to brainos in trans_start changes
+Date:   Wed, 17 Nov 2021 16:29:17 +0100
+Message-Id: <20211117152917.3739-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5163f41f-2337-6557-ca91-fb2c66738872@arm.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Nov 08, 2021 at 08:39:58PM +0000, James Clark escreveu:
-> 
-> 
-> On 05/11/2021 10:41, German Gomez wrote:
-> > Inject synthesized SPE samples during perf-inject run.
-> > 
-> > Signed-off-by: German Gomez <german.gomez@arm.com>
-> 
-> Reviewed-by: James Clark <james.clark@arm.com>
+txq_trans_cond_update() takes netdev_tx_queue *nq,
+not nq->trans_start.
 
+Fixes: 5337824f4dc4 ("net: annotate accesses to queue->trans_start")
+Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks, applied.
-
-- Arnaldo
-
-
-> > ---
-> >  tools/perf/util/arm-spe.c | 15 +++++++++++++++
-> >  1 file changed, 15 insertions(+)
-> > 
-> > diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
-> > index 58b7069c5..7054f2315 100644
-> > --- a/tools/perf/util/arm-spe.c
-> > +++ b/tools/perf/util/arm-spe.c
-> > @@ -51,6 +51,7 @@ struct arm_spe {
-> >  	u8				timeless_decoding;
-> >  	u8				data_queued;
-> >  
-> > +	u64				sample_type;
-> >  	u8				sample_flc;
-> >  	u8				sample_llc;
-> >  	u8				sample_tlb;
-> > @@ -248,6 +249,12 @@ static void arm_spe_prep_sample(struct arm_spe *spe,
-> >  	event->sample.header.size = sizeof(struct perf_event_header);
-> >  }
-> >  
-> > +static int arm_spe__inject_event(union perf_event *event, struct perf_sample *sample, u64 type)
-> > +{
-> > +	event->header.size = perf_event__sample_event_size(sample, type, 0);
-> > +	return perf_event__synthesize_sample(event, type, 0, sample);
-> > +}
-> > +
-> >  static inline int
-> >  arm_spe_deliver_synth_event(struct arm_spe *spe,
-> >  			    struct arm_spe_queue *speq __maybe_unused,
-> > @@ -256,6 +263,12 @@ arm_spe_deliver_synth_event(struct arm_spe *spe,
-> >  {
-> >  	int ret;
-> >  
-> > +	if (spe->synth_opts.inject) {
-> > +		ret = arm_spe__inject_event(event, sample, spe->sample_type);
-> > +		if (ret)
-> > +			return ret;
-> > +	}
-> > +
-> >  	ret = perf_session__deliver_synth_event(spe->session, event, sample);
-> >  	if (ret)
-> >  		pr_err("ARM SPE: failed to deliver event, error %d\n", ret);
-> > @@ -920,6 +933,8 @@ arm_spe_synth_events(struct arm_spe *spe, struct perf_session *session)
-> >  	else
-> >  		attr.sample_type |= PERF_SAMPLE_TIME;
-> >  
-> > +	spe->sample_type = attr.sample_type;
-> > +
-> >  	attr.exclude_user = evsel->core.attr.exclude_user;
-> >  	attr.exclude_kernel = evsel->core.attr.exclude_kernel;
-> >  	attr.exclude_hv = evsel->core.attr.exclude_hv;
-> > 
-
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 389d125310c1..41e9d8838f05 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -2356,7 +2356,7 @@ static bool stmmac_xdp_xmit_zc(struct stmmac_priv *priv, u32 queue, u32 budget)
+ 	bool work_done = true;
+ 
+ 	/* Avoids TX time-out as we are sharing with slow path */
+-	txq_trans_cond_update(nq->trans_start);
++	txq_trans_cond_update(nq);
+ 
+ 	budget = min(budget, stmmac_tx_avail(priv, queue));
+ 
+@@ -4657,7 +4657,7 @@ static int stmmac_xdp_xmit_back(struct stmmac_priv *priv,
+ 
+ 	__netif_tx_lock(nq, cpu);
+ 	/* Avoids TX time-out as we are sharing with slow path */
+-	txq_trans_cond_update(nq->trans_start);
++	txq_trans_cond_update(nq);
+ 
+ 	res = stmmac_xdp_xmit_xdpf(priv, queue, xdpf, false);
+ 	if (res == STMMAC_XDP_TX)
 -- 
+2.33.1
 
-- Arnaldo
