@@ -2,119 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1917454F62
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 22:33:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0364454F66
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 22:35:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239783AbhKQVgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 16:36:38 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:55085 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236717AbhKQVgb (ORCPT
+        id S239889AbhKQViL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 16:38:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236717AbhKQViJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 16:36:31 -0500
-Received: by mail-il1-f199.google.com with SMTP id x6-20020a056e021bc600b00292aa8bec6cso2128700ilv.21
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:33:33 -0800 (PST)
+        Wed, 17 Nov 2021 16:38:09 -0500
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA8CC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:35:10 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id w6-20020a9d77c6000000b0055e804fa524so7143188otl.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:35:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fAbybk/45RMrbU0Skfo3o+U0FCBPe9DYKYw9nVsCH6w=;
+        b=fKweHg3TLHziPsmWsqbhdDOV1FGG6kEzinrCY+1v3d9tspMmDzxj3Re/rzdnH3c/gw
+         x9pIpqt1WHJFueNn31tXiqptzSZUGpJDSpQJ9G3pp54rarSptb9pUw9X6MhSGnkSWdnQ
+         rDL5Wm5rFqCVWA5U+Sn6RBfoOpz9/vaNQp7zv9MMOp7M5c8yknsqNwm6zZioW9yqGTos
+         XszLFSkdrl4t2yAad8UQx9nJGq8umisWu5dXG7nmCq7xVyXYLmK2qUCAjxBLSa96lWFC
+         hrUaVh8Nqq2di0f3SxcDismOoq1iShPhnzCdHl1KF9DgKLSSFXe5ovyAfpkiU86FIKBS
+         EwZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=HtOEfgBkkhSqyK1qfuHXImnaPFywsRWVYEdA+Wk8yiE=;
-        b=K1Wi/sPTbHAqG1aUTLloDGaCw3RglLo23kNGrF5SEPRZFSUDVhOJ180O4FR7inSyXY
-         3VmBG+74bgmbyQZODEcBgi9V9Oiz/j1sWlrcrfPqBK6ma6Fu+jR8OprFr6JHR9FZjSjs
-         YA2Jcwo+Rdzis/EesT38VrmAkjQUCa3TBoRsS/iuvjaG5tp0masVT42XwSvNtvUOB6uo
-         4gr9kSR6Mj2Xau80XL69lcNM0y/9w8m1U1UgOys1IaUBczzzA4fQdTBldbQo06xHOqDQ
-         Dws5I0yyJseHdX8SKfbX0SL5+/PgA7jjaXiCwtjH+ZNiRD609AFj+QCRT7tJQjKjTYDu
-         C0Rw==
-X-Gm-Message-State: AOAM531r9BZDuf7p8xawZaB/GoLTvfWCc7nhPG7GTWKmAzlDn/HdSnBo
-        I7qZ4fjOOgUsd1iqw9kEi6i3bLdD8gUddzTLClOgVDkfEQfu
-X-Google-Smtp-Source: ABdhPJw6z0vhpa6F+0lDRaMkRXVMJW1Rh0CiCZcWKmx7jDvqh7g88SSQIGmrzt5lsu6CrAoY47mkZsViSZPKVcEazFiugPmAceHG
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fAbybk/45RMrbU0Skfo3o+U0FCBPe9DYKYw9nVsCH6w=;
+        b=VMEXbfPNVmYSwhs4cVDf55mjCwgU9hi+Ku/Pd3eBsUBWX7EIylUERMD98I4p2AtTyN
+         xxOWQIt/UQxF+hXJLWdYFjOOUPqmp717zu6aWSANoti6hp0l/zS5REgmNx/StrZk/vyJ
+         F6kFobMA0SvHSmbTNMp7IpEi/23nJTb7wxzCnv8Le3WtroJY+n8u/gcXezzPxP1zrtVj
+         PuDDxK8HPO/dOHk+Ba2LJVAYC9FHjQkiMuRDVxRdOTwKDdXnBYSTL/h01S/uFbCnBfkR
+         YsBRjbFfGWOnzl/0Q1Ag3bjbV0RNOXWBLfrtbiifo2K/RYYgnUTPOY4UhUMhJk6HtsJV
+         MjTQ==
+X-Gm-Message-State: AOAM532aayuhyh37WeCCkhzKtkB71tSFAGWzBnQPNs3UOUdmcznDzdKE
+        fQAeV4DT8t4jY3fEwgvciRfv0pe0nYvrQGNwwLs=
+X-Google-Smtp-Source: ABdhPJzLmY8A8e/jlVJOZ7Zqz1RE/BWM17Kiian6tAwIVuY3frrTFqQLE7tb8ywG727pwGLElJ+afw1NKr2g5kdMgss=
+X-Received: by 2002:a9d:67c1:: with SMTP id c1mr17029494otn.299.1637184909532;
+ Wed, 17 Nov 2021 13:35:09 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2e90:: with SMTP id m16mr13715000iow.92.1637184812636;
- Wed, 17 Nov 2021 13:33:32 -0800 (PST)
-Date:   Wed, 17 Nov 2021 13:33:32 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000305e3b05d102cbc4@google.com>
-Subject: [syzbot] WARNING in vivid_cap_update_frame_period
-From:   syzbot <syzbot+8e740e8a74e295b37726@syzkaller.appspotmail.com>
-To:     hverkuil@xs4all.nl, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, mchehab@kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20211115025901.2598-1-bernard@vivo.com> <50ed4525-dbe6-1eac-5b83-4233a18a6176@amd.com>
+In-Reply-To: <50ed4525-dbe6-1eac-5b83-4233a18a6176@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 17 Nov 2021 16:34:58 -0500
+Message-ID: <CADnq5_NhZD7LLiGPDUOGZ60niANZjw6OEVJie_Otkpf0S-_2PA@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/amdgpu: fix potential memleak
+To:     Felix Kuehling <felix.kuehling@amd.com>
+Cc:     Bernard Zhao <bernard@vivo.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        John Clements <john.clements@amd.com>,
+        Jonathan Kim <jonathan.kim@amd.com>,
+        Kevin Wang <kevin1.wang@amd.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Evan Quan <evan.quan@amd.com>, shaoyunl <shaoyun.liu@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Applied.  Thanks!
 
-syzbot found the following issue on:
+Alex
 
-HEAD commit:    66f4beaa6c1d Merge branch 'linus' of git://git.kernel.org/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14f43b9eb00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a262045c4c15a9e0
-dashboard link: https://syzkaller.appspot.com/bug?extid=8e740e8a74e295b37726
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8e740e8a74e295b37726@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 29933 at drivers/media/test-drivers/vivid/vivid-kthread-cap.c:664 vivid_cap_update_frame_period+0x16d/0x1f0 drivers/media/test-drivers/vivid/vivid-kthread-cap.c:664
-Modules linked in:
-CPU: 1 PID: 29933 Comm: vivid-001-vid-c Not tainted 5.15.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:vivid_cap_update_frame_period+0x16d/0x1f0 drivers/media/test-drivers/vivid/vivid-kthread-cap.c:664
-Code: 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 79 48 89 ab d8 a0 00 00 48 83 c4 08 5b 5d 41 5c 41 5d c3 e8 e3 bf 4d fb <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 48 c1 ea 03 0f b6 14
-RSP: 0018:ffffc90017c37e48 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff8881489b0000 RCX: 0000000000000000
-RDX: ffff88807d831d00 RSI: ffffffff862a068d RDI: 0000000000000003
-RBP: 000000a336db2200 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff862a05a9 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff8881489b9344 R14: ffff8881489b0000 R15: ffff8881489b0000
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000555556fb1708 CR3: 000000006ff99000 CR4: 00000000003526e0
-Call Trace:
- <TASK>
- vivid_thread_vid_cap+0x1ab/0xaf0 drivers/media/test-drivers/vivid/vivid-kthread-cap.c:816
- kthread+0x405/0x4f0 kernel/kthread.c:327
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
- </TASK>
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 29933 Comm: vivid-001-vid-c Not tainted 5.15.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- panic+0x2b0/0x6dd kernel/panic.c:232
- __warn.cold+0x35/0x44 kernel/panic.c:603
- report_bug+0x1bd/0x210 lib/bug.c:199
- handle_bug+0x3c/0x60 arch/x86/kernel/traps.c:239
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:259
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:566
-RIP: 0010:vivid_cap_update_frame_period+0x16d/0x1f0 drivers/media/test-drivers/vivid/vivid-kthread-cap.c:664
-Code: 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 79 48 89 ab d8 a0 00 00 48 83 c4 08 5b 5d 41 5c 41 5d c3 e8 e3 bf 4d fb <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 48 c1 ea 03 0f b6 14
-RSP: 0018:ffffc90017c37e48 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff8881489b0000 RCX: 0000000000000000
-RDX: ffff88807d831d00 RSI: ffffffff862a068d RDI: 0000000000000003
-RBP: 000000a336db2200 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff862a05a9 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff8881489b9344 R14: ffff8881489b0000 R15: ffff8881489b0000
- vivid_thread_vid_cap+0x1ab/0xaf0 drivers/media/test-drivers/vivid/vivid-kthread-cap.c:816
- kthread+0x405/0x4f0 kernel/kthread.c:327
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
- </TASK>
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+On Mon, Nov 15, 2021 at 10:56 AM Felix Kuehling <felix.kuehling@amd.com> wrote:
+>
+> Am 2021-11-14 um 9:58 p.m. schrieb Bernard Zhao:
+> > In function amdgpu_get_xgmi_hive, when kobject_init_and_add failed
+> > There is a potential memleak if not call kobject_put.
+> >
+> > Signed-off-by: Bernard Zhao <bernard@vivo.com>
+>
+> Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+>
+>
+> > ---
+> >  drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c
+> > index 0fad2bf854ae..567df2db23ac 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c
+> > @@ -386,6 +386,7 @@ struct amdgpu_hive_info *amdgpu_get_xgmi_hive(struct amdgpu_device *adev)
+> >                       "%s", "xgmi_hive_info");
+> >       if (ret) {
+> >               dev_err(adev->dev, "XGMI: failed initializing kobject for xgmi hive\n");
+> > +             kobject_put(&hive->kobj);
+> >               kfree(hive);
+> >               hive = NULL;
+> >               goto pro_end;
