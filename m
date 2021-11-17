@@ -2,71 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6F7455138
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 00:39:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D860545513A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 00:41:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241664AbhKQXmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 18:42:24 -0500
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:50329 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241649AbhKQXmW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 18:42:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637192363; x=1668728363;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=dKVIiBfJluAKZ303CpRtgb9+T2vg6QFbNX0lyDOUQUQ=;
-  b=GFzo6YIRVGqe2UoYCRz5EbF+J3ppThq4dpX0FvQRa6sU3Pwlg6VcpBK9
-   ZuVD7yMe2vAldjpMpYg0L5k3KtsQdwUXGt5O5SFbLSvSNDaCmytIzl7D3
-   etDCAa4XD/9eXOs6ySzb4zgnVx70Vy+La0GbZ5u2wPovz0i504MXO1DrR
-   Y=;
-Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 17 Nov 2021 15:39:23 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg02-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 15:39:22 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Wed, 17 Nov 2021 15:39:22 -0800
-Received: from fixkernel.com (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Wed, 17 Nov
- 2021 15:39:21 -0800
-Date:   Wed, 17 Nov 2021 18:39:19 -0500
-From:   Qian Cai <quic_qiancai@quicinc.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <catalin.marinas@arm.com>,
-        <dvyukov@google.com>, <peterz@infradead.org>,
-        <valentin.schneider@arm.com>, <will@kernel.org>,
-        <woodylin@google.com>
-Subject: Re: [PATCH] Reset task stack state in bringup_cpu()
-Message-ID: <YZWSpz75zMms133n@fixkernel.com>
-References: <20211115113310.35693-1-mark.rutland@arm.com>
- <YZPc7MLxwmd47YYw@qian-HP-Z2-SFF-G5-Workstation>
- <20211117115234.GB41542@C02TD0UTHF1T.local>
+        id S241668AbhKQXom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 18:44:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48400 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241656AbhKQXok (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 18:44:40 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 780F461B3B;
+        Wed, 17 Nov 2021 23:41:40 +0000 (UTC)
+Date:   Wed, 17 Nov 2021 18:41:38 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Nikita Yushchenko <nikita.yushchenko@virtuozzo.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        kernel@openvz.org
+Subject: Re: [PATCH] tracing: fix va_list breakage in trace_check_vprintf()
+Message-ID: <20211117184138.3bc7156e@gandalf.local.home>
+In-Reply-To: <20211117183827.4989cfab@gandalf.local.home>
+References: <20211117183720.15573-1-nikita.yushchenko@virtuozzo.com>
+        <20211117183827.4989cfab@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20211117115234.GB41542@C02TD0UTHF1T.local>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 11:52:34AM +0000, Mark Rutland wrote:
-> > Thanks for fixing this quickly, Mark. Triggering an user-after-free in
-> > user namespace but don't think it is related. I'll investigate that
-> > first since it is blocking the rest of regression testing.
+On Wed, 17 Nov 2021 18:38:27 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> The real fix is:
 > 
-> Cool; are you happy to provide a Tested-by tag for this patch? :)
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index f9139dc1262c..7aa5ea5ca912 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -3654,6 +3654,10 @@ static bool trace_safe_str(struct trace_iterator *iter, const char *str)
+>  	struct trace_event *trace_event;
+>  	struct trace_event_call *event;
+>  
+> +	/* if seq is full, then we can't test it */
+> +	if (iter->seq->full)
+> +		return true;
+> +
+>  	/* OK if part of the event data */
+>  	if ((addr >= (unsigned long)iter->ent) &&
+>  	    (addr < (unsigned long)iter->ent + iter->ent_size))
 
-Sure, the testing is running good so far.
+BTW, feel free to respin the patch and send a v2 and just add:
 
-Tested-by: Qian Cai <quic_qiancai@quicinc.com>
+Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
+-- Steve
