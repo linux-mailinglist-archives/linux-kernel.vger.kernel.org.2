@@ -2,99 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 656DD454DD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8DB454DD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:27:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240448AbhKQT3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 14:29:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230400AbhKQT3H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 14:29:07 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D64C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 11:26:08 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id gf14-20020a17090ac7ce00b001a7a2a0b5c3so6071472pjb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 11:26:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=o00hN7MYHRpbM1Hv9SEJY2YSEXemX+i/2bGeSGVdp1w=;
-        b=q3/qEKp7vmZl2Cl4mwb+pWTBMmWTAgURQsBjnglAFmfiL14bi2G0OnV5mLo6gfCYXL
-         5Q23JPhlU5GEFsskmqN6w828H9DFgETKFnbfYXUOLlynXRUY348OpLFhwlUi+bbRHLBI
-         1iBwFe9QD6JOwoi3PlPzCjtKWKqLt6H4+WLtL/8JdrIZfyCRo1art9kMCmJ4zeTWLtKY
-         cqCFdAoSpwwX4hTuvCDHHHWgg4pw0sBLAm1sMuRiqpfN7ft1NFIQFS+zAD0brMgm7QtU
-         phX+EenXax5RjSs22ogWD4u9I0kraZrJkoDiJcYDwK/j2qAuF8feK7+fsUgCfFU5CI80
-         4JVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=o00hN7MYHRpbM1Hv9SEJY2YSEXemX+i/2bGeSGVdp1w=;
-        b=JWl3pbIz2EuY8SEAQdNlaReo8yj0swAItty2hwLTmwfoU8J+vTj3MXLX9+Pos80UQq
-         FaO5IiXhSJOeVetSxAuoPAZ9201n+OTUqt2XlE+l6ovLGEEvcv4FWZErryWDASTEasYs
-         3To1ymJCCHyOs2KXY4w+DF5BMgEjJCH8Bhpchb2/yD/UE8iHuEbVkpunk2YoVeX/Nqrh
-         nynp94ypdGn7FMt4/mizDe4lBGmYm64VNcG0inunPG0QI8Io1LOtKWOnuuudfC7u4bH3
-         EElQd8H4WVv05Q6PVj2OpbbDHGTZPJAFX6YTZotUR73nWJdXus3m8QFZMsIUXNDMcnHy
-         hwrQ==
-X-Gm-Message-State: AOAM5312Q2o1Yw1vf19qNgaVpDE24Q0louJvuKkFsmEDJLtg5WeeEOk7
-        XyWe56kpI2lPDDdJpPFLJVg=
-X-Google-Smtp-Source: ABdhPJwIRMnWmBIHxvO56GOIDUR4lY2QdmERu+Xi+mtxSi4aMcgtHgdCKhzEB7yqvaG7g+7KGKP0GQ==
-X-Received: by 2002:a17:90b:3e84:: with SMTP id rj4mr2465932pjb.199.1637177168405;
-        Wed, 17 Nov 2021 11:26:08 -0800 (PST)
-Received: from makvihas ([103.85.10.92])
-        by smtp.gmail.com with ESMTPSA id i185sm403942pfg.80.2021.11.17.11.26.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 11:26:08 -0800 (PST)
-Date:   Thu, 18 Nov 2021 00:56:05 +0530
-From:   Vihas Mak <makvihas@gmail.com>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org
-Cc:     hpa@zytor.com, linux-kernel@vger.kernel.org, makvihas@gmail.com
-Subject: [PATCH] arch: x86: use swap()
-Message-ID: <20211117192605.GA774211@makvihas>
+        id S240457AbhKQTaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 14:30:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230400AbhKQTaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 14:30:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C72261BCF;
+        Wed, 17 Nov 2021 19:27:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637177230;
+        bh=LusFKQEXH9iY71gVcbD7MmvlsxPhY9nqA9hAXRWvv7E=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=KfkuSvA4ZIuPAA+HJzc0NJhitCYtVHlDogAED+HCE4CNCFPWsVFEfLjoCGyeq/soj
+         FlOJfWy78ifKdGjYgw08pMkUBZ3wmwZPEPMs0lWg02ocat24XLyZTUWgNqVXP1eV0z
+         qpe+5iEtg6jGRNZd0XPW2lrg6K5j1xxzDYKM3ooEqc731gU7bpbm4PNamYK2u8K2mX
+         SQAfCeSLQyRB2Yvo88jwDKWEkgv4QFm07VrHEFmLTjfXXhoBFhi+66olGq1vGsVk+y
+         FyKs3ZYpaT/xr0MTRmVofKJzLX+e5VXo7+lu+mNrUMKVwakbI16x5GDPqkQI4+jNEK
+         vGFvmkK4Bs07A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 4564F5C06BA; Wed, 17 Nov 2021 11:27:10 -0800 (PST)
+Date:   Wed, 17 Nov 2021 11:27:10 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 4/6] rcu/nocb: Create nocb kthreads on all CPUs as long
+ as the "rcu_nocb=" is passed
+Message-ID: <20211117192710.GK641268@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211117155637.363706-1-frederic@kernel.org>
+ <20211117155637.363706-5-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20211117155637.363706-5-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cocci gives following warning:
+On Wed, Nov 17, 2021 at 04:56:35PM +0100, Frederic Weisbecker wrote:
+> In order to be able to (de-)offload any CPU using cpuset in the future,
+> create a NOCB kthread for all possible CPUs. For now this is done only
+> as long as the "rcu_nocb=" kernel parameter is passed to avoid
+> the unnecessary overhead for most users.
 
-	arch/x86/kernel/unwind_orc.c:212:19-20: WARNING opportunity for swap()
+The "nohz_full=" kernel parameter would also cause these kthreads to
+be created, correct?  (Yeah, a nit, but...)
 
-Fix this by using swap() macro.
+And some fallout of my forgetfulness below.  :-/
 
-Signed-off-by: Vihas Mak <makvihas@gmail.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
----
- arch/x86/kernel/unwind_orc.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+							Thanx, Paul
 
-diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
-index a1202536f..a7aaf6bcf 100644
---- a/arch/x86/kernel/unwind_orc.c
-+++ b/arch/x86/kernel/unwind_orc.c
-@@ -196,7 +196,6 @@ static struct orc_entry *cur_orc_table = __start_orc_unwind;
- static void orc_sort_swap(void *_a, void *_b, int size)
- {
- 	struct orc_entry *orc_a, *orc_b;
--	struct orc_entry orc_tmp;
- 	int *a = _a, *b = _b, tmp;
- 	int delta = _b - _a;
- 
-@@ -208,9 +207,7 @@ static void orc_sort_swap(void *_a, void *_b, int size)
- 	/* Swap the corresponding .orc_unwind entries: */
- 	orc_a = cur_orc_table + (a - cur_orc_ip_table);
- 	orc_b = cur_orc_table + (b - cur_orc_ip_table);
--	orc_tmp = *orc_a;
--	*orc_a = *orc_b;
--	*orc_b = orc_tmp;
-+	swap(*orc_a, *orc_b);
- }
- 
- static int orc_sort_cmp(const void *_a, const void *_b)
--- 
-2.25.1
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: Uladzislau Rezki <urezki@gmail.com>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> ---
+>  kernel/rcu/tree_nocb.h | 16 +++++++---------
+>  1 file changed, 7 insertions(+), 9 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index 9fe4be10fde7..1871f15b8472 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -1221,11 +1221,8 @@ static void rcu_spawn_one_nocb_kthread(int cpu)
+>  	struct rcu_data *rdp_gp;
+>  	struct task_struct *t;
+>  
+> -	/*
+> -	 * If this isn't a no-CBs CPU or if it already has an rcuo kthread,
+> -	 * then nothing to do.
+> -	 */
+> -	if (!rcu_is_nocb_cpu(cpu) || rdp->nocb_cb_kthread)
+> +	/* If it already has an rcuo kthread, then nothing to do. */
+> +	if (rdp->nocb_cb_kthread)
+>  		return;
+>  
+>  	/* If we didn't spawn the GP kthread first, reorganize! */
+> @@ -1253,7 +1250,7 @@ static void rcu_spawn_one_nocb_kthread(int cpu)
+>   */
+>  static void rcu_spawn_cpu_nocb_kthread(int cpu)
+>  {
+> -	if (rcu_scheduler_fully_active)
+> +	if (rcu_scheduler_fully_active && rcu_nocb_is_setup)
+>  		rcu_spawn_one_nocb_kthread(cpu);
+>  }
+>  
+> @@ -1268,7 +1265,7 @@ static void __init rcu_spawn_nocb_kthreads(void)
+>  	int cpu;
+>  
+>  	if (rcu_nocb_is_setup) {
+> -		for_each_online_cpu(cpu)
+> +		for_each_possible_cpu(cpu)
 
+Gah...  I had forgotten.  :-/
+
+Some firmware lies about the OS instance's age.  Other firmware lies
+about the number of CPUs, sometimes claiming large multiples of the
+actual number of CPUs.
+
+So this needs to stay "for_each_online_cpu".  Otherwise, Paul Gortmaker
+will once again be afflicted with hundreds of unnecessary rcuo kthreads.
+
+The later calls to rcutree_prepare_cpu() from rcutree_prepare_cpu()
+will take care of any CPUs that first come online later.
+
+Apologies for my earlier forgetfulness!!!
+
+>  			rcu_spawn_cpu_nocb_kthread(cpu);
+>  	}
+>  }
+> @@ -1303,7 +1300,7 @@ static void __init rcu_organize_nocb_kthreads(void)
+>  	 * Should the corresponding CPU come online in the future, then
+>  	 * we will spawn the needed set of rcu_nocb_kthread() kthreads.
+>  	 */
+> -	for_each_cpu(cpu, rcu_nocb_mask) {
+> +	for_each_possible_cpu(cpu) {
+
+This needs to change, but to for_each_online_cpu() instead of
+for_each_possible_cpu().  That handles the case where the boot CPU is
+not initially offloaded, but where the sysadm later needs to offload it.
+
+>  		rdp = per_cpu_ptr(&rcu_data, cpu);
+>  		if (rdp->cpu >= nl) {
+>  			/* New GP kthread, set up for CBs & next GP. */
+> @@ -1327,7 +1324,8 @@ static void __init rcu_organize_nocb_kthreads(void)
+>  				pr_cont(" %d", cpu);
+>  		}
+>  		rdp->nocb_gp_rdp = rdp_gp;
+> -		list_add_tail(&rdp->nocb_entry_rdp, &rdp_gp->nocb_head_rdp);
+> +		if (cpumask_test_cpu(cpu, rcu_nocb_mask))
+> +			list_add_tail(&rdp->nocb_entry_rdp, &rdp_gp->nocb_head_rdp);
+>  	}
+>  	if (gotnocbs && dump_tree)
+>  		pr_cont("%s\n", gotnocbscbs ? "" : " (self only)");
+> -- 
+> 2.25.1
+> 
