@@ -2,129 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C750454A7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:05:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E19454A7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:05:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238915AbhKQQIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 11:08:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238903AbhKQQI0 (ORCPT
+        id S238917AbhKQQIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 11:08:32 -0500
+Received: from smtprelay0135.hostedemail.com ([216.40.44.135]:50134 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S238901AbhKQQI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 11:08:26 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64A4CC061570;
-        Wed, 17 Nov 2021 08:05:27 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id g14so13445452edz.2;
-        Wed, 17 Nov 2021 08:05:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HcJuavFk/01gq0GKRAkMY7+ZgXIr8DpqwilLF/2rGBY=;
-        b=dvGYsbDHhqgDXpJ+RdC3GmU5lVrIVjLV0cecgrDMXWqPCjdf8SVwSoCTQARgQKsMUH
-         c7/UqGKDDJKB9uS80y56MzFVdV5O77oz7g7sfgtYgpo5c7LHS4Ihb0HgrP6pVykubmew
-         B+jwbn44EkXEBTN7XdZ43b9FzNl5QWO1WO3Ajf8oJt5In3c32DDyKIxTB47M7j8aF/ED
-         UtUDjxw01ivtjOzy0qvWNzxTlUNY71+KdtSnCSUYZ9MyGLmwbmTOtY0NSeNMAvnJfB3f
-         sr/tXc99E9Ax9A6Nt/wpwTtav9uPDXC1QRkyekTYflwug26eUlqp2K9GlGXKXPxMyHKr
-         tg9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HcJuavFk/01gq0GKRAkMY7+ZgXIr8DpqwilLF/2rGBY=;
-        b=w64dptUTMwQI5/p8kG9PQ15vWfLg5k7XKbFUn3ZbpxVrttplXMPVdixosVdbp3NW00
-         B0cK0kCsDVTQPGlQqg5OEIBBESSxILpDoM6JM3savRAfuQutl9f6KO69a4KfqlHU2ijI
-         BY0Te8MZvZT5I9uEHHr+VN37KmfUseZ0bNKrdyXH4r+m92m7Ilyox1O4yqtCc/uxLag2
-         X4yAYBb15PjC2xRgj0eK/AOUMw3kaJEdEynplZAqrtD0ZhBNIy+/pyB28/YaT5/2ajyv
-         E0cTAE4J10ExHs+rxRDEVwiYjYtUnw2VShIy4P3ddbNpuuN6//YX9CnWW24/hdLN0Snp
-         /MIA==
-X-Gm-Message-State: AOAM531hTWg0IU2paUj/dUNlEyiEcNTqMP+zV8UnQj2CzVFusCld+wrr
-        ZLBpdNS/oYLOBDjX4/kr2DgXcjjP2JZzyRAcFfo=
-X-Google-Smtp-Source: ABdhPJwLF5u38ZpHNPUlbHGGxI10yFk6qGT+M0wZ5OAYZ17W6+0f0qff2ikd4TwQzB8lLfvk5KccVaLFf7DMdKWgbbk=
-X-Received: by 2002:a17:907:94d4:: with SMTP id dn20mr23177741ejc.379.1637165125817;
- Wed, 17 Nov 2021 08:05:25 -0800 (PST)
+        Wed, 17 Nov 2021 11:08:29 -0500
+Received: from omf16.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 942031822325F;
+        Wed, 17 Nov 2021 16:05:29 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf16.hostedemail.com (Postfix) with ESMTPA id E71D452A;
+        Wed, 17 Nov 2021 16:05:23 +0000 (UTC)
+Message-ID: <cf7ad8715a02f3a0e4fe0cd8a270585dcf84bb3a.camel@perches.com>
+Subject: Re: [PATCH v9 5/5] MAINTAINERS: Add maintainer for xilinx-ams
+From:   Joe Perches <joe@perches.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Anand Ashok Dumbre <ANANDASH@xilinx.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jic23@kernel.org" <jic23@kernel.org>,
+        "lars@metafoo.de" <lars@metafoo.de>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        git <git@xilinx.com>, Michal Simek <michals@xilinx.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>
+Date:   Wed, 17 Nov 2021 08:05:24 -0800
+In-Reply-To: <CAHp75VdaO4+DxMn2eJx7t0_UFgrHGV2vgzXvRB=qwZi-ZpMaOA@mail.gmail.com>
+References: <20211116150842.1051-1-anand.ashok.dumbre@xilinx.com>
+         <20211116150842.1051-6-anand.ashok.dumbre@xilinx.com>
+         <YZPtW5igA8RBYLWv@smile.fi.intel.com>
+         <BY5PR02MB69168A6537474DF8948C3D0BA99A9@BY5PR02MB6916.namprd02.prod.outlook.com>
+         <CAHp75VdaO4+DxMn2eJx7t0_UFgrHGV2vgzXvRB=qwZi-ZpMaOA@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-References: <20211116142631.571909964@linuxfoundation.org> <4ef11d86-28f6-69c8-ed79-926d39bdc13d@gmail.com>
- <CAPOoXdHjqm=9K5BHc8p48NEf0jzZ92yiZZFQwmhGMxcTAX020w@mail.gmail.com> <YZS3gwvOOXu0Vmzv@kroah.com>
-In-Reply-To: <YZS3gwvOOXu0Vmzv@kroah.com>
-From:   Scott Bruce <smbruce@gmail.com>
-Date:   Wed, 17 Nov 2021 08:05:13 -0800
-Message-ID: <CAPOoXdEWFWpeFtLkWqOVOZFJv3=7zyG2vrZtrZ9fHsODyPaf+A@mail.gmail.com>
-Subject: Re: [PATCH 5.15 000/927] 5.15.3-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: E71D452A
+X-Spam-Status: No, score=-3.40
+X-Stat-Signature: ami9yzewngpqq7kik7kaad5pw1e1qt3u
+X-Rspamd-Server: rspamout01
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX182X4RekMTMr80iwuE0NqYUf3L6LFeosFM=
+X-HE-Tag: 1637165123-216991
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-5.16-rc1 boots fine with the commit in, it's just the 5.15.3-rc builds
-with it that are giving me trouble.
+On Wed, 2021-11-17 at 17:17 +0200, Andy Shevchenko wrote:
+> On Wed, Nov 17, 2021 at 5:00 PM Anand Ashok Dumbre <ANANDASH@xilinx.com> wrote:
+> > > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > Sent: Tuesday 16 November 2021 5:42 PM
+> > > On Tue, Nov 16, 2021 at 03:08:42PM +0000, Anand Ashok Dumbre wrote:
+> > > > Add maintaner entry for xilinx-ams driver.
+> > > 
+> > > Have you run checkpatch?
+> > 
+> > Yes I did.
+> > I don't see any error on this.
+> 
+> Hmm... Perhaps it needs an unobvious parameter?
+> Joe, X is definitely after M, any idea why checkpatch hasn't caught this up?
 
-cheers,
-Scott
+[]
 
-On Wed, Nov 17, 2021 at 12:04 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Nov 16, 2021 at 09:41:07PM -0800, Scott Bruce wrote:
-> > On 11/16/21 13:59, Scott Bruce wrote:
-> > > On 11/16/21 07:01, Greg Kroah-Hartman wrote:
-> > >> This is the start of the stable review cycle for the 5.15.3 release.
-> > >> There are 927 patches in this series, all will be posted as a response
-> > >> to this one.  If anyone has any issues with these being applied, please
-> > >> let me know.
-> > >>
-> > >> Responses should be made by Thu, 18 Nov 2021 14:24:22 +0000.
-> > >> Anything received after that time might be too late.
-> > >>
-> > >> The whole patch series can be found in one patch at:
-> > >>     https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.3-rc2.gz
-> > >>
-> > >> or in the git tree and branch at:
-> > >>     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> > >> linux-5.15.y
-> > >> and the diffstat can be found below.
-> > >>
-> > >> thanks,
-> > >>
-> > >> greg k-h
-> > >>
-> > >
-> > > Regression found on x86-64 AMD (ASUS GA503QR, Cezanne platform)
-> > > somewhere between 7f9a9d5d9983 and 5.15.3-rc1. The very early -rc1 tag
-> > > from a day and a half ago boots fine, -rc1 final and -rc2 boot into a
-> > > kernel panic during init.
-> > >
-> > > Unfortunately I can't gather any useful debug info from the panic as the
-> > > relevant bits are instantly pushed off the screen by rest of the dump.
-> > >
-> > > Here's what I'm left with on screen after the panic, hopefully someone
-> > > can get something useful out of it:
-> > > https://photos.app.goo.gl/6FrYPfZCY6YdnPDz6
-> > >
-> > > I'll bisect and try to narrow this down some today but I'm running
-> > > builds on my laptop while I work so it won't be super quick.
-> > >
-> > > Scott
-> >
-> > Reverting c3fc9d9e8f2dc518a8ce3c77f833a11b47865944 "x86: Fix
-> > __get_wchan() for !STACKTRACE" resolves this issue.
-> >
-> > With this revert in place 5.15.3-rc2 boots successfully with no dmesg
-> > regressions on my AMD Cezanne laptop, I'll wait for actual use
-> > tomorrow to leave a proper
-> > tested by.
->
-> This is odd.  Do you see the same issues in 5.16-rc1?  We want this
-> commit in here as we "need" bc9bbb81730e ("x86: Fix get_wchan() to
-> support the ORC unwinder") because it fixes things that are reported to
-> be broken.
->
-> thanks,
->
-> greg k-h
+This is the suggested patch below right?
+https://lore.kernel.org/lkml/20211116150842.1051-6-anand.ashok.dumbre@xilinx.com/
+
+It looks OK to me.
+What do you think checkpatch is supposed to find?
+---
+diff --git a/MAINTAINERS b/MAINTAINERS
+index dcc1819ec84b..30de0ea64ac4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -20640,6 +20640,13 @@ M:	Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+ S:	Maintained
+ F:	drivers/net/ethernet/xilinx/xilinx_axienet*
+ 
++XILINX AMS DRIVER
++M:	Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
++L:	linux-iio@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/iio/adc/xlnx,zynqmp-ams.yaml
++F:	drivers/iio/adc/xilinx-ams.c
++
+ XILINX CAN DRIVER
+ M:	Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+ R:	Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+-- 
+2.17.1
+
+
+
