@@ -2,113 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F295454259
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 09:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4554F454269
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 09:09:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234362AbhKQIKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 03:10:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27796 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232071AbhKQIKu (ORCPT
+        id S234415AbhKQILe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 03:11:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232071AbhKQIL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 03:10:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637136471;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=XjV5fBqhy8BbrVmQuut3sNPg0t9OqFdRt53NVLlK0gc=;
-        b=OJESRqU+USF+KjmVULkMEDfzwq8RPny/lzmoigzyoX0ZF4LZqB0tLulrtcKKzukDlfYi52
-        yQnwl0VHHEbpPwvpyr1eTL7HJAG2eU/pB4sa7Xo9uwC2z7eDn1VxrHfVFFTexDj7tVLigV
-        AZlGJnSXo7dghCyjekIIWpZo00150ZE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-204-LmHRSOnbP_6tqwOBgDc4uw-1; Wed, 17 Nov 2021 03:07:46 -0500
-X-MC-Unique: LmHRSOnbP_6tqwOBgDc4uw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 17 Nov 2021 03:11:26 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3FEDC061570;
+        Wed, 17 Nov 2021 00:08:28 -0800 (PST)
+Received: from localhost (unknown [151.44.20.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B9E2B1023F4D;
-        Wed, 17 Nov 2021 08:07:45 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4B7C71F45B;
-        Wed, 17 Nov 2021 08:07:45 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     seanjc@google.com, stable@vger.kernel.org
-Subject: [PATCH] KVM: x86: check PIR even for vCPUs with disabled APICv
-Date:   Wed, 17 Nov 2021 03:07:44 -0500
-Message-Id: <20211117080744.995111-1-pbonzini@redhat.com>
+        by ms.lwn.net (Postfix) with ESMTPSA id 9E0064A6;
+        Wed, 17 Nov 2021 08:08:26 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 9E0064A6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1637136507; bh=WI3l1gDO1ckeyM/rewn4fHkluluKgnQPmxGdZIQcBv8=;
+        h=From:To:Subject:In-Reply-To:References:Date:From;
+        b=TslcnkXRHAjwl9HngGVriKBHCOgNyEMq5Ti0C7Bj0sujObew6iXXhL18psJXdYasx
+         Msvq9ITuU9Qu/9OHDnoRjV/R002NgCxj63ExgA/eZBfce+aW+JVws3opwiEf/1gGAI
+         b/ntpmDQMM6w0CMcbWh2aRcX4UaomljPO5QJR81asd9wNtS/6hZGnvRxyT1H97Fi0s
+         np2Qsnnyd1vihZefSA/RlkJsUIw0gBHH3hTJDP4AcZD6QQ9MnAch70xy/km4ZRI2cc
+         pV8c8XUdxsPcYaA5kLXw0nHipwGnVSEozEq3c60EOmMCCR19icPwrpnrxSzbCBcOGw
+         tFF1hL/tJauXA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>,
+        pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        akpm@linux-foundation.org, rientjes@google.com, pjt@google.com,
+        weixugc@google.com, gthelen@google.com, mingo@redhat.com,
+        will@kernel.org, rppt@kernel.org, keescook@chromium.org,
+        tglx@linutronix.de, peterz@infradead.org, masahiroy@kernel.org,
+        samitolvanen@google.com, dave.hansen@linux.intel.com,
+        x86@kernel.org, frederic@kernel.org, hpa@zytor.com,
+        aneesh.kumar@linux.ibm.com
+Subject: Re: [RFC 2/3] mm: page table check
+In-Reply-To: <20211116220038.116484-3-pasha.tatashin@soleen.com>
+References: <20211116220038.116484-1-pasha.tatashin@soleen.com>
+ <20211116220038.116484-3-pasha.tatashin@soleen.com>
+Date:   Wed, 17 Nov 2021 01:08:23 -0700
+Message-ID: <878rxngq6g.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After fixing the handling of POSTED_INTR_WAKEUP_VECTOR for vCPUs with
-disabled APICv, take care of POSTED_INTR_VECTOR.  The IRTE for an assigned
-device can trigger a POSTED_INTR_VECTOR even if APICv is disabled on the
-vCPU that receives it.  In that case, the interrupt will just cause a
-vmexit and leave the ON bit set together with the PIR bit corresponding
-to the interrupt.
+Pasha Tatashin <pasha.tatashin@soleen.com> writes:
 
-Right now, the interrupt would not be delivered until APICv is re-enabled.
-However, fixing this is just a matter of always doing the PIR->IRR
-synchronization, even if the vCPU does not have APICv enabled.
+> Check user page table entries at the time they are added and removed.
+>
+> Allows to synchronously catch memory corruption issues related to
+> double mapping.
+>
+> When a pte for an anonymous page is added into page table, we verify
+> that this pte does not already point to a file backed page, and vice
+> versa if this is a file backed page that is being added we verify that
+> this page does not have an anonymous mapping
+>
+> We also enforce that read-only sharing for anonymous pages is allowed
+> (i.e. cow after fork). All other sharing must be for file pages.
+>
+> Page table check allows to protect and debug cases where "struct page"
+> metadata became corrupted for some reason. For example, when refcnt or
+> mapcount become invalid.
+>
+> Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+> ---
+>  Documentation/vm/page_table_check.rst |  53 ++++++
 
-This is not a problem for performance, or if anything it is an
-improvement.  static_call_cond will elide the function call if APICv is
-not present or disabled, or if (as is the case for AMD hardware) it does
-not require a sync_pir_to_irr callback.  And in the common case where
-kvm_vcpu_apicv_active(vcpu) is true, one fewer check has to be performed.
+Thanks for documenting this feature!  When you add a new RST file,
+though, you need to add it to the index.rst file as well so that it is
+included in the docs build.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/x86.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+>  MAINTAINERS                           |   9 +
+>  arch/Kconfig                          |   3 +
+>  include/linux/page_table_check.h      | 147 ++++++++++++++
+>  mm/Kconfig.debug                      |  24 +++
+>  mm/Makefile                           |   1 +
+>  mm/page_alloc.c                       |   4 +
+>  mm/page_ext.c                         |   4 +
+>  mm/page_table_check.c                 | 264 ++++++++++++++++++++++++++
+>  9 files changed, 509 insertions(+)
+>  create mode 100644 Documentation/vm/page_table_check.rst
+>  create mode 100644 include/linux/page_table_check.h
+>  create mode 100644 mm/page_table_check.c
+>
+> diff --git a/Documentation/vm/page_table_check.rst b/Documentation/vm/page_table_check.rst
+> new file mode 100644
+> index 000000000000..41435a45869f
+> --- /dev/null
+> +++ b/Documentation/vm/page_table_check.rst
+> @@ -0,0 +1,53 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +.. _page_table_check:
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index dcefb1485362..eda86378dcff 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4445,8 +4445,7 @@ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
- static int kvm_vcpu_ioctl_get_lapic(struct kvm_vcpu *vcpu,
- 				    struct kvm_lapic_state *s)
- {
--	if (kvm_vcpu_apicv_active(vcpu))
--		static_call(kvm_x86_sync_pir_to_irr)(vcpu);
-+	static_call_cond(kvm_x86_sync_pir_to_irr)(vcpu);
- 
- 	return kvm_apic_get_state(vcpu, s);
- }
-@@ -9645,8 +9644,7 @@ static void vcpu_scan_ioapic(struct kvm_vcpu *vcpu)
- 	if (irqchip_split(vcpu->kvm))
- 		kvm_scan_ioapic_routes(vcpu, vcpu->arch.ioapic_handled_vectors);
- 	else {
--		if (kvm_vcpu_apicv_active(vcpu))
--			static_call(kvm_x86_sync_pir_to_irr)(vcpu);
-+		static_call_cond(kvm_x86_sync_pir_to_irr)(vcpu);
- 		if (ioapic_in_kernel(vcpu->kvm))
- 			kvm_ioapic_scan_entry(vcpu, vcpu->arch.ioapic_handled_vectors);
- 	}
-@@ -9919,10 +9917,12 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 
- 	/*
- 	 * This handles the case where a posted interrupt was
--	 * notified with kvm_vcpu_kick.
-+	 * notified with kvm_vcpu_kick.  Assigned devices can
-+	 * use the POSTED_INTR_VECTOR even if APICv is disabled,
-+	 * so do it even if !kvm_vcpu_apicv_active(vcpu).
- 	 */
--	if (kvm_lapic_enabled(vcpu) && kvm_vcpu_apicv_active(vcpu))
--		static_call(kvm_x86_sync_pir_to_irr)(vcpu);
-+	if (kvm_lapic_enabled(vcpu))
-+		static_call_cond(kvm_x86_sync_pir_to_irr)(vcpu);
- 
- 	if (kvm_vcpu_exit_request(vcpu)) {
- 		vcpu->mode = OUTSIDE_GUEST_MODE;
--- 
-2.27.0
+Do you need this label for anything?  As-is it's just added visual
+clutter and could come out.
 
+> +================
+> +Page Table Check
+> +================
+> +
+> +Page table check allows to hardern the kernel by ensuring that some types of
+> +memory corruptions are prevented.
+> +
+> +Page table check performs extra verifications at the time when new pages become
+> +accessible from userspace by getting their page table entries (PTEs PMDs etc.)
+> +added into the table.
+> +
+> +In case of detected corruption, the kernel is crashed. There is a small
+> +performance and memory overhead associated with page table check. Thereofre, it
+> +is disabled by default but can be optionally enabled on systems where extra
+> +hardening outweighs the costs. Also, because page table check is synchronous, it
+> +can help with debugging double map memory corruption issues, by crashing kernel
+> +at the time wrong mapping occurs instead of later which is often the case with
+> +memory corruptions bugs.
+> +
+> +==============================
+> +Double mapping detection logic
+> +==============================
+
+I'd use subsection markup (single "==========" line underneath) for the
+subsections.
+
+> ++-------------------+-------------------+-------------------+------------------+
+> +| Current Mapping   | New mapping       | Permissions       | Rule             |
+> ++===================+===================+===================+==================+
+> +| Anonymous         | Anonymous         | Read              | Allow            |
+> ++-------------------+-------------------+-------------------+------------------+
+> +| Anonymous         | Anonymous         | Read / Write      | Prohibit         |
+> ++-------------------+-------------------+-------------------+------------------+
+> +| Anonymous         | Named             | Any               | Prohibit         |
+> ++-------------------+-------------------+-------------------+------------------+
+> +| Named             | Anonymous         | Any               | Prohibit         |
+> ++-------------------+-------------------+-------------------+------------------+
+> +| Named             | Named             | Any               | Allow            |
+> ++-------------------+-------------------+-------------------+------------------+
+> +
+> +=========================
+> +Enabling Page Table Check
+> +=========================
+> +
+> +Build kernel with:
+> +
+> +- PAGE_TABLE_CHECK=y
+> +Note, it can only be enabled on platforms where ARCH_SUPPORTS_PAGE_TABLE_CHECK
+> +is available.
+> +- Boot with 'page_table_check=on' kernel parameter.
+> +
+> +Optionally, build kernel with PAGE_TABLE_CHECK_ENFORCED in order to have page
+> +table support without extra kernel parameter.
+
+Thanks,
+
+jon
