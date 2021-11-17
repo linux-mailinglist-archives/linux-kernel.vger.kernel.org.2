@@ -2,91 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A62454077
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 06:53:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E829F45407C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 06:53:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233429AbhKQF4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 00:56:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45520 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233348AbhKQF4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 00:56:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C206C60E08;
-        Wed, 17 Nov 2021 05:53:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637128385;
-        bh=FoIpIh0kWZhRl7ZuVuarWxUqjOzcP3NUPIm79CZvako=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gwIIQt3I/u+7T4N3Adz1s9U12jXTJFrI4PJo2KUxZbUOCP/FkjwkV7v/M+TvE8SGR
-         Nvmw11cVlGkr8gXZaX453XRnGAacRSb9uRwM4dhvaelHlRrOtu1IROG+3HEM3dT0Y6
-         SjzVOC7t4JOxt57jq3dvLsqLtlwJjKY7jkW4G1AdH1G2WKjyl294OA04uvVJoy2HDW
-         4VKSxZDhIxf6+PF/E3R/4e687d7+Gvc9MoPgbaM3kF9XOO0M3DgfDUviSuW5hYa9FZ
-         kbzOJHuP9/nls56zwWy5CMHdWJyg6mjUXqT1j8OrzJD8tHloZW2iZCRF7Df0ipxMgN
-         UDSjprpO/vKCw==
-Date:   Wed, 17 Nov 2021 11:23:00 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        stephan@gerhold.net, Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH v5 02/22] arm64: dts: qcom: msm8996: Fix 'dma' nodes in
- dts
-Message-ID: <YZSYvBEoDExaaGD5@matsya>
-References: <20211110105922.217895-1-bhupesh.sharma@linaro.org>
- <20211110105922.217895-3-bhupesh.sharma@linaro.org>
+        id S233453AbhKQF4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 00:56:15 -0500
+Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:49075 "EHLO
+        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233348AbhKQF4O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 00:56:14 -0500
+Received: from dread.disaster.area (pa49-195-103-97.pa.nsw.optusnet.com.au [49.195.103.97])
+        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id EC51AA46A9;
+        Wed, 17 Nov 2021 16:53:13 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mnDsd-009nSO-AO; Wed, 17 Nov 2021 16:53:11 +1100
+Date:   Wed, 17 Nov 2021 16:53:11 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        linux-ext4@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+        Chao Yu <chao@kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+        Chuck Lever <chuck.lever@oracle.com>,
+        linux-f2fs-devel@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MM: introduce memalloc_retry_wait()
+Message-ID: <20211117055311.GS449541@dread.disaster.area>
+References: <163712329077.13692.12796971766360881401@noble.neil.brown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211110105922.217895-3-bhupesh.sharma@linaro.org>
+In-Reply-To: <163712329077.13692.12796971766360881401@noble.neil.brown.name>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=e9dl9Yl/ c=1 sm=1 tr=0 ts=619498ca
+        a=fP9RlOTWD4uZJjPSFnn6Ew==:117 a=fP9RlOTWD4uZJjPSFnn6Ew==:17
+        a=kj9zAlcOel0A:10 a=vIxV3rELxO4A:10 a=7-415B0cAAAA:8
+        a=WAyi4Cf-4lf-hVXyuRgA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-11-21, 16:29, Bhupesh Sharma wrote:
-> Preparatory patch for subsequent patch in this series which
-> converts the qcom_bam_dma device-tree binding into YAML format.
+On Wed, Nov 17, 2021 at 03:28:10PM +1100, NeilBrown wrote:
 > 
-> Correct dma-controller node inside msm8996 dts, which
-> leads to following errors with 'make dtbs_check':
-> 
->      dma@164400: $nodename:0: 'dma@164400' does not match
->      '^dma-controller(@.*)?$'
-> 
-> Fix the same.
-
-
-Looks like one more crept in, this is the only one.. I did fix a bunch
-previously...
-
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
-
-> 
-> Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/msm8996.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> index 27683d7fdfe6..508cd9d06350 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> @@ -705,7 +705,7 @@ tsens1: thermal-sensor@4ad000 {
->  			#thermal-sensor-cells = <1>;
->  		};
+> Various places in the kernel - largely in filesystems - respond to a
+> memory allocation failure by looping around and re-trying.
+.....
+> diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+> index aca874d33fe6..f2f2a5b28808 100644
+> --- a/include/linux/sched/mm.h
+> +++ b/include/linux/sched/mm.h
+> @@ -214,6 +214,27 @@ static inline void fs_reclaim_acquire(gfp_t gfp_mask) { }
+>  static inline void fs_reclaim_release(gfp_t gfp_mask) { }
+>  #endif
 >  
-> -		cryptobam: dma@644000 {
-> +		cryptobam: dma-controller@644000 {
->  			compatible = "qcom,bam-v1.7.0";
->  			reg = <0x00644000 0x24000>;
->  			interrupts = <GIC_SPI 206 IRQ_TYPE_LEVEL_HIGH>;
-> -- 
-> 2.31.1
+> +/* Any memory-allocation retry loop should use
+> + * memalloc_retry_wait(), and pass the flags for the most
+> + * constrained allocation attempt that might have failed.
+> + * This provides useful documentation of where loops are,
+> + * and a central place to fine tune the waiting as the MM
+> + * implementation changes.
+> + */
+> +static inline void memalloc_retry_wait(gfp_t gfp_flags)
+> +{
+> +	gfp_flags = current_gfp_context(gfp_flags);
+> +	if ((gfp_flags & __GFP_DIRECT_RECLAIM) &&
+> +	    !(gfp_flags & __GFP_NORETRY))
+> +		/* Probably waited already, no need for much more */
+> +		schedule_timeout_uninterruptible(1);
+> +	else
+> +		/* Probably didn't wait, and has now released a lock,
+> +		 * so now is a good time to wait
+> +		 */
+> +		schedule_timeout_uninterruptible(HZ/50);
+> +}
+
+The existing congestion_wait() calls io_schedule_timeout() under
+TASK_UNINTERRUPTIBLE conditions.
+
+Does changing all these calls just to a plain
+schedule_timeout_uninterruptible() make any difference to behaviour?
+At least process accounting will appear different (uninterruptible
+sleep instead of IO wait), and I suspect that the block plug
+flushing in io_schedule() might be a good idea to retain for all the
+filesystems that call this function from IO-related routines.
+
+Cheers,
+
+Dave.
 
 -- 
-~Vinod
+Dave Chinner
+david@fromorbit.com
