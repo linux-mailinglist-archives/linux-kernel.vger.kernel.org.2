@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF234548F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:35:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D38FC4548F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237945AbhKQOit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 09:38:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56844 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231747AbhKQOis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 09:38:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC879613AD;
-        Wed, 17 Nov 2021 14:35:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637159750;
-        bh=ypN75feuluVV6CkzUNd9qT/2Ps0eqEvsXElsx7kHfnw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UXE4O+6Xgyewk4chPr27uwZC/N0l0RxDuR87w4JGWSaNNUKPbF36/z08a9IB96Zcy
-         OrSpiONae6hQRgq5bRWsh90RsGFoJM1GSy0Qf0gidami87tHNEioaNqbg58gtvTiR+
-         y8BA+03Yh9yE9NW8/Qa9vshwRJWN8Zdr0qSprXoLl+4lDFpxr7LzpUcjCZxtKJKzsQ
-         D4PZyAbf4vujw6EJ/kjTWRXPEBfj2HPN+TYZw5AW+B2RzdB67Q5P18OOaTcQrOMFwd
-         3Nc1OukD7iX8Se8JzVDsg8oRCvOGn0e/I48u3qXt/txrqmBs4LCM/CqUtoduDSJeVi
-         q20TIVqfIelZw==
-Date:   Wed, 17 Nov 2021 14:35:45 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Mighty M <mightymb17@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, krzk@kernel.org,
-        Tony Lindgren <tony@atomide.com>, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com
-Subject: Re: Adding support for audio (WM1811)
-Message-ID: <YZUTQdK6qWZadoz2@sirena.org.uk>
-References: <CACLAQJEjPg4swtLKVj1OdO_h6Js1CtfFJnL9+8WDEtT9AANaeg@mail.gmail.com>
+        id S231318AbhKQOkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 09:40:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229768AbhKQOkN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 09:40:13 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D162C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 06:37:15 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id k4so2326609plx.8
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 06:37:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=SOLXibsYhAQoMaZe/qoyBx3ypKaHwuZlNuup2u9BzBs=;
+        b=O1BnWiUr1yp/whuX1LGG8LUP2djb9jIguh10A9Qg3K72HdKD3Y9aagRhNGVtaouWQ1
+         PjYAo8q+YCr8FCGPr47ZLsJOOIn6drPIP7wwqXHSuoskPYqCkYUGY1e1/+2kVcCCuPYb
+         03wRXP+KhqIN/Raq5jsYLoHyi12LmgBTp//GGjOnBLpugIf+/xPyhaxDWHA1yHbT7TBN
+         3SQ9z70B6ld4IJaF/Cu0ubtsz208WCsF8qy7q+0e1PqTEXBAf6WVAHk9P7Xe2cAaatFt
+         moXuNVcBC14M2ifvitadRf9mmmHsR8cHQ9P6pc32K1imfEHxxyNi8/GOUtY68/tdoN+Q
+         DDoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=SOLXibsYhAQoMaZe/qoyBx3ypKaHwuZlNuup2u9BzBs=;
+        b=aOHWhYOq37MQWwVmXKefAjYYmI2w57h/j4uMjaP+ltv0SlseiATvpmy+pPyxr6t6C6
+         MDj9otsv5/7xbekTF7zZGC76rcVT2eegwD2ggKYESKVYc5mBeCSiUNdKFdzOVUjZ16Pl
+         I4jbqlltIahIpa9L7NQ/1ezmXWjiWRg6T4ClMD3MquWB5UEwpJZbh8le+3Qd86LlJK6e
+         NUXV30OkXueMNZ1T9upVw3+H6G8jE01WNW8FKHGx0M20z3yhauaNCnvI5xzIRFUQJkcl
+         9nvy3ePZYBBv2/LcmR0VtBCtEmFPpTqIJwcPHVGA72RjX1oJrpYtcNoTKyDcATfpjoGY
+         4rXg==
+X-Gm-Message-State: AOAM533rsN7uiKYaRb52E1c98IVkPTrfflXAoLPvTe1Fc6vL9ys2p79P
+        o0cGXSvvb4PIPy0dQWcbPMByttR63PauXr2DAOs=
+X-Google-Smtp-Source: ABdhPJwMW4uzrY9HxW0uAzYOMh/uq7SZRlqOQypnIQe7VHoIq9zU/M56rUIM2F1HZCXIufRnfNRtUB9TbMucclhfzoU=
+X-Received: by 2002:a17:902:7b8d:b0:143:95e3:7dc0 with SMTP id
+ w13-20020a1709027b8d00b0014395e37dc0mr56548201pll.21.1637159834900; Wed, 17
+ Nov 2021 06:37:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="An86/UMqTj2Q3cfh"
-Content-Disposition: inline
-In-Reply-To: <CACLAQJEjPg4swtLKVj1OdO_h6Js1CtfFJnL9+8WDEtT9AANaeg@mail.gmail.com>
-X-Cookie: One Bell System - it sometimes works.
+From:   Tim Lewis <elatllat@gmail.com>
+Date:   Wed, 17 Nov 2021 09:37:03 -0500
+Message-ID: <CA+3zgmtHdCE3TZn3Hc8+nsYc+mHHvACNgFY_Z_Z4nCAmhSnQPg@mail.gmail.com>
+Subject: Re: Re: [PATCH 5.10 000/578] 5.10.80-rc2 review
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> No regressions on arm64, arm, x86_64, and i386.
 
---An86/UMqTj2Q3cfh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I got
+proc-uptime-001: proc-uptime-001.c:39: main: Assertion `i1 >= i0' failed.
 
-On Mon, Nov 01, 2021 at 02:18:45PM +0530, Mighty M wrote:
->  I've been trying to add audio support to my device,
-> samsung-espresso3g, but cannot seem to wrap my head around it. Other
-> devices in mainline are other exynos samsung's (aries/midas/arndale) all of
-> which have some drivers in mainline, while mine is an omap. I would like to
-> know how would I start adding the support. Here's the downstream driver
-> https://github.com/Unlegacy-Android/android_kernel_ti_omap4/blob/3.0/common/sound/soc/omap/espresso.c
-> Any help would be appreciated. Audio is very confusing
+I don't see proc-uptime-001 on
+https://github.com/Linaro/test-definitions/blob/master/automated/linux/kselftest/skipfile-lkft.yaml
 
-The downstream driver looks fairly clean to be honest - I'd think you
-could get a long way to getting something upstreamable by just fixing it
-so it builds and adding basic DT bindings.  There's quite a lot of
-drivers in tree you could take as examples there, the way devices fit
-into the system isn't really device specific so they don't need to be
-WM1811 specific bindings so much.  Is there any specific thing you were
-having difficulty with or was it just general pointers about getting
-going?
-
-If you've got questions about WM1811 in particular I'd loop i the Cirrus
-people (Cirrus bought Wolfson a while back), hopefully they can provide
-some help though that part is very old by now.  You should also copy the
-ALSA list alsa-devel@alsa-project.org, that'll get more visibility from
-audio people.
-
---An86/UMqTj2Q3cfh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGVE0AACgkQJNaLcl1U
-h9CH0Qf+NDUcQGpNKmM4ejDtd+cqjQPpqUsgFlsN7xspCJPpHxIeN366MoNd4kJC
-JyUg7Yn1J4YJTxdU2/8KB4p0KoI33nsegNY8g1TMu70JLudvFidjRyCqjk9i2/NZ
-Ci0PJFQ4N5mEwNew1BbxfuEqnBlhSgld5aPfmin70sDTOkD0ainhX9d6Hew8uoDN
-7TTOFgioQ1egcamKwMR513DIo3CBcYC5Y8SApO+PtFBg7JB5zSSb597JeZ4rdOfF
-WilMD/Z3aqnRN4G2dLjO7v5sTjA6dccrYft3zwvmZ/lbeUWGZ0d/pf9NLpFS8/N6
-aOdr4vyVl3FOy/gQqh2njvMlLIhe1w==
-=5A21
------END PGP SIGNATURE-----
-
---An86/UMqTj2Q3cfh--
+my proc-uptime-001 history
+5.10.80-rc2-dirty:not ok 10 selftests: proc: proc-uptime-001 # exit=134
+5.10.80-rc1-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.79-rc1-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.78-rc2-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.77-rc1-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.76-rc1-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.75-rc1-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.74-rc1-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.73-rc3-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.73-rc2-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.72-rc1-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.71-rc2-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.71-rc1-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.70-rc2-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.70-rc1-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.69-rc2-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.69-rc1-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.68-rc1-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.67-rc1-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.65-rc1-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.63-rc1-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.62-rc1-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.60-rc2-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.59-rc1-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.58-rc1-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.57-rc1-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.56-rc1-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.54-rc2-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.53-rc2-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.52-rc2-dirty:ok 10 selftests: proc: proc-uptime-001
+5.10.51-rc1-dirty:ok 10 selftests: proc: proc-uptime-001
