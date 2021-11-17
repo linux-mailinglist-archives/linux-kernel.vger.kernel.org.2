@@ -2,93 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA889453E3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 03:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C04E453E3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 03:09:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232454AbhKQCL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 21:11:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbhKQCL5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 21:11:57 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D49DC061570;
-        Tue, 16 Nov 2021 18:08:59 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id iq11so1004628pjb.3;
-        Tue, 16 Nov 2021 18:08:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4/UAMENAQZVjitbkP9kKOozR9MA0Bb9mgqzEAIZQPrE=;
-        b=NwyKoqxQ47nrx7lSYUycTjmZXBLRbi85Oj1d6VB8S4B0rn8ntzv7HJ7eq5bTEljCuO
-         U/bGOJUN5XUP/JKwmFXC7FbiqPsmRbyNMWAS6X7c5PI5hvmmvwxqYeUuEE1/sVOQdKpw
-         T74yCTy6CQu70Bc/akQM90rMy0p7CtAm/GmzPj3Bx2TTpTdj+GwZtUUz8FmyoaTwKqsX
-         YoJd47K9PoraSgEykMtGexu6Mt0jaTgixjLVMMaTmyDkQhuqFBFG3vIP5+FQ6+YivZXD
-         JAM/DX9rgvRidnZnDHYuTuXwEdnFX7s2wBYYyjsce6r9FWUt74edZJEu6d9ImgP+gNur
-         yeFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4/UAMENAQZVjitbkP9kKOozR9MA0Bb9mgqzEAIZQPrE=;
-        b=U91u0hglwQLYhQnbNep5zWSn2Ow9qCF1CMPSofuQNm0gPN7Ykjmjkdv4Pw71Er9SdZ
-         06RU962nttKCH8nMlRpE+A+a5re2loh03h9HjWON2dOxxKrxuLOXDkTBTivWIVxRtfIS
-         NOV+dT3Sp/26EoS1DoqnmB4aQaAhma4YwJ0B5SgF7OCRR1Vs3+9DbreJtqqIEwzIhkN2
-         1r0zceXEdsWSxtkKZe/DxTJ424/+nXtISKWVWzHGPdUWbVeSgvDeSEYJ8RPxosihyIK0
-         U/iwPfphGdoe+emEcOtYNq7wFzw6LaxJ+ehtmWmD6aFh+DjB+410QnyWxXj/QE+IUo7I
-         Z82Q==
-X-Gm-Message-State: AOAM532GSzfqjEnaHflyjvFn8OANcIwgllne/sYyIVhI6BIueuARXz6C
-        LqCA0S8IoM/6mmv/4nHdD3c=
-X-Google-Smtp-Source: ABdhPJxKeop46ZbtcDdfEUpDFWioAKB7JT+ByabLMny9uhgR9P5F80UGxwnHhMRZdhxkhCAU+B67bg==
-X-Received: by 2002:a17:90a:c78f:: with SMTP id gn15mr4922243pjb.54.1637114939209;
-        Tue, 16 Nov 2021 18:08:59 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id o6sm3332087pfh.70.2021.11.16.18.08.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 18:08:58 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: deng.changcheng@zte.com.cn
-To:     thierry.reding@gmail.com
-Cc:     u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] pwm: rcar: Use div64_ul instead of do_div
-Date:   Wed, 17 Nov 2021 02:08:54 +0000
-Message-Id: <20211117020854.159472-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S232501AbhKQCM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 21:12:28 -0500
+Received: from mga01.intel.com ([192.55.52.88]:25221 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230211AbhKQCM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 21:12:27 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="257628133"
+X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
+   d="scan'208";a="257628133"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 18:09:22 -0800
+X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
+   d="scan'208";a="645676624"
+Received: from dhrupadx-mobl1.gar.corp.intel.com ([10.215.188.156])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 18:09:19 -0800
+Message-ID: <adc7132c8655bd4d1c8b6129578e931a14fe1db2.camel@linux.intel.com>
+Subject: Re: [UPDATE][PATCH] cpufreq: intel_pstate: Fix EPP restore after
+ offline/online
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>
+Date:   Tue, 16 Nov 2021 18:09:15 -0800
+In-Reply-To: <CAJZ5v0jk3KB6+uynpvdBAO+Q-Qr4HiCam=x4dxzT6NFWjROLzg@mail.gmail.com>
+References: <20211115134017.1257932-1-srinivas.pandruvada@linux.intel.com>
+         <CAJZ5v0jk3KB6+uynpvdBAO+Q-Qr4HiCam=x4dxzT6NFWjROLzg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changcheng Deng <deng.changcheng@zte.com.cn>
+On Tue, 2021-11-16 at 18:47 +0100, Rafael J. Wysocki wrote:
+> On Mon, Nov 15, 2021 at 2:40 PM Srinivas Pandruvada
+> <srinivas.pandruvada@linux.intel.com> wrote:
+> > 
+> > When using performance policy, EPP value is restored to non
+> > "performance"
+> > mode EPP after offline and online.
+> > 
+> > For example:
+> > cat
+> > /sys/devices/system/cpu/cpu1/cpufreq/energy_performance_preference
+> > performance
+> > echo 0 > /sys/devices/system/cpu/cpu1/online
+> > echo 1 > /sys/devices/system/cpu/cpu1/online
+> > cat
+> > /sys/devices/system/cpu/cpu1/cpufreq/energy_performance_preference
+> > balance_performance
+> > 
+> > The commit 4adcf2e5829f ("cpufreq: intel_pstate: Add ->offline and
+> > ->online callbacks")
+> > optimized save restore path of the HWP request MSR, when there is
+> > no
+> > change in the policy. Also added special processing for performance
+> > mode
+> > EPP. If EPP has been set to "performance" by the active mode
+> > "performance"
+> > scaling algorithm, replace that value with the cached EPP. This
+> > ends up
+> > replacing with cached EPP during offline, which is restored during
+> > online
+> > again.
+> > 
+> > So add a change which will set cpu_data->epp_policy to zero, when
+> > in
+> > performance policy and has non zero epp. In this way EPP is set to
+> > zero
+> > again.
+> > 
+> > Fixes: 4adcf2e5829f ("cpufreq: intel_pstate: Add ->offline and -
+> > >online callbacks")
+> > Signed-off-by: Srinivas Pandruvada <
+> > srinivas.pandruvada@linux.intel.com>
+> > Cc: stable@vger.kernel.org # v5.9+
+> > ---
+> > Update: Minor optimization to skip non performance policy code path
+> > 
+> >  drivers/cpufreq/intel_pstate.c | 12 +++++++++---
+> >  1 file changed, 9 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/cpufreq/intel_pstate.c
+> > b/drivers/cpufreq/intel_pstate.c
+> > index 815df3daae9d..6d7d73a0c66b 100644
+> > --- a/drivers/cpufreq/intel_pstate.c
+> > +++ b/drivers/cpufreq/intel_pstate.c
+> > @@ -936,11 +936,17 @@ static void intel_pstate_hwp_set(unsigned int
+> > cpu)
+> >         max = cpu_data->max_perf_ratio;
+> >         min = cpu_data->min_perf_ratio;
+> > 
+> > -       if (cpu_data->policy == CPUFREQ_POLICY_PERFORMANCE)
+> > -               min = max;
+> > -
+> >         rdmsrl_on_cpu(cpu, MSR_HWP_REQUEST, &value);
+> > 
+> > +       if (cpu_data->policy == CPUFREQ_POLICY_PERFORMANCE) {
+> > +               min = max;
+> > +               epp = 0;
+> > +               if (boot_cpu_has(X86_FEATURE_HWP_EPP))
+> > +                       epp = (value >> 24) & 0xff;
+> > +               if (epp)
+> > +                       cpu_data->epp_policy = 0;
+> > +       }
+> 
+> I understand the bug, but it should not be necessary to check this
+> every time intel_pstate_hwp_set() runs.
+> 
+> > +
+> >         value &= ~HWP_MIN_PERF(~0L);
+> >         value |= HWP_MIN_PERF(min);
+> > 
+> > --
+> 
+> Isn't the following sufficient (modulo the gmail-induced whitespace
+> damage)?
+> 
+> ---
+>  drivers/cpufreq/intel_pstate.c |    6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> Index: linux-pm/drivers/cpufreq/intel_pstate.c
+> ===================================================================
+> --- linux-pm.orig/drivers/cpufreq/intel_pstate.c
+> +++ linux-pm/drivers/cpufreq/intel_pstate.c
+> @@ -1006,6 +1006,12 @@ static void intel_pstate_hwp_offline(str
+>           */
+>          value &= ~GENMASK_ULL(31, 24);
+>          value |= HWP_ENERGY_PERF_PREFERENCE(cpu->epp_cached);
+> +        /*
+> +         * However, make sure that EPP will be set to "performance"
+> when
+> +         * the CPU is brought back online again and the
+> "performance"
+> +         * scaling algorithm is still in effect.
+> +         */
+> +        cpu->epp_policy = CPUFREQ_POLICY_UNKNOWN;
+>      }
+> 
+>      /*
+This works also.
 
-do_div() does a 64-by-32 division. If the divisor is unsigned long, using
-div64_ul can avoid truncation to 32-bit.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
----
- drivers/pwm/pwm-rcar.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/pwm/pwm-rcar.c b/drivers/pwm/pwm-rcar.c
-index b437192380e2..fb475c188e1e 100644
---- a/drivers/pwm/pwm-rcar.c
-+++ b/drivers/pwm/pwm-rcar.c
-@@ -111,7 +111,7 @@ static int rcar_pwm_set_counter(struct rcar_pwm_chip *rp, int div, int duty_ns,
- 	u32 cyc, ph;
- 
- 	one_cycle = (unsigned long long)NSEC_PER_SEC * 100ULL * (1 << div);
--	do_div(one_cycle, clk_rate);
-+	div64_ul(one_cycle, clk_rate);
- 
- 	tmp = period_ns * 100ULL;
- 	do_div(tmp, one_cycle);
--- 
-2.25.1
+Thanks,
+Srinivas
 
