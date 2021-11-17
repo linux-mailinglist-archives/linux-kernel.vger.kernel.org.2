@@ -2,303 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35466453E57
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 03:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE94453E5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 03:20:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232656AbhKQCV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 21:21:58 -0500
-Received: from sonic316-27.consmr.mail.ne1.yahoo.com ([66.163.187.153]:37203
-        "EHLO sonic316-27.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232568AbhKQCV4 (ORCPT
+        id S232691AbhKQCWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 21:22:40 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:30482 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232357AbhKQCWi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 21:21:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1637115538; bh=LBCU/Wrng7m0g5Np3uQ3TMPlgTx2v6ooyRRAvU2g4mc=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=n9y7wt1UEynNBEwN2WJI7Ttbj5hN2gObT54jgM3m8xDYMXGF+aKhuN14mtyjju5F6Oa8Vw3qpOj4rOdMBe4C4qBYC+1cSE1W2C3iNZNifO0Mog+cB8WfCgWjQBmnytYJAieldNvJ8MDp6TAUdOTDHhGEQ83yIWpkjIUH9tl8RRURkMk2afCOTvPmUY+ENPFptIAlyxrEG6PQ/KTI4ibpSF3h0hnuizZs8/N4rYEpmVGjTT4u4pbcoAqwnqGlAIiueFD0aRY218RlW/vj/QoP+eDJaOf3aiGY+DCxqUUcYOiDM098jq/JR8lCWzuGgeU9nsJt6EoiuKbZRYkBG8kTlg==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1637115538; bh=+osq1U5N8+WLLdjfpq9IvXR7KdNo/B62D19ppqU6H9s=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=AT7EAA0r2oZJh3KKRYQkWCCuy62lk+llrJh8Of1RtbvX1ceftkrRD6LQnLbfQPuKoXSl2vX0HU3sGYaR4ZiblfWAyRXtTOoVL3qAaQQ9fFLXTK0ylHzkTRJNKxcQP0SkRUd8nuwz5JvMF4YxT9LDTbnMhPS8gyeWhAOiSr4H8FkikkKV1TDSrBpd2Vhf/4EV8170WxMNYrZUM8Cjtl4JBACNNZOnKDK1FxWG/8BQSMkMXCGlUySg7qpQ5wqEfWkp/ZRqNIKON8XWhw1o/GzIHtVf2YI1aZG01gCPRrOQ1ueEnoobFsw1IWLa4iP7VQqSV1qCgO+rMtMS12MqhMqIAQ==
-X-YMail-OSG: 514IMmgVM1nq1_johHH4f9TN5a_uzkZa1TNcnjjLOrh.ZVfXIFVjzBDtEOt1.F1
- 4VA5GGFALP_DASzF.LR9TmXVWGLk7GpwPsj0ZzTx9mbZN9OYkl4Nsy_78Px4rpvgbyVItuNPWT4r
- FcXIEJ3h8PhhlylrETonxJ8gaWLMRLr.laydI_kfSMAvPFz0HOo591svBb1VuZqA.75h6BT7v1TD
- CYEK61WH10HtebVexKqhagWPbuPjiRf5goAMYqi5H5qv6iljGQQw_KcltPV0ILMMRvV2ZZU.qaiJ
- gtyelnnSipByLlJcBQdGHvrzjBve5X1c5x7zKwqMPhIRrCvTE1UrCNhgOXuCtkXOu3qO.IOMOn7m
- M9koWeSnyEZBoxN.6aTjh087jRc8v52CLbkH8c.5yiwx3muW31Lr7pDiiFD9qM4TIb.Lze4CVR5b
- yiA3wVkKYqJnLDelmUjpiQNTg.4nYQB9e2Vyuwtly0wxdHI09XHIbxf5KaIqVzLyFj2WV9lCDKif
- 1alcfcb41EdOJA5ysBuhVvVptpHnXemSPi4JSz7.Gz0ySG.c9ZnrE5T.zUbGIREq0hCumF0BGYDZ
- TZOX2oCa6ILyD8Rse7e.9HVKxy1I1bwnsbuiFqXZK9P4hzgSpREnXgY4YEuOobmZ5.fpaXgjPRf_
- WGB4t_Xh2r6DOgXekLlukuEcAZ.RaTaZ7YQfdolUrHFO_5AXOYv49qpOHGX0XKl42ebeF5ieHTxJ
- JuPAvByJfBlVGRfqFGTttntc3g1w.ErouRg.3_Dt7A9UFJW4urnH2Cx5jWxCkFEoOJo01ewwSTxQ
- bTGCODBINW8FCU5YD.GqThE6myol1sZnnTcZw_teDKwM7Xz57LkOxbSsfmY8w.476Q6DfUJSJ9kT
- .vJqPKAIBb9Jeg3QIZJYh6X2XKUH2D1FEXyNPUgGLLFTl.xQAnevBnDWJDo4bZOrrzeaEK7roLF1
- z4Mq7FYtM.LlM.a4PIHxYC_ugATec1oMIo7m8ROmPC96qJux0RY1jxi9f29UINpKngXdjzDaIudg
- RFwfahsTytlRWAOa8_aaxrjEViVDgUhX4UyKEweZSP25kkbgw7pYz.Cw6QEMSzmj5hdBBCjMTa0c
- 6pt6g_fBmmJkqtxmbHvXHSFJvNzUIqE5FYnWzlFww2uFxoszokPgEn3Pg9qNuNGVL3EUBjQyXsdv
- HNxPwANj5J6TvyLYeggg8kwv4TLMlKWf60Ve94tlJXkEN8nymstl5o8DPETPbwO2o3Plr7YFJm7x
- G24R.7TJeq0S8uaDsIAYEbbs4vV1EQq1VPM4.qBk8ChmZV18YlSKIbbqcyVuqDqYpdVwwN9yjxpb
- LBs5RS3rwzA7wdZpF7FQCnfguIavhSGORrKLKnwzPQ2wWtKMsVUXoKQuzYwHt.yVzJNC9XiwhBzu
- g.Zri29hcUDLaTW.GKSClUX5PKzqWjtfTNi5czbHD3xNsNfA2CT0sJXhbsTOBkYUN.oRDUiaCpgF
- h2VCFy6j0kbs3wHvfqBiWx8gqvIPXzXPQo_ZZT3niFriVxlQa_H00.yaoJ.xFL2m23Ma.lpwTbm7
- SgC6oNPQTahqTrTTVaEx7tI_EXy73xY8t3OJ._A50qEgJSykbUKdrjHsWsesvIupuOQK4_OFKUN8
- He6kMUrQwqhTFLdj1WpyCVHvYEQdTmKRFHG7auAzZvl6bn4hKxna8rhqE6J6c.fb5mxMgvM0DKR_
- US7XpyKFzSM3yz9as1Rnaey59feedVZUoNOWoik0iyTC33YR7aSor6IYeLBzhlMacqjAPttwyg4V
- tDwCif6o6w.n5ULtvUG7_DgzLClA1V55aO_7jeOdWCHsxM3eiFqkOdq52eLDT4.Hmft5_YodrgWQ
- .EfqcvIK3Arfjl6jv09RYLYnY6DranVbUwOnC9GLB7vXLYirGmIX1hMMyypWrt8VRcxTRS0doQvr
- 3tLqvk2.ezGYy4JBZvjRdwBZFN7uyR26caUhQZ2TT_KoS6ifuBeIiboYUpvBb9Up4P4726VF.pAC
- q7t6BWLRw1p7LNE1m1BqpGx7DK3g7AHVkXq0iDlBDaufsmdqtWRJ4HTDSW.D2Tc3ZCJB9BnM5dIw
- VD97p3pBjQ7IE0DkboMJWpJ.jFUsWA91SMvHAuHmIDk.Z_4.J7mefR3CaW9ys5WzrznE5mmk6yb5
- O1aWcPkfCF.WCLvjNw531oxZsuJOqBv3tcfgrm6R2aOdurJXC3HiSgFSNpacM8QtwGTmlwEK9u1q
- Cw14LbRnSszNbdBvSzH2R9Gu.l3WWZzB47vk9jSwV.27P
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Wed, 17 Nov 2021 02:18:58 +0000
-Received: by kubenode522.mail-prod1.omega.bf1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 4e09b8843f28c89cb8b5731a4dace074;
-          Wed, 17 Nov 2021 02:18:57 +0000 (UTC)
-Message-ID: <a64aa4af-67b1-536c-9bd0-7b34e6cc1abe@schaufler-ca.com>
-Date:   Tue, 16 Nov 2021 18:18:53 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH v19 0/4] overlayfs override_creds=off & nested get xattr
- fix
+        Tue, 16 Nov 2021 21:22:38 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AH1pQV3003739;
+        Tue, 16 Nov 2021 18:19:40 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=CuKDlNRFpTJgzcdhj7Z2C+1OPckrt5vfaMJRaNCD2Lo=;
+ b=SlkrnHDL/L6RXZwTu7DdxmwefLqMbXluEnwNTm8ikKK54shwx8iAi87gLSXq94bI4emv
+ /hmIy3Nh0dxhskRyF9e1l8K1XhT9OBvR+iyjx4lDAQhQe061Ydh8xoIKyWxQt5uXaGsf
+ fThzfP8AH/KS+IgaEy+4nLq/fu7Q8kHLgUo= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3cch9x3fte-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 16 Nov 2021 18:19:40 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Tue, 16 Nov 2021 18:19:38 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Cu0X/VvKNm5J7BnHf6kT4jLNevtHTDd0HI5mPp0EnqtEu8ghTTuZSuEcfOjWJNvJKq+0uiPcSEW8koc4VqAWWzhbg/VgCH3S5QUOk74F54R7F80y9Y/SpH4oxAgQKm7XlBspA2DfNX/LkKDH6JrkqDF5tpyR7aDftz6SfQFVG1Hig9nL4mREDK0xxrAZJlXdrci7Xt/AfHPyd3biSxjvKisQZRFCZUQxekq4jdk32oteZQt9qfw8N/ObRXKul75GBuIUb3wFDi5OZ8qc2sQ95s94g9KdkQZ2MyIEck37AtlADgpQ2fWSxIp1OJVazWyEIMBiixgo1lMdJDA5rb9bYw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=f0Za2ACT3ZaRoTY8XTFPQuCzyP9a87pJXo0dcwAl2ak=;
+ b=WMLl92vSa0vCC0yB+fwoJzZmsa6dWSbXejlvnUs4OdNK7ne5+sq6lUkP3jkMzCrmnQxVDZEed51ZwqPUh94u52OoPKSP6ubDMwD2jIQVbgKXHQTnynd25+YMLk9rJt8kdPwMNL4WRryKFgoJghPf32XhalqbMgvmYXL/wpI8JOQhUB6ov2PfzRtXWs4MHEEuBzVW5/oQPnNOfglQy3ue3PPbwqrkmbf3cp6OJq9PLfMJiYtIukW+mgdIR2mcmtS9PL+PpNy2dluV0erSOxWPAigxMDexk7WOXRJB0HQp5jZzeMXTcceNX0WBIsIs/ii+VnmVWCAFALLM29vxhCkljw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from BY5PR15MB3667.namprd15.prod.outlook.com (2603:10b6:a03:1f9::18)
+ by BYAPR15MB2456.namprd15.prod.outlook.com (2603:10b6:a02:82::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Wed, 17 Nov
+ 2021 02:19:32 +0000
+Received: from BY5PR15MB3667.namprd15.prod.outlook.com
+ ([fe80::8d7d:240:3369:11b4]) by BY5PR15MB3667.namprd15.prod.outlook.com
+ ([fe80::8d7d:240:3369:11b4%6]) with mapi id 15.20.4690.027; Wed, 17 Nov 2021
+ 02:19:32 +0000
+From:   Nick Terrell <terrelln@fb.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+CC:     Helge Deller <deller@gmx.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "Sergio Paracuellos" <sergio.paracuellos@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Joey Gouly <joey.gouly@arm.com>,
+        "Stan Skowronek" <stan@corellium.com>,
+        Hector Martin <marcan@marcan.st>,
+        "Andrey Ryabinin" <ryabinin.a.a@gmail.com>,
+        =?utf-8?B?QW5kcsOpIEFsbWVpZGE=?= <andrealmeid@collabora.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "Linux Crypto Mailing List" <linux-crypto@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Subject: Re: Build regressions/improvements in v5.16-rc1
+Thread-Topic: Build regressions/improvements in v5.16-rc1
+Thread-Index: AQHX2jynD2CHATmgwEukyh+iAPvEB6wEy7gAgAItboCAAAGdAIAAA9+A
+Date:   Wed, 17 Nov 2021 02:19:32 +0000
+Message-ID: <B57193D6-1FD4-45D3-8045-8D2DE691E24E@fb.com>
+References: <20211115155105.3797527-1-geert@linux-m68k.org>
+ <CAMuHMdUCsyUxaEf1Lz7+jMnur4ECwK+JoXQqmOCkRKqXdb1hTQ@mail.gmail.com>
+ <fcdead1c-2e26-b8ca-9914-4b3718d8f6d4@gmx.de>
+ <480CE37B-FE60-44EE-B9D2-59A88FDFE809@fb.com>
+ <78b2d093-e06c-ba04-9890-69f948bfb937@infradead.org>
+In-Reply-To: <78b2d093-e06c-ba04-9890-69f948bfb937@infradead.org>
+Accept-Language: en-US
 Content-Language: en-US
-To:     David Anderson <dvander@google.com>
-Cc:     Mark Salyzyn <salyzyn@android.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        John Stultz <john.stultz@linaro.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org, kernel-team@android.com,
-        selinux@vger.kernel.org, paulmoore@microsoft.com,
-        Luca.Boccassi@microsoft.com,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20211117015806.2192263-1-dvander@google.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <20211117015806.2192263-1-dvander@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.19306 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1a2d3ab0-18e6-487c-08cc-08d9a970b13d
+x-ms-traffictypediagnostic: BYAPR15MB2456:
+x-microsoft-antispam-prvs: <BYAPR15MB24563099488E2EBD125C88E1AB9A9@BYAPR15MB2456.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8uBXr6FaQzF4nFe/MM+0Tzr+HhKUgN/Le0Crea7p8PZiUtyh2gsvKqVmdGhkCDz8UTh8F59PtQ9eP5oOGy+rd4v/Paxvv4kjNOt0QU41qAxjIAnnzomQUabeCpYg3lCWec8WGOY90clvOSX2AYWjIk0dbE4+mzvwwmvt2Q4p6sHpyIaqgTP1BBT/pX/xwOJjqlrqtDB8XaNL6KStVzeRvh/7NLsiOekDOo8TuRLSBmRH+vZ8n+i9UyKvTraGesjWh+9cmagCWplSzeAFpKItOXE59axgmo7qUmkB9LQ+fxd/2Yv7tMpBrYKfAyag+PuQxxmjJFEGP7H4poKi8z2Izke1wwrqGCAF/l0lXGbYOWScOv3KdX1bQqMooYRquIjU51Pfh32s4RoG4YjTP0w2PFIWURmZqeyRQGoLVAvahPecQrZVW46StZRHOjnsVyxZYD4ynG8A5/xWozn1UMeIFBSxPxg4eqIFF/WUJjQyxx6NjKAIPbgCMl9/zx/nEV9U9LHuyeHMbCK0Y6poQjNxSfJItZ9DdQKNLBt0HdQk0AohRf++7ksjxXi27qISOF+KQllCbgPXy26zdP1RMEWBV7FO0imv1ANPlQtFMBSFZNlnfqgg+q2RiQXwF8leMk1oF5NPc49AAyjGkTJEzQHW3WyTNEEszbbKQ3ZRaTmw3Z0S9plZMYQVmKqm+WXyL0faLr+3F9hlMpO3qmTusorUNxsV8D/hk4smh9yNs8dP9B7gKfm0qpKQMU4z9NDvgXls0O+2AVaTOUP2Q8x2XxPyskKD2KstAVXzP6UkvAuoCcupgAhPCN7pj8fYceErf58InV+JhPkVvIQt73i27tc7+A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3667.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38070700005)(8936002)(6916009)(316002)(91956017)(54906003)(508600001)(8676002)(186003)(7416002)(5660300002)(966005)(2616005)(6506007)(71200400001)(86362001)(53546011)(33656002)(66946007)(66476007)(122000001)(36756003)(64756008)(66556008)(6512007)(76116006)(66446008)(38100700002)(4326008)(6486002)(83380400001)(2906002)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NEk4c1RSRnhPd1NndUZIb3RlOS90RFBjd1RRQ2ZMQ3ZOM0NVbWdSTDRBcVBM?=
+ =?utf-8?B?NnJwOS9rOVUvSDM0MWtnV0RQaWcyTG5vQmF3TVJ1S01Gb2ZGaURKRXpqMlJN?=
+ =?utf-8?B?bmxKS1RkanZkODF4cDRpZ2lwa0NxQnorc0R6eFkxTzRVQWoxemVzTWVvbUJw?=
+ =?utf-8?B?eCtSRjVHQ1lzbG1wMnZncmxWZklzUitWR1NKUVdZdGNCTFpucmdyZXZ3VndN?=
+ =?utf-8?B?TFVycHp4SHhHSUtLR2IyVGJhQS9DVWZQM3FPalplT255MnpsYStmTmwxODBN?=
+ =?utf-8?B?T2E0SXBRN3ZFSEl5TlR4YlhDWnFLY3JCTmwzVUNiU1ZSYU9xZzVjVEhQTVI2?=
+ =?utf-8?B?UnNOT0wvb2FFWENxOXBvczZiKzBtVUE1dWU3VW1OTTBUeXJrNkt3WjNqei9W?=
+ =?utf-8?B?alJDTVg4U2padlFSUlA4M1lIdnlDSUZzMlFSZlMzbDhHN1M0KzNHMitHUmpZ?=
+ =?utf-8?B?R0JaMUhWTEEzZnhDaG5vVVVMVEtYaW5qQStRYmdWM1ZHY0pQZ0Irc0NlbTRs?=
+ =?utf-8?B?UWVYdCtrcUtDVERQUUNZY0pJN09JQUJwNnRuZDF3eFliYURlRk1nZkZadytt?=
+ =?utf-8?B?Wk5wZW1DLy92czVZM2REN3NwQjJuelNBREphanpkZW00eDdUbFU0L3ZXV1R5?=
+ =?utf-8?B?TG9sUTRqNmN3Y1AvcFVLcDVyekt3dmJmTTFkSnpIeXlndE5MRjdtNmZMdENC?=
+ =?utf-8?B?MThBUnA1dTc0TERkMkV3ZUNiQUtWa2VBYzVhR21HNmQvTDlYNU9tZ0g4SUJy?=
+ =?utf-8?B?RHU0U1JVSzF1b2ZKWE8vOU03YmZXbmlGN21JWi9vVDJyNHZMVFd2Q2V6U3g3?=
+ =?utf-8?B?dGtrT3pFT2htTjZxa0lXUW5GTURRUkhqWmorTjd0alpuRWk2WW9UeGZnOVJ5?=
+ =?utf-8?B?dk8vMUhaMFNtamJHS2gyR25xNURscUpmTE1ROUJSaG5BN29kNnVCbk1HL2Zw?=
+ =?utf-8?B?REJ0NzRWS0d2UDMySzJnU1J4U0xCWXhjaWR4c3ZweGlZcE5aYXV6UzhxZHFp?=
+ =?utf-8?B?S1A5dG9YVytLcEYvSGdkWTRsNit3azlJeWVLSStzdnRKV1M3OExsNEJiZWt1?=
+ =?utf-8?B?SFRpcGVmK0Fiek1uS2pGaGNtdjdyZFc4cFA2RHBIbmRtN0ZlUlFOMVM5SU15?=
+ =?utf-8?B?WHhJdmdLRjhrdkhWaG9KbDE1SGlsajE5TTZDdkcrWnhSL1JQVVlkcnc1aHl0?=
+ =?utf-8?B?eHhPdHJFckJQOGM3WXMybGZUYlR3WDd2RnRuUmx3YmNoOGp0YVRMQmZWSkZS?=
+ =?utf-8?B?RzN5K29jNzVlTGUyR0NSbzF6OXZySU1DR0hBNnhsVXh2Q2N5ZDZlZGNBMDJG?=
+ =?utf-8?B?cjJvNmxoemFRTFYwWmpIcGFvUWdjc2t1T1R3b1N1dnoxN1Z5SlRvUS9HSjNs?=
+ =?utf-8?B?N0xNSkVOQ2dqSi9rdXUxQ0p0RjNheE9QcThWV1I0MGFVMHN1WnJSWEpBUlpv?=
+ =?utf-8?B?TnFhMDRwK0lQUlZSZVVKUnZYamltclQ1K2l3Q0hScDBTQTh2SnJjOHFERXc1?=
+ =?utf-8?B?QzJ2a3lFUTJjcUdvZERtVlVodEdMVTIrcngxNG5BdFJyOGNBSXdoUncvM1Ex?=
+ =?utf-8?B?QzNIS1VFNGNrS1ppWlhDckwydnYzV0Q3eDB5WEdLZFlldndRNm5zbW42Y2VY?=
+ =?utf-8?B?c21hTUFLZjJBZG15VUF2c01DYk1LM0lWS0JBZjZVSFRiMnU0V3d6NTczQUxo?=
+ =?utf-8?B?RHRjOWwyUm5SRlZ5YmwrL3o4T0ZzdjUzbTB1ckZEK2JOeXlQRTBYYkM0SjB5?=
+ =?utf-8?B?ZDhBL1BUODBWZFdNUU5uR2JtRHMyT1FPUDJxSDB6Vzh4aDlOenhaY2taL0xk?=
+ =?utf-8?B?ZDhMN1llWFdaT28xZDhnTlBLbmkwZ2ZsQUFINzR6cHp4OFhpb24xbGJxNVgr?=
+ =?utf-8?B?c2h4ZjFZdEtjN0pZblRDVHVtNWkyaHJtTUt0ZzNZN25LMzBUQWdzcWdiamxS?=
+ =?utf-8?B?WWF6NWsyRnhxWWQwUFFGSGtETHVJSkZWREorVytmdUZWYy81MzVoaHlxeWV1?=
+ =?utf-8?B?RjBKUHBIdHkzNWVsanF2QUJLcWk0S0N0SWtTZ1ZvaUpZRTV0RDhUNnZZQVlu?=
+ =?utf-8?B?TkU5NDVCV2Q2NWU5T0FUSFJmbFBzblh1ai95OGdSMlE0WWpvcEpHcDQxVnFI?=
+ =?utf-8?B?QlAxZEN2a21CQmlYdWxTWkhaWnBRRlR4MGwrbDM0eC9VM3Uva01PY0x2Tmt6?=
+ =?utf-8?B?YkE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2DE18F7773349D4497C4E2636E96C550@namprd15.prod.outlook.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3667.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a2d3ab0-18e6-487c-08cc-08d9a970b13d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Nov 2021 02:19:32.2285
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9Z4KzT+7g04BlBqEn7A9dAvPkSDqWfCvR7Tc3XOl08TB29zgDxDwcd4ZF13jklqe
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2456
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: wjQt9adPV7aYur0e29_oyM8RjLppM6yD
+X-Proofpoint-GUID: wjQt9adPV7aYur0e29_oyM8RjLppM6yD
+Content-Transfer-Encoding: base64
+X-Proofpoint-UnRewURL: 2 URL's were un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-16_07,2021-11-16_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
+ mlxscore=0 bulkscore=0 malwarescore=0 spamscore=0 adultscore=0
+ suspectscore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
+ phishscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111170008
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/2021 5:58 PM, David Anderson wrote:
-> Mark Salyzyn (3):
->    Add flags option to get xattr method paired to __vfs_getxattr
->    overlayfs: handle XATTR_NOSECURITY flag for get xattr method
->    overlayfs: override_creds=off option bypass creator_cred
->
-> Mark Salyzyn + John Stultz (1):
->    overlayfs: inode_owner_or_capable called during execv
->
-> The first three patches address fundamental security issues that should
-> be solved regardless of the override_creds=off feature.
->
-> The fourth adds the feature depends on these other fixes.
->
-> By default, all access to the upper, lower and work directories is the
-> recorded mounter's MAC and DAC credentials.  The incoming accesses are
-> checked against the caller's credentials.
-
-This isn't very clear. Are you saying that the security attributes
-of the upper, lower, and work directories are determined by the
-attributes of the process that mounted the filesystem? What is an
-"incoming access"? I'm sure that means something if you're steeped
-in the lore of overlayfs, but it isn't obvious to me.
-
-> If the principles of least privilege are applied for sepolicy, the
-> mounter's credentials might not overlap the credentials of the caller's
-> when accessing the overlayfs filesystem.
-
-I'm sorry, but I've tried pretty hard, and can't puzzle that one out.
-
->    For example, a file that a
-> lower DAC privileged caller can execute, is MAC denied to the
-> generally higher DAC privileged mounter, to prevent an attack vector.
-
-DAC privileges are not hierarchical. This doesn't make any sense.
-
-> We add the option to turn off override_creds in the mount options; all
-> subsequent operations after mount on the filesystem will be only the
-> caller's credentials.
-
-I think I might have figured that one out, but in order to do so
-I have to make way too many assumptions about the earlier paragraph.
-Could you please try to explain what you're doing with more context?
-
->    The module boolean parameter and mount option
-> override_creds is also added as a presence check for this "feature",
-> existence of /sys/module/overlay/parameters/overlay_creds
->
-> Signed-off-by: Mark Salyzyn <salyzyn@android.com>
-> Signed-off-by: David Anderson <dvander@google.com>
-> Cc: Miklos Szeredi <miklos@szeredi.hu>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Vivek Goyal <vgoyal@redhat.com>
-> Cc: Eric W. Biederman <ebiederm@xmission.com>
-> Cc: Amir Goldstein <amir73il@gmail.com>
-> Cc: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Stephen Smalley <sds@tycho.nsa.gov>
-> Cc: John Stultz <john.stultz@linaro.org>
-> Cc: linux-doc@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: linux-unionfs@vger.kernel.org
-> Cc: linux-security-module@vger.kernel.org
-> Cc: kernel-team@android.com
-> Cc: selinux@vger.kernel.org
-> Cc: paulmoore@microsoft.com
-> Cc: Luca.Boccassi@microsoft.com
->
-> ---
->
-> v19
-> - rebase.
->
-> v18
-> - rebase + fix minor cut and paste error for inode argument in __vfs_getxattr
->
-> v17
-> - correct some zero-day build failures.
-> - fix up documentation
->
-> v16
-> - rebase and merge of two patches.
-> - add adjustment to deal with execv when overrides is off.
->
-> v15
-> - Revert back to v4 with fixes from on the way from v5-v14. The single
->    structure argument passing to address the complaints about too many
->    arguments was rejected by the community.
-> - Drop the udner discussion fix for an additional CAP_DAC_READ_SEARCH
->    check. Can address that independently.
-> - ToDo: upstream test frame for thes security fixes (currently testing
->    is all in Android).
->
-> v14:
-> - Rejoin, rebase and a few adjustments.
->
-> v13:
-> - Pull out first patch and try to get it in alone feedback, some
->    Acks, and then <crickets> because people forgot why we were doing i.
->
-> v12:
-> - Restore squished out patch 2 and 3 in the series,
->    then change algorithm to add flags argument.
->    Per-thread flag is a large security surface.
->
-> v11:
-> - Squish out v10 introduced patch 2 and 3 in the series,
->    then and use per-thread flag instead for nesting.
-> - Switch name to ovl_do_vds_getxattr for __vds_getxattr wrapper.
-> - Add sb argument to ovl_revert_creds to match future work.
->
-> v10:
-> - Return NULL on CAP_DAC_READ_SEARCH
-> - Add __get xattr method to solve sepolicy logging issue
-> - Drop unnecessary sys_admin sepolicy checking for administrative
->    driver internal xattr functions.
->
-> v6:
-> - Drop CONFIG_OVERLAY_FS_OVERRIDE_CREDS.
-> - Do better with the documentation, drop rationalizations.
-> - pr_warn message adjusted to report consequences.
->
-> v5:
-> - beefed up the caveats in the Documentation
-> - Is dependent on
->    "overlayfs: check CAP_DAC_READ_SEARCH before issuing exportfs_decode_fh"
->    "overlayfs: check CAP_MKNOD before issuing vfs_whiteout"
-> - Added prwarn when override_creds=off
->
-> v4:
-> - spelling and grammar errors in text
->
-> v3:
-> - Change name from caller_credentials / creator_credentials to the
->    boolean override_creds.
-> - Changed from creator to mounter credentials.
-> - Updated and fortified the documentation.
-> - Added CONFIG_OVERLAY_FS_OVERRIDE_CREDS
->
-> v2:
-> - Forward port changed attr to stat, resulting in a build error.
-> - altered commit message.
->
-> David Anderson (4):
->    Add flags option to get xattr method paired to __vfs_getxattr
->    overlayfs: handle XATTR_NOSECURITY flag for get xattr method
->    overlayfs: override_creds=off option bypass creator_cred
->    overlayfs: inode_owner_or_capable called during execv
->
->   Documentation/filesystems/locking.rst   |  2 +-
->   Documentation/filesystems/overlayfs.rst | 26 ++++++++++++++-
->   fs/9p/acl.c                             |  3 +-
->   fs/9p/xattr.c                           |  3 +-
->   fs/afs/xattr.c                          | 10 +++---
->   fs/attr.c                               |  2 +-
->   fs/btrfs/xattr.c                        |  3 +-
->   fs/ceph/xattr.c                         |  3 +-
->   fs/cifs/xattr.c                         |  2 +-
->   fs/ecryptfs/inode.c                     |  6 ++--
->   fs/ecryptfs/mmap.c                      |  5 +--
->   fs/erofs/xattr.c                        |  3 +-
->   fs/ext2/xattr_security.c                |  2 +-
->   fs/ext2/xattr_trusted.c                 |  2 +-
->   fs/ext2/xattr_user.c                    |  2 +-
->   fs/ext4/xattr_hurd.c                    |  2 +-
->   fs/ext4/xattr_security.c                |  2 +-
->   fs/ext4/xattr_trusted.c                 |  2 +-
->   fs/ext4/xattr_user.c                    |  2 +-
->   fs/f2fs/xattr.c                         |  4 +--
->   fs/fuse/xattr.c                         |  4 +--
->   fs/gfs2/xattr.c                         |  3 +-
->   fs/hfs/attr.c                           |  2 +-
->   fs/hfsplus/xattr.c                      |  3 +-
->   fs/hfsplus/xattr_security.c             |  3 +-
->   fs/hfsplus/xattr_trusted.c              |  3 +-
->   fs/hfsplus/xattr_user.c                 |  3 +-
->   fs/inode.c                              |  7 +++--
->   fs/internal.h                           |  3 +-
->   fs/jffs2/security.c                     |  3 +-
->   fs/jffs2/xattr_trusted.c                |  3 +-
->   fs/jffs2/xattr_user.c                   |  3 +-
->   fs/jfs/xattr.c                          |  5 +--
->   fs/kernfs/inode.c                       |  3 +-
->   fs/nfs/nfs4proc.c                       |  9 ++++--
->   fs/ntfs3/xattr.c                        |  2 +-
->   fs/ocfs2/xattr.c                        |  9 ++++--
->   fs/open.c                               |  2 +-
->   fs/orangefs/xattr.c                     |  3 +-
->   fs/overlayfs/copy_up.c                  |  2 +-
->   fs/overlayfs/dir.c                      | 17 +++++-----
->   fs/overlayfs/file.c                     | 25 ++++++++-------
->   fs/overlayfs/inode.c                    | 29 ++++++++---------
->   fs/overlayfs/namei.c                    |  6 ++--
->   fs/overlayfs/overlayfs.h                |  7 +++--
->   fs/overlayfs/ovl_entry.h                |  1 +
->   fs/overlayfs/readdir.c                  |  8 ++---
->   fs/overlayfs/super.c                    | 34 ++++++++++++++++----
->   fs/overlayfs/util.c                     | 13 ++++++--
->   fs/posix_acl.c                          |  2 +-
->   fs/reiserfs/xattr_security.c            |  3 +-
->   fs/reiserfs/xattr_trusted.c             |  3 +-
->   fs/reiserfs/xattr_user.c                |  3 +-
->   fs/squashfs/xattr.c                     |  2 +-
->   fs/ubifs/xattr.c                        |  3 +-
->   fs/xattr.c                              | 42 +++++++++++++------------
->   fs/xfs/xfs_xattr.c                      |  3 +-
->   include/linux/lsm_hook_defs.h           |  3 +-
->   include/linux/security.h                |  6 ++--
->   include/linux/xattr.h                   |  6 ++--
->   include/uapi/linux/xattr.h              |  7 +++--
->   mm/shmem.c                              |  3 +-
->   net/socket.c                            |  3 +-
->   security/commoncap.c                    | 11 ++++---
->   security/integrity/evm/evm_main.c       | 13 +++++---
->   security/security.c                     |  5 +--
->   security/selinux/hooks.c                | 19 ++++++-----
->   security/smack/smack_lsm.c              | 18 ++++++-----
->   68 files changed, 289 insertions(+), 167 deletions(-)
->
+DQoNCj4gT24gTm92IDE2LCAyMDIxLCBhdCA2OjA1IFBNLCBSYW5keSBEdW5sYXAgPHJkdW5sYXBA
+aW5mcmFkZWFkLm9yZz4gd3JvdGU6DQo+IA0KPiBPbiAxMS8xNi8yMSA1OjU5IFBNLCBOaWNrIFRl
+cnJlbGwgd3JvdGU6DQo+Pj4gT24gTm92IDE1LCAyMDIxLCBhdCA4OjQ0IEFNLCBIZWxnZSBEZWxs
+ZXIgPGRlbGxlckBnbXguZGU+IHdyb3RlOg0KPj4+IA0KPj4+IE9uIDExLzE1LzIxIDE3OjEyLCBH
+ZWVydCBVeXR0ZXJob2V2ZW4gd3JvdGU6DQo+Pj4+IE9uIE1vbiwgTm92IDE1LCAyMDIxIGF0IDQ6
+NTQgUE0gR2VlcnQgVXl0dGVyaG9ldmVuIDxnZWVydEBsaW51eC1tNjhrLm9yZz4gd3JvdGU6DQo+
+Pj4+PiBCZWxvdyBpcyB0aGUgbGlzdCBvZiBidWlsZCBlcnJvci93YXJuaW5nIHJlZ3Jlc3Npb25z
+L2ltcHJvdmVtZW50cyBpbg0KPj4+Pj4gdjUuMTYtcmMxWzFdIGNvbXBhcmVkIHRvIHY1LjE1WzJd
+Lg0KPj4+Pj4gDQo+Pj4+PiBTdW1tYXJpemVkOg0KPj4+Pj4gIC0gYnVpbGQgZXJyb3JzOiArMjAv
+LTEzDQo+Pj4+PiAgLSBidWlsZCB3YXJuaW5nczogKzMvLTI4DQo+Pj4+PiANCj4+Pj4+IEhhcHB5
+IGZpeGluZyEgOy0pDQo+Pj4+PiANCj4+Pj4+IFRoYW5rcyB0byB0aGUgbGludXgtbmV4dCB0ZWFt
+IGZvciBwcm92aWRpbmcgdGhlIGJ1aWxkIHNlcnZpY2UuDQo+Pj4+PiANCj4+Pj4+IFsxXSBodHRw
+Oi8va2lzc2tiLmVsbGVybWFuLmlkLmF1L2tpc3NrYi9icmFuY2gvbGludXMvaGVhZC9mYTU1Yjdk
+Y2RjNDNjMWFhMWJhMTJiY2E5ZDJkZDQzMThjMmEwZGJmLyAgIChhbGwgOTAgY29uZmlncykNCj4+
+Pj4+IFsyXSBodHRwOi8va2lzc2tiLmVsbGVybWFuLmlkLmF1L2tpc3NrYi9icmFuY2gvbGludXMv
+aGVhZC84YmI3ZWNhOTcyYWQ1MzFjOWIxNDljMGE1MWFiNDNhNDE3Mzg1ODEzLyAgIChhbGwgOTAg
+Y29uZmlncykNCj4+Pj4+IA0KPj4+Pj4gDQo+Pj4+PiAqKiogRVJST1JTICoqKg0KPj4+Pj4gDQo+
+Pj4+PiAyMCBlcnJvciByZWdyZXNzaW9uczoNCj4+Pj4+ICArIC9raXNza2Ivc3JjL2FyY2gvcGFy
+aXNjL2luY2x1ZGUvYXNtL2p1bXBfbGFiZWwuaDogZXJyb3I6IGV4cGVjdGVkICc6JyBiZWZvcmUg
+J19fc3RyaW5naWZ5JzogID0+IDMzOjQsIDE4OjQNCj4+Pj4+ICArIC9raXNza2Ivc3JjL2FyY2gv
+cGFyaXNjL2luY2x1ZGUvYXNtL2p1bXBfbGFiZWwuaDogZXJyb3I6IGxhYmVsICdsX3llcycgZGVm
+aW5lZCBidXQgbm90IHVzZWQgWy1XZXJyb3I9dW51c2VkLWxhYmVsXTogID0+IDM4OjEsIDIzOjEN
+Cj4+Pj4gDQo+Pj4+ICAgIGR1ZSB0byBzdGF0aWNfYnJhbmNoX2xpa2VseSgpIGluIGNyeXB0by9h
+cGkuYw0KPj4+PiANCj4+Pj4gcGFyaXNjLWFsbG1vZGNvbmZpZw0KPj4+IA0KPj4+IGZpeGVkIG5v
+dyBpbiB0aGUgcGFyaXNjIGZvci1uZXh0IGdpdCB0cmVlLg0KPj4+IA0KPj4+IA0KPj4+Pj4gICsg
+L2tpc3NrYi9zcmMvZHJpdmVycy9ncHUvZHJtL21zbS9tc21fZHJ2Lmg6IGVycm9yOiAiQ09ORCIg
+cmVkZWZpbmVkIFstV2Vycm9yXTogID0+IDUzMQ0KPj4+Pj4gICsgL2tpc3NrYi9zcmMvbGliL3pz
+dGQvY29tcHJlc3MvenN0ZF9kb3VibGVfZmFzdC5jOiBlcnJvcjogdGhlIGZyYW1lIHNpemUgb2Yg
+MzI1MiBieXRlcyBpcyBsYXJnZXIgdGhhbiAxNTM2IGJ5dGVzIFstV2Vycm9yPWZyYW1lLWxhcmdl
+ci10aGFuPV06ICA9PiA0NzoxDQo+Pj4+PiAgKyAva2lzc2tiL3NyYy9saWIvenN0ZC9jb21wcmVz
+cy96c3RkX2RvdWJsZV9mYXN0LmM6IGVycm9yOiB0aGUgZnJhbWUgc2l6ZSBvZiAzMzYwIGJ5dGVz
+IGlzIGxhcmdlciB0aGFuIDE1MzYgYnl0ZXMgWy1XZXJyb3I9ZnJhbWUtbGFyZ2VyLXRoYW49XTog
+ID0+IDQ5OToxDQo+Pj4+PiAgKyAva2lzc2tiL3NyYy9saWIvenN0ZC9jb21wcmVzcy96c3RkX2Rv
+dWJsZV9mYXN0LmM6IGVycm9yOiB0aGUgZnJhbWUgc2l6ZSBvZiA1MzQ0IGJ5dGVzIGlzIGxhcmdl
+ciB0aGFuIDE1MzYgYnl0ZXMgWy1XZXJyb3I9ZnJhbWUtbGFyZ2VyLXRoYW49XTogID0+IDMzNDox
+DQo+Pj4+PiAgKyAva2lzc2tiL3NyYy9saWIvenN0ZC9jb21wcmVzcy96c3RkX2RvdWJsZV9mYXN0
+LmM6IGVycm9yOiB0aGUgZnJhbWUgc2l6ZSBvZiA1MzgwIGJ5dGVzIGlzIGxhcmdlciB0aGFuIDE1
+MzYgYnl0ZXMgWy1XZXJyb3I9ZnJhbWUtbGFyZ2VyLXRoYW49XTogID0+IDM1NDoxDQo+Pj4+PiAg
+KyAva2lzc2tiL3NyYy9saWIvenN0ZC9jb21wcmVzcy96c3RkX2Zhc3QuYzogZXJyb3I6IHRoZSBm
+cmFtZSBzaXplIG9mIDE4MjQgYnl0ZXMgaXMgbGFyZ2VyIHRoYW4gMTUzNiBieXRlcyBbLVdlcnJv
+cj1mcmFtZS1sYXJnZXItdGhhbj1dOiAgPT4gMzcyOjENCj4+Pj4+ICArIC9raXNza2Ivc3JjL2xp
+Yi96c3RkL2NvbXByZXNzL3pzdGRfZmFzdC5jOiBlcnJvcjogdGhlIGZyYW1lIHNpemUgb2YgMjIy
+NCBieXRlcyBpcyBsYXJnZXIgdGhhbiAxNTM2IGJ5dGVzIFstV2Vycm9yPWZyYW1lLWxhcmdlci10
+aGFuPV06ICA9PiAyMDQ6MQ0KPj4+Pj4gICsgL2tpc3NrYi9zcmMvbGliL3pzdGQvY29tcHJlc3Mv
+enN0ZF9mYXN0LmM6IGVycm9yOiB0aGUgZnJhbWUgc2l6ZSBvZiAzODAwIGJ5dGVzIGlzIGxhcmdl
+ciB0aGFuIDE1MzYgYnl0ZXMgWy1XZXJyb3I9ZnJhbWUtbGFyZ2VyLXRoYW49XTogID0+IDQ3Njox
+DQo+Pj4+IA0KPj4+PiBwYXJpc2MtYWxsbW9kY29uZmlnDQo+Pj4gDQo+Pj4gcGFyaXNjIG5lZWRz
+IG11Y2ggYmlnZ2VyIGZyYW1lIHNpemVzLCBzbyBJJ20gbm90IGFzdG9uaXNoZWQgaGVyZS4NCj4+
+PiBEdXJpbmcgdGhlIHY1LjE1IGN5Y2wgSSBpbmNyZWFzZWQgaXQgdG8gMTUzNiAoZnJvbSAxMjgw
+KSwgc28gSSdtIHNpbXBseSB0ZW1wdGVkIHRvDQo+Pj4gaW5jcmVhc2UgaXQgdGhpcyB0aW1lIHRv
+IDQwOTYsIHVubGVzcyBzb21lb25lIGhhcyBhIGJldHRlciBpZGVhLi4uLg0KPj4gVGhpcyBwYXRj
+aCBzZXQgc2hvdWxkIGZpeCB0aGUgenN0ZCBzdGFjayBzaXplIHdhcm5pbmdzIFswXS4gSeKAmXZl
+DQo+PiB2ZXJpZmllZCB0aGUgZml4IHVzaW5nIHRoZSBzYW1lIHRvb2xpbmc6IGdjYy04LWhwcGEt
+bGludXgtZ251Lg0KPj4gSeKAmWxsIHNlbmQgdGhlIFBSIHRvIExpbnVzIHRvbW9ycm93LiBJ4oCZ
+dmUgYmVlbiBpbmZvcm1lZCB0aGF0IGl0DQo+PiBpc24ndCBzdHJpY3RseSBuZWNlc3NhcnkgdG8g
+c2VuZCB0aGUgcGF0Y2hlcyB0byB0aGUgbWFpbGluZyBsaXN0DQo+PiBmb3IgYnVnIGZpeGVzLCBi
+dXQgaXRzIGFscmVhZHkgZG9uZSwgc28gSeKAmWxsIHdhaXQgYW5kIHNlZSBpZiB0aGVyZQ0KPj4g
+aXMgYW55IGZlZWRiYWNrLg0KPiANCj4gSU1PIHNldmVyYWwgKG9yIG1hbnkgbW9yZSkgcGVvcGxl
+IHdvdWxkIGRpc2FncmVlIHdpdGggdGhhdC4NCj4gDQo+ICJzdHJpY3RseT8iICBPSywgaXQncyBw
+cm9iYWJseSBwb3NzaWJsZSB0aGF0IGFsbW9zdCBhbnkgcGF0Y2gNCj4gY291bGQgYmUgbWVyZ2Vk
+IHdpdGhvdXQgYmVpbmcgb24gYSBtYWlsaW5nIGxpc3QsIGJ1dCBpdCdzIG5vdA0KPiBkZXNpcmFi
+bGUgKGV4Y2VwdCBpbiB0aGUgY2FzZSBvZiAic2VjdXJpdHkiIHBhdGNoZXMpLg0KDQpHb29kIHRv
+IGtub3chIFRoYW5rcyBmb3IgdGhlIGFkdmljZSwgSSB3YXNu4oCZdCByZWFsbHkgc3VyZSB3aGF0
+DQp0aGUgYmVzdCBwcmFjdGljZSBpcyBmb3Igc2VuZGluZyBwYXRjaGVzIHRvIHlvdXIgb3duIHRy
+ZWUsIGFzIEkNCmRpZG4ndCBzZWUgYW55dGhpbmcgYWJvdXQgaXQgaW4gdGhlIG1haW50YWluZXIg
+Z3VpZGUuDQoNClRoYW5rcywNCk5pY2sgVGVycmVsbA0KDQo+IC0tIA0KPiB+UmFuZHkNCg0K
