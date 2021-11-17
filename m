@@ -2,382 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF5B454340
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:03:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E200454344
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:04:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbhKQJGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 04:06:00 -0500
-Received: from relay11.mail.gandi.net ([217.70.178.231]:44803 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230064AbhKQJF7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 04:05:59 -0500
-Received: (Authenticated sender: pbl@bestov.io)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 6833B100013;
-        Wed, 17 Nov 2021 09:02:56 +0000 (UTC)
-From:   Riccardo Paolo Bestetti <pbl@bestov.io>
-Cc:     Riccardo Paolo Bestetti <pbl@bestov.io>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH v2] ipv4/raw: support binding to nonlocal addresses
-Date:   Wed, 17 Nov 2021 10:00:11 +0100
-Message-Id: <20211117090010.125393-1-pbl@bestov.io>
-X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211102141921.197561-1-pbl@bestov.io>
-References: <20211102141921.197561-1-pbl@bestov.io>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+        id S232958AbhKQJHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 04:07:04 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:43260 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230064AbhKQJHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 04:07:01 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxmuRUxZRhitQAAA--.4743S2;
+        Wed, 17 Nov 2021 17:03:16 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] MIPS: Do not define pci_remap_iospace() under MACH_LOONGSON64
+Date:   Wed, 17 Nov 2021 17:03:15 +0800
+Message-Id: <1637139795-3032-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxmuRUxZRhitQAAA--.4743S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWw4DCF45WFW8AFyUAry3XFb_yoW5tw4kpF
+        sIvwn7Gr4rCr45AFWUJry5Jr98XFZ0yay3tF18JrnxZF1DuryUJr1xtF1I9ryDJFWUtayx
+        XF4v9r4jqF1Yyw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GFWl
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+        42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUOo7ZUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support to inet v4 raw sockets for binding to nonlocal addresses
-through the IP_FREEBIND and IP_TRANSPARENT socket options, as well as
-the ipv4.ip_nonlocal_bind kernel parameter.
+After commit 9f76779f2418 ("MIPS: implement architecture-specific
+'pci_remap_iospace()'"), there exists the following warning on the
+Loongson64 platform:
 
-Add helper function to inet_sock.h to check for bind address validity on
-the base of the address type and whether nonlocal address are enabled
-for the socket via any of the sockopts/sysctl, deduplicating checks in
-ipv4/ping.c, ipv4/af_inet.c, ipv6/af_inet6.c (for mapped v4->v6
-addresses), and ipv4/raw.c.
+    loongson-pci 1a000000.pci:       IO 0x0018020000..0x001803ffff -> 0x0000020000
+    loongson-pci 1a000000.pci:      MEM 0x0040000000..0x007fffffff -> 0x0040000000
+    ------------[ cut here ]------------
+    WARNING: CPU: 2 PID: 1 at arch/mips/pci/pci-generic.c:55 pci_remap_iospace+0x84/0x90
+    resource start address is not zero
+    ...
+    Call Trace:
+    [<ffffffff8020dc78>] show_stack+0x40/0x120
+    [<ffffffff80cf4a0c>] dump_stack_lvl+0x58/0x74
+    [<ffffffff8023a0b0>] __warn+0xe0/0x110
+    [<ffffffff80cee02c>] warn_slowpath_fmt+0xa4/0xd0
+    [<ffffffff80cecf24>] pci_remap_iospace+0x84/0x90
+    [<ffffffff807f9864>] devm_pci_remap_iospace+0x5c/0xb8
+    [<ffffffff808121b0>] devm_of_pci_bridge_init+0x178/0x1f8
+    [<ffffffff807f4000>] devm_pci_alloc_host_bridge+0x78/0x98
+    [<ffffffff80819454>] loongson_pci_probe+0x34/0x160
+    [<ffffffff809203cc>] platform_probe+0x6c/0xe0
+    [<ffffffff8091d5d4>] really_probe+0xbc/0x340
+    [<ffffffff8091d8f0>] __driver_probe_device+0x98/0x110
+    [<ffffffff8091d9b8>] driver_probe_device+0x50/0x118
+    [<ffffffff8091dea0>] __driver_attach+0x80/0x118
+    [<ffffffff8091b280>] bus_for_each_dev+0x80/0xc8
+    [<ffffffff8091c6d8>] bus_add_driver+0x130/0x210
+    [<ffffffff8091ead4>] driver_register+0x8c/0x150
+    [<ffffffff80200a8c>] do_one_initcall+0x54/0x288
+    [<ffffffff811a5320>] kernel_init_freeable+0x27c/0x2e4
+    [<ffffffff80cfc380>] kernel_init+0x2c/0x134
+    [<ffffffff80205a2c>] ret_from_kernel_thread+0x14/0x1c
+    ---[ end trace e4a0efe10aa5cce6 ]---
+    loongson-pci 1a000000.pci: error -19: failed to map resource [io  0x20000-0x3ffff]
 
-Add test cases with IP[V6]_FREEBIND verifying that both v4 and v6 raw
-sockets support binding to nonlocal addresses after the change. Add
-necessary support for the test cases to nettest.
+We can see that the resource start address is 0x0000020000, because
+the ISA Bridge used the zero address which is defined in the dts file
+arch/mips/boot/dts/loongson/ls7a-pch.dtsi:
 
-Signed-off-by: Riccardo Paolo Bestetti <pbl@bestov.io>
-Reviewed-by: David Ahern <dsahern@kernel.org>
+    ISA Bridge: /bus@10000000/isa@18000000
+    IO 0x0000000018000000..0x000000001801ffff  ->  0x0000000000000000
+
+The architecture-independent function pci_remap_iospace() works well
+for Loongson64, so just do not define architecture-specific function
+pci_remap_iospace() under MACH_LOONGSON64.
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
-20211117: resending this, as Patchwork didn't pick it up last time
+ arch/mips/include/asm/pci.h | 2 ++
+ arch/mips/pci/pci-generic.c | 2 ++
+ 2 files changed, 4 insertions(+)
 
-Responding to review by David Ahern (21 March 2021),
-
-Thank you for your review.
-
-> Please add test cases to ipv4_addr_bind and ipv6_addr_bind in
-> tools/testing/selftests/net/fcnal-test.sh. The latter will verify if
-> IPv6 works the same or needs a change.
-I have added the tests for both v4 and v6.  IPv6 raw sockets already
-supported the functionality (under the IPV6_* sockopts), and the (new)
-related tests pass, confirming this.
-
-I have not added negative tests (i.e. checking that the same addresses
-/fail/ to bind without the necessary flags) because I haven't seen such
-tests for other features.  If you feel that's needed, I can look into
-it.
-
-> Also, this check duplicates the ones in __inet_bind and __inet6_bind; it
-> would be good to use an inline helper to reduce the duplication.
-Done.  The same check was also duplicated in net/ipv4/ping.c, as
-detailed in the commit message.  I have also deduplicated that, if it
-should have been left alone I'll quickly fire up a v3 and revert that.
-
-Sorry for the delay with v2, had a busy year.
-
-
- include/net/inet_sock.h                   | 12 +++++++
- net/ipv4/af_inet.c                        |  7 ++--
- net/ipv4/ping.c                           | 14 +++-----
- net/ipv4/raw.c                            | 13 ++++----
- net/ipv6/af_inet6.c                       |  7 ++--
- tools/testing/selftests/net/fcnal-test.sh | 40 +++++++++++++++++++++++
- tools/testing/selftests/net/nettest.c     | 33 ++++++++++++++++++-
- 7 files changed, 100 insertions(+), 26 deletions(-)
-
-diff --git a/include/net/inet_sock.h b/include/net/inet_sock.h
-index 89163ef8cf4b..13b05d116f6b 100644
---- a/include/net/inet_sock.h
-+++ b/include/net/inet_sock.h
-@@ -373,4 +373,16 @@ static inline bool inet_can_nonlocal_bind(struct net *net,
- 		inet->freebind || inet->transparent;
+diff --git a/arch/mips/include/asm/pci.h b/arch/mips/include/asm/pci.h
+index 421231f..5d647cb 100644
+--- a/arch/mips/include/asm/pci.h
++++ b/arch/mips/include/asm/pci.h
+@@ -21,8 +21,10 @@
+ #include <linux/of.h>
+ 
+ #ifdef CONFIG_PCI_DRIVERS_GENERIC
++#ifndef CONFIG_MACH_LOONGSON64
+ #define pci_remap_iospace pci_remap_iospace
+ #endif
++#endif
+ 
+ #ifdef CONFIG_PCI_DRIVERS_LEGACY
+ 
+diff --git a/arch/mips/pci/pci-generic.c b/arch/mips/pci/pci-generic.c
+index 18eb8a4..6f18071 100644
+--- a/arch/mips/pci/pci-generic.c
++++ b/arch/mips/pci/pci-generic.c
+@@ -47,6 +47,7 @@ void pcibios_fixup_bus(struct pci_bus *bus)
+ 	pci_read_bridge_bases(bus);
  }
  
-+static inline bool inet_addr_valid_or_nonlocal(struct net *net,
-+					       struct inet_sock *inet,
-+					       __be32 addr,
-+					       int addr_type)
-+{
-+	return inet_can_nonlocal_bind(net, inet) ||
-+		addr == htonl(INADDR_ANY) ||
-+		addr_type == RTN_LOCAL ||
-+		addr_type == RTN_MULTICAST ||
-+		addr_type == RTN_BROADCAST;
-+}
-+
- #endif	/* _INET_SOCK_H */
-diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-index 1d816a5fd3eb..fb5cf3623e03 100644
---- a/net/ipv4/af_inet.c
-+++ b/net/ipv4/af_inet.c
-@@ -492,11 +492,8 @@ int __inet_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
- 	 *  is temporarily down)
- 	 */
- 	err = -EADDRNOTAVAIL;
--	if (!inet_can_nonlocal_bind(net, inet) &&
--	    addr->sin_addr.s_addr != htonl(INADDR_ANY) &&
--	    chk_addr_ret != RTN_LOCAL &&
--	    chk_addr_ret != RTN_MULTICAST &&
--	    chk_addr_ret != RTN_BROADCAST)
-+	if (!inet_addr_valid_or_nonlocal(net, inet, addr->sin_addr.s_addr,
-+	                                 chk_addr_ret))
- 		goto out;
- 
- 	snum = ntohs(addr->sin_port);
-diff --git a/net/ipv4/ping.c b/net/ipv4/ping.c
-index 1e44a43acfe2..e540b0dcf085 100644
---- a/net/ipv4/ping.c
-+++ b/net/ipv4/ping.c
-@@ -311,15 +311,11 @@ static int ping_check_bind_addr(struct sock *sk, struct inet_sock *isk,
- 		pr_debug("ping_check_bind_addr(sk=%p,addr=%pI4,port=%d)\n",
- 			 sk, &addr->sin_addr.s_addr, ntohs(addr->sin_port));
- 
--		if (addr->sin_addr.s_addr == htonl(INADDR_ANY))
--			chk_addr_ret = RTN_LOCAL;
--		else
--			chk_addr_ret = inet_addr_type(net, addr->sin_addr.s_addr);
--
--		if ((!inet_can_nonlocal_bind(net, isk) &&
--		     chk_addr_ret != RTN_LOCAL) ||
--		    chk_addr_ret == RTN_MULTICAST ||
--		    chk_addr_ret == RTN_BROADCAST)
-+		chk_addr_ret = inet_addr_type(net, addr->sin_addr.s_addr);
-+
-+		if (!inet_addr_valid_or_nonlocal(net, inet_sk(sk),
-+					         addr->sin_addr.s_addr,
-+	                                         chk_addr_ret))
- 			return -EADDRNOTAVAIL;
- 
- #if IS_ENABLED(CONFIG_IPV6)
-diff --git a/net/ipv4/raw.c b/net/ipv4/raw.c
-index bb446e60cf58..fa60517372b5 100644
---- a/net/ipv4/raw.c
-+++ b/net/ipv4/raw.c
-@@ -717,6 +717,7 @@ static int raw_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len)
++#ifndef CONFIG_MACH_LOONGSON64
+ int pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
  {
- 	struct inet_sock *inet = inet_sk(sk);
- 	struct sockaddr_in *addr = (struct sockaddr_in *) uaddr;
-+	struct net *net = sock_net(sk);
- 	u32 tb_id = RT_TABLE_LOCAL;
- 	int ret = -EINVAL;
- 	int chk_addr_ret;
-@@ -725,16 +726,16 @@ static int raw_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len)
- 		goto out;
- 
- 	if (sk->sk_bound_dev_if)
--		tb_id = l3mdev_fib_table_by_index(sock_net(sk),
--						 sk->sk_bound_dev_if) ? : tb_id;
-+		tb_id = l3mdev_fib_table_by_index(net,
-+						  sk->sk_bound_dev_if) ? : tb_id;
- 
--	chk_addr_ret = inet_addr_type_table(sock_net(sk), addr->sin_addr.s_addr,
--					    tb_id);
-+	chk_addr_ret = inet_addr_type_table(net, addr->sin_addr.s_addr, tb_id);
- 
- 	ret = -EADDRNOTAVAIL;
--	if (addr->sin_addr.s_addr && chk_addr_ret != RTN_LOCAL &&
--	    chk_addr_ret != RTN_MULTICAST && chk_addr_ret != RTN_BROADCAST)
-+	if (!inet_addr_valid_or_nonlocal(net, inet, addr->sin_addr.s_addr,
-+					 chk_addr_ret))
- 		goto out;
-+
- 	inet->inet_rcv_saddr = inet->inet_saddr = addr->sin_addr.s_addr;
- 	if (chk_addr_ret == RTN_MULTICAST || chk_addr_ret == RTN_BROADCAST)
- 		inet->inet_saddr = 0;  /* Use device */
-diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
-index b5878bb8e419..0c557edbbd20 100644
---- a/net/ipv6/af_inet6.c
-+++ b/net/ipv6/af_inet6.c
-@@ -337,11 +337,8 @@ static int __inet6_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
- 		chk_addr_ret = inet_addr_type_dev_table(net, dev, v4addr);
- 		rcu_read_unlock();
- 
--		if (!inet_can_nonlocal_bind(net, inet) &&
--		    v4addr != htonl(INADDR_ANY) &&
--		    chk_addr_ret != RTN_LOCAL &&
--		    chk_addr_ret != RTN_MULTICAST &&
--		    chk_addr_ret != RTN_BROADCAST) {
-+		if (!inet_addr_valid_or_nonlocal(net, inet, v4addr,
-+						 chk_addr_ret)) {
- 			err = -EADDRNOTAVAIL;
- 			goto out;
- 		}
-diff --git a/tools/testing/selftests/net/fcnal-test.sh b/tools/testing/selftests/net/fcnal-test.sh
-index 3313566ce906..7caa4f0e067d 100755
---- a/tools/testing/selftests/net/fcnal-test.sh
-+++ b/tools/testing/selftests/net/fcnal-test.sh
-@@ -66,6 +66,10 @@ NSB_LO_IP=172.16.2.2
- NSA_LO_IP6=2001:db8:2::1
- NSB_LO_IP6=2001:db8:2::2
- 
-+# non-local addresses for freebind tests
-+NL_IP=172.17.1.1
-+NL_IP6=2001:db8:4::1
-+
- MD5_PW=abc123
- MD5_WRONG_PW=abc1234
- 
-@@ -316,6 +320,9 @@ addr2str()
- 	${NSB_LO_IP6})	echo "ns-B loopback IPv6";;
- 	${NSB_LINKIP6}|${NSB_LINKIP6}%*) echo "ns-B IPv6 LLA";;
- 
-+	${NL_IP})       echo "nonlocal IP";;
-+	${NL_IP6})      echo "nonlocal IPv6";;
-+
- 	${VRF_IP})	echo "VRF IP";;
- 	${VRF_IP6})	echo "VRF IPv6";;
- 
-@@ -1767,6 +1774,14 @@ ipv4_addr_bind_novrf()
- 		log_test_addr ${a} $? 0 "Raw socket bind to local address after device bind"
- 	done
- 
-+	#
-+	# raw socket with nonlocal bind
-+	#
-+	a=${NL_IP}
-+	log_start
-+	run_cmd nettest -s -R -P icmp -f -l ${a} -I ${NSA_DEV} -b
-+	log_test_addr ${a} $? 0 "Raw socket bind to nonlocal address after device bind"
-+
- 	#
- 	# tcp sockets
- 	#
-@@ -1815,6 +1830,14 @@ ipv4_addr_bind_vrf()
- 	run_cmd nettest -s -R -P icmp -l ${a} -I ${VRF} -b
- 	log_test_addr ${a} $? 1 "Raw socket bind to out of scope address after VRF bind"
- 
-+	#
-+	# raw socket with nonlocal bind
-+	#
-+	a=${NL_IP}
-+	log_start
-+	run_cmd nettest -s -R -P icmp -f -l ${a} -I ${VRF} -b
-+	log_test_addr ${a} $? 0 "Raw socket bind to nonlocal address after VRF bind"
-+
- 	#
- 	# tcp sockets
- 	#
-@@ -1965,6 +1988,7 @@ ipv4_rt()
- 
- 	a=${NSA_IP}
- 	log_start
-+
- 	run_cmd nettest ${varg} -s &
- 	sleep 1
- 	run_cmd nettest ${varg} -d ${NSA_DEV} -r ${a} &
-@@ -3402,6 +3426,14 @@ ipv6_addr_bind_novrf()
- 		log_test_addr ${a} $? 0 "Raw socket bind to local address after device bind"
- 	done
- 
-+	#
-+	# raw socket with nonlocal bind
-+	#
-+	a=${NL_IP6}
-+	log_start
-+	run_cmd nettest -6 -s -R -P icmp -f -l ${a} -I ${NSA_DEV} -b
-+	log_test_addr ${a} $? 0 "Raw socket bind to nonlocal address"
-+
- 	#
- 	# tcp sockets
- 	#
-@@ -3443,6 +3475,14 @@ ipv6_addr_bind_vrf()
- 	run_cmd nettest -6 -s -R -P ipv6-icmp -l ${a} -I ${VRF} -b
- 	log_test_addr ${a} $? 1 "Raw socket bind to invalid local address after vrf bind"
- 
-+	#
-+	# raw socket with nonlocal bind
-+	#
-+	a=${NL_IP6}
-+	log_start
-+	run_cmd nettest -6 -s -R -P icmp -f -l ${a} -I ${VRF} -b
-+	log_test_addr ${a} $? 0 "Raw socket bind to nonlocal address after VRF bind"
-+
- 	#
- 	# tcp sockets
- 	#
-diff --git a/tools/testing/selftests/net/nettest.c b/tools/testing/selftests/net/nettest.c
-index b599003eb5ba..d9a6fd2cd9d3 100644
---- a/tools/testing/selftests/net/nettest.c
-+++ b/tools/testing/selftests/net/nettest.c
-@@ -85,6 +85,7 @@ struct sock_args {
- 	int version;   /* AF_INET/AF_INET6 */
- 
- 	int use_setsockopt;
-+	int use_freebind;
- 	int use_cmsg;
- 	const char *dev;
- 	const char *server_dev;
-@@ -514,6 +515,29 @@ static int set_membership(int sd, uint32_t grp, uint32_t addr, int ifindex)
+ 	unsigned long vaddr;
+@@ -60,3 +61,4 @@ int pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
+ 	set_io_port_base(vaddr);
  	return 0;
  }
- 
-+static int set_freebind(int sd, int version)
-+{
-+	unsigned int one = 1;
-+	int rc = 0;
-+
-+	switch (version) {
-+	case AF_INET:
-+		if (setsockopt(sd, SOL_IP, IP_FREEBIND, &one, sizeof(one))) {
-+			log_err_errno("setsockopt(IP_FREEBIND)");
-+			rc = -1;
-+		}
-+		break;
-+	case AF_INET6:
-+		if (setsockopt(sd, SOL_IPV6, IPV6_FREEBIND, &one, sizeof(one))) {
-+			log_err_errno("setsockopt(IPV6_FREEBIND");
-+			rc = -1;
-+		}
-+		break;
-+	}
-+
-+	return rc;
-+}
-+
- static int set_broadcast(int sd)
- {
- 	unsigned int one = 1;
-@@ -1419,6 +1443,9 @@ static int lsock_init(struct sock_args *args)
- 		 set_unicast_if(sd, args->ifindex, args->version))
- 		goto err;
- 
-+	if (args->use_freebind && set_freebind(sd, args->version))
-+		goto err;
-+
- 	if (bind_socket(sd, args))
- 		goto err;
- 
-@@ -1827,7 +1854,7 @@ static int ipc_parent(int cpid, int fd, struct sock_args *args)
- 	return client_status;
- }
- 
--#define GETOPT_STR  "sr:l:c:p:t:g:P:DRn:M:X:m:d:I:BN:O:SCi6xL:0:1:2:3:Fbq"
-+#define GETOPT_STR  "sr:l:c:p:t:g:P:DRn:M:X:m:d:I:BN:O:SCi6xL:0:1:2:3:Fbqf"
- #define OPT_FORCE_BIND_KEY_IFINDEX 1001
- #define OPT_NO_BIND_KEY_IFINDEX 1002
- 
-@@ -1864,6 +1891,7 @@ static void print_usage(char *prog)
- 	"    -I dev        bind socket to given device name - server mode\n"
- 	"    -S            use setsockopt (IP_UNICAST_IF or IP_MULTICAST_IF)\n"
- 	"                  to set device binding\n"
-+	"    -f            bind socket with the IP[V6]_FREEBIND option\n"
- 	"    -C            use cmsg and IP_PKTINFO to specify device binding\n"
- 	"\n"
- 	"    -L len        send random message of given length\n"
-@@ -1999,6 +2027,9 @@ int main(int argc, char *argv[])
- 		case 'S':
- 			args.use_setsockopt = 1;
- 			break;
-+		case 'f':
-+			args.use_freebind = 1;
-+			break;
- 		case 'C':
- 			args.use_cmsg = 1;
- 			break;
++#endif
 -- 
-2.33.1
+2.1.0
 
