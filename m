@@ -2,112 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E9A4550A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:41:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2199B4550AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:42:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241400AbhKQWoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 17:44:13 -0500
-Received: from mail-wr1-f46.google.com ([209.85.221.46]:36835 "EHLO
-        mail-wr1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241317AbhKQWoK (ORCPT
+        id S241417AbhKQWpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 17:45:12 -0500
+Received: from www62.your-server.de ([213.133.104.62]:51840 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241317AbhKQWpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:44:10 -0500
-Received: by mail-wr1-f46.google.com with SMTP id s13so7619000wrb.3;
-        Wed, 17 Nov 2021 14:41:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=pP5j1KPa+oLLZIqN3V90YggZzRPPFSASRy8/v4Hg2Xk=;
-        b=sBLEWH6kNkhwMIKF2333N44PWVlXw4p7dAMmednUGtLExYCScP/h2OsklBJOrzyJ5j
-         MBMHS9+k/c0W65uIp6qcQ3TmomY1ffA8pjJV+DJ3EVaaG6kW3Q/oVvxsTrQl37Pc+0ow
-         GXbL+64rR3taibNykG0pli3RKMncb+y+bmdMbNuq1D8gf/Fzf7/kFgwoIqC65DI5nllx
-         XPRAUYIguWR+UiG6Pgw7n9kGVMJYs0FZcb5PACR+a0K4grRq4HAsuYx0N/7/15e6RUND
-         fHzWAT7uLKXI5Fe629Hs3a3+GKX4pRgkz73ucphBMsndUr/ATTtav6MNDwoEgVMnKZq1
-         X8hA==
-X-Gm-Message-State: AOAM533WaHzYQk84Dj4q1NkpC6Rul/Geq7fHyIcMSSyH77ESVcH9hOt4
-        9XTXhhxE/oyxUNoickPEuzu9i6rjyGkKHflt
-X-Google-Smtp-Source: ABdhPJyT1T5Gg4V+cRYvQzUeFM1R+tPtJ1AW2UXpEHl/E/2ZzjyEm77ozQOIfFlLWtbqZ0Qs6reXiA==
-X-Received: by 2002:a5d:6d0b:: with SMTP id e11mr24961989wrq.16.1637188870422;
-        Wed, 17 Nov 2021 14:41:10 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id q4sm1151957wrs.56.2021.11.17.14.41.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 14:41:09 -0800 (PST)
-Date:   Wed, 17 Nov 2021 23:41:08 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Qi Liu <liuqi115@huawei.com>
-Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linuxarm@huawei.com, zhangshaokun@hisilicon.com
-Subject: Re: [PATCH v11 2/2] drivers/perf: hisi: Add driver for HiSilicon
- PCIe PMU
-Message-ID: <CAC52Y8Zc5oRRBDiZq+zQNGw2CbURN2SRsfW9ek_gw96qDHB1zw@mail.gmail.com>
-References: <20211029093632.4350-1-liuqi115@huawei.com>
- <20211029093632.4350-3-liuqi115@huawei.com>
+        Wed, 17 Nov 2021 17:45:09 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mnTcz-0009qo-Kq; Wed, 17 Nov 2021 23:42:05 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mnTcz-000DgA-7Y; Wed, 17 Nov 2021 23:42:05 +0100
+Subject: Re: [PATCH] selftests/bpf: fix array_size.cocci warning:
+To:     Guo Zhengkui <guozhengkui@vivo.com>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Yucong Sun <sunyucong@gmail.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel@vivo.com
+References: <20211117132024.11509-1-guozhengkui@vivo.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <8f387f33-51f7-feea-d366-ceb5bbed0b51@iogearbox.net>
+Date:   Wed, 17 Nov 2021 23:42:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211029093632.4350-3-liuqi115@huawei.com>
+In-Reply-To: <20211117132024.11509-1-guozhengkui@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26356/Wed Nov 17 10:26:25 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qi,
+On 11/17/21 2:20 PM, Guo Zhengkui wrote:
+> Use ARRAY_SIZE() because it uses __must_be_array(arr) to make sure
+> arr is really an array.
+> 
+> Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
+> ---
+>   .../testing/selftests/bpf/prog_tests/cgroup_attach_override.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_override.c b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_override.c
+> index 356547e849e2..1921c5040d8c 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_override.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_override.c
+> @@ -1,5 +1,6 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   
+> +#include <linux/kernel.h>
+>   #include <test_progs.h>
 
-Thank you for working on this!  Looks really good!
+No need for the extra include. test_progs.h already includes bpf_util.h, please check
+such trivialities before submission. Simple grep would have revealed use of ARRAY_SIZE()
+in various places under tools/testing/selftests/bpf/prog_tests/.
 
-Below a few tiny nitpicks that you are more than welcome to ignore, of
-course, as these would have little weight on the final product, so to
-speak.
+>   #include "cgroup_helpers.h"
+> @@ -16,10 +17,9 @@ static int prog_load(int verdict)
+>   		BPF_MOV64_IMM(BPF_REG_0, verdict), /* r0 = verdict */
+>   		BPF_EXIT_INSN(),
+>   	};
+> -	size_t insns_cnt = sizeof(prog) / sizeof(struct bpf_insn);
+>   
+>   	return bpf_test_load_program(BPF_PROG_TYPE_CGROUP_SKB,
+> -			       prog, insns_cnt, "GPL", 0,
+> +			       prog, ARRAY_SIZE(prog), "GPL", 0,
+>   			       bpf_log_buf, BPF_LOG_BUF_SIZE);
 
-> +struct hisi_pcie_pmu {
-> +     struct perf_event *hw_events[HISI_PCIE_MAX_COUNTERS];
-> +     struct hlist_node node;
-> +     struct pci_dev *pdev;
-> +     struct pmu pmu;
-> +     void __iomem *base;
-> +     int irq;
-> +     u32 identifier;
-> +     /* Minimum and maximum bdf of root ports monitored by PMU */
-> +     u16 bdf_min;
-> +     u16 bdf_max;
-> +     int on_cpu;
-> +};
+There are many more similar occurrences. Please just send one cleanup patch to reduce
+churn in the git log.
 
-Would the above "bdf" be the PCI addressing schema?  If so, then we could
-capitalise the acronym to keep it consistent with how it's often referred
-to in the PCI world.
-
-[...]
-> +static int __init hisi_pcie_module_init(void)
-> +{
-> +     int ret;
-> +
-> +     ret = cpuhp_setup_state_multi(CPUHP_AP_PERF_ARM_HISI_PCIE_PMU_ONLINE,
-> +                                   "AP_PERF_ARM_HISI_PCIE_PMU_ONLINE",
-> +                                   hisi_pcie_pmu_online_cpu,
-> +                                   hisi_pcie_pmu_offline_cpu);
-> +     if (ret) {
-> +             pr_err("Failed to setup PCIe PMU hotplug, ret = %d.\n", ret);
-> +             return ret;
-> +     }
-
-The above error message could be made to be a little more aligned in terms
-of format with the other messages, thus it would be as follows:
-
-  pr_err("Failed to setup PCIe PMU hotplug: %d.\n", ret);
-
-Interestingly, there would be then no need to add the final dot (period) at
-the end here, and that would be true everywhere else.
-
-Again, thank you so much for working on this, it's very much appreciated!
-
-Acked-by: Krzysztof Wilczyński <kw@linux.com>
-
-        Krzysztof
+Thanks,
+Daniel
