@@ -2,185 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87BE454FE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 22:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05BFD454F9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 22:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240961AbhKQV6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 16:58:04 -0500
-Received: from ale.deltatee.com ([204.191.154.188]:58770 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240859AbhKQV5Y (ORCPT
+        id S240840AbhKQV5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 16:57:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229935AbhKQV5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 16:57:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Cc:To:From:content-disposition;
-        bh=tg4MegziDOSUr28d0QYX7YlGwKcxOm361uD6F0v6Nwc=; b=Pb03cCUZARE127q4WVQ0eWvolp
-        Mb1diotmJvqpeDeBK8Nzlb75G1AR4AD6o7+xcf8NlVFo0jWRBZKQZkwe1gCSszhKpi/1O1OhwbgYK
-        3ckD0YQ/amhEZITCdX7U5pN8qEyXkXJK86WnazusJs2E9tZHFN6lAJRmCFPJB4mJo/axNYMIAJnYT
-        XG6WVzpkeomCYr0DkreuBgTRZn5mjna/lx9MQP/UhKznpV/ZTDtPuX5oXoDZWif6Ga9ZylOR5RxwG
-        cG0sbb8nVRTh9h/CVz7CxWFITPcV8QEmMsfO/UY/U6GoVRU4UNqFUMYB+Vhw1lVpP1RT4efZSt718
-        xk864lBQ==;
-Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
-        by ale.deltatee.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1mnSsn-000Zo7-24; Wed, 17 Nov 2021 14:54:21 -0700
-Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.94.2)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1mnSsm-00010Q-22; Wed, 17 Nov 2021 14:54:20 -0700
-From:   Logan Gunthorpe <logang@deltatee.com>
-To:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org
-Cc:     Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>,
-        Logan Gunthorpe <logang@deltatee.com>
-Date:   Wed, 17 Nov 2021 14:54:10 -0700
-Message-Id: <20211117215410.3695-24-logang@deltatee.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211117215410.3695-1-logang@deltatee.com>
-References: <20211117215410.3695-1-logang@deltatee.com>
+        Wed, 17 Nov 2021 16:57:15 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3501EC061766
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:54:16 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id o6-20020a17090a0a0600b001a64b9a11aeso3752609pjo.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:54:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TyflncBo4THYgrqhCPbCdrMH0wmAnukogB9h7+aZLPc=;
+        b=LD3wx/0WsV+K5ZaVvJGk4B58b755LoG9yNHQCbOtNiqYXf1JDa0B+6STmSNAX7UiAb
+         a3bbZGG3lI8FB7Pl+jZRC+07aI4FLb75KMMbKB0dR/ZKgf6bHAM460JE2ur0VB+b1BaR
+         zFUCpk6hp28mvlZ/CRH8MbCstWvltcN1qAWsc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TyflncBo4THYgrqhCPbCdrMH0wmAnukogB9h7+aZLPc=;
+        b=CGolbobJWp6HeLS5KBYvERkBL/ScKjZYdeYvJyCBBGgDEekyfr3A/IVf5sBOzlFQLr
+         LDjajL3EKbbuJzD3rrq38SZhaOc1bIgV7iC1uJRWA5uKKm2XsDjG5fG8wvnr7ahyVD2+
+         QIvX3EWq+AZ9WSm/vQjKL0KyEAbvtJWAehtCiiNQhrpCEFUtTgZLu0lzYgMbGVLe1EXw
+         mWp0jqnz6Ui7dqftOMRbU8WA36D2KaOB7uCWP21FdS5+n5PevbPX0pj7JwWY5dm3JPk2
+         064p4ECeYFcv2Iu769NLFldCq4v/humj6zpTsoRNiIoEaDOr7jP3CfZT59hvp/ee1l2e
+         6pzQ==
+X-Gm-Message-State: AOAM532LvpAzY8QtEM30rdeoKq8AhNFlIQg/e5e2dgpYB2b9ea7lNpib
+        MIn7dVSgPu2DU8u6xn0bI0PNbg==
+X-Google-Smtp-Source: ABdhPJzcvx+Omftengr4Y3I++Ne+CRyHy9ruaviogn9sbmiRhSOCY96nnx7Ca6k41hOfhn1CeyD3VQ==
+X-Received: by 2002:a17:90b:4f45:: with SMTP id pj5mr3890617pjb.70.1637186055666;
+        Wed, 17 Nov 2021 13:54:15 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id oc10sm6963920pjb.26.2021.11.17.13.54.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 13:54:15 -0800 (PST)
+Date:   Wed, 17 Nov 2021 13:54:14 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Kyle Huey <me@kylehuey.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, bpf@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Robert O'Callahan <rocallahan@gmail.com>
+Subject: Re: [REGRESSION] 5.16rc1: SA_IMMUTABLE breaks debuggers
+Message-ID: <202111171341.41053845C3@keescook>
+References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
+ <202111171049.3F9C5F1@keescook>
+ <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
+ <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
+ <87k0h6334w.fsf@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 172.16.1.31
-X-SA-Exim-Rcpt-To: linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, linux-block@vger.kernel.org, linux-pci@vger.kernel.org, linux-mm@kvack.org, iommu@lists.linux-foundation.org, sbates@raithlin.com, hch@lst.de, jgg@ziepe.ca, christian.koenig@amd.com, jhubbard@nvidia.com, ddutile@redhat.com, willy@infradead.org, daniel.vetter@ffwll.ch, jason@jlekstrand.net, dave.hansen@linux.intel.com, helgaas@kernel.org, dan.j.williams@intel.com, andrzej.jakowski@intel.com, dave.b.minturn@intel.com, jianxin.xiong@intel.com, ira.weiny@intel.com, robin.murphy@arm.com, martin.oliveira@eideticom.com, ckulkarnilinux@gmail.com, logang@deltatee.com
-X-SA-Exim-Mail-From: gunthorp@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        MYRULES_NO_TEXT autolearn=no autolearn_force=no version=3.4.6
-Subject: [PATCH v4 23/23] nvme-pci: allow mmaping the CMB in userspace
-X-SA-Exim-Version: 4.2.1 (built Sat, 13 Feb 2021 17:57:42 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87k0h6334w.fsf@email.froward.int.ebiederm.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow userspace to obtain CMB memory by mmaping the controller's
-char device. The mmap call allocates and returns a hunk of CMB memory,
-(the offset is ignored) so userspace does not have control over the
-address within the CMB.
+On Wed, Nov 17, 2021 at 03:04:31PM -0600, Eric W. Biederman wrote:
+> Kyle Huey <me@kylehuey.com> writes:
+> 
+> > On Wed, Nov 17, 2021 at 11:05 AM Kyle Huey <me@kylehuey.com> wrote:
+> >>
+> >> On Wed, Nov 17, 2021 at 10:51 AM Kees Cook <keescook@chromium.org> wrote:
+> >> >
+> >> > On Wed, Nov 17, 2021 at 10:47:13AM -0800, Kyle Huey wrote:
+> >> > > rr, a userspace record and replay debugger[0], is completely broken on
+> >> > > 5.16rc1. I bisected this to 00b06da29cf9dc633cdba87acd3f57f4df3fd5c7.
+> >> > >
+> >> > > That patch makes two changes, it blocks sigaction from changing signal
+> >> > > handlers once the kernel has decided to force the program to take a
+> >> > > signal and it also stops notifying ptracers of the signal in the same
+> >> > > circumstances. The latter behavior is just wrong. There's no reason
+> >> > > that ptrace should not be able to observe and even change
+> >> > > (non-SIGKILL) forced signals.  It should be reverted.
+> >> > >
+> >> > > This behavior change is also observable in gdb. If you take a program
+> >> > > that sets SIGSYS to SIG_IGN and then raises a SIGSYS via
+> >> > > SECCOMP_RET_TRAP and run it under gdb on a good kernel gdb will stop
+> >> > > when the SIGSYS is raised, let you inspect program state, etc. After
+> >> > > the SA_IMMUTABLE change gdb won't stop until the program has already
+> >> > > died of SIGSYS.
+> >> >
+> >> > Ah, hm, this was trying to fix the case where a program trips
+> >> > SECCOMP_RET_KILL (which is a "fatal SIGSYS"), and had been unobservable
+> >> > before. I guess the fix was too broad...
+> >>
+> >> Perhaps I don't understand precisely what you mean by this, but gdb's
+> >> behavior for a program that is SECCOMP_RET_KILLed was not changed by
+> >> this patch (the SIGSYS is not observed until after program exit before
+> >> or after this change).
 
-A VMA allocated in this way will only be usable by drivers that set
-FOLL_PCI_P2PDMA when calling GUP. And inter-device support will be
-checked the first time the pages are mapped for DMA.
+The SA_IMMUTABLE change was to deal with failures seen in the seccomp
+test suite after the recent fatal signal refactoring. Mainly that a
+process that should have effectively performed do_exit() was suddenly
+visible to the tracer.
 
-Currently this is only supported by O_DIRECT to an PCI NVMe device
-or through the NVMe passthrough IOCTL.
+> > Ah, maybe that behavior changed in 5.15 (my "before" here is a 5.14
+> > kernel).  I would argue that the debugger seeing the SIGSYS for
+> > SECCOMP_RET_KILL is desirable though ...
+> 
+> This is definitely worth discussing, and probably in need of fixing (aka
+> something in rr seems to have broken).
+> 
+> We definitely need protection against the race with sigaction.
+> 
+> The fundamental question becomes does it make sense and is it safe
+> to allow a debugger to stop at, and possibly change these signals.
 
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
----
- drivers/nvme/host/core.c | 15 +++++++++++++++
- drivers/nvme/host/nvme.h |  2 ++
- drivers/nvme/host/pci.c  | 18 ++++++++++++++++++
- 3 files changed, 35 insertions(+)
+I have no problem with a debugger getting notified about a fatal
+(SECCOMP_RET_KILL*-originated) SIGSYS. But whatever happens, the kernel
+needs to make sure the process does not continue. (i.e. signal can't be
+changed/removed/etc.)
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 344414351314..39ad592cacdc 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -3111,6 +3111,10 @@ static int nvme_dev_open(struct inode *inode, struct file *file)
- 	}
- 
- 	file->private_data = ctrl;
-+
-+	if (ctrl->ops->mmap_file_open)
-+		ctrl->ops->mmap_file_open(ctrl, file);
-+
- 	return 0;
- }
- 
-@@ -3124,12 +3128,23 @@ static int nvme_dev_release(struct inode *inode, struct file *file)
- 	return 0;
- }
- 
-+static int nvme_dev_mmap(struct file *file, struct vm_area_struct *vma)
-+{
-+	struct nvme_ctrl *ctrl = file->private_data;
-+
-+	if (!ctrl->ops->mmap_cmb)
-+		return -ENODEV;
-+
-+	return ctrl->ops->mmap_cmb(ctrl, vma);
-+}
-+
- static const struct file_operations nvme_dev_fops = {
- 	.owner		= THIS_MODULE,
- 	.open		= nvme_dev_open,
- 	.release	= nvme_dev_release,
- 	.unlocked_ioctl	= nvme_dev_ioctl,
- 	.compat_ioctl	= compat_ptr_ioctl,
-+	.mmap		= nvme_dev_mmap,
- };
- 
- static ssize_t nvme_sysfs_reset(struct device *dev,
-diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-index a9f60b12a32b..5fdc1a2027e9 100644
---- a/drivers/nvme/host/nvme.h
-+++ b/drivers/nvme/host/nvme.h
-@@ -494,6 +494,8 @@ struct nvme_ctrl_ops {
- 	void (*delete_ctrl)(struct nvme_ctrl *ctrl);
- 	int (*get_address)(struct nvme_ctrl *ctrl, char *buf, int size);
- 	bool (*supports_pci_p2pdma)(struct nvme_ctrl *ctrl);
-+	void (*mmap_file_open)(struct nvme_ctrl *ctrl, struct file *file);
-+	int (*mmap_cmb)(struct nvme_ctrl *ctrl, struct vm_area_struct *vma);
- };
- 
- /*
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 3f2bd1efe076..05d6e7284000 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -2896,6 +2896,22 @@ static bool nvme_pci_supports_pci_p2pdma(struct nvme_ctrl *ctrl)
- 	return dma_pci_p2pdma_supported(dev->dev);
- }
- 
-+static void nvme_pci_mmap_file_open(struct nvme_ctrl *ctrl,
-+				    struct file *file)
-+{
-+	struct pci_dev *pdev = to_pci_dev(to_nvme_dev(ctrl)->dev);
-+
-+	pci_p2pdma_mmap_file_open(pdev, file);
-+}
-+
-+static int nvme_pci_mmap_cmb(struct nvme_ctrl *ctrl,
-+			     struct vm_area_struct *vma)
-+{
-+	struct pci_dev *pdev = to_pci_dev(to_nvme_dev(ctrl)->dev);
-+
-+	return pci_mmap_p2pmem(pdev, vma);
-+}
-+
- static const struct nvme_ctrl_ops nvme_pci_ctrl_ops = {
- 	.name			= "pcie",
- 	.module			= THIS_MODULE,
-@@ -2907,6 +2923,8 @@ static const struct nvme_ctrl_ops nvme_pci_ctrl_ops = {
- 	.submit_async_event	= nvme_pci_submit_async_event,
- 	.get_address		= nvme_pci_get_address,
- 	.supports_pci_p2pdma	= nvme_pci_supports_pci_p2pdma,
-+	.mmap_file_open		= nvme_pci_mmap_file_open,
-+	.mmap_cmb		= nvme_pci_mmap_cmb,
- };
- 
- static int nvme_dev_map(struct nvme_dev *dev)
+> Stopping at something SA_IMMUTABLE as long as the signal is allowed to
+> continue and kill the process when PTRACE_CONT happens seems harmless.
+> 
+> Allowing the debugger to change the signal, or change it's handling
+> I don't know.
+
+Right -- I'm fine with a visibility change (the seccomp test suite is
+just checking for various expected state machine changes across the
+various signal/death cases: as long as it _dies_, that's what we want.
+If a extra notification appears before it dies, that's okay, it just
+needs the test suite to change).
+
+> [...]
+> Kees I am back to asking the question I had before I figured out
+> SA_IMMUTABLE.  Are there security concerns with debuggers intercepting
+> SECCOMP_RET_KILL.
+
+I see no problem with allowing a tracer to observe the signal, but the
+signalled process must have no way to continue running. If we end up in
+such a state, then a seccomp process with access to clone() and
+ptrace() can escape the seccomp sandbox. This is why seccomp had been
+using the big do_exit() hammer -- I really want to absolutely never have
+a bug manifest with a bypassed SECCOMP_RET_KILL: having a completely
+unavoidable "dying" state is needed.
+
 -- 
-2.30.2
-
+Kees Cook
