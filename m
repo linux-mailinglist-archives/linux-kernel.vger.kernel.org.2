@@ -2,115 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9875D454F50
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 22:25:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6147D454F4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 22:25:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236766AbhKQV2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 16:28:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235649AbhKQV2t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 16:28:49 -0500
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922C7C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:25:50 -0800 (PST)
-Received: by mail-oi1-x22b.google.com with SMTP id t19so9390454oij.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 13:25:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zsu8m7qQZBsyokKQZY/iZgWOtExTquEP9UNXXnM1Y8c=;
-        b=b533kvOf4e8JBJ9EkfEo3sj0vhQ75lTR8y1eKODyoirSRFIQuU9CL6bJ6IdUO3dggl
-         Hbu31/Ad4e7ESqE+85/dRjFUnvjwJYD50t/92GYwlbRvJIjQkmbLftmZCebSvDfyqNoK
-         uQeOK6+l5P6+7UJN2M7oUemyLBu05La8WBbtvkhYkgkwVldALtOSBbaV6l6GtCZKY6iY
-         j7kbLGsCFI35kTGidd4bSElsoD8FHEwwqHU/h4YDmaIOvv2l7NT6MbPTcTp7uhSZKMd5
-         JLm1FJ2f/drGidY82Qj8/wKCFM7K0ukA9IylajmJE2xgTsj4lTZT+gRKYbRUFvFPHh9l
-         Z6sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zsu8m7qQZBsyokKQZY/iZgWOtExTquEP9UNXXnM1Y8c=;
-        b=LhExFQ13Vfm2NE9E1xl5tbLNmdiuJUqt63Mt1L11nBYW8J0k5qf3yKFNyC3BEuH6hT
-         +0CFriH1m+OPnhkURuv+9EPDi45aKZomn10CXZ4gEfYXrqDzvcTq45/iz12I7FNGnN4C
-         bZ1q72fCBaUArOrurCqx8Bojlu+SPI1Z2o7dI3dks3Vf9q/UkMzS51WlyYIg94dDOgr3
-         SIy6MMGxY6nqihRJpUsThIwyx2T1V/8laqxiZoUw3DtJvdUI1vtdyit32t1QTiTBsT0g
-         upzqDluMx1wi9YQ7kJwoimyKgqEYjgFhNEaBxDx67t0TpsAQb1hvCWjqIdut56CPtJv1
-         pJGw==
-X-Gm-Message-State: AOAM530LLXNc9+XBWKcZA+wcIHBG7DvrMhvpYf/gKzlGruW1UOVfDfg1
-        dpJnKRta7IALIRehbrOVUO2QTHXgauaESTCBcYY=
-X-Google-Smtp-Source: ABdhPJy5h/L+MOfdOoOjqkVwS+fSx+XGB7jC6qbNniJ83Ca/X7uM2gYzZJqyGXoZ9O04fFdc8zN5edaSaWWn8c3+glY=
-X-Received: by 2002:a05:6808:44:: with SMTP id v4mr2808864oic.123.1637184349846;
- Wed, 17 Nov 2021 13:25:49 -0800 (PST)
+        id S235365AbhKQV2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 16:28:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48538 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231834AbhKQV2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 16:28:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBE3661929;
+        Wed, 17 Nov 2021 21:25:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637184347;
+        bh=loXNOhaK0WJi0LoAdfM3Ag6FcSV9eSUMpqtv0lzNEOM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=GKKg+R8Yg1Cg2RUeUnb1R2nH2pcO6rwAp3Qd7QpcBLpF4bw6bCfceI2BDQCTev8SA
+         +NxLK/kdF/hEfzjUsqIe8H8L3MIDvhNOkT7DrE141GF8eTVKpQqeXQXR17LcmqD5JU
+         JM33lp8a8dq9PX9P1FTYklkrghfWuWzpYKRK3X+qLaPhU6FVhJVyEVzqsViRIyWcgL
+         o7zAvAnQvsetAETKMSpN9RVtawhCmX6jIsvwsWsfyMAxKSSVKM4wuQcE9zSO8SG3XN
+         PrTiHOtQUfA3Z2PVm7OeL8Q8U9nELQU75Cix36v1Bb9A4sW7uqlip9jMOyqUYSJRzE
+         svdEl6I/VcqpQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 9945F5C06BA; Wed, 17 Nov 2021 13:25:47 -0800 (PST)
+Date:   Wed, 17 Nov 2021 13:25:47 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Feng Tang <feng.tang@intel.com>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Cassio Neri <cassio.neri@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v2 0/4] clocksource: Avoid incorrect hpet fallback
+Message-ID: <20211117212547.GO641268@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211116234426.837799-1-longman@redhat.com>
+ <20211117165426.GG641268@paulmck-ThinkPad-P17-Gen-1>
+ <7cb5ab62-21ea-f649-2009-38b8c1ff283a@redhat.com>
 MIME-Version: 1.0
-References: <20211115071429.7314-1-bernard@vivo.com>
-In-Reply-To: <20211115071429.7314-1-bernard@vivo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 17 Nov 2021 16:25:39 -0500
-Message-ID: <CADnq5_Nj46a0mOHKcR-Y__fucV9Ug7EpvtZphFfWMTHtaoGfkQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/amdgpu: remove useless break after return
-To:     Bernard Zhao <bernard@vivo.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Evan Quan <evan.quan@amd.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7cb5ab62-21ea-f649-2009-38b8c1ff283a@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied thanks.  If you want to make the numbering more sequential,
-please also update the other dce files if you make that change.
+On Wed, Nov 17, 2021 at 01:51:51PM -0500, Waiman Long wrote:
+> On 11/17/21 11:54, Paul E. McKenney wrote:
+> > On Tue, Nov 16, 2021 at 06:44:22PM -0500, Waiman Long wrote:
+> > A few questions:
+> > 
+> > 1.	Once you have all the patches in place, is the increase in
+> > 	WATCHDOG_MAX_SKEW from 50us to 100us necessary?
+> 
+> I think so. Using Feng's reproducer, I was able to cause a hpet-hpet delay
+> of more than 90us on a 1-socket system. With a default 50us
+> WATCHDOG_MAX_SKEW, the chance of a warning showing up will be much higher.
+> Trying to minimize the chance that a warning may appear is my primary reason
+> to increase WATCHDOG_MAX_SKEW.
 
-Alex
+Should we downgrade the "had to retry read" complain to pr_info(),
+and make the only real warning be the case where a large number of
+consecutive read attempts fail?  I believe that Heiner Kallweit was
+looking for something like this.
 
-On Mon, Nov 15, 2021 at 2:14 AM Bernard Zhao <bernard@vivo.com> wrote:
+> > 2.	The reason for having cs->uncertainty_margin set to
+> > 	2*WATCHDOG_MAX_SKEW was to allow for worst-case skew from both
+> > 	the previous and the current reading.  Are you sure that
+> > 	dropping back to WATCHDOG_MAX_SKEW avoids false positives?
+> 
+> I can remove the hunk of changing cs->uncertainty_margin. It is critical for
+> this patch.
+
+Assuming "not critical", good!
+
+> > 3.	In patch 3/4, shouldn't clock_skew_skip be a field in the
+> > 	clocksource structure rather than a global?  If a system had
+> > 	multiple clocks being checked, wouldn't having this as a field
+> > 	make things more predictable?  Or am I missing something subtle
+> > 	here?
+> 
+> Yes, you are right. I should have put it into clocksource structure. I will
+> make the change in v3.
+
+Sounds good!  Looking forward to v3!
+
+> > 4.	These are intended to replace this commit in -rcu, correct?
+> > 
+> > 	9d5739316f36 ("clocksource: Forgive repeated long-latency watchdog clocksource reads")
+> > 
+> > 	But not this commit, correct?
+> > 
+> > 	5444fb39fd49 ("torture: Test splatting for delay-ridden clocksources")
 >
-> This change is to remove useless break after return.
->
-> Signed-off-by: Bernard Zhao <bernard@vivo.com>
-> ---
->  drivers/gpu/drm/amd/amdgpu/dce_v8_0.c | 4 ----
->  1 file changed, 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c b/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c
-> index b200b9e722d9..8318ee8339f1 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c
-> @@ -2092,22 +2092,18 @@ static int dce_v8_0_pick_dig_encoder(struct drm_encoder *encoder)
->                         return 1;
->                 else
->                         return 0;
-> -               break;
->         case ENCODER_OBJECT_ID_INTERNAL_UNIPHY1:
->                 if (dig->linkb)
->                         return 3;
->                 else
->                         return 2;
-> -               break;
->         case ENCODER_OBJECT_ID_INTERNAL_UNIPHY2:
->                 if (dig->linkb)
->                         return 5;
->                 else
->                         return 4;
-> -               break;
->         case ENCODER_OBJECT_ID_INTERNAL_UNIPHY3:
->                 return 6;
-> -               break;
->         default:
->                 DRM_ERROR("invalid encoder_id: 0x%x\n", amdgpu_encoder->encoder_id);
->                 return 0;
-> --
-> 2.33.1
->
+> Yes, that is my intention.
+
+Very good, thank you!
+
+> > And would you like me to queue these, or would you rather send them
+> > separately?  (Either way works for me, just please let me know.)
+> 
+> I don't have a preference either way. If you are willing to queue these, it
+> will be great too.
+
+Happy to do so!
+
+							Thanx, Paul
