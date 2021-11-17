@@ -2,107 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650C1453DCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 02:35:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC87E453DCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 02:39:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232463AbhKQBi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 20:38:28 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:33862 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231916AbhKQBiW (ORCPT
+        id S231360AbhKQBl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 20:41:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229447AbhKQBl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 20:38:22 -0500
-Received: from thelio.attlocal.net (107-203-255-60.lightspeed.sntcca.sbcglobal.net [107.203.255.60])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 2AF7E20C634D;
-        Tue, 16 Nov 2021 17:35:24 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2AF7E20C634D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1637112924;
-        bh=DZkZygZsNbm4yhyqYJBFOjarSjiO0M4rZLNpUdPdo4Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mUnc1/QQ8N3OHsBl2w/F+BCTBzNOiAoxAltBDKfQxgdpG3zEvXHAc/PqCdRzTCN6G
-         XbCovQmK9UuUT7G6YUktq+GB0SNddSfe+eCu6vPndBXBkPv/hJde2EO2EZCXrrraG0
-         /I28h8XmIwSfYjzey1WnY+QI6XkDgTWkFfaCubVA=
-From:   Katherine Perez <kaperez@linux.microsoft.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 4/4] arm64: dts: qcom: sm8150: display support for Microsoft Surface Duo
-Date:   Tue, 16 Nov 2021 17:35:16 -0800
-Message-Id: <20211117013516.4111383-5-kaperez@linux.microsoft.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211117013516.4111383-1-kaperez@linux.microsoft.com>
-References: <20211117013516.4111383-1-kaperez@linux.microsoft.com>
+        Tue, 16 Nov 2021 20:41:58 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC1AC061570;
+        Tue, 16 Nov 2021 17:39:00 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id 28so741415pgq.8;
+        Tue, 16 Nov 2021 17:39:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hH6qmXqvZSnOoRAcPtZVa0OkhWnUxqJaW0v8rMecUno=;
+        b=VRb+wdNjdNbBwnY/Y9pQl1NMpTKE53gMeoES6xIMGhGx+1uyUzSnnisRSvAvzS0j8O
+         BKqlkO+SMp9XpfgjBLY4IO8Y3HQ37c26qe5lLSewdEqkA/IFCxeAJfSXoaIOrXVr6J0f
+         pDL/wr537Au+t/OqZdEfMIoqjvyz8JKsxJhn5SLs/u/y7+h9vS0OQ2m1i3/362rXYwEG
+         nXZXj9FZ1i+4oMPD8yj/q5W+be/TudJtulBxiKYLicZG2W+cJncl/4px0SMzvQUtT5dO
+         80sY1nrekZUwH84rYJy2TdnR6nvzXAFqRNGie3RjGTH8EFCCjyNMfR0PgP4KEK9pogqu
+         3njw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hH6qmXqvZSnOoRAcPtZVa0OkhWnUxqJaW0v8rMecUno=;
+        b=6/MQ9tslKkE7JNLtitofT9/d1SfMR8DqaAUBRDeYsBszXx4+2nqucLkdD9LtegvV99
+         UN6EYMKjulGRvZQ17N/Zi0kmaHqUKP/E9Fj3mDScu3mwt5G6SJVPZanw8N6iJZKBcoJs
+         XPpJExJm14ENDViGj3x0nT+BiojQ8JJ7nDTs4qApVrUnbmZ0OhZPMOhAhIr6My2T/qhR
+         ujPxTMjItY4Y0pNjtZJsVEarZrBk6yCwY7agwfPsITBirbUrfxNrKG8kCiw7EHsB5ciG
+         mBark+kSNbWVmyhZ91WhYbrDt/aLTiuzgUhI4liUpV+5D955dmVmyomMsQ7rJf/q35na
+         7o2w==
+X-Gm-Message-State: AOAM531gbbSqesQWbS2WkZFOWXM9KnpE7YoVUn+Dpyb+Ad58BzMsU0fR
+        E9D3aPd8i4aCIVphaYPRLCk=
+X-Google-Smtp-Source: ABdhPJwjVHmxqjoD6z4EZGQfTMhn1JDO9TlmrTmVG8EayB5rEd9VN17xefIzJT8miEhx1duZtlP1/Q==
+X-Received: by 2002:aa7:9a4e:0:b0:4a2:71f9:21e0 with SMTP id x14-20020aa79a4e000000b004a271f921e0mr3617499pfj.77.1637113140023;
+        Tue, 16 Nov 2021 17:39:00 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id s7sm3053123pfm.188.2021.11.16.17.38.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 17:38:59 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: deng.changcheng@zte.com.cn
+To:     abel.vesa@nxp.com
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] clk: imx: Use div64_ul instead of do_div
+Date:   Wed, 17 Nov 2021 01:38:53 +0000
+Message-Id: <20211117013853.158777-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for display to Microsoft Surface Duo.
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-Signed-off-by: Katherine Perez <kaperez@linux.microsoft.com>
+do_div() does a 64-by-32 division. If the divisor is unsigned long, using
+div64_ul can avoid truncation to 32-bit.
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
 ---
+ drivers/clk/imx/clk-pllv3.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Changes in v3:
-	- Update dsi nodes to match mdss_dsi*
-
- .../dts/qcom/sm8150-microsoft-surface-duo.dts | 26 +++++++++++++++++++
- 1 file changed, 26 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sm8150-microsoft-surface-duo.dts b/arch/arm64/boot/dts/qcom/sm8150-microsoft-surface-duo.dts
-index 5901c28e6696..6135a820037b 100644
---- a/arch/arm64/boot/dts/qcom/sm8150-microsoft-surface-duo.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8150-microsoft-surface-duo.dts
-@@ -270,6 +270,8 @@ vdda_hv_ebi1:
- 		vdda_hv_ebi2:
- 		vdda_hv_ebi3:
- 		vdda_hv_refgen0:
-+		vdda_mipi_dsi0_1p2:
-+		vdda_mipi_dsi1_1p2:
- 		vdda_qlink_hv_ck:
- 		vreg_l3c_1p2: ldo3 {
- 			regulator-min-microvolt = <1200000>;
-@@ -359,6 +361,26 @@ vreg_l6f_2p85: ldo6 {
- 	};
- };
-
-+&mdss_dsi0 {
-+	status = "okay";
-+	vdda-supply = <&vdda_mipi_dsi0_1p2>;
-+};
-+
-+&mdss_dsi0_phy {
-+	status = "okay";
-+	vdds-supply = <&vdda_dsi_0_pll_0p9>;
-+};
-+
-+&mdss_dsi1 {
-+	status = "okay";
-+	vdda-supply = <&vdda_mipi_dsi1_1p2>;
-+};
-+
-+&mdss_dsi1_phy {
-+	status = "okay";
-+	vdds-supply = <&vdda_dsi_1_pll_0p9>;
-+};
-+
- &i2c1 {
- 	status = "okay";
- 	clock-frequency = <400000>;
-@@ -430,6 +452,10 @@ &i2c19 {
- 	/* MAX34417 @ 0x1e */
- };
-
-+&mdss {
-+	status = "okay";
-+};
-+
- &pon {
- 	pwrkey {
- 		status = "okay";
---
-2.31.1
+diff --git a/drivers/clk/imx/clk-pllv3.c b/drivers/clk/imx/clk-pllv3.c
+index 20ee9611ba6e..55497e0585a6 100644
+--- a/drivers/clk/imx/clk-pllv3.c
++++ b/drivers/clk/imx/clk-pllv3.c
+@@ -247,7 +247,7 @@ static long clk_pllv3_av_round_rate(struct clk_hw *hw, unsigned long rate,
+ 	div = rate / parent_rate;
+ 	temp64 = (u64) (rate - div * parent_rate);
+ 	temp64 *= mfd;
+-	do_div(temp64, parent_rate);
++	div64_ul(temp64, parent_rate);
+ 	mfn = temp64;
+ 
+ 	temp64 = (u64)parent_rate;
+@@ -277,7 +277,7 @@ static int clk_pllv3_av_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	div = rate / parent_rate;
+ 	temp64 = (u64) (rate - div * parent_rate);
+ 	temp64 *= mfd;
+-	do_div(temp64, parent_rate);
++	div64_ul(temp64, parent_rate);
+ 	mfn = temp64;
+ 
+ 	val = readl_relaxed(pll->base);
+@@ -334,7 +334,7 @@ static struct clk_pllv3_vf610_mf clk_pllv3_vf610_rate_to_mf(
+ 		/* rate = parent_rate * (mfi + mfn/mfd) */
+ 		temp64 = rate - parent_rate * mf.mfi;
+ 		temp64 *= mf.mfd;
+-		do_div(temp64, parent_rate);
++		div64_ul(temp64, parent_rate);
+ 		mf.mfn = temp64;
+ 	}
+ 
+-- 
+2.25.1
 
