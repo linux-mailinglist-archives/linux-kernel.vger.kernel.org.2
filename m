@@ -2,164 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4554F454269
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 09:09:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8982A45426E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 09:10:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234415AbhKQILe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 03:11:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232071AbhKQIL0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 03:11:26 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3FEDC061570;
-        Wed, 17 Nov 2021 00:08:28 -0800 (PST)
-Received: from localhost (unknown [151.44.20.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 9E0064A6;
-        Wed, 17 Nov 2021 08:08:26 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 9E0064A6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1637136507; bh=WI3l1gDO1ckeyM/rewn4fHkluluKgnQPmxGdZIQcBv8=;
-        h=From:To:Subject:In-Reply-To:References:Date:From;
-        b=TslcnkXRHAjwl9HngGVriKBHCOgNyEMq5Ti0C7Bj0sujObew6iXXhL18psJXdYasx
-         Msvq9ITuU9Qu/9OHDnoRjV/R002NgCxj63ExgA/eZBfce+aW+JVws3opwiEf/1gGAI
-         b/ntpmDQMM6w0CMcbWh2aRcX4UaomljPO5QJR81asd9wNtS/6hZGnvRxyT1H97Fi0s
-         np2Qsnnyd1vihZefSA/RlkJsUIw0gBHH3hTJDP4AcZD6QQ9MnAch70xy/km4ZRI2cc
-         pV8c8XUdxsPcYaA5kLXw0nHipwGnVSEozEq3c60EOmMCCR19icPwrpnrxSzbCBcOGw
-         tFF1hL/tJauXA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Pasha Tatashin <pasha.tatashin@soleen.com>,
-        pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-doc@vger.kernel.org,
-        akpm@linux-foundation.org, rientjes@google.com, pjt@google.com,
-        weixugc@google.com, gthelen@google.com, mingo@redhat.com,
-        will@kernel.org, rppt@kernel.org, keescook@chromium.org,
-        tglx@linutronix.de, peterz@infradead.org, masahiroy@kernel.org,
-        samitolvanen@google.com, dave.hansen@linux.intel.com,
-        x86@kernel.org, frederic@kernel.org, hpa@zytor.com,
-        aneesh.kumar@linux.ibm.com
-Subject: Re: [RFC 2/3] mm: page table check
-In-Reply-To: <20211116220038.116484-3-pasha.tatashin@soleen.com>
-References: <20211116220038.116484-1-pasha.tatashin@soleen.com>
- <20211116220038.116484-3-pasha.tatashin@soleen.com>
-Date:   Wed, 17 Nov 2021 01:08:23 -0700
-Message-ID: <878rxngq6g.fsf@meer.lwn.net>
+        id S234425AbhKQINV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 03:13:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55710 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232086AbhKQINV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 03:13:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A970D61B7D;
+        Wed, 17 Nov 2021 08:10:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637136623;
+        bh=r95Z+70f1SxANDfTBZzjaeB9B3eWiVZJu26oU6UqTm8=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=jzK9va+Hbe2/5w6dtqZcck3jrN6+Uoi/rIiYnVzZD0f1gE8MPIqO9hleJ7aTMquvg
+         S+fpeodj1jERXc5vQNt9suP08x1sTEZuBjYf7Q4IRH7E9HHacG/g4Ay+e/MTkSmFCO
+         0Iu+c+GYTogBJ4RfaH4QmFC/XT9IXNeVAA98bFj/mCEtwWSg5Kad59PUusa9WPjaff
+         EPXfajoX1kVeo9G7I6hqcanqSuNm9NqNybdu3doO069b3WUnv1wb6drsSMKeaBnL17
+         aJuDSyWE7vamtBFo0FMnTWRTvt6r93FV5Wb2xHB1YckGdWKsLrvK2TnINf1QjebbLs
+         GP0xUEt+hBJEA==
+Message-ID: <fd914758628f416db9fbaa35e910cceedabb65f7.camel@kernel.org>
+Subject: Re: [PATCH v19 3/5] tpm: tpm_tis: Verify TPM_STS register is valid
+ after locality request
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     amirmizi6@gmail.com, Eyal.Cohen@nuvoton.com,
+        oshrialkoby85@gmail.com, alexander.steffen@infineon.com,
+        robh+dt@kernel.org, mark.rutland@arm.com, peterhuewe@gmx.de,
+        jgg@ziepe.ca, arnd@arndb.de, gregkh@linuxfoundation.org,
+        benoit.houyere@st.com, eajames@linux.ibm.com, joel@jms.id.au
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, oshri.alkoby@nuvoton.com,
+        tmaimon77@gmail.com, gcwilson@us.ibm.com, kgoldman@us.ibm.com,
+        Dan.Morav@nuvoton.com, oren.tanami@nuvoton.com,
+        shmulik.hager@nuvoton.com, amir.mizinski@nuvoton.com
+Date:   Wed, 17 Nov 2021 10:10:20 +0200
+In-Reply-To: <20211104140211.6258-4-amirmizi6@gmail.com>
+References: <20211104140211.6258-1-amirmizi6@gmail.com>
+         <20211104140211.6258-4-amirmizi6@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pasha Tatashin <pasha.tatashin@soleen.com> writes:
+T24gVGh1LCAyMDIxLTExLTA0IGF0IDE2OjAyICswMjAwLCBhbWlybWl6aTZAZ21haWwuY29tIHdy
+b3RlOgo+IEZyb206IEFtaXIgTWl6aW5za2kgPGFtaXJtaXppNkBnbWFpbC5jb20+Cj4gCj4gQW4g
+aW52YWxpZCBUUE1fU1RTIHZhbHVlIGNvdWxkIGJlIHVzZWQgd2hlbiB0aGUgZm9sbG93aW5nIHR3
+byBldmVudHMgb2NjdXI6Cj4gVFBNIGRvZXMgbm90IHVwZGF0ZSBUUE1fU1RTIHJlZ2lzdGVyIGFm
+dGVyIGEgbG9jYWxpdHkgcmVxdWVzdCAoVFBNX1NUUwo+IEluaXRpYWwgdmFsdWUgPSAweEZGKSwg
+YW5kIGEgVFBNX1NUUyByZWdpc3RlciByZWFkIG9jY3VycyBpbiB0aGUKPiB0cG1fdGlzX3N0YXR1
+cyhjaGlwKSBmdW5jdGlvbiBjYWxsLgo+IAo+IEluIHByb2JlX2l0cG0oKSwgYSBjYWxsIHRvIHRw
+bV90aXNfc2VuZF9kYXRhKCkgZnVuY3Rpb24gaXMgbWFkZSBhZnRlciBhCj4gcmVxdWVzdF9sb2Nh
+bGl0eSgpIGNhbGwsIGFuZCB0aGUgY29uZGl0aW9uCj4gKCJpZiAoKHN0YXR1cyAmIFRQTV9TVFNf
+Q09NTUFORF9SRUFEWSkgPT0gMCkiKSBpcyBjaGVja2VkLiBBdCB0aGlzIG1vbWVudAo+IGlmIHRo
+ZSBzdGF0dXMgdmFsdWUgaXMgMHhGRiwgdGhlbiBpdCBpcyBjb25zaWRlcmVkLCB3cm9uZ2x5LCBp
+biDigJxyZWFkeeKAnQo+IHN0YXRlIChieSBjaGVja2luZyBvbmx5IG9uZSBiaXQpLiBIb3dldmVy
+LCBhdCB0aGlzIG1vbWVudCB0aGUgVFBNIGlzLCBpbgo+IGZhY3QsIGluICJJZGxlIiBzdGF0ZSBh
+bmQgcmVtYWlucyBpbiAiSWRsZSIgc3RhdGUgYmVjYXVzZQo+ICJ0cG1fdGlzX3JlYWR5KGNoaXAp
+OyIgd2FzIG5vdCBleGVjdXRlZC4KPiBXYWl0aW5nIGZvciB0aGUgY29uZGl0aW9uIFRQTV9TVFMu
+dHBtR28gPT0gMCwgd2lsbCBlbnN1cmUgdGhhdCB0aGUgVFBNCj4gc3RhdHVzIHJlZ2lzdGVyIGhh
+cyB0aGUgY29ycmVjdCB2YWx1ZS4KCllvdSBzaG91bGQgdXNlIGltcGVyYXRpdmUgZm9ybSBpbiBj
+b21taXQgbWVzc2FnZSwgZS5nLiAiV2FpdCBmb3IgVFBNX1NUUy50cG1Hbwp0byByZXNldCB0byB6
+ZXJvLCAuLi4iLgoKPiAKPiBTdWdnZXN0ZWQtYnk6IEJlbm9pdCBIb3V5ZXJlIDxiZW5vaXQuaG91
+eWVyZUBzdC5jb20+Cj4gU2lnbmVkLW9mZi1ieTogQW1pciBNaXppbnNraSA8YW1pcm1pemk2QGdt
+YWlsLmNvbT4KPiAtLS0KPiDCoGRyaXZlcnMvY2hhci90cG0vdHBtX3Rpc19jb3JlLmMgfCA2ICsr
+KysrLQo+IMKgMSBmaWxlIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQo+
+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2NoYXIvdHBtL3RwbV90aXNfY29yZS5jIGIvZHJpdmVy
+cy9jaGFyL3RwbS90cG1fdGlzX2NvcmUuYwo+IGluZGV4IDZmZjhiNDQuLjc3MDY4NWEgMTAwNjQ0
+Cj4gLS0tIGEvZHJpdmVycy9jaGFyL3RwbS90cG1fdGlzX2NvcmUuYwo+ICsrKyBiL2RyaXZlcnMv
+Y2hhci90cG0vdHBtX3Rpc19jb3JlLmMKPiBAQCAtMTc3LDggKzE3NywxMiBAQCBzdGF0aWMgaW50
+IHJlcXVlc3RfbG9jYWxpdHkoc3RydWN0IHRwbV9jaGlwICpjaGlwLCBpbnQgbCkKPiDCoMKgwqDC
+oMKgwqDCoMKgfSBlbHNlIHsKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC8qIHdh
+aXQgZm9yIGJ1cnN0Y291bnQgKi8KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGRv
+IHsKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmIChj
+aGVja19sb2NhbGl0eShjaGlwLCBsKSkKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoGlmIChjaGVja19sb2NhbGl0eShjaGlwLCBsKSkgewo+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlm
+ICh0cG1fdGlzX3dhaXRfZm9yX3N0YXQoY2hpcCwgVFBNX1NUU19HTywgMCwgY2hpcC0+dGltZW91
+dF9jLAo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgICZwcml2LT5pbnRfcXVldWUsIGZhbHNlKSA8IDApCgpZb3Ugd291bGQgbmVlZCB0byBl
+eHBsYWluIHRoaXMgd2l0aCBhbiBpbmxpbmUgY29tbWVudC4KCj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoHJldHVybiAtRVRJTUU7Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiBsOwo+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHRwbV9tc2xlZXAoVFBNX1RJTUVPVVQpOwo+IMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfSB3aGlsZSAodGltZV9iZWZvcmUoamlmZmllcywg
+c3RvcCkpOwo+IMKgwqDCoMKgwqDCoMKgwqB9CgoKL0phcmtrbwoK
 
-> Check user page table entries at the time they are added and removed.
->
-> Allows to synchronously catch memory corruption issues related to
-> double mapping.
->
-> When a pte for an anonymous page is added into page table, we verify
-> that this pte does not already point to a file backed page, and vice
-> versa if this is a file backed page that is being added we verify that
-> this page does not have an anonymous mapping
->
-> We also enforce that read-only sharing for anonymous pages is allowed
-> (i.e. cow after fork). All other sharing must be for file pages.
->
-> Page table check allows to protect and debug cases where "struct page"
-> metadata became corrupted for some reason. For example, when refcnt or
-> mapcount become invalid.
->
-> Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-> ---
->  Documentation/vm/page_table_check.rst |  53 ++++++
-
-Thanks for documenting this feature!  When you add a new RST file,
-though, you need to add it to the index.rst file as well so that it is
-included in the docs build.
-
->  MAINTAINERS                           |   9 +
->  arch/Kconfig                          |   3 +
->  include/linux/page_table_check.h      | 147 ++++++++++++++
->  mm/Kconfig.debug                      |  24 +++
->  mm/Makefile                           |   1 +
->  mm/page_alloc.c                       |   4 +
->  mm/page_ext.c                         |   4 +
->  mm/page_table_check.c                 | 264 ++++++++++++++++++++++++++
->  9 files changed, 509 insertions(+)
->  create mode 100644 Documentation/vm/page_table_check.rst
->  create mode 100644 include/linux/page_table_check.h
->  create mode 100644 mm/page_table_check.c
->
-> diff --git a/Documentation/vm/page_table_check.rst b/Documentation/vm/page_table_check.rst
-> new file mode 100644
-> index 000000000000..41435a45869f
-> --- /dev/null
-> +++ b/Documentation/vm/page_table_check.rst
-> @@ -0,0 +1,53 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +.. _page_table_check:
-
-Do you need this label for anything?  As-is it's just added visual
-clutter and could come out.
-
-> +================
-> +Page Table Check
-> +================
-> +
-> +Page table check allows to hardern the kernel by ensuring that some types of
-> +memory corruptions are prevented.
-> +
-> +Page table check performs extra verifications at the time when new pages become
-> +accessible from userspace by getting their page table entries (PTEs PMDs etc.)
-> +added into the table.
-> +
-> +In case of detected corruption, the kernel is crashed. There is a small
-> +performance and memory overhead associated with page table check. Thereofre, it
-> +is disabled by default but can be optionally enabled on systems where extra
-> +hardening outweighs the costs. Also, because page table check is synchronous, it
-> +can help with debugging double map memory corruption issues, by crashing kernel
-> +at the time wrong mapping occurs instead of later which is often the case with
-> +memory corruptions bugs.
-> +
-> +==============================
-> +Double mapping detection logic
-> +==============================
-
-I'd use subsection markup (single "==========" line underneath) for the
-subsections.
-
-> ++-------------------+-------------------+-------------------+------------------+
-> +| Current Mapping   | New mapping       | Permissions       | Rule             |
-> ++===================+===================+===================+==================+
-> +| Anonymous         | Anonymous         | Read              | Allow            |
-> ++-------------------+-------------------+-------------------+------------------+
-> +| Anonymous         | Anonymous         | Read / Write      | Prohibit         |
-> ++-------------------+-------------------+-------------------+------------------+
-> +| Anonymous         | Named             | Any               | Prohibit         |
-> ++-------------------+-------------------+-------------------+------------------+
-> +| Named             | Anonymous         | Any               | Prohibit         |
-> ++-------------------+-------------------+-------------------+------------------+
-> +| Named             | Named             | Any               | Allow            |
-> ++-------------------+-------------------+-------------------+------------------+
-> +
-> +=========================
-> +Enabling Page Table Check
-> +=========================
-> +
-> +Build kernel with:
-> +
-> +- PAGE_TABLE_CHECK=y
-> +Note, it can only be enabled on platforms where ARCH_SUPPORTS_PAGE_TABLE_CHECK
-> +is available.
-> +- Boot with 'page_table_check=on' kernel parameter.
-> +
-> +Optionally, build kernel with PAGE_TABLE_CHECK_ENFORCED in order to have page
-> +table support without extra kernel parameter.
-
-Thanks,
-
-jon
