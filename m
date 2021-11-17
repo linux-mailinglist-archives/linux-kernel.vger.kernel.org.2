@@ -2,239 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BD8454B91
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 805A8454B9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:07:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239118AbhKQRGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 12:06:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239305AbhKQRGe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 12:06:34 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1897C061206
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 09:03:34 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id n12so11848778lfe.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 09:03:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P7ZeURsfm4AXTkpamKINmOYQ2FnZeIesqVe6cwEr2gs=;
-        b=USJ25q1qWLEmVBtuZdhzZDnFTgIx6J22he/rofO0Y6oxw2IoClQMT3CyDDmPB0bUTt
-         TmPYItv349ILML9FLTtPpuGWJEbFzhSul/km5g4W9xXA9qNxwntSMGKs0Lwq0CWbay9+
-         o810U4Jy3V6XaBiRH8WLIF0nJ3FTknEOnipsnJ7X4VNrOcQfJglCzGHjkONGY3Cd4U0C
-         LTybn766Z9YqcD2y+Bd4wV4PLgij8xooadNwj2rz0vYwhSP/agBCwQlbhlxwY9i7nvhD
-         QlZeRhO9h6rkofI+jE6piHE4pRnm8++9N6PJt7JEpjpuuiDglEsGlxc5B+A8Ji4fws3H
-         pv5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P7ZeURsfm4AXTkpamKINmOYQ2FnZeIesqVe6cwEr2gs=;
-        b=gVSZXlcswY378kMAe1t+ZUTJUY3yaCqDoNrSfz37py5imnDuW8bG1X+Z53khyf1cuL
-         7ekd/7n7BkThEyPXT01MNnyAP6WDpgw8AkDvRGnoX4C2tmUeeZ1UmMNkQ+uzHBGRyRXf
-         huqIpsNy8/pnZgDXfVDnfRk/jJip0u9BVPMTorlgrcFK2PXKoiEvYe9NhBYJPA2GcxNH
-         dgqQJT/JzZme4VNHU4yYhct7Vek5yNXfst79L40Xuj1G81iWTehRgSs813bSGMbJhG5y
-         sp0Po8DqzjI5wptxkEcUJg1DWn/Rylf2DTctRCQVxVaQyiPl2muTfH5w0F08GpZmz400
-         SMNQ==
-X-Gm-Message-State: AOAM5313tfCuUvBeYT+meUghLHib18nrHcjHnBLFHAA/w/x9N3WIfuQ+
-        +kjC7qiW/Ubh9AmcphAOF3w1bpfVC6IrYzIbAhLX7HcWQw8=
-X-Google-Smtp-Source: ABdhPJz2+ZgVZPUFNriljP9knn2VW6oUwJ/0xUnylq0kDkM7qQJivs9PWiHBDV0++fWcUaP2IHYaVftvkjjW5nz9cuc=
-X-Received: by 2002:ac2:4ad9:: with SMTP id m25mr16722932lfp.193.1637168612274;
- Wed, 17 Nov 2021 09:03:32 -0800 (PST)
+        id S232616AbhKQRKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 12:10:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229585AbhKQRKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 12:10:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E404C615A4;
+        Wed, 17 Nov 2021 17:07:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637168828;
+        bh=Ta2Z5YSxnkVBMPA4KSpYfpVT/Yv/HAz/kPMqYKYr4+0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DfSq71CkGosAbNkmI6HVgisrrydgCrpMaHZc922ZNyCED4CEcViCFhh/x/o+fsIkz
+         mGr5I0ltF5Ft0iMGDP4H79uzgeM4L/EJBIX4MKvgWQbBFJyQcG+YFm+ZN5bYnjZEjy
+         qZRM/wxjp81ftnjLXpwmuQbbewXz3f7FfsKQKoTyKuouaEpzJXiSf/6MGsyrWu1vhv
+         CWXxjcVgt9sIpentJn/rE13FB1HqAlHa80+ksDB3sHFadtaQVA9MsqJ8eu8uG4b7ck
+         tnlGBJ3pO+p6Lqti3AK0TkK0GHvO8zwmk6KUPcqgbQXktfk01OL30j6gMcCgLF3bGM
+         y7L1aseORhrCw==
+Date:   Wed, 17 Nov 2021 09:07:07 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v2 02/28] mm: Add functions to zero portions of a folio
+Message-ID: <20211117170707.GW24307@magnolia>
+References: <20211108040551.1942823-1-willy@infradead.org>
+ <20211108040551.1942823-3-willy@infradead.org>
+ <20211117044527.GO24307@magnolia>
+ <YZUMhDDHott2Q4W+@casper.infradead.org>
 MIME-Version: 1.0
-References: <20211117163809.1441845-1-pbonzini@redhat.com> <20211117163809.1441845-3-pbonzini@redhat.com>
-In-Reply-To: <20211117163809.1441845-3-pbonzini@redhat.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Wed, 17 Nov 2021 10:03:20 -0700
-Message-ID: <CAMkAt6ovkWTxwhcWMG7UT8X68TogG-0L_6rwTisTfgcWVNapSQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] selftests: sev_migrate_tests: add tests for KVM_CAP_VM_COPY_ENC_CONTEXT_FROM
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        seanjc@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZUMhDDHott2Q4W+@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 9:38 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> I am putting the tests in sev_migrate_tests because the failure conditions are
-> very similar and some of the setup code can be reused, too.
->
-> The tests cover both successful creation of a mirror VM, and error
-> conditions.
->
-> Cc: Peter Gonda <pgonda@google.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  .../selftests/kvm/x86_64/sev_migrate_tests.c  | 106 ++++++++++++++++--
->  1 file changed, 99 insertions(+), 7 deletions(-)
->
-> diff --git a/tools/testing/selftests/kvm/x86_64/sev_migrate_tests.c b/tools/testing/selftests/kvm/x86_64/sev_migrate_tests.c
-> index 4a5d3728412b..986dc2ede61d 100644
-> --- a/tools/testing/selftests/kvm/x86_64/sev_migrate_tests.c
-> +++ b/tools/testing/selftests/kvm/x86_64/sev_migrate_tests.c
-> @@ -54,12 +54,15 @@ static struct kvm_vm *sev_vm_create(bool es)
->         return vm;
->  }
->
-> -static struct kvm_vm *__vm_create(void)
-> +static struct kvm_vm *aux_vm_create(bool with_vcpus)
->  {
->         struct kvm_vm *vm;
->         int i;
->
->         vm = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
-> +       if (!with_vcpus)
-> +               return vm;
-> +
->         for (i = 0; i < NR_MIGRATE_TEST_VCPUS; ++i)
->                 vm_vcpu_add(vm, i);
->
-> @@ -93,7 +96,7 @@ static void test_sev_migrate_from(bool es)
->
->         src_vm = sev_vm_create(es);
->         for (i = 0; i < NR_MIGRATE_TEST_VMS; ++i)
-> -               dst_vms[i] = __vm_create();
-> +               dst_vms[i] = aux_vm_create(true);
->
->         /* Initial migration from the src to the first dst. */
->         sev_migrate_from(dst_vms[0]->fd, src_vm->fd);
-> @@ -157,7 +160,7 @@ static void test_sev_migrate_parameters(void)
->         sev_vm = sev_vm_create(/* es= */ false);
->         sev_es_vm = sev_vm_create(/* es= */ true);
->         vm_no_vcpu = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
-> -       vm_no_sev = __vm_create();
-> +       vm_no_sev = aux_vm_create(true);
->         sev_es_vm_no_vmsa = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
->         sev_ioctl(sev_es_vm_no_vmsa->fd, KVM_SEV_ES_INIT, NULL);
->         vm_vcpu_add(sev_es_vm_no_vmsa, 1);
-> @@ -198,11 +201,100 @@ static void test_sev_migrate_parameters(void)
->         kvm_vm_free(vm_no_sev);
->  }
->
-> +static int __sev_mirror_create(int dst_fd, int src_fd)
-> +{
-> +       struct kvm_enable_cap cap = {
-> +               .cap = KVM_CAP_VM_COPY_ENC_CONTEXT_FROM,
-> +               .args = { src_fd }
-> +       };
-> +
-> +       return ioctl(dst_fd, KVM_ENABLE_CAP, &cap);
-> +}
-> +
-> +
-> +static void sev_mirror_create(int dst_fd, int src_fd)
-> +{
-> +       int ret;
-> +
-> +       ret = __sev_mirror_create(dst_fd, src_fd);
-> +       TEST_ASSERT(!ret, "Migration failed, ret: %d, errno: %d\n", ret, errno);
+On Wed, Nov 17, 2021 at 02:07:00PM +0000, Matthew Wilcox wrote:
+> On Tue, Nov 16, 2021 at 08:45:27PM -0800, Darrick J. Wong wrote:
+> > > +/**
+> > > + * folio_zero_segment() - Zero a byte range in a folio.
+> > > + * @folio: The folio to write to.
+> > > + * @start: The first byte to zero.
+> > > + * @end: One more than the last byte in the first range.
+> > > + */
+> > > +static inline void folio_zero_segment(struct folio *folio,
+> > > +		size_t start, size_t end)
+> > > +{
+> > > +	zero_user_segments(&folio->page, start, end, 0, 0);
+> > > +}
+> > > +
+> > > +/**
+> > > + * folio_zero_range() - Zero a byte range in a folio.
+> > > + * @folio: The folio to write to.
+> > > + * @start: The first byte to zero.
+> > > + * @length: The number of bytes to zero.
+> > > + */
+> > > +static inline void folio_zero_range(struct folio *folio,
+> > > +		size_t start, size_t length)
+> > > +{
+> > > +	zero_user_segments(&folio->page, start, start + length, 0, 0);
+> > 
+> > At first I thought "Gee, this is wrong, end should be start+length-1!"
+> > 
+> > Then I looked at zero_user_segments and realized that despite the
+> > parameter name "endi1", it really wants you to tell it the next byte.
+> > Not the end byte of the range you want to zero.
+> > 
+> > Then I looked at the other two new functions and saw that you documented
+> > this, and now I get why Linus ranted about this some time ago.
+> > 
+> > The code looks right, but the "end" names rankle me.  Can we please
+> > change them all?  Or at least in the new functions, if you all already
+> > fought a flamewar over this that I'm not aware of?
+> 
+> Change them to what?  I tend to use 'end' to mean 'excluded end' and
+> 'max' to mean 'included end'.  What would you call the excluded end?
 
-Should this read "Mirroring failed..." or something?
+I've started using 'next', or changing the code to make 'end' be the
+last element in the range the caller wants to act upon.  The thing is,
+those are all iterators, so 'next' fits, whereas it doesn't fit so well
+for range zeroing where that might have been all the zeroing we wanted
+to do.
 
-> +}
-> +
-> +static void test_sev_mirror(bool es)
-> +{
-> +       struct kvm_vm *src_vm, *dst_vm;
-> +       struct kvm_sev_launch_start start = {
-> +               .policy = es ? SEV_POLICY_ES : 0
-> +       };
-> +       int i;
-> +
-> +       src_vm = sev_vm_create(es);
-> +       dst_vm = aux_vm_create(false);
-> +
-> +       sev_mirror_create(dst_vm->fd, src_vm->fd);
-> +
-> +       /* Check that we can complete creation of the mirror VM.  */
-> +       for (i = 0; i < NR_MIGRATE_TEST_VCPUS; ++i)
-> +               vm_vcpu_add(dst_vm, i);
+Though.  'xend' (shorthand for 'excluded end') is different enough to
+signal that the reader should pay attention.  Ok, how about xend then?
 
-Style question. I realized I didn't do this myself but should there
-always be blank line after these conditionals/loops without {}s? Tom
-had me add them to work in ccp driver, unsure if that should be
-maintained everywhere.
-
-> +       sev_ioctl(dst_vm->fd, KVM_SEV_LAUNCH_START, &start);
-> +       if (es)
-> +               sev_ioctl(dst_vm->fd, KVM_SEV_LAUNCH_UPDATE_VMSA, NULL);
-> +
-> +       kvm_vm_free(src_vm);
-> +       kvm_vm_free(dst_vm);
-> +}
-> +
-> +static void test_sev_mirror_parameters(void)
-> +{
-> +       struct kvm_vm *sev_vm, *sev_es_vm, *vm_no_vcpu, *vm_with_vcpu;
-> +       int ret;
-> +
-> +       sev_vm = sev_vm_create(/* es= */ false);
-> +       sev_es_vm = sev_vm_create(/* es= */ true);
-> +       vm_with_vcpu = aux_vm_create(true);
-> +       vm_no_vcpu = aux_vm_create(false);
-> +
-> +       ret = __sev_mirror_create(sev_vm->fd, sev_es_vm->fd);
-> +       TEST_ASSERT(
-> +               ret == -1 && errno == EINVAL,
-> +               "Should not be able copy context to SEV enabled VM. ret: %d, errno: %d\n",
-
-"Should not be able *to* copy ..." (Yea I think the exiting error is
-missing the 'to')
-
-> +               ret, errno);
-> +
-> +       ret = __sev_mirror_create(sev_es_vm->fd, sev_vm->fd);
-> +       TEST_ASSERT(
-> +               ret == -1 && errno == EINVAL,
-> +               "Should not be able copy context to SEV-ES enabled VM. ret: %d, errno: %d\n",
-
-"Should not be able *to* copy ..."
-
-> +               ret, errno);
-> +
-> +       ret = __sev_mirror_create(vm_no_vcpu->fd, vm_with_vcpu->fd);
-> +       TEST_ASSERT(ret == -1 && errno == EINVAL,
-> +                   "Copy context requires SEV enabled. ret %d, errno: %d\n", ret,
-> +                   errno);
-> +
-> +       ret = __sev_mirror_create(vm_with_vcpu->fd, sev_vm->fd);
-> +       TEST_ASSERT(
-> +               ret == -1 && errno == EINVAL,
-> +               "SEV copy context requires no vCPUS on the destination. ret: %d, errno: %d\n",
-> +               ret, errno);
-> +
-> +       kvm_vm_free(sev_vm);
-> +       kvm_vm_free(sev_es_vm);
-> +       kvm_vm_free(vm_with_vcpu);
-> +       kvm_vm_free(vm_no_vcpu);
-> +}
-> +
->  int main(int argc, char *argv[])
->  {
-> -       test_sev_migrate_from(/* es= */ false);
-> -       test_sev_migrate_from(/* es= */ true);
-> -       test_sev_migrate_locking();
-> -       test_sev_migrate_parameters();
-> +       if (kvm_check_cap(KVM_CAP_VM_MOVE_ENC_CONTEXT_FROM)) {
-> +               test_sev_migrate_from(/* es= */ false);
-> +               test_sev_migrate_from(/* es= */ true);
-> +               test_sev_migrate_locking();
-> +               test_sev_migrate_parameters();
-> +       }
-> +       if (kvm_check_cap(KVM_CAP_VM_COPY_ENC_CONTEXT_FROM)) {
-> +               test_sev_mirror(/* es= */ false);
-> +               test_sev_mirror(/* es= */ true);
-> +               test_sev_mirror_parameters();
-> +       }
->         return 0;
->  }
-> --
-> 2.27.0
->
->
+--D
