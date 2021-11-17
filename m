@@ -2,125 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C9E454B08
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:32:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF8D454B00
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:31:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239254AbhKQQf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 11:35:27 -0500
-Received: from foss.arm.com ([217.140.110.172]:60660 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239131AbhKQQeu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 11:34:50 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C98A01477;
-        Wed, 17 Nov 2021 08:31:51 -0800 (PST)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 664653F5A1;
-        Wed, 17 Nov 2021 08:31:48 -0800 (PST)
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     benh@kernel.crashing.org, boqun.feng@gmail.com, bp@alien8.de,
-        catalin.marinas@arm.com, dvyukov@google.com, efuller@redhat.com,
-        elver@google.com, ink@jurassic.park.msu.ru, joey.gouly@arm.com,
-        jonas@southpole.se, juri.lelli@redhat.com, linux@armlinux.org.uk,
-        luto@kernel.org, mark.rutland@arm.com, mattst88@gmail.com,
-        michal.simek@xilinx.com, mingo@redhat.com, mpe@ellerman.id.au,
-        npiggin@gmail.com, paulmck@kernel.org, paulus@samba.org,
-        peterz@infradead.org, rth@twiddle.net, shorne@gmail.com,
-        stefan.kristiansson@saunalahti.fi, tglx@linutronix.de,
-        vincent.guittot@linaro.org, will@kernel.org
-Subject: [PATCHv7 11/11] x86: snapshot thread flags
-Date:   Wed, 17 Nov 2021 16:30:49 +0000
-Message-Id: <20211117163050.53986-12-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20211117163050.53986-1-mark.rutland@arm.com>
-References: <20211117163050.53986-1-mark.rutland@arm.com>
+        id S239129AbhKQQeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 11:34:36 -0500
+Received: from out01.mta.xmission.com ([166.70.13.231]:55958 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239078AbhKQQe3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 11:34:29 -0500
+Received: from in01.mta.xmission.com ([166.70.13.51]:33436)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mnNqL-00AvqG-5R; Wed, 17 Nov 2021 09:31:29 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:57668 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mnNqK-000CQN-0b; Wed, 17 Nov 2021 09:31:28 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marco Elver <elver@google.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Robert O'Callahan <rocallahan@gmail.com>,
+        Marko =?utf-8?B?TcOka2Vsw6Q=?= <marko.makela@mariadb.com>,
+        linux-api@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20211101034147.6203-1-khuey@kylehuey.com>
+        <877ddqabvs.fsf@disp2133>
+        <CAP045AqJVXA60R9RF8Gb2PWGBsK6bZ7tVBkdCcPYYrp6rOkG-Q@mail.gmail.com>
+        <87fsse8maf.fsf@disp2133>
+        <CAP045ApAX725ZfujaK-jJNkfCo5s+oVFpBvNfPJk+DKY8K7d=Q@mail.gmail.com>
+        <CAP045AqsstnxfTyXhhCGDSucqGN7BTtfHJ5s6ZxUQC5K-JU56A@mail.gmail.com>
+        <87bl2kekig.fsf_-_@email.froward.int.ebiederm.org>
+        <875yssekcd.fsf_-_@email.froward.int.ebiederm.org>
+        <202111161022.7B5720B@keescook>
+Date:   Wed, 17 Nov 2021 10:31:20 -0600
+In-Reply-To: <202111161022.7B5720B@keescook> (Kees Cook's message of "Tue, 16
+        Nov 2021 10:23:48 -0800")
+Message-ID: <877dd6bv6v.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-XM-SPF: eid=1mnNqK-000CQN-0b;;;mid=<877dd6bv6v.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19oxkzpsBrrn4aOH5JpxHcwA5X7nGF6NIo=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: ***
+X-Spam-Status: No, score=3.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
+        XMSubLong,XM_Body_Dirty_Words autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.0 XM_Body_Dirty_Words Contains a dirty word
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ***;Kees Cook <keescook@chromium.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 588 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 12 (2.0%), b_tie_ro: 10 (1.7%), parse: 1.21
+        (0.2%), extract_message_metadata: 17 (2.8%), get_uri_detail_list: 1.98
+        (0.3%), tests_pri_-1000: 21 (3.6%), tests_pri_-950: 1.45 (0.2%),
+        tests_pri_-900: 1.17 (0.2%), tests_pri_-90: 93 (15.9%), check_bayes:
+        89 (15.2%), b_tokenize: 7 (1.2%), b_tok_get_all: 9 (1.6%),
+        b_comp_prob: 2.7 (0.5%), b_tok_touch_all: 65 (11.0%), b_finish: 1.36
+        (0.2%), tests_pri_0: 427 (72.6%), check_dkim_signature: 0.50 (0.1%),
+        check_dkim_adsp: 2.5 (0.4%), poll_dns_idle: 0.47 (0.1%), tests_pri_10:
+        2.6 (0.4%), tests_pri_500: 8 (1.4%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 1/3] signal: In get_signal test for signal_group_exit every time through the loop
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some thread flags can be set remotely, and so even when IRQs are
-disabled, the flags can change under our feet. Generally this is
-unlikely to cause a problem in practice, but it is somewhat unsound, and
-KCSAN will legitimately warn that there is a data race.
+Kees Cook <keescook@chromium.org> writes:
 
-To avoid such issues, a snapshot of the flags has to be taken prior to
-using them. Some places already use READ_ONCE() for that, others do not.
+> On Mon, Nov 15, 2021 at 11:32:50PM -0600, Eric W. Biederman wrote:
+>> 
+>> Recently while investigating a problem with rr and signals I noticed
+>> that siglock is dropped in ptrace_signal and get_signal does not jump
+>> to relock.
+>> 
+>> Looking farther to see if the problem is anywhere else I see that
+>> do_signal_stop also returns if signal_group_exit is true.  I believe
+>> that test can now never be true, but it is a bit hard to trace
+>> through and be certain.
+>> 
+>> Testing signal_group_exit is not expensive, so move the test for
+>> signal_group_exit into the for loop inside of get_signal to ensure
+>> the test is never skipped improperly.
+>
+> Seems reasonable.
+>
+>> 
+>> This has been a potential since I added the test for signal_group_exit
+>
+> nit: missing word after "potential"? "bug", "problem"?
 
-Convert them all to the new flag accessor helpers.
+Yes.  Potential problem.  I will update the comment.
 
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Ingo Molnar <mingo@redhat.com>
----
- arch/x86/kernel/process.c | 8 ++++----
- arch/x86/kernel/process.h | 4 ++--
- arch/x86/mm/tlb.c         | 2 +-
- 3 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index e9ee8b526319..180d7a00cb66 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -365,7 +365,7 @@ void arch_setup_new_exec(void)
- 		clear_thread_flag(TIF_SSBD);
- 		task_clear_spec_ssb_disable(current);
- 		task_clear_spec_ssb_noexec(current);
--		speculation_ctrl_update(task_thread_info(current)->flags);
-+		speculation_ctrl_update(read_thread_flags());
- 	}
- }
- 
-@@ -617,7 +617,7 @@ static unsigned long speculation_ctrl_update_tif(struct task_struct *tsk)
- 			clear_tsk_thread_flag(tsk, TIF_SPEC_IB);
- 	}
- 	/* Return the updated threadinfo flags*/
--	return task_thread_info(tsk)->flags;
-+	return read_task_thread_flags(tsk);
- }
- 
- void speculation_ctrl_update(unsigned long tif)
-@@ -653,8 +653,8 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p)
- {
- 	unsigned long tifp, tifn;
- 
--	tifn = READ_ONCE(task_thread_info(next_p)->flags);
--	tifp = READ_ONCE(task_thread_info(prev_p)->flags);
-+	tifn = read_task_thread_flags(next_p);
-+	tifp = read_task_thread_flags(prev_p);
- 
- 	switch_to_bitmap(tifp);
- 
-diff --git a/arch/x86/kernel/process.h b/arch/x86/kernel/process.h
-index 1d0797b2338a..76b547b83232 100644
---- a/arch/x86/kernel/process.h
-+++ b/arch/x86/kernel/process.h
-@@ -13,8 +13,8 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p);
- static inline void switch_to_extra(struct task_struct *prev,
- 				   struct task_struct *next)
- {
--	unsigned long next_tif = task_thread_info(next)->flags;
--	unsigned long prev_tif = task_thread_info(prev)->flags;
-+	unsigned long next_tif = read_task_thread_flags(next);
-+	unsigned long prev_tif = read_task_thread_flags(prev);
- 
- 	if (IS_ENABLED(CONFIG_SMP)) {
- 		/*
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 59ba2968af1b..92bb03b9ceb5 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -361,7 +361,7 @@ static void l1d_flush_evaluate(unsigned long prev_mm, unsigned long next_mm,
- 
- static unsigned long mm_mangle_tif_spec_bits(struct task_struct *next)
- {
--	unsigned long next_tif = task_thread_info(next)->flags;
-+	unsigned long next_tif = read_task_thread_flags(next);
- 	unsigned long spec_bits = (next_tif >> TIF_SPEC_IB) & LAST_USER_MM_SPEC_MASK;
- 
- 	/*
--- 
-2.11.0
-
+>> was added.
+>> 
+>> Fixes: 35634ffa1751 ("signal: Always notice exiting tasks")
+>> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+>
+>> ---
+>>  kernel/signal.c | 20 ++++++++++----------
+>>  1 file changed, 10 insertions(+), 10 deletions(-)
+>> 
+>> diff --git a/kernel/signal.c b/kernel/signal.c
+>> index 7c4b7ae714d4..986fa69c15c5 100644
+>> --- a/kernel/signal.c
+>> +++ b/kernel/signal.c
+>> @@ -2662,19 +2662,19 @@ bool get_signal(struct ksignal *ksig)
+>>  		goto relock;
+>>  	}
+>>  
+>> -	/* Has this task already been marked for death? */
+>> -	if (signal_group_exit(signal)) {
+>> -		ksig->info.si_signo = signr = SIGKILL;
+>> -		sigdelset(&current->pending.signal, SIGKILL);
+>> -		trace_signal_deliver(SIGKILL, SEND_SIG_NOINFO,
+>> -				&sighand->action[SIGKILL - 1]);
+>> -		recalc_sigpending();
+>> -		goto fatal;
+>> -	}
+>> -
+>>  	for (;;) {
+>>  		struct k_sigaction *ka;
+>>  
+>> +		/* Has this task already been marked for death? */
+>> +		if (signal_group_exit(signal)) {
+>> +			ksig->info.si_signo = signr = SIGKILL;
+>> +			sigdelset(&current->pending.signal, SIGKILL);
+>> +			trace_signal_deliver(SIGKILL, SEND_SIG_NOINFO,
+>> +				&sighand->action[SIGKILL - 1]);
+>> +			recalc_sigpending();
+>> +			goto fatal;
+>> +		}
+>> +
+>>  		if (unlikely(current->jobctl & JOBCTL_STOP_PENDING) &&
+>>  		    do_signal_stop(0))
+>>  			goto relock;
+>> -- 
+>> 2.20.1
+>> 
