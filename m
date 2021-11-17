@@ -2,68 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F7D454039
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 06:33:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B19F454042
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 06:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233267AbhKQFfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 00:35:08 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:54858 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231596AbhKQFfI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 00:35:08 -0500
-Received: by mail-il1-f198.google.com with SMTP id x6-20020a056e021bc600b00292aa8bec6cso469068ilv.21
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 21:32:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=U6kTvO9Oiv+XnDndGB5oJ6WC1Ug39q+jw5GcZf9PM5o=;
-        b=Fx9NEYneXfNld/zGMDjacf90riuj1iJabK2y6gwUXMheCdoEHFgRo0Oc+BxagnAdwQ
-         cUVfr0AHPrfcq/X9K99hiIrLKbuyhtFcRwel9+6GfvAiYRNGbzcpUjn/AYA7XXfAJnzh
-         hvek0K3QQi6WDBt6o0t2FSYlR/66d+IxElb8JGaaIBu8MP8F4//yYyHhdZTWCmxJcDMV
-         LsYVA0qW2ywIzWLWNphyzlza8wIeCkkrA/+h4geDwQHcMxE3kgRUujWMuj0a3w5iZTgV
-         5UOSV1lBG1vHRN9y/YdNVnjJnu07H3v39fwfaHUib0vNryoAUz/o2lbIRS4p1UwvxUyH
-         XJFg==
-X-Gm-Message-State: AOAM5314rI3oih50GghYalbGb/43A+mAgcSE+oN9F3QiYva9IuYX3VmM
-        AAwpetN16+XWFoqWBcTfb2Bb8eOcKc5GyhjxOaiuRpV2u+VS
-X-Google-Smtp-Source: ABdhPJzNTw5YFfZ2o6POW9r7JpKSV/vb4VbOqP26VotgSBS9PYUKclMMIt7aM0nI2J0pC7i+O6r7kqBY+dZvlXu0kzD32nLvQmVL
+        id S233157AbhKQFjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 00:39:17 -0500
+Received: from mga05.intel.com ([192.55.52.43]:49649 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231596AbhKQFjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 00:39:16 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="320097999"
+X-IronPort-AV: E=Sophos;i="5.87,240,1631602800"; 
+   d="scan'208";a="320097999"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 21:36:18 -0800
+X-IronPort-AV: E=Sophos;i="5.87,240,1631602800"; 
+   d="scan'208";a="506768956"
+Received: from xinshuob-mobl.ccr.corp.intel.com (HELO lkp-bingo.fnst-test.com) ([10.255.31.178])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 21:36:15 -0800
+From:   Li Zhijian <zhijianx.li@intel.com>
+To:     shuah@kernel.org, kuba@kernel.org, dcaratti@redhat.com,
+        linux-kselftest@vger.kernel.org
+Cc:     lizhijian@cn.fujitsu.com, linux-kernel@vger.kernel.org,
+        lkp@intel.com, philip.li@intel.com,
+        Li Zhijian <zhijianx.li@intel.com>
+Subject: [PATCH 1/3] selftests/tc-testing: add exit code
+Date:   Wed, 17 Nov 2021 13:32:45 +0800
+Message-Id: <20211117053247.29052-1-zhijianx.li@intel.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b2f:: with SMTP id e15mr6505013ilu.167.1637127129837;
- Tue, 16 Nov 2021 21:32:09 -0800 (PST)
-Date:   Tue, 16 Nov 2021 21:32:09 -0800
-In-Reply-To: <000000000000c93bd505bf3646ed@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000006b5b205d0f55d49@google.com>
-Subject: Re: [syzbot] WARNING in inc_nlink (2)
-From:   syzbot <syzbot+1c8034b9f0e640f9ba45@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        miklos@szeredi.hu, mszeredi@redhat.com,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+Mark the summary result as FAIL to prevent from confusing the selftest
+framework if some of them are failed.
 
-commit 97f044f690bac2b094bfb7fb2d177ef946c85880
-Author: Miklos Szeredi <mszeredi@redhat.com>
-Date:   Fri Oct 22 15:03:02 2021 +0000
+Previously, the selftest framework always treats it as *ok* even though
+some of them are failed actually. That's because the script tdc.sh always
+return 0.
 
-    fuse: don't increment nlink in link()
+ # All test results:
+ #
+ # 1..97
+ # ok 1 83be - Create FQ-PIE with invalid number of flows
+ # ok 2 8b6e - Create RED with no flags
+[...snip]
+ # ok 6 5f15 - Create RED with flags ECN, harddrop
+ # ok 7 53e8 - Create RED with flags ECN, nodrop
+ # ok 8 d091 - Fail to create RED with only nodrop flag
+ # ok 9 af8e - Create RED with flags ECN, nodrop, harddrop
+ # not ok 10 ce7d - Add mq Qdisc to multi-queue device (4 queues)
+ #       Could not match regex pattern. Verify command output:
+ # qdisc mq 1: root
+ # qdisc fq_codel 0: parent 1:4 limit 10240p flows 1024 quantum 1514 target 5ms interval 100ms memory_limit 32Mb ecn drop_batch 64
+ # qdisc fq_codel 0: parent 1:3 limit 10240p flows 1024 quantum 1514 target 5ms interval 100ms memory_limit 32Mb ecn drop_batch 64
+[...snip]
+ # ok 96 6979 - Change quantum of a strict ETS band
+ # ok 97 9a7d - Change ETS strict band without quantum
+ #
+ #
+ #
+ #
+ ok 1 selftests: tc-testing: tdc.sh <<< summary result
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10563ac9b00000
-start commit:   1da38549dd64 Merge tag 'nfsd-5.15-3' of git://git.kernel.o..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e2ffb281e6323643
-dashboard link: https://syzkaller.appspot.com/bug?extid=1c8034b9f0e640f9ba45
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11f16d57300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15758d57300000
+CC: Philip Li <philip.li@intel.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Li Zhijian <zhijianx.li@intel.com>
+---
+ tools/testing/selftests/tc-testing/tdc.py | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-If the result looks correct, please mark the issue as fixed by replying with:
+diff --git a/tools/testing/selftests/tc-testing/tdc.py b/tools/testing/selftests/tc-testing/tdc.py
+index a3e43189d940..29832fce66ac 100755
+--- a/tools/testing/selftests/tc-testing/tdc.py
++++ b/tools/testing/selftests/tc-testing/tdc.py
+@@ -716,6 +716,7 @@ def set_operation_mode(pm, parser, args, remaining):
+         list_test_cases(alltests)
+         exit(0)
+ 
++    exit_code = 0 # KSFT_PASS
+     if len(alltests):
+         req_plugins = pm.get_required_plugins(alltests)
+         try:
+@@ -724,6 +725,8 @@ def set_operation_mode(pm, parser, args, remaining):
+             print('The following plugins were not found:')
+             print('{}'.format(pde.missing_pg))
+         catresults = test_runner(pm, args, alltests)
++        if catresults.count_failures() != 0
++            exit_code = 1 # KSFT_FAIL
+         if args.format == 'none':
+             print('Test results output suppression requested\n')
+         else:
+@@ -748,6 +751,8 @@ def set_operation_mode(pm, parser, args, remaining):
+                         gid=int(os.getenv('SUDO_GID')))
+     else:
+         print('No tests found\n')
++        exit_code = 4 # KSFT_SKIP
++    exit(exit_code)
+ 
+ def main():
+     """
+@@ -767,8 +772,5 @@ def main():
+ 
+     set_operation_mode(pm, parser, args, remaining)
+ 
+-    exit(0)
+-
+-
+ if __name__ == "__main__":
+     main()
+-- 
+2.32.0
 
-#syz fix: fuse: don't increment nlink in link()
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
