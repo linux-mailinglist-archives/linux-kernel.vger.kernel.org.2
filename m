@@ -2,96 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA104550F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 00:13:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 556DE4550FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 00:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241510AbhKQXQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 18:16:42 -0500
-Received: from gandalf.ozlabs.org ([150.107.74.76]:38331 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241501AbhKQXQl (ORCPT
+        id S241530AbhKQXU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 18:20:28 -0500
+Received: from smtprelay0252.hostedemail.com ([216.40.44.252]:45594 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233853AbhKQXUU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 18:16:41 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hvdyr08Gjz4xdc;
-        Thu, 18 Nov 2021 10:13:39 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1637190821;
-        bh=1KdIYkXQj6OUYXFVarRsAwE3ZpERCpX1hgrcQuIfkps=;
-        h=Date:From:To:Cc:Subject:From;
-        b=TME2eGfFBhYhYfD+I3PqZlZa1VMqt0I/ja/xJcNM6JPutdo43cMSnVld4k4c3yMdm
-         gCA+QTgtsV81rBpa5ZkOE0tV22lQE0qOU+xoZu/xcQSIMsdI9F+BUGBJplv4BcEJh6
-         chFO0sukJXv2mx7BfAKTtL/Q3Orn/a05nu1lPnk0cHPqkIskI8nASGf/pJyX/pcjxo
-         +H86aJVk2kNMM+C8DCOAWukx6QhM1pFY5VxYDND9JlK+QOIaZUweAQveY7DeOJUB5b
-         vJ9CfqKzrrt8ugKbLDYhyXYlVzHlb7aRGPJcl64HAvzHvzkphdFEtiTvUVfepKMA1O
-         b85q/vZN3fAMQ==
-Date:   Thu, 18 Nov 2021 10:13:39 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Dave Tucker <dave@dtucker.co.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: linux-next: manual merge of the bpf-next tree with the jc_docs tree
-Message-ID: <20211118101339.6ec37e14@canb.auug.org.au>
+        Wed, 17 Nov 2021 18:20:20 -0500
+Received: from omf03.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 5E0CA837F253;
+        Wed, 17 Nov 2021 23:17:20 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id 49AB3900065E;
+        Wed, 17 Nov 2021 23:17:16 +0000 (UTC)
+Message-ID: <dd3b7e0a1b71ab669fc1c0df434bf49eb3dce976.camel@perches.com>
+Subject: Re: [PATCH v1 1/1] MAINTAINERS: Sort sections with
+ parse-maintainers.pl help
+From:   Joe Perches <joe@perches.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        llvm@lists.linux.dev
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 17 Nov 2021 15:17:18 -0800
+In-Reply-To: <20211117190553.36144-1-andriy.shevchenko@linux.intel.com>
+References: <20211117190553.36144-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/5L9+vwtChqc/S0w0YGdhq+U";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 49AB3900065E
+X-Spam-Status: No, score=-3.13
+X-Stat-Signature: n9bupe7doqj5hygd79w1p9qt1qrjrf6s
+X-Rspamd-Server: rspamout01
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+rro6zIGaj4O46vOHsG7C1p1dc+9K9qn0=
+X-HE-Tag: 1637191036-854386
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/5L9+vwtChqc/S0w0YGdhq+U
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, 2021-11-17 at 21:05 +0200, Andy Shevchenko wrote:
+> Sort sections with parse-maintainers.pl help since quite a few
+> got unsorted from the previous run.
 
-Hi all,
+If this is done, I think adding --order to the command line would be better.
 
-Today's linux-next merge of the bpf-next tree got a conflict in:
+For next-20211117 this gives
 
-  Documentation/bpf/index.rst
+$ ./scripts/parse-maintainers.pl --input=MAINTAINERS --output=MAINTAINERS --order
+$ git diff --stat MAINTAINERS
+ MAINTAINERS | 826 +++++++++++++++++++++++++++++++++++++++++++++++++++---------------------------------------------------
+ 1 file changed, 413 insertions(+), 413 deletions(-)
 
-between commit:
 
-  1c1c3c7d08d8 ("libbpf: update index.rst reference")
-
-from the jc_docs tree and commit:
-
-  5931d9a3d052 ("bpf, docs: Fix ordering of bpf documentation")
-
-from the bpf-next tree.
-
-I fixed it up (the latter removed the line updated by the former, so I
-just the latter) and can carry the fix as necessary. This is now fixed
-as far as linux-next is concerned, but any non trivial conflicts should
-be mentioned to your upstream maintainer when your tree is submitted for
-merging.  You may also want to consider cooperating with the maintainer
-of the conflicting tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/5L9+vwtChqc/S0w0YGdhq+U
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGVjKMACgkQAVBC80lX
-0Gwb5wf/RINYTn/Oo4Zx3IplVB4jA9W3DvOmx/IsW7H+nZcOKCH+86QD751fkQcl
-PsNI+kLXimzNiW7HujBnAw4j6gSUL+Tjs6+p/Xv6GaZxZZyg1jagM/uwSaL/6rUQ
-1dFDebvs7UtBWNt4GFqxuQOqr01lFy6wVrM45YwgEC2q/VKCkafU1VXZyIbwFp0X
-5ana/9jSucDqfTCfcFHW4Js0pi3wZZzOrWvLJfNIxwzXVICXc2fBCoz7rMoK+S4J
-/fVId/XZSPcx8ode+bVlEJdr/pxVXOj/+HrBDPff4myAV5PI5ojshznMplnFim+p
-BSbKZJ0Jt2kIM9SjoLsL6sLFQmYuuA==
-=XdIC
------END PGP SIGNATURE-----
-
---Sig_/5L9+vwtChqc/S0w0YGdhq+U--
