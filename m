@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8D6454AFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:31:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9539B454B01
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:31:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239103AbhKQQec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 11:34:32 -0500
-Received: from foss.arm.com ([217.140.110.172]:60396 "EHLO foss.arm.com"
+        id S239136AbhKQQeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 11:34:37 -0500
+Received: from foss.arm.com ([217.140.110.172]:60442 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239112AbhKQQe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 11:34:28 -0500
+        id S239096AbhKQQec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 11:34:32 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F069213A1;
-        Wed, 17 Nov 2021 08:31:29 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 98FE0142F;
+        Wed, 17 Nov 2021 08:31:33 -0800 (PST)
 Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 8EB143F5A1;
-        Wed, 17 Nov 2021 08:31:26 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 327363F5A1;
+        Wed, 17 Nov 2021 08:31:30 -0800 (PST)
 From:   Mark Rutland <mark.rutland@arm.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     benh@kernel.crashing.org, boqun.feng@gmail.com, bp@alien8.de,
@@ -29,9 +29,9 @@ Cc:     benh@kernel.crashing.org, boqun.feng@gmail.com, bp@alien8.de,
         peterz@infradead.org, rth@twiddle.net, shorne@gmail.com,
         stefan.kristiansson@saunalahti.fi, tglx@linutronix.de,
         vincent.guittot@linaro.org, will@kernel.org
-Subject: [PATCHv7 05/11] arm: snapshot thread flags
-Date:   Wed, 17 Nov 2021 16:30:43 +0000
-Message-Id: <20211117163050.53986-6-mark.rutland@arm.com>
+Subject: [PATCHv7 06/11] arm64: snapshot thread flags
+Date:   Wed, 17 Nov 2021 16:30:44 +0000
+Message-Id: <20211117163050.53986-7-mark.rutland@arm.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20211117163050.53986-1-mark.rutland@arm.com>
 References: <20211117163050.53986-1-mark.rutland@arm.com>
@@ -50,39 +50,86 @@ using them. Some places already use READ_ONCE() for that, others do not.
 Convert them all to the new flag accessor helpers.
 
 Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Acked-by: Will Deacon <will@kernel.org>
 Acked-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Russell King <linux@armlinux.org.uk>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
 ---
- arch/arm/kernel/signal.c | 2 +-
- arch/arm/mm/alignment.c  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/kernel/entry-common.c | 2 +-
+ arch/arm64/kernel/ptrace.c       | 4 ++--
+ arch/arm64/kernel/signal.c       | 2 +-
+ arch/arm64/kernel/syscall.c      | 4 ++--
+ 4 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm/kernel/signal.c b/arch/arm/kernel/signal.c
-index a41e27ace391..c532a6041066 100644
---- a/arch/arm/kernel/signal.c
-+++ b/arch/arm/kernel/signal.c
-@@ -631,7 +631,7 @@ do_work_pending(struct pt_regs *regs, unsigned int thread_flags, int syscall)
- 			}
+diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
+index f7408edf8571..ef7fcefb96bd 100644
+--- a/arch/arm64/kernel/entry-common.c
++++ b/arch/arm64/kernel/entry-common.c
+@@ -129,7 +129,7 @@ static __always_inline void prepare_exit_to_user_mode(struct pt_regs *regs)
+ 
+ 	local_daif_mask();
+ 
+-	flags = READ_ONCE(current_thread_info()->flags);
++	flags = read_thread_flags();
+ 	if (unlikely(flags & _TIF_WORK_MASK))
+ 		do_notify_resume(regs, flags);
+ }
+diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
+index 88a9034fb9b5..33cac3d75150 100644
+--- a/arch/arm64/kernel/ptrace.c
++++ b/arch/arm64/kernel/ptrace.c
+@@ -1839,7 +1839,7 @@ static void tracehook_report_syscall(struct pt_regs *regs,
+ 
+ int syscall_trace_enter(struct pt_regs *regs)
+ {
+-	unsigned long flags = READ_ONCE(current_thread_info()->flags);
++	unsigned long flags = read_thread_flags();
+ 
+ 	if (flags & (_TIF_SYSCALL_EMU | _TIF_SYSCALL_TRACE)) {
+ 		tracehook_report_syscall(regs, PTRACE_SYSCALL_ENTER);
+@@ -1862,7 +1862,7 @@ int syscall_trace_enter(struct pt_regs *regs)
+ 
+ void syscall_trace_exit(struct pt_regs *regs)
+ {
+-	unsigned long flags = READ_ONCE(current_thread_info()->flags);
++	unsigned long flags = read_thread_flags();
+ 
+ 	audit_syscall_exit(regs);
+ 
+diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
+index 8f6372b44b65..d8aaf4b6f432 100644
+--- a/arch/arm64/kernel/signal.c
++++ b/arch/arm64/kernel/signal.c
+@@ -948,7 +948,7 @@ void do_notify_resume(struct pt_regs *regs, unsigned long thread_flags)
  		}
- 		local_irq_disable();
--		thread_flags = current_thread_info()->flags;
+ 
+ 		local_daif_mask();
+-		thread_flags = READ_ONCE(current_thread_info()->flags);
 +		thread_flags = read_thread_flags();
  	} while (thread_flags & _TIF_WORK_MASK);
- 	return 0;
  }
-diff --git a/arch/arm/mm/alignment.c b/arch/arm/mm/alignment.c
-index ea81e89e7740..adbb3817d0be 100644
---- a/arch/arm/mm/alignment.c
-+++ b/arch/arm/mm/alignment.c
-@@ -990,7 +990,7 @@ do_alignment(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
- 		 * there is no work pending for this thread.
- 		 */
- 		raw_local_irq_disable();
--		if (!(current_thread_info()->flags & _TIF_WORK_MASK))
-+		if (!(read_thread_flags() & _TIF_WORK_MASK))
- 			set_cr(cr_no_alignment);
- 	}
  
+diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
+index 50a0f1a38e84..c938603b3ba0 100644
+--- a/arch/arm64/kernel/syscall.c
++++ b/arch/arm64/kernel/syscall.c
+@@ -81,7 +81,7 @@ void syscall_trace_exit(struct pt_regs *regs);
+ static void el0_svc_common(struct pt_regs *regs, int scno, int sc_nr,
+ 			   const syscall_fn_t syscall_table[])
+ {
+-	unsigned long flags = current_thread_info()->flags;
++	unsigned long flags = read_thread_flags();
+ 
+ 	regs->orig_x0 = regs->regs[0];
+ 	regs->syscallno = scno;
+@@ -148,7 +148,7 @@ static void el0_svc_common(struct pt_regs *regs, int scno, int sc_nr,
+ 	 */
+ 	if (!has_syscall_work(flags) && !IS_ENABLED(CONFIG_DEBUG_RSEQ)) {
+ 		local_daif_mask();
+-		flags = current_thread_info()->flags;
++		flags = read_thread_flags();
+ 		if (!has_syscall_work(flags) && !(flags & _TIF_SINGLESTEP))
+ 			return;
+ 		local_daif_restore(DAIF_PROCCTX);
 -- 
 2.11.0
 
