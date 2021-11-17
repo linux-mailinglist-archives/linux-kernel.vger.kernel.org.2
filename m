@@ -2,144 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C048E454438
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:52:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D8A45443B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:52:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235610AbhKQJzT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Nov 2021 04:55:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235570AbhKQJzQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 04:55:16 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96EBC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 01:52:17 -0800 (PST)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mnHbn-0003nK-Fo; Wed, 17 Nov 2021 10:52:03 +0100
-Received: from pza by lupine with local (Exim 4.94.2)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mnHbl-0004T6-Q4; Wed, 17 Nov 2021 10:52:01 +0100
-Message-ID: <9ab98fba364f736b267dbd5e1d305d3e8426e877.camel@pengutronix.de>
-Subject: Re: [PATCH net-next 2/5] net: lan966x: add the basic lan966x driver
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>, davem@davemloft.net,
-        kuba@kernel.org, robh+dt@kernel.org, linux@armlinux.org.uk,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        id S235625AbhKQJzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 04:55:21 -0500
+Received: from mail-dm6nam11on2076.outbound.protection.outlook.com ([40.107.223.76]:2302
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235570AbhKQJzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 04:55:21 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OoITZLhCdCn8AFQDXktxTtBJDY6TgeiKEPcoOGpOzEz/XaWNcUjxM4/W2N4Tg9zUvBArMqz2X9w3cCS0UWXyANyeV82mg1e5rKiiGEoDNrEpeb0XCtJu1Vygsw4XVnkJfncK1W59TvYoFdgU3/rsv5lTIA9EqHyCx9mkaxGYABuWt/XQehatOhnL3acN9rEomQd5xh2GRolZChfPyIHUWtYuU9L41srTS5jtHrmILqYzXnT8bGJOgsyP8yV6Rc6NGzqLLw4F544O1OweWFCKn7wpYP+WebS8p4ctuJ1MrFGxM22UEY7JCplxXTsa6qSVbN3SpBGY6P2Rzdfpj/ez8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9Eq0724ClsJ1cRUSo9QhloScrK6EDxzY1cu6iZOeV90=;
+ b=aY3+Sa8sfagnnzMIIRvzakCdtrwletnOdvh7Y5X6OwpXTHUAGixDYffNoyGhXmEJ29ToSrYBtNVHJCf4ZqXAyc0nfseWLr6STSPdpOqDbyAk8vdcki2HcwLXLy6VwOdiHqzIB97d6iN9A3wwDryOxAbf27QMNuZ4wm/NH3Q5fCsVjuel8wXgHvh7GqpXI6JmR6MqoyQ+/28M0YdTaMu2E/4RIm16ZJiRi/VKag5q+k4Nbe8L9aeRK/4DDOWM0w+e8lECcQvA7mRAe4dolERa5JH5CC4J2tpnrVHFy6HL9vmlTx5/vk5yzqbTBH/aRp36aVoDLGYqDusbR6MKRbllsQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9Eq0724ClsJ1cRUSo9QhloScrK6EDxzY1cu6iZOeV90=;
+ b=nV/S0U8Ki9w46QqeObS7z2Tb+WaGeZkyNH/Xp6EiBR030Y17Eg2EMFRzfxbUVXVN9rqVkfBz1k2tgTXgL/x7AP1WnPUV0dq9pkhmsoBi05czlIQhT3gyVVYfHYgB674JmTcfhbif1cC8wBxJqrDy99arNHq7b2jWpgfM+TdOI+JzXvhkUJ6spR/YcF9Lo1y4Lh3Q5EGaAgZzNj8ZqattqnO8Gp7C366T4W1YDptNG9pgyhdISBZgeW1o95RpUqq7YPrJCDE2JkBePkLu8N0mqvD2o3w5k3My53NZmwJBZKKZF+6xQtQgN9hSaSTY9XMW4Zsq5FHVQRartJh1iUlNFw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM8PR12MB5445.namprd12.prod.outlook.com (2603:10b6:8:24::7) by
+ DM4PR12MB5295.namprd12.prod.outlook.com (2603:10b6:5:39f::23) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4690.26; Wed, 17 Nov 2021 09:52:21 +0000
+Received: from DM8PR12MB5445.namprd12.prod.outlook.com
+ ([fe80::c884:b4ad:6c93:3f86]) by DM8PR12MB5445.namprd12.prod.outlook.com
+ ([fe80::c884:b4ad:6c93:3f86%9]) with mapi id 15.20.4669.016; Wed, 17 Nov 2021
+ 09:52:21 +0000
+Subject: Re: [PATCH V2 1/2] dt-bindings: Add YAML bindings for NVENC and NVJPG
+To:     Rob Herring <robh@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-tegra@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        devicetree@vger.kernel.org,
+        Mikko Perttunen <mperttunen@nvidia.com>,
         linux-kernel@vger.kernel.org
-Date:   Wed, 17 Nov 2021 10:52:01 +0100
-In-Reply-To: <20211117091858.1971414-3-horatiu.vultur@microchip.com>
-References: <20211117091858.1971414-1-horatiu.vultur@microchip.com>
-         <20211117091858.1971414-3-horatiu.vultur@microchip.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.38.3-1 
+References: <20211116155413.164242-1-jonathanh@nvidia.com>
+ <1637116030.331789.1207279.nullmailer@robh.at.kernel.org>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <fd2c67ca-de95-6999-8a2e-a3f155add13e@nvidia.com>
+Date:   Wed, 17 Nov 2021 09:52:15 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <1637116030.331789.1207279.nullmailer@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0286.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:195::21) To DM8PR12MB5445.namprd12.prod.outlook.com
+ (2603:10b6:8:24::7)
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Received: from [IPv6:2a00:23c7:b086:2f00:fd12:4d15:935b:56c5] (2a00:23c7:b086:2f00:fd12:4d15:935b:56c5) by LO4P123CA0286.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:195::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.25 via Frontend Transport; Wed, 17 Nov 2021 09:52:20 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2986911b-9cd6-4f9d-2558-08d9a9aff335
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5295:
+X-Microsoft-Antispam-PRVS: <DM4PR12MB5295F931CFCD879D594F3793D99A9@DM4PR12MB5295.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rAaR3KqIv3Wnk3/qPE453OH+t9RSIY9ADyLlfxQi0klHAXqGTIpG4t55Hsfe0sbu/mvkc4geRrYJ/skvAdokpYu99azMz9/QivmX35dS6jCEWW2UuB6nPHl+gtNkqWwHQ+t1HOWpWsh0CwGFbjuafKqDMrPREIkXTjD+BTwbv0wdAQTZ+rcZU2XKf+1aENkhgi8eFg5rMeUjPTeNdf+RoX24GaEXR6NHUUs6syPRmkpKhspjoJae0umV7+k7y7r11r5BzqtgdWUk24nkNk2SybzNBvjUYQIfoXoYiDIefV58S5Cc/y/WH2mattzTC+zxhucQgEr+17ClyuMWn2LkRoYIc4sdtjFEQLs2AxytXq5qoMqkWDtdgwajSxFrI7dmzfpL15tDcpfV9f3ZNonD+W9zRIsyqT4yCoLqWPWWXE7rQOF8Lv4sUbMvN9X0V6hhfp2zdBE2f4Sy/Ptktvv+rYgH+BS5Ad8tO/YCO5n6oFrKVbMcd2xm6gEkXZDrUN/1mLWd8T58W3urty0zLlVfOEqVRU9pruNK17xtkwzRA/N+bCMk24lmT+oM1k9S8J2KYQ3O2g1ikNt+Yjb2QgyibLEgj1YZtJfpRiJ+McThzJCg9jX2UiX9pr0dMYWxCXa2s4iMX2L+QMxmUDvhqoG5Dmk6p5kIxYaWZVclLrugXgDE/XwzmNwhL1zj4KpYCQip9RBK1NZ6NeC5locB1YVW29wBob40qneKlFFrtXI0mzQZuDqstKWR0y6M/zDIIxGf
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR12MB5445.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(2616005)(53546011)(186003)(31686004)(2906002)(6916009)(86362001)(83380400001)(66476007)(508600001)(8676002)(66946007)(54906003)(5660300002)(6666004)(66556008)(36756003)(4326008)(316002)(31696002)(38100700002)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SWEva1ZiV2RnWWNEeWJEUCtvRTFKaWZOWXczVk1OVjdNMHBiTVQvNEZMOG1y?=
+ =?utf-8?B?cHAzaER6THd1VFVHQ1UzTHpaUWtCUHpXd2VqNktyeCtnWU8zSW5pUmFvVUU3?=
+ =?utf-8?B?NkoxU21tWmJtOUJvWWxvZkc4UDBjVFNTWnVPRkYybTJyei9TUGFjcXNCVTVa?=
+ =?utf-8?B?UXFVb1FXODFhR3N0NzNOeGRybmZUUm5IOGZWb2lHV0xBZlMrVVc2TEN4ZnlB?=
+ =?utf-8?B?WEEyRGs0K2g4VWp6QTNOd2hhaVE0QWYwUzViV1N4RnJLbHN2MjF6cEljcGNi?=
+ =?utf-8?B?SEVMN1QvYkc1VFVRVHVJN0oreEFmb1RXd0pmTXVNZU95Q0Y0OGw2L3JsK1Bh?=
+ =?utf-8?B?VjRTWVBBQmorMk9YWlhEbXZEVnhhOHcycnkrdktOR3EvWFZYR0p3YTdnUmhI?=
+ =?utf-8?B?cTRCclUzc3NIY0ZSREVoM0hGQVg2VUY1Qk0wVU1ETEdDSkxSaE1QTFQ0YnRP?=
+ =?utf-8?B?VVp0SXYxMWZGeDNDandqWm84TDZQaUo5bUdnc2N3bHhNZFJRTHNvcW1ha2d5?=
+ =?utf-8?B?VjZnOFNjUG92dXBtdWI2bDJLcTZsSkVLTXQ1T2FkQ1VGbHBrbkVxMGZnUDQ1?=
+ =?utf-8?B?MGFlN1gxalg1SzZmS3dLRzAvMzRxZ2graGc1ejUrRDdaVVQzdlJyVjBDdXFr?=
+ =?utf-8?B?S1lyL2Q0Q2dnSkk4bWkvemlsc0hUYk50MUlETGVVKy90YlRGTHZCcHJIZVo4?=
+ =?utf-8?B?empxNDR3Z1I0UXBnYjRIbklmeEtkTDYrV3FqUHFOKzBYblRLbmExaHdQRytK?=
+ =?utf-8?B?cmkvN0duQllyQmNZTFhvSURteDB6QU5vaWo0Z3hTM3JuODkrSUc2cUw0MDFu?=
+ =?utf-8?B?VXk0SzFKcXI4bk1NV3F0alJPaUYzTDlBeXN2MU1Fb3lxWFp0bUhZRjFnNkha?=
+ =?utf-8?B?UGh3V28zbFNyTjBRbnhtbjBhZytoaFM4SlJUMGppNVBOaWJWUXB1MWdkMmtX?=
+ =?utf-8?B?QXB6blRzZ1NHLzQybG1ianhWcG1Xb09SMGo1dzFNQmtXNTIrVnJUVUtDM3hm?=
+ =?utf-8?B?SVFDc2hwZkJOblpTOGhxWE1ZU2hFVmw2dDV1cGowNTJsb09INEZJMmpRalYx?=
+ =?utf-8?B?cENkU3l0OTNKK2lPcEFHN016YWx2ZjQ1OGtIQ1d3MTE5Q0pIQ29MOFBwamxy?=
+ =?utf-8?B?ODdjUDJCOXZaMjZ6SHpXVzZqSFgvUmlzQWhRNmlCNlorbUhGUTR3ZFZjVDlG?=
+ =?utf-8?B?VERCVmxGdGhzSTF1dVgzaStaS1ZycWxENkhIalljd01BNGUyWEhqVktUVmZK?=
+ =?utf-8?B?bjV4cm5EdE9oN0hTWjlRaTNlMDJyQU01NzB0VWIrRHRZTGJqTzVzdXBrM1hi?=
+ =?utf-8?B?cVRUQ2ErektuQVkxQlhMREY4bXdXU21FdEN2RUs4eDFoa1hyeWpGcGRxTmVW?=
+ =?utf-8?B?NklXVEgzV2Jaek1HQXRUYW1tUHRpWHk0c0g3ZWxtT24vY29SU2xlbjBpcnRT?=
+ =?utf-8?B?ZGQyUVp3dFRvdG5wS3BkYmd3c3BGeDBIV0Y5YnhrV3JoUTkxTHRFV0JuNDBP?=
+ =?utf-8?B?SUhaSmhyN0taU1hKUDF2a1FNUjk4OERVOFdmZmlEdDlUSkQxYk9vTno5OVRi?=
+ =?utf-8?B?TkpXT0tGWTk0ZFJMc1lFRWZsZE92TldJV2JycHBOKzdPa3RnUXROa09jZm9y?=
+ =?utf-8?B?WFAzeWxpTzlKWTY2Zk5BNG9WM3ViNnhHV2R6MUtlZmg1Ymg1V1U1Q0NpQVhU?=
+ =?utf-8?B?RGRhYkxhQVZITlN6VExwWkJENGo1TFZVL2NUV3Y5bXJ4V2wvZUx3T0VqMHli?=
+ =?utf-8?B?RHRBK2o1RWthYnp6bHN1Y2daaDc5WHVNZUVSTStmcVRSV0xySHZ5QzlrNDNu?=
+ =?utf-8?B?TmluTkJTZWx5RUR2YWJlakx4T3krekRBL1d0bVY2Vm13dEZNdnEyRzU5ejVr?=
+ =?utf-8?B?NCtnOE4rZ1VuSzB1MjQvbSt2K3ZZeTU4aTJvL2JRQm1OWXJ2bTRyV3hUS0tM?=
+ =?utf-8?B?cTB1OS9WbVpXR3pVNXhjK0syaTZETkNwUU9CTjVCZ1VTUVhkdUJRaEJNRDhx?=
+ =?utf-8?B?QUFvVnpFNEx2OGNaR201eHl3WlRVMm9KZzc3a29FZ2JaaUV5clRTY3d6SkJu?=
+ =?utf-8?B?d1haSStIeUFaakJ2UzVyL1hqYnkzU0xOK2QrVDYxSHNlQVZ4N29NeHFzMVM2?=
+ =?utf-8?B?SmhlNlpLWGp6eERvWVRwUTk1amlSdm9qeTlMNGlMMG9heWc5K1dWMUVpc3pW?=
+ =?utf-8?B?YlF6U21UUFdaZU9RemtIWHFZdmdXajVjb28zQ1loeU93b3o1eTMzNFRYM3FR?=
+ =?utf-8?Q?wuAY6CxOqfyG8HNjHfzmszT/hRXpNMmSHeM6ORxypA=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2986911b-9cd6-4f9d-2558-08d9a9aff335
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR12MB5445.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2021 09:52:21.7688
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: f3ON7LGZcF4CLq8sAeh4jsJrzz9JoLT43OKz9SrQbiC6QATxt1H/blYeN59ruwknKl7lgswBhdVZ12LydNmJiQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5295
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Horatio,
 
-On Wed, 2021-11-17 at 10:18 +0100, Horatiu Vultur wrote:
-> +static int lan966x_reset_switch(struct lan966x *lan966x)
-> +{
-> +	struct reset_control *reset;
-> +	int val = 0;
-> +	int ret;
-> +
-> +	reset = devm_reset_control_get_shared(lan966x->dev, "switch");
-> +	if (IS_ERR(reset))
-> +		dev_warn(lan966x->dev, "Could not obtain switch reset: %ld\n",
-> +			 PTR_ERR(reset));
-> +	else
-> +		reset_control_reset(reset);
+On 17/11/2021 02:27, Rob Herring wrote:
+> On Tue, 16 Nov 2021 15:54:12 +0000, Jon Hunter wrote:
+>> Add YAML device tree bindings for the Tegra NVENC and NVJPG Host1x
+>> engines.
+>>
+>> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+>> ---
+>> Changes since V1:
+>> - Fixed errors reported by Rob's bot
+>>
+>>   .../gpu/host1x/nvidia,tegra210-nvenc.yaml     | 135 ++++++++++++++++++
+>>   .../gpu/host1x/nvidia,tegra210-nvjpg.yaml     |  94 ++++++++++++
+>>   2 files changed, 229 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/gpu/host1x/nvidia,tegra210-nvenc.yaml
+>>   create mode 100644 Documentation/devicetree/bindings/gpu/host1x/nvidia,tegra210-nvjpg.yaml
+>>
+> 
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> yamllint warnings/errors:
+> ./Documentation/devicetree/bindings/gpu/host1x/nvidia,tegra210-nvenc.yaml:103:10: [warning] wrong indentation: expected 10 but found 9 (indentation)
+> ./Documentation/devicetree/bindings/gpu/host1x/nvidia,tegra210-nvenc.yaml:104:13: [warning] wrong indentation: expected 11 but found 12 (indentation)
 
-According to the device tree bindings, both resets are required.
-I'd expect this to return on error.
-Is there any chance of the device working with out the switch reset
-being triggered?
 
-> +
-> +	reset = devm_reset_control_get_shared(lan966x->dev, "phy");
-> +	if (IS_ERR(reset)) {
-> +		dev_warn(lan966x->dev, "Could not obtain phy reset: %ld\n",
-> +			 PTR_ERR(reset));
-> +	} else {
-> +		reset_control_reset(reset);
-> +	}
+Darn, I did run the check and although saw the previous ones did not 
+catch these.
 
-Same as above.
-Consider printing errors with %pe or dev_err_probe().
+> This check can fail if there are any dependencies. The base for a patch
+> series is generally the most recent rc1.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+> 
+> pip3 install dtschema --upgrade
 
-> +	lan_wr(SYS_RESET_CFG_CORE_ENA_SET(0), lan966x, SYS_RESET_CFG);
-> +	lan_wr(SYS_RAM_INIT_RAM_INIT_SET(1), lan966x, SYS_RAM_INIT);
-> +	ret = readx_poll_timeout(lan966x_ram_init, lan966x,
-> +				 val, (val & BIT(1)) == 0, READL_SLEEP_US,
-> +				 READL_TIMEOUT_US);
-> +	if (ret)
-> +		return ret;
-> +
-> +	lan_wr(SYS_RESET_CFG_CORE_ENA_SET(1), lan966x, SYS_RESET_CFG);
-> +
-> +	return 0;
-> +}
-> +
-> +static int lan966x_probe(struct platform_device *pdev)
-> +{
-> +	struct fwnode_handle *ports, *portnp;
-> +	struct lan966x *lan966x;
-> +	int err, i;
-> +
-> +	lan966x = devm_kzalloc(&pdev->dev, sizeof(*lan966x), GFP_KERNEL);
-> +	if (!lan966x)
-> +		return -ENOMEM;
-> +
-> +	platform_set_drvdata(pdev, lan966x);
-> +	lan966x->dev = &pdev->dev;
-> +
-> +	ports = device_get_named_child_node(&pdev->dev, "ethernet-ports");
-> +	if (!ports) {
-> +		dev_err(&pdev->dev, "no ethernet-ports child not found\n");
-> +		err = -ENODEV;
-> +		goto out;
 
-No need to goto as long as there's just a "return err;" after the out:
-label.
+Yes now I have upgraded and installed yamllint, I now see the above! I 
+will resubmit. It is great having these tools now to catch this.
 
-> +	}
-> +
-> +	err = lan966x_create_targets(pdev, lan966x);
-> +	if (err)
-> +		goto out;
-> +
-> +	if (lan966x_reset_switch(lan966x)) {
-> +		err = -EINVAL;
+Thanks!
+Jon
 
-This should propagate the error returned from lan966x_reset_switch()
-instead.
-
-> +		goto out;
-> +	}
-> +
-> +	i = 0;
-> +	fwnode_for_each_available_child_node(ports, portnp)
-> +		++i;
-> +
-> +	lan966x->num_phys_ports = i;
-> +	lan966x->ports = devm_kcalloc(&pdev->dev, lan966x->num_phys_ports,
-> +				      sizeof(struct lan966x_port *),
-> +				      GFP_KERNEL);
-
-	if (!lan966x->ports)
-		return -ENOMEM;
-
-regards
-Philipp
+-- 
+nvpublic
