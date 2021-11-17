@@ -2,123 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 180414542F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 09:49:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 724504542FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 09:51:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234648AbhKQIwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 03:52:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234637AbhKQIwb (ORCPT
+        id S234637AbhKQIys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 03:54:48 -0500
+Received: from mail-vk1-f180.google.com ([209.85.221.180]:43765 "EHLO
+        mail-vk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231591AbhKQIyr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 03:52:31 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEBBEC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 00:49:32 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id d27so3116699wrb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 00:49:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B7IPC7bC9AT8/D6fv37MaKPiWkigtWHGnCaDAdR23ks=;
-        b=hr4Fk8sFDF5tNoJTaSITi0W06sn1vv3dLU2DPO5fkfTKyBCQmGQMCPwnEJLd447s4D
-         /u2JAf8Wh5O2yyhZP75ZiMcjXIZN5AUnPGNYv12RZwVWLvdzsrBmoG8HFaTpHblvz3Cd
-         GkxydX4K4zTJepGsnr721QACfbOk7bZv4XRSAq6Y/Agsz+B9YLIC/+hrhgGzhDleh44m
-         SMJ9OrjL+buwd5wjKSYBaTs6+wR/fYsmq5AK5UkDCRdiCaKK++SiYZtl+Sp6NG8zruad
-         UMhR+Ps9znscTWYK9qSV7l5DZuZWYxc8M+fcQJWDQwFbIKvYjTZzGVXGYHWqi3oSH0eb
-         lTkQ==
+        Wed, 17 Nov 2021 03:54:47 -0500
+Received: by mail-vk1-f180.google.com with SMTP id f7so1171956vkf.10;
+        Wed, 17 Nov 2021 00:51:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=B7IPC7bC9AT8/D6fv37MaKPiWkigtWHGnCaDAdR23ks=;
-        b=o4vMZUSu6gDtUUyqS0GDz98XsEzS57aXvBzOF/cF+vwNWCDFPh74rxfaSbulxHdG6v
-         M8gXKcgutrtgc9LnM2T0wolJ/SC8RPMNbtm1qbbJOLEw6KkXkO2rO1mZYtVu4l0M/+jv
-         d92Zir1EZN0UIYdvSpB3XB7lMeMTaF5+BeZr7FO0MT0zHbSesRF/Q1E22bIUni1lF9tw
-         YSQau8km8EvNlEqpqDnHAmjCAtwXauiGLfx8b2aDdP8zg2v64q6lQLuJgbrxW2TxxYsY
-         49Oha9KlsTmoCkc9sZMoNTLtz7MQbH/5A8waKOJOIpmhAZh5RqY8sZkN978jXynbPWvw
-         x/Kg==
-X-Gm-Message-State: AOAM531YswqdLJ0ndVYXXYxSwEDmKYhjNObOzlrg3D8j6MO7FPcqY0Cl
-        ve+1qY2Vw9ry8ED+car4KDBInv4TNz5ETO/2Si/9Ow==
-X-Google-Smtp-Source: ABdhPJyULSq3RsjoXSpZlMHvAUGqp8FyT72f4rtpMXvyJSvuccvxb9bbZU1AiHFvqU7V9KJiog1NXIx2vH1S+mg6+HU=
-X-Received: by 2002:a5d:628f:: with SMTP id k15mr18297636wru.363.1637138971386;
- Wed, 17 Nov 2021 00:49:31 -0800 (PST)
+        bh=ogB0Be3VMRxXMWyZSKVkExMjf29Yb3it6P5RHt/MWPI=;
+        b=OuOwKd6spnPoT8pgON8wiUW1iX4vAhQ0ZsAh+xyc6VR+2PusCgrlCnH5BSZPM5II1l
+         hZcDynyWCe4ulQNzPKL2mZK7Jcv1DY7dqUVktg2Eubmk92cdXzUbY6PuK5SFXpLnu/DM
+         7Ir/hZ0z3YfXr8ibyywoQsSgknPqh7g/bHfv9fUAMxnhIBplxTvLkdpgUB89qM+u50dt
+         IDGkqu5s5m4rPJxNoa6ThN2gH4d4+FSLFEUknjsYCyK0qonBrcohggwFULn8nzbwkcTh
+         6S9t7I20IRIUA8EteG/dpYa1JrM9vaMIwX03UoP0u4XGqdvMLnDF9tOs1RYEQP30YvXd
+         I3OQ==
+X-Gm-Message-State: AOAM531kUpvmEpPQyg+/2n5FOhWmwOwLR88DzAhbEePvG0IYCB6JoX63
+        E+Nm0d67g/TFbfIL2Ed+ACsjtGUN3+t7Wg==
+X-Google-Smtp-Source: ABdhPJxyEKJU0lZv3RUXoIROdSDfmVj2tDeVHXAQznR6vv3dmLwNeJYKo1+JunTJIwOylLo1zWjyKw==
+X-Received: by 2002:a05:6122:1350:: with SMTP id f16mr42180940vkp.10.1637139108555;
+        Wed, 17 Nov 2021 00:51:48 -0800 (PST)
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com. [209.85.222.41])
+        by smtp.gmail.com with ESMTPSA id g131sm11596914vke.32.2021.11.17.00.51.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 00:51:48 -0800 (PST)
+Received: by mail-ua1-f41.google.com with SMTP id n6so4332582uak.1;
+        Wed, 17 Nov 2021 00:51:47 -0800 (PST)
+X-Received: by 2002:a05:6102:1354:: with SMTP id j20mr65779978vsl.41.1637139107431;
+ Wed, 17 Nov 2021 00:51:47 -0800 (PST)
 MIME-Version: 1.0
-References: <20211117084705.687762-1-anup.patel@wdc.com>
-In-Reply-To: <20211117084705.687762-1-anup.patel@wdc.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Wed, 17 Nov 2021 14:19:19 +0530
-Message-ID: <CAAhSdy0z=QGDVnnfsg2hYANv-=8ooCWrnRtjut88exioAvcZYA@mail.gmail.com>
-Subject: Re: [PATCH v2] RISC-V: Enable KVM in RV64 and RV32 defconfigs as a module
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        KVM General <kvm@vger.kernel.org>,
-        kvm-riscv@lists.infradead.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Anup Patel <anup.patel@wdc.com>
+References: <20211117010527.27365-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20211117010527.27365-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20211117010527.27365-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 17 Nov 2021 09:51:36 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWD-bANzURAgksYyZM-u6wPaATiNS-DjVg6NLpk7Stj6g@mail.gmail.com>
+Message-ID: <CAMuHMdWD-bANzURAgksYyZM-u6wPaATiNS-DjVg6NLpk7Stj6g@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: spi: renesas,rspi: Document RZ/G2L SoC
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Palmer,
+Hi Prabhakar,
 
-On Wed, Nov 17, 2021 at 2:17 PM Anup Patel <anup.patel@wdc.com> wrote:
+On Wed, Nov 17, 2021 at 2:05 AM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add RSPI binding documentation for Renesas RZ/G2L SoC.
 >
-> Let's enable KVM RISC-V in RV64 and RV32 defconfigs as module
-> so that it always built along with the default kernel image.
+> RSPI block is identical to one found on RZ/A, so no driver changes are
+> required the fallback compatible string "renesas,rspi-rz" will be used
+
+... required. The ...
+
+> on RZ/G2L
 >
-> Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> ---
-> Changes since v1:
->  - Rebased on Linux-5.16-rc1
->  - Removed unwanted stuff from defconfig PATCH1
->  - Dropped PATCH2 and PATCH3 since these are already merged via KVM tree
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-Like you suggested, I have removed unwanted stuff from
-defconfig PATCH.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Can you consider this patch for Linux-5.16-rcX ?
-
-Regards,
-Anup
-
-> ---
->  arch/riscv/configs/defconfig      | 2 ++
->  arch/riscv/configs/rv32_defconfig | 2 ++
->  2 files changed, 4 insertions(+)
+> --- a/Documentation/devicetree/bindings/spi/renesas,rspi.yaml
+> +++ b/Documentation/devicetree/bindings/spi/renesas,rspi.yaml
+> @@ -21,7 +21,8 @@ properties:
+>            - enum:
+>                - renesas,rspi-r7s72100  # RZ/A1H
+>                - renesas,rspi-r7s9210   # RZ/A2
+> -          - const: renesas,rspi-rz     # RZ/A
+> +              - renesas,r9a07g044-rspi # RZ/G2{L,LC}
+> +          - const: renesas,rspi-rz     # RZ/A and RZ/G2{L,LC}
 >
-> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-> index c252fd5706d2..ef473e2f503b 100644
-> --- a/arch/riscv/configs/defconfig
-> +++ b/arch/riscv/configs/defconfig
-> @@ -19,6 +19,8 @@ CONFIG_SOC_VIRT=y
->  CONFIG_SOC_MICROCHIP_POLARFIRE=y
->  CONFIG_SMP=y
->  CONFIG_HOTPLUG_CPU=y
-> +CONFIG_VIRTUALIZATION=y
-> +CONFIG_KVM=m
->  CONFIG_JUMP_LABEL=y
->  CONFIG_MODULES=y
->  CONFIG_MODULE_UNLOAD=y
-> diff --git a/arch/riscv/configs/rv32_defconfig b/arch/riscv/configs/rv32_defconfig
-> index 434ef5b64599..6e9f12ff968a 100644
-> --- a/arch/riscv/configs/rv32_defconfig
-> +++ b/arch/riscv/configs/rv32_defconfig
-> @@ -19,6 +19,8 @@ CONFIG_SOC_VIRT=y
->  CONFIG_ARCH_RV32I=y
->  CONFIG_SMP=y
->  CONFIG_HOTPLUG_CPU=y
-> +CONFIG_VIRTUALIZATION=y
-> +CONFIG_KVM=m
->  CONFIG_JUMP_LABEL=y
->  CONFIG_MODULES=y
->  CONFIG_MODULE_UNLOAD=y
-> --
-> 2.25.1
+>        - items:
+>            - enum:
+> @@ -116,6 +117,16 @@ allOf:
+>        required:
+>          - interrupt-names
 >
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - renesas,r9a07g044-rspi
+> +    then:
+> +      required:
+> +        - resets
+> +
+
+You may want to merge this with the existing section that makes
+resets required for renesas,qspi.
+
+>    - if:
+>        properties:
+>          compatible:
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
