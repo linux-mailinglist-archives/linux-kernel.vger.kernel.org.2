@@ -2,90 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDAD2454925
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:49:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A2945492A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:50:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232102AbhKQOwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 09:52:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59530 "EHLO mail.kernel.org"
+        id S233592AbhKQOxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 09:53:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229751AbhKQOwY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 09:52:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A184D61269;
-        Wed, 17 Nov 2021 14:49:24 +0000 (UTC)
+        id S229751AbhKQOxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 09:53:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 07D4361BAA;
+        Wed, 17 Nov 2021 14:50:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637160565;
-        bh=F/4hvn++wm7w8Ex8n6djxKfi0refSoyymMEBm3VvVnk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=fNhJO40CCbds1zbwPMo7Enf/AtoGJyxjFeH2GpB4N8mW2PWWyi+AmsYlmMoBFT5B5
-         4I+JwQiShvSCVw7thKJZW9OT8v9vHlcRRLg2VWeMGWNF/WL+qCSriBMZzZOr5l5ZMP
-         1DUS84WPx0PViNLV9SjuxUL+jIjsRn/btJiZU4hrE8XETFWx74RP9elDUq99jEpzOu
-         fNQcEgEbzwHvLJhwNC+KP2jrtV8PD1D5yorAMl0DSwpCZPLNZDOH2mzWeodV6bAKXp
-         ImschFs3x7C0c+KNpeX1X1dWvSWklASeZI/RyL2ljE5WgYxQFTlR8vjqfELDEUeyom
-         WJOfj4lUSpNbA==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Danielle Ratson <danieller@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Amit Cohen <amcohen@nvidia.com>
-Subject: [PATCH net v1] devlink: Don't throw an error if flash notification sent before devlink visible
-Date:   Wed, 17 Nov 2021 16:49:09 +0200
-Message-Id: <1009da147a0254f01779a47610de8df83d18cefe.1637160341.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.33.1
+        s=k20201202; t=1637160610;
+        bh=4LRUd1jOUtDBuuZzyOEfdajmOfsCpWPB28K4HNI2MTQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=b+s7ZJ7D9/f9tUxTPKYZcieDB/jM2FUoynhsGIN3jrRk4KS7IuhSgCe59T3bMZQg9
+         wB2TQ++c7yUhoFTUNuPIbTv9Xis/S0hSfbKbMnA8OAyAS0sA7SWSmEBd7aTa/ovQzB
+         I/akuYnVF5u5GXeY8kZBn47eri4B53WcVcMRCLFpgNeDmD1AKH0H251TT/ImmuaQSd
+         vtTJyuKcg3rQWkjTL2Wi9Y5OLKS/Q2iiOfK5X6XZ902wdr1pImz32TT3cXMazb3zo1
+         Xi1x5R7g3NART4rsP932JTUhRiC3S7d8aeeBVEee78rPyT6gZ/uw3jqnptuxBf61ZH
+         oVANiy98mEpvw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 02CB36095D;
+        Wed, 17 Nov 2021 14:50:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] net: dpaa2-eth: fix use-after-free in dpaa2_eth_remove
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163716061000.12308.11700471249404021576.git-patchwork-notify@kernel.org>
+Date:   Wed, 17 Nov 2021 14:50:10 +0000
+References: <20211116151712.14338-1-paskripkin@gmail.com>
+In-Reply-To: <20211116151712.14338-1-paskripkin@gmail.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     ioana.ciornei@nxp.com, davem@davemloft.net, kuba@kernel.org,
+        ruxandra.radulescu@nxp.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+Hello:
 
-The mlxsw driver calls to various devlink flash routines even before
-users can get any access to the devlink instance itself. For example,
-mlxsw_core_fw_rev_validate() one of such functions.
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-__mlxsw_core_bus_device_register
- -> mlxsw_core_fw_rev_validate
-  -> mlxsw_core_fw_flash
-   -> mlxfw_firmware_flash
-    -> mlxfw_status_notify
-     -> devlink_flash_update_status_notify
-      -> __devlink_flash_update_notify
-       -> WARN_ON(...)
+On Tue, 16 Nov 2021 18:17:12 +0300 you wrote:
+> Access to netdev after free_netdev() will cause use-after-free bug.
+> Move debug log before free_netdev() call to avoid it.
+> 
+> Fixes: 7472dd9f6499 ("staging: fsl-dpaa2/eth: Move print message")
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> ---
+> 
+> [...]
 
-It causes to the WARN_ON to trigger warning about devlink not registered.
+Here is the summary with links:
+  - [v2] net: dpaa2-eth: fix use-after-free in dpaa2_eth_remove
+    https://git.kernel.org/netdev/net/c/9b5a333272a4
 
-Fixes: cf530217408e ("devlink: Notify users when objects are accessible")
-Reported-by: Danielle Ratson <danieller@nvidia.com>
-Tested-by: Danielle Ratson <danieller@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
-v1:
- * Used Jakub's suggestion to silently drop flash notifications if
-   devlink is not visible yet.
- * Used right person for Reported and Tested tags. 
-v0: https://lore.kernel.org/all/1d750b6f4991c16995c4d0927b709eb23647ff85.1636999616.git.leonro@nvidia.com
----
- net/core/devlink.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/net/core/devlink.c b/net/core/devlink.c
-index 5ba4f9434acd..5ad72dbfcd07 100644
---- a/net/core/devlink.c
-+++ b/net/core/devlink.c
-@@ -4229,7 +4229,9 @@ static void __devlink_flash_update_notify(struct devlink *devlink,
- 	WARN_ON(cmd != DEVLINK_CMD_FLASH_UPDATE &&
- 		cmd != DEVLINK_CMD_FLASH_UPDATE_END &&
- 		cmd != DEVLINK_CMD_FLASH_UPDATE_STATUS);
--	WARN_ON(!xa_get_mark(&devlinks, devlink->index, DEVLINK_REGISTERED));
-+
-+	if (!xa_get_mark(&devlinks, devlink->index, DEVLINK_REGISTERED))
-+		return;
- 
- 	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
- 	if (!msg)
+You are awesome, thank you!
 -- 
-2.33.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
