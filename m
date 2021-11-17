@@ -2,87 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA711454A4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:50:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B695454A5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:56:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238768AbhKQPxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 10:53:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238825AbhKQPxN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 10:53:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58C2D615A4;
-        Wed, 17 Nov 2021 15:50:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637164214;
-        bh=7JQV2QbJkFAySIiIV6mIjuXxL5lFmjIpyhdopObBbG8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k0d5UPFOcCJSyQxEKrILXGpAAjvnxT97Ui49Klvn0J3rS18mBIy8sEr6oxG9FT/qL
-         9tK83cgAI0ljhW5P06f+t4Wx8dFkZU6YtXnsKO/ZlvzUI03oES+07g0ztObQYdSXmY
-         ogqZDm57Thel+b+Y8VaSmJSC/uf9n530Wpnn5nTX3r+t3vkJMgUbhY3EbsDu96Fzzx
-         kDrRa/sUPFA7DfZZnmQvE3m9zZ3LgJKb6HIhHK9fdrOPzOE6qwm8aT+2JXWDqRrw/N
-         MPeXy9Bp6lMXapmyPjezhF7QqibJrCg5c6spAH2Fkx6N2IS4TBBo9SYQt26c32atAS
-         eUrqA989BmhZQ==
-Date:   Wed, 17 Nov 2021 15:50:06 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, aou@eecs.berkeley.edu,
-        borntraeger@de.ibm.com, bp@alien8.de, catalin.marinas@arm.com,
-        dave.hansen@linux.intel.com, gor@linux.ibm.com, hca@linux.ibm.com,
-        linux-kernel@vger.kernel.org, madvenka@linux.microsoft.com,
-        mhiramat@kernel.org, mingo@redhat.com, mpe@ellerman.id.au,
-        palmer@dabbelt.com, paul.walmsley@sifive.com, peterz@infradead.org,
-        rostedt@goodmis.org, tglx@linutronix.de, will@kernel.org
-Subject: Re: [PATCH 5/9] arm64: Make __get_wchan() use arch_stack_walk()
-Message-ID: <YZUkrrBwFJBiRhs9@sirena.org.uk>
-References: <20211117140737.44420-1-mark.rutland@arm.com>
- <20211117140737.44420-6-mark.rutland@arm.com>
+        id S238810AbhKQP7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 10:59:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235325AbhKQP7E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 10:59:04 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C4AC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 07:56:05 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id o6-20020a17090a0a0600b001a64b9a11aeso2961713pjo.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 07:56:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=m9J3GBVAIZFZGi0XXHxUVPqugO9FTJB0JnBQ/K1xQms=;
+        b=n3Yg+RFlsYoNf+IeW9+Y0IS9Y85tdUMEvNnklLZ20twSkUzFZl1K+t6UAVXra2Ss8m
+         NZrC9cx5JXcgJbQapuIDznZSvV2yUvKZXTxuQPVq7yG5lpBGATWRHP/Y5iuRcKDAhfOa
+         ONhGF8KxqB5xro2PENWRZdxgrBFWOWVzbG/X8a/2+KbrfuQVX3b9U9sMnjy9g7lY3nxf
+         S7u1CteYISimNVvuz/s6zp1slTFfbcIScmqmuI0r21o/iKytnH+E8R3koNj9fD8IJJvB
+         hBsbsU9ulAGltRlvUGjBCpKjWWHlMapjuohePs9hgLKvBtl75klzDMZR97Q/mC2k3m+R
+         Lyug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=m9J3GBVAIZFZGi0XXHxUVPqugO9FTJB0JnBQ/K1xQms=;
+        b=jsOuaUHhR2QBtc/WOSZ6s4/cE+8gxrZpIL92CVSQkB1wsLy3dmdDHP1eD4m3tED0Y/
+         rIvjGMvTC5+eaffpvzBqdSWqNZESmwujM/H1rU3PGxONtz0LPeYMxvQUQwNTSgQhmyeZ
+         UVBQnfXaMRtYSJ8uGavLWhUwn/01rNiijB2GuPJlA2UrA3qX4UAl0fd6+GPTpLc83C44
+         hb8zx48bv6w5ryZm62sHPRGkD8VeG0PtGTdi6nAyMyqgaTrHtk1qDtcUw0dz2HO6XxEE
+         SymMfo0xVlkz/HNAkO54nUQoAWZ8ViMOn46c7DDmIYmLMrHgIyQk0sKx59weeXfpPyYt
+         gKyA==
+X-Gm-Message-State: AOAM533eItr4Z1KJj24c+7PEK052E/Nlj1B4FUl29RIY2nCdm47TSOCu
+        xlSRd+eU6ZVEdmGfDCazM7iMoQ==
+X-Google-Smtp-Source: ABdhPJz2X15ilt4+tq6jfQ6bUTy4rzYV43+NVsGdegDpvtMFGx0QZwaLWYvTs00OhvCoTunsg8+1dw==
+X-Received: by 2002:a17:90a:384d:: with SMTP id l13mr848984pjf.104.1637164564540;
+        Wed, 17 Nov 2021 07:56:04 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id t40sm107973pfg.107.2021.11.17.07.56.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 07:56:03 -0800 (PST)
+Date:   Wed, 17 Nov 2021 15:56:00 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Hou Wenlong <houwenlong93@linux.alibaba.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] KVM: x86/mmu: Skip tlb flush if it has been done in
+ zap_gfn_range()
+Message-ID: <YZUmEHx6iE9Mr3Ls@google.com>
+References: <5e16546e228877a4d974f8c0e448a93d52c7a5a9.1637140154.git.houwenlong93@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="QAFPEQR1AG7+BdUm"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211117140737.44420-6-mark.rutland@arm.com>
-X-Cookie: One Bell System - it sometimes works.
+In-Reply-To: <5e16546e228877a4d974f8c0e448a93d52c7a5a9.1637140154.git.houwenlong93@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 17, 2021, Hou Wenlong wrote:
+> If the parameter flush is set, zap_gfn_range() would flush remote tlb
+> when yield, then tlb flush is not needed outside. So use the return
+> value of zap_gfn_range() directly instead of OR on it in
+> kvm_unmap_gfn_range() and kvm_tdp_mmu_unmap_gfn_range().
+> 
+> Fixes: 3039bcc744980 ("KVM: Move x86's MMU notifier memslot walkers to generic code")
+> Signed-off-by: Hou Wenlong <houwenlong93@linux.alibaba.com>
+> ---
 
---QAFPEQR1AG7+BdUm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ha, I fixed this in my local repo just yesterday :-)
 
-On Wed, Nov 17, 2021 at 02:07:33PM +0000, Mark Rutland wrote:
+Reviewed-by: Sean Christopherson <seanjc@google.com>
 
-> +static bool get_wchan_cb(void *arg, unsigned long pc)
-> +{
-> +	struct wchan_info *wchan_info = arg;
-> +
-> +	if (!in_sched_functions(pc)) {
-> +		wchan_info->pc = pc;
-> +		return false;
-> +	}
-> +	return wchan_info->count++ < 16;
-> +}
+>  arch/x86/kvm/mmu/mmu.c     | 2 +-
+>  arch/x86/kvm/mmu/tdp_mmu.c | 4 ++--
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 354d2ca92df4..d57319e596a9 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -1582,7 +1582,7 @@ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
+>  		flush = kvm_handle_gfn_range(kvm, range, kvm_unmap_rmapp);
+>  
+>  	if (is_tdp_mmu_enabled(kvm))
+> -		flush |= kvm_tdp_mmu_unmap_gfn_range(kvm, range, flush);
+> +		flush = kvm_tdp_mmu_unmap_gfn_range(kvm, range, flush);
+>  
+>  	return flush;
+>  }
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 7c5dd83e52de..9d03f5b127dc 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -1034,8 +1034,8 @@ bool kvm_tdp_mmu_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range,
+>  	struct kvm_mmu_page *root;
+>  
+>  	for_each_tdp_mmu_root(kvm, root, range->slot->as_id)
 
-I don't love the magic number but it was there before so not a problem
-for this patch so
+Another issue is that this should be for_each_tdp_mmu_root_yield_safe().  I'll get
+a patch out for that later today.
 
-Reviewed-by: Mark Brown <broonie@kernel.org>
-
---QAFPEQR1AG7+BdUm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGVJK4ACgkQJNaLcl1U
-h9CAZQf+Mi5fy6asOazEo3Y0Bf9yVkbCbLsfX3JUTwBk3ehY5jkU49rWkz+tm+vZ
-vxjmnNkaOK3Xx24t5hXt9ZHVhV5equkAQ6MXs4colLCGScIVr/n74NbZmP/TkMc2
-KvpSjdo4NJP8ooWcGRM1TNoz57u829bi8Pb/7H+pcCvxfXWfs955jTExabGZmTWN
-YvFNX+o33FL/IZjB6BfzHQEWIGw5JCdOqcNkRtLMnnh6nam+uNhhZ9+Yob84tQ8F
-wIzJM4/z9OkWyeLbUwAjOMzRpa/hu4e6SRNZw4WKzVlwlp7L8TZfbt0SNqHOQPy9
-jv0ZUkIcNCSqDy9SYST4Kb8qXwlDNw==
-=VCBb
------END PGP SIGNATURE-----
-
---QAFPEQR1AG7+BdUm--
+> -		flush |= zap_gfn_range(kvm, root, range->start, range->end,
+> -				       range->may_block, flush, false);
+> +		flush = zap_gfn_range(kvm, root, range->start, range->end,
+> +				      range->may_block, flush, false);
+>  
+>  	return flush;
+>  }
+> -- 
+> 2.31.1
+> 
