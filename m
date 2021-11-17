@@ -2,84 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9CB454298
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 09:25:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B68B4542AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 09:30:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234498AbhKQI1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 03:27:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229944AbhKQI1s (ORCPT
+        id S234552AbhKQIdq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Nov 2021 03:33:46 -0500
+Received: from mail-qt1-f169.google.com ([209.85.160.169]:34729 "EHLO
+        mail-qt1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229944AbhKQIdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 03:27:48 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB10C061746
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 00:24:50 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id v64so5132047ybi.5
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 00:24:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+dwLMWwu2Sg6Zp6UBhanSJhQWX+9Ri/lE7Vz/ZzVQW8=;
-        b=KEd38Wn7TzD3I3/2UFVRny4FBayUkc4zOIqRwirdxOvtJbh68KYi4Dwor3Rr4gYaZ4
-         TCKkY4lEI/isRi8POMt6NdUlOrn3BV5OjCU5rABCJLuJs/MeK18g+hSoapeInRiUQTZS
-         2Rkz6dPgn//ebUyRv96jQnVZ6dQLJejuPzaonL/4CWAwl2ldG+Js/BFbCNJwP7r9zn5n
-         UjKBFYeh42Tloizcn3tswp2r7hv+6rY8dnJ2FNl20h57jfdhaiuLFD6/45Xy7KO7N/kx
-         o+IPi0QrJIC7XKGkZJeYiYlEi169lRYd9xq2NK0z36M5MdZFIsqYlkKdW3el/H1T/sXZ
-         KfQw==
+        Wed, 17 Nov 2021 03:33:45 -0500
+Received: by mail-qt1-f169.google.com with SMTP id o17so1924109qtk.1;
+        Wed, 17 Nov 2021 00:30:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+dwLMWwu2Sg6Zp6UBhanSJhQWX+9Ri/lE7Vz/ZzVQW8=;
-        b=uUE8Ca34b8kL/hcrz6y2fW7LOzTvRealhNimUh2NX/e0nw9NjhgRQLhiT7yK9G/2xZ
-         2dlMa9/un1ZsCs9m4GeQK+FvysG8GD9n1X5l02Gj6suooUnmozgPI7IFfA761835d2PZ
-         1fV/gXxXpHkyqAwPzPrdbujUUlQi0eQy7PihQlMw2CpCXvyqF4j79VOrU0Kq7Xx+YZhD
-         gIi0Ao9XPE0hucx9OXtzdmwI9LurvYh2co1TVUQgB0BPOsg1pVOBzXwFMOW0HSpHz2zN
-         fPpLlVfUymtO87zGa79YIdoNiwD8Yh9Ptapyql9Z7KrsYCKF6zuvIYHBws2SqTppIfBl
-         je2A==
-X-Gm-Message-State: AOAM5310Hxa+wJYOGd6pxyr5b8CYz2IiaPOqv4hNymZ7Tuq7hSYFshR4
-        aGWovNVHFhMYr0jzqp8HWg0Im20V0xa0PNvxJfc6+A==
-X-Google-Smtp-Source: ABdhPJwGJbbxTf6Disa8MHoyMDjfXsaOHQj50AZDsVTHLxfNBX/W1iLb8oDmjtVG3srUA3wmNoCScUe6NSE8AHKMeww=
-X-Received: by 2002:a5b:648:: with SMTP id o8mr16436713ybq.208.1637137489382;
- Wed, 17 Nov 2021 00:24:49 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=pLki4VXVNEgH7BpAr7thCy6liKqtc8dZxgXibG/LDtU=;
+        b=IUpfMS2Qsw+4vmn7I+udpusUuBdphjjcAJKehe7ijbqvhkYnwm6cTNdca+Cm0+0ma0
+         xHD7AGKnQOaEiCs6xqSWURkkNCEsyjFfW5BS+qXXbqRwqmicLNGkp26r99JMfFSCO/3k
+         0bWFazjujRDAHYFZe81Zf9uHbmyFG8cifydbv07Sd9hppAYW34M6QwmE5KICuNyBOc1b
+         uaRJUYDVmVWNYnHKQUaNc9sX2Jn2J5I6VMJVbOUUi0zfxBoozVHwbFXJ/iQhxxdP0nJI
+         UUZ2M0IUONMJ7yEaDyGm9GjG4M1JgiuAegMgBQl0bzAe7JH80skTE+4MB5PXQv0AtrMH
+         PE+w==
+X-Gm-Message-State: AOAM533Gmfbt9PLCNrSukClwWshSIsB1Zv0j1Rff2FGOwSGUU7Ob7m8A
+        uDSnap65Q1tmO3hQD/OtlyUl2r4Dhpxyxg==
+X-Google-Smtp-Source: ABdhPJwoFVUouk9QlvygqIYHdaUI5uPa2eT+UDuhCZpvADfGS5ohUE9j9fFTF1CGKB45SU6JCVVhbA==
+X-Received: by 2002:a05:622a:178c:: with SMTP id s12mr14701908qtk.156.1637137846345;
+        Wed, 17 Nov 2021 00:30:46 -0800 (PST)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
+        by smtp.gmail.com with ESMTPSA id j20sm5550905qtj.43.2021.11.17.00.30.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 00:30:46 -0800 (PST)
+Received: by mail-yb1-f170.google.com with SMTP id n2so746118yba.2;
+        Wed, 17 Nov 2021 00:30:46 -0800 (PST)
+X-Received: by 2002:a9f:2431:: with SMTP id 46mr20823663uaq.114.1637137464301;
+ Wed, 17 Nov 2021 00:24:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20211101093518.86845-1-songmuchun@bytedance.com>
- <20211115210917.96f681f0a75dfe6e1772dc6d@linux-foundation.org>
- <CAMZfGtX+GkVf_7D8G+Ss32+wYy1bcMgDpT5FJDA=a9gdjW36-w@mail.gmail.com> <20211116120104.f96b7f21a333c2c8d140e015@linux-foundation.org>
-In-Reply-To: <20211116120104.f96b7f21a333c2c8d140e015@linux-foundation.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 17 Nov 2021 16:24:10 +0800
-Message-ID: <CAMZfGtWQRHFWAyrfoZ3tV67FFLJH7T=Wi2QVoiO=S9w=s0S7Kg@mail.gmail.com>
-Subject: Re: [PATCH 0/4] remove PDE_DATA()
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>, gladkov.alexey@gmail.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20211115155105.3797527-1-geert@linux-m68k.org>
+ <CAMuHMdUCsyUxaEf1Lz7+jMnur4ECwK+JoXQqmOCkRKqXdb1hTQ@mail.gmail.com>
+ <fcdead1c-2e26-b8ca-9914-4b3718d8f6d4@gmx.de> <480CE37B-FE60-44EE-B9D2-59A88FDFE809@fb.com>
+ <78b2d093-e06c-ba04-9890-69f948bfb937@infradead.org> <B57193D6-1FD4-45D3-8045-8D2DE691E24E@fb.com>
+In-Reply-To: <B57193D6-1FD4-45D3-8045-8D2DE691E24E@fb.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 17 Nov 2021 09:24:12 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWgGz5FSidaGpp8YRRSnJfwdP4-wOkXdVx+mydXnMAXHQ@mail.gmail.com>
+Message-ID: <CAMuHMdWgGz5FSidaGpp8YRRSnJfwdP4-wOkXdVx+mydXnMAXHQ@mail.gmail.com>
+Subject: Re: Build regressions/improvements in v5.16-rc1
+To:     Nick Terrell <terrelln@fb.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, Helge Deller <deller@gmx.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Hector Martin <marcan@marcan.st>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 4:01 AM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Tue, 16 Nov 2021 16:26:12 +0800 Muchun Song <songmuchun@bytedance.com> wrote:
->
-> > >
-> > > because new instances are sure to turn up during the development cycle.
-> > >
-> > > But I can handle that by staging the patch series after linux-next and
-> > > reminding myself to grep for new PDE_DATA instances prior to
-> > > upstreaming.
-> >
-> > I'd be happy if you could replace PDE_DATA() with inode->i_private.
-> > In this case, should I still introduce pde_data() and perform the above
-> > things to make this series smaller?
->
-> I do tend to think that pde_data() would be better than open-coding
-> inode->i_private everywhere.  More explanatory, easier if we decide to
-> change it again in the future.
->
+Hi Nick,
 
-Got it. I'll do that in the next version. Thanks.
+On Wed, Nov 17, 2021 at 3:20 AM Nick Terrell <terrelln@fb.com> wrote:
+> > On Nov 16, 2021, at 6:05 PM, Randy Dunlap <rdunlap@infradead.org> wrote:
+> > On 11/16/21 5:59 PM, Nick Terrell wrote:
+> >> I’ll send the PR to Linus tomorrow. I’ve been informed that it
+> >> isn't strictly necessary to send the patches to the mailing list
+> >> for bug fixes, but its already done, so I’ll wait and see if there
+> >> is any feedback.
+> >
+> > IMO several (or many more) people would disagree with that.
+> >
+> > "strictly?"  OK, it's probably possible that almost any patch
+> > could be merged without being on a mailing list, but it's not
+> > desirable (except in the case of "security" patches).
+>
+> Good to know! Thanks for the advice, I wasn’t really sure what
+> the best practice is for sending patches to your own tree, as I
+> didn't see anything about it in the maintainer guide.
+
+All patches must be sent to public mailing lists for review.
+You might get away with not doing that for a simple and trivial fix,
+but be prepared to end up on people's "special" lists if you did get
+it wrong.
+
+We are Legion. We do not forgive. We do not forget ;-)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
