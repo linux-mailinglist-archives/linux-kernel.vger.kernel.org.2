@@ -2,200 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC29454620
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 13:06:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71424454628
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 13:08:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237184AbhKQMJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 07:09:35 -0500
-Received: from smtp90.ord1c.emailsrvr.com ([108.166.43.90]:55731 "EHLO
-        smtp90.ord1c.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237149AbhKQMJ3 (ORCPT
+        id S231761AbhKQMLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 07:11:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21184 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235644AbhKQMLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 07:09:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20190130-41we5z8j; t=1637150789;
-        bh=kE+MTiK5CwMCa8fVuSZzq76MHd9HJsaBM7XFcT5fWXc=;
-        h=From:To:Subject:Date:From;
-        b=IkI9cod56Kk4h/7XiWWKoYKdMizc85V22/7K1VJb6h2CkOFDgU4lKihQtC4wQieaj
-         9Yp8xNNoZALYx75YZXchtASU8miNmRnyb6SbeyvrrWRLEFVKfoJb+TXVqi5JW6hVW8
-         amWvzWBXeJVJgh8C7kaG1Coh5bQgT23e7Uai5S+k=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp20.relay.ord1c.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 15747E0138;
-        Wed, 17 Nov 2021 07:06:28 -0500 (EST)
-From:   Ian Abbott <abbotti@mev.co.uk>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>
-Subject: [PATCH 5/5] comedi: Move "comedi_isadma.h" to <linux/comedi/comedi_isadma.h>
-Date:   Wed, 17 Nov 2021 12:06:03 +0000
-Message-Id: <20211117120604.117740-6-abbotti@mev.co.uk>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211117120604.117740-1-abbotti@mev.co.uk>
-References: <20211117120604.117740-1-abbotti@mev.co.uk>
+        Wed, 17 Nov 2021 07:11:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637150882;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EUAsRQ1K2L2naUKa9LkNaNxpsS38eJg7MFYq/EUQFt4=;
+        b=VWrHgeFu7nz1shvqooJHw7Q9rPNpd/ugYQSDmWVS+QFGbB2bsHtk9Vc6QH+qsOxeEZxgiv
+        Cr61XNW7nWuLfxGwGQ+JcphfBJIv5WlcQiJrhO0VzSa1rfYFuZh4F447+W0v4/TZyqidUP
+        KNawGfWHpbEP9jo5tUf7IGa38AjRGcc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-450-FvmuAdXlOey1skiIYuat1g-1; Wed, 17 Nov 2021 07:07:58 -0500
+X-MC-Unique: FvmuAdXlOey1skiIYuat1g-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 439731023F4E;
+        Wed, 17 Nov 2021 12:07:56 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2F8315DF56;
+        Wed, 17 Nov 2021 12:07:43 +0000 (UTC)
+Message-ID: <539f71a6-f62a-c7d2-51a8-bd062a639e87@redhat.com>
+Date:   Wed, 17 Nov 2021 13:07:41 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Classification-ID: b7289a69-3998-4ed4-bad0-ca7f3c79a866-6-1
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 1/6] KVM: arm64: Cap KVM_CAP_NR_VCPUS by
+ kvm_arm_default_max_vcpus()
+Content-Language: en-US
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>, kvm-ppc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211116163443.88707-1-vkuznets@redhat.com>
+ <20211116163443.88707-2-vkuznets@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211116163443.88707-2-vkuznets@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some of the header files in "drivers/comedi/drivers/" are common enough
-to be useful to out-of-tree comedi driver modules.  Using them for
-out-of-tree module builds is hampered by the headers being outside the
-"include/" directory so it is desirable to move them.
+On 11/16/21 17:34, Vitaly Kuznetsov wrote:
+> -		r = num_online_cpus();
+> +		/*
+> +		 * ARM64 treats KVM_CAP_NR_CPUS differently from all other
+> +		 * architectures, as it does not always bound it to
+> +		 * num_online_cpus(). It should not matter much because this
+                   ^^^^^^^^^^^^^^^^^^
 
-There are about a half a dozen or so Comedi device drivers that use the
-"comedi_isadma" module to add ISA DMA support.  The macros and
-declarations to use that module are in the "comedi_isadma.h" header file
-in the comedi "drivers" directory.  Move it into
-"include/linux/comedi/".
+KVM_CAP_MAX_VCPUS (sorry for the typo in my suggestion).  I'll fix it 
+when applying.
 
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
----
- drivers/comedi/drivers/comedi_isadma.c                         | 3 +--
- drivers/comedi/drivers/das16.c                                 | 3 +--
- drivers/comedi/drivers/das1800.c                               | 3 +--
- drivers/comedi/drivers/dt282x.c                                | 3 +--
- drivers/comedi/drivers/ni_at_a2150.c                           | 3 +--
- drivers/comedi/drivers/ni_labpc_isadma.c                       | 2 +-
- drivers/comedi/drivers/pcl812.c                                | 3 +--
- drivers/comedi/drivers/pcl816.c                                | 3 +--
- drivers/comedi/drivers/pcl818.c                                | 3 +--
- .../comedi/drivers => include/linux/comedi}/comedi_isadma.h    | 0
- 10 files changed, 9 insertions(+), 17 deletions(-)
- rename {drivers/comedi/drivers => include/linux/comedi}/comedi_isadma.h (100%)
+Paolo
 
-diff --git a/drivers/comedi/drivers/comedi_isadma.c b/drivers/comedi/drivers/comedi_isadma.c
-index 63457bd4ff78..700982464c53 100644
---- a/drivers/comedi/drivers/comedi_isadma.c
-+++ b/drivers/comedi/drivers/comedi_isadma.c
-@@ -10,8 +10,7 @@
- #include <linux/dma-mapping.h>
- #include <asm/dma.h>
- #include <linux/comedi/comedidev.h>
--
--#include "comedi_isadma.h"
-+#include <linux/comedi/comedi_isadma.h>
- 
- /**
-  * comedi_isadma_program - program and enable an ISA DMA transfer
-diff --git a/drivers/comedi/drivers/das16.c b/drivers/comedi/drivers/das16.c
-index f6649ffa9670..937a69ce0977 100644
---- a/drivers/comedi/drivers/das16.c
-+++ b/drivers/comedi/drivers/das16.c
-@@ -66,8 +66,7 @@
- #include <linux/comedi/comedidev.h>
- #include <linux/comedi/comedi_8255.h>
- #include <linux/comedi/comedi_8254.h>
--
--#include "comedi_isadma.h"
-+#include <linux/comedi/comedi_isadma.h>
- 
- #define DAS16_DMA_SIZE 0xff00	/*  size in bytes of allocated dma buffer */
- 
-diff --git a/drivers/comedi/drivers/das1800.c b/drivers/comedi/drivers/das1800.c
-index a43d3414a122..f09608c0f4ff 100644
---- a/drivers/comedi/drivers/das1800.c
-+++ b/drivers/comedi/drivers/das1800.c
-@@ -75,8 +75,7 @@
- #include <linux/io.h>
- #include <linux/comedi/comedidev.h>
- #include <linux/comedi/comedi_8254.h>
--
--#include "comedi_isadma.h"
-+#include <linux/comedi/comedi_isadma.h>
- 
- /* misc. defines */
- #define DAS1800_SIZE           16	/* uses 16 io addresses */
-diff --git a/drivers/comedi/drivers/dt282x.c b/drivers/comedi/drivers/dt282x.c
-index 078f8fba7183..4ae80e6c7266 100644
---- a/drivers/comedi/drivers/dt282x.c
-+++ b/drivers/comedi/drivers/dt282x.c
-@@ -52,8 +52,7 @@
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/comedi/comedidev.h>
--
--#include "comedi_isadma.h"
-+#include <linux/comedi/comedi_isadma.h>
- 
- /*
-  * Register map
-diff --git a/drivers/comedi/drivers/ni_at_a2150.c b/drivers/comedi/drivers/ni_at_a2150.c
-index 9942d770add8..df8d219e6723 100644
---- a/drivers/comedi/drivers/ni_at_a2150.c
-+++ b/drivers/comedi/drivers/ni_at_a2150.c
-@@ -41,8 +41,7 @@
- #include <linux/io.h>
- #include <linux/comedi/comedidev.h>
- #include <linux/comedi/comedi_8254.h>
--
--#include "comedi_isadma.h"
-+#include <linux/comedi/comedi_isadma.h>
- 
- #define A2150_DMA_BUFFER_SIZE	0xff00	/*  size in bytes of dma buffer */
- 
-diff --git a/drivers/comedi/drivers/ni_labpc_isadma.c b/drivers/comedi/drivers/ni_labpc_isadma.c
-index dd37ec0d9b15..0652ca8345b6 100644
---- a/drivers/comedi/drivers/ni_labpc_isadma.c
-+++ b/drivers/comedi/drivers/ni_labpc_isadma.c
-@@ -11,8 +11,8 @@
- #include <linux/module.h>
- #include <linux/slab.h>
- #include <linux/comedi/comedidev.h>
-+#include <linux/comedi/comedi_isadma.h>
- 
--#include "comedi_isadma.h"
- #include "ni_labpc.h"
- #include "ni_labpc_regs.h"
- #include "ni_labpc_isadma.h"
-diff --git a/drivers/comedi/drivers/pcl812.c b/drivers/comedi/drivers/pcl812.c
-index 790f54476a91..70dbc129fcf5 100644
---- a/drivers/comedi/drivers/pcl812.c
-+++ b/drivers/comedi/drivers/pcl812.c
-@@ -116,8 +116,7 @@
- #include <linux/io.h>
- #include <linux/comedi/comedidev.h>
- #include <linux/comedi/comedi_8254.h>
--
--#include "comedi_isadma.h"
-+#include <linux/comedi/comedi_isadma.h>
- 
- /*
-  * Register I/O map
-diff --git a/drivers/comedi/drivers/pcl816.c b/drivers/comedi/drivers/pcl816.c
-index 77b30246d966..a5e5320be648 100644
---- a/drivers/comedi/drivers/pcl816.c
-+++ b/drivers/comedi/drivers/pcl816.c
-@@ -37,8 +37,7 @@
- #include <linux/interrupt.h>
- #include <linux/comedi/comedidev.h>
- #include <linux/comedi/comedi_8254.h>
--
--#include "comedi_isadma.h"
-+#include <linux/comedi/comedi_isadma.h>
- 
- /*
-  * Register I/O map
-diff --git a/drivers/comedi/drivers/pcl818.c b/drivers/comedi/drivers/pcl818.c
-index e5b7793cce05..29e503de8267 100644
---- a/drivers/comedi/drivers/pcl818.c
-+++ b/drivers/comedi/drivers/pcl818.c
-@@ -99,8 +99,7 @@
- #include <linux/interrupt.h>
- #include <linux/comedi/comedidev.h>
- #include <linux/comedi/comedi_8254.h>
--
--#include "comedi_isadma.h"
-+#include <linux/comedi/comedi_isadma.h>
- 
- /*
-  * Register I/O map
-diff --git a/drivers/comedi/drivers/comedi_isadma.h b/include/linux/comedi/comedi_isadma.h
-similarity index 100%
-rename from drivers/comedi/drivers/comedi_isadma.h
-rename to include/linux/comedi/comedi_isadma.h
--- 
-2.33.0
+> +		 * is just an advisory value.
+> +		 */
+> +		r = min_t(unsigned int, num_online_cpus(),
+> +			  kvm_arm_default_max_vcpus());
 
