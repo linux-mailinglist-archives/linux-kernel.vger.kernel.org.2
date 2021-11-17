@@ -2,109 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A716455157
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 00:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E0A45515D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 00:58:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241727AbhKRAAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 19:00:49 -0500
-Received: from mga03.intel.com ([134.134.136.65]:22562 "EHLO mga03.intel.com"
+        id S241752AbhKRABW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 19:01:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241721AbhKRAAr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 19:00:47 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10171"; a="234023778"
-X-IronPort-AV: E=Sophos;i="5.87,243,1631602800"; 
-   d="scan'208";a="234023778"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 15:57:11 -0800
-X-IronPort-AV: E=Sophos;i="5.87,243,1631602800"; 
-   d="scan'208";a="454834492"
-Received: from rsyep-mobl2.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.251.140.227])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 15:57:10 -0800
-Subject: Re: [PATCH] x86/paravirt: Fix build PARAVIRT_XXL=y without XEN_PV
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>
-References: <20211117181439.4368-1-kirill.shutemov@linux.intel.com>
- <YZVLVfd5E6d6YQig@hirez.programming.kicks-ass.net>
- <20211117184225.6e257nfpdd2qhrj4@box.shutemov.name>
- <4824bf30-851e-c927-a50f-87fa2a429b2a@linux.intel.com>
- <YZVOfGtHyiZg1pIP@zn.tnic>
- <980ceab6-6686-c8f3-72b8-5743ca517bdf@linux.intel.com>
- <0f0b9784-1902-1526-2796-7d1a7ab17fb6@intel.com>
- <21f1325d-d97e-1bb7-ea87-d84e44089ab4@linux.intel.com>
- <YZVvdyHhPTzzZbiu@zn.tnic>
- <d826f932-a6a4-de7d-b0ea-f8e1f9bfe012@linux.intel.com>
- <20211117232329.GD174703@worktop.programming.kicks-ass.net>
-From:   Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <ea41adcc-aeb4-136a-c723-077454ae2390@linux.intel.com>
-Date:   Wed, 17 Nov 2021 15:57:09 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20211117232329.GD174703@worktop.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S241731AbhKRABH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 19:01:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6429961ABF;
+        Wed, 17 Nov 2021 23:58:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637193488;
+        bh=lmfdFZ9wsWSSzqTt51z/Mge8gvN0Q0StiIMq2hqs1uo=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=PJxgqrTJRKDRuuI1icgLpIb3hd3kFtsDxd5gzMRl/wt9p/RPLYYIk6R+k0LrZSkHb
+         GTLXOl8pDzQMBXceIcaYlrb53SaNeKAQUW9U2n8dF41tiwRfe2ZGcXQUVk/g1/OtWo
+         sZcw6bACognY2kB+iTAFNy8QzUScOiOAeCmeIggLNxBIxmiiLOo7EaM2+oot381uXu
+         fNA76NnRvyoxlMiBb/sjvetr0Oh5h5ECVY4Moku3X5py75b17KB1Eulrq1w9G8CnVX
+         dwyU5XgXhga5zFxY1CW1jvMU04xZuPqf+1uh7VwsQQhyU1jScVymeMaPIDLbsdGKo4
+         cYylMthK60Uqw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5402A600E6;
+        Wed, 17 Nov 2021 23:58:08 +0000 (UTC)
+Subject: Re: [GIT PULL] MIPS fixes for v5.16
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20211117221136.GA16740@alpha.franken.de>
+References: <20211117221136.GA16740@alpha.franken.de>
+X-PR-Tracked-List-Id: <linux-mips.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211117221136.GA16740@alpha.franken.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes_5.16_1
+X-PR-Tracked-Commit-Id: fc1aabb088860d6cf9dd03612b7a6f0de91ccac2
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 3fa595481b3b33105d7e0480710591edb2bd8dcb
+Message-Id: <163719348828.8069.16173664396744279220.pr-tracker-bot@kernel.org>
+Date:   Wed, 17 Nov 2021 23:58:08 +0000
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     torvalds@linux-foundation.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pull request you sent on Wed, 17 Nov 2021 23:11:36 +0100:
 
+> git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes_5.16_1
 
-On 11/17/21 3:23 PM, Peter Zijlstra wrote:
-> On Wed, Nov 17, 2021 at 03:04:11PM -0800, Sathyanarayanan Kuppuswamy wrote:
-> 
->> We need PV support to handle halt() and safe_halt() cases.
->>
->> HLT instruction is generally used in cases like reboot, idle and
->> exception fixup handlers.
-> 
-> Which exception calls hlt? Because idle and reboot can easily be done.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/3fa595481b3b33105d7e0480710591edb2bd8dcb
 
-It is called in early_fixup_exception().
-
-> 
->> In TDX guest, to support HLT instruction, it has to be emulated using
->> a hypercall (aka TDVMCALL).
->>
->> We have the following three ways to emulate the HLT instruction:
->>
->> 1. Directly substitute TDVMCALLs in places where we require emulation.
->> 2. Use #VE exception handler to emulate it (In TDX guest, executing HLT
->>     will lead to #VE exception).
->> 3. Emulate it using pv_ops
->>
->> Since option#1 is not a scalable approach, it can be ignored. Option #2
->> is also not preferred because, we cannot differentiate between safe
->> halt and normal halt use cases in the exception handler.
-> 
-> Would not regs->flags & IF provide clue? I know STI normally has a
-> shadow, but wouldn't a trap in that shadow still get the flag straight?
-> I'm sure there's fun bugs around this, but surely TDX is new and doesn't
-> have these bugs.
-
-We have attempted this approach, but it failed some performance tests.
-
-Yes, if we use option # 2, for safe_halt() use case, STI will leave the
-interrupts in the desired state. But, between the STI instruction and
-the actual emulation of the HLT instruction, interrupts will be left in
-the enabled state. So any interrupt that happen in that window will
-delay the HLT operation for a long time.
-
-With above consideration, we thought PV ops is error free and a simpler
-solution.
-
-> 
+Thank you!
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
