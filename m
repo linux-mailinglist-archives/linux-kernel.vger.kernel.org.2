@@ -2,98 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897314541C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 08:25:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 499E04541CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 08:25:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233000AbhKQH2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 02:28:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37418 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232674AbhKQH2N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 02:28:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 699D063215;
-        Wed, 17 Nov 2021 07:25:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637133914;
-        bh=Tz8Q0T4hS7DypzRr8M0WEK+KGrSDlGMLdT3MX7wDdps=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JwjMyLOPhedKBqTHsrXmY+skZd9VGyLwpGKyBvAsu6jOGJ+1ulq+768f5BBUOHZ5T
-         S1BlnANV7zZ5xIFzeZ/tECf7I6YkXBaTG6iiAqSa5u+x3Zy7MtyIUHzkMx/HAQHFr1
-         587LY3q8lmShZzILcz/4GzPG4xxhLX3C6LFVUYJ8=
-Date:   Wed, 17 Nov 2021 08:25:12 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Aditya Garg <gargaditya08@live.com>
-Cc:     Thorsten Leemhuis <regressions@leemhuis.info>,
-        Orlando Chamberlain <redecorating@protonmail.com>,
-        Daniel Winkler <danielwinkler@google.com>,
-        Johan Hedberg <johan.hedberg@intel.com>,
-        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
-        Sonny Sasaka <sonnysasaka@chromium.org>
-Subject: Re: [PATCHv2] Bluetooth: quirk disabling LE Read Transmit Power
-Message-ID: <YZSuWHB6YCtGclLs@kroah.com>
-References: <20211001083412.3078-1-redecorating@protonmail.com>
- <CABBYNZLjSfcG_KqTEbL6NOSvHhA5-b1t_S=3FQP4=GwW21kuzg@mail.gmail.com>
- <972034A8-4B22-4FEE-9B37-C0A7C7ADD60C@live.com>
- <YYZr14zwHnd52rQ7@kroah.com>
- <829A2DF8-818E-4AF1-84F9-49B5822F9146@live.com>
- <YYePw07y2DzEPSBR@kroah.com>
- <70a875d0-7162-d149-dbc1-c2f5e1a8e701@leemhuis.info>
- <20211116090128.17546-1-redecorating@protonmail.com>
- <e75bf933-9b93-89d2-d73f-f85af65093c8@leemhuis.info>
- <3B8E16FA-97BF-40E5-9149-BBC3E2A245FE@live.com>
+        id S233189AbhKQH2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 02:28:43 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:57998 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231547AbhKQH2m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 02:28:42 -0500
+Date:   Wed, 17 Nov 2021 08:25:41 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637133942;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vblSOwk8WY8Wbht9jIU+VQDIA+N8xtAsFZfUXoQLMU8=;
+        b=kmhukvnhJTe597OCSDVWQgXYK2zl6pnm1ldjoOXt9hN/1GSS77MtLaFqo6uEcLwSSTqe2z
+        sVQGMXXuiiClUEbZ0g2X4SUB281P+T62VU/VWkhyU449apgl8VMb+sIHthfF3059HRgdwN
+        1A9EJ8frBOM9fRFR6fo3FCjC6Im5TqyNFMGSRccmqqRhHCot5FtjAF3uRP6nfBeLVhSkwj
+        qzQAFuFZEZHH3y7uWzea62jBGS8wDFlWUhQkO0FM5E2GeS1dcG+UkNDCrscasLNJkEcqTc
+        wX2XZbqVw/nY551w7o8tD/qQOvQxH/Zgwavf7RsqW8O/8BtefIh+ex3RBa1kqQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637133942;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vblSOwk8WY8Wbht9jIU+VQDIA+N8xtAsFZfUXoQLMU8=;
+        b=g5JiPL8QJW7dvwGvH4yVf5ubxSsCScKPQa03vioTKkolVHpwb1RXEUBwRMXVJCSOVVkXkw
+        5M2717DPQbs8e1CA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     martin.petersen@oracle.com, jejb@linux.ibm.com, hare@suse.de,
+        tglx@linutronix.de, linux-scsi@vger.kernel.org,
+        linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Davidlohr Bueso <dbueso@suse.de>
+Subject: Re: [PATCH 1/3] scsi/libfc: Remove get_cpu() semantics in
+ fc_exch_em_alloc()
+Message-ID: <20211117072541.fpgp23twyaawiool@linutronix.de>
+References: <20211117025956.79616-1-dave@stgolabs.net>
+ <20211117025956.79616-2-dave@stgolabs.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <3B8E16FA-97BF-40E5-9149-BBC3E2A245FE@live.com>
+In-Reply-To: <20211117025956.79616-2-dave@stgolabs.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 03:28:29AM +0000, Aditya Garg wrote:
+On 2021-11-16 18:59:54 [-0800], Davidlohr Bueso wrote:
+> The get_cpu() in fc_exch_em_alloc() was introduced in:
 > 
+>     f018b73af6db ([SCSI] libfc, libfcoe, fcoe: use smp_processor_id() only when preempt disabled)
 > 
-> > On 16-Nov-2021, at 2:56 PM, Thorsten Leemhuis <regressions@leemhuis.info> wrote:
-> > 
-> > On 16.11.21 10:02, Orlando Chamberlain wrote:
-> >>> Bluetooth maintainers, what's the status here? The proposed patch is
-> >>> fixing a regression. It's not a recent one (it afaics was introduced in
-> >>> v5.11-rc1). Nevertheless it would be good to get this finally resolved.
-> >>> But this thread seems inactive for more than a week now. Or was progress
-> >>> made, but is only visible somewhere else?
-> >> 
-> >> I think the best solution is getting broadcom to update their firmware,
-> >> I've just sent them a message through a form on their website, I couldn't
-> >> seem to get it to tell me "Your message has been sent", so it's possible
-> >> that it didn't submit (more likely I've sent the same message several times).
-> >> 
-> >> If I hear back from them I'll send something here.
-> > 
-> > Thx for that. But FWIW: from the point of the regression tracker that's
-> > not the best solution, as according to your report this is a regression.
-> > IOW: we deal with something that used to up to a certain kernel version
-> > and was broken by a change to the kernel. That is something frown upon
-> > in Linux kernel development, hence changes introducing regression are
-> > often quickly reverted, if they can't get fixed by follow up change quickly.
-> > 
-> > That sentence has two "quickly", as we want to prevent more people
-> > running into the issue, resulting in a loss of trust. But that's what
-> > will happen if we wait for a firmware update to get developed, tested,
-> > published, and rolled out. And even then we can't expect users to have
-> > the latest firmware installed when they switch to a new kernel.
-> > 
-> > Hence the best solution *afaics* might be: fix this in the kernel
-> > somehow now with a workaround; once the firmware update is out, change
-> > the kernel again to only apply the workaround if the old firmware is in use.
-> I have an idea. Can we make LE Read Transmit Power as a module parameter and users can turn it off if it is causing trouble. I have a patch for the same but haven't tested it yet.
+> for no other reason than to simply use smp_processor_id()
+> without getting a warning, because everything is done with
+> the pool->lock held anyway. However, get_cpu(), by disabling
+> preemption, does not play well with PREEMPT_RT, particularly
+> when acquiring a regular (and thus sleepable) spinlock.
+> 
+> Therefore remove the get_cpu() and just use the unstable value
+> as we will have CPU locality guarantees next by taking the lock.
+> The window of migration, as noted by Sebastian, is small and
+> even if it happens the result is correct.
+> 
+> Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-Module parameters are for the 1990's, please never add new ones as they
-modify code, not data, and you want to do something like this on a
-per-device basis, not on "all devices in the system", right?
+> diff --git a/drivers/scsi/libfc/fc_exch.c b/drivers/scsi/libfc/fc_exch.c
+> index 841000445b9a..be37bfb2814d 100644
+> --- a/drivers/scsi/libfc/fc_exch.c
+> +++ b/drivers/scsi/libfc/fc_exch.c
+> @@ -825,10 +825,9 @@ static struct fc_exch *fc_exch_em_alloc(struct fc_lport *lport,
+>  	}
+>  	memset(ep, 0, sizeof(*ep));
+>  
+> -	cpu = get_cpu();
+> +	cpu = raw_smp_processor_id();
+>  	pool = per_cpu_ptr(mp->pool, cpu);
+>  	spin_lock_bh(&pool->lock);
+> -	put_cpu();
 
-thanks,
+The `cpu' variable is later ORed into ep->oxid. I haven't figured out
+why this is important/ required. The ep variable/ `fc_exch' is allocated
+from a per-CPU memory pool and is later released to the same pool but
+the pool's CPU number is not obtained from fc_exch::oxid but there is a
+pointer to its pool stored in fc_exch::em. 
+So it remains a mystery to why the CPU number is stored here.
 
-greg k-h
+>  	/* peek cache of free slot */
+>  	if (pool->left != FC_XID_UNKNOWN) {
+
+Sebastian
