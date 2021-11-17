@@ -2,81 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C12FD454191
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 08:03:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78AF7454196
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 08:06:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234060AbhKQHGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 02:06:09 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:44838 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230113AbhKQHGH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 02:06:07 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Ux0WBIM_1637132585;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Ux0WBIM_1637132585)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 17 Nov 2021 15:03:07 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     richard@nod.at
-Cc:     nathan@kernel.org, ndesaulniers@google.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH -next] ubifs: Fix kernel-doc
-Date:   Wed, 17 Nov 2021 15:03:04 +0800
-Message-Id: <1637132584-52066-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S234070AbhKQHJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 02:09:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49236 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232468AbhKQHJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 02:09:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B8D361BF8;
+        Wed, 17 Nov 2021 07:06:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637132792;
+        bh=deQ+3gejzFlrmih5ge8vkutNVzvY5ImiHHpeuLw/QWk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mQn5dNlhb0fduIs8ZwcOnVMhxem3w6hCOM/fAADHtK+on2+/KWK3B3kOJstFcrmdZ
+         1yP/MQA0HV3HY1peg2OtacmKdV0+L5kzhDdv7bMSRqPN77f8UPit75DmdvPeN2SJoP
+         3/CQzXim+NO6KIzWOdBbkwS3PyAtZpQlbnnQTWkPFykzZ5HZg56fCVabGnzyQd74sq
+         tgyjXnCxwPc49wnyoI4PypWdujqq4gsqP37dqrnUx4ZEfl3uzH9i5gnzl2QwH8hpU8
+         g6R3cZ+pM9WuQNGof18FIwoSnNuS4liGj+kI9u0IazoXHSsS6vENBBOIdrV6bP/+z5
+         Ou3x3VkQz0jlw==
+Received: by mail-yb1-f169.google.com with SMTP id i194so4555594yba.6;
+        Tue, 16 Nov 2021 23:06:32 -0800 (PST)
+X-Gm-Message-State: AOAM533Abg9TPeseaRVFXxJOG7rz7M8hUy+sm+lki+BwJUXk8ecu8RM5
+        S8ZEn3Fvt3cbsFNWV/1E3YRh6c8dUyskIcF3qkA=
+X-Google-Smtp-Source: ABdhPJwp1vIoZpvK3B9DRiT0ofiXZ7TgZosM9giZ5+9CRcwiVKwTLxxnuVflxN8EdJkJYtpEmzPuLhi0GMBPZvOPfNc=
+X-Received: by 2002:a25:344d:: with SMTP id b74mr15107301yba.317.1637132791830;
+ Tue, 16 Nov 2021 23:06:31 -0800 (PST)
+MIME-Version: 1.0
+References: <20211115031817.4193-1-bernard@vivo.com>
+In-Reply-To: <20211115031817.4193-1-bernard@vivo.com>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 16 Nov 2021 23:06:21 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW6ui=wBrToYkqEOpLyLYhjHMoy0mL0UMcXnq0ObKLLhoA@mail.gmail.com>
+Message-ID: <CAPhsuW6ui=wBrToYkqEOpLyLYhjHMoy0mL0UMcXnq0ObKLLhoA@mail.gmail.com>
+Subject: Re: [PATCH] drivers/md: fix potential memleak
+To:     bernard@vivo.com
+Cc:     linux-raid <linux-raid@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix function name in fs/ubifs/io.c kernel-doc comment
-to remove some warnings found by clang(make W=1 LLVM=1).
+On Sun, Nov 14, 2021 at 7:18 PM Bernard Zhao <bernard@vivo.com> wrote:
+>
+> In function get_bitmap_from_slot, when md_bitmap_create failed,
+> md_bitmap_destroy must be called to do clean up.
 
-fs/ubifs/io.c:497: warning: expecting prototype for
-wbuf_timer_callback(). Prototype was for wbuf_timer_callback_nolock()
-instead
-fs/ubifs/io.c:513: warning: expecting prototype for new_wbuf_timer().
-Prototype was for new_wbuf_timer_nolock() instead
-fs/ubifs/io.c:538: warning: expecting prototype for cancel_wbuf_timer().
-Prototype was for cancel_wbuf_timer_nolock() instead
+Could you please explain which variable(s) need clean up?
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- fs/ubifs/io.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Thanks,
+Song
 
-diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
-index 789a781..1dbee23 100644
---- a/fs/ubifs/io.c
-+++ b/fs/ubifs/io.c
-@@ -488,7 +488,7 @@ void ubifs_prep_grp_node(struct ubifs_info *c, void *node, int len, int last)
- }
- 
- /**
-- * wbuf_timer_callback - write-buffer timer callback function.
-+ * wbuf_timer_callback_nolock - write-buffer timer callback function.
-  * @timer: timer data (write-buffer descriptor)
-  *
-  * This function is called when the write-buffer timer expires.
-@@ -505,7 +505,7 @@ static enum hrtimer_restart wbuf_timer_callback_nolock(struct hrtimer *timer)
- }
- 
- /**
-- * new_wbuf_timer - start new write-buffer timer.
-+ * new_wbuf_timer_nolock - start new write-buffer timer.
-  * @c: UBIFS file-system description object
-  * @wbuf: write-buffer descriptor
-  */
-@@ -531,7 +531,7 @@ static void new_wbuf_timer_nolock(struct ubifs_info *c, struct ubifs_wbuf *wbuf)
- }
- 
- /**
-- * cancel_wbuf_timer - cancel write-buffer timer.
-+ * cancel_wbuf_timer_nolock - cancel write-buffer timer.
-  * @wbuf: write-buffer descriptor
-  */
- static void cancel_wbuf_timer_nolock(struct ubifs_wbuf *wbuf)
--- 
-1.8.3.1
-
+>
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+> ---
+>  drivers/md/md-bitmap.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
+> index bfd6026d7809..a227bd0b9301 100644
+> --- a/drivers/md/md-bitmap.c
+> +++ b/drivers/md/md-bitmap.c
+> @@ -1961,6 +1961,7 @@ struct bitmap *get_bitmap_from_slot(struct mddev *mddev, int slot)
+>         bitmap = md_bitmap_create(mddev, slot);
+>         if (IS_ERR(bitmap)) {
+>                 rv = PTR_ERR(bitmap);
+> +               md_bitmap_destroy(mddev)
+>                 return ERR_PTR(rv);
+>         }
+>
+> --
+> 2.33.1
+>
