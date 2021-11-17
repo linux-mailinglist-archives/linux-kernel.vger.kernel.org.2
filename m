@@ -2,135 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D465454794
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 14:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F8A4454796
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 14:37:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237793AbhKQNkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 08:40:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44734 "EHLO
+        id S237798AbhKQNkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 08:40:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232295AbhKQNkY (ORCPT
+        with ESMTP id S237773AbhKQNko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 08:40:24 -0500
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F264C061570;
-        Wed, 17 Nov 2021 05:37:26 -0800 (PST)
-Received: by mail-oo1-xc29.google.com with SMTP id x1-20020a4aea01000000b002c296d82604so1079493ood.9;
-        Wed, 17 Nov 2021 05:37:26 -0800 (PST)
+        Wed, 17 Nov 2021 08:40:44 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8688FC061570;
+        Wed, 17 Nov 2021 05:37:45 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id np6-20020a17090b4c4600b001a90b011e06so2606181pjb.5;
+        Wed, 17 Nov 2021 05:37:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ao5IAeb8fqJjTHl5SOq4atwKMb2Ljlv+m0qlQXSS4M4=;
-        b=drDoMbTwOFt4QLQphLBJtu+eVHeOazXIAXMc72JBOZxy0ElYTAvdpVH5tY6mKsExq6
-         gXaD9YYXe9OpeLCFxLIY37NMNNVbgg8aKH/U2vQ7aGH5JOa16AXkG24wyzNV5+23RVEa
-         iq2lYYluZWPESZu2UGwUo4yue4gr+I747lZ6eX2BrTxZ5jCTXdH8NOv+kns65c9AGE4r
-         bjjTtw6Af0zgTt7VWoTG5zEcpCwD+zU4haTTXhtMxSGX13qNUawoLH8li7sQARsyLkCb
-         8mP3NYNjGPcBk6d1N98m9381aXFkuo69R2jsGegTV9iJfFN7nDx0VE8XJ2s2DqTclAj5
-         b5IQ==
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=bK+aM+uJiaIWQvTErFPdAKoHKtcLm+V6y4SEevN+qjc=;
+        b=ilUYALeVzHJ1L7OKC+Ef+BUaWOeYCq51FcU2QXhpN1kLOKfOQK8WKj0K90wATh/FSJ
+         2OV5T/oPJ1Fy944fwEh0KRbUUn5Ti5sIDArhOpphe3PcS7rChEImmQVfe4AjrTsis0tm
+         jNm89PYFdMX8gvUmbHMpPKXUsgGFZssXc3mUHQzoJTv2vCRHpbT1piYkQNHkXrAZliqc
+         ZhVoOnIsd1mddt3Kgfc4Ny014kpV1wE0+iGhJa0Gd1kslb4WM/tlp1Xw9fK0mv6bzRI+
+         6nwJTtrl2fHI5eyAkEzCmFUjxfWGEIAoghRYxJPPIOJN7zioLW8IMg9bMRxXsm+xBoRA
+         Ft7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Ao5IAeb8fqJjTHl5SOq4atwKMb2Ljlv+m0qlQXSS4M4=;
-        b=IdaA6koyhgEYGO9ZS8WeBLpDA+rJYpFnpWBdMugdBoFmel0sgbfWPUt36MXieYlDB5
-         mAFvi03woRfc+lxiY5c9hWCJkL1YwClG3gRV/1RFn51h0gUlfeSxBCVV6Ec7cuK8gvOy
-         VEvgbD7W51dKtaufCdQveuU5010hKmflBCWbU7IPll6jxQkh4Ocf4mzyTsJ13Fzl2sFw
-         UOn18wZiaYPwHlFn3VlckHPcMEaK7glddjlUvf+ghJ+MZ0/jZyTyd39/vUZ4RtuaypXh
-         PbMF1rNma8h58IplklrpyJWhkxVQ+86tz6lLYIIlzagDSVyYsNK7lq56sn+/MvickNni
-         r+jA==
-X-Gm-Message-State: AOAM532blLU2spy9yjz1Em7RrhL/6+L9LMUkNB0ElPxUWjdypSyQm7WY
-        5IXq7KCUULkI9ArEqvrQq5I=
-X-Google-Smtp-Source: ABdhPJx1coylXfQxDys1b+PpYciHX5IJdP0elIwy5NJmgbaVFNEGZp5+EXXDKUjSdX5XRl8sqzVydQ==
-X-Received: by 2002:a4a:cf12:: with SMTP id l18mr3920687oos.25.1637156245667;
-        Wed, 17 Nov 2021 05:37:25 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id bh12sm5127267oib.25.2021.11.17.05.37.24
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=bK+aM+uJiaIWQvTErFPdAKoHKtcLm+V6y4SEevN+qjc=;
+        b=qzITZqtdNWLJ1WkIoTSC3OFjbHkNEVh8MCbgaj9JWlWs1EdWbb5/uDs27/5vkvBeY4
+         auDfKUgeEYbxnro96nUN5FHTWJ8wG5FBVj1+OOKectT7t7GyKJjGQeqCImQVlCfA6/+c
+         VNE+HwlDKj6JW4Og8T6bd+55aLdUNnWAt00JrT2iZDJvd9aNxFF7qpT0iqYPsZ5L7whS
+         jDtQQy/Mfx5Ucqr8qAukHoS7y8v0PWBUP06kxyyQUapdm796nj6372itU1XwILZyP/V3
+         x/Wx8ii6vArmr8e2+EUl2Y0fcgORzl8eNZJFLsJEioYteqDLkx7gSEhKWZnMXi3O5kb+
+         JX1A==
+X-Gm-Message-State: AOAM53182FJpoaIk9J4hHCXDLsjSPNsvU5dkXOQWDcW181FRvYw0OfVM
+        /fYKManj0txbTkbIHwnE+Om6YPlZaZGf2fInQuk=
+X-Google-Smtp-Source: ABdhPJxddzhrW4cGy66T+t3N1izFPfH0C4QFrmBu6y0XsB0gw0puDR65egSDKb1TAzSaJnCgOdDUHw==
+X-Received: by 2002:a17:90b:38c9:: with SMTP id nn9mr9280161pjb.192.1637156264333;
+        Wed, 17 Nov 2021 05:37:44 -0800 (PST)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id o28sm7623091pgn.85.2021.11.17.05.37.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 05:37:25 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 17 Nov 2021 05:37:24 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH v3 11/12] watchdog: s3c2410: Remove superfluous err label
-Message-ID: <20211117133724.GK2435591@roeck-us.net>
-References: <20211107202943.8859-1-semen.protsenko@linaro.org>
- <20211107202943.8859-12-semen.protsenko@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211107202943.8859-12-semen.protsenko@linaro.org>
+        Wed, 17 Nov 2021 05:37:43 -0800 (PST)
+Message-ID: <619505a7.1c69fb81.8cff6.69b0@mx.google.com>
+Date:   Wed, 17 Nov 2021 05:37:43 -0800 (PST)
+X-Google-Original-Date: Wed, 17 Nov 2021 13:37:42 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20211117101657.463560063@linuxfoundation.org>
+Subject: RE: [PATCH 5.15 000/923] 5.15.3-rc3 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 07, 2021 at 10:29:42PM +0200, Sam Protsenko wrote:
-> 'err' label in probe function is not really need, it just returns.
-> Remove it and replace all 'goto' statements with actual returns in
-> place.
+On Wed, 17 Nov 2021 11:19:15 +0100, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.15.3 release.
+> There are 923 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> No functional change here, just a cleanup patch.
+> Responses should be made by Fri, 19 Nov 2021 10:14:52 +0000.
+> Anything received after that time might be too late.
 > 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.3-rc3.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+5.15.3-rc3 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
-> ---
-> Changes in v3:
->   - Added R-b tag by Krzysztof Kozlowski
-> 
-> Changes in v2:
->   - (none): it's a new patch
-> 
->  drivers/watchdog/s3c2410_wdt.c | 13 ++++---------
->  1 file changed, 4 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
-> index f31bc765a8a5..96aa5d9c6ed4 100644
-> --- a/drivers/watchdog/s3c2410_wdt.c
-> +++ b/drivers/watchdog/s3c2410_wdt.c
-> @@ -627,22 +627,18 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
->  	wdt_irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
->  	if (wdt_irq == NULL) {
->  		dev_err(dev, "no irq resource specified\n");
-> -		ret = -ENOENT;
-> -		goto err;
-> +		return -ENOENT;
->  	}
->  
->  	/* get the memory region for the watchdog timer */
->  	wdt->reg_base = devm_platform_ioremap_resource(pdev, 0);
-> -	if (IS_ERR(wdt->reg_base)) {
-> -		ret = PTR_ERR(wdt->reg_base);
-> -		goto err;
-> -	}
-> +	if (IS_ERR(wdt->reg_base))
-> +		return PTR_ERR(wdt->reg_base);
->  
->  	wdt->bus_clk = devm_clk_get(dev, "watchdog");
->  	if (IS_ERR(wdt->bus_clk)) {
->  		dev_err(dev, "failed to find bus clock\n");
-> -		ret = PTR_ERR(wdt->bus_clk);
-> -		goto err;
-> +		return PTR_ERR(wdt->bus_clk);
->  	}
->  
->  	ret = clk_prepare_enable(wdt->bus_clk);
-> @@ -757,7 +753,6 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
->   err_bus_clk:
->  	clk_disable_unprepare(wdt->bus_clk);
->  
-> - err:
->  	return ret;
->  }
->  
-> -- 
-> 2.30.2
-> 
