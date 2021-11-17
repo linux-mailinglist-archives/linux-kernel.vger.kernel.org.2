@@ -2,138 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512B3454B71
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:54:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C05454B76
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:56:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233262AbhKQQ51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 11:57:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34294 "EHLO mail.kernel.org"
+        id S234083AbhKQQ7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 11:59:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232779AbhKQQ5Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 11:57:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F1B561BFB;
-        Wed, 17 Nov 2021 16:54:26 +0000 (UTC)
+        id S230016AbhKQQ7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 11:59:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 017BA62F90;
+        Wed, 17 Nov 2021 16:56:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637168066;
-        bh=dg9zhVNHN1R/RjF64bghFhclSKy5zbJoew+7s3pcIJk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=SSHQkb9bq1rOz4UcLDo1NKPxXrtg2PqzDyM86D/TnPa8Ah7vdWWKIM45HdMfFZhA6
-         0lqjJovSHyXqEcmYF7RaVfU1/946Tzg3xwAuceZaisrIzxRsAsO6rIeQ47/7nk+YwT
-         KILTYcjFoaMPbZ/LlEB+Uo+oPr6DTLIzKgRnva4fMIkxuAdah7aK4rHrfnR0Q4bWSC
-         FQwEk7iMT0bxg24ou5Nj6iC9QTDzt/HuV2Q96MBWVorZDbORN7ar333g/ZJzQjJruU
-         dLTuuE/Au0iu1IyFdbeMv16jp1fTzFJuB5TXvCzjiNgI/20E9CmViCCvXvj7qzVUWo
-         ixP2Kjg5QMoWQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0CA925C04B0; Wed, 17 Nov 2021 08:54:26 -0800 (PST)
-Date:   Wed, 17 Nov 2021 08:54:26 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Feng Tang <feng.tang@intel.com>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Cassio Neri <cassio.neri@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v2 0/4] clocksource: Avoid incorrect hpet fallback
-Message-ID: <20211117165426.GG641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211116234426.837799-1-longman@redhat.com>
+        s=k20201202; t=1637168206;
+        bh=wYYq7JIGe7T++RofZFKvll3ULuqrZ5GmSq0XgEF6dLo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nJ64db7zU0rPyM9idZqgcTR6z4iaRgkd1bHhCLtECrpDeAe26x/IC9f7xE1HlXDsP
+         ZgLHJFEJd7wrm9Bn1sqPFN79gu3CpqTpXF7NxkIOKit2jXZJyfxSN/UCkx0hUb7HtA
+         DNGn9aR0pAElK8Og5IPhDFd/Tv5mviD/LgIumrrCKT5F5WSjF6mBf7EyDQzgo8S+ai
+         +Ig4kGDZTIM6ZYCAeAxFmwKp/QWPgbBEg2mceBy23eoZc+/MyjDiApZp53andbLusA
+         stur58N23gRrD1hxWyViiJKxEJrRHdlcodx8+JcQ0uauDKcHiyXOI+++WVYMwPZPC6
+         YxDqdNfPovt9Q==
+Date:   Wed, 17 Nov 2021 08:56:44 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     niuzhiguo84@gmail.com
+Cc:     chao@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Jing.Xia@unisoc.com
+Subject: Re: [PATCH Vx 1/1] f2fs: Avoid deadlock between writeback and
+ checkpoint
+Message-ID: <YZU0TFBH6k2Q6fJZ@google.com>
+References: <1636438608-27597-1-git-send-email-niuzhiguo84@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211116234426.837799-1-longman@redhat.com>
+In-Reply-To: <1636438608-27597-1-git-send-email-niuzhiguo84@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 06:44:22PM -0500, Waiman Long wrote:
-> It was found that when an x86 system was being stressed by running
-> various different benchmark suites, the clocksource watchdog might
-> occasionally mark TSC as unstable and fall back to hpet which will
-> have a signficant impact on system performance.
+On 11/09, niuzhiguo84@gmail.com wrote:
+> From: Zhiguo Niu <zhiguo.niu@unisoc.com>
 > 
-> The current watchdog clocksource skew threshold of 50us is found to be
-> insufficient. So it is changed back to 100us before commit 2e27e793e280
-> ("clocksource: Reduce clocksource-skew threshold") in patch 1. This
-> patch also skip the current clock skew check if the consecutive watchdog
-> read-back delay contributes a major portion of the total delay. On a
-> 1-socket 64-thread test system, it was actually found that in one the
-> test sample, the hpet-tsc-hpet delay was 95263ns, while the corresponding
-> hpet-hpet delay was 94425ns. So the majority of the delay is caused by
-> the hpet read.
+> There could be a scenario as following:
+> The inodeA and inodeB are in b_io queue of writeback
+> inodeA : f2fs's node inode
+> inodeB : a dir inode with only one dirty pages, and the node page
+> of inodeB cached into inodeA
 > 
-> Patch 2 reduces the default clocksource_watchdog() retries to 2 as
-> suggested by Paul.
+> writeback:
 > 
-> Patch 3 implements dynamic readjustment of the new internal
-> watchdog_max_skew variable in case the current value causes excessive
-> skipping of clock skew checks. The following reproducer provided by
-> Feng Tang was used to cause the test skipping:
+> wb_workfn
+> wb_writeback
+> blk_start_plug
+>         loop {
+>         queue_io
+>         progress=__writeback_inodes_wb
+>                 __writeback_single_inode
+>                         do_writepages
+>                                 f2fs_write_data_pages
+>                                 wbc->pages_skipped +=get_dirty_pages
+>                         inode->i_state &= ~dirty
+>                 wrote++
+>                 requeue_inode
+>         }
+> blk_finish_plug
 > 
->   sudo stress-ng --timeout 30 --times --verify --metrics-brief --ioport <n>
+> checkpoint:
 > 
-> where <n> is the number of cpus in the system.
+> f2fs_write_checkpoint
+> f2fs_sync_dirty_inodes
+> filemap_fdatawrite
+> do_writepages
+> f2fs_write_data_pages
+>         f2fs_write_single_data_page
+>                 f2fs_do_write_data_page
+>                         set_page_writeback
+>                         f2fs_outplace_write_data
+>                                 f2fs_update_data_blkaddr
+>                                         f2fs_wait_on_page_writeback
+>                 inode_dec_dirty_pages
 > 
-> A sample watchdog_max_skew readjustment output was:
+> 1. Writeback thread flush inodeA, and push it's bio request in task's plug;
+> 2. Checkpoint thread writes inodeB's dirty page, and then wait its node
+>     page writeback cached into inodeA which is in writeback task's plug
+> 3. Writeback thread flush inodeB and skip writing the dirty page as
+>     wb_sync_req[DATA] > 0.
+> 4. As none of the inodeB's page is marked as PAGECACHE_TAG_DIRTY, writeback
+>     thread clear inodeB's dirty state.
+> 5. Then inodeB is moved from b_io to b_dirty because of pages_skipped > 0
+>     as checkpoint thread is stuck before dec dirty_pages.
 > 
-> [  197.771144] clocksource: timekeeping watchdog on CPU8: hpet wd-wd read-back delay of 92539ns
-> [  197.789589] clocksource: wd-tsc-wd read-back delay of 90933ns, clock-skew test skipped!
-> [  197.807145] clocksource: timekeeping watchdog on CPU8: watchdog_max_skew increased to 185078ns
+> This patch collect correct pages_skipped according to the tag state in
+> page tree of inode
 > 
-> To avoid excessive increase of watchdog_max_skew, a limit of
-> 10*WATCHDOG_MAX_SKEW is used over which the watchdog itself will be
-> mark unstable and a new watchdog will be selected if possible.
+> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+> Signed-off-by: Jing Xia <jing.xia@unisoc.com>
+> ---
+>  fs/f2fs/data.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> To exercise the code, WATCHDOG_MAX_SKEW was reduced to 10us. After
-> skipping 10 checks, the watchdog then fell back to acpi_pm. However
-> the corresponding consecutive watchdog delay was still about the same
-> leading to ping-ponging between hpet and acpi_pm becoming the watchdog.
-> 
-> Patch 4 adds a Kconfig option to allow kernel builder to control the
-> actual WATCHDOG_MAX_SKEW threshold to be used.
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index f4fd6c246c9a..e98628e3868c 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -3237,7 +3237,9 @@ static int __f2fs_write_data_pages(struct address_space *mapping,
+>  	return ret;
+>  
+>  skip_write:
+> -	wbc->pages_skipped += get_dirty_pages(inode);
+> +	wbc->pages_skipped +=
+> +		mapping_tagged(inode->i_mapping, PAGECACHE_TAG_DIRTY) ?
 
-A few questions:
+Is there any race condition to get 0, if there's any dirty page? IOWs, it
+seems the current condition is just requeuing the inode as dirty, but next
+flushing time will remove it from dirty list. Is this giving too much overheads?
 
-1.	Once you have all the patches in place, is the increase in
-	WATCHDOG_MAX_SKEW from 50us to 100us necessary?
-
-2.	The reason for having cs->uncertainty_margin set to
-	2*WATCHDOG_MAX_SKEW was to allow for worst-case skew from both
-	the previous and the current reading.  Are you sure that
-	dropping back to WATCHDOG_MAX_SKEW avoids false positives?
-
-3.	In patch 3/4, shouldn't clock_skew_skip be a field in the
-	clocksource structure rather than a global?  If a system had
-	multiple clocks being checked, wouldn't having this as a field
-	make things more predictable?  Or am I missing something subtle
-	here?
-
-4.	These are intended to replace this commit in -rcu, correct?
-
-	9d5739316f36 ("clocksource: Forgive repeated long-latency watchdog clocksource reads")
-
-	But not this commit, correct?
-
-	5444fb39fd49 ("torture: Test splatting for delay-ridden clocksources")
-
-And would you like me to queue these, or would you rather send them
-separately?  (Either way works for me, just please let me know.)
-
-							Thanx, Paul
-
-> Waiman Long (4):
->   clocksource: Avoid accidental unstable marking of clocksources
->   clocksource: Reduce the default clocksource_watchdog() retries to 2
->   clocksource: Dynamically increase watchdog_max_skew
->   clocksource: Add a Kconfig option for WATCHDOG_MAX_SKEW
-> 
->  .../admin-guide/kernel-parameters.txt         |   4 +-
->  kernel/time/Kconfig                           |   9 ++
->  kernel/time/clocksource.c                     | 121 +++++++++++++++---
->  3 files changed, 114 insertions(+), 20 deletions(-)
-> 
+> +		get_dirty_pages(inode) : 0;
+>  	trace_f2fs_writepages(mapping->host, wbc, DATA);
+>  	return 0;
+>  }
 > -- 
-> 2.27.0
-> 
+> 2.28.0
