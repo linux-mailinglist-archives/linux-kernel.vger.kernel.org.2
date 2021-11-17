@@ -2,142 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5864B454D75
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:54:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7177454D76
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:54:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240259AbhKQS46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 13:56:58 -0500
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:39853 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230399AbhKQS46 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 13:56:58 -0500
-Received: by mail-ot1-f42.google.com with SMTP id r10-20020a056830080a00b0055c8fd2cebdso6393780ots.6;
-        Wed, 17 Nov 2021 10:53:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ak1jmoEOOGOhOFuQWlERnmy75zezwY/WEmUoAvtFZ1I=;
-        b=4961Gyl1UP9GXaADAl5Y+qliqzq/djmY70bpzxWX9gk/mhEz6APxZg/p3ninp+0G31
-         7b0ZPnMjVJpA4XcM8zANhnMJ9dZIUHOS8ZavHNJH0C/tHOJ6g8uG5mVQ9Rcm4f0J+CfH
-         2Dw/maFXHz6uX/RA6qgzA7Xhq1PAbi1sGjT/V6Mj1R1f/sfKhfVTQtwhkr0DS0YHlPeY
-         9q3Vr+d6tUULZKQX/NY5otQSjIJXQYh5rXEmuJzg8AHNN8PBXo7YibKSUtHBTclJYGH9
-         T/WGQb+JCfS38MhO7Bi+3ReKuHNjgzZlH16MX7CovAHE9w22zUA0pEYDfo4EZpLWPGgA
-         g77w==
-X-Gm-Message-State: AOAM533GaVF4HEiZLa7Oid3186efdcquDuPT88WC0Msqs2Gjik2e/yxv
-        YVhyQOld087HVBPp4JoCqYOaWdVjJJiRkOJ1fRU=
-X-Google-Smtp-Source: ABdhPJzIGHHnl8EoTZvUxHWYGTO/bN/uZEBx3VEccsmatzbLpcL0i+6UKJBZCjTmrJPNHIF81a/MlelW76M3M3+znjA=
-X-Received: by 2002:a05:6830:348f:: with SMTP id c15mr15779811otu.254.1637175238704;
- Wed, 17 Nov 2021 10:53:58 -0800 (PST)
+        id S240270AbhKQS5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 13:57:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35820 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230399AbhKQS5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 13:57:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9190E60F8F;
+        Wed, 17 Nov 2021 18:54:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637175257;
+        bh=HZsEd0xsgiAa1gcWQnMnVjSDW/F7feGMwtoWsG2I2kc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V6ECcgxkZaoZr9k+XYxyNR96jZ2YtFK7JQ75eXdb0aBxb1fNEk91hgTnlBTKronE9
+         VxZs3LP1gP3CJ4laWqr8ELoKGIjpRlLX2Wz2/Wvo0APE0TQ7/2D5MjrozVNI4qQa0L
+         shkCBtZfCvT0tLBzswa0VGaow+ODMgTlccouP1d8=
+Date:   Wed, 17 Nov 2021 19:54:14 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Russ Weight <russell.h.weight@intel.com>
+Cc:     sudeep.holla@arm.com, cristian.marussi@arm.com, ardb@kernel.org,
+        bjorn.andersson@linaro.org, linux-kernel@vger.kernel.org,
+        trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com
+Subject: Re: [RFC PATCH 1/5] firmware: Create firmware upload framework
+Message-ID: <YZVP1jetd/a+dYyf@kroah.com>
+References: <20211111011345.25049-1-russell.h.weight@intel.com>
+ <20211111011345.25049-2-russell.h.weight@intel.com>
+ <YZUceupQe67KYJyf@kroah.com>
+ <c521bc07-0f10-e89e-a59c-b6e07fc35089@intel.com>
+ <YZVHaeuYL8QD/7db@kroah.com>
+ <44f1be15-5e16-38fe-392c-b87a29451318@intel.com>
 MIME-Version: 1.0
-References: <20211117183709.1832925-1-john@metanate.com>
-In-Reply-To: <20211117183709.1832925-1-john@metanate.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 17 Nov 2021 19:53:47 +0100
-Message-ID: <CAJZ5v0hgL6O6mCA4wf5NtmWi7kzA0Lyop4wH0TGDLMricdpiqA@mail.gmail.com>
-Subject: Re: [PATCH v2] PM: runtime: avoid priority inversion on PREEMPT_RT
-To:     John Keeping <john@metanate.com>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <44f1be15-5e16-38fe-392c-b87a29451318@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 7:37 PM John Keeping <john@metanate.com> wrote:
->
-> With PREEMPT_RT the cpu_relax() loops in rpm_suspend and rpm_resume can
-> cause unbounded latency if they preempt an asynchronous suspend.  The
-> main scenario where this can happen is when a realtime thread resumes a
-> device while it is asynchronously suspending on a worker thread.
->
-> I'm not convinced this can actually happen in the rpm_suspend case, or
-> at least it's a lot less likely for a synchronous suspend to run at the
-> same time as an asynchronous suspend, but both functions are updated
-> here for symmetry.
->
-> For devices setting power.irq_safe, it is possible that RPM functions
-> will be called with a spinlock held (for example in
-> pl330_issue_pending()).  This means a normal call to schedule() can't be
-> used, but to avoid the priority inversion it is necessary to wait and
-> schedule.  schedule_rtlock() is only available when CONFIG_PREEMPT_RT is
-> defined, so even though the logic is correct without any preprocessor
-> guards around schedule_rtlock(), they are necessary for compilation.
->
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Signed-off-by: John Keeping <john@metanate.com>
-> ---
-> Changes since v1:
-> - Use schedule_rtlock() instead of schedule() for PREEMPT_RT & irq_safe
-> - Rewritten commit description
->
->  drivers/base/power/runtime.c | 18 ++++++++++++++----
->  1 file changed, 14 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-> index f3de7bfc7f5b..fdf461bfae8c 100644
-> --- a/drivers/base/power/runtime.c
-> +++ b/drivers/base/power/runtime.c
-> @@ -596,7 +596,7 @@ static int rpm_suspend(struct device *dev, int rpmflags)
->                         goto out;
->                 }
->
-> -               if (dev->power.irq_safe) {
-> +               if (dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
+On Wed, Nov 17, 2021 at 10:47:38AM -0800, Russ Weight wrote:
+> 
+> 
+> On 11/17/21 10:18 AM, Greg KH wrote:
+> > On Wed, Nov 17, 2021 at 10:00:54AM -0800, Russ Weight wrote:
+> >>
+> >> On 11/17/21 7:15 AM, Greg KH wrote:
+> >>> On Wed, Nov 10, 2021 at 05:13:41PM -0800, Russ Weight wrote:
+> >>>> The Firmware Upload class driver provides a common API for uploading
+> >>>> firmware files to devices.
+> >>> That is exactly what the existing firmware api in the kernel is supposed
+> >>> to be accomplishing.
+> >>>
+> >>> If it is not doing what you need it to do, then you need to document the
+> >>> heck out of why it is not, and why you need a different api for this.  I
+> >>> do not see that here in this changelog at all :(
+> >> This is part of the documentation included later in this patch. I can add
+> >> this to the changelog.
+> >>
+> >> +Some devices load firmware from on-board FLASH when the card initializes.
+> >> +These cards do not require the request_firmware framework to load the
+> >> +firmware when the card boots, but they to require a utility to allow
+> >> +users to update the FLASH contents.
+> > There's no requirement that request_firmware only be done at boot time,
+> > why not use it at any point in time?
+> Calling request_firmware() is not restricted to boot time. But it requires
+> a firmware filename under /lib/firmware
 
-Please add a helper to avoid code duplication related to this (even
-though there is a small amount of it).
+Not really, there are many locations it can be in.  See the different
+configuration options we have.
 
->                         spin_unlock(&dev->power.lock);
->
->                         cpu_relax();
-> @@ -614,7 +614,12 @@ static int rpm_suspend(struct device *dev, int rpmflags)
->
->                         spin_unlock_irq(&dev->power.lock);
->
-> -                       schedule();
-> +#ifdef CONFIG_PREEMPT_RT
-> +                       if (dev->power.irq_safe)
-> +                               schedule_rtlock();
-> +                       else
-> +#endif
+But why would you want firmware in another location?
 
-Same here, and please use the #ifdet inside the helper.
+>, and the convention is to specify the
+> filename in the kernel config.
 
-> +                               schedule();
->
->                         spin_lock_irq(&dev->power.lock);
->                 }
-> @@ -779,7 +784,7 @@ static int rpm_resume(struct device *dev, int rpmflags)
->                         goto out;
->                 }
->
-> -               if (dev->power.irq_safe) {
-> +               if (dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
->                         spin_unlock(&dev->power.lock);
->
->                         cpu_relax();
-> @@ -798,7 +803,12 @@ static int rpm_resume(struct device *dev, int rpmflags)
->
->                         spin_unlock_irq(&dev->power.lock);
->
-> -                       schedule();
-> +#ifdef CONFIG_PREEMPT_RT
-> +                       if (dev->power.irq_safe)
-> +                               schedule_rtlock();
-> +                       else
-> +#endif
-> +                               schedule();
->
->                         spin_lock_irq(&dev->power.lock);
->                 }
-> --
+That is not a requirement at all.
+
+> I don't see any support for a user to provide a filename at run time
+> to be uploaded to a device, and that is the use case that I want to
+> support.
+
+If that's the only difference here, please work with the existing
+framework to add that tiny thing (i.e. pass in a name) to the current
+framework.  Do not create a whole new one please.
+
+> >> When you say "existing firmware api", I'm thinking request_firmware, which
+> >> requires that driver names be specified in the kernel config and wants to
+> >> load firmware automatically during device initialization.
+> > It can be used at any time, why do you think it's restricted to init
+> > time?
+> >
+> > And I do not understand your issue with driver names.
+> Sorry - I meant so say "firmware file names"
+> 
+> In an earlier iteration of this patchset, you pointed out that allowing a user
+> to provide a filename for request_firmware() to use was a security issue.
+
+It is crazy, don't you think?
+
+> The use case that I am targeting is to allow a user to provide an image file
+> to a device at run time.
+
+That's not a limitation of the existing firmware layer.
+
+thanks,
+
+greg k-h
