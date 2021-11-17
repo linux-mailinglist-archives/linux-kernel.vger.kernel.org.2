@@ -2,60 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C574D454B59
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:49:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0AA454B5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239273AbhKQQwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 11:52:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32932 "EHLO mail.kernel.org"
+        id S233688AbhKQQwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 11:52:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231639AbhKQQwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 11:52:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 43A246137E;
-        Wed, 17 Nov 2021 16:49:06 +0000 (UTC)
+        id S233179AbhKQQwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 11:52:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 00A1F61360;
+        Wed, 17 Nov 2021 16:49:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637167746;
-        bh=AAfzw2zGlr3QImhF5utGKNVpW4kvwxxjFSW7Q1F0A8I=;
+        s=k20201202; t=1637167753;
+        bh=dJgr49md2/DJwvQ4nf8T3TAiN7Q3mQ/A2us7fsZdIZc=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=GLpJ7d1DuoFAFbnb9SoA0ixrTfzgIPRObijX8P8GO/PIiJTpzMlIts8zjSamXKXjZ
-         VKcQ2a4QJG+EZ5phe/tKrydUTzse3G8RihioXl1AwFN2sUeJmjYLNgP6RZWEU+JHvR
-         kslKfzBaqFDbdshl3ZolsqXmrgixVq9dO7mLZOat60qY+CTzzqUAIjfMuhEWk8Jp9n
-         lp/JuVm4nmV0fjFcdwZCYtk78EsF5L4A7egSdaTtATFMFDxIN8MiAPy7PLWQrUNyla
-         p7gMyu+FTvtQmDG8qXh9XnTfD/DokEaNjaDoZXuSlq/YijJEStUBlifwIScwRu5WqQ
-         tkTnMHSB64Ilw==
+        b=DPeydbZgNAXY3VJGvIQ4Qxti+uU+YMdXY+hdpdisyilkIqzomMv8iG+MhDFsleIhH
+         rTrv87corY+sE1yy46gmOaBXn6tp2jOY+A3GxR5u2ycOp7kmfH37q9R2HxIAOi92y/
+         ucBZFPcxNuvYU2/Xyw05CnB2OZnBUPhbDuMXlri+N8yM4z9hoAQJ4wwSODVEcLUPF0
+         UvIMLDjB0KONYAwaNKgY7GXMauIJ2xe393g0qK2ghACfS15MKoeGg+byDhvKuy5S0U
+         aanE5Z88eXVzosvQw7Fd3YfwBAYWl+HGHUVrFfYaEhlXhU1kiYt87mI+LDvVRHrrjP
+         Cxo3oLkKmhNbQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 375E860A94;
-        Wed, 17 Nov 2021 16:49:06 +0000 (UTC)
-Subject: Re: [GIT PULL] Hyper-V fixes for 5.16-rc2
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EE73160A3A;
+        Wed, 17 Nov 2021 16:49:12 +0000 (UTC)
+Subject: Re: [GIT PULL] nfsd bugfix for 5.16
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211117114810.favtd35s5gra7lli@liuwe-devbox-debian-v2>
-References: <20211117114810.favtd35s5gra7lli@liuwe-devbox-debian-v2>
-X-PR-Tracked-List-Id: <linux-hyperv.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211117114810.favtd35s5gra7lli@liuwe-devbox-debian-v2>
-X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20211117
-X-PR-Tracked-Commit-Id: f3e613e72f66226b3bea1046c1b864f67a3000a4
+In-Reply-To: <20211116015332.GJ23884@fieldses.org>
+References: <20211116015332.GJ23884@fieldses.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211116015332.GJ23884@fieldses.org>
+X-PR-Tracked-Remote: git://linux-nfs.org/~bfields/linux.git tags/nfsd-5.16-1
+X-PR-Tracked-Commit-Id: c0019b7db1d7ac62c711cda6b357a659d46428fe
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ee1703cda8dc777e937dec172da55beaf1a74919
-Message-Id: <163716774616.2428.17924057447912417998.pr-tracker-bot@kernel.org>
-Date:   Wed, 17 Nov 2021 16:49:06 +0000
-To:     Wei Liu <wei.liu@kernel.org>
+X-PR-Merge-Commit-Id: ef1d8dda23e7df10b48c90f86b12c9b4c62da1ab
+Message-Id: <163716775296.2428.13725518141872334049.pr-tracker-bot@kernel.org>
+Date:   Wed, 17 Nov 2021 16:49:12 +0000
+To:     "J. Bruce Fields" <bfields@fieldses.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        kys@microsoft.com, sthemmin@microsoft.com, haiyangz@microsoft.com,
-        Michael Kelley <mikelley@microsoft.com>
+        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        Chuck Lever <chuck.lever@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 17 Nov 2021 11:48:10 +0000:
+The pull request you sent on Mon, 15 Nov 2021 20:53:32 -0500:
 
-> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20211117
+> git://linux-nfs.org/~bfields/linux.git tags/nfsd-5.16-1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ee1703cda8dc777e937dec172da55beaf1a74919
+https://git.kernel.org/torvalds/c/ef1d8dda23e7df10b48c90f86b12c9b4c62da1ab
 
 Thank you!
 
