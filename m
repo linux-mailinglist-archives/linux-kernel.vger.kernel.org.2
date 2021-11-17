@@ -2,88 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 460E645490B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:41:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5DE454910
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238699AbhKQOop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 09:44:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233131AbhKQOom (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 09:44:42 -0500
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BDFC061570;
-        Wed, 17 Nov 2021 06:41:43 -0800 (PST)
-Received: by mail-vk1-xa29.google.com with SMTP id d130so1827294vke.0;
-        Wed, 17 Nov 2021 06:41:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aQX8G7rKHKZpQg48Q5MVfIqJ7w7XTW5bUNjp+OA8epI=;
-        b=pMaVYoNziyx91tIqKDpmfA1rvzysvj9AE6tuddjG6iKNtXx/lW/n36v+UGgHq5vKUt
-         SS8Il5Gv7NvjuRu1MASBDQDJdQX2EV9P307lFq0fyps9KKWU102O97l8c4DLGfA8oNUb
-         m4PG8RN0EisgBYWCKsI6DNGDtgOUn9+1P6R/HH8nIQvVsu2P6idJ01WZ5Gn9EJCLKG0F
-         TBuYlVegMOZNRrrMYmTlw5Xjm8Uwmod7tZUlqqPVcqXbwnxlP59VrE14oa/6EdS3Rhd9
-         Br0ibo8pZHVIteHwZyEa2hIAYAtlfXHwbKZFadnVYZb7QmAdqg0674oJh79grhCYNAip
-         cWmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aQX8G7rKHKZpQg48Q5MVfIqJ7w7XTW5bUNjp+OA8epI=;
-        b=gkgNUVid97V7lyzpm7cbkjgOXZqY6wZa0anrRE2YL0UEP/YFNGeXUptveOYYLCtZsZ
-         1S6nmjwqhpEf8a95KXpyeU4DXbWzgnRPRnD4eFUDIKUBAKMileMtKitlykW89pnzlh4i
-         P71Gnp5JGHZhjODxzihaytl7Ok/QkX+TOfmd8uq6T3QlsGQRNUDQJypQtpVYjUxFD95I
-         weaPqnoja7qrC/ZegjB9L1l59sm/7mZbK6MIBXC1UNrt3tl8mhEtko11jihgaY11rhV9
-         sZNPXp1YQOx8JSzEaiooA5RGDnyn7qLWqUKthmEETd8uezU71fvPyiC+rMhh1p/mUt3T
-         8tqA==
-X-Gm-Message-State: AOAM5330IyK5SYo326cLuSUVv0ydNZbLclY/xzuO5tGCEcnS/NpM7nEv
-        4QMW1rOTe2n6Elaa8EhyWjXi42wmIuVESqMx+GQ=
-X-Google-Smtp-Source: ABdhPJwkgwfg9vWaWtU0OosC5rdhZC3+RSAz0/4plgC3o++3h8wcVw0CbJO3vSK9W9mlwjRknryDJMg2DiycQX81KdA=
-X-Received: by 2002:a1f:9158:: with SMTP id t85mr89356241vkd.8.1637160102615;
- Wed, 17 Nov 2021 06:41:42 -0800 (PST)
+        id S238187AbhKQOqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 09:46:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58572 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233479AbhKQOqy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 09:46:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59B3461260;
+        Wed, 17 Nov 2021 14:43:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637160235;
+        bh=ezJcZ5yqF7AhnQakOLB1XrIaYOGRiiXwqKF7Jc9dx+Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2cinq2VNohMQomac7UlDeiou/MpXc7XOSuGzDdeXgJX9qJ8SVIcSBoMMqjUBPfRyI
+         OnMMDMd2akdkanWbYu2eX2YD2USMtobwVLZadO8nvcrv2DG/hnaH7Xn/NiZF6dyWE0
+         umO1Z2YfCm+lJeb8pLsr81x/70cBR3irrWW34ybU=
+Date:   Wed, 17 Nov 2021 15:43:53 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.15 000/923] 5.15.3-rc3 review
+Message-ID: <YZUVKX0KraPWiXx1@kroah.com>
+References: <20211117101657.463560063@linuxfoundation.org>
+ <81192f2a-afe7-1eee-847a-f8103a6d7cd1@roeck-us.net>
 MIME-Version: 1.0
-References: <20211117133202.775633-1-aford173@gmail.com>
-In-Reply-To: <20211117133202.775633-1-aford173@gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Wed, 17 Nov 2021 11:41:32 -0300
-Message-ID: <CAOMZO5DbzD7FBDcPN63oZzc4usVN0ZbOPe8nbUj_BuSwdozTsA@mail.gmail.com>
-Subject: Re: [PATCH] clk: imx8mn: Fix imx8mn_clko1_sels
-To:     Adam Ford <aford173@gmail.com>
-Cc:     linux-clk <linux-clk@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        cstevens@beaconembedded.com, Abel Vesa <abel.vesa@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <81192f2a-afe7-1eee-847a-f8103a6d7cd1@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 10:32 AM Adam Ford <aford173@gmail.com> wrote:
->
-> When attempting to use sys_pll1_80m as the parent for clko1, the
-> system hangs.  This is due to the fact that the source select
-> for sys_pll1_80m was incorrectly pointing to m7_alt_pll_clk, which
-> doesn't yet exist.
->
-> According to Rev 3 of the TRM, The imx8mn_clko1_sels also incorrectly
-> references an osc_27m which does not exist, nor does an entry for
-> source select bits 010b.  Fix both by inserting a dummy clock into
-> the missing space in the table and renaming the incorrectly name clock
-> with dummy.
->
-> Fixes: 96d6392b54db ("clk: imx: Add support for i.MX8MN clock driver")
-> Signed-off-by: Adam Ford <aford173@gmail.com>
+On Wed, Nov 17, 2021 at 06:13:47AM -0800, Guenter Roeck wrote:
+> On 11/17/21 2:19 AM, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.15.3 release.
+> > There are 923 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Fri, 19 Nov 2021 10:14:52 +0000.
+> > Anything received after that time might be too late.
+> > 
+> 
+> Build is still broken for m68k.
+> 
+> drivers/block/ataflop.c: In function 'atari_cleanup_floppy_disk':
+> drivers/block/ataflop.c:2050:17: error: implicit declaration of function 'blk_cleanup_disk'
+> drivers/block/ataflop.c: In function 'atari_floppy_init':
+> drivers/block/ataflop.c:2065:15: error: implicit declaration of function '__register_blkdev'
+> 
+> Are you sure you want to carry that patch series into v5.10.y ? I had to revert
+> pretty much everything to get it to compile. It seems to me that someone should
+> provide a working backport if the series is needed/wanted in v5.10.y.
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Wow, I dropped the wrong patch :(
+
+No, I don't want to carry that series, let me go rip out everything for
+ataflop.c now.  If someone cares about this for 5.10.y, I'll take a
+backport series, but really, they should just go use 5.15.y instead.
+
+I'll push out a -rc4 now.
+
+thanks,
+
+greg k-h
