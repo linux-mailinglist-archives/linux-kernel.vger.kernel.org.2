@@ -2,111 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1923454B48
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:46:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D2F454B4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:46:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239212AbhKQQtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 11:49:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28493 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231874AbhKQQtD (ORCPT
+        id S239230AbhKQQtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 11:49:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239219AbhKQQtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 11:49:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637167564;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fhLSkq7C8N1ez43dYmKR5gusfkLEVqMLGom5ncEvLCA=;
-        b=LZPSTG46HiWghi4L7RDZZjRV/k9f87iWJGqn8DlTml+jdYtK/dyojPTfFUeRMe/zyOP3Nd
-        mGvjoRyhBjhiywPhZ7hHQRO0geTORcrVcAGakNsnUD+901tam7aUK90kTJeR6nsCyIarGh
-        A+K+UapL/bzPoXOI3CRqZ7+Z93oeass=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-222-FYk1g7h7M023ldpfNuw1uQ-1; Wed, 17 Nov 2021 11:46:01 -0500
-X-MC-Unique: FYk1g7h7M023ldpfNuw1uQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D63B180DDEB;
-        Wed, 17 Nov 2021 16:45:58 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CD74F5D9DE;
-        Wed, 17 Nov 2021 16:45:55 +0000 (UTC)
-Message-ID: <d95f29e5-efef-4a58-420c-a446c3a684e9@redhat.com>
-Date:   Wed, 17 Nov 2021 17:45:54 +0100
+        Wed, 17 Nov 2021 11:49:12 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76EC8C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:46:13 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id z10so13826963edc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:46:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ET0tmIiYHyvEMKlBP8oDqKG/hNfHTYYovrhLrY7mVM4=;
+        b=gVSQ2J9OLPLCHzVVSOZFyLxcFnUjeNKwWFMMHgPvy2CzMqGKqoDu86Klbd8K/onXqm
+         xFADHCD9yHfkiuNtwgvt8f1v4R1b9+0xB9hlDvXQhyaoeAlLAXApR036UKKrHEjGWd9F
+         +JCiHyuT3OE7Firp5lwTbk7rdXmugnSjOMr8w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ET0tmIiYHyvEMKlBP8oDqKG/hNfHTYYovrhLrY7mVM4=;
+        b=BU4IyAyoxR6IYzaS5viyIVkL2oc+ZwrdPZCpi0RympVPioiuFA9tF3K6jsYQmNW/qS
+         Bj4cOhUnPoW566AFEJTIP7A2qZmls4LIv1Cf122ckZhdYk8DJ7sxUNuinwQ20xsvbp8f
+         4yuMmZt7Eb5KCRYp0DdNFUlAd4yFGaijCPtibCW8s849DY7rgcCYIYHk/3zmUOa1EiH2
+         bzuIzD0XNUZAbzWASiioyBvwVW0EaIFrwNehK3dli7D/MshrT146Z9zQjTdvU2V79tvt
+         Rr6N9Lyfh/oIbTQffvqu2/yaEdHiZMvL0+K6h4eX4bW3BJaa+DwBHdEGl1HUGwd/eI1s
+         L8Zg==
+X-Gm-Message-State: AOAM533t+IWlVRpfzKTfd0IgO2rwrrJi+sUVH8urjsp88Y67wMfl3nJp
+        NBcyzpXSHJkgXnsPgz5WP4NMlrYIUfeT3KUZ
+X-Google-Smtp-Source: ABdhPJwYbA3epTpTu0ycxh4Hv1DOUrksv5wW7r/PEF1BWaVgdZhLvtIV0hGMpgVOWNVJrbk+jnNKLQ==
+X-Received: by 2002:aa7:cac2:: with SMTP id l2mr87786edt.168.1637167571769;
+        Wed, 17 Nov 2021 08:46:11 -0800 (PST)
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com. [209.85.128.43])
+        by smtp.gmail.com with ESMTPSA id qf9sm249933ejc.18.2021.11.17.08.46.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 08:46:11 -0800 (PST)
+Received: by mail-wm1-f43.google.com with SMTP id f7-20020a1c1f07000000b0032ee11917ceso2656790wmf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:46:10 -0800 (PST)
+X-Received: by 2002:a7b:c005:: with SMTP id c5mr1212849wmb.155.1637167570617;
+ Wed, 17 Nov 2021 08:46:10 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 1/2] KVM: x86/mmu: Skip tlb flush if it has been done in
- zap_gfn_range()
-Content-Language: en-US
-To:     Hou Wenlong <houwenlong93@linux.alibaba.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-References: <5e16546e228877a4d974f8c0e448a93d52c7a5a9.1637140154.git.houwenlong93@linux.alibaba.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <5e16546e228877a4d974f8c0e448a93d52c7a5a9.1637140154.git.houwenlong93@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20211117014949.1169186-1-nickrterrell@gmail.com> <20211117014949.1169186-2-nickrterrell@gmail.com>
+In-Reply-To: <20211117014949.1169186-2-nickrterrell@gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 17 Nov 2021 08:45:54 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wibYLDep=BPrUaw_wuZRDXnq5BVtG-6gLuBq6+3fdMhOQ@mail.gmail.com>
+Message-ID: <CAHk-=wibYLDep=BPrUaw_wuZRDXnq5BVtG-6gLuBq6+3fdMhOQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] lib: zstd: Fix unused variable warning
+To:     Nick Terrell <nickrterrell@gmail.com>
+Cc:     Nick Terrell <terrelln@fb.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-parisc <linux-parisc@vger.kernel.org>,
+        Helge Deller <deller@gmx.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/21 10:20, Hou Wenlong wrote:
-> If the parameter flush is set, zap_gfn_range() would flush remote tlb
-> when yield, then tlb flush is not needed outside. So use the return
-> value of zap_gfn_range() directly instead of OR on it in
-> kvm_unmap_gfn_range() and kvm_tdp_mmu_unmap_gfn_range().
-> 
-> Fixes: 3039bcc744980 ("KVM: Move x86's MMU notifier memslot walkers to generic code")
-> Signed-off-by: Hou Wenlong <houwenlong93@linux.alibaba.com>
-> ---
->   arch/x86/kvm/mmu/mmu.c     | 2 +-
->   arch/x86/kvm/mmu/tdp_mmu.c | 4 ++--
->   2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 354d2ca92df4..d57319e596a9 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -1582,7 +1582,7 @@ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
->   		flush = kvm_handle_gfn_range(kvm, range, kvm_unmap_rmapp);
->   
->   	if (is_tdp_mmu_enabled(kvm))
-> -		flush |= kvm_tdp_mmu_unmap_gfn_range(kvm, range, flush);
-> +		flush = kvm_tdp_mmu_unmap_gfn_range(kvm, range, flush);
->   
->   	return flush;
->   }
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 7c5dd83e52de..9d03f5b127dc 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -1034,8 +1034,8 @@ bool kvm_tdp_mmu_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range,
->   	struct kvm_mmu_page *root;
->   
->   	for_each_tdp_mmu_root(kvm, root, range->slot->as_id)
-> -		flush |= zap_gfn_range(kvm, root, range->start, range->end,
-> -				       range->may_block, flush, false);
-> +		flush = zap_gfn_range(kvm, root, range->start, range->end,
-> +				      range->may_block, flush, false);
->   
->   	return flush;
->   }
-> 
+On Tue, Nov 16, 2021 at 5:43 PM Nick Terrell <nickrterrell@gmail.com> wrote:
+>
+> From: Nick Terrell <terrelln@fb.com>
+>
+> Backport the fix from upstream PR #2838 [0]. Found by the Kernel test
+> robot in [1].
 
-Queued both, thanks.
+Ugh. Mind having a better commit message?
 
-Paolo
+This just tells you that it's a backport. It doesn't actually talk
+about what it fixes.
 
+Yes, the summary line says "Fix unused variable warning", but it
+doesn't talk about why that variable is unused and why it's not
+removed entirely.
+
+And it's not obvious in the diff either, because the context isn't
+sufficiently large.
+
+So a comment along the lines of "the variable is only used by an
+'assert()', so when asserts are disabled the compiler sees no use at
+all" or similar would be appreciated.
+
+Of course, the alternative would be to make the backup definition of
+'assert()' actually evaluate the argument. That's not what the
+standard assert() is supposed to do, but whatever, and the zstd use
+doesn't care.
+
+So using
+
+    #define assert(condition) ((void)(condition))
+
+instead would also fix the warning at least in kernel use (but not
+necessarily outside the kernel - the standard C 'assert.h' is just
+evil).
+
+                  Linus
