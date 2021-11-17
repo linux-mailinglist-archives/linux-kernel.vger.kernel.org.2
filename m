@@ -2,92 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E95AC455062
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:24:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A48455064
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:25:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241192AbhKQW1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 17:27:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231985AbhKQW1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:27:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4636E613AC;
-        Wed, 17 Nov 2021 22:24:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637187888;
-        bh=Q+KEmuQT8gFLMsVZlcLv0RXAotQG9DNePeryWAiTisI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AroQHy2p8b1E9ZMSk3/OElw90PYM9oZSn12o0lA8/awN+ISe+0qcck4ex1mHerkIn
-         GYmQ7SXSa70M2CTKqk88Yiq54dKaUX8v2FJlOFU8hlezF/eQ2oaPO1dvED4NgGpmP4
-         nACYKNqZXiPTxe4J4QkU1BlwwmsXu+Y4xgrbHRRzYFVrlexyCoyQCTyJHFbBLoQ70h
-         w1ACzNKuzp9v6f2DuHMwwlqDK8TtYcm+teMPO3UdcUxSb9IyWBJf2r6tr+tvJnTeIV
-         G1cLo1fpyGBh+8i54/efOLMZyMx2GFkEC2QzJBTMxQmMZ9KyqwaerPr5FeLy9RxWE5
-         fPv6iYxSR6fjQ==
-Date:   Wed, 17 Nov 2021 22:24:43 +0000
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Tsuchiya Yuto <kitakar@gmail.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Nable <nable.maininbox@googlemail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        "andrey.i.trufanov" <andrey.i.trufanov@gmail.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 04/17] media: atomisp: pci: do not use err var when
- checking port validity for ISP2400
-Message-ID: <20211117222443.3d050caa@sal.lan>
-In-Reply-To: <20211111183812.0f33fdaa@sal.lan>
-References: <20211017161958.44351-1-kitakar@gmail.com>
-        <20211017161958.44351-5-kitakar@gmail.com>
-        <20211026092637.196447aa@sal.lan>
-        <1a295721fd1f1e512cd54a659a250aef162bfb6f.camel@gmail.com>
-        <20211028123944.66c212c1@sal.lan>
-        <af7cdf9de020171567c2e75b713deb2ed073e4e3.camel@gmail.com>
-        <20211101141058.36ea2c8e@sal.lan>
-        <ab48bd8c69273e8b18ff652f3615b2698a777092.camel@gmail.com>
-        <20211111183812.0f33fdaa@sal.lan>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S241195AbhKQW2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 17:28:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241151AbhKQW2t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 17:28:49 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A691C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:25:50 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id m14so3965679pfc.9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:25:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SASNYe7ialNeT+SNGQ0HWi92OXWehEQ5BnfhLDZEfjA=;
+        b=jKtC62fT/J1hSqWf6djWaTj7j/nfB2gv1mMpwf8irtCuyVc44WseHOa4eSkafVrsUE
+         N5vwNdmcxR0qGjI+AD06JZGrkEmjMtNwpyfZSLbrmsSVSYx9e+oh70emVTscxMcKlAI/
+         wSf7+7geJTsEHtcq8sCZgfnsyg+sk0LIk7URM+NKUzy86eRs40LRi4LnlEHlGEOEffnR
+         soq4UiKM1eEzVTHyDE7DdJ0IFBvPRWPLDQnEYfc+sO9lXAl2qQ7l1DGSjiKbCbEGOO7S
+         zCKetzVMkf+KbFx+qy0dmJTqJVz7Mibw8aeKgIw9K9gcEzthpMGURVq+Js7Q054pOm+A
+         CIzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SASNYe7ialNeT+SNGQ0HWi92OXWehEQ5BnfhLDZEfjA=;
+        b=CJ/4RF1UagQXk8J7g4yZkTVH3M0+HAZJwoJE0knS8GQs3Ihve4B6eP6nfpUz5DttNv
+         9bifBpl8KGJCce21itL7Cu67NAUl4fnv4WUrf9oOLu/cQWrxw/wOAYzToH0vFQP4fjnm
+         JK4dqFgu4ehnOHR5P2dlss0xDBD9kLsUH1aPMpMhBuHuSGBWNcKheobVhIZFiOM3gvuI
+         Oi7yRsd1c0Um/+bWReUarSt0SlEXHdwbZo61aGxH9FtZgmcp6NAPSIV0Jtbz1jzVo07k
+         rm1zR6h/GNjncJExeifk1ZlF6snAYgpVYgNs+iru8GWkv0sl4renoAP7a2VtyfYtv+Fk
+         mPSA==
+X-Gm-Message-State: AOAM530grfW9pa1f8FVgcnDxsyoOuJCJrJiVXHFHdO7mRdh55mXtXOAo
+        Y5CGN70OROLr+OnrOagIiq38Fg==
+X-Google-Smtp-Source: ABdhPJzcSuVd5EKuegyFoECLTECw+XVrU3oGg2JgEPOULB1PJIRjyod1eDFI+AzY3oyfk3jejia+gQ==
+X-Received: by 2002:a05:6a00:1681:b0:46f:6fc0:e515 with SMTP id k1-20020a056a00168100b0046f6fc0e515mr10224885pfc.11.1637187949498;
+        Wed, 17 Nov 2021 14:25:49 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id l28sm582029pgu.45.2021.11.17.14.25.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 14:25:48 -0800 (PST)
+Date:   Wed, 17 Nov 2021 22:25:45 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH] KVM: MMU: update comment on the number of page role
+ combinations
+Message-ID: <YZWBaW6P+TBKy9ez@google.com>
+References: <20211116101114.665451-1-pbonzini@redhat.com>
+ <85599dcde5c8c6b74437fac28ebb62c38dafc6a8.camel@redhat.com>
+ <42866023-7380-823d-c4c1-2fbf7b5d9527@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <42866023-7380-823d-c4c1-2fbf7b5d9527@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi 
-Em Thu, 11 Nov 2021 18:38:12 +0000
-Mauro Carvalho Chehab <mchehab@kernel.org> escreveu:
-
-> > The `ifdef ISP2401` was the result of merging two different version of
-> > driver, added on the initial commit of upstreamed atomisp. And for the
-> > `ifdef ISP2401`, I confirmed I can remove (almost [1]) all of them against
-> > the initial commit of atomisp [2][3]
-> > 
-> > [1] here are the three exceptions:
-> >     ("NOTE: ifdef ISP2400/ISP2401 usage in aero-atomisp")
-> >     https://github.com/kitakar5525/linux-kernel/commit/1a8488cdd31ad38a3805824700b29d1e5213d3f2
-> > 
-> > [2] ("atomisp: pci: css2400: remove ISP2401 ifdefs")
-> >     https://github.com/kitakar5525/linux-kernel/commit/dd6723fc5b9fe040e33b227b509a7e004243edce
-> > [3] ("atomisp: pci: remove ISP2401 ifdefs for main pci driver")
-> >     https://github.com/kitakar5525/linux-kernel/commit/1734341f84a96945af7635f6fff061db910f746f  
+On Tue, Nov 16, 2021, Paolo Bonzini wrote:
+> On 11/16/21 12:07, Maxim Levitsky wrote:
+> > > - * But, even though there are 18 bits in the mask below, not all
+> > > combinations
+> > > + * But, even though there are 20 bits in the mask
+> > > below, not all combinations
+> > I to be honest counted 19 bits there (which includes the 'smm' bit),
+> > but I might have made a mistake. I do wonder maybe it is better to
+> > just remove that comment with explicit number?
 > 
-> Ok, if there are more if/ifdef ISP2401 that, if reverted will keep the
-> driver running with the firmware we're using, I'm all for it. Just send
-> the patches ;-)
+> Yes, they are 19.  But the explicit number is there to guide in
 
-I went ahead and solved several INPUT_SYSTEM related ifdefs on a way
-that it is compatible with Intel Aero firmware for the sh_css* files.
-Except if I made any mistake, the ifdefs that are related to the
-input system were already addressed.
+No, there are 18 from a gfn_track perspective.  "smm" isn't counted because it's
+in a separate memslot address space.  The "mask below" is definitely vague on that
+point though.
 
-I didn't notice any changes when running camorama on the PREVIEW
-node. 
+> understanding how 19 goes down to 14 combinations.
+> 
+> Here is a better writeup:
+> 
+>  *   - invalid shadow pages are not accounted, so the bits are effectively 18
+>  *   - quadrant will only be used if gpte_is_8_bytes is zero (non-PAE paging);
+>  *     execonly and ad_disabled are only used for nested EPT which has
+>  *     gpte_is_8_bytes=1.  Therefore, 2 bits are always unused.
+>  *   - the 4 bits of level are effectively limited to the values 2/3/4/5,
+>  *     as 4k SPs are not tracked (allowed to go unsync).  In addition non-PAE
+>  *     paging has exactly one upper level, making level effectively redundant
+>  *     when gpte_is_8_bytes=0.
+>  *   - on top of this, smep_andnot_wp and smap_andnot_wp are only set if cr0_wp=0,
+>  *     therefore these three bits only give rise to 5 possibilities.
+> 
+> FWIW, the full count becomes 6400 unless I screwed up the math.
 
-Please test. Feel free to submit fixup patches if needed.
-
-Regards,
-Mauro
+Which is "in the neighborhood of 2^13" :-)
