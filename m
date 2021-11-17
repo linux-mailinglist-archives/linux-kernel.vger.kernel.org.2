@@ -2,148 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17B02454F5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 22:28:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42B01454F5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 22:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238006AbhKQVbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 16:31:48 -0500
-Received: from mga09.intel.com ([134.134.136.24]:15943 "EHLO mga09.intel.com"
+        id S238802AbhKQVce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 16:32:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233139AbhKQVbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 16:31:47 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10171"; a="233893997"
-X-IronPort-AV: E=Sophos;i="5.87,243,1631602800"; 
-   d="scan'208";a="233893997"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 13:28:47 -0800
-X-IronPort-AV: E=Sophos;i="5.87,243,1631602800"; 
-   d="scan'208";a="586831941"
-Received: from ankushj1-mobl.amr.corp.intel.com ([10.251.8.192])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 13:28:47 -0800
-Date:   Wed, 17 Nov 2021 13:28:46 -0800 (PST)
-From:   Mat Martineau <mathew.j.martineau@linux.intel.com>
-To:     =?ISO-8859-15?Q?Stephan_M=FCller?= <smueller@chronox.de>
-cc:     herbert@gondor.apana.org.au, ebiggers@kernel.org,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings <keyrings@vger.kernel.org>, simo@redhat.com
-Subject: Re: [PATCH v3 3/4] security: DH - remove dead code for zero
- padding
-In-Reply-To: <3323567.LZWGnKmheA@positron.chronox.de>
-Message-ID: <f98dbf21-50d1-7847-18cb-2f5093a8ac8@linux.intel.com>
-References: <2589009.vuYhMxLoTh@positron.chronox.de> <3323567.LZWGnKmheA@positron.chronox.de>
+        id S232742AbhKQVc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 16:32:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71B9B61AD0;
+        Wed, 17 Nov 2021 21:29:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637184569;
+        bh=yczZOD+UYGVAHIW6mYc4tCBqxv2S/YOU4PbfztHpSww=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OdnWfP1NS3QkFNbDXPZmaHwQODAJgt9HoPQrDZJfr5F4Z1mmCGBkbBkc3ny5SbRUZ
+         GuD0qLsi2/36cfVT5ZZHixdqKkNj3cb5yJF6jgVtCdRLYBymx8K3VY/rtFZhlI2Cf+
+         YX3xCXDkYLJUmpBHMPNNi+Vur0pdznom4iTkqk8GHecevacBW64az2+naOyDG3wKXv
+         m8jn5fuMsfv42J1vYSARs4bfEhodYlj67Msyf++vFPyQanUgqyf9ltt5xu6j9GE8hr
+         EnsENjDTtzDBpxzFQJsZI40F6Xx05PzeIDbOlgs/7afbwRkJND6aOk04XNR0iWx1Qp
+         awwrXOZqvuAqQ==
+Received: by mail-ed1-f47.google.com with SMTP id y12so17127296eda.12;
+        Wed, 17 Nov 2021 13:29:29 -0800 (PST)
+X-Gm-Message-State: AOAM530d+uCQ/mQ+xFqcOmT+11Q5kXl9+QVFCe7ut031PPq9rSK3/kFn
+        N0JpmIfKG3Vg46QnMdCr3eUSdYUsHfPpTekb5w==
+X-Google-Smtp-Source: ABdhPJy41q7mQ5K1qxypSYLF0ZlM22uMN2eY7A2GUD5iYB1t8v9kj5HkzhhUBXkuBjqIt6vfoV/nUwJKLdpxosT+jzc=
+X-Received: by 2002:a17:906:fcbb:: with SMTP id qw27mr25498207ejb.320.1637184567883;
+ Wed, 17 Nov 2021 13:29:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="0-1817436887-1637184527=:51702"
+References: <20211116105112.4c99853d@canb.auug.org.au>
+In-Reply-To: <20211116105112.4c99853d@canb.auug.org.au>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 17 Nov 2021 15:29:15 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqL0bWTW_yYS8A8kE2Q5GxUZr-C8DV9bduDrwpZob1+1kw@mail.gmail.com>
+Message-ID: <CAL_JsqL0bWTW_yYS8A8kE2Q5GxUZr-C8DV9bduDrwpZob1+1kw@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the gpio-brgl tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Mon, Nov 15, 2021 at 5:51 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the gpio-brgl tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>
+> drivers/gpio/gpio-xlp.c:300:16: error: 'GPIO_VARIANT_VULCAN' undeclared here (not in a function)
+>   300 |  { "BRCM9006", GPIO_VARIANT_VULCAN },
+>       |                ^~~~~~~~~~~~~~~~~~~
+>
+> Caused by commit
+>
+>   ea708ac5bf41 ("gpio: xlp: Remove Netlogic XLP variants")
 
---0-1817436887-1637184527=:51702
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 8BIT
+Here's the fix needed. Bartosz, let me know if you want a proper patch.
 
-On Mon, 15 Nov 2021, Stephan Müller wrote:
+diff --git a/drivers/gpio/gpio-xlp.c b/drivers/gpio/gpio-xlp.c
+index 814cc34aef97..c15ca977016c 100644
+--- a/drivers/gpio/gpio-xlp.c
++++ b/drivers/gpio/gpio-xlp.c
+@@ -297,8 +297,8 @@ static int xlp_gpio_probe(struct platform_device *pdev)
 
-> Remove the specific code that adds a zero padding that was intended
-> to be invoked when the DH operation result was smaller than the
-> modulus. However, this cannot occur any more these days because the
-> function mpi_write_to_sgl is used in the code path that calculates the
-> shared secret in dh_compute_value. This MPI service function guarantees
-> that leading zeros are introduced as needed to ensure the resulting data
-> is exactly as long as the modulus. This implies that the specific code
-> to add zero padding is dead code which can be safely removed.
->
-> Signed-off-by: Stephan Mueller <smueller@chronox.de>
-> ---
-> security/keys/dh.c | 25 ++++---------------------
-> 1 file changed, 4 insertions(+), 21 deletions(-)
-
-Hi Stephan -
-
-Thanks for the cleanup!
-
-Acked-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
-
-
-
->
-> diff --git a/security/keys/dh.c b/security/keys/dh.c
-> index 1abfa70ed6e1..56e12dae4534 100644
-> --- a/security/keys/dh.c
-> +++ b/security/keys/dh.c
-> @@ -141,7 +141,7 @@ static void kdf_dealloc(struct kdf_sdesc *sdesc)
->  * 'dlen' must be a multiple of the digest size.
->  */
-> static int kdf_ctr(struct kdf_sdesc *sdesc, const u8 *src, unsigned int slen,
-> -		   u8 *dst, unsigned int dlen, unsigned int zlen)
-> +		   u8 *dst, unsigned int dlen)
-> {
-> 	struct shash_desc *desc = &sdesc->shash;
-> 	unsigned int h = crypto_shash_digestsize(desc->tfm);
-> @@ -158,22 +158,6 @@ static int kdf_ctr(struct kdf_sdesc *sdesc, const u8 *src, unsigned int slen,
-> 		if (err)
-> 			goto err;
->
-> -		if (zlen && h) {
-> -			u8 tmpbuffer[32];
-> -			size_t chunk = min_t(size_t, zlen, sizeof(tmpbuffer));
-> -			memset(tmpbuffer, 0, chunk);
-> -
-> -			do {
-> -				err = crypto_shash_update(desc, tmpbuffer,
-> -							  chunk);
-> -				if (err)
-> -					goto err;
-> -
-> -				zlen -= chunk;
-> -				chunk = min_t(size_t, zlen, sizeof(tmpbuffer));
-> -			} while (zlen);
-> -		}
-> -
-> 		if (src && slen) {
-> 			err = crypto_shash_update(desc, src, slen);
-> 			if (err)
-> @@ -198,7 +182,7 @@ static int kdf_ctr(struct kdf_sdesc *sdesc, const u8 *src, unsigned int slen,
->
-> static int keyctl_dh_compute_kdf(struct kdf_sdesc *sdesc,
-> 				 char __user *buffer, size_t buflen,
-> -				 uint8_t *kbuf, size_t kbuflen, size_t lzero)
-> +				 uint8_t *kbuf, size_t kbuflen)
-> {
-> 	uint8_t *outbuf = NULL;
-> 	int ret;
-> @@ -211,7 +195,7 @@ static int keyctl_dh_compute_kdf(struct kdf_sdesc *sdesc,
-> 		goto err;
-> 	}
->
-> -	ret = kdf_ctr(sdesc, kbuf, kbuflen, outbuf, outbuf_len, lzero);
-> +	ret = kdf_ctr(sdesc, kbuf, kbuflen, outbuf, outbuf_len);
-> 	if (ret)
-> 		goto err;
->
-> @@ -384,8 +368,7 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
-> 		}
->
-> 		ret = keyctl_dh_compute_kdf(sdesc, buffer, buflen, outbuf,
-> -					    req->dst_len + kdfcopy->otherinfolen,
-> -					    outlen - req->dst_len);
-> +					    req->dst_len + kdfcopy->otherinfolen);
-> 	} else if (copy_to_user(buffer, outbuf, req->dst_len) == 0) {
-> 		ret = req->dst_len;
-> 	} else {
-> -- 
-> 2.33.1
->
->
->
->
->
-
---
-Mat Martineau
-Intel
---0-1817436887-1637184527=:51702--
+ #ifdef CONFIG_ACPI
+ static const struct acpi_device_id xlp_gpio_acpi_match[] = {
+-       { "BRCM9006", GPIO_VARIANT_VULCAN },
+-       { "CAV9006",  GPIO_VARIANT_VULCAN },
++       { "BRCM9006" },
++       { "CAV9006" },
+        {},
+ };
+ MODULE_DEVICE_TABLE(acpi, xlp_gpio_acpi_match);
