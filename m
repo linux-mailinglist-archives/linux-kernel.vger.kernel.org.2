@@ -2,74 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6A2454D67
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:48:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FFC454D6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239025AbhKQSvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 13:51:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60676 "EHLO
+        id S240234AbhKQSyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 13:54:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235937AbhKQSvi (ORCPT
+        with ESMTP id S239235AbhKQSya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 13:51:38 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B64A7C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:48:39 -0800 (PST)
-Received: from zn.tnic (p200300ec2f13a3006247e0a9efb398e6.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:a300:6247:e0a9:efb3:98e6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 124E51EC01A9;
-        Wed, 17 Nov 2021 19:48:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1637174917;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=17gz2w0y3TP/PTBQBFjireJkhyX578vdKPKJtyIzJOA=;
-        b=fNjUVvpT6STyPFt6MTQFZrVib/hNemH3Hdeye9qfdDZx4M+DG8FelM+pdFKi1nTb1359fv
-        Q9bvxInSPZuHPEM/mwV+15SHF8FjtFHw1Ic3tFmruTZCTyNXh03Zo+DMhswDCzu/UMR/Fo
-        12vhYTaP0pZgitTqj0dWN52vpDO/57Y=
-Date:   Wed, 17 Nov 2021 19:48:28 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>
-Subject: Re: [PATCH] x86/paravirt: Fix build PARAVIRT_XXL=y without XEN_PV
-Message-ID: <YZVOfGtHyiZg1pIP@zn.tnic>
-References: <20211117181439.4368-1-kirill.shutemov@linux.intel.com>
- <YZVLVfd5E6d6YQig@hirez.programming.kicks-ass.net>
- <20211117184225.6e257nfpdd2qhrj4@box.shutemov.name>
- <4824bf30-851e-c927-a50f-87fa2a429b2a@linux.intel.com>
+        Wed, 17 Nov 2021 13:54:30 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F19FC061766
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:51:32 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id 28so3050452pgq.8
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:51:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YMm7uqc0PVoZ5CKUw9P95CjYEyE4WkTA6NNCCrs9xIk=;
+        b=WSeVLf0WoWRPuWMFmJfO/1Sv1V44Dthw2bD8KQUn6ImGf1LCbzwoKatBL8My9+PWzi
+         BVE9VI6Ez3QFzNaVT6KtRDOQp1ziApY8DPqftRX+V9PXePgc0brzwXGb7pj1BQbO+YOm
+         Pf8FxsTEyrMX0999e7vBYfcmKbyfeTGgVEsWQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YMm7uqc0PVoZ5CKUw9P95CjYEyE4WkTA6NNCCrs9xIk=;
+        b=HA0PGKq7Zc6iG5LDIIgUPMx3DF8u969o7kgKejysl86whrRaFjpsr9lzsfVckQHq8k
+         ecW3PQCtOxIIyUpOGiFnUDCD02PrnEcEf0/1/OinwrQQJazRZ2nGGJmBEqpHQeakZdZ6
+         6pn2OkjMcL0PehocizwV+KixEDsx2NVDTUiIZQqB+w2n1JWPY+/L+HNHhdNXh2cYSCBN
+         /RdsaScAk+GZqua9cBmNm5EMhVBInv8Oj9CiPjfjD09FU9kBOYYhg7Bz7uGUK7JE+NO+
+         g0JcKtTWRk8OdbCeiTCp/hXzAaZCemXEibx8TP9m7sklpCt2vTYD/gWRXCTO2IMop5eZ
+         QO1w==
+X-Gm-Message-State: AOAM532oY2XeCKtRmIzAoa1lplXQbGLIk4rC7JALxHYCyEc0OUvuLmrW
+        hitNOotaX/deaI+bSsw8aC2aHQ==
+X-Google-Smtp-Source: ABdhPJzegaq20Wc2oLUBixdUIX3fnDf0TFKeDD46xxqB6a0a/DVlPYO5Xe1+GZALYnEX4GfVGrsXfg==
+X-Received: by 2002:a63:ea4e:: with SMTP id l14mr6827570pgk.406.1637175091571;
+        Wed, 17 Nov 2021 10:51:31 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o6sm361555pfh.70.2021.11.17.10.51.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 10:51:31 -0800 (PST)
+Date:   Wed, 17 Nov 2021 10:51:30 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Kyle Huey <me@kylehuey.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, bpf@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Robert O'Callahan <rocallahan@gmail.com>
+Subject: Re: [REGRESSION] 5.16rc1: SA_IMMUTABLE breaks debuggers
+Message-ID: <202111171049.3F9C5F1@keescook>
+References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4824bf30-851e-c927-a50f-87fa2a429b2a@linux.intel.com>
+In-Reply-To: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 10:46:30AM -0800, Sathyanarayanan Kuppuswamy wrote:
-> TDX has a requirement to use HLT paravirt calls (which is currently
-> listed under PARAVIRT_XXL). Once we submit a patch to move it
-> under CONFIG_PARAVIRT, we will drop this dependency.
+On Wed, Nov 17, 2021 at 10:47:13AM -0800, Kyle Huey wrote:
+> rr, a userspace record and replay debugger[0], is completely broken on
+> 5.16rc1. I bisected this to 00b06da29cf9dc633cdba87acd3f57f4df3fd5c7.
+> 
+> That patch makes two changes, it blocks sigaction from changing signal
+> handlers once the kernel has decided to force the program to take a
+> signal and it also stops notifying ptracers of the signal in the same
+> circumstances. The latter behavior is just wrong. There's no reason
+> that ptrace should not be able to observe and even change
+> (non-SIGKILL) forced signals.  It should be reverted.
+> 
+> This behavior change is also observable in gdb. If you take a program
+> that sets SIGSYS to SIG_IGN and then raises a SIGSYS via
+> SECCOMP_RET_TRAP and run it under gdb on a good kernel gdb will stop
+> when the SIGSYS is raised, let you inspect program state, etc. After
+> the SA_IMMUTABLE change gdb won't stop until the program has already
+> died of SIGSYS.
 
-You already have this patch in some set:
-
-https://lore.kernel.org/r/20211009053747.1694419-2-sathyanarayanan.kuppuswamy@linux.intel.com
-
-So what's this churn for?
+Ah, hm, this was trying to fix the case where a program trips
+SECCOMP_RET_KILL (which is a "fatal SIGSYS"), and had been unobservable
+before. I guess the fix was too broad...
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Kees Cook
