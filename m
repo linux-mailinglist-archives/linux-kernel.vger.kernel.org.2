@@ -2,159 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED17345469D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 13:50:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B39945469F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 13:50:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237286AbhKQMwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 07:52:06 -0500
-Received: from mga01.intel.com ([192.55.52.88]:49920 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237290AbhKQMwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 07:52:05 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="257706591"
-X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
-   d="scan'208";a="257706591"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 04:49:06 -0800
-X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
-   d="scan'208";a="604719627"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 04:49:03 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mnKMx-007nDj-7t;
-        Wed, 17 Nov 2021 14:48:55 +0200
-Date:   Wed, 17 Nov 2021 14:48:54 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Anand Ashok Dumbre <ANANDASH@xilinx.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jic23@kernel.org" <jic23@kernel.org>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        git <git@xilinx.com>, Michal Simek <michals@xilinx.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>,
-        Manish Narani <MNARANI@xilinx.com>
-Subject: Re: [PATCH v9 3/5] iio: adc: Add Xilinx AMS driver
-Message-ID: <YZT6NgAbkHVNAst0@smile.fi.intel.com>
-References: <20211116150842.1051-1-anand.ashok.dumbre@xilinx.com>
- <20211116150842.1051-4-anand.ashok.dumbre@xilinx.com>
- <YZPspfolQkDrz22s@smile.fi.intel.com>
- <BY5PR02MB6916E4CF9E34190CF7D24AE4A9999@BY5PR02MB6916.namprd02.prod.outlook.com>
+        id S237309AbhKQMwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 07:52:38 -0500
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:40557 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237288AbhKQMwZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 07:52:25 -0500
+Received: by mail-oi1-f179.google.com with SMTP id bk14so6170281oib.7;
+        Wed, 17 Nov 2021 04:49:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YVpOUkHWrxcL6gn2WZBUPNSgFOs0aLPQopQvD8QcrBs=;
+        b=D/ulIE40XUbUpxCnlsDg+aBxt9HDOrss3OUda/WlItJugJwLqkDJB+4eRRm4R94/cH
+         xRfCvvRqeKyiRTiqGbbG06SKcEYL6P+HOTl5/W0lvzTJB1Q8ViFjGhChp/aNCyxiUtKr
+         SmxEJGSmRD0/iITeu2i8hUEIieeuILv7CA7UX36n0kghxDD5KGmrdhcvPLAJ4rjnopV7
+         w4K2i1JAGRldu+/jBhsFfiVVzyp+L8CYQiTWjfTL3H1b0pZgxFQswgQCfOUa7QyJ3exa
+         3+hw3CoL3aJFZmr4OuOByOZ1fKYz7MHxA5kzBG29MwGSYxz6qDNYf3jwtK6C/zT7Ij64
+         Zn6Q==
+X-Gm-Message-State: AOAM530ziuemazZ83+8U3Xz5iamZWXNnxnyfJJhkld2X5d3ZOmVN8uP9
+        IY+stzx9lxVuJsk7X38TaECnz8jyc6aW5AMLf2M=
+X-Google-Smtp-Source: ABdhPJxRRH7QGlS3j4zHL4sqgjhdqiLp5hEUtVmiX0R5XQbuaEtlwVSb2durVB5xnVUeuWssaiqhyw47vboFp7EfluM=
+X-Received: by 2002:a05:6808:14c2:: with SMTP id f2mr13857416oiw.154.1637153366804;
+ Wed, 17 Nov 2021 04:49:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BY5PR02MB6916E4CF9E34190CF7D24AE4A9999@BY5PR02MB6916.namprd02.prod.outlook.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211115201010.68567-1-thara.gopinath@linaro.org>
+ <CAJZ5v0gezoJZVH69Y7fDwa-uLhE0PaqFrzM=0bequxpE_749zg@mail.gmail.com> <8f7397e3-4e92-c84d-9168-087967f4d683@arm.com>
+In-Reply-To: <8f7397e3-4e92-c84d-9168-087967f4d683@arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 17 Nov 2021 13:49:15 +0100
+Message-ID: <CAJZ5v0iRDtr5yae5UndwU2SmVL4cak=BN0irVGbgNzQiS8K3mA@mail.gmail.com>
+Subject: Re: Re: [PATCH] base: arch_topology: Use policy->max to calculate freq_factor
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 08:29:21PM +0000, Anand Ashok Dumbre wrote:
-> > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Sent: Tuesday 16 November 2021 5:39 PM
-> > On Tue, Nov 16, 2021 at 03:08:40PM +0000, Anand Ashok Dumbre wrote:
+On Wed, Nov 17, 2021 at 11:46 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>
+> Hi Rafael,
+>
+> On 11/16/21 7:05 PM, Rafael J. Wysocki wrote:
+> > On Mon, Nov 15, 2021 at 9:10 PM Thara Gopinath
+> > <thara.gopinath@linaro.org> wrote:
+> >>
+> >> cpuinfo.max_freq can reflect boost frequency if enabled during boot.  Since
+> >> we don't consider boost frequencies while calculating cpu capacities, use
+> >> policy->max to populate the freq_factor during boot up.
+> >
+> > I'm not sure about this.  schedutil uses cpuinfo.max_freq as the max frequency.
+>
+> Agree it's tricky how we treat the boost frequencies and also combine
+> them with thermal pressure.
+> We probably would have consider these design bits:
+> 1. Should thermal pressure include boost frequency?
 
-...
+Well, I guess so.
 
-> > > +#define AMS_ALARM_THR_MIN		0x0000
-> > > +#define AMS_ALARM_THR_MAX		0xFFFF
-> > 
-> > If this is limited by hardware register, I would rather use (BIT(16) - 1)
-> > notation. It will give immediately amount of bits used for the value.
+Running at a boost frequency certainly increases thermal pressure.
 
-> So ~(BIT(16) - 1) for AMS_ALARM_THR_MIN
+> 2. Should max capacity 1024 be a boost frequency so scheduler
+>     would see it explicitly?
 
-This will give wrong value, so preserving 0 as plain decimal is fine.
+That's what it is now if cpuinfo.max_freq is a boost frequency.
 
-> (BIT(16) - 1) for AMS_ALARM_THR_MAX
+> - if no, then schedutil could still request boost freq thanks to
+>    map_util_perf() where we add 25% to the util and then
+>    map_util_freq() would return a boost freq when util was > 1024
+>
+>
+> I can see in schedutil only one place when cpuinfo.max_freq is used:
+> get_next_freq(). If the value stored in there is a boost,
+> then don't we get a higher freq value for the same util?
 
-...
+Yes. we do, which basically is my point.
 
-> > > +	u32 reg;
-> > > +	int ret;
-> > 
-> > 	u32 expect = AMS_PS_CSTS_PS_READY;
-> > 
-> > (Use similar approach for other readX_poll_timeout() cases)
-> > 
-> > > +		ret = readl_poll_timeout(ams->base + AMS_PS_CSTS, reg,
-> > > +					 (reg & AMS_PS_CSTS_PS_READY) ==
-> > > +					 AMS_PS_CSTS_PS_READY, 0,
-> > > +					 AMS_INIT_TIMEOUT_US);
-> > 
-> > 		ret = readl_poll_timeout(ams->base + AMS_PS_CSTS, reg,
-> > 					 (reg & expect) == expect,
-> > 					 0, AMS_INIT_TIMEOUT_US);
-
-> > 0?!
-
-Any comments on this?
-
-Besides there are other cases you haven't answered on, so I assume you agreed
-to change as suggested.
-
-> > > +		if (ret)
-> > > +			return ret;
-> > 
-> > ...
-> > 
-> > > +		ret = readl(ams->base + AMS_PL_CSTS);
-> > > +		if (ret == 0)
-> > > +			return ret;
-> > 
-> > Assigning u32 to int seems wrong.
-> 
-> It's a single bit register.
-> Even if I use u32 here, the return type is int.
-
-The problem here is that you checked not for error code, readl() doesn't return
-an error. So semantic issue.
-
-> So, is it ok if I read using u32 and return it by typecasting to int?
-
-No. You need to have something like this:
-
-	value = readl(...);
-	if (value == 0)
-		return 0;
-
-this will keep proper meaning of each number and variable, while compiler may
-optimize it.
-
-...
-
-> > > +					regval = readl(ams->pl_base +
-> > > +						       AMS_REG_CONFIG4);
-> > 
-> > One line?
-> > 
-> > > +					regval = readl(ams->pl_base +
-> > > +						       AMS_REG_CONFIG4);
-> > 
-> > Ditto and so on...
-> > 
-> It goes over 80 chars per line.
-
-Is it a problem?
-
-...
-
-> > > +	schedule_delayed_work(&ams->ams_unmask_work,
-> > > +			      msecs_to_jiffies(AMS_UNMASK_TIMEOUT_MS));
-> > 
-> > Can be one line.
-> 
-> Over 80 characters.
-
-Is it a problem?
-
-> Oh! I just saw that upto 100 chars is ok.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+The schedutil's response is proportional to cpuinfo.max_freq and that
+needs to be taken into account for the results to be consistent.
