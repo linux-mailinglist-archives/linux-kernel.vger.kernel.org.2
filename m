@@ -2,852 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BE6454385
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:19:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B73454388
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:20:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235114AbhKQJVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 04:21:35 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:40772 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234976AbhKQJVE (ORCPT
+        id S234942AbhKQJXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 04:23:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39970 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235070AbhKQJXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 04:21:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1637140686; x=1668676686;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=hKvZN+mIPtn3zNqXs/4Dv5qT3c/eQJjWLPSNCSoZGfY=;
-  b=OGLZoVXwVmQ3emLeo1ZrHlWi7Rp4moWkXIQuygvIqVzkDBdUWuYuOqAw
-   2DFC/vXeJTq0yQb/LNQ3dnaYQsU/ZKtRaBlYn8f1Uugn7rklBSo51D/XK
-   9vVPm+Nm/XI5YcURgiVFSIx/sUi08QJaCG1DhmO5cT7I1BK3sFmMcy/5X
-   91ake02S7myZUfRYogf/W+XsVXzRw6ra2Kcj5eFASIIAhk34TTRSgLCAp
-   oUmMyYFPmFeLMxYgJqf3t5wmhfyQiDc0+7sfKfc2FZAgkyuQbx6IniKQB
-   XdEbHrD4GBrUAg32iBraABWjK0Oacvrlu5h0n1nV0S0T4n4qJdYe6b2rw
-   Q==;
-IronPort-SDR: zYDCSukgd6GV0saXPr1OzzKHg6y6lA6xRk6J2hKU98wjNskVy8fQmpzmg1/NhJS2CbOM8XbTfm
- WMgLxX8FL/1l3xl8+anonXv7rGzQDwyZiMJSagZtPqJxW0LZcZeLc0KOG9yxt9m+12PnKYNmJe
- OIZ7FamkWoTHjtS0GQB5NIXcP2WfQiefC8GPBUuHtJMVIS7cPxMlUrB7SwuDd/R4jb+swBRokW
- JKnofE/iBbXyryxUbmuLEhd+RTw8hKVpsmWKLDhzK5gYIiWWWO+iLJyZ/NyyY2W/gThjbwdl3N
- 65dZVqeMyLhWtU0Rydj63rTK
-X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
-   d="scan'208";a="143637844"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Nov 2021 02:18:05 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Wed, 17 Nov 2021 02:18:02 -0700
-Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Wed, 17 Nov 2021 02:18:00 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <robh+dt@kernel.org>,
-        <p.zabel@pengutronix.de>, <linux@armlinux.org.uk>,
-        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net-next 5/5] net: lan966x: add ethtool configuration and statistics
-Date:   Wed, 17 Nov 2021 10:18:58 +0100
-Message-ID: <20211117091858.1971414-6-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211117091858.1971414-1-horatiu.vultur@microchip.com>
-References: <20211117091858.1971414-1-horatiu.vultur@microchip.com>
+        Wed, 17 Nov 2021 04:23:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637140820;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=77rEDu/reg/YJ6amwbhAgjZqXAbfYRFP4sr85cH8gm4=;
+        b=ag+dyQo2AvlxAw6gQe94MJ2D+ZgiT5Ref0HtOjcHpzUQsrwCrMmwRYz/Dg6u6doh/Qfk/c
+        MaKGUCCShVkoXB6a4C6Ir5ZIzIMXaVCk1s4w+NyIMpa/+j11yA3xPAMz4Ffe7miWnq1gUP
+        JYbJQGYtE5h+wztniBqz6QcxnClp2fs=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-490-GqE_NtY7OKy7BhG_iMpeBA-1; Wed, 17 Nov 2021 04:20:19 -0500
+X-MC-Unique: GqE_NtY7OKy7BhG_iMpeBA-1
+Received: by mail-ed1-f70.google.com with SMTP id d13-20020a056402516d00b003e7e67a8f93so1619644ede.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 01:20:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=77rEDu/reg/YJ6amwbhAgjZqXAbfYRFP4sr85cH8gm4=;
+        b=xUreJfKwINEmCZFwwdJxZQy19yrmtOlZt7Xd97TzgpXRTXvOBNCmCLa3pX8PkfeBTj
+         ZQgDJjw1N5W9nteqYDUNi26TTQ2p+vtAYugMt+mliHMfszNkbloze6Na2UnAFd9BuMYc
+         BQ4X0VKwQPTMUlDHaK1lOSIbJTTS43IziK2vjB5dRZt/US/cdrlERKa36Z1NOPYKqtKC
+         0sdhOz1NL2asNG68rRLIJItQaF++bHKm/RI7e61zluv6y5tXXpGo1GQFxs7FZBKm05VO
+         SMQPIj3E14pFQ/Yn4l0ad21eQASFy/yvNGp/yyKLC4z1b0mBd7mX7KOETAFYH/d5+c+e
+         pK7Q==
+X-Gm-Message-State: AOAM530dTvMgTNKxf/YkyNej8UH0rKkSnuhBvVOXCZ2HvnI1EUjhHRkz
+        +oqTpc+4XSf2qjZ9DauNdGJXcCmVgM+8S4sWV3hbK4dzzVKozGSeqMitXvUGkzGgNxLgDvi2ofN
+        ICi1m5ScvKMDxtqkke+3OQ33a
+X-Received: by 2002:aa7:c714:: with SMTP id i20mr19958660edq.180.1637140817841;
+        Wed, 17 Nov 2021 01:20:17 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwYtu97PwkW2A1yYGpWopI7K1d4sbVlbcdvIekk7lLEy/KSy29AQt851GD79KmBNlKEUMRrUw==
+X-Received: by 2002:aa7:c714:: with SMTP id i20mr19958629edq.180.1637140817719;
+        Wed, 17 Nov 2021 01:20:17 -0800 (PST)
+Received: from steredhat (host-87-10-72-39.retail.telecomitalia.it. [87.10.72.39])
+        by smtp.gmail.com with ESMTPSA id hw8sm9777163ejc.58.2021.11.17.01.20.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 01:20:17 -0800 (PST)
+Date:   Wed, 17 Nov 2021 10:20:14 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     cgel.zte@gmail.com
+Cc:     mst@redhat.com, jasowang@redhat.com, pbonzini@redhat.com,
+        stefanha@redhat.com, axboe@kernel.dk,
+        virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ye Guojin <ye.guojin@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH] virtio-blk: modify the value type of num in
+ virtio_queue_rq()
+Message-ID: <20211117092014.qyqhtg2y5etoxrqe@steredhat>
+References: <20211117063955.160777-1-ye.guojin@zte.com.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20211117063955.160777-1-ye.guojin@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support for statistics counters for the network
-interfaces. Also adds support for configuring the network interface via
-ethtool like: speed, duplex etc.
+On Wed, Nov 17, 2021 at 06:39:55AM +0000, cgel.zte@gmail.com wrote:
+>From: Ye Guojin <ye.guojin@zte.com.cn>
+>
+>This was found by coccicheck:
+>./drivers/block/virtio_blk.c, 334, 14-17, WARNING Unsigned expression
+>compared with zero  num < 0
+>
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- .../net/ethernet/microchip/lan966x/Makefile   |   2 +-
- .../microchip/lan966x/lan966x_ethtool.c       | 664 ++++++++++++++++++
- .../ethernet/microchip/lan966x/lan966x_main.c |  11 +
- .../ethernet/microchip/lan966x/lan966x_main.h |  20 +
- 4 files changed, 696 insertions(+), 1 deletion(-)
- create mode 100644 drivers/net/ethernet/microchip/lan966x/lan966x_ethtool.c
+We should add the Fixes tag:
 
-diff --git a/drivers/net/ethernet/microchip/lan966x/Makefile b/drivers/net/ethernet/microchip/lan966x/Makefile
-index 75556387df08..2989ba528236 100644
---- a/drivers/net/ethernet/microchip/lan966x/Makefile
-+++ b/drivers/net/ethernet/microchip/lan966x/Makefile
-@@ -6,4 +6,4 @@
- obj-$(CONFIG_LAN966X_SWITCH) += lan966x-switch.o
- 
- lan966x-switch-objs  := lan966x_main.o lan966x_phylink.o lan966x_port.o \
--			lan966x_mac.o
-+			lan966x_mac.o lan966x_ethtool.o
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_ethtool.c b/drivers/net/ethernet/microchip/lan966x/lan966x_ethtool.c
-new file mode 100644
-index 000000000000..861075a385df
---- /dev/null
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_ethtool.c
-@@ -0,0 +1,664 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+
-+#include <linux/netdevice.h>
-+
-+#include "lan966x_main.h"
-+
-+/* Number of traffic classes */
-+#define LAN966X_NUM_TC			8
-+#define LAN966X_STATS_CHECK_DELAY	(2 * HZ)
-+
-+static const struct lan966x_stat_layout lan966x_stats_layout[] = {
-+	{ .name = "rx_octets", .offset = 0x00, },
-+	{ .name = "rx_unicast", .offset = 0x01, },
-+	{ .name = "rx_multicast", .offset = 0x02 },
-+	{ .name = "rx_broadcast", .offset = 0x03 },
-+	{ .name = "rx_short", .offset = 0x04 },
-+	{ .name = "rx_frag", .offset = 0x05 },
-+	{ .name = "rx_jabber", .offset = 0x06 },
-+	{ .name = "rx_crc", .offset = 0x07 },
-+	{ .name = "rx_symbol_err", .offset = 0x08 },
-+	{ .name = "rx_sz_64", .offset = 0x09 },
-+	{ .name = "rx_sz_65_127", .offset = 0x0a},
-+	{ .name = "rx_sz_128_255", .offset = 0x0b},
-+	{ .name = "rx_sz_256_511", .offset = 0x0c },
-+	{ .name = "rx_sz_512_1023", .offset = 0x0d },
-+	{ .name = "rx_sz_1024_1526", .offset = 0x0e },
-+	{ .name = "rx_sz_jumbo", .offset = 0x0f },
-+	{ .name = "rx_pause", .offset = 0x10 },
-+	{ .name = "rx_control", .offset = 0x11 },
-+	{ .name = "rx_long", .offset = 0x12 },
-+	{ .name = "rx_cat_drop", .offset = 0x13 },
-+	{ .name = "rx_red_prio_0", .offset = 0x14 },
-+	{ .name = "rx_red_prio_1", .offset = 0x15 },
-+	{ .name = "rx_red_prio_2", .offset = 0x16 },
-+	{ .name = "rx_red_prio_3", .offset = 0x17 },
-+	{ .name = "rx_red_prio_4", .offset = 0x18 },
-+	{ .name = "rx_red_prio_5", .offset = 0x19 },
-+	{ .name = "rx_red_prio_6", .offset = 0x1a },
-+	{ .name = "rx_red_prio_7", .offset = 0x1b },
-+	{ .name = "rx_yellow_prio_0", .offset = 0x1c },
-+	{ .name = "rx_yellow_prio_1", .offset = 0x1d },
-+	{ .name = "rx_yellow_prio_2", .offset = 0x1e },
-+	{ .name = "rx_yellow_prio_3", .offset = 0x1f },
-+	{ .name = "rx_yellow_prio_4", .offset = 0x20 },
-+	{ .name = "rx_yellow_prio_5", .offset = 0x21 },
-+	{ .name = "rx_yellow_prio_6", .offset = 0x22 },
-+	{ .name = "rx_yellow_prio_7", .offset = 0x23 },
-+	{ .name = "rx_green_prio_0", .offset = 0x24 },
-+	{ .name = "rx_green_prio_1", .offset = 0x25 },
-+	{ .name = "rx_green_prio_2", .offset = 0x26 },
-+	{ .name = "rx_green_prio_3", .offset = 0x27 },
-+	{ .name = "rx_green_prio_4", .offset = 0x28 },
-+	{ .name = "rx_green_prio_5", .offset = 0x29 },
-+	{ .name = "rx_green_prio_6", .offset = 0x2a },
-+	{ .name = "rx_green_prio_7", .offset = 0x2b },
-+	{ .name = "rx_assembly_err", .offset = 0x2c },
-+	{ .name = "rx_smd_err", .offset = 0x2d },
-+	{ .name = "rx_assembly_ok", .offset = 0x2e },
-+	{ .name = "rx_merge_frag", .offset = 0x2f },
-+	{ .name = "rx_pmac_octets", .offset = 0x30, },
-+	{ .name = "rx_pmac_unicast", .offset = 0x31, },
-+	{ .name = "rx_pmac_multicast", .offset = 0x32 },
-+	{ .name = "rx_pmac_broadcast", .offset = 0x33 },
-+	{ .name = "rx_pmac_short", .offset = 0x34 },
-+	{ .name = "rx_pmac_frag", .offset = 0x35 },
-+	{ .name = "rx_pmac_jabber", .offset = 0x36 },
-+	{ .name = "rx_pmac_crc", .offset = 0x37 },
-+	{ .name = "rx_pmac_symbol_err", .offset = 0x38 },
-+	{ .name = "rx_pmac_sz_64", .offset = 0x39 },
-+	{ .name = "rx_pmac_sz_65_127", .offset = 0x3a },
-+	{ .name = "rx_pmac_sz_128_255", .offset = 0x3b },
-+	{ .name = "rx_pmac_sz_256_511", .offset = 0x3c },
-+	{ .name = "rx_pmac_sz_512_1023", .offset = 0x3d },
-+	{ .name = "rx_pmac_sz_1024_1526", .offset = 0x3e },
-+	{ .name = "rx_pmac_sz_jumbo", .offset = 0x3f },
-+	{ .name = "rx_pmac_pause", .offset = 0x40 },
-+	{ .name = "rx_pmac_control", .offset = 0x41 },
-+	{ .name = "rx_pmac_long", .offset = 0x42 },
-+
-+	{ .name = "tx_octets", .offset = 0x80, },
-+	{ .name = "tx_unicast", .offset = 0x81, },
-+	{ .name = "tx_multicast", .offset = 0x82 },
-+	{ .name = "tx_broadcast", .offset = 0x83 },
-+	{ .name = "tx_col", .offset = 0x84 },
-+	{ .name = "tx_drop", .offset = 0x85 },
-+	{ .name = "tx_pause", .offset = 0x86 },
-+	{ .name = "tx_sz_64", .offset = 0x87 },
-+	{ .name = "tx_sz_65_127", .offset = 0x88 },
-+	{ .name = "tx_sz_128_255", .offset = 0x89 },
-+	{ .name = "tx_sz_256_511", .offset = 0x8a },
-+	{ .name = "tx_sz_512_1023", .offset = 0x8b },
-+	{ .name = "tx_sz_1024_1526", .offset = 0x8c },
-+	{ .name = "tx_sz_jumbo", .offset = 0x8d },
-+	{ .name = "tx_yellow_prio_0", .offset = 0x8e },
-+	{ .name = "tx_yellow_prio_1", .offset = 0x8f },
-+	{ .name = "tx_yellow_prio_2", .offset = 0x90 },
-+	{ .name = "tx_yellow_prio_3", .offset = 0x91 },
-+	{ .name = "tx_yellow_prio_4", .offset = 0x92 },
-+	{ .name = "tx_yellow_prio_5", .offset = 0x93 },
-+	{ .name = "tx_yellow_prio_6", .offset = 0x94 },
-+	{ .name = "tx_yellow_prio_7", .offset = 0x95 },
-+	{ .name = "tx_green_prio_0", .offset = 0x96 },
-+	{ .name = "tx_green_prio_1", .offset = 0x97 },
-+	{ .name = "tx_green_prio_2", .offset = 0x98 },
-+	{ .name = "tx_green_prio_3", .offset = 0x99 },
-+	{ .name = "tx_green_prio_4", .offset = 0x9a },
-+	{ .name = "tx_green_prio_5", .offset = 0x9b },
-+	{ .name = "tx_green_prio_6", .offset = 0x9c },
-+	{ .name = "tx_green_prio_7", .offset = 0x9d },
-+	{ .name = "tx_aged", .offset = 0x9e },
-+	{ .name = "tx_llct", .offset = 0x9f },
-+	{ .name = "tx_ct", .offset = 0xa0 },
-+	{ .name = "tx_mm_hold", .offset = 0xa1 },
-+	{ .name = "tx_merge_frag", .offset = 0xa2 },
-+	{ .name = "tx_pmac_octets", .offset = 0xa3, },
-+	{ .name = "tx_pmac_unicast", .offset = 0xa4, },
-+	{ .name = "tx_pmac_multicast", .offset = 0xa5 },
-+	{ .name = "tx_pmac_broadcast", .offset = 0xa6 },
-+	{ .name = "tx_pmac_pause", .offset = 0xa7 },
-+	{ .name = "tx_pmac_sz_64", .offset = 0xa8 },
-+	{ .name = "tx_pmac_sz_65_127", .offset = 0xa9 },
-+	{ .name = "tx_pmac_sz_128_255", .offset = 0xaa },
-+	{ .name = "tx_pmac_sz_256_511", .offset = 0xab },
-+	{ .name = "tx_pmac_sz_512_1023", .offset = 0xac },
-+	{ .name = "tx_pmac_sz_1024_1526", .offset = 0xad },
-+	{ .name = "tx_pmac_sz_jumbo", .offset = 0xae },
-+
-+	{ .name = "dr_local", .offset = 0x100 },
-+	{ .name = "dr_tail", .offset = 0x101 },
-+	{ .name = "dr_yellow_prio_0", .offset = 0x102 },
-+	{ .name = "dr_yellow_prio_1", .offset = 0x103 },
-+	{ .name = "dr_yellow_prio_2", .offset = 0x104 },
-+	{ .name = "dr_yellow_prio_3", .offset = 0x105 },
-+	{ .name = "dr_yellow_prio_4", .offset = 0x106 },
-+	{ .name = "dr_yellow_prio_5", .offset = 0x107 },
-+	{ .name = "dr_yellow_prio_6", .offset = 0x108 },
-+	{ .name = "dr_yellow_prio_7", .offset = 0x109 },
-+	{ .name = "dr_green_prio_0", .offset = 0x10a },
-+	{ .name = "dr_green_prio_1", .offset = 0x10b },
-+	{ .name = "dr_green_prio_2", .offset = 0x10c },
-+	{ .name = "dr_green_prio_3", .offset = 0x10d },
-+	{ .name = "dr_green_prio_4", .offset = 0x10e },
-+	{ .name = "dr_green_prio_5", .offset = 0x10f },
-+	{ .name = "dr_green_prio_6", .offset = 0x110 },
-+	{ .name = "dr_green_prio_7", .offset = 0x111 },
-+};
-+
-+/* The following numbers are indexes into lan966x_stats_layout[] */
-+#define SYS_COUNT_RX_OCT		  0
-+#define SYS_COUNT_RX_UC			  1
-+#define SYS_COUNT_RX_MC			  2
-+#define SYS_COUNT_RX_BC			  3
-+#define SYS_COUNT_RX_SHORT		  4
-+#define SYS_COUNT_RX_FRAG		  5
-+#define SYS_COUNT_RX_JABBER		  6
-+#define SYS_COUNT_RX_CRC		  7
-+#define SYS_COUNT_RX_SYMBOL_ERR		  8
-+#define SYS_COUNT_RX_SZ_64		  9
-+#define SYS_COUNT_RX_SZ_65_127		 10
-+#define SYS_COUNT_RX_SZ_128_255		 11
-+#define SYS_COUNT_RX_SZ_256_511		 12
-+#define SYS_COUNT_RX_SZ_512_1023	 13
-+#define SYS_COUNT_RX_SZ_1024_1526	 14
-+#define SYS_COUNT_RX_SZ_JUMBO		 15
-+#define SYS_COUNT_RX_PAUSE		 16
-+#define SYS_COUNT_RX_CONTROL		 17
-+#define SYS_COUNT_RX_LONG		 18
-+#define SYS_COUNT_RX_CAT_DROP		 19
-+#define SYS_COUNT_RX_RED_PRIO_0		 20
-+#define SYS_COUNT_RX_RED_PRIO_1		 21
-+#define SYS_COUNT_RX_RED_PRIO_2		 22
-+#define SYS_COUNT_RX_RED_PRIO_3		 23
-+#define SYS_COUNT_RX_RED_PRIO_4		 24
-+#define SYS_COUNT_RX_RED_PRIO_5		 25
-+#define SYS_COUNT_RX_RED_PRIO_6		 26
-+#define SYS_COUNT_RX_RED_PRIO_7		 27
-+#define SYS_COUNT_RX_YELLOW_PRIO_0	 28
-+#define SYS_COUNT_RX_YELLOW_PRIO_1	 29
-+#define SYS_COUNT_RX_YELLOW_PRIO_2	 30
-+#define SYS_COUNT_RX_YELLOW_PRIO_3	 31
-+#define SYS_COUNT_RX_YELLOW_PRIO_4	 32
-+#define SYS_COUNT_RX_YELLOW_PRIO_5	 33
-+#define SYS_COUNT_RX_YELLOW_PRIO_6	 34
-+#define SYS_COUNT_RX_YELLOW_PRIO_7	 35
-+#define SYS_COUNT_RX_GREEN_PRIO_0	 36
-+#define SYS_COUNT_RX_GREEN_PRIO_1	 37
-+#define SYS_COUNT_RX_GREEN_PRIO_2	 38
-+#define SYS_COUNT_RX_GREEN_PRIO_3	 39
-+#define SYS_COUNT_RX_GREEN_PRIO_4	 40
-+#define SYS_COUNT_RX_GREEN_PRIO_5	 41
-+#define SYS_COUNT_RX_GREEN_PRIO_6	 42
-+#define SYS_COUNT_RX_GREEN_PRIO_7	 43
-+#define SYS_COUNT_RX_ASSEMBLY_ERR	 44
-+#define SYS_COUNT_RX_SMD_ERR		 45
-+#define SYS_COUNT_RX_ASSEMBLY_OK	 46
-+#define SYS_COUNT_RX_MERGE_FRAG		 47
-+#define SYS_COUNT_RX_PMAC_OCT		 48
-+#define SYS_COUNT_RX_PMAC_UC		 49
-+#define SYS_COUNT_RX_PMAC_MC		 50
-+#define SYS_COUNT_RX_PMAC_BC		 51
-+#define SYS_COUNT_RX_PMAC_SHORT		 52
-+#define SYS_COUNT_RX_PMAC_FRAG		 53
-+#define SYS_COUNT_RX_PMAC_JABBER	 54
-+#define SYS_COUNT_RX_PMAC_CRC		 55
-+#define SYS_COUNT_RX_PMAC_SYMBOL_ERR	 56
-+#define SYS_COUNT_RX_PMAC_SZ_64		 57
-+#define SYS_COUNT_RX_PMAC_SZ_65_127	 58
-+#define SYS_COUNT_RX_PMAC_SZ_128_255	 59
-+#define SYS_COUNT_RX_PMAC_SZ_256_511	 60
-+#define SYS_COUNT_RX_PMAC_SZ_512_1023	 61
-+#define SYS_COUNT_RX_PMAC_SZ_1024_1526	 62
-+#define SYS_COUNT_RX_PMAC_SZ_JUMBO	 63
-+#define SYS_COUNT_RX_PMAC_PAUSE		 64
-+#define SYS_COUNT_RX_PMAC_CONTROL	 65
-+#define SYS_COUNT_RX_PMAC_LONG		 66
-+
-+#define SYS_COUNT_TX_OCT		 67
-+#define SYS_COUNT_TX_UC			 68
-+#define SYS_COUNT_TX_MC			 69
-+#define SYS_COUNT_TX_BC			 70
-+#define SYS_COUNT_TX_COL		 71
-+#define SYS_COUNT_TX_DROP		 72
-+#define SYS_COUNT_TX_PAUSE		 73
-+#define SYS_COUNT_TX_SZ_64		 74
-+#define SYS_COUNT_TX_SZ_65_127		 75
-+#define SYS_COUNT_TX_SZ_128_255		 76
-+#define SYS_COUNT_TX_SZ_256_511		 77
-+#define SYS_COUNT_TX_SZ_512_1023	 78
-+#define SYS_COUNT_TX_SZ_1024_1526	 79
-+#define SYS_COUNT_TX_SZ_JUMBO		 80
-+#define SYS_COUNT_TX_YELLOW_PRIO_0	 81
-+#define SYS_COUNT_TX_YELLOW_PRIO_1	 82
-+#define SYS_COUNT_TX_YELLOW_PRIO_2	 83
-+#define SYS_COUNT_TX_YELLOW_PRIO_3	 84
-+#define SYS_COUNT_TX_YELLOW_PRIO_4	 85
-+#define SYS_COUNT_TX_YELLOW_PRIO_5	 86
-+#define SYS_COUNT_TX_YELLOW_PRIO_6	 87
-+#define SYS_COUNT_TX_YELLOW_PRIO_7	 88
-+#define SYS_COUNT_TX_GREEN_PRIO_0	 89
-+#define SYS_COUNT_TX_GREEN_PRIO_1	 90
-+#define SYS_COUNT_TX_GREEN_PRIO_2	 91
-+#define SYS_COUNT_TX_GREEN_PRIO_3	 92
-+#define SYS_COUNT_TX_GREEN_PRIO_4	 93
-+#define SYS_COUNT_TX_GREEN_PRIO_5	 94
-+#define SYS_COUNT_TX_GREEN_PRIO_6	 95
-+#define SYS_COUNT_TX_GREEN_PRIO_7	 96
-+#define SYS_COUNT_TX_AGED		 97
-+#define SYS_COUNT_TX_LLCT		 98
-+#define SYS_COUNT_TX_CT			 99
-+#define SYS_COUNT_TX_MM_HOLD		100
-+#define SYS_COUNT_TX_MERGE_FRAG		101
-+#define SYS_COUNT_TX_PMAC_OCT		102
-+#define SYS_COUNT_TX_PMAC_UC		103
-+#define SYS_COUNT_TX_PMAC_MC		104
-+#define SYS_COUNT_TX_PMAC_BC		105
-+#define SYS_COUNT_TX_PMAC_PAUSE		106
-+#define SYS_COUNT_TX_PMAC_SZ_64		107
-+#define SYS_COUNT_TX_PMAC_SZ_65_127	108
-+#define SYS_COUNT_TX_PMAC_SZ_128_255	109
-+#define SYS_COUNT_TX_PMAC_SZ_256_511	110
-+#define SYS_COUNT_TX_PMAC_SZ_512_1023	111
-+#define SYS_COUNT_TX_PMAC_SZ_1024_1526	112
-+#define SYS_COUNT_TX_PMAC_SZ_JUMBO	113
-+
-+#define SYS_COUNT_DR_LOCAL		114
-+#define SYS_COUNT_DR_TAIL		115
-+#define SYS_COUNT_DR_YELLOW_PRIO_0	116
-+#define SYS_COUNT_DR_YELLOW_PRIO_1	117
-+#define SYS_COUNT_DR_YELLOW_PRIO_2	118
-+#define SYS_COUNT_DR_YELLOW_PRIO_3	119
-+#define SYS_COUNT_DR_YELLOW_PRIO_4	120
-+#define SYS_COUNT_DR_YELLOW_PRIO_5	121
-+#define SYS_COUNT_DR_YELLOW_PRIO_6	122
-+#define SYS_COUNT_DR_YELLOW_PRIO_7	123
-+#define SYS_COUNT_DR_GREEN_PRIO_0	124
-+#define SYS_COUNT_DR_GREEN_PRIO_1	125
-+#define SYS_COUNT_DR_GREEN_PRIO_2	126
-+#define SYS_COUNT_DR_GREEN_PRIO_3	127
-+#define SYS_COUNT_DR_GREEN_PRIO_4	128
-+#define SYS_COUNT_DR_GREEN_PRIO_5	129
-+#define SYS_COUNT_DR_GREEN_PRIO_6	130
-+#define SYS_COUNT_DR_GREEN_PRIO_7	131
-+
-+/* Add a possibly wrapping 32 bit value to a 64 bit counter */
-+static void lan966x_add_cnt(u64 *cnt, u32 val)
-+{
-+	if (val < (*cnt & U32_MAX))
-+		*cnt += (u64)1 << 32; /* value has wrapped */
-+
-+	*cnt = (*cnt & ~(u64)U32_MAX) + val;
-+}
-+
-+static void lan966x_stats_update(struct lan966x *lan966x)
-+{
-+	int i, j;
-+
-+	mutex_lock(&lan966x->stats_lock);
-+
-+	for (i = 0; i < lan966x->num_phys_ports; i++) {
-+		uint idx = i * lan966x->num_stats;
-+
-+		lan_wr(SYS_STAT_CFG_STAT_VIEW_SET(i),
-+		       lan966x, SYS_STAT_CFG);
-+
-+		for (j = 0; j < lan966x->num_stats; j++) {
-+			u32 offset = lan966x->stats_layout[j].offset;
-+
-+			lan966x_add_cnt(&lan966x->stats[idx++],
-+					lan_rd(lan966x, SYS_CNT(offset)));
-+		}
-+	}
-+
-+	mutex_unlock(&lan966x->stats_lock);
-+}
-+
-+static int lan966x_get_sset_count(struct net_device *dev, int sset)
-+{
-+	struct lan966x_port *port = netdev_priv(dev);
-+	struct lan966x *lan966x = port->lan966x;
-+
-+	if (sset != ETH_SS_STATS)
-+		return -EOPNOTSUPP;
-+
-+	return lan966x->num_stats;
-+}
-+
-+static void lan966x_get_strings(struct net_device *netdev, u32 sset, u8 *data)
-+{
-+	struct lan966x_port *port = netdev_priv(netdev);
-+	struct lan966x *lan966x = port->lan966x;
-+	int i;
-+
-+	if (sset != ETH_SS_STATS)
-+		return;
-+
-+	for (i = 0; i < lan966x->num_stats; i++)
-+		memcpy(data + i * ETH_GSTRING_LEN,
-+		       lan966x->stats_layout[i].name, ETH_GSTRING_LEN);
-+}
-+
-+static void lan966x_get_ethtool_stats(struct net_device *dev,
-+				      struct ethtool_stats *stats, u64 *data)
-+{
-+	struct lan966x_port *port = netdev_priv(dev);
-+	struct lan966x *lan966x = port->lan966x;
-+	int i;
-+
-+	/* check and update now */
-+	lan966x_stats_update(lan966x);
-+
-+	/* Copy all counters */
-+	for (i = 0; i < lan966x->num_stats; i++)
-+		*data++ = lan966x->stats[port->chip_port *
-+					 lan966x->num_stats + i];
-+}
-+
-+static void lan966x_get_eth_mac_stats(struct net_device *dev,
-+				      struct ethtool_eth_mac_stats *mac_stats)
-+{
-+	struct lan966x_port *port = netdev_priv(dev);
-+	struct lan966x *lan966x = port->lan966x;
-+	u32 idx;
-+
-+	lan966x_stats_update(lan966x);
-+
-+	idx = port->chip_port * lan966x->num_stats;
-+
-+	mutex_lock(&lan966x->stats_lock);
-+
-+	mac_stats->FramesTransmittedOK =
-+		lan966x->stats[idx + SYS_COUNT_TX_UC] +
-+		lan966x->stats[idx + SYS_COUNT_TX_MC] +
-+		lan966x->stats[idx + SYS_COUNT_TX_BC] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_UC] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_MC] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_BC];
-+	mac_stats->SingleCollisionFrames =
-+		lan966x->stats[idx + SYS_COUNT_TX_COL];
-+	mac_stats->MultipleCollisionFrames = 0;
-+	mac_stats->FramesReceivedOK =
-+		lan966x->stats[idx + SYS_COUNT_RX_UC] +
-+		lan966x->stats[idx + SYS_COUNT_RX_MC] +
-+		lan966x->stats[idx + SYS_COUNT_RX_BC];
-+	mac_stats->FrameCheckSequenceErrors =
-+		lan966x->stats[idx + SYS_COUNT_RX_CRC] +
-+		lan966x->stats[idx + SYS_COUNT_RX_CRC];
-+	mac_stats->AlignmentErrors = 0;
-+	mac_stats->OctetsTransmittedOK =
-+		lan966x->stats[idx + SYS_COUNT_TX_OCT] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_OCT];
-+	mac_stats->FramesWithDeferredXmissions =
-+		lan966x->stats[idx + SYS_COUNT_TX_MM_HOLD];
-+	mac_stats->LateCollisions = 0;
-+	mac_stats->FramesAbortedDueToXSColls = 0;
-+	mac_stats->FramesLostDueToIntMACXmitError = 0;
-+	mac_stats->CarrierSenseErrors = 0;
-+	mac_stats->OctetsReceivedOK =
-+		lan966x->stats[idx + SYS_COUNT_RX_OCT];
-+	mac_stats->FramesLostDueToIntMACRcvError = 0;
-+	mac_stats->MulticastFramesXmittedOK =
-+		lan966x->stats[idx + SYS_COUNT_TX_MC] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_MC];
-+	mac_stats->BroadcastFramesXmittedOK =
-+		lan966x->stats[idx + SYS_COUNT_TX_BC] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_BC];
-+	mac_stats->FramesWithExcessiveDeferral = 0;
-+	mac_stats->MulticastFramesReceivedOK =
-+		lan966x->stats[idx + SYS_COUNT_RX_MC];
-+	mac_stats->BroadcastFramesReceivedOK =
-+		lan966x->stats[idx + SYS_COUNT_RX_BC];
-+	mac_stats->InRangeLengthErrors =
-+		lan966x->stats[idx + SYS_COUNT_RX_FRAG] +
-+		lan966x->stats[idx + SYS_COUNT_RX_JABBER] +
-+		lan966x->stats[idx + SYS_COUNT_RX_CRC] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_FRAG] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_JABBER] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_CRC];
-+	mac_stats->OutOfRangeLengthField =
-+		lan966x->stats[idx + SYS_COUNT_RX_SHORT] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_SHORT] +
-+		lan966x->stats[idx + SYS_COUNT_RX_LONG] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_LONG];
-+	mac_stats->FrameTooLongErrors =
-+		lan966x->stats[idx + SYS_COUNT_RX_LONG] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_LONG];
-+
-+	mutex_unlock(&lan966x->stats_lock);
-+}
-+
-+static const struct ethtool_rmon_hist_range lan966x_rmon_ranges[] = {
-+	{    0,    64 },
-+	{   65,   127 },
-+	{  128,   255 },
-+	{  256,   511 },
-+	{  512,  1023 },
-+	{ 1024,  1518 },
-+	{ 1519, 10239 },
-+	{}
-+};
-+
-+static void lan966x_get_eth_rmon_stats(struct net_device *dev,
-+				       struct ethtool_rmon_stats *rmon_stats,
-+				       const struct ethtool_rmon_hist_range **ranges)
-+{
-+	struct lan966x_port *port = netdev_priv(dev);
-+	struct lan966x *lan966x = port->lan966x;
-+	u32 idx;
-+
-+	lan966x_stats_update(lan966x);
-+
-+	idx = port->chip_port * lan966x->num_stats;
-+
-+	mutex_lock(&lan966x->stats_lock);
-+
-+	rmon_stats->undersize_pkts =
-+		lan966x->stats[idx + SYS_COUNT_RX_SHORT] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_SHORT];
-+	rmon_stats->oversize_pkts =
-+		lan966x->stats[idx + SYS_COUNT_RX_LONG] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_LONG];
-+	rmon_stats->fragments =
-+		lan966x->stats[idx + SYS_COUNT_RX_FRAG] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_FRAG];
-+	rmon_stats->jabbers =
-+		lan966x->stats[idx + SYS_COUNT_RX_JABBER] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_JABBER];
-+	rmon_stats->hist[0] =
-+		lan966x->stats[idx + SYS_COUNT_RX_SZ_64] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_SZ_64];
-+	rmon_stats->hist[1] =
-+		lan966x->stats[idx + SYS_COUNT_RX_SZ_65_127] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_SZ_65_127];
-+	rmon_stats->hist[2] =
-+		lan966x->stats[idx + SYS_COUNT_RX_SZ_128_255] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_SZ_128_255];
-+	rmon_stats->hist[3] =
-+		lan966x->stats[idx + SYS_COUNT_RX_SZ_256_511] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_SZ_256_511];
-+	rmon_stats->hist[4] =
-+		lan966x->stats[idx + SYS_COUNT_RX_SZ_512_1023] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_SZ_512_1023];
-+	rmon_stats->hist[5] =
-+		lan966x->stats[idx + SYS_COUNT_RX_SZ_1024_1526] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_SZ_1024_1526];
-+	rmon_stats->hist[6] =
-+		lan966x->stats[idx + SYS_COUNT_RX_SZ_1024_1526] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_SZ_1024_1526];
-+
-+	rmon_stats->hist_tx[0] =
-+		lan966x->stats[idx + SYS_COUNT_TX_SZ_64] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_SZ_64];
-+	rmon_stats->hist_tx[1] =
-+		lan966x->stats[idx + SYS_COUNT_TX_SZ_65_127] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_SZ_65_127];
-+	rmon_stats->hist_tx[2] =
-+		lan966x->stats[idx + SYS_COUNT_TX_SZ_128_255] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_SZ_128_255];
-+	rmon_stats->hist_tx[3] =
-+		lan966x->stats[idx + SYS_COUNT_TX_SZ_256_511] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_SZ_256_511];
-+	rmon_stats->hist_tx[4] =
-+		lan966x->stats[idx + SYS_COUNT_TX_SZ_512_1023] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_SZ_512_1023];
-+	rmon_stats->hist_tx[5] =
-+		lan966x->stats[idx + SYS_COUNT_TX_SZ_1024_1526] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_SZ_1024_1526];
-+	rmon_stats->hist_tx[6] =
-+		lan966x->stats[idx + SYS_COUNT_TX_SZ_1024_1526] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_SZ_1024_1526];
-+
-+	mutex_unlock(&lan966x->stats_lock);
-+
-+	*ranges = lan966x_rmon_ranges;
-+}
-+
-+static int lan966x_get_link_ksettings(struct net_device *ndev,
-+				      struct ethtool_link_ksettings *cmd)
-+{
-+	struct lan966x_port *port = netdev_priv(ndev);
-+
-+	return phylink_ethtool_ksettings_get(port->phylink, cmd);
-+}
-+
-+static int lan966x_set_link_ksettings(struct net_device *ndev,
-+				      const struct ethtool_link_ksettings *cmd)
-+{
-+	struct lan966x_port *port = netdev_priv(ndev);
-+
-+	return phylink_ethtool_ksettings_set(port->phylink, cmd);
-+}
-+
-+const struct ethtool_ops lan966x_ethtool_ops = {
-+	.get_link_ksettings     = lan966x_get_link_ksettings,
-+	.set_link_ksettings     = lan966x_set_link_ksettings,
-+	.get_sset_count		= lan966x_get_sset_count,
-+	.get_strings		= lan966x_get_strings,
-+	.get_ethtool_stats	= lan966x_get_ethtool_stats,
-+	.get_eth_mac_stats      = lan966x_get_eth_mac_stats,
-+	.get_rmon_stats		= lan966x_get_eth_rmon_stats,
-+	.get_link		= ethtool_op_get_link,
-+};
-+
-+static void lan966x_check_stats_work(struct work_struct *work)
-+{
-+	struct delayed_work *del_work = to_delayed_work(work);
-+	struct lan966x *lan966x = container_of(del_work, struct lan966x,
-+					       stats_work);
-+
-+	lan966x_stats_update(lan966x);
-+
-+	queue_delayed_work(lan966x->stats_queue, &lan966x->stats_work,
-+			   LAN966X_STATS_CHECK_DELAY);
-+}
-+
-+void lan966x_stats_get(struct net_device *dev,
-+		       struct rtnl_link_stats64 *stats)
-+{
-+	struct lan966x_port *port = netdev_priv(dev);
-+	struct lan966x *lan966x = port->lan966x;
-+	u32 idx;
-+	int i;
-+
-+	idx = port->chip_port * lan966x->num_stats;
-+
-+	mutex_lock(&lan966x->stats_lock);
-+
-+	stats->rx_bytes = lan966x->stats[idx + SYS_COUNT_RX_OCT] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_OCT];
-+
-+	stats->rx_packets = lan966x->stats[idx + SYS_COUNT_RX_SHORT] +
-+		lan966x->stats[idx + SYS_COUNT_RX_FRAG] +
-+		lan966x->stats[idx + SYS_COUNT_RX_JABBER] +
-+		lan966x->stats[idx + SYS_COUNT_RX_CRC] +
-+		lan966x->stats[idx + SYS_COUNT_RX_SYMBOL_ERR] +
-+		lan966x->stats[idx + SYS_COUNT_RX_SZ_64] +
-+		lan966x->stats[idx + SYS_COUNT_RX_SZ_65_127] +
-+		lan966x->stats[idx + SYS_COUNT_RX_SZ_128_255] +
-+		lan966x->stats[idx + SYS_COUNT_RX_SZ_256_511] +
-+		lan966x->stats[idx + SYS_COUNT_RX_SZ_512_1023] +
-+		lan966x->stats[idx + SYS_COUNT_RX_SZ_1024_1526] +
-+		lan966x->stats[idx + SYS_COUNT_RX_SZ_JUMBO] +
-+		lan966x->stats[idx + SYS_COUNT_RX_LONG] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_SHORT] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_FRAG] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_JABBER] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_SZ_64] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_SZ_65_127] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_SZ_128_255] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_SZ_256_511] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_SZ_512_1023] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_SZ_1024_1526] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_SZ_JUMBO];
-+
-+	stats->multicast = lan966x->stats[idx + SYS_COUNT_RX_MC] +
-+		lan966x->stats[idx + SYS_COUNT_RX_PMAC_MC];
-+
-+	stats->rx_errors = lan966x->stats[idx + SYS_COUNT_RX_SHORT] +
-+		lan966x->stats[idx + SYS_COUNT_RX_FRAG] +
-+		lan966x->stats[idx + SYS_COUNT_RX_JABBER] +
-+		lan966x->stats[idx + SYS_COUNT_RX_CRC] +
-+		lan966x->stats[idx + SYS_COUNT_RX_SYMBOL_ERR] +
-+		lan966x->stats[idx + SYS_COUNT_RX_LONG];
-+
-+	stats->rx_dropped = dev->stats.rx_dropped +
-+		lan966x->stats[idx + SYS_COUNT_RX_LONG] +
-+		lan966x->stats[idx + SYS_COUNT_DR_LOCAL] +
-+		lan966x->stats[idx + SYS_COUNT_DR_TAIL];
-+
-+	for (i = 0; i < LAN966X_NUM_TC; i++) {
-+		stats->rx_dropped +=
-+			(lan966x->stats[idx + SYS_COUNT_DR_YELLOW_PRIO_0 + i] +
-+			 lan966x->stats[idx + SYS_COUNT_DR_GREEN_PRIO_0 + i]);
-+	}
-+
-+	/* Get Tx stats */
-+	stats->tx_bytes = lan966x->stats[idx + SYS_COUNT_TX_OCT] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_OCT];
-+
-+	stats->tx_packets = lan966x->stats[idx + SYS_COUNT_TX_SZ_64] +
-+		lan966x->stats[idx + SYS_COUNT_TX_SZ_65_127] +
-+		lan966x->stats[idx + SYS_COUNT_TX_SZ_128_255] +
-+		lan966x->stats[idx + SYS_COUNT_TX_SZ_256_511] +
-+		lan966x->stats[idx + SYS_COUNT_TX_SZ_512_1023] +
-+		lan966x->stats[idx + SYS_COUNT_TX_SZ_1024_1526] +
-+		lan966x->stats[idx + SYS_COUNT_TX_SZ_JUMBO] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_SZ_64] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_SZ_65_127] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_SZ_128_255] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_SZ_256_511] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_SZ_512_1023] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_SZ_1024_1526] +
-+		lan966x->stats[idx + SYS_COUNT_TX_PMAC_SZ_JUMBO];
-+
-+	stats->tx_dropped = lan966x->stats[idx + SYS_COUNT_TX_DROP] +
-+		lan966x->stats[idx + SYS_COUNT_TX_AGED];
-+
-+	stats->collisions = lan966x->stats[idx + SYS_COUNT_TX_COL];
-+
-+	mutex_unlock(&lan966x->stats_lock);
-+}
-+
-+int lan966x_stats_init(struct lan966x *lan966x)
-+{
-+	char queue_name[32];
-+
-+	lan966x->stats_layout = lan966x_stats_layout;
-+	lan966x->num_stats = ARRAY_SIZE(lan966x_stats_layout);
-+	lan966x->stats = devm_kcalloc(lan966x->dev, lan966x->num_phys_ports *
-+				      lan966x->num_stats,
-+				      sizeof(u64), GFP_KERNEL);
-+	if (!lan966x->stats)
-+		return -ENOMEM;
-+
-+	/* Init stats worker */
-+	mutex_init(&lan966x->stats_lock);
-+	snprintf(queue_name, sizeof(queue_name), "%s-stats",
-+		 dev_name(lan966x->dev));
-+	lan966x->stats_queue = create_singlethread_workqueue(queue_name);
-+	INIT_DELAYED_WORK(&lan966x->stats_work, lan966x_check_stats_work);
-+	queue_delayed_work(lan966x->stats_queue, &lan966x->stats_work,
-+			   LAN966X_STATS_CHECK_DELAY);
-+
-+	return 0;
-+}
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.c b/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
-index f858f0656e9c..ff80e404b8e7 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
-@@ -375,6 +375,7 @@ static const struct net_device_ops lan966x_port_netdev_ops = {
- 	.ndo_change_mtu			= lan966x_port_change_mtu,
- 	.ndo_set_rx_mode		= lan966x_port_set_rx_mode,
- 	.ndo_get_phys_port_name		= lan966x_port_get_phys_port_name,
-+	.ndo_get_stats64		= lan966x_stats_get,
- 	.ndo_set_mac_address		= lan966x_port_set_mac_address,
- 	.ndo_get_port_parent_id		= lan966x_port_get_parent_id,
- };
-@@ -584,6 +585,7 @@ static int lan966x_probe_port(struct lan966x *lan966x, u32 p,
- 	dev->max_mtu = ETH_MAX_MTU;
- 
- 	dev->netdev_ops = &lan966x_port_netdev_ops;
-+	dev->ethtool_ops = &lan966x_ethtool_ops;
- 	dev->needed_headroom = IFH_LEN * sizeof(u32);
- 
- 	eth_hw_addr_gen(dev, lan966x->base_mac, p + 1);
-@@ -874,6 +876,7 @@ static int lan966x_probe(struct platform_device *pdev)
- 
- 	/* init switch */
- 	lan966x_init(lan966x);
-+	lan966x_stats_init(lan966x);
- 
- 	/* go over the child nodes */
- 	fwnode_for_each_available_child_node(ports, portnp) {
-@@ -906,6 +909,10 @@ static int lan966x_probe(struct platform_device *pdev)
- cleanup_ports:
- 	fwnode_handle_put(portnp);
- 
-+	cancel_delayed_work_sync(&lan966x->stats_work);
-+	destroy_workqueue(lan966x->stats_queue);
-+	mutex_destroy(&lan966x->stats_lock);
-+
- 	disable_irq(lan966x->xtr_irq);
- 	lan966x->xtr_irq = -ENXIO;
- 	lan966x_cleanup_ports(lan966x);
-@@ -917,6 +924,10 @@ static int lan966x_remove(struct platform_device *pdev)
- {
- 	struct lan966x *lan966x = platform_get_drvdata(pdev);
- 
-+	cancel_delayed_work_sync(&lan966x->stats_work);
-+	destroy_workqueue(lan966x->stats_queue);
-+	mutex_destroy(&lan966x->stats_lock);
-+
- 	disable_irq(lan966x->xtr_irq);
- 	lan966x->xtr_irq = -ENXIO;
- 	lan966x_cleanup_ports(lan966x);
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-index 299e59b529bf..cfe544163c5e 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-@@ -63,6 +63,11 @@ struct lan966x_frame_info {
- 	u8 ipv;
- };
- 
-+struct lan966x_stat_layout {
-+	u32 offset;
-+	char name[ETH_GSTRING_LEN];
-+};
-+
- struct lan966x {
- 	struct device *dev;
- 
-@@ -75,6 +80,16 @@ struct lan966x {
- 
- 	u8 base_mac[ETH_ALEN];
- 
-+	/* stats */
-+	const struct lan966x_stat_layout *stats_layout;
-+	u32 num_stats;
-+
-+	/* workqueue for reading stats */
-+	struct mutex stats_lock;
-+	u64 *stats;
-+	struct delayed_work stats_work;
-+	struct workqueue_struct *stats_queue;
-+
- 	/* interrupts */
- 	int xtr_irq;
- };
-@@ -116,6 +131,11 @@ struct lan966x_port {
- 
- extern const struct phylink_mac_ops lan966x_phylink_mac_ops;
- extern const struct phylink_pcs_ops lan966x_phylink_pcs_ops;
-+extern const struct ethtool_ops lan966x_ethtool_ops;
-+
-+void lan966x_stats_get(struct net_device *dev,
-+		       struct rtnl_link_stats64 *stats);
-+int lan966x_stats_init(struct lan966x *lan966x);
- 
- void lan966x_port_config_down(struct lan966x_port *port);
- void lan966x_port_config_up(struct lan966x_port *port);
--- 
-2.33.0
+Fixes: 02746e26c39e ("virtio-blk: avoid preallocating big SGL for data")
+
+>Reported-by: Zeal Robot <zealci@zte.com.cn>
+>Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
+>---
+> drivers/block/virtio_blk.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+>index 97bf051a50ce..eed1666eff31 100644
+>--- a/drivers/block/virtio_blk.c
+>+++ b/drivers/block/virtio_blk.c
+>@@ -316,7 +316,7 @@ static blk_status_t virtio_queue_rq(struct 
+>blk_mq_hw_ctx *hctx,
+> 	struct request *req = bd->rq;
+> 	struct virtblk_req *vbr = blk_mq_rq_to_pdu(req);
+> 	unsigned long flags;
+>-	unsigned int num;
+>+	int num;
+> 	int qid = hctx->queue_num;
+> 	bool notify = false;
+> 	blk_status_t status;
+>-- 
+>2.25.1
+>
+
+The patch LGTM.
+
+With the Fixes tag added:
+
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
