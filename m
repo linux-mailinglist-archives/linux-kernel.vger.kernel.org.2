@@ -2,96 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52354454D70
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:51:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A58454D72
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:52:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240240AbhKQSyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 13:54:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240242AbhKQSyl (ORCPT
+        id S240245AbhKQSzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 13:55:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:21208 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240235AbhKQSy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 13:54:41 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78599C061570;
-        Wed, 17 Nov 2021 10:51:42 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id z6so3515429pfe.7;
-        Wed, 17 Nov 2021 10:51:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ymJQcJRqf96Ow2zei4DBcVd1WDXXoNRjGtKMHrKgyCo=;
-        b=gnk0mZKgSm7QfrIaXSU0G0tO4ESnMmu/pavEGl0r7MlUElajM1NfYGU1ROQs+03vvO
-         FIvU5T6CZRfsVxxvMnfZInSfGCMoGaczdWcrAhMaHldzuh3BHfvhzieXUOEY4q9AOAm4
-         BQv0IIVhAGccbiCVS4BNL8K4mTfWUNliY6FgCmLoOqn4+h89Fed/j6lXYI5yqf0Bivx+
-         gVZ5cvJ9O1u4QWksoWn+77PKR5IjWpQfjuIehKRxF/QPd5Kf79umdInAkwCBZHwGc8bD
-         1WptEZXbk5AOieMUTKgGDMXsyaeHWPGYF8cp8J8HbYDWfITqDvVU+BqwARVnf++oYnXs
-         xmFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ymJQcJRqf96Ow2zei4DBcVd1WDXXoNRjGtKMHrKgyCo=;
-        b=wjwYa4cIUP1ukphA9f3KM466+Ey//MNpmyGilYZU3+RvzLEX5X4wEIrQRh2XJZC8N8
-         JxUHRa569s+BP0Ew/3FdHolHKS/jgYZneLuDs7kl3Rl4Bh3NcPYKfVVSsvz9//kYCxuW
-         CM3Wq3XrOgVRDPl8z5aF0cKbKsA+H+oyy1QoJ9qgRt3lmlFG0y7HrEz/xhYEpBiL6jgf
-         BMirr2ha8WK/seZ5iX6YEXW/5TO2jUU8zv73ilb1ry3N7id83iBQmqHVnBPLwLF/kboX
-         NqKRU/lZYEcL3dQMy+AUBPSo9X0i7ZYiBUcwJDuSrSOU6t/ZOXHb/xyEGTNehbwzqAsN
-         wWGw==
-X-Gm-Message-State: AOAM532tgu4wIS4CgeSwd8jB5rXftMWZB22OtmoN3uOtcVZVfvXsf9V7
-        a/tIHf/qXOC1TsPK0Tlq0npHe50D9Jw=
-X-Google-Smtp-Source: ABdhPJwW87mY+vwP8XuatUOKD9cIRbP/+YXWu/v4p4fAfNeDaebzBGFNkroMgOnk7yX8Zbe2EWamlQ==
-X-Received: by 2002:a63:5f54:: with SMTP id t81mr6685304pgb.247.1637175101596;
-        Wed, 17 Nov 2021 10:51:41 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id fs21sm5040033pjb.1.2021.11.17.10.51.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 10:51:40 -0800 (PST)
-Subject: Re: [PATCH 5.15 000/923] 5.15.3-rc3 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20211117101657.463560063@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <ca8761e9-63bc-cec2-3b0a-607c22fc22fb@gmail.com>
-Date:   Wed, 17 Nov 2021 10:51:38 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 17 Nov 2021 13:54:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637175119;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=13nKyu9G/DhMBQpI/9h2fo3VMA3cZcEqmTrdMC+6PKA=;
+        b=FBRCjX2tbGZFL/cc6+BUIvCjEmPNiEUHwM0eOFQ7FaihNdIrefHwZ401j5YMSU9PYTXAEJ
+        EB/dQNTp/Tfb0tgg5kAufTBsiKH/3OMwvzWODBXYFkGaTldvyh7EIWqzbISto1odD6jOIv
+        c6aZdryqlxKb69nYJ6B0il8ASxUi2vg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-289-P4kNV0CiM4-zyI5N1sggFQ-1; Wed, 17 Nov 2021 13:51:54 -0500
+X-MC-Unique: P4kNV0CiM4-zyI5N1sggFQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2B6D1A40C3;
+        Wed, 17 Nov 2021 18:51:53 +0000 (UTC)
+Received: from [10.22.33.89] (unknown [10.22.33.89])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2813A1007625;
+        Wed, 17 Nov 2021 18:51:52 +0000 (UTC)
+Message-ID: <7cb5ab62-21ea-f649-2009-38b8c1ff283a@redhat.com>
+Date:   Wed, 17 Nov 2021 13:51:51 -0500
 MIME-Version: 1.0
-In-Reply-To: <20211117101657.463560063@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 0/4] clocksource: Avoid incorrect hpet fallback
 Content-Language: en-US
+To:     paulmck@kernel.org
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Feng Tang <feng.tang@intel.com>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Cassio Neri <cassio.neri@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+References: <20211116234426.837799-1-longman@redhat.com>
+ <20211117165426.GG641268@paulmck-ThinkPad-P17-Gen-1>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20211117165426.GG641268@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/21 2:19 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.3 release.
-> There are 923 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 19 Nov 2021 10:14:52 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.3-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On 11/17/21 11:54, Paul E. McKenney wrote:
+> On Tue, Nov 16, 2021 at 06:44:22PM -0500, Waiman Long wrote:
+> A few questions:
+>
+> 1.	Once you have all the patches in place, is the increase in
+> 	WATCHDOG_MAX_SKEW from 50us to 100us necessary?
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+I think so. Using Feng's reproducer, I was able to cause a hpet-hpet 
+delay of more than 90us on a 1-socket system. With a default 50us 
+WATCHDOG_MAX_SKEW, the chance of a warning showing up will be much 
+higher. Trying to minimize the chance that a warning may appear is my 
+primary reason to increase WATCHDOG_MAX_SKEW.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+>
+> 2.	The reason for having cs->uncertainty_margin set to
+> 	2*WATCHDOG_MAX_SKEW was to allow for worst-case skew from both
+> 	the previous and the current reading.  Are you sure that
+> 	dropping back to WATCHDOG_MAX_SKEW avoids false positives?
+I can remove the hunk of changing cs->uncertainty_margin. It is critical 
+for this patch.
+>
+> 3.	In patch 3/4, shouldn't clock_skew_skip be a field in the
+> 	clocksource structure rather than a global?  If a system had
+> 	multiple clocks being checked, wouldn't having this as a field
+> 	make things more predictable?  Or am I missing something subtle
+> 	here?
+
+Yes, you are right. I should have put it into clocksource structure. I 
+will make the change in v3.
+
+
+>
+> 4.	These are intended to replace this commit in -rcu, correct?
+>
+> 	9d5739316f36 ("clocksource: Forgive repeated long-latency watchdog clocksource reads")
+>
+> 	But not this commit, correct?
+>
+> 	5444fb39fd49 ("torture: Test splatting for delay-ridden clocksources")
+Yes, that is my intention.
+> And would you like me to queue these, or would you rather send them
+> separately?  (Either way works for me, just please let me know.)
+
+I don't have a preference either way. If you are willing to queue these, 
+it will be great too.
+
+Cheers,
+Longman
+
