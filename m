@@ -2,78 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7489445483E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5AA454843
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:12:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238244AbhKQOMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 09:12:52 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:50778 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234227AbhKQOMv (ORCPT
+        id S237455AbhKQOPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 09:15:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231694AbhKQOPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 09:12:51 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id 64AD81F46217
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637158191; bh=8jGdqijZ7q4/yAvbc1vyzx8rEXr6SdlAgU/wrMeMGyU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ZYUm3dSpuLo3m4ldKc6vQ+dw9LItM0E+Zh+WN9cwPB4dQlUrVqLKkJ/8mhCY1kUhQ
-         n0ahswTWMYi9xPzKycAWKux6bysNN1fATzi79F897ZXUILZjeABg/2F2Aml+i/V1uv
-         OFJ1ldFCD70lK+fps9CNQ722WSvCuG+fRJ04lEN6NCwSRvexCG46BnHniFzOhmEIwC
-         4DxirUboKEloDChAb0lw9pUGgTc7wurQXJ5CdRtE2U6hUdmdPT6GmKnsnLouhnEVdA
-         nfGnuGAHtF65PN2FTGQUWzAX5vYJbyPwg7TxbQPFGhb3+FMdr9aEQN6XWrYzplopJy
-         cJbQhWEYUuCzQ==
-Subject: Re: [PATCH] drm/msm/devfreq: Insert missing null check in
- msm_devfreq_idle
-To:     Marijn Suijten <marijn.suijten@somainline.org>,
-        phone-devel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20211117111134.315709-1-marijn.suijten@somainline.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Message-ID: <969a8521-4eff-ddd2-4971-4990a7ba0fef@collabora.com>
-Date:   Wed, 17 Nov 2021 15:09:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 17 Nov 2021 09:15:23 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 484C3C061570;
+        Wed, 17 Nov 2021 06:12:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=20OrWhq7ShdPRxUZdRVpu6ZrLfh0oU9gKnKyrbNbpDs=;
+        t=1637158345; x=1638367945; b=VE0t7WuIpo9ea0+huvCZYlnb0p3Vks+I9T+KRZq4VmF6ljf
+        qUSwBWu9RepTgHYba7XUyRxMPc0yL1umYX8hchvga5pmv+N4NjhJHhqmVvL8RDGeHo1WzraO46qXq
+        V98snoBBuE2fW182S6yz27yYkEAYvSB6Jm1dXATqyEu1HsQM4sRSshz0l/VUVOdgVs8J5Kct6BeoO
+        LwYGkjnZalZ9khwvhIK3XQStsM/2ubTeU6CEfHVeL8mVvlg4re+lZWFmcrafyBVamdyStrCDtqaZ3
+        980+vGrOJIQkQUwNZzsCPdm9PocxWqaJJNiH52H3GDBEK8lLfmbl7fe4ZLYVa0TQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.95)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1mnLfe-00GXu4-Mh;
+        Wed, 17 Nov 2021 15:12:18 +0100
+Message-ID: <5331e942ff28bb191d62bb403b03ceb7d750856c.camel@sipsolutions.net>
+Subject: Re: [PATCH v2] PCI: Reinstate "PCI: Coalesce host bridge contiguous
+ apertures"
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, bhelgaas@google.com
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Wed, 17 Nov 2021 15:12:17 +0100
+In-Reply-To: <20210713125007.1260304-1-kai.heng.feng@canonical.com>
+References: <20210713075726.1232938-1-kai.heng.feng@canonical.com>
+         <20210713125007.1260304-1-kai.heng.feng@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
 MIME-Version: 1.0
-In-Reply-To: <20211117111134.315709-1-marijn.suijten@somainline.org>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 17/11/21 12:11, Marijn Suijten ha scritto:
-> msm_devfreq_init only initializes the idle_work hrtimer when it succeeds
-> to create a devfreq instance (devfreq support is optional), yet
-> msm_devfreq_idle is called unconditionally from retire_submit and queues
-> work on it.  We're seeing:
-> 
->      [    2.005265] adreno 1c00000.gpu: [drm:msm_devfreq_init] *ERROR* Couldn't initialize GPU devfreq
-> 
-> Followed by a pagefault in:
-> 
->      [   16.650316] pc : hrtimer_start_range_ns+0x64/0x360
->      [   16.650336] lr : msm_hrtimer_queue_work+0x18/0x2c
-> 
-> Moments later.  Just like msm_devfreq_active, check if the devfreq
-> instance is not NULL before proceeding.
-> 
-> Fixes: 658f4c829688 ("drm/msm/devfreq: Add 1ms delay before clamping freq")
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+Hi!
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+So this patch landed now ... :)
+
+> +	/* Coalesce contiguous windows */
+> +	resource_list_for_each_entry_safe(window, n, &resources) {
+> +		if (list_is_last(&window->node, &resources))
+> +			break;
+> +
+> +		next = list_next_entry(window, node);
+> +		offset = window->offset;
+> +		res = window->res;
+> +		next_offset = next->offset;
+> +		next_res = next->res;
+> +
+> +		if (res->flags != next_res->flags || offset != next_offset)
+> +			continue;
+> +
+> +		if (res->end + 1 == next_res->start) {
+> +			next_res->start = res->start;
+> +			res->flags = res->start = res->end = 0;
+> +		}
+> +	}
+> 
+
+Maybe this was already a problem before - but I had a stupid thing in
+arch/um/drivers/virt-pci.c (busn_resource has start == end == 0), and
+your changes here caused that resource to be dropped off the list.
+
+Now this wouldn't be a problem, but we add it using pci_add_resource()
+and then that does a memory allocation, but you don't free it here? I'm
+not sure it'd even be safe to free it here and I'll just set
+busn_resource to have end==1 instead (it's all kind of virtual).
+
+But I still wanted to ask if this might be a problem here for others.
+
+johannes
