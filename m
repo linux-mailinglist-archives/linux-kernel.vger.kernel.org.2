@@ -2,224 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B96645467E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 13:39:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C75D945467D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 13:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235250AbhKQMlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 07:41:40 -0500
-Received: from mga06.intel.com ([134.134.136.31]:48388 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233191AbhKQMlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234493AbhKQMlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 17 Nov 2021 07:41:39 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="294754472"
-X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
-   d="scan'208";a="294754472"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 04:38:40 -0800
-X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
-   d="scan'208";a="604717454"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 04:38:38 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mnKCs-007n5y-F1;
-        Wed, 17 Nov 2021 14:38:30 +0200
-Date:   Wed, 17 Nov 2021 14:38:30 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>, sakari.ailus@linux.intel.com
-Cc:     Daniel Scally <djrscally@gmail.com>,
-        kernel test robot <oliver.sang@intel.com>, lkp@lists.01.org,
-        lkp@intel.com, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, rafael@kernel.org
-Subject: Re: [device property] 995fe757ec:
- BUG:kernel_NULL_pointer_dereference,address
-Message-ID: <YZT3xvN9x9KDqoN7@smile.fi.intel.com>
-References: <20211116074104.GC32102@xsang-OptiPlex-9020>
- <f54546b1-b0dc-c2bc-3a5f-bcdaf35297fc@redhat.com>
- <YZPjf1GfZHR2ZjpD@smile.fi.intel.com>
- <606a6bf2-e971-ddfe-74b0-cbc2b76935ba@gmail.com>
- <e465d9b9-4d95-72a0-7a34-6893ddd78daa@redhat.com>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229563AbhKQMli (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 07:41:38 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A56C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 04:38:40 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id b15so10472564edd.7
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 04:38:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=CASHoMY220WbIMoqoi4v2Ed/uxuEbP5ROvnZnECwp24=;
+        b=o0R0HtfUre7N57qD/cxBKObsxf5O10Svg+K909vsgtJOSfQR4i3Y2qhGdCMUsQ8gWT
+         EFyphr4wh+KRwmN1HWI+vJRlhiA6fWqfklixvszAo+In0yU3cNBWI31+d/JUjJmkgRYp
+         anlyh6j/vUwp7H4FSnKbehGiCkE/2A+hK6rSh1B7p0wZfcZA7a+Ux7hfN3Ojgf2DCmBN
+         lbB0O7gxqxworcu1Z+4/MI+6dQVgNGF9qeF7Ra8TxaGmH7EHorpUpIvRRb/LMJfAu10T
+         edTOP4Xsr+Pe2chyoXFSOgLTBPsyjVyG0O1G1DScqRLKOD/+wcISFdmF8LWPZBQHz1ae
+         KIHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=CASHoMY220WbIMoqoi4v2Ed/uxuEbP5ROvnZnECwp24=;
+        b=3RyAwNoH10WPrkUNXatY7GtUuSpPVATStjLaxi3IMi8PN8qzTQwnmmVBQpX1ESTq45
+         32m6+V70n2ZT1Ykzk6eYAzOghqqByFRj3Or6QbaNC9cV2kaWMVAES8yRyjhRwYxUDmWv
+         ngFiR97NkCFUwnYABQsu3rNeQngadTB6y1BpjsoY771dBHK2+JhpveSasqZDOsKXnGFL
+         vZrCtCzwJBb+Dv0PU3hO6AKOI68MOB1cKlqoP78NttJeycvnPXurYCjLexmQ+oVe5xML
+         FgkYCt0H8OpQ5CseCVH26RYCryb+HIBy6owb9yEI/7jow24rrVYgQ1nGJJXe9ML/zySw
+         51YA==
+X-Gm-Message-State: AOAM530EglYqSnQdkeNXyAJY7KQQiyMth06lJmMNzhEeNDdVv6QleYt9
+        fla6MCchjLagGe6IQLtAnys=
+X-Google-Smtp-Source: ABdhPJwVkMHrW9m7Ar2Dbr/XcqEhtuXT8GfqYGYoTCPvmo8RQNdgIhdP56ZKY7FynR3pg/CIrMbC7g==
+X-Received: by 2002:a17:906:80b:: with SMTP id e11mr21863936ejd.20.1637152718372;
+        Wed, 17 Nov 2021 04:38:38 -0800 (PST)
+Received: from localhost.localdomain (host-82-61-38-115.retail.telecomitalia.it. [82.61.38.115])
+        by smtp.gmail.com with ESMTPSA id sc27sm10471143ejc.125.2021.11.17.04.38.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 04:38:37 -0800 (PST)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        David Sterba <dsterba@suse.com>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        nick black <dankamongmen@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com,
+        Marco Elver <elver@google.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Subject: Re: [PATCH] vt: Fix sleeping functions called from atomic context
+Date:   Wed, 17 Nov 2021 13:38:33 +0100
+Message-ID: <116969909.G7WiQ7h0bV@localhost.localdomain>
+In-Reply-To: <YZTDY/h8HcEkq7mO@kroah.com>
+References: <20211116144937.19035-1-fmdefrancesco@gmail.com> <1851530.LmWsTuDv9j@localhost.localdomain> <YZTDY/h8HcEkq7mO@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e465d9b9-4d95-72a0-7a34-6893ddd78daa@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just realized we are discussing this w/o Sakari involved.
-
-On Wed, Nov 17, 2021 at 12:54:51PM +0100, Hans de Goede wrote:
-> On 11/17/21 01:10, Daniel Scally wrote:
-> > On 16/11/2021 16:59, Andy Shevchenko wrote:
-> >> On Tue, Nov 16, 2021 at 03:55:00PM +0100, Hans de Goede wrote:
-> >>> On 11/16/21 08:41, kernel test robot wrote:
-> >>>> FYI, we noticed the following commit (built with gcc-9):
-> >>>>
-> >>>> commit: 995fe757ecaeac44e023458af64d27655f9dbf73 ("[PATCH] device property: Check fwnode->secondary when finding properties")
-> >>>> url: https://github.com/0day-ci/linux/commits/Daniel-Scally/device-property-Check-fwnode-secondary-when-finding-properties/20211114-044259
-> >>>> base: https://git.kernel.org/cgit/linux/kernel/git/gregkh/driver-core.git b5013d084e03e82ceeab4db8ae8ceeaebe76b0eb
-> >>>> patch link: https://lore.kernel.org/lkml/20211113204141.520924-1-djrscally@gmail.com
-> >>>>
-> >>>> in testcase: boot
-> >>>>
-> >>>> on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 4G
-> >>>>
-> >>>> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> >>>>
-> >>>>
-> >>>> +---------------------------------------------+------------+------------+
-> >>>> |                                             | b5013d084e | 995fe757ec |
-> >>>> +---------------------------------------------+------------+------------+
-> >>>> | boot_successes                              | 23         | 0          |
-> >>>> | boot_failures                               | 0          | 22         |
-> >>>> | BUG:kernel_NULL_pointer_dereference,address | 0          | 22         |
-> >>>> | Oops:#[##]                                  | 0          | 22         |
-> >>>> | EIP:fwnode_property_get_reference_args      | 0          | 22         |
-> >>>> | Kernel_panic-not_syncing:Fatal_exception    | 0          | 22         |
-> >>>> +---------------------------------------------+------------+------------+
-> >>>>
-> >>>>
-> >>>> If you fix the issue, kindly add following tag
-> >>>> Reported-by: kernel test robot <oliver.sang@intel.com>
-> >>> Ok, so this patch likely needs a v2 which changes the if to this:
-> >>>
-> >>>         if (ret == -EINVAL && !IS_ERR_OR_NULL(fwnode) &&
-> >>>             !IS_ERR_OR_NULL(fwnode->secondary))
-> >>>                 ret = fwnode_call_int_op(fwnode->secondary, get_reference_args,
-> >>>                                          prop, nargs_prop, nargs, index, args);
-> >>>
-> >>>
-> >>> So that we check fwnode before dereferencing it, note this also changes the
-> >>> (ret < 0) check to (ret == -EINVAL), this makes the secondary node handling
-> >>> identical to fwnode_property_read_int_array() and
-> >>> fwnode_property_read_string_array()
-> >>>
-> >>> Danny, can you send a v2 with this change please?
-> >> Hmm... So, you are suggesting that we need to check it only for EINVAL and
-> >> ENOENT in this case the one that brings us to the NULL pointer dereference.
-> >> But I don't understand what's the difference here.
+On Wednesday, November 17, 2021 9:54:59 AM CET Greg Kroah-Hartman wrote:
+> On Wed, Nov 17, 2021 at 09:23:45AM +0100, Fabio M. De Francesco wrote:
+> > On Tuesday, November 16, 2021 5:59:24 PM CET Greg Kroah-Hartman wrote:
+> > > On Tue, Nov 16, 2021 at 04:35:07PM +0100, Fabio M. De Francesco wrote:
+> > > > On Tuesday, November 16, 2021 3:58:44 PM CET Greg Kroah-Hartman 
+wrote:
+> > > > > On Tue, Nov 16, 2021 at 03:49:37PM +0100, Fabio M. De Francesco 
+wrote:
+> > > > > > Fix two sleeping functions called from atomic context by doing 
+> > immediate
+> > > > > > return to the caller if !preemptible() evaluates 'true'. Remove 
+two
+> > > > > > in_interrupt() tests because they are not suited for being used 
+here.
+> > > > > > 
+> > > > > > Since functions do_con_write() and con_flush_chars() might sleep 
+in
+> > > > > > console_lock(), it must be assured that they are never executed 
+in
+> > > > > > atomic contexts.
+> > > > > > 
+> > > > > > This issue is reported by Syzbot which notices that they are 
+executed
+> > > > > > while holding spinlocks and with interrupts disabled. Actually 
+Syzbot
+> > > > > > emits a first report and then, after fixing do_con_write(), a 
+second
+> > > > > > report for the same problem in con_flush_chars() because these 
+> > functions
+> > > > > > are called one after the other by con_write().
+> > > > > > 
+> > > > > > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> > > > > > Reported-by: 
+syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com
+> > > > > > Suggested-by: Marco Elver <elver@google.com>
+> > > > > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > > > > > ---
+> > > > > >  drivers/tty/vt/vt.c | 4 ++--
+> > > > > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+> > > > > > index 7359c3e80d63..508f8a56d361 100644
+> > > > > > --- a/drivers/tty/vt/vt.c
+> > > > > > +++ b/drivers/tty/vt/vt.c
+> > > > > > @@ -2902,7 +2902,7 @@ static int do_con_write(struct tty_struct 
+*tty, 
+> > > > const unsigned char *buf, int co
+> > > > > >  	struct vt_notifier_param param;
+> > > > > >  	bool rescan;
+> > > > > >  
+> > > > > > -	if (in_interrupt())
+> > > > > > +	if (!preemptible())
+> > > > > >  		return count;
+> > > > > 
+> > > > > Very odd, what code is calling these functions to trigger this 
+check?
+> > > > 
+> > > > This is the call trace reported by Syzbot (https://
+syzkaller.appspot.com/
+> > bug?
+> > > > id=fe5a4d5a2482bd73064db5de5d28e024f1e2a387):
+> > > > 
+> > > > Call Trace:
+> > > >  <TASK>
+> > > >  __dump_stack lib/dump_stack.c:88 [inline]
+> > > >  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+> > > >  __might_resched.cold+0x222/0x26b kernel/sched/core.c:9539
+> > > >  console_lock+0x17/0x80 kernel/printk/printk.c:2522
+> > > >  do_con_write+0x10f/0x1e40 drivers/tty/vt/vt.c:2908
+> > > >  con_write+0x21/0x40 drivers/tty/vt/vt.c:3295
+> > > >  n_hdlc_send_frames+0x24b/0x490 drivers/tty/n_hdlc.c:290
+> > > >  tty_wakeup+0xe1/0x120 drivers/tty/tty_io.c:534
+> > > >  __start_tty drivers/tty/tty_io.c:806 [inline]
+> > > >  __start_tty+0xfb/0x130 drivers/tty/tty_io.c:799
+> > > >  n_tty_ioctl_helper+0x299/0x2d0 drivers/tty/tty_ioctl.c:880
+> > > > 
+> > > > 	^^^^^^^^^^
+> > > > n_tty_ioctl_helper() disabled interrupts via spin_lock_irq(&tty-
+> > >flow.lock).
+> > > > 
+> > > >  n_hdlc_tty_ioctl+0xd2/0x340 drivers/tty/n_hdlc.c:633
+> > > >  tty_ioctl+0xc69/0x1670 drivers/tty/tty_io.c:2814
+> > > >  vfs_ioctl fs/ioctl.c:51 [inline]
+> > > >  __do_sys_ioctl fs/ioctl.c:874 [inline]
+> > > >  __se_sys_ioctl fs/ioctl.c:860 [inline]
+> > > >  __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
+> > > >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> > > >  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+> > > >  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > > > 
+> > > > > Shouldn't the caller be fixed instead?
+> > > > 
+> > > > Maybe that the caller has no need to disable IRQs, but I cannot yet 
+> > answer to 
+> > > > this particular question.
+> > > > 
+> > > > > What changed to suddenly cause this to show up?
+> > > > 
+> > > > Commit c545b66c6922 ("tty: Serialize tcflow() with other tty flow 
+control 
+> > > > changes") introduced a call to spin_lock_irq() for command "TCOON", 
+just 
+> > > > before calling __start_tty().
+> > > 
+> > > That commit happened in 2014.  Why is this suddenly an issue now that 
+no
+> > > one ever saw before?
 > > 
+> > Hi Greg,
 > > 
-> > Sticking point; the ACPI version of .get_reference_args() returns
-> > -ENOENT (converted from -EINVAL [1]) if the property you ask for doesn't
-> > exist against that fwnode, which unless I'm missing something means this
-> > won't work in our use case. This confused me for a while because we
-> > definitely call fwnode_property_read_int_array() in sensor driver probes
-> > through v4l2_fwnode_endpoint_alloc_parse(), but it turns out the ACPI
-> > version of _that_ operation has no matching conversion of the error
-> > code, so when that fails to find the property it sends back -EINVAL and
-> > so the form that exists in fwnode_property_read_int_array() currently
-> > works fine.
+> > I have just been informed by Pavel Skripkin (who at this moment cannot 
+> > directly write to LKML) that this bug has been reported at least other 
+two 
+> > times. 
 > > 
+> > We cannot say why nobody has ever addressed this issue before.
 > > 
-> > We could align them all to if (ret < 0 && !IS_ERR_OR_NULL(fwnode) &&
-> > !IS_ERR_OR_NULL(fwnode->secondary)). This is probably my preferred
-> > option, because I can't really see why we'd only want to do the
-> > secondary check on -EINVAL anyway - but maybe I miss something here.
-> > Alternatively we can take Hans suggestion so they all match the existing
-> > code, but this means we have to handle that conversion first - I
-> > couldn't see from a cursory look that any of the direct callers check
-> > the value of the return beyond "is it 0?", but of course it could be
-> > done somewhere in calls to the fwnode->ops->get_reference_args()
-> > callback instead.
+> > Please read the following reports.
 > > 
-> > 
-> > Thoughts?
+> > https://syzkaller.appspot.com/bug?
+id=9ed44c22919e3cd2c71907b963fb048ac1115073
+> > https://syzkaller.appspot.com/bug?
+id=e806305a3a65a0bb2f1be7e672819a079d558016
 > 
-> I missed that just checking for -EINVAL will not work for the ipu3 case
-> (I did not test) in that case I think using "ret < 0" as check instead
-> is probably fine for this patch.
+> Great, you have a reproducer, so you should be able to duplicate this
+> locally to figure out what is really happening here.
 > 
-> As for modifying the existing 2 code paths, IMHO it does make sense 
-> to try and preserve the error code (and not try the secondary fwnode)
-> when the error is an error other then the one indicating the property
-> is not there.
+> Good luck!
 > 
-> So keeping those as -EINVAL is probably best and maybe for the
-> the fwnode_find_reference instead of (ret < 0) use:
-> (ret == -EINVAL || ret == -ENOENT)  ?
+> greg k-h
+> 
+Hi Greg,
+
+As you asked for, I've run the reproducer (as root) while "trace-cmd record -
+g n_tty_ioctl_helper -p function_graph sleep 15" was in execution.
+
+The call trace from n_tty_ioctl_helper() to console_lock() has been recorded 
+and for sure console_lock() is called while holding a spinlock and with IRQs 
+disabled via spin_lock_irq().
+
+The following is the relevant part of "trace-cmd report"...
+
+repro-27397 [004] 18814.535029: funcgraph_entry:                   |  
+n_tty_ioctl_helper() {
+           repro-27397 [004] 18814.535030: funcgraph_entry:        0.676 us   
+|    tty_check_change();
+           repro-27397 [004] 18814.535032: funcgraph_entry:        0.761 us   
+|    _raw_spin_lock_irq();
+           repro-27397 [004] 18814.535033: funcgraph_entry:                   
+|    __start_tty() {
+           repro-27397 [004] 18814.535034: funcgraph_entry:                   
+|      con_start() {
+
+---- cut not relevant code ----
+
+repro-27397 [004] 18814.535088: funcgraph_entry:                   |            
+con_write() {
+           repro-27397 [004] 18814.535088: funcgraph_entry:                   
+|              do_con_write() {
+           repro-27397 [004] 18814.535088: funcgraph_entry:                   
+|                console_lock() {
+           repro-27397 [004] 18814.535089: funcgraph_entry:                   
+|                  __cond_resched() {
+
+---- cut not relevant code ----
+
+repro-27397 [004] 18814.571839: funcgraph_entry:        0.641 us   |                  
+__printk_safe_exit();
+           repro-27397 [004] 18814.571841: funcgraph_exit:       + 18.902 us  
+|                }
+           repro-27397 [004] 18814.571842: funcgraph_exit:       + 31.651 us  
+|              }
+           repro-27397 [004] 18814.571843: funcgraph_exit:       # 36754.817 
+us |            }
+
+Please notice that "#36754.817 us" when finally console_lock() returned.
+
+May very well be that I've overlooked something (as you know I'm a newbie and 
+all this is quite new for me :)
+
+As I wrote (please read it again above) for now I confirm that commit 
+c545b66c6922 ("tty: Serialize tcflow() with other tty flow control changes") 
+introduced a call to spin_lock_irq() for command "TCOON". 
+
+However I have to double check it. 
+
+If it is confirmed, I will reply soon to Tetsuo's message because he says 
+that the relevant commit should be a different one. 
+
+However, what is relevant here is that for sure console_lock() is called in 
+atomic context and that the Syzbot report is not a false positive. Am I 
+missing something?
+
+About the possible fixes I only see two potential solutions:
+
+1) If we need for real spin_lock_irq() in n_tty_ioctl_helper() we should test 
+the context before calling console_lock() (it is annotated with 
+might_sleep()).
+
+2) If we don't need to disable IRQs we should fix n_tty_ioctl_helper().
+
+I'm not able to go deeper and understand whether or not that spin_lock_irq() 
+is an overkill and if it can be converted to a different kind of locking API.
+
+I'd appreciate feedback from you and other experienced developers.
+
+Thank you very much,
+
+Fabio M. De  Francesco
 
 
-Last time Sakari did a great job of error code alignments between DT, ACPI,
-and SW nodes. Not sure why the above slipped through the fingers.
 
-> >>>> [   17.327851][    T7] BUG: kernel NULL pointer dereference, address: 00000000
-> >>>> [   17.329758][    T7] #PF: supervisor read access in kernel mode
-> >>>> [   17.331371][    T7] #PF: error_code(0x0000) - not-present page
-> >>>> [   17.332992][    T7] *pde = 00000000
-> >>>> [   17.334107][    T7] Oops: 0000 [#1] PREEMPT
-> >>>> [   17.335310][    T7] CPU: 0 PID: 7 Comm: kworker/u2:0 Tainted: G S                5.15.0-11191-g995fe757ecae #1
-> >>>> [   17.338036][    T7] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-> >>>> [   17.340544][    T7] Workqueue: events_unbound deferred_probe_work_func
-> >>>> [ 17.342291][ T7] EIP: fwnode_property_get_reference_args (drivers/base/property.c:486 (discriminator 1)) 
-> >>>> [ 17.344051][ T7] Code: 8b 45 0c 50 8b 45 08 50 89 d8 89 55 f4 ff d6 83 c4 0c 89 c6 85 c0 78 55 8d 65 f8 89 f0 5b 5e 5d c3 8d 74 26 00 be fa ff ff ff <8b> 03 85 c0 74 e8 3d 00 f0 ff ff 77 e1 8b 58 04 85 db 74 37 8b 5b
-> >>>> All code
-> >>>> ========
-> >>>>    0:	8b 45 0c             	mov    0xc(%rbp),%eax
-> >>>>    3:	50                   	push   %rax
-> >>>>    4:	8b 45 08             	mov    0x8(%rbp),%eax
-> >>>>    7:	50                   	push   %rax
-> >>>>    8:	89 d8                	mov    %ebx,%eax
-> >>>>    a:	89 55 f4             	mov    %edx,-0xc(%rbp)
-> >>>>    d:	ff d6                	callq  *%rsi
-> >>>>    f:	83 c4 0c             	add    $0xc,%esp
-> >>>>   12:	89 c6                	mov    %eax,%esi
-> >>>>   14:	85 c0                	test   %eax,%eax
-> >>>>   16:	78 55                	js     0x6d
-> >>>>   18:	8d 65 f8             	lea    -0x8(%rbp),%esp
-> >>>>   1b:	89 f0                	mov    %esi,%eax
-> >>>>   1d:	5b                   	pop    %rbx
-> >>>>   1e:	5e                   	pop    %rsi
-> >>>>   1f:	5d                   	pop    %rbp
-> >>>>   20:	c3                   	retq   
-> >>>>   21:	8d 74 26 00          	lea    0x0(%rsi,%riz,1),%esi
-> >>>>   25:	be fa ff ff ff       	mov    $0xfffffffa,%esi
-> >>>>   2a:*	8b 03                	mov    (%rbx),%eax		<-- trapping instruction
-> >>>>   2c:	85 c0                	test   %eax,%eax
-> >>>>   2e:	74 e8                	je     0x18
-> >>>>   30:	3d 00 f0 ff ff       	cmp    $0xfffff000,%eax
-> >>>>   35:	77 e1                	ja     0x18
-> >>>>   37:	8b 58 04             	mov    0x4(%rax),%ebx
-> >>>>   3a:	85 db                	test   %ebx,%ebx
-> >>>>   3c:	74 37                	je     0x75
-> >>>>   3e:	8b                   	.byte 0x8b
-> >>>>   3f:	5b                   	pop    %rbx
-> >>>>
-> >>>> Code starting with the faulting instruction
-> >>>> ===========================================
-> >>>>    0:	8b 03                	mov    (%rbx),%eax
-> >>>>    2:	85 c0                	test   %eax,%eax
-> >>>>    4:	74 e8                	je     0xffffffffffffffee
-> >>>>    6:	3d 00 f0 ff ff       	cmp    $0xfffff000,%eax
-> >>>>    b:	77 e1                	ja     0xffffffffffffffee
-> >>>>    d:	8b 58 04             	mov    0x4(%rax),%ebx
-> >>>>   10:	85 db                	test   %ebx,%ebx
-> >>>>   12:	74 37                	je     0x4b
-> >>>>   14:	8b                   	.byte 0x8b
-> >>>>   15:	5b                   	pop    %rbx
-> >>>> [   17.350847][    T7] EAX: 00000000 EBX: 00000000 ECX: 00000000 EDX: c37cd6d8
-> >>>> [   17.352783][    T7] ESI: ffffffea EDI: f5b5a400 EBP: c4cffd24 ESP: c4cffd14
-> >>>> [   17.354673][    T7] DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 0068 EFLAGS: 00010246
-> >>>> [   17.362075][    T7] CR0: 80050033 CR2: 00000000 CR3: 04206000 CR4: 00000690
-> >>>> [   17.363993][    T7] Call Trace:
-> >>>> [ 17.365018][ T7] fwnode_find_reference (drivers/base/property.c:514) 
-> >>>> [ 17.366430][ T7] ? __this_cpu_preempt_check (lib/smp_processor_id.c:67) 
-> >>>> [ 17.367825][ T7] ? lockdep_init_map_type (kernel/locking/lockdep.c:4813) 
-> >>>> [ 17.369325][ T7] ? phylink_run_resolve+0x20/0x20 
-> >>>> [ 17.370897][ T7] ? init_timer_key (kernel/time/timer.c:818) 
-> >>>> [ 17.372228][ T7] fwnode_get_phy_node (drivers/net/phy/phy_device.c:2986) 
-> >>>> [ 17.373574][ T7] phylink_fwnode_phy_connect (drivers/net/phy/phylink.c:1180 drivers/net/phy/phylink.c:1166) 
-> >>>> [ 17.375014][ T7] phylink_of_phy_connect (drivers/net/phy/phylink.c:1152) 
-> >>>> [ 17.376373][ T7] dsa_slave_create (net/dsa/slave.c:1889 net/dsa/slave.c:2036) 
-> >>>> [ 17.377765][ T7] dsa_tree_setup_switches (net/dsa/dsa2.c:477 net/dsa/dsa2.c:977) 
-> >>>> [ 17.379282][ T7] dsa_register_switch (net/dsa/dsa2.c:1065 net/dsa/dsa2.c:1565 net/dsa/dsa2.c:1579) 
-> >>>> [ 17.380762][ T7] dsa_loop_drv_probe (drivers/net/dsa/dsa_loop.c:333) 
-> >>>> [ 17.382137][ T7] mdio_probe (drivers/net/phy/mdio_device.c:157) 
-
--- 
-With Best Regards,
-Andy Shevchenko
 
 
