@@ -2,117 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5793E454BEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:25:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA34454BF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:26:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237735AbhKQR2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 12:28:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbhKQR2p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 12:28:45 -0500
-Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 681E4C061570;
-        Wed, 17 Nov 2021 09:25:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-        s=42; h=Message-ID:Cc:To:From:Date;
-        bh=F+SAy1fSwo/1UHb21eYJQXpRzry7kLwoyhF6lnmVgT8=; b=ichtO4UKbCgnWjXKeOn77AH9e5
-        575oB77g6fC/qjmlvzfoBE1xbdkKGVne2WRkPlxrzrNWzTsAURXAcX4IjG1WxPpO4s5hP4jb3F78P
-        d4ivkFmLlmV4XDmAb5txmKFKFyNiBL0QYOvNVgm69oNGNV4uK0KY1gNSxx20p/9CmVHPWMDgCKmR1
-        nXGdemvIA/jHm3a+ZGeTxxHnoTZxfrsfLYVvlFYpzmkVfAsXICwUeOOJfnRv9wlknVHg6A/tYGS1p
-        6TeDC21wMkMBApXMgnf2G46Lj4WObbqA8y+SsI3fM10CQdGpJzJ7VuWYJNgcW4yYXls10sArZWxHg
-        gZwFirqfskQ9e6NE2wfZczfUD37JSnZ2w0ZFtwfJqC2yO3uvbwVIzCuhhtewzbYH/i+S1pjyAidyO
-        FS4YdEcYOI7E2ArLDWYvEOGKdvM860lRtTNCt1Ai++Jj3NKJ3A18yb5NOSvHdIXYSmI/od4O2lqUt
-        hm8fBEWz+VI+1Tq4ij9LzpVP;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
-        (Exim)
-        id 1mnOgn-007aa4-Fu; Wed, 17 Nov 2021 17:25:41 +0000
-Date:   Wed, 17 Nov 2021 09:25:37 -0800
-From:   Jeremy Allison <jra@samba.org>
-To:     Namjae Jeon <linkinjeon@kernel.org>
-Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steve French <sfrench@samba.org>,
-        Hyunchul Lee <hyc.lee@gmail.com>, linux-cifs@vger.kernel.org,
+        id S239381AbhKQR3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 12:29:24 -0500
+Received: from foss.arm.com ([217.140.110.172]:32920 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237770AbhKQR3X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 12:29:23 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E67ED6E;
+        Wed, 17 Nov 2021 09:26:24 -0800 (PST)
+Received: from [192.168.178.2] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D85C3F5A1;
+        Wed, 17 Nov 2021 09:26:22 -0800 (PST)
+Subject: Re: [PATCH] sched/fair: Replace CFS internal cpu_util() with
+ cpu_util_cfs()
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: ksmbd: Unsupported addition info
-Message-ID: <YZU7EdoJmvisai+z@jeremy-acer>
-Reply-To: Jeremy Allison <jra@samba.org>
-References: <5831447.lOV4Wx5bFT@natalenko.name>
- <CAKYAXd-KmxMeYWP8z6RYYK6za-Sj81Qtb3RO=oG+Yy3kXDaLjg@mail.gmail.com>
- <2865530.e9J7NaK4W3@natalenko.name>
- <CAKYAXd9wKDTE5WPQWcBZ_mHfaAOOY+pDj7=yndi17gf2KqWpwg@mail.gmail.com>
+References: <20211112141349.155713-1-dietmar.eggemann@arm.com>
+ <CAKfTPtCzP_Xgos-yAiUxnKw_BvP22P5CH3xJjLiUQLeg0a-AxQ@mail.gmail.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <4ecdc3bf-9a20-c6a8-0aff-8bb7e55a7d34@arm.com>
+Date:   Wed, 17 Nov 2021 18:26:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKYAXd9wKDTE5WPQWcBZ_mHfaAOOY+pDj7=yndi17gf2KqWpwg@mail.gmail.com>
+In-Reply-To: <CAKfTPtCzP_Xgos-yAiUxnKw_BvP22P5CH3xJjLiUQLeg0a-AxQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 06:58:50PM +0900, Namjae Jeon wrote:
->2021-11-17 16:00 GMT+09:00, Oleksandr Natalenko <oleksandr@natalenko.name>:
->> Hello.
+On 12.11.21 17:20, Vincent Guittot wrote:
+> On Fri, 12 Nov 2021 at 15:14, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
 >>
->> On středa 17. listopadu 2021 0:36:53 CET Namjae Jeon wrote:
->>> 2021-11-17 6:44 GMT+09:00, Oleksandr Natalenko
->>> <oleksandr@natalenko.name>:
->>> > With the latest ksmbd from the next branch I have an issue with wife's
->>> > Windows
->>> > 10 laptop while copying/removing files from the network share. On her
->>> > client it
->>> > looks like copy operation (server -> laptop) reaches 99% and then
->>> > stalls,
->>> > and
->>> > on the server side there's this in the kernel log:
->>> >
->>> > ```
->>> > ksmbd: Unsupported addition info: 0xf)
->>> > ksmbd: Unsupported addition info: 0x20)
+>> cpu_util_cfs() was created by commit d4edd662ac16 ("sched/cpufreq: Use
+>> the DEADLINE utilization signal") to enable the access to CPU
+>> utilization from the Schedutil CPUfreq governor.
+>>
+>> Commit a07630b8b2c1 ("sched/cpufreq/schedutil: Use util_est for OPP
+>> selection") added util_est support later.
+>>
+>> The only thing cpu_util() is doing on top of what cpu_util_cfs() already
+>> does is to clamp the return value to the [0..capacity_orig] capacity
+>> range of the CPU. Integrating this into cpu_util_cfs() is not harming
+>> the existing users (Schedutil and CPUfreq cooling (latter via
+>> sched_cpu_util() wrapper)).
+> 
+> Could you to update cpu_util_cfs() to use cpu as a parameter instead of rq ?
 
-Namjae, looks like your code is handling the
-following flags in query security descriptor:
+I could but I decided to use use `struct rq *rq` instead.
 
-         if (addition_info & ~(OWNER_SECINFO | GROUP_SECINFO | DACL_SECINFO |
-                               PROTECTED_DACL_SECINFO |
-                               UNPROTECTED_DACL_SECINFO)) {
-                 pr_err("Unsupported addition info: 0x%x)\n",
-                        addition_info);
+(A) We already know the rq in the following functions where we call
+    cpu_util_cfs():
 
- From the Samba code we have (the names are pretty
-similar):
+  update_sg_lb_stats()
+  find_busiest_queue()
+  update_numa_stats()
+  sugov_get_util() (existing cpu_util_cfs() call *)
 
-         /* security_descriptor->type bits */
-         typedef [public,bitmap16bit] bitmap {
-                 SEC_DESC_OWNER_DEFAULTED        = 0x0001,
-                 SEC_DESC_GROUP_DEFAULTED        = 0x0002,
-                 SEC_DESC_DACL_PRESENT           = 0x0004,
-                 SEC_DESC_DACL_DEFAULTED         = 0x0008,
-                 SEC_DESC_SACL_PRESENT           = 0x0010,
-                 SEC_DESC_SACL_DEFAULTED         = 0x0020,
-                 SEC_DESC_DACL_TRUSTED           = 0x0040,
-                 SEC_DESC_SERVER_SECURITY        = 0x0080,
-                 SEC_DESC_DACL_AUTO_INHERIT_REQ  = 0x0100,
-                 SEC_DESC_SACL_AUTO_INHERIT_REQ  = 0x0200,
-                 SEC_DESC_DACL_AUTO_INHERITED    = 0x0400,
-                 SEC_DESC_SACL_AUTO_INHERITED    = 0x0800,
-                 SEC_DESC_DACL_PROTECTED         = 0x1000,
-                 SEC_DESC_SACL_PROTECTED         = 0x2000,
-                 SEC_DESC_RM_CONTROL_VALID       = 0x4000,
-                 SEC_DESC_SELF_RELATIVE          = 0x8000
-         } security_descriptor_type;
+(B) For the following three functions we would call cpu_rq() outside
+    cpu_util_cfs():
 
-0xF == (SEC_DESC_OWNER_DEFAULTED|SEC_DESC_GROUP_DEFAULTED|SEC_DESC_DACL_PRESENT|SEC_DESC_DACL_DEFAULTED)
+  cpu_overutilized()
+  cpu_util_without()
+  sched_cpu_util() (*)
 
-and:
+So for (A) we wouldn't call cpu_rq(cpu) twice, avoiding issues with the
+RELOC_HIDE() thing in per_cpu(runqueues, cpu).
 
-0x20 == SEC_DESC_SACL_DEFAULTED
 
-Looks like you need to handle these bits.
+And cpu_util_cfs()'s PELT counterparts, cpu_load() and cpu_runnable()
+also use rq.
 
-Hope this helps,
+>> Remove cpu_util().
+>>
+>> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+>> ---
+>>
+>> I deliberately got rid of the comment on top of cpu_util(). It's from
+>> the early days of using PELT utilization, it describes CPU utilization
+>> behaviour before PELT time-scaling and talks about current capacity
+>> which we don't maintain.
+> 
+> would be good to keep an updated version in this case. There are lot
+> of interesting informations in the comment
 
-Jeremy.
+Yes, can do.
+
+Something like this:
+
+/**
+ * cpu_util_cfs() - Estimates the amount of CPU capacity used by CFS tasks.
+ * @cpu: the CPU to get the utilization for.
+ *
+ * The unit of the return value must be the same as the one of CPU capacity
+ * so that CPU utilization can be compared with CPU capacity.
+ *
+ * CPU utilization is the sum of running time of runnable tasks plus the
+ * recent utilization of currently non-runnable tasks on that CPU.
+ * It represents the amount of CPU capacity currently used by CFS tasks in
+ * the range [0..max CPU capacity] with max CPU capacity being the CPU
+ * capacity at f_max.
+ *
+ * The estimated CPU utilization is defined as the maximum between CPU
+ * utilization and sum of the estimated utilization of the currently
+ * runnable tasks on that CPU. It preserves a utilization "snapshot" of
+ * previously-executed tasks, which helps better deduce how busy a CPU will
+ * be when a long-sleeping task wake up. Such task's contribution to CPU
+ * utilization would be decayed significantly at this point of time.
+ *
+ * CPU utilization can be higher than the current CPU capacity
+ * (f_curr/f_max * max CPU capacity) or even the max CPU capacity because
+ * of rounding errors as well as task migrations or wakeups of new tasks.
+ * CPU utilization has to be capped to fit into the [0..max CPU capacity]
+ * range. Otherwise a group of CPUs (CPU0 util = 121% + CPU1 util = 80%)
+ * could be seen as over-utilized even though CPU1 has 20% of spare CPU
+ * capacity. CPU utilization is allowed to overshoot current CPU capacity
+ * though since this is useful for predicting the CPU capacity required
+ * after task migrations (scheduler-driven DVFS).
+ *
+ * Return: (Estimated) utilization for the specified CPU.
+ */
+
+[...]
