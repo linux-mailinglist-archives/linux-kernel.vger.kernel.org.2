@@ -2,259 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C411454184
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 07:59:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A9FB45418B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 08:01:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234052AbhKQHCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 02:02:31 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:47062 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbhKQHC3 (ORCPT
+        id S234212AbhKQHDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 02:03:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229923AbhKQHDp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 02:02:29 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9F71F218F6;
-        Wed, 17 Nov 2021 06:59:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637132370; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jFLry+57aO+/X2xFtkejmH6hxoRwRJTwEqp3PTJ65fU=;
-        b=fyZg/KscL4weKQwyRVsZb+k1WNjKVX+SU2srVMA0oEEOhBnvNU8LHsuoyEURitGQLDswUT
-        s5gP0A+aqbrjdeE96cWibIMLt196wVtmwTDI1T0HSun3P7ZzBkMSpuncyO3txBoABcyqwt
-        KomX+t/oi6Tm9lcEs2HtIMZHAUcthTg=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3320B13BC3;
-        Wed, 17 Nov 2021 06:59:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id GU53ClKolGG8QgAAMHmgww
-        (envelope-from <jgross@suse.com>); Wed, 17 Nov 2021 06:59:30 +0000
-To:     kvm@vger.kernel.org, x86@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-References: <20211116141054.17800-1-jgross@suse.com>
- <20211116141054.17800-2-jgross@suse.com>
-From:   Juergen Gross <jgross@suse.com>
-Subject: Re: [PATCH v3 1/4] x86/kvm: add boot parameter for adding vcpu-id
- bits
-Message-ID: <7f10b8b4-e753-c977-f201-5ef17a6e81c8@suse.com>
-Date:   Wed, 17 Nov 2021 07:59:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 17 Nov 2021 02:03:45 -0500
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D05C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 23:00:47 -0800 (PST)
+Received: by mail-oi1-x22c.google.com with SMTP id s139so4241095oie.13
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 23:00:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FmHhPvzXYRq4QxQbLd7/J2OjVDAM7gnWOdWR2WZAeoU=;
+        b=MqfKvny131SOomjGJL858hbl1u6rrS2cG4NdbqI55M8U5C4TKJeplMf2SBOKkE21NC
+         SOWLLuexJFf7+ky/Q09+Y8LkRhNibWBlgtMs0lAQJubCH8+oQsKZTVbnr+Hhs/Rg4Nds
+         vUou7Mxiki5uYYEAcOREAjw9phCURauTt5DAqDR1CE9/aFyLQwOkKxrOl9lelzO2wgF4
+         37sR5VUrGJrtNdMqvH8lBgVFsRNwT9dF3TFAJnMItjeE9kZmIH7sm690iZesgZR2oLSS
+         Ak3FcPIYiA9quKULT7sTaCeP2inaDUB/hv96ZYVUhy8OhMWw+gs0boJNbqAxjeJNRDOr
+         r7vA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FmHhPvzXYRq4QxQbLd7/J2OjVDAM7gnWOdWR2WZAeoU=;
+        b=Tz8UZl6zVz4j7AradAcmB/EW6BIFgNuNY4LgRGTuTzc4LJMVDQMj4pFLQHtbaaR6u4
+         4kL4KNn9pAB4ba0mG4h3An6ZKu2+sTvYswxjR2N1ymwNXczblzlFlZKRuIzpjiDT5qOZ
+         0FFA1tJSjC7Sz7c9IQChyY/PwlTNjtT5dXMybuc7AUD1m4V22/3EcOR1K0GD1XWIyB2g
+         PnH/bTpdN8TAopNwAO40uCNfpgZJiDlxf0Scc1DC5DSrIm9e522ZRNPJe3QIOsQAqrtv
+         6NWlU5t95E2t2/jV4jiuTT/66QS7cRVZIlGS9cNZM8KDtAo73LqkwbM5xi+by2HIQE9N
+         hfUg==
+X-Gm-Message-State: AOAM532b9WzmkkWPrPS/SYP7m6SCtqGqoLO6S5GGCKqIHx/cUFVcxXxF
+        9v+aVW9TLt+ONKcALnSythvZEqOcwJHkkZ+2YyqT3g==
+X-Google-Smtp-Source: ABdhPJy46zdowgx7i+k5t0OSYtgOmSgrusV3KffgbNewBAPjKcBA/xOn34Whjp399ZQ98icEeO7oDD9lusulVyQy5r8=
+X-Received: by 2002:aca:af50:: with SMTP id y77mr1173117oie.134.1637132446743;
+ Tue, 16 Nov 2021 23:00:46 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211116141054.17800-2-jgross@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="5eo5bD3r9P3bOCT2gHXysSF26z3K2TFTi"
+References: <20211116004111.3171781-1-keescook@chromium.org>
+In-Reply-To: <20211116004111.3171781-1-keescook@chromium.org>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 17 Nov 2021 08:00:00 +0100
+Message-ID: <CANpmjNMdUJj3YZ6Bb-pDmcwe73axzuVpvQs_WNcQLnKBE-0Agw@mail.gmail.com>
+Subject: Re: [PATCH] kasan: test: Silence intentional read overflow warnings
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---5eo5bD3r9P3bOCT2gHXysSF26z3K2TFTi
-Content-Type: multipart/mixed; boundary="np1SL7B1cJZKUl5TWNeDfs8AlCPuzlnt7";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: kvm@vger.kernel.org, x86@kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Jonathan Corbet <corbet@lwn.net>, Paolo Bonzini <pbonzini@redhat.com>,
- Sean Christopherson <seanjc@google.com>,
- Vitaly Kuznetsov <vkuznets@redhat.com>, Wanpeng Li <wanpengli@tencent.com>,
- Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <7f10b8b4-e753-c977-f201-5ef17a6e81c8@suse.com>
-Subject: Re: [PATCH v3 1/4] x86/kvm: add boot parameter for adding vcpu-id
- bits
-References: <20211116141054.17800-1-jgross@suse.com>
- <20211116141054.17800-2-jgross@suse.com>
-In-Reply-To: <20211116141054.17800-2-jgross@suse.com>
+On Tue, 16 Nov 2021 at 01:41, Kees Cook <keescook@chromium.org> wrote:
+> As done in commit d73dad4eb5ad ("kasan: test: bypass __alloc_size checks")
+> for __write_overflow warnings, also silence some more cases that trip
+> the __read_overflow warnings seen in 5.16-rc1[1]:
+>
+> In file included from /kisskb/src/include/linux/string.h:253,
+>                  from /kisskb/src/include/linux/bitmap.h:10,
+>                  from /kisskb/src/include/linux/cpumask.h:12,
+>                  from /kisskb/src/include/linux/mm_types_task.h:14,
+>                  from /kisskb/src/include/linux/mm_types.h:5,
+>                  from /kisskb/src/include/linux/page-flags.h:13,
+>                  from /kisskb/src/arch/arm64/include/asm/mte.h:14,
+>                  from /kisskb/src/arch/arm64/include/asm/pgtable.h:12,
+>                  from /kisskb/src/include/linux/pgtable.h:6,
+>                  from /kisskb/src/include/linux/kasan.h:29,
+>                  from /kisskb/src/lib/test_kasan.c:10:
+> In function 'memcmp',
+>     inlined from 'kasan_memcmp' at /kisskb/src/lib/test_kasan.c:897:2:
+> /kisskb/src/include/linux/fortify-string.h:263:25: error: call to '__read_overflow' declared with attribute error: detected read beyond size of object (1st parameter)
+>   263 |                         __read_overflow();
+>       |                         ^~~~~~~~~~~~~~~~~
+> In function 'memchr',
+>     inlined from 'kasan_memchr' at /kisskb/src/lib/test_kasan.c:872:2:
+> /kisskb/src/include/linux/fortify-string.h:277:17: error: call to '__read_overflow' declared with attribute error: detected read beyond size of object (1st parameter)
+>   277 |                 __read_overflow();
+>       |                 ^~~~~~~~~~~~~~~~~
+>
+> [1] http://kisskb.ellerman.id.au/kisskb/buildresult/14660585/log/
+>
+> Cc: Marco Elver <elver@google.com>
+> Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+> Cc: Alexander Potapenko <glider@google.com>
+> Cc: Andrey Konovalov <andreyknvl@gmail.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: kasan-dev@googlegroups.com
+> Fixes: d73dad4eb5ad ("kasan: test: bypass __alloc_size checks")
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
---np1SL7B1cJZKUl5TWNeDfs8AlCPuzlnt7
-Content-Type: multipart/mixed;
- boundary="------------9267E211171704C5A3D52120"
-Content-Language: en-US
+Acked-by: Marco Elver <elver@google.com>
 
-This is a multi-part message in MIME format.
---------------9267E211171704C5A3D52120
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Thanks for the quick fix!
 
-On 16.11.21 15:10, Juergen Gross wrote:
-> Today the maximum vcpu-id of a kvm guest's vcpu on x86 systems is set
-> via a #define in a header file.
->=20
-> In order to support higher vcpu-ids without generally increasing the
-> memory consumption of guests on the host (some guest structures contain=
-
-> arrays sized by KVM_MAX_VCPU_IDS) add a boot parameter for adding some
-> bits to the vcpu-id. Additional bits are needed as the vcpu-id is
-> constructed via bit-wise concatenation of socket-id, core-id, etc.
-> As those ids maximum values are not always a power of 2, the vcpu-ids
-> are sparse.
->=20
-> The additional number of bits needed is basically the number of
-> topology levels with a non-power-of-2 maximum value, excluding the top
-> most level.
->=20
-> The default value of the new parameter will be 2 in order to support
-> today's possible topologies. The special value of -1 will use the
-> number of bits needed for a guest with the current host's topology.
->=20
-> Calculating the maximum vcpu-id dynamically requires to allocate the
-> arrays using KVM_MAX_VCPU_IDS as the size dynamically.
->=20
-> Signed-of-by: Juergen Gross <jgross@suse.com>
-
-Just thought about vcpu-ids a little bit more.
-
-It would be possible to replace the topology games completely by an
-arbitrary rather high vcpu-id limit (65536?) and to allocate the memory
-depending on the max vcpu-id just as needed.
-
-Right now the only vcpu-id dependent memory is for the ioapic consisting
-of a vcpu-id indexed bitmap and a vcpu-id indexed byte array (vectors).
-
-We could start with a minimal size when setting up an ioapic and extend
-the areas in case a new vcpu created would introduce a vcpu-id outside
-the currently allocated memory. Both arrays are protected by the ioapic
-specific lock (at least I couldn't spot any unprotected usage when
-looking briefly into the code), so reallocating those arrays shouldn't
-be hard. In case of ENOMEM the related vcpu creation would just fail.
-
-Thoughts?
-
-
-Juergen
-
---------------9267E211171704C5A3D52120
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------9267E211171704C5A3D52120--
-
---np1SL7B1cJZKUl5TWNeDfs8AlCPuzlnt7--
-
---5eo5bD3r9P3bOCT2gHXysSF26z3K2TFTi
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmGUqFEFAwAAAAAACgkQsN6d1ii/Ey+7
-UQf+P6YS4A9mgfWCf4JI+ri5jUdgc5+AZzZoC5UcvZGdV5mj1WUml1G8s4W8tWNZylUDfgCNMucM
-Z/H2If/2uRvuEC0NdfrS7Zd8pbH6kNv6sUulsKFG3Ss0jjgKTYEDvj0i+SDALBkXtFIkgHnWER9T
-SYVayJQSNww4ZH3sxtHDipZh71dX9dn1Y7OTx4zHVh1RIp/0yjmocIoSYquvzdO7VivibTmUhXrF
-Ess7VX+B/4cCbcIvYX9ri78Qm1Pgh/LNgDg/KPYBaBCbyBvm1/BzWurdUf7e9oevHvNPRergTqec
-PJAa4Uq/MPZhvH3orztTxc4Zr+S1PpRNPNmGNGZvmg==
-=UeFJ
------END PGP SIGNATURE-----
-
---5eo5bD3r9P3bOCT2gHXysSF26z3K2TFTi--
+> ---
+>  lib/test_kasan.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+> index 67ed689a0b1b..0643573f8686 100644
+> --- a/lib/test_kasan.c
+> +++ b/lib/test_kasan.c
+> @@ -869,6 +869,7 @@ static void kasan_memchr(struct kunit *test)
+>         ptr = kmalloc(size, GFP_KERNEL | __GFP_ZERO);
+>         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+>
+> +       OPTIMIZER_HIDE_VAR(size);
+>         KUNIT_EXPECT_KASAN_FAIL(test,
+>                 kasan_ptr_result = memchr(ptr, '1', size + 1));
+>
+> @@ -894,6 +895,7 @@ static void kasan_memcmp(struct kunit *test)
+>         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+>         memset(arr, 0, sizeof(arr));
+>
+> +       OPTIMIZER_HIDE_VAR(size);
+>         KUNIT_EXPECT_KASAN_FAIL(test,
+>                 kasan_int_result = memcmp(ptr, arr, size+1));
+>         kfree(ptr);
+> --
+> 2.30.2
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20211116004111.3171781-1-keescook%40chromium.org.
