@@ -2,141 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB94B454346
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:06:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5A345434E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:07:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234784AbhKQJIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 04:08:41 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32978 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230064AbhKQJIj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 04:08:39 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AH8faTB019812;
-        Wed, 17 Nov 2021 09:05:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=81GUYYvzXXKxUGSxUOqwUPJtu2mV6MVicPPY3X90eco=;
- b=c9Nr612leVA8iVlsK+F5XXJ4KyrR2AcrVv7zlCGlEGGkaSyGTksjl2bhZi7s9N2Lgu/M
- 4FhFjsqA6Tzf4qGbGQh2QFredn57ewoaERtxbVdSbMZkPMRle87GBRHFhXnIGZW8ES5z
- QrzwGI9tVYLdRz5FvzCqWPQQZhaN8rdW6BSA9p3JagIkF+2wqGbbCP0iOYIJdhJQ4DGR
- 1bGHzl8bk4iWTMb2AfxQFa+ZJlxLBblbkU1Voomo6nHho9EjMnzpIW5TsfGjFehGD8j7
- /2TbJP44K7qT3D7QysRHbY6SNUMp0akVSXgTwWM69PdTUJoBrx/ZS4zgCU0ilp4/mTEF 8g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ccxesgeee-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Nov 2021 09:05:40 +0000
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AH90nMs001433;
-        Wed, 17 Nov 2021 09:05:39 GMT
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ccxesgeds-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Nov 2021 09:05:39 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AH938CY031836;
-        Wed, 17 Nov 2021 09:05:37 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 3ca4mjyu6a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Nov 2021 09:05:37 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AH95YuG983672
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Nov 2021 09:05:34 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0631D11C052;
-        Wed, 17 Nov 2021 09:05:34 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E8C6911C05B;
-        Wed, 17 Nov 2021 09:05:30 +0000 (GMT)
-Received: from [9.43.21.152] (unknown [9.43.21.152])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 17 Nov 2021 09:05:30 +0000 (GMT)
-Message-ID: <beeecf6d-3cd9-2072-ee7c-13712a77807d@linux.ibm.com>
-Date:   Wed, 17 Nov 2021 14:35:29 +0530
+        id S234810AbhKQJKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 04:10:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234800AbhKQJKD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 04:10:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A9E261BF5;
+        Wed, 17 Nov 2021 09:07:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637140025;
+        bh=jSFeocSlc6IofAObidh4I1D1bgngavZHyAu2iZpsyoY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Jn4SfpFEs22vvlVgwGhLZ//4vz0X5kRnla9/eATJkG9nK4IO9dkdV8ljTXTjVbTAn
+         L86XZkse3ajqEpWtBzJwC/sYyczw3tyJGhInWqtHCGstuiUIxspWz3oVXnDWrqLnfZ
+         ocPhkfrUVvaIztlNKo1I/DzKb+EgZtbvIovegi6uOU6QMeiIxyLi30/mr2p+djUKCy
+         vzDVHKPf9hEd0RDvUTlMvpBSOJgv7oyaG7CsA7XHyjTpUu2MUjqTffSD0IAuCsvRK9
+         i6va3OVYU5uLgtx9IV9RelIlvCkmFqE7T+A1vIOeYKVV47yZDVQ4L4u9+5C6awNTpg
+         mNwrB3OGjSYNA==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mnGtz-00075Z-Bb; Wed, 17 Nov 2021 10:06:47 +0100
+Date:   Wed, 17 Nov 2021 10:06:47 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ilia Sergachev <silia@ethz.ch>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        Filip Kokosinski <fkokosinski@antmicro.com>,
+        Stafford Horne <shorne@gmail.com>
+Subject: Re: [PATCH 1/3] serial: liteuart: fix compile testing
+Message-ID: <YZTGJzJcQ3oIEsGy@hovoldconsulting.com>
+References: <20211115133745.11445-1-johan@kernel.org>
+ <20211115133745.11445-2-johan@kernel.org>
+ <CAHp75VeGinEWv0BuAsrHtif2b1p26uUEmSRqG4_y76vDdvNKAw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] perf/test: Test case 27 broken on s390 in linux-next
-Content-Language: en-US
-To:     Thomas Richter <tmricht@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org, sumanthk@linux.ibm.com, jolsa@redhat.com
-Cc:     svens@linux.ibm.com, gor@linux.ibm.com, hca@linux.ibm.com
-References: <20211103155215.2941895-1-tmricht@linux.ibm.com>
-From:   Madhavan Srinivasan <maddy@linux.ibm.com>
-In-Reply-To: <20211103155215.2941895-1-tmricht@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: vVi8BCFFLC3Xch8WTAznHMEyCU2JnPxF
-X-Proofpoint-ORIG-GUID: _p6K4rlaX0PWiy_Q1xtuejZarqfhJPqL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-17_03,2021-11-16_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- adultscore=0 malwarescore=0 phishscore=0 mlxlogscore=999 spamscore=0
- impostorscore=0 bulkscore=0 priorityscore=1501 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111170045
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VeGinEWv0BuAsrHtif2b1p26uUEmSRqG4_y76vDdvNKAw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 16, 2021 at 05:44:14PM +0200, Andy Shevchenko wrote:
+> On Mon, Nov 15, 2021 at 3:44 PM Johan Hovold <johan@kernel.org> wrote:
+> >
+> > Allow the liteuart driver to be compile tested by fixing the broken
+> > Kconfig dependencies.
+> 
+> ...
+> 
+> >  config SERIAL_LITEUART
+> >         tristate "LiteUART serial port support"
+> > +       depends on LITEX || COMPILE_TEST
+> >         depends on HAS_IOMEM
+> > -       depends on OF || COMPILE_TEST
+> > -       depends on LITEX
+> 
+> > +       depends on OF
+> 
+> AFAICS this is optional and prevents compile testing in some cases.
 
-On 11/3/21 21:22, Thomas Richter wrote:
-> Commit 10269a2ca2b08c ("perf test sample-parsing: Add endian test for struct branch_flags")
-> broke the test case 27 (Sample parsing) on s390 on linux-next tree:
->
->    # ./perf test -Fv 27
->    27: Sample parsing
->    --- start ---
->    parsing failed for sample_type 0x800
->    ---- end ----
->    Sample parsing: FAILED!
->    #
->
-> The cause of the failure is a wrong #define BS_EXPECTED_BE statement
-> in above commit.  Correct this define and the test case runs fine.
->
-> Output After:
->    # ./perf test -Fv 27
->    27: Sample parsing                                                  :
->    --- start ---
->    ---- end ----
->    Sample parsing: Ok
->    #
+Yeah, you're right; that clause should stay. I'll send a v2. Thanks.
 
+> >         select SERIAL_CORE
+> >         help
+> >           This driver is for the FPGA-based LiteUART serial controller from LiteX
 
-Hi Thomas,
-Thanks for the fix. Not sure, I guess I messed up my big endian setup or 
-test run I had before sending
-the patch. My bad. It fails for me too, but with your patch the issue 
-fixed.
-
-Acked-and-Tested-by: Madhavan Srinivasan <maddy@linux.ibm.com>
-
-
->
-> Fixes: 10269a2ca2b08c ("perf test sample-parsing: Add endian test for struct branch_flags")
-> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
-> ---
->   tools/perf/tests/sample-parsing.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/perf/tests/sample-parsing.c b/tools/perf/tests/sample-parsing.c
-> index c83a11514129..9c7af55b74db 100644
-> --- a/tools/perf/tests/sample-parsing.c
-> +++ b/tools/perf/tests/sample-parsing.c
-> @@ -36,7 +36,7 @@
->    * These are based on the input value (213) specified
->    * in branch_stack variable.
->    */
-> -#define BS_EXPECTED_BE	0xa00d000000000000
-> +#define BS_EXPECTED_BE	0xa000d00000000000
->   #define BS_EXPECTED_LE	0xd5000000
->   #define FLAG(s)	s->branch_stack->entries[i].flags
->   
+Johan
