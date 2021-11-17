@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95616454E4E
+	by mail.lfdr.de (Postfix) with ESMTP id DE295454E4F
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 21:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237214AbhKQULe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 15:11:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50492 "EHLO
+        id S233081AbhKQULf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 15:11:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233081AbhKQULb (ORCPT
+        with ESMTP id S236758AbhKQULd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 15:11:31 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC5FC061570;
-        Wed, 17 Nov 2021 12:08:32 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so3530562pjb.4;
-        Wed, 17 Nov 2021 12:08:32 -0800 (PST)
+        Wed, 17 Nov 2021 15:11:33 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D54C061570;
+        Wed, 17 Nov 2021 12:08:34 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id z6so1969849plk.6;
+        Wed, 17 Nov 2021 12:08:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1eIUFkqmgQBeIM3a2SS7Z1qHzuY/2QZbKVIhYF2s6CM=;
-        b=gn0RGALxervyc1BJ3lrIbjlKNIWQ9Av7ZRjpP8ISH7KioW82QmyynMGV3Mnrg7Dd1X
-         3ThLa8YBeiUv5p8Co0R96Nhi6S5lkiFRWiit2IpnS3jAW9Pw7UWDrUgUjEActjW8xsFG
-         wAKKM/i/7frPj9W1LK9FJydDt43NJHl6rVNg4lGt1tI6FqGPEj/dCnoEvB3zqEikHgnx
-         ZUcTgECld9MAHQq+YOIVIAIx/X5Duh6SUwR2NbClcs2xGNNVxGJoVLOe1QqTrInr0L6X
-         ttzg0eIXE8DHz+PkPy3fvJ+ni7F6q8XXpWd6CH0f2U5UqvuQFCauXh41lkuGT3SOMqKg
-         Tg+Q==
+        bh=VXhQ+3Jn04hZWAOWWwSrrBaqDHKb3qy7BUYLOzIA82Y=;
+        b=AnbFPe4rxsVvoP5ThzxdvzzUonrraShg4Gp9LKY/T7ZCP/OeA0BXBHSIlArEgISHub
+         NgF1ro6yj8DWgysNhbjrQgleIptq0BcehiDgsqyjGRla8s19jqKvF6fRaufhBM3rVUdV
+         BiOgw0xuujKmVdAM3r4s12olwSsQT208oIXIjiPJkinmqJBFpVZ91IXJHFUZaA1qOhAh
+         qhKzBFX1yKddzxKOYN9kP8T9qrZZerW0RKr5efE25pKeERFMkIp0tuSUbVPX6OVBUtUT
+         TdaF+Fkn2MU67UyD+QgLnsJHhye4e7rigHeo46EOugS5T5bjcGQyoGA0tE1BaHTbP1lT
+         WXeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1eIUFkqmgQBeIM3a2SS7Z1qHzuY/2QZbKVIhYF2s6CM=;
-        b=r6cjzk2iwnXGGLjxd36fDOtXgMYpnYRH/ipL4zRkqjxM4HwyOu+AniKqcmP/NvlAxr
-         vrAWbzRLwzAhrKxzo6mJaqdMSd6uDyoxh41CVAqcp0je1P819KokwXAOFm66mHQ1TZFL
-         MyVKT6Bt16YZndyTRRIgAjFY5PwCCUwfBs5eau0oacUc5eiu/nIyubwghHfI/CdGkbm5
-         7R22Aszfr0ZGa7atWvgAZqWZQiBzPOsRwR8Bpgrvddy/vLx5LSi2lffpaJAujySvYmjn
-         jWyLZLVLVedR0ryTPj55nqbXcJYFq5oddq7UB9/bP5l63NpHp2sjRdxWYqT9hxERU696
-         BTRg==
-X-Gm-Message-State: AOAM533n9CbSt/LUbJ0X4yISS4EzDdc2bZeqoSk8kPLGL/XuuAwQGi/I
-        Wy6HuoFg1EXbewG82I24Atg=
-X-Google-Smtp-Source: ABdhPJyPk7N1XndovDfvuQFFkUgvLCN+Lx1OFQ+6CbRC8uj1TSl/3AAXk1ysE6LgoTEH8noW3UqCng==
-X-Received: by 2002:a17:90b:1a87:: with SMTP id ng7mr3058613pjb.86.1637179712040;
-        Wed, 17 Nov 2021 12:08:32 -0800 (PST)
+        bh=VXhQ+3Jn04hZWAOWWwSrrBaqDHKb3qy7BUYLOzIA82Y=;
+        b=NdzK8/cx/aCIfM2swuc4JXOgifIjbP5hcwyOmBZaESFz9kGWOd/zaXZREjCwps9Adp
+         26pt+qWD4DV/EBd2dhW4l+EXhgHzEn+dVfZK47m5xfL1G3ogxxnpS84whbWjhDFNck4b
+         jfGzK0CQsi5avKCIOUrADrXRg173MPHzHhrYwRn1UWYHAIXzmTkj+3C9yTixuGqqJzwH
+         Cw7jjFfB4hyXPLFfCCrAZTvW7sqfTdTkcduW3xzvMegApCjQshBW1z/b+gcHxofT3/1R
+         0e5I9nkT43MvSpjTkVayawgDkOYsV98eMWnqw3T/P0HjOk57V5Jq0qdZJXbhhV66ng3+
+         wS2A==
+X-Gm-Message-State: AOAM530xGdop+Ytxy68nu8ei4xr7L5Vz1jvBfWp/9wx+W6YItYR3A7Au
+        Bz8m4g/WJ5+8XKW8z+ulN+/J8HNOuE8=
+X-Google-Smtp-Source: ABdhPJyj8VpHNsX4Lt8HOHn8AADwSZvEGUG3efZ+Hs9TbPRQ3Dh61Vw5RzjCHealiPii3lV1qfbWfw==
+X-Received: by 2002:a17:90a:690d:: with SMTP id r13mr3027078pjj.40.1637179713711;
+        Wed, 17 Nov 2021 12:08:33 -0800 (PST)
 Received: from nickserv.localdomain (c-98-35-167-56.hsd1.ca.comcast.net. [98.35.167.56])
-        by smtp.gmail.com with ESMTPSA id rm1sm6511050pjb.3.2021.11.17.12.08.31
+        by smtp.gmail.com with ESMTPSA id rm1sm6511050pjb.3.2021.11.17.12.08.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 12:08:31 -0800 (PST)
+        Wed, 17 Nov 2021 12:08:33 -0800 (PST)
 From:   Nick Terrell <nickrterrell@gmail.com>
 To:     Nick Terrell <terrelln@fb.com>
 Cc:     linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
         Helge Deller <deller@gmx.de>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH v2 2/3] lib: zstd: Don't inline functions in zstd_opt.c
-Date:   Wed, 17 Nov 2021 12:14:58 -0800
-Message-Id: <20211117201459.1194876-3-nickrterrell@gmail.com>
+Subject: [PATCH v2 3/3] lib: zstd: Don't add -O3 to cflags
+Date:   Wed, 17 Nov 2021 12:14:59 -0800
+Message-Id: <20211117201459.1194876-4-nickrterrell@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211117201459.1194876-1-nickrterrell@gmail.com>
 References: <20211117201459.1194876-1-nickrterrell@gmail.com>
@@ -68,113 +68,68 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nick Terrell <terrelln@fb.com>
 
-`zstd_opt.c` contains the match finder for the highest compression
-levels. These levels are already very slow, and are unlikely to be used
-in the kernel. If they are used, they shouldn't be used in latency
-sensitive workloads, so slowing them down shouldn't be a big deal.
+After the update to zstd-1.4.10 passing -O3 is no longer necessary to
+get good performance from zstd. Using the default optimization level -O2
+is sufficient to get good performance.
 
-This saves 188 KB of the 288 KB regression reported by Geert Uytterhoeven [0].
-I've also opened an issue upstream [1] so that we can properly tackle
-the code size issue in `zstd_opt.c` for all users, and can hopefully
-remove this hack in the next zstd version we import.
+I've measured no significant change to compression speed, and a ~1%
+decompression speed loss, which is acceptable.
 
-Bloat-o-meter output on x86-64:
+This fixes the reported parisc -Wframe-larger-than=1536 errors [0]. The
+gcc-8-hppa-linux-gnu compiler performed very poorly with -O3, generating
+stacks that are ~3KB. With -O2 these same functions generate stacks in
+the < 100B, completely fixing the problem. Function size deltas are
+listed below:
+
+ZSTD_compressBlock_fast_extDict_generic: 3800 -> 68
+ZSTD_compressBlock_fast: 2216 -> 40
+ZSTD_compressBlock_fast_dictMatchState: 1848 ->  64
+ZSTD_compressBlock_doubleFast_extDict_generic: 3744 -> 76
+ZSTD_fillDoubleHashTable: 3252 -> 0
+ZSTD_compressBlock_doubleFast: 5856 -> 36
+ZSTD_compressBlock_doubleFast_dictMatchState: 5380 -> 84
+ZSTD_copmressBlock_lazy2: 2420 -> 72
+
+Additionally, this improves the reported code bloat [1]. With gcc-11
+bloat-o-meter shows an 80KB code size improvement:
 
 ```
 > ../scripts/bloat-o-meter vmlinux.old vmlinux
-add/remove: 6/5 grow/shrink: 1/9 up/down: 16673/-209939 (-193266)
-Function                                     old     new   delta
-ZSTD_compressBlock_opt_generic.constprop       -    7559   +7559
-ZSTD_insertBtAndGetAllMatches                  -    6304   +6304
-ZSTD_insertBt1                                 -    1731   +1731
-ZSTD_storeSeq                                  -     693    +693
-ZSTD_BtGetAllMatches                           -     255    +255
-ZSTD_updateRep                                 -     128    +128
-ZSTD_updateTree                               96      99      +3
-ZSTD_insertAndFindFirstIndexHash3             81       -     -81
-ZSTD_setBasePrices.constprop                  98       -     -98
-ZSTD_litLengthPrice.constprop                138       -    -138
-ZSTD_count                                   362     181    -181
-ZSTD_count_2segments                        1407     938    -469
-ZSTD_insertBt1.constprop                    2689       -   -2689
-ZSTD_compressBlock_btultra2                19990     423  -19567
-ZSTD_compressBlock_btultra                 19633      15  -19618
-ZSTD_initStats_ultra                       19825       -  -19825
-ZSTD_compressBlock_btopt                   20374      12  -20362
-ZSTD_compressBlock_btopt_extDict           29984      12  -29972
-ZSTD_compressBlock_btultra_extDict         30718      15  -30703
-ZSTD_compressBlock_btopt_dictMatchState    32689      12  -32677
-ZSTD_compressBlock_btultra_dictMatchState   33574      15  -33559
-Total: Before=6611828, After=6418562, chg -2.92%
+add/remove: 31/8 grow/shrink: 24/155 up/down: 25734/-107924 (-82190)
+Total: Before=6418562, After=6336372, chg -1.28%
 ```
 
-[0] https://lkml.org/lkml/2021/11/14/189
-[1] https://github.com/facebook/zstd/issues/2862
+Compared to before the zstd-1.4.10 update we see a total code size
+regression of 105KB, down from 374KB at v5.16-rc1:
+
+```
+> ../scripts/bloat-o-meter vmlinux.old vmlinux
+add/remove: 292/62 grow/shrink: 56/88 up/down: 235009/-127487 (107522)
+Total: Before=6228850, After=6336372, chg +1.73%
+```
+
+[0] https://lkml.org/lkml/2021/11/15/710
+[1] https://lkml.org/lkml/2021/11/14/189
 
 Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Nick Terrell <terrelln@fb.com>
 ---
- lib/zstd/common/compiler.h   |  7 +++++++
- lib/zstd/compress/zstd_opt.c | 14 +++++++++++++-
- 2 files changed, 20 insertions(+), 1 deletion(-)
+ lib/zstd/Makefile | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/lib/zstd/common/compiler.h b/lib/zstd/common/compiler.h
-index a1a051e4bce6..f5a9c70a228a 100644
---- a/lib/zstd/common/compiler.h
-+++ b/lib/zstd/common/compiler.h
-@@ -16,6 +16,7 @@
- *********************************************************/
- /* force inlining */
+diff --git a/lib/zstd/Makefile b/lib/zstd/Makefile
+index 65218ec5b8f2..fc45339fc3a3 100644
+--- a/lib/zstd/Makefile
++++ b/lib/zstd/Makefile
+@@ -11,8 +11,6 @@
+ obj-$(CONFIG_ZSTD_COMPRESS) += zstd_compress.o
+ obj-$(CONFIG_ZSTD_DECOMPRESS) += zstd_decompress.o
  
-+#if !defined(ZSTD_NO_INLINE)
- #if (defined(__GNUC__) && !defined(__STRICT_ANSI__)) || defined(__cplusplus) || defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L   /* C99 */
- #  define INLINE_KEYWORD inline
- #else
-@@ -24,6 +25,12 @@
- 
- #define FORCE_INLINE_ATTR __attribute__((always_inline))
- 
-+#else
-+
-+#define INLINE_KEYWORD
-+#define FORCE_INLINE_ATTR
-+
-+#endif
- 
- /*
-   On MSVC qsort requires that functions passed into it use the __cdecl calling conversion(CC).
-diff --git a/lib/zstd/compress/zstd_opt.c b/lib/zstd/compress/zstd_opt.c
-index 04337050fe9a..09483f518dc3 100644
---- a/lib/zstd/compress/zstd_opt.c
-+++ b/lib/zstd/compress/zstd_opt.c
-@@ -8,6 +8,18 @@
-  * You may select, at your option, one of the above-listed licenses.
-  */
- 
-+/*
-+ * Disable inlining for the optimal parser for the kernel build.
-+ * It is unlikely to be used in the kernel, and where it is used
-+ * latency shouldn't matter because it is very slow to begin with.
-+ * We prefer a ~180KB binary size win over faster optimal parsing.
-+ *
-+ * TODO(https://github.com/facebook/zstd/issues/2862):
-+ * Improve the code size of the optimal parser in general, so we
-+ * don't need this hack for the kernel build.
-+ */
-+#define ZSTD_NO_INLINE 1
-+
- #include "zstd_compress_internal.h"
- #include "hist.h"
- #include "zstd_opt.h"
-@@ -894,7 +906,7 @@ static void ZSTD_optLdm_processMatchCandidate(ZSTD_optLdm_t* optLdm, ZSTD_match_
-              */
-             U32 posOvershoot = currPosInBlock - optLdm->endPosInBlock;
-             ZSTD_optLdm_skipRawSeqStoreBytes(&optLdm->seqStore, posOvershoot);
--        } 
-+        }
-         ZSTD_opt_getNextMatchAndUpdateSeqStore(optLdm, currPosInBlock, remainingBytes);
-     }
-     ZSTD_optLdm_maybeAddMatch(matches, nbMatches, optLdm, currPosInBlock);
+-ccflags-y += -O3
+-
+ zstd_compress-y := \
+ 		zstd_compress_module.o \
+ 		common/debug.o \
 -- 
 2.33.1
 
