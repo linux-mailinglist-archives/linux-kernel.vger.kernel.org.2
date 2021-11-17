@@ -2,71 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A5F454D99
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:02:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC32454D9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:03:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240300AbhKQTFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 14:05:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35634 "EHLO
+        id S240323AbhKQTGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 14:06:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240302AbhKQTFi (ORCPT
+        with ESMTP id S240306AbhKQTFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 14:05:38 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68BDC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 11:02:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0u9G+LODuyaptLsjqsqqaOteSOdlaVNnmJH38eUGRBI=; b=Wkp04OOfHwWGUxrqvlRiC2/Z+3
-        4VDFmrn0h+jSSglouc6D7N5j3N2ZO9YPOBKwFuWVL3uvLEbu3nPi6YaMYFIV9oHpcqXjJePLExr0t
-        /M6RanjSgdvhF2ZoSMf91eN18PgrVAuY3givxcBYZue1IEOGklWoQk78gNO8nCzdr7wHI8MNIbnjZ
-        vFV6zAlE//Xi1WKF48vNxz6r5Sw8VN8/+UPhIE4G2iH0IMwstTfZHgfJ7QyzfOHtKUKYlL5o56mOq
-        DwrkGUZml8k2jsgHOXLpdvIwRSBOg5q5AWhmYcQWqSXr50331Fgo8Lv3xCaaKFzW92qp5gCZyLEfy
-        5ruv5+eg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mnQCM-00GYCZ-MD; Wed, 17 Nov 2021 19:02:23 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 868CE300093;
-        Wed, 17 Nov 2021 20:02:20 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6F9C52C928C54; Wed, 17 Nov 2021 20:02:20 +0100 (CET)
-Date:   Wed, 17 Nov 2021 20:02:20 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>
-Subject: Re: [PATCH] x86/paravirt: Fix build PARAVIRT_XXL=y without XEN_PV
-Message-ID: <YZVRvHXY9/i0Pht5@hirez.programming.kicks-ass.net>
-References: <20211117181439.4368-1-kirill.shutemov@linux.intel.com>
- <YZVLVfd5E6d6YQig@hirez.programming.kicks-ass.net>
- <20211117184225.6e257nfpdd2qhrj4@box.shutemov.name>
- <4824bf30-851e-c927-a50f-87fa2a429b2a@linux.intel.com>
+        Wed, 17 Nov 2021 14:05:53 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8093C061570;
+        Wed, 17 Nov 2021 11:02:54 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so6025205pjc.4;
+        Wed, 17 Nov 2021 11:02:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rMY8qG0cTAr/XL80xfJt/iFlXy7f1UseUxBfTLe6U/I=;
+        b=AxatOd3X7fIQqikggpApX3VZvXK9NrVQUsi/0FyMN1kcaN4maODrlMWOaPp7wBtnRV
+         ZFvFK3U2Hoxt6oYePxn244HPdoEMVprC/lp3oPXNg/k4YgfkX8fbTtZovudLc5NXP+c5
+         25u4e7XAQwYUC/BJuM/GqqSbc9noNq1NFDozRyxHdEvzhWIA0F5pajiG/fM203zB7kmw
+         zLUxeEv13oCs3UfZmqgz0WXhjXa0M9ojIc7uXzo8EG3duBJZE164lYmY/9jqJ8HI+Xpp
+         Vnz6r99PN8pcL99JdAFUCAWSUFmKHNH3wHdf0LWxVvaM5uPW7KmiAKIX8TKkyuE32Tz7
+         wcrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rMY8qG0cTAr/XL80xfJt/iFlXy7f1UseUxBfTLe6U/I=;
+        b=Pd/JLiZBcyUA8KU2n2hEEO7nzlNc7f5a2iDx/RotQFOsUw85xk5NNaVTl0Kw5Nc2Be
+         0z5J7Bl9vg71zVUGnYct9SLPeKsasX7UYM765Vf4O1OILtJXCFjNieaUZwJjU1HfqSmW
+         Wocfi+PN5MMsq7cVZe4k49twXUd3X9zwcn3InUNoJnbO0HK2CYP20zAaaSs09g7aE7WG
+         kpd/mKsAoGhzHk9QOXQqpc8ZHO9AtXDN1lJgCoN53WFPTezDI3YUSdE/9vZyYNj5DN/s
+         W2abexPO62dd/eTmV8ba3oq2hcQfnHM6/gauFh+lAuo2PJx232jCiJRSqSvEdL33h5id
+         4vFA==
+X-Gm-Message-State: AOAM531q9vijvYZ6aB+AfSq7sdwkA0F1xfWdJVxcQMuZx70dGTI+1WQj
+        NwDeTKBgzH3t8BzNEje1t1Wfx6VZGGY=
+X-Google-Smtp-Source: ABdhPJwomMbvuPw79ubWdCN2tNq4Exc56IOz3PPUglHowPI1WBefwmzRIIifJ1/0x7spBJSQotygdQ==
+X-Received: by 2002:a17:90a:8a82:: with SMTP id x2mr2323528pjn.187.1637175773867;
+        Wed, 17 Nov 2021 11:02:53 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id fs21sm5047629pjb.1.2021.11.17.11.02.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 11:02:53 -0800 (PST)
+Subject: Re: [PATCH 5.10 000/569] 5.10.80-rc4 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20211117144602.341592498@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <0f0a5139-ee4a-d30c-630b-55254e6537d1@gmail.com>
+Date:   Wed, 17 Nov 2021 11:02:51 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4824bf30-851e-c927-a50f-87fa2a429b2a@linux.intel.com>
+In-Reply-To: <20211117144602.341592498@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 10:46:30AM -0800, Sathyanarayanan Kuppuswamy wrote:
-> TDX has a requirement to use HLT paravirt calls (which is currently
-> listed under PARAVIRT_XXL). Once we submit a patch to move it
-> under CONFIG_PARAVIRT, we will drop this dependency.
+On 11/17/21 6:46 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.80 release.
+> There are 569 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 19 Nov 2021 14:44:50 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.80-rc4.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Why do you need to paravirt hlt at all? Can't the TDX thing simply
-install a different x86_idle function?
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
