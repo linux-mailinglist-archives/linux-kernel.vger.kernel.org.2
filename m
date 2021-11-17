@@ -2,100 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A81D4550E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 00:04:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 387F94550E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 00:07:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241474AbhKQXHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 18:07:13 -0500
-Received: from mga14.intel.com ([192.55.52.115]:61676 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233161AbhKQXHM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 18:07:12 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10171"; a="234312365"
-X-IronPort-AV: E=Sophos;i="5.87,243,1631602800"; 
-   d="scan'208";a="234312365"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 15:04:13 -0800
-X-IronPort-AV: E=Sophos;i="5.87,243,1631602800"; 
-   d="scan'208";a="454820131"
-Received: from rsyep-mobl2.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.251.140.227])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 15:04:12 -0800
-Subject: Re: [PATCH] x86/paravirt: Fix build PARAVIRT_XXL=y without XEN_PV
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>
-References: <20211117181439.4368-1-kirill.shutemov@linux.intel.com>
- <YZVLVfd5E6d6YQig@hirez.programming.kicks-ass.net>
- <20211117184225.6e257nfpdd2qhrj4@box.shutemov.name>
- <4824bf30-851e-c927-a50f-87fa2a429b2a@linux.intel.com>
- <YZVOfGtHyiZg1pIP@zn.tnic>
- <980ceab6-6686-c8f3-72b8-5743ca517bdf@linux.intel.com>
- <0f0b9784-1902-1526-2796-7d1a7ab17fb6@intel.com>
- <21f1325d-d97e-1bb7-ea87-d84e44089ab4@linux.intel.com>
- <YZVvdyHhPTzzZbiu@zn.tnic>
-From:   Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <d826f932-a6a4-de7d-b0ea-f8e1f9bfe012@linux.intel.com>
-Date:   Wed, 17 Nov 2021 15:04:11 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S241493AbhKQXJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 18:09:59 -0500
+Received: from smtprelay0099.hostedemail.com ([216.40.44.99]:54040 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233161AbhKQXJ5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 18:09:57 -0500
+Received: from omf09.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 0314418486701;
+        Wed, 17 Nov 2021 23:06:57 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id 2C054E00034E;
+        Wed, 17 Nov 2021 23:06:49 +0000 (UTC)
+Message-ID: <33ca60945b7945ff08ae295a4d683ebe99e41d46.camel@perches.com>
+Subject: Re: [PATCH v9 5/5] MAINTAINERS: Add maintainer for xilinx-ams
+From:   Joe Perches <joe@perches.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Anand Ashok Dumbre <ANANDASH@xilinx.com>,
+        linux-kernel@vger.kernel.org, jic23@kernel.org, lars@metafoo.de,
+        linux-iio@vger.kernel.org, git <git@xilinx.com>,
+        Michal Simek <michals@xilinx.com>, gregkh@linuxfoundation.org,
+        rafael@kernel.org, linux-acpi@vger.kernel.org,
+        heikki.krogerus@linux.intel.com
+Date:   Wed, 17 Nov 2021 15:06:54 -0800
+In-Reply-To: <YZVX9R/TMvkPwuuF@smile.fi.intel.com>
+References: <20211116150842.1051-1-anand.ashok.dumbre@xilinx.com>
+         <20211116150842.1051-6-anand.ashok.dumbre@xilinx.com>
+         <YZPtW5igA8RBYLWv@smile.fi.intel.com>
+         <BY5PR02MB69168A6537474DF8948C3D0BA99A9@BY5PR02MB6916.namprd02.prod.outlook.com>
+         <CAHp75VdaO4+DxMn2eJx7t0_UFgrHGV2vgzXvRB=qwZi-ZpMaOA@mail.gmail.com>
+         <cf7ad8715a02f3a0e4fe0cd8a270585dcf84bb3a.camel@perches.com>
+         <CAHp75VfJBwCcFwbv6fgvwf=Q1UdFXwgNex-4GqKLcf=ZhuqGjw@mail.gmail.com>
+         <164612d20b252a28dda74f5058e0aacb@perches.com>
+         <YZVX9R/TMvkPwuuF@smile.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-In-Reply-To: <YZVvdyHhPTzzZbiu@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 2C054E00034E
+X-Spam-Status: No, score=-3.40
+X-Stat-Signature: 5gonfoxuqwgckts6t7zg5ii6eb4g4ijk
+X-Rspamd-Server: rspamout02
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19+IFv9qylv3KP1O9JLcstv6VxH49IBE28=
+X-HE-Tag: 1637190409-49400
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/17/21 1:09 PM, Borislav Petkov wrote:
-> On Wed, Nov 17, 2021 at 12:54:56PM -0800, Sathyanarayanan Kuppuswamy wrote:
->> It is not only for idle case. We also need to support emulation of
->> normal halt case (which is used in cases like reboot or
->> early_fixup_exception(), etc.).
+On Wed, 2021-11-17 at 21:28 +0200, Andy Shevchenko wrote:
+> On Wed, Nov 17, 2021 at 10:46:20AM -0800, Joe Perches wrote:
+> > On 2021-11-17 09:08, Andy Shevchenko wrote:
+> > > On Wed, Nov 17, 2021 at 6:05 PM Joe Perches <joe@perches.com> wrote:
+> > 
+> > > > What do you think checkpatch is supposed to find?
+> > 
+> > > To me AMS should precede AXI and not the other way around. Agree?
+> > 
+> > Sure but checkpatch just looks at patches and doesn't inspect the patched
+> > file, apply the patch then look at the result. The patch itself looks fine.
 > 
-> This is more of that piecemeal feeding of people asking why. Please sit
-> down and explain exactly and in detail why you need this. "We need to
-> support emulation" is not nearly good enough.
-> 
-> I don't think any of the people who replied on this thread *actually*
-> know *why* PV support is needed.
-> 
+> I see, checkpatch simply doesn't have such functionality and maintainers should
+> ask people to rung parse-maintainers.pl from time to time…
 
-We need PV support to handle halt() and safe_halt() cases.
+I asked Linus to do that before every -rc1 and he demurred.
 
-HLT instruction is generally used in cases like reboot, idle and
-exception fixup handlers. For the idle case, interrupts will be enabled
-(using STI) before the HLT instruction (this is also called
-safe_halt()).
+https://lore.kernel.org/lkml/CAHk-=wjq68jF+fcSJYpRT3yS+=oOxaEFtYVmSjKb0RLbo7+JWw@mail.gmail.com/
 
-In TDX guest, to support HLT instruction, it has to be emulated using
-a hypercall (aka TDVMCALL).
 
-We have the following three ways to emulate the HLT instruction:
-
-1. Directly substitute TDVMCALLs in places where we require emulation.
-2. Use #VE exception handler to emulate it (In TDX guest, executing HLT
-    will lead to #VE exception).
-3. Emulate it using pv_ops
-
-Since option#1 is not a scalable approach, it can be ignored. Option #2
-is also not preferred because, we cannot differentiate between safe
-halt and normal halt use cases in the exception handler. This
-differentiation is needed to add STI before the hypercall for safe halt 
-use case. That leaves us with using pv_ops, which provides separate
-methods to emulate safe and normal halt cases.
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
