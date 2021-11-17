@@ -2,91 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6AD7454D3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:31:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACDE1454D41
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:32:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240019AbhKQSek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 13:34:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233890AbhKQSej (ORCPT
+        id S240090AbhKQSfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 13:35:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:36658 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233890AbhKQSfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 13:34:39 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6706C061570;
-        Wed, 17 Nov 2021 10:31:40 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id n85so3450844pfd.10;
-        Wed, 17 Nov 2021 10:31:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=/+smvqogmwFFh079mSXlcWbcElYUTcAGYiv6vxh7vWU=;
-        b=RZHPDN7ZzOuSG1gjqmuXZCbJc3cM0Xx+00/iDp7i1v0p8ASNcqa4TP+bo5S8FLeplz
-         4N45E1DqbFTfylWGUg0b+YcfbZ0sm701M3T57WjnxcluYTOq2PK5e4Vw7FJtL64Om4+W
-         O5VT9IjAX8NoFecJYIsWzDhmyWokSumZ/saM7zHaQ9ekChQU7c3ww+VuLyEb2YxqVeOk
-         OpInvNd/jOq4ttfkPm46yLogpqnmN2tYmEvwZgvh53r85FOYm24z2Y5lhSDzR533940D
-         kgZVMf5mVeKx0iwL9AxJrRTAOE/2Q8+kAjrFL/g/FISfZvHQb2/hP3qT3lQQGghldQwX
-         4mEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=/+smvqogmwFFh079mSXlcWbcElYUTcAGYiv6vxh7vWU=;
-        b=4oBc3IFsw2elyaGzAVI2V2UtKIl387XhdgEk+RCucAA+pP+DZ2LlY/Q3hqMItE5ht7
-         16vWn5IE4aTqn04MnY9Ch+COgl/Imeg1MnHfC5w3KN8irZdimlJGExTizpS0e7/rrCeA
-         G5Q7rxAl9rN3PTAxx3tnzIdlYVw/Mmc7bQY0/t7kyDaQg7TxcEvhsQuejuAFEJcLLgMy
-         OvpHEnSAETEDWj5Ct8q/H7rnIwNHD8FddPnkO5yZPmu84MOg+N1W+3umyqjG/HqOYsEx
-         XZd9dkDSzIoxwJ9nvjLR1ifpkOTjZLiIX0Iy+L3fJVCYc2RBq7bAQB/o/dZHgVGi0SIx
-         7qSw==
-X-Gm-Message-State: AOAM530e82+0XDbQl1fIe29RYYeh3QxpmV9s3gc8XIf6g9NtfNRmQ5E5
-        sGpW0XhjRwb1zVdQgIoakXLnXtjx99N1yLmP8lg=
-X-Google-Smtp-Source: ABdhPJw33DMLO5nhruTe39EwtFqoN0p5ChHNjNStSIgB2mfKMWYOMWgmszZ9gVZGv8u/G8ePecunCg==
-X-Received: by 2002:aa7:808e:0:b0:493:f071:274f with SMTP id v14-20020aa7808e000000b00493f071274fmr8956959pff.37.1637173899691;
-        Wed, 17 Nov 2021 10:31:39 -0800 (PST)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id t4sm366581pfj.13.2021.11.17.10.31.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 10:31:39 -0800 (PST)
-Message-ID: <61954a8b.1c69fb81.d860b.1c4b@mx.google.com>
-Date:   Wed, 17 Nov 2021 10:31:39 -0800 (PST)
-X-Google-Original-Date: Wed, 17 Nov 2021 18:31:37 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20211117144602.341592498@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 000/569] 5.10.80-rc4 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
+        Wed, 17 Nov 2021 13:35:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637173968;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y/veQ2/16dN3v+kYCtByKkIi6t7D2etplr3VDnS6swM=;
+        b=G81B2s6r7BISOOIDTQjZEKsx9b0upNqvIdRZW79a1sf+PId6QzcGezYLsYkWoMGGoJpwqe
+        +Es6P9THmw5ZoXwjpiQqE0HPjavLfxKL8uAT2+5lsXpSZ6bfJutUnpSinUIEZZ+CDBEDIb
+        VzAuSoL7FF2xaGQG1NL4fP3UjcxzNKM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-27-PjXVD03KNVumiIGzdSE9Pw-1; Wed, 17 Nov 2021 13:32:45 -0500
+X-MC-Unique: PjXVD03KNVumiIGzdSE9Pw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 69C331069401;
+        Wed, 17 Nov 2021 18:32:43 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9303160657;
+        Wed, 17 Nov 2021 18:32:25 +0000 (UTC)
+Message-ID: <e642702a-4455-9c1e-ac29-ba5809a2139c@redhat.com>
+Date:   Wed, 17 Nov 2021 19:32:24 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 2/2] KVM: x86/mmu: Pass parameter flush as false in
+ kvm_tdp_mmu_zap_collapsible_sptes()
+Content-Language: en-US
+To:     Ben Gardon <bgardon@google.com>,
+        Hou Wenlong <houwenlong93@linux.alibaba.com>
+Cc:     kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+References: <5e16546e228877a4d974f8c0e448a93d52c7a5a9.1637140154.git.houwenlong93@linux.alibaba.com>
+ <21453a1d2533afb6e59fb6c729af89e771ff2e76.1637140154.git.houwenlong93@linux.alibaba.com>
+ <CANgfPd_=M-8r8H5uoaPz_VTXZpmX6XD+QGAdBdz4PERUoqE1OA@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <CANgfPd_=M-8r8H5uoaPz_VTXZpmX6XD+QGAdBdz4PERUoqE1OA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Nov 2021 15:46:44 +0100, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.80 release.
-> There are 569 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 19 Nov 2021 14:44:50 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.80-rc4.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On 11/17/21 18:50, Ben Gardon wrote:
+>> Since tlb flush has been done for legacy MMU before
+>> kvm_tdp_mmu_zap_collapsible_sptes(), so the parameter flush
+>> should be false for kvm_tdp_mmu_zap_collapsible_sptes().
+>>
+>> Fixes: e2209710ccc5d ("KVM: x86/mmu: Skip rmap operations if rmaps not allocated")
+>> Signed-off-by: Hou Wenlong<houwenlong93@linux.alibaba.com>
+> Haha, I'm glad we're thinking along similar lines. I just sent a patch
+> yesterday to remove the flush parameter from that function entirely:
+> https://lore.kernel.org/lkml/20211115234603.2908381-2-bgardon@google.com/
+> I'll CC you on that patch.
 > 
 
-5.10.80-rc4 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+And actually I had applied that before reading Sean's answer, so his 
+follow up is not needed anymore.
+
+Paolo
 
