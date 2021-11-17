@@ -2,130 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09AB545506A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:28:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AE07455070
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:28:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241226AbhKQWbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 17:31:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40388 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241210AbhKQWbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:31:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19A3B61B51;
-        Wed, 17 Nov 2021 22:28:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637188083;
-        bh=5trusLNO6pCzQ4ZXbzfE0aF2gD2ZdLOSY0AP+qtquTY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=mbEsheLWXgAhMwc3cFC9ywdEcCuZ5TjBzBxeZqmgzVp8/y0gJtgZ6I/i0gNgkcG1J
-         r1+VGUeC++puvynHRy/DvYr02f/FAyR+4F7jjkpEy4sYKkccVRwg1jXkHb9UsTuEja
-         nfuOPQRCEeeZOP5/kL6QwK/7K/qMb6LWbJ+mU04B3GW8AUKCpyVydQrYJAxAMLvY4H
-         0nqBwa/r918sq2gz4MI8PymuIGGJtwqr09ULX/XtVsfO23ZnSZcpeuf/WRhPTNcS9n
-         DyTDL/KheSDHVVCBabur2IMhEQxIcuxMwpL4ULzG6yXDA9pIs3Wqph+F9kJuVybyio
-         gfMRZ9Ha7JWVQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D9EFD5C06BA; Wed, 17 Nov 2021 14:28:02 -0800 (PST)
-Date:   Wed, 17 Nov 2021 14:28:02 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 4/6] rcu/nocb: Create nocb kthreads on all CPUs as long
- as the "rcu_nocb=" is passed
-Message-ID: <20211117222802.GQ641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211117155637.363706-1-frederic@kernel.org>
- <20211117155637.363706-5-frederic@kernel.org>
- <20211117192710.GK641268@paulmck-ThinkPad-P17-Gen-1>
- <20211117215753.GB365507@lothringen>
+        id S241245AbhKQWbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 17:31:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50606 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241210AbhKQWbg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 17:31:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637188117;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=m5qu5e0Bmyi2YyXsZTCJ7FvtB46vdD6fod/tQPP96Gw=;
+        b=RR2VKKS2NxijkPYqJoaRomlbhJGhRaoIS6J7hMXMvNffgvt021N3LA/EgVVpOYspZBuDIt
+        ex1GeB/5qsPfkEzVM+C/GYUP+Tyys9rIcEa++QpXtjwY9awj9rp2aciFhe7tqUfllEAi1D
+        xexoCjWKeLJ1M8/0WrzRfuoQdFZ/2tI=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-268-CFg90o70PEWCI4narohPug-1; Wed, 17 Nov 2021 17:28:35 -0500
+X-MC-Unique: CFg90o70PEWCI4narohPug-1
+Received: by mail-ed1-f72.google.com with SMTP id b15-20020aa7c6cf000000b003e7cf0f73daso3409124eds.22
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:28:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=m5qu5e0Bmyi2YyXsZTCJ7FvtB46vdD6fod/tQPP96Gw=;
+        b=bnARGc7Ek/2Ue7tOPe12/8D3nIcWgFZ0sqjwekIO9vcp+gYyKOmXtiXoAFNVhZfAfx
+         JQ1PbH37bcb5FQcFoljqgrn/FPAglypYEDAm8sOKYIfsPg1KxrviRQInyYUzzPXiCHaR
+         8auC2sADzdMh2CFYt+AzYKlJGwXa6dAypP/vuestFsLKghQod1g+S+AZAhnFcKcVTfrz
+         SjC3rCBVRdwSRberdKu3ffJwJlpIOCA8azR8mYTiThRtZeNOhhNCnVi5p7FvQ1bmPeIb
+         4rH2ap/wImCVLDxV1P7P8xMrxZ+WMgXyazYFdH4yZvk9oReI17E57r/7AuscWrB5NYiA
+         BCdg==
+X-Gm-Message-State: AOAM531vZL8PA+sSL07SwJvihpt21cLIeY0y8bSEZr7R+NmMBGeKqL0q
+        INml/sBNfhD2B1SOYkVpqX2YO8eKCDkpLKx8SzgI1wCQAyZmV+0XwYEwxAcQ8f7MlzTRrqup+UV
+        CkmRQIBs77irv98fyczRe+wxt
+X-Received: by 2002:a17:907:7b9b:: with SMTP id ne27mr26058730ejc.79.1637188114564;
+        Wed, 17 Nov 2021 14:28:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxXCOz8zE8sIXG+OzU8g75Ytk28xPrlKauEFcoiDMkcnmuf5MV+OAPoN5sFp5ENv9D9sTpHgQ==
+X-Received: by 2002:a17:907:7b9b:: with SMTP id ne27mr26058685ejc.79.1637188114280;
+        Wed, 17 Nov 2021 14:28:34 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id q14sm617090edj.42.2021.11.17.14.28.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 14:28:33 -0800 (PST)
+Message-ID: <380053ee-4a4a-963c-4f70-6b9dcfef1b98@redhat.com>
+Date:   Wed, 17 Nov 2021 23:28:32 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211117215753.GB365507@lothringen>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 16/20] extcon: intel-cht-wc: Use new
+ intel_cht_wc_get_model() helper
+Content-Language: en-US
+To:     Chanwoo Choi <cwchoi00@gmail.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        Yauhen Kharuzhy <jekhor@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-efi@vger.kernel.org
+References: <20211114170335.66994-1-hdegoede@redhat.com>
+ <20211114170335.66994-17-hdegoede@redhat.com>
+ <5653c424-e12a-e889-1ae5-14a768dcf221@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <5653c424-e12a-e889-1ae5-14a768dcf221@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 10:57:53PM +0100, Frederic Weisbecker wrote:
-> On Wed, Nov 17, 2021 at 11:27:10AM -0800, Paul E. McKenney wrote:
-> > On Wed, Nov 17, 2021 at 04:56:35PM +0100, Frederic Weisbecker wrote:
-> > > In order to be able to (de-)offload any CPU using cpuset in the future,
-> > > create a NOCB kthread for all possible CPUs. For now this is done only
-> > > as long as the "rcu_nocb=" kernel parameter is passed to avoid
-> > > the unnecessary overhead for most users.
-> > 
-> > The "nohz_full=" kernel parameter would also cause these kthreads to
-> > be created, correct?  (Yeah, a nit, but...)
-> > 
-> > And some fallout of my forgetfulness below.  :-/
-> 
-> Ah right, that too!
-> > >  
-> > > @@ -1268,7 +1265,7 @@ static void __init rcu_spawn_nocb_kthreads(void)
-> > >  	int cpu;
-> > >  
-> > >  	if (rcu_nocb_is_setup) {
-> > > -		for_each_online_cpu(cpu)
-> > > +		for_each_possible_cpu(cpu)
-> > 
-> > Gah...  I had forgotten.  :-/
-> > 
-> > Some firmware lies about the OS instance's age.  Other firmware lies
-> > about the number of CPUs, sometimes claiming large multiples of the
-> > actual number of CPUs.
-> > 
-> > So this needs to stay "for_each_online_cpu".  Otherwise, Paul Gortmaker
-> > will once again be afflicted with hundreds of unnecessary rcuo kthreads.
-> > 
-> > The later calls to rcutree_prepare_cpu() from rcutree_prepare_cpu()
-> > will take care of any CPUs that first come online later.
-> 
-> Ok that makes sense.
-> 
-> > 
-> > >  			rcu_spawn_cpu_nocb_kthread(cpu);
-> > >  	}
-> > >  }
-> > > @@ -1303,7 +1300,7 @@ static void __init rcu_organize_nocb_kthreads(void)
-> > >  	 * Should the corresponding CPU come online in the future, then
-> > >  	 * we will spawn the needed set of rcu_nocb_kthread() kthreads.
-> > >  	 */
-> > > -	for_each_cpu(cpu, rcu_nocb_mask) {
-> > > +	for_each_possible_cpu(cpu) {
-> > 
-> > This needs to change, but to for_each_online_cpu() instead of
-> > for_each_possible_cpu().  That handles the case where the boot CPU is
-> > not initially offloaded, but where the sysadm later needs to offload it.
-> 
-> I'm less sure about that one. This is called early from rcu_init_nohz(). Only
-> the boot CPU should be online at that point. We really need to integrate all
-> possible CPUs within the nocb groups.
+Hi,
 
-Ah, yes, this is creating the data-structure linkages, not the kthreads.
-Your for_each_possible_cpu() is quite correct, good!
-
-							Thanx, Paul
-
-> Thanks.
+On 11/17/21 07:47, Chanwoo Choi wrote:
+> On 21. 11. 15. 오전 2:03, Hans de Goede wrote:
+>> The CHT_WC_VBUS_GPIO_CTLO GPIO actually driving an external 5V Vboost
+>> converter for Vbus depends on the board on which the Cherry Trail -
+>> Whiskey Cove PMIC is actually used.
+>>
+>> Since the information about the exact PMIC setup is necessary in other
+>> places too, the drivers/mfd/intel_soc_pmic_chtwc.c code now has a new
+>> intel_cht_wc_get_model() helper.
+>>
+>> Only poke the CHT_WC_VBUS_GPIO_CTLO GPIO if this new helper returns
+>> INTEL_CHT_WC_GPD_WIN_POCKET, which indicates the Type-C (with PD and
+>> DP-altmode) setup used on the GPD pocket and GPD win; and on which
+>> this GPIO actually controls an external 5V Vboost converter.
+>>
+>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+>> ---
+>>   drivers/extcon/extcon-intel-cht-wc.c | 35 +++++++++++++++++-----------
+>>   1 file changed, 21 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/drivers/extcon/extcon-intel-cht-wc.c b/drivers/extcon/extcon-intel-cht-wc.c
+>> index 771f6f4cf92e..a5aeeecc44fb 100644
+>> --- a/drivers/extcon/extcon-intel-cht-wc.c
+>> +++ b/drivers/extcon/extcon-intel-cht-wc.c
+>> @@ -14,6 +14,7 @@
+>>   #include <linux/module.h>
+>>   #include <linux/mod_devicetable.h>
+>>   #include <linux/platform_device.h>
+>> +#include <linux/property.h>
+>>   #include <linux/regmap.h>
+>>   #include <linux/slab.h>
+>>   @@ -358,20 +359,26 @@ static int cht_wc_extcon_probe(struct platform_device *pdev)
+>>       if (IS_ERR(ext->edev))
+>>           return PTR_ERR(ext->edev);
+>>   -    /*
+>> -     * When a host-cable is detected the BIOS enables an external 5v boost
+>> -     * converter to power connected devices there are 2 problems with this:
+>> -     * 1) This gets seen by the external battery charger as a valid Vbus
+>> -     *    supply and it then tries to feed Vsys from this creating a
+>> -     *    feedback loop which causes aprox. 300 mA extra battery drain
+>> -     *    (and unless we drive the external-charger-disable pin high it
+>> -     *    also tries to charge the battery causing even more feedback).
+>> -     * 2) This gets seen by the pwrsrc block as a SDP USB Vbus supply
+>> -     * Since the external battery charger has its own 5v boost converter
+>> -     * which does not have these issues, we simply turn the separate
+>> -     * external 5v boost converter off and leave it off entirely.
+>> -     */
+>> -    cht_wc_extcon_set_5v_boost(ext, false);
+>> +    switch (intel_cht_wc_get_model()) {
 > 
-> > 
-> > >  		rdp = per_cpu_ptr(&rcu_data, cpu);
-> > >  		if (rdp->cpu >= nl) {
-> > >  			/* New GP kthread, set up for CBs & next GP. */
-> > > @@ -1327,7 +1324,8 @@ static void __init rcu_organize_nocb_kthreads(void)
-> > >  				pr_cont(" %d", cpu);
-> > >  		}
-> > >  		rdp->nocb_gp_rdp = rdp_gp;
-> > > -		list_add_tail(&rdp->nocb_entry_rdp, &rdp_gp->nocb_head_rdp);
-> > > +		if (cpumask_test_cpu(cpu, rcu_nocb_mask))
-> > > +			list_add_tail(&rdp->nocb_entry_rdp, &rdp_gp->nocb_head_rdp);
-> > >  	}
-> > >  	if (gotnocbs && dump_tree)
-> > >  		pr_cont("%s\n", gotnocbscbs ? "" : " (self only)");
-> > > -- 
-> > > 2.25.1
-> > > 
+> intel_cht_wc_get_model() is defined in driver/mfd/intel_soc_pmic_chtwc.c
+> 
+> Usually, mfd drivers share the data structure such as struct intel_soc_pmic. But, didn't call the exported function for only
+> specific driver between linux kernel framework (extcon vs. mfd).
+> 
+> So that I think that you better to update the mode information
+> to 'struct intel_soc_pmic' data structure and then use it
+> instead of using the exported function which may make the confusion.
+
+That is a good idea, thanks.
+
+I've implemented this suggestion for the upcoming v3 of the patch-set.
+
+Regards,
+
+Hans
+
+
+> 
+>> +    case INTEL_CHT_WC_GPD_WIN_POCKET:
+>> +        /*
+>> +         * When a host-cable is detected the BIOS enables an external 5v boost
+>> +         * converter to power connected devices there are 2 problems with this:
+>> +         * 1) This gets seen by the external battery charger as a valid Vbus
+>> +         *    supply and it then tries to feed Vsys from this creating a
+>> +         *    feedback loop which causes aprox. 300 mA extra battery drain
+>> +         *    (and unless we drive the external-charger-disable pin high it
+>> +         *    also tries to charge the battery causing even more feedback).
+>> +         * 2) This gets seen by the pwrsrc block as a SDP USB Vbus supply
+>> +         * Since the external battery charger has its own 5v boost converter
+>> +         * which does not have these issues, we simply turn the separate
+>> +         * external 5v boost converter off and leave it off entirely.
+>> +         */
+>> +        cht_wc_extcon_set_5v_boost(ext, false);
+>> +        break;
+>> +    default:
+>> +        break;
+>> +    }
+>>         /* Enable sw control */
+>>       ret = cht_wc_extcon_sw_control(ext, true);
+>>
+> 
+> 
+
