@@ -2,129 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A804B454274
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 09:13:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A14A345427A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 09:19:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234442AbhKQIQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 03:16:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55176 "EHLO
+        id S234431AbhKQIWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 03:22:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229846AbhKQIQZ (ORCPT
+        with ESMTP id S229846AbhKQIWA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 03:16:25 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E85C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 00:13:26 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id u60so5003512ybi.9
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 00:13:26 -0800 (PST)
+        Wed, 17 Nov 2021 03:22:00 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5A6C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 00:19:02 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id p3-20020a05600c1d8300b003334fab53afso4059789wms.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 00:19:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jXc/W3fsZ8dOeyiOcSijJMj5DXfvkIMk6aAx/SaKEf8=;
-        b=yOTlDHdzi/R7Twc9Aoou1k/udGwAK6nbx5/uaL1lptm1SrBDRiA+whmOdxbWNnGXnj
-         qigxlWEC2e+SCtY0bZg6+bt10AbciDhc/cYMkCu5njQ3bYcVvUVAbpv5Dfoo3BMmJVuo
-         NMyzHJq/UqHlhptNsfyVmckmbtXF+diw/gjvThx7qvvBbMNLgVHDFhB4GCj6V4hVOePJ
-         hsd6W+QZw9bZIm1YmYhRL093OjuDukgJiJfGYn0z6Tl5U7r5PiXIJK2cBTAV7239VwZW
-         TBKs9n9A8EuFryLOyxAGeL0WZ7MHkD3ZCsAKMvztoZYRjuHBvH5KLDWlyS3hwxtB+kDS
-         7RXQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=gJO+hq67wFWIADyKs7hg47r83klJFHiDVa9gUS5v9J8=;
+        b=quTwTPHH+rAXIkc/+l5DE4z2+gAKWVNjg1OCK018bHrffz0C0nDb5GEJHXGrQ01CQL
+         Ziea4IeXjSPgC8BvxMh+Dl6NvzqTr/9lACqC6GoNlstd5wQ9Vl4vphNvtu0+RUwR8U76
+         I9/NPr/qj95YZcchye9J5w73dHLUDH7EHmR8jIbU7uO2iODzcCVH2yWp6cFtHeYsNAFf
+         1sgh61pp0jHPxr7K52vXfLZqF/vAwL83NUQ7QsmuFhA+S7WohICY5uk4Lr5xv5P428Y7
+         XinfvJ4s33iuyUnAZlk/Rkb3rJhki6OM/VwTdDHsnddgVWrgxz8BGtzmiCz+HG9Ch+7o
+         Ld4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jXc/W3fsZ8dOeyiOcSijJMj5DXfvkIMk6aAx/SaKEf8=;
-        b=RmICbpUvkONnUqVM68UscvYlr2pSP81ICrUA6v4BtpTavyhwE/nHh00avIdCAfNDKt
-         ejjv+QnpEZK0oNYIvqVHy7nNBuhWJGsn4KNiL1VOeuq4CT0D1uI9c+x84WTfTKcAPgAU
-         LujwEtgS1a+F4WXS14r65qaQJnl6SJqhDs40FuGuR+8o32ksp1i5/k6zxgRC4pbIgs1j
-         ADXydmSZi0+YKSDq8N25Mvb2ssHlK2JmHUny8/aCz6OeRonchLjpUXS8u7rPOpPWITG6
-         RtuXpaaYk8/lkEe3HcLVjBs+5gjD6fLhdDLDFYupY127hrURYqBvaYe/oiajVGSkjkjw
-         6Rdg==
-X-Gm-Message-State: AOAM532WyzYkTJkDjE1VUE4YDfMVTsiwPx4QsZYfAveGUk9/IbNhsd2A
-        2T+ME18may4ntBZ+1Q+7BaycfGQoNv27MF9oqL2j3w==
-X-Google-Smtp-Source: ABdhPJwLuHOoPpM54LR2hV1w3OpkkYoyTkMr4ZMw49rWPaQWnoP3DEuhMQs3kgoLn+ezTlNTYVK6hCttkqQAoo2Bd7c=
-X-Received: by 2002:a25:a427:: with SMTP id f36mr14948360ybi.245.1637136805947;
- Wed, 17 Nov 2021 00:13:25 -0800 (PST)
-MIME-Version: 1.0
-References: <20211116173255.19936-1-vincent.guittot@linaro.org> <20211116182758.GB56473@e120937-lin>
-In-Reply-To: <20211116182758.GB56473@e120937-lin>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=gJO+hq67wFWIADyKs7hg47r83klJFHiDVa9gUS5v9J8=;
+        b=ZNqH3+QMLYeZf96tO8dIsayb7wuGmdEei4c7xz1di8pIFkF1o2KeLUxOptDKxfjaAw
+         OgcqbU8vYyOSKbGFlLhT6/bdoCFa/jiQcnHqvjuGtoy/zBnaYcdlYybWmTCO95qKMS18
+         xEJB05C06s5b+uK9B5sulbCY3l9JM05yY5Qnd3Dt7/9Zvhc5MqfC2Zq2BoAvI3WLcS5K
+         1qbyJV7rV1Y3b4AusqCZwwmcFsjPs3xIib5Ufn9rdyUXPuW/40aCOJ/rqsfmU3PqKL0l
+         rcbSQ6NAbRrT4RtDhhit8RjrCJXmFVc6UQu25+i7dsNGIieGTW5r0V1C/WmKA4/M34qP
+         wO5A==
+X-Gm-Message-State: AOAM532LbmEDr6InwIR/dFUqdh9VIAPcY74DOaCHp3lHYGZTPLN85fJz
+        0OgsoHuFenNARRBCxk53cejiThpCggfLew==
+X-Google-Smtp-Source: ABdhPJxHRS+Yy3wpCUHh2hkl176fv28z9dLSXZaKn4MqGrtRjCVloK/qmx3sLpk46mOmJqUG7VEwBA==
+X-Received: by 2002:a05:600c:35cb:: with SMTP id r11mr77914397wmq.190.1637137140659;
+        Wed, 17 Nov 2021 00:19:00 -0800 (PST)
+Received: from localhost.localdomain ([2a01:e0a:f:6020:24f0:d30b:4818:6b7])
+        by smtp.gmail.com with ESMTPSA id s8sm14598254wro.19.2021.11.17.00.18.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 00:18:59 -0800 (PST)
 From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 17 Nov 2021 09:13:14 +0100
-Message-ID: <CAKfTPtDND0CfOisFpR7MtB4mi1JKh=Oz-NWV9DqXNLbZE2t3+w@mail.gmail.com>
-Subject: Re: [PATCH] arm/scmi: fix base agent discover response
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     sudeep.holla@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+To:     sudeep.holla@arm.com, cristian.marussi@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>
+Subject: [PATCH v2] arm/scmi: fix base agent discover response
+Date:   Wed, 17 Nov 2021 09:18:56 +0100
+Message-Id: <20211117081856.9932-1-vincent.guittot@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cristian,
+According to scmi specification, the response of the discover agent request
+is made of:
+- int32 status
+- uint32 agent_id
+- uint8 name[16]
 
-On Tue, 16 Nov 2021 at 19:28, Cristian Marussi <cristian.marussi@arm.com> wrote:
->
-> On Tue, Nov 16, 2021 at 06:32:55PM +0100, Vincent Guittot wrote:
-> > According to scmi specification, the response of the discover agent request
-> > is made of:
-> > - int32 status
-> > - uint32 agent_id
-> > - uint8 name[16]
-> >
-> > but the current implementation doesn't take into account the agent_id field
-> > and only allocates a rx buffer of SCMI_MAX_STR_SIZE length
-> >
->
-> Hi Vincent,
->
-> > Allocate the correct length for rx buffer and copy the name from the
-> > correct offset in the response.
-> >
-> > While no error were returned until v5.15, v5.16-rc1 fails with virtio_scmi
-> > transport channel:
-> >
-> > [    1.093253] arm-scmi firmware:scmi0: SCMI Notifications - Core Enabled.
-> > [    1.114776] arm-scmi firmware:scmi0: SCMI Protocol v2.0 'Linaro:PMWG' Firmware version 0x2090000
-> > [    1.117544] scmi-virtio virtio0: tx:used len 28 is larger than in buflen 24
-> >
->
-> Good catch...I was (still) not testing BASE_DISCOVER_AGENT in my virtio setup
-> given it's optional....
->
-> Once implemented the command I could reproduce and test you fix.
->
-> [    1.239629] arm-scmi firmware:scmi: SCMI Notifications - Core Enabled.
-> [    1.266401] arm-scmi firmware:scmi: SCMI Protocol v2.0 'EMU-SCMI-VM:userland' Firmware version 0xdeadbeef
-> [    1.280360] arm-scmi firmware:scmi: Found 3 protocol(s) 3 agent(s)
-> [    1.286304] arm-scmi firmware:scmi: Agent 0: AGENT_00
-> [    1.294115] arm-scmi firmware:scmi: Agent 1: AGENT_01
-> [    1.301062] arm-scmi firmware:scmi: Agent 2: AGENT_02
->
-> LGTM.
->
-> Maybe it's worth also a Fixes...
+but the current implementation doesn't take into account the agent_id field
+and only allocates a rx buffer of SCMI_MAX_STR_SIZE length
 
-I was not sure which commit to go back.
+Allocate the correct length for rx buffer and copy the name from the
+correct offset in the response.
 
->
-> The earlier where this was introduced seems:
->
-> Fixes: b6f20ff8bd94 ("firmware: arm_scmi: add common infrastructure and support for base protocol")
+While no error were returned until v5.15, v5.16-rc1 fails with virtio_scmi
+transport channel:
 
-I'm going to put this one to make sure that all LTS will get a fix
+[    1.093253] arm-scmi firmware:scmi0: SCMI Notifications - Core Enabled.
+[    1.114776] arm-scmi firmware:scmi0: SCMI Protocol v2.0 'Linaro:PMWG' Firmware version 0x2090000
+[    1.117544] scmi-virtio virtio0: tx:used len 28 is larger than in buflen 24
 
->
-> and then it was carried on (:D) after heavily refactoring in:
->
-> Fixes: 8d3581c2526f ("firmware: arm_scmi: Port base protocol to new interface")
->
-> FWIW,
->
-> Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
-> Tested-by: Cristian Marussi <cristian.marussi@arm.com>
+Fixes: b6f20ff8bd94 ("firmware: arm_scmi: add common infrastructure and support for base protocol")
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
+Tested-by: Cristian Marussi <cristian.marussi@arm.com>
+---
 
-Thanks
+Change since v1:
+- Added Fixes tag
+- Added Tested and Review tag
 
->
-> Thanks,
-> Cristian
->
+ drivers/firmware/arm_scmi/base.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/firmware/arm_scmi/base.c b/drivers/firmware/arm_scmi/base.c
+index de416f9e7921..f5219334fd3a 100644
+--- a/drivers/firmware/arm_scmi/base.c
++++ b/drivers/firmware/arm_scmi/base.c
+@@ -34,6 +34,12 @@ struct scmi_msg_resp_base_attributes {
+ 	__le16 reserved;
+ };
+ 
++struct scmi_msg_resp_base_discover_agent {
++	__le32 agent_id;
++	u8 name[SCMI_MAX_STR_SIZE];
++};
++
++
+ struct scmi_msg_base_error_notify {
+ 	__le32 event_control;
+ #define BASE_TP_NOTIFY_ALL	BIT(0)
+@@ -225,18 +231,21 @@ static int scmi_base_discover_agent_get(const struct scmi_protocol_handle *ph,
+ 					int id, char *name)
+ {
+ 	int ret;
++	struct scmi_msg_resp_base_discover_agent *agent_info;
+ 	struct scmi_xfer *t;
+ 
+ 	ret = ph->xops->xfer_get_init(ph, BASE_DISCOVER_AGENT,
+-				      sizeof(__le32), SCMI_MAX_STR_SIZE, &t);
++				      sizeof(__le32), sizeof(*agent_info), &t);
+ 	if (ret)
+ 		return ret;
+ 
+ 	put_unaligned_le32(id, t->tx.buf);
+ 
+ 	ret = ph->xops->do_xfer(ph, t);
+-	if (!ret)
+-		strlcpy(name, t->rx.buf, SCMI_MAX_STR_SIZE);
++	if (!ret) {
++		agent_info = t->rx.buf;
++		strlcpy(name, agent_info->name, SCMI_MAX_STR_SIZE);
++	}
+ 
+ 	ph->xops->xfer_put(ph, t);
+ 
+-- 
+2.17.1
+
