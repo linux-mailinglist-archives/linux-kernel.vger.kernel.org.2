@@ -2,102 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC164541FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 08:39:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBC44541FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 08:39:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234207AbhKQHmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 02:42:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:43268 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234007AbhKQHme (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 02:42:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637134776;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RBqSeQqOmjantMan273qAkC4lAER1ZmY/hfKqgf6Tb8=;
-        b=HX/map3BsAcOMXeyzLD9JW7Y7HNr0WSHgvDa3EEFC/fUqU9hQ306G3FiZqzMOxd6dl/D0A
-        M9X0POPkbIvgTYUyp6stMf4snUHGeRCDx2+jQE2mJkyOnwv1YZCXLiEHh4uYdxTjO4hFbc
-        P6yFO9JNPF9mDTV0+qV+0ewHWd6DZME=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-5-gXmAXYHAOqW-ffmeGtaU1Q-1; Wed, 17 Nov 2021 02:39:32 -0500
-X-MC-Unique: gXmAXYHAOqW-ffmeGtaU1Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C987580A5C8;
-        Wed, 17 Nov 2021 07:39:30 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 569B860D30;
-        Wed, 17 Nov 2021 07:39:28 +0000 (UTC)
-Message-ID: <9afc4ca6-a326-79ea-cc0b-4ce0808217d2@redhat.com>
-Date:   Wed, 17 Nov 2021 08:39:27 +0100
+        id S234223AbhKQHmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 02:42:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234219AbhKQHmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 02:42:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD48B61350;
+        Wed, 17 Nov 2021 07:39:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637134787;
+        bh=Nuc5So84Q6X06+1/kB/0jh7ulGOlJ9+M3MfCyLkrdIU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A2j7O7MncDswDjEVTJk7ppmoVlWdlnm9m0HnK3MRlxM6jxPF4xn9NZg+RRKJAi59D
+         oVrpVJSBQBYcS1MuTfvnJQvOiI6xT7/oh/246OkJ6TO9hOuLYpM+0a2DGIGpgAo8oU
+         e8kFwb40FYPpgjGVxVzp454pIF2GQuFQRo7Go4nc=
+Date:   Wed, 17 Nov 2021 08:39:44 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] kernfs: release kernfs_mutex before the inode
+ allocation
+Message-ID: <YZSxwM8ucqGsY1hq@kroah.com>
+References: <20211116194317.1430399-1-minchan@kernel.org>
+ <YZQLWq7WMSRF2xCM@kroah.com>
+ <YZQkQcrldGFwqV/r@google.com>
+ <YZSk3DECnnknOu5T@kroah.com>
+ <YZSu/HiHDZxo9Wpa@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: Thoughts of AMX KVM support based on latest kernel
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     "Liu, Jing2" <jing2.liu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Jing Liu <jing2.liu@linux.intel.com>,
-        "Cooper, Andrew" <andrew.cooper3@citrix.com>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>
-References: <BYAPR11MB325685AB8E3DFD245846F854A9939@BYAPR11MB3256.namprd11.prod.outlook.com>
- <87k0h85m65.ffs@tglx> <YZPWsICdDTZ02UDu@google.com> <87ee7g53rp.ffs@tglx>
- <04978d6d-8e1a-404d-b30d-402a7569c1f0@redhat.com> <87zgq34z4c.ffs@tglx>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <87zgq34z4c.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZSu/HiHDZxo9Wpa@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 21:36, Thomas Gleixner wrote:
->            local_irq_enable();     <- Problem starts here
+On Tue, Nov 16, 2021 at 11:27:56PM -0800, Minchan Kim wrote:
+> On Wed, Nov 17, 2021 at 07:44:44AM +0100, Greg Kroah-Hartman wrote:
+> > On Tue, Nov 16, 2021 at 01:36:01PM -0800, Minchan Kim wrote:
+> > > On Tue, Nov 16, 2021 at 08:49:46PM +0100, Greg Kroah-Hartman wrote:
+> > > > On Tue, Nov 16, 2021 at 11:43:17AM -0800, Minchan Kim wrote:
+> > > > > The kernfs implementation has big lock granularity(kernfs_rwsem) so
+> > > > > every kernfs-based(e.g., sysfs, cgroup, dmabuf) fs are able to compete
+> > > > > the lock. Thus, if one of userspace goes the sleep under holding
+> > > > > the lock for a long time, rest of them should wait it. A example is
+> > > > > the holder goes direct reclaim with the lock since it needs memory
+> > > > > allocation. Let's fix it at common technique that release the lock
+> > > > > and then allocate the memory. Fortunately, kernfs looks like have
+> > > > > an refcount so I hope it's fine.
+> > > > > 
+> > > > > Signed-off-by: Minchan Kim <minchan@kernel.org>
+> > > > > ---
+> > > > >  fs/kernfs/dir.c             | 14 +++++++++++---
+> > > > >  fs/kernfs/inode.c           |  2 +-
+> > > > >  fs/kernfs/kernfs-internal.h |  1 +
+> > > > >  3 files changed, 13 insertions(+), 4 deletions(-)
+> > > > 
+> > > > What workload hits this lock to cause it to be noticable?
+> > > 
+> > > A app launching since it was dropping the frame since the
+> > > latency was too long.
+> > 
+> > How does running a program interact with kernfs filesystems?  Which
+> > one(s)?
 > 
->            preempt_enable();	   <- Becomes wider here
->
->> It doesn't become that much wider because there's always preempt
->> notifiers.  So if it's okay to save XFD in the XSAVES wrapper and in
->> kvm_arch_vcpu_put(), that might be already remove the need to do it
->> schedule().
->
-> Did not think about preemption notifiers. Probably because I hate
-> notifiers with a passion since I had to deal with the CPU hotplug
-> notifier trainwreck.
-> 
-> But yes that would work. So the places to do that would be:
-> 
-> 1) kvm_sched_out() -> kvm_arch_vcpu_put() > 2) kernel_fpu_begin_mask()
+> A app launching involves dma_buf exports which creates kobject
+> and add it to the kernfs with down_write - kernfs_add_one.
 
-... which calls save_fpregs_to_fpstate
+I thought the "create a dma_buf kobject" kernel change was fixed up to
+not do that anymore as that was a known performance issue.
 
-> 3) kvm_put_guest_fpu()
+Creating kobjects should NOT be on a fast path, if they are, that needs
+to be fixed.
 
-... which calls save_fpregs_to_fpstate via fpu_swap_kvm_fpstate
+> At the same time in other CPU, a random process was accessing
+> sysfs and the kernfs_iop_lookup was already hoding the kernfs_rwsem
+> and ran under direct reclaim patch due to alloc_inode in
+> kerfs_get_inode.
 
-So perhaps it could be done in save_fpregs_to_fpstate (for the sched out 
-path, it would be called by switch_fpu_prepare()).  But for now I would 
-also start with the trivial version.
+What program is constantly hitting sysfs?  sysfs is not for
+performance-critical things, right?
 
-> I'd be really surprised if that RDMSR is truly noticeable within all the
-> other crud this path is doing.
+> Therefore, the app is stuck on the lock and lose frames so enduser
+> sees the jank.
 
-I agree.
+But how does this patch work around it?  It seems like you are
+special-casing the kobject creation path only.
 
-Paolo
+And is this the case really on 5.15?  I thought the kernfs locks were
+broken up again to not cause this problem in 5.14 or so.
 
+thanks,
+
+greg k-h
