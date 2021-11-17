@@ -2,131 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E200454344
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:04:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB94B454346
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:06:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232958AbhKQJHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 04:07:04 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:43260 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230064AbhKQJHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 04:07:01 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxmuRUxZRhitQAAA--.4743S2;
-        Wed, 17 Nov 2021 17:03:16 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: Do not define pci_remap_iospace() under MACH_LOONGSON64
-Date:   Wed, 17 Nov 2021 17:03:15 +0800
-Message-Id: <1637139795-3032-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxmuRUxZRhitQAAA--.4743S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWw4DCF45WFW8AFyUAry3XFb_yoW5tw4kpF
-        sIvwn7Gr4rCr45AFWUJry5Jr98XFZ0yay3tF18JrnxZF1DuryUJr1xtF1I9ryDJFWUtayx
-        XF4v9r4jqF1Yyw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GFWl
-        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
-        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAK
-        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
-        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUOo7ZUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S234784AbhKQJIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 04:08:41 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32978 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230064AbhKQJIj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 04:08:39 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AH8faTB019812;
+        Wed, 17 Nov 2021 09:05:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=81GUYYvzXXKxUGSxUOqwUPJtu2mV6MVicPPY3X90eco=;
+ b=c9Nr612leVA8iVlsK+F5XXJ4KyrR2AcrVv7zlCGlEGGkaSyGTksjl2bhZi7s9N2Lgu/M
+ 4FhFjsqA6Tzf4qGbGQh2QFredn57ewoaERtxbVdSbMZkPMRle87GBRHFhXnIGZW8ES5z
+ QrzwGI9tVYLdRz5FvzCqWPQQZhaN8rdW6BSA9p3JagIkF+2wqGbbCP0iOYIJdhJQ4DGR
+ 1bGHzl8bk4iWTMb2AfxQFa+ZJlxLBblbkU1Voomo6nHho9EjMnzpIW5TsfGjFehGD8j7
+ /2TbJP44K7qT3D7QysRHbY6SNUMp0akVSXgTwWM69PdTUJoBrx/ZS4zgCU0ilp4/mTEF 8g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ccxesgeee-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Nov 2021 09:05:40 +0000
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AH90nMs001433;
+        Wed, 17 Nov 2021 09:05:39 GMT
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ccxesgeds-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Nov 2021 09:05:39 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AH938CY031836;
+        Wed, 17 Nov 2021 09:05:37 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06ams.nl.ibm.com with ESMTP id 3ca4mjyu6a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Nov 2021 09:05:37 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AH95YuG983672
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Nov 2021 09:05:34 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0631D11C052;
+        Wed, 17 Nov 2021 09:05:34 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E8C6911C05B;
+        Wed, 17 Nov 2021 09:05:30 +0000 (GMT)
+Received: from [9.43.21.152] (unknown [9.43.21.152])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 17 Nov 2021 09:05:30 +0000 (GMT)
+Message-ID: <beeecf6d-3cd9-2072-ee7c-13712a77807d@linux.ibm.com>
+Date:   Wed, 17 Nov 2021 14:35:29 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] perf/test: Test case 27 broken on s390 in linux-next
+Content-Language: en-US
+To:     Thomas Richter <tmricht@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org, sumanthk@linux.ibm.com, jolsa@redhat.com
+Cc:     svens@linux.ibm.com, gor@linux.ibm.com, hca@linux.ibm.com
+References: <20211103155215.2941895-1-tmricht@linux.ibm.com>
+From:   Madhavan Srinivasan <maddy@linux.ibm.com>
+In-Reply-To: <20211103155215.2941895-1-tmricht@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: vVi8BCFFLC3Xch8WTAznHMEyCU2JnPxF
+X-Proofpoint-ORIG-GUID: _p6K4rlaX0PWiy_Q1xtuejZarqfhJPqL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-17_03,2021-11-16_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ adultscore=0 malwarescore=0 phishscore=0 mlxlogscore=999 spamscore=0
+ impostorscore=0 bulkscore=0 priorityscore=1501 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111170045
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 9f76779f2418 ("MIPS: implement architecture-specific
-'pci_remap_iospace()'"), there exists the following warning on the
-Loongson64 platform:
 
-    loongson-pci 1a000000.pci:       IO 0x0018020000..0x001803ffff -> 0x0000020000
-    loongson-pci 1a000000.pci:      MEM 0x0040000000..0x007fffffff -> 0x0040000000
-    ------------[ cut here ]------------
-    WARNING: CPU: 2 PID: 1 at arch/mips/pci/pci-generic.c:55 pci_remap_iospace+0x84/0x90
-    resource start address is not zero
-    ...
-    Call Trace:
-    [<ffffffff8020dc78>] show_stack+0x40/0x120
-    [<ffffffff80cf4a0c>] dump_stack_lvl+0x58/0x74
-    [<ffffffff8023a0b0>] __warn+0xe0/0x110
-    [<ffffffff80cee02c>] warn_slowpath_fmt+0xa4/0xd0
-    [<ffffffff80cecf24>] pci_remap_iospace+0x84/0x90
-    [<ffffffff807f9864>] devm_pci_remap_iospace+0x5c/0xb8
-    [<ffffffff808121b0>] devm_of_pci_bridge_init+0x178/0x1f8
-    [<ffffffff807f4000>] devm_pci_alloc_host_bridge+0x78/0x98
-    [<ffffffff80819454>] loongson_pci_probe+0x34/0x160
-    [<ffffffff809203cc>] platform_probe+0x6c/0xe0
-    [<ffffffff8091d5d4>] really_probe+0xbc/0x340
-    [<ffffffff8091d8f0>] __driver_probe_device+0x98/0x110
-    [<ffffffff8091d9b8>] driver_probe_device+0x50/0x118
-    [<ffffffff8091dea0>] __driver_attach+0x80/0x118
-    [<ffffffff8091b280>] bus_for_each_dev+0x80/0xc8
-    [<ffffffff8091c6d8>] bus_add_driver+0x130/0x210
-    [<ffffffff8091ead4>] driver_register+0x8c/0x150
-    [<ffffffff80200a8c>] do_one_initcall+0x54/0x288
-    [<ffffffff811a5320>] kernel_init_freeable+0x27c/0x2e4
-    [<ffffffff80cfc380>] kernel_init+0x2c/0x134
-    [<ffffffff80205a2c>] ret_from_kernel_thread+0x14/0x1c
-    ---[ end trace e4a0efe10aa5cce6 ]---
-    loongson-pci 1a000000.pci: error -19: failed to map resource [io  0x20000-0x3ffff]
+On 11/3/21 21:22, Thomas Richter wrote:
+> Commit 10269a2ca2b08c ("perf test sample-parsing: Add endian test for struct branch_flags")
+> broke the test case 27 (Sample parsing) on s390 on linux-next tree:
+>
+>    # ./perf test -Fv 27
+>    27: Sample parsing
+>    --- start ---
+>    parsing failed for sample_type 0x800
+>    ---- end ----
+>    Sample parsing: FAILED!
+>    #
+>
+> The cause of the failure is a wrong #define BS_EXPECTED_BE statement
+> in above commit.  Correct this define and the test case runs fine.
+>
+> Output After:
+>    # ./perf test -Fv 27
+>    27: Sample parsing                                                  :
+>    --- start ---
+>    ---- end ----
+>    Sample parsing: Ok
+>    #
 
-We can see that the resource start address is 0x0000020000, because
-the ISA Bridge used the zero address which is defined in the dts file
-arch/mips/boot/dts/loongson/ls7a-pch.dtsi:
 
-    ISA Bridge: /bus@10000000/isa@18000000
-    IO 0x0000000018000000..0x000000001801ffff  ->  0x0000000000000000
+Hi Thomas,
+Thanks for the fix. Not sure, I guess I messed up my big endian setup or 
+test run I had before sending
+the patch. My bad. It fails for me too, but with your patch the issue 
+fixed.
 
-The architecture-independent function pci_remap_iospace() works well
-for Loongson64, so just do not define architecture-specific function
-pci_remap_iospace() under MACH_LOONGSON64.
+Acked-and-Tested-by: Madhavan Srinivasan <maddy@linux.ibm.com>
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/include/asm/pci.h | 2 ++
- arch/mips/pci/pci-generic.c | 2 ++
- 2 files changed, 4 insertions(+)
 
-diff --git a/arch/mips/include/asm/pci.h b/arch/mips/include/asm/pci.h
-index 421231f..5d647cb 100644
---- a/arch/mips/include/asm/pci.h
-+++ b/arch/mips/include/asm/pci.h
-@@ -21,8 +21,10 @@
- #include <linux/of.h>
- 
- #ifdef CONFIG_PCI_DRIVERS_GENERIC
-+#ifndef CONFIG_MACH_LOONGSON64
- #define pci_remap_iospace pci_remap_iospace
- #endif
-+#endif
- 
- #ifdef CONFIG_PCI_DRIVERS_LEGACY
- 
-diff --git a/arch/mips/pci/pci-generic.c b/arch/mips/pci/pci-generic.c
-index 18eb8a4..6f18071 100644
---- a/arch/mips/pci/pci-generic.c
-+++ b/arch/mips/pci/pci-generic.c
-@@ -47,6 +47,7 @@ void pcibios_fixup_bus(struct pci_bus *bus)
- 	pci_read_bridge_bases(bus);
- }
- 
-+#ifndef CONFIG_MACH_LOONGSON64
- int pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
- {
- 	unsigned long vaddr;
-@@ -60,3 +61,4 @@ int pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
- 	set_io_port_base(vaddr);
- 	return 0;
- }
-+#endif
--- 
-2.1.0
-
+>
+> Fixes: 10269a2ca2b08c ("perf test sample-parsing: Add endian test for struct branch_flags")
+> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+> ---
+>   tools/perf/tests/sample-parsing.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/tests/sample-parsing.c b/tools/perf/tests/sample-parsing.c
+> index c83a11514129..9c7af55b74db 100644
+> --- a/tools/perf/tests/sample-parsing.c
+> +++ b/tools/perf/tests/sample-parsing.c
+> @@ -36,7 +36,7 @@
+>    * These are based on the input value (213) specified
+>    * in branch_stack variable.
+>    */
+> -#define BS_EXPECTED_BE	0xa00d000000000000
+> +#define BS_EXPECTED_BE	0xa000d00000000000
+>   #define BS_EXPECTED_LE	0xd5000000
+>   #define FLAG(s)	s->branch_stack->entries[i].flags
+>   
