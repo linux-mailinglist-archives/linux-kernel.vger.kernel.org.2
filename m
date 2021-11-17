@@ -2,54 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC8F4544C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 11:12:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 805FF4544C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 11:12:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236134AbhKQKPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 05:15:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233876AbhKQKPD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 05:15:03 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD6F9C061570;
-        Wed, 17 Nov 2021 02:12:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5ReCsooihDQ9YuxbQvkUBMTQuLIENZLOrhq8Lxdj/NU=; b=rxYDnL/QuEc3MpCMAfNwYDB1Zc
-        ng3LSc+YJvfXmQpA0Q2a516GKFGJXLYonGZuLGvKki/8MIutmGrM+4Z7SxnGtl+GNAzUkJOmyOvj8
-        CMl6VDNLknciUUICY1UpBV6MS4/f0rVScLNoV70kLp1E0Z/hgrDc0VwZb7oHmZBIsf/3i4L2ArPm3
-        85t/igOtSkg9Ejr/dj0E1eqJ3PvzF2q7bfzD7VtKN4NXoa84sRk21S49AlaWpSWze832QvBQU8GYf
-        Xur8FdcJ1eKXvgR2lcP2KRtH9hATbIpkxg1Mag/DFTROKEz9d72CETkOh+cmXR2C9rB07g0vIrM2p
-        F86l5YCA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mnHvA-004PjB-AH; Wed, 17 Nov 2021 10:12:04 +0000
-Date:   Wed, 17 Nov 2021 02:12:04 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Yifeng Li <tomli@tomli.me>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v2] PCI: Add func1 DMA quirk for Marvell 88SE9125 SATA
- controller
-Message-ID: <YZTVdOlEbMb0tv59@infradead.org>
-References: <YZPA+gSsGWI6+xBP@work>
+        id S236141AbhKQKPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 05:15:38 -0500
+Received: from foss.arm.com ([217.140.110.172]:54984 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233876AbhKQKPg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 05:15:36 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 39A7BD6E;
+        Wed, 17 Nov 2021 02:12:38 -0800 (PST)
+Received: from [10.57.24.78] (unknown [10.57.24.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8A08E3F70D;
+        Wed, 17 Nov 2021 02:12:36 -0800 (PST)
+Subject: Re: [PATCH] base: arch_topology: Use policy->max to calculate
+ freq_factor
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     sudeep.holla@arm.com, gregkh@linuxfoundation.org,
+        rafael@kernel.org, bjorn.andersson@linaro.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20211115201010.68567-1-thara.gopinath@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <bce694fc-432c-846b-bd96-592368d12e20@arm.com>
+Date:   Wed, 17 Nov 2021 10:12:34 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZPA+gSsGWI6+xBP@work>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20211115201010.68567-1-thara.gopinath@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 02:32:26PM +0000, Yifeng Li wrote:
-> Like other SATA controller chips in the Marvell 88SE91xx series, the
-> Marvell 88SE9125 has the same DMA requester ID hardware bug that prevents
-> it from working under IOMMU. This patch adds its device ID 0x9125 to the
-> Function 1 DMA alias quirk list.
 
-Btw, do we need to prevent vfio assignment for all devices with this
-quirk?
+
+On 11/15/21 8:10 PM, Thara Gopinath wrote:
+> cpuinfo.max_freq can reflect boost frequency if enabled during boot.  Since
+> we don't consider boost frequencies while calculating cpu capacities, use
+> policy->max to populate the freq_factor during boot up.
+> 
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> ---
+>   drivers/base/arch_topology.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> index 43407665918f..df818b439bc3 100644
+> --- a/drivers/base/arch_topology.c
+> +++ b/drivers/base/arch_topology.c
+> @@ -334,7 +334,7 @@ init_cpu_capacity_callback(struct notifier_block *nb,
+>   	cpumask_andnot(cpus_to_visit, cpus_to_visit, policy->related_cpus);
+>   
+>   	for_each_cpu(cpu, policy->related_cpus)
+> -		per_cpu(freq_factor, cpu) = policy->cpuinfo.max_freq / 1000;
+> +		per_cpu(freq_factor, cpu) = policy->max / 1000;
+>   
+>   	if (cpumask_empty(cpus_to_visit)) {
+>   		topology_normalize_cpu_scale();
+> 
+
+LGTM
+
+Reviewed-by: Lukasz Luba <lukasz.luba@armc.com>
