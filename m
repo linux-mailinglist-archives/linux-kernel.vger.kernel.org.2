@@ -2,64 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC96C454AEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:27:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92CBD454AF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:28:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238819AbhKQQag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 11:30:36 -0500
-Received: from foss.arm.com ([217.140.110.172]:60120 "EHLO foss.arm.com"
+        id S239030AbhKQQbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 11:31:51 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:42390 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232237AbhKQQab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 11:30:31 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 624F41FB;
-        Wed, 17 Nov 2021 08:27:32 -0800 (PST)
-Received: from [10.57.44.211] (unknown [10.57.44.211])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 95A273F5A1;
-        Wed, 17 Nov 2021 08:27:29 -0800 (PST)
-Subject: Re: [PATCH 1/1] perf arm-spe: Inject SPE samples in perf-inject
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-References: <20211105104130.28186-1-german.gomez@arm.com>
- <20211105104130.28186-2-german.gomez@arm.com>
- <5163f41f-2337-6557-ca91-fb2c66738872@arm.com> <YZUf5zu4aOfoIhFl@kernel.org>
-From:   German Gomez <german.gomez@arm.com>
-Message-ID: <aa79a8eb-e7fa-ad81-f4a3-a843b63020b2@arm.com>
-Date:   Wed, 17 Nov 2021 16:27:27 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S232237AbhKQQbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 11:31:50 -0500
+Received: from zn.tnic (p200300ec2f13a300581971bf8eb608b9.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:a300:5819:71bf:8eb6:8b9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EAF161EC0136;
+        Wed, 17 Nov 2021 17:28:50 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1637166531;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=nyy0Npgg/uDrfpHyGIa0EaJntR1EOaRQ1y2qt3lq3Dk=;
+        b=dzlHf9SGSMz/98Ra6VKiZ0zIuihOPejKIFC60rcoFMSNH9aKwboXhlJzelMxuzusoZHp+W
+        LovyuknW+MklORQtyu61D4Lhtp53e6/c0o3ZgnytjVczz0zqYVDmY3uBqOHSeJsqC3OMK4
+        IaHlpoQnEqE6JMDbgGHgy8lJVaPVWDI=
+Date:   Wed, 17 Nov 2021 17:28:40 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
+        mark.rutland@arm.com, dvyukov@google.com, seanjc@google.com,
+        pbonzini@redhat.com, mbenes@suse.cz
+Subject: Re: [PATCH v2 04/23] x86,copy_mc_64: Remove .fixup usage
+Message-ID: <YZUtuAtlezsBrnNL@zn.tnic>
+References: <20211110100102.250793167@infradead.org>
+ <20211110101325.127055887@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <YZUf5zu4aOfoIhFl@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20211110101325.127055887@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+On Wed, Nov 10, 2021 at 11:01:06AM +0100, Peter Zijlstra wrote:
+> Place the anonymous .fixup code at the tail of the regular functions.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  arch/x86/lib/copy_mc_64.S |   12 ++++--------
+>  1 file changed, 4 insertions(+), 8 deletions(-)
 
-On 17/11/2021 15:29, Arnaldo Carvalho de Melo wrote:
-> [...]
-> Next time please expand this explanations a bit more: why should we
-> inject such samples? Is this enabling some new mode of operation, fixing
-> something, what is an example of output before this patch and after it?
-I will keep this in mind, thanks. In this case the support was missing
-and I included the context in the cover letter but not the commit msg.
+Reviewed-by: Borislav Petkov <bp@suse.de>
 
-Thanks,
-German
->
-> - Arnaldo
->
-> [...]
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
