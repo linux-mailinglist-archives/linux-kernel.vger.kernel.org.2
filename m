@@ -2,99 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0AF1454CF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:20:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88E30454CF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:20:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239928AbhKQSXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 13:23:25 -0500
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:59793 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239931AbhKQSXL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 13:23:11 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 3EDD83201464;
-        Wed, 17 Nov 2021 13:20:11 -0500 (EST)
-Received: from imap47 ([10.202.2.97])
-  by compute3.internal (MEProxy); Wed, 17 Nov 2021 13:20:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm3; bh=t6XcJhp+2vBfE6NrxYwXwZsNDc9o
-        GAJ6HShxyu3Uu0M=; b=USsjOfF1YD6OT23l86ZZZ7Ro3ix9fiDQ5Rre/7/yd+g0
-        c+s2FFJJlUvNlYu2b1vJsi2n8I/779VQArh8lJhArx4Kz2Jy5trBbE70N6fVKXjQ
-        TZbAzYKoAMIe9T1C5vdZCi9g4S7ie5qW9ONQyNQQTRozEgLfiHtQ/vMV5qYYhfJz
-        JTlKGAwxMGHfPC5XG2+pHbKkO35NgngwPIm1GBhgZNWtRBKhxfJNyljPpiAm0jzf
-        G0CSc/2tCk4gDo4uslbSRYt5rTp60maNoMbC5PSxbQCnZs7WUJBBLQdCJbkLb6Ez
-        t7/IuldOwq5/Tc/29FQcqinbLhrDKQglUDr2bsT0kQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=t6XcJh
-        p+2vBfE6NrxYwXwZsNDc9oGAJ6HShxyu3Uu0M=; b=coIxL/IodzfoaU8r1N9Inn
-        CESwjNZbOr08aShc8gjxnNnU1g8jugGMXJQKi+9hzAQzG60ldUb2t6QjEtGfZ6kY
-        8km2/DBslArshbykY4KvGRDbJ7EumUkxTo7OBZDty/RqYDk4LzYsWUlXO9yU+8iS
-        Mt/r8JxlKblYAw8B/fc7fsvIpXsgM50Ng4tqZUFwE+Zw1cmxKq/ClKgOlJfWzDCv
-        yAKKq8z/IIwHF8Ul8rWFGRiLF7c53RT2jciM7FZZYiBeHCFrMor3wC4FAmuyxEzT
-        oYp8TtTG2H6uZeK5dQBkp/M8zIciR+muWS3CPk8qSiUNR+uiNB/vbVtP9aWlE3Qw
-        ==
-X-ME-Sender: <xms:2UeVYZDRM8hipnUZM0-b8300EZ211RDqrfbGwbTKYNBsJIwi_x223g>
-    <xme:2UeVYXi2DSVfnqJ8vxA1xWsNlLPzT-NgpevnEf3ejODyWGYS1BG8kc6VV8HEsR3MO
-    gOzdvUSlOJlo8Ygm-Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeeggddutdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdfuvhgv
-    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
-    htthgvrhhnpefgieegieffuefhtedtjefgteejteefleefgfefgfdvvddtgffhffduhedv
-    feekffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hsvhgvnhesshhvvghnphgvthgvrhdruggvvh
-X-ME-Proxy: <xmx:2UeVYUnZxlaZfT0z9-vgyO-xK-BXGxEF4YoB0TJhiax_Ed24dB6UuA>
-    <xmx:2UeVYTyGEXzk5hO1Y2iyj7Yt0cu2ULN0KJNT9Wvz1tNlENBTC1tqtA>
-    <xmx:2UeVYeTTo5V8B8I-AE2urJs1IoNVFkR4vFCTk1JgZ_CT9X9yOcRv_A>
-    <xmx:2keVYUNWlYQuZ1_yyzMU6uc79H-KqavJONDkQan5SrU-kJKVujyI8g>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id ED4B8274036A; Wed, 17 Nov 2021 13:20:09 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1371-g2296cc3491-fm-20211109.003-g2296cc34
-Mime-Version: 1.0
-Message-Id: <7bac877d-1929-4caf-be8d-8405c5cfd3ba@www.fastmail.com>
-In-Reply-To: <20211117151450.207168-1-marcan@marcan.st>
-References: <20211117151450.207168-1-marcan@marcan.st>
-Date:   Wed, 17 Nov 2021 19:19:49 +0100
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Hector Martin" <marcan@marcan.st>,
-        "Heikki Krogerus" <heikki.krogerus@linux.intel.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-Cc:     =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
-        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] usb: typec: tipd: Fixes for Apple M1 (CD321X) support
-Content-Type: text/plain
+        id S239913AbhKQSXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 13:23:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54206 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230094AbhKQSXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 13:23:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 086C861BC1;
+        Wed, 17 Nov 2021 18:20:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637173204;
+        bh=FBrlAqhn871oYVvr9mvGIxAz/ecPOq96bNZqG0+QPFw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0i+lTezY0Kf4tMj/aQXa51W3F7kfNg0IeEMYP8aAH1Vj4tckDivXscIMPB24/bpSf
+         D/n+vqhCc16u7dHF050vKvuueoMRr5PbrgfWny6PDKQsn6AL9/AvGZQvO8/GfzUW44
+         ucCfYdRWsT/9MJvFXmbvLrFdE7cC6rEtS5oT7ocQ=
+Date:   Wed, 17 Nov 2021 19:20:02 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     stable@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S . Miller" <davem@davemloft.net>,
+        "open list:ETHERNET PHY LIBRARY" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH stable 4.9] net: mdio-mux: fix unbalanced put_device
+Message-ID: <YZVH0u5bTOXhQw56@kroah.com>
+References: <20211117180309.2737514-1-f.fainelli@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211117180309.2737514-1-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021, at 16:14, Hector Martin wrote:
-> Hi folks,
->
-> These two fixes make tipd work properly on Apple M1 devices, in
-> particular in the case where the bootloader hasn't initialized
-> the controllers yet.
->
-> We normally do it in m1n1 (so the machine can charge and so bootloaders
-> get working USB without needing this driver), but that was causing this
-> codepath to never get properly exercised, so we never caught it. I
+On Wed, Nov 17, 2021 at 10:03:08AM -0800, Florian Fainelli wrote:
+> From: Corentin Labbe <clabbe.montjoie@gmail.com>
+> 
+> commit 60f786525032432af1b7d9b8935cb12936244ccd upstream
+> 
+> mdio_mux_uninit() call put_device (unconditionally) because of
+> of_mdio_find_bus() in mdio_mux_init.
+> But of_mdio_find_bus is only called if mux_bus is empty.
+> If mux_bus is set, mdio_mux_uninit will print a "refcount_t: underflow"
+> trace.
+> 
+> This patch add a get_device in the other branch of "if (mux_bus)".
+> 
+> Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> Signed-off-by: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+> Note: this patch did not get any fixes tag, but it does fix issues
+> introduced by  fdf3b78df4d2 ("mdio: mux: Correct mdio_mux_init error
+> path issues").
 
-My boot process usually is iBoot -> m1n1 on nvme -> m1n1 chainloaded over usb.
-I thought I exercised this path by turning off the init in m1n1. I didn't take
-into account that this would only affect the one loaded over usb and that
-the one on nvme would still intitialize everything.
-Thanks for fixing this!
+Now queued up, thanks.
 
-With the Fixes tags feel free to add
-
-Reviewed-by: Sven Peter <sven@svenpeter.dev>
-
-to both patches.
-
-Sven
+greg k-h
