@@ -2,1276 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233E2454604
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 12:53:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D6B454606
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 12:54:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237060AbhKQL4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 06:56:05 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:48698 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235695AbhKQL4C (ORCPT
+        id S237071AbhKQL5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 06:57:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56704 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233746AbhKQL5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 06:56:02 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id 69C571F45E4D
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637149983; bh=gxNmSTYOHitgFwwhx1CgfUUkm1PbkVZ1PqONhxRq4pU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VzoctRB1Ak4nxl8QtGJlN/frzcDN9wo+QuEOLiLaM6zamPb0cHsD72XuS0Sg2Uqtx
-         kmbs1roLaKdxhjDMNw0hIbZ6zdM82oZROihMpItVcbBakA4Ikgw53f4UaLkzf4pe0l
-         kMRzT5+3ep4qvbOjTRfI04jNCHIv9Xo3BzTqP86Q8WYmBPbJxROvtdDa2wrPF6O4kg
-         jc4mZRV/+AIstaPugyA0iD63ACRDLwblKpvJzESdy4fwMyqXUfjFVPjLqq8JaDsNPA
-         tQQAVk30cQJDGOxpveeo+0thT4e5kRi897dJFiC/ipC/ok/P/AylcXkDIDdTZ/IneK
-         CAUKKBofmg8qg==
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-To:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev
-Cc:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Adrian Ratiu <adrian.ratiu@collabora.com>
-Subject: [PATCH v8.1 07/12] media: rkvdec: Add the VP9 backend
-Date:   Wed, 17 Nov 2021 12:52:56 +0100
-Message-Id: <20211117115256.28582-1-andrzej.p@collabora.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211116143842.75896-8-andrzej.p@collabora.com>
-References: <20211116143842.75896-8-andrzej.p@collabora.com>
+        Wed, 17 Nov 2021 06:57:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637150095;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WwyqpelVhOWoVsHhwsGDVW/xhwyG9gh8AidJeWXV1y8=;
+        b=CA+28grf8pDTrRQWzqZ4UM3srs5MNaSKPZb8tJnoqQsTBl+f+DsstOykK3DDKN1NUNADeu
+        N8PrLj9oAm2pXlG9DP/rSSWHAfR6YfSUXta3eFsOR+EFG10btVGV0YIY/Voy9f3/t1VNhu
+        il2q9phyewpleX5ETXtdJ6CP95A6K7w=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-254-2fOTpj4tNxWQHbwu6lwReg-1; Wed, 17 Nov 2021 06:54:54 -0500
+X-MC-Unique: 2fOTpj4tNxWQHbwu6lwReg-1
+Received: by mail-ed1-f69.google.com with SMTP id d13-20020a056402516d00b003e7e67a8f93so1959018ede.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 03:54:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=WwyqpelVhOWoVsHhwsGDVW/xhwyG9gh8AidJeWXV1y8=;
+        b=pboVl8btr3x35fLsZoHJmVUN3PwtbZNa3nISL7Whp+DYSGhXcKLsvK75Acx53dcnS2
+         3DZkXcN/EYxi+bYxCUOlR792+sUBxvl7dg2libY6J4ih/b4qyDsu9iyn9sdBZSf1Zorc
+         5bOf1HSY85W1uu116FUIxeZwr4beSeLRTfZKh389AeoFtRNaVZgywktvSuqdx2m04ygV
+         GxoLb08+79tVkr5VK6wdrPU7k+3wZJoKaWxDH9IkYcVZcXQeqNHSV4QugEc3LufilFE8
+         uiulGFIZoVC+xtKgEnj8T1hXzPQcTPmmYGGDDcuVIc9/C//kLaJwRTymx57tGrTDL3dI
+         bRqg==
+X-Gm-Message-State: AOAM531qPvEJ+05QgBX17AdRNMhlWk8NQUl+54e7456fiUji4m40a2Kk
+        MchjTxkDYpGG8aXRn9LYcOme6UMFbGfk9EhoPKcuWD7/S78dm6ZDzD5y1OUubwyszCJtzcDjA06
+        YLjJR5xoolze9iXlp5+DbMih1
+X-Received: by 2002:a17:906:478e:: with SMTP id cw14mr20560684ejc.46.1637150092755;
+        Wed, 17 Nov 2021 03:54:52 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw6MBc/3RzhGPSLXHaahFl8rDZHCMLA5xYK3UCmVYHT9FiFQVVTx1+piJ5rCgjqBPn8sdc+cg==
+X-Received: by 2002:a17:906:478e:: with SMTP id cw14mr20560638ejc.46.1637150092429;
+        Wed, 17 Nov 2021 03:54:52 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id ar4sm758779ejc.52.2021.11.17.03.54.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 03:54:51 -0800 (PST)
+Message-ID: <e465d9b9-4d95-72a0-7a34-6893ddd78daa@redhat.com>
+Date:   Wed, 17 Nov 2021 12:54:51 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [device property] 995fe757ec:
+ BUG:kernel_NULL_pointer_dereference,address
+Content-Language: en-US
+To:     Daniel Scally <djrscally@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     kernel test robot <oliver.sang@intel.com>, lkp@lists.01.org,
+        lkp@intel.com, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, rafael@kernel.org
+References: <20211116074104.GC32102@xsang-OptiPlex-9020>
+ <f54546b1-b0dc-c2bc-3a5f-bcdaf35297fc@redhat.com>
+ <YZPjf1GfZHR2ZjpD@smile.fi.intel.com>
+ <606a6bf2-e971-ddfe-74b0-cbc2b76935ba@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <606a6bf2-e971-ddfe-74b0-cbc2b76935ba@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Rockchip VDEC supports VP9 profile 0 up to 4096x2304@30fps. Add
-a backend for this new format.
+Hi,
 
-Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
-Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
-Co-developed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
----
-This version includes a change in init_intra_only_probs(), which
-silences a smatch warning.
+On 11/17/21 01:10, Daniel Scally wrote:
+> Hi Hans, Andy
+> 
+> On 16/11/2021 16:59, Andy Shevchenko wrote:
+>> On Tue, Nov 16, 2021 at 03:55:00PM +0100, Hans de Goede wrote:
+>>> On 11/16/21 08:41, kernel test robot wrote:
+>>>> FYI, we noticed the following commit (built with gcc-9):
+>>>>
+>>>> commit: 995fe757ecaeac44e023458af64d27655f9dbf73 ("[PATCH] device property: Check fwnode->secondary when finding properties")
+>>>> url: https://github.com/0day-ci/linux/commits/Daniel-Scally/device-property-Check-fwnode-secondary-when-finding-properties/20211114-044259
+>>>> base: https://git.kernel.org/cgit/linux/kernel/git/gregkh/driver-core.git b5013d084e03e82ceeab4db8ae8ceeaebe76b0eb
+>>>> patch link: https://lore.kernel.org/lkml/20211113204141.520924-1-djrscally@gmail.com
+>>>>
+>>>> in testcase: boot
+>>>>
+>>>> on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 4G
+>>>>
+>>>> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+>>>>
+>>>>
+>>>> +---------------------------------------------+------------+------------+
+>>>> |                                             | b5013d084e | 995fe757ec |
+>>>> +---------------------------------------------+------------+------------+
+>>>> | boot_successes                              | 23         | 0          |
+>>>> | boot_failures                               | 0          | 22         |
+>>>> | BUG:kernel_NULL_pointer_dereference,address | 0          | 22         |
+>>>> | Oops:#[##]                                  | 0          | 22         |
+>>>> | EIP:fwnode_property_get_reference_args      | 0          | 22         |
+>>>> | Kernel_panic-not_syncing:Fatal_exception    | 0          | 22         |
+>>>> +---------------------------------------------+------------+------------+
+>>>>
+>>>>
+>>>> If you fix the issue, kindly add following tag
+>>>> Reported-by: kernel test robot <oliver.sang@intel.com>
+>>> Ok, so this patch likely needs a v2 which changes the if to this:
+>>>
+>>>         if (ret == -EINVAL && !IS_ERR_OR_NULL(fwnode) &&
+>>>             !IS_ERR_OR_NULL(fwnode->secondary))
+>>>                 ret = fwnode_call_int_op(fwnode->secondary, get_reference_args,
+>>>                                          prop, nargs_prop, nargs, index, args);
+>>>
+>>>
+>>> So that we check fwnode before dereferencing it, note this also changes the
+>>> (ret < 0) check to (ret == -EINVAL), this makes the secondary node handling
+>>> identical to fwnode_property_read_int_array() and
+>>> fwnode_property_read_string_array()
+>>>
+>>> Danny, can you send a v2 with this change please?
+>> Hmm... So, you are suggesting that we need to check it only for EINVAL and
+>> ENOENT in this case the one that brings us to the NULL pointer dereference.
+>> But I don't understand what's the difference here.
+> 
+> 
+> Sticking point; the ACPI version of .get_reference_args() returns
+> -ENOENT (converted from -EINVAL [1]) if the property you ask for doesn't
+> exist against that fwnode, which unless I'm missing something means this
+> won't work in our use case. This confused me for a while because we
+> definitely call fwnode_property_read_int_array() in sensor driver probes
+> through v4l2_fwnode_endpoint_alloc_parse(), but it turns out the ACPI
+> version of _that_ operation has no matching conversion of the error
+> code, so when that fails to find the property it sends back -EINVAL and
+> so the form that exists in fwnode_property_read_int_array() currently
+> works fine.
+> 
+> 
+> We could align them all to if (ret < 0 && !IS_ERR_OR_NULL(fwnode) &&
+> !IS_ERR_OR_NULL(fwnode->secondary)). This is probably my preferred
+> option, because I can't really see why we'd only want to do the
+> secondary check on -EINVAL anyway - but maybe I miss something here.
+> Alternatively we can take Hans suggestion so they all match the existing
+> code, but this means we have to handle that conversion first - I
+> couldn't see from a cursory look that any of the direct callers check
+> the value of the return beyond "is it 0?", but of course it could be
+> done somewhere in calls to the fwnode->ops->get_reference_args()
+> callback instead.
+> 
+> 
+> Thoughts?
 
- drivers/staging/media/rkvdec/Kconfig      |    1 +
- drivers/staging/media/rkvdec/Makefile     |    2 +-
- drivers/staging/media/rkvdec/rkvdec-vp9.c | 1072 +++++++++++++++++++++
- drivers/staging/media/rkvdec/rkvdec.c     |   41 +-
- drivers/staging/media/rkvdec/rkvdec.h     |   12 +-
- 5 files changed, 1121 insertions(+), 7 deletions(-)
- create mode 100644 drivers/staging/media/rkvdec/rkvdec-vp9.c
+I missed that just checking for -EINVAL will not work for the ipu3 case
+(I did not test) in that case I think using "ret < 0" as check instead
+is probably fine for this patch.
 
-diff --git a/drivers/staging/media/rkvdec/Kconfig b/drivers/staging/media/rkvdec/Kconfig
-index c02199b5e0fd..dc7292f346fa 100644
---- a/drivers/staging/media/rkvdec/Kconfig
-+++ b/drivers/staging/media/rkvdec/Kconfig
-@@ -9,6 +9,7 @@ config VIDEO_ROCKCHIP_VDEC
- 	select VIDEOBUF2_VMALLOC
- 	select V4L2_MEM2MEM_DEV
- 	select V4L2_H264
-+	select V4L2_VP9
- 	help
- 	  Support for the Rockchip Video Decoder IP present on Rockchip SoCs,
- 	  which accelerates video decoding.
-diff --git a/drivers/staging/media/rkvdec/Makefile b/drivers/staging/media/rkvdec/Makefile
-index c08fed0a39f9..cb86b429cfaa 100644
---- a/drivers/staging/media/rkvdec/Makefile
-+++ b/drivers/staging/media/rkvdec/Makefile
-@@ -1,3 +1,3 @@
- obj-$(CONFIG_VIDEO_ROCKCHIP_VDEC) += rockchip-vdec.o
- 
--rockchip-vdec-y += rkvdec.o rkvdec-h264.o
-+rockchip-vdec-y += rkvdec.o rkvdec-h264.o rkvdec-vp9.o
-diff --git a/drivers/staging/media/rkvdec/rkvdec-vp9.c b/drivers/staging/media/rkvdec/rkvdec-vp9.c
-new file mode 100644
-index 000000000000..311a12656072
---- /dev/null
-+++ b/drivers/staging/media/rkvdec/rkvdec-vp9.c
-@@ -0,0 +1,1072 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Rockchip Video Decoder VP9 backend
-+ *
-+ * Copyright (C) 2019 Collabora, Ltd.
-+ *	Boris Brezillon <boris.brezillon@collabora.com>
-+ * Copyright (C) 2021 Collabora, Ltd.
-+ *	Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-+ *
-+ * Copyright (C) 2016 Rockchip Electronics Co., Ltd.
-+ *	Alpha Lin <Alpha.Lin@rock-chips.com>
-+ */
-+
-+/*
-+ * For following the vp9 spec please start reading this driver
-+ * code from rkvdec_vp9_run() followed by rkvdec_vp9_done().
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/vmalloc.h>
-+#include <media/v4l2-mem2mem.h>
-+#include <media/v4l2-vp9.h>
-+
-+#include "rkvdec.h"
-+#include "rkvdec-regs.h"
-+
-+#define RKVDEC_VP9_PROBE_SIZE		4864
-+#define RKVDEC_VP9_COUNT_SIZE		13232
-+#define RKVDEC_VP9_MAX_SEGMAP_SIZE	73728
-+
-+struct rkvdec_vp9_intra_mode_probs {
-+	u8 y_mode[105];
-+	u8 uv_mode[23];
-+};
-+
-+struct rkvdec_vp9_intra_only_frame_probs {
-+	u8 coef_intra[4][2][128];
-+	struct rkvdec_vp9_intra_mode_probs intra_mode[10];
-+};
-+
-+struct rkvdec_vp9_inter_frame_probs {
-+	u8 y_mode[4][9];
-+	u8 comp_mode[5];
-+	u8 comp_ref[5];
-+	u8 single_ref[5][2];
-+	u8 inter_mode[7][3];
-+	u8 interp_filter[4][2];
-+	u8 padding0[11];
-+	u8 coef[2][4][2][128];
-+	u8 uv_mode_0_2[3][9];
-+	u8 padding1[5];
-+	u8 uv_mode_3_5[3][9];
-+	u8 padding2[5];
-+	u8 uv_mode_6_8[3][9];
-+	u8 padding3[5];
-+	u8 uv_mode_9[9];
-+	u8 padding4[7];
-+	u8 padding5[16];
-+	struct {
-+		u8 joint[3];
-+		u8 sign[2];
-+		u8 classes[2][10];
-+		u8 class0_bit[2];
-+		u8 bits[2][10];
-+		u8 class0_fr[2][2][3];
-+		u8 fr[2][3];
-+		u8 class0_hp[2];
-+		u8 hp[2];
-+	} mv;
-+};
-+
-+struct rkvdec_vp9_probs {
-+	u8 partition[16][3];
-+	u8 pred[3];
-+	u8 tree[7];
-+	u8 skip[3];
-+	u8 tx32[2][3];
-+	u8 tx16[2][2];
-+	u8 tx8[2][1];
-+	u8 is_inter[4];
-+	/* 128 bit alignment */
-+	u8 padding0[3];
-+	union {
-+		struct rkvdec_vp9_inter_frame_probs inter;
-+		struct rkvdec_vp9_intra_only_frame_probs intra_only;
-+	};
-+};
-+
-+/* Data structure describing auxiliary buffer format. */
-+struct rkvdec_vp9_priv_tbl {
-+	struct rkvdec_vp9_probs probs;
-+	u8 segmap[2][RKVDEC_VP9_MAX_SEGMAP_SIZE];
-+};
-+
-+struct rkvdec_vp9_refs_counts {
-+	u32 eob[2];
-+	u32 coeff[3];
-+};
-+
-+struct rkvdec_vp9_inter_frame_symbol_counts {
-+	u32 partition[16][4];
-+	u32 skip[3][2];
-+	u32 inter[4][2];
-+	u32 tx32p[2][4];
-+	u32 tx16p[2][4];
-+	u32 tx8p[2][2];
-+	u32 y_mode[4][10];
-+	u32 uv_mode[10][10];
-+	u32 comp[5][2];
-+	u32 comp_ref[5][2];
-+	u32 single_ref[5][2][2];
-+	u32 mv_mode[7][4];
-+	u32 filter[4][3];
-+	u32 mv_joint[4];
-+	u32 sign[2][2];
-+	/* add 1 element for align */
-+	u32 classes[2][11 + 1];
-+	u32 class0[2][2];
-+	u32 bits[2][10][2];
-+	u32 class0_fp[2][2][4];
-+	u32 fp[2][4];
-+	u32 class0_hp[2][2];
-+	u32 hp[2][2];
-+	struct rkvdec_vp9_refs_counts ref_cnt[2][4][2][6][6];
-+};
-+
-+struct rkvdec_vp9_intra_frame_symbol_counts {
-+	u32 partition[4][4][4];
-+	u32 skip[3][2];
-+	u32 intra[4][2];
-+	u32 tx32p[2][4];
-+	u32 tx16p[2][4];
-+	u32 tx8p[2][2];
-+	struct rkvdec_vp9_refs_counts ref_cnt[2][4][2][6][6];
-+};
-+
-+struct rkvdec_vp9_run {
-+	struct rkvdec_run base;
-+	const struct v4l2_ctrl_vp9_frame *decode_params;
-+};
-+
-+struct rkvdec_vp9_frame_info {
-+	u32 valid : 1;
-+	u32 segmapid : 1;
-+	u32 frame_context_idx : 2;
-+	u32 reference_mode : 2;
-+	u32 tx_mode : 3;
-+	u32 interpolation_filter : 3;
-+	u32 flags;
-+	u64 timestamp;
-+	struct v4l2_vp9_segmentation seg;
-+	struct v4l2_vp9_loop_filter lf;
-+};
-+
-+struct rkvdec_vp9_ctx {
-+	struct rkvdec_aux_buf priv_tbl;
-+	struct rkvdec_aux_buf count_tbl;
-+	struct v4l2_vp9_frame_symbol_counts inter_cnts;
-+	struct v4l2_vp9_frame_symbol_counts intra_cnts;
-+	struct v4l2_vp9_frame_context probability_tables;
-+	struct v4l2_vp9_frame_context frame_context[4];
-+	struct rkvdec_vp9_frame_info cur;
-+	struct rkvdec_vp9_frame_info last;
-+};
-+
-+static void write_coeff_plane(const u8 coef[6][6][3], u8 *coeff_plane)
-+{
-+	unsigned int idx = 0, byte_count = 0;
-+	int k, m, n;
-+	u8 p;
-+
-+	for (k = 0; k < 6; k++) {
-+		for (m = 0; m < 6; m++) {
-+			for (n = 0; n < 3; n++) {
-+				p = coef[k][m][n];
-+				coeff_plane[idx++] = p;
-+				byte_count++;
-+				if (byte_count == 27) {
-+					idx += 5;
-+					byte_count = 0;
-+				}
-+			}
-+		}
-+	}
-+}
-+
-+static void init_intra_only_probs(struct rkvdec_ctx *ctx,
-+				  const struct rkvdec_vp9_run *run)
-+{
-+	struct rkvdec_vp9_ctx *vp9_ctx = ctx->priv;
-+	struct rkvdec_vp9_priv_tbl *tbl = vp9_ctx->priv_tbl.cpu;
-+	struct rkvdec_vp9_intra_only_frame_probs *rkprobs;
-+	const struct v4l2_vp9_frame_context *probs;
-+	unsigned int i, j, k;
-+
-+	rkprobs = &tbl->probs.intra_only;
-+	probs = &vp9_ctx->probability_tables;
-+
-+	/*
-+	 * intra only 149 x 128 bits ,aligned to 152 x 128 bits coeff related
-+	 * prob 64 x 128 bits
-+	 */
-+	for (i = 0; i < ARRAY_SIZE(probs->coef); i++) {
-+		for (j = 0; j < ARRAY_SIZE(probs->coef[0]); j++)
-+			write_coeff_plane(probs->coef[i][j][0],
-+					  rkprobs->coef_intra[i][j]);
-+	}
-+
-+	/* intra mode prob  80 x 128 bits */
-+	for (i = 0; i < ARRAY_SIZE(v4l2_vp9_kf_y_mode_prob); i++) {
-+		unsigned int byte_count = 0;
-+		int idx = 0;
-+
-+		/* vp9_kf_y_mode_prob */
-+		for (j = 0; j < ARRAY_SIZE(v4l2_vp9_kf_y_mode_prob[0]); j++) {
-+			for (k = 0; k < ARRAY_SIZE(v4l2_vp9_kf_y_mode_prob[0][0]);
-+			     k++) {
-+				u8 val = v4l2_vp9_kf_y_mode_prob[i][j][k];
-+
-+				rkprobs->intra_mode[i].y_mode[idx++] = val;
-+				byte_count++;
-+				if (byte_count == 27) {
-+					byte_count = 0;
-+					idx += 5;
-+				}
-+			}
-+		}
-+
-+	}
-+
-+	for (i = 0; i < sizeof(v4l2_vp9_kf_uv_mode_prob); ++i) {
-+		const u8 *ptr = (const u8 *)v4l2_vp9_kf_uv_mode_prob;
-+
-+		rkprobs->intra_mode[i / 23].uv_mode[i % 23] = ptr[i];
-+	}
-+}
-+
-+static void init_inter_probs(struct rkvdec_ctx *ctx,
-+			     const struct rkvdec_vp9_run *run)
-+{
-+	struct rkvdec_vp9_ctx *vp9_ctx = ctx->priv;
-+	struct rkvdec_vp9_priv_tbl *tbl = vp9_ctx->priv_tbl.cpu;
-+	struct rkvdec_vp9_inter_frame_probs *rkprobs;
-+	const struct v4l2_vp9_frame_context *probs;
-+	unsigned int i, j, k;
-+
-+	rkprobs = &tbl->probs.inter;
-+	probs = &vp9_ctx->probability_tables;
-+
-+	/*
-+	 * inter probs
-+	 * 151 x 128 bits, aligned to 152 x 128 bits
-+	 * inter only
-+	 * intra_y_mode & inter_block info 6 x 128 bits
-+	 */
-+
-+	memcpy(rkprobs->y_mode, probs->y_mode, sizeof(rkprobs->y_mode));
-+	memcpy(rkprobs->comp_mode, probs->comp_mode,
-+	       sizeof(rkprobs->comp_mode));
-+	memcpy(rkprobs->comp_ref, probs->comp_ref,
-+	       sizeof(rkprobs->comp_ref));
-+	memcpy(rkprobs->single_ref, probs->single_ref,
-+	       sizeof(rkprobs->single_ref));
-+	memcpy(rkprobs->inter_mode, probs->inter_mode,
-+	       sizeof(rkprobs->inter_mode));
-+	memcpy(rkprobs->interp_filter, probs->interp_filter,
-+	       sizeof(rkprobs->interp_filter));
-+
-+	/* 128 x 128 bits coeff related */
-+	for (i = 0; i < ARRAY_SIZE(probs->coef); i++) {
-+		for (j = 0; j < ARRAY_SIZE(probs->coef[0]); j++) {
-+			for (k = 0; k < ARRAY_SIZE(probs->coef[0][0]); k++)
-+				write_coeff_plane(probs->coef[i][j][k],
-+						  rkprobs->coef[k][i][j]);
-+		}
-+	}
-+
-+	/* intra uv mode 6 x 128 */
-+	memcpy(rkprobs->uv_mode_0_2, &probs->uv_mode[0],
-+	       sizeof(rkprobs->uv_mode_0_2));
-+	memcpy(rkprobs->uv_mode_3_5, &probs->uv_mode[3],
-+	       sizeof(rkprobs->uv_mode_3_5));
-+	memcpy(rkprobs->uv_mode_6_8, &probs->uv_mode[6],
-+	       sizeof(rkprobs->uv_mode_6_8));
-+	memcpy(rkprobs->uv_mode_9, &probs->uv_mode[9],
-+	       sizeof(rkprobs->uv_mode_9));
-+
-+	/* mv related 6 x 128 */
-+	memcpy(rkprobs->mv.joint, probs->mv.joint,
-+	       sizeof(rkprobs->mv.joint));
-+	memcpy(rkprobs->mv.sign, probs->mv.sign,
-+	       sizeof(rkprobs->mv.sign));
-+	memcpy(rkprobs->mv.classes, probs->mv.classes,
-+	       sizeof(rkprobs->mv.classes));
-+	memcpy(rkprobs->mv.class0_bit, probs->mv.class0_bit,
-+	       sizeof(rkprobs->mv.class0_bit));
-+	memcpy(rkprobs->mv.bits, probs->mv.bits,
-+	       sizeof(rkprobs->mv.bits));
-+	memcpy(rkprobs->mv.class0_fr, probs->mv.class0_fr,
-+	       sizeof(rkprobs->mv.class0_fr));
-+	memcpy(rkprobs->mv.fr, probs->mv.fr,
-+	       sizeof(rkprobs->mv.fr));
-+	memcpy(rkprobs->mv.class0_hp, probs->mv.class0_hp,
-+	       sizeof(rkprobs->mv.class0_hp));
-+	memcpy(rkprobs->mv.hp, probs->mv.hp,
-+	       sizeof(rkprobs->mv.hp));
-+}
-+
-+static void init_probs(struct rkvdec_ctx *ctx,
-+		       const struct rkvdec_vp9_run *run)
-+{
-+	const struct v4l2_ctrl_vp9_frame *dec_params;
-+	struct rkvdec_vp9_ctx *vp9_ctx = ctx->priv;
-+	struct rkvdec_vp9_priv_tbl *tbl = vp9_ctx->priv_tbl.cpu;
-+	struct rkvdec_vp9_probs *rkprobs = &tbl->probs;
-+	const struct v4l2_vp9_segmentation *seg;
-+	const struct v4l2_vp9_frame_context *probs;
-+	bool intra_only;
-+
-+	dec_params = run->decode_params;
-+	probs = &vp9_ctx->probability_tables;
-+	seg = &dec_params->seg;
-+
-+	memset(rkprobs, 0, sizeof(*rkprobs));
-+
-+	intra_only = !!(dec_params->flags &
-+			(V4L2_VP9_FRAME_FLAG_KEY_FRAME |
-+			 V4L2_VP9_FRAME_FLAG_INTRA_ONLY));
-+
-+	/* sb info  5 x 128 bit */
-+	memcpy(rkprobs->partition,
-+	       intra_only ? v4l2_vp9_kf_partition_probs : probs->partition,
-+	       sizeof(rkprobs->partition));
-+
-+	memcpy(rkprobs->pred, seg->pred_probs, sizeof(rkprobs->pred));
-+	memcpy(rkprobs->tree, seg->tree_probs, sizeof(rkprobs->tree));
-+	memcpy(rkprobs->skip, probs->skip, sizeof(rkprobs->skip));
-+	memcpy(rkprobs->tx32, probs->tx32, sizeof(rkprobs->tx32));
-+	memcpy(rkprobs->tx16, probs->tx16, sizeof(rkprobs->tx16));
-+	memcpy(rkprobs->tx8, probs->tx8, sizeof(rkprobs->tx8));
-+	memcpy(rkprobs->is_inter, probs->is_inter, sizeof(rkprobs->is_inter));
-+
-+	if (intra_only)
-+		init_intra_only_probs(ctx, run);
-+	else
-+		init_inter_probs(ctx, run);
-+}
-+
-+struct rkvdec_vp9_ref_reg {
-+	u32 reg_frm_size;
-+	u32 reg_hor_stride;
-+	u32 reg_y_stride;
-+	u32 reg_yuv_stride;
-+	u32 reg_ref_base;
-+};
-+
-+static struct rkvdec_vp9_ref_reg ref_regs[] = {
-+	{
-+		.reg_frm_size = RKVDEC_REG_VP9_FRAME_SIZE(0),
-+		.reg_hor_stride = RKVDEC_VP9_HOR_VIRSTRIDE(0),
-+		.reg_y_stride = RKVDEC_VP9_LAST_FRAME_YSTRIDE,
-+		.reg_yuv_stride = RKVDEC_VP9_LAST_FRAME_YUVSTRIDE,
-+		.reg_ref_base = RKVDEC_REG_VP9_LAST_FRAME_BASE,
-+	},
-+	{
-+		.reg_frm_size = RKVDEC_REG_VP9_FRAME_SIZE(1),
-+		.reg_hor_stride = RKVDEC_VP9_HOR_VIRSTRIDE(1),
-+		.reg_y_stride = RKVDEC_VP9_GOLDEN_FRAME_YSTRIDE,
-+		.reg_yuv_stride = 0,
-+		.reg_ref_base = RKVDEC_REG_VP9_GOLDEN_FRAME_BASE,
-+	},
-+	{
-+		.reg_frm_size = RKVDEC_REG_VP9_FRAME_SIZE(2),
-+		.reg_hor_stride = RKVDEC_VP9_HOR_VIRSTRIDE(2),
-+		.reg_y_stride = RKVDEC_VP9_ALTREF_FRAME_YSTRIDE,
-+		.reg_yuv_stride = 0,
-+		.reg_ref_base = RKVDEC_REG_VP9_ALTREF_FRAME_BASE,
-+	}
-+};
-+
-+static struct rkvdec_decoded_buffer *
-+get_ref_buf(struct rkvdec_ctx *ctx, struct vb2_v4l2_buffer *dst, u64 timestamp)
-+{
-+	struct v4l2_m2m_ctx *m2m_ctx = ctx->fh.m2m_ctx;
-+	struct vb2_queue *cap_q = &m2m_ctx->cap_q_ctx.q;
-+	int buf_idx;
-+
-+	/*
-+	 * If a ref is unused or invalid, address of current destination
-+	 * buffer is returned.
-+	 */
-+	buf_idx = vb2_find_timestamp(cap_q, timestamp, 0);
-+	if (buf_idx < 0)
-+		return vb2_to_rkvdec_decoded_buf(&dst->vb2_buf);
-+
-+	return vb2_to_rkvdec_decoded_buf(vb2_get_buffer(cap_q, buf_idx));
-+}
-+
-+static dma_addr_t get_mv_base_addr(struct rkvdec_decoded_buffer *buf)
-+{
-+	unsigned int aligned_pitch, aligned_height, yuv_len;
-+
-+	aligned_height = round_up(buf->vp9.height, 64);
-+	aligned_pitch = round_up(buf->vp9.width * buf->vp9.bit_depth, 512) / 8;
-+	yuv_len = (aligned_height * aligned_pitch * 3) / 2;
-+
-+	return vb2_dma_contig_plane_dma_addr(&buf->base.vb.vb2_buf, 0) +
-+	       yuv_len;
-+}
-+
-+static void config_ref_registers(struct rkvdec_ctx *ctx,
-+				 const struct rkvdec_vp9_run *run,
-+				 struct rkvdec_decoded_buffer *ref_buf,
-+				 struct rkvdec_vp9_ref_reg *ref_reg)
-+{
-+	unsigned int aligned_pitch, aligned_height, y_len, yuv_len;
-+	struct rkvdec_dev *rkvdec = ctx->dev;
-+
-+	aligned_height = round_up(ref_buf->vp9.height, 64);
-+	writel_relaxed(RKVDEC_VP9_FRAMEWIDTH(ref_buf->vp9.width) |
-+		       RKVDEC_VP9_FRAMEHEIGHT(ref_buf->vp9.height),
-+		       rkvdec->regs + ref_reg->reg_frm_size);
-+
-+	writel_relaxed(vb2_dma_contig_plane_dma_addr(&ref_buf->base.vb.vb2_buf, 0),
-+		       rkvdec->regs + ref_reg->reg_ref_base);
-+
-+	if (&ref_buf->base.vb == run->base.bufs.dst)
-+		return;
-+
-+	aligned_pitch = round_up(ref_buf->vp9.width * ref_buf->vp9.bit_depth, 512) / 8;
-+	y_len = aligned_height * aligned_pitch;
-+	yuv_len = (y_len * 3) / 2;
-+
-+	writel_relaxed(RKVDEC_HOR_Y_VIRSTRIDE(aligned_pitch / 16) |
-+		       RKVDEC_HOR_UV_VIRSTRIDE(aligned_pitch / 16),
-+		       rkvdec->regs + ref_reg->reg_hor_stride);
-+	writel_relaxed(RKVDEC_VP9_REF_YSTRIDE(y_len / 16),
-+		       rkvdec->regs + ref_reg->reg_y_stride);
-+
-+	if (!ref_reg->reg_yuv_stride)
-+		return;
-+
-+	writel_relaxed(RKVDEC_VP9_REF_YUVSTRIDE(yuv_len / 16),
-+		       rkvdec->regs + ref_reg->reg_yuv_stride);
-+}
-+
-+static void config_seg_registers(struct rkvdec_ctx *ctx, unsigned int segid)
-+{
-+	struct rkvdec_vp9_ctx *vp9_ctx = ctx->priv;
-+	const struct v4l2_vp9_segmentation *seg;
-+	struct rkvdec_dev *rkvdec = ctx->dev;
-+	s16 feature_val;
-+	int feature_id;
-+	u32 val = 0;
-+
-+	seg = vp9_ctx->last.valid ? &vp9_ctx->last.seg : &vp9_ctx->cur.seg;
-+	feature_id = V4L2_VP9_SEG_LVL_ALT_Q;
-+	if (v4l2_vp9_seg_feat_enabled(seg->feature_enabled, feature_id, segid)) {
-+		feature_val = seg->feature_data[segid][feature_id];
-+		val |= RKVDEC_SEGID_FRAME_QP_DELTA_EN(1) |
-+		       RKVDEC_SEGID_FRAME_QP_DELTA(feature_val);
-+	}
-+
-+	feature_id = V4L2_VP9_SEG_LVL_ALT_L;
-+	if (v4l2_vp9_seg_feat_enabled(seg->feature_enabled, feature_id, segid)) {
-+		feature_val = seg->feature_data[segid][feature_id];
-+		val |= RKVDEC_SEGID_FRAME_LOOPFILTER_VALUE_EN(1) |
-+		       RKVDEC_SEGID_FRAME_LOOPFILTER_VALUE(feature_val);
-+	}
-+
-+	feature_id = V4L2_VP9_SEG_LVL_REF_FRAME;
-+	if (v4l2_vp9_seg_feat_enabled(seg->feature_enabled, feature_id, segid)) {
-+		feature_val = seg->feature_data[segid][feature_id];
-+		val |= RKVDEC_SEGID_REFERINFO_EN(1) |
-+		       RKVDEC_SEGID_REFERINFO(feature_val);
-+	}
-+
-+	feature_id = V4L2_VP9_SEG_LVL_SKIP;
-+	if (v4l2_vp9_seg_feat_enabled(seg->feature_enabled, feature_id, segid))
-+		val |= RKVDEC_SEGID_FRAME_SKIP_EN(1);
-+
-+	if (!segid &&
-+	    (seg->flags & V4L2_VP9_SEGMENTATION_FLAG_ABS_OR_DELTA_UPDATE))
-+		val |= RKVDEC_SEGID_ABS_DELTA(1);
-+
-+	writel_relaxed(val, rkvdec->regs + RKVDEC_VP9_SEGID_GRP(segid));
-+}
-+
-+static void update_dec_buf_info(struct rkvdec_decoded_buffer *buf,
-+				const struct v4l2_ctrl_vp9_frame *dec_params)
-+{
-+	buf->vp9.width = dec_params->frame_width_minus_1 + 1;
-+	buf->vp9.height = dec_params->frame_height_minus_1 + 1;
-+	buf->vp9.bit_depth = dec_params->bit_depth;
-+}
-+
-+static void update_ctx_cur_info(struct rkvdec_vp9_ctx *vp9_ctx,
-+				struct rkvdec_decoded_buffer *buf,
-+				const struct v4l2_ctrl_vp9_frame *dec_params)
-+{
-+	vp9_ctx->cur.valid = true;
-+	vp9_ctx->cur.reference_mode = dec_params->reference_mode;
-+	vp9_ctx->cur.interpolation_filter = dec_params->interpolation_filter;
-+	vp9_ctx->cur.flags = dec_params->flags;
-+	vp9_ctx->cur.timestamp = buf->base.vb.vb2_buf.timestamp;
-+	vp9_ctx->cur.seg = dec_params->seg;
-+	vp9_ctx->cur.lf = dec_params->lf;
-+}
-+
-+static void update_ctx_last_info(struct rkvdec_vp9_ctx *vp9_ctx)
-+{
-+	vp9_ctx->last = vp9_ctx->cur;
-+}
-+
-+static void config_registers(struct rkvdec_ctx *ctx,
-+			     const struct rkvdec_vp9_run *run)
-+{
-+	unsigned int y_len, uv_len, yuv_len, bit_depth, aligned_height, aligned_pitch, stream_len;
-+	const struct v4l2_ctrl_vp9_frame *dec_params;
-+	struct rkvdec_decoded_buffer *ref_bufs[3];
-+	struct rkvdec_decoded_buffer *dst, *last, *mv_ref;
-+	struct rkvdec_vp9_ctx *vp9_ctx = ctx->priv;
-+	u32 val, last_frame_info = 0;
-+	const struct v4l2_vp9_segmentation *seg;
-+	struct rkvdec_dev *rkvdec = ctx->dev;
-+	dma_addr_t addr;
-+	bool intra_only;
-+	unsigned int i;
-+
-+	dec_params = run->decode_params;
-+	dst = vb2_to_rkvdec_decoded_buf(&run->base.bufs.dst->vb2_buf);
-+	ref_bufs[0] = get_ref_buf(ctx, &dst->base.vb, dec_params->last_frame_ts);
-+	ref_bufs[1] = get_ref_buf(ctx, &dst->base.vb, dec_params->golden_frame_ts);
-+	ref_bufs[2] = get_ref_buf(ctx, &dst->base.vb, dec_params->alt_frame_ts);
-+
-+	if (vp9_ctx->last.valid)
-+		last = get_ref_buf(ctx, &dst->base.vb, vp9_ctx->last.timestamp);
-+	else
-+		last = dst;
-+
-+	update_dec_buf_info(dst, dec_params);
-+	update_ctx_cur_info(vp9_ctx, dst, dec_params);
-+	seg = &dec_params->seg;
-+
-+	intra_only = !!(dec_params->flags &
-+			(V4L2_VP9_FRAME_FLAG_KEY_FRAME |
-+			 V4L2_VP9_FRAME_FLAG_INTRA_ONLY));
-+
-+	writel_relaxed(RKVDEC_MODE(RKVDEC_MODE_VP9),
-+		       rkvdec->regs + RKVDEC_REG_SYSCTRL);
-+
-+	bit_depth = dec_params->bit_depth;
-+	aligned_height = round_up(ctx->decoded_fmt.fmt.pix_mp.height, 64);
-+
-+	aligned_pitch = round_up(ctx->decoded_fmt.fmt.pix_mp.width *
-+				 bit_depth,
-+				 512) / 8;
-+	y_len = aligned_height * aligned_pitch;
-+	uv_len = y_len / 2;
-+	yuv_len = y_len + uv_len;
-+
-+	writel_relaxed(RKVDEC_Y_HOR_VIRSTRIDE(aligned_pitch / 16) |
-+		       RKVDEC_UV_HOR_VIRSTRIDE(aligned_pitch / 16),
-+		       rkvdec->regs + RKVDEC_REG_PICPAR);
-+	writel_relaxed(RKVDEC_Y_VIRSTRIDE(y_len / 16),
-+		       rkvdec->regs + RKVDEC_REG_Y_VIRSTRIDE);
-+	writel_relaxed(RKVDEC_YUV_VIRSTRIDE(yuv_len / 16),
-+		       rkvdec->regs + RKVDEC_REG_YUV_VIRSTRIDE);
-+
-+	stream_len = vb2_get_plane_payload(&run->base.bufs.src->vb2_buf, 0);
-+	writel_relaxed(RKVDEC_STRM_LEN(stream_len),
-+		       rkvdec->regs + RKVDEC_REG_STRM_LEN);
-+
-+	/*
-+	 * Reset count buffer, because decoder only output intra related syntax
-+	 * counts when decoding intra frame, but update entropy need to update
-+	 * all the probabilities.
-+	 */
-+	if (intra_only)
-+		memset(vp9_ctx->count_tbl.cpu, 0, vp9_ctx->count_tbl.size);
-+
-+	vp9_ctx->cur.segmapid = vp9_ctx->last.segmapid;
-+	if (!intra_only &&
-+	    !(dec_params->flags & V4L2_VP9_FRAME_FLAG_ERROR_RESILIENT) &&
-+	    (!(seg->flags & V4L2_VP9_SEGMENTATION_FLAG_ENABLED) ||
-+	     (seg->flags & V4L2_VP9_SEGMENTATION_FLAG_UPDATE_MAP)))
-+		vp9_ctx->cur.segmapid++;
-+
-+	for (i = 0; i < ARRAY_SIZE(ref_bufs); i++)
-+		config_ref_registers(ctx, run, ref_bufs[i], &ref_regs[i]);
-+
-+	for (i = 0; i < 8; i++)
-+		config_seg_registers(ctx, i);
-+
-+	writel_relaxed(RKVDEC_VP9_TX_MODE(vp9_ctx->cur.tx_mode) |
-+		       RKVDEC_VP9_FRAME_REF_MODE(dec_params->reference_mode),
-+		       rkvdec->regs + RKVDEC_VP9_CPRHEADER_CONFIG);
-+
-+	if (!intra_only) {
-+		const struct v4l2_vp9_loop_filter *lf;
-+		s8 delta;
-+
-+		if (vp9_ctx->last.valid)
-+			lf = &vp9_ctx->last.lf;
-+		else
-+			lf = &vp9_ctx->cur.lf;
-+
-+		val = 0;
-+		for (i = 0; i < ARRAY_SIZE(lf->ref_deltas); i++) {
-+			delta = lf->ref_deltas[i];
-+			val |= RKVDEC_REF_DELTAS_LASTFRAME(i, delta);
-+		}
-+
-+		writel_relaxed(val,
-+			       rkvdec->regs + RKVDEC_VP9_REF_DELTAS_LASTFRAME);
-+
-+		for (i = 0; i < ARRAY_SIZE(lf->mode_deltas); i++) {
-+			delta = lf->mode_deltas[i];
-+			last_frame_info |= RKVDEC_MODE_DELTAS_LASTFRAME(i,
-+									delta);
-+		}
-+	}
-+
-+	if (vp9_ctx->last.valid && !intra_only &&
-+	    vp9_ctx->last.seg.flags & V4L2_VP9_SEGMENTATION_FLAG_ENABLED)
-+		last_frame_info |= RKVDEC_SEG_EN_LASTFRAME;
-+
-+	if (vp9_ctx->last.valid &&
-+	    vp9_ctx->last.flags & V4L2_VP9_FRAME_FLAG_SHOW_FRAME)
-+		last_frame_info |= RKVDEC_LAST_SHOW_FRAME;
-+
-+	if (vp9_ctx->last.valid &&
-+	    vp9_ctx->last.flags &
-+	    (V4L2_VP9_FRAME_FLAG_KEY_FRAME | V4L2_VP9_FRAME_FLAG_INTRA_ONLY))
-+		last_frame_info |= RKVDEC_LAST_INTRA_ONLY;
-+
-+	if (vp9_ctx->last.valid &&
-+	    last->vp9.width == dst->vp9.width &&
-+	    last->vp9.height == dst->vp9.height)
-+		last_frame_info |= RKVDEC_LAST_WIDHHEIGHT_EQCUR;
-+
-+	writel_relaxed(last_frame_info,
-+		       rkvdec->regs + RKVDEC_VP9_INFO_LASTFRAME);
-+
-+	writel_relaxed(stream_len - dec_params->compressed_header_size -
-+		       dec_params->uncompressed_header_size,
-+		       rkvdec->regs + RKVDEC_VP9_LASTTILE_SIZE);
-+
-+	for (i = 0; !intra_only && i < ARRAY_SIZE(ref_bufs); i++) {
-+		unsigned int refw = ref_bufs[i]->vp9.width;
-+		unsigned int refh = ref_bufs[i]->vp9.height;
-+		u32 hscale, vscale;
-+
-+		hscale = (refw << 14) /	dst->vp9.width;
-+		vscale = (refh << 14) / dst->vp9.height;
-+		writel_relaxed(RKVDEC_VP9_REF_HOR_SCALE(hscale) |
-+			       RKVDEC_VP9_REF_VER_SCALE(vscale),
-+			       rkvdec->regs + RKVDEC_VP9_REF_SCALE(i));
-+	}
-+
-+	addr = vb2_dma_contig_plane_dma_addr(&dst->base.vb.vb2_buf, 0);
-+	writel_relaxed(addr, rkvdec->regs + RKVDEC_REG_DECOUT_BASE);
-+	addr = vb2_dma_contig_plane_dma_addr(&run->base.bufs.src->vb2_buf, 0);
-+	writel_relaxed(addr, rkvdec->regs + RKVDEC_REG_STRM_RLC_BASE);
-+	writel_relaxed(vp9_ctx->priv_tbl.dma +
-+		       offsetof(struct rkvdec_vp9_priv_tbl, probs),
-+		       rkvdec->regs + RKVDEC_REG_CABACTBL_PROB_BASE);
-+	writel_relaxed(vp9_ctx->count_tbl.dma,
-+		       rkvdec->regs + RKVDEC_REG_VP9COUNT_BASE);
-+
-+	writel_relaxed(vp9_ctx->priv_tbl.dma +
-+		       offsetof(struct rkvdec_vp9_priv_tbl, segmap) +
-+		       (RKVDEC_VP9_MAX_SEGMAP_SIZE * vp9_ctx->cur.segmapid),
-+		       rkvdec->regs + RKVDEC_REG_VP9_SEGIDCUR_BASE);
-+	writel_relaxed(vp9_ctx->priv_tbl.dma +
-+		       offsetof(struct rkvdec_vp9_priv_tbl, segmap) +
-+		       (RKVDEC_VP9_MAX_SEGMAP_SIZE * (!vp9_ctx->cur.segmapid)),
-+		       rkvdec->regs + RKVDEC_REG_VP9_SEGIDLAST_BASE);
-+
-+	if (!intra_only &&
-+	    !(dec_params->flags & V4L2_VP9_FRAME_FLAG_ERROR_RESILIENT) &&
-+	    vp9_ctx->last.valid)
-+		mv_ref = last;
-+	else
-+		mv_ref = dst;
-+
-+	writel_relaxed(get_mv_base_addr(mv_ref),
-+		       rkvdec->regs + RKVDEC_VP9_REF_COLMV_BASE);
-+
-+	writel_relaxed(ctx->decoded_fmt.fmt.pix_mp.width |
-+		       (ctx->decoded_fmt.fmt.pix_mp.height << 16),
-+		       rkvdec->regs + RKVDEC_REG_PERFORMANCE_CYCLE);
-+}
-+
-+static int validate_dec_params(struct rkvdec_ctx *ctx,
-+			       const struct v4l2_ctrl_vp9_frame *dec_params)
-+{
-+	unsigned int aligned_width, aligned_height;
-+
-+	/* We only support profile 0. */
-+	if (dec_params->profile != 0) {
-+		dev_err(ctx->dev->dev, "unsupported profile %d\n",
-+			dec_params->profile);
-+		return -EINVAL;
-+	}
-+
-+	aligned_width = round_up(dec_params->frame_width_minus_1 + 1, 64);
-+	aligned_height = round_up(dec_params->frame_height_minus_1 + 1, 64);
-+
-+	/*
-+	 * Userspace should update the capture/decoded format when the
-+	 * resolution changes.
-+	 */
-+	if (aligned_width != ctx->decoded_fmt.fmt.pix_mp.width ||
-+	    aligned_height != ctx->decoded_fmt.fmt.pix_mp.height) {
-+		dev_err(ctx->dev->dev,
-+			"unexpected bitstream resolution %dx%d\n",
-+			dec_params->frame_width_minus_1 + 1,
-+			dec_params->frame_height_minus_1 + 1);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rkvdec_vp9_run_preamble(struct rkvdec_ctx *ctx,
-+				   struct rkvdec_vp9_run *run)
-+{
-+	const struct v4l2_ctrl_vp9_frame *dec_params;
-+	const struct v4l2_ctrl_vp9_compressed_hdr *prob_updates;
-+	struct rkvdec_vp9_ctx *vp9_ctx = ctx->priv;
-+	struct v4l2_ctrl *ctrl;
-+	unsigned int fctx_idx;
-+	int ret;
-+
-+	/* v4l2-specific stuff */
-+	rkvdec_run_preamble(ctx, &run->base);
-+
-+	ctrl = v4l2_ctrl_find(&ctx->ctrl_hdl,
-+			      V4L2_CID_STATELESS_VP9_FRAME);
-+	if (WARN_ON(!ctrl))
-+		return -EINVAL;
-+	dec_params = ctrl->p_cur.p;
-+
-+	ret = validate_dec_params(ctx, dec_params);
-+	if (ret)
-+		return ret;
-+
-+	run->decode_params = dec_params;
-+
-+	ctrl = v4l2_ctrl_find(&ctx->ctrl_hdl, V4L2_CID_STATELESS_VP9_COMPRESSED_HDR);
-+	if (WARN_ON(!ctrl))
-+		return -EINVAL;
-+	prob_updates = ctrl->p_cur.p;
-+	vp9_ctx->cur.tx_mode = prob_updates->tx_mode;
-+
-+	/*
-+	 * vp9 stuff
-+	 *
-+	 * by this point the userspace has done all parts of 6.2 uncompressed_header()
-+	 * except this fragment:
-+	 * if ( FrameIsIntra || error_resilient_mode ) {
-+	 *	setup_past_independence ( )
-+	 *	if ( frame_type == KEY_FRAME || error_resilient_mode == 1 ||
-+	 *	     reset_frame_context == 3 ) {
-+	 *		for ( i = 0; i < 4; i ++ ) {
-+	 *			save_probs( i )
-+	 *		}
-+	 *	} else if ( reset_frame_context == 2 ) {
-+	 *		save_probs( frame_context_idx )
-+	 *	}
-+	 *	frame_context_idx = 0
-+	 * }
-+	 */
-+	fctx_idx = v4l2_vp9_reset_frame_ctx(dec_params, vp9_ctx->frame_context);
-+	vp9_ctx->cur.frame_context_idx = fctx_idx;
-+
-+	/* 6.1 frame(sz): load_probs() and load_probs2() */
-+	vp9_ctx->probability_tables = vp9_ctx->frame_context[fctx_idx];
-+
-+	/*
-+	 * The userspace has also performed 6.3 compressed_header(), but handling the
-+	 * probs in a special way. All probs which need updating, except MV-related,
-+	 * have been read from the bitstream and translated through inv_map_table[],
-+	 * but no 6.3.6 inv_recenter_nonneg(v, m) has been performed. The values passed
-+	 * by userspace are either translated values (there are no 0 values in
-+	 * inv_map_table[]), or zero to indicate no update. All MV-related probs which need
-+	 * updating have been read from the bitstream and (mv_prob << 1) | 1 has been
-+	 * performed. The values passed by userspace are either new values
-+	 * to replace old ones (the above mentioned shift and bitwise or never result in
-+	 * a zero) or zero to indicate no update.
-+	 * fw_update_probs() performs actual probs updates or leaves probs as-is
-+	 * for values for which a zero was passed from userspace.
-+	 */
-+	v4l2_vp9_fw_update_probs(&vp9_ctx->probability_tables, prob_updates, dec_params);
-+
-+	return 0;
-+}
-+
-+static int rkvdec_vp9_run(struct rkvdec_ctx *ctx)
-+{
-+	struct rkvdec_dev *rkvdec = ctx->dev;
-+	struct rkvdec_vp9_run run = { };
-+	int ret;
-+
-+	ret = rkvdec_vp9_run_preamble(ctx, &run);
-+	if (ret) {
-+		rkvdec_run_postamble(ctx, &run.base);
-+		return ret;
-+	}
-+
-+	/* Prepare probs. */
-+	init_probs(ctx, &run);
-+
-+	/* Configure hardware registers. */
-+	config_registers(ctx, &run);
-+
-+	rkvdec_run_postamble(ctx, &run.base);
-+
-+	schedule_delayed_work(&rkvdec->watchdog_work, msecs_to_jiffies(2000));
-+
-+	writel(1, rkvdec->regs + RKVDEC_REG_PREF_LUMA_CACHE_COMMAND);
-+	writel(1, rkvdec->regs + RKVDEC_REG_PREF_CHR_CACHE_COMMAND);
-+
-+	writel(0xe, rkvdec->regs + RKVDEC_REG_STRMD_ERR_EN);
-+	/* Start decoding! */
-+	writel(RKVDEC_INTERRUPT_DEC_E | RKVDEC_CONFIG_DEC_CLK_GATE_E |
-+	       RKVDEC_TIMEOUT_E | RKVDEC_BUF_EMPTY_E,
-+	       rkvdec->regs + RKVDEC_REG_INTERRUPT);
-+
-+	return 0;
-+}
-+
-+#define copy_tx_and_skip(p1, p2)				\
-+do {								\
-+	memcpy((p1)->tx8, (p2)->tx8, sizeof((p1)->tx8));	\
-+	memcpy((p1)->tx16, (p2)->tx16, sizeof((p1)->tx16));	\
-+	memcpy((p1)->tx32, (p2)->tx32, sizeof((p1)->tx32));	\
-+	memcpy((p1)->skip, (p2)->skip, sizeof((p1)->skip));	\
-+} while (0)
-+
-+static void rkvdec_vp9_done(struct rkvdec_ctx *ctx,
-+			    struct vb2_v4l2_buffer *src_buf,
-+			    struct vb2_v4l2_buffer *dst_buf,
-+			    enum vb2_buffer_state result)
-+{
-+	struct rkvdec_vp9_ctx *vp9_ctx = ctx->priv;
-+	unsigned int fctx_idx;
-+
-+	/* v4l2-specific stuff */
-+	if (result == VB2_BUF_STATE_ERROR)
-+		goto out_update_last;
-+
-+	/*
-+	 * vp9 stuff
-+	 *
-+	 * 6.1.2 refresh_probs()
-+	 *
-+	 * In the spec a complementary condition goes last in 6.1.2 refresh_probs(),
-+	 * but it makes no sense to perform all the activities from the first "if"
-+	 * there if we actually are not refreshing the frame context. On top of that,
-+	 * because of 6.2 uncompressed_header() whenever error_resilient_mode == 1,
-+	 * refresh_frame_context == 0. Consequently, if we don't jump to out_update_last
-+	 * it means error_resilient_mode must be 0.
-+	 */
-+	if (!(vp9_ctx->cur.flags & V4L2_VP9_FRAME_FLAG_REFRESH_FRAME_CTX))
-+		goto out_update_last;
-+
-+	fctx_idx = vp9_ctx->cur.frame_context_idx;
-+
-+	if (!(vp9_ctx->cur.flags & V4L2_VP9_FRAME_FLAG_PARALLEL_DEC_MODE)) {
-+		/* error_resilient_mode == 0 && frame_parallel_decoding_mode == 0 */
-+		struct v4l2_vp9_frame_context *probs = &vp9_ctx->probability_tables;
-+		bool frame_is_intra = vp9_ctx->cur.flags &
-+		    (V4L2_VP9_FRAME_FLAG_KEY_FRAME | V4L2_VP9_FRAME_FLAG_INTRA_ONLY);
-+		struct tx_and_skip {
-+			u8 tx8[2][1];
-+			u8 tx16[2][2];
-+			u8 tx32[2][3];
-+			u8 skip[3];
-+		} _tx_skip, *tx_skip = &_tx_skip;
-+		struct v4l2_vp9_frame_symbol_counts *counts;
-+
-+		/* buffer the forward-updated TX and skip probs */
-+		if (frame_is_intra)
-+			copy_tx_and_skip(tx_skip, probs);
-+
-+		/* 6.1.2 refresh_probs(): load_probs() and load_probs2() */
-+		*probs = vp9_ctx->frame_context[fctx_idx];
-+
-+		/* if FrameIsIntra then undo the effect of load_probs2() */
-+		if (frame_is_intra)
-+			copy_tx_and_skip(probs, tx_skip);
-+
-+		counts = frame_is_intra ? &vp9_ctx->intra_cnts : &vp9_ctx->inter_cnts;
-+		v4l2_vp9_adapt_coef_probs(probs, counts,
-+					  !vp9_ctx->last.valid ||
-+					  vp9_ctx->last.flags & V4L2_VP9_FRAME_FLAG_KEY_FRAME,
-+					  frame_is_intra);
-+		if (!frame_is_intra) {
-+			const struct rkvdec_vp9_inter_frame_symbol_counts *inter_cnts;
-+			u32 classes[2][11];
-+			int i;
-+
-+			inter_cnts = vp9_ctx->count_tbl.cpu;
-+			for (i = 0; i < ARRAY_SIZE(classes); ++i)
-+				memcpy(classes[i], inter_cnts->classes[i], sizeof(classes[0]));
-+			counts->classes = &classes;
-+
-+			/* load_probs2() already done */
-+			v4l2_vp9_adapt_noncoef_probs(&vp9_ctx->probability_tables, counts,
-+						     vp9_ctx->cur.reference_mode,
-+						     vp9_ctx->cur.interpolation_filter,
-+						     vp9_ctx->cur.tx_mode, vp9_ctx->cur.flags);
-+		}
-+	}
-+
-+	/* 6.1.2 refresh_probs(): save_probs(fctx_idx) */
-+	vp9_ctx->frame_context[fctx_idx] = vp9_ctx->probability_tables;
-+
-+out_update_last:
-+	update_ctx_last_info(vp9_ctx);
-+}
-+
-+static void rkvdec_init_v4l2_vp9_count_tbl(struct rkvdec_ctx *ctx)
-+{
-+	struct rkvdec_vp9_ctx *vp9_ctx = ctx->priv;
-+	struct rkvdec_vp9_intra_frame_symbol_counts *intra_cnts = vp9_ctx->count_tbl.cpu;
-+	struct rkvdec_vp9_inter_frame_symbol_counts *inter_cnts = vp9_ctx->count_tbl.cpu;
-+	int i, j, k, l, m;
-+
-+	vp9_ctx->inter_cnts.partition = &inter_cnts->partition;
-+	vp9_ctx->inter_cnts.skip = &inter_cnts->skip;
-+	vp9_ctx->inter_cnts.intra_inter = &inter_cnts->inter;
-+	vp9_ctx->inter_cnts.tx32p = &inter_cnts->tx32p;
-+	vp9_ctx->inter_cnts.tx16p = &inter_cnts->tx16p;
-+	vp9_ctx->inter_cnts.tx8p = &inter_cnts->tx8p;
-+
-+	vp9_ctx->intra_cnts.partition = (u32 (*)[16][4])(&intra_cnts->partition);
-+	vp9_ctx->intra_cnts.skip = &intra_cnts->skip;
-+	vp9_ctx->intra_cnts.intra_inter = &intra_cnts->intra;
-+	vp9_ctx->intra_cnts.tx32p = &intra_cnts->tx32p;
-+	vp9_ctx->intra_cnts.tx16p = &intra_cnts->tx16p;
-+	vp9_ctx->intra_cnts.tx8p = &intra_cnts->tx8p;
-+
-+	vp9_ctx->inter_cnts.y_mode = &inter_cnts->y_mode;
-+	vp9_ctx->inter_cnts.uv_mode = &inter_cnts->uv_mode;
-+	vp9_ctx->inter_cnts.comp = &inter_cnts->comp;
-+	vp9_ctx->inter_cnts.comp_ref = &inter_cnts->comp_ref;
-+	vp9_ctx->inter_cnts.single_ref = &inter_cnts->single_ref;
-+	vp9_ctx->inter_cnts.mv_mode = &inter_cnts->mv_mode;
-+	vp9_ctx->inter_cnts.filter = &inter_cnts->filter;
-+	vp9_ctx->inter_cnts.mv_joint = &inter_cnts->mv_joint;
-+	vp9_ctx->inter_cnts.sign = &inter_cnts->sign;
-+	/*
-+	 * rk hardware actually uses "u32 classes[2][11 + 1];"
-+	 * instead of "u32 classes[2][11];", so this must be explicitly
-+	 * copied into vp9_ctx->classes when passing the data to the
-+	 * vp9 library function
-+	 */
-+	vp9_ctx->inter_cnts.class0 = &inter_cnts->class0;
-+	vp9_ctx->inter_cnts.bits = &inter_cnts->bits;
-+	vp9_ctx->inter_cnts.class0_fp = &inter_cnts->class0_fp;
-+	vp9_ctx->inter_cnts.fp = &inter_cnts->fp;
-+	vp9_ctx->inter_cnts.class0_hp = &inter_cnts->class0_hp;
-+	vp9_ctx->inter_cnts.hp = &inter_cnts->hp;
-+
-+#define INNERMOST_LOOP \
-+	do {										\
-+		for (m = 0; m < ARRAY_SIZE(vp9_ctx->inter_cnts.coeff[0][0][0][0]); ++m) {\
-+			vp9_ctx->inter_cnts.coeff[i][j][k][l][m] =			\
-+				&inter_cnts->ref_cnt[k][i][j][l][m].coeff;		\
-+			vp9_ctx->inter_cnts.eob[i][j][k][l][m][0] =			\
-+				&inter_cnts->ref_cnt[k][i][j][l][m].eob[0];		\
-+			vp9_ctx->inter_cnts.eob[i][j][k][l][m][1] =			\
-+				&inter_cnts->ref_cnt[k][i][j][l][m].eob[1];		\
-+											\
-+			vp9_ctx->intra_cnts.coeff[i][j][k][l][m] =			\
-+				&intra_cnts->ref_cnt[k][i][j][l][m].coeff;		\
-+			vp9_ctx->intra_cnts.eob[i][j][k][l][m][0] =			\
-+				&intra_cnts->ref_cnt[k][i][j][l][m].eob[0];		\
-+			vp9_ctx->intra_cnts.eob[i][j][k][l][m][1] =			\
-+				&intra_cnts->ref_cnt[k][i][j][l][m].eob[1];		\
-+		}									\
-+	} while (0)
-+
-+	for (i = 0; i < ARRAY_SIZE(vp9_ctx->inter_cnts.coeff); ++i)
-+		for (j = 0; j < ARRAY_SIZE(vp9_ctx->inter_cnts.coeff[0]); ++j)
-+			for (k = 0; k < ARRAY_SIZE(vp9_ctx->inter_cnts.coeff[0][0]); ++k)
-+				for (l = 0; l < ARRAY_SIZE(vp9_ctx->inter_cnts.coeff[0][0][0]); ++l)
-+					INNERMOST_LOOP;
-+#undef INNERMOST_LOOP
-+}
-+
-+static int rkvdec_vp9_start(struct rkvdec_ctx *ctx)
-+{
-+	struct rkvdec_dev *rkvdec = ctx->dev;
-+	struct rkvdec_vp9_priv_tbl *priv_tbl;
-+	struct rkvdec_vp9_ctx *vp9_ctx;
-+	unsigned char *count_tbl;
-+	int ret;
-+
-+	vp9_ctx = kzalloc(sizeof(*vp9_ctx), GFP_KERNEL);
-+	if (!vp9_ctx)
-+		return -ENOMEM;
-+
-+	ctx->priv = vp9_ctx;
-+
-+	priv_tbl = dma_alloc_coherent(rkvdec->dev, sizeof(*priv_tbl),
-+				      &vp9_ctx->priv_tbl.dma, GFP_KERNEL);
-+	if (!priv_tbl) {
-+		ret = -ENOMEM;
-+		goto err_free_ctx;
-+	}
-+
-+	vp9_ctx->priv_tbl.size = sizeof(*priv_tbl);
-+	vp9_ctx->priv_tbl.cpu = priv_tbl;
-+	memset(priv_tbl, 0, sizeof(*priv_tbl));
-+
-+	count_tbl = dma_alloc_coherent(rkvdec->dev, RKVDEC_VP9_COUNT_SIZE,
-+				       &vp9_ctx->count_tbl.dma, GFP_KERNEL);
-+	if (!count_tbl) {
-+		ret = -ENOMEM;
-+		goto err_free_priv_tbl;
-+	}
-+
-+	vp9_ctx->count_tbl.size = RKVDEC_VP9_COUNT_SIZE;
-+	vp9_ctx->count_tbl.cpu = count_tbl;
-+	memset(count_tbl, 0, sizeof(*count_tbl));
-+	rkvdec_init_v4l2_vp9_count_tbl(ctx);
-+
-+	return 0;
-+
-+err_free_priv_tbl:
-+	dma_free_coherent(rkvdec->dev, vp9_ctx->priv_tbl.size,
-+			  vp9_ctx->priv_tbl.cpu, vp9_ctx->priv_tbl.dma);
-+
-+err_free_ctx:
-+	kfree(vp9_ctx);
-+	return ret;
-+}
-+
-+static void rkvdec_vp9_stop(struct rkvdec_ctx *ctx)
-+{
-+	struct rkvdec_vp9_ctx *vp9_ctx = ctx->priv;
-+	struct rkvdec_dev *rkvdec = ctx->dev;
-+
-+	dma_free_coherent(rkvdec->dev, vp9_ctx->count_tbl.size,
-+			  vp9_ctx->count_tbl.cpu, vp9_ctx->count_tbl.dma);
-+	dma_free_coherent(rkvdec->dev, vp9_ctx->priv_tbl.size,
-+			  vp9_ctx->priv_tbl.cpu, vp9_ctx->priv_tbl.dma);
-+	kfree(vp9_ctx);
-+}
-+
-+static int rkvdec_vp9_adjust_fmt(struct rkvdec_ctx *ctx,
-+				 struct v4l2_format *f)
-+{
-+	struct v4l2_pix_format_mplane *fmt = &f->fmt.pix_mp;
-+
-+	fmt->num_planes = 1;
-+	if (!fmt->plane_fmt[0].sizeimage)
-+		fmt->plane_fmt[0].sizeimage = fmt->width * fmt->height * 2;
-+	return 0;
-+}
-+
-+const struct rkvdec_coded_fmt_ops rkvdec_vp9_fmt_ops = {
-+	.adjust_fmt = rkvdec_vp9_adjust_fmt,
-+	.start = rkvdec_vp9_start,
-+	.stop = rkvdec_vp9_stop,
-+	.run = rkvdec_vp9_run,
-+	.done = rkvdec_vp9_done,
-+};
-diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
-index 4fd4a2907da7..ad2624c30843 100644
---- a/drivers/staging/media/rkvdec/rkvdec.c
-+++ b/drivers/staging/media/rkvdec/rkvdec.c
-@@ -99,10 +99,30 @@ static const struct rkvdec_ctrls rkvdec_h264_ctrls = {
- 	.num_ctrls = ARRAY_SIZE(rkvdec_h264_ctrl_descs),
- };
- 
--static const u32 rkvdec_h264_decoded_fmts[] = {
-+static const u32 rkvdec_h264_vp9_decoded_fmts[] = {
- 	V4L2_PIX_FMT_NV12,
- };
- 
-+static const struct rkvdec_ctrl_desc rkvdec_vp9_ctrl_descs[] = {
-+	{
-+		.cfg.id = V4L2_CID_STATELESS_VP9_FRAME,
-+	},
-+	{
-+		.cfg.id = V4L2_CID_STATELESS_VP9_COMPRESSED_HDR,
-+	},
-+	{
-+		.cfg.id = V4L2_CID_MPEG_VIDEO_VP9_PROFILE,
-+		.cfg.min = V4L2_MPEG_VIDEO_VP9_PROFILE_0,
-+		.cfg.max = V4L2_MPEG_VIDEO_VP9_PROFILE_0,
-+		.cfg.def = V4L2_MPEG_VIDEO_VP9_PROFILE_0,
-+	},
-+};
-+
-+static const struct rkvdec_ctrls rkvdec_vp9_ctrls = {
-+	.ctrls = rkvdec_vp9_ctrl_descs,
-+	.num_ctrls = ARRAY_SIZE(rkvdec_vp9_ctrl_descs),
-+};
-+
- static const struct rkvdec_coded_fmt_desc rkvdec_coded_fmts[] = {
- 	{
- 		.fourcc = V4L2_PIX_FMT_H264_SLICE,
-@@ -116,8 +136,23 @@ static const struct rkvdec_coded_fmt_desc rkvdec_coded_fmts[] = {
- 		},
- 		.ctrls = &rkvdec_h264_ctrls,
- 		.ops = &rkvdec_h264_fmt_ops,
--		.num_decoded_fmts = ARRAY_SIZE(rkvdec_h264_decoded_fmts),
--		.decoded_fmts = rkvdec_h264_decoded_fmts,
-+		.num_decoded_fmts = ARRAY_SIZE(rkvdec_h264_vp9_decoded_fmts),
-+		.decoded_fmts = rkvdec_h264_vp9_decoded_fmts,
-+	},
-+	{
-+		.fourcc = V4L2_PIX_FMT_VP9_FRAME,
-+		.frmsize = {
-+			.min_width = 64,
-+			.max_width = 4096,
-+			.step_width = 64,
-+			.min_height = 64,
-+			.max_height = 2304,
-+			.step_height = 64,
-+		},
-+		.ctrls = &rkvdec_vp9_ctrls,
-+		.ops = &rkvdec_vp9_fmt_ops,
-+		.num_decoded_fmts = ARRAY_SIZE(rkvdec_h264_vp9_decoded_fmts),
-+		.decoded_fmts = rkvdec_h264_vp9_decoded_fmts,
- 	}
- };
- 
-diff --git a/drivers/staging/media/rkvdec/rkvdec.h b/drivers/staging/media/rkvdec/rkvdec.h
-index 52ac3874c5e5..2f4ea1786b93 100644
---- a/drivers/staging/media/rkvdec/rkvdec.h
-+++ b/drivers/staging/media/rkvdec/rkvdec.h
-@@ -42,14 +42,18 @@ struct rkvdec_run {
- 
- struct rkvdec_vp9_decoded_buffer_info {
- 	/* Info needed when the decoded frame serves as a reference frame. */
--	u16 width;
--	u16 height;
--	u32 bit_depth : 4;
-+	unsigned short width;
-+	unsigned short height;
-+	unsigned int bit_depth : 4;
- };
- 
- struct rkvdec_decoded_buffer {
- 	/* Must be the first field in this struct. */
- 	struct v4l2_m2m_buffer base;
-+
-+	union {
-+		struct rkvdec_vp9_decoded_buffer_info vp9;
-+	};
- };
- 
- static inline struct rkvdec_decoded_buffer *
-@@ -116,4 +120,6 @@ void rkvdec_run_preamble(struct rkvdec_ctx *ctx, struct rkvdec_run *run);
- void rkvdec_run_postamble(struct rkvdec_ctx *ctx, struct rkvdec_run *run);
- 
- extern const struct rkvdec_coded_fmt_ops rkvdec_h264_fmt_ops;
-+extern const struct rkvdec_coded_fmt_ops rkvdec_vp9_fmt_ops;
-+
- #endif /* RKVDEC_H_ */
--- 
-2.25.1
+As for modifying the existing 2 code paths, IMHO it does make sense 
+to try and preserve the error code (and not try the secondary fwnode)
+when the error is an error other then the one indicating the property
+is not there.
+
+So keeping those as -EINVAL is probably best and maybe for the
+the fwnode_find_reference instead of (ret < 0) use:
+(ret == -EINVAL || ret == -ENOENT)  ?
+
+Regards,
+
+Hans
+
+
+>>>> [   17.327851][    T7] BUG: kernel NULL pointer dereference, address: 00000000
+>>>> [   17.329758][    T7] #PF: supervisor read access in kernel mode
+>>>> [   17.331371][    T7] #PF: error_code(0x0000) - not-present page
+>>>> [   17.332992][    T7] *pde = 00000000
+>>>> [   17.334107][    T7] Oops: 0000 [#1] PREEMPT
+>>>> [   17.335310][    T7] CPU: 0 PID: 7 Comm: kworker/u2:0 Tainted: G S                5.15.0-11191-g995fe757ecae #1
+>>>> [   17.338036][    T7] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+>>>> [   17.340544][    T7] Workqueue: events_unbound deferred_probe_work_func
+>>>> [ 17.342291][ T7] EIP: fwnode_property_get_reference_args (drivers/base/property.c:486 (discriminator 1)) 
+>>>> [ 17.344051][ T7] Code: 8b 45 0c 50 8b 45 08 50 89 d8 89 55 f4 ff d6 83 c4 0c 89 c6 85 c0 78 55 8d 65 f8 89 f0 5b 5e 5d c3 8d 74 26 00 be fa ff ff ff <8b> 03 85 c0 74 e8 3d 00 f0 ff ff 77 e1 8b 58 04 85 db 74 37 8b 5b
+>>>> All code
+>>>> ========
+>>>>    0:	8b 45 0c             	mov    0xc(%rbp),%eax
+>>>>    3:	50                   	push   %rax
+>>>>    4:	8b 45 08             	mov    0x8(%rbp),%eax
+>>>>    7:	50                   	push   %rax
+>>>>    8:	89 d8                	mov    %ebx,%eax
+>>>>    a:	89 55 f4             	mov    %edx,-0xc(%rbp)
+>>>>    d:	ff d6                	callq  *%rsi
+>>>>    f:	83 c4 0c             	add    $0xc,%esp
+>>>>   12:	89 c6                	mov    %eax,%esi
+>>>>   14:	85 c0                	test   %eax,%eax
+>>>>   16:	78 55                	js     0x6d
+>>>>   18:	8d 65 f8             	lea    -0x8(%rbp),%esp
+>>>>   1b:	89 f0                	mov    %esi,%eax
+>>>>   1d:	5b                   	pop    %rbx
+>>>>   1e:	5e                   	pop    %rsi
+>>>>   1f:	5d                   	pop    %rbp
+>>>>   20:	c3                   	retq   
+>>>>   21:	8d 74 26 00          	lea    0x0(%rsi,%riz,1),%esi
+>>>>   25:	be fa ff ff ff       	mov    $0xfffffffa,%esi
+>>>>   2a:*	8b 03                	mov    (%rbx),%eax		<-- trapping instruction
+>>>>   2c:	85 c0                	test   %eax,%eax
+>>>>   2e:	74 e8                	je     0x18
+>>>>   30:	3d 00 f0 ff ff       	cmp    $0xfffff000,%eax
+>>>>   35:	77 e1                	ja     0x18
+>>>>   37:	8b 58 04             	mov    0x4(%rax),%ebx
+>>>>   3a:	85 db                	test   %ebx,%ebx
+>>>>   3c:	74 37                	je     0x75
+>>>>   3e:	8b                   	.byte 0x8b
+>>>>   3f:	5b                   	pop    %rbx
+>>>>
+>>>> Code starting with the faulting instruction
+>>>> ===========================================
+>>>>    0:	8b 03                	mov    (%rbx),%eax
+>>>>    2:	85 c0                	test   %eax,%eax
+>>>>    4:	74 e8                	je     0xffffffffffffffee
+>>>>    6:	3d 00 f0 ff ff       	cmp    $0xfffff000,%eax
+>>>>    b:	77 e1                	ja     0xffffffffffffffee
+>>>>    d:	8b 58 04             	mov    0x4(%rax),%ebx
+>>>>   10:	85 db                	test   %ebx,%ebx
+>>>>   12:	74 37                	je     0x4b
+>>>>   14:	8b                   	.byte 0x8b
+>>>>   15:	5b                   	pop    %rbx
+>>>> [   17.350847][    T7] EAX: 00000000 EBX: 00000000 ECX: 00000000 EDX: c37cd6d8
+>>>> [   17.352783][    T7] ESI: ffffffea EDI: f5b5a400 EBP: c4cffd24 ESP: c4cffd14
+>>>> [   17.354673][    T7] DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 0068 EFLAGS: 00010246
+>>>> [   17.362075][    T7] CR0: 80050033 CR2: 00000000 CR3: 04206000 CR4: 00000690
+>>>> [   17.363993][    T7] Call Trace:
+>>>> [ 17.365018][ T7] fwnode_find_reference (drivers/base/property.c:514) 
+>>>> [ 17.366430][ T7] ? __this_cpu_preempt_check (lib/smp_processor_id.c:67) 
+>>>> [ 17.367825][ T7] ? lockdep_init_map_type (kernel/locking/lockdep.c:4813) 
+>>>> [ 17.369325][ T7] ? phylink_run_resolve+0x20/0x20 
+>>>> [ 17.370897][ T7] ? init_timer_key (kernel/time/timer.c:818) 
+>>>> [ 17.372228][ T7] fwnode_get_phy_node (drivers/net/phy/phy_device.c:2986) 
+>>>> [ 17.373574][ T7] phylink_fwnode_phy_connect (drivers/net/phy/phylink.c:1180 drivers/net/phy/phylink.c:1166) 
+>>>> [ 17.375014][ T7] phylink_of_phy_connect (drivers/net/phy/phylink.c:1152) 
+>>>> [ 17.376373][ T7] dsa_slave_create (net/dsa/slave.c:1889 net/dsa/slave.c:2036) 
+>>>> [ 17.377765][ T7] dsa_tree_setup_switches (net/dsa/dsa2.c:477 net/dsa/dsa2.c:977) 
+>>>> [ 17.379282][ T7] dsa_register_switch (net/dsa/dsa2.c:1065 net/dsa/dsa2.c:1565 net/dsa/dsa2.c:1579) 
+>>>> [ 17.380762][ T7] dsa_loop_drv_probe (drivers/net/dsa/dsa_loop.c:333) 
+>>>> [ 17.382137][ T7] mdio_probe (drivers/net/phy/mdio_device.c:157) 
+> 
 
