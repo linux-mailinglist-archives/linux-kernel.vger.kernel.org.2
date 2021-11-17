@@ -2,94 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E89A454E47
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 21:04:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 721C8454E52
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 21:11:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233717AbhKQUHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 15:07:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230446AbhKQUHn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 15:07:43 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD17EC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 12:04:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=CYxm5Cqmepf+ZVOq1YCWdgYFRIfV5vO/wlx2Vw8B9DM=; b=BKXOjqRhb8y49+JuViqQi3EYHV
-        6k7D8SGDGQ6Xuujz8WrIrYgKFq1LihwRNUHm1mjxVAnkL7JXvhIJDpH2g7uS8iy8e0fMObzoY8xvC
-        PT/CwMsdw+abRoP3jqG3newMBl4/R3JoQmabfP6mBb91isYk5v+BxmvtlmhkOSV7zqYQCePjZb0tM
-        /U0aSVc1NjfI5IVy5Chjhai9CaOCoDVbar0fk//Lg8+oI2IecBd2tyJWK4H9yoq/pNtaOcmMCcp6v
-        aoILfrxGaz3IDOWTbb4sCkXk7egfxeEZol1ZwvXn/OfjX3Y+uu/M0BxhoolefwOugdVPDzMM4F6uW
-        oIh0FIRg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mnRAZ-006DO0-Pf; Wed, 17 Nov 2021 20:04:36 +0000
-Subject: Re: [PATCH] drm/panel-edp: modify Kconfig to prevent build error
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-References: <20211117062704.14671-1-rdunlap@infradead.org>
- <CAK8P3a1cayrsR9J+G6bAkZjK-hGaNzqSQAxB5LS4pvJm_rtpHQ@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <34aeb1de-7edf-77bd-e9d9-8cf203e73433@infradead.org>
-Date:   Wed, 17 Nov 2021 12:04:33 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S238089AbhKQUOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 15:14:32 -0500
+Received: from dcvr.yhbt.net ([64.71.152.64]:50250 "EHLO dcvr.yhbt.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231429AbhKQUOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 15:14:31 -0500
+Received: from localhost (dcvr.yhbt.net [127.0.0.1])
+        by dcvr.yhbt.net (Postfix) with ESMTP id 5FAAC1F953;
+        Wed, 17 Nov 2021 20:11:32 +0000 (UTC)
+Date:   Wed, 17 Nov 2021 20:11:32 +0000
+From:   Eric Wong <e@80x24.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mike Galbraith <efault@gmx.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        John Ogness <john.ogness@linutronix.de>,
+        Roman Penyaev <rpenyaev@suse.de>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Jason Baron <jbaron@akamai.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [RFC] How to fix eventpoll rwlock based priority inversion on
+ PREEMPT_RT?
+Message-ID: <20211117201132.M259904@dcvr>
+References: <20211116140252.GA348770@lothringen>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1cayrsR9J+G6bAkZjK-hGaNzqSQAxB5LS4pvJm_rtpHQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211116140252.GA348770@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 11:58 PM, Arnd Bergmann wrote:
-> On Wed, Nov 17, 2021 at 7:27 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> When CONFIG_DRM_KMS_HELPER=m and CONFIG_DRM_PANEL_EDP=y,
->> there is a build error in gpu/drm/panel/panel-edp.o:
->>
->> arm-linux-gnueabi-ld: drivers/gpu/drm/panel/panel-edp.o: in function `panel_edp_probe':
->> panel-edp.c:(.text+0xf38): undefined reference to `drm_panel_dp_aux_backlight'
->>
->> Fix this by limiting DRM_PANEL_DEP by the value of the DRM_KMS_HELPER
->> symbol.
+Frederic Weisbecker <frederic@kernel.org> wrote:
+> Hi,
 > 
-> I think the analysis is correct, but this is not the correct fix since
-> DRM_KMS_HELPER
-> is not user-selectable. (Almost) all other drivers that rely on DRM_KMS_HELPER
-> use 'select' for this, and mixing the two risks running into circular
-> dependencies.
-
-Oops. Thanks for catching that.
-
-My first (local) version of the patch used select, but that got me
-into kconfig circular dependency chain land (ugly).
-Maybe your all-at-once patch can take care of that problem.
-
+> I'm iterating again on this topic, this time with the author of
+> the patch Cc'ed.
 > 
-> I see that there are already some 'depends on DRM_KMS_HELPER' in bridge
-> and panel drivers, so it's possible that we have to fix them all at the same to
-> do this right. I ran into another problem like this the other day and
-> I'm currently
-> testing with the patch below, but I have not posted that yet since I am not
-> fully convinced that this is the correct fix either.
+> The following commit:
+> 
+>     a218cc491420 (epoll: use rwlock in order to reduce ep_poll
+>                   callback() contention)
+> 
+> has changed the ep->lock into an rwlock. This can cause priority inversion
+> on PREEMPT_RT. Here is an example:
+> 
+> 
+> 1) High priority task A waits for events on epoll_wait(), nothing shows up so
+>    it goes to sleep for new events in the ep_poll() loop.
+> 
+> 2) Lower prio task B brings new events in ep_poll_callback(), waking up A
+>    while still holding read_lock(ep->lock)
+> 
+> 3) Task A wakes up immediately, tries to grab write_lock(ep->lock) but it has
+>    to wait for task B to release read_lock(ep->lock). Unfortunately there is
+>    no priority inheritance when write_lock() is called on an rwlock that is
+>    already read_lock'ed. So back to task B that may even be preempted by
+>    yet another task before releasing read_lock(ep->lock).
+> 
+> 
+> Now how to solve this? Several possibilities:
+> 
+> == Delay the wake up after releasing the read_lock()? ==
+> 
+> That solves part of the problem only. If another event comes up
+> concurrently we are back to the original issue.
+> 
+> == Make rwlock more fair ? ==
+> 
+> Currently read_lock() only acquires the rtmutex if the lock is already
+> write-held (or write_lock() is waiting to acquire). So if read_lock() happens
+> after write_lock(), fairness is observed but if write_lock() happens after
+> read_lock(), priority inheritance doesn't happen.
+> 
+> I think there has been attempts to solve this by the past but some issues
+> arised (don't know the exact details, comments on rwbase_rt.c bring some clues).
+> 
+> == Convert the rwlock to RCU ? ==
+> 
+> Traditionally, we try to convert rwlocks bringing issues to RCU. I'm not sure the
+> situation fits here because the rwlock is used the other way around:
+> the epoll consumer does the write_lock() and the producers do read_lock(). Then
+> concurrent producers use ad-hoc concurrent list add (see list_add_tail_lockless)
+> to handle racy modifications.
+> 
+> There are also list modifications on both side. There are added from the
+> producers and read and deleted (even re-added sometimes) on the consumer side.
+> 
+> Perhaps RCU could be used with keeping locking on the consumer side...
 
-I'll test some with it also.
++CC linux-fsdevel and Mathieu Desnoyers
 
-thanks.
+I proposed using wfcqueue many years ago, but ran out of
+time/hardware/funding to work on it:
 
--- 
-~Randy
+  https://yhbt.net/lore/lkml/20130401183118.GA9968@dcvr.yhbt.net/
+
+wfcqueue is used internally by Userspace-RCU, but wfcqueue
+itself doesn't rely on RCU.  I'm not sure if wfcqueue helps
+PREEMPT_RT, but Mathieu + Paul might.
+
+> == Convert to llist ? ==
+> 
+> It's a possibility but some operations like single element deletion may be
+> costly because only llist_add() and llist_del_all() are atomic on llist.
+> !CONFIG_PREEMPT_RT might not be happy about it.
+> 
+> == Consider epoll not PREEMPT_RT friendly? ==
+> 
+> A last resort is to simply consider epoll is not RT-friendly and suggest
+> using more simple alternatives like poll()....
+> 
+> Any thoughts?
