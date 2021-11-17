@@ -2,131 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73AE14543DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:40:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C0C4543EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:40:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235445AbhKQJlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 04:41:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46530 "EHLO
+        id S235705AbhKQJmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 04:42:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235350AbhKQJlQ (ORCPT
+        with ESMTP id S235538AbhKQJl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 04:41:16 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F96C061570;
-        Wed, 17 Nov 2021 01:38:18 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id n15-20020a17090a160f00b001a75089daa3so4790775pja.1;
-        Wed, 17 Nov 2021 01:38:18 -0800 (PST)
+        Wed, 17 Nov 2021 04:41:59 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A27AC061766
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 01:38:41 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id d24so3463756wra.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 01:38:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=Aki1NLeVtsw26dC02yR/rmj2WdHrHGV0mkw6Kw4rHCw=;
-        b=jZ5dkPMf9wul3etBBgJWkwsyn7EE3gI+sqkW28tqz68xjxuD27gIO1xXt/szcXsrDZ
-         5jN1zYJ9RnRLgDEzwyRoatlR/N+OwJuRjYPaHqLJpw/zbXqB+txldPOfJA8b/YjBUZCt
-         4nEYacysDDtBJhp4GrD86U2byGGheF9PkTZtgsL+nTM2yEsPsJvGxOE9fIlm8RhhFXU8
-         kP+iwB6Mp/RmjTDPKXXC2upfjPKR72Rc/O/g8JKeOvDBOsq1cN0moJxaKSm8WSAjjBIX
-         PventnqvI1R5PBVuFQtNtUDyF3FDAP9Nvx3K1YxepWnxTqr9KPDhAnSMwHilr/gwI23N
-         rXWw==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=q2rKwboKgAw3nRRaCfD7SefQvnMKY/KTAzFoQdfeqaU=;
+        b=OO+6saCBlkO2KPQ5TxJjjigN9pHFCb8KDGZLaabpCFOYooTI+01Q2Im1MhLUXoBdFf
+         bf7Xriu1UCJR+ymitnwQ8BtJGDrCh5vctFZNgeZft0mEQWSEvd1ChSg9RSRKt6gcf4E/
+         IUL26Mn07+nVzUa3WLIgKVGk46tzsogB5zCVtFOidR7Tve7jLK40HYN5Ty7TpPxhhvUk
+         4FK55sgUkzOs02YZRMVUcRAEmoxqp5tQLPjTVRZacct8DEVC3BO/+e2i6qD1W/nK1AOy
+         ztaZq/NmhNGtmIzkae4XkVqufVUaQRRd2TlVuaV6mqUZX7TGOrkYBSZNfFimRAQyWIGo
+         /Uog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=Aki1NLeVtsw26dC02yR/rmj2WdHrHGV0mkw6Kw4rHCw=;
-        b=B75ZJvdBhJ4B3yo+9WGKWeukHBM/wvKW6FXC9aycwqUQ5+xSHUeP24NrOb1RjLy3qY
-         TJ7vdplM/gAkIb27fs0GXjDU8ZtGYnxixDoBYhG1ceUFHMvT9HylYzHK+Eqyzt04Sm/e
-         xrRjyFAGpsjvKUaNwVuT0JQSHj1BBAtWwZDKl7a7J/C9ni61I7bLWY6CqfROgA7PO0Nx
-         G4GvRn/AN0M2UMFySuWWKQpwFMcC1DlXPMPTDkMZcRiL1qaK3iSlVQPGfjx+hjGzXpck
-         J4h2pPP6BEPVmGG1opzx4Fi3fwJrOPRofl/RP6N2Ss71r8vhcP6pc4yBvYdap8gpeCHk
-         Ts4w==
-X-Gm-Message-State: AOAM533Uv9ra2Tyo+g85zJUrSD3U3wqUlRksLraBT8+z6zPR6FBRjcW5
-        i+V0hx13e7yBCjATrmQShhM=
-X-Google-Smtp-Source: ABdhPJy1tYpf+Ff1f/HN12UhwDRBest1lP6OWxOPXMQlYVK1+8lb3BdUwEVMqc1YzlmYhEiilmUrOg==
-X-Received: by 2002:a17:90b:4c0b:: with SMTP id na11mr8226675pjb.53.1637141898264;
-        Wed, 17 Nov 2021 01:38:18 -0800 (PST)
-Received: from [192.168.11.5] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id rj8sm5338117pjb.0.2021.11.17.01.38.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 01:38:17 -0800 (PST)
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        drbd-dev@lists.linbit.com,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Lars Ellenberg <lars.ellenberg@linbit.com>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Subject: [PATCH] docs: admin-guide/blockdev: Use subgraphs in
- node-states-8.dot
-Message-ID: <3cbff170-582b-b6cf-0988-e0d0c9b47505@gmail.com>
-Date:   Wed, 17 Nov 2021 18:38:14 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=q2rKwboKgAw3nRRaCfD7SefQvnMKY/KTAzFoQdfeqaU=;
+        b=A0/KoAStTvRv13TFdNl5ovkmqHvOH2LTx+A3VEQL+AnHzvwVgA4vUwjHr77ILH+MHJ
+         ihI2srRz24kOv9xLsIHdhCRPki4sKYprEhajPLIP7E82/+ugW92LxD0XXcMPuie63/ow
+         S5p5WhUyblU42XfACwga+eyBRZD5SfhJg2/h+fIpD5hHb0a3T7Ww60Fy9iNGnhVFp7iu
+         BBpcC+znwo8m6HTgnScyYbVbUc2p1BRLcKPmOUXBC3pArJAXAt8y9T8HjD83knZg/5MP
+         M1TTIuPURSASlWHarA+iqP6rPV4Hs/beAuqlr6RmVbKTIBc0mmoCGXN8S9j2OOJ2xjPv
+         fr9w==
+X-Gm-Message-State: AOAM5333kVR1T9MckkRU8D+ggExbKf/2KXdRNMISfFRfylYtPd17uJNX
+        6XiUaZ3+p0bSnxRribwdIf7XRW7v+kfMb2sIMCvm0g==
+X-Google-Smtp-Source: ABdhPJygAy0isU1aGl66wBzprRc9u7qmQ4gQiO3MTlAlwKzYcPAZgC5J2vn32NzEw2fj+ggFTr8dkuvXrxV5nCddxBE=
+X-Received: by 2002:adf:e387:: with SMTP id e7mr18490666wrm.412.1637141919407;
+ Wed, 17 Nov 2021 01:38:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211117135800.0b7072cd@canb.auug.org.au> <268ae204-efae-3081-a5dd-44fc07d048ba@infradead.org>
+ <CAMuHMdUdA6cJkWWKypvn7nGQw+u=gW_oRNWB-=G8g2T3VixJFQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdUdA6cJkWWKypvn7nGQw+u=gW_oRNWB-=G8g2T3VixJFQ@mail.gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 17 Nov 2021 01:38:27 -0800
+Message-ID: <CANn89iLXQWR_F6v39guPftY=jhs4XHsERifhZPOTjR3zDNkJyg@mail.gmail.com>
+Subject: Re: linux-next: Tree for Nov 17 (uml, no IPV6)
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While node-states-8.dot has two digraphs, dot(1) command can not
-properly handle multiple graphs in a DOT file.
+On Wed, Nov 17, 2021 at 12:44 AM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+>
+> Hi Randy,
+>
+> On Wed, Nov 17, 2021 at 6:49 AM Randy Dunlap <rdunlap@infradead.org> wrot=
+e:
+> > On 11/16/21 6:58 PM, Stephen Rothwell wrote:
+> > > Changes since 20211116:
+> >
+> > ARCH=3Dum SUBARCH=3Dx86_64:
+> > # CONFIG_IPV6 is not set
+>
+> It doesn't always happen with CONFIG_IPV6=3Dn, so I guess that's why
+> it wasn't detected before.
 
-Use subgraphs and merge them into a single graph.
+Thanks for letting me know
 
-Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
-Cc: Philipp Reisner <philipp.reisner@linbit.com>
-Cc: Lars Ellenberg <lars.ellenberg@linbit.com>
----
-Hi Jon,
+I guess the following addition would fix the issue ?
 
-I happened to spot a broken DOT script at the bottom of
-
-    https://www.kernel.org/doc/html/latest/admin-guide/blockdev/drbd/figures.html
-
-and managed to fix it.
-
-DRBD DRIVER maintainers,
-If I'm missing something here, please let me know.
-
-        Thanks, Akira
---
- .../blockdev/drbd/node-states-8.dot           | 25 +++++++++++--------
- 1 file changed, 14 insertions(+), 11 deletions(-)
-
-diff --git a/Documentation/admin-guide/blockdev/drbd/node-states-8.dot b/Documentation/admin-guide/blockdev/drbd/node-states-8.dot
-index bfa54e1f8016..993f0c152ead 100644
---- a/Documentation/admin-guide/blockdev/drbd/node-states-8.dot
-+++ b/Documentation/admin-guide/blockdev/drbd/node-states-8.dot
-@@ -1,13 +1,16 @@
--digraph node_states {
--	Secondary -> Primary           [ label = "ioctl_set_state()" ]
--	Primary   -> Secondary 	       [ label = "ioctl_set_state()" ]
--}
-+digraph G {
-+	compound=true;
-+	subgraph node_states {
-+		Secondary -> Primary           [ label = "ioctl_set_state()" ]
-+		Primary   -> Secondary 	       [ label = "ioctl_set_state()" ]
-+	}
- 
--digraph peer_states {
--	Secondary -> Primary           [ label = "recv state packet" ]
--	Primary   -> Secondary 	       [ label = "recv state packet" ]
--	Primary   -> Unknown 	       [ label = "connection lost" ]
--	Secondary  -> Unknown  	       [ label = "connection lost" ]
--	Unknown   -> Primary           [ label = "connected" ]
--	Unknown   -> Secondary         [ label = "connected" ]
-+	subgraph peer_states {
-+		Secondary -> Primary           [ label = "recv state packet" ]
-+		Primary   -> Secondary 	       [ label = "recv state packet" ]
-+		Primary   -> Unknown 	       [ label = "connection lost" ]
-+		Secondary  -> Unknown  	       [ label = "connection lost" ]
-+		Unknown   -> Primary           [ label = "connected" ]
-+		Unknown   -> Secondary         [ label = "connected" ]
-+	}
+diff --git a/arch/x86/um/asm/checksum_64.h b/arch/x86/um/asm/checksum_64.h
+index 7b6cd1921573c97361b8d486bbba3e8870d53ad6..4f0c15a61925c46b261f87fa319=
+e6aff28f4cfce
+100644
+--- a/arch/x86/um/asm/checksum_64.h
++++ b/arch/x86/um/asm/checksum_64.h
+@@ -14,6 +14,30 @@ static inline unsigned add32_with_carry(unsigned a,
+unsigned b)
+         return a;
  }
 
-base-commit: 53b606fa29e321352a105978726b975b42b292a4
--- 
-2.17.1
++#define _HAVE_ARCH_IPV6_CSUM
++static inline __sum16
++csum_ipv6_magic(const struct in6_addr *saddr,
++               const struct in6_addr *daddr,
++               __u32 len, __u8 proto, __wsum sum)
++{
++       __u64 rest, sum64;
++
++       rest =3D (__force __u64)htonl(len) + (__force __u64)htons(proto) +
++               (__force __u64)sum;
++
++       asm("   addq (%[saddr]),%[sum]\n"
++           "   adcq 8(%[saddr]),%[sum]\n"
++           "   adcq (%[daddr]),%[sum]\n"
++           "   adcq 8(%[daddr]),%[sum]\n"
++           "   adcq $0,%[sum]\n"
++
++           : [sum] "=3Dr" (sum64)
++           : "[sum]" (rest), [saddr] "r" (saddr), [daddr] "r" (daddr));
++
++       return csum_fold(
++              (__force __wsum)add32_with_carry(sum64 & 0xffffffff, sum64>>=
+32));
++}
++
+ extern __sum16 ip_compute_csum(const void *buff, int len);
 
+ #endif
+
+
+>
+> > In file included from ../net/ethernet/eth.c:62:0:
+> > ../include/net/gro.h: In function =E2=80=98ip6_gro_compute_pseudo=E2=80=
+=99:
+> > ../include/net/gro.h:413:22: error: implicit declaration of function =
+=E2=80=98csum_ipv6_magic=E2=80=99; did you mean =E2=80=98csum_tcpudp_magic=
+=E2=80=99? [-Werror=3Dimplicit-function-declaration]
+> >    return ~csum_unfold(csum_ipv6_magic(&iph->saddr, &iph->daddr,
+> >                        ^~~~~~~~~~~~~~~
+> >                        csum_tcpudp_magic
+> >
+> >
+> > After I made ip6_gro_compute_pseudo() conditional on CONFIG_IPV6,
+> > I got this build error:
+> >
+> > In file included from ../net/ipv6/tcpv6_offload.c:10:0:
+> > ../net/ipv6/tcpv6_offload.c: In function =E2=80=98tcp6_gro_receive=E2=
+=80=99:
+> > ../net/ipv6/tcpv6_offload.c:22:11: error: implicit declaration of funct=
+ion =E2=80=98ip6_gro_compute_pseudo=E2=80=99; did you mean =E2=80=98inet_gr=
+o_compute_pseudo=E2=80=99? [-Werror=3Dimplicit-function-declaration]
+> >             ip6_gro_compute_pseudo)) {
+> >             ^
+> > ../include/net/gro.h:235:5: note: in definition of macro =E2=80=98__skb=
+_gro_checksum_validate=E2=80=99
+> >       compute_pseudo(skb, proto));  \
+> >       ^~~~~~~~~~~~~~
+> > ../net/ipv6/tcpv6_offload.c:21:6: note: in expansion of macro =E2=80=98=
+skb_gro_checksum_validate=E2=80=99
+> >        skb_gro_checksum_validate(skb, IPPROTO_TCP,
+> >        ^~~~~~~~~~~~~~~~~~~~~~~~~
+> >
+> >
+> >
+> > This is UML x86_64 defconfig:
+> >
+> > $ make ARCH=3Dum SUBARCH=3Dx86_64 defconfig all
+>
+> noreply@ellerman.id.au reported the same issue for m5272c3_defconfig,
+> and I've bisected the failure to commit 4721031c3559db8e ("net:
+> move gro definitions to include/net/gro.h").
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
+8k.org
+>
+> In personal conversations with technical people, I call myself a hacker. =
+But
+> when I'm talking to journalists I just say "programmer" or something like=
+ that.
+>                                 -- Linus Torvalds
