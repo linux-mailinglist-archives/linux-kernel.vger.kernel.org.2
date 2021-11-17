@@ -2,110 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2D6454DF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE0E454E02
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 20:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240531AbhKQThS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 14:37:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236117AbhKQThJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 14:37:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A317461B30;
-        Wed, 17 Nov 2021 19:34:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637177650;
-        bh=sj2B2huQwh59FpOjf6V0Y3pZFT+H8BQMKj48jrEM3yQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BIBDz4SFD1hSPtPnvBlFQw/7rDY7MQUud0V7eBYcF4Pm1t3rNmLcjLT5cALd9gJUS
-         f+K89NZ+LVk4E5ssd2vkDPeFIsBYJTy8cmcwuDnI/vqtt4OJl+EdQfXbWtB4BJmKcd
-         ZeZiwblZandJAyDS8ssAUs5NF45zQjYcrZznQUa3j+5qe2rixG7CwSILzb0DokIWBh
-         /DkvR4WtYFDx3va+FYmTowfb3YRV0g1rqW8xWgHI61Gtgn6zphFIHvvXCWTJTG0Cw4
-         Q5zrhSpvFMoDFNhP7G0eExpWNIiFXDdUU5fixVifCXS0LOrAY/Zn6vrJH2SG/V0U87
-         70dKHXPQQ1SJg==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mnQh6-00DXHx-5R; Wed, 17 Nov 2021 19:34:08 +0000
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: [PATCH 8/8] media: atomisp: cleanup qbuf logic
-Date:   Wed, 17 Nov 2021 19:34:06 +0000
-Message-Id: <198e1aae6e4e5d9970f0e5c885cb627ea144d515.1637177402.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <cover.1637177402.git.mchehab+huawei@kernel.org>
-References: <cover.1637177402.git.mchehab+huawei@kernel.org>
+        id S240581AbhKQTi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 14:38:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240658AbhKQThz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 14:37:55 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8C2C06120C;
+        Wed, 17 Nov 2021 11:34:43 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id g91-20020a9d12e4000000b0055ae68cfc3dso6573523otg.9;
+        Wed, 17 Nov 2021 11:34:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=fKgROiTnocpd07KSckUqHL0oP7FUhobr1NuqsBnlJ7k=;
+        b=OckgS1Ml1G8zKBzp/7G1jNUmwj2Acasrksgsp4unQwH51Gw2x5A83pjHl9fjdiZPXW
+         4Dp2C/u4g/HqQRYKw6Cst3RgTjzzSuGWRKCy8YUdnp5Wnj3qL+v/rfXN+iepPNRR9wnS
+         UYL9oopPx+/CmkQDq6HO028yfmyETbcZdc+Q+ou3KYDAHDKanU3cx0etQLQfy0Z8J3/U
+         Yx4Xkq2F/ItRrOZM9S0KTZLsJ8HYsV81CXPdlC6v+w89Txr+oQQ80NsIoFhfU30oUurY
+         M8SOK8Zu8rHq/Onz8sCqxlFQZeKFjPDcEaQ7T/37zuUbGxRxC5EowWhsWwbwNLM0cuvj
+         ssjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=fKgROiTnocpd07KSckUqHL0oP7FUhobr1NuqsBnlJ7k=;
+        b=4700ZPS58WTrYDLh9HnYpxZcBv6jM+SBx72VppkXCw+arrq8X8R+oHsU46lZMD7YrS
+         idEmqW8wE5BXhfuFYysgQ5otOOcMaNl37xvy9vEFtWBtpC18p75FILKuS3PD2sfmja9t
+         ZFWbIAhnw+54/F2BopNEgM+3efgHfHaXrgsDHq+wjLEG+1dKyLM1Hz5uQS0fRs2z62Ah
+         og0s2q5PDK6lSXhe4sT/QG8sKCoFiSd6Zt178CXIYevhxkV1sZLcyv/lwM+lbvjQVj12
+         i2xZ6eJclwsvKghWBCtUdWD2tJ6Fo47Vfx0SbOQCnx0fyQ3NnvrzH20XqHdMFDx/ctQT
+         2v9A==
+X-Gm-Message-State: AOAM5331IsQ47ghUNqIRy82pS6WpRRRIeoYb2xH6I1GlAZJuKKkpG1ko
+        Q9M05qr5mydclQ9W2Izj+jk=
+X-Google-Smtp-Source: ABdhPJwIv96O+pZ0HD0fwdLNgLNXaLHxOcX9zSHrlHezQG0C1fxasXeMFvqxNJctOw292EGvY48GuA==
+X-Received: by 2002:a9d:6641:: with SMTP id q1mr15936411otm.323.1637177682815;
+        Wed, 17 Nov 2021 11:34:42 -0800 (PST)
+Received: from [172.16.0.2] ([8.48.134.30])
+        by smtp.googlemail.com with ESMTPSA id o2sm184062oiv.32.2021.11.17.11.34.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 11:34:42 -0800 (PST)
+Message-ID: <a15db099-a83f-69bd-2cbb-420055087904@gmail.com>
+Date:   Wed, 17 Nov 2021 12:34:41 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.1
+Subject: Re: [PATCH net-next] neigh: introduce __neigh_confirm() for __ipv{4,
+ 6}_confirm_neigh
+Content-Language: en-US
+To:     Yajun Deng <yajun.deng@linux.dev>, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211117120215.30209-1-yajun.deng@linux.dev>
+From:   David Ahern <dsahern@gmail.com>
+In-Reply-To: <20211117120215.30209-1-yajun.deng@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The logic there is meant to be used by newer firmwares.
-clean it up, in order to make compatible with the chosen
-firmware version.
+On 11/17/21 5:02 AM, Yajun Deng wrote:
+> -		unsigned long now = jiffies;
+> -
+> -		/* avoid dirtying neighbour */
+> -		if (READ_ONCE(n->confirmed) != now)
+> -			WRITE_ONCE(n->confirmed, now);
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
-
-To avoid mailbombing on a large number of people, only mailing lists were C/C on the cover.
-See [PATCH 0/8] at: https://lore.kernel.org/all/cover.1637177402.git.mchehab+huawei@kernel.org/
-
- .../staging/media/atomisp/pci/atomisp_ioctl.c | 19 -------------------
- 1 file changed, 19 deletions(-)
-
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
-index b2d3b8349234..562789c75299 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
-@@ -1457,25 +1457,8 @@ static int atomisp_qbuf(struct file *file, void *fh, struct v4l2_buffer *buf)
- 	    pipe->capq.streaming &&
- 	    !asd->enable_raw_buffer_lock->val &&
- 	    asd->params.offline_parm.num_captures == 1) {
--		if (!IS_ISP2401) {
- 			asd->pending_capture_request++;
- 			dev_dbg(isp->dev, "Add one pending capture request.\n");
--		} else {
--			if (asd->re_trigger_capture) {
--				ret = atomisp_css_offline_capture_configure(asd,
--					asd->params.offline_parm.num_captures,
--					asd->params.offline_parm.skip_frames,
--					asd->params.offline_parm.offset);
--				asd->re_trigger_capture = false;
--				dev_dbg(isp->dev, "%s Trigger capture again ret=%d\n",
--					__func__, ret);
--
--			} else {
--				asd->pending_capture_request++;
--				asd->re_trigger_capture = false;
--				dev_dbg(isp->dev, "Add one pending capture request.\n");
--			}
--		}
- 	}
- 	rt_mutex_unlock(&isp->mutex);
- 
-@@ -1868,8 +1851,6 @@ static int atomisp_streamon(struct file *file, void *fh,
- 
- 	/* Reset pending capture request count. */
- 	asd->pending_capture_request = 0;
--	if (IS_ISP2401)
--		asd->re_trigger_capture = false;
- 
- 	if ((atomisp_subdev_streaming_count(asd) > sensor_start_stream) &&
- 	    (!isp->inputs[asd->input_curr].camera_caps->multi_stream_ctrl)) {
--- 
-2.33.1
-
+Just move this part to neigh_confirm and leave the rest as it is. That
+READ_ONCE, WRITE_ONCE pair exists in other places that could use the
+neigh_confirm style helper.
