@@ -2,117 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584704547BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 14:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A254547CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 14:51:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237325AbhKQNvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 08:51:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47228 "EHLO
+        id S237932AbhKQNxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 08:53:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233343AbhKQNvT (ORCPT
+        with ESMTP id S237900AbhKQNxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 08:51:19 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E18D3C061570;
-        Wed, 17 Nov 2021 05:48:20 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id u74so6486362oie.8;
-        Wed, 17 Nov 2021 05:48:20 -0800 (PST)
+        Wed, 17 Nov 2021 08:53:44 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3BA4C061570;
+        Wed, 17 Nov 2021 05:50:45 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id d72-20020a1c1d4b000000b00331140f3dc8so2190740wmd.1;
+        Wed, 17 Nov 2021 05:50:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3mebJzVN9HcHpEGD2QX+VgGKB5YKEkPOK0FE0bHbIP4=;
-        b=ci5T3FUt/5hepMHdWVA9TlN0kHsoEBg9Vuu4c4np1oHUeGbDY6oLySQ0wPwudmQSpg
-         TcAtZSgCt3/rrd3PgXWAr53eBVmr8KS+4STKC5xKEwXOAB0wmn28SNrE0/wKsSMhyHyK
-         xQb9pzBK5rfACmZwLjseiNpNPTdOV34we6Wf+c+yXndonV/S3uG6qlQi6Bvt0VsEfZHp
-         gdhXweRSP/v8XcJOzlbI0IsSM1IQRXzHKBEYq8WEHM1+HCl04MVvlOeyiPVENiPs5jnz
-         B+0sJku2BNgCOs0GUl3R/OrcP+wb8vvu9HSaVLyI7BGEYxCVN4dx9K93V7CCCl7Mrim7
-         rnKw==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=xBxipzjATkt55wg+4IoNm4uk0hAivd514jMf6Kcw/FM=;
+        b=OOUgU+m4H6/c1+8tPBYgJTglkzF+N0PsP1nXfwaWUSl0K20l1uyRdCthcASF8wpfWZ
+         F2SBlvngKsaq5l46ahXaCM9MeUJP6hZ2ixst3hRsEZWqbgPgw0pqJKENfUclTIy7yHGV
+         ELuWfUp/93iMvrZPWSs0biDH2687gXR2Obo02fR0wMRL10CmQN+lbIV35T5sIQ4BkgO4
+         5xUjwBPsmDgZq3stpLqhlEJYFWbJsQ8OUFMi0kuG0INu2SUf1FIH8Ab6Pf+7vgjJtjRo
+         OpX3174kZdOv43gnWpscWcpIJ6gyPVLamT69Zj8Bx+EoattV/XMo8y7v4c9/H+JMaThs
+         5HKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=3mebJzVN9HcHpEGD2QX+VgGKB5YKEkPOK0FE0bHbIP4=;
-        b=6Tr3RwE94H6UsvnBrHZcX7Qhz2UkuFk9hePPCHunnWtx0u1XlpPX5xtNMWzhPefKEl
-         NzaoZco9p3tSQipIfSqbF4SWmcsWuz/kyK8/8lwjVjXWSI8+b5srH857GnifbG6VNj4t
-         LcvtdUmXPIcCSEzMnCB7EyDgrmvqpU++SjMqVrz8T8UUh6n+8Sdv2ZIc3hhWvrNKPaQC
-         xPNflEG0wD5x1NZw+VjvB0QUaNgB404C8C0TlUFVXLHw0It522iOlqul1TBO4Un8JF18
-         /geGWOmCjd+uOWjvtIYP2TTtm7puXaICNuGrea6n/CS5qgZIIj3EQjbGw6l40SHeVkM0
-         il8A==
-X-Gm-Message-State: AOAM532jBbU4IlxPrkxW1Pg3tPBmBSepLCVpNT2gZjVVsaoBx0AfFMSH
-        FPyGc6bcI3wRWaawAWA9Be0=
-X-Google-Smtp-Source: ABdhPJwWNtGrgxl6HdtyBfu5X9p0ZKyR8nj0IVJIWojeaK1jDLmxky4nGpBSFHz5fJKRASzIoYqilw==
-X-Received: by 2002:aca:2412:: with SMTP id n18mr14113342oic.119.1637156900323;
-        Wed, 17 Nov 2021 05:48:20 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w71sm4550911oiw.6.2021.11.17.05.48.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 05:48:19 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 17 Nov 2021 05:48:18 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "maintainer:BROADCOM BCM63XX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Justin Chen <justinpopo6@gmail.com>,
-        "open list:WATCHDOG DEVICE DRIVERS" <linux-watchdog@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "moderated list:BROADCOM BCM63XX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v5 2/7] dt-bindings: watchdog: Add BCM6345 compatible to
- BCM7038 binding
-Message-ID: <20211117134818.GA2724345@roeck-us.net>
-References: <20211112224636.395101-1-f.fainelli@gmail.com>
- <20211112224636.395101-3-f.fainelli@gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=xBxipzjATkt55wg+4IoNm4uk0hAivd514jMf6Kcw/FM=;
+        b=Ctm3iq/6DLI7H1R+rUiJFtiOa6cggEJDslw/k/FMF1LT3nI4LKK2h4I/Mdaw9ukYoj
+         789KOY9tiGWKf8Pa1PyW99TzEAcXHh5GH/ciGPepImbo4LU6ft11XsTs707G0k5/DLNN
+         PQL2KIn5cO6BTGFOKPGxD8lAneoemE/YxEXMKbI1Z/Xokws+KDjuKTDVbU4LKFG0P/TP
+         O7ABVYxeTHIqBvfJL6+sa0z9rxYjuaeFoCTiuriA4B1cacdZl1ijFvb18tGxETR2XNln
+         iQsEnvy4mESbR0rtLOn+YH0UZsxZ54IO5pJvBaWejZ0EhNiP+NZUVaco3MbTvDF7dez4
+         nRMw==
+X-Gm-Message-State: AOAM5324bZl13fKplHvUruWERZEpMCxX5aVBV172bjM2MzEATa43BP9m
+        RKe/cXL8T7sTYN9s5cPd3l9Y7c7AX78=
+X-Google-Smtp-Source: ABdhPJz/jGtiBVkJ6cPG+jFnrw5EJmmuDVPHMYaiRSDvJDZeFWzqzWjVRDr1Dq5rXqe1YdCTX+4HWQ==
+X-Received: by 2002:a05:600c:3505:: with SMTP id h5mr78049482wmq.22.1637157044328;
+        Wed, 17 Nov 2021 05:50:44 -0800 (PST)
+Received: from [192.168.0.18] (static-160-219-86-188.ipcom.comunitel.net. [188.86.219.160])
+        by smtp.gmail.com with ESMTPSA id l4sm20022944wrv.94.2021.11.17.05.50.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 05:50:43 -0800 (PST)
+Message-ID: <d4fdde8b-24e0-34ee-a517-766626f859d9@gmail.com>
+Date:   Wed, 17 Nov 2021 14:50:42 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211112224636.395101-3-f.fainelli@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v15 4/4] spmi: mediatek: Add support for MT8195
+Content-Language: en-US
+To:     James Lo <james.lo@mediatek.com>, Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Henry Chen <henryc.chen@mediatek.com>
+References: <20211115042030.30293-1-james.lo@mediatek.com>
+ <20211115042030.30293-5-james.lo@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+In-Reply-To: <20211115042030.30293-5-james.lo@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 02:46:31PM -0800, Florian Fainelli wrote:
-> The BCM7038 watchdog binding is updated to include a "brcm,bcm6345-wdt"
-> compatible string which is the first instance of a DSL (BCM63xx) SoC
-> seeing the integration of such a watchdog timer block.
+
+
+On 15/11/2021 05:20, James Lo wrote:
+> Add spmi support for MT8195.
+> Refine indent in spmi-mtk-pmif.c.
 > 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
+> Signed-off-by: James Lo <james.lo@mediatek.com>
+> Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
+> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+> Acked-By: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 > ---
->  .../devicetree/bindings/watchdog/brcm,bcm7038-wdt.yaml      | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+>   drivers/spmi/spmi-mtk-pmif.c | 202 +++++++++++++++++++++++++----------
+>   1 file changed, 145 insertions(+), 57 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/watchdog/brcm,bcm7038-wdt.yaml b/Documentation/devicetree/bindings/watchdog/brcm,bcm7038-wdt.yaml
-> index ed6210666ead..a926809352b8 100644
-> --- a/Documentation/devicetree/bindings/watchdog/brcm,bcm7038-wdt.yaml
-> +++ b/Documentation/devicetree/bindings/watchdog/brcm,bcm7038-wdt.yaml
-> @@ -4,7 +4,7 @@
->  $id: http://devicetree.org/schemas/watchdog/brcm,bcm7038-wdt.yaml#
->  $schema: http://devicetree.org/meta-schemas/core.yaml#
->  
-> -title: BCM7038 watchdog timer
-> +title: BCM63xx and BCM7038 watchdog timer
->  
->  allOf:
->    - $ref: "watchdog.yaml#"
-> @@ -16,7 +16,9 @@ maintainers:
->  
->  properties:
->    compatible:
-> -    const: brcm,bcm7038-wdt
-> +    enum:
-> +      - brcm,bcm6345-wdt
-> +      - brcm,bcm7038-wdt
->  
->    reg:
->      maxItems: 1
+> diff --git a/drivers/spmi/spmi-mtk-pmif.c b/drivers/spmi/spmi-mtk-pmif.c
+> index 3283d0a5903c..ad511f2c3324 100644
+> --- a/drivers/spmi/spmi-mtk-pmif.c
+> +++ b/drivers/spmi/spmi-mtk-pmif.c
+> @@ -105,51 +105,99 @@ enum pmif_regs {
+>   };
+>   
+>   static const u32 mt6873_regs[] = {
+> -	[PMIF_INIT_DONE] =	0x0000,
+> -	[PMIF_INF_EN] =		0x0024,
+> -	[PMIF_ARB_EN] =		0x0150,
+> -	[PMIF_CMDISSUE_EN] =	0x03B4,
+> -	[PMIF_TIMER_CTRL] =	0x03E0,
+> -	[PMIF_SPI_MODE_CTRL] =	0x0400,
+> -	[PMIF_IRQ_EVENT_EN_0] =	0x0418,
+> -	[PMIF_IRQ_FLAG_0] =	0x0420,
+> -	[PMIF_IRQ_CLR_0] =	0x0424,
+> -	[PMIF_IRQ_EVENT_EN_1] =	0x0428,
+> -	[PMIF_IRQ_FLAG_1] =	0x0430,
+> -	[PMIF_IRQ_CLR_1] =	0x0434,
+> -	[PMIF_IRQ_EVENT_EN_2] =	0x0438,
+> -	[PMIF_IRQ_FLAG_2] =	0x0440,
+> -	[PMIF_IRQ_CLR_2] =	0x0444,
+> -	[PMIF_IRQ_EVENT_EN_3] =	0x0448,
+> -	[PMIF_IRQ_FLAG_3] =	0x0450,
+> -	[PMIF_IRQ_CLR_3] =	0x0454,
+> -	[PMIF_IRQ_EVENT_EN_4] =	0x0458,
+> -	[PMIF_IRQ_FLAG_4] =	0x0460,
+> -	[PMIF_IRQ_CLR_4] =	0x0464,
+> -	[PMIF_WDT_EVENT_EN_0] =	0x046C,
+> -	[PMIF_WDT_FLAG_0] =	0x0470,
+> -	[PMIF_WDT_EVENT_EN_1] =	0x0474,
+> -	[PMIF_WDT_FLAG_1] =	0x0478,
+> -	[PMIF_SWINF_0_ACC] =	0x0C00,
+> -	[PMIF_SWINF_0_WDATA_31_0] =	0x0C04,
+> -	[PMIF_SWINF_0_RDATA_31_0] =	0x0C14,
+> -	[PMIF_SWINF_0_VLD_CLR] =	0x0C24,
+> -	[PMIF_SWINF_0_STA] =	0x0C28,
+> -	[PMIF_SWINF_1_ACC] =	0x0C40,
+> -	[PMIF_SWINF_1_WDATA_31_0] =	0x0C44,
+> -	[PMIF_SWINF_1_RDATA_31_0] =	0x0C54,
+> -	[PMIF_SWINF_1_VLD_CLR] =	0x0C64,
+> -	[PMIF_SWINF_1_STA] =	0x0C68,
+> -	[PMIF_SWINF_2_ACC] =	0x0C80,
+> -	[PMIF_SWINF_2_WDATA_31_0] =	0x0C84,
+> -	[PMIF_SWINF_2_RDATA_31_0] =	0x0C94,
+> -	[PMIF_SWINF_2_VLD_CLR] =	0x0CA4,
+> -	[PMIF_SWINF_2_STA] =	0x0CA8,
+> -	[PMIF_SWINF_3_ACC] =	0x0CC0,
+> -	[PMIF_SWINF_3_WDATA_31_0] =	0x0CC4,
+> -	[PMIF_SWINF_3_RDATA_31_0] =	0x0CD4,
+> -	[PMIF_SWINF_3_VLD_CLR] =	0x0CE4, > -	[PMIF_SWINF_3_STA] =	0x0CE8,
+
+Please fix format in patch 3/4.
+
+> +	[PMIF_INIT_DONE] = 0x0000,
+> +	[PMIF_INF_EN] = 0x0024,
+> +	[PMIF_ARB_EN] = 0x0150,
+> +	[PMIF_CMDISSUE_EN] = 0x03B4,
+> +	[PMIF_TIMER_CTRL] = 0x03E0,
+> +	[PMIF_SPI_MODE_CTRL] = 0x0400,
+> +	[PMIF_IRQ_EVENT_EN_0] = 0x0418,
+> +	[PMIF_IRQ_FLAG_0] = 0x0420,
+> +	[PMIF_IRQ_CLR_0] = 0x0424,
+> +	[PMIF_IRQ_EVENT_EN_1] = 0x0428,
+> +	[PMIF_IRQ_FLAG_1] = 0x0430,
+> +	[PMIF_IRQ_CLR_1] = 0x0434,
+> +	[PMIF_IRQ_EVENT_EN_2] = 0x0438,
+> +	[PMIF_IRQ_FLAG_2] = 0x0440,
+> +	[PMIF_IRQ_CLR_2] = 0x0444,
+> +	[PMIF_IRQ_EVENT_EN_3] = 0x0448,
+> +	[PMIF_IRQ_FLAG_3] = 0x0450,
+> +	[PMIF_IRQ_CLR_3] = 0x0454,
+> +	[PMIF_IRQ_EVENT_EN_4] = 0x0458,
+> +	[PMIF_IRQ_FLAG_4] = 0x0460,
+> +	[PMIF_IRQ_CLR_4] = 0x0464,
+> +	[PMIF_WDT_EVENT_EN_0] = 0x046C,
+> +	[PMIF_WDT_FLAG_0] = 0x0470,
+> +	[PMIF_WDT_EVENT_EN_1] = 0x0474,
+> +	[PMIF_WDT_FLAG_1] = 0x0478,
+> +	[PMIF_SWINF_0_ACC] = 0x0C00,
+> +	[PMIF_SWINF_0_WDATA_31_0] = 0x0C04,
+> +	[PMIF_SWINF_0_RDATA_31_0] = 0x0C14,
+> +	[PMIF_SWINF_0_VLD_CLR] = 0x0C24,
+> +	[PMIF_SWINF_0_STA] = 0x0C28,
+> +	[PMIF_SWINF_1_ACC] = 0x0C40,
+> +	[PMIF_SWINF_1_WDATA_31_0] = 0x0C44,
+> +	[PMIF_SWINF_1_RDATA_31_0] = 0x0C54,
+> +	[PMIF_SWINF_1_VLD_CLR] = 0x0C64,
+> +	[PMIF_SWINF_1_STA] = 0x0C68,
+> +	[PMIF_SWINF_2_ACC] = 0x0C80,
+> +	[PMIF_SWINF_2_WDATA_31_0] = 0x0C84,
+> +	[PMIF_SWINF_2_RDATA_31_0] = 0x0C94,
+> +	[PMIF_SWINF_2_VLD_CLR] = 0x0CA4,
+> +	[PMIF_SWINF_2_STA] = 0x0CA8,
+> +	[PMIF_SWINF_3_ACC] = 0x0CC0,
+> +	[PMIF_SWINF_3_WDATA_31_0] = 0x0CC4,
+> +	[PMIF_SWINF_3_RDATA_31_0] = 0x0CD4,
+> +	[PMIF_SWINF_3_VLD_CLR] = 0x0CE4,
+> +	[PMIF_SWINF_3_STA] = 0x0CE8,
+> +};
+> +
+> +static const u32 mt8195_regs[] = {
+> +	[PMIF_INIT_DONE] = 0x0000,
+> +	[PMIF_INF_EN] = 0x0024,
+> +	[PMIF_ARB_EN] = 0x0150,
+> +	[PMIF_CMDISSUE_EN] = 0x03B8,
+> +	[PMIF_TIMER_CTRL] = 0x03E4,
+> +	[PMIF_SPI_MODE_CTRL] = 0x0408,
+> +	[PMIF_IRQ_EVENT_EN_0] = 0x0420,
+> +	[PMIF_IRQ_FLAG_0] = 0x0428,
+> +	[PMIF_IRQ_CLR_0] = 0x042C,
+> +	[PMIF_IRQ_EVENT_EN_1] = 0x0430,
+> +	[PMIF_IRQ_FLAG_1] = 0x0438,
+> +	[PMIF_IRQ_CLR_1] = 0x043C,
+> +	[PMIF_IRQ_EVENT_EN_2] = 0x0440,
+> +	[PMIF_IRQ_FLAG_2] = 0x0448,
+> +	[PMIF_IRQ_CLR_2] = 0x044C,
+> +	[PMIF_IRQ_EVENT_EN_3] = 0x0450,
+> +	[PMIF_IRQ_FLAG_3] = 0x0458,
+> +	[PMIF_IRQ_CLR_3] = 0x045C,
+> +	[PMIF_IRQ_EVENT_EN_4] = 0x0460,
+> +	[PMIF_IRQ_FLAG_4] = 0x0468,
+> +	[PMIF_IRQ_CLR_4] = 0x046C,
+> +	[PMIF_WDT_EVENT_EN_0] = 0x0474,
+> +	[PMIF_WDT_FLAG_0] = 0x0478,
+> +	[PMIF_WDT_EVENT_EN_1] = 0x047C,
+> +	[PMIF_WDT_FLAG_1] = 0x0480,
+> +	[PMIF_SWINF_0_ACC] = 0x0800,
+> +	[PMIF_SWINF_0_WDATA_31_0] = 0x0804,
+> +	[PMIF_SWINF_0_RDATA_31_0] = 0x0814,
+> +	[PMIF_SWINF_0_VLD_CLR] = 0x0824,
+> +	[PMIF_SWINF_0_STA] = 0x0828,
+> +	[PMIF_SWINF_1_ACC] = 0x0840,
+> +	[PMIF_SWINF_1_WDATA_31_0] = 0x0844,
+> +	[PMIF_SWINF_1_RDATA_31_0] = 0x0854,
+> +	[PMIF_SWINF_1_VLD_CLR] = 0x0864,
+> +	[PMIF_SWINF_1_STA] = 0x0868,
+> +	[PMIF_SWINF_2_ACC] = 0x0880,
+> +	[PMIF_SWINF_2_WDATA_31_0] = 0x0884,
+> +	[PMIF_SWINF_2_RDATA_31_0] = 0x0894,
+> +	[PMIF_SWINF_2_VLD_CLR] = 0x08A4,
+> +	[PMIF_SWINF_2_STA] = 0x08A8,
+> +	[PMIF_SWINF_3_ACC] = 0x08C0,
+> +	[PMIF_SWINF_3_WDATA_31_0] = 0x08C4,
+> +	[PMIF_SWINF_3_RDATA_31_0] = 0x08D4,
+> +	[PMIF_SWINF_3_VLD_CLR] = 0x08E4,
+> +	[PMIF_SWINF_3_STA] = 0x08E8,
+>   };
+>   
+>   enum spmi_regs {
+> @@ -165,21 +213,52 @@ enum spmi_regs {
+>   	SPMI_REC3,
+>   	SPMI_REC4,
+>   	SPMI_MST_DBG,
+> +
+> +	/* MT8195 spmi regs */
+> +	SPMI_MST_RCS_CTRL,
+> +	SPMI_SLV_3_0_EINT,
+> +	SPMI_SLV_7_4_EINT,
+> +	SPMI_SLV_B_8_EINT,
+> +	SPMI_SLV_F_C_EINT,
+> +	SPMI_REC_CMD_DEC,
+> +	SPMI_DEC_DBG,
+>   };
+>   
+>   static const u32 mt6873_spmi_regs[] = {
+> -	[SPMI_OP_ST_CTRL] =	0x0000,
+> -	[SPMI_GRP_ID_EN] =	0x0004,
+> -	[SPMI_OP_ST_STA] =	0x0008,
+> -	[SPMI_MST_SAMPL] =	0x000c,
+> -	[SPMI_MST_REQ_EN] =	0x0010,
+> -	[SPMI_REC_CTRL] =	0x0040,
+> -	[SPMI_REC0] =		0x0044,
+> -	[SPMI_REC1] =		0x0048,
+> -	[SPMI_REC2] =		0x004c,
+> -	[SPMI_REC3] =		0x0050,
+> -	[SPMI_REC4] =		0x0054,
+> -	[SPMI_MST_DBG] =	0x00fc,
+
+Same here.
+
+Regards,
+Matthias
