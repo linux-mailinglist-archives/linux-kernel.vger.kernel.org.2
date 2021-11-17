@@ -2,90 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF0F454BE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:24:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5793E454BEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 18:25:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231860AbhKQR1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 12:27:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39122 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229954AbhKQR1n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 12:27:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77205617E3;
-        Wed, 17 Nov 2021 17:24:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637169884;
-        bh=du695jOxg2jvaQjQ9GNpG68580vqmHRYCGSwbBGthsY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UTAx+cLCOeIZmMpYijbk3JOZsa6UMMWFlgXInPKmRJciyFN43lz/zneSWUV7cBY4P
-         L87oLIgcmc7AUfkZ/ke6JY1YLvN+t6tzhHvEZYZa+ML7FQDxE2Xeov5bA7lPFTNG7l
-         7CD4brxKJ7we9S2AntKL1CvmYEgTP0E3P0tqkUjC3UnkVo2/3PDNVZwLBofxmOBOh/
-         /Vm/aT6H208iCQkjpK2WSSMzeDsAUc8NIGs9yk8e8OtYD733VRFTwVDWqYxKH6F+8p
-         450V28GU6XSiahMPUCwbbjYrvVhmAxq+kQuuDfZy5TMYe+LqBNqBUEjOrYFsaVweBG
-         VZX0p/Jnil5Mw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 49C014088E; Wed, 17 Nov 2021 14:24:41 -0300 (-03)
-Date:   Wed, 17 Nov 2021 14:24:41 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     German Gomez <german.gomez@arm.com>
-Cc:     James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/1] perf arm-spe: Inject SPE samples in perf-inject
-Message-ID: <YZU62ekT9/NimdSq@kernel.org>
-References: <20211105104130.28186-1-german.gomez@arm.com>
- <20211105104130.28186-2-german.gomez@arm.com>
- <5163f41f-2337-6557-ca91-fb2c66738872@arm.com>
- <YZUf5zu4aOfoIhFl@kernel.org>
- <aa79a8eb-e7fa-ad81-f4a3-a843b63020b2@arm.com>
+        id S237735AbhKQR2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 12:28:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229954AbhKQR2p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 12:28:45 -0500
+Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 681E4C061570;
+        Wed, 17 Nov 2021 09:25:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+        s=42; h=Message-ID:Cc:To:From:Date;
+        bh=F+SAy1fSwo/1UHb21eYJQXpRzry7kLwoyhF6lnmVgT8=; b=ichtO4UKbCgnWjXKeOn77AH9e5
+        575oB77g6fC/qjmlvzfoBE1xbdkKGVne2WRkPlxrzrNWzTsAURXAcX4IjG1WxPpO4s5hP4jb3F78P
+        d4ivkFmLlmV4XDmAb5txmKFKFyNiBL0QYOvNVgm69oNGNV4uK0KY1gNSxx20p/9CmVHPWMDgCKmR1
+        nXGdemvIA/jHm3a+ZGeTxxHnoTZxfrsfLYVvlFYpzmkVfAsXICwUeOOJfnRv9wlknVHg6A/tYGS1p
+        6TeDC21wMkMBApXMgnf2G46Lj4WObbqA8y+SsI3fM10CQdGpJzJ7VuWYJNgcW4yYXls10sArZWxHg
+        gZwFirqfskQ9e6NE2wfZczfUD37JSnZ2w0ZFtwfJqC2yO3uvbwVIzCuhhtewzbYH/i+S1pjyAidyO
+        FS4YdEcYOI7E2ArLDWYvEOGKdvM860lRtTNCt1Ai++Jj3NKJ3A18yb5NOSvHdIXYSmI/od4O2lqUt
+        hm8fBEWz+VI+1Tq4ij9LzpVP;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
+        (Exim)
+        id 1mnOgn-007aa4-Fu; Wed, 17 Nov 2021 17:25:41 +0000
+Date:   Wed, 17 Nov 2021 09:25:37 -0800
+From:   Jeremy Allison <jra@samba.org>
+To:     Namjae Jeon <linkinjeon@kernel.org>
+Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steve French <sfrench@samba.org>,
+        Hyunchul Lee <hyc.lee@gmail.com>, linux-cifs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: ksmbd: Unsupported addition info
+Message-ID: <YZU7EdoJmvisai+z@jeremy-acer>
+Reply-To: Jeremy Allison <jra@samba.org>
+References: <5831447.lOV4Wx5bFT@natalenko.name>
+ <CAKYAXd-KmxMeYWP8z6RYYK6za-Sj81Qtb3RO=oG+Yy3kXDaLjg@mail.gmail.com>
+ <2865530.e9J7NaK4W3@natalenko.name>
+ <CAKYAXd9wKDTE5WPQWcBZ_mHfaAOOY+pDj7=yndi17gf2KqWpwg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <aa79a8eb-e7fa-ad81-f4a3-a843b63020b2@arm.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKYAXd9wKDTE5WPQWcBZ_mHfaAOOY+pDj7=yndi17gf2KqWpwg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Nov 17, 2021 at 04:27:27PM +0000, German Gomez escreveu:
-> Hi Arnaldo,
-> 
-> On 17/11/2021 15:29, Arnaldo Carvalho de Melo wrote:
-> > [...]
-> > Next time please expand this explanations a bit more: why should we
-> > inject such samples? Is this enabling some new mode of operation, fixing
-> > something, what is an example of output before this patch and after it?
-> I will keep this in mind, thanks. In this case the support was missing
-> and I included the context in the cover letter but not the commit msg.
+On Wed, Nov 17, 2021 at 06:58:50PM +0900, Namjae Jeon wrote:
+>2021-11-17 16:00 GMT+09:00, Oleksandr Natalenko <oleksandr@natalenko.name>:
+>> Hello.
+>>
+>> On středa 17. listopadu 2021 0:36:53 CET Namjae Jeon wrote:
+>>> 2021-11-17 6:44 GMT+09:00, Oleksandr Natalenko
+>>> <oleksandr@natalenko.name>:
+>>> > With the latest ksmbd from the next branch I have an issue with wife's
+>>> > Windows
+>>> > 10 laptop while copying/removing files from the network share. On her
+>>> > client it
+>>> > looks like copy operation (server -> laptop) reaches 99% and then
+>>> > stalls,
+>>> > and
+>>> > on the server side there's this in the kernel log:
+>>> >
+>>> > ```
+>>> > ksmbd: Unsupported addition info: 0xf)
+>>> > ksmbd: Unsupported addition info: 0x20)
 
-Got it, I'm adding it to the cset comment:
+Namjae, looks like your code is handling the
+following flags in query security descriptor:
 
--------------------------------------------------------------------------------
+         if (addition_info & ~(OWNER_SECINFO | GROUP_SECINFO | DACL_SECINFO |
+                               PROTECTED_DACL_SECINFO |
+                               UNPROTECTED_DACL_SECINFO)) {
+                 pr_err("Unsupported addition info: 0x%x)\n",
+                        addition_info);
 
-perf-inject is currently not working for Arm SPE. When you try to run
-perf-inject and perf-report with a perf.data file that contains SPE
-traces, the tool reports a "Bad address" error:
+ From the Samba code we have (the names are pretty
+similar):
 
-  # ./perf record -e arm_spe_0/ts_enable=1,store_filter=1,branch_filter=1,load_filter=1/ -a -- sleep 1
-  # ./perf inject -i perf.data -o perf.inject.data --itrace
-  # ./perf report -i perf.inject.data --stdio
+         /* security_descriptor->type bits */
+         typedef [public,bitmap16bit] bitmap {
+                 SEC_DESC_OWNER_DEFAULTED        = 0x0001,
+                 SEC_DESC_GROUP_DEFAULTED        = 0x0002,
+                 SEC_DESC_DACL_PRESENT           = 0x0004,
+                 SEC_DESC_DACL_DEFAULTED         = 0x0008,
+                 SEC_DESC_SACL_PRESENT           = 0x0010,
+                 SEC_DESC_SACL_DEFAULTED         = 0x0020,
+                 SEC_DESC_DACL_TRUSTED           = 0x0040,
+                 SEC_DESC_SERVER_SECURITY        = 0x0080,
+                 SEC_DESC_DACL_AUTO_INHERIT_REQ  = 0x0100,
+                 SEC_DESC_SACL_AUTO_INHERIT_REQ  = 0x0200,
+                 SEC_DESC_DACL_AUTO_INHERITED    = 0x0400,
+                 SEC_DESC_SACL_AUTO_INHERITED    = 0x0800,
+                 SEC_DESC_DACL_PROTECTED         = 0x1000,
+                 SEC_DESC_SACL_PROTECTED         = 0x2000,
+                 SEC_DESC_RM_CONTROL_VALID       = 0x4000,
+                 SEC_DESC_SELF_RELATIVE          = 0x8000
+         } security_descriptor_type;
 
-  0x42c00 [0x8]: failed to process type: 9 [Bad address]
-  Error:
-  failed to process sample
+0xF == (SEC_DESC_OWNER_DEFAULTED|SEC_DESC_GROUP_DEFAULTED|SEC_DESC_DACL_PRESENT|SEC_DESC_DACL_DEFAULTED)
 
-As far as I know, the issue was first spotted in [1], but perf-inject
-was not yet injecting the samples. This patch does something similar to
-what cs_etm does for injecting the samples [2], but for SPE.
+and:
 
-[1] https://patchwork.kernel.org/project/linux-arm-kernel/cover/20210412091006.468557-1-leo.yan@linaro.org/#24117339
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tree/tools/perf/util/cs-etm.c?h=perf/core&id=133fe2e617e48ca0948983329f43877064ffda3e#n1196
--------------------------------------------------------------------------------
+0x20 == SEC_DESC_SACL_DEFAULTED
+
+Looks like you need to handle these bits.
+
+Hope this helps,
+
+Jeremy.
