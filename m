@@ -2,151 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B1145500C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:00:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A0145501C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 23:02:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240853AbhKQWDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 17:03:21 -0500
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:44352 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240763AbhKQWDL (ORCPT
+        id S240960AbhKQWEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 17:04:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240974AbhKQWEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:03:11 -0500
+        Wed, 17 Nov 2021 17:04:51 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 463E6C061200
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:01:52 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id q12so3461158pgh.5
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 14:01:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637186412; x=1668722412;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=j8EqZ2E3tsJJr2vVLoX7B0Dbv8BtMcVkEGw0WBUIKjI=;
-  b=ifeylYRP8ZSo2UNQPn4uwktcOVcv5e6uU676HuU9jF1FThtS02rgDq+y
-   VZp0VwHivcpsD1+XmiZLXoAhTetaaq31cdGoQyiA5UVfPumdPZ6ZoZZey
-   AHmxBar4J9nvBVQEZEDEDDHYDMERXA+EpcMK6dpcfheaObxm5JHigg71K
-   E=;
-Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 17 Nov 2021 14:00:11 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg01-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 14:00:11 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Wed, 17 Nov 2021 14:00:10 -0800
-Received: from fixkernel.com (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Wed, 17 Nov
- 2021 14:00:10 -0800
-Date:   Wed, 17 Nov 2021 17:00:07 -0500
-From:   Qian Cai <quic_qiancai@quicinc.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexey Gladkov <legion@kernel.org>
-CC:     Yu Zhao <yuzhao@google.com>, <linux-kernel@vger.kernel.org>
-Subject: BUG: KASAN: use-after-free in dec_rlimit_ucounts
-Message-ID: <YZV7Z+yXbsx9p3JN@fixkernel.com>
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NrftdzRJB+iZXhfybj3wXjLC5DBwV9iU14DUg7paL24=;
+        b=eBLjeWMGVqkF82f+ZTunl/5cPTL6s9LC1GIM2m29eHFzvFNKcBpgZYcng81TfXgUyt
+         2Sk/PCTAChxnm4vANMcdfsEayCJ2EUOmPIIkJEwV2q67UPGWVq+c14pvSbyxVvy9LbPV
+         FdxyxiAIRDJF4rof3OAUXlmdML5i9wTxnKiSw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NrftdzRJB+iZXhfybj3wXjLC5DBwV9iU14DUg7paL24=;
+        b=Wnq5bENjyAr8vNUeASALmLUFl+VLFM608NwWQqqmJE2lBsMPKlWZPaucPs4DsNJ5/B
+         dFaFB6JYDUGnCxK3cDMZ9/3aUvGVvUIn35GExHOKtI2Hn5+gbL9xMsEDyqWQhlycK96z
+         IxDrc00ZJ6EiwLdxoSA7Ig2L/I7wV0sLFCFysbHVm4LBIQmr8XGdVqohpyZbE0urEYLr
+         8jAlNOwSUMYmr3nXdI16ScvBjnjxtNgm2Lieb8NHM7pPCtjgLfRAYZitZYlh3wg/Vm6H
+         doCDufhwvpTm0ToceUtmnIJdaRQ5Zpywu30QfK23s+1U3l1aNtllDrYODRvoZgiKyVxi
+         RNqA==
+X-Gm-Message-State: AOAM532JYXcXbme/6XhAHhjWxVZnXoDqayZiqCYsLDpu2xTd2dorbB3s
+        teCoXq34UBB7uQuyZKCQwumTJQ==
+X-Google-Smtp-Source: ABdhPJytb4QuGhE0Dp5hS2yGoJ5gdfGFvXD2UKBYYQ+FwETV1QxzSJKBdU6XMk2BDAY7E94T1Ku81w==
+X-Received: by 2002:a63:1125:: with SMTP id g37mr7864577pgl.118.1637186511589;
+        Wed, 17 Nov 2021 14:01:51 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q18sm605060pfj.46.2021.11.17.14.01.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 14:01:51 -0800 (PST)
+Date:   Wed, 17 Nov 2021 14:01:50 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Dinh Nguyen <dinguyen@kernel.org>,
+        "Ivan T . Ivanov" <iivanov@suse.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] ARM: socfpga: Fix crash with CONFIG_FORTIRY_SOURCE
+Message-ID: <202111171400.618456DCE9@keescook>
+References: <20211117193244.31162-1-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+In-Reply-To: <20211117193244.31162-1-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi there, I can still reproduce this quickly on today's linux-next and all
-the way back to 5.15-rc6 by running a syscall fuzzer for a while. The trace
-points out to this line,
+On Wed, Nov 17, 2021 at 08:32:44PM +0100, Takashi Iwai wrote:
+> When CONFIG_FORTIFY_SOURCE is set, memcpy() checks the potential
+> buffer overflow and panics.  The code in sofcpga bootstrapping
+> contains the memcpy() calls are mistakenly translated as the shorter
+> size, hence it triggers a panic as if it were overflowing.
+> 
+> This patch adds the __NO_FORTIFY define for avoiding the
+> false-positive crash.
+> 
+> Buglink: https://bugzilla.suse.com/show_bug.cgi?id=1192473
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+> 
+> I took an easier path for now, as the attempt with a foced cast
+> failed.  If there is a better way to handle, let me know, I'd happily
+> resubmit.  Thanks!
+> 
 
-        for (iter = ucounts; iter; iter = iter->ns->ucounts) {
+The way these have been fixed in the past is to declare these as char
+arrays (see include/asm-generic/sections.h). I'd prefer something like
+this (totally untested):
 
-It looks KASAN indicated that that "ns" had already been freed. Is that
-possible or perhaps this is more of refcount issue? 
+diff --git a/arch/arm/mach-socfpga/core.h b/arch/arm/mach-socfpga/core.h
+index fc2608b18a0d..18f01190dcfd 100644
+--- a/arch/arm/mach-socfpga/core.h
++++ b/arch/arm/mach-socfpga/core.h
+@@ -33,7 +33,7 @@ extern void __iomem *sdr_ctl_base_addr;
+ u32 socfpga_sdram_self_refresh(u32 sdr_base);
+ extern unsigned int socfpga_sdram_self_refresh_sz;
+ 
+-extern char secondary_trampoline, secondary_trampoline_end;
++extern char secondary_trampoline[], secondary_trampoline_end[];
+ 
+ extern unsigned long socfpga_cpu1start_addr;
+ 
+diff --git a/arch/arm/mach-socfpga/platsmp.c b/arch/arm/mach-socfpga/platsmp.c
+index fbb80b883e5d..201191cf68f3 100644
+--- a/arch/arm/mach-socfpga/platsmp.c
++++ b/arch/arm/mach-socfpga/platsmp.c
+@@ -20,14 +20,14 @@
+ 
+ static int socfpga_boot_secondary(unsigned int cpu, struct task_struct *idle)
+ {
+-	int trampoline_size = &secondary_trampoline_end - &secondary_trampoline;
++	int trampoline_size = secondary_trampoline_end - secondary_trampoline;
+ 
+ 	if (socfpga_cpu1start_addr) {
+ 		/* This will put CPU #1 into reset. */
+ 		writel(RSTMGR_MPUMODRST_CPU1,
+ 		       rst_manager_base_addr + SOCFPGA_RSTMGR_MODMPURST);
+ 
+-		memcpy(phys_to_virt(0), &secondary_trampoline, trampoline_size);
++		memcpy(phys_to_virt(0), secondary_trampoline, trampoline_size);
+ 
+ 		writel(__pa_symbol(secondary_startup),
+ 		       sys_manager_base_addr + (socfpga_cpu1start_addr & 0x000000ff));
+@@ -45,12 +45,12 @@ static int socfpga_boot_secondary(unsigned int cpu, struct task_struct *idle)
+ 
+ static int socfpga_a10_boot_secondary(unsigned int cpu, struct task_struct *idle)
+ {
+-	int trampoline_size = &secondary_trampoline_end - &secondary_trampoline;
++	int trampoline_size = secondary_trampoline_end - secondary_trampoline;
+ 
+ 	if (socfpga_cpu1start_addr) {
+ 		writel(RSTMGR_MPUMODRST_CPU1, rst_manager_base_addr +
+ 		       SOCFPGA_A10_RSTMGR_MODMPURST);
+-		memcpy(phys_to_virt(0), &secondary_trampoline, trampoline_size);
++		memcpy(phys_to_virt(0), secondary_trampoline, trampoline_size);
+ 
+ 		writel(__pa_symbol(secondary_startup),
+ 		       sys_manager_base_addr + (socfpga_cpu1start_addr & 0x00000fff));
 
- BUG: KASAN: use-after-free in dec_rlimit_ucounts
- Read of size 8 at addr ffff0008c0739860 by task trinity-c27/10924
+>  arch/arm/mach-socfpga/platsmp.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/arch/arm/mach-socfpga/platsmp.c b/arch/arm/mach-socfpga/platsmp.c
+> index fbb80b883e5d..d46b1af96a8a 100644
+> --- a/arch/arm/mach-socfpga/platsmp.c
+> +++ b/arch/arm/mach-socfpga/platsmp.c
+> @@ -5,6 +5,9 @@
+>   * Based on platsmp.c, Copyright (C) 2002 ARM Ltd.
+>   * Copyright (C) 2012 Altera Corporation
+>   */
+> +
+> +#define __NO_FORTIFY /* need to avoid the crash with memcpy() calls */
+> +
+>  #include <linux/delay.h>
+>  #include <linux/init.h>
+>  #include <linux/smp.h>
+> -- 
+> 2.26.2
+> 
 
- CPU: 27 PID: 10924 Comm: trinity-c27 Not tainted 5.15.0-next-20211115-dirty #192
- Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 1.6 06/28/2020
- Call trace:
-  dump_backtrace
-  show_stack
-  dump_stack_lvl
-  print_address_description.constprop.0
-  kasan_report
-  __asan_report_load8_noabort
-  dec_rlimit_ucounts
-  dec_rlimit_ucounts at kernel/ucount.c:284
-  mqueue_evict_inode
-  mqueue_evict_inode at ipc/mqueue.c:544
-  evict
-  iput.part.0
-  iput
-  __arm64_sys_mq_unlink
-  invoke_syscall
-  el0_svc_common.constprop.0
-  do_el0_svc
-  el0_svc
-  el0t_64_sync_handler
-  el0t_64_sync
-
- Allocated by task 10615:
-  kasan_save_stack
-  __kasan_slab_alloc
-  slab_post_alloc_hook
-  kmem_cache_alloc
-  create_user_ns
-  unshare_userns
-  ksys_unshare
-  __arm64_sys_unshare
-  invoke_syscall
-  el0_svc_common.constprop.0
-  do_el0_svc
-  el0_svc
-  el0t_64_sync_handler
-  el0t_64_sync
-
- Freed by task 8660:
-  kasan_save_stack
-  kasan_set_track
-  kasan_set_free_info
-  __kasan_slab_free
-  slab_free_freelist_hook
-  kmem_cache_free
-  free_user_ns
-  process_one_work
-  worker_thread
-  kthread
-  ret_from_fork
-
- Last potentially related work creation:
-  kasan_save_stack
-  __kasan_record_aux_stack
-  kasan_record_aux_stack_noalloc
-  insert_work
-  __queue_work
-  queue_work_on
-  __put_user_ns
-  put_cred_rcu
-  rcu_do_batch
-  rcu_core
-  rcu_core_si
-  __do_softirq
-
- The buggy address belongs to the object at ffff0008c07395e8
-  which belongs to the cache user_namespace of size 768
- The buggy address is located 632 bytes inside of
-  768-byte region [ffff0008c07395e8, ffff0008c07398e8)
- The buggy address belongs to the page:
- page:fffffc002301ce00 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff0008c073cec8 pfn:0x940738
- head:fffffc002301ce00 order:3 compound_mapcount:0 compound_pincount:0
- memcg:ffff0008b9b5f101
- flags: 0xbfffc0000010200(slab|head|node=0|zone=2|lastcpupid=0xffff)
- raw: 0bfffc0000010200 ffff000800f3e9c8 ffff000800f3e9c8 ffff000802e69b80
- raw: ffff0008c073cec8 00000000001d0012 00000001ffffffff ffff0008b9b5f101
- page dumped because: kasan: bad access detected
-
- Memory state around the buggy address:
-  ffff0008c0739700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ffff0008c0739780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- >ffff0008c0739800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                        ^
-  ffff0008c0739880: fb fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc
-  ffff0008c0739900: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+-- 
+Kees Cook
