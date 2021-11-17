@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91FFC454D6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:51:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52354454D70
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:51:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240234AbhKQSyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 13:54:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33092 "EHLO
+        id S240240AbhKQSyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 13:54:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239235AbhKQSya (ORCPT
+        with ESMTP id S240242AbhKQSyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 13:54:30 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F19FC061766
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:51:32 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id 28so3050452pgq.8
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:51:32 -0800 (PST)
+        Wed, 17 Nov 2021 13:54:41 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78599C061570;
+        Wed, 17 Nov 2021 10:51:42 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id z6so3515429pfe.7;
+        Wed, 17 Nov 2021 10:51:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YMm7uqc0PVoZ5CKUw9P95CjYEyE4WkTA6NNCCrs9xIk=;
-        b=WSeVLf0WoWRPuWMFmJfO/1Sv1V44Dthw2bD8KQUn6ImGf1LCbzwoKatBL8My9+PWzi
-         BVE9VI6Ez3QFzNaVT6KtRDOQp1ziApY8DPqftRX+V9PXePgc0brzwXGb7pj1BQbO+YOm
-         Pf8FxsTEyrMX0999e7vBYfcmKbyfeTGgVEsWQ=
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ymJQcJRqf96Ow2zei4DBcVd1WDXXoNRjGtKMHrKgyCo=;
+        b=gnk0mZKgSm7QfrIaXSU0G0tO4ESnMmu/pavEGl0r7MlUElajM1NfYGU1ROQs+03vvO
+         FIvU5T6CZRfsVxxvMnfZInSfGCMoGaczdWcrAhMaHldzuh3BHfvhzieXUOEY4q9AOAm4
+         BQv0IIVhAGccbiCVS4BNL8K4mTfWUNliY6FgCmLoOqn4+h89Fed/j6lXYI5yqf0Bivx+
+         gVZ5cvJ9O1u4QWksoWn+77PKR5IjWpQfjuIehKRxF/QPd5Kf79umdInAkwCBZHwGc8bD
+         1WptEZXbk5AOieMUTKgGDMXsyaeHWPGYF8cp8J8HbYDWfITqDvVU+BqwARVnf++oYnXs
+         xmFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YMm7uqc0PVoZ5CKUw9P95CjYEyE4WkTA6NNCCrs9xIk=;
-        b=HA0PGKq7Zc6iG5LDIIgUPMx3DF8u969o7kgKejysl86whrRaFjpsr9lzsfVckQHq8k
-         ecW3PQCtOxIIyUpOGiFnUDCD02PrnEcEf0/1/OinwrQQJazRZ2nGGJmBEqpHQeakZdZ6
-         6pn2OkjMcL0PehocizwV+KixEDsx2NVDTUiIZQqB+w2n1JWPY+/L+HNHhdNXh2cYSCBN
-         /RdsaScAk+GZqua9cBmNm5EMhVBInv8Oj9CiPjfjD09FU9kBOYYhg7Bz7uGUK7JE+NO+
-         g0JcKtTWRk8OdbCeiTCp/hXzAaZCemXEibx8TP9m7sklpCt2vTYD/gWRXCTO2IMop5eZ
-         QO1w==
-X-Gm-Message-State: AOAM532oY2XeCKtRmIzAoa1lplXQbGLIk4rC7JALxHYCyEc0OUvuLmrW
-        hitNOotaX/deaI+bSsw8aC2aHQ==
-X-Google-Smtp-Source: ABdhPJzegaq20Wc2oLUBixdUIX3fnDf0TFKeDD46xxqB6a0a/DVlPYO5Xe1+GZALYnEX4GfVGrsXfg==
-X-Received: by 2002:a63:ea4e:: with SMTP id l14mr6827570pgk.406.1637175091571;
-        Wed, 17 Nov 2021 10:51:31 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id o6sm361555pfh.70.2021.11.17.10.51.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 10:51:31 -0800 (PST)
-Date:   Wed, 17 Nov 2021 10:51:30 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Kyle Huey <me@kylehuey.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Robert O'Callahan <rocallahan@gmail.com>
-Subject: Re: [REGRESSION] 5.16rc1: SA_IMMUTABLE breaks debuggers
-Message-ID: <202111171049.3F9C5F1@keescook>
-References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ymJQcJRqf96Ow2zei4DBcVd1WDXXoNRjGtKMHrKgyCo=;
+        b=wjwYa4cIUP1ukphA9f3KM466+Ey//MNpmyGilYZU3+RvzLEX5X4wEIrQRh2XJZC8N8
+         JxUHRa569s+BP0Ew/3FdHolHKS/jgYZneLuDs7kl3Rl4Bh3NcPYKfVVSsvz9//kYCxuW
+         CM3Wq3XrOgVRDPl8z5aF0cKbKsA+H+oyy1QoJ9qgRt3lmlFG0y7HrEz/xhYEpBiL6jgf
+         BMirr2ha8WK/seZ5iX6YEXW/5TO2jUU8zv73ilb1ry3N7id83iBQmqHVnBPLwLF/kboX
+         NqKRU/lZYEcL3dQMy+AUBPSo9X0i7ZYiBUcwJDuSrSOU6t/ZOXHb/xyEGTNehbwzqAsN
+         wWGw==
+X-Gm-Message-State: AOAM532tgu4wIS4CgeSwd8jB5rXftMWZB22OtmoN3uOtcVZVfvXsf9V7
+        a/tIHf/qXOC1TsPK0Tlq0npHe50D9Jw=
+X-Google-Smtp-Source: ABdhPJwW87mY+vwP8XuatUOKD9cIRbP/+YXWu/v4p4fAfNeDaebzBGFNkroMgOnk7yX8Zbe2EWamlQ==
+X-Received: by 2002:a63:5f54:: with SMTP id t81mr6685304pgb.247.1637175101596;
+        Wed, 17 Nov 2021 10:51:41 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id fs21sm5040033pjb.1.2021.11.17.10.51.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 10:51:40 -0800 (PST)
+Subject: Re: [PATCH 5.15 000/923] 5.15.3-rc3 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20211117101657.463560063@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <ca8761e9-63bc-cec2-3b0a-607c22fc22fb@gmail.com>
+Date:   Wed, 17 Nov 2021 10:51:38 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
+In-Reply-To: <20211117101657.463560063@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 10:47:13AM -0800, Kyle Huey wrote:
-> rr, a userspace record and replay debugger[0], is completely broken on
-> 5.16rc1. I bisected this to 00b06da29cf9dc633cdba87acd3f57f4df3fd5c7.
+On 11/17/21 2:19 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.3 release.
+> There are 923 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> That patch makes two changes, it blocks sigaction from changing signal
-> handlers once the kernel has decided to force the program to take a
-> signal and it also stops notifying ptracers of the signal in the same
-> circumstances. The latter behavior is just wrong. There's no reason
-> that ptrace should not be able to observe and even change
-> (non-SIGKILL) forced signals.  It should be reverted.
+> Responses should be made by Fri, 19 Nov 2021 10:14:52 +0000.
+> Anything received after that time might be too late.
 > 
-> This behavior change is also observable in gdb. If you take a program
-> that sets SIGSYS to SIG_IGN and then raises a SIGSYS via
-> SECCOMP_RET_TRAP and run it under gdb on a good kernel gdb will stop
-> when the SIGSYS is raised, let you inspect program state, etc. After
-> the SA_IMMUTABLE change gdb won't stop until the program has already
-> died of SIGSYS.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.3-rc3.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Ah, hm, this was trying to fix the case where a program trips
-SECCOMP_RET_KILL (which is a "fatal SIGSYS"), and had been unobservable
-before. I guess the fix was too broad...
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Kees Cook
+Florian
