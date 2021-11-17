@@ -2,138 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF55B454A46
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:47:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E761D454A4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:49:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238764AbhKQPuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 10:50:06 -0500
-Received: from foss.arm.com ([217.140.110.172]:59394 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229644AbhKQPuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 10:50:05 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1A2261FB;
-        Wed, 17 Nov 2021 07:47:07 -0800 (PST)
-Received: from [10.57.24.78] (unknown [10.57.24.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 62F7D3F5A1;
-        Wed, 17 Nov 2021 07:47:05 -0800 (PST)
-Subject: Re: [PATCH] base: arch_topology: Use policy->max to calculate
- freq_factor
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Thara Gopinath <thara.gopinath@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-References: <20211115201010.68567-1-thara.gopinath@linaro.org>
- <CAJZ5v0gezoJZVH69Y7fDwa-uLhE0PaqFrzM=0bequxpE_749zg@mail.gmail.com>
- <8f7397e3-4e92-c84d-9168-087967f4d683@arm.com>
- <CAJZ5v0iRDtr5yae5UndwU2SmVL4cak=BN0irVGbgNzQiS8K3mA@mail.gmail.com>
- <7f077790-da4c-35b8-0eea-cbdc630f9d2a@arm.com>
- <CAJZ5v0gtkQYfeEELLrNjRQmywkxrtqzVZp1Kb-f9JPsqEckevw@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <04a9a7e5-30c3-3a65-de19-ce2319d68260@arm.com>
-Date:   Wed, 17 Nov 2021 15:47:03 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S238780AbhKQPv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 10:51:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231401AbhKQPvu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 10:51:50 -0500
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D16C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 07:48:51 -0800 (PST)
+Received: by mail-ua1-x930.google.com with SMTP id t13so6858641uad.9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 07:48:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IpKDoUYT1KXwCdQVhGqcGkH6pz6S1E8mB8lpDXZKZYk=;
+        b=Azx7BINDrIrF6HBhOAtCzhB+yM1D9pHpEDwCj9ysctJE1EigY7oDoA8slivVpS0OGl
+         T8PHPX97V08isHTPOjIoW1il8agYIfkfm1Qxhm7pZqD4k8UtbdFJsU5NGK8DabPcbPxe
+         xWwzN+nkhLPVyyjnwrwp6GxOspvTXSSusdV1RwvKzEeBeOtJFqjSNJTYEFDPClqYKwkD
+         52Hu8xEBoluxaeV6g/WmV/5MQyCptX/VPi11zcl4HOUTGWEgvdvscn4UTsb7u1sCo8bH
+         q5Zu1rrdwxf6V8M9k5sBXOtWLivBY6geTMYAPLlD1TQ5y/KfQTQYOiF1xVjs0C5al6rM
+         VEYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IpKDoUYT1KXwCdQVhGqcGkH6pz6S1E8mB8lpDXZKZYk=;
+        b=3Z8N+SJzauN/rPK5c7aQ0zTBsmDftFk14aVcarZFXRQSLiHzSOzpLqsm0twE7eZPW2
+         kg4rTbRMMyfo68sWrE4FFXWTHSzy3erItwTorIuIeig3uFTeZ1y6g2/yN1wSDWgHD9v4
+         FlyjhFVSLkpi7y1nek5lsJ7EM3izrblpuL24lgNsBFfdfDf6qY6XW/SIY6b55PwKmIIr
+         H4LlgtoZuhBgZBtOb384Odw8IjTONlbTQuCapkg8x5CwKGXpenv2MnYrpxIckdDNmFvu
+         sy9nthFlU4hwz4W3EVejqoVCiUWFJ7jFORWKJbkVyB6T+OdZBmIhwIpaVmQw36JJitRo
+         6oEw==
+X-Gm-Message-State: AOAM530gpraesazqw+TdbO+tI1SoiqVjnMQmpdbkC+HwU+t42Hl9/D4q
+        5aiKwaer0ynYEy4oIHHfxA2PC/lW6WT51oMZw6o=
+X-Google-Smtp-Source: ABdhPJwvKZoG78l++K2sSY6AzSKpp3W6HqyU9eENrz5yF4sUBWXJp4mJv8L5sQyJiSZh8pfQJia0ed3Zr9mR0/23YgU=
+X-Received: by 2002:a67:cb0c:: with SMTP id b12mr71409911vsl.13.1637164130341;
+ Wed, 17 Nov 2021 07:48:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0gtkQYfeEELLrNjRQmywkxrtqzVZp1Kb-f9JPsqEckevw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <202111172322.oo8vIBuS-lkp@intel.com>
+In-Reply-To: <202111172322.oo8vIBuS-lkp@intel.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Wed, 17 Nov 2021 16:48:38 +0100
+Message-ID: <CAMhs-H8QwszxB09bkck-dAdhLy9nKWAHtdcsWQ86EqLiFYrcgg@mail.gmail.com>
+Subject: Re: drivers/pci/controller/pcie-mt7621.c:151:16: sparse: sparse:
+ symbol 'mt7621_pci_ops' was not declared. Should it be static?
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+On Wed, Nov 17, 2021 at 4:13 PM kernel test robot <lkp@intel.com> wrote:
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   8ab774587903771821b59471cc723bba6d893942
+> commit: 2bdd5238e756aac3ecbffc7c22b884485e84062e PCI: mt7621: Add MediaTek MT7621 PCIe host controller driver
+> date:   4 weeks ago
+> config: mips-allyesconfig (attached as .config)
+> compiler: mips-linux-gcc (GCC) 11.2.0
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # apt-get install sparse
+>         # sparse version: v0.6.4-dirty
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2bdd5238e756aac3ecbffc7c22b884485e84062e
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 2bdd5238e756aac3ecbffc7c22b884485e84062e
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=mips SHELL=/bin/bash drivers/pci/controller/
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+>
+> sparse warnings: (new ones prefixed by >>)
+>    command-line: note: in included file:
+>    builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_ACQUIRE redefined
+>    builtin:0:0: sparse: this was the original definition
+>    builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_SEQ_CST redefined
+>    builtin:0:0: sparse: this was the original definition
+>    builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_ACQ_REL redefined
+>    builtin:0:0: sparse: this was the original definition
+>    builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_RELEASE redefined
+>    builtin:0:0: sparse: this was the original definition
+> >> drivers/pci/controller/pcie-mt7621.c:151:16: sparse: sparse: symbol 'mt7621_pci_ops' was not declared. Should it be static?
 
-On 11/17/21 3:17 PM, Rafael J. Wysocki wrote:
-> On Wed, Nov 17, 2021 at 4:08 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->>
->>
->> On 11/17/21 12:49 PM, Rafael J. Wysocki wrote:
->>> On Wed, Nov 17, 2021 at 11:46 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>>>
->>>> Hi Rafael,
->>>>
->>>> On 11/16/21 7:05 PM, Rafael J. Wysocki wrote:
->>>>> On Mon, Nov 15, 2021 at 9:10 PM Thara Gopinath
->>>>> <thara.gopinath@linaro.org> wrote:
->>>>>>
->>>>>> cpuinfo.max_freq can reflect boost frequency if enabled during boot.  Since
->>>>>> we don't consider boost frequencies while calculating cpu capacities, use
->>>>>> policy->max to populate the freq_factor during boot up.
->>>>>
->>>>> I'm not sure about this.  schedutil uses cpuinfo.max_freq as the max frequency.
->>>>
->>>> Agree it's tricky how we treat the boost frequencies and also combine
->>>> them with thermal pressure.
->>>> We probably would have consider these design bits:
->>>> 1. Should thermal pressure include boost frequency?
->>>
->>> Well, I guess so.
->>>
->>> Running at a boost frequency certainly increases thermal pressure.
->>>
->>>> 2. Should max capacity 1024 be a boost frequency so scheduler
->>>>       would see it explicitly?
->>>
->>> That's what it is now if cpuinfo.max_freq is a boost frequency.
->>>
->>>> - if no, then schedutil could still request boost freq thanks to
->>>>      map_util_perf() where we add 25% to the util and then
->>>>      map_util_freq() would return a boost freq when util was > 1024
->>>>
->>>>
->>>> I can see in schedutil only one place when cpuinfo.max_freq is used:
->>>> get_next_freq(). If the value stored in there is a boost,
->>>> then don't we get a higher freq value for the same util?
->>>
->>> Yes. we do, which basically is my point.
->>>
->>> The schedutil's response is proportional to cpuinfo.max_freq and that
->>> needs to be taken into account for the results to be consistent.
->>>
->>
->> This boost thing wasn't an issue for us, because we didn't have
->> platforms which come with it (till recently). I've checked that you have
->> quite a few CPUs which support huge boost freq, e.g. 5GHz vs. 3.6GHz
->> nominal max freq [1]. Am I reading this correctly as kernel boost freq?
-> 
-> That actually depends on the driver.
-> 
-> For instance, intel_pstate can be run with turbo (== boost) enabled or
-> disabled.  If turbo is enabled, cpuinfo.max_freq is the max turbo
-> frequency.
-> 
-> In acpi_cpufreq things are sort of weird, because the highest bin in
-> there is a turbo frequency, but not the max one and it is used to
-> enable the entire turbo range.  The driver sets cpuinfo.max_freq to
-> this one if boost is enabled IIRC.
-> 
->> Do you represent this 5GHz as 1024 capacity?
-> 
-> Yes (but see above).
-> 
->>   From this schedutil get_next_freq() I would guess yes.
->>
->> I cannot find if you use thermal pressure, could you help me with this,
->> please?
-> 
-> It is not used on x86 AFAICS.
-> 
+Thanks for reporting. Sparse is right. Symbol 'mt7621_pci_ops' should
+be declared as static. Already sent patch with this change:
+https://lkml.org/lkml/2021/11/17/635
 
-Thank you Rafael for all these information. We will have to re-visit
-many places on our platform and how this boost should work. It looks
-for the first glance that its a full-time task for one of our
-team members. We would have to organize this investigation
-internally to get better understanding of all affected places.
+Best regards,
+    Sergio Paracuellos
 
-While this patch change is easy, since the policy->max should
-contain the nominal max freq at this setup time (which is what
-we want for calculating capacity), the schedutil usage of
-cpuinfo.max_freq is not easy to judge and solve. Currently,
-on our platforms we stick to the design where nominal max freq
-is 1024 capacity, but I don't know if that would hold for long...
+>    drivers/pci/controller/pcie-mt7621.c: note: in included file (through arch/mips/include/asm/mips-cps.h, arch/mips/include/asm/smp-ops.h, arch/mips/include/asm/smp.h, ...):
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse:     expected void const volatile [noderef] __iomem *mem
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse:     got void *
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse:     expected void const volatile [noderef] __iomem *mem
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse:     got void *
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse:     expected void const volatile [noderef] __iomem *mem
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse:     got void *
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse:     expected void const volatile [noderef] __iomem *mem
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse:     got void *
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse:     expected void *
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse:     got void [noderef] __iomem *
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse:     expected void *
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse:     got void [noderef] __iomem *
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse:     expected void *
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse:     got void [noderef] __iomem *
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse:     expected void *
+>    arch/mips/include/asm/mips-cm.h:151:1: sparse:     got void [noderef] __iomem *
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse:     expected void const volatile [noderef] __iomem *mem
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse:     got void *
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse:     expected void const volatile [noderef] __iomem *mem
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse:     got void *
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse:     expected void const volatile [noderef] __iomem *mem
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse:     got void *
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse:     expected void const volatile [noderef] __iomem *mem
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse:     got void *
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse:     expected void *
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse:     got void [noderef] __iomem *
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse:     expected void *
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse:     got void [noderef] __iomem *
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse:     expected void *
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse:     got void [noderef] __iomem *
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse:     expected void *
+>    arch/mips/include/asm/mips-cm.h:130:1: sparse:     got void [noderef] __iomem *
+>    drivers/pci/controller/pcie-mt7621.c: note: in included file (through arch/mips/include/asm/mips-cps.h, arch/mips/include/asm/smp-ops.h, arch/mips/include/asm/smp.h, ...):
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse:     expected void const volatile [noderef] __iomem *mem
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse:     got void *
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse:     expected void const volatile [noderef] __iomem *mem
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse:     got void *
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse:     expected void const volatile [noderef] __iomem *mem
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse:     got void *
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse:     expected void const volatile [noderef] __iomem *mem
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse:     got void *
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse:     expected void *
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse:     got void [noderef] __iomem *
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse:     expected void *
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse:     got void [noderef] __iomem *
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse:     expected void *
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse:     got void [noderef] __iomem *
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse:     expected void *
+>    arch/mips/include/asm/mips-cpc.h:100:1: sparse:     got void [noderef] __iomem *
+>    drivers/pci/controller/pcie-mt7621.c: note: in included file (through arch/mips/include/asm/mips-cps.h, arch/mips/include/asm/smp-ops.h, arch/mips/include/asm/smp.h, ...):
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *mem @@     got void * @@
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse:     expected void volatile [noderef] __iomem *mem
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse:     got void *
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *mem @@     got void * @@
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse:     expected void volatile [noderef] __iomem *mem
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse:     got void *
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *mem @@     got void * @@
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse:     expected void volatile [noderef] __iomem *mem
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse:     got void *
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *mem @@     got void * @@
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse:     expected void volatile [noderef] __iomem *mem
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse:     got void *
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse:     expected void *
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse:     got void [noderef] __iomem *
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse:     expected void *
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse:     got void [noderef] __iomem *
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse:     expected void *
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse:     got void [noderef] __iomem *
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse:     expected void *
+>    arch/mips/include/asm/mips-cm.h:202:1: sparse:     got void [noderef] __iomem *
+>    arch/mips/include/asm/mips-cm.h:209:1: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *mem @@     got void * @@
+>
+> vim +/mt7621_pci_ops +151 drivers/pci/controller/pcie-mt7621.c
+>
+> 03f152e31f4ae89 drivers/staging/mt7621-pci/pci-mt7621.c John Crispin       2018-03-15  150
+> 8571c62d45cb7e9 drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2018-08-03 @151  struct pci_ops mt7621_pci_ops = {
+> 8571c62d45cb7e9 drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2018-08-03  152      .map_bus        = mt7621_pcie_map_bus,
+> 8571c62d45cb7e9 drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2018-08-03  153      .read           = pci_generic_config_read,
+> 8571c62d45cb7e9 drivers/staging/mt7621-pci/pci-mt7621.c Sergio Paracuellos 2018-08-03  154      .write          = pci_generic_config_write,
+> 03f152e31f4ae89 drivers/staging/mt7621-pci/pci-mt7621.c John Crispin       2018-03-15  155  };
+> 03f152e31f4ae89 drivers/staging/mt7621-pci/pci-mt7621.c John Crispin       2018-03-15  156
+>
+> :::::: The code at line 151 was first introduced by commit
+> :::::: 8571c62d45cb7e9fdff87fe5132002d17fbce7a3 staging: mt7621-pci: use generic kernel pci subsystem read and write
+>
+> :::::: TO: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> :::::: CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
