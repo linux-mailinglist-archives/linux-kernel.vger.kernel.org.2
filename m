@@ -2,131 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4727F453EE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 04:23:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E23453EE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 04:28:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232716AbhKQDZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 22:25:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbhKQDZ6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 22:25:58 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 794B7C061570;
-        Tue, 16 Nov 2021 19:23:00 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id bf8so3210187oib.6;
-        Tue, 16 Nov 2021 19:23:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=yzCXfvPM/BMluuYB8E8uCiWLd3xZlSImFb3HDkJyyrM=;
-        b=GBPXXd/O2CgXHXLCWOAYURbl66v2HqSFNPCMcyp4m+Kf9kyj4CLlZp4cEcrln6xIgn
-         g30T4EJkJBEPox0B/nlfhewv3rJVgVI2W7lMgC9ZAGlyRYSWD+ilg0jLnlGwjF/elJcN
-         tO71BT85giyNApFipMjAbqND5XTg2asnmLCGkxKMsFwPF6N39zQYxVO8xpzl0gOvFsu+
-         6ALFg3gF5tUFaHUig/DMIdG9hHS/nV+pVX7ia9begZdBd31pVdr7jogdS67q8D5hEWGd
-         m5nM2wEaWqexgV2u5CUQXNOjrgMfZTtiFEj+CUQ2NtytkPV0E1laEJ0tEOw1Td6erITl
-         nufw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=yzCXfvPM/BMluuYB8E8uCiWLd3xZlSImFb3HDkJyyrM=;
-        b=y6egk4eQAPUFjnZXUndc2OtvzrdkDZL5nDTQ+E5ffTR47E/j9+foFKswPMwnDG1Lgv
-         b28jN/Lpu54nbq/y6EkRrzJ35XUXRCA6/glqsfFlphW5UxT8rq5aLSAcOsbN9ok+nX+v
-         UFHMQgYUms05tU/EER04LVLHTd9pCLmUDPo9oyolQC4kKZ5cJwln4T3rciIpi5oLNCmu
-         UjkkUVeoIbQugQsYKtO+u+wsk3N4dVOeG7+KTqAV9vgddK+4vZXImPwWkRgOazgZszVW
-         lfcYKNHvQ61qkY44gnl6BbO5ENukAVWAwBvifP4g02eVlh05MzOFdb8E75LxSGXFSSpb
-         HQ0Q==
-X-Gm-Message-State: AOAM530iM89qzqA4Y9XfJt/YmHc5/hmCzGkJgydyJtvlrdpLeEm/ipsD
-        BzMu36oBoFC7VO6aWMgeaIWgPZcAAQlPtnpGMzvoPZxgN9zJDQ==
-X-Google-Smtp-Source: ABdhPJxw/WlBxUZTRFPmy4yUhUapXKQTUXS29SEyPWnz+OJsCUZ5NeXSpvHiHrPXYvmlLyNZxHbicCkV62QW+kZXNAc=
-X-Received: by 2002:aca:a989:: with SMTP id s131mr11580159oie.71.1637119379566;
- Tue, 16 Nov 2021 19:22:59 -0800 (PST)
+        id S232733AbhKQDbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 22:31:33 -0500
+Received: from mail-eopbgr60067.outbound.protection.outlook.com ([40.107.6.67]:24942
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229997AbhKQDbb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Nov 2021 22:31:31 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V/9Fx9p2SfjCIUtEwpdraLcXGvr6stXtMXgkK669d7+T8vqmXaGfu1TwQj5eUwV5fDqImbwzL1c/1uaff15Bz8SOOzIZo1ZU7jQ/Rh8bcAQfFev6n1cLQe7yCq37zMc5q0Fsh4l3PdyjabP5ziNQMUqyOUhHDPj4oP9lkv6urIQbu4i5VehlzisO/qI5Oi4RL3MNZDERAxOVGPGrrQwrMzU0mtaLd6vEFWbI9ppiunk0weEokEfuVd/4a51VTUiCXblwdifLYxehEm2dizHfhbC0lgu4iRmCyX9cO+w988IFyDTRUhmYhXV0hAhbC9qOzLvfR4vN75MZZym9e98OGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OMgfsXQysMRmeWsn2qWiHYPKZXS6hRD6snA2YtwbChY=;
+ b=Efmg9r2G54KUeU6Gd4Weqvu3wVpgsSiP5kIDYPQZiLsyNTygVt/AJLJFgbvOMSrmPDvI4uIEwLJxUYZSQNqIyAJIBujJscMTFsfdNQiQyjcZtcKQZb2O6iCTRroorG75aPx161dXIi3cTONdhzr0yQBt1x0VHq2lb60YiT3WIUDE5tRSB6VHvk1pZtYB5AvM56XFJHeoPB15iF6kSO1b9/5qtD58LWW98FOZR+xnnE4gwzSpRsnlxN6YZkqX529eiCjLXRZt/rRE+tFZ5F9k46M7bzohkPnxm9VISgviUPXnSVxlh6p3deRMlavjmULd+ZJK8z39kOz9vj+qqdhU5A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OMgfsXQysMRmeWsn2qWiHYPKZXS6hRD6snA2YtwbChY=;
+ b=mRyNcz5GtVw1mutPjBmIUYoHoHOBuWVh7d0KoRjJoyuI5NIszRJqTmPtf2tu2aczTiW8hYr0y0zV0tctMYsFBQDEXZrWkH9L9nJx+FHfSBDAC4xnieeQkAdZkvsOZliNkus4jgtJ7Oq1220fHbsErk1RFzWz4xmCWa8v9F4vdzU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by DU2PR04MB8518.eurprd04.prod.outlook.com (2603:10a6:10:2d1::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Wed, 17 Nov
+ 2021 03:28:31 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::82e:6ad2:dd1d:df43]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::82e:6ad2:dd1d:df43%9]) with mapi id 15.20.4669.016; Wed, 17 Nov 2021
+ 03:28:31 +0000
+From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        ping.bai@nxp.com, aisheng.dong@nxp.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH 0/3] add i.MX8ULP scmi power domain
+Date:   Wed, 17 Nov 2021 11:27:37 +0800
+Message-Id: <20211117032740.2518926-1-peng.fan@oss.nxp.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SGXP274CA0020.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::32)
+ To DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
 MIME-Version: 1.0
-References: <CAHP4M8UvwsS6QpV6PX-qf=d2u9Qw35Hafv-BTMGUWeSc0nUBXA@mail.gmail.com>
-In-Reply-To: <CAHP4M8UvwsS6QpV6PX-qf=d2u9Qw35Hafv-BTMGUWeSc0nUBXA@mail.gmail.com>
-From:   Ajay Garg <ajaygargnsit@gmail.com>
-Date:   Wed, 17 Nov 2021 08:52:47 +0530
-Message-ID: <CAHP4M8V4ow_JUj9gjcrZoyFtnTcqngHqiD2da-v-w4VZ2WL1hg@mail.gmail.com>
-Subject: Re: Mouse stops working at random intervals in latest kernel
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-usb@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by SGXP274CA0020.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend Transport; Wed, 17 Nov 2021 03:28:27 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8fc66329-f5ba-41ae-8c9f-08d9a97a53ed
+X-MS-TrafficTypeDiagnostic: DU2PR04MB8518:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-Microsoft-Antispam-PRVS: <DU2PR04MB85180BB93383AFE53080C791C99A9@DU2PR04MB8518.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +ZPwYohKj7p61Xz2lftGwX9AVVA48Wr3Bd/5uh79YET6Iqfi4hyWdFzrkjsJeO4HBz/iPszZL2xvhM0EQgbEzqJB32peY01vygaHovY482yXgMVu+b81r9UFbFjmrfq+wgDDnYa14Tz0PlWzZzALmmNDvXZPF+4wEB12+qWAa8nW28dS/RujrDGi2GU2Bz2aBqjhgMNIkOrKNDgDDGOVz4aZy6cYT+dxHScyMVmytvILkG3manrGeK/MFPawWoCeY689OOxIyR8ksO2eMQVB90/7JMCVbCUx/vNPBarM2KeFu9rSJ9Ce/88mQNXU0gehcprUergA3ArbuBmAsT1so3JIDywyevwLABonFmPxSPcHbcg3X/0v94hSrjQhh2zlMBpx5tb0s6zQ8Ise5SJLfsPzM7vHkxpuEUVWdWscxdvlL9lQYyU3+g6aeu6LvLDyNX7VfUb8ByzcSByLw91x03+RS3F3grRtWsgJ3Nq2dCCEi8LVgfLz38IkrnhyRTOJkIkmkUKNwmn5ILXgIabrr0mu9rbBzHpdF1pY7ROwkhH5xmXD6M9zlgahWOecXkOsJUPUiFy1DEMgnAv/htaWYhzXq9+lw6otQZYsnBTdnstNRNjZCy9Wof2uFl8DgJhV8oPObRLRKIzlR6AHdSBz/tQ2MAua30J4ErXwBC6sGJG5cgKrigwfnCMRg5Ckf8GsSao4/TUTVMlezLu0TrSEGw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2616005)(66556008)(66946007)(6486002)(26005)(66476007)(38350700002)(508600001)(956004)(4744005)(2906002)(316002)(38100700002)(6512007)(6666004)(8676002)(1076003)(186003)(4326008)(52116002)(8936002)(86362001)(5660300002)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qFUOwpIHYcmF3wNKD4rIUbBIu85IK2SEyYY8syfwPgDlyXiGLCjkKO2NH4sm?=
+ =?us-ascii?Q?QwnAecROT49+TwaotlZp32jxw+7qCI3TBOd8+lElsJFDVeub/iIikLm25mPb?=
+ =?us-ascii?Q?wNqgvZdwfBD1KUOBm2Ra7ujUZOw1q23xeI1X7iAW12fuBulfiOgcaur/0izr?=
+ =?us-ascii?Q?OCjCirfzziDuI7QW+iWWv36VV1jofcb2JV0cI5tvd0E/698pstePH1/xZnH2?=
+ =?us-ascii?Q?HQBc/FuRr5qu9KQWngM0N9xSzWxDX1Tu4OJxoelMSkhgS3GhlHq/dVOE6iTp?=
+ =?us-ascii?Q?3e6O1/q7cH1qLwi1/537bTw/4tBuOJHxxkapRNv50T/LB8JSfVR4nzhuGPz/?=
+ =?us-ascii?Q?QvH3Yv92CFqHNtMrwcIUTF5bDda4bOt1YvpgPgYWsVDoRSJ4VV5baFSj90mA?=
+ =?us-ascii?Q?C22GUtkuB+iAd57oqx8ueLhMjQdL6JevSWpay0IIYE2ZO5ygSBb7d7ZGP3JQ?=
+ =?us-ascii?Q?WSmS/B1FDdOtdDUcl26UngLDX1aUwZMl0DGEdqhon5N1lnkkCuzt4x33dazg?=
+ =?us-ascii?Q?RNs8Eb1f+l7cLe1t5fRpMxSbJfNPX2ouUwXvR4hZ+NOhkYlCvDp2B2mi0Wx0?=
+ =?us-ascii?Q?jFTo0mPm2+VCJ4jPuINk9VrGzN1ZWmoLJSnA/PmpAk7rp6dXuYQoYwMsWNmp?=
+ =?us-ascii?Q?JFIsMhg99yEj7xXlgK63U2z3X5yu/sbO6x0BRCpwKkFJMmgyXjKBcKcEF83e?=
+ =?us-ascii?Q?v25bIZGIbTdcK52mlwmAG5XuJZIBrnWV1AsfymCR7KitVPBrMyJZMXRVpgO1?=
+ =?us-ascii?Q?qFMG3aEl2hPAPUm2rUk9v9iepPC+tr12gn/Sycat1iLQK3gXb+8e04solBYm?=
+ =?us-ascii?Q?CcherRzFU/mkwk4yYX2x2Nm5r2W0RVDQzUN0W5tGErLLN1tC0OWSCeZGax9x?=
+ =?us-ascii?Q?wVVAm5rooBNTMqMZcu0hEO9rZ4F2auHSfzBkL6DdmgGFJJpGZTmho1dIvtyd?=
+ =?us-ascii?Q?URhyA3/exg5p4OeHGQ4drs9WVuvGDvMfWIFUR6+PBr20RY+RYVP1T2QXeMAS?=
+ =?us-ascii?Q?zPtL2lv8PbdorIGcchSGBpgra9Z0O2RmHDOnIDGwqpDg2NaWcAeEYdI2GDOX?=
+ =?us-ascii?Q?o2/v2hxaTXFBMdVkqHMYSswd11VUWrnsM+HBcnqhAIaXt6xa6AlSV44KCI9G?=
+ =?us-ascii?Q?B2BRVRc1qkqNvLDEmzxLzSR9s0EIy17Znul/58vGQ0nuwBU94R3kIQU/WLFl?=
+ =?us-ascii?Q?GG8qysLdviq3JvPkTS/O7MlsZLGg1NaX6HiSFFyO7YVB1K8HR5waU8LfITmu?=
+ =?us-ascii?Q?jxQOgZmr/Q5OJIEWEZ6wZKoi53R6SAAVJ3//LmiySp3MG8XVQFKjbK7iVFud?=
+ =?us-ascii?Q?2Gh/vZtiEwbVQkj63CrYXqoIAFuOQ5MailsdGITTgHyvqKH2tPDC9gdPMTbT?=
+ =?us-ascii?Q?vOZvtul2PlLx4pxXWj4f4OKYIElfIqvv56pl7P4Erla91ov1+cYQQaGFLh38?=
+ =?us-ascii?Q?z5XQRkUc9COf8JAcJlCy/tpsrOf9SBXi91ZFAYze40L/GaDhrhelFfhE7aFe?=
+ =?us-ascii?Q?zEqEZZHSRloH1j8BPQnfT62za/IDhQm69NnKQof9d/TN+59u4+c/vmXnxo/2?=
+ =?us-ascii?Q?jYkVjeLA7tYLwzWy0bXojGFgjqMUgJr33C8gMWKH3w4fe+u2TlE0tVrgFfCx?=
+ =?us-ascii?Q?KPypMAfWRxFSIHO+mXo5iFo=3D?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8fc66329-f5ba-41ae-8c9f-08d9a97a53ed
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2021 03:28:31.3844
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /CnLiKZClMYAZzdhnqF+WPZhqazkovLExdPGGL0CNNKUb4GzhYUv0EzDQRdtmmDHvwOX6yafnwn47CAO8r/I5w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8518
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looping in linux-usb list members.
-Pasting the original content again, to avoid top-posting visual headaches :)
+From: Peng Fan <peng.fan@nxp.com>
 
+This patchset is to add device tree support for i.MX8ULP SCMI firmware,
+and enable it for USDHC node
 
-Hello everyone,
+Peng Fan (3):
+  dt-bindings: power: imx8ulp: add power domain header file
+  arm64: dts: imx8ulp: add scmi firmware node
+  arm64: dts: imx8ulp: add power domain entry for usdhc
 
-I have been seeing following errors at random times.
-When this happens, the (wireless-)mouse stops working. The USB-dongle
-has to be removed, and re-inserted again to get the mouse working
-again.
+ arch/arm64/boot/dts/freescale/imx8ulp.dtsi | 38 ++++++++++++++++++++++
+ include/dt-bindings/power/imx8ulp-power.h  | 26 +++++++++++++++
+ 2 files changed, 64 insertions(+)
+ create mode 100644 include/dt-bindings/power/imx8ulp-power.h
 
-This has not happened before, only observing it since last 2-3 days.
-Kernel is mainline at 8ab774587903771821b59471cc723bba6d893942.
+-- 
+2.25.1
 
-Anyone seeing similar issue?
-
-
-###########################
-Nov 16 18:15:19 host-x86-64 kernel: [ 5005.107017] usb 2-1.2: reset
-full-speed USB device number 11 using ehci-pci
-Nov 16 18:15:19 host-x86-64 kernel: [ 5005.186745] usb 2-1.2: device
-descriptor read/64, error -32
-Nov 16 18:15:20 host-x86-64 kernel: [ 5005.374638] usb 2-1.2: device
-descriptor read/64, error -32
-Nov 16 18:15:20 host-x86-64 kernel: [ 5005.562650] usb 2-1.2: reset
-full-speed USB device number 11 using ehci-pci
-Nov 16 18:15:20 host-x86-64 kernel: [ 5005.642638] usb 2-1.2: device
-descriptor read/64, error -32
-Nov 16 18:15:20 host-x86-64 kernel: [ 5005.830670] usb 2-1.2: device
-descriptor read/64, error -32
-Nov 16 18:15:20 host-x86-64 kernel: [ 5006.018544] usb 2-1.2: reset
-full-speed USB device number 11 using ehci-pci
-Nov 16 18:15:21 host-x86-64 kernel: [ 5006.434527] usb 2-1.2: device
-not accepting address 11, error -32
-Nov 16 18:15:21 host-x86-64 kernel: [ 5006.514531] usb 2-1.2: reset
-full-speed USB device number 11 using ehci-pci
-Nov 16 18:15:21 host-x86-64 kernel: [ 5006.930613] usb 2-1.2: device
-not accepting address 11, error -32
-Nov 16 18:15:21 host-x86-64 kernel: [ 5006.931546] usb 2-1.2: USB
-disconnect, device number 11
-Nov 16 18:15:21 host-x86-64 upowerd[1241]: treating change event as
-add on /sys/devices/pci0000:00/0000:00:1d.0/usb2/2-1/2-1.2
-Nov 16 18:15:21 host-x86-64 kernel: [ 5007.102858] usb 2-1.2: new
-full-speed USB device number 12 using ehci-pci
-Nov 16 18:15:21 host-x86-64 libvirtd[855]: internal error: Missing
-udev property 'ID_VENDOR_ID' on '2-1.2'
-Nov 16 18:15:21 host-x86-64 kernel: [ 5007.182555] usb 2-1.2: device
-descriptor read/64, error -32
-Nov 16 18:15:22 host-x86-64 kernel: [ 5007.370518] usb 2-1.2: device
-descriptor read/64, error -32
-Nov 16 18:15:22 host-x86-64 kernel: [ 5007.558677] usb 2-1.2: new
-full-speed USB device number 13 using ehci-pci
-Nov 16 18:15:22 host-x86-64 kernel: [ 5007.638657] usb 2-1.2: device
-descriptor read/64, error -32
-Nov 16 18:15:22 host-x86-64 kernel: [ 5007.826664] usb 2-1.2: device
-descriptor read/64, error -32
-Nov 16 18:15:22 host-x86-64 kernel: [ 5007.935063] usb 2-1-port2:
-attempt power cycle
-Nov 16 18:15:23 host-x86-64 kernel: [ 5008.538604] usb 2-1.2: new
-full-speed USB device number 14 using ehci-pci
-Nov 16 18:15:23 host-x86-64 kernel: [ 5008.956553] usb 2-1.2: device
-not accepting address 14, error -32
-Nov 16 18:15:23 host-x86-64 kernel: [ 5009.034629] usb 2-1.2: new
-full-speed USB device number 15 using ehci-pci
-Nov 16 18:15:24 host-x86-64 kernel: [ 5009.450570] usb 2-1.2: device
-not accepting address 15, error -32
-Nov 16 18:15:24 host-x86-64 kernel: [ 5009.450881] usb 2-1-port2:
-unable to enumerate USB device
-#######################################
-
-
-Thanks and Regards,
-Ajay
