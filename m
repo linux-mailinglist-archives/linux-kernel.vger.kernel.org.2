@@ -2,127 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF5A454CBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:03:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E103454CC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:04:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239832AbhKQSGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 13:06:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50314 "EHLO
+        id S239849AbhKQSHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 13:07:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239811AbhKQSGL (ORCPT
+        with ESMTP id S239854AbhKQSHT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 13:06:11 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 741BCC061570;
-        Wed, 17 Nov 2021 10:03:12 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id i12so3406694pfd.6;
-        Wed, 17 Nov 2021 10:03:12 -0800 (PST)
+        Wed, 17 Nov 2021 13:07:19 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D3CC061766
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:04:21 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id r132so2945449pgr.9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:04:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ki7oDcer0hanM/3ps/ZmeqDwU/z18POamk7geDjoU+I=;
-        b=CzyftHD9anWYfkAlCvClfjigbgbYXlUJKX8yJPB8va5eKzmLEyoSJoHs5memXi+Mj5
-         cJpkiA8/s3X7bJF6prk3dPPrhwcFFKr2Vhg5AnNplX89vGaBVe3Z0T3moXacGFWl4vEM
-         r6ePF7UzZgo/9+1LNT0gXgZjHQACKAS9PY50cm3W5SxpHV+gPGH4E52f/SRdlNOqcBbs
-         ZEVKveShJGEloxDyKQ9PDdGYoIkG+57DrQs9Jc6Cn33Ui4VemYX9KPc6vD+JnG5rsRt9
-         zKfksZMai7DEYU2T5TGDo4fCSiPpWMZps8KACNb4/O0X1vozrICY3D0mGSlvlMKp8h/C
-         zCyg==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zDX6ist1CW/Kt9E+Nmm14/qAnVEcGr3fNDAT3kZwsGc=;
+        b=BG3WtmivGHTx48BrWAR+lm3sahWCjRDWXAsYqxvgczJT/rw4Jds7UzRchVhye/Wwql
+         U8e9I33eQFEyJXH1Z0ikLVqgVEcnFsVhSclSQX5My5aXKj33itxaHx0EWvb64qL6gdXO
+         4nvIOBG6EpJ8JzKwvKQSjojdpmcJqziuR37dBuJH7ESjMaYZZ4lblvRXkW1h8wHfdRzQ
+         6agcwgQ7cOz+jkYJVwF0LTUMKmmJEswrFzBG/a+BhsVGhEoiNgGEHpZCYnHZ+o8nbEOC
+         h/1hHj3rOvk4cgkjcFP2jwXkVy6knjk+HrV1swbHSJaJLw7GybFOi6p5YtZfxYUvfhOW
+         QxWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ki7oDcer0hanM/3ps/ZmeqDwU/z18POamk7geDjoU+I=;
-        b=hCM1NgVxv9h+5s0H7TdGua+vy77MmM3Ry7a60am1jWamUFdyIqLlLGXUMfkwCcRhx7
-         OkPQzWcBpmHV9hlbXS2uTYr+c/x34aUjQy2hx7ZRkijwWjaJ3g1rRGibvLSzrOFcaqE0
-         9PRqSuBKU6MEBGpjTpeEGlQ6MJw7r2Fm8pOiG3yvkBsh5pcBdrIR8lof9W67hqUKumQE
-         fHQuSExsonjDsYCbbRL5tbmITOPKXNDBOXHHSC9bvog7T2ERMuyzUspExSSG54NsF/5g
-         MujVkATXAf/UiS8pc2qfS+rw4Pobzel0J9Eg4dhXUCIBEcfTjhb/yZsHoMFgHcE6awVT
-         rzhA==
-X-Gm-Message-State: AOAM5333mrGPFC2OLO6LC1nPNY9Mko9xbGon4jH5DrcQFJvCOvqMXnGg
-        bgVmA1owGoUtZUlXoSP2W9D9vMVFi9k=
-X-Google-Smtp-Source: ABdhPJxHcZMZwRJ82mGzIrAFp3rFX9tqrLkZi6sheylPGht17RzQ8wYBPJFzMk4ud1w5G28BA2QSkA==
-X-Received: by 2002:a63:5401:: with SMTP id i1mr3552650pgb.356.1637172191494;
-        Wed, 17 Nov 2021 10:03:11 -0800 (PST)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id z7sm292739pfe.77.2021.11.17.10.03.10
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zDX6ist1CW/Kt9E+Nmm14/qAnVEcGr3fNDAT3kZwsGc=;
+        b=VscbEZ9AYdOIQDGG0KpMhwjsuW16QbvT43KVeI/YSlP01Pj+DkD4y3z6bZ707XKjWR
+         Dp+nhA831WD5947Uc+ESnjXDOLekdRChZ9C10QoUI/5AcM7Upeza/71FUkBLZ7MlhThn
+         jB+LrhfRR+kllPkWGjlbtCmPlFGhxZzyhX+ryG2ei+4TjfQGkkLlzVzCYHbsYbklic3/
+         0OGw5qUqqHIrkR1jiPQwZHfsTCnl0KYLMaZglH+0E/H4gGvzx/wBqUjRXcrOE0kIS2aq
+         Ty6anlBuRF0V1MT2Q6898NjSsIssZYMnV+j9jQKJmNcXTDnlAlNg91lLOn3ZGLpkcgGP
+         eP8w==
+X-Gm-Message-State: AOAM531dERSGC/AcT+w2oCzDgcUThxGvvuaBmLbKfwuwlCy0cTJMaxOg
+        2EC5omSfquVPXi5nqUYgRNCJfg==
+X-Google-Smtp-Source: ABdhPJy9qodD7Yj26nxESHdjefY2nw7+RNXAjwWjuhKH7pnA7/hQihrB+OgGC5GMtDTTZpjF5A/iYQ==
+X-Received: by 2002:a05:6a00:2443:b0:44e:ec:f388 with SMTP id d3-20020a056a00244300b0044e00ecf388mr49907957pfj.7.1637172260453;
+        Wed, 17 Nov 2021 10:04:20 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id g21sm312318pfc.95.2021.11.17.10.04.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 10:03:10 -0800 (PST)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     stable@vger.kernel.org
-Cc:     Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S . Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org (open list:ETHERNET PHY LIBRARY),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH stable 4.9] net: mdio-mux: fix unbalanced put_device
-Date:   Wed, 17 Nov 2021 10:03:08 -0800
-Message-Id: <20211117180309.2737514-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 17 Nov 2021 10:04:19 -0800 (PST)
+Date:   Wed, 17 Nov 2021 18:04:16 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Hou Wenlong <houwenlong93@linux.alibaba.com>, kvm@vger.kernel.org,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] KVM: x86/mmu: Skip tlb flush if it has been done in
+ zap_gfn_range()
+Message-ID: <YZVEINlaIIMUO221@google.com>
+References: <5e16546e228877a4d974f8c0e448a93d52c7a5a9.1637140154.git.houwenlong93@linux.alibaba.com>
+ <d95f29e5-efef-4a58-420c-a446c3a684e9@redhat.com>
+ <YZU10wflDOJ5S/PY@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZU10wflDOJ5S/PY@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Corentin Labbe <clabbe.montjoie@gmail.com>
+On Wed, Nov 17, 2021, Sean Christopherson wrote:
+> On Wed, Nov 17, 2021, Paolo Bonzini wrote:
+> > On 11/17/21 10:20, Hou Wenlong wrote:
+> > > If the parameter flush is set, zap_gfn_range() would flush remote tlb
+> > > when yield, then tlb flush is not needed outside. So use the return
+> > > value of zap_gfn_range() directly instead of OR on it in
+> > > kvm_unmap_gfn_range() and kvm_tdp_mmu_unmap_gfn_range().
+> > > 
+> > > Fixes: 3039bcc744980 ("KVM: Move x86's MMU notifier memslot walkers to generic code")
+> > > Signed-off-by: Hou Wenlong <houwenlong93@linux.alibaba.com>
+> > > ---
+> > >   arch/x86/kvm/mmu/mmu.c     | 2 +-
+> > >   arch/x86/kvm/mmu/tdp_mmu.c | 4 ++--
+> > >   2 files changed, 3 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > > index 354d2ca92df4..d57319e596a9 100644
+> > > --- a/arch/x86/kvm/mmu/mmu.c
+> > > +++ b/arch/x86/kvm/mmu/mmu.c
+> > > @@ -1582,7 +1582,7 @@ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
+> > >   		flush = kvm_handle_gfn_range(kvm, range, kvm_unmap_rmapp);
+> > >   	if (is_tdp_mmu_enabled(kvm))
+> > > -		flush |= kvm_tdp_mmu_unmap_gfn_range(kvm, range, flush);
+> > > +		flush = kvm_tdp_mmu_unmap_gfn_range(kvm, range, flush);
+> > >   	return flush;
+> > >   }
+> > > diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> > > index 7c5dd83e52de..9d03f5b127dc 100644
+> > > --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> > > +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> > > @@ -1034,8 +1034,8 @@ bool kvm_tdp_mmu_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range,
+> > >   	struct kvm_mmu_page *root;
+> > >   	for_each_tdp_mmu_root(kvm, root, range->slot->as_id)
+> > > -		flush |= zap_gfn_range(kvm, root, range->start, range->end,
+> > > -				       range->may_block, flush, false);
+> > > +		flush = zap_gfn_range(kvm, root, range->start, range->end,
+> > > +				      range->may_block, flush, false);
+> > >   	return flush;
+> > >   }
+> > > 
+> > 
+> > Queued both, thanks.
+> 
+> Please replace patch 02 with the below.  Hou's patch isn't wrong, but it's nowhere
+> near agressive enough in purging the unecessary flush.  I was too slow in writing
+> a changelog for this patch in my local repo.
 
-commit 60f786525032432af1b7d9b8935cb12936244ccd upstream
-
-mdio_mux_uninit() call put_device (unconditionally) because of
-of_mdio_find_bus() in mdio_mux_init.
-But of_mdio_find_bus is only called if mux_bus is empty.
-If mux_bus is set, mdio_mux_uninit will print a "refcount_t: underflow"
-trace.
-
-This patch add a get_device in the other branch of "if (mux_bus)".
-
-Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
-Note: this patch did not get any fixes tag, but it does fix issues
-introduced by  fdf3b78df4d2 ("mdio: mux: Correct mdio_mux_init error
-path issues").
-
-Thanks!
-
- drivers/net/phy/mdio-mux.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/phy/mdio-mux.c b/drivers/net/phy/mdio-mux.c
-index 599ce24c514f..456b64248e5d 100644
---- a/drivers/net/phy/mdio-mux.c
-+++ b/drivers/net/phy/mdio-mux.c
-@@ -117,6 +117,7 @@ int mdio_mux_init(struct device *dev,
- 	} else {
- 		parent_bus_node = NULL;
- 		parent_bus = mux_bus;
-+		get_device(&parent_bus->dev);
- 	}
- 
- 	pb = devm_kzalloc(dev, sizeof(*pb), GFP_KERNEL);
-@@ -182,9 +183,7 @@ int mdio_mux_init(struct device *dev,
- 
- 	devm_kfree(dev, pb);
- err_pb_kz:
--	/* balance the reference of_mdio_find_bus() took */
--	if (!mux_bus)
--		put_device(&parent_bus->dev);
-+	put_device(&parent_bus->dev);
- err_parent_bus:
- 	of_node_put(parent_bus_node);
- 	return ret_val;
-@@ -202,7 +201,6 @@ void mdio_mux_uninit(void *mux_handle)
- 		cb = cb->next;
- 	}
- 
--	/* balance the reference of_mdio_find_bus() in mdio_mux_init() took */
- 	put_device(&pb->mii_bus->dev);
- }
- EXPORT_SYMBOL_GPL(mdio_mux_uninit);
--- 
-2.25.1
-
+Even better, take Ben's patch :-)
