@@ -2,170 +2,395 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D28FF4541FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 08:42:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A63A8454205
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 08:45:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234104AbhKQHpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 02:45:01 -0500
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:21709 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231713AbhKQHo7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 02:44:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1637134920;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7O4IAlBuV7Ht5e46unwQP9LahssvTkosfPU1fu1k7K4=;
-        b=BGz+TSw6V76OfZ1Kjvgf56FKJ0KwPepuoAUlDKSedNtAqJ5uNGwHnZfqceKFLkQaBrJo93
-        vznRYL1ncCy/nuEPP/D5kJZ6RK5VWZJ2Ip+CCjyTI1eHgredEaOQV5XeUB++RU1bbBbJjW
-        TIYUlEzwlPXn10fI68OkF8CiQFuLFcw=
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur01lp2058.outbound.protection.outlook.com [104.47.0.58]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-40-B4RYW2b2NzK08wt8dyY5TA-1; Wed, 17 Nov 2021 08:41:59 +0100
-X-MC-Unique: B4RYW2b2NzK08wt8dyY5TA-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SDhUGzxoqQKXNSnGrEn0zr67IRFXWhtNuFADnWufTi9XS9FMwkHE3fRmUiFPXRDmwjEh50qFQkGBJ5gcg0kZxCltNNi3K2pV2gpjXGoi77cN75Gsni497YO305jwLYAjWsuYL8utx4zxScCJ03ID6ohq2J2d7qqzCcf0dKPMvgKzGdSNl/qqZR8l+k9OIzVltKoi/myEljMSckZrKL7EzIalrbPFh/4n9Luw22ZEoIC8kLVic0n5ZeKgTnXheIZVi9NmKgp+X9cMYlprAZIuVElHcZZsoRcUfy7bHIFLdPW3/6VY9Lfv7nf2FShdKfR0s0jdKEdjUf6ZyniJLyyYlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7O4IAlBuV7Ht5e46unwQP9LahssvTkosfPU1fu1k7K4=;
- b=QkHveLmQDEJaDHvwM413wEVfS7ZKeNAQdoqnyGheoOEKSsvcM3AICa/9wBByCqaHe/Nl3ZG2Ih9hDiRFVibmQ+2I/1qhcT7AFu5402KhLJlnWDZzMybjMMJWwfM747mD1FNgzHvENHnlwNdO8A0Jb56agbeWz0U8i4cS5RlBYI2M3rfxhcPm8t1JFyy85M8W1cH3E6IXJDe8+trFIuhasEtT6KKfzoL5eTz4s2sA7imrUvo/7l555RAeT1nVqRiutLpLH+6axGN6YFYUZPY1V382pFoWw4x+NxH79JvrH9gxHe2/m0vht2F2NVAmw/D+HcHnOGX2KA73kq8+dlORxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
- by VI1PR0401MB2607.eurprd04.prod.outlook.com (2603:10a6:800:58::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.27; Wed, 17 Nov
- 2021 07:41:58 +0000
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::8062:d7cb:ca45:1898]) by VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::8062:d7cb:ca45:1898%3]) with mapi id 15.20.4713.019; Wed, 17 Nov 2021
- 07:41:58 +0000
-Message-ID: <2592121c-ed62-c346-5aeb-37adb6bb1982@suse.com>
-Date:   Wed, 17 Nov 2021 08:41:56 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] xen: detect uninitialized xenbus in xenbus_init
-Content-Language: en-US
-To:     Stefano Stabellini <sstabellini@kernel.org>
-Cc:     boris.ostrovsky@oracle.com, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>,
-        stable@vger.kernel.org, jgross@suse.com
-References: <20211117021145.3105042-1-sstabellini@kernel.org>
-From:   Jan Beulich <jbeulich@suse.com>
-In-Reply-To: <20211117021145.3105042-1-sstabellini@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AS9PR06CA0390.eurprd06.prod.outlook.com
- (2603:10a6:20b:460::35) To VI1PR04MB5600.eurprd04.prod.outlook.com
- (2603:10a6:803:e7::16)
+        id S232720AbhKQHr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 02:47:58 -0500
+Received: from mga04.intel.com ([192.55.52.120]:13823 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229973AbhKQHr5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 02:47:57 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="232620910"
+X-IronPort-AV: E=Sophos;i="5.87,240,1631602800"; 
+   d="scan'208";a="232620910"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 23:44:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,240,1631602800"; 
+   d="scan'208";a="506806782"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
+  by orsmga008.jf.intel.com with ESMTP; 16 Nov 2021 23:44:54 -0800
+Subject: Re: [PATCH V1] mmc: sdhci-msm: Add eMMC and SD card err_stat sysfs
+ entry
+To:     Shaik Sajida Bhanu <quic_c_sbhanu@quicinc.com>,
+        riteshh@codeaurora.org, asutoshd@quicinc.com,
+        ulf.hansson@linaro.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-mmc@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     stummala@codeaurora.org, vbadigan@codeaurora.org,
+        quic_rampraka@quicinc.com, quic_pragalla@quicinc.com,
+        sartgarg@codeaurora.org, nitirawa@codeaurora.org,
+        sayalil@codeaurora.org
+References: <1637130012-21846-1-git-send-email-quic_c_sbhanu@quicinc.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <c90754b9-37bb-7b4e-4130-05f62b2881fd@intel.com>
+Date:   Wed, 17 Nov 2021 09:44:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: from [10.156.60.236] (37.24.206.209) by AS9PR06CA0390.eurprd06.prod.outlook.com (2603:10a6:20b:460::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.19 via Frontend Transport; Wed, 17 Nov 2021 07:41:57 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9d017831-02e2-4b6d-8ef3-08d9a99dbbf6
-X-MS-TrafficTypeDiagnostic: VI1PR0401MB2607:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-Microsoft-Antispam-PRVS: <VI1PR0401MB260718B8CE8F3571989A919AB39A9@VI1PR0401MB2607.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4JtZYiXLRyiWlWkLrQXrMO3ozgxNMtlTbsuKJ+grI5xzaSb2kq7e9J4jvuK3o9nDD2ONAxvOmmMXPWahet7E4fo/+63TI3YO4IE7JobevhxvvIp5TURCSk6QXo4a8XKcxJHnkPlJqluDSFpX2ZUKgVX59qaTC65GTadHOqDFwlHik/jyxvXM+BXlrC3dPs3PvkKyurA6Mdfjj5or+NJcnnlWmjeh2qjg0fg7M6KSR57pJSeeC8tJfr7Rk+nUTzt3k3u4Ybkcty+oiCYwKLI9vXDQy6Iwi78i9J1FXXlcDVyuAyq+G16XLUvJ4ouGZFSfePkwP0UawkeMTcymDFrWh6RE6n90ffn1ks81m32UWss1H4ltHdpCLtW8Ba6ADwGhIqIgvHBikrJMswqiN/xONh8+3pGV2eYHJnqVGdhq6HVquxHstpvI5/bxBomO0dsTodh7p6l0sQi9ASNAVysZklHytNeYT1wN6s6lh10iGXcewZFzuKo7uOWe2l2WHy8pcAbCKbN+YXgBVfAdeRBcRbQAy6G4mAvsOOzwd/M4xRzAf7go7Iwz5lysGBgCF4+rEOnSnEgXzw/mq74gDk4GjiyBxFRbGjVM25N1FPqOIneWdtY+4bXx1hXX9CC0Fvqk2NleaoNKDlJqH5UowMZtQ4AF0c+zsG9lCAmw9EA5W1Vc+SOWjh9E9Bv8axYcndcjSC1arHKC/QWMYSwmjwLKASahRFwyIxmyRtnI4HBEfxwDuH/opzehP2VnQuptI4mx
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(53546011)(6486002)(8936002)(66556008)(5660300002)(38100700002)(316002)(16576012)(107886003)(66946007)(2616005)(956004)(36756003)(6916009)(86362001)(4326008)(186003)(66476007)(26005)(8676002)(508600001)(2906002)(31686004)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VjVtRUlwWXZxSVJwRitMK0xUYW1QTk5Ja1V2eVFoQW92N2RmektDekIzblVT?=
- =?utf-8?B?TVhjdk5HelpPSXAybU1FTEE5cXRsRUwzeWdtYjZUR0lUUEhUK1oxODVONXZZ?=
- =?utf-8?B?aUs1Q2JNS3cxaHdsdmdyTm02SEJkR1RJckoyTTd1SWk0bUdhRFZBVS96RTRh?=
- =?utf-8?B?WGw1UzlPYXVxdlV5aEFKL3NWQjBhNjhDaXZOSmk3WXUrRnJHcVkxaUh4cjVK?=
- =?utf-8?B?a1NLL2cydjEwRHNuMjk2U3kvbjQyZ1pKa20rNGpjZmlmMFo3Vi8xUnh0eUNC?=
- =?utf-8?B?dStjeGZ0anY3MjA0RXBUamRRMzEzbVVPRWtMOVdpOW4yWFREZDZGQkhXMGxR?=
- =?utf-8?B?OVJoVGZ3RDRMWW9NSGNGL1NYVDJpdWVNS2lDekNvOXFMUmRqa1RlRGhkREc3?=
- =?utf-8?B?TktaM2cwbmlWQVBpd20xNlpINjIvVlI3MTRqb3dnSDJ6VUUxNTIxNTAySlpN?=
- =?utf-8?B?ZS93WmJ4RVIxYTVLczgwemJCOVBOWXdrZURlbmluT0UwcFcyMnFNSmJCbG5y?=
- =?utf-8?B?Q3MxcGJ1WnplSFEzc0g0a002SmdMSTZIdUxXMkVJOFBmRGJrMFN4WVcrRmtZ?=
- =?utf-8?B?Y09qTVZnVENicnU0S2gxUWVhcTFZTDUzR0w4b0JWSTFRRGRjWDJrSWNMeXZt?=
- =?utf-8?B?MTBNRkN5QTgyYWZGcDFKa2xjR1YyM1hEMTI1WERmd3pDaVVQSFBRZTNsOU1q?=
- =?utf-8?B?UnFIbUw2K1dSN21SZUd1amNkV1VodjU1QVhYZlNsSk9QUDlnc1NpUnU0M1J4?=
- =?utf-8?B?TnNpUGhuemY2aHN4LzdZUG02bnhqdjVDdDJzWVRGdWVoZ1hwb08yOFE1R0E0?=
- =?utf-8?B?UWpFSjk3WGpoS2dxUGhwOFZkOENhZWo3N3pSVFpBSkpNQjMvN3FFbFRBdGJU?=
- =?utf-8?B?YzVTbWNGWXVvRzhweXlMRFg0RmsxMnczUzJTOWhGLy9IMEZ5Wi9lWVZtYU5M?=
- =?utf-8?B?N2dPNjVCRGxaZXRiTmdQcmFpMGdkaTZBZFpPZXZiWHBCTFFBUXAvWXhsTDdJ?=
- =?utf-8?B?T1N3Q21QSzN2T0tyZmViTnhvYU0zWE9XZjVnNmxLTDhLSVg5ZGdkdTNkaHpj?=
- =?utf-8?B?Yy84Sk5TL3BUKytuVDVuclcwUm9qTUxtWEJkL3Jnb2h5c0FNUVFnSDBEbyt2?=
- =?utf-8?B?c0xaaFNSdGZXVjNmUE5Sa0ZxSVF4UWtWMTJhc3BhM3RkV0VaUTB0QW9iMm1C?=
- =?utf-8?B?Vmd0NUk1T3Jzd0lzUUJadVVFZ0wrbHd0MHFPT3krdlArbUdFRTh2MWRZNGo3?=
- =?utf-8?B?SjZDN3hTN0ZUanhaczVsdXROOTl2R1A1ZXlia05vbUtMbXg0b25RR041RWZx?=
- =?utf-8?B?Vy9hbmtrNXoycjdiSU84dkpId3FvazVqTHptUld6UzgwdWxPR2pIR05ZOVZ2?=
- =?utf-8?B?ZHNQblRWamFXaWJmN1oyVkVqUmpScnIzM0VrRFQ5UnFoZ1J0MDJDS3Y0by9I?=
- =?utf-8?B?cWt3ZXlHMnphc1poVFR5MERsVGdZejNqUXh1bm54dkNLeTlBRHRlWGRPZnpy?=
- =?utf-8?B?bzJjeFRoSWtvTVB3dysrOCtXSkxJUkhHK2twL0NLR0dZdU1UZWFkN2RWTHJj?=
- =?utf-8?B?M2s2cG5MOC9LUEo3bmJuMVM1UkhVbEZXUDAyNThHdXFPcGdQaWloYzNZTXNo?=
- =?utf-8?B?VlhOay9iYWxPWGRpT0piUFV1d0o2SDEyV0c2aDBRUEpKK1I5YW9IdjMxeUZa?=
- =?utf-8?B?MGdWRGsya0dPcitkZGhpeFpRRkRIS0VrWmxyNWx6MVk3WVkyU0s0UEwxRGdT?=
- =?utf-8?B?bUZEU3FEZ2RVWGRadlAxNU92MXRHOFptRmJQMm96VUo3UkVWcERPMTl5NlFN?=
- =?utf-8?B?RzJCL0dXVmY1enZmZzZsUzkwdVFKbnAzWFlhRksvZ2NvU1Y5QTdDNjZrWGU0?=
- =?utf-8?B?R2JvVS9RcXgyNU1QTWpzSnV1YlpYdFZ3dTdYTHZvUCtOMWIrMTVnNDhSeTg1?=
- =?utf-8?B?TzVoTlVjR0tZQVg2RThOYjRFUHZNY1JldzI0L1dBY2lRQ0Yvb05hUGFsK3BC?=
- =?utf-8?B?bmNncWNSbWRVRnVQalM2dlMyTFkrL0psQnM4czRvdXRCZC9nNHkzL0FzaXlw?=
- =?utf-8?B?eWEybHdXVy9BSlQvYjdQNjAvQjRCbUpDQm8zNXBhanh4L3dxT29rSmdZOWk2?=
- =?utf-8?B?bm0rMGozY0tUNm5sZXg5Y2lzd2tOUDNZenlzQytOSlhKVWtWTktsMzhLc01F?=
- =?utf-8?Q?L/83Lbla6elDm+JZ/ett4Jg=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d017831-02e2-4b6d-8ef3-08d9a99dbbf6
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2021 07:41:57.9992
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: h3LW0HC/df3focdKaHLgx5xWTaEoQOnVGrI0Vp81di26VSXgFnRjjtlB1rynTkF8/IKHpfYPTncRidyUvoevJw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2607
+In-Reply-To: <1637130012-21846-1-git-send-email-quic_c_sbhanu@quicinc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.11.2021 03:11, Stefano Stabellini wrote:
-> --- a/drivers/xen/xenbus/xenbus_probe.c
-> +++ b/drivers/xen/xenbus/xenbus_probe.c
-> @@ -951,6 +951,18 @@ static int __init xenbus_init(void)
->  		err = hvm_get_parameter(HVM_PARAM_STORE_PFN, &v);
->  		if (err)
->  			goto out_error;
-> +		/*
-> +		 * Uninitialized hvm_params are zero and return no error.
-> +		 * Although it is theoretically possible to have
-> +		 * HVM_PARAM_STORE_PFN set to zero on purpose, in reality it is
-> +		 * not zero when valid. If zero, it means that Xenstore hasn't
-> +		 * been properly initialized. Instead of attempting to map a
-> +		 * wrong guest physical address return error.
-> +		 */
-> +		if (v == 0) {
-> +			err = -ENOENT;
-> +			goto out_error;
+On 17/11/2021 08:20, Shaik Sajida Bhanu wrote:
+> Add sysfs entry to query eMMC and SD card errors statistics.
+> This feature is useful for debug and testing.
+
+Did you consider making it part of cqhci.c so that all drivers using
+cqhci could benefit?
+
+> 
+> Signed-off-by: Shaik Sajida Bhanu <quic_c_sbhanu@quicinc.com>
+> ---
+>  drivers/mmc/host/cqhci.h     |   1 +
+>  drivers/mmc/host/sdhci-msm.c | 192 +++++++++++++++++++++++++++++++++++++++++++
+>  drivers/mmc/host/sdhci.c     |  17 ++++
+>  drivers/mmc/host/sdhci.h     |   1 +
+>  include/linux/mmc/host.h     |   1 +
+>  5 files changed, 212 insertions(+)
+> 
+> diff --git a/drivers/mmc/host/cqhci.h b/drivers/mmc/host/cqhci.h
+> index ba9387e..f72a1d6 100644
+> --- a/drivers/mmc/host/cqhci.h
+> +++ b/drivers/mmc/host/cqhci.h
+> @@ -286,6 +286,7 @@ struct cqhci_host_ops {
+>  				 u64 *data);
+>  	void (*pre_enable)(struct mmc_host *mmc);
+>  	void (*post_disable)(struct mmc_host *mmc);
+> +	void (*err_stats)(struct mmc_host *mmc, unsigned long flags);
+>  #ifdef CONFIG_MMC_CRYPTO
+>  	int (*program_key)(struct cqhci_host *cq_host,
+>  			   const union cqhci_crypto_cfg_entry *cfg, int slot);
+> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+> index 50c71e0..e1dcd2d 100644
+> --- a/drivers/mmc/host/sdhci-msm.c
+> +++ b/drivers/mmc/host/sdhci-msm.c
+> @@ -242,6 +242,23 @@ struct sdhci_msm_variant_ops {
+>  			u32 offset);
+>  };
+>  
+> +enum {
+> +	MMC_ERR_CMD_TIMEOUT,
+> +	MMC_ERR_CMD_CRC,
+> +	MMC_ERR_DAT_TIMEOUT,
+> +	MMC_ERR_DAT_CRC,
+> +	MMC_ERR_AUTO_CMD,
+> +	MMC_ERR_ADMA,
+> +	MMC_ERR_TUNING,
+> +	MMC_ERR_CMDQ_RED,
+> +	MMC_ERR_CMDQ_GCE,
+> +	MMC_ERR_CMDQ_ICCE,
+> +	MMC_ERR_REQ_TIMEOUT,
+> +	MMC_ERR_CMDQ_REQ_TIMEOUT,
+> +	MMC_ERR_ICE_CFG,
+> +	MMC_ERR_MAX,
+> +};
+> +
+>  /*
+>   * From V5, register spaces have changed. Wrap this info in a structure
+>   * and choose the data_structure based on version info mentioned in DT.
+> @@ -285,6 +302,8 @@ struct sdhci_msm_host {
+>  	u32 dll_config;
+>  	u32 ddr_config;
+>  	bool vqmmc_enabled;
+> +	bool err_occurred;
+> +	u32  err_stats[MMC_ERR_MAX];
+>  };
+>  
+>  static const struct sdhci_msm_offset *sdhci_priv_msm_offset(struct sdhci_host *host)
+> @@ -2106,9 +2125,20 @@ static void sdhci_msm_set_timeout(struct sdhci_host *host, struct mmc_command *c
+>  		host->data_timeout = 22LL * NSEC_PER_SEC;
+>  }
+>  
+> +void sdhci_msm_cqe_err_stats(struct mmc_host *mmc, unsigned long flags)
+> +{
+> +	struct sdhci_host *host = mmc_priv(mmc);
+> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> +	struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
+> +
+> +	if (flags & BIT(0))
+> +		msm_host->err_stats[MMC_ERR_CMDQ_REQ_TIMEOUT]++;
+> +}
+> +
+>  static const struct cqhci_host_ops sdhci_msm_cqhci_ops = {
+>  	.enable		= sdhci_msm_cqe_enable,
+>  	.disable	= sdhci_msm_cqe_disable,
+> +	.err_stats	= sdhci_msm_cqe_err_stats,
+>  #ifdef CONFIG_MMC_CRYPTO
+>  	.program_key	= sdhci_msm_program_key,
+>  #endif
+> @@ -2403,6 +2433,46 @@ static void sdhci_msm_dump_vendor_regs(struct sdhci_host *host)
+>  		readl_relaxed(host->ioaddr +
+>  			msm_offset->core_vendor_spec_func2),
+>  		readl_relaxed(host->ioaddr + msm_offset->core_vendor_spec3));
+> +	msm_host->err_occurred = true;
+> +}
+> +
+> +void sdhci_msm_err_stats(struct sdhci_host *host, u32 intmask)
+> +{
+> +	int command;
+> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> +	struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
+> +
+> +	if (!msm_host->err_occurred)
+> +		msm_host->err_stats[MMC_ERR_CMD_TIMEOUT] = 0;
+> +
+> +	if (host && host->mmc && host->mmc->timer) {
+> +		msm_host->err_stats[MMC_ERR_REQ_TIMEOUT]++;
+> +		host->mmc->timer = false;
+> +	}
+> +
+> +	if (intmask & SDHCI_INT_CRC) {
+> +		command = SDHCI_GET_CMD(sdhci_readw(host, SDHCI_COMMAND));
+> +		if (command != MMC_SEND_TUNING_BLOCK ||
+> +		    command != MMC_SEND_TUNING_BLOCK_HS200)
+> +			msm_host->err_stats[MMC_ERR_CMD_CRC]++;
+> +	} else if ((intmask & SDHCI_INT_TIMEOUT) ||
+> +		(intmask & SDHCI_INT_DATA_TIMEOUT))
+> +		msm_host->err_stats[MMC_ERR_CMD_TIMEOUT]++;
+> +	else if (intmask & SDHCI_INT_DATA_CRC) {
+> +		command = SDHCI_GET_CMD(sdhci_readw(host, SDHCI_COMMAND));
+> +		if (command != MMC_SEND_TUNING_BLOCK ||
+> +		    command != MMC_SEND_TUNING_BLOCK_HS200)
+> +			msm_host->err_stats[MMC_ERR_DAT_CRC]++;
+> +	} else if (intmask & SDHCI_INT_DATA_TIMEOUT)
+> +		msm_host->err_stats[MMC_ERR_DAT_TIMEOUT]++;
+> +	else if (intmask & CQHCI_IS_RED)
+> +		msm_host->err_stats[MMC_ERR_CMDQ_RED]++;
+> +	else if (intmask & CQHCI_IS_GCE)
+> +		msm_host->err_stats[MMC_ERR_CMDQ_GCE]++;
+> +	else if (intmask & CQHCI_IS_ICCE)
+> +		msm_host->err_stats[MMC_ERR_CMDQ_ICCE]++;
+> +	else if (intmask & SDHCI_INT_ADMA_ERROR)
+> +		msm_host->err_stats[MMC_ERR_ADMA]++;
+>  }
+>  
+>  static const struct sdhci_msm_variant_ops mci_var_ops = {
+> @@ -2456,6 +2526,7 @@ static const struct sdhci_ops sdhci_msm_ops = {
+>  	.dump_vendor_regs = sdhci_msm_dump_vendor_regs,
+>  	.set_power = sdhci_set_power_noreg,
+>  	.set_timeout = sdhci_msm_set_timeout,
+> +	.err_stats = sdhci_msm_err_stats,
+>  };
+>  
+>  static const struct sdhci_pltfm_data sdhci_msm_pdata = {
+> @@ -2482,6 +2553,125 @@ static inline void sdhci_msm_get_of_property(struct platform_device *pdev,
+>  	of_property_read_u32(node, "qcom,dll-config", &msm_host->dll_config);
+>  }
+>  
+> +static ssize_t err_state_show(struct device *dev,
+> +			struct device_attribute *attr, char *buf)
+> +{
+> +	struct sdhci_host *host = dev_get_drvdata(dev);
+> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> +	struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
+> +
+> +	if (!host || !host->mmc)
+> +		return -EINVAL;
+> +
+> +	return scnprintf(buf, PAGE_SIZE, "%d\n", !!msm_host->err_occurred);
+> +}
+> +
+> +static ssize_t err_state_store(struct device *dev,
+> +				struct device_attribute *attr,
+> +				const char *buf, size_t count)
+> +{
+> +	struct sdhci_host *host = dev_get_drvdata(dev);
+> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> +	struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
+> +	unsigned int val;
+> +
+> +	if (kstrtouint(buf, 0, &val))
+> +		return -EINVAL;
+> +	if (!host || !host->mmc)
+> +		return -EINVAL;
+> +
+> +	msm_host->err_occurred = !!val;
+> +	if (!val)
+> +		memset(msm_host->err_stats, 0, sizeof(msm_host->err_stats));
+> +
+> +	return count;
+> +}
+> +static DEVICE_ATTR_RW(err_state);
+> +
+> +static ssize_t err_stats_show(struct device *dev,
+> +				struct device_attribute *attr, char *buf)
+> +{
+> +	struct sdhci_host *host = dev_get_drvdata(dev);
+> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> +	struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
+> +	char tmp[100];
+> +
+> +	if (!host || !host->mmc)
+> +		return -EINVAL;
+> +
+> +	scnprintf(tmp, sizeof(tmp), "# Command Timeout Error: %d\n",
+> +		msm_host->err_stats[MMC_ERR_CMD_TIMEOUT]);
+> +	strlcpy(buf, tmp, PAGE_SIZE);
+> +
+> +	scnprintf(tmp, sizeof(tmp), "# Command CRC Error: %d\n",
+> +		msm_host->err_stats[MMC_ERR_CMD_CRC]);
+> +	strlcat(buf, tmp, PAGE_SIZE);
+> +
+> +	scnprintf(tmp, sizeof(tmp), "# Data Timeout Error: %d\n",
+> +		msm_host->err_stats[MMC_ERR_DAT_TIMEOUT]);
+> +	strlcat(buf, tmp, PAGE_SIZE);
+> +
+> +	scnprintf(tmp, sizeof(tmp), "# Data CRC Error: %d\n",
+> +		msm_host->err_stats[MMC_ERR_DAT_CRC]);
+> +	strlcat(buf, tmp, PAGE_SIZE);
+> +
+> +	scnprintf(tmp, sizeof(tmp), "# Auto-Cmd Error: %d\n",
+> +		msm_host->err_stats[MMC_ERR_ADMA]);
+> +	strlcat(buf, tmp, PAGE_SIZE);
+> +
+> +	scnprintf(tmp, sizeof(tmp), "# ADMA Error: %d\n",
+> +		msm_host->err_stats[MMC_ERR_ADMA]);
+> +	strlcat(buf, tmp, PAGE_SIZE);
+> +
+> +	scnprintf(tmp, sizeof(tmp), "# Tuning Error: %d\n",
+> +		msm_host->err_stats[MMC_ERR_TUNING]);
+> +	strlcat(buf, tmp, PAGE_SIZE);
+> +
+> +	scnprintf(tmp, sizeof(tmp), "# CMDQ RED Errors: %d\n",
+> +		msm_host->err_stats[MMC_ERR_CMDQ_RED]);
+> +	strlcat(buf, tmp, PAGE_SIZE);
+> +
+> +	scnprintf(tmp, sizeof(tmp), "# CMDQ GCE Errors: %d\n",
+> +		msm_host->err_stats[MMC_ERR_CMDQ_GCE]);
+> +	strlcat(buf, tmp, PAGE_SIZE);
+> +
+> +	scnprintf(tmp, sizeof(tmp), "# CMDQ ICCE Errors: %d\n",
+> +		msm_host->err_stats[MMC_ERR_CMDQ_ICCE]);
+> +	strlcat(buf, tmp, PAGE_SIZE);
+> +
+> +	scnprintf(tmp, sizeof(tmp), "# CMDQ Request Timedout: %d\n",
+> +		msm_host->err_stats[MMC_ERR_CMDQ_REQ_TIMEOUT]);
+> +	strlcat(buf, tmp, PAGE_SIZE);
+> +
+> +	scnprintf(tmp, sizeof(tmp), "# Request Timedout Error: %d\n",
+> +		msm_host->err_stats[MMC_ERR_REQ_TIMEOUT]);
+> +	strlcat(buf, tmp, PAGE_SIZE);
+> +
+> +	return strlen(buf);
+> +}
+> +static DEVICE_ATTR_RO(err_stats);
+> +
+> +static struct attribute *sdhci_msm_sysfs_attrs[] = {
+> +	&dev_attr_err_state.attr,
+> +	&dev_attr_err_stats.attr,
+> +	NULL
+> +};
+> +
+> +static const struct attribute_group sdhci_msm_sysfs_group = {
+> +	.name = "qcom",
+> +	.attrs = sdhci_msm_sysfs_attrs,
+> +};
+> +
+> +static int sdhci_msm_init_sysfs(struct platform_device *pdev)
+> +{
+> +	int ret;
+> +
+> +	ret = sysfs_create_group(&pdev->dev.kobj, &sdhci_msm_sysfs_group);
+> +	if (ret)
+> +		dev_err(&pdev->dev, "%s: Failed sdhci_msm sysfs group err=%d\n",
+> +			__func__, ret);
+> +	return ret;
+> +}
+>  
+>  static int sdhci_msm_probe(struct platform_device *pdev)
+>  {
+> @@ -2734,6 +2924,8 @@ static int sdhci_msm_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto pm_runtime_disable;
+>  
+> +	sdhci_msm_init_sysfs(pdev);
+> +
+>  	pm_runtime_mark_last_busy(&pdev->dev);
+>  	pm_runtime_put_autosuspend(&pdev->dev);
+>  
+> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> index 07c6da1..f82a3eff 100644
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -3159,6 +3159,13 @@ static void sdhci_timeout_timer(struct timer_list *t)
+>  	spin_lock_irqsave(&host->lock, flags);
+>  
+>  	if (host->cmd && !sdhci_data_line_cmd(host->cmd)) {
+> +		if (host->ops->err_stats) {
+> +			u32 intmask;
+> +
+> +			host->mmc->timer = true;
+> +			intmask = sdhci_readl(host, SDHCI_INT_STATUS);
+> +			host->ops->err_stats(host, intmask);
 > +		}
-
-If such a check gets added, then I think known-invalid frame numbers
-should be covered at even higher a priority than zero. This would,
-for example, also mean to ...
-
->  		xen_store_gfn = (unsigned long)v;
-
-... stop silently truncating a value here.
-
-By covering them we would then have the option to pre-fill PFN params
-with, say, ~0 in the hypervisor (to clearly identify them as invalid,
-rather than having to guess at the validity of 0). I haven't really
-checked yet whether such a change would be compatible with existing
-software ...
-
-Jan
+>  		pr_err("%s: Timeout waiting for hardware cmd interrupt.\n",
+>  		       mmc_hostname(host->mmc));
+>  		sdhci_dumpregs(host);
+> @@ -3181,6 +3188,13 @@ static void sdhci_timeout_data_timer(struct timer_list *t)
+>  
+>  	if (host->data || host->data_cmd ||
+>  	    (host->cmd && sdhci_data_line_cmd(host->cmd))) {
+> +		if (host->ops->err_stats) {
+> +			u32 intmask;
+> +
+> +			host->mmc->timer = true;
+> +			intmask = sdhci_readl(host, SDHCI_INT_STATUS);
+> +			host->ops->err_stats(host, intmask);
+> +		}
+>  		pr_err("%s: Timeout waiting for hardware interrupt.\n",
+>  		       mmc_hostname(host->mmc));
+>  		sdhci_dumpregs(host);
+> @@ -3466,6 +3480,9 @@ static irqreturn_t sdhci_irq(int irq, void *dev_id)
+>  	}
+>  
+>  	intmask = sdhci_readl(host, SDHCI_INT_STATUS);
+> +	if (host->ops->err_stats)
+> +		host->ops->err_stats(host, intmask);
+> +
+>  	if (!intmask || intmask == 0xffffffff) {
+>  		result = IRQ_NONE;
+>  		goto out;
+> diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
+> index d7929d7..a1546b3 100644
+> --- a/drivers/mmc/host/sdhci.h
+> +++ b/drivers/mmc/host/sdhci.h
+> @@ -658,6 +658,7 @@ struct sdhci_ops {
+>  	void	(*request_done)(struct sdhci_host *host,
+>  				struct mmc_request *mrq);
+>  	void    (*dump_vendor_regs)(struct sdhci_host *host);
+> +	void	(*err_stats)(struct sdhci_host *host, u32 intmask);
+>  };
+>  
+>  #ifdef CONFIG_MMC_SDHCI_IO_ACCESSORS
+> diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+> index 7afb57c..33186ff 100644
+> --- a/include/linux/mmc/host.h
+> +++ b/include/linux/mmc/host.h
+> @@ -492,6 +492,7 @@ struct mmc_host {
+>  	int			cqe_qdepth;
+>  	bool			cqe_enabled;
+>  	bool			cqe_on;
+> +	bool                    timer;
+>  
+>  	/* Inline encryption support */
+>  #ifdef CONFIG_MMC_CRYPTO
+> 
 
