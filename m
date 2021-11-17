@@ -2,132 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC1F4546E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 14:07:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D484546E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 14:07:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237461AbhKQNKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 08:10:09 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:49570 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237414AbhKQNKC (ORCPT
+        id S237498AbhKQNKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 08:10:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:46258 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237440AbhKQNKI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 08:10:02 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: dafna)
-        with ESMTPSA id BA1BA1F45D0A
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637154422; bh=6JMAnV3RU7RwxpTblaM1Xwfo9CIzsVLv7HT0qSc5yyQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V0y1+dhcIn4dzVKvvaG1AjlLhVGnJduVtVXopyE9WhW+RYT0wMEZbpUdoN9ct6UAi
-         LIhM69tNYae0SF0Re5z94C+xDKNAdUGrRy9Sl2NjBGpF7A4hDgJZhSPrOBUJFwomxo
-         ut8GcQnJPl7MhrflZOi2NSiHEQB3/VQ7kvGVE2hV1Qo0VAcrhsW8xKUOprzDGx4k/F
-         vIMWgefS827bSjGuV8YQcmhMDeoUPK2ovm39pUKhyOjkBOOi/swrJd+q2CiAEbTtih
-         ZcyUVmreU/5s+MDgFF7BcnDKb+eW8odFOvRwaOdPykC9rPaEHs9u9kR1de0JGWW3ov
-         ga7QaA9XgeX/Q==
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-To:     linux-media@vger.kernel.org
-Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        kernel@collabora.com, acourbot@chromium.org,
-        andrew-ct.chen@mediatek.com, courbot@chromium.org,
-        dafna3@gmail.com, eizan@chromium.org, houlong.wei@mediatek.com,
-        hsinyi@chromium.org, hverkuil@xs4all.nl, irui.wang@mediatek.com,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        maoguang.meng@mediatek.com, matthias.bgg@gmail.com,
-        mchehab@kernel.org, minghsiu.tsai@mediatek.com, tfiga@chromium.org,
-        tiffany.lin@mediatek.com
-Subject: [PATCH v2 7/7] meida: mtk-vcodec: remove unused func parameter
-Date:   Wed, 17 Nov 2021 15:06:35 +0200
-Message-Id: <20211117130635.11633-8-dafna.hirschfeld@collabora.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211117130635.11633-1-dafna.hirschfeld@collabora.com>
-References: <20211117130635.11633-1-dafna.hirschfeld@collabora.com>
+        Wed, 17 Nov 2021 08:10:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637154428;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0LTZQNPdeqRQ2yT5OTn224BgKxkqswLX71q3wqkNfeM=;
+        b=NXeddxlYd+9MY7j9RWEm8DEYoolbeA8oFr2zmWIIdkt5H/Ny3T/3aI+MOqcHh8hYj7bFBJ
+        GurZjSMlwhTe3txtJ+PQNTVA48pkTHDjTUdiuadNHg+1FYqFTFCiahGNYpl8V/wCan/64U
+        wrBJbejmioP5YnIho1+Y3hbiAMvgL88=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-87-EP4QXOF9Nx-sCzxb3JKZfg-1; Wed, 17 Nov 2021 08:07:05 -0500
+X-MC-Unique: EP4QXOF9Nx-sCzxb3JKZfg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A7EB58799E0;
+        Wed, 17 Nov 2021 13:07:03 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EB88160657;
+        Wed, 17 Nov 2021 13:07:00 +0000 (UTC)
+Message-ID: <5148de60-4a9d-67ef-ca64-5c6461034c0c@redhat.com>
+Date:   Wed, 17 Nov 2021 14:06:59 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 2/2] KVM: SVM: Extend host physical APIC ID field to
+ support more than 8-bit
+Content-Language: en-US
+To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org
+Cc:     joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, peterz@infradead.org, hpa@zytor.com,
+        thomas.lendacky@amd.com, jon.grimm@amd.com
+References: <20211110101805.16343-1-suravee.suthikulpanit@amd.com>
+ <20211110101805.16343-3-suravee.suthikulpanit@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211110101805.16343-3-suravee.suthikulpanit@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The prarameter bs_size to function vpu_enc_encode
-is not used. Remove it.
+On 11/10/21 11:18, Suravee Suthikulpanit wrote:
+> +	if (level_type != 2 || !x2apic_mode) {
+> +		avic_host_physical_id_mask = 0xffULL;
+> +		goto out;
+> +	}
+> +
+> +	core_mask_width = eax & 0xF;
+> +
+> +	max_phys_mask_width = get_count_order(apic_get_max_phys_apicid());
+> +
+> +	/*
+> +	 * Sanity check to ensure core_mask_width for a processor does not
+> +	 * exceed the calculated mask.
+> +	 */
+> +	if (WARN_ON(core_mask_width > max_phys_mask_width))
+> +		return -EINVAL;
 
-Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
----
- drivers/media/platform/mtk-vcodec/venc/venc_h264_if.c | 9 +++------
- drivers/media/platform/mtk-vcodec/venc/venc_vp8_if.c  | 3 +--
- drivers/media/platform/mtk-vcodec/venc_vpu_if.c       | 1 -
- drivers/media/platform/mtk-vcodec/venc_vpu_if.h       | 1 -
- 4 files changed, 4 insertions(+), 10 deletions(-)
+Can it just use apic_get_max_phys_apicid() in x2apic mode, and 0xff in 
+!x2apic mode?  I'm not sure why you need to check CPUID[0xb,0x1].
 
-diff --git a/drivers/media/platform/mtk-vcodec/venc/venc_h264_if.c b/drivers/media/platform/mtk-vcodec/venc/venc_h264_if.c
-index b6a4f2074fa5..bf03888a824f 100644
---- a/drivers/media/platform/mtk-vcodec/venc/venc_h264_if.c
-+++ b/drivers/media/platform/mtk-vcodec/venc/venc_h264_if.c
-@@ -367,8 +367,7 @@ static int h264_encode_sps(struct venc_h264_inst *inst,
- 
- 	mtk_vcodec_debug_enter(inst);
- 
--	ret = vpu_enc_encode(&inst->vpu_inst, H264_BS_MODE_SPS, NULL,
--			     bs_buf, bs_size, NULL);
-+	ret = vpu_enc_encode(&inst->vpu_inst, H264_BS_MODE_SPS, NULL, bs_buf, NULL);
- 	if (ret)
- 		return ret;
- 
-@@ -394,8 +393,7 @@ static int h264_encode_pps(struct venc_h264_inst *inst,
- 
- 	mtk_vcodec_debug_enter(inst);
- 
--	ret = vpu_enc_encode(&inst->vpu_inst, H264_BS_MODE_PPS, NULL,
--			     bs_buf, bs_size, NULL);
-+	ret = vpu_enc_encode(&inst->vpu_inst, H264_BS_MODE_PPS, NULL, bs_buf, NULL);
- 	if (ret)
- 		return ret;
- 
-@@ -451,8 +449,7 @@ static int h264_encode_frame(struct venc_h264_inst *inst,
- 	mtk_vcodec_debug(inst, "frm_count = %d,skip_frm_count =%d,frm_type=%d.\n",
- 			 frame_info.frm_count, frame_info.skip_frm_count,
- 			 frame_info.frm_type);
--	ret = vpu_enc_encode(&inst->vpu_inst, H264_BS_MODE_FRAME, frm_buf,
--			     bs_buf, bs_size, &frame_info);
-+	ret = vpu_enc_encode(&inst->vpu_inst, H264_BS_MODE_FRAME, frm_buf, bs_buf, &frame_info);
- 	if (ret)
- 		return ret;
- 
-diff --git a/drivers/media/platform/mtk-vcodec/venc/venc_vp8_if.c b/drivers/media/platform/mtk-vcodec/venc/venc_vp8_if.c
-index 8267a9c4fd25..6b66957d5192 100644
---- a/drivers/media/platform/mtk-vcodec/venc/venc_vp8_if.c
-+++ b/drivers/media/platform/mtk-vcodec/venc/venc_vp8_if.c
-@@ -302,8 +302,7 @@ static int vp8_enc_encode_frame(struct venc_vp8_inst *inst,
- 
- 	mtk_vcodec_debug(inst, "->frm_cnt=%d", inst->frm_cnt);
- 
--	ret = vpu_enc_encode(&inst->vpu_inst, 0, frm_buf, bs_buf, bs_size,
--			     NULL);
-+	ret = vpu_enc_encode(&inst->vpu_inst, 0, frm_buf, bs_buf, NULL);
- 	if (ret)
- 		return ret;
- 
-diff --git a/drivers/media/platform/mtk-vcodec/venc_vpu_if.c b/drivers/media/platform/mtk-vcodec/venc_vpu_if.c
-index be6d8790a41e..e7899d8a3e4e 100644
---- a/drivers/media/platform/mtk-vcodec/venc_vpu_if.c
-+++ b/drivers/media/platform/mtk-vcodec/venc_vpu_if.c
-@@ -225,7 +225,6 @@ int vpu_enc_set_param(struct venc_vpu_inst *vpu,
- int vpu_enc_encode(struct venc_vpu_inst *vpu, unsigned int bs_mode,
- 		   struct venc_frm_buf *frm_buf,
- 		   struct mtk_vcodec_mem *bs_buf,
--		   unsigned int *bs_size,
- 		   struct venc_frame_info *frame_info)
- {
- 	const bool is_ext = MTK_ENC_CTX_IS_EXT(vpu->ctx);
-diff --git a/drivers/media/platform/mtk-vcodec/venc_vpu_if.h b/drivers/media/platform/mtk-vcodec/venc_vpu_if.h
-index f9be9cab7ff7..f83bc1b3f2bf 100644
---- a/drivers/media/platform/mtk-vcodec/venc_vpu_if.h
-+++ b/drivers/media/platform/mtk-vcodec/venc_vpu_if.h
-@@ -45,7 +45,6 @@ int vpu_enc_set_param(struct venc_vpu_inst *vpu,
- int vpu_enc_encode(struct venc_vpu_inst *vpu, unsigned int bs_mode,
- 		   struct venc_frm_buf *frm_buf,
- 		   struct mtk_vcodec_mem *bs_buf,
--		   unsigned int *bs_size,
- 		   struct venc_frame_info *frame_info);
- int vpu_enc_deinit(struct venc_vpu_inst *vpu);
- 
--- 
-2.17.1
+Paolo
 
