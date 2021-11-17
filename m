@@ -2,143 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053024543BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:28:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AFEB4543BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 10:29:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235213AbhKQJbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 04:31:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:25711 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235154AbhKQJbC (ORCPT
+        id S231295AbhKQJbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 04:31:39 -0500
+Received: from mswedge2.sunplus.com ([60.248.182.106]:36420 "EHLO
+        mg.sunplus.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235191AbhKQJbe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 04:31:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637141284;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GW74lTKeqcDtN2h/mSP5w/i30xPY127lVyVN1Tm0gaY=;
-        b=Ata4857YmDi2Gi3GwHXEcG79s6zEOL5GBkdICMaZoKo/RoMeNsX+rd8bB1ElWnt5bNyJ7E
-        gHA8udtyyVuCyLRTYUlkTxyPRMxWpZtioUmGwtIRDE/lKsm5AbdmtQVCaDCZ69h0c1grqJ
-        JJ3XyO/TxVEOzYrkRgUCknPvQ5HHP30=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-155-QgdPZ7YNN4-NgvcOhvJWtQ-1; Wed, 17 Nov 2021 04:28:02 -0500
-X-MC-Unique: QgdPZ7YNN4-NgvcOhvJWtQ-1
-Received: by mail-wr1-f70.google.com with SMTP id q17-20020adfcd91000000b0017bcb12ad4fso237693wrj.12
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 01:28:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GW74lTKeqcDtN2h/mSP5w/i30xPY127lVyVN1Tm0gaY=;
-        b=fI68WtD9X+BCXxDHfqm7Vu/R9+QrWyY6SWhhxpE4NkOWVDdqdSJ+0rx0ulHVbsEj73
-         wYKAnAg3WRMzsHPJr5UqKazhYgX+eil0nPHZXuksdOClEcqehh1r8H+2ybGBJw//etiC
-         6UNig18RC0VoLL65weh8XfsTybaw3go0sTyd2eZU5XJoDdBXfUCohymsSLQb7Rd/p9p5
-         zF4DxNQpJRvK1lwbtG5yr/UUL1PlhZLxYT1WoFRDI/XC4r5nDduLz/awla1YER/iGob0
-         3x08emZRIhyG2GgBk+S5CKXkxkgIf4ilPqULMa+GWxM5ZDY7LgyA4GzSMyTWwrgwWDYi
-         Hx+Q==
-X-Gm-Message-State: AOAM530uPtkSEtv+tSo6vNiwNtYij3Z5pFnQzFFIdsueXK3H3fragDTa
-        E/gl0AS4mW8tOhcfcy17S/uswMpmm8eqhmdFQmc+sHrM6HNegp4al18Qvft10F/1atvVW/AYlR+
-        88+fEgOv4QBORhEo+33aR0VIddFonystspi2GtBpD
-X-Received: by 2002:a05:600c:1f19:: with SMTP id bd25mr15829318wmb.75.1637141281264;
-        Wed, 17 Nov 2021 01:28:01 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxaDTV+6aHsMLuzIDY2bbJIxOX2vm9dyzDJhrihA4osfWwyGWumuLEHjZwhC1n8gEki1v7Dn61uRsHRD9iWZm8=
-X-Received: by 2002:a05:600c:1f19:: with SMTP id bd25mr15829291wmb.75.1637141281059;
- Wed, 17 Nov 2021 01:28:01 -0800 (PST)
+        Wed, 17 Nov 2021 04:31:34 -0500
+X-MailGates: (flag:3,DYNAMIC,RELAY,NOHOST:PASS)(compute_score:DELIVER,40
+        ,3)
+Received: from 172.17.9.112
+        by mg02.sunplus.com with MailGates ESMTP Server V5.0(23399:0:AUTH_RELAY)
+        (envelope-from <wells.lu@sunplus.com>); Wed, 17 Nov 2021 17:28:32 +0800 (CST)
+Received: from sphcmbx02.sunplus.com.tw (172.17.9.112) by
+ sphcmbx02.sunplus.com.tw (172.17.9.112) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Wed, 17 Nov 2021 17:28:27 +0800
+Received: from sphcmbx02.sunplus.com.tw ([::1]) by sphcmbx02.sunplus.com.tw
+ ([fe80::f8bb:bd77:a854:5b9e%14]) with mapi id 15.00.1497.023; Wed, 17 Nov
+ 2021 17:28:27 +0800
+From:   =?utf-8?B?V2VsbHMgTHUg5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>,
+        Wells Lu <wellslutw@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
+Subject: RE: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
+Thread-Topic: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
+Thread-Index: AQHX0KKBcebTINBXKk6D/f7Frpi9sKwC8bWAgASQUtA=
+Date:   Wed, 17 Nov 2021 09:28:27 +0000
+Message-ID: <29c352ebf87a4ecb854c5599f5282910@sphcmbx02.sunplus.com.tw>
+References: <cover.1635936610.git.wells.lu@sunplus.com>
+ <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
+ <52dbf9c9-0fa6-d4c6-ed6e-bba39e6e921b@gmail.com>
+In-Reply-To: <52dbf9c9-0fa6-d4c6-ed6e-bba39e6e921b@gmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [172.25.108.39]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <720dcf79314acca1a78fae56d478cc851952149d.1637084492.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <720dcf79314acca1a78fae56d478cc851952149d.1637084492.git.christophe.leroy@csgroup.eu>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Wed, 17 Nov 2021 10:27:49 +0100
-Message-ID: <CAHc6FU7AWwpmbMQZu-RQ3B1+i3=ZRDTRgLaue53yz0rd2NiuNw@mail.gmail.com>
-Subject: Re: [PATCH] gup: Avoid multiple user access locking/unlocking in fault_in_{read/write}able
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 6:50 PM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
-> fault_in_readable() and fault_in_writeable() perform __get_user()
-> and __put_user() in a loop, implying multiple user access
-> locking/unlocking.
->
-> To avoid that, use user access blocks.
->
-> Cc: Andreas Gruenbacher <agruenba@redhat.com>
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-
-Reviewed-by: Andreas Gruenbacher <agruenba@redhat.com>
-
-> ---
->  mm/gup.c | 18 ++++++++++--------
->  1 file changed, 10 insertions(+), 8 deletions(-)
->
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 2c51e9748a6a..be2a41feec7d 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -1672,21 +1672,22 @@ size_t fault_in_writeable(char __user *uaddr, size_t size)
->
->         if (unlikely(size == 0))
->                 return 0;
-> +       if (!user_write_access_begin(uaddr, size))
-> +               return size;
->         if (!PAGE_ALIGNED(uaddr)) {
-> -               if (unlikely(__put_user(0, uaddr) != 0))
-> -                       return size;
-> +               unsafe_put_user(0, uaddr, out);
->                 uaddr = (char __user *)PAGE_ALIGN((unsigned long)uaddr);
->         }
->         end = (char __user *)PAGE_ALIGN((unsigned long)start + size);
->         if (unlikely(end < start))
->                 end = NULL;
->         while (uaddr != end) {
-> -               if (unlikely(__put_user(0, uaddr) != 0))
-> -                       goto out;
-> +               unsafe_put_user(0, uaddr, out);
->                 uaddr += PAGE_SIZE;
->         }
->
->  out:
-> +       user_write_access_end();
->         if (size > uaddr - start)
->                 return size - (uaddr - start);
->         return 0;
-> @@ -1771,21 +1772,22 @@ size_t fault_in_readable(const char __user *uaddr, size_t size)
->
->         if (unlikely(size == 0))
->                 return 0;
-> +       if (!user_read_access_begin(uaddr, size))
-> +               return size;
->         if (!PAGE_ALIGNED(uaddr)) {
-> -               if (unlikely(__get_user(c, uaddr) != 0))
-> -                       return size;
-> +               unsafe_get_user(c, uaddr, out);
->                 uaddr = (const char __user *)PAGE_ALIGN((unsigned long)uaddr);
->         }
->         end = (const char __user *)PAGE_ALIGN((unsigned long)start + size);
->         if (unlikely(end < start))
->                 end = NULL;
->         while (uaddr != end) {
-> -               if (unlikely(__get_user(c, uaddr) != 0))
-> -                       goto out;
-> +               unsafe_get_user(c, uaddr, out);
->                 uaddr += PAGE_SIZE;
->         }
->
->  out:
-> +       user_read_access_end();
->         (void)c;
->         if (size > uaddr - start)
->                 return size - (uaddr - start);
-> --
-> 2.31.1
->
-
+SGkgUGF2ZWwsDQoNCj4gSGksIFdlbGxzIQ0KPiANCj4gT24gMTEvMy8yMSAxNDowMiwgV2VsbHMg
+THUgd3JvdGU6DQo+IA0KPiBbY29kZSBzbmlwXQ0KPiANCj4gPiArCQlpZiAoY29tbS0+ZHVhbF9u
+aWMpIHsNCj4gPiArCQkJc3RydWN0IG5ldF9kZXZpY2UgKm5ldF9kZXYyID0gbWFjLT5uZXh0X25l
+dGRldjsNCj4gPiArDQo+ID4gKwkJCWlmICghbmV0aWZfcnVubmluZyhuZXRfZGV2MikpIHsNCj4g
+PiArCQkJCW1hY19od19zdG9wKG1hYyk7DQo+ID4gKw0KPiA+ICsJCQkJbWFjMiA9IG5ldGRldl9w
+cml2KG5ldF9kZXYyKTsNCj4gPiArDQo+IA0KPiAoKikNCj4gDQo+ID4gKwkJCQkvLyB1bnJlZ2lz
+dGVyIGFuZCBmcmVlIG5ldCBkZXZpY2UuDQo+ID4gKwkJCQl1bnJlZ2lzdGVyX25ldGRldihuZXRf
+ZGV2Mik7DQo+ID4gKwkJCQlmcmVlX25ldGRldihuZXRfZGV2Mik7DQo+ID4gKwkJCQltYWMtPm5l
+eHRfbmV0ZGV2ID0gTlVMTDsNCj4gPiArCQkJCXByX2luZm8oIiBVbnJlZ2lzdGVyZWQgYW5kIGZy
+ZWVkIG5ldCBkZXZpY2UgXCJldGgxXCIhXG4iKTsNCj4gPiArDQo+ID4gKwkJCQljb21tLT5kdWFs
+X25pYyA9IDA7DQo+ID4gKwkJCQltYWNfc3dpdGNoX21vZGUobWFjKTsNCj4gPiArCQkJCXJ4X21v
+ZGVfc2V0KG5ldF9kZXYpOw0KPiA+ICsJCQkJbWFjX2h3X2FkZHJfZGVsKG1hYzIpOw0KPiA+ICsN
+Cj4gDQo+IG1hYzIgaXMgbmV0X2RldjIgcHJpdmF0ZSBkYXRhICgqKSwgc28gaXQgd2lsbCBiZWNv
+bWUgZnJlZWQgYWZ0ZXINCj4gZnJlZV9uZXRkZXYoKSBjYWxsLg0KPiANCj4gRldJVyB0aGUgbGF0
+ZXN0IGBzbWF0Y2hgIHNob3VsZCB3YXJuIGFib3V0IHRoaXMgdHlwZSBvZiBidWdzLg0KDQpZZXMs
+IHRoaXMgaXMgaW5kZWVkIGEgYnVnLg0KQnV0IHRoZSBjb2RlIHBhcmFncmFwaCBoYXMgYmVlbiBy
+ZW1vdmVkIHRob3JvdWdobHkgaW4gW1BBVENIIHYyXS4NCg0KDQo+ID4gKwkJCQkvLyBJZiBldGgw
+IGlzIHVwLCB0dXJuIG9uIGxhbiAwIGFuZCAxIHdoZW4NCj4gPiArCQkJCS8vIHN3aXRjaGluZyB0
+byBkYWlzeS1jaGFpbiBtb2RlLg0KPiA+ICsJCQkJaWYgKGNvbW0tPmVuYWJsZSAmIDB4MSkNCj4g
+PiArCQkJCQljb21tLT5lbmFibGUgPSAweDM7DQo+IA0KPiBbY29kZSBzbmlwXQ0KPiANCj4gPiAr
+c3RhdGljIGludCBsMnN3X3JlbW92ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KSB7DQo+
+ID4gKwlzdHJ1Y3QgbmV0X2RldmljZSAqbmV0X2RldjsNCj4gPiArCXN0cnVjdCBuZXRfZGV2aWNl
+ICpuZXRfZGV2MjsNCj4gPiArCXN0cnVjdCBsMnN3X21hYyAqbWFjOw0KPiA+ICsNCj4gPiArCW5l
+dF9kZXYgPSBwbGF0Zm9ybV9nZXRfZHJ2ZGF0YShwZGV2KTsNCj4gPiArCWlmICghbmV0X2RldikN
+Cj4gPiArCQlyZXR1cm4gMDsNCj4gPiArCW1hYyA9IG5ldGRldl9wcml2KG5ldF9kZXYpOw0KPiA+
+ICsNCj4gPiArCS8vIFVucmVnaXN0ZXIgYW5kIGZyZWUgMm5kIG5ldCBkZXZpY2UuDQo+ID4gKwlu
+ZXRfZGV2MiA9IG1hYy0+bmV4dF9uZXRkZXY7DQo+ID4gKwlpZiAobmV0X2RldjIpIHsNCj4gPiAr
+CQl1bnJlZ2lzdGVyX25ldGRldihuZXRfZGV2Mik7DQo+ID4gKwkJZnJlZV9uZXRkZXYobmV0X2Rl
+djIpOw0KPiA+ICsJfQ0KPiA+ICsNCj4gDQo+IElzIGl0IHNhdmUgaGVyZSB0byBmcmVlIG1hYy0+
+bmV4dF9uZXRkZXYgYmVmb3JlIHVucmVnaXN0ZXJpbmcgInBhcmVudCINCj4gbmV0ZGV2PyBJIGhh
+dmVuJ3QgY2hlY2tlZCB0aGUgd2hvbGUgY29kZSwganVzdCBhc2tpbmcgOikNCg0KWWVzLCBJIHRo
+aW5rIGl0IGlzIHNhdmUuDQpuZXRkZXYyIHNob3VsZCBiZSB1bnJlZ2lzdGVyZWQgYW5kIGZyZWVk
+IGJlZm9yZSBuZXRfZGV2Lg0KSWYgbmV0X2RldiBpcyB1bnJlZ2lzdGVyZWQgYW5kIGZyZWVkIGlu
+IGFkdmFuY2UsDQptYWMtPm5leHRfbmV0ZGV2IGJlY29tZXMgZGFuZ2VyIGJlY2F1c2UgJ21hYycg
+aGFzIGJlZW4gZnJlZWQuDQoNCg0KPiA+ICsJc3lzZnNfcmVtb3ZlX2dyb3VwKCZwZGV2LT5kZXYu
+a29iaiwgJmwyc3dfYXR0cmlidXRlX2dyb3VwKTsNCj4gPiArDQo+ID4gKwltYWMtPmNvbW0tPmVu
+YWJsZSA9IDA7DQo+ID4gKwlzb2MwX3N0b3AobWFjKTsNCj4gPiArDQo+ID4gKwluYXBpX2Rpc2Fi
+bGUoJm1hYy0+Y29tbS0+cnhfbmFwaSk7DQo+ID4gKwluZXRpZl9uYXBpX2RlbCgmbWFjLT5jb21t
+LT5yeF9uYXBpKTsNCj4gPiArCW5hcGlfZGlzYWJsZSgmbWFjLT5jb21tLT50eF9uYXBpKTsNCj4g
+PiArCW5ldGlmX25hcGlfZGVsKCZtYWMtPmNvbW0tPnR4X25hcGkpOw0KPiA+ICsNCj4gPiArCW1k
+aW9fcmVtb3ZlKG5ldF9kZXYpOw0KPiA+ICsNCj4gPiArCS8vIFVucmVnaXN0ZXIgYW5kIGZyZWUg
+MXN0IG5ldCBkZXZpY2UuDQo+ID4gKwl1bnJlZ2lzdGVyX25ldGRldihuZXRfZGV2KTsNCj4gPiAr
+CWZyZWVfbmV0ZGV2KG5ldF9kZXYpOw0KPiA+ICsNCj4gPiArCWNsa19kaXNhYmxlKG1hYy0+Y29t
+bS0+Y2xrKTsNCj4gPiArDQo+ID4gKwkvLyBGcmVlICdjb21tb24nIGFyZWEuDQo+ID4gKwlrZnJl
+ZShtYWMtPmNvbW0pOw0KPiANCj4gU2FtZSBoZXJlIHdpdGggYG1hY2AuDQoNClRoaXMgaXMgaW5k
+ZWVkIGEgYnVnLg0KQnV0IHRoZSBzdGF0ZW1lbnQsIEtmcmVlKG1hYy0+Y29tbSk7LCBoYXMgYmVl
+biByZW1vdmVkIGluIFtQQVRDSCB2Ml0uDQpJbiBbUEFUQ0ggdjJdLCBzdHJ1Y3R1cmUgZGF0YSAn
+bWFjLT5jb21tJyBpcyBhbGxvY2F0ZWQgYnkNCmRldm1fa3phbGxvYygpLiBObyBtb3JlIG5lZWQg
+dG8gZnJlZSBpdCBoZXJlLg0KDQoNCj4gPiArCXJldHVybiAwOw0KPiA+ICt9DQo+IA0KPiANCj4g
+SSBoYXZlbid0IHJlYWQgdGhlIHdob2xlIHRocmVhZCwgaSBhbSBzb3JyeSBpZiB0aGVzZSBxdWVz
+dGlvbnMgd2VyZSBhbHJlYWR5IGRpc2N1c3NlZC4NCj4gDQo+IA0KPiANCj4gV2l0aCByZWdhcmRz
+LA0KPiBQYXZlbCBTa3JpcGtpbg0KDQoNClRoYW5rIHlvdSB2ZXJ5IG11Y2ggZm9yIHlvdXIgcmV2
+aWV3IQ0KDQpCZXN0IHJlZ2FyZHMsDQpXZWxscyBMdQ0K
