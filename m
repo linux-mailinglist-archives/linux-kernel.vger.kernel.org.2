@@ -2,95 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35834547E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 14:56:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 076F44547E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 14:57:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237973AbhKQN7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 08:59:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhKQN7j (ORCPT
+        id S237987AbhKQOAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 09:00:34 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:46060 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229587AbhKQOAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 08:59:39 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 141E8C061570;
-        Wed, 17 Nov 2021 05:56:41 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id m20so11620333edc.5;
-        Wed, 17 Nov 2021 05:56:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=barpn6HXlNEJZCIDoLRAiQeoqQVNhfDbTQPuPxYCEgE=;
-        b=pbUx2/mB0J0Or1fLsMpTkQes7REpjHCo+bSdAP8/JyNylZqPYYYtHfC4yYnuh6Et9e
-         s1sLYspfEe5eHYAohHQK2xvdUkcKisZo1qpJhdk4dlosawjPmbCQGWPd0nVGh0IgUoji
-         JbGFS8wGGgZrdU7+qObW75iK+5bvMYbe5RKHWgy6R6DBmUbN4wv+N6zLgXNZgtPvorKA
-         iwC99r0igDysKJflgZX8TtGgV1y9fUCsWl7IpCDgnimzV8ZFw7kwclfr9YrTJeJi7zcm
-         l/HAOoiPJjCgOGRTXr0dXn/Docx9PheRJLnbOzr+MgffAGnn6PN6RpW5mHyYIz/ljICp
-         AoCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=barpn6HXlNEJZCIDoLRAiQeoqQVNhfDbTQPuPxYCEgE=;
-        b=tNiOLnr6hhAvvEmn5VmPRlRUVstFaRa9QYUkkDpc2hnkx1NdjPphWbunt7FaroEDeb
-         j21MtF0aiJ++2L4ns7n0VsMqn7Vu7RTAx56M/OMCJjfSMxR/S+KmDAfzvvt+fhvbRzcB
-         iP0k/4gNNjp0vq3b+HnVuSSxquk0AHts4BQbQCc8ny967rse9pOlxJUwbK17jilCELHE
-         zVimc+yW8dPp5wxqzBT3oC9NwGX2/1vT8dcUNR3HSxDOc5XCTWRU8Caj1I+jNkTY11s3
-         ghBPVqNC5chTQKnzyAemQoIcSrY/c98x0o0ipvS+D0/NsdpoD6Awqwb+/d9E9X53Hmiu
-         VAcw==
-X-Gm-Message-State: AOAM532s2dOLWilJVo5+l0M699L6Vf7CTMqyQH42DTpEIygZqFcB/OVf
-        TdNZl6xrh91kYtnweX0bbV4xHjh1tycSpjFcCo75CZtwtyY=
-X-Google-Smtp-Source: ABdhPJwtZM5VA43xVKmj3kz4yBntpNkXzEFK5+D+KH1XnDlwVHdF50w+ggVjBrr8JJSeOm1Knyj0kN7uYmNDpVc2CJQ=
-X-Received: by 2002:a50:da48:: with SMTP id a8mr22163831edk.146.1637157399729;
- Wed, 17 Nov 2021 05:56:39 -0800 (PST)
+        Wed, 17 Nov 2021 09:00:33 -0500
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.1)
+ id 816f5c0f100f6a4a; Wed, 17 Nov 2021 14:57:33 +0100
+Received: from kreacher.localnet (unknown [213.134.175.214])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id B5E2066AB6F;
+        Wed, 17 Nov 2021 14:57:32 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH] cpufreq: intel_pstate: Fix active mode offline/online EPP handling
+Date:   Wed, 17 Nov 2021 14:57:31 +0100
+Message-ID: <2609364.mvXUDI8C0e@kreacher>
 MIME-Version: 1.0
-References: <20211111133530.2156478-1-imagedong@tencent.com>
- <20211111133530.2156478-2-imagedong@tencent.com> <20211116163407.7e0c6129@gandalf.local.home>
-In-Reply-To: <20211116163407.7e0c6129@gandalf.local.home>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Wed, 17 Nov 2021 21:55:20 +0800
-Message-ID: <CADxym3bHJZ+3HX3V=JjHfk7ZiUQAwwwdXL07e-JBSp9-wjdVXQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/2] net: snmp: add tracepoint support for snmp
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>, mingo@redhat.com,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        dsahern@kernel.org, Menglong Dong <imagedong@tencent.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.175.214
+X-CLIENT-HOSTNAME: 213.134.175.214
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvuddrfeeggdehfecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdevgfetueetheekudeuvdduteelvefftdfftdejjeeukeffteeikefgiefghedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepvddufedrudefgedrudejhedrvddugeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddujeehrddvudegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 5:34 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Thu, 11 Nov 2021 21:35:29 +0800
-> menglong8.dong@gmail.com wrote:
->
-> > +#define DEFINE_SNMP_EVENT(proto)                             \
-> > +DEFINE_EVENT(snmp_template, snmp_##proto,                    \
-> > +     TP_PROTO(struct sk_buff *skb, int field, int val),      \
-> > +     TP_ARGS(skb, field, val)                                \
-> > +)
-> > +
-> > +#define TRACE_SNMP(skb, proto, field, val) \
-> > +     trace_snmp_##proto(skb, field, val)
-> > +
-> > +#endif
->
-> Why make a separate trace event for each protocol, and not just create an
-> enum that gets passed to the trace event? Then you could just filter on
-> what you want.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-enn....I'm not sure, just feel comfortable to create a separate trace event for
-each protocol. Maybe it is easier to use? However, making them together
-seems more fridently to users who want to do statistics for all protocols. I'll
-think over it~~~
+After commit 4adcf2e5829f ("cpufreq: intel_pstate: Add ->offline and
+->online callbacks") the EPP value set by the "performance" scaling
+algorithm in the active mode is not restored after an offline/online
+cycle which replaces it with the saved EPP value coming from user
+space.
 
-Thanks!
-Menglong Dong
+Address this issue by forcing intel_pstate_hwp_set() to set a new
+EPP value when it runs first time after online.
 
->
-> -- Steve
+Fixes: 4adcf2e5829f ("cpufreq: intel_pstate: Add ->offline and ->online callbacks")
+Link: https://lore.kernel.org/linux-pm/adc7132c8655bd4d1c8b6129578e931a14fe1db2.camel@linux.intel.com/
+Reported-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: 5.9+ <stable@vger.kernel.org> # 5.9+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/cpufreq/intel_pstate.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
+
+Index: linux-pm/drivers/cpufreq/intel_pstate.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/intel_pstate.c
++++ linux-pm/drivers/cpufreq/intel_pstate.c
+@@ -1006,6 +1006,12 @@ static void intel_pstate_hwp_offline(str
+ 		 */
+ 		value &= ~GENMASK_ULL(31, 24);
+ 		value |= HWP_ENERGY_PERF_PREFERENCE(cpu->epp_cached);
++		/*
++		 * However, make sure that EPP will be set to "performance" when
++		 * the CPU is brought back online again and the "performance"
++		 * scaling algorithm is still in effect.
++		 */
++		cpu->epp_policy = CPUFREQ_POLICY_UNKNOWN;
+ 	}
+ 
+ 	/*
+
+
+
