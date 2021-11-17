@@ -2,120 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B68B4542AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 09:30:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BD145429B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 09:27:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234552AbhKQIdq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Nov 2021 03:33:46 -0500
-Received: from mail-qt1-f169.google.com ([209.85.160.169]:34729 "EHLO
-        mail-qt1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229944AbhKQIdp (ORCPT
+        id S234506AbhKQIau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 03:30:50 -0500
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:50168
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229944AbhKQIat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 03:33:45 -0500
-Received: by mail-qt1-f169.google.com with SMTP id o17so1924109qtk.1;
-        Wed, 17 Nov 2021 00:30:46 -0800 (PST)
+        Wed, 17 Nov 2021 03:30:49 -0500
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 005CD40016
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 08:27:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1637137669;
+        bh=P95dsz5DnmdjZd6IIMhwxlUD+8WIlKXIhjrCFJuQBiY=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=bR9erVziguuB4GK69yq32UCG9AstcMTmwaywevrKKmO819sWct6ckvFyNuNRwdZwQ
+         zcOjw6kTJD75FncufTx9J6mK4R2hwIyxoj1e2o0RJge7HkxopMgnu9KTh+F4/toVAK
+         6BR3Fl137YFVpn4N923Zd5SbOTbW03lTsVdOzXrRuOwxIDctv5Jng3OiD1Di+rRMHp
+         eX04UJGLgzmbzYqDD2UR6+UtZKkmoUK53jGdYZknCuZ5a4t+C/C07+7bQ9mkXFuS84
+         +E6c4rj6WqSgCgBHpkLWrhb4U2gx9oeTzqNe15J6+pBtJM27VdCcgcxCpFOWUagjbs
+         XrJDqyrfMOOVw==
+Received: by mail-lf1-f72.google.com with SMTP id z1-20020a056512308100b003ff78e6402bso985628lfd.4
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 00:27:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pLki4VXVNEgH7BpAr7thCy6liKqtc8dZxgXibG/LDtU=;
-        b=IUpfMS2Qsw+4vmn7I+udpusUuBdphjjcAJKehe7ijbqvhkYnwm6cTNdca+Cm0+0ma0
-         xHD7AGKnQOaEiCs6xqSWURkkNCEsyjFfW5BS+qXXbqRwqmicLNGkp26r99JMfFSCO/3k
-         0bWFazjujRDAHYFZe81Zf9uHbmyFG8cifydbv07Sd9hppAYW34M6QwmE5KICuNyBOc1b
-         uaRJUYDVmVWNYnHKQUaNc9sX2Jn2J5I6VMJVbOUUi0zfxBoozVHwbFXJ/iQhxxdP0nJI
-         UUZ2M0IUONMJ7yEaDyGm9GjG4M1JgiuAegMgBQl0bzAe7JH80skTE+4MB5PXQv0AtrMH
-         PE+w==
-X-Gm-Message-State: AOAM533Gmfbt9PLCNrSukClwWshSIsB1Zv0j1Rff2FGOwSGUU7Ob7m8A
-        uDSnap65Q1tmO3hQD/OtlyUl2r4Dhpxyxg==
-X-Google-Smtp-Source: ABdhPJwoFVUouk9QlvygqIYHdaUI5uPa2eT+UDuhCZpvADfGS5ohUE9j9fFTF1CGKB45SU6JCVVhbA==
-X-Received: by 2002:a05:622a:178c:: with SMTP id s12mr14701908qtk.156.1637137846345;
-        Wed, 17 Nov 2021 00:30:46 -0800 (PST)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
-        by smtp.gmail.com with ESMTPSA id j20sm5550905qtj.43.2021.11.17.00.30.46
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=P95dsz5DnmdjZd6IIMhwxlUD+8WIlKXIhjrCFJuQBiY=;
+        b=Mgmk3gvBpvdAcd/kP/o2QqyGy7tud5cw2nFutWJ0u+X6RJ97O1keoMn9hNCyB300lO
+         Fx7kdG4uOAAqv26KlaVd/IjdHk5ExSmms+0xZAEehIIR6nlSjI5wzYu5WO3was+ZSYRG
+         MpNC0gIKudJ5dyeVLgT80aCP7OOP5Zgp7kqhdn/FA8CBuYMyWOHDikDOpa6gGo4YQoNG
+         EVZPRl01gWJE8EodA5Z9I5QiT5EjLBcR3Or/RS9uOY9KwE8O6m3aLxwncpZvetT3Ku63
+         QDhIiXyoFUPnA850KvHrOMsp2Yt8efJ1DfDPq5cBcsMoQNE8U/cMCPyVo8Pe/O+XggRl
+         lsSg==
+X-Gm-Message-State: AOAM5331X1Q7aaKEJPRRgnkNEb9QbGc2lrUkrpFZTUTVUWTliW6loL3c
+        /S3HCMguxFOVZWtayp05l9jYEDP29b4+QoXaF89LlglLVewPFpKV1Ot00fyj+I9bthMFlklc9dQ
+        LJHOSMQR7RjxNlHABJMCu/U6FIk57/criwbIIYoFHbA==
+X-Received: by 2002:a05:6512:308b:: with SMTP id z11mr13039261lfd.177.1637137668142;
+        Wed, 17 Nov 2021 00:27:48 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzdracRFgDN5bjVOqJs9kEp8rGYLeXyKT3Z97paO0yilkiZKv3mOw7ITb5/C3y0gQHc7iq+FQ==
+X-Received: by 2002:a05:6512:308b:: with SMTP id z11mr13039238lfd.177.1637137667915;
+        Wed, 17 Nov 2021 00:27:47 -0800 (PST)
+Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id k5sm2085654lja.34.2021.11.17.00.27.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 00:30:46 -0800 (PST)
-Received: by mail-yb1-f170.google.com with SMTP id n2so746118yba.2;
-        Wed, 17 Nov 2021 00:30:46 -0800 (PST)
-X-Received: by 2002:a9f:2431:: with SMTP id 46mr20823663uaq.114.1637137464301;
- Wed, 17 Nov 2021 00:24:24 -0800 (PST)
+        Wed, 17 Nov 2021 00:27:47 -0800 (PST)
+Message-ID: <e448d7b7-0a7d-7c88-271f-75ed5ac7e13a@canonical.com>
+Date:   Wed, 17 Nov 2021 09:27:46 +0100
 MIME-Version: 1.0
-References: <20211115155105.3797527-1-geert@linux-m68k.org>
- <CAMuHMdUCsyUxaEf1Lz7+jMnur4ECwK+JoXQqmOCkRKqXdb1hTQ@mail.gmail.com>
- <fcdead1c-2e26-b8ca-9914-4b3718d8f6d4@gmx.de> <480CE37B-FE60-44EE-B9D2-59A88FDFE809@fb.com>
- <78b2d093-e06c-ba04-9890-69f948bfb937@infradead.org> <B57193D6-1FD4-45D3-8045-8D2DE691E24E@fb.com>
-In-Reply-To: <B57193D6-1FD4-45D3-8045-8D2DE691E24E@fb.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 17 Nov 2021 09:24:12 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWgGz5FSidaGpp8YRRSnJfwdP4-wOkXdVx+mydXnMAXHQ@mail.gmail.com>
-Message-ID: <CAMuHMdWgGz5FSidaGpp8YRRSnJfwdP4-wOkXdVx+mydXnMAXHQ@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v5.16-rc1
-To:     Nick Terrell <terrelln@fb.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, Helge Deller <deller@gmx.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Joey Gouly <joey.gouly@arm.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Hector Martin <marcan@marcan.st>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [krzk-mem-ctrl:for-v5.17/renesas-rpc 5/5]
+ drivers/memory/renesas-rpc-if.c:253:14: warning: cast to smaller integer type
+ 'enum rpcif_type' from 'const void *'
+Content-Language: en-US
+To:     kernel test robot <lkp@intel.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Wolfram Sang <wsa-dev@sang-engineering.com>
+References: <202111171118.XlLOUQ87-lkp@intel.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <202111171118.XlLOUQ87-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nick,
+On 17/11/2021 04:56, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git for-v5.17/renesas-rpc
+> head:   b04cc0d912eb80d3c438b11d96ca847c3e77e8ab
+> commit: b04cc0d912eb80d3c438b11d96ca847c3e77e8ab [5/5] memory: renesas-rpc-if: Add support for RZ/G2L
+> config: x86_64-buildonly-randconfig-r002-20211116 (attached as .config)
+> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 4c2cf3a314d9131b1b288e7c8ab0c75ac1b2be1d)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git/commit/?id=b04cc0d912eb80d3c438b11d96ca847c3e77e8ab
+>         git remote add krzk-mem-ctrl https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git
+>         git fetch --no-tags krzk-mem-ctrl for-v5.17/renesas-rpc
+>         git checkout b04cc0d912eb80d3c438b11d96ca847c3e77e8ab
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=x86_64 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>>> drivers/memory/renesas-rpc-if.c:253:14: warning: cast to smaller integer type 'enum rpcif_type' from 'const void *' [-Wvoid-pointer-to-enum-cast]
+>            rpc->type = (enum rpcif_type)of_device_get_match_data(dev);
+>                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    1 warning generated.
+> 
 
-On Wed, Nov 17, 2021 at 3:20 AM Nick Terrell <terrelln@fb.com> wrote:
-> > On Nov 16, 2021, at 6:05 PM, Randy Dunlap <rdunlap@infradead.org> wrote:
-> > On 11/16/21 5:59 PM, Nick Terrell wrote:
-> >> I’ll send the PR to Linus tomorrow. I’ve been informed that it
-> >> isn't strictly necessary to send the patches to the mailing list
-> >> for bug fixes, but its already done, so I’ll wait and see if there
-> >> is any feedback.
-> >
-> > IMO several (or many more) people would disagree with that.
-> >
-> > "strictly?"  OK, it's probably possible that almost any patch
-> > could be merged without being on a mailing list, but it's not
-> > desirable (except in the case of "security" patches).
->
-> Good to know! Thanks for the advice, I wasn’t really sure what
-> the best practice is for sending patches to your own tree, as I
-> didn't see anything about it in the maintainer guide.
+I am afraid several drivers repeat this pattern and will be affected as
+well on clang. GCC does not complain (apparently cast is enough for
+GCC), but still this has to be fixed. Maybe cast via  uintptr_t would
+quite it?
 
-All patches must be sent to public mailing lists for review.
-You might get away with not doing that for a simple and trivial fix,
-but be prepared to end up on people's "special" lists if you did get
-it wrong.
+Let me know when I can expect the fix.
 
-We are Legion. We do not forgive. We do not forget ;-)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Best regards,
+Krzysztof
