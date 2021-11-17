@@ -2,93 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2979453D6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 02:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA22453D70
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 02:05:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbhKQBHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Nov 2021 20:07:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbhKQBHC (ORCPT
+        id S230113AbhKQBIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Nov 2021 20:08:37 -0500
+Received: from relmlor1.renesas.com ([210.160.252.171]:15400 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229543AbhKQBIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Nov 2021 20:07:02 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E195CC061570;
-        Tue, 16 Nov 2021 17:04:04 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id g18so1027756pfk.5;
-        Tue, 16 Nov 2021 17:04:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PLz5baL/tForuA6NLmg8XFMsVJ3OJ6G5avfxPN9wfAY=;
-        b=CkHizIwo5OxrH6SXMtbFaBo3rxwHUxfjaYQqiQXz2DG4k37ZPaiTMLniKDmBOEYATR
-         m3NFrhQCYldaZCZRLdM++qdG+mkLTik41OH67xg1jaWt3Gz8jH2zkJqAXcUoLuPpJNwr
-         a7+Iq2UkHkQAANfQ5gvMuaCvpIPB5LbL0b51sVBNMdnBDjbIoEB0ujCNjNhF/FCTBoLq
-         aSQ+OS81elts5Tre9UNFtGkR9+gcmDWlcMaVmFd9EYWtsodEyX740N7WRAOPsrRcx/BV
-         f+Jr0PYJwF3Z3NzFAWp1mwRjsMB0/ei2In+9mI79i3swOtidWcCeWFU4eyERo0mJHkWe
-         dSNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PLz5baL/tForuA6NLmg8XFMsVJ3OJ6G5avfxPN9wfAY=;
-        b=u+lapJqTswyUZ2HDPNHSsQkmBRm8hErbNs3aeSmEdTaxwmhyRlRJ72BOdtbTM6d8xZ
-         7CG9h6ePFPeTNSWduFeymBs4DlUVeReRq4fkx4xKnCkEyKAmpTDF1Uono3+ndID2aORN
-         lumSc8ChGMVAhtByFkEJs5FTtQAiPyJdqvEmwDIjaoXdRT3N7kFdRExOu39lfkH2ezZE
-         tTqALoHcKkeNQXQnMpEzZC0T8OG8CVhcJsO9s+4Xl/lYWdLnBb3d6VlSUSqVdxWNpX9o
-         U4VYXTfMuwLkyvc6VV8mVUxD6In2nqloEg685GFnHmraEF4DtiuYUlMUUVYXGmE0Q8jY
-         a1qw==
-X-Gm-Message-State: AOAM533agdw1T3LS9G5VMuLVV9vBNsc0Oupnl9IIuJuPqTtzL7jUIz8j
-        1FySHglMtU/LURiUbSWzsK5TeIQUtWk=
-X-Google-Smtp-Source: ABdhPJxjCw37K4wG9Bj2g5qb8rvxH1zYGXCDFKGyeao3JLec2qMsk8dqqvU+XtDp1LRq+E9ueWczxQ==
-X-Received: by 2002:a63:920b:: with SMTP id o11mr2455453pgd.314.1637111044472;
-        Tue, 16 Nov 2021 17:04:04 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id b15sm19638050pfv.48.2021.11.16.17.04.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 17:04:03 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: deng.changcheng@zte.com.cn
-To:     tj@kernel.org
-Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] block: Use div64_ul instead of do_div
-Date:   Wed, 17 Nov 2021 01:03:58 +0000
-Message-Id: <20211117010358.158313-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Tue, 16 Nov 2021 20:08:36 -0500
+X-IronPort-AV: E=Sophos;i="5.87,239,1631545200"; 
+   d="scan'208";a="100509775"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 17 Nov 2021 10:05:37 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 11243400A897;
+        Wed, 17 Nov 2021 10:05:34 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-spi@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH 0/3] SPI driver support for RZ/G2L
+Date:   Wed, 17 Nov 2021 01:05:24 +0000
+Message-Id: <20211117010527.27365-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changcheng Deng <deng.changcheng@zte.com.cn>
+Hi All,
 
-do_div() does a 64-by-32 division. If the divisor is unsigned long, using
-div64_ul can avoid truncation to 32-bit.
+This patch series adds RSPI driver and dt binding support to RZ/G2L SoC.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
----
- block/blk-throttle.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Cheers,
+Prabhakar
 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 39bb6e68a9a2..2db635d66617 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -1903,7 +1903,7 @@ static void throtl_downgrade_check(struct throtl_grp *tg)
- 
- 	if (tg->bps[READ][LIMIT_LOW]) {
- 		bps = tg->last_bytes_disp[READ] * HZ;
--		do_div(bps, elapsed_time);
-+		div64_ul(bps, elapsed_time);
- 		if (bps >= tg->bps[READ][LIMIT_LOW])
- 			tg->last_low_overflow_time[READ] = now;
- 	}
+Lad Prabhakar (3):
+  dt-bindings: spi: renesas,rspi: Document RZ/G2L SoC
+  spi: spi-rspi: Add support to deassert/assert reset line
+  spi: spi-rspi: Drop redeclaring ret variable in qspi_transfer_in()
+
+ .../devicetree/bindings/spi/renesas,rspi.yaml | 13 ++++++++-
+ drivers/spi/spi-rspi.c                        | 27 ++++++++++++++++++-
+ 2 files changed, 38 insertions(+), 2 deletions(-)
+
 -- 
-2.25.1
+2.17.1
 
