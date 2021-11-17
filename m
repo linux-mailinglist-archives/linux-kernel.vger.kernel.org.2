@@ -2,78 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D277454A71
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:01:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F0E454A75
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 17:03:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238878AbhKQQEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 11:04:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49644 "EHLO mail.kernel.org"
+        id S236956AbhKQQGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 11:06:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238861AbhKQQEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 11:04:00 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 50F5E61B48;
-        Wed, 17 Nov 2021 16:01:02 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=hot-poop.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mnNMq-0067Me-4W; Wed, 17 Nov 2021 16:01:00 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org
-Cc:     kernel-team@android.com, Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH] PCI: apple: Reset the port for 100ms on probe
-Date:   Wed, 17 Nov 2021 16:00:53 +0000
-Message-Id: <20211117160053.232158-1-maz@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S230315AbhKQQGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 11:06:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E089461B3A;
+        Wed, 17 Nov 2021 16:03:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637165032;
+        bh=yQVEhZtlbcMVkIwHKjfRrDfiiWcZN5q+YNUK5Szen7A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GUeCBicRf0qeeYL+HhLOfAAaVuMuaL3TE8ic9fPwNGNJIlTu24XzzARhDtLgbhtop
+         E6hdM2vbwNHaQz/M8aQ2yX2VqyP3peG3F5ufSFKsYEm1+3QDYo+GNWBXA9lHDpFMbg
+         9avoITnpIgML1vWTD4c4pOL2DrqeCPlyIBX3fjiE=
+Date:   Wed, 17 Nov 2021 17:03:49 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Sven Peter <sven@svenpeter.dev>,
+        Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] usb: typec: tipd: Fix typo in
+ cd321x_switch_power_state
+Message-ID: <YZUn5S+RMF4yOnOt@kroah.com>
+References: <20211117151450.207168-1-marcan@marcan.st>
+ <20211117151450.207168-2-marcan@marcan.st>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org, kernel-team@android.com, alyssa@rosenzweig.io, lorenzo.pieralisi@arm.com, bhelgaas@google.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211117151450.207168-2-marcan@marcan.st>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While the Apple PCIe driver works correctly when directly booted
-from the firmware, it fails to initialise when the kernel is booted
-from a bootloader using PCIe such as u-boot.
+On Thu, Nov 18, 2021 at 12:14:49AM +0900, Hector Martin wrote:
+> SPSS should've been SSPS.
+> 
+> Signed-off-by: Hector Martin <marcan@marcan.st>
+> ---
+>  drivers/usb/typec/tipd/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+> index fb8ef12bbe9c..4da5a0b2aed2 100644
+> --- a/drivers/usb/typec/tipd/core.c
+> +++ b/drivers/usb/typec/tipd/core.c
+> @@ -653,7 +653,7 @@ static int cd321x_switch_power_state(struct tps6598x *tps, u8 target_state)
+>  	if (state == target_state)
+>  		return 0;
+>  
+> -	ret = tps6598x_exec_cmd(tps, "SPSS", sizeof(u8), &target_state, 0, NULL);
+> +	ret = tps6598x_exec_cmd(tps, "SSPS", sizeof(u8), &target_state, 0, NULL);
+>  	if (ret)
+>  		return ret;
+>  
+> -- 
+> 2.33.0
+> 
 
-That's beacuse we're missing a proper reset of the port (we only
-clear the reset, but never assert it).
+This looks like a "Fix" commit.  What commit id does this fix?
 
-Bring the port back to life by wiggling the #PERST pin for 100ms
-(as per the spec).
+thanks,
 
-Fixes: 1e33888fbe44 ("PCI: apple: Add initial hardware bring-up")
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Cc: Alyssa Rosenzweig <alyssa@rosenzweig.io>
-Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
----
- drivers/pci/controller/pcie-apple.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/pci/controller/pcie-apple.c b/drivers/pci/controller/pcie-apple.c
-index 1bf4d75b61be..bbea5f6e0a68 100644
---- a/drivers/pci/controller/pcie-apple.c
-+++ b/drivers/pci/controller/pcie-apple.c
-@@ -543,6 +543,9 @@ static int apple_pcie_setup_port(struct apple_pcie *pcie,
- 	if (ret < 0)
- 		return ret;
- 
-+	/* Hold #PERST for 100ms as per the spec */
-+	gpiod_set_value(reset, 0);
-+	msleep(100);
- 	rmw_set(PORT_PERST_OFF, port->base + PORT_PERST);
- 	gpiod_set_value(reset, 1);
- 
--- 
-2.30.2
-
+greg k-h
