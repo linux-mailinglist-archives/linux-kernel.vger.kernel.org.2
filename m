@@ -2,93 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B39945469F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 13:50:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F13CD4546A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 13:50:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237309AbhKQMwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 07:52:38 -0500
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:40557 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237288AbhKQMwZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 07:52:25 -0500
-Received: by mail-oi1-f179.google.com with SMTP id bk14so6170281oib.7;
-        Wed, 17 Nov 2021 04:49:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YVpOUkHWrxcL6gn2WZBUPNSgFOs0aLPQopQvD8QcrBs=;
-        b=D/ulIE40XUbUpxCnlsDg+aBxt9HDOrss3OUda/WlItJugJwLqkDJB+4eRRm4R94/cH
-         xRfCvvRqeKyiRTiqGbbG06SKcEYL6P+HOTl5/W0lvzTJB1Q8ViFjGhChp/aNCyxiUtKr
-         SmxEJGSmRD0/iITeu2i8hUEIieeuILv7CA7UX36n0kghxDD5KGmrdhcvPLAJ4rjnopV7
-         w4K2i1JAGRldu+/jBhsFfiVVzyp+L8CYQiTWjfTL3H1b0pZgxFQswgQCfOUa7QyJ3exa
-         3+hw3CoL3aJFZmr4OuOByOZ1fKYz7MHxA5kzBG29MwGSYxz6qDNYf3jwtK6C/zT7Ij64
-         Zn6Q==
-X-Gm-Message-State: AOAM530ziuemazZ83+8U3Xz5iamZWXNnxnyfJJhkld2X5d3ZOmVN8uP9
-        IY+stzx9lxVuJsk7X38TaECnz8jyc6aW5AMLf2M=
-X-Google-Smtp-Source: ABdhPJxRRH7QGlS3j4zHL4sqgjhdqiLp5hEUtVmiX0R5XQbuaEtlwVSb2durVB5xnVUeuWssaiqhyw47vboFp7EfluM=
-X-Received: by 2002:a05:6808:14c2:: with SMTP id f2mr13857416oiw.154.1637153366804;
- Wed, 17 Nov 2021 04:49:26 -0800 (PST)
+        id S237323AbhKQMxe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Nov 2021 07:53:34 -0500
+Received: from aposti.net ([89.234.176.197]:56374 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236966AbhKQMxc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 07:53:32 -0500
+Date:   Wed, 17 Nov 2021 12:50:20 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 00/15] iio: buffer-dma: write() and new DMABUF based API
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Christian =?iso-8859-1?b?S/ZuaWc=?= <christian.koenig@amd.com>,
+        linaro-mm-sig@lists.linaro.org,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        linux-media@vger.kernel.org
+Message-Id: <WNVP2R.HXWZSVQE5UMK1@crapouillou.net>
+In-Reply-To: <YZPWEU2zRCY0En4l@phenom.ffwll.local>
+References: <20211115141925.60164-1-paul@crapouillou.net>
+        <YZJwnPbgCOdeKq6S@phenom.ffwll.local> <18CM2R.6UYFWJDX5UQD@crapouillou.net>
+        <YZPWEU2zRCY0En4l@phenom.ffwll.local>
 MIME-Version: 1.0
-References: <20211115201010.68567-1-thara.gopinath@linaro.org>
- <CAJZ5v0gezoJZVH69Y7fDwa-uLhE0PaqFrzM=0bequxpE_749zg@mail.gmail.com> <8f7397e3-4e92-c84d-9168-087967f4d683@arm.com>
-In-Reply-To: <8f7397e3-4e92-c84d-9168-087967f4d683@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 17 Nov 2021 13:49:15 +0100
-Message-ID: <CAJZ5v0iRDtr5yae5UndwU2SmVL4cak=BN0irVGbgNzQiS8K3mA@mail.gmail.com>
-Subject: Re: Re: [PATCH] base: arch_topology: Use policy->max to calculate freq_factor
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 11:46 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->
-> Hi Rafael,
->
-> On 11/16/21 7:05 PM, Rafael J. Wysocki wrote:
-> > On Mon, Nov 15, 2021 at 9:10 PM Thara Gopinath
-> > <thara.gopinath@linaro.org> wrote:
-> >>
-> >> cpuinfo.max_freq can reflect boost frequency if enabled during boot.  Since
-> >> we don't consider boost frequencies while calculating cpu capacities, use
-> >> policy->max to populate the freq_factor during boot up.
-> >
-> > I'm not sure about this.  schedutil uses cpuinfo.max_freq as the max frequency.
->
-> Agree it's tricky how we treat the boost frequencies and also combine
-> them with thermal pressure.
-> We probably would have consider these design bits:
-> 1. Should thermal pressure include boost frequency?
+Hi Daniel,
 
-Well, I guess so.
+Le mar., nov. 16 2021 at 17:02:25 +0100, Daniel Vetter 
+<daniel@ffwll.ch> a écrit :
+> On Mon, Nov 15, 2021 at 02:57:37PM +0000, Paul Cercueil wrote:
+>>  Hi Daniel,
+>> 
+>>  Le lun., nov. 15 2021 at 15:37:16 +0100, Daniel Vetter 
+>> <daniel@ffwll.ch> a
+>>  écrit :
+>>  > On Mon, Nov 15, 2021 at 02:19:10PM +0000, Paul Cercueil wrote:
+>>  > >  Hi Jonathan,
+>>  > >
+>>  > >  This patchset introduces a new userspace interface based on 
+>> DMABUF
+>>  > >  objects, to complement the existing fileio based API.
+>>  > >
+>>  > >  The advantage of this DMABUF based interface vs. the fileio
+>>  > >  interface, is that it avoids an extra copy of the data between 
+>> the
+>>  > >  kernel and userspace. This is particularly userful for 
+>> high-speed
+>>  > >  devices which produce several megabytes or even gigabytes of 
+>> data
+>>  > > per
+>>  > >  second.
+>>  > >
+>>  > >  The first few patches [01/15] to [03/15] are not really 
+>> related, but
+>>  > >  allow to reduce the size of the patches that introduce the new 
+>> API.
+>>  > >
+>>  > >  Patch [04/15] to [06/15] enables write() support to the 
+>> buffer-dma
+>>  > >  implementation of the buffer API, to continue the work done by
+>>  > >  Mihail Chindris.
+>>  > >
+>>  > >  Patches [07/15] to [12/15] introduce the new DMABUF based API.
+>>  > >
+>>  > >  Patches [13/15] and [14/15] add support for cyclic buffers, 
+>> only
+>>  > > through
+>>  > >  the new API. A cyclic buffer will be repeated on the output 
+>> until
+>>  > > the
+>>  > >  buffer is disabled.
+>>  > >
+>>  > >  Patch [15/15] adds documentation about the new API.
+>>  > >
+>>  > >  For now, the API allows you to alloc DMABUF objects and mmap() 
+>> them
+>>  > > to
+>>  > >  read or write the samples. It does not yet allow to import 
+>> DMABUFs
+>>  > >  parented to other subsystems, but that should eventually be 
+>> possible
+>>  > >  once it's wired.
+>>  > >
+>>  > >  This patchset is inspired by the "mmap interface" that was
+>>  > > previously
+>>  > >  submitted by Alexandru Ardelean and Lars-Peter Clausen, so it 
+>> would
+>>  > > be
+>>  > >  great if I could get a review from you guys. Alexandru's 
+>> commit was
+>>  > >  signed with his @analog.com address but he doesn't work at ADI
+>>  > > anymore,
+>>  > >  so I believe I'll need him to sign with a new email.
+>>  >
+>>  > Why dma-buf? dma-buf looks like something super generic and 
+>> useful,
+>>  > until
+>>  > you realize that there's a metric ton of gpu/accelerator bagage 
+>> piled
+>>  > in.
+>>  > So unless buffer sharing with a gpu/video/accel/whatever device 
+>> is the
+>>  > goal here, and it's just for a convenient way to get at buffer 
+>> handles,
+>>  > this doesn't sound like a good idea.
+>> 
+>>  Good question. The first reason is that a somewhat similar API was 
+>> intented
+>>  before[1], but refused upstream as it was kind of re-inventing the 
+>> wheel.
+>> 
+>>  The second reason, is that we want to be able to share buffers too, 
+>> not with
+>>  gpu/video but with the network (zctap) and in the future with USB
+>>  (functionFS) too.
+>> 
+>>  [1]: 
+>> https://lore.kernel.org/linux-iio/20210217073638.21681-1-alexandru.ardelean@analog.com/T/
+> 
+> Hm is that code merged already in upstream already?
 
-Running at a boost frequency certainly increases thermal pressure.
+No, it was never merged.
 
-> 2. Should max capacity 1024 be a boost frequency so scheduler
->     would see it explicitly?
+> I know that dma-buf looks really generic, but like I said if there's 
+> no
+> need ever to interface with any of the gpu buffer sharing it might be
+> better to use something else (like get_user_pages maybe, would that 
+> work?).
 
-That's what it is now if cpuinfo.max_freq is a boost frequency.
+If it was such a bad idea, why didn't you say it in the first place 
+when you replied to my request for feedback? [1]
 
-> - if no, then schedutil could still request boost freq thanks to
->    map_util_perf() where we add 25% to the util and then
->    map_util_freq() would return a boost freq when util was > 1024
->
->
-> I can see in schedutil only one place when cpuinfo.max_freq is used:
-> get_next_freq(). If the value stored in there is a boost,
-> then don't we get a higher freq value for the same util?
+I don't think we have any other solution. We can design a custom API to 
+pass buffers between IIO and user space, but that won't allow us to 
+share these buffers with other subsystems. If dma-buf is not a generic 
+solution, then we need a generic solution.
 
-Yes. we do, which basically is my point.
+[1]: 
+https://x-lore.kernel.org/io-uring/b0a336c0-ae2f-e77f-3c5f-51fdb3fc51fe@amd.com/T/
 
-The schedutil's response is proportional to cpuinfo.max_freq and that
-needs to be taken into account for the results to be consistent.
+>>  > Also if the idea is to this with gpus/accelerators then I'd 
+>> really like
+>>  > to
+>>  > see the full thing, since most likely at that point you also want
+>>  > dma_fence. And once we talk dma_fence things get truly horrible 
+>> from a
+>>  > locking pov :-( Or well, just highly constrained and I get to 
+>> review
+>>  > what
+>>  > iio is doing with these buffers to make sure it all fits.
+>> 
+>>  There is some dma_fence action in patch #10, which is enough for the
+>>  userspace apps to use the API.
+>> 
+>>  What "horribleness" are we talking about here? It doesn't look that 
+>> scary to
+>>  me, but I certainly don't have the complete picture.
+> 
+> You need to annotate all the code involved in signalling that 
+> dma_fence
+> using dma_fence_begin/end_signalling, and then enable full lockdep and
+> everything.
+
+Doesn't dma_fence_signal() do it for me? Looking at the code, it does 
+call dma_fence_begin/end_signalling.
+
+Cheers,
+-Paul
+
+> You can safely assume you'll find bugs, because we even have bugs 
+> about
+> this in gpu drivers (where that annotation isn't fully rolled out 
+> yet).
+> 
+> The tldr is that you can allocate memory in there. And a pile of other
+> restrictions, but not being able to allocate memory (well GFP_ATOMIC 
+> is
+> ok, but that can fail) is a very serious restriction.
+> -Daniel
+> 
+> 
+>> 
+>>  Cheers,
+>>  -Paul
+>> 
+>>  > Cheers, Daniel
+>>  >
+>>  > >
+>>  > >  Cheers,
+>>  > >  -Paul
+>>  > >
+>>  > >  Alexandru Ardelean (1):
+>>  > >    iio: buffer-dma: split iio_dma_buffer_fileio_free() function
+>>  > >
+>>  > >  Paul Cercueil (14):
+>>  > >    iio: buffer-dma: Get rid of incoming/outgoing queues
+>>  > >    iio: buffer-dma: Remove unused iio_buffer_block struct
+>>  > >    iio: buffer-dma: Use round_down() instead of rounddown()
+>>  > >    iio: buffer-dma: Enable buffer write support
+>>  > >    iio: buffer-dmaengine: Support specifying buffer direction
+>>  > >    iio: buffer-dmaengine: Enable write support
+>>  > >    iio: core: Add new DMABUF interface infrastructure
+>>  > >    iio: buffer-dma: Use DMABUFs instead of custom solution
+>>  > >    iio: buffer-dma: Implement new DMABUF based userspace API
+>>  > >    iio: buffer-dma: Boost performance using write-combine cache
+>>  > > setting
+>>  > >    iio: buffer-dmaengine: Support new DMABUF based userspace API
+>>  > >    iio: core: Add support for cyclic buffers
+>>  > >    iio: buffer-dmaengine: Add support for cyclic buffers
+>>  > >    Documentation: iio: Document high-speed DMABUF based API
+>>  > >
+>>  > >   Documentation/driver-api/dma-buf.rst          |   2 +
+>>  > >   Documentation/iio/dmabuf_api.rst              |  94 +++
+>>  > >   Documentation/iio/index.rst                   |   2 +
+>>  > >   drivers/iio/adc/adi-axi-adc.c                 |   3 +-
+>>  > >   drivers/iio/buffer/industrialio-buffer-dma.c  | 670
+>>  > > ++++++++++++++----
+>>  > >   .../buffer/industrialio-buffer-dmaengine.c    |  42 +-
+>>  > >   drivers/iio/industrialio-buffer.c             |  49 ++
+>>  > >   include/linux/iio/buffer-dma.h                |  43 +-
+>>  > >   include/linux/iio/buffer-dmaengine.h          |   5 +-
+>>  > >   include/linux/iio/buffer_impl.h               |   8 +
+>>  > >   include/uapi/linux/iio/buffer.h               |  30 +
+>>  > >   11 files changed, 783 insertions(+), 165 deletions(-)
+>>  > >   create mode 100644 Documentation/iio/dmabuf_api.rst
+>>  > >
+>>  > >  --
+>>  > >  2.33.0
+>>  > >
+>>  >
+>>  > --
+>>  > Daniel Vetter
+>>  > Software Engineer, Intel Corporation
+>>  > http://blog.ffwll.ch
+>> 
+>> 
+> 
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
+
+
