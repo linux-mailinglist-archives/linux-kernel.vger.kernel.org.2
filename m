@@ -2,104 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4D94541EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 08:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7584541EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 08:36:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234132AbhKQHhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 02:37:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231718AbhKQHhS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 02:37:18 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8C43C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 23:34:19 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id x75-20020a25ce4e000000b005c5d04a1d52so2556743ybe.23
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Nov 2021 23:34:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:cc;
-        bh=1Ac3jiUmW8PLHox9OC6Cw7/3lY1oU+JstvFtg2jfLKk=;
-        b=ghqdPq2BAgJQ/1htcjsJz2zpImGgVnOr99qxNyzwB3qv5KqDygtSW5Bdk+39vGHjAS
-         rPFj/ffpCvnrtCWdY1p4r+ryW/cpkAh59BkznnagmgXQ60b1hdjpsL+oR5XjrcpGHTV5
-         7vLolic770ASZgAs0xwb/Iqy7ucozIu6oJmGBlgvuJ9ksC8KGt0RGj1QywUwThE/t4lr
-         14DNK219B8d+snzNTuqPC+OZ8CtDMUbXIHTtZQN0Ieii5BcoTQbr7tVb1jFVJOU0z48O
-         Dv7HcNgBmWeIabRLa0kqo6Eg+9M6YlYsxK496zFRo6dzdM+sApz9oyG+SYDaAuq2bA01
-         /FAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
-        bh=1Ac3jiUmW8PLHox9OC6Cw7/3lY1oU+JstvFtg2jfLKk=;
-        b=WXKUi/UoUEhX1cGf+PMTdRs+zN/aXFDIIRodP2jJIvoyJMYcN9Vmmi5Z8i3atEMEC6
-         MefDzRhtKNCqH/NSs8fxH9HGN1JSMyCd7/76+z85E8+Iy8bRWvlL/V+P7FBQbhe0pjQK
-         G1NJ1opJq7cTTWyO8yyaqfGOZ0kz0vxquqYRKz+3Q8m+HWjL9ufnQ95ZUps+0vYFMFnO
-         6kXJOdkCiy7/XzHpu4DSGfA5sD6WsWsBcWJi40SPuiRQBcE9vxhH72QMZ7qw1dXLgYFu
-         EJpf04iKsrmMD27oxBN8en8yW6n3Lu+2KbktTjq74heBlgOxeWdVQwVyLpWKn2e0AB0o
-         KWTQ==
-X-Gm-Message-State: AOAM531A5DQ57AjJq49az/wLZNOAdQZeidg7utelQZcEXE1TOLggd/bG
-        GYOlB8jLTxxCMX+SczvLXIBpcXoVyMlQL9MJZA==
-X-Google-Smtp-Source: ABdhPJw0S2K4jbmVrAQFNrGc0E5NA8neg/87YXLS+NINP4nbyTtkM/0b8cyKqAVwX8VmiL+uwIqKTAPOMdIuax5JGw==
-X-Received: from kaleshsingh.mtv.corp.google.com ([2620:15c:211:200:c20a:7cc8:f6b5:d9cd])
- (user=kaleshsingh job=sendgmr) by 2002:a25:a264:: with SMTP id
- b91mr15564363ybi.58.1637134458779; Tue, 16 Nov 2021 23:34:18 -0800 (PST)
-Date:   Tue, 16 Nov 2021 23:34:14 -0800
-Message-Id: <20211117073415.2584751-1-kaleshsingh@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
-Subject: [PATCH v2] tracing/histogram: Fix UAF in destroy_hist_field()
-From:   Kalesh Singh <kaleshsingh@google.com>
-Cc:     kernel-team@android.com, rostedt@goodmis.org, mhiramat@kernel.org,
-        zanussi@kernel.org, Kalesh Singh <kaleshsingh@google.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+        id S234151AbhKQHio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 02:38:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231718AbhKQHin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 02:38:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E433D63214;
+        Wed, 17 Nov 2021 07:35:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637134544;
+        bh=N44w5Os4QL/V+SaWDMbE4P2BjS9zix/hcIm8DmTbf4w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tI7/qYvutIbRLm6HjE7mATlkiMDd8rEspH1CSBuMz4X35HEpBSh28w3MBOEfxver4
+         EWozO4fZMoKJM1J8B/Lt9skeTQryS43yz/kG9PIrQkcjo1/j8tSbcPrWSYxmPd+EQK
+         pvgYy1a1YIMolFCNwfY1MZat5iksgkcRD6duSh72m32k4lc/mIi0O480DHuXKSJ0RH
+         CprGptOGXlPuoxJ2u3AOqqflJraz4XM7u83DLwGursu64gAqnhY52JyjQHYFV21Vbu
+         Gb/RmCoa6xoVCBJ5yjjkOjJ2uV0dPb1a8wX/iQAxlTekLzUiGX0Q6dwmCVjFlNtNKJ
+         WFevxX0WdqdCw==
+Received: by mail-yb1-f173.google.com with SMTP id v7so4951850ybq.0;
+        Tue, 16 Nov 2021 23:35:44 -0800 (PST)
+X-Gm-Message-State: AOAM533VXgA7JDGVJqvqy+JdK8uke73O2EatsAuRSN9bbKvX49aGWiyG
+        qThf9ZcJ3YsT36dsPgrp6M5UnIaWeygNjW0s0E0=
+X-Google-Smtp-Source: ABdhPJyRAXtVA2AsIc287lJBREVCHbk2Tc5yT5VRV055qicfQswQHtCzYITZSuFFw2cpR/xRhfcJbygvABhj65sf3rU=
+X-Received: by 2002:a25:324d:: with SMTP id y74mr15189196yby.526.1637134544179;
+ Tue, 16 Nov 2021 23:35:44 -0800 (PST)
+MIME-Version: 1.0
+References: <20211116012317.69456-1-dave@stgolabs.net>
+In-Reply-To: <20211116012317.69456-1-dave@stgolabs.net>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 16 Nov 2021 23:35:33 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7w9e2xNwacStU_Km9Q8evP5DcVatF8fW1DnKxJJ0L3NA@mail.gmail.com>
+Message-ID: <CAPhsuW7w9e2xNwacStU_Km9Q8evP5DcVatF8fW1DnKxJJ0L3NA@mail.gmail.com>
+Subject: Re: [PATCH] md/raid5: play nice with PREEMPT_RT
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     linux-raid <linux-raid@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Davidlohr Bueso <dbueso@suse.de>
 Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Calling destroy_hist_field() on an expression will recursively free
-any operands associated with the expression. If during expression
-parsing the operands of the expression are already set when an error
-is encountered, there is no need to explicity free the operands. Doing
-so will result in destroy_hist_field() being called twice for the
-operands and lead to a use-after-free (UAF) error.
+On Mon, Nov 15, 2021 at 5:23 PM Davidlohr Bueso <dave@stgolabs.net> wrote:
+>
+> raid_run_ops() relies on the implicitly disabled preemption for
+> its percpu ops, although this is really about CPU locality. This
+> breaks RT semantics as it can take regular (and thus sleeping)
+> spinlocks, such as stripe_lock.
+>
+> Add a local_lock such that non-RT does not change and continues
+> to be just map to preempt_disable/enable, but makes RT happy as
+> the region will use a per-CPU spinlock and thus be preemptible
+> and still guarantee CPU locality.
+>
+> Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
 
-Fix this by only calling destroy_hist_field() for the operands if they
-are not associated with the expression hist_field.
+Applied to md-next.
 
-Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-Fixes: 8b5d46fd7a38 ("tracing/histogram: Optimize division by constants")
-Reported-by: kernel test robot <oliver.sang@intel.com>
----
-
-Changes in v2:
-  - Handle all freeing logic in one place so we don't need to worry
-    about where to free what, per Steve
-
- kernel/trace/trace_events_hist.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 5ea2c9ec54a6..b53ee8d566f6 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -2717,8 +2717,10 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
- 
- 	return expr;
- free:
--	destroy_hist_field(operand1, 0);
--	destroy_hist_field(operand2, 0);
-+	if (!expr || expr->operands[0] != operand1)
-+		destroy_hist_field(operand1, 0);
-+	if (!expr || expr->operands[1] != operand2)
-+		destroy_hist_field(operand2, 0);
- 	destroy_hist_field(expr, 0);
- 
- 	return ERR_PTR(ret);
-
-base-commit: 8ab774587903771821b59471cc723bba6d893942
--- 
-2.34.0.rc1.387.gb447b232ab-goog
-
+Thanks,
+Song
