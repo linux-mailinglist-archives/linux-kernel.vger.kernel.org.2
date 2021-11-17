@@ -2,85 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D69B24545D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 12:42:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A31BC4545E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 12:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236905AbhKQLo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 06:44:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235061AbhKQLo5 (ORCPT
+        id S236926AbhKQLvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 06:51:19 -0500
+Received: from mail-wr1-f44.google.com ([209.85.221.44]:35629 "EHLO
+        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235513AbhKQLvS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 06:44:57 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3199EC061746;
-        Wed, 17 Nov 2021 03:41:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=mBBJF2yawl0kgACqc2HujgjVeeJsd5fX8mPLwpdeQ10=; b=shC1P+sQyMdlspE6psXkKoiUrl
-        j2A1Nvj3lJMLEhXPba0eldUERms+FosQ1L5h4dqlpR9CnFr3yau/XUJ3AF+W7idsJR0L02r4Hbv1f
-        uh8TGrycL4QyANpN5yCMH0WI2Y0omr49y5vG3pTpf0Wpf4+Pfh/TJh5cC9WujOsXc76qytzdnuJkp
-        yz8LKzcSMwFJFhosQ5f2XURIcmipf2izNAnvgTq3mm8e+f78YMGKN8MwbcoNyOiqKGN5s3VJAIebV
-        XuZL8daeTzGv8V8Ne5k1JDpXdNj06CvQyjt+6A0AEhvliWpgptE2vmo5c0LJzx/gZjUhgnQgerinO
-        2SpQPU3Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55678)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mnJK0-0001l5-5Q; Wed, 17 Nov 2021 11:41:48 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mnJJy-0002uI-KG; Wed, 17 Nov 2021 11:41:46 +0000
-Date:   Wed, 17 Nov 2021 11:41:46 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        p.zabel@pengutronix.de, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 3/5] net: lan966x: add port module support
-Message-ID: <YZTqekOTK8pm86G+@shell.armlinux.org.uk>
-References: <20211117091858.1971414-1-horatiu.vultur@microchip.com>
- <20211117091858.1971414-4-horatiu.vultur@microchip.com>
+        Wed, 17 Nov 2021 06:51:18 -0500
+Received: by mail-wr1-f44.google.com with SMTP id i5so4130922wrb.2;
+        Wed, 17 Nov 2021 03:48:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=FipmrGJsMbXdacPZM5RYuZYLZuiUt9ubG7V553ELRwU=;
+        b=glTJrvvXkIn568kmbS22Y1AH8kgYOaDiDiYi6V8KSXxijkyCRPnOrCeFxYIyG8QL4P
+         mFerUPQ37ALtk2bVN5XiZVMJVBwpBj5BzX+8xDNnFy2ihtSZKgeR73RIJHeoDd9OS+gS
+         N81SJkrFgZZg47TbClHDLaLNWGy4YmCWyklxsNUangOCMklqYM9dETTO1a176JwTev35
+         mxACTergKJL46g8/qrHNS/UEcxJ1Q0QmNa8MCqTdFNa876lU7KS98EF12569CuMQrl9L
+         Gc/vSjqXEK2m0kd3yUbTP1oRis9cU0W/WeZ9lFxvtA2Pq8hIhXCFdF5ZAFFoPL5TNhhc
+         2vyw==
+X-Gm-Message-State: AOAM532gu3EWCwFZOrH/eWPHkNxXHQYPeB9D7lSLhPS2wdVKHPwPFMBl
+        /ErqjszANIjvDeN8EHB+HRKzaPIn0b4=
+X-Google-Smtp-Source: ABdhPJwejG54iCxlJlNjUVlSWBwDabHwHd1/E/qzz0g9Ja9pNmg+Mpyhe6KdORPt3eMmSI39lLoSvg==
+X-Received: by 2002:adf:8008:: with SMTP id 8mr18738165wrk.188.1637149692226;
+        Wed, 17 Nov 2021 03:48:12 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id az15sm591800wmb.0.2021.11.17.03.48.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 03:48:11 -0800 (PST)
+Date:   Wed, 17 Nov 2021 11:48:10 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        kys@microsoft.com, sthemmin@microsoft.com, haiyangz@microsoft.com,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: [GIT PULL] Hyper-V fixes for 5.16-rc2
+Message-ID: <20211117114810.favtd35s5gra7lli@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211117091858.1971414-4-horatiu.vultur@microchip.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Linus,
 
-By the way...
+The following changes since commit fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf:
 
-On Wed, Nov 17, 2021 at 10:18:56AM +0100, Horatiu Vultur wrote:
-> +	port->phylink_config.mac_capabilities = MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
-> +		MAC_10 | MAC_100 | MAC_1000FD | MAC_2500FD;
-> +
-> +	__set_bit(PHY_INTERFACE_MODE_MII,
-> +		  port->phylink_config.supported_interfaces);
-> +	__set_bit(PHY_INTERFACE_MODE_GMII,
-> +		  port->phylink_config.supported_interfaces);
-> +	__set_bit(PHY_INTERFACE_MODE_SGMII,
-> +		  port->phylink_config.supported_interfaces);
-> +	__set_bit(PHY_INTERFACE_MODE_QSGMII,
-> +		  port->phylink_config.supported_interfaces);
-> +	__set_bit(PHY_INTERFACE_MODE_1000BASEX,
-> +		  port->phylink_config.supported_interfaces);
-> +	__set_bit(PHY_INTERFACE_MODE_2500BASEX,
-> +		  port->phylink_config.supported_interfaces);
-...
-> +const struct phylink_mac_ops lan966x_phylink_mac_ops = {
-> +	.validate = phylink_generic_validate,
+  Linux 5.16-rc1 (2021-11-14 13:56:52 -0800)
 
-Thank you for switching the driver to use phylink_generic_validate(),
-that's really very useful, and saves a chunk of code in your driver!
+are available in the Git repository at:
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20211117
+
+for you to fetch changes up to f3e613e72f66226b3bea1046c1b864f67a3000a4:
+
+  x86/hyperv: Move required MSRs check to initial platform probing (2021-11-15 12:37:08 +0000)
+
+----------------------------------------------------------------
+hyperv-fixes for 5.16-rc2
+  - Fix ring size calculation for balloon driver (Boqun Feng)
+  - Fix issues in Hyper-V setup code (Sean Christopherson)
+----------------------------------------------------------------
+Boqun Feng (1):
+      Drivers: hv: balloon: Use VMBUS_RING_SIZE() wrapper for dm_ring_size
+
+Sean Christopherson (2):
+      x86/hyperv: Fix NULL deref in set_hv_tscchange_cb() if Hyper-V setup fails
+      x86/hyperv: Move required MSRs check to initial platform probing
+
+ arch/x86/hyperv/hv_init.c      | 12 ++++--------
+ arch/x86/kernel/cpu/mshyperv.c | 20 +++++++++++++++-----
+ drivers/hv/hv_balloon.c        |  2 +-
+ 3 files changed, 20 insertions(+), 14 deletions(-)
