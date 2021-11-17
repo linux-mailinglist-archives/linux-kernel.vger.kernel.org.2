@@ -2,75 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D4745469A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 13:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED17345469D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 13:50:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237283AbhKQMv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 07:51:58 -0500
-Received: from mail-0301.mail-europe.com ([188.165.51.139]:48129 "EHLO
-        mail-0301.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236872AbhKQMv4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 07:51:56 -0500
-Date:   Wed, 17 Nov 2021 12:48:36 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1637153332;
-        bh=hKAEO8wqej3KZQNjrchrQxBV8gKMyvgjcZ5+i1Y8nTA=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=O8l2xGlDEwSDNbCu7+KxAu9dcztjHCCcPAAWzGzw+Mi5KwGYx/bsbAydrM3J0RE4E
-         3fMKWSeEow0hlCn8eoBwBv0K/9t89TzeFQB6XQ6e/rC6cYfisQDTk/Cxts/06k0Hfa
-         mRlTxOCwZPadWuYU5URhKGAQGJgJjAp7vcszIlcc=
-To:     regressions@leemhuis.info
-From:   Orlando Chamberlain <redecorating@protonmail.com>
-Cc:     danielwinkler@google.com, gargaditya08@live.com,
-        gregkh@linuxfoundation.org, johan.hedberg@intel.com,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.dentz@gmail.com, marcel@holtmann.org,
-        redecorating@protonmail.com, regressions@lists.linux.dev,
-        sonnysasaka@chromium.org
-Reply-To: Orlando Chamberlain <redecorating@protonmail.com>
-Subject: Re: [PATCHv2] Bluetooth: quirk disabling LE Read Transmit Power
-Message-ID: <20211117124717.12352-1-redecorating@protonmail.com>
-In-Reply-To: <8919a36b-e485-500a-2722-529ffa0d2598@leemhuis.info>
-References: <20211001083412.3078-1-redecorating@protonmail.com> <YYePw07y2DzEPSBR@kroah.com> <70a875d0-7162-d149-dbc1-c2f5e1a8e701@leemhuis.info> <20211116090128.17546-1-redecorating@protonmail.com> <e75bf933-9b93-89d2-d73f-f85af65093c8@leemhuis.info> <3B8E16FA-97BF-40E5-9149-BBC3E2A245FE@live.com> <YZSuWHB6YCtGclLs@kroah.com> <52DEDC31-EEB2-4F39-905F-D5E3F2BBD6C0@live.com> <8919a36b-e485-500a-2722-529ffa0d2598@leemhuis.info>
+        id S237286AbhKQMwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 07:52:06 -0500
+Received: from mga01.intel.com ([192.55.52.88]:49920 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237290AbhKQMwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 07:52:05 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="257706591"
+X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
+   d="scan'208";a="257706591"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 04:49:06 -0800
+X-IronPort-AV: E=Sophos;i="5.87,241,1631602800"; 
+   d="scan'208";a="604719627"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 04:49:03 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mnKMx-007nDj-7t;
+        Wed, 17 Nov 2021 14:48:55 +0200
+Date:   Wed, 17 Nov 2021 14:48:54 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Anand Ashok Dumbre <ANANDASH@xilinx.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jic23@kernel.org" <jic23@kernel.org>,
+        "lars@metafoo.de" <lars@metafoo.de>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        git <git@xilinx.com>, Michal Simek <michals@xilinx.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>,
+        Manish Narani <MNARANI@xilinx.com>
+Subject: Re: [PATCH v9 3/5] iio: adc: Add Xilinx AMS driver
+Message-ID: <YZT6NgAbkHVNAst0@smile.fi.intel.com>
+References: <20211116150842.1051-1-anand.ashok.dumbre@xilinx.com>
+ <20211116150842.1051-4-anand.ashok.dumbre@xilinx.com>
+ <YZPspfolQkDrz22s@smile.fi.intel.com>
+ <BY5PR02MB6916E4CF9E34190CF7D24AE4A9999@BY5PR02MB6916.namprd02.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BY5PR02MB6916E4CF9E34190CF7D24AE4A9999@BY5PR02MB6916.namprd02.prod.outlook.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> So if this just affects two macs, why can't the fix be realized as a
-> quirk that is only enabled on those two systems? Or are they impossible
-> to detect clearly via DMI data or something like that?
+On Tue, Nov 16, 2021 at 08:29:21PM +0000, Anand Ashok Dumbre wrote:
+> > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Sent: Tuesday 16 November 2021 5:39 PM
+> > On Tue, Nov 16, 2021 at 03:08:40PM +0000, Anand Ashok Dumbre wrote:
 
-I think we should be able to quirk based off the acpi _CID "apple-uart-blth=
-"
-or _HID "BCM2E7C". Marcel suggested quirking based of the acpi table here
-https://lore.kernel.org/linux-bluetooth/1D2217A9-EA73-4D93-8D0B-5BC2718D478=
-8@holtmann.org/
+...
 
-This would catch some unaffected Macs, but they don't support the LE Read
-Transmit Power command anyway (the affected macs were released after it
-was added to the Bluetooth spec, while the unaffected Macs were released
-before it was added to the spec, and thus don't support it).
+> > > +#define AMS_ALARM_THR_MIN		0x0000
+> > > +#define AMS_ALARM_THR_MAX		0xFFFF
+> > 
+> > If this is limited by hardware register, I would rather use (BIT(16) - 1)
+> > notation. It will give immediately amount of bits used for the value.
 
-I'm not sure how to go about applying a quirk based off this, there are
-quirks in drivers/bluetooth/hci_bcm.c (no_early_set_baudrate and
-drive_rts_on_open), but they don't seem to be based off acpi ids.
+> So ~(BIT(16) - 1) for AMS_ALARM_THR_MIN
 
-It might be simpler to make it ignore the Unknown Command error, like
-in this patch https://lore.kernel.org/linux-bluetooth/CABBYNZLjSfcG_KqTEbL6=
-NOSvHhA5-b1t_S=3D3FQP4=3DGwW21kuzg@mail.gmail.com/
-however that only applies on bluetooth-next and needed the status it
-checks for to be -56, not 0x01.
+This will give wrong value, so preserving 0 as plain decimal is fine.
 
---
-Thanks,
-Orlando
+> (BIT(16) - 1) for AMS_ALARM_THR_MAX
+
+...
+
+> > > +	u32 reg;
+> > > +	int ret;
+> > 
+> > 	u32 expect = AMS_PS_CSTS_PS_READY;
+> > 
+> > (Use similar approach for other readX_poll_timeout() cases)
+> > 
+> > > +		ret = readl_poll_timeout(ams->base + AMS_PS_CSTS, reg,
+> > > +					 (reg & AMS_PS_CSTS_PS_READY) ==
+> > > +					 AMS_PS_CSTS_PS_READY, 0,
+> > > +					 AMS_INIT_TIMEOUT_US);
+> > 
+> > 		ret = readl_poll_timeout(ams->base + AMS_PS_CSTS, reg,
+> > 					 (reg & expect) == expect,
+> > 					 0, AMS_INIT_TIMEOUT_US);
+
+> > 0?!
+
+Any comments on this?
+
+Besides there are other cases you haven't answered on, so I assume you agreed
+to change as suggested.
+
+> > > +		if (ret)
+> > > +			return ret;
+> > 
+> > ...
+> > 
+> > > +		ret = readl(ams->base + AMS_PL_CSTS);
+> > > +		if (ret == 0)
+> > > +			return ret;
+> > 
+> > Assigning u32 to int seems wrong.
+> 
+> It's a single bit register.
+> Even if I use u32 here, the return type is int.
+
+The problem here is that you checked not for error code, readl() doesn't return
+an error. So semantic issue.
+
+> So, is it ok if I read using u32 and return it by typecasting to int?
+
+No. You need to have something like this:
+
+	value = readl(...);
+	if (value == 0)
+		return 0;
+
+this will keep proper meaning of each number and variable, while compiler may
+optimize it.
+
+...
+
+> > > +					regval = readl(ams->pl_base +
+> > > +						       AMS_REG_CONFIG4);
+> > 
+> > One line?
+> > 
+> > > +					regval = readl(ams->pl_base +
+> > > +						       AMS_REG_CONFIG4);
+> > 
+> > Ditto and so on...
+> > 
+> It goes over 80 chars per line.
+
+Is it a problem?
+
+...
+
+> > > +	schedule_delayed_work(&ams->ams_unmask_work,
+> > > +			      msecs_to_jiffies(AMS_UNMASK_TIMEOUT_MS));
+> > 
+> > Can be one line.
+> 
+> Over 80 characters.
+
+Is it a problem?
+
+> Oh! I just saw that upto 100 chars is ok.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
