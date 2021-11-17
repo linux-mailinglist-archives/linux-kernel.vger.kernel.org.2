@@ -2,56 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933E24549AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:15:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D41774549B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:15:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233068AbhKQPSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 10:18:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37842 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233244AbhKQPRt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 10:17:49 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S235211AbhKQPSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 10:18:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232749AbhKQPSM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 10:18:12 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC85C0613B9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 07:15:13 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5CF7561465;
-        Wed, 17 Nov 2021 15:14:49 +0000 (UTC)
-Date:   Wed, 17 Nov 2021 10:14:47 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Beau Belgrave <beaub@linux.microsoft.com>,
-        linux-kernel@vger.kernel.org, Namhyung Kim <namhyung@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>
-Subject: Re: [PATCH 4/5] libtraceevent: Add __rel_loc relative location
- attribute support
-Message-ID: <20211117101447.39a394d4@gandalf.local.home>
-In-Reply-To: <20211117233317.841b81fa8b709455b7df9da6@kernel.org>
-References: <163697159970.131454.2661507704362599471.stgit@devnote2>
-        <163697163637.131454.1385316505107139633.stgit@devnote2>
-        <20211116172332.655bae77@gandalf.local.home>
-        <20211117233317.841b81fa8b709455b7df9da6@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        (Authenticated sender: hector@marcansoft.com)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 8273F419B4;
+        Wed, 17 Nov 2021 15:15:09 +0000 (UTC)
+From:   Hector Martin <marcan@marcan.st>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sven Peter <sven@svenpeter.dev>
+Cc:     Hector Martin <marcan@marcan.st>,
+        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] usb: typec: tipd: Fixes for Apple M1 (CD321X) support
+Date:   Thu, 18 Nov 2021 00:14:48 +0900
+Message-Id: <20211117151450.207168-1-marcan@marcan.st>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Nov 2021 23:33:17 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+Hi folks,
 
-> > Care to send a patch against:
-> > 
-> >   https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/
-> > 
-> > And Cc linux-trace-devel@vger.kernel.org  
-> 
-> Should I cc to LKML too?
+These two fixes make tipd work properly on Apple M1 devices, in
+particular in the case where the bootloader hasn't initialized
+the controllers yet.
 
-Only if you want to, but it is not necessary. Patches to linux-trace-devel
-end up at:
+We normally do it in m1n1 (so the machine can charge and so bootloaders
+get working USB without needing this driver), but that was causing this
+codepath to never get properly exercised, so we never caught it. I
+noticed on the new machines with 3+1 ports, since m1n1 was only
+initializing 2 and the other 2 were failing to initialize.
 
-   https://patchwork.kernel.org/project/linux-trace-devel/list/
+Hector Martin (2):
+  usb: typec: tipd: Fix typo in cd321x_switch_power_state
+  usb: typec: tipd: Fix initialization sequence for cd321x
 
--- Steve
+ drivers/usb/typec/tipd/core.c | 35 +++++++++++++++++------------------
+ 1 file changed, 17 insertions(+), 18 deletions(-)
+
+-- 
+2.33.0
+
