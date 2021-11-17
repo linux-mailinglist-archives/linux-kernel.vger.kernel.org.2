@@ -2,224 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4882454CFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:21:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC38D454CFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 19:21:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239936AbhKQSX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 13:23:59 -0500
-Received: from mail1.bemta24.messagelabs.com ([67.219.250.4]:24265 "EHLO
-        mail1.bemta24.messagelabs.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239918AbhKQSXt (ORCPT
+        id S239958AbhKQSYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 13:24:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239932AbhKQSXx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 13:23:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lenovo.com;
-        s=Selector; t=1637173250; i=@lenovo.com;
-        bh=hs0uHshYKdR3OJTjnzTWG7apkyD6aSmFAyi/ma+Bxy4=;
-        h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-         In-Reply-To:Content-Type:Content-Transfer-Encoding;
-        b=NXHoRXt3UzLZICvS4EnjTAG1RTGConfFW2LxVVgG9JmBdj/2R9K0QVmewSI5qCi0P
-         SOekT7kCfESmW2Uwg1C6KS6PkO7QFz8eb/TYV1AsQpEgsg4ncPMnVPBEBZaKhoNYve
-         QG5ioIcWNFRYZJClfviQLpl3uf+itC/b5GTZXWlxKvn0JG4IJA4hNqyMYy5kbbezil
-         w/j6oMd/BjlFOdTuKK9V0x6Cs6tSYYyn0xKD1GCz+QFssKLf3XyBja7LpSha2vWob/
-         793tZFVKHO51NUZtCESgcKHI8Yyuu+ATW62JKH7vedB2SGe4LFoj+i+nLVv8R9wxjK
-         y+sZkOlO/43Iw==
-Received: from [100.112.129.81] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
-        by server-4.bemta.az-a.us-west-2.aws.symcld.net id 1A/62-10907-10845916; Wed, 17 Nov 2021 18:20:49 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA1WTfUxTVxjGe+69vb0UitcC47QR3GrGIksrBYk
-  3fjD3h+NmmW4xLpubcV6k0i79Sm8R2Mzs+EgoamDUbsiXoLgNYYFgZQrG0uogyLQwmN0YMoRu
-  MCGAYzpWJlvLBcf+e97397znfU5yDoGKrQIpoco2q0x6RivDhZh607Etch5tZxLqhrZRTi+kH
-  j3+SUBNdX2GUE0L9RhVcWM7VTDsx6n+tkqcmjt1E1AL878iVIf9U5RqzbsBqIZrEyg1YPsBUD
-  3t5p3h9NXyewL6fIsTp/2tjRi90AHolotWnG6vmUPomevf4/RcSyxdfKJT8EbIO3yNPs2QfYi
-  vLpn6CzVWR2Q/7MMtYGpNERASgLyAwhpPHc4V5/jw0lwx4Ao/gE+6LWiwEJNlCMyt8/K5wonA
-  Mrd7qYDkNIBF46WBmZAAMUBX6+XlkU8Q2OVy8TngA3B6IpYDowAOPhpBg0BE7oCOxkJBUGPk8
-  /DbXxr4XH8t7D7jw4oAQUSRb0HLEBtsR5BZcHjKhQQ1SkbDQd/ZJR1JHoR3pt0Crl+Lws4vk7
-  ldFQBOuEaXAE6+CB0OPx7UIeR22OD9HeMGNsKCrxeWh9fDvMsVKBd6A/QXe5Y0JJ+FubMnAac
-  PwZOLozinJfDuj70CTsfAb25XYpzeDXvtTcueeOg5s+LRQkvj3eUz4+D1/mG0BCjKV125fNXd
-  ylfFK18VrwZgFwGVZtJkqM06RqOVKxMS5EplolyZpJQnJiUrmA/kjCKTlWepWLM8UcFksQo2R
-  3dYm67Qq8wtIPAq0415k1dA89Sswg0kBCKLEi3E2xlxeJohPUfNsOr3TJlaFesG6whCBkXHUg
-  NsrUmVoco+otEG3vYKhkSYLFLkCWIRa2R0rCaDQ7eAnCj5reocKsb0Br1KGi1itwVMZNCkztQ
-  /PWLlh3wHYqQRIsDj8cRhRpVJpzH/nz8A0QSQBRzBVWEavfnppgeBEEggREy/LRjCzPyHpBYk
-  n7Lp6OQj/4QKTScc1uj8hIbG15AKQ8qG15/0PZeJpfQaFBfGqgpvDdD1ic6fRYNVuxJapHG13
-  t1bcu0davr44T5PzJ77tfdO53ylfJgb/uHbTLNlsXCgf+fk/frUXlW7v6bzPI1Y0Y2lZZLQHe
-  OhzgP7tl7bc+rVFB7TdHDrzIij+qN0/QH/2cdfbLYaqy3r1qTeftPZc7XouGt0/53uwaFX3hf
-  20Kjk0tGRpNZ5vyQs8o+9Y7P6hs3OAumVqkVJXF644c+XKvNfjuoRRt9se8H3dz/atKvaP/lx
-  c2xr27vVzX373Tbv+hLBzOc5rrFN7tKjXUk+re2Z3JyZ/PHYrnmhDGPVjDIeNbHMv0yKfx+cB
-  AAA
-X-Env-Sender: markpearson@lenovo.com
-X-Msg-Ref: server-9.tower-336.messagelabs.com!1637173247!57816!1
-X-Originating-IP: [104.47.124.55]
-X-SYMC-ESS-Client-Auth: mailfrom-relay-check=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.81.5; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 21046 invoked from network); 17 Nov 2021 18:20:48 -0000
-Received: from mail-hk2apc01lp2055.outbound.protection.outlook.com (HELO APC01-HK2-obe.outbound.protection.outlook.com) (104.47.124.55)
-  by server-9.tower-336.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 17 Nov 2021 18:20:48 -0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bBplUmpzwQMW1T+1ubjrLIIZGHlQKefKMlBTYK+OqCjCMrOhjj6Xj2pHUXN3tTkqev77DMMJG3kO3dqhxYg8Eu9tylKfzoDCQny1NhWY3SyONJpe/RcQlTdoGlR2SokPfUFEtyjWbno4CBOzZGFQ5CztD4ZI8Ml/nFwainIt9D0DHXBTZi0hoFH4gh36gJ7BgJ11eJvnuZFB8+6+vToX3NeViRSX6zqwiqVRBPDLz4fE2XgehKCDMRf3yYQoxiV/XU71VnGfdJ+zI5XhDEu/f7GWXYg7liSNkuXCJe/E75s5xpUGH4Kk6iy43LY81tTGnWBC1AakMVT5qTw9KS1ciw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hs0uHshYKdR3OJTjnzTWG7apkyD6aSmFAyi/ma+Bxy4=;
- b=RJKqyX3NNRjydRPb9yL0LWa8LAvjtBSE8lit1JUnfxSc0EIA2+p2t3qHNNEgGDh8gK0rYAmF5ZQFlyArErgpfA/Bu2qExr/fENMINTc/C5UgzpYFoQWEJIvo0Vrlvl891jjLRLH6p8b5RNYQE36QeyD3xUZJ9zB35r8z/KvINXGntMVYhTfWq1B8HlJL5n3PyjO3DppuaISXC9bbIcjtdlTYETveka5OWAchEhn6Ro0FRL4tvjME3iV9nMdGXSbPCewZp0I9L+p4qXQ9EZziMgd2jHUdOuV28+FKB3bDfz+vrJvEgGQoo3dNOY8KxQ69+XCuNnwvSzd/CZ1R67W2LQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=temperror (sender ip
- is 104.232.225.6) smtp.rcpttodomain=weissschuh.net smtp.mailfrom=lenovo.com;
- dmarc=temperror action=none header.from=lenovo.com; dkim=none (message not
- signed); arc=none
-Received: from SG2P153CA0046.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::15) by
- SG2PR03MB3595.apcprd03.prod.outlook.com (2603:1096:4:16::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4669.4; Wed, 17 Nov 2021 18:20:46 +0000
-Received: from SG2APC01FT0047.eop-APC01.prod.protection.outlook.com
- (2603:1096:4:c6:cafe::7f) by SG2P153CA0046.outlook.office365.com
- (2603:1096:4:c6::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.7 via Frontend
- Transport; Wed, 17 Nov 2021 18:20:46 +0000
-X-MS-Exchange-Authentication-Results: spf=temperror (sender IP is
- 104.232.225.6) smtp.mailfrom=lenovo.com; weissschuh.net; dkim=none (message
- not signed) header.d=none;weissschuh.net; dmarc=temperror action=none
- header.from=lenovo.com;
-Received-SPF: TempError (protection.outlook.com: error in processing during
- lookup of lenovo.com: DNS Timeout)
-Received: from mail.lenovo.com (104.232.225.6) by
- SG2APC01FT0047.mail.protection.outlook.com (10.13.36.133) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4713.19 via Frontend Transport; Wed, 17 Nov 2021 18:20:45 +0000
-Received: from reswpmail01.lenovo.com (10.62.32.20) by mail.lenovo.com
- (10.62.123.116) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2308.20; Wed, 17 Nov
- 2021 13:20:43 -0500
-Received: from [10.38.110.13] (10.38.110.13) by reswpmail01.lenovo.com
- (10.62.32.20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2308.20; Wed, 17 Nov
- 2021 13:20:42 -0500
-Message-ID: <a0b82de2-827a-96e8-15c2-b1393ee8a705@lenovo.com>
-Date:   Wed, 17 Nov 2021 13:20:41 -0500
+        Wed, 17 Nov 2021 13:23:53 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E5DDC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:20:53 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id z34so12826644lfu.8
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 10:20:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8wMoZu0VRhizgyI2wN3ScphE3wkTWS6F6S+vhqR7W3Q=;
+        b=HhAjnQNvO2pI95doaIXBiLuvSQpF8bcjUtdAT1Q1Vh8PkCatb542wgpKAHAmAfmzja
+         WTw4XVNd5VCKEmHMgN8+Ne+rkzCsWvQndFnl9Wmx4bbAzZSs4gJHdG2cVjTvjVYyDtM1
+         yRP08WJB5tyq5a9B+OBccJ5ZErRWc82IEzLVD2FJeCgriEO/hZGBB+MvrcErnwPgSPBc
+         X9XZVNV3SSBucYo2GLZ3lwsOcF6zBoRNQt+LVv9OpBlvmoLw9+m6Xw9JVgcq17bleH5E
+         QWVvrr/joDQAtNxh8zDjE8pDcFX13NxnYv6oleyoqPO1j/jvNotKv/kxjCXG++0ozzD0
+         2Kcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8wMoZu0VRhizgyI2wN3ScphE3wkTWS6F6S+vhqR7W3Q=;
+        b=ONPubWk/neRtcfiyIKyswp6N7KaheyoUjDtm8ivx0e5v3q9ABd3TPjNOvTC4MvbZh3
+         AwQCT+1OREJUOdI5zufLXqf/Gn7emdpgqPlXhOBPqXmyPCSrXSmn0u77Zc6JWrZ9i1GG
+         I7LFZYQAtg81UXIcf/oMp9uA+pHPGKHyfT/NTAzXhGJnpYAt5xApnALza/OquN3gdu3q
+         pql/KN3SzUzFsH90/3/kOywjTGk3ER+sl3krWI7FXCH+z95mLhhzrvRBJCnL9HBKmIUB
+         U7qyWa67pIKqJrYxGUP4bI9DC8zA0td8wiAkkpZZMNAqCVBW8DImArN5tXCBDvP7Y+Z6
+         7zKQ==
+X-Gm-Message-State: AOAM530NUAUzuB0wGPJUSgVKBAJ0TXO1pdh5F1Gv5x5TG/vExC2D4pO7
+        4lzabA9fUrvtAHrNusASLWIMyQ==
+X-Google-Smtp-Source: ABdhPJzNnaWr2u/iDxNbo52VZgEW8j3U52SyX49SXu9YXY5FyL4tM1MtrexmCKO662OrbwUiFQMY0A==
+X-Received: by 2002:a05:651c:1101:: with SMTP id d1mr9877016ljo.373.1637173251461;
+        Wed, 17 Nov 2021 10:20:51 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id z19sm53166lfd.68.2021.11.17.10.20.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 10:20:50 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 00F30103139; Wed, 17 Nov 2021 21:20:54 +0300 (+03)
+Date:   Wed, 17 Nov 2021 21:20:54 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] sound updates for 5.16-rc1
+Message-ID: <20211117182054.fklz7rlpfux2d7j4@box.shutemov.name>
+References: <s5hwnlpmt9x.wl-tiwai@suse.de>
+ <20211117161855.m45mxcqszkfcetai@box.shutemov.name>
+ <s5hmtm2lphf.wl-tiwai@suse.de>
+ <20211117174826.23eakoivl33tawb2@box.shutemov.name>
+ <s5hfsrulkxk.wl-tiwai@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [External] Re: [PATCH 0/4] power: supply: add charge_behaviour
- property (force-discharge, inhibit-charge)
-Content-Language: en-US
-To:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
-        Thomas Koch <linrunner@gmx.net>
-CC:     <linux-pm@vger.kernel.org>, Sebastian Reichel <sre@kernel.org>,
-        <ibm-acpi-devel@lists.sourceforge.net>,
-        <platform-driver-x86@vger.kernel.org>,
-        Mark Gross <markgross@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-        <linux-kernel@vger.kernel.org>, <bberg@redhat.com>,
-        <hadess@hadess.net>, <nicolopiazzalunga@gmail.com>,
-        <njoshi1@lenovo.com>, <smclt30p@gmail.com>
-References: <20211113104225.141333-1-linux@weissschuh.net>
- <9cebba85-f399-a7aa-91f7-237852338dc5@gmx.net>
- <d1bc62e9-a5da-4c23-b31f-8ba718faf4a3@t-8ch.de>
-From:   Mark Pearson <markpearson@lenovo.com>
-In-Reply-To: <d1bc62e9-a5da-4c23-b31f-8ba718faf4a3@t-8ch.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.38.110.13]
-X-ClientProxiedBy: reswpmail04.lenovo.com (10.62.32.23) To
- reswpmail01.lenovo.com (10.62.32.20)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5a1108a5-c64b-44cf-44e8-08d9a9f6f935
-X-MS-TrafficTypeDiagnostic: SG2PR03MB3595:
-X-Microsoft-Antispam-PRVS: <SG2PR03MB35953E952C25ABA7FB0229ECC59A9@SG2PR03MB3595.apcprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: D90otXHL3KcKmKUacEEK0gPRbHuYwBQgFbks3wouo8wgOuUZN3dy5B2HeEeKeTzhdMHQeEBTJj2e9vlfFiDTd8YD2+xehqw22M+I5sKfHriZkmkwKVQUci275aSRpKNhd8vmRgrJXeQjHRxDyEzcx9j61j6WyBqO/3jl3/pF/Rjm2ycyFmHz5r+5rSFBwAdmivfspB6xjUWaFg0VF2tfOuE7DHqhWTBdd39kAine6D4UzXPz31LtI+kKwabT1+Vk3x5MOWG/1pMuZVB4t9ZOZsZj/wkkTSi/IJwU9pLqwEWlCbjjjaHvrogaQZoTJcA23U0QNu7t0Yf59gBOgRNfFQ0UD3ZfjaZrEOfHJxgtOz9M/JcBGdEvuHq+vsY2Nt1Y5L+fwGeb7XNDJM2u1H5b6KWE3rMxR0arYthIwhHW/W9LTERpYVxA8SkX9hbnsfEw+dGHbxmOAWqJMRQnPw0xI51Bk8x5mvProVdkY/3546uAST316RFvdwJbD9nx6phxWqjIwEh/se8eVmmMPfGvy2XsFcq0MZQOuy/rtRmu22uHYojiMiYkzZup87RgxYDeDz8BnEeAX1khBOi+DL4u+PHezdGh3TKhoRHKW5xqcS18eoC3n37StObXjQ/3XU7X3KFtUc06EQu4Fetwnrfk2rQj/VQz6EuIwfb7A9hKhyGqNJ/VIwqPGdLrik+k+6sGxcyHlYsObtZN1vrlm0mhJiUwIJLxNC/9v2/Pib67J4cUDVPmgbe37c/upVp7sfK/32gQElQRxB/W5Ue0iTILNYhCFQ7K8/b5BsDLZxP4rdI=
-X-Forefront-Antispam-Report: CIP:104.232.225.6;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.lenovo.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(63370400001)(426003)(4001150100001)(63350400001)(70586007)(86362001)(82310400003)(31686004)(36756003)(2906002)(336012)(16526019)(47076005)(26005)(53546011)(508600001)(7416002)(70206006)(2616005)(5660300002)(81166007)(31696002)(66574015)(316002)(16576012)(356005)(186003)(83380400001)(36860700001)(36906005)(54906003)(110136005)(82960400001)(8936002)(4326008)(8676002)(3940600001)(43740500002)(36900700001);DIR:OUT;SFP:1102;
-X-OriginatorOrg: lenovo.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2021 18:20:45.2325
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5a1108a5-c64b-44cf-44e8-08d9a9f6f935
-X-MS-Exchange-CrossTenant-Id: 5c7d0b28-bdf8-410c-aa93-4df372b16203
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5c7d0b28-bdf8-410c-aa93-4df372b16203;Ip=[104.232.225.6];Helo=[mail.lenovo.com]
-X-MS-Exchange-CrossTenant-AuthSource: SG2APC01FT0047.eop-APC01.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR03MB3595
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5hfsrulkxk.wl-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On Wed, Nov 17, 2021 at 07:02:47PM +0100, Takashi Iwai wrote:
+> On Wed, 17 Nov 2021 18:48:26 +0100,
+> Kirill A. Shutemov wrote:
+> > 
+> > On Wed, Nov 17, 2021 at 05:24:28PM +0100, Takashi Iwai wrote:
+> > > On Wed, 17 Nov 2021 17:18:55 +0100,
+> > > Kirill A. Shutemov wrote:
+> > > > 
+> > > > On Wed, Nov 03, 2021 at 11:24:10AM +0100, Takashi Iwai wrote:
+> > > > > Linus,
+> > > > > 
+> > > > > please pull sound updates for v5.16-rc1 from:
+> > > > > 
+> > > > >   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.16-rc1
+> > > > > 
+> > > > > The topmost commit is df0380b9539b04c1ae8854a984098da06d5f1e67
+> > > > > 
+> > > > > ----------------------------------------------------------------
+> > > > > 
+> > > > > sound updates for 5.16-rc1
+> > > > > 
+> > > > > Lots of code development have been see in ASoC side as usual, while
+> > > > > the continued development on memalloc helper and USB-audio low-
+> > > > > latency support are found in the rest.  Note that a few changes in the
+> > > > > unusual places like arch/sh are included, which are a part of ASoC DAI
+> > > > > format cleanups.
+> > > > > 
+> > > > > ALSA core:
+> > > > > - Continued memallloc helper updates and cleanups, now supporting
+> > > > >   non-coherent and non-contiguous pages
+> > > > > - Fixes for races in mixer OSS layer
+> > > > > 
+> > > > > ASoC:
+> > > > > - A new version of the audio graph card which supports a wider range
+> > > > >   of systems
+> > > > > - Several conversions to YAML DT bindings
+> > > > > - Continuing cleanups to the SOF and Intel code
+> > > > > - Move of the Cirrus DSP framework into drivers/firmware to allow for
+> > > > >   future use by non-audio DSPs
+> > > > > - An overhaul of the cs42l42 driver, correcting many problems
+> > > > > - DAI format terminology conversions over many drivers for cleanups
+> > > > > - Support for AMD Vangogh and Yelow Cap, Cirrus CS35L41, Maxim
+> > > > >   MAX98520 and MAX98360A, Mediatek MT8195, Nuvoton NAU8821, nVidia
+> > > > >   Tegra210, NXP i.MX8ULP, Qualcomm AudioReach, Realtek ALC5682I-VS,
+> > > > >   RT5682S, and RT9120 and Rockchip RV1126 and RK3568
+> > > > > 
+> > > > > USB-audio:
+> > > > > - Continued improvements on low-latency playback
+> > > > > - Quirks for Pioneer devices, Line6 HX-Stomp XL, Audient iD14
+> > > > > 
+> > > > > HD-audio:
+> > > > > - Reduce excessive udelay() calls on Intel platforms; this should
+> > > > >   reduce the CPU load with PulseAudio
+> > > > > - Quirks for HP and Clevo laptops
+> > > > > 
+> > > > > FireWire:
+> > > > > - Support for meter information on MOTU
+> > > > > 
+> > > > 
+> > > > ...
+> > > > 
+> > > > > Takashi Iwai (29):
+> > > > >       ALSA: hda: Reduce udelay() at SKL+ position reporting
+> > > > >       ALSA: hda: Use position buffer for SKL+ again
+> > > > >       ALSA: usb-audio: Restrict rates for the shared clocks
+> > > > >       ALSA: usb-audio: Fix possible race at sync of urb completions
+> > > > >       ALSA: usb-audio: Rename early_playback_start flag with lowlatency_playback
+> > > > >       ALSA: usb-audio: Disable low-latency playback for free-wheel mode
+> > > > >       ALSA: usb-audio: Disable low-latency mode for implicit feedback sync
+> > > > >       ALSA: usb-audio: Check available frames for the next packet size
+> > > > >       ALSA: usb-audio: Add spinlock to stop_urbs()
+> > > > >       ALSA: usb-audio: Improved lowlatency playback support
+> > > > 
+> > > > This commit breaks audio playback for me. The sample plays for fraction of
+> > > > a second than stops.
+> > > > 
+> > > > I use SMSL SA300. Let me know what ifo is needed to track it down.
+> > > > 
+> > > > Also I can test potential fixups if needed.
+> > > 
+> > > Could you give alsa-info.sh output with the device?  Run the script
+> > > with --no-upload option, and attach the output.
+> > 
+> > Attached. I run it on kernel without the commit. I hope it is fine.
+> > 
+> > One note: I use monolitic kernel without CONFIG_MODULES. The script
+> > complained about missing /proc/asound/modules and other modules related
+> > stuff.
+> 
+> It's a known problem I forgot, but this doesn't matter much.
+> 
+> > > Also /proc/asound/card*/stream* file for that usb device, too,
+> > > please.
+> > 
+> > Attached.
+> 
+> Thanks!
+> 
+> > > And, which environment are you testing, more exactly?  Which platform,
+> > > and with PulseAudio, pipewire, JACK, or direct ALSA device use?
+> > 
+> > Nothing fancy. Direct ALSA. I tested with 'speaker-test -c2 -t wav' during
+> > bisect.
+> 
+> Did you notice the problem with other applications, too?
 
+Youtube in Firefox hangs trying to play a video. (Browser is still
+functional otherwise)
 
-On 2021-11-17 12:57, Thomas Weißschuh wrote:
-> On 2021-11-16 17:56+0100, Thomas Koch wrote:
->> thank you very much for working on this. It is high time that we leave
->> external kernel modules for ThinkPads behind us.
->>
->> On 13.11.21 11:42, Thomas Weißschuh wrote:
->>> Hi,
->>>
->>> this series adds support for the charge_behaviour property to the power
->>> subsystem and thinkpad_acpi driver.
->>>
->>> As thinkpad_acpi has to use the 'struct power_supply' created by the generic
->>> ACPI driver it has to rely on custom sysfs attributes instead of proper
->>> power_supply properties to implement this property.
->>>
->>> Patch 1: Adds the power_supply documentation and basic public API
->>> Patch 2: Adds helpers to power_supply core to help drivers implement the
->>>    charge_behaviour attribute
->>> Patch 3: Adds support for force-discharge to thinkpad_acpi.
->>> Patch 4: Adds support for inhibit-discharge to thinkpad_acpi.
->>>
->>> Patch 3 and 4 are largely taken from other patches and adapted to the new API.
->>> (Links are in the patch trailer)
->>>
->>> Ognjen Galic, Nicolo' Piazzalunga, Thomas Koch:
->>>
->>> Your S-o-b is on the original inhibit_charge and force_discharge patches.
->>> I would like to add you as Co-developed-by but to do that it will also require
->>> your S-o-b. Could you give your sign-offs for the new patches, so you can be
->>> properly attributed?
->> S-o-b/Co-developed-by/Tested-by is fine with me.
->>
->> I tested your patches.
->>
->> Hardware:
->>
->> - ThinkPad X220, BAT0
->> - ThinkPad T450s, BAT0+BAT1
->> - ThinkPad X1C6, BAT0
->>
->> Test Results:
->>
->> 1. force-discharge
->>
->> Everythings works as expected
->> - Writing including disengaging w/ "auto" : OK
->> - Reading: OK
->>
->> - Battery discharging: OK
->> - Disengaging with "auto": OK
->>
->> 2. inhibit-charge
->>
->> Works as expected:
->> - Writing: OK
->>
->> - Disengaging with "auto": OK
->>
->>
->> Discrepancies:
->> - Battery charge inhibited: BAT0 OK, BAT1 no effect e.g. continues charging
->> - Reading: always returns "auto"
+> When you wrote "The sample plays for fraction of a second than
+> stops.", it means that the speaker-test program stalls?  Or it's
+> shorter playbacks?
+
+On "Front left" check, it stalls after "Fro" or so :P
+
+The speaker-test can be terminated normally with ctrl-c and the symptoms
+are the same if you try again.
+
+> Also, please test booting with snd_usb_audio.lowlatency=0 boot
+> option.  Does it behave like before again?
 > 
-> I tested it on a T460s with two batteries and there inhibit-charge works
-> fine for both batteries.
-> What does not work is setting force-discharge for both batteries at the same
-> time.
-> This makes somewhat sense as on a physical level probably only one of them can
-> be used at a time.
+> > > For checking the behavior, we'd need to check hw_params in
+> > > /proc/asound/card*/pcm*/sub*/* for the corresponding device during
+> > > playback/capture operations.
+> > 
+> > You need this to be collected when the problem triggers, right?
+> > I will follow up with this.
 > 
-> Mark Pearson: Could you confirm that this is the intended behaviour?
-> 
-Confirmed - only one battery can be used with the BDSS command
+> I'll need to test my device at first.  Maybe tomorrow.
+
+Okay.
+
+-- 
+ Kirill A. Shutemov
