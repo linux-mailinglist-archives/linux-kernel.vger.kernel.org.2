@@ -2,89 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5AA454843
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:12:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF94454848
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 15:13:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237455AbhKQOPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 09:15:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53050 "EHLO
+        id S238265AbhKQOQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 09:16:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231694AbhKQOPX (ORCPT
+        with ESMTP id S231694AbhKQOQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 09:15:23 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 484C3C061570;
-        Wed, 17 Nov 2021 06:12:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=20OrWhq7ShdPRxUZdRVpu6ZrLfh0oU9gKnKyrbNbpDs=;
-        t=1637158345; x=1638367945; b=VE0t7WuIpo9ea0+huvCZYlnb0p3Vks+I9T+KRZq4VmF6ljf
-        qUSwBWu9RepTgHYba7XUyRxMPc0yL1umYX8hchvga5pmv+N4NjhJHhqmVvL8RDGeHo1WzraO46qXq
-        V98snoBBuE2fW182S6yz27yYkEAYvSB6Jm1dXATqyEu1HsQM4sRSshz0l/VUVOdgVs8J5Kct6BeoO
-        LwYGkjnZalZ9khwvhIK3XQStsM/2ubTeU6CEfHVeL8mVvlg4re+lZWFmcrafyBVamdyStrCDtqaZ3
-        980+vGrOJIQkQUwNZzsCPdm9PocxWqaJJNiH52H3GDBEK8lLfmbl7fe4ZLYVa0TQ==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.95)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1mnLfe-00GXu4-Mh;
-        Wed, 17 Nov 2021 15:12:18 +0100
-Message-ID: <5331e942ff28bb191d62bb403b03ceb7d750856c.camel@sipsolutions.net>
-Subject: Re: [PATCH v2] PCI: Reinstate "PCI: Coalesce host bridge contiguous
- apertures"
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, bhelgaas@google.com
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Wed, 17 Nov 2021 15:12:17 +0100
-In-Reply-To: <20210713125007.1260304-1-kai.heng.feng@canonical.com>
-References: <20210713075726.1232938-1-kai.heng.feng@canonical.com>
-         <20210713125007.1260304-1-kai.heng.feng@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
+        Wed, 17 Nov 2021 09:16:49 -0500
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A78C061570;
+        Wed, 17 Nov 2021 06:13:50 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id v15-20020a9d604f000000b0056cdb373b82so4951005otj.7;
+        Wed, 17 Nov 2021 06:13:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=c5Y/+SnKjEvbmFXUQjDgwrGed15UEG+KOomgxz/Nf+M=;
+        b=ChfaFr1b6kZT7YgJtCt8QKRxOBOhzUxjlFJvm2H5483CtNk5ugU3IrtvkerU8hNiyU
+         jfA2kdVeAmdrvQ5GnFnuGdUc7lk6Rq2mjUdPtjqAOuQ31Ih5e7b377ozGAZQ8g7sXAHf
+         r9iqHtWIvBgkjBx1X7DWEb68GjYaYH3DiixQGvy3NBx5UnzGSCasshoFqhkICn/qB9AQ
+         DQywGUxTThqSX21CF+6C1ah9048oIuIVmZ8qYVIYu/V+cK2s1GWwDxFM3UfHkVfHW/O6
+         FZyh8uegz800DcONDMuYEF7RiYPd5eWHD6CfsaSwPlGyyGIHUW5O8Sihxa7ujsSF3EBQ
+         2bJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=c5Y/+SnKjEvbmFXUQjDgwrGed15UEG+KOomgxz/Nf+M=;
+        b=QRR8r2P3ZL9sEcwYjsir97Jc4utFHANvderEz9zdap0UOsnoZrBrt/mmnRiLEYezyU
+         g6GKWE084fjbQQtgKSrXTuxjpB09rINYnZwo8P7lYF5Mqu82GQSLXZXsCPJWu6aD3OO9
+         Pvzh4mxvhMhmpU2MXTJWHvQQNCM0bzkAL/EmmWbPPNd/NnXApeHg6C3FY+FgCJCP+AEN
+         t+xfD6fJ37YaCkiCs5FpP4mhLbANCLFTV9PhCJ5w2ucHrbcbByQlH4cbZvn62scuvIdH
+         +KhDKj7JpslHwxxXy9YZ9ISCegZgi5N4s6oikMJsBAmnAh22yigKz/atB3S4QwkVzycB
+         q+qQ==
+X-Gm-Message-State: AOAM533q2l0LJQi1h8V6CS9vxy6oho3HuzvmZJIIeX0N4Vb2h8v5B9w0
+        TM4yhOlo3EcDTVOwCPOsWdKy4Tf+fME=
+X-Google-Smtp-Source: ABdhPJwCzhBygLB4APQZIVLFJmyvt0050bRpxs+zSR1grWXS5+whNS0ygFRQl7PwYc6u2A2ihkn4nQ==
+X-Received: by 2002:a05:6830:4d:: with SMTP id d13mr14337849otp.45.1637158430076;
+        Wed, 17 Nov 2021 06:13:50 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id y9sm3656912oon.8.2021.11.17.06.13.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 06:13:49 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+References: <20211117101657.463560063@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 5.15 000/923] 5.15.3-rc3 review
+Message-ID: <81192f2a-afe7-1eee-847a-f8103a6d7cd1@roeck-us.net>
+Date:   Wed, 17 Nov 2021 06:13:47 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+In-Reply-To: <20211117101657.463560063@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-
-So this patch landed now ... :)
-
-> +	/* Coalesce contiguous windows */
-> +	resource_list_for_each_entry_safe(window, n, &resources) {
-> +		if (list_is_last(&window->node, &resources))
-> +			break;
-> +
-> +		next = list_next_entry(window, node);
-> +		offset = window->offset;
-> +		res = window->res;
-> +		next_offset = next->offset;
-> +		next_res = next->res;
-> +
-> +		if (res->flags != next_res->flags || offset != next_offset)
-> +			continue;
-> +
-> +		if (res->end + 1 == next_res->start) {
-> +			next_res->start = res->start;
-> +			res->flags = res->start = res->end = 0;
-> +		}
-> +	}
+On 11/17/21 2:19 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.3 release.
+> There are 923 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 19 Nov 2021 10:14:52 +0000.
+> Anything received after that time might be too late.
 > 
 
-Maybe this was already a problem before - but I had a stupid thing in
-arch/um/drivers/virt-pci.c (busn_resource has start == end == 0), and
-your changes here caused that resource to be dropped off the list.
+Build is still broken for m68k.
 
-Now this wouldn't be a problem, but we add it using pci_add_resource()
-and then that does a memory allocation, but you don't free it here? I'm
-not sure it'd even be safe to free it here and I'll just set
-busn_resource to have end==1 instead (it's all kind of virtual).
+drivers/block/ataflop.c: In function 'atari_cleanup_floppy_disk':
+drivers/block/ataflop.c:2050:17: error: implicit declaration of function 'blk_cleanup_disk'
+drivers/block/ataflop.c: In function 'atari_floppy_init':
+drivers/block/ataflop.c:2065:15: error: implicit declaration of function '__register_blkdev'
 
-But I still wanted to ask if this might be a problem here for others.
+Are you sure you want to carry that patch series into v5.10.y ? I had to revert
+pretty much everything to get it to compile. It seems to me that someone should
+provide a working backport if the series is needed/wanted in v5.10.y.
 
-johannes
+Guenter
