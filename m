@@ -2,92 +2,344 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A3545450A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 11:33:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D07145450D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 11:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236425AbhKQKfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 05:35:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59208 "EHLO
+        id S236447AbhKQKho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 05:37:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236396AbhKQKff (ORCPT
+        with ESMTP id S234840AbhKQKhn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 05:35:35 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53D1C061746
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 02:32:37 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id y68so6142758ybe.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 02:32:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=1mWmKyg34vlNfOejQ4Q/r+QB+22yx7RmVHSk6pM+Glg=;
-        b=bcXesqMjSCMj155y+BUh5cT0JNK3ZCfQbuOpqr9xKd4EOA6Z+J/jCagMPnVNyNrYcf
-         b5XXZstkx7CjXe1tS5NlUQIjj1H73QlDzFfX+RFSXTSPcuxX+zYuPt9PP1VdoNbIlGA2
-         7WRUlcoz2hn3LuTo3TG7GaP/q2QY3jdpw04TwZcqqNR0ZYcgd+WLeHdlnC6aKxN1SOI9
-         fSckXW1CcDH2qTDKdvrniVvsUhE+lvhKalP+6299e8u0pURo0ygFDtkbRq1gK7dv8dIb
-         XIdZWduQuWuN/E/relL8slhavnI0fk3yvB7V4I/2enxLkzJi7ygKfW0TrQMUi7Vrz4Tk
-         8jjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=1mWmKyg34vlNfOejQ4Q/r+QB+22yx7RmVHSk6pM+Glg=;
-        b=yu3JjD6jOe8+h/kQbk1EgUF3Jqfu60H/0tkrQXhK9upN//90UwJNG6OHpXf0mr/pUb
-         HBEkZQ832WzdvQJbWFz1lP3Y9tml3r61YkUb723c7nBhC5bVB8mCblBFzxDGBZzm/stJ
-         VRrIXWfTZcEhRaJnlB3mKZJC4f4c/jqDM+WaihsNZggA0hPBgE5/9wA0L2TPUliqgb/C
-         Qe37awiRXvgoHVy/d0GVzY3nFywwFY/00UGXaQyCXwcTf+TBXtFtD1vgaKVCMJ7g8fym
-         dXUkdLp5n0B4puio3FcQLC5bKBRehq0LSY2KAGs0CDi78wciqdR13vB3BOrPt5dNWzi3
-         lh/A==
-X-Gm-Message-State: AOAM530nRM0UWYqZ1nqNjBp16LarmEac87s5Cu0HKwJIQQNCP4bC2tJj
-        kwZTMQFIFp1ljqIMO+o8nHVnmu4XJjXcSOKGO5g=
-X-Google-Smtp-Source: ABdhPJwcPpLb3UDvDCyfvo/M6V8R+kOSWAdw0QzuqQUDD8pbAEWtW/iLDjzj2Lw4tnAtGCaOE5y1YNSAnXNsX5fa2uI=
-X-Received: by 2002:a25:ba0f:: with SMTP id t15mr17782592ybg.62.1637145156750;
- Wed, 17 Nov 2021 02:32:36 -0800 (PST)
+        Wed, 17 Nov 2021 05:37:43 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124E0C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 02:34:45 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mnIGy-0000KM-1Y; Wed, 17 Nov 2021 11:34:36 +0100
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mnIGs-000LR3-3P; Wed, 17 Nov 2021 11:34:30 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Amit Kucheria <amitk@kernel.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Zhang Rui <rui.zhang@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, David Jander <david@protonic.nl>,
+        Petr Benes <petrben@gmail.com>,
+        =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
+Subject: [PATCH v3] thermal: imx: implement runtime PM support
+Date:   Wed, 17 Nov 2021 11:34:26 +0100
+Message-Id: <20211117103426.81813-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Received: by 2002:a05:7110:7117:b0:105:18ec:fa8a with HTTP; Wed, 17 Nov 2021
- 02:32:36 -0800 (PST)
-Reply-To: uchennailobitenone@gmail.com
-From:   uhenna <tochiuju11@gmail.com>
-Date:   Wed, 17 Nov 2021 02:32:36 -0800
-Message-ID: <CA+6axKvFczRd44D_WBHWOCddJ_C1hXgO=vS846m3p0zyT-jEyQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-May the Almighty Lord be with you....
-Am A WIDOW TO LATE MR David Lunner,  I AM 59 .YEARS OLD. My name is
-Josephine HOLLAND.  I am married to Late Mr. David HOLLAND, who worked
-in the France Embassy a here in Lome -Togo West Africa for nine years
-before he died in the
-year 2019.
+Starting with commit d92ed2c9d3ff ("thermal: imx: Use driver's local
+data to decide whether to run a measurement") this driver stared using
+irq_enabled flag to make decision to power on/off the thermal core. This
+triggered a regression, where after reaching critical temperature, alarm
+IRQ handler set irq_enabled to false,  disabled thermal core and was not
+able read temperature and disable cooling sequence.
 
-You are chosen to Receive A Donation Cash Grant of my late husband
-that funds $5.7,000,  000,00 (Five Million Seven Hundred Thousand
-United States Dollars) to help the poor and orphanages through your
-sincere help before my death. I am suffering from long time cancer of
-the Breast, from all indication my conditions is really deteriorating
-and it is quite obvious that I wouldn't live any more longer according
-to my doctor because the cancer has gotten to a very bad stage that no
-hope for me to be a living person again, All i need from you is your
-sincerity to use this funds to do this project as i desired and I need
-your information as where My Bank will be sending the funds,
+In case the cooling device is "CPU/GPU freq", the system will run with
+reduce performance until next reboot.
 
-such as:
-Receiver's name:_ Address:_ Phone
-number:_ Country:_
+To solve this issue, we need to move all parts implementing hand made
+runtime power management and let it handle actual runtime PM framework.
 
-Please do not be offended by the way or manner I came to you as a
-stranger to do this, it is about the only way I could get to you after
-going through your contacts Id. I shall give you the contacts of the
-bank. For legitimacy with  a letter of authority that will establish
-you as my appointed beneficiary of this money.
+Fixes: d92ed2c9d3ff ("thermal: imx: Use driver's local data to decide whether to run a measurement")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ drivers/thermal/imx_thermal.c | 145 +++++++++++++++++++++-------------
+ 1 file changed, 91 insertions(+), 54 deletions(-)
 
-I am waiting for your reply.
-From Sister Josephine HOLLAND.
+diff --git a/drivers/thermal/imx_thermal.c b/drivers/thermal/imx_thermal.c
+index 2c7473d86a59..16663373b682 100644
+--- a/drivers/thermal/imx_thermal.c
++++ b/drivers/thermal/imx_thermal.c
+@@ -15,6 +15,7 @@
+ #include <linux/regmap.h>
+ #include <linux/thermal.h>
+ #include <linux/nvmem-consumer.h>
++#include <linux/pm_runtime.h>
+ 
+ #define REG_SET		0x4
+ #define REG_CLR		0x8
+@@ -194,6 +195,7 @@ static struct thermal_soc_data thermal_imx7d_data = {
+ };
+ 
+ struct imx_thermal_data {
++	struct device *dev;
+ 	struct cpufreq_policy *policy;
+ 	struct thermal_zone_device *tz;
+ 	struct thermal_cooling_device *cdev;
+@@ -252,44 +254,15 @@ static int imx_get_temp(struct thermal_zone_device *tz, int *temp)
+ 	const struct thermal_soc_data *soc_data = data->socdata;
+ 	struct regmap *map = data->tempmon;
+ 	unsigned int n_meas;
+-	bool wait, run_measurement;
+ 	u32 val;
++	int ret;
+ 
+-	run_measurement = !data->irq_enabled;
+-	if (!run_measurement) {
+-		/* Check if a measurement is currently in progress */
+-		regmap_read(map, soc_data->temp_data, &val);
+-		wait = !(val & soc_data->temp_valid_mask);
+-	} else {
+-		/*
+-		 * Every time we measure the temperature, we will power on the
+-		 * temperature sensor, enable measurements, take a reading,
+-		 * disable measurements, power off the temperature sensor.
+-		 */
+-		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
+-			    soc_data->power_down_mask);
+-		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
+-			    soc_data->measure_temp_mask);
+-
+-		wait = true;
+-	}
+-
+-	/*
+-	 * According to the temp sensor designers, it may require up to ~17us
+-	 * to complete a measurement.
+-	 */
+-	if (wait)
+-		usleep_range(20, 50);
++	ret = pm_runtime_resume_and_get(data->dev);
++	if (ret < 0)
++		return ret;
+ 
+ 	regmap_read(map, soc_data->temp_data, &val);
+ 
+-	if (run_measurement) {
+-		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
+-			     soc_data->measure_temp_mask);
+-		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
+-			     soc_data->power_down_mask);
+-	}
+-
+ 	if ((val & soc_data->temp_valid_mask) == 0) {
+ 		dev_dbg(&tz->device, "temp measurement never finished\n");
+ 		return -EAGAIN;
+@@ -328,6 +301,8 @@ static int imx_get_temp(struct thermal_zone_device *tz, int *temp)
+ 		enable_irq(data->irq);
+ 	}
+ 
++	pm_runtime_put(data->dev);
++
+ 	return 0;
+ }
+ 
+@@ -335,24 +310,16 @@ static int imx_change_mode(struct thermal_zone_device *tz,
+ 			   enum thermal_device_mode mode)
+ {
+ 	struct imx_thermal_data *data = tz->devdata;
+-	struct regmap *map = data->tempmon;
+-	const struct thermal_soc_data *soc_data = data->socdata;
+ 
+ 	if (mode == THERMAL_DEVICE_ENABLED) {
+-		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
+-			     soc_data->power_down_mask);
+-		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
+-			     soc_data->measure_temp_mask);
++		pm_runtime_get(data->dev);
+ 
+ 		if (!data->irq_enabled) {
+ 			data->irq_enabled = true;
+ 			enable_irq(data->irq);
+ 		}
+ 	} else {
+-		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
+-			     soc_data->measure_temp_mask);
+-		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
+-			     soc_data->power_down_mask);
++		pm_runtime_put(data->dev);
+ 
+ 		if (data->irq_enabled) {
+ 			disable_irq(data->irq);
+@@ -393,6 +360,11 @@ static int imx_set_trip_temp(struct thermal_zone_device *tz, int trip,
+ 			     int temp)
+ {
+ 	struct imx_thermal_data *data = tz->devdata;
++	int ret;
++
++	ret = pm_runtime_resume_and_get(data->dev);
++	if (ret < 0)
++		return ret;
+ 
+ 	/* do not allow changing critical threshold */
+ 	if (trip == IMX_TRIP_CRITICAL)
+@@ -406,6 +378,8 @@ static int imx_set_trip_temp(struct thermal_zone_device *tz, int trip,
+ 
+ 	imx_set_alarm_temp(data, temp);
+ 
++	pm_runtime_put(data->dev);
++
+ 	return 0;
+ }
+ 
+@@ -681,6 +655,8 @@ static int imx_thermal_probe(struct platform_device *pdev)
+ 	if (!data)
+ 		return -ENOMEM;
+ 
++	data->dev = &pdev->dev;
++
+ 	map = syscon_regmap_lookup_by_phandle(pdev->dev.of_node, "fsl,tempmon");
+ 	if (IS_ERR(map)) {
+ 		ret = PTR_ERR(map);
+@@ -800,6 +776,16 @@ static int imx_thermal_probe(struct platform_device *pdev)
+ 		     data->socdata->power_down_mask);
+ 	regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
+ 		     data->socdata->measure_temp_mask);
++	/* After power up, we need a delay before first access can be done. */
++	usleep_range(20, 50);
++
++	/* the core was configured and enabled just before */
++	pm_runtime_set_active(&pdev->dev);
++	pm_runtime_enable(data->dev);
++
++	ret = pm_runtime_resume_and_get(data->dev);
++	if (ret < 0)
++		goto disable_runtime_pm;
+ 
+ 	data->irq_enabled = true;
+ 	ret = thermal_zone_device_enable(data->tz);
+@@ -814,10 +800,15 @@ static int imx_thermal_probe(struct platform_device *pdev)
+ 		goto thermal_zone_unregister;
+ 	}
+ 
++	pm_runtime_put(data->dev);
++
+ 	return 0;
+ 
+ thermal_zone_unregister:
+ 	thermal_zone_device_unregister(data->tz);
++disable_runtime_pm:
++	pm_runtime_put_noidle(data->dev);
++	pm_runtime_disable(data->dev);
+ clk_disable:
+ 	clk_disable_unprepare(data->thermal_clk);
+ legacy_cleanup:
+@@ -829,13 +820,9 @@ static int imx_thermal_probe(struct platform_device *pdev)
+ static int imx_thermal_remove(struct platform_device *pdev)
+ {
+ 	struct imx_thermal_data *data = platform_get_drvdata(pdev);
+-	struct regmap *map = data->tempmon;
+ 
+-	/* Disable measurements */
+-	regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
+-		     data->socdata->power_down_mask);
+-	if (!IS_ERR(data->thermal_clk))
+-		clk_disable_unprepare(data->thermal_clk);
++	pm_runtime_put_noidle(data->dev);
++	pm_runtime_disable(data->dev);
+ 
+ 	thermal_zone_device_unregister(data->tz);
+ 	imx_thermal_unregister_legacy_cooling(data);
+@@ -858,29 +845,79 @@ static int __maybe_unused imx_thermal_suspend(struct device *dev)
+ 	ret = thermal_zone_device_disable(data->tz);
+ 	if (ret)
+ 		return ret;
++
++	return pm_runtime_force_suspend(data->dev);
++}
++
++static int __maybe_unused imx_thermal_resume(struct device *dev)
++{
++	struct imx_thermal_data *data = dev_get_drvdata(dev);
++	int ret;
++
++	ret = pm_runtime_force_resume(data->dev);
++	if (ret)
++		return ret;
++	/* Enabled thermal sensor after resume */
++	return thermal_zone_device_enable(data->tz);
++}
++
++static int __maybe_unused imx_thermal_runtime_suspend(struct device *dev)
++{
++	struct imx_thermal_data *data = dev_get_drvdata(dev);
++	const struct thermal_soc_data *socdata = data->socdata;
++	struct regmap *map = data->tempmon;
++	int ret;
++
++	ret = regmap_write(map, socdata->sensor_ctrl + REG_CLR,
++			   socdata->measure_temp_mask);
++	if (ret)
++		return ret;
++
++	ret = regmap_write(map, socdata->sensor_ctrl + REG_SET,
++			   socdata->power_down_mask);
++	if (ret)
++		return ret;
++
+ 	clk_disable_unprepare(data->thermal_clk);
+ 
+ 	return 0;
+ }
+ 
+-static int __maybe_unused imx_thermal_resume(struct device *dev)
++static int __maybe_unused imx_thermal_runtime_resume(struct device *dev)
+ {
+ 	struct imx_thermal_data *data = dev_get_drvdata(dev);
++	const struct thermal_soc_data *socdata = data->socdata;
++	struct regmap *map = data->tempmon;
+ 	int ret;
+ 
+ 	ret = clk_prepare_enable(data->thermal_clk);
+ 	if (ret)
+ 		return ret;
+-	/* Enabled thermal sensor after resume */
+-	ret = thermal_zone_device_enable(data->tz);
++
++	ret = regmap_write(map, socdata->sensor_ctrl + REG_CLR,
++			   socdata->power_down_mask);
++	if (ret)
++		return ret;
++
++	ret = regmap_write(map, socdata->sensor_ctrl + REG_SET,
++			   socdata->measure_temp_mask);
+ 	if (ret)
+ 		return ret;
+ 
++	/*
++	 * According to the temp sensor designers, it may require up to ~17us
++	 * to complete a measurement.
++	 */
++	usleep_range(20, 50);
++
+ 	return 0;
+ }
+ 
+-static SIMPLE_DEV_PM_OPS(imx_thermal_pm_ops,
+-			 imx_thermal_suspend, imx_thermal_resume);
++static const struct dev_pm_ops imx_thermal_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(imx_thermal_suspend, imx_thermal_resume)
++	SET_RUNTIME_PM_OPS(imx_thermal_runtime_suspend,
++			   imx_thermal_runtime_resume, NULL)
++};
+ 
+ static struct platform_driver imx_thermal = {
+ 	.driver = {
+-- 
+2.30.2
 
-You should contact me through my private email address:
-
-mrsjosephineoneholland@gmail.com
