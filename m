@@ -2,126 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B695454A5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:56:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE160454A61
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 16:56:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238810AbhKQP7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 10:59:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235325AbhKQP7E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 10:59:04 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C4AC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 07:56:05 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id o6-20020a17090a0a0600b001a64b9a11aeso2961713pjo.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 07:56:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=m9J3GBVAIZFZGi0XXHxUVPqugO9FTJB0JnBQ/K1xQms=;
-        b=n3Yg+RFlsYoNf+IeW9+Y0IS9Y85tdUMEvNnklLZ20twSkUzFZl1K+t6UAVXra2Ss8m
-         NZrC9cx5JXcgJbQapuIDznZSvV2yUvKZXTxuQPVq7yG5lpBGATWRHP/Y5iuRcKDAhfOa
-         ONhGF8KxqB5xro2PENWRZdxgrBFWOWVzbG/X8a/2+KbrfuQVX3b9U9sMnjy9g7lY3nxf
-         S7u1CteYISimNVvuz/s6zp1slTFfbcIScmqmuI0r21o/iKytnH+E8R3koNj9fD8IJJvB
-         hBsbsU9ulAGltRlvUGjBCpKjWWHlMapjuohePs9hgLKvBtl75klzDMZR97Q/mC2k3m+R
-         Lyug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m9J3GBVAIZFZGi0XXHxUVPqugO9FTJB0JnBQ/K1xQms=;
-        b=jsOuaUHhR2QBtc/WOSZ6s4/cE+8gxrZpIL92CVSQkB1wsLy3dmdDHP1eD4m3tED0Y/
-         rIvjGMvTC5+eaffpvzBqdSWqNZESmwujM/H1rU3PGxONtz0LPeYMxvQUQwNTSgQhmyeZ
-         UVBQnfXaMRtYSJ8uGavLWhUwn/01rNiijB2GuPJlA2UrA3qX4UAl0fd6+GPTpLc83C44
-         hb8zx48bv6w5ryZm62sHPRGkD8VeG0PtGTdi6nAyMyqgaTrHtk1qDtcUw0dz2HO6XxEE
-         SymMfo0xVlkz/HNAkO54nUQoAWZ8ViMOn46c7DDmIYmLMrHgIyQk0sKx59weeXfpPyYt
-         gKyA==
-X-Gm-Message-State: AOAM533eItr4Z1KJj24c+7PEK052E/Nlj1B4FUl29RIY2nCdm47TSOCu
-        xlSRd+eU6ZVEdmGfDCazM7iMoQ==
-X-Google-Smtp-Source: ABdhPJz2X15ilt4+tq6jfQ6bUTy4rzYV43+NVsGdegDpvtMFGx0QZwaLWYvTs00OhvCoTunsg8+1dw==
-X-Received: by 2002:a17:90a:384d:: with SMTP id l13mr848984pjf.104.1637164564540;
-        Wed, 17 Nov 2021 07:56:04 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id t40sm107973pfg.107.2021.11.17.07.56.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 07:56:03 -0800 (PST)
-Date:   Wed, 17 Nov 2021 15:56:00 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Hou Wenlong <houwenlong93@linux.alibaba.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] KVM: x86/mmu: Skip tlb flush if it has been done in
- zap_gfn_range()
-Message-ID: <YZUmEHx6iE9Mr3Ls@google.com>
-References: <5e16546e228877a4d974f8c0e448a93d52c7a5a9.1637140154.git.houwenlong93@linux.alibaba.com>
+        id S238822AbhKQP7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 10:59:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48210 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235325AbhKQP7l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 10:59:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06DC261A52;
+        Wed, 17 Nov 2021 15:56:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637164602;
+        bh=0wlnUoEor0mVOcM1L6g0mqrNoGqhsS7ylAzTRoEAP8o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RvY3O/ruQJ4X5zTzMtcG3KXCcE3k/E7PpgT6W6sjXEdtLZMvRBpmcfwso9hw4h8Oh
+         28by5ZcGWKdocqZ94XpjHmgg/LTAcbIgGtZ+ws9h7lK0g+TXew7q6/tRxgTmcQvDUS
+         z0sFTB2WCzTvlHdRinfV19lpI1PjoFXi07447Cnj061UjpKf5610+wy9u41mmQPJpt
+         fdjAzH7+//R9F872NQ6YOOsuPmb87gYd6RJjxXoGv6Ms/Ven9++u27GD7pAgEu8BZu
+         8HlT0in/s9gxaahcpwkZEjgxn90uWsUAVaoezxogrb/h94rb1cn8rd2yueQgr903o5
+         +pbVa5QVQz1UA==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: [PATCH 0/6] rcu/nocb: Last prep work before cpuset interface
+Date:   Wed, 17 Nov 2021 16:56:31 +0100
+Message-Id: <20211117155637.363706-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5e16546e228877a4d974f8c0e448a93d52c7a5a9.1637140154.git.houwenlong93@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021, Hou Wenlong wrote:
-> If the parameter flush is set, zap_gfn_range() would flush remote tlb
-> when yield, then tlb flush is not needed outside. So use the return
-> value of zap_gfn_range() directly instead of OR on it in
-> kvm_unmap_gfn_range() and kvm_tdp_mmu_unmap_gfn_range().
-> 
-> Fixes: 3039bcc744980 ("KVM: Move x86's MMU notifier memslot walkers to generic code")
-> Signed-off-by: Hou Wenlong <houwenlong93@linux.alibaba.com>
-> ---
+Hi,
 
-Ha, I fixed this in my local repo just yesterday :-)
+Hopefully this is the last RCU-side preparation work before I manage
+to add a cpuset interface to toggle nocb (de-)offloading.
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+	rcu/dev
 
->  arch/x86/kvm/mmu/mmu.c     | 2 +-
->  arch/x86/kvm/mmu/tdp_mmu.c | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 354d2ca92df4..d57319e596a9 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -1582,7 +1582,7 @@ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
->  		flush = kvm_handle_gfn_range(kvm, range, kvm_unmap_rmapp);
->  
->  	if (is_tdp_mmu_enabled(kvm))
-> -		flush |= kvm_tdp_mmu_unmap_gfn_range(kvm, range, flush);
-> +		flush = kvm_tdp_mmu_unmap_gfn_range(kvm, range, flush);
->  
->  	return flush;
->  }
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 7c5dd83e52de..9d03f5b127dc 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -1034,8 +1034,8 @@ bool kvm_tdp_mmu_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range,
->  	struct kvm_mmu_page *root;
->  
->  	for_each_tdp_mmu_root(kvm, root, range->slot->as_id)
+HEAD: 23dcef16e09a8a60cd15d001df56f72561d57a7f
 
-Another issue is that this should be for_each_tdp_mmu_root_yield_safe().  I'll get
-a patch out for that later today.
+Thanks,
+	Frederic
+---
 
-> -		flush |= zap_gfn_range(kvm, root, range->start, range->end,
-> -				       range->may_block, flush, false);
-> +		flush = zap_gfn_range(kvm, root, range->start, range->end,
-> +				      range->may_block, flush, false);
->  
->  	return flush;
->  }
-> -- 
-> 2.31.1
-> 
+Frederic Weisbecker (6):
+      rcu/nocb: Remove rdp from nocb list when de-offloaded
+      rcu/nocb: Prepare nocb_cb_wait() to start with a non-offloaded rdp
+      rcu/nocb: Optimize kthreads and rdp initialization
+      rcu/nocb: Create nocb kthreads on all CPUs as long as the "rcu_nocb=" is passed
+      rcu/nocb: Allow empty "rcu_nocbs" kernel parameter
+      rcu/nocb: Merge rcu_spawn_cpu_nocb_kthread() and rcu_spawn_one_nocb_kthread()
+
+
+ kernel/rcu/tree.h      |   7 +++-
+ kernel/rcu/tree_nocb.h | 111 +++++++++++++++++++++++++++++--------------------
+ 2 files changed, 70 insertions(+), 48 deletions(-)
