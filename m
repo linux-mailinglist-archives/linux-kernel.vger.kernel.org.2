@@ -2,115 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4904E454525
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 11:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 634E8454528
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Nov 2021 11:45:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236509AbhKQKqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 05:46:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234464AbhKQKqe (ORCPT
+        id S236517AbhKQKsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 05:48:39 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:54894 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231777AbhKQKsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 05:46:34 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73986C061570;
-        Wed, 17 Nov 2021 02:43:35 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id w1so9002942edc.6;
-        Wed, 17 Nov 2021 02:43:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uDN1GsOnIo4V4ElqUrvWCtZve9NFoolkaMsk7vOONMc=;
-        b=Gm/D8C/h5/hiiov56d8uVRJ/UloKPbAgDbfQ2BiLzeB3h0Bmk/EbgUFppqrezlFsJb
-         aPt24m7oD0agtX+k7WUTkGiCXs9UT1bJnlKnhKfqtBFKDLbIll0X/9pD/CZegoDBMyzW
-         xYuTr2pfLAntlCNJvupanmwWpKKl9V9wSNB5r5G0aIKFqT6rL+dMqyWhaQhL5LgDLKjz
-         Is06RAyB22Z3RmrJAVFgF7sviPfSsgTtoU1HBi+1Ti8P7vLzPA+naLBi5FJJ0E/iTItY
-         ensYu4kgixXXCw1U6sV3hm8PnMVd88E9idQsGfBhvmuuNjvfOCKCwvnvooflSRDKjjDO
-         qgCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uDN1GsOnIo4V4ElqUrvWCtZve9NFoolkaMsk7vOONMc=;
-        b=H7CkcR6y6bQfo6cHXSVmUyUiKLHQOu2BVjRDuGjSAKA1ZGCuZdm4ABlwJqv+8YXTts
-         1H/JCFPIbZ/anBZobz1XHz1I1Q2tsgRTcSaHrEvSm/cBhKAWWwLNSWahDpiml2O3osgG
-         xDHFpllOrvnP1lEzRXG0d0BjSHh3abDfVevw+s6MKQQVfxHMLGG5vtjgXRWtw8YRWFLO
-         0QY6l7sKhSgRA+xjiLpkJyERxKBngQpYC2JN5bjbbRtDOzDprsGzbym5GPahrZ60ER4O
-         HPNNtHrdwL5SMYpJgP8GX+rsXefhxoJhYcjiVqUeVbH0OK82dzxkY2n/gCgwttwmSvqc
-         gCNA==
-X-Gm-Message-State: AOAM533BU23Lpd4ir8LnOifDcLQwB0wS5ojRHYW4n9RqHZcXZmCKo80C
-        aBEKQ7qffnW0DEPQUruurNxGmHynlgjx/l+Nz8w=
-X-Google-Smtp-Source: ABdhPJy0UZW10x7IeVGEKtr3DcWxCW3RECxfztJDi9a6POTS6H3CWw1nuNc/+bHx5mNtasnfykpuO6ePXi1yDfEoEoQ=
-X-Received: by 2002:a17:907:869e:: with SMTP id qa30mr19414299ejc.356.1637145814005;
- Wed, 17 Nov 2021 02:43:34 -0800 (PST)
+        Wed, 17 Nov 2021 05:48:38 -0500
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AH9HK1g024792;
+        Wed, 17 Nov 2021 11:44:49 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=6pg6K8gBh2cerBYz6mBDWC+nZHXKNeCSWupwbJmZ6RQ=;
+ b=Is+BCHvc2dH6/lwryIQIMXmbes8Z35xUOTPUWzxzZx6DNH8QUbYaviJACApf+1Hmkulm
+ m0Bstjgov1gMU6NIlyYvMf3pvrhsaDOdVLrmHc7PD0ym1Tj9RU2YKUU3YkMtsPMwJ5iJ
+ qCPl5HN+2v2mJ3q3LH0tkXGNkos1Le5jqjKXZg4FlJXmnP/FHBcWzZwlLr1cG4RGpT3i
+ BvfbNBTQs27QWLodi4BqEnswCO4YY7OJNKnJmfVQKebnKUVON8Ol4NIDRtvq17CDHN1G
+ ySdXcqznaAPAN6B8AlmKg3NgfdIgQt+hYFwXJ6PRmqZfgY6sz/Zo/2MXjNRtvwXP9F1/ 1Q== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ccxypgkmy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Nov 2021 11:44:49 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6CA6610002A;
+        Wed, 17 Nov 2021 11:44:48 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2A51E209300;
+        Wed, 17 Nov 2021 11:44:48 +0100 (CET)
+Received: from localhost (10.75.127.44) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.26; Wed, 17 Nov 2021 11:44:47
+ +0100
+From:   Olivier Moysan <olivier.moysan@foss.st.com>
+To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Takashi Iwai <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: [PATCH] ASoC: stm32: i2s: fix 32 bits channel length without mclk
+Date:   Wed, 17 Nov 2021 11:44:04 +0100
+Message-ID: <20211117104404.3832-1-olivier.moysan@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20211117100512.5058-1-johan@kernel.org>
-In-Reply-To: <20211117100512.5058-1-johan@kernel.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 17 Nov 2021 12:42:53 +0200
-Message-ID: <CAHp75Ve9MB4MW9KDPoNhnPa8TCabmMgLbt6H7qrGgwmA8CpdNg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] serial: liteuart: fix driver unbind
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ilia Sergachev <silia@ethz.ch>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Stafford Horne <shorne@gmail.com>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-17_03,2021-11-17_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 12:05 PM Johan Hovold <johan@kernel.org> wrote:
->
-> Ilia Sergachev noted that the liteuart remove() function would trigger a
-> NULL-pointer dereference if it was ever called since the driver data
-> pointer was never initialised.
->
-> Turns out there are more bugs in this part of the driver which clearly
-> has never been tested.
->
-> Also relax the Kconfig dependencies so that the driver can be
-> compile-tested without first enabling a seemingly unrelated SoC
-> controller driver.
->
-> Note that this series depends on the fix by Ilia:
->
->         https://lore.kernel.org/r/20211115031808.7ab632ef@dtkw
+Fix divider calculation in the case of 32 bits channel
+configuration, when no master clock is used.
 
+Fixes: e4e6ec7b127c ("ASoC: stm32: Add I2S driver")
 
-FWIW,
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+---
+ sound/soc/stm/stm32_i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Johan
->
->
-> Changes in v2
->  - allow compile testing without CONFIG_OF (Andy)
->  - reword commit message to clarify that LITEX is neither a build or
->    runtime dependency and that the change only makes it easier to
->    compile test the driver
->  - move the Kconfig patch last in the series
->  - add Stafford's reviewed by tags to the two unmodified patches
->
->
-> Johan Hovold (3):
->   serial: liteuart: fix use-after-free and memleak on unbind
->   serial: liteuart: fix minor-number leak on probe errors
->   serial: liteuart: relax compile-test dependencies
->
->  drivers/tty/serial/Kconfig    |  2 +-
->  drivers/tty/serial/liteuart.c | 18 +++++++++++++++---
->  2 files changed, 16 insertions(+), 4 deletions(-)
->
-> --
-> 2.32.0
->
-
-
+diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
+index 6254bacad6eb..717f45a83445 100644
+--- a/sound/soc/stm/stm32_i2s.c
++++ b/sound/soc/stm/stm32_i2s.c
+@@ -700,7 +700,7 @@ static int stm32_i2s_configure_clock(struct snd_soc_dai *cpu_dai,
+ 		if (ret < 0)
+ 			return ret;
+ 
+-		nb_bits = frame_len * ((cgfr & I2S_CGFR_CHLEN) + 1);
++		nb_bits = frame_len * (FIELD_GET(I2S_CGFR_CHLEN, cgfr) + 1);
+ 		ret = stm32_i2s_calc_clk_div(i2s, i2s_clock_rate,
+ 					     (nb_bits * rate));
+ 		if (ret)
 -- 
-With Best Regards,
-Andy Shevchenko
+2.17.1
+
