@@ -2,117 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D6D456285
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:37:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 696A8456287
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234405AbhKRSkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 13:40:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45336 "EHLO
+        id S233175AbhKRSlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 13:41:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234389AbhKRSkv (ORCPT
+        with ESMTP id S233612AbhKRSlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 13:40:51 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C96C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:37:50 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id 8so6913463pfo.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:37:50 -0800 (PST)
+        Thu, 18 Nov 2021 13:41:01 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE89C061574;
+        Thu, 18 Nov 2021 10:38:00 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id r23so6153493pgu.13;
+        Thu, 18 Nov 2021 10:38:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hmolre7Okhy+2RfWXyND/uy2w4i4I9jFJ+ihj69aXDA=;
-        b=H2VVy+98VZb3T/nxecceRPaS4zE5Oz+cewzsaZHfm9eEsv3XRjc+DZ9njtbvTiIV9v
-         J3uSabI9Zn1CjpwWGCCmAjBS+t2u97WQlEQMjNpnEkhOLklQ8XH185Q78ublW5dzZJwg
-         7NXk/C4Z7m2WT6IK7nQoYb89NQ/9+XXt5CJ1Q=
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=u/4kSTrGc6s0vkEXts+k6V2+iObH758xpZNsQ3V2YGw=;
+        b=NhQl042oKslxVio5jb4d91oGqvFSEO1uT5e40Pp7NF676KJu56u9QoSvClSBwarsvl
+         FnoxLqwX2B7jpTUGpMng28Dod0XVmf5bkvEQGn2tXDbuvmluUx8xS6IXjWp9zJjxMxwz
+         rJ4YLDfqp23R7DjeWa/dzhekuc8UNgze/aac+gbMtmOKScnJtJy7ULYODd6k9LDTS/ln
+         cNcldt+buPju5cZ97wYZqvKFE2UUJGsKiGQjSH52iDgq1uFjNiPLrPMbwH+SJyWmYvcU
+         QV1LPSq0m8pnTEcjsNNLtedYCiPHCXmzYlL5iXDHUK2qq+CYJx8s7g/nSmJA/uRABd1K
+         ZtBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=hmolre7Okhy+2RfWXyND/uy2w4i4I9jFJ+ihj69aXDA=;
-        b=Iqxta9uI/24x1Omfc6H7/lZbLnGVxyuEub4VfIOZPbMrZwSaQmgiDGkSAUn6pd1qpT
-         Yfo1AyGoGChr2c06mFkNtmlaEMeieAVgie3BGjXiDEoPYIYzukPGri6/MFfthytz309O
-         jbgtZs0Eb5qje/TO8V53YdSHXLtvfAfToizJUNgF8DoIVHADe5lL/2j9YzLFdSaJN3V1
-         FxrOFpB7BTbkPxvMRe669vPPyGerhN9pz+IhAh/A3fPx+mqN3TiAF7xWP3A3luL9fW2f
-         +fPFAl3EXH7uzxnPIMwWYwfrcGvf/PvbOg91GTTyyh6TD4FucUUNBndJWxKNnXSOwsZe
-         Qcag==
-X-Gm-Message-State: AOAM533LsSUF85kkufG1L4nqS1QHuIq90QjeryKgGbX93mTmwzEm+5Yx
-        YVhCUnkFaHNWFNbYsnWfvjusBQ==
-X-Google-Smtp-Source: ABdhPJyGMYhMNijolBn3fPZucIoXtbuuMs7SP0RN0sabR7T56FvS5htc77aeK768uABZmy/8W3JFMA==
-X-Received: by 2002:a63:e214:: with SMTP id q20mr12662707pgh.442.1637260670241;
-        Thu, 18 Nov 2021 10:37:50 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v10sm313376pfg.162.2021.11.18.10.37.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 10:37:49 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Saeed Mahameed <saeedm@nvidia.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] net/mlx5e: Use struct_group() for memcpy() region
-Date:   Thu, 18 Nov 2021 10:37:48 -0800
-Message-Id: <20211118183748.1283069-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        bh=u/4kSTrGc6s0vkEXts+k6V2+iObH758xpZNsQ3V2YGw=;
+        b=v4ezjBJnm3nldRAMHuj4Q0r67+CZQrPrM0YmajbQJL8MUGejg1sYhnFw+eVJoEh2gK
+         z5Qupi9yOEoQ+NOTXEGjrjYDMGNEflgj9aYafvSxnhvw/r5N/vntKoS8uOSLnMElnFIl
+         O1x7SVYh34CTNW4WCsCnaNWvZU2FdFhRJJMf++d2ghx2gkCPqNL3ZCe58g9+fyS0iVsr
+         luWSRAshFJEVzez0EG2zix3+myrRV9c202Qq9zXcZiTbnxAUl3I+idxYZ7INBNhzw+QL
+         2tcFFiAeHvXDRYI+6i5zM7BB0IywHOzMuCN+vI4AFJmFTFrADI3G6POq2SMwL7viKgjk
+         Eu5w==
+X-Gm-Message-State: AOAM531pjq8HWyJGIPELD2cNR7y7VmxrfM4wzy4rAN1bFPkjHHNn0dPZ
+        cdxRy3W/fb1ZFsCqG2sA4T+P6U7McLQ=
+X-Google-Smtp-Source: ABdhPJwV03P4pLU0HaHTq/hgnzZHm6NEFOl15dwuWwxS2yCvdbQ4RSqr2c44BH7KQOYZ7lJbMCBy5w==
+X-Received: by 2002:a63:2c51:: with SMTP id s78mr12796454pgs.312.1637260680099;
+        Thu, 18 Nov 2021 10:38:00 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id k8sm258431pgj.94.2021.11.18.10.37.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Nov 2021 10:37:59 -0800 (PST)
+Subject: Re: [PATCH 5.15 000/920] 5.15.3-rc4 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20211118081919.507743013@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <520f9662-85e0-0804-b41f-4a15a9ca0759@gmail.com>
+Date:   Thu, 18 Nov 2021 10:37:55 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2065; h=from:subject; bh=5h1/OCbcMC9fSZGebngnGdh+E0sfjUIlmjyL7n2bbX0=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhlp171Vyvp59PAA8HQAbsKsvjRM9PHtYPsKBL4acu CDa8lw+JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZadewAKCRCJcvTf3G3AJjJyD/ 4nVg1irFelKvdZ02Th2MFSO4WzpimbnUZGifMbJ9L4pb52/n77LB3drjD6NSKlGtEaFlVyvNB/q0RH +t/6kzu/hCv25FLpy+J6YbtieBUc8Z7Kg7lW8weJX68+CWq+x3l0WyLhvkf9HlFZYWmrJBvC3AC6x5 dI0QXV4svrZEPVbYXsPfvAzX+4EDWdU9s7zA09cEH/a9lZdqyBvDoDQiTEEColX1wlqh13LZ3/n0Zq XOB4CCOqJCMlVnO9zINDvQYcH54PDqtqs4V9c9oZMVHbbyqELLtqCye3Ro0gFCi84RQ9pBtgBS+VDy mznZ3n6bPNcfnTfsA1Dihx8wWa6thbBI5S86q35YSkZxyiUnTU45jLBdYBhVE4I1oXDAVq/LpKYGv6 sgtYOkpjTGovnUhqboAgs8hfQQmAiZzzzKPq+86NsanzBWMWd3maqAMUNHYJPdJaqA6Uibnjke/1UI S5rQgcUS7i6Hbe3b2xk9hPo847RY/mh+MSUZHI4DPJAtgX0uxEfcLKoTZsGJFL+Qbe/MnmV8mTQ1RP 2oyRGggP9SLnZ1SNPIbbNbkpVYjgfgvMFseD5DfdK7/VdtmUkgFcwOc6uk6dy/cJF3dDOzAnHEhi1+ LbRyBwkAWgx7RJYydaCeTzzcKygH91nEK0WjuQja6ADP01c168owKfL4arnQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211118081919.507743013@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), memmove(), and memset(), avoid
-intentionally writing across neighboring fields.
+On 11/18/21 12:25 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.3 release.
+> There are 920 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 20 Nov 2021 08:14:03 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.3-rc4.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Use struct_group() in struct vlan_ethhdr around members h_dest and
-h_source, so they can be referenced together. This will allow memcpy()
-and sizeof() to more easily reason about sizes, improve readability,
-and avoid future warnings about writing beyond the end of h_dest.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-"pahole" shows no size nor member offset changes to struct vlan_ethhdr.
-"objdump -d" shows no object code changes.
-
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/net/ethernet/mellanox/mlx5/core/en_tx.c | 2 +-
- include/linux/if_vlan.h                         | 6 ++++--
- 2 files changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-index 7fd33b356cc8..ee7ecb88adc1 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-@@ -208,7 +208,7 @@ static inline void mlx5e_insert_vlan(void *start, struct sk_buff *skb, u16 ihs)
- 	int cpy1_sz = 2 * ETH_ALEN;
- 	int cpy2_sz = ihs - cpy1_sz;
- 
--	memcpy(vhdr, skb->data, cpy1_sz);
-+	memcpy(&vhdr->addrs, skb->data, cpy1_sz);
- 	vhdr->h_vlan_proto = skb->vlan_proto;
- 	vhdr->h_vlan_TCI = cpu_to_be16(skb_vlan_tag_get(skb));
- 	memcpy(&vhdr->h_vlan_encapsulated_proto, skb->data + cpy1_sz, cpy2_sz);
-diff --git a/include/linux/if_vlan.h b/include/linux/if_vlan.h
-index 41a518336673..45aad461aa34 100644
---- a/include/linux/if_vlan.h
-+++ b/include/linux/if_vlan.h
-@@ -46,8 +46,10 @@ struct vlan_hdr {
-  *	@h_vlan_encapsulated_proto: packet type ID or len
-  */
- struct vlan_ethhdr {
--	unsigned char	h_dest[ETH_ALEN];
--	unsigned char	h_source[ETH_ALEN];
-+	struct_group(addrs,
-+		unsigned char	h_dest[ETH_ALEN];
-+		unsigned char	h_source[ETH_ALEN];
-+	);
- 	__be16		h_vlan_proto;
- 	__be16		h_vlan_TCI;
- 	__be16		h_vlan_encapsulated_proto;
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.30.2
-
+Florian
