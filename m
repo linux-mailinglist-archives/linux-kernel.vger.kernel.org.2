@@ -2,179 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7BF455925
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 11:35:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD89B45592A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 11:37:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245709AbhKRKis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 05:38:48 -0500
-Received: from esa3.mentor.iphmx.com ([68.232.137.180]:48291 "EHLO
-        esa3.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245687AbhKRKiR (ORCPT
+        id S245400AbhKRKkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 05:40:45 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:35685 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245711AbhKRKj0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 05:38:17 -0500
-IronPort-SDR: XRc2SeJvfvatwcyIZv1bptwbSuK8HS6MKhiMqGuWcfUg8KaZ9v6jGGaZoCh3o38LsG0q8FBBnz
- +ZmU/KwpJtuKU8rweNLpZWsqmo5gdpeYdjl313Vx+AyCYccOYlBZkKuOLqOiWTQqcnzIxkKllD
- Q5ca9y5TQlBYpKlYnVsO8zXLNnigannIaGqTG9WtkD2U5CB6BZMs5RKIXeBqYgXnYvONM+P/qk
- qrCBKO4GK+WKYpBii+t6I76mq+/Hl4aMnlrcWByWCpiBAjnMM8bAShxfkB1qyLH5wCHkWnvtJQ
- t77tS8kVlUPjQ+SbywGjftDJ
-X-IronPort-AV: E=Sophos;i="5.87,244,1631606400"; 
-   d="scan'208";a="68500610"
-Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
-  by esa3.mentor.iphmx.com with ESMTP; 18 Nov 2021 02:35:16 -0800
-IronPort-SDR: GNS320mbJC4QmFu1VPRCRHkweYFzarWcwiyi7hZNYXUtE6MbvKGUMuJ7KCLSGF1SMOI1dbTm1b
- vwRAFhYoeXuLJ4og6vzJhkWyeLygFH/pqMhYnoSUUL/W1MbmdJkiSz5skfQE3YoEiN/RXY44mt
- xuKSy0nCB6v1SwlQw3vD0N2p6y+sL8kEedtlqb9j/fDT0be3RF61ndKFiI5TNctQDnCIfiIR2u
- n/NDDP3FxoNaGa7T+48a07Zvicm+6F3Xr/HBbOH8/FAigHu1OhmZDowll11cLbNip3J+MuJXKE
- 3io=
-From:   Andrew Gabbasov <andrew_gabbasov@mentor.com>
-To:     'Geert Uytterhoeven' <geert@linux-m68k.org>
-CC:     'Linux-Renesas' <linux-renesas-soc@vger.kernel.org>,
-        'Linux I2C' <linux-i2c@vger.kernel.org>,
-        'Linux Kernel Mailing List' <linux-kernel@vger.kernel.org>,
-        'Wolfram Sang' <wsa+renesas@sang-engineering.com>,
-        "Surachari, Bhuvanesh" <Bhuvanesh_Surachari@mentor.com>
-References: <20210922160649.28449-1-andrew_gabbasov@mentor.com> <CAMuHMdVVDpBAQR+H1TAnpf65aVbAL0Mm0km7Z9L7+1JuF6n1gQ@mail.gmail.com> 
-In-Reply-To: 
-Subject: RE: [PATCH] i2c: rcar: add SMBus block read support
-Date:   Thu, 18 Nov 2021 13:35:02 +0300
-Organization: Mentor Graphics Corporation
-Message-ID: <000001d7dc67$f695e5c0$e3c1b140$@mentor.com>
+        Thu, 18 Nov 2021 05:39:26 -0500
+Received: by mail-io1-f70.google.com with SMTP id x11-20020a0566022c4b00b005e702603028so3322961iov.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 02:36:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=S+hZjFERYaau081nQLDIk+XVoTNXbx6u415PGYVVeHs=;
+        b=xhw/zKKv88KfMWbrdiRIrasimr+UuKpPvdswTEM30aLkxC1+p4llDdG6vA24lriYbC
+         p1XRAdAZHmcf9UJRU4WZbkxCpruKeTqPQRAd9LYAuqJr7cqTsfC6mjSKDPzBl9InWISj
+         nc1gYfAjJWdAG5Z9Edpr2iTvMIH2Jg+8CAo91w5uNcXDtNTd320nvTeycbvTvXW3L7gB
+         0U+8JbQy/yS4GenLf6b+9Sk14LkaSo2sId4p92L7mYdanrl3b0fQT/glZTbj9o9AK91/
+         6sNRyrMJ9J0rRUNZCAtl3OPs9zLdvLVg1VumQN+qmj4HEMj9AKOncqdrwHP8p+wFLcYi
+         K/gQ==
+X-Gm-Message-State: AOAM532jzKDBCRxL8XpHcvN5dfvbKJTO25i7j7BLWw6Sm7yOv06L310+
+        Rp8jKgFa60oAJPzWqKgvhbWco7J3VbSu9FceBzq70KXZhdE2
+X-Google-Smtp-Source: ABdhPJyeDLvfzOSKR4ho0K/xNgaGX2Onqw53w4ffa4yw9VbumzBRC2NcioErWsXXdKfcYf9JQv3JgPL8Oh9ss91iksxBTF8hb1E7
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQHXue1eCQdNXjaiK021FrevUeTu7qvGRbCQgEMVGxA=
-Content-Language: en-us
-X-Originating-IP: [137.202.0.90]
-X-ClientProxiedBy: svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2) To
- svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2)
+X-Received: by 2002:a05:6e02:1749:: with SMTP id y9mr15060210ill.232.1637231786114;
+ Thu, 18 Nov 2021 02:36:26 -0800 (PST)
+Date:   Thu, 18 Nov 2021 02:36:26 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000006c24a05d10dbb7f@google.com>
+Subject: [syzbot] WARNING: refcount bug in nr_release (3)
+From:   syzbot <syzbot+342c8cfbf3eb29cb36e8@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, linux-hams@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        ralf@linux-mips.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Geert, Wolfram,
+Hello,
 
-Do you have any feedback on version 2 of this patch, that was submitted
-after your review comments below?
+syzbot found the following issue on:
 
-https://lore.kernel.org/all/20211006182314.10585-1-andrew_gabbasov@mentor.com/
+HEAD commit:    f2e19fd15bd7 Add linux-next specific files for 20211112
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=14de0821b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ba9c83199208e103
+dashboard link: https://syzkaller.appspot.com/bug?extid=342c8cfbf3eb29cb36e8
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Thanks!
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Best regards,
-Andrew
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+342c8cfbf3eb29cb36e8@syzkaller.appspotmail.com
 
-> -----Original Message-----
-> From: Andrew Gabbasov <andrew_gabbasov@mentor.com>
-> Sent: Wednesday, October 06, 2021 9:12 PM
-> To: 'Geert Uytterhoeven' <geert@linux-m68k.org>
-> Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>; Linux I2C <linux-i2c@vger.kernel.org>; Linux Kernel
-> Mailing List <linux-kernel@vger.kernel.org>; Wolfram Sang <wsa+renesas@sang-engineering.com>; Surachari,
-> Bhuvanesh <Bhuvanesh_Surachari@mentor.com>
-> Subject: RE: [PATCH] i2c: rcar: add SMBus block read support
-> 
-> Hi Geert,
-> 
-> Thank you for your review!
-> 
-> > -----Original Message-----
-> > From: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Sent: Tuesday, October 05, 2021 4:32 PM
-> > To: Gabbasov, Andrew <Andrew_Gabbasov@mentor.com>
-> > Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>; Linux I2C <linux-i2c@vger.kernel.org>; Linux Kernel
-> > Mailing List <linux-kernel@vger.kernel.org>; Wolfram Sang <wsa+renesas@sang-engineering.com>; Surachari,
-> > Bhuvanesh <Bhuvanesh_Surachari@mentor.com>
-> > Subject: Re: [PATCH] i2c: rcar: add SMBus block read support
-> >
-> > Hi Andrew,
-> >
-> > On Wed, Sep 22, 2021 at 6:14 PM Andrew Gabbasov
-> > <andrew_gabbasov@mentor.com> wrote:
-> > > The smbus block read is not currently supported for rcar i2c devices.
-> > > This patchset adds the support to rcar i2c bus so that blocks of data
-> > > can be read using SMbus block reads.(using i2c_smbus_read_block_data()
-> > > function from the i2c-core-smbus.c).
-> > >
-> > > Inspired by commit 8e8782c71595 ("i2c: imx: add SMBus block read support")
-> > >
-> > > This patch (adapted) was tested with v4.14, but due to lack of real
-> > > hardware with SMBus block read operations support, using "simulation",
-> > > that is manual analysis of data, read from plain I2C devices with
-> > > SMBus block read request.
-> > >
-> > > Signed-off-by: Bhuvanesh Surachari <bhuvanesh_surachari@mentor.com>
-> > > Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
-> >
-> > Thanks for your patch!
-> >
-> > > --- a/drivers/i2c/busses/i2c-rcar.c
-> > > +++ b/drivers/i2c/busses/i2c-rcar.c
-> > > @@ -429,9 +431,16 @@ static bool rcar_i2c_dma(struct rcar_i2c_priv *priv)
-> > >                 /*
-> > >                  * The last two bytes needs to be fetched using PIO in
-> > >                  * order for the STOP phase to work.
-> > > +                *
-> > > +                * For SMBus block read the first byte was received using PIO.
-> >
-> > So it might be easier to read, and more maintainable, to keep the
-> > old assignments:
-> >
-> >     buf = priv->msg->buf;
-> >     len = priv->msg->len - 2;
-> >
-> > and adjust them for SMBus afterwards:
-> >
-> >     if (block_data) {
-> >             /* For SMBus block read the first byte was received using PIO */
-> >             buf++;
-> >             len--;
-> >     }
-> >
-> > ?
-> >
-> > >                  */
-> > > -               buf = priv->msg->buf;
-> > > -               len = priv->msg->len - 2;
-> > > +               if (block_data) {
-> > > +                       buf = priv->msg->buf + 1;
-> > > +                       len = priv->msg->len - 3;
-> > > +               } else {
-> > > +                       buf = priv->msg->buf;
-> > > +                       len = priv->msg->len - 2;
-> > > +               }
-> > >         } else {
-> > >                 /*
-> > >                  * First byte in message was sent using PIO.
-> >
-> > And below we have another case handling buf and len :-(
-> >
-> > So perhaps:
-> >
-> >     buf = priv->msg->buf;
-> >     len = priv->msg->len;
-> >
-> >     if (read) {
-> >             /*
-> >              * The last two bytes needs to be fetched using PIO in
-> >              * order for the STOP phase to work.
-> >              */
-> >             len -= 2;
-> >     }
-> >     if (!read || block_data) {
-> >             /* First byte in message was sent using PIO *
-> >             buf++;
-> >             len--;
-> >     }
-> 
-> Probably I was trying to minimize the changes ;-)
-> 
-> However, I agree with you that the whole code fragment can be simplified
-> and your variant indeed looks more clean and understandable.
-> Thank you for your suggestion, I'll submit version 2 of the patch
-> with this fragment changed.
-> 
-> Thanks!
-> 
-> Best regards,
-> Andrew
+------------[ cut here ]------------
+refcount_t: addition on 0; use-after-free.
+WARNING: CPU: 0 PID: 13624 at lib/refcount.c:25 refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
+Modules linked in:
+CPU: 0 PID: 13624 Comm: syz-executor.4 Not tainted 5.15.0-next-20211112-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
+Code: 09 31 ff 89 de e8 27 70 a0 fd 84 db 0f 85 36 ff ff ff e8 3a 6c a0 fd 48 c7 c7 a0 5f 04 8a c6 05 0e 1e a5 09 01 e8 de 4d 34 05 <0f> 0b e9 17 ff ff ff e8 1b 6c a0 fd 0f b6 1d f3 1d a5 09 31 ff 89
+RSP: 0018:ffffc9000282fa70 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88802c4fd7c0 RSI: ffffffff815f5c98 RDI: fffff52000505f40
+RBP: 0000000000000002 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815efa3e R11: 0000000000000000 R12: ffff88803cd1c200
+R13: ffff88803c3d7080 R14: ffff88803cd1c218 R15: ffff888011a4a620
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffdbaf50df8 CR3: 0000000022a02000 CR4: 00000000003526f0
+Call Trace:
+ <TASK>
+ __refcount_add include/linux/refcount.h:199 [inline]
+ __refcount_inc include/linux/refcount.h:250 [inline]
+ refcount_inc include/linux/refcount.h:267 [inline]
+ sock_hold include/net/sock.h:708 [inline]
+ nr_release+0x3d1/0x450 net/netrom/af_netrom.c:520
+ __sock_release+0xcd/0x280 net/socket.c:649
+ sock_close+0x18/0x20 net/socket.c:1314
+ __fput+0x286/0x9f0 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ exit_task_work include/linux/task_work.h:32 [inline]
+ do_exit+0xc14/0x2b40 kernel/exit.c:832
+ do_group_exit+0x125/0x310 kernel/exit.c:929
+ get_signal+0x47d/0x2220 kernel/signal.c:2830
+ arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:868
+ handle_signal_work kernel/entry/common.c:148 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+ exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:207
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f8de835cae9
+Code: Unable to access opcode bytes at RIP 0x7f8de835cabf.
+RSP: 002b:00007f8de58d2218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 00007f8de846ff68 RCX: 00007f8de835cae9
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007f8de846ff68
+RBP: 00007f8de846ff60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f8de846ff6c
+R13: 00007ffc7f8041ff R14: 00007f8de58d2300 R15: 0000000000022000
+ </TASK>
 
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
