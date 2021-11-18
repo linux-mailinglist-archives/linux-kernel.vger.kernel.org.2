@@ -2,78 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282A0455CC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:34:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A43455CEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231432AbhKRNhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 08:37:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231420AbhKRNhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 08:37:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 46AA56140D
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 13:34:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637242443;
-        bh=0ivQJzVzui4MmwVgZ8hpY5e30FitxB1fn4ngg2LjTFM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=eY7IpajSbkICMs8va3RvD5zJy8GE5QH6EWzgflZPzioyzqR89I7zeJ2FXx3dXy8D8
-         FhFCTAFdxbKp3bvNOfhkJz0Y+xjfffIxjQwGyB24PLEY77ZZOUWfFnkryu5IVsh8zP
-         oIAo1T3BuB0zfTvBa3ZbdpOn6TDxNqOSpavS/uWPDLlziD7OTt2buS7elUkkffzEpq
-         GzTrwM+JDc3yhJ8SzoWF+vDULiwQm+112CCObJsC/X4L2tu7+onIs8QjNaF7IEWBAC
-         Rw/l5InSq6D7S/+RHrt3cj69MZNOWqYHb8tX9fav9xRMDJQuZC64sfLXOo4HpuzKEO
-         iXkJ98dCAa6aA==
-Received: by mail-wr1-f46.google.com with SMTP id i5so11647697wrb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 05:34:03 -0800 (PST)
-X-Gm-Message-State: AOAM532FgBUvgQHaewMH96cx5OTjVrsSj/ByJp8voIxrZcTbHfkmF8eP
-        tVHNLQ8Kb5ucdR/NUnELvvfV+zhHJgvp5yT6qlI=
-X-Google-Smtp-Source: ABdhPJyaUK/Ojy7DSBYbAR0aPoS6sB6RDNQxLobpvm80W8uUqqGn8ZOZtD+x56mwKpf4ZqG6Tc+h4uHQt1BfUkQ4Eaw=
-X-Received: by 2002:adf:f7c2:: with SMTP id a2mr32000504wrq.71.1637242441723;
- Thu, 18 Nov 2021 05:34:01 -0800 (PST)
+        id S231639AbhKRNsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 08:48:19 -0500
+Received: from mail-m17671.qiye.163.com ([59.111.176.71]:36544 "EHLO
+        mail-m17671.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231314AbhKRNsF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 08:48:05 -0500
+X-Greylist: delayed 663 seconds by postgrey-1.27 at vger.kernel.org; Thu, 18 Nov 2021 08:48:03 EST
+Received: from localhost.localdomain (unknown [14.18.236.70])
+        by mail-m17671.qiye.163.com (Hmail) with ESMTPA id AA7522E0062;
+        Thu, 18 Nov 2021 21:33:58 +0800 (CST)
+From:   Yi Li <yili@winhong.com>
+To:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org
+Cc:     yilikernel@gmail.com, yili@winhong.com, axboe@kernel.dk,
+        martin.petersen@oracle.com
+Subject: [PATCH] use blk_queue_fua() to check QUEUE_FLAG_FUA
+Date:   Thu, 18 Nov 2021 21:33:50 +0800
+Message-Id: <20211118133350.2716698-1-yili@winhong.com>
+X-Mailer: git-send-email 2.25.3
 MIME-Version: 1.0
-References: <20211115223911.982330-1-daniel.lezcano@linaro.org>
-In-Reply-To: <20211115223911.982330-1-daniel.lezcano@linaro.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 18 Nov 2021 14:33:45 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0fLzjFSHRDHT7-eEnk0+E4zPrk-_g53ROs_dmyc3g1EA@mail.gmail.com>
-Message-ID: <CAK8P3a0fLzjFSHRDHT7-eEnk0+E4zPrk-_g53ROs_dmyc3g1EA@mail.gmail.com>
-Subject: Re: [RFC] DT: bindings: Powerzone new bindings
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rafael Wysocki <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRkaHkxWSRkdGU9MGUJOTh
+        lIVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWVVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PzI6Ehw*MD4CNiIxNzkWQw0Z
+        Th1PCylVSlVKTUhMSU9JT0hCSkxPVTMWGhIXVQISFxI7DBIVExQVHFUYFBZFWVdZEgtZQVlKT1VK
+        Q1VJSE1VTEtZV1kIAVlBSUhJTTcG
+X-HM-Tid: 0a7d3341051ada56kuwsaa7522e0062
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 11:39 PM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
-> The proposed bindings are describing a powerzone, a power capping
-> capable place to act on and where we can read the power
-> consumption. The powerzone semantic is also found on the Intel
-> platform with the RAPL register.
->
-> The powerzone can also represent a group of children powerzones, hence
-> the description can result on a hierarchy.
->
-> The description gives the power constraint dependencies to apply on a
-> specific group of logically or physically aggregated devices. They do
-> not represent the physical location or the power domains of the SoC
-> even if the description could be similar.
->
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+We alreday has the interface blk_queue_fua() to check QUEUE_FLAG_FUA flag,
+so use it.
 
-Hi Daniel,
+Signed-off-by: Yi Li <yili@winhong.com>
+---
+ block/blk-sysfs.c                   | 2 +-
+ drivers/target/target_core_iblock.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-This looks reasonable to me, based on what I remember from previous
-discussions, but it would be good if you could summarize the points that
-have already been discussed in the past, e.g. which approaches you have
-tried out before and how you ended  up here, including links to mailing
-list archives.
+diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
+index cef1f713370b..6a5135b216de 100644
+--- a/block/blk-sysfs.c
++++ b/block/blk-sysfs.c
+@@ -544,7 +544,7 @@ static ssize_t queue_wc_store(struct request_queue *q, const char *page,
+ 
+ static ssize_t queue_fua_show(struct request_queue *q, char *page)
+ {
+-	return sprintf(page, "%u\n", test_bit(QUEUE_FLAG_FUA, &q->queue_flags));
++	return sprintf(page, "%u\n", blk_queue_fua(q));
+ }
+ 
+ static ssize_t queue_dax_show(struct request_queue *q, char *page)
+diff --git a/drivers/target/target_core_iblock.c b/drivers/target/target_core_iblock.c
+index bf8ae4825a06..683374ddd24d 100644
+--- a/drivers/target/target_core_iblock.c
++++ b/drivers/target/target_core_iblock.c
+@@ -738,7 +738,7 @@ iblock_execute_rw(struct se_cmd *cmd, struct scatterlist *sgl, u32 sgl_nents,
+ 		 */
+ 		opf = REQ_OP_WRITE;
+ 		miter_dir = SG_MITER_TO_SG;
+-		if (test_bit(QUEUE_FLAG_FUA, &q->queue_flags)) {
++		if (blk_queue_fua(q)) {
+ 			if (cmd->se_cmd_flags & SCF_FUA)
+ 				opf |= REQ_FUA;
+ 			else if (!test_bit(QUEUE_FLAG_WC, &q->queue_flags))
+-- 
+2.25.3
 
-I know you've been at this for quite some time now, but I can never
-remember the bits that we discussed in the past myself.
-
-        Arnd
