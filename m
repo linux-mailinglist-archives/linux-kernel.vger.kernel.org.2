@@ -2,94 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3D04560AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:38:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1EE4560B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233568AbhKRQl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 11:41:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233545AbhKRQl1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 11:41:27 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69255C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:38:26 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id t5so29975662edd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:38:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WSppPk3DPCX/InvfqFTPS/l3REWdYaf45cm5tdKXOlY=;
-        b=y8iXcU/CZw/Cu7843SW3MJSyGKMeXrFPDcO8PvkoglapriCkEvzvvjFtInuYb1tY40
-         TtDDUD5LINgmlfU9WMtgCNf0EFmfxyhj7HXc431tSnWE63lpp8FENhdrve4dD0Z8HWWK
-         HU6mAhWi7HUsVVmOvmIfd5NE3Tz6WCIMTO95Jt2a5fr3auw8x21TbyLhjWsUcMWpmIl1
-         n2ePm53jtvmaaGEi4zdNpBp1Of7QISc+Q2PcrAoGwOLn6LZ/TY7TbpIjxleVZq4sxLWe
-         5g9nmgehFZS6tFomVQert0wXXZBwmcxHOaxTcMbBa/qU2a7TIYnx0WQrIO8eiBJJ7EWG
-         4C+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WSppPk3DPCX/InvfqFTPS/l3REWdYaf45cm5tdKXOlY=;
-        b=REZ5cL2FpAyaE12M5XNvmiyoNiu/cewLkcjFAOk/GcN/uGIZ/3eDfTTUypjB2cWwe8
-         TiQ0tMlJLyyxRGLQnUZyCqCG9uUD15la0p6Eu7XxTka4Tx+t6L/BBKXMvE5ZbyBSTMs6
-         71MCaKwV4cMMiEq4DHZPzo1D/zRDBFi3c4kpnGWPeJcUCExZN8R3ZdttL1WOkO2dUGqe
-         M2v38yYdDEzK35+DNZ9FkYAoIqVEdIGPefSv90ZCiTpR/kQE6jhlCUABC9OBlm71HJBc
-         e4q0plajqII0xX44Gym32N96RXj2hgIoapGwzwNbnoDZKA2IJFRgIrNbNHCHXyHcPH8e
-         DIbQ==
-X-Gm-Message-State: AOAM5300+cjTAVfy3XTFT0R0oqFBmiVHPmKKwIluzxv3uDOCHvqwex0M
-        n0u6Fwm6VonOnSWgXujjSLlObUKSWQ5fY02819VrQw==
-X-Google-Smtp-Source: ABdhPJyDp/dxu5CdyRi5uKo5rhAx52nwL5NmSIQpkm0xMjwlt2b0dHHw8LI+iYNyZl9JkYoj/dVIhiJD4CPEChKaAps=
-X-Received: by 2002:aa7:ca4f:: with SMTP id j15mr13401339edt.178.1637253504982;
- Thu, 18 Nov 2021 08:38:24 -0800 (PST)
+        id S233584AbhKRQlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 11:41:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37430 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230174AbhKRQlf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 11:41:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BD6F61175;
+        Thu, 18 Nov 2021 16:38:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637253515;
+        bh=mArgnRfcSnN8b/ojn8BR4nw9zNy3hAJuT1DaSGX+/S0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LOpF3U+RhD3PYGhvtNjhix49h84nEdkx6qfhXRJ0tLrPRHUEMnhW4zAxj7EDOBp0C
+         KP2yIQA9MjKuyAlrKnNMQ7YSw5Ycvjvz6JH93VcBX1CSOj9cV5OeKC+1EWrVsX2Xck
+         Uhc5VR57cKbTMbpIZYs2ah24Oa0KiYwfZt+nFP0MH8digYPABLtuE8NW7hdotaKudO
+         t1TZnUNhcDI9nYgc2L68noRfjJWx/rUCnEJLSLDPNarqNvhzboPyAAzzNbNzMdeaMW
+         tiIwvcu01DEz755z3618qWlFzWwYE0mltcoE57ufNH1aeXU1x9vIKia2fv+g2wqEX9
+         1R3nsaJQZub6Q==
+Date:   Thu, 18 Nov 2021 08:38:33 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Tadeusz Struk <tadeusz.struk@linaro.org>
+Cc:     David Miller <davem@davemloft.net>, elver@google.com,
+        nathan@kernel.org, ndesaulniers@google.com,
+        jonathan.lemon@gmail.com, alobakin@pm.me, willemb@google.com,
+        pabeni@redhat.com, cong.wang@bytedance.com, haokexin@gmail.com,
+        ilias.apalodimas@linaro.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        keescook@chromium.org, edumazet@google.com
+Subject: Re: [PATCH] skbuff: suppress clang object-size-mismatch error
+Message-ID: <20211118083833.3c2805d4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <90fece34-14af-8c91-98f5-daf6fad1825b@linaro.org>
+References: <CANpmjNNuWfauPoUxQ6BETrZ8JMjWgrAAhAEqEXW=5BNsfWfyDA@mail.gmail.com>
+        <931f1038-d7ab-f236-8052-c5e5b9753b18@linaro.org>
+        <20211111095444.461b900e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20211112.154238.1786308722975241620.davem@davemloft.net>
+        <90fece34-14af-8c91-98f5-daf6fad1825b@linaro.org>
 MIME-Version: 1.0
-References: <20211118132317.15898-1-brgl@bgdev.pl> <20211118132317.15898-2-brgl@bgdev.pl>
- <YZZ0xPU207qDaOpX@smile.fi.intel.com>
-In-Reply-To: <YZZ0xPU207qDaOpX@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 18 Nov 2021 17:38:14 +0100
-Message-ID: <CAMRc=McHCUsO430t618EW92G-B_mgxXucYye3qb85697MHW_KQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] gpiolib: check the 'ngpios' property in core
- gpiolib code
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 4:46 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Thu, Nov 18, 2021 at 02:23:17PM +0100, Bartosz Golaszewski wrote:
-> > Several drivers read the 'ngpios' device property on their own, but
-> > since it's defined as a standard GPIO property in the device tree bindings
-> > anyway, it's a good candidate for generalization. If the driver didn't
-> > set its gc->ngpio, try to read the 'ngpios' property from the GPIO
-> > device's firmware node before bailing out.
->
-> Thanks for update, my comment below.
->
-> ...
->
-> >       if (gc->ngpio == 0) {
-> > -             chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
-> > -             ret = -EINVAL;
-> > -             goto err_free_descs;
-> > +             ret = device_property_read_u32(&gdev->dev, "ngpios", &ngpios);
-> > +             if (ret) {
-> > +                     chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
->
-> > +                     ret = -EINVAL;
->
-> Sorry, forgot to ask, why this is needed?
->
+On Thu, 18 Nov 2021 08:05:01 -0800 Tadeusz Struk wrote:
+> On 11/12/21 07:42, David Miller wrote:
+> > From: Jakub Kicinski <kuba@kernel.org>
+> > Date: Thu, 11 Nov 2021 09:54:44 -0800
+> >   
+> >> I'm not sure if that stalled due to lack of time or some fundamental
+> >> problems.  
+> > 
+> > ran out of time, then had a stroke...
+> >   
+> >> Seems like finishing that would let us clean up such misuses?  
+> > 
+> > yes it would
+> 
+> so since there is not better way of suppressing the issue atm are
+> you ok with taking this fix for now?
 
-What do you mean? 0 lines doesn't sound like a valid value so -EINVAL
-is in order.
+I vote no on sprinkling ugly tags around to silence some random
+checkers warning. We already have too many of them. They are 
+meaningless and confusing to people reading the code.
 
-Bart
+This is not a fundamental problem, the solution is clear.
