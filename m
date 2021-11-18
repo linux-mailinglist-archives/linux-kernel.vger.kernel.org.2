@@ -2,115 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F852455788
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:59:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ABBA455796
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244949AbhKRJBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 04:01:45 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:49728 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244873AbhKRJB3 (ORCPT
+        id S244960AbhKRJEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 04:04:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244972AbhKRJD1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 04:01:29 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id A9C7D21763;
-        Thu, 18 Nov 2021 08:58:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1637225908; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DMSRHZltUhfnD0xcd/VgVm+c9gvquxAWnELVPwEVRpw=;
-        b=eTz3wXhLogtPJE0sEp1EBos0JswRTRYCM3P//c7jP4riflnr5fp5rUumfYbNWB9PowoDmV
-        1qFU8cKyDzO/A2MI5ce/ZebRzPs3Hn+45hmeHmeiES2zw1+sGmCOszTyX+6YPUvtaCfQkG
-        V1pmGP51FZBwNQ0W8aqxacp7p/Et9AM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1637225908;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DMSRHZltUhfnD0xcd/VgVm+c9gvquxAWnELVPwEVRpw=;
-        b=yxI91LKMw5KKkwWK2zjWhuX8YRPzaYM8osTHT88mweOattB1kdAk+j+LPfU9xiTjfEm+y3
-        LQ+9rRggHIeCX6BQ==
-Received: from suse.de (unknown [10.163.43.106])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 523D2A3B84;
-        Thu, 18 Nov 2021 08:58:27 +0000 (UTC)
-Date:   Thu, 18 Nov 2021 08:58:20 +0000
-From:   Mel Gorman <mgorman@suse.de>
-To:     Gang Li <ligang.bdlg@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-api@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: Re: Re: Re: Re: Re: Re: Re: [PATCH v1] sched/numa: add
- per-process numa_balancing
-Message-ID: <20211118085819.GD3301@suse.de>
-References: <20211109091951.GW3891@suse.de>
- <7de25e1b-e548-b8b5-dda5-6a2e001f3c1a@bytedance.com>
- <20211109121222.GX3891@suse.de>
- <117d5b88-b62b-f50b-32ff-1a9fe35b9e2e@bytedance.com>
- <20211109162647.GY3891@suse.de>
- <08e95d68-7ba9-44d0-da85-41dc244b4c99@bytedance.com>
- <20211117082952.GA3301@suse.de>
- <816cb511-446d-11eb-ae4a-583c5a7102c4@bytedance.com>
- <20211117101008.GB3301@suse.de>
- <f0193837-2f2c-b55f-cd79-b80d931e7931@bytedance.com>
+        Thu, 18 Nov 2021 04:03:27 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888B5C061570;
+        Thu, 18 Nov 2021 01:00:25 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id b40so22556266lfv.10;
+        Thu, 18 Nov 2021 01:00:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=G27YXSER0dL2xbw6ocbzN4KLUhffd2ytCL7vYepxLzQ=;
+        b=DaSp/3BbRNe4OzvN71UWlGcQ7tazW/+flxn4NmwK8LsDJDQxkUpOxM0PIukahVOmnV
+         nNg0cYv/ypwZXdMS/uzmcI/mXX8ogO0vjNrgH921bOsLpplp6utWDLGbUpZtOrcNtBVR
+         LRiwBftbOUVwVOUQHDjMj51IzoR5aVOu8O5i+6luh5VYNTPFiMlzcVFVxyvWNUwLYJlF
+         z9E8rf1EtdfAwWvbHNWHmGk3XbU3IVT6GwUivtb/kxNrKpCahFTzKhkUXPgdJ+WUlftP
+         IHPt9nlDPiFrInO6c9Gud+Q5PPESyh2J7n+Iioolhw/7bE7w/I/fAQjpEfMLL2KARddA
+         TN+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=G27YXSER0dL2xbw6ocbzN4KLUhffd2ytCL7vYepxLzQ=;
+        b=m1Ce2N2gVMzOOQkOQj9VeC6MTUAzYpgfiqKdVZLi7A7Eoosk3d5exf2bfCY5BXx4UB
+         dc4gbvgnhExpH7emBAr3eQTehpToYW6/ngpa3zUdFDDyjbeNsaALh+ONOSUk5+Fb3cZK
+         e274mAPMtQ2aa0QyuuJpngPj8fQgF6ni3q3OHXjqEIPTeb2mJB0QGDfv1IambM7yDogl
+         mfYtOGe4r3FoZGKpBCu7vLGMztasZFHS7rtKgIB7NlBKnv7rrm5XgaRuy5yQKIziwPnH
+         jUqVTbkTGTqxusFXpfYt+g9Ry7hd/MwfC+qF/s8CtdM05lrnGhk2mr9lAZoJc7yZv9aq
+         67Zg==
+X-Gm-Message-State: AOAM5321PSle5x5xqk80aRT++0YRirAPCWITBrzRjKfJVY9dRsjjr7zM
+        TgzDcv9iSr9z/8QgJFqYXf0=
+X-Google-Smtp-Source: ABdhPJziFAWTi66Q6JLiFDlf2F5623Cb+gphUPFq1reuEs4jYW3mOjks4xhyHREDQP1ye/+oXXMY7w==
+X-Received: by 2002:a05:6512:e91:: with SMTP id bi17mr22424116lfb.14.1637226023900;
+        Thu, 18 Nov 2021 01:00:23 -0800 (PST)
+Received: from [192.168.1.11] ([217.117.245.43])
+        by smtp.gmail.com with ESMTPSA id y11sm250477ljh.54.2021.11.18.01.00.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Nov 2021 01:00:23 -0800 (PST)
+Message-ID: <018ada52-3e9b-8909-2346-ea2ce1d817fa@gmail.com>
+Date:   Thu, 18 Nov 2021 12:00:21 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <f0193837-2f2c-b55f-cd79-b80d931e7931@bytedance.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] net: bnx2x: fix variable dereferenced before check
+Content-Language: en-US
+To:     Johan Hovold <johan@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     aelior@marvell.com, skalluru@marvell.com,
+        GR-everest-linux-l2@marvell.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211113223636.11446-1-paskripkin@gmail.com>
+ <YZYULWjK34xL6BeW@hovoldconsulting.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <YZYULWjK34xL6BeW@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 11:26:30AM +0800, Gang Li wrote:
-> On 11/17/21 6:10 PM, Mel Gorman wrote:
-> > On Wed, Nov 17, 2021 at 05:38:28PM +0800, Gang Li wrote:
-> > > If those APIs are ok with you, I will send v2 soon.
-> > > 
-> > > 1. prctl(PR_NUMA_BALANCING, PR_SET_THP_DISABLE);
-> > 
-> > It would be (PR_SET_NUMAB_DISABLE, 1)
-> > 
-> > > 2. prctl(PR_NUMA_BALANCING, PR_SET_THP_ENABLE);
-> > 
-> > An enable prctl will have the same problems as
-> > prctl(PR_NUMA_BALANCING, PR_SET_NUMA_BALANCING, 0/1) -- it should have
-> > meaning if the numa_balancing sysctl is disabled.
-> > 
-> > > 3. prctl(PR_NUMA_BALANCING, PR_GET_THP);
-> > > 
-> > 
-> > PR_GET_NUMAB_DISABLE
-> > 
+On 11/18/21 11:51, Johan Hovold wrote:
+> [ Adding Dan. ]
 > 
-> How about this:
+> On Sun, Nov 14, 2021 at 01:36:36AM +0300, Pavel Skripkin wrote:
+>> Smatch says:
+>> 	bnx2x_init_ops.h:640 bnx2x_ilt_client_mem_op()
+>> 	warn: variable dereferenced before check 'ilt' (see line 638)
+>> 
+>> Move ilt_cli variable initialization _after_ ilt validation, because
+>> it's unsafe to deref the pointer before validation check.
 > 
-> 1. prctl(PR_NUMA_BALANCING, PR_SET_NUMAB_DEFAULT); //follow global
-> 2. prctl(PR_NUMA_BALANCING, PR_SET_NUMAB_DISABLE); //disable
-> 3. prctl(PR_NUMA_BALANCING, PR_SET_NUMAB_ENABLE);  //enable
+> It seems smatch is confused here. There is no dereference happening
+> until after the check, we're just determining the address when
+> initialising ilt_cli.
+> 
+> I know this has been applied, and the change itself is fine, but the
+> patch description is wrong and the Fixes tag is unwarranted.
+>   
 
-If PR_SET_NUMAB_ENABLE enables numa balancing for a task when
-kernel.numa_balancing == 0 instead of returning an error then sure.
+I agree. I came up with same thing after the patch has been applied. I 
+thought about a revert, but seems it's not necessary, since there is no 
+function change.
 
-> 4. prctl(PR_NUMA_BALANCING, PR_GET_NUMAB);
-> 
-> PR_SET_NUMAB_DISABLE/ENABLE can always have meaning whether the
-> numa_balancing sysctl is disabled or not,
-> 
-> -- 
-> Thanks,
-> Gang Li
-> 
+I should check smatch warnings more carefully next time, can't say why I 
+didn't notice it before sending :(
 
--- 
-Mel Gorman
-SUSE Labs
+thanks
+
+
+
+With regards,
+Pavel Skripkin
