@@ -2,89 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE06456053
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:18:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01487456056
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233175AbhKRQVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 11:21:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232656AbhKRQVb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 11:21:31 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE19C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:18:31 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id r130so6541537pfc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:18:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uN/UmyJLSi0l3cbBlFO2ztb0Ka2IeTkhbf5uDX11zJg=;
-        b=Jf2HiBNgA7RFW5gnRVgO0QLoM16OxD2Ix0npEpGUNyHeBto2hwoxb7djkqNJkCKNJQ
-         ByBlDRJg8UYf7tniV4n2D0BFjQaesADQJT6zDD4S/6ZZzxFMb1WnkZf+P0o3et4mB/nm
-         E5uqiSs24dgjIDvQFyTAh34YMqDQYl4jW8cSdlHdPU2XrQgxK9vzrpy338baHYp8b6Bs
-         XYCloL4mMS3zmvt9izVE7vr1yQOTVDI3JSCvvaky+NpOWx0bzzNGnA8JodPgxrvPwPoA
-         dSIsrK/4/Ko13lPuMD7XrXU9yA04eh8HzDGVqCHRCeJGFNXXsUazVoLA2bxfrpoNDMiO
-         IxsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uN/UmyJLSi0l3cbBlFO2ztb0Ka2IeTkhbf5uDX11zJg=;
-        b=EeNh0vwsykhObSDcA2QEwCWCq1U9HGgLyaG49Jc7FJx9hcEqM2pli24sO4wvPEyTJ8
-         kfV8+vJcOjbOCXsZ57QZmxupEHwm/g5LQt0H7gwTHBZwoL5c5Ise/4A3+S7i4B9dwI1E
-         fFYJpvL9htmO1gvoCUh1wkoe6eBXFRHCInV7r1z2Vq2wqzQKVWPbIDk/nO+4BZqLNYk1
-         jq6BY/QcTjriJZxYjLsiB181cnXBP2KFYTX1K53xGC7Xk+29YDRxNLNr/eQ7WL5a4x1h
-         MZQfcaTosuwpUpERjlqrchAkit/KA2wj3kxq83JxsciUdRHrvUJyJz52Ws3z7gxepGCU
-         NXtw==
-X-Gm-Message-State: AOAM532xGdT7qi7pDDchXalsoNO5GSMMXnN84odnlXcStsxjnfgXdXvK
-        0I/w37WZ9t7fc8WxbmbQ8XIxcA==
-X-Google-Smtp-Source: ABdhPJz+BPkGN+BaCyqqsDRTEE2zjEfSVMmUxovOZVKwnp6uxPmLpJv4DfRqP4VAs8MYJaVU1K93Dw==
-X-Received: by 2002:a63:89c6:: with SMTP id v189mr12280953pgd.23.1637252310465;
-        Thu, 18 Nov 2021 08:18:30 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id u22sm104416pfk.148.2021.11.18.08.18.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 08:18:29 -0800 (PST)
-Date:   Thu, 18 Nov 2021 16:18:26 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] KVM: x86: check PIR even for vCPUs with disabled APICv
-Message-ID: <YZZ80rok+NbpI6lJ@google.com>
-References: <20211118072531.1534938-1-pbonzini@redhat.com>
+        id S233189AbhKRQWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 11:22:34 -0500
+Received: from li1434-30.members.linode.com ([45.33.107.30]:46212 "EHLO
+        node.akkea.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232656AbhKRQWe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 11:22:34 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by node.akkea.ca (Postfix) with ESMTP id BA2134E2006;
+        Thu, 18 Nov 2021 16:19:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
+        t=1637252373; bh=ACfjbTUZOE9dZ7d4RhaiULxwDF61C6EiIzM9lgp6nWQ=;
+        h=From:To:Cc:Subject:Date;
+        b=D/Vd4F7KWNqMas7ANp3EDjy1LJipJoaDJRIrmRtFXBflXtbLRx3sueeWeLjIjuutY
+         MsjlWqfQN11/urwPAiHsdcBq3B75DZGd3jaA1Y2arEup1WTELPYt/h2SCffi1C6q+0
+         8f2GTtBMGkGu6nJvWWM+3YlPTPTG1pqzo6K7gBeY=
+X-Virus-Scanned: Debian amavisd-new at mail.akkea.ca
+Received: from node.akkea.ca ([127.0.0.1])
+        by localhost (mail.akkea.ca [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id gLN4dSe4Q8uF; Thu, 18 Nov 2021 16:19:33 +0000 (UTC)
+Received: from midas.localdomain (S0106788a2041785e.gv.shawcable.net [24.108.106.191])
+        by node.akkea.ca (Postfix) with ESMTPSA id 192F0394043;
+        Thu, 18 Nov 2021 16:19:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
+        t=1637252373; bh=ACfjbTUZOE9dZ7d4RhaiULxwDF61C6EiIzM9lgp6nWQ=;
+        h=From:To:Cc:Subject:Date;
+        b=D/Vd4F7KWNqMas7ANp3EDjy1LJipJoaDJRIrmRtFXBflXtbLRx3sueeWeLjIjuutY
+         MsjlWqfQN11/urwPAiHsdcBq3B75DZGd3jaA1Y2arEup1WTELPYt/h2SCffi1C6q+0
+         8f2GTtBMGkGu6nJvWWM+3YlPTPTG1pqzo6K7gBeY=
+From:   Angus Ainslie <angus@akkea.ca>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Sebastian Reichel <sre@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@puri.sm, Angus Ainslie <angus@akkea.ca>
+Subject: [PATCH v2] power: bq25890: add POWER_SUPPLY_PROP_TEMP
+Date:   Thu, 18 Nov 2021 08:18:45 -0800
+Message-Id: <20211118161845.98767-1-angus@akkea.ca>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211118072531.1534938-1-pbonzini@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021, Paolo Bonzini wrote:
-> The IRTE for an assigned device can trigger a POSTED_INTR_VECTOR even
-> if APICv is disabled on the vCPU that receives it.  In that case, the
-> interrupt will just cause a vmexit and leave the ON bit set together
-> with the PIR bit corresponding to the interrupt.
-> 
-> Right now, the interrupt would not be delivered until APICv is re-enabled.
-> However, fixing this is just a matter of always doing the PIR->IRR
-> synchronization, even if the vCPU has temporarily disabled APICv.
-> 
-> This is not a problem for performance, or if anything it is an
-> improvement.  First, in the common case where vcpu->arch.apicv_active is
-> true, one fewer check has to be performed.  Second, static_call_cond will
-> elide the function call if APICv is not present or disabled.  Finally,
-> in the case for AMD hardware we can remove the sync_pir_to_irr callback:
-> it is only needed for apic_has_interrupt_for_ppr, and that function
-> already has a fallback for !APICv.
-> 
-> Cc: stable@vger.kernel.org
-> Co-developed-by: Sean Christopherson <seanjc@google.com>
+Add the POWER_SUPPLY_PROP_TEMP and a NTC 10K percent VREGN to degrees LUT.
 
-For my bits:
+Make sure that a conversion is forced when the power supply is offline so
+the temperature is valid.
 
-Signed-off-by: Sean Christopherson <seanjc@google.com> 
+Signed-off-by: Angus Ainslie <angus@akkea.ca>
+---
+ drivers/power/supply/bq25890_charger.c | 37 +++++++++++++++++++++++++-
+ 1 file changed, 36 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/power/supply/bq25890_charger.c b/drivers/power/supply/bq25890_charger.c
+index 945c3257ca93..0260c6efdcb2 100644
+--- a/drivers/power/supply/bq25890_charger.c
++++ b/drivers/power/supply/bq25890_charger.c
+@@ -266,6 +266,7 @@ enum bq25890_table_ids {
+ 	/* lookup tables */
+ 	TBL_TREG,
+ 	TBL_BOOSTI,
++	TBL_TSPCT,
+ };
+ 
+ /* Thermal Regulation Threshold lookup table, in degrees Celsius */
+@@ -280,6 +281,28 @@ static const u32 bq25890_boosti_tbl[] = {
+ 
+ #define BQ25890_BOOSTI_TBL_SIZE		ARRAY_SIZE(bq25890_boosti_tbl)
+ 
++/* NTC 10K temperature lookup table in tenths of a degree */
++static const u32 bq25890_tspct_tbl[] = {
++	850, 840, 830, 820, 810, 800, 790, 780,
++	770, 760, 750, 740, 730, 720, 710, 700,
++	690, 685, 680, 675, 670, 660, 650, 645,
++	640, 630, 620, 615, 610, 600, 590, 585,
++	580, 570, 565, 560, 550, 540, 535, 530,
++	520, 515, 510, 500, 495, 490, 480, 475,
++	470, 460, 455, 450, 440, 435, 430, 425,
++	420, 410, 405, 400, 390, 385, 380, 370,
++	365, 360, 355, 350, 340, 335, 330, 320,
++	310, 305, 300, 290, 285, 280, 275, 270,
++	260, 250, 245, 240, 230, 225, 220, 210,
++	205, 200, 190, 180, 175, 170, 160, 150,
++	145, 140, 130, 120, 115, 110, 100, 90,
++	80, 70, 60, 50, 40, 30, 20, 10,
++	0, -10, -20, -30, -40, -60, -70, -80,
++	-90, -10, -120, -140, -150, -170, -190, -210,
++};
++
++#define BQ25890_TSPCT_TBL_SIZE		ARRAY_SIZE(bq25890_tspct_tbl)
++
+ struct bq25890_range {
+ 	u32 min;
+ 	u32 max;
+@@ -308,7 +331,8 @@ static const union {
+ 
+ 	/* lookup tables */
+ 	[TBL_TREG] =	{ .lt = {bq25890_treg_tbl, BQ25890_TREG_TBL_SIZE} },
+-	[TBL_BOOSTI] =	{ .lt = {bq25890_boosti_tbl, BQ25890_BOOSTI_TBL_SIZE} }
++	[TBL_BOOSTI] =	{ .lt = {bq25890_boosti_tbl, BQ25890_BOOSTI_TBL_SIZE} },
++	[TBL_TSPCT] =	{ .lt = {bq25890_tspct_tbl, BQ25890_TSPCT_TBL_SIZE} }
+ };
+ 
+ static int bq25890_field_read(struct bq25890_device *bq,
+@@ -388,6 +412,7 @@ static bool bq25890_is_adc_property(enum power_supply_property psp)
+ 	switch (psp) {
+ 	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
+ 	case POWER_SUPPLY_PROP_CURRENT_NOW:
++	case POWER_SUPPLY_PROP_TEMP:
+ 		return true;
+ 
+ 	default:
+@@ -528,6 +553,15 @@ static int bq25890_power_supply_get_property(struct power_supply *psy,
+ 		val->intval = ret * -50000;
+ 		break;
+ 
++	case POWER_SUPPLY_PROP_TEMP:
++		ret = bq25890_field_read(bq, F_TSPCT);
++		if (ret < 0)
++			return ret;
++
++		/* convert TS percentage into rough temperature */
++		val->intval = bq25890_find_val(ret, TBL_TSPCT);
++		break;
++
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -713,6 +747,7 @@ static const enum power_supply_property bq25890_power_supply_props[] = {
+ 	POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT,
+ 	POWER_SUPPLY_PROP_VOLTAGE_NOW,
+ 	POWER_SUPPLY_PROP_CURRENT_NOW,
++	POWER_SUPPLY_PROP_TEMP,
+ };
+ 
+ static char *bq25890_charger_supplied_to[] = {
+-- 
+2.25.1
+
