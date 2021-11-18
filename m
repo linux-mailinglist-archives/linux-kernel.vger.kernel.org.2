@@ -2,112 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06CD1456282
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D6D456285
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:37:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234376AbhKRSkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 13:40:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45290 "EHLO
+        id S234405AbhKRSkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 13:40:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233616AbhKRSkl (ORCPT
+        with ESMTP id S234389AbhKRSkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 13:40:41 -0500
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3FFBC061574;
-        Thu, 18 Nov 2021 10:37:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=metanate.com; s=stronger; h=In-Reply-To:Content-Type:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description; bh=NMsSVSlICaw3KxLzwPPUCPeVdNgwg5v8aK2nEdXuhtA=; b=DILZx
-        /TB9pZ1072e6u6lM8weFHFpm1OxAnji/1mVME5ECSH4vCffcOLqzZVLl9ABFp1eiHkfUCzM9/B40F
-        p0DdAQ4KvHFi0GD2q+1d5twBHNIo4IcyJtFIXmysJ7uhOU9U3XXAGHEFqZ9pJNOP+g9HzavcKLD80
-        BQwOrZZasBUwPK1JWN97LcMLNGOlQDEy8vzTah0QqgBwmdoZ98DNRr+1AzoM0YiPrRrgTgbmC1CdP
-        A078lmkh22euzzTvJAzI0hqn9qpHoLBc+Ws5DguYxd2tDAVxLEzYrLikydU9V+bw2BMPKBh0dCKwr
-        sGusX9DDSrYh9JmSuyaa7f6MEUD2w==;
-Received: from [81.174.171.191] (helo=donbot)
-        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <john@metanate.com>)
-        id 1mnmHu-0005Py-OZ; Thu, 18 Nov 2021 18:37:34 +0000
-Date:   Thu, 18 Nov 2021 18:37:33 +0000
-From:   John Keeping <john@metanate.com>
-To:     Ondrej Jirman <megous@megous.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>, Wolfram Sang <wsa@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "moderated list:ARM/Rockchip SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC support" 
-        <linux-rockchip@lists.infradead.org>,
-        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [RESEND PATCH] i2c: rk3x: Handle a spurious start completion
- interrupt flag
-Message-ID: <YZadbTw0q4NA2XWs@donbot>
-References: <20210924111528.2924251-1-megous@megous.com>
+        Thu, 18 Nov 2021 13:40:51 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C96C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:37:50 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id 8so6913463pfo.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:37:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hmolre7Okhy+2RfWXyND/uy2w4i4I9jFJ+ihj69aXDA=;
+        b=H2VVy+98VZb3T/nxecceRPaS4zE5Oz+cewzsaZHfm9eEsv3XRjc+DZ9njtbvTiIV9v
+         J3uSabI9Zn1CjpwWGCCmAjBS+t2u97WQlEQMjNpnEkhOLklQ8XH185Q78ublW5dzZJwg
+         7NXk/C4Z7m2WT6IK7nQoYb89NQ/9+XXt5CJ1Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hmolre7Okhy+2RfWXyND/uy2w4i4I9jFJ+ihj69aXDA=;
+        b=Iqxta9uI/24x1Omfc6H7/lZbLnGVxyuEub4VfIOZPbMrZwSaQmgiDGkSAUn6pd1qpT
+         Yfo1AyGoGChr2c06mFkNtmlaEMeieAVgie3BGjXiDEoPYIYzukPGri6/MFfthytz309O
+         jbgtZs0Eb5qje/TO8V53YdSHXLtvfAfToizJUNgF8DoIVHADe5lL/2j9YzLFdSaJN3V1
+         FxrOFpB7BTbkPxvMRe669vPPyGerhN9pz+IhAh/A3fPx+mqN3TiAF7xWP3A3luL9fW2f
+         +fPFAl3EXH7uzxnPIMwWYwfrcGvf/PvbOg91GTTyyh6TD4FucUUNBndJWxKNnXSOwsZe
+         Qcag==
+X-Gm-Message-State: AOAM533LsSUF85kkufG1L4nqS1QHuIq90QjeryKgGbX93mTmwzEm+5Yx
+        YVhCUnkFaHNWFNbYsnWfvjusBQ==
+X-Google-Smtp-Source: ABdhPJyGMYhMNijolBn3fPZucIoXtbuuMs7SP0RN0sabR7T56FvS5htc77aeK768uABZmy/8W3JFMA==
+X-Received: by 2002:a63:e214:: with SMTP id q20mr12662707pgh.442.1637260670241;
+        Thu, 18 Nov 2021 10:37:50 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v10sm313376pfg.162.2021.11.18.10.37.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 10:37:49 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Saeed Mahameed <saeedm@nvidia.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] net/mlx5e: Use struct_group() for memcpy() region
+Date:   Thu, 18 Nov 2021 10:37:48 -0800
+Message-Id: <20211118183748.1283069-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210924111528.2924251-1-megous@megous.com>
-X-Authenticated: YES
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2065; h=from:subject; bh=5h1/OCbcMC9fSZGebngnGdh+E0sfjUIlmjyL7n2bbX0=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhlp171Vyvp59PAA8HQAbsKsvjRM9PHtYPsKBL4acu CDa8lw+JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZadewAKCRCJcvTf3G3AJjJyD/ 4nVg1irFelKvdZ02Th2MFSO4WzpimbnUZGifMbJ9L4pb52/n77LB3drjD6NSKlGtEaFlVyvNB/q0RH +t/6kzu/hCv25FLpy+J6YbtieBUc8Z7Kg7lW8weJX68+CWq+x3l0WyLhvkf9HlFZYWmrJBvC3AC6x5 dI0QXV4svrZEPVbYXsPfvAzX+4EDWdU9s7zA09cEH/a9lZdqyBvDoDQiTEEColX1wlqh13LZ3/n0Zq XOB4CCOqJCMlVnO9zINDvQYcH54PDqtqs4V9c9oZMVHbbyqELLtqCye3Ro0gFCi84RQ9pBtgBS+VDy mznZ3n6bPNcfnTfsA1Dihx8wWa6thbBI5S86q35YSkZxyiUnTU45jLBdYBhVE4I1oXDAVq/LpKYGv6 sgtYOkpjTGovnUhqboAgs8hfQQmAiZzzzKPq+86NsanzBWMWd3maqAMUNHYJPdJaqA6Uibnjke/1UI S5rQgcUS7i6Hbe3b2xk9hPo847RY/mh+MSUZHI4DPJAtgX0uxEfcLKoTZsGJFL+Qbe/MnmV8mTQ1RP 2oyRGggP9SLnZ1SNPIbbNbkpVYjgfgvMFseD5DfdK7/VdtmUkgFcwOc6uk6dy/cJF3dDOzAnHEhi1+ LbRyBwkAWgx7RJYydaCeTzzcKygH91nEK0WjuQja6ADP01c168owKfL4arnQ==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 01:15:27PM +0200, Ondrej Jirman wrote:
-> In a typical read transfer, start completion flag is being set after
-> read finishes (notice ipd bit 4 being set):
-> 
-> trasnfer poll=0
-> i2c start
-> rk3x-i2c fdd40000.i2c: IRQ: state 1, ipd: 10
-> i2c read
-> rk3x-i2c fdd40000.i2c: IRQ: state 2, ipd: 1b
-> i2c stop
-> rk3x-i2c fdd40000.i2c: IRQ: state 4, ipd: 33
-> 
-> This causes I2C transfer being aborted in polled mode from a stop completion
-> handler:
-> 
-> trasnfer poll=1
-> i2c start
-> rk3x-i2c fdd40000.i2c: IRQ: state 1, ipd: 10
-> i2c read
-> rk3x-i2c fdd40000.i2c: IRQ: state 2, ipd: 0
-> rk3x-i2c fdd40000.i2c: IRQ: state 2, ipd: 1b
-> i2c stop
-> rk3x-i2c fdd40000.i2c: IRQ: state 4, ipd: 13
-> i2c stop
-> rk3x-i2c fdd40000.i2c: unexpected irq in STOP: 0x10
-> 
-> Clearing the START flag after read fixes the issue without any obvious
-> side effects.
-> 
-> This issue was dicovered on RK3566 when adding support for powering
-> off the RK817 PMIC.
-> 
-> Signed-off-by: Ondrej Jirman <megous@megous.com>
-> ---
+In preparation for FORTIFY_SOURCE performing compile-time and run-time
+field bounds checking for memcpy(), memmove(), and memset(), avoid
+intentionally writing across neighboring fields.
 
-I haven't seen the issue described here, so I can't test whether this
-fix works, but the explanation makes sense, so:
+Use struct_group() in struct vlan_ethhdr around members h_dest and
+h_source, so they can be referenced together. This will allow memcpy()
+and sizeof() to more easily reason about sizes, improve readability,
+and avoid future warnings about writing beyond the end of h_dest.
 
-Reviewed-by: John Keeping <john@metanate.com>
+"pahole" shows no size nor member offset changes to struct vlan_ethhdr.
+"objdump -d" shows no object code changes.
 
->  drivers/i2c/busses/i2c-rk3x.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
-> index 819ab4ee517e..02ddb237f69a 100644
-> --- a/drivers/i2c/busses/i2c-rk3x.c
-> +++ b/drivers/i2c/busses/i2c-rk3x.c
-> @@ -423,8 +423,8 @@ static void rk3x_i2c_handle_read(struct rk3x_i2c *i2c, unsigned int ipd)
->  	if (!(ipd & REG_INT_MBRF))
->  		return;
->  
-> -	/* ack interrupt */
-> -	i2c_writel(i2c, REG_INT_MBRF, REG_IPD);
-> +	/* ack interrupt (read also produces a spurious START flag, clear it too) */
-> +	i2c_writel(i2c, REG_INT_MBRF | REG_INT_START, REG_IPD);
->  
->  	/* Can only handle a maximum of 32 bytes at a time */
->  	if (len > 32)
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_tx.c | 2 +-
+ include/linux/if_vlan.h                         | 6 ++++--
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
+index 7fd33b356cc8..ee7ecb88adc1 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
+@@ -208,7 +208,7 @@ static inline void mlx5e_insert_vlan(void *start, struct sk_buff *skb, u16 ihs)
+ 	int cpy1_sz = 2 * ETH_ALEN;
+ 	int cpy2_sz = ihs - cpy1_sz;
+ 
+-	memcpy(vhdr, skb->data, cpy1_sz);
++	memcpy(&vhdr->addrs, skb->data, cpy1_sz);
+ 	vhdr->h_vlan_proto = skb->vlan_proto;
+ 	vhdr->h_vlan_TCI = cpu_to_be16(skb_vlan_tag_get(skb));
+ 	memcpy(&vhdr->h_vlan_encapsulated_proto, skb->data + cpy1_sz, cpy2_sz);
+diff --git a/include/linux/if_vlan.h b/include/linux/if_vlan.h
+index 41a518336673..45aad461aa34 100644
+--- a/include/linux/if_vlan.h
++++ b/include/linux/if_vlan.h
+@@ -46,8 +46,10 @@ struct vlan_hdr {
+  *	@h_vlan_encapsulated_proto: packet type ID or len
+  */
+ struct vlan_ethhdr {
+-	unsigned char	h_dest[ETH_ALEN];
+-	unsigned char	h_source[ETH_ALEN];
++	struct_group(addrs,
++		unsigned char	h_dest[ETH_ALEN];
++		unsigned char	h_source[ETH_ALEN];
++	);
+ 	__be16		h_vlan_proto;
+ 	__be16		h_vlan_TCI;
+ 	__be16		h_vlan_encapsulated_proto;
+-- 
+2.30.2
+
