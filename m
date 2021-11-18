@@ -2,119 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AC4455E68
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B74F455E6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:43:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhKROoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 09:44:46 -0500
-Received: from mx1.tq-group.com ([93.104.207.81]:53891 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230134AbhKROop (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 09:44:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1637246505; x=1668782505;
-  h=from:to:cc:subject:date:message-id;
-  bh=t2I8o2x03tIkjpXNO1UmbqLdi++NbU1U5tYQ4OEwDhc=;
-  b=AqhOkEPKqC/eIKagvUYToeUq1hiJhqv+0VPvwOveVHQNHA3YigK7QWKm
-   fpjC/CY2cv75yuAlofCJb23amgmTY7c5BcO/ZhHuRid6va2sUkSr0FcE8
-   XpHwHWeYQaU41HPWJFW8kXZzSWY2quF2+Pc1oItYzDFoNTXwB30H5r9HY
-   fdIDa4cRzTf2I0SJEiMlgDdWodz8HE0NnvfNuiB6ilg+UT92eqag81xvR
-   Vj1h8C+YsI0soIiwo9c9B4fJpwAEqrnPQJRUDP5B9+9AKy628FIlU/Az8
-   +QMbuVruRedP64paf2sHIH9+SkAg8tppd3h2KF+CRXX30/sKCBPRyrMZ7
-   g==;
-X-IronPort-AV: E=Sophos;i="5.87,245,1631570400"; 
-   d="scan'208";a="20545389"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 18 Nov 2021 15:41:43 +0100
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Thu, 18 Nov 2021 15:41:43 +0100
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Thu, 18 Nov 2021 15:41:43 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1637246503; x=1668782503;
-  h=from:to:cc:subject:date:message-id;
-  bh=t2I8o2x03tIkjpXNO1UmbqLdi++NbU1U5tYQ4OEwDhc=;
-  b=Q9qMcRqt67tJDEwR9Od0PYclll5wYhs1g+1Cbfb/rXcBunPz4afdyDix
-   Jd1lQcGVRk4WAXfqRDfImjVfdZn6wmjsULdDFDFQ89NhczMubKonrnqRD
-   ZfLPvGOLFsA+Mo7i36US1PtN4rvUkm1rxQunLeNvTRJZJgERHd8vS4UbN
-   SqMsHZsh9PwBaXjtKEWGBuveZEuHsTGt3SKVO/PguPmRsHxpkvKqrISJ+
-   eh2xrR1+PnLKOb6LNheAU+Q0lHMY74H5ryG7pTu/5A86rKaciueLC5Wk2
-   QKrhzORcp76Mx/ppyQT+itYCzUm56N9iU9ZSTK8pm7V8dWuCgBY96X3Op
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.87,245,1631570400"; 
-   d="scan'208";a="20545388"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 18 Nov 2021 15:41:43 +0100
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 487DA280065;
-        Thu, 18 Nov 2021 15:41:43 +0100 (CET)
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Felipe Balbi (Intel)" <balbi@kernel.org>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Matt Kline <matt@bitbashing.io>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH net] can: m_can: pci: fix iomap_read_fifo() and iomap_write_fifo()
-Date:   Thu, 18 Nov 2021 15:40:11 +0100
-Message-Id: <20211118144011.10921-1-matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.17.1
+        id S230376AbhKROqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 09:46:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38379 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229474AbhKROqf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 09:46:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637246615;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=U2HTpEJGA8kCZGKGmh2ShVUAanB3gLtGDWTV2flej/k=;
+        b=c/sXmyGU+xA/a2NKDzYjYshbmNkpbtk3xijGMvY/d+AVp10vlphkX8h08Z9H1fglVd0/6t
+        cTvS57oZgNxnJk+sxl0R7SIXNqAJg7UV9D79iwr0G8pf47wJN0mFRaxH/hBBI9t9LYvbUG
+        h0truj8nRCW7YNo5Yf4nRPMfWliKzd4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-230-nRDX9vYTPQm1Z88OKetB9Q-1; Thu, 18 Nov 2021 09:43:30 -0500
+X-MC-Unique: nRDX9vYTPQm1Z88OKetB9Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 85D73100D0DB;
+        Thu, 18 Nov 2021 14:43:28 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4EE985C1D5;
+        Thu, 18 Nov 2021 14:43:26 +0000 (UTC)
+Message-ID: <350b8c9b-c672-d6e2-a7a9-bf7c01699a8e@redhat.com>
+Date:   Thu, 18 Nov 2021 15:43:25 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] KVM: x86/pmu: Fix reserved bits for AMD PerfEvtSeln
+ register
+Content-Language: en-US
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211118130320.95997-1-likexu@tencent.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211118130320.95997-1-likexu@tencent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The same fix that was previously done in m_can_platform in commit
-99d173fbe894 ("can: m_can: fix iomap_read_fifo() and iomap_write_fifo()")
-is required in m_can_pci as well to make iomap_read_fifo() and
-iomap_write_fifo() work for val_count > 1.
+On 11/18/21 14:03, Like Xu wrote:
+> From: Like Xu <likexu@tencent.com>
+> 
+> If we run the following perf command in an AMD Milan guest:
+> 
+>    perf stat \
+>    -e cpu/event=0x1d0/ \
+>    -e cpu/event=0x1c7/ \
+>    -e cpu/umask=0x1f,event=0x18e/ \
+>    -e cpu/umask=0x7,event=0x18e/ \
+>    -e cpu/umask=0x18,event=0x18e/ \
+>    ./workload
+> 
+> dmesg will report a #GP warning from an unchecked MSR access
+> error on MSR_F15H_PERF_CTLx.
+> 
+> This is because according to APM (Revision: 4.03) Figure 13-7,
+> the bits [35:32] of AMD PerfEvtSeln register is a part of the
+> event select encoding, which extends the EVENT_SELECT field
+> from 8 bits to 12 bits.
+> 
+> Opportunistically update pmu->reserved_bits for reserved bit 19.
+> 
+> Reported-by: Jim Mattson <jmattson@google.com>
+> Fixes: ca724305a2b0 ("KVM: x86/vPMU: Implement AMD vPMU code for KVM")
+> Signed-off-by: Like Xu <likexu@tencent.com>
+> ---
+>   arch/x86/kvm/svm/pmu.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/svm/pmu.c b/arch/x86/kvm/svm/pmu.c
+> index 871c426ec389..b4095dfeeee6 100644
+> --- a/arch/x86/kvm/svm/pmu.c
+> +++ b/arch/x86/kvm/svm/pmu.c
+> @@ -281,7 +281,7 @@ static void amd_pmu_refresh(struct kvm_vcpu *vcpu)
+>   		pmu->nr_arch_gp_counters = AMD64_NUM_COUNTERS;
+>   
+>   	pmu->counter_bitmask[KVM_PMC_GP] = ((u64)1 << 48) - 1;
+> -	pmu->reserved_bits = 0xffffffff00200000ull;
+> +	pmu->reserved_bits = 0xfffffff000280000ull;
+>   	pmu->version = 1;
+>   	/* not applicable to AMD; but clean them to prevent any fall out */
+>   	pmu->counter_bitmask[KVM_PMC_FIXED] = 0;
+> 
 
-Fixes: 812270e5445b ("can: m_can: Batch FIFO writes during CAN transmit")
-Fixes: 1aa6772f64b4 ("can: m_can: Batch FIFO reads during CAN receive")
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
----
- drivers/net/can/m_can/m_can_pci.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/can/m_can/m_can_pci.c b/drivers/net/can/m_can/m_can_pci.c
-index 8bbbaa264f0d..b56a54d6c5a9 100644
---- a/drivers/net/can/m_can/m_can_pci.c
-+++ b/drivers/net/can/m_can/m_can_pci.c
-@@ -47,8 +47,13 @@ static u32 iomap_read_reg(struct m_can_classdev *cdev, int reg)
- static int iomap_read_fifo(struct m_can_classdev *cdev, int offset, void *val, size_t val_count)
- {
- 	struct m_can_pci_priv *priv = cdev_to_priv(cdev);
-+	void __iomem *src = priv->base + offset;
- 
--	ioread32_rep(priv->base + offset, val, val_count);
-+	while (val_count--) {
-+		*(unsigned int *)val = ioread32(src);
-+		val += 4;
-+		src += 4;
-+	}
- 
- 	return 0;
- }
-@@ -66,8 +71,13 @@ static int iomap_write_fifo(struct m_can_classdev *cdev, int offset,
- 			    const void *val, size_t val_count)
- {
- 	struct m_can_pci_priv *priv = cdev_to_priv(cdev);
-+	void __iomem *dst = priv->base + offset;
- 
--	iowrite32_rep(priv->base + offset, val, val_count);
-+	while (val_count--) {
-+		iowrite32(*(unsigned int *)val, dst);
-+		val += 4;
-+		dst += 4;
-+	}
- 
- 	return 0;
- }
--- 
-2.17.1
+Queued, thanks.
 
