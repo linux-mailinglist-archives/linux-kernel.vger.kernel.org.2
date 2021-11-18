@@ -2,119 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10580455EB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0E3E455EBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbhKRO4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 09:56:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:44165 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229607AbhKRO4k (ORCPT
+        id S231381AbhKRO44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 09:56:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230098AbhKRO4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 09:56:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637247220;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=L373jXSEIoDZsHVMU2PhLorWCXbM5HPTVlTFl6hbkas=;
-        b=F/lAVgSbnv9nVTWssHPEiVDbSCvfTJfJIqaR8qkweuJ457L0ZsBjgTuUfIZKzX588ZUaUu
-        6LsxgD/CRpz8W8/0H6zlnjDHIKbmU1l07bzVDxoW+y+z7dB/0CX3QD/Q2PD8NQbcCZ4kek
-        D6f9OTStG+grjSZtlYDUAcIZIrBy6yM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-321-aAAJpS2sPauaaYyCBJc8hQ-1; Thu, 18 Nov 2021 09:53:39 -0500
-X-MC-Unique: aAAJpS2sPauaaYyCBJc8hQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 24EA718D6A2A;
-        Thu, 18 Nov 2021 14:53:36 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 516301037F47;
-        Thu, 18 Nov 2021 14:53:31 +0000 (UTC)
-Message-ID: <0008cb01-9100-6664-2cb8-e1c741f69a77@redhat.com>
-Date:   Thu, 18 Nov 2021 15:53:30 +0100
+        Thu, 18 Nov 2021 09:56:55 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB50C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 06:53:54 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id p18-20020a17090ad31200b001a78bb52876so8397331pju.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 06:53:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=00/NWBiXDMIwTA2wxI59iuasKKaexVRD/MgwjjpMNtY=;
+        b=PQKOVFgLa4dXcJbx1KgwRmt+rTPDI0UAmCo43eoJDn0dXmS3OERtXNkwvUSDwtsexL
+         4gZOC6lI9TeLsiecL0ABkcWatE90NTwp4ISl6tDiXrScVr/PcZkS4OrOr22pCgyODRaM
+         sb4pPU3jkGOr0wq5XHOdRmNZ6tcbz6bA2k2jXclwOsG7AiEfvd8V3b4XWtRVpDgXdlmG
+         2ju0aNbMaixRvYx3/MdF3qM9rN4d3X6J/kz0hTvTW39sgWvpoEpfGzHFixnJ/MtUBXKa
+         uGCr54Q37jvDomNAzMZc8dv3z7zzzcGtm6q7AzHFEyRxEf5QjDKrO6gc7X99qaGbJA7F
+         nHMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=00/NWBiXDMIwTA2wxI59iuasKKaexVRD/MgwjjpMNtY=;
+        b=UhHXNhocMrUVNLnc9XxopAGbPZSAL7zyGBGPr/BT0CH4DaiOSUUsEH814Nmme8uhX5
+         +zPOkSnog0rIk1CWAQmDGlT1qi5Kqi1eN6eJKNtR1TkEUYScIYWC8lg6lhtgqoK6N5un
+         XUvqlZjOo1BBMlXIE7NlN0PGvRU+ZfPkjH8FpeZzLj/VxGBAVrBU3+1rtxXBqHM4/9rI
+         vWteEdAQJMOcvgjxm1BeMtxnEzecCIqVYBcxYEJS1wgw26AR+T/Wx1G6AqwVUncDNzAD
+         2UZshV+pGJlgBSnNHqJBRY2rMFiocYjdph8YaYQogesuXOG4iTtwsfqKmWrYf8d/x6xV
+         IqaA==
+X-Gm-Message-State: AOAM5325SOcdqIRJXFeB8RKlKAgysJdmj/BwyuthWX7s0ra7iZxclbYx
+        uGwNHUfrPuRrZFwd4ai+fbD3Eu2Pgc+zW4zgxbr++A==
+X-Google-Smtp-Source: ABdhPJy/yXtGCmRA0aJzW6HarUsG1nwCHbSHk0dZn1p5TvpTB66YkOcGNLY8thYYlrjSODVvyDJjR9SOcaB75LGsl9U=
+X-Received: by 2002:a17:903:2443:b0:142:1e92:1d19 with SMTP id
+ l3-20020a170903244300b001421e921d19mr66821454pls.24.1637247234084; Thu, 18
+ Nov 2021 06:53:54 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 4/4] KVM: x86/pmu: Refactoring kvm_perf_overflow{_intr}()
-Content-Language: en-US
-To:     Like Xu <like.xu.linux@gmail.com>,
-        Jim Mattson <jmattson@google.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211116122030.4698-1-likexu@tencent.com>
- <20211116122030.4698-5-likexu@tencent.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211116122030.4698-5-likexu@tencent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20211112112433.942075-1-hsinyi@chromium.org>
+In-Reply-To: <20211112112433.942075-1-hsinyi@chromium.org>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Thu, 18 Nov 2021 15:53:42 +0100
+Message-ID: <CAG3jFyvznd2FD7=fxkEYrck0P3iu4qyKUc326yRHN1Wf90TRXw@mail.gmail.com>
+Subject: Re: [PATCH] drm/bridge: anx7625: Fix edid_read break case in sp_tx_edid_read()
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Sam Ravnborg <sam@ravnborg.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Xin Ji <xji@analogixsemi.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 13:20, Like Xu wrote:
-> -	}
-> +	if (!intr)
-> +		return;
-> +
-> +	/*
-> +	 * Inject PMI. If vcpu was in a guest mode during NMI PMI
-> +	 * can be ejected on a guest mode re-entry. Otherwise we can't
-> +	 * be sure that vcpu wasn't executing hlt instruction at the
-> +	 * time of vmexit and is not going to re-enter guest mode until
-> +	 * woken up. So we should wake it, but this is impossible from
-> +	 * NMI context. Do it from irq work instead.
-> +	 */
-> +	if (!kvm_is_in_guest())
-> +		irq_work_queue(&pmc_to_pmu(pmc)->irq_work);
-> +	else
-> +		kvm_make_request(KVM_REQ_PMI, pmc->vcpu);
-> +}
-> +
-> +static void kvm_perf_overflow(struct perf_event *perf_event,
-> +			      struct perf_sample_data *data,
-> +			      struct pt_regs *regs)
-> +{
-> +	struct kvm_pmc *pmc = perf_event->overflow_handler_context;
-> +	struct kvm_pmu *pmu = pmc_to_pmu(pmc);
-> +
-> +	if (!test_and_set_bit(pmc->idx, pmu->reprogram_pmi))
-> +		kvm_pmu_counter_overflow(pmc, need_overflow_intr(pmc));
->   }
+Hey Hsin-Yi,
 
-It could be even better to make a single function, but instead of 
-need_overflow_intr(pmc) you should store into pmc from 
-pmc_reprogram_counter.  Like this:
+Thanks for catching this.
 
-	/* Ignore counters that have been reported already.  */
-	if (test_and_set_bit(pmc->idx, pmu->reprogram_pmi))
-		return;
+checkpatch --strict is throwing an error for this patch. With that,
+feel free to add my r-b.
 
-	__set_bit(pmc->idx, (unsigned long *)&pmu->global_status);
-	kvm_make_request(KVM_REQ_PMU, pmc->vcpu);
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
 
-	if (pmc->intr) {
-		/*
-		 * Inject PMI. If vcpu was in a guest mode during NMI PMI
-		 * can be ejected on a guest mode re-entry. Otherwise we can't
-		 * be sure that vcpu wasn't executing hlt instruction at the
-		 * time of vmexit and is not going to re-enter guest mode until
-		 * woken up. So we should wake it, but this is impossible from
-		 * NMI context. Do it from irq work instead.
-		 */
-		if (!kvm_is_in_guest())
-			irq_work_queue(pmu->irq_work);
-		else
-			kvm_make_request(KVM_REQ_PMI, pmc->vcpu);
-	}
-
-Paolo
-
+On Fri, 12 Nov 2021 at 12:24, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>
+> edid_read() was assumed to return 0 on success. After
+> 7f16d0f3b8e2("drm/bridge: anx7625: Propagate errors from sp_tx_rst_aux()"),
+> the function can return >= 0 for successful case. Fix the g_edid_break
+> condition in sp_tx_edid_read().
+>
+> Fixes: 7f16d0f3b8e2("drm/bridge: anx7625: Propagate errors from sp_tx_rst_aux()")
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+>  drivers/gpu/drm/bridge/analogix/anx7625.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> index 1a871f6b6822ee..392203b576042b 100644
+> --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
+> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> @@ -826,7 +826,7 @@ static int sp_tx_edid_read(struct anx7625_data *ctx,
+>                                 g_edid_break = edid_read(ctx, offset,
+>                                                          pblock_buf);
+>
+> -                               if (g_edid_break)
+> +                               if (g_edid_break < 0)
+>                                         break;
+>
+>                                 memcpy(&pedid_blocks_buf[offset],
+> --
+> 2.34.0.rc1.387.gb447b232ab-goog
+>
