@@ -2,125 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2909C4562A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:41:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 358ED4562A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:41:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229521AbhKRSoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 13:44:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46222 "EHLO
+        id S233845AbhKRSoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 13:44:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233679AbhKRSoX (ORCPT
+        with ESMTP id S233807AbhKRSoi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 13:44:23 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB13C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:41:23 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id z6so4831821plk.6
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:41:23 -0800 (PST)
+        Thu, 18 Nov 2021 13:44:38 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F04C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:41:37 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id z34so30731189lfu.8
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:41:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RbUTIPyfuQU3KvEwbLJbeU9iwD29PEErUjBhpe3f1nk=;
-        b=Co+TIeRJL09Rq3VPI76nMtEKLH/eE+0ZvB8aRWw0Yi+6DgAd9bRSPauVUzKvqEeMK1
-         hT1e0mHlV6mDk225eu1z8Lo9YAC9bcPXiC7i39eZ5PAvNdOPGhiaHeh64Q1FqeJM60zz
-         KzPl31m9ey7qhQdqvq8xeaHux2ki+1q97tYd8=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VvElXszLwjkIoRUsL1wZhCMOi1Cft0lEphidMFxQYiQ=;
+        b=tfhCkOcnElZBYRqGQUCSH+dme82Vpni11cDtKi3sPhbkkXAd4xCGYiujsK1sQhWSoq
+         ulNOeLM7vRuMSRokD7ZZvQ7O5gnP0N9lZEN9ysei3a0EkPz4mo09Dm3YdgRHgVuiyehn
+         YH8BPvQuYg7f7X2WYp1EjztWMGdgtNERicEr22IHuDMEEbPNc5jhkgujxXi7C8mJFaR/
+         E5yXBvJUT33JTk6RDh3W4m4jatPtG/XB9nTtluDfDSgnMHmeQfkw0QuvcFo/7AWWzSSN
+         O2cgAJGTW/7vF1RfNusft5yTt6hz4uo9+7LT+4cQTQYS3v0P6JJbSVO6/KFeN9Bwhzrv
+         iJDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RbUTIPyfuQU3KvEwbLJbeU9iwD29PEErUjBhpe3f1nk=;
-        b=zygWBfRbgtSKtX5Sbkmjs4bpBJfoAz7/zjYOPKbqRHaxgDMWmXv47XwPbOHBbr4XdA
-         MU/W8HiLqAHyW+sN0Rg5c5Ho7VE1PBSGIo6J3iCr5I+WSpCm927DEbQcPUQOvJ1RGnPU
-         c/C1RvGycSOpEbhss5gzpLi6Eq/jxQFy1IulNrptx4sIh2oNnQQJBeOJUcROBKSAiulY
-         TV2LxZqywnJJzKB+6ATsZEJrn3OLWbo4rZhURie9t4WiHB2vNgnmzycVeofMORQLJrxR
-         odERhTmXrSI+0pSUn4XEiphk9E6uTtbQCuNz2cFxYT0FOT/fOpd5sLX+Na5nBTa+bj2T
-         1+UA==
-X-Gm-Message-State: AOAM532Ix+hxq946vMCRJGqzUlQ8mQGvv+MY2eBKiGBRWDpL2e/JfZ9/
-        kbp+x2TMT0VACvICAMnQ5KEARQ==
-X-Google-Smtp-Source: ABdhPJzodK/I+eeNuN3Xk06+n5zhrWUoOkx/5chP0/yt93UK8GaJ8Jr/gwEyIDSs3RSJwJEYECbGVw==
-X-Received: by 2002:a17:902:e804:b0:142:1c0b:c2a6 with SMTP id u4-20020a170902e80400b001421c0bc2a6mr67605456plg.23.1637260882951;
-        Thu, 18 Nov 2021 10:41:22 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j8sm343200pfc.8.2021.11.18.10.41.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 10:41:22 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] libertas_tf: Use struct_group() for memcpy() region
-Date:   Thu, 18 Nov 2021 10:41:21 -0800
-Message-Id: <20211118184121.1283821-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VvElXszLwjkIoRUsL1wZhCMOi1Cft0lEphidMFxQYiQ=;
+        b=rWrzF3MBo4UKBGupYUxNd1XdzRkexDJDR1fOKIAWuO8ttBSrBS5FNe+zYbWAQJz4E2
+         53uB3FGeumZo1zRMfIWLrpulb2XpsHY2XbdG4TOV8jq2R/HZDXC3S35PyCpEOaapWzYI
+         szGWVcp9YFNV3mO4aCdeXwrxmOvAUpWlfZzC7IfBJxo0jCjp0eX3/J1/xVbqvzb5E9a0
+         dZM9P+ZNong5o9Nn9HTZpo7D6HYlcVWqXLVmcIRzZm2qENNJROz/JNWr1pcaxy9EmVHs
+         5XsVXnJ8vJW/dS8HZNLWD7WEj5t4hXSBnL5BnZmo/PRiEGy3884DY80xoKZtHr4hBnDu
+         FJfQ==
+X-Gm-Message-State: AOAM530V+iqM/uDy9HP15t50at71O/Ptt47QAhOoSF8XZ2LvJxVU64je
+        zBxtm/JH77QwW/EPfaQd5n5EH8S16wqhc6Y5d8OJIQ==
+X-Google-Smtp-Source: ABdhPJxhAY1J1WZVxgqU7eTZK7w9CGyzR/q/+PV+sQbqi1Amt65GIAIMyXxlYmcPV99KaJPI6VtBYMiZD8WipHO60P4=
+X-Received: by 2002:a05:6512:3d16:: with SMTP id d22mr25399536lfv.523.1637260895491;
+ Thu, 18 Nov 2021 10:41:35 -0800 (PST)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2474; h=from:subject; bh=aN5SRWSO0jhRLPZQ+xEXk4KxeSHDMCg25qp77Fv8hh8=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhlp5Qeg0TURmPLYxq0mwE2hFWy/0AYNHuIKbeAQlp DWoEAlmJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZaeUAAKCRCJcvTf3G3AJuSiD/ 4wcpmRD5px9n6yd6xWv+gt3hCr1H9791Cboykwo0Lpp/SHFjH4FZFXODl+Yk+h1qKLUNAVhyaeHdD5 ADLhR1hGYi57Gv7cSAZI9hjopIS2JhOKy8SseJvoBH9XV+zEvzMxVRyIJHkaPpMjvA8Rw8VHba+0wD qBVapKp9KITa6HKnH/imrMShxTcyssHL8gq7t4yipfOjliNPO4LikA2ppq8Z11+vyhvi2BKm9VNl8m LAnFs3PVt1PVVsGYYMBO5TNmu6kZWu9HeDnikMMc4NOBKNWusiT/fPonzIeYVmgzRAGeHQnsQcQ84h qyfKFYGtvKXCn2YSM/TNcxk0h1b5fG1TaLmNtKtuImNhbZylnnK6tq3kgBrTTIq7MjdwvVDT3/24pO zTYInji5mjFrii4gSkR119Ov/UFizJsDhaOrkbDX+b3kNW9xt8DvboOv7WNaKXUg/jZGuBsfhHsWOg uuZPI6u5uYPndGRgLsAfIxMuPQHyi+1w9L/EKxOOZ6NsEn2LjfzmGTYs/ZdFr07sW/YYyaXIWQTrCk UXpaSTtRRrfX+R5NUiIVO1r+Q6qcTtLAHfNeQToQct7l4M12U+Esi6lwI8XmDpPMmuupWueu9v3q1s PL+z3lUwp41eD44PcKvy0a7/bHVNO04v5GifSaKwueC/Yo6IR64WA/+8I85g==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+References: <CADYN=9+_UU9qZX56uahGXxz00iayqJLRAaQrRXh1CMXTvwSbAg@mail.gmail.com>
+ <20211118095852.616256-1-anders.roxell@linaro.org> <CAKwvOdkDVeoH8J1xFDeO5m_5EzNjDWucfyUewhgVSLWi5BN_QA@mail.gmail.com>
+In-Reply-To: <CAKwvOdkDVeoH8J1xFDeO5m_5EzNjDWucfyUewhgVSLWi5BN_QA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 18 Nov 2021 10:41:23 -0800
+Message-ID: <CAKwvOdm9HuXyw64ECVVhROxc3R9LL-FT3KbO_e5XzfE4=Q-UoA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] selftests: kselftest.h: mark functions with 'noreturn'
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     shuah@kernel.org, fenghua.yu@intel.com, reinette.chatre@intel.com,
+        john.stultz@linaro.org, tglx@linutronix.de,
+        akpm@linux-foundation.org, nathan@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, llvm@lists.linux.dev, christian@brauner.io
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field array bounds checking for memcpy(), memmove(), and memset(),
-avoid intentionally writing across neighboring fields.
+On Thu, Nov 18, 2021 at 10:40 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Thu, Nov 18, 2021 at 1:58 AM Anders Roxell <anders.roxell@linaro.org> wrote:
+> >
+> > When building kselftests/capabilities the following warning shows up:
+> >
+> > clang -O2 -g -std=gnu99 -Wall    test_execve.c -lcap-ng -lrt -ldl -o test_execve
+> > test_execve.c:121:13: warning: variable 'have_outer_privilege' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
+> >         } else if (unshare(CLONE_NEWUSER | CLONE_NEWNS) == 0) {
+> >                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > test_execve.c:136:9: note: uninitialized use occurs here
+> >         return have_outer_privilege;
+> >                ^~~~~~~~~~~~~~~~~~~~
+> > test_execve.c:121:9: note: remove the 'if' if its condition is always true
+> >         } else if (unshare(CLONE_NEWUSER | CLONE_NEWNS) == 0) {
+> >                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > test_execve.c:94:27: note: initialize the variable 'have_outer_privilege' to silence this warning
+> >         bool have_outer_privilege;
+> >                                  ^
+> >                                   = false
+> >
+> > Rework so all the ksft_exit_*() functions have attribue
+> > '__attribute__((noreturn))' so the compiler knows that there wont be
+> > any return from the function. That said, without
+> > '__attribute__((noreturn))' the compiler warns about the above issue
+> > since it thinks that it will get back from the ksft_exit_skip()
+> > function, which it wont.
+> > Cleaning up the callers that rely on ksft_exit_*() return code, since
+> > the functions ksft_exit_*() have never returned anything.
+> >
+> > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> > ---
+> >  tools/testing/selftests/clone3/clone3.c              |  4 +++-
+> >  .../testing/selftests/clone3/clone3_clear_sighand.c  |  2 +-
+> >  tools/testing/selftests/clone3/clone3_set_tid.c      |  4 +++-
+> >  tools/testing/selftests/ipc/msgque.c                 | 10 +++++-----
+> >  tools/testing/selftests/kcmp/kcmp_test.c             |  2 +-
+> >  tools/testing/selftests/kselftest.h                  | 12 ++++++------
+> >  .../membarrier/membarrier_test_multi_thread.c        |  2 +-
+> >  .../membarrier/membarrier_test_single_thread.c       |  2 +-
+> >  tools/testing/selftests/pidfd/pidfd_fdinfo_test.c    |  2 +-
+> >  tools/testing/selftests/pidfd/pidfd_open_test.c      |  4 +++-
+> >  tools/testing/selftests/pidfd/pidfd_poll_test.c      |  2 +-
+> >  tools/testing/selftests/pidfd/pidfd_test.c           |  2 +-
+> >  tools/testing/selftests/resctrl/resctrl_tests.c      |  6 +++---
+> >  tools/testing/selftests/sync/sync_test.c             |  2 +-
+> >  tools/testing/selftests/timers/adjtick.c             |  4 ++--
+> >  tools/testing/selftests/timers/alarmtimer-suspend.c  |  4 ++--
+> >  tools/testing/selftests/timers/change_skew.c         |  4 ++--
+> >  tools/testing/selftests/timers/clocksource-switch.c  |  4 ++--
+> >  tools/testing/selftests/timers/freq-step.c           |  4 ++--
+> >  tools/testing/selftests/timers/inconsistency-check.c |  4 ++--
+> >  tools/testing/selftests/timers/leap-a-day.c          | 10 +++++-----
+> >  tools/testing/selftests/timers/leapcrash.c           |  4 ++--
+> >  tools/testing/selftests/timers/mqueue-lat.c          |  4 ++--
+> >  tools/testing/selftests/timers/nanosleep.c           |  4 ++--
+> >  tools/testing/selftests/timers/nsleep-lat.c          |  4 ++--
+> >  tools/testing/selftests/timers/posix_timers.c        | 12 ++++++------
+> >  tools/testing/selftests/timers/raw_skew.c            |  6 +++---
+> >  tools/testing/selftests/timers/set-2038.c            |  4 ++--
+> >  tools/testing/selftests/timers/set-tai.c             |  4 ++--
+> >  tools/testing/selftests/timers/set-timer-lat.c       |  4 ++--
+> >  tools/testing/selftests/timers/set-tz.c              |  4 ++--
+> >  tools/testing/selftests/timers/skew_consistency.c    |  4 ++--
+> >  tools/testing/selftests/timers/threadtest.c          |  2 +-
+> >  tools/testing/selftests/timers/valid-adjtimex.c      |  6 +++---
+> >  tools/testing/selftests/vm/madv_populate.c           |  2 +-
+> >  35 files changed, 80 insertions(+), 74 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/clone3/clone3.c b/tools/testing/selftests/clone3/clone3.c
+> > index 42be3b925830..ede5da0c67b4 100644
+> > --- a/tools/testing/selftests/clone3/clone3.c
+> > +++ b/tools/testing/selftests/clone3/clone3.c
+> > @@ -191,5 +191,7 @@ int main(int argc, char *argv[])
+> >         test_clone3(CLONE_NEWPID, getpagesize() + 8, -E2BIG,
+> >                         CLONE3_ARGS_NO_TEST);
+> >
+> > -       return !ksft_get_fail_cnt() ? ksft_exit_pass() : ksft_exit_fail();
+> > +       if (ksft_get_fail_cnt())
+> > +               ksft_exit_fail();
+> > +       ksft_exit_pass();
+> >  }
+> > diff --git a/tools/testing/selftests/clone3/clone3_clear_sighand.c b/tools/testing/selftests/clone3/clone3_clear_sighand.c
+> > index 47a8c0fc3676..dcd9448eaeec 100644
+> > --- a/tools/testing/selftests/clone3/clone3_clear_sighand.c
+> > +++ b/tools/testing/selftests/clone3/clone3_clear_sighand.c
+> > @@ -124,5 +124,5 @@ int main(int argc, char **argv)
+> >
+> >         test_clone3_clear_sighand();
+> >
+> > -       return ksft_exit_pass();
+> > +       ksft_exit_pass();
+> >  }
+> > diff --git a/tools/testing/selftests/clone3/clone3_set_tid.c b/tools/testing/selftests/clone3/clone3_set_tid.c
+> > index 0229e9ebb995..a755fcd3af89 100644
+> > --- a/tools/testing/selftests/clone3/clone3_set_tid.c
+> > +++ b/tools/testing/selftests/clone3/clone3_set_tid.c
+> > @@ -393,5 +393,7 @@ int main(int argc, char *argv[])
+> >  out:
+> >         ret = 0;
+> >
+> > -       return !ret ? ksft_exit_pass() : ksft_exit_fail();
+> > +       if (ret)
+> > +               ksft_exit_fail();
+> > +       ksft_exit_pass();
+>
+> err...did you update clone3_set_tid as Shuah requested in v3?
+> Otherwise what changed from v2 -> v3?
 
-Use struct_group() in struct txpd around members tx_dest_addr_high
-and tx_dest_addr_low so they can be referenced together. This will
-allow memcpy() and sizeof() to more easily reason about sizes, improve
-readability, and avoid future warnings about writing beyond the end
-of tx_dest_addr_high.
+Ah, this was part of a series. Sorry I missed that; gmail keeps the
+original subject line when --in-reply-to is used even when the subject
+changes.
 
-"pahole" shows no size nor member offset changes to struct txpd.
-"objdump -d" shows no object code changes.
-
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/net/wireless/marvell/libertas_tf/libertas_tf.h | 10 ++++++----
- drivers/net/wireless/marvell/libertas_tf/main.c        |  3 ++-
- 2 files changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/wireless/marvell/libertas_tf/libertas_tf.h b/drivers/net/wireless/marvell/libertas_tf/libertas_tf.h
-index 5d726545d987..b2af2ddb6bc4 100644
---- a/drivers/net/wireless/marvell/libertas_tf/libertas_tf.h
-+++ b/drivers/net/wireless/marvell/libertas_tf/libertas_tf.h
-@@ -268,10 +268,12 @@ struct txpd {
- 	__le32 tx_packet_location;
- 	/* Tx packet length */
- 	__le16 tx_packet_length;
--	/* First 2 byte of destination MAC address */
--	u8 tx_dest_addr_high[2];
--	/* Last 4 byte of destination MAC address */
--	u8 tx_dest_addr_low[4];
-+	struct_group(tx_dest_addr,
-+		/* First 2 byte of destination MAC address */
-+		u8 tx_dest_addr_high[2];
-+		/* Last 4 byte of destination MAC address */
-+		u8 tx_dest_addr_low[4];
-+	);
- 	/* Pkt Priority */
- 	u8 priority;
- 	/* Pkt Trasnit Power control */
-diff --git a/drivers/net/wireless/marvell/libertas_tf/main.c b/drivers/net/wireless/marvell/libertas_tf/main.c
-index 71492211904b..02a1e1f547d8 100644
---- a/drivers/net/wireless/marvell/libertas_tf/main.c
-+++ b/drivers/net/wireless/marvell/libertas_tf/main.c
-@@ -232,7 +232,8 @@ static void lbtf_tx_work(struct work_struct *work)
- 			     ieee80211_get_tx_rate(priv->hw, info)->hw_value);
- 
- 	/* copy destination address from 802.11 header */
--	memcpy(txpd->tx_dest_addr_high, skb->data + sizeof(struct txpd) + 4,
-+	BUILD_BUG_ON(sizeof(txpd->tx_dest_addr) != ETH_ALEN);
-+	memcpy(&txpd->tx_dest_addr, skb->data + sizeof(struct txpd) + 4,
- 		ETH_ALEN);
- 	txpd->tx_packet_length = cpu_to_le16(len);
- 	txpd->tx_packet_location = cpu_to_le32(sizeof(struct txpd));
 -- 
-2.30.2
-
+Thanks,
+~Nick Desaulniers
