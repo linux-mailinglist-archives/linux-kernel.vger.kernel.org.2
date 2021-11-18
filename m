@@ -2,147 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F9F455B9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 036CB455BA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344729AbhKRMiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 07:38:55 -0500
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:50283 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244153AbhKRMix (ORCPT
+        id S1344752AbhKRMpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 07:45:04 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:57712 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1344732AbhKRMoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 07:38:53 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id E91D35C014D;
-        Thu, 18 Nov 2021 07:35:52 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 18 Nov 2021 07:35:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
-         h=from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=iKI+aVjgA+kJtYX60R+9iXQ/EJ
-        QYl+sXi1s+u7msgzs=; b=Z3fSUJC4WoYakZFAMN4PdJLPbj6Bl6lpO4STEwcbcb
-        qw6sq4MYPPBoXkT2bsww5iDI3veUoP5uiPpduenUP27s1fMZQpsu7TFsIVwAk8P1
-        +pm2A6zyzQa89womAfoS0jUO75nDHRebsevSTH3ps/67lWfWjulXoQPocCegmbJk
-        KxhjnVItePlScWGgIU9JA4cTpbcqz8GpDhApUug4e12ZG6AfCyc049rZQAsGBEMd
-        WlKc68xleJJRHN6pa3gZCFK4FnsgrsGa3zdl9+W2NVobTWmsOG0qJwzUJkECLwd7
-        ckRgwoX3j9ErGNK0I/Ap8ue4H59kF/6re1e33/jVMLbw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=iKI+aVjgA+kJtYX60
-        R+9iXQ/EJQYl+sXi1s+u7msgzs=; b=bEQTUr0hBe0I23xM82Gp+QhPPC94P7Alt
-        J0FAwShWri1/VWATAYh7dHUkNGPtHOppsGxRc8lkm0fvthph4x8p+3XrJZGVBtpv
-        mHc/uUzpWVHV2Muj3rmMm8RV+J38XMO8pXX+k07jqxXi+jqZsnW8RQZYW9c/Q4HC
-        gVxNN7s4kBqk+fHcI3SEw2ZK9hDDjYLwwHCkDDTYVnl8uqRNoyu3Vnata+0XYwUN
-        uS9sZYZM/6mNx+vTR9KnnMPKxi3rB2mOIdYEgPIEAY1bO/glmQ+kABn5rte2smHp
-        ppTBfVPDP/fttjld1/9lNSkYbpvSyaKZY1ohlu/Zt8FRWgcNn6MbA==
-X-ME-Sender: <xms:qEiWYXdXqc45QjtBslOEYVxZR6EzwhUs8Xg-RjPgm_6I5_dt7jLZWQ>
-    <xme:qEiWYdNDWT6olo6SE637rBrSy6rjrcad8UiWlxPRLhz7Y54NYMCbYmWUHro09h5u_
-    ATCzkv8BhxbwlIUBfk>
-X-ME-Received: <xmr:qEiWYQjL1TbmqdEoI0MDRyJEFredjlzqLIshsa1bIgf_Us7kt91cMDkLki9ZMZEdQ0qRwp-9sRU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeeigdefkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
-    dtnecuhfhrohhmpeetlhhishhtrghirhcuhfhrrghntghishcuoegrlhhishhtrghirhes
-    rghlihhsthgrihhrvdefrdhmvgeqnecuggftrfgrthhtvghrnhepjeeliefhvdetgfdtte
-    fhtdegffdtiefffeejiefffeevueeljeehjeevhfffueeknecuvehluhhsthgvrhfuihii
-    vgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghlihhsthgrihhrsegrlhhishhtrg
-    hirhdvfedrmhgv
-X-ME-Proxy: <xmx:qEiWYY8OtM2y21edjN8lt8d-RzX0GpjdnIdBJitqFE3OiVDHSEt83A>
-    <xmx:qEiWYTtx1gS-3Ahhuo7fiUotfXwLbUzr-De7ondXIaF_Wdi2E8R4vA>
-    <xmx:qEiWYXHUU8Ybvq9wFCC0KpTVBFd95ETOleAomFUgDuLxEQmLMOSeVw>
-    <xmx:qEiWYTL3vWptxGJHV4EBr3_JABpeyrYsY4EDMucn4S7gW66EyutE4w>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 18 Nov 2021 07:35:50 -0500 (EST)
-From:   Alistair Francis <alistair@alistair23.me>
-To:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     alistair@alistair23.me, alistair23@gmail.com
-Subject: [PATCH v2] Input: wacom_i2c - Clean up the query device fields
-Date:   Thu, 18 Nov 2021 22:35:45 +1000
-Message-Id: <20211118123545.102872-1-alistair@alistair23.me>
-X-Mailer: git-send-email 2.31.1
+        Thu, 18 Nov 2021 07:44:55 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AI9ZkHS011332;
+        Thu, 18 Nov 2021 13:41:22 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=bZLyccCPkGwBC1ILuSoOqJaq32TOZCofwJur9eMV86c=;
+ b=OgwKPvKIo8GkStXgpTIemvV3xjtrU71q80vfqsu+RPjq8KNkagcNevO+gMJu6Hefqm39
+ j8qU8SEVwUHIRg7S6MeMxrpqY2TPFRc9pgSE27MurQcQZfrenOKBOYY1PkPdXL7ir9uY
+ hnC2b14uHPk+mZ29WUn2PWjvO5WEq60QQ1bnYyTYSZccmmyWUcEPorbcFZ/7/Fpmw0y0
+ a8TgtYC4QUatnBW6QRQlIIa4nOrS3X7R+dyT19VhVEyMWeBbXWtCJx81ptBWAQ6AsGxb
+ NrUaPP+Yy22urQHSdNyFnj2YYTi9dslV/5ERtjW19OQcm3rWTFNEDx/IWb1Q+zE/ueTv ag== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3cdcvuumpd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Nov 2021 13:41:22 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2B35710002A;
+        Thu, 18 Nov 2021 13:41:19 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 224BB2291A7;
+        Thu, 18 Nov 2021 13:41:19 +0100 (CET)
+Received: from localhost (10.75.127.51) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.26; Thu, 18 Nov 2021 13:41:18
+ +0100
+From:   Olivier Moysan <olivier.moysan@foss.st.com>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Wan Jiabing <wanjiabing@vivo.com>, Xu Wang <vulab@iscas.ac.cn>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: [PATCH] iio: adc: stm32: fix null pointer on defer_probe error
+Date:   Thu, 18 Nov 2021 13:39:52 +0100
+Message-ID: <20211118123952.15383-1-olivier.moysan@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-18_05,2021-11-17_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Improve the query device fields to be more verbose.
+dev_err_probe() calls __device_set_deferred_probe_reason()
+on -EPROBE_DEFER error.
+If device pointer to driver core private structure is not initialized,
+a null pointer error occurs.
+This pointer is set too late on iio_device_register() call, for iio device.
+So use parent device instead for dev_err_probe() call.
 
-Signed-off-by: Alistair Francis <alistair@alistair23.me>
+Fixes: 0e346b2cfa85 ("iio: adc: stm32-adc: add vrefint calibration support")
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
 ---
- drivers/input/touchscreen/wacom_i2c.c | 45 ++++++++++++++++-----------
- 1 file changed, 27 insertions(+), 18 deletions(-)
+ drivers/iio/adc/stm32-adc.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
-index fe4ea6204a4e..50d159919bd1 100644
---- a/drivers/input/touchscreen/wacom_i2c.c
-+++ b/drivers/input/touchscreen/wacom_i2c.c
-@@ -23,13 +23,20 @@
- #define WACOM_BARREL_SWITCH_2	BIT(4)
- #define WACOM_IN_PROXIMITY	BIT(5)
+diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+index 7f1fb36c747c..14c7c9d390e8 100644
+--- a/drivers/iio/adc/stm32-adc.c
++++ b/drivers/iio/adc/stm32-adc.c
+@@ -217,6 +217,7 @@ struct stm32_adc_cfg {
  
--/* Registers */
--#define WACOM_CMD_QUERY0	0x04
--#define WACOM_CMD_QUERY1	0x00
--#define WACOM_CMD_QUERY2	0x33
--#define WACOM_CMD_QUERY3	0x02
--#define WACOM_CMD_THROW0	0x05
--#define WACOM_CMD_THROW1	0x00
-+// Registers
-+#define WACOM_COMMAND_LSB	0x04
-+#define WACOM_COMMAND_MSB	0x00
-+
-+#define WACOM_DATA_LSB		0x05
-+#define WACOM_DATA_MSB		0x00
-+
-+// Report types
-+#define REPORT_FEATURE		0x30
-+
-+// Requests / operations
-+#define OPCODE_GET_REPORT	0x02
-+
-+#define WACOM_QUERY_REPORT	3
- #define WACOM_QUERY_SIZE	19
+ /**
+  * struct stm32_adc - private data of each ADC IIO instance
++ * dev:			parent device
+  * @common:		reference to ADC block common data
+  * @offset:		ADC instance register offset in ADC block
+  * @cfg:		compatible configuration data
+@@ -243,6 +244,7 @@ struct stm32_adc_cfg {
+  * @int_ch:		internal channel indexes array
+  */
+ struct stm32_adc {
++	struct device		*dev;
+ 	struct stm32_adc_common	*common;
+ 	u32			offset;
+ 	const struct stm32_adc_cfg	*cfg;
+@@ -1986,8 +1988,7 @@ static int stm32_adc_populate_int_ch(struct iio_dev *indio_dev, const char *ch_n
+ 			/* Get calibration data for vrefint channel */
+ 			ret = nvmem_cell_read_u16(&indio_dev->dev, "vrefint", &vrefint);
+ 			if (ret && ret != -ENOENT) {
+-				return dev_err_probe(&indio_dev->dev, ret,
+-						     "nvmem access error\n");
++				return dev_err_probe(adc->dev, ret, "nvmem access error\n");
+ 			}
+ 			if (ret == -ENOENT)
+ 				dev_dbg(&indio_dev->dev, "vrefint calibration not found\n");
+@@ -2221,6 +2222,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
+ 	init_completion(&adc->completion);
+ 	adc->cfg = (const struct stm32_adc_cfg *)
+ 		of_match_device(dev->driver->of_match_table, dev)->data;
++	adc->dev = &pdev->dev;
  
- struct wacom_features {
-@@ -51,22 +58,24 @@ static int wacom_query_device(struct i2c_client *client,
- 			      struct wacom_features *features)
- {
- 	int ret;
--	u8 cmd1[] = { WACOM_CMD_QUERY0, WACOM_CMD_QUERY1,
--			WACOM_CMD_QUERY2, WACOM_CMD_QUERY3 };
--	u8 cmd2[] = { WACOM_CMD_THROW0, WACOM_CMD_THROW1 };
- 	u8 data[WACOM_QUERY_SIZE];
-+
-+	u8 get_query_data_cmd[] = {
-+		WACOM_COMMAND_LSB,
-+		WACOM_COMMAND_MSB,
-+		REPORT_FEATURE | WACOM_QUERY_REPORT,
-+		OPCODE_GET_REPORT,
-+		WACOM_DATA_LSB,
-+		WACOM_DATA_MSB,
-+	};
-+
- 	struct i2c_msg msgs[] = {
-+		// Request reading of feature ReportID: 3 (Pen Query Data)
- 		{
- 			.addr = client->addr,
- 			.flags = 0,
--			.len = sizeof(cmd1),
--			.buf = cmd1,
--		},
--		{
--			.addr = client->addr,
--			.flags = 0,
--			.len = sizeof(cmd2),
--			.buf = cmd2,
-+			.len = sizeof(get_query_data_cmd),
-+			.buf = get_query_data_cmd,
- 		},
- 		{
- 			.addr = client->addr,
+ 	indio_dev->name = dev_name(&pdev->dev);
+ 	indio_dev->dev.of_node = pdev->dev.of_node;
 -- 
-2.31.1
+2.17.1
 
