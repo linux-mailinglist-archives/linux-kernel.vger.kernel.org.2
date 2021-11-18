@@ -2,160 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD438455FF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:54:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D33455FF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:55:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232742AbhKRP5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 10:57:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35906 "EHLO
+        id S232782AbhKRP6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 10:58:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232464AbhKRP5x (ORCPT
+        with ESMTP id S232464AbhKRP6Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 10:57:53 -0500
+        Thu, 18 Nov 2021 10:58:16 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E44DC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 07:54:53 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B4CAC061574;
+        Thu, 18 Nov 2021 07:55:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wt52NzKLJyhGGE5ZYNYIxdwq+HKe3NAkMCE4yDKMlYo=; b=RHrRmCnFavFRJLxFPQXoQuFJFN
-        kiL2cHmk+pE9ErROfK4b5ye2Okv5kIS0rWwUXVexLSXUKUKQqJkYbMxGQWH5zzBLGTTfMYY5aG4hL
-        yON1uWFBq9s5/prihpGm+ekxQq5Cla9KPtYg6p/8q+bPBH1GAe4aJUb/mayqJPY5puhtgngGhdcwN
-        fZiNJZX1Ud6JPkxIuW4O7NjGPL9tz3cH/ruFwHRYIx+fPDkHF1Qi9cMq2r0gTQhG/cK5o44Y6odLE
-        3M6QaY2oNCJsVtiFhqFJ5uHtkdjLjEzpG5a1/FXRxijS7Y5KsWxGgSpFp3wKAeLYbm5CJC5JjE3/S
-        eO6VRzlg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mnjkA-008bMe-0H; Thu, 18 Nov 2021 15:54:34 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1C84030001B;
-        Thu, 18 Nov 2021 16:54:33 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0BD55302619A5; Thu, 18 Nov 2021 16:54:33 +0100 (CET)
-Date:   Thu, 18 Nov 2021 16:54:33 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "Chang S . Bae" <chang.seok.bae@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH V5 01/50] x86/entry: Add fence for kernel entry swapgs in
- paranoid_entry()
-Message-ID: <YZZ3OUaMjMIhvj70@hirez.programming.kicks-ass.net>
-References: <20211110115736.3776-1-jiangshanlai@gmail.com>
- <20211110115736.3776-2-jiangshanlai@gmail.com>
+        bh=X6u5jOtxjpZsL1qWxw9nRGO399G6h4RYQJk7HMGPx1I=; b=mLGqp9ZQsddZj0NmjOe+oo8jBc
+        /J31ihLpooVSx/YC9y/QkUo9Ami7jMajKHrYuVm/s56eou9/mPA48aPjSLZFwvZiQGu0GTyF+Dfw9
+        iq5/ZgHn7ewV/3ZpqwGEa3dWiOi+HoPxs7GjRvjZ20opoEn1GZcfW3CN3NRrte5whq42Zxk6BV+7Q
+        ClAVVwfQ/drf4Q5EBy81nslpfcCQzK3K+MbfWLseFwjgvZ4x3iItFxKoIvwym+65t7hEvMLCJt+wb
+        Yvb3GVe+DhRF+fIDWFp8qYSpTgntZdoyPSCEP6uMSciLKLJscmgbU0kBaa/7Y8kt0HAmRnWy6clQX
+        uN08tu4A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mnjkm-008bOy-3L; Thu, 18 Nov 2021 15:55:12 +0000
+Date:   Thu, 18 Nov 2021 15:55:12 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v2 02/28] mm: Add functions to zero portions of a folio
+Message-ID: <YZZ3YJucR/WOpOaF@casper.infradead.org>
+References: <20211108040551.1942823-1-willy@infradead.org>
+ <20211108040551.1942823-3-willy@infradead.org>
+ <20211117044527.GO24307@magnolia>
+ <YZUMhDDHott2Q4W+@casper.infradead.org>
+ <20211117170707.GW24307@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211110115736.3776-2-jiangshanlai@gmail.com>
+In-Reply-To: <20211117170707.GW24307@magnolia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 07:56:47PM +0800, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
-> 
-> Commit 18ec54fdd6d18 ("x86/speculation: Prepare entry code for Spectre
-> v1 swapgs mitigations") adds FENCE_SWAPGS_{KERNEL|USER}_ENTRY
-> for conditional swapgs.  And in paranoid_entry(), it uses only
-> FENCE_SWAPGS_KERNEL_ENTRY for both branches.  It is because the fence
-> is required for both cases since the CR3 write is conditinal even PTI
-> is enabled.
-> 
-> But commit 96b2371413e8f ("x86/entry/64: Switch CR3 before SWAPGS in
-> paranoid entry") switches the code order and changes the branches.
-> And it misses the needed FENCE_SWAPGS_KERNEL_ENTRY for user gsbase case.
-> 
-> Add it back by moving FENCE_SWAPGS_KERNEL_ENTRY up to cover both branches.
-> 
-> Fixes: Commit 96b2371413e8f ("x86/entry/64: Switch CR3 before SWAPGS in paranoid entry")
-> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> Cc: Chang S. Bae <chang.seok.bae@intel.com>
-> Cc: Sasha Levin <sashal@kernel.org>
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> ---
->  arch/x86/entry/entry_64.S | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-> index e38a4cf795d9..14ffe12807ba 100644
-> --- a/arch/x86/entry/entry_64.S
-> +++ b/arch/x86/entry/entry_64.S
-> @@ -888,6 +888,13 @@ SYM_CODE_START_LOCAL(paranoid_entry)
->  	ret
->  
->  .Lparanoid_entry_checkgs:
-> +	/*
-> +	 * The above SAVE_AND_SWITCH_TO_KERNEL_CR3 macro doesn't do an
-> +	 * unconditional CR3 write, even in the PTI case.  So do an lfence
-> +	 * to prevent GS speculation, regardless of whether PTI is enabled.
-> +	 */
-> +	FENCE_SWAPGS_KERNEL_ENTRY
-> +
->  	/* EBX = 1 -> kernel GSBASE active, no restore required */
->  	movl	$1, %ebx
->  	/*
-> @@ -903,13 +910,6 @@ SYM_CODE_START_LOCAL(paranoid_entry)
->  .Lparanoid_entry_swapgs:
->  	swapgs
->  
-> -	/*
-> -	 * The above SAVE_AND_SWITCH_TO_KERNEL_CR3 macro doesn't do an
-> -	 * unconditional CR3 write, even in the PTI case.  So do an lfence
-> -	 * to prevent GS speculation, regardless of whether PTI is enabled.
-> -	 */
-> -	FENCE_SWAPGS_KERNEL_ENTRY
-> -
->  	/* EBX = 0 -> SWAPGS required on exit */
->  	xorl	%ebx, %ebx
->  	ret
+On Wed, Nov 17, 2021 at 09:07:07AM -0800, Darrick J. Wong wrote:
+> I've started using 'next', or changing the code to make 'end' be the
+> last element in the range the caller wants to act upon.  The thing is,
+> those are all iterators, so 'next' fits, whereas it doesn't fit so well
+> for range zeroing where that might have been all the zeroing we wanted
+> to do.
 
-I'm confused, shouldn't the LFENCE be between SWAPGS and future uses of
-GS prefix?
+Yeah, it doesn't really work so well for one of the patches in this
+series:
 
-In the old code, before 96b2371413e8f, we had:
+                        if (buffer_new(bh)) {
+...
+                                        folio_zero_segments(folio,
+                                                to, block_end,
+                                                block_start, from);
 
-	swapgs
-	SAVE_AND_SWITCH_TO_KERNEL_CR3
-	FENCE_SWAPGS_KERNEL_ENTRY
+("zero between block_start and block_end, except for the region
+specified by 'from' and 'to'").  Except that for some reason the
+ranges are specified backwards, so it's not obvious what's going on.
+Converting that to folio_zero_ranges() would be a possibility, at the
+expense of complexity in the caller, or using 'max' instead of 'end'
+would also add complexity to the callers.
 
-	// %gs user comes here..
+> Though.  'xend' (shorthand for 'excluded end') is different enough to
+> signal that the reader should pay attention.  Ok, how about xend then?
 
-And the comment made sense, since if SAVE_AND_SWITCH_TO_KERNEL_CR3 would
-imply an unconditional CR3 write, the LFENCE would not be needed.
+Done!
 
-Then along gomes 96b2371413e8f and changes the order to:
+@@ -367,26 +367,26 @@ static inline void memzero_page(struct page *page, size_t
+offset, size_t len)
+  * folio_zero_segments() - Zero two byte ranges in a folio.
+  * @folio: The folio to write to.
+  * @start1: The first byte to zero.
+- * @end1: One more than the last byte in the first range.
++ * @xend1: One more than the last byte in the first range.
+  * @start2: The first byte to zero in the second range.
+- * @end2: One more than the last byte in the second range.
++ * @xend2: One more than the last byte in the second range.
+  */
+ static inline void folio_zero_segments(struct folio *folio,
+-               size_t start1, size_t end1, size_t start2, size_t end2)
++               size_t start1, size_t xend1, size_t start2, size_t xend2)
+ {
+-       zero_user_segments(&folio->page, start1, end1, start2, end2);
++       zero_user_segments(&folio->page, start1, xend1, start2, xend2);
+ }
 
-	SAVE_AND_SWITCH_TO_KERNEL_CR3
-	swapgs
-	FENCE_SWAPGS_KERNEL_ENTRY
-	// %gs user comes here..
+ /**
+  * folio_zero_segment() - Zero a byte range in a folio.
+  * @folio: The folio to write to.
+  * @start: The first byte to zero.
+- * @end: One more than the last byte in the first range.
++ * @xend: One more than the last byte to zero.
+  */
+ static inline void folio_zero_segment(struct folio *folio,
+-               size_t start, size_t end)
++               size_t start, size_t xend)
+ {
+-       zero_user_segments(&folio->page, start, end, 0, 0);
++       zero_user_segments(&folio->page, start, xend, 0, 0);
+ }
 
-But now the comment is crazy talk, because even if the CR3 write were
-unconditional, it'd be pointless, since it's not after SWAPGS, but we
-still have the LFENCE in the right place.
-
-But now you want to make it:
-
-	SAVE_AND_SWITCH_TO_KERNEL_CR3
-	FENCE_SWAPGS_KERNEL_ENTRY
-	swapgs
-	// %gs user comes here..
-
-And there's nothing left and speculation can use the old %gs for our
-user and things go sideways. Hmm?
-
-
-(on a completely unrelated note, I find KERNEL_ENTRY and USER_ENTRY
-utterly confusing)
+ /**
 
