@@ -2,216 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3515C45626C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:31:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 200DF45626D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:31:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233197AbhKRSeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 13:34:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50006 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232869AbhKRSeO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 13:34:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 873446137F;
-        Thu, 18 Nov 2021 18:31:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637260274;
-        bh=a3m+BKh0Jnunoq/SkVLC7fV+Sk+GUckO3a1ITs25Grw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JyqzDMacklVQLloiCP5eZZIxYfvmSMr0Dm51JVfpiDqHrEE/qQNifouDqYhIpD+EU
-         Yv40BXIUZCOX/GNT/qQ3IsSEeyMCBkwwVvn89nA5Ajdx+Wk++qrqmKyh+o4+J1QEEo
-         GpZgIqgPnJUT7jecYqIN1S2Ec7O76znAm+o9xrs8=
-Date:   Thu, 18 Nov 2021 19:31:11 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Naveen Naidu <naveennaidu479@gmail.com>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] PCI: Add KUnit tests for __pci_read_base()
-Message-ID: <YZab7zZZvaAH3op2@kroah.com>
-References: <cover.1637250854.git.naveennaidu479@gmail.com>
- <07ce42cd2000acbff5f2fdfd8c15972a364b5cbd.1637250854.git.naveennaidu479@gmail.com>
+        id S233303AbhKRSe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 13:34:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232869AbhKRSe2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 13:34:28 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 528B0C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:31:28 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id gx15-20020a17090b124f00b001a695f3734aso6547637pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:31:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=JahmURoXBpdrG/zZ4YqYsqdrEmWXbGGp7MXl+Rf1lRk=;
+        b=GWITrKiU3TYnu2v4rPJE357hkIE53WNulBCQ8zIwxiO261sPBAq435OHfJk0u2Ex8o
+         kMQxaBomq0ftBcEI+hgv4xd3AgZ+vTmWO34gfeBzgfxb+QfStlFXOsORK3PVBJ6sKAbj
+         XwcqC8sX434SdQPM9dpiI3eR7q5xsJprLAZaI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=JahmURoXBpdrG/zZ4YqYsqdrEmWXbGGp7MXl+Rf1lRk=;
+        b=39i4UFDQtfi4qqDWlhuHfpWELOhbEkoKfRP2SxL2G9SwG4AlOVsSSM56PW7hzdxM3n
+         LqLlZekm/tFHg0gmV30NqFHbQ74hnhVqzhwlHqM6oFc29xf+tzQ/X99RXB9PAD9DvuzH
+         o/kDibdw4WhK6lLAbP12iVG3QF5R6imd6V+zTZ0w07RcGGd5fbLWrIJ7VatjweQDiAJP
+         t4/3agkL9puqEIuHxJOnhiQQO8dSI+OQ4gVX4hYyBiqBRKXt2z9nzHMri/MLIgWpIjPj
+         Sjo8L11AR/gSg/5zfzAi742y1hPDh33sIBo3JRFJrzwz+gNt9ObQFqXx3SkC3tcWcA2H
+         0kPg==
+X-Gm-Message-State: AOAM530vlavaqmJQgChebpFub7TXAfQNXR8Yg9DBNg2CENLQyv5QEdth
+        hSNxs8yv7qV28nQnuiln9r83Iw==
+X-Google-Smtp-Source: ABdhPJyavBQ6FX9lX/05f4CtIha1xk8B/dWinGz1YTjcV8ygxuXB+1gD7F11HUgZPGRG/NGvUwUbfQ==
+X-Received: by 2002:a17:90a:cc01:: with SMTP id b1mr12707388pju.226.1637260287209;
+        Thu, 18 Nov 2021 10:31:27 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g14sm254810pgo.88.2021.11.18.10.31.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 10:31:26 -0800 (PST)
+Date:   Thu, 18 Nov 2021 10:31:26 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Tony Luck <tony.luck@intel.com>, Colin Cross <ccross@android.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH] pstore/ftrace: add a kernel parameter to start pstore
+ recording
+Message-ID: <202111181030.A6A1469@keescook>
+References: <20210610082134.20636-1-u.kleine-koenig@pengutronix.de>
+ <163725891549.1179817.6546871118396864090.b4-ty@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <07ce42cd2000acbff5f2fdfd8c15972a364b5cbd.1637250854.git.naveennaidu479@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <163725891549.1179817.6546871118396864090.b4-ty@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 10:48:51PM +0530, Naveen Naidu wrote:
-> Currently it is hard to debug issues in the resource assignment code due
-> to long reporduction cycles between the developer trying to fix the code
-> and the user testing it due to the lack of hardware device with the
-> developer [1].
+On Thu, Nov 18, 2021 at 10:08:38AM -0800, Kees Cook wrote:
+> On Thu, 10 Jun 2021 10:21:34 +0200, Uwe Kleine-König wrote:
+> > With this knob you can enable pstore recording early enough to debug
+> > hangs happening during the boot process before userspace is up enough to
+> > enable it via sysfs.
+> > 
+> > 
 > 
-> [1]:
-> https://lore.kernel.org/all/20210621123714.GA3286648@bjorn-Precision-5520/
+> I refactored this patch a fair bit so it would use a common enable/disable
+> routine, but otherwise the original intent remains. :)
 > 
-> This adds KUnit tests for __pci_read_base() which is only  dependent
-> on software structures, so no hardware is needed to run these.
+> Applied to for-next/pstore, thanks!
 > 
-> This lays the foundation for test fixtures we can use to reproduce the
-> resource assignment code path of PCI.
-> 
-> Sample output from KUnit Test run:
-> 
->       # Subtest: __pci_read_base()
->       1..3
->       # test_pci_read_base_type_0_hdr_approach_1: initializing __pci_read_base() tests
->    (null): reg 0x18: [mem 0x4f400000-0x4f400fff]
->       ok 1 - test_pci_read_base_type_0_hdr_approach_1
->       # test_pci_read_base_type_0_hdr_approach_2: initializing __pci_read_base() tests
->    (null): reg 0x18: [mem 0x4f400000-0x4f400fff]
->    (null): reg 0x1c: [mem 0xaf400000-0xaf4000ff]
->       ok 2 - test_pci_read_base_type_0_hdr_approach_2
->       # test_pci_read_base_type_1_hdr: initializing __pci_read_base() tests
->    (null): reg 0x10: [mem 0xaf400000-0xaf4000ff]
->       ok 3 - test_pci_read_base_type_1_hdr
->   # __pci_read_base(): pass:3 fail:0 skip:0 total:3
->   # Totals: pass:3 fail:0 skip:0 total:3
->   # ok 8 - __pci_read_base()
-> 
-> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-> Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
-> ---
->  drivers/pci/Kconfig              |   4 +
->  drivers/pci/Makefile             |   3 +
->  drivers/pci/pci-read-base-test.c | 803 +++++++++++++++++++++++++++++++
->  3 files changed, 810 insertions(+)
->  create mode 100644 drivers/pci/pci-read-base-test.c
-> 
-> diff --git a/drivers/pci/Kconfig b/drivers/pci/Kconfig
-> index 43e615aa12ff..12b3779fb640 100644
-> --- a/drivers/pci/Kconfig
-> +++ b/drivers/pci/Kconfig
-> @@ -252,6 +252,10 @@ config PCIE_BUS_PEER2PEER
->  
->  endchoice
->  
-> +config PCI_READ_BASE_KUNIT_TEST
-> +	tristate "KUnit tests for __pci_read_base() in probe.c"
-> +	depends on PCI && KUNIT=y
-> +
->  source "drivers/pci/hotplug/Kconfig"
->  source "drivers/pci/controller/Kconfig"
->  source "drivers/pci/endpoint/Kconfig"
-> diff --git a/drivers/pci/Makefile b/drivers/pci/Makefile
-> index d62c4ac4ae1b..010a903c3d5d 100644
-> --- a/drivers/pci/Makefile
-> +++ b/drivers/pci/Makefile
-> @@ -36,4 +36,7 @@ obj-$(CONFIG_PCI_ENDPOINT)	+= endpoint/
->  obj-y				+= controller/
->  obj-y				+= switch/
->  
-> +# KUnit test files
-> +obj-$(CONFIG_PCI_READ_BASE_KUNIT_TEST) += pci-read-base-test.o
-> +
->  subdir-ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
-> diff --git a/drivers/pci/pci-read-base-test.c b/drivers/pci/pci-read-base-test.c
-> new file mode 100644
-> index 000000000000..df89d50b0321
-> --- /dev/null
-> +++ b/drivers/pci/pci-read-base-test.c
-> @@ -0,0 +1,803 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * KUnit tests for __pci_read_base()
-> + *
-> + * Author: Naveen Naidu <naveennaidu479@gmail.com>
-> + */
-> +#include <kunit/test.h>
-> +#include <linux/pci.h>
-> +#include <linux/math.h>
-> +#include <linux/errno.h>
-> +
-> +#include "pci.h"
-> +
-> +#define MY_PCI_BUS_NUM 0x011
-> +#define NUM_32_BITCONFIG_REGISTERS 16
-> +
-> +/*
-> + * Representation of type 0/1 headers.
-> + *
-> + * Each element of the array represents one 32 bit register of the
-> + * Type 0/1 Header register.
-> + */
-> +u32 config_registers[NUM_32_BITCONFIG_REGISTERS];
+> [1/1] pstore/ftrace: add a kernel parameter to start pstore recording
+>       https://git.kernel.org/kees/c/8d74118c9441
 
-static?
+Hrm, sha shenanigans. This is actually:
 
-> +
-> +/* Type of the device you are testing */
-> +unsigned int type_header_test_case;
+	https://git.kernel.org/kees/c/a5d05b07961a
 
-static?
-
-
-> +
-> +/* Type 0/1 Header register values */
-> +struct config_space_bitfield {
-> +	char name[64];
-> +	unsigned int offset;
-> +	unsigned int size; /* In bytes */
-> +	unsigned int bit_array_index;
-> +	unsigned int value;
-> +};
-> +
-> +/*
-> + * The index value of BARS in the type_0/1_header struct.
-> + * Useful for setting the values for test cases.
-> + */
-> +enum type_header_BAR_index {
-> +	BAR0 = 3,
-> +	BAR1,
-> +	BAR2,
-> +	BAR3,
-> +	BAR4,
-> +	BAR5
-> +};
-> +
-> +/* PCI Type 0 Header for Endpoints */
-> +static struct config_space_bitfield type_0_header[] = {
-> +	{"Vendor ID",	PCI_VENDOR_ID,		2,	0,	0},
-> +	{"Device ID",	PCI_DEVICE_ID,		2,	16,	0},
-> +	{"Command",	PCI_COMMAND,		2,	32,	0},
-> +	{"BAR 0",	PCI_BASE_ADDRESS_0,	4,	128,	0},
-> +	{"BAR 1",	PCI_BASE_ADDRESS_1,	4,	160,	0},
-> +	{"BAR 2",	PCI_BASE_ADDRESS_2,	4,	192,	0},
-> +	{"BAR 3",	PCI_BASE_ADDRESS_3,	4,	224,	0},
-> +	{"BAR 4",	PCI_BASE_ADDRESS_4,	4,	256,	0},
-> +	{"BAR 5",	PCI_BASE_ADDRESS_5,	4,	288,	0}
-> +};
-> +
-> +/* PCI Type 1 Header for Bridges */
-> +static struct config_space_bitfield type_1_header[] = {
-> +	{"Vendor ID",	PCI_VENDOR_ID,		2,	0,	0},
-> +	{"Device ID",	PCI_DEVICE_ID,		2,	16,	0},
-> +	{"Command",	PCI_COMMAND,		2,	32,	0},
-> +	{"BAR 0",	PCI_BASE_ADDRESS_0,	4,	128,	0},
-> +	{"BAR 1",	PCI_BASE_ADDRESS_1,	4,	160,	0}
-> +};
-> +
-> +/*
-> + * -----------------------------------------------------------------------
-> + * Data structures to hold test cases values
-> + * -----------------------------------------------------------------------
-> + */
-> +
-> +/* Used for setting the test values of BAR registers. */
-> +struct config_BARS {
-> +	char name[64];
-> +	unsigned int offset;
-
-u32?
-
-> +	/*
-> +	 * Allocated Address size.
-> +	 *
-> +	 * Value to return, when all 1's are written to BAR registers.
-> +	 *
-> +	 * See (NOTE: How to calculate the allocated address size for the BAR
-> +	 * registers) comment below.
-> +	 */
-> +	unsigned int allocated_size;
-
-u32?
+-- 
+Kees Cook
