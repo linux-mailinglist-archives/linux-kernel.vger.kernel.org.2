@@ -2,58 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A934455984
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 11:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D8E45598A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:00:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343546AbhKRLAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 06:00:38 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:34980 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343537AbhKRLAa (ORCPT
+        id S1343547AbhKRLDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 06:03:49 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:60255 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235730AbhKRLDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 06:00:30 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UxC3Aql_1637233045;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UxC3Aql_1637233045)
+        Thu, 18 Nov 2021 06:03:46 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=zhangliguang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UxCJ72c_1637233244;
+Received: from 30.225.24.22(mailfrom:zhangliguang@linux.alibaba.com fp:SMTPD_---0UxCJ72c_1637233244)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 18 Nov 2021 18:57:29 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     alexander.deucher@amd.com
-Cc:     christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@linux.ie,
-        daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] drm/amdgpu/pm: clean up some inconsistent indenting
-Date:   Thu, 18 Nov 2021 18:57:19 +0800
-Message-Id: <1637233039-22503-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+          Thu, 18 Nov 2021 19:00:44 +0800
+Message-ID: <6bbac280-8f6f-2834-c51b-c7e72c22d504@linux.alibaba.com>
+Date:   Thu, 18 Nov 2021 19:00:45 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH] PCI: pciehp: clear cmd_busy bit when Command Completed in
+ polling mode
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211111054258.7309-1-zhangliguang@linux.alibaba.com>
+From:   luanshi <zhangliguang@linux.alibaba.com>
+In-Reply-To: <20211111054258.7309-1-zhangliguang@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the follow smatch warning:
+Hi Bjorn & Lukas & Kuppuswamy & Amey,
 
-drivers/gpu/drm/amd/amdgpu/../pm/powerplay/amd_powerplay.c:1554
-pp_asic_reset_mode_2() warn: inconsistent indenting.
+Gentle ping! Any comments on this patch?
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/gpu/drm/amd/pm/powerplay/amd_powerplay.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/amd_powerplay.c b/drivers/gpu/drm/amd/pm/powerplay/amd_powerplay.c
-index 8d796ed..20cb234 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/amd_powerplay.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/amd_powerplay.c
-@@ -1551,7 +1551,7 @@ static int pp_set_ppfeature_status(void *handle, uint64_t ppfeature_masks)
- static int pp_asic_reset_mode_2(void *handle)
- {
- 	struct pp_hwmgr *hwmgr = handle;
--		int ret = 0;
-+	int ret = 0;
- 
- 	if (!hwmgr || !hwmgr->pm_en)
- 		return -EINVAL;
--- 
-1.8.3.1
-
+在 2021/11/11 13:42, Liguang Zhang 写道:
+> This patch fixes this problem that on driver probe from system startup,
+> pciehp checks the Presence Detect State bit in the Slot Status register
+> to bring up an occupied slot or bring down an unoccupied slot. If empty
+> slot's power status is on, turn power off. The Hot-Plug interrupt isn't
+> requested yet, so avoid triggering a notification by calling
+> pcie_disable_notification().
+>
+> Both the CCIE and HPIE bits are masked in pcie_disable_notification(),
+> when we issue a hotplug command, pcie_wait_cmd() will polling the
+> Command Completed bit instead of waiting for an interrupt. But cmd_busy
+> bit was not cleared when Command Completed which results in timeouts
+> like this in pciehp_power_off_slot() and pcie_init_notification():
+>
+>    pcieport 0000:00:03.0: pciehp: Timeout on hotplug command 0x01c0
+> (issued 2264 msec ago)
+>    pcieport 0000:00:03.0: pciehp: Timeout on hotplug command 0x05c0
+> (issued 2288 msec ago)
+>
+> Signed-off-by: Liguang Zhang <zhangliguang@linux.alibaba.com>
+> ---
+>   drivers/pci/hotplug/pciehp_hpc.c | 2 ++
+>   1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/pci/hotplug/pciehp_hpc.c b/drivers/pci/hotplug/pciehp_hpc.c
+> index 83a0fa119cae..8698aefc6041 100644
+> --- a/drivers/pci/hotplug/pciehp_hpc.c
+> +++ b/drivers/pci/hotplug/pciehp_hpc.c
+> @@ -98,6 +98,8 @@ static int pcie_poll_cmd(struct controller *ctrl, int timeout)
+>   		if (slot_status & PCI_EXP_SLTSTA_CC) {
+>   			pcie_capability_write_word(pdev, PCI_EXP_SLTSTA,
+>   						   PCI_EXP_SLTSTA_CC);
+> +			ctrl->cmd_busy = 0;
+> +			smp_mb();
+>   			return 1;
+>   		}
+>   		msleep(10);
