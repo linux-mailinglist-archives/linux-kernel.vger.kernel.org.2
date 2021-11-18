@@ -2,123 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A45845579D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:02:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E5C4557AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:03:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244990AbhKRJFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 04:05:11 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:15833 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244984AbhKRJEi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 04:04:38 -0500
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hvv0n0zYxz917Z;
-        Thu, 18 Nov 2021 17:01:13 +0800 (CST)
-Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.20; Thu, 18 Nov 2021 17:01:34 +0800
-Received: from [10.67.102.169] (10.67.102.169) by
- dggema772-chm.china.huawei.com (10.1.198.214) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.20; Thu, 18 Nov 2021 17:01:34 +0800
-CC:     <yangyicong@hisilicon.com>, <prime.zeng@huawei.com>,
-        <linuxarm@huawei.com>, <zhangshaokun@hisilicon.com>,
-        <liuqi115@huawei.com>
-Subject: Re: [PATCH v2 2/6] hwtracing: Add trace function support for
- HiSilicon PCIe Tune and Trace device
-To:     Robin Murphy <robin.murphy@arm.com>, <gregkh@linuxfoundation.org>,
-        <helgaas@kernel.org>, <alexander.shishkin@linux.intel.com>,
-        <lorenzo.pieralisi@arm.com>, <will@kernel.org>,
-        <mark.rutland@arm.com>, <mathieu.poirier@linaro.org>,
-        <suzuki.poulose@arm.com>, <mike.leach@linaro.org>,
-        <leo.yan@linaro.org>, <jonathan.cameron@huawei.com>,
-        <daniel.thompson@linaro.org>, <joro@8bytes.org>,
-        <john.garry@huawei.com>, <shameerali.kolothum.thodi@huawei.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <coresight@lists.linaro.org>, <linux-pci@vger.kernel.org>,
-        <linux-perf-users@vger.kernel.org>,
-        <iommu@lists.linux-foundation.org>
-References: <20211116090625.53702-1-yangyicong@hisilicon.com>
- <20211116090625.53702-3-yangyicong@hisilicon.com>
- <0b67745c-13dd-1fea-1b8b-d55212bad232@arm.com>
- <3644ad6e-d800-c84b-9d62-6dda8462450f@hisilicon.com>
-From:   Yicong Yang <yangyicong@hisilicon.com>
-Message-ID: <e7d4afb7-e4e4-e581-872b-2477850ad8da@hisilicon.com>
-Date:   Thu, 18 Nov 2021 17:01:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S245072AbhKRJGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 04:06:34 -0500
+Received: from mga02.intel.com ([134.134.136.20]:25387 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244985AbhKRJF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 04:05:29 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10171"; a="221359928"
+X-IronPort-AV: E=Sophos;i="5.87,244,1631602800"; 
+   d="scan'208";a="221359928"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 01:02:26 -0800
+X-IronPort-AV: E=Sophos;i="5.87,244,1631602800"; 
+   d="scan'208";a="495294468"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 01:02:25 -0800
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 13CB520282;
+        Thu, 18 Nov 2021 11:02:23 +0200 (EET)
+Date:   Thu, 18 Nov 2021 11:02:23 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Eugen.Hristev@microchip.com
+Cc:     leonl@leopardimaging.com, linux-media@vger.kernel.org,
+        skomatineni@nvidia.com, luca@lucaceresoli.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: i2c: imx274: fix s_frame_interval runtime resume
+ not requested
+Message-ID: <YZYWn0zY1tNcpysI@paasikivi.fi.intel.com>
+References: <20211117154009.261787-1-eugen.hristev@microchip.com>
+ <YZUptcn1isWQuCdq@paasikivi.fi.intel.com>
+ <97fbf01c-6cfb-7ab9-f045-383a1e4053c2@microchip.com>
+ <YZVuGrkKTrvQC/Qm@paasikivi.fi.intel.com>
+ <17380c4a-1ab9-6bb1-a574-2e9ba7065aa6@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <3644ad6e-d800-c84b-9d62-6dda8462450f@hisilicon.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.102.169]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema772-chm.china.huawei.com (10.1.198.214)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <17380c4a-1ab9-6bb1-a574-2e9ba7065aa6@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
+On Thu, Nov 18, 2021 at 07:16:16AM +0000, Eugen.Hristev@microchip.com wrote:
+> On 11/17/21 11:03 PM, Sakari Ailus wrote:
+> > Hi Eugen,
+> > 
+> > On Wed, Nov 17, 2021 at 04:52:40PM +0000, Eugen.Hristev@microchip.com wrote:
+> >> On 11/17/21 6:11 PM, Sakari Ailus wrote:
+> >>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> >>>
+> >>> Hi Eugen,
+> >>>
+> >>> On Wed, Nov 17, 2021 at 05:40:09PM +0200, Eugen Hristev wrote:
+> >>>> pm_runtime_resume_and_get should be called when the s_frame_interval
+> >>>> is called.
+> >>>>
+> >>>> The driver will try to access device registers to configure VMAX, coarse
+> >>>> time and exposure.
+> >>>>
+> >>>> Currently if the runtime is not resumed, this fails:
+> >>>>    # media-ctl -d /dev/media0 --set-v4l2 '"IMX274 1-001a":0[fmt:SRGGB10_1X10/3840x2
+> >>>> 160@1/10]'
+> >>>>
+> >>>> IMX274 1-001a: imx274_binning_goodness: ask 3840x2160, size 3840x2160, goodness 0
+> >>>> IMX274 1-001a: imx274_binning_goodness: ask 3840x2160, size 1920x1080, goodness -3000
+> >>>> IMX274 1-001a: imx274_binning_goodness: ask 3840x2160, size 1280x720, goodness -4000
+> >>>> IMX274 1-001a: imx274_binning_goodness: ask 3840x2160, size 1280x540, goodness -4180
+> >>>> IMX274 1-001a: __imx274_change_compose: selected 1x1 binning
+> >>>> IMX274 1-001a: imx274_set_frame_interval: input frame interval = 1 / 10
+> >>>> IMX274 1-001a: imx274_read_mbreg : addr 0x300e, val=0x1 (2 bytes)
+> >>>> IMX274 1-001a: imx274_set_frame_interval : register SVR = 1
+> >>>> IMX274 1-001a: imx274_read_mbreg : addr 0x30f6, val=0x6a8 (2 bytes)
+> >>>> IMX274 1-001a: imx274_set_frame_interval : register HMAX = 1704
+> >>>> IMX274 1-001a: imx274_set_frame_length : input length = 2112
+> >>>> IMX274 1-001a: imx274_write_mbreg : i2c bulk write failed, 30f8 = 884 (3 bytes)
+> >>>> IMX274 1-001a: imx274_set_frame_length error = -121
+> >>>> IMX274 1-001a: imx274_set_frame_interval error = -121
+> >>>> Unable to setup formats: Remote I/O error (121)
+> >>>>
+> >>>> The device is not resumed thus the remote I/O error.
+> >>>>
+> >>>> Setting the frame interval works at streaming time, because
+> >>>> pm_runtime_resume_and_get is called at s_stream time before sensor setup.
+> >>>> The failure happens when only the s_frame_interval is called separately
+> >>>> independently on streaming time.
+> >>>>
+> >>>> Fixes: ad97bc37426c ("media: i2c: imx274: Add IMX274 power on and off sequence"
+> >>>> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+> >>>> ---
+> >>>>    drivers/media/i2c/imx274.c | 5 +++++
+> >>>>    1 file changed, 5 insertions(+)
+> >>>>
+> >>>> diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
+> >>>> index e89ef35a71c5..6e63fdcc5e46 100644
+> >>>> --- a/drivers/media/i2c/imx274.c
+> >>>> +++ b/drivers/media/i2c/imx274.c
+> >>>> @@ -1420,6 +1420,10 @@ static int imx274_s_frame_interval(struct v4l2_subdev *sd,
+> >>>>         int min, max, def;
+> >>>>         int ret;
+> >>>>
+> >>>> +     ret = pm_runtime_resume_and_get(&imx274->client->dev);
+> >>>> +     if (ret < 0)
+> >>>> +             return ret;
+> >>>> +
+> >>>>         mutex_lock(&imx274->lock);
+> >>>>         ret = imx274_set_frame_interval(imx274, fi->interval);
+> >>>>
+> >>>> @@ -1451,6 +1455,7 @@ static int imx274_s_frame_interval(struct v4l2_subdev *sd,
+> >>>>
+> >>>>    unlock:
+> >>>>         mutex_unlock(&imx274->lock);
+> >>>> +     pm_runtime_put(&imx274->client->dev);
+> >>>>
+> >>>>         return ret;
+> >>>>    }
+> >>>
+> >>> If the device is powered off in the end, could you instead not power it on
+> >>> in the first place? I.e. see how this works for the s_ctrl() callback.
+> >>
+> >>
+> >> Hi Sakari,
+> >>
+> >> I tried this initially, as in s_ctrl,
+> >>
+> >>           if (!pm_runtime_get_if_in_use(&imx274->client->dev))
+> >>
+> >>                   return 0;
+> >>
+> >>
+> >> However, if the device is powered off, the s_frame_interval does not do
+> >> anything (return 0), and the frame interval is not changed. Not even the
+> >> internal structure frame_interval is updated (as this is updated after
+> >> configuring the actual device).
+> >> And in consequence media-ctl -p will still print the old frame interval.
+> >>
+> >> So either we power on the device to set everything, or, things have to
+> >> be set in the software struct and written once streaming starts.
+> >> I am in favor of the first option (hence the patch), to avoid having
+> >> configuration that was requested but not written to the device itself.
+> >> The second option would require some rework to move the software part
+> >> before the hardware part, and to assume that the hardware part never
+> >> fails in bounds or by other reason (or the software part would be no
+> >> longer consistent)
+> >>
+> >> What do you think ?
+> > 
+> > Seems reasonable, but the driver is hardly doing this in an exemplary way.
+> > Still the rework might not worth the small gain. I'll take this one then.
+> 
+> 
+> Okay, thank you.
+> I noticed that the fixes tag in the commit message misses the last 
+> closing bracket ')' . Might break automated checkers and shout out a 
+> warning. Maybe it's possible to amend it ?
 
-On 2021/11/16 19:37, Yicong Yang wrote:
-> On 2021/11/16 18:56, Robin Murphy wrote:
->> On 2021-11-16 09:06, Yicong Yang via iommu wrote:
->> [...]
->>> +/*
->>> + * Get RMR address if provided by the firmware.
->>> + * Return 0 if the IOMMU doesn't present or the policy of the
->>> + * IOMMU domain is passthrough or we get a usable RMR region.
->>> + * Otherwise a negative value is returned.
->>> + */
->>> +static int hisi_ptt_get_rmr(struct hisi_ptt *hisi_ptt)
->>> +{
->>> +    struct pci_dev *pdev = hisi_ptt->pdev;
->>> +    struct iommu_domain *iommu_domain;
->>> +    struct iommu_resv_region *region;
->>> +    LIST_HEAD(list);
->>> +
->>> +    /*
->>> +     * Use direct DMA if IOMMU does not present or the policy of the
->>> +     * IOMMU domain is passthrough.
->>> +     */
->>> +    iommu_domain = iommu_get_domain_for_dev(&pdev->dev);
->>> +    if (!iommu_domain || iommu_domain->type == IOMMU_DOMAIN_IDENTITY)
->>> +        return 0;
->>> +
->>> +    iommu_get_resv_regions(&pdev->dev, &list);
->>> +    list_for_each_entry(region, &list, list)
->>> +        if (region->type == IOMMU_RESV_DIRECT &&
->>> +            region->length >= HISI_PTT_TRACE_BUFFER_SIZE) {
->>> +            hisi_ptt->trace_ctrl.has_rmr = true;
->>> +            hisi_ptt->trace_ctrl.rmr_addr = region->start;
->>> +            hisi_ptt->trace_ctrl.rmr_length = region->length;
->>> +            break;
->>> +        }
->>> +
->>> +    iommu_put_resv_regions(&pdev->dev, &list);
->>> +    return hisi_ptt->trace_ctrl.has_rmr ? 0 : -ENOMEM;
->>> +}
->>
->> No.
->>
->> The whole point of RMRs is for devices that are already configured to access the given address range in a manner beyond the kernel's control. If you can do this, it proves that you should not have an RMR in the first place.
->>
->> The notion of a kernel driver explicitly configuring its device to DMA into any random RMR that looks big enough is so egregiously wrong that I'm almost lost for words...
->>
-> 
-> our bios will reserve such a region and reported it through iort. the device will write to the region and in the driver we need to access the region
-> to get the traced data. the region is reserved exclusively and will not be accessed by kernel or other devices.
-> 
-> is it ok to let bios configure the address to the device and from CPU side we just read it?
-> 
+Thanks, fixed it.
 
-Any suggestion?  Is this still an issue you concern if we move the configuration of the device address to BIOS and just read from the CPU side?
-
-> 
-> 
-> .
-> 
+-- 
+Sakari Ailus
