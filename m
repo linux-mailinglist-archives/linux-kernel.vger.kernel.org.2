@@ -2,112 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0107A456130
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:09:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B31A6456133
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233974AbhKRRMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 12:12:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233973AbhKRRMl (ORCPT
+        id S233940AbhKRROi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 12:14:38 -0500
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:39778 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229678AbhKRROh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 12:12:41 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0641C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:09:41 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id r132so5932481pgr.9
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:09:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=uAaNcFBaz8xMWJV2W+/3Uo4xhT4fDaoMNM5naM4cPuQ=;
-        b=w6EnFf/fdmjFCnM1iJb91AZT+blHrRcY3EIZIQUSbym0jUmMaNDhxnTN5YT3rjGJjZ
-         O2sbZPSr2wLkg241GbXHltpbkwwSwyOzSisKSuR5FicUCBycBDY3qwV+C9edY1Gdup4F
-         g/9Niko3LRYs0PJP0OGHCagvEw7G7vj+3uu3KAOC6I+7UW29IgN3GctN2MV7L40S7Jp/
-         Hqc+ylT81301Dvj5dWqPtjvdW/u1Z4aFhOlu80vYUfo+vNjxCBVTZXGxTFn5RFTxSYTU
-         dHUMpvE93pDxSPaO/MblS3YFT3MRhrak9YLuQ3yJvGqgF2sv68CrivJYdtb1glLj5f1w
-         IcuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=uAaNcFBaz8xMWJV2W+/3Uo4xhT4fDaoMNM5naM4cPuQ=;
-        b=hDWTxzzb8KuaKz17DQvG0C8YATjNJPeRbkQNx89wVSkxx37ryNRI96+2eWEeju2QCP
-         74E9xG0P7ZM0lM+dk6V6pFCBejYj7HmzZ2ki2fbp0IdUboABvopy6JNOFSjeEsVH02yy
-         xB3aaA6+zmLcYWxr+5DWI2S1UjsqiaUw/B5EVpNNrGaiOdhaUniv9FO8qKrICRpjTB5O
-         BkVLWpzMXEYUV2meP/wf1BEYpmpr2DHUBWN8Ej6ksEcy7irV1ijgMJnY6no7SJVBybdE
-         YawI4Sdum+gYVcNbihBTw3pazPF+dgpkWVTq7oM5AZrEVozCo/vJKUZ86k6n0eoPuujg
-         Cn0A==
-X-Gm-Message-State: AOAM533YtnLkFWp022OFoAsBCMByxQ6T0hKqGbfW0abejuZIlW6cRImS
-        pYM6INPA0hzu0lEfl6N8VqLYdA==
-X-Google-Smtp-Source: ABdhPJzxXTTx9lD5m5ibuEEC/M2r0+XPA9yTZcSIonpEOusTjbzEAF3y84vs8GUFUvGBreRYNAaZCg==
-X-Received: by 2002:aa7:9575:0:b0:49f:ddab:dcdb with SMTP id x21-20020aa79575000000b0049fddabdcdbmr16506842pfq.13.1637255379778;
-        Thu, 18 Nov 2021 09:09:39 -0800 (PST)
-Received: from [192.168.254.17] ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id na13sm199705pjb.11.2021.11.18.09.09.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Nov 2021 09:09:39 -0800 (PST)
-Message-ID: <e1235016-bcec-d7b4-ecbc-cf7e3365317e@linaro.org>
-Date:   Thu, 18 Nov 2021 09:09:38 -0800
+        Thu, 18 Nov 2021 12:14:37 -0500
+Received: from [77.244.183.192] (port=63900 helo=[192.168.178.41])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1mnkwh-000DiM-MS; Thu, 18 Nov 2021 18:11:35 +0100
+Subject: Re: [PATCH] media: i2c: imx274: implement enum_mbus_code
+To:     Eugen Hristev <eugen.hristev@microchip.com>,
+        leonl@leopardimaging.com, linux-media@vger.kernel.org
+Cc:     skomatineni@nvidia.com, sakari.ailus@linux.intel.com,
+        linux-kernel@vger.kernel.org
+References: <20211118154009.307430-1-eugen.hristev@microchip.com>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <fa26e991-9228-7ed7-833a-b296e6b32afc@lucaceresoli.net>
+Date:   Thu, 18 Nov 2021 18:11:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] skbuff: suppress clang object-size-mismatch error
+In-Reply-To: <20211118154009.307430-1-eugen.hristev@microchip.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>
-Cc:     elver@google.com, nathan@kernel.org, ndesaulniers@google.com,
-        jonathan.lemon@gmail.com, alobakin@pm.me, willemb@google.com,
-        pabeni@redhat.com, cong.wang@bytedance.com, haokexin@gmail.com,
-        ilias.apalodimas@linaro.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        keescook@chromium.org, edumazet@google.com
-References: <CANpmjNNuWfauPoUxQ6BETrZ8JMjWgrAAhAEqEXW=5BNsfWfyDA@mail.gmail.com>
- <931f1038-d7ab-f236-8052-c5e5b9753b18@linaro.org>
- <20211111095444.461b900e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20211112.154238.1786308722975241620.davem@davemloft.net>
- <90fece34-14af-8c91-98f5-daf6fad1825b@linaro.org>
- <20211118083833.3c2805d4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-In-Reply-To: <20211118083833.3c2805d4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/21 08:38, Jakub Kicinski wrote:
-> On Thu, 18 Nov 2021 08:05:01 -0800 Tadeusz Struk wrote:
->> On 11/12/21 07:42, David Miller wrote:
->>> From: Jakub Kicinski <kuba@kernel.org>
->>> Date: Thu, 11 Nov 2021 09:54:44 -0800
->>>    
->>>> I'm not sure if that stalled due to lack of time or some fundamental
->>>> problems.
->>>
->>> ran out of time, then had a stroke...
->>>    
->>>> Seems like finishing that would let us clean up such misuses?
->>>
->>> yes it would
->>
->> so since there is not better way of suppressing the issue atm are
->> you ok with taking this fix for now?
-> 
-> I vote no on sprinkling ugly tags around to silence some random
-> checkers warning. We already have too many of them. They are
-> meaningless and confusing to people reading the code.
-> 
-> This is not a fundamental problem, the solution is clear.
-> 
+Hi Eugen,
 
-Fair enough.
+On 18/11/21 16:40, Eugen Hristev wrote:
+> Current driver supports only SRGGB 10 bit RAW bayer format.
+> Add the enum_mbus_code implementation to report this format supported.
+> 
+>  # v4l2-ctl -d /dev/v4l-subdev3 --list-subdev-mbus-codes
+> ioctl: VIDIOC_SUBDEV_ENUM_MBUS_CODE (pad=0)
+>         0x300f: MEDIA_BUS_FMT_SRGGB10_1X10
+>  #
+> 
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
 
-David, did you post your work somewhere if someone would like to pick
-it up and finish it?
+Generally OK, but I have a few minor comments.
+
+> ---
+>  drivers/media/i2c/imx274.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
+> index 2e804e3b70c4..25a4ef8f6187 100644
+> --- a/drivers/media/i2c/imx274.c
+> +++ b/drivers/media/i2c/imx274.c
+> @@ -1909,7 +1909,21 @@ static int imx274_set_frame_interval(struct stimx274 *priv,
+>  	return err;
+>  }
+>  
+> +static int imx274_enum_mbus_code(struct v4l2_subdev *sd,
+> +				 struct v4l2_subdev_state *sd_state,
+> +				 struct v4l2_subdev_mbus_code_enum *code)
+> +{
+> +	if (code->index > 0)
+> +		return -EINVAL;
+
+Many driver do check code->pad too, so you might want to do
+
+	if (code->pad > 0 || code->index > 0)
+		return -EINVAL;
+
+However I don't think it is strictly necessary, thus
+
+> +
+> +	/* only supported format in the driver is Raw 10 bits SRGGB */
+> +	code->code = MEDIA_BUS_FMT_SRGGB10_1X10;
+
+Maybe better:
+
+  code->code =  to_imx274(sd)->format.code
+
+just as a little guard for future format changes.
+
+With or without these I'm OK anyway with the patch, so:
+
+Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
 
 -- 
-Thanks,
-Tadeusz
+Luca
