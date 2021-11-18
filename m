@@ -2,75 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D552B455B40
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:09:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5778B455B41
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:10:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344529AbhKRMMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 07:12:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40702 "EHLO mail.kernel.org"
+        id S1344537AbhKRMM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 07:12:57 -0500
+Received: from foss.arm.com ([217.140.110.172]:40092 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344522AbhKRMM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 07:12:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 46675613B1;
-        Thu, 18 Nov 2021 12:09:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637237367;
-        bh=vTc7gyH6B+jCfzlmBr6QVgg81p6LYBnt9/FZaldxVh4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mkemVrpH3KgutAOA8RPVxJss5CnZYYBjtzrehAf8bvshsBZ7xsuv6xPiZysNNSBEt
-         vhTRGtBtq9irHiF/bXpNYhUqtY85hTzUu8+aY18wjrOHKQG0nGEvNURXB6yN1hkO1U
-         TqKfhqdXzOZLUnyZw6O2Oe5MlWYAdM0kDzAZXuWwYhEca4ZOTwiDWcUX4+Cztl7sjA
-         m0eSnrZqg63p+eCxoWgmK0CsvFmEPfwMlPFWpIcBDM9ydAT8jsUPPrQa1vqrQUh2Jt
-         +55bTKOsudJPXj+jncKU+rpcOjVhI9rEAsuRrEleP71Mm9jZGtHyzC+CoXnMNsYkGL
-         fxvpuf79bMerA==
-Date:   Thu, 18 Nov 2021 12:09:23 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] spi: qcom: geni: set the error code for gpi transfer
-Message-ID: <YZZCc2DDxJhTfA5I@sirena.org.uk>
-References: <20211117133110.2682631-1-vkoul@kernel.org>
- <20211117133110.2682631-2-vkoul@kernel.org>
+        id S1344467AbhKRMMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 07:12:49 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7637E1FB;
+        Thu, 18 Nov 2021 04:09:49 -0800 (PST)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A008E3F766;
+        Thu, 18 Nov 2021 04:09:48 -0800 (PST)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        cristian.marussi@arm.com
+Cc:     Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH v2] arm/scmi: fix base agent discover response
+Date:   Thu, 18 Nov 2021 12:09:43 +0000
+Message-Id: <163723734736.4014156.4454501057354855876.b4-ty@arm.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211117081856.9932-1-vincent.guittot@linaro.org>
+References: <20211117081856.9932-1-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uX22MhuhZ3wmiD3M"
-Content-Disposition: inline
-In-Reply-To: <20211117133110.2682631-2-vkoul@kernel.org>
-X-Cookie: People respond to people who respond.
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 17 Nov 2021 09:18:56 +0100, Vincent Guittot wrote:
+> According to scmi specification, the response of the discover agent request
+> is made of:
+> - int32 status
+> - uint32 agent_id
+> - uint8 name[16]
+> 
+> but the current implementation doesn't take into account the agent_id field
+> and only allocates a rx buffer of SCMI_MAX_STR_SIZE length
+> 
+> [...]
 
---uX22MhuhZ3wmiD3M
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to sudeep.holla/linux (for-next/scmi), thanks!
 
-On Wed, Nov 17, 2021 at 07:01:09PM +0530, Vinod Koul wrote:
-> Before we invoke spi_finalize_current_transfer() in
-> spi_gsi_callback_result() we should set the spi->cur_msg->status as
-> appropriate (0 for success, error otherwise).
+[1/1] arm/scmi: fix base agent discover response
+      https://git.kernel.org/sudeep.holla/c/d1cbd9e0f7
 
-Fixes should come at the start of the patch series to make sure they can
-be applied as fixes without pulling in anything else.
+--
+Regards,
+Sudeep
 
---uX22MhuhZ3wmiD3M
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGWQnIACgkQJNaLcl1U
-h9B6AQf+JglmmKD8Jw1wEnvRgBZCgNXB5rnObe53RwuURkNIFRwzpa0uTvUCDqHm
-2ynwnEdYuogeX+TiXlTrSXJ0XMReawjaKiVFihaZOvr9UHi2oIvqr2VFWWFtl7TZ
-LJtKCNLNe8XlgBU8dBqnE/0HHN01YfLty8CqMppoEtUDOt8ft+O1KyTGbvrJ9YbI
-KGPCjFn1qMd/qOhjd+EiUzOFmA7NVqO+lmmj7rbJ/JLLm6IDJ5FIs8qRebFS5V6J
-hnnBN2VIRyyrbOg0XsCXQmaxeyYIvG+SHalhfe61VgDRUt86Gt/kcXxeQDMG1CUp
-8m9+7uw5nAtP6l/hxekEko0nfPUzeA==
-=+hVN
------END PGP SIGNATURE-----
-
---uX22MhuhZ3wmiD3M--
