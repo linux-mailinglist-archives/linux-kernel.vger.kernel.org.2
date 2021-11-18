@@ -2,66 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B746E455E39
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3616455E41
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233522AbhKROiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 09:38:24 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:45825 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233350AbhKROiA (ORCPT
+        id S233817AbhKROil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 09:38:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233372AbhKROiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 09:38:00 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R381e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UxDGhjF_1637246094;
-Received: from 192.168.2.97(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0UxDGhjF_1637246094)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 18 Nov 2021 22:34:56 +0800
-Message-ID: <bcfa0e4d-f6ab-037a-9ce1-d0cd612422a5@linux.alibaba.com>
-Date:   Thu, 18 Nov 2021 22:34:54 +0800
+        Thu, 18 Nov 2021 09:38:20 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9665DC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 06:35:20 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id x9so6631431ilu.6
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 06:35:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=5x6WOv0CKzpTKeVpOGLcGQsyAj8+hoUmQ/3ATUXLpb8=;
+        b=2MjgmgAmYj3REgChVDTJNGL8QHEsE3+PPtuxSgy8vINofW4UBAhQVUcw4UOU+d8RrC
+         a+o1tqz/hCpB5Io69nP6zofw75T3ZIYm6pMlzC58nltc6hmvlzVj+qSxaLROmDMJ3lNl
+         ndAA2rW6VoMneSsjVXvkzg5W4VGDGgyg07TRjaj7XrfUxY2Nny9b2ly8pmP2D03Bmt6E
+         inHnNp6UPRKLQD1ObvQbTZoUFp5y2hhMX1m4dOrgEYK2YxKhF0qegikWVdiB5t1rs1r/
+         ASfO/0pXelf/7EPCloQv1ThLO3dne7GKkbE/GHlaLoncdi8DRfRL2nqvsJYSVPnuPIDx
+         +4eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=5x6WOv0CKzpTKeVpOGLcGQsyAj8+hoUmQ/3ATUXLpb8=;
+        b=fjODvG0AfTCDTX2h2opPcjfQRahn5BcT7o79IyksUJfQcotVh6LiVctST7t/q8bVxf
+         DkxhNFXqCie3j5QcyrRFbDv6VPFbHOX3rDdoZgPzOYeH1dGoINzK/ZuM4gaYETsmidqa
+         8AQJnPe8VgUEX9A7tic4YffomwT18nJuZKlzIDEtP5JxYZD0p+JSKS0z0P+K7O/c1hBt
+         goGN4nZUeDR8PDHr8HOH+m1xX7J7PkrxsB20hT90tDm5MUvcUrClRxODqrNa0NWm3O51
+         z1QltcB1dpnvZyqn9T/peo3EAuVuLa1vxls+ZH+fQ1U5y2ERe5r7qg2FjgqoHcxnV94o
+         nt6A==
+X-Gm-Message-State: AOAM532+Xeb15WsZ6Mir6/wfl33+hfNb5VvfASemc4Sl1a6lP8dHqQyl
+        wdJSiqRlRBAtPeOycC3yuhiX9g==
+X-Google-Smtp-Source: ABdhPJymz8ch3wnyxVw+4PkayYCDASDgAlJyqmmui95LJS0hfJMxUv7Ja6tfW2gCUadmUgqQ6wiY2w==
+X-Received: by 2002:a05:6e02:1d9e:: with SMTP id h30mr16455668ila.138.1637246120025;
+        Thu, 18 Nov 2021 06:35:20 -0800 (PST)
+Received: from nicolas-tpx395.localdomain (mtl.collabora.ca. [66.171.169.34])
+        by smtp.gmail.com with ESMTPSA id f2sm2476811ilu.54.2021.11.18.06.35.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 06:35:19 -0800 (PST)
+Message-ID: <873eced9623809200c2d97e488a2a14df070d8f9.camel@ndufresne.ca>
+Subject: Re: [PATCH v2 7/7] meida: mtk-vcodec: remove unused func parameter
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        linux-media@vger.kernel.org
+Cc:     kernel@collabora.com, acourbot@chromium.org,
+        andrew-ct.chen@mediatek.com, courbot@chromium.org,
+        dafna3@gmail.com, eizan@chromium.org, houlong.wei@mediatek.com,
+        hsinyi@chromium.org, hverkuil@xs4all.nl, irui.wang@mediatek.com,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        maoguang.meng@mediatek.com, matthias.bgg@gmail.com,
+        mchehab@kernel.org, minghsiu.tsai@mediatek.com, tfiga@chromium.org,
+        tiffany.lin@mediatek.com
+Date:   Thu, 18 Nov 2021 09:35:17 -0500
+In-Reply-To: <20211117130635.11633-8-dafna.hirschfeld@collabora.com>
+References: <20211117130635.11633-1-dafna.hirschfeld@collabora.com>
+         <20211117130635.11633-8-dafna.hirschfeld@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH 15/15] KVM: X86: Always set gpte_is_8_bytes when direct
- map
-Content-Language: en-US
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     kvm@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-doc@vger.kernel.org
-References: <20211118110814.2568-1-jiangshanlai@gmail.com>
- <20211118110814.2568-16-jiangshanlai@gmail.com>
- <16b701db-e277-c4ef-e198-65a2dc6e3fdf@redhat.com>
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-In-Reply-To: <16b701db-e277-c4ef-e198-65a2dc6e3fdf@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Just noticed the headline typo: meida -> media
 
+cheers,
+Nicolas
 
-On 2021/11/18 19:12, Paolo Bonzini wrote:
-> On 11/18/21 12:08, Lai Jiangshan wrote:
->> From: Lai Jiangshan <laijs@linux.alibaba.com>
->>
->> When direct map, gpte_is_8_bytes has no meaning, but it is true for all
->> other cases except direct map when nonpaping.
->>
->> Setting gpte_is_8_bytes to true when nonpaping can ensure that
->> !gpte_is_8_bytes means 32-bit gptes for shadow paging.
+Le mercredi 17 novembre 2021 à 15:06 +0200, Dafna Hirschfeld a écrit :
+> The prarameter bs_size to function vpu_enc_encode
+> is not used. Remove it.
 > 
-> Then the right thing to do would be to rename it to has_4_byte_gptes and invert the direction.  But as things stand, 
-> it's a bit more confusing to make gpte_is_8_bytes=1 if there are no guest PTEs at all.
+> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+> ---
+>  drivers/media/platform/mtk-vcodec/venc/venc_h264_if.c | 9 +++------
+>  drivers/media/platform/mtk-vcodec/venc/venc_vp8_if.c  | 3 +--
+>  drivers/media/platform/mtk-vcodec/venc_vpu_if.c       | 1 -
+>  drivers/media/platform/mtk-vcodec/venc_vpu_if.h       | 1 -
+>  4 files changed, 4 insertions(+), 10 deletions(-)
 > 
+> diff --git a/drivers/media/platform/mtk-vcodec/venc/venc_h264_if.c b/drivers/media/platform/mtk-vcodec/venc/venc_h264_if.c
+> index b6a4f2074fa5..bf03888a824f 100644
+> --- a/drivers/media/platform/mtk-vcodec/venc/venc_h264_if.c
+> +++ b/drivers/media/platform/mtk-vcodec/venc/venc_h264_if.c
+> @@ -367,8 +367,7 @@ static int h264_encode_sps(struct venc_h264_inst *inst,
+>  
+>  	mtk_vcodec_debug_enter(inst);
+>  
+> -	ret = vpu_enc_encode(&inst->vpu_inst, H264_BS_MODE_SPS, NULL,
+> -			     bs_buf, bs_size, NULL);
+> +	ret = vpu_enc_encode(&inst->vpu_inst, H264_BS_MODE_SPS, NULL, bs_buf, NULL);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -394,8 +393,7 @@ static int h264_encode_pps(struct venc_h264_inst *inst,
+>  
+>  	mtk_vcodec_debug_enter(inst);
+>  
+> -	ret = vpu_enc_encode(&inst->vpu_inst, H264_BS_MODE_PPS, NULL,
+> -			     bs_buf, bs_size, NULL);
+> +	ret = vpu_enc_encode(&inst->vpu_inst, H264_BS_MODE_PPS, NULL, bs_buf, NULL);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -451,8 +449,7 @@ static int h264_encode_frame(struct venc_h264_inst *inst,
+>  	mtk_vcodec_debug(inst, "frm_count = %d,skip_frm_count =%d,frm_type=%d.\n",
+>  			 frame_info.frm_count, frame_info.skip_frm_count,
+>  			 frame_info.frm_type);
+> -	ret = vpu_enc_encode(&inst->vpu_inst, H264_BS_MODE_FRAME, frm_buf,
+> -			     bs_buf, bs_size, &frame_info);
+> +	ret = vpu_enc_encode(&inst->vpu_inst, H264_BS_MODE_FRAME, frm_buf, bs_buf, &frame_info);
+>  	if (ret)
+>  		return ret;
+>  
+> diff --git a/drivers/media/platform/mtk-vcodec/venc/venc_vp8_if.c b/drivers/media/platform/mtk-vcodec/venc/venc_vp8_if.c
+> index 8267a9c4fd25..6b66957d5192 100644
+> --- a/drivers/media/platform/mtk-vcodec/venc/venc_vp8_if.c
+> +++ b/drivers/media/platform/mtk-vcodec/venc/venc_vp8_if.c
+> @@ -302,8 +302,7 @@ static int vp8_enc_encode_frame(struct venc_vp8_inst *inst,
+>  
+>  	mtk_vcodec_debug(inst, "->frm_cnt=%d", inst->frm_cnt);
+>  
+> -	ret = vpu_enc_encode(&inst->vpu_inst, 0, frm_buf, bs_buf, bs_size,
+> -			     NULL);
+> +	ret = vpu_enc_encode(&inst->vpu_inst, 0, frm_buf, bs_buf, NULL);
+>  	if (ret)
+>  		return ret;
+>  
+> diff --git a/drivers/media/platform/mtk-vcodec/venc_vpu_if.c b/drivers/media/platform/mtk-vcodec/venc_vpu_if.c
+> index be6d8790a41e..e7899d8a3e4e 100644
+> --- a/drivers/media/platform/mtk-vcodec/venc_vpu_if.c
+> +++ b/drivers/media/platform/mtk-vcodec/venc_vpu_if.c
+> @@ -225,7 +225,6 @@ int vpu_enc_set_param(struct venc_vpu_inst *vpu,
+>  int vpu_enc_encode(struct venc_vpu_inst *vpu, unsigned int bs_mode,
+>  		   struct venc_frm_buf *frm_buf,
+>  		   struct mtk_vcodec_mem *bs_buf,
+> -		   unsigned int *bs_size,
+>  		   struct venc_frame_info *frame_info)
+>  {
+>  	const bool is_ext = MTK_ENC_CTX_IS_EXT(vpu->ctx);
+> diff --git a/drivers/media/platform/mtk-vcodec/venc_vpu_if.h b/drivers/media/platform/mtk-vcodec/venc_vpu_if.h
+> index f9be9cab7ff7..f83bc1b3f2bf 100644
+> --- a/drivers/media/platform/mtk-vcodec/venc_vpu_if.h
+> +++ b/drivers/media/platform/mtk-vcodec/venc_vpu_if.h
+> @@ -45,7 +45,6 @@ int vpu_enc_set_param(struct venc_vpu_inst *vpu,
+>  int vpu_enc_encode(struct venc_vpu_inst *vpu, unsigned int bs_mode,
+>  		   struct venc_frm_buf *frm_buf,
+>  		   struct mtk_vcodec_mem *bs_buf,
+> -		   unsigned int *bs_size,
+>  		   struct venc_frame_info *frame_info);
+>  int vpu_enc_deinit(struct venc_vpu_inst *vpu);
+>  
 
-I will make the last 3 patches be a separated patchset and will do the rename.
