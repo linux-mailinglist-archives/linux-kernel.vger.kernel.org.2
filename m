@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 599A345601A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 309AC45601C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:06:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232897AbhKRQIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 11:08:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57412 "EHLO
+        id S232942AbhKRQJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 11:09:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27666 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230133AbhKRQIh (ORCPT
+        by vger.kernel.org with ESMTP id S231167AbhKRQJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 11:08:37 -0500
+        Thu, 18 Nov 2021 11:09:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637251537;
+        s=mimecast20190719; t=1637251559;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=NoP5kE8w00obosPq8BwwxTuvnKXCJqUeOM7n6CSCB2U=;
-        b=amd68jIpXFzW4daFc2/suo0wnS3Vl+0zGk1iH3SSLM6598OyruDNK4L2/RW9F2tgNLqesB
-        qTB5LI2ZYhpQhY2RtFcUf/bX0eyJhc3zBI5/W5oOu4UZvhpuvAeOq5Flj6sre09lIqy69M
-        Wah9a3GifMKm710UJJv0h+xb3tWXOio=
+        bh=CP4HVUwyCXLglaJMn5giAMMYbfCEGfvRmGXa6Q3B3Ls=;
+        b=XUV3CWg9L3wNZcA2O5t0sUffGA5YiMhlRhEYY/8g8TSpOcnVXf9nWobU7DxQ3AZyLo1vO3
+        7Upvk1XM7B4ieo+mUQQuNVA5/ecI6R+WJ9637jXokf2VwSXSw3fL2DBT0QyPttgNW+U4Ck
+        cOueFIf12yYgex0FnoMjxAjg0KaIouw=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-560-kiYuzqXdNU2xjVKPhKdxmw-1; Thu, 18 Nov 2021 11:05:31 -0500
-X-MC-Unique: kiYuzqXdNU2xjVKPhKdxmw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+ us-mta-322-Hn9QUDsfONG2GXwobF2uXw-1; Thu, 18 Nov 2021 11:05:54 -0500
+X-MC-Unique: Hn9QUDsfONG2GXwobF2uXw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7624C875110;
-        Thu, 18 Nov 2021 16:05:29 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 328CA101F7A5;
+        Thu, 18 Nov 2021 16:05:52 +0000 (UTC)
 Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5CCAA19E7E;
-        Thu, 18 Nov 2021 16:05:25 +0000 (UTC)
-Message-ID: <226fc242-ae46-3214-4e01-dbfdf5f7c0fb@redhat.com>
-Date:   Thu, 18 Nov 2021 17:05:22 +0100
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3D3E114104;
+        Thu, 18 Nov 2021 16:05:48 +0000 (UTC)
+Message-ID: <4f40ed93-eca0-7a19-5ad6-b48fcf8e281f@redhat.com>
+Date:   Thu, 18 Nov 2021 17:05:47 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.2.0
-Subject: Re: [PATCH 05/15] KVM: VMX: Add document to state that write to uret
- msr should always be intercepted
+Subject: Re: [PATCH 01/15] KVM: VMX: Use x86 core API to access to fs_base and
+ inactive gs_base
 Content-Language: en-US
 To:     Lai Jiangshan <jiangshanlai@gmail.com>,
         linux-kernel@vger.kernel.org
 Cc:     kvm@vger.kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
-        Sean Christopherson <seanjc@google.com>,
+        x86@kernel.org, Sean Christopherson <seanjc@google.com>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
         Wanpeng Li <wanpengli@tencent.com>,
         Jim Mattson <jmattson@google.com>,
         Joerg Roedel <joro@8bytes.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Kees Cook <keescook@chromium.org>
 References: <20211118110814.2568-1-jiangshanlai@gmail.com>
- <20211118110814.2568-6-jiangshanlai@gmail.com>
+ <20211118110814.2568-2-jiangshanlai@gmail.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211118110814.2568-6-jiangshanlai@gmail.com>
+In-Reply-To: <20211118110814.2568-2-jiangshanlai@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -69,37 +69,118 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 11/18/21 12:08, Lai Jiangshan wrote:
 > From: Lai Jiangshan <laijs@linux.alibaba.com>
 > 
-> And adds a corresponding sanity check code.
+> And they use FSGSBASE instructions when enabled.
 > 
+> Cc: x86@kernel.org
 > Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> ---
->   arch/x86/kvm/vmx/vmx.c | 10 +++++++++-
->   1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index e8a41fdc3c4d..cd081219b668 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -3703,13 +3703,21 @@ void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
->   	if (!cpu_has_vmx_msr_bitmap())
->   		return;
->   
-> +	/*
-> +	 * Write to uret msr should always be intercepted due to the mechanism
-> +	 * must know the current value.  Santity check to avoid any inadvertent
-> +	 * mistake in coding.
-> +	 */
-> +	if (WARN_ON_ONCE(vmx_find_uret_msr(vmx, msr) && (type & MSR_TYPE_W)))
-> +		return;
-> +
 
-I'm not sure about this one, it's relatively expensive to call 
-vmx_find_uret_msr.
+This needs ACK from x86 maintainers.
 
-User-return MSRs and disable-intercept MSRs are almost the opposite: 
-uret is for MSRs that the host (not even the processor) never uses, 
-disable-intercept is for MSRs that the guest reads/writes often.  As 
-such it seems almost impossible that they overlap.
+I queued 2-4 and 6-14.
 
 Paolo
+
+> ---
+>   arch/x86/include/asm/kvm_host.h | 10 ----------
+>   arch/x86/kernel/process_64.c    |  2 ++
+>   arch/x86/kvm/vmx/vmx.c          | 14 +++++++-------
+>   3 files changed, 9 insertions(+), 17 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 1fcb345bc107..4cbb402f5636 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1808,16 +1808,6 @@ static inline void kvm_load_ldt(u16 sel)
+>   	asm("lldt %0" : : "rm"(sel));
+>   }
+>   
+> -#ifdef CONFIG_X86_64
+> -static inline unsigned long read_msr(unsigned long msr)
+> -{
+> -	u64 value;
+> -
+> -	rdmsrl(msr, value);
+> -	return value;
+> -}
+> -#endif
+> -
+>   static inline void kvm_inject_gp(struct kvm_vcpu *vcpu, u32 error_code)
+>   {
+>   	kvm_queue_exception_e(vcpu, GP_VECTOR, error_code);
+> diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
+> index 3402edec236c..296bd5c2e38b 100644
+> --- a/arch/x86/kernel/process_64.c
+> +++ b/arch/x86/kernel/process_64.c
+> @@ -443,6 +443,7 @@ unsigned long x86_gsbase_read_cpu_inactive(void)
+>   
+>   	return gsbase;
+>   }
+> +EXPORT_SYMBOL_GPL(x86_gsbase_read_cpu_inactive);
+>   
+>   void x86_gsbase_write_cpu_inactive(unsigned long gsbase)
+>   {
+> @@ -456,6 +457,7 @@ void x86_gsbase_write_cpu_inactive(unsigned long gsbase)
+>   		wrmsrl(MSR_KERNEL_GS_BASE, gsbase);
+>   	}
+>   }
+> +EXPORT_SYMBOL_GPL(x86_gsbase_write_cpu_inactive);
+>   
+>   unsigned long x86_fsbase_read_task(struct task_struct *task)
+>   {
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 3127c66a1651..48a34d1a2989 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -1156,11 +1156,11 @@ void vmx_prepare_switch_to_guest(struct kvm_vcpu *vcpu)
+>   	} else {
+>   		savesegment(fs, fs_sel);
+>   		savesegment(gs, gs_sel);
+> -		fs_base = read_msr(MSR_FS_BASE);
+> -		vmx->msr_host_kernel_gs_base = read_msr(MSR_KERNEL_GS_BASE);
+> +		fs_base = x86_fsbase_read_cpu();
+> +		vmx->msr_host_kernel_gs_base = x86_gsbase_read_cpu_inactive();
+>   	}
+>   
+> -	wrmsrl(MSR_KERNEL_GS_BASE, vmx->msr_guest_kernel_gs_base);
+> +	x86_gsbase_write_cpu_inactive(vmx->msr_guest_kernel_gs_base);
+>   #else
+>   	savesegment(fs, fs_sel);
+>   	savesegment(gs, gs_sel);
+> @@ -1184,7 +1184,7 @@ static void vmx_prepare_switch_to_host(struct vcpu_vmx *vmx)
+>   	++vmx->vcpu.stat.host_state_reload;
+>   
+>   #ifdef CONFIG_X86_64
+> -	rdmsrl(MSR_KERNEL_GS_BASE, vmx->msr_guest_kernel_gs_base);
+> +	vmx->msr_guest_kernel_gs_base = x86_gsbase_read_cpu_inactive();
+>   #endif
+>   	if (host_state->ldt_sel || (host_state->gs_sel & 7)) {
+>   		kvm_load_ldt(host_state->ldt_sel);
+> @@ -1204,7 +1204,7 @@ static void vmx_prepare_switch_to_host(struct vcpu_vmx *vmx)
+>   #endif
+>   	invalidate_tss_limit();
+>   #ifdef CONFIG_X86_64
+> -	wrmsrl(MSR_KERNEL_GS_BASE, vmx->msr_host_kernel_gs_base);
+> +	x86_gsbase_write_cpu_inactive(vmx->msr_host_kernel_gs_base);
+>   #endif
+>   	load_fixmap_gdt(raw_smp_processor_id());
+>   	vmx->guest_state_loaded = false;
+> @@ -1216,7 +1216,7 @@ static u64 vmx_read_guest_kernel_gs_base(struct vcpu_vmx *vmx)
+>   {
+>   	preempt_disable();
+>   	if (vmx->guest_state_loaded)
+> -		rdmsrl(MSR_KERNEL_GS_BASE, vmx->msr_guest_kernel_gs_base);
+> +		vmx->msr_guest_kernel_gs_base = x86_gsbase_read_cpu_inactive();
+>   	preempt_enable();
+>   	return vmx->msr_guest_kernel_gs_base;
+>   }
+> @@ -1225,7 +1225,7 @@ static void vmx_write_guest_kernel_gs_base(struct vcpu_vmx *vmx, u64 data)
+>   {
+>   	preempt_disable();
+>   	if (vmx->guest_state_loaded)
+> -		wrmsrl(MSR_KERNEL_GS_BASE, data);
+> +		x86_gsbase_write_cpu_inactive(data);
+>   	preempt_enable();
+>   	vmx->msr_guest_kernel_gs_base = data;
+>   }
+> 
 
