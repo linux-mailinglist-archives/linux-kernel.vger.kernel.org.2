@@ -2,140 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B945C455FB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91978455FB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:38:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232590AbhKRPkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 10:40:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:57983 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230376AbhKRPkv (ORCPT
+        id S232547AbhKRPk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 10:40:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232596AbhKRPk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 10:40:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637249871;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Yy1LH5o0VGJSqKmP60w+gcgBMDkEPZ5wa2DfnRKliAM=;
-        b=fqxuoj6ZIBoWjixcjgWW4Nc26r/p3wykaGMMi/AMw73F5lmaU9UMpbQ0hm4k38bCKQzlYy
-        CVr8oz96aw7RlDlwGsoCBwC9vdIC/F0BzfpS8h9utTxXtynTM1UeYzvvAjxsAM9cIrIiRL
-        feBAY2oS8vGYkzPF6FIORrGBtT3uwz8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-337--oIvI2fGNeOs3_A8TJP0FA-1; Thu, 18 Nov 2021 10:37:45 -0500
-X-MC-Unique: -oIvI2fGNeOs3_A8TJP0FA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A69B687D541;
-        Thu, 18 Nov 2021 15:37:43 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BA86960657;
-        Thu, 18 Nov 2021 15:37:39 +0000 (UTC)
-Message-ID: <937c373e-80f4-38d9-b45a-a655dcb66569@redhat.com>
-Date:   Thu, 18 Nov 2021 16:37:38 +0100
+        Thu, 18 Nov 2021 10:40:58 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E976C061574;
+        Thu, 18 Nov 2021 07:37:58 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id n85so6386033pfd.10;
+        Thu, 18 Nov 2021 07:37:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H63tYC9VZirdHLdx/wP8j9KfA3u77nm8eK5aUwcmc7I=;
+        b=Ot44ei6RVgNJ5wnsuAEPY40LMWLWkuTl2NwglGZJNZuR/RWtL5KSG4zquBUqAGWHRG
+         YDlKNg1IDgejuR6glbKGB1/pmrtqvnwncEi49hvjMN8DI39LgpuhQHzzp9IRseu+9f6B
+         F0MERHdaZTbVfXmi7rtzVWLfzWP2YIE0dK3JIB9ZGgt0b6SulkIfJ/V/CxksY8gE7hGQ
+         D6glIFn5yKzH7q7Dh1VHuEWQFbCtvFYal4SVEr8P9nuHXp+ACGGnh6Y0UwDmH3Zx/U5S
+         TU5s6FWCLSDK0Q7X5r2sto8TNlqAb0WcI8gLyE8x62hL/v/0fUTM2n/1YgWINckDfhix
+         gOxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H63tYC9VZirdHLdx/wP8j9KfA3u77nm8eK5aUwcmc7I=;
+        b=qGnbwzLy5Mloh73+Nvu5B/VFuW4qomiabF3dDJlV/1sY8oskCPdFrqO+yRQupFAD0u
+         bk7XkhUoblbKoE7ZxUt5ohud49jt9+7RX0Ef1nEAtcapa/uExT3mF8SZUouH4BQ7y+Q1
+         7Eozw7JJU+ZpZAMRVPMgedrnAJU2cTS1UwxKkCiZvDqVspEOZbKyForKN90ig+mvIAWt
+         rTg6k54cYdM5yXLPiIr7hMnZ9W93m6wK/KNH4McQ+PWgMRuFqMHMy1KySbF9saXKLGWB
+         Q1EIrNQbPvB3uSLTRCpYbsSaJiYhBojf468+qmbclHLBq+fvJSxzjkKYK1AbmrGrDtzO
+         uJiA==
+X-Gm-Message-State: AOAM5322yX7BER87o66yIlePPyPKkhJyYy6fSc7obQYJG9aLGY6ZvXDl
+        XoRNdrKj1t7PhtJAk5zVcjb9y2IuQWmlIERKSYQ=
+X-Google-Smtp-Source: ABdhPJxIsnca/WuiwlgH8hsoVhfQYGtrxibEd8TAes0FdIYphIVtlfbpdo5+QCOP1kZOQYVCmDaitDtW5IBftZ0MXRs=
+X-Received: by 2002:a63:d00c:: with SMTP id z12mr11871225pgf.334.1637249877960;
+ Thu, 18 Nov 2021 07:37:57 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 13/15] KVM: SVM: Add and use svm_register_cache_reset()
-Content-Language: en-US
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-References: <20211108124407.12187-1-jiangshanlai@gmail.com>
- <20211108124407.12187-14-jiangshanlai@gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211108124407.12187-14-jiangshanlai@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <CA+3zgmtHdCE3TZn3Hc8+nsYc+mHHvACNgFY_Z_Z4nCAmhSnQPg@mail.gmail.com>
+ <CA+G9fYuFqFyYXkvGK8jVCZAiDZW_oNG4dNY_2q9BG__uXRR1DQ@mail.gmail.com>
+In-Reply-To: <CA+G9fYuFqFyYXkvGK8jVCZAiDZW_oNG4dNY_2q9BG__uXRR1DQ@mail.gmail.com>
+From:   Tim Lewis <elatllat@gmail.com>
+Date:   Thu, 18 Nov 2021 10:37:46 -0500
+Message-ID: <CA+3zgmtwFQNc05why_bT1fXxPM2ShHtZ=MaB6QOmkYw81wKn6A@mail.gmail.com>
+Subject: Re: Re: [PATCH 5.10 000/578] 5.10.80-rc2 review
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/21 13:44, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
-> 
-> It resets all the appropriate bits like vmx.
-> 
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> ---
->   arch/x86/kvm/svm/svm.c |  3 +--
->   arch/x86/kvm/svm/svm.h | 26 ++++++++++++++++++++++++++
->   2 files changed, 27 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index b7da66935e72..ba9cfddd2875 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -3969,8 +3969,7 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
->   
->   	svm->vmcb->control.tlb_ctl = TLB_CONTROL_DO_NOTHING;
->   	vmcb_mark_all_clean(svm->vmcb);
-> -
-> -	kvm_register_clear_available(vcpu, VCPU_EXREG_PDPTR);
-> +	svm_register_cache_reset(vcpu);
->   
->   	/*
->   	 * We need to handle MC intercepts here before the vcpu has a chance to
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 0d7bbe548ac3..1cf5d5e2d0cd 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -274,6 +274,32 @@ static inline bool vmcb_is_dirty(struct vmcb *vmcb, int bit)
->           return !test_bit(bit, (unsigned long *)&vmcb->control.clean);
->   }
->   
-> +static inline void svm_register_cache_reset(struct kvm_vcpu *vcpu)
-> +{
-> +/*
-> + * SVM_REGS_AVAIL_SET - The set of registers that will be updated in cache on
-> + *			demand.  Other registers not listed here are synced to
-> + *			the cache immediately after VM-Exit.
-> + *
-> + * SVM_REGS_DIRTY_SET - The set of registers that might be outdated in
-> + *			architecture. Other registers not listed here are synced
-> + *			to the architecture immediately when modifying.
-> + *
-> + *			Special case: VCPU_EXREG_CR3 should be in this set due
-> + *			to the fact.  But KVM_REQ_LOAD_MMU_PGD is always
-> + *			requested when the cache vcpu->arch.cr3 is changed and
-> + *			svm_load_mmu_pgd() always syncs the new CR3 value into
-> + *			the architecture.  So the dirty information of
-> + *			VCPU_EXREG_CR3 is not used which means VCPU_EXREG_CR3
-> + *			isn't required to be put in this set.
-> + */
-> +#define SVM_REGS_AVAIL_SET	(1 << VCPU_EXREG_PDPTR)
-> +#define SVM_REGS_DIRTY_SET	(0)
-> +
-> +	vcpu->arch.regs_avail &= ~SVM_REGS_AVAIL_SET;
-> +	vcpu->arch.regs_dirty &= ~SVM_REGS_DIRTY_SET;
-> +}
+On Thu, Nov 18, 2021 at 5:41 AM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
+...
+> I have noticed intermittent failures on slow devices.
+...
+> When the test runs more than X time (45 sec i guess) the script will
+> be killed by the runner script.
 
-I think touching regs_dirty is confusing here, so I'd go with this:
+In my test environment proc-uptime-001 seems to be passing ~40% (N=10)
+of the time,
+and taking approximately 0.60 seconds  (~11 seconds / 18 tests).
 
-         vcpu->arch.regs_avail &= ~SVM_REGS_LAZY_LOAD_SET;
+kselftest is not timing individual targets (maybe it should?),
+so I don't have a timing history but it used to pass 100% (N=60) of the time.
 
-         /*
-          * SVM does not use vcpu->arch.regs_dirty.  The only register that
-          * might be out of date in the VMCB is CR3, but KVM_REQ_LOAD_MMU_PGD
-          * is always requested when the cache vcpu->arch.cr3 is changed and
-          * svm_load_mmu_pgd() always syncs the new CR3 value into the VMCB.
-          */
+> We will add this as known intermittent failure.
 
-(VMX instead needs VCPU_EXREG_CR3 mostly because it does not want to
-update it unconditionally on exit).
+Thanks, I'll remove it from my tests.
 
-Paolo
+Data for the numbers above:
 
+for X in $(seq 1 10) ; do echo $X && time make TARGETS="proc"
+kselftest | grep -P "ok.*proc-uptime-001" ; done
+1
+ok 10 selftests: proc: proc-uptime-001
+
+real    0m10.605s
+user    0m3.427s
+sys    0m7.239s
+2
+not ok 10 selftests: proc: proc-uptime-001 # exit=134
+
+real    0m10.808s
+user    0m3.237s
+sys    0m6.614s
+3
+ok 10 selftests: proc: proc-uptime-001
+
+real    0m10.577s
+user    0m3.377s
+sys    0m7.269s
+4
+ok 10 selftests: proc: proc-uptime-001
+
+real    0m12.424s
+user    0m3.215s
+sys    0m7.402s
+5
+not ok 10 selftests: proc: proc-uptime-001 # exit=134
+
+real    0m11.101s
+user    0m3.257s
+sys    0m6.883s
+6
+not ok 10 selftests: proc: proc-uptime-001 # exit=134
+
+real    0m10.797s
+user    0m3.199s
+sys    0m6.671s
+7
+not ok 10 selftests: proc: proc-uptime-001 # exit=134
+
+real    0m12.817s
+user    0m3.308s
+sys    0m7.177s
+8
+not ok 10 selftests: proc: proc-uptime-001 # exit=134
+
+real    0m10.816s
+user    0m3.201s
+sys    0m6.663s
+9
+not ok 10 selftests: proc: proc-uptime-001 # exit=134
+
+real    0m10.832s
+user    0m3.145s
+sys    0m6.721s
+10
+ok 10 selftests: proc: proc-uptime-001
+
+real    0m10.664s
+user    0m3.337s
+sys    0m7.375s
