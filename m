@@ -2,115 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45275455621
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 08:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A1D45561F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 08:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244139AbhKRH5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 02:57:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244100AbhKRH5L (ORCPT
+        id S244113AbhKRH5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 02:57:21 -0500
+Received: from mail-wm1-f45.google.com ([209.85.128.45]:43974 "EHLO
+        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244031AbhKRH5H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 02:57:11 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73354C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 23:54:11 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id v138so15481790ybb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 23:54:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tUx9UjZoKSPnqR6g70X7U+S/RFB8dii6mOvb2a9mdkw=;
-        b=QdZaVueVf1RI9KAn4GY3zFdazR/X2OmjOrNG3c+p4FkxC1hxvkGmqLSDC5JnkUzGoR
-         bJIjgd1N331cufVv26TCQHZiyG8JwYR9tD/2vG9Fp3EtD9lnL7PBKozHyQn83bYGZRnF
-         urnmL7ipfX/FGNoOKIm2xoNfRfCgyS6fcKrQ0=
+        Thu, 18 Nov 2021 02:57:07 -0500
+Received: by mail-wm1-f45.google.com with SMTP id 67-20020a1c1946000000b0030d4c90fa87so4083327wmz.2;
+        Wed, 17 Nov 2021 23:54:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tUx9UjZoKSPnqR6g70X7U+S/RFB8dii6mOvb2a9mdkw=;
-        b=Q14UqCfUnSJjZqVXVi5tUk5r405cIU3mu6gclwrY9VYkMWQAeBKX4hLRyAIk/cJnJS
-         nhHDwvI9pvJBF7OdBym9BNarKZSlQVbTD8yeFdajxQmHA93m30Z6v+MHtLHcDxQe/Ymj
-         kdrFZ67yCtM6WL7CFF68IyfpwWVAojCN8y3kBVJYfqnnmgLo851FmjCnCTcUOH/crQli
-         FEZQh2eYCoR2xutoGn26bSuis0xXoevTrAYf/WTBfYcSPa+k5Q6rdRrmqVlNJCiPLiOe
-         ++P86PE5kiKRZLfPVqWy2WlL+pNhMoWdJaguMcmwdP8m3QxHPsV7XEY5ILSFRwP86uW0
-         0Qhg==
-X-Gm-Message-State: AOAM531Qqr1J5GbMW/Nu3ha7gp0ibyMgR+K5/p2idCItf0OpYRLR7Mkl
-        V5G5JupIFLqbYXGZWpkfjgz8JpJJCc0ZUlyg0x4n
-X-Google-Smtp-Source: ABdhPJztIGeM2yO42tHG/OmNK597LLtMYpZrWrT/uiP9eI1nHBWCBrDBBYc830E4jWNuw8OZfj6oG/jQLdidDgSgfko=
-X-Received: by 2002:a25:b005:: with SMTP id q5mr24987464ybf.35.1637222050369;
- Wed, 17 Nov 2021 23:54:10 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:cc:references:in-reply-to
+         :content-transfer-encoding;
+        bh=/WPksyNIJfHVwRowN/X0gm5j/hURdH3QuE+5mF2pGYM=;
+        b=QM0p6XSJCXBLJ5iZi5rb690ofcYWIXx22x+hN2NCvR0lfisUvmF6gPGDvJ7W9jjgAe
+         s9skfQCPEGjdvD+oc9+/YbtehtQVz+mwLQuhTHiQ4vYK3atSFMrwvR1ve0YyVHX0/rgb
+         BksI426ljNMFx/1m2uhEV01md5V12RLG++XLHF5PpD789Pazjyd8kmHzSpyUcoCQMZEU
+         AQalu5EJfFvNhLG55lsz/cDJdhFEpsJE7eCaIwx+fEwlOKR6V3HC3T+4CnXZVPhQHOzz
+         JOOQGsz94JciGSY9TqNqVEuCILoJcURm+X8v5hQFJm+QngC9l/AiLLYUNJMc4v2d33ae
+         yGGw==
+X-Gm-Message-State: AOAM533GOTLwQ9093iye27iDnAzLujucksCdLlWncu6NT0rTfApvPSKs
+        QMa5HTIRFGMOW9zrtUNi904=
+X-Google-Smtp-Source: ABdhPJwc25V0qqm9TTcQx2Oeh41d9gR3LuMfmq/O5UgECJPmZ1+mNaARXI6lFCDpzvAVExFYhDlt/Q==
+X-Received: by 2002:a1c:a711:: with SMTP id q17mr7550692wme.158.1637222047111;
+        Wed, 17 Nov 2021 23:54:07 -0800 (PST)
+Received: from ?IPV6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id o12sm3335053wrc.85.2021.11.17.23.54.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 23:54:06 -0800 (PST)
+Message-ID: <01079c75-2d2f-fe57-db0e-6aadf9963846@kernel.org>
+Date:   Thu, 18 Nov 2021 08:54:05 +0100
 MIME-Version: 1.0
-References: <20211117084705.687762-1-anup.patel@wdc.com>
-In-Reply-To: <20211117084705.687762-1-anup.patel@wdc.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Wed, 17 Nov 2021 23:53:59 -0800
-Message-ID: <CAOnJCULQJj0ZyyF+Q1cogXsC9GDQKLTms8vHvNNpj4aHntmx6w@mail.gmail.com>
-Subject: Re: [PATCH v2] RISC-V: Enable KVM in RV64 and RV32 defconfigs as a module
-To:     Anup Patel <anup.patel@wdc.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Anup Patel <anup@brainfault.org>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH 16/16] tty: drop tty_flip_buffer_push
+Content-Language: en-US
+From:   Jiri Slaby <jirislaby@kernel.org>
+To:     Johan Hovold <johan@kernel.org>, gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210914091134.17426-1-jslaby@suse.cz>
+ <20210914091415.17918-1-jslaby@suse.cz>
+ <20210914091415.17918-9-jslaby@suse.cz>
+ <YUMWaCpT4s8dQKiy@hovoldconsulting.com>
+ <1fd9ed1a-edd2-a154-da1c-022a89b2c722@kernel.org>
+In-Reply-To: <1fd9ed1a-edd2-a154-da1c-022a89b2c722@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 12:47 AM Anup Patel <anup.patel@wdc.com> wrote:
->
-> Let's enable KVM RISC-V in RV64 and RV32 defconfigs as module
-> so that it always built along with the default kernel image.
->
-> Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> ---
-> Changes since v1:
->  - Rebased on Linux-5.16-rc1
->  - Removed unwanted stuff from defconfig PATCH1
->  - Dropped PATCH2 and PATCH3 since these are already merged via KVM tree
-> ---
->  arch/riscv/configs/defconfig      | 2 ++
->  arch/riscv/configs/rv32_defconfig | 2 ++
->  2 files changed, 4 insertions(+)
->
-> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-> index c252fd5706d2..ef473e2f503b 100644
-> --- a/arch/riscv/configs/defconfig
-> +++ b/arch/riscv/configs/defconfig
-> @@ -19,6 +19,8 @@ CONFIG_SOC_VIRT=y
->  CONFIG_SOC_MICROCHIP_POLARFIRE=y
->  CONFIG_SMP=y
->  CONFIG_HOTPLUG_CPU=y
-> +CONFIG_VIRTUALIZATION=y
-> +CONFIG_KVM=m
->  CONFIG_JUMP_LABEL=y
->  CONFIG_MODULES=y
->  CONFIG_MODULE_UNLOAD=y
-> diff --git a/arch/riscv/configs/rv32_defconfig b/arch/riscv/configs/rv32_defconfig
-> index 434ef5b64599..6e9f12ff968a 100644
-> --- a/arch/riscv/configs/rv32_defconfig
-> +++ b/arch/riscv/configs/rv32_defconfig
-> @@ -19,6 +19,8 @@ CONFIG_SOC_VIRT=y
->  CONFIG_ARCH_RV32I=y
->  CONFIG_SMP=y
->  CONFIG_HOTPLUG_CPU=y
-> +CONFIG_VIRTUALIZATION=y
-> +CONFIG_KVM=m
->  CONFIG_JUMP_LABEL=y
->  CONFIG_MODULES=y
->  CONFIG_MODULE_UNLOAD=y
-> --
-> 2.25.1
->
+Friendly ping Johan, Greg: any opinions on the tty_schedule_flip vs 
+tty_flip_buffer_push case -- which one should I keep?
 
-Reviewed-by: Atish Patra <atishp@rivosinc.com>
+I would like to move forward with these as I have a lot kernel-doc 
+writings pending and depending on this patch (be it "drop 
+tty_flip_buffer_push" or "drop tty_schedule_flip").
+
+Thanks.
+
+On 22. 09. 21, 8:57, Jiri Slaby wrote:
+> On 16. 09. 21, 12:03, Johan Hovold wrote:
+>> On Tue, Sep 14, 2021 at 11:14:15AM +0200, Jiri Slaby wrote:
+>>> Since commit a9c3f68f3cd8d (tty: Fix low_latency BUG) in 2014,
+>>> tty_flip_buffer_push() is only a wrapper to tty_schedule_flip(). All
+>>> users were converted, so remove tty_flip_buffer_push() completely.
+>>
+>> Did you consider inlining tty_flip_buffer_push() or unexporting
+>> tty_schedule_flip() instead?
+> 
+> Yes -- I see no reason for two functions doing the very same thing. It's 
+> only confusing.
+> 
+>> The name tty_flip_buffer_push() is arguable more descriptive since the
+>> work may already be running and is also less tied to the implementation.
+>>
+>> The ratio of drivers using tty_flip_buffer_push() over
+>> tty_schedule_flip() is also something like 186 to 15 so that would
+>> amount to a lot less churn too.
+> 
+> OK, I can do either way. I chose this path as tty_schedule_flip was a 
+> wrapper to tty_flip_buffer_push. In any case, I wouldn't take the number 
+> of changed drivers as a measure. But if it makes more sense for people 
+> regarding the naming, I will "flip" the two flips.
+
 
 
 -- 
-Regards,
-Atish
+js
+suse labs
