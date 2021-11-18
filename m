@@ -2,359 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34880455D1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63899455D29
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:58:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231894AbhKROA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 09:00:28 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:43749 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231620AbhKROA1 (ORCPT
+        id S231978AbhKROBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 09:01:30 -0500
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:45895 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231939AbhKROB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 09:00:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637243847; x=1668779847;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=+NdzldTMSSkGRdemJD7AyB6YIMOdbFEXWjyG7Gn5xIE=;
-  b=MFHtnWcyL8inB1tHkjN8ryHwhu6qB4Bh8vQWWoL0gtsdK5gidHT3mLur
-   Mcaf6MjtFvxLPLljByPNeXtvw4wAqbJ5FOdPnEu/xWKAMmVmybB44VBEy
-   vuiwj5ZTwWyiygwP8wFSCUZWoLsm2zYaOONXiXzY4PkB79sPMdkunSfBE
-   k=;
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 18 Nov 2021 05:57:27 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 05:57:26 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Thu, 18 Nov 2021 05:57:26 -0800
-Received: from [10.216.52.30] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Thu, 18 Nov
- 2021 05:57:22 -0800
-Subject: Re: [PATCH V3 3/4] regulator: Add a regulator driver for the PM8008
- PMIC
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, <subbaram@codeaurora.org>,
-        Das Srinagesh <gurus@codeaurora.org>,
-        <linux-arm-msm@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1635434072-32055-1-git-send-email-quic_c_skakit@quicinc.com>
- <1635434072-32055-4-git-send-email-quic_c_skakit@quicinc.com>
- <CAE-0n51yD6GG9eTn0tivqg0GUme5ONOabQrM0KBDjs5n8WKMYQ@mail.gmail.com>
-From:   "Satya Priya Kakitapalli (Temp)" <quic_c_skakit@quicinc.com>
-Message-ID: <a7b155ab-a8cf-2bec-83a7-a91f79385ee2@quicinc.com>
-Date:   Thu, 18 Nov 2021 19:27:19 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <CAE-0n51yD6GG9eTn0tivqg0GUme5ONOabQrM0KBDjs5n8WKMYQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+        Thu, 18 Nov 2021 09:01:29 -0500
+Received: by mail-oi1-f173.google.com with SMTP id 7so14354569oip.12;
+        Thu, 18 Nov 2021 05:58:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=L+1EFFQEVUzHvIKDEFNtXuuodd0KJOWIJZc/I07HBGM=;
+        b=z4NNVgOwyB9tWPaPpLThGglKn5yX8v4SNDlP8QoJbc7Rf6j/syAo3+SgXVVIKsOb3u
+         oaNrOhXmNp17JrGggrFKnMQ+80+MeQW6+cMi3o55cmTpxXfQo0j42nc8BTbzweqF5HiF
+         ydd8lyiRm8FRbFy69d7yYTUBX6DawtGgZbycL9rVLYiiVB064pi8cB7CcOcI5EGWrN2o
+         5IzkcZlCKZtPiG4eL2SP26YxCPXyIYzXKXThzewzwXy1hRuqmsub7X9qLbf2wJeu5ghy
+         Y1buiFSmQCTBZlhzsbNr8Be2G84mxOus9lYeHUoq1X8vg+sM2kb44Ve2XxH13k/P/1YT
+         lg2g==
+X-Gm-Message-State: AOAM532ttbxiXB781/cOewQFYbVNpRGCKN64fbI16zLmIeOrzxLR+b9c
+        NDYB+0ValeniX7jAq6ZCGA==
+X-Google-Smtp-Source: ABdhPJxJn9aDv3ESZiqtnlnO+DbXLP+Qg0jRjAQSTOO69pFMvmlCJud/IeQZMmd9fmvmvjElF7x/Sg==
+X-Received: by 2002:aca:230b:: with SMTP id e11mr7939069oie.22.1637243908404;
+        Thu, 18 Nov 2021 05:58:28 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id j187sm733988oih.5.2021.11.18.05.58.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 05:58:26 -0800 (PST)
+Received: (nullmailer pid 998657 invoked by uid 1000);
+        Thu, 18 Nov 2021 13:58:21 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        linux-sunxi@lists.linux.dev, Maxime Ripard <mripard@kernel.org>,
+        linux-pm@vger.kernel.org
+In-Reply-To: <20211118031841.42315-3-samuel@sholland.org>
+References: <20211118031841.42315-1-samuel@sholland.org> <20211118031841.42315-3-samuel@sholland.org>
+Subject: Re: [PATCH v3 2/6] dt-bindings: arm: sunxi: Expand MBUS binding
+Date:   Thu, 18 Nov 2021 07:58:21 -0600
+Message-Id: <1637243901.379133.998656.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 17 Nov 2021 21:18:37 -0600, Samuel Holland wrote:
+> The MBUS provides more than address translation and bandwidth control.
+> It also provides a PMU to measure bandwidth usage by certain masters,
+> and it provides notification via IRQ when they are active or idle.
+> 
+> The MBUS is also tightly integrated with the DRAM controller to provide
+> a Memory Dynamic Frequency Scaling (MDFS) feature. In view of this, the
+> MBUS binding needs to represent the hardware resources needed for MDFS,
+> which include the clocks and MMIO range of the adjacent DRAM controller.
+> 
+> Add the additional resources for the H3 and A64 compatibles, and a new
+> example showing how they are used.
+> 
+> Reviewed-by: Chanwoo Choi <cw00.choi@samsung.com>
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
+>  .../arm/sunxi/allwinner,sun4i-a10-mbus.yaml   | 89 ++++++++++++++++++-
+>  1 file changed, 86 insertions(+), 3 deletions(-)
+> 
 
-On 10/29/2021 1:49 AM, Stephen Boyd wrote:
-> Quoting Satya Priya (2021-10-28 08:14:31)
->> diff --git a/drivers/regulator/qcom-pm8008-regulator.c b/drivers/regulator/qcom-pm8008-regulator.c
->> new file mode 100644
->> index 0000000..74ba682
->> --- /dev/null
->> +++ b/drivers/regulator/qcom-pm8008-regulator.c
->> @@ -0,0 +1,269 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/* Copyright (c) 2021, The Linux Foundation. All rights reserved. */
->> +
->> +#include <linux/device.h>
->> +#include <linux/interrupt.h>
->> +#include <linux/kernel.h>
->> +#include <linux/module.h>
->> +#include <linux/of.h>
->> +#include <linux/of_device.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/regmap.h>
->> +#include <linux/regulator/driver.h>
->> +#include <linux/regulator/machine.h>
->> +#include <linux/regulator/of_regulator.h>
->> +
->> +#define STARTUP_DELAY_USEC             20
->> +#define VSET_STEP_MV                   8
->> +#define VSET_STEP_UV                   (VSET_STEP_MV * 1000)
->> +
->> +#define LDO_ENABLE_REG(base)           (base + 0x46)
-> Add parenthesis around base as well ((base) + 0x46)
-Okay
->> +#define ENABLE_BIT                     BIT(7)
->> +
->> +#define LDO_STATUS1_REG(base)          (base + 0x08)
->> +#define VREG_READY_BIT                 BIT(7)
->> +
->> +#define LDO_VSET_LB_REG(base)          (base + 0x40)
->> +
->> +#define LDO_STEPPER_CTL_REG(base)      (base + 0x3b)
->> +#define DEFAULT_VOLTAGE_STEPPER_RATE   38400
->> +#define STEP_RATE_MASK                 GENMASK(1, 0)
->> +
->> +struct regulator_data {
->> +       const char      *name;
->> +       const char      *supply_name;
->> +       int             min_uv;
->> +       int             max_uv;
->> +       int             min_dropout_uv;
->> +};
->> +
->> +struct pm8008_regulator {
->> +       struct device           *dev;
->> +       struct regmap           *regmap;
->> +       struct regulator_desc   rdesc;
->> +       struct regulator_dev    *rdev;
->> +       struct device_node      *of_node;
-> This isn't used outside of probe so please drop it. Same goes for any
-> other struct member that we don't need to keep around beyond probe. Drop
-> them. rdev?
-Okay, I'll remove.
->> +       u16                     base;
->> +       int                     step_rate;
->> +};
->> +
->> +static const struct regulator_data reg_data[] = {
->> +       /* name  parent      min_uv  max_uv  headroom_uv */
->> +       { "l1", "vdd_l1_l2",  528000, 1504000, 225000 },
->> +       { "l2", "vdd_l1_l2",  528000, 1504000, 225000 },
->> +       { "l3", "vdd_l3_l4", 1504000, 3400000, 200000 },
->> +       { "l4", "vdd_l3_l4", 1504000, 3400000, 200000 },
->> +       { "l5", "vdd_l5",    1504000, 3400000, 300000 },
->> +       { "l6", "vdd_l6",    1504000, 3400000, 300000 },
->> +       { "l7", "vdd_l7",    1504000, 3400000, 300000 },
->> +       { }
->> +};
->> +
->> +static int pm8008_regulator_get_voltage(struct regulator_dev *rdev)
->> +{
->> +       struct pm8008_regulator *pm8008_reg = rdev_get_drvdata(rdev);
->> +       __le16 mV;
->> +       int rc;
->> +
->> +       rc = regmap_bulk_read(pm8008_reg->regmap,
->> +                       LDO_VSET_LB_REG(pm8008_reg->base), (void *)&mV, 2);
->> +       if (rc < 0) {
->> +               dev_err(pm8008_reg->dev,
->> +                                       "failed to read regulator voltage rc=%d\n", rc);
-> Put it all on one line?
-Okay.
->> +               return rc;
->> +       }
->> +
->> +       return le16_to_cpu(mV) * 1000;
->> +}
->> +
->> +static inline int pm8008_write_voltage(struct pm8008_regulator *pm8008_reg,
->> +                                       int min_uv, int max_uv)
->> +{
->> +       int rc, mv;
->> +       u16 vset_raw;
->> +
->> +       mv = DIV_ROUND_UP(min_uv, 1000);
->> +
->> +       /*
->> +        * Each LSB of regulator is 1mV and the voltage setpoint
->> +        * should be multiple of 8mV(step).
->> +        */
->> +       mv = DIV_ROUND_UP(mv, VSET_STEP_MV) * VSET_STEP_MV;
->> +       if (mv * 1000 > max_uv) {
->> +               dev_err(pm8008_reg->dev,
->> +                       "requested voltage (%d uV) above maximum limit (%d uV)\n",
->> +                               mv*1000, max_uv);
->> +               return -EINVAL;
->> +       }
->> +
->> +       vset_raw = cpu_to_le16(mv);
->> +
->> +       rc = regmap_bulk_write(pm8008_reg->regmap,
->> +                       LDO_VSET_LB_REG(pm8008_reg->base),
->> +                       (const void *)&vset_raw, sizeof(vset_raw));
->> +       if (rc < 0) {
->> +               dev_err(pm8008_reg->dev, "failed to write voltage rc=%d\n", rc);
-> If this uses the regulator_dev::dev then we'll know which regulator is
-> failing, instead of just that some regulator failed inside the PMIC.
-OK, but in this API we do not have the rdev, in other APIs wherever 
-possible I'll use rdev->dev.
->> +               return rc;
->> +       }
->> +
->> +       return 0;
->> +}
->> +
->> +static int pm8008_regulator_set_voltage_time(struct regulator_dev *rdev,
->> +                               int old_uV, int new_uv)
->> +{
->> +       struct pm8008_regulator *pm8008_reg = rdev_get_drvdata(rdev);
->> +
->> +       return DIV_ROUND_UP(abs(new_uv - old_uV), pm8008_reg->step_rate);
->> +}
->> +
->> +static int pm8008_regulator_set_voltage(struct regulator_dev *rdev,
->> +                               int min_uv, int max_uv, unsigned int *selector)
->> +{
->> +       struct pm8008_regulator *pm8008_reg = rdev_get_drvdata(rdev);
->> +       int rc;
->> +
->> +       rc = pm8008_write_voltage(pm8008_reg, min_uv, max_uv);
->> +       if (rc < 0)
->> +               return rc;
->> +
->> +       *selector = DIV_ROUND_UP(min_uv - pm8008_reg->rdesc.min_uV,
->> +                               VSET_STEP_UV);
->> +
->> +       dev_dbg(pm8008_reg->dev, "voltage set to %d\n", min_uv);
->> +       return 0;
->> +}
->> +
->> +static const struct regulator_ops pm8008_regulator_ops = {
->> +       .enable                 = regulator_enable_regmap,
->> +       .disable                = regulator_disable_regmap,
->> +       .is_enabled             = regulator_is_enabled_regmap,
->> +       .set_voltage            = pm8008_regulator_set_voltage,
-> Can we use set_voltage_sel instead?
-Yes
->> +       .get_voltage            = pm8008_regulator_get_voltage,
->> +       .list_voltage           = regulator_list_voltage_linear,
->> +       .set_voltage_time       = pm8008_regulator_set_voltage_time,
->> +};
->> +
->> +static int pm8008_regulator_of_parse(struct device_node *node,
->> +                       const struct regulator_desc *desc,
->> +                       struct regulator_config *config)
->> +{
->> +       struct pm8008_regulator *pm8008_reg = config->driver_data;
->> +       struct device *dev = config->dev;
->> +       int rc;
->> +       u8 reg;
->> +
->> +       rc = of_property_read_u32(node, "regulator-min-dropout-voltage-microvolt",
->> +                       &pm8008_reg->rdesc.min_dropout_uV);
->> +       if (rc) {
->> +               dev_err(dev, "failed to read min-dropout voltage rc=%d\n", rc);
->> +               return rc;
->> +       }
->> +
->> +       /* get slew rate */
->> +       rc = regmap_bulk_read(pm8008_reg->regmap,
->> +                       LDO_STEPPER_CTL_REG(pm8008_reg->base), (void *)&reg, 1);
-> Just make reg unsigned int to avoid the cast.
+Running 'make dtbs_check' with the schema in this patch gives the
+following warnings. Consider if they are expected or the schema is
+incorrect. These may not be new warnings.
 
-Ok
+Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+This will change in the future.
 
->> +       if (rc < 0) {
->> +               dev_err(dev, "%s: failed to read step rate configuration rc=%d\n",
->> +                               pm8008_reg->rdesc.name, rc);
->> +               return rc;
->> +       }
-> 	reg &= STEP_RATE_MASK;
-> 	pm8008_reg->step_rate = DEFAULT_VOLTAGE_STEPPER_RATE >> reg;
-Ok
->> +       pm8008_reg->step_rate
->> +                       = DEFAULT_VOLTAGE_STEPPER_RATE >> (reg & STEP_RATE_MASK);
->> +
->> +       return 0;
->> +}
->> +
->> +static int pm8008_regulator_probe(struct platform_device *pdev)
->> +{
->> +       struct device *dev = &pdev->dev;
->> +       struct device_node *node = pdev->dev.of_node;
->> +       struct pm8008_regulator *pm8008_reg;
->> +       struct regmap *regmap;
->> +       struct regulator_config reg_config = {};
->> +       const struct regulator_data *reg;
->> +       struct regulator_init_data *init_data;
->> +       int rc;
->> +       u32 base;
->> +
->> +       regmap = dev_get_regmap(dev->parent, NULL);
->> +       if (!regmap) {
->> +               dev_err(dev, "parent regmap is missing\n");
->> +               return -EINVAL;
->> +       }
->> +
->> +       for (reg = &reg_data[0]; reg->name; reg++) {
->> +               pm8008_reg = devm_kzalloc(dev, sizeof(*pm8008_reg), GFP_KERNEL);
->> +
->> +               pm8008_reg->regmap = regmap;
->> +
->> +               pm8008_reg->of_node = of_get_child_by_name(node, reg->name);
-> This of_node reference needs to be put somewhere.
->
->> +               if (!pm8008_reg->of_node) {
->> +                       dev_err(dev, "child node %s not found\n", reg->name);
->> +                       return -ENODEV;
->> +               }
->> +
->> +               pm8008_reg->dev = dev;
->> +
->> +               rc = of_property_read_u32(pm8008_reg->of_node, "reg", &base);
->> +               if (rc < 0) {
->> +                       dev_err(dev, "%s: failed to get regulator base rc=%d\n",
->> +                                               reg->name, rc);
->> +                       return rc;
->> +               }
->> +               pm8008_reg->base = base;
->> +
->> +               init_data = of_get_regulator_init_data(dev, pm8008_reg->of_node,
->> +                                                       &pm8008_reg->rdesc);
-> Is this necessary?
-I guess its not necessary, I'll remove and validate once.
->> +               if (!init_data) {
->> +                       dev_err(dev, "%s: failed to get regulator data\n", reg->name);
->> +                       return -ENODATA;
->> +               }
->> +
->> +               pm8008_reg->rdesc.type = REGULATOR_VOLTAGE;
->> +               pm8008_reg->rdesc.ops = &pm8008_regulator_ops;
->> +               pm8008_reg->rdesc.name = init_data->constraints.name;
->> +               pm8008_reg->rdesc.supply_name = reg->supply_name;
->> +               pm8008_reg->rdesc.of_match = reg->name;
->> +               pm8008_reg->rdesc.of_parse_cb = pm8008_regulator_of_parse;
->> +               pm8008_reg->rdesc.uV_step = VSET_STEP_UV;
->> +               pm8008_reg->rdesc.min_uV = reg->min_uv;
->> +               pm8008_reg->rdesc.n_voltages
->> +                       = ((reg->max_uv - reg->min_uv)
->> +                               / pm8008_reg->rdesc.uV_step) + 1;
->> +
->> +               pm8008_reg->rdesc.enable_reg = LDO_ENABLE_REG(base);
->> +               pm8008_reg->rdesc.enable_mask = ENABLE_BIT;
->> +               pm8008_reg->rdesc.min_dropout_uV = reg->min_dropout_uv;
->> +
->> +               init_data->constraints.input_uV = init_data->constraints.max_uV;
->> +               reg_config.dev = dev;
->> +               reg_config.init_data = init_data;
->> +               reg_config.driver_data = pm8008_reg;
->> +               reg_config.of_node = pm8008_reg->of_node;
-> I think we don't need to do this?
-Right, I'll remove.
->> +
->> +               return PTR_ERR_OR_ZERO(devm_regulator_register(dev, &pm8008_reg->rdesc,
->> +                                                               &reg_config));
-> Why are we returning here? Shouldn't we check return value and only
-> return on failure and otherwise continue with registering the rest of
-> the regulators?
+Full log is available here: https://patchwork.ozlabs.org/patch/1556462
 
-My bad,  I'll correct this.
 
->> +       }
->> +
->> +       return 0;
->> +}
->> +
+dram-controller@1c62000: 'clock-names' is a required property
+	arch/arm64/boot/dts/allwinner/sun50i-a64-amarula-relic.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-nanopi-a64.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-oceanic-5205-5inmfd.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-olinuxino.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-olinuxino-emmc.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-orangepi-win.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-lts.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.0.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-early-adopter.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-teres-i.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-bananapi-m2-plus.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-bananapi-m2-plus-v1.2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-emlid-neutis-n5-devboard.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-libretech-all-h3-cc.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-libretech-all-h3-it.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-libretech-all-h5-cc.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo-plus2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-r1s-h5.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-zero-plus2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-zero-plus.dt.yaml
+	arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dt.yaml
+	arch/arm/boot/dts/sun8i-h2-plus-libretech-all-h3-cc.dt.yaml
+	arch/arm/boot/dts/sun8i-h2-plus-orangepi-r1.dt.yaml
+	arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus-v1.2.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-beelink-x2.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-emlid-neutis-n5h3-devboard.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-libretech-all-h3-cc.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-mapleboard-mp130.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-duo2.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-m1.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-m1-plus.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-neo-air.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-neo.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-r1.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-2.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-lite.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-one.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-pc.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-plus2e.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-plus.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-zero-plus2.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-rervision-dvk.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-zeropi.dt.yaml
+
+dram-controller@1c62000: clocks: [[2, 112]] is too short
+	arch/arm64/boot/dts/allwinner/sun50i-a64-amarula-relic.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-nanopi-a64.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-oceanic-5205-5inmfd.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-olinuxino.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-olinuxino-emmc.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-orangepi-win.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-lts.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.0.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-early-adopter.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-teres-i.dt.yaml
+
+dram-controller@1c62000: clocks: [[3, 113]] is too short
+	arch/arm64/boot/dts/allwinner/sun50i-h5-bananapi-m2-plus.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-bananapi-m2-plus-v1.2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-emlid-neutis-n5-devboard.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-libretech-all-h3-cc.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-libretech-all-h3-it.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-libretech-all-h5-cc.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo-plus2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-r1s-h5.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-zero-plus2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-zero-plus.dt.yaml
+	arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dt.yaml
+	arch/arm/boot/dts/sun8i-h2-plus-libretech-all-h3-cc.dt.yaml
+	arch/arm/boot/dts/sun8i-h2-plus-orangepi-r1.dt.yaml
+	arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus-v1.2.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-beelink-x2.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-emlid-neutis-n5h3-devboard.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-libretech-all-h3-cc.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-mapleboard-mp130.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-duo2.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-m1.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-m1-plus.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-neo-air.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-neo.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-r1.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-2.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-lite.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-one.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-pc.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-plus2e.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-plus.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-zero-plus2.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-rervision-dvk.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-zeropi.dt.yaml
+
+dram-controller@1c62000: reg: [[29761536, 4096]] is too short
+	arch/arm64/boot/dts/allwinner/sun50i-a64-amarula-relic.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-nanopi-a64.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-oceanic-5205-5inmfd.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-olinuxino.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-olinuxino-emmc.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-orangepi-win.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-lts.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.0.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-early-adopter.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-teres-i.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-bananapi-m2-plus.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-bananapi-m2-plus-v1.2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-emlid-neutis-n5-devboard.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-libretech-all-h3-cc.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-libretech-all-h3-it.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-libretech-all-h5-cc.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo-plus2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-r1s-h5.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-zero-plus2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-zero-plus.dt.yaml
+	arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dt.yaml
+	arch/arm/boot/dts/sun8i-h2-plus-libretech-all-h3-cc.dt.yaml
+	arch/arm/boot/dts/sun8i-h2-plus-orangepi-r1.dt.yaml
+	arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus-v1.2.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-beelink-x2.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-emlid-neutis-n5h3-devboard.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-libretech-all-h3-cc.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-mapleboard-mp130.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-duo2.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-m1.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-m1-plus.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-neo-air.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-neo.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-r1.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-2.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-lite.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-one.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-pc.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-plus2e.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-plus.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-zero-plus2.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-rervision-dvk.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-zeropi.dt.yaml
+
+dram-controller@1c62000: 'reg-names' is a required property
+	arch/arm64/boot/dts/allwinner/sun50i-a64-amarula-relic.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-nanopi-a64.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-oceanic-5205-5inmfd.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-olinuxino.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-olinuxino-emmc.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-orangepi-win.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-lts.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.0.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.1.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-early-adopter.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-a64-teres-i.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-bananapi-m2-plus.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-bananapi-m2-plus-v1.2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-emlid-neutis-n5-devboard.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-libretech-all-h3-cc.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-libretech-all-h3-it.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-libretech-all-h5-cc.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo-plus2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-r1s-h5.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-zero-plus2.dt.yaml
+	arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-zero-plus.dt.yaml
+	arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dt.yaml
+	arch/arm/boot/dts/sun8i-h2-plus-libretech-all-h3-cc.dt.yaml
+	arch/arm/boot/dts/sun8i-h2-plus-orangepi-r1.dt.yaml
+	arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus-v1.2.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-beelink-x2.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-emlid-neutis-n5h3-devboard.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-libretech-all-h3-cc.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-mapleboard-mp130.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-duo2.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-m1.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-m1-plus.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-neo-air.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-neo.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-nanopi-r1.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-2.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-lite.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-one.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-pc.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-plus2e.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-plus.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-orangepi-zero-plus2.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-rervision-dvk.dt.yaml
+	arch/arm/boot/dts/sun8i-h3-zeropi.dt.yaml
+
