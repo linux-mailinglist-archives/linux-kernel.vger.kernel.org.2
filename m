@@ -2,147 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE000455E64
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:40:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2AC4455E68
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:41:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbhKROnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 09:43:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231338AbhKROnU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 09:43:20 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837C8C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 06:40:19 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id u3so27086394lfl.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 06:40:19 -0800 (PST)
+        id S230351AbhKROoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 09:44:46 -0500
+Received: from mx1.tq-group.com ([93.104.207.81]:53891 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230134AbhKROop (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 09:44:45 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7zz8gOW0spq6SwCj6xdmPi8mKkUZqJzBx7pOfLsS8go=;
-        b=eROHSRErai982dsiFR0/iwBghuSftaP5Z4UIvzXIpWbMe0M1az9iiNKVPzEUkbMPPh
-         7zgTeIcjWjXBxpWq3G5lr3J467F577/bvKDTiC+kgKmmUPAe8TvwrhJ4rNGCUTdGhAYQ
-         aUPyEjwZF+qSH32RX7/XVhfOd7T3X22bSlTFhAqRBVQmxUu1/aUom6JDB2w57X3XjSlJ
-         hLJohLPubNFkk/w/kIR1/Hd2JtUKnADUPypYnzTEaSJdcBEFYEt8/Z4w6pM7r87ABele
-         5DTeTmA0nNVOC+cf2Ly/sddpKQvhIFX/8jOUZ+hzHqWOOlRJYY9PDWQxHqS126o86Tiw
-         IpQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7zz8gOW0spq6SwCj6xdmPi8mKkUZqJzBx7pOfLsS8go=;
-        b=HDTNFh+Gz3WBECMp0JefZM5prhLGUerYcuSHEa8gXLoFew1W9rVnhqkCNasGmWsHHO
-         Jek06TT7hj9ssxRFeKmDpd7F6NCc7YqWtWsmrYtzuzg1SSTEcc85Sr+MgyxQXQplCqcw
-         HvEvS6+25d+dN+FjLRVIm4IPCbeRRBOjvkwCUkL+d+MlcWWfzaserD5XKJPClGGlABm7
-         d9SZFL1gVDbWjmgJcP+FMzMRaUnt5WiqPvdXmAEjtVhnuC+mFxGSLA5rT56pkuBEJyG9
-         A4Hi7LvTc6XvCbqpkJecRQLtAEm6RBq2UAzMiWd9LEuKw5K9Wp+pmcWo+iAInNVv3mpe
-         bvdA==
-X-Gm-Message-State: AOAM531z3TEp/oAdFL/0a6TjbIMY3DyKob3wVY5u4/AC06j7FODmYqSs
-        96IiSRtuY7fedMIulIyFuqLKR7GBzvx0uOE/9AbqXQ==
-X-Google-Smtp-Source: ABdhPJxq1h2mVE4eCU1xEh6Wt0Dh/zczIcfSsWZBvAddXlhEICnyaBDTBDZZGCBR6UFUC57bNpqOKxCot0QVWS8dikE=
-X-Received: by 2002:a05:6512:2292:: with SMTP id f18mr24308379lfu.18.1637246417714;
- Thu, 18 Nov 2021 06:40:17 -0800 (PST)
-MIME-Version: 1.0
-References: <20211112095857.7016-1-vincent.guittot@linaro.org> <41d0d7cbd3e292eb89b12d27d9beb576be3531bf.camel@linux.intel.com>
-In-Reply-To: <41d0d7cbd3e292eb89b12d27d9beb576be3531bf.camel@linux.intel.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 18 Nov 2021 15:40:06 +0100
-Message-ID: <CAKfTPtBhf5Wt_tAPhg-vvFMsk-xrPW2KvSqZ7aoGDnf9OE1b-g@mail.gmail.com>
-Subject: Re: [PATCH 0/2] avoid spurious blocked load update
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
-        joel@joelfernandes.org
-Content-Type: text/plain; charset="UTF-8"
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1637246505; x=1668782505;
+  h=from:to:cc:subject:date:message-id;
+  bh=t2I8o2x03tIkjpXNO1UmbqLdi++NbU1U5tYQ4OEwDhc=;
+  b=AqhOkEPKqC/eIKagvUYToeUq1hiJhqv+0VPvwOveVHQNHA3YigK7QWKm
+   fpjC/CY2cv75yuAlofCJb23amgmTY7c5BcO/ZhHuRid6va2sUkSr0FcE8
+   XpHwHWeYQaU41HPWJFW8kXZzSWY2quF2+Pc1oItYzDFoNTXwB30H5r9HY
+   fdIDa4cRzTf2I0SJEiMlgDdWodz8HE0NnvfNuiB6ilg+UT92eqag81xvR
+   Vj1h8C+YsI0soIiwo9c9B4fJpwAEqrnPQJRUDP5B9+9AKy628FIlU/Az8
+   +QMbuVruRedP64paf2sHIH9+SkAg8tppd3h2KF+CRXX30/sKCBPRyrMZ7
+   g==;
+X-IronPort-AV: E=Sophos;i="5.87,245,1631570400"; 
+   d="scan'208";a="20545389"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 18 Nov 2021 15:41:43 +0100
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Thu, 18 Nov 2021 15:41:43 +0100
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Thu, 18 Nov 2021 15:41:43 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1637246503; x=1668782503;
+  h=from:to:cc:subject:date:message-id;
+  bh=t2I8o2x03tIkjpXNO1UmbqLdi++NbU1U5tYQ4OEwDhc=;
+  b=Q9qMcRqt67tJDEwR9Od0PYclll5wYhs1g+1Cbfb/rXcBunPz4afdyDix
+   Jd1lQcGVRk4WAXfqRDfImjVfdZn6wmjsULdDFDFQ89NhczMubKonrnqRD
+   ZfLPvGOLFsA+Mo7i36US1PtN4rvUkm1rxQunLeNvTRJZJgERHd8vS4UbN
+   SqMsHZsh9PwBaXjtKEWGBuveZEuHsTGt3SKVO/PguPmRsHxpkvKqrISJ+
+   eh2xrR1+PnLKOb6LNheAU+Q0lHMY74H5ryG7pTu/5A86rKaciueLC5Wk2
+   QKrhzORcp76Mx/ppyQT+itYCzUm56N9iU9ZSTK8pm7V8dWuCgBY96X3Op
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.87,245,1631570400"; 
+   d="scan'208";a="20545388"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 18 Nov 2021 15:41:43 +0100
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 487DA280065;
+        Thu, 18 Nov 2021 15:41:43 +0100 (CET)
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Felipe Balbi (Intel)" <balbi@kernel.org>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Matt Kline <matt@bitbashing.io>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH net] can: m_can: pci: fix iomap_read_fifo() and iomap_write_fifo()
+Date:   Thu, 18 Nov 2021 15:40:11 +0100
+Message-Id: <20211118144011.10921-1-matthias.schiffer@ew.tq-group.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Nov 2021 at 00:48, Tim Chen <tim.c.chen@linux.intel.com> wrote:
->
-> On Fri, 2021-11-12 at 10:58 +0100, Vincent Guittot wrote:
-> > This patchset is a follow up of :
-> > https://lore.kernel.org/lkml/20211019123537.17146-1-vincent.guittot@linaro.org/
-> >
-> > It ensures that newly idle load balance will not kick the update of
-> > blocked load if it skips the load balance because avg_idle is too
-> > short.
-> > It also makes sure that rq->next_balance doesn't go in the past when
-> > updated.
-> >
-> > Tim Chen (1):
-> >   sched: sched: Fix rq->next_balance time updated to earlier than
-> >     current time
-> >
-> > Vincent Guittot (1):
-> >   sched/fair: skip newidle update stats
-> >
-> >  kernel/sched/fair.c | 25 ++++++++++++++++++++-----
-> >  1 file changed, 20 insertions(+), 5 deletions(-)
-> >
->
-> Vincent,
->
-> Got some data back from the benchmark team.
-> To my surprise, the skip_new_idle_update_stats patch
-> actually makes things a little worse.
->
->                                         Relative Performance
->                                         (higher better)
-> 5.15 rc4 vanilla (cgroup disabled)      100%
-> 5.15 rc4 vanilla (cgroup enabled)       96%
-> patch v2                                96%
-> patch v3                                96%
-> patch v3
->         +skip_new_idle_update_stats     93.7%
-> patch v3
->         +skip_new_idle_update_stats
->         +Fix rq->next_balance_time      93.7%
->
+The same fix that was previously done in m_can_platform in commit
+99d173fbe894 ("can: m_can: fix iomap_read_fifo() and iomap_write_fifo()")
+is required in m_can_pci as well to make iomap_read_fifo() and
+iomap_write_fifo() work for val_count > 1.
 
-Yeah, that looks surprising.
-patch skip_new_idle_update_stats only ensures that the cpu will not
-run an update of the blocked average of idle cpus before entering idle
-but outside newidle_balance if it thinks that a task is about to wake
-up soon.
-The end result is that we run less often
-_nohz_idle_balance(cpu_rq(cpu), NOHZ_STATS_KICK, CPU_IDLE); before
-entering idle.
+Fixes: 812270e5445b ("can: m_can: Batch FIFO writes during CAN transmit")
+Fixes: 1aa6772f64b4 ("can: m_can: Batch FIFO reads during CAN receive")
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+---
+ drivers/net/can/m_can/m_can_pci.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-> The cpu utilization actually is the similar compared with
-> having just the v3 patch. In both cases they are
-> 81% user
-> 12% kernel
-> 2%  idle
-> 5%  waiting for IO
->
->
-> Profile on key functions
-> in load balancing shows a little more cpu utilization,
-> which is unexpected as we are cutting short
-> the newidle_balance.
->
-> patch v3
->      0.56%          [k] __update_load_avg_cfs_rq
->      0.51%          [k] update_load_avg
->      0.39%          [k] update_blocked_averages
->      0.36%          [k] __update_load_avg_se
->      0.05%          [k] newidle_balance
->
-> patch v3 + skip_new_idle_update_stats
->      0.58%          [k] __update_load_avg_cfs_rq
->      0.53%          [k] update_load_avg
->      0.40%          [k] update_blocked_averages
->      0.37%          [k] __update_load_avg_se
->      0.06%          [k] newidle_balance
->
-> Context switch frequency is lower by 4% with the skip_new_idle_update_stats
-> patch.
->
-> Thanks.
->
-> Tim
->
+diff --git a/drivers/net/can/m_can/m_can_pci.c b/drivers/net/can/m_can/m_can_pci.c
+index 8bbbaa264f0d..b56a54d6c5a9 100644
+--- a/drivers/net/can/m_can/m_can_pci.c
++++ b/drivers/net/can/m_can/m_can_pci.c
+@@ -47,8 +47,13 @@ static u32 iomap_read_reg(struct m_can_classdev *cdev, int reg)
+ static int iomap_read_fifo(struct m_can_classdev *cdev, int offset, void *val, size_t val_count)
+ {
+ 	struct m_can_pci_priv *priv = cdev_to_priv(cdev);
++	void __iomem *src = priv->base + offset;
+ 
+-	ioread32_rep(priv->base + offset, val, val_count);
++	while (val_count--) {
++		*(unsigned int *)val = ioread32(src);
++		val += 4;
++		src += 4;
++	}
+ 
+ 	return 0;
+ }
+@@ -66,8 +71,13 @@ static int iomap_write_fifo(struct m_can_classdev *cdev, int offset,
+ 			    const void *val, size_t val_count)
+ {
+ 	struct m_can_pci_priv *priv = cdev_to_priv(cdev);
++	void __iomem *dst = priv->base + offset;
+ 
+-	iowrite32_rep(priv->base + offset, val, val_count);
++	while (val_count--) {
++		iowrite32(*(unsigned int *)val, dst);
++		val += 4;
++		dst += 4;
++	}
+ 
+ 	return 0;
+ }
+-- 
+2.17.1
+
