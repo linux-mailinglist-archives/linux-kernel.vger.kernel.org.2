@@ -2,119 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1100745663C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 00:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F356456651
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 00:14:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233023AbhKRXLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 18:11:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232076AbhKRXLa (ORCPT
+        id S233113AbhKRXRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 18:17:49 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:39152 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233050AbhKRXRo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 18:11:30 -0500
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F4DC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 15:08:29 -0800 (PST)
-Received: by mail-oi1-x22b.google.com with SMTP id r26so17777296oiw.5
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 15:08:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pmCu9COc1pWaYRUVj52qJ3fL6u90fsV4q8bFRcC0CE4=;
-        b=LGy5ljPFT5L6X3AraG7oxFPAZC7+PhKyE4d+l67ld6wBZ6fUxye4MFWSwBQYAjVBki
-         PJVHyLdrtienL7hcilNDEBSjWAej1HqgBEuDa+XXvT4FQzd51uNCke0X1xAoB4q7s2Tc
-         RiXHmpFeBV9mJYtmlpuJoQmyoSeGpnrlduYlRSw3reKFoGKGKA6aDlnJBTkXfv7Erfu+
-         T8UbmO6EaoLRVwvl+278FgITNN76UMZ56v8wYv4zuLSGS6a5wi6/RGuG3Xd8tppTAgdC
-         3sHB88LkV4lcSG0xRz0ukAE5UvrZ1slOffilL9+h/+fhSNi3hdYO3dr4fiULHxBQ0oez
-         7HOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=pmCu9COc1pWaYRUVj52qJ3fL6u90fsV4q8bFRcC0CE4=;
-        b=UJzC4o382alfavHM2+sYbZSlvNpv6vavviNXME5TmtQ3K31Z/sl1dDkLZwpaPb4cik
-         RRY0QMwsc/2rm6TfoRRLXVrkiJRCu1aMVes0IN8TYLF0jRHJ0uQiPgWXou26LAfVYd7o
-         YxaYN/LlvwSJZd2GrO39OC4Smh19p0jqUEr/HMY3LR7AiCX10b+pPC7AQkLn0QHdnH1q
-         7WXfQ/1NJN8b/jPkxpStPDSAP6wVJ8CdtmaYZ1RjubR+Rqf3TDqrd6zI39UWArnbJc8C
-         RHTkhFrgqp9ADhhZlCYz/jDjxTRBcGLPl78KqnuJrMMAhzs4N/qlW6f3D5GoyTtkVcdK
-         OAxw==
-X-Gm-Message-State: AOAM53396rKnNNcMFJH4WiQ7nM3TQX4pOieg+gLQXMKOYyS405kwdqKV
-        Z2hSgQYJ2gl9jylnwfvigx0m2Pdm8tI=
-X-Google-Smtp-Source: ABdhPJy8D9/79xRpKX9aS7CibK+UdACaHPV8juKUjfXDtID186geF/p9qhOWZK9TQvgA0VgT4nsN8A==
-X-Received: by 2002:a05:6808:2181:: with SMTP id be1mr606253oib.147.1637276909061;
-        Thu, 18 Nov 2021 15:08:29 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id bi20sm297318oib.29.2021.11.18.15.08.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 15:08:28 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 18 Nov 2021 15:08:26 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Anton Altaparmakov <anton@tuxera.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>
-Subject: Re: Linux 5.16-rc1
-Message-ID: <20211118230826.GA3427600@roeck-us.net>
-References: <CAHk-=whca4JrEExUZCf+iGhP+mV-_D2uyqiFHnaYqnfCOKyEVg@mail.gmail.com>
- <652edea7-28a0-70d9-c63f-d910b5942454@roeck-us.net>
- <87a6i4miwu.fsf@mpe.ellerman.id.au>
- <CAMuHMdVrpQJKKzpxrKKCCD_2+DzAvgFW+jsjPdR9JhBYeRgvNw@mail.gmail.com>
- <8D79B547-D606-4975-A79A-AEA65684F3A0@tuxera.com>
- <CAHk-=wgvzH=BaFg+kiWk1DXGLNELSmPS2VWcgSSmW5Y6vz-v_A@mail.gmail.com>
- <E1EED1BE-A0F0-4EFA-86A6-CF721E194CDC@tuxera.com>
- <CAHk-=wjoQYuOfhsiPXUvFbUbSd5iHmmoRHMP+zv+bzHKkWqAyA@mail.gmail.com>
- <20211118212349.GA3424901@roeck-us.net>
- <CAHk-=wiNX2vr4JA=d5xr_2iwp+vSD62rze3gsxh5NwbiRuKbQQ@mail.gmail.com>
+        Thu, 18 Nov 2021 18:17:44 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B7FA52170E;
+        Thu, 18 Nov 2021 23:14:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1637277282; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=J+T3+AC//U32S54eK96JFxe6YTH+QG23o+QTpg+MWBg=;
+        b=XiKNcVmND/Ld3xDzCaAuxhxLIKgm9SjvNpw/hrNAkpgSHKsmOhVHqsjDlKaWcRS1S0+Q26
+        wjADst+RlW59NFmkq8c3JLEY8e+tSOG6l1eh4gQj6DXbx8EVsIJv1NYk0SamuyMoCIFd56
+        bl7rt3uCnF67MGim+hyXRdHdpDlmCes=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1637277282;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=J+T3+AC//U32S54eK96JFxe6YTH+QG23o+QTpg+MWBg=;
+        b=Kqvgpf2EVq7491a6MDAqZpjOdxlHpX9e8EOIvWYInXIc4ymEowqynCeYp16u507ZR1URQh
+        LBb5a/Y4TuYWeDCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DE63713AA8;
+        Thu, 18 Nov 2021 23:14:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id v5PrJmDelmG5QAAAMHmgww
+        (envelope-from <neilb@suse.de>); Thu, 18 Nov 2021 23:14:40 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiNX2vr4JA=d5xr_2iwp+vSD62rze3gsxh5NwbiRuKbQQ@mail.gmail.com>
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Matthew Wilcox" <willy@infradead.org>
+Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
+        "Michal Hocko" <mhocko@suse.com>,
+        "Thierry Reding" <thierry.reding@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MM: discard __GFP_ATOMIC
+In-reply-to: <YZUBIbALcSHn4Rub@casper.infradead.org>
+References: <163712397076.13692.4727608274002939094@noble.neil.brown.name>,
+ <YZUBIbALcSHn4Rub@casper.infradead.org>
+Date:   Fri, 19 Nov 2021 10:14:38 +1100
+Message-id: <163727727803.13692.15470049610672496362@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 02:34:51PM -0800, Linus Torvalds wrote:
-> On Thu, Nov 18, 2021 at 1:23 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> >
-> > Like this ?
-> 
-> Ugh. Yes. Like that.
-> 
-> But now I have to go dig my eyes out with a rusty spoon and try to
-> forget I ever saw that thing.
-> 
-> Because a thing of beauty it ain't.
-> 
-Hah.
+On Thu, 18 Nov 2021, Matthew Wilcox wrote:
+> On Wed, Nov 17, 2021 at 03:39:30PM +1100, NeilBrown wrote:
+> > +++ b/drivers/iommu/tegra-smmu.c
+> > @@ -676,12 +676,12 @@ static struct page *as_get_pde_page(struct tegra_sm=
+mu_as *as,
+> >  	 * allocate page in a sleeping context if GFP flags permit. Hence
+> >  	 * spinlock needs to be unlocked and re-locked after allocation.
+> >  	 */
+> > -	if (!(gfp & __GFP_ATOMIC))
+> > +	if (gfp & __GFP_DIRECT_RECLAIM)
+> >  		spin_unlock_irqrestore(&as->lock, *flags);
+> > =20
+> >  	page =3D alloc_page(gfp | __GFP_DMA | __GFP_ZERO);
+> > =20
+> > -	if (!(gfp & __GFP_ATOMIC))
+> > +	if (gfp & __GFP_DIRECT_RECLAIM)
+> >  		spin_lock_irqsave(&as->lock, *flags);
+> > =20
+> >  	/*
+>=20
+> Surely this should be gfpflags_allow_blocking() instead of poking about
+> in the innards of gfp flags?
 
-> I would still hope somebody comes up with something prettier.
-> 
+Possibly.  Didn't know about gfpflags_allow_blocking().  From a quick
+grep in the kernel, a whole lot of other people don't know about it
+either, though clearly some do.
 
-It doesn't really have to be that fancy, but I suspect we'll end up
-with something along that line. Kconfig doesn't support arithmetik,
-so
+Maybe we should reaname "__GFP_DIRECT_RECLAIM" to
+"__GFP_ALLOW_BLOCKING", because that is what most users seems to care
+about.
 
-config PAGE_SIZE
-	int
-	default 1 << PAGE_SHIFT
+If not, then we probably want a gfpflags_without_block() function that
+removes that flag, as lots of code wants to do that - and using the flag
+for one, and an inline for the other is not consistent.
 
-doesn't work, requiring the complex defaults.
+My leaning would be to __GFP_ALLOW_BLOCKING
 
-Also,
+NeilBrown
 
-	depends on !PAGE_SIZE || PAGE_SIZE < xxx
 
-doesn't work either, making something like HAVE_PAGE_SIZE mandatory
-unless PAGE_SIZE is made available for all architectures, which seems
-excessive.
+>=20
+> This patch seems like a good simplification to me.
+>=20
+> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Of course,
-	depends on !PPC
-would be the simple solution.
-
-Guenter
+Thanks,
+NeilBrown
