@@ -2,140 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8474D455D2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:59:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ADCA455D35
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:00:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231995AbhKROCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 09:02:12 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:36787 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231848AbhKROCH (ORCPT
+        id S232009AbhKRODV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 09:03:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231848AbhKRODT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 09:02:07 -0500
+        Thu, 18 Nov 2021 09:03:19 -0500
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45CDC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 06:00:19 -0800 (PST)
+Received: by mail-oi1-x236.google.com with SMTP id bj13so14486412oib.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 06:00:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637243947; x=1668779947;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=SHRzlI9IOqhVEUvv8yRyRNjixW4+joD+VQ66SbP/hoo=;
-  b=WFAYNj+1bWHmZrrUzfA1JA2woQ9L4mraM3zcEvllAje3n928kAnnmdnD
-   6L7y6X/0wA9k9qqtI8dA1RKZwa+sPxP1yRZ1oUEXhcs+ZDg9Exfrazz2e
-   ywpf9P+kHInmvhkp4xfI09K5qwyqIPqd8IbQorcFl7XHaHdYFNJDVenWl
-   0=;
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 18 Nov 2021 05:59:07 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 05:59:06 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Thu, 18 Nov 2021 05:59:06 -0800
-Received: from [10.216.52.30] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Thu, 18 Nov
- 2021 05:59:02 -0800
-Subject: Re: [PATCH V3 1/4] regulator: dt-bindings: Add pm8008 regulator
- bindings
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, <subbaram@codeaurora.org>,
-        Das Srinagesh <gurus@codeaurora.org>,
-        <linux-arm-msm@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1635434072-32055-1-git-send-email-quic_c_skakit@quicinc.com>
- <1635434072-32055-2-git-send-email-quic_c_skakit@quicinc.com>
- <CAE-0n53G4dwj6yLV6G3VehzzKLW-A5q8v=Ld6RFS7QXm5TjsOA@mail.gmail.com>
-From:   "Satya Priya Kakitapalli (Temp)" <quic_c_skakit@quicinc.com>
-Message-ID: <292d03f6-9575-b3d9-4f0e-014e6284f515@quicinc.com>
-Date:   Thu, 18 Nov 2021 19:28:59 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a+FyNz0pXjfppEydoj/lLxWxvoerNkGHwTC6CZVssPk=;
+        b=g38VSvHOuIxc8vZCNlbGx5FRlQjY3MpAniRNiOQqR34GMv/0PFXbK4eS6gmgcyFOjf
+         7yQEFNPi5iYDEID2IgNwjo9vcB90FUTWC5kbkDB+tnRPS8gdLovHM35h1hPfSLnTWaCB
+         MMKX8MW24EPxSPgKf5CwuEUCh5n9GvuoQgEvqHjbbmVLrvWT/P6A4u+g0zE7xl2MCJmv
+         zMt42GwYnkkdC/eyUckMj0osy3EEQidvP+AO2R/bSdf4SCrhbwbAyx6PjYxbL+hIOejZ
+         sJMW1oBp+x7373aoksxftGY1UbDrKFRGtJDGxenKoLaLa+XUxrUkQ3LyTaYNaG6wGd5s
+         8RXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a+FyNz0pXjfppEydoj/lLxWxvoerNkGHwTC6CZVssPk=;
+        b=qW0W/OtrN2ECCFM43N5Sg6XUEn8uTvMVh20NOGgS7ugtchFdKkOLYWG+HHyVwyrGiL
+         uWlr2C9NxkWSVszR6ck/v+AY0qIMqqri78QNLFOtTjbaJtisinpiGIUXft6qHDbucYpe
+         KCCOcwbJzrYnHUMqqQLHdtiWfCvYFrA6yZLrkvln1SlSrwX2fatZ3edvgQ2KmcFQbtjg
+         pyD7heYIp8L9I8EnqjBy5W4+BIvWK7sekTx/szkYZ7lDRjlYCeOvQxIwzA/Ch/1ckz1Q
+         xaF9EVSA/ID/nXw4FgSSE2QqckTgDfDKPVu4mhXOzyyHkmHJCqqsmCgfll4Z0Do74Te4
+         MBvA==
+X-Gm-Message-State: AOAM533vgodl6bZ9sQZgFSifQHzGtfOWKqVu5mCMHbrKsdVdZspHvOLd
+        W9CJNx1W5JajiPDHAUWB9iY/hzuWUsXrai+8keLOa7vArv3b1Q==
+X-Google-Smtp-Source: ABdhPJwh9QfcANGMxTDZItK1De/poOVeIHvaVHi9NAFyod203khnlc4Q/m28biChTrZB9LcA9tlTxGRLQIpD1b5kj9Q=
+X-Received: by 2002:aca:3104:: with SMTP id x4mr8087672oix.128.1637244018908;
+ Thu, 18 Nov 2021 06:00:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAE-0n53G4dwj6yLV6G3VehzzKLW-A5q8v=Ld6RFS7QXm5TjsOA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+References: <1637130234-57238-1-git-send-email-quic_jiangenj@quicinc.com>
+In-Reply-To: <1637130234-57238-1-git-send-email-quic_jiangenj@quicinc.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 18 Nov 2021 15:00:06 +0100
+Message-ID: <CACT4Y+YwNawV9H7uFMVSCA5WB-Dkyu9TX+rMM3FR6gNGkKFPqw@mail.gmail.com>
+Subject: Re: [PATCH] kcov: add KCOV_PC_RANGE to limit pc range
+To:     Joey Jiao <quic_jiangenj@quicinc.com>
+Cc:     andreyknvl@gmail.com, kasan-dev@googlegroups.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexander Lochmann <info@alexander-lochmann.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+,On Wed, 17 Nov 2021 at 07:24, Joey Jiao <quic_jiangenj@quicinc.com> wrote:
+>
+> Sometimes we only interested in the pcs within some range,
+> while there are cases these pcs are dropped by kernel due
+> to `pos >= t->kcov_size`, and by increasing the map area
+> size doesn't help.
+>
+> To avoid disabling KCOV for these not intereseted pcs during
+> build time, adding this new KCOV_PC_RANGE cmd.
 
-On 10/29/2021 1:36 AM, Stephen Boyd wrote:
-> Quoting Satya Priya (2021-10-28 08:14:29)
->> diff --git a/Documentation/devicetree/bindings/regulator/qcom,pm8008-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom,pm8008-regulator.yaml
->> new file mode 100644
->> index 0000000..cc624d1
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/regulator/qcom,pm8008-regulator.yaml
->> @@ -0,0 +1,74 @@
->> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/regulator/qcom,pm8008-regulator.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Qualcomm Technologies, Inc. PM8008 Regulator bindings
->> +
->> +maintainers:
->> +  - Satya Priya <skakit@codeaurora.org>
->> +
->> +description:
->> +  Qualcomm Technologies, Inc. PM8008 is an I2C controlled PMIC
->> +  containing 7 LDO regulators.
->> +
->> +properties:
->> +  compatible:
->> +    const: qcom,pm8008-regulator
-> Maybe qcom,pm8008-regulators because there's more than one?
-Okay
->> +
->> +  "#address-cells":
->> +    const: 1
->> +
->> +  "#size-cells":
->> +    const: 0
->> +
->> +  vdd_l1_l2-supply:
->> +    description: Input supply phandle of ldo1 and ldo2 regulators.
->> +
->> +  vdd_l3_l4-supply:
->> +    description: Input supply phandle of ldo3 and ldo4 regulators.
->> +
->> +  vdd_l5-supply:
->> +    description: Input supply phandle of ldo5 regulator.
->> +
->> +  vdd_l6-supply:
->> +    description: Input supply phandle of ldo6 regulator.
->> +
->> +  vdd_l7-supply:
->> +    description: Input supply phandle of ldo7 regulator.
->> +
->> +patternProperties:
->> +  "^l[1-7]@[0-9a-f]+$":
->> +    type: object
->> +
->> +    $ref: "regulator.yaml#"
->> +
->> +    description: PM8008 regulator peripherals of PM8008 regulator device
->> +
->> +    properties:
->> +      reg:
->> +        maxItems: 1
->> +        description: Base address of the regulator.
->> +
->> +      regulator-name: true
->> +
->> +      regulator-min-dropout-voltage-microvolt:
-> This needs to move to regulator.yaml in a separate patch.
-Okay
->> +        description:
->> +          Specifies the minimum voltage in microvolts that the parent
->> +          supply regulator must output, above the output of this
->> +          regulator.
->> +
+Hi Joey,
+
+How do you use this? I am concerned that a single range of PCs is too
+restrictive. I can only see how this can work for single module
+(continuous in memory) or a single function. But for anything else
+(something in the main kernel, or several modules), it won't work as
+PCs are not continuous.
+
+Maybe we should use a compressed bitmap of interesting PCs? It allows
+to support all cases and we already have it in syz-executor, then
+syz-executor could simply pass the bitmap to the kernel rather than
+post-filter.
+It's also overlaps with the KCOV_MODE_UNIQUE mode that +Alexander proposed here:
+https://groups.google.com/g/kasan-dev/c/oVz3ZSWaK1Q/m/9ASztdzCAAAJ
+It would be reasonable if kernel uses the same bitmap format for these
+2 features.
+
+
+
+> An example usage is to use together syzkaller's cov filter.
+>
+> Change-Id: I954f6efe1bca604f5ce31f8f2b6f689e34a2981d
+> Signed-off-by: Joey Jiao <quic_jiangenj@quicinc.com>
+> ---
+>  Documentation/dev-tools/kcov.rst | 10 ++++++++++
+>  include/uapi/linux/kcov.h        |  7 +++++++
+>  kernel/kcov.c                    | 18 ++++++++++++++++++
+>  3 files changed, 35 insertions(+)
+>
+> diff --git a/Documentation/dev-tools/kcov.rst b/Documentation/dev-tools/kcov.rst
+> index d83c9ab..fbcd422 100644
+> --- a/Documentation/dev-tools/kcov.rst
+> +++ b/Documentation/dev-tools/kcov.rst
+> @@ -52,9 +52,15 @@ program using kcov:
+>      #include <fcntl.h>
+>      #include <linux/types.h>
+>
+> +    struct kcov_pc_range {
+> +      uint32 start;
+> +      uint32 end;
+> +    };
+> +
+>      #define KCOV_INIT_TRACE                    _IOR('c', 1, unsigned long)
+>      #define KCOV_ENABLE                        _IO('c', 100)
+>      #define KCOV_DISABLE                       _IO('c', 101)
+> +    #define KCOV_TRACE_RANGE                   _IOW('c', 103, struct kcov_pc_range)
+>      #define COVER_SIZE                 (64<<10)
+>
+>      #define KCOV_TRACE_PC  0
+> @@ -64,6 +70,8 @@ program using kcov:
+>      {
+>         int fd;
+>         unsigned long *cover, n, i;
+> +        /* Change start and/or end to your interested pc range. */
+> +        struct kcov_pc_range pc_range = {.start = 0, .end = (uint32)(~((uint32)0))};
+>
+>         /* A single fd descriptor allows coverage collection on a single
+>          * thread.
+> @@ -79,6 +87,8 @@ program using kcov:
+>                                      PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+>         if ((void*)cover == MAP_FAILED)
+>                 perror("mmap"), exit(1);
+> +        if (ioctl(fd, KCOV_PC_RANGE, pc_range))
+> +               dprintf(2, "ignore KCOV_PC_RANGE error.\n");
+>         /* Enable coverage collection on the current thread. */
+>         if (ioctl(fd, KCOV_ENABLE, KCOV_TRACE_PC))
+>                 perror("ioctl"), exit(1);
+> diff --git a/include/uapi/linux/kcov.h b/include/uapi/linux/kcov.h
+> index 1d0350e..353ff0a 100644
+> --- a/include/uapi/linux/kcov.h
+> +++ b/include/uapi/linux/kcov.h
+> @@ -16,12 +16,19 @@ struct kcov_remote_arg {
+>         __aligned_u64   handles[0];
+>  };
+>
+> +#define PC_RANGE_MASK ((__u32)(~((u32) 0)))
+> +struct kcov_pc_range {
+> +       __u32           start;          /* start pc & 0xFFFFFFFF */
+> +       __u32           end;            /* end pc & 0xFFFFFFFF */
+> +};
+> +
+>  #define KCOV_REMOTE_MAX_HANDLES                0x100
+>
+>  #define KCOV_INIT_TRACE                        _IOR('c', 1, unsigned long)
+>  #define KCOV_ENABLE                    _IO('c', 100)
+>  #define KCOV_DISABLE                   _IO('c', 101)
+>  #define KCOV_REMOTE_ENABLE             _IOW('c', 102, struct kcov_remote_arg)
+> +#define KCOV_PC_RANGE                  _IOW('c', 103, struct kcov_pc_range)
+>
+>  enum {
+>         /*
+> diff --git a/kernel/kcov.c b/kernel/kcov.c
+> index 36ca640..59550450 100644
+> --- a/kernel/kcov.c
+> +++ b/kernel/kcov.c
+> @@ -36,6 +36,7 @@
+>   *  - initial state after open()
+>   *  - then there must be a single ioctl(KCOV_INIT_TRACE) call
+>   *  - then, mmap() call (several calls are allowed but not useful)
+> + *  - then, optional to set trace pc range
+>   *  - then, ioctl(KCOV_ENABLE, arg), where arg is
+>   *     KCOV_TRACE_PC - to trace only the PCs
+>   *     or
+> @@ -69,6 +70,8 @@ struct kcov {
+>          * kcov_remote_stop(), see the comment there.
+>          */
+>         int                     sequence;
+> +       /* u32 Trace PC range from start to end. */
+> +       struct kcov_pc_range    pc_range;
+>  };
+>
+>  struct kcov_remote_area {
+> @@ -192,6 +195,7 @@ static notrace unsigned long canonicalize_ip(unsigned long ip)
+>  void notrace __sanitizer_cov_trace_pc(void)
+>  {
+>         struct task_struct *t;
+> +       struct kcov_pc_range pc_range;
+>         unsigned long *area;
+>         unsigned long ip = canonicalize_ip(_RET_IP_);
+>         unsigned long pos;
+> @@ -199,6 +203,11 @@ void notrace __sanitizer_cov_trace_pc(void)
+>         t = current;
+>         if (!check_kcov_mode(KCOV_MODE_TRACE_PC, t))
+>                 return;
+> +       pc_range = t->kcov->pc_range;
+> +       if (pc_range.start < pc_range.end &&
+> +               ((ip & PC_RANGE_MASK) < pc_range.start ||
+> +               (ip & PC_RANGE_MASK) > pc_range.end))
+> +               return;
+>
+>         area = t->kcov_area;
+>         /* The first 64-bit word is the number of subsequent PCs. */
+> @@ -568,6 +577,7 @@ static int kcov_ioctl_locked(struct kcov *kcov, unsigned int cmd,
+>         int mode, i;
+>         struct kcov_remote_arg *remote_arg;
+>         struct kcov_remote *remote;
+> +       struct kcov_pc_range *pc_range;
+>         unsigned long flags;
+>
+>         switch (cmd) {
+> @@ -589,6 +599,14 @@ static int kcov_ioctl_locked(struct kcov *kcov, unsigned int cmd,
+>                 kcov->size = size;
+>                 kcov->mode = KCOV_MODE_INIT;
+>                 return 0;
+> +       case KCOV_PC_RANGE:
+> +               /* Limit trace pc range. */
+> +               pc_range = (struct kcov_pc_range *)arg;
+> +               if (copy_from_user(&kcov->pc_range, pc_range, sizeof(kcov->pc_range)))
+> +                       return -EINVAL;
+> +               if (kcov->pc_range.start >= kcov->pc_range.end)
+> +                       return -EINVAL;
+> +               return 0;
+>         case KCOV_ENABLE:
+>                 /*
+>                  * Enable coverage for the current task.
+> --
+> 2.7.4
+>
