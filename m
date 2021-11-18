@@ -2,159 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E40C455FFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ECB3456002
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:58:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232805AbhKRQAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 11:00:12 -0500
-Received: from so254-9.mailgun.net ([198.61.254.9]:20102 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232663AbhKRQAL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 11:00:11 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1637251031; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=fZTkXkb1Cv7ebJoaLjsjX8K/mJjllfTsgjIdQ8n6GyQ=; b=gTBaLQKCyl0tNQcbvaYVG/KfPtrm5rMJJjJM4Ew/chxxBjcoIGw+OVFR5vdb1sJxKjFL/HHi
- sfoYRBGEx01sxEUnVjtGqes+ec5Ai/8g9SAE6XIUEDywPeDM6P2486jDz0edR0wjsI+akZKJ
- 9tDvfPl55ZaETZhJgBgfc0piAmw=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 619677d6638a2f4d616056ad (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 18 Nov 2021 15:57:10
- GMT
-Sender: pillair=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A965EC43616; Thu, 18 Nov 2021 15:57:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from pillair-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S232822AbhKRQA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 11:00:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43064 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232079AbhKRQA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 11:00:56 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: pillair)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C5F66C4338F;
-        Thu, 18 Nov 2021 15:57:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org C5F66C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Rakesh Pillai <pillair@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        swboyd@chromium.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sibis@codeaurora.org,
-        mpubbise@codeaurora.org, kuabhs@chromium.org,
-        Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH v6] arm64: dts: qcom: sc7280: Add WPSS remoteproc node
-Date:   Thu, 18 Nov 2021 21:26:56 +0530
-Message-Id: <1637251016-21923-1-git-send-email-pillair@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by mail.kernel.org (Postfix) with ESMTPSA id 5093C6152B;
+        Thu, 18 Nov 2021 15:57:55 +0000 (UTC)
+Date:   Thu, 18 Nov 2021 10:57:52 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     menglong8.dong@gmail.com
+Cc:     kuba@kernel.org, davem@davemloft.net, mingo@redhat.com,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org, imagedong@tencent.com,
+        ycheng@google.com, kuniyu@amazon.co.jp,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 net-next 1/2] net: snmp: add tracepoint support for
+ snmp
+Message-ID: <20211118105752.1d46e990@gandalf.local.home>
+In-Reply-To: <20211118124812.106538-2-imagedong@tencent.com>
+References: <20211118124812.106538-1-imagedong@tencent.com>
+        <20211118124812.106538-2-imagedong@tencent.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the WPSS remoteproc node in dts for
-PIL loading.
+On Thu, 18 Nov 2021 20:48:11 +0800
+menglong8.dong@gmail.com wrote:
 
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
----
-Changes from v5:
-- Update the clock names
----
- arch/arm64/boot/dts/qcom/sc7280-idp.dts |  4 +++
- arch/arm64/boot/dts/qcom/sc7280.dtsi    | 56 +++++++++++++++++++++++++++++++++
- 2 files changed, 60 insertions(+)
+> From: Menglong Dong <imagedong@tencent.com>
+> 
+> snmp is the network package statistics module in kernel, and it is
+> useful in network issue diagnosis, such as packet drop.
+> 
+> However, it is hard to get the detail information about the packet.
+> For example, we can know that there is something wrong with the
+> checksum of udp packet though 'InCsumErrors' of UDP protocol in
+> /proc/net/snmp, but we can't figure out the ip and port of the packet
+> that this error is happening on.
+> 
+> Add tracepoint for snmp. Therefor, users can use some tools (such as
+> eBPF) to get the information of the exceptional packet.
+> 
+> Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> v2:
+> - use a single event, instead of creating events for every protocols
+> ---
+>  include/trace/events/snmp.h | 44 +++++++++++++++++++++++++++++++++++++
+>  include/uapi/linux/snmp.h   | 21 ++++++++++++++++++
+>  net/core/net-traces.c       |  3 +++
+>  3 files changed, 68 insertions(+)
+>  create mode 100644 include/trace/events/snmp.h
+> 
+> diff --git a/include/trace/events/snmp.h b/include/trace/events/snmp.h
+> new file mode 100644
+> index 000000000000..1fa2e31056e0
+> --- /dev/null
+> +++ b/include/trace/events/snmp.h
+> @@ -0,0 +1,44 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#undef TRACE_SYSTEM
+> +#define TRACE_SYSTEM snmp
+> +
+> +#if !defined(_TRACE_SNMP_H) || defined(TRACE_HEADER_MULTI_READ)
+> +#define _TRACE_SNMP_H
+> +
+> +#include <linux/tracepoint.h>
+> +#include <linux/skbuff.h>
+> +#include <linux/snmp.h>
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-index 9b991ba..ddab150 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-@@ -80,3 +80,7 @@
- 		qcom,pre-scaling = <1 1>;
- 	};
- };
-+
-+&remoteproc_wpss {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 365a2e0..76c2a90 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -134,6 +134,11 @@
- 			no-map;
- 		};
- 
-+		wpss_mem: memory@9ae00000 {
-+			no-map;
-+			reg = <0x0 0x9ae00000 0x0 0x1900000>;
-+		};
-+
- 		rmtfs_mem: memory@9c900000 {
- 			compatible = "qcom,rmtfs-mem";
- 			reg = <0x0 0x9c900000 0x0 0x280000>;
-@@ -2598,6 +2603,57 @@
- 			status = "disabled";
- 		};
- 
-+		remoteproc_wpss: remoteproc@8a00000 {
-+			compatible = "qcom,sc7280-wpss-pil";
-+			reg = <0 0x08a00000 0 0x10000>;
-+
-+			interrupts-extended = <&intc GIC_SPI 587 IRQ_TYPE_EDGE_RISING>,
-+					      <&wpss_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
-+					      <&wpss_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
-+					      <&wpss_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
-+					      <&wpss_smp2p_in 3 IRQ_TYPE_EDGE_RISING>,
-+					      <&wpss_smp2p_in 7 IRQ_TYPE_EDGE_RISING>;
-+			interrupt-names = "wdog", "fatal", "ready", "handover",
-+					  "stop-ack", "shutdown-ack";
-+
-+			clocks = <&gcc GCC_WPSS_AHB_BDG_MST_CLK>,
-+				 <&gcc GCC_WPSS_AHB_CLK>,
-+				 <&gcc GCC_WPSS_RSCP_CLK>,
-+				 <&rpmhcc RPMH_CXO_CLK>;
-+			clock-names = "ahb_bdg", "ahb",
-+				      "rscp", "xo";
-+
-+			power-domains = <&rpmhpd SC7280_CX>,
-+					<&rpmhpd SC7280_MX>;
-+			power-domain-names = "cx", "mx";
-+
-+			memory-region = <&wpss_mem>;
-+
-+			qcom,qmp = <&aoss_qmp>;
-+
-+			qcom,smem-states = <&wpss_smp2p_out 0>;
-+			qcom,smem-state-names = "stop";
-+
-+			resets = <&aoss_reset AOSS_CC_WCSS_RESTART>,
-+				 <&pdc_reset PDC_WPSS_SYNC_RESET>;
-+			reset-names = "restart", "pdc_sync";
-+
-+			qcom,halt-regs = <&tcsr_mutex 0x37000>;
-+
-+			status = "disabled";
-+
-+			glink-edge {
-+				interrupts-extended = <&ipcc IPCC_CLIENT_WPSS
-+							     IPCC_MPROC_SIGNAL_GLINK_QMP
-+							     IRQ_TYPE_EDGE_RISING>;
-+				mboxes = <&ipcc IPCC_CLIENT_WPSS
-+						IPCC_MPROC_SIGNAL_GLINK_QMP>;
-+
-+				label = "wpss";
-+				qcom,remote-pid = <13>;
-+			};
-+		};
-+
- 		dc_noc: interconnect@90e0000 {
- 			reg = <0 0x090e0000 0 0x5080>;
- 			compatible = "qcom,sc7280-dc-noc";
--- 
-2.7.4
+Add:
+
+#define TRACE_MIB_VALUES			\
+	EM(TRACE_MIB_NUM,	NUM)		\
+	EM(TRACE_MIB_IP,	IP)		\
+	EM(TRACE_MIB_IPV6,	IPV6)		\
+	EM(TRACE_MIB_TCP,	TCP)		\
+	EM(TRACE_MIB_NET,	NET)		\
+	EM(TRACE_MIB_ICMP,	ICMP)		\
+	EM(TRACE_MIB_ICMPV6,	ICMPV6)		\
+	EM(TRACE_MIB_ICMPMSG,	ICMPMSG)	\
+	EM(TRACE_MIB_ICMPV6MSG,	ICMPV6MSG)	\
+	EM(TRACE_MIB_UDP,	UDP)		\
+	EM(TRACE_MIB_UDPV6,	UDPV6)		\
+	EM(TRACE_MIB_UDPLITE,	UDPLITE)	\
+	EM(TRACE_MIB_UDPV6LITE,	UDPV6LITE)	\
+	EM(TRACE_MIB_XFRM,	XFRM)		\
+	EM(TRACE_MIB_TLS,	TLS)		\
+	EMe(TRACE_MIB_MPTCP,	MPTCP)
+
+#define TRACE_UDP_MIB_VALUES				\
+	EM(UDP_MIB_NUM,		NUM)			\
+	EM(UDP_MIB_INDATAGRAMS,		INDATAGRAMS)	\
+	EM(UDP_MIB_NOPORTS,		NOPORTS)	\
+	EM(UDP_MIB_INERRORS,		INERRORS)	\
+	EM(UDP_MIB_OUTDATAGRAMS,	OUTDATAGRAMS)	\
+	EM(UDP_MIB_RCVBUFERRORS,	RCVBUFERRORS)	\
+	EM(UDP_MIB_SNDBUFERRORS,	SNDBUFERRORS)	\
+	EM(UDP_MIB_CSUMERRORS,		CSUMERRORS)	\
+	EM(UDP_MIB_IGNOREDMULTI,	IGNOREDMULTI)	\
+	EMe(UDP_MIB_MEMERRORS,		MEMERRORS)
+
+#undef EM
+#undef EMe
+#define EM(a, b)        TRACE_DEFINE_ENUM(a);
+#define EMe(a, b)       TRACE_DEFINE_ENUM(a);
+
+TRACE_MIB_VALUES
+TRACE_UDP_MIB_VALES
+
+#undef EM
+#undef EMe
+#define EM(a,b)		{ a , #b },
+#define EMe(a,b)	{ a , #b }
+
+> +
+> +DECLARE_EVENT_CLASS(snmp_template,
+> +
+> +	TP_PROTO(struct sk_buff *skb, int type, int field, int val),
+> +
+> +	TP_ARGS(skb, type, field, val),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(void *, skbaddr)
+> +		__field(int, type)
+> +		__field(int, field)
+> +		__field(int, val)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->skbaddr = skb;
+> +		__entry->type = type;
+> +		__entry->field = field;
+> +		__entry->val = val;
+> +	),
+> +
+> +	TP_printk("skbaddr=%p, type=%d, field=%d, val=%d",
+
+Then have here:
+
+	__enrty->skbaddr, __print_symbolic(__entry->type, TRACE_MIB_VALUES),
+	__print_symbolic(__entry->field, TRACE_UDP_MIB_VALUES),
+	__print_symbolic(__entry->val, { 0, "Decrease" }, { 1, "Increase" })
+
+And then the output will have the proper English terms and not have to rely
+on the user knowing what the numbers represent. Also, it allows them to
+change in the future.
+
+-- Steve
+
+> +		  __entry->skbaddr, __entry->type,
+> +		  __entry->field, __entry->val)
+> +);
+> +
+> +DEFINE_EVENT(snmp_template, snmp,
+> +	TP_PROTO(struct sk_buff *skb, int type, int field, int val),
+> +	TP_ARGS(skb, type, field, val)
+> +);
+> +
+> +#endif
+> +
+> +#include <trace/define_trace.h>
+> diff --git a/include/uapi/linux/snmp.h b/include/uapi/linux/snmp.h
+> index 904909d020e2..b96077e09a58 100644
+> --- a/include/uapi/linux/snmp.h
+> +++ b/include/uapi/linux/snmp.h
+> @@ -347,4 +347,25 @@ enum
+>  	__LINUX_MIB_TLSMAX
+>  };
+>  
+> +/* mib type definitions for trace event */
+> +enum {
+> +	TRACE_MIB_NUM = 0,
+> +	TRACE_MIB_IP,
+> +	TRACE_MIB_IPV6,
+> +	TRACE_MIB_TCP,
+> +	TRACE_MIB_NET,
+> +	TRACE_MIB_ICMP,
+> +	TRACE_MIB_ICMPV6,
+> +	TRACE_MIB_ICMPMSG,
+> +	TRACE_MIB_ICMPV6MSG,
+> +	TRACE_MIB_UDP,
+> +	TRACE_MIB_UDPV6,
+> +	TRACE_MIB_UDPLITE,
+> +	TRACE_MIB_UDPV6LITE,
+> +	TRACE_MIB_XFRM,
+> +	TRACE_MIB_TLS,
+> +	TRACE_MIB_MPTCP,
+> +	__TRACE_MIB_MAX
+> +};
+> +
+>  #endif	/* _LINUX_SNMP_H */
+> diff --git a/net/core/net-traces.c b/net/core/net-traces.c
+> index c40cd8dd75c7..e291c0974438 100644
+> --- a/net/core/net-traces.c
+> +++ b/net/core/net-traces.c
+> @@ -35,6 +35,7 @@
+>  #include <trace/events/tcp.h>
+>  #include <trace/events/fib.h>
+>  #include <trace/events/qdisc.h>
+> +#include <trace/events/snmp.h>
+>  #if IS_ENABLED(CONFIG_BRIDGE)
+>  #include <trace/events/bridge.h>
+>  EXPORT_TRACEPOINT_SYMBOL_GPL(br_fdb_add);
+> @@ -61,3 +62,5 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(napi_poll);
+>  
+>  EXPORT_TRACEPOINT_SYMBOL_GPL(tcp_send_reset);
+>  EXPORT_TRACEPOINT_SYMBOL_GPL(tcp_bad_csum);
+> +
+> +EXPORT_TRACEPOINT_SYMBOL_GPL(snmp);
 
