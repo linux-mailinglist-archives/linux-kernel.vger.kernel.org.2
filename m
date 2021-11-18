@@ -2,95 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E01C456144
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:15:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3153145614B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:16:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234013AbhKRRSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 12:18:45 -0500
-Received: from polaris.svanheule.net ([84.16.241.116]:58156 "EHLO
-        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231509AbhKRRSo (ORCPT
+        id S234036AbhKRRTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 12:19:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234025AbhKRRTR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 12:18:44 -0500
-Received: from [IPv6:2a02:a03f:eafe:c901:baf4:d6c5:5600:301] (unknown [IPv6:2a02:a03f:eafe:c901:baf4:d6c5:5600:301])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id 2F42227385D;
-        Thu, 18 Nov 2021 18:15:43 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1637255743;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QgYHfXZl7fEBUWDEwQ3rgbcDzTDWb/LKD5PuawmAAMs=;
-        b=uUasYc2WgM3xuOmvaH90/p4u05dnyGrlv0kbTh4TInjuxMyYsgO9N5ggQpZjAXDrkL3t9m
-        lAr25lvNs7e0OK9y6rcRpFep9/8UFVvxn0oF3OrigJGCySbz7O9T+HGPG26HSa2ESTxtKS
-        3Z5E8f+mfZ1IrVqWTNbjcK2XHK9Hmy9qaZ41pkh9Yi5t2wyQ7mjU3a5qPfDU3nhdMHFZWW
-        5mKGbFCgjQ49LBLWx1l5jqbpsVZWxqwo9XWHGtdjk33CEnq2EZbtN1I9olwcIuPKDglaAh
-        m+79xbed7eY6PU7rFqJHZFIuVAG59pAeQObPmOiBd0iXUofZ8uVFdGbU0v/jQw==
-Message-ID: <e311fa3e7a187ca32920534310b0a0cbd3b6526f.camel@svanheule.net>
-Subject: Re: [PATCH v3 2/2] watchdog: Add Realtek Otto watchdog timer
-From:   Sander Vanheule <sander@svanheule.net>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
-Date:   Thu, 18 Nov 2021 18:15:41 +0100
-In-Reply-To: <62050743-bc11-cc21-c6ae-0be9d7b5633c@roeck-us.net>
-References: <cover.1636018117.git.sander@svanheule.net>
-         <2dbf0c6e0eebf523008c15794434d2d1a9b1260e.1636018117.git.sander@svanheule.net>
-         <20211117052054.GA215087@roeck-us.net>
-         <787cfd2ab58fb7f1d841f0ced261213f9c2050ae.camel@svanheule.net>
-         <62050743-bc11-cc21-c6ae-0be9d7b5633c@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
+        Thu, 18 Nov 2021 12:19:17 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E7FC061748
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:16:16 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id p18so5784536plf.13
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:16:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FndYr0qwU2GRfRJE7/Zc89ZCgTNkWQJ8LHvpWcp9GA0=;
+        b=Ju1LRNiA/W27gB9xy5brMPAbwNd4NIS3O7OF0tQibcdx032Yx3q/JWBgfrbj1EqMkv
+         hv06mzH/wUfCORLxtFPCTXHRUlKNvNmhX5HS15pGodQhDjmbZ6x6SJ7YLG2nKfjSsN7C
+         K3lvdbNgasHvN50bbOnOWjxuF3XPJFtWoTEs8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FndYr0qwU2GRfRJE7/Zc89ZCgTNkWQJ8LHvpWcp9GA0=;
+        b=NIoehWZ/sUn8z4fHBnVM4lQjaVPzKuGUAMFquOcz/RV/YDVryBoA2xM6A9zUTe+TkF
+         fmYMJIbDy8hlLE/Ch4mQrk6Gtd4afAK6JIOhz8OAEKUEvTGFmSxx1WH6ho+oquUlGEi0
+         dmOCTdvJSILUiIL2gQi4oC9R6FZYTDHz+LoJg0Z/ldML0zBP/xp6RHcyJ3SUpaF6Ek+e
+         HzwyEwEVzfGU3TNaqQlkFRwyyuE6crCLUwagZz83AY2tWIMUJjVNUKy0rCsDfEtbT2E0
+         MVYiWkE9XtOM3JZZ17gpVXWUo2PmCoZ9Wou72tydM0OQkgEPvxwlEru+5qge4Z3EWNZO
+         4n6w==
+X-Gm-Message-State: AOAM531vb2J4/TkQcnp1NWMh30AkuFlTXLdZUacDGjg6T7fyDnN2aB4q
+        JgyQBTofR21xwSF0ZKGdjGGjyQ==
+X-Google-Smtp-Source: ABdhPJy+MBB6lHWPY8+YDrYXHI/xPNJN9EJi9uDlOmPn4pR0RXebX/Mx/tnu+yfFjq9XXjvqeAmu0Q==
+X-Received: by 2002:a17:90b:97:: with SMTP id bb23mr12331985pjb.201.1637255776529;
+        Thu, 18 Nov 2021 09:16:16 -0800 (PST)
+Received: from localhost ([2620:15c:202:201:8ceb:c68a:21af:bebe])
+        by smtp.gmail.com with UTF8SMTPSA id k3sm190564pff.211.2021.11.18.09.16.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Nov 2021 09:16:16 -0800 (PST)
+Date:   Thu, 18 Nov 2021 09:16:14 -0800
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Peter Chen <peter.chen@kernel.org>, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH v17 7/7] usb: Specify dependencies on USB_XHCI_PLATFORM
+ with 'depends on'
+Message-ID: <YZaKXtRW7oO1SNbG@google.com>
+References: <20211116200739.924401-1-mka@chromium.org>
+ <20211116120642.v17.7.If248f05613bbb06a44eb0b0909be5d97218f417b@changeid>
+ <20211117022144.GA158646@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211117022144.GA158646@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
-
-On Wed, 2021-11-17 at 04:42 -0800, Guenter Roeck wrote:
-> On 11/16/21 11:13 PM, Sander Vanheule wrote:
-> > Hi Guenter,
+On Tue, Nov 16, 2021 at 09:21:44PM -0500, Alan Stern wrote:
+> On Tue, Nov 16, 2021 at 12:07:39PM -0800, Matthias Kaehlcke wrote:
+> > Some USB controller drivers that depend on the xhci-plat driver
+> > specify this dependency using 'select' in Kconfig. This is not
+> > recommended for symbols that have other dependencies as it may
+> > lead to invalid configurations. Use 'depends on' to specify the
+> > dependency instead of 'select'.
 > > 
-> > On Tue, 2021-11-16 at 21:20 -0800, Guenter Roeck wrote:
-> > > On Thu, Nov 04, 2021 at 10:32:13AM +0100, Sander Vanheule wrote:
-> > > > Realtek MIPS SoCs (platform name Otto) have a watchdog timer with
-> > > > pretimeout notifitication support. The WDT can (partially) hard reset,
-> > > > or soft reset the SoC.
-> > > > 
-> > > > This driver implements all features as described in the devicetree
-> > > > binding, except the phase2 interrupt, and also functions as a restart
-> > > > handler. The cpu reset mode is considered to be a "warm" restart, since
-> > > > this mode does not reset all peripherals. Being an embedded system
-> > > > though, the "cpu" and "software" modes will still cause the bootloader
-> > > > to run on restart.
-> > > > 
-> > > > It is not known how a forced system reset can be disabled on the
-> > > > supported platforms. This means that the phase2 interrupt will only fire
-> > > > at the same time as reset, so implementing phase2 is of little use.
-> > > > 
-> > > > Signed-off-by: Sander Vanheule <sander@svanheule.net>
-> > > 
-> > > Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> > For dwc3 specify the dependency on USB_XHCI_PLATFORM in
+> > USB_DWC3_HOST and USB_DWC3_DUAL_ROLE. Also adjust the
+> > dependencies of USB_DWC3_CORE to make sure that at least one
+> > of USB_DWC3_HOST, USB_DWC3_GADGET or USB_DWC3_DUAL_ROLE can be
+> > selected.
 > > 
-> > Thank you for the review! In the meantime, I was preparing a v4 of this series with some
-> > small changes (see inline below). Could you let me know if I can keep your Reviewed-by
-> > with those changes?
+> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> > Reviewed-by: Roger Quadros <rogerq@kernel.org>
+> > Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> > ---
 > > 
+> > Changes in v17:
+> > - removed explicit dependency on USB from USB_DWC3
+> > - added 'Reviewed-by' tags from Roger and Doug
+> > 
+> > Changes in v16:
+> > - none
+> > 
+> > Changes in v15:
+> > - adjusted dependencies of USB_DWC3_CORE to make sure it can only
+> >   be enabled when at least one of USB_DWC3_HOST, USB_DWC3_GADGET
+> >   or USB_DWC3_DUAL_ROLE is selectable
+> > - updated commit message
+> > 
+> > Changes in v14:
+> > - none
+> > 
+> > Changes in v13:
+> > - patch added to the series
 > 
-> I think it would be better to re-review it.
+> > diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+> > index d1d926f8f9c2..e5e612f143a1 100644
+> > --- a/drivers/usb/host/Kconfig
+> > +++ b/drivers/usb/host/Kconfig
+> > @@ -80,7 +80,7 @@ config USB_XHCI_MTK
+> >  
+> >  config USB_XHCI_MVEBU
+> >  	tristate "xHCI support for Marvell Armada 375/38x/37xx"
+> > -	select USB_XHCI_PLATFORM
+> > +	depends on USB_XHCI_PLATFORM
+> >  	depends on HAS_IOMEM
+> >  	depends on ARCH_MVEBU || COMPILE_TEST
+> >  	help
+> > @@ -112,9 +112,9 @@ config USB_EHCI_BRCMSTB
+> >  config USB_BRCMSTB
+> >  	tristate "Broadcom STB USB support"
+> >  	depends on (ARCH_BRCMSTB && PHY_BRCM_USB) || COMPILE_TEST
+> > +	depends on !USB_XHCI_HCD || USB_XHCI_PLATFORM
+> >  	select USB_OHCI_HCD_PLATFORM if USB_OHCI_HCD
+> >  	select USB_EHCI_BRCMSTB if USB_EHCI_HCD
+> > -	select USB_XHCI_PLATFORM if USB_XHCI_HCD
+> >  	help
+> >  	  Enables support for XHCI, EHCI and OHCI host controllers
+> >  	  found in Broadcom STB SoC's.
+> 
+> It should be pointed out that this now requires people with xHCI systems 
+> to actively turn on CONFIG_USB_XHCI_PLATFORM before they can enable 
+> CONFIG_USB_BRCMSTB.  Before, that was not necessary.  Some users might 
+> get confused and not realize what is needed.  Perhaps something should 
+> be added to the "help" text.
 
-I sent out the v4 a bit later than expected, because I hit a regression for the irqchip on
-this platform:
-https://lore.kernel.org/all/bbe5506a2458b2d6049bd22a5fda77ae6175ddec.camel@svanheule.net/
+I agree that the change could cause confusion, I'm not sure though if
+adding something to the "help" text is a good mitigation. Users won't see
+the text unless they can select the option, which requires
+CONFIG_USB_XHCI_PLATFORM to be enabled. Also the dependencies are specified
+nearby (and displayed), so it seems similar to a code comment on something
+that the code evidently does (e.g. "initialize foobar with 0").
 
-
-Best,
-Sander
+On a different note: I'm considering to break the CONFIG_USB_XHCI_PLATFORM
+related patches out of the onboard_usb_hub series, since the driver
+doesn't any longer depend on xhci_plat. In that sense I'm also open
+to abandon those patches, if they aren't considered an improvement on
+their own.
