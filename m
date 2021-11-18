@@ -2,127 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E126C455AE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:46:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D73A455AE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344367AbhKRLtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 06:49:42 -0500
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:42455 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344380AbhKRLse (ORCPT
+        id S1344033AbhKRLvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 06:51:12 -0500
+Received: from mail-lf1-f44.google.com ([209.85.167.44]:37730 "EHLO
+        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233171AbhKRLvK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 06:48:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637235935; x=1668771935;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=cISyEGAsMJQM8NdfhvC1TwyQRYsH3j/ZOtqURpc7aUM=;
-  b=NPKRnWEkppeilR9xc5tHjtzx42oavYjA5x3pr4iuoiMA56w3TmFGG1SV
-   LSIYo/gvP9QdBOPJLlcRiIB5XI+HOFJTX4Rksxm/cfx8S0fUK3/2Rc8Nl
-   l00pR/SdYz7o6kcPERXHRer5JVRD64TM8bitpqnq/FdK4ae3ufOz4mwmb
-   M=;
-Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 18 Nov 2021 03:45:34 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 03:45:33 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Thu, 18 Nov 2021 03:45:33 -0800
-Received: from [10.216.28.51] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Thu, 18 Nov
- 2021 03:45:28 -0800
-Subject: Re: [PATCH v9 4/5] usb: dwc3: qcom: Change the IRQ flag for DP/DM hs
- phy irq
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Andy Gross <agross@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        "Matthias Kaehlcke" <mka@chromium.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_pkondeti@quicinc.com>,
-        <quic_ppratap@quicinc.com>
-References: <1635753224-23975-1-git-send-email-quic_c_sanm@quicinc.com>
- <1635753224-23975-5-git-send-email-quic_c_sanm@quicinc.com>
- <YYAWfSSD7FCXPo8d@ripper>
-From:   Sandeep Maheswaram <quic_c_sanm@quicinc.com>
-Message-ID: <0a27ac22-5a80-4885-9344-7e6b9a9480f3@quicinc.com>
-Date:   Thu, 18 Nov 2021 17:15:23 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 18 Nov 2021 06:51:10 -0500
+Received: by mail-lf1-f44.google.com with SMTP id c32so24705630lfv.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 03:48:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=WjEPo+4pFXoa2OYpwI90zm5uszBj3a/lWeST2vrDunM=;
+        b=wlk6Av7Rnsh2ktvm6kZBiN0f6oHsN1GsbPYmjxAOEN7STl7xB1p5vOJ6Fvzr+dzqUM
+         5L1SPEoY8QGcow/0yCeVxe4YAgebP9N/isFIK4U+FxAfucjcazURN/bT63SiBTiDVnfn
+         q0BAmoHptshGpZ3R+uHVk2M17NOTHNaKhL87FBMnEopM7xcT5+dVVyTGiRIsKUHBGoqY
+         Y1Os9Nibhu9VHx+Mw+ilZbRllWc4/iddXmlUcKtUGzwsHwYIsWBwbHPzspkN1w9pOJri
+         6wkJuxFKRNR5qpvqqeNZCh9q+VzFbK7EXOBvo/TYUdzQaND9DrYt8Qd7R1SuonRuYCLE
+         fimA==
+X-Gm-Message-State: AOAM531bvonmBuxAZUZHhxbxlS6dpaReyqqO7qvVQCJP15XgbHIkzpby
+        skrQwlQPDmP53QsM+KVdesI=
+X-Google-Smtp-Source: ABdhPJzK5ucCnEiXBwlRdOqshazDMWpzPuCSTJB6Ps+/+exokmqWZl5uUPZaHNVN8rjhibsf74NnOA==
+X-Received: by 2002:ac2:4aca:: with SMTP id m10mr22971738lfp.437.1637236089160;
+        Thu, 18 Nov 2021 03:48:09 -0800 (PST)
+Received: from fedora (dc73szyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16ee:fa00::4])
+        by smtp.gmail.com with ESMTPSA id s7sm253559lji.67.2021.11.18.03.48.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 03:48:08 -0800 (PST)
+Date:   Thu, 18 Nov 2021 13:47:59 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-power@fi.rohmeurope.com, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] Few miscellaneous regulator improvements
+Message-ID: <cover.1637233864.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-In-Reply-To: <YYAWfSSD7FCXPo8d@ripper>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="v7yfdkaqYfY3ffMP"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 11/1/2021 10:01 PM, Bjorn Andersson wrote:
-> On Mon 01 Nov 00:53 PDT 2021, Sandeep Maheswaram wrote:
->
->> Change the IRQ flags for DP/DM hs phy irq to avoid interrupt
->> triggering during system suspend.
->>
-> Why does replacing HIGH with RISING change this behavior, or do you get
-> a RISING interrupt just before hitting suspend which you ignore?
->
-> I think it would be nice to have the commit message for this (or per
-> below request the DTS change) include some details about what's really
-> happening on the irq line.
+--v7yfdkaqYfY3ffMP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-When we use IRQF_TRIGGER_HIGH we get interrupt during PM suspend and 
-causes resume.
+Minor regulator improvemnts / fixes.
 
-[  119.743083] Resume caused by IRQ 101, qcom_dwc3 DP_HS
+This is a collection of minor improvemnts done while developing drivers
+for yet another ROHM PMIC. Please note that the new generic function
+added in Patch 2 does currently have only one in-tree driver using it.
+(call added in patch 3). I intended to post this with the set of patches
+bringing support to a new PMIC - but it appears this new PMIC requires
+one more HW-iteration - meaning it will be delayed probably by months.
+It'd be easier for me to add this upstream now in order to avoid
+rebasing/conflicts with other changes introduced meanwhile. Please let
+me know if you don't think that's Ok.
 
->> Signed-off-by: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
->> ---
->>   drivers/usb/dwc3/dwc3-qcom.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
->> index 54461f1..356f4f8 100644
->> --- a/drivers/usb/dwc3/dwc3-qcom.c
->> +++ b/drivers/usb/dwc3/dwc3-qcom.c
->> @@ -473,7 +473,7 @@ static int dwc3_qcom_setup_irq(struct platform_device *pdev)
->>   		irq_set_status_flags(irq, IRQ_NOAUTOEN);
->>   		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
->>   					qcom_dwc3_resume_irq,
->> -					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
->> +					IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-> IRQF_TRIGGER_* should be omitted from the driver and supplied by the DT.
->
-> The dtbs out there should all have IRQ_TYPE_LEVEL_HIGH at this time, so
-> simply dropping that from this list and updating the dts would be the
-> right thing to do.
->
-> Regards,
-> Bjorn
-Ok. Dropping IRQF_TRIGGER_*  solved the resume issue during PM suspend.
->>   					"qcom_dwc3 DP_HS", qcom);
->>   		if (ret) {
->>   			dev_err(qcom->dev, "dp_hs_phy_irq failed: %d\n", ret);
->> @@ -488,7 +488,7 @@ static int dwc3_qcom_setup_irq(struct platform_device *pdev)
->>   		irq_set_status_flags(irq, IRQ_NOAUTOEN);
->>   		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
->>   					qcom_dwc3_resume_irq,
->> -					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
->> +					IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
->>   					"qcom_dwc3 DM_HS", qcom);
->>   		if (ret) {
->>   			dev_err(qcom->dev, "dm_hs_phy_irq failed: %d\n", ret);
->> -- 
->> 2.7.4
->>
+Patch 1:
+IRQ-helpers do not really need to map IRQ to specific notification in
+cases when the sole purpose of an IRQ is to notify this specific error.
+Allow omitting the IRQ mapping callback.
+
+Patch 2:
+The new PMIC I am writing drivers for does once again allow (base) voltage
+to be changed when regulator is disabled. Create a generic function for this
+as it seems ROHM keeps designing such outputs.
+
+Patch 3:
+Use this generic function with the bd71837/47/50
+
+Patch 4 & 5:
+kerneldoc updates.
+
+--
+
+Matti Vaittinen (5):
+  regulator: irq_helpers: Allow omitting map_event for simple IRQs
+  regulator: rohm-regulator: add helper for restricted voltage setting
+  regulator: bd718x7: Use rohm generic restricted voltage setting
+  regulator: Add units to limit documentation
+  regulator: Update protection IRQ helper docs
+
+ drivers/regulator/bd718x7-regulator.c | 29 ++------------
+ drivers/regulator/irq_helpers.c       | 52 +++++++++++++++++++++++-
+ drivers/regulator/rohm-regulator.c    | 16 ++++++++
+ include/linux/mfd/rohm-generic.h      |  7 ++++
+ include/linux/regulator/driver.h      | 58 ++++++++++++++++++++++-----
+ 5 files changed, 126 insertions(+), 36 deletions(-)
+
+--=20
+2.31.1
+
+
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
+
+--v7yfdkaqYfY3ffMP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmGWPWEACgkQeFA3/03a
+ocU0Nwf/UR0EUE+s97WaDjMeH7rbP8bhOEurT6SaQqS56Ex2SCSorWvadrsrsi8N
+0vdpA6Ogf3jLWqmeqFVfTq7S3oP2rB8vQBQOVVDHH6eqQaTcwuy0bLNYwBuwONft
+PW/4s+1CptSvczvFBqnHSNiGcCfbIDYbf0514cI8j77fSivOCLg6sDaJWIFXHwB2
+UXT7/V9mctJiEJoFKkPy5NwyiLM1BOcNFWccA2c2a/hNIH4dzL87k3VqW4yXkpV6
+1Gp9raBavkptu0TRw/btZPimjJk+5nj+FRmACjuqXZyyyTC7J5UUVrtegI7JT/Vy
+06ncVBcebU3lYGpelbjPLemvETKYiA==
+=yqIM
+-----END PGP SIGNATURE-----
+
+--v7yfdkaqYfY3ffMP--
