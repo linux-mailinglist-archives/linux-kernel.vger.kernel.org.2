@@ -2,333 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3494045655B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 23:05:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AEB745655D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 23:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231789AbhKRWIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 17:08:44 -0500
-Received: from out02.mta.xmission.com ([166.70.13.232]:39486 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbhKRWIn (ORCPT
+        id S231667AbhKRWJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 17:09:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229574AbhKRWJx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 17:08:43 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52]:38218)
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mnpXK-00E39T-6Z; Thu, 18 Nov 2021 15:05:42 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:52906 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mnpXH-00Av0p-Bt; Thu, 18 Nov 2021 15:05:41 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     <linux-kernel@vger.kernel.org>
-Cc:     Kyle Huey <me@kylehuey.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        "open list\:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        Robert O'Callahan <rocallahan@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Oliver Sang <oliver.sang@intel.com>, lkp@lists.01.org,
-        lkp@intel.com
-References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
-        <202111171049.3F9C5F1@keescook>
-        <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
-        <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
-        <87k0h6334w.fsf@email.froward.int.ebiederm.org>
-        <202111171341.41053845C3@keescook>
-        <CAHk-=wgkOGmkTu18hJQaJ4mk8hGZc16=gzGMgGGOd=uwpXsdyw@mail.gmail.com>
-        <CAP045ApYXxhiAfmn=fQM7_hD58T-yx724ctWFHO4UAWCD+QapQ@mail.gmail.com>
-        <CAHk-=wiCRbSvUi_TnQkokLeM==_+Tow0GsQXnV3UYwhsxirPwg@mail.gmail.com>
-        <CAP045AoqssLTKOqse1t1DG1HgK9h+goG8C3sqgOyOV3Wwq+LDA@mail.gmail.com>
-        <202111171728.D85A4E2571@keescook>
-        <87h7c9qg7p.fsf_-_@email.froward.int.ebiederm.org>
-Date:   Thu, 18 Nov 2021 16:05:31 -0600
-In-Reply-To: <87h7c9qg7p.fsf_-_@email.froward.int.ebiederm.org> (Eric
-        W. Biederman's message of "Thu, 18 Nov 2021 15:58:02 -0600")
-Message-ID: <871r3dqfv8.fsf_-_@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mnpXH-00Av0p-Bt;;;mid=<871r3dqfv8.fsf_-_@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19ee9ZQZjXSCESInoDhJZjCrjsKA+I5xtg=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
-X-Spam-Level: ***
-X-Spam-Status: No, score=3.8 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,FVGT_m_MULTI_ODD,LotsOfNums_01,T_TooManySym_01,
-        XMNoVowels,XMSubLong,XM_B_SpammyWords autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4985]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.4 FVGT_m_MULTI_ODD Contains multiple odd letter combinations
-        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ***;<linux-kernel@vger.kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 2240 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 4.5 (0.2%), b_tie_ro: 3.2 (0.1%), parse: 1.57
-        (0.1%), extract_message_metadata: 19 (0.8%), get_uri_detail_list: 5.0
-        (0.2%), tests_pri_-1000: 23 (1.0%), tests_pri_-950: 1.10 (0.0%),
-        tests_pri_-900: 0.86 (0.0%), tests_pri_-90: 591 (26.4%), check_bayes:
-        590 (26.3%), b_tokenize: 15 (0.7%), b_tok_get_all: 155 (6.9%),
-        b_comp_prob: 3.4 (0.2%), b_tok_touch_all: 413 (18.4%), b_finish: 0.75
-        (0.0%), tests_pri_0: 1587 (70.9%), check_dkim_signature: 0.50 (0.0%),
-        check_dkim_adsp: 1.93 (0.1%), poll_dns_idle: 0.48 (0.0%),
-        tests_pri_10: 1.81 (0.1%), tests_pri_500: 6 (0.3%), rewrite_mail: 0.00
-        (0.0%)
-Subject: [PATCH 2/2] signal: Replace force_fatal_sig with force_exit_sig when in doubt
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+        Thu, 18 Nov 2021 17:09:53 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F6AAC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 14:06:53 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id z3-20020a170903018300b0014224dca4a1so3656010plg.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 14:06:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=bPMPgZzyhDtannpbp/itJXQHsFdPQT97DYPC6FjJqDE=;
+        b=IrYK7nDdhdHRuX7dxzYGzNkNKzZ6RXZ7gOErHcf38Hwl7kTRZXT7wNicTi7hGjQyns
+         C83SbJUkT8drQXkNgxXOUhhSrNTASMA/1xm9fmkvKE+II89SIwWU7hPSWak5xw5Iu0mD
+         euS+ktyORqvWbhMP40+Aqk/fpNsBEUgNMP111ue0lvla+qXY7bifxJlHiiIZcjwGcsFZ
+         +37dpSYlYeHfONT/Uq+nkjDxk9KpabhdREMvRWUi0bfMPThfMLdAPJKzlumMtFPKEzX9
+         jRbLxc4Vq7tCv1kkq2x6UjNzSlaDmjweXuS1uUtyNjr00qvWeN9+os+AMbtkf0i3gH61
+         k+rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=bPMPgZzyhDtannpbp/itJXQHsFdPQT97DYPC6FjJqDE=;
+        b=GSzZCNHc3Px9RWn0rYq3XRcT/6Zs094hzsAtJai8O05317Moj17j8cIkrQ0oigHP/Q
+         3rlM6yrXDt7+LrAkYcZfs9Iz/9Tg0zbLLSO/Adz1xkJ+1JQwPKg2Bbz1qrejBua7h8rn
+         4qZIi4o0pDf8ubDLmoyPlH3RSnMJS+3AXZmIpDXfRwowkt4FmNkceW6z9SyfRxG+UESY
+         nK6NO5yrCiuIr2CB7j8GACYJR8V/ZybrkDv5qn49d+JyvghBc6lijfUk2X6lQyKAk145
+         BCiAuhR91tWrKebU95w9L7QKa1kSXu6RGD0vWKGVkJgK5rbz0/RdTOSZqXGpOwBCP20n
+         Uz3g==
+X-Gm-Message-State: AOAM532KCc/Y4kIz0325JdEHcno+li2l+vJE6ltGx/6AYRT9TKopKakT
+        kvDTxsHaHH15X2PoEC+EVrpifcSz4Yet
+X-Google-Smtp-Source: ABdhPJxmNmmgb0mBdEemGyrSaIXpTYTPoI4yq88XcxPpDGxzzKj1HKzoKhiq3AgVYpMnJKRZIu+GWPWilHsf
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:3908:af20:80e3:e47])
+ (user=irogers job=sendgmr) by 2002:a17:902:7fcd:b0:142:8ab3:ec0e with SMTP id
+ t13-20020a1709027fcd00b001428ab3ec0emr69556088plb.4.1637273212657; Thu, 18
+ Nov 2021 14:06:52 -0800 (PST)
+Date:   Thu, 18 Nov 2021 14:06:46 -0800
+Message-Id: <20211118220647.2355999-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+Subject: [PATCH v2 1/2] perf evlist: Allow setting arbitrary leader
+From:   Ian Rogers <irogers@google.com>
+To:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vineet Singh <vineet.singh@intel.com>
+Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The leader of a group is the first, but allow it to be an arbitrary
+list member so that for Intel topdown events slots may always be the
+group leader.
 
-Recently to prevent issues with SECCOMP_RET_KILL and similar signals
-being changed before they are delivered SA_IMMUTABLE was added.
-
-Unfortunately this broke debuggers[1][2] which reasonably expect
-to be able to trap synchronous SIGTRAP and SIGSEGV even when
-the target process is not configured to handle those signals.
-
-Add force_exit_sig and use it instead of force_fatal_sig where
-historically the code has directly called do_exit.  This has the
-implementation benefits of going through the signal exit path
-(including generating core dumps) without the danger of allowing
-userspace to ignore or change these signals.
-
-This avoids userspace regressions as older kernels exited with do_exit
-which debuggers also can not intercept.
-
-In the future is should be possible to improve the quality of
-implementation of the kernel by changing some of these force_exit_sig
-calls to force_fatal_sig.  That can be done where it matters on
-a case-by-case basis with careful analysis.
-
-Reported-by: Kyle Huey <me@kylehuey.com>
-Reported-by: kernel test robot <oliver.sang@intel.com>
-[1] https://lkml.kernel.org/r/CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com
-[2] https://lkml.kernel.org/r/20211117150258.GB5403@xsang-OptiPlex-902
-Fixes: 00b06da29cf9 ("signal: Add SA_IMMUTABLE to ensure forced siganls do not get changed")
-Fixes: a3616a3c0272 ("signal/m68k: Use force_sigsegv(SIGSEGV) in fpsp040_die")
-Fixes: 83a1f27ad773 ("signal/powerpc: On swapcontext failure force SIGSEGV")
-Fixes: 9bc508cf0791 ("signal/s390: Use force_sigsegv in default_trap_handler")
-Fixes: 086ec444f866 ("signal/sparc32: In setup_rt_frame and setup_fram use force_fatal_sig")
-Fixes: c317d306d550 ("signal/sparc32: Exit with a fatal signal when try_to_clear_window_buffer fails")
-Fixes: 695dd0d634df ("signal/x86: In emulate_vsyscall force a signal instead of calling do_exit")
-Fixes: 1fbd60df8a85 ("signal/vm86_32: Properly send SIGSEGV when the vm86 state cannot be saved.")
-Fixes: 941edc5bf174 ("exit/syscall_user_dispatch: Send ordinary signals on failure")
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Reviewed-by: Kajol Jain<kjain@linux.ibm.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- arch/m68k/kernel/traps.c              |  2 +-
- arch/powerpc/kernel/signal_32.c       |  2 +-
- arch/powerpc/kernel/signal_64.c       |  4 ++--
- arch/s390/kernel/traps.c              |  2 +-
- arch/sparc/kernel/signal_32.c         |  4 ++--
- arch/sparc/kernel/windows.c           |  2 +-
- arch/x86/entry/vsyscall/vsyscall_64.c |  2 +-
- arch/x86/kernel/vm86_32.c             |  2 +-
- include/linux/sched/signal.h          |  1 +
- kernel/entry/syscall_user_dispatch.c  |  4 ++--
- kernel/signal.c                       | 13 +++++++++++++
- 11 files changed, 26 insertions(+), 12 deletions(-)
+ tools/lib/perf/evlist.c                  | 15 +++++++++------
+ tools/lib/perf/include/internal/evlist.h |  2 +-
+ tools/perf/util/parse-events.c           |  2 +-
+ 3 files changed, 11 insertions(+), 8 deletions(-)
 
-diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
-index 99058a6da956..34d6458340b0 100644
---- a/arch/m68k/kernel/traps.c
-+++ b/arch/m68k/kernel/traps.c
-@@ -1145,7 +1145,7 @@ asmlinkage void set_esp0(unsigned long ssp)
-  */
- asmlinkage void fpsp040_die(void)
+diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
+index e37dfad31383..974da341b8b0 100644
+--- a/tools/lib/perf/evlist.c
++++ b/tools/lib/perf/evlist.c
+@@ -643,14 +643,14 @@ perf_evlist__next_mmap(struct perf_evlist *evlist, struct perf_mmap *map,
+ 	return overwrite ? evlist->mmap_ovw_first : evlist->mmap_first;
+ }
+ 
+-void __perf_evlist__set_leader(struct list_head *list)
++void __perf_evlist__set_leader(struct list_head *list, struct perf_evsel *leader)
  {
--	force_fatal_sig(SIGSEGV);
-+	force_exit_sig(SIGSEGV);
- }
+-	struct perf_evsel *evsel, *leader;
++	struct perf_evsel *first, *last, *evsel;
  
- #ifdef CONFIG_M68KFPU_EMU
-diff --git a/arch/powerpc/kernel/signal_32.c b/arch/powerpc/kernel/signal_32.c
-index 00a9c9cd6d42..3e053e2fd6b6 100644
---- a/arch/powerpc/kernel/signal_32.c
-+++ b/arch/powerpc/kernel/signal_32.c
-@@ -1063,7 +1063,7 @@ SYSCALL_DEFINE3(swapcontext, struct ucontext __user *, old_ctx,
- 	 * We kill the task with a SIGSEGV in this situation.
- 	 */
- 	if (do_setcontext(new_ctx, regs, 0)) {
--		force_fatal_sig(SIGSEGV);
-+		force_exit_sig(SIGSEGV);
- 		return -EFAULT;
- 	}
+-	leader = list_entry(list->next, struct perf_evsel, node);
+-	evsel = list_entry(list->prev, struct perf_evsel, node);
++	first = list_entry(list->next, struct perf_evsel, node);
++	last = list_entry(list->prev, struct perf_evsel, node);
  
-diff --git a/arch/powerpc/kernel/signal_64.c b/arch/powerpc/kernel/signal_64.c
-index ef518535d436..d1e1fc0acbea 100644
---- a/arch/powerpc/kernel/signal_64.c
-+++ b/arch/powerpc/kernel/signal_64.c
-@@ -704,7 +704,7 @@ SYSCALL_DEFINE3(swapcontext, struct ucontext __user *, old_ctx,
- 	 */
+-	leader->nr_members = evsel->idx - leader->idx + 1;
++	leader->nr_members = last->idx - first->idx + 1;
  
- 	if (__get_user_sigset(&set, &new_ctx->uc_sigmask)) {
--		force_fatal_sig(SIGSEGV);
-+		force_exit_sig(SIGSEGV);
- 		return -EFAULT;
- 	}
- 	set_current_blocked(&set);
-@@ -713,7 +713,7 @@ SYSCALL_DEFINE3(swapcontext, struct ucontext __user *, old_ctx,
- 		return -EFAULT;
- 	if (__unsafe_restore_sigcontext(current, NULL, 0, &new_ctx->uc_mcontext)) {
- 		user_read_access_end();
--		force_fatal_sig(SIGSEGV);
-+		force_exit_sig(SIGSEGV);
- 		return -EFAULT;
- 	}
- 	user_read_access_end();
-diff --git a/arch/s390/kernel/traps.c b/arch/s390/kernel/traps.c
-index 035705c9f23e..2b780786fc68 100644
---- a/arch/s390/kernel/traps.c
-+++ b/arch/s390/kernel/traps.c
-@@ -84,7 +84,7 @@ static void default_trap_handler(struct pt_regs *regs)
+ 	__perf_evlist__for_each_entry(list, evsel)
+ 		evsel->leader = leader;
+@@ -659,7 +659,10 @@ void __perf_evlist__set_leader(struct list_head *list)
+ void perf_evlist__set_leader(struct perf_evlist *evlist)
  {
- 	if (user_mode(regs)) {
- 		report_user_fault(regs, SIGSEGV, 0);
--		force_fatal_sig(SIGSEGV);
-+		force_exit_sig(SIGSEGV);
- 	} else
- 		die(regs, "Unknown program exception");
- }
-diff --git a/arch/sparc/kernel/signal_32.c b/arch/sparc/kernel/signal_32.c
-index cd677bc564a7..ffab16369bea 100644
---- a/arch/sparc/kernel/signal_32.c
-+++ b/arch/sparc/kernel/signal_32.c
-@@ -244,7 +244,7 @@ static int setup_frame(struct ksignal *ksig, struct pt_regs *regs,
- 		get_sigframe(ksig, regs, sigframe_size);
- 
- 	if (invalid_frame_pointer(sf, sigframe_size)) {
--		force_fatal_sig(SIGILL);
-+		force_exit_sig(SIGILL);
- 		return -EINVAL;
- 	}
- 
-@@ -336,7 +336,7 @@ static int setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs,
- 	sf = (struct rt_signal_frame __user *)
- 		get_sigframe(ksig, regs, sigframe_size);
- 	if (invalid_frame_pointer(sf, sigframe_size)) {
--		force_fatal_sig(SIGILL);
-+		force_exit_sig(SIGILL);
- 		return -EINVAL;
- 	}
- 
-diff --git a/arch/sparc/kernel/windows.c b/arch/sparc/kernel/windows.c
-index bbbd40cc6b28..8f20862ccc83 100644
---- a/arch/sparc/kernel/windows.c
-+++ b/arch/sparc/kernel/windows.c
-@@ -122,7 +122,7 @@ void try_to_clear_window_buffer(struct pt_regs *regs, int who)
- 		if ((sp & 7) ||
- 		    copy_to_user((char __user *) sp, &tp->reg_window[window],
- 				 sizeof(struct reg_window32))) {
--			force_fatal_sig(SIGILL);
-+			force_exit_sig(SIGILL);
- 			return;
- 		}
- 	}
-diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c b/arch/x86/entry/vsyscall/vsyscall_64.c
-index 0b6b277ee050..fd2ee9408e91 100644
---- a/arch/x86/entry/vsyscall/vsyscall_64.c
-+++ b/arch/x86/entry/vsyscall/vsyscall_64.c
-@@ -226,7 +226,7 @@ bool emulate_vsyscall(unsigned long error_code,
- 	if ((!tmp && regs->orig_ax != syscall_nr) || regs->ip != address) {
- 		warn_bad_vsyscall(KERN_DEBUG, regs,
- 				  "seccomp tried to change syscall nr or ip");
--		force_fatal_sig(SIGSYS);
-+		force_exit_sig(SIGSYS);
- 		return true;
- 	}
- 	regs->orig_ax = -1;
-diff --git a/arch/x86/kernel/vm86_32.c b/arch/x86/kernel/vm86_32.c
-index cce1c89cb7df..c21bcd668284 100644
---- a/arch/x86/kernel/vm86_32.c
-+++ b/arch/x86/kernel/vm86_32.c
-@@ -160,7 +160,7 @@ void save_v86_state(struct kernel_vm86_regs *regs, int retval)
- 	user_access_end();
- Efault:
- 	pr_alert("could not access userspace vm86 info\n");
--	force_fatal_sig(SIGSEGV);
-+	force_exit_sig(SIGSEGV);
- 	goto exit_vm86;
- }
- 
-diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
-index 23505394ef70..33a50642cf41 100644
---- a/include/linux/sched/signal.h
-+++ b/include/linux/sched/signal.h
-@@ -352,6 +352,7 @@ extern __must_check bool do_notify_parent(struct task_struct *, int);
- extern void __wake_up_parent(struct task_struct *p, struct task_struct *parent);
- extern void force_sig(int);
- extern void force_fatal_sig(int);
-+extern void force_exit_sig(int);
- extern int send_sig(int, struct task_struct *, int);
- extern int zap_other_threads(struct task_struct *p);
- extern struct sigqueue *sigqueue_alloc(void);
-diff --git a/kernel/entry/syscall_user_dispatch.c b/kernel/entry/syscall_user_dispatch.c
-index 4508201847d2..0b6379adff6b 100644
---- a/kernel/entry/syscall_user_dispatch.c
-+++ b/kernel/entry/syscall_user_dispatch.c
-@@ -48,7 +48,7 @@ bool syscall_user_dispatch(struct pt_regs *regs)
- 		 * the selector is loaded by userspace.
- 		 */
- 		if (unlikely(__get_user(state, sd->selector))) {
--			force_fatal_sig(SIGSEGV);
-+			force_exit_sig(SIGSEGV);
- 			return true;
- 		}
- 
-@@ -56,7 +56,7 @@ bool syscall_user_dispatch(struct pt_regs *regs)
- 			return false;
- 
- 		if (state != SYSCALL_DISPATCH_FILTER_BLOCK) {
--			force_fatal_sig(SIGSYS);
-+			force_exit_sig(SIGSYS);
- 			return true;
- 		}
- 	}
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 02058c983bd6..fe7ba05145d4 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -1671,6 +1671,19 @@ void force_fatal_sig(int sig)
- 	force_sig_info_to_task(&info, current, HANDLER_SIG_DFL);
- }
- 
-+void force_exit_sig(int sig)
-+{
-+	struct kernel_siginfo info;
+ 	if (evlist->nr_entries) {
++		struct perf_evsel *first = list_entry(evlist->entries.next,
++						struct perf_evsel, node);
 +
-+	clear_siginfo(&info);
-+	info.si_signo = sig;
-+	info.si_errno = 0;
-+	info.si_code = SI_KERNEL;
-+	info.si_pid = 0;
-+	info.si_uid = 0;
-+	force_sig_info_to_task(&info, current, HANDLER_EXIT);
-+}
-+
- /*
-  * When things go south during signal handling, we
-  * will force a SIGSEGV. And if the signal that caused
+ 		evlist->nr_groups = evlist->nr_entries > 1 ? 1 : 0;
+-		__perf_evlist__set_leader(&evlist->entries);
++		__perf_evlist__set_leader(&evlist->entries, first);
+ 	}
+ }
+diff --git a/tools/lib/perf/include/internal/evlist.h b/tools/lib/perf/include/internal/evlist.h
+index f366dbad6a88..6f74269a3ad4 100644
+--- a/tools/lib/perf/include/internal/evlist.h
++++ b/tools/lib/perf/include/internal/evlist.h
+@@ -127,5 +127,5 @@ int perf_evlist__id_add_fd(struct perf_evlist *evlist,
+ 
+ void perf_evlist__reset_id_hash(struct perf_evlist *evlist);
+ 
+-void __perf_evlist__set_leader(struct list_head *list);
++void __perf_evlist__set_leader(struct list_head *list, struct perf_evsel *leader);
+ #endif /* __LIBPERF_INTERNAL_EVLIST_H */
+diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+index 5bfb6f892489..6308ba739d19 100644
+--- a/tools/perf/util/parse-events.c
++++ b/tools/perf/util/parse-events.c
+@@ -1834,8 +1834,8 @@ void parse_events__set_leader(char *name, struct list_head *list,
+ 	if (parse_events__set_leader_for_uncore_aliase(name, list, parse_state))
+ 		return;
+ 
+-	__perf_evlist__set_leader(list);
+ 	leader = list_entry(list->next, struct evsel, core.node);
++	__perf_evlist__set_leader(list, &leader->core);
+ 	leader->group_name = name ? strdup(name) : NULL;
+ }
+ 
 -- 
-2.20.1
+2.34.0.rc2.393.gf8c9666880-goog
 
