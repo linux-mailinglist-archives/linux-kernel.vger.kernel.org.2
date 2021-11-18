@@ -2,178 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7664558F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 11:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 562DE4558F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 11:21:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245022AbhKRKY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 05:24:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245598AbhKRKX0 (ORCPT
+        id S245547AbhKRKYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 05:24:31 -0500
+Received: from so254-9.mailgun.net ([198.61.254.9]:19557 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245663AbhKRKXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 05:23:26 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B085C061570;
-        Thu, 18 Nov 2021 02:20:26 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id e144so7241138iof.3;
-        Thu, 18 Nov 2021 02:20:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=itCVI2ENrhkTTYHps6m3XQ5oUYvCnNOBSzEcX1dRLm4=;
-        b=Dfmb6C0k8WZPBVmY/ibFGC9rxZ8Lhy/SquLt0Xv9ML0bvrlyblnx0IRCmS7VXCwSWF
-         15jAMM45IjpeyO/OR4aFw2sBHxN4+6BZkLlr+TXB9zXFrFYdsi8Kt06cBlaqUQSIdJlC
-         Yn7uSyCD2rHKVyxC0tut7kil37wW8m9Ca/5kPpsMd/Kzf8MJP3sJqtazQU3ovX+muOmH
-         jcTRqAgCMqO6F72HLARp4oCvnzzrJDHbyJt+3cbR1WRfiY72/19/jIGSNU1Jnwn8RyXi
-         E585sJ2ZIEa2PncDfKNtXisgSaBz0PxJ5MwdFnvnwHiKQtFIAVnWsH65G0fc4N68QzD3
-         +zhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=itCVI2ENrhkTTYHps6m3XQ5oUYvCnNOBSzEcX1dRLm4=;
-        b=K95j6+Ogx3IsNIzdtp3vFauJOVMKqjHtJOsZDu0qYXwQRH0Ol6TG1jTwrPHK6FSkaC
-         NJ05bIwjgIEVewMmM6QTz8DDUGAwkPxqK5rdlFqa00JLnMPqFgmlm197xUovB2RXC71j
-         AUs6HVavv3jaqYhKwCccbtxgjUg7Bhu7VDqawjN7oI2xS6CpHyP7XRLV91E4IM/ZlCtt
-         ODcmf+ZGyU+iH9YrvbPCi1gD+j8e62sxLIqArHMuN5gkInqZj74mLOvSmdAmItNIgKVG
-         b2JPLM81WVCWnYgIdUG/V9Wr4EAfUkaVyZ97oKLnSt3Xh4jHIc/ql5mCD/ruiccVEgSN
-         FHXQ==
-X-Gm-Message-State: AOAM5314RQ3OevGeCYea7RJBX/Qgcf7eNSqZSS924o7X6JPPI83F+ZyK
-        lQMxg9UkEovLj+wjqZK1T7r2iQhaXhwmvc+R3i0=
-X-Google-Smtp-Source: ABdhPJyQnM3LkZ5uLvVCdeDBR0vhPZV82yI4Jj+q18fa+DAtlhzwEUs8WdW+WEH39xQX7jtO0ruQA6/9ugBzYLOm0yk=
-X-Received: by 2002:a05:6638:2727:: with SMTP id m39mr19361551jav.75.1637230825580;
- Thu, 18 Nov 2021 02:20:25 -0800 (PST)
-MIME-Version: 1.0
-References: <20211117015806.2192263-1-dvander@google.com> <CAOQ4uxjjapFeOAFGLmsXObdgFVYLfNer-rnnee1RR+joxK3xYg@mail.gmail.com>
- <CA+FmFJBDwt52Z-dVGfuUcnRMiMtGPhK4cCQJ=J_fg0r3x-b6ng@mail.gmail.com>
-In-Reply-To: <CA+FmFJBDwt52Z-dVGfuUcnRMiMtGPhK4cCQJ=J_fg0r3x-b6ng@mail.gmail.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 18 Nov 2021 12:20:14 +0200
-Message-ID: <CAOQ4uxjTRfwGrXuWjACZyEQTozxUHTabJsN7yH5wCJcAapm-6g@mail.gmail.com>
-Subject: Re: [PATCH v19 0/4] overlayfs override_creds=off & nested get xattr fix
-To:     David Anderson <dvander@google.com>
-Cc:     Mark Salyzyn <salyzyn@android.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        John Stultz <john.stultz@linaro.org>,
-        linux-doc@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>, selinux@vger.kernel.org,
-        paulmoore@microsoft.com, luca.boccassi@microsoft.com
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 18 Nov 2021 05:23:47 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1637230848; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=8grzA7wlYzBqRilFeYBvLQm90ydwuJD4YjemvC4tAqw=; b=bR9qejqvhFv81iQl5HXHH8qtXFTfKyRC7mgackrDVVrliyXZneA6Ol5FvMqHcojjL2lkYLf6
+ AhClTiyBksD5ff9RZLu0ht4xX7rlp9bBl0EgI3EK6Q4bUIDkbnG6dNf0pmsBYRJE0LIcRVUv
+ GDtUZ9a3ozz0ieJZvTqP0Cvr0WA=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 619628fc1e1d2f52330e90f9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 18 Nov 2021 10:20:44
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 07B4BC43616; Thu, 18 Nov 2021 10:20:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld559.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 91F63C4338F;
+        Thu, 18 Nov 2021 10:20:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 91F63C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+To:     freedreno <freedreno@lists.freedesktop.org>,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Rob Clark <robdclark@gmail.com>
+Cc:     Jordan Crouse <jordan@cosmicpenguin.net>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Douglas Anderson <dianders@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>, Sean Paul <sean@poorly.run>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] drm/msm: Increase gpu boost interval
+Date:   Thu, 18 Nov 2021 15:50:29 +0530
+Message-Id: <20211118154903.1.I2ed37cd8ad45a5a94d9de53330f973a62bd1fb29@changeid>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 11:53 AM David Anderson <dvander@google.com> wrote:
->
-> On Tue, Nov 16, 2021 at 11:36 PM Amir Goldstein <amir73il@gmail.com> wrote:
-> > Hi David,
-> >
-> > I see that the patch set has changed hands (presumably to Android upstreaming
-> > team), but you just rebased v18 without addressing the maintainers concerns [1].
->
-> Indeed I'm carrying this forward as Mark is no longer working on it.
-> My apologies for
-> missing those comments!
->
-> > Specifically, the patch 2/4 is very wrong for unprivileged mount and
-> > I think that the very noisy patch 1/4 could be completely avoided:
-> > Can't you use -o userxattr mount option for Android use case and limit
-> > the manipulation of user.ovrelay.* xattr based on sepolicy for actors
-> > that are allowed
-> > to make changes in overlayfs mount? or not limit at all?
-> > The access to those xattr is forbidden via "incoming" xattr ops on
-> > overlay inodes.
->
-> Can you clarify a bit more? The patch is definitely super noisy and I'd love
-> to have a better solution. The problem it's trying to solve is:
->  1. Kernel-privileged init mounts /mnt/blah-lower and /mnt/blah-upper.
->  2. Kernel-privileged init mounts /blah with overlayfs using the above dirs.
->  2. Kernel-privileged init loads sepolicy off /blah/policy. Enforcing begins.
->  3. Kernel-privileged init tries to execute /blah/init to initiate a
-> domain transition.
->  4. exec() fails because the overlayfs mounter creds (kernel domain) does
->      not have getxattr permission to /blah/init.
->
-> Eg, we're hitting this problem without even making changes to the mount, and
-> without anything being written to /mnt/blah-upper.
->
+Currently, we boost gpu freq after 25ms of inactivity. This regresses
+some of the 30 fps usecases where the workload on gpu (at 33ms internval)
+is very small which it can finish at the lowest OPP before the deadline.
+Lets increase this inactivity threshold to 50ms (same as the current
+devfreq interval) to fix this.
 
-So what is your solution?
-Remove the security check from overlayfs setting xattr?
-How does that work for the person who composed the security policy?
-You will need to grant some basic privileges to the mounter.
-If you do not want to grant the mounter privileges to set trusted.overlay xattr
-you may use mount option -o userxattr and grant it permissions to set
-user.overlay xattrs.
+Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+---
 
-> > Can an unprivileged user create an overlay over a directory that they have
-> > access to and redirect an innocent looking file name to an underlying file that
-> > said the mounting user has no access to and by doing that, tricking a privileged
-> > user to modify the innocent looking file on the  mounter's behalf?
-> > Of course this could be avoided by forbidding unprivileged mount with
-> > override_creds=off, but there could be other scenarios, so a clear model
-> > would help to understand the risks.
-> >
-> > For example:
-> > If user 1 was able to read in lower dir A, now the content of overlay dir A
-> > is cached and user 2, that has permissions to read upper dir A and does
-> > not have read permissions on lower dir A will see the content of lower dir A.
->
-> I'll need to think about this more and test to verify. It's not a scenario that
-> would come up in our use case (both dirs effectively have the same permissions).
->
+ drivers/gpu/drm/msm/msm_gpu_devfreq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Your argument is taking the wrong POV.
-The reason that previous posts of this patch set have been rejected
-is not because it doesn't work for your use case.
-It is because other players can exploit the feature to bypass security
-policies, so the feature cannot be merged as is.
+diff --git a/drivers/gpu/drm/msm/msm_gpu_devfreq.c b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+index d32b729..c4d8920 100644
+--- a/drivers/gpu/drm/msm/msm_gpu_devfreq.c
++++ b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+@@ -178,7 +178,7 @@ void msm_devfreq_active(struct msm_gpu *gpu)
+ 	 * interval, then we won't meet the threshold of busyness for
+ 	 * the governor to ramp up the freq.. so give some boost
+ 	 */
+-	if (idle_time > msm_devfreq_profile.polling_ms/2) {
++	if (idle_time > msm_devfreq_profile.polling_ms) {
+ 		target_freq *= 2;
+ 	}
+ 
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation.
 
-> If the answer is "yes, that can happen" - do you see this as a problem of
-> clarifying the model, or a problem of fixing that loophole?
->
-
-It is something that is not at all easy to fix.
-In the example above, instead of checking permissions against the
-overlay inode (on "incoming" readdir) will need to check permissions of every
-accessing user against all layers, before allowing access to the merged
-directory content (which is cached).
-A lot more work - and this is just for this one example.
-
-> >> I think that the core problem with the approach is using Non-uniform
-> > credentials to access underlying layers. I don't see a simple way around
-> > a big audit that checks all those cases, but maybe I'm missing some quick
-> > shortcut or maybe your use case can add some restrictions about the
-> > users that could access this overlay that would simplify the generic problem.
->
-> In a security model like ours, I think there's no way around it, that
-> we really need
-> accesses to be from the caller's credentials and not the mounter's. It's even
-> worse than earlier iterations of this patch perhaps let on: we mount
-> before sepolicy
-> is loaded (so we can overlay the policy itself), and thus the
-> mounter's creds are
-> effectively "the kernel". This domain is highly restricted in our
-> sepolicy for obvious
-> reasons. There's no way our security team will let us unrestrict it.
->
-
-Not sure what that means or what I can do with this information.
-If I had a simple suggestion on how to solve your problem I would have
-suggested it, but I cannot think of any right now.
-The best I can do is to try to make you understand the problems that your
-patch causes to others, so you can figure out a way that meets your goals
-without breaking other use cases.
-
-Thanks,
-Amir.
