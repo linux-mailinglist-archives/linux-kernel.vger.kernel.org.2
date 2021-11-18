@@ -2,134 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25126456072
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:28:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 538B6456079
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:30:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233343AbhKRQbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 11:31:49 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:32953 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233086AbhKRQbs (ORCPT
+        id S233393AbhKRQdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 11:33:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233344AbhKRQdB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 11:31:48 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0Uv6jhz._1637252923;
-Received: from 30.30.94.206(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0Uv6jhz._1637252923)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 19 Nov 2021 00:28:45 +0800
-Message-ID: <55654594-9967-37d2-335b-5035f99212fe@linux.alibaba.com>
-Date:   Fri, 19 Nov 2021 00:28:43 +0800
+        Thu, 18 Nov 2021 11:33:01 -0500
+Received: from polaris.svanheule.net (polaris.svanheule.net [IPv6:2a00:c98:2060:a004:1::200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775E2C06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:30:01 -0800 (PST)
+Received: from terra.local.svanheule.net (unknown [IPv6:2a02:a03f:eafe:c901:baf4:d6c5:5600:301])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id D10C6273809;
+        Thu, 18 Nov 2021 17:29:59 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1637253000;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=1JTDewxmDd3Uj2UDDhFbVjaroT1xBd19dnBZLJEMz1A=;
+        b=XH5kuUG7tAmftkxkqBU4En1mrcWH48Lxsfz5bZpjGpgTzrFpzWMJxhN+fo9XNFwQAusX2c
+        fs2VJoGa0br6Ay5sBsyjusGeeWMKZNxw0bfh/Uj/B0+0TnPSQf5qgchjkyXurZVfVDIQLS
+        gNRPx3mqlZ7MJiMoTT3ZmF+47W42l7c05UK1THAmA0N9hIN/4LUftwsgk4Q3uZoue2IKYA
+        6rgIkp2RNEwd5bvedItGTTDl6OBnmlSezQQqtC3OHXOx98uQt5rnzeSosFlBl6X7RR25TM
+        fjklzZhKoiy6JoxTWZ3vfhaIiQs8X0nGKxVHoIW8ASJTlruF52qhRXSI6jNqsQ==
+From:   Sander Vanheule <sander@svanheule.net>
+To:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Sander Vanheule <sander@svanheule.net>
+Subject: [PATCH v4 0/2] Add Realtek Otto WDT support
+Date:   Thu, 18 Nov 2021 17:29:50 +0100
+Message-Id: <cover.1637252610.git.sander@svanheule.net>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH 13/15] KVM: SVM: Add and use svm_register_cache_reset()
-Content-Language: en-US
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-References: <20211108124407.12187-1-jiangshanlai@gmail.com>
- <20211108124407.12187-14-jiangshanlai@gmail.com>
- <937c373e-80f4-38d9-b45a-a655dcb66569@redhat.com>
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-In-Reply-To: <937c373e-80f4-38d9-b45a-a655dcb66569@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This watchdog timer is found on Realtek's Otto MIPS platforms, including the
+RTL838x, RTL839x, and RTL930x series of ethernet switch SoCs. It has a number
+of reset modes (SoC, CPU, software), and can provide pretimeout interrupts.
 
+The timer has two timeout phases. Both phases have a maximum duration of 32
+prescaled clock ticks, which is ca. 43s with a clock of 200MHz:
+- Phase 1: During this phase, the WDT can be pinged to reset the timeout.
+- Phase 2: Starts after phase 1 has timed out, and only serves to give the
+  system some time to clean up, or notify others that it's going to reset.
+  During this phase, pinging the WDT has no effect, and a reset is unavoidable.
 
-On 2021/11/18 23:37, Paolo Bonzini wrote:
-> On 11/8/21 13:44, Lai Jiangshan wrote:
->> From: Lai Jiangshan <laijs@linux.alibaba.com>
->>
->> It resets all the appropriate bits like vmx.
->>
->> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
->> ---
->>   arch/x86/kvm/svm/svm.c |  3 +--
->>   arch/x86/kvm/svm/svm.h | 26 ++++++++++++++++++++++++++
->>   2 files changed, 27 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
->> index b7da66935e72..ba9cfddd2875 100644
->> --- a/arch/x86/kvm/svm/svm.c
->> +++ b/arch/x86/kvm/svm/svm.c
->> @@ -3969,8 +3969,7 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
->>       svm->vmcb->control.tlb_ctl = TLB_CONTROL_DO_NOTHING;
->>       vmcb_mark_all_clean(svm->vmcb);
->> -
->> -    kvm_register_clear_available(vcpu, VCPU_EXREG_PDPTR);
->> +    svm_register_cache_reset(vcpu);
->>       /*
->>        * We need to handle MC intercepts here before the vcpu has a chance to
->> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
->> index 0d7bbe548ac3..1cf5d5e2d0cd 100644
->> --- a/arch/x86/kvm/svm/svm.h
->> +++ b/arch/x86/kvm/svm/svm.h
->> @@ -274,6 +274,32 @@ static inline bool vmcb_is_dirty(struct vmcb *vmcb, int bit)
->>           return !test_bit(bit, (unsigned long *)&vmcb->control.clean);
->>   }
->> +static inline void svm_register_cache_reset(struct kvm_vcpu *vcpu)
->> +{
->> +/*
->> + * SVM_REGS_AVAIL_SET - The set of registers that will be updated in cache on
->> + *            demand.  Other registers not listed here are synced to
->> + *            the cache immediately after VM-Exit.
->> + *
->> + * SVM_REGS_DIRTY_SET - The set of registers that might be outdated in
->> + *            architecture. Other registers not listed here are synced
->> + *            to the architecture immediately when modifying.
->> + *
->> + *            Special case: VCPU_EXREG_CR3 should be in this set due
->> + *            to the fact.  But KVM_REQ_LOAD_MMU_PGD is always
->> + *            requested when the cache vcpu->arch.cr3 is changed and
->> + *            svm_load_mmu_pgd() always syncs the new CR3 value into
->> + *            the architecture.  So the dirty information of
->> + *            VCPU_EXREG_CR3 is not used which means VCPU_EXREG_CR3
->> + *            isn't required to be put in this set.
->> + */
->> +#define SVM_REGS_AVAIL_SET    (1 << VCPU_EXREG_PDPTR)
->> +#define SVM_REGS_DIRTY_SET    (0)
->> +
->> +    vcpu->arch.regs_avail &= ~SVM_REGS_AVAIL_SET;
->> +    vcpu->arch.regs_dirty &= ~SVM_REGS_DIRTY_SET;
->> +}
-> 
-> I think touching regs_dirty is confusing here, so I'd go with this:
+The driver has been tested on a Zyxel GS1900-8 (RTL8380, mainline kernel and
+OpenWrt), a Zyxel GS1900-48 (RTL8393, mainline), a Netgear GS110TPPv1
+(RTL8381, mainline), and a Zyxel XGS1250-12 (RTL9203B, Openwrt).
 
-It makes the code the same as vmx by clearing all the SVM_REGS_DIRTY_SET
-bits.  And the compiler will remove this line of code since
-SVM_REGS_DIRTY_SET is (0), and regs_dirty is not touched.
+Changes since v3:
+Link: https://lore.kernel.org/all/cover.1636018117.git.sander@svanheule.net/
+- Improve clock initialisation
 
-Using VMX_REGS_DIRTY_SET and SVM_REGS_DIRTY_SET and making the code
-similar is my intent for patch12,13.  If it causes confusing, I would
-like to make a second thought.  SVM_REGS_DIRTY_SET does be special
-in svm where VCPU_EXREG_CR3 is in it by definition, but it is not
-added into SVM_REGS_DIRTY_SET in the patch just for optimization to allow
-the compiler optimizes the line of code out.
+Changes since v2:
+Link: https://lore.kernel.org/all/20211104085952.13572-1-sander@svanheule.net/
+- Fix off-by-one error in prescale assignment
 
-I'm Ok to not queue patch12,13,14.
+Main changes since v1:
+Link: https://lore.kernel.org/all/cover.1634131707.git.sander@svanheule.net/
+- Drop implementation of phase2 irq, since it is only triggered on system reset
+- Drop redundant value checks and lock
+- Add RTL930x compatibility
 
-> 
->          vcpu->arch.regs_avail &= ~SVM_REGS_LAZY_LOAD_SET;
-> 
->          /*
->           * SVM does not use vcpu->arch.regs_dirty.  The only register that
->           * might be out of date in the VMCB is CR3, but KVM_REQ_LOAD_MMU_PGD
->           * is always requested when the cache vcpu->arch.cr3 is changed and
->           * svm_load_mmu_pgd() always syncs the new CR3 value into the VMCB.
->           */
-> 
-> (VMX instead needs VCPU_EXREG_CR3 mostly because it does not want to
-> update it unconditionally on exit).
-> 
-> Paolo
+Sander Vanheule (2):
+  dt-bindings: watchdog: Realtek Otto WDT binding
+  watchdog: Add Realtek Otto watchdog timer
+
+ .../bindings/watchdog/realtek,otto-wdt.yaml   |  91 +++++
+ MAINTAINERS                                   |   7 +
+ drivers/watchdog/Kconfig                      |  13 +
+ drivers/watchdog/Makefile                     |   1 +
+ drivers/watchdog/realtek_otto_wdt.c           | 384 ++++++++++++++++++
+ 5 files changed, 496 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/watchdog/realtek,otto-wdt.yaml
+ create mode 100644 drivers/watchdog/realtek_otto_wdt.c
+
+-- 
+2.33.1
+
