@@ -2,90 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4601D4554E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 07:51:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E779845550C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 08:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243471AbhKRGyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 01:54:31 -0500
-Received: from mga02.intel.com ([134.134.136.20]:15541 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243452AbhKRGyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 01:54:19 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10171"; a="221340515"
-X-IronPort-AV: E=Sophos;i="5.87,243,1631602800"; 
-   d="scan'208";a="221340515"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 22:51:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,243,1631602800"; 
-   d="scan'208";a="495251025"
-Received: from zxingrtx.sh.intel.com ([10.239.159.110])
-  by orsmga007.jf.intel.com with ESMTP; 17 Nov 2021 22:51:09 -0800
-From:   zhengjun.xing@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     adrian.hunter@intel.com, alexander.shishkin@intel.com,
-        ak@linux.intel.com, kan.liang@intel.com,
-        zhengjun.xing@linux.intel.com, stable@vger.kernel.org
-Subject: [PATCH] perf/x86/intel/uncore: Fix CAS_COUNT_WRITE issue for ICX
-Date:   Thu, 18 Nov 2021 22:48:11 +0800
-Message-Id: <20211118144811.329111-1-zhengjun.xing@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S243532AbhKRHF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 02:05:28 -0500
+Received: from mta-13-4.privateemail.com ([198.54.127.109]:47279 "EHLO
+        MTA-13-4.privateemail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243524AbhKRHF1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 02:05:27 -0500
+Received: from mta-13.privateemail.com (localhost [127.0.0.1])
+        by mta-13.privateemail.com (Postfix) with ESMTP id 5003F18000BA;
+        Thu, 18 Nov 2021 02:02:27 -0500 (EST)
+Received: from localhost.localdomain (unknown [10.20.151.247])
+        by mta-13.privateemail.com (Postfix) with ESMTPA id 59D27180009F;
+        Thu, 18 Nov 2021 02:02:25 -0500 (EST)
+From:   Jordy Zomer <jordy@pwning.systems>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jordy Zomer <jordy@pwning.systems>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        wengjianfeng <wengjianfeng@yulong.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH v2] nfc: st-nci: Fix potential buffer overflows in EVT_TRANSACTION
+Date:   Thu, 18 Nov 2021 08:02:00 +0100
+Message-Id: <20211118070202.2739158-1-jordy@pwning.systems>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20211117171554.2731340-1-jordy@pwning.systems>
+References: <20211117171554.2731340-1-jordy@pwning.systems>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhengjun Xing <zhengjun.xing@linux.intel.com>
+It appears that there are some buffer overflows in EVT_TRANSACTION.
+This happens because the length parameters that are passed to memcpy
+come directly from skb->data and are not guarded in any way.
 
-The user recently report a perf issue in the ICX platform, when test by
-perf event “uncore_imc_x/cas_count_write”,the write bandwidth is always
-very small (only 0.38MB/s), it is caused by the wrong "umask" for the
-"cas_count_write" event. When double-checking, find "cas_count_read"
-also is wrong.
+It would be nice if someone can review and test this patch because
+I don't own the hardware :)
 
-The public document for ICX uncore:
+EDIT: Changed comment style and double newlines
 
-https://www.intel.com/content/www/us/en/develop/download/3rd-gen-intel-xeon-processor-scalable-uncore-pm.html
-
-On page 142, Table 2-143, defines Unit Masks for CAS_COUNT:
-RD b00001111
-WR b00110000
-
-So Corrected both "cas_count_read" and "cas_count_write" for ICX.
-
-Old settings:
- hswep_uncore_imc_events
-	INTEL_UNCORE_EVENT_DESC(cas_count_read,  "event=0x04,umask=0x03")
- 	INTEL_UNCORE_EVENT_DESC(cas_count_write, "event=0x04,umask=0x0c")
-
-New settings:
- snr_uncore_imc_events
-	INTEL_UNCORE_EVENT_DESC(cas_count_read,  "event=0x04,umask=0x0f")
-	INTEL_UNCORE_EVENT_DESC(cas_count_write, "event=0x04,umask=0x30"),
-
-Fixes: 2b3b76b5ec67 ("perf/x86/intel/uncore: Add Ice Lake server uncore support")
-Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
-Signed-off-by: Zhengjun Xing <zhengjun.xing@linux.intel.com>
+Signed-off-by: Jordy Zomer <jordy@pwning.systems>
 ---
- arch/x86/events/intel/uncore_snbep.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nfc/st-nci/se.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index 5ddc0f30db6f..a6fd8eb410a9 100644
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -5468,7 +5468,7 @@ static struct intel_uncore_type icx_uncore_imc = {
- 	.fixed_ctr_bits	= 48,
- 	.fixed_ctr	= SNR_IMC_MMIO_PMON_FIXED_CTR,
- 	.fixed_ctl	= SNR_IMC_MMIO_PMON_FIXED_CTL,
--	.event_descs	= hswep_uncore_imc_events,
-+	.event_descs	= snr_uncore_imc_events,
- 	.perf_ctr	= SNR_IMC_MMIO_PMON_CTR0,
- 	.event_ctl	= SNR_IMC_MMIO_PMON_CTL0,
- 	.event_mask	= SNBEP_PMON_RAW_EVENT_MASK,
+diff --git a/drivers/nfc/st-nci/se.c b/drivers/nfc/st-nci/se.c
+index 7764b1a4c3cf..8e2ac8a3d199 100644
+--- a/drivers/nfc/st-nci/se.c
++++ b/drivers/nfc/st-nci/se.c
+@@ -335,6 +335,11 @@ static int st_nci_hci_connectivity_event_received(struct nci_dev *ndev,
+ 			return -ENOMEM;
+ 
+ 		transaction->aid_len = skb->data[1];
++
++		/* Checking if the length of the AID is valid */
++		if (transaction->aid_len > sizeof(transaction->aid))
++			return -EINVAL;
++
+ 		memcpy(transaction->aid, &skb->data[2], transaction->aid_len);
+ 
+ 		/* Check next byte is PARAMETERS tag (82) */
+@@ -343,6 +348,16 @@ static int st_nci_hci_connectivity_event_received(struct nci_dev *ndev,
+ 			return -EPROTO;
+ 
+ 		transaction->params_len = skb->data[transaction->aid_len + 3];
++
++		/*
++		 * check if the length of the parameters is valid
++		 * we can't use sizeof(transaction->params) because it's
++		 * a flexible array member so we have to check if params_len
++		 * is bigger than the space allocated for the array
++		 */
++		if (transaction->params_len > ((skb->len - 2) - sizeof(struct nfc_evt_transaction)))
++			return -EINVAL;
++
+ 		memcpy(transaction->params, skb->data +
+ 		       transaction->aid_len + 4, transaction->params_len);
+ 
 -- 
-2.25.1
+2.27.0
 
