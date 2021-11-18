@@ -2,133 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6384561D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E2D4561DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:55:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234284AbhKRRzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 12:55:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232969AbhKRRzn (ORCPT
+        id S234281AbhKRR6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 12:58:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44094 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234295AbhKRR6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 12:55:43 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9909BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:52:43 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id o6-20020a17090a0a0600b001a64b9a11aeso6394501pjo.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:52:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UNpYcjznSLDfrzZVMS7i8YLtd72JJeEh++gxWfKid5Y=;
-        b=l7/2SQXr83cdfNO2sisZ71yuAqRpqszIBUBbFPK84k34dcsW9nUu/z3gJwIU0qj8JZ
-         Eg+HgMbNZaraeCJnaC3AL595oWntSA5hkbUXFRs+j2sWze5FMsRxajZl/H34rK8DCwlk
-         ciRZHALou/mVz+5pPKfn31BKbBJJ7YnX4flf6M1nAInVEsCjQGXPm5zJjaRIhrcQUz8b
-         D+jFm2JWoqGzAL2xZHZAniqLcq8dtktiGTfpx0b8t1P1UdH32RTH8b8JZzrexHSA7tl0
-         1G2RFQI/bTmEMKeEFceGYU5wINFT5nzWw8ouqPV3lz+seKTq8nzDbI3q2zrUPPUXeGVv
-         Yx/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UNpYcjznSLDfrzZVMS7i8YLtd72JJeEh++gxWfKid5Y=;
-        b=0xGoEnEZCQ8b+014gTyw+mXDYd8DJT3WuNbHvdBMZ5L3hVqPAEzuoG5cNGgUED14cU
-         9t+2vqu3AqDK0jNSs42fi3SVqRJiLn+24Di9FeYpJbS+D6q1geecg4AVNpEx82VEjrXt
-         P/qM/OvXq628PcgtcDUyjFyaN3Ua1srpxIIqOZSPEkRfSpZswTk8C/6LD9jbdOWIdnrv
-         DwL+3giTYPI9zytQyIUHhXKhiYibGFqdlgFYMhmsYmoffLJk5wbaAl8k8m/t/Y5tzhdB
-         WiRfNqAYN/j1+7An7bMEnutiOeDzxI6t1v9bG2DbHMtwukBkwSOtlvV4uWq4dvGP6mra
-         MHtw==
-X-Gm-Message-State: AOAM530rFpQqgsIenMNukrAMV7NIDWkGsUUqZhtj7lDp7i0I62Mhni6I
-        I2Pod6rNja5LC0EdJ/8sS9M=
-X-Google-Smtp-Source: ABdhPJy9TTrI1+f79mR3GQvEsao8byDUoEhTeY2LKVa02l8TaH0/GcWRSUVkqbalE4Fms/zDplwG7A==
-X-Received: by 2002:a17:90b:124d:: with SMTP id gx13mr12611749pjb.106.1637257963196;
-        Thu, 18 Nov 2021 09:52:43 -0800 (PST)
-Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:db6:6273:9e40:bea5])
-        by smtp.gmail.com with ESMTPSA id s14sm263937pfk.73.2021.11.18.09.52.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 09:52:42 -0800 (PST)
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] x86/csum: fix compilation error for UM
-Date:   Thu, 18 Nov 2021 09:52:39 -0800
-Message-Id: <20211118175239.1525650-1-eric.dumazet@gmail.com>
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+        Thu, 18 Nov 2021 12:58:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637258108;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sHWnGcRuP/WgcdAzJ5VzC9lntIFnuIoT2MN9TEimzbc=;
+        b=LDpWgsq+AHyc+KApLFAH1ZxmTCWqZ28inPUaIuObb77yW4c48oMS6HTTGNHqE6VbrnRl6n
+        Oz4xVu16My8dMyvuKARYnPmvWkSKQq2bwqOMJVzi5N8Gc9xjWuZCCz0imBWiA7KvK0R3df
+        WjwAIzW6qFFKmZZJH5rFMJ0YDg4P3Hw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-556-N74ubZ-QN32tvq40H3ZBSg-1; Thu, 18 Nov 2021 12:55:05 -0500
+X-MC-Unique: N74ubZ-QN32tvq40H3ZBSg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 10A55CC628;
+        Thu, 18 Nov 2021 17:55:02 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1912E5D9DE;
+        Thu, 18 Nov 2021 17:54:57 +0000 (UTC)
+Message-ID: <f2a99afc-6ce6-459d-05d5-a2e396af96d4@redhat.com>
+Date:   Thu, 18 Nov 2021 18:54:56 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 13/15] KVM: SVM: Add and use svm_register_cache_reset()
+Content-Language: en-US
+To:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+References: <20211108124407.12187-1-jiangshanlai@gmail.com>
+ <20211108124407.12187-14-jiangshanlai@gmail.com>
+ <937c373e-80f4-38d9-b45a-a655dcb66569@redhat.com>
+ <55654594-9967-37d2-335b-5035f99212fe@linux.alibaba.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <55654594-9967-37d2-335b-5035f99212fe@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+On 11/18/21 17:28, Lai Jiangshan wrote:
+> Using VMX_REGS_DIRTY_SET and SVM_REGS_DIRTY_SET and making the code
+> similar is my intent for patch12,13.  If it causes confusing, I would
+> like to make a second thought.  SVM_REGS_DIRTY_SET does be special
+> in svm where VCPU_EXREG_CR3 is in it by definition, but it is not
+> added into SVM_REGS_DIRTY_SET in the patch just for optimization to allow
+> the compiler optimizes the line of code out.
 
-load_unaligned_zeropad() is not yet universal.
+I think this is where we disagree.  In my opinion it is enough to
+document that CR3 _can_ be out of date, but it doesn't have to be marked
+dirty because its dirty bit is effectively KVM_REQ_LOAD_MMU_PGD.
 
-ARCH=um SUBARCH=x86_64 builds do not have it.
+For VMX, it is important to clear VCPU_EXREG_CR3 because the combination
+"avail=0, dirty=1" is nonsensical:
 
-When CONFIG_DCACHE_WORD_ACCESS is not set, simply continue
-the bisection with 4, 2 and 1 byte steps.
+	av d
+	0  0    in VMCS
+	0  1    *INVALID*
+	1  0	in vcpu->arch
+	1  1	in vcpu->arch, needs store
 
-Fixes: df4554cebdaa ("x86/csum: Rewrite/optimize csum_partial()")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Alexander Duyck <alexanderduyck@fb.com>
-Cc: Johannes Berg <johannes.berg@intel.com>
-Reported-by: kernel test robot <lkp@intel.com>
----
- arch/x86/lib/csum-partial_64.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+But on SVM, VCPU_EXREG_CR3 is always available.
 
-diff --git a/arch/x86/lib/csum-partial_64.c b/arch/x86/lib/csum-partial_64.c
-index 5ec35626945b6db2f7f41c6d46d5e422810eac46..1eb8f2d11f7c785be624eba315fe9ca7989fd56d 100644
---- a/arch/x86/lib/csum-partial_64.c
-+++ b/arch/x86/lib/csum-partial_64.c
-@@ -92,6 +92,7 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
- 		buff += 8;
- 	}
- 	if (len & 7) {
-+#ifdef CONFIG_DCACHE_WORD_ACCESS
- 		unsigned int shift = (8 - (len & 7)) * 8;
- 		unsigned long trail;
- 
-@@ -101,6 +102,31 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
- 		    "adcq $0,%[res]"
- 			: [res] "+r" (temp64)
- 			: [trail] "r" (trail));
-+#else
-+		if (len & 4) {
-+			asm("addq %[val],%[res]\n\t"
-+			    "adcq $0,%[res]"
-+				: [res] "+r" (temp64)
-+				: [val] "r" ((u64)*(u32 *)buff)
-+				: "memory");
-+			buff += 4;
-+		}
-+		if (len & 2) {
-+			asm("addq %[val],%[res]\n\t"
-+			    "adcq $0,%[res]"
-+				: [res] "+r" (temp64)
-+				: [val] "r" ((u64)*(u16 *)buff)
-+				: "memory");
-+			buff += 2;
-+		}
-+		if (len & 1) {
-+			asm("addq %[val],%[res]\n\t"
-+			    "adcq $0,%[res]"
-+				: [res] "+r" (temp64)
-+				: [val] "r" ((u64)*(u8 *)buff)
-+				: "memory");
-+		}
-+#endif
- 	}
- 	result = add32_with_carry(temp64 >> 32, temp64 & 0xffffffff);
- 	if (unlikely(odd)) { 
--- 
-2.34.0.rc1.387.gb447b232ab-goog
+Thinking more about it, it makes more sense for VMX to reset _all_
+bits of dirty to 0, just like it was before your change, but doing
+so even earlier in vmx_vcpu_run.
+
+I appreciate that VMX_REGS_LAZY_UPDATE_SET is useful for documentation,
+but it's also important that the values in avail/dirty make sense as
+a pair.
+
+So here is what I would do:
+
+diff --git a/arch/x86/kvm/kvm_cache_regs.h b/arch/x86/kvm/kvm_cache_regs.h
+index 6e6d0d01f18d..ac3d3bd662f4 100644
+--- a/arch/x86/kvm/kvm_cache_regs.h
++++ b/arch/x86/kvm/kvm_cache_regs.h
+@@ -43,6 +43,13 @@ BUILD_KVM_GPR_ACCESSORS(r14, R14)
+  BUILD_KVM_GPR_ACCESSORS(r15, R15)
+  #endif
+  
++/*
++ * avail  dirty
++ * 0	  0	  register in VMCS/VMCB
++ * 0	  1	  *INVALID*
++ * 1	  0	  register in vcpu->arch
++ * 1	  1	  register in vcpu->arch, needs to be stored back
++ */
+  static inline bool kvm_register_is_available(struct kvm_vcpu *vcpu,
+  					     enum kvm_reg reg)
+  {
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 6fce61fc98e3..72ae67e214b5 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -6635,6 +6635,7 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
+  		vmcs_writel(GUEST_RSP, vcpu->arch.regs[VCPU_REGS_RSP]);
+  	if (kvm_register_is_dirty(vcpu, VCPU_REGS_RIP))
+  		vmcs_writel(GUEST_RIP, vcpu->arch.regs[VCPU_REGS_RIP]);
++	vcpu->arch.regs_dirty = 0;
+  
+  	cr3 = __get_current_cr3_fast();
+  	if (unlikely(cr3 != vmx->loaded_vmcs->host_state.cr3)) {
+@@ -6729,7 +6730,7 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
+  	loadsegment(es, __USER_DS);
+  #endif
+  
+-	vmx_register_cache_reset(vcpu);
++	vcpu->arch.regs_avail &= ~VMX_REGS_LAZY_LOAD_SET;
+  
+  	pt_guest_exit(vmx);
+  
+diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+index 4df2ac24ffc1..f978699480e3 100644
+--- a/arch/x86/kvm/vmx/vmx.h
++++ b/arch/x86/kvm/vmx/vmx.h
+@@ -473,19 +473,21 @@ BUILD_CONTROLS_SHADOW(pin, PIN_BASED_VM_EXEC_CONTROL)
+  BUILD_CONTROLS_SHADOW(exec, CPU_BASED_VM_EXEC_CONTROL)
+  BUILD_CONTROLS_SHADOW(secondary_exec, SECONDARY_VM_EXEC_CONTROL)
+  
+-static inline void vmx_register_cache_reset(struct kvm_vcpu *vcpu)
+-{
+-	vcpu->arch.regs_avail = ~((1 << VCPU_REGS_RIP) | (1 << VCPU_REGS_RSP)
+-				  | (1 << VCPU_EXREG_RFLAGS)
+-				  | (1 << VCPU_EXREG_PDPTR)
+-				  | (1 << VCPU_EXREG_SEGMENTS)
+-				  | (1 << VCPU_EXREG_CR0)
+-				  | (1 << VCPU_EXREG_CR3)
+-				  | (1 << VCPU_EXREG_CR4)
+-				  | (1 << VCPU_EXREG_EXIT_INFO_1)
+-				  | (1 << VCPU_EXREG_EXIT_INFO_2));
+-	vcpu->arch.regs_dirty = 0;
+-}
++/*
++ * VMX_REGS_LAZY_LOAD_SET - The set of registers that will be updated in the
++ * cache on demand.  Other registers not listed here are synced to
++ * the cache immediately after VM-Exit.
++ */
++#define VMX_REGS_LAZY_LOAD_SET	((1 << VCPU_REGS_RIP) |         \
++				(1 << VCPU_REGS_RSP) |          \
++				(1 << VCPU_EXREG_RFLAGS) |      \
++				(1 << VCPU_EXREG_PDPTR) |       \
++				(1 << VCPU_EXREG_SEGMENTS) |    \
++				(1 << VCPU_EXREG_CR0) |         \
++				(1 << VCPU_EXREG_CR3) |         \
++				(1 << VCPU_EXREG_CR4) |         \
++				(1 << VCPU_EXREG_EXIT_INFO_1) | \
++				(1 << VCPU_EXREG_EXIT_INFO_2))
+  
+  static inline struct kvm_vmx *to_kvm_vmx(struct kvm *kvm)
+  {
+
+and likewise for SVM:
+
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index eb2a2609cae8..4b22aa7d55d0 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -3944,6 +3944,7 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+  		vcpu->arch.regs[VCPU_REGS_RSP] = svm->vmcb->save.rsp;
+  		vcpu->arch.regs[VCPU_REGS_RIP] = svm->vmcb->save.rip;
+  	}
++	vcpu->arch.regs_dirty = 0;
+  
+  	if (unlikely(svm->vmcb->control.exit_code == SVM_EXIT_NMI))
+  		kvm_before_interrupt(vcpu);
+@@ -3978,7 +3978,7 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+  		vcpu->arch.apf.host_apf_flags =
+  			kvm_read_and_reset_apf_flags();
+  
+-	kvm_register_clear_available(vcpu, VCPU_EXREG_PDPTR);
++	vcpu->arch.regs_avail &= ~SVM_REGS_LAZY_LOAD_SET;
+  
+  	/*
+  	 * We need to handle MC intercepts here before the vcpu has a chance to
+diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+index 32769d227860..b3c3c3098216 100644
+--- a/arch/x86/kvm/svm/svm.h
++++ b/arch/x86/kvm/svm/svm.h
+@@ -321,6 +321,16 @@ static inline bool vmcb_is_dirty(struct vmcb *vmcb, int bit)
+          return !test_bit(bit, (unsigned long *)&vmcb->control.clean);
+  }
+  
++/*
++ * Only the PDPTRs are loaded on demand into the shadow MMU.  All other
++ * fields are synchronized in handle_exit, because accessing the VMCB is cheap.
++ *
++ * CR3 might be out of date in the VMCB but it is not marked dirty; instead,
++ * KVM_REQ_LOAD_MMU_PGD is always requested when the cached vcpu->arch.cr3
++ * is changed.  svm_load_mmu_pgd() then syncs the new CR3 value into the VMCB.
++ */
++#define SVM_REGS_LAZY_LOAD_SET	(1 << VCPU_EXREG_PDPTR)
++
+  static inline struct vcpu_svm *to_svm(struct kvm_vcpu *vcpu)
+  {
+  	return container_of(vcpu, struct vcpu_svm, vcpu);
+
 
