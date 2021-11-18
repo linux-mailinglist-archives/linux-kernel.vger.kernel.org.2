@@ -2,248 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCAD44560DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:43:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E35F4560EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:47:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233683AbhKRQqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 11:46:55 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:52366 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233673AbhKRQqy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 11:46:54 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 48695218B0;
-        Thu, 18 Nov 2021 16:43:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637253833; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uAvLRnRmvQQtZ3go6D5e5zJVFcCKD7HB2NABcevNTLo=;
-        b=auG2BY1i8mGJfduvur7HqOxc61KzrLa9dtfPM63InvHlhhWnX7qO1cJ/5G4gyVxJ/KX28J
-        siifTEBgD0na7RHYRPqWThRSHo5NqR0yMwYBTwM3Dvmolh6085y/YNw/fVNOoHrA8xXkN6
-        p6xziFdFJN03Zs9Q0upvHOG9YF6/3Ns=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637253833;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uAvLRnRmvQQtZ3go6D5e5zJVFcCKD7HB2NABcevNTLo=;
-        b=KkQ8xd7MJnXjLrdy2bTbFJ/yroSDOuVEC8e1dTrcN6OJYHDvRi6xj0dlaxsWpwN15UhxEE
-        +Lu02cyNjLvI9RAQ==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 0EDF2A3B97;
-        Thu, 18 Nov 2021 16:43:53 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id DC2801F2C95; Thu, 18 Nov 2021 17:43:49 +0100 (CET)
-Date:   Thu, 18 Nov 2021 17:43:49 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Chengguang Xu <cgxu519@mykernel.net>
-Cc:     Jan Kara <jack@suse.cz>, Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v5 06/10] ovl: implement overlayfs' ->write_inode
- operation
-Message-ID: <20211118164349.GB8267@quack2.suse.cz>
-References: <17c5aba1fef.c5c03d5825886.6577730832510234905@mykernel.net>
- <CAJfpegtr1NkOiY9YWd1meU1yiD-LFX-aB55UVJs94FrX0VNEJQ@mail.gmail.com>
- <17c5adfe5ea.12f1be94625921.4478415437452327206@mykernel.net>
- <CAJfpegt4jZpSCXGFk2ieqUXVm3m=ng7QtSzZp2bXVs07bfrbXg@mail.gmail.com>
- <17d268ba3ce.1199800543649.1713755891767595962@mykernel.net>
- <CAJfpegttQreuuD_jLgJmrYpsLKBBe2LmB5NSj6F5dHoTzqPArw@mail.gmail.com>
- <17d2c858d76.d8a27d876510.8802992623030721788@mykernel.net>
- <17d31bf3d62.1119ad4be10313.6832593367889908304@mykernel.net>
- <20211118112315.GD13047@quack2.suse.cz>
- <17d32ecf46e.124314f8f672.8832559275193368959@mykernel.net>
+        id S233718AbhKRQuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 11:50:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233699AbhKRQut (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 11:50:49 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E132261266;
+        Thu, 18 Nov 2021 16:47:47 +0000 (UTC)
+Date:   Thu, 18 Nov 2021 11:47:46 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Gavin Shan <gshan@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Subject: Re: [BUG] WARNING: CPU: 3 PID: 1 at mm/debug_vm_pgtable.c:493
+Message-ID: <20211118114746.3329bd33@gandalf.local.home>
+In-Reply-To: <CAHk-=wird-sCbSG3KxNavdD-mFWO1YkT2Qjoeb0Z1Ag4QDNwuA@mail.gmail.com>
+References: <20211012141131.3c9a2eb1@gandalf.local.home>
+        <CAHk-=wj2SbVnsO7yxgaD20HBaH=0rNM60nD92+BDSwQxofd9SQ@mail.gmail.com>
+        <20211012145540.343541e9@gandalf.local.home>
+        <CAHk-=wg6fw130AkO72GPFow9PHvP9odnC5LZ0UaY9bJQuF-C5A@mail.gmail.com>
+        <20211022083845.08fe5754@gandalf.local.home>
+        <CAHk-=wird-sCbSG3KxNavdD-mFWO1YkT2Qjoeb0Z1Ag4QDNwuA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <17d32ecf46e.124314f8f672.8832559275193368959@mykernel.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 18-11-21 20:02:09, Chengguang Xu wrote:
->  ---- 在 星期四, 2021-11-18 19:23:15 Jan Kara <jack@suse.cz> 撰写 ----
->  > On Thu 18-11-21 14:32:36, Chengguang Xu wrote:
->  > > 
->  > >  ---- 在 星期三, 2021-11-17 14:11:29 Chengguang Xu <cgxu519@mykernel.net> 撰写 ----
->  > >  >  ---- 在 星期二, 2021-11-16 20:35:55 Miklos Szeredi <miklos@szeredi.hu> 撰写 ----
->  > >  >  > On Tue, 16 Nov 2021 at 03:20, Chengguang Xu <cgxu519@mykernel.net> wrote:
->  > >  >  > >
->  > >  >  > >  ---- 在 星期四, 2021-10-07 21:34:19 Miklos Szeredi <miklos@szeredi.hu> 撰写 ----
->  > >  >  > >  > On Thu, 7 Oct 2021 at 15:10, Chengguang Xu <cgxu519@mykernel.net> wrote:
->  > >  >  > >  > >  > However that wasn't what I was asking about.  AFAICS ->write_inode()
->  > >  >  > >  > >  > won't start write back for dirty pages.   Maybe I'm missing something,
->  > >  >  > >  > >  > but there it looks as if nothing will actually trigger writeback for
->  > >  >  > >  > >  > dirty pages in upper inode.
->  > >  >  > >  > >  >
->  > >  >  > >  > >
->  > >  >  > >  > > Actually, page writeback on upper inode will be triggered by overlayfs ->writepages and
->  > >  >  > >  > > overlayfs' ->writepages will be called by vfs writeback function (i.e writeback_sb_inodes).
->  > >  >  > >  >
->  > >  >  > >  > Right.
->  > >  >  > >  >
->  > >  >  > >  > But wouldn't it be simpler to do this from ->write_inode()?
->  > >  >  > >  >
->  > >  >  > >  > I.e. call write_inode_now() as suggested by Jan.
->  > >  >  > >  >
->  > >  >  > >  > Also could just call mark_inode_dirty() on the overlay inode
->  > >  >  > >  > regardless of the dirty flags on the upper inode since it shouldn't
->  > >  >  > >  > matter and results in simpler logic.
->  > >  >  > >  >
->  > >  >  > >
->  > >  >  > > Hi Miklos，
->  > >  >  > >
->  > >  >  > > Sorry for delayed response for this, I've been busy with another project.
->  > >  >  > >
->  > >  >  > > I agree with your suggesion above and further more how about just mark overlay inode dirty
->  > >  >  > > when it has upper inode? This approach will make marking dirtiness simple enough.
->  > >  >  > 
->  > >  >  > Are you suggesting that all non-lower overlay inodes should always be dirty?
->  > >  >  > 
->  > >  >  > The logic would be simple, no doubt, but there's the cost to walking
->  > >  >  > those overlay inodes which don't have a dirty upper inode, right?  
->  > >  > 
->  > >  > That's true.
->  > >  > 
->  > >  >  > Can you quantify this cost with a benchmark?  Can be totally synthetic,
->  > >  >  > e.g. lookup a million upper files without modifying them, then call
->  > >  >  > syncfs.
->  > >  >  > 
->  > >  > 
->  > >  > No problem, I'll do some tests for the performance.
->  > >  > 
->  > > 
->  > > Hi Miklos,
->  > > 
->  > > I did some rough tests and the results like below.  In practice,  I don't
->  > > think that 1.3s extra time of syncfs will cause significant problem.
->  > > What do you think?
->  > 
->  > Well, burning 1.3s worth of CPU time for doing nothing seems like quite a
->  > bit to me. I understand this is with 1000000 inodes but although that is
->  > quite a few it is not unheard of. If there would be several containers
->  > calling sync_fs(2) on the machine they could easily hog the machine... That
->  > is why I was originally against keeping overlay inodes always dirty and
->  > wanted their dirtiness to at least roughly track the real need to do
->  > writeback.
->  > 
+On Fri, 22 Oct 2021 09:34:15 -1000
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
+
+> On Fri, Oct 22, 2021 at 2:38 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > It finally triggered again. And this time with this patch applied. But I
+> > don't see the added printks anywhere in the dmesg.  
 > 
-> Hi Jan,
+> That's strange. Those printk's were added in the only places that do a
+> "return 0".
 > 
-> Actually, the time on user and sys are almost same with directly excute syncfs on underlying fs.
-> IMO, it only extends syncfs(2) waiting time for perticular container but not burning cpu.
-> What am I missing?
+> Ok, there's also the dummy pud_set_huge() inline function that
+> unconditionally returns zero, but that's only if you don't have
+> CONFIG_HAVE_ARCH_HUGE_VMAP enabled. And then the testing code is
+> disabled too.
+> 
+> > [  178.714431] debug_vm_pgtable: [debug_vm_pgtable         ]: Validating architecture page table helpers
+> > [  178.723726] ------------[ cut here ]------------
+> > [  178.728389] WARNING: CPU: 2 PID: 1 at mm/debug_vm_pgtable.c:492 pud_huge_tests+0x42/0x68  
+> 
+> That's literally that
+> 
+>     WARN_ON(!pud_set_huge(..));
+> 
+> and pud_set_huge() has two 'return 0' (and one 'return 1') and that
+> patch added debug-printing to both of them.
+> 
+> Oh, it shouldn't have been a pr_debug() that gets suppressed. It
+> should have been a pr_warn() or something.
 
-Ah, right, I've missed that only realtime changed, not systime. I'm sorry
-for confusion. But why did the realtime increase so much? Are we waiting
-for some IO?
+Triggered it again with the new update:
 
-								Honza
+[   24.751779] IPI shorthand broadcast: enabled
+[   24.761177] sched_clock: Marking stable (23431856262, 1329270511)->(28163092341, -3401965568)
+[   24.770495] device: 'cpu_dma_latency': device_add
+[   24.775232] PM: Adding info for No Bus:cpu_dma_latency
+[   24.780929] debug_vm_pgtable: [debug_vm_pgtable         ]: Validating architecture page table helpers
+[   24.799490] mtrr_type_lookup() returned 0 (0)
+[   24.803892] ------------[ cut here ]------------
+[   24.808517] WARNING: CPU: 0 PID: 1 at mm/debug_vm_pgtable.c:492 debug_vm_pgtable+0x1315/0x1696
+[   24.817131] Modules linked in:
+[   24.820193] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.16.0-rc1-test+ #17
+[   24.827069] Hardware name: MSI MS-7823/CSM-H87M-G43 (MS-7823), BIOS V1.6 02/22/2014
+[   24.834724] RIP: 0010:debug_vm_pgtable+0x1315/0x1696
+[   24.839692] Code: 38 ff ff ff 48 c7 00 00 00 00 00 48 8b 75 b8 48 8b 95 78 ff ff ff 48 8b bd 38 ff ff ff 48 c1 e6 0c e8 d3 f4 61 fe 85 c0 75 02 <0f> 0b 48 8b bd 38 ff ff ff e8 61 f7 61 fe 85 c0 75 02 0f 0b 48 8b
+[   24.858438] RSP: 0000:ffffb59e80033da8 EFLAGS: 00010246
+[   24.863677] RAX: 0000000000000000 RBX: bffffffffffffff7 RCX: 00000000ffffefff
+[   24.870815] RDX: 0000000000000000 RSI: 00000000ffffffea RDI: 0000000000000001
+[   24.877947] RBP: ffffb59e80033e98 R08: ffffffff9b6d3b68 R09: 0000000000004ffb
+[   24.885078] R10: 00000000fffff000 R11: 3fffffffffffffff R12: ffff9abe83684078
+[   24.892211] R13: 000038b500000000 R14: 000fffffffe00000 R15: 0000000000000027
+[   24.899346] FS:  0000000000000000(0000) GS:ffff9abf9dc00000(0000) knlGS:0000000000000000
+[   24.907430] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   24.913175] CR2: ffff9abf97a01000 CR3: 0000000216612001 CR4: 00000000001706f0
+[   24.920309] Call Trace:
+[   24.922763]  <TASK>
+[   24.924880]  ? destroy_args+0x281/0x281
+[   24.928727]  do_one_initcall+0x68/0x310
+[   24.932574]  ? rcu_read_lock_sched_held+0x46/0x80
+[   24.937290]  kernel_init_freeable+0x1a5/0x1f4
+[   24.941654]  ? rest_init+0x270/0x270
+[   24.945236]  kernel_init+0x1a/0x120
+[   24.948736]  ret_from_fork+0x22/0x30
+[   24.952323]  </TASK>
+[   24.954517] irq event stamp: 902445
+[   24.958008] hardirqs last  enabled at (902455): [<ffffffff9a10c33f>] __up_console_sem+0x6f/0x80
+[   24.966700] hardirqs last disabled at (902464): [<ffffffff9a10c324>] __up_console_sem+0x54/0x80
+[   24.975395] softirqs last  enabled at (902372): [<ffffffff9ae00276>] __do_softirq+0x276/0x43d
+[   24.983912] softirqs last disabled at (902367): [<ffffffff9a098dd2>] irq_exit_rcu+0xa2/0xd0
+[   24.992262] ---[ end trace 385def99126fe75e ]---
+[   24.996891] ------------[ cut here ]------------
 
->  > > Test bed: kvm vm 
->  > > 2.50GHz cpu 32core
->  > > 64GB mem
->  > > vm kernel  5.15.0-rc1+ (with ovl syncfs patch V6)
->  > > 
->  > > one millon files spread to 2 level of dir hierarchy.
->  > > test step:
->  > > 1) create testfiles in ovl upper dir
->  > > 2) mount overlayfs
->  > > 3) excute ls -lR to lookup all file in overlay merge dir
->  > > 4) excute slabtop to make sure overlay inode number
->  > > 5) call syncfs to the file in merge dir
->  > > 
->  > > Tested five times and the reusults are in 1.310s ~ 1.326s
->  > > 
->  > > root@VM-144-4-centos test]# time ./syncfs ovl-merge/create-file.sh 
->  > > syncfs success
->  > > 
->  > > real    0m1.310s
->  > > user    0m0.000s
->  > > sys     0m0.001s
->  > > [root@VM-144-4-centos test]# time ./syncfs ovl-merge/create-file.sh 
->  > > syncfs success
->  > > 
->  > > real    0m1.326s
->  > > user    0m0.001s
->  > > sys     0m0.000s
->  > > [root@VM-144-4-centos test]# time ./syncfs ovl-merge/create-file.sh 
->  > > syncfs success
->  > > 
->  > > real    0m1.321s
->  > > user    0m0.000s
->  > > sys     0m0.001s
->  > > [root@VM-144-4-centos test]# time ./syncfs ovl-merge/create-file.sh 
->  > > syncfs success
->  > > 
->  > > real    0m1.316s
->  > > user    0m0.000s
->  > > sys     0m0.001s
->  > > [root@VM-144-4-centos test]# time ./syncfs ovl-merge/create-file.sh 
->  > > syncfs success
->  > > 
->  > > real    0m1.314s
->  > > user    0m0.001s
->  > > sys     0m0.001s
->  > > 
->  > > 
->  > > Directly run syncfs to the file in ovl-upper dir.
->  > > Tested five times and the reusults are in 0.001s ~ 0.003s
->  > > 
->  > > [root@VM-144-4-centos test]# time ./syncfs a
->  > > syncfs success
->  > > 
->  > > real    0m0.002s
->  > > user    0m0.001s
->  > > sys     0m0.000s
->  > > [root@VM-144-4-centos test]# time ./syncfs ovl-upper/create-file.sh 
->  > > syncfs success
->  > > 
->  > > real    0m0.003s
->  > > user    0m0.001s
->  > > sys     0m0.000s
->  > > [root@VM-144-4-centos test]# time ./syncfs ovl-upper/create-file.sh 
->  > > syncfs success
->  > > 
->  > > real    0m0.001s
->  > > user    0m0.000s
->  > > sys     0m0.001s
->  > > [root@VM-144-4-centos test]# time ./syncfs ovl-upper/create-file.sh 
->  > > syncfs success
->  > > 
->  > > real    0m0.001s
->  > > user    0m0.000s
->  > > sys     0m0.001s
->  > > [root@VM-144-4-centos test]# time ./syncfs ovl-upper/create-file.sh 
->  > > syncfs success
->  > > 
->  > > real    0m0.001s
->  > > user    0m0.000s
->  > > sys     0m0.001s
->  > > [root@VM-144-4-centos test]# time ./syncfs ovl-upper/create-file.sh 
->  > > syncfs success
->  > > 
->  > > real    0m0.001s
->  > > user    0m0.000s
->  > > sys     0m0.001
->  > > 
->  > > 
->  > > 
->  > > 
->  > > 
->  > > 
->  > -- 
->  > Jan Kara <jack@suse.com>
->  > SUSE Labs, CR
->  > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Full dmesg is here:  https://rostedt.org/private/dmesg-20211118.txt
+config is here: https://rostedt.org/private/config-20211118
+
+-- Steve
+
