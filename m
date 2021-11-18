@@ -2,247 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2455B4557ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:21:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DAF64557F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245120AbhKRJYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 04:24:21 -0500
-Received: from mailgw01.mediatek.com ([60.244.123.138]:59482 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S245092AbhKRJXm (ORCPT
+        id S245121AbhKRJZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 04:25:44 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:50924 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241323AbhKRJZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 04:23:42 -0500
-X-UUID: 93647bccf59144dabaaf01070fae0942-20211118
-X-UUID: 93647bccf59144dabaaf01070fae0942-20211118
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <kuan-ying.lee@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1194778436; Thu, 18 Nov 2021 17:20:39 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Thu, 18 Nov 2021 17:20:38 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 18 Nov 2021 17:20:38 +0800
-Message-ID: <754511d9a0368065768cc3ad8037184d62c3fbd1.camel@mediatek.com>
-Subject: Re: [PATCH] kmemleak: fix kmemleak false positive report with HW
- tag-based kasan enable
-From:   Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <kuan-ying.lee@mediatek.com>,
-        Chinwen Chang =?UTF-8?Q?=28=E5=BC=B5=E9=8C=A6=E6=96=87=29?= 
-        <chinwen.chang@mediatek.com>,
-        Nicholas Tang =?UTF-8?Q?=28=E9=84=AD=E7=A7=A6=E8=BC=9D=29?= 
-        <nicholas.tang@mediatek.com>,
-        James Hsu =?UTF-8?Q?=28=E5=BE=90=E6=85=B6=E8=96=B0=29?= 
-        <James.Hsu@mediatek.com>,
-        "Yee Lee =?UTF-8?Q?=28=E6=9D=8E=E5=BB=BA=E8=AA=BC=29?=" 
-        <Yee.Lee@mediatek.com>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>, <kasan-dev@googlegroups.com>
-Date:   Thu, 18 Nov 2021 17:20:38 +0800
-In-Reply-To: <20211118054426.4123-1-Kuan-Ying.Lee@mediatek.com>
-References: <20211118054426.4123-1-Kuan-Ying.Lee@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Thu, 18 Nov 2021 04:25:37 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 48E1321763;
+        Thu, 18 Nov 2021 09:22:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637227357; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=q6iiWQeeIKLNGLnUwc8/VbB9r+gV+5b2XZV6BZvYfco=;
+        b=kecWV1Ad/JRMeprX80gouQRTuyWFJjecbRj2QGb7406UCMNuemOzEqK4qPtiN3vr0Bkeo+
+        VigrxkcImtS51/CliB4OoDpfyIzMgUCq3imyADdiv/4c/uNGOIoThG1QZA1FRHaUUI9+Fk
+        zBf/JE719T4ZUrTU9Udc9PTGFThXgX0=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 15D1AA3B81;
+        Thu, 18 Nov 2021 09:22:37 +0000 (UTC)
+Date:   Thu, 18 Nov 2021 10:22:36 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Mel Gorman <mgorman@suse.de>
+Subject: Re: [PATCH] MM: discard __GFP_ATOMIC
+Message-ID: <YZYbXC/ycmif8WIE@dhcp22.suse.cz>
+References: <163712397076.13692.4727608274002939094@noble.neil.brown.name>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163712397076.13692.4727608274002939094@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc kasan group
+[Cc Mel]
 
-On Thu, 2021-11-18 at 13:44 +0800, Kuan-Ying Lee wrote:
-> With HW tag-based kasan enable, We will get the warning
-> when we free object whose address starts with 0xFF.
+On Wed 17-11-21 15:39:30, Neil Brown wrote:
 > 
-> It is because kmemleak rbtree stores tagged object and
-> this freeing object's tag does not match with rbtree object.
+> __GFP_ATOMIC serves little purpose.
+> It's main effect is to set ALLOC_HARDER which adds a few little boosts to
+> increase the chance of an allocation succeeding, one of which is to
+> lower the water-mark at which it will succeed.
 > 
-> In the example below, kmemleak rbtree stores the tagged object in
-> the kmalloc(), and kfree() gets the pointer with 0xFF tag.
+> It is *always* paired with __GFP_HIGH which sets ALLOC_HIGH which also
+> adjusts this watermark.  It is probable that other users of __GFP_HIGH
+> should benefit from the other little bonuses that __GFP_ATOMIC gets.
 > 
-> Call sequence:
-> ptr = kmalloc(size, GFP_KERNEL);
-> page = virt_to_page(ptr);
-> kfree(page_address(page));
-> ptr = kmalloc(size, GFP_KERNEL);
+> __GFP_ATOMIC also gives a warning if used with __GFP_DIRECT_RECLAIM.
+> There is little point to this.  We already get a might_sleep() warning
+> if __GFP_DIRECT_RECLAIM is set.
 > 
-> Call sequence like that may cause the warning as following:
-> 1) Freeing unknown object:
-> In kfree(), we will get free unknown object warning in
-> kmemleak_free().
-> Because object(0xFx) in kmemleak rbtree and pointer(0xFF) in kfree()
-> have
-> different tag.
+> __GFP_ATOMIC allows the "watermark_boost" to be side-stepped.  It is
+> probable that testing ALLOC_HARDER is a better fit here.
 > 
-> 2) Overlap existing:
-> When we allocate that object with the same hw-tag again, we will
-> find the overlap in the kmemleak rbtree and kmemleak thread will
-> be killed.
+> __GFP_ATOMIC is used by tegra-smmu.c to check if the allocation might
+> sleep.  This should test __GFP_DIRECT_RECLAIM instead.
 > 
-> [  116.685312] kmemleak: Freeing unknown object at 0xffff000003f88000
-> [  116.686422] CPU: 5 PID: 177 Comm: cat Not tainted 5.16.0-rc1-dirty 
-> #21
-> [  116.687067] Hardware name: linux,dummy-virt (DT)
-> [  116.687496] Call trace:
-> [  116.687792]  dump_backtrace+0x0/0x1ac
-> [  116.688255]  show_stack+0x1c/0x30
-> [  116.688663]  dump_stack_lvl+0x68/0x84
-> [  116.689096]  dump_stack+0x1c/0x38
-> [  116.689499]  kmemleak_free+0x6c/0x70
-> [  116.689919]  slab_free_freelist_hook+0x104/0x200
-> [  116.690420]  kmem_cache_free+0xa8/0x3d4
-> [  116.690845]  test_version_show+0x270/0x3a0
-> [  116.691344]  module_attr_show+0x28/0x40
-> [  116.691789]  sysfs_kf_seq_show+0xb0/0x130
-> [  116.692245]  kernfs_seq_show+0x30/0x40
-> [  116.692678]  seq_read_iter+0x1bc/0x4b0
-> [  116.692678]  seq_read_iter+0x1bc/0x4b0
-> [  116.693114]  kernfs_fop_read_iter+0x144/0x1c0
-> [  116.693586]  generic_file_splice_read+0xd0/0x184
-> [  116.694078]  do_splice_to+0x90/0xe0
-> [  116.694498]  splice_direct_to_actor+0xb8/0x250
-> [  116.694975]  do_splice_direct+0x88/0xd4
-> [  116.695409]  do_sendfile+0x2b0/0x344
-> [  116.695829]  __arm64_sys_sendfile64+0x164/0x16c
-> [  116.696306]  invoke_syscall+0x48/0x114
-> [  116.696735]  el0_svc_common.constprop.0+0x44/0xec
-> [  116.697263]  do_el0_svc+0x74/0x90
-> [  116.697665]  el0_svc+0x20/0x80
-> [  116.698261]  el0t_64_sync_handler+0x1a8/0x1b0
-> [  116.698695]  el0t_64_sync+0x1ac/0x1b0
-> ...
-> [  117.520301] kmemleak: Cannot insert 0xf2ff000003f88000 into the
-> object search tree (overlaps existing)
-> [  117.521118] CPU: 5 PID: 178 Comm: cat Not tainted 5.16.0-rc1-dirty 
-> #21
-> [  117.521827] Hardware name: linux,dummy-virt (DT)
-> [  117.522287] Call trace:
-> [  117.522586]  dump_backtrace+0x0/0x1ac
-> [  117.523053]  show_stack+0x1c/0x30
-> [  117.523578]  dump_stack_lvl+0x68/0x84
-> [  117.524039]  dump_stack+0x1c/0x38
-> [  117.524472]  create_object.isra.0+0x2d8/0x2fc
-> [  117.524975]  kmemleak_alloc+0x34/0x40
-> [  117.525416]  kmem_cache_alloc+0x23c/0x2f0
-> [  117.525914]  test_version_show+0x1fc/0x3a0
-> [  117.526379]  module_attr_show+0x28/0x40
-> [  117.526827]  sysfs_kf_seq_show+0xb0/0x130
-> [  117.527363]  kernfs_seq_show+0x30/0x40
-> [  117.527848]  seq_read_iter+0x1bc/0x4b0
-> [  117.528320]  kernfs_fop_read_iter+0x144/0x1c0
-> [  117.528809]  generic_file_splice_read+0xd0/0x184
-> [  117.529316]  do_splice_to+0x90/0xe0
-> [  117.529734]  splice_direct_to_actor+0xb8/0x250
-> [  117.530227]  do_splice_direct+0x88/0xd4
-> [  117.530686]  do_sendfile+0x2b0/0x344
-> [  117.531154]  __arm64_sys_sendfile64+0x164/0x16c
-> [  117.531673]  invoke_syscall+0x48/0x114
-> [  117.532111]  el0_svc_common.constprop.0+0x44/0xec
-> [  117.532621]  do_el0_svc+0x74/0x90
-> [  117.533048]  el0_svc+0x20/0x80
-> [  117.533461]  el0t_64_sync_handler+0x1a8/0x1b0
-> [  117.533950]  el0t_64_sync+0x1ac/0x1b0
-> [  117.534625] kmemleak: Kernel memory leak detector disabled
-> [  117.535201] kmemleak: Object 0xf2ff000003f88000 (size 128):
-> [  117.535761] kmemleak:   comm "cat", pid 177, jiffies 4294921177
-> [  117.536339] kmemleak:   min_count = 1
-> [  117.536718] kmemleak:   count = 0
-> [  117.537068] kmemleak:   flags = 0x1
-> [  117.537429] kmemleak:   checksum = 0
-> [  117.537806] kmemleak:   backtrace:
-> [  117.538211]      kmem_cache_alloc+0x23c/0x2f0
-> [  117.538924]      test_version_show+0x1fc/0x3a0
-> [  117.539393]      module_attr_show+0x28/0x40
-> [  117.539844]      sysfs_kf_seq_show+0xb0/0x130
-> [  117.540304]      kernfs_seq_show+0x30/0x40
-> [  117.540750]      seq_read_iter+0x1bc/0x4b0
-> [  117.541206]      kernfs_fop_read_iter+0x144/0x1c0
-> [  117.541687]      generic_file_splice_read+0xd0/0x184
-> [  117.542182]      do_splice_to+0x90/0xe0
-> [  117.542611]      splice_direct_to_actor+0xb8/0x250
-> [  117.543097]      do_splice_direct+0x88/0xd4
-> [  117.543544]      do_sendfile+0x2b0/0x344
-> [  117.543983]      __arm64_sys_sendfile64+0x164/0x16c
-> [  117.544471]      invoke_syscall+0x48/0x114
-> [  117.544917]      el0_svc_common.constprop.0+0x44/0xec
-> [  117.545416]      do_el0_svc+0x74/0x90
-> [  117.554100] kmemleak: Automatic memory scanning thread ended
+> This patch:
+>  - removes __GFP_ATOMIC
+>  - causes __GFP_HIGH to set ALLOC_HARDER unless __GFP_NOMEMALLOC is set
+>    (as well as ALLOC_HIGH).
+>  - makes other adjustments as suggested by the above.
 > 
-> Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+> The net result is not change to GFP_ATOMIC allocations.  Other
+> allocations that use __GFP_HIGH will benefit from a few different extra
+> privileges.  This affects:
+>   xen, dm, md, ntfs3
+>   the vermillion frame buffer
+>   hibernation
+>   ksm
+>   swap
+> all of which likely produce more benefit than cost if these selected
+> allocation are more likely to succeed quickly.
+> 
+> Signed-off-by: NeilBrown <neilb@suse.de>
 > ---
->  mm/kmemleak.c | 17 ++++++++++++-----
->  1 file changed, 12 insertions(+), 5 deletions(-)
 > 
-> diff --git a/mm/kmemleak.c b/mm/kmemleak.c
-> index b57383c17cf6..fa12e2e08cdc 100644
-> --- a/mm/kmemleak.c
-> +++ b/mm/kmemleak.c
-> @@ -381,15 +381,20 @@ static void dump_object_info(struct
-> kmemleak_object *object)
->  static struct kmemleak_object *lookup_object(unsigned long ptr, int
-> alias)
->  {
->  	struct rb_node *rb = object_tree_root.rb_node;
-> +	unsigned long untagged_ptr = (unsigned
-> long)kasan_reset_tag((void *)ptr);
+> This patch came out of my attempts to review and document some of the
+> __GFP flags.  I couldn't find that __GFP_ATOMIC meant anything really
+> useful, so I thought that discarding it would be best.
+> 
+> Obviously GFP_ATOMIC is useful - just not __GFP_ATOMIC (and the fact
+> that both names exist could be seen as a warning sign).
+> 
+> Thanks,
+> NeilBrown
+> 
+> 
+>  Documentation/vm/balance.rst         |  2 +-
+>  drivers/iommu/tegra-smmu.c           |  4 ++--
+>  include/linux/gfp.h                  | 12 ++++--------
+>  include/trace/events/mmflags.h       |  1 -
+>  lib/test_printf.c                    |  8 ++++----
+>  mm/internal.h                        |  3 +--
+>  mm/memcontrol.c                      |  2 +-
+>  mm/page_alloc.c                      | 16 ++++------------
+>  tools/perf/builtin-kmem.c            |  1 -
+>  tools/testing/radix-tree/linux/gfp.h |  3 +--
+>  10 files changed, 18 insertions(+), 34 deletions(-)
+> 
+> diff --git a/Documentation/vm/balance.rst b/Documentation/vm/balance.rst
+> index 6a1fadf3e173..e38e9d83c1c7 100644
+> --- a/Documentation/vm/balance.rst
+> +++ b/Documentation/vm/balance.rst
+> @@ -6,7 +6,7 @@ Memory Balancing
 >  
->  	while (rb) {
->  		struct kmemleak_object *object =
->  			rb_entry(rb, struct kmemleak_object, rb_node);
-> -		if (ptr < object->pointer)
-> +		unsigned long untagged_objp;
-> +
-> +		untagged_objp = (unsigned long)kasan_reset_tag((void
-> *)object->pointer);
-> +
-> +		if (untagged_ptr < untagged_objp)
->  			rb = object->rb_node.rb_left;
-> -		else if (object->pointer + object->size <= ptr)
-> +		else if (untagged_objp + object->size <= untagged_ptr)
->  			rb = object->rb_node.rb_right;
-> -		else if (object->pointer == ptr || alias)
-> +		else if (untagged_objp == untagged_ptr || alias)
->  			return object;
->  		else {
->  			kmemleak_warn("Found object by alias at
-> 0x%08lx\n",
-> @@ -576,6 +581,7 @@ static struct kmemleak_object
-> *create_object(unsigned long ptr, size_t size,
->  	struct kmemleak_object *object, *parent;
->  	struct rb_node **link, *rb_parent;
->  	unsigned long untagged_ptr;
-> +	unsigned long untagged_objp;
+>  Started Jan 2000 by Kanoj Sarcar <kanoj@sgi.com>
 >  
->  	object = mem_pool_alloc(gfp);
->  	if (!object) {
-> @@ -629,9 +635,10 @@ static struct kmemleak_object
-> *create_object(unsigned long ptr, size_t size,
->  	while (*link) {
->  		rb_parent = *link;
->  		parent = rb_entry(rb_parent, struct kmemleak_object,
-> rb_node);
-> -		if (ptr + size <= parent->pointer)
-> +		untagged_objp = (unsigned long)kasan_reset_tag((void
-> *)parent->pointer);
-> +		if (untagged_ptr + size <= untagged_objp)
->  			link = &parent->rb_node.rb_left;
-> -		else if (parent->pointer + parent->size <= ptr)
-> +		else if (untagged_objp + parent->size <= untagged_ptr)
->  			link = &parent->rb_node.rb_right;
->  		else {
->  			kmemleak_stop("Cannot insert 0x%lx into the
-> object search tree (overlaps existing)\n",
+> -Memory balancing is needed for !__GFP_ATOMIC and !__GFP_KSWAPD_RECLAIM as
+> +Memory balancing is needed for !__GFP_HIGH and !__GFP_KSWAPD_RECLAIM as
+>  well as for non __GFP_IO allocations.
+>  
+>  The first reason why a caller may avoid reclaim is that the caller can not
+> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+> index e900e3c46903..c5fa8b8673b6 100644
+> --- a/drivers/iommu/tegra-smmu.c
+> +++ b/drivers/iommu/tegra-smmu.c
+> @@ -676,12 +676,12 @@ static struct page *as_get_pde_page(struct tegra_smmu_as *as,
+>  	 * allocate page in a sleeping context if GFP flags permit. Hence
+>  	 * spinlock needs to be unlocked and re-locked after allocation.
+>  	 */
+> -	if (!(gfp & __GFP_ATOMIC))
+> +	if (gfp & __GFP_DIRECT_RECLAIM)
+>  		spin_unlock_irqrestore(&as->lock, *flags);
+>  
+>  	page = alloc_page(gfp | __GFP_DMA | __GFP_ZERO);
+>  
+> -	if (!(gfp & __GFP_ATOMIC))
+> +	if (gfp & __GFP_DIRECT_RECLAIM)
+>  		spin_lock_irqsave(&as->lock, *flags);
+>  
+>  	/*
+> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+> index b976c4177299..676c813bd93f 100644
+> --- a/include/linux/gfp.h
+> +++ b/include/linux/gfp.h
+> @@ -39,7 +39,7 @@ struct vm_area_struct;
+>  #define ___GFP_IO		0x40u
+>  #define ___GFP_FS		0x80u
+>  #define ___GFP_ZERO		0x100u
+> -#define ___GFP_ATOMIC		0x200u
+> +/* 0x200u unused */
+>  #define ___GFP_DIRECT_RECLAIM	0x400u
+>  #define ___GFP_KSWAPD_RECLAIM	0x800u
+>  #define ___GFP_WRITE		0x1000u
+> @@ -116,11 +116,8 @@ struct vm_area_struct;
+>   *
+>   * %__GFP_HIGH indicates that the caller is high-priority and that granting
+>   * the request is necessary before the system can make forward progress.
+> - * For example, creating an IO context to clean pages.
+> - *
+> - * %__GFP_ATOMIC indicates that the caller cannot reclaim or sleep and is
+> - * high priority. Users are typically interrupt handlers. This may be
+> - * used in conjunction with %__GFP_HIGH
+> + * For example creating an IO context to clean pages and requests
+> + * from atomic context.
+>   *
+>   * %__GFP_MEMALLOC allows access to all memory. This should only be used when
+>   * the caller guarantees the allocation will allow more memory to be freed
+> @@ -135,7 +132,6 @@ struct vm_area_struct;
+>   * %__GFP_NOMEMALLOC is used to explicitly forbid access to emergency reserves.
+>   * This takes precedence over the %__GFP_MEMALLOC flag if both are set.
+>   */
+> -#define __GFP_ATOMIC	((__force gfp_t)___GFP_ATOMIC)
+>  #define __GFP_HIGH	((__force gfp_t)___GFP_HIGH)
+>  #define __GFP_MEMALLOC	((__force gfp_t)___GFP_MEMALLOC)
+>  #define __GFP_NOMEMALLOC ((__force gfp_t)___GFP_NOMEMALLOC)
+> @@ -320,7 +316,7 @@ struct vm_area_struct;
+>   * version does not attempt reclaim/compaction at all and is by default used
+>   * in page fault path, while the non-light is used by khugepaged.
+>   */
+> -#define GFP_ATOMIC	(__GFP_HIGH|__GFP_ATOMIC|__GFP_KSWAPD_RECLAIM)
+> +#define GFP_ATOMIC	(__GFP_HIGH|__GFP_KSWAPD_RECLAIM)
+>  #define GFP_KERNEL	(__GFP_RECLAIM | __GFP_IO | __GFP_FS)
+>  #define GFP_KERNEL_ACCOUNT (GFP_KERNEL | __GFP_ACCOUNT)
+>  #define GFP_NOWAIT	(__GFP_KSWAPD_RECLAIM)
+> diff --git a/include/trace/events/mmflags.h b/include/trace/events/mmflags.h
+> index 116ed4d5d0f8..30f492256b8c 100644
+> --- a/include/trace/events/mmflags.h
+> +++ b/include/trace/events/mmflags.h
+> @@ -29,7 +29,6 @@
+>  	{(unsigned long)__GFP_HIGHMEM,		"__GFP_HIGHMEM"},	\
+>  	{(unsigned long)GFP_DMA32,		"GFP_DMA32"},		\
+>  	{(unsigned long)__GFP_HIGH,		"__GFP_HIGH"},		\
+> -	{(unsigned long)__GFP_ATOMIC,		"__GFP_ATOMIC"},	\
+>  	{(unsigned long)__GFP_IO,		"__GFP_IO"},		\
+>  	{(unsigned long)__GFP_FS,		"__GFP_FS"},		\
+>  	{(unsigned long)__GFP_NOWARN,		"__GFP_NOWARN"},	\
+> diff --git a/lib/test_printf.c b/lib/test_printf.c
+> index 07309c45f327..8010de49b6c5 100644
+> --- a/lib/test_printf.c
+> +++ b/lib/test_printf.c
+> @@ -673,17 +673,17 @@ flags(void)
+>  	gfp = GFP_ATOMIC|__GFP_DMA;
+>  	test("GFP_ATOMIC|GFP_DMA", "%pGg", &gfp);
+>  
+> -	gfp = __GFP_ATOMIC;
+> -	test("__GFP_ATOMIC", "%pGg", &gfp);
+> +	gfp = __GFP_HIGH;
+> +	test("__GFP_HIGH", "%pGg", &gfp);
+>  
+>  	/* Any flags not translated by the table should remain numeric */
+>  	gfp = ~__GFP_BITS_MASK;
+>  	snprintf(cmp_buffer, BUF_SIZE, "%#lx", (unsigned long) gfp);
+>  	test(cmp_buffer, "%pGg", &gfp);
+>  
+> -	snprintf(cmp_buffer, BUF_SIZE, "__GFP_ATOMIC|%#lx",
+> +	snprintf(cmp_buffer, BUF_SIZE, "__GFP_HIGH|%#lx",
+>  							(unsigned long) gfp);
+> -	gfp |= __GFP_ATOMIC;
+> +	gfp |= __GFP_HIGH;
+>  	test(cmp_buffer, "%pGg", &gfp);
+>  
+>  	kfree(cmp_buffer);
+> diff --git a/mm/internal.h b/mm/internal.h
+> index 3b79a5c9427a..4564067065f9 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -20,8 +20,7 @@
+>   */
+>  #define GFP_RECLAIM_MASK (__GFP_RECLAIM|__GFP_HIGH|__GFP_IO|__GFP_FS|\
+>  			__GFP_NOWARN|__GFP_RETRY_MAYFAIL|__GFP_NOFAIL|\
+> -			__GFP_NORETRY|__GFP_MEMALLOC|__GFP_NOMEMALLOC|\
+> -			__GFP_ATOMIC)
+> +			__GFP_NORETRY|__GFP_MEMALLOC|__GFP_NOMEMALLOC)
+>  
+>  /* The GFP flags allowed during early boot */
+>  #define GFP_BOOT_MASK (__GFP_BITS_MASK & ~(__GFP_RECLAIM|__GFP_IO|__GFP_FS))
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 781605e92015..1ff55347e4b9 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2621,7 +2621,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	 * put the burden of reclaim on regular allocation requests
+>  	 * and let these go through as privileged allocations.
+>  	 */
+> -	if (gfp_mask & __GFP_ATOMIC)
+> +	if (gfp_mask & __GFP_HIGH)
+>  		goto force;
+>  
+>  	/*
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index c5952749ad40..4fff90ca145b 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -3932,12 +3932,12 @@ static inline bool zone_watermark_fast(struct zone *z, unsigned int order,
+>  					free_pages))
+>  		return true;
+>  	/*
+> -	 * Ignore watermark boosting for GFP_ATOMIC order-0 allocations
+> +	 * Ignore watermark boosting for GFP_HIGH order-0 allocations
+>  	 * when checking the min watermark. The min watermark is the
+>  	 * point where boosting is ignored so that kswapd is woken up
+>  	 * when below the low watermark.
+>  	 */
+> -	if (unlikely(!order && (gfp_mask & __GFP_ATOMIC) && z->watermark_boost
+> +	if (unlikely(!order && (alloc_flags & ALLOC_HARDER) && z->watermark_boost
+>  		&& ((alloc_flags & ALLOC_WMARK_MASK) == WMARK_MIN))) {
+>  		mark = z->_watermark[WMARK_MIN];
+>  		return __zone_watermark_ok(z, order, mark, highest_zoneidx,
+> @@ -4661,12 +4661,12 @@ gfp_to_alloc_flags(gfp_t gfp_mask)
+>  	 * The caller may dip into page reserves a bit more if the caller
+>  	 * cannot run direct reclaim, or if the caller has realtime scheduling
+>  	 * policy or is asking for __GFP_HIGH memory.  GFP_ATOMIC requests will
+> -	 * set both ALLOC_HARDER (__GFP_ATOMIC) and ALLOC_HIGH (__GFP_HIGH).
+> +	 * set both ALLOC_HARDER (unless __GFP_NOMEMALLOC) and ALLOC_HIGH.
+>  	 */
+>  	alloc_flags |= (__force int)
+>  		(gfp_mask & (__GFP_HIGH | __GFP_KSWAPD_RECLAIM));
+>  
+> -	if (gfp_mask & __GFP_ATOMIC) {
+> +	if (gfp_mask & __GFP_HIGH) {
+>  		/*
+>  		 * Not worth trying to allocate harder for __GFP_NOMEMALLOC even
+>  		 * if it can't schedule.
+> @@ -4859,14 +4859,6 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
+>  	unsigned int cpuset_mems_cookie;
+>  	int reserve_flags;
+>  
+> -	/*
+> -	 * We also sanity check to catch abuse of atomic reserves being used by
+> -	 * callers that are not in atomic context.
+> -	 */
+> -	if (WARN_ON_ONCE((gfp_mask & (__GFP_ATOMIC|__GFP_DIRECT_RECLAIM)) ==
+> -				(__GFP_ATOMIC|__GFP_DIRECT_RECLAIM)))
+> -		gfp_mask &= ~__GFP_ATOMIC;
+> -
+>  retry_cpuset:
+>  	compaction_retries = 0;
+>  	no_progress_loops = 0;
+> diff --git a/tools/perf/builtin-kmem.c b/tools/perf/builtin-kmem.c
+> index da03a341c63c..17e6eeb6e196 100644
+> --- a/tools/perf/builtin-kmem.c
+> +++ b/tools/perf/builtin-kmem.c
+> @@ -640,7 +640,6 @@ static const struct {
+>  	{ "__GFP_HIGHMEM",		"HM" },
+>  	{ "GFP_DMA32",			"D32" },
+>  	{ "__GFP_HIGH",			"H" },
+> -	{ "__GFP_ATOMIC",		"_A" },
+>  	{ "__GFP_IO",			"I" },
+>  	{ "__GFP_FS",			"F" },
+>  	{ "__GFP_NOWARN",		"NWR" },
+> diff --git a/tools/testing/radix-tree/linux/gfp.h b/tools/testing/radix-tree/linux/gfp.h
+> index 32159c08a52e..0a0741104dfe 100644
+> --- a/tools/testing/radix-tree/linux/gfp.h
+> +++ b/tools/testing/radix-tree/linux/gfp.h
+> @@ -12,7 +12,6 @@
+>  #define __GFP_FS		0x80u
+>  #define __GFP_NOWARN		0x200u
+>  #define __GFP_ZERO		0x8000u
+> -#define __GFP_ATOMIC		0x80000u
+>  #define __GFP_ACCOUNT		0x100000u
+>  #define __GFP_DIRECT_RECLAIM	0x400000u
+>  #define __GFP_KSWAPD_RECLAIM	0x2000000u
+> @@ -20,7 +19,7 @@
+>  #define __GFP_RECLAIM	(__GFP_DIRECT_RECLAIM|__GFP_KSWAPD_RECLAIM)
+>  
+>  #define GFP_ZONEMASK	0x0fu
+> -#define GFP_ATOMIC	(__GFP_HIGH|__GFP_ATOMIC|__GFP_KSWAPD_RECLAIM)
+> +#define GFP_ATOMIC	(__GFP_HIGH|__GFP_KSWAPD_RECLAIM)
+>  #define GFP_KERNEL	(__GFP_RECLAIM | __GFP_IO | __GFP_FS)
+>  #define GFP_NOWAIT	(__GFP_KSWAPD_RECLAIM)
+>  
 > -- 
-> 2.18.0
-> 
+> 2.33.1
 
+-- 
+Michal Hocko
+SUSE Labs
