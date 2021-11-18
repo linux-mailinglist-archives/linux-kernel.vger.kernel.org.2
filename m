@@ -2,164 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4224B45536A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 04:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB6B455370
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 04:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242737AbhKRDdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 22:33:16 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:54123 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241185AbhKRDdO (ORCPT
+        id S242751AbhKRDgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 22:36:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241185AbhKRDgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 22:33:14 -0500
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 1619F58096D;
-        Wed, 17 Nov 2021 22:30:15 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Wed, 17 Nov 2021 22:30:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=/cj2kNWq2UVok38XhOoZvbWa1e
-        3Ab7EbCh9ffCDhegQ=; b=SlaJoQPZ0D8JAqVMzmyHi0sw+sgy7uu/oANeIVxm29
-        HFrEmWErsV7kaRg+X1SIr5rXJU6D+FjcqyWejxatHkx2v1KTe4JjEi0W9BS2+cm9
-        bPBhbmL5y9XTvKFHq9QBfnezgc0urHipU2U7C6ABvCr6VWIFYI38DByxYYKeHHsX
-        bswFcXp5iup85w9pjO4C1VkVckQwdRA6N4HdF9/3YB/cWk0+eeWbp2M928T96bxl
-        cjkZ8Gslusr6IgLFnbvtfCGAZJvD7TMO+qiQTXxMrA7+v56pvngE+3cVZSXtKZDV
-        aWVgbZa8Wd+olciVeTlQg2LNjVweNcORGWqbKgY/VE0Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=/cj2kNWq2UVok38Xh
-        OoZvbWa1e3Ab7EbCh9ffCDhegQ=; b=dh0I2lx53fPhtPjNglmfjZXV7+KbNoQ/5
-        YZkfTZBKl3VGVI4+q6yJwFO861lkDJ2Y5gDT60h30hjEvNaOVq7Tmcj8Hn9Cu7E9
-        6SVTNpjJq2xN1wxBSzbHQQGaWtFjd3U3BIIIoYU2Vy84kEDYFRpjyUJdiXYfgl+J
-        k1ixViqChTnIEFsnHQwh0/W/uIc8lC4oycDSA7n22JkTMEQiKKQTxnAUicFBzB+s
-        aAaT1uH4FMma/annEutUQOVLLXn+qwQi6dh6TQpHkyRvI5hxi/0RhleRArMEZk8T
-        8QrHvaHHxPwOc+HMv331o+Uty6WEibTfDlzA8hnGOfUv6DN5ocVEw==
-X-ME-Sender: <xms:xsiVYf_fFXbvi0b076db3MsHV3a5_28GkGAg1hB6aGdf9Mg6Y0WOjw>
-    <xme:xsiVYbuVmdfJ1HlCBWyDcrOuxIK3N999jUCL8aIbTGiKrR4260iBcPIOZZ7_Z_2vB
-    6mDAZQwG6YlRL04CQ>
-X-ME-Received: <xmr:xsiVYdAar_JRGDNmKmSamg6bOpH3pHQI_PEjpMylSmDNABveJ60nPHBKLD_6o5qOWzy2cuKdmuTowLfp3Nqs4spxu8cSt7xMKXC1GGhu0sf1P0__27BBhMt6aGNDG7xByXJ5sw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeehgdehjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
-    ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrfgrth
-    htvghrnhepieetkefhheduudfgledtudefjeejfeegveehkeeufffhhfejkeehiefftdev
-    tdevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsh
-    grmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:xsiVYbe2SAOXq52AakDhDwW9wRYj5kzZ-w6LXtnb0W0UkguWvzlVuQ>
-    <xmx:xsiVYUP6FRn0RlBvk0ID7YE-Wvb0kGYjFEubjvlf0FHAkCH09BlcEw>
-    <xmx:xsiVYdlc3r3S9iphdjBQIE5b-vCRHe5RKdujgdmtTyihozvgTiksRA>
-    <xmx:x8iVYVGjS6GTwHVPHNO5xLQN3UmTFXDe83kG0l_ZF9IRHVhSeo_i4g>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 17 Nov 2021 22:30:13 -0500 (EST)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        devicetree@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        Ondrej Jirman <megous@megous.com>,
-        Samuel Holland <samuel@sholland.org>
-Subject: [RERESEND PATCH v3] Input: sun4i-lradc-keys -  Add wakup support
-Date:   Wed, 17 Nov 2021 21:30:13 -0600
-Message-Id: <20211118033013.43116-1-samuel@sholland.org>
-X-Mailer: git-send-email 2.32.0
+        Wed, 17 Nov 2021 22:36:17 -0500
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E79C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 19:33:18 -0800 (PST)
+Received: by mail-ua1-x931.google.com with SMTP id r15so10708825uao.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 19:33:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A/jn/zgEzxQP9ZQwx0L5iwDA8SV1bEGJAnIDVoaBgXA=;
+        b=JaF2etFbSKwaLKzECO7evTgrEGCIalvzi/L4AwWws/5MQ1RFdDBo7lk0Hk8D19TPOS
+         5hBeTx2Go4PHeEnUOL5nZZkv5NQTN0Sk76gafNUap5rlb4d1pksHHXt6KUKliJIrZcZZ
+         oaim98jEcrP/7lYYDjSjk5JY5dxuV3WF/novS95lwB+hbkmtKoXILpTiegKv3yF9/I7b
+         Wx+WXy+6diat0CHIwnZZWpK4vQ/P9/aQLbldF0v7DLROD7mMsRZU3a6MtAQULarpMuDS
+         MCPXPTeM6rIaPmTy0scKj3pSpYJj2K3a8LMzT4aZhBSETsB9B20fauaN16KmpbGG08y2
+         2wPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A/jn/zgEzxQP9ZQwx0L5iwDA8SV1bEGJAnIDVoaBgXA=;
+        b=6syZSgyvb/sRwUn0LosA43BUBixoV8H6OLG/mUX8r4k1EVC5Pw4NvKnQq6gYTs84EJ
+         nYA9VvFpI/UUKEHmuzhTORAQ/M5a4NFBGiGi260sfiKPPXuIMjmv3wjdFZ0sVN6tOKBh
+         95ZwGEhLOxahUhfXJwRXeRK0ApuaU0nKT//hMz3Xbit0oa0Kzt8ugTC6m9Th5w0QacAD
+         O+RUsRRQndvgtA3/TXGIw74+I4nSTaBHeZ+0i9v5Ti8JFK4PCU/7NRxjBeQM2a7MEHMl
+         ONPPyXa909juVKyHI7FUngG7K3CyrbtrsUpPzltO8wf7uTeK6ojGGy0NvspZCG40t9KA
+         c48Q==
+X-Gm-Message-State: AOAM530pEN5n4DSK8gCYDDTdkdDxuW8iBsTpo0gMAHQCzt+q+7OcX9SA
+        ZkD0M6cRpnBRSC/PDhuAnFNckLxZjJd9fOdCMX4=
+X-Google-Smtp-Source: ABdhPJx+SwE+lVngvA+ZZMvKi/vw2I5Xo7+pTY18CvYLu3GrjLvmCauC65r8hLMZ/7tTPQUQdMAU6W6EFB0SJ82r3ak=
+X-Received: by 2002:a05:6102:32c9:: with SMTP id o9mr76054026vss.46.1637206397469;
+ Wed, 17 Nov 2021 19:33:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211116072027.18466-1-tiwai@suse.de> <07e228eb-676a-bdb1-c2ec-a96f691f5a18@linaro.org>
+ <s5h5ysqlcm8.wl-tiwai@suse.de> <b0d2b643-214a-07c5-96b7-4845c54cba72@linaro.org>
+In-Reply-To: <b0d2b643-214a-07c5-96b7-4845c54cba72@linaro.org>
+From:   Vaibhav Agarwal <vaibhav.sr@gmail.com>
+Date:   Thu, 18 Nov 2021 09:02:40 +0530
+Message-ID: <CAAs364-thiqACMRwT++JMxkMd7qa_stFApjK-4SmrEJetX6oyw@mail.gmail.com>
+Subject: Re: [greybus-dev] [PATCH] staging: greybus: Add missing rwsem around
+ snd_ctl_remove() calls
+To:     Alex Elder <elder@linaro.org>
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        "moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
+        Alex Elder <elder@kernel.org>, Johan Hovold <johan@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ondrej Jirman <megous@megous.com>
+On Thu, Nov 18, 2021 at 3:25 AM Alex Elder <elder@linaro.org> wrote:
+>
+> On 11/17/21 3:02 PM, Takashi Iwai wrote:
+> > On Wed, 17 Nov 2021 20:56:14 +0100,
+> > Alex Elder wrote:
+> >>
+> >> On 11/16/21 1:20 AM, Takashi Iwai wrote:
+> >>> snd_ctl_remove() has to be called with card->controls_rwsem held (when
+> >>> called after the card instantiation).  This patch adds the missing
+> >>> rwsem calls around it.
+> >>
+> >> I see the comment above snd_ctl_remove() that says you must hold
+> >> the write lock.  And given that, this seems correct to me.
+> >>
+> >> I understand why you want to take the lock just once, rather
+> >> than each time snd_ctl_remove() is called.
+> >>
+> >> However I believe the acquisition and release of the lock
+> >> belongs inside gbaudio_remove_controls(), not in its caller.
+> >>
+> >> If you disagree, can you please explain why?
+> >
+> > In general if the function returns an error and has a loop inside,
+> > taking a lock in the caller side avoids the forgotten unlock.
+>
+> But taking the lock in the called function makes the
+> caller not need to take the lock (which would be even
+> more valuable if there were more than one caller).
+>
+> I prefer having the lock acquisition in the called
+> function.  Please send version 2, as I suggested.
 
-Allow the driver to wake the system on key press if the "wakeup-source"
-property is provided in the device tree. Using the LRADC as a wakeup
-source requires keeping the AVCC domain active during sleep. Since this
-has a nontrivial impact on power consumption (sometimes doubling it),
-disable the LRADC wakeup source by default.
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Ondrej Jirman <megous@megous.com>
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
+Hi Takashi,
 
-Changes since resend v3:
-  - An entirely different, but equivalent, DT binding patch was merged,
-    so there is only one patch left...
+Thanks for sharing this patch. In reference to the suggestion from Alex,
+do you think replacing snd_ctl_find_id(), snd_ctl_remove() with
+snd_ctl_remove_id() inside gbaudio_remove_controls() would be an even
+better choice without worrying about locks?
 
-Changes since v2:
-  - Dropped unnecessary pr_err in platform_get_irq() error path
-  - Dropped patch 3 (DT update) as it was merged
-  - Added Acked-by/Reviewed-by tags
+--
+vaibhav
 
-Changes since v1:
-  - Add requisite DT binding change
-  - Only add wakeup capability if "wakeup-source" is present
-  - Warn but do not error out if setting the wake IRQ fails
-  - Add "wakeup-source" property to PinePhone device tree
-
----
- drivers/input/keyboard/sun4i-lradc-keys.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/input/keyboard/sun4i-lradc-keys.c b/drivers/input/keyboard/sun4i-lradc-keys.c
-index 4a796bed48ac..af1683d68c8c 100644
---- a/drivers/input/keyboard/sun4i-lradc-keys.c
-+++ b/drivers/input/keyboard/sun4i-lradc-keys.c
-@@ -22,6 +22,8 @@
- #include <linux/module.h>
- #include <linux/of_platform.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_wakeirq.h>
-+#include <linux/pm_wakeup.h>
- #include <linux/regulator/consumer.h>
- #include <linux/slab.h>
- 
-@@ -226,8 +228,7 @@ static int sun4i_lradc_probe(struct platform_device *pdev)
- {
- 	struct sun4i_lradc_data *lradc;
- 	struct device *dev = &pdev->dev;
--	int i;
--	int error;
-+	int error, i, irq;
- 
- 	lradc = devm_kzalloc(dev, sizeof(struct sun4i_lradc_data), GFP_KERNEL);
- 	if (!lradc)
-@@ -272,8 +273,11 @@ static int sun4i_lradc_probe(struct platform_device *pdev)
- 	if (IS_ERR(lradc->base))
- 		return PTR_ERR(lradc->base);
- 
--	error = devm_request_irq(dev, platform_get_irq(pdev, 0),
--				 sun4i_lradc_irq, 0,
-+	irq = platform_get_irq(pdev, 0);
-+	if (irq < 0)
-+		return irq;
-+
-+	error = devm_request_irq(dev, irq, sun4i_lradc_irq, 0,
- 				 "sun4i-a10-lradc-keys", lradc);
- 	if (error)
- 		return error;
-@@ -282,6 +286,14 @@ static int sun4i_lradc_probe(struct platform_device *pdev)
- 	if (error)
- 		return error;
- 
-+	if (device_property_read_bool(dev, "wakeup-source")) {
-+		device_set_wakeup_capable(dev, true);
-+
-+		error = dev_pm_set_wake_irq(dev, irq);
-+		if (error)
-+			dev_warn(dev, "Failed to set wake IRQ\n");
-+	}
-+
- 	return 0;
- }
- 
--- 
-2.32.0
-
+ >
+>
+>                                         -Alex
+>
+> > Takashi
+> >
+> >
+> >> Otherwise, will you please submit version two, taking the
+> >> lock inside gbaudio_remove_controls()?
+> >>
+> >> Thanks.
+> >>
+> >>                                      -Alex
+> >>
+> >>> Fixes: 510e340efe0c ("staging: greybus: audio: Add helper APIs for dynamic audio modules")
+> >>> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> >>> ---
+> >>>    drivers/staging/greybus/audio_helper.c | 8 ++++++--
+> >>>    1 file changed, 6 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/drivers/staging/greybus/audio_helper.c b/drivers/staging/greybus/audio_helper.c
+> >>> index 1ed4772d2771..843760675876 100644
+> >>> --- a/drivers/staging/greybus/audio_helper.c
+> >>> +++ b/drivers/staging/greybus/audio_helper.c
+> >>> @@ -192,7 +192,11 @@ int gbaudio_remove_component_controls(struct snd_soc_component *component,
+> >>>                                   unsigned int num_controls)
+> >>>    {
+> >>>     struct snd_card *card = component->card->snd_card;
+> >>> +   int err;
+> >>>    -        return gbaudio_remove_controls(card, component->dev, controls,
+> >>> -                                  num_controls, component->name_prefix);
+> >>> +   down_write(&card->controls_rwsem);
+> >>> +   err = gbaudio_remove_controls(card, component->dev, controls,
+> >>> +                                 num_controls, component->name_prefix);
+> >>> +   up_write(&card->controls_rwsem);
+> >>> +   return err;
+> >>>    }
+> >>>
+> >>
+>
+> _______________________________________________
+> greybus-dev mailing list
+> greybus-dev@lists.linaro.org
+> https://lists.linaro.org/mailman/listinfo/greybus-dev
