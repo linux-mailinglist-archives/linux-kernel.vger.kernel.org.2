@@ -2,57 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DEE4455B3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:08:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D552B455B40
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:09:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344518AbhKRMLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 07:11:23 -0500
-Received: from foss.arm.com ([217.140.110.172]:40062 "EHLO foss.arm.com"
+        id S1344529AbhKRMMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 07:12:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344494AbhKRMLP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 07:11:15 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3460B1FB;
-        Thu, 18 Nov 2021 04:08:15 -0800 (PST)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0C78D3F766;
-        Thu, 18 Nov 2021 04:08:13 -0800 (PST)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     virtio-dev@lists.oasis-open.org,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Sudeep Holla <sudeep.holla@arm.com>, peter.hilber@opensynergy.com,
-        igor.skalkin@opensynergy.com
-Subject: Re: [PATCH] firmware: arm_scmi: Fix null de-reference on error path
-Date:   Thu, 18 Nov 2021 12:08:04 +0000
-Message-Id: <163723724296.4014039.8488368572572858524.b4-ty@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211112180705.41601-1-cristian.marussi@arm.com>
-References: <20211112180705.41601-1-cristian.marussi@arm.com>
+        id S1344522AbhKRMM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 07:12:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46675613B1;
+        Thu, 18 Nov 2021 12:09:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637237367;
+        bh=vTc7gyH6B+jCfzlmBr6QVgg81p6LYBnt9/FZaldxVh4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mkemVrpH3KgutAOA8RPVxJss5CnZYYBjtzrehAf8bvshsBZ7xsuv6xPiZysNNSBEt
+         vhTRGtBtq9irHiF/bXpNYhUqtY85hTzUu8+aY18wjrOHKQG0nGEvNURXB6yN1hkO1U
+         TqKfhqdXzOZLUnyZw6O2Oe5MlWYAdM0kDzAZXuWwYhEca4ZOTwiDWcUX4+Cztl7sjA
+         m0eSnrZqg63p+eCxoWgmK0CsvFmEPfwMlPFWpIcBDM9ydAT8jsUPPrQa1vqrQUh2Jt
+         +55bTKOsudJPXj+jncKU+rpcOjVhI9rEAsuRrEleP71Mm9jZGtHyzC+CoXnMNsYkGL
+         fxvpuf79bMerA==
+Date:   Thu, 18 Nov 2021 12:09:23 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] spi: qcom: geni: set the error code for gpi transfer
+Message-ID: <YZZCc2DDxJhTfA5I@sirena.org.uk>
+References: <20211117133110.2682631-1-vkoul@kernel.org>
+ <20211117133110.2682631-2-vkoul@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="uX22MhuhZ3wmiD3M"
+Content-Disposition: inline
+In-Reply-To: <20211117133110.2682631-2-vkoul@kernel.org>
+X-Cookie: People respond to people who respond.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Nov 2021 18:07:05 +0000, Cristian Marussi wrote:
-> During channel setup a failure in the call of scmi_vio_feed_vq_rx() leads
-> to an attempt to access a dev pointer by dereferencing vioch->cinfo at
-> a time when vioch->cinfo has still to be initialized.
-> 
-> Fix it by providing the device reference directly to scmi_vio_feed_vq_rx.
-> 
-> 
-> [...]
 
-Applied to sudeep.holla/linux (for-next/scmi), thanks!
+--uX22MhuhZ3wmiD3M
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-[1/1] firmware: arm_scmi: Fix null de-reference on error path
-      https://git.kernel.org/sudeep.holla/c/9516116572
+On Wed, Nov 17, 2021 at 07:01:09PM +0530, Vinod Koul wrote:
+> Before we invoke spi_finalize_current_transfer() in
+> spi_gsi_callback_result() we should set the spi->cur_msg->status as
+> appropriate (0 for success, error otherwise).
 
---
-Regards,
-Sudeep
+Fixes should come at the start of the patch series to make sure they can
+be applied as fixes without pulling in anything else.
 
+--uX22MhuhZ3wmiD3M
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGWQnIACgkQJNaLcl1U
+h9B6AQf+JglmmKD8Jw1wEnvRgBZCgNXB5rnObe53RwuURkNIFRwzpa0uTvUCDqHm
+2ynwnEdYuogeX+TiXlTrSXJ0XMReawjaKiVFihaZOvr9UHi2oIvqr2VFWWFtl7TZ
+LJtKCNLNe8XlgBU8dBqnE/0HHN01YfLty8CqMppoEtUDOt8ft+O1KyTGbvrJ9YbI
+KGPCjFn1qMd/qOhjd+EiUzOFmA7NVqO+lmmj7rbJ/JLLm6IDJ5FIs8qRebFS5V6J
+hnnBN2VIRyyrbOg0XsCXQmaxeyYIvG+SHalhfe61VgDRUt86Gt/kcXxeQDMG1CUp
+8m9+7uw5nAtP6l/hxekEko0nfPUzeA==
+=+hVN
+-----END PGP SIGNATURE-----
+
+--uX22MhuhZ3wmiD3M--
