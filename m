@@ -2,73 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5895C4554C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 07:25:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41D794554C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 07:26:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242366AbhKRG2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 01:28:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46884 "EHLO
+        id S242388AbhKRG3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 01:29:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242388AbhKRG2L (ORCPT
+        with ESMTP id S243387AbhKRG3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 01:28:11 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A802CC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 22:25:11 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id b40so20732664lfv.10
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 22:25:11 -0800 (PST)
+        Thu, 18 Nov 2021 01:29:35 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC6FC061570;
+        Wed, 17 Nov 2021 22:26:35 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id q25so12207278oiw.0;
+        Wed, 17 Nov 2021 22:26:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=xtK8HXHUnWsN7MfNKMlfGYb0Ec4gMWZMwqcGq47yeik=;
-        b=A1PUCUJxXAZzueBDu4bMmPvVj3P/s9Le9VnkQT371i8vx+jJHDSdhuJI6vbtTMjbYv
-         vL1GlPPkCbUhys1/EEZwxfzXGzJylX9yLjetla7TjPfQt/G/nO5jEK6D35YCcf7S8iCU
-         BjYd1i3itC371oQiCciHiNExj0z7gEB4GDQIa6RVzACDszxD1ucvZWBTZkYF06hFNrqa
-         8R/yBdB2aOg8LLTXWke+ZqloZHuoT9mFTjAhGZQMmgPYx4b5mdU9h6Mdmx6XvTtwahyz
-         qU9/nGN4CISyveEKAOozq73HdyPCc09/8rZsdSlrxfywH7H9q1bC0glT2yq5qYAXJc3s
-         v24Q==
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zC3lGC5vP7hv7dugfu+cJwFjkb/yK58mvfwGdIvQ6+Q=;
+        b=UJyHTSrqgpc6qSJ7dtKuhmvl7CwjoI5Be72JM1kVeyHWFvCxlgyJNjGnIduhZKKT2N
+         LoIyvADcLPOPnFUb6sZ2mtqFBs4yCWrB/fMRcekgbzrM13tqZUOkMzDUwOSy4hBc+0S3
+         wp2YoJxgUdLE5vtcGnCCxtNhebWj0ls3CXaiIPR9TQC6/oG/bUNLpZDGTCliKzGi8ECU
+         3hc8lSj+6ZSqPm5Gw9qzi5MZ+F4XpE71/C3kRTUwjWN1h1WJAdQVmILK/6cE1vZUOvYm
+         VCRNtwThsFluQvZBAq1OhN5WpRe5SnRGKt5yRHtYGFOPOqvlx9SJz5oDp/vWR88nF9kY
+         F2XQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=xtK8HXHUnWsN7MfNKMlfGYb0Ec4gMWZMwqcGq47yeik=;
-        b=IJqAx1+qntFd/e6TKCg++c001G2TuKb2cG80IAON/NC4c1B0tfri/K3OYGoeiRy8ym
-         RkfXBNxaD7FqddkEI9RaEXGZ74l4RhWbuaEzHJN2VwJ71jE7xS4ZMrA/+HXDgjhASpT6
-         j4QDuv5Cgk75qmUhjnef+zl8pJPqHY8CHnGMWzlCZzIVC6ZdBNJLG4CjKp6LJAAiTKpa
-         JYdbHCa7CHmlIBoNVmuuUPmC3r7aaoC+g2RL8aGZBH8srWSFs4MS5ePCFuarEAdCgMx/
-         BvI6CwTjWGWSpxYOF9vjCFxaMgNDaLsA0QllwoZEPY/U33zk22jGRoQiw1sRdf3KAqac
-         jNrw==
-X-Gm-Message-State: AOAM533+5Sm2MFE+2o+Lgy9C1f5hyAZgce84D9k1nZxgyY12TU2ueoXj
-        I+Iu/4ahk22zdYI8VLZS4P5ToaJddQqMYz/MKPw=
-X-Google-Smtp-Source: ABdhPJyZrFFi4hyv1xtx52SzZPi0Tir/5AgTLIKbgMscO7aT6NdL38RFIOD9EuCTe1XxcUiQetHsdDf5cbxNBtUZjL4=
-X-Received: by 2002:a05:6512:128f:: with SMTP id u15mr21622331lfs.92.1637216710062;
- Wed, 17 Nov 2021 22:25:10 -0800 (PST)
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zC3lGC5vP7hv7dugfu+cJwFjkb/yK58mvfwGdIvQ6+Q=;
+        b=Tiz02LPyo0AgTYq6MVSnqSxYY3JOruYk6nttponROFKsXP57fAr8S0HNgYX5cbVzVM
+         BKNGHOgVdBIGpEXp1d5nkYbAJeG4wNd5pg8G0XcqWn8dp0dKSdzCcq1zs7fjs9JwzK94
+         OXOcp/xgGyg00F336Hqd4NJ6WL+jZsRHOo0VUmMR3CIC6ExEca4McMuoAtvCjegag16N
+         BP4UIowm5YIfTMqHhZlYQmWm5+tu5YZpsBa8QZokqa0qf0R+tGO+vLQON6Mu6vSqd9Nm
+         3XHh8MsbVD6+QSu6JQekkayAU135vpBwDOVzEBb3wq83fKIaW6t5VLNOxFhhRYbaG06x
+         UThg==
+X-Gm-Message-State: AOAM533/mrkJTo53mPvTs7Hjj6hgc3xpiPohJecHAukg0sqVuy00xynG
+        spnkxsIGTjP3J+hm7w59P1c=
+X-Google-Smtp-Source: ABdhPJwA0Q3XlpFWj5xMSUo2FP2f9bsNXHhPMSNIPkd6MOQOLgbPY7tF3VlylTWmaC9TA1g+gURyGA==
+X-Received: by 2002:a05:6808:53:: with SMTP id v19mr5666603oic.8.1637216794882;
+        Wed, 17 Nov 2021 22:26:34 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id bi20sm645377oib.29.2021.11.17.22.26.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 22:26:34 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 5.15 000/923] 5.15.3-rc3 review
+To:     Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Justin Forbes <jmforbes@linuxtx.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        stable <stable@vger.kernel.org>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        =?UTF-8?Q?Fran=c3=a7ois_Guerraz?= <kubrick@fgv6.net>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+References: <20211117101657.463560063@linuxfoundation.org>
+ <YZV02RCRVHIa144u@fedora64.linuxtx.org>
+ <55c7b316-e03d-9e91-d74c-fea63c469b3b@applied-asynchrony.com>
+ <CAHk-=wjHbKfck1Ws4Y0pUZ7bxdjU9eh2WK0EFsv65utfeVkT9Q@mail.gmail.com>
+ <202111171609.56F12BD@keescook>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <7bc0d46b-1412-a630-bbf7-57e7ec702784@roeck-us.net>
+Date:   Wed, 17 Nov 2021 22:26:31 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: by 2002:a9a:7ad1:0:b0:13a:420b:54e2 with HTTP; Wed, 17 Nov 2021
- 22:25:09 -0800 (PST)
-Reply-To: carollbenmoore@gmail.com
-From:   Caroll Benmoore <kingess.stone@gmail.com>
-Date:   Wed, 17 Nov 2021 22:25:09 -0800
-Message-ID: <CAA-BsjoXT-Kh+SEyoyE9Q+cSC+tfn2FcRESsAzaFVy6HRc3zKw@mail.gmail.com>
-Subject: Partnership For Good Investment
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <202111171609.56F12BD@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-My Dear,
+On 11/17/21 4:16 PM, Kees Cook wrote:
+> On Wed, Nov 17, 2021 at 03:50:17PM -0800, Linus Torvalds wrote:
+>> Sorry for top-posting and quoting this all, but the actual people
+>> involved with the wchan changes don't seem to be on the participant
+>> list.
+> 
+> Adding more folks from a private report and
+> https://bugzilla.kernel.org/show_bug.cgi?id=215031
+> 
+> and for the new people, here's a lore link for this thread:
+> https://lore.kernel.org/stable/YZV02RCRVHIa144u@fedora64.linuxtx.org/
+> 
+> 
+> FWIW, earlier bisection pointed to the stable backport of
+> 5d1ceb3969b6b2e47e2df6d17790a7c5a20fcbb4 being the primary culprit.
+> At first glance it seems to me that the problem with -stable is that an
+> unvetted subset of the wchan refactoring series landed in -stable.
+> 
 
-        I am Mr Caroll Benmoore a Medical Doctor in prosession from UK
-is here to brife you. I served in United States of America Military
-Hospital in Afghanistan. Do to The crisis raise by The Talibans to
-controll And took over the Afghanistan Nation, i decided to trun back
-to my country for my safety. Am here compelled to contact you
-concerning a business deal which would be beneficial to us and will
-lead us into Partnership Investment. I have some US funds that i
-successfully moved out of the country, It is an oil business money
-deal i did with citizen of Afghanistan. Reply back so that i can give
-you my full details.
+Can the (partial) wchan backport possibly be dropped from v5.15.y until
+someone figures out what exactly - if anything - is needed ?
 
-Dr.Caroll Benmoore.
+Thanks,
+Guenter
