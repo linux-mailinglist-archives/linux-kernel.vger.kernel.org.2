@@ -2,145 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01487456056
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:19:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F6C45605A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:20:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233189AbhKRQWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 11:22:34 -0500
-Received: from li1434-30.members.linode.com ([45.33.107.30]:46212 "EHLO
-        node.akkea.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232656AbhKRQWe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 11:22:34 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by node.akkea.ca (Postfix) with ESMTP id BA2134E2006;
-        Thu, 18 Nov 2021 16:19:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
-        t=1637252373; bh=ACfjbTUZOE9dZ7d4RhaiULxwDF61C6EiIzM9lgp6nWQ=;
-        h=From:To:Cc:Subject:Date;
-        b=D/Vd4F7KWNqMas7ANp3EDjy1LJipJoaDJRIrmRtFXBflXtbLRx3sueeWeLjIjuutY
-         MsjlWqfQN11/urwPAiHsdcBq3B75DZGd3jaA1Y2arEup1WTELPYt/h2SCffi1C6q+0
-         8f2GTtBMGkGu6nJvWWM+3YlPTPTG1pqzo6K7gBeY=
-X-Virus-Scanned: Debian amavisd-new at mail.akkea.ca
-Received: from node.akkea.ca ([127.0.0.1])
-        by localhost (mail.akkea.ca [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id gLN4dSe4Q8uF; Thu, 18 Nov 2021 16:19:33 +0000 (UTC)
-Received: from midas.localdomain (S0106788a2041785e.gv.shawcable.net [24.108.106.191])
-        by node.akkea.ca (Postfix) with ESMTPSA id 192F0394043;
-        Thu, 18 Nov 2021 16:19:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
-        t=1637252373; bh=ACfjbTUZOE9dZ7d4RhaiULxwDF61C6EiIzM9lgp6nWQ=;
-        h=From:To:Cc:Subject:Date;
-        b=D/Vd4F7KWNqMas7ANp3EDjy1LJipJoaDJRIrmRtFXBflXtbLRx3sueeWeLjIjuutY
-         MsjlWqfQN11/urwPAiHsdcBq3B75DZGd3jaA1Y2arEup1WTELPYt/h2SCffi1C6q+0
-         8f2GTtBMGkGu6nJvWWM+3YlPTPTG1pqzo6K7gBeY=
-From:   Angus Ainslie <angus@akkea.ca>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Sebastian Reichel <sre@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@puri.sm, Angus Ainslie <angus@akkea.ca>
-Subject: [PATCH v2] power: bq25890: add POWER_SUPPLY_PROP_TEMP
-Date:   Thu, 18 Nov 2021 08:18:45 -0800
-Message-Id: <20211118161845.98767-1-angus@akkea.ca>
-X-Mailer: git-send-email 2.25.1
+        id S233219AbhKRQWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 11:22:54 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:51214 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232656AbhKRQWx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 11:22:53 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A2B0F212BE;
+        Thu, 18 Nov 2021 16:19:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637252392; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0JJucwqstRRglfGy5GARRQBRbEOHxGEv3PMY9bwltU4=;
+        b=OVOcBPqJB4prn2H7/qCFoEM0+6oTebKqG14jr7d1jqRmhO6Q1iRGw8Bi+le34DTyZrUd6g
+        ab/isT/kTKczyJ/yz21hIsijdgbHneuXz5WUzSV7U9awMWDHyoXy9p2weJdICOauw9UAQn
+        UjZxvJDMiVRgdX/FPcrJ8RHEURxfn8c=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4196413D21;
+        Thu, 18 Nov 2021 16:19:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 8emNDih9lmE0OAAAMHmgww
+        (envelope-from <jgross@suse.com>); Thu, 18 Nov 2021 16:19:52 +0000
+Subject: Re: [PATCH v3 4/4] x86/kvm: add boot parameter for setting max number
+ of vcpus per guest
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <20211116141054.17800-1-jgross@suse.com>
+ <20211116141054.17800-5-jgross@suse.com> <YZVsnZ8e7cXls2P2@google.com>
+ <b252671e-dbd6-03a3-e8b5-552425ad63d3@suse.com> <YZZrzSi1rdaP0ETF@google.com>
+ <d5c57c27-e237-ef84-96c7-f50619597023@suse.com> <YZZyEgvYLRFHh2iz@google.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <d67abec0-3688-5b76-fbd7-fa261d8d5125@suse.com>
+Date:   Thu, 18 Nov 2021 17:19:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YZZyEgvYLRFHh2iz@google.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="odvGf7KuZL5CZox8lKBj6b4tqNCqmVbP2"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the POWER_SUPPLY_PROP_TEMP and a NTC 10K percent VREGN to degrees LUT.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--odvGf7KuZL5CZox8lKBj6b4tqNCqmVbP2
+Content-Type: multipart/mixed; boundary="sWZcQdAfqcKXqNmKA6ITkNzdMTFH0vbTk";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: kvm@vger.kernel.org, x86@kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+ Paolo Bonzini <pbonzini@redhat.com>, Vitaly Kuznetsov <vkuznets@redhat.com>,
+ Wanpeng Li <wanpengli@tencent.com>, Jim Mattson <jmattson@google.com>,
+ Joerg Roedel <joro@8bytes.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <d67abec0-3688-5b76-fbd7-fa261d8d5125@suse.com>
+Subject: Re: [PATCH v3 4/4] x86/kvm: add boot parameter for setting max number
+ of vcpus per guest
+References: <20211116141054.17800-1-jgross@suse.com>
+ <20211116141054.17800-5-jgross@suse.com> <YZVsnZ8e7cXls2P2@google.com>
+ <b252671e-dbd6-03a3-e8b5-552425ad63d3@suse.com> <YZZrzSi1rdaP0ETF@google.com>
+ <d5c57c27-e237-ef84-96c7-f50619597023@suse.com> <YZZyEgvYLRFHh2iz@google.com>
+In-Reply-To: <YZZyEgvYLRFHh2iz@google.com>
 
-Make sure that a conversion is forced when the power supply is offline so
-the temperature is valid.
+--sWZcQdAfqcKXqNmKA6ITkNzdMTFH0vbTk
+Content-Type: multipart/mixed;
+ boundary="------------515323C00E231591325A6E08"
+Content-Language: en-US
 
-Signed-off-by: Angus Ainslie <angus@akkea.ca>
----
- drivers/power/supply/bq25890_charger.c | 37 +++++++++++++++++++++++++-
- 1 file changed, 36 insertions(+), 1 deletion(-)
+This is a multi-part message in MIME format.
+--------------515323C00E231591325A6E08
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/power/supply/bq25890_charger.c b/drivers/power/supply/bq25890_charger.c
-index 945c3257ca93..0260c6efdcb2 100644
---- a/drivers/power/supply/bq25890_charger.c
-+++ b/drivers/power/supply/bq25890_charger.c
-@@ -266,6 +266,7 @@ enum bq25890_table_ids {
- 	/* lookup tables */
- 	TBL_TREG,
- 	TBL_BOOSTI,
-+	TBL_TSPCT,
- };
- 
- /* Thermal Regulation Threshold lookup table, in degrees Celsius */
-@@ -280,6 +281,28 @@ static const u32 bq25890_boosti_tbl[] = {
- 
- #define BQ25890_BOOSTI_TBL_SIZE		ARRAY_SIZE(bq25890_boosti_tbl)
- 
-+/* NTC 10K temperature lookup table in tenths of a degree */
-+static const u32 bq25890_tspct_tbl[] = {
-+	850, 840, 830, 820, 810, 800, 790, 780,
-+	770, 760, 750, 740, 730, 720, 710, 700,
-+	690, 685, 680, 675, 670, 660, 650, 645,
-+	640, 630, 620, 615, 610, 600, 590, 585,
-+	580, 570, 565, 560, 550, 540, 535, 530,
-+	520, 515, 510, 500, 495, 490, 480, 475,
-+	470, 460, 455, 450, 440, 435, 430, 425,
-+	420, 410, 405, 400, 390, 385, 380, 370,
-+	365, 360, 355, 350, 340, 335, 330, 320,
-+	310, 305, 300, 290, 285, 280, 275, 270,
-+	260, 250, 245, 240, 230, 225, 220, 210,
-+	205, 200, 190, 180, 175, 170, 160, 150,
-+	145, 140, 130, 120, 115, 110, 100, 90,
-+	80, 70, 60, 50, 40, 30, 20, 10,
-+	0, -10, -20, -30, -40, -60, -70, -80,
-+	-90, -10, -120, -140, -150, -170, -190, -210,
-+};
-+
-+#define BQ25890_TSPCT_TBL_SIZE		ARRAY_SIZE(bq25890_tspct_tbl)
-+
- struct bq25890_range {
- 	u32 min;
- 	u32 max;
-@@ -308,7 +331,8 @@ static const union {
- 
- 	/* lookup tables */
- 	[TBL_TREG] =	{ .lt = {bq25890_treg_tbl, BQ25890_TREG_TBL_SIZE} },
--	[TBL_BOOSTI] =	{ .lt = {bq25890_boosti_tbl, BQ25890_BOOSTI_TBL_SIZE} }
-+	[TBL_BOOSTI] =	{ .lt = {bq25890_boosti_tbl, BQ25890_BOOSTI_TBL_SIZE} },
-+	[TBL_TSPCT] =	{ .lt = {bq25890_tspct_tbl, BQ25890_TSPCT_TBL_SIZE} }
- };
- 
- static int bq25890_field_read(struct bq25890_device *bq,
-@@ -388,6 +412,7 @@ static bool bq25890_is_adc_property(enum power_supply_property psp)
- 	switch (psp) {
- 	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
- 	case POWER_SUPPLY_PROP_CURRENT_NOW:
-+	case POWER_SUPPLY_PROP_TEMP:
- 		return true;
- 
- 	default:
-@@ -528,6 +553,15 @@ static int bq25890_power_supply_get_property(struct power_supply *psy,
- 		val->intval = ret * -50000;
- 		break;
- 
-+	case POWER_SUPPLY_PROP_TEMP:
-+		ret = bq25890_field_read(bq, F_TSPCT);
-+		if (ret < 0)
-+			return ret;
-+
-+		/* convert TS percentage into rough temperature */
-+		val->intval = bq25890_find_val(ret, TBL_TSPCT);
-+		break;
-+
- 	default:
- 		return -EINVAL;
- 	}
-@@ -713,6 +747,7 @@ static const enum power_supply_property bq25890_power_supply_props[] = {
- 	POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT,
- 	POWER_SUPPLY_PROP_VOLTAGE_NOW,
- 	POWER_SUPPLY_PROP_CURRENT_NOW,
-+	POWER_SUPPLY_PROP_TEMP,
- };
- 
- static char *bq25890_charger_supplied_to[] = {
--- 
-2.25.1
+On 18.11.21 16:32, Sean Christopherson wrote:
+> On Thu, Nov 18, 2021, Juergen Gross wrote:
+>> On 18.11.21 16:05, Sean Christopherson wrote:
+>>> the partner isn't running a vanilla distro build and could set it as =
+they see fit.
+>>
+>> And here you are wrong. They'd like to use standard SUSE Linux (SLE).
+>=20
+> Huh.  As in, completely off-the-shelf kernel binaries without any tweak=
+s to the
+> config?
 
+This is the idea, yes.
+
+
+Juergen
+
+--------------515323C00E231591325A6E08
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------515323C00E231591325A6E08--
+
+--sWZcQdAfqcKXqNmKA6ITkNzdMTFH0vbTk--
+
+--odvGf7KuZL5CZox8lKBj6b4tqNCqmVbP2
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmGWfScFAwAAAAAACgkQsN6d1ii/Ey+H
+8wf/TSZouk7B0Q+kRAZTpTnehU2PHMp2Ui5qQPwPyytXjEhuwBUw0ItzYPIvXeGGnznurqpGPm1L
+pXvuw7B0wS3pHemWfwgpPXSww5vD/mZXe7eKeYzw98x1jDRBN1pII1c8FhI1hl1ykOmORSMHQYoM
+2F2RpOGqvDTTd6KCjPGYtWi3UdeLvRPNn0Th3JNsWZZ2oH4dydEETOp6LuhUSKrlqtJW/2cEWyRf
+Vcd8dVOvFUn3jQQnYmhNUmtE9K8OLeGnwjLxOPiL/BJiN7M0WmI3bQGF63Tb00uQQh4ED6GBBGPg
+c5U5oXYpKw0j6BidlB0tK6zQlccaR2TqmZ6iRESwWw==
+=18em
+-----END PGP SIGNATURE-----
+
+--odvGf7KuZL5CZox8lKBj6b4tqNCqmVbP2--
