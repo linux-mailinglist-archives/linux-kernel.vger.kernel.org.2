@@ -2,164 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 962CF4556DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:19:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DEFF4556DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244414AbhKRIWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 03:22:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43792 "EHLO
+        id S244450AbhKRIWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 03:22:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244362AbhKRIWp (ORCPT
+        with ESMTP id S244500AbhKRIWq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 03:22:45 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83662C0432E3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:18:28 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id z6so3390469plk.6
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:18:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id;
-        bh=cZ+YA8uAzApfXRQQGU6EpEsIwHWl1lHGZYEmkQkBhzo=;
-        b=cDwrnb4aNFg6kGJfRpci4saVKp9WwBYstRoJ9IEugLZKi87EST/F7M1qXnu7J2ok/4
-         ZcrVJavz89knFtMW0q/I4Fk6vYCG9Y5kmMwipfF0e5NpxET602HWoABwrloMbTdg7Opy
-         UlFcec2RzTyjQ/9rX+gfUcmqB8YoOB6vRgp611AfO6sd8EAF9sz9g4rqp2W69L9B9D2A
-         GcnSzz/K2KlRtTFwNwcftOaNZgGjBt1W053Wyxp/aOZIziVWbi63/44H5E+OWjH3lS0y
-         E7Q1LrlP6EY6ijozc68K8jDU6RdoWCpiPYo2Y4+WbH0eBkd+5WhYQdXViOT9tKuNBBDV
-         40AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=cZ+YA8uAzApfXRQQGU6EpEsIwHWl1lHGZYEmkQkBhzo=;
-        b=61ijVEJzvG3VMzphuDwedWZraFL1c/o8JAhbjaogxPEzzRKb2tvx2ecB3R1k3bBDfa
-         +KdvmhGi9ghoVxOeLNmFssYUQb9Y1Sx42lRxb7lSWDokThvVkUDtZyETrhWUx+bJtYi/
-         HADVqlvDjIlBiUMScHFHVE+aFXsZY2t9+y1MB7d2TeyJEnEDKc8t4xVigMd5rE6w2pYp
-         p1Ipesn+urSEGAi2yKgNSXXuEPD0djL4OqBEV5oSEDdxq3butUkiwY763Snkyrs/Bp2Z
-         dJuL9foHAadWK3a8MmbIe2n0mEBTb72hyMJYERF3hrSTPHiAsuEn++zRLoXSLvxkpA53
-         ejsw==
-X-Gm-Message-State: AOAM531Q4YoSXpB32UwDMChr7/iqhnIELl/SydICv7i90StB4nGT/JJe
-        GDR8JkWRY6/9yW+iJT+T5aU=
-X-Google-Smtp-Source: ABdhPJwCx6Y69smeN1eEBx4ltoy2FmVuGGdC0A2LA+y9NC70l7kpBNN/WdakR5rIOQdrMIwNqGEViQ==
-X-Received: by 2002:a17:902:d490:b0:141:fd0f:5316 with SMTP id c16-20020a170902d49000b00141fd0f5316mr63602417plg.14.1637223508108;
-        Thu, 18 Nov 2021 00:18:28 -0800 (PST)
-Received: from bj03382pcu.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id v1sm2000265pfg.169.2021.11.18.00.18.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 18 Nov 2021 00:18:27 -0800 (PST)
-From:   Huangzhaoyang <huangzhaoyang@gmail.com>
-To:     Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Thu, 18 Nov 2021 03:22:46 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A002C06120C;
+        Thu, 18 Nov 2021 00:19:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KdhmxrMWnIvVZExztWMRsMmtiCRt7Nw3QRrmvsJdAv4=; b=qtNJVbk+IPRPR4o1b/4Df6Q+VA
+        CorBt1kp/POGXuqKN41aDoF1npzaDf+DhUsiaCZ0Ef76tr35afDU5f2eNCNk9Fw1LjXL3DXjXCRn8
+        Ym/nuk+vcrCubmdTh+FbCAKv2/fhI8nfE1j53Y0V0oTkl/vwgJENRcxVJlfU1Trg0Q4RALigBrpgv
+        y7nnt1wjsusINTEJul6t2AMIJfdqqKtpDAbEAohvTO0nI6AjXPvVyYJ7qPq6Fl7ZjpZqkz1AwCkbw
+        cMsDVZbxhcMrUeGI4Kfka6VgRexrfPcnHc6ZIsdU/ReSpYDM8fNzxbPEApcXKkO52gY83z8Io4Nn6
+        e96b8kZA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mncdA-008Hyh-Eb; Thu, 18 Nov 2021 08:18:53 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D0B5B9863CD; Thu, 18 Nov 2021 09:18:52 +0100 (CET)
+Date:   Thu, 18 Nov 2021 09:18:52 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Holger =?iso-8859-1?Q?Hoffst=E4tte?= 
+        <holger@applied-asynchrony.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Justin Forbes <jmforbes@linuxtx.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] arch: arm64: try to use PTE_CONT when change page attr
-Date:   Thu, 18 Nov 2021 16:18:03 +0800
-Message-Id: <1637223483-2867-1-git-send-email-huangzhaoyang@gmail.com>
-X-Mailer: git-send-email 1.7.9.5
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        stable <stable@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH 5.15 000/923] 5.15.3-rc3 review
+Message-ID: <20211118081852.GM174730@worktop.programming.kicks-ass.net>
+References: <20211117101657.463560063@linuxfoundation.org>
+ <YZV02RCRVHIa144u@fedora64.linuxtx.org>
+ <55c7b316-e03d-9e91-d74c-fea63c469b3b@applied-asynchrony.com>
+ <CAHk-=wjHbKfck1Ws4Y0pUZ7bxdjU9eh2WK0EFsv65utfeVkT9Q@mail.gmail.com>
+ <20211118080627.GH174703@worktop.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211118080627.GH174703@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+On Thu, Nov 18, 2021 at 09:06:27AM +0100, Peter Zijlstra wrote:
+> On Wed, Nov 17, 2021 at 03:50:17PM -0800, Linus Torvalds wrote:
+> 
+> > I really don't think the WCHAN code should use unwinders at all. It's
+> > too damn fragile, and it's too easily triggered from user space.
+> 
+> On x86, esp. with ORC, it pretty much has to. The thing is, the ORC
+> unwinder has been very stable so far. I'm guessing there's some really
+> stupid thing going on, like for example trying to unwind a freed stack.
+> 
+> I *just* managed to reproduce, so let me go have a poke.
 
-kernel will use the min granularity when rodata_full enabled which
-make TLB pressure high. Furthermore, there is no PTE_CONT applied.
-Try to improve these a little by apply PTE_CONT when change page's
-attr.
+Confirmed, with the below it no longer reproduces. Now, let me go undo
+that and fix the unwinder to not explode while trying to unwind nothing.
 
-Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+
 ---
- arch/arm64/mm/pageattr.c | 62 ++++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 58 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm64/mm/pageattr.c b/arch/arm64/mm/pageattr.c
-index a3bacd7..0b6a354 100644
---- a/arch/arm64/mm/pageattr.c
-+++ b/arch/arm64/mm/pageattr.c
-@@ -61,8 +61,13 @@ static int change_memory_common(unsigned long addr, int numpages,
- 	unsigned long start = addr;
- 	unsigned long size = PAGE_SIZE * numpages;
- 	unsigned long end = start + size;
-+	unsigned long cont_pte_start = 0;
-+	unsigned long cont_pte_end = 0;
-+	unsigned long cont_pmd_start = 0;
-+	unsigned long cont_pmd_end = 0;
-+	pgprot_t orig_set_mask = set_mask;
- 	struct vm_struct *area;
--	int i;
-+	int i = 0;
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 862af1db22ab..f810c5192cb9 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1978,7 +1978,7 @@ unsigned long get_wchan(struct task_struct *p)
+ 	raw_spin_lock_irq(&p->pi_lock);
+ 	state = READ_ONCE(p->__state);
+ 	smp_rmb(); /* see try_to_wake_up() */
+-	if (state != TASK_RUNNING && state != TASK_WAKING && !p->on_rq)
++	if (state != TASK_RUNNING && state != TASK_WAKING && !p->on_rq && !(p->flags & PF_EXITING))
+ 		ip = __get_wchan(p);
+ 	raw_spin_unlock_irq(&p->pi_lock);
  
- 	if (!PAGE_ALIGNED(addr)) {
- 		start &= PAGE_MASK;
-@@ -98,9 +103,58 @@ static int change_memory_common(unsigned long addr, int numpages,
- 	 */
- 	if (rodata_full && (pgprot_val(set_mask) == PTE_RDONLY ||
- 			    pgprot_val(clear_mask) == PTE_RDONLY)) {
--		for (i = 0; i < area->nr_pages; i++) {
--			__change_memory_common((u64)page_address(area->pages[i]),
--					       PAGE_SIZE, set_mask, clear_mask);
-+		cont_pmd_start = (start + ~CONT_PMD_MASK + 1) & CONT_PMD_MASK;
-+		cont_pmd_end = cont_pmd_start + ~CONT_PMD_MASK + 1;
-+		cont_pte_start = (start + ~CONT_PTE_MASK + 1) & CONT_PTE_MASK;
-+		cont_pte_end = cont_pte_start + ~CONT_PTE_MASK + 1;
-+
-+		if (addr <= cont_pmd_start && end > cont_pmd_end) {
-+			do {
-+				__change_memory_common((u64)page_address(area->pages[i]),
-+						PAGE_SIZE, set_mask, clear_mask);
-+				i++;
-+				addr++;
-+			} while(addr < cont_pmd_start);
-+			do {
-+				set_mask = __pgprot(pgprot_val(set_mask) | PTE_CONT);
-+				__change_memory_common((u64)page_address(area->pages[i]),
-+						PAGE_SIZE, set_mask, clear_mask);
-+				i++;
-+				addr++;
-+			} while(addr < cont_pmd_end);
-+			set_mask = orig_set_mask;
-+			do {
-+				__change_memory_common((u64)page_address(area->pages[i]),
-+						PAGE_SIZE, set_mask, clear_mask);
-+				i++;
-+				addr++;
-+			} while(addr <= end);
-+		} else if (addr <= cont_pte_start && end > cont_pte_end) {
-+			do {
-+				__change_memory_common((u64)page_address(area->pages[i]),
-+						PAGE_SIZE, set_mask, clear_mask);
-+				i++;
-+				addr++;
-+			} while(addr < cont_pte_start);
-+			do {
-+				set_mask = __pgprot(pgprot_val(set_mask) | PTE_CONT);
-+				__change_memory_common((u64)page_address(area->pages[i]),
-+						PAGE_SIZE, set_mask, clear_mask);
-+				i++;
-+				addr++;
-+			} while(addr < cont_pte_end);
-+			set_mask = orig_set_mask;
-+			do {
-+				__change_memory_common((u64)page_address(area->pages[i]),
-+						PAGE_SIZE, set_mask, clear_mask);
-+				i++;
-+				addr++;
-+			} while(addr <= end);
-+		} else {
-+			for (i = 0; i < area->nr_pages; i++) {
-+				__change_memory_common((u64)page_address(area->pages[i]),
-+						PAGE_SIZE, set_mask, clear_mask);
-+			}
- 		}
- 	}
- 
--- 
-1.9.1
-
