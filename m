@@ -2,68 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D7C455CE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:43:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C49455CB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231587AbhKRNqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 08:46:39 -0500
-Received: from sp3.canonet.ne.jp ([210.134.165.90]:42099 "EHLO
-        sp3.canonet.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229976AbhKRNqi (ORCPT
+        id S231311AbhKRNfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 08:35:10 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:44748 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230249AbhKRNfJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 08:46:38 -0500
-X-Greylist: delayed 634 seconds by postgrey-1.27 at vger.kernel.org; Thu, 18 Nov 2021 08:46:37 EST
-Received: from csp3.canonet.ne.jp (unknown [172.21.160.43])
-        by sp3.canonet.ne.jp (Postfix) with ESMTP id 468141E0B60;
-        Thu, 18 Nov 2021 22:33:02 +0900 (JST)
-Received: from echeck3.canonet.ne.jp ([172.21.160.33])
-        by csp3 with ESMTP
-        id nhXCm1WUck9ggnhXCm1AhT; Thu, 18 Nov 2021 22:33:02 +0900
-X-CNT-CMCheck-Reason: "undefined", "v=2.4 cv=V+LDbcri c=1 sm=1 tr=0
- ts=6196560e cx=g_jp:t_eml p=P_n2J6lHuxgA:10 p=2BfPvtufOV9g0-GkILsA:9
- p=Ru6vtKnBtiYA:10 p=aDMdyHb_vLPQhaFATL2a:22 a=xyT3al3xnjtl1zci1KSAEw==:117
- a=qe8ehg0FkIpOVRgsrOzrVA==:17 a=PlGk70OYzacA:10 a=Dyoqhi_TatcA:10
- a=Cfj4BQAnxiAA:10 a=vIxV3rELxO4A:10 a=x7bEGLp0ZPQA:10 a=pGLkceISAAAA:8
- a=Ft8UYL4EG9YA:10 a=aEEHF8iN6bIA:10 a=y8lwTy-JBwuByJXH5tZe:22"
-X-CNT-CMCheck-Score: 100.00
-Received: from echeck3.canonet.ne.jp (localhost [127.0.0.1])
-        by esets.canonet.ne.jp (Postfix) with ESMTP id CF98E1C023A;
-        Thu, 18 Nov 2021 22:33:01 +0900 (JST)
-X-Virus-Scanner: This message was checked by ESET Mail Security
-        for Linux/BSD. For more information on ESET Mail Security,
-        please, visit our website: http://www.eset.com/.
-Received: from smtp3.canonet.ne.jp (smtp3.canonet.ne.jp [172.21.160.23])
-        by echeck3.canonet.ne.jp (Postfix) with ESMTP id C20DA1C020D;
-        Thu, 18 Nov 2021 22:33:01 +0900 (JST)
-Received: from User (unknown [95.77.104.79])
-        by smtp3.canonet.ne.jp (Postfix) with ESMTPA id A1B0C15F962;
-        Thu, 18 Nov 2021 22:31:24 +0900 (JST)
-Reply-To: <drefri677tg@gmail.com>
-From:   "Dean" <inazawa@senko-sha.co.jp>
-Subject: Re: How Are You Today?
-Date:   Thu, 18 Nov 2021 13:31:59 -0000
-MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-X-EsetResult: clean, %VIRUSNAME%
-X-ESET-AS: R=SPAM;S=100;OP=CALC;TIME=1637242382;VERSION=7909;MC=1267769;TRN=15;CRV=0;IPC=95.77.104.79;SP=4;SIPS=1;PI=5;F=0
-X-I-ESET-AS: RN=442,304:0,624:1;RNP=95.77.104.79,drefri677tg@gmail.com
-X-ESET-Antispam: SPAM
-Message-Id: <20211118133301.CF98E1C023A@echeck3.canonet.ne.jp>
-To:     undisclosed-recipients:;
+        Thu, 18 Nov 2021 08:35:09 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id DE56E1FD29;
+        Thu, 18 Nov 2021 13:32:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1637242327; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vJPpmSqwfQ+E7wyd/Ugvv0kRl9SOxF8b6yI9zshXapU=;
+        b=coMFhzHHTNQpqP1vGLhw2kauOIpNkdWyBHBsqcWy9r4oHA9e68LtK1QoLLxzYzAiU6NtGj
+        x2NUoxsicqy/j+e1B6vDvB/EM69jn9wLdI3wlqK35mUMvybrgWMMzMsXILsnoNE3qus2NR
+        rls9WDtUkoFvCtON7XpNWB03Q9b1pSw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1637242327;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vJPpmSqwfQ+E7wyd/Ugvv0kRl9SOxF8b6yI9zshXapU=;
+        b=yU4K9TSDyOFY52UmX/MihBq1XfW8lh/RgMb9KD91z2TRONEEnOwARA5K/c1N63b6uzB7QM
+        wN4j1FTX+8eEHQCA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id B17A4A3B81;
+        Thu, 18 Nov 2021 13:32:07 +0000 (UTC)
+Date:   Thu, 18 Nov 2021 14:32:07 +0100
+Message-ID: <s5hzgq1io88.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <perex@perex.cz>,
+        <tiwai@suse.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <alsa-devel@alsa-project.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 12/16] ASoC: tegra: Fix kcontrol put callback in MVC
+In-Reply-To: <1637219231-406-13-git-send-email-spujar@nvidia.com>
+References: <1637219231-406-1-git-send-email-spujar@nvidia.com>
+        <1637219231-406-13-git-send-email-spujar@nvidia.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good Day,
+On Thu, 18 Nov 2021 08:07:07 +0100,
+Sameer Pujar wrote:
+> 
+> The kcontrol put callback is expected to return 1 when there is change
+> in HW or when the update is acknowledged by driver. This would ensure
+> that change notifications are sent to subscribed applications. Filter
+> out duplicate updates in MVC driver.
+> 
+> Fixes: e539891f9687 ("ASoC: tegra: Add Tegra210 based MVC driver")
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> Suggested-by: Jaroslav Kysela <perex@perex.cz>
+> Suggested-by: Mark Brown <broonie@kernel.org>
+> ---
+>  sound/soc/tegra/tegra210_mvc.c | 22 ++++++++++++++++++----
+>  1 file changed, 18 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/soc/tegra/tegra210_mvc.c b/sound/soc/tegra/tegra210_mvc.c
+> index b7e3170..85b1558 100644
+> --- a/sound/soc/tegra/tegra210_mvc.c
+> +++ b/sound/soc/tegra/tegra210_mvc.c
+> @@ -136,7 +136,7 @@ static int tegra210_mvc_put_mute(struct snd_kcontrol *kcontrol,
+>  	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
+>  	struct tegra210_mvc *mvc = snd_soc_component_get_drvdata(cmpnt);
+>  	unsigned int value;
+> -	u8 mute_mask;
+> +	u8 new_mask, old_mask;
+>  	int err;
+>  
+>  	pm_runtime_get_sync(cmpnt->dev);
+> @@ -148,11 +148,19 @@ static int tegra210_mvc_put_mute(struct snd_kcontrol *kcontrol,
+>  	if (err < 0)
+>  		goto end;
+>  
+> -	mute_mask = ucontrol->value.integer.value[0];
+> +	regmap_read(mvc->regmap, TEGRA210_MVC_CTRL, &value);
+> +
+> +	old_mask = (value >> TEGRA210_MVC_MUTE_SHIFT) & TEGRA210_MUTE_MASK_EN;
+> +	new_mask = ucontrol->value.integer.value[0];
+> +
+> +	if (new_mask == old_mask) {
+> +		err = 0;
+> +		goto end;
+> +	}
+>  
+>  	err = regmap_update_bits(mvc->regmap, mc->reg,
+>  				 TEGRA210_MVC_MUTE_MASK,
+> -				 mute_mask << TEGRA210_MVC_MUTE_SHIFT);
+> +				 new_mask << TEGRA210_MVC_MUTE_SHIFT);
 
-I hope this message finds you in good health .
-I am still waiting for your response to my numerous unreplied emails to you concerning your relative inheritance fund valued 9.8M USD left in our bank here before his untimely death. Contact me for more details on my private email address   defra54tg@gmail.com  so that you can understand better.
+I guess this test-and-update procedure can be simplified with
+regmap_update_bits_check().
 
-I await your response.
-Mr.Dean
+
+thanks,
+
+Takashi
