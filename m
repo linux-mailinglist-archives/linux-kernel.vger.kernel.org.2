@@ -2,189 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F2F456501
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 22:23:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A7D456503
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 22:24:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230266AbhKRV0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 16:26:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbhKRV0x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 16:26:53 -0500
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C5EEC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 13:23:52 -0800 (PST)
-Received: by mail-ot1-x32c.google.com with SMTP id a23-20020a9d4717000000b0056c15d6d0caso13261912otf.12
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 13:23:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UWACXBbqRdeol3CXg5rFjYspFN+GWNxgtVk6AOTQB1Y=;
-        b=YQdznxljCTKZuu8S49lt0p3eYl8ryeVW22jLBlQGaQshzaVOw22E/xxGibi9GBUE3W
-         rZ9J0lrXplM/5P9PeW4sYiveFTbIQfzCqokBKYXXO9Im6ytnzVfQN5g/2zCrSEVdS1x9
-         PqwnmDPtTnzWX+q+AgI4ZKn5jvHGec3AVPgQ6y+zBUbm2RGrwAN3614aXB5v+nHXYNUY
-         Fu9gkFRNWPXKKjVjDR5Kz6TS94eo8wIFvN+Ya6c285fJphNiG5TXKIdHN4q38n0hjF3z
-         n3Qnll8tmp7qreeaY3XAkvGyoeHYBv3SEXCYtqDZavF+Dc1k9KP9ktZqe/vhuKEpDxUr
-         z6tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=UWACXBbqRdeol3CXg5rFjYspFN+GWNxgtVk6AOTQB1Y=;
-        b=tZo+EDjloLYdgujJ0j9UqPRwR+NfRMyrrGeNjafMFpDvHI4NjQjQDDTi4y442+1Zgm
-         n4YrnMZ8230zpGaeNMmrRAdeWxzuBF1MYo4JLCxYRpuEW/FWtbQm2fz76fZf31o23hNz
-         Tia5QjsPVOg2VVPv2g+iP27D8cqe3p7342fcqspLEbm0eswyCkShcSwn/gRpRdf0SWNP
-         lO65qWcLc9o0PTfKx3qfpI3JRqwKDjSHMN0UsVy5XlxqF2/BbiNBr7khIyRCXAp0CMsi
-         PyIvt/PsaQVMLwzdBT1ha7LH58WnkNCKC+s3YdWHxrOWmVLqKs6mI/GlRcQesnNDzn8T
-         rsWw==
-X-Gm-Message-State: AOAM531u7LHRd1TjB6S9H4hQmoSgqDdNl9WraUWUbUEZDiclMfdqEdcd
-        Q9B+xAm3GJYfTcfcKGp+dRs=
-X-Google-Smtp-Source: ABdhPJwWg8Wje8poBr0MOTXBSHqruwMlvAW14Sn2MrWZ6wd3sgB7FUm+A5CA3Jyg09GoFZu779Ue2A==
-X-Received: by 2002:a05:6830:3113:: with SMTP id b19mr284327ots.9.1637270631904;
-        Thu, 18 Nov 2021 13:23:51 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id e28sm227315oiy.10.2021.11.18.13.23.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 13:23:51 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 18 Nov 2021 13:23:49 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Anton Altaparmakov <anton@tuxera.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>
-Subject: Re: Linux 5.16-rc1
-Message-ID: <20211118212349.GA3424901@roeck-us.net>
-References: <CAHk-=wjF=JzLkCi2wV+G=f8OWa5rNjPsZd2RMFG5MHwKZPgYvw@mail.gmail.com>
- <20211115045616.GA1012538@roeck-us.net>
- <CAHk-=whca4JrEExUZCf+iGhP+mV-_D2uyqiFHnaYqnfCOKyEVg@mail.gmail.com>
- <652edea7-28a0-70d9-c63f-d910b5942454@roeck-us.net>
- <87a6i4miwu.fsf@mpe.ellerman.id.au>
- <CAMuHMdVrpQJKKzpxrKKCCD_2+DzAvgFW+jsjPdR9JhBYeRgvNw@mail.gmail.com>
- <8D79B547-D606-4975-A79A-AEA65684F3A0@tuxera.com>
- <CAHk-=wgvzH=BaFg+kiWk1DXGLNELSmPS2VWcgSSmW5Y6vz-v_A@mail.gmail.com>
- <E1EED1BE-A0F0-4EFA-86A6-CF721E194CDC@tuxera.com>
- <CAHk-=wjoQYuOfhsiPXUvFbUbSd5iHmmoRHMP+zv+bzHKkWqAyA@mail.gmail.com>
+        id S230398AbhKRV1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 16:27:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230274AbhKRV1M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 16:27:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15E6260EBD;
+        Thu, 18 Nov 2021 21:24:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637270652;
+        bh=TYswleEFlex6fJqliFbnTWm7RMblNeV+4kiIIa4Ympw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d+H5yVhKNS5UvAtPm6UEXFf0CtRPNFIhCvJCkHXzsLUjOcWE2soaOuvgzMxEH2WQW
+         pMk1GMLxEeyjacExyqZVV4aI3tcUz5kd+V1WgslDD73ozUgvb2i14c3F2imBT/5JZ4
+         wqv8FdDgm0V78yydZIsEB+EfT4veEFqmjtzbUkHycQpl1WMejLhTsto+N7D0I5Z4fm
+         ghWnwTHCwyPkHtVNt8QmzMg9kL7l6W0EZ61hDvBye4LS16OpKh547fGxMHdoLnnIJO
+         Gc5aV6flPNosvPiQFFWvh1zeIWk0bGJd3IyCKDqlZs56NUFuGXh6IZB6SYPr5kjC94
+         LjC3Ih3U/7FFg==
+Date:   Thu, 18 Nov 2021 23:24:02 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, ebiederm@xmission.com,
+        rostedt@goodmis.org, mingo@redhat.com, hagen@jauu.net,
+        James.Bottomley@hansenpartnership.com, akpm@linux-foundation.org,
+        vvs@virtuozzo.com, shakeelb@google.com,
+        christian.brauner@ubuntu.com, mkoutny@suse.com,
+        Pavel Emelyanov <ovzxemul@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>, criu@openvz.org
+Subject: Re: [RFC PATCH 0/4] namespacefs: Proof-of-Concept
+Message-ID: <YZbEcvH+BWwSqeeC@kernel.org>
+References: <20211118181210.281359-1-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wjoQYuOfhsiPXUvFbUbSd5iHmmoRHMP+zv+bzHKkWqAyA@mail.gmail.com>
+In-Reply-To: <20211118181210.281359-1-y.karadz@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 05:54:06PM -0800, Linus Torvalds wrote:
-> On Wed, Nov 17, 2021 at 5:26 PM Anton Altaparmakov <anton@tuxera.com> wrote:
-> >
-> > So is it worth doing the singly linked list to fix one file only to have compilation fail a few files later when it gets to mft.c?
+(added more CRIU folks)
+
+On Thu, Nov 18, 2021 at 08:12:06PM +0200, Yordan Karadzhov (VMware) wrote:
+> We introduce a simple read-only virtual filesystem that provides
+> direct mechanism for examining the existing hierarchy of namespaces
+> on the system. For the purposes of this PoC, we tried to keep the
+> implementation of the pseudo filesystem as simple as possible. Only
+> two namespace types (PID and UTS) are coupled to it for the moment.
+> Nevertheless, we do not expect having significant problems when
+> adding all other namespace types.
 > 
-> Heh.
+> When fully functional, 'namespacefs' will allow the user to see all
+> namespaces that are active on the system and to easily retrieve the
+> specific data, managed by each namespace. For example the PIDs of
+> all tasks enclosed in the individual PID namespaces. Any existing
+> namespace on the system will be represented by its corresponding
+> directory in namespacesfs. When a namespace is created a directory
+> will be added. When a namespace is destroyed, its corresponding
+> directory will be removed. The hierarchy of the directories will
+> follow the hierarchy of the namespaces.
 > 
-> That does sound dubious.
+> One may argue that most of the information, being exposed by this
+> new filesystem is already provided by 'procfs' in /proc/*/ns/. In
+> fact, 'namespacefs' aims to be complementary to 'procfs', showing not
+> only the individual connections between a process and its namespaces,
+> but also the global hierarchy of these connections. As a usage example,
+> before playing with 'namespacefs', I had no idea that the Chrome web
+> browser creates a number of nested PID namespaces. I can only guess
+> that each tab or each site is isolated in a nested namespace.
 > 
-> Honestly, maybe the solution here is to just make the Kconfig depend
-> on the page size not being excessive for what NTFS wants to do.
+> Being able to see the structure of the namespaces can be very useful
+> in the context of the containerized workloads. This will provide
+> universal methods for detecting, examining and monitoring all sorts
+> of containers running on the system, without relaying on any specific
+> user-space software. Fore example, with the help of 'namespacefs',
+> the simple Python script below can discover all containers, created
+> by 'Docker' and Podman' (by all user) that are currently running on
+> the system.
 > 
-> Because I'm not sure that "powerpc with 64kB pages" is all that
-> relevant for NTFS to begin with.
 > 
-> The main problem is that the page size thing isn't some generic
-> Kconfig entry, different architectures have different names for it. On
-> PPC, the confic name is PPC_*K_PAGES and PPC_PAGE_SHIFT.
+> import sys
+> import os
+> import pwd
 > 
-> And arm64 has something very similar.
+> path = '/sys/fs/namespaces'
 > 
-> We have other things that do that, ie KASAN support has
+> def pid_ns_tasks(inum):
+>     tasks_file = '{0}/pid/{1}/tasks'.format(path ,inum)
+>     with open(tasks_file) as f:
+>         return [int(pid) for pid in f]
 > 
->         select HAVE_ARCH_KASAN  if PPC32 && PPC_PAGE_SHIFT <= 14
+> def uts_ns_inum(pid):
+>     uts_ns_file = '/proc/{0}/ns/uts'.format(pid)
+>     uts_ns = os.readlink(uts_ns_file)
+>     return  uts_ns.split('[')[1].split(']')[0]
 > 
-> (and something very similar for arm64).
+> def container_info(pid_inum):
+>     pids = pid_ns_tasks(inum)
+>     name = ''
+>     uid = -1
 > 
-> But those KASAN dependencies are inside the core architecture Kconfig
-> files, so it can fairly naturally use that page size config variable
-> as a conditional.
+>     if len(pids):
+>         uts_inum = uts_ns_inum(pids[0])
+>         uname_file = '{0}/uts/{1}/uname'.format(path, uts_inum)
+>         if os.path.exists(uname_file):
+>             stat_info = os.stat(uname_file)
+>             uid = stat_info.st_uid
+>             with open(uname_file) as f:
+>                 name = f.read().split()[1]
 > 
-> For something like NTFS, we don't really have a generic Kconfig
-> variable to test.
+>     return name, pids, uid
 > 
-> It wouldn't be _hard_ to add, but it would have to be done somewhat
-> sensibly and preferably in a way that doesn't require every
-> architecture to change how their page size selection (or lack of
-> selection) is done.
+> if __name__ == "__main__":
+>     pid_ns_list = os.listdir('{0}/pid'.format(path))
+>     for inum in pid_ns_list:
+>         name, pids, uid = container_info(inum)
+>         if (name):
+>             user = pwd.getpwuid(uid).pw_name
+>             print("{0} -> pids: {1} user: {2}".format(name, pids, user))
 > 
-> The simplest thing would probably be to add something like
->      config BIG_PAGES
->           bool
 > 
-> to some generic file, and then add
 > 
->         select BIG_PAGES
+> The idea for 'namespacefs' is inspired by the discussion of the
+> 'Container tracing' topic [1] during the 'Tracing micro-conference' [2]
+> at LPC 2021.
 > 
-> to PPC and arm64 for the 64kB+ page size, and add a
+> 1. https://www.youtube.com/watch?v=09bVK3f0MPg&t=5455s
+> 2. https://www.linuxplumbersconf.org/event/11/page/104-accepted-microconferences
 > 
->         depends on !BIG_PAGES
 > 
-> to the NTFS Kconfig entry.
+> Yordan Karadzhov (VMware) (4):
+>   namespacefs: Introduce 'namespacefs'
+>   namespacefs: Add methods to create/remove PID namespace directories
+>   namespacefs: Couple namespacefs to the PID namespace
+>   namespacefs: Couple namespacefs to the UTS namespace
 > 
-> But that honestly looks a bit hacky to me. It would be less hacky to
-> just add a PAGE_SIZE config variable, and have architectures just set
-> it, and then NTFS could do
+>  fs/Kconfig                  |   1 +
+>  fs/Makefile                 |   1 +
+>  fs/namespacefs/Kconfig      |   6 +
+>  fs/namespacefs/Makefile     |   4 +
+>  fs/namespacefs/inode.c      | 410 ++++++++++++++++++++++++++++++++++++
+>  include/linux/namespacefs.h |  73 +++++++
+>  include/linux/ns_common.h   |   4 +
+>  include/uapi/linux/magic.h  |   2 +
+>  kernel/pid_namespace.c      |   9 +
+>  kernel/utsname.c            |   9 +
+>  10 files changed, 519 insertions(+)
+>  create mode 100644 fs/namespacefs/Kconfig
+>  create mode 100644 fs/namespacefs/Makefile
+>  create mode 100644 fs/namespacefs/inode.c
+>  create mode 100644 include/linux/namespacefs.h
 > 
->         depends on PAGE_SIZE < 65536
-> 
-> or whatever. I just don't know if it's worth it if this is only for NTFS.
+> -- 
+> 2.33.1
 > 
 
-Like this ?
-
-Guenter
-
----
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index dea74d7717c0..fd3fb2ab2350 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -767,6 +767,16 @@ config PPC_PAGE_SHIFT
-        default 14 if PPC_16K_PAGES
-        default 12
-
-+config HAVE_PAGE_SIZE
-+       def_bool y
-+
-+config PAGE_SIZE
-+       int
-+       default 262144 if PPC_256K_PAGES
-+       default 65536 if PPC_64K_PAGES
-+       default 16384 if PPC_16K_PAGES
-+       default 4096
-+
- config THREAD_SHIFT
-        int "Thread shift" if EXPERT
-        range 13 15
-diff --git a/fs/ntfs/Kconfig b/fs/ntfs/Kconfig
-index 1667a7e590d8..912361014bb0 100644
---- a/fs/ntfs/Kconfig
-+++ b/fs/ntfs/Kconfig
-@@ -1,6 +1,16 @@
- # SPDX-License-Identifier: GPL-2.0-only
-+
-+config NTFS_PAGE_SIZE_LIMIT
-+       int
-+       default 262144 if FRAME_WARN >= 8192
-+       default 131072 if FRAME_WARN >= 4096
-+       default 65536 if FRAME_WARN >= 2048
-+       default 32768 if FRAME_WARN >= 1024
-+       default 16384
-+
- config NTFS_FS
-        tristate "NTFS file system support"
-+       depends on !WERROR || !HAVE_PAGE_SIZE || PAGE_SIZE < NTFS_PAGE_SIZE_LIMIT
-        select NLS
-        help
-          NTFS is the file system of Microsoft Windows NT, 2000, XP and 2003.
-
+-- 
+Sincerely yours,
+Mike.
