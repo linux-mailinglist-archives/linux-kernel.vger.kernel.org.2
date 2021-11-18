@@ -2,158 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E4B45639D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 20:45:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0604563A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 20:46:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232799AbhKRTsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 14:48:32 -0500
-Received: from polaris.svanheule.net ([84.16.241.116]:32786 "EHLO
-        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232597AbhKRTsb (ORCPT
+        id S233115AbhKRTtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 14:49:16 -0500
+Received: from out03.mta.xmission.com ([166.70.13.233]:42156 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232804AbhKRTtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 14:48:31 -0500
-Received: from [IPv6:2a02:a03f:eafe:c901:baf4:d6c5:5600:301] (unknown [IPv6:2a02:a03f:eafe:c901:baf4:d6c5:5600:301])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id AA47827392C;
-        Thu, 18 Nov 2021 20:45:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1637264730;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hTg71gT4+sSOxaZJj0tu0X+/0mdwoiEc4gEID80RIMM=;
-        b=k5l/w2mSnqHVRr/utbcyislFKhi2HMH8jKrrBIJFtn3PhA5TypA7dmA/xvf8Vl6lCC41by
-        b7sgTKIF5RvtRUrBhxP1uulHAwY5Ej8goW0W1pKMubmRdDZeYRWSJ4kjse577z2mMu4MMP
-        dMVY2IfWBds24uXAXEPLZ3/pxCVe5x6AJmeG+U23A4a1AHZQdBrKwlKT6ajAJBqKAvXCOx
-        ezjRdh8f+h0E9WrWhjuo93qiahIXeml1vl/Y8rCE1n88qeDmLd1Id5pUxY2DLsOOcG6Hy+
-        gxe9JYt66QOe9vAYelKIYuwzVDRfZNmFfadTuFbNDv/oanhOMSCxFliCTx61dQ==
-Message-ID: <fdfe6615a0ec0d4a770b04a437922956e8586078.camel@svanheule.net>
-Subject: Re: realtek,rtl-intc IRQ mapping broken on 5.16-rc1
-From:   Sander Vanheule <sander@svanheule.net>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Birger Koblitz <mail@birger-koblitz.de>,
-        Bert Vermeulen <bert@biot.com>,
-        John Crispin <john@phrozen.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>
-Date:   Thu, 18 Nov 2021 20:45:26 +0100
-In-Reply-To: <87ilwp6zm6.wl-maz@kernel.org>
-References: <bbe5506a2458b2d6049bd22a5fda77ae6175ddec.camel@svanheule.net>
-         <87ilwp6zm6.wl-maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
+        Thu, 18 Nov 2021 14:49:14 -0500
+Received: from in01.mta.xmission.com ([166.70.13.51]:45014)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mnnML-000oY8-MV; Thu, 18 Nov 2021 12:46:13 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:48772 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mnnMK-003oBG-Co; Thu, 18 Nov 2021 12:46:13 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Qian Cai <quic_qiancai@quicinc.com>
+Cc:     Alexey Gladkov <legion@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        <linux-kernel@vger.kernel.org>
+References: <YZV7Z+yXbsx9p3JN@fixkernel.com>
+Date:   Thu, 18 Nov 2021 13:46:05 -0600
+In-Reply-To: <YZV7Z+yXbsx9p3JN@fixkernel.com> (Qian Cai's message of "Wed, 17
+        Nov 2021 17:00:07 -0500")
+Message-ID: <875ysptfgi.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-XM-SPF: eid=1mnnMK-003oBG-Co;;;mid=<875ysptfgi.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/TnzlgEA7YGDyydVrGjr/zPCC+vAMjgt0=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=8.0 tests=ALL_TRUSTED,BAYES_40,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
+        *      [score: 0.2102]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa03 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa03 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Qian Cai <quic_qiancai@quicinc.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 282 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 4.7 (1.7%), b_tie_ro: 3.2 (1.1%), parse: 0.99
+        (0.4%), extract_message_metadata: 11 (4.1%), get_uri_detail_list: 1.29
+        (0.5%), tests_pri_-1000: 10 (3.6%), tests_pri_-950: 1.03 (0.4%),
+        tests_pri_-900: 0.80 (0.3%), tests_pri_-90: 66 (23.6%), check_bayes:
+        65 (23.2%), b_tokenize: 3.7 (1.3%), b_tok_get_all: 5 (1.9%),
+        b_comp_prob: 1.31 (0.5%), b_tok_touch_all: 52 (18.5%), b_finish: 0.71
+        (0.3%), tests_pri_0: 173 (61.5%), check_dkim_signature: 0.36 (0.1%),
+        check_dkim_adsp: 2.1 (0.7%), poll_dns_idle: 0.62 (0.2%), tests_pri_10:
+        2.7 (1.0%), tests_pri_500: 7 (2.6%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: BUG: KASAN: use-after-free in dec_rlimit_ucounts
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+Qian Cai <quic_qiancai@quicinc.com> writes:
 
-On Thu, 2021-11-18 at 19:19 +0000, Marc Zyngier wrote:
-> Hi Sander,
-> 
-> On Thu, 18 Nov 2021 15:56:06 +0000,
-> Sander Vanheule <sander@svanheule.net> wrote:
-> > 
-> > Hi everyone,
-> > 
-> > On 5.16-rc1, the realtek,rtl-intc interrupt controller driver for
-> > Realtek RTL8380 SoCs (and related) appears broken. When booting, I
-> > don't get a tty on the serial port, although serial output works.
-> 
-> Thanks for the heads up.
-> 
-> > The watchdog (currently under review) also cannot acquire the
-> > required phase1 interrupt, and produces the following output:
-> 
-> > [    1.968228] realtek-otto-watchdog 18003150.watchdog: error -EINVAL: Failed to get
-> > IRQ 4
-> > for phase1
-> > [    1.978404] realtek-otto-watchdog: probe of 18003150.watchdog failed with error -22
-> > 
-> > A bisects points to commit 041284181226 ("of/irq: Allow matching of
-> > an interrupt-map local to an interrupt controller"). Reverting this
-> > above commit and follow-up commit 10a20b34d735 ("of/irq: Don't
-> > ignore interrupt-controller when interrupt-map failed") restores the
-> > functionality from v5.15.
-> 
-> OK, back to square one, we need to debug this one.
-> 
-> [...]
-> 
-> >         cpuintc: cpuintc {
-> >                 compatible = "mti,cpu-interrupt-controller";
-> >                 #address-cells = <0>;
-> >                 #interrupt-cells = <1>;
-> >                 interrupt-controller;
-> >         };
-> > 
-> 
-> [...]
-> 
-> > 
-> >                 intc: interrupt-controller@3000 {
-> >                         compatible = "realtek,rtl-intc";
-> >                         reg = <0x3000 0x20>;
-> >                         interrupt-controller;
-> >                         #interrupt-cells = <1>;
-> > 
-> >                         #address-cells = <0>;
-> >                         interrupt-map =
-> >                                 <31 &cpuintc 2>, /* UART0 */
-> >                                 <20 &cpuintc 3>, /* SWCORE */
-> >                                 <19 &cpuintc 4>, /* WDT IP1 */
-> >                                 <18 &cpuintc 5>; /* WDT IP2 */
-> >                 };
-> 
-> Something looks pretty odd. With 5.15, this interrupt-map would be
-> completely ignored. With 5.16-rc1, we should actually honour it.
-> 
-> /me digs...
-> 
-> Gah, I see. This driver has its own interrupt-map parser and invents
-> something out of thin air. I will bang my own head on the wall for
-> having merged this horror.
-> 
-> Can you try applying the patch below and rename the interrupt-map
-> property in your DT to "silly-interrupt-map" and let me know if that
-> helps?
+> Hi there, I can still reproduce this quickly on today's linux-next and all
+> the way back to 5.15-rc6 by running a syscall fuzzer for a while. The trace
+> points out to this line,
+>
+>         for (iter = ucounts; iter; iter = iter->ns->ucounts) {
+>
+> It looks KASAN indicated that that "ns" had already been freed. Is that
+> possible or perhaps this is more of refcount issue?
 
-I've dropped the aforementioned reverts, and applied your suggested changes to the DTS and
-irq-realtek-rtl. Interrupts now appear to work like before; UART console and watchdog work
-as expected.
+Is it possible?  Yes it is possible.  That is one place where
+a use-after-free has shown up and I expect would show up in the
+future.
 
-Best,
-Sander
+That said it is hard to believe there is still a user-after-free in the
+code.  We spent the last kernel development cycle pouring through and
+correcting everything we saw until we ultimately found one very subtle
+use-after-free.
 
-> 
-> That's of course not the right fix, but that's just to confirm the
-> extent of the damage...
-> 
->         M.
-> 
-> diff --git a/drivers/irqchip/irq-realtek-rtl.c b/drivers/irqchip/irq-realtek-rtl.c
-> index fd9f275592d2..3641cd2b1a2c 100644
-> --- a/drivers/irqchip/irq-realtek-rtl.c
-> +++ b/drivers/irqchip/irq-realtek-rtl.c
-> @@ -114,7 +114,7 @@ static int __init map_interrupts(struct device_node *node, struct
-> irq_domain *do
->         if (ret || tmp)
->                 return -EINVAL;
->  
-> -       imap = of_get_property(node, "interrupt-map", &imaplen);
-> +       imap = of_get_property(node, "silly-interrupt-map", &imaplen);
->         if (!imap || imaplen % 3)
->                 return -EINVAL;
->  
-> 
+If you have a reliable reproducer that you can share, we can look into
+this and see if we can track down where the reference count is going
+bad.
 
+It tends to take instrumenting the entire life cycle every increment and
+every decrement and then pouring through the logs to track down a
+use-after-free.  Which is not something we can really do without a
+reproducer.
+
+Eric
