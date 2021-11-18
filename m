@@ -2,653 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCABB45535A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 04:20:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9A845535C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 04:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242796AbhKRDWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 22:22:39 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:44269 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239873AbhKRDVs (ORCPT
+        id S241506AbhKRDZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 22:25:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234085AbhKRDZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 22:21:48 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 0C3D65808BA;
-        Wed, 17 Nov 2021 22:18:49 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 17 Nov 2021 22:18:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=qFBdOad+LATh1
-        EQyunyx2SN0JGqvh+Ex84Z4hp/BFIQ=; b=TlQUh+ihn02ip15RcM6hTnpkOZ+bm
-        o0KHmcaV3VukyuqJImaNpkzL+korxXihexYJsgTYkHT+yQbZDhzLjY8zJBSqLOsz
-        3d19/l6/NirhInc7AXPVPNvzOaqpD0LL+syEFOmU1Z7lykJvFlCiE33x2xcKGDrt
-        urSCb4nU10Gbf1zF3kcmXu4GMEdm8rBvbZ9qk5T1n42OIjkg2+1n6hJTTpyo1u3Z
-        H6aaH68uG/V6KAIqvHlxmdPgKpfD63i2avZ7smauJTWxPLdMTTfYU9HGzR9fK7d6
-        J+Wtk41WTDOzwvDvP7YkNpqTXNKSf16XCvEwdE/bE3gtRO8xse0Y0Nktg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=qFBdOad+LATh1EQyunyx2SN0JGqvh+Ex84Z4hp/BFIQ=; b=VpQqze0X
-        w6weI/g8lUN7iOX1cDm/UFIN1rfWCYPTPwJIynjRKudbH+NBBYJiEh0qhQh2wqxC
-        q3VDGpYj6O5LUo6fNttQX9Ttf3qAk6w+XsIu7PrKjseQ8yiJ/ROUnmK8Vb8H/QbP
-        Izdg/rAINAPkK3jVKATJGPY7do6sUSr+xdAFKOk3QVbbV8J8lGPytZwMGTEkSw8g
-        pYzzekhJo8camx63g8o4ZkwNZcbu/4Cy4R72DDKQf6UM/2X8bXqz6ctuq/axozNS
-        hEJEqCoS/s07gLaCW4Ev2GaqLLqylMiTtRfPybztPQykXKjKtSgGR20qtOH61QST
-        y/x+hBMMkV5Yxg==
-X-ME-Sender: <xms:GMaVYfG2ftnwFRiJCxPZgqKdg1576jCiIei8K9nloTgpxMydJmexnA>
-    <xme:GMaVYcWGcl9zqgNw6stt59kCaAvmaq6PnuE19bvmn0MbfePzD9UNyOYyi2UyIV5ZU
-    FfmrbobUQJon8Hb6g>
-X-ME-Received: <xmr:GMaVYRK41JOZid1PGmgDM0-8BOLqsEHdrrqAbYKX9RoHDHtsfjZxxLFFLhmgXdLg217ZgzDcgscvlTbXnvpRNJGH3Sc_IB0Wva611xMxIlJ3bE0CUQb6CC_aBho_jW4ZZfMO2Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeehgdehhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghl
-    ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrf
-    grthhtvghrnhepudfhjeefvdfhgfefheetgffhieeigfefhefgvddvveefgeejheejvdfg
-    jeehueeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:GMaVYdH3baDzmvyXF4cOYHzW7t6U3GFZ48jU3qEs4cc5DFxGBdFkbA>
-    <xmx:GMaVYVUOaAqXG_YtbPhl594PQoKLv6JPV8Z1sKFCpOaios1s6VPzLg>
-    <xmx:GMaVYYMUcVjy1hg7VLMXCDt_uUkgOmqF4ixnZDAUh2SaLHgGlxvRiw>
-    <xmx:GcaVYQNO0QAplukJQ4P0B6X-jAsjZkG5ma6VX0b0ARtG2Zkjw-HtXQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 17 Nov 2021 22:18:48 -0500 (EST)
-From:   Samuel Holland <samuel@sholland.org>
-To:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v3 6/6] PM / devfreq: Add a driver for the sun8i/sun50i MBUS
-Date:   Wed, 17 Nov 2021 21:18:41 -0600
-Message-Id: <20211118031841.42315-7-samuel@sholland.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211118031841.42315-1-samuel@sholland.org>
-References: <20211118031841.42315-1-samuel@sholland.org>
+        Wed, 17 Nov 2021 22:25:22 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2102C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 19:22:22 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id m14so4549368pfc.9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 19:22:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version;
+        bh=xedMP1ZkqZXA2h8jwzBT2LFvWL5ySMN/Y1y8FYtzcIU=;
+        b=Nl41wYBaSKRsBwRePkbDlYmaSIm1ofrircMokZqEZXuh0PLW2T7BjOQbld9LWD6AMw
+         YlYJHG7u/FG8b8uvzOv0YKeI/rdlxl4pDTFcy9CPWnq6E4SSSMrb0XEAM1EjXPSyTVrc
+         UkvjcCL7Pl2jtwb2m+oGCCRUZm8+xrittprLY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
+        bh=xedMP1ZkqZXA2h8jwzBT2LFvWL5ySMN/Y1y8FYtzcIU=;
+        b=bpk+PBGdiQoUkp/tJwfNNp0OAshEUv7J4HlyIB/JFD7fGB1LtRulAV+9GQhBfSmUy1
+         E/A6lqMpXh5+5vWerq4psVq7ZAMlGevPVdguQJcjbst+3Vw5ReZhif/DKp3QT1q4B08T
+         yF7aZxLdNIwjLRrTHlwB/bqPd9Mn7FZ+U8AimG5kCJ1gSZaDI554HYYXdQzZKuQfOWKv
+         x3FxQP8pD8hKed3tKmKkve88bjJ80Z4nGZoFC5YXImNVR1ORi3l2leXvX6/mkFOhLtjb
+         28O3Y+xEZNTyKrd5UAik3j7+GspYVLIqtQ4sxA/afVthoXz7taMfhTYLjyMMHy2TbclG
+         FdEg==
+X-Gm-Message-State: AOAM533s3evIILStODnxwuiIWqPVaPUUtmAvfxcuqffjXvLPBfUctzN+
+        ibI53BPyoLKrTAcmhBgrN0hYjiRPA1FZbnfW9ffDPVBt7tgOb/NDcJx2SZVR/ndHFVp9qnx3tlM
+        fx45L1MuIHMpb1o9WUTLQHYy7RYO3CIk0QSqou+yWv0BJtt6LMPyHAXvtUek1sU3Xj9E+YZ90iQ
+        15bDdKvTKXgwtpp1B3Jw==
+X-Google-Smtp-Source: ABdhPJyG8vcHm57su/Lt54mqQMlVn8EkoGKgG4m2E5IO3q/O83iasrtBG9y5eblpIEd3EU1AYZcU7w==
+X-Received: by 2002:a65:6a4b:: with SMTP id o11mr9001190pgu.305.1637205741013;
+        Wed, 17 Nov 2021 19:22:21 -0800 (PST)
+Received: from ldt-sj3-komrakov.dhcp.broadcom.net ([192.19.222.250])
+        by smtp.gmail.com with ESMTPSA id z10sm1049654pfh.106.2021.11.17.19.22.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 19:22:20 -0800 (PST)
+From:   Alexander Komrakov <alexander.komrakov@broadcom.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     alexander.komrakov@broadcom.com
+Subject: [PATCH 1/1] Calculate the monotonic clock from the timespec clock to generate PPS elapsed real-time event value and stores the result into /sys/class/pps/pps0/assert_elapsed.
+Date:   Wed, 17 Nov 2021 19:22:16 -0800
+Message-Id: <20211118032217.244985-1-alexander.komrakov@broadcom.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000b120da05d107aaec"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver works by adjusting the divider on the DRAM controller's
-module clock. Thus there is no fixed set of OPPs, only "full speed" down
-to "quarter speed" (or whatever the maximum divider is on that variant).
+--000000000000b120da05d107aaec
+Content-Type: text/plain; charset="US-ASCII"
 
-It makes use of the MDFS hardware in the MBUS, in "DFS" mode, which
-takes care of updating registers during the critical section while DRAM
-is inaccessible.
+From: alexkom <alexander.komrakov@broadcom.com>
 
-This driver should support several sunxi SoCs, starting with the A33,
-which have a DesignWare DDR3 controller with merged PHY register space
-and the matching MBUS register layout (so not A63 or later). However,
-the driver has only been tested on the A64/H5, so those are the only
-compatibles enabled for now.
+*** BLURB HERE ***
 
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
- drivers/devfreq/Kconfig          |   8 +
- drivers/devfreq/Makefile         |   1 +
- drivers/devfreq/sun8i-a33-mbus.c | 511 +++++++++++++++++++++++++++++++
- 3 files changed, 520 insertions(+)
- create mode 100644 drivers/devfreq/sun8i-a33-mbus.c
+alexkom (1):
+  Calculate the monotonic clock from the timespec clock to generate PPS
+    elapsed real-time event value and stores the result into
+    /sys/class/pps/pps0/assert_elapsed.
 
-diff --git a/drivers/devfreq/Kconfig b/drivers/devfreq/Kconfig
-index e87d01c0b76a..b94eb04761f6 100644
---- a/drivers/devfreq/Kconfig
-+++ b/drivers/devfreq/Kconfig
-@@ -132,6 +132,14 @@ config ARM_RK3399_DMC_DEVFREQ
- 	  It sets the frequency for the memory controller and reads the usage counts
- 	  from hardware.
- 
-+config ARM_SUN8I_A33_MBUS_DEVFREQ
-+	tristate "sun8i/sun50i MBUS DEVFREQ Driver"
-+	depends on ARCH_SUNXI || COMPILE_TEST
-+	select DEVFREQ_GOV_SIMPLE_ONDEMAND
-+	help
-+	  This adds the DEVFREQ driver for the MBUS controller in some
-+	  Allwinner sun8i (A33 through H3) and sun50i (A64 and H5) SoCs.
-+
- source "drivers/devfreq/event/Kconfig"
- 
- endif # PM_DEVFREQ
-diff --git a/drivers/devfreq/Makefile b/drivers/devfreq/Makefile
-index a16333ea7034..0b6be92a25d9 100644
---- a/drivers/devfreq/Makefile
-+++ b/drivers/devfreq/Makefile
-@@ -12,6 +12,7 @@ obj-$(CONFIG_ARM_EXYNOS_BUS_DEVFREQ)	+= exynos-bus.o
- obj-$(CONFIG_ARM_IMX_BUS_DEVFREQ)	+= imx-bus.o
- obj-$(CONFIG_ARM_IMX8M_DDRC_DEVFREQ)	+= imx8m-ddrc.o
- obj-$(CONFIG_ARM_RK3399_DMC_DEVFREQ)	+= rk3399_dmc.o
-+obj-$(CONFIG_ARM_SUN8I_A33_MBUS_DEVFREQ)	+= sun8i-a33-mbus.o
- obj-$(CONFIG_ARM_TEGRA_DEVFREQ)		+= tegra30-devfreq.o
- 
- # DEVFREQ Event Drivers
-diff --git a/drivers/devfreq/sun8i-a33-mbus.c b/drivers/devfreq/sun8i-a33-mbus.c
-new file mode 100644
-index 000000000000..13d32213139f
---- /dev/null
-+++ b/drivers/devfreq/sun8i-a33-mbus.c
-@@ -0,0 +1,511 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// Copyright (C) 2020-2021 Samuel Holland <samuel@sholland.org>
-+//
-+
-+#include <linux/clk.h>
-+#include <linux/devfreq.h>
-+#include <linux/err.h>
-+#include <linux/io.h>
-+#include <linux/iopoll.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/property.h>
-+
-+#define MBUS_CR				0x0000
-+#define MBUS_CR_GET_DRAM_TYPE(x)	(((x) >> 16) & 0x7)
-+#define MBUS_CR_DRAM_TYPE_DDR2		2
-+#define MBUS_CR_DRAM_TYPE_DDR3		3
-+#define MBUS_CR_DRAM_TYPE_DDR4		4
-+#define MBUS_CR_DRAM_TYPE_LPDDR2	6
-+#define MBUS_CR_DRAM_TYPE_LPDDR3	7
-+
-+#define MBUS_TMR			0x000c
-+#define MBUS_TMR_PERIOD(x)		((x) - 1)
-+
-+#define MBUS_PMU_CFG			0x009c
-+#define MBUS_PMU_CFG_PERIOD(x)		(((x) - 1) << 16)
-+#define MBUS_PMU_CFG_UNIT		(0x3 << 1)
-+#define MBUS_PMU_CFG_UNIT_B		(0x0 << 1)
-+#define MBUS_PMU_CFG_UNIT_KB		(0x1 << 1)
-+#define MBUS_PMU_CFG_UNIT_MB		(0x2 << 1)
-+#define MBUS_PMU_CFG_ENABLE		(0x1 << 0)
-+
-+#define MBUS_PMU_BWCR(n)		(0x00a0 + (0x04 * (n)))
-+
-+#define MBUS_TOTAL_BWCR			MBUS_PMU_BWCR(5)
-+#define MBUS_TOTAL_BWCR_H616		MBUS_PMU_BWCR(13)
-+
-+#define MBUS_MDFSCR			0x0100
-+#define MBUS_MDFSCR_BUFFER_TIMING	(0x1 << 15)
-+#define MBUS_MDFSCR_PAD_HOLD		(0x1 << 13)
-+#define MBUS_MDFSCR_BYPASS		(0x1 << 4)
-+#define MBUS_MDFSCR_MODE		(0x1 << 1)
-+#define MBUS_MDFSCR_MODE_DFS		(0x0 << 1)
-+#define MBUS_MDFSCR_MODE_CFS		(0x1 << 1)
-+#define MBUS_MDFSCR_START		(0x1 << 0)
-+
-+#define MBUS_MDFSMRMR			0x0108
-+
-+#define DRAM_PWRCTL			0x0004
-+#define DRAM_PWRCTL_SELFREF_EN		(0x1 << 0)
-+
-+#define DRAM_RFSHTMG			0x0090
-+#define DRAM_RFSHTMG_TREFI(x)		((x) << 16)
-+#define DRAM_RFSHTMG_TRFC(x)		((x) << 0)
-+
-+#define DRAM_VTFCR			0x00b8
-+#define DRAM_VTFCR_VTF_ENABLE		(0x3 << 8)
-+
-+#define DRAM_ODTMAP			0x0120
-+
-+#define DRAM_DX_MAX			4
-+
-+#define DRAM_DXnGCR0(n)			(0x0344 + 0x80 * (n))
-+#define DRAM_DXnGCR0_DXODT		(0x3 << 4)
-+#define DRAM_DXnGCR0_DXODT_DYNAMIC	(0x0 << 4)
-+#define DRAM_DXnGCR0_DXODT_ENABLED	(0x1 << 4)
-+#define DRAM_DXnGCR0_DXODT_DISABLED	(0x2 << 4)
-+#define DRAM_DXnGCR0_DXEN		(0x1 << 0)
-+
-+struct sun8i_a33_mbus_variant {
-+	u32					min_dram_divider;
-+	u32					max_dram_divider;
-+	u32					odt_freq_mhz;
-+};
-+
-+struct sun8i_a33_mbus {
-+	const struct sun8i_a33_mbus_variant	*variant;
-+	void __iomem				*reg_dram;
-+	void __iomem				*reg_mbus;
-+	struct clk				*clk_bus;
-+	struct clk				*clk_dram;
-+	struct clk				*clk_mbus;
-+	struct devfreq				*devfreq_dram;
-+	struct devfreq_simple_ondemand_data	gov_data;
-+	struct devfreq_dev_profile		profile;
-+	u32					data_width;
-+	u32					nominal_bw;
-+	u32					odtmap;
-+	u32					tREFI_ns;
-+	u32					tRFC_ns;
-+	unsigned long				freq_table[];
-+};
-+
-+/*
-+ * The unit for this value is (MBUS clock cycles / MBUS_TMR_PERIOD). When
-+ * MBUS_TMR_PERIOD is programmed to match the MBUS clock frequency in MHz, as
-+ * it is during DRAM init and during probe, the resulting unit is microseconds.
-+ */
-+static int pmu_period = 50000;
-+module_param(pmu_period, int, 0644);
-+MODULE_PARM_DESC(pmu_period, "Bandwidth measurement period (microseconds)");
-+
-+static u32 sun8i_a33_mbus_get_peak_bw(struct sun8i_a33_mbus *priv)
-+{
-+	/* Returns the peak transfer (in KiB) during any single PMU period. */
-+	return readl_relaxed(priv->reg_mbus + MBUS_TOTAL_BWCR);
-+}
-+
-+static void sun8i_a33_mbus_restart_pmu_counters(struct sun8i_a33_mbus *priv)
-+{
-+	u32 pmu_cfg = MBUS_PMU_CFG_PERIOD(pmu_period) | MBUS_PMU_CFG_UNIT_KB;
-+
-+	/* All PMU counters are cleared on a disable->enable transition. */
-+	writel_relaxed(pmu_cfg,
-+		       priv->reg_mbus + MBUS_PMU_CFG);
-+	writel_relaxed(pmu_cfg | MBUS_PMU_CFG_ENABLE,
-+		       priv->reg_mbus + MBUS_PMU_CFG);
-+
-+}
-+
-+static void sun8i_a33_mbus_update_nominal_bw(struct sun8i_a33_mbus *priv,
-+					     u32 ddr_freq_mhz)
-+{
-+	/*
-+	 * Nominal bandwidth (KiB per PMU period):
-+	 *
-+	 *   DDR transfers   microseconds     KiB
-+	 *   ------------- * ------------ * --------
-+	 *    microsecond     PMU period    transfer
-+	 */
-+	priv->nominal_bw = ddr_freq_mhz * pmu_period * priv->data_width / 1024;
-+}
-+
-+static int sun8i_a33_mbus_set_dram_freq(struct sun8i_a33_mbus *priv,
-+					unsigned long freq)
-+{
-+	u32  ddr_freq_mhz = freq / USEC_PER_SEC; /* DDR */
-+	u32 dram_freq_mhz =    ddr_freq_mhz / 2; /* SDR */
-+	u32 mctl_freq_mhz =   dram_freq_mhz / 2; /* HDR */
-+	u32 dxodt, mdfscr, pwrctl, vtfcr;
-+	u32 i, tREFI_32ck, tRFC_ck;
-+	int ret;
-+
-+	/* The rate change is not effective until the MDFS process runs. */
-+	ret = clk_set_rate(priv->clk_dram, freq);
-+	if (ret)
-+		return ret;
-+
-+	/* Disable automatic self-refesh and VTF before starting MDFS. */
-+	pwrctl = readl_relaxed(priv->reg_dram + DRAM_PWRCTL) &
-+		 ~DRAM_PWRCTL_SELFREF_EN;
-+	writel_relaxed(pwrctl, priv->reg_dram + DRAM_PWRCTL);
-+	vtfcr = readl_relaxed(priv->reg_dram + DRAM_VTFCR);
-+	writel_relaxed(vtfcr & ~DRAM_VTFCR_VTF_ENABLE,
-+		       priv->reg_dram + DRAM_VTFCR);
-+
-+	/* Set up MDFS and enable double buffering for timing registers. */
-+	mdfscr = MBUS_MDFSCR_MODE_DFS |
-+		 MBUS_MDFSCR_BYPASS |
-+		 MBUS_MDFSCR_PAD_HOLD |
-+		 MBUS_MDFSCR_BUFFER_TIMING;
-+	writel(mdfscr, priv->reg_mbus + MBUS_MDFSCR);
-+
-+	/* Update the buffered copy of RFSHTMG. */
-+	tREFI_32ck = priv->tREFI_ns * mctl_freq_mhz / 1000 / 32;
-+	tRFC_ck = DIV_ROUND_UP(priv->tRFC_ns * mctl_freq_mhz, 1000);
-+	writel(DRAM_RFSHTMG_TREFI(tREFI_32ck) | DRAM_RFSHTMG_TRFC(tRFC_ck),
-+	       priv->reg_dram + DRAM_RFSHTMG);
-+
-+	/* Enable ODT if needed, or disable it to save power. */
-+	if (priv->odtmap && dram_freq_mhz > priv->variant->odt_freq_mhz) {
-+		dxodt = DRAM_DXnGCR0_DXODT_DYNAMIC;
-+		writel(priv->odtmap, priv->reg_dram + DRAM_ODTMAP);
-+	} else {
-+		dxodt = DRAM_DXnGCR0_DXODT_DISABLED;
-+		writel(0, priv->reg_dram + DRAM_ODTMAP);
-+	}
-+	for (i = 0; i < DRAM_DX_MAX; ++i) {
-+		void __iomem *reg = priv->reg_dram + DRAM_DXnGCR0(i);
-+
-+		writel((readl(reg) & ~DRAM_DXnGCR0_DXODT) | dxodt, reg);
-+	}
-+
-+	dev_dbg(priv->devfreq_dram->dev.parent,
-+		"Setting DRAM to %u MHz, tREFI=%u, tRFC=%u, ODT=%s\n",
-+		dram_freq_mhz, tREFI_32ck, tRFC_ck,
-+		dxodt == DRAM_DXnGCR0_DXODT_DYNAMIC ? "dynamic" : "disabled");
-+
-+	/* Trigger hardware MDFS. */
-+	writel(mdfscr | MBUS_MDFSCR_START, priv->reg_mbus + MBUS_MDFSCR);
-+	ret = readl_poll_timeout_atomic(priv->reg_mbus + MBUS_MDFSCR, mdfscr,
-+					!(mdfscr & MBUS_MDFSCR_START), 10, 1000);
-+	if (ret)
-+		return ret;
-+
-+	/* Disable double buffering. */
-+	writel(0, priv->reg_mbus + MBUS_MDFSCR);
-+
-+	/* Restore VTF configuration. */
-+	writel_relaxed(vtfcr, priv->reg_dram + DRAM_VTFCR);
-+
-+	/* Enable automatic self-refresh at the lowest frequency only. */
-+	if (freq == priv->freq_table[0])
-+		pwrctl |= DRAM_PWRCTL_SELFREF_EN;
-+	writel_relaxed(pwrctl, priv->reg_dram + DRAM_PWRCTL);
-+
-+	sun8i_a33_mbus_restart_pmu_counters(priv);
-+	sun8i_a33_mbus_update_nominal_bw(priv, ddr_freq_mhz);
-+
-+	return 0;
-+}
-+
-+static int sun8i_a33_mbus_set_dram_target(struct device *dev,
-+					  unsigned long *freq, u32 flags)
-+{
-+	struct sun8i_a33_mbus *priv = dev_get_drvdata(dev);
-+	struct devfreq *devfreq = priv->devfreq_dram;
-+	struct dev_pm_opp *opp;
-+	int ret;
-+
-+	opp = devfreq_recommended_opp(dev, freq, flags);
-+	if (IS_ERR(opp))
-+		return PTR_ERR(opp);
-+
-+	dev_pm_opp_put(opp);
-+
-+	if (*freq == devfreq->previous_freq)
-+		return 0;
-+
-+	ret = sun8i_a33_mbus_set_dram_freq(priv, *freq);
-+	if (ret) {
-+		dev_warn(dev, "failed to set DRAM frequency: %d\n", ret);
-+		*freq = devfreq->previous_freq;
-+	}
-+
-+	return ret;
-+}
-+
-+static int sun8i_a33_mbus_get_dram_status(struct device *dev,
-+					  struct devfreq_dev_status *stat)
-+{
-+	struct sun8i_a33_mbus *priv = dev_get_drvdata(dev);
-+
-+	stat->busy_time		= sun8i_a33_mbus_get_peak_bw(priv);
-+	stat->total_time	= priv->nominal_bw;
-+	stat->current_frequency	= priv->devfreq_dram->previous_freq;
-+
-+	sun8i_a33_mbus_restart_pmu_counters(priv);
-+
-+	dev_dbg(dev, "Using %lu/%lu (%lu%%) at %lu MHz\n",
-+		stat->busy_time, stat->total_time,
-+		DIV_ROUND_CLOSEST(stat->busy_time * 100, stat->total_time),
-+		stat->current_frequency / USEC_PER_SEC);
-+
-+	return 0;
-+}
-+
-+static int sun8i_a33_mbus_hw_init(struct device *dev,
-+				  struct sun8i_a33_mbus *priv,
-+				  unsigned long ddr_freq)
-+{
-+	u32 i, mbus_cr, mbus_freq_mhz;
-+
-+	/* Choose tREFI and tRFC to match the configured DRAM type. */
-+	mbus_cr = readl_relaxed(priv->reg_mbus + MBUS_CR);
-+	switch (MBUS_CR_GET_DRAM_TYPE(mbus_cr)) {
-+	case MBUS_CR_DRAM_TYPE_DDR2:
-+	case MBUS_CR_DRAM_TYPE_DDR3:
-+	case MBUS_CR_DRAM_TYPE_DDR4:
-+		priv->tREFI_ns = 7800;
-+		priv->tRFC_ns = 350;
-+		break;
-+	case MBUS_CR_DRAM_TYPE_LPDDR2:
-+	case MBUS_CR_DRAM_TYPE_LPDDR3:
-+		priv->tREFI_ns = 3900;
-+		priv->tRFC_ns = 210;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	/* Save ODTMAP so it can be restored when raising the frequency. */
-+	priv->odtmap = readl_relaxed(priv->reg_dram + DRAM_ODTMAP);
-+
-+	/* Compute the DRAM data bus width by counting enabled DATx8 blocks. */
-+	for (i = 0; i < DRAM_DX_MAX; ++i) {
-+		void __iomem *reg = priv->reg_dram + DRAM_DXnGCR0(i);
-+
-+		if (!(readl_relaxed(reg) & DRAM_DXnGCR0_DXEN))
-+			break;
-+	}
-+	priv->data_width = i;
-+
-+	dev_dbg(dev, "Detected %u-bit %sDDRx with%s ODT\n",
-+		priv->data_width * 8,
-+		MBUS_CR_GET_DRAM_TYPE(mbus_cr) > 4 ? "LP" : "",
-+		priv->odtmap ? "" : "out");
-+
-+	/* Program MBUS_TMR such that the PMU period unit is microseconds. */
-+	mbus_freq_mhz = clk_get_rate(priv->clk_mbus) / USEC_PER_SEC;
-+	writel_relaxed(MBUS_TMR_PERIOD(mbus_freq_mhz),
-+		       priv->reg_mbus + MBUS_TMR);
-+
-+	/* "Master Ready Mask Register" bits must be set or MDFS will block. */
-+	writel_relaxed(0xffffffff, priv->reg_mbus + MBUS_MDFSMRMR);
-+
-+	sun8i_a33_mbus_restart_pmu_counters(priv);
-+	sun8i_a33_mbus_update_nominal_bw(priv, ddr_freq / USEC_PER_SEC);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused sun8i_a33_mbus_suspend(struct device *dev)
-+{
-+	struct sun8i_a33_mbus *priv = dev_get_drvdata(dev);
-+
-+	clk_disable_unprepare(priv->clk_bus);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused sun8i_a33_mbus_resume(struct device *dev)
-+{
-+	struct sun8i_a33_mbus *priv = dev_get_drvdata(dev);
-+
-+	return clk_prepare_enable(priv->clk_bus);
-+}
-+
-+static int sun8i_a33_mbus_probe(struct platform_device *pdev)
-+{
-+	const struct sun8i_a33_mbus_variant *variant;
-+	struct device *dev = &pdev->dev;
-+	struct sun8i_a33_mbus *priv;
-+	unsigned long base_freq;
-+	unsigned int max_state;
-+	const char *err;
-+	int i, ret;
-+
-+	variant = device_get_match_data(dev);
-+	if (!variant)
-+		return -EINVAL;
-+
-+	max_state = variant->max_dram_divider - variant->min_dram_divider + 1;
-+
-+	priv = devm_kzalloc(dev, struct_size(priv, freq_table, max_state), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(pdev, priv);
-+
-+	priv->variant = variant;
-+
-+	priv->reg_dram = devm_platform_ioremap_resource_byname(pdev, "dram");
-+	if (IS_ERR(priv->reg_dram))
-+		return PTR_ERR(priv->reg_dram);
-+
-+	priv->reg_mbus = devm_platform_ioremap_resource_byname(pdev, "mbus");
-+	if (IS_ERR(priv->reg_mbus))
-+		return PTR_ERR(priv->reg_mbus);
-+
-+	priv->clk_bus = devm_clk_get(dev, "bus");
-+	if (IS_ERR(priv->clk_bus))
-+		return dev_err_probe(dev, PTR_ERR(priv->clk_bus),
-+				     "failed to get bus clock\n");
-+
-+	priv->clk_dram = devm_clk_get(dev, "dram");
-+	if (IS_ERR(priv->clk_dram))
-+		return dev_err_probe(dev, PTR_ERR(priv->clk_dram),
-+				     "failed to get dram clock\n");
-+
-+	priv->clk_mbus = devm_clk_get(dev, "mbus");
-+	if (IS_ERR(priv->clk_mbus))
-+		return dev_err_probe(dev, PTR_ERR(priv->clk_mbus),
-+				     "failed to get mbus clock\n");
-+
-+	ret = clk_prepare_enable(priv->clk_bus);
-+	if (ret)
-+		return dev_err_probe(dev, ret,
-+				     "failed to enable bus clock\n");
-+
-+	/* Lock the DRAM clock rate to keep priv->nominal_bw in sync. */
-+	ret = clk_rate_exclusive_get(priv->clk_dram);
-+	if (ret) {
-+		err = "failed to lock dram clock rate\n";
-+		goto err_disable_bus;
-+	}
-+
-+	/* Lock the MBUS clock rate to keep MBUS_TMR_PERIOD in sync. */
-+	ret = clk_rate_exclusive_get(priv->clk_mbus);
-+	if (ret) {
-+		err = "failed to lock mbus clock rate\n";
-+		goto err_unlock_dram;
-+	}
-+
-+	priv->gov_data.upthreshold	= 10;
-+	priv->gov_data.downdifferential	=  5;
-+
-+	priv->profile.initial_freq	= clk_get_rate(priv->clk_dram);
-+	priv->profile.polling_ms	= 1000;
-+	priv->profile.target		= sun8i_a33_mbus_set_dram_target;
-+	priv->profile.get_dev_status	= sun8i_a33_mbus_get_dram_status;
-+	priv->profile.freq_table	= priv->freq_table;
-+	priv->profile.max_state		= max_state;
-+
-+	ret = devm_pm_opp_set_clkname(dev, "dram");
-+	if (ret) {
-+		err = "failed to add OPP table\n";
-+		goto err_unlock_mbus;
-+	}
-+
-+	base_freq = clk_get_rate(clk_get_parent(priv->clk_dram));
-+	for (i = 0; i < max_state; ++i) {
-+		unsigned int div = variant->max_dram_divider - i;
-+
-+		priv->freq_table[i] = base_freq / div;
-+
-+		ret = dev_pm_opp_add(dev, priv->freq_table[i], 0);
-+		if (ret) {
-+			err = "failed to add OPPs\n";
-+			goto err_remove_opps;
-+		}
-+	}
-+
-+	ret = sun8i_a33_mbus_hw_init(dev, priv, priv->profile.initial_freq);
-+	if (ret) {
-+		err = "failed to init hardware\n";
-+		goto err_remove_opps;
-+	}
-+
-+	priv->devfreq_dram = devfreq_add_device(dev, &priv->profile,
-+						DEVFREQ_GOV_SIMPLE_ONDEMAND,
-+						&priv->gov_data);
-+	if (IS_ERR(priv->devfreq_dram)) {
-+		ret = PTR_ERR(priv->devfreq_dram);
-+		err = "failed to add devfreq device\n";
-+		goto err_remove_opps;
-+	}
-+
-+	/*
-+	 * This must be set manually after registering the devfreq device,
-+	 * because there is no way to select a dynamic OPP as the suspend OPP.
-+	 */
-+	priv->devfreq_dram->suspend_freq = priv->freq_table[0];
-+
-+	return 0;
-+
-+err_remove_opps:
-+	dev_pm_opp_remove_all_dynamic(dev);
-+err_unlock_mbus:
-+	clk_rate_exclusive_put(priv->clk_mbus);
-+err_unlock_dram:
-+	clk_rate_exclusive_put(priv->clk_dram);
-+err_disable_bus:
-+	clk_disable_unprepare(priv->clk_bus);
-+
-+	return dev_err_probe(dev, ret, err);
-+}
-+
-+static int sun8i_a33_mbus_remove(struct platform_device *pdev)
-+{
-+	struct sun8i_a33_mbus *priv = platform_get_drvdata(pdev);
-+	unsigned long initial_freq = priv->profile.initial_freq;
-+	struct device *dev = &pdev->dev;
-+	int ret;
-+
-+	devfreq_remove_device(priv->devfreq_dram);
-+
-+	ret = sun8i_a33_mbus_set_dram_freq(priv, initial_freq);
-+	if (ret)
-+		dev_warn(dev, "failed to restore DRAM frequency: %d\n", ret);
-+
-+	dev_pm_opp_remove_all_dynamic(dev);
-+	clk_rate_exclusive_put(priv->clk_mbus);
-+	clk_rate_exclusive_put(priv->clk_dram);
-+	clk_disable_unprepare(priv->clk_bus);
-+
-+	return 0;
-+}
-+
-+static const struct sun8i_a33_mbus_variant sun50i_a64_mbus = {
-+	.min_dram_divider	= 1,
-+	.max_dram_divider	= 4,
-+	.odt_freq_mhz		= 400,
-+};
-+
-+static const struct of_device_id sun8i_a33_mbus_of_match[] = {
-+	{ .compatible = "allwinner,sun50i-a64-mbus", .data = &sun50i_a64_mbus },
-+	{ .compatible = "allwinner,sun50i-h5-mbus", .data = &sun50i_a64_mbus },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, sun8i_a33_mbus_of_match);
-+
-+static SIMPLE_DEV_PM_OPS(sun8i_a33_mbus_pm_ops,
-+			 sun8i_a33_mbus_suspend, sun8i_a33_mbus_resume);
-+
-+static struct platform_driver sun8i_a33_mbus_driver = {
-+	.probe	= sun8i_a33_mbus_probe,
-+	.remove	= sun8i_a33_mbus_remove,
-+	.driver	= {
-+		.name		= "sun8i-a33-mbus",
-+		.of_match_table	= sun8i_a33_mbus_of_match,
-+		.pm		= pm_ptr(&sun8i_a33_mbus_pm_ops),
-+	},
-+};
-+module_platform_driver(sun8i_a33_mbus_driver);
-+
-+MODULE_AUTHOR("Samuel Holland <samuel@sholland.org>");
-+MODULE_DESCRIPTION("Allwinner sun8i/sun50i MBUS DEVFREQ Driver");
-+MODULE_LICENSE("GPL v2");
+ Documentation/ABI/testing/sysfs-pps | 24 ++++++++++++++++++
+ drivers/pps/kapi.c                  | 38 ++++++++++++++++++++++++++---
+ drivers/pps/sysfs.c                 | 33 +++++++++++++++++++++++++
+ include/linux/pps_kernel.h          |  2 ++
+ 4 files changed, 94 insertions(+), 3 deletions(-)
+
 -- 
-2.32.0
+2.25.1
 
+
+-- 
+This electronic communication and the information and any files transmitted 
+with it, or attached to it, are confidential and are intended solely for 
+the use of the individual or entity to whom it is addressed and may contain 
+information that is confidential, legally privileged, protected by privacy 
+laws, or otherwise restricted from disclosure to anyone else. If you are 
+not the intended recipient or the person responsible for delivering the 
+e-mail to the intended recipient, you are hereby notified that any use, 
+copying, distributing, dissemination, forwarding, printing, or copying of 
+this e-mail is strictly prohibited. If you received this e-mail in error, 
+please return the e-mail to the sender, delete it from your computer, and 
+destroy any printed copy of it.
+
+--000000000000b120da05d107aaec
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+ZX2NhNnwh9gNMFxHdE5c6+G3LG7AHwFOPA6G1TuzZ35urQXh4HWGbGoCJPszKLgccfOBBHYaXyo6
+yiBn77ZVlo89La3IlKW/J8Bg1ZiYHcR6RtGGylxCCKgFDdESfV03AgMBAAGjggHgMIIB3DAOBgNV
+HQ8BAf8EBAMCBaAwgaMGCCsGAQUFBwEBBIGWMIGTME4GCCsGAQUFBzAChkJodHRwOi8vc2VjdXJl
+Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcnQwQQYI
+KwYBBQUHMAGGNWh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24y
+Y2EyMDIwME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3
+dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEkGA1UdHwRCMEAwPqA8oDqG
+OGh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3Js
+MCoGA1UdEQQjMCGBH2FsZXhhbmRlci5rb21yYWtvdkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYI
+KwYBBQUHAwQwHwYDVR0jBBgwFoAUljPR5lgXWzR1ioFWZNW+SN6hj88wHQYDVR0OBBYEFElfe2CJ
+evQgM+vs7qmUiI/AGUBAMA0GCSqGSIb3DQEBCwUAA4IBAQCmTMsF9VHjT0L2ycGjBg8eb/+aTBhL
+U6r4e4vaGj/xmDd1cWfvz4brxodjpmuSnjfyWvU/odcNIepLv17Xc91OiZBWGYgr4jNViUqunvaH
+DCnJlLbrD88ITE1uo7OCdlN/SS+Sskp2dDvL/Xlyorb+PaS7/AaIwEmuGyJv2uv1wQ+UZzPXXo1B
+vOM4N+PxiEKCkmmYhfeSVye92Bta6vjf0b+oDE2JT82+D+9nAfiyJ9P/SRVTTvLlSzcO2fqX6GOc
+37xY9F5HGjunD+cc5mqKM/r5PXyM/LEzWjdU1lVUVuvLRerUn+GNFgAPzpksTVYDv2kuseIFwRrF
+845kQxaRMYICbTCCAmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
+di1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIM
+dggvSHLsW0JrSJrDMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCC4BsvR4ZesMIlq
+bOgvaULtje2hJsOUwu9g/lktbrYjcjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3
+DQEJBTEPFw0yMTExMTgwMzIyMjJaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCG
+SAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEB
+BzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAHSiZ6QVW0nSsG4km4uinkRKcAf8sRbuf
+JbnSEa+ASusSnGh14WtFAsRwClZeKnEJXrYDtNLji8OqcpbBuD5tiCKED9sMN/yLnVBMesS8ixl4
+TGieekKZEa2yF7j26jMSGweE4PNlN/6bEBdV+mGB8maZlIGQ55ea6q2SqGhPmdxvtlOQHtRyoBH/
+xf9M9Z11S4ZYGvaE8JfUZqA8DFvJUpd89Cm04HkvzmezOr+WhSvnK5BZKXQh72b4u2DZYkwHofcL
+xkgBxQBoE+LpcIHf6jQOt8YfUlQGu1McvcDmr0TDA7ZDEkDNGS1YLmMTVOWBpMn0rCTIiXtYODLp
+f14DIQ==
+--000000000000b120da05d107aaec--
