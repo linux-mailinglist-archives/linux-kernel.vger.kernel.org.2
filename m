@@ -2,123 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B70455A07
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:21:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0018F455A09
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:21:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343658AbhKRLYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 06:24:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54285 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343874AbhKRLWD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 06:22:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637234342;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PJitnqPLBSkM+mYouKpFhG+7JBnN4rgOMnx+Y3fh6Vc=;
-        b=WJEKJ2JlBHGkTAlgEkIsOtK2V57NhchzasM2QtS2enkI7WU5QlDDUoLuz1pzF6jwi3dM16
-        sBr5JUjFTEa1cVjgkZSGgXmtSpIDl+9qE1DiSh73nDa4COZafOhLtqupZD+JBDI+96zO0m
-        dj8H4QcdvNiX25/nEWpgiAmX6CuTdGs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-406-ifnd4lH9NTG_rEHC7c_tCg-1; Thu, 18 Nov 2021 06:18:58 -0500
-X-MC-Unique: ifnd4lH9NTG_rEHC7c_tCg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D1AEE180831C;
-        Thu, 18 Nov 2021 11:18:56 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5FA0660240;
-        Thu, 18 Nov 2021 11:18:40 +0000 (UTC)
-Message-ID: <94d4b7d8-1e56-69e9-dd52-d154bee6c461@redhat.com>
-Date:   Thu, 18 Nov 2021 12:18:39 +0100
+        id S1343737AbhKRLY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 06:24:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343787AbhKRLXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 06:23:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id E167361AD2;
+        Thu, 18 Nov 2021 11:20:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637234408;
+        bh=CoWvvJ5SUlmGMCDBGkTvshowClGajIqZ5Cr0Xwr7xHc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=I1vWlZbwHiwLgB8K6biR3K2diYzSBc9Qj3S/u2m4Wu7IiVpD8fUrIzZ0dmw3CWMFp
+         RcI9Stk2Br46AyjzK18b9TIxlhp7VPDz3snq2D8mfIIAicc2w3IpbAe22P/T5H/2ld
+         tokZVNDyIQ/f6F5ud30HWkanXzL6OGbFLuI5PhyZf+aVxX349aFAflmaPdhSL/QoQR
+         80QGOsEbIP4odleYamJrTL7+bZIeipxDTVAlFy/i06PRDrBDB/8Bx6g7/u1RDPro1w
+         B62MEyivubZ5+/42E6ugpT/6X96MFBo4a+YuAx0/2Y8rkrIKa6iNYHoYxLHm/wyl6K
+         7NyrhyLiI8IGQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D487160A4E;
+        Thu, 18 Nov 2021 11:20:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 02/15] KVM: VMX: Avoid to rdmsrl(MSR_IA32_SYSENTER_ESP)
-Content-Language: en-US
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     kvm@vger.kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-References: <20211118110814.2568-1-jiangshanlai@gmail.com>
- <20211118110814.2568-3-jiangshanlai@gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211118110814.2568-3-jiangshanlai@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] ethernet: hisilicon: hns: hns_dsaf_misc: fix a possible array
+ overflow in hns_dsaf_ge_srst_by_port()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163723440886.3044.13326844858914802767.git-patchwork-notify@kernel.org>
+Date:   Thu, 18 Nov 2021 11:20:08 +0000
+References: <20211117034453.28963-1-starmiku1207184332@gmail.com>
+In-Reply-To: <20211117034453.28963-1-starmiku1207184332@gmail.com>
+To:     Teng Qi <starmiku1207184332@gmail.com>
+Cc:     yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        davem@davemloft.net, kuba@kernel.org, lipeng321@huawei.com,
+        huangguangbin2@huawei.com, zhengyongjun3@huawei.com,
+        liuyonglong@huawei.com, shenyang39@huawei.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        baijiaju1990@gmail.com, islituo@gmail.com, oslab@tsinghua.edu.cn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/21 12:08, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
-> 
-> The value of host MSR_IA32_SYSENTER_ESP is known to be constant for
-> each CPU: (cpu_entry_stack(cpu) + 1) when 32 bit syscall is enabled or
-> NULL is 32 bit syscall is not enabled.
-> 
-> So rdmsrl() can be avoided for the first case and both rdmsrl() and
-> vmcs_writel() can be avoided for the second case.
-> 
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+Hello:
 
-Then it's not constant host state, isn't?  The hunk in 
-vmx_set_constant_host_state seems wrong.
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-Paolo
-
-> ---
->   arch/x86/kvm/vmx/vmx.c | 10 +++++++---
->   1 file changed, 7 insertions(+), 3 deletions(-)
+On Wed, 17 Nov 2021 11:44:53 +0800 you wrote:
+> The if statement:
+>   if (port >= DSAF_GE_NUM)
+>         return;
 > 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 48a34d1a2989..4e4a33226edb 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -1271,7 +1271,6 @@ void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu,
->   
->   	if (!already_loaded) {
->   		void *gdt = get_current_gdt_ro();
-> -		unsigned long sysenter_esp;
->   
->   		/*
->   		 * Flush all EPTP/VPID contexts, the new pCPU may have stale
-> @@ -1287,8 +1286,11 @@ void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu,
->   			    (unsigned long)&get_cpu_entry_area(cpu)->tss.x86_tss);
->   		vmcs_writel(HOST_GDTR_BASE, (unsigned long)gdt);   /* 22.2.4 */
->   
-> -		rdmsrl(MSR_IA32_SYSENTER_ESP, sysenter_esp);
-> -		vmcs_writel(HOST_IA32_SYSENTER_ESP, sysenter_esp); /* 22.2.3 */
-> +		if (IS_ENABLED(CONFIG_IA32_EMULATION) || IS_ENABLED(CONFIG_X86_32)) {
-> +			/* 22.2.3 */
-> +			vmcs_writel(HOST_IA32_SYSENTER_ESP,
-> +				    (unsigned long)(cpu_entry_stack(cpu) + 1));
-> +		}
->   
->   		vmx->loaded_vmcs->cpu = cpu;
->   	}
-> @@ -4021,6 +4023,8 @@ void vmx_set_constant_host_state(struct vcpu_vmx *vmx)
->   
->   	rdmsr(MSR_IA32_SYSENTER_CS, low32, high32);
->   	vmcs_write32(HOST_IA32_SYSENTER_CS, low32);
-> +	rdmsrl(MSR_IA32_SYSENTER_ESP, tmpl);
-> +	vmcs_writel(HOST_IA32_SYSENTER_ESP, tmpl);
->   	rdmsrl(MSR_IA32_SYSENTER_EIP, tmpl);
->   	vmcs_writel(HOST_IA32_SYSENTER_EIP, tmpl);   /* 22.2.3 */
+> limits the value of port less than DSAF_GE_NUM (i.e., 8).
+> However, if the value of port is 6 or 7, an array overflow could occur:
+>   port_rst_off = dsaf_dev->mac_cb[port]->port_rst_off;
+> 
+> [...]
+
+Here is the summary with links:
+  - ethernet: hisilicon: hns: hns_dsaf_misc: fix a possible array overflow in hns_dsaf_ge_srst_by_port()
+    https://git.kernel.org/netdev/net/c/a66998e0fbf2
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
