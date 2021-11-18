@@ -2,86 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1D34561FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:09:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7645B4561FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:08:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234319AbhKRSMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 13:12:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230446AbhKRSMp (ORCPT
+        id S234309AbhKRSL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 13:11:58 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4108 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231477AbhKRSL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 13:12:45 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0921CC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:09:45 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id h63so6079544pgc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:09:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Xlr8/9jdTTcKRDI4drRmlYUB7JGZiHjD5lSETKckpwM=;
-        b=EcL45fGRuSvD/CSKS2/iXr+xLip1rRwsvpWzgxkZIkioJnVpKyp1VZ+6Vz9WF698HZ
-         QDXYElkWRB3INlkmIzX/w+ApoVTO4QSIEi+18plGAQZe6+YXHji5TILcdfVRS/remG1W
-         B6usaGzQcPaVIuOebF9IMFocIgML9Vr1xXBUI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Xlr8/9jdTTcKRDI4drRmlYUB7JGZiHjD5lSETKckpwM=;
-        b=vouisc/YKww1Rr3gEKF48WjL+Daj9vHgbqWhXfFjh3yoZ94hNBOT1x00jr+W+duGBm
-         di81HJP6x+q9Cf/3kbkJCRebcfHPgKpo1qBwuAvEMl60XhCLWmuoFqtLN+AIJ+N5xcLO
-         L31z2fPcym+3gUGusKkvRT5RaR0wVWEFxQBByP47WFEV7DhIyO+ep9NavUzEofJAuNis
-         r4FDXyr0zRlam+L1JX4x+a3M4AUWPREYBbKgDto0joDsolDXViE72EAcJkaFt39wimiw
-         3OjYp+naXhY6pvv16UIFDHiV12NXI90+hzzB5Ic6menUsfCmHOJ2KiXHYPzhktDe2qTy
-         cHJQ==
-X-Gm-Message-State: AOAM532dxPhfCd/ThmCByAkJGld2rPQ7CfNS0xxUMuKZmEo5nnc+nLY2
-        5PT+lSU79VTkvxIvC/+cQ1B3cQ==
-X-Google-Smtp-Source: ABdhPJxyHCLK9Y73MJGzlT9oyXLqZq/T3u+w72IDms+04AER4eljXNAF5eQoJBWhoyLcthPNVwWeUQ==
-X-Received: by 2002:a62:31c5:0:b0:447:cd37:61f8 with SMTP id x188-20020a6231c5000000b00447cd3761f8mr16891829pfx.29.1637258984270;
-        Thu, 18 Nov 2021 10:09:44 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k14sm256403pga.65.2021.11.18.10.09.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 10:09:43 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Tony Luck <tony.luck@intel.com>, Colin Cross <ccross@android.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: Re: [PATCH] pstore/ftrace: add a kernel parameter to start pstore recording
-Date:   Thu, 18 Nov 2021 10:08:38 -0800
-Message-Id: <163725891549.1179817.6546871118396864090.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210610082134.20636-1-u.kleine-koenig@pengutronix.de>
-References: <20210610082134.20636-1-u.kleine-koenig@pengutronix.de>
+        Thu, 18 Nov 2021 13:11:57 -0500
+Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Hw74P2Sj9z67GTC;
+        Fri, 19 Nov 2021 02:05:09 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.20; Thu, 18 Nov 2021 19:08:54 +0100
+Received: from localhost (10.52.127.148) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Thu, 18 Nov
+ 2021 18:08:54 +0000
+Date:   Thu, 18 Nov 2021 18:08:51 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+CC:     <jic23@kernel.org>, <linux-iio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] iio: expose shared parameter in IIO_ENUM_AVAILABLE
+Message-ID: <20211118180851.00001693@Huawei.com>
+In-Reply-To: <20211118141709.64450-1-antoniu.miclaus@analog.com>
+References: <20211118141709.64450-1-antoniu.miclaus@analog.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.127.148]
+X-ClientProxiedBy: lhreml749-chm.china.huawei.com (10.201.108.199) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Jun 2021 10:21:34 +0200, Uwe Kleine-König wrote:
-> With this knob you can enable pstore recording early enough to debug
-> hangs happening during the boot process before userspace is up enough to
-> enable it via sysfs.
+On Thu, 18 Nov 2021 16:17:09 +0200
+Antoniu Miclaus <antoniu.miclaus@analog.com> wrote:
+
+> The shared parameter should be configurable based on its usage, and not
+> constrained to IIO_SHARED_BY_TYPE.
 > 
+> This patch aims to improve the flexibility in using the
+> IIO_ENUM_AVAILABLE define and avoid redefining custom iio enums that
+> expose the shared parameter.
 > 
+> An example is the ad5766.c driver where IIO_ENUM_AVAILABLE_SHARED was
+> defined in order to achieve `shared` parameter customization.
+> 
+> The current state of the IIO_ENUM_AVAILABLE implementation will imply
+> similar redefinitions each time a driver will require access to the
+> `shared` parameter. An example would be admv1013 driver which will
+> require custom device attribute for the frequency translation  modes:
+> Quadrature I/Q mode and Intermediate frequency mode.
+> 
+> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
 
-I refactored this patch a fair bit so it would use a common enable/disable
-routine, but otherwise the original intent remains. :)
+I'm fine with the change subject to comments below,
 
-Applied to for-next/pstore, thanks!
+Jonathan
 
-[1/1] pstore/ftrace: add a kernel parameter to start pstore recording
-      https://git.kernel.org/kees/c/8d74118c9441
+> ---
+>  drivers/iio/accel/bma180.c                |  2 +-
+>  drivers/iio/accel/mma9553.c               |  2 +-
+>  drivers/iio/adc/ad7192.c                  |  2 +-
+>  drivers/iio/adc/hi8435.c                  |  2 +-
+>  drivers/iio/dac/ad5064.c                  |  4 ++--
+>  drivers/iio/dac/ad5380.c                  |  2 +-
+>  drivers/iio/dac/ad5446.c                  |  2 +-
+>  drivers/iio/dac/ad5504.c                  |  2 +-
+>  drivers/iio/dac/ad5624r_spi.c             |  2 +-
+>  drivers/iio/dac/ad5686.c                  |  2 +-
+>  drivers/iio/dac/ad5766.c                  | 13 ++-----------
+>  drivers/iio/dac/ad5791.c                  |  2 +-
+>  drivers/iio/dac/max5821.c                 |  2 +-
+>  drivers/iio/dac/mcp4725.c                 |  8 ++++----
+>  drivers/iio/dac/stm32-dac.c               |  2 +-
+>  drivers/iio/dac/ti-dac082s085.c           |  2 +-
+>  drivers/iio/dac/ti-dac5571.c              |  2 +-
+>  drivers/iio/dac/ti-dac7311.c              |  2 +-
+>  drivers/iio/magnetometer/hmc5843_core.c   |  4 ++--
+>  drivers/iio/trigger/stm32-timer-trigger.c |  4 ++--
+>  include/linux/iio/iio.h                   |  5 +++--
+>  21 files changed, 30 insertions(+), 38 deletions(-)
+> 
+> diff --git a/drivers/iio/accel/bma180.c b/drivers/iio/accel/bma180.c
+> index 2edfcb4819b7..09496f358ad9 100644
+> --- a/drivers/iio/accel/bma180.c
+> +++ b/drivers/iio/accel/bma180.c
+> @@ -658,7 +658,7 @@ static const struct iio_chan_spec_ext_info bma023_ext_info[] = {
+>  
+>  static const struct iio_chan_spec_ext_info bma180_ext_info[] = {
+>  	IIO_ENUM("power_mode", IIO_SHARED_BY_TYPE, &bma180_power_mode_enum),
+> -	IIO_ENUM_AVAILABLE("power_mode", &bma180_power_mode_enum),
+> +	IIO_ENUM_AVAILABLE("power_mode", IIO_SHARED_BY_TYPE, &bma180_power_mode_enum),
+>  	IIO_MOUNT_MATRIX(IIO_SHARED_BY_DIR, bma180_accel_get_mount_matrix),
+>  	{ }
+>  };
+> diff --git a/drivers/iio/accel/mma9553.c b/drivers/iio/accel/mma9553.c
+> index ba3ecb3b57dc..0570ab1cc064 100644
+> --- a/drivers/iio/accel/mma9553.c
+> +++ b/drivers/iio/accel/mma9553.c
+> @@ -917,7 +917,7 @@ static const struct iio_enum mma9553_calibgender_enum = {
+>  
+>  static const struct iio_chan_spec_ext_info mma9553_ext_info[] = {
+>  	IIO_ENUM("calibgender", IIO_SHARED_BY_TYPE, &mma9553_calibgender_enum),
+> -	IIO_ENUM_AVAILABLE("calibgender", &mma9553_calibgender_enum),
+> +	IIO_ENUM_AVAILABLE("calibgender", IIO_SHARED_BY_TYPE, &mma9553_calibgender_enum),
+>  	{},
+>  };
+>  
+> diff --git a/drivers/iio/adc/ad7192.c b/drivers/iio/adc/ad7192.c
+> index 2121a812b0c3..7cb1bd3ea375 100644
+> --- a/drivers/iio/adc/ad7192.c
+> +++ b/drivers/iio/adc/ad7192.c
+> @@ -257,7 +257,7 @@ static const struct iio_chan_spec_ext_info ad7192_calibsys_ext_info[] = {
+>  	},
+>  	IIO_ENUM("sys_calibration_mode", IIO_SEPARATE,
+>  		 &ad7192_syscalib_mode_enum),
+> -	IIO_ENUM_AVAILABLE("sys_calibration_mode", &ad7192_syscalib_mode_enum),
+> +	IIO_ENUM_AVAILABLE("sys_calibration_mode", IIO_SHARED_BY_TYPE, &ad7192_syscalib_mode_enum),
 
--- 
-Kees Cook
+Please wrap the lines to 80 chars unless strong reason not to do so.
 
+
+> diff --git a/drivers/iio/magnetometer/hmc5843_core.c b/drivers/iio/magnetometer/hmc5843_core.c
+> index f08726bf5ec3..4364d7fa066e 100644
+> --- a/drivers/iio/magnetometer/hmc5843_core.c
+> +++ b/drivers/iio/magnetometer/hmc5843_core.c
+> @@ -246,7 +246,7 @@ static const struct iio_enum hmc5843_meas_conf_enum = {
+>  
+>  static const struct iio_chan_spec_ext_info hmc5843_ext_info[] = {
+>  	IIO_ENUM("meas_conf", IIO_SHARED_BY_TYPE, &hmc5843_meas_conf_enum),
+> -	IIO_ENUM_AVAILABLE("meas_conf", &hmc5843_meas_conf_enum),
+> +	IIO_ENUM_AVAILABLE("meas_conf", IIO_SHARED_BY_TYPE, &hmc5843_meas_conf_enum),
+>  	IIO_MOUNT_MATRIX(IIO_SHARED_BY_DIR, hmc5843_get_mount_matrix),
+>  	{ }
+>  };
+> @@ -261,7 +261,7 @@ static const struct iio_enum hmc5983_meas_conf_enum = {
+>  static const struct iio_chan_spec_ext_info hmc5983_ext_info[] = {
+>  	IIO_ENUM("meas_conf", IIO_SHARED_BY_TYPE, &hmc5983_meas_conf_enum),
+>  	IIO_ENUM_AVAILABLE("meas_conf", &hmc5983_meas_conf_enum),
+> -	IIO_MOUNT_MATRIX(IIO_SHARED_BY_DIR, hmc5843_get_mount_matrix),
+> +	IIO_MOUNT_MATRIX(IIO_SHARED_BY_DIR, IIO_SHARED_BY_TYPE, hmc5843_get_mount_matrix),
+Wrong macro.  (I cheated on this as 0-day already spotted it :)
+
+>
+Thanks,
+
+Jonathan
