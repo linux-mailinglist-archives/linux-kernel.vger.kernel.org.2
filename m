@@ -2,232 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93BFB455AE3
+	by mail.lfdr.de (Postfix) with ESMTP id E126C455AE4
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:46:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344329AbhKRLth convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 18 Nov 2021 06:49:37 -0500
-Received: from aposti.net ([89.234.176.197]:33056 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344367AbhKRLs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 06:48:29 -0500
-Date:   Thu, 18 Nov 2021 11:45:15 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 11/15] iio: buffer-dma: Boost performance using
- write-combine cache setting
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?b?S/ZuaWc=?= <christian.koenig@amd.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
-Message-Id: <FBNR2R.LJWHFK5HYPTY@crapouillou.net>
-In-Reply-To: <20211115141925.60164-12-paul@crapouillou.net>
-References: <20211115141925.60164-1-paul@crapouillou.net>
-        <20211115141925.60164-12-paul@crapouillou.net>
+        id S1344367AbhKRLtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 06:49:42 -0500
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:42455 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344380AbhKRLse (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 06:48:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1637235935; x=1668771935;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=cISyEGAsMJQM8NdfhvC1TwyQRYsH3j/ZOtqURpc7aUM=;
+  b=NPKRnWEkppeilR9xc5tHjtzx42oavYjA5x3pr4iuoiMA56w3TmFGG1SV
+   LSIYo/gvP9QdBOPJLlcRiIB5XI+HOFJTX4Rksxm/cfx8S0fUK3/2Rc8Nl
+   l00pR/SdYz7o6kcPERXHRer5JVRD64TM8bitpqnq/FdK4ae3ufOz4mwmb
+   M=;
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 18 Nov 2021 03:45:34 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 03:45:33 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Thu, 18 Nov 2021 03:45:33 -0800
+Received: from [10.216.28.51] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Thu, 18 Nov
+ 2021 03:45:28 -0800
+Subject: Re: [PATCH v9 4/5] usb: dwc3: qcom: Change the IRQ flag for DP/DM hs
+ phy irq
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+CC:     Andy Gross <agross@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        "Matthias Kaehlcke" <mka@chromium.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_pkondeti@quicinc.com>,
+        <quic_ppratap@quicinc.com>
+References: <1635753224-23975-1-git-send-email-quic_c_sanm@quicinc.com>
+ <1635753224-23975-5-git-send-email-quic_c_sanm@quicinc.com>
+ <YYAWfSSD7FCXPo8d@ripper>
+From:   Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+Message-ID: <0a27ac22-5a80-4885-9344-7e6b9a9480f3@quicinc.com>
+Date:   Thu, 18 Nov 2021 17:15:23 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <YYAWfSSD7FCXPo8d@ripper>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-Le lun., nov. 15 2021 at 14:19:21 +0000, Paul Cercueil 
-<paul@crapouillou.net> a �crit :
-> We can be certain that the input buffers will only be accessed by
-> userspace for reading, and output buffers will mostly be accessed by
-> userspace for writing.
-> 
-> Therefore, it makes more sense to use only fully cached input buffers,
-> and to use the write-combine cache coherency setting for output 
-> buffers.
-> 
-> This boosts performance, as the data written to the output buffers 
-> does
-> not have to be sync'd for coherency. It will halve performance if the
-> userspace application tries to read from the output buffer, but this
-> should never happen.
-> 
-> Since we don't need to sync the cache when disabling CPU access either
-> for input buffers or output buffers, the .end_cpu_access() callback 
-> can
-> be dropped completely.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  drivers/iio/buffer/industrialio-buffer-dma.c | 82 
-> +++++++++++++-------
->  1 file changed, 54 insertions(+), 28 deletions(-)
-> 
-> diff --git a/drivers/iio/buffer/industrialio-buffer-dma.c 
-> b/drivers/iio/buffer/industrialio-buffer-dma.c
-> index 92356ee02f30..fb39054d8c15 100644
-> --- a/drivers/iio/buffer/industrialio-buffer-dma.c
-> +++ b/drivers/iio/buffer/industrialio-buffer-dma.c
-> @@ -229,8 +229,33 @@ static int iio_buffer_dma_buf_mmap(struct 
-> dma_buf *dbuf,
->  	if (vma->vm_ops->open)
->  		vma->vm_ops->open(vma);
-> 
-> -	return dma_mmap_pages(dev, vma, vma->vm_end - vma->vm_start,
-> -			      virt_to_page(block->vaddr));
-> +	if (block->queue->buffer.direction == IIO_BUFFER_DIRECTION_IN) {
-> +		/*
-> +		 * With an input buffer, userspace will only read the data and
-> +		 * never write. We can mmap the buffer fully cached.
-> +		 */
-> +		return dma_mmap_pages(dev, vma, vma->vm_end - vma->vm_start,
-> +				      virt_to_page(block->vaddr));
-> +	} else {
-> +		/*
-> +		 * With an output buffer, userspace will only write the data
-> +		 * and should rarely (if never) read from it. It is better to
-> +		 * use write-combine in this case.
-> +		 */
-> +		return dma_mmap_wc(dev, vma, block->vaddr, block->phys_addr,
-> +				   vma->vm_end - vma->vm_start);
-> +	}
-> +}
-> +
-> +static void iio_dma_buffer_free_dmamem(struct iio_dma_buffer_block 
-> *block)
-> +{
-> +	struct device *dev = block->queue->dev;
-> +	size_t size = PAGE_ALIGN(block->size);
-> +
-> +	if (block->queue->buffer.direction == IIO_BUFFER_DIRECTION_IN)
-> +		dma_free_coherent(dev, size, block->vaddr, block->phys_addr);
-> +	else
-> +		dma_free_wc(dev, size, block->vaddr, block->phys_addr);
->  }
-> 
->  static void iio_buffer_dma_buf_release(struct dma_buf *dbuf)
-> @@ -243,9 +268,7 @@ static void iio_buffer_dma_buf_release(struct 
-> dma_buf *dbuf)
-> 
->  	mutex_lock(&queue->lock);
-> 
-> -	dma_free_coherent(queue->dev, PAGE_ALIGN(block->size),
-> -			  block->vaddr, block->phys_addr);
-> -
-> +	iio_dma_buffer_free_dmamem(block);
->  	kfree(block);
-> 
->  	queue->num_blocks--;
-> @@ -268,19 +291,6 @@ static int 
-> iio_buffer_dma_buf_begin_cpu_access(struct dma_buf *dbuf,
->  	return 0;
->  }
-> 
-> -static int iio_buffer_dma_buf_end_cpu_access(struct dma_buf *dbuf,
-> -					     enum dma_data_direction dma_dir)
-> -{
-> -	struct iio_dma_buffer_block *block = dbuf->priv;
-> -	struct device *dev = block->queue->dev;
-> -
-> -	/* We only need to sync the cache for output buffers */
-> -	if (block->queue->buffer.direction == IIO_BUFFER_DIRECTION_OUT)
-> -		dma_sync_single_for_device(dev, block->phys_addr, block->size, 
-> dma_dir);
-> -
-> -	return 0;
-> -}
-> -
->  static const struct dma_buf_ops iio_dma_buffer_dmabuf_ops = {
->  	.attach			= iio_buffer_dma_buf_attach,
->  	.map_dma_buf		= iio_buffer_dma_buf_map,
-> @@ -288,9 +298,28 @@ static const struct dma_buf_ops 
-> iio_dma_buffer_dmabuf_ops = {
->  	.mmap			= iio_buffer_dma_buf_mmap,
->  	.release		= iio_buffer_dma_buf_release,
->  	.begin_cpu_access	= iio_buffer_dma_buf_begin_cpu_access,
-> -	.end_cpu_access		= iio_buffer_dma_buf_end_cpu_access,
->  };
-> 
-> +static int iio_dma_buffer_alloc_dmamem(struct iio_dma_buffer_block 
-> *block)
-> +{
-> +	struct device *dev = block->queue->dev;
-> +	size_t size = PAGE_ALIGN(block->size);
-> +
-> +	if (block->queue->buffer.direction == IIO_BUFFER_DIRECTION_IN) {
-> +		block->vaddr = dma_alloc_coherent(dev, size,
-> +						  &block->phys_addr,
-> +						  GFP_KERNEL);
+On 11/1/2021 10:01 PM, Bjorn Andersson wrote:
+> On Mon 01 Nov 00:53 PDT 2021, Sandeep Maheswaram wrote:
+>
+>> Change the IRQ flags for DP/DM hs phy irq to avoid interrupt
+>> triggering during system suspend.
+>>
+> Why does replacing HIGH with RISING change this behavior, or do you get
+> a RISING interrupt just before hitting suspend which you ignore?
+>
+> I think it would be nice to have the commit message for this (or per
+> below request the DTS change) include some details about what's really
+> happening on the irq line.
 
-I'm so used to dma_alloc_noncoherent() that I didn't even notice that 
-it was dma_alloc_coherent() here. The code I added meant to work with 
-non-coherent memory - hence the dma_sync_* operations and the use of 
-dma_mmap_pages().
+When we use IRQF_TRIGGER_HIGH we get interrupt during PM suspend and 
+causes resume.
 
-I'll fix that in V2.
+[  119.743083] Resume caused by IRQ 101, qcom_dwc3 DP_HS
 
-Cheers,
--Paul
-
-> +	} else {
-> +		block->vaddr = dma_alloc_wc(dev, size,
-> +					    &block->phys_addr,
-> +					    GFP_KERNEL);
-> +	}
-> +	if (!block->vaddr)
-> +		return -ENOMEM;
-> +
-> +	return 0;
-> +}
-> +
->  static struct iio_dma_buffer_block *iio_dma_buffer_alloc_block(
->  	struct iio_dma_buffer_queue *queue, size_t size, bool fileio)
->  {
-> @@ -303,12 +332,12 @@ static struct iio_dma_buffer_block 
-> *iio_dma_buffer_alloc_block(
->  	if (!block)
->  		return ERR_PTR(-ENOMEM);
-> 
-> -	block->vaddr = dma_alloc_coherent(queue->dev, PAGE_ALIGN(size),
-> -		&block->phys_addr, GFP_KERNEL);
-> -	if (!block->vaddr) {
-> -		err = -ENOMEM;
-> +	block->size = size;
-> +	block->queue = queue;
-> +
-> +	err = iio_dma_buffer_alloc_dmamem(block);
-> +	if (err)
->  		goto err_free_block;
-> -	}
-> 
->  	einfo.ops = &iio_dma_buffer_dmabuf_ops;
->  	einfo.size = PAGE_ALIGN(size);
-> @@ -322,10 +351,8 @@ static struct iio_dma_buffer_block 
-> *iio_dma_buffer_alloc_block(
->  	}
-> 
->  	block->dmabuf = dmabuf;
-> -	block->size = size;
->  	block->bytes_used = size;
->  	block->state = IIO_BLOCK_STATE_DONE;
-> -	block->queue = queue;
->  	block->fileio = fileio;
->  	INIT_LIST_HEAD(&block->head);
-> 
-> @@ -338,8 +365,7 @@ static struct iio_dma_buffer_block 
-> *iio_dma_buffer_alloc_block(
->  	return block;
-> 
->  err_free_dma:
-> -	dma_free_coherent(queue->dev, PAGE_ALIGN(size),
-> -			  block->vaddr, block->phys_addr);
-> +	iio_dma_buffer_free_dmamem(block);
->  err_free_block:
->  	kfree(block);
->  	return ERR_PTR(err);
-> --
-> 2.33.0
-> 
-
-
+>> Signed-off-by: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+>> ---
+>>   drivers/usb/dwc3/dwc3-qcom.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+>> index 54461f1..356f4f8 100644
+>> --- a/drivers/usb/dwc3/dwc3-qcom.c
+>> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+>> @@ -473,7 +473,7 @@ static int dwc3_qcom_setup_irq(struct platform_device *pdev)
+>>   		irq_set_status_flags(irq, IRQ_NOAUTOEN);
+>>   		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
+>>   					qcom_dwc3_resume_irq,
+>> -					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
+>> +					IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+> IRQF_TRIGGER_* should be omitted from the driver and supplied by the DT.
+>
+> The dtbs out there should all have IRQ_TYPE_LEVEL_HIGH at this time, so
+> simply dropping that from this list and updating the dts would be the
+> right thing to do.
+>
+> Regards,
+> Bjorn
+Ok. Dropping IRQF_TRIGGER_*  solved the resume issue during PM suspend.
+>>   					"qcom_dwc3 DP_HS", qcom);
+>>   		if (ret) {
+>>   			dev_err(qcom->dev, "dp_hs_phy_irq failed: %d\n", ret);
+>> @@ -488,7 +488,7 @@ static int dwc3_qcom_setup_irq(struct platform_device *pdev)
+>>   		irq_set_status_flags(irq, IRQ_NOAUTOEN);
+>>   		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
+>>   					qcom_dwc3_resume_irq,
+>> -					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
+>> +					IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+>>   					"qcom_dwc3 DM_HS", qcom);
+>>   		if (ret) {
+>>   			dev_err(qcom->dev, "dm_hs_phy_irq failed: %d\n", ret);
+>> -- 
+>> 2.7.4
+>>
