@@ -2,152 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C22A64561B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:44:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C134561B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:44:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234186AbhKRRq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 12:46:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234168AbhKRRq6 (ORCPT
+        id S234199AbhKRRrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 12:47:10 -0500
+Received: from mxout03.lancloud.ru ([45.84.86.113]:40670 "EHLO
+        mxout03.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234191AbhKRRrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 12:46:58 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551CDC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:43:58 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id v23so9055628iom.12
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:43:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YmWc7qIUDoaNMJwYkB1mdPXNq1GKCmwNkveJmjIq/nI=;
-        b=R0F7nl6l02m98nslLgBmwCrZbMadQE6rGz5kKt+GSzDqAjDbH1NR4MMxMnKMuK7TzF
-         HsWapVtmX4NXV8aL/tIDI6hbpht0fU+iGVI7d0+QR6bI/YCM9yVpETXtZKQBM6uCgRGA
-         xIbj7wkqx4uy1kUvWPoIRKNPYq1oWwsKk5XKKxKyAufAaXU9RMCtIRiM7HQVmnmWCMWT
-         jegAAW2bQe4NA6WoLcJ5fJRuFvzIAKofMwr4z9pq1eNToWiZy/Ov+AZfAY4Ja+p6pAR1
-         d7F32BpCo9J4iMoAVideuD2tdb7xytbsEiUBG5zsS3UHkIYBNd0YVta/GhxH24XCrbd2
-         Sj8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YmWc7qIUDoaNMJwYkB1mdPXNq1GKCmwNkveJmjIq/nI=;
-        b=ozaOzwPQOOYNrUhHECwW6RZeWWth3xrm5s+SIV5LeFplWVBbyH790CPMgv4OyKDUGb
-         jmsKR8eEmmiJDwSDHf9xUu+CqQAo95DG5nvQnvdoq847vprTUa4SKkoF8h2ltDfXjXr4
-         tsLaguEIlQRZDOvrQYgHk9dmhOegQtoETS2ld1GTJH0YoptLuO+oWLoHA6t4hGkKpOAe
-         s3UXgHEyKBBPrCMQO1DT6//uhucBMw40r9mxi/+hfpqVvF4o9DgKDtNrrYvAftSfgV0E
-         krvLnCJ4NmEvJlYx1mXnWufUIU4kCyVJrwhuf5yN/WBuRXD6wb0uXp1/uqdYYGffl7yN
-         4hGg==
-X-Gm-Message-State: AOAM531MV1SYd/HyXlrQn9HfcBO5RRd7ACs28BQRxrXniV8JLEZ8H7X0
-        7o6enTW/sjn5SVOmO7KcRrwGD45QwM+k4vuFCIFhOw==
-X-Google-Smtp-Source: ABdhPJy/ex0GEDw34YUwbvewezGGWyJ3Vmks3SCJirwTDPEeVKLHZg8u7glXzPmhRI7m6CtbmqoZ9NM9idVx+dJ5frQ=
-X-Received: by 2002:a5d:8049:: with SMTP id b9mr620384ior.41.1637257437596;
- Thu, 18 Nov 2021 09:43:57 -0800 (PST)
+        Thu, 18 Nov 2021 12:47:09 -0500
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout03.lancloud.ru B3E27205EC18
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Subject: Re: [PATCH 3/4] clk: renesas: cpg-mssr: Check return value of
+ pm_genpd_init()
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+CC:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+References: <20211117115101.28281-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20211117115101.28281-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CAMuHMdUi_Aj6JQ5n31R3DROUMG8F+032+L43AMmkiBwB_TQhWw@mail.gmail.com>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <a427dace-171d-3cf7-ece6-ea7b15d586d0@omp.ru>
+Date:   Thu, 18 Nov 2021 20:44:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20211110223010.1392399-1-bgardon@google.com> <20211110223010.1392399-8-bgardon@google.com>
- <YZW2i7GnORD+X5NT@google.com>
-In-Reply-To: <YZW2i7GnORD+X5NT@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Thu, 18 Nov 2021 09:43:46 -0800
-Message-ID: <CANgfPd-f+VXQJnz-LPuiy+rTDkSdw3zjUfozaqzgb8n0rv9STA@mail.gmail.com>
-Subject: Re: [RFC 07/19] KVM: x86/mmu: Factor wrprot for nested PML out of make_spte
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        David Hildenbrand <david@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAMuHMdUi_Aj6JQ5n31R3DROUMG8F+032+L43AMmkiBwB_TQhWw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.11.198]
+X-ClientProxiedBy: LFEXT02.lancloud.ru (fd00:f066::142) To
+ LFEX1907.lancloud.ru (fd00:f066::207)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 6:12 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Wed, Nov 10, 2021, Ben Gardon wrote:
-> > When running a nested VM, KVM write protects SPTEs in the EPT/NPT02
-> > instead of using PML for dirty tracking. This avoids expensive
-> > translation later, when emptying the Page Modification Log. In service
-> > of removing the vCPU pointer from make_spte, factor the check for nested
-> > PML out of the function.
->
-> Aha!  The dependency on @vcpu can be avoided without having to take a flag from
-> the caller.  The shadow page has everything we need.  The check is really "is this
-> a page for L2 EPT".  The kvm_x86_ops.cpu_dirty_log_size gets us the EPT part, and
-> kvm_mmu_page.guest_mode gets us the L2 part.
+On 11/18/21 6:29 PM, Geert Uytterhoeven wrote:
 
-Haha that's way cleaner than what I was doing! Seems like an obvious
-solution in retrospect. I'll include this in the next version of the
-series I send out unless Paolo beats me and just merges it directly.
-Happy to give this my reviewed-by.
+[...]
+>> Make sure we check the return value of pm_genpd_init() which might fail.
+>> Also add a devres action to remove the power-domain in-case the probe
+>> callback fails further down in the code flow.
+>>
+>> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> 
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> i.e. will queue in renesas-clk-for-v5.17.
+> 
+>> @@ -574,7 +580,13 @@ static int __init cpg_mssr_add_clk_domain(struct device *dev,
+>>                        GENPD_FLAG_ACTIVE_WAKEUP;
+>>         genpd->attach_dev = cpg_mssr_attach_dev;
+>>         genpd->detach_dev = cpg_mssr_detach_dev;
+>> -       pm_genpd_init(genpd, &pm_domain_always_on_gov, false);
+>> +       ret = pm_genpd_init(genpd, &pm_domain_always_on_gov, false);
+>> +       if (ret)
+>> +               return ret;
+>> +       ret = devm_add_action_or_reset(dev, cpg_mssr_genpd_remove, genpd);
+> 
+> Will insert a blank line here.
 
->
-> Compile tested only...
->
-> From 773414e4fd7010c38ac89221d16089f3dcc57467 Mon Sep 17 00:00:00 2001
-> From: Sean Christopherson <seanjc@google.com>
-> Date: Wed, 17 Nov 2021 18:08:42 -0800
-> Subject: [PATCH] KVM: x86/mmu: Use shadow page role to detect PML-unfriendly
->  pages for L2
->
-> Rework make_spte() to query the shadow page's role, specifically whether
-> or not it's a guest_mode page, a.k.a. a page for L2, when determining if
-> the SPTE is compatible with PML.  This eliminates a dependency on @vcpu,
-> with a future goal of being able to create SPTEs without a specific vCPU.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+   You mean after *return*? Else I don't think we need an empty line. :-)
 
-Reviewed-by: Ben Gardon <bgardon@google.com>
+> 
+>> +       if (ret)
+>> +               return ret;
+>> +
+>>         cpg_mssr_clk_domain = pd;
+>>
+>>         of_genpd_add_provider_simple(np, genpd);
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
 
-> ---
->  arch/x86/kvm/mmu/mmu_internal.h | 7 +++----
->  arch/x86/kvm/mmu/spte.c         | 2 +-
->  2 files changed, 4 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-> index 8ede43a826af..03882b2624c8 100644
-> --- a/arch/x86/kvm/mmu/mmu_internal.h
-> +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> @@ -109,7 +109,7 @@ static inline int kvm_mmu_page_as_id(struct kvm_mmu_page *sp)
->         return kvm_mmu_role_as_id(sp->role);
->  }
->
-> -static inline bool kvm_vcpu_ad_need_write_protect(struct kvm_vcpu *vcpu)
-> +static inline bool kvm_mmu_page_ad_need_write_protect(struct kvm_mmu_page *sp)
->  {
->         /*
->          * When using the EPT page-modification log, the GPAs in the CPU dirty
-> @@ -117,10 +117,9 @@ static inline bool kvm_vcpu_ad_need_write_protect(struct kvm_vcpu *vcpu)
->          * on write protection to record dirty pages, which bypasses PML, since
->          * writes now result in a vmexit.  Note, the check on CPU dirty logging
->          * being enabled is mandatory as the bits used to denote WP-only SPTEs
-> -        * are reserved for NPT w/ PAE (32-bit KVM).
-> +        * are reserved for PAE paging (32-bit KVM).
->          */
-> -       return vcpu->arch.mmu == &vcpu->arch.guest_mmu &&
-> -              kvm_x86_ops.cpu_dirty_log_size;
-> +       return kvm_x86_ops.cpu_dirty_log_size && sp->role.guest_mode;
->  }
->
->  int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, struct kvm_memory_slot *slot,
-> diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
-> index 0c76c45fdb68..84e64dbdd89e 100644
-> --- a/arch/x86/kvm/mmu/spte.c
-> +++ b/arch/x86/kvm/mmu/spte.c
-> @@ -101,7 +101,7 @@ bool make_spte(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp,
->
->         if (sp->role.ad_disabled)
->                 spte |= SPTE_TDP_AD_DISABLED_MASK;
-> -       else if (kvm_vcpu_ad_need_write_protect(vcpu))
-> +       else if (kvm_mmu_page_ad_need_write_protect(sp))
->                 spte |= SPTE_TDP_AD_WRPROT_ONLY_MASK;
->
->         /*
-> --
+MBR, Sergey
