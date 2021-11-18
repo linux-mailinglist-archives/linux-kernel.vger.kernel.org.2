@@ -2,269 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC411455F61
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:24:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20FC8455F67
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:25:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232033AbhKRP1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 10:27:38 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:47164 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230205AbhKRP1b (ORCPT
+        id S232079AbhKRP2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 10:28:07 -0500
+Received: from mout.kundenserver.de ([212.227.17.10]:40495 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231773AbhKRP2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 10:27:31 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B07C6212C4;
-        Thu, 18 Nov 2021 15:24:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637249069; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zRV7uWQt5wOO82GENZMQXL2ufpBPou91oq1HzKO2zYU=;
-        b=NcASZNZR1e/nAIkAPJS9d2RbsXwbTfERAXm1kQsPh04XyOd6ft4KD29Qqriur+LdNQI4ze
-        6F8gJOEUJ9H2m6DfzdmusItVkP3bl6orMfdfxE9YmTEgkJ4F8R3oMPjVfQ4FSsPHQnC+IL
-        PZNLQInJxh8N03HFRIL8UyKGqFB6+Ps=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3BDF213D43;
-        Thu, 18 Nov 2021 15:24:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id GfRqDS1wlmFwHgAAMHmgww
-        (envelope-from <jgross@suse.com>); Thu, 18 Nov 2021 15:24:29 +0000
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-References: <20211116141054.17800-1-jgross@suse.com>
- <20211116141054.17800-4-jgross@suse.com> <YZVrDpjW0aZjFxo1@google.com>
- <bfe38122-0ddd-d9bc-4927-942b051a39c4@suse.com> <YZZn/iWsi2H845w6@google.com>
-From:   Juergen Gross <jgross@suse.com>
-Subject: Re: [PATCH v3 3/4] x86/kvm: add max number of vcpus for hyperv
- emulation
-Message-ID: <c3823bf6-dca3-515f-4657-14aac51679b3@suse.com>
-Date:   Thu, 18 Nov 2021 16:24:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 18 Nov 2021 10:28:06 -0500
+Received: from mail-wm1-f47.google.com ([209.85.128.47]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1Mi23L-1mAWqO1xuT-00e8Sy; Thu, 18 Nov 2021 16:25:05 +0100
+Received: by mail-wm1-f47.google.com with SMTP id i12so5678723wmq.4;
+        Thu, 18 Nov 2021 07:25:05 -0800 (PST)
+X-Gm-Message-State: AOAM53356mLbbBGrg5CGTEW6/JtNW3ZzuZHktYM46l8J2sf4ICSOvhNj
+        vWFNpqX024aMJCheGm26NduAWE22L3JnK2ko2js=
+X-Google-Smtp-Source: ABdhPJzCDc7U/om5VTrFzVpeYf+uqPA8EYXDoIatLLdGVXoJx5jqS+K6FZ7sUawNFCuFbFVHiLDr/9z+YsGN7/9johY=
+X-Received: by 2002:a05:600c:6d2:: with SMTP id b18mr11167951wmn.98.1637249105074;
+ Thu, 18 Nov 2021 07:25:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YZZn/iWsi2H845w6@google.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="X6jJQE3N0K8ymlGjTFBbrgWYnUljfCxw0"
+References: <cover.1636973694.git.quic_saipraka@quicinc.com> <9396fbdc415a3096ab271868960372b21479e4fb.1636973694.git.quic_saipraka@quicinc.com>
+In-Reply-To: <9396fbdc415a3096ab271868960372b21479e4fb.1636973694.git.quic_saipraka@quicinc.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 18 Nov 2021 16:24:48 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2Bp4LP7C1-XLKvjyxV-e1vrHb-=3zpm75CRgPYNbY2jA@mail.gmail.com>
+Message-ID: <CAK8P3a2Bp4LP7C1-XLKvjyxV-e1vrHb-=3zpm75CRgPYNbY2jA@mail.gmail.com>
+Subject: Re: [PATCHv4 2/2] arm64/io: Add a header for mmio access instrumentation
+To:     Sai Prakash Ranjan <quic_saipraka@quicinc.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        quic_psodagud@quicinc.com, Marc Zyngier <maz@kernel.org>,
+        gregkh <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:lkA5frvhWsdtogVokqZiCDKtivzgxSKDMsRrmNlpUQgO+z2trOt
+ RqHaEfD1bTQCbXIKT7IrKjyit7Vw3hz3/CPL58Bv2oRtWjW108NPHZaVd2vmxwFPgurp3Bi
+ J7EYa5jZAW8YQBJMwP3IYVtzMShL6gbFXQTx9bANscQ4avTxNJPFA6F1s7YAYnsFcEeRWGJ
+ ca0uphHEY5YqITojhzsVg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:M2QPeqVcQjw=:Ne2Kxlsv1gHEqOwQVVxVr7
+ M03OPsbON1U4/FRjFlWL/3K5NnHcndaFrcoKo27ahBDHlH2/HDnakiBIMf5gTK6JDLdZ3mImE
+ Nzo2jjuDPQr4NNOaRt3pLyTi+vjIarqJRg77F7RGDfisaeCA8RAN/ivGXfzNlLf8+3cFwr3Sx
+ lHs7W5B0naCJkgH+QukFt4TnoqR2KUuW/lTbyPtbpra6fMsZmHwVenXgY+19r1GG530KFCash
+ CcGmkTLk6U4KYwmGnTjk233foyFg8ifcJTrG2qncfzFSMnWle/auA3JWi0gTzGYzISd2oZecK
+ 3hWUx2zA0drOJ9tXAq6Gim37DbuZhCW7R5yPOxz4DmboIn3PfK8xPRULXyKl7qxlgVoYH56h9
+ Sh7H30hUVaFkAuN8HBfFeD91RxOI2WuL7ZEtxNkzCyHG7ugFpHfbF8cxI6u1kR2GE9JrpSpjD
+ 9fMoIvUyr2fhV1QPMsHRkpf+EAuxsyQjrE7pcIIS2uLQ5PZ8wHv6VWVSB4WgQ6hqzdpbu5WQb
+ 3gufiSCWVbGuIBuJMV5tX4nvtFvDJDeXKPGsSkrudPhgr9SfxKh70YYd51VgvJ0TtjkzfyGWx
+ V597EJxq7ps03+f4skXUC7dif5xrw+eeOVlDrsUHoTVbkKJeuusXK/Bq/WEi09VukqqpPG/PY
+ H659msrRmxn04auAeObwQoyS0hvs7I9DSLYmvDQzFA6ug7ORxOexU53sdYPpx34GRnXyZ3JMo
+ k9u4JdS4oPfG/6crd2EsweniuepjXVNXPIO3gWQpSA0LVdENgW2KbITxkq19k8WtA1ssWvKqm
+ QbaaYVR/+EU/SRP6R5OFPt4O5Km0Z/R+hgi/sZT3npBSadyLIM=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---X6jJQE3N0K8ymlGjTFBbrgWYnUljfCxw0
-Content-Type: multipart/mixed; boundary="tOiQG9FrlPl3W6AdWehUB6831YZbWNdhn";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: kvm@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
- Paolo Bonzini <pbonzini@redhat.com>, Vitaly Kuznetsov <vkuznets@redhat.com>,
- Wanpeng Li <wanpengli@tencent.com>, Jim Mattson <jmattson@google.com>,
- Joerg Roedel <joro@8bytes.org>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <c3823bf6-dca3-515f-4657-14aac51679b3@suse.com>
-Subject: Re: [PATCH v3 3/4] x86/kvm: add max number of vcpus for hyperv
- emulation
-References: <20211116141054.17800-1-jgross@suse.com>
- <20211116141054.17800-4-jgross@suse.com> <YZVrDpjW0aZjFxo1@google.com>
- <bfe38122-0ddd-d9bc-4927-942b051a39c4@suse.com> <YZZn/iWsi2H845w6@google.com>
-In-Reply-To: <YZZn/iWsi2H845w6@google.com>
+On Mon, Nov 15, 2021 at 12:33 PM Sai Prakash Ranjan
+<quic_saipraka@quicinc.com> wrote:
+>  /*
+>   * Generic IO read/write.  These perform native-endian accesses.
+>   */
+> -#define __raw_writeb __raw_writeb
+> -static inline void __raw_writeb(u8 val, volatile void __iomem *addr)
+> +static inline void arch_raw_writeb(u8 val, volatile void __iomem *addr)
+>  {
+>         asm volatile("strb %w0, [%1]" : : "rZ" (val), "r" (addr));
+>  }
 
---tOiQG9FrlPl3W6AdWehUB6831YZbWNdhn
-Content-Type: multipart/mixed;
- boundary="------------CFC25338D1A051C3E504BEEE"
-Content-Language: en-US
+Woundn't removing the #define here will break the logic in
+include/asm-generic/io.h,
+making it fall back to the pointer-dereference version for the actual access?
 
-This is a multi-part message in MIME format.
---------------CFC25338D1A051C3E504BEEE
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+> +#if IS_ENABLED(CONFIG_TRACE_MMIO_ACCESS) && !(defined(__DISABLE_TRACE_MMIO__))
+> +DECLARE_TRACEPOINT(rwmmio_write);
+> +DECLARE_TRACEPOINT(rwmmio_read);
+> +
+> +void log_write_mmio(const char *width, volatile void __iomem *addr);
+> +void log_read_mmio(const char *width, const volatile void __iomem *addr);
+> +
+> +#define __raw_write(v, a, _l)  ({                              \
+> +       volatile void __iomem *_a = (a);                        \
+> +       if (tracepoint_enabled(rwmmio_write))                   \
+> +               log_write_mmio(__stringify(write##_l), _a);     \
+> +       arch_raw_write##_l((v), _a);                            \
+> +       })
 
-On 18.11.21 15:49, Sean Christopherson wrote:
-> On Thu, Nov 18, 2021, Juergen Gross wrote:
->> On 17.11.21 21:50, Sean Christopherson wrote:
->>>> @@ -166,7 +166,7 @@ static struct kvm_vcpu *get_vcpu_by_vpidx(struct=
- kvm *kvm, u32 vpidx)
->>>>    	struct kvm_vcpu *vcpu =3D NULL;
->>>>    	int i;
->>>> -	if (vpidx >=3D KVM_MAX_VCPUS)
->>>> +	if (vpidx >=3D min(KVM_MAX_VCPUS, KVM_MAX_HYPERV_VCPUS))
->>>
->>> IMO, this is conceptually wrong.  KVM should refuse to allow Hyper-V =
-to be enabled
->>> if the max number of vCPUs exceeds what can be supported, or should r=
-efuse to create
->>
->> TBH, I wasn't sure where to put this test. Is there a guaranteed
->> sequence of ioctl()s regarding vcpu creation (or setting the max
->> number of vcpus) and the Hyper-V enabling?
->=20
-> For better or worse (mostly worse), like all other things CPUID, Hyper-=
-V is a per-vCPU
-> knob.  If KVM can't detect the impossible condition at compile time, kv=
-m_check_cpuid()
-> is probably the right place to prevent enabling Hyper-V on an unreachab=
-le vCPU.
+This feels like it's getting too big to be inlined. Have you considered
+integrating this with the lib/logic_iomem.c infrastructure instead?
 
-With HYPERV_CPUID_IMPLEMENT_LIMITS already returning the
-supported number of vcpus for the Hyper-V case I'm not sure
-there is really more needed.
+That already provides a way to override MMIO areas, and it lets you do
+the logging from a single place rather than having it duplicated in every
+single caller. It also provides a way of filtering it based on the ioremap()
+call.
 
-The problem I'm seeing is that the only thing I can do is to
-let kvm_get_hv_cpuid() not adding the Hyper-V cpuid leaves for
-vcpus > 64. I can't return a failure, because that would
-probably let vcpu creation fail. And this is something we don't
-want, as kvm_get_hv_cpuid() is called even in the case the guest
-doesn't plan to use Hyper-V extensions.
-
->=20
->>> the vCPUs.  I agree it makes sense to add a Hyper-V specific limit, s=
-ince there are
->>> Hyper-V structures that have a hard limit, but detection of violation=
-s should be a
->>> BUILD_BUG_ON, not a silent failure at runtime.
->>>
->>
->> A BUILD_BUG_ON won't be possible with KVM_MAX_VCPUS being selecteble v=
-ia
->> boot parameter.
->=20
-> I was thinking that there would still be a KVM-defined max that would c=
-ap whatever
-> comes in from userspace.
->=20
-
-See my answers to you your other responses.
-
-
-Juergen
-
---------------CFC25338D1A051C3E504BEEE
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------CFC25338D1A051C3E504BEEE--
-
---tOiQG9FrlPl3W6AdWehUB6831YZbWNdhn--
-
---X6jJQE3N0K8ymlGjTFBbrgWYnUljfCxw0
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmGWcCwFAwAAAAAACgkQsN6d1ii/Ey/r
-iQf/bolwpowY42dhidl7jgDoUN3L3lBwGIzssu1WU62NiW0BrC+bCEIx1iQxRlnzbSTzbPad8qsO
-3loR2LLouWRaklV2BG8lolbXm4R1GDvq5zP/2DaDY9PBV2XkE0tJ2pPvOvOiki+BMejjDhAN9DEZ
-JaiSlkmGTTjK0aaNAm6LSQHfXEYcfLHv6IDytXPq4zCVGFtpNNlFWwXi1h8B6W2XhHuUa84ynZTR
-R+Lil6D9RKWQJve6fJ3zrW5dtvffPDllpnH21ER5Y5sbOZL1P5XB/fk5dX+AK6y+ayhDylLFngOB
-kut6ozNOEl0wAXQm3/QBixhFyNrG8OfLTkOPE4QgxA==
-=E+2E
------END PGP SIGNATURE-----
-
---X6jJQE3N0K8ymlGjTFBbrgWYnUljfCxw0--
+        Arnd
