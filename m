@@ -2,110 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 324964554B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 07:19:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D134C4554B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 07:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243315AbhKRGWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 01:22:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242003AbhKRGWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 01:22:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 717F061B3A;
-        Thu, 18 Nov 2021 06:19:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637216363;
-        bh=IS/+ZFzUMaT6WnHfrvP61djs6+uOU3Thi6+OOrX6y9I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jw8mt9Wex57ua/Nfs6bQZZyrnQdes9vg/lzI/3x6eFACuep211fwGYZeCbNyI84Ba
-         KZmYSYgQ3BVVTnfuV7g62atSQOypbKrk22fVmNbdeoRAhl0WkEyHG/mMOE7VPa8qr5
-         lkYpowLDocMnWXLC25UaEuKMtBG9GdOyA6NeaIbNnkHvj5AscM32zGx7tEbBkPp4w3
-         qMinzCeKtqF7+L0cWSi4+UYQDoct+bFF3brd3HAKSheZLuHxWzDvxXLxx+vRuWGdFH
-         KG30D/s4KR3oVSxMVnhl/t65C3lZa50vzb70S01Lmvmec+Jwiqus3ykNbXYIs9BwUl
-         NXNNE2/MBe6MA==
-Date:   Thu, 18 Nov 2021 11:49:17 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Slark Xiao <slark_xiao@163.com>
-Cc:     hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bus: mhi: pci_generic: Fix device recovery failed issue
-Message-ID: <20211118061917.GF6461@thinkpad>
-References: <20211108113127.3938-1-slark_xiao@163.com>
+        id S243324AbhKRGXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 01:23:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242003AbhKRGXG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 01:23:06 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E08C061570;
+        Wed, 17 Nov 2021 22:20:07 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id gf14-20020a17090ac7ce00b001a7a2a0b5c3so7304762pjb.5;
+        Wed, 17 Nov 2021 22:20:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RoYCEa35yWQpbsRMiUsNjWpekgd7QWGvSSthS44F8g0=;
+        b=bBfb5oEgu6F/76M8eDrzPh/ZwVHkNC/ssyC77zAP2YKASSwTkW1bHBtYtCFfAut8wO
+         fJfV3OYGX2a9lDcjSerpc5RFiZM4GbZxHQC66XfRBCZeKwmcs0HNOyBf4pznwtHXuHYq
+         pfCvL4X4G/yG3hW7BDciwGBrLEi+w8auXUqzK7SyU0Ntgo7DAvM5fIiRnbN85jCEtIUi
+         O2yb0/t0b4JTGdAE1WxlYfRxT7HOZu/cmMVgSpleovrc4yVRWSlGulE7avwNQHhspB2o
+         vlyweuG+ZLmO1UJIsL7EV4DQ+AB8j1c47Wb44o/eaV3oAl5616UgMURLZJ8PUS1T2k45
+         aWag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RoYCEa35yWQpbsRMiUsNjWpekgd7QWGvSSthS44F8g0=;
+        b=Ssn7tehNTYUnsgUKabZZcLrs5YFa0Gmi0+/D6Fai3cY89CXY5/GEUxrRJVUcEbrgth
+         Q+OwSlHHEtr+LDxPdWa60P8dNdMLDmDYy1RBYAJMBLt206Rf0kbOzx8XpnZld5nf8Hg8
+         fdbayekS+CX0RO0+9lZBL5UQ8ebtx+kQdaH7VfS/t7wsgu49y6SCe1sIKKbOk3VUrhNI
+         /DAhgK4ZYNhlQm9o6cn1KJLn85JwqGiGUsd+nNxhexcn2cT6N0Jeq5QkYVMUJDUh75XY
+         JVPuH7fsZqhSq5uGBxfr1gn2xHPfOa23Za+1ZrcMbE3VqkPT9n5uNGsAzr8DTgSX23nj
+         Ptmg==
+X-Gm-Message-State: AOAM531yG9ck2xleZiLPMYyTqxkF9cDxlvdZIttSESfRD9UqQr1FhiXj
+        InptuqhzrfGzdjxJzBjfAKFMQo6e0Zk=
+X-Google-Smtp-Source: ABdhPJx6AF0hwNYuyvmlEPbV8cFcj+fzECG7PPqxTbNCGseWSbtzXpO5zQZuDMr9xbzM4/tHmwGt9Q==
+X-Received: by 2002:a17:90b:4d86:: with SMTP id oj6mr7547264pjb.101.1637216406930;
+        Wed, 17 Nov 2021 22:20:06 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id j22sm1745329pfj.130.2021.11.17.22.20.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 22:20:06 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: yao.jing2@zte.com.cn
+To:     akpm@linux-foundation.org
+Cc:     slyfox@gentoo.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yao Jing <yao.jing2@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] ia64: module: use swap() to make code cleaner
+Date:   Thu, 18 Nov 2021 06:20:02 +0000
+Message-Id: <20211118062002.164121-1-yao.jing2@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211108113127.3938-1-slark_xiao@163.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 07:31:27PM +0800, Slark Xiao wrote:
->   For Foxconn T99W175 device(sdx55 platform) in some host
-> platform, it would be unavailable once the host execute
->  the err handler.
->  After checking, it's caused by the delay time too short to
-> get a successful reset.
-> 
->   Please see my test evidence as bewlow(BTW, I add some
-> extra test logs in function mhi_pci_reset_prepare and
-> mhi_pci_reset_done):
->   When MHI_POST_RESET_DELAY_MS equals to 500ms:
->    Nov  4 14:30:03 jbd-ThinkEdge kernel: [  146.222477] mhi mhi0: Device MHI is not in valid state
->    Nov  4 14:30:03 jbd-ThinkEdge kernel: [  146.222628] mhi-pci-generic 0000:2d:00.0: mhi_pci_reset_prepare reset
->    Nov  4 14:30:03 jbd-ThinkEdge kernel: [  146.222631] mhi-pci-generic 0000:2d:00.0: mhi_pci_reset_prepare mhi_soc_reset
->    Nov  4 14:30:03 jbd-ThinkEdge kernel: [  146.222632] mhi mhi0:  mhi_soc_reset write soc to reset
->    Nov  4 14:30:05 jbd-ThinkEdge kernel: [  147.839993] mhi-pci-generic 0000:2d:00.0: mhi_pci_reset_done
->    Nov  4 14:30:05 jbd-ThinkEdge kernel: [  147.902063] mhi-pci-generic 0000:2d:00.0: reset failed
-> 
->   When MHI_POST_RESET_DELAY_MS equals to 1000ms or 1500ms:
->    Nov  4 19:07:26 jbd-ThinkEdge kernel: [  157.067857] mhi mhi0: Device MHI is not in valid state
->    Nov  4 19:07:26 jbd-ThinkEdge kernel: [  157.068029] mhi-pci-generic 0000:2d:00.0: mhi_pci_reset_prepare reset
->    Nov  4 19:07:26 jbd-ThinkEdge kernel: [  157.068032] mhi-pci-generic 0000:2d:00.0: mhi_pci_reset_prepare mhi_soc_reset
->    Nov  4 19:07:26 jbd-ThinkEdge kernel: [  157.068034] mhi mhi0:  mhi_soc_reset write soc to reset
->    Nov  4 19:07:29 jbd-ThinkEdge kernel: [  159.607006] mhi-pci-generic 0000:2d:00.0: mhi_pci_reset_done
->    Nov  4 19:07:29 jbd-ThinkEdge kernel: [  159.607152] mhi mhi0: Requested to power ON
->    Nov  4 19:07:51 jbd-ThinkEdge kernel: [  181.302872] mhi mhi0: Failed to reset MHI due to syserr state
->    Nov  4 19:07:51 jbd-ThinkEdge kernel: [  181.303011] mhi-pci-generic 0000:2d:00.0: failed to power up MHI controller
-> 
->   When MHI_POST_RESET_DELAY_MS equals to 2000ms:
->    Nov  4 17:51:08 jbd-ThinkEdge kernel: [  147.180527] mhi mhi0: Failed to transition from PM state: Linkdown or Error Fatal Detect to: SYS ERROR Process
->    Nov  4 17:51:08 jbd-ThinkEdge kernel: [  147.180535] mhi mhi0: Device MHI is not in valid state
->    Nov  4 17:51:08 jbd-ThinkEdge kernel: [  147.180722] mhi-pci-generic 0000:2d:00.0: mhi_pci_reset_prepare reset
->    Nov  4 17:51:08 jbd-ThinkEdge kernel: [  147.180725] mhi-pci-generic 0000:2d:00.0: mhi_pci_reset_prepare mhi_soc_reset
->    Nov  4 17:51:08 jbd-ThinkEdge kernel: [  147.180727] mhi mhi0:  mhi_soc_reset write soc to reset
->    Nov  4 17:51:11 jbd-ThinkEdge kernel: [  150.230787] mhi-pci-generic 0000:2d:00.0: mhi_pci_reset_done
->    Nov  4 17:51:11 jbd-ThinkEdge kernel: [  150.230928] mhi mhi0: Requested to power ON
->    Nov  4 17:51:11 jbd-ThinkEdge kernel: [  150.231173] mhi mhi0: Power on setup success
->    Nov  4 17:51:14 jbd-ThinkEdge kernel: [  153.254747] mhi mhi0: Wait for device to enter SBL or Mission mode
-> 
->   I also tried big data like 3000, and it worked as well.
->   500ms may not be enough for all support mhi device. We shall
-> increase it to 2000ms at least.
-> 
-> Signed-off-by: Slark Xiao <slark_xiao@163.com>
+From: Yao Jing <yao.jing2@zte.com.cn>
 
-Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
+Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
+opencoding it.
 
-Thanks,
-Mani
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Yao Jing <yao.jing2@zte.com.cn>
+---
+ arch/ia64/kernel/module.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-> ---
->  drivers/bus/mhi/pci_generic.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
-> index 59a4896a8030..4c577a731709 100644
-> --- a/drivers/bus/mhi/pci_generic.c
-> +++ b/drivers/bus/mhi/pci_generic.c
-> @@ -20,7 +20,7 @@
->  
->  #define MHI_PCI_DEFAULT_BAR_NUM 0
->  
-> -#define MHI_POST_RESET_DELAY_MS 500
-> +#define MHI_POST_RESET_DELAY_MS 2000
->  
->  #define HEALTH_CHECK_PERIOD (HZ * 2)
->  
-> -- 
-> 2.25.1
-> 
+diff --git a/arch/ia64/kernel/module.c b/arch/ia64/kernel/module.c
+index 2cba53c1da82..360f36b0eb3f 100644
+--- a/arch/ia64/kernel/module.c
++++ b/arch/ia64/kernel/module.c
+@@ -848,7 +848,7 @@ register_unwind_table (struct module *mod)
+ {
+ 	struct unw_table_entry *start = (void *) mod->arch.unwind->sh_addr;
+ 	struct unw_table_entry *end = start + mod->arch.unwind->sh_size / sizeof (*start);
+-	struct unw_table_entry tmp, *e1, *e2, *core, *init;
++	struct unw_table_entry *e1, *e2, *core, *init;
+ 	unsigned long num_init = 0, num_core = 0;
+ 
+ 	/* First, count how many init and core unwind-table entries there are.  */
+@@ -865,9 +865,7 @@ register_unwind_table (struct module *mod)
+ 	for (e1 = start; e1 < end; ++e1) {
+ 		for (e2 = e1 + 1; e2 < end; ++e2) {
+ 			if (e2->start_offset < e1->start_offset) {
+-				tmp = *e1;
+-				*e1 = *e2;
+-				*e2 = tmp;
++				swap(*e1, *e2);
+ 			}
+ 		}
+ 	}
+-- 
+2.25.1
+
