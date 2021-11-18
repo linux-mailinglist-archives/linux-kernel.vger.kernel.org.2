@@ -2,105 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ABBA455796
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:01:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6510455798
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:01:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244960AbhKRJEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 04:04:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
+        id S244973AbhKRJEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 04:04:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244972AbhKRJD1 (ORCPT
+        with ESMTP id S245012AbhKRJEE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 04:03:27 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888B5C061570;
-        Thu, 18 Nov 2021 01:00:25 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id b40so22556266lfv.10;
-        Thu, 18 Nov 2021 01:00:25 -0800 (PST)
+        Thu, 18 Nov 2021 04:04:04 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9914BC061570;
+        Thu, 18 Nov 2021 01:01:04 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id d5so10127537wrc.1;
+        Thu, 18 Nov 2021 01:01:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=G27YXSER0dL2xbw6ocbzN4KLUhffd2ytCL7vYepxLzQ=;
-        b=DaSp/3BbRNe4OzvN71UWlGcQ7tazW/+flxn4NmwK8LsDJDQxkUpOxM0PIukahVOmnV
-         nNg0cYv/ypwZXdMS/uzmcI/mXX8ogO0vjNrgH921bOsLpplp6utWDLGbUpZtOrcNtBVR
-         LRiwBftbOUVwVOUQHDjMj51IzoR5aVOu8O5i+6luh5VYNTPFiMlzcVFVxyvWNUwLYJlF
-         z9E8rf1EtdfAwWvbHNWHmGk3XbU3IVT6GwUivtb/kxNrKpCahFTzKhkUXPgdJ+WUlftP
-         IHPt9nlDPiFrInO6c9Gud+Q5PPESyh2J7n+Iioolhw/7bE7w/I/fAQjpEfMLL2KARddA
-         TN+w==
+        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
+         :from:to:references:in-reply-to;
+        bh=HoB8UigyPFgMPV3vxuTV7Mz+M/fc/B322pVo6Nb1Z/M=;
+        b=Tkp+Hyi8/PwTDgDCb8mHGZWCuQFfKMxxxMOdGnnXMwFJkVRW9gr+p6nBSd1JUfT7v2
+         rGwxVTuCK59egHqpvNsqMiDQx6E9mtsQDzJzie9CSTfiPdT8BXQkAiukKa5evJvsThec
+         qPFP3hI5LrpfL3yhpBTacL39PriVqBQQJjTJk1CFOv/L1Jk5iU96Fy+U9pqPwLxAbagN
+         oY/hap7xdWyAxspz+v6yobF0eGU0547G9HpfzDFmhEUVszGR6X1YOF3J+RzTOhcIXhrs
+         Uy8P8wlEsGM8vsULmfSwVe3lqpxQNl+NJtDBeOQMjDrZx/pzJAUO5MGwfIUfTaHZNP9m
+         j/WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=G27YXSER0dL2xbw6ocbzN4KLUhffd2ytCL7vYepxLzQ=;
-        b=m1Ce2N2gVMzOOQkOQj9VeC6MTUAzYpgfiqKdVZLi7A7Eoosk3d5exf2bfCY5BXx4UB
-         dc4gbvgnhExpH7emBAr3eQTehpToYW6/ngpa3zUdFDDyjbeNsaALh+ONOSUk5+Fb3cZK
-         e274mAPMtQ2aa0QyuuJpngPj8fQgF6ni3q3OHXjqEIPTeb2mJB0QGDfv1IambM7yDogl
-         mfYtOGe4r3FoZGKpBCu7vLGMztasZFHS7rtKgIB7NlBKnv7rrm5XgaRuy5yQKIziwPnH
-         jUqVTbkTGTqxusFXpfYt+g9Ry7hd/MwfC+qF/s8CtdM05lrnGhk2mr9lAZoJc7yZv9aq
-         67Zg==
-X-Gm-Message-State: AOAM5321PSle5x5xqk80aRT++0YRirAPCWITBrzRjKfJVY9dRsjjr7zM
-        TgzDcv9iSr9z/8QgJFqYXf0=
-X-Google-Smtp-Source: ABdhPJziFAWTi66Q6JLiFDlf2F5623Cb+gphUPFq1reuEs4jYW3mOjks4xhyHREDQP1ye/+oXXMY7w==
-X-Received: by 2002:a05:6512:e91:: with SMTP id bi17mr22424116lfb.14.1637226023900;
-        Thu, 18 Nov 2021 01:00:23 -0800 (PST)
-Received: from [192.168.1.11] ([217.117.245.43])
-        by smtp.gmail.com with ESMTPSA id y11sm250477ljh.54.2021.11.18.01.00.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Nov 2021 01:00:23 -0800 (PST)
-Message-ID: <018ada52-3e9b-8909-2346-ea2ce1d817fa@gmail.com>
-Date:   Thu, 18 Nov 2021 12:00:21 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] net: bnx2x: fix variable dereferenced before check
-Content-Language: en-US
-To:     Johan Hovold <johan@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     aelior@marvell.com, skalluru@marvell.com,
-        GR-everest-linux-l2@marvell.com, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211113223636.11446-1-paskripkin@gmail.com>
- <YZYULWjK34xL6BeW@hovoldconsulting.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <YZYULWjK34xL6BeW@hovoldconsulting.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:content-transfer-encoding:date
+         :message-id:cc:subject:from:to:references:in-reply-to;
+        bh=HoB8UigyPFgMPV3vxuTV7Mz+M/fc/B322pVo6Nb1Z/M=;
+        b=55T0VJdW5bTTRw6r6C5zE7eula1CXciyWf9Wg4p6myCsHyRWtwSRL0hl3IrWu5FmHz
+         hQiS2GhYlK+wzvUTpGtRePLpCibQKVKIL6oKcBhY7kzEGPiMK6C/VNtlDyyeQD15YsXa
+         bgSbEtRQptbI0o9zFb2LG6FPpCinGD2YkhXmpE2s86KeEekIWu5GcMjiJxqmDFbJCwDo
+         YKraeVeIPs046sbsviQ4CsMSNCstx7jMB8S/5ABvU30Km+vZWLVy8Xu/yBuu/rqtEFFE
+         saDsj5Rl+usOJ9APuWtpfNxWu1tIsYjA1bUnJrzbAv7e4qH3nwNVF9AbxNFBmG5JEYAc
+         H5Rw==
+X-Gm-Message-State: AOAM531kMEVCCd8NCDJaVywr5/4oxBazXgfcTRAvtIPqfZMSz/waeh35
+        JplrE27lU7YB1pxOrt32Jqc=
+X-Google-Smtp-Source: ABdhPJxpXMQii2ux6+hCaETePd4TfBQSSFXNgyFjTdkHDPE54QnR1Eaeb78OxXTzBwpPO7Gb6joitQ==
+X-Received: by 2002:adf:9bdb:: with SMTP id e27mr29564347wrc.417.1637226063168;
+        Thu, 18 Nov 2021 01:01:03 -0800 (PST)
+Received: from localhost (a109-49-33-111.cpe.netcabo.pt. [109.49.33.111])
+        by smtp.gmail.com with ESMTPSA id l7sm3029048wry.86.2021.11.18.01.01.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 01:01:02 -0800 (PST)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 18 Nov 2021 09:01:01 +0000
+Message-Id: <CFSS79FWS3AE.3DWGLGKSNQIH9@arch-thunder>
+Cc:     <devicetree@vger.kernel.org>, <kernel@pengutronix.de>,
+        <kernel@puri.sm>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-imx@nxp.com>, <linux-kernel@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <robh@kernel.org>,
+        <shawnguo@kernel.org>
+Subject: Re: [PATCH v2 1/2] media: imx: imx7-media-csi: add support for
+ imx8mq
+From:   "Rui Miguel Silva" <rmfrfs@gmail.com>
+To:     "Martin Kepplinger" <martin.kepplinger@puri.sm>,
+        <laurent.pinchart@ideasonboard.com>, <mchehab@kernel.org>
+References: <20211118063347.3370678-1-martin.kepplinger@puri.sm>
+In-Reply-To: <20211118063347.3370678-1-martin.kepplinger@puri.sm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/21 11:51, Johan Hovold wrote:
-> [ Adding Dan. ]
-> 
-> On Sun, Nov 14, 2021 at 01:36:36AM +0300, Pavel Skripkin wrote:
->> Smatch says:
->> 	bnx2x_init_ops.h:640 bnx2x_ilt_client_mem_op()
->> 	warn: variable dereferenced before check 'ilt' (see line 638)
->> 
->> Move ilt_cli variable initialization _after_ ilt validation, because
->> it's unsafe to deref the pointer before validation check.
-> 
-> It seems smatch is confused here. There is no dereference happening
-> until after the check, we're just determining the address when
-> initialising ilt_cli.
-> 
-> I know this has been applied, and the change itself is fine, but the
-> patch description is wrong and the Fixes tag is unwarranted.
->   
+Hi Martin,
+Thanks for this version.
 
-I agree. I came up with same thing after the patch has been applied. I 
-thought about a revert, but seems it's not necessary, since there is no 
-function change.
+On Thu Nov 18, 2021 at 6:33 AM WET, Martin Kepplinger wrote:
 
-I should check smatch warnings more carefully next time, can't say why I 
-didn't notice it before sending :(
+> Modeled after the NXP driver mx6s_capture.c that this driver is based on,
+> imx8mq needs different settings for the baseaddr_switch mechanism. Define
+> the needed bits and set that for imx8mq.
+>
+> Without these settings, the system will "sometimes" hang completely when
+> starting to stream (the interrupt will never be called).
+>
+> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
 
-thanks
+LGTM
+
+Acked-by: Rui Miguel Silva <rmfrfs@gmail.com>
+
+------
+Cheers,
+     Rui
+> ---
+>
+> revision history
+> ----------------
+> v2: (thank you Rui and Laurent)
+>  * rename function and enum
+>  * remove unrealted newline
+>  * add Laurents reviewed tag to the bindings patch
+>
+> v1:
+> https://lore.kernel.org/linux-media/20211117092710.3084034-1-martin.keppl=
+inger@puri.sm/T/#t
+>
+>
+>
+>  drivers/staging/media/imx/imx7-media-csi.c | 32 ++++++++++++++++++++--
+>  1 file changed, 30 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/staging/media/imx/imx7-media-csi.c b/drivers/staging=
+/media/imx/imx7-media-csi.c
+> index 2288dadb2683..1f3d9e27270d 100644
+> --- a/drivers/staging/media/imx/imx7-media-csi.c
+> +++ b/drivers/staging/media/imx/imx7-media-csi.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/mfd/syscon.h>
+>  #include <linux/module.h>
+> +#include <linux/of_device.h>
+>  #include <linux/of_graph.h>
+>  #include <linux/pinctrl/consumer.h>
+>  #include <linux/platform_device.h>
+> @@ -122,6 +123,10 @@
+>  #define BIT_DATA_FROM_MIPI		BIT(22)
+>  #define BIT_MIPI_YU_SWAP		BIT(21)
+>  #define BIT_MIPI_DOUBLE_CMPNT		BIT(20)
+> +#define BIT_MASK_OPTION_FIRST_FRAME	(0 << 18)
+> +#define BIT_MASK_OPTION_CSI_EN		(1 << 18)
+> +#define BIT_MASK_OPTION_SECOND_FRAME	(2 << 18)
+> +#define BIT_MASK_OPTION_ON_DATA		(3 << 18)
+>  #define BIT_BASEADDR_CHG_ERR_EN		BIT(9)
+>  #define BIT_BASEADDR_SWITCH_SEL		BIT(5)
+>  #define BIT_BASEADDR_SWITCH_EN		BIT(4)
+> @@ -154,6 +159,11 @@
+>  #define CSI_CSICR18			0x48
+>  #define CSI_CSICR19			0x4c
+> =20
+> +enum imx_csi_model {
+> +	IMX7_CSI_IMX7 =3D 0,
+> +	IMX7_CSI_IMX8MQ,
+> +};
+> +
+>  struct imx7_csi {
+>  	struct device *dev;
+>  	struct v4l2_subdev sd;
+> @@ -189,6 +199,8 @@ struct imx7_csi {
+>  	bool is_csi2;
+> =20
+>  	struct completion last_eof_completion;
+> +
+> +	enum imx_csi_model model;
+>  };
+> =20
+>  static struct imx7_csi *
+> @@ -537,6 +549,16 @@ static void imx7_csi_deinit(struct imx7_csi *csi,
+>  	clk_disable_unprepare(csi->mclk);
+>  }
+> =20
+> +static void imx7_csi_baseaddr_switch_on_second_frame(struct imx7_csi *cs=
+i)
+> +{
+> +	u32 cr18 =3D imx7_csi_reg_read(csi, CSI_CSICR18);
+> +
+> +	cr18 |=3D BIT_BASEADDR_SWITCH_EN | BIT_BASEADDR_SWITCH_SEL |
+> +		BIT_BASEADDR_CHG_ERR_EN;
+> +	cr18 |=3D BIT_MASK_OPTION_SECOND_FRAME;
+> +	imx7_csi_reg_write(csi, cr18, CSI_CSICR18);
+> +}
+> +
+>  static void imx7_csi_enable(struct imx7_csi *csi)
+>  {
+>  	/* Clear the Rx FIFO and reflash the DMA controller. */
+> @@ -552,6 +574,9 @@ static void imx7_csi_enable(struct imx7_csi *csi)
+>  	/* Enable the RxFIFO DMA and the CSI. */
+>  	imx7_csi_dmareq_rff_enable(csi);
+>  	imx7_csi_hw_enable(csi);
+> +
+> +	if (csi->model =3D=3D IMX7_CSI_IMX8MQ)
+> +		imx7_csi_baseaddr_switch_on_second_frame(csi);
+>  }
+> =20
+>  static void imx7_csi_disable(struct imx7_csi *csi)
+> @@ -1155,6 +1180,8 @@ static int imx7_csi_probe(struct platform_device *p=
+dev)
+>  	if (IS_ERR(csi->regbase))
+>  		return PTR_ERR(csi->regbase);
+> =20
+> +	csi->model =3D (enum imx_csi_model)of_device_get_match_data(&pdev->dev)=
+;
+> +
+>  	spin_lock_init(&csi->irqlock);
+>  	mutex_init(&csi->lock);
+> =20
+> @@ -1249,8 +1276,9 @@ static int imx7_csi_remove(struct platform_device *=
+pdev)
+>  }
+> =20
+>  static const struct of_device_id imx7_csi_of_match[] =3D {
+> -	{ .compatible =3D "fsl,imx7-csi" },
+> -	{ .compatible =3D "fsl,imx6ul-csi" },
+> +	{ .compatible =3D "fsl,imx8mq-csi", .data =3D (void *)IMX7_CSI_IMX8MQ }=
+,
+> +	{ .compatible =3D "fsl,imx7-csi", .data =3D (void *)IMX7_CSI_IMX7 },
+> +	{ .compatible =3D "fsl,imx6ul-csi", .data =3D (void *)IMX7_CSI_IMX7 },
+>  	{ },
+>  };
+>  MODULE_DEVICE_TABLE(of, imx7_csi_of_match);
+> --=20
+> 2.30.2
 
 
 
-With regards,
-Pavel Skripkin
