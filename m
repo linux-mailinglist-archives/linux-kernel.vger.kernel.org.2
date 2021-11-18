@@ -2,176 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E684564BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 22:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A34C94564BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 22:03:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234000AbhKRVGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 16:06:12 -0500
-Received: from mail-mw2nam10on2055.outbound.protection.outlook.com ([40.107.94.55]:18560
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        id S233983AbhKRVGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 16:06:49 -0500
+Received: from mail-dm6nam10on2070.outbound.protection.outlook.com ([40.107.93.70]:3008
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233949AbhKRVGC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 16:06:02 -0500
+        id S233033AbhKRVGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 16:06:41 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bk20c2d3RtM965VIPEx1PX5Lu2SMJte+L4BAsqpMJtVGMrHLhLAdjhP+MUwiQNMy1LN0YVPQezbJvvCGfJR/RGtjNtW2iHUTOmiFUpqJU6o+182DXoBoJRP3DF5tT/lAKZWAqojefzMkHoOylkWfYZVvoeOF3DXd9R2vZ0ji5OoYbGSiCW84Dz+RhQHL77H+8KSxtKYu9r44n/d2ztf/RXTl5d4HenCZmKAUz8CKEMxARPkie784M5C/hY2qzWNOV2SHRSkpxpVoIy2YcAWlV8E5lhZd55LWPs0gnjmrzJPhC7a0N4mn/eTJsQS4A6+JVCNY1OoUsilJ3ntxa11VnQ==
+ b=dGGko2W2/EwFmvWF3VLtgp3bk9METBPWGi6azrl7cCQhKQq3oWATNOVwaxxadWbDCsVn/6IvPopIT2QqqZoX3ZM0jIagcNVq9xRsHFjiewVec71HFFcs8KBafFK2s5Y7t60RvHlCeflfYbW5PQTCdJhb8w966CVHc/UdRRFV+BnoRIRiJhsECME9qXcaBGAc1kJYT8/zZVX8M6BnJv4jkk04iKOl4SY+xqLIs8FUPBvElNumlz3I+KYrrdDfN40fWBc3c0UsCPw1OdQ1Y3ZKYosL1L6WbWTlR5+EL6SFUD1akxiay1eVG4T2N4xDh6pHqaMrbBx06jFXn81kFQLDqQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ehv3vxWSuYNRMsgYCVA12YBrW31JvZJV0tvytvKlb0Q=;
- b=YDu3iNJRzL7jm+Lr1pzt0WHnt8AUp1c1GRwbp1nDebJHeoCUwOOQrysU0JQVAQ3avjEq3DFk7dkqFI9BQi1E0j0AsVEKvhiN47/lim2I6kg8VrDP+OeU/4/TLzSZgXMhTl2I6mgWXMXd1hW3VqUp3XAgFYDC9F2K55OhNV00CsqdhTFeMouJgNSNAIFw+mz4udIY5QEz5JwV0x6Nny0dABCBCGsbpsM4q3d6uvvQxFQO+mh9TBlbW/xveXjnoKk1QX9ZDz1UFbfTmgMutaCxsYQIbs2eI6usGemAkOFGBvNvioaMUBEMUpa7rd7QPl4Z5bVWAwV+mzOLnfjoNGgIzw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=K7Q4vNd0znRVPwo9gso9EKmXLAnz30P1D1TqhtUPNo8=;
+ b=dTXnfKkdZdFjErI808rjQpN4W7YH1UIXt2Uo2ggm8g95wUPPIgmcOshQrJlh+3c82iwYTLGb2pS/FpyDugkreBUpt5P5CffDYEXympHdA9EiKaFoMBS3RkQf5MMJQGKmi/PnxDG5omQFeNBZcgqmOUkC2fEUsp38P+GZMhfPgZddSdexDa9DAtC6st+fnWOY8Q7+hiCzsFGiEgYan6/ITOUhY5qARYD395zs4T0BzX35NSRGN9EMNwI16+39xE/AquxcyeiUyZbJfwppi3Qt2WBH/2YyUjxQlEFRPgpo+rHnBZvTMLNWRajIHi01erXoWrawnCOmtaiYadWwIkH4MQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=infradead.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ehv3vxWSuYNRMsgYCVA12YBrW31JvZJV0tvytvKlb0Q=;
- b=Qg7y7ERUgsvoEpQDcxvZb9rGFXPdM56OJWIsZhiiE919G2Uu0rHi2YBlRxayrcH1a/mmvzRY8vfqHrg3d/UVOn9PxnmGCbDTk6f9X186erVnsjkSgewoE3hYRqYQyS8NusNi2Jm8yWJv4LWuS42kvoaDrbuzVIDUuXFmEqCHL70=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3505.namprd12.prod.outlook.com (2603:10b6:408:69::17)
- by BN8PR12MB3043.namprd12.prod.outlook.com (2603:10b6:408:65::26) with
+ bh=K7Q4vNd0znRVPwo9gso9EKmXLAnz30P1D1TqhtUPNo8=;
+ b=RDehNOOfFZ4bAqxOVKWNvJtC86Fgt8SiKQQt+AkITeQ94t1l7XzdbE+Nn5PBhSysvSNNlQbYB32ahk8UKhbegHGqPYgKIGeJt4ca/QAGAfsefbgWtFSF+8ngQ4+Zw9iwaFyLkNb5N/nJEUCu3aBPtQCPZHc6GJ9z/SjWzYgSJ0k=
+Received: from SA9PR13CA0171.namprd13.prod.outlook.com (2603:10b6:806:28::26)
+ by MWHPR02MB2830.namprd02.prod.outlook.com (2603:10b6:300:107::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Thu, 18 Nov
- 2021 21:02:59 +0000
-Received: from BN8PR12MB3505.namprd12.prod.outlook.com
- ([fe80::704c:60ed:36f:4e4c]) by BN8PR12MB3505.namprd12.prod.outlook.com
- ([fe80::704c:60ed:36f:4e4c%7]) with mapi id 15.20.4713.022; Thu, 18 Nov 2021
- 21:02:58 +0000
-Subject: Re: [PATCH v2 11/13] perf tools: improve IBS error handling
-To:     Stephane Eranian <eranian@google.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        acme@redhat.com, jolsa@redhat.com, songliubraving@fb.com,
-        mpe@ellerman.id.au, maddy@linux.ibm.com
-References: <20211111084415.663951-1-eranian@google.com>
- <20211111084415.663951-12-eranian@google.com>
- <689f7b71-32b8-ba0e-22ff-c2248662b1e1@amd.com>
- <CABPqkBQNpFUGm0Eu3KtPwex1r7G5C0yp-F+fsjiS+2KJ0uuRqQ@mail.gmail.com>
-From:   Kim Phillips <kim.phillips@amd.com>
-Organization: AMD
-Message-ID: <659eb6eb-3a46-f9b4-730b-026c28a50b31@amd.com>
-Date:   Thu, 18 Nov 2021 15:02:55 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <CABPqkBQNpFUGm0Eu3KtPwex1r7G5C0yp-F+fsjiS+2KJ0uuRqQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL0PR0102CA0013.prod.exchangelabs.com
- (2603:10b6:207:18::26) To BN8PR12MB3505.namprd12.prod.outlook.com
- (2603:10b6:408:69::17)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Thu, 18 Nov
+ 2021 21:03:38 +0000
+Received: from SN1NAM02FT0029.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:806:28:cafe::73) by SA9PR13CA0171.outlook.office365.com
+ (2603:10b6:806:28::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.11 via Frontend
+ Transport; Thu, 18 Nov 2021 21:03:38 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT0029.mail.protection.outlook.com (10.97.4.175) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4713.19 via Frontend Transport; Thu, 18 Nov 2021 21:03:37 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 18 Nov 2021 13:03:36 -0800
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Thu, 18 Nov 2021 13:03:36 -0800
+Envelope-to: dwmw2@infradead.org,
+ mdf@kernel.org,
+ robh@kernel.org,
+ trix@redhat.com,
+ devicetree@vger.kernel.org,
+ linux-fpga@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Received: from [172.19.72.93] (port=37748 helo=xsj-xw9400.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <lizhi.hou@xilinx.com>)
+        id 1mnoZE-0007CN-O9; Thu, 18 Nov 2021 13:03:36 -0800
+Received: by xsj-xw9400.xilinx.com (Postfix, from userid 21952)
+        id 5CB5A600093; Thu, 18 Nov 2021 13:03:36 -0800 (PST)
+From:   Lizhi Hou <lizhi.hou@xilinx.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Lizhi Hou <lizhi.hou@xilinx.com>, <linux-fpga@vger.kernel.org>,
+        <maxz@xilinx.com>, <sonal.santan@xilinx.com>, <yliu@xilinx.com>,
+        <michal.simek@xilinx.com>, <stefanos@xilinx.com>,
+        <devicetree@vger.kernel.org>, <trix@redhat.com>, <mdf@kernel.org>,
+        <robh@kernel.org>, <dwmw2@infradead.org>
+Subject: [PATCH V1 XRT Alveo Infrastructure 0/9] XRT Alveo driver infrastructure overview
+Date:   Thu, 18 Nov 2021 13:03:14 -0800
+Message-ID: <20211118210323.1070283-1-lizhi.hou@xilinx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: from [IPv6:2603:8080:1540:87c:fedf:2f0f:c0e6:d56d] (2603:8080:1540:87c:fedf:2f0f:c0e6:d56d) by BL0PR0102CA0013.prod.exchangelabs.com (2603:10b6:207:18::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend Transport; Thu, 18 Nov 2021 21:02:57 +0000
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0092f980-7ae0-44ce-50da-08d9aad6ccd2
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3043:
-X-Microsoft-Antispam-PRVS: <BN8PR12MB3043BD970007AF45044B0E46879B9@BN8PR12MB3043.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Office365-Filtering-Correlation-Id: bb480ad7-fc18-4981-f519-08d9aad6e439
+X-MS-TrafficTypeDiagnostic: MWHPR02MB2830:
+X-Microsoft-Antispam-PRVS: <MWHPR02MB2830461B44E7A270D77BBB40A19B9@MWHPR02MB2830.namprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rP2mlT321i5s0Av2WbN5zY6obZ7+rCCMF4atVjmdTeg0svYlWsEIS0mNoszJqQAJudmDSRWYvdo29i5ahCEEn33a4ZGOxKYPMzf3fqkJDOnfr7LC6o2sbvTRnYeiV01erwXZPSX7FRGdS3Vmq1IOpwZSywls/ZbmFGSFLwlWT85CoNgoNEB88FvKDWMlOvU5EqhFMW52Nmmn63QCddCHQ9aKJZ0D8apsRbqQE8xj0cjQJm7wwiyaHZJiyJff3hvJe3h87NOt28pogXNEKR0q5FK3Zf+9mrPpmxXRY+yeSxOu9CxIbp2lwnDht8S8niGhRRIgNHwUe3o6T3iBe10LFWCXoBZMv13mjDXXzvmUtpUxj+ssWNJ1CCERvYjjdG4ZyBIQT9LeYva/3OsKo2OxstT+x4VeTS1d/vp2IEj4TDf/6dG1CEHc+QhmElqCxF5m1v96XFNHHqHriC5WaFCjMZ4tGLY4tdAk4BWXXIsr5LwicpnY2lkU6pJiIClfRXW+2H3DrWR0lrDgQ0ksPiGpUcwn65kjT3TMKKE6sdYA3mIrqt/nBPfYqtwLLZH0hUvuJZBGT9GYvtA2LTfvLw5XZbadeM1DdqAu8uuiTyoo0rP6V1JihGedHGo58LB6NBovrFM1Apcedr1GNeczl6KQnhvfylUTAGv6YiHTy0Sk+L5x69bJozretAHb0pPSRr0+9SPiT/k6pLoTGc6aicmNYhJYF50NxMXU6yQTJSddvBPDCk719HWdjIql9q/s9Fyi/SjnPAze8i8OHEQBM7Y9do977p82OrvUV+LLsPqLGTOrIm7+VbHj09VO5unBOIRI4aqAQY33NIko+Qlvxh/oRQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3505.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(8936002)(83380400001)(36916002)(6486002)(8676002)(31686004)(2906002)(36756003)(53546011)(44832011)(2616005)(38100700002)(86362001)(6916009)(4326008)(66556008)(66476007)(31696002)(508600001)(966005)(66946007)(186003)(316002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b0JFNGpkTWFDbnBDWGZsdUFlblVlaTVFYWdWQjJFUzVnUnJKeHFuSWh1NDNm?=
- =?utf-8?B?ME1LZ2wyQ0hmcy9yaGhnWEhMdklqS0dGMWo0TGpsVEQ2SnZuTWZOWThWYjVs?=
- =?utf-8?B?SDExaVVUNHdYVEI4ckRYcUVsc0pub2pMODJCZHRkcXdxYjlya0tRWnRHcnRZ?=
- =?utf-8?B?SEx0aTZhQXFlV2VHYjV4OGIxeWZzd2lnbEwwZElWc2pqS3FRM1R2eDROVnhn?=
- =?utf-8?B?MTZjQ3QyQ0dhVlZDMkNyVXEzREg2cWN2cUdCMmhkZU0wOW9WNHkwM1U5SEpv?=
- =?utf-8?B?ZHUxTlJyYXdEY2RrK0V5NTBFa093ZGhaRFFSMnhTQTFaOXJ3eDBnSWpLQXYx?=
- =?utf-8?B?SXRBbkhkVCtzdUpHdmZodGpxS0VLbVBXcGx1cHBtVzZtTithaWtyaWd0NHRr?=
- =?utf-8?B?dGVNeGFTRGFoS2crS0FxbzJ1VFo5cDIzc3c0dWhnci9Nbm5xUHlZN0Y1VFo1?=
- =?utf-8?B?dkUxRVl6ejJYSlJkQ2M1em1EUTdRZUYxVnBMdHJWMkh4bVU2TnhLYTdvK3Zj?=
- =?utf-8?B?ZGE2cEJuZjlhcTlnTlJFZ2xoS0habVhnYmFWL1gvY1FkUlJmRHhZRmd2eG5y?=
- =?utf-8?B?UHhsbzlPWGh1cVg3NTFsMVlSeGxOcGgxYXh5a2dOZzR5WkNHdnJRT051c1FN?=
- =?utf-8?B?dzJRdEVSUTAxZG5EY0VpbDF2aXNaeS9Vekozdmh4VTUzNmlaZlFERit3SWFD?=
- =?utf-8?B?WWc3R1BrSko2SFpwdG1oS1dRa09obDAwWFAvTEZoV0Npd3ZiK3RjY1lmTDd6?=
- =?utf-8?B?ZmVwUHpFVW5Vbm5PQTN1RGRmendIZ2JVSVRjem96SFRCL29xNU1SaEdVVFlW?=
- =?utf-8?B?YmU3ZTBMaXl3Sm5LSFlxRksyRWoxb0t5bC9xNUlmRWtTZmZxNTNxbXlDM1VF?=
- =?utf-8?B?L2RNRVh2dmM5c2tZTVVaT2ZFczVxdlhrRWJSNkNRWTJFWWx1NDZlQ3pwMUh4?=
- =?utf-8?B?SXJ4akJwdG9Jb2wvckMvREo3c0NjbmZKck1aZ1Q3QmR2WitBYXdLMzVaemNL?=
- =?utf-8?B?NzZydGV4bWJQaUZnY0pyL0VyTmh0b0xZS3JZOHRLbksxaHdxQ1Z5UmEzckhS?=
- =?utf-8?B?NEhQazU2M2lwb1U0WFE2bXF5RlB4ZVRTS0hUNjZLakZNY3dvUjU4UGdOOHNj?=
- =?utf-8?B?WFNKOEk2MVpsdlNuMzcyZFNsMWtUY3ZGM2ZTaVkvdXFrcUY2R0NweU95S29v?=
- =?utf-8?B?M3ZIM2RQSHY5R0FHUStwN21XSGlOT01KNkp3TWwxRHcvek84cmEwd2RUbi9L?=
- =?utf-8?B?N0VjN0FCNGhjRTNCZ0ZYbDBvMzRkcWwrYWg1bmdoY3MzbFZHbXUxeHlIQUxR?=
- =?utf-8?B?aGpBbjl5MXJMekZ1TitDUTRQQkNSMW10Z2R1YjVNbGN2MnZDYlYzdlF0QWpZ?=
- =?utf-8?B?bmJyRnhVNzlEcGpvcWFVOHFUOVM1VE53NllpRytGRHdnR29NSi9VSHpnZDhQ?=
- =?utf-8?B?eTY0R09hQkZEWHpQWEl0VVRhVFYvRXE4ODcyZEZ1RDFxS3VHN08ra09Mc1Zy?=
- =?utf-8?B?bmJsVk15dXpNNUYxNm1uWTZUTFBqTUYrWGVseXhHdGZSdURRZlY3MmZDMGVx?=
- =?utf-8?B?NVZJbUpuUFppNTZWMUxndDY5amlKcS84VXNMQ1YyKzBOdm1ibGxYYzM2R2hF?=
- =?utf-8?B?c284cjltZVB4ZkloSkxJRmZMYmpKRmFScUFtenppSnJPdCtkR09NNGZleUpW?=
- =?utf-8?B?YXlGZW5VNlZzWGVxVUhteWgrRU9WWXBIRDR1eEdzeS9IYjRCS0NHd3Z6SEtC?=
- =?utf-8?B?YlRZSFk2WTljOWFwRlZBQkdVQWhaSGRqaTZTMjZCQlNiR3FuVEVML1Myd3dl?=
- =?utf-8?B?aytncHMvL1hkTEFMQTFmMVFvY3pmTUE0OXk5dnJqMlBaV052SU90VTVDY0NX?=
- =?utf-8?B?TENScjU5MWV1cmNJNUNHRXkxVnNHZ0dybVREMUNta25JdU1hYW1NbGtqUlNq?=
- =?utf-8?B?ZkZqWWw3dk9jWUJEbVQ0RURvNlRINzRjbmdYbUdOeHNreExvRWZ0U0gvUWNW?=
- =?utf-8?B?YWFLRHd5UHVFSE5aalU1R0F4c1RWRVdlbGp1bnZxeHA2WHAzeHZVNjd3bjIr?=
- =?utf-8?B?SUVlYXF0SSt2OVk3SkliTnZKSk5YQlYxL0pmeDJwd215M2V5aitVVjdrN0gy?=
- =?utf-8?B?ZVM0bFBaYitsYnQ4MWVDOTBBTlJMbEwxM1lyRWtDWkJqN0Q4NHFtTHZUZk5B?=
- =?utf-8?B?SG0wRm95ODVwR3FRdE8ydTdGVlIvdkh4bms5SnhqTGhwSkVNbWZScDdyOG5O?=
- =?utf-8?Q?oV0wstb3qmhRcLmK94zV/bGeTPZl+a5xGMROsvLT3g=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0092f980-7ae0-44ce-50da-08d9aad6ccd2
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3505.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2021 21:02:58.8033
+X-Microsoft-Antispam-Message-Info: Dqw+NYqCCSiprmPXrckmc+Hia0ZibcWk85OiuFhmFyNXbCC4RdYm5A1p+IgWnJ5UNpMtTg2caC/nipzkSd6TONavDoGJk3HyRD2zbvTYyv3ZCXkPvbAeVXp5cibgOk41Wjgi7XWZwSkBAxa0TIhJKpmxbVs1JkG5/66dwFvryOWbJBm7EjWKaQM+VBk+utAqFJXeJxBsqjjb7AMkL01B0TSd6vQ1Fc/qGX8cTE5onwdDiTCcs9DydNLvSqpHJzEnR0lxGtF3tTbK8gWB0xBAOz+FIfljB/nSlJZur2OagG1I4q08oOzRC+W9LHLfTz2rFfwfLYYaloaFW5/Ry4v5nA10geZPRJ8jicvDUMo1ihV6A2rjZuNyLsmdECWH5sxD9pweZahuhNGCSYvzibNmzZM52/I/Jbhw0PvLYKLpG57smGH/IuSX/ZVgcRb7nYWUJU8WJeHpqQNm2WRkysf8kn/sEtF90/fJWaXQNTjtCPa7IFU+WGbxEB/c/sjas9TZdZ8AMvnLt1d2DuoY4M0eJ7JEgx84Mj5y6tc1dNtuoEankMEPmlv2Y62j6BsGHcYP2Gyu6ITEnUYOHpClHq+aKyURVLLyJLpMYOFXwyos7g7twVLxh6qJ6LZCD295+A2JZANbdqhMJfRUHzIlM1DiLpZI6ZkS04fB4iL8pbv3TCdMOFBqMVKmjCO/VqEZrmGC6AClT3q0ax9RhFb+TpljY9/p4y+mNKCiZq1G9qMLKICC+3/GDrzMQU4rqnjGwhLn6LydwIacyjWnkqIXswwHptKL5omwRlhXg7sfHLB+N7Q=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(36840700001)(46966006)(8676002)(6666004)(26005)(426003)(336012)(83380400001)(5660300002)(186003)(44832011)(82310400003)(8936002)(36860700001)(7636003)(356005)(2616005)(6916009)(2906002)(6266002)(4326008)(36756003)(316002)(42186006)(966005)(47076005)(1076003)(36906005)(54906003)(70586007)(508600001)(70206006);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2021 21:03:37.7563
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PG4RcHvrSCDoQMUZk1FooRBh9R/ywZCWQt3u9LIqywcz1VlC40vZD76e15C257LnA0L5TqILcFu6r0zeohMDFw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3043
+X-MS-Exchange-CrossTenant-Network-Message-Id: bb480ad7-fc18-4981-f519-08d9aad6e439
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0029.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR02MB2830
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
+This V1 of patch series is the infrastruture of previous submitted XRT
+driver patch set for Xilinx Alveo PCIe accelerator cards.
+    https://lore.kernel.org/lkml/20210802160521.331031-1-lizhi.hou@xilinx.com/
 
-On 11/17/21 3:15 AM, Stephane Eranian wrote:
-> Kim,
-> 
-> On Tue, Nov 16, 2021 at 8:46 AM Kim Phillips <kim.phillips@amd.com> wrote:
->>
->> On 11/11/21 2:44 AM, Stephane Eranian wrote:
->>> From: Kim Phillips <kim.phillips@amd.com>
->>>
->>> This patch improves the error message returned on failed perf_event_open() on
->>> AMD when using IBS.
->>>
->>> Signed-off-by: Kim Phillips <kim.phillips@amd.com>
->>> ---
->>
->> Hi, AFAICT this v2 == v1, i.e., this patch doesn't address the comments
->> raised in v1:
->>
->> https://lore.kernel.org/lkml/aa40b532-0e95-76c0-6c9c-a91d45bf3468@amd.com/
->>
->> Arnaldo, orthogonal to this series, it'd be great if you could apply
->> these two patches:
->>
->> https://lore.kernel.org/lkml/20211004214114.188477-1-kim.phillips@amd.com/T/#mc4c9c582e3816ab31af6d0187e6803de1a98ac84
->>
-> I don't understand why this patch is related to the IBS error
-> handling. Patch 11/13 does not modify the evsel__env() function.
+The patch series includes Documentation/xrt.rst which describes Alveo
+platform, XRT driver architecture and deployment model in more detail.
 
-Without it, after applying patch 2/2 of that series and executing
-the commands in 2/2's description will cause perf to sigsegv.
+The Alveo PCIe device uses Device Tree blob to describe its HW subsystems.
+Each device tree node respresents a hardware endpoint and each endpoint
+is an hardware unit which requires a driver for it. XRT driver
+infrastructure unflattens device tree blob and overlay the device nodes
+to system device tree. of/unittest.c, pci/hotplug/pnv_php.c and other
+linux kernel code are referenced for usage of OF functions.
 
-> I have included your change in the new version of the patch.
-> Thanks.
+XRT driver infrastructure implements xrt_device and xrt_driver for Alveo
+endpoints. An xrt_bus_type is also implemented to bind xrt driver to
+xrt device.
 
-You mean this one?:
+This patch series uses a builtin test device tree blob which contains only
+one endpoint as a input. The XRT driver creates a pseudo group xrt_device
+for the input device tree blob. And a group xrt_driver is implemented to
+discover and create xrt_device for the endpoint contained in the blob.
 
->> Then, Stephane, you could drop this patch and in your next
->> version, patch 12/13 of this series would be replaced with
->> what's at the end of this email:
->>
->> https://lore.kernel.org/lkml/20211004214114.188477-1-kim.phillips@amd.com/T/#m885ead1f280445357c91cce53c01217913bd017b
+Lizhi Hou (9):
+  Documentation: fpga: Add a document describing XRT Alveo driver
+    infrastructure
+  Documentation: devicetree: bindings: add xrt group binding
+  of: handle fdt buffer alignment inside unflatten function
+  of: create empty of root
+  fpga: xrt: xrt-lib initialization
+  fpga: xrt: xrt bus and device
+  fpga: xrt: lib-xrt xroot APIs
+  fpga: xrt: xrt group device driver
+  fpga: xrt: management physical function driver
 
-If so, great, but patch 1/2 in the two-series set mentioned above
-will need to be carried along with this series, unless acme
-applies those two directly.
+ .../bindings/xrt/xlnx,xrt-group.yaml          |  59 ++
+ Documentation/fpga/index.rst                  |   1 +
+ Documentation/fpga/xrt.rst                    | 510 ++++++++++++++++++
+ MAINTAINERS                                   |  10 +
+ drivers/fpga/Kconfig                          |   3 +
+ drivers/fpga/Makefile                         |   4 +
+ drivers/fpga/xrt/Kconfig                      |   7 +
+ drivers/fpga/xrt/include/xroot.h              |  30 ++
+ drivers/fpga/xrt/lib/Kconfig                  |  16 +
+ drivers/fpga/xrt/lib/Makefile                 |  18 +
+ drivers/fpga/xrt/lib/group.c                  |  94 ++++
+ drivers/fpga/xrt/lib/lib-drv.c                | 249 +++++++++
+ drivers/fpga/xrt/lib/lib-drv.h                |  28 +
+ drivers/fpga/xrt/lib/xroot.c                  | 210 ++++++++
+ drivers/fpga/xrt/lib/xrt-bus.dts              |  13 +
+ drivers/fpga/xrt/mgmt/Kconfig                 |  14 +
+ drivers/fpga/xrt/mgmt/Makefile                |  16 +
+ drivers/fpga/xrt/mgmt/dt-test.dts             |  13 +
+ drivers/fpga/xrt/mgmt/dt-test.h               |  15 +
+ drivers/fpga/xrt/mgmt/xmgmt-drv.c             | 166 ++++++
+ drivers/of/Makefile                           |   2 +-
+ drivers/of/fdt.c                              |  37 +-
+ drivers/of/fdt_default.dts                    |   5 +
+ drivers/of/of_private.h                       |   5 +
+ include/linux/xrt/xdevice.h                   | 128 +++++
+ 25 files changed, 1651 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/xrt/xlnx,xrt-group.yaml
+ create mode 100644 Documentation/fpga/xrt.rst
+ create mode 100644 drivers/fpga/xrt/Kconfig
+ create mode 100644 drivers/fpga/xrt/include/xroot.h
+ create mode 100644 drivers/fpga/xrt/lib/Kconfig
+ create mode 100644 drivers/fpga/xrt/lib/Makefile
+ create mode 100644 drivers/fpga/xrt/lib/group.c
+ create mode 100644 drivers/fpga/xrt/lib/lib-drv.c
+ create mode 100644 drivers/fpga/xrt/lib/lib-drv.h
+ create mode 100644 drivers/fpga/xrt/lib/xroot.c
+ create mode 100644 drivers/fpga/xrt/lib/xrt-bus.dts
+ create mode 100644 drivers/fpga/xrt/mgmt/Kconfig
+ create mode 100644 drivers/fpga/xrt/mgmt/Makefile
+ create mode 100644 drivers/fpga/xrt/mgmt/dt-test.dts
+ create mode 100644 drivers/fpga/xrt/mgmt/dt-test.h
+ create mode 100644 drivers/fpga/xrt/mgmt/xmgmt-drv.c
+ create mode 100644 drivers/of/fdt_default.dts
+ create mode 100644 include/linux/xrt/xdevice.h
 
-Thanks,
+-- 
+2.27.0
 
-Kim
