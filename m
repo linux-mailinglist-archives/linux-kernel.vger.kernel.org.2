@@ -2,141 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EA5845653C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 22:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 754C245653F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 22:58:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbhKRWBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 17:01:18 -0500
-Received: from out03.mta.xmission.com ([166.70.13.233]:36338 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhKRWBM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 17:01:12 -0500
-Received: from in01.mta.xmission.com ([166.70.13.51]:46794)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mnpQ2-00115C-O4; Thu, 18 Nov 2021 14:58:10 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:52636 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mnpQ1-0048Wm-LN; Thu, 18 Nov 2021 14:58:10 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     <linux-kernel@vger.kernel.org>
-Cc:     Kyle Huey <me@kylehuey.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        "open list\:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        Robert O'Callahan <rocallahan@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Oliver Sang <oliver.sang@intel.com>, lkp@lists.01.org,
-        lkp@intel.com
-References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
-        <202111171049.3F9C5F1@keescook>
-        <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
-        <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
-        <87k0h6334w.fsf@email.froward.int.ebiederm.org>
-        <202111171341.41053845C3@keescook>
-        <CAHk-=wgkOGmkTu18hJQaJ4mk8hGZc16=gzGMgGGOd=uwpXsdyw@mail.gmail.com>
-        <CAP045ApYXxhiAfmn=fQM7_hD58T-yx724ctWFHO4UAWCD+QapQ@mail.gmail.com>
-        <CAHk-=wiCRbSvUi_TnQkokLeM==_+Tow0GsQXnV3UYwhsxirPwg@mail.gmail.com>
-        <CAP045AoqssLTKOqse1t1DG1HgK9h+goG8C3sqgOyOV3Wwq+LDA@mail.gmail.com>
-        <202111171728.D85A4E2571@keescook>
-Date:   Thu, 18 Nov 2021 15:58:02 -0600
-In-Reply-To: <202111171728.D85A4E2571@keescook> (Kees Cook's message of "Wed,
-        17 Nov 2021 17:32:20 -0800")
-Message-ID: <87h7c9qg7p.fsf_-_@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mnpQ1-0048Wm-LN;;;mid=<87h7c9qg7p.fsf_-_@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX188U8Ali6pt3gI0MiWxDnFXisSnqx50bZA=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TooManySym_01,XMNoVowels autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4859]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;<linux-kernel@vger.kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 441 ms - load_scoreonly_sql: 0.14 (0.0%),
-        signal_user_changed: 12 (2.8%), b_tie_ro: 10 (2.3%), parse: 1.67
-        (0.4%), extract_message_metadata: 5 (1.1%), get_uri_detail_list: 1.79
-        (0.4%), tests_pri_-1000: 6 (1.4%), tests_pri_-950: 1.74 (0.4%),
-        tests_pri_-900: 1.46 (0.3%), tests_pri_-90: 126 (28.5%), check_bayes:
-        124 (28.0%), b_tokenize: 14 (3.1%), b_tok_get_all: 9 (2.0%),
-        b_comp_prob: 3.7 (0.8%), b_tok_touch_all: 93 (21.0%), b_finish: 1.08
-        (0.2%), tests_pri_0: 264 (59.9%), check_dkim_signature: 0.62 (0.1%),
-        check_dkim_adsp: 3.1 (0.7%), poll_dns_idle: 1.14 (0.3%), tests_pri_10:
-        2.1 (0.5%), tests_pri_500: 6 (1.5%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH 0/2] SA_IMMUTABLE fixes
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+        id S230290AbhKRWBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 17:01:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229472AbhKRWBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 17:01:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD99661220;
+        Thu, 18 Nov 2021 21:58:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1637272729;
+        bh=qRyDXwaTe3qUn3q5rUCnxzGRTuX1TapIqNvlx4tcXq8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=xVqkWFkv5mEQQCTHGzAUSOSOOpzbkwrzNTEjZhCij945qEou5kB0ARDQ8HOY50KJs
+         dFf7SMnq735dbLhsJv0UuGx5ni+N28ON008MIQI8nhme70J9p+5Jd4WCwE6i6TESmN
+         TZXV5bsYmQAchyzzs6EI4mNzygJz9Bfs5eWqyRF4=
+Date:   Thu, 18 Nov 2021 13:58:46 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        Drew DeVault <sir@cmpwn.com>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+Message-Id: <20211118135846.26da93737a70d486e68462bf@linux-foundation.org>
+In-Reply-To: <ec24ff4e-8413-914c-7cdf-203a7a5f0586@kernel.dk>
+References: <20211028080813.15966-1-sir@cmpwn.com>
+        <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
+        <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
+        <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
+        <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
+        <YZWBkZHdsh5LtWSG@cmpxchg.org>
+        <ec24ff4e-8413-914c-7cdf-203a7a5f0586@kernel.dk>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 17 Nov 2021 16:17:26 -0700 Jens Axboe <axboe@kernel.dk> wrote:
 
-SA_IMMUTABLE fixed issues with force_sig_seccomp and the introduction
-for force_sig_fatal where the exit previously could not be interrupted
-but now it can.  Unfortunately it added that behavior to all force_sig
-functions under the right conditions which debuggers usage of SIG_TRAP
-and debuggers handling of SIGSEGV.
+> On 11/17/21 3:26 PM, Johannes Weiner wrote:
+> >> Link: https://lkml.kernel.org/r/20211028080813.15966-1-sir@cmpwn.com
+> >> Signed-off-by: Drew DeVault <sir@cmpwn.com>
+> >> Acked-by: Jens Axboe <axboe@kernel.dk>
+> >> Acked-by: Cyril Hrubis <chrubis@suse.cz>
+> >> Cc: Pavel Begunkov <asml.silence@gmail.com>
+> >> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> > 
+> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> > 
+> > As per above, I think basing it off of RAM size would be better, but
+> > this increase is overdue given all the new users beyond mlock(), and
+> > 8M is much better than the current value.
+> 
+> That's basically my reasoning too. Let's just get something going that
+> will at least unblock some valid use cases, and not get bogged down with
+> aiming for perfection. The latter can happen in parallel, but it should
+> not hold it up imho.
 
-Solve that by limiting SA_IMMUTABLE to just the cases that historically
-debuggers have not been able to intercept.
+Nobody's aiming for perfection.  We're discussing aiming for "better".
 
-The first patch changes force_sig_info_to_task to take a flag
-that requests which behavior is desired.
-
-The second patch adds force_exit_sig which replaces force_fatal_sig
-in the cases where historically userspace would only find out about
-the ``signal'' after the process has exited.
-
-The first one with the hunk changing force_fatal_sig removed should be
-suitable for backporting to v5.15. v5.15 does not implement
-force_fatal_sig.
-
-This should be enough to fix the regressions.
-
-Kyle if you can double check me that I have properly fixed these issues
-that would be appreciated.
-
-Any other review or suggestions to improve the names would be
-appreciated.  I think I have named things reasonably well but I am very
-close to the code so it is easy for me to miss things.
-
-Eric W. Biederman (2):
-      signal: Don't always set SA_IMMUTABLE for forced signals
-      signal: Replace force_fatal_sig with force_exit_sig when in doubt
-
- arch/m68k/kernel/traps.c              |  2 +-
- arch/powerpc/kernel/signal_32.c       |  2 +-
- arch/powerpc/kernel/signal_64.c       |  4 ++--
- arch/s390/kernel/traps.c              |  2 +-
- arch/sparc/kernel/signal_32.c         |  4 ++--
- arch/sparc/kernel/windows.c           |  2 +-
- arch/x86/entry/vsyscall/vsyscall_64.c |  2 +-
- arch/x86/kernel/vm86_32.c             |  2 +-
- include/linux/sched/signal.h          |  1 +
- kernel/entry/syscall_user_dispatch.c  |  4 ++--
- kernel/signal.c                       | 36 ++++++++++++++++++++++++++++-------
- 11 files changed, 42 insertions(+), 19 deletions(-)
-
-Eric
+What we should have done on day one was to set the default MLOCK_LIMIT
+to zero bytes.  Then everyone would have infrastructure to tune it from
+userspace and we wouldn't ever have this discussion.
