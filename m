@@ -2,90 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E86455487
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 07:04:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B380445548D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 07:06:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242728AbhKRGHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 01:07:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50524 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241204AbhKRGHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 01:07:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61D5A6120A;
-        Thu, 18 Nov 2021 06:03:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637215441;
-        bh=Gs9D2KwTxs3OWcxoK8xBCbG42AA+a6f4cC1TfwQ+o5E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=moEKlKyHv8PClQTKjgTg+2LjiZtNmfUWVgJwZLwcXI2yEVhXL8k9Itt0GUyJHNPmS
-         CTJSarEPYLW7ReogNQjR3OcBR08YTN4RAg/Y4JYe94gOQ2VatDAQfMX4rxOb4CPalf
-         f81no89sQ5OD02ZlqzvQ71T5aFGLejAoWb45GlpTOt3vNbypFIlGfMHhvljvnTxr9v
-         gds+NCN+bTgqq4Xjgz5srDukLkrWzsKm2uS+iKD53RQLvWsKxEyidoFRT9HOaL3FOd
-         vUY4uRoVvd1ag7NbSPOCjnVgX+h742Shecm0r4XMCHB1klmfZ93F2OTPUHJhjtx3CL
-         GekyVFLARvoQQ==
-Date:   Thu, 18 Nov 2021 11:33:55 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Slark Xiao <slark_xiao@163.com>
-Cc:     mani@kernel.org, hemantk@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] bus: mhi: pci_generic: Add new device ID support for
- T99W175
-Message-ID: <20211118060355.GB6461@thinkpad>
-References: <20211029104918.3976-1-slark_xiao@163.com>
+        id S242805AbhKRGJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 01:09:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242748AbhKRGI7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 01:08:59 -0500
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98DBAC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 22:05:59 -0800 (PST)
+Received: by mail-oo1-xc30.google.com with SMTP id v19-20020a4a2453000000b002bb88bfb594so2033482oov.4
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 22:05:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GH5DsMQ3QaWgiH0MtT4VPh8uW1FF7ANWq123A9PIt3o=;
+        b=qmL3blZ9nlnWuevH3rA18HtJtKXlurKxYR/1Rp5rBHLDOU5JFq4dprX0iD2YNXF4al
+         m0NyR+CqsknraoB6x92KS4a+OsNDUzqfqCxsArkrxNMsXNMYpaxg+pC3UGYh3Z43C+Tw
+         wgikDxMfbXo9d9U4E256aDQjLLrv8WrVxdGBw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GH5DsMQ3QaWgiH0MtT4VPh8uW1FF7ANWq123A9PIt3o=;
+        b=30hScnfucD+Rt+0Zr0s+r/uCEO2q1vcrJB2oLEUfo/lp2adIa5vey4DTHkvc+TmfX6
+         lR+GWW6n7jM/kdOhLZXitsQjWB46bov4JI5RDxifOoLQ+H4zCth6jAsfbtlmauvpG4CA
+         gqk2Yjfys7z1mhb+TmR7+saE/YU2x8IC7DAd2XRENsHQ96MmqWpPPbuLeL04W1Siudrn
+         4YIm060oJpK2yV/lWhcRdhchQgeEH1qy5zVN8jMDIA+sTLchLb1Xg27XJL7gMrScHmj/
+         pLU3qC6XrXzLPNKf8qnpDWPTvXFSiJrsvG6vSwfvBREMALeh7U2ulIodQ7hMTAxMaDkT
+         vyBw==
+X-Gm-Message-State: AOAM532AZGsnYwXkTLqTCMEdjRcrTqvxrG2nRwbYQwVacLFACpPmq8Hw
+        tPG65jKmM5lDXt67BsEtM8EKDZHIs0lq6h4=
+X-Google-Smtp-Source: ABdhPJztZycF+YPOFZurRn2NUYVGfHgy2vIKmAmLQyQSIRA6iSyF9c1bLqOzpWJpW8w+rIrswzT1+w==
+X-Received: by 2002:a4a:5842:: with SMTP id f63mr11953351oob.97.1637215558524;
+        Wed, 17 Nov 2021 22:05:58 -0800 (PST)
+Received: from fedora.. (99-13-229-45.lightspeed.snjsca.sbcglobal.net. [99.13.229.45])
+        by smtp.gmail.com with ESMTPSA id j20sm395379ota.76.2021.11.17.22.05.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 22:05:58 -0800 (PST)
+From:   Atish Patra <atishp@atishpatra.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Atish Patra <atishp@atishpatra.org>, anup.patel@wdc.com,
+        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH] MAINTAINERS: Update Atish's email address
+Date:   Wed, 17 Nov 2021 22:05:01 -0800
+Message-Id: <20211118060501.932993-1-atishp@atishpatra.org>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211029104918.3976-1-slark_xiao@163.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 06:49:18PM +0800, Slark Xiao wrote:
-> Add new device ID 0xe0bf for T99W175.
-> This device ID is created because it is using Qualcomm SDX55 new base line.
-> 
-> Test evidence as below:
-> root@jbd-ThinkPad-P1-Gen-4:/dev# lspci -nn | grep Foxconn
-> 0000:08:00.0 Wireless controller [0d40]: Foxconn International, Inc. Device [105b:e0bf]
-> root@jbd-ThinkPad-P1-Gen-4:/dev# cat wwan0at0 & echo -ne "ati\r" > wwan0at0
-> [2] 2977
-> root@jbd-ThinkPad-P1-Gen-4:/dev# ati
-> Manufacturer: Qualcomm
-> Model: T99W175
-> Revision: T99W175.F0.6.0.0.6.CC.005  1  [Oct 21 2021 10:00:00]
-> IMEI:
-> +GCAP: +CGSM
-> 
-> OK
-> 
-> Signed-off-by: Slark Xiao <slark_xiao@163.com>
+I no longer employed by western digital. Update my email address to
+personal one.
 
-Applied to mhi-next!
+Signed-off-by: Atish Patra <atishp@atishpatra.org>
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Mani
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 7a2345ce8521..b22af4edcd08 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10434,7 +10434,7 @@ F:	arch/powerpc/kvm/
+ 
+ KERNEL VIRTUAL MACHINE FOR RISC-V (KVM/riscv)
+ M:	Anup Patel <anup.patel@wdc.com>
+-R:	Atish Patra <atish.patra@wdc.com>
++R:	Atish Patra <atishp@atishpatra.org>
+ L:	kvm@vger.kernel.org
+ L:	kvm-riscv@lists.infradead.org
+ L:	linux-riscv@lists.infradead.org
+-- 
+2.33.1
 
-> ---
-> 
-> v2: Add descriptions about the dfiiference between 0xe0ab and 0xeobf.
-> ---
->  drivers/bus/mhi/pci_generic.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
-> index 59a4896a8030..94d8aa9c2eae 100644
-> --- a/drivers/bus/mhi/pci_generic.c
-> +++ b/drivers/bus/mhi/pci_generic.c
-> @@ -423,6 +423,9 @@ static const struct pci_device_id mhi_pci_id_table[] = {
->  	/* DW5930e (sdx55), Non-eSIM, It's also T99W175 */
->  	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0b1),
->  		.driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
-> +	/* T99W175 (sdx55), Based on Qualcomm new baseline */
-> +	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0bf),
-> +		.driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
->  	/* MV31-W (Cinterion) */
->  	{ PCI_DEVICE(0x1269, 0x00b3),
->  		.driver_data = (kernel_ulong_t) &mhi_mv31_info },
-> -- 
-> 2.25.1
-> 
