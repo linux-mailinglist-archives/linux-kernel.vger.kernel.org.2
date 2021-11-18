@@ -2,249 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3674552B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 03:22:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B564455269
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 02:55:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242652AbhKRCZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 21:25:16 -0500
-Received: from inva021.nxp.com ([92.121.34.21]:46620 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242538AbhKRCYv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 21:24:51 -0500
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 64DA52031B9;
-        Thu, 18 Nov 2021 03:21:50 +0100 (CET)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 0928D2031B2;
-        Thu, 18 Nov 2021 03:21:50 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 148F7183AD05;
-        Thu, 18 Nov 2021 10:21:48 +0800 (+08)
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     l.stach@pengutronix.de, bhelgaas@google.com,
-        lorenzo.pieralisi@arm.com, marcel.ziswiler@toradex.com,
-        tharvey@gateworks.com, kishon@ti.com, vkoul@kernel.org,
-        robh@kernel.org, galak@kernel.crashing.org, shawnguo@kernel.org
-Cc:     hongxing.zhu@nxp.com, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, linux-imx@nxp.com
-Subject: [PATCH v6 8/8] PCI: imx: Add the imx8mm pcie support
-Date:   Thu, 18 Nov 2021 09:54:49 +0800
-Message-Id: <1637200489-11855-9-git-send-email-hongxing.zhu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1637200489-11855-1-git-send-email-hongxing.zhu@nxp.com>
-References: <1637200489-11855-1-git-send-email-hongxing.zhu@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S242391AbhKRB5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 20:57:54 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:41641 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233128AbhKRB5w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 20:57:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1637200493; x=1668736493;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Oi7O/U4Rf2pPIs/j+dPfPg0GjDFEjDFV+JfzEknM8k8=;
+  b=X6Zz3lMfkubpwyFa9mpf9a0FLXFjXOdY6CparHf3EGHk2igNhAJdYNR4
+   wzcbtbebPBJf9+KMtdrAgzJ/Zx68IyVMl3p9s9ToH53nPEZMZs1HX5Coi
+   qca1vebqRbMVZwcApMCcmsKZpIIYgCp8pxmUMwYEzdKXuSinHZOtGImi9
+   Q=;
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 17 Nov 2021 17:54:52 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 17:54:52 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Wed, 17 Nov 2021 17:54:52 -0800
+Received: from quicinc.com (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Wed, 17 Nov
+ 2021 17:54:51 -0800
+Date:   Wed, 17 Nov 2021 17:54:50 -0800
+From:   Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
+To:     Vinod Koul <vkoul@kernel.org>, <g@quicinc.com>
+CC:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <robh+dt@kernel.org>, <tglx@linutronix.de>, <maz@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <manivannan.sadhasivam@linaro.org>
+Subject: Re: [PATCH v4 2/6] clk: qcom: Add LUCID_EVO PLL type for SDX65
+Message-ID: <20211118015450.GB18984@quicinc.com>
+References: <cover.1637047731.git.quic_vamslank@quicinc.com>
+ <5a048452c128e4b678609bef780e2c1328c482fc.1637047731.git.quic_vamslank@quicinc.com>
+ <YZNq+Y07kwhbIboe@matsya>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YZNq+Y07kwhbIboe@matsya>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-i.MX8MM PCIe works mostly like the i.MX8MQ one, but has a different PHY
-and allows to output the internal PHY reference clock via the refclk pad.
-Add the i.MX8MM PCIe support based on the standalone PHY driver.
+On Tue, Nov 16, 2021 at 01:55:29PM +0530, Vinod Koul wrote:
+> On 15-11-21, 23:38, quic_vamslank@quicinc.com wrote:
+> > From: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
+> > 
+> > Add a LUCID_EVO PLL type for SDX65 SoC from Qualcomm.
+> > 
+> > Signed-off-by: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
+> > ---
+> >  drivers/clk/qcom/clk-alpha-pll.c | 171 +++++++++++++++++++++++++++++++
+> >  drivers/clk/qcom/clk-alpha-pll.h |   3 +
+> >  2 files changed, 174 insertions(+)
+> > 
+> > diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
+> > index eaedcceb766f..b2dbb8d56773 100644
+> > --- a/drivers/clk/qcom/clk-alpha-pll.c
+> > +++ b/drivers/clk/qcom/clk-alpha-pll.c
+> > @@ -1,5 +1,6 @@
+> >  // SPDX-License-Identifier: GPL-2.0
+> >  /*
+> > + * Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
+> 
+> This line should ideally come after the below line..
 
-Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-Tested-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Reviewed-by: Tim Harvey <tharvey@gateworks.com>
-Tested-by: Tim Harvey <tharvey@gateworks.com>
----
- drivers/pci/controller/dwc/pci-imx6.c | 73 ++++++++++++++++++++++++---
- 1 file changed, 66 insertions(+), 7 deletions(-)
+Will do.
 
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index 26f49f797b0f..d8c587b4d54f 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -29,6 +29,7 @@
- #include <linux/types.h>
- #include <linux/interrupt.h>
- #include <linux/reset.h>
-+#include <linux/phy/phy.h>
- #include <linux/pm_domain.h>
- #include <linux/pm_runtime.h>
- 
-@@ -49,6 +50,7 @@ enum imx6_pcie_variants {
- 	IMX6QP,
- 	IMX7D,
- 	IMX8MQ,
-+	IMX8MM,
- };
- 
- #define IMX6_PCIE_FLAG_IMX6_PHY			BIT(0)
-@@ -88,6 +90,7 @@ struct imx6_pcie {
- 	struct device		*pd_pcie;
- 	/* power domain for pcie phy */
- 	struct device		*pd_pcie_phy;
-+	struct phy		*phy;
- 	const struct imx6_pcie_drvdata *drvdata;
- };
- 
-@@ -372,6 +375,8 @@ static void imx6_pcie_assert_core_reset(struct imx6_pcie *imx6_pcie)
- 	case IMX7D:
- 	case IMX8MQ:
- 		reset_control_assert(imx6_pcie->pciephy_reset);
-+		fallthrough;
-+	case IMX8MM:
- 		reset_control_assert(imx6_pcie->apps_reset);
- 		break;
- 	case IMX6SX:
-@@ -407,7 +412,8 @@ static void imx6_pcie_assert_core_reset(struct imx6_pcie *imx6_pcie)
- 
- static unsigned int imx6_pcie_grp_offset(const struct imx6_pcie *imx6_pcie)
- {
--	WARN_ON(imx6_pcie->drvdata->variant != IMX8MQ);
-+	WARN_ON(imx6_pcie->drvdata->variant != IMX8MQ &&
-+		imx6_pcie->drvdata->variant != IMX8MM);
- 	return imx6_pcie->controller_id == 1 ? IOMUXC_GPR16 : IOMUXC_GPR14;
- }
- 
-@@ -446,6 +452,13 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
- 		break;
- 	case IMX7D:
- 		break;
-+	case IMX8MM:
-+		ret = clk_prepare_enable(imx6_pcie->pcie_aux);
-+		if (ret) {
-+			dev_err(dev, "unable to enable pcie_aux clock\n");
-+			break;
-+		}
-+		break;
- 	case IMX8MQ:
- 		ret = clk_prepare_enable(imx6_pcie->pcie_aux);
- 		if (ret) {
-@@ -522,6 +535,14 @@ static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
- 		goto err_ref_clk;
- 	}
- 
-+	switch (imx6_pcie->drvdata->variant) {
-+	case IMX8MM:
-+		if (phy_power_on(imx6_pcie->phy))
-+			dev_err(dev, "unable to power on PHY\n");
-+		break;
-+	default:
-+		break;
-+	}
- 	/* allow the clocks to stabilize */
- 	usleep_range(200, 500);
- 
-@@ -538,6 +559,10 @@ static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
- 	case IMX8MQ:
- 		reset_control_deassert(imx6_pcie->pciephy_reset);
- 		break;
-+	case IMX8MM:
-+		if (phy_init(imx6_pcie->phy) != 0)
-+			dev_err(dev, "Waiting for PHY ready timeout!\n");
-+		break;
- 	case IMX7D:
- 		reset_control_deassert(imx6_pcie->pciephy_reset);
- 
-@@ -614,6 +639,8 @@ static void imx6_pcie_configure_type(struct imx6_pcie *imx6_pcie)
- static void imx6_pcie_init_phy(struct imx6_pcie *imx6_pcie)
- {
- 	switch (imx6_pcie->drvdata->variant) {
-+	case IMX8MM:
-+		break;
- 	case IMX8MQ:
- 		/*
- 		 * TODO: Currently this code assumes external
-@@ -753,6 +780,7 @@ static void imx6_pcie_ltssm_enable(struct device *dev)
- 		break;
- 	case IMX7D:
- 	case IMX8MQ:
-+	case IMX8MM:
- 		reset_control_deassert(imx6_pcie->apps_reset);
- 		break;
- 	}
-@@ -871,6 +899,7 @@ static void imx6_pcie_ltssm_disable(struct device *dev)
- 				   IMX6Q_GPR12_PCIE_CTL_2, 0);
- 		break;
- 	case IMX7D:
-+	case IMX8MM:
- 		reset_control_assert(imx6_pcie->apps_reset);
- 		break;
- 	default:
-@@ -930,6 +959,7 @@ static void imx6_pcie_clk_disable(struct imx6_pcie *imx6_pcie)
- 				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL);
- 		break;
- 	case IMX8MQ:
-+	case IMX8MM:
- 		clk_disable_unprepare(imx6_pcie->pcie_aux);
- 		break;
- 	default:
-@@ -1043,11 +1073,6 @@ static int imx6_pcie_probe(struct platform_device *pdev)
- 	}
- 
- 	/* Fetch clocks */
--	imx6_pcie->pcie_phy = devm_clk_get(dev, "pcie_phy");
--	if (IS_ERR(imx6_pcie->pcie_phy))
--		return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_phy),
--				     "pcie_phy clock source missing or invalid\n");
--
- 	imx6_pcie->pcie_bus = devm_clk_get(dev, "pcie_bus");
- 	if (IS_ERR(imx6_pcie->pcie_bus))
- 		return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_bus),
-@@ -1089,10 +1114,39 @@ static int imx6_pcie_probe(struct platform_device *pdev)
- 			dev_err(dev, "Failed to get PCIE APPS reset control\n");
- 			return PTR_ERR(imx6_pcie->apps_reset);
- 		}
-+		break;
-+	case IMX8MM:
-+		imx6_pcie->pcie_aux = devm_clk_get(dev, "pcie_aux");
-+		if (IS_ERR(imx6_pcie->pcie_aux))
-+			return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_aux),
-+					     "pcie_aux clock source missing or invalid\n");
-+		imx6_pcie->apps_reset = devm_reset_control_get_exclusive(dev,
-+									 "apps");
-+		if (IS_ERR(imx6_pcie->apps_reset)) {
-+			dev_err(dev, "Failed to get PCIE APPS reset control\n");
-+			return PTR_ERR(imx6_pcie->apps_reset);
-+		}
-+
-+		imx6_pcie->phy = devm_phy_get(dev, "pcie-phy");
-+		if (IS_ERR(imx6_pcie->phy)) {
-+			if (PTR_ERR(imx6_pcie->phy) == -EPROBE_DEFER)
-+				return -EPROBE_DEFER;
-+			dev_err(dev, "Failed to get PCIE PHY\n");
-+			return PTR_ERR(imx6_pcie->phy);
-+		}
-+
- 		break;
- 	default:
- 		break;
- 	}
-+	/* Don't fetch the pcie_phy clock, if it has abstract PHY driver */
-+	if (imx6_pcie->phy == NULL) {
-+		imx6_pcie->pcie_phy = devm_clk_get(dev, "pcie_phy");
-+		if (IS_ERR(imx6_pcie->pcie_phy))
-+			return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_phy),
-+					     "pcie_phy clock source missing or invalid\n");
-+	}
-+
- 
- 	/* Grab turnoff reset */
- 	imx6_pcie->turnoff_reset = devm_reset_control_get_optional_exclusive(dev, "turnoff");
-@@ -1202,6 +1256,10 @@ static const struct imx6_pcie_drvdata drvdata[] = {
- 	[IMX8MQ] = {
- 		.variant = IMX8MQ,
- 	},
-+	[IMX8MM] = {
-+		.variant = IMX8MM,
-+		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
-+	},
- };
- 
- static const struct of_device_id imx6_pcie_of_match[] = {
-@@ -1209,7 +1267,8 @@ static const struct of_device_id imx6_pcie_of_match[] = {
- 	{ .compatible = "fsl,imx6sx-pcie", .data = &drvdata[IMX6SX], },
- 	{ .compatible = "fsl,imx6qp-pcie", .data = &drvdata[IMX6QP], },
- 	{ .compatible = "fsl,imx7d-pcie",  .data = &drvdata[IMX7D],  },
--	{ .compatible = "fsl,imx8mq-pcie", .data = &drvdata[IMX8MQ], } ,
-+	{ .compatible = "fsl,imx8mq-pcie", .data = &drvdata[IMX8MQ], },
-+	{ .compatible = "fsl,imx8mm-pcie", .data = &drvdata[IMX8MM], },
- 	{},
- };
- 
--- 
-2.25.1
+> 
+> >   * Copyright (c) 2015, 2018, The Linux Foundation. All rights reserved.
+> >   */
+> >  
+> > @@ -139,6 +140,20 @@ const u8 clk_alpha_pll_regs[][PLL_OFF_MAX_REGS] = {
+> >  		[PLL_OFF_OPMODE] = 0x28,
+> >  		[PLL_OFF_STATUS] = 0x38,
+> >  	},
+> > +	[CLK_ALPHA_PLL_TYPE_LUCID_EVO] = {
+> > +		[PLL_OFF_OPMODE] = 0x04,
+> > +		[PLL_OFF_STATUS] = 0x0c,
+> > +		[PLL_OFF_L_VAL] = 0x10,
+> > +		[PLL_OFF_ALPHA_VAL] = 0x14,
+> > +		[PLL_OFF_USER_CTL] = 0x18,
+> > +		[PLL_OFF_USER_CTL_U] = 0x1c,
+> > +		[PLL_OFF_CONFIG_CTL] = 0x20,
+> > +		[PLL_OFF_CONFIG_CTL_U] = 0x24,
+> > +		[PLL_OFF_CONFIG_CTL_U1] = 0x28,
+> > +		[PLL_OFF_TEST_CTL] = 0x2c,
+> > +		[PLL_OFF_TEST_CTL_U] = 0x30,
+> > +		[PLL_OFF_TEST_CTL_U1] = 0x34,
+> > +        },
+> >  };
+> >  EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
+> >  
+> > @@ -175,6 +190,10 @@ EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
+> >  #define LUCID_5LPE_PLL_LATCH_INPUT	BIT(14)
+> >  #define LUCID_5LPE_ENABLE_VOTE_RUN	BIT(21)
+> >  
+> > +/* LUCID EVO PLL specific settings and offsets */
+> > +#define LUCID_EVO_ENABLE_VOTE_RUN       BIT(25)
+> > +#define LUCID_EVO_PLL_L_VAL_MASK        GENMASK(15, 0)
+> > +
+> >  /* ZONDA PLL specific */
+> >  #define ZONDA_PLL_OUT_MASK	0xf
+> >  #define ZONDA_STAY_IN_CFA	BIT(16)
+> > @@ -1951,3 +1970,155 @@ const struct clk_ops clk_alpha_pll_zonda_ops = {
+> >  	.set_rate = clk_zonda_pll_set_rate,
+> >  };
+> >  EXPORT_SYMBOL(clk_alpha_pll_zonda_ops);
+> > +
+> > +static int alpha_pll_lucid_evo_enable(struct clk_hw *hw)
+> > +{
+> > +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
+> > +	struct regmap *regmap = pll->clkr.regmap;
+> > +	u32 val;
+> > +	int ret;
+> > +
+> > +	ret = regmap_read(regmap, PLL_USER_CTL(pll), &val);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* If in FSM mode, just vote for it */
+> > +	if (val & LUCID_EVO_ENABLE_VOTE_RUN) {
+> > +		ret = clk_enable_regmap(hw);
+> > +		if (ret)
+> > +			return ret;
+> > +		return wait_for_pll_enable_lock(pll);
+> > +	}
+> > +
+> > +	/* Check if PLL is already enabled */
+> > +	ret = trion_pll_is_enabled(pll, regmap);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +	else if (ret) {
+> > +		pr_warn("%s PLL is already enabled\n",
+> > +				clk_hw_get_name(&pll->clkr.hw));
+> 
+> this should fit in a single line
 
+Will do.
+
+> 
+> > +		return 0;
+> > +	}
+> > +
+> > +	ret = regmap_update_bits(regmap, PLL_MODE(pll), PLL_RESET_N, PLL_RESET_N);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* Set operation mode to RUN */
+> > +	regmap_write(regmap, PLL_OPMODE(pll), PLL_RUN);
+> > +
+> > +	ret = wait_for_pll_enable_lock(pll);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* Enable the PLL outputs */
+> > +	ret = regmap_update_bits(regmap, PLL_USER_CTL(pll), PLL_OUT_MASK, PLL_OUT_MASK);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* Enable the global PLL outputs */
+> > +	ret = regmap_update_bits(regmap, PLL_MODE(pll), PLL_OUTCTRL, PLL_OUTCTRL);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* Ensure that the write above goes through before returning. */
+> > +	mb();
+> > +	return ret;
+> > +}
+> > +
+> > +static void alpha_pll_lucid_evo_disable(struct clk_hw *hw)
+> > +{
+> > +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
+> > +	struct regmap *regmap = pll->clkr.regmap;
+> > +	u32 val;
+> > +	int ret;
+> > +
+> > +	ret = regmap_read(regmap, PLL_USER_CTL(pll), &val);
+> > +	if (ret)
+> > +		return;
+> > +
+> > +	/* If in FSM mode, just unvote it */
+> > +	if (val & LUCID_EVO_ENABLE_VOTE_RUN) {
+> > +		clk_disable_regmap(hw);
+> > +		return;
+> > +	}
+> > +
+> > +	/* Disable the global PLL output */
+> > +	ret = regmap_update_bits(regmap, PLL_MODE(pll), PLL_OUTCTRL, 0);
+> > +	if (ret)
+> > +		return;
+> > +
+> > +	/* Disable the PLL outputs */
+> > +	ret = regmap_update_bits(regmap, PLL_USER_CTL(pll), PLL_OUT_MASK, 0);
+> > +	if (ret)
+> > +		return;
+> > +
+> > +	/* Place the PLL mode in STANDBY */
+> > +	regmap_write(regmap, PLL_OPMODE(pll), PLL_STANDBY);
+> > +}
+> > +
+> > +static unsigned long alpha_pll_lucid_evo_recalc_rate(struct clk_hw *hw,
+> > +		unsigned long parent_rate)
+> 
+> pls align this to preceding line open brace
+
+Will do.
+
+> 
+> > +{
+> > +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
+> > +	struct regmap *regmap = pll->clkr.regmap;
+> > +	u32 l, frac;
+> > +
+> > +	regmap_read(regmap, PLL_L_VAL(pll), &l);
+> > +	l &= LUCID_EVO_PLL_L_VAL_MASK;
+> > +	regmap_read(regmap, PLL_ALPHA_VAL(pll), &frac);
+> > +
+> > +	return alpha_pll_calc_rate(parent_rate, l, frac, pll_alpha_width(pll));
+> > +}
+> 
+> I think this can use __alpha_pll_trion_set_rate()
+
+I didn't get with which function are you comparing this. I cannot able to
+find any function similar to this.
+
+> 
+> > +
+> > +static int clk_lucid_evo_pll_postdiv_set_rate(struct clk_hw *hw,
+> > +		unsigned long rate, unsigned long parent_rate)
+> > +{
+> > +	struct clk_alpha_pll_postdiv *pll = to_clk_alpha_pll_postdiv(hw);
+> > +	struct regmap *regmap = pll->clkr.regmap;
+> > +	int i, val, div, ret;
+> > +
+> > +	/*
+> > +	 * If the PLL is in FSM mode, then treat set_rate callback as a
+> > +	 * no-operation.
+> > +	 */
+> > +	ret = regmap_read(regmap, PLL_USER_CTL(pll), &val);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	if (val & LUCID_EVO_ENABLE_VOTE_RUN)
+> > +		return 0;
+> > +
+> > +	if (!pll->post_div_table) {
+> > +		pr_err("Missing the post_div_table for the PLL\n");
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	div = DIV_ROUND_UP_ULL((u64)parent_rate, rate);
+> > +	for (i = 0; i < pll->num_post_div; i++) {
+> > +		if (pll->post_div_table[i].div == div) {
+> > +			val = pll->post_div_table[i].val;
+> > +			break;
+> > +		}
+> > +	}
+> > +
+> > +	return regmap_update_bits(regmap, PLL_USER_CTL(pll),
+> > +			(BIT(pll->width) - 1) << pll->post_div_shift,
+> > +			val << pll->post_div_shift);
+> > +}
+> 
+> This looks _very_ similar to clk_lucid_5lpe_pll_postdiv_set_rate() maybe
+> add a helper which both can use and pass on the
+> LUCID_EVO_ENABLE_VOTE_RUN as argument to helper?
+
+That's a good thought. I can do that.
+
+> 
+> -- 
+> ~Vinod
