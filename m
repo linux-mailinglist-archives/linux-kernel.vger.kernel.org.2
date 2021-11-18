@@ -2,114 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D33455FF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:55:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED11455FFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:56:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232782AbhKRP6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 10:58:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36006 "EHLO
+        id S232772AbhKRP7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 10:59:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232464AbhKRP6Q (ORCPT
+        with ESMTP id S232464AbhKRP7L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 10:58:16 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B4CAC061574;
-        Thu, 18 Nov 2021 07:55:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=X6u5jOtxjpZsL1qWxw9nRGO399G6h4RYQJk7HMGPx1I=; b=mLGqp9ZQsddZj0NmjOe+oo8jBc
-        /J31ihLpooVSx/YC9y/QkUo9Ami7jMajKHrYuVm/s56eou9/mPA48aPjSLZFwvZiQGu0GTyF+Dfw9
-        iq5/ZgHn7ewV/3ZpqwGEa3dWiOi+HoPxs7GjRvjZ20opoEn1GZcfW3CN3NRrte5whq42Zxk6BV+7Q
-        ClAVVwfQ/drf4Q5EBy81nslpfcCQzK3K+MbfWLseFwjgvZ4x3iItFxKoIvwym+65t7hEvMLCJt+wb
-        Yvb3GVe+DhRF+fIDWFp8qYSpTgntZdoyPSCEP6uMSciLKLJscmgbU0kBaa/7Y8kt0HAmRnWy6clQX
-        uN08tu4A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mnjkm-008bOy-3L; Thu, 18 Nov 2021 15:55:12 +0000
-Date:   Thu, 18 Nov 2021 15:55:12 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v2 02/28] mm: Add functions to zero portions of a folio
-Message-ID: <YZZ3YJucR/WOpOaF@casper.infradead.org>
-References: <20211108040551.1942823-1-willy@infradead.org>
- <20211108040551.1942823-3-willy@infradead.org>
- <20211117044527.GO24307@magnolia>
- <YZUMhDDHott2Q4W+@casper.infradead.org>
- <20211117170707.GW24307@magnolia>
+        Thu, 18 Nov 2021 10:59:11 -0500
+Received: from polaris.svanheule.net (polaris.svanheule.net [IPv6:2a00:c98:2060:a004:1::200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4066C06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 07:56:10 -0800 (PST)
+Received: from [IPv6:2a02:a03f:eafe:c901:baf4:d6c5:5600:301] (unknown [IPv6:2a02:a03f:eafe:c901:baf4:d6c5:5600:301])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id 920E52737E0;
+        Thu, 18 Nov 2021 16:56:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1637250968;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xFBgvNoKxIt+rGYYd66CKxyErQSt2mh7u9EnEzl9/Ww=;
+        b=sGADkhOKzV4Bn3wVKoq8VGNAhPy3oeOal01P+gdvcQyeB6wuncBdC5N8WQWokDMsFyWPjB
+        L+m3iDx/crHWEngH0LkJHPzOde6kV1f8MdmMHle33Vz3zCvXBZp9U/Drk8C1v2j2WG5TDP
+        NQJTUDVnaPtIWZlVt717ZJwRD9yAMJgLf9RYEimQurwrQkaY5bfiYKmxQTD9lA65HFwq3i
+        JwCg0nSm3ylG2PYHqihY/Tb7niBU9u3MZetxzTAitWz4WQqTwAlklp1OweN3C80JA1cssj
+        +HbzOk2HjeUEXaw7bRZaqglRY5EiimSsG7o1glvB9mu09kbeWbFP8+igDYp47g==
+Message-ID: <bbe5506a2458b2d6049bd22a5fda77ae6175ddec.camel@svanheule.net>
+Subject: realtek,rtl-intc IRQ mapping broken on 5.16-rc1
+From:   Sander Vanheule <sander@svanheule.net>
+To:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Birger Koblitz <mail@birger-koblitz.de>,
+        Bert Vermeulen <bert@biot.com>,
+        John Crispin <john@phrozen.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Frank Rowand <frowand.list@gmail.com>
+Date:   Thu, 18 Nov 2021 16:56:06 +0100
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211117170707.GW24307@magnolia>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 09:07:07AM -0800, Darrick J. Wong wrote:
-> I've started using 'next', or changing the code to make 'end' be the
-> last element in the range the caller wants to act upon.  The thing is,
-> those are all iterators, so 'next' fits, whereas it doesn't fit so well
-> for range zeroing where that might have been all the zeroing we wanted
-> to do.
+Hi everyone,
 
-Yeah, it doesn't really work so well for one of the patches in this
-series:
+On 5.16-rc1, the realtek,rtl-intc interrupt controller driver for Realtek RTL8380 SoCs
+(and related) appears broken. When booting, I don't get a tty on the serial port, although
+serial output works.
 
-                        if (buffer_new(bh)) {
-...
-                                        folio_zero_segments(folio,
-                                                to, block_end,
-                                                block_start, from);
+The watchdog (currently under review) also cannot acquire the required phase1 interrupt,
+and produces the following output:
+[    1.968228] realtek-otto-watchdog 18003150.watchdog: error -EINVAL: Failed to get IRQ 4
+for phase1
+[    1.978404] realtek-otto-watchdog: probe of 18003150.watchdog failed with error -22
 
-("zero between block_start and block_end, except for the region
-specified by 'from' and 'to'").  Except that for some reason the
-ranges are specified backwards, so it's not obvious what's going on.
-Converting that to folio_zero_ranges() would be a possibility, at the
-expense of complexity in the caller, or using 'max' instead of 'end'
-would also add complexity to the callers.
+A bisects points to commit 041284181226 ("of/irq: Allow matching of an interrupt-map local
+to an interrupt controller"). Reverting this above commit and follow-up commit
+10a20b34d735 ("of/irq: Don't ignore interrupt-controller when interrupt-map failed")
+restores the functionality from v5.15.
 
-> Though.  'xend' (shorthand for 'excluded end') is different enough to
-> signal that the reader should pay attention.  Ok, how about xend then?
+Below you can find the DTS that I used to reproduce this on my Zyxel GS1900-8.
 
-Done!
 
-@@ -367,26 +367,26 @@ static inline void memzero_page(struct page *page, size_t
-offset, size_t len)
-  * folio_zero_segments() - Zero two byte ranges in a folio.
-  * @folio: The folio to write to.
-  * @start1: The first byte to zero.
-- * @end1: One more than the last byte in the first range.
-+ * @xend1: One more than the last byte in the first range.
-  * @start2: The first byte to zero in the second range.
-- * @end2: One more than the last byte in the second range.
-+ * @xend2: One more than the last byte in the second range.
-  */
- static inline void folio_zero_segments(struct folio *folio,
--               size_t start1, size_t end1, size_t start2, size_t end2)
-+               size_t start1, size_t xend1, size_t start2, size_t xend2)
- {
--       zero_user_segments(&folio->page, start1, end1, start2, end2);
-+       zero_user_segments(&folio->page, start1, xend1, start2, xend2);
- }
+Best,
+Sander
 
- /**
-  * folio_zero_segment() - Zero a byte range in a folio.
-  * @folio: The folio to write to.
-  * @start: The first byte to zero.
-- * @end: One more than the last byte in the first range.
-+ * @xend: One more than the last byte to zero.
-  */
- static inline void folio_zero_segment(struct folio *folio,
--               size_t start, size_t end)
-+               size_t start, size_t xend)
- {
--       zero_user_segments(&folio->page, start, end, 0, 0);
-+       zero_user_segments(&folio->page, start, xend, 0, 0);
- }
+---
+// SPDX-License-Identifier: GPL-2.0-or-later
+/dts-v1/;
 
- /**
+/ {
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	compatible = "zyxel,gs1900-8", "realtek,rtl83xx-soc";
+	model = "ZyXEL GS1900-8";
+
+	aliases {
+		serial0 = &serial0;
+	};
+
+	baseclk: baseclk {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <500000000>;
+	};
+
+	chosen {
+		stdout-path = "serial0";
+		bootargs = "earlycon console=ttyS0,115200";
+	};
+
+	cpuintc: cpuintc {
+		compatible = "mti,cpu-interrupt-controller";
+		#address-cells = <0>;
+		#interrupt-cells = <1>;
+		interrupt-controller;
+	};
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		cpu@0 {
+			compatible = "mips,mips4KEc";
+			reg = <0>;
+			clocks = <&baseclk>;
+			clock-names = "cpu";
+		};
+	};
+
+	lx_clk: lx_clk {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <200000000>;
+	};
+
+	memory@0 {
+		device_type = "memory";
+		reg = <0x0 0x8000000>;
+	};
+
+	soc: soc@18000000 {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges = <0x0 0x18000000 0x10000>;
+
+		serial0: serial@2000 {
+			compatible = "ns16550a";
+			reg = <0x2000 0x100>;
+
+			clocks = <&lx_clk>;
+
+			interrupt-parent = <&intc>;
+			interrupts = <31>;
+
+			reg-io-width = <1>;
+			reg-shift = <2>;
+			fifo-size = <1>;
+			no-loopback-test;
+		};
+
+		intc: interrupt-controller@3000 {
+			compatible = "realtek,rtl-intc";
+			reg = <0x3000 0x20>;
+			interrupt-controller;
+			#interrupt-cells = <1>;
+
+			#address-cells = <0>;
+			interrupt-map =
+				<31 &cpuintc 2>, /* UART0 */
+				<20 &cpuintc 3>, /* SWCORE */
+				<19 &cpuintc 4>, /* WDT IP1 */
+				<18 &cpuintc 5>; /* WDT IP2 */
+		};
+
+		watchdog@3150 {
+			compatible = "realtek,rtl8380-wdt";
+			reg = <0x3150 0xc>;
+
+			realtek,reset-mode = "soc";
+
+			clocks = <&lx_clk>;
+			timeout-sec = <20>;
+
+			interrupt-parent = <&intc>;
+			interrupt-names = "phase1", "phase2";
+			interrupts = <19>, <18>;
+		};
+	};
+};
 
