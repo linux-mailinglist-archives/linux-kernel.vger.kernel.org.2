@@ -2,140 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184BD45619B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:37:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B1645619D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:37:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbhKRRkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 12:40:35 -0500
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:43841 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229597AbhKRRke (ORCPT
+        id S231393AbhKRRkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 12:40:53 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:60304 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234160AbhKRRko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 12:40:34 -0500
-Received: from [77.244.183.192] (port=64292 helo=[192.168.178.41])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1mnlLp-000BON-01; Thu, 18 Nov 2021 18:37:33 +0100
-Subject: Re: [PATCH] media: i2c: imx274: implement enum_mbus_code
-To:     Eugen.Hristev@microchip.com, sakari.ailus@linux.intel.com
-Cc:     leonl@leopardimaging.com, linux-media@vger.kernel.org,
-        skomatineni@nvidia.com, linux-kernel@vger.kernel.org
-References: <20211118154009.307430-1-eugen.hristev@microchip.com>
- <fa26e991-9228-7ed7-833a-b296e6b32afc@lucaceresoli.net>
- <YZaMtGhqaXIOLhox@paasikivi.fi.intel.com>
- <aff9c675-cd7b-ef11-d337-c5c3de9b921a@microchip.com>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <65d864d8-8c28-cf8e-43bf-a5a4c4dc11f7@lucaceresoli.net>
-Date:   Thu, 18 Nov 2021 18:37:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Thu, 18 Nov 2021 12:40:44 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id B7C1E1FD38;
+        Thu, 18 Nov 2021 17:37:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637257062; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=gr4vTY2qmq+4abZaqjY58lKDgGoIRxKbq/34OYSg12s=;
+        b=DyyId0ieskvMDaBOVlUlhes5ODIBreBFDnHdGD7IDaGYOiyig/KYf4qN0eSxpgYmpyDmkm
+        CJ+DLkBERnC0Gxr068PLrSGblt7+YF2DAv5V+YzYkF4v+QZQdvfFWaqYjd9QB4/ghoHQE5
+        sRMkY0+pNLLanz6HdGqGczLVvZyNb4U=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id AF43EA3B81;
+        Thu, 18 Nov 2021 17:37:42 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 37055DA735; Thu, 18 Nov 2021 18:37:38 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.16-rc2
+Date:   Thu, 18 Nov 2021 18:37:37 +0100
+Message-Id: <cover.1637255480.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <aff9c675-cd7b-ef11-d337-c5c3de9b921a@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On 18/11/21 18:34, Eugen.Hristev@microchip.com wrote:
-> On 11/18/21 7:26 PM, Sakari Ailus wrote:
->> Hi Luca,
->>
->> On Thu, Nov 18, 2021 at 06:11:35PM +0100, Luca Ceresoli wrote:
->>> Hi Eugen,
->>>
->>> On 18/11/21 16:40, Eugen Hristev wrote:
->>>> Current driver supports only SRGGB 10 bit RAW bayer format.
->>>> Add the enum_mbus_code implementation to report this format supported.
->>>>
->>>>   # v4l2-ctl -d /dev/v4l-subdev3 --list-subdev-mbus-codes
->>>> ioctl: VIDIOC_SUBDEV_ENUM_MBUS_CODE (pad=0)
->>>>          0x300f: MEDIA_BUS_FMT_SRGGB10_1X10
->>>>   #
->>>>
->>>> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
->>>
->>> Generally OK, but I have a few minor comments.
->>>
->>>> ---
->>>>   drivers/media/i2c/imx274.c | 14 ++++++++++++++
->>>>   1 file changed, 14 insertions(+)
->>>>
->>>> diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
->>>> index 2e804e3b70c4..25a4ef8f6187 100644
->>>> --- a/drivers/media/i2c/imx274.c
->>>> +++ b/drivers/media/i2c/imx274.c
->>>> @@ -1909,7 +1909,21 @@ static int imx274_set_frame_interval(struct stimx274 *priv,
->>>>      return err;
->>>>   }
->>>>
->>>> +static int imx274_enum_mbus_code(struct v4l2_subdev *sd,
->>>> +                            struct v4l2_subdev_state *sd_state,
->>>> +                            struct v4l2_subdev_mbus_code_enum *code)
->>>> +{
->>>> +   if (code->index > 0)
->>>> +           return -EINVAL;
->>>
->>> Many driver do check code->pad too, so you might want to do
->>>
->>>        if (code->pad > 0 || code->index > 0)
->>>                return -EINVAL;
->>
->> The caller will have checked the pad exists, and there's a single one on
->> the subdev I suppose.
->>
->>>
->>> However I don't think it is strictly necessary, thus
->>>
->>>> +
->>>> +   /* only supported format in the driver is Raw 10 bits SRGGB */
->>>> +   code->code = MEDIA_BUS_FMT_SRGGB10_1X10;
->>>
->>> Maybe better:
->>>
->>>    code->code =  to_imx274(sd)->format.code
->>
->> Good idea.
-> 
-> Hi,
-> 
-> Initially I thought about this, but my idea was to keep it simple.
-> If we return format.code, we are not enumerating anything, just 
-> returning the current format and that's it.
-> 
-> If we want to be correct, I would rather add a struct with supported 
-> formats(currently just one ) and iterate through this structure.
-> 
-> If in the future we want to support more formats (I see this sensor 
-> could support SRGGB 12 bits ), then it would support 2 formats, and 
-> returning priv->format.code would be incorrect here (it would be correct 
-> for a g_fmt only )
-> 
-> So, how do you think I should proceed ?
-> 1/ Create a struct with a single element and iterate through it
+there are several fixes and one old ioctl deprecation. Namely there's
+fix for crashes/warnings with lzo compression that was suspected to be
+caused by first pull merge resolution, but it was a different bug.
 
-I dislike adding complexity (albeit small) that adds no features. Let's
-leave this idea to the day somebody adds another format.
+The branch is based on the previous pull so there's still a conflict in
+lzo.c but this time it's a trivial one (diff below). I've also tested
+the branches with/without the fix and on both 64bit and 32bit hosts so
+there should be no surprises.
 
-> 2/ Leave it like this and always return SRGGB10
-> 3/ Do like Luca suggests and return format.code (which I am personally 
-> against )
+The ioctl deprecation patch is new but it's just adding a warning
+message, there's no reason to delay that for another full release.
 
-No strong preference between 2 and 3.
+Changes:
 
--- 
-Luca
+* regression, fix crash in lzo due to missing boundary checks of page
+  array
+
+* fix crashes on ARM64 due to missing barriers when synchronizing
+  status bits between work queues
+
+* silence lockdep when reading chunk tree during mount
+
+* fix false positive warning in integrity checker on devices with
+  disabled write caching
+
+* fix signedness of bitfields in scrub
+
+* start deprecation of balance v1 ioctl
+
+Please pull, thanks.
+
+Conflict resolution:
+
+diff --cc fs/btrfs/lzo.c
+index 65cb0766e62d,f410ceabcdbd..9febb8025825
+--- a/fs/btrfs/lzo.c
++++ b/fs/btrfs/lzo.c
+@@@ -131,8 -132,10 +132,11 @@@ static int copy_compressed_data_to_page
+  	u32 sector_bytes_left;
+  	u32 orig_out;
+  	struct page *cur_page;
+ +	char *kaddr;
+  
++ 	if ((*cur_out / PAGE_SIZE) >= max_nr_page)
++ 		return -E2BIG;
++ 
+  	/*
+  	 * We never allow a segment header crossing sector boundary, previous
+  	 * run should ensure we have enough space left inside the sector.
+@@@ -160,7 -162,9 +164,11 @@@
+  		u32 copy_len = min_t(u32, sectorsize - *cur_out % sectorsize,
+  				     orig_out + compressed_size - *cur_out);
+  
+ +		kunmap(cur_page);
+++
++ 		if ((*cur_out / PAGE_SIZE) >= max_nr_page)
++ 			return -E2BIG;
++ 
+  		cur_page = out_pages[*cur_out / PAGE_SIZE];
+  		/* Allocate a new page */
+  		if (!cur_page) {
+@@@ -202,7 -202,7 +210,8 @@@ int lzo_compress_pages(struct list_hea
+  	struct workspace *workspace = list_entry(ws, struct workspace, list);
+  	const u32 sectorsize = btrfs_sb(mapping->host->i_sb)->sectorsize;
+  	struct page *page_in = NULL;
+ +	char *sizes_ptr;
++ 	const unsigned long max_nr_page = *out_pages;
+  	int ret = 0;
+  	/* Points to the file offset of input data */
+  	u64 cur_in = start;
+
+----------------------------------------------------------------
+The following changes since commit d1ed82f3559e151804743df0594f45d7ff6e55fa:
+
+  btrfs: remove root argument from check_item_in_log() (2021-10-29 12:39:13 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.16-rc1-tag
+
+for you to fetch changes up to 6c405b24097c24cbb11570b47fd382676014f72e:
+
+  btrfs: deprecate BTRFS_IOC_BALANCE ioctl (2021-11-16 16:51:19 +0100)
+
+----------------------------------------------------------------
+Colin Ian King (1):
+      btrfs: make 1-bit bit-fields of scrub_page unsigned int
+
+Filipe Manana (1):
+      btrfs: silence lockdep when reading chunk tree during mount
+
+Nikolay Borisov (2):
+      btrfs: fix memory ordering between normal and ordered work functions
+      btrfs: deprecate BTRFS_IOC_BALANCE ioctl
+
+Qu Wenruo (1):
+      btrfs: fix a out-of-bound access in copy_compressed_data_to_page()
+
+Wang Yugui (1):
+      btrfs: check-integrity: fix a warning on write caching disabled disk
+
+ fs/btrfs/async-thread.c | 14 ++++++++++++++
+ fs/btrfs/disk-io.c      | 14 +++++++++++++-
+ fs/btrfs/ioctl.c        |  4 ++++
+ fs/btrfs/lzo.c          | 12 +++++++++++-
+ fs/btrfs/scrub.c        |  4 ++--
+ fs/btrfs/volumes.c      | 18 +++++++++++++-----
+ 6 files changed, 57 insertions(+), 9 deletions(-)
