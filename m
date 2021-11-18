@@ -2,203 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 185C8456387
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 20:30:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C79456392
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 20:36:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231479AbhKRTdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 14:33:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhKRTdr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 14:33:47 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC652C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 11:30:46 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id n85so7027126pfd.10
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 11:30:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Pb14MqCTU3J6D9GGe31yDgUMoZQIJFb1ROL5bX0DMqg=;
-        b=cQZwJ9YeqwPxXKl7/Ra3o+Rh8nEuwKxhuosgjgtlhTQ9kgdIZjE74Ip21sK6YRPEgm
-         7pGvDXGboYqRXhoV3r5ew86r8uC7gbuGrZDoWKAVT5sRfMUYfx0FANg7onPC6+lRTMFT
-         G7NBPobkXbp7AjQ9XFWMpeuuNrxYMee4pKUfo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Pb14MqCTU3J6D9GGe31yDgUMoZQIJFb1ROL5bX0DMqg=;
-        b=pes9J5FiA6laPBx8yyZ9e0VpobCM+hO16ksw9tW+iLuwOePa+kBBCZNbl8j4ZccvXw
-         KjvdSN7dqPeYNSrWNyn/NzezfQ3GvQ6TYf7kC+aTziWwaCOlVAeSmZ2ixdQMlwDThG2n
-         9eg6FmZB+K92PuHpgu73qyYFdlAJcHOhNhVKwXzZKltuzYkezXHJAQh4FoySTwtrG5hR
-         jaiegY7jYSoDmLDq8TADTmF6H4Orp1GIWvcraNn9X9niRqnMTDO3BBASoOBezWY9IMAE
-         hOyIZJbusnP6q11jLSrhJaIpQ+iKfgfQuxEVa4dnKIF2HWEYzI4FuEt0saPdeD1WjA1O
-         +Mwg==
-X-Gm-Message-State: AOAM530yKEpWoCQckKkoQThdeRCZdGKfgvhy5sONly2q2Bc/E7izlZyx
-        5vCY7hPA5olxr8z6oOLYfTcYsg==
-X-Google-Smtp-Source: ABdhPJwhGJoIuasv+jusGZbzhkG5zaQIvyvco0ciQxImTVKnurOgSMOAYFJj+ihc5CEUER2gToLAjQ==
-X-Received: by 2002:a65:46cf:: with SMTP id n15mr13180408pgr.260.1637263846379;
-        Thu, 18 Nov 2021 11:30:46 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:896b:df38:4eae:c568])
-        by smtp.gmail.com with ESMTPSA id e13sm319618pgi.90.2021.11.18.11.30.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 11:30:45 -0800 (PST)
-Date:   Thu, 18 Nov 2021 11:30:43 -0800
-From:   Brian Norris <briannorris@chromium.org>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Doug Anderson <dianders@chromium.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Rob Clark <robdclark@gmail.com>, linux-input@vger.kernel.org,
-        Rob Clark <robdclark@chromium.org>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v2 1/2] drm/input_helper: Add new input-handling helper
-Message-ID: <YZap4zKo8D5eZc1y@google.com>
-References: <20211117224841.3442482-1-briannorris@chromium.org>
- <20211117144807.v2.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
- <YZYXR4u6VBEi4qnM@phenom.ffwll.local>
+        id S231966AbhKRTjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 14:39:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229574AbhKRTji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 14:39:38 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C1EC61507;
+        Thu, 18 Nov 2021 19:36:36 +0000 (UTC)
+Date:   Thu, 18 Nov 2021 14:36:34 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     ebiederm@xmission.com (Eric W. Biederman)
+Cc:     "Yordan Karadzhov \(VMware\)" <y.karadz@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, mingo@redhat.com, hagen@jauu.net,
+        rppt@kernel.org, James.Bottomley@HansenPartnership.com,
+        akpm@linux-foundation.org, vvs@virtuozzo.com, shakeelb@google.com,
+        christian.brauner@ubuntu.com, mkoutny@suse.com,
+        Linux Containers <containers@lists.linux.dev>
+Subject: Re: [RFC PATCH 0/4] namespacefs: Proof-of-Concept
+Message-ID: <20211118143634.3f7d43e9@gandalf.local.home>
+In-Reply-To: <87pmqxuv4n.fsf@email.froward.int.ebiederm.org>
+References: <20211118181210.281359-1-y.karadz@gmail.com>
+        <87a6i1xpis.fsf@email.froward.int.ebiederm.org>
+        <20211118140211.7d7673fb@gandalf.local.home>
+        <87pmqxuv4n.fsf@email.froward.int.ebiederm.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZYXR4u6VBEi4qnM@phenom.ffwll.local>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Thu, 18 Nov 2021 13:22:16 -0600
+ebiederm@xmission.com (Eric W. Biederman) wrote:
 
-Thanks for the review. Lots to address elsewhere, but I can respond
-here first:
+> Steven Rostedt <rostedt@goodmis.org> writes:
 
-On Thu, Nov 18, 2021 at 10:05:11AM +0100, Daniel Vetter wrote:
-> On Wed, Nov 17, 2021 at 02:48:40PM -0800, Brian Norris wrote:
-> > --- a/drivers/gpu/drm/Kconfig
-> > +++ b/drivers/gpu/drm/Kconfig
-> > @@ -79,9 +79,15 @@ config DRM_DEBUG_SELFTEST
-> >  
-> >  	  If in doubt, say "N".
-> >  
-> > +config DRM_INPUT_HELPER
-> > +	def_bool y
-> > +	depends on DRM_KMS_HELPER
-> > +	depends on INPUT
+> > 
+> I am refreshing my nack on the concept.  My nack has been in place for
+> good technical reasons since about 2006.
+
+I'll admit, we are new to this, as we are now trying to add more visibility
+into the workings of things like kubernetes. And having a way of knowing
+what containers are running and how to monitor them is needed, and we need
+to do this for all container infrastructures.
+
 > 
-> Uh please no configs for each thing, it just makes everything more
-> complex. Do we _really_ need this?
+> I see no way forward.  I do not see a compelling use case.
 
-First, it's not a configurable option (a user will never see this nor
-have to answer Y/N to it); it only serves as an intermediary to express
-the CONFIG_INPUT dependency (which is necessary) without making
-DRM_KMS_HELPER fully depend on CONFIG_INPUT. (We should be able to run
-display stacks without the input subsystem.)
+What do you use to debug issues in a kubernetes cluster of hundreds of
+machines running thousands of containers? Currently, if something is amiss,
+a node is restarted in the hopes that the issue does not appear again. But
+we would like to add infrastructure that takes advantage of tracing and
+profiling to be able to narrow that down. But to do so, we need to
+understand what tasks belong to what containers.
 
-The closest alternative I can think of with fewer Kconfig symbols is to
-just use CONFIG_INPUT directly in the code, to decide whether to provide
-the helpers or else just stub them out. But that has a problem of not
-properly expressing the =m vs. =y necessity: if, for example,
-CONFIG_DRM_KMS_HELPER=y and CONFIG_INPUT=m, then we'll have linker
-issues.
-
-In short, yes, I think we really need this. But I'm not a Kbuild expert.
-
-> > diff --git a/include/drm/drm_input_helper.h b/include/drm/drm_input_helper.h
-> > new file mode 100644
-> > index 000000000000..7904f397b934
-> > --- /dev/null
-> > +++ b/include/drm/drm_input_helper.h
-> > @@ -0,0 +1,41 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (C) 2021 Google, Inc.
-> > + */
-> > +#ifndef __DRM_INPUT_HELPER_H__
-> > +#define __DRM_INPUT_HELPER_H__
-> > +
-> > +#include <linux/input.h>
-> > +
-> > +struct drm_device;
-> > +
-> > +struct drm_input_handler {
-> > +	/*
-> > +	 * Callback to call for input activity. Will be called in an atomic
-> > +	 * context.
 > 
-> How atomic? Like hardirq, and nasty spinlocks held?
+> There have been many conversations in the past attempt to implement
+> something that requires a namespace of namespaces and they have never
+> gotten anywhere.
 
-Maybe I should have just cribbed off the <linux/input.h> doc:
+We are not asking about a "namespace" of namespaces, but a filesystem (one,
+not a namespace of one), that holds the information at the system scale,
+not a container view.
 
- * @event: event handler. This method is being called by input core with
- *      interrupts disabled and dev->event_lock spinlock held and so
- *      it may not sleep
+I would be happy to implement something that makes a container having this
+file system available "special" as most containers do not need this.
 
-I probably don't want to propagate the subsystem details about which
-locks, but I guess I can be specific about "interrupts disabled" and
-"don't sleep".
-
-> > +	 */
-> > +	void (*callback)(struct drm_input_handler *handler);
-> > +
-> > +	struct input_handler handler;
-> > +};
-> > +
-> > +#if defined(CONFIG_DRM_INPUT_HELPER)
-> > +
-> > +int drm_input_handle_register(struct drm_device *dev,
-> > +			      struct drm_input_handler *handler);
-> > +void drm_input_handle_unregister(struct drm_input_handler *handler);
-> > +
-> > +#else /* !CONFIG_DRM_INPUT_HELPER */
-> > +
-> > +static inline int drm_input_handle_register(struct drm_device *dev,
-> > +					    struct drm_input_handler *handler)
-> > +{
-> > +	return 0;
-> > +}
 > 
-> I guess the reason behind the helper is that you also want to use this in
-> drivers or maybe drm/sched?
+> I see no attempt a due diligence or of actually understanding what
+> hierarchy already exists in namespaces.
 
-I think my reasoning is heavily described in both the cover letter and
-the commit message. If that's not clear, can you point out which part?
-I'd gladly improve it :)
+This is not trivial. What did we miss?
 
-But specifically, see the 2nd bullet from the commit message, which I've
-re-quoted down here:
+> 
+> I don't mean to be nasty but I do mean to be clear.  Without a
+> compelling new idea in this space I see no hope of an implementation.
+> 
+> What they are attempting to do makes it impossible to migrate a set of
+> process that uses this feature from one machine to another.  AKA this
+> would be a breaking change and a regression if merged.
 
-> >  * GPU drivers: on GPU-accelerated desktop systems, we may need to
-> >    render new frames immediately after user activity. Powering up the
-> >    GPU can take enough time that it is worthwhile to start this process
-> >    as soon as there is input activity. Many Chrome OS systems also ship
-> >    with an input_handler boost that powers up the GPU.
+The point of this is not to allow that migration. I'd be happy to add that
+if a container has access to this file system, it is pinned to the system
+and can not be migrated. The whole point of this file system is to monitor
+all containers no the system, and it makes no sense in migrating it.
 
-Rob Clark has patches to drm/msm to boost GPU power-up via a similar
-helper.
+We would duplicate it over several systems, but there's no reason to move
+it once it is running.
 
-> Anyway I think it looks all reasonable. Definitely need an ack from input
-> people
+> 
+> The breaking and regression are caused by assigning names to namespaces
+> without putting those names into a namespace of their own.   That
+> appears fundamental to the concept not to the implementation.
 
-I realized I failed to carry Dmitry's Ack from version 1 [1]. If this
-has a v3 in similar form, I'll carry it there.
+If you think this should be migrated then yes, it is broken. But we don't
+want this to work across migrations. That defeats the purpose of this work.
 
-> that the event list you have is a good choice, I have no idea what
-> that all does. Maybe also document that part a bit more.
+> 
+> Since the concept if merged would cause a regression it qualifies for
+> a nack.
+> 
+> We can explore what problems they are trying to solve with this and
+> explore other ways to solve those problems.  All I saw was a comment
+> about monitoring tools and wanting a global view.  I did not see
+> any comments about dealing with all of the reasons why a global view
+> tends to be a bad idea.
 
-I'm admittedly not an expert there, and this is actually one reason why
-we hoped to make this a library (that nobody wants to keep figuring out
-whether all those flags, etc., are really doing the right thing), but
-there are comments about what each entry is _trying_ to do. Are you
-suggesting more, as in, why "BTN_LEFT + EV_KEY" means "pointer"? Or why
-we match certain devices (because they represent likely user activity
-that will affect the display pipeline)? Or both? Anyway, I'll give it a
-shot, if we keep this.
+If you only care about a working environment of the system that runs a set
+of containers, how is that a bad idea. Again, I'm happy with implementing
+something that makes having this file system prevent it from being
+migrated. A pinned privileged container.
 
-Brian
+> 
+> I should have added that we have to some extent a way to walk through
+> namespaces using ioctls on nsfs inodes.
 
-[1] https://lore.kernel.org/all/YYW6FwSeNMK25ENm@google.com/
+How robust is this? And is there a library or tooling around it?
+
+-- Steve
