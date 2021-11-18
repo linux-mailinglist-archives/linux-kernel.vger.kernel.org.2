@@ -2,150 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A58456686
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 00:40:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA505456689
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 00:47:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233263AbhKRXnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 18:43:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhKRXnC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 18:43:02 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57258C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 15:40:01 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id c4so7660697pfj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 15:40:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oXVLgn7Fm48aBJFzNVOVlXR9OEHonO1R9lF3Un+NrdE=;
-        b=adean6vy4yeH/XRaSWPDn2eF5HEXAskqbiJ4tLKSBOb1kEyQu9T00sNYEWyuZYH2gk
-         BuF3Urre/F4ibEf37iZjBvW4IZEl0BMap4ubCE63aePPvfePIQAiI+s9xh6cRSH/QQrU
-         BDvNCfnznWgz+Gl09t2mFIMIKWsWkcTIDmIKI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oXVLgn7Fm48aBJFzNVOVlXR9OEHonO1R9lF3Un+NrdE=;
-        b=X/ZJ6D3gaxm2HdxWBjRd8fm95m+scoxw+x8J7te2Y6qyeTe3ER2DDVxkztUPhW1mfS
-         5qw2tufUzQ9lXNAAPuRhFuUZGelZWjPLisUxCmBXN3pEbfHjRMe0Ikwr3sd97dWfddSs
-         BhE8Xnbu0KjjswWo65F2txPUN1c56ZI57Klz5b8XEYrovP5rBKF6W6gpWDlMkLx0+DNf
-         UJdo6hNY3SPeLTXkC7gL4Bs+xn6cniQoGPVmhmLPH/oQUCnoZoWITO5uUgOlsMg/8VGk
-         YFriwVCKLLbkfkL7p2p4XHQAtvBANHfGr4XYW5McK3BBKbdosXXjMCk5kWlOIqdhsypb
-         bJMA==
-X-Gm-Message-State: AOAM530Vlft4ZdliwZ4NBKmvawVLsR0D8M1w2ckr1lNutYiFnlNRo8W/
-        CtlL+ScSn+WHriHY06YgnBjd9A==
-X-Google-Smtp-Source: ABdhPJzhq8/zLZS54halfY22K3R0DFf+8t9M9mL7GrX7pO1LuSwDghC9VZ8n/iGRKAxpPjjpRv4NSg==
-X-Received: by 2002:a63:e216:: with SMTP id q22mr14105524pgh.3.1637278800301;
-        Thu, 18 Nov 2021 15:40:00 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k3sm680152pff.211.2021.11.18.15.39.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 15:40:00 -0800 (PST)
-Date:   Thu, 18 Nov 2021 15:39:59 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] sata_fsl: Use struct_group() for memcpy() region
-Message-ID: <202111181533.2D90E391@keescook>
-References: <20211118183807.1283332-1-keescook@chromium.org>
- <0dd24142-a5e6-b146-9315-d2680ef4ed35@opensource.wdc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0dd24142-a5e6-b146-9315-d2680ef4ed35@opensource.wdc.com>
+        id S233324AbhKRXup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 18:50:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46746 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229911AbhKRXuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 18:50:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 977FD615E3;
+        Thu, 18 Nov 2021 23:47:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1637279263;
+        bh=/PpTA8Ztzws1iG2KXKvOte1u98F6v8LSb2XI+pEpruc=;
+        h=Date:From:To:Subject:From;
+        b=qZPOqQW1xAex6LcpNyN+DDe+ZVGa8kuD5UKNoNT3GFRnknSpdXNbMzE4ThxV6LuJI
+         lo/43byxEpj4GHRynJe2GH77PyPGGCCIyi3UcaVZFnJNbkn+RD6V35RcXNd/oJvkso
+         KugtK96Sb5tdLdH104DYmCRoHwsYKAPCfAq9W2KE=
+Date:   Thu, 18 Nov 2021 15:47:43 -0800
+From:   akpm@linux-foundation.org
+To:     broonie@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
+Subject:  mmotm 2021-11-18-15-47 uploaded
+Message-ID: <20211118234743.-bgoWMQfK%akpm@linux-foundation.org>
+User-Agent: s-nail v14.8.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 08:17:14AM +0900, Damien Le Moal wrote:
-> On 2021/11/19 3:38, Kees Cook wrote:
-> > In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> > field bounds checking for memcpy(), memmove(), and memset(), avoid
-> > intentionally writing across neighboring fields.
-> > 
-> > Use struct_group() in struct command_desc around members acmd and fill,
-> > so they can be referenced together. This will allow memset(), memcpy(),
-> > and sizeof() to more easily reason about sizes, improve readability,
-> > and avoid future warnings about writing beyond the end of acmd:
-> > 
-> > In function 'fortify_memset_chk',
-> >     inlined from 'sata_fsl_qc_prep' at drivers/ata/sata_fsl.c:534:3:
-> > ./include/linux/fortify-string.h:199:4: warning: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Wattribute-warning]
-> >   199 |    __write_overflow_field();
-> >       |    ^~~~~~~~~~~~~~~~~~~~~~~~
-> > 
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> 
-> This lacks some context with regard to FORTIFY_SOURCE and struct_group(). Is
-> that already in 5.16 ? It sounds like it is not. Do you want a ack ? Or do you
-> want me to queue this up for 5.17 ?
+The mm-of-the-moment snapshot 2021-11-18-15-47 has been uploaded to
 
-Ah yes, some details are here in the earlier "big" series cover letter
-here:
-https://lore.kernel.org/linux-hardening/20210818060533.3569517-1-keescook@chromium.org/
+   https://www.ozlabs.org/~akpm/mmotm/
 
-One of the requests from earlier review was to split it up for separate
-trees for the maintainers that wanted to take stuff via their trees
-directly.
+mmotm-readme.txt says
 
-The new helpers are landed as of v5.16-rc1, so it can go either way, but
-given that the merge window is closed, I would expect this to be for
-v5.17.
+README for mm-of-the-moment:
 
-I am happy to to carry it in my fortify topic branch that I'm expecting
-to send for 5.17, but totally up to you. Some folks like to take these
-changes via their trees, others would rather not be bothered with it. :)
+https://www.ozlabs.org/~akpm/mmotm/
 
-Thanks!
+This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+more than once a week.
 
--Kees
+You will need quilt to apply these patches to the latest Linus release (5.x
+or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+https://ozlabs.org/~akpm/mmotm/series
 
-> 
-> Cheers.
-> 
-> > ---
-> >  drivers/ata/sata_fsl.c | 10 ++++++----
-> >  1 file changed, 6 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/ata/sata_fsl.c b/drivers/ata/sata_fsl.c
-> > index e5838b23c9e0..fec3c9032606 100644
-> > --- a/drivers/ata/sata_fsl.c
-> > +++ b/drivers/ata/sata_fsl.c
-> > @@ -246,8 +246,10 @@ enum {
-> >  struct command_desc {
-> >  	u8 cfis[8 * 4];
-> >  	u8 sfis[8 * 4];
-> > -	u8 acmd[4 * 4];
-> > -	u8 fill[4 * 4];
-> > +	struct_group(cdb,
-> > +		u8 acmd[4 * 4];
-> > +		u8 fill[4 * 4];
-> > +	);
-> >  	u32 prdt[SATA_FSL_MAX_PRD_DIRECT * 4];
-> >  	u32 prdt_indirect[(SATA_FSL_MAX_PRD - SATA_FSL_MAX_PRD_DIRECT) * 4];
-> >  };
-> > @@ -531,8 +533,8 @@ static enum ata_completion_errors sata_fsl_qc_prep(struct ata_queued_cmd *qc)
-> >  	/* setup "ACMD - atapi command" in cmd. desc. if this is ATAPI cmd */
-> >  	if (ata_is_atapi(qc->tf.protocol)) {
-> >  		desc_info |= ATAPI_CMD;
-> > -		memset((void *)&cd->acmd, 0, 32);
-> > -		memcpy((void *)&cd->acmd, qc->cdb, qc->dev->cdb_len);
-> > +		memset(&cd->cdb, 0, sizeof(cd->cdb));
-> > +		memcpy(&cd->cdb, qc->cdb, qc->dev->cdb_len);
-> >  	}
-> >  
-> >  	if (qc->flags & ATA_QCFLAG_DMAMAP)
-> > 
-> 
-> 
-> -- 
-> Damien Le Moal
-> Western Digital Research
+The file broken-out.tar.gz contains two datestamp files: .DATE and
+.DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+followed by the base kernel version against which this patch series is to
+be applied.
 
--- 
-Kees Cook
+This tree is partially included in linux-next.  To see which patches are
+included in linux-next, consult the `series' file.  Only the patches
+within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
+linux-next.
+
+
+A full copy of the full kernel tree with the linux-next and mmotm patches
+already applied is available through git within an hour of the mmotm
+release.  Individual mmotm releases are tagged.  The master branch always
+points to the latest release, so it's constantly rebasing.
+
+	https://github.com/hnaz/linux-mm
+
+The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
+contains daily snapshots of the -mm tree.  It is updated more frequently
+than mmotm, and is untested.
+
+A git copy of this tree is also available at
+
+	https://github.com/hnaz/linux-mm
+
+
+
+This mmotm tree contains the following patches against 5.16-rc1:
+(patches marked "*" will be included in linux-next)
+
+  origin.patch
+* hitting-bug_on-trap-in-read_pages-mm-optimise-put_pages_list.patch
+* ipc-warn-if-trying-to-remove-ipc-object-which-is-absent.patch
+* shm-extend-forced-shm-destroy-to-support-objects-from-several-ipc-nses-simplified.patch
+* mm-emit-the-free-trace-report-before-freeing-memory-in-kmem_cache_free.patch
+* hexagon-export-raw-i-o-routines-for-modules.patch
+* hexagon-clean-up-timer-regsh.patch
+* hexagon-ignore-vmlinuxlds.patch
+* mm-kmemleak-slob-respect-slab_noleaktrace-flag.patch
+* hugetlb-fix-hugetlb-cgroup-refcounting-during-mremap.patch
+* kasan-test-silence-intentional-read-overflow-warnings.patch
+* mm-damon-dbgfs-use-__gfp_nowarn-for-user-specified-size-buffer-allocation.patch
+* mm-damon-dbgfs-fix-missed-use-of-damon_dbgfs_lock.patch
+* kmap_local-dont-assume-kmap-ptes-are-linear-arrays-in-memory.patch
+* proc-vmcore-fix-clearing-user-buffer-by-properly-using-clear_user.patch
+* mm-fix-panic-in-__alloc_pages.patch
+* hugetlb-userfaultfd-fix-reservation-restore-on-userfaultfd-error.patch
+* mm-bdi-initialize-bdi_min_ratio-when-bdi-unregister.patch
+* mm-bdi-initialize-bdi_min_ratio-when-bdi-unregister-fix.patch
+* increase-default-mlock_limit-to-8-mib.patch
+* proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
+* proc-kpageflags-do-not-use-uninitialized-struct-pages.patch
+* procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch
+* kthread-add-the-helper-function-kthread_run_on_cpu.patch
+* kthread-add-the-helper-function-kthread_run_on_cpu-fix.patch
+* rdma-siw-make-use-of-the-helper-function-kthread_run_on_cpu.patch
+* ring-buffer-make-use-of-the-helper-function-kthread_run_on_cpu.patch
+* rcutorture-make-use-of-the-helper-function-kthread_run_on_cpu.patch
+* trace-osnoise-make-use-of-the-helper-function-kthread_run_on_cpu.patch
+* trace-hwlat-make-use-of-the-helper-function-kthread_run_on_cpu.patch
+* ia64-module-use-swap-to-make-code-cleaner.patch
+* ia64-use-swap-to-make-code-cleaner.patch
+* ia64-fix-typo-in-a-comment.patch
+* squashfs-provides-backing_dev_info-in-order-to-disable-read-ahead.patch
+* ocfs2-use-bug_on-instead-of-if-condition-followed-by-bug.patch
+* ocfs2-reflink-deadlock-when-clone-file-to-the-same-directory-simultaneously.patch
+* ocfs2-clear-links-count-in-ocfs2_mknod-if-an-error-occurs.patch
+* ocfs2-fix-ocfs2-corrupt-when-iputting-an-inode.patch
+  mm.patch
+* mm-slab_common-use-warn-if-cache-still-has-objects-on-destroy.patch
+* mm-slab-make-slab-iterator-functions-static.patch
+* kmemleak-fix-kmemleak-false-positive-report-with-hw-tag-based-kasan-enable.patch
+* kasan-test-add-globals-left-out-of-bounds-test.patch
+* gup-avoid-multiple-user-access-locking-unlocking-in-fault_in_read-writeable.patch
+* mm-shmem-dont-truncate-page-if-memory-failure-happens.patch
+* mm-memcontrol-make-cgroup_memory_nokmem-static.patch
+* mm-page_counter-remove-an-incorrect-call-to-propagate_protected_usage.patch
+* memcg-better-bounds-on-the-memcg-stats-updates.patch
+* mm-remove-redundant-check-about-fault_flag_allow_retry-bit.patch
+* mm-remove-redundant-check-about-fault_flag_allow_retry-bit-checkpatch-fixes.patch
+* mm-rearrange-madvise-code-to-allow-for-reuse.patch
+* mm-add-a-field-to-store-names-for-private-anonymous-memory.patch
+* mm-add-anonymous-vma-name-refcounting.patch
+* mm-discard-__gfp_atomic.patch
+* selftests-uffd-allow-eintr-eagain.patch
+* vmscan-make-drop_slab_node-static.patch
+* mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt.patch
+* mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt-fix.patch
+* mm-migrate-fix-the-return-value-of-migrate_pages.patch
+* mm-migrate-correct-the-hugetlb-migration-stats.patch
+* mm-compaction-fix-the-migration-stats-in-trace_mm_compaction_migratepages.patch
+* mm-migratec-rework-migration_entry_wait-to-not-take-a-pageref.patch
+* mm-migrate-support-multiple-target-nodes-demotion.patch
+* mm-hwpoison-mf_mutex-for-soft-offline-and-unpoison.patch
+* mm-hwpoison-remove-mf_msg_buddy_2nd-and-mf_msg_poisoned_huge.patch
+* mm-hwpoison-fix-unpoison_memory.patch
+* mm-rmap-convert-from-atomic_t-to-refcount_t-on-anon_vma-refcount.patch
+* zsmalloc-introduce-some-helper-functions.patch
+* zsmalloc-rename-zs_stat_type-to-class_stat_type.patch
+* zsmalloc-decouple-class-actions-from-zspage-works.patch
+* zsmalloc-introduce-obj_allocated.patch
+* zsmalloc-move-huge-compressed-obj-from-page-to-zspage.patch
+* zsmalloc-remove-zspage-isolation-for-migration.patch
+* locking-rwlocks-introduce-write_lock_nested.patch
+* zsmalloc-replace-per-zpage-lock-with-pool-migrate_lock.patch
+* zsmalloc-replace-get_cpu_var-with-local_lock.patch
+* zram-use-attribute_groups.patch
+* writeback-fix-some-comment-errors.patch
+* mm-hmmc-allow-vm_mixedmap-to-work-with-hmm_range_fault.patch
+* mm-damon-unified-access_check-function-naming-rules.patch
+* mm-damon-add-age-of-region-tracepoint-support.patch
+* mm-damon-core-using-function-abs-instead-of-diff_of.patch
+* mm-damon-remove-some-no-need-func-definitions-in-damonh-file.patch
+* mm-damon-remove-some-no-need-func-definitions-in-damonh-file-fix.patch
+* mm-damon-vaddr-remove-swap_ranges-and-replace-it-with-swap.patch
+* mm-damon-schemes-add-the-validity-judgment-of-thresholds.patch
+* info-task-hung-in-generic_file_write_iter.patch
+* info-task-hung-in-generic_file_write-fix.patch
+* kernel-hung_taskc-monitor-killed-tasks.patch
+* proc-vmcore-dont-fake-reading-zeroes-on-surprise-vmcore_cb-unregistration.patch
+* proc-make-the-proc_create-stubs-static-inlines.patch
+* proc-sysctl-make-protected_-world-readable.patch
+* kstrtox-uninline-everything.patch
+* lz4-fix-lz4_decompress_safe_partial-read-out-of-bound.patch
+* checkpatch-relax-regexp-for-commit_log_long_line.patch
+* elf-fix-overflow-in-total-mapping-size-calculation.patch
+* init-mainc-silence-some-wunused-parameter-warnings.patch
+* hfsplus-fix-out-of-bounds-warnings-in-__hfsplus_setxattr.patch
+* panic-use-error_report_end-tracepoint-on-warnings.patch
+* panic-use-error_report_end-tracepoint-on-warnings-fix.patch
+* delayacct-support-swapin-delay-accounting-for-swapping-without-blkio.patch
+* configs-introduce-debugconfig-for-ci-like-setup.patch
+  linux-next.patch
+  linux-next-git-rejects.patch
+* fs-proc-store-pde-data-into-inode-i_private.patch
+* fs-proc-replace-pde_datainode-with-inode-i_private.patch
+* fs-proc-remove-pde_data.patch
+* fs-proc-use-define_proc_show_attribute-to-simplify-the-code.patch
+* lib-stackdepot-allow-optional-init-and-stack_table-allocation-by-kvmalloc.patch
+* lib-stackdepot-allow-optional-init-and-stack_table-allocation-by-kvmalloc-fix.patch
+* lib-stackdepot-allow-optional-init-and-stack_table-allocation-by-kvmalloc-fix-2.patch
+* lib-stackdepot-allow-optional-init-and-stack_table-allocation-by-kvmalloc-fixup3.patch
+  make-sure-nobodys-leaking-resources.patch
+  releasing-resources-with-children.patch
+  mutex-subsystem-synchro-test-module.patch
+  kernel-forkc-export-kernel_thread-to-modules.patch
+  workaround-for-a-pci-restoring-bug.patch
