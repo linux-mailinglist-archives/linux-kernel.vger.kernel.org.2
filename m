@@ -2,87 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67964455CD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:37:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7474A455CDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:38:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231534AbhKRNkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 08:40:42 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:56308 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231260AbhKRNkl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 08:40:41 -0500
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.1)
- id 0cb7c8d19da39fc9; Thu, 18 Nov 2021 14:37:39 +0100
-Received: from kreacher.localnet (unknown [213.134.175.214])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id E5A8466AB00;
-        Thu, 18 Nov 2021 14:37:38 +0100 (CET)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: [PATCH v2] ACPI: CPPC: Add NULL pointer check to cppc_get_perf()
-Date:   Thu, 18 Nov 2021 14:37:38 +0100
-Message-ID: <5521509.DvuYhMxLoT@kreacher>
-In-Reply-To: <2611837.mvXUDI8C0e@kreacher>
-References: <2611837.mvXUDI8C0e@kreacher>
+        id S231542AbhKRNl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 08:41:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33496 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230501AbhKRNl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 08:41:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90673617E5;
+        Thu, 18 Nov 2021 13:38:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637242707;
+        bh=hLl7IjdRvqKdkE+mSKKqxPbm1kSkIRvdG0UJzw4TKwA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jePfkbfF3EH7tLYMgp9uodBG445aeIc+BhDplVOr3iHfnGjN8+TgWg3FCiJ/SwRZH
+         nsvn1DjOtfOoCm2WsufUZ7oxQ2YX/nqZXJ1c1IfVbMflOtEebjjAWcyv9kZjmzuJhi
+         lLofh00MJGlYKM6YGmGfoKYOnNpOuoeqtC9xAdYdPcH4mIIIEFR4bK+MunSuHmplEH
+         MAQxMEbKQ0sHaKmSppYnVx7pMptZFE6+LHL7pCKe4DDVXWk4Y5yGb4sAHLVShZJG9i
+         hytUzKK4mHJDWpNWB5j5XoGsAfMDm/fQwOqxEL5xvAFlorJeidUsrTuQ3NtYnbtnoL
+         u0cA9HdFALpJA==
+Date:   Thu, 18 Nov 2021 13:38:22 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Lh Kuo =?utf-8?B?6YOt5Yqb6LGq?= <lh.Kuo@sunplus.com>
+Cc:     "LH.Kuo" <lhjeff911@gmail.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dvorkin@tibbo.com" <dvorkin@tibbo.com>,
+        "qinjian@cqplus1.com" <qinjian@cqplus1.com>,
+        Wells Lu =?utf-8?B?5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
+Subject: Re: [PATCH v2 1/2] SPI: Add SPI driver for Sunplus SP7021
+Message-ID: <YZZXTokMn6+p7C3H@sirena.org.uk>
+References: <1635747525-31243-1-git-send-email-lh.kuo@sunplus.com>
+ <1636448488-14158-1-git-send-email-lh.kuo@sunplus.com>
+ <1636448488-14158-2-git-send-email-lh.kuo@sunplus.com>
+ <YYqMLPB6VX9k5LUK@sirena.org.uk>
+ <f98b5548cf564093af1d10ba1239507d@sphcmbx02.sunplus.com.tw>
+ <YYvx4LtKiSPBIgCN@sirena.org.uk>
+ <70a9c10ef34e46c2a51f134829abdd08@sphcmbx02.sunplus.com.tw>
+ <YY0dk26NqoOi2QEH@sirena.org.uk>
+ <083dc70e20964ec8b74f71f6817be55e@sphcmbx02.sunplus.com.tw>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 213.134.175.214
-X-CLIENT-HOSTNAME: 213.134.175.214
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvuddrfeeigdehtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppedvudefrddufeegrddujeehrddvudegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvddufedrudefgedrudejhedrvddugedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghp
- thhtohepkhgrihdrhhgvnhhgrdhfvghnghestggrnhhonhhitggrlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tplQcX+QKV56luWj"
+Content-Disposition: inline
+In-Reply-To: <083dc70e20964ec8b74f71f6817be55e@sphcmbx02.sunplus.com.tw>
+X-Cookie: People respond to people who respond.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Subject: [PATCH] ACPI: CPPC: Add NULL pointer check to cppc_get_perf()
 
-Check cpc_desc against NULL in cppc_get_perf(), so it doesn't crash
-down the road if cpc_desc is NULL.
+--tplQcX+QKV56luWj
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 0654cf05d17b ("ACPI: CPPC: Introduce cppc_get_nominal_perf()")
-Reported-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: 5.15+ <stable@vger.kernel.org> # 5.15+
----
+On Wed, Nov 17, 2021 at 09:11:08AM +0000, Lh Kuo =E9=83=AD=E5=8A=9B=E8=B1=
+=AA wrote:
 
--> v2: Check cpc_desc against NULL before using it to initialize reg.
+> The main function are as follows
+>=20
+> The sp7021_spi_mas_transfer_one is replace the transfer_one_message funct=
+ion.
+>=20
+> static int sp7021_spi_mas_transfer_one(struct spi_controller *ctlr,
+> 		struct spi_device *spi, struct spi_transfer *xfer)
+> {
+> 	struct sp7021_spi_ctlr *pspim =3D spi_master_get_devdata(ctlr);
+> 	u32 reg_temp =3D 0;
+> 	unsigned long timeout =3D msecs_to_jiffies(1000);
 
----
- drivers/acpi/cppc_acpi.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+I'm still not clear why this needs to be transfer_one_message() and not
+just transfer_one()?  The whole thing with copying everything into a
+buffer is a bit confusing to me.
 
-Index: linux-pm/drivers/acpi/cppc_acpi.c
-===================================================================
---- linux-pm.orig/drivers/acpi/cppc_acpi.c
-+++ linux-pm/drivers/acpi/cppc_acpi.c
-@@ -998,7 +998,14 @@ static int cpc_write(int cpu, struct cpc
- static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *perf)
- {
- 	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpunum);
--	struct cpc_register_resource *reg = &cpc_desc->cpc_regs[reg_idx];
-+	struct cpc_register_resource *reg;
-+
-+	if (!cpc_desc) {
-+		pr_debug("No CPC descriptor for CPU:%d\n", cpunum);
-+		return -ENODEV;
-+	}
-+
-+	reg = &cpc_desc->cpc_regs[reg_idx];
- 
- 	if (CPC_IN_PCC(reg)) {
- 		int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
+> The probe function is as follows.
+>=20
+> static int sp7021_spi_controller_probe(struct platform_device *pdev)
+> {
+> 	int ret;
+> 	int mode;
+> 	struct spi_controller *ctlr;
+> 	struct sp7021_spi_ctlr *pspim;
 
+This looks fine.
 
+--tplQcX+QKV56luWj
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGWV00ACgkQJNaLcl1U
+h9ACYAf/WN2ye9DzTP1BTyDED8vTdgtzpXVIRx5bvw8xz9/l8mluwdplMlwXRle+
+zFLDiAqiRG9kysYPdE02/BewqGMPwTwgfT+3KwIbL7BQYXzI803MQuE4KJD3VQNL
+BLnxmEgAhR1PWDIfBX1THd6E1Eccn9Wz6TJ2k39QB59C0amAw3earHEGFAkVG5aM
+7MpC4A/PBwtsh2XGeEwDIJSNwnkYbE1vgmJjqvZuTgOoTT88g1hELG675UYQPfO3
+3zdsLjHMNminXqFzIa3Rri9E8EkLJMjfGsOrstHKgyT9P/cft+MFMKwhSJNAUtPs
+1Oh7gawY7IV3wyNBbZWTrzwQtBWEiQ==
+=KTHo
+-----END PGP SIGNATURE-----
+
+--tplQcX+QKV56luWj--
