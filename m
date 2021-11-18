@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E273455E21
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:35:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2288455E26
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:35:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233280AbhKROhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 09:37:51 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:39208 "EHLO
+        id S233311AbhKROhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 09:37:54 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:39220 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230164AbhKROhm (ORCPT
+        with ESMTP id S232453AbhKROhm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 18 Nov 2021 09:37:42 -0500
-Date:   Thu, 18 Nov 2021 14:34:40 -0000
+Date:   Thu, 18 Nov 2021 14:34:41 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637246081;
+        s=2020; t=1637246082;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aQdzq1DsmxcH0GD0n93+JdmlRYs9Fs8QH5ImpFeuNfM=;
-        b=317AWbp/i/iCwLcaJoRQa6TSHtk45WfeBPfshjKmQomXdbnnaxjGd9EhNORzR/jgSxu9Yt
-        gVAT9URWB9i9zJAgCbJsYsxIYVre6Yv/03J7PeaXgC5T+TpAKq+s7IB0Dc1oEvGFKy/2bI
-        eNoUyYTfC6p0EHN9b6ibtxYDIMn4lqtKKxei7Pmg2A029hZ19rZ0hjkCuPAnDypnoH/HNV
-        3Pkuqu0tLFLGGBW4mL3nRBpv7sDkfh/fZoaGC/cChNfM8adEDlJ7lEs6Gt4ELDKWn+aGMA
-        LZwi6ZUu6ahDrskYiMdZNb0oUysKHnvAIqqfa26WoG71OU4nhRN6recEAwlIFw==
+        bh=8Zm0uORDvEK0aATpQAo0AM5PHmZRibrRmFjGz2l+CxU=;
+        b=DvusMaZrs5uY252cAjpwIVXfAFxVQFmLuOUlC1xPkyAHPXjJZYz+DV2cVP/xjAsaEql5ma
+        1zVd6PnyiLr1ccOq4HzztcJhfPRsLMvgalFoIiTToGSK8aq/rgcUXe7smd8IX8QvLfVf4c
+        BCWev8ZWwJI0FqvvwQbx6AzE04N6trNsN/NFq55jStrfa9XpJeRkxgqWHSM8+i3l9e6Maa
+        adxigZpdS9bF+RRhEkPsDkDHQSMEfUdQE+NfQao1vNyAdYNq2ysLnDLXLyQuBmgpyclzaQ
+        dCofofgmTOghS6M1PRw2LOzw7Up37OvMAhrnOcXBF81/6ygDolTwpFqBE3ZY0w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637246081;
+        s=2020e; t=1637246082;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aQdzq1DsmxcH0GD0n93+JdmlRYs9Fs8QH5ImpFeuNfM=;
-        b=i9bzm6W6oaT/6yAezOwJFs8wZVJ+JyE/8XGv2musYhWt4DhchNGnmdpwEOVtcBWh+KOfb2
-        WbgWD4tiEnnEv0CA==
+        bh=8Zm0uORDvEK0aATpQAo0AM5PHmZRibrRmFjGz2l+CxU=;
+        b=Leo7xTBM9HRWn7OpAaWQ7O87txmssRo+nsaBoW7QV56ciH+q9zRH4CGkAsACAraZPopo/U
+        JTHNG5xCE0cY61Dg==
 From:   "tip-bot2 for Sean Christopherson" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] KVM: Move x86's perf guest info callbacks to generic KVM
+Subject: [tip: perf/core] KVM: x86: More precisely identify NMI from guest
+ when handling PMI
 Cc:     Sean Christopherson <seanjc@google.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20211111020738.2512932-13-seanjc@google.com>
-References: <20211111020738.2512932-13-seanjc@google.com>
+In-Reply-To: <20211111020738.2512932-12-seanjc@google.com>
+References: <20211111020738.2512932-12-seanjc@google.com>
 MIME-Version: 1.0
-Message-ID: <163724608024.11128.11754092008754286426.tip-bot2@tip-bot2>
+Message-ID: <163724608104.11128.12039087886235952211.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,259 +60,108 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     e1bfc24577cc65c95dc519d7621a9c985b97e567
-Gitweb:        https://git.kernel.org/tip/e1bfc24577cc65c95dc519d7621a9c985b97e567
+Commit-ID:     db215756ae5970aec8ad50257d2eb1678b552b91
+Gitweb:        https://git.kernel.org/tip/db215756ae5970aec8ad50257d2eb1678b552b91
 Author:        Sean Christopherson <seanjc@google.com>
-AuthorDate:    Thu, 11 Nov 2021 02:07:33 
+AuthorDate:    Thu, 11 Nov 2021 02:07:32 
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 17 Nov 2021 14:49:10 +01:00
+CommitterDate: Wed, 17 Nov 2021 14:49:09 +01:00
 
-KVM: Move x86's perf guest info callbacks to generic KVM
+KVM: x86: More precisely identify NMI from guest when handling PMI
 
-Move x86's perf guest callbacks into common KVM, as they are semantically
-identical to arm64's callbacks (the only other such KVM callbacks).
-arm64 will convert to the common versions in a future patch.
+Differentiate between IRQ and NMI for KVM's PMC overflow callback, which
+was originally invoked in response to an NMI that arrived while the guest
+was running, but was inadvertantly changed to fire on IRQs as well when
+support for perf without PMU/NMI was added to KVM.  In practice, this
+should be a nop as the PMC overflow callback shouldn't be reached, but
+it's a cheap and easy fix that also better documents the situation.
 
-Implement the necessary arm64 arch hooks now to avoid having to provide
-stubs or a temporary #define (from x86) to avoid arm64 compilation errors
-when CONFIG_GUEST_PERF_EVENTS=y.
+Note, this also doesn't completely prevent false positives if perf
+somehow ends up calling into KVM, e.g. an NMI can arrive in host after
+KVM sets its flag.
 
+Fixes: dd60d217062f ("KVM: x86: Fix perf timer mode IP reporting")
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-Acked-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20211111020738.2512932-13-seanjc@google.com
+Link: https://lore.kernel.org/r/20211111020738.2512932-12-seanjc@google.com
 ---
- arch/arm64/include/asm/kvm_host.h | 10 ++++++-
- arch/arm64/kvm/arm.c              |  5 +++-
- arch/x86/include/asm/kvm_host.h   |  3 ++-
- arch/x86/kvm/x86.c                | 53 ++++++------------------------
- include/linux/kvm_host.h          | 10 ++++++-
- virt/kvm/kvm_main.c               | 44 +++++++++++++++++++++++++-
- 6 files changed, 83 insertions(+), 42 deletions(-)
+ arch/x86/kvm/svm/svm.c |  2 +-
+ arch/x86/kvm/vmx/vmx.c |  4 +++-
+ arch/x86/kvm/x86.c     |  2 +-
+ arch/x86/kvm/x86.h     | 13 ++++++++++---
+ 4 files changed, 15 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index f680f30..aa28b8e 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -678,6 +678,16 @@ int io_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa);
- void kvm_perf_init(void);
- void kvm_perf_teardown(void);
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 5630c24..b2f0c6c 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -3931,7 +3931,7 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+ 	}
  
-+/*
-+ * Returns true if a Performance Monitoring Interrupt (PMI), a.k.a. perf event,
-+ * arrived in guest context.  For arm64, any event that arrives while a vCPU is
-+ * loaded is considered to be "in guest".
-+ */
-+static inline bool kvm_arch_pmi_in_guest(struct kvm_vcpu *vcpu)
-+{
-+	return IS_ENABLED(CONFIG_GUEST_PERF_EVENTS) && !!vcpu;
-+}
-+
- long kvm_hypercall_pv_features(struct kvm_vcpu *vcpu);
- gpa_t kvm_init_stolen_time(struct kvm_vcpu *vcpu);
- void kvm_update_stolen_time(struct kvm_vcpu *vcpu);
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 2f03cbf..b400be9 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -496,6 +496,11 @@ bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
- 	return vcpu_mode_priv(vcpu);
- }
+ 	if (unlikely(svm->vmcb->control.exit_code == SVM_EXIT_NMI))
+-		kvm_before_interrupt(vcpu);
++		kvm_before_interrupt(vcpu, KVM_HANDLING_NMI);
  
-+unsigned long kvm_arch_vcpu_get_ip(struct kvm_vcpu *vcpu)
-+{
-+	return *vcpu_pc(vcpu);
-+}
-+
- /* Just ensure a guest exit from a particular CPU */
- static void exit_vm_noop(void *info)
+ 	kvm_load_host_xsave_state(vcpu);
+ 	stgi();
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 7d90c8d..a0c2497 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -6317,7 +6317,9 @@ void vmx_do_interrupt_nmi_irqoff(unsigned long entry);
+ static void handle_interrupt_nmi_irqoff(struct kvm_vcpu *vcpu,
+ 					unsigned long entry)
  {
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 38f01b0..8957654 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1567,6 +1567,9 @@ static inline int kvm_arch_flush_remote_tlb(struct kvm *kvm)
- 		return -ENOTSUPP;
- }
- 
-+#define kvm_arch_pmi_in_guest(vcpu) \
-+	((vcpu) && (vcpu)->arch.handling_intr_from_guest)
+-	kvm_before_interrupt(vcpu);
++	bool is_nmi = entry == (unsigned long)asm_exc_nmi_noist;
 +
- int kvm_mmu_module_init(void);
- void kvm_mmu_module_exit(void);
- 
++	kvm_before_interrupt(vcpu, is_nmi ? KVM_HANDLING_NMI : KVM_HANDLING_IRQ);
+ 	vmx_do_interrupt_nmi_irqoff(entry);
+ 	kvm_after_interrupt(vcpu);
+ }
 diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index ab032ef..32cb6f9 100644
+index bb71e10..ab032ef 100644
 --- a/arch/x86/kvm/x86.c
 +++ b/arch/x86/kvm/x86.c
-@@ -8469,43 +8469,12 @@ static void kvm_timer_init(void)
- 			  kvmclock_cpu_online, kvmclock_cpu_down_prep);
+@@ -9896,7 +9896,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+ 	 * interrupts on processors that implement an interrupt shadow, the
+ 	 * stat.exits increment will do nicely.
+ 	 */
+-	kvm_before_interrupt(vcpu);
++	kvm_before_interrupt(vcpu, KVM_HANDLING_IRQ);
+ 	local_irq_enable();
+ 	++vcpu->stat.exits;
+ 	local_irq_disable();
+diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+index d070043..f8d2c58 100644
+--- a/arch/x86/kvm/x86.h
++++ b/arch/x86/kvm/x86.h
+@@ -385,9 +385,16 @@ static inline bool kvm_cstate_in_guest(struct kvm *kvm)
+ 	return kvm->arch.cstate_in_guest;
  }
  
--static inline bool kvm_pmi_in_guest(struct kvm_vcpu *vcpu)
--{
--	return vcpu && vcpu->arch.handling_intr_from_guest;
--}
--
--static unsigned int kvm_guest_state(void)
--{
--	struct kvm_vcpu *vcpu = kvm_get_running_vcpu();
--	unsigned int state;
--
--	if (!kvm_pmi_in_guest(vcpu))
--		return 0;
--
--	state = PERF_GUEST_ACTIVE;
--	if (static_call(kvm_x86_get_cpl)(vcpu))
--		state |= PERF_GUEST_USER;
--
--	return state;
--}
--
--static unsigned long kvm_guest_get_ip(void)
--{
--	struct kvm_vcpu *vcpu = kvm_get_running_vcpu();
--
--	/* Retrieving the IP must be guarded by a call to kvm_guest_state(). */
--	if (WARN_ON_ONCE(!kvm_pmi_in_guest(vcpu)))
--		return 0;
--
--	return kvm_rip_read(vcpu);
--}
--
- static unsigned int kvm_handle_intel_pt_intr(void)
- {
- 	struct kvm_vcpu *vcpu = kvm_get_running_vcpu();
- 
- 	/* '0' on failure so that the !PT case can use a RET0 static call. */
--	if (!kvm_pmi_in_guest(vcpu))
-+	if (!kvm_arch_pmi_in_guest(vcpu))
- 		return 0;
- 
- 	kvm_make_request(KVM_REQ_PMI, vcpu);
-@@ -8514,12 +8483,6 @@ static unsigned int kvm_handle_intel_pt_intr(void)
- 	return 1;
- }
- 
--static struct perf_guest_info_callbacks kvm_guest_cbs = {
--	.state			= kvm_guest_state,
--	.get_ip			= kvm_guest_get_ip,
--	.handle_intel_pt_intr	= NULL,
--};
--
- #ifdef CONFIG_X86_64
- static void pvclock_gtod_update_fn(struct work_struct *work)
- {
-@@ -11229,9 +11192,11 @@ int kvm_arch_hardware_setup(void *opaque)
- 	memcpy(&kvm_x86_ops, ops->runtime_ops, sizeof(kvm_x86_ops));
- 	kvm_ops_static_call_update();
- 
-+	/* Temporary ugliness. */
- 	if (ops->intel_pt_intr_in_guest && ops->intel_pt_intr_in_guest())
--		kvm_guest_cbs.handle_intel_pt_intr = kvm_handle_intel_pt_intr;
--	perf_register_guest_info_callbacks(&kvm_guest_cbs);
-+		kvm_register_perf_callbacks(kvm_handle_intel_pt_intr);
-+	else
-+		kvm_register_perf_callbacks(NULL);
- 
- 	if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
- 		supported_xss = 0;
-@@ -11260,8 +11225,7 @@ int kvm_arch_hardware_setup(void *opaque)
- 
- void kvm_arch_hardware_unsetup(void)
- {
--	perf_unregister_guest_info_callbacks(&kvm_guest_cbs);
--	kvm_guest_cbs.handle_intel_pt_intr = NULL;
-+	kvm_unregister_perf_callbacks();
- 
- 	static_call(kvm_x86_hardware_unsetup)();
- }
-@@ -11852,6 +11816,11 @@ bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
- 	return vcpu->arch.preempted_in_kernel;
- }
- 
-+unsigned long kvm_arch_vcpu_get_ip(struct kvm_vcpu *vcpu)
-+{
-+	return kvm_rip_read(vcpu);
-+}
-+
- int kvm_arch_vcpu_should_kick(struct kvm_vcpu *vcpu)
- {
- 	return kvm_vcpu_exiting_guest_mode(vcpu) == IN_GUEST_MODE;
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 9e0667e..9df7ab2 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -1170,6 +1170,16 @@ static inline bool kvm_arch_intc_initialized(struct kvm *kvm)
- }
- #endif
- 
-+#ifdef CONFIG_GUEST_PERF_EVENTS
-+unsigned long kvm_arch_vcpu_get_ip(struct kvm_vcpu *vcpu);
-+
-+void kvm_register_perf_callbacks(unsigned int (*pt_intr_handler)(void));
-+void kvm_unregister_perf_callbacks(void);
-+#else
-+static inline void kvm_register_perf_callbacks(void *ign) {}
-+static inline void kvm_unregister_perf_callbacks(void) {}
-+#endif /* CONFIG_GUEST_PERF_EVENTS */
-+
- int kvm_arch_init_vm(struct kvm *kvm, unsigned long type);
- void kvm_arch_destroy_vm(struct kvm *kvm);
- void kvm_arch_sync_events(struct kvm *kvm);
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index d317245..76778dd 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -5479,6 +5479,50 @@ struct kvm_vcpu * __percpu *kvm_get_running_vcpus(void)
-         return &kvm_running_vcpu;
- }
- 
-+#ifdef CONFIG_GUEST_PERF_EVENTS
-+static unsigned int kvm_guest_state(void)
-+{
-+	struct kvm_vcpu *vcpu = kvm_get_running_vcpu();
-+	unsigned int state;
-+
-+	if (!kvm_arch_pmi_in_guest(vcpu))
-+		return 0;
-+
-+	state = PERF_GUEST_ACTIVE;
-+	if (!kvm_arch_vcpu_in_kernel(vcpu))
-+		state |= PERF_GUEST_USER;
-+
-+	return state;
-+}
-+
-+static unsigned long kvm_guest_get_ip(void)
-+{
-+	struct kvm_vcpu *vcpu = kvm_get_running_vcpu();
-+
-+	/* Retrieving the IP must be guarded by a call to kvm_guest_state(). */
-+	if (WARN_ON_ONCE(!kvm_arch_pmi_in_guest(vcpu)))
-+		return 0;
-+
-+	return kvm_arch_vcpu_get_ip(vcpu);
-+}
-+
-+static struct perf_guest_info_callbacks kvm_guest_cbs = {
-+	.state			= kvm_guest_state,
-+	.get_ip			= kvm_guest_get_ip,
-+	.handle_intel_pt_intr	= NULL,
+-static inline void kvm_before_interrupt(struct kvm_vcpu *vcpu)
++enum kvm_intr_type {
++	/* Values are arbitrary, but must be non-zero. */
++	KVM_HANDLING_IRQ = 1,
++	KVM_HANDLING_NMI,
 +};
 +
-+void kvm_register_perf_callbacks(unsigned int (*pt_intr_handler)(void))
-+{
-+	kvm_guest_cbs.handle_intel_pt_intr = pt_intr_handler;
-+	perf_register_guest_info_callbacks(&kvm_guest_cbs);
-+}
-+void kvm_unregister_perf_callbacks(void)
-+{
-+	perf_unregister_guest_info_callbacks(&kvm_guest_cbs);
-+}
-+#endif
-+
- struct kvm_cpu_compat_check {
- 	void *opaque;
- 	int *ret;
++static inline void kvm_before_interrupt(struct kvm_vcpu *vcpu,
++					enum kvm_intr_type intr)
+ {
+-	WRITE_ONCE(vcpu->arch.handling_intr_from_guest, 1);
++	WRITE_ONCE(vcpu->arch.handling_intr_from_guest, (u8)intr);
+ }
+ 
+ static inline void kvm_after_interrupt(struct kvm_vcpu *vcpu)
+@@ -397,7 +404,7 @@ static inline void kvm_after_interrupt(struct kvm_vcpu *vcpu)
+ 
+ static inline bool kvm_handling_nmi_from_guest(struct kvm_vcpu *vcpu)
+ {
+-	return !!vcpu->arch.handling_intr_from_guest;
++	return vcpu->arch.handling_intr_from_guest == KVM_HANDLING_NMI;
+ }
+ 
+ static inline bool kvm_pat_valid(u64 data)
