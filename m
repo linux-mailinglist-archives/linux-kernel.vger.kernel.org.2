@@ -2,761 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE1D4564E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 22:08:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3C14564E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 22:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233769AbhKRVLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 16:11:55 -0500
-Received: from mail-db8eur05on2048.outbound.protection.outlook.com ([40.107.20.48]:21856
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229774AbhKRVLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 16:11:54 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Dq3E48+6gVNwXh5upaDKf+qNpq4X9fEyJRYLRpCXAfVE3iSKJrBtLVg1Kq5pDhuCLw1Xchxe/tcrg8ey5Fq+mx+Oh0FWXzU+JVAVq5KfGDfFQfEjUYpoPP/4xU6BM3oxwj3OhyQsoSuXXf+F12wqBjWX+NOa/NbF7PswwBV65gijHIQHDLDWfsbzHQX+jnmZAOraquiE2q4sLUTFBIykiwMp3BA3mJh2kR7u7x0RFoSlDWqzXj88h0DRgSa24T1SLYeHmrdgcO2DbdT/RIN9fjyglDBXgwGJn7cy2T1y0TrhbLC6QGpcu1pLXViKSz1I+Xq8MNprhqahFwUiibUE/Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Sgr0Ljt/nTnpUVe6I8TouvdVM4WpKi3br5rZzyd4CUo=;
- b=MAIstIUBDX/4h3SF6F6rwoUtS2UTl84q47Yco6e5C7CmrePtMve6v2Gp+hogi7TxdLAONwixVrm23R8noDoUP1lwlYKR25mRa6nYVAPuTRP35CxODdEhze+YU8PpdzBcKMro+EujekRTeG1mbxY6mP3JZfiqATajdNKVIxjuJ5YshjjRnGMg7L0Sw5jPOzYmJtkeLGMlYyoQumSB3QFgLr9ajVVFKgdFGVX4GG9HFdFqvx/tLd3Vqc1nBfvijamklsnzTgJ2Ie9bgGI3/IimhaeGyVO0IqbuoPgurfG55WAONbbhMx3LAWMUOqn9IX+uieWL74/NO/5Cindvu5U7Ig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
- dkim=pass header.d=seco.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=secospa.onmicrosoft.com; s=selector2-secospa-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Sgr0Ljt/nTnpUVe6I8TouvdVM4WpKi3br5rZzyd4CUo=;
- b=f8VbK7rcPiZbqPPFwtjvS90I4ILBx5nxX3pn4ySdt0owdERf6FXRTJDoKFSOS7nl8D93TsiuRW2osk46aRZqvJbwvVAeGreLZKjwKRG39RJy6xlg+/L973zj5eYA2DKES75Im8CnKurTNeijhOXtBr6iy3s3umIvMzEEiEDqAWo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=seco.com;
-Received: from DB7PR03MB4523.eurprd03.prod.outlook.com (2603:10a6:10:19::27)
- by DB6PR0302MB2822.eurprd03.prod.outlook.com (2603:10a6:4:ae::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.27; Thu, 18 Nov
- 2021 21:08:50 +0000
-Received: from DB7PR03MB4523.eurprd03.prod.outlook.com
- ([fe80::9093:a60b:46b7:32ee]) by DB7PR03MB4523.eurprd03.prod.outlook.com
- ([fe80::9093:a60b:46b7:32ee%4]) with mapi id 15.20.4713.022; Thu, 18 Nov 2021
- 21:08:50 +0000
-From:   Sean Anderson <sean.anderson@seco.com>
-Subject: Re: [PATCH v10 3/3] pwm: Add support for Xilinx AXI Timer
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Alvaro Gamez <alvaro.gamez@hazent.com>,
-        linux-kernel@vger.kernel.org, michal.simek@xilinx.com
-References: <20211112185504.1921780-1-sean.anderson@seco.com>
- <20211112185504.1921780-3-sean.anderson@seco.com>
- <20211118092813.xhulsyy5l36ukngw@pengutronix.de>
-Message-ID: <e826e68c-d725-79ef-2140-365383eaf0e0@seco.com>
-Date:   Thu, 18 Nov 2021 16:08:45 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20211118092813.xhulsyy5l36ukngw@pengutronix.de>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BLAPR03CA0112.namprd03.prod.outlook.com
- (2603:10b6:208:32a::27) To DB7PR03MB4523.eurprd03.prod.outlook.com
- (2603:10a6:10:19::27)
+        id S234163AbhKRVMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 16:12:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55232 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233752AbhKRVMR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 16:12:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637269756;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Urfwj+y75PwDE5lU9UV+6XO4MbTLPXSUwzBb111QeTY=;
+        b=XrabggJ9o0oqgLDtJJnuSlM0PpL8pGpo7Q/iZ4Uxdn5AqvEUtq9N8kNqEh+r+qGemJnlxR
+        IMJ1aaOKUyZ5mYA1rOucwa7zNRsfdjO258VWYsXmgxR9YXhhS7qlpUbIjf4WOyOsDgCEoP
+        zuUaTzLNGltAysJ/QBTMT16X6KHzO8o=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-488-mY15YhadPLGRgB4jBMDA2g-1; Thu, 18 Nov 2021 16:09:15 -0500
+X-MC-Unique: mY15YhadPLGRgB4jBMDA2g-1
+Received: by mail-ot1-f70.google.com with SMTP id h15-20020a9d554f000000b0055c93007430so4607696oti.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 13:09:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Urfwj+y75PwDE5lU9UV+6XO4MbTLPXSUwzBb111QeTY=;
+        b=yPkyP97GwlV+yTZi/c0L5t9qgyzI+TexwPydfsoWARU0hnHjVaTuc/5KK59R+h373o
+         fwM/fGy5jBApXQDWyROUmKXwDzyFo9p9XrzAN5foLdjUeK1LPzE80cjFTOJQotAlAIK5
+         r8auo9dUxxexIlL2e78NIdrEaH6oI3ngcq7FsAc4i6Te6AXmstwO2Mzlsnn0vqvYxCpg
+         /vAwKHvYKJgmXA2ch4X81D4f9V6lBvwc3ZYpLMWu31RDTJyDmkaEmbjvZZY77YuXQMUp
+         pxk5+kryAcuNicoqY+RlKcEkrdjhOBCLf8+ELSYYeUk0IKefAtbOsZbCw3DsD3har+Ay
+         6xyQ==
+X-Gm-Message-State: AOAM533P43v8sGtOqydwCNlrH2S4UW0UZvsd/JiaxV0Lxsp5Rmi4AI1V
+        DfzUB1JsSQGqSFDbvROfJQwMZKuBH5+QpXA1zNmcFAF4yXkRHsyUo6wY70vdMGF+TREWHfA3w8O
+        8lqDkdXqOL/uk0S36j+WQ95DQ
+X-Received: by 2002:aca:af50:: with SMTP id y77mr115158oie.134.1637269754742;
+        Thu, 18 Nov 2021 13:09:14 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxZ2jVBhIXRuJeKQxcIinFLrQGDRo0bUzm2Bp9C01L4SlUzDN+PdHKZMBXqusH98ASVJ0ZuDg==
+X-Received: by 2002:aca:af50:: with SMTP id y77mr115129oie.134.1637269754447;
+        Thu, 18 Nov 2021 13:09:14 -0800 (PST)
+Received: from redhat.com ([38.15.36.239])
+        by smtp.gmail.com with ESMTPSA id 70sm176600otn.74.2021.11.18.13.09.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 13:09:14 -0800 (PST)
+Date:   Thu, 18 Nov 2021 14:09:13 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Abhishek Sahu <abhsahu@nvidia.com>
+Cc:     kvm@vger.kernel.org, Cornelia Huck <cohuck@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC 3/3] vfio/pci: use runtime PM for vfio-device into low
+ power state
+Message-ID: <20211118140913.180bf94f.alex.williamson@redhat.com>
+In-Reply-To: <8a49aa97-5de9-9cc8-d45f-e96456d66603@nvidia.com>
+References: <20211115133640.2231-1-abhsahu@nvidia.com>
+        <20211115133640.2231-4-abhsahu@nvidia.com>
+        <20211117105323.2866b739.alex.williamson@redhat.com>
+        <8a49aa97-5de9-9cc8-d45f-e96456d66603@nvidia.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Received: from [172.27.1.65] (50.195.82.171) by BLAPR03CA0112.namprd03.prod.outlook.com (2603:10b6:208:32a::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21 via Frontend Transport; Thu, 18 Nov 2021 21:08:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 10f5e403-747e-4696-6ae7-08d9aad79e7f
-X-MS-TrafficTypeDiagnostic: DB6PR0302MB2822:
-X-Microsoft-Antispam-PRVS: <DB6PR0302MB28229E5398270E83F049B4B8969B9@DB6PR0302MB2822.eurprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3L3+OTUGCxyHykJVN0EsaUErOoZNLulQhO2avVwD5c8BclFl4HT3g4aAdbJKbkObJp9EQU9oaP6SazxSn3HAV2CU53P2Nm3BChc0xfJ6EffdYUbIpCqf6A1RqJTWTLEins1ilwc4gXNeXaOpYQkBtTYGS7NeTOA4kVBzMXMU5N8wNgS9aHerK6o+3H6UHVm79vdazSvt6UNASUTrCtS5AfVO/o0dhKAEPxPntBksh3sOHNj5ApZMdhaM5AlWKA2Dw0Dc0lpLG/B8VMpvlBdcmVYfNr2DdkywnFxz0GHYUa9V2OVDKNDwBp5DLIkDq38F7nT4tQfxFjsWcCZUXAUChtl/b/lutiOHCIapsEVaNLfXpnFdW7BfWfyZt0LRT2qLwREv8rP4VW4NIZSIl6IouhYbEJmA7Sh2KAT6sifEdb2icKzA2zTUDugqWVYMHvSqCkuSG+XyO2D9AyhfWaFPrfQ7uqxFGoxquhcdl9SPWESJe0PneNvm+l7YLP3RTfsYmJ8zoJrN7NNzazJiQXss/WR3WaGfGOxXAebu4G833E2t8MXQqW03vTEYohvAaQAYdqbca84gHgQa/oc7mBuVImNzyZn5BkPc4x5YNOI4a02VUvI7Z8l3PTkanE87LbAF1W6i0fYkyddUfbTrZ1C3aOA1ZDtS/+u7AiYJ8IecP7lA64iyU87LYmuopipwFSY9Kcv8yxtHq1Rf1+rFltIAewowNDYkun5m8EOXxZW6m/6TMYGTmjFfvvQ4AuXLTht6Fa0g64xIAptxEuLuiZCb7Q7afyPm0tV+jOxRL9Uj3EC8JWA+kjT//ILb1wdvVhB5WWivIw7IJABW9TOF5sJK3auusYMriQy2mxAEaGSG0ow=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR03MB4523.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(26005)(31686004)(5660300002)(66946007)(52116002)(86362001)(44832011)(316002)(6486002)(186003)(54906003)(2616005)(30864003)(956004)(31696002)(6916009)(53546011)(4326008)(6666004)(38350700002)(508600001)(66476007)(66556008)(38100700002)(83380400001)(8676002)(966005)(2906002)(36756003)(16576012)(66574015)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?Windows-1252?Q?02RnnvuIrPSuLnX6T4v79uB5DcZqHzIRvfp7YC5/TrjR83GmjeGp6AnN?=
- =?Windows-1252?Q?8Wq+yUe27hC2QOE+oFcsaQn0Rjhc6bZzqTnYnzraPQI+HAkT+XqZssdL?=
- =?Windows-1252?Q?Dsl4qLtoVve4lyJPcv5WeytDe3EzcmJBrQm13t6b5tM0b5r2BlI/hz3E?=
- =?Windows-1252?Q?YxFiSND+WYEIRl2JhxzAmlAu5IAvwjD2dwXfboHGXvfVnWZN24EpYEci?=
- =?Windows-1252?Q?r/lT4UQq1oY2CD8qRnLida4hWKpkCniSGGT+jwtNhPLEHjk7X3+F5Emc?=
- =?Windows-1252?Q?uqPkde04DaILqyLK8lAH++F+xZmMqygdPZb+bc9ZF8TS8NiifUOHVnTm?=
- =?Windows-1252?Q?H/F76JS1dSUw1KZXb2av+IH/1Lh6w/zEMpjggk4QKSbK/bt0b7w2e2G7?=
- =?Windows-1252?Q?Iq4UT+Dri4R1LJgUK7bRrjyIG1W4Nit3uVcd4yzZl9cnYmVw/cBextzE?=
- =?Windows-1252?Q?Cmmg/2XkZSA/pKR4IICZO2JtAt8DoLs13bwaM0+q+wyIQn4zoEyf4Svd?=
- =?Windows-1252?Q?NXLrEiAm/T11Y+PSpFVeaVdC7XUglj/ryJrK7SIXSrmzOM4NbnvQs3Z3?=
- =?Windows-1252?Q?YRnna+Up8Rsv2eV8dql9OTK9RcFnYpGTPJ/JqRnEExNC31J5RPYVQbRI?=
- =?Windows-1252?Q?aG+4SS8bpN7fiHWYEGcPaeYyxCWru6CXBo3HWbm1wLlQnFiM6jVabrDo?=
- =?Windows-1252?Q?vjapZ/9NbV3kgUrAmuvjO2Wm5/g1T3ELPNj1fv6caHgseAExwA0Duzbx?=
- =?Windows-1252?Q?AV/iXeWUy0tqiolTXPzqxY+ZqesDY0TckNoeEuJZRkLigP7g8uzAl2kR?=
- =?Windows-1252?Q?tdx1I6LDzpB/AsYSwobHrCwumVFUdittXLXwaXXY3PzUsi1JVqfT6I4q?=
- =?Windows-1252?Q?M8RkcVG1uceMWZd0KZAW+G8a3GwVAn0WWblfzyUU8O5f4BJLcw6bSZKg?=
- =?Windows-1252?Q?R6e4VyS2tIk2ArjEWUT/eqb96RwpHWV9g5MspzymFZUlq8g2Lxizz0NS?=
- =?Windows-1252?Q?an+ef1GMo13n2AMn6ApIuaQjyokN5OkVSsWuwiME4pKXGHtzlZcMdpUr?=
- =?Windows-1252?Q?bJDRkX4u8x97HvuKaZw5XLdU4yF2KNPUruAovQKUPGZP2qZYWJSD7XuT?=
- =?Windows-1252?Q?rfOoIJ546dUE8wEAc1y//TEpeNtyU9b5r9wjmYw5aOEUNeFKv+1wPb9l?=
- =?Windows-1252?Q?RehwszkogAxscm0axoo6OUQPW1eRKD+x071u9xxD8QOdsBFfzDLIJCFU?=
- =?Windows-1252?Q?Fu/Op6bwz1WQnXPVDKNm0cFDYCbeFegV3ro45XRO5/0tlY8GEG32gfGe?=
- =?Windows-1252?Q?fmq914Bph9tDtu7YBqhT7ng/Wbu9IeW/8HOBL6u/odK9wasuxxHePYVZ?=
- =?Windows-1252?Q?7j6FM3eftNjS0LQO47ITT9g9VKMxIZRtyQ4U11paleoB1fEHPbHVpOg+?=
- =?Windows-1252?Q?po7fJ9ojLhBr/FXNy5zzcwM5DY8tMnWzu8vCZVgOM80Z8XxfFn4sZ6Sm?=
- =?Windows-1252?Q?DX/zzlue1yYVkt+eg+O+7jB4bRaT3AQ8jjVv6O8+lcb0pEV1OtfTgiOv?=
- =?Windows-1252?Q?OzRqmSgiw7ihmBxoLj4TgfVEC9VrfH4OrBOAjUewili6yYiwSxBBvP3b?=
- =?Windows-1252?Q?cweROJbL/Qo5o/4QtOeAmjkQ3FdxAD5gqCnUpk/QOMHxX22fbJXZBMwo?=
- =?Windows-1252?Q?2STKCtyfWCkEYVm/gV4+wIpSMIyEYPUBuemXsl9dg4FwMw68NoliWpeQ?=
- =?Windows-1252?Q?i40dkWCtlJ7gqvW7qpI=3D?=
-X-OriginatorOrg: seco.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 10f5e403-747e-4696-6ae7-08d9aad79e7f
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR03MB4523.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2021 21:08:50.5186
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aTmQCDjY1eND7apKmKWMB3vImkYjDZUa9lTZNDE/L3Vfsy+GHQ23vooLCYb8cf5Cs/KF9RaltOy1Yke2ePMKlg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0302MB2822
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Uwe,
+On Thu, 18 Nov 2021 20:51:41 +0530
+Abhishek Sahu <abhsahu@nvidia.com> wrote:
+> On 11/17/2021 11:23 PM, Alex Williamson wrote:
+>  Thanks Alex for checking this series and providing your inputs.=20
+> =20
+> > If we're transitioning a device to D3cold rather than D3hot as
+> > requested by userspace, isn't that a user visible change?  =20
+>=20
+>   For most of the driver, in linux kernel, the D3hot vs D3cold
+>   state will be decided at PCI core layer. In the PCI core layer,
+>   pci_target_state() determines which D3 state to choose. It checks
+>   for platform_pci_power_manageable() and then it calls
+>   platform_pci_choose_state() to find the target state.
+>   In VM, the platform_pci_power_manageable() check will fail if the
+>   guest is linux OS. So, it uses, D3hot state.
 
-On 11/18/21 4:28 AM, Uwe Kleine-König wrote:
-> Hello,
->
-> On Fri, Nov 12, 2021 at 01:55:04PM -0500, Sean Anderson wrote:
->> This adds PWM support for Xilinx LogiCORE IP AXI soft timers commonly
->> found on Xilinx FPGAs. At the moment clock control is very basic: we
->> just enable the clock during probe and pin the frequency. In the future,
->> someone could add support for disabling the clock when not in use.
->>
->> Some common code has been specially demarcated. While currently only
->> used by the PWM driver, it is anticipated that it may be split off in
->> the future to be used by the timer driver as well.
->>
->> This driver was written with reference to Xilinx DS764 for v1.03.a [1].
->>
->> [1] https://www.xilinx.com/support/documentation/ip_documentation/axi_timer/v1_03_a/axi_timer_ds764.pdf
->>
->> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
->> ---
->>
->> Changes in v10:
->> - Fix compilation error in timer driver
->>
->> Changes in v9:
->> - Refactor "if { return } else if { }" to "if { return } if { }"
->> - Remove drivers/clocksource/timer-xilinx-common.c from MAINTAINERS
->> - Remove xilinx_timer_common_init and integrate it into xilinx_timer_probe
->>
->> Changes in v8:
->> - Drop new timer driver; it has been deferred for future series
->>
->> Changes in v7:
->> - Add dependency on OF_ADDRESS
->> - Fix period_cycles calculation
->> - Fix typo in limitations
->>
->> Changes in v6:
->> - Capitalize error messages
->> - Don't disable regmap locking to allow inspection of registers via
->>   debugfs
->> - Prevent overflow when calculating period_cycles
->> - Remove enabled variable from xilinx_pwm_apply
->> - Swap order of period_cycle range comparisons
->>
->> Changes in v5:
->> - Allow non-zero #pwm-cells
->> - Correctly set duty_cycle in get_state when TLR0=TLR1
->> - Elaborate on limitation section
->> - Perform some additional checks/rounding in apply_state
->> - Remove xlnx,axi-timer-2.0 compatible string
->> - Rework duty-cycle and period calculations with feedback from Uwe
->> - Switch to regmap to abstract endianness issues
->> - Use more verbose error messages
->>
->> Changes in v4:
->> - Don't use volatile in read/write replacements. Some arches have it and
->>   some don't.
->> - Put common timer properties into their own struct to better reuse
->>   code.
->> - Remove references to properties which are not good enough for Linux.
->>
->> Changes in v3:
->> - Add clockevent and clocksource support
->> - Remove old microblaze driver
->> - Rewrite probe to only use a device_node, since timers may need to be
->>   initialized before we have proper devices. This does bloat the code a bit
->>   since we can no longer rely on helpers such as dev_err_probe. We also
->>   cannot rely on device resources being free'd on failure, so we must free
->>   them manually.
->> - We now access registers through xilinx_timer_(read|write). This allows us
->>   to deal with endianness issues, as originally seen in the microblaze
->>   driver. CAVEAT EMPTOR: I have not tested this on big-endian!
->>
->> Changes in v2:
->> - Add comment describing device
->> - Add comment explaining why we depend on !MICROBLAZE
->> - Add dependencies on COMMON_CLK and HAS_IOMEM
->> - Cast dividends to u64 to avoid overflow
->> - Check for over- and underflow when calculating TLR
->> - Check range of xlnx,count-width
->> - Don't compile this module by default for arm64
->> - Don't set pwmchip.base to -1
->> - Ensure the clock is always running when the pwm is registered
->> - Remove debugfs file :l
->> - Rename TCSR_(SET|CLEAR) to TCSR_RUN_(SET|CLEAR)
->> - Report errors with dev_error_probe
->> - Set xilinx_pwm_ops.owner
->> - Use NSEC_TO_SEC instead of defining our own
->> - Use TCSR_RUN_MASK to check if the PWM is enabled, as suggested by Uwe
->>
->>  MAINTAINERS                        |   6 +
->>  arch/microblaze/kernel/timer.c     |   3 +
->>  drivers/pwm/Kconfig                |  14 ++
->>  drivers/pwm/Makefile               |   1 +
->>  drivers/pwm/pwm-xilinx.c           | 311 +++++++++++++++++++++++++++++
->>  include/clocksource/timer-xilinx.h |  91 +++++++++
->>  6 files changed, 426 insertions(+)
->>  create mode 100644 drivers/pwm/pwm-xilinx.c
->>  create mode 100644 include/clocksource/timer-xilinx.h
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 3b79fd441dde..6f0f57c041c4 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -20614,6 +20614,12 @@ F:	drivers/misc/Makefile
->>  F:	drivers/misc/xilinx_sdfec.c
->>  F:	include/uapi/misc/xilinx_sdfec.h
->>
->> +XILINX PWM DRIVER
->> +M:	Sean Anderson <sean.anderson@seco.com>
->> +S:	Maintained
->> +F:	drivers/pwm/pwm-xilinx.c
->> +F:	include/clocksource/timer-xilinx.h
->> +
->>  XILINX UARTLITE SERIAL DRIVER
->>  M:	Peter Korsgaard <jacmet@sunsite.dk>
->>  L:	linux-serial@vger.kernel.org
->> diff --git a/arch/microblaze/kernel/timer.c b/arch/microblaze/kernel/timer.c
->> index f8832cf49384..dea34a3d4aa4 100644
->> --- a/arch/microblaze/kernel/timer.c
->> +++ b/arch/microblaze/kernel/timer.c
->> @@ -251,6 +251,9 @@ static int __init xilinx_timer_init(struct device_node *timer)
->>  	u32 timer_num = 1;
->>  	int ret;
->>
->> +	if (of_property_read_bool(timer, "#pwm-cells"))
->> +		return 0;
->> +
->>  	if (initialized)
->>  		return -EINVAL;
->>
->> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
->> index aa29841bbb79..47f25237754f 100644
->> --- a/drivers/pwm/Kconfig
->> +++ b/drivers/pwm/Kconfig
->> @@ -638,4 +638,18 @@ config PWM_VT8500
->>  	  To compile this driver as a module, choose M here: the module
->>  	  will be called pwm-vt8500.
->>
->> +config PWM_XILINX
->> +	tristate "Xilinx AXI Timer PWM support"
->> +	depends on OF_ADDRESS
->> +	depends on COMMON_CLK
->> +	select REGMAP_MMIO
->> +	help
->> +	  PWM driver for Xilinx LogiCORE IP AXI timers. This timer is
->> +	  typically a soft core which may be present in Xilinx FPGAs.
->> +	  This device may also be present in Microblaze soft processors.
->> +	  If you don't have this IP in your design, choose N.
->> +
->> +	  To compile this driver as a module, choose M here: the module
->> +	  will be called pwm-xilinx.
->> +
->>  endif
->> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
->> index 708840b7fba8..ea785480359b 100644
->> --- a/drivers/pwm/Makefile
->> +++ b/drivers/pwm/Makefile
->> @@ -60,3 +60,4 @@ obj-$(CONFIG_PWM_TWL)		+= pwm-twl.o
->>  obj-$(CONFIG_PWM_TWL_LED)	+= pwm-twl-led.o
->>  obj-$(CONFIG_PWM_VISCONTI)	+= pwm-visconti.o
->>  obj-$(CONFIG_PWM_VT8500)	+= pwm-vt8500.o
->> +obj-$(CONFIG_PWM_XILINX)	+= pwm-xilinx.o
->> diff --git a/drivers/pwm/pwm-xilinx.c b/drivers/pwm/pwm-xilinx.c
->> new file mode 100644
->> index 000000000000..d79ef202d62f
->> --- /dev/null
->> +++ b/drivers/pwm/pwm-xilinx.c
->> @@ -0,0 +1,311 @@
->> +// SPDX-License-Identifier: GPL-2.0+
->> +/*
->> + * Copyright (C) 2021 Sean Anderson <sean.anderson@seco.com>
->> + *
->> + * Limitations:
->> + * - When changing both duty cycle and period, we may end up with one cycle
->> + *   with the old duty cycle and the new period. This is because the counters
->> + *   may only be reloaded by first stopping them, or by letting them be
->> + *   automatically reloaded at the end of a cycle. If this automatic reload
->> + *   happens after we set TLR0 but before we set TLR1 then we will have a
->> + *   bad cycle. This could probably be fixed by reading TCR0 just before
->> + *   reprogramming, but I think it would add complexity for little gain.
->> + * - Cannot produce 100% duty cycle by configuring the TLRs. This might be
->> + *   possible by stopping the counters at an appropriate point in the cycle,
->> + *   but this is not (yet) implemented.
->> + * - Only produces "normal" output.
->> + * - Always produces low output if disabled.
->> + */
->> +
->> +#include <clocksource/timer-xilinx.h>
->> +#include <linux/clk.h>
->> +#include <linux/clk-provider.h>
->> +#include <linux/device.h>
->> +#include <linux/module.h>
->> +#include <linux/of.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/pwm.h>
->> +#include <linux/regmap.h>
->> +
->> +/*
->> + * The following functions are "common" to drivers for this device, and may be
->> + * exported at a future date.
->> + */
->> +u32 xilinx_timer_tlr_cycles(struct xilinx_timer_priv *priv, u32 tcsr,
->> +			    u64 cycles)
->> +{
->> +	WARN_ON(cycles < 2 || cycles - 2 > priv->max);
->> +
->> +	if (tcsr & TCSR_UDT)
->> +		return cycles - 2;
->> +	return priv->max - cycles + 2;
->> +}
->> +
->> +unsigned int xilinx_timer_get_period(struct xilinx_timer_priv *priv,
->> +				     u32 tlr, u32 tcsr)
->> +{
->> +	u64 cycles;
->> +
->> +	if (tcsr & TCSR_UDT)
->> +		cycles = tlr + 2;
->> +	else
->> +		cycles = (u64)priv->max - tlr + 2;
->> +
->> +	/* cycles has a max of 2^32 + 2 */
->> +	return DIV64_U64_ROUND_CLOSEST(cycles * NSEC_PER_SEC,
->> +				       clk_get_rate(priv->clk));
->
-> Please round up here.
+Right, but my statement is really more that the device PM registers
+cannot be used to put the device into D3cold, so the write of the PM
+register that we're trapping was the user/guest's intention to put the
+device into D3hot.  We therefore need to be careful about differences
+in the resulting device state when it comes out of D3cold vs D3hot.
 
-Please document the correct rounding mode you expect. The last time we
-discussed this (3 months ago), you only said that rounding down was
-incorrect...
+>   But there are few drivers which does not use the PCI framework
+>   generic power related routines during runtime suspend/system suspend
+>   and set the PCI power state directly with D3hot.
 
->> +}
->> +
->> +/*
->> + * The idea here is to capture whether the PWM is actually running (e.g.
->> + * because we or the bootloader set it up) and we need to be careful to ensure
->> + * we don't cause a glitch. According to the data sheet, to enable the PWM we
->> + * need to
->> + *
->> + * - Set both timers to generate mode (MDT=1)
->> + * - Set both timers to PWM mode (PWMA=1)
->> + * - Enable the generate out signals (GENT=1)
->> + *
->> + * In addition,
->> + *
->> + * - The timer must be running (ENT=1)
->> + * - The timer must auto-reload TLR into TCR (ARHT=1)
->> + * - We must not be in the process of loading TLR into TCR (LOAD=0)
->> + * - Cascade mode must be disabled (CASC=0)
->> + *
->> + * If any of these differ from usual, then the PWM is either disabled, or is
->> + * running in a mode that this driver does not support.
->> + */
->> +#define TCSR_PWM_SET (TCSR_GENT | TCSR_ARHT | TCSR_ENT | TCSR_PWMA)
->> +#define TCSR_PWM_CLEAR (TCSR_MDT | TCSR_LOAD)
->> +#define TCSR_PWM_MASK (TCSR_PWM_SET | TCSR_PWM_CLEAR)
->> +
->> +struct xilinx_pwm_device {
->> +	struct pwm_chip chip;
->> +	struct xilinx_timer_priv priv;
->> +};
->> +
->> +static inline struct xilinx_timer_priv
->> +*xilinx_pwm_chip_to_priv(struct pwm_chip *chip)
->> +{
->> +	return &container_of(chip, struct xilinx_pwm_device, chip)->priv;
->> +}
->> +
->> +static bool xilinx_timer_pwm_enabled(u32 tcsr0, u32 tcsr1)
->> +{
->> +	return ((TCSR_PWM_MASK | TCSR_CASC) & tcsr0) == TCSR_PWM_SET &&
->> +		(TCSR_PWM_MASK & tcsr1) == TCSR_PWM_SET;
->> +}
->> +
->> +static int xilinx_pwm_apply(struct pwm_chip *chip, struct pwm_device *unused,
->> +			    const struct pwm_state *state)
->> +{
->> +	struct xilinx_timer_priv *priv = xilinx_pwm_chip_to_priv(chip);
->> +	u32 tlr0, tlr1, tcsr0, tcsr1;
->> +	u64 period_cycles, duty_cycles;
->> +	unsigned long rate;
->> +
->> +	if (state->polarity != PWM_POLARITY_NORMAL)
->> +		return -EINVAL;
->> +
->> +	/*
->> +	 * To be representable by TLR, cycles must be between 2 and
->> +	 * priv->max + 2. To enforce this we can reduce the duty
->> +	 * cycle, but we may not increase it.
->> +	 */
->> +	rate = clk_get_rate(priv->clk);
->> +	/* Prevent overflow by clamping to the worst case of rate */
->
-> I wouldn't have called this "worst case of rate", maybe better use
-> "maximal rate"?
+Current vfio-pci being one of those ;)
 
-OK
+>   Also, the guest can be non-Linux OS also and, in that case,
+>   it will be difficult to know the behavior. So, it may impact
+>   these cases.
 
->> +	period_cycles = min_t(u64, state->period, ULONG_MAX * NSEC_PER_SEC);
->> +	period_cycles = mul_u64_u32_div(period_cycles, rate, NSEC_PER_SEC);
->> +	if (period_cycles < 2 || period_cycles - 2 > priv->max)
->> +		return -ERANGE;
->
-> if period_cycles - 2 > priv->max the right reaction is to do
->
-> 	period_cycles = priv->max + 2
+That's what I'm worried about.
 
-It has been 5 months since we last talked about this, and yet you have
-not submitted any patches for a "pwm_round_rate" function. Forgive me if
-I am reticent to implement forward compatibility for an API which shows
-no signs of appearing.
+> > For instance, a device may report NoSoftRst- indicating that the device
+> > does not do a soft reset on D3hot->D0 transition.  If we're instead
+> > putting the device in D3cold, then a transition back to D0 has very
+> > much undergone a reset.  On one hand we should at least virtualize the
+> > NoSoftRst bit to allow the guest to restore the device, but I wonder if
+> > that's really safe.  Is a better option to prevent entering D3cold if
+> > the device isn't natively reporting NoSoftRst-?
+> >  =20
+>=20
+>  You mean to say NoSoftRst+ instead of NoSoftRst- as visible in
 
->> +	duty_cycles = mul_u64_u32_div(state->duty_cycle, rate, NSEC_PER_SEC);
->
-> duty_cycle needs sanitation in case period was reduced and duty_cycle is
-> bigger now than period.
+Oops yes.  The concern is if the user/guest is not expecting a soft
+reset when using D3hot, but we transparently promote D3hot to D3cold
+which will always implies a device reset.
 
-OK
+>  the lspci output. For NoSoftRst- case, we do a soft reset on
+>  D3hot->D0 transition. But, will this case not be handled internally
+>  in drivers/pci/pci-driver.c ? For both system suspend and runtime suspen=
+d,
+>  we check for pci_dev->state_saved flag and do pci_save_state()
+>  irrespective of NoSoftRst bit. For NoSoftRst- case, pci_restore_bars()
+>  will be called in pci_raw_set_power_state() which will reinitialize devi=
+ce
+>  for D3hot/D3cold-> D0 case. Once the device is initialized in the host,
+>  then for guest, it should work without re-initializing again in the
+>  guest side. I am not sure, if my understanding is correct.
 
->> +	/*
->> +	 * If we specify 100% duty cycle, we will get 0% instead, so decrease
->> +	 * the duty cycle count by one.
->> +	 */
->> +	if (period_cycles == duty_cycles)
->> +		duty_cycles--;
->> +
->> +	/* Round down to 0% duty cycle for unrepresentable duty cycles */
->> +	if (duty_cycles < 2)
->> +		duty_cycles = period_cycles;
->> +
->> +	regmap_read(priv->map, TCSR0, &tcsr0);
->> +	regmap_read(priv->map, TCSR1, &tcsr1);
->> +	tlr0 = xilinx_timer_tlr_cycles(priv, tcsr0, period_cycles);
->> +	tlr1 = xilinx_timer_tlr_cycles(priv, tcsr1, duty_cycles);
->> +	regmap_write(priv->map, TLR0, tlr0);
->> +	regmap_write(priv->map, TLR1, tlr1);
->> +
->> +	if (state->enabled) {
->> +		/*
->> +		 * If the PWM is already running, then the counters will be
->> +		 * reloaded at the end of the current cycle.
->> +		 */
->> +		if (!xilinx_timer_pwm_enabled(tcsr0, tcsr1)) {
->> +			/* Load TLR into TCR */
->> +			regmap_write(priv->map, TCSR0, tcsr0 | TCSR_LOAD);
->> +			regmap_write(priv->map, TCSR1, tcsr1 | TCSR_LOAD);
->> +			/* Enable timers all at once with ENALL */
->> +			tcsr0 = (TCSR_PWM_SET & ~TCSR_ENT) | (tcsr0 & TCSR_UDT);
->> +			tcsr1 = TCSR_PWM_SET | TCSR_ENALL | (tcsr1 & TCSR_UDT);
->> +			regmap_write(priv->map, TCSR0, tcsr0);
->> +			regmap_write(priv->map, TCSR1, tcsr1);
->> +		}
->> +	} else {
->> +		regmap_write(priv->map, TCSR0, 0);
->> +		regmap_write(priv->map, TCSR1, 0);
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static void xilinx_pwm_get_state(struct pwm_chip *chip,
->> +				 struct pwm_device *unused,
->> +				 struct pwm_state *state)
->> +{
->> +	struct xilinx_timer_priv *priv = xilinx_pwm_chip_to_priv(chip);
->> +	u32 tlr0, tlr1, tcsr0, tcsr1;
->> +
->> +	regmap_read(priv->map, TLR0, &tlr0);
->> +	regmap_read(priv->map, TLR1, &tlr1);
->> +	regmap_read(priv->map, TCSR0, &tcsr0);
->> +	regmap_read(priv->map, TCSR1, &tcsr1);
->> +	state->period = xilinx_timer_get_period(priv, tlr0, tcsr0);
->> +	state->duty_cycle = xilinx_timer_get_period(priv, tlr1, tcsr1);
->> +	state->enabled = xilinx_timer_pwm_enabled(tcsr0, tcsr1);
->> +	state->polarity = PWM_POLARITY_NORMAL;
->> +
->> +	/* 100% duty cycle results in constant low output */
->> +	if (state->period == state->duty_cycle)
->> +		state->duty_cycle = 0;
->> +}
->> +
->> +static const struct pwm_ops xilinx_pwm_ops = {
->> +	.apply = xilinx_pwm_apply,
->> +	.get_state = xilinx_pwm_get_state,
->> +	.owner = THIS_MODULE,
->> +};
->> +
->> +static const struct regmap_config xilinx_pwm_regmap_config = {
->> +	.reg_bits = 32,
->> +	.reg_stride = 4,
->> +	.val_bits = 32,
->> +	.val_format_endian = REGMAP_ENDIAN_LITTLE,
->> +	.max_register = TCR1,
->> +};
->> +
->> +static int xilinx_timer_probe(struct platform_device *pdev)
->> +{
->> +	int ret;
->> +	struct device *dev = &pdev->dev;
->> +	struct device_node *np = dev->of_node;
->> +	struct xilinx_timer_priv *priv;
->> +	struct xilinx_pwm_device *pwm;
->
-> The name "pwm" is usually reserved for struct pwm_device pointers. A
-> typical name for this would be xlnxpwm or ddata.
+The soft reset is not limited to the state that the PCI subsystem can
+save and restore.  Device specific state that the user/guest may
+legitimately expect to be retained may be reset as well.
 
-I suppose. However, no variables of struct pwm_device are used in
-this driver.
+[PCIe v5 5.3.1.4]
+	Functional context is required to be maintained by Functions in
+	the D3 hot state if the No_Soft_Reset field in the PMCSR is Set.
 
->> +	u32 pwm_cells, one_timer, width;
->> +	void __iomem *regs;
->> +
->> +	ret = of_property_read_u32(np, "#pwm-cells", &pwm_cells);
->> +	if (ret == -EINVAL)
->> +		return -ENODEV;
->
-> A comment about why this is done would be great.
+Unfortunately I don't see a specific definition of "functional
+context", but I interpret that to include device specific state.  For
+example, if a GPU contains specific frame buffer data and reports
+NoSoftRst+, wouldn't it be reasonable to expect that framebuffer data
+to be retained on D3hot->D0 transition?
+=20
+> > We're also essentially making a policy decision on behalf of
+> > userspace that favors power saving over latency.  Is that
+> > universally the correct trade-off?  =20
+>=20
+>  For most drivers, the D3hot vs D3cold should not be favored due
+>  to latency reasons. In the linux kernel side, I am seeing, the
+>  PCI framework try to use D3cold state if platform and device
+>  supports that. But its correct that covertly replacing D3hot with
+>  D3cold may be concern for some drivers.
+>=20
+> > I can imagine this could be desirable for many use cases,
+> > but if we're going to covertly replace D3hot with D3cold, it seems
+> > like there should be an opt-in.  Is co-opting the PM capability for
+> > this even really acceptable or should there be a device ioctl to
+> > request D3cold and plumbing through QEMU such that a VM guest can
+> > make informed choices regarding device power management?
+> >  =20
+>=20
+>  Making IOCTL is also an option but that case, this support needs to
+>  be added in all hypervisors and user must pass this information
+>  explicitly for each device. Another option could be to use
+>  module parameter to explicitly enable D3cold support. If module
+>  parameter is not set, then we can call pci_d3cold_disable() and
+>  in that case, runtime PM should not use D3cold state.
+>=20
+>  Also, I was checking we can pass this information though some
+>  virtualized register bit which will be only defined for passing
+>  the information between guest and host. In the guest side if the
+>  target state is being decided with pci_target_state(), then
+>  the D3cold vs D3hot should not matter for the driver running
+>  in the guest side and in that case, it depends upon platform support.
+>  We can set this virtualize bit to 1. But, if driver is either
+>  setting D3hot state explicitly or has called pci_d3cold_disable() or
+>  similar API available in the guest OS, then set this bit to 0 and
+>  in that case, the D3cold state can be disabled in the host side.
+>  But don't know if is possible to use some non PCI defined
+>  virtualized register bit.=20
 
-OK. How about:
+If you're suggesting a device config space register, that's troublesome
+because we can't guarantee that simply because a range of config space
+isn't within a capability that it doesn't have some device specific
+purpose.  However, we could certainly implement virtual registers in
+the hypervisor that implement the ACPI support that an OS would use on
+bare metal to implement D3cold.  Those could trigger this ioctl through
+the vfio device.
 
-/* If there are no #pwm-cells, this binding is for a timer and not a PWM */
+>  I am not sure what should be best option to make choice
+>  regarding d3cold but if we can have some option by which this
+>  can be done without involvement of user, then it will benefit
+>  for lot of cases. Currently, the D3cold is supported only in
+>  very few desktops/servers but in future, we will see on
+>  most of the platforms. =20
 
->> +	if (ret)
->> +		return dev_err_probe(dev, ret, "could not read #pwm-cells\n");
->> +
->> +	pwm = devm_kzalloc(dev, sizeof(*pwm), GFP_KERNEL);
->> +	if (!pwm)
->> +		return -ENOMEM;
->> +	platform_set_drvdata(pdev, pwm);
->> +	priv = &pwm->priv;
->> +
->> +	regs = devm_platform_ioremap_resource(pdev, 0);
->> +	if (IS_ERR(regs))
->> +		return PTR_ERR(regs);
->> +
->> +	priv->map = devm_regmap_init_mmio(dev, regs,
->> +					  &xilinx_pwm_regmap_config);
->> +	if (IS_ERR(priv->map))
->> +		return dev_err_probe(dev, PTR_ERR(priv->map),
->> +				     "Could not create regmap\n");
->> +
->> +	ret = of_property_read_u32(np, "xlnx,one-timer-only", &one_timer);
->> +	if (ret)
->> +		return dev_err_probe(dev, ret,
->> +				     "Could not read xlnx,one-timer-only\n");
->> +
->> +	if (one_timer)
->> +		return dev_err_probe(dev, -EINVAL,
->> +				     "Two timers required for PWM mode\n");
->> +
->> +
->> +	ret = of_property_read_u32(np, "xlnx,count-width", &width);
->> +	if (ret == -EINVAL)
->> +		width = 32;
->> +	else if (ret)
->> +		return dev_err_probe(dev, ret,
->> +				     "Could not read xlnx,count-width\n");
->> +
->> +	if (width != 8 && width != 16 && width != 32)
->> +		return dev_err_probe(dev, -EINVAL,
->> +				     "Invalid counter width %d\n", width);
->> +	priv->max = BIT_ULL(width) - 1;
->> +
->> +	/*
->> +	 * The polarity of the generate outputs must be active high for PWM
->
-> s/generate/generated/
+I tend to see it as an interesting hack to promote D3hot to D3cold, and
+potentially very useful.  However, we're also introducing potentially
+unexpected device behavior, so I think it would probably need to be an
+opt-in.  Possibly if the device reports NoSoftRst- we could use it by
+default, but even virtualizing the NoSoftRst suggests that there's an
+expectation that the guest driver has that support available.
+=20
+> > Also if the device is not responsive to config space due to the user
+> > placing it in D3 now, I'd expect there are other ioctl paths that
+> > need to be blocked, maybe even MMIO paths that might be a gap for
+> > existing D3hot support.  Thanks,
+>=20
+>  I was in assumption that most of IOCTL code will be called by the
+>  hypervisor before guest OS boot and during that time, the device
+>  will be always in D0. But, if we have paths where IOCTL can be
+>  called when the device has been suspended by guest OS, then can we
+>  use runtime_get/put API=E2=80=99s there also ?
 
-The signals I am referring to are called "GenerateOut0" and
-"GenerateOut1".
+It's more a matter of preventing user actions that can cause harm
+rather than expecting certain operations only in specific states.  We
+could chose to either resume the device for those operations or fail
+the operation.  We should probably also leverage the memory-disable
+support to fault mmap access to MMIO when the device is in D3* as well.
+Thanks,
 
->> +	 * mode to work. We could determine this from the device tree, but
->> +	 * alas, such properties are not allowed to be used.
->> +	 */
->> +
->> +	priv->clk = devm_clk_get(dev, "s_axi_aclk");
->> +	if (IS_ERR(priv->clk))
->> +		return dev_err_probe(dev, PTR_ERR(priv->clk),
->> +				     "Could not get clock\n");
->> +
->> +	ret = clk_prepare_enable(priv->clk);
->> +	if (ret)
->> +		return dev_err_probe(dev, ret, "Clock enable failed\n");
->> +	clk_rate_exclusive_get(priv->clk);
->> +
->> +	pwm->chip.dev = dev;
->> +	pwm->chip.ops = &xilinx_pwm_ops;
->> +	pwm->chip.npwm = 1;
->> +	ret = pwmchip_add(&pwm->chip);
->> +	if (ret) {
->> +		clk_rate_exclusive_put(priv->clk);
->> +		clk_disable_unprepare(priv->clk);
->> +		return dev_err_probe(dev, ret, "Could not register PWM chip\n");
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static int xilinx_timer_remove(struct platform_device *pdev)
->> +{
->> +	struct xilinx_pwm_device *pwm = platform_get_drvdata(pdev);
->> +
->> +	pwmchip_remove(&pwm->chip);
->> +	clk_rate_exclusive_put(pwm->priv.clk);
->> +	clk_disable_unprepare(pwm->priv.clk);
->> +	return 0;
->> +}
->> +
->> +static const struct of_device_id xilinx_timer_of_match[] = {
->> +	{ .compatible = "xlnx,xps-timer-1.00.a", },
->> +	{},
->> +};
->> +MODULE_DEVICE_TABLE(of, xilinx_timer_of_match);
->> +
->> +static struct platform_driver xilinx_timer_driver = {
->> +	.probe = xilinx_timer_probe,
->> +	.remove = xilinx_timer_remove,
->> +	.driver = {
->> +		.name = "xilinx-timer",
->
-> Doesn't this give a wrong impression as this is a PWM driver, not a
-> timer driver?
+Alex
 
-Perhaps. Though this is the PWM driver for the Xilinx AXI timer, not the
-Xilinx AXI PWM.
-
---Sean
-
->> +		.of_match_table = of_match_ptr(xilinx_timer_of_match),
->> +	},
->> +};
->> +module_platform_driver(xilinx_timer_driver);
->> +
->> +MODULE_ALIAS("platform:xilinx-timer");
->> +MODULE_DESCRIPTION("Xilinx LogiCORE IP AXI Timer driver");
->> +MODULE_LICENSE("GPL v2");
->> diff --git a/include/clocksource/timer-xilinx.h b/include/clocksource/timer-xilinx.h
->> new file mode 100644
->> index 000000000000..1f7757b84a5e
->> --- /dev/null
->> +++ b/include/clocksource/timer-xilinx.h
->> @@ -0,0 +1,91 @@
->> +/* SPDX-License-Identifier: GPL-2.0+ */
->> +/*
->> + * Copyright (C) 2021 Sean Anderson <sean.anderson@seco.com>
->> + */
->> +
->> +#ifndef XILINX_TIMER_H
->> +#define XILINX_TIMER_H
->> +
->> +#include <linux/compiler.h>
->> +
->> +#define TCSR0	0x00
->> +#define TLR0	0x04
->> +#define TCR0	0x08
->> +#define TCSR1	0x10
->> +#define TLR1	0x14
->> +#define TCR1	0x18
->> +
->> +#define TCSR_MDT	BIT(0)
->> +#define TCSR_UDT	BIT(1)
->> +#define TCSR_GENT	BIT(2)
->> +#define TCSR_CAPT	BIT(3)
->> +#define TCSR_ARHT	BIT(4)
->> +#define TCSR_LOAD	BIT(5)
->> +#define TCSR_ENIT	BIT(6)
->> +#define TCSR_ENT	BIT(7)
->> +#define TCSR_TINT	BIT(8)
->> +#define TCSR_PWMA	BIT(9)
->> +#define TCSR_ENALL	BIT(10)
->> +#define TCSR_CASC	BIT(11)
->> +
->> +struct clk;
->> +struct device_node;
->> +struct regmap;
->> +
->> +/**
->> + * struct xilinx_timer_priv - Private data for Xilinx AXI timer drivers
->> + * @map: Regmap of the device, possibly with an offset
->> + * @clk: Parent clock
->> + * @max: Maximum value of the counters
->> + */
->> +struct xilinx_timer_priv {
->> +	struct regmap *map;
->> +	struct clk *clk;
->> +	u32 max;
->> +};
->> +
->> +/**
->> + * xilinx_timer_tlr_cycles() - Calculate the TLR for a period specified
->> + *                             in clock cycles
->> + * @priv: The timer's private data
->> + * @tcsr: The value of the TCSR register for this counter
->> + * @cycles: The number of cycles in this period
->> + *
->> + * Callers of this function MUST ensure that @cycles is representable as
->> + * a TLR.
->> + *
->> + * Return: The calculated value for TLR
->> + */
->> +u32 xilinx_timer_tlr_cycles(struct xilinx_timer_priv *priv, u32 tcsr,
->> +			    u64 cycles);
->> +
->> +/**
->> + * xilinx_timer_get_period() - Get the current period of a counter
->> + * @priv: The timer's private data
->> + * @tlr: The value of TLR for this counter
->> + * @tcsr: The value of TCSR for this counter
->> + *
->> + * Return: The period, in ns
->> + */
->> +unsigned int xilinx_timer_get_period(struct xilinx_timer_priv *priv,
->> +				     u32 tlr, u32 tcsr);
->> +
->> +/**
->> + * xilinx_timer_common_init() - Perform common initialization for Xilinx
->> + *                              AXI timer drivers.
->> + * @priv: The timer's private data
->> + * @np: The devicetree node for the timer
->> + * @one_timer: Set to %1 if there is only one timer
->> + *
->> + * This performs common initialization, such as detecting endianness,
->> + * and parsing devicetree properties. @priv->regs must be initialized
->> + * before calling this function. This function initializes @priv->read,
->> + * @priv->write, and @priv->width.
->> + *
->> + * Return: 0, or negative errno
->> + */
->> +int xilinx_timer_common_init(struct device_node *np,
->> +			     struct xilinx_timer_priv *priv,
->> +			     u32 *one_timer);
->> +
->> +#endif /* XILINX_TIMER_H */
->> --
->> 2.25.1
->>
->>
->
