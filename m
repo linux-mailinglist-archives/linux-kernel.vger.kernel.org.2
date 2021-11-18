@@ -2,331 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6777455A7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:34:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A28EE455A87
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343872AbhKRLhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 06:37:12 -0500
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:20356 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343640AbhKRLhH (ORCPT
+        id S1344067AbhKRLiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 06:38:03 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53670 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1343958AbhKRLhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 06:37:07 -0500
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AIB2Bus031723;
-        Thu, 18 Nov 2021 11:32:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : content-type : mime-version; s=corp-2021-07-09;
- bh=nhUTn6S1O8buFn5Xa3Dk47TjJg+nwkO5vlgzpPLJgSE=;
- b=SuIVDFTjYL+9nS6Adl2VHU4NCEKf9lC54nWGFZiZq1ToWapQNth4YNmq5xZG6CZQ5FKx
- mS8Z2N7QiNk+Mbbhfe/X2DRsI7QC1VkHDVB8IlWQnHa/JAmjhE6q+5+P+/DSme2ECHUd
- faJL0JGyLQYCmxtpxG2pkZbeeYOUAzpc6VXMFMitZQEXyw3DtGFwlcP6tSYiLAmkHPXR
- 0aIMssDQL2dTAwC7LUC9ht9yZso7iE5EEmE6Q1fyvlTrXARY8cSo+aNMmNjZ8+xfnWxC
- Xr6qRxaceTTZRU/PRj89kVmZy4/+fu5LZQ2KTHTflejPTrRq4xjg/ozMD9p9Ej9UCbG3 Hg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3cd2ajpen4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Nov 2021 11:32:46 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AIBV363033036;
-        Thu, 18 Nov 2021 11:32:45 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2105.outbound.protection.outlook.com [104.47.55.105])
-        by aserp3020.oracle.com with ESMTP id 3ca568edju-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Nov 2021 11:32:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Tk9YZ2jR2cLUm4Z/YZf4ZsemUeOSzKTiIwE+ylLVA7CTDNeiCm0alwzdQuopXZ8/cWamIqH15zOYvZ+p63GQWJu/GvAs6w2yw7vb+kAqPkKEJWCJVDPKjvxaXTkK+5l0Df5CtGV3tSIvgcjml1RXoGVUD4bvPgI29AHT9+JdDeBWdLl0Tn06CwhSzisqeQDB8SlwKfm4aHH0GOFk0GsWSGLiIWgO36Y2rKMfB/W+C80xcY11W7asSU9Jkpd3qqrVs/K6tnVEJiOSu+aIAztak0zlPDX8agO+pbGXMFlTVaNpZtYKISP1zV36hwmdDsFedfupPbezMR+2V07QBPv4Kw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nhUTn6S1O8buFn5Xa3Dk47TjJg+nwkO5vlgzpPLJgSE=;
- b=i757mMafynh9yKKQoqJSp7Fd46si3k3N6mIDE/CVsaiK4siVxHIMoD0eM2jsKb0mEADAUi9KknpgK/hbIbKb1/RYkqn4NPjZiZtNwdZAyaVPljbLJSYZcbAaxENp41nthySvDBHf22ISDFg/TUZcQ60UNsHmYT7H7ATqILqzkyEghC7f4ooszjzXVC8JrmNUZLjOKWXTCZkA9An4ay28KP4xxzG3XPBAwknUL3jdSxp4vE/qJRnKZa3f1rtYs6bVA3BKPVl/y4BlOX9CMbQIy05Qj710iplobWCy/jZTehlUije8bCOm2O05daf6sOjAp9CxZ5dHfudpVKmrJMcBVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nhUTn6S1O8buFn5Xa3Dk47TjJg+nwkO5vlgzpPLJgSE=;
- b=AIzZyeTgx1isYANbm/he97jNVrS7Lxo8qAMSzsN8I9VASyB0S4+NydChcbXECX26TAEduA8/uZR+8NMU2WUeMfNOxIKw7z4q5ZhaKTErsBCRn5e2V97Wt1enSKOIYBoBq96cQnEhCNifCQ6J0btkAoIctjMl9nQkzn/+d20qzbM=
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MWHPR10MB1949.namprd10.prod.outlook.com
- (2603:10b6:300:10c::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Thu, 18 Nov
- 2021 11:32:43 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4690.016; Thu, 18 Nov 2021
- 11:32:42 +0000
-Date:   Thu, 18 Nov 2021 14:32:22 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     MyungJoo Ham <myungjoo.ham@samsung.com>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-omap@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] extcon: fix extcon_get_extcon_dev() error handling
-Message-ID: <20211118113026.GG1147@kili>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-ClientProxiedBy: ZR0P278CA0014.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:16::24) To MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28)
+        Thu, 18 Nov 2021 06:37:33 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AI9liBL035144;
+        Thu, 18 Nov 2021 11:34:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=kLdQR6Rnbkk3HhgdrLGD6gw4qSi5mO8D55WKWsjodbc=;
+ b=dq0AXpGgiOU4AemQ1tAjVv5wtjoDeozZnX3ul8z15/lB9r+ORJy1Av7D906wyq5ANDGX
+ McbmoSSdddBlVoXlOPqIU9ZbgPd6ePDqsMQGMJVLJTAOASRvaxbnxBhGJlpnZ3S+izJT
+ ASMD8ZMJyWdJ5pwUJvn7a3DwOsoNbG8dlhcJwGoZaHjUKRQf8F48bnkGW/pItrufXdlm
+ Xw6kkHWxfhYgPAZ8QwEh4RYbfl4Juw+uuYzvU0iQY2Oio/n6IL6NiZxobkGC9hD8u4xr
+ AuxNsTUe0f1YEpG5HXRPiLM8FszWaEbT/8EcQi8uUZ14KEorB4v+4F3MLuXGPH7Ncc8v eA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cdmgy2ahm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Nov 2021 11:34:10 +0000
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AIAewlw032491;
+        Thu, 18 Nov 2021 11:34:10 GMT
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cdmgy2ah1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Nov 2021 11:34:09 +0000
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AIBTQ8p022352;
+        Thu, 18 Nov 2021 11:34:08 GMT
+Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
+        by ppma03wdc.us.ibm.com with ESMTP id 3ca50c2bcv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Nov 2021 11:34:08 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AIBY5YW16449810
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Nov 2021 11:34:05 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DEE3CAE05C;
+        Thu, 18 Nov 2021 11:34:04 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9A52DAE063;
+        Thu, 18 Nov 2021 11:34:04 +0000 (GMT)
+Received: from amdrome3.watson.ibm.com (unknown [9.2.130.16])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 18 Nov 2021 11:34:04 +0000 (GMT)
+From:   Dov Murik <dovmurik@linux.ibm.com>
+To:     linux-efi@vger.kernel.org
+Cc:     Dov Murik <dovmurik@linux.ibm.com>, Borislav Petkov <bp@suse.de>,
+        Ashish Kalra <ashish.kalra@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Andrew Scull <ascull@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
+        Jim Cadden <jcadden@ibm.com>,
+        Daniele Buono <dbuono@linux.vnet.ibm.com>,
+        linux-coco@lists.linux.dev, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/4] Allow guest access to EFI confidential computing secret area
+Date:   Thu, 18 Nov 2021 11:33:55 +0000
+Message-Id: <20211118113359.642571-1-dovmurik@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: UQOJ25NSbDTbgdc5HFomto6OHy0SzWEO
+X-Proofpoint-ORIG-GUID: wxcSa_IC8ZufmHYBHZaBVWzpf-M0Nr5X
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Received: from kili (102.222.70.114) by ZR0P278CA0014.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:16::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend Transport; Thu, 18 Nov 2021 11:32:32 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0b21c3c8-9732-4634-f5ca-08d9aa872295
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1949:
-X-Microsoft-Antispam-PRVS: <MWHPR10MB19499C99034CC2FA4D8B0E048E9B9@MWHPR10MB1949.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:843;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WplJOR/UyQigLqVjxG6Braew2R5+yP0aSSfAlsGNDcfMSLjJo8C1MmxZgMgr9NKDWdw3NnDbSiKz1DSeEMENIxpaDyXkiim1OQAWpZhpbtfJfjWL6eYJWrkDBv5r3GRL5bguV/Bc+JqpQ+vOD6+s8UoK0EHALs+WtoKD2LU40DkEbyDGoxGhgZF/N7SrmLku0iRGe/UGNJOne6bZMZOI01EHS75qD1NmPNu+i83APqXy8iwI+6G6938qHPYGstjWfsmKLmekDADlo00sVqSQR3MDP5dmgJZ+p2Ua2jfTk9SSZpeIpzYRPzQz8gzqheTEmxjv/F099VOyPvwgEcSHsYBgO7m3bsPGgr3Vbl3+3TSMzL14z/izEeFSUZiVA3hf8NfCaFC82nTU82XUeToteuihnNal+Skad1SrhjTt1RKrin0jOc6XIuBmK3wJBrOMkYVBCTpiRAA2aiwRt6IcI5/tFB3pRR5Lgoa6OBQRzm2uTWeLiiby3oGhqdIPGc21rgZ5s1S8C2SXjbQFLtDi9P7RgmaxQFhy05HfYw9n4Q8l6bitnv1187djNe4QcFYXMlDiMSHt6KoF5wU2RRDu7DAsLCRa6jXAXIXrKvyzhMkDajwnUS00WgDnpaYbUuR0bt7oL7T5qAvdZVH17k+O2+zT5GguljxtX0erLFwewdcBcpg6ygh2eKZmHg/A8uOUR+2GnZ4pvDZHGLzlYiE6RA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(8936002)(2906002)(6666004)(6916009)(33716001)(4326008)(55016002)(54906003)(6496006)(186003)(7416002)(52116002)(5660300002)(33656002)(1076003)(83380400001)(316002)(86362001)(508600001)(956004)(9576002)(38350700002)(66556008)(66476007)(66946007)(38100700002)(26005)(9686003)(44832011)(8676002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+dWMIB7P6PCyOu4TIr7AgXtmrCLY5O8befh/Y+PQpheLLHxF76M4d1MH/AFf?=
- =?us-ascii?Q?3Bs9EA6Uhm5fGhWyAcBwPTNd0Q7UqsB+CpCzeBBEkiPhbfn/ikDsdPt1s0Vo?=
- =?us-ascii?Q?IssScfwi6+YuJHID0Ox0Cnk25AxoUInueNsC0ngA6bOFpd/mI6l+eOeLhhsS?=
- =?us-ascii?Q?/RyDAE7K6/iQ6POnqYu4NFO3mrxueQWY29Pn0dEOI3hekfcgTe3MAnd3XvaE?=
- =?us-ascii?Q?Ut5tzAR5cN8SN7aZx5O33OOCdoeHY7/smHlSpSspk/wU7Zc8nUFq/lPSYEpi?=
- =?us-ascii?Q?tyWz2aE9NRCTIUv+jtOnG/RSy+qfF0r6HPN8ClUZBfW7kT6lAvCJdCa2oCXd?=
- =?us-ascii?Q?OI1yXlOKhvQIsOCad1ufZ+0xA8OaGC86O+V0Cwqys3pFLPsuYXRnZiWRQoOy?=
- =?us-ascii?Q?009kcuirMEOLtc7Adu5JKdR2kNXJE7EU2ybGfX9f/YvgXTMQRbO/6XsDJckd?=
- =?us-ascii?Q?C88OyGQArns3gvLM336kqEOEZ4PUaTDay3Ovk9JIVwshPLK6sycNfABrhpuH?=
- =?us-ascii?Q?AM93oteWvW28lDPupNJK27NDLcWIvzhP/LIZfNAzCqbP0G9n73Zl0u5xGTK8?=
- =?us-ascii?Q?H6uKzfkdqQ8PeQrewzN9IqLC150sBKTxGLEXXx/iMRlQNcqS1d9q9mF23pKf?=
- =?us-ascii?Q?bt9mjGHDCl/piVWwudc2hBpERFnJKJ+dosgH0LDYdOLXpAo117QBh9Jaktej?=
- =?us-ascii?Q?4S5mYz2VMoN+x0kyQmRM76nne1yswQO5nkHypzKOQE4VPv18vzUFGK9l+TSW?=
- =?us-ascii?Q?+YKe7cbGcft9l9wASynRSUaGAFLUYIJ5UQOecAMld+cruhphLBTZ3d9KHdUa?=
- =?us-ascii?Q?Y+Wt3m3r9V1kFVQuqf1wANS4em7/A+kQm+CablOLlyC1oRv3d9Zs0/p1T17D?=
- =?us-ascii?Q?02R5SJcbXB2HE70V/gdTIkjCM0YZ1VAcUroJSg6a+yBagCENKx1uB21syQSe?=
- =?us-ascii?Q?BgGHxhUYKHze5GzjKn2IFVV8QudfP/1sjYZGgEfdrJAGjHC8xQCCn5IL9TTu?=
- =?us-ascii?Q?miA4K5eM18Yf0udHcsiRSGO+GCfQI1po1QhJWd8TLi/HN96OeQuY2vQ2T/DO?=
- =?us-ascii?Q?qvBr7KJBNVNsuH3imlfvJDjAziAF+OX1o8KhxfLrCNNZ28KfocKOqg2zIt/G?=
- =?us-ascii?Q?cSaChrayKS+iMZkOTZ9KnA+8iqlQjIl353gzpjOvCcYqLi92DAyM1WTe43oA?=
- =?us-ascii?Q?TBIm1TDWU1vLDycFQCjapc63q0aDJKJ18jrdLVNr8iPmzdqlleAyXu7hJ3Lu?=
- =?us-ascii?Q?SK9z9Ih44ONTrJfcPPXXKoj1o5BdxUe/zSSIfwJLnzslwJ/MBvchms8PWtL9?=
- =?us-ascii?Q?t0myjp7IvUpvuOG3M79RsvjJB2tYfSiDq10AvIhBIO0vVu5x8UMxy9UzzE1H?=
- =?us-ascii?Q?/+TfcZ5lM4hma7dvgUvmmscvG2mnbqR+o+iv6qz0n6cmoMp6xHLF2FiELjLi?=
- =?us-ascii?Q?fZlczGg29GCHgfbYlzAc+xmHnGQ5c5OZ+iRc0Eg8H+IpA+l7cwbdU3+YqkSA?=
- =?us-ascii?Q?w1kuE5o6hMBWqRTrYpTZR57vdE7YqOtHCeuXlhIyeiqjT/6dDJg6x8HQ7EiK?=
- =?us-ascii?Q?+SnnrR82/CBufhDIesNGWsE3Ag7iJ7mtVL9EPs1s+LaowjLaeAXY7hj9MBOJ?=
- =?us-ascii?Q?Gcg/umD4E3vbBRcsrLuCa0IB6F09t/6AmmlRaf7LhsWDHVV561NzUCrRwPkd?=
- =?us-ascii?Q?efPrO19McT1gqjArGyym9K5rJWE=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b21c3c8-9732-4634-f5ca-08d9aa872295
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2021 11:32:42.8575
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1pZV/oBlNEfOTo6l31aqKJbBxEGDZ0XoQainqnAIi2qfbTOTBzGDXQLdOKtWDOj3gwqgNczWiB40Zu4/qdxv10/64ft0cf3nhmXgcExeo6Y=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1949
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10171 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0 mlxscore=0
- spamscore=0 malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111180067
-X-Proofpoint-GUID: x1HW4TBj0hBVYk5MbQohNcLHhnWhpkVd
-X-Proofpoint-ORIG-GUID: x1HW4TBj0hBVYk5MbQohNcLHhnWhpkVd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-18_05,2021-11-17_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ mlxlogscore=999 phishscore=0 bulkscore=0 spamscore=0 adultscore=0
+ malwarescore=0 priorityscore=1501 clxscore=1015 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111180067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The extcon_get_extcon_dev() function returns error pointers on error
-and NULL when it's a -EPROBE_DEFER defer situation.  There are eight
-callers and only two of them handled this correctly.  In the other
-callers an error pointer return would lead to a crash.
+Confidential computing (coco) hardware such as AMD SEV (Secure Encrypted
+Virtualization) allows guest owners to inject secrets into the VMs
+memory without the host/hypervisor being able to read them.  In SEV,
+secret injection is performed early in the VM launch process, before the
+guest starts running.
 
-What prevents crashes is that errors can only happen in the case of
-a bug in the caller or if CONFIG_EXTCON is disabled.  Six out of
-eight callers use the Kconfig to either depend on or select
-CONFIG_EXTCON.  Thus the real life impact of these bugs is tiny.
+OVMF already reserves designated area for secret injection (in its
+AmdSev package; see edk2 commit 01726b6d23d4 "OvmfPkg/AmdSev: Expose the
+Sev Secret area using a configuration table" [1]), but the secrets were
+not available in the guest kernel.
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+The patch series keeps the address of the EFI-provided memory for
+injected secrets, and optionally exposes the secrets to userspace via
+securityfs using a new efi_secret kernel module.
+
+The first patch in EFI keeps the address of the secret area as passed in
+the EFI configuration table.  The second patch is a quirk fix for older
+firmwares didn't mark the secrets page as EFI_RESERVED_TYPE.  The third
+patch introduces the new efi_secret module that exposes the content of
+the secret entries as securityfs files, and allows clearing out secrets
+with a file unlink interface.  The last patch documents the data flow of
+confidential computing secret injection.
+
+As a usage example, consider a guest performing computations on
+encrypted files.  The Guest Owner provides the decryption key (= secret)
+using the secret injection mechanism.  The guest application reads the
+secret from the efi_secret filesystem and proceeds to decrypt the files
+into memory and then performs the needed computations on the content.
+
+In this example, the host can't read the files from the disk image
+because they are encrypted.  Host can't read the decryption key because
+it is passed using the secret injection mechanism (= secure channel).
+Host can't read the decrypted content from memory because it's a
+confidential (memory-encrypted) guest.
+
+This has been tested with AMD SEV and SEV-ES guests, but the kernel side
+of handling the secret area has no SEV-specific dependencies, and
+therefore might be usable (perhaps with minor changes) for any
+confidential computing hardware that can publish the secret area via the
+standard EFI config table entry.
+
+To enable this functionality, set CONFIG_EFI_SECRET=m when building the
+guest kernel.
+
+Here is a simple example for usage of the efi_secret module in a guest
+to which an EFI secret area with 4 secrets was injected during launch:
+
+# modprobe efi_secret
+# ls -la /sys/kernel/security/coco/efi_secret
+total 0
+drwxr-xr-x 2 root root 0 Jun 28 11:54 .
+drwxr-xr-x 3 root root 0 Jun 28 11:54 ..
+-r--r----- 1 root root 0 Jun 28 11:54 736870e5-84f0-4973-92ec-06879ce3da0b
+-r--r----- 1 root root 0 Jun 28 11:54 83c83f7f-1356-4975-8b7e-d3a0b54312c6
+-r--r----- 1 root root 0 Jun 28 11:54 9553f55d-3da2-43ee-ab5d-ff17f78864d2
+-r--r----- 1 root root 0 Jun 28 11:54 e6f5a162-d67f-4750-a67c-5d065f2a9910
+
+# xxd /sys/kernel/security/coco/efi_secret/e6f5a162-d67f-4750-a67c-5d065f2a9910
+00000000: 7468 6573 652d 6172 652d 7468 652d 6b61  these-are-the-ka
+00000010: 7461 2d73 6563 7265 7473 0001 0203 0405  ta-secrets......
+00000020: 0607                                     ..
+
+# rm /sys/kernel/security/coco/efi_secret/e6f5a162-d67f-4750-a67c-5d065f2a9910
+
+# ls -la /sys/kernel/security/coco/efi_secret
+total 0
+drwxr-xr-x 2 root root 0 Jun 28 11:55 .
+drwxr-xr-x 3 root root 0 Jun 28 11:54 ..
+-r--r----- 1 root root 0 Jun 28 11:54 736870e5-84f0-4973-92ec-06879ce3da0b
+-r--r----- 1 root root 0 Jun 28 11:54 83c83f7f-1356-4975-8b7e-d3a0b54312c6
+-r--r----- 1 root root 0 Jun 28 11:54 9553f55d-3da2-43ee-ab5d-ff17f78864d2
+
+
+[1] https://github.com/tianocore/edk2/commit/01726b6d23d4
+
 ---
-The two callers where the drivers can be built without CONFIG_EXTCON
-are TYPEC_FUSB302 and CHARGER_MAX8997.
 
-If we apply this patch, it might be a good idea to send it to -stable
-so that backported code that relies on handling error pointers does
-not break silently.
+v5 changes:
+ - Simplify EFI code: instead of copying the secret area, the firmware
+   marks the secret area as EFI_RESERVED_TYPE, and then the uefi_init()
+   code just keeps the pointer as it appears in the EFI configuration
+   table.  The use of reserved pages is similar to the AMD SEV-SNP
+   patches for handling SNP-Secrets and SNP-CPUID pages.
+ - In order to handle OVMF releases out there which mark the
+   confidential computing secrets page as EFI_BOOT_SERVICES_DATA, add
+   efi/libstub code that detects this and fixes the E820 map to reserve
+   this page.
+ - In the efi_secret module code, map the secrets page using
+   ioremap_encrypted (again, similar to the AMD SEV-SNP guest patches
+   for accessing SNP-Secrets and SNP-CPUID pages).
+ - Add documentation in Documentation/security/coco/efi_secret.
 
- drivers/extcon/extcon.c                |  2 +-
- drivers/power/supply/axp288_charger.c  | 17 ++++++++++-------
- drivers/power/supply/charger-manager.c |  7 ++-----
- drivers/power/supply/max8997_charger.c | 10 +++++-----
- drivers/usb/dwc3/drd.c                 |  9 ++-------
- drivers/usb/phy/phy-omap-otg.c         |  4 ++--
- drivers/usb/typec/tcpm/fusb302.c       |  4 ++--
- drivers/extcon/extcon-axp288.c         |  4 ++--
- 8 files changed, 26 insertions(+), 31 deletions(-)
+v4: https://lore.kernel.org/linux-coco/20211020061408.3447533-1-dovmurik@linux.ibm.com/
+v4 changes:
+ - Guard all the new EFI and efi-stub code (patches 1+2) with #ifdef
+   CONFIG_EFI_COCO_SECRET (thanks Greg KH).  Selecting
+   CONFIG_EFI_SECRET=m (patch 3) will enable the EFI parts as well.
+ - Guard call to clflush_cache_range() with #ifdef CONFIG_X86
+   (Reported-by: kernel test robot <lkp@intel.com>)
 
-diff --git a/drivers/extcon/extcon.c b/drivers/extcon/extcon.c
-index e7a9561a826d..a35e99928807 100644
---- a/drivers/extcon/extcon.c
-+++ b/drivers/extcon/extcon.c
-@@ -876,7 +876,7 @@ struct extcon_dev *extcon_get_extcon_dev(const char *extcon_name)
- 		if (!strcmp(sd->name, extcon_name))
- 			goto out;
- 	}
--	sd = NULL;
-+	sd = ERR_PTR(-EPROBE_DEFER);
- out:
- 	mutex_unlock(&extcon_dev_list_lock);
- 	return sd;
-diff --git a/drivers/power/supply/axp288_charger.c b/drivers/power/supply/axp288_charger.c
-index ec41f6cd3f93..4acfeb52a44e 100644
---- a/drivers/power/supply/axp288_charger.c
-+++ b/drivers/power/supply/axp288_charger.c
-@@ -848,17 +848,20 @@ static int axp288_charger_probe(struct platform_device *pdev)
- 	info->regmap_irqc = axp20x->regmap_irqc;
- 
- 	info->cable.edev = extcon_get_extcon_dev(AXP288_EXTCON_DEV_NAME);
--	if (info->cable.edev == NULL) {
--		dev_dbg(dev, "%s is not ready, probe deferred\n",
--			AXP288_EXTCON_DEV_NAME);
--		return -EPROBE_DEFER;
-+	if (IS_ERR(info->cable.edev)) {
-+		dev_err_probe(dev, PTR_ERR(info->cable.edev),
-+			      "extcon_get_extcon_dev(%s) failed\n",
-+			      AXP288_EXTCON_DEV_NAME);
-+		return PTR_ERR(info->cable.edev);
- 	}
- 
- 	if (acpi_dev_present(USB_HOST_EXTCON_HID, NULL, -1)) {
- 		info->otg.cable = extcon_get_extcon_dev(USB_HOST_EXTCON_NAME);
--		if (info->otg.cable == NULL) {
--			dev_dbg(dev, "EXTCON_USB_HOST is not ready, probe deferred\n");
--			return -EPROBE_DEFER;
-+		if (IS_ERR(info->otg.cable)) {
-+			dev_err_probe(dev, PTR_ERR(info->otg.cable),
-+				      "extcon_get_extcon_dev(%s) failed\n",
-+				      USB_HOST_EXTCON_NAME);
-+			return PTR_ERR(info->otg.cable);
- 		}
- 		dev_info(dev, "Using " USB_HOST_EXTCON_HID " extcon for usb-id\n");
- 	}
-diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/supply/charger-manager.c
-index d67edb760c94..92db79400a6a 100644
---- a/drivers/power/supply/charger-manager.c
-+++ b/drivers/power/supply/charger-manager.c
-@@ -985,13 +985,10 @@ static int charger_extcon_init(struct charger_manager *cm,
- 	cable->nb.notifier_call = charger_extcon_notifier;
- 
- 	cable->extcon_dev = extcon_get_extcon_dev(cable->extcon_name);
--	if (IS_ERR_OR_NULL(cable->extcon_dev)) {
-+	if (IS_ERR(cable->extcon_dev)) {
- 		pr_err("Cannot find extcon_dev for %s (cable: %s)\n",
- 			cable->extcon_name, cable->name);
--		if (cable->extcon_dev == NULL)
--			return -EPROBE_DEFER;
--		else
--			return PTR_ERR(cable->extcon_dev);
-+		return PTR_ERR(cable->extcon_dev);
- 	}
- 
- 	for (i = 0; i < ARRAY_SIZE(extcon_mapping); i++) {
-diff --git a/drivers/power/supply/max8997_charger.c b/drivers/power/supply/max8997_charger.c
-index 25207fe2aa68..634658adf313 100644
---- a/drivers/power/supply/max8997_charger.c
-+++ b/drivers/power/supply/max8997_charger.c
-@@ -248,13 +248,13 @@ static int max8997_battery_probe(struct platform_device *pdev)
- 		dev_info(&pdev->dev, "couldn't get charger regulator\n");
- 	}
- 	charger->edev = extcon_get_extcon_dev("max8997-muic");
--	if (IS_ERR_OR_NULL(charger->edev)) {
--		if (!charger->edev)
--			return -EPROBE_DEFER;
--		dev_info(charger->dev, "couldn't get extcon device\n");
-+	if (IS_ERR(charger->edev)) {
-+		dev_err_probe(charger->dev, PTR_ERR(charger->edev),
-+			      "couldn't get extcon device: max8997-muic\n");
-+		return PTR_ERR(charger->edev);
- 	}
- 
--	if (!IS_ERR(charger->reg) && !IS_ERR_OR_NULL(charger->edev)) {
-+	if (!IS_ERR(charger->reg)) {
- 		INIT_WORK(&charger->extcon_work, max8997_battery_extcon_evt_worker);
- 		ret = devm_add_action(&pdev->dev, max8997_battery_extcon_evt_stop_work, charger);
- 		if (ret) {
-diff --git a/drivers/usb/dwc3/drd.c b/drivers/usb/dwc3/drd.c
-index d7f76835137f..a490f79131c1 100644
---- a/drivers/usb/dwc3/drd.c
-+++ b/drivers/usb/dwc3/drd.c
-@@ -454,13 +454,8 @@ static struct extcon_dev *dwc3_get_extcon(struct dwc3 *dwc)
- 	 * This device property is for kernel internal use only and
- 	 * is expected to be set by the glue code.
- 	 */
--	if (device_property_read_string(dev, "linux,extcon-name", &name) == 0) {
--		edev = extcon_get_extcon_dev(name);
--		if (!edev)
--			return ERR_PTR(-EPROBE_DEFER);
--
--		return edev;
--	}
-+	if (device_property_read_string(dev, "linux,extcon-name", &name) == 0)
-+		return extcon_get_extcon_dev(name);
- 
- 	/*
- 	 * Try to get an extcon device from the USB PHY controller's "port"
-diff --git a/drivers/usb/phy/phy-omap-otg.c b/drivers/usb/phy/phy-omap-otg.c
-index ee0863c6553e..6e6ef8c0bc7e 100644
---- a/drivers/usb/phy/phy-omap-otg.c
-+++ b/drivers/usb/phy/phy-omap-otg.c
-@@ -95,8 +95,8 @@ static int omap_otg_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 
- 	extcon = extcon_get_extcon_dev(config->extcon);
--	if (!extcon)
--		return -EPROBE_DEFER;
-+	if (IS_ERR(extcon))
-+		return PTR_ERR(extcon);
- 
- 	otg_dev = devm_kzalloc(&pdev->dev, sizeof(*otg_dev), GFP_KERNEL);
- 	if (!otg_dev)
-diff --git a/drivers/usb/typec/tcpm/fusb302.c b/drivers/usb/typec/tcpm/fusb302.c
-index 7a2a17866a82..8594b59bd527 100644
---- a/drivers/usb/typec/tcpm/fusb302.c
-+++ b/drivers/usb/typec/tcpm/fusb302.c
-@@ -1706,8 +1706,8 @@ static int fusb302_probe(struct i2c_client *client,
- 	 */
- 	if (device_property_read_string(dev, "linux,extcon-name", &name) == 0) {
- 		chip->extcon = extcon_get_extcon_dev(name);
--		if (!chip->extcon)
--			return -EPROBE_DEFER;
-+		if (IS_ERR(chip->extcon))
-+			return PTR_ERR(chip->extcon);
- 	}
- 
- 	chip->vbus = devm_regulator_get(chip->dev, "vbus");
-diff --git a/drivers/extcon/extcon-axp288.c b/drivers/extcon/extcon-axp288.c
-index 7c6d5857ff25..180be768c215 100644
---- a/drivers/extcon/extcon-axp288.c
-+++ b/drivers/extcon/extcon-axp288.c
-@@ -394,8 +394,8 @@ static int axp288_extcon_probe(struct platform_device *pdev)
- 		if (adev) {
- 			info->id_extcon = extcon_get_extcon_dev(acpi_dev_name(adev));
- 			put_device(&adev->dev);
--			if (!info->id_extcon)
--				return -EPROBE_DEFER;
-+			if (IS_ERR(info->id_extcon))
-+				return PTR_ERR(info->id_extcon);
- 
- 			dev_info(dev, "controlling USB role\n");
- 		} else {
+v3: https://lore.kernel.org/linux-coco/20211014130848.592611-1-dovmurik@linux.ibm.com/
+v3 changes:
+ - Rename the module to efi_secret
+ - Remove the exporting of clean_cache_range
+ - Use clflush_cache_range in wipe_memory
+ - Document function wipe_memory
+ - Initialize efi.coco_secret to EFI_INVALID_TABLE_ADDR to correctly detect
+   when there's no secret area published in the EFI configuration tables
+
+v2: https://lore.kernel.org/linux-coco/20211007061838.1381129-1-dovmurik@linux.ibm.com
+v2 changes:
+ - Export clean_cache_range()
+ - When deleteing a secret, call clean_cache_range() after explicit_memzero
+ - Add Documentation/ABI/testing/securityfs-coco-sev_secret
+
+v1: https://lore.kernel.org/linux-coco/20210809190157.279332-1-dovmurik@linux.ibm.com/
+
+RFC: https://lore.kernel.org/linux-coco/20210628183431.953934-1-dovmurik@linux.ibm.com/
+
+
+
+
+Dov Murik (4):
+  efi: Save location of EFI confidential computing area
+  efi/libstub: Reserve confidential computing secret area
+  virt: Add efi_secret module to expose confidential computing secrets
+  docs: security: Add coco/efi_secret documentation
+
+ .../ABI/testing/securityfs-coco-efi_secret    |  50 +++
+ Documentation/security/coco/efi_secret.rst    | 103 ++++++
+ Documentation/security/coco/index.rst         |   9 +
+ Documentation/security/index.rst              |   1 +
+ arch/x86/platform/efi/efi.c                   |   3 +
+ drivers/firmware/efi/Kconfig                  |  16 +
+ drivers/firmware/efi/efi.c                    |   6 +
+ drivers/firmware/efi/libstub/x86-stub.c       |  28 ++
+ drivers/virt/Kconfig                          |   3 +
+ drivers/virt/Makefile                         |   1 +
+ drivers/virt/coco/efi_secret/Kconfig          |  11 +
+ drivers/virt/coco/efi_secret/Makefile         |   2 +
+ drivers/virt/coco/efi_secret/efi_secret.c     | 341 ++++++++++++++++++
+ include/linux/efi.h                           |   7 +
+ 14 files changed, 581 insertions(+)
+ create mode 100644 Documentation/ABI/testing/securityfs-coco-efi_secret
+ create mode 100644 Documentation/security/coco/efi_secret.rst
+ create mode 100644 Documentation/security/coco/index.rst
+ create mode 100644 drivers/virt/coco/efi_secret/Kconfig
+ create mode 100644 drivers/virt/coco/efi_secret/Makefile
+ create mode 100644 drivers/virt/coco/efi_secret/efi_secret.c
+
+
+base-commit: 42eb8fdac2fc5d62392dcfcf0253753e821a97b0
 -- 
-2.20.1
+2.25.1
 
