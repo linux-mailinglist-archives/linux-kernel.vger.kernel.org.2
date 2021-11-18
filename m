@@ -2,130 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A41CC45616C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:26:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D5A456173
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234098AbhKRR3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 12:29:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234079AbhKRR3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 12:29:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2082361A07;
-        Thu, 18 Nov 2021 17:26:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637256376;
-        bh=QE4r16+cz7m3BK89h/Sjb1ZqaoOg/LCERqDrH6tb69Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oAA+BTIPwj1adxXFbA5+bQGhBP32aJ1fDxcdEl60hrmRyXDRXH5SK8ucWoVXYYOqv
-         oIv3bz01ICv3R2TXeLiTZfXhQJ/zRwfRhElcF/1MAgbR6+KHGhLURtF0yoW/9JDorz
-         HpWmoliNaGsGZf9j6/fLbZwqxYxTbxB0ua9PUvdtk7OGTpyeET9KmSwTRocXr2NqhL
-         D6h263kakpuVQYWYFuNmVBG24ZNomOZRiN7qH3uEp2ZEE4C/+T4FkRKJZLesdJOoU7
-         D//wsaBt4SrwQLMEtbT0a4LMP6mhRMjBba20MXgoqivoDPQ4TVMUTZw0iug/C289ZR
-         SgKMwgFKWGfDQ==
-Date:   Thu, 18 Nov 2021 09:26:15 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v2 02/28] mm: Add functions to zero portions of a folio
-Message-ID: <20211118172615.GA24307@magnolia>
-References: <20211108040551.1942823-1-willy@infradead.org>
- <20211108040551.1942823-3-willy@infradead.org>
- <20211117044527.GO24307@magnolia>
- <YZUMhDDHott2Q4W+@casper.infradead.org>
- <20211117170707.GW24307@magnolia>
- <YZZ3YJucR/WOpOaF@casper.infradead.org>
+        id S231991AbhKRRaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 12:30:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234092AbhKRR3w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 12:29:52 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E35C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:26:52 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id gx15-20020a17090b124f00b001a695f3734aso6392518pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:26:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ffg8RENMvUuNEkBhbj1rA+p5DmTOHVu6yl2demT0EE4=;
+        b=fb17491S/0gCnhjw+z0N6OqW92Tpeno6JI0c/csN8eX8CnIeKqlHLLnbYOpgouQx5q
+         /vtBplywQdcqf0PQ3Qwot2PPxBcx3YU6PQ2GCes4CuxMTHWYtAK1HKc0+3i8o7FAbRpY
+         01mzWpo1DwrHuAepeXOHU6IF2mjHq+r09yhUe01Lh42slxYx0G0lRzkQWMNGjzL1ixPw
+         Yxp4dRABOXdkmw/u3rWxmnxmfcPPSBUfUvSfP63GYg4Rz2jZ16TtwkMYE1Imud86YSZ+
+         +iPhSMPj46izY9h6v8K7QFlyNbHHE3x4LMg3ekEun1ZTGngs9MDjCwXVWFVLZIWKo/FG
+         wJNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ffg8RENMvUuNEkBhbj1rA+p5DmTOHVu6yl2demT0EE4=;
+        b=ckyES6yc0VwOb1LZ7MmhWllaUInP6kq79r8Vg4Y+fw1w8A3jOhEVIeHItEHqPj1xI7
+         fCf+f6fJLPr/2AYj+sYC3E684f++5TmcQaW3SVjTVe0I3iOkkCCRJL5EiPiHIrZTGEu5
+         hviqCQdJ8dYDlp7gkwd7FhdnXKIML+GKjm0dcQb8fb286Qo/7OfRZDtaDVC8H7mTdACw
+         m+8IfE6TY+e7Uzal49r70GISJL6ofJqIMbrupocCadNEhh5jQNKte0b0FgSKTuCmRha1
+         cbtjHesxxl8rqv61t0r0wfccAmopwJNz8RsrsZQxdoSDZevkOnpCUIRPqe+2bPdbOLZb
+         g9BQ==
+X-Gm-Message-State: AOAM531YUY5P/4j3K972En2x1zqOqH6DbjcwzrKrigNyQa+67xKjQCmO
+        Ks3XI2vhoa/UwUWCgNyaXJO3Ew==
+X-Google-Smtp-Source: ABdhPJwT015s86rLy9F8ng6d55iG1IPThLw+nvpC0UIAsjoQ/rL8E+JpvJUMBGsEjaoL3VO27U59zg==
+X-Received: by 2002:a17:902:e548:b0:141:f4ae:d2bd with SMTP id n8-20020a170902e54800b00141f4aed2bdmr69754101plf.41.1637256411831;
+        Thu, 18 Nov 2021 09:26:51 -0800 (PST)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id z22sm233489pfe.93.2021.11.18.09.26.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 09:26:50 -0800 (PST)
+Date:   Thu, 18 Nov 2021 10:26:48 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH] rpmsg: char: Add pr_fmt() to prefix messages
+Message-ID: <20211118172648.GC2530497@p14s>
+References: <20211108135945.3364-1-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YZZ3YJucR/WOpOaF@casper.infradead.org>
+In-Reply-To: <20211108135945.3364-1-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 03:55:12PM +0000, Matthew Wilcox wrote:
-> On Wed, Nov 17, 2021 at 09:07:07AM -0800, Darrick J. Wong wrote:
-> > I've started using 'next', or changing the code to make 'end' be the
-> > last element in the range the caller wants to act upon.  The thing is,
-> > those are all iterators, so 'next' fits, whereas it doesn't fit so well
-> > for range zeroing where that might have been all the zeroing we wanted
-> > to do.
+On Mon, Nov 08, 2021 at 02:59:45PM +0100, Arnaud Pouliquen wrote:
+> Make all messages to be prefixed in a unified way.
+> Add pr_fmt() to achieve this.
 > 
-> Yeah, it doesn't really work so well for one of the patches in this
-> series:
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> ---
+>  drivers/rpmsg/rpmsg_char.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 > 
->                         if (buffer_new(bh)) {
-> ...
->                                         folio_zero_segments(folio,
->                                                 to, block_end,
->                                                 block_start, from);
-> 
-> ("zero between block_start and block_end, except for the region
-> specified by 'from' and 'to'").  Except that for some reason the
-> ranges are specified backwards, so it's not obvious what's going on.
-> Converting that to folio_zero_ranges() would be a possibility, at the
-> expense of complexity in the caller, or using 'max' instead of 'end'
-> would also add complexity to the callers.
-
-The call above looks like it is preparing to copy some data into the
-middle of a buffer by zero-initializing the bytes before and the bytes
-after that middle region.
-
-Admittedly my fs-addled brain actually finds this hot mess easier to
-understand:
-
-folio_zero_segments(folio, to, blocksize - 1, block_start, from - 1);
-
-but I suppose the xend method involves less subtraction everywhere.
-
-> 
-> > Though.  'xend' (shorthand for 'excluded end') is different enough to
-> > signal that the reader should pay attention.  Ok, how about xend then?
-> 
-> Done!
-> 
-> @@ -367,26 +367,26 @@ static inline void memzero_page(struct page *page, size_t
-> offset, size_t len)
->   * folio_zero_segments() - Zero two byte ranges in a folio.
->   * @folio: The folio to write to.
->   * @start1: The first byte to zero.
-> - * @end1: One more than the last byte in the first range.
-> + * @xend1: One more than the last byte in the first range.
->   * @start2: The first byte to zero in the second range.
-> - * @end2: One more than the last byte in the second range.
-> + * @xend2: One more than the last byte in the second range.
+> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> index b5907b80727c..d6214cb66026 100644
+> --- a/drivers/rpmsg/rpmsg_char.c
+> +++ b/drivers/rpmsg/rpmsg_char.c
+> @@ -9,6 +9,9 @@
+>   * Based on rpmsg performance statistics driver by Michal Simek, which in turn
+>   * was based on TI & Google OMX rpmsg driver.
 >   */
->  static inline void folio_zero_segments(struct folio *folio,
-> -               size_t start1, size_t end1, size_t start2, size_t end2)
-> +               size_t start1, size_t xend1, size_t start2, size_t xend2)
->  {
-> -       zero_user_segments(&folio->page, start1, end1, start2, end2);
-> +       zero_user_segments(&folio->page, start1, xend1, start2, xend2);
->  }
-> 
->  /**
->   * folio_zero_segment() - Zero a byte range in a folio.
->   * @folio: The folio to write to.
->   * @start: The first byte to zero.
-> - * @end: One more than the last byte in the first range.
-> + * @xend: One more than the last byte to zero.
->   */
->  static inline void folio_zero_segment(struct folio *folio,
-> -               size_t start, size_t end)
-> +               size_t start, size_t xend)
->  {
-> -       zero_user_segments(&folio->page, start, end, 0, 0);
-> +       zero_user_segments(&folio->page, start, xend, 0, 0);
+> +
+> +#define pr_fmt(fmt)	KBUILD_MODNAME ": " fmt
+> +
+>  #include <linux/cdev.h>
+>  #include <linux/device.h>
+>  #include <linux/fs.h>
+> @@ -550,7 +553,7 @@ static int rpmsg_chrdev_init(void)
+>  
+>  	ret = alloc_chrdev_region(&rpmsg_major, 0, RPMSG_DEV_MAX, "rpmsg");
+>  	if (ret < 0) {
+> -		pr_err("rpmsg: failed to allocate char dev region\n");
+> +		pr_err("failed to allocate char dev region\n");
+>  		return ret;
+>  	}
+>  
+> @@ -563,7 +566,7 @@ static int rpmsg_chrdev_init(void)
+>  
+>  	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
+>  	if (ret < 0) {
+> -		pr_err("rpmsgchr: failed to register rpmsg driver\n");
+> +		pr_err("failed to register rpmsg driver\n");
 
-Works for me,
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+This probably the right thing to do - I will pick up this patch.
 
---D
+Thanks,
+Mathieu
 
->  }
-> 
->  /**
+>  		class_destroy(rpmsg_class);
+>  		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+>  	}
+> -- 
+> 2.17.1
 > 
