@@ -2,82 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA259455F6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF97455F6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:26:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232161AbhKRP2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 10:28:55 -0500
-Received: from mail-vk1-f180.google.com ([209.85.221.180]:45579 "EHLO
-        mail-vk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230376AbhKRP2z (ORCPT
+        id S232201AbhKRP25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 10:28:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38016 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232139AbhKRP2z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 18 Nov 2021 10:28:55 -0500
-Received: by mail-vk1-f180.google.com with SMTP id m19so3999009vko.12;
-        Thu, 18 Nov 2021 07:25:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l75YBvaIKIqMqRd0fPmOyxtiZBsumc8q9gz1NkIt1Os=;
-        b=zmBlb8RiIvXVZs0/HRSajIyAL9eQ0lqYKFPYwoGLjOaVp/X9QAI99bQHP9rkW8Nonw
-         fcl1xcvT5M0a7sn8sVtLaQ05g9q2FF8b05yl0xGIKtVfFngdDeQdL9GdPG4mIGq+M4+m
-         6XREFcqV91Tz+Okxfw5krRP1zVYOSCzdjfiD9xcJZoFtkKfRfe2YvtqUCgfpc5sriAGI
-         RdUhk962sQ9SSXKHg/krx6M7X59aFY6mCfITQJVazdiyG+J408vLT+TP6TI0Pt/FeMFC
-         ML9RAJnkoOXZqP/cMrgdCW36cfNCHuKTNx9SUQ75BxZ956ioFxFKqPwvwl+IGs9kvfh1
-         3vcQ==
-X-Gm-Message-State: AOAM532VfHTHyGUGM2++e8JhB6VRJDY8WvAnN4NAfKjEZtgFNS8nsYmQ
-        OjgPhAL4Edrb+VnRqW4PZBIwUJaippNzJQ==
-X-Google-Smtp-Source: ABdhPJwPINizTvpshG6X52QT8E8P79GrAmIz20sbfN05UjqYivYKBpMiDkqYDdfLytK3SGlvQ6nanA==
-X-Received: by 2002:a1f:f24f:: with SMTP id q76mr104864791vkh.11.1637249153981;
-        Thu, 18 Nov 2021 07:25:53 -0800 (PST)
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com. [209.85.222.51])
-        by smtp.gmail.com with ESMTPSA id f21sm45253vke.39.2021.11.18.07.25.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Nov 2021 07:25:53 -0800 (PST)
-Received: by mail-ua1-f51.google.com with SMTP id y5so14436512ual.7;
-        Thu, 18 Nov 2021 07:25:53 -0800 (PST)
-X-Received: by 2002:a67:af0a:: with SMTP id v10mr82716792vsl.35.1637249153248;
- Thu, 18 Nov 2021 07:25:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637249155;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ERRITdzVcT17gm6mQeebp56svvkvy1m5O4EplSE47f4=;
+        b=GPXM4rKr2nZ5ykM1sr2GFR1xrNYW35ugbEk9h/HCuqGz16yfzsENhBWFpZ0tUpziIeQVyP
+        BwDwkgX8J9QQQgJYdSpBODDUGbMs26mPq/6lMeXi08gg22Lf8D1we2SUyfBlIwQ0rxtZIn
+        QYdHrcMQPMiWeXtfLgIuO0obsIP73qg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-551-MXMbAmXsNMWNYlsH7x48Sw-1; Thu, 18 Nov 2021 10:25:50 -0500
+X-MC-Unique: MXMbAmXsNMWNYlsH7x48Sw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E374280A5C3;
+        Thu, 18 Nov 2021 15:25:47 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B8AA05C3E0;
+        Thu, 18 Nov 2021 15:25:44 +0000 (UTC)
+Message-ID: <b6711c49-edab-acfa-2005-42e4732d0e4f@redhat.com>
+Date:   Thu, 18 Nov 2021 16:25:43 +0100
 MIME-Version: 1.0
-References: <20211117115101.28281-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20211117115101.28281-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20211117115101.28281-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 18 Nov 2021 16:25:41 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUhT64AixfTunxcu0T8xmP8sKH-k=f_w9T6pQDRBSPP0A@mail.gmail.com>
-Message-ID: <CAMuHMdUhT64AixfTunxcu0T8xmP8sKH-k=f_w9T6pQDRBSPP0A@mail.gmail.com>
-Subject: Re: [PATCH 1/4] clk: renesas: rzg2l: Check return value of pm_genpd_init()
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 12/15] KVM: VMX: Reset the bits that are meaningful to be
+ reset in vmx_register_cache_reset()
+Content-Language: en-US
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+References: <20211108124407.12187-1-jiangshanlai@gmail.com>
+ <20211108124407.12187-13-jiangshanlai@gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211108124407.12187-13-jiangshanlai@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 12:51 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Make sure we check the return value of pm_genpd_init() which might fail.
-> Also add a devres action to remove the power-domain in-case the probe
-> callback fails further down in the code flow.
->
-> Fixes: ef3c613ccd68a ("clk: renesas: Add CPG core wrapper for RZ/G2L SoC")
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On 11/8/21 13:44, Lai Jiangshan wrote:
+> +/*
+> + * VMX_REGS_AVAIL_SET - The set of registers that will be updated in cache on
+> + *			demand.  Other registers not listed here are synced to
+> + *			the cache immediately after VM-Exit.
+> + *
+> + * VMX_REGS_DIRTY_SET - The set of registers that might be outdated in
+> + *			architecture. Other registers not listed here are synced
+> + *			to the architecture immediately when modifying.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Slightly more expressive:
 
-Gr{oetje,eeting}s,
+/*
+  * VMX_REGS_LAZY_LOAD_SET - The set of registers that will be updated in the
+  * cache on demand.  Other registers not listed here are synced to
+  * the cache immediately after VM-Exit.
+  */
+...
 
-                        Geert
+/*
+  * VMX_REGS_LAZY_UPDATE_SET - The set of registers that might be outdated in
+  * VMCS. Other registers not listed here are synced to the VMCS
+  * immediately when modified.
+  */
+...
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+	BUILD_BUG_ON(VMX_REGS_LAZY_UPDATE_SET & ~VMX_REGS_LAZY_LOAD_SET);
+         vcpu->arch.regs_avail &= ~VMX_REGS_LAZY_LOAD_SET;
+         vcpu->arch.regs_dirty &= ~VMX_REGS_LAZY_UPDATE_SET;
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+That is lazily loaded registers become unavailable, and lazily updated registers
+become unavailable and dirty.
+
+Paolo
+
