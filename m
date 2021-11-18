@@ -2,173 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2344562A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:41:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 784E84562AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:41:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233781AbhKRSoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 13:44:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29060 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233730AbhKRSoh (ORCPT
+        id S233895AbhKRSor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 13:44:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233869AbhKRSop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 13:44:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637260896;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=H/2EXvjEWRBka07ANn93tEZDf/F6ZMhQQB8oMKQppL8=;
-        b=Eham2C36VqRVjrOfgnLf8BurlG0dlC4d2CuzSp7mN8MBxMO9t1CxGWWrskVWRQTRq7j9LN
-        tUTWrfZlOJCGSAcP218JM50kQKJr8djyBWWMcEhVEPxPAHl7xe6z1VXXa4qm4V9FZyRy25
-        xqvax5aUZovjhwQOXxZ2rXOotBr2Vko=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-200-yqNnAm96M0uBgYYUQKObRw-1; Thu, 18 Nov 2021 13:41:32 -0500
-X-MC-Unique: yqNnAm96M0uBgYYUQKObRw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1CD77802B78;
-        Thu, 18 Nov 2021 18:41:31 +0000 (UTC)
-Received: from metal.redhat.com (unknown [10.40.193.71])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EF19160BF1;
-        Thu, 18 Nov 2021 18:41:29 +0000 (UTC)
-From:   Daniel Vacek <neelx@redhat.com>
-To:     paulmck@kernel.org
-Cc:     guillaume@morinfr.org, linux-kernel@vger.kernel.org
-Subject: Re: call_rcu data race patch
-Date:   Thu, 18 Nov 2021 19:41:28 +0100
-Message-Id: <20211118184128.1335912-1-neelx@redhat.com>
-In-Reply-To: <20210927161046.GU880162@paulmck-ThinkPad-P17-Gen-1>
-References: <20210927161046.GU880162@paulmck-ThinkPad-P17-Gen-1>
+        Thu, 18 Nov 2021 13:44:45 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1529FC06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:41:45 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id b4so6179094pgh.10
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:41:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5E2IB/Cp5SuCY2sMyx1cHvM233breYUpupZJuCXffq8=;
+        b=YvYFLqdU3Oi4flhk7q3El5kZ7FqV051hMCCD6VF5Tb/poiUbX0drReNeKn+G5awMb9
+         cp5wNl1XUbpv7xo5VqqrtHhqHgIa2kocOk5Gczd0xN2FgV81OUfoRES8XHkPsqUQLR22
+         TDj9BvAFvDLK4iZUAhYFUcP0HgO6A5ci+WDQQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5E2IB/Cp5SuCY2sMyx1cHvM233breYUpupZJuCXffq8=;
+        b=snZl578O3Kowjo3yLY/Vv5UgYzHKiZ7p8PbElIefPz28XA2xYFHHTD+13f7DKr8bWa
+         ZIXPT1OTGyvBQp1rYExuiX+vunnwNAsXzgUSWvYD4LRJGG2zp/P1kKwJ8B/us0wfzcs2
+         deLJ37RwfnsUAZ6JuhpNXTc+p85nCLWTsPvkNgpPEHY8gM6cFzlkzSFSGg24e7or7k6x
+         Qmzr0AdDetoWQaf3oJgZBeSM/ngBpHKbD3cAuqSqdN6wvA9fQ1cGoNK7vMK0VWsOqi+G
+         VoHbSQTnjbI1UvRe6IKAK5q1ubiIuYqKZV4KVvyafhOYnn01diyBqYaGu70EaaYbROCM
+         cnlA==
+X-Gm-Message-State: AOAM532bvx43YZQ12KD0mBpujCoVR4zpISWOLhSYpFvGweehOm6tnc0j
+        mWywdknwvZ9bpKVMejySuvHPoA==
+X-Google-Smtp-Source: ABdhPJwc7dnnWYpM/BII7semDW5K7ZTw5EQ3iZo3X0zK2n9opbpjrbcZJyR+C92Td6Eikt6CMY98eQ==
+X-Received: by 2002:a63:b25d:: with SMTP id t29mr12824824pgo.79.1637260904633;
+        Thu, 18 Nov 2021 10:41:44 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id pg13sm302472pjb.8.2021.11.18.10.41.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 10:41:44 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Raju Rangoju <rajur@chelsio.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] cxgb3: Use struct_group() for memcpy() region
+Date:   Thu, 18 Nov 2021 10:41:42 -0800
+Message-Id: <20211118184142.1283993-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1623; h=from:subject; bh=9/lgDnWvjAG/e4OtiG74R7yvt2mCPlf+g9R0v4twSTc=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhlp5mtFisJPPeiK7VACEqYNfq6Fb60V+qwJbzbWt+ +nC/xFuJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZaeZgAKCRCJcvTf3G3AJhcsEA CcpVmG8yZhgXbmKlGecnQW49FYZz8akEQcu30+t5gK9rn3YgcTKqBf7yP2/wHuVKHScvVYapnJnr/V JX3B3H0+0XhdAGePr6HGr6rPI+RBTybQnCXU8gEC+T+bpO7m0x7xBFwJ3fv1e+G7oDTH1n9b2V6pGB aJa+En3kTyCshKf81CKABUBYBzy0bH0ZBBP6775HWbLdFKLSe01VtQtxdViYEfU27rBhJ87VlPVD5G ti9Apzrhyzk2/aEWeQjzMGro0SeCcy3b+pE38w3SuvDdqdjO06YVBfjm0oos09tXbj0y2N7oWUooCG W0ZmUusrutmfVAiECbkhQaUvPNznzIQZyNwVAEyRSRrQF9I1SnovoyXAmW2I4tO8R/Ab3xTBaRJPf3 CHF2uzIKx4c1oKhwz5EMbZPVqZLZ1DAGPzDZwk2enfQekZab4BUe8sYhfrkxl6smpYEL0Pa7ApBNPS UV13xkGPy2xWQCUauX2D5H9/QwUjWh558+BQH0zrMelESZ1OIO44v9K0MU4qTGlZ125ukZa0r2yLCO PBusfdLqKb6vy2+GzBZcUSb4ir3nGKNkQOrXM/BJfk6imvBq+bgABBi97mLjrXc/EFe+vHVRhroR2P TvUrhPtSG7MVAKPYsIEa8tjvhkNeE8tqUFa6ccc7+UiDgZIfyMlxfkZTBNZw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Sep 2021 15:07:00 -0700, Paul E. McKenney wrote:
-> OK, please see below.  This is a complete shot in the dark, but could
-> potentially prevent the problem.  Or make it worse, which would at the
-> very least speed up debugging.  It might needs a bit of adjustment to
-> apply to the -stable kernels, but at first glance should apply cleanly.
-> 
-> Oh, and FYI I am having to manually paste your email address into the To:
-> line in order to get this to go back to you.  Please check your email
-> configuration.
-> 
-> Which might mean that you need to pull this from my -rcu tree here:
-> 
-> 1a792b59071b ("EXP rcu: Tighten rcu_advance_cbs_nowake() checks")
-> 
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 6a1e9d3374db..6d692a591f66 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1590,10 +1590,14 @@ static void __maybe_unused rcu_advance_cbs_nowake(struct rcu_node *rnp,
->  						  struct rcu_data *rdp)
->  {
->  	rcu_lockdep_assert_cblist_protected(rdp);
-> -	if (!rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) ||
-> +	// Don't do anything unless the current grace period is guaranteed
-> +	// not to end.  This means a grace period in progress and at least
-> +	// one holdout CPU.
-> +	if (!rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) || !READ_ONCE(rnp->qsmask) ||
->  	    !raw_spin_trylock_rcu_node(rnp))
->  		return;
-> -	WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
-> +	if (rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) && READ_ONCE(rnp->qsmask))
-> +		WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
->  	raw_spin_unlock_rcu_node(rnp);
->  }
->  
+In preparation for FORTIFY_SOURCE performing compile-time and run-time
+field bounds checking for memcpy(), memmove(), and memset(), avoid
+intentionally writing across neighboring fields.
 
-Hello Paul,
+Use struct_group() in struct rss_hdr around members imm_data and intr_gen,
+so they can be referenced together. This will allow memcpy() and sizeof()
+to more easily reason about sizes, improve readability, and avoid future
+warnings about writing beyond the end of imm_data.
 
-We've received a few reports of this warning. Reviewing the code I don't really
-see any reason for the READ_ONCE(rnp->qsmask) part here and hence I started
-tracing the data before applying the patch to see the actual values before
-and after the lock is acquired to better understand the situation.
+"pahole" shows no size nor member offset changes to struct rss_hdr.
+"objdump -d" shows no object code changes.
 
-This can be done with a short bash script:
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/net/ethernet/chelsio/cxgb3/sge.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-~~~
-perf probe 'prelock1=rcu_advance_cbs_nowake+0x29 gp_seq=%ax:x64 rnp->qsmask rnp->lock'			# gp_seq from register after the condition check so this one will always be &3!=0
-perf probe 'prelock2=rcu_advance_cbs_nowake+0x2c rnp->gp_seq    rnp->qsmask rnp->lock'			# gp_seq refetched from memory. it could already be &0x3==0
-perf probe 'acquired=rcu_advance_cbs_nowake+0x35 rnp->gp_seq    rnp->qsmask rnp->lock'			# gp_seq refetched again after taking the lock, ditto - which is bug
-perf probe 'warning_=rcu_advance_cbs_nowake+0x40 rnp->gp_seq    rnp->qsmask rnp->lock condition=%ax:s8'	# 'condition' is the return value from rcu_advance_cbs() call
-trace-cmd stream \
-	-e probe:prelock1 \
-	-e probe:prelock2 -f '!gp_seq&3' \
-	-e probe:acquired -f '!gp_seq&3' \
-	-e probe:warning_ -f condition==1
-~~~
-
-The best part is that adding the kprobes opened the race window so that with
-the tracing enabled I could reproduce the bug in matter of seconds on my VM.
-One 'top' on an idle system is enough to hit it, though to accelerate I was
-using a bunch of them (but still just enough so that the machine remains
-mostly idle - the VM has 8 vCPUs):
-
-# for i in {1..40}; do top -b -d 0.1 >/dev/null & done	# kill %{1..40}
-
-Note, that 'rcu_nocbs=1-7' kernel option needs to be used otherwise
-rcu_advance_cbs_nowake() is not even beeing called at all as well as there
-are no offload threads it could race with.
-
-The results show that indeed (confirming the code review) the node qsmask can
-be zero while still there is no warning and no subsequent stall. As long as
-rcu_seq_state(...) is true, everything is fine.
-
-Only when the GP state check is true before taking the lock and false after
-acquiring it is when rcu_advance_cbs() returns with true and the system is
-doomed (with the warning warmly announcing it) as the 'rcu_sched' thread is
-never woken again. The system will eventually run out of memory or the tasks
-get blocked on synchronize_rcu() indefinitely.
-
-With this observation I was confident enough to finally apply just the grace
-period part of your patch (below). After that the system survived 12 hours
-over night. Since I could reproduce in matter of seconds before I call it a
-success.
-
-So what is your opinion about the quiescent state mask part? Is it needed or
-rather really redundant? Perhaps upstream differs to RHEL kernel but on RHEL
-I don't really see the need and the below patch is sufficient IMO.
-
-Or perhaps I'm missing the part where the qsmask check is not really needed
-but it's just an optimization because in that case we do not need to advance
-the callbacks here as they will be advanced soon anyways?
-
-With or without the qsmask part, in both cases I believe this should go to
-stable 5.4+ and of course we want it in RHEL asap, so once Linus merges a
-version of it, we are going to backport. Since this is only reproducible
-with the 'rcu_nocbs' option I understand that the v5.17 merge window is
-a reasonable target for upstream. Nevertheless this is still a bugfix.
-
---nX
-
-----
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 1aebb2dfbf90..96df7f68ff4d 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1389,7 +1389,8 @@ static void __maybe_unused rcu_advance_cbs_nowake(struct rcu_node *rnp,
- 	if (!rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) ||
- 	    !raw_spin_trylock_rcu_node(rnp))
- 		return;
--	WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
-+	if (rcu_seq_state(rcu_seq_current(&rnp->gp_seq)))
-+		WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
- 	raw_spin_unlock_rcu_node(rnp);
- }
+diff --git a/drivers/net/ethernet/chelsio/cxgb3/sge.c b/drivers/net/ethernet/chelsio/cxgb3/sge.c
+index c3afec1041f8..70f528a9c727 100644
+--- a/drivers/net/ethernet/chelsio/cxgb3/sge.c
++++ b/drivers/net/ethernet/chelsio/cxgb3/sge.c
+@@ -126,8 +126,10 @@ struct rsp_desc {		/* response queue descriptor */
+ 	struct rss_header rss_hdr;
+ 	__be32 flags;
+ 	__be32 len_cq;
+-	u8 imm_data[47];
+-	u8 intr_gen;
++	struct_group(immediate,
++		u8 imm_data[47];
++		u8 intr_gen;
++	);
+ };
  
+ /*
+@@ -925,7 +927,8 @@ static inline struct sk_buff *get_imm_packet(const struct rsp_desc *resp)
+ 
+ 	if (skb) {
+ 		__skb_put(skb, IMMED_PKT_SIZE);
+-		skb_copy_to_linear_data(skb, resp->imm_data, IMMED_PKT_SIZE);
++		BUILD_BUG_ON(IMMED_PKT_SIZE != sizeof(resp->immediate));
++		skb_copy_to_linear_data(skb, &resp->immediate, IMMED_PKT_SIZE);
+ 	}
+ 	return skb;
+ }
 -- 
+2.30.2
 
