@@ -2,85 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CDEF456044
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65CC4456048
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233079AbhKRQTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 11:19:10 -0500
-Received: from mout.gmx.net ([212.227.15.19]:36719 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232984AbhKRQTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 11:19:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1637252168;
-        bh=R1Da6f0eM2GEzCzgkzCUXcWS+oLCUqHQulyAz/iRcF4=;
-        h=X-UI-Sender-Class:Date:Subject:From:To:References:In-Reply-To;
-        b=S35npDQBX8f/j0E3/60Uy61KDUfQRTxtpz1NEBcSsuKNKx46Q5nWHoYWsRpMQ7iCk
-         X8+pO25pfFTsVC7XBYVRAZ+jyDI00JfCHX+Q82FyNCp+0wJn5v/JMa+VMiz/9vXPdu
-         2awO0nlUMhF3jvzqLLNDEO5n5CPY9zwgrS01cKss=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.23] ([77.8.228.232]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MZkpR-1n8FDj2Bgl-00Wlhe for
- <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 17:16:08 +0100
-Message-ID: <180bc128-6017-1a87-f738-a407b1af9a3a@gmx.de>
-Date:   Thu, 18 Nov 2021 17:16:08 +0100
+        id S233088AbhKRQUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 11:20:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232984AbhKRQUN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 11:20:13 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65168C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:17:13 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id cq22-20020a17090af99600b001a9550a17a5so8635101pjb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:17:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SBcIQzCX8Yq5J7qmrIFRGqarw+SHho/cn1etZqGWWXg=;
+        b=J5q10V4d8pi9a9wYxUYPyW3JVjZzW7L7/yOJAKCE2ks7Q5GEUqNMovDlFEDpQXkzrb
+         B+J6JYrmxgMrAIMtL8FE6INACm8S5p9UygDANUSLgQTqSA8jos4/XsOUS8rYVH9UGlv3
+         E4sc8EfhDRU64uE9IKM/7taVdAyaW75nMsczSPsf4cKbIZMxXqXqbvP9A9XJzXh4wmw/
+         H1kKPS9OX1nRPTdsDTP1qoqd8jvveeHzwyFGNt8V9cpZSBPAO0TrBrK4oTzmH1nQeIZT
+         AE1rbvCypa3znaIRhI0leraXk39igTRXK6hXVG9xogK7XvRlPbGb9oU66+HokmZU/UZR
+         soQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SBcIQzCX8Yq5J7qmrIFRGqarw+SHho/cn1etZqGWWXg=;
+        b=NUxefks5BVH53W5Qndke6IJkhvY+fAhAmS9LavrRCbUD6EOHuLOgBAfMWOd0W8u0xe
+         v5xh9QDFSvFBPq7XTgGq4fvYlgFENP2dtlIjqNlocfV98fJfi+gEH40o0gUrek0H7wtb
+         +TJVUFmbSWTnDFW+rDlFXhb13ys9nXAfalaXaWU/NdBeAHLCWPGzFDa+tzx9i3nuaV8Z
+         apGgJyPU2IAvhbDPEpgVXNlAveTlXLJEx2E50qS0a3MfAnQNwEbU1bwRkgGbvIkaDxdM
+         93domMtOe0DDtNkOMTy+K5ViA8davx4fnQCRqOHNdYMUe6wB2csInlm0+MR0KfgnHFRM
+         d4eA==
+X-Gm-Message-State: AOAM530tvlm4GuQKXJfbd8nrJ5BnBY8GjV2oXXMVycO0C6S1NlJHpdXk
+        ZKkqJd8qZtSUTQtGOYeg03uOxA==
+X-Google-Smtp-Source: ABdhPJzGVTCI02WZkeU94xIqEOFMTcYNEQT1GyEoQZIVk9gFGNyOROoxkz2LqIeWOQmktUvz6cUmsA==
+X-Received: by 2002:a17:90a:ad47:: with SMTP id w7mr11953097pjv.16.1637252232716;
+        Thu, 18 Nov 2021 08:17:12 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id p19sm116176pfo.92.2021.11.18.08.17.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 08:17:12 -0800 (PST)
+Date:   Thu, 18 Nov 2021 16:17:08 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2] KVM: x86: check PIR even for vCPUs with disabled APICv
+Message-ID: <YZZ8hAjbIJnkkraD@google.com>
+References: <20211118072531.1534938-1-pbonzini@redhat.com>
+ <8ad47d43a7c8ae19f09cc6ada73665d6e348e213.camel@redhat.com>
+ <4ee9fe58-73ca-98fd-3d79-198e1093f722@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: BUG with 5.14.19
-Content-Language: en-US
-From:   =?UTF-8?Q?Toralf_F=c3=b6rster?= <toralf.foerster@gmx.de>
-To:     Linux Kernel <linux-kernel@vger.kernel.org>
-References: <43a8abc2-6168-5f5f-5436-58f69fa7e679@gmx.de>
-In-Reply-To: <43a8abc2-6168-5f5f-5436-58f69fa7e679@gmx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:GndE9ENJGVlE8VINAAFOib1IgWau5/evAbuwx+yk7D4/IPf4jD7
- EZKYBZ6owR9xaZPK2Y8vfraTSxurq1bOh4wu2d0Ny93HJC5l5g7sM/IKhHEwX9RiU4WAhLI
- kHoWXex49uYhYR7lvtjCoAzLxBTB+KSNDAleyqNkaXFtGQfCK0z4+H/GrDUAecsuZQfikZj
- MN8yWMbalIKVve2K9tjnw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:uiazx/O0/BU=:m+cyakrbztSrvuPTpoCf/q
- /NjrWOLI8smklB+/DidNAyb/d9DVRckqmCxOCeV1IYTDEJmPDG531ZMDGMNibuNe0NyUpzKh+
- 8F1aAg6ZS/Ub3XWPEXZzYPxqKaHmj/n7iOmKom4jGHSVWxQqK63YD0Tb+MXjN0ZPfh1ZvAfmA
- EdJGfWtFVRFGCjM0rOa+pJPMbrWr/RRIRHPqDQu30Aabw3yOtczwgY/GqEhnOTCe66pOdpiWF
- 84zqE5TNAF/i1eIU/4O9JKKz2szlilp364/fcEytMz8KxrjW09YFvCwomy+UV5Exa6uwfIon9
- t73zPR+4SzfsECBEeowk5S6GyEsGbMXzezmOn/cQfKR2MUlEAru8KSk/g+fZFOprme8dl3B8W
- YsZCZLharf0sWs865rv0HutdSxM2L4R4wsNxc3YjNGFRer6iYkQ+gJpSAg9d6p8gHFxFNBFm1
- PNMQugUkOO7u0YbHAPohAU3IywUVCF1B1S/F3//XlruYFy13RZ4EIUT0Z/7E2teLySet7Y9pz
- P79nvPt2FxQzGC7NWubFeVLgsUKGGLdXTobrCk2SX1BJl941a9wLWN9y4J7Ul6gMULwCU9lyR
- hDvBe6OgcIBhSKHLATvZA2GHiyKlbdibBWJYO0ADx8SNykcWJkDf9Zg65tVm0WziaUrm3cDra
- BKX/hTplEVXBGjSjY0wWD6eQxu1EXu7gP7U731ZHi0CLq28Yfnl/oKFzZwssq/M/gHmOWk8hE
- OqnEQfJoIvrtRLhg2gKySbkh+EWkCDGqyfW4kkoOPvAXs10brQ/vwrx9YaD0USDho6dXxGBA3
- bZRhTMTILThdSxd0c9dCn7XroXvOtJ1qoMeUWe9olbY7sGE3S6UnUsGV6VTguO8IxuXdQQAzh
- 0LdwUvK0NRGd93LKpbMG2H6y6gc89KMASAIqRnfRtDp27cNHBcsNaaJMNnjiU4MUV2iT1t5DQ
- h3dAtMy6NF+wP3Aq5u9oLli+YB8RBVIlT9IvsXKkBYwT4b/mZAoGd1cBXuLxmsV0JLZnxGSZ+
- hGISFIb8YPeE9VuGFae6FaqpbS5MgvIMYb2qbXNgOMcirkxfVqy5jstfMVQNlgTFX/6A0ROwX
- a7r1YxXLhLIgrQ=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4ee9fe58-73ca-98fd-3d79-198e1093f722@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/21 09:09, Toralf F=C3=B6rster wrote:
-> Hi,
->
-> got the crash (attached) today at a ThinkPad T440s
-> IIRC this is happened the first time.
-> I updated from 5.14.17 yesterday.
-> At that time the KDE sessions freezed and I had to power off/on.
->
->
-> $ uname -a
-> Linux t44 5.14.19 #16 SMP Wed Nov 17 11:46:45 CET 2021 x86_64 Intel(R)
-> Core(TM) i5-4300U CPU @ 1.90GHz GenuineIntel GNU/Linux
->
+On Thu, Nov 18, 2021, Paolo Bonzini wrote:
+> On 11/18/21 10:56, Maxim Levitsky wrote:
+> > vmx_sync_pir_to_irr has 'if (KVM_BUG_ON(!vcpu->arch.apicv_active,
+> > vcpu->kvm))' That has to be removed I think for this to work.
+> 
+> Good point.
 
-FWIW it produced data corruption here at a BTRFS volume.
+Hmm, I think I'd prefer to keep it as
 
-KDE config files, password vaults, but even larger Git repositories like
-the kernel or Gentoo portage git tree were corrupted.
+	if (KVM_BUG_ON(!enable_apicv))
+		return -EIO;
 
-Didn't really expected this for a .19 stable release.
-
-=2D-
-Toralf
+since calling it directly or failing to nullify vmx_x86_ops.sync_pir_to_irr when
+APICv is unsupported would lead to all sorts of errors.  It's not a strong
+preference though.
