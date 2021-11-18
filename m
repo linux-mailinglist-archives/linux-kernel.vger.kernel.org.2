@@ -2,57 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5778B455B41
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:10:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E117D455B47
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:10:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344537AbhKRMM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 07:12:57 -0500
-Received: from foss.arm.com ([217.140.110.172]:40092 "EHLO foss.arm.com"
+        id S1344564AbhKRMNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 07:13:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344467AbhKRMMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 07:12:49 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7637E1FB;
-        Thu, 18 Nov 2021 04:09:49 -0800 (PST)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A008E3F766;
-        Thu, 18 Nov 2021 04:09:48 -0800 (PST)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        cristian.marussi@arm.com
-Cc:     Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH v2] arm/scmi: fix base agent discover response
-Date:   Thu, 18 Nov 2021 12:09:43 +0000
-Message-Id: <163723734736.4014156.4454501057354855876.b4-ty@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211117081856.9932-1-vincent.guittot@linaro.org>
-References: <20211117081856.9932-1-vincent.guittot@linaro.org>
-MIME-Version: 1.0
+        id S1344558AbhKRMNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 07:13:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6486F613B1;
+        Thu, 18 Nov 2021 12:10:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637237409;
+        bh=wKd64XmNjusL5yxTUQ+3VyQzvQcvVhwUtjhGaUR498o=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=cm06SYnaHlkeePSA6ELglKUq7Pl21KbkBCHl834wjvfD7sojT5bMVx5/EW+/rvrcK
+         dUIt81rzWhZ/5zTOFHlIID5SaqaRjWUShCHmSX8eIBXtJKzc6iUuPctWTBguG/Nxr3
+         J51CYiQnvclY3JHehEwQL4qJNcxwr7ERFH/ZUPKGnDNupbVKSK+mGVIZ8VTtN9HXOY
+         R580OcMh1RkoVmjVzXMJj81s75Y4OEpgy36azfZECpWj9CYtulpWFZ/Bd7Guxs/9Nr
+         lj3u2ita7oaXIjASYc8w/nxejN3qmR6JSVoxijXNiLGqa3vv+uQUTRzhxHAedXSR7y
+         v6Jg6bfir9kww==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 578DD60A94;
+        Thu, 18 Nov 2021 12:10:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] net: ethernet: dec: tulip: de4x5: fix possible array
+ overflows in type3_infoblock()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163723740935.26371.8164804741918888412.git-patchwork-notify@kernel.org>
+Date:   Thu, 18 Nov 2021 12:10:09 +0000
+References: <20211118070118.63756-1-starmiku1207184332@gmail.com>
+In-Reply-To: <20211118070118.63756-1-starmiku1207184332@gmail.com>
+To:     Teng Qi <starmiku1207184332@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, tanghui20@huawei.com,
+        arnd@arndb.de, netdev@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        baijiaju1990@gmail.com, islituo@gmail.com, oslab@tsinghua.edu.cn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Nov 2021 09:18:56 +0100, Vincent Guittot wrote:
-> According to scmi specification, the response of the discover agent request
-> is made of:
-> - int32 status
-> - uint32 agent_id
-> - uint8 name[16]
+Hello:
+
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
+
+On Thu, 18 Nov 2021 15:01:18 +0800 you wrote:
+> The definition of macro MOTO_SROM_BUG is:
+>   #define MOTO_SROM_BUG    (lp->active == 8 && (get_unaligned_le32(
+>   dev->dev_addr) & 0x00ffffff) == 0x3e0008)
 > 
-> but the current implementation doesn't take into account the agent_id field
-> and only allocates a rx buffer of SCMI_MAX_STR_SIZE length
+> and the if statement
+>   if (MOTO_SROM_BUG) lp->active = 0;
 > 
 > [...]
 
-Applied to sudeep.holla/linux (for-next/scmi), thanks!
+Here is the summary with links:
+  - [v2] net: ethernet: dec: tulip: de4x5: fix possible array overflows in type3_infoblock()
+    https://git.kernel.org/netdev/net/c/0fa68da72c3b
 
-[1/1] arm/scmi: fix base agent discover response
-      https://git.kernel.org/sudeep.holla/c/d1cbd9e0f7
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
---
-Regards,
-Sudeep
 
