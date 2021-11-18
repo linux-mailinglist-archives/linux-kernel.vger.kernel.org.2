@@ -2,177 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF981455CA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CADE4455CE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:42:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231204AbhKRN27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 08:28:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:52885 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230512AbhKRN27 (ORCPT
+        id S231563AbhKRNpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 08:45:07 -0500
+Received: from fgw20-4.mail.saunalahti.fi ([62.142.5.107]:59422 "EHLO
+        fgw20-4.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231455AbhKRNpE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 08:28:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637241958;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kb1ScM+tPjpaRtxM4KUni8Ao9s67vbqfcmBg158Ebpk=;
-        b=fjshLGupEPAtqh8XNOhA60MxDmPi4LA2FFTOmmcz8mTSRRtQMN8+UbNCAs7Sy9uSY2v/Cs
-        QB7NkrCzSrrUWojQK5AR2Il0tRRuTyu80nKO3aNf9TTm4MEWrLlf3YW1JA13edqesE/LyA
-        m6t4rTJsk+CS45BOKU7Dck3pYFWx9EM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-287-urWffV7eM2mCNtKSCJvgSA-1; Thu, 18 Nov 2021 08:25:55 -0500
-X-MC-Unique: urWffV7eM2mCNtKSCJvgSA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AB30018D6A36;
-        Thu, 18 Nov 2021 13:25:53 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 80A6C1B5C2;
-        Thu, 18 Nov 2021 13:25:33 +0000 (UTC)
-Message-ID: <c840f1fe-5000-fb45-b5f6-eac15e205995@redhat.com>
-Date:   Thu, 18 Nov 2021 14:25:32 +0100
+        Thu, 18 Nov 2021 08:45:04 -0500
+Received: from darkstar.musicnaut.iki.fi (85-76-67-64-nat.elisa-mobile.fi [85.76.67.64])
+        by fgw20.mail.saunalahti.fi (Halon) with ESMTP
+        id 0fb7db22-4873-11ec-8d6d-005056bd6ce9;
+        Thu, 18 Nov 2021 15:25:57 +0200 (EET)
+Date:   Thu, 18 Nov 2021 15:25:56 +0200
+From:   Aaro Koskinen <aaro.koskinen@iki.fi>
+To:     Johannes Berg <johannes.berg@intel.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [BISECTED REGRESSION] Wireless networking kernel crashes
+Message-ID: <20211118132556.GD334428@darkstar.musicnaut.iki.fi>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] KVM: x86/svm: Add module param to control PMU
- virtualization
-Content-Language: en-US
-To:     Like Xu <like.xu.linux@gmail.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211117080304.38989-1-likexu@tencent.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211117080304.38989-1-likexu@tencent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/21 09:03, Like Xu wrote:
-> From: Like Xu <likexu@tencent.com>
-> 
-> For Intel, the guest PMU can be disabled via clearing the PMU CPUID.
-> For AMD, all hw implementations support the base set of four
-> performance counters, with current mainstream hardware indicating
-> the presence of two additional counters via X86_FEATURE_PERFCTR_CORE.
-> 
-> In the virtualized world, the AMD guest driver may detect
-> the presence of at least one counter MSR. Most hypervisor
-> vendors would introduce a module param (like lbrv for svm)
-> to disable PMU for all guests.
-> 
-> Another control proposal per-VM is to pass PMU disable information
-> via MSR_IA32_PERF_CAPABILITIES or one bit in CPUID Fn4000_00[FF:00].
-> Both of methods require some guest-side changes, so a module
-> parameter may not be sufficiently granular, but practical enough.
-> 
-> Signed-off-by: Like Xu <likexu@tencent.com>
-> ---
->   arch/x86/kvm/cpuid.c   |  2 +-
->   arch/x86/kvm/svm/pmu.c |  4 ++++
->   arch/x86/kvm/svm/svm.c | 11 +++++++++++
->   arch/x86/kvm/svm/svm.h |  1 +
->   4 files changed, 17 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 2d70edb0f323..647af2a184ad 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -487,7 +487,7 @@ void kvm_set_cpu_caps(void)
->   		F(CR8_LEGACY) | F(ABM) | F(SSE4A) | F(MISALIGNSSE) |
->   		F(3DNOWPREFETCH) | F(OSVW) | 0 /* IBS */ | F(XOP) |
->   		0 /* SKINIT, WDT, LWP */ | F(FMA4) | F(TBM) |
-> -		F(TOPOEXT) | F(PERFCTR_CORE)
-> +		F(TOPOEXT) | 0 /* PERFCTR_CORE */
->   	);
->   
->   	kvm_cpu_cap_mask(CPUID_8000_0001_EDX,
-> diff --git a/arch/x86/kvm/svm/pmu.c b/arch/x86/kvm/svm/pmu.c
-> index fdf587f19c5f..a0bcf0144664 100644
-> --- a/arch/x86/kvm/svm/pmu.c
-> +++ b/arch/x86/kvm/svm/pmu.c
-> @@ -16,6 +16,7 @@
->   #include "cpuid.h"
->   #include "lapic.h"
->   #include "pmu.h"
-> +#include "svm.h"
->   
->   enum pmu_type {
->   	PMU_TYPE_COUNTER = 0,
-> @@ -100,6 +101,9 @@ static inline struct kvm_pmc *get_gp_pmc_amd(struct kvm_pmu *pmu, u32 msr,
->   {
->   	struct kvm_vcpu *vcpu = pmu_to_vcpu(pmu);
->   
-> +	if (!pmuv)
-> +		return NULL;
-> +
->   	switch (msr) {
->   	case MSR_F15H_PERF_CTL0:
->   	case MSR_F15H_PERF_CTL1:
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 21bb81710e0f..062e48c191ee 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -190,6 +190,10 @@ module_param(vgif, int, 0444);
->   static int lbrv = true;
->   module_param(lbrv, int, 0444);
->   
-> +/* enable/disable PMU virtualization */
-> +bool pmuv = true;
-> +module_param(pmuv, bool, 0444);
-> +
->   static int tsc_scaling = true;
->   module_param(tsc_scaling, int, 0444);
->   
-> @@ -952,6 +956,10 @@ static __init void svm_set_cpu_caps(void)
->   	    boot_cpu_has(X86_FEATURE_AMD_SSBD))
->   		kvm_cpu_cap_set(X86_FEATURE_VIRT_SSBD);
->   
-> +	/* AMD PMU PERFCTR_CORE CPUID */
-> +	if (pmuv && boot_cpu_has(X86_FEATURE_PERFCTR_CORE))
-> +		kvm_cpu_cap_set(X86_FEATURE_PERFCTR_CORE);
-> +
->   	/* CPUID 0x8000001F (SME/SEV features) */
->   	sev_set_cpu_caps();
->   }
-> @@ -1085,6 +1093,9 @@ static __init int svm_hardware_setup(void)
->   			pr_info("LBR virtualization supported\n");
->   	}
->   
-> +	if (!pmuv)
-> +		pr_info("PMU virtualization is disabled\n");
-> +
->   	svm_set_cpu_caps();
->   
->   	/*
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 0d7bbe548ac3..08e1c19ffbdf 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -32,6 +32,7 @@
->   extern u32 msrpm_offsets[MSRPM_OFFSETS] __read_mostly;
->   extern bool npt_enabled;
->   extern bool intercept_smi;
-> +extern bool pmuv;
->   
->   /*
->    * Clean bits in VMCB.
-> 
+Hello,
 
-Queued, thanks - just changed the parameter name to "pmu".
+I have tried to upgrade my wireless AP (Raspberry Pi with rt2x00usb)
+from v5.9 to the current mainline, but now it keeps crashing every hour
+or so, basically making my wireless network unusable.
 
-Paolo
+I have bisected this to:
 
+commit 03c3911d2d67a43ad4ffd15b534a5905d6ce5c59
+Author: Ryder Lee <ryder.lee@mediatek.com>
+Date:   Thu Jun 17 18:31:12 2021 +0200
+
+    mac80211: call ieee80211_tx_h_rate_ctrl() when dequeue
+
+With the previous commit the system stays up for weeks...
+
+I just tried today's mainline, and it crashed after 10 minutes:
+
+[  603.545437] ------------[ cut here ]------------
+[  603.550148] WARNING: CPU: 1 PID: 45 at include/net/mac80211.h:2742 rt2x00queue_create_tx_descriptor+0x4b0/0x4c8
+[  603.560378] CPU: 1 PID: 45 Comm: kworker/u8:1 Not tainted 5.16.0-rc1-rpi32-los_25d00-00021-g42eb8fdac2fc #1
+[  603.570200] Hardware name: BCM2835
+[  603.573649] Workqueue: phy0 rt2x00usb_work_rxdone
+[  603.578459] [<b010bec8>] (unwind_backtrace) from [<b0109f14>] (show_stack+0x10/0x14)
+[  603.586277] [<b0109f14>] (show_stack) from [<b06f5f14>] (dump_stack_lvl+0x40/0x4c)
+[  603.593924] [<b06f5f14>] (dump_stack_lvl) from [<b06ed554>] (__warn+0xa0/0xc8)
+[  603.601226] [<b06ed554>] (__warn) from [<b06ed5d8>] (warn_slowpath_fmt+0x5c/0xc8)
+[  603.608808] [<b06ed5d8>] (warn_slowpath_fmt) from [<b0463ea4>] (rt2x00queue_create_tx_descriptor+0x4b0/0x4c8)
+[  603.618841] [<b0463ea4>] (rt2x00queue_create_tx_descriptor) from [<b046481c>] (rt2x00queue_write_tx_frame+0x34/0x454)
+[  603.629540] [<b046481c>] (rt2x00queue_write_tx_frame) from [<b0462564>] (rt2x00mac_tx+0x8c/0x360)
+[  603.638542] [<b0462564>] (rt2x00mac_tx) from [<b06ac828>] (ieee80211_tx_frags+0x158/0x22c)
+[  603.646894] [<b06ac828>] (ieee80211_tx_frags) from [<b06adffc>] (__ieee80211_tx.constprop.0+0x60/0x154)
+[  603.656369] [<b06adffc>] (__ieee80211_tx.constprop.0) from [<b06b18ac>] (ieee80211_tx+0x114/0x144)
+[  603.665406] [<b06b18ac>] (ieee80211_tx) from [<b06b46f8>] (ieee80211_tx_pending+0xb8/0x298)
+[  603.673837] [<b06b46f8>] (ieee80211_tx_pending) from [<b012450c>] (tasklet_action_common.constprop.0+0xc0/0xd8)
+[  603.684011] [<b012450c>] (tasklet_action_common.constprop.0) from [<b01012c4>] (__do_softirq+0xc4/0x23c)
+[  603.693606] [<b01012c4>] (__do_softirq) from [<b0123e60>] (do_softirq+0x60/0x68)
+[  603.701079] [<b0123e60>] (do_softirq) from [<b0123f30>] (__local_bh_enable_ip+0xc8/0xdc)
+[  603.709251] [<b0123f30>] (__local_bh_enable_ip) from [<b0461694>] (rt2x00lib_rxdone+0x2c0/0x650)
+[  603.718111] [<b0461694>] (rt2x00lib_rxdone) from [<b04662c4>] (rt2x00usb_work_rxdone+0x50/0x9c)
+[  603.726879] [<b04662c4>] (rt2x00usb_work_rxdone) from [<b01364bc>] (process_one_work+0x1c4/0x408)
+[  603.735832] [<b01364bc>] (process_one_work) from [<b0136728>] (worker_thread+0x28/0x4dc)
+[  603.744002] [<b0136728>] (worker_thread) from [<b013bf64>] (kthread+0x158/0x184)
+[  603.751516] [<b013bf64>] (kthread) from [<b0100148>] (ret_from_fork+0x14/0x2c)
+[  603.758836] Exception stack(0xb13edfb0 to 0xb13edff8)
+[  603.763941] dfa0:                                     00000000 00000000 00000000 00000000
+[  603.772159] dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[  603.780382] dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[  603.787081] ---[ end trace 55e1e82e78938beb ]---
+[  603.791783] 8<--- cut here ---
+[  603.794883] Unable to handle kernel NULL pointer dereference at virtual address 00000006
+[  603.803057] [00000006] *pgd=00000000
+[  603.806730] Internal error: Oops: 17 [#1] PREEMPT SMP ARM
+[  603.812177] CPU: 1 PID: 45 Comm: kworker/u8:1 Tainted: G        W         5.16.0-rc1-rpi32-los_25d00-00021-g42eb8fdac2fc #1
+[  603.823361] Hardware name: BCM2835
+[  603.826807] Workqueue: phy0 rt2x00usb_work_rxdone
+[  603.831595] PC is at rt2x00queue_create_tx_descriptor+0x424/0x4c8
+[  603.837739] LR is at rt2x00queue_create_tx_descriptor+0x4b0/0x4c8
+[  603.843879] pc : [<b0463e18>]    lr : [<b0463ea4>]    psr: 60000013
+[  603.850199] sp : b13edc98  ip : 00000000  fp : 00000002
+[  603.855486] r10: b13edda4  r9 : 00000002  r8 : 00000000
+[  603.860744] r7 : b23cc7a0  r6 : b23c7760  r5 : b115c300  r4 : b13edcc0
+[  603.867317] r3 : 00000000  r2 : 00000000  r1 : b0cc0858  r0 : 00000000
+[  603.873897] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+[  603.881096] Control: 10c5387d  Table: 025e806a  DAC: 00000051
+[  603.886877] Register r0 information: NULL pointer
+[  603.891653] Register r1 information: non-slab/vmalloc memory
+[  603.897385] Register r2 information: NULL pointer
+[  603.902137] Register r3 information: NULL pointer
+[  603.906892] Register r4 information: non-slab/vmalloc memory
+[  603.912608] Register r5 information: slab skbuff_head_cache start b115c300 pointer offset 0 size 48
+[  603.921776] Register r6 information: slab kmalloc-8k start b23c6000 pointer offset 5984 size 8192
+[  603.930735] Register r7 information: slab kmalloc-4k start b23cc000 pointer offset 1952 size 4096
+[  603.939686] Register r8 information: NULL pointer
+[  603.944434] Register r9 information: non-paged memory
+[  603.949540] Register r10 information: non-slab/vmalloc memory
+[  603.955333] Register r11 information: non-paged memory
+[  603.960522] Register r12 information: NULL pointer
+[  603.965375] Process kworker/u8:1 (pid: 45, stack limit = 0x90ded79a)
+[  603.971786] Stack: (0xb13edc98 to 0xb13ee000)
+[  603.976196] dc80:                                                       b10e7d08 00000000
+[  603.984429] dca0: b115c300 b13edd58 b10e7d08 b046481c ec896000 80150003 b0537a48 b1d83f00
+[  603.992681] dcc0: 00000088 001805c0 00000000 00000000 00000000 00000000 00000000 00000000
+[  604.000926] dce0: 00000000 00000000 00000000 b0b05e88 0000f8a0 b115c300 b23c6500 b23c7760
+[  604.009158] dd00: b13edd58 b10e7d08 00000002 b13edda4 00000002 b0462564 00000000 00000000
+[  604.017393] dd20: 00000000 00000000 00000000 b13edda4 b23c6500 b04624d8 00000001 00000000
+[  604.025630] dd40: b23c6a1c b13edda4 00000002 b06ac828 b23c2d48 b23cc7a0 b23cc7a0 b0b05e88
+[  604.033869] dd60: b115c300 b115c300 b13edda4 b23c2540 00000001 b23c6500 b23c2540 b23c6724
+[  604.042114] dd80: b23c6500 b06adffc 00000001 b23c6500 b115c300 00000000 b23c2540 b06b18ac
+[  604.050343] dda0: 00000000 b13edda4 b13edda4 00000000 00000000 b23c6500 b23c2540 b23cc000
+[  604.058570] ddc0: b20ee800 00000000 00000002 b0b05e88 b115c300 b23c6b84 20000013 b23c6a1c
+[  604.066816] dde0: 00000000 b06b46f8 b23c6504 00000002 00000001 8015000f b21c2780 00000000
+[  604.075066] de00: b23c6c68 b0b05e88 00000000 b23c6c64 00000000 ec8332b0 b0abdec0 00000040
+[  604.083304] de20: 40000006 b13ede48 00000006 b012450c 00000000 b0b03098 00000101 b0b03080
+[  604.091555] de40: b12a8000 b01012c4 b12d3ac8 b23c6500 b13ede74 0000000a 0004a1b9 04208060
+[  604.099805] de60: 00000100 60000013 b23c7760 b1e92b40 b2241300 00000000 00000100 b21e0505
+[  604.108040] de80: b0cba7b0 b0123e60 00000001 b0123f30 b12d3ac8 b0461694 b12a8280 ec836340
+[  604.116265] dea0: 00000000 00000000 00000000 ffffffcd 00000018 00000000 0000000c 00000000
+[  604.124514] dec0: 00000000 00000000 00000004 00000000 00000000 00000000 00000000 b0b05e88
+[  604.132754] dee0: b23c7b80 b13edf04 b1006200 b21e0500 00000000 00000100 b21e0505 b04662c4
+[  604.140991] df00: b13edf4c 00000028 b10e7d60 b0b03d00 b23c7760 b0471008 b23c7760 b23c7b90
+[  604.149233] df20: b23c7b80 b0b05e88 b1006200 b23c7b80 b1201a00 b01364bc b1006218 b0b03d00
+[  604.157470] df40: b1201a00 b1006200 b1201a18 b1006218 b0b03d00 00000088 b1006200 b0136728
+[  604.165695] df60: 00000000 b1207e80 00000000 b1207ec0 b12a8000 b0136700 b1201a00 b1073ec4
+[  604.173924] df80: b1207ee0 b013bf64 00000000 b1207e80 b013be0c 00000000 00000000 00000000
+[  604.182161] dfa0: 00000000 00000000 00000000 b0100148 00000000 00000000 00000000 00000000
+[  604.190406] dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[  604.198638] dfe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
+[  604.206856] [<b0463e18>] (rt2x00queue_create_tx_descriptor) from [<b046481c>] (rt2x00queue_write_tx_frame+0x34/0x454)
+[  604.217572] [<b046481c>] (rt2x00queue_write_tx_frame) from [<b0462564>] (rt2x00mac_tx+0x8c/0x360)
+[  604.226521] [<b0462564>] (rt2x00mac_tx) from [<b06ac828>] (ieee80211_tx_frags+0x158/0x22c)
+[  604.234894] [<b06ac828>] (ieee80211_tx_frags) from [<b06adffc>] (__ieee80211_tx.constprop.0+0x60/0x154)
+[  604.244388] [<b06adffc>] (__ieee80211_tx.constprop.0) from [<b06b18ac>] (ieee80211_tx+0x114/0x144)
+[  604.253424] [<b06b18ac>] (ieee80211_tx) from [<b06b46f8>] (ieee80211_tx_pending+0xb8/0x298)
+[  604.261852] [<b06b46f8>] (ieee80211_tx_pending) from [<b012450c>] (tasklet_action_common.constprop.0+0xc0/0xd8)
+[  604.272022] [<b012450c>] (tasklet_action_common.constprop.0) from [<b01012c4>] (__do_softirq+0xc4/0x23c)
+[  604.281581] [<b01012c4>] (__do_softirq) from [<b0123e60>] (do_softirq+0x60/0x68)
+[  604.289048] [<b0123e60>] (do_softirq) from [<b0123f30>] (__local_bh_enable_ip+0xc8/0xdc)
+[  604.297207] [<b0123f30>] (__local_bh_enable_ip) from [<b0461694>] (rt2x00lib_rxdone+0x2c0/0x650)
+[  604.306079] [<b0461694>] (rt2x00lib_rxdone) from [<b04662c4>] (rt2x00usb_work_rxdone+0x50/0x9c)
+[  604.314872] [<b04662c4>] (rt2x00usb_work_rxdone) from [<b01364bc>] (process_one_work+0x1c4/0x408)
+[  604.323825] [<b01364bc>] (process_one_work) from [<b0136728>] (worker_thread+0x28/0x4dc)
+[  604.331988] [<b0136728>] (worker_thread) from [<b013bf64>] (kthread+0x158/0x184)
+[  604.339464] [<b013bf64>] (kthread) from [<b0100148>] (ret_from_fork+0x14/0x2c)
+[  604.346756] Exception stack(0xb13edfb0 to 0xb13edff8)
+[  604.351873] dfa0:                                     00000000 00000000 00000000 00000000
+[  604.360112] dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[  604.368335] dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[  604.375013] Code: e283303a e7913103 e5933004 e0833102 (e5d38006) 
+
+A.
