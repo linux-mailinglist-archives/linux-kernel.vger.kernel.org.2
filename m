@@ -2,110 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC7F455C7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D92455C7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:19:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbhKRNWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 08:22:44 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:21601 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbhKRNWn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 08:22:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1637241583; x=1668777583;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=yIrZAo54rZ3DAXexqyAzLPHQ4ztCKoEXIwr7Mfa6QpU=;
-  b=JIHjIMhpDHHkH0XC7ALmSHLybWK3e8N6J9w9+HZcyjVWf5q7rV98gWwE
-   o7a9BNOPbHy3MDMWtmwOjjEqkZ5wIeKAFDlJQ4wd8cF71nrpd2zzXof48
-   yBiyeVVemsbauRNis4zuFfGDSyp8jfhfjfDFjhQxlkUs+w4pKXAXNIA9X
-   T8M3bIJQXZvHgVLfgT/jjON5EnTpRz+ifrbMYlFRbihUc8hoEDYZ3LY/j
-   3qaRH1vw7M/X2z7FemwAXWh0B4qfXMwPZmVea5Vn0mlA2SjbczB+CScix
-   X74Fwcl9ISGXF3v0/RZC2nkkmvQSGGntRGfHrjccGBstAjo5XFZrXAfow
-   w==;
-IronPort-SDR: IgVHdGdfN1vVE4ffD2slPPBESiLzb50BsRLXZ1vbwPtJzki5NKZtj7t/btsxz9Vzr4YtG7xR0V
- idpv5knBfdIE61wwX7BPZKOjYs8kWbchVcCcicc51Hnf/GFQaegxYMRCEBAja99a/qP43oPtja
- qurioZdQE2pezYF2HMO5vI6NLb/G/1kfdvll3u2Own4JjJaWta/M6ufhx73uACjj/XeXdxZiRD
- 9vhBY2aK4voqp2XgdnHiYg6KhpHwUsCx6cQVTPyjemNrC11mF2deZXNGn7r2IW3r6+DRJAe5tA
- MpCc+0gH9UBXnesaQWjxNElr
-X-IronPort-AV: E=Sophos;i="5.87,244,1631602800"; 
-   d="scan'208";a="139575941"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Nov 2021 06:19:42 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 18 Nov 2021 06:19:42 -0700
-Received: from [10.159.245.112] (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Thu, 18 Nov 2021 06:19:39 -0700
-Subject: Re: [PATCH] pwm: Use div64_ul instead of do_div
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
-CC:     <cgel.zte@gmail.com>, <linux-pwm@vger.kernel.org>,
-        <alexandre.belloni@bootlin.com>, Zeal Robot <zealci@zte.com.cn>,
-        <linux-kernel@vger.kernel.org>, <ludovic.desroches@microchip.com>,
-        <thierry.reding@gmail.com>,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        <lee.jones@linaro.org>, <linux-arm-kernel@lists.infradead.org>
-References: <20211117020426.159242-1-deng.changcheng@zte.com.cn>
- <20211117112400.bkscb2pyavonpfsn@pengutronix.de>
- <YZYmZecp8WPkFY2F@shell.armlinux.org.uk>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <a9a62f9d-7227-0421-e36f-44222b79bbe7@microchip.com>
-Date:   Thu, 18 Nov 2021 14:19:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230331AbhKRNWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 08:22:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229633AbhKRNWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 08:22:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A705361507;
+        Thu, 18 Nov 2021 13:19:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637241593;
+        bh=7Ej1eCyvMoykGQJV5L+TbSPMLFwDrFz5s3QKLNmBn6I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lk9e+0HaLrI+lKHoa+tljqOcc6BRaT2h2Z+lS0lIsyJsGHEEUKE4mVWaS36u7ZBAF
+         36bznk66XQuGE3wyCxiUZv5/7dJomyM1E7u9GFdtRbEDGKH3Lt+RIAhj1K9QksFGGF
+         ExiDaQI9XHjE5ic55eY+OCVs97qPgbTqKL5EIERC9n4fmwpiTijorHCdviJiYBLO4L
+         MTmuQ5wto3mxK9tO232v9877GEHMD1TyHxfQe1y7Ty8UxpKsOmwB28QuDavSiuG7Kf
+         XRCryErjTimNV94sJTbALEg63fvjt6mj5A2NOTTRGjCh/YH6NVWso1H0e4WxwCux60
+         lYODt588uoMqA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 90E2F4088E; Thu, 18 Nov 2021 10:19:50 -0300 (-03)
+Date:   Thu, 18 Nov 2021 10:19:50 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH] perf evsel: Fix memory leaks relating to unit
+Message-ID: <YZZS9iNwvS6NGint@kernel.org>
+References: <20211118084749.2191447-1-irogers@google.com>
 MIME-Version: 1.0
-In-Reply-To: <YZYmZecp8WPkFY2F@shell.armlinux.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211118084749.2191447-1-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/11/2021 at 11:09, Russell King (Oracle) wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> On Wed, Nov 17, 2021 at 12:24:00PM +0100, Uwe Kleine-König wrote:
->> Hello,
->>
->> On Wed, Nov 17, 2021 at 02:04:26AM +0000, cgel.zte@gmail.com wrote:
->>> From: Changcheng Deng <deng.changcheng@zte.com.cn>
->>>
->>> do_div() does a 64-by-32 division. If the divisor is unsigned long, using
->>> div64_ul can avoid truncation to 32-bit.
->>
->> After some research I understood your commit log. I'd write:
->>
->>        do_div() does a 64-by-32 division. Here the divsor is an
->>        unsigned long which on some platforms is 64 bit wide. So use
->>        div64_ul instead of do_div to avoid a possible truncation.
->>
->> The priority of this patch seems to be low, as the device seems to exist
->> only on (32bit) arm.
-> 
-> ... where unsigned long is 32-bit.
-> 
-> In any case, for this to overflow, we would need to have a clock in
-> excess of 2^32-1 Hz, or around 4GHz - and if we had such a situation
-> on 32-bit devices, we need to change the type for holding the frequency
-> in the clk API, and probably a lot of code in the CCF as well.
-> 
-> Unless there is a real reason for this change, I would suggest leaving
-> the code as is - there is absolutely no point in making these divisions
-> more expensive unless there is a real reason.
+Em Thu, Nov 18, 2021 at 12:47:49AM -0800, Ian Rogers escreveu:
+> unit may have a strdup pointer or be to a literal, consequently memory
+> assocciated with it isn't freed. Change it so the unit is always strdup
+> and so the memory can be safely freed. Fix related issue in
+> perf_event__process_event_update for name and own_cpus. Leaks were
+> spotted by leak sanitizer.
 
-Thanks for the technical demonstration Russell. With this in mind:
-NACK to the patch, sorry Changcheng Deng.
+Thanks, applied.
 
-Best regards,
-   Nicolas
+- Arnaldo
 
+ 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/tests/event_update.c |  5 ++---
+>  tools/perf/util/evsel.c         | 18 +++++++++---------
+>  tools/perf/util/header.c        |  8 +++++---
+>  tools/perf/util/parse-events.c  |  9 ++++++---
+>  4 files changed, 22 insertions(+), 18 deletions(-)
+> 
+> diff --git a/tools/perf/tests/event_update.c b/tools/perf/tests/event_update.c
+> index fbb68deba59f..d01532d40acb 100644
+> --- a/tools/perf/tests/event_update.c
+> +++ b/tools/perf/tests/event_update.c
+> @@ -88,7 +88,6 @@ static int test__event_update(struct test_suite *test __maybe_unused, int subtes
+>  	struct evsel *evsel;
+>  	struct event_name tmp;
+>  	struct evlist *evlist = evlist__new_default();
+> -	char *unit = strdup("KRAVA");
+>  
+>  	TEST_ASSERT_VAL("failed to get evlist", evlist);
+>  
+> @@ -99,7 +98,8 @@ static int test__event_update(struct test_suite *test __maybe_unused, int subtes
+>  
+>  	perf_evlist__id_add(&evlist->core, &evsel->core, 0, 0, 123);
+>  
+> -	evsel->unit = unit;
+> +	free((char *)evsel->unit);
+> +	evsel->unit = strdup("KRAVA");
+>  
+>  	TEST_ASSERT_VAL("failed to synthesize attr update unit",
+>  			!perf_event__synthesize_event_update_unit(NULL, evsel, process_event_unit));
+> @@ -119,7 +119,6 @@ static int test__event_update(struct test_suite *test __maybe_unused, int subtes
+>  	TEST_ASSERT_VAL("failed to synthesize attr update cpus",
+>  			!perf_event__synthesize_event_update_cpus(&tmp.tool, evsel, process_event_cpus));
+>  
+> -	free(unit);
+>  	evlist__delete(evlist);
+>  	return 0;
+>  }
+> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> index a59fb2ecb84e..ac0127be0459 100644
+> --- a/tools/perf/util/evsel.c
+> +++ b/tools/perf/util/evsel.c
+> @@ -241,7 +241,7 @@ void evsel__init(struct evsel *evsel,
+>  {
+>  	perf_evsel__init(&evsel->core, attr, idx);
+>  	evsel->tracking	   = !idx;
+> -	evsel->unit	   = "";
+> +	evsel->unit	   = strdup("");
+>  	evsel->scale	   = 1.0;
+>  	evsel->max_events  = ULONG_MAX;
+>  	evsel->evlist	   = NULL;
+> @@ -276,13 +276,8 @@ struct evsel *evsel__new_idx(struct perf_event_attr *attr, int idx)
+>  	}
+>  
+>  	if (evsel__is_clock(evsel)) {
+> -		/*
+> -		 * The evsel->unit points to static alias->unit
+> -		 * so it's ok to use static string in here.
+> -		 */
+> -		static const char *unit = "msec";
+> -
+> -		evsel->unit = unit;
+> +		free((char *)evsel->unit);
+> +		evsel->unit = strdup("msec");
+>  		evsel->scale = 1e-6;
+>  	}
+>  
+> @@ -420,7 +415,11 @@ struct evsel *evsel__clone(struct evsel *orig)
+>  
+>  	evsel->max_events = orig->max_events;
+>  	evsel->tool_event = orig->tool_event;
+> -	evsel->unit = orig->unit;
+> +	free((char *)evsel->unit);
+> +	evsel->unit = strdup(orig->unit);
+> +	if (evsel->unit == NULL)
+> +		goto out_err;
+> +
+>  	evsel->scale = orig->scale;
+>  	evsel->snapshot = orig->snapshot;
+>  	evsel->per_pkg = orig->per_pkg;
+> @@ -1441,6 +1440,7 @@ void evsel__exit(struct evsel *evsel)
+>  	zfree(&evsel->group_name);
+>  	zfree(&evsel->name);
+>  	zfree(&evsel->pmu_name);
+> +	zfree(&evsel->unit);
+>  	zfree(&evsel->metric_id);
+>  	evsel__zero_per_pkg(evsel);
+>  	hashmap__free(evsel->per_pkg_mask);
+> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+> index fda8d14c891f..79cce216727e 100644
+> --- a/tools/perf/util/header.c
+> +++ b/tools/perf/util/header.c
+> @@ -4257,9 +4257,11 @@ int perf_event__process_event_update(struct perf_tool *tool __maybe_unused,
+>  
+>  	switch (ev->type) {
+>  	case PERF_EVENT_UPDATE__UNIT:
+> +		free((char *)evsel->unit);
+>  		evsel->unit = strdup(ev->data);
+>  		break;
+>  	case PERF_EVENT_UPDATE__NAME:
+> +		free(evsel->name);
+>  		evsel->name = strdup(ev->data);
+>  		break;
+>  	case PERF_EVENT_UPDATE__SCALE:
+> @@ -4268,11 +4270,11 @@ int perf_event__process_event_update(struct perf_tool *tool __maybe_unused,
+>  		break;
+>  	case PERF_EVENT_UPDATE__CPUS:
+>  		ev_cpus = (struct perf_record_event_update_cpus *)ev->data;
+> -
+>  		map = cpu_map__new_data(&ev_cpus->cpus);
+> -		if (map)
+> +		if (map) {
+> +			perf_cpu_map__put(evsel->core.own_cpus);
+>  			evsel->core.own_cpus = map;
+> -		else
+> +		} else
+>  			pr_err("failed to get event_update cpus\n");
+>  	default:
+>  		break;
+> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> index a2f4c086986f..12d925a6d27f 100644
+> --- a/tools/perf/util/parse-events.c
+> +++ b/tools/perf/util/parse-events.c
+> @@ -402,8 +402,10 @@ static int add_event_tool(struct list_head *list, int *idx,
+>  	if (!evsel)
+>  		return -ENOMEM;
+>  	evsel->tool_event = tool_event;
+> -	if (tool_event == PERF_TOOL_DURATION_TIME)
+> -		evsel->unit = "ns";
+> +	if (tool_event == PERF_TOOL_DURATION_TIME) {
+> +		free((char *)evsel->unit);
+> +		evsel->unit = strdup("ns");
+> +	}
+>  	return 0;
+>  }
+>  
+> @@ -1630,7 +1632,8 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
+>  	if (parse_state->fake_pmu)
+>  		return 0;
+>  
+> -	evsel->unit = info.unit;
+> +	free((char *)evsel->unit);
+> +	evsel->unit = strdup(info.unit);
+>  	evsel->scale = info.scale;
+>  	evsel->per_pkg = info.per_pkg;
+>  	evsel->snapshot = info.snapshot;
+> -- 
+> 2.34.0.rc1.387.gb447b232ab-goog
 
 -- 
-Nicolas Ferre
+
+- Arnaldo
