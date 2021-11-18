@@ -2,106 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3354455E8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:49:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F73C455E8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:50:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230513AbhKROwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 09:52:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48690 "EHLO
+        id S231167AbhKROx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 09:53:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230478AbhKROwj (ORCPT
+        with ESMTP id S230315AbhKROx0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 09:52:39 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302D4C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 06:49:39 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id y8so5450725plg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 06:49:39 -0800 (PST)
+        Thu, 18 Nov 2021 09:53:26 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D803C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 06:50:26 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id n8so5444447plf.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 06:50:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yfgOishc+iyGnpLtUV02QcOrbhlHMbh/VRP7OyAqEeU=;
-        b=I7gH33SMM5K528hZc6oE7o1NwZqPOQ14ApO241MZe44zhrW7cwQufQUf1DTDuXQQJj
-         6o100rddBL1u5trO+IAK9O6mdBmPUMTRX+Aw56d/IzRlHp6zeI7+m68y9LpcJcbdGzWG
-         nwUm1j+c6PItm4wk76vOblRyU2c4Ivz8vPeEs5w3E2NzgF7VcpsD/2HXbURoqIroyWtb
-         57XZoA5ZmlOORhMW4VOpYow0829BbFn3jvX7vXl4qkQfrshfkScZ80Jr4vifMbISvA+J
-         f62pJlOWdatUUUmG9U7cR/egTojvWT+/cVkJqbGFlCO5/i/TiRF8bq0a+GPjYCkL1FBT
-         Ftwg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ny0uL9iKW5aWaMIzk2WLew51qerbE8sN22vaskeI4V8=;
+        b=CVplG+fdNbG2kS4vvPdidKwwzJfLSXrSBRzZyc2c5aUsJqBAJfZ0BxY28Kac68yLQR
+         zVF4DoR/6LnJBjJv0OWWcFRNmUuuMuEDH5kd/M08w6GDHLhjVKubbEQlHSaEcp41PJOV
+         BvkulN5vl+6OoRglwO0AwTBG5RoVcOSfG+/wfwG4TArDNHOO+jc9LKf2LRbavZ1XDnLt
+         wOBo+WPL3pxjdqAjVFJ1jNPy01sc3UgXSJwCMHqGJrK9p6UZbJXjb6ia9RqZG5huoE2G
+         RCvK3Fq5Rfx3avvORmG+cORE3AXTx+ppPl0zojQQNsziz5xjayaw27EzSebvW0GnofUg
+         waug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yfgOishc+iyGnpLtUV02QcOrbhlHMbh/VRP7OyAqEeU=;
-        b=IDtVJj87GO1KqjEnevNVznZuU5Qsqolbx67EW6kI9QdTkKnLCzCgYYickiGDUaQr3B
-         OcAXRoQLKrhxrLi+N4ijCbEZmo63IPoIVL0npduq2ZQLa1j683EaVpGN4dSy3z4NDx7R
-         CrujCIzg28BCqu5+2tr1YXtJPU4+zaItx/LsEyEr/wp8JDXEsVkqPQsS2EpoyWUorcrt
-         iDc6BppW0lvxO5crZX1m45FzrK3fnDWUKHcmpRTl7y7HGglgPkjAxMZK2aYLQhs3EWkG
-         U2waMvMC8tEqMZ3tiQ1VDYjAbTwkULy3AUBmm/mPUdFrr4uA8HOXE4DE1nuY4BQ1A2ld
-         G2eA==
-X-Gm-Message-State: AOAM533U6OE0JDnZhAgEBC8myUOAnCkHFY7G3ergdVfO0ekZz/wLENlX
-        inzg5simxE+9WnShXrqKqwePBw==
-X-Google-Smtp-Source: ABdhPJyUILYN6gmH9Qpi1vIeNx6IWkRkXkdABwGeC0vvHQ0h8OAD7bS8b6z47Bl/9u03gMPcQjWINA==
-X-Received: by 2002:a17:90b:4f4c:: with SMTP id pj12mr11150375pjb.217.1637246978538;
-        Thu, 18 Nov 2021 06:49:38 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id k20sm4241488pfc.83.2021.11.18.06.49.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 06:49:37 -0800 (PST)
-Date:   Thu, 18 Nov 2021 14:49:34 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v3 3/4] x86/kvm: add max number of vcpus for hyperv
- emulation
-Message-ID: <YZZn/iWsi2H845w6@google.com>
-References: <20211116141054.17800-1-jgross@suse.com>
- <20211116141054.17800-4-jgross@suse.com>
- <YZVrDpjW0aZjFxo1@google.com>
- <bfe38122-0ddd-d9bc-4927-942b051a39c4@suse.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ny0uL9iKW5aWaMIzk2WLew51qerbE8sN22vaskeI4V8=;
+        b=yKhtF15Ac+uj/3VMANXYSxiL+oair42+aK5hwZz06XNQq2K5Ul0DM3UlqXGxBe6EHu
+         8a4bpdT/iSFExBfvdRSuQDgFlIg+q886dEYfnHe/ZN5LNsXsTkEE5RMddH4AJpPHFaVW
+         z+RN4zoC2x2wkR19/vjbkE058b1uxj+tDPc05X7LYk1to/cfLkKjQ2x5tvoD6fICoZN7
+         aKKWUMC6Ek5XFV79jN4iaiYWINz0MAot5WizsP/ywN+k5fbyTR9rXmniGxvk+4oGw5DA
+         3aPmTVuCl8+/7+msTVf9w8l8emT692ly72WdQlObVS/SNSw3Br1V5P0+X18j6CUK2gVy
+         g+5Q==
+X-Gm-Message-State: AOAM531ei6DJaTV6PyWgVxXAvZDPESNJ95qWimMAvFsS4HNOqgvdl8lV
+        b8hPKw0+eMiWW+ff/MJSVfm/STu1I/eFIWl1/YVjZ1sLtAU=
+X-Google-Smtp-Source: ABdhPJzRsb5q5FxQnLpMJkOXR2yOgtMl+AskZu+DENNDEPdXtzjxW+yvTcKo+AeNsTJuCPBsF5iCtLEFJLiZeUIk1dc=
+X-Received: by 2002:a17:903:2443:b0:142:1e92:1d19 with SMTP id
+ l3-20020a170903244300b001421e921d19mr66795185pls.24.1637247026000; Thu, 18
+ Nov 2021 06:50:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bfe38122-0ddd-d9bc-4927-942b051a39c4@suse.com>
+References: <20211110220050.2854-1-jirivanek1@gmail.com>
+In-Reply-To: <20211110220050.2854-1-jirivanek1@gmail.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Thu, 18 Nov 2021 15:50:15 +0100
+Message-ID: <CAG3jFyvB-Dzd9YDJ7FrAC5avobL7Wfk-91E-DVeYWwfNcQLiLg@mail.gmail.com>
+Subject: Re: [PATCH] drm/bridge/tc358775: Fix for dual-link LVDS
+To:     Jiri Vanek <jirivanek1@gmail.com>,
+        Zheng Bin <zhengbin13@huawei.com>,
+        Vinay Simha BN <simhavcs@gmail.com>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021, Juergen Gross wrote:
-> On 17.11.21 21:50, Sean Christopherson wrote:
-> > > @@ -166,7 +166,7 @@ static struct kvm_vcpu *get_vcpu_by_vpidx(struct kvm *kvm, u32 vpidx)
-> > >   	struct kvm_vcpu *vcpu = NULL;
-> > >   	int i;
-> > > -	if (vpidx >= KVM_MAX_VCPUS)
-> > > +	if (vpidx >= min(KVM_MAX_VCPUS, KVM_MAX_HYPERV_VCPUS))
-> > 
-> > IMO, this is conceptually wrong.  KVM should refuse to allow Hyper-V to be enabled
-> > if the max number of vCPUs exceeds what can be supported, or should refuse to create
-> 
-> TBH, I wasn't sure where to put this test. Is there a guaranteed
-> sequence of ioctl()s regarding vcpu creation (or setting the max
-> number of vcpus) and the Hyper-V enabling?
++ Zhen & Vinay
 
-For better or worse (mostly worse), like all other things CPUID, Hyper-V is a per-vCPU
-knob.  If KVM can't detect the impossible condition at compile time, kvm_check_cpuid()
-is probably the right place to prevent enabling Hyper-V on an unreachable vCPU.
+This patch looks good in itself, but I would like to see a tested by
+tag. At the very least testing for regression in single-link LVDS but
+ideally some third party verification of this patch.
 
-> > the vCPUs.  I agree it makes sense to add a Hyper-V specific limit, since there are
-> > Hyper-V structures that have a hard limit, but detection of violations should be a
-> > BUILD_BUG_ON, not a silent failure at runtime.
-> > 
-> 
-> A BUILD_BUG_ON won't be possible with KVM_MAX_VCPUS being selecteble via
-> boot parameter.
-
-I was thinking that there would still be a KVM-defined max that would cap whatever
-comes in from userspace.
+On Wed, 10 Nov 2021 at 23:01, Jiri Vanek <jirivanek1@gmail.com> wrote:
+>
+> Fixed wrong register shift for single/dual link LVDS output.
+>
+> Signed-off-by: Jiri Vanek <jirivanek1@gmail.com>
+> ---
+>  drivers/gpu/drm/bridge/tc358775.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/tc358775.c b/drivers/gpu/drm/bridge/tc358775.c
+> index 2272adcc5b4a..1d6ec1baeff2 100644
+> --- a/drivers/gpu/drm/bridge/tc358775.c
+> +++ b/drivers/gpu/drm/bridge/tc358775.c
+> @@ -241,7 +241,7 @@ static inline u32 TC358775_LVCFG_PCLKDIV(uint32_t val)
+>  }
+>
+>  #define TC358775_LVCFG_LVDLINK__MASK                         0x00000002
+> -#define TC358775_LVCFG_LVDLINK__SHIFT                        0
+> +#define TC358775_LVCFG_LVDLINK__SHIFT                        1
+>  static inline u32 TC358775_LVCFG_LVDLINK(uint32_t val)
+>  {
+>         return ((val) << TC358775_LVCFG_LVDLINK__SHIFT) &
+> --
+> 2.30.2
+>
