@@ -2,191 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECE1F455EF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:08:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 674FA455F12
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:09:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbhKRPLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 10:11:23 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:39724 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbhKRPLW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 10:11:22 -0500
-Date:   Thu, 18 Nov 2021 16:08:20 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637248101;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=7oCS5/LWeYjZJXu87vNtdEWguj2/WRSfIFf6f9r11ls=;
-        b=Nn1VMC3KaG1Q+ssNoNiHwLVb7kopMd4SqsWWx+LLTT8ttg2GUeyqa86VmawCcJ8vZ3DMz+
-        LzYaBsBrz6Pvzwq2fEuDeDNzl2znUk/r3+zet8aIRDYmLCTA8wwNMJ65vpDz/jJSfpfiz8
-        jwPATle1O9vWmwPhOuSyxCaD/tyzCp2i9Lui5caooOEW6LM5lk049vbmJKwvUdcbmmx9he
-        X0WipT5Jz9mUEK4JnS6UuvksLA7xrMpQHZuqMZh90XRCQVp4EpqhjOeywfRA6QUrFB+ay5
-        VLcNknvsSNOyYCflzfKQjhM/eayvmZMRbeBA/4MYXVoM7M2DONHwCsBElKyudA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637248101;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=7oCS5/LWeYjZJXu87vNtdEWguj2/WRSfIFf6f9r11ls=;
-        b=XvfZRAFgSlZTQ1ZCO4c/6dbxiZZYqDk8FxgMBtIWEOYZ6lwWGajgkrj20RXJRxh11s8wA7
-        xhC4lzx+fFcZlfCQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v5.15.2-rt20
-Message-ID: <20211118150820.j45sben45nthrs4t@linutronix.de>
+        id S231849AbhKRPMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 10:12:43 -0500
+Received: from mga17.intel.com ([192.55.52.151]:21502 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231777AbhKRPMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 10:12:40 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10171"; a="214916215"
+X-IronPort-AV: E=Sophos;i="5.87,245,1631602800"; 
+   d="scan'208";a="214916215"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 07:09:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,245,1631602800"; 
+   d="scan'208";a="455357569"
+Received: from mylly.fi.intel.com (HELO [10.237.72.56]) ([10.237.72.56])
+  by orsmga006.jf.intel.com with ESMTP; 18 Nov 2021 07:09:36 -0800
+Subject: Re: [PATCH net] can: m_can: pci: fix iomap_read_fifo() and
+ iomap_write_fifo()
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Felipe Balbi (Intel)" <balbi@kernel.org>,
+        Matt Kline <matt@bitbashing.io>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211118144011.10921-1-matthias.schiffer@ew.tq-group.com>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <ca1c6275-1609-466e-95b5-d7ad5083f666@linux.intel.com>
+Date:   Thu, 18 Nov 2021 17:09:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20211118144011.10921-1-matthias.schiffer@ew.tq-group.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
+On 11/18/21 4:40 PM, Matthias Schiffer wrote:
+> The same fix that was previously done in m_can_platform in commit
+> 99d173fbe894 ("can: m_can: fix iomap_read_fifo() and iomap_write_fifo()")
+> is required in m_can_pci as well to make iomap_read_fifo() and
+> iomap_write_fifo() work for val_count > 1.
+> 
+> Fixes: 812270e5445b ("can: m_can: Batch FIFO writes during CAN transmit")
+> Fixes: 1aa6772f64b4 ("can: m_can: Batch FIFO reads during CAN receive")
+> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> ---
+>   drivers/net/can/m_can/m_can_pci.c | 14 ++++++++++++--
+>   1 file changed, 12 insertions(+), 2 deletions(-)
+> 
+I tested this on top of plain v5.15 (v5.16-rc1 has some rootfs 
+regression on my EHL HW) where my test case was receiving zeros and this 
+makes it working again like in v5.14 and earlier.
 
-I'm pleased to announce the v5.15.2-rt20 patch set. 
-
-Changes since v5.15.2-rt19:
-
-  - A patch from upstream to avoid a "larg stack frame" warning.
-
-Known issues
-     - netconsole triggers WARN.
-
-     - The "Memory controller" (CONFIG_MEMCG) has been disabled.
-
-     - Valentin Schneider reported a few splats on ARM64, see
-          https://lkml.kernel.org/r/20210810134127.1394269-1-valentin.schneider@arm.com
-
-The delta patch against v5.15.2-rt19 is appended below and can be found here:
- 
-     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/incr/patch-5.15.2-rt19-rt20.patch.xz
-
-You can get this release via the git tree at:
-
-    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.15.2-rt20
-
-The RT patch against v5.15.2 can be found here:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/older/patch-5.15.2-rt20.patch.xz
-
-The split quilt queue is available at:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/older/patches-5.15.2-rt20.tar.xz
-
-Sebastian
-
-diff --git a/localversion-rt b/localversion-rt
-index 483ad771f201a..e095ab8197147 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt19
-+-rt20
-diff --git a/net/sched/sch_gred.c b/net/sched/sch_gred.c
-index 72de08ef8335e..1073c76d05c45 100644
---- a/net/sched/sch_gred.c
-+++ b/net/sched/sch_gred.c
-@@ -56,6 +56,7 @@ struct gred_sched {
- 	u32 		DPs;
- 	u32 		def;
- 	struct red_vars wred_set;
-+	struct tc_gred_qopt_offload *opt;
- };
- 
- static inline int gred_wred_mode(struct gred_sched *table)
-@@ -311,42 +312,43 @@ static void gred_offload(struct Qdisc *sch, enum tc_gred_command command)
- {
- 	struct gred_sched *table = qdisc_priv(sch);
- 	struct net_device *dev = qdisc_dev(sch);
--	struct tc_gred_qopt_offload opt = {
--		.command	= command,
--		.handle		= sch->handle,
--		.parent		= sch->parent,
--	};
-+	struct tc_gred_qopt_offload *opt = table->opt;
- 
- 	if (!tc_can_offload(dev) || !dev->netdev_ops->ndo_setup_tc)
- 		return;
- 
-+	memset(opt, 0, sizeof(*opt));
-+	opt->command = command;
-+	opt->handle = sch->handle;
-+	opt->parent = sch->parent;
-+
- 	if (command == TC_GRED_REPLACE) {
- 		unsigned int i;
- 
--		opt.set.grio_on = gred_rio_mode(table);
--		opt.set.wred_on = gred_wred_mode(table);
--		opt.set.dp_cnt = table->DPs;
--		opt.set.dp_def = table->def;
-+		opt->set.grio_on = gred_rio_mode(table);
-+		opt->set.wred_on = gred_wred_mode(table);
-+		opt->set.dp_cnt = table->DPs;
-+		opt->set.dp_def = table->def;
- 
- 		for (i = 0; i < table->DPs; i++) {
- 			struct gred_sched_data *q = table->tab[i];
- 
- 			if (!q)
- 				continue;
--			opt.set.tab[i].present = true;
--			opt.set.tab[i].limit = q->limit;
--			opt.set.tab[i].prio = q->prio;
--			opt.set.tab[i].min = q->parms.qth_min >> q->parms.Wlog;
--			opt.set.tab[i].max = q->parms.qth_max >> q->parms.Wlog;
--			opt.set.tab[i].is_ecn = gred_use_ecn(q);
--			opt.set.tab[i].is_harddrop = gred_use_harddrop(q);
--			opt.set.tab[i].probability = q->parms.max_P;
--			opt.set.tab[i].backlog = &q->backlog;
-+			opt->set.tab[i].present = true;
-+			opt->set.tab[i].limit = q->limit;
-+			opt->set.tab[i].prio = q->prio;
-+			opt->set.tab[i].min = q->parms.qth_min >> q->parms.Wlog;
-+			opt->set.tab[i].max = q->parms.qth_max >> q->parms.Wlog;
-+			opt->set.tab[i].is_ecn = gred_use_ecn(q);
-+			opt->set.tab[i].is_harddrop = gred_use_harddrop(q);
-+			opt->set.tab[i].probability = q->parms.max_P;
-+			opt->set.tab[i].backlog = &q->backlog;
- 		}
--		opt.set.qstats = &sch->qstats;
-+		opt->set.qstats = &sch->qstats;
- 	}
- 
--	dev->netdev_ops->ndo_setup_tc(dev, TC_SETUP_QDISC_GRED, &opt);
-+	dev->netdev_ops->ndo_setup_tc(dev, TC_SETUP_QDISC_GRED, opt);
- }
- 
- static int gred_offload_dump_stats(struct Qdisc *sch)
-@@ -731,6 +733,7 @@ static int gred_change(struct Qdisc *sch, struct nlattr *opt,
- static int gred_init(struct Qdisc *sch, struct nlattr *opt,
- 		     struct netlink_ext_ack *extack)
- {
-+	struct gred_sched *table = qdisc_priv(sch);
- 	struct nlattr *tb[TCA_GRED_MAX + 1];
- 	int err;
- 
-@@ -754,6 +757,12 @@ static int gred_init(struct Qdisc *sch, struct nlattr *opt,
- 		sch->limit = qdisc_dev(sch)->tx_queue_len
- 		             * psched_mtu(qdisc_dev(sch));
- 
-+	if (qdisc_dev(sch)->netdev_ops->ndo_setup_tc) {
-+		table->opt = kzalloc(sizeof(*table->opt), GFP_KERNEL);
-+		if (!table->opt)
-+			return -ENOMEM;
-+	}
-+
- 	return gred_change_table_def(sch, tb[TCA_GRED_DPS], extack);
- }
- 
-@@ -910,6 +919,7 @@ static void gred_destroy(struct Qdisc *sch)
- 			gred_destroy_vq(table->tab[i]);
- 	}
- 	gred_offload(sch, TC_GRED_DESTROY);
-+	kfree(table->opt);
- }
- 
- static struct Qdisc_ops gred_qdisc_ops __read_mostly = {
+Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
