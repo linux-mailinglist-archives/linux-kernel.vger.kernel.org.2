@@ -2,146 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC5B645554E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 08:13:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72DDE455556
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 08:14:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243713AbhKRHQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 02:16:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242205AbhKRHQO (ORCPT
+        id S242970AbhKRHRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 02:17:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55545 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243716AbhKRHQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 02:16:14 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E63FDC061207
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 23:12:52 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id v7-20020a25ab87000000b005c2130838beso8489143ybi.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 23:12:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=skq4P9T6KtKDwyZw1ZKeY27aIa6yFc8QolZIysalVnQ=;
-        b=pMhXGuz+NjsXR9CxpSpB+s0xuJZqv/3iQYQHwVTKv/36M9oLhmMUWwEBtvvDrbJsV0
-         D9N8hxTFaiyLh5RdrRezPZ6Q5SkmNEXVqNXVT46ejojaLI6F5ClwpF0oiU0LuyH6d/rZ
-         U4wBO1Pr7xFiMUDJg6w3EC4c9BXeBQ5yIu4Mt5C7I1YG+ITclzrKGGwtLaPSYvzcfz+4
-         h0MUR6Qp4e7BM9QpLupceF+QaCntui9UqI59lK6lR7TOvrQTQWFSgYWr7IG6WqHvwSkp
-         dSpSIm/kapllKtzijhjSBIgB+8rdipsYTnn+DG7lTtPwcRzVz7N70/T24jrSB/GMgh2r
-         Eruw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=skq4P9T6KtKDwyZw1ZKeY27aIa6yFc8QolZIysalVnQ=;
-        b=DY6rkRocqqIzykxOr6WglTu6dhrOQSq44T6sUHrza3DN+LQS4A52DOrY50N4mP6mIb
-         SKQWWN/gukfc3iX8MQdT2/gUdzcYt17zig7gfMi+jIEyd6a6qt3kyRe1z4erJvmpvx/a
-         Ffhr9Bl4nN9bPxR1cI63J2k9c01VVi0z7EoiV8wICqnSlIg9IGg7rRMGUCOmSVCbq+t4
-         I4NYuAhyMEirVMquCynuerHHBOevk+q9JiRmUp8U7thoQMgHL42SD+4uxt6DvR/9Ufnx
-         kVpg8rq7YfjFJ/IfyADRzWWC/qcB0aGvpdP3j+rhFxJhLgjQmgLMODxRHd4A0K9tqegZ
-         pmig==
-X-Gm-Message-State: AOAM533xwH1fmw4tl/Rczi/G/ngAqL9DpWvma9LKnmjfq6ohW/bCv/vi
-        wqsL1Z3H4yG4kIL51WP+Y/tKrMLy7igi
-X-Google-Smtp-Source: ABdhPJzX4Vz+h0R6UP4eA/RJSLyOSp0dl9Mb4hEzxj2xfVawuOLFv44oQxi/ze358O3kc+HxRL6sWRybBrwM
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:b539:25b3:faf2:d1b3])
- (user=irogers job=sendgmr) by 2002:a25:abe3:: with SMTP id
- v90mr23979943ybi.315.1637219572118; Wed, 17 Nov 2021 23:12:52 -0800 (PST)
-Date:   Wed, 17 Nov 2021 23:12:47 -0800
-Message-Id: <20211118071247.2140392-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
-Subject: [PATCH] perf hist: Fix memory leak of a perf_hpp_fmt
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 18 Nov 2021 02:16:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637219615;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SF4NLtdhTHJmZ2DCt6uZicYUmuLShwIcU3ZjdEhWqWs=;
+        b=XQurxYJah3dsfbW1e/0/E4fR6PRJOYA0EDI0BTm07hst2sVeNdSKtan+WgYhmXQW5CZrYN
+        wZ8tDTTByTeKnTYKqilOgMQ/+NMWj1UZ3Of85CR3YPKWHFk8FvUZPQz7NeKtUif5yxWm5o
+        gwEs/PXcO1vfLIJA9yx72wOj3VYe/Vg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-404-2tH_2BRxMSKP-fDcaQ7Xsg-1; Thu, 18 Nov 2021 02:13:32 -0500
+X-MC-Unique: 2tH_2BRxMSKP-fDcaQ7Xsg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7BC3E1006AA0;
+        Thu, 18 Nov 2021 07:13:31 +0000 (UTC)
+Received: from localhost (ovpn-13-105.pek2.redhat.com [10.72.13.105])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D3E64509FF;
+        Thu, 18 Nov 2021 07:13:29 +0000 (UTC)
+Date:   Thu, 18 Nov 2021 15:13:27 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     hca@linux.ibm.com, kernel test robot <lkp@intel.com>
+Cc:     linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
+        linux-s390@vger.kernel.org, kexec@lists.infradead.org,
+        prudo@redhat.com
+Subject: Re: [PATCH v2 2/2] s390/kexec: fix kmemleak
+Message-ID: <20211118071327.GF21646@MiWiFi-R3L-srv>
+References: <20211116032557.14075-2-bhe@redhat.com>
+ <202111180539.e7kmpOSP-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202111180539.e7kmpOSP-lkp@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-perf_hpp__column_unregister removes an entry from a list but doesn't
-free the memory causing a memory leak spotted by leak sanitizer. Add the
-free while at the same time reducing the scope of the function to
-static.
+On 11/18/21 at 05:46am, kernel test robot wrote:
+> Hi Baoquan,
+> 
+> I love your patch! Yet something to improve:
+> 
+> [auto build test ERROR on s390/features]
+> [also build test ERROR on linux/master linus/master v5.16-rc1 next-20211117]
+> [cannot apply to kvms390/next]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Baoquan-He/s390-kexec-check-the-return-value-of-ipl_report_finish/20211116-112827
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git features
+> config: s390-allmodconfig (attached as .config)
+> compiler: s390-linux-gcc (GCC) 11.2.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/0day-ci/linux/commit/d5463ab680d37f95b493b71c487a51c039dfe845
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Baoquan-He/s390-kexec-check-the-return-value-of-ipl_report_finish/20211116-112827
+>         git checkout d5463ab680d37f95b493b71c487a51c039dfe845
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=s390 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    arch/s390/kernel/machine_kexec_file.c: In function 'arch_kimage_file_post_load_cleanup':
+> >> arch/s390/kernel/machine_kexec_file.c:332:9: error: implicit declaration of function 'kvfree'; did you mean 'vfree'? [-Werror=implicit-function-declaration]
+>      332 |         kvfree(image->arch.ipl_buf);
+>          |         ^~~~~~
+>          |         vfree
 
-Signed-off-by: Ian Rogers <irogers@google.com>
+OK, kvfree is not wrong, seems vfree is more appropriate since it's
+clear the ipl_buf is allocated with zvalloc() in ipl_report_finish().
+
+Hi Heiko,
+
+Could you help modify the code in your tree or append below patch to
+mute the lkp complaint? Sorry for the inconvenience.
+
+
+From 8ff5547d0b31093bb361328bc9df8bf19e96155a Mon Sep 17 00:00:00 2001
+From: Baoquan He <bhe@redhat.com>
+Date: Thu, 18 Nov 2021 14:37:53 +0800
+Subject: [PATCH] s390/kexec: use vfree to free memory from vmalloc
+
+Since it's clear that memory is allocated with vzalloc in ipl_report_finish(),
+let's use vfree to free the memory instead since it's more efficient than
+kvfree.
+
+This fixes the warning reported by lkp.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Baoquan He <bhe@redhat.com>
 ---
- tools/perf/ui/hist.c   | 28 ++++++++++++++--------------
- tools/perf/util/hist.h |  1 -
- 2 files changed, 14 insertions(+), 15 deletions(-)
+ arch/s390/kernel/machine_kexec_file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/ui/hist.c b/tools/perf/ui/hist.c
-index c1f24d004852..5075ecead5f3 100644
---- a/tools/perf/ui/hist.c
-+++ b/tools/perf/ui/hist.c
-@@ -535,6 +535,18 @@ struct perf_hpp_list perf_hpp_list = {
- #undef __HPP_SORT_ACC_FN
- #undef __HPP_SORT_RAW_FN
+diff --git a/arch/s390/kernel/machine_kexec_file.c b/arch/s390/kernel/machine_kexec_file.c
+index 7f51837e9bc2..351a7ff69a43 100644
+--- a/arch/s390/kernel/machine_kexec_file.c
++++ b/arch/s390/kernel/machine_kexec_file.c
+@@ -329,7 +329,7 @@ int arch_kexec_apply_relocations_add(struct purgatory_info *pi,
  
-+static void fmt_free(struct perf_hpp_fmt *fmt)
-+{
-+	/*
-+	 * At this point fmt should be completely
-+	 * unhooked, if not it's a bug.
-+	 */
-+	BUG_ON(!list_empty(&fmt->list));
-+	BUG_ON(!list_empty(&fmt->sort_list));
-+
-+	if (fmt->free)
-+		fmt->free(fmt);
-+}
- 
- void perf_hpp__init(void)
+ int arch_kimage_file_post_load_cleanup(struct kimage *image)
  {
-@@ -598,9 +610,10 @@ void perf_hpp_list__prepend_sort_field(struct perf_hpp_list *list,
- 	list_add(&format->sort_list, &list->sorts);
- }
+-	kvfree(image->arch.ipl_buf);
++	vfree(image->arch.ipl_buf);
+ 	image->arch.ipl_buf = NULL;
  
--void perf_hpp__column_unregister(struct perf_hpp_fmt *format)
-+static void perf_hpp__column_unregister(struct perf_hpp_fmt *format)
- {
- 	list_del_init(&format->list);
-+	fmt_free(format);
- }
- 
- void perf_hpp__cancel_cumulate(void)
-@@ -672,19 +685,6 @@ void perf_hpp__append_sort_keys(struct perf_hpp_list *list)
- }
- 
- 
--static void fmt_free(struct perf_hpp_fmt *fmt)
--{
--	/*
--	 * At this point fmt should be completely
--	 * unhooked, if not it's a bug.
--	 */
--	BUG_ON(!list_empty(&fmt->list));
--	BUG_ON(!list_empty(&fmt->sort_list));
--
--	if (fmt->free)
--		fmt->free(fmt);
--}
--
- void perf_hpp__reset_output_field(struct perf_hpp_list *list)
- {
- 	struct perf_hpp_fmt *fmt, *tmp;
-diff --git a/tools/perf/util/hist.h b/tools/perf/util/hist.h
-index 5343b62476e6..621f35ae1efa 100644
---- a/tools/perf/util/hist.h
-+++ b/tools/perf/util/hist.h
-@@ -369,7 +369,6 @@ enum {
- };
- 
- void perf_hpp__init(void);
--void perf_hpp__column_unregister(struct perf_hpp_fmt *format);
- void perf_hpp__cancel_cumulate(void);
- void perf_hpp__setup_output_field(struct perf_hpp_list *list);
- void perf_hpp__reset_output_field(struct perf_hpp_list *list);
+ 	return kexec_image_post_load_cleanup_default(image);
 -- 
-2.34.0.rc1.387.gb447b232ab-goog
+2.17.2
 
