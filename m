@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C826C4563FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 21:21:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D79C84563FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 21:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233827AbhKRUYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 15:24:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40738 "EHLO
+        id S233895AbhKRUZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 15:25:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230205AbhKRUYa (ORCPT
+        with ESMTP id S230205AbhKRUZU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 15:24:30 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 822C5C06173E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 12:21:30 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id h63so6424244pgc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 12:21:30 -0800 (PST)
+        Thu, 18 Nov 2021 15:25:20 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F672C06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 12:22:20 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id g28so6471158pgg.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 12:22:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=NPtDKY3zQHIrhlifOBQrVsDaP/5HgYzaYhUSwrSVsRg=;
-        b=nAdORjdK6MXlng6B14U7W9bMVwCkxUdc44HjUZYWokmn+o9Fruy78RMIi0EuKfh2fr
-         yH3U186Qu019Tlr4jlAH0fAQKcXKSMASCHYYuzbcryaNN5yDg9zCprj+9pXNQOovUn0Q
-         L3r3jbL/ZztL2IWiGyK2BjW+l4wBxDpJICc+Y=
+        bh=5NN+1nK45BHSkImYf6ZodrZEc2yKCKofH6gEEO0/JrA=;
+        b=Hhu4lPecOWYqSDmCEtuCIv9aoB7v58qsCp5npK+joXCK1vErdgAydRN0rnIgMZ0jKy
+         LWxOM4gipBBrs0s1n+yw8QWm1M5kwEsLxxwBenmXR07glvDR2phzg5lB07Xg8MtoyX8X
+         H4u48vBszumbfva6YQivX0MIcwgplnPBtANJI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=NPtDKY3zQHIrhlifOBQrVsDaP/5HgYzaYhUSwrSVsRg=;
-        b=LV2Kku8QfYtesDpoGr5gFzSquMK6U2In1jbAKLdB7DzYkXk4wwNIt9Z0lRybCJ0Vq3
-         y4UQ37/DY3626FPT7cE1p9+2eGRVvErZyvdWxisETv+NAD+yPzqpsy99MvRmJ0WQIDBH
-         dcyxbAZzyb1WWwQcO1Q9J4WyUWx11eOsIzBFzdJxUG3nU85eh/yEewLKrcM8MZbVI9+C
-         XGiNJwn/OSha6uuwnM87WZpZ3cZABNT4tDBr1ZOyD7SNCC2/DUQIlrLmoUrLy2638+Qf
-         dJ23Khu1t5EmR5iz1G8Ar65TMpIwlx3cWFMluMQ3QgtyT5k9mPLAw7hfpIutdQH+MuPz
-         1vlQ==
-X-Gm-Message-State: AOAM5309V1KERDDZDAPudi50f5mRI6Op/S7N+JDq4ywaXaxL4yoEU3g9
-        aIjXycA7WzcHbsyORtTF02QzBw==
-X-Google-Smtp-Source: ABdhPJyKrWvKRcJ3pyV+ombqFhaMRamBg42UFc7f5jzTlmLWTdD9qb1CTIEAY3Xyim7RVp2/+p4T5A==
-X-Received: by 2002:a05:6a00:234f:b0:3eb:3ffd:6da2 with SMTP id j15-20020a056a00234f00b003eb3ffd6da2mr58477427pfj.15.1637266889691;
-        Thu, 18 Nov 2021 12:21:29 -0800 (PST)
+        bh=5NN+1nK45BHSkImYf6ZodrZEc2yKCKofH6gEEO0/JrA=;
+        b=qeXjJnOI+ADIpY8r/s7owjNuvYw8j5Y91+pZLFwoBZ7CwzQWs/zKFU2f3UEltLTsvG
+         igwaQvetEHdPUFyiCmLVHHggW7B0d8FtN2mZsvhNZMCnWKos+nBowRPclW4bUaXVgRuU
+         iK6n9e3XzVN9aAoAC+eSdVU/oArGARbx4vlw6+X9USu4D6nySRhZSCQ64u9SoOu+e2vB
+         BP7jbzuT6vHm2l0cDgdnw9Rh0CWjb7U0fkvBWz2hCBBY3vcS3ceQi7cPezyk3C2TTmDG
+         stK7TQ/CjN/IL9kpEuBUtZY5YZNdheLXyMJSEsN0M+MMx5nuSNj2+xzV7RSpWmkcjG7P
+         xdyQ==
+X-Gm-Message-State: AOAM5307eHwKz5rhHtXyTm3jrwGLeNwK8VLBu019CjDQXl897YGNIAU/
+        O/WMrk5ZPMc+CH/WFBXE/edhjw==
+X-Google-Smtp-Source: ABdhPJxnlerFWtMMvQznBjcjaOTIWk+vb2WlXHeUEB4sKBD875o+SosCQnWomCv9gGMS9/cK1Pgp2Q==
+X-Received: by 2002:a63:8ac3:: with SMTP id y186mr13439232pgd.444.1637266939652;
+        Thu, 18 Nov 2021 12:22:19 -0800 (PST)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id u2sm429035pfi.120.2021.11.18.12.21.29
+        by smtp.gmail.com with ESMTPSA id t8sm384779pgk.66.2021.11.18.12.22.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 12:21:29 -0800 (PST)
+        Thu, 18 Nov 2021 12:22:19 -0800 (PST)
 From:   Kees Cook <keescook@chromium.org>
-To:     Doug Ledford <dledford@redhat.com>
-Cc:     Kees Cook <keescook@chromium.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Max Gurtovoy <maxg@mellanox.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] IB/mthca: Use memset_startat() for clearing mpt_entry
-Date:   Thu, 18 Nov 2021 12:21:26 -0800
-Message-Id: <20211118202126.1285376-1-keescook@chromium.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] tracing: Use memset_startat() to zero struct trace_iterator
+Date:   Thu, 18 Nov 2021 12:22:17 -0800
+Message-Id: <20211118202217.1285588-1-keescook@chromium.org>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1127; h=from:subject; bh=2Oxvu1fYS+Nd7p7Top4F6FCD5kXJlWjbh4cJzd7nFgI=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhlrXFiwg0OSPG9eDsUlPRIabyANFH36YdFsJ8apQT R6jmUeiJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZa1xQAKCRCJcvTf3G3AJvS6EA Cuybx5qm56ctjo8osQI7GQCDUkeL1CwbycpT/pu+c6lmOxuL8ilwqtEdsZMe1VHwAmD+7GbThsnn/y aSNRhNH1099AO6aDrK8VpLgGjwtlun1KfxWsnLqaNPjSWTjMQIfGpc2v34/v5g2Cl0Q/Xjk5S+MnSA y/gVw0FLU/WHM47DoxRSkhj1hpEGFmktOETdfw9e4j6Jktf+6d4r5DYvQoobVwaovIt9jlcx4c89d1 Yi3wD+VbjUj2aYwRirNv2vravL2GJBicutD2nD3dX6oBgnL/FBhNECzhg6ipA9do73z8x4LdUaX3D5 Cv9G0DrfWU62UfdU/56LPpq0mVKLkEsgJJaocRSXsRuscU11pT3xIWnjZS6/AaXQJqvJF0WKVp1JQM W333vNY9X9AkZonl0bB3d3GozsNYnrDNpL2jhZHYuKlG8mX46SPy0AbFt5kfj029g++JpLVpcRjIhj eFbu/1PR9/9e/eYzJA0dXurbFP19rZDS0ORYe1rBsefFDs1+SFwZ2gvGoImPTKFI3POjQfvlN8s152 neY+IqfUBXBmjAOUSPf6ZR+8C/CYeAy3QRBUai4BrPvM5l1S57LWmHLzrMDx6WPZcTSDMyzg5RpANw GYkPX7DWOAtbubOJrAYLZv3uWtpH8IiA7F5psyETzFcGK4ognxCBcHCHoH+A==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=959; h=from:subject; bh=Or3Zz/FgWlK+lUON8T4CDH2/5TJ3uqemt7E5bllyab4=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhlrX4AxQyT+rUJsTyDxvi/eHEapUCKtkKsFBEtfT8 Sdx77Y2JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZa1+AAKCRCJcvTf3G3AJi/aEA CMGD3cq8RZKap2de38j9tpuhhpskiCG+hDT0vKa5qSFmoDNRV/RxfJP7+mHHpaTBttUVfkCYaY7Exo kFqF7/M7219agIwGswmRogk7vcNAdJdJ1PjjkVTHv6mNfJ0Vi9GZa9diLFyoN4ZhXX3DgMV6c5BJQI 5HIJEZbU7bBvSHWL7f2l3pqn0kncWj0ifsOcXM01QRiozID6T/zogR8EZX49jWJNwqTAsaSmTiUF68 POybeb3iYyVH3WI0wutv/L28abFwq4hD02Lkn+RIcaZ3S1khaJWxpjz8vFPE7VCcMc4BKQ5mqbaSwH niZ/lFPN8et7i2z1S64TWtRzYlysHgsGgLnfaVPqd3r0hwUXHuwRAGyZJY66bQgb2DWEtywn17WNH+ 3k+a4mSJEh78aTtIakEefSCBiZJiTpV5Cek19kpjakGMmu8TNz/g/dxAYa+evdDt9oOafHThkQ+BiP 5BbLqy1QePQNaJa9Sxmra/T4zwVH9EmGZWwFtOsRxuLIxN9Yyr5MVZ2kZSMssJ6rma1YI+IkUNl5+c Q21Feu8znWKUFqtaWuwnOPoS5TuioH5mV58BLZxSy9zvZdQbgF2yTz7ioijGEoEfT+CA2Eww6DxvhR ZxYlb1LjTiDSRWrEx5smnAUyzIIwGUURNWdorXV13OKdGk/8HNsfHxz+TaTg==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -66,29 +65,29 @@ In preparation for FORTIFY_SOURCE performing compile-time and run-time
 field bounds checking for memset(), avoid intentionally writing across
 neighboring fields.
 
-Use memset_startat() so memset() doesn't get confused about writing
-beyond the destination member that is intended to be the starting point
-of zeroing through the end of the struct.
+Use memset_startat() to avoid confusing memset() about writing beyond
+the target struct member.
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/infiniband/hw/mthca/mthca_mr.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ kernel/trace/trace.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mthca/mthca_mr.c b/drivers/infiniband/hw/mthca/mthca_mr.c
-index ce0e0867e488..1208e92ca3d3 100644
---- a/drivers/infiniband/hw/mthca/mthca_mr.c
-+++ b/drivers/infiniband/hw/mthca/mthca_mr.c
-@@ -469,8 +469,7 @@ int mthca_mr_alloc(struct mthca_dev *dev, u32 pd, int buffer_size_shift,
- 	mpt_entry->start     = cpu_to_be64(iova);
- 	mpt_entry->length    = cpu_to_be64(total_size);
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index f9139dc1262c..e3c80cfd4eec 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -6706,9 +6706,7 @@ tracing_read_pipe(struct file *filp, char __user *ubuf,
+ 		cnt = PAGE_SIZE - 1;
  
--	memset(&mpt_entry->lkey, 0,
--	       sizeof *mpt_entry - offsetof(struct mthca_mpt_entry, lkey));
-+	memset_startat(mpt_entry, 0, lkey);
- 
- 	if (mr->mtt)
- 		mpt_entry->mtt_seg =
+ 	/* reset all but tr, trace, and overruns */
+-	memset(&iter->seq, 0,
+-	       sizeof(struct trace_iterator) -
+-	       offsetof(struct trace_iterator, seq));
++	memset_startat(iter, 0, seq);
+ 	cpumask_clear(iter->started);
+ 	trace_seq_init(&iter->seq);
+ 	iter->pos = -1;
 -- 
 2.30.2
 
