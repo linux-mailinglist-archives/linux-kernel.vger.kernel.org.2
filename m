@@ -2,146 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DAD455FF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:52:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD438455FF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:54:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232769AbhKRPze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 10:55:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37015 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232464AbhKRPza (ORCPT
+        id S232742AbhKRP5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 10:57:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232464AbhKRP5x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 10:55:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637250749;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RVRccCHrHSJUs8Dx0UtuzvJdQI+OvJyg4mtalesCP0s=;
-        b=aHvMQrWvljnTyvVtJWKEtmQvC+tA+D9lDCnW4VzNPSY/v6hwubJvnY2wg6nAWPdsaJfYjg
-        KQ3KqN/LZkaIo1fJVKtFOz7wJklNDns2vwxvW/v2r1e9oPkRvBC36gvut3/SoUQPmXsf/2
-        ubvf30o0POqfCzvLUJDZ5c5ISBVrWjk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-34-dXgO5v_fMX-m-4G0OxE5oQ-1; Thu, 18 Nov 2021 10:52:24 -0500
-X-MC-Unique: dXgO5v_fMX-m-4G0OxE5oQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E33A887D543;
-        Thu, 18 Nov 2021 15:52:22 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BE4051B5B7;
-        Thu, 18 Nov 2021 15:52:10 +0000 (UTC)
-Message-ID: <24fa6ee7-a8d1-6737-7bb8-8412ac1f630d@redhat.com>
-Date:   Thu, 18 Nov 2021 16:52:09 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 15/15] KVM: nVMX: Always write vmcs.GUEST_CR3 during
- nested VM-Exit
-Content-Language: en-US
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
+        Thu, 18 Nov 2021 10:57:53 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E44DC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 07:54:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wt52NzKLJyhGGE5ZYNYIxdwq+HKe3NAkMCE4yDKMlYo=; b=RHrRmCnFavFRJLxFPQXoQuFJFN
+        kiL2cHmk+pE9ErROfK4b5ye2Okv5kIS0rWwUXVexLSXUKUKQqJkYbMxGQWH5zzBLGTTfMYY5aG4hL
+        yON1uWFBq9s5/prihpGm+ekxQq5Cla9KPtYg6p/8q+bPBH1GAe4aJUb/mayqJPY5puhtgngGhdcwN
+        fZiNJZX1Ud6JPkxIuW4O7NjGPL9tz3cH/ruFwHRYIx+fPDkHF1Qi9cMq2r0gTQhG/cK5o44Y6odLE
+        3M6QaY2oNCJsVtiFhqFJ5uHtkdjLjEzpG5a1/FXRxijS7Y5KsWxGgSpFp3wKAeLYbm5CJC5JjE3/S
+        eO6VRzlg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mnjkA-008bMe-0H; Thu, 18 Nov 2021 15:54:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1C84030001B;
+        Thu, 18 Nov 2021 16:54:33 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0BD55302619A5; Thu, 18 Nov 2021 16:54:33 +0100 (CET)
+Date:   Thu, 18 Nov 2021 16:54:33 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Chang S . Bae" <chang.seok.bae@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-References: <20211108124407.12187-1-jiangshanlai@gmail.com>
- <20211108124407.12187-16-jiangshanlai@gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211108124407.12187-16-jiangshanlai@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH V5 01/50] x86/entry: Add fence for kernel entry swapgs in
+ paranoid_entry()
+Message-ID: <YZZ3OUaMjMIhvj70@hirez.programming.kicks-ass.net>
+References: <20211110115736.3776-1-jiangshanlai@gmail.com>
+ <20211110115736.3776-2-jiangshanlai@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211110115736.3776-2-jiangshanlai@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/21 13:44, Lai Jiangshan wrote:
+On Wed, Nov 10, 2021 at 07:56:47PM +0800, Lai Jiangshan wrote:
 > From: Lai Jiangshan <laijs@linux.alibaba.com>
 > 
-> For VM-Enter, vmcs.GUEST_CR3 and vcpu->arch.cr3 are synced and it is
-> better to mark VCPU_EXREG_CR3 available rather than dirty to reduce a
-> redundant vmwrite(GUEST_CR3) in vmx_load_mmu_pgd().
+> Commit 18ec54fdd6d18 ("x86/speculation: Prepare entry code for Spectre
+> v1 swapgs mitigations") adds FENCE_SWAPGS_{KERNEL|USER}_ENTRY
+> for conditional swapgs.  And in paranoid_entry(), it uses only
+> FENCE_SWAPGS_KERNEL_ENTRY for both branches.  It is because the fence
+> is required for both cases since the CR3 write is conditinal even PTI
+> is enabled.
 > 
-> But nested_vmx_load_cr3() is also served for VM-Exit which doesn't
-> set vmcs.GUEST_CR3.
+> But commit 96b2371413e8f ("x86/entry/64: Switch CR3 before SWAPGS in
+> paranoid entry") switches the code order and changes the branches.
+> And it misses the needed FENCE_SWAPGS_KERNEL_ENTRY for user gsbase case.
 > 
-> This patch moves writing to vmcs.GUEST_CR3 into nested_vmx_load_cr3()
-> for both nested VM-Eneter/Exit and use kvm_register_mark_available().
+> Add it back by moving FENCE_SWAPGS_KERNEL_ENTRY up to cover both branches.
 > 
-> This patch doesn't cause any extra writing to vmcs.GUEST_CR3 and if
-> userspace is modifying CR3 with KVM_SET_SREGS later, the dirty info
-> for VCPU_EXREG_CR3 would be set for next writing to vmcs.GUEST_CR3
-> and no update will be lost.
-> 
+> Fixes: Commit 96b2371413e8f ("x86/entry/64: Switch CR3 before SWAPGS in paranoid entry")
+> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> Cc: Chang S. Bae <chang.seok.bae@intel.com>
+> Cc: Sasha Levin <sashal@kernel.org>
 > Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 > ---
->   arch/x86/kvm/vmx/nested.c | 32 +++++++++++++++++++++-----------
->   1 file changed, 21 insertions(+), 11 deletions(-)
+>  arch/x86/entry/entry_64.S | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
 > 
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index ee5a68c2ea3a..4ddd4b1b0503 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -1133,8 +1133,28 @@ static int nested_vmx_load_cr3(struct kvm_vcpu *vcpu, unsigned long cr3,
->   	if (!nested_ept)
->   		kvm_mmu_new_pgd(vcpu, cr3);
->   
+> diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+> index e38a4cf795d9..14ffe12807ba 100644
+> --- a/arch/x86/entry/entry_64.S
+> +++ b/arch/x86/entry/entry_64.S
+> @@ -888,6 +888,13 @@ SYM_CODE_START_LOCAL(paranoid_entry)
+>  	ret
+>  
+>  .Lparanoid_entry_checkgs:
 > +	/*
-> +	 * Immediately write vmcs.GUEST_CR3 when changing vcpu->arch.cr3.
-> +	 *
-> +	 * VCPU_EXREG_CR3 is marked available rather than dirty because
-> +	 * vcpu->arch.cr3 and vmcs.GUEST_CR3 are synced when enable_ept and
-> +	 * vmcs.GUEST_CR3 is irrelevant to vcpu->arch.cr3 when !enable_ept.
-> +	 *
-> +	 * For VM-Enter case, it will be propagated to vmcs12 on nested
-> +	 * VM-Exit, which can occur without actually running L2 and thus
-> +	 * without hitting vmx_load_mmu_pgd(), e.g. if L1 is entering L2 with
-> +	 * vmcs12.GUEST_ACTIVITYSTATE=HLT, in which case KVM will intercept
-> +	 * the transition to HLT instead of running L2.
-> +	 *
-> +	 * For VM-Exit case, it is likely that vmcs.GUEST_CR3 == cr3 here, but
-> +	 * L1 may set HOST_CR3 to a value other than its CR3 before VM-Entry,
-> +	 * so we just update it unconditionally.
+> +	 * The above SAVE_AND_SWITCH_TO_KERNEL_CR3 macro doesn't do an
+> +	 * unconditional CR3 write, even in the PTI case.  So do an lfence
+> +	 * to prevent GS speculation, regardless of whether PTI is enabled.
 > +	 */
-> +	if (enable_ept)
-> +		vmcs_writel(GUEST_CR3, cr3);
+> +	FENCE_SWAPGS_KERNEL_ENTRY
 > +
->   	vcpu->arch.cr3 = cr3;
-> -	kvm_register_mark_dirty(vcpu, VCPU_EXREG_CR3);
-> +	kvm_register_mark_available(vcpu, VCPU_EXREG_CR3);
->   
->   	/* Re-initialize the MMU, e.g. to pick up CR4 MMU role changes. */
->   	kvm_init_mmu(vcpu);
-> @@ -2600,16 +2620,6 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
->   				from_vmentry, entry_failure_code))
->   		return -EINVAL;
->   
+>  	/* EBX = 1 -> kernel GSBASE active, no restore required */
+>  	movl	$1, %ebx
+>  	/*
+> @@ -903,13 +910,6 @@ SYM_CODE_START_LOCAL(paranoid_entry)
+>  .Lparanoid_entry_swapgs:
+>  	swapgs
+>  
 > -	/*
-> -	 * Immediately write vmcs02.GUEST_CR3.  It will be propagated to vmcs12
-> -	 * on nested VM-Exit, which can occur without actually running L2 and
-> -	 * thus without hitting vmx_load_mmu_pgd(), e.g. if L1 is entering L2 with
-> -	 * vmcs12.GUEST_ACTIVITYSTATE=HLT, in which case KVM will intercept the
-> -	 * transition to HLT instead of running L2.
+> -	 * The above SAVE_AND_SWITCH_TO_KERNEL_CR3 macro doesn't do an
+> -	 * unconditional CR3 write, even in the PTI case.  So do an lfence
+> -	 * to prevent GS speculation, regardless of whether PTI is enabled.
 > -	 */
-> -	if (enable_ept)
-> -		vmcs_writel(GUEST_CR3, vmcs12->guest_cr3);
+> -	FENCE_SWAPGS_KERNEL_ENTRY
 > -
->   	/* Late preparation of GUEST_PDPTRs now that EFER and CRs are set. */
->   	if (load_guest_pdptrs_vmcs12 && nested_cpu_has_ept(vmcs12) &&
->   	    is_pae_paging(vcpu)) {
-> 
+>  	/* EBX = 0 -> SWAPGS required on exit */
+>  	xorl	%ebx, %ebx
+>  	ret
 
-I have to think more about this one and patch 17.  I queued the rest.
+I'm confused, shouldn't the LFENCE be between SWAPGS and future uses of
+GS prefix?
 
-Paolo
+In the old code, before 96b2371413e8f, we had:
+
+	swapgs
+	SAVE_AND_SWITCH_TO_KERNEL_CR3
+	FENCE_SWAPGS_KERNEL_ENTRY
+
+	// %gs user comes here..
+
+And the comment made sense, since if SAVE_AND_SWITCH_TO_KERNEL_CR3 would
+imply an unconditional CR3 write, the LFENCE would not be needed.
+
+Then along gomes 96b2371413e8f and changes the order to:
+
+	SAVE_AND_SWITCH_TO_KERNEL_CR3
+	swapgs
+	FENCE_SWAPGS_KERNEL_ENTRY
+	// %gs user comes here..
+
+But now the comment is crazy talk, because even if the CR3 write were
+unconditional, it'd be pointless, since it's not after SWAPGS, but we
+still have the LFENCE in the right place.
+
+But now you want to make it:
+
+	SAVE_AND_SWITCH_TO_KERNEL_CR3
+	FENCE_SWAPGS_KERNEL_ENTRY
+	swapgs
+	// %gs user comes here..
+
+And there's nothing left and speculation can use the old %gs for our
+user and things go sideways. Hmm?
+
+
+(on a completely unrelated note, I find KERNEL_ENTRY and USER_ENTRY
+utterly confusing)
 
