@@ -2,158 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8573D45648A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 21:53:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE10445649A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 21:59:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230422AbhKRU4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 15:56:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229922AbhKRU4f (ORCPT
+        id S232260AbhKRVCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 16:02:03 -0500
+Received: from out01.mta.xmission.com ([166.70.13.231]:41574 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232033AbhKRVCC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 15:56:35 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20AE9C06173E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 12:53:35 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id s139so16909140oie.13
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 12:53:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BSO/JJojc1oQqdqKSBcUWRtsOGWvGZNo7fh8qXiGMMo=;
-        b=HCpLUdOPbcIEk7DnsmaNVMRmHf1HpJHNeXeYINQWLqs+W2WH9bx8srdfUT8h8oTv1+
-         79qPWIohPu1Okrg3q5g9LrP7r7M+T3Rzatz5lWN6vkL+xPVH8NRb2MwihLK7H4igKRe/
-         j/HxOK6Iz2E3HtK4H3ttQwmIHNsX3xf587AqBrabvgEW7xcn9O5w8Q4oQrxmnrFFGv+i
-         HYPge3PrO83qNN6jH/9Pbktb+98iDHdyB9+1/FS8grNrzyPAMrzkydi0Pt9Eucqpfr36
-         0Fdl7CZX8yF/IGMKC6SuQoA7rbjhybSpUhdrAI4KAy2z2fZfW9d2Gn5igf5uOqilr4U3
-         j4Kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BSO/JJojc1oQqdqKSBcUWRtsOGWvGZNo7fh8qXiGMMo=;
-        b=ESYi1H4H0jerA9vUe1ckbZEqm4oAR2aiWrYKGkLibEpbBPZRQuQZoeHfDEpCrWZQyp
-         SZGSlJ7nRJGuojxcjEOF7QrvwDhw+n4Iq8mvgTSInQIBN6hDi6rzRFDc/SfoiXaTQ9KL
-         lDunFoaQGCpSfDNqNGi9XXcDmM0Tdb0LHiSE381HdbYHlAb/3i9JOo/n0OYZlDNfGED5
-         vno9oR1xbi0hSsZKxHf3LCc8zECdfqZdsPzJNd1xOz4aGFOi3u21HFk/71yyEBQaYv0I
-         64rhah1A/SEY/KGVMg7YoLNNA1S2yfterbjHKzDANYEJH1NFY8rg79PI2V+PY3EbwG4R
-         FxKw==
-X-Gm-Message-State: AOAM5318IE+vWedSnDSJVoAXRdLSQCI0qm4xbIGdMIN+gLCoTeAQkvBS
-        ZhuA+L6rVWTKQWdbJK/42YyU2A==
-X-Google-Smtp-Source: ABdhPJzb7SFNUfFOr4Kd5icHu+hRrmqXpRDmJAyHJ5H21ENhkc+rxIXiOJFuKZm301Vg6GxH33eR/A==
-X-Received: by 2002:a05:6808:171c:: with SMTP id bc28mr10636184oib.18.1637268814457;
-        Thu, 18 Nov 2021 12:53:34 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id i16sm182363oig.15.2021.11.18.12.53.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 12:53:33 -0800 (PST)
-Date:   Thu, 18 Nov 2021 14:53:29 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Odelu Kukatla <okukatla@codeaurora.org>, georgi.djakov@linaro.org
-Cc:     evgreen@google.com, Andy Gross <agross@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sboyd@kernel.org,
-        mdtipton@codeaurora.org, sibis@codeaurora.org,
-        saravanak@google.com, seansw@qti.qualcomm.com, elder@linaro.org,
-        linux-arm-msm-owner@vger.kernel.org
-Subject: Re: [v8 2/3] interconnect: qcom: Add EPSS L3 support on SC7280
-Message-ID: <YZa9SStiYqfp6f7a@builder.lan>
-References: <1634812857-10676-1-git-send-email-okukatla@codeaurora.org>
- <1634812857-10676-3-git-send-email-okukatla@codeaurora.org>
+        Thu, 18 Nov 2021 16:02:02 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52]:33074)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mnoUm-00DoTt-H5; Thu, 18 Nov 2021 13:59:00 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:51282 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mnoUl-00Akvn-Ga; Thu, 18 Nov 2021 13:59:00 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Qian Cai <quic_qiancai@quicinc.com>
+Cc:     Alexey Gladkov <legion@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        <linux-kernel@vger.kernel.org>
+References: <YZV7Z+yXbsx9p3JN@fixkernel.com>
+        <875ysptfgi.fsf@email.froward.int.ebiederm.org>
+        <YZa4YbcOyjtD3+pL@fixkernel.com>
+Date:   Thu, 18 Nov 2021 14:57:17 -0600
+In-Reply-To: <YZa4YbcOyjtD3+pL@fixkernel.com> (Qian Cai's message of "Thu, 18
+        Nov 2021 15:32:33 -0500")
+Message-ID: <87k0h5rxle.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1634812857-10676-3-git-send-email-okukatla@codeaurora.org>
+Content-Type: text/plain
+X-XM-SPF: eid=1mnoUl-00Akvn-Ga;;;mid=<87k0h5rxle.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/xFxhvjIdEI4qeidXSmsLguyRERS2BhmM=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4979]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Qian Cai <quic_qiancai@quicinc.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 451 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 11 (2.4%), b_tie_ro: 10 (2.1%), parse: 0.84
+        (0.2%), extract_message_metadata: 12 (2.6%), get_uri_detail_list: 1.66
+        (0.4%), tests_pri_-1000: 14 (3.1%), tests_pri_-950: 1.24 (0.3%),
+        tests_pri_-900: 0.98 (0.2%), tests_pri_-90: 113 (25.0%), check_bayes:
+        111 (24.5%), b_tokenize: 10 (2.2%), b_tok_get_all: 9 (2.0%),
+        b_comp_prob: 3.3 (0.7%), b_tok_touch_all: 80 (17.8%), b_finish: 1.56
+        (0.3%), tests_pri_0: 279 (61.9%), check_dkim_signature: 0.67 (0.1%),
+        check_dkim_adsp: 3.4 (0.8%), poll_dns_idle: 1.00 (0.2%), tests_pri_10:
+        2.5 (0.6%), tests_pri_500: 14 (3.0%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: BUG: KASAN: use-after-free in dec_rlimit_ucounts
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 21 Oct 05:40 CDT 2021, Odelu Kukatla wrote:
+Qian Cai <quic_qiancai@quicinc.com> writes:
 
-> Add Epoch Subsystem (EPSS) L3 interconnect provider support on
-> SC7280 SoCs.
-> 
+> On Thu, Nov 18, 2021 at 01:46:05PM -0600, Eric W. Biederman wrote:
+>> Is it possible?  Yes it is possible.  That is one place where
+>> a use-after-free has shown up and I expect would show up in the
+>> future.
+>> 
+>> That said it is hard to believe there is still a user-after-free in the
+>> code.  We spent the last kernel development cycle pouring through and
+>> correcting everything we saw until we ultimately found one very subtle
+>> use-after-free.
+>> 
+>> If you have a reliable reproducer that you can share, we can look into
+>> this and see if we can track down where the reference count is going
+>> bad.
+>> 
+>> It tends to take instrumenting the entire life cycle every increment and
+>> every decrement and then pouring through the logs to track down a
+>> use-after-free.  Which is not something we can really do without a
+>> reproducer.
+>
+> The reproducer is just to run trinity by an unprivileged user on defconfig
+> with KASAN enabled (On linux-next, you can do "make defconfig debug.conf"
+> [1], but dont think other debugging options are relevent here.)
+>
+> $ trinity -C 31 -N 10000000
+>
+> It is always reproduced on an arm64 server here within 5-minute so far.
+> Some debugging progress so far. BTW, this could happen on user_shm_unlock()
+> path as well.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Does this only happen on a single architecture?  If so I wonder if
+perhaps some of the architectures atomic primitives are implemented
+improperly.
 
-@Georgi, do you intend to apply the two interconnect patches in this
-series?
+Unfortunately I don't have any arm64 machines where I can easily test
+this.
 
-Regards,
-Bjorn
+The call path you posted from user_shm_unlock is another path where
+a use-after-free has show up in the past.
 
-> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
-> ---
->  drivers/interconnect/qcom/osm-l3.c | 20 +++++++++++++++++++-
->  drivers/interconnect/qcom/sc7280.h |  2 ++
->  2 files changed, 21 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/interconnect/qcom/osm-l3.c b/drivers/interconnect/qcom/osm-l3.c
-> index c7af143..eec1309 100644
-> --- a/drivers/interconnect/qcom/osm-l3.c
-> +++ b/drivers/interconnect/qcom/osm-l3.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
-> - * Copyright (c) 2020, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
->   */
->  
->  #include <linux/bitfield.h>
-> @@ -15,6 +15,7 @@
->  #include <dt-bindings/interconnect/qcom,osm-l3.h>
->  
->  #include "sc7180.h"
-> +#include "sc7280.h"
->  #include "sc8180x.h"
->  #include "sdm845.h"
->  #include "sm8150.h"
-> @@ -114,6 +115,22 @@ static const struct qcom_osm_l3_desc sc7180_icc_osm_l3 = {
->  	.reg_perf_state = OSM_REG_PERF_STATE,
->  };
->  
-> +DEFINE_QNODE(sc7280_epss_apps_l3, SC7280_MASTER_EPSS_L3_APPS, 32, SC7280_SLAVE_EPSS_L3);
-> +DEFINE_QNODE(sc7280_epss_l3, SC7280_SLAVE_EPSS_L3, 32);
-> +
-> +static const struct qcom_osm_l3_node *sc7280_epss_l3_nodes[] = {
-> +	[MASTER_EPSS_L3_APPS] = &sc7280_epss_apps_l3,
-> +	[SLAVE_EPSS_L3_SHARED] = &sc7280_epss_l3,
-> +};
-> +
-> +static const struct qcom_osm_l3_desc sc7280_icc_epss_l3 = {
-> +	.nodes = sc7280_epss_l3_nodes,
-> +	.num_nodes = ARRAY_SIZE(sc7280_epss_l3_nodes),
-> +	.lut_row_size = EPSS_LUT_ROW_SIZE,
-> +	.reg_freq_lut = EPSS_REG_FREQ_LUT,
-> +	.reg_perf_state = EPSS_REG_PERF_STATE,
-> +};
-> +
->  DEFINE_QNODE(sc8180x_osm_apps_l3, SC8180X_MASTER_OSM_L3_APPS, 32, SC8180X_SLAVE_OSM_L3);
->  DEFINE_QNODE(sc8180x_osm_l3, SC8180X_SLAVE_OSM_L3, 32);
->  
-> @@ -326,6 +343,7 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
->  
->  static const struct of_device_id osm_l3_of_match[] = {
->  	{ .compatible = "qcom,sc7180-osm-l3", .data = &sc7180_icc_osm_l3 },
-> +	{ .compatible = "qcom,sc7280-epss-l3", .data = &sc7280_icc_epss_l3 },
->  	{ .compatible = "qcom,sdm845-osm-l3", .data = &sdm845_icc_osm_l3 },
->  	{ .compatible = "qcom,sm8150-osm-l3", .data = &sm8150_icc_osm_l3 },
->  	{ .compatible = "qcom,sc8180x-osm-l3", .data = &sc8180x_icc_osm_l3 },
-> diff --git a/drivers/interconnect/qcom/sc7280.h b/drivers/interconnect/qcom/sc7280.h
-> index 175e400..1fb9839 100644
-> --- a/drivers/interconnect/qcom/sc7280.h
-> +++ b/drivers/interconnect/qcom/sc7280.h
-> @@ -150,5 +150,7 @@
->  #define SC7280_SLAVE_PCIE_1			139
->  #define SC7280_SLAVE_QDSS_STM			140
->  #define SC7280_SLAVE_TCU			141
-> +#define SC7280_MASTER_EPSS_L3_APPS		142
-> +#define SC7280_SLAVE_EPSS_L3			143
->  
->  #endif
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+My blind guess would be that I made an implementation mistake in
+inc_rlimit_get_ucounts or dec_rlimit_put_ucounts but I can't see it
+right now.
+
+Eric
+
+>  Call trace:
+>   dec_rlimit_ucounts
+>   user_shm_unlock
+>   (inlined by) user_shm_unlock at mm/mlock.c:854
+>   shmem_lock
+>   shmctl_do_lock
+>   ksys_shmctl.constprop.0
+>   __arm64_sys_shmctl
+>   invoke_syscall
+>   el0_svc_common.constprop.0
+>   do_el0_svc
+>   el0_svc
+>   el0t_64_sync_handler
+>   el0t_64_sync
+>
+> I noticed in dec_rlimit_ucounts(), dec == 0 and type ==
+> UCOUNT_RLIMIT_MEMLOCK. 
+>
+> [1] https://lore.kernel.org/lkml/20211115134754.7334-1-quic_qiancai@quicinc.com/
