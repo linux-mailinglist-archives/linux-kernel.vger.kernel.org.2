@@ -2,238 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B39456221
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:13:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7FD045620E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:12:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234452AbhKRSQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 13:16:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234357AbhKRSQP (ORCPT
+        id S234378AbhKRSPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 13:15:21 -0500
+Received: from mail-oo1-f52.google.com ([209.85.161.52]:40862 "EHLO
+        mail-oo1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231467AbhKRSPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 13:16:15 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B964C061574;
-        Thu, 18 Nov 2021 10:13:14 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id y12so30853120eda.12;
-        Thu, 18 Nov 2021 10:13:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/6mwuE2ioP3zIf0NEAQqDxkNdeNXnzy/i4Fsz7rpYK4=;
-        b=Xt7JdXLB0T9hexi4YCte00Q3Ru73DwwHKLjglGmUr9LeS7IQb5SHQNUlpKdirYFXve
-         mwAY9mWkBeCa2ry6W4jPLmF+4AkfWbxH6XDeP5RhybPjSoKyWXWkPN/DLFmu/ORRyoq+
-         7DQVDh8BeSjLFStTgc6y+ast4/ObSw0lA0ae6xWMtHGkqUPFlHcTpoQPAhStLs1qK/qn
-         0hgbo6qzA47oBANb8TrmvkJbyCNNYC+BLQKsMW9sFPYUtX02WEs7MnbG6OW0hwXlSUzQ
-         054AdyX85+lRmCotJy2T8EwjNws9FVFcHE5N2CbzQL0ANYQ3VldMNziemMYMsRBnXDc9
-         NaPQ==
+        Thu, 18 Nov 2021 13:15:17 -0500
+Received: by mail-oo1-f52.google.com with SMTP id m37-20020a4a9528000000b002b83955f771so2726323ooi.7;
+        Thu, 18 Nov 2021 10:12:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/6mwuE2ioP3zIf0NEAQqDxkNdeNXnzy/i4Fsz7rpYK4=;
-        b=OWjcXXg+qHyJ43k8AqL1NLvEEKuMi4SYMSzzv94JSmVkF/YCbrUkOLz38E6//Hibq4
-         mpm5/pFWg+zj+9QxjlfEqYUkytyPZdZKG3nIHffiqDAmV8qMnjVdcef/JSiAFEMjbxsZ
-         3Hn3/NWz83vRic+NTeX6ETkElB9ugBBcIOD/sueOknx7a+fmMB1Zn7rOOhSNfJ1qAtCH
-         lS8OQ41xqFTY6iQPs4m94eYR/WEX6Ud9TG1uo64PPNCptzNBdYOUhqYMfpDaPwjbneqb
-         2AJwmNE8kLoX1CdVKUJ6pN/EPpV7Der5nPrrXGw2nWf/FLM1HRp+0vmlYubLfYFtXV4p
-         lVwQ==
-X-Gm-Message-State: AOAM5302mLWYFIFAOjpQ3drhpiK2jcC6yPdCT2JqVDhqWIyGSsduYr1m
-        4vU9Vp76mdIzGS/uvQw8TI/VjIGPDa4=
-X-Google-Smtp-Source: ABdhPJwXTqudvE9ZFphI3X7QeIfodRKvwJBdw9UDlOWvDVFV9zF+9q2yDsW8vsnBkn5FlEeqlMPhJQ==
-X-Received: by 2002:a17:906:c14b:: with SMTP id dp11mr1462787ejc.294.1637259192969;
-        Thu, 18 Nov 2021 10:13:12 -0800 (PST)
-Received: from crow.. ([95.87.219.163])
-        by smtp.gmail.com with ESMTPSA id d10sm224135eja.4.2021.11.18.10.13.11
+        bh=G/rDT7Ch22cRv8ocwTIplCJIJgVz/+NCSfa9ah97YsE=;
+        b=kpSjYj0ih0OqJv8EmjJNMz86zgADAnjEkz9OfedxhOd/zhQbfNpX+PWka8yTj9PL4D
+         HfMoN0SumFR5i+9wrSJrLsofI08K+H2T8TxFiSNyYHtGPaGbWgJlZNC00pLPNXINppQb
+         WwNyP9GYuekxgf7rPNtW/EE2X5daRen83F+2NgZRovn4aNTZaPEeHlmd9gq0lUT+gvzi
+         SxFDPdZO8rQpwRbd+zlXIgA4qv0jnTHAyyhiW5/KaGFLbjcQheFKX0Rt5vowAS2PMcXo
+         cRiW5mhzrYDHLA5tvQs/dGhulw2dIDyxAAnHkEh+vBSyWXfxZnI0DuFGL/zf7vt4J/Pt
+         DKtA==
+X-Gm-Message-State: AOAM531t4zHkc479LcNRTFI3jViZHPNMr6UYntxGjKULdlEPfirWJrTA
+        qpETPUCGDVnWa/K/hM3FgQ==
+X-Google-Smtp-Source: ABdhPJyL/SlOyJsSGpmvSajfOGfDWDXAiWYA9MuwFEUsGar/48u2hwyBPRUwD7lVoJi4p5yXKpuwpg==
+X-Received: by 2002:a4a:d00a:: with SMTP id h10mr14268325oor.60.1637259136784;
+        Thu, 18 Nov 2021 10:12:16 -0800 (PST)
+Received: from xps15.herring.priv (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.googlemail.com with ESMTPSA id n20sm99339ooe.7.2021.11.18.10.12.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 10:13:12 -0800 (PST)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     viro@zeniv.linux.org.uk, ebiederm@xmission.com,
-        rostedt@goodmis.org, mingo@redhat.com, hagen@jauu.net,
-        rppt@kernel.org, James.Bottomley@HansenPartnership.com,
-        akpm@linux-foundation.org, vvs@virtuozzo.com, shakeelb@google.com,
-        christian.brauner@ubuntu.com, mkoutny@suse.com,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [RFC PATCH 4/4] namespacefs: Couple namespacefs to the UTS namespace
-Date:   Thu, 18 Nov 2021 20:12:10 +0200
-Message-Id: <20211118181210.281359-5-y.karadz@gmail.com>
+        Thu, 18 Nov 2021 10:12:15 -0800 (PST)
+From:   Rob Herring <robh@kernel.org>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH 1/3] of/fdt: Rework early_init_dt_scan_chosen() to call directly
+Date:   Thu, 18 Nov 2021 12:12:10 -0600
+Message-Id: <20211118181213.1433346-2-robh@kernel.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211118181210.281359-1-y.karadz@gmail.com>
-References: <20211118181210.281359-1-y.karadz@gmail.com>
+In-Reply-To: <20211118181213.1433346-1-robh@kernel.org>
+References: <20211118181213.1433346-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the UTS namespace gets initialized, a directory called 'uts'
-is added to namespacesfs. This directory represents the main UTS
-namespace and also serves as a trunk (parent) of all other UTS
-namespaces. Every time when a new UTS namespace is created a
-corresponding directory is added to 'namespacefs/uts/'. The 'inum'
-of the new namespace gives the name of its directory. When a UTS
-namespace is destroyed the corresponding directory is removed. Each
-directory contains a file called 'uname' that can be used to get the
-unique data fields of the uts namespaces(sysname, nodename, ...).
+Use of the of_scan_flat_dt() function predates libfdt and is discouraged
+as libfdt provides a nicer set of APIs. Rework
+early_init_dt_scan_chosen() to be called directly and use libfdt.
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Frank Rowand <frowand.list@gmail.com>
+Cc: linuxppc-dev@lists.ozlabs.org
+Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- fs/namespacefs/inode.c      | 57 +++++++++++++++++++++++++++++++++++++
- include/linux/namespacefs.h | 13 +++++++++
- kernel/utsname.c            |  9 ++++++
- 3 files changed, 79 insertions(+)
+ arch/powerpc/kernel/prom.c           |  2 +-
+ arch/powerpc/mm/nohash/kaslr_booke.c |  4 +--
+ drivers/of/fdt.c                     | 39 ++++++++++++++--------------
+ include/linux/of_fdt.h               |  3 +--
+ 4 files changed, 22 insertions(+), 26 deletions(-)
 
-diff --git a/fs/namespacefs/inode.c b/fs/namespacefs/inode.c
-index 55d71733164c..4b661bdd4d9c 100644
---- a/fs/namespacefs/inode.c
-+++ b/fs/namespacefs/inode.c
-@@ -14,6 +14,7 @@
- #include <linux/proc_ns.h>
- #include <linux/seq_file.h>
- #include <linux/pid_namespace.h>
-+#include <linux/utsname.h>
+diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
+index 2e67588f6f6e..c6c398ccd98a 100644
+--- a/arch/powerpc/kernel/prom.c
++++ b/arch/powerpc/kernel/prom.c
+@@ -402,7 +402,7 @@ static int __init early_init_dt_scan_chosen_ppc(unsigned long node,
+ 	const unsigned long *lprop; /* All these set by kernel, so no need to convert endian */
  
- static struct vfsmount *namespacefs_mount;
- static int namespacefs_mount_count;
-@@ -309,6 +310,58 @@ void namespacefs_remove_pid_ns_dir(struct pid_namespace *ns)
- 	namespacefs_remove_dir(ns->ns.dentry);
+ 	/* Use common scan routine to determine if this is the chosen node */
+-	if (early_init_dt_scan_chosen(node, uname, depth, data) == 0)
++	if (early_init_dt_scan_chosen(data) < 0)
+ 		return 0;
+ 
+ #ifdef CONFIG_PPC64
+diff --git a/arch/powerpc/mm/nohash/kaslr_booke.c b/arch/powerpc/mm/nohash/kaslr_booke.c
+index 8fc49b1b4a91..90debe19ab4c 100644
+--- a/arch/powerpc/mm/nohash/kaslr_booke.c
++++ b/arch/powerpc/mm/nohash/kaslr_booke.c
+@@ -44,9 +44,7 @@ struct regions __initdata regions;
+ 
+ static __init void kaslr_get_cmdline(void *fdt)
+ {
+-	int node = fdt_path_offset(fdt, "/chosen");
+-
+-	early_init_dt_scan_chosen(node, "chosen", 1, boot_command_line);
++	early_init_dt_scan_chosen(boot_command_line);
  }
  
-+#define _UNAME_N_FIELDS		6
-+#define _UNAME_MAX_LEN		((__NEW_UTS_LEN + 1) * _UNAME_N_FIELDS)
-+
-+static ssize_t uts_ns_read(struct file *file, char __user *ubuf,
-+			   size_t count, loff_t *pos)
-+{
-+	struct new_utsname *name = file->private_data;
-+	char buff[_UNAME_MAX_LEN + 1];
-+	int n;
-+
-+	n = snprintf(buff, _UNAME_MAX_LEN + 1,
-+		     "%s %s %s %s %s %s\n",
-+		     name->sysname,
-+		     name->nodename,
-+		     name->release,
-+		     name->version,
-+		     name->machine,
-+		     name->domainname);
-+
-+	return simple_read_from_buffer(ubuf, count, pos, buff, n);
-+}
-+
-+static const struct file_operations uts_fops = {
-+	.open = simple_open,
-+	.read = uts_ns_read,
-+	.llseek = default_llseek,
-+};
-+
-+int namespacefs_create_uts_ns_dir(struct uts_namespace *ns)
-+{
-+	struct dentry *dentry;
-+	int err;
-+
-+	err = create_inode_dir(&ns->ns, init_uts_ns.ns.dentry, ns->user_ns);
-+	if (err)
-+		return err;
-+
-+	dentry = namespacefs_create_file("uname", ns->ns.dentry, ns->user_ns,
-+					 &uts_fops, &ns->name);
-+	if (IS_ERR(dentry)) {
-+		dput(ns->ns.dentry);
-+		return PTR_ERR(dentry);
-+	}
-+
-+	return 0;
-+}
-+
-+void namespacefs_remove_uts_ns_dir(struct uts_namespace *ns)
-+{
-+	namespacefs_remove_dir(ns->ns.dentry);
-+}
-+
- static int add_ns_dentry(struct ns_common *ns)
- {
- 	struct dentry *dentry =
-@@ -340,6 +393,10 @@ static int __init namespacefs_init(void)
- 	if (err)
- 		goto unreg;
- 
-+	err = add_ns_dentry(&init_uts_ns.ns);
-+	if (err)
-+		goto unreg;
-+
+ static unsigned long __init rotate_xor(unsigned long hash, const void *area,
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index bdca35284ceb..1f1705f76263 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -1124,18 +1124,18 @@ int __init early_init_dt_scan_memory(unsigned long node, const char *uname,
  	return 0;
- 
-  unreg:
-diff --git a/include/linux/namespacefs.h b/include/linux/namespacefs.h
-index f41499a7635a..3815a7bbeb1c 100644
---- a/include/linux/namespacefs.h
-+++ b/include/linux/namespacefs.h
-@@ -21,6 +21,8 @@ namespacefs_create_dir(const char *name, struct dentry *parent,
- void namespacefs_remove_dir(struct dentry *dentry);
- int namespacefs_create_pid_ns_dir(struct pid_namespace *ns);
- void namespacefs_remove_pid_ns_dir(struct pid_namespace *ns);
-+int namespacefs_create_uts_ns_dir(struct uts_namespace *ns);
-+void namespacefs_remove_uts_ns_dir(struct uts_namespace *ns);
- 
- #else
- 
-@@ -55,6 +57,17 @@ namespacefs_remove_pid_ns_dir(struct pid_namespace *ns)
- {
  }
  
-+static inline int
-+namespacefs_create_uts_ns_dir(struct uts_namespace *ns)
-+{
-+	return 0;
-+}
-+
-+static inline void
-+namespacefs_remove_uts_ns_dir(struct uts_namespace *ns)
-+{
-+}
-+
- #endif /* CONFIG_NAMESPACE_FS */
- 
- #endif
-diff --git a/kernel/utsname.c b/kernel/utsname.c
-index b1ac3ca870f2..d44b307cffdc 100644
---- a/kernel/utsname.c
-+++ b/kernel/utsname.c
-@@ -12,6 +12,7 @@
- #include <linux/slab.h>
- #include <linux/cred.h>
- #include <linux/user_namespace.h>
-+#include <linux/namespacefs.h>
- #include <linux/proc_ns.h>
- #include <linux/sched/task.h>
- 
-@@ -70,8 +71,15 @@ static struct uts_namespace *clone_uts_ns(struct user_namespace *user_ns,
- 	memcpy(&ns->name, &old_ns->name, sizeof(ns->name));
- 	ns->user_ns = get_user_ns(user_ns);
- 	up_read(&uts_sem);
-+
-+	err = namespacefs_create_uts_ns_dir(ns);
-+	if (err)
-+		goto fail_free_inum;
-+
- 	return ns;
- 
-+fail_free_inum:
-+	ns_free_inum(&ns->ns);
- fail_free:
- 	kmem_cache_free(uts_ns_cache, ns);
- fail_dec:
-@@ -105,6 +113,7 @@ struct uts_namespace *copy_utsname(unsigned long flags,
- 
- void free_uts_ns(struct uts_namespace *ns)
+-int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
+-				     int depth, void *data)
++int __init early_init_dt_scan_chosen(char *cmdline)
  {
-+	namespacefs_remove_uts_ns_dir(ns);
- 	dec_uts_namespaces(ns->ucounts);
- 	put_user_ns(ns->user_ns);
- 	ns_free_inum(&ns->ns);
+-	int l;
++	int l, node;
+ 	const char *p;
+ 	const void *rng_seed;
++	const void *fdt = initial_boot_params;
+ 
+-	pr_debug("search \"chosen\", depth: %d, uname: %s\n", depth, uname);
+-
+-	if (depth != 1 || !data ||
+-	    (strcmp(uname, "chosen") != 0 && strcmp(uname, "chosen@0") != 0))
+-		return 0;
++	node = fdt_path_offset(fdt, "/chosen");
++	if (node < 0)
++		node = fdt_path_offset(fdt, "/chosen@0");
++	if (node < 0)
++		return -ENOENT;
+ 
+ 	early_init_dt_check_for_initrd(node);
+ 	early_init_dt_check_for_elfcorehdr(node);
+@@ -1144,7 +1144,7 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
+ 	/* Retrieve command line */
+ 	p = of_get_flat_dt_prop(node, "bootargs", &l);
+ 	if (p != NULL && l > 0)
+-		strlcpy(data, p, min(l, COMMAND_LINE_SIZE));
++		strlcpy(cmdline, p, min(l, COMMAND_LINE_SIZE));
+ 
+ 	/*
+ 	 * CONFIG_CMDLINE is meant to be a default in case nothing else
+@@ -1153,18 +1153,18 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
+ 	 */
+ #ifdef CONFIG_CMDLINE
+ #if defined(CONFIG_CMDLINE_EXTEND)
+-	strlcat(data, " ", COMMAND_LINE_SIZE);
+-	strlcat(data, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
++	strlcat(cmdline, " ", COMMAND_LINE_SIZE);
++	strlcat(cmdline, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
+ #elif defined(CONFIG_CMDLINE_FORCE)
+-	strlcpy(data, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
++	strlcpy(cmdline, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
+ #else
+ 	/* No arguments from boot loader, use kernel's  cmdl*/
+-	if (!((char *)data)[0])
+-		strlcpy(data, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
++	if (!((char *)cmdline)[0])
++		strlcpy(cmdline, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
+ #endif
+ #endif /* CONFIG_CMDLINE */
+ 
+-	pr_debug("Command line is: %s\n", (char *)data);
++	pr_debug("Command line is: %s\n", (char *)cmdline);
+ 
+ 	rng_seed = of_get_flat_dt_prop(node, "rng-seed", &l);
+ 	if (rng_seed && l > 0) {
+@@ -1178,8 +1178,7 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
+ 				fdt_totalsize(initial_boot_params));
+ 	}
+ 
+-	/* break now */
+-	return 1;
++	return 0;
+ }
+ 
+ #ifndef MIN_MEMBLOCK_ADDR
+@@ -1261,14 +1260,14 @@ bool __init early_init_dt_verify(void *params)
+ 
+ void __init early_init_dt_scan_nodes(void)
+ {
+-	int rc = 0;
++	int rc;
+ 
+ 	/* Initialize {size,address}-cells info */
+ 	of_scan_flat_dt(early_init_dt_scan_root, NULL);
+ 
+ 	/* Retrieve various information from the /chosen node */
+-	rc = of_scan_flat_dt(early_init_dt_scan_chosen, boot_command_line);
+-	if (!rc)
++	rc = early_init_dt_scan_chosen(boot_command_line);
++	if (rc)
+ 		pr_warn("No chosen node found, continuing without\n");
+ 
+ 	/* Setup memory, calling early_init_dt_add_memory_arch */
+diff --git a/include/linux/of_fdt.h b/include/linux/of_fdt.h
+index cf48983d3c86..654722235df6 100644
+--- a/include/linux/of_fdt.h
++++ b/include/linux/of_fdt.h
+@@ -58,8 +58,7 @@ extern int of_flat_dt_is_compatible(unsigned long node, const char *name);
+ extern unsigned long of_get_flat_dt_root(void);
+ extern uint32_t of_get_flat_dt_phandle(unsigned long node);
+ 
+-extern int early_init_dt_scan_chosen(unsigned long node, const char *uname,
+-				     int depth, void *data);
++extern int early_init_dt_scan_chosen(char *cmdline);
+ extern int early_init_dt_scan_memory(unsigned long node, const char *uname,
+ 				     int depth, void *data);
+ extern int early_init_dt_scan_chosen_stdout(void);
 -- 
-2.33.1
+2.32.0
 
