@@ -2,81 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8952455469
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 06:45:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D99C45546A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 06:45:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243171AbhKRFs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 00:48:27 -0500
-Received: from relay.sw.ru ([185.231.240.75]:44232 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243159AbhKRFsD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 00:48:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=MIME-Version:Message-Id:Date:Subject:From:
-        Content-Type; bh=WQi5+rgaHPzF5NhG9pqdt7iWYlVLkiBM+aEJu98Q2Uo=; b=jHaQxP8QnJWJ
-        f+Mm2QWKeG+5E8X8oaBZPnZC6qqjiSSqJYkzOkahj/CMfRAIUA9mcS5Tl2X/Gg8kwtZUshHR6VeQC
-        GJ57RKasYLnUvOinaKxdX3fOQd+I9isVm/j/JVA9ur/y9q7OufBFo+kjWBmDSwmt3It8sqzU5t+7l
-        rdDWA=;
-Received: from [192.168.15.175] (helo=cobook.home)
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <nikita.yushchenko@virtuozzo.com>)
-        id 1mnaEC-000drd-Po; Thu, 18 Nov 2021 08:44:56 +0300
-From:   Nikita Yushchenko <nikita.yushchenko@virtuozzo.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kernel@openvz.org
-Subject: [PATCH] trace: don't use out-of-sync va_list in event printing
-Date:   Thu, 18 Nov 2021 08:44:53 +0300
-Message-Id: <20211118054453.16759-1-nikita.yushchenko@virtuozzo.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <ae2254dd-dcc8-3375-e8d6-efb73e280574@virtuozzo.com>
-References: <ae2254dd-dcc8-3375-e8d6-efb73e280574@virtuozzo.com>
-MIME-Version: 1.0
+        id S243193AbhKRFsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 00:48:39 -0500
+Received: from mail-mw2nam10on2119.outbound.protection.outlook.com ([40.107.94.119]:58977
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S243156AbhKRFsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 00:48:15 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jpSURizjGClWBXNjfgRL13yYBfe84hXPIFtDckRRWB7HhkMrXuMZok7axhCEvuXRmApKiQ0pry/HYvsW2xth6Qprn+kHAnPn1cNZo1cPp+eyZcwHQzN1/cjbwDSLvL0WSWvKBaEV+N91c1t/ubkkEWdC66XG6iWRwpK8K9GAhijjKNMPMRQshz/qXwhNQ6HfkOXLuO5NfZn+uRN80iQMZGkkEaR+5h5jvVFJ9TJelt9IN5vNArczSPzk9zVTsdsCaB/Aer6dzTRtrM6xNXfMzZZK6uVWl1YzwKTMuzwZCm+DLfb/C0NXpm2JRCDNV77bl2BWiDi+8T/xtDuZ8YhEXQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=39EtZ9HndNjpwi8ul7c7XTdTnWiALhPX3LVIu02Gvdc=;
+ b=SbT7ANM9+A33SZJ8Z3lQACDht1XmLfDNkcVvw0oHwJo9+rRMnYCwITGRvdvTgp8sKJzk07ouf4mhJaLgdpYbZPIgnGldMy7Y0ZNNtKrOha39a9LBJDph5FA+7t5obZ0FXrsaoODpZMoAQ0shDi6y+37XwKRyL9iRrnltdO2bcfSoA+uep5adVBMEDYl4K1Qk7kUfiom/YYtb3uyHTd/Ty4MNlfOQhitNWXqr65uMr90jMGiKI//Y4UWmq2wmM/i23cf3NEvz/qDVXYDWj/KsRgBG4nhX1edv0m71Ea1QnN5fyoE2+Qzsi1XRGhp5ulUXcbchkFZgtpuc+mrwendKvw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=39EtZ9HndNjpwi8ul7c7XTdTnWiALhPX3LVIu02Gvdc=;
+ b=kunVEQy4Xpm2ndZjlbQYuJ/JNkouje90Qri63ogHAUgQRPYfCMa1oDgYztiafCV7WBkRFLsIWJa43uCCbXigXCxqjxCAfvuK2yMOuQKi0xlNBt/anxZwDWe/C5OABSBJKL9/2PVfpSrmx1kW8u9Gf0XjVWTYpALyxeVpEV8reWA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=analogixsemi.com;
+Received: from CH2PR04MB6741.namprd04.prod.outlook.com (2603:10b6:610:96::19)
+ by CH2PR04MB6710.namprd04.prod.outlook.com (2603:10b6:610:93::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21; Thu, 18 Nov
+ 2021 05:45:14 +0000
+Received: from CH2PR04MB6741.namprd04.prod.outlook.com
+ ([fe80::d062:2525:29dc:13df]) by CH2PR04MB6741.namprd04.prod.outlook.com
+ ([fe80::d062:2525:29dc:13df%7]) with mapi id 15.20.4713.021; Thu, 18 Nov 2021
+ 05:45:14 +0000
+From:   Xin Ji <xji@analogixsemi.com>
+To:     narmstrong@baylibre.com, dan.carpenter@oracle.com,
+        robert.foss@linaro.org, Laurent.pinchart@ideasonboard.com,
+        jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@linux.ie,
+        daniel@ffwll.ch, sam@ravnborg.org, pihsun@chromium.org,
+        tzungbi@google.com, maxime@cerno.tech, drinkcat@google.com,
+        hsinyi@chromium.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, bliang@analogixsemi.com,
+        qwen@analogixsemi.com
+Cc:     Xin Ji <xji@analogixsemi.com>
+Subject: [PATCH v2] drm/bridge: anx7625: Check GPIO description to avoid crash
+Date:   Thu, 18 Nov 2021 13:45:02 +0800
+Message-Id: <20211118054502.3796946-1-xji@analogixsemi.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR02CA0147.apcprd02.prod.outlook.com
+ (2603:1096:202:16::31) To CH2PR04MB6741.namprd04.prod.outlook.com
+ (2603:10b6:610:96::19)
+MIME-Version: 1.0
+Received: from anxtwsw-Precision-3640-Tower (60.251.58.79) by HK2PR02CA0147.apcprd02.prod.outlook.com (2603:1096:202:16::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21 via Frontend Transport; Thu, 18 Nov 2021 05:45:13 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 03848f13-8a69-497d-b3a8-08d9aa569797
+X-MS-TrafficTypeDiagnostic: CH2PR04MB6710:
+X-Microsoft-Antispam-PRVS: <CH2PR04MB671022FF2B480340F0510133C79B9@CH2PR04MB6710.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1388;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JlXVhMG6JqRbIX6qYM9ruDE6at9sIdbyxAXoHBDtFCmaQudFABizbkamVK4Gce7glxjAZjVNRhtLi3zwfjXJSWx2VLHOe6bx8z9Nskzh3Dw3O1MHNt4gWQa8DRhOikUyNVonvjS3RgQHafYqXhO1B0f4Il0mcX90QzxLhNomihnCwzdhjqIHrqeGEwztn1mRoUXecHCYJsgLiDL3CiBHSh6kJFE6vp9rgmzcf6lh/5KbD+UL/q6vP/muXCkYL5wDycaS1RYEabbPioh3+Ykx9HwQTKU39XVqLY35SuvT4ayTL29yzUEco2f/CpIZxv10gIXGKbmYvYwrlMHw03VKWVWQ60xi6jphhdjWWkpAVTgZDUtjVyznfoEAFDpWC4bn4DCIHj0Q1YVzCfHr1CBWd2qUAy/VC7fKpz6VwdHBjHIEd2w5hF87gSAuzxHw2ppXqzNd5piZhN9W5067hGFHVnzX2YASPyLBMathCU61vzZ1vRTi2WBSC0pvObaXm9quAz/5ge7/nBuhcKLaNyQE1yoWQ5HjgFXu/la750gkhfkUMCzJF6LMR8Gz+06cv1PCmUgjiED3nB+CDOKWya6zoWB/SAqK4QoRkDHZ4JjTWbpY0m8jJXKAUFo5l3fsEMVXgD/3EksyjiSHAvOujubORtgQuj+8cgmjIXaYpxYlgQJnezJ1Xj11qZmU4YU2RgkRBHdxwYJoFxbM064wP5wT9+56kZ3FT81AabDf/pcRh5k=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR04MB6741.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(38100700002)(921005)(5660300002)(2616005)(956004)(7416002)(6666004)(66476007)(1076003)(38350700002)(6486002)(107886003)(66946007)(66556008)(26005)(186003)(6496006)(8936002)(4326008)(52116002)(6636002)(8676002)(36756003)(508600001)(2906002)(86362001)(316002)(55236004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Py2KM3t2/HSrYSMtLI/V9Hjltukji4sqUSrv5fgtIWeNzxtNXkHG/5N4jFve?=
+ =?us-ascii?Q?kMYVRRlsC1QPy225npefndXOVSCxFA92auJ/eAZ8M1/6CB12GFsznbC0owMT?=
+ =?us-ascii?Q?QoR9zIDHUBKUl3BMz/Mz1zLVzQkC21cDidpo4qhLM5xLNq3+xz/qEqQkhV/J?=
+ =?us-ascii?Q?BiSg6Nn5ZBSyWFhc3c4nPZy7XF3Hmt7KC2dGl4xBMbnLm9twP+6+dlY1FFos?=
+ =?us-ascii?Q?exizyPLaIxb0xJC58ROqdCeXdxIAY4RZGoD8KaQUUJjwyYx5YYxJMjkb5GyS?=
+ =?us-ascii?Q?OTwvPnBSjZad4P/k7oBjnCNqKSX4VAW+QOla4+b/mx3NinCsvAg01cbhSqev?=
+ =?us-ascii?Q?e5h+tS11ouOEOD49hF/JnBwAKkExTzy813RgGgcmFEpP8jf1uW+I+dVsgj9K?=
+ =?us-ascii?Q?yCxhNEbMslQPDLL82DcveeCiRzD4TkJ1sI2rVR72k3V5t5WfAIqSrtxSMFoc?=
+ =?us-ascii?Q?2aYGtXjx5HNI76XQEVthPYVi5KfVNE6agl1zSqEfg/coulnAe00PO/UqSu2y?=
+ =?us-ascii?Q?SwavJn9be9+zE+VMevp4L4BnTC9fsBsckWIK3tkMMVfYOpvGzujbgN5LzuwG?=
+ =?us-ascii?Q?qnBtqtKsMlk/LhCIOMm8lKE7vKHsVefXicxKOVDkTJN3v6/sI8QKmuVRrHVk?=
+ =?us-ascii?Q?j4z7u8sHh+uTbrTN2sFS9H/ItMfAC1WHbcrqRR+HtNR0n+myp/mmGUqycA22?=
+ =?us-ascii?Q?1EOmogg6i7gQjIksoGoFP9JzZawbKSstbGkYGknxisOrcnu3CXCNvFoVYLa3?=
+ =?us-ascii?Q?1pqiafex6a+YMqcSVlUwI42mSzQaykAd9waRp9YjkVnrR0doJdB79lY26yBe?=
+ =?us-ascii?Q?Kuv6KaJpQ0Iw5zTqExv1i3fD6vzUWVzwq143VShaQeBNycOB37c4IEuOJ5NO?=
+ =?us-ascii?Q?/58XrFvEvJUkW3zk+pxpicPw0wdXg5Xcv5m6+9tCch+H6gGSknvusR2O4I/2?=
+ =?us-ascii?Q?zkoCFJxykXPD+kzOHw7c63Fh9o+mfjLkHyMVS/hW1snLxmkbAtA81k7vqLXY?=
+ =?us-ascii?Q?phYMp7luStQubiPzF8o5GRUKvYFN0RJ/02wsXun5UYyUkojhlYumsgYkUstd?=
+ =?us-ascii?Q?E2wka8mAjFPQDD/xaM2G2SN50gUWoYa+tXSeTNPyA11T+jFv940aUGIaVwaw?=
+ =?us-ascii?Q?eqlYiOHTsLA20xd7XsKekiBT0m0qwRxHTzojG188LZAmuaVblRzxI1zBbq/R?=
+ =?us-ascii?Q?pWeYC2IDzrhjP2txv7vBR7fHelg3NeJGGXR/YRYgTnh7xw7ibag0SdpASSwC?=
+ =?us-ascii?Q?P7xvJtSSstGvepBVzoMSYiQf43I1NdulrZ4in4KBZF9NN72/1eo2P1WKoJr4?=
+ =?us-ascii?Q?hi6eGEnyE1OIglDBFaUD1K24yYL+mCglhxeXRPO4mNDmrG0qA0wD2JOr34eV?=
+ =?us-ascii?Q?4DBAf5proB/smyXBvmJVff0AQkFnMzapTE89hRqXN44kCKSBAhIykDYbjzHX?=
+ =?us-ascii?Q?JerxeBh9TJJhZR/A+6TpRTV6i8e3G/HQh0I4il7uKAK7uD5OiwMbc5uKzaBu?=
+ =?us-ascii?Q?Zb8cPOKMpMTffmtONKqR8dcBShdrTwyeuXahuei6HUMTS7jAD+uuiAarcGZq?=
+ =?us-ascii?Q?+zE+NNssrXiQimRQeWkV5JG+2Gu79UiGY3F74H6mtn+4eQuhnbtZvVyauJbG?=
+ =?us-ascii?Q?PSx+Lb9Qn3JXIE4hTSEhVmk=3D?=
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 03848f13-8a69-497d-b3a8-08d9aa569797
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR04MB6741.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2021 05:45:13.9783
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5bWDKGm98FemNi91rtXW85Ya/8ntWfOewpFCiVf8E/2owqLZAEAzGPek7NpJ2t4eptjzf+hvgotZVxb6vQDQXA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR04MB6710
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If trace_seq becomes full, trace_seq_vprintf() no longer consumes
-arguments from va_list, making va_list out of sync with format
-processing by trace_check_vprintf().
+As GPIO probe function "devm_gpiod_get_optional()" may return error
+code, driver should identify GPIO desc as NULL to avoid crash.
 
-This causes va_arg() in trace_check_vprintf() to return wrong
-positional argument, which results into a WARN_ON_ONCE() hit.
-
-ftrace_stress_test from LTP triggers this situation.
-
-Fix it by explicitly avoiding further use if va_list at the point
-when it's consistency can no longer be guaranteed.
-
-Signed-off-by: Nikita Yushchenko <nikita.yushchenko@virtuozzo.com>
+Acked-by: Tzung-Bi Shih <tzungbi@google.com>
+Signed-off-by: Xin Ji <xji@analogixsemi.com>
 ---
- kernel/trace/trace.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/gpu/drm/bridge/analogix/anx7625.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index a1adb29ef5c1..3f527c2e08f2 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -3826,6 +3826,18 @@ void trace_check_vprintf(struct trace_iterator *iter, const char *fmt,
- 		iter->fmt[i] = '\0';
- 		trace_seq_vprintf(&iter->seq, iter->fmt, ap);
- 
-+		/*
-+		 * If iter->seq is full, the above call no longer guarantees
-+		 * that ap is in sync with fmt processing, and further calls
-+		 * to va_arg() can return wrong positional arguments.
-+		 *
-+		 * Ensure that ap is no longer used in this case.
-+		 */
-+		if (iter->seq.full) {
-+			p = "";
-+			break;
-+		}
+diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+index 001fb39d9919..a872cfaf6257 100644
+--- a/drivers/gpu/drm/bridge/analogix/anx7625.c
++++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+@@ -1098,9 +1098,18 @@ static void anx7625_init_gpio(struct anx7625_data *platform)
+ 	/* Gpio for chip power enable */
+ 	platform->pdata.gpio_p_on =
+ 		devm_gpiod_get_optional(dev, "enable", GPIOD_OUT_LOW);
++	if (IS_ERR_OR_NULL(platform->pdata.gpio_p_on)) {
++		DRM_DEV_DEBUG_DRIVER(dev, "no enable gpio found\n");
++		platform->pdata.gpio_p_on = NULL;
++	}
 +
- 		if (star)
- 			len = va_arg(ap, int);
+ 	/* Gpio for chip reset */
+ 	platform->pdata.gpio_reset =
+ 		devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
++	if (IS_ERR_OR_NULL(platform->pdata.gpio_reset)) {
++		DRM_DEV_DEBUG_DRIVER(dev, "no reset gpio found\n");
++		platform->pdata.gpio_p_on = NULL;
++	}
  
+ 	if (platform->pdata.gpio_p_on && platform->pdata.gpio_reset) {
+ 		platform->pdata.low_power_mode = 1;
 -- 
-2.30.2
+2.25.1
 
