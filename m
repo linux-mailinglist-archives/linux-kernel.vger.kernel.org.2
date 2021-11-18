@@ -2,253 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE2945628D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:38:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3B4456289
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:38:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234452AbhKRSlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 13:41:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45468 "EHLO
+        id S234430AbhKRSlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 13:41:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234434AbhKRSlQ (ORCPT
+        with ESMTP id S234414AbhKRSlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 13:41:16 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7E4C061574;
-        Thu, 18 Nov 2021 10:38:15 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id e136so20814166ybc.4;
-        Thu, 18 Nov 2021 10:38:15 -0800 (PST)
+        Thu, 18 Nov 2021 13:41:11 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279DEC06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:38:10 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id n8so6025134plf.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:38:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ixhgm2s62Z4HwBsJ6qusKDYK8qBy46in4O+L2y7KtNk=;
-        b=JaRLKHOq9U1Snip6gy1N+HmsjBmI/9fE7jXPhzzuB0tC9UIOhbvSDt8O++xOXldF2E
-         +9dWbZzgD2GfgvLui/XTku3n9FvFi8KdeRwoRtNfANOMWjH03JjAOB0a6G0QNh7cjyNM
-         Jr+4285L5OnKTXPpL6MQYX4pULEUQ8JmCksJHBpL6M7U9Jkm2If4RjnuezRVp9Pjkl1x
-         3uA1ozFJt7x0XjmLV0Y4hYTPU+aqDRauETP1aK7SRQ7PhHrCmEZYsRW3N8zRv8/DowrA
-         ygIrierHvcpU2eWHbYLeIoUHaAN/Dpn2XVLdXjtnyYfWJVrKpDOsTeMuepVN6M1ysBJX
-         aqBQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=67r8F0/sx9q+LGM+Wt7NDN9RqixdzHVjgcdUmlc55vY=;
+        b=X5xGc74onqJ3Mnmz3GFI9VwuiV1dU0VR/iZk1apwAKikDZddfQ3iqIwNhODPuPVbIb
+         nQOjtH7yxVhzxgaouhfVI1zpr8COiM/Q5PLkB+/rXcrgI/s9keHuefDr2z2MojYwS6Ku
+         nrdvGlTfurlo/2gJfJe4zoxmzhrhU4wWTPKyA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ixhgm2s62Z4HwBsJ6qusKDYK8qBy46in4O+L2y7KtNk=;
-        b=W7hXdnydlTETz8JYDMIAGnskPPAOAvP2CnhcjjHi4y1A7EW2k2Y/X4hsgthfdJQ25F
-         gBWO7jq/g+pzygbrkvKDVKsKfMHWJ/uE83PAm5VV/RHvvLz+WBhZqSLqSlO3e4xTRDsr
-         SPyqLIWhwWP9CnoYw+UqbIGuB9BnRfQr7/1T5zbgYBSCkUebgHIz506FC83SFU5sFhyC
-         AI3vxka13zUmLxHet8WA+2btrbvxDMWNQpE8F3qSHLcroFQp90dgopoXhrk0T3Fmu8/S
-         z7MScEx545r38g6V2So9TANreX1Tr6m8mOl5AyEyJxX1UnfQS+8DQ4LdALUTFZQByLZw
-         7CIQ==
-X-Gm-Message-State: AOAM5320wfE7ZLFT1aZNPH0DPVx9mMSDXb9OKxaFw4ogv0mtmFLme7gW
-        bH9VQUdadhxFlExMtB+79bp6zx/Us4Ba38rAoYs=
-X-Google-Smtp-Source: ABdhPJwB7AZ6vxnEjgf4p0dk+bgJ5nPC5fRM/Lvy4Ukx0HdlBXPGYwhmU/limhcAFZcIZWa8b2O4tMB7E6lOgJQWQYM=
-X-Received: by 2002:a05:6902:1023:: with SMTP id x3mr29269555ybt.267.1637260695081;
- Thu, 18 Nov 2021 10:38:15 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=67r8F0/sx9q+LGM+Wt7NDN9RqixdzHVjgcdUmlc55vY=;
+        b=YHKDqw0/KUHWWwoO0eT7z9AjZlTh9IbYY0N/HMqqArWuRPQFOcDIJy9zlCwvCVpyCW
+         ktoBEzB7kkyYSST3lrV+RkJbSBD+lmYpAG0A6Ezuc3pS5sbVgvS1xXVSnJxl9F75PZcW
+         P30D68HDqMxpteZNvVu0DuWyVdeFe/gN168ygyLss7okLuePBN84pKi9C/9rZrEwrDR9
+         GxHoE/Egp+LDgXVnQlU1qBg/iD0jWm66WrusRm799h0hqjwoSfYs3/CgQP9H6ekMtBgP
+         9aDWGmqO0iUTRvf43tfLcS3DAn+H8G0VdEc/iqf/ktVcEmrL0aJL+yvcjAhzZO07UPXr
+         ALtw==
+X-Gm-Message-State: AOAM531bN3CYM7nGQkAnGs2UQwycqThxI19m5BDxHoZdOMMfT1CVdjAZ
+        TfJ8odvsh8EWstsFoDffGP3Cdnh8Dmr6tA==
+X-Google-Smtp-Source: ABdhPJzxZJhkgk3/UTN/PTa3qc95MynPtxwFJgrX8FIc9hGFvqkb/ak+LE/E7bVC7uHBfZVQybKL1A==
+X-Received: by 2002:a17:903:10d:b0:142:6343:a48e with SMTP id y13-20020a170903010d00b001426343a48emr68148113plc.29.1637260689750;
+        Thu, 18 Nov 2021 10:38:09 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o1sm8838800pjs.30.2021.11.18.10.38.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 10:38:09 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] sata_fsl: Use struct_group() for memcpy() region
+Date:   Thu, 18 Nov 2021 10:38:07 -0800
+Message-Id: <20211118183807.1283332-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20211118115225.1349726-1-iii@linux.ibm.com>
-In-Reply-To: <20211118115225.1349726-1-iii@linux.ibm.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 18 Nov 2021 10:38:04 -0800
-Message-ID: <CAEf4BzajYRJfqwB7oYwWX_-K8WzMdiOTbZiW3zqKm+oYjEu2PA@mail.gmail.com>
-Subject: Re: [PATCH bpf] selfetests/bpf: Adapt vmtest.sh to s390 libbpf CI changes
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Shuah Khan <shuah@kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1986; h=from:subject; bh=6F3Hbtl0qNeNG8U8V+w5sB9aTa4zVRLFY4AiTt0tp9g=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhlp2Px6D/hRDhXYVtZDKrKpJoBeWgsIp4owxiTf+2 R2mhhzeJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZadjwAKCRCJcvTf3G3AJhTSD/ 9gAVFmbAytcjL9YYE9+bRQqgtVOevbPlQvD/AI//SohjvY+B2WMdCpteORsPNGagz3VtVWyzLmNmZu BxYhzRmmq5pHiQHZDHIBu//MCiHRjBA5g2AXAauWUZIv7pRFe5m/Y1OPrS+NV283NuPiE8B/0aNVEu WjS7dHIPQLdyxTPq4VBtQqQVkPyPuPtVEl7BoWD4kGGb15YRVR8kHIw8FcBj++4TIrOpLs+yXdoOXK v30S/4/p9Ml1OzkjwLs5hx7+V3J36EfzGog2zaeasmHJdg25GK2QVxeYU2u00Czhww4x2LNh5Lx0ya KmaXrzhTh99hJlIeWnuhpk7pqnweHD0K3ppCZ/rblNd+H6s32872o7uytzFvdrA/Cx6DdTR131AKeA 8ctfNY3KjipThrZy62aq80W0YSpGtqFPLLztzN87Iun6eFz471J78VJOEL6KCwAYDhkWMFt5Hf59VA mmHw1cyBlOf8pJt7Vhe/WRGawqEM3Ijks24mCNiijPlI8kALQdE8EB1DwL3hf3lp/ibU4gi2KcAdgN S3RLvyWfQP9o187CJY4M09m54H+GfWQl5NETdJ1BCju/yz+VqhiqEeDDULXLPvQYjtgqVPOJtK3UD8 nRrZWY2H9xx/h8+LKr8h9m58RtfPGkQmNRDKPMHQS3B6UFqaq+e9ClLjwZXw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 3:52 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
->
-> [1] added s390 support to libbpf CI and added an ${ARCH} prefix to a
-> number of paths and identifiers in libbpf GitHub repo, which vmtest.sh
-> relies upon. Update these and make use of the new s390 support.
->
-> [1] https://github.com/libbpf/libbpf/pull/204
->
-> Co-developed-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
+In preparation for FORTIFY_SOURCE performing compile-time and run-time
+field bounds checking for memcpy(), memmove(), and memset(), avoid
+intentionally writing across neighboring fields.
 
-Thanks for the quick fix! I did rm -r ~/.bpf_selftest (though I
-thought I did that with my changes as well, whatever) before running
-vmtest.sh. It all worked. I got three test failures which is strange,
-because I don't get those failures in my custom and more complete QEMU
-image, so it's strange, if anyone has any ideas and is willing to help
-debug this, it would be greatly appreciated.
+Use struct_group() in struct command_desc around members acmd and fill,
+so they can be referenced together. This will allow memset(), memcpy(),
+and sizeof() to more easily reason about sizes, improve readability,
+and avoid future warnings about writing beyond the end of acmd:
 
-But either way, this fixes immediate problems with vmtest.sh, pushed
-to bpf-next. Thanks!
+In function 'fortify_memset_chk',
+    inlined from 'sata_fsl_qc_prep' at drivers/ata/sata_fsl.c:534:3:
+./include/linux/fortify-string.h:199:4: warning: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Wattribute-warning]
+  199 |    __write_overflow_field();
+      |    ^~~~~~~~~~~~~~~~~~~~~~~~
 
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/ata/sata_fsl.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-All error logs:
+diff --git a/drivers/ata/sata_fsl.c b/drivers/ata/sata_fsl.c
+index e5838b23c9e0..fec3c9032606 100644
+--- a/drivers/ata/sata_fsl.c
++++ b/drivers/ata/sata_fsl.c
+@@ -246,8 +246,10 @@ enum {
+ struct command_desc {
+ 	u8 cfis[8 * 4];
+ 	u8 sfis[8 * 4];
+-	u8 acmd[4 * 4];
+-	u8 fill[4 * 4];
++	struct_group(cdb,
++		u8 acmd[4 * 4];
++		u8 fill[4 * 4];
++	);
+ 	u32 prdt[SATA_FSL_MAX_PRD_DIRECT * 4];
+ 	u32 prdt_indirect[(SATA_FSL_MAX_PRD - SATA_FSL_MAX_PRD_DIRECT) * 4];
+ };
+@@ -531,8 +533,8 @@ static enum ata_completion_errors sata_fsl_qc_prep(struct ata_queued_cmd *qc)
+ 	/* setup "ACMD - atapi command" in cmd. desc. if this is ATAPI cmd */
+ 	if (ata_is_atapi(qc->tf.protocol)) {
+ 		desc_info |= ATAPI_CMD;
+-		memset((void *)&cd->acmd, 0, 32);
+-		memcpy((void *)&cd->acmd, qc->cdb, qc->dev->cdb_len);
++		memset(&cd->cdb, 0, sizeof(cd->cdb));
++		memcpy(&cd->cdb, qc->cdb, qc->dev->cdb_len);
+ 	}
+ 
+ 	if (qc->flags & ATA_QCFLAG_DMAMAP)
+-- 
+2.30.2
 
-#17 btf_map_in_map:FAIL
-test_lookup_update:PASS:skel_open 0 nsec
-test_lookup_update:PASS:skel_attach 0 nsec
-test_lookup_update:PASS:inner1 0 nsec
-test_lookup_update:PASS:inner2 0 nsec
-test_lookup_update:PASS:inner3 0 nsec
-test_lookup_update:PASS:inner1 0 nsec
-test_lookup_update:PASS:inner2 0 nsec
-test_lookup_update:PASS:inner4 0 nsec
-test_lookup_update:PASS:inner5 0 nsec
-test_lookup_update:PASS:map1_id 0 nsec
-test_lookup_update:PASS:map2_id 0 nsec
-test_lookup_update:PASS:sync_rcu 0 nsec
-test_lookup_update:PASS:sync_rcu 0 nsec
-test_lookup_update:FAIL:map1_leak inner_map1 leaked!
-#17/1 btf_map_in_map/lookup_update:FAIL
-test_diff_size:PASS:skel_open 0 nsec
-test_diff_size:PASS:outer_sockarr inner map size check 0 nsec
-test_diff_size:PASS:outer_arr inner map size check 0 nsec
-#17/2 btf_map_in_map/diff_size:OK
-
-#147 task_local_storage:FAIL
-test_sys_enter_exit:PASS:skel_open_and_load 0 nsec
-test_sys_enter_exit:PASS:skel_attach 0 nsec
-test_sys_enter_exit:PASS:enter_cnt 0 nsec
-test_sys_enter_exit:PASS:exit_cnt 0 nsec
-test_sys_enter_exit:PASS:mismatch_cnt 0 nsec
-#147/1 task_local_storage/sys_enter_exit:OK
-test_exit_creds:PASS:skel_open_and_load 0 nsec
-test_exit_creds:PASS:skel_attach 0 nsec
-test_exit_creds:PASS:valid_ptr_count 0 nsec
-test_exit_creds:FAIL:null_ptr_count unexpected null_ptr_count: actual
-0 == expected 0
-#147/2 task_local_storage/exit_creds:FAIL
-test_recursion:PASS:skel_open_and_load 0 nsec
-test_recursion:PASS:skel_attach 0 nsec
-#147/3 task_local_storage/recursion:OK
-
-#155 test_bpffs:FAIL
-test_test_bpffs:PASS:clone 0 nsec
-test_test_bpffs:PASS:waitpid 0 nsec
-test_test_bpffs:FAIL:bpffs test  failed 255
-Summary: 209/967 PASSED, 10 SKIPPED, 3 FAILED
-
-
->  tools/testing/selftests/bpf/vmtest.sh | 46 ++++++++++++++++++---------
->  1 file changed, 31 insertions(+), 15 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/vmtest.sh b/tools/testing/selftests/bpf/vmtest.sh
-> index 027198768fad..5e43c79ddc6e 100755
-> --- a/tools/testing/selftests/bpf/vmtest.sh
-> +++ b/tools/testing/selftests/bpf/vmtest.sh
-> @@ -4,17 +4,34 @@
->  set -u
->  set -e
->
-> -# This script currently only works for x86_64, as
-> -# it is based on the VM image used by the BPF CI which is
-> -# x86_64.
-> -QEMU_BINARY="${QEMU_BINARY:="qemu-system-x86_64"}"
-> -X86_BZIMAGE="arch/x86/boot/bzImage"
-> +# This script currently only works for x86_64 and s390x, as
-> +# it is based on the VM image used by the BPF CI, which is
-> +# available only for these architectures.
-> +ARCH="$(uname -m)"
-> +case "${ARCH}" in
-> +s390x)
-> +       QEMU_BINARY=qemu-system-s390x
-> +       QEMU_CONSOLE="ttyS1"
-> +       QEMU_FLAGS=(-smp 2)
-> +       BZIMAGE="arch/s390/boot/compressed/vmlinux"
-> +       ;;
-> +x86_64)
-> +       QEMU_BINARY=qemu-system-x86_64
-> +       QEMU_CONSOLE="ttyS0,115200"
-> +       QEMU_FLAGS=(-cpu host -smp 8)
-> +       BZIMAGE="arch/x86/boot/bzImage"
-> +       ;;
-> +*)
-> +       echo "Unsupported architecture"
-> +       exit 1
-> +       ;;
-> +esac
->  DEFAULT_COMMAND="./test_progs"
->  MOUNT_DIR="mnt"
->  ROOTFS_IMAGE="root.img"
->  OUTPUT_DIR="$HOME/.bpf_selftests"
-> -KCONFIG_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/latest.config"
-> -KCONFIG_API_URL="https://api.github.com/repos/libbpf/libbpf/contents/travis-ci/vmtest/configs/latest.config"
-> +KCONFIG_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/config-latest.${ARCH}"
-> +KCONFIG_API_URL="https://api.github.com/repos/libbpf/libbpf/contents/travis-ci/vmtest/configs/config-latest.${ARCH}"
->  INDEX_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/INDEX"
->  NUM_COMPILE_JOBS="$(nproc)"
->  LOG_FILE_BASE="$(date +"bpf_selftests.%Y-%m-%d_%H-%M-%S")"
-> @@ -85,7 +102,7 @@ newest_rootfs_version()
->  {
->         {
->         for file in "${!URLS[@]}"; do
-> -               if [[ $file =~ ^libbpf-vmtest-rootfs-(.*)\.tar\.zst$ ]]; then
-> +               if [[ $file =~ ^"${ARCH}"/libbpf-vmtest-rootfs-(.*)\.tar\.zst$ ]]; then
->                         echo "${BASH_REMATCH[1]}"
->                 fi
->         done
-> @@ -102,7 +119,7 @@ download_rootfs()
->                 exit 1
->         fi
->
-> -       download "libbpf-vmtest-rootfs-$rootfsversion.tar.zst" |
-> +       download "${ARCH}/libbpf-vmtest-rootfs-$rootfsversion.tar.zst" |
->                 zstd -d | sudo tar -C "$dir" -x
->  }
->
-> @@ -224,13 +241,12 @@ EOF
->                 -nodefaults \
->                 -display none \
->                 -serial mon:stdio \
-> -               -cpu host \
-> +               "${qemu_flags[@]}" \
->                 -enable-kvm \
-> -               -smp 8 \
->                 -m 4G \
->                 -drive file="${rootfs_img}",format=raw,index=1,media=disk,if=virtio,cache=none \
->                 -kernel "${kernel_bzimage}" \
-> -               -append "root=/dev/vda rw console=ttyS0,115200"
-> +               -append "root=/dev/vda rw console=${QEMU_CONSOLE}"
->  }
->
->  copy_logs()
-> @@ -282,7 +298,7 @@ main()
->         local kernel_checkout=$(realpath "${script_dir}"/../../../../)
->         # By default the script searches for the kernel in the checkout directory but
->         # it also obeys environment variables O= and KBUILD_OUTPUT=
-> -       local kernel_bzimage="${kernel_checkout}/${X86_BZIMAGE}"
-> +       local kernel_bzimage="${kernel_checkout}/${BZIMAGE}"
->         local command="${DEFAULT_COMMAND}"
->         local update_image="no"
->         local exit_command="poweroff -f"
-> @@ -337,13 +353,13 @@ main()
->                 if is_rel_path "${O}"; then
->                         O="$(realpath "${PWD}/${O}")"
->                 fi
-> -               kernel_bzimage="${O}/${X86_BZIMAGE}"
-> +               kernel_bzimage="${O}/${BZIMAGE}"
->                 make_command="${make_command} O=${O}"
->         elif [[ "${KBUILD_OUTPUT:=""}" != "" ]]; then
->                 if is_rel_path "${KBUILD_OUTPUT}"; then
->                         KBUILD_OUTPUT="$(realpath "${PWD}/${KBUILD_OUTPUT}")"
->                 fi
-> -               kernel_bzimage="${KBUILD_OUTPUT}/${X86_BZIMAGE}"
-> +               kernel_bzimage="${KBUILD_OUTPUT}/${BZIMAGE}"
->                 make_command="${make_command} KBUILD_OUTPUT=${KBUILD_OUTPUT}"
->         fi
->
-> --
-> 2.31.1
->
