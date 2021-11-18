@@ -2,163 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D25B45584B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:50:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3779345584E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245304AbhKRJxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 04:53:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29695 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245288AbhKRJxD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 04:53:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637229002;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=TYzIt72Y0GLEBCHWpV2i6CZMp5top3e9SI2S0V0GzMw=;
-        b=V3z94lnduvAaalIZcYh8ibAnnRHPmrUqQFyPzbN4QPyOsszpg/alpo14CdQFDgHoO4bKnF
-        +WKOJS2S/NGjIUo5aBarBrooUETm/OhL5fjGU35vYagCMiabTC9vGaDFrr/Qdhg9GvhDzV
-        g/i02gSbax3q8mmP8i/oOQctYVHuXXs=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-585-HarLLI7-MS2j-_GzCzhWDg-1; Thu, 18 Nov 2021 04:50:01 -0500
-X-MC-Unique: HarLLI7-MS2j-_GzCzhWDg-1
-Received: by mail-ed1-f70.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso4740810edj.20
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 01:50:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:from
-         :subject:to:cc:content-language:content-transfer-encoding;
-        bh=TYzIt72Y0GLEBCHWpV2i6CZMp5top3e9SI2S0V0GzMw=;
-        b=m45unGULAOAxyzq2n7J9FIwoqCkbKx5XdYascLrmOcFH+1VgCoMep6qsA5Jg+MgPU2
-         +drl4E8EBtQjl6Dap16J1TwuxmgVIq4PTfgCFjiFOlCIdj7gehGNpTEPfir/bawmMY67
-         U/jMVHMsBV++IFERIK3uAwW4CWlLIVMjtMxJdTdc8qMbcgygGUERwVi1XlGS7IawbyOy
-         tHk974jI8s+YVeCy111Lk6jysv2bFQKMrpRDPKV8RE8uNqOB9JuIG0/T3caNmDJRSQHo
-         kXkZaYn8FysS5rpLNl+yGsIHfSdrx8V/3FYoGBa11Q/iRrJUmBot8mVH4muw5XFcrdSO
-         fvWA==
-X-Gm-Message-State: AOAM533ZBhlEiTT2jqyZ+uRGCVB1dRV78xvgNvdteHi4tNLJkTf2l7Ou
-        UYVuImMXryNw43LfYXpNVPaxO+USSK+wR16KDnhPhIcXip8ucMQ/9vI+QYzzOt4sVpt6akH/OA0
-        QX+z9P7psQB/HWhTuLnZYm+Gn
-X-Received: by 2002:a05:6402:22a5:: with SMTP id cx5mr9325864edb.334.1637228999806;
-        Thu, 18 Nov 2021 01:49:59 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx4nR554SfrGYJi4G12EFLOiXUxJBtxE+zltb9yfvA2VIZ0bHmrREihf7KmA/EVx5tzXplNHA==
-X-Received: by 2002:a05:6402:22a5:: with SMTP id cx5mr9325844edb.334.1637228999682;
-        Thu, 18 Nov 2021 01:49:59 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id kx3sm1034912ejc.112.2021.11.18.01.49.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Nov 2021 01:49:59 -0800 (PST)
-Message-ID: <f5ff716f-ba1d-31b1-bad3-e1aadea02931@redhat.com>
+        id S245340AbhKRJxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 04:53:53 -0500
+Received: from mail-eopbgr30093.outbound.protection.outlook.com ([40.107.3.93]:44942
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S245293AbhKRJxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 04:53:06 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XqJj26F+N+6QdiDrtfUSGOSGbo+XhFczLV233HAwX6Kp7NR7+BZESfRtzY3H3x0ncfMtYmYx4hfexlXg/Wegl7gxS+r5UxuQI6JtaNt7cz2W5JM445L0y7kkhcKgig0iDIrGN1v4nh1maoDoX1Qp/mG1ee6a2ZaemqPIppBRY10R9ZS335APTgtAW73sPR7VDkzHw2OgcqKtq7tLZfdXDKBG4wx08sg8Uhcy0Lcg0b3dKGeky+88xnBhaGSISsP0ZhpCnQyHj+bHkY9y054gDIr1pcZXz/5ir3CwRAQMKTgFAhUvGGxMxu2Suyi8/l6Ia/5Mj/AS3YgRhkXt9mgl9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KRGiPdhTCbSfvD3JZkuu48TebwKTstnEiOr+Ie6sPok=;
+ b=QHafre6UXA6wk37nItWCHWvZuWSkMJdyhau9PFb/QjfopGkWoatvKzGw+vqIkfAbXBJQiufM9ylNfKnuJioLGMj9wd8lH9BdutT8Du46ccaF8EGLize9kx/1UpM8IoAiySUs46NFtYMFCCgbwpEgYdiJBI6B/+oH9FxGRb+kJFCr33hyUF8EqwYoNe9xBUUgHyPELp97/znSF+CTiB07pFJg7cKIOsTkjIcc9xTev+OJI/qcIZAeM/Ejnfstt9OXm2Q6jSYhod77yiaB6pm6kl416VaczLQLoUS28LWHRctFgzQXcDcLbHjcV9obykVMOYIbWjYhNnr+CvK9RY93sQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
+ dkim=pass header.d=axentia.se; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KRGiPdhTCbSfvD3JZkuu48TebwKTstnEiOr+Ie6sPok=;
+ b=XWuz16uhiJcGtuXcXq0c9GecEq0FflvNTmRjAhzL3yhjGwskcsPgnrgNDQHtNlZt7NsHBJ15UXBp05wmWHzV7YWAJDICZzdElDTqhc6n1q9iYR8GDFRT/AlG0BWDB+spZ0ynZXBN5re8fWHFM4pdg3OVCKrtCwcDKvDjNNwK6e8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=axentia.se;
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
+ by DB6PR02MB3063.eurprd02.prod.outlook.com (2603:10a6:6:1d::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.27; Thu, 18 Nov
+ 2021 09:50:00 +0000
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::b1d6:d448:8d63:5683]) by DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::b1d6:d448:8d63:5683%6]) with mapi id 15.20.4690.027; Thu, 18 Nov 2021
+ 09:50:00 +0000
+Message-ID: <c471b53e-2999-0b81-da93-d764f840ce4f@axentia.se>
 Date:   Thu, 18 Nov 2021 10:49:58 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-From:   Hans de Goede <hdegoede@redhat.com>
-Subject: [GIT PULL] platform-drivers-x86 for 5.16-2
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH v1 3/3] i2c: mux: gpio: Use array_size() helper
 Content-Language: en-US
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Evan Green <evgreen@chromium.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Peter Korsgaard <peter.korsgaard@barco.com>
+References: <20211115154201.46579-1-andriy.shevchenko@linux.intel.com>
+ <20211115154201.46579-3-andriy.shevchenko@linux.intel.com>
+From:   Peter Rosin <peda@axentia.se>
+Organization: Axentia Technologies AB
+In-Reply-To: <20211115154201.46579-3-andriy.shevchenko@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: GV3P280CA0059.SWEP280.PROD.OUTLOOK.COM
+ (2603:10a6:150:9::12) To DB8PR02MB5482.eurprd02.prod.outlook.com
+ (2603:10a6:10:eb::29)
+MIME-Version: 1.0
+Received: from [192.168.13.3] (185.178.140.238) by GV3P280CA0059.SWEP280.PROD.OUTLOOK.COM (2603:10a6:150:9::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21 via Frontend Transport; Thu, 18 Nov 2021 09:49:59 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f2dd064d-6f42-479e-9664-08d9aa78c984
+X-MS-TrafficTypeDiagnostic: DB6PR02MB3063:
+X-Microsoft-Antispam-PRVS: <DB6PR02MB30636C92E2661D619BCF4C50BC9B9@DB6PR02MB3063.eurprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1824;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ndDJRuNjRn20gCnZmZ0mnN8ElfSRduI3y1Osc+AHd93i8YnE+8xCtMiWS1FAM1Bl2+zDkoxXJpBGUGt6N/3fqw/cr7EsWaILO7+Q0D6+/rwiNQFDwtYEd/UPiNNLBTBdMijr5wX5tTEzli5fokyZAxrXNsJP26CMheQxM67ER3dKlPBzA+j6PYJBIcZR7f+p+j71JzajNbOoWGZIGQDr0IQGb+emQ5gbzji6euxmfJaJZjDFFeapct1vDsLeq9nofT9wJMVyWy6vhX9vku3nh9o7gipjsN+/U61vZD5TUCg4AtWKIEqVl0nATM0QpXqJeysxEbLp0/CumLUYB32pArnbu1q9NCpA0yUBuKTlHszuPR0RkB8bijZxUlVPAk0At2lY7/CMdxy7FLd0t1r7mnKR/dr2ah4xqKP2ZUNyHynFxzR1iYQbWp819q/IjMg1U8h4cDZyUGdhROhErTTfzD826uFsTVoup73ZPatPFmD7Z9XdTg5yA2FJEkBXz95cfmOA9Pf/OhlJKKuipqRPt45+LONYdVgJyEvywojONyFCcNAfjGpX0FER2fSz9V+qVtdiTcAmQth9uzol44oxBWOnhvW73mctKFrsfrJrBli+Lkl0AvrgMjfE9Sw0f8uh69EmSZD/WNwi/OanMAMrxRm227eXbdw19e5/WRaGFOtLxMZ/jSnT+QhEGWmv55vt0Uu2p4aTA6nguxNy/CpOpw0UrmgUyvZHp4vf7EzDU28=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(396003)(136003)(346002)(39830400003)(66946007)(66556008)(4326008)(66476007)(31696002)(16576012)(26005)(110136005)(558084003)(53546011)(2906002)(36916002)(86362001)(956004)(508600001)(5660300002)(2616005)(31686004)(4001150100001)(8676002)(38100700002)(6486002)(186003)(36756003)(316002)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QkpZSVJXQmNsK21qQzB1S1AyY21idDdXZW05KzFNMklRKzZRR2Q3V040MElJ?=
+ =?utf-8?B?b1pkdlkzQ21SMlBpR2dLZ1dhSnB2QU9VUFMvWktEQVhjUmRPL3JQSTZtTzdY?=
+ =?utf-8?B?dmZicWVRYktVRDFOaURua2o1d2poUXlDSXNrQTZWdXFrL1V4ZWZDVG9zeUVD?=
+ =?utf-8?B?NENJZDlXQ2FQRGhFQWFTaDhjT1N3QUt1U2hnOHI1WXRGV09vK2M5YXA4V0Iz?=
+ =?utf-8?B?OFpXSUYwVUlXUzNHcVBZK05BekV5dU1YSFZQWVB6OVZ5L1hrQnRBTHNPWFRH?=
+ =?utf-8?B?dGpwSW9sN2k3S0hSZlJpUFk2a2ZSckJGZVQ2cG5HNlJUTmJHL3dZeGp6RExl?=
+ =?utf-8?B?ZUJWcElOd09jMTZFdnRJOUJkeUFrS2tEV3FiSUw0SlRuSEhBOThOemIzdmgy?=
+ =?utf-8?B?S0pNVWw4TGwreVZPSEh3b0p2Y2xzc3FxRnhkR0N6cnF6V2J0NWFDcmIvNlBV?=
+ =?utf-8?B?NFF4OWF5VzZ6Rk5GVzRPbEtHdHBNdmpUWTQybFM5Uk95a3ZiQWw3dU55N1d2?=
+ =?utf-8?B?SWVtTUZJVVNOQ3VUV2ptTDRqQkdvYnZJTGliMGpmMHpVdmRqOVhtQWduSThK?=
+ =?utf-8?B?b2Z0REJzWXFXMjR3cjFrMnhIT1pMcWo0VTdCajlQRWpUT1V2bm1YanIrL1Q5?=
+ =?utf-8?B?MjhldU1BYVgzTlJSTUpXa2lzcWdCUXE5aGFrN2R1SDM2SThOM0o5SkJpVVNU?=
+ =?utf-8?B?Nm5kNGVnYTVyMGxwU0ZnZDErSVNveEsvVUlsV0trM092OXBqT2dsdWVURVd1?=
+ =?utf-8?B?UHdBVVV3YlEwM0V5dTlzcXZ4ajNTVDk1c21hR0dJMzRuWDFjVzBZYTMyRnJE?=
+ =?utf-8?B?bVF0dDFKWWlBQUxpNVFTSTZ2dGJ6aGdxdkVKQ0QxVlI1TGxneHlxRVhaUitN?=
+ =?utf-8?B?NnpXbkpuSnZ2aThqTWltSEFkdjRNSmRBQ0FjQWlTcHFUcWl5NkZtYnV2eXdo?=
+ =?utf-8?B?cWFEdjlnMlAvNmQxcG0rUTVjMHd3a3RRdE9FeU9NS1ExWDNlckg1dzBjT29M?=
+ =?utf-8?B?cXBjcEo3UjBoZ2dqTWw5ZjlzaHhmVUdPbnlWRzZZcEx4clZJYUpnSW50MHJ6?=
+ =?utf-8?B?M05HZzRwdFpvcy8xNmdKbVNQZEo1NzRPaUdBN2hES3ZYNGsxRkV1NkR0ZUU0?=
+ =?utf-8?B?QzBXRFRWak54Y2dxWTlEdXlDVkdqSXZ5dm1XOHBLSHJoK2UxYnZidzcxZEFh?=
+ =?utf-8?B?Tm9CYmtrcTdkZGI4ODVsUTd4bzhuZnNQSGR4WUJDQThkUHIxYWtCVHJHdUYy?=
+ =?utf-8?B?T3ZiRnFOSXYybFNadmxyeFdaU2IvcUNjNlVLdFpsd0JaM1JqQy92R2RqcDl4?=
+ =?utf-8?B?VUFKTUFuU3lKS0IrRzdBWGxzYnhlVjIvdlB1UXJ0U0s2aEpIOERzUzFtSXkx?=
+ =?utf-8?B?RHhKSnJweHpSbzI2MXRlY0VpZk1rNlhGaVJnTnl0ZnBHbjB0QkwzZlRWZENQ?=
+ =?utf-8?B?ZlJja0ZYZTBlemdDMkprUjREdk1ZK0hlbUVBRUJPS2hwWHBzWE5DQWEvZEsv?=
+ =?utf-8?B?elk3Vnl0cEZPbVY5S2VzQkdHaHdLT2hxSWJQM3o3eXNxSFcvVzFPeGNmYUV0?=
+ =?utf-8?B?alNROHN2NEh5RlJFdXdxcklDM0xic01wVnpNU0wyQXE2Q3hsdFdKTUIvMjVU?=
+ =?utf-8?B?anVWbysvYXhTd2V3NWFka0ZPSkxTZTlBMFlSWHF6WnB6UDJhZWRLc0NKZTYz?=
+ =?utf-8?B?WFRKU3MvL0dKRVZQK0ltVk5xRnRieWJQWHpuNW5lcG1oNHRJeUpxOExyVGpD?=
+ =?utf-8?B?aFZqdXVtQ3lxNUViOW03bXRHMEVWNmRPOG00Vmhsc3dtVERLRStnSXJiT2Rl?=
+ =?utf-8?B?aTRNTmtOc3dUUW9xSlNJNDlxWnkwTENDY2laYytHeVk5c3RxV0N2RkE3MjYy?=
+ =?utf-8?B?U25YaW95NU9GVHQ2U3l5VHdjU1pZTkxCdk1DMjkwUVFKdGpXS1Vla0h2aFR1?=
+ =?utf-8?B?VXdnTkg0ajl5TGd4MmtDemgxVVZtN2lTYUdTaHZqWWYxaXpvV0s4ZERiWExC?=
+ =?utf-8?B?c005dFBGd1JsSCtRb3pHNWhYWC9FN29nZjR6VzlPVUthRzM1K3EwbEx1SG5U?=
+ =?utf-8?B?cWxnbjhZbTdWNklJWjVmcFZKbFZZL25qTU15Slp6dG82WWRSTnkzajBxZGhw?=
+ =?utf-8?Q?VyY4=3D?=
+X-OriginatorOrg: axentia.se
+X-MS-Exchange-CrossTenant-Network-Message-Id: f2dd064d-6f42-479e-9664-08d9aa78c984
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2021 09:50:00.6191
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: C5kVCNpHEamDcoO93SmgUO6iD0d/QHm1hkAM4oTGaQImjO8L/owUhDZZ25qjkAwP
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR02MB3063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 2021-11-15 16:42, Andy Shevchenko wrote:
+> Use array_size() helper to aid in 2-factor allocation instances.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Here is the first round of bug-fixes for platform-drivers-x86
-for 5.16.
+Acked-by: Peter Rosin <peda@axentia.se>
 
-This consists of various build- and bug-fixes as well as
-1 hardware-id addition.
-
-Regards,
-
-Hans
-
-
-The following changes since commit fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf:
-
-  Linux 5.16-rc1 (2021-11-14 13:56:52 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.16-2
-
-for you to fetch changes up to d477a907cba317cfa58a8c89c09454d3fced1964:
-
-  platform/x86: thinkpad_acpi: fix documentation for adaptive keyboard (2021-11-16 10:56:53 +0100)
-
-----------------------------------------------------------------
-platform-drivers-x86 for v5.16-2
-
-Various build- and bug-fixes as well as 1 hardware-id addition.
-
-The following is an automated git shortlog grouped by driver:
-
-amd-pmc:
- -  Make CONFIG_AMD_PMC depend on RTC_CLASS
-
-dell-wmi-descriptor:
- -  disable by default
-
-hp_accel:
- -  Fix an error handling path in 'lis3lv02d_probe()'
-
-platform/mellanox:
- -  mlxreg-lc: fix error code in mlxreg_lc_create_static_devices()
-
-samsung-laptop:
- -  Fix typo in a comment
-
-think-lmi:
- -  Abort probe on analyze failure
-
-thinkpad_acpi:
- -  fix documentation for adaptive keyboard
- -  Fix WWAN device disabled issue after S3 deep
- -  Add support for dual fan control
-
-----------------------------------------------------------------
-Alex Williamson (1):
-      platform/x86: think-lmi: Abort probe on analyze failure
-
-Christophe JAILLET (1):
-      platform/x86: hp_accel: Fix an error handling path in 'lis3lv02d_probe()'
-
-Dan Carpenter (1):
-      platform/mellanox: mlxreg-lc: fix error code in mlxreg_lc_create_static_devices()
-
-Hans de Goede (1):
-      platform/x86: amd-pmc: Make CONFIG_AMD_PMC depend on RTC_CLASS
-
-Jason Wang (1):
-      platform/x86: samsung-laptop: Fix typo in a comment
-
-Jimmy Wang (1):
-      platform/x86: thinkpad_acpi: Add support for dual fan control
-
-Slark Xiao (1):
-      platform/x86: thinkpad_acpi: Fix WWAN device disabled issue after S3 deep
-
-Thomas Weißschuh (1):
-      platform/x86: dell-wmi-descriptor: disable by default
-
-Vincent Bernat (1):
-      platform/x86: thinkpad_acpi: fix documentation for adaptive keyboard
-
- Documentation/admin-guide/laptops/thinkpad-acpi.rst | 12 ++++++------
- drivers/platform/mellanox/mlxreg-lc.c               |  5 +++--
- drivers/platform/x86/Kconfig                        |  2 +-
- drivers/platform/x86/dell/Kconfig                   |  2 +-
- drivers/platform/x86/hp_accel.c                     |  2 ++
- drivers/platform/x86/samsung-laptop.c               |  2 +-
- drivers/platform/x86/think-lmi.c                    | 13 ++++++++++---
- drivers/platform/x86/think-lmi.h                    |  1 -
- drivers/platform/x86/thinkpad_acpi.c                | 13 +------------
- 9 files changed, 25 insertions(+), 27 deletions(-)
+Cheers,
+Peter
 
