@@ -2,82 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65CC4456048
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C41CD456049
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233088AbhKRQUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 11:20:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232984AbhKRQUN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 11:20:13 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65168C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:17:13 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id cq22-20020a17090af99600b001a9550a17a5so8635101pjb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:17:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SBcIQzCX8Yq5J7qmrIFRGqarw+SHho/cn1etZqGWWXg=;
-        b=J5q10V4d8pi9a9wYxUYPyW3JVjZzW7L7/yOJAKCE2ks7Q5GEUqNMovDlFEDpQXkzrb
-         B+J6JYrmxgMrAIMtL8FE6INACm8S5p9UygDANUSLgQTqSA8jos4/XsOUS8rYVH9UGlv3
-         E4sc8EfhDRU64uE9IKM/7taVdAyaW75nMsczSPsf4cKbIZMxXqXqbvP9A9XJzXh4wmw/
-         H1kKPS9OX1nRPTdsDTP1qoqd8jvveeHzwyFGNt8V9cpZSBPAO0TrBrK4oTzmH1nQeIZT
-         AE1rbvCypa3znaIRhI0leraXk39igTRXK6hXVG9xogK7XvRlPbGb9oU66+HokmZU/UZR
-         soQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SBcIQzCX8Yq5J7qmrIFRGqarw+SHho/cn1etZqGWWXg=;
-        b=NUxefks5BVH53W5Qndke6IJkhvY+fAhAmS9LavrRCbUD6EOHuLOgBAfMWOd0W8u0xe
-         v5xh9QDFSvFBPq7XTgGq4fvYlgFENP2dtlIjqNlocfV98fJfi+gEH40o0gUrek0H7wtb
-         +TJVUFmbSWTnDFW+rDlFXhb13ys9nXAfalaXaWU/NdBeAHLCWPGzFDa+tzx9i3nuaV8Z
-         apGgJyPU2IAvhbDPEpgVXNlAveTlXLJEx2E50qS0a3MfAnQNwEbU1bwRkgGbvIkaDxdM
-         93domMtOe0DDtNkOMTy+K5ViA8davx4fnQCRqOHNdYMUe6wB2csInlm0+MR0KfgnHFRM
-         d4eA==
-X-Gm-Message-State: AOAM530tvlm4GuQKXJfbd8nrJ5BnBY8GjV2oXXMVycO0C6S1NlJHpdXk
-        ZKkqJd8qZtSUTQtGOYeg03uOxA==
-X-Google-Smtp-Source: ABdhPJzGVTCI02WZkeU94xIqEOFMTcYNEQT1GyEoQZIVk9gFGNyOROoxkz2LqIeWOQmktUvz6cUmsA==
-X-Received: by 2002:a17:90a:ad47:: with SMTP id w7mr11953097pjv.16.1637252232716;
-        Thu, 18 Nov 2021 08:17:12 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id p19sm116176pfo.92.2021.11.18.08.17.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 08:17:12 -0800 (PST)
-Date:   Thu, 18 Nov 2021 16:17:08 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2] KVM: x86: check PIR even for vCPUs with disabled APICv
-Message-ID: <YZZ8hAjbIJnkkraD@google.com>
-References: <20211118072531.1534938-1-pbonzini@redhat.com>
- <8ad47d43a7c8ae19f09cc6ada73665d6e348e213.camel@redhat.com>
- <4ee9fe58-73ca-98fd-3d79-198e1093f722@redhat.com>
+        id S233095AbhKRQUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 11:20:21 -0500
+Received: from foss.arm.com ([217.140.110.172]:42694 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232858AbhKRQUU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 11:20:20 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E66981042;
+        Thu, 18 Nov 2021 08:17:19 -0800 (PST)
+Received: from [192.168.178.2] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CDB823F766;
+        Thu, 18 Nov 2021 08:17:17 -0800 (PST)
+Subject: Re: [PATCH] sched/fair: Replace CFS internal cpu_util() with
+ cpu_util_cfs()
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        linux-kernel@vger.kernel.org
+References: <20211112141349.155713-1-dietmar.eggemann@arm.com>
+ <CAKfTPtCzP_Xgos-yAiUxnKw_BvP22P5CH3xJjLiUQLeg0a-AxQ@mail.gmail.com>
+ <4ecdc3bf-9a20-c6a8-0aff-8bb7e55a7d34@arm.com>
+ <CAKfTPtBZdpxMPP4-uRqmCxavKosf4NL14SF1S6=mrKJjVfX+Pw@mail.gmail.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <2a800d9c-2dfc-e901-da46-5f858d6abd57@arm.com>
+Date:   Thu, 18 Nov 2021 17:17:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4ee9fe58-73ca-98fd-3d79-198e1093f722@redhat.com>
+In-Reply-To: <CAKfTPtBZdpxMPP4-uRqmCxavKosf4NL14SF1S6=mrKJjVfX+Pw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021, Paolo Bonzini wrote:
-> On 11/18/21 10:56, Maxim Levitsky wrote:
-> > vmx_sync_pir_to_irr has 'if (KVM_BUG_ON(!vcpu->arch.apicv_active,
-> > vcpu->kvm))' That has to be removed I think for this to work.
+On 18.11.21 09:07, Vincent Guittot wrote:
+> On Wed, 17 Nov 2021 at 18:26, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>>
+>> On 12.11.21 17:20, Vincent Guittot wrote:
+>>> On Fri, 12 Nov 2021 at 15:14, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>>>>
+>>>> cpu_util_cfs() was created by commit d4edd662ac16 ("sched/cpufreq: Use
+>>>> the DEADLINE utilization signal") to enable the access to CPU
+>>>> utilization from the Schedutil CPUfreq governor.
+>>>>
+>>>> Commit a07630b8b2c1 ("sched/cpufreq/schedutil: Use util_est for OPP
+>>>> selection") added util_est support later.
+>>>>
+>>>> The only thing cpu_util() is doing on top of what cpu_util_cfs() already
+>>>> does is to clamp the return value to the [0..capacity_orig] capacity
+>>>> range of the CPU. Integrating this into cpu_util_cfs() is not harming
+>>>> the existing users (Schedutil and CPUfreq cooling (latter via
+>>>> sched_cpu_util() wrapper)).
+>>>
+>>> Could you to update cpu_util_cfs() to use cpu as a parameter instead of rq ?
+>>
+>> I could but I decided to use use `struct rq *rq` instead.
+>>
+>> (A) We already know the rq in the following functions where we call
+>>     cpu_util_cfs():
 > 
-> Good point.
+> The only user of cpu_util_cfs() is sugov_get_util() and it does
+> cpu_util_cfs(cpu_rq(sg_cpu->cpu)) because rq is only used as a
+> parameter of cpu_util_cfs()
 
-Hmm, I think I'd prefer to keep it as
+Sure, I guess there is another user currently: cpufreq_cooling
 
-	if (KVM_BUG_ON(!enable_apicv))
-		return -EIO;
+get_load() -> sched_cpu_util() ->
+effective_cpu_util(..., cpu_util_cfs(cpu_rq(cpu)), ...)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+> all other ones are using cpu_util() which already uses cpu as a
+> parameter so it's more straight forward to keep using cpu
 
-since calling it directly or failing to nullify vmx_x86_ops.sync_pir_to_irr when
-APICv is unsupported would lead to all sorts of errors.  It's not a strong
-preference though.
+OK, will do it this way, just wanted to mention the possibility to save
+some of these cpu_rq(cpu) calls.
+
+[...]
+
+>> /**
+>>  * cpu_util_cfs() - Estimates the amount of CPU capacity used by CFS tasks.
+>>  * @cpu: the CPU to get the utilization for.
+> 
+> cpu is clearly the right parameter ;-)
+
+Not very clever of me ;-)
+
+[...]
