@@ -2,156 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2C145582D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:38:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4779A455830
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:40:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245235AbhKRJlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 04:41:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34044 "EHLO
+        id S245227AbhKRJnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 04:43:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245232AbhKRJlW (ORCPT
+        with ESMTP id S242788AbhKRJnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 04:41:22 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FFDC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 01:38:22 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id x15so24291422edv.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 01:38:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jA5Sozi5oYO1BZC2ZueqGW4ScLb2yo/Eb+YJoK727bk=;
-        b=AeiddrX4/+3R7flwsiNzXgE5s3GEwuj/MoCNan8cr02QtLnzsaoESrl0AKP9WezR4m
-         PpZOT4ggZ4mQrmZ8Re91vdinteGEW9xskUi95fMlfpOyGlFHAG4KhZBH2JcbOEFQ7YWa
-         gBkjoLkWElIHLTe4fHsbZ90JwwY+i5LSWY9CTms68RzHCwLRCoKoWqLtfhEhQQCo9d0w
-         7mNSLWcLwxeThXIlgmwVqzFI2LZHDVcaYOL64AlhON1Gwa0o/lbh2Xuqej49B8xvWHh7
-         80LMpT6SH3NbtdrxCL38wk2bveT0Ft0bQy7frp+/wKGfFtZt1C5kBYnYeyaYO2YLQb7m
-         t40w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jA5Sozi5oYO1BZC2ZueqGW4ScLb2yo/Eb+YJoK727bk=;
-        b=oHW1rTMUumoUxgeX1nH6vVSd7xsHeDVvYU3EikJOGV+dQy6wqwBpAc7eX9K3RIzdlo
-         BF4nkDw94rrUYfeqejQjieMvC9Pw9SAqVHJakZHao2/z2PhunzS4fqfgrNemH/G8qDe3
-         DqmwuMILf89J+DytHnI2jD+TJpJi3Du+3y+lK4iF7v3UCUlx82HhmqsyUUL36SBG6M/2
-         go8xbRzf21PZuZBP+JeFMuFUHgAhaHh4TRm2+iabBnPnM/AYLc8sCZB7RhM/C1U7MIkZ
-         mCFATJvoavJZGVJ154LArHZwHFHB4QDJJecR9HCwARcaQcnNCNauSTjmABfDG2pISV1G
-         cl4A==
-X-Gm-Message-State: AOAM530Quk8whN5v16yUVvi6/OmFO711tjzyfsmDlXHGxdhOMp/iBb6X
-        LXvcPtEf0zZRNvnmvWjqdcM=
-X-Google-Smtp-Source: ABdhPJzfIye8IZI7el8CHTUJ+nyNLDHn8PHh+dRD7n4DJN48e86UuASpTMnR92jvPK07EsH+iCTxfA==
-X-Received: by 2002:aa7:d652:: with SMTP id v18mr9534884edr.68.1637228301283;
-        Thu, 18 Nov 2021 01:38:21 -0800 (PST)
-Received: from localhost.localdomain (host-82-61-38-115.retail.telecomitalia.it. [82.61.38.115])
-        by smtp.gmail.com with ESMTPSA id hc10sm1028280ejc.99.2021.11.18.01.38.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 01:38:20 -0800 (PST)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Peter Hurley <peter@hurleysoftware.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        David Sterba <dsterba@suse.com>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
-        nick black <dankamongmen@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com,
-        Marco Elver <elver@google.com>
-Subject: Re: [PATCH] vt: Fix sleeping functions called from atomic context
-Date:   Thu, 18 Nov 2021 10:38:19 +0100
-Message-ID: <1825634.Qa45DEmgBM@localhost.localdomain>
-In-Reply-To: <77983591.hkYTjcaLry@localhost.localdomain>
-References: <20211116144937.19035-1-fmdefrancesco@gmail.com> <df266c83-88df-4d1a-5c7e-ea0214f3de3b@i-love.sakura.ne.jp> <77983591.hkYTjcaLry@localhost.localdomain>
+        Thu, 18 Nov 2021 04:43:01 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F28C061570;
+        Thu, 18 Nov 2021 01:40:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ogCf4AytFUFECDajO7C4/wd84tMdRQVBsKyePnKRwKk=; b=ngAbZZvsDoH/aHl2u2ApTYpDbK
+        x5hRRWlzgHEbYmSnYWjcsHzz6ZgHi8LGMl5E4uN8GjJAzMtzZraw5KEdIdTR2z+SoS4v3qMl/cpPM
+        299e6tCkDvUxjeUFm+UjyglASUbdper+V4MfkNqkQ4b89bq28Oqu3poyEigSKDoWgKY1QaLE4qvZr
+        1uPpKZFGElBtKfcFAdgmhDQMk/LUFnqG5ImLE4LBE3Eeta/OFq6IZoB8eUd3Lp+gg7JEcAucV7hJx
+        Wg1AiHbAJIpfbkQKCtKKy2knL9a2RovCCaV0rRqjGnmvNnxMA/fu1dcbbXhdIaEWXcxXjASq2m5i2
+        mkg8iZ4w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mndtT-00GfRe-UX; Thu, 18 Nov 2021 09:39:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5CF70300129;
+        Thu, 18 Nov 2021 10:39:44 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 30B212CFFA13E; Thu, 18 Nov 2021 10:39:44 +0100 (CET)
+Date:   Thu, 18 Nov 2021 10:39:44 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Holger =?iso-8859-1?Q?Hoffst=E4tte?= 
+        <holger@applied-asynchrony.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Justin Forbes <jmforbes@linuxtx.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        stable <stable@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH 5.15 000/923] 5.15.3-rc3 review
+Message-ID: <YZYfYOcqNqOyZ8Yo@hirez.programming.kicks-ass.net>
+References: <20211117101657.463560063@linuxfoundation.org>
+ <YZV02RCRVHIa144u@fedora64.linuxtx.org>
+ <55c7b316-e03d-9e91-d74c-fea63c469b3b@applied-asynchrony.com>
+ <CAHk-=wjHbKfck1Ws4Y0pUZ7bxdjU9eh2WK0EFsv65utfeVkT9Q@mail.gmail.com>
+ <20211118080627.GH174703@worktop.programming.kicks-ass.net>
+ <20211118081852.GM174730@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211118081852.GM174730@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, November 18, 2021 9:31:06 AM CET Fabio M. De Francesco wrote:
-> On Wednesday, November 17, 2021 11:51:13 AM CET Tetsuo Handa wrote:
-> > On 2021/11/17 17:54, Greg Kroah-Hartman wrote:
-> > > Great, you have a reproducer, so you should be able to duplicate this
-> > > locally to figure out what is really happening here.
-> >
-> > Until commit ac751efa6a0d70f2 ("console: rename acquire/release_console_sem() to
-> > console_lock/unlock()"), do_con_write() was surely designed to be able to sleep.
+On Thu, Nov 18, 2021 at 09:18:52AM +0100, Peter Zijlstra wrote:
+> On Thu, Nov 18, 2021 at 09:06:27AM +0100, Peter Zijlstra wrote:
+> > On Wed, Nov 17, 2021 at 03:50:17PM -0800, Linus Torvalds wrote:
 > > 
-> > > $ git blame ac751efa6a0d7~1 drivers/tty/vt/vt.c
-> >
-> > [...]
+> > > I really don't think the WCHAN code should use unwinders at all. It's
+> > > too damn fragile, and it's too easily triggered from user space.
 > > 
-> > Until that commit, n_hdlc_send_frames() was prepared for being interrupted by signal
-> > while sleeping.
+> > On x86, esp. with ORC, it pretty much has to. The thing is, the ORC
+> > unwinder has been very stable so far. I'm guessing there's some really
+> > stupid thing going on, like for example trying to unwind a freed stack.
 > > 
-> > $ git blame ac751efa6a0d7~1 drivers/tty/n_hdlc.c
-> >
-> > [...]
-> >
-> > But as of commit c545b66c6922b002 ("tty: Serialize tcflow() with other tty flow
-> > control changes"), start_tty() was already holding spinlock.
+> > I *just* managed to reproduce, so let me go have a poke.
 > 
-> Hi Tetsuo,
-> 
-> Actually, we don't care of start_tty(). It's not in the path that triggers sleeping in atomic bug.
-> According to Syzbot report and to my ftrace analysis it's __start_tty() that is called by 
-> n_tty_ioctl_helper(), and it is this function that acquires a spinlock and disables interrupts. 
-> 
-> I must admit that I've never used git-blame and I'm not sure to understand what you did here :(
+> Confirmed, with the below it no longer reproduces. Now, let me go undo
+> that and fix the unwinder to not explode while trying to unwind nothing.
 
-I've had a chance to look both at commit c545b66c6922 and f9e053dcfc02. They are so strictly 
-related (same code. same author, same date) that I'm not anymore sure of which is to blame.
+OK, so the bug is firmly with 5d1ceb3969b6 ("x86: Fix __get_wchan() for
+!STACKTRACE") which lost the try_get_task_stack() that stack_trace_*()
+does.
 
-However, at this moment I'm scarcely interested in figuring out which one actually is responsible 
-for this issue.
+We can ofc trivially re-instate that, but I'm now running with the
+below which I suppose is a better fix, hmm?
 
-What I know is that this issue is _real_ and that it should be fixed some way.
+(obv I still need to look a the other two unwinders)
 
-> Have you had a chance to read my analysis?
->  
-> > $ git blame c545b66c6922b002~1 drivers/tty/tty_io.c
-> >
-> > [...]
-> > 
-> > Actually, it is commit f9e053dcfc02b0ad ("tty: Serialize tty flow control changes
-> > with flow_lock") that started calling tty->ops->start(tty) from atomic context.
-> > 
-> > $ git blame f9e053dcfc02b~1 drivers/tty/tty_io.c
-> >
-> > [...]
-> > 
-> > Therefore, I think that bisection will reach f9e053dcfc02b0ad, and I guess that
-> > this bug was not noticed simply because little people tested n_hdlc driver.
-> > 
-> > Well, how to fix? Introduce a new flag for indicating "starting" state (like drivers/block/loop.c uses Lo_* state) ?
-> 
-> I think this is not the correct fix, but I might very well be wrong...
-
-I've read (again) the code that you mentioned. I've changed my mind about it.
-Now I think that a flag like that could be useful if there are no other means to
-lock __start_tty() and __stop_tty() critical sections.
-
-Thanks,
-
-Fabio
-
-> Can you please reply to my last email (the one with the ftrace analysis)?
-> In the last lines I proposed two alternative solutions, what about them?
-> 
-> Thanks,
-> 
-> Fabio
-> 
-> 
-> 
-> 
-> 
-
-
-
-
+---
+diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+index e6f7592790af..9261ff1343cf 100644
+--- a/arch/x86/kernel/unwind_orc.c
++++ b/arch/x86/kernel/unwind_orc.c
+@@ -352,8 +352,14 @@ static bool deref_stack_reg(struct unwind_state *state, unsigned long addr,
+ 	if (!stack_access_ok(state, addr, sizeof(long)))
+ 		return false;
+ 
+-	*val = READ_ONCE_NOCHECK(*(unsigned long *)addr);
++	pagefault_disable();
++	__get_kernel_nofault(val, addr, unsigned long, Efault);
++	pagefault_enable();
+ 	return true;
++
++Efault:
++	pagefault_enable();
++	return false;
+ }
+ 
+ static bool deref_stack_regs(struct unwind_state *state, unsigned long addr,
+@@ -367,9 +373,16 @@ static bool deref_stack_regs(struct unwind_state *state, unsigned long addr,
+ 	if (!stack_access_ok(state, addr, sizeof(struct pt_regs)))
+ 		return false;
+ 
+-	*ip = READ_ONCE_NOCHECK(regs->ip);
+-	*sp = READ_ONCE_NOCHECK(regs->sp);
++	pagefault_disable();
++	__get_kernel_nofault(ip, &regs->ip, unsigned long, Efault);
++	__get_kernel_nofault(sp, &regs->sp, unsigned long, Efault);
++	pagefault_enable();
++
+ 	return true;
++
++Efault:
++	pagefault_enable();
++	return false;
+ }
+ 
+ static bool deref_stack_iret_regs(struct unwind_state *state, unsigned long addr,
+@@ -380,9 +393,16 @@ static bool deref_stack_iret_regs(struct unwind_state *state, unsigned long addr
+ 	if (!stack_access_ok(state, addr, IRET_FRAME_SIZE))
+ 		return false;
+ 
+-	*ip = READ_ONCE_NOCHECK(regs->ip);
+-	*sp = READ_ONCE_NOCHECK(regs->sp);
++	pagefault_disable();
++	__get_kernel_nofault(ip, &regs->ip, unsigned long, Efault);
++	__get_kernel_nofault(sp, &regs->sp, unsigned long, Efault);
++	pagefault_enable();
++
+ 	return true;
++
++Efault:
++	pagefault_enable();
++	return false;
+ }
+ 
+ /*
+@@ -396,22 +416,27 @@ static bool deref_stack_iret_regs(struct unwind_state *state, unsigned long addr
+ static bool get_reg(struct unwind_state *state, unsigned int reg_off,
+ 		    unsigned long *val)
+ {
+-	unsigned int reg = reg_off/8;
+-
+ 	if (!state->regs)
+ 		return false;
+ 
++	pagefault_disable();
+ 	if (state->full_regs) {
+-		*val = READ_ONCE_NOCHECK(((unsigned long *)state->regs)[reg]);
++		__get_kernel_nofault(val, (void *)state->regs + reg_off, unsigned long, Efault);
++		pagefault_enable();
+ 		return true;
+ 	}
+ 
+ 	if (state->prev_regs) {
+-		*val = READ_ONCE_NOCHECK(((unsigned long *)state->prev_regs)[reg]);
++		__get_kernel_nofault(val, (void *)state->regs + reg_off, unsigned long, Efault);
++		pagefault_enable();
+ 		return true;
+ 	}
+ 
+ 	return false;
++
++Efault:
++	pagefault_enable();
++	return false;
+ }
+ 
+ bool unwind_next_frame(struct unwind_state *state)
+@@ -673,8 +698,12 @@ void __unwind_start(struct unwind_state *state, struct task_struct *task,
+ 		struct inactive_task_frame *frame = (void *)task->thread.sp;
+ 
+ 		state->sp = task->thread.sp + sizeof(*frame);
+-		state->bp = READ_ONCE_NOCHECK(frame->bp);
+-		state->ip = READ_ONCE_NOCHECK(frame->ret_addr);
++
++		pagefault_disable();
++		__get_kernel_nofault(&state->bp, &frame->bp, unsigned long, Efault);
++		__get_kernel_nofault(&state->ip, &frame->ret_addr, unsigned long, Efault);
++		pagefault_enable();
++
+ 		state->signal = (void *)state->ip == ret_from_fork;
+ 	}
+ 
+@@ -713,6 +742,8 @@ void __unwind_start(struct unwind_state *state, struct task_struct *task,
+ 
+ 	return;
+ 
++Efault:
++	pagefault_enable();
+ err:
+ 	state->error = true;
+ the_end:
