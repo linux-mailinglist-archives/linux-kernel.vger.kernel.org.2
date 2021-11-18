@@ -2,181 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246C9455869
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:57:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1AE455864
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:56:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245368AbhKRKAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 05:00:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:22864 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245370AbhKRJ7T (ORCPT
+        id S245377AbhKRJ7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 04:59:23 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:47697 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245329AbhKRJ6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 04:59:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637229379;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wEk0Ix6QqXBgVWnz008QmDW0QekiZrGZyqYEU0wf5p4=;
-        b=R1IVZ+gw68ytCyB3rtw5ziFoQjoDgGTHXTNx7+fHbDiEPoRatPdaXOndkZBNiOVpZ+6s+k
-        hK2CWHNvXRNUuIi7C6lmMMwW2YaXvwy/6F2hDITgvQE17CHEl/gs6ZLSXr46e7uIB0XN3G
-        nSbhHw2zKLUTLkZsBvZnK48Wvz/3CPg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-363-uqecaitHPRmsAKjQpphpBg-1; Thu, 18 Nov 2021 04:56:16 -0500
-X-MC-Unique: uqecaitHPRmsAKjQpphpBg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1D81587D541;
-        Thu, 18 Nov 2021 09:56:14 +0000 (UTC)
-Received: from starship (unknown [10.40.194.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5D8CB5FC13;
-        Thu, 18 Nov 2021 09:56:12 +0000 (UTC)
-Message-ID: <8ad47d43a7c8ae19f09cc6ada73665d6e348e213.camel@redhat.com>
-Subject: Re: [PATCH v2] KVM: x86: check PIR even for vCPUs with disabled
- APICv
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>
-Date:   Thu, 18 Nov 2021 11:56:11 +0200
-In-Reply-To: <20211118072531.1534938-1-pbonzini@redhat.com>
-References: <20211118072531.1534938-1-pbonzini@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Thu, 18 Nov 2021 04:58:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1637229317; x=1668765317;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=IEdv4oCs78UF+a2B4VJ1pWOAAeTD3DooZgB7/gLExrw=;
+  b=wopihMaZNA+DshbkFxDi/1oUpYrtfmcKjmAbK/ur3dNF9NotbAlpN6sf
+   MO6ESZPuZh50UVYbhIKzdIO7aLYuTkIg2X+mC5qdoupXgIDpGrg7YHmZ8
+   UqcB89EiuCSR5UaX0PAY3lCD1KmOMMJgSTKbm0cYWAdWFVzJY7mgnjKe8
+   sA/Bnze06yxPfvArNfJvvS5Y8VU5gXaBfUQXN9Y6Yof6JWHV5G54BOnFz
+   /PfO7sSu/bDkw5cTLjU0jgxnDPq2Kae5tSP4RIPpq7cuMycTOp3LMlKMr
+   sJ70fu32enpW4pRVIYGJnySOojCBK6Y+a8KW9e+FLRbPTRLNLTpSBqw7+
+   Q==;
+IronPort-SDR: gMEfGbO0w+9X2i5IEe/1YkeSb6qT/bzz2E6r1pHmdiZnXGFefzxhp6zy3tS56sUae7Njmtfk2v
+ MEdFLe2zr5v0iex15F7umsSO1v0URPpslluG90kd06KEa3o+EUgYdCQxl0bpxQlMQ3Iw6X3Osc
+ N8zR2wTp6fHirZs8N/BwtdenkittlJ54DWck+jreNDTotwTyhrSXx2mWSr7fRLVJfmICZU96nW
+ KlLzkx3/+BEcBEYVJZY4ag9sw0qYUOCwkClFCldUtBJVOTuTG3+xWOvRW/0gjsr/dejoNakkcL
+ Abqb2WR9BjstzQsfkXckvhNH
+X-IronPort-AV: E=Sophos;i="5.87,244,1631602800"; 
+   d="scan'208";a="152384821"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Nov 2021 02:55:16 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 18 Nov 2021 02:55:16 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Thu, 18 Nov 2021 02:55:16 -0700
+Date:   Thu, 18 Nov 2021 10:57:03 +0100
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <robh+dt@kernel.org>,
+        <p.zabel@pengutronix.de>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 3/5] net: lan966x: add port module support
+Message-ID: <20211118095703.owsb2nen5hb5vjz2@soft-dev3-1.localhost>
+References: <20211117091858.1971414-1-horatiu.vultur@microchip.com>
+ <20211117091858.1971414-4-horatiu.vultur@microchip.com>
+ <YZTRUfvPPu5qf7mE@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <YZTRUfvPPu5qf7mE@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-11-18 at 02:25 -0500, Paolo Bonzini wrote:
-> The IRTE for an assigned device can trigger a POSTED_INTR_VECTOR even
-> if APICv is disabled on the vCPU that receives it.  In that case, the
-> interrupt will just cause a vmexit and leave the ON bit set together
-> with the PIR bit corresponding to the interrupt.
-100% true.
+The 11/17/2021 09:54, Russell King (Oracle) wrote:
 > 
-> Right now, the interrupt would not be delivered until APICv is re-enabled.
-> However, fixing this is just a matter of always doing the PIR->IRR
-> synchronization, even if the vCPU has temporarily disabled APICv.
+> Hi,
+
+Hi Russell,
+
 > 
-> This is not a problem for performance, or if anything it is an
-> improvement.  First, in the common case where vcpu->arch.apicv_active is
-> true, one fewer check has to be performed.  Second, static_call_cond will
-> elide the function call if APICv is not present or disabled.  Finally,
-> in the case for AMD hardware we can remove the sync_pir_to_irr callback:
-> it is only needed for apic_has_interrupt_for_ppr, and that function
-> already has a fallback for !APICv.
+> On Wed, Nov 17, 2021 at 10:18:56AM +0100, Horatiu Vultur wrote:
+> > +static void lan966x_phylink_mac_link_state(struct phylink_config *config,
+> > +                                        struct phylink_link_state *state)
+> > +{
+> > +}
+> > +
+> > +static void lan966x_phylink_mac_aneg_restart(struct phylink_config *config)
+> > +{
+> > +}
 > 
-> Cc: stable@vger.kernel.org
-> Co-developed-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  arch/x86/kvm/lapic.c   |  2 +-
->  arch/x86/kvm/svm/svm.c |  1 -
->  arch/x86/kvm/x86.c     | 18 +++++++++---------
->  3 files changed, 10 insertions(+), 11 deletions(-)
+> Since you always attach a PCS, it is not necessary to provide stubs
+> for these functions.
+
+Pefect, I will remove these ones.
+
 > 
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index 759952dd1222..f206fc35deff 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -707,7 +707,7 @@ static void pv_eoi_clr_pending(struct kvm_vcpu *vcpu)
->  static int apic_has_interrupt_for_ppr(struct kvm_lapic *apic, u32 ppr)
->  {
->  	int highest_irr;
-> -	if (apic->vcpu->arch.apicv_active)
-> +	if (kvm_x86_ops.sync_pir_to_irr)
->  		highest_irr = static_call(kvm_x86_sync_pir_to_irr)(apic->vcpu);
+> > +static int lan966x_pcs_config(struct phylink_pcs *pcs,
+> > +                           unsigned int mode,
+> > +                           phy_interface_t interface,
+> > +                           const unsigned long *advertising,
+> > +                           bool permit_pause_to_mac)
+> > +{
+> > +     struct lan966x_port *port = lan966x_pcs_to_port(pcs);
+> > +     struct lan966x_port_config config;
+> > +     int ret;
+> > +
+> > +     memset(&config, 0, sizeof(config));
+> > +
+> > +     config = port->config;
+> > +     config.portmode = interface;
+> > +     config.inband = phylink_autoneg_inband(mode);
+> > +     config.autoneg = phylink_test(advertising, Autoneg);
+> > +     if (phylink_test(advertising, Pause))
+> > +             config.pause_adv |= ADVERTISE_1000XPAUSE;
+> > +     if (phylink_test(advertising, Asym_Pause))
+> > +             config.pause_adv |= ADVERTISE_1000XPSE_ASYM;
+> 
+> There are patches around that add
+> phylink_mii_c22_pcs_encode_advertisement() which will create the C22
+> advertisement for you. It would be good to get that patch merged so
+> people can use it. That should also eliminate lan966x_get_aneg_word(),
+> although I notice you need to set ADVERTISE_LPACK as well (can you
+> check that please? Hardware should be managing that bit as it should
+> only be set once the hardware has received the link partner's
+> advertisement.)
 
->  	else
->  		highest_irr = apic_find_highest_irr(apic);
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 5630c241d5f6..d0f68d11ec70 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -4651,7 +4651,6 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
->  	.load_eoi_exitmap = svm_load_eoi_exitmap,
->  	.hwapic_irr_update = svm_hwapic_irr_update,
->  	.hwapic_isr_update = svm_hwapic_isr_update,
-> -	.sync_pir_to_irr = kvm_lapic_find_highest_irr,
->  	.apicv_post_state_restore = avic_post_state_restore,
->  
->  	.set_tss_addr = svm_set_tss_addr,
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 627c955101a0..a8f12c83db4b 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -4448,8 +4448,7 @@ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
->  static int kvm_vcpu_ioctl_get_lapic(struct kvm_vcpu *vcpu,
->  				    struct kvm_lapic_state *s)
->  {
-> -	if (vcpu->arch.apicv_active)
-> -		static_call(kvm_x86_sync_pir_to_irr)(vcpu);
-> +	static_call_cond(kvm_x86_sync_pir_to_irr)(vcpu);
->  
->  	return kvm_apic_get_state(vcpu, s);
->  }
-> @@ -9528,8 +9527,7 @@ static void vcpu_scan_ioapic(struct kvm_vcpu *vcpu)
->  	if (irqchip_split(vcpu->kvm))
->  		kvm_scan_ioapic_routes(vcpu, vcpu->arch.ioapic_handled_vectors);
->  	else {
-> -		if (vcpu->arch.apicv_active)
-> -			static_call(kvm_x86_sync_pir_to_irr)(vcpu);
-> +		static_call_cond(kvm_x86_sync_pir_to_irr)(vcpu);
->  		if (ioapic_in_kernel(vcpu->kvm))
->  			kvm_ioapic_scan_entry(vcpu, vcpu->arch.ioapic_handled_vectors);
->  	}
-> @@ -9802,10 +9800,12 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->  
->  	/*
->  	 * This handles the case where a posted interrupt was
-> -	 * notified with kvm_vcpu_kick.
-> +	 * notified with kvm_vcpu_kick.  Assigned devices can
-> +	 * use the POSTED_INTR_VECTOR even if APICv is disabled,
-> +	 * so do it even if !kvm_vcpu_apicv_active(vcpu).
->  	 */
-> -	if (kvm_lapic_enabled(vcpu) && vcpu->arch.apicv_active)
-> -		static_call(kvm_x86_sync_pir_to_irr)(vcpu);
-> +	if (kvm_lapic_enabled(vcpu))
-> +		static_call_cond(kvm_x86_sync_pir_to_irr)(vcpu);
->  
->  	if (kvm_vcpu_exit_request(vcpu)) {
->  		vcpu->mode = OUTSIDE_GUEST_MODE;
-> @@ -9849,8 +9849,8 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->  		if (likely(exit_fastpath != EXIT_FASTPATH_REENTER_GUEST))
->  			break;
->  
-> -		if (kvm_lapic_enabled(vcpu) && kvm->arch.apicv_active)
-> -			static_call(kvm_x86_sync_pir_to_irr)(vcpu);
-> +		if (kvm_lapic_enabled(vcpu))
-> +			static_call_cond(kvm_x86_sync_pir_to_irr)(vcpu);
->  
->  		if (unlikely(kvm_vcpu_exit_request(vcpu))) {
->  			exit_fastpath = EXIT_FASTPATH_EXIT_HANDLED;
+Yes, I will keep an eye for phylink_mii_c22_pcs_encode_advertisement.
+Also I have also tried to remove ADVERTISE_LPACK and that seems to work
+fine.
 
+> 
+> > +static void decode_cl37_word(u16 lp_abil, uint16_t ld_abil,
+> > +                          struct lan966x_port_status *status)
+> > +{
+> > +     status->link = !(lp_abil & ADVERTISE_RFAULT) && status->link;
+> > +     status->an_complete = true;
+> > +     status->duplex = (ADVERTISE_1000XFULL & lp_abil) ?
+> > +             DUPLEX_FULL : DUPLEX_UNKNOWN;
+> > +
+> > +     if ((ld_abil & ADVERTISE_1000XPAUSE) &&
+> > +         (lp_abil & ADVERTISE_1000XPAUSE)) {
+> > +             status->pause = MLO_PAUSE_RX | MLO_PAUSE_TX;
+> > +     } else if ((ld_abil & ADVERTISE_1000XPSE_ASYM) &&
+> > +                (lp_abil & ADVERTISE_1000XPSE_ASYM)) {
+> > +             status->pause |= (lp_abil & ADVERTISE_1000XPAUSE) ?
+> > +                     MLO_PAUSE_TX : 0;
+> > +             status->pause |= (ld_abil & ADVERTISE_1000XPAUSE) ?
+> > +                     MLO_PAUSE_RX : 0;
+> > +     } else {
+> > +             status->pause = MLO_PAUSE_NONE;
+> > +     }
+> > +}
+> 
+> We already have phylink_decode_c37_word() which will decode this for
+> you, although it would need to be exported. Please re-use this code.
 
-vmx_sync_pir_to_irr has 'if (KVM_BUG_ON(!vcpu->arch.apicv_active, vcpu->kvm))'
-That has to be removed I think for this to work.
+Yes, I will do that.
 
-Plus the above calls now can happen when APICv is fully disabled (and not just inhibited),
-which is also something that I think that vmx_sync_pir_to_irr should be fixed to be aware of.
+> 
+> > +
+> > +static void decode_sgmii_word(u16 lp_abil, struct lan966x_port_status *status)
+> > +{
+> > +     status->an_complete = true;
+> > +     if (!(lp_abil & LPA_SGMII_LINK)) {
+> > +             status->link = false;
+> > +             return;
+> > +     }
+> > +
+> > +     switch (lp_abil & LPA_SGMII_SPD_MASK) {
+> > +     case LPA_SGMII_10:
+> > +             status->speed = SPEED_10;
+> > +             break;
+> > +     case LPA_SGMII_100:
+> > +             status->speed = SPEED_100;
+> > +             break;
+> > +     case LPA_SGMII_1000:
+> > +             status->speed = SPEED_1000;
+> > +             break;
+> > +     default:
+> > +             status->link = false;
+> > +             return;
+> > +     }
+> > +     if (lp_abil & LPA_SGMII_FULL_DUPLEX)
+> > +             status->duplex = DUPLEX_FULL;
+> > +     else
+> > +             status->duplex = DUPLEX_HALF;
+> > +}
+> 
+> The above mentioned function will also handle SGMII as well.
 
-Also note that VMX has code that sets vmx_x86_ops.sync_pir_to_irr to NULL in its 'hardware_setup'
-if APICv is disabled. 
-I wonder if that done befor or after the static_call_cond sites are updated.
+I noticed that you have phylink_decode_sgmii_work(), so I will try to
+export it also.
 
-I think that this code should be removed as well, and vmx_sync_pir_to_irr should just
-do nothing when APICv is fully disabled.
+> 
+> > +int lan966x_port_pcs_set(struct lan966x_port *port,
+> > +                      struct lan966x_port_config *config)
+> > +{
+> > +     struct lan966x *lan966x = port->lan966x;
+> > +     bool sgmii = false, inband_aneg = false;
+> > +     int err;
+> > +
+> > +     lan966x_port_link_down(port);
+> > +
+> > +     if (config->inband) {
+> > +             if (config->portmode == PHY_INTERFACE_MODE_SGMII ||
+> > +                 config->portmode == PHY_INTERFACE_MODE_QSGMII)
+> > +                     inband_aneg = true; /* Cisco-SGMII in-band-aneg */
+> > +             else if (config->portmode == PHY_INTERFACE_MODE_1000BASEX &&
+> > +                      config->autoneg)
+> > +                     inband_aneg = true; /* Clause-37 in-band-aneg */
+> > +
+> > +             if (config->speed > 0) {
+> > +                     err = phy_set_speed(port->serdes, config->speed);
+> > +                     if (err)
+> > +                             return err;
+> > +             }
+> > +
+> > +     } else {
+> > +             sgmii = true; /* Phy is connnected to the MAC */
+> 
+> This looks weird. SGMII can be in-band as well (and technically is
+> in-band in its as-specified form.)
 
-I haven't run tested this code so I might be wrong of course.
+I think the names are a little bit misleading.
+We cover the case where SGMII is inbind in the code
 
+if (config->inband) {
+    if (config->portmode == PHY_INTERFACE_MODE_SGMII ||
+        config->portmode == PHY_INTERFACE_MODE_QSGMII)
+}
 
-Best regards,
-	Maxim Levitsky
+I think we can remove the sgmii variable and use directly the
+config->inband.
 
+> 
+> > +     }
+> > +
+> > +     /* Choose SGMII or 1000BaseX/2500BaseX PCS mode */
+> > +     lan_rmw(DEV_PCS1G_MODE_CFG_SGMII_MODE_ENA_SET(sgmii),
+> > +             DEV_PCS1G_MODE_CFG_SGMII_MODE_ENA,
+> > +             lan966x, DEV_PCS1G_MODE_CFG(port->chip_port));
+> 
+> With the code as you have it, what this means is if we specify
+> SGMII + in-band, we end up configuring the port to be in 1000BaseX
+> mode, so it's incapable of 10 and 100M speeds. This seems incorrect.
+
+Actually I think the comment is misleading, that bit will just choose to
+enable or not the control word for inbound.
+
+> 
+> Thanks.
+> 
+> --
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+
+-- 
+/Horatiu
