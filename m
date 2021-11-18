@@ -2,97 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125994556FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:30:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E6E455700
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:31:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244599AbhKRId1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 03:33:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244553AbhKRIdW (ORCPT
+        id S244618AbhKRIeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 03:34:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44968 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244606AbhKRIeK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 03:33:22 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F947C061570;
-        Thu, 18 Nov 2021 00:30:22 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id g28so4727525pgg.3;
-        Thu, 18 Nov 2021 00:30:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=c6Lxx4TXfjBkvm4wGudSZgIaFPEI/+SKic/apfT6R10=;
-        b=cKxB1LeYrLZ4qFfo+ekjpTch+jOOBh3aE6wPkgLog+oCnjj3QpeonlaqaUWQw5gG3w
-         7xCxT2UHhso+SIOM19zT1OlWeP1z8prlJ9NSyFP97sqLRgpe0w64WGTTkapFr1xe9gIa
-         KQ7G1Lfr2E+W8c2FSGZ93a6lFzx9uiRJC84SjnDt03D6P4lB+15WfiYy/HjGC5F5Q31p
-         p0yojJ6FCmSF/zf0I0hPmh44O5xLrDSs1yHRODTORhf7af9RUTN+SJk6neemavVtT0hi
-         XeNuwzBY8M4aQRZnK4TIHQpIwjPeWvNakJhY/k/5mfhuNbCNHm26DsAK+PMWAevGAQmb
-         /gUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=c6Lxx4TXfjBkvm4wGudSZgIaFPEI/+SKic/apfT6R10=;
-        b=QB3u/F1Fqvvpq17BaOAgP6O9UDkTxJPLTk8Os0wHJI02cbAh5z19sOttK035HLf6nd
-         CwrPdibSmdgJ24g0fWVwDYWs7AsySHDqwGS8iuNB5uxj3T0r65pcO8bMehfBXDb7EpkR
-         fnwPZEOTK7aXwvqW/xTg+BUDGUDWE9C1keqROzcLbjUPbHPhUii+H/f/InCOKGvXnR6+
-         HfyJCycmUUb4FG3CrVrQm9rvAdVfD1TmdHlbhZSMerFdOFdCXnvYNTlsnrBsGB1PO1Gd
-         1V4+8a3CEoURChA1MfMtXWyWHs9LwuzbzKIW2aCTXTWWs0/luk1AL1mnmMZXsGzF6aCk
-         0HGw==
-X-Gm-Message-State: AOAM5318N7jft5dRzuJJ8dx3CBgexTvXuj02BRPvA8+Wum0YTOoh5+dF
-        Tk5ujxcIU6ki86OHyb/mGnY=
-X-Google-Smtp-Source: ABdhPJxQ9wL1q09H9aed/A6vCOvB0QmdwbHXmPIA1QbrvEK9NoCXyXVcrc2RgWtgMF1sfra+lALpTw==
-X-Received: by 2002:a05:6a00:2313:b0:49f:d9ec:7492 with SMTP id h19-20020a056a00231300b0049fd9ec7492mr55481875pfh.25.1637224217085;
-        Thu, 18 Nov 2021 00:30:17 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id e13sm1770391pgb.8.2021.11.18.00.30.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 00:30:16 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: deng.changcheng@zte.com.cn
-To:     avifishman70@gmail.com
-Cc:     benjaminfair@google.com, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mturquette@baylibre.com,
-        openbmc@lists.ozlabs.org, sboyd@kernel.org, tali.perry1@gmail.com,
-        tmaimon77@gmail.com, venture@google.com, yuenn@google.com,
-        zealci@zte.com.cn, cgel.zte@gmail.com, deng.changcheng@zte.com.cn
-Subject: [PATCH v2] clk: Use div64_ul instead of do_div
-Date:   Thu, 18 Nov 2021 08:28:58 +0000
-Message-Id: <20211118082858.165538-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211117011244.158541-1-deng.changcheng@zte.com.cn>
-References: <20211117011244.158541-1-deng.changcheng@zte.com.cn>
+        Thu, 18 Nov 2021 03:34:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637224269;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lTL4eaK5mfz0wzJaY3ZitLZvSdyNfMyW+TIZzVoNB2w=;
+        b=exLxs4WDHZWq7pUB5zqOnfjUGNviNcDPuWMho0dsKxcJMGXhuVCtETxLFFKojis01/38x7
+        SNU3wt5ZvUFdgsPISInWo1QZq9Ohb5BEBLqqDW61rQ+pgEIoZSmUUOANebXatRs06gCcqX
+        X/dD0GLRz6TIpRJ9BTaFNH/THxm5QyM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-591-xLAL6LpiPKeleQ07hE0K2Q-1; Thu, 18 Nov 2021 03:31:06 -0500
+X-MC-Unique: xLAL6LpiPKeleQ07hE0K2Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F58815721;
+        Thu, 18 Nov 2021 08:31:04 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 93603104A9CB;
+        Thu, 18 Nov 2021 08:30:15 +0000 (UTC)
+Message-ID: <a1be97c6-6784-fd5f-74a8-85124f039530@redhat.com>
+Date:   Thu, 18 Nov 2021 09:30:14 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 11/15] KVM: x86/MMU: Refactor vmx_get_mt_mask
+Content-Language: en-US
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>,
+        David Hildenbrand <david@redhat.com>
+References: <20211115234603.2908381-1-bgardon@google.com>
+ <20211115234603.2908381-12-bgardon@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211115234603.2908381-12-bgardon@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changcheng Deng <deng.changcheng@zte.com.cn>
+On 11/16/21 00:45, Ben Gardon wrote:
+> Remove the gotos from vmx_get_mt_mask to make it easier to separate out
+> the parts which do not depend on vcpu state.
+> 
+> No functional change intended.
+> 
+> 
+> Signed-off-by: Ben Gardon <bgardon@google.com>
 
-do_div() does a 64-by-32 division. Here the divisor is an unsigned long
-which on some platforms is 64 bit wide. So use div64_ul instead of do_div
-to avoid a possible truncation.
+Queued, thanks (with a slightly edited commit message; the patch is a 
+simplification anyway).
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
----
- drivers/clk/clk-npcm7xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Paolo
 
-diff --git a/drivers/clk/clk-npcm7xx.c b/drivers/clk/clk-npcm7xx.c
-index e677bb5a784b..c75880af2b74 100644
---- a/drivers/clk/clk-npcm7xx.c
-+++ b/drivers/clk/clk-npcm7xx.c
-@@ -56,7 +56,7 @@ static unsigned long npcm7xx_clk_pll_recalc_rate(struct clk_hw *hw,
- 	otdv2 = FIELD_GET(PLLCON_OTDV2, val);
- 
- 	ret = (u64)parent_rate * fbdv;
--	do_div(ret, indv * otdv1 * otdv2);
-+	ret = div64_ul(ret, indv * otdv1 * otdv2);
- 
- 	return ret;
- }
--- 
-2.25.1
+> ---
+>   arch/x86/kvm/vmx/vmx.c | 23 +++++++----------------
+>   1 file changed, 7 insertions(+), 16 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 71f54d85f104..77f45c005f28 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -6987,7 +6987,6 @@ static int __init vmx_check_processor_compat(void)
+>   static u64 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
+>   {
+>   	u8 cache;
+> -	u64 ipat = 0;
+>   
+>   	/* We wanted to honor guest CD/MTRR/PAT, but doing so could result in
+>   	 * memory aliases with conflicting memory types and sometimes MCEs.
+> @@ -7007,30 +7006,22 @@ static u64 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
+>   	 * EPT memory type is used to emulate guest CD/MTRR.
+>   	 */
+>   
+> -	if (is_mmio) {
+> -		cache = MTRR_TYPE_UNCACHABLE;
+> -		goto exit;
+> -	}
+> +	if (is_mmio)
+> +		return MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT;
+>   
+> -	if (!kvm_arch_has_noncoherent_dma(vcpu->kvm)) {
+> -		ipat = VMX_EPT_IPAT_BIT;
+> -		cache = MTRR_TYPE_WRBACK;
+> -		goto exit;
+> -	}
+> +	if (!kvm_arch_has_noncoherent_dma(vcpu->kvm))
+> +		return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
+>   
+>   	if (kvm_read_cr0(vcpu) & X86_CR0_CD) {
+> -		ipat = VMX_EPT_IPAT_BIT;
+>   		if (kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_CD_NW_CLEARED))
+>   			cache = MTRR_TYPE_WRBACK;
+>   		else
+>   			cache = MTRR_TYPE_UNCACHABLE;
+> -		goto exit;
+> -	}
+>   
+> -	cache = kvm_mtrr_get_guest_memory_type(vcpu, gfn);
+> +		return (cache << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
+> +	}
+>   
+> -exit:
+> -	return (cache << VMX_EPT_MT_EPTE_SHIFT) | ipat;
+> +	return kvm_mtrr_get_guest_memory_type(vcpu, gfn) << VMX_EPT_MT_EPTE_SHIFT;
+>   }
+>   
+>   static void vmcs_set_secondary_exec_control(struct vcpu_vmx *vmx, u32 new_ctl)
+> 
 
