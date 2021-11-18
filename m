@@ -2,302 +2,476 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C019C4560CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:42:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D684560D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233642AbhKRQpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 11:45:52 -0500
-Received: from foss.arm.com ([217.140.110.172]:42974 "EHLO foss.arm.com"
+        id S233668AbhKRQqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 11:46:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233601AbhKRQpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 11:45:51 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 787986D;
-        Thu, 18 Nov 2021 08:42:50 -0800 (PST)
-Received: from dell3630.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2B4083F766;
-        Thu, 18 Nov 2021 08:42:48 -0800 (PST)
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] sched/fair: Replace CFS internal cpu_util() with cpu_util_cfs()
-Date:   Thu, 18 Nov 2021 17:42:40 +0100
-Message-Id: <20211118164240.623551-1-dietmar.eggemann@arm.com>
-X-Mailer: git-send-email 2.25.1
+        id S232964AbhKRQqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 11:46:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AC1C610A5;
+        Thu, 18 Nov 2021 16:43:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637253798;
+        bh=eba2Ht3UtKXS0rCd0sbTrn7iAQmc+spvH5BhUf6pN8g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=U982T9g55kj0lEkJuJ1t/2zka8nxF1+t82LfL60LDFc93ODb+iXfglpzHkFpePqIK
+         KnW3PhPvUuzAVR3c/DzuFN9jgpD6GgCjFr5QLymF3jYsrzuXEA+IMMqjkdb4dlvSZh
+         kcz1STn0MdZuT6IEBWxHIE9+0Y3JcsRKZPIPaDBtoSuM2luiLVjExJnMQp94Uim8rJ
+         1NnQDrIFitHBn/7bTFoljgG2is7DX8V/19Kda/2qEoQqfF65vS9ZpUuCfTuiOEYk7i
+         4YdeusrXPZsHsp/6cTawjoKLBJP+CkxnIkacxNIsSH8Pi5rX9DxbMorfvxzISebmTu
+         6FaYOj1Tv7Rrg==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        johannes@sipsolutions.net
+Subject: [GIT PULL] Networking for 5.16-rc2
+Date:   Thu, 18 Nov 2021 08:42:53 -0800
+Message-Id: <20211118164253.1751486-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cpu_util_cfs() was created by commit d4edd662ac16 ("sched/cpufreq: Use
-the DEADLINE utilization signal") to enable the access to CPU
-utilization from the Schedutil CPUfreq governor.
+Hi Linus!
 
-Commit a07630b8b2c1 ("sched/cpufreq/schedutil: Use util_est for OPP
-selection") added util_est support later.
+The following changes since commit 66f4beaa6c1d28161f534471484b2daa2de1dce0:
 
-The only thing cpu_util() is doing on top of what cpu_util_cfs() already
-does is to clamp the return value to the [0..capacity_orig] capacity
-range of the CPU. Integrating this into cpu_util_cfs() is not harming
-the existing users (Schedutil and CPUfreq cooling (latter via
-sched_cpu_util() wrapper)).
+  Merge branch 'linus' of git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6 (2021-11-12 12:35:46 -0800)
 
-For straightforwardness, prefer to keep using `int cpu` as the function
-parameter over using `struct rq *rq` which might avoid some calls to
-cpu_rq(cpu) -> per_cpu(runqueues, cpu) -> RELOC_HIDE().
-Update cfs_util()'s documentation and reuse it for cpu_util_cfs().
-Remove cpu_util().
+are available in the Git repository at:
 
-Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
----
- kernel/sched/core.c              |  2 +-
- kernel/sched/cpufreq_schedutil.c |  2 +-
- kernel/sched/fair.c              | 71 ++++----------------------------
- kernel/sched/sched.h             | 44 ++++++++++++++++++--
- 4 files changed, 50 insertions(+), 69 deletions(-)
+  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.16-rc2
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index f2611b9cf503..a86865ebbe2f 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7123,7 +7123,7 @@ unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
- 
- unsigned long sched_cpu_util(int cpu, unsigned long max)
- {
--	return effective_cpu_util(cpu, cpu_util_cfs(cpu_rq(cpu)), max,
-+	return effective_cpu_util(cpu, cpu_util_cfs(cpu), max,
- 				  ENERGY_UTIL, NULL);
- }
- #endif /* CONFIG_SMP */
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index e7af18857371..26778884d9ab 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -168,7 +168,7 @@ static void sugov_get_util(struct sugov_cpu *sg_cpu)
- 
- 	sg_cpu->max = max;
- 	sg_cpu->bw_dl = cpu_bw_dl(rq);
--	sg_cpu->util = effective_cpu_util(sg_cpu->cpu, cpu_util_cfs(rq), max,
-+	sg_cpu->util = effective_cpu_util(sg_cpu->cpu, cpu_util_cfs(sg_cpu->cpu), max,
- 					  FREQUENCY_UTIL, NULL);
- }
- 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 13950beb01a2..6ddc2013e033 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1502,7 +1502,6 @@ struct task_numa_env {
- 
- static unsigned long cpu_load(struct rq *rq);
- static unsigned long cpu_runnable(struct rq *rq);
--static unsigned long cpu_util(int cpu);
- static inline long adjust_numa_imbalance(int imbalance,
- 					int dst_running, int dst_weight);
- 
-@@ -1569,7 +1568,7 @@ static void update_numa_stats(struct task_numa_env *env,
- 
- 		ns->load += cpu_load(rq);
- 		ns->runnable += cpu_runnable(rq);
--		ns->util += cpu_util(cpu);
-+		ns->util += cpu_util_cfs(cpu);
- 		ns->nr_running += rq->cfs.h_nr_running;
- 		ns->compute_capacity += capacity_of(cpu);
- 
-@@ -3240,7 +3239,7 @@ static inline void cfs_rq_util_change(struct cfs_rq *cfs_rq, int flags)
- 		 * As is, the util number is not freq-invariant (we'd have to
- 		 * implement arch_scale_freq_capacity() for that).
- 		 *
--		 * See cpu_util().
-+		 * See cpu_util_cfs().
- 		 */
- 		cpufreq_update_util(rq, flags);
- 	}
-@@ -5509,11 +5508,9 @@ static inline void hrtick_update(struct rq *rq)
- #endif
- 
- #ifdef CONFIG_SMP
--static inline unsigned long cpu_util(int cpu);
--
- static inline bool cpu_overutilized(int cpu)
- {
--	return !fits_capacity(cpu_util(cpu), capacity_of(cpu));
-+	return !fits_capacity(cpu_util_cfs(cpu), capacity_of(cpu));
- }
- 
- static inline void update_overutilized_status(struct rq *rq)
-@@ -6456,58 +6453,6 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	return target;
- }
- 
--/**
-- * cpu_util - Estimates the amount of capacity of a CPU used by CFS tasks.
-- * @cpu: the CPU to get the utilization of
-- *
-- * The unit of the return value must be the one of capacity so we can compare
-- * the utilization with the capacity of the CPU that is available for CFS task
-- * (ie cpu_capacity).
-- *
-- * cfs_rq.avg.util_avg is the sum of running time of runnable tasks plus the
-- * recent utilization of currently non-runnable tasks on a CPU. It represents
-- * the amount of utilization of a CPU in the range [0..capacity_orig] where
-- * capacity_orig is the cpu_capacity available at the highest frequency
-- * (arch_scale_freq_capacity()).
-- * The utilization of a CPU converges towards a sum equal to or less than the
-- * current capacity (capacity_curr <= capacity_orig) of the CPU because it is
-- * the running time on this CPU scaled by capacity_curr.
-- *
-- * The estimated utilization of a CPU is defined to be the maximum between its
-- * cfs_rq.avg.util_avg and the sum of the estimated utilization of the tasks
-- * currently RUNNABLE on that CPU.
-- * This allows to properly represent the expected utilization of a CPU which
-- * has just got a big task running since a long sleep period. At the same time
-- * however it preserves the benefits of the "blocked utilization" in
-- * describing the potential for other tasks waking up on the same CPU.
-- *
-- * Nevertheless, cfs_rq.avg.util_avg can be higher than capacity_curr or even
-- * higher than capacity_orig because of unfortunate rounding in
-- * cfs.avg.util_avg or just after migrating tasks and new task wakeups until
-- * the average stabilizes with the new running time. We need to check that the
-- * utilization stays within the range of [0..capacity_orig] and cap it if
-- * necessary. Without utilization capping, a group could be seen as overloaded
-- * (CPU0 utilization at 121% + CPU1 utilization at 80%) whereas CPU1 has 20% of
-- * available capacity. We allow utilization to overshoot capacity_curr (but not
-- * capacity_orig) as it useful for predicting the capacity required after task
-- * migrations (scheduler-driven DVFS).
-- *
-- * Return: the (estimated) utilization for the specified CPU
-- */
--static inline unsigned long cpu_util(int cpu)
--{
--	struct cfs_rq *cfs_rq;
--	unsigned int util;
--
--	cfs_rq = &cpu_rq(cpu)->cfs;
--	util = READ_ONCE(cfs_rq->avg.util_avg);
--
--	if (sched_feat(UTIL_EST))
--		util = max(util, READ_ONCE(cfs_rq->avg.util_est.enqueued));
--
--	return min_t(unsigned long, util, capacity_orig_of(cpu));
--}
--
- /*
-  * cpu_util_without: compute cpu utilization without any contributions from *p
-  * @cpu: the CPU which utilization is requested
-@@ -6528,7 +6473,7 @@ static unsigned long cpu_util_without(int cpu, struct task_struct *p)
- 
- 	/* Task has no contribution or is new */
- 	if (cpu != task_cpu(p) || !READ_ONCE(p->se.avg.last_update_time))
--		return cpu_util(cpu);
-+		return cpu_util_cfs(cpu);
- 
- 	cfs_rq = &cpu_rq(cpu)->cfs;
- 	util = READ_ONCE(cfs_rq->avg.util_avg);
-@@ -6592,7 +6537,7 @@ static unsigned long cpu_util_without(int cpu, struct task_struct *p)
- 	/*
- 	 * Utilization (estimated) can exceed the CPU capacity, thus let's
- 	 * clamp to the maximum CPU capacity to ensure consistency with
--	 * the cpu_util call.
-+	 * cpu_util.
- 	 */
- 	return min_t(unsigned long, util, capacity_orig_of(cpu));
- }
-@@ -6624,7 +6569,7 @@ static unsigned long cpu_util_next(int cpu, struct task_struct *p, int dst_cpu)
- 		 * During wake-up, the task isn't enqueued yet and doesn't
- 		 * appear in the cfs_rq->avg.util_est.enqueued of any rq,
- 		 * so just add it (if needed) to "simulate" what will be
--		 * cpu_util() after the task has been enqueued.
-+		 * cpu_util after the task has been enqueued.
- 		 */
- 		if (dst_cpu == cpu)
- 			util_est += _task_util_est(p);
-@@ -8681,7 +8626,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
- 		struct rq *rq = cpu_rq(i);
- 
- 		sgs->group_load += cpu_load(rq);
--		sgs->group_util += cpu_util(i);
-+		sgs->group_util += cpu_util_cfs(i);
- 		sgs->group_runnable += cpu_runnable(rq);
- 		sgs->sum_h_nr_running += rq->cfs.h_nr_running;
- 
-@@ -9699,7 +9644,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
- 			break;
- 
- 		case migrate_util:
--			util = cpu_util(cpu_of(rq));
-+			util = cpu_util_cfs(i);
- 
- 			/*
- 			 * Don't try to pull utilization from a CPU with one
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index f0b249ec581d..2733f15c5859 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2942,16 +2942,52 @@ static inline unsigned long cpu_util_dl(struct rq *rq)
- 	return READ_ONCE(rq->avg_dl.util_avg);
- }
- 
--static inline unsigned long cpu_util_cfs(struct rq *rq)
-+/**
-+ * cpu_util_cfs() - Estimates the amount of CPU capacity used by CFS tasks.
-+ * @cpu: the CPU to get the utilization for.
-+ *
-+ * The unit of the return value must be the same as the one of CPU capacity
-+ * so that CPU utilization can be compared with CPU capacity.
-+ *
-+ * CPU utilization is the sum of running time of runnable tasks plus the
-+ * recent utilization of currently non-runnable tasks on that CPU.
-+ * It represents the amount of CPU capacity currently used by CFS tasks in
-+ * the range [0..max CPU capacity] with max CPU capacity being the CPU
-+ * capacity at f_max.
-+ *
-+ * The estimated CPU utilization is defined as the maximum between CPU
-+ * utilization and sum of the estimated utilization of the currently
-+ * runnable tasks on that CPU. It preserves a utilization "snapshot" of
-+ * previously-executed tasks, which helps better deduce how busy a CPU will
-+ * be when a long-sleeping task wakes up. The contribution to CPU utilization
-+ * of such a task would be significantly decayed at this point of time.
-+ *
-+ * CPU utilization can be higher than the current CPU capacity
-+ * (f_curr/f_max * max CPU capacity) or even the max CPU capacity because
-+ * of rounding errors as well as task migrations or wakeups of new tasks.
-+ * CPU utilization has to be capped to fit into the [0..max CPU capacity]
-+ * range. Otherwise a group of CPUs (CPU0 util = 121% + CPU1 util = 80%)
-+ * could be seen as over-utilized even though CPU1 has 20% of spare CPU
-+ * capacity. CPU utilization is allowed to overshoot current CPU capacity
-+ * though since this is useful for predicting the CPU capacity required
-+ * after task migrations (scheduler-driven DVFS).
-+ *
-+ * Return: (Estimated) utilization for the specified CPU.
-+ */
-+static inline unsigned long cpu_util_cfs(int cpu)
- {
--	unsigned long util = READ_ONCE(rq->cfs.avg.util_avg);
-+	struct cfs_rq *cfs_rq;
-+	unsigned long util;
-+
-+	cfs_rq = &cpu_rq(cpu)->cfs;
-+	util = READ_ONCE(cfs_rq->avg.util_avg);
- 
- 	if (sched_feat(UTIL_EST)) {
- 		util = max_t(unsigned long, util,
--			     READ_ONCE(rq->cfs.avg.util_est.enqueued));
-+			     READ_ONCE(cfs_rq->avg.util_est.enqueued));
- 	}
- 
--	return util;
-+	return min(util, capacity_orig_of(cpu));
- }
- 
- static inline unsigned long cpu_util_rt(struct rq *rq)
--- 
-2.25.1
+for you to fetch changes up to c7521d3aa2fa7fc785682758c99b5bcae503f6be:
 
+  ptp: ocp: Fix a couple NULL vs IS_ERR() checks (2021-11-18 12:12:55 +0000)
+
+----------------------------------------------------------------
+Networking fixes for 5.16-rc2, including fixes from bpf, mac80211.
+
+Current release - regressions:
+
+ - devlink: don't throw an error if flash notification sent before
+   devlink visible
+
+ - page_pool: Revert "page_pool: disable dma mapping support...",
+   turns out there are active arches who need it
+
+Current release - new code bugs:
+
+ - amt: cancel delayed_work synchronously in amt_fini()
+
+Previous releases - regressions:
+
+ - xsk: fix crash on double free in buffer pool
+
+ - bpf: fix inner map state pruning regression causing program
+   rejections
+
+ - mac80211: drop check for DONT_REORDER in __ieee80211_select_queue,
+   preventing mis-selecting the best effort queue
+
+ - mac80211: do not access the IV when it was stripped
+
+ - mac80211: fix radiotap header generation, off-by-one
+
+ - nl80211: fix getting radio statistics in survey dump
+
+ - e100: fix device suspend/resume
+
+Previous releases - always broken:
+
+ - tcp: fix uninitialized access in skb frags array for Rx 0cp
+
+ - bpf: fix toctou on read-only map's constant scalar tracking
+
+ - bpf: forbid bpf_ktime_get_coarse_ns and bpf_timer_* in tracing progs
+
+ - tipc: only accept encrypted MSG_CRYPTO msgs
+
+ - smc: transfer remaining wait queue entries during fallback,
+   fix missing wake ups
+
+ - udp: validate checksum in udp_read_sock() (when sockmap is used)
+
+ - sched: act_mirred: drop dst for the direction from egress to ingress
+
+ - virtio_net_hdr_to_skb: count transport header in UFO, prevent
+   allowing bad skbs into the stack
+
+ - nfc: reorder the logic in nfc_{un,}register_device, fix unregister
+
+ - ipsec: check return value of ipv6_skip_exthdr
+
+ - usb: r8152: add MAC passthrough support for more Lenovo Docks
+
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+
+----------------------------------------------------------------
+Aaron Ma (1):
+      net: usb: r8152: Add MAC passthrough support for more Lenovo Docks
+
+Akeem G Abodunrin (1):
+      iavf: Restore VLAN filters after link down
+
+Alex Elder (2):
+      net: ipa: HOLB register sometimes must be written twice
+      net: ipa: disable HOLB drop when updating timer
+
+Alexander Lobakin (2):
+      samples/bpf: Fix summary per-sec stats in xdp_sample_user
+      samples/bpf: Fix build error due to -isystem removal
+
+Alexei Starovoitov (2):
+      bpf: Fix inner map state pruning regression.
+      Merge branch 'Forbid bpf_ktime_get_coarse_ns and bpf_timer_* in tracing progs'
+
+Arjun Roy (1):
+      tcp: Fix uninitialized access in skb frags array for Rx 0cp.
+
+Avihai Horon (1):
+      net/mlx5: Fix flow counters SF bulk query len
+
+Cong Wang (1):
+      udp: Validate checksum in udp_read_sock()
+
+Dan Carpenter (2):
+      octeontx2-af: debugfs: don't corrupt user memory
+      ptp: ocp: Fix a couple NULL vs IS_ERR() checks
+
+Daniel Borkmann (1):
+      bpf: Fix toctou on read-only map's constant scalar tracking
+
+David S. Miller (5):
+      Merge branch 'net-ipa-fixes'
+      Merge branch 'bnxt_en-fixes'
+      Merge branch '40GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue
+      Merge tag 'mlx5-fixes-2021-11-16' of git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux
+      Merge branch '40GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net- queue
+
+Davide Caratti (1):
+      selftests: add a test case for mirred egress to ingress
+
+Dmitrii Banshchikov (2):
+      bpf: Forbid bpf_ktime_get_coarse_ns and bpf_timer_* in tracing progs
+      selftests/bpf: Add tests for restricted helpers
+
+Edwin Peer (2):
+      bnxt_en: extend RTNL to VF check in devlink driver_reinit
+      bnxt_en: fix format specifier in live patch error message
+
+Eryk Rybak (3):
+      i40e: Fix correct max_pkt_size on VF RX queue
+      i40e: Fix changing previously set num_queue_pairs for PFs
+      i40e: Fix ping is lost after configuring ADq on VF
+
+Felix Fietkau (2):
+      mac80211: drop check for DONT_REORDER in __ieee80211_select_queue
+      mac80211: fix throughput LED trigger
+
+Grzegorz Szczurek (2):
+      iavf: Fix for setting queues to 0
+      i40e: Fix display error code in dmesg
+
+Jacob Keller (1):
+      iavf: prevent accidental free of filter structure
+
+Jakub Kicinski (5):
+      selftests: net: switch to socat in the GSO GRE test
+      ethernet: sis900: fix indentation
+      Merge https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf
+      Merge tag 'mac80211-for-net-2021-11-16' of git://git.kernel.org/pub/scm/linux/kernel/git/jberg/mac80211
+      Merge branch 'net-fix-the-mirred-packet-drop-due-to-the-incorrect-dst'
+
+Jean-Philippe Brucker (1):
+      tools/runqslower: Fix cross-build
+
+Jedrzej Jagielski (1):
+      i40e: Fix creation of first queue by omitting it if is not power of two
+
+Jesse Brandeburg (1):
+      e100: fix device suspend/resume
+
+Jiapeng Chong (1):
+      net: Clean up some inconsistent indenting
+
+Johannes Berg (3):
+      nl80211: fix radio statistics in survey dump
+      mac80211: fix radiotap header generation
+      mac80211: fix monitor_sdata RCU/locking assertions
+
+Jonathan Davies (1):
+      net: virtio_net_hdr_to_skb: count transport header in UFO
+
+Jordy Zomer (1):
+      ipv6: check return value of ipv6_skip_exthdr
+
+Karen Sornek (1):
+      i40e: Fix warning message and call stack during rmmod i40e driver
+
+Konrad Dybcio (1):
+      net/ipa: ipa_resource: Fix wrong for loop range
+
+Kumar Kartikeya Dwivedi (2):
+      samples/bpf: Fix incorrect use of strlen in xdp_redirect_cpu
+      libbpf: Perform map fd cleanup for gen_loader in case of error
+
+Leon Romanovsky (1):
+      devlink: Don't throw an error if flash notification sent before devlink visible
+
+Lin Ma (4):
+      hamradio: remove needs_free_netdev to avoid UAF
+      NFC: reorganize the functions in nci_request
+      NFC: reorder the logic in nfc_{un,}register_device
+      NFC: add NCI_UNREG flag to eliminate the race
+
+Lorenz Bauer (1):
+      selftests/bpf: Check map in map pruning
+
+Magnus Karlsson (1):
+      xsk: Fix crash on double free in buffer pool
+
+Maher Sanalla (1):
+      net/mlx5: Lag, update tracker when state change event received
+
+Marcin Wojtas (1):
+      net: mvmdio: fix compilation warning
+
+Mark Bloch (1):
+      net/mlx5: E-Switch, rebuild lag only when needed
+
+Mateusz Palczewski (1):
+      iavf: Fix return of set the new channel count
+
+Meng Li (1):
+      net: stmmac: socfpga: add runtime suspend/resume callback for stratix10 platform
+
+Michael Chan (1):
+      bnxt_en: Fix compile error regression when CONFIG_BNXT_SRIOV is not set
+
+Michal Maloszewski (1):
+      i40e: Fix NULL ptr dereference on VSI filter sync
+
+Mitch Williams (1):
+      iavf: validate pointers
+
+Neta Ostrovsky (1):
+      net/mlx5: Update error handler for UCTX and UMEM
+
+Nguyen Dinh Phi (1):
+      cfg80211: call cfg80211_stop_ap when switch from P2P_GO type
+
+Nicholas Nunley (3):
+      iavf: check for null in iavf_fix_features
+      iavf: free q_vectors before queues in iavf_disable_vf
+      iavf: don't clear a lock we don't hold
+
+Nicolas Dichtel (1):
+      tun: fix bonding active backup with arp monitoring
+
+Paul Blakey (1):
+      net/mlx5: E-Switch, Fix resetting of encap mode when entering switchdev
+
+Paul Moore (1):
+      net,lsm,selinux: revert the security_sctp_assoc_established() hook
+
+Pavel Skripkin (3):
+      net: bnx2x: fix variable dereferenced before check
+      MAINTAINERS: remove GR-everest-linux-l2@marvell.com
+      net: dpaa2-eth: fix use-after-free in dpaa2_eth_remove
+
+Piotr Marczak (1):
+      iavf: Fix failure to exit out from last all-multicast mode
+
+Raed Salem (1):
+      net/mlx5: E-Switch, return error if encap isn't supported
+
+Randy Dunlap (2):
+      ptp: ptp_clockmatrix: repair non-kernel-doc comment
+      net: ethernet: lantiq_etop: fix build errors/warnings
+
+Roi Dayan (1):
+      net/mlx5e: CT, Fix multiple allocations and memleak of mod acts
+
+Sriharsha Basavapatna (1):
+      bnxt_en: reject indirect blk offload when hw-tc-offload is off
+
+Surabhi Boob (1):
+      iavf: Fix for the false positive ASQ/ARQ errors while issuing VF reset
+
+Tadeusz Struk (2):
+      tipc: use consistent GFP flags
+      tipc: check for null after calling kmemdup
+
+Taehee Yoo (1):
+      amt: cancel delayed_work synchronously in amt_fini()
+
+Tariq Toukan (1):
+      net/mlx5e: kTLS, Fix crash in RX resync flow
+
+Teng Qi (2):
+      ethernet: hisilicon: hns: hns_dsaf_misc: fix a possible array overflow in hns_dsaf_ge_srst_by_port()
+      net: ethernet: dec: tulip: de4x5: fix possible array overflows in type3_infoblock()
+
+Tetsuo Handa (1):
+      sock: fix /proc/net/sockstat underflow in sk_clone_lock()
+
+Thomas Gleixner (1):
+      net: stmmac: Fix signed/unsigned wreckage
+
+Valentine Fatiev (1):
+      net/mlx5e: nullify cq->dbg pointer in mlx5_debug_cq_remove()
+
+Vlad Buslov (1):
+      net/mlx5e: Wait for concurrent flow deletion during neigh/fib events
+
+Wen Gu (2):
+      net/smc: Transfer remaining wait queue entries during fallback
+      net/smc: Make sure the link_id is unique
+
+Xin Long (2):
+      tipc: only accept encrypted MSG_CRYPTO msgs
+      net: sched: act_mirred: drop dst for the direction from egress to ingress
+
+Xing Song (1):
+      mac80211: do not access the IV when it was stripped
+
+Yevgeny Kliteynik (2):
+      net/mlx5: DR, Handle eswitch manager and uplink vports separately
+      net/mlx5: DR, Fix check for unsupported fields in match param
+
+Yunsheng Lin (1):
+      page_pool: Revert "page_pool: disable dma mapping support..."
+
+Zekun Shen (1):
+      atlantic: Fix OOB read and write in hw_atl_utils_fw_rpc_wait
+
+liuguoqiang (1):
+      net: return correct error code
+
+zhangyue (1):
+      net: tulip: de4x5: fix the problem that the array 'lp->phy[8]' may be out of bound
+
+Łukasz Stelmach (1):
+      net: ax88796c: use bit numbers insetad of bit masks
+
+ Documentation/security/SCTP.rst                    |  22 +--
+ MAINTAINERS                                        |   4 +-
+ drivers/net/amt.c                                  |   2 +-
+ .../aquantia/atlantic/hw_atl/hw_atl_utils.c        |  10 ++
+ drivers/net/ethernet/asix/ax88796c_main.h          |   6 +-
+ .../net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h   |   4 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt.h          |  10 ++
+ drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c  |   9 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c       |   2 +-
+ drivers/net/ethernet/dec/tulip/de4x5.c             |  34 ++--
+ drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c   |   4 +-
+ drivers/net/ethernet/hisilicon/hns/hns_dsaf_misc.c |   4 +
+ drivers/net/ethernet/intel/e100.c                  |  18 +-
+ drivers/net/ethernet/intel/i40e/i40e.h             |   2 +
+ drivers/net/ethernet/intel/i40e/i40e_main.c        | 160 +++++++++++------
+ drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c | 121 +++++--------
+ drivers/net/ethernet/intel/iavf/iavf.h             |   1 +
+ drivers/net/ethernet/intel/iavf/iavf_ethtool.c     |  30 +++-
+ drivers/net/ethernet/intel/iavf/iavf_main.c        |  55 ++++--
+ drivers/net/ethernet/lantiq_etop.c                 |  20 ++-
+ drivers/net/ethernet/marvell/mvmdio.c              |   2 +
+ .../ethernet/marvell/octeontx2/af/rvu_debugfs.c    |  17 +-
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c      |   4 +-
+ drivers/net/ethernet/mellanox/mlx5/core/cq.c       |   5 +-
+ drivers/net/ethernet/mellanox/mlx5/core/debugfs.c  |   4 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c |  26 ++-
+ drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.h |   2 +
+ .../net/ethernet/mellanox/mlx5/core/en/tc_priv.h   |   1 +
+ .../ethernet/mellanox/mlx5/core/en/tc_tun_encap.c  |   8 +-
+ .../ethernet/mellanox/mlx5/core/en_accel/ktls_rx.c |  23 ++-
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.c    |  10 +-
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch.c  |  21 ++-
+ .../ethernet/mellanox/mlx5/core/eswitch_offloads.c |   9 +-
+ .../net/ethernet/mellanox/mlx5/core/fs_counters.c  |   2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c  |  28 ++-
+ .../mellanox/mlx5/core/steering/dr_domain.c        |  56 +++---
+ .../mellanox/mlx5/core/steering/dr_matcher.c       |  11 +-
+ .../mellanox/mlx5/core/steering/dr_types.h         |   1 +
+ drivers/net/ethernet/sis/sis900.c                  |   2 +-
+ .../net/ethernet/stmicro/stmmac/dwmac-socfpga.c    |  24 ++-
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |  23 ++-
+ drivers/net/hamradio/6pack.c                       |   1 -
+ drivers/net/ipa/ipa_endpoint.c                     |   5 +
+ drivers/net/ipa/ipa_resource.c                     |   2 +-
+ drivers/net/tun.c                                  |   5 +
+ drivers/net/usb/r8152.c                            |   9 +-
+ drivers/ptp/ptp_clockmatrix.c                      |   5 +-
+ drivers/ptp/ptp_ocp.c                              |   9 +-
+ include/linux/bpf.h                                |   3 +-
+ include/linux/lsm_hook_defs.h                      |   2 -
+ include/linux/lsm_hooks.h                          |   5 -
+ include/linux/mlx5/eswitch.h                       |   4 +-
+ include/linux/mm_types.h                           |  13 +-
+ include/linux/security.h                           |   7 -
+ include/linux/skbuff.h                             |   2 +-
+ include/linux/virtio_net.h                         |   7 +-
+ include/net/nfc/nci_core.h                         |   1 +
+ include/net/page_pool.h                            |  12 +-
+ kernel/bpf/cgroup.c                                |   2 +
+ kernel/bpf/helpers.c                               |   2 -
+ kernel/bpf/syscall.c                               |  57 +++---
+ kernel/bpf/verifier.c                              |  27 ++-
+ kernel/trace/bpf_trace.c                           |   2 -
+ net/core/devlink.c                                 |   4 +-
+ net/core/filter.c                                  |   6 +
+ net/core/page_pool.c                               |  10 +-
+ net/core/sock.c                                    |   6 +-
+ net/ipv4/bpf_tcp_ca.c                              |   2 +
+ net/ipv4/devinet.c                                 |   2 +-
+ net/ipv4/tcp.c                                     |   3 +
+ net/ipv4/udp.c                                     |  11 ++
+ net/ipv6/esp6.c                                    |   6 +
+ net/mac80211/cfg.c                                 |  12 +-
+ net/mac80211/iface.c                               |   4 +-
+ net/mac80211/led.h                                 |   8 +-
+ net/mac80211/rx.c                                  |  12 +-
+ net/mac80211/tx.c                                  |  34 ++--
+ net/mac80211/util.c                                |   7 +-
+ net/mac80211/wme.c                                 |   3 +-
+ net/nfc/core.c                                     |  32 ++--
+ net/nfc/nci/core.c                                 |  30 +++-
+ net/sched/act_mirred.c                             |  11 +-
+ net/sctp/sm_statefuns.c                            |   2 +-
+ net/smc/af_smc.c                                   |  14 ++
+ net/smc/smc_core.c                                 |   3 +-
+ net/tipc/crypto.c                                  |  12 +-
+ net/tipc/link.c                                    |   7 +-
+ net/wireless/nl80211.c                             |  34 ++--
+ net/wireless/nl80211.h                             |   6 +-
+ net/wireless/util.c                                |   1 +
+ net/xdp/xsk_buff_pool.c                            |   7 +-
+ samples/bpf/hbm_kern.h                             |   2 -
+ samples/bpf/xdp_redirect_cpu_user.c                |   5 +-
+ samples/bpf/xdp_sample_user.c                      |  28 +--
+ security/security.c                                |   7 -
+ security/selinux/hooks.c                           |  14 +-
+ tools/bpf/runqslower/Makefile                      |   3 +-
+ tools/lib/bpf/bpf_gen_internal.h                   |   4 +-
+ tools/lib/bpf/gen_loader.c                         |  47 +++--
+ tools/lib/bpf/libbpf.c                             |   4 +-
+ tools/testing/selftests/bpf/Makefile               |   2 +-
+ .../selftests/bpf/prog_tests/helper_restricted.c   |  33 ++++
+ .../selftests/bpf/progs/test_helper_restricted.c   | 123 +++++++++++++
+ tools/testing/selftests/bpf/test_verifier.c        |  46 ++++-
+ .../selftests/bpf/verifier/helper_restricted.c     | 196 +++++++++++++++++++++
+ tools/testing/selftests/bpf/verifier/map_in_map.c  |  34 ++++
+ tools/testing/selftests/net/forwarding/config      |   1 +
+ .../testing/selftests/net/forwarding/tc_actions.sh |  47 ++++-
+ tools/testing/selftests/net/gre_gso.sh             |  16 +-
+ 109 files changed, 1328 insertions(+), 552 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/helper_restricted.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_helper_restricted.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/helper_restricted.c
