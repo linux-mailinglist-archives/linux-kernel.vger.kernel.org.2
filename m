@@ -2,105 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A2D4558D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 11:17:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F8A4558E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 11:21:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245573AbhKRKUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 05:20:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41540 "EHLO
+        id S245030AbhKRKXE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 18 Nov 2021 05:23:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244762AbhKRKTP (ORCPT
+        with ESMTP id S243132AbhKRKWd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 05:19:15 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFBF8C061200;
-        Thu, 18 Nov 2021 02:13:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PLFdZ7dTTvBZHONBWUV9JxsnvnbG0+9H32oC94T6RB8=; b=VgJYFTdCxhDoCm1ftVqf2hHxVS
-        2dPSPKdP3jt9ch5X0jg3UM+yfTVVB2wQz/H9kjxKKB2kKAGg7JlpHSW5dqj3B9I1PI70u6PT7vpgp
-        Yhl5jWngxiUevxgMStLD6+GJjebzoSGNVjj3W++bOUslSdnPz37PM2hNda5oVbQj3PdKgH98bU7wP
-        thfQetVfXGPPLbWvCVvJ8oyRPYY+/IRcp1rD9AhAJagXChl357YxkzhYtqQNw7LeV60KyrXOZomeH
-        MbS59mFJd3eeJ7rokAq9HQ/sNGFzOtOIH68RjVsess461Pm6TVYr2EAKsEHoFgd/uL9GPKIQS1j+y
-        9/Qt6XHw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mnePY-00GfiA-1s; Thu, 18 Nov 2021 10:12:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BE2173001FD;
-        Thu, 18 Nov 2021 11:12:54 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id AD35D2CFFA120; Thu, 18 Nov 2021 11:12:54 +0100 (CET)
-Date:   Thu, 18 Nov 2021 11:12:54 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Holger =?iso-8859-1?Q?Hoffst=E4tte?= 
-        <holger@applied-asynchrony.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Justin Forbes <jmforbes@linuxtx.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        stable <stable@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH 5.15 000/923] 5.15.3-rc3 review
-Message-ID: <YZYnJi0GcxOH16eF@hirez.programming.kicks-ass.net>
-References: <20211117101657.463560063@linuxfoundation.org>
- <YZV02RCRVHIa144u@fedora64.linuxtx.org>
- <55c7b316-e03d-9e91-d74c-fea63c469b3b@applied-asynchrony.com>
- <CAHk-=wjHbKfck1Ws4Y0pUZ7bxdjU9eh2WK0EFsv65utfeVkT9Q@mail.gmail.com>
- <20211118080627.GH174703@worktop.programming.kicks-ass.net>
- <20211118081852.GM174730@worktop.programming.kicks-ass.net>
- <YZYfYOcqNqOyZ8Yo@hirez.programming.kicks-ass.net>
+        Thu, 18 Nov 2021 05:22:33 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9ECC0613B9
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 02:19:33 -0800 (PST)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mneVo-0007U0-08; Thu, 18 Nov 2021 11:19:24 +0100
+Received: from pza by lupine with local (Exim 4.94.2)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mneVm-0005wT-St; Thu, 18 Nov 2021 11:19:22 +0100
+Message-ID: <cdb9c0c334823505a2ce499e36be9507112f4298.camel@pengutronix.de>
+Subject: Re: [PATCH net-next 2/5] net: lan966x: add the basic lan966x driver
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        linux@armlinux.org.uk, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 18 Nov 2021 11:19:22 +0100
+In-Reply-To: <20211117214231.yiv2s6nxl6yx4klq@soft-dev3-1.localhost>
+References: <20211117091858.1971414-1-horatiu.vultur@microchip.com>
+         <20211117091858.1971414-3-horatiu.vultur@microchip.com>
+         <9ab98fba364f736b267dbd5e1d305d3e8426e877.camel@pengutronix.de>
+         <20211117214231.yiv2s6nxl6yx4klq@soft-dev3-1.localhost>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZYfYOcqNqOyZ8Yo@hirez.programming.kicks-ass.net>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 10:39:44AM +0100, Peter Zijlstra wrote:
-> @@ -396,22 +416,27 @@ static bool deref_stack_iret_regs(struct unwind_state *state, unsigned long addr
->  static bool get_reg(struct unwind_state *state, unsigned int reg_off,
->  		    unsigned long *val)
->  {
-> -	unsigned int reg = reg_off/8;
-> -
->  	if (!state->regs)
->  		return false;
->  
-> +	pagefault_disable();
->  	if (state->full_regs) {
-> -		*val = READ_ONCE_NOCHECK(((unsigned long *)state->regs)[reg]);
-> +		__get_kernel_nofault(val, (void *)state->regs + reg_off, unsigned long, Efault);
-> +		pagefault_enable();
->  		return true;
->  	}
->  
->  	if (state->prev_regs) {
-> -		*val = READ_ONCE_NOCHECK(((unsigned long *)state->prev_regs)[reg]);
-> +		__get_kernel_nofault(val, (void *)state->regs + reg_off, unsigned long, Efault);
-							^^^ prev_regs
-> +		pagefault_enable();
->  		return true;
->  	}
->  
->  	return false;
-> +
-> +Efault:
-> +	pagefault_enable();
-> +	return false;
->  }
+Hi Horatiu,
+
+On Wed, 2021-11-17 at 22:42 +0100, Horatiu Vultur wrote:
+> > On Wed, 2021-11-17 at 10:18 +0100, Horatiu Vultur wrote:
+> > > +static int lan966x_reset_switch(struct lan966x *lan966x)
+> > > +{
+> > > +     struct reset_control *reset;
+> > > +     int val = 0;
+> > > +     int ret;
+> > > +
+> > > +     reset = devm_reset_control_get_shared(lan966x->dev, "switch");
+> > > +     if (IS_ERR(reset))
+> > > +             dev_warn(lan966x->dev, "Could not obtain switch reset: %ld\n",
+> > > +                      PTR_ERR(reset));
+> > > +     else
+> > > +             reset_control_reset(reset);
+> > 
+> > According to the device tree bindings, both resets are required.
+> > I'd expect this to return on error.
+> > Is there any chance of the device working with out the switch reset
+> > being triggered?
+> 
+> The only case that I see is if the bootloader triggers this switch
+> reset and then when bootloader starts the kernel and doesn't set back
+> the switch in reset. Is this a valid scenario or is a bug in the
+> bootloader?
+
+I'm not sure. In general, the kernel shouldn't rely on the bootloader to
+have put the devices into a certain working state. If the driver will
+not work or worse, if register access could hang the system if the
+bootloader has passed control to the kernel with the switch held in
+reset and no reset control is available to the driver, it should not
+continue after failure to get the reset handle.
+
+I'd suggest to just use:
+
+	reset = devm_reset_control_get_shared(lan966x->dev, "switch");
+	if (IS_ERR(reset))
+		return dev_err_probe(lan966x->dev, PTR_ERR(reset),
+				     "Could not obtain switch reset");
+	reset_control_reset(reset);
+
+unless you have a good reason to do otherwise.
+
+regards
+Philipp
