@@ -2,71 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B8F455B1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFBDA455B1E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344436AbhKRMDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 07:03:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38746 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344403AbhKRMDK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 07:03:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 15FEF61265;
-        Thu, 18 Nov 2021 12:00:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637236810;
-        bh=xdVEYePZ4MHyu6ftETBlzQeJgWfwxB+1LMLpvjRoQoU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=l2P+oCjo0xnjxmgsdVbg4R6iotuwJyU/SJr/umzTdUXHNxtBsUzOknd2oLcehoEZ5
-         mIwvHchDBzpsCt1fo17AZ2q80yJYpA55BO7y203ITmrRe/qnNQVvT6CoE14CCN3eQw
-         U/+HjLREcA82kaLtNr7rWTpwWrOikjN1FTgqLOhLeZiYkbkzmH5E6rleuSaRhFvDa4
-         hOqOFqFl4wh+Vwlu51MEUMhdNgjDkWCAW5mf3yyk8n46TpqLasC2gzbYGwgE+YyTiS
-         yFZnbYv/6Ct++/7ZqCBnx8L2HWBzFv6pdiH4iIP99EBi6NW5uCNnMdF+Dt2rKBXamM
-         fsQAtZ09tDeqg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0396160BE1;
-        Thu, 18 Nov 2021 12:00:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] net: tulip: de4x5: fix the problem that the array
- 'lp->phy[8]' may be out of bound
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163723681000.21585.16416019300090762726.git-patchwork-notify@kernel.org>
-Date:   Thu, 18 Nov 2021 12:00:10 +0000
-References: <20211118054632.357006-1-zhangyue1@kylinos.cn>
-In-Reply-To: <20211118054632.357006-1-zhangyue1@kylinos.cn>
-To:     zhangyue <zhangyue1@kylinos.cn>
-Cc:     davem@davemloft.net, jesse.brandeburg@intel.com,
-        gregkh@linuxfoundation.org, ecree@solarflare.com,
-        netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
+        id S1344396AbhKRMDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 07:03:46 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:56798 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344513AbhKRMDe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 07:03:34 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R551e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UxCl-n0_1637236831;
+Received: from B-X3VXMD6M-2058.local(mailfrom:xhao@linux.alibaba.com fp:SMTPD_---0UxCl-n0_1637236831)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 18 Nov 2021 20:00:32 +0800
+From:   Xin Hao <xhao@linux.alibaba.com>
+Reply-To: xhao@linux.alibaba.com
+Subject: Re: [PATCH V1] mm/damon/schemes: Add the validity judgment of
+ thresholds
+To:     SeongJae Park <sj@kernel.org>
+Cc:     sjpark@amazon.de, akpm@linux-foundation.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
+References: <20211118115113.20234-1-sj@kernel.org>
+Message-ID: <c1237c76-f15a-7bf5-80bb-e078c2efb7f5@linux.alibaba.com>
+Date:   Thu, 18 Nov 2021 20:00:31 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <20211118115113.20234-1-sj@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
+On 11/18/21 7:51 PM, SeongJae Park wrote:
+> Hi Xin,
+>
+>
+> Thank you for this patch.
+>
+>  From next time, please send patches for DAMON to sj@kernel.org instead of
+> sjpark@amazon.de.
+>
+> On Thu, 18 Nov 2021 12:16:02 +0800 Xin Hao <xhao@linux.alibaba.com> wrote:
+Oh,l will.
+>> In dbgfs "schemes" interface, i do some test like this:
+>>      # cd /sys/kernel/debug/damon
+>>      # echo "2 1 2 1 10 1 3 10 1 1 1 1 1 1 1 1 2 3" > schemes
+>>      # cat schemes
+>>      # 2 1 2 1 10 1 3 10 1 1 1 1 1 1 1 1 2 3 0 0
+>>
+>> There have some unreasonable places, i set the valules of these variables
+>> "<min_sz, max_sz> <min_nr_a, max_nr_a>, <min_age, max_age>, <wmarks.high,
+>> wmarks.mid, wmarks.low>" as "<2, 1>, <2, 1>, <10, 1>, <1, 2, 3>.
+>>
+>> So there add a validity judgment for these threshold values.
+>>
+>> Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
+>> ---
+>>   mm/damon/dbgfs.c | 11 +++++++++++
+>>   1 file changed, 11 insertions(+)
+>>
+>> diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
+>> index befb27a29aab..a4c94d563d3d 100644
+>> --- a/mm/damon/dbgfs.c
+>> +++ b/mm/damon/dbgfs.c
+>> @@ -215,6 +215,17 @@ static struct damos **str_to_schemes(const char *str, ssize_t len,
+>>   			goto fail;
+>>   		}
+>>   
+>> +		if (min_sz > max_sz || min_nr_a > max_nr_a || min_age > max_age) {
+>> +			pr_err("mininum > maxinum\n");
+> I think this error message is not really needed.
+Ok, i will remove it, i add this message is aim to better find where is 
+wrong, because there have so many variables
+>
+>> +			goto fail;
+>> +		}
+>> +
+>> +		if (wmarks.high < wmarks.mid || wmarks.high < wmarks.low ||
+>> +		    wmarks.mid <  wmarks.low) {
+>> +			pr_err("wrong wmarks\n");
+> Ditto.
+>
+>
+> Thanks,
+> SJ
+>
+>> +			goto fail;
+>> +		}
+>> +
+>>   		pos += parsed;
+>>   		scheme = damon_new_scheme(min_sz, max_sz, min_nr_a, max_nr_a,
+>>   				min_age, max_age, action, &quota, &wmarks);
+>> -- 
+>> 2.31.0
 
-On Thu, 18 Nov 2021 13:46:32 +0800 you wrote:
-> In line 5001, if all id in the array 'lp->phy[8]' is not 0, when the
-> 'for' end, the 'k' is 8.
-> 
-> At this time, the array 'lp->phy[8]' may be out of bound.
-> 
-> Signed-off-by: zhangyue <zhangyue1@kylinos.cn>
-> 
-> [...]
-
-Here is the summary with links:
-  - [v2] net: tulip: de4x5: fix the problem that the array 'lp->phy[8]' may be out of bound
-    https://git.kernel.org/netdev/net/c/61217be886b5
-
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Best Regards!
+Xin Hao
 
