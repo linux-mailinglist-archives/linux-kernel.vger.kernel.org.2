@@ -2,113 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7D1455191
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 01:15:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2D7455192
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 01:16:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241850AbhKRASp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 19:18:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49610 "EHLO
+        id S241853AbhKRASv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 19:18:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241818AbhKRASj (ORCPT
+        with ESMTP id S241849AbhKRASp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 19:18:39 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4008AC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 16:15:40 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id w1so18765127edc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 16:15:40 -0800 (PST)
+        Wed, 17 Nov 2021 19:18:45 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D78C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 16:15:45 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id g14so18725690edb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 16:15:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=K+58f0SyQ3Lb12arfHudpznsJpM8EH8QJRhqC+3D+/o=;
-        b=GIK/XZDC7ZNVXEqtZ+tcRvrXQwqh/3lJY4yq2xqMR5g4v4WHdHdxBBddnKCXAxjOPb
-         D4LDriIwmMmUqzawd5iS2gHre59nN6Ls/L0plgWyRkjMH6wccNzKmXtgD3O8sgwqJg2Q
-         rLVrPCOoHEuMVi4eKbaeBXjnaPlOpyQXvrK0A=
+        bh=PPzDrm8hw/ujJmiUKHH7CMVzIaJ4uv6KjA6rPPfDBlA=;
+        b=MYjaC48HJMlTwAZ5qRLVZREpdOvi98kfTgr63YfwurOcOCrjl9nJYQY/icYELIUxrA
+         JckcwZRrBPvvLA2osY4mkl4IFR21i3IrIi93OetLdhRQbXGnvSiOw0KBlPyPlGLcm62M
+         EF+WyaDrV6hZhmnG5QRvaGd0Ez6fk8j7gaZrvhrKDlD8+q3sNaNBDklXm1S/qD2ZO9Zr
+         ZXDEyEn4vI7w2sN/7X0GF6fZEHK9VXv0kxNv/4/F7efW5JAVBadzz1tbCr4uKZHiIjza
+         jouvD+XsEWjw9sis7M/LW7FUAAxRuIlEozUxeVWxxGqQ8bvvV0SH9eCibsIX/M2z3Xvk
+         Kz8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=K+58f0SyQ3Lb12arfHudpznsJpM8EH8QJRhqC+3D+/o=;
-        b=Sf5j244d41jWyKyBcPN4eXimV6qjQ93eK5gezH5Yw/66f1YYSGPcTnTXMjRyDH3Koq
-         vVYvSeucLU1cr2uxe8aZE94gJO+aJRgKdFNPy7U2bnRGxibd8/KwNxy2Csc5BFmPcnRE
-         JNK0oGzm+Okgc8ZWIkJK5x3X+863lHXBJ0qvNOO70d1Rtymzmbjw9RJ82FtuDGUFH2IG
-         FIithkDh5u4M72z5IzQXDoVdKaIR6zPzeUBTCWnS2tQ0J/4tZolbQOm/Ovatut4q9Tp/
-         +doXIJOHJLCgysUi/WXWNa1TlUJ+WcJoB5S47NZm/u/Ib+LYgq7QOPMSEBx9Dt89McgE
-         Xgzw==
-X-Gm-Message-State: AOAM531up/bsqBfHi3B032w+bILt1JpOA6+LogU1O/+GESi11gJoxDb1
-        AcoJLwpgAsIMFtmTAGNcxiW1pWVE+WIUZe9U
-X-Google-Smtp-Source: ABdhPJxNiJccgdlf87+cC8SqXFd3fI9x+N/VDMw9/Mi82XG6YpclZ2kb94YWJ//oWOUiQQaXAHCvMw==
-X-Received: by 2002:a17:906:6549:: with SMTP id u9mr28309785ejn.514.1637194538332;
-        Wed, 17 Nov 2021 16:15:38 -0800 (PST)
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com. [209.85.221.48])
-        by smtp.gmail.com with ESMTPSA id i10sm628698ejw.48.2021.11.17.16.15.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 16:15:37 -0800 (PST)
-Received: by mail-wr1-f48.google.com with SMTP id s13so7954401wrb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 16:15:37 -0800 (PST)
-X-Received: by 2002:adf:d082:: with SMTP id y2mr24843502wrh.214.1637194537139;
- Wed, 17 Nov 2021 16:15:37 -0800 (PST)
+        bh=PPzDrm8hw/ujJmiUKHH7CMVzIaJ4uv6KjA6rPPfDBlA=;
+        b=l6e8uSDecDra2ArFusZ2j509usvZakYthW/kNg70KYWd7N3frk2+AjUs+lJBcP205q
+         bjTW1whtMh1qNxNWKH2X20WwjEq64Vy9A+wCPggWU0AFtHDLUMaQl/jzzqxsPvAoda0P
+         cdpIC75OCbW965XDvoOiVrcPzrMFK85BEVAPxK2DJmq8DH77KkKilnSyg3Pz2HNugMes
+         A6LwixG0sL9zpZPUCE0aDrxpTPxpRibuZjUl/hw2lZYgykFeFmKz87zy3MCYgC20OIQ9
+         oIPpD5hW2Vu8eTZe1b+CWhhUXt9VliTKkPTVYh8HgInhJmZ1InKxkcs2XX8GZhGmBI4j
+         CdUA==
+X-Gm-Message-State: AOAM5317NWtYDztLBaCrMy0kN7fYclDNDUwWTvdW/OyYP64LlH9Cw/U7
+        0qDMlx71zpXrMoZv1QPwuDbnpUGk2NBvsSvuv91cyBlBf4s=
+X-Google-Smtp-Source: ABdhPJzX2jweD0mYj8O2e9J4t8sqUX9NjEWWi4n12PZ/vxHqcZkNTop10a1J0vwbn/VBUOa6nTaTtK26vO6eZr3EstY=
+X-Received: by 2002:a05:6402:2926:: with SMTP id ee38mr4415019edb.71.1637194544403;
+ Wed, 17 Nov 2021 16:15:44 -0800 (PST)
 MIME-Version: 1.0
-References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
- <202111171049.3F9C5F1@keescook> <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
- <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
- <87k0h6334w.fsf@email.froward.int.ebiederm.org> <202111171341.41053845C3@keescook>
- <CAHk-=wgkOGmkTu18hJQaJ4mk8hGZc16=gzGMgGGOd=uwpXsdyw@mail.gmail.com> <202111171603.34F36D0E01@keescook>
-In-Reply-To: <202111171603.34F36D0E01@keescook>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 17 Nov 2021 16:15:21 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjsyDcohs=i0XGu0GRb6AkXUNyWCE_f6JMy0RY9wdXUXg@mail.gmail.com>
-Message-ID: <CAHk-=wjsyDcohs=i0XGu0GRb6AkXUNyWCE_f6JMy0RY9wdXUXg@mail.gmail.com>
-Subject: Re: [REGRESSION] 5.16rc1: SA_IMMUTABLE breaks debuggers
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Kyle Huey <me@kylehuey.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        "Robert O'Callahan" <rocallahan@gmail.com>
+References: <20211116013522.140575-1-ying.huang@intel.com> <20211116013522.140575-2-ying.huang@intel.com>
+In-Reply-To: <20211116013522.140575-2-ying.huang@intel.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 17 Nov 2021 16:15:32 -0800
+Message-ID: <CAHbLzkoa_YoNUFHoEd41eXDi57XdcKJFT9zH1KJGSMPE7OB5yw@mail.gmail.com>
+Subject: Re: [PATCH -V10 1/6] NUMA Balancing: add page promotion counter
+To:     Huang Ying <ying.huang@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Feng Tang <feng.tang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Zi Yan <ziy@nvidia.com>, Wei Xu <weixugc@google.com>,
+        osalvador <osalvador@suse.de>, Shakeel Butt <shakeelb@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 4:05 PM Kees Cook <keescook@chromium.org> wrote:
+On Mon, Nov 15, 2021 at 5:36 PM Huang Ying <ying.huang@intel.com> wrote:
 >
-> (nit: should the "sigdfl" argument be renamed "immutable" for clarity
-> in this function?)
+> In a system with multiple memory types, e.g. DRAM and PMEM, the CPU
+> and DRAM in one socket will be put in one NUMA node as before, while
+> the PMEM will be put in another NUMA node as described in the
+> description of the commit c221c0b0308f ("device-dax: "Hotplug"
+> persistent memory for use like normal RAM").  So, the NUMA balancing
+> mechanism will identify all PMEM accesses as remote access and try to
+> promote the PMEM pages to DRAM.
+>
+> To distinguish the number of the inter-type promoted pages from that
+> of the inter-socket migrated pages.  A new vmstat count is added.  The
+> counter is per-node (count in the target node).  So this can be used
+> to identify promotion imbalance among the NUMA nodes.
 
-I don't think that would necessarily clarify anything. Neither
-"sigdfl" nor "immutable" makes at least me go "Ahh, that explains
-things".
+Reviewed-by: Yang Shi <shy828301@gmail.com>
 
-Both "sigdfl" and "immutable" are about random internal implementation
-choices ("force SIGDFL" and "set SA_IMMUTABLE" respectively).
-
-I think naming things by random internal implementation things is
-questionable in general, but it's particularly questionable when they
-aren't even some really fundamental thing.
-
-I think you generally want to name things not by how they do
-something, but by *WHAT* they do.
-
-So I think the proper name for it would be "fatal" or something like
-that. It's basically saying "This signal is fatal, even if you have a
-handler for it or not". That "set it to SIGDFL" just happens to be how
-we made it fatal.
-
-And then we should perhaps also make such a signal uncatchable by the
-debugger (rather than just "debugger cannot undo or modify it" like
-the SA_IMMUTABLE bit does).
-
-Anybody want to take on that renaming / uncatchable part? Please take
-my (now at least tested by Kees) patch and make it your own.
-
-              Linus
+>
+> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Rik van Riel <riel@surriel.com>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Yang Shi <shy828301@gmail.com>
+> Cc: Zi Yan <ziy@nvidia.com>
+> Cc: Wei Xu <weixugc@google.com>
+> Cc: osalvador <osalvador@suse.de>
+> Cc: Shakeel Butt <shakeelb@google.com>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> ---
+>  include/linux/mmzone.h |  3 +++
+>  include/linux/node.h   |  5 +++++
+>  mm/migrate.c           | 13 ++++++++++---
+>  mm/vmstat.c            |  3 +++
+>  4 files changed, 21 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 58e744b78c2c..eda6d2f09d77 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -210,6 +210,9 @@ enum node_stat_item {
+>         NR_PAGETABLE,           /* used for pagetables */
+>  #ifdef CONFIG_SWAP
+>         NR_SWAPCACHE,
+> +#endif
+> +#ifdef CONFIG_NUMA_BALANCING
+> +       PGPROMOTE_SUCCESS,      /* promote successfully */
+>  #endif
+>         NR_VM_NODE_STAT_ITEMS
+>  };
+> diff --git a/include/linux/node.h b/include/linux/node.h
+> index bb21fd631b16..81bbf1c0afd3 100644
+> --- a/include/linux/node.h
+> +++ b/include/linux/node.h
+> @@ -181,4 +181,9 @@ static inline void register_hugetlbfs_with_node(node_registration_func_t reg,
+>
+>  #define to_node(device) container_of(device, struct node, dev)
+>
+> +static inline bool node_is_toptier(int node)
+> +{
+> +       return node_state(node, N_CPU);
+> +}
+> +
+>  #endif /* _LINUX_NODE_H_ */
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index cf25b00f03c8..b7c27abb0e5c 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -2141,6 +2141,7 @@ int migrate_misplaced_page(struct page *page, struct vm_area_struct *vma,
+>         pg_data_t *pgdat = NODE_DATA(node);
+>         int isolated;
+>         int nr_remaining;
+> +       int nr_succeeded;
+>         LIST_HEAD(migratepages);
+>         new_page_t *new;
+>         bool compound;
+> @@ -2179,7 +2180,8 @@ int migrate_misplaced_page(struct page *page, struct vm_area_struct *vma,
+>
+>         list_add(&page->lru, &migratepages);
+>         nr_remaining = migrate_pages(&migratepages, *new, NULL, node,
+> -                                    MIGRATE_ASYNC, MR_NUMA_MISPLACED, NULL);
+> +                                    MIGRATE_ASYNC, MR_NUMA_MISPLACED,
+> +                                    &nr_succeeded);
+>         if (nr_remaining) {
+>                 if (!list_empty(&migratepages)) {
+>                         list_del(&page->lru);
+> @@ -2188,8 +2190,13 @@ int migrate_misplaced_page(struct page *page, struct vm_area_struct *vma,
+>                         putback_lru_page(page);
+>                 }
+>                 isolated = 0;
+> -       } else
+> -               count_vm_numa_events(NUMA_PAGE_MIGRATE, nr_pages);
+> +       }
+> +       if (nr_succeeded) {
+> +               count_vm_numa_events(NUMA_PAGE_MIGRATE, nr_succeeded);
+> +               if (!node_is_toptier(page_to_nid(page)) && node_is_toptier(node))
+> +                       mod_node_page_state(NODE_DATA(node), PGPROMOTE_SUCCESS,
+> +                                           nr_succeeded);
+> +       }
+>         BUG_ON(!list_empty(&migratepages));
+>         return isolated;
+>
+> diff --git a/mm/vmstat.c b/mm/vmstat.c
+> index d701c335628c..53a6e92b1efb 100644
+> --- a/mm/vmstat.c
+> +++ b/mm/vmstat.c
+> @@ -1242,6 +1242,9 @@ const char * const vmstat_text[] = {
+>  #ifdef CONFIG_SWAP
+>         "nr_swapcached",
+>  #endif
+> +#ifdef CONFIG_NUMA_BALANCING
+> +       "pgpromote_success",
+> +#endif
+>
+>         /* enum writeback_stat_item counters */
+>         "nr_dirty_threshold",
+> --
+> 2.30.2
+>
