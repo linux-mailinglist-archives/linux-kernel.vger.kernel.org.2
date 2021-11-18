@@ -2,166 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE4A455C7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:18:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC7F455C7C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:19:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbhKRNVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 08:21:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57104 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229633AbhKRNVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 08:21:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4820F61547;
-        Thu, 18 Nov 2021 13:18:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637241524;
-        bh=DnR/tAzcFkj7GhF6oyoCXGjTfQAoF5HPfUG1t4dCATE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IZqCXswX+VTDySPGrnKMdOK6IZHxekqSWvsR+NgLPDja/yBLg5YL3ZYc/2fbJm0mY
-         5vgsf9TW357jHz2m/bS7y5y8c6k6IfEJ0hqCU9WhTvBWDISfsuyh7kTnVFHJOeHQFV
-         UFv9SwRmRjqyeKr4it+rzTZbuSWXBiTuIqx64VDAmag6yQjDzVvqSy7r0BM9r+AAQi
-         +9lBLdlA04UEI63H4lyfxjv5zJnm+bPO2TYvPLwQKEqyUOs1EAkMKH8Q+emb0PB94m
-         n8Y+bKv9Q6CCWA7Kv2MmWu611twq8QrTu6Q/SQBdjLd/WU5VeV001OgOmEQJtCZWro
-         hfSMke/OlXb0Q==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 74CF44088E; Thu, 18 Nov 2021 10:18:41 -0300 (-03)
-Date:   Thu, 18 Nov 2021 10:18:41 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH] perf report: Fix memory leaks around perf_tip
-Message-ID: <YZZSsaPLcsIH2oKi@kernel.org>
-References: <20211118073804.2149974-1-irogers@google.com>
+        id S230285AbhKRNWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 08:22:44 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:21601 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229633AbhKRNWn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 08:22:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1637241583; x=1668777583;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=yIrZAo54rZ3DAXexqyAzLPHQ4ztCKoEXIwr7Mfa6QpU=;
+  b=JIHjIMhpDHHkH0XC7ALmSHLybWK3e8N6J9w9+HZcyjVWf5q7rV98gWwE
+   o7a9BNOPbHy3MDMWtmwOjjEqkZ5wIeKAFDlJQ4wd8cF71nrpd2zzXof48
+   yBiyeVVemsbauRNis4zuFfGDSyp8jfhfjfDFjhQxlkUs+w4pKXAXNIA9X
+   T8M3bIJQXZvHgVLfgT/jjON5EnTpRz+ifrbMYlFRbihUc8hoEDYZ3LY/j
+   3qaRH1vw7M/X2z7FemwAXWh0B4qfXMwPZmVea5Vn0mlA2SjbczB+CScix
+   X74Fwcl9ISGXF3v0/RZC2nkkmvQSGGntRGfHrjccGBstAjo5XFZrXAfow
+   w==;
+IronPort-SDR: IgVHdGdfN1vVE4ffD2slPPBESiLzb50BsRLXZ1vbwPtJzki5NKZtj7t/btsxz9Vzr4YtG7xR0V
+ idpv5knBfdIE61wwX7BPZKOjYs8kWbchVcCcicc51Hnf/GFQaegxYMRCEBAja99a/qP43oPtja
+ qurioZdQE2pezYF2HMO5vI6NLb/G/1kfdvll3u2Own4JjJaWta/M6ufhx73uACjj/XeXdxZiRD
+ 9vhBY2aK4voqp2XgdnHiYg6KhpHwUsCx6cQVTPyjemNrC11mF2deZXNGn7r2IW3r6+DRJAe5tA
+ MpCc+0gH9UBXnesaQWjxNElr
+X-IronPort-AV: E=Sophos;i="5.87,244,1631602800"; 
+   d="scan'208";a="139575941"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Nov 2021 06:19:42 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 18 Nov 2021 06:19:42 -0700
+Received: from [10.159.245.112] (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Thu, 18 Nov 2021 06:19:39 -0700
+Subject: Re: [PATCH] pwm: Use div64_ul instead of do_div
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+CC:     <cgel.zte@gmail.com>, <linux-pwm@vger.kernel.org>,
+        <alexandre.belloni@bootlin.com>, Zeal Robot <zealci@zte.com.cn>,
+        <linux-kernel@vger.kernel.org>, <ludovic.desroches@microchip.com>,
+        <thierry.reding@gmail.com>,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        <lee.jones@linaro.org>, <linux-arm-kernel@lists.infradead.org>
+References: <20211117020426.159242-1-deng.changcheng@zte.com.cn>
+ <20211117112400.bkscb2pyavonpfsn@pengutronix.de>
+ <YZYmZecp8WPkFY2F@shell.armlinux.org.uk>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <a9a62f9d-7227-0421-e36f-44222b79bbe7@microchip.com>
+Date:   Thu, 18 Nov 2021 14:19:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211118073804.2149974-1-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <YZYmZecp8WPkFY2F@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Nov 17, 2021 at 11:38:04PM -0800, Ian Rogers escreveu:
-> perf_tip may allocate memory or use a literal, this means memory wasn't
-> freed if allocated. Change the API so that literals aren't used. At the
-> same time add missing frees for system_path. These issues were spotted
-> using leak sanitizer.
-
-Thanks, applied.
-
-- Arnaldo
-
- 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/builtin-report.c | 15 +++++++++------
->  tools/perf/util/util.c      | 14 +++++++-------
->  tools/perf/util/util.h      |  2 +-
->  3 files changed, 17 insertions(+), 14 deletions(-)
+On 18/11/2021 at 11:09, Russell King (Oracle) wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 > 
-> diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-> index 8167ebfe776a..8ae400429870 100644
-> --- a/tools/perf/builtin-report.c
-> +++ b/tools/perf/builtin-report.c
-> @@ -619,14 +619,17 @@ static int report__browse_hists(struct report *rep)
->  	int ret;
->  	struct perf_session *session = rep->session;
->  	struct evlist *evlist = session->evlist;
-> -	const char *help = perf_tip(system_path(TIPDIR));
-> +	char *help = NULL, *path = NULL;
->  
-> -	if (help == NULL) {
-> +	path = system_path(TIPDIR);
-> +	if (perf_tip(&help, path) || help == NULL) {
->  		/* fallback for people who don't install perf ;-) */
-> -		help = perf_tip(DOCDIR);
-> -		if (help == NULL)
-> -			help = "Cannot load tips.txt file, please install perf!";
-> +		free(path);
-> +		path = system_path(DOCDIR);
-> +		if (perf_tip(&help, path) || help == NULL)
-> +			help = strdup("Cannot load tips.txt file, please install perf!");
->  	}
-> +	free(path);
->  
->  	switch (use_browser) {
->  	case 1:
-> @@ -651,7 +654,7 @@ static int report__browse_hists(struct report *rep)
->  		ret = evlist__tty_browse_hists(evlist, rep, help);
->  		break;
->  	}
-> -
-> +	free(help);
->  	return ret;
->  }
->  
-> diff --git a/tools/perf/util/util.c b/tools/perf/util/util.c
-> index 37a9492edb3e..df3c4671be72 100644
-> --- a/tools/perf/util/util.c
-> +++ b/tools/perf/util/util.c
-> @@ -379,32 +379,32 @@ fetch_kernel_version(unsigned int *puint, char *str,
->  	return 0;
->  }
->  
-> -const char *perf_tip(const char *dirpath)
-> +int perf_tip(char **strp, const char *dirpath)
->  {
->  	struct strlist *tips;
->  	struct str_node *node;
-> -	char *tip = NULL;
->  	struct strlist_config conf = {
->  		.dirname = dirpath,
->  		.file_only = true,
->  	};
-> +	int ret = 0;
->  
-> +	*strp = NULL;
->  	tips = strlist__new("tips.txt", &conf);
->  	if (tips == NULL)
-> -		return errno == ENOENT ? NULL :
-> -			"Tip: check path of tips.txt or get more memory! ;-p";
-> +		return -errno;
->  
->  	if (strlist__nr_entries(tips) == 0)
->  		goto out;
->  
->  	node = strlist__entry(tips, random() % strlist__nr_entries(tips));
-> -	if (asprintf(&tip, "Tip: %s", node->s) < 0)
-> -		tip = (char *)"Tip: get more memory! ;-)";
-> +	if (asprintf(strp, "Tip: %s", node->s) < 0)
-> +		ret = -ENOMEM;
->  
->  out:
->  	strlist__delete(tips);
->  
-> -	return tip;
-> +	return ret;
->  }
->  
->  char *perf_exe(char *buf, int len)
-> diff --git a/tools/perf/util/util.h b/tools/perf/util/util.h
-> index ad737052e597..9f0d36ba77f2 100644
-> --- a/tools/perf/util/util.h
-> +++ b/tools/perf/util/util.h
-> @@ -39,7 +39,7 @@ int fetch_kernel_version(unsigned int *puint,
->  #define KVER_FMT	"%d.%d.%d"
->  #define KVER_PARAM(x)	KVER_VERSION(x), KVER_PATCHLEVEL(x), KVER_SUBLEVEL(x)
->  
-> -const char *perf_tip(const char *dirpath);
-> +int perf_tip(char **strp, const char *dirpath);
->  
->  #ifndef HAVE_SCHED_GETCPU_SUPPORT
->  int sched_getcpu(void);
-> -- 
-> 2.34.0.rc1.387.gb447b232ab-goog
+> On Wed, Nov 17, 2021 at 12:24:00PM +0100, Uwe Kleine-König wrote:
+>> Hello,
+>>
+>> On Wed, Nov 17, 2021 at 02:04:26AM +0000, cgel.zte@gmail.com wrote:
+>>> From: Changcheng Deng <deng.changcheng@zte.com.cn>
+>>>
+>>> do_div() does a 64-by-32 division. If the divisor is unsigned long, using
+>>> div64_ul can avoid truncation to 32-bit.
+>>
+>> After some research I understood your commit log. I'd write:
+>>
+>>        do_div() does a 64-by-32 division. Here the divsor is an
+>>        unsigned long which on some platforms is 64 bit wide. So use
+>>        div64_ul instead of do_div to avoid a possible truncation.
+>>
+>> The priority of this patch seems to be low, as the device seems to exist
+>> only on (32bit) arm.
+> 
+> ... where unsigned long is 32-bit.
+> 
+> In any case, for this to overflow, we would need to have a clock in
+> excess of 2^32-1 Hz, or around 4GHz - and if we had such a situation
+> on 32-bit devices, we need to change the type for holding the frequency
+> in the clk API, and probably a lot of code in the CCF as well.
+> 
+> Unless there is a real reason for this change, I would suggest leaving
+> the code as is - there is absolutely no point in making these divisions
+> more expensive unless there is a real reason.
+
+Thanks for the technical demonstration Russell. With this in mind:
+NACK to the patch, sorry Changcheng Deng.
+
+Best regards,
+   Nicolas
+
 
 -- 
-
-- Arnaldo
+Nicolas Ferre
