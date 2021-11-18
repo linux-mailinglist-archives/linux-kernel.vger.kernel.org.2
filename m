@@ -2,149 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D99C45546A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 06:45:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21ACF45546D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 06:46:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243193AbhKRFsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 00:48:39 -0500
-Received: from mail-mw2nam10on2119.outbound.protection.outlook.com ([40.107.94.119]:58977
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S243156AbhKRFsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 00:48:15 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jpSURizjGClWBXNjfgRL13yYBfe84hXPIFtDckRRWB7HhkMrXuMZok7axhCEvuXRmApKiQ0pry/HYvsW2xth6Qprn+kHAnPn1cNZo1cPp+eyZcwHQzN1/cjbwDSLvL0WSWvKBaEV+N91c1t/ubkkEWdC66XG6iWRwpK8K9GAhijjKNMPMRQshz/qXwhNQ6HfkOXLuO5NfZn+uRN80iQMZGkkEaR+5h5jvVFJ9TJelt9IN5vNArczSPzk9zVTsdsCaB/Aer6dzTRtrM6xNXfMzZZK6uVWl1YzwKTMuzwZCm+DLfb/C0NXpm2JRCDNV77bl2BWiDi+8T/xtDuZ8YhEXQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=39EtZ9HndNjpwi8ul7c7XTdTnWiALhPX3LVIu02Gvdc=;
- b=SbT7ANM9+A33SZJ8Z3lQACDht1XmLfDNkcVvw0oHwJo9+rRMnYCwITGRvdvTgp8sKJzk07ouf4mhJaLgdpYbZPIgnGldMy7Y0ZNNtKrOha39a9LBJDph5FA+7t5obZ0FXrsaoODpZMoAQ0shDi6y+37XwKRyL9iRrnltdO2bcfSoA+uep5adVBMEDYl4K1Qk7kUfiom/YYtb3uyHTd/Ty4MNlfOQhitNWXqr65uMr90jMGiKI//Y4UWmq2wmM/i23cf3NEvz/qDVXYDWj/KsRgBG4nhX1edv0m71Ea1QnN5fyoE2+Qzsi1XRGhp5ulUXcbchkFZgtpuc+mrwendKvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
- header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+        id S243175AbhKRFte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 00:49:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243190AbhKRFtH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 00:49:07 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1367DC061767
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 21:46:08 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id l25so5301814eda.11
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 21:46:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=39EtZ9HndNjpwi8ul7c7XTdTnWiALhPX3LVIu02Gvdc=;
- b=kunVEQy4Xpm2ndZjlbQYuJ/JNkouje90Qri63ogHAUgQRPYfCMa1oDgYztiafCV7WBkRFLsIWJa43uCCbXigXCxqjxCAfvuK2yMOuQKi0xlNBt/anxZwDWe/C5OABSBJKL9/2PVfpSrmx1kW8u9Gf0XjVWTYpALyxeVpEV8reWA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=analogixsemi.com;
-Received: from CH2PR04MB6741.namprd04.prod.outlook.com (2603:10b6:610:96::19)
- by CH2PR04MB6710.namprd04.prod.outlook.com (2603:10b6:610:93::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21; Thu, 18 Nov
- 2021 05:45:14 +0000
-Received: from CH2PR04MB6741.namprd04.prod.outlook.com
- ([fe80::d062:2525:29dc:13df]) by CH2PR04MB6741.namprd04.prod.outlook.com
- ([fe80::d062:2525:29dc:13df%7]) with mapi id 15.20.4713.021; Thu, 18 Nov 2021
- 05:45:14 +0000
-From:   Xin Ji <xji@analogixsemi.com>
-To:     narmstrong@baylibre.com, dan.carpenter@oracle.com,
-        robert.foss@linaro.org, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@linux.ie,
-        daniel@ffwll.ch, sam@ravnborg.org, pihsun@chromium.org,
-        tzungbi@google.com, maxime@cerno.tech, drinkcat@google.com,
-        hsinyi@chromium.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, bliang@analogixsemi.com,
-        qwen@analogixsemi.com
-Cc:     Xin Ji <xji@analogixsemi.com>
-Subject: [PATCH v2] drm/bridge: anx7625: Check GPIO description to avoid crash
-Date:   Thu, 18 Nov 2021 13:45:02 +0800
-Message-Id: <20211118054502.3796946-1-xji@analogixsemi.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR02CA0147.apcprd02.prod.outlook.com
- (2603:1096:202:16::31) To CH2PR04MB6741.namprd04.prod.outlook.com
- (2603:10b6:610:96::19)
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=9xoW2+qkJ0j06ZzFxD55kRcyYr97dCzfdx7pR0ez3FU=;
+        b=DF6/Syf1yIPTSEGDvDhST+BhCiXFoIZsdY+oDYJPhqObHj+7DayTXrwz8wRKyU4Jxi
+         z0oQneBzdeU56fdLsGO+ZRYfdy1y1P7bo87By/hDx0vNAnqlCGZd/S4/tXZUCr2tIGcc
+         jhkGSYN9dWTdtCKJdsQMzdmqCM3TXmPQne0viIBl8xIWuVLrIVBHVWHht70FWT/+oxZU
+         csB5Ao4E3oKD/h/hmob5KDXgsk6gOIdCu7hDtXxt3Sgi7vBk474HvxeX9UbzeE9/r2ym
+         mBqiuDaMhglzGN94nbDy7Eud11Ez+UuQ9mi9ICWgMm+vOBHmyKPlZd8qT1kHhM/hdXq9
+         eKhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9xoW2+qkJ0j06ZzFxD55kRcyYr97dCzfdx7pR0ez3FU=;
+        b=zZGUH4m/beLQUhX5UJIXQNIjpnewaqahBQMfAAR5ZocvC3U2kU6Hftxe+hf9jvhOC1
+         5DawBcnY1Ly3zXBu8CnJM5zPxtzoRArPrNMCTfQoo0wbj1+75P39oDhh44Fn1S6aSCGz
+         G1YYhJ62DwipT2WmIj7j7Jpj44/X9XaI6yNufiY/NtIP3/OMsI5V9GIb45KjzperNAFd
+         vhJop5uiRFNlXXd5qmuM6WNakuEJRaFImemeuLn675O4a89iN7A1Mxk3dqgnkQF9lRvU
+         BmDK26zSkIr1+SXb4WwLYwIw+FGzFG1cAx+vAAtvNKU0vGH7284oNLlJkVjStKaCVQnK
+         8I5g==
+X-Gm-Message-State: AOAM532rV0cdvoYUAM+I7xf0TrX0p9Hgo2bbAwGNA8BTTLDdLHiGDYK6
+        9FjOqeUpGCQs1MNjbbPugC/YaCilRUE3PzGPMJ231w==
+X-Google-Smtp-Source: ABdhPJyd9wbn0UkOynT79hGk79iWB4YdsFGu5uRGNcHc/R/TVhezhM+Ur0tOZkFRVaojcogkxkJHgaUSwGXprFmrLpA=
+X-Received: by 2002:a17:906:b50:: with SMTP id v16mr29941824ejg.384.1637214366463;
+ Wed, 17 Nov 2021 21:46:06 -0800 (PST)
 MIME-Version: 1.0
-Received: from anxtwsw-Precision-3640-Tower (60.251.58.79) by HK2PR02CA0147.apcprd02.prod.outlook.com (2603:1096:202:16::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21 via Frontend Transport; Thu, 18 Nov 2021 05:45:13 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 03848f13-8a69-497d-b3a8-08d9aa569797
-X-MS-TrafficTypeDiagnostic: CH2PR04MB6710:
-X-Microsoft-Antispam-PRVS: <CH2PR04MB671022FF2B480340F0510133C79B9@CH2PR04MB6710.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1388;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JlXVhMG6JqRbIX6qYM9ruDE6at9sIdbyxAXoHBDtFCmaQudFABizbkamVK4Gce7glxjAZjVNRhtLi3zwfjXJSWx2VLHOe6bx8z9Nskzh3Dw3O1MHNt4gWQa8DRhOikUyNVonvjS3RgQHafYqXhO1B0f4Il0mcX90QzxLhNomihnCwzdhjqIHrqeGEwztn1mRoUXecHCYJsgLiDL3CiBHSh6kJFE6vp9rgmzcf6lh/5KbD+UL/q6vP/muXCkYL5wDycaS1RYEabbPioh3+Ykx9HwQTKU39XVqLY35SuvT4ayTL29yzUEco2f/CpIZxv10gIXGKbmYvYwrlMHw03VKWVWQ60xi6jphhdjWWkpAVTgZDUtjVyznfoEAFDpWC4bn4DCIHj0Q1YVzCfHr1CBWd2qUAy/VC7fKpz6VwdHBjHIEd2w5hF87gSAuzxHw2ppXqzNd5piZhN9W5067hGFHVnzX2YASPyLBMathCU61vzZ1vRTi2WBSC0pvObaXm9quAz/5ge7/nBuhcKLaNyQE1yoWQ5HjgFXu/la750gkhfkUMCzJF6LMR8Gz+06cv1PCmUgjiED3nB+CDOKWya6zoWB/SAqK4QoRkDHZ4JjTWbpY0m8jJXKAUFo5l3fsEMVXgD/3EksyjiSHAvOujubORtgQuj+8cgmjIXaYpxYlgQJnezJ1Xj11qZmU4YU2RgkRBHdxwYJoFxbM064wP5wT9+56kZ3FT81AabDf/pcRh5k=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR04MB6741.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(38100700002)(921005)(5660300002)(2616005)(956004)(7416002)(6666004)(66476007)(1076003)(38350700002)(6486002)(107886003)(66946007)(66556008)(26005)(186003)(6496006)(8936002)(4326008)(52116002)(6636002)(8676002)(36756003)(508600001)(2906002)(86362001)(316002)(55236004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Py2KM3t2/HSrYSMtLI/V9Hjltukji4sqUSrv5fgtIWeNzxtNXkHG/5N4jFve?=
- =?us-ascii?Q?kMYVRRlsC1QPy225npefndXOVSCxFA92auJ/eAZ8M1/6CB12GFsznbC0owMT?=
- =?us-ascii?Q?QoR9zIDHUBKUl3BMz/Mz1zLVzQkC21cDidpo4qhLM5xLNq3+xz/qEqQkhV/J?=
- =?us-ascii?Q?BiSg6Nn5ZBSyWFhc3c4nPZy7XF3Hmt7KC2dGl4xBMbnLm9twP+6+dlY1FFos?=
- =?us-ascii?Q?exizyPLaIxb0xJC58ROqdCeXdxIAY4RZGoD8KaQUUJjwyYx5YYxJMjkb5GyS?=
- =?us-ascii?Q?OTwvPnBSjZad4P/k7oBjnCNqKSX4VAW+QOla4+b/mx3NinCsvAg01cbhSqev?=
- =?us-ascii?Q?e5h+tS11ouOEOD49hF/JnBwAKkExTzy813RgGgcmFEpP8jf1uW+I+dVsgj9K?=
- =?us-ascii?Q?yCxhNEbMslQPDLL82DcveeCiRzD4TkJ1sI2rVR72k3V5t5WfAIqSrtxSMFoc?=
- =?us-ascii?Q?2aYGtXjx5HNI76XQEVthPYVi5KfVNE6agl1zSqEfg/coulnAe00PO/UqSu2y?=
- =?us-ascii?Q?SwavJn9be9+zE+VMevp4L4BnTC9fsBsckWIK3tkMMVfYOpvGzujbgN5LzuwG?=
- =?us-ascii?Q?qnBtqtKsMlk/LhCIOMm8lKE7vKHsVefXicxKOVDkTJN3v6/sI8QKmuVRrHVk?=
- =?us-ascii?Q?j4z7u8sHh+uTbrTN2sFS9H/ItMfAC1WHbcrqRR+HtNR0n+myp/mmGUqycA22?=
- =?us-ascii?Q?1EOmogg6i7gQjIksoGoFP9JzZawbKSstbGkYGknxisOrcnu3CXCNvFoVYLa3?=
- =?us-ascii?Q?1pqiafex6a+YMqcSVlUwI42mSzQaykAd9waRp9YjkVnrR0doJdB79lY26yBe?=
- =?us-ascii?Q?Kuv6KaJpQ0Iw5zTqExv1i3fD6vzUWVzwq143VShaQeBNycOB37c4IEuOJ5NO?=
- =?us-ascii?Q?/58XrFvEvJUkW3zk+pxpicPw0wdXg5Xcv5m6+9tCch+H6gGSknvusR2O4I/2?=
- =?us-ascii?Q?zkoCFJxykXPD+kzOHw7c63Fh9o+mfjLkHyMVS/hW1snLxmkbAtA81k7vqLXY?=
- =?us-ascii?Q?phYMp7luStQubiPzF8o5GRUKvYFN0RJ/02wsXun5UYyUkojhlYumsgYkUstd?=
- =?us-ascii?Q?E2wka8mAjFPQDD/xaM2G2SN50gUWoYa+tXSeTNPyA11T+jFv940aUGIaVwaw?=
- =?us-ascii?Q?eqlYiOHTsLA20xd7XsKekiBT0m0qwRxHTzojG188LZAmuaVblRzxI1zBbq/R?=
- =?us-ascii?Q?pWeYC2IDzrhjP2txv7vBR7fHelg3NeJGGXR/YRYgTnh7xw7ibag0SdpASSwC?=
- =?us-ascii?Q?P7xvJtSSstGvepBVzoMSYiQf43I1NdulrZ4in4KBZF9NN72/1eo2P1WKoJr4?=
- =?us-ascii?Q?hi6eGEnyE1OIglDBFaUD1K24yYL+mCglhxeXRPO4mNDmrG0qA0wD2JOr34eV?=
- =?us-ascii?Q?4DBAf5proB/smyXBvmJVff0AQkFnMzapTE89hRqXN44kCKSBAhIykDYbjzHX?=
- =?us-ascii?Q?JerxeBh9TJJhZR/A+6TpRTV6i8e3G/HQh0I4il7uKAK7uD5OiwMbc5uKzaBu?=
- =?us-ascii?Q?Zb8cPOKMpMTffmtONKqR8dcBShdrTwyeuXahuei6HUMTS7jAD+uuiAarcGZq?=
- =?us-ascii?Q?+zE+NNssrXiQimRQeWkV5JG+2Gu79UiGY3F74H6mtn+4eQuhnbtZvVyauJbG?=
- =?us-ascii?Q?PSx+Lb9Qn3JXIE4hTSEhVmk=3D?=
-X-OriginatorOrg: analogixsemi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 03848f13-8a69-497d-b3a8-08d9aa569797
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR04MB6741.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2021 05:45:13.9783
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5bWDKGm98FemNi91rtXW85Ya/8ntWfOewpFCiVf8E/2owqLZAEAzGPek7NpJ2t4eptjzf+hvgotZVxb6vQDQXA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR04MB6710
+References: <20211117101657.463560063@linuxfoundation.org>
+In-Reply-To: <20211117101657.463560063@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 18 Nov 2021 11:15:55 +0530
+Message-ID: <CA+G9fYu51TyOskHrMf9oNCmTWdnoBX=QTunxf_QD1eNua4Q1Gg@mail.gmail.com>
+Subject: Re: [PATCH 5.15 000/923] 5.15.3-rc3 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As GPIO probe function "devm_gpiod_get_optional()" may return error
-code, driver should identify GPIO desc as NULL to avoid crash.
+On Wed, 17 Nov 2021 at 15:49, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.15.3 release.
+> There are 923 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 19 Nov 2021 10:14:52 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.15.3-rc3.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.15.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Acked-by: Tzung-Bi Shih <tzungbi@google.com>
-Signed-off-by: Xin Ji <xji@analogixsemi.com>
----
- drivers/gpu/drm/bridge/analogix/anx7625.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-index 001fb39d9919..a872cfaf6257 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-@@ -1098,9 +1098,18 @@ static void anx7625_init_gpio(struct anx7625_data *platform)
- 	/* Gpio for chip power enable */
- 	platform->pdata.gpio_p_on =
- 		devm_gpiod_get_optional(dev, "enable", GPIOD_OUT_LOW);
-+	if (IS_ERR_OR_NULL(platform->pdata.gpio_p_on)) {
-+		DRM_DEV_DEBUG_DRIVER(dev, "no enable gpio found\n");
-+		platform->pdata.gpio_p_on = NULL;
-+	}
-+
- 	/* Gpio for chip reset */
- 	platform->pdata.gpio_reset =
- 		devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
-+	if (IS_ERR_OR_NULL(platform->pdata.gpio_reset)) {
-+		DRM_DEV_DEBUG_DRIVER(dev, "no reset gpio found\n");
-+		platform->pdata.gpio_p_on = NULL;
-+	}
- 
- 	if (platform->pdata.gpio_p_on && platform->pdata.gpio_reset) {
- 		platform->pdata.low_power_mode = 1;
--- 
-2.25.1
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+## Build
+* kernel: 5.15.3-rc3
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.15.y
+* git commit: 7c10b031cbb7ead7befe5ffd99f08aaae7128eac
+* git describe: v5.15.2-924-g7c10b031cbb7
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15=
+.2-924-g7c10b031cbb7
+
+## No regressions (compared to v5.15.2-928-gcb98d6b416c1)
+
+## No fixes (compared to v5.15.2-928-gcb98d6b416c1)
+
+## Test result summary
+total: 88673, pass: 75229, fail: 811, skip: 11931, xfail: 702
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 290 total, 290 passed, 0 failed
+* arm64: 40 total, 40 passed, 0 failed
+* i386: 38 total, 38 passed, 0 failed
+* mips: 37 total, 37 passed, 0 failed
+* parisc: 12 total, 12 passed, 0 failed
+* powerpc: 45 total, 42 passed, 3 failed
+* riscv: 24 total, 24 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 24 total, 24 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x86_64: 40 total, 40 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* perf/Zstd-perf.data-compression
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
