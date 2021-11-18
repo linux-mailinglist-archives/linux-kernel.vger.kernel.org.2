@@ -2,233 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D64D2455D03
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:51:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3219455D08
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbhKRNx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 08:53:59 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:31017 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231620AbhKRNx6 (ORCPT
+        id S231773AbhKRNzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 08:55:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231587AbhKRNzV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 08:53:58 -0500
+        Thu, 18 Nov 2021 08:55:21 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4183BC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 05:52:21 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id n2so13772202yba.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 05:52:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637243458; x=1668779458;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=CJR1fG+YuzhuLB13jNgULGuZOsS9eMa1X46m29OB0Jc=;
-  b=UlkDNl3PvICGB2KcQTblpE2caVQvshmPnltZoGDD4/9mZZmvWptFTgvk
-   tkaaGWf0Y7jgJ1cmrdJ9AG/oKDVvYLv63bo0mjniikqABM7gZCa+++pYk
-   RUqgBsxMk8AaeiJ/pi6gUBvWhkv0YzNVLvZL15k2JMbNCy45gQc0Mn+Lj
-   s=;
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 18 Nov 2021 05:50:57 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 05:50:56 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Thu, 18 Nov 2021 05:50:56 -0800
-Received: from [10.216.52.30] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Thu, 18 Nov
- 2021 05:50:51 -0800
-Subject: Re: [PATCH V3 4/4] arm64: dts: qcom: sc7280: Add pm8008 regulators
- support for sc7280-idp
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, <collinsd@codeurora.org>,
-        <subbaram@codeaurora.org>, Das Srinagesh <gurus@codeaurora.org>,
-        <linux-arm-msm@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1635434072-32055-1-git-send-email-quic_c_skakit@quicinc.com>
- <1635434072-32055-5-git-send-email-quic_c_skakit@quicinc.com>
- <CAE-0n53kp5M6LG2iwaJeysQDrJD1AvcctEd6xjVdTXs5ddhu2w@mail.gmail.com>
-From:   "Satya Priya Kakitapalli (Temp)" <quic_c_skakit@quicinc.com>
-Message-ID: <66f2eb4b-eb63-1d21-46da-c78085d3ae92@quicinc.com>
-Date:   Thu, 18 Nov 2021 19:20:11 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=AF48GYCTPe4X9J0FI4hs8zQ8jNlWlY1BkFbi41F/NWk=;
+        b=cudoTQmaupOqgTcFAuVUcYYcQAl8QY+Zcx68UccArWG3pmsCu9XlN+WASxwhcK3CJI
+         DKjLaPm1l3AS+lR8MYLU7JX67X/Ogjgq292mjKhSXOtX91PyAsCzEqdUqDKYF5s64j0r
+         XJw8E6uWGkwQbmi6FToonrfwGGqPgWMCstleu6ptvIQqUSNXOOQKBSn8RII1JyarD/6b
+         Z6VJAbmdOwpZBDZFzoROes0z38dEeV/i1OsIwCRsvZj8rojSE8SiVdhOtPZzy8s6Of3A
+         yw/ARBWHla/+xbnvNJaMNbYOjr3E6yZWGZ4E3QF50FbxrUyFGCwlpngPANpCdqHt/mM+
+         VV8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=AF48GYCTPe4X9J0FI4hs8zQ8jNlWlY1BkFbi41F/NWk=;
+        b=n31VnQR5koB9mi67RigpTto8QPgNqL2RuNRrW4w3GlyMOZA2S+ZLEJrgQFWLrqGRnF
+         fk9i75hMu60TJk5GEUzBKHPgrXIkrPLQvuVVmmwN0p4qJ52h2rJZCwrBV74gSaAWpFCx
+         7pV21kz+nGk6MfcXsHm7SKZVmhSZ1w8VauBx7XV4HAmUaJAEotj4uIVgeGQmtbWvLCV/
+         69BI+bkZEf14eTi/+5Ugs18b8gM797npOF6u/ystgD7UKhYbR8VKiThik/H8MLlAJzIA
+         m7lSgDscMxy3M5oEcAUTmvTHic+Ah6vwRfNQaRbqkFUdjpOsFj2x6snVkwaSIpCAGH14
+         aKHw==
+X-Gm-Message-State: AOAM530q1r/378f4HMPxLG0voFEMkK5A66o59gySNHXW/OK5lgpwgk3v
+        +vq2YObBctQhb+QvRLgIClL00ddkcXSdrcAot08=
+X-Google-Smtp-Source: ABdhPJwAfImvv9yO/jhwodwpY0D3RGNwgrDZsOZ9nBrid4R+xmnj0YJRJU+TZSuwBPzXFpRK1XyUtwgpjBiGdED+1xY=
+X-Received: by 2002:a25:bdc5:: with SMTP id g5mr27291914ybk.403.1637243540293;
+ Thu, 18 Nov 2021 05:52:20 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAE-0n53kp5M6LG2iwaJeysQDrJD1AvcctEd6xjVdTXs5ddhu2w@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Received: by 2002:a05:7110:900a:b0:103:889d:a596 with HTTP; Thu, 18 Nov 2021
+ 05:52:19 -0800 (PST)
+From:   "Mrs.Samira Nikaein" <mrs.samiranikaein@gmail.com>
+Date:   Thu, 18 Nov 2021 14:52:19 +0100
+Message-ID: <CA+X4GLyw6YFXV5ODRZCmq=10P1bXgtKh2g0C6SvfPOfyOj09VA@mail.gmail.com>
+Subject: Hello Good News My Dear Partner,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Good News My Dear Partner,
+How are you today, I, Mrs.Samira Nikaein, wrote to you a long time ago
+about ATM debit cards in your name. I ask if Rev. Pastor Amos Deia
+will send you an ATM debit card totaling $750,000 to your address?
 
-On 10/29/2021 2:10 AM, Stephen Boyd wrote:
-> Quoting Satya Priya (2021-10-28 08:14:32)
->> Add pm8008 regulators support for sc7280 idp.
->>
->> Signed-off-by: Satya Priya <quic_c_skakit@quicinc.com>
->> ---
->> Changes in V2:
->>   - As per Stephen's comments, replaced '_' with '-' for node names.
->>
->> Changes in V3:
->>   - Changed the regulator node names as l1, l2 etc
->>   - Changed "pm8008-regulators" to "regulators"
->>   - Changed "qcom,min-dropout-voltage" to "regulator-min-dropout-voltage-microvolt"
->>
->>   arch/arm64/boot/dts/qcom/sc7280-idp.dtsi | 103 +++++++++++++++++++++++++++++++
->>   1 file changed, 103 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
->> index d623d71..493575b 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
->> @@ -309,6 +309,97 @@
->>          };
->>   };
->>
->> +&i2c1 {
->> +       #address-cells = <1>;
->> +       #size-cells = <0>;
->> +       status = "okay";
->> +
->> +       pm8008_chip: pm8008@8 {
-> If this is going to be copy/pasted wherever devices that use pm8008 live
-> then it's probably better to make a new file like we do for other pmics.
-Sounds good, I'll do that.
-> Maybe something like
->
-> &pm8008_i2c {
-> 	<All the generic stuff in here like reg properties and
-> 	address/size cells and compatible>
-> };
->
-> and then have each board set the min/max voltages and min dropout
-> properties. Then we can include the pm8008.dtsi file after defining
-> which i2c bus it lives on.
->
-> pm8008_i2c: i2c5 { };
-> #include "pm8008.dtsi"
->
-> ...
->
->
-> &pm8008_l1 {
-> 	regulator-min-microvolt = <...>;
-> 	...
-> };
->
->> +               compatible = "qcom,pm8008";
->> +               reg = <0x8>;
->> +               #address-cells = <1>;
->> +               #size-cells = <0>;
->> +
->> +               pinctrl-names = "default";
->> +               pinctrl-0 = <&pm8008_active>;
->> +       };
->> +
->> +       pm8008_ldo: pm8008@9 {
->> +               compatible = "qcom,pm8008";
->> +               reg = <0x9>;
->> +               #address-cells = <1>;
->> +               #size-cells = <0>;
->> +
->> +               regulators {
->> +                       compatible = "qcom,pm8008-regulator";
->> +                       #address-cells = <1>;
->> +                       #size-cells = <0>;
->> +
->> +                       vdd_l1_l2-supply = <&vreg_s8b_1p2>;
->> +                       vdd_l3_l4-supply = <&vreg_s1b_1p8>;
->> +                       vdd_l5-supply = <&vreg_bob>;
->> +                       vdd_l6-supply = <&vreg_bob>;
->> +                       vdd_l7-supply = <&vreg_bob>;
->> +
->> +                       pm8008_l1: l1@4000 {
->> +                               reg = <0x4000>;
->> +                               regulator-name = "pm8008_l1";
->> +                               regulator-min-microvolt = <950000>;
->> +                               regulator-max-microvolt = <1300000>;
->> +                               regulator-min-dropout-voltage-microvolt = <96000>;
->> +                       };
->> +
->> +                       pm8008_l2: l2@4100 {
->> +                               reg = <0x4100>;
->> +                               regulator-name = "pm8008_l2";
->> +                               regulator-min-microvolt = <950000>;
->> +                               regulator-max-microvolt = <1250000>;
->> +                               regulator-min-dropout-voltage-microvolt = <24000>;
->> +                       };
->> +
->> +                       pm8008_l3: l3@4200 {
->> +                               reg = <0x4200>;
->> +                               regulator-name = "pm8008_l3";
->> +                               regulator-min-microvolt = <1650000>;
->> +                               regulator-max-microvolt = <3000000>;
->> +                               regulator-min-dropout-voltage-microvolt = <224000>;
->> +                       };
->> +
->> +                       pm8008_l4: l4@4300 {
->> +                               reg = <0x4300>;
->> +                               regulator-name = "pm8008_l4";
->> +                               regulator-min-microvolt = <1504000>;
->> +                               regulator-max-microvolt = <1600000>;
->> +                               regulator-min-dropout-voltage-microvolt = <0>;
->> +                       };
->> +
->> +                       pm8008_l5: l5@4400 {
->> +                               reg = <0x4400>;
->> +                               regulator-name = "pm8008_l5";
->> +                               regulator-min-microvolt = <2600000>;
->> +                               regulator-max-microvolt = <3000000>;
->> +                               regulator-min-dropout-voltage-microvolt = <104000>;
->> +                       };
->> +
->> +                       pm8008_l6: l6@4500 {
->> +                               reg = <0x4500>;
->> +                               regulator-name = "pm8008_l6";
->> +                               regulator-min-microvolt = <2600000>;
->> +                               regulator-max-microvolt = <3000000>;
->> +                               regulator-min-dropout-voltage-microvolt = <112000>;
->> +                       };
->> +
->> +                       pm8008_l7: l7@4600 {
->> +                               reg = <0x4600>;
->> +                               regulator-name = "pm8008_l7";
->> +                               regulator-min-microvolt = <3000000>;
->> +                               regulator-max-microvolt = <3544000>;
->> +                               regulator-min-dropout-voltage-microvolt = <96000>;
->> +                       };
->> +               };
->> +       };
->> +};
->> +
->>   &qfprom {
->>          vcc-supply = <&vreg_l1c_1p8>;
->>   };
->> @@ -437,6 +528,18 @@
->>          };
->>   };
->>
->> +&pm8350c_gpios {
->> +       pm8008-reset {
-> Why is it a subnode of a subnode? Shouldn't it be pm8008-active
-> directly underneath pm8350c_gpios?
-Right, I'll remove the subnode pm8008-reset.
->> +               pm8008_active: pm8008-active {
->> +                       pins = "gpio4";
->> +                       function = "normal";
->> +                       bias-disable;
->> +                       output-high;
->> +                       power-source = <0>;
->> +               };
->> +       };
->> +};
->> +
->>   &qspi_cs0 {
->>          bias-disable;
->>   };
+ Along with the globally accepted PIN that allows you to access the
+funds loaded on your card is the prepaid card, I have sent this to
+Rev. Pastor Amos's office on your behalf for a long time since I have
+not heard from you.
+
+And you can get confirmation from Reverend Pastor Amos Deya at his
+direct email address: rev.amosdeya@gmail.com  And ask him to send you
+the prepaid card fund amount ($750,000.00) that I have left for you.
+compensation for all past efforts and attempts to help me then.please
+use  the card fund  to help the poor orphanage children in your
+country.
+
+I am glad to inform you about my success in obtaining the fund
+handed over with the cooperation of a new partner from Venezuela in
+South America.
+  Best regards, Mrs.Samira Nikaein
