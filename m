@@ -2,101 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7AC455F83
+	by mail.lfdr.de (Postfix) with ESMTP id C06DD455F85
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:31:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbhKRPdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 10:33:15 -0500
-Received: from mail-ua1-f51.google.com ([209.85.222.51]:40910 "EHLO
-        mail-ua1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232255AbhKRPdL (ORCPT
+        id S232145AbhKRPdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 10:33:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232107AbhKRPdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 10:33:11 -0500
-Received: by mail-ua1-f51.google.com with SMTP id y5so14469969ual.7;
-        Thu, 18 Nov 2021 07:30:11 -0800 (PST)
+        Thu, 18 Nov 2021 10:33:22 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC963C06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 07:30:22 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id m14so6375423pfc.9
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 07:30:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=O9HW8VN8FD0mQUuNl0O7hTZetbVOFYwSJ/10X1Qi/dg=;
+        b=VEz76Ih4++By0aewhJfkfWBIpULKWUjt9W5wyeG7SvksDqYyv5JxzJD1/2Og/sXCTU
+         +UyfUDS8aE3KvwbapaaVhBW1vS5K6+twNIGAoLO7unxx80El83rQYjaVCQdXxvRc5FKr
+         LWkxvKCVYzZYTFhHaDDwEuISeCmqorOr9eqpUcxXCg5MDCOXXbK47Wzk+cysKVRtrQQN
+         lH71xN4vTDYvuZNEeCbuNYwaRRm7Davx2M//PgZR62W5ZQtCXLkqWu5khDmUt/leLeVq
+         8GkyjKYNQuBNA1qYuRP8bFb7s93N/Rn4MBj2fMoS/WQrvHWMV4FNFBa/Cq8v7upxnyFI
+         fmmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6WlBFhFdLaiNrzdAPfTzWOZByLWbYzJb4NTghlT9WrI=;
-        b=UU3yGyZiROXYsaBx2gjhM60eWmw6dUN0sNw0CFAxf3mXCcmVOKvyTshMxZmtn76EY+
-         vxxSAun24U7IdPBe+v6DGNHLqJeOMrTny7bDTCeJiLIBKThR4Be42Y3vwwur+1k+7/2g
-         h0LkR73Ua1s7rAccbekGnaq86fc/znLEeDYXt1AM5LCw5SPxryQi1bzJYiR8QIAn3a3s
-         x0XCEwSEcjTsD/HT2rLSesKCRaUe2sqUrvTSto02c7KOBTa66bMoqnt6tf+omXjET9ac
-         LmzsfD6yFrXV3+2tWz4r3QQKtkWFR/OHjtwnR5N8HQy5fA6k3zC4XWeyQmBsVl7s9F4k
-         XTmA==
-X-Gm-Message-State: AOAM531mVxMHya+r/qcRMWZ8sfkvtbawI59J1Ts8MHEimII/qrtFk6lT
-        oa2qyafQcyV6fKxAT5fQ3V/54SKrjvmbbw==
-X-Google-Smtp-Source: ABdhPJz6hoAdzIZ6+jEpqzRupXbOO/TmrgMCCm7VRRs9Uqso7sY4Ka2GDnJ3vxDkkINL2REliWd1ZA==
-X-Received: by 2002:a67:fad4:: with SMTP id g20mr83633737vsq.1.1637249410849;
-        Thu, 18 Nov 2021 07:30:10 -0800 (PST)
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com. [209.85.222.45])
-        by smtp.gmail.com with ESMTPSA id t189sm56207vsb.13.2021.11.18.07.30.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Nov 2021 07:30:10 -0800 (PST)
-Received: by mail-ua1-f45.google.com with SMTP id t13so14455133uad.9;
-        Thu, 18 Nov 2021 07:30:10 -0800 (PST)
-X-Received: by 2002:a05:6102:e82:: with SMTP id l2mr82475115vst.37.1637249410167;
- Thu, 18 Nov 2021 07:30:10 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=O9HW8VN8FD0mQUuNl0O7hTZetbVOFYwSJ/10X1Qi/dg=;
+        b=h6nAbWNFFUq1Tr5XkHkSs+3HyGkZd53PQAQk6Ziov0hNRp+Nm45sQFq9xDb9Y53hD3
+         Fl7SMLT/w2yClKh2qAm4C99f/SwzRdyORacF3aiGENjaD1AF1JA4VlnJ9bB11rfkoliB
+         t2g153WzVeAVToJ2t8/za8/5MB4kzF8Ogp+95+KAMfSsoTXR66ETOxMnEDrxNzJB5rqK
+         lUxS2w7SHiqGkMmYPgL89zu0TE5igSNmuH0reSaHjDKjHE9TO4wBI3r3L6RP6rP+0goo
+         j4j7MLr6flfy0Ucr8a0TPgdeXvy8eJWTFRPbN0qd9n4Mqip9W6CEjYDyi+TodW+2Wx3W
+         i42A==
+X-Gm-Message-State: AOAM530IqNjUpUhFPF29803yjAICYfN2NrczdkjeWMyO7n3NoeeRpJBe
+        bpt/vqIMxvHV7zNykQ6Cuuxsxw==
+X-Google-Smtp-Source: ABdhPJxfM/6/NQ7XWwirjRlwpSH8CUpTFiWf5wqmIzfCsQcYwXKe1gl7GFrQ9W3s2mRyTtWZX26xgw==
+X-Received: by 2002:a63:5813:: with SMTP id m19mr11804373pgb.451.1637249422122;
+        Thu, 18 Nov 2021 07:30:22 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id u11sm11706pfk.152.2021.11.18.07.30.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 07:30:21 -0800 (PST)
+Date:   Thu, 18 Nov 2021 15:30:18 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH 11/15] KVM: x86/MMU: Refactor vmx_get_mt_mask
+Message-ID: <YZZxivgSeGH4wZnB@google.com>
+References: <20211115234603.2908381-1-bgardon@google.com>
+ <20211115234603.2908381-12-bgardon@google.com>
+ <a1be97c6-6784-fd5f-74a8-85124f039530@redhat.com>
 MIME-Version: 1.0
-References: <20211117115101.28281-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20211117115101.28281-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20211117115101.28281-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 18 Nov 2021 16:29:59 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUi_Aj6JQ5n31R3DROUMG8F+032+L43AMmkiBwB_TQhWw@mail.gmail.com>
-Message-ID: <CAMuHMdUi_Aj6JQ5n31R3DROUMG8F+032+L43AMmkiBwB_TQhWw@mail.gmail.com>
-Subject: Re: [PATCH 3/4] clk: renesas: cpg-mssr: Check return value of pm_genpd_init()
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a1be97c6-6784-fd5f-74a8-85124f039530@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 12:51 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Make sure we check the return value of pm_genpd_init() which might fail.
-> Also add a devres action to remove the power-domain in-case the probe
-> callback fails further down in the code flow.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On Thu, Nov 18, 2021, Paolo Bonzini wrote:
+> On 11/16/21 00:45, Ben Gardon wrote:
+> > Remove the gotos from vmx_get_mt_mask to make it easier to separate out
+> > the parts which do not depend on vcpu state.
+> > 
+> > No functional change intended.
+> > 
+> > 
+> > Signed-off-by: Ben Gardon <bgardon@google.com>
+> 
+> Queued, thanks (with a slightly edited commit message; the patch is a
+> simplification anyway).
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-clk-for-v5.17.
+Don't know waht message you've queued, but just in case you kept some of the original,
+can you further edit it to remove any snippets that mention separating out the parts
+that don't depend on vCPU state?
 
-> @@ -574,7 +580,13 @@ static int __init cpg_mssr_add_clk_domain(struct device *dev,
->                        GENPD_FLAG_ACTIVE_WAKEUP;
->         genpd->attach_dev = cpg_mssr_attach_dev;
->         genpd->detach_dev = cpg_mssr_detach_dev;
-> -       pm_genpd_init(genpd, &pm_domain_always_on_gov, false);
-> +       ret = pm_genpd_init(genpd, &pm_domain_always_on_gov, false);
-> +       if (ret)
-> +               return ret;
-> +       ret = devm_add_action_or_reset(dev, cpg_mssr_genpd_remove, genpd);
+IMO, we should not separate vmx_get_mt_mask() into per-VM and per-vCPU variants,
+because the per-vCPU variant is a lie.  The memtype of a SPTE is not tracked anywhere,
+which means that if the guest has non-uniform CR0.CD/NW or MTRR settings, KVM will
+happily let the guest consumes SPTEs with the incorrect memtype.  In practice, this
+isn't an issue because no sane BIOS or kernel uses per-CPU MTRRs, nor do they have
+DMA operations running while the cacheability state is in flux.
 
-Will insert a blank line here.
+If we really want to make this state per-vCPU, KVM would need to incorporate the
+CR0.CD and MTRR settings in kvm_mmu_page_role.  For MTRRs in particular, the worst
+case scenario is that every vCPU has different MTRR settings, which means that
+kvm_mmu_page_role would need to be expanded by 10 bits in order to track every
+possible vcpu_idx (currently capped at 1024).
 
-> +       if (ret)
-> +               return ret;
-> +
->         cpg_mssr_clk_domain = pd;
->
->         of_genpd_add_provider_simple(np, genpd);
+So unless we want to massively complicate kvm_mmu_page_role and gfn_track for a
+scenario no one cares about, I would strongly prefer to acknowledge that KVM assumes
+memtypes are a per-VM property, e.g. on top:
 
-Gr{oetje,eeting}s,
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 77f45c005f28..8a84d30f1dbd 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -6984,8 +6984,9 @@ static int __init vmx_check_processor_compat(void)
+        return 0;
+ }
 
-                        Geert
+-static u64 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
++static u64 vmx_get_mt_mask(struct kvm *kvm, gfn_t gfn, bool is_mmio)
+ {
++       struct kvm_vcpu *vcpu;
+        u8 cache;
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+        /* We wanted to honor guest CD/MTRR/PAT, but doing so could result in
+@@ -7009,11 +7010,15 @@ static u64 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
+        if (is_mmio)
+                return MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT;
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-       if (!kvm_arch_has_noncoherent_dma(vcpu->kvm))
++       if (!kvm_arch_has_noncoherent_dma(kvm))
+                return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
+
++       vcpu = kvm_get_vcpu_by_id(kvm, 0);
++       if (KVM_BUG_ON(!vcpu, kvm))
++               return;
++
+        if (kvm_read_cr0(vcpu) & X86_CR0_CD) {
+-               if (kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_CD_NW_CLEARED))
++               if (kvm_check_has_quirk(kvm, KVM_X86_QUIRK_CD_NW_CLEARED))
+                        cache = MTRR_TYPE_WRBACK;
+                else
+                        cache = MTRR_TYPE_UNCACHABLE;
