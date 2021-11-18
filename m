@@ -2,140 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C9D45625F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:29:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 656DA456260
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:29:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232876AbhKRScL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 13:32:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
+        id S232977AbhKRSc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 13:32:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232871AbhKRScK (ORCPT
+        with ESMTP id S232712AbhKRScZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 13:32:10 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2933BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:29:10 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id n85so6861106pfd.10
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:29:10 -0800 (PST)
+        Thu, 18 Nov 2021 13:32:25 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBD9C06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:29:25 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id gx15-20020a17090b124f00b001a695f3734aso6542217pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:29:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=uSpY8+ZZw7VrKc1FtbyhIu09kHALiBf3b1wB2/ERM84=;
-        b=FFDOLGcNCvLCzew0kAl/PrKO6GF2WJn0StIk8lHWGW/Nsegh4lz7mceUZxz0rj3xpg
-         zv9r0YDfv48Tk0S2QuVib3gTJYpn7lsBm+mgXLUjl0dA7OtUV/twZggjJT5/XLGQ1Lgo
-         yJCThsCKqhtw7RYN0FPeMP7R4JimYDPQiA/HNJSHS+gJr1Nra7mJF6bhXbWZCqcgdXGi
-         OD+PN1T/Z3IMbXTAerzxq7ZO8dt2mO4dgwnHyTOGsyb0iqWO5Mcpx2Ws84AeZjPhUHXv
-         506ausdqvVSQpNg//HRe3ZUWt52rGUt9eLhqPWTphicODw1IjaEM6xPTYtxQuDiplH5g
-         DyJQ==
+        bh=aJ9zhx5y0aG/RaME3/5ksU42Do7i2tWs6AW5Cr2sJu0=;
+        b=moOTaEpnht4Ful9gObA6oYHZZUxom2eQ/nowHHfSiH9vWrs9UBXVLwztRc4/WQNs1g
+         FWWx37YcaSyX9KoSDp42d3lBDaSiQXhHTpa1Tj+I+GHe1J8aBYXnXp1PBQ7h9gLa4Iz8
+         8tmbGSQny4Y97mPl1P67a00DO9QMp6pObI47Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=uSpY8+ZZw7VrKc1FtbyhIu09kHALiBf3b1wB2/ERM84=;
-        b=vcSUVuX4GOkm9xZAChDdVbiEpFRUuaz73H7R4JWz9IUiMaW3M4rkE2drO/8birKlDn
-         cbozTjxaGAcbhoZ7wlXnmgcdndTzAVSOSOhYqMsJ2CdnZ3Gg2RdzmGOp38PUATvAhCNf
-         Una6VBJQyULFzUEhWhcjkFQ34UOoAqMB4cnjPfkrT/QtThhUOM9AfsvTwKWmILgZiyZu
-         G/98sX+usNweZv2EmRvNOYW2DWnM5L8mNNVMFaOPK3Ab4j/xZiiPD/9QKgSUoLDAeWNw
-         2DOxgbtD9qNobuvUi+eJiTHU1UWCA1UG26SmxwT8DOMNXhobeMbC2qYSY1qMZH1hlZ1C
-         Imgw==
-X-Gm-Message-State: AOAM531v2j51S0M/cudluAByHJPEbQ8ttGswnpHYN7HvHKaYge8z6qzU
-        y8+Lf9OVow/zJb7bLiITTGflYg==
-X-Google-Smtp-Source: ABdhPJwy3KjQMrd7Y6BMNeVoxIqHpThnIeHkISg6+ofmx1GlKl2PNcRgVasH/MbvMqrZYDcJwBeo4g==
-X-Received: by 2002:a05:6a00:181a:b0:47c:1057:52e with SMTP id y26-20020a056a00181a00b0047c1057052emr17426322pfa.76.1637260149673;
-        Thu, 18 Nov 2021 10:29:09 -0800 (PST)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id v15sm298349pfu.195.2021.11.18.10.29.07
+        bh=aJ9zhx5y0aG/RaME3/5ksU42Do7i2tWs6AW5Cr2sJu0=;
+        b=ZxicWu1nUnQcOeM0P3oWbF/DQPgon9qJ6ckFuEgVutlac1r5bfgitEi5+GVXw8g5SF
+         ckn28qN9HL3GCHFDhPga3+P1GWNoYSC+jO+/+UrjTMGGJa7e47fU+mAfN7yP/vG+NUWl
+         b2GLGxODJJf0uhsZwcy1z8DewAYuoJ+NPR0P6BPTbFGwE5inCjWbEzRBCrOKD8vlXKAo
+         5y2KtG1TZf5UUKnky5WUGOcm4xBDzHMqgiFuDiJWfFtk37zhSQrdayMU2uumBEQr3xoP
+         sQ+5XD034jHNVD7O8iXfNrXC26YIOQia5TPSdcE6bcPYrrq1UypWGpd8KeRfRphBfgzj
+         JGJg==
+X-Gm-Message-State: AOAM533CEESx1R7QEH2WWTqqE5OlSP6lgIzYVWVv2t9XljkY5HLsLM5v
+        M1IKRV1UohgHNTvLq4XwFfUaOg==
+X-Google-Smtp-Source: ABdhPJyfmoc6S1n51Fi29lAjKMKHjeYfaWcjjKHh2r2tdLjejVzDr3BzNicARWYsyNzPw+XDEZof6w==
+X-Received: by 2002:a17:90b:224f:: with SMTP id hk15mr12803684pjb.173.1637260165083;
+        Thu, 18 Nov 2021 10:29:25 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c9sm271751pgq.58.2021.11.18.10.29.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 10:29:08 -0800 (PST)
-Date:   Thu, 18 Nov 2021 11:29:05 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        o.rempel@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH] remoteproc: imx_rproc: use imx specific hook for
- find_loaded_rsc_table
-Message-ID: <20211118182905.GE2530497@p14s>
-References: <20211112063416.3485866-1-peng.fan@oss.nxp.com>
+        Thu, 18 Nov 2021 10:29:24 -0800 (PST)
+Date:   Thu, 18 Nov 2021 10:29:24 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-kernel@vger.kernel.org, Colin Cross <ccross@android.com>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Tony Luck <tony.luck@intel.com>,
+        linux-hardening@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] Revert "mark pstore-blk as broken"
+Message-ID: <202111181026.D7EF6BCED@keescook>
+References: <20211116181559.3975566-1-keescook@chromium.org>
+ <163710862474.168539.12611066078131838062.b4-ty@kernel.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211112063416.3485866-1-peng.fan@oss.nxp.com>
+In-Reply-To: <163710862474.168539.12611066078131838062.b4-ty@kernel.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peng,
-
-On Fri, Nov 12, 2021 at 02:34:16PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On Tue, Nov 16, 2021 at 05:23:44PM -0700, Jens Axboe wrote:
+> On Tue, 16 Nov 2021 10:15:59 -0800, Kees Cook wrote:
+> > This reverts commit d07f3b081ee632268786601f55e1334d1f68b997.
+> > 
+> > pstore-blk was fixed to avoid the unwanted APIs in commit 7bb9557b48fc
+> > ("pstore/blk: Use the normal block device I/O path"), which landed in
+> > the same release as the commit adding BROKEN.
+> > 
+> > 
+> > [...]
 > 
-> When loading elf and kicking M core from Linux, previously we directly
-> use the address of the resource table in elf file. After i.MX8MN/P
-> RDC enabled to proect TCM, linux not able to access the TCM space
-
-It would be nice to know what RDC is and what it stands for.  Moreover I assume
-you mean "protect" here when writing "proect".
-
-> when updating resource table status and cause kernel dump.
-
-How was it possible to boot an i.MX8MN before this patch?  Why wasn't this part
-of the patchset that introduced support for the i.MX8MN?
-
+> Applied, thanks!
 > 
-> So let's check whether rsc_table is available, if available, we use this
-> address.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/remoteproc/imx_rproc.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-> index ff8170dbbc3c..96a56ab39ccb 100644
-> --- a/drivers/remoteproc/imx_rproc.c
-> +++ b/drivers/remoteproc/imx_rproc.c
-> @@ -497,6 +497,17 @@ static struct resource_table *imx_rproc_get_loaded_rsc_table(struct rproc *rproc
->  	return (struct resource_table *)priv->rsc_table;
->  }
->  
-> +static struct resource_table *
-> +imx_rproc_elf_find_loaded_rsc_table(struct rproc *rproc, const struct firmware *fw)
-> +{
-> +	struct imx_rproc *priv = rproc->priv;
-> +
+> [1/1] Revert "mark pstore-blk as broken"
+>       commit: d1faacbf67b1944f0e0c618dc581d929263f6fe9
 
-This is lacking proper documentation.  Please specify which remote processor
-is supposed to find a resource table address in the device tree and which should
-rely on the address in the resource table.  It would be much better to rely on
-the remote processor model to decide where to get the resource table from, and
-return an error if it is not where we expect it to be.
+Thanks! I realize now what Geert meant in an earlier thread that I
+actually can't split this change from a warning fix that was living in
+the pstore tree (and was masked by the now removed BROKEN). Can you take
+this patch as well? I've removed it from my tree now...
 
-Thanks,
-Mathieu
+https://lore.kernel.org/lkml/20211118182621.1280983-1-keescook@chromium.org/
 
-> +	if (priv->rsc_table)
-> +		return (struct resource_table *)priv->rsc_table;
-> +
-> +	return rproc_elf_find_loaded_rsc_table(rproc, fw);
-> +}
-> +
->  static const struct rproc_ops imx_rproc_ops = {
->  	.prepare	= imx_rproc_prepare,
->  	.attach		= imx_rproc_attach,
-> @@ -506,7 +517,7 @@ static const struct rproc_ops imx_rproc_ops = {
->  	.da_to_va       = imx_rproc_da_to_va,
->  	.load		= rproc_elf_load_segments,
->  	.parse_fw	= imx_rproc_parse_fw,
-> -	.find_loaded_rsc_table = rproc_elf_find_loaded_rsc_table,
-> +	.find_loaded_rsc_table = imx_rproc_elf_find_loaded_rsc_table,
->  	.get_loaded_rsc_table = imx_rproc_get_loaded_rsc_table,
->  	.sanity_check	= rproc_elf_sanity_check,
->  	.get_boot_addr	= rproc_elf_get_boot_addr,
-> -- 
-> 2.25.1
-> 
+-- 
+Kees Cook
