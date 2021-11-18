@@ -2,208 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F74455AEA
+	by mail.lfdr.de (Postfix) with ESMTP id 7B645455AEB
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:49:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344206AbhKRLwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 06:52:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29041 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344081AbhKRLvm (ORCPT
+        id S1344196AbhKRLwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 06:52:17 -0500
+Received: from mail-lf1-f51.google.com ([209.85.167.51]:38443 "EHLO
+        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344157AbhKRLwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 06:51:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637236120;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NVvMJWrJ9UKr+oYWnQ3asuZNYNYkBhWlbJlX4He2Ums=;
-        b=XjARhUPm2jFqQOjINRKC71qVPnYXEcjXg9m2CAIakvOMRtkc3z3y4Sz0SZNAaQU8eaqrR8
-        WL47LIkuujV2Rv1sU6bVj4wdQXjS9pWyyRJQ8WC0Cdzpa4nN2ZC2upVr0hZHmPL3Fe1M8H
-        Ixs/pRSiw2uqtphc8uxsHn47NGgGFEc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-580-zvgDP5ZjNYa2lSvL9U8ZAg-1; Thu, 18 Nov 2021 06:48:37 -0500
-X-MC-Unique: zvgDP5ZjNYa2lSvL9U8ZAg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 09A9B804141;
-        Thu, 18 Nov 2021 11:48:35 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1452A10246F8;
-        Thu, 18 Nov 2021 11:48:30 +0000 (UTC)
-Message-ID: <a130e317-58b9-dae8-2d87-98695cdc4f22@redhat.com>
-Date:   Thu, 18 Nov 2021 12:48:29 +0100
+        Thu, 18 Nov 2021 06:52:00 -0500
+Received: by mail-lf1-f51.google.com with SMTP id bi37so24640155lfb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 03:48:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jatb59kfVdHN6eWt15b1MrApzfZf1yR/5GhBccqsDF8=;
+        b=3oJtAvs2W+eyFCIfFIOuW9g5msRSqpCTmF4jVUaSZuFEHv5qLnJCTz1zyUxqo7VCFQ
+         Y/JJtXeyjGJ6n4+/C2OjU7fqW6i6xFsb5UN5k2LXG9JcAghFlMAR0t8SEHF96E1BDpjJ
+         cR5B8e8lOkxoefKvPeTMwzq7h9uStXXHvEZjnyNETtjbxp+hFb4RnfhRc6TbPQKEhvs5
+         OY910rNMdNZqbG9ZU29Ix9Cw9eshpqWvDo9to629tuO6+3ncv4KI/aKBL5tKoHBhi694
+         +hsGhgEZW3S1+8O2qYzimu4/29mzzhRfAJ9j76YSzHR9LvNQWLvOmTJncxeqxHBnQUru
+         z7/g==
+X-Gm-Message-State: AOAM530bAcB8P/+TMfOXlTa8FqVmsmt6tMSGkJeDtNC2WBihBruA1i7N
+        +qqThmTXF7/i3yL4HKC525WFgajFFm4=
+X-Google-Smtp-Source: ABdhPJz+z5fxe0RpytkCXeV37gOgY1kg+MRrFa0Fx/6YWKRoaqNkYY3dVgHrGh0vB0cx/kJ6HhZtRw==
+X-Received: by 2002:a2e:a4d1:: with SMTP id p17mr15902042ljm.318.1637236135095;
+        Thu, 18 Nov 2021 03:48:55 -0800 (PST)
+Received: from fedora (dc73szyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16ee:fa00::4])
+        by smtp.gmail.com with ESMTPSA id h7sm281310lfu.253.2021.11.18.03.48.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 03:48:54 -0800 (PST)
+Date:   Thu, 18 Nov 2021 13:48:47 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-power@fi.rohmeurope.com, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/5] regulator: rohm-regulator: add helper for restricted
+ voltage setting
+Message-ID: <6f51871e9fea611d133b5dd2560f4a7ee1ede9cd.1637233864.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1637233864.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] Fix SEV-ES INS/OUTS instructions for word, dword, and
- qword.
-Content-Language: en-US
-To:     Michael Sterritt <sterritt@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-coco@lists.linux.dev
-Cc:     marcorr@google.com, pgonda@google.com
-References: <20211118021326.4134850-1-sterritt@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211118021326.4134850-1-sterritt@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="VdoY8lpoMst1Xhba"
+Content-Disposition: inline
+In-Reply-To: <cover.1637233864.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/21 03:13, Michael Sterritt wrote:
-> Properly type the operands being passed to __put_user()/__get_user().
-> Otherwise, these routines truncate data for dependent instructions
-> (e.g., INSW) and only read/write one byte.
-> 
-> Tested: Tested by sending a string with `REP OUTSW` to a port and then
-> reading it back in with `REP INSW` on the same port. Previous behavior
-> was to only send and receive the first char of the size. For example,
-> word operations for "abcd" would only read/write "ac". With change, the
-> full string is now written and read back.
-> 
-> Signed-off-by: Michael Sterritt <sterritt@google.com>
-> Reviewed-by: Marc Orr <marcorr@google.com>
-> Reviewed-by: Peter Gonda <pgonda@google.com>
-> ---
->   arch/x86/kernel/sev.c | 57 +++++++++++++++++++++++++++++--------------
->   1 file changed, 39 insertions(+), 18 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-> index 74f0ec955384..a9fc2ac7a8bd 100644
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -294,11 +294,6 @@ static enum es_result vc_write_mem(struct es_em_ctxt *ctxt,
->   				   char *dst, char *buf, size_t size)
->   {
->   	unsigned long error_code = X86_PF_PROT | X86_PF_WRITE;
-> -	char __user *target = (char __user *)dst;
-> -	u64 d8;
-> -	u32 d4;
-> -	u16 d2;
-> -	u8  d1;
->   
->   	/*
->   	 * This function uses __put_user() independent of whether kernel or user
-> @@ -320,26 +315,42 @@ static enum es_result vc_write_mem(struct es_em_ctxt *ctxt,
->   	 * instructions here would cause infinite nesting.
->   	 */
->   	switch (size) {
-> -	case 1:
-> +	case 1: {
-> +		u8 d1;
-> +		u8 __user *target = (u8 __user *)dst;
-> +
->   		memcpy(&d1, buf, 1);
->   		if (__put_user(d1, target))
->   			goto fault;
->   		break;
-> -	case 2:
-> +	}
-> +	case 2: {
-> +		u16 d2;
-> +		u16 __user *target = (u16 __user *)dst;
-> +
->   		memcpy(&d2, buf, 2);
->   		if (__put_user(d2, target))
->   			goto fault;
->   		break;
-> -	case 4:
-> +	}
-> +	case 4: {
-> +		u32 d4;
-> +		u32 __user *target = (u32 __user *)dst;
-> +
->   		memcpy(&d4, buf, 4);
->   		if (__put_user(d4, target))
->   			goto fault;
->   		break;
-> -	case 8:
-> +	}
-> +	case 8: {
-> +		u64 d8;
-> +		u64 __user *target = (u64 __user *)dst;
-> +
->   		memcpy(&d8, buf, 8);
->   		if (__put_user(d8, target))
->   			goto fault;
->   		break;
-> +	}
->   	default:
->   		WARN_ONCE(1, "%s: Invalid size: %zu\n", __func__, size);
->   		return ES_UNSUPPORTED;
-> @@ -362,11 +373,6 @@ static enum es_result vc_read_mem(struct es_em_ctxt *ctxt,
->   				  char *src, char *buf, size_t size)
->   {
->   	unsigned long error_code = X86_PF_PROT;
-> -	char __user *s = (char __user *)src;
-> -	u64 d8;
-> -	u32 d4;
-> -	u16 d2;
-> -	u8  d1;
->   
->   	/*
->   	 * This function uses __get_user() independent of whether kernel or user
-> @@ -388,26 +394,41 @@ static enum es_result vc_read_mem(struct es_em_ctxt *ctxt,
->   	 * instructions here would cause infinite nesting.
->   	 */
->   	switch (size) {
-> -	case 1:
-> +	case 1: {
-> +		u8 d1;
-> +		u8 __user *s = (u8 __user *)src;
-> +
->   		if (__get_user(d1, s))
->   			goto fault;
->   		memcpy(buf, &d1, 1);
->   		break;
-> -	case 2:
-> +	}
-> +	case 2: {
-> +		u16 d2;
-> +		u16 __user *s = (u16 __user *)src;
-> +
->   		if (__get_user(d2, s))
->   			goto fault;
->   		memcpy(buf, &d2, 2);
->   		break;
-> -	case 4:
-> +	}
-> +	case 4: {
-> +		u32 d4;
-> +		u32 __user *s = (u32 __user *)src;
-> +
->   		if (__get_user(d4, s))
->   			goto fault;
->   		memcpy(buf, &d4, 4);
->   		break;
-> -	case 8:
-> +	}
-> +	case 8: {
-> +		u64 d8;
-> +		u64 __user *s = (u64 __user *)src;
->   		if (__get_user(d8, s))
->   			goto fault;
->   		memcpy(buf, &d8, 8);
->   		break;
-> +	}
->   	default:
->   		WARN_ONCE(1, "%s: Invalid size: %zu\n", __func__, size);
->   		return ES_UNSUPPORTED;
-> 
 
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+--VdoY8lpoMst1Xhba
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Few ROHM PMICs have regulators where voltage setting can be done only
+when regulator is disabled. Add helper for those PMICs.
+
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
+ drivers/regulator/rohm-regulator.c | 16 ++++++++++++++++
+ include/linux/mfd/rohm-generic.h   |  7 +++++++
+ 2 files changed, 23 insertions(+)
+
+diff --git a/drivers/regulator/rohm-regulator.c b/drivers/regulator/rohm-re=
+gulator.c
+index 6e0d9c08ec1c..f97a9a51ee76 100644
+--- a/drivers/regulator/rohm-regulator.c
++++ b/drivers/regulator/rohm-regulator.c
+@@ -112,6 +112,22 @@ int rohm_regulator_set_dvs_levels(const struct rohm_dv=
+s_config *dvs,
+ }
+ EXPORT_SYMBOL(rohm_regulator_set_dvs_levels);
+=20
++/*
++ * Few ROHM PMIC ICs have constrains on voltage changing:
++ * BD71837 - only buck 1-4 voltages can be changed when they are enabled.
++ * Other bucks and all LDOs must be disabled when voltage is changed.
++ * BD96801 - LDO voltage levels can be changed when LDOs are disabled.
++ */
++int rohm_regulator_set_voltage_sel_restricted(struct regulator_dev *rdev,
++					      unsigned int sel)
++{
++	if (rdev->desc->ops->is_enabled(rdev))
++		return -EBUSY;
++
++	return regulator_set_voltage_sel_regmap(rdev, sel);
++}
++EXPORT_SYMBOL_GPL(rohm_regulator_set_voltage_sel_restricted);
++
+ MODULE_LICENSE("GPL v2");
+ MODULE_AUTHOR("Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>");
+ MODULE_DESCRIPTION("Generic helpers for ROHM PMIC regulator drivers");
+diff --git a/include/linux/mfd/rohm-generic.h b/include/linux/mfd/rohm-gene=
+ric.h
+index 35b392a0d73a..35c5866f48b7 100644
+--- a/include/linux/mfd/rohm-generic.h
++++ b/include/linux/mfd/rohm-generic.h
+@@ -80,6 +80,8 @@ int rohm_regulator_set_dvs_levels(const struct rohm_dvs_c=
+onfig *dvs,
+ 				  const struct regulator_desc *desc,
+ 				  struct regmap *regmap);
+=20
++int rohm_regulator_set_voltage_sel_restricted(struct regulator_dev *rdev,
++					      unsigned int sel);
+ #else
+ static inline int rohm_regulator_set_dvs_levels(const struct rohm_dvs_conf=
+ig *dvs,
+ 						struct device_node *np,
+@@ -88,6 +90,11 @@ static inline int rohm_regulator_set_dvs_levels(const st=
+ruct rohm_dvs_config *dv
+ {
+ 	return 0;
+ }
++static int rohm_regulator_set_voltage_sel_restricted(struct regulator_dev =
+*rdev,
++						     unsigned int sel)
++{
++	return 0;
++}
+ #endif
+=20
+ #endif
+--=20
+2.31.1
+
+
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
+
+--VdoY8lpoMst1Xhba
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmGWPZ8ACgkQeFA3/03a
+ocVsvwf8CPckIs2AMDMPxYwoQo2RAC5yqld/mftWQrImxe0YlHepA7YSr2F3luoP
+qAJ5MQwJELTkP/prst/HhoqL1J4BDX2PTJSlVBj5vSj5aAqpDZ2ZLTbxMdNX6kSw
+FuQb3pANk5uoq1nAavG5HzeRhkX3iIPbcBqWNRm7pgzXUcNBwg8LhggtyfhqV3ph
+aL0zw/CFWJHDoNK/+WgjclD7wJ0Cn1dm9fiqCLKgAAuUn7NdPYb/ydvQoj/A5VHZ
+hBb7GiOxGpCgXS6Hh3HPpGRUiprttkhuYAkHYn+gWDp3aGJwRJ8/oqmJMEh1JpFN
+3+9X35W8SG6THAutqMTVsSS/eaI1Sg==
+=UZ6A
+-----END PGP SIGNATURE-----
+
+--VdoY8lpoMst1Xhba--
