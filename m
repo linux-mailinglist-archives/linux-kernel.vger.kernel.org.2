@@ -2,91 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CF345624B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:22:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF9045624F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:26:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232591AbhKRSZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 13:25:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41838 "EHLO
+        id S232605AbhKRS3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 13:29:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231895AbhKRSZt (ORCPT
+        with ESMTP id S231667AbhKRS3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 13:25:49 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5998C06173E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:22:48 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id m15so6131593pgu.11
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:22:48 -0800 (PST)
+        Thu, 18 Nov 2021 13:29:18 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7222C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:26:17 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id v19so5983969plo.7
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:26:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=RxXagynv4ZtTxwDXTPjZYaISy3py26voDBtBw3aaQgQ=;
-        b=OBlnJC4k1myvVeYu1NZFyNQ7qs/DclyrajXgQLwlwDdvyrZ1+s9GpJL+W34aT1uHku
-         J9wZKd+02F7Er09DCXIA4DItiSZshXGnoeLLFc0LEv1itHvrGlrNwc86GwZ+//C5msRa
-         QQXoaNdT+OSK2tLxMzOUcYsIV1YXz0/Nmu3cNVd2SO5kWEG6YrMHl8I0nbd9mg3BjspR
-         NIo0GdtkntdAdN9EIj31GsTeZ5hB8HliqHEFc0AJ0e/ZfzHWSdsq8Gh9tPPV2zL4ofso
-         VSK22FsK0SEiEcRe50ecyel1PB1xFbX31kTsaXpkN/sYQYsin8zVD07JdS1VXFcMUG7O
-         t9SA==
+        bh=28eshNjNO/qxhONwqlc26zChfwY3CikV/8tFwgmOtR0=;
+        b=Oek9boK3Bv3JYZp2UyX5KMXFCE+9KCcnJIf8eIBBYosgxl8iEKPWR0ubjC3UgDvpz3
+         kFQj1rIbFzgbyetJ+D2lmSEXgSQrd7G8fde1hP+1CIrq0S2X3MG/ijKRIUUUPmHIet/q
+         CdWVKayeGpNOhWyRJh4z5KH6RJ+ql/OsPL6Ng=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=RxXagynv4ZtTxwDXTPjZYaISy3py26voDBtBw3aaQgQ=;
-        b=vOABUM2hHcldLYD6w1pWLi3upXphMsjiwVvBi4z+2ZlDSsxv5EQoW9RfoshnqREf4o
-         L7cWx3km8436U4t9s5+Ec5i0bezfJEZOYME65Bv3SLNJ9GsoUnNHkNAKbs69rVfSQHVC
-         aGVavQpyzVNuo4cLSfv/7m00g767fAYrhU0yu91xcq4SjYPs0pzRf3xHQaIBAMcZ8xG9
-         +njnpjjtTjedrAtWq2EiNBWbFZtoxlzRdVe5nbBgxk1f+ptzgjtJazJTmXZPu7vqWX9B
-         naLwiv12/u/3LMuft72/fM1CYKYegYuUkgwzce9ADIB9J+Zh+12ou5FpyE72I/sb6YU8
-         7Wfw==
-X-Gm-Message-State: AOAM531hlMAVa0WCtxeKoc5pNlS1ST519Sgj8/SR2Tr0Ip71YKSOy2Ei
-        BdaMd5ii57NW/GmXUetH/xiN1ztEKIXPJQ==
-X-Google-Smtp-Source: ABdhPJyTh37LpHwXrN+6deoifsV0BNizkbqHIu8tIW6La8IWWgSK2j8DxntCks4HzMc3Ez+BucvBTw==
-X-Received: by 2002:a63:6945:: with SMTP id e66mr12760455pgc.9.1637259768283;
-        Thu, 18 Nov 2021 10:22:48 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id i68sm264849pfc.158.2021.11.18.10.22.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 10:22:47 -0800 (PST)
-Date:   Thu, 18 Nov 2021 18:22:44 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     linux-kernel@vger.kernel.org, anup.patel@wdc.com,
-        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH] MAINTAINERS: Update Atish's email address
-Message-ID: <YZaZ9KxEz+GVjH7q@google.com>
-References: <20211118060501.932993-1-atishp@atishpatra.org>
+        bh=28eshNjNO/qxhONwqlc26zChfwY3CikV/8tFwgmOtR0=;
+        b=eAW9WeX1OFN6j05xqnaeEeD0JYdXdm3K0nvqCEjoI3DPrQNh6uqz7toiBXH+Ayvhz3
+         wfolExr6OLkshQwDehC+/ZBbH9RwAn7M824rsVxfMx9uRF5tA9r/pqtTJUP3cgreorDj
+         JjdkX6qkdnwkq27h4gfW+7QbXgFcFZECmqbcQrTeVk8fqMdH++2hA2W9lYCzfqHKG4gz
+         KDYoKgAUREVo4qEc/DCA7dEefKZHbIKre4pre3SAG8VptNSd0gs7cIg2joXiBiAH4laF
+         q45d2F4t8JrGY9BmWXEj3+7k+ALAy3abVkzMdTxZnRFafqdfxjjOadg0WXgLlCV4APjT
+         PnuA==
+X-Gm-Message-State: AOAM532/ejnMfWvsgilRel/BTuqz7UvJKgv5sohBd0mwaqlzgz3G8VKS
+        x8A+f+HXUbFY4GjYLCtAOLWudQ==
+X-Google-Smtp-Source: ABdhPJxvq7TUug8fknfOWltBhQxa5BXskabfCjfusbTfBkJyfkoVs+Q2jr8FjBJ+VnBXkyORpITOrA==
+X-Received: by 2002:a17:90a:e005:: with SMTP id u5mr12560743pjy.17.1637259977228;
+        Thu, 18 Nov 2021 10:26:17 -0800 (PST)
+Received: from localhost ([2620:15c:202:201:8ceb:c68a:21af:bebe])
+        by smtp.gmail.com with UTF8SMTPSA id h186sm302596pfg.59.2021.11.18.10.26.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Nov 2021 10:26:16 -0800 (PST)
+Date:   Thu, 18 Nov 2021 10:26:16 -0800
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        swboyd@chromium.org
+Subject: Re: [PATCH 1/2] soc: qcom: rpmhpd: Rename rpmhpd struct names
+Message-ID: <YZaayLSMa8ivu40Z@google.com>
+References: <1637040382-22987-1-git-send-email-rnayak@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211118060501.932993-1-atishp@atishpatra.org>
+In-Reply-To: <1637040382-22987-1-git-send-email-rnayak@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021, Atish Patra wrote:
-> I no longer employed by western digital. Update my email address to
-> personal one.
+On Tue, Nov 16, 2021 at 10:56:21AM +0530, Rajendra Nayak wrote:
+> The rpmhpd structs were named with a SoC-name prefix, but then
+> they got reused across multiple SoC families making things confusing.
+> Rename all the struct names to remove SoC-name prefixes.
+> No other functional change as part of this patch.
 > 
-> Signed-off-by: Atish Patra <atishp@atishpatra.org>
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
 > ---
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/soc/qcom/rpmhpd.c | 255 +++++++++++++++++++++++-----------------------
+>  1 file changed, 128 insertions(+), 127 deletions(-)
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7a2345ce8521..b22af4edcd08 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -10434,7 +10434,7 @@ F:	arch/powerpc/kvm/
+> diff --git a/drivers/soc/qcom/rpmhpd.c b/drivers/soc/qcom/rpmhpd.c
+> index 1118345..c71481d 100644
+> --- a/drivers/soc/qcom/rpmhpd.c
+> +++ b/drivers/soc/qcom/rpmhpd.c
+> @@ -63,73 +63,102 @@ struct rpmhpd_desc {
 >  
->  KERNEL VIRTUAL MACHINE FOR RISC-V (KVM/riscv)
->  M:	Anup Patel <anup.patel@wdc.com>
-> -R:	Atish Patra <atish.patra@wdc.com>
-> +R:	Atish Patra <atishp@atishpatra.org>
->  L:	kvm@vger.kernel.org
->  L:	kvm-riscv@lists.infradead.org
->  L:	linux-riscv@lists.infradead.org
-> -- 
+>  static DEFINE_MUTEX(rpmhpd_lock);
+>  
+> -/* SDM845 RPMH powerdomains */
+> +/* RPMH powerdomains */
+>  
+> -static struct rpmhpd sdm845_ebi = {
+> +static struct rpmhpd ebi = {
+>  	.pd = { .name = "ebi", },
+>  	.res_name = "ebi.lvl",
+>  };
+>  
+> -static struct rpmhpd sdm845_lmx = {
+> +static struct rpmhpd lmx = {
+>  	.pd = { .name = "lmx", },
+>  	.res_name = "lmx.lvl",
+>  };
+>  
+> -static struct rpmhpd sdm845_lcx = {
+> +static struct rpmhpd lcx = {
+>  	.pd = { .name = "lcx", },
+>  	.res_name = "lcx.lvl",
+>  };
+>  
+> -static struct rpmhpd sdm845_gfx = {
+> +static struct rpmhpd gfx = {
+>  	.pd = { .name = "gfx", },
+>  	.res_name = "gfx.lvl",
+>  };
+>  
+> -static struct rpmhpd sdm845_mss = {
+> +static struct rpmhpd mss = {
+>  	.pd = { .name = "mss", },
+>  	.res_name = "mss.lvl",
+>  };
+>  
+> -static struct rpmhpd sdm845_mx_ao;
+> -static struct rpmhpd sdm845_mx = {
+> +static struct rpmhpd mx_ao;
+> +static struct rpmhpd mx = {
+>  	.pd = { .name = "mx", },
+> -	.peer = &sdm845_mx_ao,
+> +	.peer = &mx_ao,
+>  	.res_name = "mx.lvl",
+>  };
+>  
+> -static struct rpmhpd sdm845_mx_ao = {
+> +static struct rpmhpd mx_ao = {
+>  	.pd = { .name = "mx_ao", },
+>  	.active_only = true,
+> -	.peer = &sdm845_mx,
+> +	.peer = &mx,
+>  	.res_name = "mx.lvl",
+>  };
+>  
+> -static struct rpmhpd sdm845_cx_ao;
+> -static struct rpmhpd sdm845_cx = {
+> +static struct rpmhpd cx_ao;
+> +static struct rpmhpd cx = {
+>  	.pd = { .name = "cx", },
+> -	.peer = &sdm845_cx_ao,
+> -	.parent = &sdm845_mx.pd,
+> +	.peer = &cx_ao,
+> +	.parent = &mx.pd,
+>  	.res_name = "cx.lvl",
+>  };
+>  
+> -static struct rpmhpd sdm845_cx_ao = {
+> +static struct rpmhpd cx_ao = {
+>  	.pd = { .name = "cx_ao", },
+>  	.active_only = true,
+> -	.peer = &sdm845_cx,
+> -	.parent = &sdm845_mx_ao.pd,
+> +	.peer = &cx,
+> +	.parent = &mx_ao.pd,
+>  	.res_name = "cx.lvl",
+>  };
+>  
+> +static struct rpmhpd mmcx_ao;
+> +static struct rpmhpd mmcx = {
+> +	.pd = { .name = "mmcx", },
+> +	.peer = &mmcx_ao,
+> +	.res_name = "mmcx.lvl",
+> +};
+> +
+> +static struct rpmhpd mmcx_ao = {
+> +	.pd = { .name = "mmcx_ao", },
+> +	.active_only = true,
+> +	.peer = &mmcx,
+> +	.res_name = "mmcx.lvl",
+> +};
+> +
+> +static struct rpmhpd mxc_ao;
+> +static struct rpmhpd mxc = {
+> +	.pd = { .name = "mxc", },
+> +	.peer = &mxc_ao,
+> +	.res_name = "mxc.lvl",
+> +};
+> +
+> +static struct rpmhpd mxc_ao = {
+> +	.pd = { .name = "mxc_ao", },
+> +	.active_only = true,
+> +	.peer = &mxc,
+> +	.res_name = "mxc.lvl",
+> +};
+> +
+> +/* SDM845 RPMH powerdomains */
+>  static struct rpmhpd *sdm845_rpmhpds[] = {
+> -	[SDM845_EBI] = &sdm845_ebi,
+> -	[SDM845_MX] = &sdm845_mx,
+> -	[SDM845_MX_AO] = &sdm845_mx_ao,
+> -	[SDM845_CX] = &sdm845_cx,
+> -	[SDM845_CX_AO] = &sdm845_cx_ao,
+> -	[SDM845_LMX] = &sdm845_lmx,
+> -	[SDM845_LCX] = &sdm845_lcx,
+> -	[SDM845_GFX] = &sdm845_gfx,
+> -	[SDM845_MSS] = &sdm845_mss,
+> +	[SDM845_EBI] = &ebi,
+> +	[SDM845_MX] = &mx,
+> +	[SDM845_MX_AO] = &mx_ao,
+> +	[SDM845_CX] = &cx,
+> +	[SDM845_CX_AO] = &cx_ao,
+> +	[SDM845_LMX] = &lmx,
+> +	[SDM845_LCX] = &lcx,
+> +	[SDM845_GFX] = &gfx,
+> +	[SDM845_MSS] = &mss,
+>  };
 
-Please add an entry in .mailmap as well.
+nit: some PD lists are ordered alphabetically, others aren't, since you are
+already changing them you could use alphabetical order for all of them.
+
+Just a nit though, the change generally looks good to me, so:
+
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
