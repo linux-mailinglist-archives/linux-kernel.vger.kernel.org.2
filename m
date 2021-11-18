@@ -2,79 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2D84553E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 05:41:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 475E24553E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 05:42:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243039AbhKREoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 23:44:39 -0500
-Received: from gandalf.ozlabs.org ([150.107.74.76]:52015 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243026AbhKREo1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 23:44:27 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HvnF22YLkz4xbs;
-        Thu, 18 Nov 2021 15:41:26 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1637210486;
-        bh=5mHJV7I9AE96H9DFLO24CypX6qPfYRzWjk7GCUDEYv4=;
+        id S243036AbhKREpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 23:45:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41442 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241924AbhKREpQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 23:45:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB08761AA9;
+        Thu, 18 Nov 2021 04:42:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637210536;
+        bh=ZYoUiZma9XmCfS77K5mblLfiVjWC2xPDADZTuS8Q11Y=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=EkJKI0fALxdlHZoqWVajZtRU/g14VvNOTTD9wLcM+f4AV4OWnvgYP5hoOZiVju5Xq
-         SHUzgYt/klYmZqmGk8pJchTtPwLkFyPdk7yp18zghL9/ah0yI0BOzdqjuWIObGDju2
-         Ozhb27goEVwRyq+UzN2NhT0moUtmYsaQulFeJdEZxLYbQldqH/omH1fbeOiGsktAfO
-         os7FnjpPGt/vgv7acZE3kOaK+XtD30HCoo/CtedLJqtIKEnxr4foejssAc7Ah+UCFk
-         8g6oocU+KT15UNYOY0b+gCiUqvrzoI3RALCjtRNxtXeuv2ho4qW5rxQFRy6IIwp/Bd
-         5chxBbn2FzBqQ==
-Date:   Thu, 18 Nov 2021 15:41:25 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: Tree for Nov 18
-Message-ID: <20211118154125.2103c098@canb.auug.org.au>
-In-Reply-To: <20211118152404.40561423@canb.auug.org.au>
-References: <20211118152404.40561423@canb.auug.org.au>
+        b=OeSajbWol8nXasARQgH1pKKDG3u6uNQJrsPdLirAhwZSlnX5j4eqQneTSNU2UqL0S
+         Q7uzmhMqyqff0E6n6b+YxZIAW4eRp44XO0dAxC9ODh08I3GGYc+BaDo4wEiAcwPUKn
+         NBSQCbyc6ttN7hHiyxagC4qdbYdV1MFrCOtaLGZh5GyeAHdfWVYtEXsOlIYrLXCWfP
+         +yZcKlxe8oT0gtvhsuiqfh6R1MAfmzoBiLXIZJWCN3GBaA4RmCEIRbR1ZZ3cIaOATR
+         JvHA00pmX2NCw+EJxQNQwsFWHhSIcr7QwEm5UZuvhfXmBkjzOdAXGK9UbG9RjZYzXI
+         +jz9CdL1W9gtw==
+Date:   Wed, 17 Nov 2021 20:42:14 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jordy Zomer <jordy@pwning.systems>
+Cc:     linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        wengjianfeng <wengjianfeng@yulong.com>, netdev@vger.kernel.org
+Subject: Re: [PATCH] nfc: st-nci: Fix potential buffer overflows in
+ EVT_TRANSACTION
+Message-ID: <20211117204214.5fe26708@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211117171554.2731340-1-jordy@pwning.systems>
+References: <20211117171554.2731340-1-jordy@pwning.systems>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/J.hq2Ohkh7xO/_6rgcLz4tg";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/J.hq2Ohkh7xO/_6rgcLz4tg
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, 17 Nov 2021 18:15:51 +0100 Jordy Zomer wrote:
+> +
+> +		// Checking if the length of the AID is valid
+> +		if (transaction->aid_len > sizeof(transaction->aid))
+> +			return -EINVAL;
+> +
+> +
 
-Hi all,
+Please remove the double blank lines and use more common style of
+multi-line comments /* */ like the rest of this file.
 
-On Thu, 18 Nov 2021 15:24:04 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Changes since 20211117:
-
-Sorry, I forgot to say that there will be no linux-next release
-tomorrow or on Monday.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/J.hq2Ohkh7xO/_6rgcLz4tg
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGV2XUACgkQAVBC80lX
-0GzVoAf+My5VhcYdO5wmLWbjguU4w/Lh+7vjrtoPxrwfxQeyrl5vBz7SjWZfkAwR
-SOIg4zBKFw9TVLoZlIUBa/XUImMB1RWTUkvRiNy6baqycyHAJz5+s1DDhSksQOqu
-H32mvT9ulQpC1EkLC7PHcTYypVh0hTsYlpZjXf3zY3HdFfNSBvhUK7ih1ti8A5Hg
-LBYa2lfcoK0U68Bq84mMblMv4dqfRf7LPNsmQX3AVVtL26wKC8qCviIYXDp2YQPe
-ROgzJKE9TdmW/vruiQxEPHYtSDQAWZFNPjwHWCrHBaDkqEKo2qhv/juvKA+f4F0o
-ti90xZPZZxVxiAsisxxVTPHynLykTg==
-=qlAL
------END PGP SIGNATURE-----
-
---Sig_/J.hq2Ohkh7xO/_6rgcLz4tg--
+Same for the other patch. Thanks!
