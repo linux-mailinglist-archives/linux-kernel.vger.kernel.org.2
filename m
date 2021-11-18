@@ -2,393 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33DB4557B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:06:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 452BB4557C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245039AbhKRJJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 04:09:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245028AbhKRJIP (ORCPT
+        id S244975AbhKRJL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 04:11:27 -0500
+Received: from mxout04.lancloud.ru ([45.84.86.114]:52080 "EHLO
+        mxout04.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242855AbhKRJLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 04:08:15 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1F5C0613B9
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 01:05:15 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id l25so7400561eda.11
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 01:05:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lXnv3StCz6QOJgzKo0TU0WtB9sNFJ2NEu70wfyrmomU=;
-        b=HSCFnNZdlXyl+vXxXJE2gHtqTi/WFPXBQfVGJRTbDNCC8d3FL37LjuRLAH3PllB6C7
-         qAGaSKiJ6Dw6zvW8LfkEfmdVBSbxmIA39VqrLicnQ0PzgoUV8+BI+kw5BKGYaaRKm+PN
-         ty4/h2ion6eBIk7tnQ3/Up6okNbJYrOHT6L5E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=lXnv3StCz6QOJgzKo0TU0WtB9sNFJ2NEu70wfyrmomU=;
-        b=N++08TKdayjAVHpjS41Kpuo2gxkxm8nD2qYc/lWrFB7w/i/dcEj6ru7qKmHHuNYTgL
-         DApW7kUuW6CwU8ouS7fbbTDXnqFFrgO8V2RHlPIbinMwVLjf5dzlUDHxzFls9ZxkbRvK
-         j/S+mte/RY56Cl3nEAvHn2sshsIgpbqZdfjNeXZgTQ19FvIO9ATQf6FXtjiAjaD5/mgz
-         n5atrcrv+Ni2LFJtiM02EtlankuyWUbrFAQLvSpiarbBxmkit3wCqgZIxQ3V2icY/AKG
-         hyPe+OuRe5VZAf5EBYVaWEjm5WxD4VL4NnupJ88pm/tMXn8xqahcCiXYS4tF7DzG4Q+f
-         18uA==
-X-Gm-Message-State: AOAM531BtycfmwcuSHKSXXW/Nn5wO0apvkvakptK/UEk4lLPrqYVWLnf
-        9oLTkZTQr4agTNrtcxwVUlhCPA==
-X-Google-Smtp-Source: ABdhPJylQ8JBdXxl0Xb2D3tJ7cosBlu1Mj8PTO+yC7edF/HmQtFMt97ubDhZlPf8+OCdHzz0n+uziA==
-X-Received: by 2002:a05:6402:2751:: with SMTP id z17mr8692761edd.296.1637226314076;
-        Thu, 18 Nov 2021 01:05:14 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id v10sm1229647edt.24.2021.11.18.01.05.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 01:05:13 -0800 (PST)
-Date:   Thu, 18 Nov 2021 10:05:11 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Doug Anderson <dianders@chromium.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Rob Clark <robdclark@gmail.com>, linux-input@vger.kernel.org,
-        Rob Clark <robdclark@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v2 1/2] drm/input_helper: Add new input-handling helper
-Message-ID: <YZYXR4u6VBEi4qnM@phenom.ffwll.local>
-Mail-Followup-To: Brian Norris <briannorris@chromium.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Doug Anderson <dianders@chromium.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Rob Clark <robdclark@gmail.com>, linux-input@vger.kernel.org,
-        Rob Clark <robdclark@chromium.org>, David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org
-References: <20211117224841.3442482-1-briannorris@chromium.org>
- <20211117144807.v2.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
+        Thu, 18 Nov 2021 04:11:00 -0500
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout04.lancloud.ru 591F620CDD6D
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Message-ID: <6851a10a-e7cf-b533-ab9d-0df539bbba00@omp.ru>
+Date:   Thu, 18 Nov 2021 12:07:45 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211117144807.v2.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Subject: Re: [PATCH -next] ethernet: renesas: Use div64_ul instead of do_div
+To:     Yang Li <yang.lee@linux.alibaba.com>, <davem@davemloft.net>
+CC:     <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-renesas-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1637203805-125780-1-git-send-email-yang.lee@linux.alibaba.com>
+Content-Language: en-US
+Organization: Open Mobile Platform
+In-Reply-To: <1637203805-125780-1-git-send-email-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.11.198]
+X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To
+ LFEX1907.lancloud.ru (fd00:f066::207)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 02:48:40PM -0800, Brian Norris wrote:
-> A variety of applications have found it useful to listen to
-> user-initiated input events to make decisions within a DRM driver, given
-> that input events are often the first sign that we're going to start
-> doing latency-sensitive activities:
+Hello!
+
+    Why you didn't Cc me (as a reviewer)?
+
+On 18.11.2021 5:50, Yang Li wrote:
+
+> do_div() does a 64-by-32 division. Here the divisor is an
+> unsigned long which on some platforms is 64 bit wide. So use
+> div64_ul instead of do_div to avoid a possible truncation.
 > 
->  * Panel self-refresh: software-directed self-refresh (e.g., with
->    Rockchip eDP) is especially latency sensitive. In some cases, it can
->    take 10s of milliseconds for a panel to exit self-refresh, which can
->    be noticeable. Rockchip RK3399 Chrome OS systems have always shipped
->    with an input_handler boost, that preemptively exits self-refresh
->    whenever there is input activity.
+> Eliminate the following coccicheck warning:
+> ./drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c:2742:1-7: WARNING:
+> do_div() does a 64-by-32 division, please consider using div64_ul
+> instead.
 > 
->  * GPU drivers: on GPU-accelerated desktop systems, we may need to
->    render new frames immediately after user activity. Powering up the
->    GPU can take enough time that it is worthwhile to start this process
->    as soon as there is input activity. Many Chrome OS systems also ship
->    with an input_handler boost that powers up the GPU.
-> 
-> This patch provides a small helper library that abstracts some of the
-> input-subsystem details around picking which devices to listen to, and
-> some other boilerplate. This will be used in the next patch to implement
-> the first bullet: preemptive exit for panel self-refresh.
-> 
-> Bits of this are adapted from code the Android and/or Chrome OS kernels
-> have been carrying for a while.
-> 
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 > ---
+>   drivers/net/ethernet/renesas/ravb_main.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Changes in v2:
->  - Honor CONFIG_INPUT dependency, via new CONFIG_DRM_INPUT_HELPER
->  - Remove void*; users should use container_of()
->  - Document the callback context
-> 
->  drivers/gpu/drm/Kconfig            |   6 ++
->  drivers/gpu/drm/Makefile           |   2 +
->  drivers/gpu/drm/drm_input_helper.c | 143 +++++++++++++++++++++++++++++
->  include/drm/drm_input_helper.h     |  41 +++++++++
+> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+> index b4c597f..2b89710 100644
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> @@ -2489,7 +2489,7 @@ static int ravb_set_gti(struct net_device *ndev)
+>   		return -EINVAL;
+>   
+>   	inc = 1000000000ULL << 20;
+> -	do_div(inc, rate);
+> +	inc = div64_ul(inc, rate);
 
-Please add documentation for this and include it under
-Documentation/gpu/drm-kms-helpers.rst in a suitable place.
+    Why not just:
 
-Standards for core code should be overview DOC: with references to key
-functions/structs, and all driver visible structs, functions (static
-inline in header or exported) fully documented.
+	inc = div64_ul(1000000000ULL << 20, rate);
 
->  4 files changed, 192 insertions(+)
->  create mode 100644 drivers/gpu/drm/drm_input_helper.c
->  create mode 100644 include/drm/drm_input_helper.h
-> 
-> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-> index fb144617055b..381476b10a9d 100644
-> --- a/drivers/gpu/drm/Kconfig
-> +++ b/drivers/gpu/drm/Kconfig
-> @@ -79,9 +79,15 @@ config DRM_DEBUG_SELFTEST
->  
->  	  If in doubt, say "N".
->  
-> +config DRM_INPUT_HELPER
-> +	def_bool y
-> +	depends on DRM_KMS_HELPER
-> +	depends on INPUT
+>   	if (inc < GTI_TIV_MIN || inc > GTI_TIV_MAX) {
+>   		dev_err(dev, "gti.tiv increment 0x%llx is outside the range 0x%x - 0x%x\n",
 
-Uh please no configs for each thing, it just makes everything more
-complex. Do we _really_ need this?
-
-> +
->  config DRM_KMS_HELPER
->  	tristate
->  	depends on DRM
-> +	select DRM_INPUT_HELPER if INPUT
->  	help
->  	  CRTC helpers for KMS drivers.
->  
-> diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
-> index 1c41156deb5f..9a6494aa45e6 100644
-> --- a/drivers/gpu/drm/Makefile
-> +++ b/drivers/gpu/drm/Makefile
-> @@ -56,6 +56,8 @@ drm_kms_helper-y := drm_bridge_connector.o drm_crtc_helper.o drm_dp_helper.o \
->  		drm_atomic_state_helper.o drm_damage_helper.o \
->  		drm_format_helper.o drm_self_refresh_helper.o drm_rect.o
->  
-> +drm_kms_helper-$(CONFIG_DRM_INPUT_HELPER) += drm_input_helper.o
-> +
->  drm_kms_helper-$(CONFIG_DRM_PANEL_BRIDGE) += bridge/panel.o
->  drm_kms_helper-$(CONFIG_DRM_FBDEV_EMULATION) += drm_fb_helper.o
->  drm_kms_helper-$(CONFIG_DRM_KMS_CMA_HELPER) += drm_fb_cma_helper.o
-> diff --git a/drivers/gpu/drm/drm_input_helper.c b/drivers/gpu/drm/drm_input_helper.c
-> new file mode 100644
-> index 000000000000..470f90865c7c
-> --- /dev/null
-> +++ b/drivers/gpu/drm/drm_input_helper.c
-> @@ -0,0 +1,143 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2021 Google, Inc.
-> + */
-> +#include <linux/input.h>
-> +#include <linux/slab.h>
-> +
-> +#include <drm/drm_device.h>
-> +#include <drm/drm_input_helper.h>
-> +
-> +/**
-> + * DOC: overview
-> + *
-> + * This helper library provides a thin wrapper around input handles, so that
-> + * DRM drivers can easily perform domain-specific actions in response to user
-> + * activity. e.g., if someone is moving a mouse, we're likely to want to
-> + * display something soon, and we should exit panel self-refresh.
-> + */
-> +
-> +static void drm_input_event(struct input_handle *handle, unsigned int type,
-> +			    unsigned int code, int value)
-> +{
-> +	struct drm_input_handler *handler = handle->handler->private;
-> +
-> +	handler->callback(handler);
-> +}
-> +
-> +static int drm_input_connect(struct input_handler *handler,
-> +			     struct input_dev *dev,
-> +			     const struct input_device_id *id)
-> +{
-> +	struct input_handle *handle;
-> +	int error;
-> +
-> +	handle = kzalloc(sizeof(struct input_handle), GFP_KERNEL);
-> +	if (!handle)
-> +		return -ENOMEM;
-> +
-> +	handle->dev = dev;
-> +	handle->handler = handler;
-> +	handle->name = "drm-input-helper";
-> +
-> +	error = input_register_handle(handle);
-> +	if (error)
-> +		goto err2;
-> +
-> +	error = input_open_device(handle);
-> +	if (error)
-> +		goto err1;
-> +
-> +	return 0;
-> +
-> +err1:
-> +	input_unregister_handle(handle);
-> +err2:
-> +	kfree(handle);
-> +	return error;
-> +}
-> +
-> +static void drm_input_disconnect(struct input_handle *handle)
-> +{
-> +	input_close_device(handle);
-> +	input_unregister_handle(handle);
-> +	kfree(handle);
-> +}
-> +
-> +static const struct input_device_id drm_input_ids[] = {
-> +	{
-> +		.flags = INPUT_DEVICE_ID_MATCH_EVBIT |
-> +			 INPUT_DEVICE_ID_MATCH_ABSBIT,
-> +		.evbit = { BIT_MASK(EV_ABS) },
-> +		.absbit = { [BIT_WORD(ABS_MT_POSITION_X)] =
-> +			    BIT_MASK(ABS_MT_POSITION_X) |
-> +			    BIT_MASK(ABS_MT_POSITION_Y) },
-> +	}, /* multi-touch touchscreen */
-> +	{
-> +		.flags = INPUT_DEVICE_ID_MATCH_EVBIT,
-> +		.evbit = { BIT_MASK(EV_ABS) },
-> +		.absbit = { [BIT_WORD(ABS_X)] = BIT_MASK(ABS_X) }
-> +
-> +	}, /* stylus or joystick device */
-> +	{
-> +		.flags = INPUT_DEVICE_ID_MATCH_EVBIT,
-> +		.evbit = { BIT_MASK(EV_KEY) },
-> +		.keybit = { [BIT_WORD(BTN_LEFT)] = BIT_MASK(BTN_LEFT) },
-> +	}, /* pointer (e.g. trackpad, mouse) */
-> +	{
-> +		.flags = INPUT_DEVICE_ID_MATCH_EVBIT,
-> +		.evbit = { BIT_MASK(EV_KEY) },
-> +		.keybit = { [BIT_WORD(KEY_ESC)] = BIT_MASK(KEY_ESC) },
-> +	}, /* keyboard */
-> +	{
-> +		.flags = INPUT_DEVICE_ID_MATCH_EVBIT |
-> +			 INPUT_DEVICE_ID_MATCH_KEYBIT,
-> +		.evbit = { BIT_MASK(EV_KEY) },
-> +		.keybit = {[BIT_WORD(BTN_JOYSTICK)] = BIT_MASK(BTN_JOYSTICK) },
-> +	}, /* joysticks not caught by ABS_X above */
-> +	{
-> +		.flags = INPUT_DEVICE_ID_MATCH_EVBIT |
-> +			 INPUT_DEVICE_ID_MATCH_KEYBIT,
-> +		.evbit = { BIT_MASK(EV_KEY) },
-> +		.keybit = { [BIT_WORD(BTN_GAMEPAD)] = BIT_MASK(BTN_GAMEPAD) },
-> +	}, /* gamepad */
-> +	{ },
-> +};
-> +
-> +int drm_input_handle_register(struct drm_device *dev,
-> +			      struct drm_input_handler *handler)
-> +{
-> +	int ret;
-> +
-> +	if (!handler->callback)
-> +		return -EINVAL;
-> +
-> +	handler->handler.event = drm_input_event;
-> +	handler->handler.connect = drm_input_connect;
-> +	handler->handler.disconnect = drm_input_disconnect;
-> +	handler->handler.name = kasprintf(GFP_KERNEL, "drm-input-helper-%s",
-> +					  dev_name(dev->dev));
-> +	if (!handler->handler.name)
-> +		return -ENOMEM;
-> +
-> +	handler->handler.id_table = drm_input_ids;
-> +	handler->handler.private = handler;
-> +
-> +	ret = input_register_handler(&handler->handler);
-> +	if (ret)
-> +		goto err;
-> +
-> +	return 0;
-> +
-> +err:
-> +	kfree(handler->handler.name);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(drm_input_handle_register);
-> +
-> +void drm_input_handle_unregister(struct drm_input_handler *handler)
-> +{
-> +	input_unregister_handler(&handler->handler);
-> +	kfree(handler->handler.name);
-> +}
-> +EXPORT_SYMBOL(drm_input_handle_unregister);
-> diff --git a/include/drm/drm_input_helper.h b/include/drm/drm_input_helper.h
-> new file mode 100644
-> index 000000000000..7904f397b934
-> --- /dev/null
-> +++ b/include/drm/drm_input_helper.h
-> @@ -0,0 +1,41 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2021 Google, Inc.
-> + */
-> +#ifndef __DRM_INPUT_HELPER_H__
-> +#define __DRM_INPUT_HELPER_H__
-> +
-> +#include <linux/input.h>
-> +
-> +struct drm_device;
-> +
-> +struct drm_input_handler {
-> +	/*
-> +	 * Callback to call for input activity. Will be called in an atomic
-> +	 * context.
-
-How atomic? Like hardirq, and nasty spinlocks held?
-
-> +	 */
-> +	void (*callback)(struct drm_input_handler *handler);
-> +
-> +	struct input_handler handler;
-> +};
-> +
-> +#if defined(CONFIG_DRM_INPUT_HELPER)
-> +
-> +int drm_input_handle_register(struct drm_device *dev,
-> +			      struct drm_input_handler *handler);
-> +void drm_input_handle_unregister(struct drm_input_handler *handler);
-> +
-> +#else /* !CONFIG_DRM_INPUT_HELPER */
-> +
-> +static inline int drm_input_handle_register(struct drm_device *dev,
-> +					    struct drm_input_handler *handler)
-> +{
-> +	return 0;
-> +}
-
-I guess the reason behind the helper is that you also want to use this in
-drivers or maybe drm/sched?
-
-Anyway I think it looks all reasonable. Definitely need an ack from input
-people that the event list you have is a good choice, I have no idea what
-that all does. Maybe also document that part a bit more.
--Daniel
-
-
-> +
-> +static inline void
-> +drm_input_handle_unregister(struct drm_input_handler *handler) {}
-> +
-> +#endif /* CONFIG_DRM_INPUT_HELPER */
-> +
-> +#endif /* __DRM_INPUT_HELPER_H__ */
-> -- 
-> 2.34.0.rc1.387.gb447b232ab-goog
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+MBR, Sergey
