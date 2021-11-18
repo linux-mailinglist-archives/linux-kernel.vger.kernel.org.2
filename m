@@ -2,69 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70560455AD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:42:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF09B455ACE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:42:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344361AbhKRLpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 06:45:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344141AbhKRLnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 06:43:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1E86861BCF;
-        Thu, 18 Nov 2021 11:40:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637235612;
-        bh=z75Sd0PO1i42YMnBmU5hptoHe8TRz3K51r91cbRFcmU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=AvQSUoog1hkEKuJtUlojJk/8OAoJY5q0d18AHpHl/AQsYdM3y+1dKatTwdY5dcvF2
-         uEVM14vnfi413Xy/Kq3MxraPywR9aG+JSBP4GQKKA/3koI1fM1AqOVygh7Z4hPeH/z
-         ZOWpvZScNJZo7Ax9YD8jZrqxo3CD5W1G+/u745+u1s70/kurVXu2MaMS/y2lctRJWz
-         JxjlKfcYdkTqYoQFT+DWrnrriE8TN9xGhZ8KPEQJ4Joe65bnEBjQQ/ghRVgAkU2L2D
-         X+B+0AKceOtAGJECFvaOlInksAkuUKLuJYmiNEp2besfQqEBjgQRLfmw/ksC+Aohoe
-         TlzJSFLAJ/Wig==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 18626609CD;
-        Thu, 18 Nov 2021 11:40:12 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1344332AbhKRLoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 06:44:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31031 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344091AbhKRLnm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 06:43:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637235642;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ilkLwQyWVzoTxezBXpsOqx5haL4+cCYbCvehJdiBMCs=;
+        b=gs/lezH59MK5pNFAtqhlqzQ2tgL+Vfv57AQRH0XofRvMl3tZDJVXIdt5bjZTA8UXZp+0u5
+        vVd/dYJXScMabjxIM9I2yR5GSNQiyjb8EjMkvbe/ux1K5EEjtkNeRkE1Daq2p/FO3CPiBD
+        bsozqfgG8gV7CqJrQrJ/SLZN55rEPQ0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-216-_Z8H5PfvMBKlKzrbB1aG3Q-1; Thu, 18 Nov 2021 06:40:41 -0500
+X-MC-Unique: _Z8H5PfvMBKlKzrbB1aG3Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2DE9D1572B;
+        Thu, 18 Nov 2021 11:40:40 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B3A93179B3;
+        Thu, 18 Nov 2021 11:40:39 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     seanjc@google.com, mlevitsk@redhat.com
+Subject: [PATCH v3] KVM: MMU: update comment on the number of page role combinations
+Date:   Thu, 18 Nov 2021 06:40:39 -0500
+Message-Id: <20211118114039.1733976-1-pbonzini@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: stmmac: dwmac-qcom-ethqos: add platform level
- clocks management
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163723561209.11739.17599978487412465889.git-patchwork-notify@kernel.org>
-Date:   Thu, 18 Nov 2021 11:40:12 +0000
-References: <20211117110538.204948-1-bhupesh.sharma@linaro.org>
-In-Reply-To: <20211117110538.204948-1-bhupesh.sharma@linaro.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     netdev@vger.kernel.org, vkoul@kernel.org, bhupesh.linux@gmail.com,
-        linux-kernel@vger.kernel.org, davem@davemloft.net
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Fix the number of bits in the role, and simplify the explanation of
+why several bits or combinations of bits are redundant.
 
-This patch was applied to netdev/net-next.git (master)
-by David S. Miller <davem@davemloft.net>:
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/include/asm/kvm_host.h | 32 ++++++++++++++++++++------------
+ 1 file changed, 20 insertions(+), 12 deletions(-)
 
-On Wed, 17 Nov 2021 16:35:38 +0530 you wrote:
-> Split clocks settings from init callback into clks_config callback,
-> which could support platform level clock management.
-> 
-> Cc: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> ---
->  .../stmicro/stmmac/dwmac-qcom-ethqos.c        | 26 ++++++++++++++++---
->  1 file changed, 23 insertions(+), 3 deletions(-)
-
-Here is the summary with links:
-  - [net-next] net: stmmac: dwmac-qcom-ethqos: add platform level clocks management
-    https://git.kernel.org/netdev/net-next/c/6c950ca7c11c
-
-You are awesome, thank you!
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 6ac61f85e07b..55f280e96b59 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -291,19 +291,27 @@ struct kvm_kernel_irq_routing_entry;
+  * the number of unique SPs that can theoretically be created is 2^n, where n
+  * is the number of bits that are used to compute the role.
+  *
+- * But, even though there are 18 bits in the mask below, not all combinations
+- * of modes and flags are possible.  The maximum number of possible upper-level
+- * shadow pages for a single gfn is in the neighborhood of 2^13.
++ * There are 19 bits in the mask below, and the page tracking code only uses
++ * 16 bits per gfn in kvm_arch_memory_slot to count whether a page is tracked.
++ * However, not all combinations of modes and flags are possible.  First
++ * of all, invalid shadow pages pages are not accounted, and "smm" is constant
++ * in a given memslot (because memslots are per address space, and SMM uses
++ * a separate address space).  Of the remaining 2^17 possibilities:
+  *
+- *   - invalid shadow pages are not accounted.
+- *   - level is effectively limited to four combinations, not 16 as the number
+- *     bits would imply, as 4k SPs are not tracked (allowed to go unsync).
+- *   - level is effectively unused for non-PAE paging because there is exactly
+- *     one upper level (see 4k SP exception above).
+- *   - quadrant is used only for non-PAE paging and is exclusive with
+- *     gpte_is_8_bytes.
+- *   - execonly and ad_disabled are used only for nested EPT, which makes it
+- *     exclusive with quadrant.
++ *   - quadrant will only be used if gpte_is_8_bytes=0 (non-PAE paging);
++ *     execonly and ad_disabled are only used for nested EPT which has
++ *     gpte_is_8_bytes=1.  Therefore, 2 bits are always unused.
++ *
++ *   - the 4 bits of level are effectively limited to the values 2/3/4/5,
++ *     as 4k SPs are not tracked (allowed to go unsync).  In addition non-PAE
++ *     paging has exactly one upper level, making level completely redundant
++ *     when gpte_is_8_bytes=0.
++ *
++ *   - on top of this, smep_andnot_wp and smap_andnot_wp are only set if
++ *     cr0_wp=0, therefore these three bits only give rise to 5 possibilities.
++ *
++ * Therefore, the maximum number of possible upper-level shadow pages for a
++ * given (as_id, gfn) pair is a bit less than 2^12.
+  */
+ union kvm_mmu_page_role {
+ 	u32 word;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.27.0
 
