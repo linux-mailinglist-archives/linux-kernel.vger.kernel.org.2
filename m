@@ -2,74 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C292456122
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:07:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEBAD456126
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:08:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233925AbhKRRKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 12:10:36 -0500
-Received: from mga01.intel.com ([192.55.52.88]:8201 "EHLO mga01.intel.com"
+        id S233939AbhKRRLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 12:11:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233905AbhKRRKf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 12:10:35 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="258021102"
-X-IronPort-AV: E=Sophos;i="5.87,245,1631602800"; 
-   d="scan'208";a="258021102"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 09:06:46 -0800
-X-IronPort-AV: E=Sophos;i="5.87,245,1631602800"; 
-   d="scan'208";a="507520814"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 09:06:45 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mnkru-008EdW-Ki;
-        Thu, 18 Nov 2021 19:06:38 +0200
-Date:   Thu, 18 Nov 2021 19:06:38 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] gpiolib: check the 'ngpios' property in core
- gpiolib code
-Message-ID: <YZaIHnPQCsMucEMt@smile.fi.intel.com>
-References: <20211118132317.15898-1-brgl@bgdev.pl>
- <20211118132317.15898-2-brgl@bgdev.pl>
- <YZZ0xPU207qDaOpX@smile.fi.intel.com>
- <CAMRc=McHCUsO430t618EW92G-B_mgxXucYye3qb85697MHW_KQ@mail.gmail.com>
- <YZaG9vPYh4YIwEIi@smile.fi.intel.com>
+        id S233903AbhKRRLv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 12:11:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAFCC60295;
+        Thu, 18 Nov 2021 17:08:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637255330;
+        bh=D78NxU2zghKsclghXx0yz3B0QO/agSm5yD90cTOxoPM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UVOX7XjQZNMGLYfWa2H45MH36B5Xf7odxtfEw3Ro0+U7vLdUIQpfvUATZME+j80wT
+         q5jJsyxhy0B8LIc0SVcdVSajkHjRWlXAmDOOx0q6A3vR1xpVonJy8PmrOe9EuJiAai
+         Qc8LNCN0ee89E1R4+Vdj+FXAmx/qtmnQOtB1Q/ic=
+Date:   Thu, 18 Nov 2021 18:08:48 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Holger Kiehl <Holger.Kiehl@dwd.de>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.15 000/923] 5.15.3-rc3 review
+Message-ID: <YZaIoGm+td26duG7@kroah.com>
+References: <20211117101657.463560063@linuxfoundation.org>
+ <413ef3-c782-be14-da3-da86ed14a210@diagnostix.dwd.de>
+ <YZYLYlvdfi9ddToA@kroah.com>
+ <45eb66bb-818d-d1f-a78f-f7c7c1bcaa2@diagnostix.dwd.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YZaG9vPYh4YIwEIi@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <45eb66bb-818d-d1f-a78f-f7c7c1bcaa2@diagnostix.dwd.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 07:01:42PM +0200, Andy Shevchenko wrote:
-> On Thu, Nov 18, 2021 at 05:38:14PM +0100, Bartosz Golaszewski wrote:
-> > On Thu, Nov 18, 2021 at 4:46 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Thu, Nov 18, 2021 at 02:23:17PM +0100, Bartosz Golaszewski wrote:
-
-...
-
-> > > > +             if (ret) {
-
-> > > > +                     ret = -EINVAL;
-> > >
-> > > Sorry, forgot to ask, why this is needed?
-> > 
-> > What do you mean? 0 lines doesn't sound like a valid value so -EINVAL
-> > is in order.
+On Thu, Nov 18, 2021 at 02:08:33PM +0000, Holger Kiehl wrote:
+> On Thu, 18 Nov 2021, Greg Kroah-Hartman wrote:
 > 
-> What is so special about -EINVAL? Why ret can't be returned?
+> > On Wed, Nov 17, 2021 at 08:25:12PM +0000, Holger Kiehl wrote:
+> > > Hello,
+> > > 
+> > > On Wed, 17 Nov 2021, Greg Kroah-Hartman wrote:
+> > > 
+> > > > This is the start of the stable review cycle for the 5.15.3 release.
+> > > > There are 923 patches in this series, all will be posted as a response
+> > > > to this one.  If anyone has any issues with these being applied, please
+> > > > let me know.
+> > > > 
+> > > > Responses should be made by Fri, 19 Nov 2021 10:14:52 +0000.
+> > > > Anything received after that time might be too late.
+> > > > 
+> > > > The whole patch series can be found in one patch at:
+> > > > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.3-rc3.gz
+> > > > or in the git tree and branch at:
+> > > > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> > > > and the diffstat can be found below.
+> > > > 
+> > > On a Deskmini X300 with a AMD APU 5700G this does not boot (rc1+rc2 also
+> > > do not boot). As Scott Bruce already noticed, if one removes
+> > > c3fc9d9e8f2dc518a8ce3c77f833a11b47865944 "x86: Fix __get_wchan() for
+> > > !STACKTRACE" it boots.
+> > 
+> > Now dropped, thanks.
+> > 
+> Thanks. Now 5.15.3-rc4 works fine!
 
-See another mail, I explained how the code should be.
+Wonderful, thanks for testing and letting us know.
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+greg k-h
