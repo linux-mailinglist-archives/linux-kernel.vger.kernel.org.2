@@ -2,145 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25FCA455E37
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53693455E4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:36:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233484AbhKROiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 09:38:21 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:39220 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233159AbhKROht (ORCPT
+        id S233205AbhKROjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 09:39:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233423AbhKROiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 09:37:49 -0500
-Date:   Thu, 18 Nov 2021 14:34:47 -0000
+        Thu, 18 Nov 2021 09:38:02 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F46C06175C;
+        Thu, 18 Nov 2021 06:35:02 -0800 (PST)
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637246088;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        s=2020; t=1637246100;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1CV93nGgLWDjwZaIN3bqqvQXIf0meYWmaW5aNlpM5Aw=;
-        b=NkYKwq3/msuo1WHHYaDT3cZKsvGtR+MRaM5h2bWCOye3edkMk/+Q33QTCVTQ9niIznTwd3
-        oh4KUCZeIB9wdfMPaOGwffynTr3FY6YDNxpIcjY8aUuq867EOAW93vafOTeGENFgcHUHo/
-        AhGEGV5rM+V+MNiCBpKtlSIVtuD4N29tYRnkhNJpAbQCSW2yQG3VuJ0k+1VfFu3SDHuGjF
-        /hYz0Vne+tvjCHZKL5x12IklCIFJEdP7/qk1oOVnWdyjy0i/DQWsnLrnSDG655sPQfpU1L
-        DpdSg1+nXLsFXfPV7tcmWDQQ18Vb4VAcH3odb21dW6+vJ2bEscHSo2hcyUZslA==
+        bh=qKv7/S++igpwRRMI31ZQXmTblRNIVp/T1R6Y07Jvo0k=;
+        b=1pXf7QNNOPUPgH/2+6/KLHU97NvjAfztV9rZLJBzhy3YsZnmJR1uddRDDQ7ldyHxro06VF
+        EcJaBe3GY4UBqG+aTVlvXZQIw8JUJI9c3b+jHWrdCSQLil6mvFdbQYiRYeEMsSQ5WnGvEC
+        9jYn8rLQLJKYdtHp1MOPwzjgY3bhlglGb+aQByig1Gt9eTjebKJLdlniWZWPD37tj7Umc1
+        eby8EVNtM+p0HB4ISqBib7OFwU3VSAomZC9dJtVx4iV61UEyPUNRf7auiIoAhKUEG8v/aa
+        EAAdgmJsVUjdMVM1OkAmkX62u9LEMs2ZlfiR6258OmXziMY4aYpRHqJXt4H6DQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637246088;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        s=2020e; t=1637246100;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1CV93nGgLWDjwZaIN3bqqvQXIf0meYWmaW5aNlpM5Aw=;
-        b=ksNtQU2wFFuxxcK0/mjOfBg04At9ZMySHoyfgrcFH0JhoYMviuRza4Fff06lxixhXvOQCv
-        fkUb+aoCzEYVRICA==
-From:   "tip-bot2 for Sean Christopherson" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] KVM: x86: Register Processor Trace interrupt hook
- iff PT enabled in guest
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Artem Kashkanov <artem.kashkanov@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, stable@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20211111020738.2512932-4-seanjc@google.com>
-References: <20211111020738.2512932-4-seanjc@google.com>
+        bh=qKv7/S++igpwRRMI31ZQXmTblRNIVp/T1R6Y07Jvo0k=;
+        b=tHS31gIlAH8vVjujo5IrIp6dvI+yrk5VJoiDwaEHnapYtSCg2ndXuXxfEyRvv7NQatLrxd
+        GeoUqrz6ECB42kBw==
+To:     linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH 4/8] kernel/fork: Don't assign the stack pointer in dup_task_struct().
+Date:   Thu, 18 Nov 2021 15:34:48 +0100
+Message-Id: <20211118143452.136421-5-bigeasy@linutronix.de>
+In-Reply-To: <20211118143452.136421-1-bigeasy@linutronix.de>
+References: <20211118143452.136421-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <163724608738.11128.13025616950861371216.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+All four versions of alloc_thread_stack_node() assign now
+task_struct::stack in case the allocation was successful.
 
-Commit-ID:     f4b027c5c8199abd4fb6f00d67d380548dbfdfa8
-Gitweb:        https://git.kernel.org/tip/f4b027c5c8199abd4fb6f00d67d380548dbfdfa8
-Author:        Sean Christopherson <seanjc@google.com>
-AuthorDate:    Thu, 11 Nov 2021 02:07:24 
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 17 Nov 2021 14:49:06 +01:00
+Let alloc_thread_stack_node() return an error code instead of the stack
+pointer and remove the stack assignment in dup_task_struct().
 
-KVM: x86: Register Processor Trace interrupt hook iff PT enabled in guest
-
-Override the Processor Trace (PT) interrupt handler for guest mode if and
-only if PT is configured for host+guest mode, i.e. is being used
-independently by both host and guest.  If PT is configured for system
-mode, the host fully controls PT and must handle all events.
-
-Fixes: 8479e04e7d6b ("KVM: x86: Inject PMI for KVM guest")
-Reported-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Reported-by: Artem Kashkanov <artem.kashkanov@intel.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20211111020738.2512932-4-seanjc@google.com
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- arch/x86/include/asm/kvm_host.h | 1 +
- arch/x86/kvm/vmx/vmx.c          | 1 +
- arch/x86/kvm/x86.c              | 5 ++++-
- 3 files changed, 6 insertions(+), 1 deletion(-)
+ kernel/fork.c | 47 ++++++++++++++++-------------------------------
+ 1 file changed, 16 insertions(+), 31 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index e5d8700..41e858d 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1516,6 +1516,7 @@ struct kvm_x86_init_ops {
- 	int (*disabled_by_bios)(void);
- 	int (*check_processor_compatibility)(void);
- 	int (*hardware_setup)(void);
-+	bool (*intel_pt_intr_in_guest)(void);
- 
- 	struct kvm_x86_ops *runtime_ops;
- };
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index ba66c17..7d90c8d 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7865,6 +7865,7 @@ static struct kvm_x86_init_ops vmx_init_ops __initdata = {
- 	.disabled_by_bios = vmx_disabled_by_bios,
- 	.check_processor_compatibility = vmx_check_processor_compat,
- 	.hardware_setup = hardware_setup,
-+	.intel_pt_intr_in_guest = vmx_pt_mode_is_host_guest,
- 
- 	.runtime_ops = &vmx_x86_ops,
- };
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 50f0cd1..760c4e3 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -8510,7 +8510,7 @@ static struct perf_guest_info_callbacks kvm_guest_cbs = {
- 	.is_in_guest		= kvm_is_in_guest,
- 	.is_user_mode		= kvm_is_user_mode,
- 	.get_guest_ip		= kvm_get_guest_ip,
--	.handle_intel_pt_intr	= kvm_handle_intel_pt_intr,
-+	.handle_intel_pt_intr	= NULL,
- };
- 
- #ifdef CONFIG_X86_64
-@@ -11222,6 +11222,8 @@ int kvm_arch_hardware_setup(void *opaque)
- 	memcpy(&kvm_x86_ops, ops->runtime_ops, sizeof(kvm_x86_ops));
- 	kvm_ops_static_call_update();
- 
-+	if (ops->intel_pt_intr_in_guest && ops->intel_pt_intr_in_guest())
-+		kvm_guest_cbs.handle_intel_pt_intr = kvm_handle_intel_pt_intr;
- 	perf_register_guest_info_callbacks(&kvm_guest_cbs);
- 
- 	if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
-@@ -11252,6 +11254,7 @@ int kvm_arch_hardware_setup(void *opaque)
- void kvm_arch_hardware_unsetup(void)
- {
- 	perf_unregister_guest_info_callbacks(&kvm_guest_cbs);
-+	kvm_guest_cbs.handle_intel_pt_intr = NULL;
- 
- 	static_call(kvm_x86_hardware_unsetup)();
+diff --git a/kernel/fork.c b/kernel/fork.c
+index d1681a415cdf1..5e58e0a923f85 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -210,7 +210,7 @@ static int free_vm_stack_cache(unsigned int cpu)
+ 	return 0;
  }
+=20
+-static unsigned long *alloc_thread_stack_node(struct task_struct *tsk, int=
+ node)
++static int alloc_thread_stack_node(struct task_struct *tsk, int node)
+ {
+ 	void *stack;
+ 	int i;
+@@ -231,7 +231,7 @@ static unsigned long *alloc_thread_stack_node(struct ta=
+sk_struct *tsk, int node)
+=20
+ 		tsk->stack_vm_area =3D s;
+ 		tsk->stack =3D s->addr;
+-		return s->addr;
++		return 0;
+ 	}
+=20
+ 	/*
+@@ -244,17 +244,16 @@ static unsigned long *alloc_thread_stack_node(struct =
+task_struct *tsk, int node)
+ 				     THREADINFO_GFP & ~__GFP_ACCOUNT,
+ 				     PAGE_KERNEL,
+ 				     0, node, __builtin_return_address(0));
+-
++	if (!stack)
++		return -ENOMEM;
+ 	/*
+ 	 * We can't call find_vm_area() in interrupt context, and
+ 	 * free_thread_stack() can be called in interrupt context,
+ 	 * so cache the vm_struct.
+ 	 */
+-	if (stack) {
+-		tsk->stack_vm_area =3D find_vm_area(stack);
+-		tsk->stack =3D stack;
+-	}
+-	return stack;
++	tsk->stack_vm_area =3D find_vm_area(stack);
++	tsk->stack =3D stack;
++	return 0;
+ }
+=20
+ static void free_thread_stack(struct task_struct *tsk)
+@@ -281,16 +280,16 @@ static void free_thread_stack(struct task_struct *tsk)
+=20
+ #  else /* !CONFIG_VMAP_STACK */
+=20
+-static unsigned long *alloc_thread_stack_node(struct task_struct *tsk, int=
+ node)
++static int alloc_thread_stack_node(struct task_struct *tsk, int node)
+ {
+ 	struct page *page =3D alloc_pages_node(node, THREADINFO_GFP,
+ 					     THREAD_SIZE_ORDER);
+=20
+ 	if (likely(page)) {
+ 		tsk->stack =3D kasan_reset_tag(page_address(page));
+-		return tsk->stack;
++		return 0;
+ 	}
+-	return NULL;
++	return -ENOMEM;
+ }
+=20
+ static void free_thread_stack(struct task_struct *tsk)
+@@ -304,14 +303,13 @@ static void free_thread_stack(struct task_struct *tsk)
+=20
+ static struct kmem_cache *thread_stack_cache;
+=20
+-static unsigned long *alloc_thread_stack_node(struct task_struct *tsk,
+-						  int node)
++static int alloc_thread_stack_node(struct task_struct *tsk, int node)
+ {
+ 	unsigned long *stack;
+ 	stack =3D kmem_cache_alloc_node(thread_stack_cache, THREADINFO_GFP, node);
+ 	stack =3D kasan_reset_tag(stack);
+ 	tsk->stack =3D stack;
+-	return stack;
++	return stack ? 0 : -ENOMEM;
+ }
+=20
+ static void free_thread_stack(struct task_struct *tsk)
+@@ -331,13 +329,13 @@ void thread_stack_cache_init(void)
+ # endif /* THREAD_SIZE >=3D PAGE_SIZE || defined(CONFIG_VMAP_STACK) */
+ #else /* CONFIG_ARCH_THREAD_STACK_ALLOCATOR */
+=20
+-static unsigned long *alloc_thread_stack_node(struct task_struct *tsk, int=
+ node)
++static int alloc_thread_stack_node(struct task_struct *tsk, int node)
+ {
+ 	unsigned long *stack;
+=20
+ 	stack =3D arch_alloc_thread_stack_node(tsk, node);
+ 	tsk->stack =3D stack;
+-	return stack;
++	return stack ? 0 : -ENOMEM;
+ }
+=20
+ static void free_thread_stack(struct task_struct *tsk, bool cache_only)
+@@ -893,8 +891,6 @@ void set_task_stack_end_magic(struct task_struct *tsk)
+ static struct task_struct *dup_task_struct(struct task_struct *orig, int n=
+ode)
+ {
+ 	struct task_struct *tsk;
+-	unsigned long *stack;
+-	struct vm_struct *stack_vm_area __maybe_unused;
+ 	int err;
+=20
+ 	if (node =3D=3D NUMA_NO_NODE)
+@@ -907,24 +903,13 @@ static struct task_struct *dup_task_struct(struct tas=
+k_struct *orig, int node)
+ 	if (err)
+ 		goto free_tsk;
+=20
+-	stack =3D alloc_thread_stack_node(tsk, node);
+-	if (!stack)
++	err =3D alloc_thread_stack_node(tsk, node);
++	if (err)
+ 		goto free_tsk;
+=20
+ 	if (memcg_charge_kernel_stack(tsk))
+ 		goto free_stack;
+=20
+-	stack_vm_area =3D task_stack_vm_area(tsk);
+-
+-	/*
+-	 * arch_dup_task_struct() clobbers the stack-related fields.  Make
+-	 * sure they're properly initialized before using any stack-related
+-	 * functions again.
+-	 */
+-	tsk->stack =3D stack;
+-#ifdef CONFIG_VMAP_STACK
+-	tsk->stack_vm_area =3D stack_vm_area;
+-#endif
+ #ifdef CONFIG_THREAD_INFO_IN_TASK
+ 	refcount_set(&tsk->stack_refcount, 1);
+ #endif
+--=20
+2.33.1
+
