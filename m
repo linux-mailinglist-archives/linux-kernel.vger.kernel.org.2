@@ -2,118 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E330D455C07
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A5E455C13
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236285AbhKRNBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 08:01:33 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:57418 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232163AbhKRNAn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 08:00:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1637240263; x=1668776263;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=j/0ca7hXl32K5luAtpihGEK4BUx6G5/UQ4YGF/yuGKM=;
-  b=EDnqY57QKwSO0c5ur4w0blGtXqak3DImpCeJfN1CC/tCkDvlrxfBXDT+
-   Frt/PqNm/VsbyQGFO2GwEjGp0QL/se0u1WviTh7Czt6OoAmQ9K7pryVtE
-   kN9TAka19gorF3kBIncHGj6iY1aAhW6dICAo/uTLmFu6+t47Nnk+pxPzi
-   hSnKV2usNst+6KvFYfzxXXTmFWR/rJLfUtqJzgqEBNLj7kRgjhxIElfjW
-   qkyOr/RJoL79MkKJ5JYAtlrmgvxDbLlpHa6OtFRvzP5Fwuany6agQ+TKi
-   kEZl1gS44vtPRdhy2ra0K1kV8mr8/a5QA6/8I2izeHKPMks1D7BK/EfaN
-   Q==;
-IronPort-SDR: Tte6N3iF1NeBc+TCVuZMv25iVdoZ6KV/9vbmNe3qFYcrghSUQAvVxj9IQ4J1X+8Qz1JmkZvIvc
- FZMeNv8xWqxC49Yqy4r7tNOnMk06/eyo49cjxglOqXKPuH1WtA5xyOk1p9mDiMZi1RLIVjKuoj
- V+lf5ivrfHEtyAFj6k/LOri1HecMKrvhuW6z8T0Uf/jNx3FCX0YpCUsCVw8ksxuBZOJX96niJq
- 2iqiPIDEfpJXdXlup4tW4eNndOrtgtR7jBRHyKnp40ykfQH9myxiVV0dLVYk3+M16QGzZazWE8
- 1IM8bOrB/kpGmj98oDC9Oq+/
-X-IronPort-AV: E=Sophos;i="5.87,244,1631602800"; 
-   d="scan'208";a="136998624"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Nov 2021 05:57:40 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 18 Nov 2021 05:57:40 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Thu, 18 Nov 2021 05:57:40 -0700
-Date:   Thu, 18 Nov 2021 13:59:28 +0100
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <robh+dt@kernel.org>,
-        <p.zabel@pengutronix.de>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 3/5] net: lan966x: add port module support
-Message-ID: <20211118125928.tav7k5xlbnhrgp3o@soft-dev3-1.localhost>
-References: <20211117091858.1971414-1-horatiu.vultur@microchip.com>
- <20211117091858.1971414-4-horatiu.vultur@microchip.com>
- <YZTRUfvPPu5qf7mE@shell.armlinux.org.uk>
- <20211118095703.owsb2nen5hb5vjz2@soft-dev3-1.localhost>
- <YZYj9fwCeWdIZJOt@shell.armlinux.org.uk>
-MIME-Version: 1.0
+        id S233876AbhKRNEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 08:04:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244433AbhKRNDN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 08:03:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 981556124B;
+        Thu, 18 Nov 2021 13:00:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637240412;
+        bh=drOXdrLs1gvxQSOKb/m+6uXo0ib3X0iwjOT3EhXYufc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=XhVIs/APCZwGNgxPeyzyqSOIFuYciUYZvt+ZmsQIwovvN0Wxvpcz7lzQvvejShbBW
+         LBNoVsCjWt4GuLldwQBlDnRFHrtxP7bdKqA5muuKNuVM2+jZj+DOB3+Krit7dr6Ov9
+         tq2ypRWvYliiz3CFK0tJaXt8c/OuWq4C+46BmQOJTCM5MWTFnHUNmxb4tjZaxGamt8
+         r763GSWBlQA9d+uSXlVY6/yWwKgomBk2EJEGOFl11W20vbceCQVcx5S8oSBOCkW8g6
+         CLTjCAdogrHwHUj/BdGvNmzm7n45s4GlFJz+ORaRKXRGfl3gQ1CKOW8SDH9awblP2M
+         7pLnadp/UHv0w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8511860BE1;
+        Thu, 18 Nov 2021 13:00:12 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <YZYj9fwCeWdIZJOt@shell.armlinux.org.uk>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v7 net-next 0/8] net: dsa: felix: psfp support on vsc9959
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163724041253.16944.2537212050004573959.git-patchwork-notify@kernel.org>
+Date:   Thu, 18 Nov 2021 13:00:12 +0000
+References: <20211118101204.4338-1-xiaoliang.yang_1@nxp.com>
+In-Reply-To: <20211118101204.4338-1-xiaoliang.yang_1@nxp.com>
+To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, allan.nielsen@microchip.com,
+        joergen.andreasen@microchip.com, UNGLinuxDriver@microchip.com,
+        vinicius.gomes@intel.com, jiri@mellanox.com, idosch@mellanox.com,
+        alexandre.belloni@bootlin.com, po.liu@nxp.com, leoyang.li@nxp.com,
+        f.fainelli@gmail.com, andrew@lunn.ch, vivien.didelot@gmail.com,
+        claudiu.manoil@nxp.com, matthias.bgg@gmail.com,
+        horatiu.vultur@microchip.com, vladimir.oltean@nxp.com,
+        kuba@kernel.org, mingkai.hu@nxp.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 11/18/2021 09:59, Russell King (Oracle) wrote:
+Hello:
+
+This series was applied to netdev/net-next.git (master)
+by David S. Miller <davem@davemloft.net>:
+
+On Thu, 18 Nov 2021 18:11:56 +0800 you wrote:
+> VSC9959 hardware supports Per-Stream Filtering and Policing(PSFP).
+> This patch series add PSFP support on tc flower offload of ocelot
+> driver. Use chain 30000 to distinguish PSFP from VCAP blocks. Add gate
+> and police set to support PSFP in VSC9959 driver.
 > 
-> On Thu, Nov 18, 2021 at 10:57:03AM +0100, Horatiu Vultur wrote:
-> > > > +static void decode_sgmii_word(u16 lp_abil, struct lan966x_port_status *status)
-> > > > +{
-> > > > +     status->an_complete = true;
-> > > > +     if (!(lp_abil & LPA_SGMII_LINK)) {
-> > > > +             status->link = false;
-> > > > +             return;
-> > > > +     }
-> > > > +
-> > > > +     switch (lp_abil & LPA_SGMII_SPD_MASK) {
-> > > > +     case LPA_SGMII_10:
-> > > > +             status->speed = SPEED_10;
-> > > > +             break;
-> > > > +     case LPA_SGMII_100:
-> > > > +             status->speed = SPEED_100;
-> > > > +             break;
-> > > > +     case LPA_SGMII_1000:
-> > > > +             status->speed = SPEED_1000;
-> > > > +             break;
-> > > > +     default:
-> > > > +             status->link = false;
-> > > > +             return;
-> > > > +     }
-> > > > +     if (lp_abil & LPA_SGMII_FULL_DUPLEX)
-> > > > +             status->duplex = DUPLEX_FULL;
-> > > > +     else
-> > > > +             status->duplex = DUPLEX_HALF;
-> > > > +}
-> > >
-> > > The above mentioned function will also handle SGMII as well.
-> >
-> > I noticed that you have phylink_decode_sgmii_work(), so I will try to
-> > export it also.
+> v6-v7 changes:
+>  - Add a patch to restrict psfp rules on ingress port.
+>  - Using stats.drops to show the packet count discarded by the rule.
 > 
-> Another approach would be to split phylink_mii_c22_pcs_decode_state()
-> so that the appropriate decode function is selected depending on the
-> interface state, which may be a better idea.
+> [...]
 
-I have tried to look for phylink_mii_c22_pcs_decode_state() and I
-have found it only here [1], and seems that it depends on [2]. But not
-much activity happened to these series since October.
-Do you think they will still get in?
+Here is the summary with links:
+  - [v7,net-next,1/8] net: mscc: ocelot: add MAC table stream learn and lookup operations
+    https://git.kernel.org/netdev/net-next/c/0568c3bf3f34
+  - [v7,net-next,2/8] net: mscc: ocelot: set vcap IS2 chain to goto PSFP chain
+    https://git.kernel.org/netdev/net-next/c/5b1918a54a91
+  - [v7,net-next,3/8] net: mscc: ocelot: add gate and police action offload to PSFP
+    https://git.kernel.org/netdev/net-next/c/23e2c506ad6c
+  - [v7,net-next,4/8] net: dsa: felix: support psfp filter on vsc9959
+    https://git.kernel.org/netdev/net-next/c/7d4b564d6add
+  - [v7,net-next,5/8] net: dsa: felix: add stream gate settings for psfp
+    https://git.kernel.org/netdev/net-next/c/23ae3a787771
+  - [v7,net-next,6/8] net: mscc: ocelot: use index to set vcap policer
+    https://git.kernel.org/netdev/net-next/c/77043c37096d
+  - [v7,net-next,7/8] net: dsa: felix: use vcap policer to set flow meter for psfp
+    https://git.kernel.org/netdev/net-next/c/76c13ede7120
+  - [v7,net-next,8/8] net: dsa: felix: restrict psfp rules on ingress port
+    https://git.kernel.org/netdev/net-next/c/a7e13edf37be
 
-[1] https://patchwork.kernel.org/project/netdevbpf/patch/20211022160959.3350916-1-sean.anderson@seco.com/
-[2] https://lore.kernel.org/netdev/20211022155914.3347672-1-sean.anderson@seco.com/
-
-> 
-> --
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
-
+You are awesome, thank you!
 -- 
-/Horatiu
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
