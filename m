@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC57455697
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:12:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64BA845568E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:11:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244481AbhKRIPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 03:15:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42506 "EHLO
+        id S244434AbhKRIOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 03:14:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244328AbhKRIOQ (ORCPT
+        with ESMTP id S244342AbhKRIOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 03:14:16 -0500
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C0DC061220
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:11:15 -0800 (PST)
-Received: by mail-wr1-x449.google.com with SMTP id b1-20020a5d6341000000b001901ddd352eso880738wrw.7
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:11:15 -0800 (PST)
+        Thu, 18 Nov 2021 03:14:18 -0500
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ACADC0613B9
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:11:18 -0800 (PST)
+Received: by mail-wm1-x349.google.com with SMTP id v10-20020a1cf70a000000b00318203a6bd1so2718913wmh.6
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:11:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=j+xGmYJ7a6naxsOgId4/Y5ehX22eJTAnRqZAmnKJeqk=;
-        b=AFKYBDtNxe/zIpPX6ATOP6Oaf/Q/ogNw/iuYP+kZPqIMpI7lQIp++McD2UNNH1Fpin
-         ihP4MNeiSed+OTnLOoVn0uh/0kySxK/Yk0Z1LTYcfyEHKOpLFR3dz9xOUbi2vMRqQA1e
-         K8MeKX4ibWJWyagq5O/D04JyuXakUpDsqfcEwbchowFAUBMfZCT0jmD2GaDyWdE/M/O1
-         o9NYFL4JjzkzNDER+vaAbRyCE5YkV/7tPiF1eLZHrGIOCrNQev5SHn365wh2dJTMds1m
-         pR1to1GIKquZyoS0ryoBzMFyuzgj/NUhPMiB8SAuBj/BlNlPUxNrb7UzTegA7B82czWm
-         9OWQ==
+        bh=9MKtF9b1Z9XuvDPczN5keFD3RJ+5M3WbaM5UaZup9oY=;
+        b=DMAx5U3Fq0tP2IpTecmx2uzaQrI5aNjYvE+5mnDJ204VI98d/lvz8rkfefRhzdA/E0
+         k7gs2A0XYnaBBJMRRkmgTryO2/rf4nmHl0stwY+VnfzrRuuYfa2ApkTwlQVkN4lPePJk
+         ZIblsBMvV5I0MtrEotmY6nO/dglGNf5muUAa8aERxSDl7cYVE0b/kB8C2Bhm+bwLQ+Y8
+         cM2iFDXi4ilnBKpIPN36Nzhp5jNjC7GuYPEhDYBtogMAfcOSxfXEgOL/XONoElP/K4am
+         3/K6Sdenb6LHzN8WCA6jT2l7ifmqfW78PR2IXtCK0mH9madbnkAhB3sR+uNDQpP+4D/4
+         3VdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=j+xGmYJ7a6naxsOgId4/Y5ehX22eJTAnRqZAmnKJeqk=;
-        b=JCc4ipXmTbUcF3xF+9/eulNSVR83P5ZKI+Xycm1qoia/xc2T2n1t6WsnBOYzejZ8Jv
-         ssOUVLZk0xEAQkhkCUCPd3alO/PfLGwhyDZPzHlyXRVVSICG0nyQ4KiyEpeHm0N+kDKK
-         7TGvsjvROLbCuEObElTWC0udVNaV8H/6+2EyIAcweAHiNlRo67yTLiQIdLJIvM+n03/o
-         Z8MIHZeQmjx7Qefe+m27NPAlLd2kjiSuQap5SZXa9dD6gQJF6v/ibTAovpfC5RYKHH55
-         QPcCjtyZIZioBi6u5qqQuWF8i9bf7lcjtWdbIMVlTFH20d4CUYg1RyZzMUc6wiV7K6US
-         /P5g==
-X-Gm-Message-State: AOAM532bW29Rgzo0t3Ke2CW3aQpTb2lBZAgwRLq99ZoqEqJzk/vzFK/Q
-        C4XXuJ3Xaz/9/ZPdaJBaa3sJRPI2Lw==
-X-Google-Smtp-Source: ABdhPJyrAblfdPUbSGFAD6qCfKTgpVs0/aJt2TepI3LGsbV36W6kcYuuz/E/yHTNXjbyTxE0/jLTFnm6jw==
+        bh=9MKtF9b1Z9XuvDPczN5keFD3RJ+5M3WbaM5UaZup9oY=;
+        b=uurca3ijpNkn1Ww1ppp7r1mZ9eW5OQeRl2OkIoQpdZrq/7RuiBzZPmzlFKtd++FeaL
+         SGB0WhVa8eUtT+2/uu/KjzPRQG3S/NuW930wL2X7APQVlokqi/idIuxNAB6JJwU3bNWE
+         6+TGA6eJQSO341kwzz13GNrwrPyCIc1RmJv9jkWSP0L6ZGt4zvB7V92I4vxnZXHH6/ff
+         KDYYtwdo6sJ1vxO4XL2u3KL/sUeBVkWLZFRRwQ9WeMKXP07NlXP6OBBH8hlrwxkzACU1
+         qg+S9pFHRZFYVudx2USr/gyAWv4Ufdif7WsoU/Me4+TTAKIl9vaAP2NHFqtY8eRyDSt0
+         0eug==
+X-Gm-Message-State: AOAM531vffhusemjwgjeMZkXbsRoJigRUWSfhMnYS3g6uSIxxQhGacga
+        lUSLqMdezkye4exdnPIU0JHvW5dtSw==
+X-Google-Smtp-Source: ABdhPJxwbovaIILlaArhHRkjnI7oUBUtVLJjVdVc3WM52C6Lf8NNfvQC2lsfzwv+93dShVkkuQEd46P4RQ==
 X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:7155:1b7:fca5:3926])
- (user=elver job=sendgmr) by 2002:a7b:c409:: with SMTP id k9mr7703441wmi.173.1637223073968;
- Thu, 18 Nov 2021 00:11:13 -0800 (PST)
-Date:   Thu, 18 Nov 2021 09:10:11 +0100
+ (user=elver job=sendgmr) by 2002:a05:600c:3b20:: with SMTP id
+ m32mr2109456wms.0.1637223076382; Thu, 18 Nov 2021 00:11:16 -0800 (PST)
+Date:   Thu, 18 Nov 2021 09:10:12 +0100
 In-Reply-To: <20211118081027.3175699-1-elver@google.com>
-Message-Id: <20211118081027.3175699-8-elver@google.com>
+Message-Id: <20211118081027.3175699-9-elver@google.com>
 Mime-Version: 1.0
 References: <20211118081027.3175699-1-elver@google.com>
 X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH v2 07/23] kcsan: Call scoped accesses reordered in reports
+Subject: [PATCH v2 08/23] kcsan: Show location access was reordered to
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com, "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     Alexander Potapenko <glider@google.com>,
@@ -73,72 +73,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The scoping of an access simply denotes the scope in which it may be
-reordered. However, in reports, it'll be less confusing to say the
-access is "reordered". This is more accurate when the race occurred.
+Also show the location the access was reordered to. An example report:
+
+| ==================================================================
+| BUG: KCSAN: data-race in test_kernel_wrong_memorder / test_kernel_wrong_memorder
+|
+| read-write to 0xffffffffc01e61a8 of 8 bytes by task 2311 on cpu 5:
+|  test_kernel_wrong_memorder+0x57/0x90
+|  access_thread+0x99/0xe0
+|  kthread+0x2ba/0x2f0
+|  ret_from_fork+0x22/0x30
+|
+| read-write (reordered) to 0xffffffffc01e61a8 of 8 bytes by task 2310 on cpu 7:
+|  test_kernel_wrong_memorder+0x57/0x90
+|  access_thread+0x99/0xe0
+|  kthread+0x2ba/0x2f0
+|  ret_from_fork+0x22/0x30
+|   |
+|   +-> reordered to: test_kernel_wrong_memorder+0x80/0x90
+|
+| Reported by Kernel Concurrency Sanitizer on:
+| CPU: 7 PID: 2310 Comm: access_thread Not tainted 5.14.0-rc1+ #18
+| Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+| ==================================================================
 
 Signed-off-by: Marco Elver <elver@google.com>
 ---
- kernel/kcsan/kcsan_test.c |  4 ++--
- kernel/kcsan/report.c     | 16 ++++++++--------
- 2 files changed, 10 insertions(+), 10 deletions(-)
+ kernel/kcsan/report.c | 35 +++++++++++++++++++++++------------
+ 1 file changed, 23 insertions(+), 12 deletions(-)
 
-diff --git a/kernel/kcsan/kcsan_test.c b/kernel/kcsan/kcsan_test.c
-index 660729238588..6e3c2b8bc608 100644
---- a/kernel/kcsan/kcsan_test.c
-+++ b/kernel/kcsan/kcsan_test.c
-@@ -213,9 +213,9 @@ static bool report_matches(const struct expect_report *r)
- 		const bool is_atomic = (ty & KCSAN_ACCESS_ATOMIC);
- 		const bool is_scoped = (ty & KCSAN_ACCESS_SCOPED);
- 		const char *const access_type_aux =
--				(is_atomic && is_scoped)	? " (marked, scoped)"
-+				(is_atomic && is_scoped)	? " (marked, reordered)"
- 				: (is_atomic			? " (marked)"
--				   : (is_scoped			? " (scoped)" : ""));
-+				   : (is_scoped			? " (reordered)" : ""));
- 
- 		if (i == 1) {
- 			/* Access 2 */
 diff --git a/kernel/kcsan/report.c b/kernel/kcsan/report.c
-index fc15077991c4..1b0e050bdf6a 100644
+index 1b0e050bdf6a..67794404042a 100644
 --- a/kernel/kcsan/report.c
 +++ b/kernel/kcsan/report.c
-@@ -215,9 +215,9 @@ static const char *get_access_type(int type)
- 	if (type & KCSAN_ACCESS_ASSERT) {
- 		if (type & KCSAN_ACCESS_SCOPED) {
- 			if (type & KCSAN_ACCESS_WRITE)
--				return "assert no accesses (scoped)";
-+				return "assert no accesses (reordered)";
- 			else
--				return "assert no writes (scoped)";
-+				return "assert no writes (reordered)";
- 		} else {
- 			if (type & KCSAN_ACCESS_WRITE)
- 				return "assert no accesses";
-@@ -240,17 +240,17 @@ static const char *get_access_type(int type)
- 	case KCSAN_ACCESS_COMPOUND | KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC:
- 		return "read-write (marked)";
- 	case KCSAN_ACCESS_SCOPED:
--		return "read (scoped)";
-+		return "read (reordered)";
- 	case KCSAN_ACCESS_SCOPED | KCSAN_ACCESS_ATOMIC:
--		return "read (marked, scoped)";
-+		return "read (marked, reordered)";
- 	case KCSAN_ACCESS_SCOPED | KCSAN_ACCESS_WRITE:
--		return "write (scoped)";
-+		return "write (reordered)";
- 	case KCSAN_ACCESS_SCOPED | KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC:
--		return "write (marked, scoped)";
-+		return "write (marked, reordered)";
- 	case KCSAN_ACCESS_SCOPED | KCSAN_ACCESS_COMPOUND | KCSAN_ACCESS_WRITE:
--		return "read-write (scoped)";
-+		return "read-write (reordered)";
- 	case KCSAN_ACCESS_SCOPED | KCSAN_ACCESS_COMPOUND | KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC:
--		return "read-write (marked, scoped)";
-+		return "read-write (marked, reordered)";
- 	default:
- 		BUG();
+@@ -308,10 +308,12 @@ static int get_stack_skipnr(const unsigned long stack_entries[], int num_entries
+ 
+ /*
+  * Skips to the first entry that matches the function of @ip, and then replaces
+- * that entry with @ip, returning the entries to skip.
++ * that entry with @ip, returning the entries to skip with @replaced containing
++ * the replaced entry.
+  */
+ static int
+-replace_stack_entry(unsigned long stack_entries[], int num_entries, unsigned long ip)
++replace_stack_entry(unsigned long stack_entries[], int num_entries, unsigned long ip,
++		    unsigned long *replaced)
+ {
+ 	unsigned long symbolsize, offset;
+ 	unsigned long target_func;
+@@ -330,6 +332,7 @@ replace_stack_entry(unsigned long stack_entries[], int num_entries, unsigned lon
+ 		func -= offset;
+ 
+ 		if (func == target_func) {
++			*replaced = stack_entries[skip];
+ 			stack_entries[skip] = ip;
+ 			return skip;
+ 		}
+@@ -342,9 +345,10 @@ replace_stack_entry(unsigned long stack_entries[], int num_entries, unsigned lon
+ }
+ 
+ static int
+-sanitize_stack_entries(unsigned long stack_entries[], int num_entries, unsigned long ip)
++sanitize_stack_entries(unsigned long stack_entries[], int num_entries, unsigned long ip,
++		       unsigned long *replaced)
+ {
+-	return ip ? replace_stack_entry(stack_entries, num_entries, ip) :
++	return ip ? replace_stack_entry(stack_entries, num_entries, ip, replaced) :
+ 			  get_stack_skipnr(stack_entries, num_entries);
+ }
+ 
+@@ -360,6 +364,14 @@ static int sym_strcmp(void *addr1, void *addr2)
+ 	return strncmp(buf1, buf2, sizeof(buf1));
+ }
+ 
++static void
++print_stack_trace(unsigned long stack_entries[], int num_entries, unsigned long reordered_to)
++{
++	stack_trace_print(stack_entries, num_entries, 0);
++	if (reordered_to)
++		pr_err("  |\n  +-> reordered to: %pS\n", (void *)reordered_to);
++}
++
+ static void print_verbose_info(struct task_struct *task)
+ {
+ 	if (!task)
+@@ -378,10 +390,12 @@ static void print_report(enum kcsan_value_change value_change,
+ 			 struct other_info *other_info,
+ 			 u64 old, u64 new, u64 mask)
+ {
++	unsigned long reordered_to = 0;
+ 	unsigned long stack_entries[NUM_STACK_ENTRIES] = { 0 };
+ 	int num_stack_entries = stack_trace_save(stack_entries, NUM_STACK_ENTRIES, 1);
+-	int skipnr = sanitize_stack_entries(stack_entries, num_stack_entries, ai->ip);
++	int skipnr = sanitize_stack_entries(stack_entries, num_stack_entries, ai->ip, &reordered_to);
+ 	unsigned long this_frame = stack_entries[skipnr];
++	unsigned long other_reordered_to = 0;
+ 	unsigned long other_frame = 0;
+ 	int other_skipnr = 0; /* silence uninit warnings */
+ 
+@@ -394,7 +408,7 @@ static void print_report(enum kcsan_value_change value_change,
+ 	if (other_info) {
+ 		other_skipnr = sanitize_stack_entries(other_info->stack_entries,
+ 						      other_info->num_stack_entries,
+-						      other_info->ai.ip);
++						      other_info->ai.ip, &other_reordered_to);
+ 		other_frame = other_info->stack_entries[other_skipnr];
+ 
+ 		/* @value_change is only known for the other thread */
+@@ -434,10 +448,9 @@ static void print_report(enum kcsan_value_change value_change,
+ 		       other_info->ai.cpu_id);
+ 
+ 		/* Print the other thread's stack trace. */
+-		stack_trace_print(other_info->stack_entries + other_skipnr,
++		print_stack_trace(other_info->stack_entries + other_skipnr,
+ 				  other_info->num_stack_entries - other_skipnr,
+-				  0);
+-
++				  other_reordered_to);
+ 		if (IS_ENABLED(CONFIG_KCSAN_VERBOSE))
+ 			print_verbose_info(other_info->task);
+ 
+@@ -451,9 +464,7 @@ static void print_report(enum kcsan_value_change value_change,
+ 		       get_thread_desc(ai->task_pid), ai->cpu_id);
  	}
+ 	/* Print stack trace of this thread. */
+-	stack_trace_print(stack_entries + skipnr, num_stack_entries - skipnr,
+-			  0);
+-
++	print_stack_trace(stack_entries + skipnr, num_stack_entries - skipnr, reordered_to);
+ 	if (IS_ENABLED(CONFIG_KCSAN_VERBOSE))
+ 		print_verbose_info(current);
+ 
 -- 
 2.34.0.rc2.393.gf8c9666880-goog
 
