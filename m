@@ -2,148 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0F2455338
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 04:12:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0DD3455340
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 04:14:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242695AbhKRDOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 22:14:47 -0500
-Received: from mail-co1nam11on2117.outbound.protection.outlook.com ([40.107.220.117]:2784
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S242472AbhKRDOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 22:14:42 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dpOsJaXiyUO4AlGgU0jxar2NpiKyUI/YbmeAl6hQprsK8Pt9bYAG+BMkj2KzaUqlyxXH6eFCxbvb+kJ/JA3/AaJigMvaVeBbf+miJ9sZOr1+9G98LZiKTneBrwjvaGq0fWYqPbN8dHgxP/c7ZDXW/iuVQNsdXuVlpMCD2yF1yz2vjTbclJlmTWu1mtH83Ey2d/tblkNbiHOgRADCS7Na/tYO619EDZc0qQ9FhD/VZbqarEoPsDbUd19RhfSRvcovbEvdFIQCgWxDdZr4O+4SeNMl6oxLl2XjE+kUi+rqIREp02G1zpEJyTNC5y3DwKZ/47lJ/uyGcz2o57CnZIzYnA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rGgQ4eVZy1XXCtze9igLJSqpF3XlLiJRqfbzrTAN+Zc=;
- b=LApnJ1OfCzP3h0I7H5HOVABkJbneAg3Aj/aqmPJGVdMkvu8x1bGWpUbLfPYnT4R7uG2lkpgHKEkQsb0N3gjiw4w4Oc64yM+/E2U93jNWt1u+KLWeesoC6JzC4KKdkTR5k31QiFQ1Hng9y1cg05ZetAhA29gEMi4XV2WzCN6k93yrk3r685IJtnKLLnpatfS8wMTl784u1bpSAO66YwnsEfZXNConzcXrHRDt87aOctN6rF1M4oHB0oWrymOLHeg6+2QdGw4+ISbppxRviaU1pFta6aFL8tVyIcNrtO4sElI6qnok9laLgRebDPjcMIj4n/5n0evqyJTuddVG/fE9lw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
- header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rGgQ4eVZy1XXCtze9igLJSqpF3XlLiJRqfbzrTAN+Zc=;
- b=3/k68S8x1a9SbUaedgANMY+7Ea/vO1RJH5umvQnqx25bglmpm4j5xd+cjREsunkCjMovuw9KTgo6Z/2u44SwNsda+O94nQfDElYzrsXye95xbUwjTi7DPdJLN/59JUhuXvNynrfNuKZlIAps/lRC6gTEH7aURd6Eblu7QLJz0/w=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=analogixsemi.com;
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
- by BY5PR04MB6788.namprd04.prod.outlook.com (2603:10b6:a03:219::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21; Thu, 18 Nov
- 2021 03:11:41 +0000
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::6807:22c:61f6:d595]) by BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::6807:22c:61f6:d595%3]) with mapi id 15.20.4713.021; Thu, 18 Nov 2021
- 03:11:41 +0000
-From:   Xin Ji <xji@analogixsemi.com>
-To:     a.hajda@samsung.com, narmstrong@baylibre.com,
-        dan.carpenter@oracle.com, robert.foss@linaro.org,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@gmail.com, airlied@linux.ie, daniel@ffwll.ch,
-        sam@ravnborg.org, pihsun@chromium.org, tzungbi@google.com,
-        maxime@cerno.tech, drinkcat@google.com, hsinyi@chromium.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        bliang@analogixsemi.com, qwen@analogixsemi.com
-Cc:     Xin Ji <xji@analogixsemi.com>
-Subject: [PATCH] drm/bridge: anx7625: Check GPIO description to avoid crash
-Date:   Thu, 18 Nov 2021 11:11:25 +0800
-Message-Id: <20211118031125.3778969-1-xji@analogixsemi.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR02CA0130.apcprd02.prod.outlook.com
- (2603:1096:202:16::14) To BY5PR04MB6739.namprd04.prod.outlook.com
- (2603:10b6:a03:229::8)
+        id S241760AbhKRDRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 22:17:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239637AbhKRDRP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 22:17:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDD9E61507;
+        Thu, 18 Nov 2021 03:14:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637205255;
+        bh=/CsQ1mpqXvq8j6eKOBaGsDwpNoQJqGhnqNZpfFmZkMQ=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=kgVX51Asa5Wqvj478HWtq/8Z1Vsf5aZMylfhRQ1T193i10YWv3gZwPGyMPXRHCSzK
+         uBax/QkQCeXGQxDkLk3FkLANV/E5fFPAg4i1OqZTRb9rxZunNe9ZVtfZ4eI7Kr+xZm
+         hUWpXCFPw74+6C2pEa1DV+hLeTwaylX65yZ/AuHCPGJJndSIwFLzrFxzi0bNEOh67i
+         Ocvkq5iJjXnK5LFDPjmK22CvHLOIFcGm5wDx0FUKkKm2WmR8X6upcHDDUtTILWN2OQ
+         SSRG3v6qjE4l+eDRwnTSxQViCMTYStpxud7nSltF8WPErPt/mLqJ3BvjoW+a5sYecD
+         qK97S67Sg6/nQ==
+Message-ID: <10919ebd45263cd790ef928891ff54e4b3dd1407.camel@kernel.org>
+Subject: Re: [PATCH v7 00/17] Enroll kernel keys thru MOK
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Eric Snowberg <eric.snowberg@oracle.com>,
+        Konrad Wilk <konrad.wilk@oracle.com>
+Cc:     "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        "weiyongjun1@huawei.com" <weiyongjun1@huawei.com>,
+        "nayna@linux.ibm.com" <nayna@linux.ibm.com>,
+        "ebiggers@google.com" <ebiggers@google.com>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "nramas@linux.microsoft.com" <nramas@linux.microsoft.com>,
+        "lszubowi@redhat.com" <lszubowi@redhat.com>,
+        "jason@zx2c4.com" <jason@zx2c4.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "James.Bottomley@hansenpartnership.com" 
+        <James.Bottomley@HansenPartnership.com>,
+        "pjones@redhat.com" <pjones@redhat.com>
+Date:   Thu, 18 Nov 2021 05:14:12 +0200
+In-Reply-To: <7E672BCB-EEA7-4DB8-AEB1-644B46EBE124@oracle.com>
+References: <20211116001545.2639333-1-eric.snowberg@oracle.com>
+         <eac5f11d7ddcc65d16a9a949c5cf44851bff8f5f.camel@kernel.org>
+         <YZPZww0bafYEQ0VS@0xbeefdead.lan>
+         <f30a1399208a88257b3ff25b369088cf88a96367.camel@kernel.org>
+         <YZPevFtTucji7gIm@0xbeefdead.lan>
+         <8fcadcf2a5da5118fb7f9caea0a61440525a67b2.camel@kernel.org>
+         <3939a2fac50d2e836c48855b1b00c7b36659f23f.camel@kernel.org>
+         <YZU1lkBkphf73dF+@0xbeefdead.lan>
+         <7E672BCB-EEA7-4DB8-AEB1-644B46EBE124@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Received: from anxtwsw-Precision-3640-Tower (60.251.58.79) by HK2PR02CA0130.apcprd02.prod.outlook.com (2603:1096:202:16::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend Transport; Thu, 18 Nov 2021 03:11:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 91070a6a-8400-4b24-40b1-08d9aa41244e
-X-MS-TrafficTypeDiagnostic: BY5PR04MB6788:
-X-Microsoft-Antispam-PRVS: <BY5PR04MB678873E0B43A8A1676422E0AC79B9@BY5PR04MB6788.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1388;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kbgI7JY7BGSZLzddqUBQXtJu3Cr7Ran21tznQbGr3rQXykE3avNNBsdt2u1lSBxLAi/5X9jz+hCaBrrJDCqrdewNRUNKgoVMEfrKJtO8NcVPJS4SYOqB9TfmlHJOgNrAgaiOYBDw2kwH4pEVMvVhpEcrcIxdAJqOLWHUzYuF9g3kbGSXUFREsf9PwPQnvakaC4bPfYpp/KNCf4sBN3SYuZCtOHpMBx1wqVpUPDLma3ugmx5OZABT8zkRSAfLa1o5pPR0042ufPRy79xAyIl9Hk8Tbg+X7p9kOM9cJXKffiVcLGZUbSKCNPHg64iAaw0lf0Qwklhe2094uvLKh5cf+/14pKMThiG7yt8BC7riu6YAL00rkBEj6r96xutpjrFAbWkDlGcJYhLY1Wx8kGPm5QdrCrnQ//GKdQ043oWHjWXg0zm7632T8u48mRBVNMttkBn2h45DPfMl/+i1Tj6KoMwTYqs+3JVZQmIku2glO6mAEQfI4/pvjmOqqLkc0b4jt8M/Gk9VtuBZkawV47iNuY++uXXqdHnrI0k+C+3CP3C7SguWc/QGGCqkbvwBlmHF/mZMclBoAsOT0dC1ZBcpdVztdhz8Z0FItiq8fAE5r47uZq69ZMrk6IJjH0E0JVLYzu2FkvyxctbsOyxbxMWWnI1lALihryjNmKVF0t0J+Qxi6eJ8iz6xc+SEdukMISzcB53X/Qq6gqkD+xW78CIoApfslO+9fiesRodIULEh/aA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(52116002)(36756003)(8676002)(6636002)(8936002)(26005)(186003)(6496006)(4326008)(508600001)(316002)(86362001)(55236004)(2906002)(5660300002)(2616005)(921005)(38100700002)(956004)(38350700002)(1076003)(6486002)(107886003)(66946007)(66556008)(7416002)(6666004)(66476007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gRRzy0Nb1m2z1pun1824szfRS1/aTS55hqBG/CINDFIFEMUtVEvzImqXDIoc?=
- =?us-ascii?Q?JCuxt9oO74fDv3DjrbHmL/VqL1C70PGTCvQBxux9T5WJe8ES30pFms3QCBz8?=
- =?us-ascii?Q?4gDegxlbYLuE+VbsQp3gGJuLaAcL0e5VDJwmB3rHPaeHzotRVdD31agfTrrh?=
- =?us-ascii?Q?jxru8jtMa1y1V+neLNadOlwM5VSQRVOcd+lQ3QVbr+hpohn1XQBL4GKY85Kq?=
- =?us-ascii?Q?KOfyvs1lsy39A7RrYtzUfzhY5PEmESrehgRUGAtpS63BxOds/DJoVIQR8slj?=
- =?us-ascii?Q?aNbEYUgIOXxbRjmZLWWc2WVlpP9dQlCr8o0pSydWJn2Y0VfNNpc4cSUpnq4c?=
- =?us-ascii?Q?FxG4ZPzarwoU96iaIDhNljZ3+ccU3zYxFfSSx35FU8HF2i1LZ+B9KAPjEJth?=
- =?us-ascii?Q?pJglYG6abnvE4vW+88XxOKDkRA7N6IPS6QxlEYfO+73wQ/aMGDGjOPUbeizg?=
- =?us-ascii?Q?hpneiA6wHwXVrY3zT1ULyTiZi1O5ZuSIIvy0EuimKGd1vwS8zI3SUF0Njyd9?=
- =?us-ascii?Q?4u1mlk4O6rlZhL1HXCCW+ayKsXiSfdQCFOb4jwGN+M9hTuZaz1665hRFz6uI?=
- =?us-ascii?Q?LNdiHFgi8bbeJgalKqn7bdrU0uRwORasAx6Z9jlFQ3BgE1TfL5TQ7OgRgC7O?=
- =?us-ascii?Q?4pPo3/H0nfq+qiqnz8hip/LvLQYO9NyPs1w/d23manWUQJueSdbCkZ54JW74?=
- =?us-ascii?Q?lNmLVDuybIY6aPHOwOOGfLyNUy8W0ZdHu3Fo+mORUmCsfe9S5ndqAFBiy0S1?=
- =?us-ascii?Q?PjTINEnyC5oQK09FxokdTE558J4oObYtEZngz89lNUOJ0zBjddNsA9fxeuH4?=
- =?us-ascii?Q?h2iXlwEQb+zi4VvZXf+FHaolty157drsuWpeLqCT1tNYpyAna77b35QPiUD/?=
- =?us-ascii?Q?jjuVf63IdwIO3APeRoLw2RgddNMZvD15bQMM0Egus1ORGAywcbEKXh7Blh7V?=
- =?us-ascii?Q?bDQQjAVZjtM4LC7uYs7tplfj3aL6uZfwmQqNf6IXlIAdzyhTvQJj1ZfAPnzD?=
- =?us-ascii?Q?0wrEEYCZq65gGZFNMN/7CjzgVhgE1TQY2n1I3jtZDqj/E1rLEw/B6NKJqa2G?=
- =?us-ascii?Q?BMjTtG4ni1VIPAp4d2pk9LhqruBgwPPJ758k7J8wNh4qeyrxMw7CdYWq1I0R?=
- =?us-ascii?Q?GBuVJY03AfJKMR104RwgY3fknXN8IvN29iTNJ0+eD1F3NxAno9yQcIJTQkeS?=
- =?us-ascii?Q?yoId2vRH+XNsm/w2C6bmYKVJx/YV0Z9wwoP0jVcUnv4ykzZXw7/tzjXNvEcQ?=
- =?us-ascii?Q?6aWPiQIFnRayq0RvOZ7zvCVkS1ufJXeo38+o6q/i8yvqt6ESM16esRQcrS6V?=
- =?us-ascii?Q?e6TOj8E3eVqianbp1H1P4l3mK5WsDkXyhVrO34lwWqdN9aC2/uW40neZjgH3?=
- =?us-ascii?Q?coIstQrxElTGMz0TvtFylv9PbSW9KLyqOFJOTYyUtco5dmViZfxJbF0cvfl4?=
- =?us-ascii?Q?0rqihHvrUToiOC1Up+l+zUBlDCCmovSJ/na9x+Py1sowbATi78c5XS+Fk4NQ?=
- =?us-ascii?Q?PvmU/bUIHPb/gvw1+uM579SAQPIzF2ulTKXLSTJzjFbZnhHlLKSdTtpnJzmE?=
- =?us-ascii?Q?dlqq2jusVQdKg/KieuiROnIExYnlXkArTzAYyuNPTFVFHPddy8k0SDiEv3IQ?=
- =?us-ascii?Q?833vo8V8VAI0Gnts+fOk8TE=3D?=
-X-OriginatorOrg: analogixsemi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 91070a6a-8400-4b24-40b1-08d9aa41244e
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2021 03:11:41.1297
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HYCHWFCW7guMtAo7G6ol2fQ8taL5PE99mkOifBuaSsDjvei79Z4be8BWM+cnmojvvhz2dGV8MrmxIM6ghUWYKQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6788
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As GPIO probe function "devm_gpiod_get_optional()" may return error
-code, driver should identify GPIO desc as NULL to avoid crash.
+On Wed, 2021-11-17 at 17:20 +0000, Eric Snowberg wrote:
+>=20
+>=20
+> > On Nov 17, 2021, at 10:02 AM, Konrad Wilk <konrad.wilk@oracle.com> wrot=
+e:
+> >=20
+> > On Wed, Nov 17, 2021 at 09:51:25AM +0200, Jarkko Sakkinen wrote:
+> > > On Wed, 2021-11-17 at 09:50 +0200, Jarkko Sakkinen wrote:
+> > > > On Tue, 2021-11-16 at 11:39 -0500, Konrad Rzeszutek Wilk wrote:
+> > > > > On Tue, Nov 16, 2021 at 06:24:52PM +0200, Jarkko Sakkinen wrote:
+> > > > > > On Tue, 2021-11-16 at 11:18 -0500, Konrad Rzeszutek Wilk wrote:
+> > > > > > > > > I have included=C2=A0 a link to the mokutil [5] changes I=
+ have made to support=20
+> > > > > > > > > this new functionality.=C2=A0 The shim changes have now b=
+een accepted
+> > > > > > > > > upstream [6].
+> > > > > > >=20
+> > > > > > > ..snip..
+> > > > > > > > > [6] https://github.com/rhboot/shim/commit/4e513405b4f1641=
+710115780d19dcec130c5208f
+> > > > > > >=20
+> > > > > > > ..snip..
+> > > > > > > >=20
+> > > > > > > > Does shim have the necessary features in a release?
+> > > > > > >=20
+> > > > > > > Hi!
+> > > > > > >=20
+> > > > > > > It has been accepted in the upstream shim. If you are looking
+> > > > > > > for a distribution having rolled out a shim with this feature=
+ (so signed
+> > > > > > > by MSF) I fear that distributions are not that fast with shim=
+ releases.
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ~~~
+> > > >=20
+> > > > Should that be MS, or what does MSF mean?
+> >=20
+> > Microsoft :-)
+>=20
+> Correct, I=E2=80=99ll fix that in the next round.
+>=20
+> > > > > > >=20
+> > > > > > > Also these:
+> > > > > > > https://github.com/rhboot/shim/pulls
+> > > > > > > https://github.com/rhboot/shim/issues
+> > > > > > >=20
+> > > > > > > do mean some extra work would need to go in before an officia=
+l
+> > > > > > > release is cut.
+> > > > > > >=20
+> > > > > > > Hope this helps?
+> > > > > >=20
+> > > > > > Yes. I'll hold with this up until there is an official release.=
+ Thank you.
+> > > > >=20
+> > > > > Not sure I understand - but what are the concerns you have with s=
+him
+> > > > > code that has been accepted?
+> > > >=20
+> > > > Maybe my concern is that none of the patches have a tested-by?
+> > > >=20
+> > > > Probably would be easier to get a test coverage, e.g. for people li=
+ke
+> > > > me who do not even know how to self-compile Shim, how to setup user
+> > > > space using the product and so forth.
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ~~~~~~~~~~~~~~~~~
+> > >=20
+> > > for the end product
+> >=20
+> > <nods> That makes total sense. Thanks for the explanation, let me doubl=
+e
+> > check whether
+> >=20
+> > https://github.com/rhboot/shim/blob/main/BUILDING
+> >=20
+> > is still correct.
+>=20
+> Those are the steps I use for building.=C2=A0=C2=A0 I then move over mmx6=
+4.efi and=C2=A0=20
+> shimx64.efi to the ESP.=C2=A0 I can add the shim build/install instructio=
+ns to the next
+> cover letter If you think that would be appropriate.
 
-Signed-off-by: Xin Ji <xji@analogixsemi.com>
----
- drivers/gpu/drm/bridge/analogix/anx7625.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Yeah, that would be great. I'll try to setup VM for that purpose. I have
+already a script to build UEFI enabled archlinux VM's, which I use to
+test SGX patches. I can probably tailor that for this purpose.
 
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-index 001fb39d9919..36e0ae5a1c7b 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-@@ -1098,9 +1098,18 @@ static void anx7625_init_gpio(struct anx7625_data *platform)
- 	/* Gpio for chip power enable */
- 	platform->pdata.gpio_p_on =
- 		devm_gpiod_get_optional(dev, "enable", GPIOD_OUT_LOW);
-+	if (IS_ERR(platform->pdata.gpio_p_on)) {
-+		DRM_DEV_DEBUG_DRIVER(dev, "no enable gpio found\n");
-+		platform->pdata.gpio_p_on = NULL;
-+	}
-+
- 	/* Gpio for chip reset */
- 	platform->pdata.gpio_reset =
- 		devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
-+	if (IS_ERR(platform->pdata.gpio_reset)) {
-+		DRM_DEV_DEBUG_DRIVER(dev, "no reset gpio found\n");
-+		platform->pdata.gpio_p_on = NULL;
-+	}
- 
- 	if (platform->pdata.gpio_p_on && platform->pdata.gpio_reset) {
- 		platform->pdata.low_power_mode = 1;
--- 
-2.25.1
+/Jarkko
 
