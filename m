@@ -2,147 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91978455FB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:38:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5316B455FB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232547AbhKRPk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 10:40:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232596AbhKRPk6 (ORCPT
+        id S232488AbhKRPn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 10:43:28 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:50580 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230376AbhKRPnY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 10:40:58 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E976C061574;
-        Thu, 18 Nov 2021 07:37:58 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id n85so6386033pfd.10;
-        Thu, 18 Nov 2021 07:37:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H63tYC9VZirdHLdx/wP8j9KfA3u77nm8eK5aUwcmc7I=;
-        b=Ot44ei6RVgNJ5wnsuAEPY40LMWLWkuTl2NwglGZJNZuR/RWtL5KSG4zquBUqAGWHRG
-         YDlKNg1IDgejuR6glbKGB1/pmrtqvnwncEi49hvjMN8DI39LgpuhQHzzp9IRseu+9f6B
-         F0MERHdaZTbVfXmi7rtzVWLfzWP2YIE0dK3JIB9ZGgt0b6SulkIfJ/V/CxksY8gE7hGQ
-         D6glIFn5yKzH7q7Dh1VHuEWQFbCtvFYal4SVEr8P9nuHXp+ACGGnh6Y0UwDmH3Zx/U5S
-         TU5s6FWCLSDK0Q7X5r2sto8TNlqAb0WcI8gLyE8x62hL/v/0fUTM2n/1YgWINckDfhix
-         gOxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H63tYC9VZirdHLdx/wP8j9KfA3u77nm8eK5aUwcmc7I=;
-        b=qGnbwzLy5Mloh73+Nvu5B/VFuW4qomiabF3dDJlV/1sY8oskCPdFrqO+yRQupFAD0u
-         bk7XkhUoblbKoE7ZxUt5ohud49jt9+7RX0Ef1nEAtcapa/uExT3mF8SZUouH4BQ7y+Q1
-         7Eozw7JJU+ZpZAMRVPMgedrnAJU2cTS1UwxKkCiZvDqVspEOZbKyForKN90ig+mvIAWt
-         rTg6k54cYdM5yXLPiIr7hMnZ9W93m6wK/KNH4McQ+PWgMRuFqMHMy1KySbF9saXKLGWB
-         Q1EIrNQbPvB3uSLTRCpYbsSaJiYhBojf468+qmbclHLBq+fvJSxzjkKYK1AbmrGrDtzO
-         uJiA==
-X-Gm-Message-State: AOAM5322yX7BER87o66yIlePPyPKkhJyYy6fSc7obQYJG9aLGY6ZvXDl
-        XoRNdrKj1t7PhtJAk5zVcjb9y2IuQWmlIERKSYQ=
-X-Google-Smtp-Source: ABdhPJxIsnca/WuiwlgH8hsoVhfQYGtrxibEd8TAes0FdIYphIVtlfbpdo5+QCOP1kZOQYVCmDaitDtW5IBftZ0MXRs=
-X-Received: by 2002:a63:d00c:: with SMTP id z12mr11871225pgf.334.1637249877960;
- Thu, 18 Nov 2021 07:37:57 -0800 (PST)
+        Thu, 18 Nov 2021 10:43:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1637250024; x=1668786024;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Dwd5YESAleZyXmLDqMWJAf0dEVjLMfvumua/5MKSLjQ=;
+  b=QDjLjcGkDudm43DHaETL1mj5cs1jGl3qK1f+msLT0EsmSfPFCdi+Insm
+   ke5kI6d0073nn+Q0U9wSz6pzKdqxE2dBTVk6TJCYLKh+fOQLWan+iTa4E
+   4klKLCePkvkg8m6wKnlOge4mA9/YuObGlT7+tRdacPuoBwHnO+PonIPfx
+   2KdoO0YfOYNAfWsNqxmdRi5xxi19vYTe8dvjCF3QegKyFFkP4wxT+Qo3/
+   RM0BqZu3r//wMOMm1sMsMue+7POmIJNkY9SvPUBWFXKuFt+iaMNXym0Yu
+   YowvFq/Zvmd7YrdMXILtxSG0AIYd3LH7AxWXpsULj+/V6l5BzFJ/evHQ/
+   Q==;
+IronPort-SDR: sab5iU5rA+79z375dyOnMrIWePS5ag7YpHiaBPF3ECtjuvFWIdwd4TEZ4PSKeZayKcoJ8uCt/4
+ 7dt79bI/ANr9T+qtmyAR/p2SWJhw5oC5MpHZv1Xe3MlTUFFxzaiv3hTSovFUjV+hZwPhnj5AqI
+ vhoPUhPdJBCOEPJMxs8pphny85Yl9VZ52o/vEgqzmG1vlLXG7u4NTYvsPGdT91+WDjxkpgTzht
+ EuHBC1CDKyWYQofcucZWRBnWSnfqxWBF5qw9hK65Cwl9y9F9QIhxC1uZhi2MYPlGcj1qv9zXfT
+ dapULgUdHR50n18xmYbjqdou
+X-IronPort-AV: E=Sophos;i="5.87,245,1631602800"; 
+   d="scan'208";a="144394485"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Nov 2021 08:40:23 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 18 Nov 2021 08:40:23 -0700
+Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Thu, 18 Nov 2021 08:40:15 -0700
+From:   Eugen Hristev <eugen.hristev@microchip.com>
+To:     <leonl@leopardimaging.com>, <linux-media@vger.kernel.org>
+CC:     <skomatineni@nvidia.com>, <sakari.ailus@linux.intel.com>,
+        <luca@lucaceresoli.net>, <linux-kernel@vger.kernel.org>,
+        Eugen Hristev <eugen.hristev@microchip.com>
+Subject: [PATCH] media: i2c: imx274: implement enum_mbus_code
+Date:   Thu, 18 Nov 2021 17:40:09 +0200
+Message-ID: <20211118154009.307430-1-eugen.hristev@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CA+3zgmtHdCE3TZn3Hc8+nsYc+mHHvACNgFY_Z_Z4nCAmhSnQPg@mail.gmail.com>
- <CA+G9fYuFqFyYXkvGK8jVCZAiDZW_oNG4dNY_2q9BG__uXRR1DQ@mail.gmail.com>
-In-Reply-To: <CA+G9fYuFqFyYXkvGK8jVCZAiDZW_oNG4dNY_2q9BG__uXRR1DQ@mail.gmail.com>
-From:   Tim Lewis <elatllat@gmail.com>
-Date:   Thu, 18 Nov 2021 10:37:46 -0500
-Message-ID: <CA+3zgmtwFQNc05why_bT1fXxPM2ShHtZ=MaB6QOmkYw81wKn6A@mail.gmail.com>
-Subject: Re: Re: [PATCH 5.10 000/578] 5.10.80-rc2 review
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 5:41 AM Naresh Kamboju
-<naresh.kamboju@linaro.org> wrote:
-...
-> I have noticed intermittent failures on slow devices.
-...
-> When the test runs more than X time (45 sec i guess) the script will
-> be killed by the runner script.
+Current driver supports only SRGGB 10 bit RAW bayer format.
+Add the enum_mbus_code implementation to report this format supported.
 
-In my test environment proc-uptime-001 seems to be passing ~40% (N=10)
-of the time,
-and taking approximately 0.60 seconds  (~11 seconds / 18 tests).
+ # v4l2-ctl -d /dev/v4l-subdev3 --list-subdev-mbus-codes
+ioctl: VIDIOC_SUBDEV_ENUM_MBUS_CODE (pad=0)
+        0x300f: MEDIA_BUS_FMT_SRGGB10_1X10
+ #
 
-kselftest is not timing individual targets (maybe it should?),
-so I don't have a timing history but it used to pass 100% (N=60) of the time.
+Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+---
+ drivers/media/i2c/imx274.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-> We will add this as known intermittent failure.
+diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
+index 2e804e3b70c4..25a4ef8f6187 100644
+--- a/drivers/media/i2c/imx274.c
++++ b/drivers/media/i2c/imx274.c
+@@ -1909,7 +1909,21 @@ static int imx274_set_frame_interval(struct stimx274 *priv,
+ 	return err;
+ }
+ 
++static int imx274_enum_mbus_code(struct v4l2_subdev *sd,
++				 struct v4l2_subdev_state *sd_state,
++				 struct v4l2_subdev_mbus_code_enum *code)
++{
++	if (code->index > 0)
++		return -EINVAL;
++
++	/* only supported format in the driver is Raw 10 bits SRGGB */
++	code->code = MEDIA_BUS_FMT_SRGGB10_1X10;
++
++	return 0;
++}
++
+ static const struct v4l2_subdev_pad_ops imx274_pad_ops = {
++	.enum_mbus_code = imx274_enum_mbus_code,
+ 	.get_fmt = imx274_get_fmt,
+ 	.set_fmt = imx274_set_fmt,
+ 	.get_selection = imx274_get_selection,
+-- 
+2.25.1
 
-Thanks, I'll remove it from my tests.
-
-Data for the numbers above:
-
-for X in $(seq 1 10) ; do echo $X && time make TARGETS="proc"
-kselftest | grep -P "ok.*proc-uptime-001" ; done
-1
-ok 10 selftests: proc: proc-uptime-001
-
-real    0m10.605s
-user    0m3.427s
-sys    0m7.239s
-2
-not ok 10 selftests: proc: proc-uptime-001 # exit=134
-
-real    0m10.808s
-user    0m3.237s
-sys    0m6.614s
-3
-ok 10 selftests: proc: proc-uptime-001
-
-real    0m10.577s
-user    0m3.377s
-sys    0m7.269s
-4
-ok 10 selftests: proc: proc-uptime-001
-
-real    0m12.424s
-user    0m3.215s
-sys    0m7.402s
-5
-not ok 10 selftests: proc: proc-uptime-001 # exit=134
-
-real    0m11.101s
-user    0m3.257s
-sys    0m6.883s
-6
-not ok 10 selftests: proc: proc-uptime-001 # exit=134
-
-real    0m10.797s
-user    0m3.199s
-sys    0m6.671s
-7
-not ok 10 selftests: proc: proc-uptime-001 # exit=134
-
-real    0m12.817s
-user    0m3.308s
-sys    0m7.177s
-8
-not ok 10 selftests: proc: proc-uptime-001 # exit=134
-
-real    0m10.816s
-user    0m3.201s
-sys    0m6.663s
-9
-not ok 10 selftests: proc: proc-uptime-001 # exit=134
-
-real    0m10.832s
-user    0m3.145s
-sys    0m6.721s
-10
-ok 10 selftests: proc: proc-uptime-001
-
-real    0m10.664s
-user    0m3.337s
-sys    0m7.375s
