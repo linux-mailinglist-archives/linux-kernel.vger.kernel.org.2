@@ -2,128 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A17455E32
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4823455E50
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:36:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233632AbhKROiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 09:38:14 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:39208 "EHLO
+        id S233633AbhKROjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 09:39:21 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:39454 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233186AbhKROhu (ORCPT
+        with ESMTP id S233343AbhKROiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 09:37:50 -0500
-Date:   Thu, 18 Nov 2021 14:34:48 -0000
+        Thu, 18 Nov 2021 09:38:02 -0500
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637246089;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        s=2020; t=1637246101;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=N+KBAXfINBDngw79WyyWxTVVH1FuLVzM+Khkw83Sjj8=;
-        b=jimiHe8+6FBuyifBQ/s6qJHCLIc4B515BoZW3xfhwDkYT/yG02904vD4gFh/dO+Rz1Dq+T
-        BI6znXRhePqNVMOLI1d4GfHU5NMFMIAv+xEsz2JSiebK7wwj9swJ6tlt5FlJHgJbpVCnJX
-        oG/F+xfdDI4//LXzn+rpGTY2Rl6N3TbQ0YuBMpbCwLP8r3Sb5/CvEhSTqQD/uLJXHVrVLX
-        2tvnQ2zzksiG6HyXzmSXkjK6/eW5O6z2PEEsoDtf66fQtnnPD6duWCxJ6n+J48RxzxOn9C
-        Rqn0xIhnMVfGndajKNP1cHlzTqTLp9OfSGfWJ6JyxVD8vxDqak2tOW8Hs2orUA==
+        bh=DJ/j+RSho2k1HLNYW3vQru62KzHZDO3Y8owSeLvRnFU=;
+        b=kdF+OnjzQb/mEvNu44RYcU5J3OFUhPPpUivoHOEIsbI7Fvz8vgaCcI8oIUGZiPlHk0O08A
+        nbqXkEPfMRuZ82cAjCHkjMe0xdXOFxr4r7MkpHkVZi01tj1moEx3ZZ3F3GJ0ifNWTPh67V
+        syNmpygPMiQ8La5Ygaom+LSYrx0G4w7inDkgxaab0+oc3JA9ocUAOcZuqJ5ULQ86/noMX6
+        SNjlDYhtIOyJ3gNaVnwpM6VhD1Xxu4fFgC9yAvoaQXqyhNCYswvzH0C+os1jZkIWonbpvK
+        AnAM4tnjO1hcUzllKAY7AUC5AANwSfC6LZ0AidioeJun6Gk0mE8Ydg6oZO+uxQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637246089;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        s=2020e; t=1637246101;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=N+KBAXfINBDngw79WyyWxTVVH1FuLVzM+Khkw83Sjj8=;
-        b=DPeqdSyOMMZvuDs6txTNtT5VkZXfK/FAYmY8DUSAaDEf0ygNp+wbN/U31XdsRDlzCJX0JY
-        Bd30DLm4gJQxQHDQ==
-From:   "tip-bot2 for Sean Christopherson" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] KVM: x86: Register perf callbacks after calling
- vendor's hardware_setup()
-Cc:     Sean Christopherson <seanjc@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, stable@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20211111020738.2512932-3-seanjc@google.com>
-References: <20211111020738.2512932-3-seanjc@google.com>
+        bh=DJ/j+RSho2k1HLNYW3vQru62KzHZDO3Y8owSeLvRnFU=;
+        b=ini6jE5OY2Ap9U14ZA1Dwh022vj94Fjiv5cqmtXl/4ceag9dUa9rHaztJWT9GR/nHJ9R3j
+        bax7R2GHoP3fN6BA==
+To:     linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH 5/8] kernel/fork: Move memcg_charge_kernel_stack() into CONFIG_VMAP_STACK.
+Date:   Thu, 18 Nov 2021 15:34:49 +0100
+Message-Id: <20211118143452.136421-6-bigeasy@linutronix.de>
+In-Reply-To: <20211118143452.136421-1-bigeasy@linutronix.de>
+References: <20211118143452.136421-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <163724608811.11128.10260908640428524095.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+memcg_charge_kernel_stack() is only used in the CONFIG_VMAP_STACK case.
 
-Commit-ID:     5c7df80e2ce4c954c80eb4ecf5fa002a5ff5d2d6
-Gitweb:        https://git.kernel.org/tip/5c7df80e2ce4c954c80eb4ecf5fa002a5ff5d2d6
-Author:        Sean Christopherson <seanjc@google.com>
-AuthorDate:    Thu, 11 Nov 2021 02:07:23 
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 17 Nov 2021 14:49:06 +01:00
+Move memcg_charge_kernel_stack() into the CONFIG_VMAP_STACK block and
+invoke it from within alloc_thread_stack_node().
 
-KVM: x86: Register perf callbacks after calling vendor's hardware_setup()
-
-Wait to register perf callbacks until after doing vendor hardaware setup.
-VMX's hardware_setup() configures Intel Processor Trace (PT) mode, and a
-future fix to register the Intel PT guest interrupt hook if and only if
-Intel PT is exposed to the guest will consume the configured PT mode.
-
-Delaying registration to hardware setup is effectively a nop as KVM's perf
-hooks all pivot on the per-CPU current_vcpu, which is non-NULL only when
-KVM is handling an IRQ/NMI in a VM-Exit path.  I.e. current_vcpu will be
-NULL throughout both kvm_arch_init() and kvm_arch_hardware_setup().
-
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20211111020738.2512932-3-seanjc@google.com
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- arch/x86/kvm/x86.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ kernel/fork.c | 69 +++++++++++++++++++++++++++------------------------
+ 1 file changed, 36 insertions(+), 33 deletions(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index dc7eb5f..50f0cd1 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -8626,8 +8626,6 @@ int kvm_arch_init(void *opaque)
- 
- 	kvm_timer_init();
- 
--	perf_register_guest_info_callbacks(&kvm_guest_cbs);
--
- 	if (boot_cpu_has(X86_FEATURE_XSAVE)) {
- 		host_xcr0 = xgetbv(XCR_XFEATURE_ENABLED_MASK);
- 		supported_xcr0 = host_xcr0 & KVM_SUPPORTED_XCR0;
-@@ -8659,7 +8657,6 @@ void kvm_arch_exit(void)
- 		clear_hv_tscchange_cb();
- #endif
- 	kvm_lapic_exit();
--	perf_unregister_guest_info_callbacks(&kvm_guest_cbs);
- 
- 	if (!boot_cpu_has(X86_FEATURE_CONSTANT_TSC))
- 		cpufreq_unregister_notifier(&kvmclock_cpufreq_notifier_block,
-@@ -11225,6 +11222,8 @@ int kvm_arch_hardware_setup(void *opaque)
- 	memcpy(&kvm_x86_ops, ops->runtime_ops, sizeof(kvm_x86_ops));
- 	kvm_ops_static_call_update();
- 
-+	perf_register_guest_info_callbacks(&kvm_guest_cbs);
-+
- 	if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
- 		supported_xss = 0;
- 
-@@ -11252,6 +11251,8 @@ int kvm_arch_hardware_setup(void *opaque)
- 
- void kvm_arch_hardware_unsetup(void)
- {
-+	perf_unregister_guest_info_callbacks(&kvm_guest_cbs);
-+
- 	static_call(kvm_x86_hardware_unsetup)();
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 5e58e0a923f85..cdbfc9280f3b1 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -210,6 +210,32 @@ static int free_vm_stack_cache(unsigned int cpu)
+ 	return 0;
  }
- 
+=20
++static int memcg_charge_kernel_stack(struct task_struct *tsk)
++{
++	struct vm_struct *vm =3D task_stack_vm_area(tsk);
++	int i;
++	int ret;
++
++	BUILD_BUG_ON(IS_ENABLED(CONFIG_VMAP_STACK) && PAGE_SIZE % 1024 !=3D 0);
++	BUG_ON(vm->nr_pages !=3D THREAD_SIZE / PAGE_SIZE);
++
++	for (i =3D 0; i < THREAD_SIZE / PAGE_SIZE; i++) {
++		ret =3D memcg_kmem_charge_page(vm->pages[i], GFP_KERNEL, 0);
++		if (ret)
++			goto err;
++	}
++	return 0;
++err:
++	/*
++	 * If memcg_kmem_charge_page() fails, page's memory cgroup pointer is
++	 * NULL, and memcg_kmem_uncharge_page() in free_thread_stack() will
++	 * ignore this page.
++	 */
++	for (i =3D 0; i < THREAD_SIZE / PAGE_SIZE; i++)
++		memcg_kmem_uncharge_page(vm->pages[i], 0);
++	return ret;
++}
++
+ static int alloc_thread_stack_node(struct task_struct *tsk, int node)
+ {
+ 	void *stack;
+@@ -229,6 +255,11 @@ static int alloc_thread_stack_node(struct task_struct =
+*tsk, int node)
+ 		/* Clear stale pointers from reused stack. */
+ 		memset(s->addr, 0, THREAD_SIZE);
+=20
++		if (memcg_charge_kernel_stack(tsk)) {
++			vfree(s->addr);
++			return -ENOMEM;
++		}
++
+ 		tsk->stack_vm_area =3D s;
+ 		tsk->stack =3D s->addr;
+ 		return 0;
+@@ -246,6 +277,11 @@ static int alloc_thread_stack_node(struct task_struct =
+*tsk, int node)
+ 				     0, node, __builtin_return_address(0));
+ 	if (!stack)
+ 		return -ENOMEM;
++
++	if (memcg_charge_kernel_stack(tsk)) {
++		vfree(stack);
++		return -ENOMEM;
++	}
+ 	/*
+ 	 * We can't call find_vm_area() in interrupt context, and
+ 	 * free_thread_stack() can be called in interrupt context,
+@@ -414,36 +450,6 @@ static void account_kernel_stack(struct task_struct *t=
+sk, int account)
+ 	}
+ }
+=20
+-static int memcg_charge_kernel_stack(struct task_struct *tsk)
+-{
+-#ifdef CONFIG_VMAP_STACK
+-	struct vm_struct *vm =3D task_stack_vm_area(tsk);
+-	int ret;
+-
+-	BUILD_BUG_ON(IS_ENABLED(CONFIG_VMAP_STACK) && PAGE_SIZE % 1024 !=3D 0);
+-
+-	if (vm) {
+-		int i;
+-
+-		BUG_ON(vm->nr_pages !=3D THREAD_SIZE / PAGE_SIZE);
+-
+-		for (i =3D 0; i < THREAD_SIZE / PAGE_SIZE; i++) {
+-			/*
+-			 * If memcg_kmem_charge_page() fails, page's
+-			 * memory cgroup pointer is NULL, and
+-			 * memcg_kmem_uncharge_page() in free_thread_stack()
+-			 * will ignore this page.
+-			 */
+-			ret =3D memcg_kmem_charge_page(vm->pages[i], GFP_KERNEL,
+-						     0);
+-			if (ret)
+-				return ret;
+-		}
+-	}
+-#endif
+-	return 0;
+-}
+-
+ static void release_task_stack(struct task_struct *tsk)
+ {
+ 	if (WARN_ON(READ_ONCE(tsk->__state) !=3D TASK_DEAD))
+@@ -907,9 +913,6 @@ static struct task_struct *dup_task_struct(struct task_=
+struct *orig, int node)
+ 	if (err)
+ 		goto free_tsk;
+=20
+-	if (memcg_charge_kernel_stack(tsk))
+-		goto free_stack;
+-
+ #ifdef CONFIG_THREAD_INFO_IN_TASK
+ 	refcount_set(&tsk->stack_refcount, 1);
+ #endif
+--=20
+2.33.1
+
