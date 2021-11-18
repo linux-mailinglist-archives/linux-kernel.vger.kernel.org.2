@@ -2,164 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64064455803
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:29:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C527A45580F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:31:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245177AbhKRJcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 04:32:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243402AbhKRJcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 04:32:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EFE4613B1;
-        Thu, 18 Nov 2021 09:29:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637227756;
-        bh=SbT6v6JXmhx+DWm7/9JNoCSaPGJ+y1LRCR97NmzdoRA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VxQUaKuRnYmw/+3YUl8Jnl8nxYLB4BN7eu6po5SM/RAaPP7nc0VHF21g93AcUJbaB
-         eyAMvssmmcaoBZHSC06AUrW3mfFTuZtJ9QmKEd5pUrSvLgHDtA8ioERM3J37E4zA5t
-         UAKzKycbgPBKHGIumCTBISbWZMzBrHxD10m8/iGY=
-Date:   Thu, 18 Nov 2021 10:29:14 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Chris Rankin <rankincj@gmail.com>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
-Subject: Re: [OOPS] Linux 5.14.19 crashes and burns!
-Message-ID: <YZYc6uSpp76Sz4vO@kroah.com>
-References: <CAK2bqV+NuRYNU0dHni9Cmfvi5CZ7Ycp6rGrNRDLzrdU9xkSXaw@mail.gmail.com>
- <99d07599-3d72-d389-cfc2-f463230037a5@leemhuis.info>
- <ed000478-2a60-0066-c337-a04bffc112b1@leemhuis.info>
+        id S245168AbhKRJe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 04:34:29 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:52210 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245159AbhKRJe0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 04:34:26 -0500
+Received: by mail-io1-f71.google.com with SMTP id b1-20020a05660214c100b005e241049240so3182012iow.18
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 01:31:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=WkXPHSDdF1/3uLg3WzVhRO8Ez4oXsew4MO68MI5bYBw=;
+        b=0fTqQxV9RMXy4EGI6+T9gdX2qhkcfHpi1zK0BsAZ39OvvGY95whpKH6j5xkbHuvwUB
+         9FSgWTrDD6TCoRFzgxBS12KKPcw1heqvSgNXlnG6AaVWCCWBcUvnXSoKsFraUoKrnnJy
+         dZgcHxyqBwmT6MlRzkNQH0azhjnLE9jJHWT9zm3LkGiCzXRa91SiYG92M93+g5bA21Y5
+         GDnmaTtYPVR4yrzJWBQ4xhP9GZZfjNzE796YGaqCzX4MTuewLrG5bHJbPhgsLolyd8EP
+         VP4UYnSFmQWzKE50UFqG7vv/egCIrCqwlCpkWaYOFvCBuG9Uu+aUx18s9lloj0zlhoBF
+         WbRw==
+X-Gm-Message-State: AOAM530+BkmN/0bAS0bpjHSmaEL8qra1ORV5+78aZ00YHvH9XnozTwea
+        v77rBiMz5cOKFkjsy0ExrqhqDtJoKkgiGOb0LGAlXw8fyuYr
+X-Google-Smtp-Source: ABdhPJzDlXBCvYsnc0HSMfL9ECwM5IDifVksfqYDpVp4pU6koI0n8kWLUV9BFkj1rma2pBpTFH++Qo5fc/gIe2LcW91j2Q/X08yO
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ed000478-2a60-0066-c337-a04bffc112b1@leemhuis.info>
+X-Received: by 2002:a02:1949:: with SMTP id b70mr19221470jab.7.1637227886297;
+ Thu, 18 Nov 2021 01:31:26 -0800 (PST)
+Date:   Thu, 18 Nov 2021 01:31:26 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009448bd05d10cd2bc@google.com>
+Subject: [syzbot] WARNING: refcount bug in nsim_destroy
+From:   syzbot <syzbot+0d65c9e2e3bcb8873be4@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 10:15:23AM +0100, Thorsten Leemhuis wrote:
-> Hey Greg!
-> 
-> On 18.11.21 09:57, Thorsten Leemhuis wrote:
-> > Lo! CCing stable and regressions list. FWIW, I have a Fedora 34 VM that
-> > stopped booting with 5.14.19 as well. More inline:
-> > 
-> > On 18.11.21 01:55, Chris Rankin wrote:
-> >>
-> >> I have tried to boot a vanilla 5.14.19 kernel, but it crashes when
-> >> "switching root" away from the initramfs. ("Unable to handle page
-> >> fault...)
-> >>
-> >> Google's "copy text from image" feature has managed to scrape this
-> >> information from my phone camera:
-> >>
-> >> 1tch Noo
-> >> BUG: unable to handle page fault for address: ffffc980006cfeDS
-> >> #PF: supervisor read access in kernel mode #PF: error_code (8x8888) -
-> >> not-present page
-> >> PGD 100000067 P4D 100000067 PUD 18885e867 PMD 104486867 PTE 8
-> >> Oops: 0888 [#1] PREEMPT SMP PTI
-> >> CPU: 6 PID: 1 Comm: systemd Tainted: G Hardware name: Gigabyte
-> >> Technology Co., Ltd. EX58-UD3R/EX58-UD3R, BIOS FB 05/04/2009
-> >> 5.14.19 #1
-> >> RIP: 0010: __unwind_start+8xb5/8x15f
-> >> Code: 48 8d 8d 88 88 88 88 48 89 e2 48 89 e8 48 89 4d 48 48 89 55 38
-> >> 48 RSP: 0018:ffffc90088823bf0 EFLAGS: 00010006
-> >> RAX: ffffc900006efde8 RBX: 0000000000000000 RCX: 08 RDX:
-> >> ffffc900006efe18 RSI : ffff88818a9f6c80 RDI: ffffc
-> >> RBP: ffffc90808823c18 R08: 00000000000001de R89: R10: ffff888107d20000
-> >> R11: ffff888183b4ba88 R12: ffffc900006ef dell
-> >> R13: ffff88810a9f73bc R14: ffff888103c58480 R15: FS: 00007f528fd19b40
-> >> (0800) GS:ffff888343488808 (0888) knl6S:
-> >> CS: 0818 DS: 0000 ES: 0000 CRO: 0888000088858833
-> >> CR2: ffffc900006efe88 CR3: 088080818186a888 CR4: 8888
-> >> Call Trace:
-> >> <TASK>
-> >> get_wchan+8x42/8x8f
-> >> get_wchan+8x45/8x59
-> >> do_task_stat+0x3ab/0x38
-> >> proc_single_show+8x1e/8x68
-> >> seq_read_iter+0x151/8x342 seq_read+8xf1/8x117
-> >> uf's_read+Bxa3/8x183
-> >> ksys_read+8x71/8xb9 do_syscal1_64+8x6d/8x88
-> >> entry_SYSCALL_64_after_huframe+8x11/8xne
-> >> RIP: 8033:8x7f529884f832
-> >> Code: c0 e9 b2 fe ff ff 50 48 8d 3d ea 2e Bc 80 68 65 £9 01 00 0f 16 44 000
-> >> RSP: 082b:00087ffed3b91f18 EFLAGS: 88888246 ORIG RAX:
-> >> RAX: ffffffffffffffda RBX: 8888559462036658 RCX: 000071529084/83
-> >> RDX: 0000000000000100 RSI: 8088559462c90b78 RDI:
-> >> RBP: 000071529894a300 BAR:
-> >> te fa
-> >>
-> >> And also this:
-> >>
-> >> do_syscall_64+0x6d/0x80
-> >> entry_SYSCALL_64_after_huframe+0x44/0xae
-> >> RIP: 8033:0x7f529884f832
-> >> Code: c0 e9 b2 fe ff ff 50 48 8d 3d ea Ze Bc 80 e8 b5 f9 01 00 0f 1f
-> >> 44 00 00 f3 Bf 1e fa 64 8b 84 25 18 88 RSP: 082b:00087ffed3b91f 18
-> >> EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-> >> RAX: ffffffffffffffda RBX: 0000559462c36650 RCX: 000071529084f832 RDX:
-> >> 0000000000000400 RSI: 0000559462c90b70 RDI: 0000000000000006
-> >> RBP: 000071529094a3a0 R08: 0000000000000006 RO9: 0000000000000001 R18:
-> >> 0000000000001000 R11: 0000000000000246 R12: 00007f528fd198f0
-> >> R13: 0000000000000168 R14: 00007f52909497a0 R15: 00000000000001468
-> >> </TASK>
-> >> Modules linked in: ext4 crc32c_generic crc16 mbcache jbd2 sr_mod
-> >> sd_mod cdrom hid_microsoft usbhid amdgpu uh ci drm_kms_helper ehci_hcd
-> >> cf bf illrect syscopyarea cfbimgblt sysfillrect sysimgblt xhci pci
-> >> xhci_hcd fb_sys_ mod usb_common drm_panel_orientation_quirks
-> >> ipmi_devintf ipmi_msghandler msr sha256_ssse3 sha256_generic ipu CRZ:
-> >> ffffc900006efe08
-> >> --- end trace 9771b79967a8dd89 ]--- RIP: 8010:_unwind_start+8xb5/0x15f
-> >> Code: 48 8d 8d 00 00 00 00 48 89 e2 48 89 e8 48 89 4d 48 48 89 55 38
-> >> 48 89 45 40 eb 29 48 8b 86 98 Ba 80 00 RSP: 0818:ffffc90000023bf0
-> >> EFLAGS: 00010006 RAX: ffffc900006efde0 RBX: 0000000000000000 RCX:
-> >> 0000000000000000
-> >> RDX: ffffc900006efe18 RSI: ffff88810a9f6c00 RDI: ffffc90000023c78 RBP:
-> >> ffffc98800023c18 R08: 00000000000001de R09: 00000000005b20c6
-> >> R10: ffff888107120000 R11: ffff888103b4ba80 R12: ffffc900006ef de
-> >> R13: ffff88818a9f73bc R14: ffff888103c50480 R15: 0000000000000000 FS:
-> >> 00007f528fd19b40(8000) GS:ffff888343180000 (0800)
-> >> knlGS:0000000000000000 CS: 0810 DS: 0000 ES: 0000 CRO:
-> >> 0000000080050033
-> >> CR2: ffffc908806efe88 CR3: 000000010186a000 CR4: 00000000000006e0
-> >> note: systemd [1] exited with preempt_count 1
-> >> Kernel panic - not syncing: Attempted to kill init!
-> >> exitcode=0x00000009 Kernel Offset: disabled
-> >> --- [ end Kernel panic not syncing: Attempted to kill initf
-> >> exitcode=0x00000009 1--- -
-> >>
-> >> I cannot capture the exact oops via any other means, although I can
-> >> send the original camera pictures that I captured the text from, on
-> >> request.
-> > 
-> > By default I didn't get to see any messages,
-> 
-> BTW: that was a stupid error on my side, I get them now.
-> 
-> > the VM just hangs when
-> > switching to root. Did anyone else already report or even track this
-> > down already? Guess otherwise I need to take a closer look and maybe
-> > start bisecting...
-> 
-> On a quick looks above problems seems to be similar to the one already
-> reported wrt to WCHAN:
-> https://lore.kernel.org/stable/YZV02RCRVHIa144u@fedora64.linuxtx.org/
-> 
-> Greg, is there any reason why you didn't drop them from 5.14.y as well,
-> as you did for 5.15.y:
-> https://lore.kernel.org/all/YZYLC9D6zpUneYtn@kroah.com/
-> 
-> Should I try reverting these three and see if the situations improves?
+Hello,
 
-I will push out a new 5.14 release in a few hours with those commits
-reverted, as yes, you are right, they should not be there if I have
-dropped them from 5.15.y
+syzbot found the following issue on:
 
-thanks,
+HEAD commit:    66f4beaa6c1d Merge branch 'linus' of git://git.kernel.org/..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15ff99c6b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a262045c4c15a9e0
+dashboard link: https://syzkaller.appspot.com/bug?extid=0d65c9e2e3bcb8873be4
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-greg k-h
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0d65c9e2e3bcb8873be4@syzkaller.appspotmail.com
+
+netdevsim netdevsim4 netdevsim2 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
+------------[ cut here ]------------
+refcount_t: decrement hit 0; leaking memory.
+WARNING: CPU: 1 PID: 13920 at lib/refcount.c:31 refcount_warn_saturate+0xbf/0x1e0 lib/refcount.c:31
+Modules linked in:
+CPU: 1 PID: 13920 Comm: syz-executor.4 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:refcount_warn_saturate+0xbf/0x1e0 lib/refcount.c:31
+Code: 1d 9e 9c 81 09 31 ff 89 de e8 6d 11 9d fd 84 db 75 e0 e8 84 0d 9d fd 48 c7 c7 60 cb e4 89 c6 05 7e 9c 81 09 01 e8 78 77 1c 05 <0f> 0b eb c4 e8 68 0d 9d fd 0f b6 1d 6d 9c 81 09 31 ff 89 de e8 38
+RSP: 0018:ffffc90002d5f1e8 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff815f39c8 RDI: fffff520005abe2f
+RBP: 0000000000000004 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815ed79e R11: 0000000000000000 R12: 0000000000000001
+R13: ffffc90002d5f330 R14: ffff88807c3545b0 R15: ffff888071c4a400
+FS:  00007fa593aa9700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2ca2c000 CR3: 000000003d640000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __refcount_dec include/linux/refcount.h:344 [inline]
+ refcount_dec include/linux/refcount.h:359 [inline]
+ dev_put include/linux/netdevice.h:4166 [inline]
+ unregister_netdevice_many+0x12c9/0x1790 net/core/dev.c:11114
+ unregister_netdevice_queue+0x2dd/0x3c0 net/core/dev.c:11011
+ unregister_netdevice include/linux/netdevice.h:2989 [inline]
+ nsim_destroy+0x3f/0x190 drivers/net/netdevsim/netdev.c:382
+ __nsim_dev_port_del+0x191/0x250 drivers/net/netdevsim/dev.c:1429
+ nsim_dev_port_del_all drivers/net/netdevsim/dev.c:1442 [inline]
+ nsim_dev_reload_destroy+0x12b/0x300 drivers/net/netdevsim/dev.c:1650
+ nsim_dev_reload_down+0xdf/0x180 drivers/net/netdevsim/dev.c:964
+ devlink_reload+0x53b/0x6b0 net/core/devlink.c:4042
+ devlink_nl_cmd_reload+0x6ed/0x11d0 net/core/devlink.c:4163
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:731
+ genl_family_rcv_msg net/netlink/genetlink.c:775 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:792
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2491
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
+ netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1345
+ netlink_sendmsg+0x86d/0xda0 net/netlink/af_netlink.c:1916
+ sock_sendmsg_nosec net/socket.c:704 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:724
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fa596533ae9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fa593aa9188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007fa596646f60 RCX: 00007fa596533ae9
+RDX: 0000000000000000 RSI: 00000000200003c0 RDI: 0000000000000003
+RBP: 00007fa59658df6d R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffed384289f R14: 00007fa593aa9300 R15: 0000000000022000
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
