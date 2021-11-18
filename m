@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A315A455BCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:49:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B7C455BCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:49:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344827AbhKRMvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 07:51:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48308 "EHLO
+        id S1344871AbhKRMwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 07:52:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244060AbhKRMvZ (ORCPT
+        with ESMTP id S1344831AbhKRMv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 07:51:25 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C13E0C061764
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 04:48:24 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id k37-20020a05600c1ca500b00330cb84834fso7507533wms.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 04:48:24 -0800 (PST)
+        Thu, 18 Nov 2021 07:51:29 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC52C061207
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 04:48:26 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id t30so11293068wra.10
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 04:48:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=tGxJYhNR1wDaDEZR9RgxRUSgwO4lM3FgflyATgU42ms=;
-        b=j57Ozilf8R5QUaFhDZr4WvHZBweTwt7S/wz+5tTd4M37jzcAUOQyKxBq+SHgBvj/yf
-         jOs8tJepJ6AgSry0FmCh0Q8tPjZIsH7YQMjF/hY9Je3c2zmxCxz01XAc9Bflo3H6S/LX
-         zSWxBrfoUZEBRg7NwJSOkmmy6n0AUrd4SHP/iGCQdsP5NF7sBTMd35RF9uV0Yhg6rO88
-         or14JRqos9rQZ5iRmxRFfKkFSk+eNaArc0kjcnjNAt/k6FYKCExQc01AysA90QMJN3gS
-         SyJQFl9frMg6Vm36/D2yG4dZChpxctIRujAeTjzsg/+f+m+VzkOIgQniXSNmx1lIoSh0
-         +56A==
+        bh=gMYLE7J7LVl7QS6DrFMU1QSMUJ4cnRJy0GXYbQPzrx8=;
+        b=wwWUVhFVK7pVQLUIw3RRlbr/hOKNKvqiczHBqQTpHnURSf23wktS4IbwcHDkG5VRJe
+         tBwXdTVO7HxB0p0v2LXbx80htZbIctVFNEfadD0t5b000o/ca7HO6Gvun/ZBuTunLgi6
+         0Jc8jUTQ436/9YlKD8T4vp5eWNPf6OUSDone0ivLhevzMQqkn+oL01INmDNU0uLFHtyr
+         hNXOmpDLpFOgN5FlEt1WDqx5OyY+Q1VK7pOvGkphK8Xer8XImycR6HRwoxx9Uo78HRpI
+         gBFdL1U+B89F6hDd95ezpGJeSBjpVcBuHVGIDbBl0QbXL44b4DkOAV7F4DmEhgBTz9ST
+         E50A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tGxJYhNR1wDaDEZR9RgxRUSgwO4lM3FgflyATgU42ms=;
-        b=fZvxdzNuvT3huLKxLFloxRl85vmOZNksSp8WNuYtGDtJF9j9C250Cb1hv1pMNCEfa6
-         rf5mHc+1j9vkjzJ1Lx3NoN9iiCgnaLkkpTP2I/VLOh9VIBO01q4cM57LpNvnpfP+ecD4
-         ocEGgOAoT69mGgzdZf2t8txdQZUKXpiouU/l1He1ZloeGpdc4sIK1YLKFd4XAj7JcrfW
-         +Q52UOPFnYCQlGXT/RTBP7u0X09KJCvUaKP1ftb0AuOZm4P2jzhoGnBgVHZKTiWwT7x2
-         zoxjlEhsSLXulzyWT+TvZ9C79Vf9rXQAZpqS/+kO2NxCm6soekSAft9frPfpjZp+oc4w
-         FfBQ==
-X-Gm-Message-State: AOAM530/ciNM+zyVOnLSGF7zs3Mgb41BbxTNchiTWEMspW/lB779SdfZ
-        eall+dHlmx5BrE+Kek6vK6blNw==
-X-Google-Smtp-Source: ABdhPJzAKqAckg6sG87m9s236s5Zc53+K6PmF/AwzklGvFIhO5r/VmOrbfidXFErfB1wci/DVwNItQ==
-X-Received: by 2002:a7b:c050:: with SMTP id u16mr9697799wmc.82.1637239703280;
-        Thu, 18 Nov 2021 04:48:23 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=gMYLE7J7LVl7QS6DrFMU1QSMUJ4cnRJy0GXYbQPzrx8=;
+        b=lMG6CoT83azf2+ls0zBWS8QddUSnrZztOxRIPhly9II7Sag6z2ON3bkW4H+8MGpAbN
+         q6SpN7TNACdoD/ZazvCOppUen7P2U4J68BiiXiIXXWU3/Jc4Ra6bx7L1keg/HtG1uf9c
+         QeKWGWXnzjNbOEBWoSzuKIYucThyVdDgGEggn4TqT3IZ4ryYawoyMmpFU7BpHU0sLECl
+         drrcXmgUMDzIcNqRHMOx9WwuV3MLyOj22a+pKP1/pC4TZQW6bcYlfE8+W5wbq0PD9VWk
+         r4c4Ur+K+gN6TV/Qc3x5/NnzkgWKb2Mc8pmEkMKrMLN5tmhz/gqMPjIx68y/Y1xRqsGJ
+         XI4A==
+X-Gm-Message-State: AOAM530wKbJfgLXFcZLg/pQhvnsfzig8Ph1UF+9Imr1G5kl1t+rRYgNk
+        xIVhxcorIp00UgiKASTZ68cdyRMJkaoEyg==
+X-Google-Smtp-Source: ABdhPJz6bavwxOvi2JVP0JxfC7JS+MV0CPPpAZKltOFeVrw073MB4/DGU0pBn8v3Pynt5YzuEgQ1BQ==
+X-Received: by 2002:a05:6000:15c8:: with SMTP id y8mr30557000wry.55.1637239704385;
+        Thu, 18 Nov 2021 04:48:24 -0800 (PST)
 Received: from xps7590.. (freifunk-gw.bsa1-cpe1.syseleven.net. [176.74.57.43])
-        by smtp.gmail.com with ESMTPSA id h2sm2955635wrz.23.2021.11.18.04.48.22
+        by smtp.gmail.com with ESMTPSA id h2sm2955635wrz.23.2021.11.18.04.48.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 04:48:22 -0800 (PST)
+        Thu, 18 Nov 2021 04:48:23 -0800 (PST)
 From:   Robert Foss <robert.foss@linaro.org>
 To:     agross@kernel.org, bjorn.andersson@linaro.org,
         robert.foss@linaro.org, todor.too@gmail.com, mchehab@kernel.org,
@@ -57,45 +57,195 @@ To:     agross@kernel.org, bjorn.andersson@linaro.org,
         Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
         Andrey Konovalov <andrey.konovalov@linaro.org>,
         Stephan Gerhold <stephan@gerhold.net>
-Subject: [PATCH v3 0/4] Remove clock-lanes DT property from CAMSS
-Date:   Thu, 18 Nov 2021 13:48:15 +0100
-Message-Id: <20211118124819.1902427-1-robert.foss@linaro.org>
+Subject: [PATCH v3 1/4] media: camss: csiphy: Move to hardcode CSI Clock Lane number
+Date:   Thu, 18 Nov 2021 13:48:16 +0100
+Message-Id: <20211118124819.1902427-2-robert.foss@linaro.org>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211118124819.1902427-1-robert.foss@linaro.org>
+References: <20211118124819.1902427-1-robert.foss@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changes since v2:
- - Stephan: Rebased on v5.16-rc1
- - Stephan: Fixed 3/4 commit message title
+QCOM ISPs do not support having a programmable CSI Clock Lane number.
 
-Changes since v1:
- - Rob: Instead of documenting and fixing the use of the clock-lanes
-   property, remove it, since it is is not programmable and
-   therefore shouldn't be exposed in the DT.
+In order to accurately reflect this, the different CSIPHY HW versions
+need to have their own register layer for computing lane masks.
 
-Robert Foss (4):
-  media: camss: csiphy: Move to hardcode CSI Clock Lane number
-  media: dt-bindings: media: camss: Remove clock-lane property
-  arm64: dts: qcom: apq8016-sbc: Remove clock-lanes property from &camss
-    node
-  arm64: dts: qcom: sdm845-db845c: Remove clock-lanes property from
-    &camss node
-
- .../bindings/media/qcom,msm8916-camss.yaml    | 10 ---------
- .../bindings/media/qcom,msm8996-camss.yaml    | 20 ------------------
- .../bindings/media/qcom,sdm660-camss.yaml     | 20 ------------------
- .../bindings/media/qcom,sdm845-camss.yaml     | 17 ---------------
- arch/arm64/boot/dts/qcom/apq8016-sbc.dts      |  2 --
- arch/arm64/boot/dts/qcom/sdm845-db845c.dts    |  3 ---
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+---
  .../qcom/camss/camss-csiphy-2ph-1-0.c         | 19 +++++++++++++++--
  .../qcom/camss/camss-csiphy-3ph-1-0.c         | 17 ++++++++++++++-
  .../media/platform/qcom/camss/camss-csiphy.c  | 21 +------------------
  .../media/platform/qcom/camss/camss-csiphy.h  |  7 +++++++
- 10 files changed, 41 insertions(+), 95 deletions(-)
+ 4 files changed, 41 insertions(+), 23 deletions(-)
 
+diff --git a/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c b/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c
+index 30b454c369ab..cd4a8c369234 100644
+--- a/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c
++++ b/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c
+@@ -16,6 +16,7 @@
+ 
+ #define CAMSS_CSI_PHY_LNn_CFG2(n)		(0x004 + 0x40 * (n))
+ #define CAMSS_CSI_PHY_LNn_CFG3(n)		(0x008 + 0x40 * (n))
++#define		CAMSS_CSI_PHY_LN_CLK		1
+ #define CAMSS_CSI_PHY_GLBL_RESET		0x140
+ #define CAMSS_CSI_PHY_GLBL_PWR_CFG		0x144
+ #define CAMSS_CSI_PHY_GLBL_IRQ_CMD		0x164
+@@ -26,6 +27,19 @@
+ #define CAMSS_CSI_PHY_GLBL_T_INIT_CFG0		0x1ec
+ #define CAMSS_CSI_PHY_T_WAKEUP_CFG0		0x1f4
+ 
++static u8 csiphy_get_lane_mask(struct csiphy_lanes_cfg *lane_cfg)
++{
++	u8 lane_mask;
++	int i;
++
++	lane_mask = 1 << CAMSS_CSI_PHY_LN_CLK;
++
++	for (i = 0; i < lane_cfg->num_data; i++)
++		lane_mask |= 1 << lane_cfg->data[i].pos;
++
++	return lane_mask;
++}
++
+ static void csiphy_hw_version_read(struct csiphy_device *csiphy,
+ 				   struct device *dev)
+ {
+@@ -105,7 +119,7 @@ static void csiphy_lanes_enable(struct csiphy_device *csiphy,
+ 
+ 	for (i = 0; i <= c->num_data; i++) {
+ 		if (i == c->num_data)
+-			l = c->clk.pos;
++			l = CAMSS_CSI_PHY_LN_CLK;
+ 		else
+ 			l = c->data[i].pos;
+ 
+@@ -129,7 +143,7 @@ static void csiphy_lanes_disable(struct csiphy_device *csiphy,
+ 
+ 	for (i = 0; i <= c->num_data; i++) {
+ 		if (i == c->num_data)
+-			l = c->clk.pos;
++			l = CAMSS_CSI_PHY_LN_CLK;
+ 		else
+ 			l = c->data[i].pos;
+ 
+@@ -167,6 +181,7 @@ static irqreturn_t csiphy_isr(int irq, void *dev)
+ }
+ 
+ const struct csiphy_hw_ops csiphy_ops_2ph_1_0 = {
++	.get_lane_mask = csiphy_get_lane_mask,
+ 	.hw_version_read = csiphy_hw_version_read,
+ 	.reset = csiphy_reset,
+ 	.lanes_enable = csiphy_lanes_enable,
+diff --git a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
+index e318c822ab04..cde6b3a10b9e 100644
+--- a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
++++ b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
+@@ -43,6 +43,7 @@
+ #define CSIPHY_3PH_LNn_CSI_LANE_CTRL15_SWI_SOT_SYMBOL	0xb8
+ 
+ #define CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(n)	(0x800 + 0x4 * (n))
++#define CSIPHY_3PH_CMN_CSI_COMMON_CTRL5_CLK_ENABLE	BIT(7)
+ #define CSIPHY_3PH_CMN_CSI_COMMON_CTRL6_COMMON_PWRDN_B	BIT(0)
+ #define CSIPHY_3PH_CMN_CSI_COMMON_CTRL6_SHOW_REV_ID	BIT(1)
+ #define CSIPHY_3PH_CMN_CSI_COMMON_STATUSn(n)	(0x8b0 + 0x4 * (n))
+@@ -320,6 +321,19 @@ static void csiphy_gen2_config_lanes(struct csiphy_device *csiphy,
+ 	}
+ }
+ 
++static u8 csiphy_get_lane_mask(struct csiphy_lanes_cfg *lane_cfg)
++{
++	u8 lane_mask;
++	int i;
++
++	lane_mask = CSIPHY_3PH_CMN_CSI_COMMON_CTRL5_CLK_ENABLE;
++
++	for (i = 0; i < lane_cfg->num_data; i++)
++		lane_mask |= 1 << lane_cfg->data[i].pos;
++
++	return lane_mask;
++}
++
+ static void csiphy_lanes_enable(struct csiphy_device *csiphy,
+ 				struct csiphy_config *cfg,
+ 				s64 link_freq, u8 lane_mask)
+@@ -331,7 +345,7 @@ static void csiphy_lanes_enable(struct csiphy_device *csiphy,
+ 
+ 	settle_cnt = csiphy_settle_cnt_calc(link_freq, csiphy->timer_clk_rate);
+ 
+-	val = BIT(c->clk.pos);
++	val = CSIPHY_3PH_CMN_CSI_COMMON_CTRL5_CLK_ENABLE;
+ 	for (i = 0; i < c->num_data; i++)
+ 		val |= BIT(c->data[i].pos * 2);
+ 
+@@ -397,6 +411,7 @@ static void csiphy_lanes_disable(struct csiphy_device *csiphy,
+ }
+ 
+ const struct csiphy_hw_ops csiphy_ops_3ph_1_0 = {
++	.get_lane_mask = csiphy_get_lane_mask,
+ 	.hw_version_read = csiphy_hw_version_read,
+ 	.reset = csiphy_reset,
+ 	.lanes_enable = csiphy_lanes_enable,
+diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
+index 24eec16197e7..ac7e96e6b7cd 100644
+--- a/drivers/media/platform/qcom/camss/camss-csiphy.c
++++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
+@@ -229,25 +229,6 @@ static int csiphy_set_power(struct v4l2_subdev *sd, int on)
+ 	return 0;
+ }
+ 
+-/*
+- * csiphy_get_lane_mask - Calculate CSI2 lane mask configuration parameter
+- * @lane_cfg - CSI2 lane configuration
+- *
+- * Return lane mask
+- */
+-static u8 csiphy_get_lane_mask(struct csiphy_lanes_cfg *lane_cfg)
+-{
+-	u8 lane_mask;
+-	int i;
+-
+-	lane_mask = 1 << lane_cfg->clk.pos;
+-
+-	for (i = 0; i < lane_cfg->num_data; i++)
+-		lane_mask |= 1 << lane_cfg->data[i].pos;
+-
+-	return lane_mask;
+-}
+-
+ /*
+  * csiphy_stream_on - Enable streaming on CSIPHY module
+  * @csiphy: CSIPHY device
+@@ -261,7 +242,7 @@ static int csiphy_stream_on(struct csiphy_device *csiphy)
+ {
+ 	struct csiphy_config *cfg = &csiphy->cfg;
+ 	s64 link_freq;
+-	u8 lane_mask = csiphy_get_lane_mask(&cfg->csi2->lane_cfg);
++	u8 lane_mask = csiphy->ops->get_lane_mask(&cfg->csi2->lane_cfg);
+ 	u8 bpp = csiphy_get_bpp(csiphy->formats, csiphy->nformats,
+ 				csiphy->fmt[MSM_CSIPHY_PAD_SINK].code);
+ 	u8 num_lanes = csiphy->cfg.csi2->lane_cfg.num_data;
+diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.h b/drivers/media/platform/qcom/camss/camss-csiphy.h
+index d71b8bc6ec00..1c14947f92d3 100644
+--- a/drivers/media/platform/qcom/camss/camss-csiphy.h
++++ b/drivers/media/platform/qcom/camss/camss-csiphy.h
+@@ -45,6 +45,13 @@ struct csiphy_config {
+ struct csiphy_device;
+ 
+ struct csiphy_hw_ops {
++	/*
++	 * csiphy_get_lane_mask - Calculate CSI2 lane mask configuration parameter
++	 * @lane_cfg - CSI2 lane configuration
++	 *
++	 * Return lane mask
++	 */
++	u8 (*get_lane_mask)(struct csiphy_lanes_cfg *lane_cfg);
+ 	void (*hw_version_read)(struct csiphy_device *csiphy,
+ 				struct device *dev);
+ 	void (*reset)(struct csiphy_device *csiphy);
 -- 
 2.32.0
 
