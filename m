@@ -2,130 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFAD0455205
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 02:11:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD540455218
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 02:17:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242135AbhKRBOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 20:14:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235898AbhKRBOe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 20:14:34 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25728C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 17:11:35 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id y13so19063309edd.13
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 17:11:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=n59JA5vpAiFzqymIZR9NoTDmE0/JzGU9uabXY31m74I=;
-        b=TgbadRECWp9oKG6JDdvRokOmyyN+GN0KMTnE2W0YX4/fid4SCJaU1J56VwkRFzLenC
-         aPit+3iAGdT6f+MxXOqWupGW+vI58N7aCqgED7muqJwin6ZugaYYI0OrOYph+wiTNVoY
-         u++A2iFFJw776IR8URCgDpOww/+MnT+NlmuFw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n59JA5vpAiFzqymIZR9NoTDmE0/JzGU9uabXY31m74I=;
-        b=FFKRhpTI698xJ2b6Ze2Zz6IZNOEyzDMDaHcvuF/ap++Dj3eT2TD4Lh2Jl6n8pHnMby
-         RW/HbzRs+m5UOZFZRPlVbKgYaAvhyrndsT0nHsozUeXNifNLy7hErPxv1CNaFTKYji5s
-         qno/GKHtoUdqpnd18nu0eWgIZtTRl7MGK7L7c1VLrxSSHkpGGlWqz3neHOCTlQG1VxbG
-         /15aRBSk7vZKC08/d8CcuiQ/cuTapuYdj3dni4rnTbKrB7sb1BZif0gZwaH6Gmu+BIXD
-         X+NKCsdajtdPO0oBcPQMRk5VU6qAhbdBiq6tWAvdPkg8j3LehqHkYrcy8TeARHpjPKx4
-         7cSA==
-X-Gm-Message-State: AOAM531WWxjbkI4x/BYWLteaUb9aFqPSmt2y/iUetL9u88v0ZxkWVCf3
-        RrBNuuLZVnYSVIXGAINjp5/aBRRBgOobwPyZ
-X-Google-Smtp-Source: ABdhPJw18uVR3Ue/gTTpy+czCY5UDQJl1vEqE0eQhI4W3SVRKcIPeeTtDkqSiMcomOM7PT2V0jhSqw==
-X-Received: by 2002:a05:6402:40c3:: with SMTP id z3mr4766994edb.203.1637197893489;
-        Wed, 17 Nov 2021 17:11:33 -0800 (PST)
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com. [209.85.128.46])
-        by smtp.gmail.com with ESMTPSA id s2sm632449ejn.96.2021.11.17.17.11.31
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 17:11:31 -0800 (PST)
-Received: by mail-wm1-f46.google.com with SMTP id i8-20020a7bc948000000b0030db7b70b6bso6267921wml.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 17:11:31 -0800 (PST)
-X-Received: by 2002:a7b:c005:: with SMTP id c5mr5081792wmb.155.1637197890742;
- Wed, 17 Nov 2021 17:11:30 -0800 (PST)
+        id S242191AbhKRBUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 20:20:21 -0500
+Received: from mga07.intel.com ([134.134.136.100]:42317 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242174AbhKRBUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 20:20:15 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10171"; a="297510643"
+X-IronPort-AV: E=Sophos;i="5.87,243,1631602800"; 
+   d="scan'208";a="297510643"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 17:17:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,243,1631602800"; 
+   d="scan'208";a="495157953"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.118]) ([10.239.159.118])
+  by orsmga007.jf.intel.com with ESMTP; 17 Nov 2021 17:17:09 -0800
+Cc:     baolu.lu@linux.intel.com, Christoph Hellwig <hch@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Chaitanya Kulkarni <kch@nvidia.com>, kvm@vger.kernel.org,
+        rafael@kernel.org, linux-pci@vger.kernel.org,
+        Cornelia Huck <cohuck@redhat.com>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Jacob jun Pan <jacob.jun.pan@intel.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 01/11] iommu: Add device dma ownership set/release
+ interfaces
+To:     Jason Gunthorpe <jgg@nvidia.com>
+References: <20211115020552.2378167-1-baolu.lu@linux.intel.com>
+ <20211115020552.2378167-2-baolu.lu@linux.intel.com>
+ <YZJdJH4AS+vm0j06@infradead.org>
+ <cc7ce6f4-b1ec-49ef-e245-ab6c330154c2@linux.intel.com>
+ <20211116134603.GA2105516@nvidia.com>
+ <d79acc01-eeaf-e6ac-0415-af498c355a00@linux.intel.com>
+ <20211117133517.GJ2105516@nvidia.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <5901c54b-a6eb-b060-aa52-15de7708d703@linux.intel.com>
+Date:   Thu, 18 Nov 2021 09:12:41 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
- <202111171049.3F9C5F1@keescook> <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
- <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
- <87k0h6334w.fsf@email.froward.int.ebiederm.org> <202111171341.41053845C3@keescook>
- <CAHk-=wgkOGmkTu18hJQaJ4mk8hGZc16=gzGMgGGOd=uwpXsdyw@mail.gmail.com> <CAP045ApYXxhiAfmn=fQM7_hD58T-yx724ctWFHO4UAWCD+QapQ@mail.gmail.com>
-In-Reply-To: <CAP045ApYXxhiAfmn=fQM7_hD58T-yx724ctWFHO4UAWCD+QapQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 17 Nov 2021 17:11:14 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiCRbSvUi_TnQkokLeM==_+Tow0GsQXnV3UYwhsxirPwg@mail.gmail.com>
-Message-ID: <CAHk-=wiCRbSvUi_TnQkokLeM==_+Tow0GsQXnV3UYwhsxirPwg@mail.gmail.com>
-Subject: Re: [REGRESSION] 5.16rc1: SA_IMMUTABLE breaks debuggers
-To:     Kyle Huey <me@kylehuey.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        "Robert O'Callahan" <rocallahan@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211117133517.GJ2105516@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 4:37 PM Kyle Huey <me@kylehuey.com> wrote:
->
-> This fixes most of the issues with rr, but it still changes the ptrace
-> behavior for the double-SIGSEGV case
+On 11/17/21 9:35 PM, Jason Gunthorpe wrote:
+> On Wed, Nov 17, 2021 at 01:22:19PM +0800, Lu Baolu wrote:
+>> Hi Jason,
+>>
+>> On 11/16/21 9:46 PM, Jason Gunthorpe wrote:
+>>> On Tue, Nov 16, 2021 at 09:57:30AM +0800, Lu Baolu wrote:
+>>>> Hi Christoph,
+>>>>
+>>>> On 11/15/21 9:14 PM, Christoph Hellwig wrote:
+>>>>> On Mon, Nov 15, 2021 at 10:05:42AM +0800, Lu Baolu wrote:
+>>>>>> +enum iommu_dma_owner {
+>>>>>> +	DMA_OWNER_NONE,
+>>>>>> +	DMA_OWNER_KERNEL,
+>>>>>> +	DMA_OWNER_USER,
+>>>>>> +};
+>>>>>> +
+>>>>>
+>>>>>> +	enum iommu_dma_owner dma_owner;
+>>>>>> +	refcount_t owner_cnt;
+>>>>>> +	struct file *owner_user_file;
+>>>>>
+>>>>> I'd just overload the ownership into owner_user_file,
+>>>>>
+>>>>>     NULL			-> no owner
+>>>>>     (struct file *)1UL)	-> kernel
+>>>>>     real pointer		-> user
+>>>>>
+>>>>> Which could simplify a lot of the code dealing with the owner.
+>>>>>
+>>>>
+>>>> Yeah! Sounds reasonable. I will make this in the next version.
+>>>
+>>> It would be good to figure out how to make iommu_attach_device()
+>>> enforce no other driver binding as a kernel user without a file *, as
+>>> Robin pointed to, before optimizing this.
+>>>
+>>> This fixes an existing bug where iommu_attach_device() only checks the
+>>> group size and is vunerable to a hot plug increasing the group size
+>>> after it returns. That check should be replaced by this series's logic
+>>> instead.
+>>
+>> As my my understanding, the essence of this problem is that only the
+>> user owner of the iommu_group could attach an UNMANAGED domain to it.
+>> If I understand it right, how about introducing a new interface to
+>> allocate a user managed domain and storing the user file pointer in it.
+> 
+> For iommu_attach_device() the semantic is simple non-sharing, so there
+> is no need for the file * at all, it can just be NULL.
 
-Hmm. I think that's because of how "force_sigsgv()" works.
+The file * being NULL means the device is only owned by the kernel
+driver. Perhaps we can check this pointer in iommu_attach_device() to
+avoid using it for user domain attachment.
 
-I absolutely detest that function.
+> 
+>> Does above help here?
+> 
+> No, iommu_attach_device() is kernel only and should not interact with
+> userspace.
 
-So we have signal_setup_done() doing that
+The existing iommu_attach_device() allows only for singleton group. As
+we have added group ownership attribute, we can enforce this interface
+only for kernel domain usage.
 
-        if (failed)
-                force_sigsegv(ksig->sig);
+> 
+> I'm also going to see if I can learn what Tegra is doing with
+> iommu_attach_group()
 
-and then force_sigsegv() has that completely insane
+Okay! Thank you!
 
-        if (sig == SIGSEGV)
-                force_fatal_sig(SIGSEGV);
-        else
-                force_sig(SIGSEGV);
+> 
+> Jason
+> 
 
-behavior.
-
-And I think I know the _reason_ for that complete insanity: when
-SIGSEGV takes a SIGSEGV, and there is a handler, we need to stop
-trying to send more SIGSEGV's.
-
-But it does mean that with my change, that second SIGSEGV now ends up
-being that SA_IMMUTABLE kind, so yeah, it broke the debugger test -
-where catching the second SIGSEGV is actually somewhat sensible (ok,
-not really, but at least understandable)
-
-End result: I think we want not a boolean, but a three-way choice for
-that force_sig_info_to_task() thing:
-
- - unconditionally fatal (for things that just want to force an exit
-and used to do do_exit())
-
- - ignore valid and unblocked handler (for that SIGSEGV recursion
-case, aka force "sigdfl")
-
- - catching signal ok
-
-So my one-liner isn't sufficient. It wants some kind of nasty enum.
-
-At least the enum can be entirely internal to kernel/signal.c, I
-think. No need to expose this all to anything else.
-
-            Linus
+Best regards,
+baolu
