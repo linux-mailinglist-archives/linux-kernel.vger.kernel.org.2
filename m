@@ -2,819 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 403ED455208
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 02:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB7045520B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 02:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242140AbhKRBQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 20:16:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235898AbhKRBP6 (ORCPT
+        id S242148AbhKRBQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 20:16:28 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:46762 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239106AbhKRBQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 20:15:58 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31FF0C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 17:12:59 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id o14so3766516plg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 17:12:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=accesio-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SjyIycdw6npApI5zItaLRCEPx3V5C7NN2Rzwwn/XbZM=;
-        b=y5Vh1/ZJcwpdFheWH3s2m2mAgg3JLTvVTVJucfgFzi4/kirUErj73fMpfekgBmPSNe
-         a+8/Mz7cKHlNUBr27J4RZnFpJDESOavJi3/B+Jh+e5NlsJfPaQCkutljAIfnoc1ezjwa
-         3xsj4UolBqS0NGSX/41pnWFUfwTPOaUhO9+d52mj7F1YrHosDW2oIk8O9NxXgsr58xLo
-         MiZ73OtFpNWfZO59GtKwYL4NxgHnlg6G5O3gTj18rLDnK+HzS8nuv37ZA6ur5zQK4TeZ
-         qeklFPBogV69FUPJQkoko5cySF36tHF9CoipVZYXHNSR1OlFV725T0OnNY//QmwDRtdG
-         Wayw==
+        Wed, 17 Nov 2021 20:16:27 -0500
+Received: by mail-il1-f200.google.com with SMTP id a5-20020a92c545000000b0026b54ead1b1so3023022ilj.13
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 17:13:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SjyIycdw6npApI5zItaLRCEPx3V5C7NN2Rzwwn/XbZM=;
-        b=Pt0r9YXu3jRkoKcbE0htsUNhdacXcDtJwpzSJd1tHv2MaIXRl3FVJ4AnVDBjYw5lV2
-         pDADDhOTSamG7Q5WMRXrAm0Uzhf/3cbppHvF7pKCHaIWaIWJqscoIFcbnCelp33kEKaS
-         a/w0vMz9Yuptd4CdJPgZvqfwbnja5cQHZ50fgfqr5Huxm/pQkxxrCar8BrK9hpH7xmDb
-         tfkI1qUivBIA/XisShP00yX1wa+fStF+6M7zHGMsl9jpZf93A9YLcwmym7PGAyj+y2gc
-         ljjFSsp83f/BiRe8CfScvH847C+jrOLH4jBt5Xa8wYb5XB4bKtr6KVY0A7hOFo7JBN5T
-         pqYA==
-X-Gm-Message-State: AOAM532HEiBgHkiBpZ3ocFM1LYd/NUNA3Vm/mproS6AzFUNBFJHAWuuc
-        rdeowR/vF4gYBgAs+9oKZB1X
-X-Google-Smtp-Source: ABdhPJwcHhhANEzTLry0tyj9+TN/gY3JaVVN5QVTuZiCqxf4/bdF7lkAP5nxjUfCxVE2CgPUutazEQ==
-X-Received: by 2002:a17:90b:1bca:: with SMTP id oa10mr5639688pjb.20.1637197978390;
-        Wed, 17 Nov 2021 17:12:58 -0800 (PST)
-Received: from [172.16.8.241] ([98.149.220.160])
-        by smtp.gmail.com with ESMTPSA id c1sm909070pfv.54.2021.11.17.17.12.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 17:12:58 -0800 (PST)
-Subject: Re: [PATCH v1 1/2] serial: 8250_pci: Split out Pericom driver
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Cc:     Jiri Slaby <jirislaby@kernel.org>
-References: <20211117145750.43911-1-andriy.shevchenko@linux.intel.com>
- <20211117145750.43911-2-andriy.shevchenko@linux.intel.com>
-From:   Jay Dolan <jay.dolan@accesio.com>
-Message-ID: <36a3c24a-59c1-2537-14ef-c750aaa55ea9@accesio.com>
-Date:   Wed, 17 Nov 2021 17:12:56 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=1p/zvlkwUF4+3C9sFWeL4/DIFk0DbI9ehxkA1GczZDQ=;
+        b=C4msVfiZcUdgNHsY3vfLu2t1U0cW8wtEJPQuOldi2F5N4LPHyMrVT/9rsme+YqOiNW
+         F7JDjhoqjcC+JZIP8RSOHM9+tzmO+ZcN5sc7qEkqHxveLp0M1ZGiM83NTC3frXa1FB/e
+         JDBHWL/dC2nd6ZXuQLSVfa+/slTcWKRLWecNAPsO/FM3TsIHDtd1TR0cXX/mGPCiGoub
+         ove19PvZLUDZHuXyW/ZZVa+H4Hdp+Mt/KXpfLGzJu4ld7gSBQaZNNNghf6WbQgtmoYhw
+         6KZqIDgbES3/Hlui0SiMptPgKGnZRnpJ/5YI0pv/PJxd4VSuHG1Rg30G6AqTH8nbGiy/
+         Dp5g==
+X-Gm-Message-State: AOAM533sbtSX1zZomfzxm8QlYdnDMDcJXzWJGQDoFeILC6QXAPNvH7h7
+        OziwJFnoUKDP76oQ2qS+SJWo+qKhDU7doiYEJ8E7D++QcG6E
+X-Google-Smtp-Source: ABdhPJxSHosbxl8lFFPtndhyNiEbV7KCfMn4Gn6cS45+QefzAr4fkeNxVzK1i8+aTM8qz2+cvx4bAGIn4hV6TDKVzqHk0d7dagrl
 MIME-Version: 1.0
-In-Reply-To: <20211117145750.43911-2-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:20ea:: with SMTP id q10mr4605625ilv.283.1637198007934;
+ Wed, 17 Nov 2021 17:13:27 -0800 (PST)
+Date:   Wed, 17 Nov 2021 17:13:27 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b0a37405d105ddd5@google.com>
+Subject: [syzbot] INFO: task hung in __loop_clr_fd
+From:   syzbot <syzbot+cf73574f3ec41f2513ee@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    ee1703cda8dc Merge tag 'hyperv-fixes-signed-20211117' of g..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=135e3236b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6c3ab72998e7f1a4
+dashboard link: https://syzkaller.appspot.com/bug?extid=cf73574f3ec41f2513ee
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cf73574f3ec41f2513ee@syzkaller.appspotmail.com
+
+INFO: task syz-executor.5:17065 blocked for more than 143 seconds.
+      Not tainted 5.16.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.5  state:D stack:25296 pid:17065 ppid:  8521 flags:0x00004004
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:4972 [inline]
+ __schedule+0xb72/0x1460 kernel/sched/core.c:6253
+ schedule+0x12b/0x1f0 kernel/sched/core.c:6326
+ blk_mq_freeze_queue_wait+0x105/0x190 block/blk-mq.c:178
+ __loop_clr_fd+0x1c6/0x9b0 drivers/block/loop.c:1122
+ loop_clr_fd drivers/block/loop.c:1237 [inline]
+ lo_ioctl+0x107b/0x1f40 drivers/block/loop.c:1562
+ blkdev_ioctl+0x3ac/0x790 block/ioctl.c:609
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:874 [inline]
+ __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:860
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f018af738a7
+RSP: 002b:00007f01884e8fa8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00000000200042c0 RCX: 00007f018af738a7
+RDX: 0000000000000000 RSI: 0000000000004c01 RDI: 0000000000000005
+RBP: 00007f01884e96bc R08: 00007f01884e9040 R09: 0000000020000000
+R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffff
+R13: 0000000000000005 R14: 00007f01884e9000 R15: 0000000020004340
+ </TASK>
+INFO: task syz-executor.5:17077 blocked for more than 143 seconds.
+      Not tainted 5.16.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.5  state:D stack:26960 pid:17077 ppid:  8521 flags:0x00004004
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:4972 [inline]
+ __schedule+0xb72/0x1460 kernel/sched/core.c:6253
+ schedule+0x12b/0x1f0 kernel/sched/core.c:6326
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6385
+ __mutex_lock_common+0xd1f/0x2590 kernel/locking/mutex.c:680
+ __mutex_lock kernel/locking/mutex.c:740 [inline]
+ mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:792
+ blkdev_get_by_dev+0xfc/0xb80 block/bdev.c:819
+ blkdev_open+0x137/0x2f0 block/fops.c:501
+ do_dentry_open+0x78b/0x1020 fs/open.c:822
+ do_open fs/namei.c:3426 [inline]
+ path_openat+0x2896/0x3660 fs/namei.c:3559
+ do_filp_open+0x277/0x4f0 fs/namei.c:3586
+ do_sys_openat2+0x13b/0x500 fs/open.c:1212
+ do_sys_open fs/open.c:1228 [inline]
+ __do_sys_openat fs/open.c:1244 [inline]
+ __se_sys_openat fs/open.c:1239 [inline]
+ __x64_sys_openat+0x243/0x290 fs/open.c:1239
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f018af26a04
+RSP: 002b:00007f01884a6ed0 EFLAGS: 00000293 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 00007f018afbd970 RCX: 00007f018af26a04
+RDX: 0000000000000002 RSI: 00007f01884a7000 RDI: 00000000ffffff9c
+RBP: 00007f01884a7000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000002
+R13: 0000000000000004 R14: 0000000020004320 R15: 0000000000000004
+ </TASK>
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/27:
+ #0: ffffffff8cd1db00 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0x0/0x30
+2 locks held by kworker/u4:5/1085:
+ #0: ffff8880b9a395d8 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x25/0x110 kernel/sched/core.c:478
+ #1: ffffc90004dc7d20 ((work_completion)(&(&bat_priv->nc.work)->work)){+.+.}-{0:0}, at: process_one_work+0x808/0x1140 kernel/workqueue.c:2273
+2 locks held by agetty/6240:
+ #0: ffff88801ce1e098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x21/0x70 drivers/tty/tty_ldisc.c:252
+ #1: ffffc90002f832e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6c5/0x1c60 drivers/tty/n_tty.c:2113
+2 locks held by agetty/6241:
+ #0: ffff88801ce1c098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x21/0x70 drivers/tty/tty_ldisc.c:252
+ #1: ffffc90002f732e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6c5/0x1c60 drivers/tty/n_tty.c:2113
+2 locks held by agetty/6242:
+ #0: ffff88801b31f098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x21/0x70 drivers/tty/tty_ldisc.c:252
+ #1: ffffc90002f632e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6c5/0x1c60 drivers/tty/n_tty.c:2113
+2 locks held by agetty/26834:
+ #0: ffff8880711c8098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x21/0x70 drivers/tty/tty_ldisc.c:252
+ #1: ffffc9000474b2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6c5/0x1c60 drivers/tty/n_tty.c:2113
+2 locks held by systemd-udevd/1504:
+ #0: ffff88801b76d918 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0xfc/0xb80 block/bdev.c:819
+ #1: ffff88801b769360 (&lo->lo_mutex){+.+.}-{3:3}, at: lo_open+0x68/0x100 drivers/block/loop.c:1733
+1 lock held by syz-executor.5/17065:
+ #0: ffff88801b769360 (&lo->lo_mutex){+.+.}-{3:3}, at: __loop_clr_fd+0x6d/0x9b0 drivers/block/loop.c:1106
+1 lock held by syz-executor.5/17077:
+ #0: ffff88801b76d918 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0xfc/0xb80 block/bdev.c:819
+
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 PID: 27 Comm: khungtaskd Not tainted 5.16.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1dc/0x2d8 lib/dump_stack.c:106
+ nmi_cpu_backtrace+0x45f/0x490 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x16a/0x280 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
+ watchdog+0xc82/0xcd0 kernel/hung_task.c:295
+ kthread+0x468/0x490 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30
+ </TASK>
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 1085 Comm: kworker/u4:5 Not tainted 5.16.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events_unbound toggle_allocation_gate
+RIP: 0010:lookup_chain_cache kernel/locking/lockdep.c:3695 [inline]
+RIP: 0010:lookup_chain_cache_add kernel/locking/lockdep.c:3714 [inline]
+RIP: 0010:validate_chain+0x1c3/0x8240 kernel/locking/lockdep.c:3769
+Code: 83 c3 f8 75 15 eb 5a 48 8b 03 48 8d 58 f8 48 85 c0 48 0f 44 d8 48 85 db 74 47 4c 8d 7b 18 4c 89 f8 48 c1 e8 03 42 80 3c 20 00 <74> 08 4c 89 ff e8 33 86 69 00 49 8b 07 4c 39 f0 74 1c 48 83 c3 08
+RSP: 0018:ffffc90004dc7180 EFLAGS: 00000046
+RAX: 1ffffffff1faac6b RBX: ffffffff8fd56340 RCX: ffffffff8166bbb8
+RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffffffff901a6ef0
+RBP: ffffc90004dc7490 R08: dffffc0000000000 R09: fffffbfff2034ddf
+R10: fffffbfff2034ddf R11: 0000000000000000 R12: dffffc0000000000
+R13: 1ffff920009b8e50 R14: c60639a784b57c10 R15: ffffffff8fd56358
+FS:  0000000000000000(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f3842131000 CR3: 000000000ca8e000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __lock_acquire+0x1382/0x2b00 kernel/locking/lockdep.c:5027
+ lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5637
+ __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:154
+ spin_lock include/linux/spinlock.h:349 [inline]
+ __get_locked_pte+0x2ad/0x390 mm/memory.c:1722
+ get_locked_pte include/linux/mm.h:2160 [inline]
+ __text_poke+0x280/0x9f0 arch/x86/kernel/alternative.c:1000
+ text_poke arch/x86/kernel/alternative.c:1083 [inline]
+ text_poke_bp_batch+0x4b0/0x940 arch/x86/kernel/alternative.c:1310
+ text_poke_flush arch/x86/kernel/alternative.c:1451 [inline]
+ text_poke_finish+0x16/0x30 arch/x86/kernel/alternative.c:1458
+ arch_jump_label_transform_apply+0x13/0x20 arch/x86/kernel/jump_label.c:146
+ static_key_disable_cpuslocked+0xcc/0x1b0 kernel/jump_label.c:207
+ static_key_disable+0x16/0x20 kernel/jump_label.c:215
+ toggle_allocation_gate+0x3c8/0x460 mm/kfence/core.c:746
+ process_one_work+0x853/0x1140 kernel/workqueue.c:2298
+ worker_thread+0xac1/0x1320 kernel/workqueue.c:2445
+ kthread+0x468/0x490 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30
+ </TASK>
+----------------
+Code disassembly (best guess):
+   0:	83 c3 f8             	add    $0xfffffff8,%ebx
+   3:	75 15                	jne    0x1a
+   5:	eb 5a                	jmp    0x61
+   7:	48 8b 03             	mov    (%rbx),%rax
+   a:	48 8d 58 f8          	lea    -0x8(%rax),%rbx
+   e:	48 85 c0             	test   %rax,%rax
+  11:	48 0f 44 d8          	cmove  %rax,%rbx
+  15:	48 85 db             	test   %rbx,%rbx
+  18:	74 47                	je     0x61
+  1a:	4c 8d 7b 18          	lea    0x18(%rbx),%r15
+  1e:	4c 89 f8             	mov    %r15,%rax
+  21:	48 c1 e8 03          	shr    $0x3,%rax
+  25:	42 80 3c 20 00       	cmpb   $0x0,(%rax,%r12,1)
+* 2a:	74 08                	je     0x34 <-- trapping instruction
+  2c:	4c 89 ff             	mov    %r15,%rdi
+  2f:	e8 33 86 69 00       	callq  0x698667
+  34:	49 8b 07             	mov    (%r15),%rax
+  37:	4c 39 f0             	cmp    %r14,%rax
+  3a:	74 1c                	je     0x58
+  3c:	48 83 c3 08          	add    $0x8,%rbx
 
 
-On 11/17/21 6:57 AM, Andy Shevchenko wrote:
-> Pericom along with Acces I/O support consumes a lot of LOCs in 8250_pci.c.
-> For the sake of easier maintenance, split it to a separate driver.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->   drivers/tty/serial/8250/8250_pci.c     | 405 +------------------------
->   drivers/tty/serial/8250/8250_pericom.c | 217 +++++++++++++
->   drivers/tty/serial/8250/Kconfig        |   8 +
->   drivers/tty/serial/8250/Makefile       |   1 +
->   4 files changed, 231 insertions(+), 400 deletions(-)
->   create mode 100644 drivers/tty/serial/8250/8250_pericom.c
-> 
-> diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-> index 8b29a9381c74..f8d68db73db8 100644
-> --- a/drivers/tty/serial/8250/8250_pci.c
-> +++ b/drivers/tty/serial/8250/8250_pci.c
-> @@ -1318,89 +1318,6 @@ static int pci_default_setup(struct serial_private *priv,
->   
->   	return setup_port(priv, port, bar, offset, board->reg_shift);
->   }
-> -static void
-> -pericom_do_set_divisor(struct uart_port *port, unsigned int baud,
-> -			       unsigned int quot, unsigned int quot_frac)
-> -{
-> -	int scr;
-> -	int lcr;
-> -
-> -	for (scr = 16; scr > 4; scr--) {
-> -		unsigned int maxrate = port->uartclk / scr;
-> -		unsigned int divisor = maxrate / baud;
-> -		int delta = maxrate / divisor - baud;
-> -
-> -		if (baud > maxrate + baud / 50)
-> -			continue;
-> -
-> -		if (divisor == 0 || delta > baud / 50)
-> -			divisor++;
-> -
-> -		if (divisor > 0xffff)
-> -			continue;
-> -
-> -		/* Update delta due to possible divisor change */
-> -		delta = maxrate / divisor - baud;
-> -		if (abs(delta) < baud / 50) {
-> -			lcr = serial_port_in(port, UART_LCR);
-> -			serial_port_out(port, UART_LCR, lcr | 0x80);
-> -			serial_port_out(port, UART_DLL, divisor & 0xff);
-> -			serial_port_out(port, UART_DLM, divisor >> 8 & 0xff);
-> -			serial_port_out(port, 2, 16 - scr);
-> -			serial_port_out(port, UART_LCR, lcr);
-> -			return;
-> -		}
-> -	}
-> -}
-> -static int pci_pericom_setup(struct serial_private *priv,
-> -		  const struct pciserial_board *board,
-> -		  struct uart_8250_port *port, int idx)
-> -{
-> -	unsigned int bar, offset = board->first_offset, maxnr;
-> -
-> -	bar = FL_GET_BASE(board->flags);
-> -	if (board->flags & FL_BASE_BARS)
-> -		bar += idx;
-> -	else
-> -		offset += idx * board->uart_offset;
-> -
-> -
-> -	maxnr = (pci_resource_len(priv->dev, bar) - board->first_offset) >>
-> -		(board->reg_shift + 3);
-> -
-> -	if (board->flags & FL_REGION_SZ_CAP && idx >= maxnr)
-> -		return 1;
-> -
-> -	port->port.set_divisor = pericom_do_set_divisor;
-> -
-> -	return setup_port(priv, port, bar, offset, board->reg_shift);
-> -}
-> -
-> -static int pci_pericom_setup_four_at_eight(struct serial_private *priv,
-> -		  const struct pciserial_board *board,
-> -		  struct uart_8250_port *port, int idx)
-> -{
-> -	unsigned int bar, offset = board->first_offset, maxnr;
-> -
-> -	bar = FL_GET_BASE(board->flags);
-> -	if (board->flags & FL_BASE_BARS)
-> -		bar += idx;
-> -	else
-> -		offset += idx * board->uart_offset;
-> -
-> -	if (idx==3)
-> -		offset = 0x38;
-> -
-> -	maxnr = (pci_resource_len(priv->dev, bar) - board->first_offset) >>
-> -		(board->reg_shift + 3);
-> -
-> -	if (board->flags & FL_REGION_SZ_CAP && idx >= maxnr)
-> -		return 1;
-> -
-> -	port->port.set_divisor = pericom_do_set_divisor;
-> -
-> -	return setup_port(priv, port, bar, offset, board->reg_shift);
-> -}
->   
->   static int
->   ce4100_serial_setup(struct serial_private *priv,
-> @@ -1886,42 +1803,6 @@ pci_moxa_setup(struct serial_private *priv,
->   #define PCIE_DEVICE_ID_WCH_CH384_8S	0x3853
->   #define PCIE_DEVICE_ID_WCH_CH382_2S	0x3253
->   
-> -#define PCI_VENDOR_ID_ACCESIO			0x494f
-> -#define PCI_DEVICE_ID_ACCESIO_PCIE_COM_2SDB	0x1051
-> -#define PCI_DEVICE_ID_ACCESIO_MPCIE_COM_2S	0x1053
-> -#define PCI_DEVICE_ID_ACCESIO_PCIE_COM_4SDB	0x105C
-> -#define PCI_DEVICE_ID_ACCESIO_MPCIE_COM_4S	0x105E
-> -#define PCI_DEVICE_ID_ACCESIO_PCIE_COM232_2DB	0x1091
-> -#define PCI_DEVICE_ID_ACCESIO_MPCIE_COM232_2	0x1093
-> -#define PCI_DEVICE_ID_ACCESIO_PCIE_COM232_4DB	0x1099
-> -#define PCI_DEVICE_ID_ACCESIO_MPCIE_COM232_4	0x109B
-> -#define PCI_DEVICE_ID_ACCESIO_PCIE_COM_2SMDB	0x10D1
-> -#define PCI_DEVICE_ID_ACCESIO_MPCIE_COM_2SM	0x10D3
-> -#define PCI_DEVICE_ID_ACCESIO_PCIE_COM_4SMDB	0x10DA
-> -#define PCI_DEVICE_ID_ACCESIO_MPCIE_COM_4SM	0x10DC
-> -#define PCI_DEVICE_ID_ACCESIO_MPCIE_ICM485_1	0x1108
-> -#define PCI_DEVICE_ID_ACCESIO_MPCIE_ICM422_2	0x1110
-> -#define PCI_DEVICE_ID_ACCESIO_MPCIE_ICM485_2	0x1111
-> -#define PCI_DEVICE_ID_ACCESIO_MPCIE_ICM422_4	0x1118
-> -#define PCI_DEVICE_ID_ACCESIO_MPCIE_ICM485_4	0x1119
-> -#define PCI_DEVICE_ID_ACCESIO_PCIE_ICM_2S	0x1152
-> -#define PCI_DEVICE_ID_ACCESIO_PCIE_ICM_4S	0x115A
-> -#define PCI_DEVICE_ID_ACCESIO_PCIE_ICM232_2	0x1190
-> -#define PCI_DEVICE_ID_ACCESIO_MPCIE_ICM232_2	0x1191
-> -#define PCI_DEVICE_ID_ACCESIO_PCIE_ICM232_4	0x1198
-> -#define PCI_DEVICE_ID_ACCESIO_MPCIE_ICM232_4	0x1199
-> -#define PCI_DEVICE_ID_ACCESIO_PCIE_ICM_2SM	0x11D0
-> -#define PCI_DEVICE_ID_ACCESIO_PCIE_COM422_4	0x105A
-> -#define PCI_DEVICE_ID_ACCESIO_PCIE_COM485_4	0x105B
-> -#define PCI_DEVICE_ID_ACCESIO_PCIE_COM422_8	0x106A
-> -#define PCI_DEVICE_ID_ACCESIO_PCIE_COM485_8	0x106B
-> -#define PCI_DEVICE_ID_ACCESIO_PCIE_COM232_4	0x1098
-> -#define PCI_DEVICE_ID_ACCESIO_PCIE_COM232_8	0x10A9
-> -#define PCI_DEVICE_ID_ACCESIO_PCIE_COM_4SM	0x10D9
-> -#define PCI_DEVICE_ID_ACCESIO_PCIE_COM_8SM	0x10E9
-> -#define PCI_DEVICE_ID_ACCESIO_PCIE_ICM_4SM	0x11D8
-> -
-> -
->   #define	PCI_DEVICE_ID_MOXA_CP102E	0x1024
->   #define	PCI_DEVICE_ID_MOXA_CP102EL	0x1025
->   #define	PCI_DEVICE_ID_MOXA_CP104EL_A	0x1045
-> @@ -2198,16 +2079,6 @@ static struct pci_serial_quirk pci_serial_quirks[] = {
->   		.setup		= pci_default_setup,
->   		.exit		= pci_plx9050_exit,
->   	},
-> -	/*
-> -	 * Pericom (Only 7954 - It have a offset jump for port 4)
-> -	 */
-> -	{
-> -		.vendor		= PCI_VENDOR_ID_PERICOM,
-> -		.device		= PCI_DEVICE_ID_PERICOM_PI7C9X7954,
-> -		.subvendor	= PCI_ANY_ID,
-> -		.subdevice	= PCI_ANY_ID,
-> -		.setup		= pci_pericom_setup_four_at_eight,
-> -	},
->   	/*
->   	 * PLX
->   	 */
-> @@ -2238,125 +2109,7 @@ static struct pci_serial_quirk pci_serial_quirks[] = {
->   		.setup		= pci_default_setup,
->   		.exit		= pci_plx9050_exit,
->   	},
-> -	{
-> -		.vendor     = PCI_VENDOR_ID_ACCESIO,
-> -		.device     = PCI_DEVICE_ID_ACCESIO_PCIE_COM_4SDB,
-> -		.subvendor  = PCI_ANY_ID,
-> -		.subdevice  = PCI_ANY_ID,
-> -		.setup      = pci_pericom_setup_four_at_eight,
-> -	},
-> -	{
-> -		.vendor     = PCI_VENDOR_ID_ACCESIO,
-> -		.device     = PCI_DEVICE_ID_ACCESIO_MPCIE_COM_4S,
-> -		.subvendor  = PCI_ANY_ID,
-> -		.subdevice  = PCI_ANY_ID,
-> -		.setup      = pci_pericom_setup_four_at_eight,
-> -	},
-> -	{
-> -		.vendor     = PCI_VENDOR_ID_ACCESIO,
-> -		.device     = PCI_DEVICE_ID_ACCESIO_PCIE_COM232_4DB,
-> -		.subvendor  = PCI_ANY_ID,
-> -		.subdevice  = PCI_ANY_ID,
-> -		.setup      = pci_pericom_setup_four_at_eight,
-> -	},
-> -	{
-> -		.vendor     = PCI_VENDOR_ID_ACCESIO,
-> -		.device     = PCI_DEVICE_ID_ACCESIO_MPCIE_COM232_4,
-> -		.subvendor  = PCI_ANY_ID,
-> -		.subdevice  = PCI_ANY_ID,
-> -		.setup      = pci_pericom_setup_four_at_eight,
-> -	},
-> -	{
-> -		.vendor     = PCI_VENDOR_ID_ACCESIO,
-> -		.device     = PCI_DEVICE_ID_ACCESIO_PCIE_COM_4SMDB,
-> -		.subvendor  = PCI_ANY_ID,
-> -		.subdevice  = PCI_ANY_ID,
-> -		.setup      = pci_pericom_setup_four_at_eight,
-> -	},
-> -	{
-> -		.vendor     = PCI_VENDOR_ID_ACCESIO,
-> -		.device     = PCI_DEVICE_ID_ACCESIO_MPCIE_COM_4SM,
-> -		.subvendor  = PCI_ANY_ID,
-> -		.subdevice  = PCI_ANY_ID,
-> -		.setup      = pci_pericom_setup_four_at_eight,
-> -	},
-> -	{
-> -		.vendor     = PCI_VENDOR_ID_ACCESIO,
-> -		.device     = PCI_DEVICE_ID_ACCESIO_MPCIE_ICM422_4,
-> -		.subvendor  = PCI_ANY_ID,
-> -		.subdevice  = PCI_ANY_ID,
-> -		.setup      = pci_pericom_setup_four_at_eight,
-> -	},
-> -	{
-> -		.vendor     = PCI_VENDOR_ID_ACCESIO,
-> -		.device     = PCI_DEVICE_ID_ACCESIO_MPCIE_ICM485_4,
-> -		.subvendor  = PCI_ANY_ID,
-> -		.subdevice  = PCI_ANY_ID,
-> -		.setup      = pci_pericom_setup_four_at_eight,
-> -	},
-> -	{
-> -		.vendor     = PCI_VENDOR_ID_ACCESIO,
-> -		.device     = PCI_DEVICE_ID_ACCESIO_PCIE_ICM232_4,
-> -		.subvendor  = PCI_ANY_ID,
-> -		.subdevice  = PCI_ANY_ID,
-> -		.setup      = pci_pericom_setup_four_at_eight,
-> -	},
-> -	{
-> -		.vendor     = PCI_VENDOR_ID_ACCESIO,
-> -		.device     = PCI_DEVICE_ID_ACCESIO_PCIE_ICM_4S,
-> -		.subvendor  = PCI_ANY_ID,
-> -		.subdevice  = PCI_ANY_ID,
-> -		.setup      = pci_pericom_setup_four_at_eight,
-> -	},
-> -	{
-> -		.vendor     = PCI_VENDOR_ID_ACCESIO,
-> -		.device     = PCI_DEVICE_ID_ACCESIO_MPCIE_ICM232_4,
-> -		.subvendor  = PCI_ANY_ID,
-> -		.subdevice  = PCI_ANY_ID,
-> -		.setup      = pci_pericom_setup_four_at_eight,
-> -	},
-> -	{
-> -		.vendor     = PCI_VENDOR_ID_ACCESIO,
-> -		.device     = PCI_DEVICE_ID_ACCESIO_PCIE_COM422_4,
-> -		.subvendor  = PCI_ANY_ID,
-> -		.subdevice  = PCI_ANY_ID,
-> -		.setup      = pci_pericom_setup_four_at_eight,
-> -	},
-> -	{
-> -		.vendor     = PCI_VENDOR_ID_ACCESIO,
-> -		.device     = PCI_DEVICE_ID_ACCESIO_PCIE_COM485_4,
-> -		.subvendor  = PCI_ANY_ID,
-> -		.subdevice  = PCI_ANY_ID,
-> -		.setup      = pci_pericom_setup_four_at_eight,
-> -	},
-> -	{
-> -		.vendor     = PCI_VENDOR_ID_ACCESIO,
-> -		.device     = PCI_DEVICE_ID_ACCESIO_PCIE_COM232_4,
-> -		.subvendor  = PCI_ANY_ID,
-> -		.subdevice  = PCI_ANY_ID,
-> -		.setup      = pci_pericom_setup_four_at_eight,
-> -	},
-> -	{
-> -		.vendor     = PCI_VENDOR_ID_ACCESIO,
-> -		.device     = PCI_DEVICE_ID_ACCESIO_PCIE_COM_4SM,
-> -		.subvendor  = PCI_ANY_ID,
-> -		.subdevice  = PCI_ANY_ID,
-> -		.setup      = pci_pericom_setup_four_at_eight,
-> -	},
-> -	{
-> -		.vendor     = PCI_VENDOR_ID_ACCESIO,
-> -		.device     = PCI_DEVICE_ID_ACCESIO_PCIE_ICM_4SM,
-> -		.subvendor  = PCI_ANY_ID,
-> -		.subdevice  = PCI_ANY_ID,
-> -		.setup      = pci_pericom_setup_four_at_eight,
-> -	},
-> -	{
-> -		.vendor     = PCI_VENDOR_ID_ACCESIO,
-> -		.device     = PCI_ANY_ID,
-> -		.subvendor  = PCI_ANY_ID,
-> -		.subdevice  = PCI_ANY_ID,
-> -		.setup      = pci_pericom_setup,
-> -	},	/*
-> +	/*
->   	 * SBS Technologies, Inc., PMC-OCTALPRO 232
->   	 */
->   	{
-> @@ -2948,10 +2701,6 @@ enum pci_board_num_t {
->   	pbn_wch382_2,
->   	pbn_wch384_4,
->   	pbn_wch384_8,
-> -	pbn_pericom_PI7C9X7951,
-> -	pbn_pericom_PI7C9X7952,
-> -	pbn_pericom_PI7C9X7954,
-> -	pbn_pericom_PI7C9X7958,
->   	pbn_sunix_pci_1s,
->   	pbn_sunix_pci_2s,
->   	pbn_sunix_pci_4s,
-> @@ -3696,33 +3445,6 @@ static struct pciserial_board pci_boards[] = {
->   		.uart_offset    = 8,
->   		.first_offset   = 0x00,
->   	},
-> -	/*
-> -	 * Pericom PI7C9X795[1248] Uno/Dual/Quad/Octal UART
-> -	 */
-> -	[pbn_pericom_PI7C9X7951] = {
-> -		.flags          = FL_BASE0,
-> -		.num_ports      = 1,
-> -		.base_baud      = 921600,
-> -		.uart_offset	= 0x8,
-> -	},
-> -	[pbn_pericom_PI7C9X7952] = {
-> -		.flags          = FL_BASE0,
-> -		.num_ports      = 2,
-> -		.base_baud      = 921600,
-> -		.uart_offset	= 0x8,
-> -	},
-> -	[pbn_pericom_PI7C9X7954] = {
-> -		.flags          = FL_BASE0,
-> -		.num_ports      = 4,
-> -		.base_baud      = 921600,
-> -		.uart_offset	= 0x8,
-> -	},
-> -	[pbn_pericom_PI7C9X7958] = {
-> -		.flags          = FL_BASE0,
-> -		.num_ports      = 8,
-> -		.base_baud      = 921600,
-> -		.uart_offset	= 0x8,
-> -	},
->   	[pbn_sunix_pci_1s] = {
->   		.num_ports	= 1,
->   		.base_baud      = 921600,
-> @@ -3834,6 +3556,10 @@ static const struct pci_device_id blacklist[] = {
->   	{ PCI_VDEVICE(EXAR, PCI_ANY_ID), },
->   	{ PCI_VDEVICE(COMMTECH, PCI_ANY_ID), },
->   
-> +	/* Pericom devices */
-> +	{ PCI_VDEVICE(PERICOM, PCI_ANY_ID), },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_ANY_ID), },
-> +
->   	/* End of the black list */
->   	{ }
->   };
-> @@ -5027,127 +4753,6 @@ static const struct pci_device_id serial_pci_tbl[] = {
->   	{	PCI_VENDOR_ID_DCI, PCI_DEVICE_ID_DCI_PCCOM8,
->   		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
->   		pbn_b3_8_115200 },
-> -	/*
-> -	 * Pericom PI7C9X795[1248] Uno/Dual/Quad/Octal UART
-> -	 */
-> -	{   PCI_VENDOR_ID_PERICOM, PCI_DEVICE_ID_PERICOM_PI7C9X7951,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		0,
-> -		0, pbn_pericom_PI7C9X7951 },
-> -	{   PCI_VENDOR_ID_PERICOM, PCI_DEVICE_ID_PERICOM_PI7C9X7952,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		0,
-> -		0, pbn_pericom_PI7C9X7952 },
-> -	{   PCI_VENDOR_ID_PERICOM, PCI_DEVICE_ID_PERICOM_PI7C9X7954,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		0,
-> -		0, pbn_pericom_PI7C9X7954 },
-> -	{   PCI_VENDOR_ID_PERICOM, PCI_DEVICE_ID_PERICOM_PI7C9X7958,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		0,
-> -		0, pbn_pericom_PI7C9X7958 },
-> -	/*
-> -	 * ACCES I/O Products quad
-> -	 */
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_PCIE_COM_2SDB,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7952 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_MPCIE_COM_2S,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7952 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_PCIE_COM_4SDB,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7954 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_MPCIE_COM_4S,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7954 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_PCIE_COM232_2DB,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7952 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_MPCIE_COM232_2,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7952 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_PCIE_COM232_4DB,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7954 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_MPCIE_COM232_4,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7954 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_PCIE_COM_2SMDB,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7952 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_MPCIE_COM_2SM,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7952 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_PCIE_COM_4SMDB,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7954 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_MPCIE_COM_4SM,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7954 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_MPCIE_ICM485_1,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7951 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_MPCIE_ICM422_2,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7952 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_MPCIE_ICM485_2,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7952 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_MPCIE_ICM422_4,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7954 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_MPCIE_ICM485_4,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7954 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_PCIE_ICM_2S,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7952 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_PCIE_ICM_4S,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7954 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_PCIE_ICM232_2,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7952 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_MPCIE_ICM232_2,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7952 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_PCIE_ICM232_4,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7954 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_MPCIE_ICM232_4,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7954 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_PCIE_ICM_2SM,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7952 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_PCIE_COM422_4,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7954 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_PCIE_COM485_4,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7954 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_PCIE_COM422_8,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7958 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_PCIE_COM485_8,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7958 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_PCIE_COM232_4,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7954 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_PCIE_COM232_8,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7958 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_PCIE_COM_4SM,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7954 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_PCIE_COM_8SM,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7958 },
-> -	{	PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_PCIE_ICM_4SM,
-> -		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -		pbn_pericom_PI7C9X7954 },
->   	/*
->   	 * Topic TP560 Data/Fax/Voice 56k modem (reported by Evan Clarke)
->   	 */
-> diff --git a/drivers/tty/serial/8250/8250_pericom.c b/drivers/tty/serial/8250/8250_pericom.c
-> new file mode 100644
-> index 000000000000..322c3b743a38
-> --- /dev/null
-> +++ b/drivers/tty/serial/8250/8250_pericom.c
-> @@ -0,0 +1,217 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Driver for Pericom UART */
-> +
-> +#include <linux/bits.h>
-> +#include <linux/module.h>
-> +#include <linux/overflow.h>
-> +#include <linux/pci.h>
-> +
-> +#include "8250.h"
-> +
-> +#define PCI_DEVICE_ID_ACCESSIO_PCIE_COM_2SDB	0x1051
-> +#define PCI_DEVICE_ID_ACCESSIO_MPCIE_COM_2S	0x1053
-> +#define PCI_DEVICE_ID_ACCESSIO_PCIE_COM422_4	0x105a
-> +#define PCI_DEVICE_ID_ACCESSIO_PCIE_COM485_4	0x105b
-> +#define PCI_DEVICE_ID_ACCESSIO_PCIE_COM_4SDB	0x105c
-> +#define PCI_DEVICE_ID_ACCESSIO_MPCIE_COM_4S	0x105e
-> +#define PCI_DEVICE_ID_ACCESSIO_PCIE_COM422_8	0x106a
-> +#define PCI_DEVICE_ID_ACCESSIO_PCIE_COM485_8	0x106b
-> +#define PCI_DEVICE_ID_ACCESSIO_PCIE_COM232_2DB	0x1091
-> +#define PCI_DEVICE_ID_ACCESSIO_MPCIE_COM232_2	0x1093
-> +#define PCI_DEVICE_ID_ACCESSIO_PCIE_COM232_4	0x1098
-> +#define PCI_DEVICE_ID_ACCESSIO_PCIE_COM232_4DB	0x1099
-> +#define PCI_DEVICE_ID_ACCESSIO_MPCIE_COM232_4	0x109b
-> +#define PCI_DEVICE_ID_ACCESSIO_PCIE_COM232_8	0x10a9
-> +#define PCI_DEVICE_ID_ACCESSIO_PCIE_COM_2SMDB	0x10d1
-> +#define PCI_DEVICE_ID_ACCESSIO_MPCIE_COM_2SM	0x10d3
-> +#define PCI_DEVICE_ID_ACCESSIO_PCIE_COM_4SM	0x10d9
-> +#define PCI_DEVICE_ID_ACCESSIO_PCIE_COM_4SMDB	0x10da
-> +#define PCI_DEVICE_ID_ACCESSIO_MPCIE_COM_4SM	0x10dc
-> +#define PCI_DEVICE_ID_ACCESSIO_PCIE_COM_8SM	0x10e9
-> +#define PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM485_1	0x1108
-> +#define PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM422_2	0x1110
-> +#define PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM485_2	0x1111
-> +#define PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM422_4	0x1118
-> +#define PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM485_4	0x1119
-> +#define PCI_DEVICE_ID_ACCESSIO_PCIE_ICM_2S	0x1152
-> +#define PCI_DEVICE_ID_ACCESSIO_PCIE_ICM_4S	0x115a
-> +#define PCI_DEVICE_ID_ACCESSIO_PCIE_ICM232_2	0x1190
-> +#define PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM232_2	0x1191
-> +#define PCI_DEVICE_ID_ACCESSIO_PCIE_ICM232_4	0x1198
-> +#define PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM232_4	0x1199
-> +#define PCI_DEVICE_ID_ACCESSIO_PCIE_ICM_2SM	0x11d0
-> +#define PCI_DEVICE_ID_ACCESSIO_PCIE_ICM_4SM	0x11d8
-> +
-> +struct pericom8250 {
-> +	void __iomem *virt;
-> +	unsigned int nr;
-> +	int line[];
-> +};
-> +
-> +#define PERICOM8250_DEFAUL_BAUD_RATE		921600
-> +
-> +static void pericom_do_set_divisor(struct uart_port *port, unsigned int baud,
-> +				   unsigned int quot, unsigned int quot_frac)
-> +{
-> +	int scr;
-> +
-> +	for (scr = 16 ; scr > 4 ; scr--) {
-> +		int maxrate = port->uartclk / scr;
-> +		int divisor = maxrate / baud;
-> +		int delta = maxrate / divisor - baud;
-> +
-> +		if (baud > maxrate + baud / 50)
-> +			continue;
-> +
-> +		if (divisor == 0 || delta > baud / 50)
-> +			divisor++;
-> +
-> +		if (divisor > 0xffff)
-> +			continue;
-> +
-> +		/* Update delta due to possible divisor change */
-> +		delta = maxrate / divisor - baud;
-> +		if (abs(delta) < baud / 50) {
-> +			int lcr = serial_port_in(port, UART_LCR);
-> +
-> +			serial_port_out(port, UART_LCR, lcr | 0x80);
-> +			serial_port_out(port, UART_DLL, divisor & 0xff);
-> +			serial_port_out(port, UART_DLM, (divisor >> 8) & 0xff);
-> +			serial_port_out(port, 2, 16 - scr);
-> +			serial_port_out(port, UART_LCR, lcr);
-> +			return;
-> +		}
-> +	}
-> +}
-> +
-> +static int pericom8250_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> +{
-> +	unsigned int nr, i, bar = 0, maxnr;
-> +	struct pericom8250 *pericom;
-> +	struct uart_8250_port uart;
-> +	int ret;
-> +
-> +	ret = pcim_enable_device(pdev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	maxnr = pci_resource_len(pdev, bar) >> 3;
-> +
-> +	if (pdev->vendor == PCI_VENDOR_ID_PERICOM)
-> +		nr = pdev->device & 0x0f;
-> +	else if (pdev->vendor == PCI_VENDOR_ID_ACCESSIO)
-> +		nr = BIT(((pdev->device & 0x38) >> 3) - 1);
-> +	else
-> +		nr = 1;
-> +
-> +	pericom = devm_kzalloc(&pdev->dev, struct_size(pericom, line, nr), GFP_KERNEL);
-> +	if (!pericom)
-> +		return -ENOMEM;
-> +
-> +	pericom->virt = pcim_iomap(pdev, bar, 0);
-> +	if (!pericom->virt)
-> +		return -ENOMEM;
-> +
-> +	memset(&uart, 0, sizeof(uart));
-> +
-> +	uart.port.dev = &pdev->dev;
-> +	uart.port.irq = pdev->irq;
-> +	uart.port.private_data = pericom;
-> +	uart.port.iotype = UPIO_MEM;
-> +	uart.port.uartclk = PERICOM8250_DEFAUL_BAUD_RATE * 16;
-> +	uart.port.flags = UPF_SKIP_TEST | UPF_BOOT_AUTOCONF | UPF_SHARE_IRQ;
-> +	uart.port.set_divisor = pericom_do_set_divisor;
-> +	for (i = 0; i < nr && i < maxnr; i++) {
-> +		unsigned int offset = (i == 3 && nr == 4) ? 0x38 : i * 0x8;
-I'm told this works for PCIe ACCES PIDS, but the PCI PIDs don't have the 
-fourth port at the wrong address. I didn't know this until just now. 
-I've never had reason to try and tell if a pci_dev is PCI or PCIe. Can 
-we query capabilities? It may also be possible to tell by the size of 
-one of the BARs. I've requested a four port PCI card and should have it 
-tomorrow.
-I'm currently building the previous patch set for testing.
-> +
-> +		uart.port.mapbase = pci_resource_start(pdev, bar) + offset;
-> +		uart.port.membase = pericom->virt + offset;
-> +
-> +		dev_dbg(&pdev->dev, "Setup PCI port: port %lx, irq %d, type %d\n",
-> +			uart.port.iobase, uart.port.irq, uart.port.iotype);
-> +
-> +		pericom->line[i] = serial8250_register_8250_port(&uart);
-> +		if (pericom->line[i] < 0) {
-> +			dev_err(&pdev->dev,
-> +				"Couldn't register serial port %lx, irq %d, type %d, error %d\n",
-> +				uart.port.iobase, uart.port.irq,
-> +				uart.port.iotype, pericom->line[i]);
-> +			break;
-> +		}
-> +	}
-> +	pericom->nr = i;
-> +
-> +	pci_set_drvdata(pdev, pericom);
-> +	return 0;
-> +}
-> +
-> +static void pericom8250_remove(struct pci_dev *pdev)
-> +{
-> +	struct pericom8250 *pericom = pci_get_drvdata(pdev);
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < pericom->nr; i++)
-> +		serial8250_unregister_port(pericom->line[i]);
-> +}
-> +
-> +static const struct pci_device_id pericom8250_pci_ids[] = {
-> +	/*
-> +	 * Pericom PI7C9X795[1248] Uno/Dual/Quad/Octal UART
-> +	 * (Only 7954 has an offset jump for port 4)
-> +	 */
-> +	{ PCI_VDEVICE(PERICOM, PCI_DEVICE_ID_PERICOM_PI7C9X7951) },
-> +	{ PCI_VDEVICE(PERICOM, PCI_DEVICE_ID_PERICOM_PI7C9X7952) },
-> +	{ PCI_VDEVICE(PERICOM, PCI_DEVICE_ID_PERICOM_PI7C9X7954) },
-> +	{ PCI_VDEVICE(PERICOM, PCI_DEVICE_ID_PERICOM_PI7C9X7958) },
-> +
-> +	/*
-> +	 * ACCES I/O Products quad
-> +	 * (Only 7954 has an offset jump for port 4)
-> +	 */
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM_2SDB) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_COM_2S) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM422_4) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM485_4) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM_4SDB) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_COM_4S) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM422_8) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM485_8) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM232_2DB) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_COM232_2) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM232_4) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM232_4DB) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_COM232_4) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM232_8) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM_2SMDB) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_COM_2SM) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM_4SM) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM_4SMDB) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_COM_4SM) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM_8SM) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM485_1) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM422_2) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM485_2) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM422_4) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM485_4) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_ICM_2S) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_ICM_4S) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_ICM232_2) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM232_2) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_ICM232_4) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM232_4) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_ICM_2SM) },
-> +	{ PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_ICM_4SM) },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(pci, pericom8250_pci_ids);
-> +
-> +static struct pci_driver pericom8250_pci_driver = {
-> +	.name           = "8250_pericom",
-> +	.id_table       = pericom8250_pci_ids,
-> +	.probe          = pericom8250_probe,
-> +	.remove         = pericom8250_remove,
-> +};
-> +module_pci_driver(pericom8250_pci_driver);
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_DESCRIPTION("Pericom UART driver");
-> diff --git a/drivers/tty/serial/8250/Kconfig b/drivers/tty/serial/8250/Kconfig
-> index 8cd11aa63ed5..9d415a38cc71 100644
-> --- a/drivers/tty/serial/8250/Kconfig
-> +++ b/drivers/tty/serial/8250/Kconfig
-> @@ -498,6 +498,14 @@ config SERIAL_8250_MID
->   	  present on the UART found on Intel Medfield SOC and various other
->   	  Intel platforms.
->   
-> +config SERIAL_8250_PERICOM
-> +	tristate "Support for Pericom and Acces I/O serial ports"
-> +	default SERIAL_8250
-> +	depends on SERIAL_8250 && PCI
-> +	help
-> +	  Selecting this option will enable handling of the extra features
-> +	  present on the Pericom and Acces I/O UARTs.
-> +
->   config SERIAL_8250_PXA
->   	tristate "PXA serial port support"
->   	depends on SERIAL_8250
-> diff --git a/drivers/tty/serial/8250/Makefile b/drivers/tty/serial/8250/Makefile
-> index b9bcd73c8997..4e4913e0e4d2 100644
-> --- a/drivers/tty/serial/8250/Makefile
-> +++ b/drivers/tty/serial/8250/Makefile
-> @@ -36,6 +36,7 @@ obj-$(CONFIG_SERIAL_8250_UNIPHIER)	+= 8250_uniphier.o
->   obj-$(CONFIG_SERIAL_8250_INGENIC)	+= 8250_ingenic.o
->   obj-$(CONFIG_SERIAL_8250_LPSS)		+= 8250_lpss.o
->   obj-$(CONFIG_SERIAL_8250_MID)		+= 8250_mid.o
-> +obj-$(CONFIG_SERIAL_8250_PERICOM)	+= 8250_pericom.o
->   obj-$(CONFIG_SERIAL_8250_PXA)		+= 8250_pxa.o
->   obj-$(CONFIG_SERIAL_8250_TEGRA)		+= 8250_tegra.o
->   obj-$(CONFIG_SERIAL_8250_BCM7271)	+= 8250_bcm7271.o
-> 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
--- 
-Jay Dolan
-ACCES I/O Products, Inc.
-Senior Linux Kernel Dev
-jay.dolan@accesio.com
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
