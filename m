@@ -2,108 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1CB455728
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:40:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D57455739
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244703AbhKRIm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 03:42:59 -0500
-Received: from mail-vk1-f178.google.com ([209.85.221.178]:33464 "EHLO
-        mail-vk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242185AbhKRImz (ORCPT
+        id S244890AbhKRIpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 03:45:12 -0500
+Received: from forward104o.mail.yandex.net ([37.140.190.179]:39916 "EHLO
+        forward104o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244788AbhKRInj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 03:42:55 -0500
-Received: by mail-vk1-f178.google.com with SMTP id d130so3379869vke.0;
-        Thu, 18 Nov 2021 00:39:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jRhaJP30xRfGoC6YfQR1gJhdJCfA0BcIWGwc3ucBNgY=;
-        b=eP4RJ2wYhz2Aod0sWLHh3u8VGOjWWffBO5antXYK6ZvykOLwg7Fk65vJOafO9wWeoH
-         Za1eTahl3P8stzkWSetnagkc0eq4V8gnnYOeTOCdelO7W/S85KFeJzoMpF2Qhmiy6yss
-         gOdb/O8SK5LyV6wVljcRRDdq70Et5UV2TRoF/EeNABiMKALQRPyA+IzGuoLBmut7zEw7
-         kn+VgGfIlZEXtGSXoQqskd5fqmTpKEHYcvfh8aLRD54+4jcDUUkn4t3Az8BbzCD+jy8T
-         Qeo7V9YUgsRtl0L4Y1zltWfiVfzgZlC4JcZ/ueEOOje3XNE50SsR734xvbsdkbgk/2A9
-         VZ4Q==
-X-Gm-Message-State: AOAM531G8DZAIkZ7M4XEa0o7UmqaB+Osz1iMmHO9jTKF6utvsIKVGx3R
-        +Rta+oSKWhcLYUyTj88guhZFP4H0ZPLVhg==
-X-Google-Smtp-Source: ABdhPJw6TFS2OAxiO9CEBXu37PgWmucGjUZy3O0qTJmxjSvOWLW3HvjdYpV98A4hxhApXn5vYYnZXg==
-X-Received: by 2002:a05:6122:2158:: with SMTP id m24mr34049603vkd.1.1637224794868;
-        Thu, 18 Nov 2021 00:39:54 -0800 (PST)
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com. [209.85.222.51])
-        by smtp.gmail.com with ESMTPSA id 92sm1396828uav.9.2021.11.18.00.39.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Nov 2021 00:39:54 -0800 (PST)
-Received: by mail-ua1-f51.google.com with SMTP id o1so12010161uap.4;
-        Thu, 18 Nov 2021 00:39:54 -0800 (PST)
-X-Received: by 2002:a05:6102:2910:: with SMTP id cz16mr78807614vsb.9.1637224794088;
- Thu, 18 Nov 2021 00:39:54 -0800 (PST)
+        Thu, 18 Nov 2021 03:43:39 -0500
+Received: from sas2-5b46325ecb6a.qloud-c.yandex.net (sas2-5b46325ecb6a.qloud-c.yandex.net [IPv6:2a02:6b8:c14:251e:0:640:5b46:325e])
+        by forward104o.mail.yandex.net (Yandex) with ESMTP id 0991265D4536;
+        Thu, 18 Nov 2021 11:40:33 +0300 (MSK)
+Received: from sas1-37da021029ee.qloud-c.yandex.net (sas1-37da021029ee.qloud-c.yandex.net [2a02:6b8:c08:1612:0:640:37da:210])
+        by sas2-5b46325ecb6a.qloud-c.yandex.net (mxback/Yandex) with ESMTP id FtLNllXEUi-eWDiUBtw;
+        Thu, 18 Nov 2021 11:40:32 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1637224833;
+        bh=VAVrk5AtcZPdThMqvCtu4lfkZK3ioKc2UOuIMebKmOw=;
+        h=Date:Subject:To:From:Message-Id:Cc;
+        b=JLZrlVtk1yIFaFT7DmA9KmBr7uvWqQOjQ75+Qg71PJrL9lJqxBbDQkuu9h+jjCa5L
+         tVYR+KwNzkV6UmRsKc/HUISBvxnSTjULLiqpIo1PmaecL0B9v4lJOiY27lHlCZztHH
+         ZzFO4Gs3RqYxxYuejG2zFyvbwapO+NKTYOTEWzpc=
+Authentication-Results: sas2-5b46325ecb6a.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
+Received: by sas1-37da021029ee.qloud-c.yandex.net (smtp/Yandex) with ESMTPS id 2UL3WBMzNA-eVx4iPp5;
+        Thu, 18 Nov 2021 11:40:31 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+X-Yandex-Fwd: 2
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     David Abdurachmanov <david.abdurachmanov@sifive.com>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND] rtc: da9063: add as wakeup source
+Date:   Thu, 18 Nov 2021 11:40:08 +0300
+Message-Id: <20211118084008.30327-1-nikita.shubin@maquefel.me>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <1637204329-3314-1-git-send-email-yang.lee@linux.alibaba.com>
-In-Reply-To: <1637204329-3314-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 18 Nov 2021 09:39:42 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXL4nfiq8B-PtAiQmCQkZMBP8t-CUBO4bbMZumiA=QpaQ@mail.gmail.com>
-Message-ID: <CAMuHMdXL4nfiq8B-PtAiQmCQkZMBP8t-CUBO4bbMZumiA=QpaQ@mail.gmail.com>
-Subject: Re: [PATCH -next v2] ethernet: renesas: Use div64_ul instead of do_div
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yang,
+in case if threaded irq registered successfully - add da9063
+as a wakeup source if "wakeup-source" node present in device tree,
+set as wakeup capable otherwise.
 
-On Thu, Nov 18, 2021 at 4:13 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
-> do_div() does a 64-by-32 division. Here the divisor is an
-> unsigned long which on some platforms is 64 bit wide. So use
-> div64_ul instead of do_div to avoid a possible truncation.
->
-> Eliminate the following coccicheck warning:
-> ./drivers/net/ethernet/renesas/ravb_main.c:2492:1-7: WARNING:
-> do_div() does a 64-by-32 division, please consider using div64_ul instead.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+---
+ drivers/rtc/rtc-da9063.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-Thanks for your patch!
+diff --git a/drivers/rtc/rtc-da9063.c b/drivers/rtc/rtc-da9063.c
+index d4b72a9fa2ba..1aceb5ba6992 100644
+--- a/drivers/rtc/rtc-da9063.c
++++ b/drivers/rtc/rtc-da9063.c
+@@ -490,7 +490,15 @@ static int da9063_rtc_probe(struct platform_device *pdev)
+ 					da9063_alarm_event,
+ 					IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+ 					"ALARM", rtc);
+-	if (ret)
++	if (!ret) {
++		if (device_property_present(&pdev->dev, "wakeup-source")) {
++			device_init_wakeup(&pdev->dev, true);
++			dev_info(&pdev->dev, "registered as wakeup source.\n");
++		} else {
++			device_set_wakeup_capable(&pdev->dev, true);
++			dev_info(&pdev->dev, "marked as wakeup capable.\n");
++		}
++	} else
+ 		dev_err(&pdev->dev, "Failed to request ALARM IRQ %d: %d\n",
+ 			irq_alarm, ret);
+ 
+-- 
+2.31.1
 
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> @@ -2489,7 +2489,7 @@ static int ravb_set_gti(struct net_device *ndev)
->                 return -EINVAL;
->
->         inc = 1000000000ULL << 20;
-> -       do_div(inc, rate);
-> +       inc = div64_ul(inc, rate);
->
->         if (inc < GTI_TIV_MIN || inc > GTI_TIV_MAX) {
->                 dev_err(dev, "gti.tiv increment 0x%llx is outside the range 0x%x - 0x%x\n",
-
-Please also replace
-
-    #include <asm/div64.h>
-
-by
-
-#include <linux/math64.h>
-
-With that added:
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
