@@ -2,82 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF9F45583C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:48:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F37B045583F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:48:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245256AbhKRJvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 04:51:13 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:52804 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245246AbhKRJvM (ORCPT
+        id S245284AbhKRJvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 04:51:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245264AbhKRJvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 04:51:12 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UxAmziA_1637228888;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UxAmziA_1637228888)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 18 Nov 2021 17:48:10 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, s.shtylyov@omp.ru, geert@linux-m68k.org,
-        netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH -next v2] ethernet: renesas: Use div64_ul instead of do_div
-Date:   Thu, 18 Nov 2021 17:48:03 +0800
-Message-Id: <1637228883-100100-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Thu, 18 Nov 2021 04:51:24 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99752C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 01:48:24 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id u18so10333997wrg.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 01:48:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yZtWnV2AZaTtP7W31ku5iWN+RjlPIjMELYCK0vwIHbQ=;
+        b=HZWqpB6kFbD+fz5zJokWz51ktHZPeZ7IeIpoCZ407WXMnXPc7wpkgf+Fbv9QgTn6Ms
+         zaUZ2kCSuHX+PXyxJ8dDdCRoimWUriQbmsnvAMe8QZCGwH0c4d278pCrnUZ5f8tsU/5I
+         K8EscoS8cxrF+j2+pDpkuJmKFJcltxwSG0FqdaX8UPT8KbzpMVXFP3typfVGtKwE3mNt
+         ev3kxzF68C3cu0rrv5PDC4hIv7sAtGyWETSaSp6HytSy4bwOEx1PLDlS37Frz4R/xiAS
+         KkPr+jAoGY+32/8M3QqiSnfQZ1tXBBcVCQWy8h1TRgMUJYYgcaygaBu7fzvOEX6yU9l4
+         w2/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yZtWnV2AZaTtP7W31ku5iWN+RjlPIjMELYCK0vwIHbQ=;
+        b=aP2xT99BbyK4/Oee2y1G21l+yWA37Zy19MxWAlR6V/f/LrCri4JvFHUxAUdz/j0TYi
+         bhe8EBAddkEqZKiPrxT/tskfszIPjq+2iAPG7oMMC8TN9S83B1LusGM26nbxibuAsI2E
+         ZM16DRxnpgF50JsvMrKBnaltMry9q/TSoxDnnx1yvDs9/j754xZsrfKZQ16taBkE7GeH
+         XvgeaYAO8dBF5WZ+YXoHItR79u3U8yv5oYnEygH3T0iDfV6iz46xJlkgW+Xe2heXEI63
+         kQ3krJSVqErBu7zm7DOXnTa58DBP64VgyxP7s608pXopeLQiEDS+vbCF+7yiDZ4bifPm
+         wD3A==
+X-Gm-Message-State: AOAM531KMyH1UtT6SRtOBWhAw7jRfGhZM/5bEhmummPRVLxc7PFq6/tm
+        o659zOjcZap35szr+u6cD0fJScXU4T4zDQUMbs4=
+X-Google-Smtp-Source: ABdhPJxiBmKacSHCnqardmw88c4Q0OW5/V3fLQzY75pI9koggT83OYbb35ZfIORvxITUz582p+Dl+EQo408sLfo+RiY=
+X-Received: by 2002:a5d:598c:: with SMTP id n12mr28836702wri.250.1637228903193;
+ Thu, 18 Nov 2021 01:48:23 -0800 (PST)
+MIME-Version: 1.0
+References: <20211117093734.17407-1-daniel.baluta@oss.nxp.com>
+ <20211117093734.17407-17-daniel.baluta@oss.nxp.com> <YZU75B2JHbYHy40l@sirena.org.uk>
+ <e918b4c4-dc85-dcf5-2781-5edfcd1bf1a5@nxp.com> <CAEnQRZBCc4bhX-sT43KT6Tb-=RK=J9poxRvEM_H=1oXh0_AsPA@mail.gmail.com>
+In-Reply-To: <CAEnQRZBCc4bhX-sT43KT6Tb-=RK=J9poxRvEM_H=1oXh0_AsPA@mail.gmail.com>
+From:   Daniel Baluta <daniel.baluta@gmail.com>
+Date:   Thu, 18 Nov 2021 11:48:11 +0200
+Message-ID: <CAEnQRZAgRW-VRGOsKninEV29NJJH4GjoaOaEAEYbHFqtM3PiHQ@mail.gmail.com>
+Subject: Re: [PATCH 16/21] ASoC: SOF: topology: Add support for Mediatek AFE DAI
+To:     Daniel Baluta <daniel.baluta@nxp.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, AjitKumar.Pandey@amd.com,
+        Balakishore.pati@amd.com, vsreddy@amd.com,
+        Julian.Schroeder@amd.com, vishnuvardhanrao.ravulapati@amd.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?WUMgSHVuZyAo5rSq5aCv5L+KKQ==?= <yc.hung@mediatek.com>,
+        linux-mediatek@lists.infradead.org,
+        =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-do_div() does a 64-by-32 division. Here the divisor is an
-unsigned long which on some platforms is 64 bit wide. So use
-div64_ul instead of do_div to avoid a possible truncation.
+On Thu, Nov 18, 2021 at 11:34 AM Daniel Baluta <daniel.baluta@gmail.com> wrote:
+>
+> Hi Mark,
+>
+> I noticed that you already applied this. Should I resend the entire
+> series or just a fixup?
 
-Eliminate the following coccicheck warning:
-./drivers/net/ethernet/renesas/ravb_main.c:2492:1-7: WARNING:
-do_div() does a 64-by-32 division, please consider using div64_ul
-instead.
+Later edit: All good. You applied only the AMD patches. Sorry for the noise.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
----
-
-change in v2:
---According to Geert's suggestion
-  replace #include <asm/div64.h> by
-  #include <linux/math64.h>
---According to Sergey's suggestion
-  Merge two statements into one
-
- drivers/net/ethernet/renesas/ravb_main.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-index b4c597f..151cce2 100644
---- a/drivers/net/ethernet/renesas/ravb_main.c
-+++ b/drivers/net/ethernet/renesas/ravb_main.c
-@@ -30,8 +30,7 @@
- #include <linux/spinlock.h>
- #include <linux/sys_soc.h>
- #include <linux/reset.h>
--
--#include <asm/div64.h>
-+#include <linux/math64.h>
- 
- #include "ravb.h"
- 
-@@ -2488,8 +2487,7 @@ static int ravb_set_gti(struct net_device *ndev)
- 	if (!rate)
- 		return -EINVAL;
- 
--	inc = 1000000000ULL << 20;
--	do_div(inc, rate);
-+	inc = div64_ul(1000000000ULL << 20, rate);
- 
- 	if (inc < GTI_TIV_MIN || inc > GTI_TIV_MAX) {
- 		dev_err(dev, "gti.tiv increment 0x%llx is outside the range 0x%x - 0x%x\n",
--- 
-1.8.3.1
-
+Will fix and resend the MTK patches.
