@@ -2,85 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522DA455B43
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:10:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C722455B2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:03:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344554AbhKRMNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 07:13:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39690 "EHLO
+        id S1344485AbhKRMGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 07:06:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344535AbhKRMM4 (ORCPT
+        with ESMTP id S1344471AbhKRMGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 07:12:56 -0500
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A5D69C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 04:09:55 -0800 (PST)
+        Thu, 18 Nov 2021 07:06:37 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 828D7C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 04:03:35 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id v23so4926535pjr.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 04:03:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=RAv3ldc+YtKig7hsLOKSrSUz10bjjpekX4e3Vo2jfPE=; b=p1NOk9Z5H0wGg
-        rfDNp9AniCQdGCvIM3sV+30eAulKsuT8jcFjLtvUTfiQpFn7t6wldIODukwl6exn
-        kWPn1ukCF/gKR/6wOA6EGiQnHKw57cmcozoEtEwoILh7xVbhhSM7c4YXZKpk0ZSC
-        0Igxyl+jzcy3gD2A8Dc/uUuWy9YVSU=
-Received: from xhacker (unknown [101.86.18.22])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygAHD9+OQpZhfM9cAQ--.27594S2;
-        Thu, 18 Nov 2021 20:09:51 +0800 (CST)
-Date:   Thu, 18 Nov 2021 20:02:49 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: extable: remove unsed ex_handler_t definition
-Message-ID: <20211118200249.73172ce5@xhacker>
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YI1Lh1+u9y2Rdr5uc1zvo5rFFoVd9BpEe5RkTQkaRgk=;
+        b=KOp8Ene37x19VH16WN233yfPR54BHDHYa4nb0L5nnvxvqubFe6QxQWhRSmpkMbif8s
+         V+3b6m72vpyuv0BwIv20K2pcuOREx/enp1DIkzPg45sf8nOiledNOaxMgZoKhMiPzsb1
+         YxueZ5VqrcZNRefvmUMg9kYOs/ilnbBA+xXQloVPEFCnI+6OOE5rS91wfnJXeqHB3N9k
+         mmU341jzl1j48f8W4C+gBJmjP1pGCeP3oBIl4c8TJSy62CZ1/dLtJmCkwVP6c7Fiws8m
+         Dyyd/l/kFcV5rl7HByK1ZbXJ3wpEbCCnr1abtQG0q25z5RBJEjW0ezDv0fCoyANw0PU5
+         mzLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YI1Lh1+u9y2Rdr5uc1zvo5rFFoVd9BpEe5RkTQkaRgk=;
+        b=PdxTqxpAaZ4hAXtoR2cqvAv9tzoxQ7GtlinpQa5MCRBvJMzCRufg6+ov0IHOMv0Z43
+         WrP3QCY0hai+9ABoPZx5mxSPRIMoo2Cpd36y4zRT34xWucEJJJNZtJP204blcAHarWtd
+         w/19FHr1//EXfKPSDb5ZQ7c8sGftB7vCHy53hTnKtnT+J4EhBIzMe67zW5d9HAB4SVqT
+         LAdIjejpU0GV0xyTHdtIWbuSjDZezxyBb1d9i2spyy6b/8wkffjSrJijPCpMHsKQFAA4
+         r0zLWbyi4/IX/zrGDpUPgFmyqXSIxgI9wCe5XklNfrv8FsKsu0bl7pVzl/MF+bPIR6Cg
+         0pbQ==
+X-Gm-Message-State: AOAM533VlgznbaYCqUHXGs9JtZlEPllLp/HQMOjEEaetnTW0xnaLAjPo
+        jK/P5jlVzv70qV9DUzhK5sqnPaUBLNDST7H5l9OsFw==
+X-Google-Smtp-Source: ABdhPJw6Gr+Smw+R053iYguuCDSumjKjHrfO8w2JPvCxw/fo3NTdSoxbKbNhybeZ7l+yAfiOSe1QU4ydx1fHuauJw0M=
+X-Received: by 2002:a17:90b:4a05:: with SMTP id kk5mr9826965pjb.232.1637237014885;
+ Thu, 18 Nov 2021 04:03:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygAHD9+OQpZhfM9cAQ--.27594S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7GFyfJF1DCF4DZry3try3XFb_yoWxZFc_X3
-        42ya1kWryFyr1SkFyrG3Z8CrySkw4vqry7ZF4IqrWvyr9FqrWrAr4qqFn3Kr1vgF4fursa
-        q3ZrJr15GrW2gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbFkYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCF
-        s4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
-        1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWU
-        JVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r
-        WUJVWrZr1UMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j
-        6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUxsXoUUUUU
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+References: <20211117113800.260741-1-robert.foss@linaro.org>
+ <20211117113800.260741-4-robert.foss@linaro.org> <YZT4lddeEJAOkIc4@gerhold.net>
+In-Reply-To: <YZT4lddeEJAOkIc4@gerhold.net>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Thu, 18 Nov 2021 13:03:23 +0100
+Message-ID: <CAG3jFyuja1OYcSK6VCoRCwQ-O_CPU8eB_mzcH-y6azNAXosrew@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] arm64: dts: qcom: msm8916: Remove clock-lanes
+ property from &camss node
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, todor.too@gmail.com,
+        mchehab@kernel.org, robh+dt@kernel.org,
+        angelogioacchino.delregno@somainline.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <jszhang@kernel.org>
+Thanks Stephan.
 
-The type ex_handler_t is defined but not used, remove it.
+On Wed, 17 Nov 2021 at 13:42, Stephan Gerhold <stephan@gerhold.net> wrote:
+>
+> Hi Robert,
+>
+> small nitpick: The subject would be more clear with
+> "arm64: dts: qcom: apq8016-sbc: ..." instead of "msm8916: ..." like in
+> your sdm845-db845c patch, since only apq8016-sbc is modified.
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- arch/arm64/mm/extable.c | 3 ---
- 1 file changed, 3 deletions(-)
+Will do.
 
-diff --git a/arch/arm64/mm/extable.c b/arch/arm64/mm/extable.c
-index c3d53811a15e..c0181e60cc98 100644
---- a/arch/arm64/mm/extable.c
-+++ b/arch/arm64/mm/extable.c
-@@ -10,9 +10,6 @@
- #include <asm/asm-extable.h>
- #include <asm/ptrace.h>
- 
--typedef bool (*ex_handler_t)(const struct exception_table_entry *,
--			     struct pt_regs *);
--
- static inline unsigned long
- get_ex_fixup(const struct exception_table_entry *ex)
- {
--- 
-2.33.0
+>
+> On Wed, Nov 17, 2021 at 12:37:59PM +0100, Robert Foss wrote:
+> > The clock-lanes property is no longer used as it is not programmable by
+> > the CSIPHY hardware block of Qcom ISPs and should be removed.
+> >
+> > Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> > ---
+> >  arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi | 2 --
+>
+> Can you rebase this on 5.16-rc1? All of apq8016-sbc.dtsi is now in
+> apq8016-sbc.dts (the extra dtsi did not have any good use).
 
+Ack.
 
+>
+> Thanks,
+> Stephan
