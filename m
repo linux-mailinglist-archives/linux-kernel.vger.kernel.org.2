@@ -2,86 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBBFD455B93
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:33:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B767F455B95
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:33:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344716AbhKRMgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 07:36:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344718AbhKRMgL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 07:36:11 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52881C061766
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 04:33:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=35pW5d9C2lDavDzNiLwiDhFMaMD5Y4hZdtLMABTEiE0=; b=eauBMzEkPKZufthSqkLEWgyEpf
-        46daHuqD3Q5ZNy3kW8Lvia0u3vQfNzodCCX4XUvC9z3lJ59q6TXKDSj5ewkT4TuKkTPSgva6k9Elm
-        T4UXW2Y9nN2XwQ/UIbGDPWazmHdYbHKfQrdYIx5rfE3BebGIR8LB5o7MbWPn1aqrjByldTrv1gpwN
-        cVioLpF2bRRBXiJa3Xhn1fpANDU3g8Nd4F8dGyZY+StMO6pFjIbBn6Utxtdyw2mBnclbSFlbVbaTt
-        m9RkO7vFOhqfvAm0SzYe5/kdt9daOIBalbzWF7YF4tVkebhv5cmkjkYRkpK/Oeq+KrCvC+QbhjYUN
-        /dwY2lrQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mngb5-00GgoL-Q6; Thu, 18 Nov 2021 12:32:59 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 65330300093;
-        Thu, 18 Nov 2021 13:32:59 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4F8B82D3CA53D; Thu, 18 Nov 2021 13:32:59 +0100 (CET)
-Date:   Thu, 18 Nov 2021 13:32:59 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Stephane Eranian <eranian@google.com>
-Cc:     linux-kernel@vger.kernel.org, kim.phillips@amd.com,
-        acme@redhat.com, jolsa@redhat.com, songliubraving@fb.com,
-        mpe@ellerman.id.au, maddy@linux.ibm.com
-Subject: Re: [PATCH v2 03/13] perf/x86/amd: add AMD Fam19h Branch Sampling
- support
-Message-ID: <YZZH+5odIawPQtgJ@hirez.programming.kicks-ass.net>
-References: <20211111084415.663951-1-eranian@google.com>
- <20211111084415.663951-4-eranian@google.com>
- <YY6QBXs0sM16DdbV@hirez.programming.kicks-ass.net>
- <CABPqkBShSBaJH+PR6rMkRRzjZAKN5zPhcdnLWx=4a-yQWxcA2A@mail.gmail.com>
- <20211116082923.GX174703@worktop.programming.kicks-ass.net>
- <CABPqkBQ4BCswvNPpkO79dBamhudikz1cGCXFpwAp9xsTb3F8xQ@mail.gmail.com>
- <YZZE+bPCokVrTARM@hirez.programming.kicks-ass.net>
+        id S1344726AbhKRMg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 07:36:26 -0500
+Received: from mga04.intel.com ([192.55.52.120]:34122 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344735AbhKRMgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 07:36:22 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10171"; a="232895585"
+X-IronPort-AV: E=Sophos;i="5.87,244,1631602800"; 
+   d="scan'208";a="232895585"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 04:33:22 -0800
+X-IronPort-AV: E=Sophos;i="5.87,244,1631602800"; 
+   d="scan'208";a="455312743"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 04:33:18 -0800
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 34F2C20282;
+        Thu, 18 Nov 2021 14:33:16 +0200 (EET)
+Date:   Thu, 18 Nov 2021 14:33:16 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Jammy Huang <jammy_huang@aspeedtech.com>
+Cc:     eajames@linux.ibm.com, mchehab@kernel.org, joel@jms.id.au,
+        andrew@aj.id.au, hverkuil-cisco@xs4all.nl,
+        gregkh@linuxfoundation.org, laurent.pinchart@ideasonboard.com,
+        linux-media@vger.kernel.org, openbmc@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 05/10] media: v4l: Add definition for the Aspeed JPEG
+ format
+Message-ID: <YZZIDNCLJXwrqY4W@paasikivi.fi.intel.com>
+References: <20211118074030.685-1-jammy_huang@aspeedtech.com>
+ <20211118074030.685-6-jammy_huang@aspeedtech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YZZE+bPCokVrTARM@hirez.programming.kicks-ass.net>
+In-Reply-To: <20211118074030.685-6-jammy_huang@aspeedtech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 01:20:09PM +0100, Peter Zijlstra wrote:
-> On Tue, Nov 16, 2021 at 11:23:39PM -0800, Stephane Eranian wrote:
+Hi Jammy,
 
-> > Ok, I made the changes you suggested. It looks closer to the way LBR is handled.
-> > However, this means that there is no path by which you can get to
-> > amd_pmu_disable_event()
-> > without having gone through amd_pmu_disable_all(). Is that always the
-> > case? And same thing
-> > on the enable side.
+On Thu, Nov 18, 2021 at 03:40:26PM +0800, Jammy Huang wrote:
+> This introduces support for the Aspeed JPEG format, where the new frame
+> can refer to previous frame to reduce the amount of compressed data. The
+> concept is similar to I/P frame of video compression. I will compare the
+> new frame with previous one to decide which macroblock's data is
+> changed, and only the changed macroblocks will be compressed.
 > 
-> So that's true for ->add() and ->del(), those cannot be called without
-> being wrapped in ->pmu_disable(), ->pmu_enable().
+> This Aspeed JPEG format is used by the video engine on Aspeed platforms,
+> which is generally adapted for remote KVM.
 > 
-> There is however the ->stop() and ->start() usage for throttling, which
-> can stop an individual event (while leaving the event scheduled on the
-> PMU). Now, I think the ->stop() gets called with the PMU enabled, but
-> the ->start() is with it disabled again.
+> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+> ---
+> v5:
+>   - no update
+> v4:
+>   - new
+> ---
+>  Documentation/media/uapi/v4l/pixfmt-reserved.rst | 12 ++++++++++++
+>  drivers/media/v4l2-core/v4l2-ioctl.c             |  1 +
+>  include/uapi/linux/videodev2.h                   |  1 +
+>  3 files changed, 14 insertions(+)
+> 
+> diff --git a/Documentation/media/uapi/v4l/pixfmt-reserved.rst b/Documentation/media/uapi/v4l/pixfmt-reserved.rst
+> index b2cd155e691b..23c05063133d 100644
+> --- a/Documentation/media/uapi/v4l/pixfmt-reserved.rst
+> +++ b/Documentation/media/uapi/v4l/pixfmt-reserved.rst
+> @@ -264,6 +264,18 @@ please make a proposal on the linux-media mailing list.
+>  	of tiles, resulting in 32-aligned resolutions for the luminance plane
+>  	and 16-aligned resolutions for the chrominance plane (with 2x2
+>  	subsampling).
+> +    * .. _V4L2-PIX-FMT-AJPG:
+> +
+> +      - ``V4L2_PIX_FMT_AJPG``
+> +      - 'AJPG'
+> +      - ASPEED JPEG format used by the aspeed-video driver on Aspeed platforms,
+> +        which is generally adapted for remote KVM.
+> +        On each frame compression, I will compare the new frame with previous
+> +        one to decide which macroblock's data is changed, and only the changed
+> +        macroblocks will be compressed.
+> +
+> +        You could reference to chapter 36, Video Engine, of AST2600's datasheet
+> +        for more information.
 
-I just looked, and the throttling depends on the PMU's PMI handler
-implementation, for Intel it will have the PMU disabled, for generic and
-AMD it has it enabled (see x86_pmu_handle_irq -- also these are really
-NMIs but lets not do a mass rename just now).
+Is this datasheet publicly available? Do you have a URL?
 
-> The ramification would be that we'd stop the event, but leave BRS
-> enabled for a throttled event. Which should be harmless, no?
+-- 
+Regards,
+
+Sakari Ailus
