@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9794F456327
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 20:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08AA945632A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 20:06:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233609AbhKRTJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 14:09:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57294 "EHLO mail.kernel.org"
+        id S233534AbhKRTJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 14:09:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233406AbhKRTJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 14:09:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5ADC611F2;
-        Thu, 18 Nov 2021 19:06:20 +0000 (UTC)
+        id S233774AbhKRTJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 14:09:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DBC361B1B;
+        Thu, 18 Nov 2021 19:06:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637262381;
-        bh=rNZifMDEF0JahX/dp8msj9TUp+FDQHZfIPbz/FrHK+o=;
+        s=k20201202; t=1637262386;
+        bh=ErQ/nsV6NGKXfTi3u48vwQs0bvmwyCa4rQaBQ2Jkz4o=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=RjHtOsdG882YaW8Ko2LMGvZ87oduP8Y4q1LZ3ZQcMXlke6E27Gba9Tzg21yjI4ozo
-         CTLqZ4cNVmnI40ZOheAY3fMm12pxqwX2lcjzWI+qN/L71XKqmbPHRPfnMvfqUXkfy1
-         NBbB7m6pVI/p+wqlVqfgKvjywSqjX4nfq+a3HlMuANhYtuCa7YxRfsSm8vdHYveLuW
-         +oownVrqKewmXvc3jcwvX9y1Y4ocN5aXZYn1EJV3BU0s3SYOGkCVJ9jmxyX/xTXrh4
-         TFTIROhGmX7YbT0GNF7Ebbr5HGYso1nq+7gO2BKQGuvu97+/QXK7qNQjQmc8PL3p1o
-         FdbH49ciDv3WA==
+        b=e7j+my+k/2CbBU/sWB65orjTqPIZfGW1c8PIva2DmHN2yMkgLy1EI6bwNEKWDM6l6
+         2/hVkdqusZcNgUNOa3YRcA7JyRh+sj1hUTV5fm0a3WnMJkS1WbYkMVlyfVGknn6WmJ
+         LHCSgciQcGCImTBtsyJaXYy8isNwP5zb5y5LT3i7K5D3rmY4O5C223Qj8ajv6/zpwE
+         IZai55qFKB9mkQed3Ps9VUeVhyAu/Y263pUD78FfXxOktw5BPO5Mou7hiF3WEBQ8St
+         Cl6DhlHpBOGz2B8ZuR3ObeGK60jkZBozWnOCK/CgcoP/3Y4dO+gwl8sLDkd6N7M+ji
+         Rh39ibhYAdY4w==
 From:   Mark Brown <broonie@kernel.org>
-To:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        linux-power@fi.rohmeurope.com, Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <cover.1637233864.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1637233864.git.matti.vaittinen@fi.rohmeurope.com>
-Subject: Re: (subset) [PATCH 0/5] Few miscellaneous regulator improvements
-Message-Id: <163726238042.96440.10857054540797519740.b4-ty@kernel.org>
-Date:   Thu, 18 Nov 2021 19:06:20 +0000
+To:     Vinod Koul <vkoul@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-spi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20211117133110.2682631-1-vkoul@kernel.org>
+References: <20211117133110.2682631-1-vkoul@kernel.org>
+Subject: Re: [PATCH 1/3] spi: qcom: geni: remove unused defines
+Message-Id: <163726238525.96493.17735171365340037570.b4-ty@kernel.org>
+Date:   Thu, 18 Nov 2021 19:06:25 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,35 +42,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Nov 2021 13:47:59 +0200, Matti Vaittinen wrote:
-> Minor regulator improvemnts / fixes.
+On Wed, 17 Nov 2021 19:01:08 +0530, Vinod Koul wrote:
+> Commit b59c122484ec ("spi: spi-geni-qcom: Add support for GPI dma")
+> added GPI support but also added unused defines, so remove them
 > 
-> This is a collection of minor improvemnts done while developing drivers
-> for yet another ROHM PMIC. Please note that the new generic function
-> added in Patch 2 does currently have only one in-tree driver using it.
-> (call added in patch 3). I intended to post this with the set of patches
-> bringing support to a new PMIC - but it appears this new PMIC requires
-> one more HW-iteration - meaning it will be delayed probably by months.
-> It'd be easier for me to add this upstream now in order to avoid
-> rebasing/conflicts with other changes introduced meanwhile. Please let
-> me know if you don't think that's Ok.
 > 
-> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-linus
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[2/5] regulator: rohm-regulator: add helper for restricted voltage setting
+[1/3] spi: qcom: geni: remove unused defines
+      commit: 61f6e38ae8b6cbe140cfd320b3003a52147edef0
+[2/3] spi: qcom: geni: set the error code for gpi transfer
       (no commit info)
-[3/5] regulator: bd718x7: Use rohm generic restricted voltage setting
+[3/3] spi: qcom: geni: handle timeout for gpi mode
       (no commit info)
-[4/5] regulator: Add units to limit documentation
-      (no commit info)
-[5/5] regulator: Update protection IRQ helper docs
-      commit: 6966df483d7b5b218aeb0e13e7e334a8fc3c1744
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
