@@ -2,135 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA030455D7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54BC9455D85
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:09:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232536AbhKROLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 09:11:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232503AbhKROLG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 09:11:06 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2FE2C061764
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 06:08:06 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id bk22so6395194qkb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 06:08:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PGT3zZBITe/LWXQCMhqSdshUMMzhyWhRVp97Kizl7zw=;
-        b=ve7v04KxgBj3+YWB/sPKKYeAwhPuff5ROtGzgYXp8XRFG3VZ3AhF2q18SafpzoZLbn
-         dkyAebe1GvnHzsocxknJGYYHyrSLotXmR5Zf3rU7emsqtw4mVOlx6hW0hyo2YTiQjvDI
-         5UThyYavtHhA87j2BwDULh0AOcCpVH4mCnhxraECqHP9tYFfYW8hVi/yOY/8HAlsLDjh
-         oiUyzW99HKQ0k9KN+h+VTnjY4DbTLrL/ak6N3gqPbbfgWw5DhZ4tqHuoelqsTM0yZwsk
-         1lxc/HV/S2cFWMxetPnpmJ2X5Zpfk8lCadurL1UDaHE8KHU+D+dbpY+R/n2kxxB7Wufo
-         UeqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PGT3zZBITe/LWXQCMhqSdshUMMzhyWhRVp97Kizl7zw=;
-        b=2MWTZuzh+5dgBiHLA08WKikmYqXsHh9DEWcoW+GFy1tBqzhoBBQt6re+7+/C6gkO/G
-         ZdQmuO6v7y6wq2sOCq4JBf6CAUvV9NsYRImpImAvU8lI8SMauzdqpZ1n4OKI67u7RLde
-         D+XYaZCcggGHVYuNPqKe/wubGlEKE1gQ6Lv3/Iu+/pLChhUrT/4d1ow7C9Q674mVA79z
-         +DtF0O54rUi+dX2QGr64NeH9AfbIkYsjYV2W5THyhReXxGjGHI3LP2Kf0GAOdSShD/V1
-         gHHCcFzvILGMxaVfEz4CcGC4B/OzNwmjLhe+QY5vOS28yPfzh/MKQyTipU5geLDJP6aW
-         Bl9g==
-X-Gm-Message-State: AOAM532JImjR86PYT8rxDi9xIFZmPQ3lSdm3j3shZuVWPqqHeYxEpI9g
-        FvgFhtflsXKIaJC3VO9+6mtGCg==
-X-Google-Smtp-Source: ABdhPJySk9up+d6zujaC7A6Ap/eUcdJjJDvIzKooJVC8PYjF52/J+133C9wbmnSLJLlTkhBGWZ2mQg==
-X-Received: by 2002:a05:620a:a45:: with SMTP id j5mr21033392qka.392.1637244485660;
-        Thu, 18 Nov 2021 06:08:05 -0800 (PST)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id n18sm1503314qtk.9.2021.11.18.06.08.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Nov 2021 06:08:05 -0800 (PST)
-Subject: Re: [PATCH] cpufreq: qcom-hw: Use optional irq API
-To:     Stephen Boyd <swboyd@chromium.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20211117020346.4088302-1-swboyd@chromium.org>
- <76b103ec-7034-e6c1-1ab4-174cf16f9fc8@linaro.org>
- <CAE-0n53HNSRTdADO1dbQTyLafyajUTatMq5tsLeNDLQ4g95YpA@mail.gmail.com>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <f1038a3e-57fb-ec01-26a0-452a11dfcf3a@linaro.org>
-Date:   Thu, 18 Nov 2021 09:08:04 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232578AbhKROLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 09:11:52 -0500
+Received: from ofcsgdbm.dwd.de ([141.38.3.245]:33993 "EHLO ofcsgdbm.dwd.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232554AbhKROLv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 09:11:51 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by ofcsg2dn4.dwd.de (Postfix) with ESMTP id 4Hw1qj3jw5z3vbH
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 14:08:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dwd.de; h=
+        content-type:content-type:mime-version:references:message-id
+        :in-reply-to:subject:subject:from:from:date:date:received
+        :received:received:received:received:received:received:received;
+         s=dwd-csg20210107; t=1637244529; x=1638454130; bh=0aXjVUwp2MRjd
+        FO8lFYKGzei3eTQXJFh1/lj7AUxfu8=; b=BrsOR8mPzS5aZpfUSda0O9IMBOWlr
+        nEpltiivM/GTNR5Y1JtEGx3BQ20oWlgBf5sYNYMNAa35dKJS+TyNvxvhW30IKlVX
+        dYM2mgD09CmLIcRVPHGHeLMLqHtQYP7XpmXEt6t6o5sLez9PHFEu5YTggUZlsYC7
+        hhXmrUXmwGZ1B1/re0rxjgR6GBtGphBoWugRwtOVD6OjAcJU8J/HHGpBW8dFbdzL
+        V8nOSJ5Xv49yfX8F0wIubJTLjTkpvSXDHbc/SK3ZpMp2iQSCdUv6PVnrOrTkjzxb
+        FLiWVi34i23TzPzpUCcCYdO8oFWNwiepAzrqUXjkoDM9Hqwv2Q/1ejkBg==
+X-Virus-Scanned: by amavisd-new at csg.dwd.de
+Received: from ofcsg2cteh1.dwd.de ([172.30.232.65])
+        by localhost (ofcsg2dn4.dwd.de [172.30.232.27]) (amavisd-new, port 10024)
+        with ESMTP id MVjc2IRZ0Yx0 for <linux-kernel@vger.kernel.org>;
+        Thu, 18 Nov 2021 14:08:49 +0000 (UTC)
+Received: from ofcsg2cteh1.dwd.de (unknown [127.0.0.1])
+        by DDEI (Postfix) with SMTP id 50D6CC9023A9
+        for <root@ofcsg2dn4.dwd.de>; Thu, 18 Nov 2021 14:08:49 +0000 (UTC)
+Received: from ofcsg2cteh1.dwd.de (unknown [127.0.0.1])
+        by DDEI (Postfix) with ESMTP id CBCE1C9023A9
+        for <root@ofcsg2dn4.dwd.de>; Thu, 18 Nov 2021 14:08:33 +0000 (UTC)
+X-DDEI-TLS-USAGE: Unused
+Received: from ofcsgdbm.dwd.de (unknown [172.30.232.27])
+        by ofcsg2cteh1.dwd.de (Postfix) with ESMTP
+        for <root@ofcsg2dn4.dwd.de>; Thu, 18 Nov 2021 14:08:33 +0000 (UTC)
+Received: from ofcsgdbm.dwd.de by localhost (Postfix XFORWARD proxy);
+ Thu, 18 Nov 2021 14:08:33 -0000
+Received: from ofcsg2dvf2.dwd.de (ofcsg2dvf2.dwd.de [172.30.232.11])
+        by ofcsg2dn4.dwd.de (Postfix) with ESMTPS id 4Hw1qP5Wsyz3vR2;
+        Thu, 18 Nov 2021 14:08:33 +0000 (UTC)
+Received: from ofmailhub.dwd.de (ofmailhub.dwd.de [141.38.39.196])
+        by ofcsg2dvf2.dwd.de  with ESMTP id 1AIE8Xew014827-1AIE8Xex014827;
+        Thu, 18 Nov 2021 14:08:33 GMT
+Received: from diagnostix.dwd.de (diagnostix.dwd.de [141.38.44.45])
+        by ofmailhub.dwd.de (Postfix) with ESMTP id 29579E27A3;
+        Thu, 18 Nov 2021 14:08:33 +0000 (UTC)
+Date:   Thu, 18 Nov 2021 14:08:33 +0000 (GMT)
+From:   Holger Kiehl <Holger.Kiehl@dwd.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.15 000/923] 5.15.3-rc3 review
+In-Reply-To: <YZYLYlvdfi9ddToA@kroah.com>
+Message-ID: <45eb66bb-818d-d1f-a78f-f7c7c1bcaa2@diagnostix.dwd.de>
+References: <20211117101657.463560063@linuxfoundation.org> <413ef3-c782-be14-da3-da86ed14a210@diagnostix.dwd.de> <YZYLYlvdfi9ddToA@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <CAE-0n53HNSRTdADO1dbQTyLafyajUTatMq5tsLeNDLQ4g95YpA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+X-FE-Policy-ID: 2:2:1:SYSTEM
+X-TMASE-Version: DDEI-5.1-8.6.1018-26536.007
+X-TMASE-Result: 10--13.824200-10.000000
+X-TMASE-MatchedRID: y/2oPz6gbviWfDtBOz4q26HggtOWAEvR69aS+7/zbj/mNRhvDVinv7BU
+        pHHLYQpmSHSWZchqtCGn9WnUf4yXmVzhU0/oppo2uZBZOg7RfX9UIaneDj+GO2yIID37xcHKsb9
+        HPmxftEn5yPaI4eFKR/kuGZQ5f5nDnEMCM6PzyYEK4MBRf7I7prw+GCqPUrbc+frbXg+Uc4Uq6L
+        BhXC7ZgmUVI5FRUThefzUNu6btPNHt+DjkxhBU4jfu+RTlciXg4oSd18bdmwIyNJCVcSRuoA31l
+        m1cxQaATToGGHMg/J5d+uVFnTtvxeVHGbcDbAq6/sToY2qzpx7dB/CxWTRRu/558CedkGIvqcoA
+        hihTwviYPPIGKI9LSrTo9HU7Ngwfz5kNXzFS6ld3IU9XpIOZp2NJ1X7dZmox
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-TMASE-INERTIA: 0-0;;;;
+X-DDEI-PROCESSED-RESULT: Safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 18 Nov 2021, Greg Kroah-Hartman wrote:
 
-
-On 11/17/21 11:32 PM, Stephen Boyd wrote:
-> Quoting Thara Gopinath (2021-11-17 18:55:17)
->> Hello Stephen,
->>
->> Thanks for the patch
->>
->> On 11/16/21 9:03 PM, Stephen Boyd wrote:
->>> Use platform_get_irq_optional() to avoid a noisy error message when the
->>> irq isn't specified. The irq is definitely optional given that we only
->>> care about errors that are -EPROBE_DEFER here.
->>>
->>> Cc: Thara Gopinath <thara.gopinath@linaro.org>
->>> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
->>> ---
->>>    drivers/cpufreq/qcom-cpufreq-hw.c | 8 +++++---
->>>    1 file changed, 5 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
->>> index a2be0df7e174..b442d4983a22 100644
->>> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
->>> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
->>> @@ -382,9 +382,11 @@ static int qcom_cpufreq_hw_lmh_init(struct cpufreq_policy *policy, int index)
->>>         * Look for LMh interrupt. If no interrupt line is specified /
->>>         * if there is an error, allow cpufreq to be enabled as usual.
->>>         */
->>> -     data->throttle_irq = platform_get_irq(pdev, index);
->>> -     if (data->throttle_irq <= 0)
->>> -             return data->throttle_irq == -EPROBE_DEFER ? -EPROBE_DEFER : 0;
->>> +     data->throttle_irq = platform_get_irq_optional(pdev, index);
->>> +     if (data->throttle_irq == -ENXIO)
->>> +             return 0;
->>> +     if (data->throttle_irq < 0)
->>> +             return data->throttle_irq;
->>
->> Here the idea is to return only -EPROBE_DEFER error. Else return a 0 ,
->> so that cpufreq is enabled even if lmh interrupt is inaccessible. The
->> above check returns errors other than -EPROBE_DEFER as well. So I would
->> say make irq optional and keep the below check
->>
->> if (data->throttle_irq <= 0)
->>          return data->throttle_irq == -EPROBE_DEFER ? -EPROBE_DEFER : 0;
+> On Wed, Nov 17, 2021 at 08:25:12PM +0000, Holger Kiehl wrote:
+> > Hello,
+> > 
+> > On Wed, 17 Nov 2021, Greg Kroah-Hartman wrote:
+> > 
+> > > This is the start of the stable review cycle for the 5.15.3 release.
+> > > There are 923 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > > 
+> > > Responses should be made by Fri, 19 Nov 2021 10:14:52 +0000.
+> > > Anything received after that time might be too late.
+> > > 
+> > > The whole patch series can be found in one patch at:
+> > > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.3-rc3.gz
+> > > or in the git tree and branch at:
+> > > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> > > and the diffstat can be found below.
+> > > 
+> > On a Deskmini X300 with a AMD APU 5700G this does not boot (rc1+rc2 also
+> > do not boot). As Scott Bruce already noticed, if one removes
+> > c3fc9d9e8f2dc518a8ce3c77f833a11b47865944 "x86: Fix __get_wchan() for
+> > !STACKTRACE" it boots.
 > 
-> I'd like to catch other errors, for example, DT has an irq specified
-> that is outside the range of irqs available. If the DT is correct, then
-> it will either have a valid irq and this will return a >= 0 value or
-> nothing will be specified and we'll get back -ENXIO now. Do you have
-> some scenario where my patch fails to work?
-
-Exactly. Like in the scenario you mentioned above, I do not want cpufreq 
-to be disabled. This interrupt is a throttle notification interrupt. The 
-action taken on basis of this is to send thermal pressure signal to 
-scheduler so that scheduler places tasks better. Even if the dt has 
-messed up this interrupt, I think cpufreq should still be enabled. May 
-be we can print a warn and still return 0 to enable cpufreq.
-
+> Now dropped, thanks.
 > 
+Thanks. Now 5.15.3-rc4 works fine!
 
--- 
-Warm Regards
-Thara (She/Her/Hers)
+Holger
