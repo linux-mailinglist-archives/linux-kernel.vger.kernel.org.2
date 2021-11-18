@@ -2,231 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB81455A1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:24:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A36C455ABF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:38:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343707AbhKRL1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 06:27:03 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:37930 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343675AbhKRL0U (ORCPT
+        id S1344167AbhKRLlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 06:41:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343949AbhKRLj2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 06:26:20 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 5ADE61FD35;
-        Thu, 18 Nov 2021 11:23:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637234597; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gZP2OrTM2vruLHNAH3Bkkec284UppfF4E24Hyfhj1rU=;
-        b=pY1OwxrM3M9X0p68lL4V8crk++gpsq44jDeYiY5mpcP70q2gXyQMedxfjc67o/bd4Bmkv1
-        4iRumPUNyhrVZzhZvQAAQfS8fpQigBXLTHEMomgCMxkpgXhTK2T1MQwe57cfhQ36d75jqv
-        ZVU54jF5d055WNomqSyCNOb2/IDmYVg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637234597;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gZP2OrTM2vruLHNAH3Bkkec284UppfF4E24Hyfhj1rU=;
-        b=2IeHefRL5EPKeJmusr9VIl20cIR7Cn6pN29dL6TWDdifGtWXzUsjL5CImx1mDQzMFXgbOo
-        /2PMQQHl7BTzFfCg==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 060EFA3B85;
-        Thu, 18 Nov 2021 11:23:17 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id C48FC1F2B83; Thu, 18 Nov 2021 12:23:15 +0100 (CET)
-Date:   Thu, 18 Nov 2021 12:23:15 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Chengguang Xu <cgxu519@mykernel.net>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>,
-        Amir Goldstein <amir73il@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v5 06/10] ovl: implement overlayfs' ->write_inode
- operation
-Message-ID: <20211118112315.GD13047@quack2.suse.cz>
-References: <20210923130814.140814-7-cgxu519@mykernel.net>
- <CAJfpeguqj2vst4Zj5EovSktJkXiDSCSWY=X12X0Yrz4M8gPRmQ@mail.gmail.com>
- <17c5aba1fef.c5c03d5825886.6577730832510234905@mykernel.net>
- <CAJfpegtr1NkOiY9YWd1meU1yiD-LFX-aB55UVJs94FrX0VNEJQ@mail.gmail.com>
- <17c5adfe5ea.12f1be94625921.4478415437452327206@mykernel.net>
- <CAJfpegt4jZpSCXGFk2ieqUXVm3m=ng7QtSzZp2bXVs07bfrbXg@mail.gmail.com>
- <17d268ba3ce.1199800543649.1713755891767595962@mykernel.net>
- <CAJfpegttQreuuD_jLgJmrYpsLKBBe2LmB5NSj6F5dHoTzqPArw@mail.gmail.com>
- <17d2c858d76.d8a27d876510.8802992623030721788@mykernel.net>
- <17d31bf3d62.1119ad4be10313.6832593367889908304@mykernel.net>
+        Thu, 18 Nov 2021 06:39:28 -0500
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2BE33C061766;
+        Thu, 18 Nov 2021 03:35:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=LZbD31jZkGrgx6ViTy/l2Vjvp0vliXuYxb
+        Te8LX4ujw=; b=eBUeMH7vDQCB4UTcZcKRSntM3kEpjHWStnxhoW4CDMxOwbXM7v
+        GdnjFi8y6HoaK9ejGWIKpUkfO3iPNj7S9N0P/0DyPPrRwLqngNL3Lzwgcn7oLIsr
+        bUn7kGYOsFBjx719kaxD2cfS6y+VlXLzGeiZPUl8mY86BGOQJzOF3TGP4=
+Received: from xhacker (unknown [101.86.18.22])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBnLsxMOpZhi51cAQ--.6032S7;
+        Thu, 18 Nov 2021 19:34:45 +0800 (CST)
+Date:   Thu, 18 Nov 2021 19:23:21 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "=?UTF-8?B?Qmo=?= =?UTF-8?B?w7ZybiBUw7ZwZWw=?=" <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Tong Tiangen <tongtiangen@huawei.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: [PATCH 04/12] riscv: bpf: move rv_bpf_fixup_exception signature to
+ extable.h
+Message-ID: <20211118192321.16837434@xhacker>
+In-Reply-To: <20211118192130.48b8f04c@xhacker>
+References: <20211118192130.48b8f04c@xhacker>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <17d31bf3d62.1119ad4be10313.6832593367889908304@mykernel.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygBnLsxMOpZhi51cAQ--.6032S7
+X-Coremail-Antispam: 1UD129KBjvJXoWxuryfXrWUJryxJF4DZr13Jwb_yoW5GrWxpF
+        s8Cas3GrWFgwn3ur13tw10gF45Kr40g34Syry8C3W5t3WIkrWrJr1rta9Iyr98WrW7Wry8
+        CFySgr1fCw4rZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBCb7Iv0xC_Cr1lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
+        8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28C
+        jxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI
+        8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E
+        87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64
+        kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm
+        72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42
+        xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWU
+        GwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI4
+        8JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWx
+        Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0x
+        vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxU2bAwDUUUU
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 18-11-21 14:32:36, Chengguang Xu wrote:
-> 
->  ---- 在 星期三, 2021-11-17 14:11:29 Chengguang Xu <cgxu519@mykernel.net> 撰写 ----
->  >  ---- 在 星期二, 2021-11-16 20:35:55 Miklos Szeredi <miklos@szeredi.hu> 撰写 ----
->  >  > On Tue, 16 Nov 2021 at 03:20, Chengguang Xu <cgxu519@mykernel.net> wrote:
->  >  > >
->  >  > >  ---- 在 星期四, 2021-10-07 21:34:19 Miklos Szeredi <miklos@szeredi.hu> 撰写 ----
->  >  > >  > On Thu, 7 Oct 2021 at 15:10, Chengguang Xu <cgxu519@mykernel.net> wrote:
->  >  > >  > >  > However that wasn't what I was asking about.  AFAICS ->write_inode()
->  >  > >  > >  > won't start write back for dirty pages.   Maybe I'm missing something,
->  >  > >  > >  > but there it looks as if nothing will actually trigger writeback for
->  >  > >  > >  > dirty pages in upper inode.
->  >  > >  > >  >
->  >  > >  > >
->  >  > >  > > Actually, page writeback on upper inode will be triggered by overlayfs ->writepages and
->  >  > >  > > overlayfs' ->writepages will be called by vfs writeback function (i.e writeback_sb_inodes).
->  >  > >  >
->  >  > >  > Right.
->  >  > >  >
->  >  > >  > But wouldn't it be simpler to do this from ->write_inode()?
->  >  > >  >
->  >  > >  > I.e. call write_inode_now() as suggested by Jan.
->  >  > >  >
->  >  > >  > Also could just call mark_inode_dirty() on the overlay inode
->  >  > >  > regardless of the dirty flags on the upper inode since it shouldn't
->  >  > >  > matter and results in simpler logic.
->  >  > >  >
->  >  > >
->  >  > > Hi Miklos，
->  >  > >
->  >  > > Sorry for delayed response for this, I've been busy with another project.
->  >  > >
->  >  > > I agree with your suggesion above and further more how about just mark overlay inode dirty
->  >  > > when it has upper inode? This approach will make marking dirtiness simple enough.
->  >  > 
->  >  > Are you suggesting that all non-lower overlay inodes should always be dirty?
->  >  > 
->  >  > The logic would be simple, no doubt, but there's the cost to walking
->  >  > those overlay inodes which don't have a dirty upper inode, right?  
->  > 
->  > That's true.
->  > 
->  >  > Can you quantify this cost with a benchmark?  Can be totally synthetic,
->  >  > e.g. lookup a million upper files without modifying them, then call
->  >  > syncfs.
->  >  > 
->  > 
->  > No problem, I'll do some tests for the performance.
->  > 
-> 
-> Hi Miklos,
-> 
-> I did some rough tests and the results like below.  In practice,  I don't
-> think that 1.3s extra time of syncfs will cause significant problem.
-> What do you think?
+From: Jisheng Zhang <jszhang@kernel.org>
 
-Well, burning 1.3s worth of CPU time for doing nothing seems like quite a
-bit to me. I understand this is with 1000000 inodes but although that is
-quite a few it is not unheard of. If there would be several containers
-calling sync_fs(2) on the machine they could easily hog the machine... That
-is why I was originally against keeping overlay inodes always dirty and
-wanted their dirtiness to at least roughly track the real need to do
-writeback.
+This is to group riscv related extable related functions signature
+into one file.
 
-								Honza
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ arch/riscv/include/asm/extable.h | 12 ++++++++++++
+ arch/riscv/mm/extable.c          |  6 ------
+ arch/riscv/net/bpf_jit_comp64.c  |  2 --
+ 3 files changed, 12 insertions(+), 8 deletions(-)
 
-> Test bed: kvm vm 
-> 2.50GHz cpu 32core
-> 64GB mem
-> vm kernel  5.15.0-rc1+ (with ovl syncfs patch V6)
-> 
-> one millon files spread to 2 level of dir hierarchy.
-> test step:
-> 1) create testfiles in ovl upper dir
-> 2) mount overlayfs
-> 3) excute ls -lR to lookup all file in overlay merge dir
-> 4) excute slabtop to make sure overlay inode number
-> 5) call syncfs to the file in merge dir
-> 
-> Tested five times and the reusults are in 1.310s ~ 1.326s
-> 
-> root@VM-144-4-centos test]# time ./syncfs ovl-merge/create-file.sh 
-> syncfs success
-> 
-> real    0m1.310s
-> user    0m0.000s
-> sys     0m0.001s
-> [root@VM-144-4-centos test]# time ./syncfs ovl-merge/create-file.sh 
-> syncfs success
-> 
-> real    0m1.326s
-> user    0m0.001s
-> sys     0m0.000s
-> [root@VM-144-4-centos test]# time ./syncfs ovl-merge/create-file.sh 
-> syncfs success
-> 
-> real    0m1.321s
-> user    0m0.000s
-> sys     0m0.001s
-> [root@VM-144-4-centos test]# time ./syncfs ovl-merge/create-file.sh 
-> syncfs success
-> 
-> real    0m1.316s
-> user    0m0.000s
-> sys     0m0.001s
-> [root@VM-144-4-centos test]# time ./syncfs ovl-merge/create-file.sh 
-> syncfs success
-> 
-> real    0m1.314s
-> user    0m0.001s
-> sys     0m0.001s
-> 
-> 
-> Directly run syncfs to the file in ovl-upper dir.
-> Tested five times and the reusults are in 0.001s ~ 0.003s
-> 
-> [root@VM-144-4-centos test]# time ./syncfs a
-> syncfs success
-> 
-> real    0m0.002s
-> user    0m0.001s
-> sys     0m0.000s
-> [root@VM-144-4-centos test]# time ./syncfs ovl-upper/create-file.sh 
-> syncfs success
-> 
-> real    0m0.003s
-> user    0m0.001s
-> sys     0m0.000s
-> [root@VM-144-4-centos test]# time ./syncfs ovl-upper/create-file.sh 
-> syncfs success
-> 
-> real    0m0.001s
-> user    0m0.000s
-> sys     0m0.001s
-> [root@VM-144-4-centos test]# time ./syncfs ovl-upper/create-file.sh 
-> syncfs success
-> 
-> real    0m0.001s
-> user    0m0.000s
-> sys     0m0.001s
-> [root@VM-144-4-centos test]# time ./syncfs ovl-upper/create-file.sh 
-> syncfs success
-> 
-> real    0m0.001s
-> user    0m0.000s
-> sys     0m0.001s
-> [root@VM-144-4-centos test]# time ./syncfs ovl-upper/create-file.sh 
-> syncfs success
-> 
-> real    0m0.001s
-> user    0m0.000s
-> sys     0m0.001
-> 
-> 
-> 
-> 
-> 
-> 
+diff --git a/arch/riscv/include/asm/extable.h b/arch/riscv/include/asm/extable.h
+index 84760392fc69..c48c020fcf4d 100644
+--- a/arch/riscv/include/asm/extable.h
++++ b/arch/riscv/include/asm/extable.h
+@@ -22,4 +22,16 @@ struct exception_table_entry {
+ #define ARCH_HAS_RELATIVE_EXTABLE
+ 
+ int fixup_exception(struct pt_regs *regs);
++
++#if defined(CONFIG_BPF_JIT) && defined(CONFIG_ARCH_RV64I)
++int rv_bpf_fixup_exception(const struct exception_table_entry *ex, struct pt_regs *regs);
++#else
++static inline int
++rv_bpf_fixup_exception(const struct exception_table_entry *ex,
++		       struct pt_regs *regs)
++{
++	return 0;
++}
++#endif
++
+ #endif
+diff --git a/arch/riscv/mm/extable.c b/arch/riscv/mm/extable.c
+index d8d239c2c1bd..cbb0db11b28f 100644
+--- a/arch/riscv/mm/extable.c
++++ b/arch/riscv/mm/extable.c
+@@ -11,10 +11,6 @@
+ #include <linux/module.h>
+ #include <linux/uaccess.h>
+ 
+-#if defined(CONFIG_BPF_JIT) && defined(CONFIG_ARCH_RV64I)
+-int rv_bpf_fixup_exception(const struct exception_table_entry *ex, struct pt_regs *regs);
+-#endif
+-
+ int fixup_exception(struct pt_regs *regs)
+ {
+ 	const struct exception_table_entry *fixup;
+@@ -23,10 +19,8 @@ int fixup_exception(struct pt_regs *regs)
+ 	if (!fixup)
+ 		return 0;
+ 
+-#if defined(CONFIG_BPF_JIT) && defined(CONFIG_ARCH_RV64I)
+ 	if (regs->epc >= BPF_JIT_REGION_START && regs->epc < BPF_JIT_REGION_END)
+ 		return rv_bpf_fixup_exception(fixup, regs);
+-#endif
+ 
+ 	regs->epc = (unsigned long)&fixup->fixup + fixup->fixup;
+ 	return 1;
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+index f2a779c7e225..2ca345c7b0bf 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -459,8 +459,6 @@ static int emit_call(bool fixed, u64 addr, struct rv_jit_context *ctx)
+ #define BPF_FIXUP_OFFSET_MASK   GENMASK(26, 0)
+ #define BPF_FIXUP_REG_MASK      GENMASK(31, 27)
+ 
+-int rv_bpf_fixup_exception(const struct exception_table_entry *ex,
+-				struct pt_regs *regs);
+ int rv_bpf_fixup_exception(const struct exception_table_entry *ex,
+ 				struct pt_regs *regs)
+ {
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.33.0
+
+
