@@ -2,107 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C87BC45642D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 21:30:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6C1456432
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 21:30:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhKRUc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 15:32:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42756 "EHLO
+        id S233161AbhKRUd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 15:33:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbhKRUc6 (ORCPT
+        with ESMTP id S233125AbhKRUd1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 15:32:58 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0F00C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 12:29:57 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id 14so9730591ioe.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 12:29:57 -0800 (PST)
+        Thu, 18 Nov 2021 15:33:27 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10278C06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 12:30:27 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id y12so32479369eda.12
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 12:30:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yYt9/X+O3xwYmGyId9geOmyLFTgYSAl9UI0lqAAeF2k=;
-        b=m5TEvsbxfBqQIb4tuD1f9/ZQ/7VmLTi9LbQFAllDlm/owT7miVsSXeVo64hP8FIeQR
-         V5NxSG79XVDiOF7sAjpdDapSyAMaEx/jt78R+foIWa/b24yKfPQYs4Xe9IFMoefi4h/u
-         VlTqhy3XhsWa3G1brbYr2E7mlv0o4cFLqsrhE=
+        bh=wwg+Ca9jb9pUEm7rE+CduZsgo7GneYWcNrMAsYNN4w0=;
+        b=J9QOzTq127+fjB9bPz1Tnkq8fAIAL3i5cPhju4I+zno7r6Z0aHsjUzVuJ+w32/a2Q7
+         RIO526yWOq/eal3vMxgZIKyyhjNMlEhgJs1eDXiPQE0NsNprB6qriiR7Wgsbrecrq+ez
+         QuyIbgcopabzqAIu2L6lhS70RNLKh00a3v3a2ZprgWdnPCFAeWW0kiwblid1NUwc96yC
+         Tp8dl/pjplMx8XddvkdoNoROcC0Sub/8IwP0p5ArtnbG4R3QPLL74z9buVSle0iD2Nc0
+         5tLmpZhp7pg5CqPUA69D4PYecmNlT74wayeiqMWMg/ZYZsNGalBVUnMwRNtMKDhXAECX
+         o9NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yYt9/X+O3xwYmGyId9geOmyLFTgYSAl9UI0lqAAeF2k=;
-        b=mN9HXNi2q/4b0PaeigJgA8g+1HDtOoMBA77USbwtLPbKZQ71nuNQIDzklY0z/AYjs7
-         ZAYI1szU557iy3bFSLQ3CsJA7drXTKs++3irohaLysiYFLuMr8p0fiMrUgL7GGT6A1lg
-         MtD47OUp/U3MO0JAND33iidujm9h1q+eeSJbOx02UJYi+iddYV0dBoy8tHArr6tHyWJw
-         8dhw/2w9KFnOU/8kME0VpJ9I4cmhMkgSz7WlGNsK6h1jQwpCLiT6uzzl919ntKgwue7C
-         gugQXJgidCGsIU8O8c1uyoyEnveN2r5O0Aay9rvfd7YclOf8yP/xvsH83n9vynP5Yssr
-         R2sQ==
-X-Gm-Message-State: AOAM532BcGEAz3VelyfL6i4xtFTsYCeFwKeSOBRy7sq90r5MG68UmIiA
-        Uf39OXmZ8R6eSXWLLtQD5EFGS9mJKeBeXA5rl69Q0w==
-X-Google-Smtp-Source: ABdhPJzqpDhtem1HFVcS+EX78SHgn/oe6Rjax3EXhJ9Dq0IVlb5JcMUMdq2kJKmgClqwuZFcoVM4tRItcT5u/xOKfwc=
-X-Received: by 2002:a02:864b:: with SMTP id e69mr22200390jai.9.1637267397355;
- Thu, 18 Nov 2021 12:29:57 -0800 (PST)
+        bh=wwg+Ca9jb9pUEm7rE+CduZsgo7GneYWcNrMAsYNN4w0=;
+        b=4RvCKim2gZBc4YJ0M1taGrzgimBdTTKf9+FAw25AxXZ2ntT8id+Msv9bZg1NGtp++/
+         xy8pRUqcF3C78kEN89pYFqWBLpYUYFSsPhIm7W9NnoDFTaqRtIEImRzcvXMhdt9OLfMr
+         1Cx9/vfhPLJWuqwPlICWpRILuClVeb7prIaHLwOGRIanHvnGFPo9dMJcChMmvnegGoiY
+         hk+gc+E8dXqpD8aJPa2z0ewvMRjeIwDKX3Q69WKhDs8JkEMj+siG09Z1hEEP98YmitP/
+         kblVx4C4Q6O3tj3PiUwSOaUVr/1xDOYaTxesj1nrl+g4M4ZedwaZgjLWMLJMZ9mGE0ia
+         LaqQ==
+X-Gm-Message-State: AOAM533HWiw/lZx6KrL+wOokYifx/+L0gCJ6oETyox37hMqAhxHF+I7i
+        mJhn4OEZYc76D07t+dF5niM5KFKQLpEGQ/daHuz++Q==
+X-Google-Smtp-Source: ABdhPJwmTWmlHt4Iw5Q0nSvh9x75b6Y1V3AEdkg+yigj2bPoOupsbO8rrcQLoT70uyjwd8iVWqIasKW1gEPKi1IWv7Q=
+X-Received: by 2002:a50:ef02:: with SMTP id m2mr15409971eds.172.1637267425669;
+ Thu, 18 Nov 2021 12:30:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20211118103335.1208372-1-revest@chromium.org> <CAEf4BzY5JXvWSTdyyPRoTdqupsnxiRf622sGTzsOPhr4WVMNBA@mail.gmail.com>
-In-Reply-To: <CAEf4BzY5JXvWSTdyyPRoTdqupsnxiRf622sGTzsOPhr4WVMNBA@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Thu, 18 Nov 2021 21:29:46 +0100
-Message-ID: <CABRcYmLfbHSU9of5x+sdor6WxkFXfWiJpJiwgjVur1Hps0TtPA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Add ability to clear per-program load flags
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20211105124242.27288-1-andriy.shevchenko@linux.intel.com>
+ <CACRpkdZ2-MRY_L2J4RvKDNW1yyThg7KUFbd80ZMpRY209RNxnw@mail.gmail.com>
+ <YZJDFhMNyRaH+HFE@smile.fi.intel.com> <YZaFuGZ4AEN8HjUv@smile.fi.intel.com>
+In-Reply-To: <YZaFuGZ4AEN8HjUv@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Thu, 18 Nov 2021 21:30:14 +0100
+Message-ID: <CAMRc=MfD54gjMcZazJqXKUMTaW45_qKH6GSLOfs4eciKGtfrCw@mail.gmail.com>
+Subject: Re: [PATCH v1 01/19] lib/string_helpers: Introduce kasprintf_strarray()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Jianqun Xu <jay.xu@rock-chips.com>,
+        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Bamvor Jian Zhang <bamv2005@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Andy Shevchenko <andy@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 6:49 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Thu, Nov 18, 2021 at 5:56 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> On Thu, Nov 18, 2021 at 2:33 AM Florent Revest <revest@chromium.org> wrote:
+> On Mon, Nov 15, 2021 at 01:23:02PM +0200, Andy Shevchenko wrote:
+> > On Tue, Nov 09, 2021 at 12:42:00PM +0100, Linus Walleij wrote:
+> > > On Fri, Nov 5, 2021 at 1:43 PM Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
+> > >
+> > > > We have a few users already that basically want to have array of
+> > > > sequential strings to be allocated and filled.
+> > > >
+> > > > Provide a helper for them (basically adjusted version from gpio-mockup.c).
+> > > >
+> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > >
+> > > Fulfils Rusty Russell's API design hierarchy requirements
+> > > and help people to make less mistakes so:
+> > > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 > >
-> > We have a use-case where we construct a skeleton with a sleepable
-> > program and if it fails to load then we want to make it non-sleepable by
-> > clearing BPF_F_SLEEPABLE.
+> > Thanks!
+> >
+> > Should I resend, take into mine PR, or you just apply it as is?
+> >
+> > As I answered previously the series doesn't require additional work
+> > from my perspective.
 >
-> I'd say the better way to do this is to have two programs (that share
-> the logic, of course) and pick one or another at runtime:
+> Okay, I'm about to send a PR to you and Bart for this.
+> Does it sound good?
 >
-> static int whatever_logic(bool sleepable) { ... }
->
-> SEC("fentry.s/whatever")
-> int BPF_PROG(whatever_sleepable, ...)
-> {
->     return whatever_logic(true);
-> }
->
-> SEC("fentry/whatever")
-> int BPF_PROG(whatever_nonsleepable, ...)
-> {
->     return whatever_logic(false);
-> }
->
->
-> Then at runtime you can bpf_program__autoload(..., false) for a
-> variant you don't want to load.
 
-Ah cool, thanks! That's a good idea :) it will also look cleaner.
+Sounds good to me.
 
-> This clear_flags business seems too low-level and too limited. Next
-> thing we'll be adding a few more bit manipulation variants (e.g, reset
-> flags). Let's see how far you can get with the use of existing
-> features. I'd set_extra_flags() to be almost never used, btw. And they
-> shouldn't, if can be avoided. So I'm hesitant to keep extending
-> operations around prog_flags.
-
-I agree
-
-> But given we just added set_extra_flags() and it's already too
-> limiting, let's change set_extra flags to just set_flags() that will
-> override the flags with whatever user provides. Then with
-> bpf_program__flags() and bpf_program__set_flags() you can express
-> whatever you want without adding extra APIs. Care to fix that?
-
-Sure, I'll send a patch for this! :)
+Bart
