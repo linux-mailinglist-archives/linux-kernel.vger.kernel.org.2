@@ -2,128 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1EB045667E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 00:32:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8B3456682
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 00:35:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233192AbhKRXfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 18:35:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231231AbhKRXfn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 18:35:43 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA966C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 15:32:42 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id k37so34304367lfv.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 15:32:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=KmJklbxeovu0jbhadZ0czuuGmkYq4VZ7SEWyJcSVlOQ=;
-        b=IZREUG1sS9pu+HwaMSonuO3w9636SOb6MNIduGUxhbx+WG/DwtmzhzK+UHebYKj521
-         4B/iKKlAzx7vT7siMbMUeQ1Nt2XeQBhkZ7gLpUJMZqTrQVVwPTgmny5p+9XawGfkv2e9
-         3UzeG6RWD0+0WjefUximysriqDkfi0lyQ26S87uik8GYkcKv+nX29fYiv0XTMPUAKjvq
-         WmS3lwZf++GHn4gbDI+rdfWw1DyIproAsFKhd/B0WXQJU/tb5r7EdLgJBnmaCqjhJMm+
-         R5gKl1gbvkeOTtIR3JfvEneI/XDc+2EOkb5C+IHw/zMulNBIenTWKPFEraJHw7WpadOI
-         ZJfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=KmJklbxeovu0jbhadZ0czuuGmkYq4VZ7SEWyJcSVlOQ=;
-        b=t47Xz2KDTS5fjgWiYqBkP9l2AyT/kaJm4kLY2RWBp0CmNGT4Ky9iVD8jt7NGb0M1XG
-         8Gw8SrYwItabSLgL3Ox3QMexBMq1pUl3QrX3Qq7KOBV6S4cRLCHjvTB6yEoT3fNwAb3+
-         04VhMIJRGufNIIL1tRoYtJegfzUBCpUs1gm45gx+GYqHNCx/hjat+OgRzGJMXzFd838S
-         ivs4uGCFAdXaP6tg33Xl79Jt7U1gnRXhmjNO0W+U83IKq317y59nyZ4CEdJzmLfEgtqO
-         B5gocZofD6pRdx0LmjYv3LU6m4QOT8A4zARxXscxmU96lkzuobveKcuJmAup3+rWPqe3
-         4QfQ==
-X-Gm-Message-State: AOAM530jMGKISL6YUGgHDHb+/oYhOJPlXgHU2+bE+mMHUS/tFswugajv
-        DYf9vMkzjbkzLhfZEAK8uzst2ddP1PFMglvQQFA=
-X-Google-Smtp-Source: ABdhPJxnz3MuD/u2ERkx1cby+oOP9q7f+ZhHGEAihawS+BUx9oVwc6dp4DM5M2Rxt9WY1YQzf9NQxwiMWMj0qyb5h9k=
-X-Received: by 2002:ac2:5049:: with SMTP id a9mr28797519lfm.666.1637278361230;
- Thu, 18 Nov 2021 15:32:41 -0800 (PST)
+        id S233252AbhKRXiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 18:38:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42264 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231231AbhKRXiX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 18:38:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EB5F61A86;
+        Thu, 18 Nov 2021 23:35:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637278522;
+        bh=Fqau0dqCEINzmMkwJjTEgzqPnrOEmI3UQprV38RXFd0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ucRdJNh0JXxmrs6RFed71fSHkitIRuiPVywHVpbADH9wJn5rFo9NaESSCr88xfb52
+         R4OA09akXeyN2c5XGNgJ0m86J2qusiU41LSRAXgfZ9WcKuZFRBPlHd2oTpOvkWQ4pz
+         GB6L3s0HEccYXM7G19W6AB7ZLX4vEzQuL8OYsGn8IH91yugl6Q3gHbPzKpvgR2073k
+         /iEmv6ho1jXDxK80FgY0TjYc6MhDJel4Cl5+QEO6Yy42WWF739pWPpy9z9s1pALXEu
+         OnxRsIhI8F61Zc0t82NwNoH/caNkc9XIY2GHGe3j8EaEZ5gvgI5Xl+oeyMJ6oBjIJF
+         s7A9s6vYvySmw==
+Received: by mail-ed1-f50.google.com with SMTP id l25so17941603eda.11;
+        Thu, 18 Nov 2021 15:35:22 -0800 (PST)
+X-Gm-Message-State: AOAM531FW8EZLl1T0ejNaPSEfW0YyDE50Rgh+mHXph+Yu0qxMTaJvpkR
+        7ICzqQrHvYzEd7E7IPbgYc4+OtNER6wGf0jE/g==
+X-Google-Smtp-Source: ABdhPJwcyGfkHDNwA//qQiBHvHR4tBMsbq6RlSr5Nv+iHL3iTM86rng209dGFSMwRijpZAJ/aoi0m/llJIz5W6hdbFk=
+X-Received: by 2002:aa7:cd5c:: with SMTP id v28mr17372154edw.6.1637278520762;
+ Thu, 18 Nov 2021 15:35:20 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a05:6512:4005:0:0:0:0 with HTTP; Thu, 18 Nov 2021 15:32:40
- -0800 (PST)
-Reply-To: msbelinaya892@gmail.com
-From:   msbelinaya <westernu288@gmail.com>
-Date:   Thu, 18 Nov 2021 23:32:40 +0000
-Message-ID: <CAD1j+E_6oMJz4xwy1Kx+6-=s9a6JjbmsznuFx5eFzKr=Sw5Fmw@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
+References: <1635427419-22478-1-git-send-email-akhilrajeev@nvidia.com>
+ <1635427419-22478-2-git-send-email-akhilrajeev@nvidia.com>
+ <YYE7D2W721a1L4Mb@robh.at.kernel.org> <BN9PR12MB5273887DC5A3153A434432ADC08C9@BN9PR12MB5273.namprd12.prod.outlook.com>
+In-Reply-To: <BN9PR12MB5273887DC5A3153A434432ADC08C9@BN9PR12MB5273.namprd12.prod.outlook.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 18 Nov 2021 17:35:09 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKqG79kZCT97pRnDHxztoq6rfJ9LDjn_iiuyvQksNnR4A@mail.gmail.com>
+Message-ID: <CAL_JsqKqG79kZCT97pRnDHxztoq6rfJ9LDjn_iiuyvQksNnR4A@mail.gmail.com>
+Subject: Re: [PATCH v11 1/4] dt-bindings: dmaengine: Add doc for tegra gpcdma
+To:     Akhil R <akhilrajeev@nvidia.com>
+Cc:     "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krishna Yarlagadda <kyarlagadda@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        Rajesh Gumasta <rgumasta@nvidia.com>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "vkoul@kernel.org" <vkoul@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ich biete meine Freundschaft an und glaube, dass Sie mich mit gutem
-Herzen akzeptieren werden. Ich wurde gedr=C3=A4ngt, Sie zu kontaktieren und
-zu sehen, wie wir einander am besten unterst=C3=BCtzen k=C3=B6nnen. Ich bin=
- Frau
-Kodjovi Hegbor aus der T=C3=BCrkei und arbeite als Divisionsleiterin f=C3=
-=BCr
-Operationen bei der StandardBNP bank limited Turkey . Ich glaube, es
-ist der Wille Gottes, dass ich Ihnen jetzt begegnen werde. Ich habe
-ein wichtiges gesch=C3=A4ftliches Gespr=C3=A4ch, das ich mit Ihnen teilen
-m=C3=B6chte, von dem ich glaube, dass es Sie interessiert, da es mit Ihrem
-Nachnamen in Verbindung steht und Sie davon profitieren werden.
+On Wed, Nov 3, 2021 at 5:34 AM Akhil R <akhilrajeev@nvidia.com> wrote:
+>
+> > On Thu, Oct 28, 2021 at 06:53:36PM +0530, Akhil R wrote:
+> > > Add DT binding document for Nvidia Tegra GPCDMA controller.
+> > >
+> > > Signed-off-by: Rajesh Gumasta <rgumasta@nvidia.com>
+> > > Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
+> > > Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+> > > ---
+> > >  .../bindings/dma/nvidia,tegra186-gpc-dma.yaml      | 115
+> > +++++++++++++++++++++
+> > >  1 file changed, 115 insertions(+)
+> > >  create mode 100644
+> > > Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
+> > >
+> > > diff --git
+> > > a/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
+> > > b/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
+> > > new file mode 100644
+> > > index 0000000..bc97efc
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.ya
+> > > +++ ml
+> > > @@ -0,0 +1,115 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) %YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/dma/nvidia,tegra186-gpc-dma.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: NVIDIA Tegra GPC DMA Controller Device Tree Bindings
+> > > +
+> > > +description: |
+> > > +  The Tegra General Purpose Central (GPC) DMA controller is used for
+> > > +faster
+> > > +  data transfers between memory to memory, memory to device and
+> > > +device to
+> > > +  memory.
+> > > +
+> > > +maintainers:
+> > > +  - Jon Hunter <jonathanh@nvidia.com>
+> > > +  - Rajesh Gumasta <rgumasta@nvidia.com>
+> > > +
+> > > +allOf:
+> > > +  - $ref: "dma-controller.yaml#"
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    oneOf:
+> > > +      - enum:
+> > > +          - nvidia,tegra186-gpcdma
+> > > +          - nvidia,tegra194-gpcdma
+> > > +      - items:
+> > > +          - const: nvidia,tegra186-gpcdma
+> > > +          - const: nvidia,tegra194-gpcdma
+> >
+> > One of these is wrong. Either 186 has a fallback to 194 or it doesn't.
+> Not sure if I understood this correctly. Tegra186 and 194 have different chip data
+> inside driver based on the compatible. I guess, it then needs to be one of these.
+> Or is the mistake something related to formatting?
 
- Im Jahr 2006 hat ein B=C3=BCrger Ihres Landes ein Nicht-Residentenkonto
-f=C3=BCr 36 Monate des Kalenders im Wert von =C2=A38.400.000,00 bei meiner =
-Bank
-eingerichtet. Das Ablaufdatum f=C3=BCr diesen Depotvertrag war der 16.
-Januar 2009. Leider starb er w=C3=A4hrend einer Gesch=C3=A4ftsreise bei ein=
-em
-t=C3=B6dlichen Erdbeben am 12. Mai 2008 in Sichuan, China, bei dem
-mindestens 68.000 Menschen ums Leben kamen.
+It's not about what the driver uses, but what is valid in a DT file.
+Either you say the 2 implementations are different and in no way
+compatible with each other:
 
-Das Management meiner Bank hat noch nichts von seinem Tod erfahren,
-ich wusste davon, weil er mein Freund war und ich sein Kontof=C3=BChrer
-war, als das Konto vor meiner Bef=C3=B6rderung er=C3=B6ffnet wurde. Jedoch =
-Herr
- erw=C3=A4hnte bei der Kontoer=C3=B6ffnung keine n=C3=A4chsten Verwandten/E=
-rben, und
-er war nicht verheiratet und hatte keine Kinder. Letzte Woche hat
-meine Bankdirektion mich gebeten, Anweisungen zu geben, was mit seinen
-Geldern zu tun ist, wenn der Vertrag verl=C3=A4ngert werden soll.
+enum:
+  - nvidia,tegra186-gpcdma
+  - nvidia,tegra194-gpcdma
 
-Ich wei=C3=9F, dass dies passieren wird, und deshalb habe ich nach einem
-Mittel gesucht, um mit der Situation umzugehen, denn wenn meine
-Bankdirektoren wissen, dass sie tot sind und keinen Erben haben,
-werden sie das Geld f=C3=BCr ihren pers=C3=B6nlichen Gebrauch nehmen, also =
-Ich
-m=C3=B6chte nicht, dass so etwas passiert. Als ich Ihren Nachnamen sah, war
-ich gl=C3=BCcklich und suche jetzt Ihre Mitarbeit, um Sie als Next of
-Kin/Erbe des Kontos zu pr=C3=A4sentieren, da Sie den gleichen Nachnamen wie
-er haben und meine Bankzentrale das Konto freigeben wird f=C3=BCr dich. Es
-besteht kein Risiko; die Transaktion wird im Rahmen einer legitimen
-Vereinbarung ausgef=C3=BChrt, die Sie vor Rechtsverletzungen sch=C3=BCtzt.
+Or you say 186 is backwards compatible with 194 (meaning 186 is a
+superset of 194 so a driver written for 194 still works on 186 (though
+not any new features)).
 
-Es ist besser, dass wir das Geld beanspruchen, als es den
-Bankdirektoren zu erlauben, es zu nehmen, sie sind bereits reich. Ich
-bin kein gieriger Mensch, daher schlage ich vor, dass wir das Geld zu
-gleichen Teilen teilen, 50/50% auf beide Parteien. Mein Anteil wird
-mir helfen, mein eigenes Unternehmen zu gr=C3=BCnden und den Erl=C3=B6s f=
-=C3=BCr
-wohlt=C3=A4tige Zwecke zu verwenden, was mein Traum war.
+oneOf:
+  - const: nvidia,tegra194-gpcdma
+  - items:
+    - const: nvidia,tegra186-gpcdma
+    - const: nvidia,tegra194-gpcdma
 
-Teilen Sie mir Ihre Meinung zu meinem Vorschlag mit, bitte, ich
-brauche wirklich Ihre Hilfe bei dieser Transaktion. Ich habe Sie
-ausgew=C3=A4hlt, um mir zu helfen, nicht durch mein eigenes Tun, mein
-Lieber, sondern bei Gott wollte ich, dass Sie wissen, dass ich mir
-Zeit zum Beten genommen habe =C3=BCber diese Mitteilung, bevor ich Sie
-jemals kontaktiert habe, teilen Sie mir Ihre Meinung dazu mit und
-behandeln Sie diese Informationen bitte als STRENG GEHEIM. Nach Erhalt
-Ihrer Antwort, ausschlie=C3=9Flich =C3=BCber meine pers=C3=B6nliche E-Mail-=
-Adresse,
-msbelinaya892@gmail.com
-gibt Ihnen Details zur Transaktion. Und eine Kopie der
-Einlagenbescheinigung des Fonds sowie die Gr=C3=BCndungsurkunde der
-Gesellschaft, die den Fonds erstellt hat.
-Gott segne, in Erwartung Ihrer dringenden Antwort
-Mit freundlichen Gr=C3=BC=C3=9Fen
-Frau Kodjovi Hegbor
-msbelinaya892@gmail.coma
+Rob
