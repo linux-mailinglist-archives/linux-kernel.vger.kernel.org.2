@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF83A455616
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 08:51:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EBDE45561A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 08:53:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244085AbhKRHyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 02:54:09 -0500
-Received: from mail-vk1-f173.google.com ([209.85.221.173]:43645 "EHLO
-        mail-vk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244122AbhKRHxc (ORCPT
+        id S244073AbhKRH4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 02:56:17 -0500
+Received: from mail-vk1-f174.google.com ([209.85.221.174]:36544 "EHLO
+        mail-vk1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243953AbhKRH4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 02:53:32 -0500
-Received: by mail-vk1-f173.google.com with SMTP id f7so3257294vkf.10;
-        Wed, 17 Nov 2021 23:50:33 -0800 (PST)
+        Thu, 18 Nov 2021 02:56:10 -0500
+Received: by mail-vk1-f174.google.com with SMTP id b192so3291824vkf.3;
+        Wed, 17 Nov 2021 23:53:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5fvf9IHoTjOVlxPhBDqizDh4T7hHOnvCceGRp3XgLv0=;
-        b=neFbh92ag5xutXWkcBwCEVUKJr0T1lHo+wASbx/Ou1629oZ4oZu0ZV0uR9QW7HucST
-         zT0DleC2B4xzjLKXTF173Le69chTaaLPzeaXO3t//nS8l+cE7MUiyMJHoDvMkqdNmI8S
-         kNLYyZV30evu6CCv490OGBdqfwQE3o6/FcsjwkL7WkLjx2A3W3Hnv0EaYOMKZ6HgDs+t
-         p6sB4FVStLWKQTCjyz63oTWwODHQz3DOqZauW9qdim4JVzvLZPTzu+Aviy7U2rltzODY
-         9aDvzfadkKcaqAgNip/Jls5JMm0ypzVbzBWfayi0sMCZiJreIOehWt94Ckd0dLIIz3kY
-         3uAw==
-X-Gm-Message-State: AOAM530UVw34fISCF7N8QaRy3lMBvAms9jfFG7QGz6gaDVnA++oMngEx
-        G+fFahP/XL/TlefvLby1GiHhMZ9evn9g5w==
-X-Google-Smtp-Source: ABdhPJxJuLpIvOR4MbFNwSH60xeMJ9wDAykt6IhVe92btZ8D3Up3/zYSy30cxImJ9OlfEexes4SlsA==
-X-Received: by 2002:a05:6122:1796:: with SMTP id o22mr100975924vkf.23.1637221832634;
-        Wed, 17 Nov 2021 23:50:32 -0800 (PST)
-Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com. [209.85.222.41])
-        by smtp.gmail.com with ESMTPSA id v8sm1200574vkc.52.2021.11.17.23.50.31
+        bh=MsZfy0TOro1vfH8A3JIpHvIwPAiVrIi4MFkv4lGb5JM=;
+        b=7J9yCDVPQSKxjpM+dNO0GOHeslHWoKA6FF288IeMyRzu+L3vmQO+w2XRGzi81P0dmX
+         VQsMynI8/U4zD2axpQIW2sXkfCdvdf8Pearx++Bwl5Lg9G3Pz1fDYc+NgLgxe8ZKgrkV
+         2X9S8znRaaXJSowTjl9EMJfZdTdvdCHrIwBPUQ2lmeuN2OTsB5UPbY1t0mjd7QCfOscG
+         XrSVMj0bN5L+hQDOpDxuD0mYG6jnYDL5WJhap6ZOOHnqwWowumo3llgClxzbYDyZ5TNG
+         IVAE3t1fuE5Qvt1zQ5UN6mz+ds0ELApnW42gdNh+9nVMihUZSOLrN9YWqblOTPWwJqU2
+         xGgA==
+X-Gm-Message-State: AOAM531YdmWb+ja6PXFK5AYGXfQ+mHJxVeiwAroqS35+fJ4bEm5jHIaz
+        c7n3LNp6Nne2uaIOp2yhNZO43coGBL6e6w==
+X-Google-Smtp-Source: ABdhPJxLvHJU8eG9FmdoeoG3GRR7Buc95kvZo/OhHVQayFmp4XNzIKM7kX/n/QC9yuUcgqqn7yNmFA==
+X-Received: by 2002:a1f:aa48:: with SMTP id t69mr98697664vke.2.1637221990048;
+        Wed, 17 Nov 2021 23:53:10 -0800 (PST)
+Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com. [209.85.221.176])
+        by smtp.gmail.com with ESMTPSA id 15sm1259860vkj.49.2021.11.17.23.53.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 23:50:32 -0800 (PST)
-Received: by mail-ua1-f41.google.com with SMTP id l24so11806061uak.2;
-        Wed, 17 Nov 2021 23:50:31 -0800 (PST)
-X-Received: by 2002:a9f:248b:: with SMTP id 11mr33653990uar.14.1637221831518;
- Wed, 17 Nov 2021 23:50:31 -0800 (PST)
+        Wed, 17 Nov 2021 23:53:09 -0800 (PST)
+Received: by mail-vk1-f176.google.com with SMTP id b125so3268755vkb.9;
+        Wed, 17 Nov 2021 23:53:09 -0800 (PST)
+X-Received: by 2002:a05:6122:7d4:: with SMTP id l20mr4449881vkr.26.1637221989243;
+ Wed, 17 Nov 2021 23:53:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20211117201459.1194876-1-nickrterrell@gmail.com> <20211117201459.1194876-2-nickrterrell@gmail.com>
-In-Reply-To: <20211117201459.1194876-2-nickrterrell@gmail.com>
+References: <20211117201459.1194876-1-nickrterrell@gmail.com> <20211117201459.1194876-3-nickrterrell@gmail.com>
+In-Reply-To: <20211117201459.1194876-3-nickrterrell@gmail.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 18 Nov 2021 08:50:20 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWts1kh8koe7y9CLqRX3DoF_Lnm9o7M=TULJhJDPGKnkw@mail.gmail.com>
-Message-ID: <CAMuHMdWts1kh8koe7y9CLqRX3DoF_Lnm9o7M=TULJhJDPGKnkw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] lib: zstd: Fix unused variable warning
+Date:   Thu, 18 Nov 2021 08:52:57 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdU0JaSKG95ozPWQUhBBBgbGUMOrxdsA=N-q-Cm9-RoF7A@mail.gmail.com>
+Message-ID: <CAMuHMdU0JaSKG95ozPWQUhBBBgbGUMOrxdsA=N-q-Cm9-RoF7A@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] lib: zstd: Don't inline functions in zstd_opt.c
 To:     Nick Terrell <nickrterrell@gmail.com>
 Cc:     Nick Terrell <terrelln@fb.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Parisc List <linux-parisc@vger.kernel.org>,
         Helge Deller <deller@gmx.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel test robot <lkp@intel.com>
+        Linus Torvalds <torvalds@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -61,47 +60,76 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Hi Nick,
 
 On Wed, Nov 17, 2021 at 9:08 PM Nick Terrell <nickrterrell@gmail.com> wrote:
-> The variable `litLengthSum` is only used by an `assert()`, so when
-> asserts are disabled the compiler doesn't see any usage and warns.
+> `zstd_opt.c` contains the match finder for the highest compression
+> levels. These levels are already very slow, and are unlikely to be used
+> in the kernel. If they are used, they shouldn't be used in latency
+> sensitive workloads, so slowing them down shouldn't be a big deal.
 >
-> This issue is already fixed upstream by PR #2838 [0]. It was reported
-> by the Kernel test robot in [1].
+> This saves 188 KB of the 288 KB regression reported by Geert Uytterhoeven [0].
+> I've also opened an issue upstream [1] so that we can properly tackle
+> the code size issue in `zstd_opt.c` for all users, and can hopefully
+> remove this hack in the next zstd version we import.
 >
-> Another approach would be to change zstd's disabled `assert()`
-> definition to use the argument in a disabled branch, instead of
-> ignoring the argument. I've avoided this approach because there are
-> some small changes necessary to get zstd to build, and I would
-> want to thoroughly re-test for performance, since that is slightly
-> changing the code in every function in zstd. It seems like a
-> trivial change, but some functions are pretty sensitive to small
-> changes. However, I think it is a valid approach that I would
-> like to see upstream take, so I've opened Issue #2868 to attempt
-> this upstream.
+> Bloat-o-meter output on x86-64:
 >
-> [0] https://github.com/facebook/zstd/pull/2838
-> [1] https://lore.kernel.org/linux-mm/202111120312.833wII4i-lkp@intel.com/T/
-> [2] https://github.com/facebook/zstd/issues/2868
+> ```
+> > ../scripts/bloat-o-meter vmlinux.old vmlinux
+> add/remove: 6/5 grow/shrink: 1/9 up/down: 16673/-209939 (-193266)
+> Function                                     old     new   delta
+> ZSTD_compressBlock_opt_generic.constprop       -    7559   +7559
+> ZSTD_insertBtAndGetAllMatches                  -    6304   +6304
+> ZSTD_insertBt1                                 -    1731   +1731
+> ZSTD_storeSeq                                  -     693    +693
+> ZSTD_BtGetAllMatches                           -     255    +255
+> ZSTD_updateRep                                 -     128    +128
+> ZSTD_updateTree                               96      99      +3
+> ZSTD_insertAndFindFirstIndexHash3             81       -     -81
+> ZSTD_setBasePrices.constprop                  98       -     -98
+> ZSTD_litLengthPrice.constprop                138       -    -138
+> ZSTD_count                                   362     181    -181
+> ZSTD_count_2segments                        1407     938    -469
+> ZSTD_insertBt1.constprop                    2689       -   -2689
+> ZSTD_compressBlock_btultra2                19990     423  -19567
+> ZSTD_compressBlock_btultra                 19633      15  -19618
+> ZSTD_initStats_ultra                       19825       -  -19825
+> ZSTD_compressBlock_btopt                   20374      12  -20362
+> ZSTD_compressBlock_btopt_extDict           29984      12  -29972
+> ZSTD_compressBlock_btultra_extDict         30718      15  -30703
+> ZSTD_compressBlock_btopt_dictMatchState    32689      12  -32677
+> ZSTD_compressBlock_btultra_dictMatchState   33574      15  -33559
+> Total: Before=6611828, After=6418562, chg -2.92%
+> ```
 >
-> Reported-by: kernel test robot <lkp@intel.com>
+> [0] https://lkml.org/lkml/2021/11/14/189
+> [1] https://github.com/facebook/zstd/issues/2862
+>
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
 > Signed-off-by: Nick Terrell <terrelln@fb.com>
 
 Thanks for your patch!
 
-> --- a/lib/zstd/compress/zstd_compress_superblock.c
-> +++ b/lib/zstd/compress/zstd_compress_superblock.c
-> @@ -411,6 +411,8 @@ static size_t ZSTD_seqDecompressedSize(seqStore_t const* seqStore, const seqDef*
->      const seqDef* sp = sstart;
->      size_t matchLengthSum = 0;
->      size_t litLengthSum = 0;
-> +    /* Only used by assert(), suppress unused variable warnings in production. */
-> +    (void)litLengthSum;
+Impact on lib/zstd/zstd_compress.ko for atari_defconfig:
 
-The Linux way-to do this is to add __maybe_unused.
-But perhaps you don't want to introduce that in the upstream codebase.
+    add/remove: 5/4 grow/shrink: 1/9 up/down: 15392/-167214 (-151822)
 
->      while (send-sp > 0) {
->          ZSTD_sequenceLength const seqLen = ZSTD_getSequenceLength(seqStore, sp);
->          litLengthSum += seqLen.litLength;
+Nice!
+
+Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+> --- a/lib/zstd/compress/zstd_opt.c
+> +++ b/lib/zstd/compress/zstd_opt.c
+> @@ -894,7 +906,7 @@ static void ZSTD_optLdm_processMatchCandidate(ZSTD_optLdm_t* optLdm, ZSTD_match_
+>               */
+>              U32 posOvershoot = currPosInBlock - optLdm->endPosInBlock;
+>              ZSTD_optLdm_skipRawSeqStoreBytes(&optLdm->seqStore, posOvershoot);
+> -        }
+> +        }
+>          ZSTD_opt_getNextMatchAndUpdateSeqStore(optLdm, currPosInBlock, remainingBytes);
+>      }
+>      ZSTD_optLdm_maybeAddMatch(matches, nbMatches, optLdm, currPosInBlock);
+
+This change is unrelated. With that removed:
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 Gr{oetje,eeting}s,
 
