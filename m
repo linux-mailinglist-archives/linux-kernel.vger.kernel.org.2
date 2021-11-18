@@ -2,119 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEFC8455C9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:23:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C72F3455CA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:23:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbhKRN0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 08:26:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58380 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229843AbhKRN0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 08:26:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4D5A61B51;
-        Thu, 18 Nov 2021 13:23:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637241783;
-        bh=V6XUF7UdDZ0rC974g9Pc5Lryb/qxKRnvtskjdWaPUt4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UAXcc6UWQQBeeOtPga8ebQTS8vFnTNt0mKBs8w7jDWwdRq7+tY9pKl8m3sgEewVVv
-         LpEGS+2/3/buOlh3dTASbdEfso/aC+TKM2HOECvJWTJsA9dejw2d/gdJ65rDRMW1mz
-         2BSx+9BXpbXz5ogud86d2bH3RRwbIXUDZtS8BC5jeasTo1pg1FRGc5t83QUi/P96Km
-         khChKt2qr0WSStoEYXzPrgDkE8SnDnLUHVtRaEHGO8ocBgIEnGE6yHxf8H+py4ppMi
-         KkwT7/xh7HhdT+8x7W6X+X6uFWgrG31cOAtg2XlmLlI9PB5CVNB2XGXi2+WiafmUrg
-         YtiPJU6SD3HNg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 10E0A4088E; Thu, 18 Nov 2021 10:23:02 -0300 (-03)
-Date:   Thu, 18 Nov 2021 10:23:02 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] Documentation: Add minimum pahole version
-Message-ID: <YZZTtvuwP6bK8/ut@kernel.org>
-References: <YZPQ6+u2wTHRfR+W@kernel.org>
- <CAEf4BzbOnpL-=2Xi1DOheUtzc-JG5FmHqdvs4B_+0OeaCTgY=w@mail.gmail.com>
- <df39b24d-7813-c6fb-a9eb-a5c199e002d0@iogearbox.net>
+        id S230501AbhKRN01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 08:26:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230209AbhKRN0W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 08:26:22 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18035C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 05:23:22 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id w29so11502417wra.12
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 05:23:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HruntyEK+pw1BpLtwCYk1VkoplidL3Q+Wm5DupTh6Hg=;
+        b=Nj0Go1LsEp5M39tKvD7EY8KR+1eV8/kMWdoQPennxO7hRsdPfbur3RRLjiZkXGGoht
+         503dMNwR+T3QV4AvUJv/uYmTcu5Xd2fJ2IXHppObUgeRgPa1AjxWXRIb9vo5M13YYpTv
+         gCdhfGQIEiekpZaMjxAu/xPyGada72sjNr5pN8ZVfRmhf5ytlVT9JLedNsFee/q2qlFO
+         bHNGBjQsMhw1X87H3Zaud1OJ5kJl9/zafrj5MbP6t/UklxaZevY+LJvMR9bv42yvL5vt
+         atY32+8cXcLuIrPIi/SC79u+aTUMulfK0yyvKSuQRnibHta1GxBm/8uFfywqR6osUnFh
+         cLig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HruntyEK+pw1BpLtwCYk1VkoplidL3Q+Wm5DupTh6Hg=;
+        b=7gaYAa0lIWAKwIVtbvni3AdnXSu7fHqJBTTwwIc+p3iDY+KoEv2g8qcbppyE+uZexR
+         BCfiukT1i2uH+toFRPGMk4dKucdBwd1NztksXTgq8SCthEBDyCQ0Xe7z2Z1gDXSXQRM8
+         bzr7vq5SQ0smPzouBBNP/7hkHZiqMimz0iAfxAKR7yTm16dMGiS3HwJWgPzx8DO9qO34
+         roxzw7Wd2VSiHIpoUjdXd+6n9A7KyXzqdbOblrTnt3Ml3qnuLF//t34ZE6x9CY6RhWhP
+         c86B/6hfE3NkoUqS0asoKLQz0narGre3MyELrv9k7cpzEjZAoDKLFPDPicDHvFVhstyA
+         /qYw==
+X-Gm-Message-State: AOAM530kTCSgaPOhWAjMDEAymM+P+KU3OYzBkkmyM4rlJihajY9coWni
+        3qaQ+OQ51b/6yqSpHF/60RQHjQ==
+X-Google-Smtp-Source: ABdhPJyZ2pdFa9VXqicqdlSMFsf3Ej6ZOrK98L5UdGKCsVWnK2QRu/TR3RVw2ITykSqoqwRQzBjX0w==
+X-Received: by 2002:a5d:4ecd:: with SMTP id s13mr31932335wrv.400.1637241800652;
+        Thu, 18 Nov 2021 05:23:20 -0800 (PST)
+Received: from debian-brgl.home ([2a01:cb1d:334:ac00:7d50:ff5:f5c1:e225])
+        by smtp.gmail.com with ESMTPSA id x1sm3094267wru.40.2021.11.18.05.23.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 05:23:20 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [PATCH v2 1/2] gpiolib: improve coding style for local variables
+Date:   Thu, 18 Nov 2021 14:23:16 +0100
+Message-Id: <20211118132317.15898-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <df39b24d-7813-c6fb-a9eb-a5c199e002d0@iogearbox.net>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Nov 17, 2021 at 11:33:24PM +0100, Daniel Borkmann escreveu:
-> On 11/16/21 7:21 PM, Andrii Nakryiko wrote:
-> > On Tue, Nov 16, 2021 at 7:40 AM Arnaldo Carvalho de Melo
-> > <acme@kernel.org> wrote:
-> > > 
-> > > A report was made in https://github.com/acmel/dwarves/issues/26 about
-> > > pahole not being listed in the process/changes.rst file as being needed
-> > > for building the kernel, address that.
-> > > 
-> > > Link: https://github.com/acmel/dwarves/issues/26
-> > > Cc: Alexei Starovoitov <ast@kernel.org>
-> > > Cc: Andrii Nakryiko <andrii@kernel.org>
-> > > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > > Cc: Jiri Olsa <jolsa@redhat.com>
-> > > Cc: Jonathan Corbet <corbet@lwn.net>
-> > > Cc: bpf@vger.kernel.org
-> > > Cc: netdev@vger.kernel.org
-> > > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > > ---
-> > >   Documentation/process/changes.rst | 9 +++++++++
-> > >   1 file changed, 9 insertions(+)
-> > > 
-> > > diff --git a/Documentation/process/changes.rst b/Documentation/process/changes.rst
-> > > index e35ab74a0f804b04..c45f167a1b6c02a4 100644
-> > > --- a/Documentation/process/changes.rst
-> > > +++ b/Documentation/process/changes.rst
-> > > @@ -35,6 +35,7 @@ GNU make               3.81             make --version
-> > >   binutils               2.23             ld -v
-> > >   flex                   2.5.35           flex --version
-> > >   bison                  2.0              bison --version
-> > > +pahole                 1.16             pahole --version
-> > >   util-linux             2.10o            fdformat --version
-> > >   kmod                   13               depmod -V
-> > >   e2fsprogs              1.41.4           e2fsck -V
-> > > @@ -108,6 +109,14 @@ Bison
-> > >   Since Linux 4.16, the build system generates parsers
-> > >   during build.  This requires bison 2.0 or later.
-> > > 
-> > > +pahole:
-> > > +-------
-> > > +
-> > > +Since Linux 5.2 the build system generates BTF (BPF Type Format) from DWARF in
-> > > +vmlinux, a bit later from kernel modules as well, if CONFIG_DEBUG_INFO_BTF is
-> > 
-> > I'd probably emphasize a bit more that pahole is required only if
-> > CONFIG_DEBUG_INFO_BTF is selected by moving "If CONFIG_DEBUG_INFO_BTF
-> > is selected, " to the front. But either way looks good.
-> 
-> +1, I presume Jonathan will later pick up the v2?
+Drop unneeded whitespaces and put the variables of the same type
+together for consistency with the rest of the code.
 
-I'll resubmit later.
+Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ drivers/gpio/gpiolib.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-- Arnaldo
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index abfbf546d159..20d63028b85c 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -594,11 +594,10 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+ 			       struct lock_class_key *request_key)
+ {
+ 	struct fwnode_handle *fwnode = gc->parent ? dev_fwnode(gc->parent) : NULL;
+-	unsigned long	flags;
+-	int		ret = 0;
+-	unsigned	i;
+-	int		base = gc->base;
++	int ret = 0, base = gc->base;
+ 	struct gpio_device *gdev;
++	unsigned long flags;
++	unsigned int i;
  
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > 
-> > > +selected.  This requires pahole v1.16 or later. It is found in the 'dwarves' or
-> > > +'pahole' distro packages or from https://fedorapeople.org/~acme/dwarves/.
-> > > +
-> > >   Perl
-> > >   ----
-> > > 
-> > > --
-> > > 2.31.1
-> > > 
-
+ 	/*
+ 	 * First: allocate and populate the internal stat container, and
 -- 
+2.25.1
 
-- Arnaldo
