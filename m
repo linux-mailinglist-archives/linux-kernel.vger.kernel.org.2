@@ -2,90 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C604551C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 01:36:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 387D54551CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 01:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241991AbhKRAi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 19:38:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34305 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232441AbhKRAi4 (ORCPT
+        id S242004AbhKRAkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 19:40:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232441AbhKRAkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 19:38:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637195756;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H2M4Gb3cmHoSrafJN3mnHsisz7WttR12tk9W7yfyJiE=;
-        b=LWJOSC1LAl/KXI4JN692UdRar7ah9EIzSByhdNEt32aP5o+GModqicMEv6ynRSj5vyr4vU
-        r7WBRmGualiGIbAi4j+d/F2Vynvi4iKSgArAmkTA2mu2VDrUSzu5pVAJJGNt7ZWLLhwGAd
-        vITZo90Z4Ty2f2sUtWJGGhcrBu+ZEZU=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-574-8ai4baslOAaJmdamQfWCOw-1; Wed, 17 Nov 2021 19:35:55 -0500
-X-MC-Unique: 8ai4baslOAaJmdamQfWCOw-1
-Received: by mail-pf1-f200.google.com with SMTP id x25-20020aa79199000000b0044caf0d1ba8so2582416pfa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 16:35:55 -0800 (PST)
+        Wed, 17 Nov 2021 19:40:33 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FA3FC061766
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 16:37:34 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id g14so19001313edz.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 16:37:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kylehuey.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CHmkZszPR6EELtxyc0tZ5ImEP6GCMXNuKUoNO1WLl4A=;
+        b=G+Az4leoYHWjXC176OT/xR8EoiNodE3UlIl9ddIYba1/nV7CORra7HBL4DptBg3QUq
+         NQlFUVejndDpvLty7d7Y4RcDcpHvTbW1v7DnxyzRovMW+0YIbEspfZSRLWm2omOMY9qc
+         HAF2aebOm9RxOWip8Q0KjhFqmJLXYB5d8//Asua/4C7ZC5vLsCLyryEoleJlsMlZ7dRz
+         ylVcglAE2EsGVjRPzcSKPmtJOh9HcKD6S4gdoW18AFzzikJhLefle9XYW7rHu7NQuLER
+         ZVGAW8frokLTzFAA6CclBHmM9iz9n0+9unpWLnA0WBwsH0w9XP8gaZKsQoR6NI5w6ecr
+         TjJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=H2M4Gb3cmHoSrafJN3mnHsisz7WttR12tk9W7yfyJiE=;
-        b=rSgf7RiRPD8RIPQW5+d/BxN5YzeTwMKZJETA/rZ+EhibF3yGPM+w9SlcC5kgWNGgA7
-         JV3VknXfu4glBhz3BdhcAyLMv/anOso/P5r/PKjjiIxCDSfztwCKElcKmp6cWDT++X+P
-         s6S0PRCKXYssmMuPa5/rCUfxX7Lo++RT3/T6OM+B4ZHri9E4QYG7O5VbIOSlBIA7BRFq
-         aU3hXC3eTMhCPp+CDlUnW4hXW1WqewQC8zMHLjrczyBzCtu0Ro5mH3FcSRtaXSx/6bu0
-         96MSf1KKLmjPrSsZPhlmLSP4805YbNQ27QdjghWxGJaPhz2H+4gMm+Ne8oVRM7oUTx19
-         Mn6w==
-X-Gm-Message-State: AOAM532otJz1bKpg3ZX/OXnzNjHB46DGj2TTdQ4j9DjGrMt0kGwgMbnx
-        GTNR+zV46UE1ze43Uneno6Vrr3kVGervmn1mdro3bFP4jF9TAXmoiIhDfSGQrzbbiLYLDcRD2rt
-        rI1Ha1JnNnVzAzRr9iaq4Wd/2
-X-Received: by 2002:a17:90b:4c4f:: with SMTP id np15mr5059076pjb.65.1637195754465;
-        Wed, 17 Nov 2021 16:35:54 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzcRORMJpC3aKxfkFfHsfxftNO67uoZZZxJhoO5F4dyLPPoH8H48jpWfr6Egtb1+uLIeGVrBw==
-X-Received: by 2002:a17:90b:4c4f:: with SMTP id np15mr5059031pjb.65.1637195754166;
-        Wed, 17 Nov 2021 16:35:54 -0800 (PST)
-Received: from xz-m1.local ([191.101.132.73])
-        by smtp.gmail.com with ESMTPSA id pi17sm7089247pjb.34.2021.11.17.16.35.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 16:35:53 -0800 (PST)
-Date:   Thu, 18 Nov 2021 08:35:46 +0800
-From:   Peter Xu <peterx@redhat.com>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Paul E . McKenney" <paulmckrcu@fb.com>,
-        Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <florian.schmidt@nutanix.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v4] mm: Add PM_HUGE_THP_MAPPING to /proc/pid/pagemap
-Message-ID: <YZWf4utHNPhUic7u@xz-m1.local>
-References: <20211107235754.1395488-1-almasrymina@google.com>
- <YYtuqsnOSxA44AUX@t490s>
- <CAHS8izP9zJYfqmDouA1otnD-CsQtWJSta0KhOQq81qLSTOHB4Q@mail.gmail.com>
- <YY4bFPkfUhlpUqvo@xz-m1.local>
- <CAHS8izP7_BBH9NGz3XoL2=xVniH6REor=biqDSZ4wR=NaFS-8A@mail.gmail.com>
- <YZMQbiV9JQWd0EM+@xz-m1.local>
- <CAHS8izPwQidVLAEApJ4vnERwwK6iJ8phfedA0d4_NPwumzRFcw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CHmkZszPR6EELtxyc0tZ5ImEP6GCMXNuKUoNO1WLl4A=;
+        b=7f1K0K3apoRlfD1zBJHMTqhzz6w1x/2OyLzuGeQw28BX5jaskG9LVCj7aGnaXhH82Z
+         17NcP0+U0xsPiurNj/jutJrS41OI5J5HWorZYTC1+R1IaGStS1e6s6O/ygTT2rjlI9iI
+         7K81wqN9eVc0KUTvQK1OVpWaCOQVsXWgqZ1/JtV9bJF0ZYaBIl64vp1Rg0I3NwadF2MZ
+         UOYGh6OVVgdb6aMSuhwqHAnaNuQGu5F/4gdEkCRe8eq2ewldsIyJ9BTGBOktP/TIDSea
+         l+hrOM9XlyIlYG97utVbh/nZPU9KARuV1OcJ9THkbW+Xkb04cegmNR8Hgh/mUtD1BbHx
+         8bJg==
+X-Gm-Message-State: AOAM531I3zbUEGtp6p+caBMrJu0SH5wUypqW6rphRvoN5ZBabhqUN+/K
+        cLbAOPKay1dCRGGxuDwJAzf6rIw9ESrdwZp0GB8tPA==
+X-Google-Smtp-Source: ABdhPJxYJytp1pKphdFW2jBHyU5wMlXwFvI1+mIFO9dA4MYHB84eYMqVfc/KNHGNV9du6PqVFrN9mH2uwzEDhLGEmA8=
+X-Received: by 2002:a17:906:8699:: with SMTP id g25mr27232161ejx.271.1637195852821;
+ Wed, 17 Nov 2021 16:37:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHS8izPwQidVLAEApJ4vnERwwK6iJ8phfedA0d4_NPwumzRFcw@mail.gmail.com>
+References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
+ <202111171049.3F9C5F1@keescook> <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
+ <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
+ <87k0h6334w.fsf@email.froward.int.ebiederm.org> <202111171341.41053845C3@keescook>
+ <CAHk-=wgkOGmkTu18hJQaJ4mk8hGZc16=gzGMgGGOd=uwpXsdyw@mail.gmail.com>
+In-Reply-To: <CAHk-=wgkOGmkTu18hJQaJ4mk8hGZc16=gzGMgGGOd=uwpXsdyw@mail.gmail.com>
+From:   Kyle Huey <me@kylehuey.com>
+Date:   Wed, 17 Nov 2021 16:37:21 -0800
+Message-ID: <CAP045ApYXxhiAfmn=fQM7_hD58T-yx724ctWFHO4UAWCD+QapQ@mail.gmail.com>
+Subject: Re: [REGRESSION] 5.16rc1: SA_IMMUTABLE breaks debuggers
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        "Robert O'Callahan" <rocallahan@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 11:50:23AM -0800, Mina Almasry wrote:
-> Awesome, thanks! PM_THP_MAPPED sounds good to me and I just sent v6
-> with these changes.
+On Wed, Nov 17, 2021 at 3:24 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Wed, Nov 17, 2021 at 1:54 PM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > The SA_IMMUTABLE change was to deal with failures seen in the seccomp
+> > test suite after the recent fatal signal refactoring. Mainly that a
+> > process that should have effectively performed do_exit() was suddenly
+> > visible to the tracer.
+>
+> I think this basically shows that the conversion from do_exit() to
+> fatal_signal() was just wrong. The "do_exit()" wasn't really a signal,
+> and can't be treated as such.
+>
+> That said, instead of reverting, maybe we can just mark the cases
+> where it really is about sending a synchronous signal, vs sending an
+> explicitly fatal signal.
+>
+> It's basically the "true" condition to force_sig_info_to_task(), so
+> the fix might be just
+>
+>   @@ -1323,7 +1323,8 @@ force_sig_info_to_task(struct kernel_siginfo
+> *info, struct task_struct *t, bool
+>         blocked = sigismember(&t->blocked, sig);
+>         if (blocked || ignored || sigdfl) {
+>                 action->sa.sa_handler = SIG_DFL;
+>   -             action->sa.sa_flags |= SA_IMMUTABLE;
+>   +             if (sigdfl)
+>   +                     action->sa.sa_flags |= SA_IMMUTABLE;
+>                 if (blocked) {
+>                         sigdelset(&t->blocked, sig);
+>                         recalc_sigpending_and_wake(t);
+>
+> Kyle, does that fix your test-case? And Kees - yours?
 
-Sorry I just noticed one paragraph of the new commit message that may need some
-amending. I commented in the new version, please have a look.  Thanks,
+This fixes most of the issues with rr, but it still changes the ptrace
+behavior for the double-SIGSEGV case (yes, we have a test for that
+too). The second SIGSEGV isn't reported to the ptracer and the program
+just skips straight to the PTRACE_EVENT_EXIT. This is visible in gdb
+as well (only the first SIGSEGV is caught).
 
--- 
-Peter Xu
-
+- Kyle
