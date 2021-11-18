@@ -2,124 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1734551E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 02:00:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F09C7455200
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 02:09:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242064AbhKRBCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 20:02:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234120AbhKRBCw (ORCPT
+        id S242118AbhKRBMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 20:12:40 -0500
+Received: from prt-mail.chinatelecom.cn ([42.123.76.227]:39136 "EHLO
+        chinatelecom.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235976AbhKRBMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 20:02:52 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC0FC061570;
-        Wed, 17 Nov 2021 16:59:53 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id fv9-20020a17090b0e8900b001a6a5ab1392so4125527pjb.1;
-        Wed, 17 Nov 2021 16:59:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=G4BTv//+2MDg63que21d0SOH04kYLO0+v6GBYWMab9k=;
-        b=gwNtRhwFgUmqSdP/igrE0GsKWzxnQtjoGMphrPIHgteDlFwghXonsmctZ5p4Ni4vXK
-         obNJyliP69uarrXKPfqCVc+RodWPMi98iJFjJyCA/6OauQHX3O/xbMy5uby2H8LgDjIU
-         rnATDpCE2JxB4HyTuo2VJuVGR9bD54hWPfwildnCSC9m4oMG9YiCDK5gAocvuL/oTZCS
-         Sp16hVZhe/fNLX+h2Qyzrx7/UlUHOKDS+r2n2PyQAN8iLnbXDTGm8Tjh5w12D3BoJnmn
-         XDAxrLlgDKlSY1BGnecNaD/KaKErF3+19RVU/bRcZ4WViMDG5uhowg6VP7wSXNBBcR5A
-         w7lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=G4BTv//+2MDg63que21d0SOH04kYLO0+v6GBYWMab9k=;
-        b=o6AoyCTjWQ4eWhxNrJsAfvyxBm5YV9enzXJ//v+fkwvx6bzS7sPGsFs/S5OFk9RqoU
-         J0bjnxtehPUtXHR/pk4jSHe4haAv544+yT3PkLkbAWT5zwCGlW+mnsZ9n9Kh81+fH9XE
-         41qHuxAb0DTewFmOmgwvNUFbIvYlIaMtFcHgN+JVHNHIiP2TTwQ/I0nRi6Ej0qm5RslD
-         CG3vOSIRNvKI141ZqJwcDWZqomneH/FJ6oxsSLVwDsOsc9EBHfRT1tg/4kxJVOPHJBCz
-         3EqwuX7SP8RRn04f0DAjL6orIA8rm6/VfDrLjJQWy4xGF7gVN6uxryscJi5yFW9czidC
-         PfYA==
-X-Gm-Message-State: AOAM533WaJvZF6ATbvQp23PVOMTn8Iu3SltZFLdJAHeqb8oMl5BZri6x
-        DaqFXKhvucHkcQytdQvhO8k=
-X-Google-Smtp-Source: ABdhPJw44Tow0AbatX/zGAE8pX5WnUDYNMbQ6+SqaKQQlklvGPlNmQeQt/l7MQKZuoIHYpXdvrFskA==
-X-Received: by 2002:a17:90b:4c88:: with SMTP id my8mr5101646pjb.132.1637197193117;
-        Wed, 17 Nov 2021 16:59:53 -0800 (PST)
-Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
-        by smtp.gmail.com with ESMTPSA id mg17sm744731pjb.17.2021.11.17.16.59.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 16:59:52 -0800 (PST)
-From:   Rob Clark <robdclark@gmail.com>
-To:     alsa-devel@alsa-project.org
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        Derek Fang <derek.fang@realtek.com>,
-        linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] ASoC: rt5682s: Fix crash due to out of scope stack vars
-Date:   Wed, 17 Nov 2021 17:04:53 -0800
-Message-Id: <20211118010453.843286-2-robdclark@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211118010453.843286-1-robdclark@gmail.com>
-References: <20211118010453.843286-1-robdclark@gmail.com>
+        Wed, 17 Nov 2021 20:12:39 -0500
+HMM_SOURCE_IP: 172.18.0.48:51592.85767161
+HMM_ATTACHE_NUM: 0000
+HMM_SOURCE_TYPE: SMTP
+Received: from clientip-110.86.5.93 (unknown [172.18.0.48])
+        by chinatelecom.cn (HERMES) with SMTP id DF2A628008F;
+        Thu, 18 Nov 2021 09:09:20 +0800 (CST)
+X-189-SAVE-TO-SEND: zhenggy@chinatelecom.cn
+Received: from  ([172.18.0.48])
+        by app0024 with ESMTP id 80432f6858924d939d5209d0796bb61f for linux-kernel@vger.kernel.org;
+        Thu, 18 Nov 2021 09:09:23 CST
+X-Transaction-ID: 80432f6858924d939d5209d0796bb61f
+X-Real-From: zhenggy@chinatelecom.cn
+X-Receive-IP: 172.18.0.48
+X-MEDUSA-Status: 0
+Sender: zhenggy@chinatelecom.cn
+Subject: Re: [PATCH] ipvs: remove unused variable for ip_vs_new_dest
+To:     Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>,
+        pablo@netfilter.org
+Cc:     lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        netdev@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1636112380-11040-1-git-send-email-zhenggy@chinatelecom.cn>
+ <25e945b7-9027-43cb-f79c-573fdce42a26@ssi.bg>
+ <20211114180206.GA2757@vergenet.net>
+From:   zhenggy <zhenggy@chinatelecom.cn>
+Message-ID: <97494860-f9d3-44e6-7515-0031ea64f86c@chinatelecom.cn>
+Date:   Thu, 18 Nov 2021 09:09:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
+In-Reply-To: <20211114180206.GA2757@vergenet.net>
+Content-Type: text/plain; charset=gbk
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+Thanks for review.
 
-Move the declaration of temporary arrays to somewhere that won't go out
-of scope before the devm_clk_hw_register() call, lest we be at the whim
-of the compiler for whether those stack variables get overwritten.
-
-Fixes a crash seen with gcc version 11.2.1 20210728 (Red Hat 11.2.1-1)
-
-Fixes: bdd229ab26be ("ASoC: rt5682s: Add driver for ALC5682I-VS codec")
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- sound/soc/codecs/rt5682s.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/codecs/rt5682s.c b/sound/soc/codecs/rt5682s.c
-index 470957fcad6b..d49a4f68566d 100644
---- a/sound/soc/codecs/rt5682s.c
-+++ b/sound/soc/codecs/rt5682s.c
-@@ -2693,6 +2693,8 @@ static int rt5682s_register_dai_clks(struct snd_soc_component *component)
- 
- 	for (i = 0; i < RT5682S_DAI_NUM_CLKS; ++i) {
- 		struct clk_init_data init = { };
-+		struct clk_parent_data parent_data;
-+		const struct clk_hw *parent;
- 
- 		dai_clk_hw = &rt5682s->dai_clks_hw[i];
- 
-@@ -2700,17 +2702,17 @@ static int rt5682s_register_dai_clks(struct snd_soc_component *component)
- 		case RT5682S_DAI_WCLK_IDX:
- 			/* Make MCLK the parent of WCLK */
- 			if (rt5682s->mclk) {
--				init.parent_data = &(struct clk_parent_data){
-+				parent_data = (struct clk_parent_data){
- 					.fw_name = "mclk",
- 				};
-+				init.parent_data = &parent_data;
- 				init.num_parents = 1;
- 			}
- 			break;
- 		case RT5682S_DAI_BCLK_IDX:
- 			/* Make WCLK the parent of BCLK */
--			init.parent_hws = &(const struct clk_hw *){
--				&rt5682s->dai_clks_hw[RT5682S_DAI_WCLK_IDX]
--			};
-+			parent = &rt5682s->dai_clks_hw[RT5682S_DAI_WCLK_IDX];
-+			init.parent_hws = &parent;
- 			init.num_parents = 1;
- 			break;
- 		default:
--- 
-2.33.1
-
+ÔÚ 2021/11/15 2:02, Simon Horman Ð´µÀ:
+> On Sat, Nov 13, 2021 at 11:56:36AM +0200, Julian Anastasov wrote:
+>>
+>> 	Hello,
+>>
+>> On Fri, 5 Nov 2021, GuoYong Zheng wrote:
+>>
+>>> The dest variable is not used after ip_vs_new_dest anymore in
+>>> ip_vs_add_dest, do not need pass it to ip_vs_new_dest, remove it.
+>>>
+>>> Signed-off-by: GuoYong Zheng <zhenggy@chinatelecom.cn>
+>>
+>> 	Looks good to me for -next, thanks!
+>>
+>> Acked-by: Julian Anastasov <ja@ssi.bg>
+> 
+> Thanks GuoYong,
+> 
+> Acked-by: Simon Horman <horms@verge.net.au>
+> 
+> Pablo, please consider this for nf-next at your convenience.
+> 
+>>
+>>> ---
+>>>  net/netfilter/ipvs/ip_vs_ctl.c | 7 ++-----
+>>>  1 file changed, 2 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+>>> index e62b40b..494399d 100644
+>>> --- a/net/netfilter/ipvs/ip_vs_ctl.c
+>>> +++ b/net/netfilter/ipvs/ip_vs_ctl.c
+>>> @@ -959,8 +959,7 @@ static void ip_vs_trash_cleanup(struct netns_ipvs *ipvs)
+>>>   *	Create a destination for the given service
+>>>   */
+>>>  static int
+>>> -ip_vs_new_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest,
+>>> -	       struct ip_vs_dest **dest_p)
+>>> +ip_vs_new_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest)
+>>>  {
+>>>  	struct ip_vs_dest *dest;
+>>>  	unsigned int atype, i;
+>>> @@ -1020,8 +1019,6 @@ static void ip_vs_trash_cleanup(struct netns_ipvs *ipvs)
+>>>  	spin_lock_init(&dest->stats.lock);
+>>>  	__ip_vs_update_dest(svc, dest, udest, 1);
+>>>  
+>>> -	*dest_p = dest;
+>>> -
+>>>  	LeaveFunction(2);
+>>>  	return 0;
+>>>  
+>>> @@ -1095,7 +1092,7 @@ static void ip_vs_trash_cleanup(struct netns_ipvs *ipvs)
+>>>  		/*
+>>>  		 * Allocate and initialize the dest structure
+>>>  		 */
+>>> -		ret = ip_vs_new_dest(svc, udest, &dest);
+>>> +		ret = ip_vs_new_dest(svc, udest);
+>>>  	}
+>>>  	LeaveFunction(2);
+>>>  
+>>> -- 
+>>> 1.8.3.1
+>>
+>> Regards
+>>
+>> --
+>> Julian Anastasov <ja@ssi.bg>
+>>
