@@ -2,136 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E6E455700
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5617455701
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:31:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244618AbhKRIeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 03:34:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44968 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244606AbhKRIeK (ORCPT
+        id S244632AbhKRIeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 03:34:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244610AbhKRIeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 03:34:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637224269;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lTL4eaK5mfz0wzJaY3ZitLZvSdyNfMyW+TIZzVoNB2w=;
-        b=exLxs4WDHZWq7pUB5zqOnfjUGNviNcDPuWMho0dsKxcJMGXhuVCtETxLFFKojis01/38x7
-        SNU3wt5ZvUFdgsPISInWo1QZq9Ohb5BEBLqqDW61rQ+pgEIoZSmUUOANebXatRs06gCcqX
-        X/dD0GLRz6TIpRJ9BTaFNH/THxm5QyM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-591-xLAL6LpiPKeleQ07hE0K2Q-1; Thu, 18 Nov 2021 03:31:06 -0500
-X-MC-Unique: xLAL6LpiPKeleQ07hE0K2Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F58815721;
-        Thu, 18 Nov 2021 08:31:04 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 93603104A9CB;
-        Thu, 18 Nov 2021 08:30:15 +0000 (UTC)
-Message-ID: <a1be97c6-6784-fd5f-74a8-85124f039530@redhat.com>
-Date:   Thu, 18 Nov 2021 09:30:14 +0100
+        Thu, 18 Nov 2021 03:34:11 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D9B8C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:31:11 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id y13so23302533edd.13
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:31:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=VeMUwfD9fqjO01UjxP7eilCSbZ8phxHK2UIfLtNxFHo=;
+        b=e32qX9GdTA8hdP6g8tyNvQarviZsUM4tS51oCl1ZzjzCZHLujmZAFH9SC7VsaG6Hcy
+         w/kyAIAiNNC7gdPlpOioqPQ82U/32/29ZrnEGkgWWHOvf1tb+LvNv8ef7rbtWzl7ju2P
+         gwIESEK9FdRYyjdGynAhRLda82VUzCcTPk5koykan9GsJgWt446hjT1uYnwNEAQydQFx
+         DHF0KE6Q7jeGpuSq0swnVx4MdY4KLFxUqq8FIHy8y+RHfSIELy4M67FCH/e2BIiBLD6M
+         9uCztAdDmna8AKkdddpvFttBcQ1bNCgybUBh0con8DKCtGd8dzdyvb+YrvM2GYHQyu7t
+         3VCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=VeMUwfD9fqjO01UjxP7eilCSbZ8phxHK2UIfLtNxFHo=;
+        b=Nr1yI9bAOoFfCmzllT5riZ4hJaFCo9fBK9TKFeoNRHlCO/CW9SlieKE2+znlWxOv0A
+         qX+2pig2bGFvtuhT1rswvVL5KPBHS40tDz9legeypfitkdh+a144JA8floLgDBzQmhRj
+         fluyAD2KJNBczUoWyBk90iLdWnq04WpXhy2XGuSJFkkijtPV1r20+AN6z/Vl7gqxyLcL
+         yu5RDFCjY8I5IviAjGj09A6q4fbjL9dkeowliPmUXUdnFmJrP8V4qtbz7iunin4vSrqw
+         2lfx2hFm/7gUu6tVGQsYYG6xwZkWHrjwQP2fJQuoqMSBjEc41Wsi8d6r1YwqGmzlq29w
+         forw==
+X-Gm-Message-State: AOAM533qMgGodZLp0t6deltiOZz58OPhpvVb0Twk3oGlX+aV05faomfR
+        swXo+fHim/OSZODohZ4Xq9E=
+X-Google-Smtp-Source: ABdhPJzMJG0mgBhXkaGLQDWUnV9sc2gaNAsDNAWDDugSp/svER3/x1qdvL/KFFk07Vzz4O2skm5/1w==
+X-Received: by 2002:aa7:c30e:: with SMTP id l14mr8538893edq.370.1637224269892;
+        Thu, 18 Nov 2021 00:31:09 -0800 (PST)
+Received: from localhost.localdomain (host-82-61-38-115.retail.telecomitalia.it. [82.61.38.115])
+        by smtp.gmail.com with ESMTPSA id jg32sm1055175ejc.43.2021.11.18.00.31.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 00:31:09 -0800 (PST)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Peter Hurley <peter@hurleysoftware.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        David Sterba <dsterba@suse.com>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        nick black <dankamongmen@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com,
+        Marco Elver <elver@google.com>
+Subject: Re: [PATCH] vt: Fix sleeping functions called from atomic context
+Date:   Thu, 18 Nov 2021 09:31:06 +0100
+Message-ID: <77983591.hkYTjcaLry@localhost.localdomain>
+In-Reply-To: <df266c83-88df-4d1a-5c7e-ea0214f3de3b@i-love.sakura.ne.jp>
+References: <20211116144937.19035-1-fmdefrancesco@gmail.com> <YZTDY/h8HcEkq7mO@kroah.com> <df266c83-88df-4d1a-5c7e-ea0214f3de3b@i-love.sakura.ne.jp>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 11/15] KVM: x86/MMU: Refactor vmx_get_mt_mask
-Content-Language: en-US
-To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        David Hildenbrand <david@redhat.com>
-References: <20211115234603.2908381-1-bgardon@google.com>
- <20211115234603.2908381-12-bgardon@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211115234603.2908381-12-bgardon@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 00:45, Ben Gardon wrote:
-> Remove the gotos from vmx_get_mt_mask to make it easier to separate out
-> the parts which do not depend on vcpu state.
+On Wednesday, November 17, 2021 11:51:13 AM CET Tetsuo Handa wrote:
+> On 2021/11/17 17:54, Greg Kroah-Hartman wrote:
+> > Great, you have a reproducer, so you should be able to duplicate this
+> > locally to figure out what is really happening here.
+>
+> Until commit ac751efa6a0d70f2 ("console: rename acquire/release_console_sem() to
+> console_lock/unlock()"), do_con_write() was surely designed to be able to sleep.
 > 
-> No functional change intended.
+> > $ git blame ac751efa6a0d7~1 drivers/tty/vt/vt.c
+>
+> [...]
 > 
+> Until that commit, n_hdlc_send_frames() was prepared for being interrupted by signal
+> while sleeping.
 > 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
+> $ git blame ac751efa6a0d7~1 drivers/tty/n_hdlc.c
+>
+> [...]
+>
+> But as of commit c545b66c6922b002 ("tty: Serialize tcflow() with other tty flow
+> control changes"), start_tty() was already holding spinlock.
 
-Queued, thanks (with a slightly edited commit message; the patch is a 
-simplification anyway).
+Hi Tetsuo,
 
-Paolo
+Actually, we don't care of start_tty(). It's not in the path that triggers sleeping in atomic bug.
+According to Syzbot report and to my ftrace analysis it's __start_tty() that is called by 
+n_tty_ioctl_helper(), and it is this function that acquires a spinlock and disables interrupts. 
 
-> ---
->   arch/x86/kvm/vmx/vmx.c | 23 +++++++----------------
->   1 file changed, 7 insertions(+), 16 deletions(-)
+I must admit that I've never used git-blame and I'm not sure to understand what you did here :(
+
+Have you had a chance to read my analysis?
+ 
+> $ git blame c545b66c6922b002~1 drivers/tty/tty_io.c
+>
+> [...]
 > 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 71f54d85f104..77f45c005f28 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -6987,7 +6987,6 @@ static int __init vmx_check_processor_compat(void)
->   static u64 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
->   {
->   	u8 cache;
-> -	u64 ipat = 0;
->   
->   	/* We wanted to honor guest CD/MTRR/PAT, but doing so could result in
->   	 * memory aliases with conflicting memory types and sometimes MCEs.
-> @@ -7007,30 +7006,22 @@ static u64 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
->   	 * EPT memory type is used to emulate guest CD/MTRR.
->   	 */
->   
-> -	if (is_mmio) {
-> -		cache = MTRR_TYPE_UNCACHABLE;
-> -		goto exit;
-> -	}
-> +	if (is_mmio)
-> +		return MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT;
->   
-> -	if (!kvm_arch_has_noncoherent_dma(vcpu->kvm)) {
-> -		ipat = VMX_EPT_IPAT_BIT;
-> -		cache = MTRR_TYPE_WRBACK;
-> -		goto exit;
-> -	}
-> +	if (!kvm_arch_has_noncoherent_dma(vcpu->kvm))
-> +		return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
->   
->   	if (kvm_read_cr0(vcpu) & X86_CR0_CD) {
-> -		ipat = VMX_EPT_IPAT_BIT;
->   		if (kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_CD_NW_CLEARED))
->   			cache = MTRR_TYPE_WRBACK;
->   		else
->   			cache = MTRR_TYPE_UNCACHABLE;
-> -		goto exit;
-> -	}
->   
-> -	cache = kvm_mtrr_get_guest_memory_type(vcpu, gfn);
-> +		return (cache << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
-> +	}
->   
-> -exit:
-> -	return (cache << VMX_EPT_MT_EPTE_SHIFT) | ipat;
-> +	return kvm_mtrr_get_guest_memory_type(vcpu, gfn) << VMX_EPT_MT_EPTE_SHIFT;
->   }
->   
->   static void vmcs_set_secondary_exec_control(struct vcpu_vmx *vmx, u32 new_ctl)
+> Actually, it is commit f9e053dcfc02b0ad ("tty: Serialize tty flow control changes
+> with flow_lock") that started calling tty->ops->start(tty) from atomic context.
 > 
+> $ git blame f9e053dcfc02b~1 drivers/tty/tty_io.c
+>
+> [...]
+> 
+> Therefore, I think that bisection will reach f9e053dcfc02b0ad, and I guess that
+> this bug was not noticed simply because little people tested n_hdlc driver.
+> 
+> Well, how to fix? Introduce a new flag for indicating "starting" state (like drivers/block/loop.c uses Lo_* state) ?
+
+I think this is not the correct fix, but I might very well be wrong...
+
+Can you please reply to my last email (the one with the ftrace analysis)?
+In the last lines I proposed two alternative solutions, what about them?
+
+Thanks,
+
+Fabio
+
+
+
 
