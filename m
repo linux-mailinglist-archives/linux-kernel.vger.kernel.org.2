@@ -2,83 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 224F945615B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:20:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2B4456166
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:25:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231562AbhKRRXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 12:23:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhKRRXv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 12:23:51 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D8FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:20:51 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id n15-20020a17090a160f00b001a75089daa3so8796005pja.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:20:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qF3dFEJZGRJtNF11kmh6blPwskIMMiy+AwHD5+7bKlY=;
-        b=IR4MLGy8gee2IwKR9A+0TRlVg9coLKnoSk6e1ekxW6zPymF5ptj59pN8VA6WVL9Hrm
-         MvM/zbqINU82Sp50PxHKbqqtS05ecyB2zxtl3+pve1CTO0Dii6m6gaX57SUWUh/OLkNf
-         phzV4K8zB6BvhtvAMbPMeUgaM91y2s8d9v39o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qF3dFEJZGRJtNF11kmh6blPwskIMMiy+AwHD5+7bKlY=;
-        b=p+DYCxoN/wG8FSPwGdBPQNfselgiCHhKTy4uRWxBAIu1si0+hINLKzI1o2fU9addC3
-         gtkZogvfaVbzLpCBPmEbbLs0uA7FMuAtDe/XhI3C1M8PYaLNLTesVUfxsXw/1Qu0n6xk
-         4XEC8sMxLxW1cAtS+dDCmOl1vONfPy/6ArqEMTlw7oq8g4kOr98TGJhssio/TVFowlIx
-         DOSPPoHB5v2Bs/U5R2Bt6bPBnIidX9ddy4I1oHE+YrB+feHN5n04wqIVl3o820IaI/0w
-         wMscIGMb4htxRKTSGQrJRJmEbuJr8LBypp7/q/VwYWz/zP5QFSpUq9+qtX2NJb4xUsNU
-         byMg==
-X-Gm-Message-State: AOAM53121bqehXFHHDHIjQEEB7o4ZWrOPSqsvb2p4/hZXtiklRnaaXjB
-        Ei4lQtPb51nT9f8Pri0WRACoZ+735sJNNg==
-X-Google-Smtp-Source: ABdhPJxivGHLlUtQYU5PudHC2KRPb2OIhZCQDTqM+bFLfuQ94CCe/xfqDrElVYfixd5QHCIasRDkhA==
-X-Received: by 2002:a17:902:860b:b0:143:87bf:648f with SMTP id f11-20020a170902860b00b0014387bf648fmr68876676plo.11.1637256050686;
-        Thu, 18 Nov 2021 09:20:50 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id o129sm218937pfg.44.2021.11.18.09.20.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 09:20:50 -0800 (PST)
-Date:   Thu, 18 Nov 2021 09:20:49 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Dinh Nguyen <dinguyen@kernel.org>,
-        "Ivan T . Ivanov" <iivanov@suse.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ARM: socfpga: Fix crash with CONFIG_FORTIRY_SOURCE
-Message-ID: <202111180920.FA0FC5F9@keescook>
-References: <20211118142508.19200-1-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211118142508.19200-1-tiwai@suse.de>
+        id S234050AbhKRR2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 12:28:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231127AbhKRR2y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 12:28:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF0FB61284;
+        Thu, 18 Nov 2021 17:25:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637256354;
+        bh=WwmOGkKKg0zLLgzvK9bLyotJTO+HbvDvts6r7EmggQM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WNmADNxh32pTrQvEeF4sVYYNa3FNEYUax8almx8UI3TIQmoXZb21qY0zuGZ+AQXcn
+         y+u0Clp7wQjru0BScXkvoiU8TpBNYvAjwET5snyQ8pHE0BOC5+haa8V6t4S2zJRF5a
+         cjHIc7UpVY3zGPnIRngmvChcIVhaiE6Z8s70hIjTiC88q5vcd7eQfOhlR9rgBKpJLE
+         KWFfcGUYNGER3t/u3QlkaPIF3IDOscf81ssLGsIelYZ+92fnQjmPyeI/pmX23IJyvS
+         FXdeFL3mVYTBUoaxW4CtXnbqQxi39HaNxGr9LMMIhsX5vrCn0qjarGEo2/dq8wPTTt
+         8DHROXG9bgLGw==
+From:   Mark Brown <broonie@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] SPI fixes for v5.16-rc1
+Date:   Thu, 18 Nov 2021 17:25:37 +0000
+Message-Id: <20211118172553.DF0FB61284@mail.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 03:25:08PM +0100, Takashi Iwai wrote:
-> When CONFIG_FORTIFY_SOURCE is set, memcpy() checks the potential
-> buffer overflow and panics.  The code in sofcpga bootstrapping
-> contains the memcpy() calls are mistakenly translated as the shorter
-> size, hence it triggers a panic as if it were overflowing.
-> 
-> This patch changes the secondary_trampoline and *_end definitions
-> to arrays for avoiding the false-positive crash above.
-> 
-> Suggested-by: Kees Cook <keescook@chromium.org>
-> Buglink: https://bugzilla.suse.com/show_bug.cgi?id=1192473
-> Link: https://lore.kernel.org/r/20211117193244.31162-1-tiwai@suse.de
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+The following changes since commit 28b5eaf9712bbed90c2b5a5608d70a16b7950856:
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+  spi: Convert NXP flexspi to json schema (2021-10-29 18:56:02 +0100)
 
-Thanks!
+are available in the Git repository at:
 
--- 
-Kees Cook
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.16-rc1
+
+for you to fetch changes up to 6c53b45c71b4920b5e62f0ea8079a1da382b9434:
+
+  spi: fix use-after-free of the add_lock mutex (2021-11-12 18:18:03 +0000)
+
+----------------------------------------------------------------
+spi: Fixes for v5.16
+
+A few small fixes for v5.16, one in the core for an issue with handling
+of controller unregistration that was introduced with the fixes for
+registering nested SPI controllers and a few more minor device specific
+ones.
+
+----------------------------------------------------------------
+Alexander Stein (1):
+      spi: lpspi: Silence error message upon deferred probe
+
+Dan Carpenter (1):
+      spi: spi-geni-qcom: fix error handling in spi_geni_grab_gpi_chan()
+
+Dinh Nguyen (1):
+      spi: cadence-quadspi: fix write completion support
+
+Michael Walle (1):
+      spi: fix use-after-free of the add_lock mutex
+
+ drivers/spi/spi-cadence-quadspi.c | 24 +++++++++++++++++++++---
+ drivers/spi/spi-fsl-lpspi.c       |  2 +-
+ drivers/spi/spi-geni-qcom.c       | 16 ++++++++++------
+ drivers/spi/spi.c                 | 12 ++++++------
+ 4 files changed, 38 insertions(+), 16 deletions(-)
