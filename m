@@ -2,112 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D202456036
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:11:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D24C945603A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:12:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232964AbhKRQOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 11:14:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39650 "EHLO
+        id S232984AbhKRQPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 11:15:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231167AbhKRQOa (ORCPT
+        with ESMTP id S232882AbhKRQPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 11:14:30 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E7CC061574;
-        Thu, 18 Nov 2021 08:11:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=FqXFoFJw+7zJvJVEr7OM4grmg4IXaSw/6BDungSGX3M=; b=UdZmhO2yxjiDYqVx0mJPhHmAXP
-        1xmDfU3ls0wpkOvHqul7NfP9ZH57q66zhNDNdjHcD5wU2X9N5fSzEGw9/LznZlR8xWHGJZzNh2rlr
-        RlAmCBln22+Riad2x+HlUDaaHlBnXQT6CQkxQUYb/lFUI1TLxdUpjN7366uGxrRxN/ANzBIm5Pp6F
-        Xq3f4nlm1x0k5i2QRQF35FLpr75oDBGDtICjAi/gYxQKXvWru4gK8VKXJJYgdylaWpHFDDDPEDjPS
-        zRgXXfzYNxivqAWtfeaUuso/lgdqQV15IHxxQwUmJjN/Pd9AuhFpQYhfIgWB/lmntzQxpy9SbjJ7D
-        40QGIvTw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55728)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mnk0S-000381-Ac; Thu, 18 Nov 2021 16:11:24 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mnk0R-000448-9U; Thu, 18 Nov 2021 16:11:23 +0000
-Date:   Thu, 18 Nov 2021 16:11:23 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     Horatiu Vultur <horatiu.vultur@microchip.com>, davem@davemloft.net,
-        kuba@kernel.org, robh+dt@kernel.org, p.zabel@pengutronix.de,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 3/5] net: lan966x: add port module support
-Message-ID: <YZZ7KwKw8i6EPcFL@shell.armlinux.org.uk>
-References: <20211117091858.1971414-1-horatiu.vultur@microchip.com>
- <20211117091858.1971414-4-horatiu.vultur@microchip.com>
- <YZTRUfvPPu5qf7mE@shell.armlinux.org.uk>
- <20211118095703.owsb2nen5hb5vjz2@soft-dev3-1.localhost>
- <YZYj9fwCeWdIZJOt@shell.armlinux.org.uk>
- <20211118125928.tav7k5xlbnhrgp3o@soft-dev3-1.localhost>
- <YZZVn6jve4BvSqyX@shell.armlinux.org.uk>
- <e973b8e6-f8ca-eec9-f5ac-9ae401deea81@seco.com>
+        Thu, 18 Nov 2021 11:15:21 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE002C06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:12:20 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id k4so5636929plx.8
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:12:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JtUbgJF6NuH5ekchLkHHx7uhAr5eiEYDxaa/1ZDxQZM=;
+        b=iRBhWG5YmMZ8saHTlZ/Xuz0EDAF+36mnUXW9sw4XNE40qtsP9abacRjGj7c8sYEJEN
+         RXbIuWjqZsO2VHrGVChvijshzPkxkBds4BrFHqRB1S3+hBj0sTAveaI1hlcsqSNT9Smq
+         jC28mFTpF5iFgIIvodg94YTOjPtG4lfvEgBH8ybTeo2YZ6JL4FivN48XTr4SQiXqNRIr
+         pow/xaD/Fm5PaS4WLDjH63Mi6bOt+4itX5B3TAY3F0tzBgnwAVlDU3C4MfbPRRpcloXH
+         8BFnHBhpgmg0VTW2Hj8w6dRDFUcL/0usr/iVid4soYx1bKkPTGP51kRAQO7tHc5YCgqw
+         JyAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JtUbgJF6NuH5ekchLkHHx7uhAr5eiEYDxaa/1ZDxQZM=;
+        b=T/TxykQEELsJ8z4mcVKqNQLbWU9p8upJZTox125MLiVwB1dDJNvAY3pdxBpsg6QaoT
+         tLmhRKqeLsbQMbwod62HpYQ66ygZChQ+TszchoHywN6TyiApO/n26t233o8hv/kxVdAj
+         BD1xLFC9u4afdk58kQTosAh1LcGhA92IEdu+1MhQQmOf3A7BOFifGb8clBbDW9jaQuC1
+         Wm/9jOmshvIFTZdXfrc49baM5KNZ7prSwrcLhWFUZHiNDDUj9W30uhhMFG1OLHiNwseb
+         sefnzgTlS2AOxh5InMgZHqXp1T+feh1u6VRxd6moI1B6IL47PopK8TZdZYStHGHo2eiZ
+         1jkw==
+X-Gm-Message-State: AOAM533qWW6C6LhcjwQkzopuCfuQkZtLQT8f9T1Qcy9eNBWcTv2+X9Cg
+        enm9pdzr9wylavln0O1iJEuiWw==
+X-Google-Smtp-Source: ABdhPJz/oQk2Mm80u4EHRmjaQ3+PKJloRdFqaSBeITGTV+Ei76TrbAUwoZVcNLOQ3yPldyZqefDXDQ==
+X-Received: by 2002:a17:90a:49c2:: with SMTP id l2mr12111506pjm.23.1637251939046;
+        Thu, 18 Nov 2021 08:12:19 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id f29sm121048pgf.34.2021.11.18.08.12.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 08:12:18 -0800 (PST)
+Date:   Thu, 18 Nov 2021 16:12:15 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v3 3/4] x86/kvm: add max number of vcpus for hyperv
+ emulation
+Message-ID: <YZZ7Xxg5LEoCb+oK@google.com>
+References: <20211116141054.17800-1-jgross@suse.com>
+ <20211116141054.17800-4-jgross@suse.com>
+ <YZVrDpjW0aZjFxo1@google.com>
+ <bfe38122-0ddd-d9bc-4927-942b051a39c4@suse.com>
+ <YZZn/iWsi2H845w6@google.com>
+ <c3823bf6-dca3-515f-4657-14aac51679b3@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e973b8e6-f8ca-eec9-f5ac-9ae401deea81@seco.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <c3823bf6-dca3-515f-4657-14aac51679b3@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 10:36:58AM -0500, Sean Anderson wrote:
-> Hi Russell,
-> 
-> On 11/18/21 8:31 AM, Russell King (Oracle) wrote:
-> > On Thu, Nov 18, 2021 at 01:59:28PM +0100, Horatiu Vultur wrote:
-> > > The 11/18/2021 09:59, Russell King (Oracle) wrote:
-> > > > Another approach would be to split phylink_mii_c22_pcs_decode_state()
-> > > > so that the appropriate decode function is selected depending on the
-> > > > interface state, which may be a better idea.
+On Thu, Nov 18, 2021, Juergen Gross wrote:
+> On 18.11.21 15:49, Sean Christopherson wrote:
+> > On Thu, Nov 18, 2021, Juergen Gross wrote:
+> > > On 17.11.21 21:50, Sean Christopherson wrote:
+> > > > > @@ -166,7 +166,7 @@ static struct kvm_vcpu *get_vcpu_by_vpidx(struct kvm *kvm, u32 vpidx)
+> > > > >    	struct kvm_vcpu *vcpu = NULL;
+> > > > >    	int i;
+> > > > > -	if (vpidx >= KVM_MAX_VCPUS)
+> > > > > +	if (vpidx >= min(KVM_MAX_VCPUS, KVM_MAX_HYPERV_VCPUS))
+> > > > 
+> > > > IMO, this is conceptually wrong.  KVM should refuse to allow Hyper-V to be enabled
+> > > > if the max number of vCPUs exceeds what can be supported, or should refuse to create
 > > > 
-> > > I have tried to look for phylink_mii_c22_pcs_decode_state() and I
-> > > have found it only here [1], and seems that it depends on [2]. But not
-> > > much activity happened to these series since October.
-> > > Do you think they will still get in?
+> > > TBH, I wasn't sure where to put this test. Is there a guaranteed
+> > > sequence of ioctl()s regarding vcpu creation (or setting the max
+> > > number of vcpus) and the Hyper-V enabling?
 > > 
-> > I don't see any reason the first two patches should not be sent. I'm
-> > carrying the second one locally because I use it in some changes I've
-> > made to the mv88e6xxx code - as I mentioned in the patchwork entry you
-> > linked to. See:
-> > 
-> >   http://git.armlinux.org.uk/cgit/linux-arm.git/log/?h=net-queue
-> > 
-> >   "net: phylink: Add helpers for c22 registers without MDIO"
-> > 
-> > Although I notice I committed it to my tree with the wrong author. :(
-> > 
-> > Sean, please can you submit the mdiodev patch and this patch for
-> > net-next as they have general utility? Thanks.
+> > For better or worse (mostly worse), like all other things CPUID, Hyper-V is a per-vCPU
+> > knob.  If KVM can't detect the impossible condition at compile time, kvm_check_cpuid()
+> > is probably the right place to prevent enabling Hyper-V on an unreachable vCPU.
 > 
-> The mdiodev patch is already in the tree as 0ebecb2644c8 ("net: mdio:
-> Add helper functions for accessing MDIO devices"). The c22 patch is
-> submitted as [1].
-> 
-> --Sean
-> 
-> [1] https://lore.kernel.org/netdev/20211022160959.3350916-1-sean.anderson@seco.com/
+> With HYPERV_CPUID_IMPLEMENT_LIMITS already returning the
+> supported number of vcpus for the Hyper-V case I'm not sure
+> there is really more needed.
 
-Patchwork says its deferrred:
+Yep, that'll do nicely.
 
-https://patchwork.kernel.org/project/netdevbpf/patch/20211022160959.3350916-1-sean.anderson@seco.com/
+> The problem I'm seeing is that the only thing I can do is to
+> let kvm_get_hv_cpuid() not adding the Hyper-V cpuid leaves for
+> vcpus > 64. I can't return a failure, because that would
+> probably let vcpu creation fail. And this is something we don't
+> want, as kvm_get_hv_cpuid() is called even in the case the guest
+> doesn't plan to use Hyper-V extensions.
 
-However, it does apply to current net-next, but Jakub did ask for
-it to be resubmitted. Given that patches are being quickly applied
-to net-next, I suggest resubmission may be just what's neeeded!
+Argh, that thing is annoying.
 
-Thanks.
+My vote is still to reject KVM_SET_CPUID{2} if userspace attempts to enable Hyper-V
+for a vCPU when the max number of vCPUs exceeds HYPERV_CPUID_IMPLEMENT_LIMITS.  If
+userspace parrots back KVM_GET_SUPPORTED_CPUID, it will specify KVM as the hypervisor,
+i.e. enabling Hyper-V requires deliberate action from userspace.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+The non-vCPU version of KVM_GET_SUPPORTED_HV_CPUID is not an issue, e.g. the generic
+KVM_GET_SUPPORTED_CPUID also reports features that become unsupported if dependent
+CPUID features are not enabled by userspace.
+
+The discrepancy with the per-vCPU variant of kvm_get_hv_cpuid() would be unfortunate,
+but IMO that ship sailed when the per-vCPU variant was added by commit 2bc39970e932
+("x86/kvm/hyper-v: Introduce KVM_GET_SUPPORTED_HV_CPUID").  We can't retroactively
+yank that code out, but I don't think we should be overly concerned with keeping it
+100% accurate.  IMO it's perfectly fine for KVM to define the output of
+KVM_GET_SUPPORTED_HV_CPUID as being garbage if the vCPU cannot possibly support
+Hyper-V enlightments.  That situation isn't possible today, so there's no backwards
+compatibility to worry about.
