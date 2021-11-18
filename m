@@ -2,95 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B379E456430
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 21:30:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E6C456435
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 21:30:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232636AbhKRUdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 15:33:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42856 "EHLO
+        id S233322AbhKRUdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 15:33:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230525AbhKRUdX (ORCPT
+        with ESMTP id S231231AbhKRUdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 15:33:23 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B5BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 12:30:21 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id n26so7204357pff.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 12:30:21 -0800 (PST)
+        Thu, 18 Nov 2021 15:33:37 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43985C06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 12:30:37 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id bj13so16934425oib.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 12:30:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iu7U35TLsSX6gA69t+3VJK/DHYP3v2WkEHmDvw5qjGo=;
-        b=Oz7anz2rJ42T1oV7T6o4alhUei5UNKjjSsAWaqFKjILKgCjFAH98uxcKIZdojsylA7
-         oP/HbD1DOieg9KPfQJwuLLZVc6/AOgmPMKDb/+75mfJcaKTYnMjvEpV9+NnJMrxUEViK
-         yYFc4VkMLlkmexi5tcLNOXGS4624S9oJiWjic=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lpxOUZi8eZtXgRuCBNNMVCz/8y8+r3vF20s7lvfQT9w=;
+        b=u2a5n/mvSzduXGiOrrvh3GGtSy3rq5tEEjevCnZ2g5lFriIVQhxWwI2g68kAe+p1ht
+         2pmrVbJHQ5kWPoIYX89tFsfC4oS5245rm3s1nhr2bT1j60N9qFy75Sp+5jPIr/StT78c
+         uvZkxgkRrU+mLZajRbZlVd3t5hQlWDpZWNxQslU9TvLtYdK7w5EmWjj0GEJeqAaU7V/9
+         pR5FW6PxyZ0QrCg94oifWcS9ucyh1eYAWemGWW4A/5Rv/6R+kgy2RSb48J3RMcGAUVa3
+         /f/lke7WUGL62Y17itVE5qq/myng8G/tQHL4qvBhSBr7sP7Q1JLF/5TGaCbMqD794NHX
+         q7lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iu7U35TLsSX6gA69t+3VJK/DHYP3v2WkEHmDvw5qjGo=;
-        b=W89eLIxiTzqV/lsPgbX0QiavEXYxT+qeTLKKFDWngWmdpqjgBgbRJ0a8claxdenr39
-         i3UkODe844v9oxWKNZZ76Sp5KdEywRcc0dwEXC9pYxvXKzp7yZgaycGcbjCXOow8GNAt
-         F6vS+6Nf0hVWBrbbgeTne3lPh7wweYh2oLfb/VCu1Qn374wIK6ZH/kv1k6L1J4yjAHI1
-         jD76tW6zA85Mr21b4mCYU/Ju2CtXp+pTbJmaAIvaEYkrKS0slik0nMeVRopw3fuFRzhb
-         z2bnInfUp6/jdh/SufDeKVmXzcNbjB5O2neqP8gFLEdkPB/Wniyw1D1x4ckGlr22TYGS
-         uaUw==
-X-Gm-Message-State: AOAM531qGguECM99UUEVfj/RBFP+qgRa/vk+S2gzjcLNMi//fbuC7oPQ
-        Jzez4aSRWZf6oMBEg+B+x3kOqg==
-X-Google-Smtp-Source: ABdhPJwBLwTMtsGbZvSVYwVsbT0lUiJKofe81XSZqHxg2FZ1ltbh91iXmFOSVysPaoKl6EDYkRyM6A==
-X-Received: by 2002:a05:6a00:13a4:b0:49f:add2:3c83 with SMTP id t36-20020a056a0013a400b0049fadd23c83mr17283853pfg.28.1637267421227;
-        Thu, 18 Nov 2021 12:30:21 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id oc10sm9932941pjb.26.2021.11.18.12.30.20
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lpxOUZi8eZtXgRuCBNNMVCz/8y8+r3vF20s7lvfQT9w=;
+        b=cOOrQEN5k8BEMeEfrGaLRpvzw1Q8fMI599REGwtaZ4V7izYZWxlDWQbcJwTrRyV0+K
+         7pM3HKSWEU9wYFcM4Xl7eTzCdj0DWGwlNXTLSL123fYcQoIxH+aYupkQEXWUMjNU8P5+
+         JvSxwp69X9HsqnkQpTxAyoCpdpy3ozcOmj5r/sNlYgYHRTFyNX4yr3PnJOll1pfDVnze
+         MUlvihG5zrBzPWjTk4TZC2aew01EqOtcqY7vgEgiah7PdkCelgrcR4/V+6dm6V7Rtceq
+         wmKe3Svop69R+EfLRrksIXUTnDX2Rm6ml04KwhOkBNuN8vEL9PxVQ9zXNH0q4W+PVvHY
+         iXVQ==
+X-Gm-Message-State: AOAM531e5Yh28vOButoxoLLtURZVmG42/b+pdWid6BykxIGlMYcl+Zz4
+        mfBtFwlOQG6RY5B6enLYYv5PFQ==
+X-Google-Smtp-Source: ABdhPJzr43gYSVIqQaBxtCBx1ey4ahfuAlTLLX8MN9Jlw6mkUxEuYKtvGcUH5Dafd4SArfdbXQ1/Jg==
+X-Received: by 2002:a05:6808:4d9:: with SMTP id a25mr10210086oie.52.1637267436553;
+        Thu, 18 Nov 2021 12:30:36 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id w19sm215372oik.58.2021.11.18.12.30.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 12:30:20 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     "David S. Miller" <davem@davemloft.net>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        dccp@vger.kernel.org, netdev@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] net: dccp: Use memset_startat() for TP zeroing
-Date:   Thu, 18 Nov 2021 12:30:19 -0800
-Message-Id: <20211118203019.1286474-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        Thu, 18 Nov 2021 12:30:35 -0800 (PST)
+Date:   Thu, 18 Nov 2021 14:30:33 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Dang Huynh <danct12@riseup.net>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexey Min <alexey.min@gmail.com>,
+        Caleb Connolly <caleb@connolly.tech>,
+        Martin Botka <martin.botka@somainline.org>,
+        Konrad Dybcio <konradybcio@gmail.com>
+Subject: Re: [PATCH v3 0/8] Improve support for Xiaomi Redmi Note 7
+Message-ID: <YZa36ZACKVShtNtM@builder.lan>
+References: <20211111031635.3839947-1-danct12@riseup.net>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=956; h=from:subject; bh=tL6Zd8mHif0zgpnxOE5SiGN4U+GuNNxpaAv5++LURlc=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhlrfakwyr07L6bDqrWWfqR7Vt6SJluCb6DznklYrj I8TnpuSJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZa32gAKCRCJcvTf3G3AJosXD/ 9ooZFwhPpDQbbhdeEOYfd9RUIBmboebLiEgB0L/dTPwju5kUUPaFL9JLkQbEacliDC0bi8F+sj/UHD Dcnud5ljv5lgexma98YxJnna1UfFtrIXCs+X22Zlz1bMQlVDk0FC+bpFFCwXqn/epchgEFxJYLp6Yu HU4ptDP/pXVzpzhT2zgRqPadCLanixeoquzAR9mz4sKpN5bF5SCy1sZe77xzbYVHH1uXPkQ5OSL9DY VJBiFIbzgTAuuJMyO712Qq1HjnWgPSm8wXAOudC9ebdVhtE5MQ0plUTjivdNAsFWtR6jFZj8SzAD/X r1BZeO8mPiSCeCzSagoyy+dbdmjG5atshC/brAuGi0+FliQrvXGGl9EiW3I4kqGRQrH96H2uXRewNA MOtFkZuMQyv2WsQsQxJ/WQwqAXM29m2Zc7q+w/tPZZjSgyKWiKsXHauQhTuQteybHWJEl7qUxBNJHd O52k6Y+vM/Wr6oFwAnrjDmh6MxIoK5uHpFu9U7zUB2GNXKPL7v8mz0Vb7I16T9sZYOSj+Up4T+uxxe sRH4lVwTyvbwyCWtTSleibIirJXToi74NqY6p6LvQUjJjDhrlBp/Mt7knFs3MAdpFYJBgLySAzt+to F/vkn6qiuDeem6sqtYNJ4+Krf2pJ6tHaZWsWjpzq8Ah0Z8wL8u2m/DTlya2Q==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211111031635.3839947-1-danct12@riseup.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memset(), avoid intentionally writing across
-neighboring fields.
+On Wed 10 Nov 21:16 CST 2021, Dang Huynh wrote:
 
-Use memset_startat() so memset() doesn't get confused about writing
-beyond the destination member that is intended to be the starting point
-of zeroing through the end of the struct.
+> This series expand the Redmi Note 7 device port to support:
+>  + Regulators
+>  + Volume keys
+>  + eMMC and SD card slot
+>  + Framebuffer display
+>  + USB
+> 
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- net/dccp/trace.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Thanks for the patches Dang, I think they look good and would like to
+merge them.
 
-diff --git a/net/dccp/trace.h b/net/dccp/trace.h
-index 5062421beee9..5a43b3508c7f 100644
---- a/net/dccp/trace.h
-+++ b/net/dccp/trace.h
-@@ -60,9 +60,7 @@ TRACE_EVENT(dccp_probe,
- 			__entry->tx_t_ipi = hc->tx_t_ipi;
- 		} else {
- 			__entry->tx_s = 0;
--			memset(&__entry->tx_rtt, 0, (void *)&__entry->tx_t_ipi -
--			       (void *)&__entry->tx_rtt +
--			       sizeof(__entry->tx_t_ipi));
-+			memset_startat(__entry, 0, tx_rtt);
- 		}
- 	),
- 
--- 
-2.30.2
+Could you please submit an updated version with the one gpio.h inclusion
+pointed out by Konrad moved and fix up the Reviewed-by pointed out my
+Martin?
 
+Thanks,
+Bjorn
+
+> Changes in v2:
+>  - Dropped linux,input-type from volume up as 1 is set by default.
+>  - Dropped gpio-key,wakeup as it's a legacy property name and is
+> not relevant for a volume button.
+>  - Rename label cont_splash_mem to framebuffer_mem and change node
+> name to memory.
+> 
+> Changes in v3:
+>  - Add voltage range for vph_pwr
+>  - Move RESIN to PM660 and make PON keys disabled by default 
+>  - Addressed review comments from Konrad
+>  - Make Alexey Min the author of the USB patch as he came up with
+> the patch first on downstream. 
+> 
+> Alexey Min (1):
+>   arm64: dts: qcom: sdm660-xiaomi-lavender: Add USB
+> 
+> Dang Huynh (7):
+>   arm64: dts: qcom: sdm630: Assign numbers to eMMC and SD
+>   arm64: dts: qcom: sdm630-pm660: Move RESIN to pm660 dtsi
+>   arm64: dts: qcom: sdm660-xiaomi-lavender: Add RPM and fixed regulators
+>   arm64: dts: qcom: sdm660-xiaomi-lavender: Add PWRKEY and RESIN
+>   arm64: dts: qcom: sdm660-xiaomi-lavender: Add volume up button
+>   arm64: dts: qcom: sdm660-xiaomi-lavender: Add eMMC and SD
+>   arm64: dts: qcom: sdm660-xiaomi-lavender: Enable Simple Framebuffer
+> 
+>  arch/arm64/boot/dts/qcom/pm660.dtsi           |  12 +-
+>  .../dts/qcom/sdm630-sony-xperia-nile.dtsi     |  16 +-
+>  arch/arm64/boot/dts/qcom/sdm630.dtsi          |   5 +
+>  .../boot/dts/qcom/sdm660-xiaomi-lavender.dts  | 383 ++++++++++++++++++
+>  4 files changed, 407 insertions(+), 9 deletions(-)
+> 
+> -- 
+> 2.33.1
+> 
