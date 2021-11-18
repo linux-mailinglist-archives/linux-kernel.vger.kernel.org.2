@@ -2,73 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2B4456166
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D29145616B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234050AbhKRR2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 12:28:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37110 "EHLO mail.kernel.org"
+        id S234104AbhKRR3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 12:29:19 -0500
+Received: from mga11.intel.com ([192.55.52.93]:23277 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231127AbhKRR2y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 12:28:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF0FB61284;
-        Thu, 18 Nov 2021 17:25:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637256354;
-        bh=WwmOGkKKg0zLLgzvK9bLyotJTO+HbvDvts6r7EmggQM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=WNmADNxh32pTrQvEeF4sVYYNa3FNEYUax8almx8UI3TIQmoXZb21qY0zuGZ+AQXcn
-         y+u0Clp7wQjru0BScXkvoiU8TpBNYvAjwET5snyQ8pHE0BOC5+haa8V6t4S2zJRF5a
-         cjHIc7UpVY3zGPnIRngmvChcIVhaiE6Z8s70hIjTiC88q5vcd7eQfOhlR9rgBKpJLE
-         KWFfcGUYNGER3t/u3QlkaPIF3IDOscf81ssLGsIelYZ+92fnQjmPyeI/pmX23IJyvS
-         FXdeFL3mVYTBUoaxW4CtXnbqQxi39HaNxGr9LMMIhsX5vrCn0qjarGEo2/dq8wPTTt
-         8DHROXG9bgLGw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] SPI fixes for v5.16-rc1
-Date:   Thu, 18 Nov 2021 17:25:37 +0000
-Message-Id: <20211118172553.DF0FB61284@mail.kernel.org>
+        id S231562AbhKRR3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 12:29:16 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="231724161"
+X-IronPort-AV: E=Sophos;i="5.87,245,1631602800"; 
+   d="scan'208";a="231724161"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 09:26:16 -0800
+X-IronPort-AV: E=Sophos;i="5.87,245,1631602800"; 
+   d="scan'208";a="550618531"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 09:26:14 -0800
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 523BC202B4;
+        Thu, 18 Nov 2021 19:26:12 +0200 (EET)
+Date:   Thu, 18 Nov 2021 19:26:12 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     Eugen Hristev <eugen.hristev@microchip.com>,
+        leonl@leopardimaging.com, linux-media@vger.kernel.org,
+        skomatineni@nvidia.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: i2c: imx274: implement enum_mbus_code
+Message-ID: <YZaMtGhqaXIOLhox@paasikivi.fi.intel.com>
+References: <20211118154009.307430-1-eugen.hristev@microchip.com>
+ <fa26e991-9228-7ed7-833a-b296e6b32afc@lucaceresoli.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fa26e991-9228-7ed7-833a-b296e6b32afc@lucaceresoli.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 28b5eaf9712bbed90c2b5a5608d70a16b7950856:
+Hi Luca,
 
-  spi: Convert NXP flexspi to json schema (2021-10-29 18:56:02 +0100)
+On Thu, Nov 18, 2021 at 06:11:35PM +0100, Luca Ceresoli wrote:
+> Hi Eugen,
+> 
+> On 18/11/21 16:40, Eugen Hristev wrote:
+> > Current driver supports only SRGGB 10 bit RAW bayer format.
+> > Add the enum_mbus_code implementation to report this format supported.
+> > 
+> >  # v4l2-ctl -d /dev/v4l-subdev3 --list-subdev-mbus-codes
+> > ioctl: VIDIOC_SUBDEV_ENUM_MBUS_CODE (pad=0)
+> >         0x300f: MEDIA_BUS_FMT_SRGGB10_1X10
+> >  #
+> > 
+> > Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+> 
+> Generally OK, but I have a few minor comments.
+> 
+> > ---
+> >  drivers/media/i2c/imx274.c | 14 ++++++++++++++
+> >  1 file changed, 14 insertions(+)
+> > 
+> > diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
+> > index 2e804e3b70c4..25a4ef8f6187 100644
+> > --- a/drivers/media/i2c/imx274.c
+> > +++ b/drivers/media/i2c/imx274.c
+> > @@ -1909,7 +1909,21 @@ static int imx274_set_frame_interval(struct stimx274 *priv,
+> >  	return err;
+> >  }
+> >  
+> > +static int imx274_enum_mbus_code(struct v4l2_subdev *sd,
+> > +				 struct v4l2_subdev_state *sd_state,
+> > +				 struct v4l2_subdev_mbus_code_enum *code)
+> > +{
+> > +	if (code->index > 0)
+> > +		return -EINVAL;
+> 
+> Many driver do check code->pad too, so you might want to do
+> 
+> 	if (code->pad > 0 || code->index > 0)
+> 		return -EINVAL;
 
-are available in the Git repository at:
+The caller will have checked the pad exists, and there's a single one on
+the subdev I suppose.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.16-rc1
+> 
+> However I don't think it is strictly necessary, thus
+> 
+> > +
+> > +	/* only supported format in the driver is Raw 10 bits SRGGB */
+> > +	code->code = MEDIA_BUS_FMT_SRGGB10_1X10;
+> 
+> Maybe better:
+> 
+>   code->code =  to_imx274(sd)->format.code
 
-for you to fetch changes up to 6c53b45c71b4920b5e62f0ea8079a1da382b9434:
+Good idea.
 
-  spi: fix use-after-free of the add_lock mutex (2021-11-12 18:18:03 +0000)
+> 
+> just as a little guard for future format changes.
+> 
+> With or without these I'm OK anyway with the patch, so:
+> 
+> Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+> 
+> -- 
+> Luca
 
-----------------------------------------------------------------
-spi: Fixes for v5.16
-
-A few small fixes for v5.16, one in the core for an issue with handling
-of controller unregistration that was introduced with the fixes for
-registering nested SPI controllers and a few more minor device specific
-ones.
-
-----------------------------------------------------------------
-Alexander Stein (1):
-      spi: lpspi: Silence error message upon deferred probe
-
-Dan Carpenter (1):
-      spi: spi-geni-qcom: fix error handling in spi_geni_grab_gpi_chan()
-
-Dinh Nguyen (1):
-      spi: cadence-quadspi: fix write completion support
-
-Michael Walle (1):
-      spi: fix use-after-free of the add_lock mutex
-
- drivers/spi/spi-cadence-quadspi.c | 24 +++++++++++++++++++++---
- drivers/spi/spi-fsl-lpspi.c       |  2 +-
- drivers/spi/spi-geni-qcom.c       | 16 ++++++++++------
- drivers/spi/spi.c                 | 12 ++++++------
- 4 files changed, 38 insertions(+), 16 deletions(-)
+-- 
+Sakari Ailus
