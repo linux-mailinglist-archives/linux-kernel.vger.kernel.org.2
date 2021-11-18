@@ -2,73 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11689455361
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 04:25:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27131455364
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 04:27:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242663AbhKRD2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 22:28:50 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:42397 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241600AbhKRD2t (ORCPT
+        id S242705AbhKRD3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 22:29:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241600AbhKRD3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 22:28:49 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R561e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Ux6f13A_1637205946;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Ux6f13A_1637205946)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 18 Nov 2021 11:25:47 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     patrice.chotard@foss.st.com
-Cc:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
-        linux-arm-kernel@lists.infradead.org, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH -next] rtc: st-lpc: Use div64_ul instead of do_div
-Date:   Thu, 18 Nov 2021 11:25:41 +0800
-Message-Id: <1637205941-26223-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Wed, 17 Nov 2021 22:29:39 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20704C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 19:26:40 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id m14so4558610pfc.9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 19:26:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=YgqEwSaksHCsJ2Xk3ukFf6EiHTEDT7mkEiActroWWyQ=;
+        b=hVnVE9+QsBt3sP6MbBEN8t8mleGbEOJlIYVQhZR1FgtC7MyBTk2zSA8S2cOOBFKzov
+         4io7fzgCxIC0WZX1AZ+LIBlVrkBxXYWrU2KTr4gxNAfyL3LENPXn8rjrIY+MCCVsOuto
+         gFIXUlq/E+JRoJ6y/PXDlnTwmia3VmsXdqGMht4ezVCPQFv7Fvphy87WhoNBbZYmH2GA
+         4pOFjxsVHOhDYmQNcgwGdobwiGJDYbk5HVtZyAivkVI/QkixAw4KtIPUb26hJFhp2f0w
+         7gaTmvaGY7hNGhc6/nHQYYTMHiOK8flxSyfCFv7h7jJOuAuUyM+Z3UpkPSi6Msg+tNPK
+         LN9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=YgqEwSaksHCsJ2Xk3ukFf6EiHTEDT7mkEiActroWWyQ=;
+        b=Xt2SfH499+tLl+rI5VFMXj9eFuj9hy09N7EpFKgwwC8bfcxDKKreEQgz9v0W9NI2cz
+         HTQ3gA2p7p36lz8Z6vnmHk1ih4OrdibF8DwUlG55xo1BykRZ1SLYmJb1/21r8dazH419
+         WWsDsXJWaXuJnUGEvnisAPsJkA00PTqmO+fBxwg6xUcwlJasmQP0z8mWE98OEpIjST6k
+         0pyZq/PP/tOC4sJ8xjzEcJlozqbmdMjHtdBUUdhZdPARz4sOoZRz9uWBdWpLM4ROJtSB
+         HGqMD2kNelzQQswjpVNhwRQYjcRlpfah8k4ebURt7YqmTMNuARqFOp8C7qfPQ9pa5xDi
+         Zxnw==
+X-Gm-Message-State: AOAM532ZvphwsluacsZ1tS/+aOVi64Ey8gjsCKlPPwZcFe/3dT231AbO
+        E5wjsnELnSP3Nn6coZB4u1hkIg==
+X-Google-Smtp-Source: ABdhPJxPC/wgO01gLT38/YulI8aGZPE5vGabnciA7zJcJTyPkzEDRPImeJCfQ5MSUJ/sxOB4b9nvJQ==
+X-Received: by 2002:aa7:811a:0:b0:44c:b9ef:f618 with SMTP id b26-20020aa7811a000000b0044cb9eff618mr12061528pfi.9.1637205999727;
+        Wed, 17 Nov 2021 19:26:39 -0800 (PST)
+Received: from [10.76.43.192] ([61.120.150.76])
+        by smtp.gmail.com with ESMTPSA id x33sm1046264pfh.133.2021.11.17.19.26.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 19:26:39 -0800 (PST)
+Message-ID: <f0193837-2f2c-b55f-cd79-b80d931e7931@bytedance.com>
+Date:   Thu, 18 Nov 2021 11:26:30 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.1
+Subject: Re: Re: Re: Re: Re: Re: Re: Re: [PATCH v1] sched/numa: add
+ per-process numa_balancing
+Content-Language: en-US
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-api@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org
+References: <20211029083751.GR3891@suse.de>
+ <CAMx52ARF1fVH9=YLQMjE=8ckKJ=q3X2-ovtKuQcoTyo564mQnQ@mail.gmail.com>
+ <20211109091951.GW3891@suse.de>
+ <7de25e1b-e548-b8b5-dda5-6a2e001f3c1a@bytedance.com>
+ <20211109121222.GX3891@suse.de>
+ <117d5b88-b62b-f50b-32ff-1a9fe35b9e2e@bytedance.com>
+ <20211109162647.GY3891@suse.de>
+ <08e95d68-7ba9-44d0-da85-41dc244b4c99@bytedance.com>
+ <20211117082952.GA3301@suse.de>
+ <816cb511-446d-11eb-ae4a-583c5a7102c4@bytedance.com>
+ <20211117101008.GB3301@suse.de>
+From:   Gang Li <ligang.bdlg@bytedance.com>
+In-Reply-To: <20211117101008.GB3301@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-do_div() does a 64-by-32 division. Here the divisor is an
-unsigned long which on some platforms is 64 bit wide. So use
-div64_ul instead of do_div to avoid a possible truncation.
+On 11/17/21 6:10 PM, Mel Gorman wrote:
+> On Wed, Nov 17, 2021 at 05:38:28PM +0800, Gang Li wrote:
+>> If those APIs are ok with you, I will send v2 soon.
+>>
+>> 1. prctl(PR_NUMA_BALANCING, PR_SET_THP_DISABLE);
+> 
+> It would be (PR_SET_NUMAB_DISABLE, 1)
+> 
+>> 2. prctl(PR_NUMA_BALANCING, PR_SET_THP_ENABLE);
+> 
+> An enable prctl will have the same problems as
+> prctl(PR_NUMA_BALANCING, PR_SET_NUMA_BALANCING, 0/1) -- it should have
+> meaning if the numa_balancing sysctl is disabled.
+> 
+>> 3. prctl(PR_NUMA_BALANCING, PR_GET_THP);
+>>
+> 
+> PR_GET_NUMAB_DISABLE
+> 
 
-Eliminate the following coccicheck warnings:
+How about this:
 
-./drivers/rtc/rtc-st-lpc.c:96:1-7: WARNING: do_div() does a 64-by-32
-division, please consider using div64_ul instead.
-./drivers/rtc/rtc-st-lpc.c:251:1-7: WARNING: do_div() does a 64-by-32
-division, please consider using div64_ul instead.
+1. prctl(PR_NUMA_BALANCING, PR_SET_NUMAB_DEFAULT); //follow global
+2. prctl(PR_NUMA_BALANCING, PR_SET_NUMAB_DISABLE); //disable
+3. prctl(PR_NUMA_BALANCING, PR_SET_NUMAB_ENABLE);  //enable
+4. prctl(PR_NUMA_BALANCING, PR_GET_NUMAB);
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/rtc/rtc-st-lpc.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+PR_SET_NUMAB_DISABLE/ENABLE can always have meaning whether the
+numa_balancing sysctl is disabled or not,
 
-diff --git a/drivers/rtc/rtc-st-lpc.c b/drivers/rtc/rtc-st-lpc.c
-index bdb20f6..b6e169b 100644
---- a/drivers/rtc/rtc-st-lpc.c
-+++ b/drivers/rtc/rtc-st-lpc.c
-@@ -93,7 +93,7 @@ static int st_rtc_read_time(struct device *dev, struct rtc_time *tm)
- 	spin_unlock_irqrestore(&rtc->lock, flags);
- 
- 	lpt = ((unsigned long long)lpt_msb << 32) | lpt_lsb;
--	do_div(lpt, rtc->clkrate);
-+	lpt = div64_ul(lpt, rtc->clkrate);
- 	rtc_time64_to_tm(lpt, tm);
- 
- 	return 0;
-@@ -248,7 +248,8 @@ static int st_rtc_probe(struct platform_device *pdev)
- 
- 	rtc->rtc_dev->ops = &st_rtc_ops;
- 	rtc->rtc_dev->range_max = U64_MAX;
--	do_div(rtc->rtc_dev->range_max, rtc->clkrate);
-+	rtc->rtc_dev->range_max = div64_ul(rtc->rtc_dev->range_max,
-+					rtc->clkrate);
- 
- 	ret = devm_rtc_register_device(rtc->rtc_dev);
- 	if (ret) {
 -- 
-1.8.3.1
+Thanks,
+Gang Li
 
