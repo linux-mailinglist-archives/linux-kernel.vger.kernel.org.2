@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F4DB455DC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:16:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1079B455DC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:15:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232896AbhKROTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 09:19:16 -0500
-Received: from foss.arm.com ([217.140.110.172]:41412 "EHLO foss.arm.com"
+        id S232891AbhKROSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 09:18:47 -0500
+Received: from foss.arm.com ([217.140.110.172]:41424 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233041AbhKROSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 09:18:24 -0500
+        id S233079AbhKROSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 09:18:25 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 95F8BD6E;
-        Thu, 18 Nov 2021 06:15:23 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D437A101E;
+        Thu, 18 Nov 2021 06:15:24 -0800 (PST)
 Received: from localhost.localdomain (FVFF7649Q05P.cambridge.arm.com [10.1.31.30])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 778DC3F766;
-        Thu, 18 Nov 2021 06:15:22 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D2B493F766;
+        Thu, 18 Nov 2021 06:15:23 -0800 (PST)
 From:   Vincent Donnefort <vincent.donnefort@arm.com>
 To:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org
 Cc:     linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
         valentin.schneider@arm.com,
         Vincent Donnefort <vincent.donnefort@arm.com>
-Subject: [PATCH v2 1/2] sched/fair: Fix asym_fits_capacity() task_util type
-Date:   Thu, 18 Nov 2021 14:14:10 +0000
-Message-Id: <20211118141411.2623521-1-vincent.donnefort@arm.com>
+Subject: [PATCH v2 2/2] sched/fair: Fix task_fits_capacity() capacity type
+Date:   Thu, 18 Nov 2021 14:14:11 +0000
+Message-Id: <20211118141411.2623521-2-vincent.donnefort@arm.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211118141411.2623521-1-vincent.donnefort@arm.com>
+References: <20211118141411.2623521-1-vincent.donnefort@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-task_util is an unsigned long value, compared with a CPU capacity which is
-unsigned long as well. There's no need for an intermediate implicit int
-cast.
+capacity is an unsigned long value, compared with a task utilization which
+is unsigned long as well. There's no need for an intermediate implicit
+long cast.
 
-Fixes: b4c9c9f15649 ("sched/fair: Prefer prev cpu in asymmetric wakeup path")
+Fixes: 3b1baa6496e6 ("sched/fair: Add 'group_misfit_task' load-balance type")
 Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 945d987246c5..8fde6e10e24b 100644
+index 8fde6e10e24b..26a88975f68a 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -6346,7 +6346,7 @@ select_idle_capacity(struct task_struct *p, struct sched_domain *sd, int target)
- 	return best_cpu;
+@@ -4070,7 +4070,8 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
+ 	trace_sched_util_est_se_tp(&p->se);
  }
  
--static inline bool asym_fits_capacity(int task_util, int cpu)
-+static inline bool asym_fits_capacity(unsigned long task_util, int cpu)
+-static inline int task_fits_capacity(struct task_struct *p, long capacity)
++static inline int task_fits_capacity(struct task_struct *p,
++				     unsigned long capacity)
  {
- 	if (static_branch_unlikely(&sched_asym_cpucapacity))
- 		return fits_capacity(task_util, capacity_of(cpu));
+ 	return fits_capacity(uclamp_task_util(p), capacity);
+ }
 -- 
 2.25.1
 
