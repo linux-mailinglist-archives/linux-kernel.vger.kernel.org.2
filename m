@@ -2,91 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECC9A4554DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 07:39:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D63444554DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 07:46:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243427AbhKRGmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 01:42:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243421AbhKRGmp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 01:42:45 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09588C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 22:39:46 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id q17so4370407plr.11
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 22:39:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FMI94b/yAujS84g8LGbPIlO0F6a4sIjHraHl0xC9qbA=;
-        b=RXZYLWj+1PEiNsO61vCWFGwgPlLIfFJ/upevq6+bkOm+yNbUGWjZVdGe8mFaTU0sRM
-         4y768qWlDzmvJhLSqREaYUui+WYrgxAaAtWKOHZHxm400qFBLt3jQiJhyDM0cRj2xJkn
-         T2BjmVR5eDgKUOgoyvHFP/0MhvHy/inHT2HKA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FMI94b/yAujS84g8LGbPIlO0F6a4sIjHraHl0xC9qbA=;
-        b=Qg6lvX+fVOoKBscptrLYqCY24WjjJ4V0gf+b7CZGlhQToNcSzLcbD63+eJqfNtHXA2
-         r8avejMPv6iAaYfd/4/lB2iWEIfGtJO8Vds96vewzqWS5qVZbmJIH6xDBaQRvHvUlpgX
-         7PkiN+oOA9QchVkP7l4bxuihBNU1QgO/+jqhkvGUsEgUnAJAqznN1b5GNR0YQmY3VVUr
-         /UxQkm6xTrL34fcYT5WoVdXxJgwTkmg7ncqwsV3G5nLPPgozH0q0vcsp+SyPdb+JXrl9
-         bwjGkK4ZIIrQWWu5MJBImxo/Zf0JvIdNjoq9uKZHaJO6GfjVtksSc0WC1k4R6OOFPZuv
-         gkeg==
-X-Gm-Message-State: AOAM530C+YC0TRT+DjAIpU4qc1lUfsUrIaRFDwTHn+x1XeqME75vHCpL
-        pJPGQF3u4VQ0/TSrqIS+RtEmpxm+J5I3/40FM2VKZw==
-X-Google-Smtp-Source: ABdhPJxaTW+u+s1H+E8ZH+9vokchEDm3K3lC/3RDIg6F87zyZurnpOQ1SBHlrNPn0pFuECkb0RNA1ePDFrAYegdbiOg=
-X-Received: by 2002:a17:903:185:b0:141:f5f3:dae with SMTP id
- z5-20020a170903018500b00141f5f30daemr63792446plg.56.1637217585625; Wed, 17
- Nov 2021 22:39:45 -0800 (PST)
+        id S243437AbhKRGtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 01:49:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56540 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243432AbhKRGtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 01:49:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C4C761B2B;
+        Thu, 18 Nov 2021 06:46:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637217970;
+        bh=iZ3AZWTffkMbSj10kvH590+JEon66Aqsp48z/miqcWw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=G55i3t8rXhltxEcvposIf3Utxep8UkiP2fQ8IhoTSeaOEcw869h4DPuikpXg8VkoN
+         /VueoCw0aPHqUe7K5iTaOvTh5sTCqdiAT13UZfT3v0HwHTOANV/F3rru2OnTtUtl9w
+         /QNuxTtLYbKvrhD1Y9/a8SpzIos/RfSKA9jPLpyz4Afsk3ghwhZ0zHKOTafGzYbgVc
+         w9J9VglD5F8qZGnFf6B/u7rkxzQ8bj1OMW3Ki4xh+KNt4KLbcDEurLKEHAgYqgqPZg
+         FMCpx7NZMKWOakZBFWBN+YsMLSEjmr/qhFKU0Cxk5S1gI0mEFlCkuE4r/mAkqfYpW9
+         wzVifsKVjY8TA==
+Message-ID: <e28d4963-d816-b568-dec8-60a79a9fe88d@kernel.org>
+Date:   Thu, 18 Nov 2021 14:46:07 +0800
 MIME-Version: 1.0
-References: <20211103234018.4009771-1-briannorris@chromium.org>
- <20211103164002.2.Ie6c485320b35b89fd49e15a73f0a68e3bb49eef9@changeid>
- <CAKMK7uHGNrgqjQh3DX4gChpNt+xhB_39sVrhdA3BFqnoW-ue2w@mail.gmail.com> <CA+ASDXPtWsZRTUmrGQKY2Sc-yaeg=e47QpkYWA=KpN5iYGafjQ@mail.gmail.com>
-In-Reply-To: <CA+ASDXPtWsZRTUmrGQKY2Sc-yaeg=e47QpkYWA=KpN5iYGafjQ@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 18 Nov 2021 07:39:34 +0100
-Message-ID: <CAKMK7uHS0vhZDk4d4MyBr1fJGitosmPXB21pJq6992nRCBnkoQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] drm/self_refresh: Disable self-refresh on input events
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        linux-rockchip@lists.infradead.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        Doug Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH Vx 1/1] f2fs: Avoid deadlock between writeback and
+ checkpoint
+Content-Language: en-US
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, niuzhiguo84@gmail.com
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Jing.Xia@unisoc.com
+References: <1636438608-27597-1-git-send-email-niuzhiguo84@gmail.com>
+ <YZU0TFBH6k2Q6fJZ@google.com>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <YZU0TFBH6k2Q6fJZ@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 8:37 PM Brian Norris <briannorris@chromium.org> wrote:
->
-> On Wed, Nov 17, 2021 at 11:12 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > Can you pls resend with dri-devel on cc? scripts/get_maintainers.pl
-> > should pick this up, you have all the maintainers but not the list.
->
-> Oops, I don't know how that happened. I guess I sometimes have to trim
-> get_maintainer output, since it likes to hoover up a bunch of
-> barely-relevant previous committers. I must have been too aggressive.
->
-> I'll plan on sending v2 to dri-devel, but let me know (privately if
-> you'd like) if you'd prefer a pure RESEND of v1.
+On 2021/11/18 0:56, Jaegeuk Kim wrote:
+> On 11/09, niuzhiguo84@gmail.com wrote:
+>> From: Zhiguo Niu <zhiguo.niu@unisoc.com>
+>>
+>> There could be a scenario as following:
+>> The inodeA and inodeB are in b_io queue of writeback
+>> inodeA : f2fs's node inode
+>> inodeB : a dir inode with only one dirty pages, and the node page
+>> of inodeB cached into inodeA
+>>
+>> writeback:
+>>
+>> wb_workfn
+>> wb_writeback
+>> blk_start_plug
+>>          loop {
+>>          queue_io
+>>          progress=__writeback_inodes_wb
+>>                  __writeback_single_inode
+>>                          do_writepages
+>>                                  f2fs_write_data_pages
+>>                                  wbc->pages_skipped +=get_dirty_pages
+>>                          inode->i_state &= ~dirty
+>>                  wrote++
+>>                  requeue_inode
+>>          }
+>> blk_finish_plug
+>>
+>> checkpoint:
+>>
+>> f2fs_write_checkpoint
+>> f2fs_sync_dirty_inodes
+>> filemap_fdatawrite
+>> do_writepages
+>> f2fs_write_data_pages
+>>          f2fs_write_single_data_page
+>>                  f2fs_do_write_data_page
+>>                          set_page_writeback
+>>                          f2fs_outplace_write_data
+>>                                  f2fs_update_data_blkaddr
+>>                                          f2fs_wait_on_page_writeback
+>>                  inode_dec_dirty_pages
+>>
+>> 1. Writeback thread flush inodeA, and push it's bio request in task's plug;
+>> 2. Checkpoint thread writes inodeB's dirty page, and then wait its node
+>>      page writeback cached into inodeA which is in writeback task's plug
+>> 3. Writeback thread flush inodeB and skip writing the dirty page as
+>>      wb_sync_req[DATA] > 0.
+>> 4. As none of the inodeB's page is marked as PAGECACHE_TAG_DIRTY, writeback
+>>      thread clear inodeB's dirty state.
+>> 5. Then inodeB is moved from b_io to b_dirty because of pages_skipped > 0
+>>      as checkpoint thread is stuck before dec dirty_pages.
+>>
+>> This patch collect correct pages_skipped according to the tag state in
+>> page tree of inode
+>>
+>> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+>> Signed-off-by: Jing Xia <jing.xia@unisoc.com>
+>> ---
+>>   fs/f2fs/data.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+>> index f4fd6c246c9a..e98628e3868c 100644
+>> --- a/fs/f2fs/data.c
+>> +++ b/fs/f2fs/data.c
+>> @@ -3237,7 +3237,9 @@ static int __f2fs_write_data_pages(struct address_space *mapping,
+>>   	return ret;
+>>   
+>>   skip_write:
+>> -	wbc->pages_skipped += get_dirty_pages(inode);
+>> +	wbc->pages_skipped +=
+>> +		mapping_tagged(inode->i_mapping, PAGECACHE_TAG_DIRTY) ?
+> 
+> Is there any race condition to get 0, if there's any dirty page? IOWs, it
 
-Nah just for next version is fine, assuming you include all the
-context in in-patch changelog and all that so new readers can catch
-up.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Quoted from Jing Xia's explanation:
+
+[T:writeback]				[T:checkpoint]
+					- do_writepages  -- sync write inodeB, inc wb_sync_req[DATA]
+					 - f2fs_write_data_pages
+					  - f2fs_write_single_data_page -- write last dirty page
+					   - f2fs_do_write_data_page
+					    - set_page_writeback  -- clear page dirty flag and
+					    PAGECACHE_TAG_DIRTY tag in radix tree
+					    - f2fs_outplace_write_data
+					     - f2fs_update_data_blkaddr
+					      - f2fs_wait_on_page_writeback -- wait NodeA to writeback here
+					   - inode_dec_dirty_pages
+bio contains NodeA was plugged in writeback threads
+- writeback_sb_inodes
+  - writeback_single_inode
+   - do_writepages
+    - f2fs_write_data_pages -- skip writepages due to wb_sync_req[DATA]
+     - wbc->pages_skipped += get_dirty_pages() -- PAGECACHE_TAG_DIRTY is not set but get_dirty_pages() returns one
+  - requeue_inode -- requeue inode to wb->b_dirty queue due to non-zero.pages_skipped
+
+> seems the current condition is just requeuing the inode as dirty, but next
+> flushing time will remove it from dirty list. Is this giving too much overheads?
+
+I prefer to let writeback thread call blk_flush_plug() after skipping
+writepages() due to wb_sync_req[DATA/NODE] check condition, thoughts?
+
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 9f754aaef558..b6e1ed73f8f5 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -3087,6 +3087,8 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
+  			/* give a priority to WB_SYNC threads */
+  			if (atomic_read(&sbi->wb_sync_req[DATA]) &&
+  					wbc->sync_mode == WB_SYNC_NONE) {
++				if (current->plug)
++					blk_flush_plug(current->plug, false);
+  				done = 1;
+  				break;
+  			}
+diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+index 556fcd8457f3..dd9a817d8dab 100644
+--- a/fs/f2fs/node.c
++++ b/fs/f2fs/node.c
+@@ -1946,6 +1946,8 @@ int f2fs_sync_node_pages(struct f2fs_sb_info *sbi,
+  			if (atomic_read(&sbi->wb_sync_req[NODE]) &&
+  					wbc->sync_mode == WB_SYNC_NONE) {
+  				done = 1;
++				if (current->plug)
++					blk_flush_plug(current->plug, false);
+  				break;
+  			}
+
+
+
+Thanks,
+
+> 
+>> +		get_dirty_pages(inode) : 0;
+>>   	trace_f2fs_writepages(mapping->host, wbc, DATA);
+>>   	return 0;
+>>   }
+>> -- 
+>> 2.28.0
