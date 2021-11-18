@@ -2,71 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B754563A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 20:45:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8D645639E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 20:45:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbhKRTso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 14:48:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233115AbhKRTsn (ORCPT
+        id S233030AbhKRTsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 14:48:37 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:48574 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232969AbhKRTsg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 14:48:43 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9730C061574;
-        Thu, 18 Nov 2021 11:45:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=YQZLKIAQX/7i026JYisn1BPQuqEVD/2BD06l661YaYw=;
-        t=1637264742; x=1638474342; b=fcrHXOD9MEyTVGT4c1p88yBQCT7kApzH1AE6DplKLlDa4nH
-        YilGlS5CgVU5ZwKmm6ri5lTjs2b4FL5b8D0Othp7Q+IzqniGpBpg0ko3wW2WqkMkDVCBjrL0L5IvJ
-        xiS/r66zY3sXdARTP9Q01S1DYJ3Wfp7GSrlKG64c5W9FSKLRFzI+hI0hEfLaptu4VO2TnLTI3+fsb
-        4l4Btr/vRewzUTX79R7tUOSiWUuSfsjz3mfHdmeQeOScvPPNdOolS1G/TyRX5E5qs9O9L12pjIhAG
-        2TY4THJg30iFcOEsD7M2GGtkCSB5MqXzuogSVhSOS2QF5PT5snB3ux7OhLL1is6Q==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.95)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1mnnLY-00H8Qc-40;
-        Thu, 18 Nov 2021 20:45:24 +0100
-Message-ID: <147e31ef85dbbdf87d6785b6a28229de81f8af6c.camel@sipsolutions.net>
-Subject: Re: [PATCH] mwl8k: Use struct_group() for memcpy() region
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Kees Cook <keescook@chromium.org>,
-        Lennert Buytenhek <buytenh@wantstofly.org>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        wengjianfeng <wengjianfeng@yulong.com>,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Allen Pais <allen.lkml@gmail.com>,
-        Zheyu Ma <zheyuma97@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Date:   Thu, 18 Nov 2021 20:45:22 +0100
-In-Reply-To: <20211118183700.1282181-1-keescook@chromium.org>
-References: <20211118183700.1282181-1-keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
+        Thu, 18 Nov 2021 14:48:36 -0500
+Received: from kbox (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5869320C7078;
+        Thu, 18 Nov 2021 11:45:35 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5869320C7078
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1637264735;
+        bh=A5p+9VafbOYligF8cdr2BF7SzLa5YXG1ybXA/Uh0I3s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F+m9m2db9AZT9P9drTtUvhVoeqrj4Gmx6iVVwPRL3p0and34iFNdiCcp0BVfw5zA/
+         94kUyj0iFjlpKflDyM5Vnd6E30Ow4tTVtoQC2eqPdEnuZ7ZHDlWm5khMYsOcSz7PSP
+         Q1Y9LQmBQyOvQvZm9AkVFX7rCOudWMVSORpmftwQ=
+Date:   Thu, 18 Nov 2021 11:45:26 -0800
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     mhiramat@kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 12/12] user_events: Validate user payloads for size
+ and null termination
+Message-ID: <20211118194514.GA1895@kbox>
+References: <20211116005047.1808-1-beaub@linux.microsoft.com>
+ <20211116005047.1808-13-beaub@linux.microsoft.com>
+ <20211116211150.GA2337@kbox>
+ <20211117205220.6d49f5b9@gandalf.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211117205220.6d49f5b9@gandalf.local.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-11-18 at 10:37 -0800, Kees Cook wrote:
+On Wed, Nov 17, 2021 at 08:52:20PM -0500, Steven Rostedt wrote:
+> On Tue, 16 Nov 2021 13:11:50 -0800
+> Beau Belgrave <beaub@linux.microsoft.com> wrote:
 > 
-> -	__u8 key_material[MAX_ENCR_KEY_LENGTH];
-> -	__u8 tkip_tx_mic_key[MIC_KEY_LENGTH];
-> -	__u8 tkip_rx_mic_key[MIC_KEY_LENGTH];
-> +	struct {
-> +			__u8 key_material[MAX_ENCR_KEY_LENGTH];
+> > On Mon, Nov 15, 2021 at 04:50:47PM -0800, Beau Belgrave wrote:
+> > > +static int user_event_validate(struct user_event *user, void *data, int len)
+> > > +{
+> > > +	struct list_head *head = &user->validators;
+> > > +	struct user_event_validator *validator;
+> > > +	void *pos, *end = data + len;
+> > > +	u16 *val, offset, size;
+> > > +
+> > > +	list_for_each_entry(validator, head, link) {
+> > > +		pos = data + validator->offset;
+> > > +		val = pos;
+> > > +
+> > > +		/* Already done min_size check, no bounds check here */
+> > > +		offset = *val++;
+> > > +		size = *val++;  
+> > 
+> > I believe I have these backwards, size should come first for both dyn
+> > and rel data. Is this correct?
 > 
+> it's size << 16 | offset;
+> 
+> 
+> > 
+> > > diff --git a/tools/testing/selftests/user_events/ftrace_test.c b/tools/testing/selftests/user_events/ftrace_test.c
+> > > index 9d53717139e6..bea694e9df8c 100644
+> > > --- a/tools/testing/selftests/user_events/ftrace_test.c
+> > > +++ b/tools/testing/selftests/user_events/ftrace_test.c
+> > > @@ -21,6 +21,11 @@ const char *status_file = "/sys/kernel/debug/tracing/user_events_status";
+> > >  const char *enable_file = "/sys/kernel/debug/tracing/events/user_events/__test_event/enable";
+> > >  const char *trace_file = "/sys/kernel/debug/tracing/trace";
+> > >  
+> > > +struct rel_loc {
+> > > +	__u16 offset;
+> > > +	__u16 size;
+> > > +} __packed;
+> > > +  
+> > 
+> > Same here.
+> 
+> I would not use pointer arithmetic or the above structure, as I'm not sure
+> they work the same for both big and little endian. It's best to just use
+> u32 and '|' (or) the two unsigned shorts into one integer.
+> 
+> -- Steve
 
-That got one tab too many?
+Got it, totally makes sense now, thank you!
 
-johannes
+-Beau
