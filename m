@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4301D4552BE
+	by mail.lfdr.de (Postfix) with ESMTP id D70AE4552C0
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 03:28:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241671AbhKRCbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 21:31:32 -0500
-Received: from mga18.intel.com ([134.134.136.126]:50723 "EHLO mga18.intel.com"
+        id S241714AbhKRCbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 21:31:34 -0500
+Received: from mga06.intel.com ([134.134.136.31]:50401 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240439AbhKRCbb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S241637AbhKRCbb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 17 Nov 2021 21:31:31 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10171"; a="220981333"
+X-IronPort-AV: E=McAfee;i="6200,9189,10171"; a="294911034"
 X-IronPort-AV: E=Sophos;i="5.87,243,1631602800"; 
-   d="scan'208";a="220981333"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 18:28:31 -0800
+   d="scan'208";a="294911034"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 18:28:30 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,243,1631602800"; 
-   d="scan'208";a="454878254"
+   d="scan'208";a="505372389"
 Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 17 Nov 2021 18:28:28 -0800
+  by fmsmga007.fm.intel.com with ESMTP; 17 Nov 2021 18:28:28 -0800
 Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mnXA3-0002Z3-BL; Thu, 18 Nov 2021 02:28:27 +0000
-Date:   Thu, 18 Nov 2021 10:27:42 +0800
+        id 1mnXA3-0002ZR-Jc; Thu, 18 Nov 2021 02:28:27 +0000
+Date:   Thu, 18 Nov 2021 10:28:19 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:perf/urgent] BUILD SUCCESS
- f3fd84a3b7754b60df67ebfe64e1d90623895111
-Message-ID: <6195ba1e.3lq6k1VExUeTOgnt%lkp@intel.com>
+Subject: [tip:sched/core] BUILD SUCCESS
+ cb0e52b7748737b2cf6481fdd9b920ce7e1ebbdf
+Message-ID: <6195ba43.Nt4h3bTojMoQYcEe%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,13 +39,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git perf/urgent
-branch HEAD: f3fd84a3b7754b60df67ebfe64e1d90623895111  x86/perf: Fix snapshot_branch_stack warning in VM
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+branch HEAD: cb0e52b7748737b2cf6481fdd9b920ce7e1ebbdf  psi: Fix PSI_MEM_FULL state when tasks are in memstall and doing reclaim
 
 elapsed time: 729m
 
-configs tested: 165
-configs skipped: 75
+configs tested: 177
+configs skipped: 3
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -58,6 +58,10 @@ arm                              allyesconfig
 arm                              allmodconfig
 i386                 randconfig-c001-20211117
 powerpc              randconfig-c003-20211117
+sh                ecovec24-romimage_defconfig
+m68k                          multi_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                      jornada720_defconfig
 sh                          rsk7269_defconfig
 riscv                            alldefconfig
 alpha                               defconfig
@@ -101,6 +105,10 @@ powerpc                     akebono_defconfig
 powerpc                      chrp32_defconfig
 powerpc                mpc7448_hpc2_defconfig
 sh                              ul2_defconfig
+sh                           se7724_defconfig
+arm                            mmp2_defconfig
+powerpc                         wii_defconfig
+arm                         lpc32xx_defconfig
 powerpc                    socrates_defconfig
 powerpc                    klondike_defconfig
 sh                          sdk7786_defconfig
@@ -118,6 +126,10 @@ xtensa                              defconfig
 arm                            mps2_defconfig
 arm                          collie_defconfig
 sh                        edosk7705_defconfig
+arm                       aspeed_g5_defconfig
+m68k                         amcore_defconfig
+ia64                             allyesconfig
+sh                         ecovec24_defconfig
 sh                             sh03_defconfig
 mips                     loongson1c_defconfig
 powerpc                   currituck_defconfig
@@ -146,7 +158,6 @@ arm                            dove_defconfig
 arm                  randconfig-c002-20211117
 ia64                             allmodconfig
 ia64                                defconfig
-ia64                             allyesconfig
 m68k                             allmodconfig
 m68k                                defconfig
 m68k                             allyesconfig
@@ -184,6 +195,7 @@ i386                 randconfig-a005-20211117
 i386                 randconfig-a001-20211117
 i386                 randconfig-a004-20211117
 i386                 randconfig-a002-20211117
+arc                  randconfig-r043-20211117
 riscv                    nommu_k210_defconfig
 riscv                            allyesconfig
 riscv                    nommu_virt_defconfig
