@@ -2,141 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADB5456204
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:11:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC4C5456207
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:11:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234323AbhKRSOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 13:14:10 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4109 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230446AbhKRSOJ (ORCPT
+        id S234332AbhKRSOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 13:14:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:46691 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234327AbhKRSOg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 13:14:09 -0500
-Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Hw7BP5mSyz67HxV;
-        Fri, 19 Nov 2021 02:10:21 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.20; Thu, 18 Nov 2021 19:11:06 +0100
-Received: from localhost (10.52.127.148) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Thu, 18 Nov
- 2021 18:11:06 +0000
-Date:   Thu, 18 Nov 2021 18:11:03 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-CC:     Olivier Moysan <olivier.moysan@foss.st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        "Wan Jiabing" <wanjiabing@vivo.com>, Xu Wang <vulab@iscas.ac.cn>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: Re: [PATCH] iio: adc: stm32: fix null pointer on defer_probe error
-Message-ID: <20211118181103.000054c7@Huawei.com>
-In-Reply-To: <45a5129a-c0b1-4a07-aef8-d6e0845c7b1a@pengutronix.de>
-References: <20211118123952.15383-1-olivier.moysan@foss.st.com>
-        <45a5129a-c0b1-4a07-aef8-d6e0845c7b1a@pengutronix.de>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; i686-w64-mingw32)
+        Thu, 18 Nov 2021 13:14:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637259095;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gtO9f9wMH7XMAgr69Sqq/ALOOvo4PzU6z/sVRo8aNSU=;
+        b=FIOTKiJOev7kWamQFSRoxW/hJ3tFacJ1nRlEFgOqcehObcnPIaTtnzIV+vi8HYEYeBeiwm
+        gf4OaK+f6TUmKYQT0Ed4jj4dMoXhIx3SB67dx0BAcs7EZ2gZSX0RqRanHDvyW2pHPE6S+w
+        ++LYUEEJRHgOA2RLxbQIXW5P5x0jxfA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-465-ybRe6V3oPH678MpH4akbJA-1; Thu, 18 Nov 2021 13:11:32 -0500
+X-MC-Unique: ybRe6V3oPH678MpH4akbJA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B4F3F1006AA1;
+        Thu, 18 Nov 2021 18:11:30 +0000 (UTC)
+Received: from dqiao.bos.com (unknown [10.22.10.130])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C28F760BF1;
+        Thu, 18 Nov 2021 18:11:29 +0000 (UTC)
+From:   Donghai Qiao <dqiao@redhat.com>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     mhocko@kernel.org, hannes@cmpxchg.org, guro@fb.com,
+        dqiao@redhat.com
+Subject: [PATCH] mm/page_counter: remove an incorrect call to propagate_protected_usage()
+Date:   Thu, 18 Nov 2021 13:11:25 -0500
+Message-Id: <20211118181125.3918222-1-dqiao@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.127.148]
-X-ClientProxiedBy: lhreml749-chm.china.huawei.com (10.201.108.199) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Nov 2021 13:51:44 +0100
-Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+The function propagate_protected_usage() is called to propagate the usage
+change in the page_counter structure. But there is call to this function
+from page_counter_try_charge() when there is actually no usage change.
+Hence this call should be removed.
 
-> Hello Olivier,
-> 
-> On 18.11.21 13:39, Olivier Moysan wrote:
-> > dev_err_probe() calls __device_set_deferred_probe_reason()
-> > on -EPROBE_DEFER error.
-> > If device pointer to driver core private structure is not initialized,
-> > a null pointer error occurs.
-> > This pointer is set too late on iio_device_register() call, for iio device.  
-> 
-> Even if it were set earlier, you should call dev_err_probe with the dev of
-> the probe that's currently running. Not any other devices you created since
-> then.
+Signed-off-by: Donghai Qiao <dqiao@redhat.com>
+---
+ mm/page_counter.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-+1 on that
-
-> 
-> > So use parent device instead for dev_err_probe() call.
-> > 
-> > Fixes: 0e346b2cfa85 ("iio: adc: stm32-adc: add vrefint calibration support")
-> > 
-
-No line break between these two tags.  Greg will reject a pull if there
-is one (and 0-day probably complain about it...)
-
-Jonathan
-
-
-> > Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
-> > ---
-> >  drivers/iio/adc/stm32-adc.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-> > index 7f1fb36c747c..14c7c9d390e8 100644
-> > --- a/drivers/iio/adc/stm32-adc.c
-> > +++ b/drivers/iio/adc/stm32-adc.c
-> > @@ -217,6 +217,7 @@ struct stm32_adc_cfg {
-> >  
-> >  /**
-> >   * struct stm32_adc - private data of each ADC IIO instance
-> > + * dev:			parent device
-> >   * @common:		reference to ADC block common data
-> >   * @offset:		ADC instance register offset in ADC block
-> >   * @cfg:		compatible configuration data
-> > @@ -243,6 +244,7 @@ struct stm32_adc_cfg {
-> >   * @int_ch:		internal channel indexes array
-> >   */
-> >  struct stm32_adc {
-> > +	struct device		*dev;  
-> 
-> Can't you use the parent pointer of the indio_dev?
-> 
-> >  	struct stm32_adc_common	*common;
-> >  	u32			offset;
-> >  	const struct stm32_adc_cfg	*cfg;
-> > @@ -1986,8 +1988,7 @@ static int stm32_adc_populate_int_ch(struct iio_dev *indio_dev, const char *ch_n
-> >  			/* Get calibration data for vrefint channel */
-> >  			ret = nvmem_cell_read_u16(&indio_dev->dev, "vrefint", &vrefint);
-> >  			if (ret && ret != -ENOENT) {
-> > -				return dev_err_probe(&indio_dev->dev, ret,
-> > -						     "nvmem access error\n");
-> > +				return dev_err_probe(adc->dev, ret, "nvmem access error\n");
-> >  			}
-> >  			if (ret == -ENOENT)
-> >  				dev_dbg(&indio_dev->dev, "vrefint calibration not found\n");
-> > @@ -2221,6 +2222,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
-> >  	init_completion(&adc->completion);
-> >  	adc->cfg = (const struct stm32_adc_cfg *)
-> >  		of_match_device(dev->driver->of_match_table, dev)->data;
-> > +	adc->dev = &pdev->dev;  
-> 
-> There's struct device *dev = &pdev->dev; defined earlier, so you can use dev instead.
-> 
-> >  
-> >  	indio_dev->name = dev_name(&pdev->dev);
-> >  	indio_dev->dev.of_node = pdev->dev.of_node;
-> >   
-> 
-> Cheers,
-> Ahmad
-> 
+diff --git a/mm/page_counter.c b/mm/page_counter.c
+index 7d83641eb86b..eb156ff5d603 100644
+--- a/mm/page_counter.c
++++ b/mm/page_counter.c
+@@ -120,7 +120,6 @@ bool page_counter_try_charge(struct page_counter *counter,
+ 		new = atomic_long_add_return(nr_pages, &c->usage);
+ 		if (new > c->max) {
+ 			atomic_long_sub(nr_pages, &c->usage);
+-			propagate_protected_usage(c, new);
+ 			/*
+ 			 * This is racy, but we can live with some
+ 			 * inaccuracy in the failcnt which is only used
+-- 
+2.27.0
 
