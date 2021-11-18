@@ -2,134 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD2045620B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:12:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D6C456219
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:13:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234358AbhKRSPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 13:15:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:56768 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234346AbhKRSPQ (ORCPT
+        id S232192AbhKRSQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 13:16:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231194AbhKRSQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 13:15:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637259135;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nxg/TVHdwtBQVY5nxbtP/+vp+jJ++dcyFK+gQZlfSsk=;
-        b=LWGgRMl4HltfVzBtK7tSkXuZ/1bONbTMeF/lWWv1iRPecWQY8Q+s/qjTNA30/LfKqJFxx0
-        BHprslz+XzV4IROrRiUESNmiSQI8LuN8vxu+WYFQVJfhIVE6fEHh15UUyMqHvBShMJoB3a
-        uiHovaLn1p0Aac9zIMfrdZck8D2d1nM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-385-8vrf8jOpPaerSCYES0oCrQ-1; Thu, 18 Nov 2021 13:12:14 -0500
-X-MC-Unique: 8vrf8jOpPaerSCYES0oCrQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0F504DF8A4;
-        Thu, 18 Nov 2021 18:12:13 +0000 (UTC)
-Received: from [10.22.16.126] (unknown [10.22.16.126])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 405FD104A9EE;
-        Thu, 18 Nov 2021 18:12:04 +0000 (UTC)
-Message-ID: <54f5bdcf-8b6e-0e53-8f28-5d5c3eb5f7ad@redhat.com>
-Date:   Thu, 18 Nov 2021 13:12:03 -0500
+        Thu, 18 Nov 2021 13:16:10 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0292AC061574;
+        Thu, 18 Nov 2021 10:13:10 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id w1so30906296edc.6;
+        Thu, 18 Nov 2021 10:13:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MR6HCnfEdOmSa0vPnzGfLi+AiErSezoUtjplUYba5T0=;
+        b=cuH4iWLjrrRh1KzLh8i/JeI3eRywIWW0hdf/W1EOFyQL6va1Dib4hhm/JQ9/DO15WY
+         dKP9Ps+1Cqmh41412VvGT0qJ7u3icE8JtkSGeeYtNPis6NNIFYr2EL22pelOiIMSUAUh
+         Xed4jPqYI1Wxx+lfFHvCAyjVNOT6h1FzMzlMO3KbkZIWT4UTbxt4Mwpwab23IvLdnT5A
+         yxiPl28LGfPJaxFMXLe9qJ2enHCwmxNC6uofGVqpItl21Kz40bpe8a61syr97SRJGam9
+         gjW4yHXs4u9sG16abDmYdJciap6Qdb+vqCCVDH1nJK7Q+Gqre4PxeU4h+4wzyNdg8/Ew
+         Z3DQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MR6HCnfEdOmSa0vPnzGfLi+AiErSezoUtjplUYba5T0=;
+        b=UTuSXlsmYJFJgFpk7dpkA1J9Rwn5H8FyhTbuhwTPp12lltUTIfneAgQQyr95YgBM2Q
+         MpYOULjK7mlKiEkI8xC0++f+LN1bW/IPlsDPObkcZwAs4T3dHGoVYTrTAoUzB9rFkTPf
+         JijVHNyceJ5ihlun4G9Ye5GXhWqbfrFKBqf6Lm98bF4On3nHWr+Z73QdxS1Zznb//9vF
+         s1pT7vIEOJY8KW7HKgno+b4TFJq0+Y0WXrLCxPg+SyIko3kLIicxCm/ZVpg3UDgXuLkv
+         ZVAzDyZKV27t77mcWubf3eEeZO/svIxQEtsa6oD8P3w3J76HbhBMlhhgc7xTDmavpbra
+         4l7Q==
+X-Gm-Message-State: AOAM530e1hBjLoVLuollpluQAteO/fePXM4nA8KYI29jzPTC1shvbnNC
+        VT+ov7bnQtwVll93U9Vx6aando2lVQs=
+X-Google-Smtp-Source: ABdhPJwfJBKGQyc19XG7oaA0PKZjf+OQoErav0ZNOQWItZ4EeiFQbBkugDFUyRXGS3Hb1BY6NshGqw==
+X-Received: by 2002:a17:906:4099:: with SMTP id u25mr1320210ejj.453.1637259187648;
+        Thu, 18 Nov 2021 10:13:07 -0800 (PST)
+Received: from crow.. ([95.87.219.163])
+        by smtp.gmail.com with ESMTPSA id d10sm224135eja.4.2021.11.18.10.13.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 10:13:07 -0800 (PST)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     viro@zeniv.linux.org.uk, ebiederm@xmission.com,
+        rostedt@goodmis.org, mingo@redhat.com, hagen@jauu.net,
+        rppt@kernel.org, James.Bottomley@HansenPartnership.com,
+        akpm@linux-foundation.org, vvs@virtuozzo.com, shakeelb@google.com,
+        christian.brauner@ubuntu.com, mkoutny@suse.com,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [RFC PATCH 0/4] namespacefs: Proof-of-Concept
+Date:   Thu, 18 Nov 2021 20:12:06 +0200
+Message-Id: <20211118181210.281359-1-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] locking/rwsem: Optimize down_read_trylock() under highly
- contended case
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Muchun Song <songmuchun@bytedance.com>
-Cc:     mingo@redhat.com, will@kernel.org, boqun.feng@gmail.com,
-        linux-kernel@vger.kernel.org, duanxiongchun@bytedance.com,
-        zhengqi.arch@bytedance.com
-References: <20211118094455.9068-1-songmuchun@bytedance.com>
- <YZZNv3JflBYwRjdd@hirez.programming.kicks-ass.net>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <YZZNv3JflBYwRjdd@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/21 07:57, Peter Zijlstra wrote:
-> On Thu, Nov 18, 2021 at 05:44:55PM +0800, Muchun Song wrote:
->
->> By using the above benchmark, the real executing time on a x86-64 system
->> before and after the patch were:
-> What kind of x86_64 ?
->
->>                    Before Patch  After Patch
->>     # of Threads      real          real     reduced by
->>     ------------     ------        ------    ----------
->>           1          65,373        65,206       ~0.0%
->>           4          15,467        15,378       ~0.5%
->>          40           6,214         5,528      ~11.0%
->>
->> For the uncontended case, the new down_read_trylock() is the same as
->> before. For the contended cases, the new down_read_trylock() is faster
->> than before. The more contended, the more fast.
->>
->> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->> ---
->>   kernel/locking/rwsem.c | 11 ++++-------
->>   1 file changed, 4 insertions(+), 7 deletions(-)
->>
->> diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
->> index c51387a43265..ef2b2a3f508c 100644
->> --- a/kernel/locking/rwsem.c
->> +++ b/kernel/locking/rwsem.c
->> @@ -1249,17 +1249,14 @@ static inline int __down_read_trylock(struct rw_semaphore *sem)
->>   
->>   	DEBUG_RWSEMS_WARN_ON(sem->magic != sem, sem);
->>   
->> -	/*
->> -	 * Optimize for the case when the rwsem is not locked at all.
->> -	 */
->> -	tmp = RWSEM_UNLOCKED_VALUE;
->> -	do {
->> +	tmp = atomic_long_read(&sem->count);
->> +	while (!(tmp & RWSEM_READ_FAILED_MASK)) {
->>   		if (atomic_long_try_cmpxchg_acquire(&sem->count, &tmp,
->> -					tmp + RWSEM_READER_BIAS)) {
->> +						    tmp + RWSEM_READER_BIAS)) {
->>   			rwsem_set_reader_owned(sem);
->>   			return 1;
->>   		}
->> -	} while (!(tmp & RWSEM_READ_FAILED_MASK));
->> +	}
->>   	return 0;
->>   }
-> This is weird... so the only difference is that leading load, but given
-> contention you'd expect that load to stall, also, given it's a
-> non-exclusive load, to get stolen by a competing CPU. Whereas the old
-> code would start with a cmpxchg, which obviously will also stall, but
-> does an exclusive load.
->
-> And the thinking is that the exclusive load and the presence of the
-> cmpxchg loop would keep the line on that CPU for a little while and
-> progress is made.
->
-> Clearly this isn't working as expected. Also I suppose it would need
-> wider testing...
+We introduce a simple read-only virtual filesystem that provides
+direct mechanism for examining the existing hierarchy of namespaces
+on the system. For the purposes of this PoC, we tried to keep the
+implementation of the pseudo filesystem as simple as possible. Only
+two namespace types (PID and UTS) are coupled to it for the moment.
+Nevertheless, we do not expect having significant problems when
+adding all other namespace types.
 
-For a contended case, doing a shared read first doing an exclusive 
-cmpxchg can certainly help to reduce cacheline trashing. I have no 
-objection to making this change.
+When fully functional, 'namespacefs' will allow the user to see all
+namespaces that are active on the system and to easily retrieve the
+specific data, managed by each namespace. For example the PIDs of
+all tasks enclosed in the individual PID namespaces. Any existing
+namespace on the system will be represented by its corresponding
+directory in namespacesfs. When a namespace is created a directory
+will be added. When a namespace is destroyed, its corresponding
+directory will be removed. The hierarchy of the directories will
+follow the hierarchy of the namespaces.
 
-I believe most of the other trylock functions do a read first before 
-doing an atomic operation. In essence, we assume the use of trylock 
-means the callers are expecting an contended lock whereas callers of 
-regular *lock() function are expecting an uncontended lock.
+One may argue that most of the information, being exposed by this
+new filesystem is already provided by 'procfs' in /proc/*/ns/. In
+fact, 'namespacefs' aims to be complementary to 'procfs', showing not
+only the individual connections between a process and its namespaces,
+but also the global hierarchy of these connections. As a usage example,
+before playing with 'namespacefs', I had no idea that the Chrome web
+browser creates a number of nested PID namespaces. I can only guess
+that each tab or each site is isolated in a nested namespace.
 
-Acked-by: Waiman Long <longman@redhat.com>
+Being able to see the structure of the namespaces can be very useful
+in the context of the containerized workloads. This will provide
+universal methods for detecting, examining and monitoring all sorts
+of containers running on the system, without relaying on any specific
+user-space software. Fore example, with the help of 'namespacefs',
+the simple Python script below can discover all containers, created
+by 'Docker' and Podman' (by all user) that are currently running on
+the system.
 
--Longman
+
+import sys
+import os
+import pwd
+
+path = '/sys/fs/namespaces'
+
+def pid_ns_tasks(inum):
+    tasks_file = '{0}/pid/{1}/tasks'.format(path ,inum)
+    with open(tasks_file) as f:
+        return [int(pid) for pid in f]
+
+def uts_ns_inum(pid):
+    uts_ns_file = '/proc/{0}/ns/uts'.format(pid)
+    uts_ns = os.readlink(uts_ns_file)
+    return  uts_ns.split('[')[1].split(']')[0]
+
+def container_info(pid_inum):
+    pids = pid_ns_tasks(inum)
+    name = ''
+    uid = -1
+
+    if len(pids):
+        uts_inum = uts_ns_inum(pids[0])
+        uname_file = '{0}/uts/{1}/uname'.format(path, uts_inum)
+        if os.path.exists(uname_file):
+            stat_info = os.stat(uname_file)
+            uid = stat_info.st_uid
+            with open(uname_file) as f:
+                name = f.read().split()[1]
+
+    return name, pids, uid
+
+if __name__ == "__main__":
+    pid_ns_list = os.listdir('{0}/pid'.format(path))
+    for inum in pid_ns_list:
+        name, pids, uid = container_info(inum)
+        if (name):
+            user = pwd.getpwuid(uid).pw_name
+            print("{0} -> pids: {1} user: {2}".format(name, pids, user))
+
+
+
+The idea for 'namespacefs' is inspired by the discussion of the
+'Container tracing' topic [1] during the 'Tracing micro-conference' [2]
+at LPC 2021.
+
+1. https://www.youtube.com/watch?v=09bVK3f0MPg&t=5455s
+2. https://www.linuxplumbersconf.org/event/11/page/104-accepted-microconferences
+
+
+Yordan Karadzhov (VMware) (4):
+  namespacefs: Introduce 'namespacefs'
+  namespacefs: Add methods to create/remove PID namespace directories
+  namespacefs: Couple namespacefs to the PID namespace
+  namespacefs: Couple namespacefs to the UTS namespace
+
+ fs/Kconfig                  |   1 +
+ fs/Makefile                 |   1 +
+ fs/namespacefs/Kconfig      |   6 +
+ fs/namespacefs/Makefile     |   4 +
+ fs/namespacefs/inode.c      | 410 ++++++++++++++++++++++++++++++++++++
+ include/linux/namespacefs.h |  73 +++++++
+ include/linux/ns_common.h   |   4 +
+ include/uapi/linux/magic.h  |   2 +
+ kernel/pid_namespace.c      |   9 +
+ kernel/utsname.c            |   9 +
+ 10 files changed, 519 insertions(+)
+ create mode 100644 fs/namespacefs/Kconfig
+ create mode 100644 fs/namespacefs/Makefile
+ create mode 100644 fs/namespacefs/inode.c
+ create mode 100644 include/linux/namespacefs.h
+
+-- 
+2.33.1
 
