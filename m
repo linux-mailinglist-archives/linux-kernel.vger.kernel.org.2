@@ -2,59 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79C84563FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 21:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7923C4563FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 21:23:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233895AbhKRUZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 15:25:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40928 "EHLO
+        id S231546AbhKRU0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 15:26:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230205AbhKRUZU (ORCPT
+        with ESMTP id S230205AbhKRU0i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 15:25:20 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F672C06173E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 12:22:20 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id g28so6471158pgg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 12:22:20 -0800 (PST)
+        Thu, 18 Nov 2021 15:26:38 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2010BC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 12:23:38 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id k4so6243294plx.8
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 12:23:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=5NN+1nK45BHSkImYf6ZodrZEc2yKCKofH6gEEO0/JrA=;
-        b=Hhu4lPecOWYqSDmCEtuCIv9aoB7v58qsCp5npK+joXCK1vErdgAydRN0rnIgMZ0jKy
-         LWxOM4gipBBrs0s1n+yw8QWm1M5kwEsLxxwBenmXR07glvDR2phzg5lB07Xg8MtoyX8X
-         H4u48vBszumbfva6YQivX0MIcwgplnPBtANJI=
+        bh=IQNsqAqVViEU3XvBO/CRhKayo7Uy9hYK0KAzIytsmBA=;
+        b=HooZPLmEmuWp0i73mi2Xmp58mGSg0YRZRUfaTTR8lk/sRwRpp6XrfKzpRO/kMQHO7l
+         f9Lwg74kAODtdQvYU2rGt0M1rYl0JffCJwA9YijRev1D/7yvXJlslbRyJgjAH32wwAZR
+         B/b0NKEfnM/5U8v359vYnvEUV/ozCefq0OTGQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=5NN+1nK45BHSkImYf6ZodrZEc2yKCKofH6gEEO0/JrA=;
-        b=qeXjJnOI+ADIpY8r/s7owjNuvYw8j5Y91+pZLFwoBZ7CwzQWs/zKFU2f3UEltLTsvG
-         igwaQvetEHdPUFyiCmLVHHggW7B0d8FtN2mZsvhNZMCnWKos+nBowRPclW4bUaXVgRuU
-         iK6n9e3XzVN9aAoAC+eSdVU/oArGARbx4vlw6+X9USu4D6nySRhZSCQ64u9SoOu+e2vB
-         BP7jbzuT6vHm2l0cDgdnw9Rh0CWjb7U0fkvBWz2hCBBY3vcS3ceQi7cPezyk3C2TTmDG
-         stK7TQ/CjN/IL9kpEuBUtZY5YZNdheLXyMJSEsN0M+MMx5nuSNj2+xzV7RSpWmkcjG7P
-         xdyQ==
-X-Gm-Message-State: AOAM5307eHwKz5rhHtXyTm3jrwGLeNwK8VLBu019CjDQXl897YGNIAU/
-        O/WMrk5ZPMc+CH/WFBXE/edhjw==
-X-Google-Smtp-Source: ABdhPJxnlerFWtMMvQznBjcjaOTIWk+vb2WlXHeUEB4sKBD875o+SosCQnWomCv9gGMS9/cK1Pgp2Q==
-X-Received: by 2002:a63:8ac3:: with SMTP id y186mr13439232pgd.444.1637266939652;
-        Thu, 18 Nov 2021 12:22:19 -0800 (PST)
+        bh=IQNsqAqVViEU3XvBO/CRhKayo7Uy9hYK0KAzIytsmBA=;
+        b=aJ2QnXtLSgpfOXrxrmhH/1OyH5bWVWFOttZam/9Sezk93EAwjW0D382dDSCqW9PIKy
+         t/Kbwec1VyF1/Seb3gDW1K4JPkGbHfM5QuOntljSTT5scGxgPG9nREyw4kl4Ck+0DNHb
+         Bvb/tWzLhP++A0xkbL4olH7gUGgDYM8TCfUjmI3Jeuhf2QBzJXCkCxAnAATP8zVgDlGr
+         uecjaRnBYWFJ055lCH0YI0C8qIf7iJWtgj9DVLc0s5FutS55rz+v1fa8pDH0Bktr+j6x
+         9Zqk/+/msQL3C2zZESMJw5CwTYEIj7XkRrQ4cjJqkMKhbc4bkpHrzfk87hA0GYi5SwOa
+         dPXg==
+X-Gm-Message-State: AOAM530tsXMjjryF0oNqp3wZ7a1PqiDYuzusgpiwo5R+ijft9yQpLx0q
+        WiJI+ojIzAdBZ3RF9bkZ0TqPpA==
+X-Google-Smtp-Source: ABdhPJypqzdGLd0A00SSS7G3WjBvbGDWJFvBCPFhTOnBO9Zy8s/HE2BF+uUxaJp1pxzcyn9aKmUXmQ==
+X-Received: by 2002:a17:90b:4b09:: with SMTP id lx9mr14063965pjb.100.1637267017586;
+        Thu, 18 Nov 2021 12:23:37 -0800 (PST)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t8sm384779pgk.66.2021.11.18.12.22.19
+        by smtp.gmail.com with ESMTPSA id y8sm461344pfi.56.2021.11.18.12.23.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 12:22:19 -0800 (PST)
+        Thu, 18 Nov 2021 12:23:37 -0800 (PST)
 From:   Kees Cook <keescook@chromium.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] tracing: Use memset_startat() to zero struct trace_iterator
-Date:   Thu, 18 Nov 2021 12:22:17 -0800
-Message-Id: <20211118202217.1285588-1-keescook@chromium.org>
+To:     Potnuri Bharat Teja <bharat@chelsio.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Raju Rangoju <rajur@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] iw_cxgb4: Use memset_startat() for cpl_t5_pass_accept_rpl
+Date:   Thu, 18 Nov 2021 12:23:35 -0800
+Message-Id: <20211118202335.1285836-1-keescook@chromium.org>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=959; h=from:subject; bh=Or3Zz/FgWlK+lUON8T4CDH2/5TJ3uqemt7E5bllyab4=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhlrX4AxQyT+rUJsTyDxvi/eHEapUCKtkKsFBEtfT8 Sdx77Y2JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZa1+AAKCRCJcvTf3G3AJi/aEA CMGD3cq8RZKap2de38j9tpuhhpskiCG+hDT0vKa5qSFmoDNRV/RxfJP7+mHHpaTBttUVfkCYaY7Exo kFqF7/M7219agIwGswmRogk7vcNAdJdJ1PjjkVTHv6mNfJ0Vi9GZa9diLFyoN4ZhXX3DgMV6c5BJQI 5HIJEZbU7bBvSHWL7f2l3pqn0kncWj0ifsOcXM01QRiozID6T/zogR8EZX49jWJNwqTAsaSmTiUF68 POybeb3iYyVH3WI0wutv/L28abFwq4hD02Lkn+RIcaZ3S1khaJWxpjz8vFPE7VCcMc4BKQ5mqbaSwH niZ/lFPN8et7i2z1S64TWtRzYlysHgsGgLnfaVPqd3r0hwUXHuwRAGyZJY66bQgb2DWEtywn17WNH+ 3k+a4mSJEh78aTtIakEefSCBiZJiTpV5Cek19kpjakGMmu8TNz/g/dxAYa+evdDt9oOafHThkQ+BiP 5BbLqy1QePQNaJa9Sxmra/T4zwVH9EmGZWwFtOsRxuLIxN9Yyr5MVZ2kZSMssJ6rma1YI+IkUNl5+c Q21Feu8znWKUFqtaWuwnOPoS5TuioH5mV58BLZxSy9zvZdQbgF2yTz7ioijGEoEfT+CA2Eww6DxvhR ZxYlb1LjTiDSRWrEx5smnAUyzIIwGUURNWdorXV13OKdGk/8HNsfHxz+TaTg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2101; h=from:subject; bh=r0RjNW1nt8hO6RUISrpRK9oSUV76aQP0ukBh+E6zpXY=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhlrZHk5MDbm9O/fZR6Lin9O4U7uvALO7jxjVNquJ+ nX+c/BGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZa2RwAKCRCJcvTf3G3AJtLoD/ 0VMGNmHYtW3sXAkw7Jp68P4uEZynPoPbYo+O7pExC/ORBNQ5LW+o2sSbBuNdf6eokFzIAbbC7h7ICk NxU/WzUJAcRUTXyDDIns8RorZCTZdXlIN2s/M2qUuQ0ARja4ngwvvVkq9Rmy6v5vn5aJ1We3vTQdiU BEVvE+Shy5Drh2cwZkOCVkvnkdv1lIXgjcueAV+Ugh1qTpnCsG/ymoeMsaOxeal5Bns0kerpAMsX7N zh2/OePfy/6C0VYeL5fczA434KVY6g2kg77hxxZH5inhE1bn9+lLAHLYliAEJzsriuV5kIeCMYVmZO IV4JmFxsrB19LnGF5t3p59UjxIBweNfw3ced7MF8PI9GBkQfRGNeMipEUvhXfQcTFg/fH6n5xHgPaQ HjKQckFssw2aJWJ0/lxDWN7BkLaTHgM/WfevzpljjNmsQ13ByOIQMLrEFcRu47Wj1FppcCSA7bB5wW K8dsdcfXUmBLKnWYC9FVH8+/CQRwX5QOU9/qFTAgoCOWpso8n5tBeky/DNNMtHgLh3tQbsFz+tQLpr EVj9J07u13wziRTjKbUUDCoSigImU24zYnWqyGyIxI0PokOHwphNpTrw0jP4ertITdfff0SI7KKek5 bTPcNg4b7lj7qH54hf0m4DJLIBngP3HKk6vZ0PJ0viFDFT01pw0rcCmsoSPw==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -65,29 +71,55 @@ In preparation for FORTIFY_SOURCE performing compile-time and run-time
 field bounds checking for memset(), avoid intentionally writing across
 neighboring fields.
 
-Use memset_startat() to avoid confusing memset() about writing beyond
-the target struct member.
+Use memset_startat() so memset() doesn't get confused about writing
+beyond the destination member that is intended to be the starting point
+of zeroing through the end of the struct. Additionally, since everything
+appears to perform a roundup (including allocation), just change the
+size of the struct itself and add a build-time check to validate the
+expected size.
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- kernel/trace/trace.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/infiniband/hw/cxgb4/cm.c            | 5 +++--
+ drivers/net/ethernet/chelsio/cxgb4/t4_msg.h | 2 +-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index f9139dc1262c..e3c80cfd4eec 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -6706,9 +6706,7 @@ tracing_read_pipe(struct file *filp, char __user *ubuf,
- 		cnt = PAGE_SIZE - 1;
+diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
+index 913f39ee4416..c16017f6e8db 100644
+--- a/drivers/infiniband/hw/cxgb4/cm.c
++++ b/drivers/infiniband/hw/cxgb4/cm.c
+@@ -2471,7 +2471,8 @@ static int accept_cr(struct c4iw_ep *ep, struct sk_buff *skb,
+ 	skb_get(skb);
+ 	rpl = cplhdr(skb);
+ 	if (!is_t4(adapter_type)) {
+-		skb_trim(skb, roundup(sizeof(*rpl5), 16));
++		BUILD_BUG_ON(sizeof(*rpl5) != roundup(sizeof(*rpl5), 16));
++		skb_trim(skb, sizeof(*rpl5));
+ 		rpl5 = (void *)rpl;
+ 		INIT_TP_WR(rpl5, ep->hwtid);
+ 	} else {
+@@ -2487,7 +2488,7 @@ static int accept_cr(struct c4iw_ep *ep, struct sk_buff *skb,
+ 		opt2 |= CONG_CNTRL_V(CONG_ALG_TAHOE);
+ 		opt2 |= T5_ISS_F;
+ 		rpl5 = (void *)rpl;
+-		memset(&rpl5->iss, 0, roundup(sizeof(*rpl5)-sizeof(*rpl), 16));
++		memset_after(rpl5, 0, iss);
+ 		if (peer2peer)
+ 			isn += 4;
+ 		rpl5->iss = cpu_to_be32(isn);
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h b/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h
+index fed5f93bf620..26433a62d7f0 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h
++++ b/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h
+@@ -497,7 +497,7 @@ struct cpl_t5_pass_accept_rpl {
+ 	__be32 opt2;
+ 	__be64 opt0;
+ 	__be32 iss;
+-	__be32 rsvd;
++	__be32 rsvd[3];
+ };
  
- 	/* reset all but tr, trace, and overruns */
--	memset(&iter->seq, 0,
--	       sizeof(struct trace_iterator) -
--	       offsetof(struct trace_iterator, seq));
-+	memset_startat(iter, 0, seq);
- 	cpumask_clear(iter->started);
- 	trace_seq_init(&iter->seq);
- 	iter->pos = -1;
+ struct cpl_act_open_req {
 -- 
 2.30.2
 
