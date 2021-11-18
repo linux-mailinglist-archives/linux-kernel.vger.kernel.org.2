@@ -2,232 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBFA456315
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 20:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 518DA456322
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 20:06:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbhKRTGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 14:06:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbhKRTGf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 14:06:35 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70078C06173E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 11:03:35 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id e9-20020a170902ed8900b00143a3f40299so3412109plj.20
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 11:03:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=HbbnT4g8uYXIZ4nFA7Y+X8aSEdLIcDyoD9XMwtQbx1Y=;
-        b=fiLii7/mlsjqDi+U5IhIH5ww75jnDR7U36Nl3na2PjrYgnrUU/u7BbXxbzFkWlv5UW
-         CkVw7JSRYSr2XsT/3ektJIPSnsc1Bq8uoS+VDrrWWH/9Gz1ZdODjmMAeET5gOQBRL2mm
-         Ao6KoZj/CYRoLRA29CldVMS4ySGHVr4uGIDyDXQqtJX//C2Insn3nooIRJ6CsMMxfx1w
-         GhCDlHK7qqz2sxKQoa4ifFXCg4if/ZPJs+E/q79WIqx+zEAn/fQ6PrOcIwG9Q67SzszD
-         Ki01XWPPeQimrjSp4J4vbK7t9XWqQ+hdOhac3ytkF0wVCq3GO7WxWloNQzyzrHFsnsqr
-         E8IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=HbbnT4g8uYXIZ4nFA7Y+X8aSEdLIcDyoD9XMwtQbx1Y=;
-        b=eddPL2xBtkZ2zRRqPKKv/1HYTuhdF49XE3toGWbdTR9Uv94IbD2RDiJOolPUOn2Xo9
-         Dc+cLl/Yi3XIIcC6I3ut7NBIkLuMK9YBYFJCS1jWvgIrc4uuMR89ZIXi7zpiNJv71SKe
-         /QPG2ksgZ/BK6GMgtuF7EKy5CTyzSzBO6y5QyVySJH7gdDBa7LyPhw8blmKjFv0xdtjS
-         h7cMf7HApCGM1a9NMs6U7YQMOmqXZ88W7d0H1WsOs6zt0dmF0RaiJXXtIYyI7fO1UayZ
-         u2oOAo45oG1UQ2t7qNxcZJAAP0uD7jV5zEAlchKm42omVScDbzd+j5rsCVSFi3jO9fkT
-         s7XA==
-X-Gm-Message-State: AOAM532PbdWH5d9APQp4OuVTy43PehrBJKS+NgSQvLS1AdnE5iQYgT76
-        4YMboFQad8XGy1pERv9FzTJe12GI5kApYw==
-X-Google-Smtp-Source: ABdhPJzFkgFOA9pRhwhquQr18CIg/N87lwp4HnotuWd+w1xAo93fsID55xxbHcJjm9EGpCv9FXuq/HV+jp44VQ==
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:b453:daa7:1a43:6c62])
- (user=dlatypov job=sendgmr) by 2002:a17:90b:3a89:: with SMTP id
- om9mr13123321pjb.99.1637262214821; Thu, 18 Nov 2021 11:03:34 -0800 (PST)
-Date:   Thu, 18 Nov 2021 11:03:29 -0800
-Message-Id: <20211118190329.1925388-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH] kunit: tool: reconfigure when the used kunitconfig changes
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S232547AbhKRTJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 14:09:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232137AbhKRTJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 14:09:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1A19611C0;
+        Thu, 18 Nov 2021 19:06:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637262363;
+        bh=K0dhONGx5eh8ZXaYYjtDkxxtM9Z92WwRmibNsJcJ738=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=EKEu5DziBC2A7SyJ4RLec0HqRTsc2ECO9INuaYkhiTobP7At82tUH12VdGzvsWcym
+         ANtj9KMhL9xoAvioDuBoyMZ0Wq2AP+w0de6muBrT+3UJlxzwF8lZ/qpI1kZm5ty+Sy
+         IhpNJJ9qqd9sdU2EqsuXxK/vRjONrsDXVlXgcsID7QJt6fCYrpr6XM1sYTv365fNuN
+         mg8LiajK4q1KI7z+5ynVlO2yDARalaFXHwOR3fIbEWOIZVk2KU4se5ja15A2UEdvKd
+         l74ebi6Z1uANA8KKEKa98/qtRiCIEkjmg/WQTFBvpqLgm6J+OVKLusAgkHozs2jDtP
+         uJyiWXl8qwj/g==
+From:   Mark Brown <broonie@kernel.org>
+To:     Sameer Pujar <spujar@nvidia.com>, lgirdwood@gmail.com,
+        perex@perex.cz, tiwai@suse.com
+Cc:     linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
+        jonathanh@nvidia.com, thierry.reding@gmail.com,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <1637219231-406-1-git-send-email-spujar@nvidia.com>
+References: <1637219231-406-1-git-send-email-spujar@nvidia.com>
+Subject: Re: [PATCH v3 00/16] Kcontrol get/put cleanup in Tegra drivers
+Message-Id: <163726236152.95988.1168935629731605987.b4-ty@kernel.org>
+Date:   Thu, 18 Nov 2021 19:06:01 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Problem: currently, if you remove something from your kunitconfig,
-kunit.py will not regenerate the .config file.
-The same thing happens if you did --kunitconfig_add=CONFIG_KASAN=y [1]
-and then ran again without it. Your new run will still have KASAN.
+On Thu, 18 Nov 2021 12:36:55 +0530, Sameer Pujar wrote:
+> There are two cleanups in the series:
+>  1. Use correct value type for enum controls. This is suggested by
+>     Takashi during review of v2.
+> 
+>  2. This series fixes kcontrol put callback in some of the Tegra drivers
+>     which are used on platforms based on Tegra210 and later. The callback
+>     is expected to return 1 whenever the HW update is done.
+> 
+> [...]
 
-The reason is that kunit.py won't regenerate the .config file if it's a
-superset of the kunitconfig. This speeds it up a bit for iterating.
+Applied to
 
-This patch adds an additional check that forces kunit.py to regenerate
-the .config file if the current kunitconfig doesn't match the previous
-one.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
 
-What this means:
-* deleting entries from .kunitconfig works as one would expect
-* dropping  a --kunitconfig_add also triggers a rebuild
-* you can still edit .config directly to turn on new options
+Thanks!
 
-We implement this by creating a `last_used_kunitconfig` file in the
-build directory (so .kunit, by default) after we generate the .config.
-When comparing the kconfigs, we compare python sets, so duplicates and
-permutations don't trip us up.
+[01/16] ASoC: tegra: Fix wrong value type in ADMAIF
+        commit: 884c6cb3b7030f75c46e55b9e625d2372708c306
+[02/16] ASoC: tegra: Fix wrong value type in I2S
+        commit: 8a2c2fa0c5331445c801e9241f2bb4e0e2a895a8
+[03/16] ASoC: tegra: Fix wrong value type in DMIC
+        commit: 559d234569a998a4004de1bd1f12da5487fb826e
+[04/16] ASoC: tegra: Fix wrong value type in DSPK
+        commit: 3aa0d5c8bb3f5ef622ec2764823f551a1f630711
+[05/16] ASoC: tegra: Fix wrong value type in SFC
+        commit: 42afca1a65661935cdd54d2e0c5d0cc2426db7af
+[06/16] ASoC: tegra: Fix wrong value type in MVC
+        commit: 6762965d0214df474e3a58e1d4d3ab004c5da0ea
+[07/16] ASoC: tegra: Fix kcontrol put callback in ADMAIF
+        commit: e2b87a18a60c02d0dcd1de801d669587e516cc4d
+[08/16] ASoC: tegra: Fix kcontrol put callback in I2S
+        commit: f21a9df3f7cb0005947679d7b9237c90574e229a
+[09/16] ASoC: tegra: Fix kcontrol put callback in DMIC
+        commit: a347dfa10262fa0a10e2b1970ea0194e3d4a3251
+[10/16] ASoC: tegra: Fix kcontrol put callback in DSPK
+        commit: d6202a57e79d102271d38c34481fedc9d4c79694
+[11/16] ASoC: tegra: Fix kcontrol put callback in AHUB
+        commit: a4e37950c9e9b126f9cbee79b8ab94a94646dcf1
+[12/16] ASoC: tegra: Fix kcontrol put callback in MVC
+        commit: c7b34b51bbac6ab64e873f6c9bd43564a7442e33
+[13/16] ASoC: tegra: Fix kcontrol put callback in SFC
+        commit: b31f8febd1850bbe74aba184779ec54552d92752
+[14/16] ASoC: tegra: Fix kcontrol put callback in AMX
+        commit: 8db78ace1ba897302131422ce15c5eb04510cef8
+[15/16] ASoC: tegra: Fix kcontrol put callback in ADX
+        commit: 3c97881b8c8a2aa8afd4d7a379b7ff03884c9e4a
+[16/16] ASoC: tegra: Fix kcontrol put callback in Mixer
+        commit: 8cf72c4e75a0265135d34a8e29224b4c1e92b51c
 
-The majority of this patch is adding unit tests for the existing logic
-and for the new case where `last_used_kunitconfig` differs.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-[1] https://lore.kernel.org/linux-kselftest/20211106013058.2621799-2-dlatypov@google.com/
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
- Documentation/dev-tools/kunit/start.rst |  8 ++---
- tools/testing/kunit/kunit_kernel.py     | 36 ++++++++++++++-------
- tools/testing/kunit/kunit_tool_test.py  | 43 +++++++++++++++++++++++++
- 3 files changed, 72 insertions(+), 15 deletions(-)
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-diff --git a/Documentation/dev-tools/kunit/start.rst b/Documentation/dev-tools/kunit/start.rst
-index 1e00f9226f74..0a5e65540974 100644
---- a/Documentation/dev-tools/kunit/start.rst
-+++ b/Documentation/dev-tools/kunit/start.rst
-@@ -50,10 +50,10 @@ It'll warn you if you haven't included the dependencies of the options you're
- using.
- 
- .. note::
--   Note that removing something from the ``.kunitconfig`` will not trigger a
--   rebuild of the ``.config`` file: the configuration is only updated if the
--   ``.kunitconfig`` is not a subset of ``.config``. This means that you can use
--   other tools (such as make menuconfig) to adjust other config options.
-+   If you change the ``.kunitconfig``, kunit.py will trigger a rebuild of the
-+   ``.config`` file. But you can edit the ``.config`` file directly or with
-+   tools like ``make menuconfig O=.kunit``. As long as its a superset of
-+   ``.kunitconfig``, kunit.py won't overwrite your changes.
- 
- 
- Running the tests (KUnit Wrapper)
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index 350883672be0..8a6e0ee88f3d 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -21,6 +21,7 @@ import qemu_config
- 
- KCONFIG_PATH = '.config'
- KUNITCONFIG_PATH = '.kunitconfig'
-+OLD_KUNITCONFIG_PATH = 'last_used_kunitconfig'
- DEFAULT_KUNITCONFIG_PATH = 'tools/testing/kunit/configs/default.config'
- BROKEN_ALLCONFIG_PATH = 'tools/testing/kunit/configs/broken_on_uml.config'
- OUTFILE_PATH = 'test.log'
-@@ -289,24 +290,37 @@ class LinuxSourceTree(object):
- 		except ConfigError as e:
- 			logging.error(e)
- 			return False
--		return self.validate_config(build_dir)
-+		if not self.validate_config(build_dir):
-+			return False
-+
-+		old_path = get_file_path(build_dir, OLD_KUNITCONFIG_PATH)
-+		os.remove(old_path)  # write_to_file appends to the file
-+		self._kconfig.write_to_file(old_path)
-+		return True
-+
-+	def _kconfig_changed(self, build_dir: str) -> bool:
-+		old_path = get_file_path(build_dir, OLD_KUNITCONFIG_PATH)
-+		if not os.path.exists(old_path):
-+			return False
-+
-+		old_kconfig = kunit_config.parse_file(old_path)
-+		return old_kconfig.entries() != self._kconfig.entries()
- 
- 	def build_reconfig(self, build_dir, make_options) -> bool:
- 		"""Creates a new .config if it is not a subset of the .kunitconfig."""
- 		kconfig_path = get_kconfig_path(build_dir)
--		if os.path.exists(kconfig_path):
--			existing_kconfig = kunit_config.parse_file(kconfig_path)
--			self._ops.make_arch_qemuconfig(self._kconfig)
--			if not self._kconfig.is_subset_of(existing_kconfig):
--				print('Regenerating .config ...')
--				os.remove(kconfig_path)
--				return self.build_config(build_dir, make_options)
--			else:
--				return True
--		else:
-+		if not os.path.exists(kconfig_path):
- 			print('Generating .config ...')
- 			return self.build_config(build_dir, make_options)
- 
-+		existing_kconfig = kunit_config.parse_file(kconfig_path)
-+		self._ops.make_arch_qemuconfig(self._kconfig)
-+		if self._kconfig.is_subset_of(existing_kconfig) and not self._kconfig_changed(build_dir):
-+			return True
-+		print('Regenerating .config ...')
-+		os.remove(kconfig_path)
-+		return self.build_config(build_dir, make_options)
-+
- 	def build_kernel(self, alltests, jobs, build_dir, make_options) -> bool:
- 		try:
- 			if alltests:
-diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-index 7e42a7c27987..8cd8d53e3d24 100755
---- a/tools/testing/kunit/kunit_tool_test.py
-+++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -358,6 +358,49 @@ class LinuxSourceTreeTest(unittest.TestCase):
- 			with open(kunit_kernel.get_outfile_path(build_dir), 'rt') as outfile:
- 				self.assertEqual(outfile.read(), 'hi\nbye\n', msg='Missing some output')
- 
-+	def test_build_reconfig_no_config(self):
-+		with tempfile.TemporaryDirectory('') as build_dir:
-+			with open(kunit_kernel.get_kunitconfig_path(build_dir), 'w') as f:
-+				f.write('CONFIG_KUNIT=y')
-+
-+			tree = kunit_kernel.LinuxSourceTree(build_dir)
-+			mock_build_config = mock.patch.object(tree, 'build_config').start()
-+
-+			# Should generate the .config
-+			self.assertTrue(tree.build_reconfig(build_dir, make_options=[]))
-+			mock_build_config.assert_called_once_with(build_dir, [])
-+
-+	def test_build_reconfig_existing_config(self):
-+		with tempfile.TemporaryDirectory('') as build_dir:
-+			# Existing .config is a superset, should not touch it
-+			with open(kunit_kernel.get_kunitconfig_path(build_dir), 'w') as f:
-+				f.write('CONFIG_KUNIT=y')
-+			with open(kunit_kernel.get_kconfig_path(build_dir), 'w') as f:
-+				f.write('CONFIG_KUNIT=y\nCONFIG_KUNIT_TEST=y')
-+
-+			tree = kunit_kernel.LinuxSourceTree(build_dir)
-+			mock_build_config = mock.patch.object(tree, 'build_config').start()
-+
-+			self.assertTrue(tree.build_reconfig(build_dir, make_options=[]))
-+			self.assertEqual(mock_build_config.call_count, 0)
-+
-+	def test_build_reconfig_remove_option(self):
-+		with tempfile.TemporaryDirectory('') as build_dir:
-+			# We removed CONFIG_KUNIT_TEST=y from our .kunitconfig...
-+			with open(kunit_kernel.get_kunitconfig_path(build_dir), 'w') as f:
-+				f.write('CONFIG_KUNIT=y')
-+			with open(kunit_kernel.get_file_path(build_dir, kunit_kernel.OLD_KUNITCONFIG_PATH), 'w') as f:
-+				f.write('CONFIG_KUNIT=y\nCONFIG_KUNIT_TEST=y')
-+			with open(kunit_kernel.get_kconfig_path(build_dir), 'w') as f:
-+				f.write('CONFIG_KUNIT=y\nCONFIG_KUNIT_TEST=y')
-+
-+			tree = kunit_kernel.LinuxSourceTree(build_dir)
-+			mock_build_config = mock.patch.object(tree, 'build_config').start()
-+
-+			# ... so we should trigger a call to build_config()
-+			self.assertTrue(tree.build_reconfig(build_dir, make_options=[]))
-+			mock_build_config.assert_called_once_with(build_dir, [])
-+
- 	# TODO: add more test cases.
- 
- 
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-base-commit: 4770a2c00c390b88d33f24fb0b8b386535970ffc
--- 
-2.34.0.rc2.393.gf8c9666880-goog
-
+Thanks,
+Mark
