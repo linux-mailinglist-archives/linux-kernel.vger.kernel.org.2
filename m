@@ -2,215 +2,390 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 163C845518B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 01:13:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA3A4551A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 01:28:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241838AbhKRAQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 19:16:16 -0500
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:13464 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241818AbhKRAQN (ORCPT
+        id S241912AbhKRAb3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Nov 2021 19:31:29 -0500
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:44619 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232147AbhKRAb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 19:16:13 -0500
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AHMWSr7013697;
-        Thu, 18 Nov 2021 00:12:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=rorM2zXxQd3+OmY4f8e7ideAQCMEkWoCzR2pbkmtGWk=;
- b=fnU7bhKuPI3Rl4xKEYT1JyZGEimfDcvs7JVKUEBO+b1y+jyIaTkIwG+UaZeTkb9hTOeE
- 5J+2Zjki6mVgAHRmaT+I6NyAS0DEjDzXkhbtYbtQ1rmB6kyvBmsnW3jG2lBkZ+c0Cnjo
- HTJZp/7r4zsIH1LHjpdX/sTpqn6aLJLry7jJe3WLpe8RY2MrZVLnF/M+XdlcGtGldfy6
- JWA/A5tBsIYJrlyyFieKcNhv64PWFEz7MmjL7iE5PlK+3rwUUIGfqLSgxeuhG6j9ZPYL
- DVRtxIN98ia/ithi4uLO+Bg3IfWM7xZA5RL6/1Z+e7Up9iCGbzIqtM4eDvp3Utcbqexp xg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3cd2ajkp9t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Nov 2021 00:12:56 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AI06Uaf061619;
-        Thu, 18 Nov 2021 00:12:54 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-        by aserp3030.oracle.com with ESMTP id 3ccccqw62q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Nov 2021 00:12:54 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iMuGsqezVyrLz4jwf3TEEbXrTiu8EEtsFAsNcPzBj+o1VhDYtOcCKvksWC+UN2yyAmRBgB0Zt/HOM8L3wA8jyVBKfZMbyNy7xmhQhqERsoqp+C7ATn9y9hqQhH78FIFbL0hd8b+0FjwL7OH9BEYmAN0BdBf2Tjze+nDUbN9CcvNpfmxhMeK8C7LYX73V6iNdYR0urgdq8HgNmTO4GVPdzmAQel5cqRsWTjz+/oBP3G2SuZHtK3inHSo1r09RVGMRf2ysz/3Jf79WN3fiWmHmCfoSJe9WpUGq2gUla9ZiiNSHJUpoM1VZmMs7hpk2TI2HNUc+oKgUPz08v+39u4iMvA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rorM2zXxQd3+OmY4f8e7ideAQCMEkWoCzR2pbkmtGWk=;
- b=HuE0nK5jEgtbRoTRo7To18PsN49trEusudLKBboTViBUp8meSfTElgKJYKKVLtYIYV9/FQfELMBRcUqMLcqVl+VyEVxSAzejC5vAWxRoKUrQ0RWF0unl7J0hNbgT/tYyYCVSEzREKktS8beLeJPOCnl3kwMUHmJLf068CNQ9uBn/GtfBuYZSQPtieOFFDhN19mzH4yVShZXqtafURyABlSOAMcwebdddz43zo6kAGdUwroQDN7eGoCh1AI5MJGZWt7U30RuaqHoouOr6Yt0Z30lv5qRNhFB/TUEhWD4P+uxlul9SEQES+H/FnpCXgrRcopKrZxMLhZgd4DTadsGK6Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rorM2zXxQd3+OmY4f8e7ideAQCMEkWoCzR2pbkmtGWk=;
- b=QeTmKlEg3dXR/G4BAWrBEba6BnWtOX71tuBDg8KBHgdL4swnUAQaXktYiuZloY6u8Y7nNjprYNWOOfNUUkjP0lQUxvsRaz6z4Nq8fqSEnvuBjZy9vZ0KxQzD0o7jjiWZlD2NDQMJ3zO7kLgmmChB93NEyV5h0MO8vBAjldz5nxw=
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by BYAPR10MB3542.namprd10.prod.outlook.com (2603:10b6:a03:11a::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.27; Thu, 18 Nov
- 2021 00:12:52 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::b5bc:c29f:1c2d:afd7]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::b5bc:c29f:1c2d:afd7%9]) with mapi id 15.20.4713.021; Thu, 18 Nov 2021
- 00:12:52 +0000
-Message-ID: <86d3ba7a-3706-d66c-cbf7-d2c39ad2cd4c@oracle.com>
-Date:   Wed, 17 Nov 2021 16:12:49 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH v7] hugetlb: Add hugetlb.*.numa_stat file
-Content-Language: en-US
-To:     Mina Almasry <almasrymina@google.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Shuah Khan <shuah@kernel.org>, Miaohe Lin <linmiaohe@huawei.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Shakeel Butt <shakeelb@google.com>, Jue Wang <juew@google.com>,
-        Yang Yao <ygyao@google.com>, Joanna Li <joannali@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20211117201825.429650-1-almasrymina@google.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-In-Reply-To: <20211117201825.429650-1-almasrymina@google.com>
+        Wed, 17 Nov 2021 19:31:29 -0500
+Received: (Authenticated sender: pbl@bestov.io)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 065FF1C0003;
+        Thu, 18 Nov 2021 00:28:25 +0000 (UTC)
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CO2PR04CA0103.namprd04.prod.outlook.com
- (2603:10b6:104:6::29) To BY5PR10MB4196.namprd10.prod.outlook.com
- (2603:10b6:a03:20d::23)
-MIME-Version: 1.0
-Received: from [192.168.2.123] (50.38.35.18) by CO2PR04CA0103.namprd04.prod.outlook.com (2603:10b6:104:6::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.19 via Frontend Transport; Thu, 18 Nov 2021 00:12:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 65895c45-e52e-4a86-0817-08d9aa282998
-X-MS-TrafficTypeDiagnostic: BYAPR10MB3542:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB3542E290D5B17CEAE2E14945E29B9@BYAPR10MB3542.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XEJ8WR1gaU9XMOibI2cX030AgXWTNwUi1sOFAdlBorZXBZhdnpmQS0Ia4fbGcnxyaBgH6VRV79Vc+7TTAaGadxwOdHhbZBkG1leekxJUSQL2Aun1jYjOtdwNcJPNeHYjf7DZWy9XOzr2cK+9EkP0wiPLjYZdQbkuEmaItQWrXt8ZxxpHdoTeoHZmwZc5oEzWNmhcIDruWErl1LMsCKBBW4MbHwmDS/NIoq3kWvqjS6gr3xaw2lq6gEqV69DA4rz6XwaZcdUeb7Gx02LkTlmBEmiX8gv2xLVzUvJb249YjHyjZiZar3L+dnIenwxcupHBVDZny2NFguL6TFvBngJk4iaRJnDMFD8zHIaqeQXL3ywXVXS7O1fAV8UszKWRVfCyO1qA4kge+Zrz2nbmysMn8BuOkK/CFrCt2Cs++JRkh7DEEanpBY9dSgP/gFBRouHpIjf8wcaym0srrfpjeO4EMdp5ELcjsWu0zAX2+H4xFbgFq7aktq6td/0hAbk4LZu5sFYkDiL+1Yueg2lCnPx/VGesOmVaHlCDaiJXhXErpkL1M04xESkDPl8Cc1T2vtfrmVcum+14pNDn+Gvd0EDmKzkm2913jZrLF5SoriRWBHuZL+Q+MLHY9XzOLl6mJYbWmGL47pmo2b4oBhhfKz8yCDQQEagzEKUxf4yN2Cb5ZSjGvH2n+fU9vrFDu/e+C/nVX/MZyRwYVvsNbJzGFX+vHItEBKDow9vnrSuHjTq11nprlZXqSknQNrswSe/tAmD2wjhY/20EwBCEqtW2gDktVw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(86362001)(31696002)(66556008)(26005)(956004)(83380400001)(316002)(66476007)(66946007)(53546011)(52116002)(54906003)(7416002)(186003)(44832011)(8936002)(38100700002)(2616005)(16576012)(4326008)(31686004)(8676002)(110136005)(36756003)(2906002)(508600001)(5660300002)(6486002)(38350700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RUh6L0tFSlMzVEl6NFJ5NFJiVGhhWG5jTU9KQVFWQ0Z5Z1p5RCtxbkhDNitC?=
- =?utf-8?B?cklFTEpPclBQczduRTFQa1FwRjY4a0o4eitwNGRLMGcxSDlUd2Y2WnF4ZXhO?=
- =?utf-8?B?dXcyTHVoeDRLNWtxV2xCNlczQ0R4aHFyZGI2STRWU2pGQ29kd3JxVkZ0Yy9n?=
- =?utf-8?B?VG5IeCtxMVRSdVRBd0krKzlMWFkxQ0ZZVks0Z25uVURnUkZoNURpckhXV21E?=
- =?utf-8?B?VnhYMVcvcmJzSWZCck1LOXNkeUJnSWNVeFVxN253RytQbFBHVGtFL29ZbCtu?=
- =?utf-8?B?L3V3cFlJenlqN2dtRkFTeXVBZGw4UkJ4cU5SbFVET1dXTGVsWU0wb0pvOEI4?=
- =?utf-8?B?Q1VGQ24rcEhUMEdESWpsY1plUTJPZE5IQXN2aFEvWmwwL1kyTy9wc0QrU2Zk?=
- =?utf-8?B?Q0FaNmdEV1lVem5ybVlOMUNkZS9wZjJ3UFlIckY5Zjg2Nk0yYk5mUktUVHds?=
- =?utf-8?B?eXRiZEFsakNHblJ2V2hjeUJlMUZodFk3K2wzMEFwS3pIeFpSWmthUDRnQjFT?=
- =?utf-8?B?M1VQUzNZWjRqMC9xcisxSzVLYk9RWE9naHZwZk5DVEUvNWVldktqU0NkcFd6?=
- =?utf-8?B?aWphZkxQOGhDT2hFbnhCYVpXZytRN2NIcWc4VUJacDdOVjcydmhJZEVueWY2?=
- =?utf-8?B?RG9yWjR6bytpRDR6QTkyd0VScnlGUnAxS3pLdjRSM0tzWUswb28vbkJGdURk?=
- =?utf-8?B?eXFRUmxEamtmUVNLK3o2Y3hXWTdQbW54WXFiamwvdC9za3pJUStMYzhwRXhk?=
- =?utf-8?B?N3NJOUtLaWpPalV0NUo5NGkrUFU0dDNQSlVyNHVmN1U0a3NwL0IrbUExYTlj?=
- =?utf-8?B?ZE8wUDRIZ0dpb2FHS0hSMHNreEU2bXhnNVFxZytvQThIMnlVQWgwR0tBbVVE?=
- =?utf-8?B?ejV3ZG5jMkVOQmlhRDBNVVRreWlueHRLeGcwZlNaa3hrWTFORWtSRUpCQ1A4?=
- =?utf-8?B?dC9GK1Y3M3Rld3ZQNENnT21EWU91c1g5cVNrUHk1L01ZQ1owNDVOMUpsTENs?=
- =?utf-8?B?Ukw3Y29NMVg0a0JibjFrUENXT082aG5vTE1jUXNRZFZGb1crMzAwdEJhUEpY?=
- =?utf-8?B?d3FnT0RKMTZhZXlUb0NBVnRwVVN3SXorb09uUnFqLzR6R0JRZmp2eDZrU1VQ?=
- =?utf-8?B?Tm81eWN5VHZEWnk4TzA4V0hMQWJzdkc4VGpIVkI0blhKU2szWHl3aXB6UXlS?=
- =?utf-8?B?ZVpjeDRBV0NNZ2xtNDRYMmFsdTZTR0QvY3FCWHgyNGdRL0NLTUVLYUgyZTg1?=
- =?utf-8?B?Nk1MOStiVnFocjJ4YUgxbHBCd3UxaTNub3RYTG56LzQxbmE1eis0cEluWEd6?=
- =?utf-8?B?TEQ2M1pNZXd0STllQysvT3dlbE1SMkpmY3o0OHcraHZkbGZWSlA3T2FsaHNt?=
- =?utf-8?B?Q1p0dlZka1lwTXJjM1pad3k4TVByZk5DQ3JSRmtRY1pPbmYwMFhjVkVZZklI?=
- =?utf-8?B?U3hNcnlKM2RvbG8wR2R2cVJrY3BQNFRvZVZHVXh6VEM2eDZld0l3NVBvaFFX?=
- =?utf-8?B?TjNtRDkzbGhHZVR3enErVlZMeld0aTA3MGRJVWlzSWtNMU1ubWZmZFlud2ho?=
- =?utf-8?B?bnlkditzL0ZBZlQ2cFZTTC9HQUFsT2pOOUw5c0VYdHI4ajNsQ2lFaDcwb0tp?=
- =?utf-8?B?WForays2VjlaeGI3SFF2ZWorNW9vUHFLKzJkTkEybWh0ZlJSMFAxWlEvU2t4?=
- =?utf-8?B?ZFBzd2wzcDNUQjg1cVoyTko0bVQ3dzBwTUJBbjROdVRmUG5xTUF4WHF6NjJ1?=
- =?utf-8?B?WlNDd0c2YjBMdjI3TGFvVUNQOGtudGJlSE9HR3BRODJlTkdhbFZBY1h2Sngy?=
- =?utf-8?B?bW5oNjBCaldvM3pQc1l1N09HUml0MTMrNmt6K2tRSmEwTk1BSzNDNlhMU1RD?=
- =?utf-8?B?SWJLRDBzcmcxRy9tRDRLRXE1VDcxTmwwT3NmMlQ1OFdDZVIxdVRuaUpOVFgz?=
- =?utf-8?B?SHJ3QlVmNGVJbEEvTzI1NElyTUp1bFRGV0lnKzhwM0ZEQlhocE5YaGtUT0V4?=
- =?utf-8?B?eVlGejVoTUxpSWdibFMwWmFVZm9vNFcrQThkNXhoMFJ2YnZzNWhJWmYvZE9a?=
- =?utf-8?B?dHF3RFVCY3pldFBYakdWVnVzZnFEbVdLNVJTVFpuaXJrcms3dnBYenBOSzJG?=
- =?utf-8?B?Wk1hMGZCZndqa25NcmJoeWRlVHl5SVdKMDZKZ1pjTGlIV0RDUVA3ZXFxYkd1?=
- =?utf-8?Q?5ELW4zt2wLkpOqDXPfzCoqg=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 65895c45-e52e-4a86-0817-08d9aa282998
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2021 00:12:52.5955
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LWshhZEnDACdLm/+vC8lKJz0pNqxb8BE620fcSN87f5GSDxSdEjAHKTn0YSRy9Yv1trT8RwhUU+w31NEFkbFNw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3542
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10171 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
- adultscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111170113
-X-Proofpoint-GUID: CWsCO6Von24_srqKJxogL79nFRPAxznE
-X-Proofpoint-ORIG-GUID: CWsCO6Von24_srqKJxogL79nFRPAxznE
+Subject: Re: [PATCH v2] ipv4/raw: support binding to nonlocal addresses
+From:   "Riccardo Paolo Bestetti" <pbl@bestov.io>
+To:     "Denis Kirjanov" <dkirjanov@suse.de>
+Cc:     "David Ahern" <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        "Hideaki YOSHIFUJI" <yoshfuji@linux-ipv6.org>,
+        "Shuah Khan" <shuah@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>
+Date:   Thu, 18 Nov 2021 01:14:44 +0100
+Message-Id: <CFSH0AY7X60L.1KW9K4CV82NQG@enhorning>
+In-Reply-To: <1bbdd04b-26e6-9d02-6d8f-49bd4abedee4@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/21 12:18, Mina Almasry wrote:
-...
-> diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
-...
-> @@ -288,11 +317,21 @@ static void __hugetlb_cgroup_commit_charge(int idx, unsigned long nr_pages,
->  					   struct hugetlb_cgroup *h_cg,
->  					   struct page *page, bool rsvd)
->  {
-> +	unsigned long *usage;
-> +
+On Wed Nov 17, 2021 at 4:14 PM CET, Denis Kirjanov wrote:
+>
+>
+> 11/17/21 12:00 PM, Riccardo Paolo Bestetti пишет:
+> > Add support to inet v4 raw sockets for binding to nonlocal addresses
+> > through the IP_FREEBIND and IP_TRANSPARENT socket options, as well as
+> > the ipv4.ip_nonlocal_bind kernel parameter.
+> > 
+> > Add helper function to inet_sock.h to check for bind address validity on
+> > the base of the address type and whether nonlocal address are enabled
+> > for the socket via any of the sockopts/sysctl, deduplicating checks in
+> > ipv4/ping.c, ipv4/af_inet.c, ipv6/af_inet6.c (for mapped v4->v6
+> > addresses), and ipv4/raw.c.
+> > 
+> > Add test cases with IP[V6]_FREEBIND verifying that both v4 and v6 raw
+> > sockets support binding to nonlocal addresses after the change. Add
+> > necessary support for the test cases to nettest.
+> > 
+> > Signed-off-by: Riccardo Paolo Bestetti <pbl@bestov.io>
+> > Reviewed-by: David Ahern <dsahern@kernel.org>
+> > ---
+> > 20211117: resending this, as Patchwork didn't pick it up last time
+> > 
+> > Responding to review by David Ahern (21 March 2021),
+> > 
+> > Thank you for your review.
+> > 
+> >> Please add test cases to ipv4_addr_bind and ipv6_addr_bind in
+> >> tools/testing/selftests/net/fcnal-test.sh. The latter will verify if
+> >> IPv6 works the same or needs a change.
+> > I have added the tests for both v4 and v6.  IPv6 raw sockets already
+> > supported the functionality (under the IPV6_* sockopts), and the (new)
+> > related tests pass, confirming this.
+> > 
+> > I have not added negative tests (i.e. checking that the same addresses
+> > /fail/ to bind without the necessary flags) because I haven't seen such
+> > tests for other features.  If you feel that's needed, I can look into
+> > it.
+> > 
+> >> Also, this check duplicates the ones in __inet_bind and __inet6_bind; it
+> >> would be good to use an inline helper to reduce the duplication.
+> > Done.  The same check was also duplicated in net/ipv4/ping.c, as
+> > detailed in the commit message.  I have also deduplicated that, if it
+> > should have been left alone I'll quickly fire up a v3 and revert that.
+> > 
+> > Sorry for the delay with v2, had a busy year.
+> > 
+> > 
+> >   include/net/inet_sock.h                   | 12 +++++++
+> >   net/ipv4/af_inet.c                        |  7 ++--
+> >   net/ipv4/ping.c                           | 14 +++-----
+> >   net/ipv4/raw.c                            | 13 ++++----
+> >   net/ipv6/af_inet6.c                       |  7 ++--
+> >   tools/testing/selftests/net/fcnal-test.sh | 40 +++++++++++++++++++++++
+> >   tools/testing/selftests/net/nettest.c     | 33 ++++++++++++++++++-
+> >   7 files changed, 100 insertions(+), 26 deletions(-)
+> > 
+> > diff --git a/include/net/inet_sock.h b/include/net/inet_sock.h
+> > index 89163ef8cf4b..13b05d116f6b 100644
+> > --- a/include/net/inet_sock.h
+> > +++ b/include/net/inet_sock.h
+> > @@ -373,4 +373,16 @@ static inline bool inet_can_nonlocal_bind(struct net *net,
+> >   		inet->freebind || inet->transparent;
+> >   }
+> >   
+> > +static inline bool inet_addr_valid_or_nonlocal(struct net *net,
+> > +					       struct inet_sock *inet,
+> > +					       __be32 addr,
+> > +					       int addr_type)
+> > +{
+> > +	return inet_can_nonlocal_bind(net, inet) ||
+> > +		addr == htonl(INADDR_ANY) ||
+> > +		addr_type == RTN_LOCAL ||
+> > +		addr_type == RTN_MULTICAST ||
+> > +		addr_type == RTN_BROADCAST;
+> > +}
+> > +
+> >   #endif	/* _INET_SOCK_H */
+> > diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+> > index 1d816a5fd3eb..fb5cf3623e03 100644
+> > --- a/net/ipv4/af_inet.c
+> > +++ b/net/ipv4/af_inet.c
+> > @@ -492,11 +492,8 @@ int __inet_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+> >   	 *  is temporarily down)
+> >   	 */
+> >   	err = -EADDRNOTAVAIL;
+> > -	if (!inet_can_nonlocal_bind(net, inet) &&
+> > -	    addr->sin_addr.s_addr != htonl(INADDR_ANY) &&
+> > -	    chk_addr_ret != RTN_LOCAL &&
+> > -	    chk_addr_ret != RTN_MULTICAST &&
+> > -	    chk_addr_ret != RTN_BROADCAST)
+> > +	if (!inet_addr_valid_or_nonlocal(net, inet, addr->sin_addr.s_addr,
+> > +	                                 chk_addr_ret))
+> >   		goto out;
+> >   
+> >   	snum = ntohs(addr->sin_port);
+> > diff --git a/net/ipv4/ping.c b/net/ipv4/ping.c
+> > index 1e44a43acfe2..e540b0dcf085 100644
+> > --- a/net/ipv4/ping.c
+> > +++ b/net/ipv4/ping.c
+> > @@ -311,15 +311,11 @@ static int ping_check_bind_addr(struct sock *sk, struct inet_sock *isk,
+> >   		pr_debug("ping_check_bind_addr(sk=%p,addr=%pI4,port=%d)\n",
+> >   			 sk, &addr->sin_addr.s_addr, ntohs(addr->sin_port));
+> >   
+> > -		if (addr->sin_addr.s_addr == htonl(INADDR_ANY))
+> > -			chk_addr_ret = RTN_LOCAL;
+> > -		else
+> > -			chk_addr_ret = inet_addr_type(net, addr->sin_addr.s_addr);
+>
+> That was done intentionally in commit 0ce779a9f501
+>
 
-I assume the use of a pointer is just to make the following WRITE_ONCE
-look better?  I prefer the suggestion by Muchun:
+Should I remove this from the patch? Is there a particular reason why
+this was done in ping.c but not in the other places?
 
-unsigned long usage = h_cg->nodeinfo[page_to_nid(page)]->usage[idx];
+> > -
+> > -		if ((!inet_can_nonlocal_bind(net, isk) &&
+> > -		     chk_addr_ret != RTN_LOCAL) ||
+> > -		    chk_addr_ret == RTN_MULTICAST ||
+> > -		    chk_addr_ret == RTN_BROADCAST)
+> > +		chk_addr_ret = inet_addr_type(net, addr->sin_addr.s_addr);
+> > +
+> > +		if (!inet_addr_valid_or_nonlocal(net, inet_sk(sk),
+> > +					         addr->sin_addr.s_addr,
+> > +	                                         chk_addr_ret))
+> >   			return -EADDRNOTAVAIL;
+> >   
+> >   #if IS_ENABLED(CONFIG_IPV6)
+> > diff --git a/net/ipv4/raw.c b/net/ipv4/raw.c
+> > index bb446e60cf58..fa60517372b5 100644
+> > --- a/net/ipv4/raw.c
+> > +++ b/net/ipv4/raw.c
+> > @@ -717,6 +717,7 @@ static int raw_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len)
+> >   {
+> >   	struct inet_sock *inet = inet_sk(sk);
+> >   	struct sockaddr_in *addr = (struct sockaddr_in *) uaddr;
+> > +	struct net *net = sock_net(sk);
+> >   	u32 tb_id = RT_TABLE_LOCAL;
+> >   	int ret = -EINVAL;
+> >   	int chk_addr_ret;
+> > @@ -725,16 +726,16 @@ static int raw_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len)
+> >   		goto out;
+> >   
+> >   	if (sk->sk_bound_dev_if)
+> > -		tb_id = l3mdev_fib_table_by_index(sock_net(sk),
+> > -						 sk->sk_bound_dev_if) ? : tb_id;
+> > +		tb_id = l3mdev_fib_table_by_index(net,
+> > +						  sk->sk_bound_dev_if) ? : tb_id;
+> >   
+> > -	chk_addr_ret = inet_addr_type_table(sock_net(sk), addr->sin_addr.s_addr,
+> > -					    tb_id);
+> > +	chk_addr_ret = inet_addr_type_table(net, addr->sin_addr.s_addr, tb_id);
+> >   
+> >   	ret = -EADDRNOTAVAIL;
+> > -	if (addr->sin_addr.s_addr && chk_addr_ret != RTN_LOCAL &&
+> > -	    chk_addr_ret != RTN_MULTICAST && chk_addr_ret != RTN_BROADCAST)
+> > +	if (!inet_addr_valid_or_nonlocal(net, inet, addr->sin_addr.s_addr,
+> > +					 chk_addr_ret))
+> >   		goto out;
+> > +
+> >   	inet->inet_rcv_saddr = inet->inet_saddr = addr->sin_addr.s_addr;
+> >   	if (chk_addr_ret == RTN_MULTICAST || chk_addr_ret == RTN_BROADCAST)
+> >   		inet->inet_saddr = 0;  /* Use device */
+> > diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
+> > index b5878bb8e419..0c557edbbd20 100644
+> > --- a/net/ipv6/af_inet6.c
+> > +++ b/net/ipv6/af_inet6.c
+> > @@ -337,11 +337,8 @@ static int __inet6_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+> >   		chk_addr_ret = inet_addr_type_dev_table(net, dev, v4addr);
+> >   		rcu_read_unlock();
+> >   
+> > -		if (!inet_can_nonlocal_bind(net, inet) &&
+> > -		    v4addr != htonl(INADDR_ANY) &&
+> > -		    chk_addr_ret != RTN_LOCAL &&
+> > -		    chk_addr_ret != RTN_MULTICAST &&
+> > -		    chk_addr_ret != RTN_BROADCAST) {
+> > +		if (!inet_addr_valid_or_nonlocal(net, inet, v4addr,
+> > +						 chk_addr_ret)) {
+> >   			err = -EADDRNOTAVAIL;
+> >   			goto out;
+> >   		}
+> > diff --git a/tools/testing/selftests/net/fcnal-test.sh b/tools/testing/selftests/net/fcnal-test.sh
+> > index 3313566ce906..7caa4f0e067d 100755
+> > --- a/tools/testing/selftests/net/fcnal-test.sh
+> > +++ b/tools/testing/selftests/net/fcnal-test.sh
+> > @@ -66,6 +66,10 @@ NSB_LO_IP=172.16.2.2
+> >   NSA_LO_IP6=2001:db8:2::1
+> >   NSB_LO_IP6=2001:db8:2::2
+> >   
+> > +# non-local addresses for freebind tests
+> > +NL_IP=172.17.1.1
+> > +NL_IP6=2001:db8:4::1
+> > +
+> >   MD5_PW=abc123
+> >   MD5_WRONG_PW=abc1234
+> >   
+> > @@ -316,6 +320,9 @@ addr2str()
+> >   	${NSB_LO_IP6})	echo "ns-B loopback IPv6";;
+> >   	${NSB_LINKIP6}|${NSB_LINKIP6}%*) echo "ns-B IPv6 LLA";;
+> >   
+> > +	${NL_IP})       echo "nonlocal IP";;
+> > +	${NL_IP6})      echo "nonlocal IPv6";;
+> > +
+> >   	${VRF_IP})	echo "VRF IP";;
+> >   	${VRF_IP6})	echo "VRF IPv6";;
+> >   
+> > @@ -1767,6 +1774,14 @@ ipv4_addr_bind_novrf()
+> >   		log_test_addr ${a} $? 0 "Raw socket bind to local address after device bind"
+> >   	done
+> >   
+> > +	#
+> > +	# raw socket with nonlocal bind
+> > +	#
+> > +	a=${NL_IP}
+> > +	log_start
+> > +	run_cmd nettest -s -R -P icmp -f -l ${a} -I ${NSA_DEV} -b
+> > +	log_test_addr ${a} $? 0 "Raw socket bind to nonlocal address after device bind"
+> > +
+> >   	#
+> >   	# tcp sockets
+> >   	#
+> > @@ -1815,6 +1830,14 @@ ipv4_addr_bind_vrf()
+> >   	run_cmd nettest -s -R -P icmp -l ${a} -I ${VRF} -b
+> >   	log_test_addr ${a} $? 1 "Raw socket bind to out of scope address after VRF bind"
+> >   
+> > +	#
+> > +	# raw socket with nonlocal bind
+> > +	#
+> > +	a=${NL_IP}
+> > +	log_start
+> > +	run_cmd nettest -s -R -P icmp -f -l ${a} -I ${VRF} -b
+> > +	log_test_addr ${a} $? 0 "Raw socket bind to nonlocal address after VRF bind"
+> > +
+> >   	#
+> >   	# tcp sockets
+> >   	#
+> > @@ -1965,6 +1988,7 @@ ipv4_rt()
+> >   
+> >   	a=${NSA_IP}
+> >   	log_start
+> > +
+> >   	run_cmd nettest ${varg} -s &
+> >   	sleep 1
+> >   	run_cmd nettest ${varg} -d ${NSA_DEV} -r ${a} &
+> > @@ -3402,6 +3426,14 @@ ipv6_addr_bind_novrf()
+> >   		log_test_addr ${a} $? 0 "Raw socket bind to local address after device bind"
+> >   	done
+> >   
+> > +	#
+> > +	# raw socket with nonlocal bind
+> > +	#
+> > +	a=${NL_IP6}
+> > +	log_start
+> > +	run_cmd nettest -6 -s -R -P icmp -f -l ${a} -I ${NSA_DEV} -b
+> > +	log_test_addr ${a} $? 0 "Raw socket bind to nonlocal address"
+> > +
+> >   	#
+> >   	# tcp sockets
+> >   	#
+> > @@ -3443,6 +3475,14 @@ ipv6_addr_bind_vrf()
+> >   	run_cmd nettest -6 -s -R -P ipv6-icmp -l ${a} -I ${VRF} -b
+> >   	log_test_addr ${a} $? 1 "Raw socket bind to invalid local address after vrf bind"
+> >   
+> > +	#
+> > +	# raw socket with nonlocal bind
+> > +	#
+> > +	a=${NL_IP6}
+> > +	log_start
+> > +	run_cmd nettest -6 -s -R -P icmp -f -l ${a} -I ${VRF} -b
+> > +	log_test_addr ${a} $? 0 "Raw socket bind to nonlocal address after VRF bind"
+> > +
+> >   	#
+> >   	# tcp sockets
+> >   	#
+> > diff --git a/tools/testing/selftests/net/nettest.c b/tools/testing/selftests/net/nettest.c
+> > index b599003eb5ba..d9a6fd2cd9d3 100644
+> > --- a/tools/testing/selftests/net/nettest.c
+> > +++ b/tools/testing/selftests/net/nettest.c
+> > @@ -85,6 +85,7 @@ struct sock_args {
+> >   	int version;   /* AF_INET/AF_INET6 */
+> >   
+> >   	int use_setsockopt;
+> > +	int use_freebind;
+> >   	int use_cmsg;
+> >   	const char *dev;
+> >   	const char *server_dev;
+> > @@ -514,6 +515,29 @@ static int set_membership(int sd, uint32_t grp, uint32_t addr, int ifindex)
+> >   	return 0;
+> >   }
+> >   
+> > +static int set_freebind(int sd, int version)
+> > +{
+> > +	unsigned int one = 1;
+> > +	int rc = 0;
+> > +
+> > +	switch (version) {
+> > +	case AF_INET:
+> > +		if (setsockopt(sd, SOL_IP, IP_FREEBIND, &one, sizeof(one))) {
+> > +			log_err_errno("setsockopt(IP_FREEBIND)");
+> > +			rc = -1;
+> > +		}
+> > +		break;
+> > +	case AF_INET6:
+> > +		if (setsockopt(sd, SOL_IPV6, IPV6_FREEBIND, &one, sizeof(one))) {
+> > +			log_err_errno("setsockopt(IPV6_FREEBIND");
+> > +			rc = -1;
+> > +		}
+> > +		break;
+> > +	}
+> > +
+> > +	return rc;
+> > +}
+> > +
+> >   static int set_broadcast(int sd)
+> >   {
+> >   	unsigned int one = 1;
+> > @@ -1419,6 +1443,9 @@ static int lsock_init(struct sock_args *args)
+> >   		 set_unicast_if(sd, args->ifindex, args->version))
+> >   		goto err;
+> >   
+> > +	if (args->use_freebind && set_freebind(sd, args->version))
+> > +		goto err;
+> > +
+> >   	if (bind_socket(sd, args))
+> >   		goto err;
+> >   
+> > @@ -1827,7 +1854,7 @@ static int ipc_parent(int cpid, int fd, struct sock_args *args)
+> >   	return client_status;
+> >   }
+> >   
+> > -#define GETOPT_STR  "sr:l:c:p:t:g:P:DRn:M:X:m:d:I:BN:O:SCi6xL:0:1:2:3:Fbq"
+> > +#define GETOPT_STR  "sr:l:c:p:t:g:P:DRn:M:X:m:d:I:BN:O:SCi6xL:0:1:2:3:Fbqf"
+> >   #define OPT_FORCE_BIND_KEY_IFINDEX 1001
+> >   #define OPT_NO_BIND_KEY_IFINDEX 1002
+> >   
+> > @@ -1864,6 +1891,7 @@ static void print_usage(char *prog)
+> >   	"    -I dev        bind socket to given device name - server mode\n"
+> >   	"    -S            use setsockopt (IP_UNICAST_IF or IP_MULTICAST_IF)\n"
+> >   	"                  to set device binding\n"
+> > +	"    -f            bind socket with the IP[V6]_FREEBIND option\n"
+> >   	"    -C            use cmsg and IP_PKTINFO to specify device binding\n"
+> >   	"\n"
+> >   	"    -L len        send random message of given length\n"
+> > @@ -1999,6 +2027,9 @@ int main(int argc, char *argv[])
+> >   		case 'S':
+> >   			args.use_setsockopt = 1;
+> >   			break;
+> > +		case 'f':
+> > +			args.use_freebind = 1;
+> > +			break;
+> >   		case 'C':
+> >   			args.use_cmsg = 1;
+> >   			break;
+> > 
 
-usage += nr_pages;
-WRITE_ONCE(h_cg->nodeinfo[page_to_nid(page)]->usage[idx], usage);
-
-I had to think for just a second 'why are we using/passing a pointer?'.
-Not insisting we use Muchun's suggestion, it just caused me to think
-a little more than necessary.
-
-In any case, I would move the variable usage inside the
-'if (!rsvd)' block.
-
->  	if (hugetlb_cgroup_disabled() || !h_cg)
->  		return;
-> 
->  	__set_hugetlb_cgroup(page, h_cg, rsvd);
-> -	return;
-> +	if (!rsvd) {
-> +		usage = &h_cg->nodeinfo[page_to_nid(page)]->usage[idx];
-> +		/*
-> +		 * This write is not atomic due to fetching *usage and writing
-> +		 * to it, but that's fine because we call this with
-> +		 * hugetlb_lock held anyway.
-> +		 */
-> +		WRITE_ONCE(*usage, *usage + nr_pages);
-> +	}
->  }
-> 
->  void hugetlb_cgroup_commit_charge(int idx, unsigned long nr_pages,
-> @@ -316,6 +355,7 @@ static void __hugetlb_cgroup_uncharge_page(int idx, unsigned long nr_pages,
->  					   struct page *page, bool rsvd)
->  {
->  	struct hugetlb_cgroup *h_cg;
-> +	unsigned long *usage;
-
-Same here.
-
-Otherwise, looks good to me.
--- 
-Mike Kravetz
