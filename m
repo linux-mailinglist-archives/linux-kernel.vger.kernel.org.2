@@ -2,272 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E213455B71
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9560455B76
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344645AbhKRMY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 07:24:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344613AbhKRMXa (ORCPT
+        id S1344651AbhKRMZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 07:25:42 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:33268 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344620AbhKRMZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 07:23:30 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3256DC061766
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 04:20:30 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id n12so25195310lfe.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 04:20:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tibbo.com; s=google;
-        h=subject:to:references:cc:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language;
-        bh=zAWwsFO8j7y6AlgFPfx815dEezRcNwOx2V1LdD0AChI=;
-        b=JQc2fNRH0/5gcLQE7HFGll9HLuq9GI4uYb6ozCCqOhDtM1RJ1EjvmGqPb2GGPU+jtc
-         vMafNvjhvDo9WzH16BLxHsjc3BuHvbAfE8fosHFal/dh86ZR3JjlT3eVD6atFLM+zr1d
-         X+ubNZfL3Og/O+j1PkXhQ2pX5hqz7VGHjcYZ36pIqozb5ZC4gUt3i7Yr87Aed8+TOaIu
-         iHWL6OdIck5Mi/jUg3qcVj3fR1/t7DSY3bNuOfBLooGB0/VmvOou9sMnuIjONhThARPN
-         cfyri/oD7pX6wzl4iB52A6x/YAR/7DOF4V0C+StXteykDi8QSReRhgpSpwbPfdpehQkR
-         tfTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:cc:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language;
-        bh=zAWwsFO8j7y6AlgFPfx815dEezRcNwOx2V1LdD0AChI=;
-        b=iEemWID7AWY6n7J+W9ownkNpPbZD1TctMGPuMGlC/byb5gK4Qa44vV//gSjmGOykRJ
-         RKyzqrKmwoxYJFIkLY+14gsXRcTSC+9yNn3zKFzgFIMjPDECWZjMNpMhuyDhoeYXyHwY
-         5GRxlQmFCxUsxec9AX6qiDrL19LfsQFfunsRUanKfQV6k0TYl89RCpGKpbTe/xgCm638
-         QseEkATtlOVtL2YHq50T2gKNURXNXjsDQZlxIrOd2+jq5T/J2YLGU3Apf+G9/1eLJBCa
-         Pd5pDbcJriVcDF+g72IjJlnHLckAvwW91XAj7FQHgXT91IcgH+2v6FuLY1hKWDG1LDTy
-         7Nnw==
-X-Gm-Message-State: AOAM530DnscQBPi7FShMBkeIGBN2Rnxa9RrYnvZvnoMj/VwhZejmXEyr
-        +SBzn/PsB4LMH0s+XsK3mHQ8kA==
-X-Google-Smtp-Source: ABdhPJyB5nP/Z8/u0d5p3sI90Ix7Td7kz1PgcxjR35x7aJplOKnjjMTABDXPmo8WxKLc8u9Ggx2n7A==
-X-Received: by 2002:a05:651c:a0f:: with SMTP id k15mr17198015ljq.298.1637238028473;
-        Thu, 18 Nov 2021 04:20:28 -0800 (PST)
-Received: from localhost.localdomain ([5.167.98.73])
-        by smtp.gmail.com with ESMTPSA id br24sm293670lfb.104.2021.11.18.04.20.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Nov 2021 04:20:28 -0800 (PST)
-Subject: Re: [PATCH 3/3] devicetree: bindings: pinctrl: Add bindings doc for
- Sunplus SP7021.
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Wells Lu <wellslutw@gmail.com>
-References: <1635324926-22319-1-git-send-email-wells.lu@sunplus.com>
- <1635324926-22319-4-git-send-email-wells.lu@sunplus.com>
- <CACRpkdaqAtP0rykP2Q25wc+t1Uk2xXYFvcrCdBXyWVRnHNGtGA@mail.gmail.com>
- <f315d79da3e742b4a4ec0131d6035046@sphcmbx02.sunplus.com.tw>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org, qinjian@cqplus1.com
-From:   Dvorkin Dmitry <dvorkin@tibbo.com>
-Organization: Tibbo Technology Inc.
-Message-ID: <b88855af-bdbe-2894-f7ac-c1ea9dba87e4@tibbo.com>
-Date:   Thu, 18 Nov 2021 15:20:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 18 Nov 2021 07:25:34 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 161A21F46A8F
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1637238152; bh=lYlMXiP4nz1RaOxxaa71KgChCTVevMt+/EYOLvLW4V8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TEqT96HIvd1shHDO25zQEISCjBscB1Kr2Bl/rRR9THeycUsoP0i/9rGmsAD2dh8U4
+         DN78nkkJBcacpMNNdAVirDXc6CAIUuqAXyJL2koX1BNxW2xZnNb81agekWL+F8YYhg
+         yjrouaP6AQwAX003L8BOHpy7/RPasgET0cUCmugSu9z+89ji1IQGi18R3XtCjY2cF/
+         5a1r/qYsikwxuV1BVHciFqDG5wHSic+rXYlm7oANNc/Cf+dNoxXDQ88ldPBKDGI2dE
+         oOhLpFXCicpjW0OBaTNJo35SvP3fOsSMfz3bT7JnUI5wdBOnLLhQFbkdjjUlB22u/T
+         ydIS/diYk0N1w==
+Received: by earth.universe (Postfix, from userid 1000)
+        id E492E3C0F9E; Thu, 18 Nov 2021 13:22:29 +0100 (CET)
+Date:   Thu, 18 Nov 2021 13:22:29 +0100
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-omap@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] extcon: fix extcon_get_extcon_dev() error handling
+Message-ID: <20211118122229.f7zzpiif2k4hr73q@earth.universe>
+References: <20211118113026.GG1147@kili>
 MIME-Version: 1.0
-In-Reply-To: <f315d79da3e742b4a4ec0131d6035046@sphcmbx02.sunplus.com.tw>
-Content-Type: multipart/mixed;
- boundary="------------2B6DCA0BF58703AB4283FD5F"
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="z5v7lnf7mcpizrt6"
+Content-Disposition: inline
+In-Reply-To: <20211118113026.GG1147@kili>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------2B6DCA0BF58703AB4283FD5F
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 
-Dear Linus!
+--z5v7lnf7mcpizrt6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I am the person who wrote this driver. Let me answer to your questions...
+Hi,
 
------Original Message-----
->> From: Linus Walleij <linus.walleij@linaro.org>
->> Sent: Tuesday, November 9, 2021 12:00 PM
->> To: Wells Lu <wellslutw@gmail.com>
->> Cc: linux-gpio@vger.kernel.org; linux-kernel@vger.kernel.org;
->> robh+dt@kernel.org; devicetree@vger.kernel.org; qinjian@cqplus1.com;
->> dvorkin@tibbo.com; Wells Lu 呂芳騰 <wells.lu@sunplus.com>
->> Subject: Re: [PATCH 3/3] devicetree: bindings: pinctrl: Add bindings doc for
->> Sunplus SP7021.
->>
->>
->>> +        zero_func:
->>> +          description: |
->>> +            Disabled pins which are not used by pinctrl node's client
->> device.
->>> +          $ref: /schemas/types.yaml#/definitions/uint32-array
->> I have never seen this before. Can't you just use pin control hogs for this so the
->> pin controller just take care of these pins?
+On Thu, Nov 18, 2021 at 02:32:22PM +0300, Dan Carpenter wrote:
+> The extcon_get_extcon_dev() function returns error pointers on error
+> and NULL when it's a -EPROBE_DEFER defer situation.  There are eight
+> callers and only two of them handled this correctly.  In the other
+> callers an error pointer return would lead to a crash.
+>=20
+> What prevents crashes is that errors can only happen in the case of
+> a bug in the caller or if CONFIG_EXTCON is disabled.  Six out of
+> eight callers use the Kconfig to either depend on or select
+> CONFIG_EXTCON.  Thus the real life impact of these bugs is tiny.
+>=20
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+> The two callers where the drivers can be built without CONFIG_EXTCON
+> are TYPEC_FUSB302 and CHARGER_MAX8997.
+>=20
+> If we apply this patch, it might be a good idea to send it to -stable
+> so that backported code that relies on handling error pointers does
+> not break silently.
+>=20
+>  drivers/extcon/extcon.c                |  2 +-
+>  drivers/power/supply/axp288_charger.c  | 17 ++++++++++-------
+>  drivers/power/supply/charger-manager.c |  7 ++-----
+>  drivers/power/supply/max8997_charger.c | 10 +++++-----
+>  drivers/usb/dwc3/drd.c                 |  9 ++-------
+>  drivers/usb/phy/phy-omap-otg.c         |  4 ++--
+>  drivers/usb/typec/tcpm/fusb302.c       |  4 ++--
+>  drivers/extcon/extcon-axp288.c         |  4 ++--
+>  8 files changed, 26 insertions(+), 31 deletions(-)
 
-zero_func is required.
+Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com> # for power-s=
+upply
 
-The bootloader may have different device tree (I am using general sp7021 
-DTS in my u-boot setup, for example), while the kernel DTS may be 
-changed between boots and specifies it more precisely - it is configured 
-by user. So u-boot DTB and kernel DTB may be different -> result is that 
-some pins may be muxed wrongly after u-boot starts kernel. Or even in 
-pre-u-boot stage (we have the bootloader that starts u-boot, called 
-XBoot). This XBoot also do some muxing. So we need this feature to get 
-rid of possible unneded muxes done before kernel has been started.
+-- Sebastian
 
-There is the "group of pins" functions and individual pins that may 
-intersect.
+>=20
+> diff --git a/drivers/extcon/extcon.c b/drivers/extcon/extcon.c
+> index e7a9561a826d..a35e99928807 100644
+> --- a/drivers/extcon/extcon.c
+> +++ b/drivers/extcon/extcon.c
+> @@ -876,7 +876,7 @@ struct extcon_dev *extcon_get_extcon_dev(const char *=
+extcon_name)
+>  		if (!strcmp(sd->name, extcon_name))
+>  			goto out;
+>  	}
+> -	sd =3D NULL;
+> +	sd =3D ERR_PTR(-EPROBE_DEFER);
+>  out:
+>  	mutex_unlock(&extcon_dev_list_lock);
+>  	return sd;
+> diff --git a/drivers/power/supply/axp288_charger.c b/drivers/power/supply=
+/axp288_charger.c
+> index ec41f6cd3f93..4acfeb52a44e 100644
+> --- a/drivers/power/supply/axp288_charger.c
+> +++ b/drivers/power/supply/axp288_charger.c
+> @@ -848,17 +848,20 @@ static int axp288_charger_probe(struct platform_dev=
+ice *pdev)
+>  	info->regmap_irqc =3D axp20x->regmap_irqc;
+> =20
+>  	info->cable.edev =3D extcon_get_extcon_dev(AXP288_EXTCON_DEV_NAME);
+> -	if (info->cable.edev =3D=3D NULL) {
+> -		dev_dbg(dev, "%s is not ready, probe deferred\n",
+> -			AXP288_EXTCON_DEV_NAME);
+> -		return -EPROBE_DEFER;
+> +	if (IS_ERR(info->cable.edev)) {
+> +		dev_err_probe(dev, PTR_ERR(info->cable.edev),
+> +			      "extcon_get_extcon_dev(%s) failed\n",
+> +			      AXP288_EXTCON_DEV_NAME);
+> +		return PTR_ERR(info->cable.edev);
+>  	}
+> =20
+>  	if (acpi_dev_present(USB_HOST_EXTCON_HID, NULL, -1)) {
+>  		info->otg.cable =3D extcon_get_extcon_dev(USB_HOST_EXTCON_NAME);
+> -		if (info->otg.cable =3D=3D NULL) {
+> -			dev_dbg(dev, "EXTCON_USB_HOST is not ready, probe deferred\n");
+> -			return -EPROBE_DEFER;
+> +		if (IS_ERR(info->otg.cable)) {
+> +			dev_err_probe(dev, PTR_ERR(info->otg.cable),
+> +				      "extcon_get_extcon_dev(%s) failed\n",
+> +				      USB_HOST_EXTCON_NAME);
+> +			return PTR_ERR(info->otg.cable);
+>  		}
+>  		dev_info(dev, "Using " USB_HOST_EXTCON_HID " extcon for usb-id\n");
+>  	}
+> diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/suppl=
+y/charger-manager.c
+> index d67edb760c94..92db79400a6a 100644
+> --- a/drivers/power/supply/charger-manager.c
+> +++ b/drivers/power/supply/charger-manager.c
+> @@ -985,13 +985,10 @@ static int charger_extcon_init(struct charger_manag=
+er *cm,
+>  	cable->nb.notifier_call =3D charger_extcon_notifier;
+> =20
+>  	cable->extcon_dev =3D extcon_get_extcon_dev(cable->extcon_name);
+> -	if (IS_ERR_OR_NULL(cable->extcon_dev)) {
+> +	if (IS_ERR(cable->extcon_dev)) {
+>  		pr_err("Cannot find extcon_dev for %s (cable: %s)\n",
+>  			cable->extcon_name, cable->name);
+> -		if (cable->extcon_dev =3D=3D NULL)
+> -			return -EPROBE_DEFER;
+> -		else
+> -			return PTR_ERR(cable->extcon_dev);
+> +		return PTR_ERR(cable->extcon_dev);
+>  	}
+> =20
+>  	for (i =3D 0; i < ARRAY_SIZE(extcon_mapping); i++) {
+> diff --git a/drivers/power/supply/max8997_charger.c b/drivers/power/suppl=
+y/max8997_charger.c
+> index 25207fe2aa68..634658adf313 100644
+> --- a/drivers/power/supply/max8997_charger.c
+> +++ b/drivers/power/supply/max8997_charger.c
+> @@ -248,13 +248,13 @@ static int max8997_battery_probe(struct platform_de=
+vice *pdev)
+>  		dev_info(&pdev->dev, "couldn't get charger regulator\n");
+>  	}
+>  	charger->edev =3D extcon_get_extcon_dev("max8997-muic");
+> -	if (IS_ERR_OR_NULL(charger->edev)) {
+> -		if (!charger->edev)
+> -			return -EPROBE_DEFER;
+> -		dev_info(charger->dev, "couldn't get extcon device\n");
+> +	if (IS_ERR(charger->edev)) {
+> +		dev_err_probe(charger->dev, PTR_ERR(charger->edev),
+> +			      "couldn't get extcon device: max8997-muic\n");
+> +		return PTR_ERR(charger->edev);
+>  	}
+> =20
+> -	if (!IS_ERR(charger->reg) && !IS_ERR_OR_NULL(charger->edev)) {
+> +	if (!IS_ERR(charger->reg)) {
+>  		INIT_WORK(&charger->extcon_work, max8997_battery_extcon_evt_worker);
+>  		ret =3D devm_add_action(&pdev->dev, max8997_battery_extcon_evt_stop_wo=
+rk, charger);
+>  		if (ret) {
+> diff --git a/drivers/usb/dwc3/drd.c b/drivers/usb/dwc3/drd.c
+> index d7f76835137f..a490f79131c1 100644
+> --- a/drivers/usb/dwc3/drd.c
+> +++ b/drivers/usb/dwc3/drd.c
+> @@ -454,13 +454,8 @@ static struct extcon_dev *dwc3_get_extcon(struct dwc=
+3 *dwc)
+>  	 * This device property is for kernel internal use only and
+>  	 * is expected to be set by the glue code.
+>  	 */
+> -	if (device_property_read_string(dev, "linux,extcon-name", &name) =3D=3D=
+ 0) {
+> -		edev =3D extcon_get_extcon_dev(name);
+> -		if (!edev)
+> -			return ERR_PTR(-EPROBE_DEFER);
+> -
+> -		return edev;
+> -	}
+> +	if (device_property_read_string(dev, "linux,extcon-name", &name) =3D=3D=
+ 0)
+> +		return extcon_get_extcon_dev(name);
+> =20
+>  	/*
+>  	 * Try to get an extcon device from the USB PHY controller's "port"
+> diff --git a/drivers/usb/phy/phy-omap-otg.c b/drivers/usb/phy/phy-omap-ot=
+g.c
+> index ee0863c6553e..6e6ef8c0bc7e 100644
+> --- a/drivers/usb/phy/phy-omap-otg.c
+> +++ b/drivers/usb/phy/phy-omap-otg.c
+> @@ -95,8 +95,8 @@ static int omap_otg_probe(struct platform_device *pdev)
+>  		return -ENODEV;
+> =20
+>  	extcon =3D extcon_get_extcon_dev(config->extcon);
+> -	if (!extcon)
+> -		return -EPROBE_DEFER;
+> +	if (IS_ERR(extcon))
+> +		return PTR_ERR(extcon);
+> =20
+>  	otg_dev =3D devm_kzalloc(&pdev->dev, sizeof(*otg_dev), GFP_KERNEL);
+>  	if (!otg_dev)
+> diff --git a/drivers/usb/typec/tcpm/fusb302.c b/drivers/usb/typec/tcpm/fu=
+sb302.c
+> index 7a2a17866a82..8594b59bd527 100644
+> --- a/drivers/usb/typec/tcpm/fusb302.c
+> +++ b/drivers/usb/typec/tcpm/fusb302.c
+> @@ -1706,8 +1706,8 @@ static int fusb302_probe(struct i2c_client *client,
+>  	 */
+>  	if (device_property_read_string(dev, "linux,extcon-name", &name) =3D=3D=
+ 0) {
+>  		chip->extcon =3D extcon_get_extcon_dev(name);
+> -		if (!chip->extcon)
+> -			return -EPROBE_DEFER;
+> +		if (IS_ERR(chip->extcon))
+> +			return PTR_ERR(chip->extcon);
+>  	}
+> =20
+>  	chip->vbus =3D devm_regulator_get(chip->dev, "vbus");
+> diff --git a/drivers/extcon/extcon-axp288.c b/drivers/extcon/extcon-axp28=
+8.c
+> index 7c6d5857ff25..180be768c215 100644
+> --- a/drivers/extcon/extcon-axp288.c
+> +++ b/drivers/extcon/extcon-axp288.c
+> @@ -394,8 +394,8 @@ static int axp288_extcon_probe(struct platform_device=
+ *pdev)
+>  		if (adev) {
+>  			info->id_extcon =3D extcon_get_extcon_dev(acpi_dev_name(adev));
+>  			put_device(&adev->dev);
+> -			if (!info->id_extcon)
+> -				return -EPROBE_DEFER;
+> +			if (IS_ERR(info->id_extcon))
+> +				return PTR_ERR(info->id_extcon);
+> =20
+>  			dev_info(dev, "controlling USB role\n");
+>  		} else {
+> --=20
+> 2.20.1
+>=20
 
-You may have "group of pins", say, emmc preconfigured before kernel 
-started (in general DTS for u-boot) and you may want to have the pin 
-from emmc group to be muxed as, say, SD card detect. You mux it in 
-kernel DTS as GPIO, it will be in correct GPIO state, configured 
-correctly, but while emmc group is enabled (nobody disabled it in kernel 
-DTS!) the pin will belong to emmc function (preset group) and will not 
-be functional.
+--z5v7lnf7mcpizrt6
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I invented zero_func while has been debugging the problem like "why my 
-Eth is not working when all pins are configured correctly and muxed to 
-Eth". I spend some time to find that the pin I muxed to Eth has been 
-muxed to SPI_FLASH GROUP in very early stage (in ROM boot). And I have 
-no way to cleanup this mux group easily.
+-----BEGIN PGP SIGNATURE-----
 
-zero_func is the way to easily guarantee that you will successfully and 
-correctly mux some pins / functions on kernel load even if somebody 
-muxed other pins to this functions before kernel.
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmGWRX8ACgkQ2O7X88g7
++prY1A/6AlHt9/9Sqs3JZBaDcacgQbuL2hATtIodPI4knAHSG/ZQgpNIoqMnGGuw
+fNHM9uJMaObVolucsxcNTbkcqD5feUu/DObfdUuzydS6B8xJjLNbLHUT6pX2gnmE
+hX2elEzlO1+1Om1Sp2xBkkvx2avHj/tUBv3mBsiyTCdPF8eD4KgFKcArRlpz/IAv
++SRbRVzmx1OpEw4EwBzcNPrY1M/s1PSw7HXz6IHE3DckyJu9IYSlp1F9dal8WTXl
+AytAdo1Rd1ALOfiTX0A8hqJKmwdOUK4FAg+IjHDh8FPRM72/nWPsuH9XJ+q771E1
+d+N1FAAVU6OFfXEUVh1h4/lnThC+isTO5Bj5JTIDcZxu/4AGOqQIIFI6Or39A0Y5
+n3wIbtejOZTEvSUvzLyNkkt50KC0q1lx8KsTqyO75gLyGVOOoRerQ8yfaH2kMVmK
+TR9g3TiTw1eZoFbDzmrVVK3yo5SfNo1ULnpzTz4YqzsMjOIXO6Jk8O3Liqt8DnDE
+FZZYTRxUzKZiLAN5P6XB5P4o4LgzDaVL/rNKMLURBb5u4+gGoDs2gg1ysXdchdyG
+CTfYsRLr1yl8Ocg9rA2gfTIRfr4s8av7/ZY1F6I5rti+AHIRK7AonzaofojPKYGu
+xiy+zua4N3lU63Og+lCY405LMIjNU583I/RrSsK33d1B8USuryE=
+=BXLN
+-----END PGP SIGNATURE-----
 
-If I'd implement "automatic" mux cleanup before muxing some pin, the 
-code would be more complex. I would like to keep code as simple as I can 
-and give better control to user.
-
-
->>
->>> +      allOf:
->>> +        - if:
->>> +            properties:
->>> +              function:
->>> +                enum:
->>> +                  - SPI_FLASH
->>> +          then:
->>> +            properties:
->>> +              groups:
->>> +                enum:
->>> +                  - SPI_FLASH1
->>> +                  - SPI_FLASH2
->>> +        - if:
->>> +            properties:
->>> +              function:
->>> +                enum:
->>> +                  - SPI_FLASH_4BIT
->>> +          then:
->>> +            properties:
->>> +              groups:
->>> +                enum:
->>> +                  - SPI_FLASH_4BIT1
->>> +                  - SPI_FLASH_4BIT2
->>> +        - if:
->>> +            properties:
->>> +              function:
->>> +                enum:
->>> +                  - HDMI_TX
->>> +          then:
->>> +            properties:
->>> +              groups:
->>> +                enum:
->>> +                  - HDMI_TX1
->>> +                  - HDMI_TX2
->>> +                  - HDMI_TX3
->>> +        - if:
->>> +            properties:
->>> +              function:
->>> +                enum:
->>> +                  - LCDIF
->>> +          then:
->>> +            properties:
->>> +              groups:
->>> +                enum:
->>> +                  - LCDIF
->>>
->>> This looks complex to me, I need feedback from bindings people on this.
-
-sp7021 supports two types of muxes:
-
-1) group muxing (1-N sets of predefined pins for some function)
-
-2) individual pin muxing
-
-Some functions may be muxed only in group, like SPI_FLASH or HDMI.
-
-That's why we have
-
-pins = <...>;
-
-and
-
-function = <funcname>;
-
-group = <funcsubname-group>;
-
-second case could be cuted to
-
-function = <funcsubname-group> only;
-
-But I think, the syntax of a pair {function,group} fits SoC logic 
-better. Especially if customer is reading possible muxes table for the chip.
-
-
->>>
->>> +        pins_uart0: pins_uart0 {
->>> +            function = "UA0";
->>> +            groups = "UA0";
->>> +        };
->>> +
->>> +        pins_uart1: pins_uart1 {
->>> +            pins = <
->>> +
->> SPPCTL_IOPAD(11,SPPCTL_PCTL_G_PMUX,MUXF_UA1_TX,0)
->>> +
->> SPPCTL_IOPAD(10,SPPCTL_PCTL_G_PMUX,MUXF_UA1_RX,0)
->>> +
->> SPPCTL_IOPAD(7,SPPCTL_PCTL_G_GPIO,0,SPPCTL_PCTL_L_OUT)
->>> +            >;
->>> +        };
->> This first looks like two ways to do the same thing?
->> UART0 uses strings for group + function and uart1 control individual pins.
->>
->> Is it possible to just do it one way?
->>
->> I think the pins = <...> scheme includes also multiplexing settings and then it
->> should be named pinmux = <...>:
-No. Sorry. It is two different way of supported two different types of 
-muxing, described above.
->>
->> Please read
->> Documentation/devicetree/bindings/pinctrl/pinmux-node.yaml
->> closely.
->>
->> Yours,
->> Linus Walleij
-
---------------2B6DCA0BF58703AB4283FD5F
-Content-Type: text/x-vcard; charset=utf-8;
- name="dvorkin.vcf"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="dvorkin.vcf"
-
-BEGIN:VCARD
-VERSION:4.0
-EMAIL;PREF=1:dvorkin@tibbo.com
-EMAIL:dvorkindmitry@gmail.com
-FN:Dmitry Dvorkin
-NICKNAME:dv
-ORG:Tibbo Technology Inc.;
-TITLE:Embedded Linux Architect
-N:Dvorkin;Dmitry;;;
-ADR:;;9F-3\, No.31, Lane 169, Kang-Ning St., Hsi-Chih;New Taipei City;;2218
- 0;Taiwan
-TEL;VALUE=TEXT:+79190546388
-URL;VALUE=URL:https://tibbo.com/
-UID:1c58210f-ac8c-4337-b391-0bde146d2d83
-END:VCARD
-
---------------2B6DCA0BF58703AB4283FD5F--
+--z5v7lnf7mcpizrt6--
