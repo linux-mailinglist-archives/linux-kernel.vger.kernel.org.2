@@ -2,108 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09ABE455BFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1D9455BFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236700AbhKRM7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 07:59:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49518 "EHLO
+        id S1345011AbhKRM6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 07:58:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244640AbhKRM5r (ORCPT
+        with ESMTP id S1345019AbhKRM5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 07:57:47 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55073C0797BD;
-        Thu, 18 Nov 2021 04:52:08 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id x10so7734751ioj.9;
-        Thu, 18 Nov 2021 04:52:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hh6WFJbrjkxar19GKDaTBBspe0IRHAyuOKu9Kp1/cDA=;
-        b=NAaZpLeTqNCDp9En3qKeDV5jszC/FGakNoK2ytbCmZW+lejAcmA5cI6Q4fuL4FOYb7
-         LRL2Hsem5g57/046Ey+oMb/iF/siq0c1KP7u6LNHjV7A5caPk5/GhZCAkeEhHR4wS4m2
-         Eo2AVgLV4/6MjpgndbJvMzcjWJ7rXynYAVJ668HrIGTlPijmRCI8II8FHwRebickVqO+
-         VsULr0vxbzChoMLpscGhjanlIhUzyGw2Hieg2cX/jjp4X7TJ5PSuDTg8uNFLKOOFDjrp
-         FJjGNL2TqAj3ASsKORgfKNqDlxE7UnhiRUhWD9sRf8kNEli66/xHyVFYV/kOehOetaws
-         Bqyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hh6WFJbrjkxar19GKDaTBBspe0IRHAyuOKu9Kp1/cDA=;
-        b=g9bouWw28NpsMCpdAZI/ze1Rug6OeZyrSt/ItwRtzOKWw0eNf4Qjay0Aq571OJtpOP
-         t4mFC8oXK/lgSzBHXcjEFENNAUa2CyosxLuYIdXhfkqjwyPOwPxgzMdeWqqN9P3c5i+5
-         e6WXcKzqnQgZNHoz7a9Fb0UQlA/6hCZgyjELsxPHc4Z/fuptyNSDg1odeYRuElLTuzsU
-         k4BCW+bj2p00nzWGQU7Y6mg8LVMPWmvfS7J+z/OArLe0D8EZnH2zP1xCWYQivfhJEnnp
-         VIxKaWuA2Qaqm3wnoULMvxeGz9Iqk0oYlhw9Zfbv1cDje5me5MqRSsB1kLEYhXQ4UvnV
-         NrZw==
-X-Gm-Message-State: AOAM530z5plKpCBOtzE/lb4o0G1yTowQ4/MfWJ4dhADjEbcAxoe4cPmc
-        ov5VOp/hxGB93dBIp85a43JAtDLISfwqFt40C/d2pw+KZPTYONgC
-X-Google-Smtp-Source: ABdhPJx5EhnYWpEZOUik32wYJq838uTveeLUrceUgABJecPHCC8kS5Dj+aDby9ceIVI2hoeZIGAm/F7LdcA47MkjDhQ=
-X-Received: by 2002:a05:6602:204e:: with SMTP id z14mr17452585iod.90.1637239927727;
- Thu, 18 Nov 2021 04:52:07 -0800 (PST)
+        Thu, 18 Nov 2021 07:57:13 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D64CC061226
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 04:51:51 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1mngtJ-0000oU-Qc; Thu, 18 Nov 2021 13:51:49 +0100
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Subject: Re: [PATCH] iio: adc: stm32: fix null pointer on defer_probe error
+To:     Olivier Moysan <olivier.moysan@foss.st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Wan Jiabing <wanjiabing@vivo.com>, Xu Wang <vulab@iscas.ac.cn>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+References: <20211118123952.15383-1-olivier.moysan@foss.st.com>
+Message-ID: <45a5129a-c0b1-4a07-aef8-d6e0845c7b1a@pengutronix.de>
+Date:   Thu, 18 Nov 2021 13:51:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211103114830.62711-1-alistair@alistair23.me>
- <20211103114830.62711-3-alistair@alistair23.me> <20211105152154.20f5cbd1@aktux>
- <CAKmqyKNx00ecsAyOjtLk8i6r75WD0uw=nd=fd9z44yBuau+Vdw@mail.gmail.com>
- <20211110183654.61328998@kemnade.info> <CACRpkdbrf8a7B-J=3s9x7JCyGgDk9VcsTd_-9o484MtfapVzHQ@mail.gmail.com>
-In-Reply-To: <CACRpkdbrf8a7B-J=3s9x7JCyGgDk9VcsTd_-9o484MtfapVzHQ@mail.gmail.com>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Thu, 18 Nov 2021 22:51:41 +1000
-Message-ID: <CAKmqyKPOGyY3=1vJH50h=qfRfwFgMZAM1U+T1nKnSBk5WGyd6w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] Documentation: DT: bindings: input: Add
- documentation for cyttsp5
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andreas Kemnade <andreas@kemnade.info>,
-        Alistair Francis <alistair@alistair23.me>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-input <linux-input@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mylene Josserand <mylene.josserand@free-electrons.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211118123952.15383-1-olivier.moysan@foss.st.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 1:16 AM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Wed, Nov 10, 2021 at 6:37 PM Andreas Kemnade <andreas@kemnade.info> wrote:
-> > Alistair Francis <alistair23@gmail.com> wrote:
->
-> > You have a kind of double inversion here, so things are automagically fixed.
-> > IMHO to describe it correctly would be to set GPIO_ACTIVE_LOW here
-> > and in the driver
-> >
-> >         /* Reset the gpio to be in a reset state */
-> >         ts->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
-> >         if (IS_ERR(ts->reset_gpio)) {
-> >                 rc = PTR_ERR(ts->reset_gpio);
-> >                 dev_err(dev, "Failed to request reset gpio, error %d\n", rc);
-> >                 return rc;
-> >         }
-> >         gpiod_set_value(ts->reset_gpio, 0);
-> >
-> > That is the way how other active-low reset lines are handled.
->
-> Correct.
->
-> This is a source of confusion, I contemplated just changing the name
-> of GPIOD_OUT_HIGH to GPIOD_OUT_ASSERTED etc to indicate
-> what is going on.
->
-> gpiod_set_value(ts->reset_gpio, 0) should similarly be interpreted
-> as "de-assert this line" no matter the polarity.
+Hello Olivier,
 
-Thanks! I have fixed this
+On 18.11.21 13:39, Olivier Moysan wrote:
+> dev_err_probe() calls __device_set_deferred_probe_reason()
+> on -EPROBE_DEFER error.
+> If device pointer to driver core private structure is not initialized,
+> a null pointer error occurs.
+> This pointer is set too late on iio_device_register() call, for iio device.
 
-Alistair
+Even if it were set earlier, you should call dev_err_probe with the dev of
+the probe that's currently running. Not any other devices you created since
+then.
 
->
-> Yours,
-> Linus Walleij
+> So use parent device instead for dev_err_probe() call.
+> 
+> Fixes: 0e346b2cfa85 ("iio: adc: stm32-adc: add vrefint calibration support")
+> 
+> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+> ---
+>  drivers/iio/adc/stm32-adc.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+> index 7f1fb36c747c..14c7c9d390e8 100644
+> --- a/drivers/iio/adc/stm32-adc.c
+> +++ b/drivers/iio/adc/stm32-adc.c
+> @@ -217,6 +217,7 @@ struct stm32_adc_cfg {
+>  
+>  /**
+>   * struct stm32_adc - private data of each ADC IIO instance
+> + * dev:			parent device
+>   * @common:		reference to ADC block common data
+>   * @offset:		ADC instance register offset in ADC block
+>   * @cfg:		compatible configuration data
+> @@ -243,6 +244,7 @@ struct stm32_adc_cfg {
+>   * @int_ch:		internal channel indexes array
+>   */
+>  struct stm32_adc {
+> +	struct device		*dev;
+
+Can't you use the parent pointer of the indio_dev?
+
+>  	struct stm32_adc_common	*common;
+>  	u32			offset;
+>  	const struct stm32_adc_cfg	*cfg;
+> @@ -1986,8 +1988,7 @@ static int stm32_adc_populate_int_ch(struct iio_dev *indio_dev, const char *ch_n
+>  			/* Get calibration data for vrefint channel */
+>  			ret = nvmem_cell_read_u16(&indio_dev->dev, "vrefint", &vrefint);
+>  			if (ret && ret != -ENOENT) {
+> -				return dev_err_probe(&indio_dev->dev, ret,
+> -						     "nvmem access error\n");
+> +				return dev_err_probe(adc->dev, ret, "nvmem access error\n");
+>  			}
+>  			if (ret == -ENOENT)
+>  				dev_dbg(&indio_dev->dev, "vrefint calibration not found\n");
+> @@ -2221,6 +2222,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
+>  	init_completion(&adc->completion);
+>  	adc->cfg = (const struct stm32_adc_cfg *)
+>  		of_match_device(dev->driver->of_match_table, dev)->data;
+> +	adc->dev = &pdev->dev;
+
+There's struct device *dev = &pdev->dev; defined earlier, so you can use dev instead.
+
+>  
+>  	indio_dev->name = dev_name(&pdev->dev);
+>  	indio_dev->dev.of_node = pdev->dev.of_node;
+> 
+
+Cheers,
+Ahmad
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
