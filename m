@@ -2,307 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76027455736
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1CB455728
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:40:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244777AbhKRIok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 03:44:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244732AbhKRInN (ORCPT
+        id S244703AbhKRIm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 03:42:59 -0500
+Received: from mail-vk1-f178.google.com ([209.85.221.178]:33464 "EHLO
+        mail-vk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242185AbhKRImz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 03:43:13 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 480F3C061206
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:40:13 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id a23-20020a9d4717000000b0056c15d6d0caso9660183otf.12
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:40:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=89xr5l4aQSea0c59k4jjlx2ck4kW898rOwi+JsY0e98=;
-        b=BGslt7yqfKOdo8PN4IVyYrjn8e35WOb2IMOH931zccIX8h0NyJQ/YxtoJbs6iFpi7Z
-         QdLk/QYvOBvh7SDzgSBrVhAUeVdsKrrcQ920LEGxXxz1bMm6TmT9hdr5BRUG68RpB6Sr
-         I4ORsLO9k0jEo+A/SWvG1fYUrSajIf+lEYPEFvXi6Ii7QVa4gPSFx8PFiiOw0nvrhqWw
-         05oYUTQnl+NlGCxwkYyJbC9mOtChywZriz95wIRH81zn/hhJpNgQLadahNxLWaMvQzSh
-         jPOGxi2ceAA9W6rd/+33yYZQ7XttHOUK8J3LwVIRbSXFHTNeJLQ2GF2Oe/n0yJeiC7fJ
-         aSMA==
+        Thu, 18 Nov 2021 03:42:55 -0500
+Received: by mail-vk1-f178.google.com with SMTP id d130so3379869vke.0;
+        Thu, 18 Nov 2021 00:39:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=89xr5l4aQSea0c59k4jjlx2ck4kW898rOwi+JsY0e98=;
-        b=w5kuFgv0/pNQSgTF9zR3Mpuhw/oCJ0pwjjiRP52AL2HPvW5fMDCedBR/jNngM/eC6z
-         D1PvZmlktg7WPwA3WNrZgTP7AuAIGp3s0PDRwGIjCMFf87qyANDw0cAI7DuUVZFwI+PW
-         /3gbqMjqoY58eDT1rEws0rsKMlni9lq/pjwfWM+h+HOe5U9XqjVpnQeffbY3gH8htBYg
-         yMR5+1G5AFlzSxXLslo/3/hw0DUxl0vGYY/mBRhTm6UuJKp+E587VsGYlaq3KT0bdE3u
-         SEVa40YQyWaHX2YONrzaZDs+u26R6KamY3xOfFFi8/57szi4OXj5eLT5sxT/OSdM2zhn
-         UQ1w==
-X-Gm-Message-State: AOAM530MeSGcvf+rlp4W3zr83tACKadxcpvjSt1oRWFPM8oZekuaFWfo
-        q6/5jqzJtocv/ezO7LOsLziZ4CvexdYmMPAB
-X-Google-Smtp-Source: ABdhPJzhsuyHIaz9OwhKmOdqpaM2QJ42EF/gciwTjJTdDhkx6KTgmhdTunV1g+b77eh91Weg0MM42A==
-X-Received: by 2002:a05:6830:1da:: with SMTP id r26mr19675998ota.73.1637224812342;
-        Thu, 18 Nov 2021 00:40:12 -0800 (PST)
-Received: from fedora.. (99-13-229-45.lightspeed.snjsca.sbcglobal.net. [99.13.229.45])
-        by smtp.gmail.com with ESMTPSA id p14sm422100oov.0.2021.11.18.00.40.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 00:40:12 -0800 (PST)
-From:   Atish Patra <atishp@rivosinc.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Atish Patra <atish.patra@wdc.com>, Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atishp@rivosinc.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>
-Subject: [PATCH v5 5/5] RISC-V: KVM: Add SBI HSM extension in KVM
-Date:   Thu, 18 Nov 2021 00:39:12 -0800
-Message-Id: <20211118083912.981995-6-atishp@rivosinc.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211118083912.981995-1-atishp@rivosinc.com>
-References: <20211118083912.981995-1-atishp@rivosinc.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jRhaJP30xRfGoC6YfQR1gJhdJCfA0BcIWGwc3ucBNgY=;
+        b=eP4RJ2wYhz2Aod0sWLHh3u8VGOjWWffBO5antXYK6ZvykOLwg7Fk65vJOafO9wWeoH
+         Za1eTahl3P8stzkWSetnagkc0eq4V8gnnYOeTOCdelO7W/S85KFeJzoMpF2Qhmiy6yss
+         gOdb/O8SK5LyV6wVljcRRDdq70Et5UV2TRoF/EeNABiMKALQRPyA+IzGuoLBmut7zEw7
+         kn+VgGfIlZEXtGSXoQqskd5fqmTpKEHYcvfh8aLRD54+4jcDUUkn4t3Az8BbzCD+jy8T
+         Qeo7V9YUgsRtl0L4Y1zltWfiVfzgZlC4JcZ/ueEOOje3XNE50SsR734xvbsdkbgk/2A9
+         VZ4Q==
+X-Gm-Message-State: AOAM531G8DZAIkZ7M4XEa0o7UmqaB+Osz1iMmHO9jTKF6utvsIKVGx3R
+        +Rta+oSKWhcLYUyTj88guhZFP4H0ZPLVhg==
+X-Google-Smtp-Source: ABdhPJw6TFS2OAxiO9CEBXu37PgWmucGjUZy3O0qTJmxjSvOWLW3HvjdYpV98A4hxhApXn5vYYnZXg==
+X-Received: by 2002:a05:6122:2158:: with SMTP id m24mr34049603vkd.1.1637224794868;
+        Thu, 18 Nov 2021 00:39:54 -0800 (PST)
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com. [209.85.222.51])
+        by smtp.gmail.com with ESMTPSA id 92sm1396828uav.9.2021.11.18.00.39.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Nov 2021 00:39:54 -0800 (PST)
+Received: by mail-ua1-f51.google.com with SMTP id o1so12010161uap.4;
+        Thu, 18 Nov 2021 00:39:54 -0800 (PST)
+X-Received: by 2002:a05:6102:2910:: with SMTP id cz16mr78807614vsb.9.1637224794088;
+ Thu, 18 Nov 2021 00:39:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1637204329-3314-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1637204329-3314-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 18 Nov 2021 09:39:42 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXL4nfiq8B-PtAiQmCQkZMBP8t-CUBO4bbMZumiA=QpaQ@mail.gmail.com>
+Message-ID: <CAMuHMdXL4nfiq8B-PtAiQmCQkZMBP8t-CUBO4bbMZumiA=QpaQ@mail.gmail.com>
+Subject: Re: [PATCH -next v2] ethernet: renesas: Use div64_ul instead of do_div
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Atish Patra <atish.patra@wdc.com>
+Hi Yang,
 
-SBI HSM extension allows OS to start/stop harts any time. It also allows
-ordered booting of harts instead of random booting.
+On Thu, Nov 18, 2021 at 4:13 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
+> do_div() does a 64-by-32 division. Here the divisor is an
+> unsigned long which on some platforms is 64 bit wide. So use
+> div64_ul instead of do_div to avoid a possible truncation.
+>
+> Eliminate the following coccicheck warning:
+> ./drivers/net/ethernet/renesas/ravb_main.c:2492:1-7: WARNING:
+> do_div() does a 64-by-32 division, please consider using div64_ul instead.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-Implement SBI HSM exntesion and designate the vcpu 0 as the boot vcpu id.
-All other non-zero non-booting vcpus should be brought up by the OS
-implementing HSM extension. If the guest OS doesn't implement HSM
-extension, only single vcpu will be available to OS.
+Thanks for your patch!
 
-Reviewed-by: Anup Patel <anup.patel@wdc.com>
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
-Signed-off-by: Atish Patra <atishp@rivosinc.com>
----
- arch/riscv/include/asm/sbi.h  |   1 +
- arch/riscv/kvm/Makefile       |   1 +
- arch/riscv/kvm/vcpu.c         |  23 ++++++++
- arch/riscv/kvm/vcpu_sbi.c     |   4 ++
- arch/riscv/kvm/vcpu_sbi_hsm.c | 105 ++++++++++++++++++++++++++++++++++
- 5 files changed, 134 insertions(+)
- create mode 100644 arch/riscv/kvm/vcpu_sbi_hsm.c
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> @@ -2489,7 +2489,7 @@ static int ravb_set_gti(struct net_device *ndev)
+>                 return -EINVAL;
+>
+>         inc = 1000000000ULL << 20;
+> -       do_div(inc, rate);
+> +       inc = div64_ul(inc, rate);
+>
+>         if (inc < GTI_TIV_MIN || inc > GTI_TIV_MAX) {
+>                 dev_err(dev, "gti.tiv increment 0x%llx is outside the range 0x%x - 0x%x\n",
 
-diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-index 4f9370b6032e..79af25c45c8d 100644
---- a/arch/riscv/include/asm/sbi.h
-+++ b/arch/riscv/include/asm/sbi.h
-@@ -90,6 +90,7 @@ enum sbi_hsm_hart_status {
- #define SBI_ERR_INVALID_PARAM	-3
- #define SBI_ERR_DENIED		-4
- #define SBI_ERR_INVALID_ADDRESS	-5
-+#define SBI_ERR_ALREADY_AVAILABLE -6
- 
- extern unsigned long sbi_spec_version;
- struct sbiret {
-diff --git a/arch/riscv/kvm/Makefile b/arch/riscv/kvm/Makefile
-index 4757ae158bf3..aaf181a3d74b 100644
---- a/arch/riscv/kvm/Makefile
-+++ b/arch/riscv/kvm/Makefile
-@@ -26,4 +26,5 @@ kvm-y += vcpu_sbi.o
- kvm-$(CONFIG_RISCV_SBI_V01) += vcpu_sbi_v01.o
- kvm-y += vcpu_sbi_base.o
- kvm-y += vcpu_sbi_replace.o
-+kvm-y += vcpu_sbi_hsm.o
- kvm-y += vcpu_timer.o
-diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
-index e3d3aed46184..50158867406d 100644
---- a/arch/riscv/kvm/vcpu.c
-+++ b/arch/riscv/kvm/vcpu.c
-@@ -53,6 +53,17 @@ static void kvm_riscv_reset_vcpu(struct kvm_vcpu *vcpu)
- 	struct kvm_vcpu_csr *reset_csr = &vcpu->arch.guest_reset_csr;
- 	struct kvm_cpu_context *cntx = &vcpu->arch.guest_context;
- 	struct kvm_cpu_context *reset_cntx = &vcpu->arch.guest_reset_context;
-+	bool loaded;
-+
-+	/**
-+	 * The preemption should be disabled here because it races with
-+	 * kvm_sched_out/kvm_sched_in(called from preempt notifiers) which
-+	 * also calls vcpu_load/put.
-+	 */
-+	get_cpu();
-+	loaded = (vcpu->cpu != -1);
-+	if (loaded)
-+		kvm_arch_vcpu_put(vcpu);
- 
- 	memcpy(csr, reset_csr, sizeof(*csr));
- 
-@@ -64,6 +75,11 @@ static void kvm_riscv_reset_vcpu(struct kvm_vcpu *vcpu)
- 
- 	WRITE_ONCE(vcpu->arch.irqs_pending, 0);
- 	WRITE_ONCE(vcpu->arch.irqs_pending_mask, 0);
-+
-+	/* Reset the guest CSRs for hotplug usecase */
-+	if (loaded)
-+		kvm_arch_vcpu_load(vcpu, smp_processor_id());
-+	put_cpu();
- }
- 
- int kvm_arch_vcpu_precreate(struct kvm *kvm, unsigned int id)
-@@ -100,6 +116,13 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
- 
- void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu)
- {
-+	/**
-+	 * vcpu with id 0 is the designated boot cpu.
-+	 * Keep all vcpus with non-zero cpu id in power-off state so that they
-+	 * can brought to online using SBI HSM extension.
-+	 */
-+	if (vcpu->vcpu_idx != 0)
-+		kvm_riscv_vcpu_power_off(vcpu);
- }
- 
- void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
-diff --git a/arch/riscv/kvm/vcpu_sbi.c b/arch/riscv/kvm/vcpu_sbi.c
-index cf284e080f3e..f62d25bc9733 100644
---- a/arch/riscv/kvm/vcpu_sbi.c
-+++ b/arch/riscv/kvm/vcpu_sbi.c
-@@ -25,6 +25,8 @@ static int kvm_linux_err_map_sbi(int err)
- 		return SBI_ERR_INVALID_ADDRESS;
- 	case -EOPNOTSUPP:
- 		return SBI_ERR_NOT_SUPPORTED;
-+	case -EALREADY:
-+		return SBI_ERR_ALREADY_AVAILABLE;
- 	default:
- 		return SBI_ERR_FAILURE;
- 	};
-@@ -43,6 +45,7 @@ extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_base;
- extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_time;
- extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_ipi;
- extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_rfence;
-+extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_hsm;
- 
- static const struct kvm_vcpu_sbi_extension *sbi_ext[] = {
- 	&vcpu_sbi_ext_v01,
-@@ -50,6 +53,7 @@ static const struct kvm_vcpu_sbi_extension *sbi_ext[] = {
- 	&vcpu_sbi_ext_time,
- 	&vcpu_sbi_ext_ipi,
- 	&vcpu_sbi_ext_rfence,
-+	&vcpu_sbi_ext_hsm,
- };
- 
- void kvm_riscv_vcpu_sbi_forward(struct kvm_vcpu *vcpu, struct kvm_run *run)
-diff --git a/arch/riscv/kvm/vcpu_sbi_hsm.c b/arch/riscv/kvm/vcpu_sbi_hsm.c
-new file mode 100644
-index 000000000000..2e383687fa48
---- /dev/null
-+++ b/arch/riscv/kvm/vcpu_sbi_hsm.c
-@@ -0,0 +1,105 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2021 Western Digital Corporation or its affiliates.
-+ *
-+ * Authors:
-+ *     Atish Patra <atish.patra@wdc.com>
-+ */
-+
-+#include <linux/errno.h>
-+#include <linux/err.h>
-+#include <linux/kvm_host.h>
-+#include <asm/csr.h>
-+#include <asm/sbi.h>
-+#include <asm/kvm_vcpu_sbi.h>
-+
-+static int kvm_sbi_hsm_vcpu_start(struct kvm_vcpu *vcpu)
-+{
-+	struct kvm_cpu_context *reset_cntx;
-+	struct kvm_cpu_context *cp = &vcpu->arch.guest_context;
-+	struct kvm_vcpu *target_vcpu;
-+	unsigned long target_vcpuid = cp->a0;
-+
-+	target_vcpu = kvm_get_vcpu_by_id(vcpu->kvm, target_vcpuid);
-+	if (!target_vcpu)
-+		return -EINVAL;
-+	if (!target_vcpu->arch.power_off)
-+		return -EALREADY;
-+
-+	reset_cntx = &target_vcpu->arch.guest_reset_context;
-+	/* start address */
-+	reset_cntx->sepc = cp->a1;
-+	/* target vcpu id to start */
-+	reset_cntx->a0 = target_vcpuid;
-+	/* private data passed from kernel */
-+	reset_cntx->a1 = cp->a2;
-+	kvm_make_request(KVM_REQ_VCPU_RESET, target_vcpu);
-+
-+	kvm_riscv_vcpu_power_on(target_vcpu);
-+
-+	return 0;
-+}
-+
-+static int kvm_sbi_hsm_vcpu_stop(struct kvm_vcpu *vcpu)
-+{
-+	if (vcpu->arch.power_off)
-+		return -EINVAL;
-+
-+	kvm_riscv_vcpu_power_off(vcpu);
-+
-+	return 0;
-+}
-+
-+static int kvm_sbi_hsm_vcpu_get_status(struct kvm_vcpu *vcpu)
-+{
-+	struct kvm_cpu_context *cp = &vcpu->arch.guest_context;
-+	unsigned long target_vcpuid = cp->a0;
-+	struct kvm_vcpu *target_vcpu;
-+
-+	target_vcpu = kvm_get_vcpu_by_id(vcpu->kvm, target_vcpuid);
-+	if (!target_vcpu)
-+		return -EINVAL;
-+	if (!target_vcpu->arch.power_off)
-+		return SBI_HSM_HART_STATUS_STARTED;
-+	else
-+		return SBI_HSM_HART_STATUS_STOPPED;
-+}
-+
-+static int kvm_sbi_ext_hsm_handler(struct kvm_vcpu *vcpu, struct kvm_run *run,
-+				   unsigned long *out_val,
-+				   struct kvm_cpu_trap *utrap,
-+				   bool *exit)
-+{
-+	int ret = 0;
-+	struct kvm_cpu_context *cp = &vcpu->arch.guest_context;
-+	struct kvm *kvm = vcpu->kvm;
-+	unsigned long funcid = cp->a6;
-+
-+	switch (funcid) {
-+	case SBI_EXT_HSM_HART_START:
-+		mutex_lock(&kvm->lock);
-+		ret = kvm_sbi_hsm_vcpu_start(vcpu);
-+		mutex_unlock(&kvm->lock);
-+		break;
-+	case SBI_EXT_HSM_HART_STOP:
-+		ret = kvm_sbi_hsm_vcpu_stop(vcpu);
-+		break;
-+	case SBI_EXT_HSM_HART_STATUS:
-+		ret = kvm_sbi_hsm_vcpu_get_status(vcpu);
-+		if (ret >= 0) {
-+			*out_val = ret;
-+			ret = 0;
-+		}
-+		break;
-+	default:
-+		ret = -EOPNOTSUPP;
-+	}
-+
-+	return ret;
-+}
-+
-+const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_hsm = {
-+	.extid_start = SBI_EXT_HSM,
-+	.extid_end = SBI_EXT_HSM,
-+	.handler = kvm_sbi_ext_hsm_handler,
-+};
--- 
-2.33.1
+Please also replace
 
+    #include <asm/div64.h>
+
+by
+
+#include <linux/math64.h>
+
+With that added:
+
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
