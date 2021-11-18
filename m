@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92246456344
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 20:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C702B456345
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 20:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233532AbhKRTSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 14:18:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:24573 "EHLO
+        id S233540AbhKRTSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 14:18:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:43791 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231508AbhKRTSB (ORCPT
+        by vger.kernel.org with ESMTP id S233487AbhKRTSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 14:18:01 -0500
+        Thu, 18 Nov 2021 14:18:03 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637262900;
+        s=mimecast20190719; t=1637262902;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=eRY3yo90aqgFMq+mPhIxyaRz0/eoySFZO6nTG1/nB7M=;
-        b=IZra9mIVr32O7wKzqwMTriBncSLFBpSsn3IlMGMX6jmScCFiatvR7sDyzG/0OI6hZ+HYBn
-        sA5XVQStHjGeeHBLLID4QFiNDsN9T8LGIHt5skd5WbSgmGYMOAcp7FkRtlGrkBC/3HlefV
-        53CvqGWfnImh5ZcPE6WlElVS9s0djaU=
+        bh=jD/S5EQWmX6rQ+AVzOyMcoL+fu4Joi3GhDEClhu68hM=;
+        b=bsgXqDce/hryvbAFEOBo06NyUwnM8/jTbpNTcFG0IOkr5Gr8ONucOfQ17J+GpHd+RogXfz
+        wxeeFo366KclRqeXgr7LHq+OAXRQmyuuTAowQ3X7y3Z3neJeduZMf46bgTMhKNsz0IbfS5
+        gSxuG3n/QSK78MepMKbQ9SgsCJolMJQ=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-303-1QRNk1ZEPJKKmXu0jhsNiw-1; Thu, 18 Nov 2021 14:14:54 -0500
-X-MC-Unique: 1QRNk1ZEPJKKmXu0jhsNiw-1
+ us-mta-7-nOJh7V1eNX-TP50X_0QRsA-1; Thu, 18 Nov 2021 14:14:59 -0500
+X-MC-Unique: nOJh7V1eNX-TP50X_0QRsA-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 18CA5804142;
-        Thu, 18 Nov 2021 19:14:53 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7A7F019253C0;
+        Thu, 18 Nov 2021 19:14:57 +0000 (UTC)
 Received: from llong.com (unknown [10.22.16.126])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CCC3F9808;
-        Thu, 18 Nov 2021 19:14:51 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 408B79808;
+        Thu, 18 Nov 2021 19:14:53 +0000 (UTC)
 From:   Waiman Long <longman@redhat.com>
 To:     John Stultz <john.stultz@linaro.org>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Linus Walleij <linus.walleij@linaro.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Waiman Long <longman@redhat.com>
-Subject: [PATCH v3 1/4] clocksource: Avoid accidental unstable marking of clocksources
-Date:   Thu, 18 Nov 2021 14:14:36 -0500
-Message-Id: <20211118191439.1000012-2-longman@redhat.com>
+Subject: [PATCH v3 2/4] clocksource: Reduce the default clocksource_watchdog() retries to 2
+Date:   Thu, 18 Nov 2021 14:14:37 -0500
+Message-Id: <20211118191439.1000012-3-longman@redhat.com>
 In-Reply-To: <20211118191439.1000012-1-longman@redhat.com>
 References: <20211118191439.1000012-1-longman@redhat.com>
 MIME-Version: 1.0
@@ -59,156 +59,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit db3a34e17433 ("clocksource: Retry clock read if long delays
-detected") and commit 2e27e793e280 ("clocksource: Reduce clocksource-skew
-threshold"), it is found that tsc clocksource fallback to hpet can
-sometimes happen on both Intel and AMD systems especially when they are
-running stressful benchmarking workloads. Of the 23 systems tested with
-a v5.14 kernel, 10 of them have switched to hpet clock source during
-the test run.
+With the previous patch, there is an extra watchdog read in each retry.
+Now the total number of clocksource reads is increased to 4 per iteration.
+In order to avoid increasing the clock skew check overhead, the default
+maximum number of retries is reduced from 3 to 2 to maintain the same 12
+clocksource reads in the worst case.
 
-The result of falling back to hpet is a drastic reduction of performance
-when running benchmarks. For example, the fio performance tests can
-drop up to 70% whereas the iperf3 performance can drop up to 80%.
-
-4 hpet fallbacks happened during bootup. They were:
-
-  [    8.749399] clocksource: timekeeping watchdog on CPU13: hpet read-back delay of 263750ns, attempt 4, marking unstable
-  [   12.044610] clocksource: timekeeping watchdog on CPU19: hpet read-back delay of 186166ns, attempt 4, marking unstable
-  [   17.336941] clocksource: timekeeping watchdog on CPU28: hpet read-back delay of 182291ns, attempt 4, marking unstable
-  [   17.518565] clocksource: timekeeping watchdog on CPU34: hpet read-back delay of 252196ns, attempt 4, marking unstable
-
-Other fallbacks happen when the systems were running stressful
-benchmarks. For example:
-
-  [ 2685.867873] clocksource: timekeeping watchdog on CPU117: hpet read-back delay of 57269ns, attempt 4, marking unstable
-  [46215.471228] clocksource: timekeeping watchdog on CPU8: hpet read-back delay of 61460ns, attempt 4, marking unstable
-
-Commit 2e27e793e280 ("clocksource: Reduce clocksource-skew threshold"),
-changed the skew margin from 100us to 50us. I think this is too small
-and can easily be exceeded when running some stressful workloads on a
-thermally stressed system.  So it is switched back to 100us.
-
-Even a maximum skew margin of 100us may be too small in for some systems
-when booting up especially if those systems are under thermal stress. To
-eliminate the case that the large skew is due to the system being too
-busy slowing down the reading of both the watchdog and the clocksource,
-an extra consecutive read of watchdog clock is being done to check this.
-
-The consecutive watchdog read delay is compared against
-WATCHDOG_MAX_SKEW/2. If the delay exceeds the limit, we assume that
-the system is just too busy. A warning will be printed to the console
-and the clock skew check is skipped for this round.
-
-Fixes: db3a34e17433 ("clocksource: Retry clock read if long delays detected")
-Fixes: 2e27e793e280 ("clocksource: Reduce clocksource-skew threshold")
+Suggested-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- kernel/time/clocksource.c | 50 ++++++++++++++++++++++++++++++++-------
- 1 file changed, 41 insertions(+), 9 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt | 4 ++--
+ kernel/time/clocksource.c                       | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 9725c546a0d4..3ea934b034f7 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -603,8 +603,8 @@
+ 	clocksource.max_cswd_read_retries= [KNL]
+ 			Number of clocksource_watchdog() retries due to
+ 			external delays before the clock will be marked
+-			unstable.  Defaults to three retries, that is,
+-			four attempts to read the clock under test.
++			unstable.  Defaults to two retries, that is,
++			three attempts to read the clock under test.
+ 
+ 	clocksource.verify_n_cpus= [KNL]
+ 			Limit the number of CPUs checked for clocksources
 diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index b8a14d2fb5ba..bcad1a1e5dcf 100644
+index bcad1a1e5dcf..b7e52a642948 100644
 --- a/kernel/time/clocksource.c
 +++ b/kernel/time/clocksource.c
-@@ -107,7 +107,7 @@ static u64 suspend_start;
-  * This delay could be due to SMIs, NMIs, or to VCPU preemptions.  Used as
-  * a lower bound for cs->uncertainty_margin values when registering clocks.
-  */
--#define WATCHDOG_MAX_SKEW (50 * NSEC_PER_USEC)
-+#define WATCHDOG_MAX_SKEW (100 * NSEC_PER_USEC)
- 
- #ifdef CONFIG_CLOCKSOURCE_WATCHDOG
- static void clocksource_watchdog_work(struct work_struct *work);
-@@ -205,17 +205,24 @@ EXPORT_SYMBOL_GPL(max_cswd_read_retries);
- static int verify_n_cpus = 8;
- module_param(verify_n_cpus, int, 0644);
- 
--static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
-+enum wd_read_status {
-+	WD_READ_SUCCESS,
-+	WD_READ_UNSTABLE,
-+	WD_READ_SKIP
-+};
-+
-+static enum wd_read_status cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
- {
- 	unsigned int nretries;
--	u64 wd_end, wd_delta;
--	int64_t wd_delay;
-+	u64 wd_end, wd_end2, wd_delta;
-+	int64_t wd_delay, wd_seq_delay;
- 
- 	for (nretries = 0; nretries <= max_cswd_read_retries; nretries++) {
- 		local_irq_disable();
- 		*wdnow = watchdog->read(watchdog);
- 		*csnow = cs->read(cs);
- 		wd_end = watchdog->read(watchdog);
-+		wd_end2 = watchdog->read(watchdog);
- 		local_irq_enable();
- 
- 		wd_delta = clocksource_delta(wd_end, *wdnow, watchdog->mask);
-@@ -226,13 +233,34 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
- 				pr_warn("timekeeping watchdog on CPU%d: %s retried %d times before success\n",
- 					smp_processor_id(), watchdog->name, nretries);
- 			}
--			return true;
-+			return WD_READ_SUCCESS;
- 		}
-+
-+		/*
-+		 * Now compute delay in consecutive watchdog read to see if
-+		 * there is too much external interferences that cause
-+		 * significant delay in reading both clocksource and watchdog.
-+		 *
-+		 * If consecutive WD read-back delay > WATCHDOG_MAX_SKEW/2,
-+		 * report system busy, reinit the watchdog and skip the current
-+		 * watchdog test.
-+		 */
-+		wd_delta = clocksource_delta(wd_end2, wd_end, watchdog->mask);
-+		wd_seq_delay = clocksource_cyc2ns(wd_delta, watchdog->mult, watchdog->shift);
-+		if (wd_seq_delay > WATCHDOG_MAX_SKEW/2)
-+			goto skip_test;
- 	}
- 
- 	pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, marking unstable\n",
- 		smp_processor_id(), watchdog->name, wd_delay, nretries);
--	return false;
-+	return WD_READ_UNSTABLE;
-+
-+skip_test:
-+	pr_info("timekeeping watchdog on CPU%d: %s wd-wd read-back delay of %lldns\n",
-+		smp_processor_id(), watchdog->name, wd_seq_delay);
-+	pr_info("wd-%s-wd read-back delay of %lldns, clock-skew test skipped!\n",
-+		cs->name, wd_delay);
-+	return WD_READ_SKIP;
+@@ -199,7 +199,7 @@ void clocksource_mark_unstable(struct clocksource *cs)
+ 	spin_unlock_irqrestore(&watchdog_lock, flags);
  }
  
- static u64 csnow_mid;
-@@ -356,6 +384,7 @@ static void clocksource_watchdog(struct timer_list *unused)
- 	int next_cpu, reset_pending;
- 	int64_t wd_nsec, cs_nsec;
- 	struct clocksource *cs;
-+	enum wd_read_status read_ret;
- 	u32 md;
- 
- 	spin_lock(&watchdog_lock);
-@@ -373,9 +402,12 @@ static void clocksource_watchdog(struct timer_list *unused)
- 			continue;
- 		}
- 
--		if (!cs_watchdog_read(cs, &csnow, &wdnow)) {
--			/* Clock readout unreliable, so give it up. */
--			__clocksource_unstable(cs);
-+		read_ret = cs_watchdog_read(cs, &csnow, &wdnow);
-+
-+		if (read_ret != WD_READ_SUCCESS) {
-+			if (read_ret == WD_READ_UNSTABLE)
-+				/* Clock readout unreliable, so give it up. */
-+				__clocksource_unstable(cs);
- 			continue;
- 		}
- 
+-ulong max_cswd_read_retries = 3;
++ulong max_cswd_read_retries = 2;
+ module_param(max_cswd_read_retries, ulong, 0644);
+ EXPORT_SYMBOL_GPL(max_cswd_read_retries);
+ static int verify_n_cpus = 8;
 -- 
 2.27.0
 
