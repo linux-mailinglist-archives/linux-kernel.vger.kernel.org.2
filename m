@@ -2,81 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C294F455333
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 04:11:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A03A9455325
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 04:11:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242743AbhKRDOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 22:14:09 -0500
-Received: from relmlor1.renesas.com ([210.160.252.171]:51670 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S242697AbhKRDOA (ORCPT
+        id S242671AbhKRDN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 22:13:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242645AbhKRDNv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 22:14:00 -0500
-X-IronPort-AV: E=Sophos;i="5.87,243,1631545200"; 
-   d="scan'208";a="100643664"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 18 Nov 2021 12:11:00 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id E9A1E4008C4D;
-        Thu, 18 Nov 2021 12:10:57 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-spi@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v2 3/3] spi: spi-rspi: Drop redeclaring ret variable in qspi_transfer_in()
-Date:   Thu, 18 Nov 2021 03:10:41 +0000
-Message-Id: <20211118031041.2312-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Wed, 17 Nov 2021 22:13:51 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34657C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 19:10:51 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so6965732pjc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 19:10:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=HZhNaj1zb/jXice+UIHy/9JYO1KOcEwz8mr+T3bRCek=;
+        b=WoPNm99Ae/EYe/1rQT8rVwRFHKIMC/PehFnQfLOoYInh4puyZGBaAudVt8zB3UWE94
+         QZvFSaasnkw1zyd0xqWpchYf312YrR26JH9ERcvLwkVbjL/jsweksTtdekHaZiKHTzZf
+         CSgIw4A3Xuav7eROeVgjGQmpFGI/oozA6aNdhy/fBkz3q6Mp2i4NF5sFvjTyrYKIbCAp
+         0WBREcS/kV36KV8DBPDVSXIVkVVkkf1EkY9fGDJpyNLERNfjrO0yf1iVANd74jvm/wd5
+         gCuYVaGQ/B5JcpPEqESYTG4asPLZz33ebstZjgDZy4SgokotJ6aOFeH+ug4x39hZymcB
+         9UJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HZhNaj1zb/jXice+UIHy/9JYO1KOcEwz8mr+T3bRCek=;
+        b=ahp8dxzIlO7UDg5Z3mcYeQcvg+8FkNR9ZX2fTnvN7yhG+d2ulcSbbDunh2w5eG1Puz
+         XReramdSBlxv/L4z2YRxMc8cvq8NoKSvg4Y3ubcNHktOB7APoTMSL8FYrvcu4x0J7WCf
+         bTuoLTsmyUOJptIM6OZpJQAoJbXcg5lNIZHKGR31R/rZxCE9GyxtKaTBIXCvUJFMZPMn
+         fl+XJIgANxdYQ/PHnTCxtXD6SNiUOcn7OiJlChJIKbxFqhJq3Xc0xGMfr18KqMLDUHBT
+         PFED4jjiXXgSR7rK9+7XA8anTjtkfUkPa+asyU+Z6DzVLFDhK5g1SFoSNm5hBYI2HNex
+         VBKA==
+X-Gm-Message-State: AOAM531/wqf/s8w3SCvZCjfic1ylJFzGIwuSFfN4lfmlSOQBVjaFrEAK
+        83nbgj3uBzv/BBiBOWj+VYo=
+X-Google-Smtp-Source: ABdhPJwmcd68zWf7Xh743EDRoIcMkRtB9dwp2wqn98KxvCPz5TWiC7tE2B0EvZkJwWWE1n9cj1lXqg==
+X-Received: by 2002:a17:90b:11c1:: with SMTP id gv1mr6074349pjb.208.1637205050770;
+        Wed, 17 Nov 2021 19:10:50 -0800 (PST)
+Received: from BJ-zhangqiang.qcraft.lan ([137.59.101.13])
+        by smtp.gmail.com with ESMTPSA id b4sm1053360pfl.60.2021.11.17.19.10.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 19:10:50 -0800 (PST)
+From:   Zqiang <qiang.zhang1211@gmail.com>
+To:     frederic@kernel.org, pmladek@suse.com
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        Zqiang <qiang.zhang1211@gmail.com>
+Subject: [PATCH v3] watchdog: Add warning message when the newcpumask contains nohz_full cores
+Date:   Thu, 18 Nov 2021 11:10:46 +0800
+Message-Id: <20211118031046.32632-1-qiang.zhang1211@gmail.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211118031041.2312-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20211118031041.2312-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"ret" variable is already declared in qspi_transfer_in() at the
-beginning of function, drop redeclaring ret in the if block, fixing
-below:
+The watchdog default is disabled on nohz_full cores, however when
+override the cpumask, if new cpumask contains nohz_full cores,
+add warning message.
 
-spi-rspi.c: In function ‘qspi_transfer_in’:
-spi-rspi.c:838:7: warning: declaration of ‘ret’ shadows a previous local
-  838 |   int ret = rspi_dma_transfer(rspi, NULL, &xfer->rx_sg);
-      |       ^~~
-spi-rspi.c:835:6: note: shadowed declaration is here
-  835 |  int ret;
-
-Fixes: db30083813b55 ("spi: rspi: avoid uninitialized variable access")
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
 ---
-v1->v2
-* Included RB tag
----
- drivers/spi/spi-rspi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ v1->v2:
+ if watchdog_cpumask became empty, set housekeeping_cpumask.
+ v2->v3:
+ only print a warning when a nohz_full CPU is included in new cpumask.
 
-diff --git a/drivers/spi/spi-rspi.c b/drivers/spi/spi-rspi.c
-index 592682d96562..815698366412 100644
---- a/drivers/spi/spi-rspi.c
-+++ b/drivers/spi/spi-rspi.c
-@@ -835,7 +835,7 @@ static int qspi_transfer_in(struct rspi_data *rspi, struct spi_transfer *xfer)
- 	int ret;
+ kernel/watchdog.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index ad912511a0c0..37a978d8ff06 100644
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -629,6 +629,7 @@ static void proc_watchdog_update(void)
+ {
+ 	/* Remove impossible cpus to keep sysctl output clean. */
+ 	cpumask_and(&watchdog_cpumask, &watchdog_cpumask, cpu_possible_mask);
++	WARN_ONCE(!cpumask_subset(&watchdog_cpumask, housekeeping_cpumask(HK_FLAG_TIMER)), "Enabling watchdog on nohz_full cores\n");
+ 	lockup_detector_reconfigure();
+ }
  
- 	if (rspi->ctlr->can_dma && __rspi_can_dma(rspi, xfer)) {
--		int ret = rspi_dma_transfer(rspi, NULL, &xfer->rx_sg);
-+		ret = rspi_dma_transfer(rspi, NULL, &xfer->rx_sg);
- 		if (ret != -EAGAIN)
- 			return ret;
- 	}
 -- 
 2.17.1
 
