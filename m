@@ -2,405 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40605455FA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:36:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7A32455FA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:37:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbhKRPjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 10:39:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59674 "EHLO
+        id S232482AbhKRPj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 10:39:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232397AbhKRPjP (ORCPT
+        with ESMTP id S232287AbhKRPj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 10:39:15 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 791BDC06173E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 07:36:14 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id d5so12395896wrc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 07:36:14 -0800 (PST)
+        Thu, 18 Nov 2021 10:39:58 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B329C061574;
+        Thu, 18 Nov 2021 07:36:58 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id h19-20020a9d3e53000000b0056547b797b2so11602472otg.4;
+        Thu, 18 Nov 2021 07:36:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Ie6Tu2P5Bk+kxdEtWy+/RXXOlEd/vH+F5MzmsBPE6KA=;
-        b=djawHILmVTs9ySjuJxTX6LZ2HnM+DoY/FGntdYU7oV3pwghzVv8dyfZ9yPkL/8HVzP
-         ym/20/txKspti3cWZOSUjfQCzTliSGN6tafhiDd1/99Kj40jDrp8E5JzcXlDmp7aJzIa
-         gAdiemUm+fwz5eFLZVpjs1mqBcxTBJR6JMY5o=
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=dZlZJATQ/YmcJWgA31Q7e7yJH81G5LLLJ42PGoSP0yI=;
+        b=EJXnXAqgwaqGjyZXZVTkLHK0Qp8VQFd7iFh+WtunxBelUvtr0lgK4lVp9UkuwxQTeY
+         8D0rpyErhdP5ZwYzWKyuVP0lsQFNCKSGJVAS8Ea7c3HteDQg+YKfiEo9WEaDmZpieO34
+         5cC+kbDe/VQVw8ouBPT/6xW1WxCxr3otNxvLAGF+RGuO5lBwdDBsSja2xazPLxoSA8QH
+         6dvmXESOrug6o0IZxqZm5p5ysLRraui14a2Y2wfe7B/ZKET0mIjZH7ARPNYTBiqbbGHK
+         tEyqZrCM4tz7qlgxCJDal9+NsRF7TKESmiuAUqqu9BuYkXTKtZlu/39ci0zWxxQJ20Hr
+         XXXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Ie6Tu2P5Bk+kxdEtWy+/RXXOlEd/vH+F5MzmsBPE6KA=;
-        b=qbpyos7ncmp2LBbQvkl9c3cghVJvOBrLTiydJRA+QeOwfnkXGSq8XLo5HmpbVv8c1h
-         HnGgFWlEUwbItMe9dwlCHU9iWj456vs9s8WZGuwN+wjbkQ2rZ+mkjTcrT5tufBgypokb
-         4KJ+vMKyaYRhApTmlk+zR9RHWHN/cxYPsSuPuKw+siLw+0budZgEDBgP+uy2aD0Mjhlf
-         V5KKgMkUnaJ3Iojxll16OgXePddUexuBL2CN62SSL/0pPGlTi10erVg91eX6qJ23n+Av
-         yL5CScW/mV7L15NozLgnQPKQgvPVwPqh7u2U+FDzn9ugHClSBkQSU9EvEz7XaDR+nYSs
-         yQXw==
-X-Gm-Message-State: AOAM533AFQFf34R97sPET4ufslbLo/YXE1NNInOV6sS2j5bt498ITRFz
-        Rd/nPU3AVVD6spK/G2ddy2DqD2atatNhlKQayl3PTw==
-X-Google-Smtp-Source: ABdhPJz1KgOsDUS2KKyyRep6AYgiuFNYiPQqbqA2ankF7GprEP1Ao6oVrjXQMoHmP2YGui4LzcLgCSXRj5WCJoKFARw=
-X-Received: by 2002:a5d:4b41:: with SMTP id w1mr31339631wrs.437.1637249772824;
- Thu, 18 Nov 2021 07:36:12 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=dZlZJATQ/YmcJWgA31Q7e7yJH81G5LLLJ42PGoSP0yI=;
+        b=rphVHOivmvPMQIfe2TyFpXJ+atXdiIx3VoAZx7WlCPujJkHzGOlBfH2otK4w4Y8rua
+         0DIuUpULY5MTiXRJtVmkVyCXgDKsBpQaUFM7+3tnG/dBwDUW8Hd8XfMS9mRVfDtY+YOl
+         dVL7g7pWPHb6G2OJ2vJRvZjOXRLuB98bygJUzI5g5X600jbqA2nzNavG14ipn299+ZZk
+         UhAqqpQ6bPEfGjV78+ErTZiq3bDIJw1Z6Zg0NuPw+2HXb6iFOR9oDwtsch9lxJyH1FCh
+         4GeGDYG91Iw7lKHbph9NH81zr1qVfUQXGLJVpfS8I3WCSCVRBmKZZgQkKKHYn+dtucKv
+         wWNw==
+X-Gm-Message-State: AOAM533KMmWxt2tFWnzEVEQuPVMhDzyekqAXwXlpd9uhv6qlZoJJYXrX
+        77+QPhahFCkBGWNwhX/RoNU=
+X-Google-Smtp-Source: ABdhPJzBnDAazNpr2RMobQK1UpRc2NWjCOCOE7f0HrPAtpc5UHuOh8P96ocIpy4uoI5W39b5Pad0cg==
+X-Received: by 2002:a9d:24c3:: with SMTP id z61mr21930817ota.100.1637249817453;
+        Thu, 18 Nov 2021 07:36:57 -0800 (PST)
+Received: from [172.16.0.2] ([8.48.134.30])
+        by smtp.googlemail.com with ESMTPSA id l23sm33822oti.16.2021.11.18.07.36.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Nov 2021 07:36:57 -0800 (PST)
+Message-ID: <67b36bd8-2477-88ac-83a0-35a1eeaf40c9@gmail.com>
+Date:   Thu, 18 Nov 2021 08:36:55 -0700
 MIME-Version: 1.0
-References: <20211110221456.11977-1-jim2101024@gmail.com> <20211110221456.11977-6-jim2101024@gmail.com>
- <CAL_Jsq+6g-EhyVCeWTMkjOZmBwsOOVZo2jXpzAkjOXcZaxb2eA@mail.gmail.com>
- <CA+-6iNxfrOQtH1JDEjAdSZQkENoaw1tUDTfVc5+G7P6BAbSc6g@mail.gmail.com>
- <CAL_JsqJno4ROQD38buz8Z-tU5aaQL5b_d1R0-D+c9UwnMKYNOw@mail.gmail.com>
- <20211116205337.ui5sjrsmkef4a53k@pali> <CA+-6iNxz2RSmJ9C1dfjEOPmuTxELPDiGzsWoL-8KkH8FGjN3nA@mail.gmail.com>
- <20211117154512.aelgnqhcnw3gqu5s@pali>
-In-Reply-To: <20211117154512.aelgnqhcnw3gqu5s@pali>
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-Date:   Thu, 18 Nov 2021 10:36:00 -0500
-Message-ID: <CA+-6iNwUORmdLy9ii748K4JfZQ8J-N48r-q7QO1P9XAZR2W2qw@mail.gmail.com>
-Subject: Re: [PATCH v8 5/8] PCI/portdrv: add mechanism to turn on subdev regulators
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, Jim Quinlan <jim2101024@gmail.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Sean V Kelley <sean.v.kelley@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Keith Busch <kbusch@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.1
+Subject: Re: [PATCH v2 net-next 0/2] net: snmp: tracepoint support for snmp
+Content-Language: en-US
+To:     menglong8.dong@gmail.com, kuba@kernel.org, rostedt@goodmis.org
+Cc:     davem@davemloft.net, mingo@redhat.com, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, imagedong@tencent.com, ycheng@google.com,
+        kuniyu@amazon.co.jp, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20211118124812.106538-1-imagedong@tencent.com>
+From:   David Ahern <dsahern@gmail.com>
+In-Reply-To: <20211118124812.106538-1-imagedong@tencent.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 10:45 AM Pali Roh=C3=A1r <pali@kernel.org> wrote:
->
-> On Wednesday 17 November 2021 10:14:19 Jim Quinlan wrote:
-> > On Tue, Nov 16, 2021 at 3:53 PM Pali Roh=C3=A1r <pali@kernel.org> wrote=
-:
-> > >
-> > > On Tuesday 16 November 2021 11:41:22 Rob Herring wrote:
-> > > > +Pali
-> > > >
-> > > > On Mon, Nov 15, 2021 at 2:44 PM Jim Quinlan <james.quinlan@broadcom=
-.com> wrote:
-> > > > >
-> > > > > On Thu, Nov 11, 2021 at 5:57 PM Rob Herring <robh@kernel.org> wro=
-te:
-> > > > > >
-> > > > > > On Wed, Nov 10, 2021 at 4:15 PM Jim Quinlan <jim2101024@gmail.c=
-om> wrote:
-> > > > > > >
-> > > > > > > Adds a mechanism inside the root port device to identify stan=
-dard PCIe
-> > > > > > > regulators in the DT, allocate them, and turn them on before =
-the rest of
-> > > > > > > the bus is scanned during pci_host_probe().  A root complex d=
-river can
-> > > > > > > leverage this mechanism by setting the pci_ops methods add_bu=
-s and
-> > > > > > > remove_bus to pci_subdev_regulators_{add,remove}_bus.
-> > > > > > >
-> > > > > > > The allocated structure that contains the regulators is store=
-d in
-> > > > > > > dev.driver_data.
-> > > > > > >
-> > > > > > > The unabridge    /* PCIe endpoint */d reason for doing this i=
-s as follows.  We would like the
-> > > > > > > Broadcom STB PCIe root complex driver (and others) to be able=
- to turn
-> > > > > > > off/on regulators[1] that provide power to endpoint[2] device=
-s.  Typically,
-> > > > > > > the drivers of these endpoint devices are stock Linux drivers=
- that are not
-> > > > > > > aware that these regulator(s) exist and must be turned on for=
- the driver to
-> > > > > > > be probed.  The simple solution of course is to turn these re=
-gulators on at
-> > > > > > > boot and keep them on.  However, this solution does not satis=
-fy at least
-> > > > > > > three of our usage modes:
-> > > > > > >
-> > > > > > > 1. For example, one customer uses multiple PCIe controllers, =
-but wants the
-> > > > > > > ability to, by script invoking and unbind, turn any or all of=
- them by and
-> > > > > > > their subdevices off to save power, e.g. when in battery mode=
-.
-> > > > > > >
-> > > > > > > 2. Another example is when a watchdog script discovers that a=
-n endpoint
-> > > > > > > device is in an unresponsive state and would like to unbind, =
-power toggle,
-> > > > > > > and re-bind just the PCIe endpoint and controller.
-> > > > > > >
-> > > > > > > 3. Of course we also want power turned off during suspend mod=
-e.  However,
-> > > > > > > some endpoint devices may be able to "wake" during suspend an=
-d we need to
-> > > > > > > recognise this case and veto the nominal act of turning off i=
-ts regulator.
-> > > > > > > Such is the case with Wake-on-LAN and Wake-on-WLAN support wh=
-ere PCIe
-> > > > > > > end-point device needs to be kept powered on in order to rece=
-ive network
-> > > > > > > packets and wake-up the system.
-> > > > > > >
-> > > > > > > In all of these cases it is advantageous for the PCIe control=
-ler to govern
-> > > > > > > the turning off/on the regulators needed by the endpoint devi=
-ce.  The first
-> > > > > > > two cases can be done by simply unbinding and binding the PCI=
-e controller,
-> > > > > > > if the controller has control of these regulators.
-> > > > > > >
-> > > > > > > [1] These regulators typically govern the actual power supply=
- to the
-> > > > > > >     endpoint chip.  Sometimes they may be a the official PCIe=
- socket
-> > > > > > >     power -- such as 3.3v or aux-3.3v.  Sometimes they are tr=
-uly
-> > > > > > >     the regulator(s) that supply power to the EP chip.
-> > > > > > >
-> > > > > > > [2] The 99% configuration of our boards is a single endpoint =
-device
-> > > > > > >     attached to the PCIe controller.  I use the term endpoint=
- but it could
-> > > > > > >     possible mean a switch as well.
-> > > > > > >
-> > > > > > > Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-> > > > > > > ---
-> > > > > > >  drivers/pci/bus.c              | 72 ++++++++++++++++++++++++=
-++++++++++
-> > > > > > >  drivers/pci/pci.h              |  8 ++++
-> > > > > > >  drivers/pci/pcie/portdrv_pci.c | 32 +++++++++++++++
-> > > > > > >  3 files changed, 112 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
-> > > > > > > index 3cef835b375f..c39fdf36b0ad 100644
-> > > > > > > --- a/drivers/pci/bus.c
-> > > > > > > +++ b/drivers/pci/bus.c
-> > > > > > > @@ -419,3 +419,75 @@ void pci_bus_put(struct pci_bus *bus)
-> > > > > > >         if (bus)
-> > > > > > >                 put_device(&bus->dev);
-> > > > > > >  }
-> > > > > > > +
-> > > > > > > +static void *alloc_subdev_regulators(struct device *dev)
-> > > > > > > +{
-> > > > > > > +       static const char * const supplies[] =3D {
-> > > > > > > +               "vpcie3v3",
-> > > > > > > +               "vpcie3v3aux",
-> > > > > > > +               "vpcie12v",
-> > > > > > > +       };
-> > > > > > > +       const size_t size =3D sizeof(struct subdev_regulators=
-)
-> > > > > > > +               + sizeof(struct regulator_bulk_data) * ARRAY_=
-SIZE(supplies);
-> > > > > > > +       struct subdev_regulators *sr;
-> > > > > > > +       int i;
-> > > > > > > +
-> > > > > > > +       sr =3D devm_kzalloc(dev, size, GFP_KERNEL);
-> > > > > > > +
-> > > > > > > +       if (sr) {
-> > > > > > > +               sr->num_supplies =3D ARRAY_SIZE(supplies);
-> > > > > > > +               for (i =3D 0; i < ARRAY_SIZE(supplies); i++)
-> > > > > > > +                       sr->supplies[i].supply =3D supplies[i=
-];
-> > > > > > > +       }
-> > > > > > > +
-> > > > > > > +       return sr;
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +
-> > > > > > > +int pci_subdev_regulators_add_bus(struct pci_bus *bus)
-> > > > > > > +{
-> > > > > > > +       struct device *dev =3D &bus->dev;
-> > > > > > > +       struct subdev_regulators *sr;
-> > > > > > > +       int ret;
-> > > > > > > +
-> > > > > > > +       if (!pcie_is_port_dev(bus->self))
-> > > > > > > +               return 0;
-> > > > > > > +
-> > > > > > > +       if (WARN_ON(bus->dev.driver_data))
-> > > > > > > +               dev_err(dev, "multiple clients using dev.driv=
-er_data\n");
-> > > > > > > +
-> > > > > > > +       sr =3D alloc_subdev_regulators(&bus->dev);
-> > > > > > > +       if (!sr)
-> > > > > > > +               return -ENOMEM;
-> > > > > > > +
-> > > > > > > +       bus->dev.driver_data =3D sr;
-> > > > > > > +       ret =3D regulator_bulk_get(dev, sr->num_supplies, sr-=
->supplies);
-> > > > > > > +       if (ret)
-> > > > > > > +               return ret;
-> > > > > > > +
-> > > > > > > +       ret =3D regulator_bulk_enable(sr->num_supplies, sr->s=
-upplies);
-> > > > > > > +       if (ret) {
-> > > > > > > +               dev_err(dev, "failed to enable regulators for=
- downstream device\n");
-> > > > > > > +               return ret;
-> > > > > > > +       }
-> > > > > > > +
-> > > > > > > +       return 0;
-> > > > > > > +}
-> > > > > > > +EXPORT_SYMBOL_GPL(pci_subdev_regulators_add_bus);
-> > > > > >
-> > > > > > Can't these just go in the portdrv probe and remove functions n=
-ow?
-> > > > > >
-> > > > > > Rob
-> > > > >
-> > > > > Not really.  The idea is that  only when a host controller driver=
- does this
-> > > > >
-> > > > > static struct pci_ops my_pcie_ops =3D {
-> > > > >     .add_bus =3D pci_subdev_regulators_add_bus , /* see  note bel=
-ow */
-> > > > >     .remove_bus =3D pci_subdev_regulators_remove_bus,
-> > > > >     ...
-> > > > > }
-> > > > >
-> > > > > does it explicitly want this feature.  Without doing this, every =
-PCI
-> > > > > port in the world will execute a devm_kzalloc() and
-> > > > > devm_regulator_bulk_get() to (likely) grab nothing, and then ther=
-e
-> > > > > will be three superfluous lines in the boot log:
-> > > >
-> > > > You can opt-in based on there being a DT node.
-> > > >
-> > > > > pci_bus 0001:01: 0001:01 supply vpcie12v not found, using dummy r=
-egulator
-> > > > > pci_bus 0001:01: 0001:01 supply vpcie3v3 not found, using dummy r=
-egulator
-> > > > > pci_bus 0001:01: 0001:01 supply vpcie3v3aux not found, using dumm=
-y regulator
-> > > >
-> > > > This would be annoying, but not really a reason for how to design t=
-his.
-> > > >
-> > > > > Secondly, our  HW needs to know when the  alloc/get/enable of
-> > > > > regulators is done so that the PCIe link can then be attempted.  =
- This
-> > > > > is pretty much the cornerstone of this patchset.   To do this the=
- brcm
-> > > > > RC driver's call to pci_subdev_regulators_add_bus() is wrapped by
-> > > > > brcm_pcie_add_bus() so that we can do this:
-> > > > >
-> > > > > static struct pci_ops my_pcie_ops =3D {
-> > > > >     .add_bus =3D brcm_pcie_add_bus ,   /* calls pci_subdev_regula=
-tors_add_bus() */
-> > > > >     .remove_bus =3D pci_subdev_regulators_remove_bus,
-> > > >
-> > > > Do add_bus/remove_bus get called during resume/suspend? If not, how=
- do
-> > > > you handle the link during resume?
-> > > >
-> > > > Maybe there needs to be explicit hooks for link handling. Pali has
-> > > > been looking into this some.
-> > > >
-> > > > Rob
-> > >
-> > > Yes, I was looking at it... main power (12V/3.3V) and AUX power (3.3V=
-)
-> > > needs to be supplied at the "correct" time during establishing link
-> > > procedure. I wrote it in my RFC email:
-> > > https://lore.kernel.org/linux-pci/20211022183808.jdeo7vntnagqkg7g@pal=
-i/
-> > Hello Pali,
-> >
-> > I really like your proposal although I would like to get my patchset
-> > first :-) :-)
-> >
-> > Suppose you came up with a patchset for your ideas-- would that include
-> > changes to existing RC drivers to use the proposed framework?  If so,
-> > I am wary that it would
-> > break at least a few of them.  Or would you just present the framework
-> > and allow the
-> > RC drivers' authors to opt-in, one by one?
->
-> My idea is to add new "framework" to allow drivers implement new
-> callbacks for this "framework". There would be no change in drivers
-> which do not provide these callbacks to ensure that nothing is going to
-> be broken. I'm planning to implement these callbacks only for RC drivers
-> for which I have hardware and can properly test to not introduce any
-> regression. For other existing RC drivers it is up to other authors +
-> testers. But to decrease future maintenance cost of all RC drivers I
-> expect that new drivers would not implement any ad-hoc solution in their
-> "probe" function and instead implement these new callbacks. That is my
-> idea.
->
-> > At any rate, if you want someone to test some of your ideas I can work
-> > with you.
->
-> Perfect! If you have any concerns or you see any issues, please reply
-> that my RFC email. So I can collect feedback.
->
-> Also I sent draft for updating DTS schema for PCIe devices:
-> https://github.com/devicetree-org/dt-schema/pull/64
+On 11/18/21 5:48 AM, menglong8.dong@gmail.com wrote:
+> From: Menglong Dong <imagedong@tencent.com>
+> 
+> snmp is the network package statistics module in kernel, and it is
+> useful in network issue diagnosis, such as packet drop.
+> 
+> However, it is hard to get the detail information about the packet.
+> For example, we can know that there is something wrong with the
+> checksum of udp packet though 'InCsumErrors' of UDP protocol in
+> /proc/net/snmp, but we can't figure out the ip and port of the packet
+> that this error is happening on.
+> 
+> Add tracepoint for snmp. Therefor, users can use some tools (such as
+> eBPF) to get the information of the exceptional packet.
+> 
+> In the first patch, the frame of snmp-tracepoint is created. And in
+> the second patch, tracepoint for udp-snmp is introduced.
+> 
 
-Hi Pali,
-I don't see any mention or placement of the regulator nodes for power;
-do you agree with where
-I proposed we place them, ie in the first bridge under the root-complex,  e=
-.g.
+there is already good infrastructure around kfree_skb - e.g., drop watch
+monitor. Why not extend that in a way that other drop points can benefit
+over time?
 
-            pcie0: pcie@7d500000 {                                /*
-root complex */
-                    compatible =3D "brcm,bcm2711-pcie";
-                    reg =3D <0x0 0x7d500000 0x9310>;
+e.g., something like this (uncompiled and not tested; and to which
+Steven is going to suggest strings for the reason):
 
-                    /* PCIe bridge */
-                    pci@0,0 {
-                            #address-cells =3D <3>;
-                            #size-cells =3D <2>;
-                            reg =3D <0x0 0x0 0x0 0x0 0x0>;
-                            compatible =3D "pciclass,0604";
-                            device_type =3D "pci";
-                            vpcie3v3-supply =3D <&vreg7>;     /*
-<------------- HERE  */
-                            ranges;
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 0bd6520329f6..e66e634acad0 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -1075,8 +1075,13 @@ static inline bool skb_unref(struct sk_buff *skb)
+        return true;
+ }
 
-                            pci-ep@0,0 {        /* PCIe endpoint */
-                                    assigned-addresses =3D
-                                        <0x82010000 0x0 0xf8000000 0x6
-0x00000000 0x0 0x2000>;
-                                    reg =3D <0x0 0x0 0x0 0x0 0x0>;
-                                    compatible =3D "pci14e4,1688";
-                                    #address-cells =3D <3>;
-                                    #size-cells =3D <2>;
++enum skb_drop_reason {
++       SKB_DROP_REASON_NOT_SPECIFIED,
++       SKB_DROP_REASON_CSUM,
++}
+ void skb_release_head_state(struct sk_buff *skb);
+ void kfree_skb(struct sk_buff *skb);
++void kfree_skb_with_reason(struct sk_buff *skb, enum skb_drop_reason);
+ void kfree_skb_list(struct sk_buff *segs);
+ void skb_dump(const char *level, const struct sk_buff *skb, bool full_pkt);
+ void skb_tx_error(struct sk_buff *skb);
+diff --git a/include/trace/events/skb.h b/include/trace/events/skb.h
+index 9e92f22eb086..2a2d263f9d46 100644
+--- a/include/trace/events/skb.h
++++ b/include/trace/events/skb.h
+@@ -14,7 +14,7 @@
+  */
+ TRACE_EVENT(kfree_skb,
 
-                                    ranges;
-                            };
-                    };
-            };
+-       TP_PROTO(struct sk_buff *skb, void *location),
++       TP_PROTO(struct sk_buff *skb, void *location, enum
+skb_drop_reason reason),
 
+        TP_ARGS(skb, location),
 
-Regards,
-Jim
+@@ -22,16 +22,18 @@ TRACE_EVENT(kfree_skb,
+                __field(        void *,         skbaddr         )
+                __field(        void *,         location        )
+                __field(        unsigned short, protocol        )
++               __field(        unsigned int,   reason          )
+        ),
 
->
-> > Regards,
-> > Jim Quinlan
-> > Broadcom STB
-> >
-> >
-> > >
-> > > I'm not sure if regulator API is the most suitable for this task in P=
-CI
-> > > core code as there are planty ways how it can be controllers. My idea
-> > > presented in that email was that driver provides power callback and c=
-ore
-> > > pci code would use it.
-> > >
-> > > Because power needs to be enabled at the "correct" time during link u=
-p,
-> > > I think that add/remove bus callbacks are unsuitable for this task. T=
-his
-> > > would just cause adding another msleep() calls on different places to
-> > > make correct timing of link up...
-> > >
-> > > I think it is needed to implement generic function for establishing l=
-ink
-> > > in pci core code with all required steps.
+        TP_fast_assign(
+                __entry->skbaddr = skb;
+                __entry->location = location;
+                __entry->protocol = ntohs(skb->protocol);
++               __entry->reason = reason;
+        ),
+
+-       TP_printk("skbaddr=%p protocol=%u location=%p",
+-               __entry->skbaddr, __entry->protocol, __entry->location)
++       TP_printk("skbaddr=%p protocol=%u location=%p reason %u",
++               __entry->skbaddr, __entry->protocol, __entry->location,
+__entry->reason)
+ );
+
+ TRACE_EVENT(consume_skb,
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 67a9188d8a49..388059bda3d1 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -770,11 +770,29 @@ void kfree_skb(struct sk_buff *skb)
+        if (!skb_unref(skb))
+                return;
+
+-       trace_kfree_skb(skb, __builtin_return_address(0));
++       trace_kfree_skb(skb, __builtin_return_address(0),
+SKB_DROP_REASON_NOT_SPECIFIED);
+        __kfree_skb(skb);
+ }
+ EXPORT_SYMBOL(kfree_skb);
+
++/**
++ *     kfree_skb_with_reason - free an sk_buff
++ *     @skb: buffer to free
++ *     @reason: enum describing why the skb is dropped
++ *
++ *     Drop a reference to the buffer and free it if the usage count has
++ *     hit zero.
++ */
++void kfree_skb_with_reason(struct sk_buff *skb, enum skb_drop_reason
+reason);
++{
++       if (!skb_unref(skb))
++               return;
++
++       trace_kfree_skb(skb, __builtin_return_address(0), reason);
++       __kfree_skb(skb);
++}
++EXPORT_SYMBOL(kfree_skb_with_reason);
++
+ void kfree_skb_list(struct sk_buff *segs)
+ {
+        while (segs) {
