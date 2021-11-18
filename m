@@ -2,173 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0D1B4562BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:43:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 337DC4562C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:44:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233904AbhKRSqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 13:46:35 -0500
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:39782 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231204AbhKRSqd (ORCPT
+        id S233774AbhKRSrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 13:47:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229644AbhKRSrA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 13:46:33 -0500
-Received: by mail-oi1-f177.google.com with SMTP id bf8so16266819oib.6;
-        Thu, 18 Nov 2021 10:43:33 -0800 (PST)
+        Thu, 18 Nov 2021 13:47:00 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F07A1C06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:43:59 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id w33-20020a17090a6ba400b001a722a06212so7247996pjj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:43:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jQ7Q3jdQqye6b63JEwuz0UrVtVAQHNs/hH6Rmr9vUg0=;
+        b=I1sIuz6yICjv30SpY++42NwDbq6Mp+Itq0b1L5QbT/QZ6KhUTpVUeR1e/S9LIfilBu
+         jDcHScfysDs8Lf6SQ2lBmCRcRaCtjtaz0HH6QMMueAl9e4l/dn7BpZH6Mg+QkIWQBaYU
+         T8USZP6ZHqdnKdZxIbMTMrPxXuucBrsNldIlQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1kySb+QlzVqZ4BCjNqmHk4U4EiQ858nhVYzzDU2WDzg=;
-        b=XOoTptNYp9xM/gc0VKPFK1XlsSI6x+R5rxwhMtpuD8nWqPKTraibCIkVTCTQD1Am0w
-         kOrxf9y4YMIs1k65hs4qquaFiK43jgb4Ffe5QJbuuaYdnvdXqa6qj0cOfDjHh0kyBxQh
-         qQgSz7XdgChrvN5cupHVp/F963h16fHj+kCE/pM2OYMRLpVrlgBBA/pzIwzfl7WcAG8Y
-         E9BOfZER7OqI/xO2LneA2s6/OT/wx95opi1fV08/QuJx0+LNwL4IoCawD/7i1nEV+B4Z
-         leEmAfu0tLm/lNtEPI75TcbhANQOLefDDpv3b7hftauy1Jkc0JOv2or5dXxZtmVf7NNh
-         IPnQ==
-X-Gm-Message-State: AOAM533K/F5Zb7KyhaSfPOpWIBqO2+3ax1qf9ttjgLkg06sfxSZhx30i
-        cClMNCU80TEzwfVEaHs1YRU+N7FZX5LUYAn3YoJBeWk8
-X-Google-Smtp-Source: ABdhPJxU59+TqoM8WODxZUXubxZrIjJPnq0V0VNlKJPKi0GdLphbKEvsNJOeS5hHQdXL27kFtyTQ+GOO1VqnJUbHMvk=
-X-Received: by 2002:a05:6808:14c3:: with SMTP id f3mr9724324oiw.51.1637261013150;
- Thu, 18 Nov 2021 10:43:33 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jQ7Q3jdQqye6b63JEwuz0UrVtVAQHNs/hH6Rmr9vUg0=;
+        b=tLPTRlhv+ia4CPNgHrZFiHjiA2bsFqvauQtw3jAulPJJ2u8wsG+o7S+9gPgdLvtnBk
+         MkHSeeH6gkz8SMC0+xTkWfxR1YPVvjMaQHqETLQWXyWM5twJ1+Pv63q2LitFfO5Xvil/
+         zrz405lW2qflsDAe307gaqzEZcT1SBnAZFMK7TUhaijz2U/eL4KToTh7XjC5X7MkdJS9
+         J3E+kEYUmDyOnjzDELiHgpGqkVhkfnUMBPsObPhfe2Mjd3Cx6+6wW9PUJJESlFsv3bxS
+         5McfZQJhIs5fHiL+UE1xHTwm8hEIV3HZGX/eFCttwtDAVf2H0ICNEebCMNHtCNxLYQ/N
+         3Ipg==
+X-Gm-Message-State: AOAM532vuQN0hRkDMBM91eVrTTNjRzdvrhLOCRakbb5JRjpBNsx72P/b
+        ozAGE/RM/LX8aUOTPszXo4MJ1IWJrfRFig==
+X-Google-Smtp-Source: ABdhPJyuwtnp7HiOnoa5XciTrb7GBk22YzrDwRh1QfSzDx+VksGMYG4VQZ850rDIHTSuSpHwB6hVvg==
+X-Received: by 2002:a17:90b:4a43:: with SMTP id lb3mr13139803pjb.222.1637261039481;
+        Thu, 18 Nov 2021 10:43:59 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id e18sm274374pgl.50.2021.11.18.10.43.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 10:43:59 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] media: omap3isp: Use struct_group() for memcpy() region
+Date:   Thu, 18 Nov 2021 10:43:52 -0800
+Message-Id: <20211118184352.1284792-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <cover.1635953446.git.yu.c.chen@intel.com> <68d1c452bbf7f742793cb39ebb66f6b4ba6a3fb3.1635953446.git.yu.c.chen@intel.com>
- <CAJZ5v0gKu3JtCGThZKx87rQJeW+xK=ZkSD47kaP+N8Qr8Pq-Tw@mail.gmail.com> <20211118161120.GA884221@chenyu-desktop>
-In-Reply-To: <20211118161120.GA884221@chenyu-desktop>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 18 Nov 2021 19:43:22 +0100
-Message-ID: <CAJZ5v0hGrvg9Jo=QoMbSV19bmK-8npxj6-3GMP14cdoCbhUgnQ@mail.gmail.com>
-Subject: Re: [PATCH v8 1/4] efi: Introduce EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
- and corresponding structures
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4161; h=from:subject; bh=6HM1xQAwdUhYlxd827odkUtGQFwknJXIWVVzXi/7nLw=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhlp7fIy4m5wHWpoRTBmOzDmU3UD7/uFHIYWL3ROtF R72c0SGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZae3wAKCRCJcvTf3G3AJieeEA Cz4NE52KfM3bLL/HppQJ+cM/f/j0SaJd9BmzANcOaX30GEFNG/i8N32N2ISlm/HcAPUFsJEiE1Zei5 xKHA57glXiE0xSX/9m7zvXcBc1/ScmhQMCqBQ5LOYgaY1PR+Lw2VY6oVoRtk7pJZPz9OSgBYgi973G pGYV59QNeNrdumxWv46xdlY8IAxhmmbY18cHA04PpAWNwJa8i7WSmS/ayOURCXbFN6hEX+vF5FpI16 KIwdJ2/L8K7vlkqpfLxivB6tHZ+t2p2ITDqlitYsrK6PsIGqH/2YkW0txU+f0fQqyAyogz7TJRJiA0 uyvt45KhgT2EiDQfcG700urMI3eEeht3r8xEf7DY9z4vTuxWzyQX+AGap5PvoY8c1NvrjPOzsFmTRy OobbQIDA57RvlfaePshSsNvJ8Bc3rxz3+GKJSowUiiQUT3G0LquG+vFF6ow+0i1nc4+MqRmcyFvVah /FDNSoAFRNfHZ66cPhOsEtxCA1cwHbyo3F/JOuYnBJWipy/TxPQlFXR0M7QBWeKsK4Mhsq0hptavFt NEl2pcCMtUbqYT5e13J5WB5MGvQ2+MmaBlNP47XKSUlyBJmVCTzWgHUrN87t8Y/jw2sn0WASeFsk9B vOV3VtAaNS+av255HKWgOFg7nuyZNyOkiDJcQ2gXDdYt6WVd09cOOKjgNKbw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 5:21 PM Chen Yu <yu.c.chen@intel.com> wrote:
->
-> Hi Rafael,
-> On Thu, Nov 18, 2021 at 04:49:35PM +0100, Rafael J. Wysocki wrote:
-> > On Wed, Nov 3, 2021 at 4:44 PM Chen Yu <yu.c.chen@intel.com> wrote:
-> > >
-> > > Platform Firmware Runtime Update image starts with UEFI headers, and the
-> > > headers are defined in UEFI specification, but some of them have not been
-> > > defined in the kernel yet.
-> > >
-> > > For example, the header layout of a capsule file looks like this:
-> > >
-> > > EFI_CAPSULE_HEADER
-> > > EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
-> > > EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER
-> > > EFI_FIRMWARE_IMAGE_AUTHENTICATION
-> > >
-> > > These structures would be used by the Platform Firmware Runtime Update
-> > > driver to parse the format of capsule file to verify if the corresponding
-> > > version number is valid.
-> >
-> > Why does the driver need to do that?
-> >
-> > The firmware will reject the update if the version is invalid anyway, won't it?
-> >
-> Yes, the firmware will reject the update if the version does not match. The motivation
-> of checking it in kernel before the firmware is mainly to deal with a corner case that,
-> if the user provides an invalid capsule image, the kernel could be used as a guard to
-> reject it, without switching to the MM update mode(which might be costly).
+In preparation for FORTIFY_SOURCE performing compile-time and run-time
+field bounds checking for memcpy(), memmove(), and memset(), avoid
+intentionally writing across neighboring fields. Wrap the target region
+in struct_group(). This additionally fixes a theoretical misalignment
+of the copy (since the size of "buf" changes between 64-bit and 32-bit,
+but this is likely never built for 64-bit).
 
-OK, but it would be good to mention this somewhere, preferably in he
-changelog and maybe also in a comment next to the related code.
+FWIW, I think this code is totally broken on 64-bit (which appears to
+not be a "real" build configuration): it would either always fail (with
+an uninitialized data->buf_size) or would cause corruption in userspace
+due to the copy_to_user() in the call path against an uninitialized
+data->buf value:
 
-> > > The EFI_CAPSULE_HEADER has been defined in the
-> > > kernel, however the rest are not, thus introduce corresponding UEFI
-> > > structures accordingly.
-> >
-> > I would change the above in the following way:
-> >
-> > "EFI_CAPSULE_HEADER has been defined in the kernel, but the other
-> > structures have not been defined yet, so do that."
-> >
-> Ok, will do.
-> > > Besides, EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
-> > > and EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER are required to be packed
-> > > in the uefi specification.
-> >
-> > > Ard has pointed out that, the __packed
-> > > attribute does indicate to the compiler that the entire thing can appear
-> > > misaligned in memory. So if one follows the other in the capsule header,
-> > > the __packed attribute may be appropriate to ensure that the second one
-> > > is not accessed using misaligned loads and stores.
-> >
-> > "For this reason, use the __packed attribute to indicate to the
-> > compiler that the entire structure can appear misaligned in memory (as
-> > suggested by Ard) in case one of them follows the other directly in a
-> > capsule header."
-> >
-> Ok, will do.
-> > >
-> > > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> > > ---
-> > > v8: Use efi_guid_t instead of guid_t. (Andy Shevchenko)
-> > > v7: Use __packed instead of pragma pack(1). (Greg Kroah-Hartman, Ard Biesheuve)
-> > > v6: No change since v5.
-> > > v5: No change since v4.
-> > > v4: Revise the commit log to make it more clear. (Rafael J. Wysocki)
-> > > ---
-> > >  include/linux/efi.h | 46 +++++++++++++++++++++++++++++++++++++++++++++
-> > >  1 file changed, 46 insertions(+)
-> > >
-> > > diff --git a/include/linux/efi.h b/include/linux/efi.h
-> > > index 6b5d36babfcc..1ec73c5ab6c9 100644
-> > > --- a/include/linux/efi.h
-> > > +++ b/include/linux/efi.h
-> > > @@ -148,6 +148,52 @@ typedef struct {
-> > >         u32 imagesize;
-> > >  } efi_capsule_header_t;
-> > >
-> > > +/* EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER */
-> > > +struct efi_manage_capsule_header {
-> > > +       u32 ver;
-> > > +       u16 emb_drv_cnt;
-> > > +       u16 payload_cnt;
-> > > +       /*
-> > > +        * Variable array indicated by number of
-> > > +        * (emb_drv_cnt + payload_cnt)
-> >
-> > * Variable-size array of the size given by the sum of
-> > * emb_drv_cnt and payload_cnt.
-> >
-> Ok, will change it.
-> > > +        */
-> > > +       u64 offset_list[];
-> > > +} __packed;
-> > > +
-> > > +/* EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER */
-> > > +struct efi_manage_capsule_image_header {
-> > > +       u32 ver;
-> > > +       efi_guid_t image_type_id;
-> > > +       u8 image_index;
-> > > +       u8 reserved_bytes[3];
-> > > +       u32 image_size;
-> > > +       u32 vendor_code_size;
-> > > +       /* ver = 2. */
-> >
-> > What does this mean?
-> >
-> > > +       u64 hw_ins;
-> > > +       /* ver = v3. */
-> >
-> > And same here?
-> >
-> The hw_ins was introduced in version 2, and capsule_support
-> was introduced in version 3 of the capsule image format.
-> I'll revise the comment in next version.
+omap3isp_stat_request_statistics_time32(...)
+    struct omap3isp_stat_data data64;
+    ...
+    omap3isp_stat_request_statistics(stat, &data64);
 
-Please do.
+int omap3isp_stat_request_statistics(struct ispstat *stat,
+                                     struct omap3isp_stat_data *data)
+    ...
+    buf = isp_stat_buf_get(stat, data);
+
+static struct ispstat_buffer *isp_stat_buf_get(struct ispstat *stat,
+                                               struct omap3isp_stat_data *data)
+...
+    if (buf->buf_size > data->buf_size) {
+            ...
+            return ERR_PTR(-EINVAL);
+    }
+    ...
+    rval = copy_to_user(data->buf,
+                        buf->virt_addr,
+                        buf->buf_size);
+
+Regardless, additionally initialize data64 to be zero-filled to avoid
+undefined behavior.
+
+Fixes: 378e3f81cb56 ("media: omap3isp: support 64-bit version of omap3isp_stat_data")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/media/platform/omap3isp/ispstat.c |  5 +++--
+ include/uapi/linux/omap3isp.h             | 21 +++++++++++++--------
+ 2 files changed, 16 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/media/platform/omap3isp/ispstat.c b/drivers/media/platform/omap3isp/ispstat.c
+index 5b9b57f4d9bf..68cf68dbcace 100644
+--- a/drivers/media/platform/omap3isp/ispstat.c
++++ b/drivers/media/platform/omap3isp/ispstat.c
+@@ -512,7 +512,7 @@ int omap3isp_stat_request_statistics(struct ispstat *stat,
+ int omap3isp_stat_request_statistics_time32(struct ispstat *stat,
+ 					struct omap3isp_stat_data_time32 *data)
+ {
+-	struct omap3isp_stat_data data64;
++	struct omap3isp_stat_data data64 = { };
+ 	int ret;
+ 
+ 	ret = omap3isp_stat_request_statistics(stat, &data64);
+@@ -521,7 +521,8 @@ int omap3isp_stat_request_statistics_time32(struct ispstat *stat,
+ 
+ 	data->ts.tv_sec = data64.ts.tv_sec;
+ 	data->ts.tv_usec = data64.ts.tv_usec;
+-	memcpy(&data->buf, &data64.buf, sizeof(*data) - sizeof(data->ts));
++	data->buf = (uintptr_t)data64.buf;
++	memcpy(&data->frame, &data64.frame, sizeof(data->frame));
+ 
+ 	return 0;
+ }
+diff --git a/include/uapi/linux/omap3isp.h b/include/uapi/linux/omap3isp.h
+index 87b55755f4ff..9a6b3ed11455 100644
+--- a/include/uapi/linux/omap3isp.h
++++ b/include/uapi/linux/omap3isp.h
+@@ -162,6 +162,7 @@ struct omap3isp_h3a_aewb_config {
+  * struct omap3isp_stat_data - Statistic data sent to or received from user
+  * @ts: Timestamp of returned framestats.
+  * @buf: Pointer to pass to user.
++ * @buf_size: Size of buffer.
+  * @frame_number: Frame number of requested stats.
+  * @cur_frame: Current frame number being processed.
+  * @config_counter: Number of the configuration associated with the data.
+@@ -176,10 +177,12 @@ struct omap3isp_stat_data {
+ 	struct timeval ts;
+ #endif
+ 	void __user *buf;
+-	__u32 buf_size;
+-	__u16 frame_number;
+-	__u16 cur_frame;
+-	__u16 config_counter;
++	__struct_group(/* no type */, frame, /* no attrs */,
++		__u32 buf_size;
++		__u16 frame_number;
++		__u16 cur_frame;
++		__u16 config_counter;
++	);
+ };
+ 
+ #ifdef __KERNEL__
+@@ -189,10 +192,12 @@ struct omap3isp_stat_data_time32 {
+ 		__s32	tv_usec;
+ 	} ts;
+ 	__u32 buf;
+-	__u32 buf_size;
+-	__u16 frame_number;
+-	__u16 cur_frame;
+-	__u16 config_counter;
++	__struct_group(/* no type */, frame, /* no attrs */,
++		__u32 buf_size;
++		__u16 frame_number;
++		__u16 cur_frame;
++		__u16 config_counter;
++	);
+ };
+ #endif
+ 
+-- 
+2.30.2
+
