@@ -2,118 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C248455509
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 08:01:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4601D4554E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 07:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243522AbhKRHEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 02:04:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238258AbhKRHEX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 02:04:23 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F9D3C061570;
-        Wed, 17 Nov 2021 23:01:23 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id j5-20020a17090a318500b001a6c749e697so6045784pjb.1;
-        Wed, 17 Nov 2021 23:01:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oM4jK15lu4pb/vtYZCteppAAAeGITk9zIwzzPns4s2M=;
-        b=Yg4QTkpHOhKs4fBF2mv/OAGj3o2BQ2/riUOjUg40zxhb7sUkdERxwISdHtipQbWltY
-         hcO2BpQ4CGAHHtHXdMu8suVuJt7s/9ZkLInUnNoxDvJNjEtuZDztyrDVFj2+6mRKQZcz
-         ToITmBWvAdFjDxN2QpXJhpsY+Nsx+NsRa5yALHimrc4QqRfO2dKUlkB8A2iAvS1qXE3R
-         xPFNgk4cNFv41sL+bJTN0JyicURtbbtuCb33UuJ1AlcxlyvhfnjUrSMXbO1/xTHUioZv
-         /4IhZEWhvMw8TxN5566UiaSQHnX/u5bQfyX5GldGpfkU+NNLFU6qinpInbXoq0YzWt5z
-         RkJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oM4jK15lu4pb/vtYZCteppAAAeGITk9zIwzzPns4s2M=;
-        b=DzBP934ABJhOBonk4z6PGuDaHZNAGAM2MZn7q6+ya5/0uqEM8KUamrY3pO4QDWKnls
-         tebT2ZVOkkv45seJ5Et6hwwVzsu7tzurYUmRj3LbQX9xII8fQtrWPfkzODZe5nctlngI
-         1lNcGcLxkZPHWKIl6I7qWbGE+/g+zpK+zpl5uCc5lhuMQP7J4dISb6qFHBqeGVU47sck
-         cXkWFzTSk55EQPqbl62kQFgDjN5mTl4B8/o0AJ2U5TwucIQ+2+hinheNuN2G8iUh/yLN
-         3BVzZamdS4t7ArMlZ6coE89KPiTBXCHaDxxJRW+5k3tB971w4bf75WQoI9Qm7whEd46P
-         TYyA==
-X-Gm-Message-State: AOAM530wGu49HGGgSvgCij6nl0rNaJ74pG+aGE4nlaMV8duOfz5lpNRY
-        2gM0q/g0UWMAm77cAOewgtU=
-X-Google-Smtp-Source: ABdhPJwWsJla+gLDtPWKcLO66tAPghK3N7UvA75f2P8LyQNKxURsj+zxVkMieuZSK3ta2TE6Rd8/gA==
-X-Received: by 2002:a17:90a:1b26:: with SMTP id q35mr7580985pjq.212.1637218882909;
-        Wed, 17 Nov 2021 23:01:22 -0800 (PST)
-Received: from localhost ([219.142.138.170])
-        by smtp.gmail.com with ESMTPSA id u23sm1775337pfl.105.2021.11.17.23.01.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 23:01:22 -0800 (PST)
-From:   Teng Qi <starmiku1207184332@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, tanghui20@huawei.com,
-        arnd@arndb.de
-Cc:     netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, baijiaju1990@gmail.com,
-        islituo@gmail.com, Teng Qi <starmiku1207184332@gmail.com>,
-        TOTE Robot <oslab@tsinghua.edu.cn>
-Subject: [PATCH v2] net: ethernet: dec: tulip: de4x5: fix possible array overflows in type3_infoblock()
-Date:   Thu, 18 Nov 2021 15:01:18 +0800
-Message-Id: <20211118070118.63756-1-starmiku1207184332@gmail.com>
+        id S243471AbhKRGyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 01:54:31 -0500
+Received: from mga02.intel.com ([134.134.136.20]:15541 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243452AbhKRGyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 01:54:19 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10171"; a="221340515"
+X-IronPort-AV: E=Sophos;i="5.87,243,1631602800"; 
+   d="scan'208";a="221340515"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 22:51:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,243,1631602800"; 
+   d="scan'208";a="495251025"
+Received: from zxingrtx.sh.intel.com ([10.239.159.110])
+  by orsmga007.jf.intel.com with ESMTP; 17 Nov 2021 22:51:09 -0800
+From:   zhengjun.xing@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     adrian.hunter@intel.com, alexander.shishkin@intel.com,
+        ak@linux.intel.com, kan.liang@intel.com,
+        zhengjun.xing@linux.intel.com, stable@vger.kernel.org
+Subject: [PATCH] perf/x86/intel/uncore: Fix CAS_COUNT_WRITE issue for ICX
+Date:   Thu, 18 Nov 2021 22:48:11 +0800
+Message-Id: <20211118144811.329111-1-zhengjun.xing@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The definition of macro MOTO_SROM_BUG is:
-  #define MOTO_SROM_BUG    (lp->active == 8 && (get_unaligned_le32(
-  dev->dev_addr) & 0x00ffffff) == 0x3e0008)
+From: Zhengjun Xing <zhengjun.xing@linux.intel.com>
 
-and the if statement
-  if (MOTO_SROM_BUG) lp->active = 0;
+The user recently report a perf issue in the ICX platform, when test by
+perf event “uncore_imc_x/cas_count_write”,the write bandwidth is always
+very small (only 0.38MB/s), it is caused by the wrong "umask" for the
+"cas_count_write" event. When double-checking, find "cas_count_read"
+also is wrong.
 
-using this macro indicates lp->active could be 8. If lp->active is 8 and
-the second comparison of this macro is false. lp->active will remain 8 in:
-  lp->phy[lp->active].gep = (*p ? p : NULL); p += (2 * (*p) + 1);
-  lp->phy[lp->active].rst = (*p ? p : NULL); p += (2 * (*p) + 1);
-  lp->phy[lp->active].mc  = get_unaligned_le16(p); p += 2;
-  lp->phy[lp->active].ana = get_unaligned_le16(p); p += 2;
-  lp->phy[lp->active].fdx = get_unaligned_le16(p); p += 2;
-  lp->phy[lp->active].ttm = get_unaligned_le16(p); p += 2;
-  lp->phy[lp->active].mci = *p;
+The public document for ICX uncore:
 
-However, the length of array lp->phy is 8, so array overflows can occur.
-To fix these possible array overflows, we first check lp->active and then
-return -EINVAL if it is greater or equal to ARRAY_SIZE(lp->phy) (i.e. 8).
+https://www.intel.com/content/www/us/en/develop/download/3rd-gen-intel-xeon-processor-scalable-uncore-pm.html
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Teng Qi <starmiku1207184332@gmail.com>
+On page 142, Table 2-143, defines Unit Masks for CAS_COUNT:
+RD b00001111
+WR b00110000
+
+So Corrected both "cas_count_read" and "cas_count_write" for ICX.
+
+Old settings:
+ hswep_uncore_imc_events
+	INTEL_UNCORE_EVENT_DESC(cas_count_read,  "event=0x04,umask=0x03")
+ 	INTEL_UNCORE_EVENT_DESC(cas_count_write, "event=0x04,umask=0x0c")
+
+New settings:
+ snr_uncore_imc_events
+	INTEL_UNCORE_EVENT_DESC(cas_count_read,  "event=0x04,umask=0x0f")
+	INTEL_UNCORE_EVENT_DESC(cas_count_write, "event=0x04,umask=0x30"),
+
+Fixes: 2b3b76b5ec67 ("perf/x86/intel/uncore: Add Ice Lake server uncore support")
+Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
+Signed-off-by: Zhengjun Xing <zhengjun.xing@linux.intel.com>
 ---
-v2:
-* Check lp->active in separate if statement within macro WARN_ON() and 
-return -EINVAL if it is greater or equal to ARRAY_SIZE(lp->phy). Instead
-of checking lp->active and MOTO_SROM_BUG together in the same if
-statement.
-  Thank Arnd Bergmann for helpful and friendly suggestion.
----
- drivers/net/ethernet/dec/tulip/de4x5.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/x86/events/intel/uncore_snbep.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/dec/tulip/de4x5.c b/drivers/net/ethernet/dec/tulip/de4x5.c
-index 13121c4dcfe6..828b9642fd68 100644
---- a/drivers/net/ethernet/dec/tulip/de4x5.c
-+++ b/drivers/net/ethernet/dec/tulip/de4x5.c
-@@ -4709,6 +4709,10 @@ type3_infoblock(struct net_device *dev, u_char count, u_char *p)
-         lp->ibn = 3;
-         lp->active = *p++;
- 	if (MOTO_SROM_BUG) lp->active = 0;
-+	/* if (MOTO_SROM_BUG) statement indicates lp->active could
-+	 * be 8 (i.e. the size of array lp->phy) */
-+	if (WARN_ON(lp->active >= ARRAY_SIZE(lp->phy)))
-+		return -EINVAL;
- 	lp->phy[lp->active].gep = (*p ? p : NULL); p += (2 * (*p) + 1);
- 	lp->phy[lp->active].rst = (*p ? p : NULL); p += (2 * (*p) + 1);
- 	lp->phy[lp->active].mc  = get_unaligned_le16(p); p += 2;
+diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+index 5ddc0f30db6f..a6fd8eb410a9 100644
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -5468,7 +5468,7 @@ static struct intel_uncore_type icx_uncore_imc = {
+ 	.fixed_ctr_bits	= 48,
+ 	.fixed_ctr	= SNR_IMC_MMIO_PMON_FIXED_CTR,
+ 	.fixed_ctl	= SNR_IMC_MMIO_PMON_FIXED_CTL,
+-	.event_descs	= hswep_uncore_imc_events,
++	.event_descs	= snr_uncore_imc_events,
+ 	.perf_ctr	= SNR_IMC_MMIO_PMON_CTR0,
+ 	.event_ctl	= SNR_IMC_MMIO_PMON_CTL0,
+ 	.event_mask	= SNBEP_PMON_RAW_EVENT_MASK,
 -- 
 2.25.1
 
