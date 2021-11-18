@@ -2,71 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 943994565CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 23:43:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C54B4565CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 23:44:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232456AbhKRWq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 17:46:56 -0500
-Received: from mail-oo1-f47.google.com ([209.85.161.47]:35553 "EHLO
-        mail-oo1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231895AbhKRWqz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 17:46:55 -0500
-Received: by mail-oo1-f47.google.com with SMTP id e17-20020a4a8291000000b002c5ee0645e7so3021433oog.2;
-        Thu, 18 Nov 2021 14:43:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PxnCVezNopKR+k8ykkz9LIWuyHdpRUeIr4oh8AQBA8c=;
-        b=gK0kNMqwtQxMmX9RmF2Onztdli379xCtyNXWrYfU2PRXskujm8YKs3zWnoRIxe0gAO
-         MvoxIN+8gzECDAvUJHokdxDK962ElLkvW1nJgL+hNgwoVFFiFhELByk2pDXbcb59feER
-         3b4j5qyjjsoWLBxrHuU6kq3GPUZZOiWpnZgsz0yzy9nv0jrbn8ZM2STonYXiTpf3RzxK
-         RCL7GMhcbS2QU4tmfoB09icyn4Byhshlyg1/jYN3AMUPMniuumXEbto0dMZrgbSccRBy
-         5c2Yx8enqzDrViR+UOe8taFDftn8T0LmhfUGdnEMZA1PoiWPnAOSk/eXZIFZHEOG8Pym
-         bV1g==
-X-Gm-Message-State: AOAM530lRmMVYDYQfS7bndNskcAPJiDEnXVmwtKWAaxQ8YjDPsoXRmvg
-        3eqReu9zGFG7etLHKsl1Ag==
-X-Google-Smtp-Source: ABdhPJwZEiszKbwpz6hrqsSazqPPFsRt5w9KZlN+9P1OkdeFkB3Fa/RXJCmk5rFKGcrFWAaqmNBKsA==
-X-Received: by 2002:a4a:9292:: with SMTP id i18mr15333917ooh.90.1637275433084;
-        Thu, 18 Nov 2021 14:43:53 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id r26sm222958otn.15.2021.11.18.14.43.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 14:43:52 -0800 (PST)
-Received: (nullmailer pid 1897260 invoked by uid 1000);
-        Thu, 18 Nov 2021 22:43:51 -0000
-Date:   Thu, 18 Nov 2021 16:43:51 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     James Lo <james.lo@mediatek.com>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [PATCH v15 1/4] dt-bindings: spmi: remove the constraint of reg
- property
-Message-ID: <YZbXJ3/C+ovlYEF0@robh.at.kernel.org>
-References: <20211115042030.30293-1-james.lo@mediatek.com>
- <20211115042030.30293-2-james.lo@mediatek.com>
+        id S232504AbhKRWrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 17:47:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232469AbhKRWq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 17:46:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9F97600D4;
+        Thu, 18 Nov 2021 22:43:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637275437;
+        bh=N9jTIFliNnDCqYanHCgoS9+gfA6v3yNGg/McyII/kPs=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=LAWLApl0V0aUK4UdGPZtWzjV87bJ994Bz/Bp+N5n/sxm9Xjzi1pyKn4vQMs70LZWT
+         9QevPtT/DcJiBjeGgvNyLxBYcKJVudgntS3V+qyBtPjcdPc26hqNNPh0KL3bSJ5Cw1
+         tIgQ9fjjFgRlPG5+m7cJK4svRNS+Zu6aji+Wuaxk5/eyDTV6m8p63iDYRlYdjm7eb4
+         8ms4xctUUfe0cZu7cJY1tGKm3RXaH9CVrz8vIp/yTOvswnICaQNU1Vs93AjkqGvXsM
+         R80ZfgJn3Bszg/tHNoF7BkYi6Pt531JMMiGcw43aKVHWREagwhm8Imh4bQAbF13yu+
+         /PGynoCpgMpTQ==
+Subject: Re: [PATCHv4 1/4] EDAC/synopsys: use the quirk for version instead of
+ ddr version
+To:     bp@alien8.de
+Cc:     linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        Michal Simek <michal.simek@xilinx.com>
+References: <20211012190709.1504152-1-dinguyen@kernel.org>
+From:   Dinh Nguyen <dinguyen@kernel.org>
+Message-ID: <778158cf-fbe9-0a65-7982-5372592e5ad2@kernel.org>
+Date:   Thu, 18 Nov 2021 16:43:55 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115042030.30293-2-james.lo@mediatek.com>
+In-Reply-To: <20211012190709.1504152-1-dinguyen@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 12:20:27PM +0800, James Lo wrote:
-> 'reg' is controller specific so we shouldn't even be specifying it here.
-> Just remove it.
-> 
-> Signed-off-by: James Lo <james.lo@mediatek.com>
-> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/spmi/spmi.yaml | 3 ---
->  1 file changed, 3 deletions(-)
+Hi Boris,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+can you please take this series through your tree?
+
+Thanks,
+Dinh
+
+On 10/12/21 2:07 PM, Dinh Nguyen wrote:
+> Version 2.40a supports DDR_ECC_INTR_SUPPORT for a quirk, so use that
+> quirk to determine a call to setup_address_map().
+> 
+> Reviewed-by: Michal Simek <michal.simek@xilinx.com>
+> Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+> ---
+> v4: add Reviewed-by
+> v3: new patch
+> ---
+>   drivers/edac/synopsys_edac.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/edac/synopsys_edac.c b/drivers/edac/synopsys_edac.c
+> index 7e7146b22c16..bf237fccb444 100644
+> --- a/drivers/edac/synopsys_edac.c
+> +++ b/drivers/edac/synopsys_edac.c
+> @@ -1352,8 +1352,7 @@ static int mc_probe(struct platform_device *pdev)
+>   		}
+>   	}
+>   
+> -	if (of_device_is_compatible(pdev->dev.of_node,
+> -				    "xlnx,zynqmp-ddrc-2.40a"))
+> +	if (priv->p_data->quirks & DDR_ECC_INTR_SUPPORT)
+>   		setup_address_map(priv);
+>   #endif
+>   
+> 
