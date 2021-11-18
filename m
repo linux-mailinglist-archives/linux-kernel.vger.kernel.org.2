@@ -2,85 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B380445548D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 07:06:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA403455493
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 07:07:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242805AbhKRGJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 01:09:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242748AbhKRGI7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 01:08:59 -0500
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98DBAC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 22:05:59 -0800 (PST)
-Received: by mail-oo1-xc30.google.com with SMTP id v19-20020a4a2453000000b002bb88bfb594so2033482oov.4
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 22:05:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GH5DsMQ3QaWgiH0MtT4VPh8uW1FF7ANWq123A9PIt3o=;
-        b=qmL3blZ9nlnWuevH3rA18HtJtKXlurKxYR/1Rp5rBHLDOU5JFq4dprX0iD2YNXF4al
-         m0NyR+CqsknraoB6x92KS4a+OsNDUzqfqCxsArkrxNMsXNMYpaxg+pC3UGYh3Z43C+Tw
-         wgikDxMfbXo9d9U4E256aDQjLLrv8WrVxdGBw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GH5DsMQ3QaWgiH0MtT4VPh8uW1FF7ANWq123A9PIt3o=;
-        b=30hScnfucD+Rt+0Zr0s+r/uCEO2q1vcrJB2oLEUfo/lp2adIa5vey4DTHkvc+TmfX6
-         lR+GWW6n7jM/kdOhLZXitsQjWB46bov4JI5RDxifOoLQ+H4zCth6jAsfbtlmauvpG4CA
-         gqk2Yjfys7z1mhb+TmR7+saE/YU2x8IC7DAd2XRENsHQ96MmqWpPPbuLeL04W1Siudrn
-         4YIm060oJpK2yV/lWhcRdhchQgeEH1qy5zVN8jMDIA+sTLchLb1Xg27XJL7gMrScHmj/
-         pLU3qC6XrXzLPNKf8qnpDWPTvXFSiJrsvG6vSwfvBREMALeh7U2ulIodQ7hMTAxMaDkT
-         vyBw==
-X-Gm-Message-State: AOAM532AZGsnYwXkTLqTCMEdjRcrTqvxrG2nRwbYQwVacLFACpPmq8Hw
-        tPG65jKmM5lDXt67BsEtM8EKDZHIs0lq6h4=
-X-Google-Smtp-Source: ABdhPJztZycF+YPOFZurRn2NUYVGfHgy2vIKmAmLQyQSIRA6iSyF9c1bLqOzpWJpW8w+rIrswzT1+w==
-X-Received: by 2002:a4a:5842:: with SMTP id f63mr11953351oob.97.1637215558524;
-        Wed, 17 Nov 2021 22:05:58 -0800 (PST)
-Received: from fedora.. (99-13-229-45.lightspeed.snjsca.sbcglobal.net. [99.13.229.45])
-        by smtp.gmail.com with ESMTPSA id j20sm395379ota.76.2021.11.17.22.05.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 22:05:58 -0800 (PST)
-From:   Atish Patra <atishp@atishpatra.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Atish Patra <atishp@atishpatra.org>, anup.patel@wdc.com,
-        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org
-Subject: [PATCH] MAINTAINERS: Update Atish's email address
-Date:   Wed, 17 Nov 2021 22:05:01 -0800
-Message-Id: <20211118060501.932993-1-atishp@atishpatra.org>
-X-Mailer: git-send-email 2.33.1
+        id S243247AbhKRGK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 01:10:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50924 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241659AbhKRGK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 01:10:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02EAA61B3D;
+        Thu, 18 Nov 2021 06:07:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637215647;
+        bh=5fxTQ1bWIoc5Ws6kmYvJTIHYtyZWgMDwpyFzbjys5uw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oQih70Pibk7SpLxev2lK1NFOlWEiHcjZ+aKh3KD3JeCkioepG4vYUx7kLrgGSJKSR
+         ZPooBzm0YfT2qyV+duTAXAeMiEiSMrSMt4dWvZvAB+rJ8+111geF1Tb1xpiDTC93x2
+         B6RyU7CRSreXhQAaoJPDYoSNFrABEpylHn0ykXcps3mmzewFWwSKtBm/Sj4Iwf8Txo
+         LsOPl1Uk0Mzk6tR+jeJUGnnEQWANfO+nv4laOm/EeZFgE4RgLBMkKmbERyOIOQiQBI
+         WLTZ683eHK/HEJtpvUT8DOocfAn32dnTzoSftKaevd3CDNNQ+/Z7jnBYNq6TPvDGkF
+         56T0KpsEwLa6w==
+Date:   Thu, 18 Nov 2021 11:37:20 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Bhaumik Bhatt <quic_bbhatt@quicinc.com>
+Cc:     manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
+        quic_hemantk@quicinc.com, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org
+Subject: Re: [PATCH] bus: mhi: core: Read missing channel configuration entry
+Message-ID: <20211118060720.GC6461@thinkpad>
+References: <1636072273-16034-1-git-send-email-quic_bbhatt@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1636072273-16034-1-git-send-email-quic_bbhatt@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I no longer employed by western digital. Update my email address to
-personal one.
+On Thu, Nov 04, 2021 at 05:31:13PM -0700, Bhaumik Bhatt wrote:
+> The 'wake-capable' entry in channel configuration is not set when
+> parsing the configuration specified by the controller driver. Add
+> the missing entry to ensure channel is correctly specified as a
+> 'wake-capable' channel.
+> 
+> Signed-off-by: Bhaumik Bhatt <quic_bbhatt@quicinc.com>
 
-Signed-off-by: Atish Patra <atishp@atishpatra.org>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7a2345ce8521..b22af4edcd08 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10434,7 +10434,7 @@ F:	arch/powerpc/kvm/
- 
- KERNEL VIRTUAL MACHINE FOR RISC-V (KVM/riscv)
- M:	Anup Patel <anup.patel@wdc.com>
--R:	Atish Patra <atish.patra@wdc.com>
-+R:	Atish Patra <atishp@atishpatra.org>
- L:	kvm@vger.kernel.org
- L:	kvm-riscv@lists.infradead.org
- L:	linux-riscv@lists.infradead.org
--- 
-2.33.1
+Looks like this one is qualified as a bug fix. Please add the fixes tag and Cc
+stable.
 
+And the subject could be,
+"bus: mhi: core: Fix reading wake_capable configuration"
+
+Thanks,
+Mani
+
+> ---
+>  drivers/bus/mhi/core/init.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> index 5aaca6d..f1ec3441 100644
+> --- a/drivers/bus/mhi/core/init.c
+> +++ b/drivers/bus/mhi/core/init.c
+> @@ -788,6 +788,7 @@ static int parse_ch_cfg(struct mhi_controller *mhi_cntrl,
+>  		mhi_chan->offload_ch = ch_cfg->offload_channel;
+>  		mhi_chan->db_cfg.reset_req = ch_cfg->doorbell_mode_switch;
+>  		mhi_chan->pre_alloc = ch_cfg->auto_queue;
+> +		mhi_chan->wake_capable = ch_cfg->wake_capable;
+>  
+>  		/*
+>  		 * If MHI host allocates buffers, then the channel direction
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
