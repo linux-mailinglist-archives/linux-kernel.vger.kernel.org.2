@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21DAB4565E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 23:56:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D262E4565EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 23:56:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232688AbhKRW7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 17:59:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42360 "EHLO mail.kernel.org"
+        id S232748AbhKRW7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 17:59:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231526AbhKRW7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 17:59:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2714E61526;
-        Thu, 18 Nov 2021 22:56:07 +0000 (UTC)
+        id S231526AbhKRW7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 17:59:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7573061A79;
+        Thu, 18 Nov 2021 22:56:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637276167;
-        bh=gh7z4pam1guQWNqq19/ROaavwuPt+NUH0wC0sO2O8eo=;
+        s=k20201202; t=1637276176;
+        bh=mbFWc2bahPfk1gApTJ9Jw4y7Aym/1FPAUvv2WnmpCtY=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=QSrwzA/HLHfAXzz0ObHIfDLVFlWaWzA0WpGsJsIV9l0pIOZEVDc/pgW44JlaLaGxx
-         8X+EHdc8brVpDn62Gu7Jdy9ISlWmpbNc52w+BD0CLqAWjXZssbyTEiMD0d/W4wc/S2
-         G+MOcKTZyBln531hbC/LPSg2+SeuaIo8Hxz1MUPpcBtIGfJTcXaCaS9SllouPb8LsC
-         C7vPauHFaK4iUUK/4pkCq5FjQS4fY/EST5JEHVX3hD/O6XWqeKinVilYKZsqMaZfWv
-         FW3c7Dl6Imqu+95jMsGzzJsGoQyftPi2zoO2TPtoYyUFV7kize9VSNa0idgWPRMp0b
-         c+OWSWYD8RR+A==
+        b=mt524ZUzd1S5Sl9tsrTr2/6u51tHGyNNQsoV4JQJPPS14/vUlnIGTnhqtm96zPibr
+         SmPrdpZUuAXgrrAokGH2ibj6cbTwPmWOOtbzzgJ9+tDvjTvVSiIOA2Se2Jkh/8/Kfh
+         NhyHAq2MY75HT0hNP1KoLhYO/o4khtOUHvGy408oKjWOle66XbpQbkictjxPXvo/Vr
+         SzBqQ9jsebFnZ/HR+ZHL1zY5zZLL1qUcTY3hLv3Oe0B2xXWrmE9UdY7PORVWpltlWy
+         yl74NA8ijjug02p1BiMszdC4nhHVuO8FCmsfWVb4ATx0Q+uRLCewujyt3WVSJHVBu9
+         qHj1eMU/lsQ6A==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1281660A3A;
-        Thu, 18 Nov 2021 22:56:07 +0000 (UTC)
-Subject: Re: [GIT PULL] SPI fixes for v5.16-rc1
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6FB44609CD;
+        Thu, 18 Nov 2021 22:56:16 +0000 (UTC)
+Subject: Re: [GIT PULL] Power management fixes for v5.16-rc2
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211118172553.DF0FB61284@mail.kernel.org>
-References: <20211118172553.DF0FB61284@mail.kernel.org>
-X-PR-Tracked-List-Id: <linux-spi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211118172553.DF0FB61284@mail.kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.16-rc1
-X-PR-Tracked-Commit-Id: 6c53b45c71b4920b5e62f0ea8079a1da382b9434
+In-Reply-To: <CAJZ5v0hWGX0txDBHfUMX=hgynrsyhp0T8NX-rY8YXdPbdZPKtA@mail.gmail.com>
+References: <CAJZ5v0hWGX0txDBHfUMX=hgynrsyhp0T8NX-rY8YXdPbdZPKtA@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-pm.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAJZ5v0hWGX0txDBHfUMX=hgynrsyhp0T8NX-rY8YXdPbdZPKtA@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.16-rc2
+X-PR-Tracked-Commit-Id: 47b577ae6fba635de1e5e042d425ebd0f9313111
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ea229296809aa696fbe006d29d6cd8692880f60e
-Message-Id: <163727616701.9679.11107681105658242812.pr-tracker-bot@kernel.org>
-Date:   Thu, 18 Nov 2021 22:56:07 +0000
-To:     Mark Brown <broonie@kernel.org>
+X-PR-Merge-Commit-Id: 18e2befaf6c2a2b877a8842f8caa7bce54d9b59b
+Message-Id: <163727617645.9679.17852914733510650360.pr-tracker-bot@kernel.org>
+Date:   Thu, 18 Nov 2021 22:56:16 +0000
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 18 Nov 2021 17:25:37 +0000:
+The pull request you sent on Thu, 18 Nov 2021 21:14:30 +0100:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.16-rc1
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.16-rc2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ea229296809aa696fbe006d29d6cd8692880f60e
+https://git.kernel.org/torvalds/c/18e2befaf6c2a2b877a8842f8caa7bce54d9b59b
 
 Thank you!
 
