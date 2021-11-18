@@ -2,292 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B564455269
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 02:55:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8828745526C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 02:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242391AbhKRB5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 20:57:54 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:41641 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233128AbhKRB5w (ORCPT
+        id S242396AbhKRB6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 20:58:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233128AbhKRB6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 20:57:52 -0500
+        Wed, 17 Nov 2021 20:58:35 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F50C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 17:55:36 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id iq11so3829780pjb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 17:55:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637200493; x=1668736493;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Oi7O/U4Rf2pPIs/j+dPfPg0GjDFEjDFV+JfzEknM8k8=;
-  b=X6Zz3lMfkubpwyFa9mpf9a0FLXFjXOdY6CparHf3EGHk2igNhAJdYNR4
-   wzcbtbebPBJf9+KMtdrAgzJ/Zx68IyVMl3p9s9ToH53nPEZMZs1HX5Coi
-   qca1vebqRbMVZwcApMCcmsKZpIIYgCp8pxmUMwYEzdKXuSinHZOtGImi9
-   Q=;
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 17 Nov 2021 17:54:52 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 17:54:52 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Wed, 17 Nov 2021 17:54:52 -0800
-Received: from quicinc.com (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Wed, 17 Nov
- 2021 17:54:51 -0800
-Date:   Wed, 17 Nov 2021 17:54:50 -0800
-From:   Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
-To:     Vinod Koul <vkoul@kernel.org>, <g@quicinc.com>
-CC:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
-        <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <robh+dt@kernel.org>, <tglx@linutronix.de>, <maz@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <manivannan.sadhasivam@linaro.org>
-Subject: Re: [PATCH v4 2/6] clk: qcom: Add LUCID_EVO PLL type for SDX65
-Message-ID: <20211118015450.GB18984@quicinc.com>
-References: <cover.1637047731.git.quic_vamslank@quicinc.com>
- <5a048452c128e4b678609bef780e2c1328c482fc.1637047731.git.quic_vamslank@quicinc.com>
- <YZNq+Y07kwhbIboe@matsya>
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Vd/oJdSLv2nLMzuhB/Noxo3ol/XC/Vn5+tNwcBvMn70=;
+        b=FMMoCUU9jmO31V8CNgBWLoynogY1H2jIdIBcShTk3M6abbyXlvrIR2YmhkzvtDHHp2
+         Hexccufe9i4/ko3tnld8dNnUxNWWVpXh8EvhqT7VPtZ0ZGarcNXaXTquAcW4rSzKiYQp
+         NkenKGWGDih4or2MOjrIQNDiermZ7WKXmyRb85Z+/v18BuguGOF7VxpklKkBKWd8oHeQ
+         r1Dd1v6zIXPzh86Vpg1mJ79rLdVdH5gaDCejBl/hSPQT++xw3f+1YxwYjkd8tPmKQtUz
+         LJpJ+R6/AzCvtCNIr1nacLxADtekUCGM9C1OtiJqS9aWo1JP5cYz5z+cpGxnUXQo1HEw
+         cVAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Vd/oJdSLv2nLMzuhB/Noxo3ol/XC/Vn5+tNwcBvMn70=;
+        b=ez7ORVf+rhtdaElXn8asezk9PHR0tGan/sXz1KCcBiAUTPbGhemZyCwVnyaQoSotLp
+         UIiU0u9DH0hmPPPeVv3HoLLIUvhK9yjnhbJKmmF+ra2kIMX35H/U5Jo9zYuavpiQYMi5
+         z9JhYJYy0sRFpRJjQrFbPClTmJmSFN9eu6yIrzeLBWH9R4M5QlPPjvZ/7rdJS1H9FaC9
+         ZP+QSHXtyTRV+rWzCOj/aQXaJe6FMfE6wzIexZWiQUY0FgfS2njcU3vUL7aJ+Kt4ClS/
+         TM4qGWhwJJEJi/mxkDIFprsSZaw8BU/Zw6Ag5VchHzeApC7ILUC5ttrIKl4+cdrpf4lQ
+         GaDA==
+X-Gm-Message-State: AOAM530+MC6JVxHW/l5cTJ5yqM7XSqGWg9z0CfN0oFedjNKY9puJbUIL
+        2q7rks207i/QW7Uv4AVb2fE=
+X-Google-Smtp-Source: ABdhPJwwDFM0N41hSl4M67auuXqvUJxB8cjjkgRKoWRgKHcK96+2z8IhxpdMApLUhKZRMJFqgD+E+w==
+X-Received: by 2002:a17:90b:1650:: with SMTP id il16mr5708237pjb.83.1637200535399;
+        Wed, 17 Nov 2021 17:55:35 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:ac60:a5b:b800:3af7])
+        by smtp.gmail.com with ESMTPSA id p128sm878652pfg.125.2021.11.17.17.55.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 17:55:34 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Wed, 17 Nov 2021 17:55:33 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] kernfs: release kernfs_mutex before the inode
+ allocation
+Message-ID: <YZWylT2SuN+N2Z2K@google.com>
+References: <20211116194317.1430399-1-minchan@kernel.org>
+ <YZQLWq7WMSRF2xCM@kroah.com>
+ <YZQkQcrldGFwqV/r@google.com>
+ <YZSk3DECnnknOu5T@kroah.com>
+ <YZSu/HiHDZxo9Wpa@google.com>
+ <YZV4CtJnH+ngOcxi@slm.duckdns.org>
+ <YZV+j5LivK+9Dt50@google.com>
+ <YZWA+8B1xQOKCMnS@slm.duckdns.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YZNq+Y07kwhbIboe@matsya>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+In-Reply-To: <YZWA+8B1xQOKCMnS@slm.duckdns.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 01:55:29PM +0530, Vinod Koul wrote:
-> On 15-11-21, 23:38, quic_vamslank@quicinc.com wrote:
-> > From: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
+On Wed, Nov 17, 2021 at 12:23:55PM -1000, Tejun Heo wrote:
+> Hello,
+> 
+> On Wed, Nov 17, 2021 at 02:13:35PM -0800, Minchan Kim wrote:
+> > > So, one really low hanging fruit here would be using a separate rwsem per
+> > > superblock. Nothing needs synchronization across different users of kernfs
+> > > and the locking is shared just because nobody bothered to separate them out
+> > > while generalizing it from sysfs.
 > > 
-> > Add a LUCID_EVO PLL type for SDX65 SoC from Qualcomm.
+> > That's really what I wanted but had a question whether we can access
+> > superblock from the kernfs_node all the time since there are some
+> > functions to access the kernfs_rwsem without ionde, sb context.
 > > 
-> > Signed-off-by: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
-> > ---
-> >  drivers/clk/qcom/clk-alpha-pll.c | 171 +++++++++++++++++++++++++++++++
-> >  drivers/clk/qcom/clk-alpha-pll.h |   3 +
-> >  2 files changed, 174 insertions(+)
-> > 
-> > diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
-> > index eaedcceb766f..b2dbb8d56773 100644
-> > --- a/drivers/clk/qcom/clk-alpha-pll.c
-> > +++ b/drivers/clk/qcom/clk-alpha-pll.c
-> > @@ -1,5 +1,6 @@
-> >  // SPDX-License-Identifier: GPL-2.0
-> >  /*
-> > + * Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
+> > Is it doable to get the superblock from the kernfs_node all the time?
 > 
-> This line should ideally come after the below line..
+> Ah, right, kernfs_node doesn't point back to kernfs_root. I guess it can go
+> one of three ways:
 
-Will do.
+Thanks for the suggestion, Tejun.
+
+I found kernfs_root and it seems like to return kernfs_root from kernfs_node.
+If it's true all the case, we would put the rwsem in kernfs_root and change
+would be straightforward. Do you see any problem?
 
 > 
-> >   * Copyright (c) 2015, 2018, The Linux Foundation. All rights reserved.
-> >   */
-> >  
-> > @@ -139,6 +140,20 @@ const u8 clk_alpha_pll_regs[][PLL_OFF_MAX_REGS] = {
-> >  		[PLL_OFF_OPMODE] = 0x28,
-> >  		[PLL_OFF_STATUS] = 0x38,
-> >  	},
-> > +	[CLK_ALPHA_PLL_TYPE_LUCID_EVO] = {
-> > +		[PLL_OFF_OPMODE] = 0x04,
-> > +		[PLL_OFF_STATUS] = 0x0c,
-> > +		[PLL_OFF_L_VAL] = 0x10,
-> > +		[PLL_OFF_ALPHA_VAL] = 0x14,
-> > +		[PLL_OFF_USER_CTL] = 0x18,
-> > +		[PLL_OFF_USER_CTL_U] = 0x1c,
-> > +		[PLL_OFF_CONFIG_CTL] = 0x20,
-> > +		[PLL_OFF_CONFIG_CTL_U] = 0x24,
-> > +		[PLL_OFF_CONFIG_CTL_U1] = 0x28,
-> > +		[PLL_OFF_TEST_CTL] = 0x2c,
-> > +		[PLL_OFF_TEST_CTL_U] = 0x30,
-> > +		[PLL_OFF_TEST_CTL_U1] = 0x34,
-> > +        },
-> >  };
-> >  EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
-> >  
-> > @@ -175,6 +190,10 @@ EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
-> >  #define LUCID_5LPE_PLL_LATCH_INPUT	BIT(14)
-> >  #define LUCID_5LPE_ENABLE_VOTE_RUN	BIT(21)
-> >  
-> > +/* LUCID EVO PLL specific settings and offsets */
-> > +#define LUCID_EVO_ENABLE_VOTE_RUN       BIT(25)
-> > +#define LUCID_EVO_PLL_L_VAL_MASK        GENMASK(15, 0)
-> > +
-> >  /* ZONDA PLL specific */
-> >  #define ZONDA_PLL_OUT_MASK	0xf
-> >  #define ZONDA_STAY_IN_CFA	BIT(16)
-> > @@ -1951,3 +1970,155 @@ const struct clk_ops clk_alpha_pll_zonda_ops = {
-> >  	.set_rate = clk_zonda_pll_set_rate,
-> >  };
-> >  EXPORT_SYMBOL(clk_alpha_pll_zonda_ops);
-> > +
-> > +static int alpha_pll_lucid_evo_enable(struct clk_hw *hw)
-> > +{
-> > +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> > +	struct regmap *regmap = pll->clkr.regmap;
-> > +	u32 val;
-> > +	int ret;
-> > +
-> > +	ret = regmap_read(regmap, PLL_USER_CTL(pll), &val);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	/* If in FSM mode, just vote for it */
-> > +	if (val & LUCID_EVO_ENABLE_VOTE_RUN) {
-> > +		ret = clk_enable_regmap(hw);
-> > +		if (ret)
-> > +			return ret;
-> > +		return wait_for_pll_enable_lock(pll);
-> > +	}
-> > +
-> > +	/* Check if PLL is already enabled */
-> > +	ret = trion_pll_is_enabled(pll, regmap);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +	else if (ret) {
-> > +		pr_warn("%s PLL is already enabled\n",
-> > +				clk_hw_get_name(&pll->clkr.hw));
+> a. Follow parent until root kernfs_node and make that guy point to
+>    kernfs_root through its parent field. This isn't great but the hotter
+>    paths all have sb / inode already, I think, so if we do this only in the
+>    really cold paths, it likely isn't too bad.
 > 
-> this should fit in a single line
-
-Will do.
-
+> b. Change the interface so that the callers have to provide kernfs_root. I
+>    don't think this is gonna be a huge problem. There are a few users of
+>    kernfs and they always know their roots.
 > 
-> > +		return 0;
-> > +	}
-> > +
-> > +	ret = regmap_update_bits(regmap, PLL_MODE(pll), PLL_RESET_N, PLL_RESET_N);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	/* Set operation mode to RUN */
-> > +	regmap_write(regmap, PLL_OPMODE(pll), PLL_RUN);
-> > +
-> > +	ret = wait_for_pll_enable_lock(pll);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	/* Enable the PLL outputs */
-> > +	ret = regmap_update_bits(regmap, PLL_USER_CTL(pll), PLL_OUT_MASK, PLL_OUT_MASK);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	/* Enable the global PLL outputs */
-> > +	ret = regmap_update_bits(regmap, PLL_MODE(pll), PLL_OUTCTRL, PLL_OUTCTRL);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	/* Ensure that the write above goes through before returning. */
-> > +	mb();
-> > +	return ret;
-> > +}
-> > +
-> > +static void alpha_pll_lucid_evo_disable(struct clk_hw *hw)
-> > +{
-> > +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> > +	struct regmap *regmap = pll->clkr.regmap;
-> > +	u32 val;
-> > +	int ret;
-> > +
-> > +	ret = regmap_read(regmap, PLL_USER_CTL(pll), &val);
-> > +	if (ret)
-> > +		return;
-> > +
-> > +	/* If in FSM mode, just unvote it */
-> > +	if (val & LUCID_EVO_ENABLE_VOTE_RUN) {
-> > +		clk_disable_regmap(hw);
-> > +		return;
-> > +	}
-> > +
-> > +	/* Disable the global PLL output */
-> > +	ret = regmap_update_bits(regmap, PLL_MODE(pll), PLL_OUTCTRL, 0);
-> > +	if (ret)
-> > +		return;
-> > +
-> > +	/* Disable the PLL outputs */
-> > +	ret = regmap_update_bits(regmap, PLL_USER_CTL(pll), PLL_OUT_MASK, 0);
-> > +	if (ret)
-> > +		return;
-> > +
-> > +	/* Place the PLL mode in STANDBY */
-> > +	regmap_write(regmap, PLL_OPMODE(pll), PLL_STANDBY);
-> > +}
-> > +
-> > +static unsigned long alpha_pll_lucid_evo_recalc_rate(struct clk_hw *hw,
-> > +		unsigned long parent_rate)
+> c. Add a field to kernfs_node so that we can always find kernfs_root.
 > 
-> pls align this to preceding line open brace
-
-Will do.
-
+> I think b is likely the cheapest && cleanest.
 > 
-> > +{
-> > +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> > +	struct regmap *regmap = pll->clkr.regmap;
-> > +	u32 l, frac;
-> > +
-> > +	regmap_read(regmap, PLL_L_VAL(pll), &l);
-> > +	l &= LUCID_EVO_PLL_L_VAL_MASK;
-> > +	regmap_read(regmap, PLL_ALPHA_VAL(pll), &frac);
-> > +
-> > +	return alpha_pll_calc_rate(parent_rate, l, frac, pll_alpha_width(pll));
-> > +}
-> 
-> I think this can use __alpha_pll_trion_set_rate()
-
-I didn't get with which function are you comparing this. I cannot able to
-find any function similar to this.
-
-> 
-> > +
-> > +static int clk_lucid_evo_pll_postdiv_set_rate(struct clk_hw *hw,
-> > +		unsigned long rate, unsigned long parent_rate)
-> > +{
-> > +	struct clk_alpha_pll_postdiv *pll = to_clk_alpha_pll_postdiv(hw);
-> > +	struct regmap *regmap = pll->clkr.regmap;
-> > +	int i, val, div, ret;
-> > +
-> > +	/*
-> > +	 * If the PLL is in FSM mode, then treat set_rate callback as a
-> > +	 * no-operation.
-> > +	 */
-> > +	ret = regmap_read(regmap, PLL_USER_CTL(pll), &val);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	if (val & LUCID_EVO_ENABLE_VOTE_RUN)
-> > +		return 0;
-> > +
-> > +	if (!pll->post_div_table) {
-> > +		pr_err("Missing the post_div_table for the PLL\n");
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	div = DIV_ROUND_UP_ULL((u64)parent_rate, rate);
-> > +	for (i = 0; i < pll->num_post_div; i++) {
-> > +		if (pll->post_div_table[i].div == div) {
-> > +			val = pll->post_div_table[i].val;
-> > +			break;
-> > +		}
-> > +	}
-> > +
-> > +	return regmap_update_bits(regmap, PLL_USER_CTL(pll),
-> > +			(BIT(pll->width) - 1) << pll->post_div_shift,
-> > +			val << pll->post_div_shift);
-> > +}
-> 
-> This looks _very_ similar to clk_lucid_5lpe_pll_postdiv_set_rate() maybe
-> add a helper which both can use and pass on the
-> LUCID_EVO_ENABLE_VOTE_RUN as argument to helper?
-
-That's a good thought. I can do that.
-
+> Thanks.
 > 
 > -- 
-> ~Vinod
+> tejun
