@@ -2,168 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D084565BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 23:31:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8414565C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 23:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232211AbhKRWe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 17:34:57 -0500
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:40439 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229521AbhKRWe5 (ORCPT
+        id S232389AbhKRWhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 17:37:35 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52052 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229521AbhKRWhe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 17:34:57 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 9B54B2B011A3;
-        Thu, 18 Nov 2021 17:31:55 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 18 Nov 2021 17:31:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:date:from:message-id:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=EgttxCz67NcGqBysOvfjKjCJjUrua2/KraxC4XRjMOo=; b=MIvEX0Uw
-        CHwc8/1iR65sKpJadsaYNFN3tJsJphfdn2z17p73TeiyDaJU6YdAqNYEB5EdjrBH
-        WC7YHhV9oJFxmj03KIYsT5grO9Vy6c09y2Jno24SChu7o7fnKhbA4P4aTcvDFY6w
-        PMWk6E9OxDcS/Jt15yovQlDljvNdJMx8BxX1aNAwQfiQNP7rLNo2EoX+4fmBD5JG
-        bmziiQYeUffo48o712hQasV3Y/YU3NfW7vsiS3r9vl3lEDLMZHlF28KLgh3Vg6aZ
-        Nf2rCQBAwcik/qWBZeAqhZDFZZXMgnQMAfVkfB7k0amCX3QfAY9r3+VNRoHB2XFc
-        z1VvyhOCVlsFAg==
-X-ME-Sender: <xms:WtSWYdXLpil2AjAeZlsHq7OdZZb_y4dMiY88UjrIm0Ij-js4t0ou3w>
-    <xme:WtSWYdlDeH1hkl7U2fWdxHgTHSBC8fEMCgOY_PhIcfzZt3bLtvSJw3z9JFLNssbUK
-    CRA6JXRWB6h_IFWKMk>
-X-ME-Received: <xmr:WtSWYZYxlipmCY7YEpXnXAsdvBARFR44UJ5yrEl3WUwLcGjZjByAv2kLLZaIOP8OtYjnJHsSIFi2yFhwYIGeS6Wh9Oq_d_saNUM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeeigdduheekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gohfhorhgsihguuggvnhfjughrucdlhedttddmnecujfgurhepvffkhffuffestddtredt
-    tddtnecuhfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmh
-    eikehkrdhorhhgqeenucfhohhrsghiugguvghnjfgurhepvffkhffuffestddtredttddt
-    pdfvkffhufffsedttdertddttdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:WtSWYQVNqyHU2m8QhyJipMxzeFT8A-anjgcnvBiexeWR5JgKlYoPnA>
-    <xmx:WtSWYXkNAtDM3whEUvHz8M_zr24WtK0gp1lm6ix07LO1_BrSU994TQ>
-    <xmx:WtSWYdcObUNCRdi522esKtha7wc0BGGpnwDVy_cdJfyWUNARow-SKA>
-    <xmx:WtSWYQDN26_AQMZij2_cnLlg0XMh8xmHcisxLizMroVCoA9wV1hP9jwdsCI>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 18 Nov 2021 17:31:52 -0500 (EST)
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Mike Rapoport" <rppt@kernel.org>, "Sam Creasey" <sammy@sammy.net>,
-        "Jonathan Corbet" <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Message-Id: <8170fe1d1c62426d82275d36ba409ecc18754292.1637274578.git.fthain@linux-m68k.org>
-From:   Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH v3] m68k: Enable memtest functionality
-Date:   Fri, 19 Nov 2021 09:29:38 +1100
+        Thu, 18 Nov 2021 17:37:34 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AIKxYo6019153;
+        Thu, 18 Nov 2021 22:34:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=3sZP65E5byhIvz4i90BuqnvbuxB6Skk0Z/nrqSuw/UU=;
+ b=LtdEAQpZQ05KH5eWVBSStMhM3evlFg17GYUOrqiEEofJjF7olEuXJDGAhK/ypIfKoOEO
+ 8GF6QG9C4QQR5ZNJWrVJv248tj4jW/G88iXQNnKU2SHmhKiz78/lOaH5ksQ3wznTAEW7
+ k0OV5qeRSLfQY6YrEZw+TWpvjoeYbDUKOJ9TG6EnjSfn2xPRPTdjgkwYlSqmK3hG/NZD
+ BfKELpL8fKNQ7oZez7ucVBq2QpCch/kfKfc6aV6QA+KOJMQQW6hZ4qW1/JtxxSGt58H5
+ Hasrmk6b8pfNF0IoFg0puoGk85s41/jy9eqRxipxUZY8vKsWyTU7GSmQyY+EvYsgI3dt QQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cdxbvt7mc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Nov 2021 22:34:13 +0000
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AIMNMYg013965;
+        Thu, 18 Nov 2021 22:34:13 GMT
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cdxbvt7m5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Nov 2021 22:34:12 +0000
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AIMR5mD011651;
+        Thu, 18 Nov 2021 22:34:11 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma04wdc.us.ibm.com with ESMTP id 3ca50cfmfu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Nov 2021 22:34:11 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AIMY7FK36241826
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Nov 2021 22:34:07 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 34C12AC089;
+        Thu, 18 Nov 2021 22:34:07 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C7D03AC06C;
+        Thu, 18 Nov 2021 22:34:02 +0000 (GMT)
+Received: from [9.211.61.197] (unknown [9.211.61.197])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 18 Nov 2021 22:34:02 +0000 (GMT)
+Message-ID: <604dad24-5406-509c-d765-905d74880523@linux.vnet.ibm.com>
+Date:   Thu, 18 Nov 2021 17:34:01 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 0/3] KEXEC_SIG with appended signature
+Content-Language: en-US
+To:     =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>, keyrings@vger.kernel.org,
+        Rob Herring <robh@kernel.org>, linux-s390@vger.kernel.org,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Jessica Yu <jeyu@kernel.org>, linux-kernel@vger.kernel.org,
+        David Howells <dhowells@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Frank van der Linden <fllinden@amazon.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Daniel Axtens <dja@axtens.net>, buendgen@de.ibm.com
+References: <cover.1635948742.git.msuchanek@suse.de>
+ <87czneeurr.fsf@dja-thinkpad.axtens.net>
+ <20211105131401.GL11195@kunlun.suse.cz>
+ <87a6ifehin.fsf@dja-thinkpad.axtens.net>
+ <20211108120500.GO11195@kunlun.suse.cz>
+ <56d2ae87-b9bf-c9fc-1395-db4769a424ea@linux.vnet.ibm.com>
+ <20211112083055.GA34414@kunlun.suse.cz>
+ <8cd90fea-05c9-b5f9-5e0c-84f98b2f55cd@linux.vnet.ibm.com>
+ <20211116095343.GG34414@kunlun.suse.cz>
+From:   Nayna <nayna@linux.vnet.ibm.com>
+In-Reply-To: <20211116095343.GG34414@kunlun.suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: x398kgBnLb2ZNX7NPbVzUTEXr0d2VD96
+X-Proofpoint-GUID: G_o52HHXc1RIsRhcs9H375AtA3LqBl1o
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-18_12,2021-11-17_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ clxscore=1015 lowpriorityscore=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 suspectscore=0 spamscore=0 bulkscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111180115
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the memtest functionality and rearrange some code to prevent it
-from clobbering the initrd.
 
-The code to implement CONFIG_BLK_DEV_INITRD was conditional on
-!defined(CONFIG_SUN3). For simplicity, remove that test on the basis
-that m68k_ramdisk.size == 0 on Sun 3. The SLIME source code at
-http://sammy.net/sun3/ftp/pub/m68k/sun3/slime/slime-2.0.tar.gz
-indicates that no BI_RAMDISK entry is ever passed to the kernel due
-to #ifdef 0 around the relevant code.
+On 11/16/21 04:53, Michal Suchánek wrote:
+> On Mon, Nov 15, 2021 at 06:53:53PM -0500, Nayna wrote:
+>> On 11/12/21 03:30, Michal Suchánek wrote:
+>>> Hello,
+>>>
+>>> On Thu, Nov 11, 2021 at 05:26:41PM -0500, Nayna wrote:
+>>>> On 11/8/21 07:05, Michal Suchánek wrote:
+>>>>> Hello,
+>>>>>
+>>>>> The other part is that distributions apply 'lockdown' patches that change
+>>>>> the security policy depending on secure boot status which were rejected
+>>>>> by upstream which only hook into the _SIG options, and not into the IMA_
+>>>>> options. Of course, I expect this to change when the IMA options are
+>>>>> universally available across architectures and the support picked up by
+>>>>> distributions.
+>>>>>
+>>>>> Which brings the third point: IMA features vary across architectures,
+>>>>> and KEXEC_SIG is more common than IMA_KEXEC.
+>>>>>
+>>>>> config/arm64/default:CONFIG_HAVE_IMA_KEXEC=y
+>>>>> config/ppc64le/default:CONFIG_HAVE_IMA_KEXEC=y
+>>>>>
+>>>>> config/arm64/default:CONFIG_KEXEC_SIG=y
+>>>>> config/s390x/default:CONFIG_KEXEC_SIG=y
+>>>>> config/x86_64/default:CONFIG_KEXEC_SIG=y
+>>>>>
+>>>>> KEXEC_SIG makes it much easier to get uniform features across
+>>>>> architectures.
+>>>> Architectures use KEXEC_SIG vs IMA_KEXEC based on their requirement.
+>>>> IMA_KEXEC is for the kernel images signed using sign-file (appended
+>>>> signatures, not PECOFF), provides measurement along with verification, and
+>>> That's certainly not the case. S390 uses appended signatures with
+>>> KEXEC_SIG, arm64 uses PECOFF with both KEXEC_SIG and IMA_KEXEC.
+>> Yes, S390 uses appended signature, but they also do not support
+>> measurements.
+>>
+>> On the other hand for arm64/x86, PECOFF works only with KEXEC_SIG. Look at
+>> the KEXEC_IMAGE_VERIFY_SIG config dependencies in arch/arm64/Kconfig and
+>> KEXEC_BZIMAGE_VERIFY_SIG config dependencies in arch/x86/Kconfig. Now, if
+>> KEXEC_SIG is not enabled, then IMA appraisal policies are enforced if secure
+>> boot is enabled, refer to security/integrity/ima_efi.c . IMA would fail
+>> verification if kernel is not signed with module sig appended signatures or
+>> signature verification fails.
+>>
+>> In short, IMA is used to enforce the existence of a policy if secure boot is
+>> enabled. If they don't support module sig appended signatures, by definition
+>> it fails. Thus PECOFF doesn't work with both KEXEC_SIG and IMA_KEXEC, but
+>> only with KEXEC_SIG.
+> Then IMA_KEXEC is a no-go. It is not supported on all architectures and
+> it principially cannot be supported because it does not support PECOFF
+> which is needed to boot the kernel on EFI platforms. To get feature
+> parity across architectures KEXEC_SIG is required.
 
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Sam Creasey <sammy@sammy.net>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
----
-Is SLIME the only Linux bootloader on Sun 3?
----
-Changed since v2:
- - Made conditional on MMU_MOTOROLA.
+I would not say "a no-go", it is based on user requirements.
 
-Changed since v1:
- - Updated documentation.
----
- Documentation/admin-guide/kernel-parameters.txt |  2 +-
- arch/m68k/Kconfig                               |  1 +
- arch/m68k/kernel/setup_mm.c                     | 15 ++++++---------
- arch/m68k/mm/motorola.c                         |  2 ++
- 4 files changed, 10 insertions(+), 10 deletions(-)
+The key takeaway from this discussion is that both KEXEC_SIG and 
+IMA_KEXEC support functionality with some small degree of overlap, and 
+that documenting the differences is needed.  This will help kernel 
+consumers to understand the difference and enable the appropriate 
+functionality for their environment.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 43dc35fe5bc0..ac42b421a95c 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -2924,7 +2924,7 @@
- 			both parameters are enabled, hugetlb_free_vmemmap takes
- 			precedence over memory_hotplug.memmap_on_memory.
- 
--	memtest=	[KNL,X86,ARM,PPC,RISCV] Enable memtest
-+	memtest=	[KNL,X86,ARM,M68K,PPC,RISCV] Enable memtest
- 			Format: <integer>
- 			default : 0 <disable>
- 			Specifies the number of memtest passes to be
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 0b50da08a9c5..4cae3fbe7f97 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -9,6 +9,7 @@ config M68K
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
- 	select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
- 	select ARCH_NO_PREEMPT if !COLDFIRE
-+	select ARCH_USE_MEMTEST if MMU_MOTOROLA
- 	select ARCH_WANT_IPC_PARSE_VERSION
- 	select BINFMT_FLAT_ARGVP_ENVP_ON_STACK
- 	select DMA_DIRECT_REMAP if HAS_DMA && MMU && !COLDFIRE
-diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-index 4b51bfd38e5f..49e573b94326 100644
---- a/arch/m68k/kernel/setup_mm.c
-+++ b/arch/m68k/kernel/setup_mm.c
-@@ -338,13 +338,6 @@ void __init setup_arch(char **cmdline_p)
- 		panic("No configuration setup");
- 	}
- 
--	paging_init();
--
--#ifdef CONFIG_NATFEAT
--	nf_init();
--#endif
--
--#ifndef CONFIG_SUN3
- #ifdef CONFIG_BLK_DEV_INITRD
- 	if (m68k_ramdisk.size) {
- 		memblock_reserve(m68k_ramdisk.addr, m68k_ramdisk.size);
-@@ -354,6 +347,12 @@ void __init setup_arch(char **cmdline_p)
- 	}
- #endif
- 
-+	paging_init();
-+
-+#ifdef CONFIG_NATFEAT
-+	nf_init();
-+#endif
-+
- #ifdef CONFIG_ATARI
- 	if (MACH_IS_ATARI)
- 		atari_stram_reserve_pages((void *)availmem);
-@@ -364,8 +363,6 @@ void __init setup_arch(char **cmdline_p)
- 	}
- #endif
- 
--#endif /* !CONFIG_SUN3 */
--
- /* set ISA defs early as possible */
- #if defined(CONFIG_ISA) && defined(MULTI_ISA)
- 	if (MACH_IS_Q40) {
-diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
-index 9f3f77785aa7..5b6575eb6d02 100644
---- a/arch/m68k/mm/motorola.c
-+++ b/arch/m68k/mm/motorola.c
-@@ -455,6 +455,8 @@ void __init paging_init(void)
- 
- 	flush_tlb_all();
- 
-+	early_memtest(min_addr, max_addr);
-+
- 	/*
- 	 * initialize the bad page table and bad page to point
- 	 * to a couple of allocated pages
--- 
-2.26.3
+As per my understanding:
+
+KEXEC_SIG:
+* Supports kernel image verification
+* Linked with secureboot state using downstream patch
+* Supports PECOFF and module sig appended signature format
+* Supports blocklisting of keys
+
+IMA_KEXEC:
+* Supports kernel image verification
+* Linked with secureboot state in upstream
+* Supports module sig appended signature format and signatures in 
+extended attribute.
+* Supports blocklisting of keys
+* Supports blocklisting single kernel binary
+* Supports measurements for attestation
+* Supports audit log
+
+Users can enable the option based on their requirements.
+
+Thanks for the good discussion and enabling KEXEC_SIG for POWER as well. 
+It would be good to have updated kernel documentation to go along with 
+KEXEC_SIG support in the patchset.
+
+Thanks & Regards,
+     - Nayna
 
