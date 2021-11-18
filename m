@@ -2,136 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E204560EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:49:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9A74560EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:52:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233730AbhKRQwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 11:52:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48506 "EHLO
+        id S233694AbhKRQzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 11:55:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233678AbhKRQwp (ORCPT
+        with ESMTP id S229580AbhKRQzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 11:52:45 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B6DC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:49:44 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id g18so6613030pfk.5
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:49:44 -0800 (PST)
+        Thu, 18 Nov 2021 11:55:06 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FEF1C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:52:06 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id q25so15723198oiw.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:52:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=d+draVXuiToCJFuznv+X75lB2WMBUcaNE7FlgHWC0MU=;
-        b=DxgdGAKhzq3iyj9XYWSp808CqbmkOFGPmgg7YVZtMyxOrUGFfeUX+VPM+3VtI6PeNC
-         mXntPnVXxiJXKkwh4rQDq4nKwcob/ZyifgYpaCy36N+l4YM6TOIEi9xQ9mi8f82KU/5+
-         P1htAxvVenSKqKBPral+lxCJbRMW+uKe2giLruhAivHxRNXdEzvrXZbq9B6menVhBjfW
-         EYhuV5V8Hl/Zs3zYtlECxcptXXILpTecglTra9i+xPqyVG/x9HlgiiGVNLMJZhOtehTr
-         jCM3VEJN4P8HXBOJdbaAmlaaPkmd4AOyS2ykk8z6jSJiW2UJP7uifEbRy0Yv7Ig6c6Ze
-         eH8g==
+        bh=Md/3/5JKM+oVwuA7MgVwTq9uvS3LFmGmmFvpu2uaZik=;
+        b=fj/+3S7DMb744W00SwXLVIK5nOQSESv3guuqih+RelIQ/bpTyiWCAyLOQSOjwPi/42
+         zQlujAW2Yge8V1MDhzPhZND2RhySDzxgd3FZctXrbSjoOncX7Eu73soKd9at7zHyHjwm
+         xoZjGgmnkJrwyVnCBkhB7gjkaoA2tPI8f88jiFyvcOh838rqQllNhTaelZxEv5BqTouD
+         X/HExseYUpwzu9BqrHElSVUdv8AMTKVH6Xf27g4w+DEt8qyqGUmhkdhHkNVnrNc2FVKS
+         mv8gMEayxVE8RsihX1eCkg58nZOB/R63S4SMp2uanplrtKZ0Mgn7hOpFlPjYzQ7uj/dB
+         p8Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=d+draVXuiToCJFuznv+X75lB2WMBUcaNE7FlgHWC0MU=;
-        b=6Zht5NNFgrAWiwjl07p0YJFyJohaB/j67dFZZXweqpHaX2/ywIDtU/IaugmMpKUJny
-         VRvL9u8jQ1icR8iR7oTuBsWpS2AfTGhHQQPulrz14BqcTB3nAK/Wf5A900Llc43gANwd
-         bzKfHdfpiUatGrwiuFjGlcZRddim+Ll9n45KdjLkruXB8MeR05YP32f6P79hHm6Y3B29
-         R8sniegpZOAiTuStH39wPgFFh2PyJm3JRP4pS3RJmkCM8OdyvE5HYDcwv7vF6ToKJsdN
-         Tu2ZTk9ZdGUO5IKdObTfwLiyA1xFzSPbxqmpvLIJ1dHLbTOpWGU3PZAqnRQkhMa3UE/K
-         1lMg==
-X-Gm-Message-State: AOAM533uaU896xiFCP52hMtgaOMWBNjKarjP/1GQOr5hEXZIPncAkfmH
-        EQeDpnCXkkHWbPvp6wQyWZVCaA==
-X-Google-Smtp-Source: ABdhPJxizezP7GB1Qdiu6Zf7X61r6zIjOCTHRhTJXDFWIfg4vKlgMcTpvhOOyCHc3QgSDAozqFQ7Mw==
-X-Received: by 2002:a63:7d0f:: with SMTP id y15mr12032460pgc.446.1637254184220;
-        Thu, 18 Nov 2021 08:49:44 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id g21sm181147pfc.95.2021.11.18.08.49.43
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Md/3/5JKM+oVwuA7MgVwTq9uvS3LFmGmmFvpu2uaZik=;
+        b=TYH4sj8rYyAD+V4dOw+42YxvsmCWvaX2xFzYVRKATXAJhMuj8bc72uOjKtQXJHkX0y
+         IU1PP4OY7YOA5d9NvvfaH2VkRKCpVzcSnMTpKsa4YJfaapunns+Xb3ZOloW9eVHLTK9N
+         /ct/gehMCupjd9fqdRmsfZukHjQjc2OC/rY0hdxLm49SYvGQzRNPccy5CJvJjUKq3wIo
+         T0ZQZzHy/6X+vUyiQ1WwzK81VqWyg1xpoksd4J46De+0OEn27BtXsDI/vcAJhER2X5mb
+         G2bNG3KxbPdbJVFIzFF8QpEArT84xiZYl12eU1Q9l87WSbYCbt+WVNZ3CteFs6p7pRdk
+         HVLQ==
+X-Gm-Message-State: AOAM533EknH60vWdZP20ROPecLHLGaziOQtD9M0LS77t6ygKeBW6kCr9
+        TgdPor9HBh3do6RY39iKGrc=
+X-Google-Smtp-Source: ABdhPJwuRuQAtJTKuR72U4ZLce/J4haR8WuBB/b4O9pQAxD8GnIG++dPDeEtMkI3GrP+bTLzTeC9Xw==
+X-Received: by 2002:a05:6808:1482:: with SMTP id e2mr8654698oiw.45.1637254325830;
+        Thu, 18 Nov 2021 08:52:05 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id h3sm60851ooe.13.2021.11.18.08.52.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 08:49:43 -0800 (PST)
-Date:   Thu, 18 Nov 2021 16:49:40 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        mlevitsk@redhat.com
-Subject: Re: [PATCH v3] KVM: MMU: update comment on the number of page role
- combinations
-Message-ID: <YZaEJDRXrN5W20sk@google.com>
-References: <20211118114039.1733976-1-pbonzini@redhat.com>
+        Thu, 18 Nov 2021 08:52:05 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 18 Nov 2021 08:52:03 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Robert Foss <robert.foss@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        linux-kernel@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Xin Ji <xji@analogixsemi.com>
+Subject: Re: [PATCH] drm/bridge: anx7625: Fix edid_read break case in
+ sp_tx_edid_read()
+Message-ID: <20211118165203.GA1721588@roeck-us.net>
+References: <20211112112433.942075-1-hsinyi@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211118114039.1733976-1-pbonzini@redhat.com>
+In-Reply-To: <20211112112433.942075-1-hsinyi@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021, Paolo Bonzini wrote:
-> Fix the number of bits in the role, and simplify the explanation of
-> why several bits or combinations of bits are redundant.
+On Fri, Nov 12, 2021 at 07:24:33PM +0800, Hsin-Yi Wang wrote:
+> edid_read() was assumed to return 0 on success. After
+> 7f16d0f3b8e2("drm/bridge: anx7625: Propagate errors from sp_tx_rst_aux()"),
+> the function can return >= 0 for successful case. Fix the g_edid_break
+> condition in sp_tx_edid_read().
 > 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> Fixes: 7f16d0f3b8e2("drm/bridge: anx7625: Propagate errors from sp_tx_rst_aux()")
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Reviewed-by: Robert Foss <robert.foss@linaro.org>
 > ---
->  arch/x86/include/asm/kvm_host.h | 32 ++++++++++++++++++++------------
->  1 file changed, 20 insertions(+), 12 deletions(-)
+>  drivers/gpu/drm/bridge/analogix/anx7625.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 6ac61f85e07b..55f280e96b59 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -291,19 +291,27 @@ struct kvm_kernel_irq_routing_entry;
->   * the number of unique SPs that can theoretically be created is 2^n, where n
->   * is the number of bits that are used to compute the role.
->   *
-> - * But, even though there are 18 bits in the mask below, not all combinations
-> - * of modes and flags are possible.  The maximum number of possible upper-level
-> - * shadow pages for a single gfn is in the neighborhood of 2^13.
-> + * There are 19 bits in the mask below, and the page tracking code only uses
-> + * 16 bits per gfn in kvm_arch_memory_slot to count whether a page is tracked.
-> + * However, not all combinations of modes and flags are possible.  First
-> + * of all, invalid shadow pages pages are not accounted, and "smm" is constant
-> + * in a given memslot (because memslots are per address space, and SMM uses
-> + * a separate address space).  Of the remaining 2^17 possibilities:
->   *
-> - *   - invalid shadow pages are not accounted.
-> - *   - level is effectively limited to four combinations, not 16 as the number
-> - *     bits would imply, as 4k SPs are not tracked (allowed to go unsync).
-> - *   - level is effectively unused for non-PAE paging because there is exactly
-> - *     one upper level (see 4k SP exception above).
-> - *   - quadrant is used only for non-PAE paging and is exclusive with
-> - *     gpte_is_8_bytes.
-> - *   - execonly and ad_disabled are used only for nested EPT, which makes it
-> - *     exclusive with quadrant.
-> + *   - quadrant will only be used if gpte_is_8_bytes=0 (non-PAE paging);
-> + *     execonly and ad_disabled are only used for nested EPT which has
-> + *     gpte_is_8_bytes=1.  Therefore, 2 bits are always unused.
+> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> index 1a871f6b6822ee..392203b576042b 100644
+> --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
+> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> @@ -826,7 +826,7 @@ static int sp_tx_edid_read(struct anx7625_data *ctx,
+>  				g_edid_break = edid_read(ctx, offset,
+>  							 pblock_buf);
+>  
+> -				if (g_edid_break)
+> +				if (g_edid_break < 0)
+>  					break;
 
-Since we're already out behind the bikeshed... :-) 
+g_edid_break is declared u8 and thus never < 0. The break; statement
+doesn't indicate an error but that a break was encountered, and the
+value of g_edid_break == 1 is used elsewhere in the function to indicate
+that condition.  It also doesn't break out of the outer loop, but only
+out of the switch statement.
 
-Maybe instead of "always unused", pharse it as "Therefore, 2 bits (quadrant or
-execonly+ad_disabled) are constant".  The bits are still used in the sense that
-they do key the role, they're just guaranteed to be zero.
+With this patch in place, g_edid_break will have a more or less random
+value after an error, and the behavior of this function will be undefined.
 
-> + *   - the 4 bits of level are effectively limited to the values 2/3/4/5,
-> + *     as 4k SPs are not tracked (allowed to go unsync).  In addition non-PAE
-> + *     paging has exactly one upper level, making level completely redundant
-> + *     when gpte_is_8_bytes=0.
-> + *
-> + *   - on top of this, smep_andnot_wp and smap_andnot_wp are only set if
-> + *     cr0_wp=0, therefore these three bits only give rise to 5 possibilities.
-
-Ah, I missed the opportunity to shave those bits.  Nice!
-
-> + *
-> + * Therefore, the maximum number of possible upper-level shadow pages for a
-> + * given (as_id, gfn) pair is a bit less than 2^12.
-
-With the unused/constant change,
-
-Reviewed-by: Sean Christopherson <seanjc@google.com>
-
->   */
->  union kvm_mmu_page_role {
->  	u32 word;
-> -- 
-> 2.27.0
-> 
+Guenter
