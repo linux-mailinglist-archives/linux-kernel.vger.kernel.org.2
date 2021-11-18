@@ -2,244 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BD11455D71
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA030455D7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:08:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232454AbhKROKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 09:10:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38342 "EHLO
+        id S232536AbhKROLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 09:11:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232388AbhKROKL (ORCPT
+        with ESMTP id S232503AbhKROLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 09:10:11 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D132C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 06:07:11 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id y12so27467207eda.12
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 06:07:11 -0800 (PST)
+        Thu, 18 Nov 2021 09:11:06 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2FE2C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 06:08:06 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id bk22so6395194qkb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 06:08:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ggxXWX2QXeKOHI2GNezcaKGfjTo3F0HumEDmucHbcKU=;
-        b=x4UsDYCNm07fWhdiSnaJNeGdj9SbHCAi970jvIb6RPQCs9zv6ocXrLsrfuTUgbNrnG
-         qVlj5Likyz6ltR4p4GLS2UsxBy2kAIKlWQdPdx2WY+5peHOP173BkiIppxBJDcCf6siY
-         8oLw7BkRBxp82JDoqXqw+rRIFXsVmYj1qNgies7WpdLstzs06rXhEh3UkusYItbLYoM1
-         8Vq35hkVIjVUY1pzrKYrPn1QRGGJLqdyyq6Dr4+smRMN5JgGfqRANB9MndnPcVJ2cNAo
-         bIlbpPxfnuFVrj958q/tNzlXenYZVyGuVrpQ1jl+AMvRwuaSJnO//EYYqOYaBIsnFcCy
-         RToA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PGT3zZBITe/LWXQCMhqSdshUMMzhyWhRVp97Kizl7zw=;
+        b=ve7v04KxgBj3+YWB/sPKKYeAwhPuff5ROtGzgYXp8XRFG3VZ3AhF2q18SafpzoZLbn
+         dkyAebe1GvnHzsocxknJGYYHyrSLotXmR5Zf3rU7emsqtw4mVOlx6hW0hyo2YTiQjvDI
+         5UThyYavtHhA87j2BwDULh0AOcCpVH4mCnhxraECqHP9tYFfYW8hVi/yOY/8HAlsLDjh
+         oiUyzW99HKQ0k9KN+h+VTnjY4DbTLrL/ak6N3gqPbbfgWw5DhZ4tqHuoelqsTM0yZwsk
+         1lxc/HV/S2cFWMxetPnpmJ2X5Zpfk8lCadurL1UDaHE8KHU+D+dbpY+R/n2kxxB7Wufo
+         UeqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ggxXWX2QXeKOHI2GNezcaKGfjTo3F0HumEDmucHbcKU=;
-        b=dCCac4t0Zwo99+qCoi1GSHZMeYabzsxefDD9f5hvBptMLlzHBCHTYVJ1JpfLRKJikF
-         6chHz3RcCmcf3XX+c7eE5SyifiK/A/mu2C9xMlDpz5ycvCpxojcN5yIDEyU+0VsU4l9X
-         zJanreR/YRfurMAiFF++minmOklIpLNpcFVfK9RAV28Dm2i4D/Rk35w455z5Uabk+RGU
-         aS+F5FXfSCGFO/uBkvHWBZmZSu59EWL1B3JD4Ntcwm/8wM4cGG8BrJFQCBGVaAj8AbEY
-         J7dYnwLYGJkGQJd1JzochHk/27VQuLVAmvD+QqMjgCac6bCxbx3P2G+KPwIpJOS/8hk/
-         TeCg==
-X-Gm-Message-State: AOAM532DYBTgDMc33GYKHzoW/P2zdX2k/8VwNFCpF/TY70mOyxyC5NKP
-        5sz31NyVhZmrTuJ9trbCqCGnxmMDltW1ZSVp314Xwg==
-X-Google-Smtp-Source: ABdhPJyFYLg0pY5A3vHpb3QVG3rSrMn/8dfgfNJ49HdkutPZCssyf+r2LjSlfLaBQxtbcQlhygynUITYe4rplCbH6wc=
-X-Received: by 2002:a17:906:4791:: with SMTP id cw17mr34367375ejc.493.1637244429743;
- Thu, 18 Nov 2021 06:07:09 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PGT3zZBITe/LWXQCMhqSdshUMMzhyWhRVp97Kizl7zw=;
+        b=2MWTZuzh+5dgBiHLA08WKikmYqXsHh9DEWcoW+GFy1tBqzhoBBQt6re+7+/C6gkO/G
+         ZdQmuO6v7y6wq2sOCq4JBf6CAUvV9NsYRImpImAvU8lI8SMauzdqpZ1n4OKI67u7RLde
+         D+XYaZCcggGHVYuNPqKe/wubGlEKE1gQ6Lv3/Iu+/pLChhUrT/4d1ow7C9Q674mVA79z
+         +DtF0O54rUi+dX2QGr64NeH9AfbIkYsjYV2W5THyhReXxGjGHI3LP2Kf0GAOdSShD/V1
+         gHHCcFzvILGMxaVfEz4CcGC4B/OzNwmjLhe+QY5vOS28yPfzh/MKQyTipU5geLDJP6aW
+         Bl9g==
+X-Gm-Message-State: AOAM532JImjR86PYT8rxDi9xIFZmPQ3lSdm3j3shZuVWPqqHeYxEpI9g
+        FvgFhtflsXKIaJC3VO9+6mtGCg==
+X-Google-Smtp-Source: ABdhPJySk9up+d6zujaC7A6Ap/eUcdJjJDvIzKooJVC8PYjF52/J+133C9wbmnSLJLlTkhBGWZ2mQg==
+X-Received: by 2002:a05:620a:a45:: with SMTP id j5mr21033392qka.392.1637244485660;
+        Thu, 18 Nov 2021 06:08:05 -0800 (PST)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id n18sm1503314qtk.9.2021.11.18.06.08.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Nov 2021 06:08:05 -0800 (PST)
+Subject: Re: [PATCH] cpufreq: qcom-hw: Use optional irq API
+To:     Stephen Boyd <swboyd@chromium.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20211117020346.4088302-1-swboyd@chromium.org>
+ <76b103ec-7034-e6c1-1ab4-174cf16f9fc8@linaro.org>
+ <CAE-0n53HNSRTdADO1dbQTyLafyajUTatMq5tsLeNDLQ4g95YpA@mail.gmail.com>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <f1038a3e-57fb-ec01-26a0-452a11dfcf3a@linaro.org>
+Date:   Thu, 18 Nov 2021 09:08:04 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20211118081919.507743013@linuxfoundation.org>
-In-Reply-To: <20211118081919.507743013@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 18 Nov 2021 19:36:58 +0530
-Message-ID: <CA+G9fYuVuu2xffq33+x3CCpR1MW+U+kgaM5g6u=0sSFzbWOkAg@mail.gmail.com>
-Subject: Re: [PATCH 5.15 000/920] 5.15.3-rc4 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAE-0n53HNSRTdADO1dbQTyLafyajUTatMq5tsLeNDLQ4g95YpA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Nov 2021 at 13:56, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.15.3 release.
-> There are 920 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 20 Nov 2021 08:14:03 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.15.3-rc4.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.15.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+On 11/17/21 11:32 PM, Stephen Boyd wrote:
+> Quoting Thara Gopinath (2021-11-17 18:55:17)
+>> Hello Stephen,
+>>
+>> Thanks for the patch
+>>
+>> On 11/16/21 9:03 PM, Stephen Boyd wrote:
+>>> Use platform_get_irq_optional() to avoid a noisy error message when the
+>>> irq isn't specified. The irq is definitely optional given that we only
+>>> care about errors that are -EPROBE_DEFER here.
+>>>
+>>> Cc: Thara Gopinath <thara.gopinath@linaro.org>
+>>> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+>>> ---
+>>>    drivers/cpufreq/qcom-cpufreq-hw.c | 8 +++++---
+>>>    1 file changed, 5 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
+>>> index a2be0df7e174..b442d4983a22 100644
+>>> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
+>>> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+>>> @@ -382,9 +382,11 @@ static int qcom_cpufreq_hw_lmh_init(struct cpufreq_policy *policy, int index)
+>>>         * Look for LMh interrupt. If no interrupt line is specified /
+>>>         * if there is an error, allow cpufreq to be enabled as usual.
+>>>         */
+>>> -     data->throttle_irq = platform_get_irq(pdev, index);
+>>> -     if (data->throttle_irq <= 0)
+>>> -             return data->throttle_irq == -EPROBE_DEFER ? -EPROBE_DEFER : 0;
+>>> +     data->throttle_irq = platform_get_irq_optional(pdev, index);
+>>> +     if (data->throttle_irq == -ENXIO)
+>>> +             return 0;
+>>> +     if (data->throttle_irq < 0)
+>>> +             return data->throttle_irq;
+>>
+>> Here the idea is to return only -EPROBE_DEFER error. Else return a 0 ,
+>> so that cpufreq is enabled even if lmh interrupt is inaccessible. The
+>> above check returns errors other than -EPROBE_DEFER as well. So I would
+>> say make irq optional and keep the below check
+>>
+>> if (data->throttle_irq <= 0)
+>>          return data->throttle_irq == -EPROBE_DEFER ? -EPROBE_DEFER : 0;
+> 
+> I'd like to catch other errors, for example, DT has an irq specified
+> that is outside the range of irqs available. If the DT is correct, then
+> it will either have a valid irq and this will return a >= 0 value or
+> nothing will be specified and we'll get back -ENXIO now. Do you have
+> some scenario where my patch fails to work?
 
-## Build
-* kernel: 5.15.3-rc4
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.15.y
-* git commit: 6e3a56cbc9a1219bf26666c48c1270c344463a8c
-* git describe: v5.15.2-921-g6e3a56cbc9a1
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15=
-.2-921-g6e3a56cbc9a1
+Exactly. Like in the scenario you mentioned above, I do not want cpufreq 
+to be disabled. This interrupt is a throttle notification interrupt. The 
+action taken on basis of this is to send thermal pressure signal to 
+scheduler so that scheduler places tasks better. Even if the dt has 
+messed up this interrupt, I think cpufreq should still be enabled. May 
+be we can print a warn and still return 0 to enable cpufreq.
 
-## No regressions (compared to v5.15.2-924-g7c10b031cbb7)
+> 
 
-## No fixes (compared to v5.15.2-924-g7c10b031cbb7)
-
-## Test result summary
-total: 91324, pass: 77350, fail: 650, skip: 12475, xfail: 849
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 259 total, 259 passed, 0 failed
-* arm64: 37 total, 37 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 36 total, 36 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 34 total, 34 passed, 0 failed
-* parisc: 12 total, 12 passed, 0 failed
-* powerpc: 45 total, 42 passed, 3 failed
-* riscv: 24 total, 24 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 24 total, 24 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 37 total, 37 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Warm Regards
+Thara (She/Her/Hers)
