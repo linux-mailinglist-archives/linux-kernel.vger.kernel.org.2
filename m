@@ -2,304 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C20D455450
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 06:32:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7736455462
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 06:44:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243115AbhKRFfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 00:35:13 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:50118 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242431AbhKRFfF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 00:35:05 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 104871FD29;
-        Thu, 18 Nov 2021 05:32:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637213524; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rRGAu7bZdX3Ix9JjDYs+TM1bDyCbS8VjFB3i9fDpzso=;
-        b=IXTG1B1p8nOT82thsHAyS5xb/uvyMUF+0QWFgzFeMeEOQncgGDlEOmquzge0zR8s2xtz5A
-        ISfc9DongohcrZZLZ7YvoNQes5lhSh7McJRV1bEiY7eAGj4++zhEb2qYGIc7XCbdvAPzhG
-        +VRdQOmPPJQV8FEbq0BxqbCimwL9LTw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CBF9813CD1;
-        Thu, 18 Nov 2021 05:32:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id +JAKMFPllWGiGQAAMHmgww
-        (envelope-from <jgross@suse.com>); Thu, 18 Nov 2021 05:32:03 +0000
-To:     Stefano Stabellini <sstabellini@kernel.org>,
-        Jan Beulich <jbeulich@suse.com>
-Cc:     boris.ostrovsky@oracle.com, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>,
-        stable@vger.kernel.org
-References: <20211117021145.3105042-1-sstabellini@kernel.org>
- <2592121c-ed62-c346-5aeb-37adb6bb1982@suse.com>
- <alpine.DEB.2.22.394.2111171823160.1412361@ubuntu-linux-20-04-desktop>
-From:   Juergen Gross <jgross@suse.com>
-Subject: Re: [PATCH] xen: detect uninitialized xenbus in xenbus_init
-Message-ID: <44403efe-a850-b53b-785f-6f5c73eb2b96@suse.com>
-Date:   Thu, 18 Nov 2021 06:32:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S243136AbhKRFq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 00:46:59 -0500
+Received: from mail-mw2nam10on2124.outbound.protection.outlook.com ([40.107.94.124]:49248
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S243124AbhKRFq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 00:46:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iovsJHltHYipGNQiigWfb/Xy0PkSHrd4+E9FngJzXsLLizXwfIcsHLTy+EKGp+xHq6BneyK31sXihs5k6c7ZVTxdUKEN2YMQT1+Ka3hSSPHk6YiqgXxAZKBoakm6Pg0rUIYWTUzApt+1ckVkap2LkmRGXKklzLsmZ0pov0sAs45gKIVCDTymbXikwT6pLYKqOUN9mFdLspbJmMkHqGwglXjznr7yzGNLhX2Gy0y2BhO8kdYP+uLNhKn2J2bDLSFMGpof6MI28TDZE/OF1CJR7Ur7A6fowDNEo66JLaW6UJQETh2t4cVaBZyktJMgrz5kUhL6VLQ/IE3aUD4ZCNvmCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5c1w7LYaoCSbDg2ebgYAAc6JUyMONns9ZNRL3TYDAZA=;
+ b=jg7rgoAo5Zy+lKolQlZ+jY2ugzCpJ0Q10JSKIWWy0sivsNIo5wXIVO1fKgNtMENomdOBo6wymbvihwyGp6U7lum2LoDmhwDVsqGaUzjR1AoBXPc2vl8PWQpdBgmKZHJLlhjJylIXW5Ox2QyKE3d63rnxAUW811JI39G8ZJJ+k4iu7Mhrvo5tfuSAMAC64jWIdnEJSj5M3YqwaiYWYcOdoUDyJm4fAE9K6cBhRRI7QkUxowEoiJr/NrBP3D4V/FPwVdTt+G753J00tkxCqJ+nIoo+gIhqeaOLUF+5+hC8hfdtJaHs9ilkCRtlencXkodXuOe85hYyM43OXRg67JJl+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5c1w7LYaoCSbDg2ebgYAAc6JUyMONns9ZNRL3TYDAZA=;
+ b=vX4Z8FcNf85y8NX2STbN0TzLsQxH++vyUamI0dbHp6bPcJN0KM4+C/jY46UUbOv21sJEUX37ALQzzwyBRhXDOdPZksmWq7fgXpg4f0dwWbg5kAeymWPTciWSdaVsNwb6z+MwD3f07EqEIo+VXr7oM4iirNsj2wG/6twQl7b1mZ8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=analogixsemi.com;
+Received: from CH2PR04MB6741.namprd04.prod.outlook.com (2603:10b6:610:96::19)
+ by CH2PR04MB6710.namprd04.prod.outlook.com (2603:10b6:610:93::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21; Thu, 18 Nov
+ 2021 05:43:55 +0000
+Received: from CH2PR04MB6741.namprd04.prod.outlook.com
+ ([fe80::d062:2525:29dc:13df]) by CH2PR04MB6741.namprd04.prod.outlook.com
+ ([fe80::d062:2525:29dc:13df%7]) with mapi id 15.20.4713.021; Thu, 18 Nov 2021
+ 05:43:54 +0000
+Date:   Thu, 18 Nov 2021 13:43:46 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     Tzung-Bi Shih <tzungbi@google.com>
+Cc:     narmstrong@baylibre.com, dan.carpenter@oracle.com,
+        robert.foss@linaro.org, Laurent.pinchart@ideasonboard.com,
+        jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@linux.ie,
+        daniel@ffwll.ch, sam@ravnborg.org, pihsun@chromium.org,
+        maxime@cerno.tech, drinkcat@google.com, hsinyi@chromium.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        bliang@analogixsemi.com, qwen@analogixsemi.com
+Subject: Re: [PATCH] drm/bridge: anx7625: Check GPIO description to avoid
+ crash
+Message-ID: <20211118054346.GA3796880@anxtwsw-Precision-3640-Tower>
+References: <20211118031125.3778969-1-xji@analogixsemi.com>
+ <CA+Px+wUc8+5HtkS8y4b9aw7m+wLS+zC1em6VKRNog1QKnJrZ=Q@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+Px+wUc8+5HtkS8y4b9aw7m+wLS+zC1em6VKRNog1QKnJrZ=Q@mail.gmail.com>
+X-ClientProxiedBy: HK0PR03CA0107.apcprd03.prod.outlook.com
+ (2603:1096:203:b0::23) To CH2PR04MB6741.namprd04.prod.outlook.com
+ (2603:10b6:610:96::19)
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2111171823160.1412361@ubuntu-linux-20-04-desktop>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="29RVxVUJg63awUgJUSxsgmOlVhK4615qM"
+Received: from anxtwsw-Precision-3640-Tower (60.251.58.79) by HK0PR03CA0107.apcprd03.prod.outlook.com (2603:1096:203:b0::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend Transport; Thu, 18 Nov 2021 05:43:53 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f9c039a4-e390-4bbc-e352-08d9aa56684f
+X-MS-TrafficTypeDiagnostic: CH2PR04MB6710:
+X-Microsoft-Antispam-PRVS: <CH2PR04MB671096ECED6EB86C65DC621AC79B9@CH2PR04MB6710.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sFlf9Ft4V1RKm6ccDsnoYk3wrpAfIQq5rmI7/SBPezO6Nt1fCpo7RQUprmnBwkA5GlQ0QeBz2Y5VySqmVdIlzHW0DTeqacffgamdsOCNEni25q1+NjC8VaeWqQtMVccza+3fdvcvmoJbFtYXA10uXQ30vjim0PbyQc2AclQSDhFbHPEPk/fCThQRxeuTsmBM7XAVTo/O2++7la7k0+gGCamz3iMcYtpiFWEVc4HyhJlthVM/sjLCU2PSqFRB+2gskXyOGscps8fdOwkjo2FKw1KjojWZrC8mBOiNqoxzBUIAcVf2wXfKa6F6WLwUd1Z/XHVRnIkVnzZq5XUnTzxl1rcgMs0UMO39O5p/+X318mBiPzhMVunJWU9garviCh/a+ITUSCbrvdw6NIjTiJhCw35FfJ1YGt8b9VdbB4zuE8dn8uHSfd2W7AU13ARqIwyHrp0AbQOPeJvlMHdXEumBIXAah8+CT4UzamF3DVUXAZqdsLJrX2gA+P1qLw/tC8fGr9CpiwF+clrlG5HO8VqblRd2gOFQYIqo4YCl+rGlwhMdcTSv2BOiGu4WKYpL3Ra7ngWeDJNBos6zAcR/Zbw1KVQer2rKpuZ5u6y2LSsLoGIezbgCxBEvQgXMg7nASlDtAyrXvi8J0LA4nFH5gI0ceQIIRZCZVS5X1hrXztsT+lNT7efyAUuuJ7pBGS2i9EDo8oRDzRnQ5dfbfoD53r3SB4W22pxprUe/Yu4hk2EOcitDgnsKoh84CMOH/BdyAdSRVCIDIj9TRrRhwPafwg//DoWjjM9DPjBGjgw9TF43Nyk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR04MB6741.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(83380400001)(38100700002)(5660300002)(956004)(7416002)(6666004)(9686003)(55016002)(66476007)(1076003)(38350700002)(107886003)(66946007)(66556008)(26005)(186003)(6496006)(8936002)(4326008)(52116002)(966005)(8676002)(508600001)(33716001)(33656002)(2906002)(86362001)(316002)(45080400002)(53546011)(55236004)(6916009);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MeIV+gNDXuugK3GCXHE0KdR6fccTF9aI/zY7BbaK6sAx+RMbjuSuDLmECN/K?=
+ =?us-ascii?Q?no+Cl/AHWJN66O838nsItEp0lFK5WlEurtSrLvz29Y93PY6GtuBgDPSJFZ1y?=
+ =?us-ascii?Q?FBEpIut2Aac2K3U/dMB0lKX+iIr+u4jCk89Lnmsq3zwWEUwUr1bvXilyc61U?=
+ =?us-ascii?Q?Z1zOnIFGIFXEypiWLjp5EUBRVFmF8zCAb2VlbLSnhGoIBuuS64xBSx/jSVRM?=
+ =?us-ascii?Q?GsTbvUNDNXVq0qjfDlgtlz/VhmSoTtjgRB6N3wPV0bDTEl+QsDq8XzSgD1EI?=
+ =?us-ascii?Q?tmK84uh7gqKWZm/PRr4GzNptsMQQenLdD2PVGi+5VyY0GN+FtcyUQju98ssC?=
+ =?us-ascii?Q?8ueV+QoORhgvh0ZFk2X15YUjzZWpaE+2D4LKoF3R5YDlRqXOQGzs6Oc9Vt9c?=
+ =?us-ascii?Q?aXEGRKT3ubbmUeQ8rI4AGHUpDp9fCCZdGO6uXyuYdlYOhViNwqAyapnh2i0d?=
+ =?us-ascii?Q?j+DXAJV0IucivoALmmHF8/dINdtovpRTh9IzGCh7W0YA/mIX/052Dbt1HMir?=
+ =?us-ascii?Q?IuJwoSzd6cXx+usnHKOT5HLifzh0H6S0zD2rORguXhvadUDzthNVNL1iB0qm?=
+ =?us-ascii?Q?xiF/uUQ/tayjyfj9GxgE090Vxy23jqiu3lc3IqBnGKsKY0eebDd1hG2WyaWv?=
+ =?us-ascii?Q?jc1OFGfohIqKsUPiVxbVIsVz5mN/BDUspH0plmzA9Gh5YuIfYjUg8Rl9Uhtc?=
+ =?us-ascii?Q?NrI9i+MQrJNrlGeAHwM67Q3DSbCkLvtFFIsRUvN+imZtIl4eSLHKCOLKzLJI?=
+ =?us-ascii?Q?lz5Ouatog3qgrP88/1CCaL873HinQHx5ehJEMvxKusXBl3GLUwPpNz6c/XvD?=
+ =?us-ascii?Q?DLOKDWIkkVDPp0yDxxfNvadOGZioxtdXQdF7Y6gUx/JuAwsXD1Q9WA4MgjUL?=
+ =?us-ascii?Q?iFSB9J07eXHhTAfAJu9WAPKBDGsTuTE1W15Q8b0NiLzlrZSni3yACAcbxccL?=
+ =?us-ascii?Q?JWjRYPkj8Yycw9JB0fbjt+rVczYtwuXFPtQ/cfHbRoiHr2VROjrHAjPZW6cy?=
+ =?us-ascii?Q?92lacVo0+zgqe9yaHEybRnrt4z6Yka0TBBWExC8v4vFSSs2/Br96haWSjbvc?=
+ =?us-ascii?Q?9ldZOKVY+tQVy1yBxdqjA8oFuGAmILIgnMz/D0ljTUiVjtAI0xT5q/7B8bfE?=
+ =?us-ascii?Q?HT1SAndoEFGNHF47PBXwqo4gHO8+LEV77EF9Frw1vil9p8VKi1+9hGAibjZc?=
+ =?us-ascii?Q?GeJUBRoaU5ykMfo+g9aX1AoyIXnZywGPJVhlHd05HH5/RL7zKqem5BmOAjdj?=
+ =?us-ascii?Q?NLP+aeMW5eZzxUcjPwIue/80NCi8Qkamdo6iv3FnoeYPI0+NFBKND47DQB4d?=
+ =?us-ascii?Q?3px2gt/HJv72u+y2iAHZ5XcH69gYB9Wh5dnsCos47dw6HFaPP5ZRk1gitajY?=
+ =?us-ascii?Q?tDVEPyKAoprYkmBW/YrkAuDVuFcbBzv4Oe8YgLhce8MAYOdXh+TbIESLo6/+?=
+ =?us-ascii?Q?0S0ljFIHN4WDgT8W11mfr5Q98T6HuibvvkizzZj4JrRLokMYRVgM4BII9cyX?=
+ =?us-ascii?Q?qyDtkKBls0tl8qfhCLWoF9Fd/XDnq5qhDEVwBulqs1DO8rdTOeg5wLoRXfcW?=
+ =?us-ascii?Q?UxseAlZH22RK0btgEiFxvR9SuBWx1VtTEPbSaL3WkPyZ5gfsPwvMlqkv+Bg4?=
+ =?us-ascii?Q?Y4HNybVfKddpQqBQvOqrQVk=3D?=
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f9c039a4-e390-4bbc-e352-08d9aa56684f
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR04MB6741.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2021 05:43:54.6667
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PqaNfmik9uWgaAVqD/AzBHFgZv3MrP20KMGh2/ujcIzVxvMnWHpjeNUm9zUu3OS17Ez4iU66cuq8KraK8IMIVg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR04MB6710
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---29RVxVUJg63awUgJUSxsgmOlVhK4615qM
-Content-Type: multipart/mixed; boundary="nSHzhRpesfpXITYpkJ2xhm90WcK6GlkeW";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Stefano Stabellini <sstabellini@kernel.org>,
- Jan Beulich <jbeulich@suse.com>
-Cc: boris.ostrovsky@oracle.com, xen-devel@lists.xenproject.org,
- linux-kernel@vger.kernel.org,
- Stefano Stabellini <stefano.stabellini@xilinx.com>, stable@vger.kernel.org
-Message-ID: <44403efe-a850-b53b-785f-6f5c73eb2b96@suse.com>
-Subject: Re: [PATCH] xen: detect uninitialized xenbus in xenbus_init
-References: <20211117021145.3105042-1-sstabellini@kernel.org>
- <2592121c-ed62-c346-5aeb-37adb6bb1982@suse.com>
- <alpine.DEB.2.22.394.2111171823160.1412361@ubuntu-linux-20-04-desktop>
-In-Reply-To: <alpine.DEB.2.22.394.2111171823160.1412361@ubuntu-linux-20-04-desktop>
+On Thu, Nov 18, 2021 at 12:52:14PM +0800, Tzung-Bi Shih wrote:
+> On Thu, Nov 18, 2021 at 11:11 AM Xin Ji <xji@analogixsemi.com> wrote:
+> > @@ -1098,9 +1098,18 @@ static void anx7625_init_gpio(struct anx7625_data *platform)
+> >         /* Gpio for chip power enable */
+> >         platform->pdata.gpio_p_on =
+> >                 devm_gpiod_get_optional(dev, "enable", GPIOD_OUT_LOW);
+> > +       if (IS_ERR(platform->pdata.gpio_p_on)) {
+> > +               DRM_DEV_DEBUG_DRIVER(dev, "no enable gpio found\n");
+> > +               platform->pdata.gpio_p_on = NULL;
+> > +       }
+> > +
+> >         /* Gpio for chip reset */
+> >         platform->pdata.gpio_reset =
+> >                 devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
+> > +       if (IS_ERR(platform->pdata.gpio_reset)) {
+> > +               DRM_DEV_DEBUG_DRIVER(dev, "no reset gpio found\n");
+> > +               platform->pdata.gpio_p_on = NULL;
+> > +       }
+> >
+> >         if (platform->pdata.gpio_p_on && platform->pdata.gpio_reset) {
+> >                 platform->pdata.low_power_mode = 1;
+> 
+> devm_gpiod_get_optional() is possible to return NULL (see
+> https://nam10.safelinks.protection.outlook.com/?url=https%3A%2F%2Felixir.bootlin.com%2Flinux%2Fv5.15.2%2Fsource%2Fdrivers%2Fgpio%2Fgpiolib-devres.c%23L250&amp;data=04%7C01%7Cxji%40analogixsemi.com%7C40e84a44676149c2544a08d9aa4f37f0%7Cb099b0b4f26c4cf59a0fd5be9acab205%7C0%7C0%7C637728079481953910%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=2UPuAadtM%2FObwkwE6fLhJr7uCfWN%2Fr29o4t8uqUU2Ls%3D&amp;reserved=0).
+> Thus, we should use IS_ERR_OR_NULL for checking the return value.
+Hi Tzung-Bi Shih, IS_ERR_OR_NULL is better, I'll use it.
 
---nSHzhRpesfpXITYpkJ2xhm90WcK6GlkeW
-Content-Type: multipart/mixed;
- boundary="------------AC4F40E86C19AA84FCDD6900"
-Content-Language: en-US
-
-This is a multi-part message in MIME format.
---------------AC4F40E86C19AA84FCDD6900
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 18.11.21 03:37, Stefano Stabellini wrote:
-> On Wed, 17 Nov 2021, Jan Beulich wrote:
->> On 17.11.2021 03:11, Stefano Stabellini wrote:
->>> --- a/drivers/xen/xenbus/xenbus_probe.c
->>> +++ b/drivers/xen/xenbus/xenbus_probe.c
->>> @@ -951,6 +951,18 @@ static int __init xenbus_init(void)
->>>   		err =3D hvm_get_parameter(HVM_PARAM_STORE_PFN, &v);
->>>   		if (err)
->>>   			goto out_error;
->>> +		/*
->>> +		 * Uninitialized hvm_params are zero and return no error.
->>> +		 * Although it is theoretically possible to have
->>> +		 * HVM_PARAM_STORE_PFN set to zero on purpose, in reality it is
->>> +		 * not zero when valid. If zero, it means that Xenstore hasn't
->>> +		 * been properly initialized. Instead of attempting to map a
->>> +		 * wrong guest physical address return error.
->>> +		 */
->>> +		if (v =3D=3D 0) {
->>> +			err =3D -ENOENT;
->>> +			goto out_error;
->>> +		}
->>
->> If such a check gets added, then I think known-invalid frame numbers
->> should be covered at even higher a priority than zero.
->=20
-> Uhm, that's a good point. We could check for 0 and also ULONG_MAX
->=20
->=20
->> This would, for example, also mean to ...
->>
->>>   		xen_store_gfn =3D (unsigned long)v;
->>
->> ... stop silently truncating a value here.
->=20
-> Yeah, it can only happen on 32-bit but you have a point.
->=20
->=20
->> By covering them we would then have the option to pre-fill PFN params
->> with, say, ~0 in the hypervisor (to clearly identify them as invalid,
->> rather than having to guess at the validity of 0). I haven't really
->> checked yet whether such a change would be compatible with existing
->> software ...
->=20
-> I had the same idea. I think the hvm_params should be initialized to an=
-
-> invalid value in Xen. But here in Linux we need to be able to cope with=
-
-> older Xen versions too so it still makes sense to check for zero in
-> places where it is very obviously incorrect (HVM_PARAM_STORE_PFN).
->=20
->=20
-> What do you think of the appended?
->=20
->=20
->=20
-> diff --git a/drivers/xen/xenbus/xenbus_probe.c b/drivers/xen/xenbus/xen=
-bus_probe.c
-> index 94405bb3829e..04558d3a5562 100644
-> --- a/drivers/xen/xenbus/xenbus_probe.c
-> +++ b/drivers/xen/xenbus/xenbus_probe.c
-> @@ -951,6 +951,28 @@ static int __init xenbus_init(void)
->   		err =3D hvm_get_parameter(HVM_PARAM_STORE_PFN, &v);
->   		if (err)
->   			goto out_error;
-> +		/*
-> +		 * Return error on an invalid value.
-> +		 *
-> +		 * Uninitialized hvm_params are zero and return no error.
-> +		 * Although it is theoretically possible to have
-> +		 * HVM_PARAM_STORE_PFN set to zero on purpose, in reality it is
-> +		 * not zero when valid. If zero, it means that Xenstore hasn't
-> +		 * been properly initialized. Instead of attempting to map a
-> +		 * wrong guest physical address return error.
-> +		 */
-> +		if (v =3D=3D 0) {
-
-Make this "if (v =3D=3D ULONG_MAX || v=3D=3D 0)" instead?
-This would result in the same err on a new and an old hypervisor
-(assuming we switch the hypervisor to init params with ~0UL).
-
-> +			err =3D -ENOENT;
-> +			goto out_error;
-> +		}
-> +		/*
-> +		 * ULONG_MAX is invalid on 64-bit because is INVALID_PFN.
-> +		 * On 32-bit return error to avoid truncation.
-> +		 */
-> +		if (v >=3D ULONG_MAX) {
-> +			err =3D -EINVAL;
-> +			goto out_error;
-> +		}
-
-Does it make sense to continue the system running in case of
-truncation? This would be a 32-bit guest with more than 16TB of RAM
-and the Xen tools decided to place the Xenstore ring page above the
-16TB boundary. This is a completely insane scenario IMO.
-
-A proper panic() in this case would make diagnosis of that much
-easier (me having doubts that this will ever be hit, though).
-
-
-Juergen
-
---------------AC4F40E86C19AA84FCDD6900
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------AC4F40E86C19AA84FCDD6900--
-
---nSHzhRpesfpXITYpkJ2xhm90WcK6GlkeW--
-
---29RVxVUJg63awUgJUSxsgmOlVhK4615qM
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmGV5VMFAwAAAAAACgkQsN6d1ii/Ey+m
-2wf9GyRRXxpr7aSCaqm3ovd4UF8HOBo0CnBk+Ti67Vjan76QfABYXOAHc42WfBqnSyIBqOSu7jfc
-gTasNsMIuW0UIBP+3/PxkxQDsEH/lH5PhP981gubpBybw5kmZUkBjciYyxC0SJltFpr/PxR3naq9
-LYx9p5LvjLKISEE0Ti2IKWKnNFw8Y4Wvuvi7T8+kKkChe2wmF/++ZuxtZ0QLENVcNy0K4wmObbDK
-K8SbtprmzIk7go564BEW8quvdvyryv72kQq2jO8mcRKUmyixvxRkzSK5D1n5vojDjZKysO2ZIHTf
-kc38gS1aN61mdkjZD9DrpeduE/5hHnxe+Rw1paAp7g==
-=HByG
------END PGP SIGNATURE-----
-
---29RVxVUJg63awUgJUSxsgmOlVhK4615qM--
+Thanks,
+Xin
+> 
+> The cases here would work fine except it will skip to print some
+> informative messages.
+> 
+> Acked-by: Tzung-Bi Shih <tzungbi@google.com>
