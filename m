@@ -2,153 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5BE345585D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:54:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 211A945585F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:55:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245341AbhKRJ5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 04:57:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37420 "EHLO
+        id S245270AbhKRJ6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 04:58:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245334AbhKRJ4Z (ORCPT
+        with ESMTP id S245410AbhKRJ5e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 04:56:25 -0500
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD08C061208
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 01:53:25 -0800 (PST)
-Received: by mail-ua1-x929.google.com with SMTP id o1so12368289uap.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 01:53:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JY0UXmr3zp8U/NJuIhRPM0TLPJ/m8rx39/0IZd280GU=;
-        b=LSqC4wUQa8ABy11DMBygmQnI2lohiG0AjBOTAwhE64lMX6lHxg9/EARkmHZhPydwTn
-         6tZUC0rHH5c8DCKJUghtg/zdWkytXs6k2cDXV9TuZkVuQCTmVwOnZaQOrNaGlwz3d6sY
-         V0IJcupqGE5CMSctMs5GgKWaU7ip4N/ixmGOvc6UDLl9re0sf3dGvdGMqma7YTVdxVAZ
-         8rB/iDNfTNSO+pkSk7akif/naGQ2yybN7C6sVIvW2wVZR0v8MnNO1UJutVuZcxlr7aNr
-         ri4oN0IJRhTT1B1bYwQaJ1P0AcY3SIGrFpvySXa8bmroTJmYFtTyMDgodobuWMqpSiIc
-         cnWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JY0UXmr3zp8U/NJuIhRPM0TLPJ/m8rx39/0IZd280GU=;
-        b=Bt2CmS0EvzrFU+Z6bsbH1iRq9NXayyP2BNVNBhg7POK3RMMHuYwMtyYxEYuwToIkBv
-         M2fC7u4iApGLjPk2z4tkOcUj6GLn6pvWl0efCNrQRakXgA4ZfRY9/8vlzM5fQ4TyqHh1
-         FqmRPqqCAGcDttKOfwIl3roxH4FL9bWbXn1B9kIUFzK91rW5t+r1VK1DLmNAX1V2lTf3
-         QmdTxpYYr3D5VAssb9qaWSuJZOVBuzfQoMK5bdesy2KYhnspbb4CEiRIo7R7S5FCOqyK
-         UprmlNE7mJfd9jAtUlCjwRn/rxdjdYm/byPYorbjrQZMx7Eiqc8YoTEPBxfS08Y21jtH
-         WERA==
-X-Gm-Message-State: AOAM533X9lUDofL8JdZEa1vqK1mV6TIkn4J9spjqnYAMFzO2pw2S62db
-        LIp7Ckx2iHMQNuChEEWOTK+9FERQlHNG+DMI8dspWw==
-X-Google-Smtp-Source: ABdhPJwy0TUrPwUxvXKivmCrLAfaniiw5vp4PgG8EaXUJC1b6K6X/jKTsJBRBD29IEgpt9YxtTuvgfeAYx2mw+dE9L0=
-X-Received: by 2002:a05:6102:5109:: with SMTP id bm9mr77713653vsb.10.1637229204491;
- Thu, 18 Nov 2021 01:53:24 -0800 (PST)
+        Thu, 18 Nov 2021 04:57:34 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3FAC06120C
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 01:54:33 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mne7i-0003yE-ID; Thu, 18 Nov 2021 10:54:30 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mne7f-000OTo-OI; Thu, 18 Nov 2021 10:54:27 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mne7d-0008SV-T7; Thu, 18 Nov 2021 10:54:25 +0100
+Date:   Thu, 18 Nov 2021 10:54:18 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     cgel.zte@gmail.com
+Cc:     alexandre.belloni@bootlin.com, deng.changcheng@zte.com.cn,
+        lee.jones@linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
+        ludovic.desroches@microchip.com, nicolas.ferre@microchip.com,
+        thierry.reding@gmail.com, zealci@zte.com.cn
+Subject: Re: [PATCH V3] pwm: Use div64_ul instead of do_div
+Message-ID: <20211118095418.mfodz4ubde5qsx57@pengutronix.de>
+References: <20211117145419.b4wb6zp42rjdpgn5@pengutronix.de>
+ <20211118025254.163231-1-deng.changcheng@zte.com.cn>
 MIME-Version: 1.0
-References: <20211117015806.2192263-1-dvander@google.com> <CAOQ4uxjjapFeOAFGLmsXObdgFVYLfNer-rnnee1RR+joxK3xYg@mail.gmail.com>
-In-Reply-To: <CAOQ4uxjjapFeOAFGLmsXObdgFVYLfNer-rnnee1RR+joxK3xYg@mail.gmail.com>
-From:   David Anderson <dvander@google.com>
-Date:   Thu, 18 Nov 2021 01:53:13 -0800
-Message-ID: <CA+FmFJBDwt52Z-dVGfuUcnRMiMtGPhK4cCQJ=J_fg0r3x-b6ng@mail.gmail.com>
-Subject: Re: [PATCH v19 0/4] overlayfs override_creds=off & nested get xattr fix
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Mark Salyzyn <salyzyn@android.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        John Stultz <john.stultz@linaro.org>,
-        linux-doc@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>, selinux@vger.kernel.org,
-        paulmoore@microsoft.com, luca.boccassi@microsoft.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7kouj4zcq22bjk3w"
+Content-Disposition: inline
+In-Reply-To: <20211118025254.163231-1-deng.changcheng@zte.com.cn>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 11:36 PM Amir Goldstein <amir73il@gmail.com> wrote:
-> Hi David,
->
-> I see that the patch set has changed hands (presumably to Android upstreaming
-> team), but you just rebased v18 without addressing the maintainers concerns [1].
 
-Indeed I'm carrying this forward as Mark is no longer working on it.
-My apologies for
-missing those comments!
+--7kouj4zcq22bjk3w
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Specifically, the patch 2/4 is very wrong for unprivileged mount and
-> I think that the very noisy patch 1/4 could be completely avoided:
-> Can't you use -o userxattr mount option for Android use case and limit
-> the manipulation of user.ovrelay.* xattr based on sepolicy for actors
-> that are allowed
-> to make changes in overlayfs mount? or not limit at all?
-> The access to those xattr is forbidden via "incoming" xattr ops on
-> overlay inodes.
+On Thu, Nov 18, 2021 at 02:52:54AM +0000, cgel.zte@gmail.com wrote:
+> From: Changcheng Deng <deng.changcheng@zte.com.cn>
+>=20
+> do_div() does a 64-by-32 division. Here the divisor is an unsigned long
+> which on some platforms is 64 bit wide. So use div64_ul instead of do_div
+> to avoid a possible truncation.
+>=20
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-Can you clarify a bit more? The patch is definitely super noisy and I'd love
-to have a better solution. The problem it's trying to solve is:
- 1. Kernel-privileged init mounts /mnt/blah-lower and /mnt/blah-upper.
- 2. Kernel-privileged init mounts /blah with overlayfs using the above dirs.
- 2. Kernel-privileged init loads sepolicy off /blah/policy. Enforcing begins.
- 3. Kernel-privileged init tries to execute /blah/init to initiate a
-domain transition.
- 4. exec() fails because the overlayfs mounter creds (kernel domain) does
-     not have getxattr permission to /blah/init.
+There is no S-o-b line matching the mail sender.
 
-Eg, we're hitting this problem without even making changes to the mount, and
-without anything being written to /mnt/blah-upper.
+Best regards
+Uwe
 
-> Can an unprivileged user create an overlay over a directory that they have
-> access to and redirect an innocent looking file name to an underlying file that
-> said the mounting user has no access to and by doing that, tricking a privileged
-> user to modify the innocent looking file on the  mounter's behalf?
-> Of course this could be avoided by forbidding unprivileged mount with
-> override_creds=off, but there could be other scenarios, so a clear model
-> would help to understand the risks.
->
-> For example:
-> If user 1 was able to read in lower dir A, now the content of overlay dir A
-> is cached and user 2, that has permissions to read upper dir A and does
-> not have read permissions on lower dir A will see the content of lower dir A.
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-I'll need to think about this more and test to verify. It's not a scenario that
-would come up in our use case (both dirs effectively have the same permissions).
+--7kouj4zcq22bjk3w
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If the answer is "yes, that can happen" - do you see this as a problem of
-clarifying the model, or a problem of fixing that loophole?
+-----BEGIN PGP SIGNATURE-----
 
->> I think that the core problem with the approach is using Non-uniform
-> credentials to access underlying layers. I don't see a simple way around
-> a big audit that checks all those cases, but maybe I'm missing some quick
-> shortcut or maybe your use case can add some restrictions about the
-> users that could access this overlay that would simplify the generic problem.
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGWIsUACgkQwfwUeK3K
+7AkZ5Qf9HR7iISiYdJZ8YBH614+DPXIpNQoQGAMYpBT/IMDvHXQGKwLZwDr4tje4
++vgghB4LPVcApwDENj78/nnJAkSCtYnoSPKk0b3YR9CBEIviBbbJLWLENtNk1hlW
+EaLOf4cs9PF1Or/zfllcRw9fpjVpd4DUtfYfLwOM7ktiYMqem30NQ8GNQalCPcOa
+DCWaVwBp/6Dl3QBxnKKoZSFbpT+WinrbVOb6gtDETANXcDe6BSe0SeyhRM+umoQ6
+UA8GcslIzt+exZ9qDbgMA4myrnQSyD7pSeEI0FhLPVly06RVhA2H3/2HQB0McYsS
+/99h9TRhwJqUhzzvk8cP0B0v66V7mw==
+=2WhT
+-----END PGP SIGNATURE-----
 
-In a security model like ours, I think there's no way around it, that
-we really need
-accesses to be from the caller's credentials and not the mounter's. It's even
-worse than earlier iterations of this patch perhaps let on: we mount
-before sepolicy
-is loaded (so we can overlay the policy itself), and thus the
-mounter's creds are
-effectively "the kernel". This domain is highly restricted in our
-sepolicy for obvious
-reasons. There's no way our security team will let us unrestrict it.
-
-Best,
-
--David
-
-
-
-
->
-> Thanks,
-> Amir.
->
-> [1] https://lore.kernel.org/linux-unionfs/CAJfpegtMoD85j5namV592sJD23QeUMD=+tq4SvFDqjVxsAszYQ@mail.gmail.com/
+--7kouj4zcq22bjk3w--
