@@ -2,132 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED2DC456199
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:37:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 184BD45619B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:37:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234155AbhKRRkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 12:40:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234098AbhKRRkF (ORCPT
+        id S231264AbhKRRkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 12:40:35 -0500
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:43841 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229597AbhKRRke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 12:40:05 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB759C061748
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:37:04 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so6356021pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:37:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=y6JG8t+9/4oW2UNmN7dKbz4GRgFS2eQMvm+xiLNfXHc=;
-        b=e4Wjrj7DLSd4a2YD6Nm6tCYLhb+dDkXTgVSPv5j8hlt2HW3kihvhx9KMbj3m30tihB
-         OtrrQmz4iEVmErJyMO7QQgD/Dv1Q+gjYoiEv+qNiPVDAjaIykVmEE28y9jVTra6Hf1Af
-         r0voEroSpcHGkunCrJ1o6s/wdGcMOXBjlJOe8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=y6JG8t+9/4oW2UNmN7dKbz4GRgFS2eQMvm+xiLNfXHc=;
-        b=Zvz8OVGGX54mJRP7cBf4L+CDizYz0opr5DkmhwmyaTPnYFzqeR/2+dvmIVVFYOvJ2m
-         Dfky4MJn1S6CK2R2Cl0l//4wBECE1CalcUoCv8PlNNe7nCH/G8bqoOzIaDuScLiRkTcS
-         4E4rTQye/fYwbd68A6Rzag/1QgOPf2d0jAPuN2e3L/t3C3fB1MW0mvh5OubwahDd7mg5
-         L/0hmdWLCpNAJOLsNoMcyM7VXbJb3saNdqxATRElvU6WgaSmi/do11veegRZBfjQB0EZ
-         FHGMuWuuvsePdLNesOJsl+wXlf69Dnanx2/4+cES/64uqROrfxd/ZvHb/KTU+c0vWYit
-         f6ow==
-X-Gm-Message-State: AOAM532hT5GDzWFitggFq60n/uPM81mFnmJrXUv+4whGI48YtYxG87Nd
-        u2HVe+5EZcUPExwXG3BZoYLAKg==
-X-Google-Smtp-Source: ABdhPJwz/SCMC1A/H+aQ5Qi8UQ+2A92EEqkr1i9U9wbEjc2GAiyfw6LUpHMj9IhIWbrkaDafzAmexA==
-X-Received: by 2002:a17:902:7797:b0:143:88c3:7ff1 with SMTP id o23-20020a170902779700b0014388c37ff1mr67380354pll.22.1637257024390;
-        Thu, 18 Nov 2021 09:37:04 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j18sm221300pgi.39.2021.11.18.09.37.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 09:37:04 -0800 (PST)
-Date:   Thu, 18 Nov 2021 09:37:03 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Andrea Righi <andrea.righi@canonical.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/seccomp: fix check of fds being assigned
-Message-ID: <202111180933.BE5101720@keescook>
-References: <20211115165227.101124-1-andrea.righi@canonical.com>
+        Thu, 18 Nov 2021 12:40:34 -0500
+Received: from [77.244.183.192] (port=64292 helo=[192.168.178.41])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1mnlLp-000BON-01; Thu, 18 Nov 2021 18:37:33 +0100
+Subject: Re: [PATCH] media: i2c: imx274: implement enum_mbus_code
+To:     Eugen.Hristev@microchip.com, sakari.ailus@linux.intel.com
+Cc:     leonl@leopardimaging.com, linux-media@vger.kernel.org,
+        skomatineni@nvidia.com, linux-kernel@vger.kernel.org
+References: <20211118154009.307430-1-eugen.hristev@microchip.com>
+ <fa26e991-9228-7ed7-833a-b296e6b32afc@lucaceresoli.net>
+ <YZaMtGhqaXIOLhox@paasikivi.fi.intel.com>
+ <aff9c675-cd7b-ef11-d337-c5c3de9b921a@microchip.com>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <65d864d8-8c28-cf8e-43bf-a5a4c4dc11f7@lucaceresoli.net>
+Date:   Thu, 18 Nov 2021 18:37:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211115165227.101124-1-andrea.righi@canonical.com>
+In-Reply-To: <aff9c675-cd7b-ef11-d337-c5c3de9b921a@microchip.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 05:52:27PM +0100, Andrea Righi wrote:
-> There might be an arbitrary free open fd slot when we run the addfd
-> sub-test, so checking for progressive numbers of file descriptors
-> starting from memfd is not always a reliable check and we could get the
-> following failure:
+Hi,
+
+On 18/11/21 18:34, Eugen.Hristev@microchip.com wrote:
+> On 11/18/21 7:26 PM, Sakari Ailus wrote:
+>> Hi Luca,
+>>
+>> On Thu, Nov 18, 2021 at 06:11:35PM +0100, Luca Ceresoli wrote:
+>>> Hi Eugen,
+>>>
+>>> On 18/11/21 16:40, Eugen Hristev wrote:
+>>>> Current driver supports only SRGGB 10 bit RAW bayer format.
+>>>> Add the enum_mbus_code implementation to report this format supported.
+>>>>
+>>>>   # v4l2-ctl -d /dev/v4l-subdev3 --list-subdev-mbus-codes
+>>>> ioctl: VIDIOC_SUBDEV_ENUM_MBUS_CODE (pad=0)
+>>>>          0x300f: MEDIA_BUS_FMT_SRGGB10_1X10
+>>>>   #
+>>>>
+>>>> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+>>>
+>>> Generally OK, but I have a few minor comments.
+>>>
+>>>> ---
+>>>>   drivers/media/i2c/imx274.c | 14 ++++++++++++++
+>>>>   1 file changed, 14 insertions(+)
+>>>>
+>>>> diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
+>>>> index 2e804e3b70c4..25a4ef8f6187 100644
+>>>> --- a/drivers/media/i2c/imx274.c
+>>>> +++ b/drivers/media/i2c/imx274.c
+>>>> @@ -1909,7 +1909,21 @@ static int imx274_set_frame_interval(struct stimx274 *priv,
+>>>>      return err;
+>>>>   }
+>>>>
+>>>> +static int imx274_enum_mbus_code(struct v4l2_subdev *sd,
+>>>> +                            struct v4l2_subdev_state *sd_state,
+>>>> +                            struct v4l2_subdev_mbus_code_enum *code)
+>>>> +{
+>>>> +   if (code->index > 0)
+>>>> +           return -EINVAL;
+>>>
+>>> Many driver do check code->pad too, so you might want to do
+>>>
+>>>        if (code->pad > 0 || code->index > 0)
+>>>                return -EINVAL;
+>>
+>> The caller will have checked the pad exists, and there's a single one on
+>> the subdev I suppose.
+>>
+>>>
+>>> However I don't think it is strictly necessary, thus
+>>>
+>>>> +
+>>>> +   /* only supported format in the driver is Raw 10 bits SRGGB */
+>>>> +   code->code = MEDIA_BUS_FMT_SRGGB10_1X10;
+>>>
+>>> Maybe better:
+>>>
+>>>    code->code =  to_imx274(sd)->format.code
+>>
+>> Good idea.
 > 
->   #  RUN           global.user_notification_addfd ...
->   # seccomp_bpf.c:3989:user_notification_addfd:Expected listener (18) == nextfd++ (9)
-
-What injected 9 extra fds into this test?
-
->   # user_notification_addfd: Test terminated by assertion
+> Hi,
 > 
-> Simply check if memfd and listener are valid file descriptors and start
-> counting for progressive file checking with the listener fd.
-
-Hm, so I attempted to fix this once already:
-93e720d710df ("selftests/seccomp: More closely track fds being assigned")
-so I'm not sure the proposed patch really improves it in the general
-case.
-
-> Fixes: 93e720d710df ("selftests/seccomp: More closely track fds being assigned")
-> Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
-> ---
->  tools/testing/selftests/seccomp/seccomp_bpf.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+> Initially I thought about this, but my idea was to keep it simple.
+> If we return format.code, we are not enumerating anything, just 
+> returning the current format and that's it.
 > 
-> diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> index d425688cf59c..4f37153378a1 100644
-> --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-> +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> @@ -3975,18 +3975,17 @@ TEST(user_notification_addfd)
->  	/* There may be arbitrary already-open fds at test start. */
->  	memfd = memfd_create("test", 0);
->  	ASSERT_GE(memfd, 0);
-> -	nextfd = memfd + 1;
->  
->  	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
->  	ASSERT_EQ(0, ret) {
->  		TH_LOG("Kernel does not support PR_SET_NO_NEW_PRIVS!");
->  	}
->  
-> -	/* fd: 4 */
->  	/* Check that the basic notification machinery works */
->  	listener = user_notif_syscall(__NR_getppid,
->  				      SECCOMP_FILTER_FLAG_NEW_LISTENER);
-> -	ASSERT_EQ(listener, nextfd++);
-> +	ASSERT_GE(listener, 0);
-> +	nextfd = listener + 1;
-
-e.g. if there was a hole in the fd map for memfd, why not listener too?
-
-Should the test dup2 memfd up to fd 100 and start counting there or
-something? What is the condition that fills the fds for this process?
-
--Kees
-
->  
->  	pid = fork();
->  	ASSERT_GE(pid, 0);
-> -- 
-> 2.32.0
+> If we want to be correct, I would rather add a struct with supported 
+> formats(currently just one ) and iterate through this structure.
 > 
+> If in the future we want to support more formats (I see this sensor 
+> could support SRGGB 12 bits ), then it would support 2 formats, and 
+> returning priv->format.code would be incorrect here (it would be correct 
+> for a g_fmt only )
+> 
+> So, how do you think I should proceed ?
+> 1/ Create a struct with a single element and iterate through it
+
+I dislike adding complexity (albeit small) that adds no features. Let's
+leave this idea to the day somebody adds another format.
+
+> 2/ Leave it like this and always return SRGGB10
+> 3/ Do like Luca suggests and return format.code (which I am personally 
+> against )
+
+No strong preference between 2 and 3.
 
 -- 
-Kees Cook
+Luca
