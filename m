@@ -2,106 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8061A4566C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 00:58:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 468DA4566CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 01:00:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233355AbhKSABc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 19:01:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33356 "EHLO
+        id S231546AbhKSADD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 19:03:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230477AbhKSABb (ORCPT
+        with ESMTP id S230315AbhKSADD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 19:01:31 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0804C06173E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 15:58:30 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id c4so7711447pfj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 15:58:30 -0800 (PST)
+        Thu, 18 Nov 2021 19:03:03 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E1BC061574;
+        Thu, 18 Nov 2021 16:00:02 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id y13so34470341edd.13;
+        Thu, 18 Nov 2021 16:00:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9WkN4HKXuKYbFciD1zZtiqVWPD50CNCY9jlNGzee/uw=;
-        b=qrO2wcdt1faJZaDnJbYZRzsdKDdVdTc2K/Q8VGgqOZpv5ePN4i5qAlnQCzYV/E1W1N
-         kyqG0nBAvNIwmOkCZdc7bZ1rpvMjW7OgP6LSA6b+fpBjF1k1d6+krF3Kt5hAmxw05XlH
-         If6DvQA16yH3QpGEA3YSYbS3N99chxAe+LoqKyll3EFfP7WWqfOeHgYoolaOJhbOxuz7
-         g7gOtc1fKeHiu6/afTCtGfYP/TsnR4wzkjRwDbyWYw1SEBxyKs4J8d7yjc5Vvs/PoJEH
-         XjRZUK92nR/JIvYfTSRVQBFC+O8VGpyuYe89pYrRJ+hwNv4VwujZU0d/q6UOyW6Ixbg9
-         zbcQ==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=M1g96wvk2fScmlQSqAqL2X6S00BnYHNLyt+afv0QIyo=;
+        b=f4hMsNyqdGbMXPCmS7JBsFq5cINp+XBRNmd+Ngv+5KFE8Cts4wsg8Cph4EUvQHOxjm
+         WpLQx/zxTxK58pk7EDJtnn6cY0jBbMeS8wCyKd9AwOfaijBLuO211kp1Zg0izgyO7IfG
+         tMs7cUFxYE6Awm8qjPO6VoJ0EOFZGymjcDVlTttVw+hbKDwPwdYjFRaqhpKVaWVNT0Rs
+         NktUwqVisrFf6fCgDgklOfwWga2KLZQ2OLwmf1YBTxveujJTGrIv4rJZx24KG8v8XUUz
+         yIUFuK1nRr/t972kNf8R9AFKw1NmdITTR2Vn4T57sOQlKzxXDE67bzAAQm0aFp0xEH3V
+         4vAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9WkN4HKXuKYbFciD1zZtiqVWPD50CNCY9jlNGzee/uw=;
-        b=3jO/D1z+X6rMFg2wzzzJPEUPalNQ/KDo/ULtztJw3xQLXkqw37JZak5W3oTJ610CL5
-         Y/ceq62zlmGjheAhI1cv/AVayUoezCNhl/ZSHJaeQtJrC39yy4/rRCRmOe13k6xO1Kr4
-         tsqP9gNnPymJQ1NumURvycbCLVP+/JMFOFaV2RtfGjEda+I/206famgE2tE6Ngm1t5KC
-         kRJDiZeYUmB5fFioM6aABqk6WlZ+xLBlaCvQwvNLLS5DjoQRCJCFrKI0Y4/N7vH9vChK
-         sbZTLYnAb/LVgRsBA3o+RAsuKAJaJLK/hjEdzGPjv97GT2+02DfF3liKHhXwmNp9dy0i
-         b/8w==
-X-Gm-Message-State: AOAM5308lvFcLAJk2H/gSvoGkFZblJ1nPtnz87mR78Qzz1shxzILLkBg
-        5BmhTmtFBYp8lMW4SDZtzDhBBIR6Zv8uUg==
-X-Google-Smtp-Source: ABdhPJwRZiJZb3NbkmAdoQ5A+L6PoE6jT0vR3ZTTdIvSEpKR9s9kX013IkpCvc500C8TS0vhWSIJhw==
-X-Received: by 2002:a63:6ece:: with SMTP id j197mr13929977pgc.11.1637279910401;
-        Thu, 18 Nov 2021 15:58:30 -0800 (PST)
-Received: from localhost.localdomain ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id b8sm685811pfi.103.2021.11.18.15.58.29
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=M1g96wvk2fScmlQSqAqL2X6S00BnYHNLyt+afv0QIyo=;
+        b=1w+M8I0DFCw0uWxiJ5vGbgsmgKcc2ZNltkENTcP3vA4Vx0Ke01S62sJcXboEOqWl3t
+         sE3cMkpDa1eH6fGQDfV0F6QXt0PgF4r1Ppdiw7UFjq2QqaXwRQHn5XDNcYsSIYw8hrn0
+         JZo1s2yYUhZfaP0K/GhI8FbaSaQ9xQcMOgmLsoswa/KRuIiOVnc4LKZwKupdxY0YBhcF
+         gw2IzuLvA/dyHpUDv+bBa914ufMDvHpQOVlEOA5RmvN8xg6lPHP5fO3Ge1P+0zmFQlJo
+         GHrtn5ZZ/CI2oKdSJVJ3gPx1P/YYqeuvNxQviGXu/22A6FiWGD1TaeZXHufB11p3tQCw
+         j4eQ==
+X-Gm-Message-State: AOAM531n/VKnAwqkUeD/gLomRR6arsQ8pN9PAOAgeRrA9D1X3NftYLYm
+        FJjaSYxZZlfuZAj5ON5UEFuIT8Zpb7w=
+X-Google-Smtp-Source: ABdhPJwXQm9GW8Bslhks3s+dd8TXkWn3/JGGMaJAGtolwirXi/bEsG0qoA3BRG3j5KCeRdfIrD2AbA==
+X-Received: by 2002:a05:6402:2551:: with SMTP id l17mr14848060edb.142.1637280000795;
+        Thu, 18 Nov 2021 16:00:00 -0800 (PST)
+Received: from skbuf ([188.25.163.189])
+        by smtp.gmail.com with ESMTPSA id s12sm643476edc.48.2021.11.18.15.59.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 15:58:30 -0800 (PST)
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-To:     stable@vger.kernel.org
-Cc:     tadeusz.struk@linaro.org, axboe@kernel.dk, hch@lst.de,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+662448179365dddc1880@syzkaller.appspotmail.com,
-        xieyongji@bytedance.com
-Subject: [PATCH 5.10] block: Add a helper to validate the block size
-Date:   Thu, 18 Nov 2021 15:58:18 -0800
-Message-Id: <20211118235818.1128157-1-tadeusz.struk@linaro.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <7e6c4c23-f071-f33b-7bd4-da11980d34c6@linaro.org>
-References: <7e6c4c23-f071-f33b-7bd4-da11980d34c6@linaro.org>
+        Thu, 18 Nov 2021 16:00:00 -0800 (PST)
+Date:   Fri, 19 Nov 2021 01:59:58 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [net-next PATCH 02/19] net: dsa: qca8k: remove redundant check
+ in parse_port_config
+Message-ID: <20211118235958.ojpquokxwrh3zvji@skbuf>
+References: <20211117210451.26415-1-ansuelsmth@gmail.com>
+ <20211117210451.26415-3-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211117210451.26415-3-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie Yongji <xieyongji@bytedance.com>
+On Wed, Nov 17, 2021 at 10:04:34PM +0100, Ansuel Smith wrote:
+> The very next check for port 0 and 6 already make sure we don't go out
+                                               ~~~~
+                                               makes
+> of bounds with the ports_config delay table.
+> Remove the redundant check.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
 
-From: Xie Yongji <xieyongji@bytedance.com>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 
-There are some duplicated codes to validate the block
-size in block drivers. This limitation actually comes
-from block layer, so this patch tries to add a new block
-layer helper for that.
-
-Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-Link: https://lore.kernel.org/r/20211026144015.188-2-xieyongji@bytedance.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
----
- include/linux/blkdev.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 4ba17736b614..98fdf5a31fd6 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -59,6 +59,14 @@ struct blk_keyslot_manager;
-  */
- #define BLKCG_MAX_POLS		5
- 
-+static inline int blk_validate_block_size(unsigned int bsize)
-+{
-+	if (bsize < 512 || bsize > PAGE_SIZE || !is_power_of_2(bsize))
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
- typedef void (rq_end_io_fn)(struct request *, blk_status_t);
- 
- /*
--- 
-2.33.1
-
+>  drivers/net/dsa/qca8k.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+> index a429c9750add..bfffc1fb7016 100644
+> --- a/drivers/net/dsa/qca8k.c
+> +++ b/drivers/net/dsa/qca8k.c
+> @@ -983,7 +983,7 @@ qca8k_parse_port_config(struct qca8k_priv *priv)
+>  	u32 delay;
+>  
+>  	/* We have 2 CPU port. Check them */
+> -	for (port = 0; port < QCA8K_NUM_PORTS && cpu_port_index < QCA8K_NUM_CPU_PORTS; port++) {
+> +	for (port = 0; port < QCA8K_NUM_PORTS; port++) {
+>  		/* Skip every other port */
+>  		if (port != 0 && port != 6)
+>  			continue;
+> -- 
+> 2.32.0
+> 
