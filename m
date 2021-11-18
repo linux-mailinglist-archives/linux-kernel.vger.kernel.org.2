@@ -2,53 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5DC4455E7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:46:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB28455E84
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:48:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230243AbhKROtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 09:49:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52338 "EHLO mail.kernel.org"
+        id S230446AbhKROuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 09:50:54 -0500
+Received: from mx1.tq-group.com ([93.104.207.81]:17159 "EHLO mx1.tq-group.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229587AbhKROtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 09:49:31 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D93B613D0;
-        Thu, 18 Nov 2021 14:46:30 +0000 (UTC)
-Date:   Thu, 18 Nov 2021 09:46:28 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     menglong8.dong@gmail.com
-Cc:     kuba@kernel.org, davem@davemloft.net, mingo@redhat.com,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, imagedong@tencent.com,
-        ycheng@google.com, kuniyu@amazon.co.jp,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v2 net-next 0/2] net: snmp: tracepoint support for snmp
-Message-ID: <20211118094628.4e445ef6@gandalf.local.home>
-In-Reply-To: <20211118124812.106538-1-imagedong@tencent.com>
-References: <20211118124812.106538-1-imagedong@tencent.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S230014AbhKROux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 09:50:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1637246873; x=1668782873;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Ooc+9ajbFTu8Zm2ebiyDnY2oS/xRRKmFnMNQRhlZffs=;
+  b=q9S7pnG96kPhTK7kfiImYUe05JKg+/tE6d1JnwkvuAzmv8hoLsz+4qyn
+   v1eN4FDpxGngtn4uRF7uC/i+TGEI/YkCytW1tdONfnln4cWgMCJoz3/hw
+   Kj/EvXL9CIte8C70BGC23j9PQMC4/bJQlMFiJwNyc4wSm+U7m9PK8jsI5
+   C/sFi2RAl4rF3QU43ctmALLpLukCYUiThfGCpMD1gYKKBArD7FM1YzAHI
+   lgNsSmbk+b1yyDIvFiKhq0LXQ6B3cSEphNWVtAEDtNbVcCZRt6W069rNi
+   xDVPKoYRbObk9kZVbZvuLUss/jrWETdP861jQ1zjwUYE/aFt59WOjeGJw
+   A==;
+X-IronPort-AV: E=Sophos;i="5.87,245,1631570400"; 
+   d="scan'208";a="20545537"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 18 Nov 2021 15:47:52 +0100
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Thu, 18 Nov 2021 15:47:52 +0100
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Thu, 18 Nov 2021 15:47:52 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1637246872; x=1668782872;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Ooc+9ajbFTu8Zm2ebiyDnY2oS/xRRKmFnMNQRhlZffs=;
+  b=fqnNGU12oPlc4efoN99xDo6coQd1LUMUOvWXqutBzKveKEImrXBpuSUy
+   H9g2qaxIzQySASSIedGt6G/xiUU6cG83d2A3v7nXGljSMYQ8ecqqbcGcc
+   pmAxmT0IQEP00Ukdl7PwAeV6I4Qix9LZsP5E2Q/tKSJ2iplwhXGGKzhoZ
+   RAquUJwU+0MB3OKqGAdkkP1BjudG9AbR/L4A3mnRoB7SGVsvlvr4+zjqI
+   vM/arFSK+fdeaWQDtA+y7Kw10yeZx3cai5SmCbUtXJKulzlskq1KBAd0G
+   9tTkfL71NCKhtVnEXYYGNbtXbKhb6/hRSkkLhxdbS3Go2S/xWJrsQn5JG
+   g==;
+X-IronPort-AV: E=Sophos;i="5.87,245,1631570400"; 
+   d="scan'208";a="20545536"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 18 Nov 2021 15:47:52 +0100
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 75326280065;
+        Thu, 18 Nov 2021 15:47:50 +0100 (CET)
+Message-ID: <c17640ea3468b78ffe1f073f0a0c51ddfe89836f.camel@ew.tq-group.com>
+Subject: Re: [PATCH net 0/4] Fix bit timings for m_can_pci (Elkhart Lake)
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Felipe Balbi (Intel)" <balbi@kernel.org>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Date:   Thu, 18 Nov 2021 15:47:47 +0100
+In-Reply-To: <72489ea7-cf81-2446-3620-06a98f53ce54@linux.intel.com>
+References: <cover.1636967198.git.matthias.schiffer@ew.tq-group.com>
+         <e38eb4ca0a03c60c8bbeccbd8126ffc5bf97d490.camel@ew.tq-group.com>
+         <72489ea7-cf81-2446-3620-06a98f53ce54@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Nov 2021 20:48:10 +0800
-menglong8.dong@gmail.com wrote:
-
->               nc-171     [000] ..s1.    35.952997: snmp: skbaddr=(____ptrval____), type=9, field=2, val=1
->               nc-171     [000] .N...    35.957006: snmp: skbaddr=(____ptrval____), type=9, field=4, val=1
->               nc-171     [000] ..s1.    35.957822: snmp: skbaddr=(____ptrval____), type=9, field=2, val=1
->               nc-171     [000] .....    35.957893: snmp: skbaddr=(____ptrval____), type=9, field=4, val=1
+On Wed, 2021-11-17 at 14:14 +0200, Jarkko Nikula wrote:
+> Hi
 > 
-> 'type=9' means that the event is triggered by udp statistics and 'field=2'
-> means that this is triggered by 'NoPorts'. 'val=1' means that increases
-> of statistics (decrease can happen on tcp).
+> On 11/16/21 3:58 PM, Matthias Schiffer wrote:
+> > I just noticed that m_can_pci is completely broken on 5.15.2, while
+> > it's working fine on 5.14.y.
+> > 
+> 
+> Hmm.. so that may explain why I once saw candump received just zeroes on 
+> v5.15-rc something but earlier kernels were ok. What's odd then next 
+> time v5.15-rc was ok so went blaming sun spots instead of bisecting.
+> 
+> > I assume something simliar to [1] will be necessary in m_can_pci as
+> > well, however I'm not really familiar with the driver. There is no
+> > "mram_base" in m_can_plat_pci, only "base". Is using "base" with
+> > iowrite32/ioread32 + manual increment the correct solution here?
+> > 
+> > 
+> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=99d173fbe8944861a00ebd1c73817a1260d21e60
+> > 
+> 
+> If your test case after 5.15 reliably fails are you able to bisect or 
+> check does the regression originate from the same commit?
+> 
+> Jarkko
 
-Instead of printing numbers, why not print the meanings?
+The Fixes tag of 99d173fbe894 ("can: m_can: fix iomap_read_fifo() and
+iomap_write_fifo()") is off AFAICT, the actual breakage happened with
+812270e5445b ("can: m_can: Batch FIFO writes during CAN transmit") and
+1aa6772f64b4 ("can: m_can: Batch FIFO reads during CAN receive");
+reverting these two patches fixes the regression.
 
-I'll reply to the other patches to explain that.
+I just sent a patch for m_can_pci that applies the same fix that was
+done in m_can_platform in 99d173fbe894, and verified that this makes
+CAN communication work on Elkhart Lake with Linux 5.15.y together with
+my other patches.
 
--- Steve
+Matthias
+
