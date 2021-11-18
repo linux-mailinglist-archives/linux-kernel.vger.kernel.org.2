@@ -2,200 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4AD4564FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 22:22:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F2F456501
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 22:23:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhKRVZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 16:25:43 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:29926 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229974AbhKRVZl (ORCPT
+        id S230266AbhKRV0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 16:26:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229647AbhKRV0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 16:25:41 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AIKYhqE027760;
-        Thu, 18 Nov 2021 13:22:41 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-id : mime-version;
- s=facebook; bh=Kxo8ANhWOqOrD9VnaMJ3OrQr4kQwQ0+MJnz90TykERg=;
- b=NAOQ7ZFNv58rsae548Rs/UOT0jB5zzOefE93WUdrsEnZM20d/X4DhmZYuabgboIyMjk8
- 0TI2QzMtF+er6j0OJ+J/no75/H2KHcpEpTVXmIiFrA8a7X2mkLMCkdvTxG+4lrhu6ULO
- SjmH6oIhoZlm3Og1JocrK0GcCgfridwnWVU= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3cdqp4kq3y-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 18 Nov 2021 13:22:40 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Thu, 18 Nov 2021 13:22:37 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FTfX8/cJb4gKff4Opa3NImr6MvWFnBLXH8jdXZkpmDPp7j/87oOseQuRhSLsxau3vRg7lUAHDvEesTVUaPm8FblTR+nF/Nkxb1c3YdqO53XT55zckLVrK7zPRfxKe5kDypQ8ggzDvqNaLDws3TJRUbxBydXSrX4alcQY8wdqWrq0kzj036mgzUSjnUEkD45KcgVSCYQD+p6FA9wOsxyaGLfgWfMviG6CZZqL260m/5uX3lqjdA2n9yfsBeBURTg7DSsl6jfktY5sw5e2Mo+d0vnR/NYGoXQB9Pt0OEj3YuhoubHXSHVxoZTbIIUGn1kFr3QKm9xL0GOF//no4WlQdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Kxo8ANhWOqOrD9VnaMJ3OrQr4kQwQ0+MJnz90TykERg=;
- b=EnNKpb/GJ/fW1T7p2U4J05JrQP/rG8NW/qFaWgz3yRT5vGnSx+V2NUfkS73rpNhNV8stNzBweT8uOGHeP5HvGxQVws3/n6ie+UM9g+kNoBDITJWvE+jzI2OU3R1xkOTUiMcAYI51rPopb1OABis1tAsQgR0YyoEoVebZaqpjG9RtXjxpI6yOp8QSiKnvx4As77ebQNeV3JPZHylrsWoFkiCz9c50t9YRmyz6vdQAu+H7wYUl0HiHfwSbXbo04xJAlccd0P2zfe31CVdUgazhS3ru7sZVw6Tsz4puNxxXAcDY0CKL8U2P0d3s+bwVg6PY8o92ZfQhpBZ2w+/5IwTD8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from BY5PR15MB3667.namprd15.prod.outlook.com (2603:10b6:a03:1f9::18)
- by SJ0PR15MB4390.namprd15.prod.outlook.com (2603:10b6:a03:35b::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Thu, 18 Nov
- 2021 21:22:35 +0000
-Received: from BY5PR15MB3667.namprd15.prod.outlook.com
- ([fe80::8d7d:240:3369:11b4]) by BY5PR15MB3667.namprd15.prod.outlook.com
- ([fe80::8d7d:240:3369:11b4%6]) with mapi id 15.20.4690.027; Thu, 18 Nov 2021
- 21:22:35 +0000
-From:   Nick Terrell <terrelln@fb.com>
+        Thu, 18 Nov 2021 16:26:53 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C5EEC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 13:23:52 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id a23-20020a9d4717000000b0056c15d6d0caso13261912otf.12
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 13:23:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UWACXBbqRdeol3CXg5rFjYspFN+GWNxgtVk6AOTQB1Y=;
+        b=YQdznxljCTKZuu8S49lt0p3eYl8ryeVW22jLBlQGaQshzaVOw22E/xxGibi9GBUE3W
+         rZ9J0lrXplM/5P9PeW4sYiveFTbIQfzCqokBKYXXO9Im6ytnzVfQN5g/2zCrSEVdS1x9
+         PqwnmDPtTnzWX+q+AgI4ZKn5jvHGec3AVPgQ6y+zBUbm2RGrwAN3614aXB5v+nHXYNUY
+         Fu9gkFRNWPXKKjVjDR5Kz6TS94eo8wIFvN+Ya6c285fJphNiG5TXKIdHN4q38n0hjF3z
+         n3Qnll8tmp7qreeaY3XAkvGyoeHYBv3SEXCYtqDZavF+Dc1k9KP9ktZqe/vhuKEpDxUr
+         z6tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=UWACXBbqRdeol3CXg5rFjYspFN+GWNxgtVk6AOTQB1Y=;
+        b=tZo+EDjloLYdgujJ0j9UqPRwR+NfRMyrrGeNjafMFpDvHI4NjQjQDDTi4y442+1Zgm
+         n4YrnMZ8230zpGaeNMmrRAdeWxzuBF1MYo4JLCxYRpuEW/FWtbQm2fz76fZf31o23hNz
+         Tia5QjsPVOg2VVPv2g+iP27D8cqe3p7342fcqspLEbm0eswyCkShcSwn/gRpRdf0SWNP
+         lO65qWcLc9o0PTfKx3qfpI3JRqwKDjSHMN0UsVy5XlxqF2/BbiNBr7khIyRCXAp0CMsi
+         PyIvt/PsaQVMLwzdBT1ha7LH58WnkNCKC+s3YdWHxrOWmVLqKs6mI/GlRcQesnNDzn8T
+         rsWw==
+X-Gm-Message-State: AOAM531u7LHRd1TjB6S9H4hQmoSgqDdNl9WraUWUbUEZDiclMfdqEdcd
+        Q9B+xAm3GJYfTcfcKGp+dRs=
+X-Google-Smtp-Source: ABdhPJwWg8Wje8poBr0MOTXBSHqruwMlvAW14Sn2MrWZ6wd3sgB7FUm+A5CA3Jyg09GoFZu779Ue2A==
+X-Received: by 2002:a05:6830:3113:: with SMTP id b19mr284327ots.9.1637270631904;
+        Thu, 18 Nov 2021 13:23:51 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e28sm227315oiy.10.2021.11.18.13.23.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 13:23:51 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 18 Nov 2021 13:23:49 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] zstd fixes for v5.16-rc1
-Thread-Topic: [GIT PULL] zstd fixes for v5.16-rc1
-Thread-Index: AQHX3MJohLd7tvU2E0SoSeZx2RSNQg==
-Date:   Thu, 18 Nov 2021 21:22:35 +0000
-Message-ID: <1F7E17E1-9B51-4D21-B7FB-9BD3BE4A199A@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3f0a77ee-b4e1-44e6-86dd-08d9aad98a95
-x-ms-traffictypediagnostic: SJ0PR15MB4390:
-x-microsoft-antispam-prvs: <SJ0PR15MB43905C2299AA98BBF0974B7AAB9B9@SJ0PR15MB4390.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:2958;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2FyT2h4ByzoZfdnZjpAKpe5eUwRsnvf/SmtIktMxw3u/sTZcJIlg7vJSa9ctQ1k35S55L2mE86HIW/j+NUtghI34IJBxxk/lpoNpzGZxFM/5pHjk7csf0785u3MC4Q/0LQ9on33TKz9F6MWMiDpacYL7avpsa7gLoCl1RBuqnIfvgtwFp18qi+Kg4oZponQvsX+fgT7T6oV+wBMkDd38+tdyMAHycrTqh0ONh5iNx9Z5wxWiLOpd1k0ZuSB+xdvyJpEBmZuxDsAtflNkqRTLoxTH9tGAvB6m/REAp3zPe+nOIalXMPb7t1RDDpiAfj7q0QY73tLsHNKjlKql+7nLKWpcyrRGieGBB/4OjtWr6RfpJcrao1XPNlBQIAaH4aKsj4ryZSAJEjiStkQZB5SpQxpqhOc/umKfGl+3v+q51HxQOb+/NVgcMp1JquKuIwm4WK8pvgpH0hqWFVUWc2k/+Z6fvs6OPqo8gadXte8zY5BbkDEZqsxZ7lMdGkUlWfy8ow69az0Py1sX67aAK4zxKj2EaRvPv2rymJrqvjEKgbESYS3Ylv4pEeyUAGtmYjwYVyic1NytpBupjuM7um1YpasOSxBscqofaxUDDQ/MHQZPjsWX/hISpSQtJwQUmzno5t79I4tpPC+55sFk0c/TfyrrsvGCd9gyPWVDluaKFQsZVOzxgeEIEzmaHOs4ahUST+0DW9A27ZiKOYs83P+i0yVEWeAP11B6LSHuehdIPap7ykN1NympNyz4taeKLq2/JPoXQmYwxPAxe7d4wKRUMOjxakmy9B2qi5cM3fGxXDzC8BHFdj0ehA3KNb8zzjJ7meXfuAwyQ905tcadfLGY5CrCAkrKPQ8f1KCwiaw+7tc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3667.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6916009)(5660300002)(6506007)(6512007)(186003)(66556008)(71200400001)(64756008)(54906003)(66476007)(4001150100001)(76116006)(6486002)(8936002)(66446008)(66946007)(8676002)(966005)(91956017)(38100700002)(122000001)(508600001)(4326008)(2616005)(2906002)(33656002)(83380400001)(38070700005)(316002)(36756003)(86362001)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?wwCDjrAsalPu76qEeKdLx1jemVWZc7QCFwnAtumRBu/qK7uPdgTTxDIIYhdZ?=
- =?us-ascii?Q?U8VIs2R5vLFBKaMVkQaRCLgC7/7cg7HLO/T9lML7hNLJ22EsJLIzm2hqTZfO?=
- =?us-ascii?Q?UnjkOCKuSrDinlk8nzvZnmTOzfwWeM3bMBu+y0dZhGk868iuMgZANG5a8/Jp?=
- =?us-ascii?Q?y3WWHfsF7KiViKW+tTl8xGV+HxZeAISFqEoDUDpUm7Phlq9cdxDaHFNiIVRT?=
- =?us-ascii?Q?BZ+AMVCmvYQi2XCsqjNFhkrAdM6IR9XbUBmx70XXKWvysk5qQEjDxZqze3R1?=
- =?us-ascii?Q?W96DC0CHjlTvXyoTqIGAMWVpuiYBPYymJVZN3VTXm9DQrdjYAcnQ+xq9T0iK?=
- =?us-ascii?Q?sVLgA4RLc0cQIhOFeLmjC338OLuHPGvuc4jwL+GeB+unNId4rSTvi9ixBf1W?=
- =?us-ascii?Q?rUB+6upBKqgB1SjWJVwHs2b6bxEI2PcXE8yUq2Kc6mPnJgaUU672DT6g+waX?=
- =?us-ascii?Q?HA7RxIOTYdWJ4EYYZwNXszfnFHO3G6qUzlnndWrF6ZOWnguF3WuIG9VsUw9E?=
- =?us-ascii?Q?m3Zncrjlnl1xQKq6Xz9aKrVlxbVogDgOS0mltJCoHJVDjKNpTn3cI/6yywKz?=
- =?us-ascii?Q?t8Z+JvYTPAcFMcMVK6oNS1y0Vk+aya+WdEV9HvD7ykEObHPpAPbdJXlA8AWO?=
- =?us-ascii?Q?A4Bhq81Kz0Ki5rBKCFxzUa05oQS8EFm35Rldp3/XngH7k5LyP0O3c+wrrIg9?=
- =?us-ascii?Q?/EHYtIAWNYv2kaANSFDseXA9DZ+ZFyHoMYVsy9wv/hkmmZ17ROaPRoeij9XU?=
- =?us-ascii?Q?Bv48wmAhYtkELMtoMnxLqd+AvYnzgB0xQHNNRV6Ebsic02O6f6ip4vBgfH06?=
- =?us-ascii?Q?Z/oDd/mmRTPD6Gi1wm99HUOtCOw5OW0PRve9T6eaWhLEn3Zkc3aPW5ELNTJA?=
- =?us-ascii?Q?Jwg3ZqDbo+KSO6tUdqovrm8RbXNgU0DHO/NN/k28xxDDRb8R4o33TFpOV19T?=
- =?us-ascii?Q?bH2h/+DOww1Y7pYTgNgxiBTJ5x3wJMCwmoTMurcheND5RruQtB0eV3386HYh?=
- =?us-ascii?Q?Z8PIv/j3Iyaqt2ba1CAwn9UqOHiGmhkaE6++gO/VtKkBx/EPQ7EfMiqgxgpY?=
- =?us-ascii?Q?RyZd/ILMqV8mBErtgTmfDY1h/l0b039BHs/HJjdVhErdhVoLfc+18fVOGibh?=
- =?us-ascii?Q?v58CMTTtpcc8NYhhxSua5lj09qwUcuC08PA9j1lPPCLo1IiwyKnPz6OSFs+m?=
- =?us-ascii?Q?jK4RKHBpi/4Nh6Gbpth4J2XmoGg6ZiZqd/Vlqf8Zn4GfL1Abo3NjKmwdY73K?=
- =?us-ascii?Q?duETagV0t7P27K+EIWinRcssom+VhumHK4nZpO2ApcB0ljBkHnq4RbfYr6Gj?=
- =?us-ascii?Q?q/ioBOmiR626fUXSUVhrims8JV5N/WTOTU9JP87e8cJLDyH+XwV7/HXPLEZ1?=
- =?us-ascii?Q?pafTZzxg6i5trJhobMBH4q4++b/BIisRSaLRxElHLKvLWKIT4p2RUZudAlZv?=
- =?us-ascii?Q?ZdA/Vu4Tbt8ZlR1n2ZdWiC1VvdMpWNIAQbYwQY0rYWDglSWbqF+/c94oHvAz?=
- =?us-ascii?Q?FiDj1MqmNHg/TNXKtOIPmTkD3wdcfmhKyGWfkfpqeOpx6fO3BYOBv+2mPEKx?=
- =?us-ascii?Q?GpwAN2GfCiaqKCM8cEPBU9NfVu3MJWqsNRSTfz/UKBCDpftoqhEjyFaZEROt?=
- =?us-ascii?Q?rg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <046EBE6D33BDB74685D2B59F23BE9519@namprd15.prod.outlook.com>
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3667.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f0a77ee-b4e1-44e6-86dd-08d9aad98a95
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Nov 2021 21:22:35.7916
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: e7cU7In9uR47D0NTOKSBHWfck4JnW/cP4KzMOYR1zyY451roaX1xv8TOUjXnDcbI
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4390
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: CRirX0OoM_5R9l-dWxVQkAnmDuu9ftk9
-X-Proofpoint-ORIG-GUID: CRirX0OoM_5R9l-dWxVQkAnmDuu9ftk9
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+Cc:     Anton Altaparmakov <anton@tuxera.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>
+Subject: Re: Linux 5.16-rc1
+Message-ID: <20211118212349.GA3424901@roeck-us.net>
+References: <CAHk-=wjF=JzLkCi2wV+G=f8OWa5rNjPsZd2RMFG5MHwKZPgYvw@mail.gmail.com>
+ <20211115045616.GA1012538@roeck-us.net>
+ <CAHk-=whca4JrEExUZCf+iGhP+mV-_D2uyqiFHnaYqnfCOKyEVg@mail.gmail.com>
+ <652edea7-28a0-70d9-c63f-d910b5942454@roeck-us.net>
+ <87a6i4miwu.fsf@mpe.ellerman.id.au>
+ <CAMuHMdVrpQJKKzpxrKKCCD_2+DzAvgFW+jsjPdR9JhBYeRgvNw@mail.gmail.com>
+ <8D79B547-D606-4975-A79A-AEA65684F3A0@tuxera.com>
+ <CAHk-=wgvzH=BaFg+kiWk1DXGLNELSmPS2VWcgSSmW5Y6vz-v_A@mail.gmail.com>
+ <E1EED1BE-A0F0-4EFA-86A6-CF721E194CDC@tuxera.com>
+ <CAHk-=wjoQYuOfhsiPXUvFbUbSd5iHmmoRHMP+zv+bzHKkWqAyA@mail.gmail.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-18_12,2021-11-17_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- spamscore=0 mlxlogscore=999 mlxscore=0 priorityscore=1501 phishscore=0
- bulkscore=0 malwarescore=0 suspectscore=0 adultscore=0 clxscore=1015
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111180111
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjoQYuOfhsiPXUvFbUbSd5iHmmoRHMP+zv+bzHKkWqAyA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, Nov 17, 2021 at 05:54:06PM -0800, Linus Torvalds wrote:
+> On Wed, Nov 17, 2021 at 5:26 PM Anton Altaparmakov <anton@tuxera.com> wrote:
+> >
+> > So is it worth doing the singly linked list to fix one file only to have compilation fail a few files later when it gets to mft.c?
+> 
+> Heh.
+> 
+> That does sound dubious.
+> 
+> Honestly, maybe the solution here is to just make the Kconfig depend
+> on the page size not being excessive for what NTFS wants to do.
+> 
+> Because I'm not sure that "powerpc with 64kB pages" is all that
+> relevant for NTFS to begin with.
+> 
+> The main problem is that the page size thing isn't some generic
+> Kconfig entry, different architectures have different names for it. On
+> PPC, the confic name is PPC_*K_PAGES and PPC_PAGE_SHIFT.
+> 
+> And arm64 has something very similar.
+> 
+> We have other things that do that, ie KASAN support has
+> 
+>         select HAVE_ARCH_KASAN  if PPC32 && PPC_PAGE_SHIFT <= 14
+> 
+> (and something very similar for arm64).
+> 
+> But those KASAN dependencies are inside the core architecture Kconfig
+> files, so it can fairly naturally use that page size config variable
+> as a conditional.
+> 
+> For something like NTFS, we don't really have a generic Kconfig
+> variable to test.
+> 
+> It wouldn't be _hard_ to add, but it would have to be done somewhat
+> sensibly and preferably in a way that doesn't require every
+> architecture to change how their page size selection (or lack of
+> selection) is done.
+> 
+> The simplest thing would probably be to add something like
+>      config BIG_PAGES
+>           bool
+> 
+> to some generic file, and then add
+> 
+>         select BIG_PAGES
+> 
+> to PPC and arm64 for the 64kB+ page size, and add a
+> 
+>         depends on !BIG_PAGES
+> 
+> to the NTFS Kconfig entry.
+> 
+> But that honestly looks a bit hacky to me. It would be less hacky to
+> just add a PAGE_SIZE config variable, and have architectures just set
+> it, and then NTFS could do
+> 
+>         depends on PAGE_SIZE < 65536
+> 
+> or whatever. I just don't know if it's worth it if this is only for NTFS.
+> 
 
-The following changes since commit fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf:
+Like this ?
 
-  Linux 5.16-rc1 (2021-11-14 13:56:52 -0800)
+Guenter
 
-are available in the Git repository at:
+---
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index dea74d7717c0..fd3fb2ab2350 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -767,6 +767,16 @@ config PPC_PAGE_SHIFT
+        default 14 if PPC_16K_PAGES
+        default 12
 
-  git://github.com/terrelln/linux.git tags/zstd-for-linus-5.16-rc1
-
-for you to fetch changes up to 7416cdc9b9c10968c57b1f73be5d48b3ecdaf3c8:
-
-  lib: zstd: Don't add -O3 to cflags (2021-11-18 13:16:22 -0800)
-
-Best,
-Nick Terrell
-
-----------------------------------------------------------------
-zstd fixes for v5.16-rc1
-
-Fix stack usage on parisc & improve code size bloat
-
-This PR contains 3 commits:
-
-1. Fixes a minor unused variable warning reported by Kernel test robot [0].
-2. Improves the reported code bloat (-88KB / 374KB) [1] by outlining
-   some functions that are unlikely to be used in performance sensitive
-   workloads.
-3. Fixes the reported excess stack usage on parisc [2] by removing -O3
-   from zstd's compilation flags. -O3 triggered bugs in the hppa-linux-gnu
-   gcc-8 compiler. -O2 performance is acceptable: neutral compression,
-   about -1% decompression speed. We also reduce code bloat
-   (-105KB / 374KB).
-
-After this commit our code bloat is cut from 374KB to 105KB with gcc-11.
-If we wanted to cut the remaining 105KB we'd likely have to trade
-signicant performance, so I want to say that this is enough for now.
-
-We should be able to get further gains without sacrificing speed, but
-that will take some significant optimization effort, and isn't suitable
-for a quick fix. I've opened an upstream issue [3] to track the code size,
-and try to avoid future regressions, and improve it in the long term.
-
-[0] https://lore.kernel.org/linux-mm/202111120312.833wII4i-lkp@intel.com/T/
-[1] https://lkml.org/lkml/2021/11/15/710
-[2] https://lkml.org/lkml/2021/11/14/189
-[3] https://github.com/facebook/zstd/issues/2867
-
-Link: https://lore.kernel.org/r/20211117014949.1169186-1-nickrterrell@gmail.com/
-Link: https://lore.kernel.org/r/20211117201459.1194876-1-nickrterrell@gmail.com/
-
-Signed-off-by: Nick Terrell <terrelln@fb.com>
-
-----------------------------------------------------------------
-Nick Terrell (3):
-      lib: zstd: Fix unused variable warning
-      lib: zstd: Don't inline functions in zstd_opt.c
-      lib: zstd: Don't add -O3 to cflags
-
- lib/zstd/Makefile                            |  2 --
- lib/zstd/common/compiler.h                   |  7 +++++++
- lib/zstd/compress/zstd_compress_superblock.c |  2 ++
- lib/zstd/compress/zstd_opt.c                 | 12 ++++++++++++
- 4 files changed, 21 insertions(+), 2 deletions(-)
++config HAVE_PAGE_SIZE
++       def_bool y
++
++config PAGE_SIZE
++       int
++       default 262144 if PPC_256K_PAGES
++       default 65536 if PPC_64K_PAGES
++       default 16384 if PPC_16K_PAGES
++       default 4096
++
+ config THREAD_SHIFT
+        int "Thread shift" if EXPERT
+        range 13 15
+diff --git a/fs/ntfs/Kconfig b/fs/ntfs/Kconfig
+index 1667a7e590d8..912361014bb0 100644
+--- a/fs/ntfs/Kconfig
++++ b/fs/ntfs/Kconfig
+@@ -1,6 +1,16 @@
+ # SPDX-License-Identifier: GPL-2.0-only
++
++config NTFS_PAGE_SIZE_LIMIT
++       int
++       default 262144 if FRAME_WARN >= 8192
++       default 131072 if FRAME_WARN >= 4096
++       default 65536 if FRAME_WARN >= 2048
++       default 32768 if FRAME_WARN >= 1024
++       default 16384
++
+ config NTFS_FS
+        tristate "NTFS file system support"
++       depends on !WERROR || !HAVE_PAGE_SIZE || PAGE_SIZE < NTFS_PAGE_SIZE_LIMIT
+        select NLS
+        help
+          NTFS is the file system of Microsoft Windows NT, 2000, XP and 2003.
 
