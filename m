@@ -2,417 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67574557CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E82694557D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbhKRJRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 04:17:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245079AbhKRJRK (ORCPT
+        id S245087AbhKRJTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 04:19:03 -0500
+Received: from 113.196.136.146.ll.static.sparqnet.net ([113.196.136.146]:52600
+        "EHLO mg.sunplus.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S245098AbhKRJSJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 04:17:10 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DCC4C061200;
-        Thu, 18 Nov 2021 01:14:10 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id 136so4849250pgc.0;
-        Thu, 18 Nov 2021 01:14:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:content-language:to:cc
-         :references:from:organization:subject:in-reply-to
-         :content-transfer-encoding;
-        bh=3s8G0Xd/9x2hLp5GIKxUiDxtVxH8VbvhOU5LzwFcfIU=;
-        b=AUZmQoTK9YnO08scdYdulngxYtgBzkai8M98aX0mM7wElb/PN/BM18ZVNdnhfrIK0W
-         gCwjaGDWESUm0KoIs34T1qyH5tzSv3EIDBZPB/LIqhI8tIsjCw99uA2nzugbWlY2Uk9L
-         TMYOH6/QMdmT2ve4Z9fXe6nYoemZ/ofX/mpChHAspII6j655E5+SesLCvrbOfw0IKMNl
-         mcYtpfkHlc8PvkcXv1C3yxsyAzucX+f389bbkb4tDEdw50jcVeGiO2UDmYrBy/vQXwZB
-         FoZCRG/k12b/ZH7hl6LpYk60o3laxTbnjMLmjwyqPyzrnr/mJRRhrd3mevXrHpD0J6IJ
-         Tf9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=3s8G0Xd/9x2hLp5GIKxUiDxtVxH8VbvhOU5LzwFcfIU=;
-        b=TNL8ydt/BToW7RZDv7bvLslRhh6jy6Kc7lB1qLwcoLthWK92iyJd5Kw9RcxtwLfX2X
-         naqiI8qKxe/+3Z0evavby4cA5JPKqOIU3u4TlpIFB0tA8CEjqK2SjCeviRsM/L0q/1hH
-         g3NdG3N6f1w8wSVlfcd5kU1qIuGtsnZxZ2kmeCF/DdV4bFPQvR0ZxGd/E/yXGx5zSjrZ
-         CX26pLnhXwRDahUKjMT+9qu4fOI76yPnja2W/xw+QwRpURxckg5p1uUiyDkRUY0v3du7
-         aVYyBx6YliUtLexZI2JSWWt+F6mdgVTrI/5LXsqFlXjWE12ykVQk9j61zla879aZkJhl
-         ylSQ==
-X-Gm-Message-State: AOAM532p0im2jUwh57UYi+9/bjPlyixWBk/aTQDRByNB+ltPQk6ykbx2
-        BpaqfYnefBhDAruyl6491Cs=
-X-Google-Smtp-Source: ABdhPJwrchPlEzopuP/0g5KsAcWXAg2R16ip/wL/2jr2g76hGiiYLrzve8MGvqYBKKhQX10id4e4qQ==
-X-Received: by 2002:a63:6c44:: with SMTP id h65mr10321820pgc.423.1637226847280;
-        Thu, 18 Nov 2021 01:14:07 -0800 (PST)
-Received: from [192.168.255.10] ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id z22sm2598124pfe.93.2021.11.18.01.14.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Nov 2021 01:14:06 -0800 (PST)
-Message-ID: <19868ec5-75f4-0ca5-71f7-cc12d135335d@gmail.com>
-Date:   Thu, 18 Nov 2021 17:13:56 +0800
+        Thu, 18 Nov 2021 04:18:09 -0500
+X-MailGates: (flag:3,DYNAMIC,RELAY,NOHOST:PASS)(compute_score:DELIVER,40
+        ,3)
+Received: from 172.17.9.202
+        by mg02.sunplus.com with MailGates ESMTP Server V5.0(23395:0:AUTH_RELAY)
+        (envelope-from <wells.lu@sunplus.com>); Thu, 18 Nov 2021 17:15:09 +0800 (CST)
+Received: from sphcmbx02.sunplus.com.tw (172.17.9.112) by
+ sphcmbx01.sunplus.com.tw (172.17.9.202) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Thu, 18 Nov 2021 17:15:08 +0800
+Received: from sphcmbx02.sunplus.com.tw ([::1]) by sphcmbx02.sunplus.com.tw
+ ([fe80::f8bb:bd77:a854:5b9e%14]) with mapi id 15.00.1497.023; Thu, 18 Nov
+ 2021 17:15:09 +0800
+From:   =?big5?B?V2VsbHMgTHUgp2aq2sTL?= <wells.lu@sunplus.com>
+To:     Rob Herring <robh@kernel.org>, Wells Lu <wellslutw@gmail.com>
+CC:     "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "qinjian@cqplus1.com" <qinjian@cqplus1.com>,
+        "dvorkin@tibbo.com" <dvorkin@tibbo.com>
+Subject: RE: [PATCH v2 3/3] devicetree: bindings: pinctrl: Add bindings doc
+ for Sunplus SP7021.
+Thread-Topic: [PATCH v2 3/3] devicetree: bindings: pinctrl: Add bindings doc
+ for Sunplus SP7021.
+Thread-Index: AQHXzvghvSM0mqYhsk2X5VMf5rbvsqv/k0UAgAmFRpA=
+Date:   Thu, 18 Nov 2021 09:15:08 +0000
+Message-ID: <462257a3afb24beeb5eb5b847a5ff5dd@sphcmbx02.sunplus.com.tw>
+References: <1635324926-22319-1-git-send-email-wells.lu@sunplus.com>
+ <1635754277-32429-1-git-send-email-wells.lu@sunplus.com>
+ <1635754277-32429-4-git-send-email-wells.lu@sunplus.com>
+ <YY6K/sJi9xZLmW+W@robh.at.kernel.org>
+In-Reply-To: <YY6K/sJi9xZLmW+W@robh.at.kernel.org>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [172.25.108.39]
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Content-Language: en-US
-To:     Jim Mattson <jmattson@google.com>
-Cc:     "Paolo Bonzini - Distinguished Engineer (kernel-recipes.org)" 
-        <pbonzini@redhat.com>, Eric Hankland <ehankland@google.com>,
-        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Peter Zijlstra (Intel OTC, Netherlander)" <peterz@infradead.org>
-References: <20211112235235.1125060-1-jmattson@google.com>
- <20211112235235.1125060-2-jmattson@google.com>
- <fcb9aea5-2cf5-897f-5a3d-054ead555da4@gmail.com>
- <CALMp9eR5oi=ZrrEsZpcAJ7AP-Jo2cLGz9GA=SoTjX--TiG4=sw@mail.gmail.com>
- <afb108ed-a2f3-cb49-d0b4-b1bd6739cdb6@gmail.com>
- <CALMp9eSYvGW=EfuDCyc+fu7gVNnKHmEvFMackYcuZ-sGT8H5uA@mail.gmail.com>
-From:   Like Xu <like.xu.linux@gmail.com>
-Organization: Tencent
-Subject: Re: [PATCH 1/2] KVM: x86: Update vPMCs when retiring instructions
-In-Reply-To: <CALMp9eSYvGW=EfuDCyc+fu7gVNnKHmEvFMackYcuZ-sGT8H5uA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/11/2021 4:01 am, Jim Mattson wrote:
-> On Tue, Nov 16, 2021 at 7:22 PM Like Xu <like.xu.linux@gmail.com> wrote:
->>
->> On 17/11/2021 6:15 am, Jim Mattson wrote:
->>> On Tue, Nov 16, 2021 at 4:44 AM Like Xu <like.xu.linux@gmail.com> wrote:
->>>>
->>>> Hi Jim,
->>>>
->>>> On 13/11/2021 7:52 am, Jim Mattson wrote:
->>>>> When KVM retires a guest instruction through emulation, increment any
->>>>> vPMCs that are configured to monitor "instructions retired," and
->>>>> update the sample period of those counters so that they will overflow
->>>>> at the right time.
->>>>>
->>>>> Signed-off-by: Eric Hankland <ehankland@google.com>
->>>>> [jmattson:
->>>>>      - Split the code to increment "branch instructions retired" into a
->>>>>        separate commit.
->>>>>      - Added 'static' to kvm_pmu_incr_counter() definition.
->>>>>      - Modified kvm_pmu_incr_counter() to check pmc->perf_event->state ==
->>>>>        PERF_EVENT_STATE_ACTIVE.
->>>>> ]
->>>>> Signed-off-by: Jim Mattson <jmattson@google.com>
->>>>> Fixes: f5132b01386b ("KVM: Expose a version 2 architectural PMU to a guests")
->>>>> ---
->>>>>     arch/x86/kvm/pmu.c | 31 +++++++++++++++++++++++++++++++
->>>>>     arch/x86/kvm/pmu.h |  1 +
->>>>>     arch/x86/kvm/x86.c |  3 +++
->>>>>     3 files changed, 35 insertions(+)
->>>>>
->>>>> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
->>>>> index 09873f6488f7..153c488032a5 100644
->>>>> --- a/arch/x86/kvm/pmu.c
->>>>> +++ b/arch/x86/kvm/pmu.c
->>>>> @@ -490,6 +490,37 @@ void kvm_pmu_destroy(struct kvm_vcpu *vcpu)
->>>>>         kvm_pmu_reset(vcpu);
->>>>>     }
->>>>>
->>>>> +static void kvm_pmu_incr_counter(struct kvm_pmc *pmc, u64 evt)
->>>>> +{
->>>>> +     u64 counter_value, sample_period;
->>>>> +
->>>>> +     if (pmc->perf_event &&
->>>>
->>>> We need to incr pmc->counter whether it has a perf_event or not.
->>>>
->>>>> +         pmc->perf_event->attr.type == PERF_TYPE_HARDWARE &&
->>>>
->>>> We need to cover PERF_TYPE_RAW as well, for example,
->>>> it has the basic bits for "{ 0xc0, 0x00, PERF_COUNT_HW_INSTRUCTIONS },"
->>>> plus HSW_IN_TX or ARCH_PERFMON_EVENTSEL_EDGE stuff.
->>>>
->>>> We just need to focus on checking the select and umask bits:
->>>
->>> [What follows applies only to Intel CPUs. I haven't looked at AMD's
->>> PMU implementation yet.]
->>
->> x86 has the same bit definition and semantics on at least the select and umask bits.
-> 
-> Yes, but AMD supports 12 bits of event selector. AMD also has the
-> HG_ONLY bits, which affect whether or not to count the event based on
-> context.
-
-You're right, "EVENT_SELECT[11:8] (Event Select): read/write.
-This field extends the EVENT_SELECT field from 8 bits to 12 bits."
-
-But as a legacy way, we're using amd_event_mapping[]
-(which checking the shared select and umask bits) to
-get the two generalized performance event
-"instructions retired" and "branch instructions retired".
-
-So we may insist on checking x86 shared 16-bits and comment the risk from extra 
-4 bits.
-
-We may not support HG_ONLY bit in the KVM world (df51fe7ea1c1).
-
-> 
->>>
->>> Looking at the SDM, volume 3, Figure 18-1: Layout of IA32_PERFEVTSELx
->>> MSRs, there seems to be a lot of complexity here, actually. In
->>
->> The devil is in the details.
->>
->>> addition to checking for the desired event select and unit mask, it
->>> looks like we need to check the following:
->>>
->>> 1. The EN bit is set.
->>
->> We need to cover the EN bit of fixed counter 0 for HW_INSTRUCTIONS.
-> 
-> I don't know what you mean by that.
-
-The four fixed ctrl bits for fixed counter 0 should be consulted as well.
-
-> 
->>> 2. The CMASK field is 0 (for events that can only happen once per cycle).
->>> 3. The E bit is clear (maybe?).
->>
->> The "Edge detect" bit is about hw detail and let's ignore it.
-> 
->   From my reading of the SDM, I don't think the edge detect bit can be
-> ignored, but I will do some empirical tests to convince myself when I
-> get back from vacation.
-
-Sorry to bother you on vacation.
-
-I assume turning edge detection on or off causes certain event
-to occur depending on the HW implementation.
-
-Can we trap the edge status of an emulated instruction ?
-
-> 
->>> 4. The OS bit is set if the guest is running at CPL0.
->>> 5. The USR bit is set if the guest is running at CPL>0.
->>
->> CPL is a necessity.
->>
-> 
-> As is host/guest mode on AMD.
-> 
->>>
->>>
->>>> static inline bool eventsel_match_perf_hw_id(struct kvm_pmc *pmc,
->>>>           unsigned int perf_hw_id)
->>>> {
->>>>           u64 old_eventsel = pmc->eventsel;
->>>>           unsigned int config;
->>>>
->>>>           pmc->eventsel &=
->>>>                   (ARCH_PERFMON_EVENTSEL_EVENT | ARCH_PERFMON_EVENTSEL_UMASK);
->>>>           config = kvm_x86_ops.pmu_ops->find_perf_hw_id(pmc);
->>>>           pmc->eventsel = old_eventsel;
->>>>           return config == perf_hw_id;
->>>> }
->>
->> My proposal is to incr counter as long as the select and mask bits match the
->> generi event.
->>
->> What do you think?
->>
->>>>
->>>>> +         pmc->perf_event->state == PERF_EVENT_STATE_ACTIVE &&
->>>>
->>>> Again, we should not care the pmc->perf_event.
->>>
->>> This test was intended as a proxy for checking that the counter is
->>> enabled in the guest's IA32_PERF_GLOBAL_CTRL MSR.
->>
->> The two are not equivalent.
-> 
-> Yes. I'm getting that now.
-> 
->> A enabled counter means true from "pmc_is_enabled(pmc)  &&
->> pmc_speculative_in_use(pmc)".
->> A well-emulated counter means true from "perf_event->state ==
->> PERF_EVENT_STATE_ACTIVE".
->>
->> A bad-emulated but enabled counter should be incremented for emulated instructions.
-> 
-> What is a "bad-emulated" counter?
-
-When pmc->perf_event is not created or not scheduled by the host perf scheduler.
-
-> 
->>>
->>>>> +         pmc->perf_event->attr.config == evt) {
->>>>
->>>> So how about the emulated instructions for
->>>> ARCH_PERFMON_EVENTSEL_USR and ARCH_PERFMON_EVENTSEL_USR ?
->>>
->>> I assume you're referring to the OS and USR bits of the corresponding
->>> IA32_PERFEVTSELx MSR. I agree that these bits have to be consulted,
->>> along with guest privilege level, before deciding whether or not to
->>> count the event.
->>
->> Thanks and we may need update the testcase as well.
-> 
-> Indeed.
-> 
->>>
->>>>> +             pmc->counter++;
->>>>> +             counter_value = pmc_read_counter(pmc);
->>>>> +             sample_period = get_sample_period(pmc, counter_value);
->>>>> +             if (!counter_value)
->>>>> +                     perf_event_overflow(pmc->perf_event, NULL, NULL);
->>>>
->>>> We need to call kvm_perf_overflow() or kvm_perf_overflow_intr().
->>>> And the patch set doesn't export the perf_event_overflow() SYMBOL.
->>>
->>> Oops. I was compiling with kvm built into vmlinux, so I missed this.
->>
->> In fact, I don't think the perf code would accept such rude symbolic export
->> And I do propose to apply kvm_pmu_incr_counter() in a less invasive way.
->>
->>>
->>>>> +             if (local64_read(&pmc->perf_event->hw.period_left) >
->>>>> +                 sample_period)
->>>>> +                     perf_event_period(pmc->perf_event, sample_period);
->>>>> +     }
->>>>> +}
->>>>
->>>> Not cc PeterZ or perf reviewers for this part of code is not a good thing.
->>>
->>> Added.
->>>
->>>> How about this:
->>>>
->>>> static void kvm_pmu_incr_counter(struct kvm_pmc *pmc)
->>>> {
->>>>           struct kvm_pmu *pmu = pmc_to_pmu(pmc);
->>>>
->>>>           pmc->counter++;
->>>>           reprogram_counter(pmu, pmc->idx);
->>>>           if (!pmc_read_counter(pmc))
->>>>                   // https://lore.kernel.org/kvm/20211116122030.4698-1-likexu@tencent.com/T/#t
->>>>                   kvm_pmu_counter_overflow(pmc, need_overflow_intr(pmc));
->>>> }
->>>>
->>>>> +
->>>>> +void kvm_pmu_record_event(struct kvm_vcpu *vcpu, u64 evt)
->>>>
->>>> s/kvm_pmu_record_event/kvm_pmu_trigger_event/
->>>>
->>>>> +{
->>>>> +     struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
->>>>> +     int i;
->>>>> +
->>>>> +     for (i = 0; i < pmu->nr_arch_gp_counters; i++)
->>>>> +             kvm_pmu_incr_counter(&pmu->gp_counters[i], evt);
->>>>
->>>> Why do we need to accumulate a counter that is not enabled at all ?
->>>
->>> In the original code, the condition checked in kmu_pmu_incr_counter()
->>> was intended to filter out disabled counters.
->>
->> The bar of code review haven't been lowered, eh?
-> 
-> I have no idea what you mean. If anything, I'd like the bar for both
-> review and acceptance to be higher than it is today. No one was more
-> surprised than I was when Paolo accepted these patches so quickly.
-
-Personally, I have great sympathy for the maintainers who are always overworked.
-
-Surely, we need more eyes on all corners of the KVM code. At least I may offer a 
-little help.
-
-> 
->>>
->>>>> +     for (i = 0; i < pmu->nr_arch_fixed_counters; i++)
->>>>> +             kvm_pmu_incr_counter(&pmu->fixed_counters[i], evt);
->>>>
->>>> How about this:
->>>>
->>>>           for_each_set_bit(i, pmu->all_valid_pmc_idx, X86_PMC_IDX_MAX) {
->>>>                   pmc = kvm_x86_ops.pmu_ops->pmc_idx_to_pmc(pmu, i);
->>>>
->>>>                   if (!pmc || !pmc_is_enabled(pmc) || !pmc_speculative_in_use(pmc))
->>>>                           continue;
->>>>
->>>>                   // https://lore.kernel.org/kvm/20211116122030.4698-1-likexu@tencent.com/T/#t
->>>>                   if (eventsel_match_perf_hw_id(pmc, perf_hw_id))
->>>>                           kvm_pmu_incr_counter(pmc);
->>>>           }
->>>>
->>>
->>> Let me expand the list of reviewers and come back with v2 after I
->>> collect more input.
->>
->> I'm not sure Paolo will revert the "Queued both" decision,
->> but I'm not taking my eyes or hands off the vPMU code.
-> 
-> I'm going on vacation for a couple of weeks. If Paolo doesn't want to
-> revert the buggy submissions from kvm-queue, then I will gladly defer
-> to you as the self-declared warden of the vPMU code to fix it as you
-> see fit.
-> 
-
-Sorry to disturb you before a wonderful holiday.
-
-It looks we committed the test case and reverted this patch set.
-Please let me know if you need me to take over for a V2 w/ your SOBs.
-
-> Thanks!
-> 
-> --jim
-> 
->>>
->>> Thanks!
->>>
->>>
->>>>> +}
->>>>> +EXPORT_SYMBOL_GPL(kvm_pmu_record_event);
->>>>> +
->>>>>     int kvm_vm_ioctl_set_pmu_event_filter(struct kvm *kvm, void __user *argp)
->>>>>     {
->>>>>         struct kvm_pmu_event_filter tmp, *filter;
->>>>> diff --git a/arch/x86/kvm/pmu.h b/arch/x86/kvm/pmu.h
->>>>> index 59d6b76203d5..d1dd2294f8fb 100644
->>>>> --- a/arch/x86/kvm/pmu.h
->>>>> +++ b/arch/x86/kvm/pmu.h
->>>>> @@ -159,6 +159,7 @@ void kvm_pmu_init(struct kvm_vcpu *vcpu);
->>>>>     void kvm_pmu_cleanup(struct kvm_vcpu *vcpu);
->>>>>     void kvm_pmu_destroy(struct kvm_vcpu *vcpu);
->>>>>     int kvm_vm_ioctl_set_pmu_event_filter(struct kvm *kvm, void __user *argp);
->>>>> +void kvm_pmu_record_event(struct kvm_vcpu *vcpu, u64 evt);
->>>>>
->>>>>     bool is_vmware_backdoor_pmc(u32 pmc_idx);
->>>>>
->>>>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->>>>> index d7def720227d..bd49e2a204d5 100644
->>>>> --- a/arch/x86/kvm/x86.c
->>>>> +++ b/arch/x86/kvm/x86.c
->>>>> @@ -7854,6 +7854,8 @@ int kvm_skip_emulated_instruction(struct kvm_vcpu *vcpu)
->>>>>         if (unlikely(!r))
->>>>>                 return 0;
->>>>>
->>>>> +     kvm_pmu_record_event(vcpu, PERF_COUNT_HW_INSTRUCTIONS);
->>>>> +
->>>>>         /*
->>>>>          * rflags is the old, "raw" value of the flags.  The new value has
->>>>>          * not been saved yet.
->>>>> @@ -8101,6 +8103,7 @@ int x86_emulate_instruction(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
->>>>>                 vcpu->arch.emulate_regs_need_sync_to_vcpu = false;
->>>>>                 if (!ctxt->have_exception ||
->>>>>                     exception_type(ctxt->exception.vector) == EXCPT_TRAP) {
->>>>> +                     kvm_pmu_record_event(vcpu, PERF_COUNT_HW_INSTRUCTIONS);
->>>>>                         kvm_rip_write(vcpu, ctxt->eip);
->>>>>                         if (r && (ctxt->tf || (vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP)))
->>>>>                                 r = kvm_vcpu_do_singlestep(vcpu);
->>>>>
->>>
-> 
+SGksDQoNClRoYW5rcyBmb3IgeW91ciByZXZpZXcuDQoNCg0KPiBPbiBNb24sIE5vdiAwMSwgMjAy
+MSBhdCAwNDoxMToxN1BNICswODAwLCBXZWxscyBMdSB3cm90ZToNCj4gPiBBZGQgYmluZGluZ3Mg
+ZG9jdW1lbnRhdGlvbiBmb3IgU3VucGx1cyBTUDcwMjEuDQo+IA0KPiBQYXRjaCAyIGFuZCAzIGNh
+biBiZSBjb21iaW5lZC4gVXNlIGNvbnNpc3RlbnQgc3ViamVjdHMuIFBhdGNoIDIgaXMgZ29vZC4N
+Cj4gVGhpcyBvbmUgaXMgbm90Lg0KDQpZZXMsIEknbGwgY29tYmluZSBwYXRjaCAyIGFuZCAzIGlu
+dG8gYSBzaW5nbGUgcGF0Y2ggaW4gbmV4dCBwYXRjaCBzZXJpZXMuDQoNCg0KPiA+DQo+ID4gU2ln
+bmVkLW9mZi1ieTogV2VsbHMgTHUgPHdlbGxzLmx1QHN1bnBsdXMuY29tPg0KPiA+IC0tLQ0KPiA+
+IENoYW5nZXMgaW4gdjI6DQo+ID4gIC0gTm9uZQ0KPiA+DQo+ID4gIC4uLi9iaW5kaW5ncy9waW5j
+dHJsL3N1bnBsdXMsc3A3MDIxLXBpbmN0cmwueWFtbCAgIHwgMjc3ICsrKysrKysrKysrKysrKysr
+KysrKw0KPiA+ICBNQUlOVEFJTkVSUyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICB8ICAgMSArDQo+ID4gIDIgZmlsZXMgY2hhbmdlZCwgMjc4IGluc2VydGlvbnMoKykNCj4g
+PiAgY3JlYXRlIG1vZGUgMTAwNjQ0DQo+ID4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
+bmdzL3BpbmN0cmwvc3VucGx1cyxzcDcwMjEtcGluY3RybC55YW1sDQo+ID4NCj4gPiBkaWZmIC0t
+Z2l0DQo+ID4gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGluY3RybC9zdW5w
+bHVzLHNwNzAyMS1waW5jdHJsLnlhbQ0KPiA+IGwNCj4gPiBiL0RvY3VtZW50YXRpb24vZGV2aWNl
+dHJlZS9iaW5kaW5ncy9waW5jdHJsL3N1bnBsdXMsc3A3MDIxLXBpbmN0cmwueWFtDQo+ID4gbA0K
+PiA+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0DQo+ID4gaW5kZXggMDAwMDAwMC4uN2NmYTBjZQ0KPiA+
+IC0tLSAvZGV2L251bGwNCj4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
+Z3MvcGluY3RybC9zdW5wbHVzLHNwNzAyMS1waW5jdHJsDQo+ID4gKysrIC55YW1sDQo+ID4gQEAg
+LTAsMCArMSwyNzcgQEANCj4gPiArIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogKEdQTC0yLjAt
+b25seSBPUiBCU0QtMi1DbGF1c2UpICMgQ29weXJpZ2h0DQo+ID4gKyhDKSBTdW5wbHVzIENvLiwg
+THRkLiAyMDIxICVZQU1MIDEuMg0KPiA+ICstLS0NCj4gPiArJGlkOg0KPiA+ICtodHRwOi8vZGV2
+aWNldHJlZS5vcmcvc2NoZW1hcy9waW5jdHJsL3N1bnBsdXMsc3A3MDIxLXBpbmN0cmwueWFtbCMN
+Cj4gPiArJHNjaGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9jb3JlLnlh
+bWwjDQo+ID4gKw0KPiA+ICt0aXRsZTogU3VucGx1cyBTUDcwMjEgUGluIENvbnRyb2xsZXIgRGV2
+aWNlIFRyZWUgQmluZGluZ3MNCj4gPiArDQo+ID4gK21haW50YWluZXJzOg0KPiA+ICsgIC0gRHZv
+cmtpbiBEbWl0cnkgPGR2b3JraW5AdGliYm8uY29tPg0KPiA+ICsgIC0gV2VsbHMgTHUgPHdlbGxz
+Lmx1QHN1bnBsdXMuY29tPg0KPiA+ICsNCj4gPiArZGVzY3JpcHRpb246IHwNCj4gPiArICBUaGUg
+U3VucGx1cyBTUDcwMjEgcGluIGNvbnRyb2xsZXIgaXMgdXNlZCB0byBjb250cm9sIFNvQyBwaW5z
+Lg0KPiA+ICtQbGVhc2UNCj4gPiArICByZWZlciB0byBwaW5jdHJsLWJpbmRpbmdzLnR4dCBpbiB0
+aGlzIGRpcmVjdG9yeSBmb3IgZGV0YWlscyBvZiB0aGUNCj4gPiArY29tbW9uDQo+ID4gKyAgcGlu
+Y3RybCBiaW5kaW5ncyB1c2VkIGJ5IGNsaWVudCBkZXZpY2VzLg0KPiA+ICsNCj4gPiArICBSZWZl
+ciB0byBodHRwczovL3N1bnBsdXMtdGliYm8uYXRsYXNzaWFuLm5ldC93aWtpL3NwYWNlcy9kb2Mv
+cGFnZXMvDQo+ID4gKyAgMTQ0MzQ5NTk5MS9Ib3crdG8rc2V0dXArcGlucytvZitTUDcwMjEraW4r
+ZGV2aWNlLXRyZWUrc291cmNlDQo+ID4gKw0KPiA+ICsgIFRoZSBkZXZpY2Ugbm9kZSBvZiBwaW4g
+Y29udHJvbGxlciBvZiBTdW5wbHVzIFNQNzAyMSBoYXMgZm9sbG93aW5nDQo+ID4gKyBwcm9wZXJ0
+aWVzLg0KPiA+ICsNCj4gPiArcHJvcGVydGllczoNCj4gPiArICBjb21wYXRpYmxlOg0KPiA+ICsg
+ICAgY29uc3Q6IHN1bnBsdXMsc3A3MDIxLXBjdGwNCj4gPiArDQo+ID4gKyAgZ3Bpby1jb250cm9s
+bGVyOiB0cnVlDQo+ID4gKw0KPiA+ICsgICcjZ3Bpby1jZWxscyc6DQo+ID4gKyAgICBjb25zdDog
+Mg0KPiA+ICsNCj4gPiArICByZWc6DQo+ID4gKyAgICBpdGVtczoNCj4gPiArICAgICAgLSBkZXNj
+cmlwdGlvbjogQmFzZSBhZGRyZXNzIGFuZCBsZW5ndGggb2YgdGhlIE1PT04yIHJlZ2lzdGVycy4N
+Cj4gPiArICAgICAgLSBkZXNjcmlwdGlvbjogQmFzZSBhZGRyZXNzIGFuZCBsZW5ndGggb2YgdGhl
+IEdQSU9YVCByZWdpc3RlcnMuDQo+ID4gKyAgICAgIC0gZGVzY3JpcHRpb246IEJhc2UgYWRkcmVz
+cyBhbmQgbGVuZ3RoIG9mIHRoZSBHUElPWFQyIHJlZ2lzdGVycy4NCj4gPiArICAgICAgLSBkZXNj
+cmlwdGlvbjogQmFzZSBhZGRyZXNzIGFuZCBsZW5ndGggb2YgdGhlIEZJUlNUIHJlZ2lzdGVycy4N
+Cj4gPiArICAgICAgLSBkZXNjcmlwdGlvbjogQmFzZSBhZGRyZXNzIGFuZCBsZW5ndGggb2YgdGhl
+IE1PT04xIHJlZ2lzdGVycy4NCj4gPiArDQo+ID4gKyAgY2xvY2tzOg0KPiA+ICsgICAgbWF4SXRl
+bXM6IDENCj4gPiArDQo+ID4gKyAgcmVzZXRzOg0KPiA+ICsgICAgbWF4SXRlbXM6IDENCj4gPiAr
+DQo+ID4gK3BhdHRlcm5Qcm9wZXJ0aWVzOg0KPiA+ICsgICdeLiokJzoNCj4gPiArICAgIGlmOg0K
+PiA+ICsgICAgICB0eXBlOiBvYmplY3QNCj4gPiArICAgIHRoZW46DQo+IA0KPiBGb3IgbmV3IGJp
+bmRpbmdzLCBkb24ndCB1c2UgdGhpcyBoYWNrLiBNYWtlIHRoZSBub2RlIG5hbWUgc29tZXRoaW5n
+IHlvdSBjYW4gbWF0Y2ggb24gKGUuZy4NCj4gJy1waW5zJCcpLg0KDQpZZXMsIEknbGwgbW9kaWZ5
+IHRoZSByZWd1bGFyIGV4cHJlc3Npb24gdG8gJy1waW5zJCcgaW4gbmV4dCBwYXRjaC4NClN1Yi1u
+b2RlcyBvZiBwaW5jdHJsIG5vZGUgd2lsbCBsb29rIGxpa2U6DQoNCgl1YXJ0MC1waW5zIHsNCgkJ
+Li4uDQoJfTsNCg0KCWVtbWMtcGlucyB7DQoJCS4uLg0KCX07DQoNCj4gPiArICAgICAgZGVzY3Jp
+cHRpb246IHwNCj4gPiArICAgICAgICBBIHBpbmN0cmwgbm9kZSBzaG91bGQgY29udGFpbiBhdCBs
+ZWFzdCBvbmUgc3Vibm9kZXMgcmVwcmVzZW50aW5nIHRoZQ0KPiA+ICsgICAgICAgIHBpbnMgb3Ig
+ZnVuY3Rpb24tcGlucyBncm91cCBhdmFpbGFibGUgb24gdGhlIG1hY2hpbmUuIEVhY2ggc3Vibm9k
+ZQ0KPiA+ICsgICAgICAgIHdpbGwgbGlzdCB0aGUgcGlucyBpdCBuZWVkcywgYW5kIGhvdyB0aGV5
+IHNob3VsZCBiZSBjb25maWd1cmVkLg0KPiA+ICsNCj4gPiArICAgICAgICBQaW5jdHJsIG5vZGUn
+cyBjbGllbnQgZGV2aWNlcyB1c2Ugc3Vibm9kZXMgZm9yIGRlc2lyZWQgcGluDQo+ID4gKyAgICAg
+ICAgY29uZmlndXJhdGlvbi4gQ2xpZW50IGRldmljZSBzdWJub2RlcyB1c2UgYmVsb3cgc3RhbmRh
+cmQgcHJvcGVydGllcy4NCj4gPiArDQo+ID4gKyAgICAgIHByb3BlcnRpZXM6DQo+ID4gKyAgICAg
+ICAgcGluczoNCj4gPiArICAgICAgICAgIGRlc2NyaXB0aW9uOiB8DQo+ID4gKyAgICAgICAgICAg
+IERlZmluZSBwaW5zIHdoaWNoIGFyZSB1c2VkIGJ5IHBpbmN0cmwgbm9kZSdzIGNsaWVudCBkZXZp
+Y2UuDQo+ID4gKw0KPiA+ICsgICAgICAgICAgICBJdCBjb25zaXN0cyBvZiBvbmUgb3IgbW9yZSBp
+bnRlZ2VycyB3aGljaCByZXByZXNlbnRzIHRoZSBjb25maWcNCj4gPiArICAgICAgICAgICAgc2V0
+dGluZyBmb3IgY29ycmVzcG9uZGluZyBwaW4uIFBsZWFzZSB1c2UgbWFjcm8gU1BQQ1RMX0lPUEFE
+IHRvDQo+ID4gKyAgICAgICAgICAgIGRlZmluZSB0aGUgaW50ZWdlcnMgZm9yIHBpbnMuDQo+ID4g
+Kw0KPiA+ICsgICAgICAgICAgICBUaGUgZmlyc3QgYXJndW1lbnQgb2YgdGhlIG1hY3JvIGlzIHBp
+biBudW1iZXIsIHRoZSBzZWNvbmQgaXMgcGluDQo+ID4gKyAgICAgICAgICAgIHR5cGUsIHRoZSB0
+aGlyZCBpcyB0eXBlIG9mIEdQSU8sIHRoZSBsYXN0IGlzIGRlZmF1bHQgb3V0cHV0IHN0YXRlDQo+
+ID4gKyAgICAgICAgICAgIG9mIEdQSU8uDQo+ID4gKyAgICAgICAgICAkcmVmOiAvc2NoZW1hcy90
+eXBlcy55YW1sIy9kZWZpbml0aW9ucy91aW50MzItYXJyYXkNCj4gPiArDQo+ID4gKyAgICAgICAg
+ZnVuY3Rpb246DQo+ID4gKyAgICAgICAgICBkZXNjcmlwdGlvbjogfA0KPiA+ICsgICAgICAgICAg
+ICBEZWZpbmUgcGluLWZ1bmN0aW9uIHdoaWNoIGlzIHVzZWQgYnkgcGluY3RybCBub2RlJ3MgY2xp
+ZW50IGRldmljZS4NCj4gPiArICAgICAgICAgICAgVGhlIG5hbWUgc2hvdWxkIGJlIG9uZSBvZiBz
+dHJpbmcgaW4gdGhlIGZvbGxvd2luZyBlbnVtZXJhdGlvbi4NCj4gPiArICAgICAgICAgICRyZWY6
+ICIvc2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy9zdHJpbmciDQo+ID4gKyAgICAgICAg
+ICBlbnVtOiBbIFNQSV9GTEFTSCwgU1BJX0ZMQVNIXzRCSVQsIFNQSV9OQU5ELCBDQVJEMF9FTU1D
+LCBTRF9DQVJELA0KPiA+ICsgICAgICAgICAgICAgICAgICBVQTAsIEZQR0FfSUZYLCBIRE1JX1RY
+LCBMQ0RJRiwgVVNCMF9PVEcsIFVTQjFfT1RHIF0NCj4gPiArDQo+ID4gKyAgICAgICAgZ3JvdXBz
+Og0KPiA+ICsgICAgICAgICAgZGVzY3JpcHRpb246IHwNCj4gPiArICAgICAgICAgICAgRGVmaW5l
+IHBpbi1ncm91cCBpbiBhIHNwZWNpZmllZCBwaW4tZnVuY3Rpb24uDQo+ID4gKyAgICAgICAgICAg
+IFRoZSBuYW1lIHNob3VsZCBiZSBvbmUgb2Ygc3RyaW5nIGluIHRoZSBmb2xsb3dpbmcgZW51bWVy
+YXRpb24uDQo+ID4gKyAgICAgICAgICAkcmVmOiAiL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5p
+dGlvbnMvc3RyaW5nIg0KPiA+ICsgICAgICAgICAgZW51bTogWyBTUElfRkxBU0gxLCBTUElfRkxB
+U0gyLCBTUElfRkxBU0hfNEJJVDEsIFNQSV9GTEFTSF80QklUMiwNCj4gPiArICAgICAgICAgICAg
+ICAgICAgU1BJX05BTkQsIENBUkQwX0VNTUMsIFNEX0NBUkQsIFVBMCwgRlBHQV9JRlgsIEhETUlf
+VFgxLA0KPiA+ICsgICAgICAgICAgICAgICAgICBIRE1JX1RYMiwgSERNSV9UWDMsIExDRElGLCBV
+U0IwX09URywgVVNCMV9PVEcgXQ0KPiA+ICsNCj4gPiArICAgICAgICB6ZXJvX2Z1bmM6DQo+ID4g
+KyAgICAgICAgICBkZXNjcmlwdGlvbjogfA0KPiA+ICsgICAgICAgICAgICBEaXNhYmxlZCBwaW5z
+IHdoaWNoIGFyZSBub3QgdXNlZCBieSBwaW5jdHJsIG5vZGUncyBjbGllbnQgZGV2aWNlLg0KPiA+
+ICsgICAgICAgICAgJHJlZjogL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMvdWludDMy
+LWFycmF5DQo+ID4gKw0KPiA+ICsgICAgICBhZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UNCj4g
+PiArDQo+ID4gKyAgICAgIGFsbE9mOg0KPiA+ICsgICAgICAgIC0gaWY6DQo+ID4gKyAgICAgICAg
+ICAgIHByb3BlcnRpZXM6DQo+ID4gKyAgICAgICAgICAgICAgZnVuY3Rpb246DQo+ID4gKyAgICAg
+ICAgICAgICAgICBlbnVtOg0KPiA+ICsgICAgICAgICAgICAgICAgICAtIFNQSV9GTEFTSA0KPiA+
+ICsgICAgICAgICAgdGhlbjoNCj4gPiArICAgICAgICAgICAgcHJvcGVydGllczoNCj4gPiArICAg
+ICAgICAgICAgICBncm91cHM6DQo+ID4gKyAgICAgICAgICAgICAgICBlbnVtOg0KPiA+ICsgICAg
+ICAgICAgICAgICAgICAtIFNQSV9GTEFTSDENCj4gPiArICAgICAgICAgICAgICAgICAgLSBTUElf
+RkxBU0gyDQo+ID4gKyAgICAgICAgLSBpZjoNCj4gPiArICAgICAgICAgICAgcHJvcGVydGllczoN
+Cj4gPiArICAgICAgICAgICAgICBmdW5jdGlvbjoNCj4gPiArICAgICAgICAgICAgICAgIGVudW06
+DQo+ID4gKyAgICAgICAgICAgICAgICAgIC0gU1BJX0ZMQVNIXzRCSVQNCj4gPiArICAgICAgICAg
+IHRoZW46DQo+ID4gKyAgICAgICAgICAgIHByb3BlcnRpZXM6DQo+ID4gKyAgICAgICAgICAgICAg
+Z3JvdXBzOg0KPiA+ICsgICAgICAgICAgICAgICAgZW51bToNCj4gPiArICAgICAgICAgICAgICAg
+ICAgLSBTUElfRkxBU0hfNEJJVDENCj4gPiArICAgICAgICAgICAgICAgICAgLSBTUElfRkxBU0hf
+NEJJVDINCj4gPiArICAgICAgICAtIGlmOg0KPiA+ICsgICAgICAgICAgICBwcm9wZXJ0aWVzOg0K
+PiA+ICsgICAgICAgICAgICAgIGZ1bmN0aW9uOg0KPiA+ICsgICAgICAgICAgICAgICAgZW51bToN
+Cj4gPiArICAgICAgICAgICAgICAgICAgLSBTUElfTkFORA0KPiA+ICsgICAgICAgICAgdGhlbjoN
+Cj4gPiArICAgICAgICAgICAgcHJvcGVydGllczoNCj4gPiArICAgICAgICAgICAgICBncm91cHM6
+DQo+ID4gKyAgICAgICAgICAgICAgICBlbnVtOg0KPiA+ICsgICAgICAgICAgICAgICAgICAtIFNQ
+SV9OQU5EDQo+ID4gKyAgICAgICAgLSBpZjoNCj4gPiArICAgICAgICAgICAgcHJvcGVydGllczoN
+Cj4gPiArICAgICAgICAgICAgICBmdW5jdGlvbjoNCj4gPiArICAgICAgICAgICAgICAgIGVudW06
+DQo+ID4gKyAgICAgICAgICAgICAgICAgIC0gQ0FSRDBfRU1NQw0KPiA+ICsgICAgICAgICAgdGhl
+bjoNCj4gPiArICAgICAgICAgICAgcHJvcGVydGllczoNCj4gPiArICAgICAgICAgICAgICBncm91
+cHM6DQo+ID4gKyAgICAgICAgICAgICAgICBlbnVtOg0KPiA+ICsgICAgICAgICAgICAgICAgICAt
+IENBUkQwX0VNTUMNCj4gPiArICAgICAgICAtIGlmOg0KPiA+ICsgICAgICAgICAgICBwcm9wZXJ0
+aWVzOg0KPiA+ICsgICAgICAgICAgICAgIGZ1bmN0aW9uOg0KPiA+ICsgICAgICAgICAgICAgICAg
+ZW51bToNCj4gPiArICAgICAgICAgICAgICAgICAgLSBTRF9DQVJEDQo+ID4gKyAgICAgICAgICB0
+aGVuOg0KPiA+ICsgICAgICAgICAgICBwcm9wZXJ0aWVzOg0KPiA+ICsgICAgICAgICAgICAgIGdy
+b3VwczoNCj4gPiArICAgICAgICAgICAgICAgIGVudW06DQo+ID4gKyAgICAgICAgICAgICAgICAg
+IC0gU0RfQ0FSRA0KPiA+ICsgICAgICAgIC0gaWY6DQo+ID4gKyAgICAgICAgICAgIHByb3BlcnRp
+ZXM6DQo+ID4gKyAgICAgICAgICAgICAgZnVuY3Rpb246DQo+ID4gKyAgICAgICAgICAgICAgICBl
+bnVtOg0KPiA+ICsgICAgICAgICAgICAgICAgICAtIFVBMA0KPiA+ICsgICAgICAgICAgdGhlbjoN
+Cj4gPiArICAgICAgICAgICAgcHJvcGVydGllczoNCj4gPiArICAgICAgICAgICAgICBncm91cHM6
+DQo+ID4gKyAgICAgICAgICAgICAgICBlbnVtOg0KPiA+ICsgICAgICAgICAgICAgICAgICAtIFVB
+MA0KPiA+ICsgICAgICAgIC0gaWY6DQo+ID4gKyAgICAgICAgICAgIHByb3BlcnRpZXM6DQo+ID4g
+KyAgICAgICAgICAgICAgZnVuY3Rpb246DQo+ID4gKyAgICAgICAgICAgICAgICBlbnVtOg0KPiA+
+ICsgICAgICAgICAgICAgICAgICAtIEZQR0FfSUZYDQo+ID4gKyAgICAgICAgICB0aGVuOg0KPiA+
+ICsgICAgICAgICAgICBwcm9wZXJ0aWVzOg0KPiA+ICsgICAgICAgICAgICAgIGdyb3VwczoNCj4g
+PiArICAgICAgICAgICAgICAgIGVudW06DQo+ID4gKyAgICAgICAgICAgICAgICAgIC0gRlBHQV9J
+RlgNCj4gPiArICAgICAgICAtIGlmOg0KPiA+ICsgICAgICAgICAgICBwcm9wZXJ0aWVzOg0KPiA+
+ICsgICAgICAgICAgICAgIGZ1bmN0aW9uOg0KPiA+ICsgICAgICAgICAgICAgICAgZW51bToNCj4g
+PiArICAgICAgICAgICAgICAgICAgLSBIRE1JX1RYDQo+ID4gKyAgICAgICAgICB0aGVuOg0KPiA+
+ICsgICAgICAgICAgICBwcm9wZXJ0aWVzOg0KPiA+ICsgICAgICAgICAgICAgIGdyb3VwczoNCj4g
+PiArICAgICAgICAgICAgICAgIGVudW06DQo+ID4gKyAgICAgICAgICAgICAgICAgIC0gSERNSV9U
+WDENCj4gPiArICAgICAgICAgICAgICAgICAgLSBIRE1JX1RYMg0KPiA+ICsgICAgICAgICAgICAg
+ICAgICAtIEhETUlfVFgzDQo+ID4gKyAgICAgICAgLSBpZjoNCj4gPiArICAgICAgICAgICAgcHJv
+cGVydGllczoNCj4gPiArICAgICAgICAgICAgICBmdW5jdGlvbjoNCj4gPiArICAgICAgICAgICAg
+ICAgIGVudW06DQo+ID4gKyAgICAgICAgICAgICAgICAgIC0gTENESUYNCj4gPiArICAgICAgICAg
+IHRoZW46DQo+ID4gKyAgICAgICAgICAgIHByb3BlcnRpZXM6DQo+ID4gKyAgICAgICAgICAgICAg
+Z3JvdXBzOg0KPiA+ICsgICAgICAgICAgICAgICAgZW51bToNCj4gPiArICAgICAgICAgICAgICAg
+ICAgLSBMQ0RJRg0KPiA+ICsgICAgICAgIC0gaWY6DQo+ID4gKyAgICAgICAgICAgIHByb3BlcnRp
+ZXM6DQo+ID4gKyAgICAgICAgICAgICAgZnVuY3Rpb246DQo+ID4gKyAgICAgICAgICAgICAgICBl
+bnVtOg0KPiA+ICsgICAgICAgICAgICAgICAgICAtIFVTQjBfT1RHDQo+ID4gKyAgICAgICAgICB0
+aGVuOg0KPiA+ICsgICAgICAgICAgICBwcm9wZXJ0aWVzOg0KPiA+ICsgICAgICAgICAgICAgIGdy
+b3VwczoNCj4gPiArICAgICAgICAgICAgICAgIGVudW06DQo+ID4gKyAgICAgICAgICAgICAgICAg
+IC0gVVNCMF9PVEcNCj4gPiArICAgICAgICAtIGlmOg0KPiA+ICsgICAgICAgICAgICBwcm9wZXJ0
+aWVzOg0KPiA+ICsgICAgICAgICAgICAgIGZ1bmN0aW9uOg0KPiA+ICsgICAgICAgICAgICAgICAg
+ZW51bToNCj4gPiArICAgICAgICAgICAgICAgICAgLSBVU0IxX09URw0KPiA+ICsgICAgICAgICAg
+dGhlbjoNCj4gPiArICAgICAgICAgICAgcHJvcGVydGllczoNCj4gPiArICAgICAgICAgICAgICBn
+cm91cHM6DQo+ID4gKyAgICAgICAgICAgICAgICBlbnVtOg0KPiA+ICsgICAgICAgICAgICAgICAg
+ICAtIFVTQjFfT1RHDQo+ID4gKw0KPiA+ICtyZXF1aXJlZDoNCj4gPiArICAtIGNvbXBhdGlibGUN
+Cj4gPiArICAtIHJlZw0KPiA+ICsgIC0gIiNncGlvLWNlbGxzIg0KPiA+ICsgIC0gZ3Bpby1jb250
+cm9sbGVyDQo+ID4gKyAgLSBjbG9ja3MNCj4gPiArICAtIHJlc2V0cw0KPiA+ICsNCj4gPiArYWRk
+aXRpb25hbFByb3BlcnRpZXM6IGZhbHNlDQo+ID4gKw0KPiA+ICtleGFtcGxlczoNCj4gPiArICAt
+IHwNCj4gPiArICAgICNpbmNsdWRlIDxkdC1iaW5kaW5ncy9jbG9jay9zcC1zcDcwMjEuaD4NCj4g
+PiArICAgICNpbmNsdWRlIDxkdC1iaW5kaW5ncy9yZXNldC9zcC1zcDcwMjEuaD4NCj4gPiArICAg
+ICNpbmNsdWRlIDxkdC1iaW5kaW5ncy9waW5jdHJsL3NwcGN0bC1zcDcwMjEuaD4NCj4gPiArDQo+
+ID4gKyAgICBwY3RsOiBwY3RsQDlDMDAwMTAwIHsNCj4gDQo+IHBpbmN0bEA5YzAwMDEwMA0KDQpZ
+ZXMsIEknbGwgbW9kaWZ5IG5vZGUgbmFtZSBvZiBwaW4tY3RybCB0byAncGluY3RsQDljMDAwMTAw
+JyBpbiBuZXh0IHBhdGNoLg0KDQoNCj4gPiArICAgICAgICBjb21wYXRpYmxlID0gInN1bnBsdXMs
+c3A3MDIxLXBjdGwiOw0KPiA+ICsgICAgICAgIHJlZyA9IDwweDlDMDAwMTAwIDB4MTAwPiwgPDB4
+OUMwMDAzMDAgMHg4MD4sIDwweDlDMDAwMzgwIDB4ODA+LA0KPiA+ICsgICAgICAgICAgICAgIDww
+eDlDMDAzMmU0IDB4MUM+LCA8MHg5QzAwMDA4MCAweDIwPjsNCj4gPiArICAgICAgICBncGlvLWNv
+bnRyb2xsZXI7DQo+ID4gKyAgICAgICAgI2dwaW8tY2VsbHMgPSA8Mj47DQo+ID4gKyAgICAgICAg
+Y2xvY2tzID0gPCZjbGtjIEdQSU8+Ow0KPiA+ICsgICAgICAgIHJlc2V0cyA9IDwmcnN0YyBSU1Rf
+R1BJTz47DQo+ID4gKw0KPiA+ICsgICAgICAgIHBpbnNfdWFydDA6IHBpbnNfdWFydDAgew0KPiA+
+ICsgICAgICAgICAgICBmdW5jdGlvbiA9ICJVQTAiOw0KPiA+ICsgICAgICAgICAgICBncm91cHMg
+PSAiVUEwIjsNCj4gPiArICAgICAgICB9Ow0KPiA+ICsNCj4gPiArICAgICAgICBwaW5zX3VhcnQx
+OiBwaW5zX3VhcnQxIHsNCj4gPiArICAgICAgICAgICAgcGlucyA9IDwNCj4gPiArICAgICAgICAg
+ICAgICAgIFNQUENUTF9JT1BBRCgxMSxTUFBDVExfUENUTF9HX1BNVVgsTVVYRl9VQTFfVFgsMCkN
+Cj4gPiArICAgICAgICAgICAgICAgIFNQUENUTF9JT1BBRCgxMCxTUFBDVExfUENUTF9HX1BNVVgs
+TVVYRl9VQTFfUlgsMCkNCj4gPiArICAgICAgICAgICAgICAgIFNQUENUTF9JT1BBRCg3LFNQUENU
+TF9QQ1RMX0dfR1BJTywwLFNQUENUTF9QQ1RMX0xfT1VUKQ0KPiA+ICsgICAgICAgICAgICA+Ow0K
+PiA+ICsgICAgICAgIH07DQo+ID4gKw0KPiA+ICsgICAgICAgIGVtbWNfbXV4OiBlbW1jX211eCB7
+DQo+ID4gKyAgICAgICAgICAgIGZ1bmN0aW9uID0gIkNBUkQwX0VNTUMiOw0KPiA+ICsgICAgICAg
+ICAgICBncm91cHMgPSAiQ0FSRDBfRU1NQyI7DQo+ID4gKyAgICAgICAgfTsNCj4gPiArDQo+ID4g
+KyAgICAgICAgbW1jMV9tdXg6IG1tYzFfbXV4IHsNCj4gPiArICAgICAgICAgICAgZnVuY3Rpb24g
+PSAiU0RfQ0FSRCI7DQo+ID4gKyAgICAgICAgICAgIGdyb3VwcyA9ICJTRF9DQVJEIjsNCj4gPiAr
+ICAgICAgICAgICAgcGlucyA9IDwgU1BQQ1RMX0lPUEFEKDkxLFNQUENUTF9QQ1RMX0dfR1BJTyww
+LDApID47DQo+ID4gKyAgICAgICAgfTsNCj4gPiArDQo+ID4gKyAgICAgICAgaGRtaV9BX3R4MTog
+aGRtaV9BX3R4MV9waW5zIHsNCj4gPiArICAgICAgICAgICAgZnVuY3Rpb24gPSAiSERNSV9UWCI7
+DQo+ID4gKyAgICAgICAgICAgIGdyb3VwcyA9ICJIRE1JX1RYMSI7DQo+ID4gKyAgICAgICAgfTsN
+Cj4gPiArICAgICAgICBoZG1pX0FfdHgyOiBoZG1pX0FfdHgyX3BpbnMgew0KPiA+ICsgICAgICAg
+ICAgICBmdW5jdGlvbiA9ICJIRE1JX1RYIjsNCj4gPiArICAgICAgICAgICAgZ3JvdXBzID0gIkhE
+TUlfVFgyIjsNCj4gPiArICAgICAgICB9Ow0KPiA+ICsgICAgICAgIGhkbWlfQV90eDM6IGhkbWlf
+QV90eDNfcGlucyB7DQo+ID4gKyAgICAgICAgICAgIGZ1bmN0aW9uID0gIkhETUlfVFgiOw0KPiA+
+ICsgICAgICAgICAgICBncm91cHMgPSAiSERNSV9UWDMiOw0KPiA+ICsgICAgICAgIH07DQo+ID4g
+KyAgICB9Ow0KPiA+ICsuLi4NCj4gPiBkaWZmIC0tZ2l0IGEvTUFJTlRBSU5FUlMgYi9NQUlOVEFJ
+TkVSUyBpbmRleCBkYTYzNzhmLi4xMTgzNWU3IDEwMDY0NA0KPiA+IC0tLSBhL01BSU5UQUlORVJT
+DQo+ID4gKysrIGIvTUFJTlRBSU5FUlMNCj4gPiBAQCAtMTQ4NzIsNiArMTQ4NzIsNyBAQCBNOglX
+ZWxscyBMdSA8d2VsbHMubHVAc3VucGx1cy5jb20+DQo+ID4gIEw6CWxpbnV4LWFybS1rZXJuZWxA
+bGlzdHMuaW5mcmFkZWFkLm9yZyAobW9kZXJhdGVkIGZvciBub24tc3Vic2NyaWJlcnMpDQo+ID4g
+IFM6CU1haW50YWluZWQNCj4gPiAgVzoJaHR0cHM6Ly9zdW5wbHVzLXRpYmJvLmF0bGFzc2lhbi5u
+ZXQvd2lraS9zcGFjZXMvZG9jL292ZXJ2aWV3DQo+ID4gK0Y6CURvY3VtZW50YXRpb24vZGV2aWNl
+dHJlZS9iaW5kaW5ncy9waW5jdHJsL3N1bnBsdXMsKg0KPiA+ICBGOglkcml2ZXJzL3BpbmN0cmwv
+c3VucGx1cy8NCj4gPiAgRjoJaW5jbHVkZS9kdC1iaW5kaW5ncy9waW5jdHJsL3NwcGN0bCoNCj4g
+Pg0KPiA+IC0tDQo+ID4gMi43LjQNCj4gPg0KPiA+DQo=
