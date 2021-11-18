@@ -2,127 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1D9455BFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:56:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E76F455BFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:53:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345011AbhKRM6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 07:58:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345019AbhKRM5N (ORCPT
+        id S1344974AbhKRM4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 07:56:15 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:59499 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344986AbhKRMzB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 07:57:13 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D64CC061226
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 04:51:51 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1mngtJ-0000oU-Qc; Thu, 18 Nov 2021 13:51:49 +0100
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Subject: Re: [PATCH] iio: adc: stm32: fix null pointer on defer_probe error
-To:     Olivier Moysan <olivier.moysan@foss.st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Wan Jiabing <wanjiabing@vivo.com>, Xu Wang <vulab@iscas.ac.cn>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-References: <20211118123952.15383-1-olivier.moysan@foss.st.com>
-Message-ID: <45a5129a-c0b1-4a07-aef8-d6e0845c7b1a@pengutronix.de>
-Date:   Thu, 18 Nov 2021 13:51:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Thu, 18 Nov 2021 07:55:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1637239921; x=1668775921;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=EOyHM8o1vLknnH/Jm6VZx0iPxkh1Fvpl/xnTHtx5hwk=;
+  b=XgcGr/FnDW7KycoW4WzQ9H+fin9wigozCPzVB4sAktS9fhtR3LFAc+Zw
+   RAKSII00HnlIGVfGjDUonH6Ihlrhi++dpqEsa2PRQDKevI+xlWkh6J0oz
+   uP3K1nAoNPANAM1Pzk7c2J5buX2iU5qJgNkHHxcb3zfwiUfxCsgIxEBqR
+   5v6YsUR+w3tgqs1S7o/qZ4R4UsJsXk3RfvzMTCMLHtLVUBT57PWtsgosD
+   puSU6mus3RIllMLLZB76xwwp2j0+Sbm3IAciliymuxvKiUryxHJlnV9Li
+   mlD3K+Ldqz0qlTv8YvIjFuCkeKDuohX8B/COozvi0OQHnPbTbvRRa4AdP
+   Q==;
+IronPort-SDR: +2ZDFT8Kc+s9St7RhTTfwOTbgY8zsXjhfUMYMfI3Q7yWqA0Q2AtOdomBe1x/lgHPeQ7HRGRJ4g
+ 3mqJADvTAVYqY9NGpAX8HVOc3KkxlPndLpYgnHHmmJNe4bb0S3TqOm3vstVObbsBeVgfjYClxc
+ hcB6ykezTOdZgsFrtKJ7AefrvU/cdTrADlJW2pG48JgDVaurV8iqz3uQxTKd6D2XYgzp4AcIjE
+ NtHCorxUgas5mK0V9B7E5hVDR88Rp2SqKxCG4HWCJm3tHEZmYUYIjnfmHkevgyvsCjq6FmgL1F
+ qM0GOaNI5wEZ/syO0BVrzagi
+X-IronPort-AV: E=Sophos;i="5.87,244,1631602800"; 
+   d="scan'208";a="139572308"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Nov 2021 05:52:01 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 18 Nov 2021 05:52:00 -0700
+Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Thu, 18 Nov 2021 05:51:57 -0700
+From:   Eugen Hristev <eugen.hristev@microchip.com>
+To:     <leonl@leopardimaging.com>, <linux-media@vger.kernel.org>
+CC:     <skomatineni@nvidia.com>, <sakari.ailus@linux.intel.com>,
+        <luca@lucaceresoli.net>, <linux-kernel@vger.kernel.org>,
+        Eugen Hristev <eugen.hristev@microchip.com>
+Subject: [PATCH] media: i2c: imx274: fix trivial typo obainted/obtained
+Date:   Thu, 18 Nov 2021 14:51:51 +0200
+Message-ID: <20211118125151.290144-1-eugen.hristev@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20211118123952.15383-1-olivier.moysan@foss.st.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Olivier,
+Fix typo obainted/obtained.
 
-On 18.11.21 13:39, Olivier Moysan wrote:
-> dev_err_probe() calls __device_set_deferred_probe_reason()
-> on -EPROBE_DEFER error.
-> If device pointer to driver core private structure is not initialized,
-> a null pointer error occurs.
-> This pointer is set too late on iio_device_register() call, for iio device.
+Fixes: 0985dd306f72 ("media: imx274: V4l2 driver for Sony imx274 CMOS sensor")
+Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+---
+ drivers/media/i2c/imx274.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Even if it were set earlier, you should call dev_err_probe with the dev of
-the probe that's currently running. Not any other devices you created since
-then.
-
-> So use parent device instead for dev_err_probe() call.
-> 
-> Fixes: 0e346b2cfa85 ("iio: adc: stm32-adc: add vrefint calibration support")
-> 
-> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
-> ---
->  drivers/iio/adc/stm32-adc.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-> index 7f1fb36c747c..14c7c9d390e8 100644
-> --- a/drivers/iio/adc/stm32-adc.c
-> +++ b/drivers/iio/adc/stm32-adc.c
-> @@ -217,6 +217,7 @@ struct stm32_adc_cfg {
->  
->  /**
->   * struct stm32_adc - private data of each ADC IIO instance
-> + * dev:			parent device
->   * @common:		reference to ADC block common data
->   * @offset:		ADC instance register offset in ADC block
->   * @cfg:		compatible configuration data
-> @@ -243,6 +244,7 @@ struct stm32_adc_cfg {
->   * @int_ch:		internal channel indexes array
->   */
->  struct stm32_adc {
-> +	struct device		*dev;
-
-Can't you use the parent pointer of the indio_dev?
-
->  	struct stm32_adc_common	*common;
->  	u32			offset;
->  	const struct stm32_adc_cfg	*cfg;
-> @@ -1986,8 +1988,7 @@ static int stm32_adc_populate_int_ch(struct iio_dev *indio_dev, const char *ch_n
->  			/* Get calibration data for vrefint channel */
->  			ret = nvmem_cell_read_u16(&indio_dev->dev, "vrefint", &vrefint);
->  			if (ret && ret != -ENOENT) {
-> -				return dev_err_probe(&indio_dev->dev, ret,
-> -						     "nvmem access error\n");
-> +				return dev_err_probe(adc->dev, ret, "nvmem access error\n");
->  			}
->  			if (ret == -ENOENT)
->  				dev_dbg(&indio_dev->dev, "vrefint calibration not found\n");
-> @@ -2221,6 +2222,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
->  	init_completion(&adc->completion);
->  	adc->cfg = (const struct stm32_adc_cfg *)
->  		of_match_device(dev->driver->of_match_table, dev)->data;
-> +	adc->dev = &pdev->dev;
-
-There's struct device *dev = &pdev->dev; defined earlier, so you can use dev instead.
-
->  
->  	indio_dev->name = dev_name(&pdev->dev);
->  	indio_dev->dev.of_node = pdev->dev.of_node;
-> 
-
-Cheers,
-Ahmad
-
+diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
+index 5312cf3e855d..2e804e3b70c4 100644
+--- a/drivers/media/i2c/imx274.c
++++ b/drivers/media/i2c/imx274.c
+@@ -1499,7 +1499,7 @@ static int imx274_s_stream(struct v4l2_subdev *sd, int on)
+ /*
+  * imx274_get_frame_length - Function for obtaining current frame length
+  * @priv: Pointer to device structure
+- * @val: Pointer to obainted value
++ * @val: Pointer to obtained value
+  *
+  * frame_length = vmax x (svr + 1), in unit of hmax.
+  *
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.25.1
+
