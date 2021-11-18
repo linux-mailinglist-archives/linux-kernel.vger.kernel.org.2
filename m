@@ -2,133 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BFA4554A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 07:16:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A0B4554B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 07:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243296AbhKRGTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 01:19:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44926 "EHLO
+        id S243309AbhKRGUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 01:20:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237324AbhKRGTb (ORCPT
+        with ESMTP id S243301AbhKRGUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 01:19:31 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A018C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 22:16:32 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id q12so4445405pgh.5
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 22:16:32 -0800 (PST)
+        Thu, 18 Nov 2021 01:20:33 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED00C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 22:17:33 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id y12so22002688eda.12
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 22:17:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dBpck1aGx8TqPXrKH8c2Dl1lu1ufAM7ETwQygrf3Zc8=;
-        b=N90mRRf5IotDMCZ6cNPZ7ByOXadx0DrSOK0K9oombTs19m68yAIiDg/z4IeOon1Q6p
-         MS8fRPJI02IFSCxaHAK/bhNXjPZm2e5a1z8qtgW5Nqorzk+f3YRlbqHzHHnej9/hywvg
-         4IYDjqUjZsrp02miPEp/IxO7DRszSMimLnJj6UslUX2nNcomYIuVzSdkw/U3vXHK9qB7
-         j5ao0PaLR4aVAo5haMueYIA0nQ0BGPPOY8tb2daeUv5C4MPlAX0irUu8UJR8umZUAbgF
-         ME3MxvvbJ6mnTR0gijRfsF+8WPUbFcQaYmKejCtCbMWX85U+UJPOPZsHG4uuJza+4Hsz
-         MsMw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2Jgd/Uy9gtODKx1KtUIvf0F11hbP4Jy1x4tgEAPO2Ag=;
+        b=nUSEXBVc11rBCtBD7x3GDqvBrXQo4CKDhYAd2w9Ptj3WCS/T8/tNSQ52nXpBiC5+hr
+         A9woN8mVpcOVmPA+f0TLSka078BeypYAO+9wBv3tC0wGkwCHS0LmaRwBcDfGG1bYEl0g
+         X4mi49p/RBBy9bqlp8qyz5e75pFwcTEB7YfViavDlBXi+C9H1KLW12MX63sdMcmIAIaE
+         r435TVQC4PYHHDfEqaiPZag7+7wxUKMuqkt96hWxrgPbJY+8TgPb1mS6frDaVscjeKfI
+         7PoblSYw/y5dyLxSRSiTFc6ghyERIOWtlrwvQ9kDWHtskIV98S3pMpKQ5rrvfzarhLqo
+         aUfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dBpck1aGx8TqPXrKH8c2Dl1lu1ufAM7ETwQygrf3Zc8=;
-        b=MvFvlfb2ES+ePdZk1Emp/Sxjq5Lkn9f55pASM1dBO4GHixNTkQ7gM1THb3RI7hwbAQ
-         oB2gySjk/azIwLoq5drtgq7kCqFwDJh4zBGEDywedAG/0oNECQlPwEdWFL6dgiE5j913
-         B1kJbI2JEABZ9u1sueExcej6eZwPpNeBIzUEHS+YuAbh/5K1ZY930xEY94FYF8GuOfvH
-         X16dw6UOdIQdt44mbffP660pk/RV++fZHw8QQNJnGZXD9qpKNOmcAGqTHwTWyUTq8I2I
-         6gJW4SfAA6UN9Pj5aFzJnUGL05xF9NDIgwrHVDPxqtyS85/O3tEOeoVKwf21CWo5ynkl
-         Vvow==
-X-Gm-Message-State: AOAM531ySwYcGZgqqKLT9eLxGqM7fq86LjywuoUKfKR+9cVhP5HjSPLy
-        DeKISvkicMPqu8S35kLpML6YBaV26bw=
-X-Google-Smtp-Source: ABdhPJwChD6detTH/DDXDirtCdG9FDC3JLVtE92pMilKctfs/2wFrr0vBw5wO31jtOgPJ/Bp+D8/Hg==
-X-Received: by 2002:a05:6a00:21c4:b0:475:e532:3d18 with SMTP id t4-20020a056a0021c400b00475e5323d18mr12751266pfj.40.1637216191187;
-        Wed, 17 Nov 2021 22:16:31 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id l11sm1639525pfu.129.2021.11.17.22.16.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 22:16:30 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: yao.jing2@zte.com.cn
-To:     linux-kernel@vger.kernel.org
-Cc:     yao.jing2@zte.com.cn, Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] lib/mpi: use swap() to make code cleaner
-Date:   Thu, 18 Nov 2021 06:16:21 +0000
-Message-Id: <20211118061621.164023-1-yao.jing2@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2Jgd/Uy9gtODKx1KtUIvf0F11hbP4Jy1x4tgEAPO2Ag=;
+        b=ioAVJKmwbJ6xUv3pjv3bkhHdIh0+kBn2fMWRyKb4gou4aA7ssk7wezj8btHZ5vXq+N
+         1mgznrTBU+t655YdadUlEVkt3vFxiNGQ9af6JRpm6ofMnR8A2VzpF7tglM2itkWiB+wP
+         qNzb9PMkm4HQua73/OO7lh+3Tmzqvak00f2rDWy7t5DURKIhPCsE+JVhWJjkd7IXHk3c
+         G9KWFqplo87sZ/NKj/DfLDKRnXc0phwcLQyck9pxnMWNEa6UP+CEbuqy1vt0OhH1TQZu
+         5gnwdxYZWs83L+GA3NlUNGDk75nva6aNot0klCNMTlV1RVzUdlt8oKnKcSn/JNR+vgHN
+         C7nQ==
+X-Gm-Message-State: AOAM531mkzFPXJd7PCTlUZe8mpnGbg5eNa2sUuEuASR6Ei2+VbRUEDt2
+        52HREtnuiir+UVdYKmqNVtyAbNI0ukjg5x+vsLyENQ==
+X-Google-Smtp-Source: ABdhPJz5jXV9FDBEk4qJUbxvQpSDeAySuVhYuOB3OxjgG/lbBWVUwaxhu5X3K+zXJjQIZSyxGugAievmkFXtCmQ3ZZ0=
+X-Received: by 2002:a17:906:489b:: with SMTP id v27mr29401117ejq.567.1637216251656;
+ Wed, 17 Nov 2021 22:17:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211117144602.341592498@linuxfoundation.org>
+In-Reply-To: <20211117144602.341592498@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 18 Nov 2021 11:47:20 +0530
+Message-ID: <CA+G9fYv6gNNhtGtE5HC4e4M+kdb7gJKn1t6tC1mec3V0gJ2SZA@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/569] 5.10.80-rc4 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yao Jing <yao.jing2@zte.com.cn>
+On Wed, 17 Nov 2021 at 20:16, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.80 release.
+> There are 569 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 19 Nov 2021 14:44:50 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.80-rc4.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
-opencoding it.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Yao Jing <yao.jing2@zte.com.cn>
----
- lib/mpi/ec.c      | 6 ++----
- lib/mpi/mpi-pow.c | 9 ++-------
- 2 files changed, 4 insertions(+), 11 deletions(-)
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-diff --git a/lib/mpi/ec.c b/lib/mpi/ec.c
-index 40f5908e57a4..a2f5694425ee 100644
---- a/lib/mpi/ec.c
-+++ b/lib/mpi/ec.c
-@@ -1282,14 +1282,12 @@ void mpi_ec_mul_point(MPI_POINT result,
- 		sum = &p2_;
- 
- 		for (j = nbits-1; j >= 0; j--) {
--			MPI_POINT t;
--
- 			sw = mpi_test_bit(scalar, j);
- 			point_swap_cond(q1, q2, sw, ctx);
- 			montgomery_ladder(prd, sum, q1, q2, point->x, ctx);
- 			point_swap_cond(prd, sum, sw, ctx);
--			t = q1;  q1 = prd;  prd = t;
--			t = q2;  q2 = sum;  sum = t;
-+			swap(q1, prd);
-+			swap(q2, sum);
- 		}
- 
- 		mpi_clear(result->y);
-diff --git a/lib/mpi/mpi-pow.c b/lib/mpi/mpi-pow.c
-index 2fd7a46d55ec..67fbd4c2503d 100644
---- a/lib/mpi/mpi-pow.c
-+++ b/lib/mpi/mpi-pow.c
-@@ -176,7 +176,6 @@ int mpi_powm(MPI res, MPI base, MPI exp, MPI mod)
- 
- 		for (;;) {
- 			while (c) {
--				mpi_ptr_t tp;
- 				mpi_size_t xsize;
- 
- 				/*if (mpihelp_mul_n(xp, rp, rp, rsize) < 0) goto enomem */
-@@ -207,9 +206,7 @@ int mpi_powm(MPI res, MPI base, MPI exp, MPI mod)
- 					xsize = msize;
- 				}
- 
--				tp = rp;
--				rp = xp;
--				xp = tp;
-+				swap(rp, xp);
- 				rsize = xsize;
- 
- 				if ((mpi_limb_signed_t) e < 0) {
-@@ -235,9 +232,7 @@ int mpi_powm(MPI res, MPI base, MPI exp, MPI mod)
- 						xsize = msize;
- 					}
- 
--					tp = rp;
--					rp = xp;
--					xp = tp;
-+					swap(rp, xp);
- 					rsize = xsize;
- 				}
- 				e <<= 1;
--- 
-2.25.1
+NOTE:
+Anders reported that,
+The following warnings are still noticed on arm64 builds.
+drivers/soc/tegra/pmc.c: In function 'tegra_powergate_power_up':
+drivers/soc/tegra/pmc.c:726:1: warning: label 'powergate_off' defined
+but not used [-Wunused-label]
+  726 | powergate_off:
+      | ^~~~~~~~~~~~~
 
+If I cherry pick 19221e308302 ("soc/tegra: pmc: Fix imbalanced clock
+disabling in error code path")
+the warning goes away.
+
+build link:
+https://builds.tuxbuild.com/213DyYEZ9MU7o7yLjEn0sleNfM6/
+
+## Build
+* kernel: 5.10.80-rc4
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.10.y
+* git commit: 087abd07310fe0fc9974a321f3e0918e63c4bd44
+* git describe: v5.10.79-570-g087abd07310f
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+.79-570-g087abd07310f
+
+## No regressions (compared to v5.10.79-579-g739c1bb0c245)
+
+## No fixes (compared to v5.10.79-579-g739c1bb0c245)
+
+## Test result summary
+total: 90167, pass: 76691, fail: 526, skip: 12152, xfail: 798
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 259 total, 259 passed, 0 failed
+* arm64: 37 total, 37 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 36 total, 36 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 34 total, 34 passed, 0 failed
+* parisc: 12 total, 12 passed, 0 failed
+* powerpc: 54 total, 46 passed, 8 failed
+* riscv: 24 total, 24 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 24 total, 24 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 37 total, 37 passed, 0 failed
+
+## Test suites summary
+* fwts
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* perf/Zstd-perf.data-compression
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
