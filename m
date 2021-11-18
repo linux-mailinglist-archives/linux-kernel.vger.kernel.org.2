@@ -2,195 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 477B8456320
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 20:05:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CBFA456315
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 20:03:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232431AbhKRTIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 14:08:45 -0500
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:56624 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230107AbhKRTIo (ORCPT
+        id S232240AbhKRTGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 14:06:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230107AbhKRTGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 14:08:44 -0500
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AII5Nkl031693;
-        Thu, 18 Nov 2021 19:05:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-type : mime-version;
- s=corp-2021-07-09; bh=+IDro81HnAGGh3MRfDiAB2CpWJ4MhTWn8dNV/1gYJ4Y=;
- b=eUl/fUD3xP+r+JUpAqW+zwE32KGXi5aldVw0rapZ+rrXyWeceajmDU93242OKQTR8x9X
- bqEJTreg+VFBxRX7ax1b0YMPV0qR34T301xRU1UhIG1xhE71ppyDo1AlsIllUy38Fr8A
- iK2GpIvyaTFNLX+PK0nT7gO/ZfWzFn/q2pnpSo/99YEHAlN3uFzCxMieeRhXy6PFzgx/
- H6z/gy0WXtD7hUw6+fVBu22qPyPu1DyLpynbffyK+EBG/lbpnDDCvdHLG7P1NvEjVMP7
- 8laHcTDlCTYRtHfKXABoz+TUJnm7BcYOzW/HH2O90W6lGq5GUCDga5BdlSHg4IqRig9F IQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3cd2ajsa6t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Nov 2021 19:05:38 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AIJ0Yfs123178;
-        Thu, 18 Nov 2021 19:05:37 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-        by aserp3030.oracle.com with ESMTP id 3ccccs7urc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Nov 2021 19:05:37 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n9sTgCVnnivEynqIe+edGb9DzZKaSGlDo9jG75ubHdH6O3KeyT20J+BsFu5dpujo43BHYZbiTtVEjr/JRh8NbyVNhK8OwSvODMCKhoGwxdBQCt5/9shy6O1nub2r61sTqGjQij7WgVd0L61LJmoUMv7IZ9JgAmuLC/Z2WfCLUckp9tDqew+Ut+8FhXTkN4gCXKhYfX7ycdx5YMGWCdhZBmu9dD2uygYdl4KF2KPvSn72iBBNeZJyEVUCxpOrDoN43vFMPVLcFOM9JmhToTs3g+71GnCXfH1YKN0ccvFAjxIiintUYbR/x1JEIitI43DpntkZg3nZ1duXBxmWquxawg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+IDro81HnAGGh3MRfDiAB2CpWJ4MhTWn8dNV/1gYJ4Y=;
- b=TkRiHZs9824tMJG4rVO7CpnzLtFgX2dPCGu5EPHlOWaiSl9K+6lJpwkS6fuX11W/fEmGolNiKPNIbfLkUIakEeHEk6q4+nL9BotL+v0+oT40TnxRj8KmC3gB0mK4umUno+tW5lWnRvpHDBQEDxMGpkfmjGLICvSFSp7HpBiLFom56E2KLbuidhmKOU5I11rWxQrehgmcMANFrgAi6LAY3XYIB/k1AORzPyQ5H+O6JnWemFQ9KPGhQKvjry8IMH7wrxMVzDW51qmrqET0FaiCxgoI0TWBIgpwnqT9C2Z3LFwc3AqVpGhe8FEQpp2Kp+wH7qixGFwilWUDew7XHdNirQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Thu, 18 Nov 2021 14:06:35 -0500
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70078C06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 11:03:35 -0800 (PST)
+Received: by mail-pl1-x64a.google.com with SMTP id e9-20020a170902ed8900b00143a3f40299so3412109plj.20
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 11:03:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+IDro81HnAGGh3MRfDiAB2CpWJ4MhTWn8dNV/1gYJ4Y=;
- b=gcB9UuyDLTF5jCnDQ689qWZPTtahcoZOGzJtI2oiNR5f9vkFq8gRODwzwg/LUXh9oxFFUu9/k7dl1GUcu89bJYxuDYwer0dNTAQRnuueI7aOY70ije6WFgidbG5vVMBErs2bUJnQxNlwGeOUxlPdI+a+DMHxKiETUm0yv8iEgh0=
-Received: from BN0PR10MB5192.namprd10.prod.outlook.com (2603:10b6:408:115::8)
- by BN7PR10MB2627.namprd10.prod.outlook.com (2603:10b6:406:c8::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.20; Thu, 18 Nov
- 2021 19:05:35 +0000
-Received: from BN0PR10MB5192.namprd10.prod.outlook.com
- ([fe80::8823:3dbf:b88f:2c0e]) by BN0PR10MB5192.namprd10.prod.outlook.com
- ([fe80::8823:3dbf:b88f:2c0e%4]) with mapi id 15.20.4713.022; Thu, 18 Nov 2021
- 19:05:35 +0000
-From:   George Kennedy <george.kennedy@oracle.com>
-To:     gregkh@linuxfoundation.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, dgilbert@interlog.com
-Cc:     george.kennedy@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: scsi_debug: sanity check block descriptor length in resp_mode_select
-Date:   Thu, 18 Nov 2021 14:03:28 -0500
-Message-Id: <1637262208-28850-1-git-send-email-george.kennedy@oracle.com>
-X-Mailer: git-send-email 1.9.4
-Content-Type: text/plain
-X-ClientProxiedBy: SN2PR01CA0017.prod.exchangelabs.com (2603:10b6:804:2::27)
- To BN0PR10MB5192.namprd10.prod.outlook.com (2603:10b6:408:115::8)
-MIME-Version: 1.0
-Received: from dhcp-10-152-13-169.usdhcp.oraclecorp.com.com (209.17.40.40) by SN2PR01CA0017.prod.exchangelabs.com (2603:10b6:804:2::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend Transport; Thu, 18 Nov 2021 19:05:34 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 71455e31-9dae-46f0-6534-08d9aac666ed
-X-MS-TrafficTypeDiagnostic: BN7PR10MB2627:
-X-Microsoft-Antispam-PRVS: <BN7PR10MB262795D60B312E6B6FE68CAFE69B9@BN7PR10MB2627.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: b1ZmOMDFIT7AAvRnygZ4l0/HxZ+1C+HQNaCp/1SafYK9yl5L0VI8GR04aP8TNzHAZQJPSTsxlQgjK5IhB+pC78TuzP9tnKz9wn4qlWy8dAMZQYcm2FzHYq7BCsqUqmM3eIcovQ+++B7OY4+RcnjMkzHXv1bA1GdcctttICdZ2SI7AINzmAOAKY8Zx9Bsv9yFhT1ib5qUS46431qvIRajkCLnTm5EIWH/BDoXO7RYH6hDboLd2ErqnIRV0nXHyC8rI2MnSkXVIMsG5giNBYmyhCh14nqNQQS7PKom+sE2TWwtowI1nlCVDLMtninwokWD52F0znV9MjjFZsRhqlF0kJiW9BJDYuqOo2UWjw8ylYkWdVFd0ahQUaL/XVWusybDOGhhj2CA5oDBT24lhMHtoy4WQyQSfxlkd5+pXaP9ThXPqlt9nZYxKllMQdF86HOaVJNzEycKyYfR+IZWSFT4NLSkLQdM7WXM0LwDctfg7bgBNeT0HK0VzqqNK5PyrSI9oTEHr2LcLe6IjvulVHw4/EV7CE0DDnJt16BbVgvOSLdIng4muJgbzhiTzKYJ86zWi64waq3WoGQusLtzzRbEd+WDaXQZ5J3gEUxwkUCSTdjjMAAfULUqe3yfuVUK6RNUauZ4A06C3O6LCAmLMHMH2QdMTIjsmaQW8SLzXYetjoFHpSitHFbGoQAs/fn6Fz3Ggjg9liZ58elXCzdgAPPzLg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5192.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(83380400001)(38100700002)(956004)(6666004)(5660300002)(66946007)(66476007)(6486002)(44832011)(38350700002)(6512007)(66556008)(8936002)(8676002)(6506007)(36756003)(4326008)(52116002)(186003)(26005)(508600001)(2616005)(86362001)(316002)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?g6TiYKrJWySZVMqP3GZaugTTGSLb1KozGPJtA8Gynf4M0pPl9vKB8WnCa6fB?=
- =?us-ascii?Q?8vxMsUS493ABrHp+AsY6Z8fgZhpjUFpwI0C81YIxGq9yH3LURuVQYNyShW4M?=
- =?us-ascii?Q?8PgtzjFRo24Mta6I1TQUC95L6glfOvig4TkJPj9RoKb0rCp42ORPQW0JX0jQ?=
- =?us-ascii?Q?7qgwTwoD1EDdJE1h0sW0NThWupKYQRP3fZmPvp4UKWoC2Ylv4aLpzkcjzXnA?=
- =?us-ascii?Q?63z0B/ZVRdMx41ojD53MFP9q4fhhFBh95WBP3ysJrcOPf3CTjPIWwmxGog5c?=
- =?us-ascii?Q?jRqbIaldf7Itgcvu3PQ20SCOfKWzPTQuvnJITYVeJwyh/G7CXffgT+9OF1kW?=
- =?us-ascii?Q?CRwDxbLdwmeex7tzQ1Khp4bGLhSCMwZ/toeuDdv1TFVYDosr2/dJW86W1KLc?=
- =?us-ascii?Q?it49bfo4tuHdnBZDOmUghVrXThc3YuvyY4kPZM+EKe4ehyVIhav+kZbslwTP?=
- =?us-ascii?Q?eVxOprNcEajrX/Rq2hsc9Mtixb913trzjxQDmTfNEei0LvhUkHTXFfSrWW0M?=
- =?us-ascii?Q?SiKEgGW1t9QB23UbrL1Bxr7Kz9vpSq7Jnb4Q6PIu7evNfB/MEeqFnfBmPabj?=
- =?us-ascii?Q?Ko+JfMqr/8fgoREeUeFIqkvr3x/23BpK7Hl/3ZOUiTCNIlml0f7KKxxjLJ+T?=
- =?us-ascii?Q?d6U8/c0uA2KnaU1vRf7gtMsejauphCdmEq8LAWhGYs4q6c0hndaNvG3DhIOO?=
- =?us-ascii?Q?qnZXZD5TQX4OskbSBqDWYudCneoKr8tsa157QCHQjPlyxz+NgmuwfC98w/KZ?=
- =?us-ascii?Q?L0HrNn9kFkTDUoByRQNWc0hVcRPZYEsvqz/Dvi0L5e6uajEfyJWL2uETkEDO?=
- =?us-ascii?Q?77XxGnFBOZ/Q0aHmLPHmaHAeci55zIcUZ8XbCowFK3XZftt8vo4QPP/MgFNd?=
- =?us-ascii?Q?+hoYX21Ivt1O7c21+5cZxMuKYmqAgn1Y+cJGX1Dni3FhnVyC0pQUfbwuv5bR?=
- =?us-ascii?Q?ntkfqmcfLuuTvfYk+iGUkvTvQKJpFNE7Of3u9NzH4HHeOmhq0k0DbIika2oV?=
- =?us-ascii?Q?xdRAm+uKCGpAQi6Ip0mUvDaMyyDfheNZuXM91iMSADw31db/tPYYsnckn/Xh?=
- =?us-ascii?Q?jpp4QT2BL7bDoalQgiSi9VhvLSvISMaJN50OP6FWyW3wusUKuEedtwUhzy18?=
- =?us-ascii?Q?40Umg+DbY4dv/L4ePahs/XH/t9Hl+7RGqzRT0Q5oWN5O1bQOcovTDs4sJc7N?=
- =?us-ascii?Q?1uxrH4zbODHuzs6u8pQeACjvXhJz/AGr9hepT+XXn5if3qLYgUnONmGgRsaV?=
- =?us-ascii?Q?LaYWo/6A6e/GsD4No/nWReqc5/2MeuBp+T/GNSir670ZGoaIBX0W9FcsbWq1?=
- =?us-ascii?Q?Bm7nV+T6XDLvdSjLcnGtWnTphvPfl+mkktlDqXdN9WRPMUqF76BzPWeOLPto?=
- =?us-ascii?Q?HEGx9wbWT8p/7O+8e91J8AhG5QzMFZRaeCFwNe71gFXNz81icXLnesfFyG2F?=
- =?us-ascii?Q?C6r6U3wIV9vOV/2Y5wfOYbSY4bfZMMDIfgGWHxhLL6pZXIftfEyuh0BIwP+D?=
- =?us-ascii?Q?dLYFy3EIhDW120JuCJG/Y6dPi2X6acXePi5oxWqHvfCRrCItiPqyFVAGqLjD?=
- =?us-ascii?Q?UveFphToN3pJLBRUmN/s6sXhpl9nDjM6foADZvy/fqRegKoEsM0OXl1+ROGt?=
- =?us-ascii?Q?RvzzIRPM8WlF4GMfUlY4ZLGWsIE+sPtpqi6CyQUKOlD4ZCRX8SZD/4CMdFke?=
- =?us-ascii?Q?99asGQ=3D=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 71455e31-9dae-46f0-6534-08d9aac666ed
-X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5192.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2021 19:05:35.8538
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: R/fIcw5gXtWpNxVLZgxU0B5HlMA6QKSl8tfSIzruIxlRvdXf8d2BAULShO6wrtUrSwgS0xrRHg+i2ydAmlShBa19qmEGsZeepggOmuOmQJk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR10MB2627
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10172 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
- adultscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111180101
-X-Proofpoint-GUID: 62lkHl-KOwscIb1mNbbxXx3g76iuTrEN
-X-Proofpoint-ORIG-GUID: 62lkHl-KOwscIb1mNbbxXx3g76iuTrEN
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=HbbnT4g8uYXIZ4nFA7Y+X8aSEdLIcDyoD9XMwtQbx1Y=;
+        b=fiLii7/mlsjqDi+U5IhIH5ww75jnDR7U36Nl3na2PjrYgnrUU/u7BbXxbzFkWlv5UW
+         CkVw7JSRYSr2XsT/3ektJIPSnsc1Bq8uoS+VDrrWWH/9Gz1ZdODjmMAeET5gOQBRL2mm
+         Ao6KoZj/CYRoLRA29CldVMS4ySGHVr4uGIDyDXQqtJX//C2Insn3nooIRJ6CsMMxfx1w
+         GhCDlHK7qqz2sxKQoa4ifFXCg4if/ZPJs+E/q79WIqx+zEAn/fQ6PrOcIwG9Q67SzszD
+         Ki01XWPPeQimrjSp4J4vbK7t9XWqQ+hdOhac3ytkF0wVCq3GO7WxWloNQzyzrHFsnsqr
+         E8IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=HbbnT4g8uYXIZ4nFA7Y+X8aSEdLIcDyoD9XMwtQbx1Y=;
+        b=eddPL2xBtkZ2zRRqPKKv/1HYTuhdF49XE3toGWbdTR9Uv94IbD2RDiJOolPUOn2Xo9
+         Dc+cLl/Yi3XIIcC6I3ut7NBIkLuMK9YBYFJCS1jWvgIrc4uuMR89ZIXi7zpiNJv71SKe
+         /QPG2ksgZ/BK6GMgtuF7EKy5CTyzSzBO6y5QyVySJH7gdDBa7LyPhw8blmKjFv0xdtjS
+         h7cMf7HApCGM1a9NMs6U7YQMOmqXZ88W7d0H1WsOs6zt0dmF0RaiJXXtIYyI7fO1UayZ
+         u2oOAo45oG1UQ2t7qNxcZJAAP0uD7jV5zEAlchKm42omVScDbzd+j5rsCVSFi3jO9fkT
+         s7XA==
+X-Gm-Message-State: AOAM532PbdWH5d9APQp4OuVTy43PehrBJKS+NgSQvLS1AdnE5iQYgT76
+        4YMboFQad8XGy1pERv9FzTJe12GI5kApYw==
+X-Google-Smtp-Source: ABdhPJzFkgFOA9pRhwhquQr18CIg/N87lwp4HnotuWd+w1xAo93fsID55xxbHcJjm9EGpCv9FXuq/HV+jp44VQ==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:b453:daa7:1a43:6c62])
+ (user=dlatypov job=sendgmr) by 2002:a17:90b:3a89:: with SMTP id
+ om9mr13123321pjb.99.1637262214821; Thu, 18 Nov 2021 11:03:34 -0800 (PST)
+Date:   Thu, 18 Nov 2021 11:03:29 -0800
+Message-Id: <20211118190329.1925388-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+Subject: [PATCH] kunit: tool: reconfigure when the used kunitconfig changes
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In resp_mode_select() sanity check the block descriptor len to avoid UAF.
+Problem: currently, if you remove something from your kunitconfig,
+kunit.py will not regenerate the .config file.
+The same thing happens if you did --kunitconfig_add=CONFIG_KASAN=y [1]
+and then ran again without it. Your new run will still have KASAN.
 
-BUG: KASAN: use-after-free in resp_mode_select+0xa4c/0xb40 drivers/scsi/scsi_debug.c:2509
-Read of size 1 at addr ffff888026670f50 by task scsicmd/15032
+The reason is that kunit.py won't regenerate the .config file if it's a
+superset of the kunitconfig. This speeds it up a bit for iterating.
 
-CPU: 1 PID: 15032 Comm: scsicmd Not tainted 5.15.0-01d0625 #15
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-Call Trace:
- <TASK>
- dump_stack_lvl+0x89/0xb5 lib/dump_stack.c:107
- print_address_description.constprop.9+0x28/0x160 mm/kasan/report.c:257
- kasan_report.cold.14+0x7d/0x117 mm/kasan/report.c:443
- __asan_report_load1_noabort+0x14/0x20 mm/kasan/report_generic.c:306
- resp_mode_select+0xa4c/0xb40 drivers/scsi/scsi_debug.c:2509
- schedule_resp+0x4af/0x1a10 drivers/scsi/scsi_debug.c:5483
- scsi_debug_queuecommand+0x8c9/0x1e70 drivers/scsi/scsi_debug.c:7537
- scsi_queue_rq+0x16b4/0x2d10 drivers/scsi/scsi_lib.c:1521
- blk_mq_dispatch_rq_list+0xb9b/0x2700 block/blk-mq.c:1640
- __blk_mq_sched_dispatch_requests+0x28f/0x590 block/blk-mq-sched.c:325
- blk_mq_sched_dispatch_requests+0x105/0x190 block/blk-mq-sched.c:358
- __blk_mq_run_hw_queue+0xe5/0x150 block/blk-mq.c:1762
- __blk_mq_delay_run_hw_queue+0x4f8/0x5c0 block/blk-mq.c:1839
- blk_mq_run_hw_queue+0x18d/0x350 block/blk-mq.c:1891
- blk_mq_sched_insert_request+0x3db/0x4e0 block/blk-mq-sched.c:474
- blk_execute_rq_nowait+0x16b/0x1c0 block/blk-exec.c:63
- sg_common_write.isra.18+0xeb3/0x2000 drivers/scsi/sg.c:837
- sg_new_write.isra.19+0x570/0x8c0 drivers/scsi/sg.c:775
- sg_ioctl_common+0x14d6/0x2710 drivers/scsi/sg.c:941
- sg_ioctl+0xa2/0x180 drivers/scsi/sg.c:1166
- __x64_sys_ioctl+0x19d/0x220 fs/ioctl.c:52
- do_syscall_64+0x3a/0x80 arch/x86/entry/common.c:50
- entry_SYSCALL_64_after_hwframe+0x44/0xae arch/x86/entry/entry_64.S:113
+This patch adds an additional check that forces kunit.py to regenerate
+the .config file if the current kunitconfig doesn't match the previous
+one.
 
-Reported-by: syzkaller <syzkaller@googlegroups.com>
-Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+What this means:
+* deleting entries from .kunitconfig works as one would expect
+* dropping  a --kunitconfig_add also triggers a rebuild
+* you can still edit .config directly to turn on new options
+
+We implement this by creating a `last_used_kunitconfig` file in the
+build directory (so .kunit, by default) after we generate the .config.
+When comparing the kconfigs, we compare python sets, so duplicates and
+permutations don't trip us up.
+
+The majority of this patch is adding unit tests for the existing logic
+and for the new case where `last_used_kunitconfig` differs.
+
+[1] https://lore.kernel.org/linux-kselftest/20211106013058.2621799-2-dlatypov@google.com/
+
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
 ---
- drivers/scsi/scsi_debug.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Documentation/dev-tools/kunit/start.rst |  8 ++---
+ tools/testing/kunit/kunit_kernel.py     | 36 ++++++++++++++-------
+ tools/testing/kunit/kunit_tool_test.py  | 43 +++++++++++++++++++++++++
+ 3 files changed, 72 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/scsi/scsi_debug.c b/drivers/scsi/scsi_debug.c
-index 1d0278d..51e3b57 100644
---- a/drivers/scsi/scsi_debug.c
-+++ b/drivers/scsi/scsi_debug.c
-@@ -2499,11 +2499,11 @@ static int resp_mode_select(struct scsi_cmnd *scp,
- 			    __func__, param_len, res);
- 	md_len = mselect6 ? (arr[0] + 1) : (get_unaligned_be16(arr + 0) + 2);
- 	bd_len = mselect6 ? arr[3] : get_unaligned_be16(arr + 6);
--	if (md_len > 2) {
-+	off = bd_len + (mselect6 ? 4 : 8);
-+	if (md_len > 2 || off >= res) {
- 		mk_sense_invalid_fld(scp, SDEB_IN_DATA, 0, -1);
- 		return check_condition_result;
- 	}
--	off = bd_len + (mselect6 ? 4 : 8);
- 	mpage = arr[off] & 0x3f;
- 	ps = !!(arr[off] & 0x80);
- 	if (ps) {
+diff --git a/Documentation/dev-tools/kunit/start.rst b/Documentation/dev-tools/kunit/start.rst
+index 1e00f9226f74..0a5e65540974 100644
+--- a/Documentation/dev-tools/kunit/start.rst
++++ b/Documentation/dev-tools/kunit/start.rst
+@@ -50,10 +50,10 @@ It'll warn you if you haven't included the dependencies of the options you're
+ using.
+ 
+ .. note::
+-   Note that removing something from the ``.kunitconfig`` will not trigger a
+-   rebuild of the ``.config`` file: the configuration is only updated if the
+-   ``.kunitconfig`` is not a subset of ``.config``. This means that you can use
+-   other tools (such as make menuconfig) to adjust other config options.
++   If you change the ``.kunitconfig``, kunit.py will trigger a rebuild of the
++   ``.config`` file. But you can edit the ``.config`` file directly or with
++   tools like ``make menuconfig O=.kunit``. As long as its a superset of
++   ``.kunitconfig``, kunit.py won't overwrite your changes.
+ 
+ 
+ Running the tests (KUnit Wrapper)
+diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+index 350883672be0..8a6e0ee88f3d 100644
+--- a/tools/testing/kunit/kunit_kernel.py
++++ b/tools/testing/kunit/kunit_kernel.py
+@@ -21,6 +21,7 @@ import qemu_config
+ 
+ KCONFIG_PATH = '.config'
+ KUNITCONFIG_PATH = '.kunitconfig'
++OLD_KUNITCONFIG_PATH = 'last_used_kunitconfig'
+ DEFAULT_KUNITCONFIG_PATH = 'tools/testing/kunit/configs/default.config'
+ BROKEN_ALLCONFIG_PATH = 'tools/testing/kunit/configs/broken_on_uml.config'
+ OUTFILE_PATH = 'test.log'
+@@ -289,24 +290,37 @@ class LinuxSourceTree(object):
+ 		except ConfigError as e:
+ 			logging.error(e)
+ 			return False
+-		return self.validate_config(build_dir)
++		if not self.validate_config(build_dir):
++			return False
++
++		old_path = get_file_path(build_dir, OLD_KUNITCONFIG_PATH)
++		os.remove(old_path)  # write_to_file appends to the file
++		self._kconfig.write_to_file(old_path)
++		return True
++
++	def _kconfig_changed(self, build_dir: str) -> bool:
++		old_path = get_file_path(build_dir, OLD_KUNITCONFIG_PATH)
++		if not os.path.exists(old_path):
++			return False
++
++		old_kconfig = kunit_config.parse_file(old_path)
++		return old_kconfig.entries() != self._kconfig.entries()
+ 
+ 	def build_reconfig(self, build_dir, make_options) -> bool:
+ 		"""Creates a new .config if it is not a subset of the .kunitconfig."""
+ 		kconfig_path = get_kconfig_path(build_dir)
+-		if os.path.exists(kconfig_path):
+-			existing_kconfig = kunit_config.parse_file(kconfig_path)
+-			self._ops.make_arch_qemuconfig(self._kconfig)
+-			if not self._kconfig.is_subset_of(existing_kconfig):
+-				print('Regenerating .config ...')
+-				os.remove(kconfig_path)
+-				return self.build_config(build_dir, make_options)
+-			else:
+-				return True
+-		else:
++		if not os.path.exists(kconfig_path):
+ 			print('Generating .config ...')
+ 			return self.build_config(build_dir, make_options)
+ 
++		existing_kconfig = kunit_config.parse_file(kconfig_path)
++		self._ops.make_arch_qemuconfig(self._kconfig)
++		if self._kconfig.is_subset_of(existing_kconfig) and not self._kconfig_changed(build_dir):
++			return True
++		print('Regenerating .config ...')
++		os.remove(kconfig_path)
++		return self.build_config(build_dir, make_options)
++
+ 	def build_kernel(self, alltests, jobs, build_dir, make_options) -> bool:
+ 		try:
+ 			if alltests:
+diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+index 7e42a7c27987..8cd8d53e3d24 100755
+--- a/tools/testing/kunit/kunit_tool_test.py
++++ b/tools/testing/kunit/kunit_tool_test.py
+@@ -358,6 +358,49 @@ class LinuxSourceTreeTest(unittest.TestCase):
+ 			with open(kunit_kernel.get_outfile_path(build_dir), 'rt') as outfile:
+ 				self.assertEqual(outfile.read(), 'hi\nbye\n', msg='Missing some output')
+ 
++	def test_build_reconfig_no_config(self):
++		with tempfile.TemporaryDirectory('') as build_dir:
++			with open(kunit_kernel.get_kunitconfig_path(build_dir), 'w') as f:
++				f.write('CONFIG_KUNIT=y')
++
++			tree = kunit_kernel.LinuxSourceTree(build_dir)
++			mock_build_config = mock.patch.object(tree, 'build_config').start()
++
++			# Should generate the .config
++			self.assertTrue(tree.build_reconfig(build_dir, make_options=[]))
++			mock_build_config.assert_called_once_with(build_dir, [])
++
++	def test_build_reconfig_existing_config(self):
++		with tempfile.TemporaryDirectory('') as build_dir:
++			# Existing .config is a superset, should not touch it
++			with open(kunit_kernel.get_kunitconfig_path(build_dir), 'w') as f:
++				f.write('CONFIG_KUNIT=y')
++			with open(kunit_kernel.get_kconfig_path(build_dir), 'w') as f:
++				f.write('CONFIG_KUNIT=y\nCONFIG_KUNIT_TEST=y')
++
++			tree = kunit_kernel.LinuxSourceTree(build_dir)
++			mock_build_config = mock.patch.object(tree, 'build_config').start()
++
++			self.assertTrue(tree.build_reconfig(build_dir, make_options=[]))
++			self.assertEqual(mock_build_config.call_count, 0)
++
++	def test_build_reconfig_remove_option(self):
++		with tempfile.TemporaryDirectory('') as build_dir:
++			# We removed CONFIG_KUNIT_TEST=y from our .kunitconfig...
++			with open(kunit_kernel.get_kunitconfig_path(build_dir), 'w') as f:
++				f.write('CONFIG_KUNIT=y')
++			with open(kunit_kernel.get_file_path(build_dir, kunit_kernel.OLD_KUNITCONFIG_PATH), 'w') as f:
++				f.write('CONFIG_KUNIT=y\nCONFIG_KUNIT_TEST=y')
++			with open(kunit_kernel.get_kconfig_path(build_dir), 'w') as f:
++				f.write('CONFIG_KUNIT=y\nCONFIG_KUNIT_TEST=y')
++
++			tree = kunit_kernel.LinuxSourceTree(build_dir)
++			mock_build_config = mock.patch.object(tree, 'build_config').start()
++
++			# ... so we should trigger a call to build_config()
++			self.assertTrue(tree.build_reconfig(build_dir, make_options=[]))
++			mock_build_config.assert_called_once_with(build_dir, [])
++
+ 	# TODO: add more test cases.
+ 
+ 
+
+base-commit: 4770a2c00c390b88d33f24fb0b8b386535970ffc
 -- 
-1.8.3.1
+2.34.0.rc2.393.gf8c9666880-goog
 
