@@ -2,130 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD234555C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 08:33:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA494555C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 08:33:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244125AbhKRHf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 02:35:58 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:46422 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243873AbhKRHeb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 02:34:31 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 714B8218E0;
-        Thu, 18 Nov 2021 07:31:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637220690; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Yu0y74oMtF+lJUlNGiYgI7tMeVKHm6ikxOnBczy+TBI=;
-        b=cdidaUYUcos5XS+hXMBqr5Gp/qjFdtCs72oVUr/J3SKGmHlLSV4BV2I29cc+SDzNsukcrs
-        Yi6JE7WwqMxP8MTlJrMnSJlnk2ly4WLg3DrFAPmalLJD0Zy480iNaE9owifl1B4Nt8vUTG
-        EmjIgzk/vYmuNm+1ydcd+OzhyRs9DFA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637220690;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Yu0y74oMtF+lJUlNGiYgI7tMeVKHm6ikxOnBczy+TBI=;
-        b=7MwmCi+KrRmUhPrveuMefWK6Bbu45i+FCewzSfKFyVdFxmhnxRb2VcIaqHdCv+3AwwLRXn
-        wz4aaCp6IIN0UyAA==
-Received: from localhost.localdomain (unknown [10.100.208.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 49500A3B84;
-        Thu, 18 Nov 2021 07:31:30 +0000 (UTC)
-From:   Jiri Slaby <jslaby@suse.cz>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 19/19] mxser: use PCI_DEVICE_DATA
-Date:   Thu, 18 Nov 2021 08:31:25 +0100
-Message-Id: <20211118073125.12283-20-jslaby@suse.cz>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211118073125.12283-1-jslaby@suse.cz>
-References: <20211118073125.12283-1-jslaby@suse.cz>
+        id S244037AbhKRHgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 02:36:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244051AbhKRHfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 02:35:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33D7261269;
+        Thu, 18 Nov 2021 07:32:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637220744;
+        bh=2VdstZWq6DPnEC6DxQBReel0V2k00OcC7KSNTUSs0UM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L5+VP4Ka3rsFmALNqTLemtiG0EWqk+dRJRopAI2LWM6KvO3vHptMPQgscHsM3zQWO
+         5uvHosaFkH4jIr0zwZ+asDr75n2vrU+231CRqcF+Pw5Sk4EzkPvagD0ZGdC7jiCVuv
+         0jXJzMu6YS2U3syEpyvfhPMcnf9lJbLIFEtTGvTjk6ds8oBFjqKC4u1/mPLmspKR/W
+         lWyISppbmOhxIE9Ng6ScATnvTBGadUU3KUAiGDXivu/0aCpCbVL86uzYh/sj2nVFuH
+         IMPEsOt7MxJ/hTkBPnZcQAmjYxu3Y0epF+vD1ebs2tgLfoVt2x41iaJWw9HrENEdGs
+         bQAAsrgAD9Rpg==
+Date:   Thu, 18 Nov 2021 09:32:20 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Aya Levin <ayal@mellanox.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>, drivers@pensando.io,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Michael Chan <michael.chan@broadcom.com>,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Simon Horman <simon.horman@corigine.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [PATCH net-next 4/6] devlink: Clean registration of devlink port
+Message-ID: <YZYBhArHOAbLfOUb@unreal>
+References: <cover.1637173517.git.leonro@nvidia.com>
+ <9c3eb77a90a2be10d5c637981a8047160845f60f.1637173517.git.leonro@nvidia.com>
+ <20211117204929.4bd24597@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211117204929.4bd24597@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have all the PCI device IDs unified, we can use
-PCI_DEVICE_DATA() macro to simplify mxser's pci_device_id list, i.e.
-mxser_pcibrds.
+On Wed, Nov 17, 2021 at 08:49:29PM -0800, Jakub Kicinski wrote:
+> On Wed, 17 Nov 2021 20:26:20 +0200 Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> > 
+> > devlink_port_register() is in-kernel API and as such can't really fail
+> > as long as driver author didn't make a mistake by providing already existing
+> > port index. Instead of relying on various error prints from the driver,
+> > convert the existence check to be WARN_ON(), so such a mistake will be
+> > caught easier.
+> > 
+> > As an outcome of this conversion, it was made clear that this function
+> > should be void and devlink->lock was intended to protect addition to
+> > port_list.
+> 
+> Leave this error checking in please.
 
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
----
- drivers/tty/mxser.c | 52 ++++++++++++++++++++++-----------------------
- 1 file changed, 26 insertions(+), 26 deletions(-)
+Are you referring to error checks in the drivers or the below section
+from devlink_port_register()?
 
-diff --git a/drivers/tty/mxser.c b/drivers/tty/mxser.c
-index ba96ffed193a..c858aff721c4 100644
---- a/drivers/tty/mxser.c
-+++ b/drivers/tty/mxser.c
-@@ -212,32 +212,32 @@ static const struct {
- /* driver_data correspond to the lines in the structure above
-    see also ISA probe function before you change something */
- static const struct pci_device_id mxser_pcibrds[] = {
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_C168),	.driver_data = 8 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_C104),	.driver_data = 4 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CP132),	.driver_data = 2 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CP114),	.driver_data = 4 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CT114),	.driver_data = 4 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CP102),	.driver_data = 2 | MXSER_HIGHBAUD },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CP104U),	.driver_data = 4 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CP168U),	.driver_data = 8 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CP132U),	.driver_data = 2 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CP134U),	.driver_data = 4 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CP104JU),.driver_data = 4 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_RC7000),	.driver_data = 8 }, /* RC7000 */
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CP118U),	.driver_data = 8 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CP102UL),.driver_data = 2 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CP102U),	.driver_data = 2 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CP118EL),.driver_data = 8 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CP168EL),.driver_data = 8 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CP104EL),.driver_data = 4 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CB108),	.driver_data = 8 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CB114),	.driver_data = 4 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CB134I),	.driver_data = 4 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CP138U),	.driver_data = 8 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_POS104UL),.driver_data = 4 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CP114UL),.driver_data = 4 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CP102UF),.driver_data = 2 },
--	{ PCI_VDEVICE(MOXA, PCI_DEVICE_ID_MOXA_CP112UL),.driver_data = 2 },
-+	{ PCI_DEVICE_DATA(MOXA, C168,		8) },
-+	{ PCI_DEVICE_DATA(MOXA, C104,		4) },
-+	{ PCI_DEVICE_DATA(MOXA, CP132,		2) },
-+	{ PCI_DEVICE_DATA(MOXA, CP114,		4) },
-+	{ PCI_DEVICE_DATA(MOXA, CT114,		4) },
-+	{ PCI_DEVICE_DATA(MOXA, CP102,		2 | MXSER_HIGHBAUD) },
-+	{ PCI_DEVICE_DATA(MOXA, CP104U,		4) },
-+	{ PCI_DEVICE_DATA(MOXA, CP168U,		8) },
-+	{ PCI_DEVICE_DATA(MOXA, CP132U,		2) },
-+	{ PCI_DEVICE_DATA(MOXA, CP134U,		4) },
-+	{ PCI_DEVICE_DATA(MOXA, CP104JU,	4) },
-+	{ PCI_DEVICE_DATA(MOXA, RC7000,		8) }, /* RC7000 */
-+	{ PCI_DEVICE_DATA(MOXA, CP118U,		8) },
-+	{ PCI_DEVICE_DATA(MOXA, CP102UL,	2) },
-+	{ PCI_DEVICE_DATA(MOXA, CP102U,		2) },
-+	{ PCI_DEVICE_DATA(MOXA, CP118EL,	8) },
-+	{ PCI_DEVICE_DATA(MOXA, CP168EL,	8) },
-+	{ PCI_DEVICE_DATA(MOXA, CP104EL,	4) },
-+	{ PCI_DEVICE_DATA(MOXA, CB108,		8) },
-+	{ PCI_DEVICE_DATA(MOXA, CB114,		4) },
-+	{ PCI_DEVICE_DATA(MOXA, CB134I,		4) },
-+	{ PCI_DEVICE_DATA(MOXA, CP138U,		8) },
-+	{ PCI_DEVICE_DATA(MOXA, POS104UL,	4) },
-+	{ PCI_DEVICE_DATA(MOXA, CP114UL,	4) },
-+	{ PCI_DEVICE_DATA(MOXA, CP102UF,	2) },
-+	{ PCI_DEVICE_DATA(MOXA, CP112UL,	2) },
- 	{ }
- };
- MODULE_DEVICE_TABLE(pci, mxser_pcibrds);
--- 
-2.33.1
+       mutex_lock(&devlink->lock);
+       if (devlink_port_index_exists(devlink, port_index)) {
+               mutex_unlock(&devlink->lock);
+               return -EEXIST;
+       }
 
+Because if it is latter, any driver (I didn't find any) that will rely
+on this -EEXIST field should have some sort of locking in top level.
+Otherwise nothing will prevent from doing port unregister right
+before "return --EXEEXIST".
+
+So change to WARN_ON() will be much more effective in finding wrong
+drivers, because they manage port_index and not devlink.
+
+And because this function can't fail, the drivers have a plenty of dead
+code.
+
+Thanks
