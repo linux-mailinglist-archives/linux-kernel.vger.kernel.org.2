@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 239E84556A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:14:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E4584556AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:14:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244439AbhKRIQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 03:16:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42466 "EHLO
+        id S244482AbhKRIRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 03:17:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244270AbhKRIPO (ORCPT
+        with ESMTP id S244345AbhKRIPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 03:15:14 -0500
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D51C0611FE
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:11:33 -0800 (PST)
-Received: by mail-wr1-x449.google.com with SMTP id q7-20020adff507000000b0017d160d35a8so877608wro.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:11:33 -0800 (PST)
+        Thu, 18 Nov 2021 03:15:47 -0500
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E369C06120C
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:11:36 -0800 (PST)
+Received: by mail-wm1-x349.google.com with SMTP id 201-20020a1c04d2000000b003335bf8075fso2273731wme.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:11:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=HO2j8fDcTjG33FWF1g1vyRfUzwW+oeuePm13p24Xfnw=;
-        b=ao5F3zNvGXxVbqr2Du/zW9wtDIC0MnWhuj3g8RN6FekTYCAm/TIV2DFBPFYh9bRbL2
-         r5w3RiwWnR6D5obU2fflsW/ZCWM66Aqzn5TzOS+zu/UAJHqand2uoACrxNqKqat3XZAV
-         KoMGsvxNIhJrzm1WnVqgTbJkkj4TXJb72EwbJBGe7NkSD0s/7yOXJr9ILqqN0aHyNa6a
-         zKl3aEWbX8EbPCTv1aHZZ3zUZzX3kCxkT5cgVpTZEuwrMnF5OyztgJLey0zd0KccuJzZ
-         J62DAuuCuRTz30T+UvkRCvZiU4Zf1LRX+oolLWrm24sOlGI+mDLfBJeYDZa35pYL/tr8
-         GM9w==
+        bh=T9LcpiESjlbrW6ACmq5IFNnAkv2Wwnn3szo64Ts4MTU=;
+        b=n/UFmav1ENDv1h0WTCbIrOk73KwKcPYIyMh2kyYhwgQF7oBo7KaTGaEDsjUzXHoHMh
+         Xi6CGU4q74OXQJGZDf1Jpb24tNMq/Zq7ELFRT33dDDe70MxRXxsWGk5pOk26Q4hqYxcg
+         ezIn341A84Qv5ayPNZMP3vg5G0JMNuisUbOj1PxV04DqjHBw3bMLwFNaotZf/yktqEIK
+         NyehNHEADWmBPRFTFKj4DnO3d84Q1Ob3Ptn3tV2x+1XKmjOp5QLjxUQ5NctWHvLViK88
+         OniwqfsH6SGdMm3/fuZaONRHF3PE4nlH8yzFqUOG6EOGl7oro8kHw7g0cViqxPAquYJY
+         HuJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=HO2j8fDcTjG33FWF1g1vyRfUzwW+oeuePm13p24Xfnw=;
-        b=bX7eCj42bA+d1WhViSpQGBY4xCiyeHS71lHWan/xHEBd7k0xGIUYakVwRRetO9azWv
-         SxV1yGEHqS0/BCU7VAh18tVEySs6tym4F2SdjKgCOhuIiI1AWv1VyfOms++hE7sn1yPm
-         8wv4fuy+vQ6IdMeG2thmhg3XUhRiwgCDw46sQMHP9otqhGbWtTR+eqaEPr0ynNqpPACi
-         AkEaU2q6BhvHD0LjPgenaW+kKWaEJolY6o99z4eF/X+1lDENdG+rqa//yNjjo1re5cdg
-         /hCbbU/za7eGutCjUrhYKxS6Uq/c2CT+YDo/zDQ3DlmZypmb/HSqxT03S//fLrmjiuNE
-         fcGQ==
-X-Gm-Message-State: AOAM531cmD30o7RxzYvVpJSO+EotEXaXRSu49NSr8/wj6dxQoTEoxGD+
-        zMTLKdWTUUPI4uMe+ZNhzX68Ke/qxg==
-X-Google-Smtp-Source: ABdhPJxksiSN8tufizdjFZL4xtcYBdfWZ9cx8tN8NGNKYPnH4et+mkDmYt47SvSibdw6UtKtmx9wVCWV6w==
+        bh=T9LcpiESjlbrW6ACmq5IFNnAkv2Wwnn3szo64Ts4MTU=;
+        b=Y7sWI/Fyxdxk0mfENOQQdh4kfvuCnI9OZnhS3E1i444IPu61HUUZz6XtEUevKVz/Cn
+         +eFpLcsGlE746i8c8+zGyXUaPRx1iJZU0ZlzMBVsp04Avn8khLnsdNKdHCX1buocMubw
+         xhTK2UwR96DbQ+LYioKXS9meuspgMpwGTy5iUyZitTsLzc1CZ2+pPByN82IcBIe4u6b9
+         /TUD/nVnyCj1lwlEI2UwoBVYuQqiWv7cMrzjYHy0aiNRLfDiB7YFF/DVBL7gkizUVgLM
+         xcIeCUxyqCy55267Mm3Dbsea6/Kf2LB6cRMPNQh6I59pO207nLxYi9FJ9GEFyvcdDuaV
+         GVEg==
+X-Gm-Message-State: AOAM531JZ/XDNdJHVazWzICT4//wquQehaNHv7F9asz00DQK1OOP4WCS
+        B8tx83gUM6RGVWrZv6ENk+DKEj1Owg==
+X-Google-Smtp-Source: ABdhPJzDuFmLudQnfsl3oBo9w+kUceIPU6SyWe+MGVHxuaPu65q9Yc11/mzBXR//E2asV/5c9jvF39wc4g==
 X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:7155:1b7:fca5:3926])
- (user=elver job=sendgmr) by 2002:a05:600c:4149:: with SMTP id
- h9mr7592130wmm.100.1637223092073; Thu, 18 Nov 2021 00:11:32 -0800 (PST)
-Date:   Thu, 18 Nov 2021 09:10:18 +0100
+ (user=elver job=sendgmr) by 2002:a05:600c:350c:: with SMTP id
+ h12mr7414150wmq.123.1637223094553; Thu, 18 Nov 2021 00:11:34 -0800 (PST)
+Date:   Thu, 18 Nov 2021 09:10:19 +0100
 In-Reply-To: <20211118081027.3175699-1-elver@google.com>
-Message-Id: <20211118081027.3175699-15-elver@google.com>
+Message-Id: <20211118081027.3175699-16-elver@google.com>
 Mime-Version: 1.0
 References: <20211118081027.3175699-1-elver@google.com>
 X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH v2 14/23] locking/barriers, kcsan: Add instrumentation for barriers
+Subject: [PATCH v2 15/23] locking/barriers, kcsan: Support generic instrumentation
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com, "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     Alexander Potapenko <glider@google.com>,
@@ -73,109 +73,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds the required KCSAN instrumentation for barriers if CONFIG_SMP.
-KCSAN supports modeling the effects of:
+Thus far only smp_*() barriers had been defined by asm-generic/barrier.h
+based on __smp_*() barriers, because the !SMP case is usually generic.
 
-	smp_mb()
-	smp_rmb()
-	smp_wmb()
-	smp_store_release()
+With the introduction of instrumentation, it also makes sense to have
+asm-generic/barrier.h assist in the definition of instrumented versions
+of mb(), rmb(), wmb(), dma_rmb(), and dma_wmb().
+
+Because there is no requirement to distinguish the !SMP case, the
+definition can be simpler: we can avoid also providing fallbacks for the
+__ prefixed cases, and only check if `defined(__<barrier>)`, to finally
+define the KCSAN-instrumented versions.
+
+This also allows for the compiler to complain if an architecture
+accidentally defines both the normal and __ prefixed variant.
 
 Signed-off-by: Marco Elver <elver@google.com>
 ---
- include/asm-generic/barrier.h | 29 +++++++++++++++--------------
- include/linux/spinlock.h      |  2 +-
- 2 files changed, 16 insertions(+), 15 deletions(-)
+ include/asm-generic/barrier.h | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
 diff --git a/include/asm-generic/barrier.h b/include/asm-generic/barrier.h
-index 640f09479bdf..27a9c9edfef6 100644
+index 27a9c9edfef6..02c4339c8eeb 100644
 --- a/include/asm-generic/barrier.h
 +++ b/include/asm-generic/barrier.h
-@@ -14,6 +14,7 @@
- #ifndef __ASSEMBLY__
- 
- #include <linux/compiler.h>
-+#include <linux/kcsan-checks.h>
- #include <asm/rwonce.h>
- 
- #ifndef nop
-@@ -62,15 +63,15 @@
- #ifdef CONFIG_SMP
- 
- #ifndef smp_mb
--#define smp_mb()	__smp_mb()
-+#define smp_mb()	do { kcsan_mb(); __smp_mb(); } while (0)
+@@ -21,6 +21,31 @@
+ #define nop()	asm volatile ("nop")
  #endif
  
- #ifndef smp_rmb
--#define smp_rmb()	__smp_rmb()
-+#define smp_rmb()	do { kcsan_rmb(); __smp_rmb(); } while (0)
- #endif
- 
- #ifndef smp_wmb
--#define smp_wmb()	__smp_wmb()
-+#define smp_wmb()	do { kcsan_wmb(); __smp_wmb(); } while (0)
- #endif
- 
- #else	/* !CONFIG_SMP */
-@@ -123,19 +124,19 @@ do {									\
- #ifdef CONFIG_SMP
- 
- #ifndef smp_store_mb
--#define smp_store_mb(var, value)  __smp_store_mb(var, value)
-+#define smp_store_mb(var, value)  do { kcsan_mb(); __smp_store_mb(var, value); } while (0)
- #endif
- 
- #ifndef smp_mb__before_atomic
--#define smp_mb__before_atomic()	__smp_mb__before_atomic()
-+#define smp_mb__before_atomic()	do { kcsan_mb(); __smp_mb__before_atomic(); } while (0)
- #endif
- 
- #ifndef smp_mb__after_atomic
--#define smp_mb__after_atomic()	__smp_mb__after_atomic()
-+#define smp_mb__after_atomic()	do { kcsan_mb(); __smp_mb__after_atomic(); } while (0)
- #endif
- 
- #ifndef smp_store_release
--#define smp_store_release(p, v) __smp_store_release(p, v)
-+#define smp_store_release(p, v) do { kcsan_release(); __smp_store_release(p, v); } while (0)
- #endif
- 
- #ifndef smp_load_acquire
-@@ -178,13 +179,13 @@ do {									\
- #endif	/* CONFIG_SMP */
- 
- /* Barriers for virtual machine guests when talking to an SMP host */
--#define virt_mb() __smp_mb()
--#define virt_rmb() __smp_rmb()
--#define virt_wmb() __smp_wmb()
--#define virt_store_mb(var, value) __smp_store_mb(var, value)
--#define virt_mb__before_atomic() __smp_mb__before_atomic()
--#define virt_mb__after_atomic()	__smp_mb__after_atomic()
--#define virt_store_release(p, v) __smp_store_release(p, v)
-+#define virt_mb() do { kcsan_mb(); __smp_mb(); } while (0)
-+#define virt_rmb() do { kcsan_rmb(); __smp_rmb(); } while (0)
-+#define virt_wmb() do { kcsan_wmb(); __smp_wmb(); } while (0)
-+#define virt_store_mb(var, value) do { kcsan_mb(); __smp_store_mb(var, value); } while (0)
-+#define virt_mb__before_atomic() do { kcsan_mb(); __smp_mb__before_atomic(); } while (0)
-+#define virt_mb__after_atomic()	do { kcsan_mb(); __smp_mb__after_atomic(); } while (0)
-+#define virt_store_release(p, v) do { kcsan_release(); __smp_store_release(p, v); } while (0)
- #define virt_load_acquire(p) __smp_load_acquire(p)
- 
- /**
-diff --git a/include/linux/spinlock.h b/include/linux/spinlock.h
-index b4e5ca23f840..5c0c5174155d 100644
---- a/include/linux/spinlock.h
-+++ b/include/linux/spinlock.h
-@@ -171,7 +171,7 @@ do {									\
-  * Architectures that can implement ACQUIRE better need to take care.
-  */
- #ifndef smp_mb__after_spinlock
--#define smp_mb__after_spinlock()	do { } while (0)
-+#define smp_mb__after_spinlock()	kcsan_mb()
- #endif
- 
- #ifdef CONFIG_DEBUG_SPINLOCK
++/*
++ * Architectures that want generic instrumentation can define __ prefixed
++ * variants of all barriers.
++ */
++
++#ifdef __mb
++#define mb()	do { kcsan_mb(); __mb(); } while (0)
++#endif
++
++#ifdef __rmb
++#define rmb()	do { kcsan_rmb(); __rmb(); } while (0)
++#endif
++
++#ifdef __wmb
++#define wmb()	do { kcsan_wmb(); __wmb(); } while (0)
++#endif
++
++#ifdef __dma_rmb
++#define dma_rmb()	do { kcsan_rmb(); __dma_rmb(); } while (0)
++#endif
++
++#ifdef __dma_wmb
++#define dma_wmb()	do { kcsan_wmb(); __dma_wmb(); } while (0)
++#endif
++
+ /*
+  * Force strict CPU ordering. And yes, this is required on UP too when we're
+  * talking to devices.
 -- 
 2.34.0.rc2.393.gf8c9666880-goog
 
