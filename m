@@ -2,100 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B061445591E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 11:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC93345591C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 11:34:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245630AbhKRKhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 05:37:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46526 "EHLO
+        id S245582AbhKRKhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 05:37:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245641AbhKRKg5 (ORCPT
+        with ESMTP id S245593AbhKRKgn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 05:36:57 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA0EC061570;
-        Thu, 18 Nov 2021 02:33:54 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id y13so24691206edd.13;
-        Thu, 18 Nov 2021 02:33:54 -0800 (PST)
+        Thu, 18 Nov 2021 05:36:43 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D011C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 02:33:43 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id g191-20020a1c9dc8000000b0032fbf912885so4408068wme.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 02:33:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sZ2+SkN/OTi1aedHX+w4qcv7bpQUocYUpa+mahwYIHM=;
-        b=Z4R10QyvykSlYvy1lyDunnScu7/t3hL91PrpcCDmch9FZnUYGY7vrFARzHrzLedbKi
-         FtY/3yE86K1UxkLzMcIWEJJmEo+fDzgGOspctyyI6fN0h4j+JxeXAjxSJYG0nL4uhb8w
-         4niy3UvZFxeYEDUA4ttdguHn2gjipvR2Hgb9rqyDMuNacp/jciISwzzgR6MFGRkrW3Tn
-         BCky5U++T+9K6iJDN2sFswprCMJ3ov24Inv+atT0u2sQ6foFJ41J/+7K0gxJiEhzgy4K
-         Cg7VA3vaUsqNh8wNr0gfnNu+wHTHIhTx0Et+aGIoEwVMlrmqVcineGTi5I+naQdUQNsX
-         Wk8w==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rZJn2yys8DcTAzYwQDSGPoDW37F/570yrxTfXh7kbsc=;
+        b=j4Wu6KWzKYfAlYvq2HS1I/TeKC8AAa6xsTmh/G6sIlISKHIi3zcS/VT87Fb8dfWOFh
+         mGaM3N1bGpEJ7c916ANWKgIeBDSDLCiGb6IKWDlyAtQhXVsY8Z+rjpFaSqCc5ZliNv+B
+         sthyb66VCxH2V0DQePenA6GGCoaZllSZUwugA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sZ2+SkN/OTi1aedHX+w4qcv7bpQUocYUpa+mahwYIHM=;
-        b=xxLAAt0WWIP0B3t8E3ELk21wg8FyLljffGTbAoxXszHzSqWxVW+743kDkvIp68L/H4
-         PC7RGCkgiIh4mS6UGUST/mQCxlQq8wwvL+J2BGSkry5hfu8aiT1ESdexFdyg8aaTcQwO
-         bV5L9qmy2EHE1oY31srknAebpdL1ScryH4fi6p+vSee+HXWzdkhbt0yCGE2uLIPxfIm4
-         LSMwaQnqbEtIFQ0no3ThCaFZ1MhrQHAqtHh8Fz0e1jtWxpZz3hV/MBOQsfewpq1o2qSe
-         QyTAG0jpVRkv5sSlFVAj0RnjNHj3vIVlZsnkeTpyZS2kM5QEGwZirtvsxxweYFQ4Wx6+
-         kE1g==
-X-Gm-Message-State: AOAM533IqyOSypBZtlGs46w05xSMNH/G00/vFs33bLZcZZ1lO0BFqwwX
-        rvyMFQpyn9JIoLCVztk3JwheeUUA+16DXBPb3jGlrZcEowc=
-X-Google-Smtp-Source: ABdhPJwtjRqdTbHnUyAtyD6G4Pkngw2yHZvkaa6mePlhi+srzRadNq+Z7uEuAbWMAZK2WqSNXwiLLyMjx/oKMzf2aVo=
-X-Received: by 2002:a17:907:60d0:: with SMTP id hv16mr31117348ejc.425.1637231632726;
- Thu, 18 Nov 2021 02:33:52 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rZJn2yys8DcTAzYwQDSGPoDW37F/570yrxTfXh7kbsc=;
+        b=DBiafBUnq5ObU/Ho6DIgXW3Rqf+umnB3BYMm7hggb+WJM6dPoc936y2Cx+oguioUWB
+         yDT/+i0jgsU4m8W4/915Xtjo/PzwKRO4WASiBnzZsnDtmh9WLkq+LAq1JmoJX8RdJcMp
+         PbKhS243gJSQYJw7PaUEWpNcRwmKhWz5tYvML1DJ1hMS+moj97eLEWBt4oUwGjA4gOKN
+         WFXCv13KIB6GMV076qMQpSDYbhuN3KTuQNgYOgGPpJxEnAj8mv9fjtHKSerynC6Yvvem
+         JC3uJx/FUF1cjEwMHkdk5ciNscMQBo9i3Yl5svo2S9jmTEQCuWVyzcZluM/Z0F1XwmW6
+         ORHw==
+X-Gm-Message-State: AOAM532rOXcAIVfgkmd7hKY8edNpPJSgy/Ei2vhcGnJrc6sCyXPVi3YD
+        y44Se6DawtNOY2qOFrjSwSl2Lg==
+X-Google-Smtp-Source: ABdhPJzEsJWXGbz1Yv47x3W5We/ddCiXHLTj/MjqS/zki0onTjpbbxJOqCPuhAQQbo/bE3PHXyoF6Q==
+X-Received: by 2002:a05:600c:1d97:: with SMTP id p23mr8650388wms.186.1637231621534;
+        Thu, 18 Nov 2021 02:33:41 -0800 (PST)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:61:302:58e0:dffc:78e8:484])
+        by smtp.gmail.com with ESMTPSA id h15sm10097484wmq.32.2021.11.18.02.33.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 02:33:41 -0800 (PST)
+From:   Florent Revest <revest@chromium.org>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, kpsingh@kernel.org, jackmanb@google.com,
+        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
+Subject: [PATCH bpf-next] libbpf: Add ability to clear per-program load flags
+Date:   Thu, 18 Nov 2021 11:33:35 +0100
+Message-Id: <20211118103335.1208372-1-revest@chromium.org>
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
 MIME-Version: 1.0
-References: <20211115154201.46579-1-andriy.shevchenko@linux.intel.com> <304efdfe-db6e-051e-b61d-e73a8dfa1c53@axentia.se>
-In-Reply-To: <304efdfe-db6e-051e-b61d-e73a8dfa1c53@axentia.se>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 18 Nov 2021 12:33:16 +0200
-Message-ID: <CAHp75VcF1TZ5hH42-D+0sRkYkN-A1r797LdHGMT93UO4Sp3wLQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/3] i2c: mux: gpio: Replace custom acpi_get_local_address()
-To:     Peter Rosin <peda@axentia.se>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Evan Green <evgreen@chromium.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Korsgaard <peter.korsgaard@barco.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc: Rafael
+Recently, bpf_program__flags and bpf_program__set_extra_flags were
+introduced to the libbpf API but they only allow adding load flags.
 
-On Thu, Nov 18, 2021 at 12:24 PM Peter Rosin <peda@axentia.se> wrote:
-> On 2021-11-15 16:41, Andy Shevchenko wrote:
+We have a use-case where we construct a skeleton with a sleepable
+program and if it fails to load then we want to make it non-sleepable by
+clearing BPF_F_SLEEPABLE.
 
-...
+Signed-off-by: Florent Revest <revest@chromium.org>
+---
+ tools/lib/bpf/libbpf.c   | 9 +++++++++
+ tools/lib/bpf/libbpf.h   | 1 +
+ tools/lib/bpf/libbpf.map | 1 +
+ 3 files changed, 11 insertions(+)
 
-> > -     *adr =3D adr64;
-> > -     if (*adr !=3D adr64) {
-> > -             dev_err(dev, "Address out of range\n");
-> > -             return -ERANGE;
-> > -     }
->
-> In the conversion, I read it as if we lose this overflow check.
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index de7e09a6b5ec..dcb7fced5fd2 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -8305,6 +8305,15 @@ int bpf_program__set_extra_flags(struct bpf_program *prog, __u32 extra_flags)
+ 	return 0;
+ }
+ 
++int bpf_program__clear_flags(struct bpf_program *prog, __u32 flags)
++{
++	if (prog->obj->loaded)
++		return libbpf_err(-EBUSY);
++
++	prog->prog_flags &= ~flags;
++	return 0;
++}
++
+ #define SEC_DEF(sec_pfx, ptype, atype, flags, ...) {			    \
+ 	.sec = sec_pfx,							    \
+ 	.prog_type = BPF_PROG_TYPE_##ptype,				    \
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 4ec69f224342..08f108e49841 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -495,6 +495,7 @@ bpf_program__set_expected_attach_type(struct bpf_program *prog,
+ 
+ LIBBPF_API __u32 bpf_program__flags(const struct bpf_program *prog);
+ LIBBPF_API int bpf_program__set_extra_flags(struct bpf_program *prog, __u32 extra_flags);
++LIBBPF_API int bpf_program__clear_flags(struct bpf_program *prog, __u32 flags);
+ 
+ LIBBPF_API int
+ bpf_program__set_attach_target(struct bpf_program *prog, int attach_prog_fd,
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 6a59514a48cf..eeff700240dc 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -401,6 +401,7 @@ LIBBPF_0.6.0 {
+ 		bpf_program__insn_cnt;
+ 		bpf_program__insns;
+ 		bpf_program__set_extra_flags;
++		bpf_program__clear_flags;
+ 		btf__add_btf;
+ 		btf__add_decl_tag;
+ 		btf__add_type_tag;
+-- 
+2.34.0.rc2.393.gf8c9666880-goog
 
-It depends from which angle you look at this. We relaxed requirements.
-
-> Why is that
-> not a problem?
-
-The idea behind the acpi_get_local_address() is to provide a unified
-way between DT and ACPI for the same value. In either case we take
-only a 32-bit value. We might nevertheless add that check to the API.
-Rafael, what do you think?
-
-P.S. Just realized that in ACPI the higher part of the address may be
-used as flags by some interfaces (SoundWire is one of them), this is
-not applicable to I=C2=B2C muxes right now, but who knows... So I prefer a
-relaxed version and, if necessary, documentation should be
-amended/updated.
-
-
---=20
-With Best Regards,
-Andy Shevchenko
