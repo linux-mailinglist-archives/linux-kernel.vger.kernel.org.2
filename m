@@ -2,91 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A5E455C13
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3CAA455C3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:06:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233876AbhKRNEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 08:04:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52682 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244433AbhKRNDN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 08:03:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 981556124B;
-        Thu, 18 Nov 2021 13:00:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637240412;
-        bh=drOXdrLs1gvxQSOKb/m+6uXo0ib3X0iwjOT3EhXYufc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=XhVIs/APCZwGNgxPeyzyqSOIFuYciUYZvt+ZmsQIwovvN0Wxvpcz7lzQvvejShbBW
-         LBNoVsCjWt4GuLldwQBlDnRFHrtxP7bdKqA5muuKNuVM2+jZj+DOB3+Krit7dr6Ov9
-         tq2ypRWvYliiz3CFK0tJaXt8c/OuWq4C+46BmQOJTCM5MWTFnHUNmxb4tjZaxGamt8
-         r763GSWBlQA9d+uSXlVY6/yWwKgomBk2EJEGOFl11W20vbceCQVcx5S8oSBOCkW8g6
-         CLTjCAdogrHwHUj/BdGvNmzm7n45s4GlFJz+ORaRKXRGfl3gQ1CKOW8SDH9awblP2M
-         7pLnadp/UHv0w==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8511860BE1;
-        Thu, 18 Nov 2021 13:00:12 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229766AbhKRNJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 08:09:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231777AbhKRNHe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 08:07:34 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DFCC061200;
+        Thu, 18 Nov 2021 05:03:30 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id 206so223343pgb.4;
+        Thu, 18 Nov 2021 05:03:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YkQ0L6ov2Ory4vQt6aQEMjJBE8NyFL5tDp9I+7VLkvk=;
+        b=UvSjLrChPyOxJoCoR2N463zw6Yi5XH52FrUqYT0H6H2npToGJPWvtuRuRrFiNn5mpE
+         gKxVuxXZDosf2FstvS5n6w7o20nR1pye6jwXa/T1WoK12aMVpNkMnEHZ74FC17LrBZtJ
+         91YPEiw0hb7g5zNy4rfjqsA3QQLu1CsSgnwAfmqSRyGAuErpuq2+iM+2tFOl2nFMEP5w
+         XgMxQjNvkwKNO8BQMuqcS0BdNpE1ONVKHnGO68ALjJAfKZVaTUZ5dyXGFppw7pjnQVdh
+         Amux6FRI/wlzsidovr6PL3hb+aYbSwE0mJLUH9kCNYbCVXyvmHgWwMXKZoXfhAQaOd4e
+         JHKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YkQ0L6ov2Ory4vQt6aQEMjJBE8NyFL5tDp9I+7VLkvk=;
+        b=IZEpaA4LsfJ7MtRHvqkZpkyoKv9BrzV8LVnBlsOKUaxUgSL6T74PrVmMjgpgNhQ+L/
+         rqSd1cHm0GUJFhK1U4yh/GyWP05SZiu6lKvDXcSICqyJqCb2esMokJcXJxxe6MrgbFLP
+         Fm3FIunu0lk2v/z3lQEPYFm6FScIlcTixt/VGwvbCEG+G3QquUIQOh75usZlhetmrPGb
+         DPzxoa52W7e99SWgd8tjECjjk6Y5SeKP2IX3tFmt3QfbT/wc6xfstD/r481st24DjwW3
+         XswdMKDWljl03nh7/T6bQPFvB8FJ6vcr+X/icONCnOv+a09AIPDzGUIiSHIMPdK8ItDz
+         facw==
+X-Gm-Message-State: AOAM5328kQjrouJWPgxvv7gD29zCG/uHI4u0sSQ3hFgHZFq46x+QwbLk
+        XJvmqqz6sM6otxXnJZg8gnY=
+X-Google-Smtp-Source: ABdhPJytthsNWRyHkl5u4MZgBEyE85NEi6df3AZHNa2xO3GbwD7XWpb4DLj5PtOATfpvkM8dC9lHCw==
+X-Received: by 2002:a65:6854:: with SMTP id q20mr11073627pgt.38.1637240610362;
+        Thu, 18 Nov 2021 05:03:30 -0800 (PST)
+Received: from localhost.localdomain ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id pf15sm9416265pjb.40.2021.11.18.05.03.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 18 Nov 2021 05:03:29 -0800 (PST)
+From:   Like Xu <like.xu.linux@gmail.com>
+X-Google-Original-From: Like Xu <likexu@tencent.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: x86/pmu: Fix reserved bits for AMD PerfEvtSeln register
+Date:   Thu, 18 Nov 2021 21:03:20 +0800
+Message-Id: <20211118130320.95997-1-likexu@tencent.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v7 net-next 0/8] net: dsa: felix: psfp support on vsc9959
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163724041253.16944.2537212050004573959.git-patchwork-notify@kernel.org>
-Date:   Thu, 18 Nov 2021 13:00:12 +0000
-References: <20211118101204.4338-1-xiaoliang.yang_1@nxp.com>
-In-Reply-To: <20211118101204.4338-1-xiaoliang.yang_1@nxp.com>
-To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, allan.nielsen@microchip.com,
-        joergen.andreasen@microchip.com, UNGLinuxDriver@microchip.com,
-        vinicius.gomes@intel.com, jiri@mellanox.com, idosch@mellanox.com,
-        alexandre.belloni@bootlin.com, po.liu@nxp.com, leoyang.li@nxp.com,
-        f.fainelli@gmail.com, andrew@lunn.ch, vivien.didelot@gmail.com,
-        claudiu.manoil@nxp.com, matthias.bgg@gmail.com,
-        horatiu.vultur@microchip.com, vladimir.oltean@nxp.com,
-        kuba@kernel.org, mingkai.hu@nxp.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+From: Like Xu <likexu@tencent.com>
 
-This series was applied to netdev/net-next.git (master)
-by David S. Miller <davem@davemloft.net>:
+If we run the following perf command in an AMD Milan guest:
 
-On Thu, 18 Nov 2021 18:11:56 +0800 you wrote:
-> VSC9959 hardware supports Per-Stream Filtering and Policing(PSFP).
-> This patch series add PSFP support on tc flower offload of ocelot
-> driver. Use chain 30000 to distinguish PSFP from VCAP blocks. Add gate
-> and police set to support PSFP in VSC9959 driver.
-> 
-> v6-v7 changes:
->  - Add a patch to restrict psfp rules on ingress port.
->  - Using stats.drops to show the packet count discarded by the rule.
-> 
-> [...]
+  perf stat \
+  -e cpu/event=0x1d0/ \
+  -e cpu/event=0x1c7/ \
+  -e cpu/umask=0x1f,event=0x18e/ \
+  -e cpu/umask=0x7,event=0x18e/ \
+  -e cpu/umask=0x18,event=0x18e/ \
+  ./workload
 
-Here is the summary with links:
-  - [v7,net-next,1/8] net: mscc: ocelot: add MAC table stream learn and lookup operations
-    https://git.kernel.org/netdev/net-next/c/0568c3bf3f34
-  - [v7,net-next,2/8] net: mscc: ocelot: set vcap IS2 chain to goto PSFP chain
-    https://git.kernel.org/netdev/net-next/c/5b1918a54a91
-  - [v7,net-next,3/8] net: mscc: ocelot: add gate and police action offload to PSFP
-    https://git.kernel.org/netdev/net-next/c/23e2c506ad6c
-  - [v7,net-next,4/8] net: dsa: felix: support psfp filter on vsc9959
-    https://git.kernel.org/netdev/net-next/c/7d4b564d6add
-  - [v7,net-next,5/8] net: dsa: felix: add stream gate settings for psfp
-    https://git.kernel.org/netdev/net-next/c/23ae3a787771
-  - [v7,net-next,6/8] net: mscc: ocelot: use index to set vcap policer
-    https://git.kernel.org/netdev/net-next/c/77043c37096d
-  - [v7,net-next,7/8] net: dsa: felix: use vcap policer to set flow meter for psfp
-    https://git.kernel.org/netdev/net-next/c/76c13ede7120
-  - [v7,net-next,8/8] net: dsa: felix: restrict psfp rules on ingress port
-    https://git.kernel.org/netdev/net-next/c/a7e13edf37be
+dmesg will report a #GP warning from an unchecked MSR access
+error on MSR_F15H_PERF_CTLx.
 
-You are awesome, thank you!
+This is because according to APM (Revision: 4.03) Figure 13-7,
+the bits [35:32] of AMD PerfEvtSeln register is a part of the
+event select encoding, which extends the EVENT_SELECT field
+from 8 bits to 12 bits.
+
+Opportunistically update pmu->reserved_bits for reserved bit 19.
+
+Reported-by: Jim Mattson <jmattson@google.com>
+Fixes: ca724305a2b0 ("KVM: x86/vPMU: Implement AMD vPMU code for KVM")
+Signed-off-by: Like Xu <likexu@tencent.com>
+---
+ arch/x86/kvm/svm/pmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/svm/pmu.c b/arch/x86/kvm/svm/pmu.c
+index 871c426ec389..b4095dfeeee6 100644
+--- a/arch/x86/kvm/svm/pmu.c
++++ b/arch/x86/kvm/svm/pmu.c
+@@ -281,7 +281,7 @@ static void amd_pmu_refresh(struct kvm_vcpu *vcpu)
+ 		pmu->nr_arch_gp_counters = AMD64_NUM_COUNTERS;
+ 
+ 	pmu->counter_bitmask[KVM_PMC_GP] = ((u64)1 << 48) - 1;
+-	pmu->reserved_bits = 0xffffffff00200000ull;
++	pmu->reserved_bits = 0xfffffff000280000ull;
+ 	pmu->version = 1;
+ 	/* not applicable to AMD; but clean them to prevent any fall out */
+ 	pmu->counter_bitmask[KVM_PMC_FIXED] = 0;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.33.1
 
