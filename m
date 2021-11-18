@@ -2,164 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24BB455182
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 01:11:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6704455170
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 01:05:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241816AbhKRAOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 19:14:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48648 "EHLO
+        id S241780AbhKRAIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 19:08:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240630AbhKRAOT (ORCPT
+        with ESMTP id S239514AbhKRAIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 19:14:19 -0500
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85966C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 16:11:20 -0800 (PST)
-Received: by mail-qv1-xf29.google.com with SMTP id s9so3270636qvk.12
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 16:11:20 -0800 (PST)
+        Wed, 17 Nov 2021 19:08:04 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7350BC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 16:05:05 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id y7so3697031plp.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 16:05:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Hl+jHNmt64gcmop2VJ5YRcreilaGiydQ+Rm3hJ+geuM=;
-        b=C/ZiqA5KWRgbZsPgO6NZ5wRG/u5B1DYJCyimXTpNpDryUAx+ssN5yomcXO1RGpDY9A
-         ixB4krsYY/nzR8gQqmIUHUmL0918qK6khE5JQ6ciLvbsemrN4PRtFl1RJ/XVy1ummekC
-         dMqUGD4sWrobbLj1f44v7vmXIqCcGhVVMdqMQ=
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ChZgIpzUfYvijuqUqtVoWtSMGD31N+GQgxAh+7fMbp8=;
+        b=Di7J6TOX33+B9dU/u9WC+7YP4svglgu9OaaCXscWh0VBycwGYItmVIlA8AmTeuV18o
+         Ql+ctrzRstL3Ps98BFm9H5xAWIlVjEP2ZcF50hSpogiz1bbsJthGKWpsdpG7mxr8AQ2N
+         TltTSDGJ0iypzFDJFD+OmPYrGHr3DocGqc9rM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Hl+jHNmt64gcmop2VJ5YRcreilaGiydQ+Rm3hJ+geuM=;
-        b=qI/CwLT6OR0xaTFvR/XxrAaCzN2iAVG7ZnSt0m5m5jJOZd2raSOstpz4AuisDvp/JD
-         bhvzz6MHs5iEXbIEIS8bl9hyNBS0X+cMuiZisWwKNbuAT5YmUlGUfFwna4kA5q8Mm8hl
-         rVnpIfT5mUC31Uju5JEmP3FChW4zAOWOYeg71K8u1WWjPhoA2M7ai7f8BvG4otd9iIhS
-         ext918Rd4eu41uYgyQ8P1KkuyCzfrRPlDP1QrafoEd+lVEAsJwJmIAXH60EMcFGJO9rL
-         ZyRoo+KvDnzHmJccvWcgpFDHDGlK/qYZ+ENuHXaxKOy2Jq744zs3G9G8Tded3deVvAsr
-         reFA==
-X-Gm-Message-State: AOAM533Y+paeDKjXGb76xLt3l5SWey/0eC4nJhHaICqlI/vXSdvkKD5g
-        Uh04YIkiIcTCiAxdMvNc6gDj4B8vxNhExg==
-X-Google-Smtp-Source: ABdhPJyU9wDmu3k2UIMtM/HKkJCW9X8EzhYyIEp4jrgJZs7fCI4uHsk04LtXxpgd75NRQbsB5hl/ow==
-X-Received: by 2002:a05:6214:2a45:: with SMTP id jf5mr60973519qvb.50.1637194279672;
-        Wed, 17 Nov 2021 16:11:19 -0800 (PST)
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com. [209.85.222.181])
-        by smtp.gmail.com with ESMTPSA id s11sm825468qki.95.2021.11.17.16.11.19
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Nov 2021 16:11:19 -0800 (PST)
-Received: by mail-qk1-f181.google.com with SMTP id de30so4546081qkb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 16:11:19 -0800 (PST)
-X-Received: by 2002:a05:6638:190f:: with SMTP id p15mr16966992jal.82.1637193816599;
- Wed, 17 Nov 2021 16:03:36 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ChZgIpzUfYvijuqUqtVoWtSMGD31N+GQgxAh+7fMbp8=;
+        b=K6e/utGfTEUXMGec+KucFTi1b8Ap+E0T+icpLdrHADwZ0rjzKO6ljARIrCaT5xhq5G
+         GZNHS3vdsHsfo0KqvMLoP+egvT5zD4yd00cwe6YLcyThpLN+zki88WwHXL+ivNPW/4Qq
+         N7O/IjLzF5bMIIh988ACy+izK5hsPq/O/61FdLpqQjaUvTla7tTFO8IiGGxuGWV0wSYs
+         aKcvSRa6ununpKdfJrOL6C4jH4fohrWp5wA7WyzsQD7Ur8jJS8+bR1m+Gt70xId1kDmh
+         VHxZEChClkiapQDWI6f0asw2qTXOOn2JDbFDnn6os43QtgVlidbLYsa7njcnQiSR/cUE
+         AGQQ==
+X-Gm-Message-State: AOAM531Ba55JHR+gr7G9QU9sKF3aZLCMUuUkFkT3i0q420Y6e+sMefQa
+        WQ8WWErDEYRwB7n3XwcvkVic6A==
+X-Google-Smtp-Source: ABdhPJz5YJBDbTERTvTg1d9Or3fJnBADZp93ACWVfY67SpTH3thC82aRTj9OrDJXtWSOM4jCjovwkA==
+X-Received: by 2002:a17:90b:3508:: with SMTP id ls8mr4819396pjb.51.1637193904941;
+        Wed, 17 Nov 2021 16:05:04 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q89sm699960pjk.50.2021.11.17.16.05.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 16:05:04 -0800 (PST)
+Date:   Wed, 17 Nov 2021 16:05:03 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Kyle Huey <me@kylehuey.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        Robert O'Callahan <rocallahan@gmail.com>
+Subject: Re: [REGRESSION] 5.16rc1: SA_IMMUTABLE breaks debuggers
+Message-ID: <202111171603.34F36D0E01@keescook>
+References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
+ <202111171049.3F9C5F1@keescook>
+ <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
+ <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
+ <87k0h6334w.fsf@email.froward.int.ebiederm.org>
+ <202111171341.41053845C3@keescook>
+ <CAHk-=wgkOGmkTu18hJQaJ4mk8hGZc16=gzGMgGGOd=uwpXsdyw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211116200739.924401-1-mka@chromium.org> <20211116120642.v17.3.I7a3a7d9d2126c34079b1cab87aa0b2ec3030f9b7@changeid>
-In-Reply-To: <20211116120642.v17.3.I7a3a7d9d2126c34079b1cab87aa0b2ec3030f9b7@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 17 Nov 2021 16:03:25 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VcAdSWWVykGrw2r5BFMe4Esotb+ieggczcrY2TH-4VSA@mail.gmail.com>
-Message-ID: <CAD=FV=VcAdSWWVykGrw2r5BFMe4Esotb+ieggczcrY2TH-4VSA@mail.gmail.com>
-Subject: Re: [PATCH v17 3/7] usb: core: hcd: Create platform devices for
- onboard hubs in probe()
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Peter Chen <peter.chen@kernel.org>, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, Roger Quadros <rogerq@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Li Jun <jun.li@nxp.com>, Peter Chen <peter.chen@nxp.com>,
-        Sasha Levin <sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgkOGmkTu18hJQaJ4mk8hGZc16=gzGMgGGOd=uwpXsdyw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Nov 17, 2021 at 03:24:24PM -0800, Linus Torvalds wrote:
+> On Wed, Nov 17, 2021 at 1:54 PM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > The SA_IMMUTABLE change was to deal with failures seen in the seccomp
+> > test suite after the recent fatal signal refactoring. Mainly that a
+> > process that should have effectively performed do_exit() was suddenly
+> > visible to the tracer.
+> 
+> I think this basically shows that the conversion from do_exit() to
+> fatal_signal() was just wrong. The "do_exit()" wasn't really a signal,
+> and can't be treated as such.
+> 
+> That said, instead of reverting, maybe we can just mark the cases
+> where it really is about sending a synchronous signal, vs sending an
+> explicitly fatal signal.
+> 
+> It's basically the "true" condition to force_sig_info_to_task(), so
+> the fix might be just
+> 
+>   @@ -1323,7 +1323,8 @@ force_sig_info_to_task(struct kernel_siginfo
+> *info, struct task_struct *t, bool
+>         blocked = sigismember(&t->blocked, sig);
+>         if (blocked || ignored || sigdfl) {
+>                 action->sa.sa_handler = SIG_DFL;
+>   -             action->sa.sa_flags |= SA_IMMUTABLE;
+>   +             if (sigdfl)
+>   +                     action->sa.sa_flags |= SA_IMMUTABLE;
+>                 if (blocked) {
+>                         sigdelset(&t->blocked, sig);
+>                         recalc_sigpending_and_wake(t);
+> 
+> Kyle, does that fix your test-case? And Kees - yours?
 
-On Tue, Nov 16, 2021 at 12:07 PM Matthias Kaehlcke <mka@chromium.org> wrote:
->
-> Call onboard_hub_create/destroy_pdevs() from usb_add/remove_hcd()
-> for primary HCDs to create/destroy platform devices for onboard
-> USB hubs that may be connected to the root hub of the controller.
-> These functions are a NOP unless CONFIG_USB_ONBOARD_HUB=y/m.
->
-> Also add a field to struct usb_hcd to keep track of the onboard hub
-> platform devices that are owned by the HCD.
->
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
->
-> Changes in v17:
-> - create the platform devices in the generic HCD code instead of
->   the xhci_platform driver
-> - updated subject and commit message to reflect the above change
-> - dropped initialization of platform device list, which is now
->   done in onboard_hub_create_pdevs()
->
-> Changes in v16:
-> - none
->
-> Changes in v15:
-> - none
->
-> Changes in v14:
-> - none
->
-> Changes in v13:
-> - added comment for 'depends on USB_ONBOARD_HUB || !USB_ONBOARD_HUB'
->   construct
->
-> Changes in v12:
-> - none
->
-> Changes in v11:
-> - use onboard_hub_create/destroy_pdevs() to support multiple onboard
->   hubs that are connected to the same root hub
-> - moved field/list to keep track of platform devices from struct
->   usb_hcd to struct xhci_hcd
-> - updated commit message
->
-> Changes in v10:
-> - none
->
-> Changes in v9:
-> - added dependency on USB_ONBOARD_HUB (or !!USB_ONBOARD_HUB) to
->   USB_XHCI_PLATFORM
->
-> Changes in v8:
-> - none
->
-> Changes in v7:
-> - none
->
-> Changes in v6:
-> - none
->
-> Changes in v5:
-> - patch added to the series
->
->  drivers/usb/core/hcd.c  | 6 ++++++
->  include/linux/usb/hcd.h | 1 +
->  2 files changed, 7 insertions(+)
+Yup, the correct behavior is retained for me with this change.
 
-This looks sane to me, so:
+(nit: should the "sigdfl" argument be renamed "immutable" for clarity
+in this function?)
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-
-That being said, I don't know these functions and can't say with any
-authority that this is the "right" place to put the
-onboard_hub_create_pdevs() and onboard_hub_destroy_pdevs(). I'm
-assuming that Alan, Greg, or someone else on this CC list will
-scrutinize that more closely and make sure where Matthias picked is
-OK.
-
-
--Doug
+-- 
+Kees Cook
