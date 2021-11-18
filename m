@@ -2,170 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB18D456280
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:37:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06CD1456282
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:37:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234370AbhKRSk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 13:40:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45216 "EHLO
+        id S234376AbhKRSkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 13:40:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233616AbhKRSkZ (ORCPT
+        with ESMTP id S233616AbhKRSkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 13:40:25 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D48A8C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:37:24 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id 200so6210896pga.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:37:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=clRlkcTWzJOWdb6SjT1HZu+AyElzVwLtoYPXziOiXRE=;
-        b=oY7fVIiTAYnTqInaucomXlnqySq5BwBRW6KXZQ3tAe5Nt/jzBPxEe7HGtHgSYSpsMx
-         JL6AqOkxn9t+v9dhiUB01lWZYqrcjU9G3FBe9rg0WC4TfNPviTGHoq/+6qp1W6aFlTOF
-         dvujVBx27nX0gWVuYqTfJfZTge+VWgImT1aqY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=clRlkcTWzJOWdb6SjT1HZu+AyElzVwLtoYPXziOiXRE=;
-        b=oTY/Luz43uEzUIKYBu3csF+pJB8wFRRiUEXQMjGaOULHn65b4fdMKBH1I3p+Ep/3zh
-         TVskiDfVQqHO37TBE8oz48xgHHEwxYglIUDaEX/QPvRpqASMEOCVkl6lstE/j1UZs4jc
-         fSzr5J+FCevMyvOsg2vHcAT5ZicWh0Bng5XOf8YcIdT1IO0RbXLYihFtXk/axN/T4X0f
-         QnaRa4iPHXc8el0ZzduwXNVFkDdFRIeS/uHXAJILsLQ95BeCwGawP4TTIfl6BvWDy3kU
-         0swgurbARGEBgImlPFiwGep9Ov8NtSId/UOBrSorKxG+962wgoWj3uhscOCV/yCLXbGZ
-         9idQ==
-X-Gm-Message-State: AOAM530x9C4nWF2QKhdVomUTUEHv1zCAobgNv9r7v9JaDWX+EebLaOBl
-        eZNbJbRYo5EcjZZLJ4cB9W6hGw==
-X-Google-Smtp-Source: ABdhPJzvGy5Q9eb8Ms7CI5ZHNFdwzG8O5AFw8vmp2OUM5bltybpyQ2T/sTVs4ZaHR76fdd6ospb1zg==
-X-Received: by 2002:a05:6a00:26e3:b0:49f:c0ca:850e with SMTP id p35-20020a056a0026e300b0049fc0ca850emr57893944pfw.4.1637260643129;
-        Thu, 18 Nov 2021 10:37:23 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id b9sm324100pfm.127.2021.11.18.10.37.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 10:37:22 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Zhang Rui <rui.zhang@intel.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] thermal: intel: int340x_thermal: Use struct_group() for memcpy() region
-Date:   Thu, 18 Nov 2021 10:37:20 -0800
-Message-Id: <20211118183720.1282540-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        Thu, 18 Nov 2021 13:40:41 -0500
+Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3FFBC061574;
+        Thu, 18 Nov 2021 10:37:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=metanate.com; s=stronger; h=In-Reply-To:Content-Type:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description; bh=NMsSVSlICaw3KxLzwPPUCPeVdNgwg5v8aK2nEdXuhtA=; b=DILZx
+        /TB9pZ1072e6u6lM8weFHFpm1OxAnji/1mVME5ECSH4vCffcOLqzZVLl9ABFp1eiHkfUCzM9/B40F
+        p0DdAQ4KvHFi0GD2q+1d5twBHNIo4IcyJtFIXmysJ7uhOU9U3XXAGHEFqZ9pJNOP+g9HzavcKLD80
+        BQwOrZZasBUwPK1JWN97LcMLNGOlQDEy8vzTah0QqgBwmdoZ98DNRr+1AzoM0YiPrRrgTgbmC1CdP
+        A078lmkh22euzzTvJAzI0hqn9qpHoLBc+Ws5DguYxd2tDAVxLEzYrLikydU9V+bw2BMPKBh0dCKwr
+        sGusX9DDSrYh9JmSuyaa7f6MEUD2w==;
+Received: from [81.174.171.191] (helo=donbot)
+        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <john@metanate.com>)
+        id 1mnmHu-0005Py-OZ; Thu, 18 Nov 2021 18:37:34 +0000
+Date:   Thu, 18 Nov 2021 18:37:33 +0000
+From:   John Keeping <john@metanate.com>
+To:     Ondrej Jirman <megous@megous.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>, Wolfram Sang <wsa@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "moderated list:ARM/Rockchip SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC support" 
+        <linux-rockchip@lists.infradead.org>,
+        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [RESEND PATCH] i2c: rk3x: Handle a spurious start completion
+ interrupt flag
+Message-ID: <YZadbTw0q4NA2XWs@donbot>
+References: <20210924111528.2924251-1-megous@megous.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3277; h=from:subject; bh=FXb9nQQ+9raXNRheCnPL/rsMtfpVZSmOVeEiPUzBx+k=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhlp1g97boEQtghYWjunVAHXryqRBeKslQ/U0/9Z2K SuHsN8WJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZadYAAKCRCJcvTf3G3AJq6KEA Cq20Gf/+Ej92Sxr7ZbNW+QKWeFJDk56z7sNHE0roxks3ZGfeYa/gixYUjrdl6IAQKl553wzRaKoYwY tx7WMeOtV/opd/xq6vYTaMM/zBgEJuNdR/fF9bNGgaiswLzZWisgIBchzD+XwIuhtiewP1m5dE/8bq bsA97zyTEtdrsX8gqAhTzXY3Dm6A1rgfQWe1rlfd5RAgnz0WEmV7nnDl2sCA9M7fumTk6svQw5RWpC ae806DJbuzjNrJmp2d9XaEapK3XNMHKY5lpV6puNAVEubCdhkz9SC8Jd6vd7r6TWPNkj5ntZikzbd5 QU1Ut8w+ttz7GXA0mjxkVkhyQ+AMgfU9vFjx0Xmjdqv5pvuNXmBrs9CH2pVxMJHZLV3g79ksaJdYAG dnJn5FSQ5ICsVGR9rdhqvpJDJCCkBJnNbNpSA9jbnMT5jAofGeRCj/pIfr6s6l+pz838LVgXiFQGii DDXsL3pc1zeu7bi9xkTNAMA0f5PjTGmxntTPps2kKqrzgluV3j+/+YbxE0Iy4Lo60VZxlHjeVf6HFY DzYj2vOCiCqNRBFNxGSnv6g6tifRyiLCF3ruA8UUOWNgT+5EBJvL3uhIZnImNYu2sHIabEsiQtwK5I BvbJzO+4AIU6UPwZzzNcZL2MHlcVwNY27JEk00SqHgwvKHPKkGWXcAbSo5AA==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210924111528.2924251-1-megous@megous.com>
+X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), avoid intentionally writing across
-neighboring fields.
+On Fri, Sep 24, 2021 at 01:15:27PM +0200, Ondrej Jirman wrote:
+> In a typical read transfer, start completion flag is being set after
+> read finishes (notice ipd bit 4 being set):
+> 
+> trasnfer poll=0
+> i2c start
+> rk3x-i2c fdd40000.i2c: IRQ: state 1, ipd: 10
+> i2c read
+> rk3x-i2c fdd40000.i2c: IRQ: state 2, ipd: 1b
+> i2c stop
+> rk3x-i2c fdd40000.i2c: IRQ: state 4, ipd: 33
+> 
+> This causes I2C transfer being aborted in polled mode from a stop completion
+> handler:
+> 
+> trasnfer poll=1
+> i2c start
+> rk3x-i2c fdd40000.i2c: IRQ: state 1, ipd: 10
+> i2c read
+> rk3x-i2c fdd40000.i2c: IRQ: state 2, ipd: 0
+> rk3x-i2c fdd40000.i2c: IRQ: state 2, ipd: 1b
+> i2c stop
+> rk3x-i2c fdd40000.i2c: IRQ: state 4, ipd: 13
+> i2c stop
+> rk3x-i2c fdd40000.i2c: unexpected irq in STOP: 0x10
+> 
+> Clearing the START flag after read fixes the issue without any obvious
+> side effects.
+> 
+> This issue was dicovered on RK3566 when adding support for powering
+> off the RK817 PMIC.
+> 
+> Signed-off-by: Ondrej Jirman <megous@megous.com>
+> ---
 
-Use struct_group() in struct art around members weight, and ac[0-9]_max,
-so they can be referenced together. This will allow memcpy() and sizeof()
-to more easily reason about sizes, improve readability, and avoid future
-warnings about writing beyond the end of weight.
+I haven't seen the issue described here, so I can't test whether this
+fix works, but the explanation makes sense, so:
 
-"pahole" shows no size nor member offset changes to struct art.
-"objdump -d" shows no meaningful object code changes (i.e. only source
-line number induced differences).
+Reviewed-by: John Keeping <john@metanate.com>
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- .../intel/int340x_thermal/acpi_thermal_rel.c  |  5 +-
- .../intel/int340x_thermal/acpi_thermal_rel.h  | 48 ++++++++++---------
- 2 files changed, 29 insertions(+), 24 deletions(-)
-
-diff --git a/drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.c b/drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.c
-index a478cff8162a..e90690a234c4 100644
---- a/drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.c
-+++ b/drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.c
-@@ -250,8 +250,9 @@ static int fill_art(char __user *ubuf)
- 		get_single_name(arts[i].source, art_user[i].source_device);
- 		get_single_name(arts[i].target, art_user[i].target_device);
- 		/* copy the rest int data in addition to source and target */
--		memcpy(&art_user[i].weight, &arts[i].weight,
--			sizeof(u64) * (ACPI_NR_ART_ELEMENTS - 2));
-+		BUILD_BUG_ON(sizeof(art_user[i].data) !=
-+			     sizeof(u64) * (ACPI_NR_ART_ELEMENTS - 2));
-+		memcpy(&art_user[i].data, &arts[i].data, sizeof(art_user[i].data));
- 	}
- 
- 	if (copy_to_user(ubuf, art_user, art_len))
-diff --git a/drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.h b/drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.h
-index 58822575fd54..78d942477035 100644
---- a/drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.h
-+++ b/drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.h
-@@ -17,17 +17,19 @@
- struct art {
- 	acpi_handle source;
- 	acpi_handle target;
--	u64 weight;
--	u64 ac0_max;
--	u64 ac1_max;
--	u64 ac2_max;
--	u64 ac3_max;
--	u64 ac4_max;
--	u64 ac5_max;
--	u64 ac6_max;
--	u64 ac7_max;
--	u64 ac8_max;
--	u64 ac9_max;
-+	struct_group(data,
-+		u64 weight;
-+		u64 ac0_max;
-+		u64 ac1_max;
-+		u64 ac2_max;
-+		u64 ac3_max;
-+		u64 ac4_max;
-+		u64 ac5_max;
-+		u64 ac6_max;
-+		u64 ac7_max;
-+		u64 ac8_max;
-+		u64 ac9_max;
-+	);
- } __packed;
- 
- struct trt {
-@@ -47,17 +49,19 @@ union art_object {
- 	struct {
- 		char source_device[8]; /* ACPI single name */
- 		char target_device[8]; /* ACPI single name */
--		u64 weight;
--		u64 ac0_max_level;
--		u64 ac1_max_level;
--		u64 ac2_max_level;
--		u64 ac3_max_level;
--		u64 ac4_max_level;
--		u64 ac5_max_level;
--		u64 ac6_max_level;
--		u64 ac7_max_level;
--		u64 ac8_max_level;
--		u64 ac9_max_level;
-+		struct_group(data,
-+			u64 weight;
-+			u64 ac0_max_level;
-+			u64 ac1_max_level;
-+			u64 ac2_max_level;
-+			u64 ac3_max_level;
-+			u64 ac4_max_level;
-+			u64 ac5_max_level;
-+			u64 ac6_max_level;
-+			u64 ac7_max_level;
-+			u64 ac8_max_level;
-+			u64 ac9_max_level;
-+		);
- 	};
- 	u64 __data[ACPI_NR_ART_ELEMENTS];
- };
--- 
-2.30.2
-
+>  drivers/i2c/busses/i2c-rk3x.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
+> index 819ab4ee517e..02ddb237f69a 100644
+> --- a/drivers/i2c/busses/i2c-rk3x.c
+> +++ b/drivers/i2c/busses/i2c-rk3x.c
+> @@ -423,8 +423,8 @@ static void rk3x_i2c_handle_read(struct rk3x_i2c *i2c, unsigned int ipd)
+>  	if (!(ipd & REG_INT_MBRF))
+>  		return;
+>  
+> -	/* ack interrupt */
+> -	i2c_writel(i2c, REG_INT_MBRF, REG_IPD);
+> +	/* ack interrupt (read also produces a spurious START flag, clear it too) */
+> +	i2c_writel(i2c, REG_INT_MBRF | REG_INT_START, REG_IPD);
+>  
+>  	/* Can only handle a maximum of 32 bytes at a time */
+>  	if (len > 32)
