@@ -2,181 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A5845605F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:21:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D202456036
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:11:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233257AbhKRQYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 11:24:33 -0500
-Received: from mga07.intel.com ([134.134.136.100]:38411 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231667AbhKRQYb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 11:24:31 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="297637333"
-X-IronPort-AV: E=Sophos;i="5.87,245,1631602800"; 
-   d="scan'208";a="297637333"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 08:12:14 -0800
-X-IronPort-AV: E=Sophos;i="5.87,245,1631602800"; 
-   d="scan'208";a="507497104"
-Received: from chenyu-desktop.sh.intel.com (HELO chenyu-desktop) ([10.239.158.186])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 08:12:12 -0800
-Date:   Fri, 19 Nov 2021 00:11:20 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 1/4] efi: Introduce
- EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER and corresponding structures
-Message-ID: <20211118161120.GA884221@chenyu-desktop>
-References: <cover.1635953446.git.yu.c.chen@intel.com>
- <68d1c452bbf7f742793cb39ebb66f6b4ba6a3fb3.1635953446.git.yu.c.chen@intel.com>
- <CAJZ5v0gKu3JtCGThZKx87rQJeW+xK=ZkSD47kaP+N8Qr8Pq-Tw@mail.gmail.com>
+        id S232964AbhKRQOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 11:14:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231167AbhKRQOa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 11:14:30 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E7CC061574;
+        Thu, 18 Nov 2021 08:11:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=FqXFoFJw+7zJvJVEr7OM4grmg4IXaSw/6BDungSGX3M=; b=UdZmhO2yxjiDYqVx0mJPhHmAXP
+        1xmDfU3ls0wpkOvHqul7NfP9ZH57q66zhNDNdjHcD5wU2X9N5fSzEGw9/LznZlR8xWHGJZzNh2rlr
+        RlAmCBln22+Riad2x+HlUDaaHlBnXQT6CQkxQUYb/lFUI1TLxdUpjN7366uGxrRxN/ANzBIm5Pp6F
+        Xq3f4nlm1x0k5i2QRQF35FLpr75oDBGDtICjAi/gYxQKXvWru4gK8VKXJJYgdylaWpHFDDDPEDjPS
+        zRgXXfzYNxivqAWtfeaUuso/lgdqQV15IHxxQwUmJjN/Pd9AuhFpQYhfIgWB/lmntzQxpy9SbjJ7D
+        40QGIvTw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55728)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mnk0S-000381-Ac; Thu, 18 Nov 2021 16:11:24 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mnk0R-000448-9U; Thu, 18 Nov 2021 16:11:23 +0000
+Date:   Thu, 18 Nov 2021 16:11:23 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     Horatiu Vultur <horatiu.vultur@microchip.com>, davem@davemloft.net,
+        kuba@kernel.org, robh+dt@kernel.org, p.zabel@pengutronix.de,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 3/5] net: lan966x: add port module support
+Message-ID: <YZZ7KwKw8i6EPcFL@shell.armlinux.org.uk>
+References: <20211117091858.1971414-1-horatiu.vultur@microchip.com>
+ <20211117091858.1971414-4-horatiu.vultur@microchip.com>
+ <YZTRUfvPPu5qf7mE@shell.armlinux.org.uk>
+ <20211118095703.owsb2nen5hb5vjz2@soft-dev3-1.localhost>
+ <YZYj9fwCeWdIZJOt@shell.armlinux.org.uk>
+ <20211118125928.tav7k5xlbnhrgp3o@soft-dev3-1.localhost>
+ <YZZVn6jve4BvSqyX@shell.armlinux.org.uk>
+ <e973b8e6-f8ca-eec9-f5ac-9ae401deea81@seco.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJZ5v0gKu3JtCGThZKx87rQJeW+xK=ZkSD47kaP+N8Qr8Pq-Tw@mail.gmail.com>
+In-Reply-To: <e973b8e6-f8ca-eec9-f5ac-9ae401deea81@seco.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
-On Thu, Nov 18, 2021 at 04:49:35PM +0100, Rafael J. Wysocki wrote:
-> On Wed, Nov 3, 2021 at 4:44 PM Chen Yu <yu.c.chen@intel.com> wrote:
-> >
-> > Platform Firmware Runtime Update image starts with UEFI headers, and the
-> > headers are defined in UEFI specification, but some of them have not been
-> > defined in the kernel yet.
-> >
-> > For example, the header layout of a capsule file looks like this:
-> >
-> > EFI_CAPSULE_HEADER
-> > EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
-> > EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER
-> > EFI_FIRMWARE_IMAGE_AUTHENTICATION
-> >
-> > These structures would be used by the Platform Firmware Runtime Update
-> > driver to parse the format of capsule file to verify if the corresponding
-> > version number is valid.
+On Thu, Nov 18, 2021 at 10:36:58AM -0500, Sean Anderson wrote:
+> Hi Russell,
 > 
-> Why does the driver need to do that?
+> On 11/18/21 8:31 AM, Russell King (Oracle) wrote:
+> > On Thu, Nov 18, 2021 at 01:59:28PM +0100, Horatiu Vultur wrote:
+> > > The 11/18/2021 09:59, Russell King (Oracle) wrote:
+> > > > Another approach would be to split phylink_mii_c22_pcs_decode_state()
+> > > > so that the appropriate decode function is selected depending on the
+> > > > interface state, which may be a better idea.
+> > > 
+> > > I have tried to look for phylink_mii_c22_pcs_decode_state() and I
+> > > have found it only here [1], and seems that it depends on [2]. But not
+> > > much activity happened to these series since October.
+> > > Do you think they will still get in?
+> > 
+> > I don't see any reason the first two patches should not be sent. I'm
+> > carrying the second one locally because I use it in some changes I've
+> > made to the mv88e6xxx code - as I mentioned in the patchwork entry you
+> > linked to. See:
+> > 
+> >   http://git.armlinux.org.uk/cgit/linux-arm.git/log/?h=net-queue
+> > 
+> >   "net: phylink: Add helpers for c22 registers without MDIO"
+> > 
+> > Although I notice I committed it to my tree with the wrong author. :(
+> > 
+> > Sean, please can you submit the mdiodev patch and this patch for
+> > net-next as they have general utility? Thanks.
 > 
-> The firmware will reject the update if the version is invalid anyway, won't it?
+> The mdiodev patch is already in the tree as 0ebecb2644c8 ("net: mdio:
+> Add helper functions for accessing MDIO devices"). The c22 patch is
+> submitted as [1].
 > 
-Yes, the firmware will reject the update if the version does not match. The motivation
-of checking it in kernel before the firmware is mainly to deal with a corner case that,
-if the user provides an invalid capsule image, the kernel could be used as a guard to
-reject it, without switching to the MM update mode(which might be costly).
-> > The EFI_CAPSULE_HEADER has been defined in the
-> > kernel, however the rest are not, thus introduce corresponding UEFI
-> > structures accordingly.
+> --Sean
 > 
-> I would change the above in the following way:
-> 
-> "EFI_CAPSULE_HEADER has been defined in the kernel, but the other
-> structures have not been defined yet, so do that."
->
-Ok, will do. 
-> > Besides, EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
-> > and EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER are required to be packed
-> > in the uefi specification.
-> 
-> > Ard has pointed out that, the __packed
-> > attribute does indicate to the compiler that the entire thing can appear
-> > misaligned in memory. So if one follows the other in the capsule header,
-> > the __packed attribute may be appropriate to ensure that the second one
-> > is not accessed using misaligned loads and stores.
-> 
-> "For this reason, use the __packed attribute to indicate to the
-> compiler that the entire structure can appear misaligned in memory (as
-> suggested by Ard) in case one of them follows the other directly in a
-> capsule header."
-> 
-Ok, will do.
-> >
-> > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> > ---
-> > v8: Use efi_guid_t instead of guid_t. (Andy Shevchenko)
-> > v7: Use __packed instead of pragma pack(1). (Greg Kroah-Hartman, Ard Biesheuve)
-> > v6: No change since v5.
-> > v5: No change since v4.
-> > v4: Revise the commit log to make it more clear. (Rafael J. Wysocki)
-> > ---
-> >  include/linux/efi.h | 46 +++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 46 insertions(+)
-> >
-> > diff --git a/include/linux/efi.h b/include/linux/efi.h
-> > index 6b5d36babfcc..1ec73c5ab6c9 100644
-> > --- a/include/linux/efi.h
-> > +++ b/include/linux/efi.h
-> > @@ -148,6 +148,52 @@ typedef struct {
-> >         u32 imagesize;
-> >  } efi_capsule_header_t;
-> >
-> > +/* EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER */
-> > +struct efi_manage_capsule_header {
-> > +       u32 ver;
-> > +       u16 emb_drv_cnt;
-> > +       u16 payload_cnt;
-> > +       /*
-> > +        * Variable array indicated by number of
-> > +        * (emb_drv_cnt + payload_cnt)
-> 
-> * Variable-size array of the size given by the sum of
-> * emb_drv_cnt and payload_cnt.
-> 
-Ok, will change it.
-> > +        */
-> > +       u64 offset_list[];
-> > +} __packed;
-> > +
-> > +/* EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER */
-> > +struct efi_manage_capsule_image_header {
-> > +       u32 ver;
-> > +       efi_guid_t image_type_id;
-> > +       u8 image_index;
-> > +       u8 reserved_bytes[3];
-> > +       u32 image_size;
-> > +       u32 vendor_code_size;
-> > +       /* ver = 2. */
-> 
-> What does this mean?
-> 
-> > +       u64 hw_ins;
-> > +       /* ver = v3. */
-> 
-> And same here?
-> 
-The hw_ins was introduced in version 2, and capsule_support
-was introduced in version 3 of the capsule image format.
-I'll revise the comment in next version.
-> > +       u64 capsule_support;
-> > +} __packed;
-> > +
-> > +/* WIN_CERTIFICATE */
-> > +struct win_cert {
-> > +       u32 len;
-> > +       u16 rev;
-> > +       u16 cert_type;
-> > +};
-> > +
-> > +/* WIN_CERTIFICATE_UEFI_GUID */
-> > +struct win_cert_uefi_guid {
-> > +       struct win_cert hdr;
-> > +       efi_guid_t cert_type;
-> > +       u8 cert_data[];
-> > +};
-> > +
-> > +/* EFI_FIRMWARE_IMAGE_AUTHENTICATIO */
-> 
-> The "N" character at the end is missing.
-> 
-Ok, will fix it.
+> [1] https://lore.kernel.org/netdev/20211022160959.3350916-1-sean.anderson@seco.com/
 
-thanks,
-Chenyu
+Patchwork says its deferrred:
+
+https://patchwork.kernel.org/project/netdevbpf/patch/20211022160959.3350916-1-sean.anderson@seco.com/
+
+However, it does apply to current net-next, but Jakub did ask for
+it to be resubmitted. Given that patches are being quickly applied
+to net-next, I suggest resubmission may be just what's neeeded!
+
+Thanks.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
