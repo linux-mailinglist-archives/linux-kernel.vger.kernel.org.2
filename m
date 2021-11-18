@@ -2,185 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED11455FFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E40C455FFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232772AbhKRP7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 10:59:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232464AbhKRP7L (ORCPT
+        id S232805AbhKRQAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 11:00:12 -0500
+Received: from so254-9.mailgun.net ([198.61.254.9]:20102 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232663AbhKRQAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 10:59:11 -0500
-Received: from polaris.svanheule.net (polaris.svanheule.net [IPv6:2a00:c98:2060:a004:1::200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4066C06173E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 07:56:10 -0800 (PST)
-Received: from [IPv6:2a02:a03f:eafe:c901:baf4:d6c5:5600:301] (unknown [IPv6:2a02:a03f:eafe:c901:baf4:d6c5:5600:301])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Thu, 18 Nov 2021 11:00:11 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1637251031; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=fZTkXkb1Cv7ebJoaLjsjX8K/mJjllfTsgjIdQ8n6GyQ=; b=gTBaLQKCyl0tNQcbvaYVG/KfPtrm5rMJJjJM4Ew/chxxBjcoIGw+OVFR5vdb1sJxKjFL/HHi
+ sfoYRBGEx01sxEUnVjtGqes+ec5Ai/8g9SAE6XIUEDywPeDM6P2486jDz0edR0wjsI+akZKJ
+ 9tDvfPl55ZaETZhJgBgfc0piAmw=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 619677d6638a2f4d616056ad (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 18 Nov 2021 15:57:10
+ GMT
+Sender: pillair=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A965EC43616; Thu, 18 Nov 2021 15:57:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from pillair-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id 920E52737E0;
-        Thu, 18 Nov 2021 16:56:08 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1637250968;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=xFBgvNoKxIt+rGYYd66CKxyErQSt2mh7u9EnEzl9/Ww=;
-        b=sGADkhOKzV4Bn3wVKoq8VGNAhPy3oeOal01P+gdvcQyeB6wuncBdC5N8WQWokDMsFyWPjB
-        L+m3iDx/crHWEngH0LkJHPzOde6kV1f8MdmMHle33Vz3zCvXBZp9U/Drk8C1v2j2WG5TDP
-        NQJTUDVnaPtIWZlVt717ZJwRD9yAMJgLf9RYEimQurwrQkaY5bfiYKmxQTD9lA65HFwq3i
-        JwCg0nSm3ylG2PYHqihY/Tb7niBU9u3MZetxzTAitWz4WQqTwAlklp1OweN3C80JA1cssj
-        +HbzOk2HjeUEXaw7bRZaqglRY5EiimSsG7o1glvB9mu09kbeWbFP8+igDYp47g==
-Message-ID: <bbe5506a2458b2d6049bd22a5fda77ae6175ddec.camel@svanheule.net>
-Subject: realtek,rtl-intc IRQ mapping broken on 5.16-rc1
-From:   Sander Vanheule <sander@svanheule.net>
-To:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Birger Koblitz <mail@birger-koblitz.de>,
-        Bert Vermeulen <bert@biot.com>,
-        John Crispin <john@phrozen.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>
-Date:   Thu, 18 Nov 2021 16:56:06 +0100
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C5F66C4338F;
+        Thu, 18 Nov 2021 15:57:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org C5F66C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Rakesh Pillai <pillair@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        swboyd@chromium.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sibis@codeaurora.org,
+        mpubbise@codeaurora.org, kuabhs@chromium.org,
+        Rakesh Pillai <pillair@codeaurora.org>
+Subject: [PATCH v6] arm64: dts: qcom: sc7280: Add WPSS remoteproc node
+Date:   Thu, 18 Nov 2021 21:26:56 +0530
+Message-Id: <1637251016-21923-1-git-send-email-pillair@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi everyone,
+Add the WPSS remoteproc node in dts for
+PIL loading.
 
-On 5.16-rc1, the realtek,rtl-intc interrupt controller driver for Realtek RTL8380 SoCs
-(and related) appears broken. When booting, I don't get a tty on the serial port, although
-serial output works.
-
-The watchdog (currently under review) also cannot acquire the required phase1 interrupt,
-and produces the following output:
-[    1.968228] realtek-otto-watchdog 18003150.watchdog: error -EINVAL: Failed to get IRQ 4
-for phase1
-[    1.978404] realtek-otto-watchdog: probe of 18003150.watchdog failed with error -22
-
-A bisects points to commit 041284181226 ("of/irq: Allow matching of an interrupt-map local
-to an interrupt controller"). Reverting this above commit and follow-up commit
-10a20b34d735 ("of/irq: Don't ignore interrupt-controller when interrupt-map failed")
-restores the functionality from v5.15.
-
-Below you can find the DTS that I used to reproduce this on my Zyxel GS1900-8.
-
-
-Best,
-Sander
-
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 ---
-// SPDX-License-Identifier: GPL-2.0-or-later
-/dts-v1/;
+Changes from v5:
+- Update the clock names
+---
+ arch/arm64/boot/dts/qcom/sc7280-idp.dts |  4 +++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi    | 56 +++++++++++++++++++++++++++++++++
+ 2 files changed, 60 insertions(+)
 
-/ {
-	#address-cells = <1>;
-	#size-cells = <1>;
-
-	compatible = "zyxel,gs1900-8", "realtek,rtl83xx-soc";
-	model = "ZyXEL GS1900-8";
-
-	aliases {
-		serial0 = &serial0;
-	};
-
-	baseclk: baseclk {
-		compatible = "fixed-clock";
-		#clock-cells = <0>;
-		clock-frequency = <500000000>;
-	};
-
-	chosen {
-		stdout-path = "serial0";
-		bootargs = "earlycon console=ttyS0,115200";
-	};
-
-	cpuintc: cpuintc {
-		compatible = "mti,cpu-interrupt-controller";
-		#address-cells = <0>;
-		#interrupt-cells = <1>;
-		interrupt-controller;
-	};
-
-	cpus {
-		#address-cells = <1>;
-		#size-cells = <0>;
-
-		cpu@0 {
-			compatible = "mips,mips4KEc";
-			reg = <0>;
-			clocks = <&baseclk>;
-			clock-names = "cpu";
-		};
-	};
-
-	lx_clk: lx_clk {
-		compatible = "fixed-clock";
-		#clock-cells = <0>;
-		clock-frequency = <200000000>;
-	};
-
-	memory@0 {
-		device_type = "memory";
-		reg = <0x0 0x8000000>;
-	};
-
-	soc: soc@18000000 {
-		compatible = "simple-bus";
-		#address-cells = <1>;
-		#size-cells = <1>;
-		ranges = <0x0 0x18000000 0x10000>;
-
-		serial0: serial@2000 {
-			compatible = "ns16550a";
-			reg = <0x2000 0x100>;
-
-			clocks = <&lx_clk>;
-
-			interrupt-parent = <&intc>;
-			interrupts = <31>;
-
-			reg-io-width = <1>;
-			reg-shift = <2>;
-			fifo-size = <1>;
-			no-loopback-test;
-		};
-
-		intc: interrupt-controller@3000 {
-			compatible = "realtek,rtl-intc";
-			reg = <0x3000 0x20>;
-			interrupt-controller;
-			#interrupt-cells = <1>;
-
-			#address-cells = <0>;
-			interrupt-map =
-				<31 &cpuintc 2>, /* UART0 */
-				<20 &cpuintc 3>, /* SWCORE */
-				<19 &cpuintc 4>, /* WDT IP1 */
-				<18 &cpuintc 5>; /* WDT IP2 */
-		};
-
-		watchdog@3150 {
-			compatible = "realtek,rtl8380-wdt";
-			reg = <0x3150 0xc>;
-
-			realtek,reset-mode = "soc";
-
-			clocks = <&lx_clk>;
-			timeout-sec = <20>;
-
-			interrupt-parent = <&intc>;
-			interrupt-names = "phase1", "phase2";
-			interrupts = <19>, <18>;
-		};
-	};
-};
+diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+index 9b991ba..ddab150 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
++++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+@@ -80,3 +80,7 @@
+ 		qcom,pre-scaling = <1 1>;
+ 	};
+ };
++
++&remoteproc_wpss {
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index 365a2e0..76c2a90 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -134,6 +134,11 @@
+ 			no-map;
+ 		};
+ 
++		wpss_mem: memory@9ae00000 {
++			no-map;
++			reg = <0x0 0x9ae00000 0x0 0x1900000>;
++		};
++
+ 		rmtfs_mem: memory@9c900000 {
+ 			compatible = "qcom,rmtfs-mem";
+ 			reg = <0x0 0x9c900000 0x0 0x280000>;
+@@ -2598,6 +2603,57 @@
+ 			status = "disabled";
+ 		};
+ 
++		remoteproc_wpss: remoteproc@8a00000 {
++			compatible = "qcom,sc7280-wpss-pil";
++			reg = <0 0x08a00000 0 0x10000>;
++
++			interrupts-extended = <&intc GIC_SPI 587 IRQ_TYPE_EDGE_RISING>,
++					      <&wpss_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
++					      <&wpss_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
++					      <&wpss_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
++					      <&wpss_smp2p_in 3 IRQ_TYPE_EDGE_RISING>,
++					      <&wpss_smp2p_in 7 IRQ_TYPE_EDGE_RISING>;
++			interrupt-names = "wdog", "fatal", "ready", "handover",
++					  "stop-ack", "shutdown-ack";
++
++			clocks = <&gcc GCC_WPSS_AHB_BDG_MST_CLK>,
++				 <&gcc GCC_WPSS_AHB_CLK>,
++				 <&gcc GCC_WPSS_RSCP_CLK>,
++				 <&rpmhcc RPMH_CXO_CLK>;
++			clock-names = "ahb_bdg", "ahb",
++				      "rscp", "xo";
++
++			power-domains = <&rpmhpd SC7280_CX>,
++					<&rpmhpd SC7280_MX>;
++			power-domain-names = "cx", "mx";
++
++			memory-region = <&wpss_mem>;
++
++			qcom,qmp = <&aoss_qmp>;
++
++			qcom,smem-states = <&wpss_smp2p_out 0>;
++			qcom,smem-state-names = "stop";
++
++			resets = <&aoss_reset AOSS_CC_WCSS_RESTART>,
++				 <&pdc_reset PDC_WPSS_SYNC_RESET>;
++			reset-names = "restart", "pdc_sync";
++
++			qcom,halt-regs = <&tcsr_mutex 0x37000>;
++
++			status = "disabled";
++
++			glink-edge {
++				interrupts-extended = <&ipcc IPCC_CLIENT_WPSS
++							     IPCC_MPROC_SIGNAL_GLINK_QMP
++							     IRQ_TYPE_EDGE_RISING>;
++				mboxes = <&ipcc IPCC_CLIENT_WPSS
++						IPCC_MPROC_SIGNAL_GLINK_QMP>;
++
++				label = "wpss";
++				qcom,remote-pid = <13>;
++			};
++		};
++
+ 		dc_noc: interconnect@90e0000 {
+ 			reg = <0 0x090e0000 0 0x5080>;
+ 			compatible = "qcom,sc7280-dc-noc";
+-- 
+2.7.4
 
