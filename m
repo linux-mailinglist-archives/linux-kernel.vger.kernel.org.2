@@ -2,309 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F44456339
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 20:11:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE247456343
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 20:15:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233450AbhKRTOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 14:14:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbhKRTOS (ORCPT
+        id S233353AbhKRTSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 14:18:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:27134 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229678AbhKRTSA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 14:14:18 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFEBAC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 11:11:17 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id v23so9425195iom.12
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 11:11:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3kTTbw0wxNJ2WJq/0m4wL50EwrDS/E2+zk2MZkwiuPA=;
-        b=eOLtAgi3C9LcESqiPOWdQLyxW+z5ZsYxjyA6hZIK5CtOBadPMRp04YG971xzRfKEWq
-         381ufaxkjonPCGZvbSCVAtiFktUtoBzkiH1y2ynTQOG7BgaS9e6Afm50NUUsrOan7Xml
-         sn+DaPGPNSW905QdFMSZZWnu0T1dprdy5orKru5CoHfKPvVgDefOrEa/e/QP74KBkhF4
-         cZCj+HPH2XI4mqupQFFv4FZBjf/ENNWcfaZQGs7wIioTjGtSgdmGyeN7a99BttqOJnuq
-         uXatPCgX/KfU3eVCSvdyAyKgKdcqxZ6qgsS5CzUGAuTIlmavJL+Dg5S0fw61U3Oqoj3o
-         IxoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3kTTbw0wxNJ2WJq/0m4wL50EwrDS/E2+zk2MZkwiuPA=;
-        b=HCaJPDThRd2Ls8oNpY69V8Rbix0OaclojDsg09SGVKnSsM7EY2s+gxun2hPMmpCEoX
-         3sVnxEYAgaLVmerTZujbwNoTC4KRVsx3fpwuJjY44X8JUmtt2hOVKF8OGOd8gLPHGQJq
-         PzyL6gid+TAzIAY1mCzU0b2l0USGsELulErSVEYU1F8Sf3/aHQGaoMPWlwNKKusbv9RC
-         M8vucBVMyB33U6ITAQ7+2eAWEMaWr0PaDUarRGiYoO6dJi9DH8EelsZdip0JhGNXlJhr
-         Y1Ds1mHcbb0XoJAp7EwuAEmWbfcWzXgHXCNvRZxxC3XgExmBhHAK4iSxfC9dV/wz5qpP
-         00yQ==
-X-Gm-Message-State: AOAM532v3ylZRNqe+Fq99yeCV2HuzzH4H72+rk5WmMB0ZY/CJ86+pHnF
-        cJb9dPxaZD9cK55MzLYfc4RpB8KrugdE+04qDKmugw==
-X-Google-Smtp-Source: ABdhPJxaNazcik9X1qrk6hwvFgzu2eRpoP5s28rY7bIhXh0iXyYRIJpNaQdxw1TTf5YLAzrntkcsnp/mEViiZ3qykBE=
-X-Received: by 2002:a05:6602:1342:: with SMTP id i2mr1051698iov.153.1637262676912;
- Thu, 18 Nov 2021 11:11:16 -0800 (PST)
+        Thu, 18 Nov 2021 14:18:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637262899;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=pptzbwHT9d+uWaAy6Hyo3woK7sDmafa/xCw8uzoRJfg=;
+        b=OiPEY/MBjbTsi/aeWgxO7mulWiXi+jaHKLiL9WSqTolXlDSeDs2wiqRdlwxeob4mxCeJ6l
+        rQhId4HH7Zvtm+79JGYDUJkEydh9Uye32g5kAPKM5Wrcge1M4/HCvFWLiiRmmI5XmhYNca
+        PT8heHq+B04qwB2i32KAXRrPhwh0sh0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-39-GZ33z-WQP4qAFav10qpvfQ-1; Thu, 18 Nov 2021 14:14:53 -0500
+X-MC-Unique: GZ33z-WQP4qAFav10qpvfQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C1359100CC85;
+        Thu, 18 Nov 2021 19:14:51 +0000 (UTC)
+Received: from llong.com (unknown [10.22.16.126])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5A65619739;
+        Thu, 18 Nov 2021 19:14:47 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Feng Tang <feng.tang@intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Cassio Neri <cassio.neri@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v3 0/4] clocksource: Avoid incorrect hpet fallback
+Date:   Thu, 18 Nov 2021 14:14:35 -0500
+Message-Id: <20211118191439.1000012-1-longman@redhat.com>
 MIME-Version: 1.0
-References: <20211106013058.2621799-1-dlatypov@google.com> <20211106013058.2621799-2-dlatypov@google.com>
- <CABVgOSnQ9qGtu0nEKePH+Zb1oR2osmVh791zyQ9P61SNznryrw@mail.gmail.com> <CAGS_qxr3qd4b=00B76qN5GpFBa9aYa4UBFPvR505F3PbF5HSmg@mail.gmail.com>
-In-Reply-To: <CAGS_qxr3qd4b=00B76qN5GpFBa9aYa4UBFPvR505F3PbF5HSmg@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Thu, 18 Nov 2021 11:11:05 -0800
-Message-ID: <CAGS_qxqhCHQEwoAKZ-ieEXtoC5SRjxwuceCqwF5eyfEDZ7YuBA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] kunit: tool: add --kconfig_add to allow easily
- tweaking kunitconfigs
-To:     David Gow <davidgow@google.com>
-Cc:     brendanhiggins@google.com, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 8, 2021 at 9:23 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> On Fri, Nov 5, 2021 at 9:07 PM David Gow <davidgow@google.com> wrote:
-> >
-> > On Sat, Nov 6, 2021 at 9:31 AM 'Daniel Latypov' via KUnit Development
-> > <kunit-dev@googlegroups.com> wrote:
-> > >
-> > > E.g. run tests but with KASAN
-> > > $ ./tools/testing/kunit/kunit.py run --arch=x86_64 --kconfig_add=CONFIG_KASAN=y
-> >
-> > This is very neat, thank you. I'm definitely going to use this quite a bit.
-> >
-> > My only real note is that we'll need to add some documentation (but
-> > since the KUnit documentation is being reworked at the moment, I'm
-> > okay with doing that later to avoid merge conflicts).
->
-> Yeah, there's that and I was also unsure where exactly to mention it.
-> I'd also want there to be the caveat about how removing the option
-> won't trigger a rebuild.
-> The part where we have that right now is really early on and doesn't
-> need more stuff added there:
-> https://www.kernel.org/doc/html/latest/dev-tools/kunit/start.html#creating-a-kunitconfig
->
-> >
-> > > This also works with --kunitconfig
-> > > $ ./tools/testing/kunit/kunit.py run --arch=x86_64 --kunitconfig=fs/ext4 --kconfig_add=CONFIG_KASAN=y
-> >
-> > It's also worth noting that this can be appended multiple times to set
-> > multiple options, which is useful
->
-> Ah yeah, this could be called out in the commit desc if we want a v2.
-> Checking the examples in the link down below, TuxMake doesn't actually
-> include one with it being repeated.
-> I had been banking on readers of this message assuming that it could
-> be repeated either from previous familiarity with TuxMake or by
-> clicking that link.
->
-> But for tweaks that require multiple options, I'm personally going to
-> stick with --kunitconfig and heredocs.
-> E.g. coverage requires appending 3 kconfigs, so I'm sticking with
->
-> ./tools/testing/kunit/kunit.py run --make_options=CC=/usr/bin/gcc-6
-> --kunitconfig /dev/stdin <<EOF
-> CONFIG_KUNIT=y
-> CONFIG_KUNIT_ALL_TESTS=y
-> CONFIG_DEBUG_KERNEL=y
-> CONFIG_DEBUG_INFO=y
-> CONFIG_GCOV=y
-> EOF
->
-> >
-> > > This flag is inspired by TuxMake's --kconfig-add, see
-> > > https://gitlab.com/Linaro/tuxmake#examples.
-> > >
-> > > Our version just uses "_" as the delimiter for consistency with
-> > > pre-existing flags like --build_dir, --make_options, --kernel_args, etc.
-> > >
-> > > Note: this does make it easier to run into a pre-existing edge case:
-> > > $ ./tools/testing/kunit/kunit.py run --arch=x86_64 --kconfig_add=CONFIG_KASAN=y
-> > > $ ./tools/testing/kunit/kunit.py run --arch=x86_64
-> > > This second invocation ^ still has KASAN enabled!
-> >
-> > This behaviour is quite useful, and actually means we can turn on
-> > individual items with
-> > $ ./tools/testing/kunit/kunit.py config --kconfig_add=<option>
->
-> Yes, that also works.
-> I didn't really want to call that out, however.
->
-> I ultimately would like this option to make it easier to have kunit
-> commands be more declarative and less dependent on state.
+It was found that when an x86 system was being stressed by running
+various different benchmark suites, the clocksource watchdog might
+occasionally mark TSC as unstable and fall back to hpet which will
+have a signficant impact on system performance.
 
-I've just proposed
-https://lore.kernel.org/linux-kselftest/20211118190329.1925388-1-dlatypov@google.com
+ v3:
+  - Remove the patch 1 thunks that changes uncertainty_margin from 2 *
+    WATCHDOG_MAX_SKEW to WATCHDOG_MAX_SKEW.
+  - Use pr_info() for the clock-skew test skipped" message instead of
+    pr_warn().
+  - Move the global clock_skew_skip into a new clock_skew_skipcnt
+    field in the clocksource structure.
+  - Replace the local_irq_save()/local_irq_restore() pair in
+    __clocksource_select_watchdog() by local_irq_disable()/local_irq_enable().
 
-If that patch goes in, the use case described above *won't* work.
-I've been annoyed by the issue that removing lines from .kunitconfig
-doesn't do anything for a while.
+The current watchdog clocksource skew threshold of 50us is found to be
+insufficient. So it is changed back to 100us before commit 2e27e793e280
+("clocksource: Reduce clocksource-skew threshold") in patch 1. This
+patch also skip the current clock skew check if the consecutive watchdog
+read-back delay contributes a major portion of the total delay. On a
+1-socket 64-thread test system, it was actually found that in one the
+test sample, the hpet-tsc-hpet delay was 95263ns, while the corresponding
+hpet-hpet delay was 94425ns. So the majority of the delay is caused by
+the hpet read.
 
-I really don't like the "stickiness" of options, since I think it's
-very much not what a user would initially expect. It can be useful in
-some situations, but I don't think it's worth the cost.
+Patch 2 reduces the default clocksource_watchdog() retries to 2 as
+suggested by Paul.
 
-And I think the stickiness can be annoying to power users as well.
-Imagine you were trying to debug an issue that only showed up if some
-other Kconfig's are set.
-Now instead of iterating by adding diff --kconfig_add=<...>, you have
-to remember to delete .kunit/.config each time, lest you forget and go
-down a rabbit hole.
+Patch 3 implements dynamic readjustment of the new internal
+watchdog_max_skew variable in case the current value causes excessive
+skipping of clock skew checks. The following reproducer provided by
+Feng Tang was used to cause the test skipping:
 
->
-> E.g. instead of
-> $ cp fs/ext4/.kunitconfig .kunit/.kunitconfig
-> $ echo "CONFIG_KASAN=y" >> .kunit/.kunitconfig
-> $ ./tools/testing/kunit/kunit.py run --arch=x86_64
->
-> it's now just one line and I'm less likely to miss a step, etc.
-> $ ./tools/testing/kunit/kunit.py run --arch=x86_64
-> --kunitconfig=fs/ext4 --kconfig_add=CONFIG_KASAN=y
->
-> A user could alternatively do this via
-> $ ./tools/testing/kunit/kunit.py config --arch=x86_64
-> --kunitconfig=fs/ext4 --kconfig_add=CONFIG_KASAN=y
-> $ ./tools/testing/kunit/kunit.py config --arch=x86_64
-> --kconfig_add=CONFIG_ANOTHER_OPTION=y
-> $ ./tools/testing/kunit/kunit.py build
-> $ ./tools/testing/kunit/kunit.py exec --arch=x86_64
->
->
-> >
-> > > kunit.py won't call olddefconfig if our current .config is already a
-> > > superset of the provided kunitconfig.
-> > >
-> > > Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> >
-> > Looks good.
-> >
-> > Reviewed-by: David Gow <davidgow@google.com>
-> >
-> >
-> > > ---
-> > >  tools/testing/kunit/kunit.py           |  8 ++++++++
-> > >  tools/testing/kunit/kunit_kernel.py    |  5 +++++
-> > >  tools/testing/kunit/kunit_tool_test.py | 18 ++++++++++++++++++
-> > >  3 files changed, 31 insertions(+)
-> > >
-> > > diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-> > > index 68e6f461c758..be58f4c93806 100755
-> > > --- a/tools/testing/kunit/kunit.py
-> > > +++ b/tools/testing/kunit/kunit.py
-> > > @@ -280,6 +280,10 @@ def add_common_opts(parser) -> None:
-> > >                              ' If given a directory, (e.g. lib/kunit), "/.kunitconfig" '
-> > >                              'will get  automatically appended.',
-> > >                              metavar='kunitconfig')
-> > > +       parser.add_argument('--kconfig_add',
-> > > +                            help='Additional Kconfig options to append to the '
-> > > +                            '.kunitconfig, e.g. CONFIG_KASAN=y. Can be repeated.',
-> > > +                           action='append')
-> > >
-> > >         parser.add_argument('--arch',
-> > >                             help=('Specifies the architecture to run tests under. '
-> > > @@ -398,6 +402,7 @@ def main(argv, linux=None):
-> > >                 if not linux:
-> > >                         linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir,
-> > >                                         kunitconfig_path=cli_args.kunitconfig,
-> > > +                                       kconfig_add=cli_args.kconfig_add,
-> > >                                         arch=cli_args.arch,
-> > >                                         cross_compile=cli_args.cross_compile,
-> > >                                         qemu_config_path=cli_args.qemu_config)
-> > > @@ -423,6 +428,7 @@ def main(argv, linux=None):
-> > >                 if not linux:
-> > >                         linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir,
-> > >                                         kunitconfig_path=cli_args.kunitconfig,
-> > > +                                       kconfig_add=cli_args.kconfig_add,
-> > >                                         arch=cli_args.arch,
-> > >                                         cross_compile=cli_args.cross_compile,
-> > >                                         qemu_config_path=cli_args.qemu_config)
-> > > @@ -439,6 +445,7 @@ def main(argv, linux=None):
-> > >                 if not linux:
-> > >                         linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir,
-> > >                                         kunitconfig_path=cli_args.kunitconfig,
-> > > +                                       kconfig_add=cli_args.kconfig_add,
-> > >                                         arch=cli_args.arch,
-> > >                                         cross_compile=cli_args.cross_compile,
-> > >                                         qemu_config_path=cli_args.qemu_config)
-> > > @@ -457,6 +464,7 @@ def main(argv, linux=None):
-> > >                 if not linux:
-> > >                         linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir,
-> > >                                         kunitconfig_path=cli_args.kunitconfig,
-> > > +                                       kconfig_add=cli_args.kconfig_add,
-> > >                                         arch=cli_args.arch,
-> > >                                         cross_compile=cli_args.cross_compile,
-> > >                                         qemu_config_path=cli_args.qemu_config)
-> > > diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-> > > index 51ee6e5dae91..7d459d6d6ff2 100644
-> > > --- a/tools/testing/kunit/kunit_kernel.py
-> > > +++ b/tools/testing/kunit/kunit_kernel.py
-> > > @@ -224,6 +224,7 @@ class LinuxSourceTree(object):
-> > >               build_dir: str,
-> > >               load_config=True,
-> > >               kunitconfig_path='',
-> > > +             kconfig_add: Optional[List[str]]=None,
-> > >               arch=None,
-> > >               cross_compile=None,
-> > >               qemu_config_path=None) -> None:
-> > > @@ -249,6 +250,10 @@ class LinuxSourceTree(object):
-> > >                                 shutil.copyfile(DEFAULT_KUNITCONFIG_PATH, kunitconfig_path)
-> > >
-> > >                 self._kconfig = kunit_config.parse_file(kunitconfig_path)
-> > > +               if kconfig_add:
-> > > +                       kconfig = kunit_config.parse_from_string('\n'.join(kconfig_add))
-> > > +                       self._kconfig.merge_in_entries(kconfig)
-> > > +
-> > >
-> > >         def clean(self) -> bool:
-> > >                 try:
-> > > diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-> > > index 4ec70e41ec5a..7e42a7c27987 100755
-> > > --- a/tools/testing/kunit/kunit_tool_test.py
-> > > +++ b/tools/testing/kunit/kunit_tool_test.py
-> > > @@ -334,6 +334,10 @@ class LinuxSourceTreeTest(unittest.TestCase):
-> > >                                 pass
-> > >                         kunit_kernel.LinuxSourceTree('', kunitconfig_path=dir)
-> > >
-> > > +       def test_kconfig_add(self):
-> > > +               tree = kunit_kernel.LinuxSourceTree('', kconfig_add=['CONFIG_NOT_REAL=y'])
-> > > +               self.assertIn(kunit_config.KconfigEntry('NOT_REAL', 'y'), tree._kconfig.entries())
-> > > +
-> > >         def test_invalid_arch(self):
-> > >                 with self.assertRaisesRegex(kunit_kernel.ConfigError, 'not a valid arch, options are.*x86_64'):
-> > >                         kunit_kernel.LinuxSourceTree('', arch='invalid')
-> > > @@ -540,6 +544,7 @@ class KUnitMainTest(unittest.TestCase):
-> > >                 # Just verify that we parsed and initialized it correctly here.
-> > >                 mock_linux_init.assert_called_once_with('.kunit',
-> > >                                                         kunitconfig_path='mykunitconfig',
-> > > +                                                       kconfig_add=None,
-> > >                                                         arch='um',
-> > >                                                         cross_compile=None,
-> > >                                                         qemu_config_path=None)
-> > > @@ -551,6 +556,19 @@ class KUnitMainTest(unittest.TestCase):
-> > >                 # Just verify that we parsed and initialized it correctly here.
-> > >                 mock_linux_init.assert_called_once_with('.kunit',
-> > >                                                         kunitconfig_path='mykunitconfig',
-> > > +                                                       kconfig_add=None,
-> > > +                                                       arch='um',
-> > > +                                                       cross_compile=None,
-> > > +                                                       qemu_config_path=None)
-> > > +
-> > > +       @mock.patch.object(kunit_kernel, 'LinuxSourceTree')
-> > > +       def test_run_kconfig_add(self, mock_linux_init):
-> > > +               mock_linux_init.return_value = self.linux_source_mock
-> > > +               kunit.main(['run', '--kconfig_add=CONFIG_KASAN=y', '--kconfig_add=CONFIG_KCSAN=y'])
-> > > +               # Just verify that we parsed and initialized it correctly here.
-> > > +               mock_linux_init.assert_called_once_with('.kunit',
-> > > +                                                       kunitconfig_path=None,
-> > > +                                                       kconfig_add=['CONFIG_KASAN=y', 'CONFIG_KCSAN=y'],
-> > >                                                         arch='um',
-> > >                                                         cross_compile=None,
-> > >                                                         qemu_config_path=None)
-> > > --
-> > > 2.34.0.rc0.344.g81b53c2807-goog
-> > >
-> > > --
-> > > You received this message because you are subscribed to the Google Groups "KUnit Development" group.
-> > > To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
-> > > To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/20211106013058.2621799-2-dlatypov%40google.com.
+  sudo stress-ng --timeout 30 --times --verify --metrics-brief --ioport <n>
+
+where <n> is the number of cpus in the system.
+
+A sample watchdog_max_skew readjustment output was:
+
+[  197.771144] clocksource: timekeeping watchdog on CPU8: hpet wd-wd read-back delay of 92539ns
+[  197.789589] clocksource: wd-tsc-wd read-back delay of 90933ns, clock-skew test skipped!
+[  197.807145] clocksource: timekeeping watchdog on CPU8: watchdog_max_skew increased to 185078ns
+
+To avoid excessive increase of watchdog_max_skew, a limit of
+10*WATCHDOG_MAX_SKEW is used over which the watchdog itself will be
+mark unstable and a new watchdog will be selected if possible.
+
+To exercise the code, WATCHDOG_MAX_SKEW was reduced to 10us. After
+skipping 10 checks, the watchdog then fell back to acpi_pm. However
+the corresponding consecutive watchdog delay was still about the same
+leading to ping-ponging between hpet and acpi_pm becoming the watchdog.
+
+Patch 4 adds a Kconfig option to allow kernel builder to control the
+actual WATCHDOG_MAX_SKEW threshold to be used.
+
+Waiman Long (4):
+  clocksource: Avoid accidental unstable marking of clocksources
+  clocksource: Reduce the default clocksource_watchdog() retries to 2
+  clocksource: Dynamically increase watchdog_max_skew
+  clocksource: Add a Kconfig option for WATCHDOG_MAX_SKEW
+
+ .../admin-guide/kernel-parameters.txt         |   4 +-
+ include/linux/clocksource.h                   |   1 +
+ kernel/time/Kconfig                           |   9 ++
+ kernel/time/clocksource.c                     | 112 +++++++++++++++---
+ 4 files changed, 110 insertions(+), 16 deletions(-)
+
+-- 
+2.27.0
+
