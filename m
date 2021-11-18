@@ -2,164 +2,370 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F37B4455A4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:29:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFCCF455ABE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:38:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344077AbhKRLby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 06:31:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58302 "EHLO
+        id S1344474AbhKRLlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 06:41:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343997AbhKRL3p (ORCPT
+        with ESMTP id S1343953AbhKRLj2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 06:29:45 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D356C061210;
-        Thu, 18 Nov 2021 03:26:45 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id p17so5078598pgj.2;
-        Thu, 18 Nov 2021 03:26:45 -0800 (PST)
+        Thu, 18 Nov 2021 06:39:28 -0500
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4EF17C06122C;
+        Thu, 18 Nov 2021 03:35:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=HbcBPjl/CgPhWyR8EGJxFeqoCcz/Im26xERRkTRsJVE=;
-        b=fdcJFKtEEe/N3oiO0PXGJxzCO1DVsRsGaSYGWx3n8JzhRgr7mreSexDUTUIP+GqDaN
-         WCQGE5/EK1heKKPrtoOBr+k0pgvTAD3Pcs/cuv8F+2uv60vaueuSvkKo+nHGiRscaaiB
-         Jsjj5N9jf0TMAlQw78rs+LGHMuFLYPLtpuRJyamDSw3RbGc3Zy0ZZ6nW/ZTXL8ly8LjB
-         sAd0FC8ZMUT3vBXAIL7Vc6TjSDyPpGYnHpJmiNBKD82yeq/AyhoGLtgsqHzQ2E47XQeV
-         U/dBUJ7JPjNLew2V+0wnUxY2+uTLE3O135TvOsVHMUt48jaRIzI8KydES4RzsQiQXDVY
-         m75A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=HbcBPjl/CgPhWyR8EGJxFeqoCcz/Im26xERRkTRsJVE=;
-        b=lQktIChqja62rRlHmkzmvB65C6QXz+hA1u9ZwBqhH0MsDWY2KLrjUDuOxdIVAvkpAg
-         kzpPyPxwbVJEkKs9s0nBmiEexRcajF2XG2ErI0fRJG9hAz/X/6QVjhCNUMKUAJoIn1KM
-         tSjQBf6AAqRf0iJyN2mGGeOaLAzMi6zQZQcfrH0I14V2hW+SSt4/gyfbvDG4wAxqe7Vy
-         LJrZqY6JuO4w3Ox6jXHM14qVIuQTX+KKh1TWKn8Z+T6qigTNdk48NgNJdhrXLGTc+WWI
-         QW3dXJ/KKZt6INcaNyADaV/1SOM9WUhZPpx8Aw2jDz1UqE3iGDj17LGaHDs9t2ccmE/6
-         WQOQ==
-X-Gm-Message-State: AOAM532aJR0+e0RuH4Y4UtE8WMFYtjL5lU8ikBige445H1YnVJvLtglj
-        i2CtVBvPd7qTWjVUHkkKAPU=
-X-Google-Smtp-Source: ABdhPJwTpqdmuP41PuWg/EvQku7vKhRdxKEhZbmwiPbBPIEqItBhjdB9bDOGTfrk3JCfMKPbk3A0yw==
-X-Received: by 2002:a05:6a00:a02:b0:47b:f59a:2c80 with SMTP id p2-20020a056a000a0200b0047bf59a2c80mr55672733pfh.41.1637234805021;
-        Thu, 18 Nov 2021 03:26:45 -0800 (PST)
-Received: from [192.168.255.10] ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id k129sm2119992pgk.72.2021.11.18.03.26.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Nov 2021 03:26:44 -0800 (PST)
-Message-ID: <92782a36-82ce-a76b-289b-3635f801d4a1@gmail.com>
-Date:   Thu, 18 Nov 2021 19:26:32 +0800
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=wixk569uf0n1TYoIXBryiuwd/MDJ0a4Am9
+        56c85iGKU=; b=MvS6qGPToVllxhrgTgj0zZspYFulGyu+P+eXk5vJmOpZd/puzj
+        HP+OVBd+r/FxfYHLK7STHyAUJAUnMVJM+wRpl/Lhit9yh2YR4WMXpfsgmOXx31CF
+        HmC6nUgHXY6t7q+al6Pq7DfOgrmFx4YhxGoZ1yX1bSxqFveEpZRB600aQ=
+Received: from xhacker (unknown [101.86.18.22])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBnLsxMOpZhi51cAQ--.6032S6;
+        Thu, 18 Nov 2021 19:34:43 +0800 (CST)
+Date:   Thu, 18 Nov 2021 19:26:51 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "=?UTF-8?B?Qmo=?= =?UTF-8?B?w7ZybiBUw7ZwZWw=?=" <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Tong Tiangen <tongtiangen@huawei.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: [PATCH 11/12] riscv: extable: add a dedicated uaccess handler
+Message-ID: <20211118192651.605d0c80@xhacker>
+In-Reply-To: <20211118192130.48b8f04c@xhacker>
+References: <20211118192130.48b8f04c@xhacker>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Subject: Re: [PATCH 1/2] KVM: x86: Update vPMCs when retiring instructions
-Content-Language: en-US
-To:     Jim Mattson <jmattson@google.com>
-Cc:     "Paolo Bonzini - Distinguished Engineer (kernel-recipes.org)" 
-        <pbonzini@redhat.com>, Eric Hankland <ehankland@google.com>,
-        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Peter Zijlstra (Intel OTC, Netherlander)" <peterz@infradead.org>
-References: <20211112235235.1125060-1-jmattson@google.com>
- <20211112235235.1125060-2-jmattson@google.com>
- <fcb9aea5-2cf5-897f-5a3d-054ead555da4@gmail.com>
- <CALMp9eR5oi=ZrrEsZpcAJ7AP-Jo2cLGz9GA=SoTjX--TiG4=sw@mail.gmail.com>
- <afb108ed-a2f3-cb49-d0b4-b1bd6739cdb6@gmail.com>
- <CALMp9eSYvGW=EfuDCyc+fu7gVNnKHmEvFMackYcuZ-sGT8H5uA@mail.gmail.com>
- <CALMp9eTq2NwhB5cq_LknUjJncKHK2xPuQ5vpTaDN_zCDPT_JWw@mail.gmail.com>
-From:   Like Xu <like.xu.linux@gmail.com>
-Organization: Tencent
-In-Reply-To: <CALMp9eTq2NwhB5cq_LknUjJncKHK2xPuQ5vpTaDN_zCDPT_JWw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygBnLsxMOpZhi51cAQ--.6032S6
+X-Coremail-Antispam: 1UD129KBjvJXoW3AFy3Zr1xZw4xCr13uF18uFg_yoW3ZF15pa
+        1qkr93KrW5KF1xuF97ta47ur1jgw48K3s0y3s7Kr1qv3W2k3W8CF1093s7ArykAayxAa4x
+        J3ySkr1rWr4fZrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBCb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
+        8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28C
+        jxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI
+        8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E
+        87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64
+        kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm
+        72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42
+        xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWU
+        GwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI4
+        8JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWx
+        Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0x
+        vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxU29mRUUUUU
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/11/2021 11:37 am, Jim Mattson wrote:
-> On Wed, Nov 17, 2021 at 12:01 PM Jim Mattson <jmattson@google.com> wrote:
->>
->> On Tue, Nov 16, 2021 at 7:22 PM Like Xu <like.xu.linux@gmail.com> wrote:
->>>
->>> On 17/11/2021 6:15 am, Jim Mattson wrote:
->>>> On Tue, Nov 16, 2021 at 4:44 AM Like Xu <like.xu.linux@gmail.com> wrote:
->>>>>
->>>>> Hi Jim,
->>>>>
->>>>> On 13/11/2021 7:52 am, Jim Mattson wrote:
->>>>>> When KVM retires a guest instruction through emulation, increment any
->>>>>> vPMCs that are configured to monitor "instructions retired," and
->>>>>> update the sample period of those counters so that they will overflow
->>>>>> at the right time.
->>>>>>
->>>>>> Signed-off-by: Eric Hankland <ehankland@google.com>
->>>>>> [jmattson:
->>>>>>      - Split the code to increment "branch instructions retired" into a
->>>>>>        separate commit.
->>>>>>      - Added 'static' to kvm_pmu_incr_counter() definition.
->>>>>>      - Modified kvm_pmu_incr_counter() to check pmc->perf_event->state ==
->>>>>>        PERF_EVENT_STATE_ACTIVE.
->>>>>> ]
->>>>>> Signed-off-by: Jim Mattson <jmattson@google.com>
->>>>>> Fixes: f5132b01386b ("KVM: Expose a version 2 architectural PMU to a guests")
->>>>>> ---
->>>>>>     arch/x86/kvm/pmu.c | 31 +++++++++++++++++++++++++++++++
->>>>>>     arch/x86/kvm/pmu.h |  1 +
->>>>>>     arch/x86/kvm/x86.c |  3 +++
->>>>>>     3 files changed, 35 insertions(+)
->>>>>>
->>>>>> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
->>>>>> index 09873f6488f7..153c488032a5 100644
->>>>>> --- a/arch/x86/kvm/pmu.c
->>>>>> +++ b/arch/x86/kvm/pmu.c
->>>>>> @@ -490,6 +490,37 @@ void kvm_pmu_destroy(struct kvm_vcpu *vcpu)
->>>>>>         kvm_pmu_reset(vcpu);
->>>>>>     }
->>>>>>
->>>>>> +static void kvm_pmu_incr_counter(struct kvm_pmc *pmc, u64 evt)
->>>>>> +{
->>>>>> +     u64 counter_value, sample_period;
->>>>>> +
->>>>>> +     if (pmc->perf_event &&
->>>>>
->>>>> We need to incr pmc->counter whether it has a perf_event or not.
->>>>>
->>>>>> +         pmc->perf_event->attr.type == PERF_TYPE_HARDWARE &&
->>>>>
->>>>> We need to cover PERF_TYPE_RAW as well, for example,
->>>>> it has the basic bits for "{ 0xc0, 0x00, PERF_COUNT_HW_INSTRUCTIONS },"
->>>>> plus HSW_IN_TX or ARCH_PERFMON_EVENTSEL_EDGE stuff.
->>>>>
->>>>> We just need to focus on checking the select and umask bits:
->>>>
->>>> [What follows applies only to Intel CPUs. I haven't looked at AMD's
->>>> PMU implementation yet.]
->>>
->>> x86 has the same bit definition and semantics on at least the select and umask bits.
->>
->> Yes, but AMD supports 12 bits of event selector. AMD also has the
->> HG_ONLY bits, which affect whether or not to count the event based on
->> context.
-> 
-> It looks like we already have an issue with event selector truncation
-> on the AMD side. It's not clear from the APM if AMD has always had a
-> 12-bit event selector field, but it's 12 bits now. Milan, for example,
-> has at least 6 different events with selectors > 255. I don't see how
-> a guest could monitor those events with the existing KVM
-> implementation.
+From: Jisheng Zhang <jszhang@kernel.org>
 
-Yes and I have reproduced the issue on a Milan.
-Thanks for your input, and let me try to fix it.
+Inspired by commit 2e77a62cb3a6("arm64: extable: add a dedicated
+uaccess handler"), do similar to riscv to add a dedicated uaccess
+exception handler to update registers in exception context and
+subsequently return back into the function which faulted, so we remove
+the need for fixups specialized to each faulting instruction.
 
-Thanks,
-Like Xu
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ arch/riscv/include/asm/asm-extable.h | 23 +++++++++
+ arch/riscv/include/asm/futex.h       | 23 +++------
+ arch/riscv/include/asm/uaccess.h     | 74 +++++++++-------------------
+ arch/riscv/mm/extable.c              | 27 ++++++++++
+ 4 files changed, 78 insertions(+), 69 deletions(-)
+
+diff --git a/arch/riscv/include/asm/asm-extable.h b/arch/riscv/include/asm/asm-extable.h
+index 1b1f4ffd8d37..14be0673f5b5 100644
+--- a/arch/riscv/include/asm/asm-extable.h
++++ b/arch/riscv/include/asm/asm-extable.h
+@@ -5,6 +5,7 @@
+ #define EX_TYPE_NONE			0
+ #define EX_TYPE_FIXUP			1
+ #define EX_TYPE_BPF			2
++#define EX_TYPE_UACCESS_ERR_ZERO	3
+ 
+ #ifdef __ASSEMBLY__
+ 
+@@ -23,7 +24,9 @@
+ 
+ #else /* __ASSEMBLY__ */
+ 
++#include <linux/bits.h>
+ #include <linux/stringify.h>
++#include <asm/gpr-num.h>
+ 
+ #define __ASM_EXTABLE_RAW(insn, fixup, type, data)	\
+ 	".pushsection	__ex_table, \"a\"\n"		\
+@@ -37,6 +40,26 @@
+ #define _ASM_EXTABLE(insn, fixup)	\
+ 	__ASM_EXTABLE_RAW(#insn, #fixup, __stringify(EX_TYPE_FIXUP), "0")
+ 
++#define EX_DATA_REG_ERR_SHIFT	0
++#define EX_DATA_REG_ERR		GENMASK(4, 0)
++#define EX_DATA_REG_ZERO_SHIFT	5
++#define EX_DATA_REG_ZERO	GENMASK(9, 5)
++
++#define EX_DATA_REG(reg, gpr)						\
++	"((.L__gpr_num_" #gpr ") << " __stringify(EX_DATA_REG_##reg##_SHIFT) ")"
++
++#define _ASM_EXTABLE_UACCESS_ERR_ZERO(insn, fixup, err, zero)		\
++	__DEFINE_ASM_GPR_NUMS						\
++	__ASM_EXTABLE_RAW(#insn, #fixup, 				\
++			  __stringify(EX_TYPE_UACCESS_ERR_ZERO),	\
++			  "("						\
++			    EX_DATA_REG(ERR, err) " | "			\
++			    EX_DATA_REG(ZERO, zero)			\
++			  ")")
++
++#define _ASM_EXTABLE_UACCESS_ERR(insn, fixup, err)			\
++	_ASM_EXTABLE_UACCESS_ERR_ZERO(insn, fixup, err, zero)
++
+ #endif /* __ASSEMBLY__ */
+ 
+ #endif /* __ASM_ASM_EXTABLE_H */
+diff --git a/arch/riscv/include/asm/futex.h b/arch/riscv/include/asm/futex.h
+index 2e15e8e89502..fc8130f995c1 100644
+--- a/arch/riscv/include/asm/futex.h
++++ b/arch/riscv/include/asm/futex.h
+@@ -21,20 +21,14 @@
+ 
+ #define __futex_atomic_op(insn, ret, oldval, uaddr, oparg)	\
+ {								\
+-	uintptr_t tmp;						\
+ 	__enable_user_access();					\
+ 	__asm__ __volatile__ (					\
+ 	"1:	" insn "				\n"	\
+ 	"2:						\n"	\
+-	"	.section .fixup,\"ax\"			\n"	\
+-	"	.balign 4				\n"	\
+-	"3:	li %[r],%[e]				\n"	\
+-	"	jump 2b,%[t]				\n"	\
+-	"	.previous				\n"	\
+-		_ASM_EXTABLE(1b, 3b)				\
++	_ASM_EXTABLE_UACCESS_ERR(1b, 2b, %[r])			\
+ 	: [r] "+r" (ret), [ov] "=&r" (oldval),			\
+-	  [u] "+m" (*uaddr), [t] "=&r" (tmp)			\
+-	: [op] "Jr" (oparg), [e] "i" (-EFAULT)			\
++	  [u] "+m" (*uaddr)					\
++	: [op] "Jr" (oparg)					\
+ 	: "memory");						\
+ 	__disable_user_access();				\
+ }
+@@ -96,15 +90,10 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+ 	"2:	sc.w.aqrl %[t],%z[nv],%[u]		\n"
+ 	"	bnez %[t],1b				\n"
+ 	"3:						\n"
+-	"	.section .fixup,\"ax\"			\n"
+-	"	.balign 4				\n"
+-	"4:	li %[r],%[e]				\n"
+-	"	jump 3b,%[t]				\n"
+-	"	.previous				\n"
+-		_ASM_EXTABLE(1b, 4b)			\
+-		_ASM_EXTABLE(2b, 4b)			\
++		_ASM_EXTABLE_UACCESS_ERR(1b, 3b, %[r])	\
++		_ASM_EXTABLE_UACCESS_ERR(2b, 3b, %[r])	\
+ 	: [r] "+r" (ret), [v] "=&r" (val), [u] "+m" (*uaddr), [t] "=&r" (tmp)
+-	: [ov] "Jr" (oldval), [nv] "Jr" (newval), [e] "i" (-EFAULT)
++	: [ov] "Jr" (oldval), [nv] "Jr" (newval)
+ 	: "memory");
+ 	__disable_user_access();
+ 
+diff --git a/arch/riscv/include/asm/uaccess.h b/arch/riscv/include/asm/uaccess.h
+index 40e6099af488..a4716c026386 100644
+--- a/arch/riscv/include/asm/uaccess.h
++++ b/arch/riscv/include/asm/uaccess.h
+@@ -81,22 +81,14 @@ static inline int __access_ok(unsigned long addr, unsigned long size)
+ 
+ #define __get_user_asm(insn, x, ptr, err)			\
+ do {								\
+-	uintptr_t __tmp;					\
+ 	__typeof__(x) __x;					\
+ 	__asm__ __volatile__ (					\
+ 		"1:\n"						\
+-		"	" insn " %1, %3\n"			\
++		"	" insn " %1, %2\n"			\
+ 		"2:\n"						\
+-		"	.section .fixup,\"ax\"\n"		\
+-		"	.balign 4\n"				\
+-		"3:\n"						\
+-		"	li %0, %4\n"				\
+-		"	li %1, 0\n"				\
+-		"	jump 2b, %2\n"				\
+-		"	.previous\n"				\
+-			_ASM_EXTABLE(1b, 3b)			\
+-		: "+r" (err), "=&r" (__x), "=r" (__tmp)		\
+-		: "m" (*(ptr)), "i" (-EFAULT));			\
++		_ASM_EXTABLE_UACCESS_ERR_ZERO(1b, 2b, %0, %1)	\
++		: "+r" (err), "=&r" (__x)			\
++		: "m" (*(ptr)));				\
+ 	(x) = __x;						\
+ } while (0)
+ 
+@@ -108,27 +100,18 @@ do {								\
+ do {								\
+ 	u32 __user *__ptr = (u32 __user *)(ptr);		\
+ 	u32 __lo, __hi;						\
+-	uintptr_t __tmp;					\
+ 	__asm__ __volatile__ (					\
+ 		"1:\n"						\
+-		"	lw %1, %4\n"				\
++		"	lw %1, %3\n"				\
+ 		"2:\n"						\
+-		"	lw %2, %5\n"				\
++		"	lw %2, %4\n"				\
+ 		"3:\n"						\
+-		"	.section .fixup,\"ax\"\n"		\
+-		"	.balign 4\n"				\
+-		"4:\n"						\
+-		"	li %0, %6\n"				\
+-		"	li %1, 0\n"				\
+-		"	li %2, 0\n"				\
+-		"	jump 3b, %3\n"				\
+-		"	.previous\n"				\
+-			_ASM_EXTABLE(1b, 4b)			\
+-			_ASM_EXTABLE(2b, 4b)			\
+-		: "+r" (err), "=&r" (__lo), "=r" (__hi),	\
+-			"=r" (__tmp)				\
+-		: "m" (__ptr[__LSW]), "m" (__ptr[__MSW]),	\
+-			"i" (-EFAULT));				\
++		_ASM_EXTABLE_UACCESS_ERR_ZERO(1b, 3b, %0, %1)	\
++		_ASM_EXTABLE_UACCESS_ERR_ZERO(2b, 3b, %0, %1)	\
++		: "+r" (err), "=&r" (__lo), "=r" (__hi)		\
++		: "m" (__ptr[__LSW]), "m" (__ptr[__MSW]))	\
++	if (err)						\
++		__hi = 0;					\
+ 	(x) = (__typeof__(x))((__typeof__((x)-(x)))(		\
+ 		(((u64)__hi << 32) | __lo)));			\
+ } while (0)
+@@ -216,21 +199,14 @@ do {								\
+ 
+ #define __put_user_asm(insn, x, ptr, err)			\
+ do {								\
+-	uintptr_t __tmp;					\
+ 	__typeof__(*(ptr)) __x = x;				\
+ 	__asm__ __volatile__ (					\
+ 		"1:\n"						\
+-		"	" insn " %z3, %2\n"			\
++		"	" insn " %z2, %1\n"			\
+ 		"2:\n"						\
+-		"	.section .fixup,\"ax\"\n"		\
+-		"	.balign 4\n"				\
+-		"3:\n"						\
+-		"	li %0, %4\n"				\
+-		"	jump 2b, %1\n"				\
+-		"	.previous\n"				\
+-			_ASM_EXTABLE(1b, 3b)			\
+-		: "+r" (err), "=r" (__tmp), "=m" (*(ptr))	\
+-		: "rJ" (__x), "i" (-EFAULT));			\
++		_ASM_EXTABLE_UACCESS_ERR(1b, 2b, %0)		\
++		: "+r" (err), "=m" (*(ptr))			\
++		: "rJ" (__x));					\
+ } while (0)
+ 
+ #ifdef CONFIG_64BIT
+@@ -244,22 +220,16 @@ do {								\
+ 	uintptr_t __tmp;					\
+ 	__asm__ __volatile__ (					\
+ 		"1:\n"						\
+-		"	sw %z4, %2\n"				\
++		"	sw %z3, %1\n"				\
+ 		"2:\n"						\
+-		"	sw %z5, %3\n"				\
++		"	sw %z4, %2\n"				\
+ 		"3:\n"						\
+-		"	.section .fixup,\"ax\"\n"		\
+-		"	.balign 4\n"				\
+-		"4:\n"						\
+-		"	li %0, %6\n"				\
+-		"	jump 3b, %1\n"				\
+-		"	.previous\n"				\
+-			_ASM_EXTABLE(1b, 4b)			\
+-			_ASM_EXTABLE(2b, 4b)			\
+-		: "+r" (err), "=r" (__tmp),			\
++		_ASM_EXTABLE_UACCESS_ERR(1b, 3b, %0)		\
++		_ASM_EXTABLE_UACCESS_ERR(2b, 3b, %0)		\
++		: "+r" (err),					\
+ 			"=m" (__ptr[__LSW]),			\
+ 			"=m" (__ptr[__MSW])			\
+-		: "rJ" (__x), "rJ" (__x >> 32), "i" (-EFAULT));	\
++		: "rJ" (__x), "rJ" (__x >> 32));		\
+ } while (0)
+ #endif /* CONFIG_64BIT */
+ 
+diff --git a/arch/riscv/mm/extable.c b/arch/riscv/mm/extable.c
+index 91e52c4bb33a..05978f78579f 100644
+--- a/arch/riscv/mm/extable.c
++++ b/arch/riscv/mm/extable.c
+@@ -7,10 +7,12 @@
+  */
+ 
+ 
++#include <linux/bitfield.h>
+ #include <linux/extable.h>
+ #include <linux/module.h>
+ #include <linux/uaccess.h>
+ #include <asm/asm-extable.h>
++#include <asm/ptrace.h>
+ 
+ static inline unsigned long
+ get_ex_fixup(const struct exception_table_entry *ex)
+@@ -25,6 +27,29 @@ static bool ex_handler_fixup(const struct exception_table_entry *ex,
+ 	return true;
+ }
+ 
++static inline void regs_set_gpr(struct pt_regs *regs, unsigned int offset,
++				unsigned long val)
++{
++	if (unlikely(offset > MAX_REG_OFFSET))
++		return;
++
++	if (!offset)
++		*(unsigned long *)((unsigned long)regs + offset) = val;
++}
++
++static bool ex_handler_uaccess_err_zero(const struct exception_table_entry *ex,
++					struct pt_regs *regs)
++{
++	int reg_err = FIELD_GET(EX_DATA_REG_ERR, ex->data);
++	int reg_zero = FIELD_GET(EX_DATA_REG_ZERO, ex->data);
++
++	regs_set_gpr(regs, reg_err, -EFAULT);
++	regs_set_gpr(regs, reg_zero, 0);
++
++	regs->epc = get_ex_fixup(ex);
++	return true;
++}
++
+ bool fixup_exception(struct pt_regs *regs)
+ {
+ 	const struct exception_table_entry *ex;
+@@ -38,6 +63,8 @@ bool fixup_exception(struct pt_regs *regs)
+ 		return ex_handler_fixup(ex, regs);
+ 	case EX_TYPE_BPF:
+ 		return ex_handler_bpf(ex, regs);
++	case EX_TYPE_UACCESS_ERR_ZERO:
++		return ex_handler_uaccess_err_zero(ex, regs);
+ 	}
+ 
+ 	BUG();
+-- 
+2.33.0
+
 
