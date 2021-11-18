@@ -2,74 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0018F455A09
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:21:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7DE455A0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:21:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343737AbhKRLY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 06:24:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51138 "EHLO mail.kernel.org"
+        id S1343722AbhKRLY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 06:24:29 -0500
+Received: from m43-7.mailgun.net ([69.72.43.7]:18689 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343787AbhKRLXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 06:23:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id E167361AD2;
-        Thu, 18 Nov 2021 11:20:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637234408;
-        bh=CoWvvJ5SUlmGMCDBGkTvshowClGajIqZ5Cr0Xwr7xHc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=I1vWlZbwHiwLgB8K6biR3K2diYzSBc9Qj3S/u2m4Wu7IiVpD8fUrIzZ0dmw3CWMFp
-         RcI9Stk2Br46AyjzK18b9TIxlhp7VPDz3snq2D8mfIIAicc2w3IpbAe22P/T5H/2ld
-         tokZVNDyIQ/f6F5ud30HWkanXzL6OGbFLuI5PhyZf+aVxX349aFAflmaPdhSL/QoQR
-         80QGOsEbIP4odleYamJrTL7+bZIeipxDTVAlFy/i06PRDrBDB/8Bx6g7/u1RDPro1w
-         B62MEyivubZ5+/42E6ugpT/6X96MFBo4a+YuAx0/2Y8rkrIKa6iNYHoYxLHm/wyl6K
-         7NyrhyLiI8IGQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D487160A4E;
-        Thu, 18 Nov 2021 11:20:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] ethernet: hisilicon: hns: hns_dsaf_misc: fix a possible array
- overflow in hns_dsaf_ge_srst_by_port()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163723440886.3044.13326844858914802767.git-patchwork-notify@kernel.org>
-Date:   Thu, 18 Nov 2021 11:20:08 +0000
-References: <20211117034453.28963-1-starmiku1207184332@gmail.com>
-In-Reply-To: <20211117034453.28963-1-starmiku1207184332@gmail.com>
-To:     Teng Qi <starmiku1207184332@gmail.com>
-Cc:     yisen.zhuang@huawei.com, salil.mehta@huawei.com,
-        davem@davemloft.net, kuba@kernel.org, lipeng321@huawei.com,
-        huangguangbin2@huawei.com, zhengyongjun3@huawei.com,
-        liuyonglong@huawei.com, shenyang39@huawei.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        baijiaju1990@gmail.com, islituo@gmail.com, oslab@tsinghua.edu.cn
+        id S1343897AbhKRLXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 06:23:30 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1637234430; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=V0O5o9Y5iT8rkl0A/PwJ6T3Pn0iIKrXiHMODcgx8FkE=; b=oU13Bkq3nNJpg/z/h/RFfObDLfdlPdlvpMRt9cpS9jQZxJYxxcrF6PciNyCYbbG41y2bLJRO
+ GujvvKbp8Ywa1wrG4GeYbVnCoKwaUnNrBpRW6jJJbViQsPLrI/9niJlu7fhE3Wgd59smHN9y
+ CcT6oHVeoCgRgQlzncf/uDY9RvA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 619636fcf5c956d49e74a093 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 18 Nov 2021 11:20:28
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 976A5C4360D; Thu, 18 Nov 2021 11:20:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 95489C4338F;
+        Thu, 18 Nov 2021 11:20:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 95489C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        swboyd@chromium.org, judyhsiao@chromium.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        Venkata Prasad Potturu <potturu@codeaurora.org>
+Subject: [PATCH] ASoC: codecs: MBHC: Remove useless condition check
+Date:   Thu, 18 Nov 2021 16:50:11 +0530
+Message-Id: <1637234411-554-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Remove redundant conditional check and clean code in special
+headset support functions.
 
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+---
+ sound/soc/codecs/wcd-mbhc-v2.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-On Wed, 17 Nov 2021 11:44:53 +0800 you wrote:
-> The if statement:
->   if (port >= DSAF_GE_NUM)
->         return;
-> 
-> limits the value of port less than DSAF_GE_NUM (i.e., 8).
-> However, if the value of port is 6 or 7, an array overflow could occur:
->   port_rst_off = dsaf_dev->mac_cb[port]->port_rst_off;
-> 
-> [...]
-
-Here is the summary with links:
-  - ethernet: hisilicon: hns: hns_dsaf_misc: fix a possible array overflow in hns_dsaf_ge_srst_by_port()
-    https://git.kernel.org/netdev/net/c/a66998e0fbf2
-
-You are awesome, thank you!
+diff --git a/sound/soc/codecs/wcd-mbhc-v2.c b/sound/soc/codecs/wcd-mbhc-v2.c
+index d6545e4..99586ce 100644
+--- a/sound/soc/codecs/wcd-mbhc-v2.c
++++ b/sound/soc/codecs/wcd-mbhc-v2.c
+@@ -1055,12 +1055,8 @@ static bool wcd_mbhc_check_for_spl_headset(struct wcd_mbhc *mbhc)
+ 	hs_threshold = wcd_mbhc_get_spl_hs_thres(mbhc);
+ 	hph_threshold = wcd_mbhc_adc_get_hph_thres(mbhc);
+ 
+-	if (output_mv > hs_threshold || output_mv < hph_threshold) {
+-		if (mbhc->force_linein == true)
+-			is_spl_hs = false;
+-	} else {
++	if (!(output_mv > hs_threshold || output_mv < hph_threshold))
+ 		is_spl_hs = true;
+-	}
+ 
+ 	/* Back MIC_BIAS2 to 1.8v if the type is not special headset */
+ 	if (!is_spl_hs) {
+@@ -1149,13 +1145,13 @@ static void wcd_correct_swch_plug(struct work_struct *work)
+ 		plug_type = wcd_mbhc_get_plug_from_adc(mbhc, output_mv);
+ 		is_pa_on = wcd_mbhc_read_field(mbhc, WCD_MBHC_HPH_PA_EN);
+ 
+-		if ((output_mv > hs_threshold) && (!is_spl_hs)) {
++		if (output_mv > hs_threshold && !is_spl_hs) {
+ 			is_spl_hs = wcd_mbhc_check_for_spl_headset(mbhc);
+ 			output_mv = wcd_measure_adc_once(mbhc, MUX_CTL_IN2P);
+ 
+ 			if (is_spl_hs) {
+-				hs_threshold = (hs_threshold * wcd_mbhc_get_micbias(mbhc)) /
+-									micbias_mv;
++				hs_threshold *= wcd_mbhc_get_micbias(mbhc);
++				hs_threshold /= micbias_mv;
+ 			}
+ 		}
+ 
+@@ -1185,7 +1181,7 @@ static void wcd_correct_swch_plug(struct work_struct *work)
+ 		}
+ 
+ 		/* cable is extension cable */
+-		if (output_mv > hs_threshold || mbhc->force_linein == true)
++		if (output_mv > hs_threshold || mbhc->force_linein)
+ 			plug_type = MBHC_PLUG_TYPE_HIGH_HPH;
+ 	}
+ 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
