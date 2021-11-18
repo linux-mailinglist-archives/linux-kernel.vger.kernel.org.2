@@ -2,142 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40FC6455B92
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:33:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBBFD455B93
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:33:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344710AbhKRMgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 07:36:06 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59038 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242412AbhKRMf6 (ORCPT
+        id S1344716AbhKRMgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 07:36:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344718AbhKRMgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 07:35:58 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AICBYkC002211;
-        Thu, 18 Nov 2021 12:32:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=/kvOeSOOTZygMRJ8VpjcjEDUTMlQ9VeW4mzGdb3efG8=;
- b=jKengn854irDoJWdI194ngsJ/6TTQ4LGsxu9mwtBH3vw6Vr/5G8pIZxgXc6u0CrtnJzS
- S34KqUYqUFMvxMOfY6cb+rBht5clhgcbBF7ezCSn/4qTpwyRipfusYWbxCyDnybN6YLY
- /79JN/ZZOP+teatRxkNPNlgx+cohpOwifu5SsUrGoSemhs6xWk9PY+m47Irxn/j5VTXu
- sBxASAHzJniKRXzWq+nXRVcqvLRHQp7Yv6QTrelyXbiw47j39BVwAS1LVaZpRkIaKUhi
- kHXtRqAxQtRe+eyrPFsuHqXjRfTga5FTnECz6HeSgCE0i6ESfl4EVr4RHuL9dwR2EwUw VA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cdpm9rgs8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 18 Nov 2021 12:32:41 +0000
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AICBr8x003102;
-        Thu, 18 Nov 2021 12:32:40 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cdpm9rgqc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 18 Nov 2021 12:32:40 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AICHUXG011356;
-        Thu, 18 Nov 2021 12:32:37 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 3ca50anhbp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 18 Nov 2021 12:32:37 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AICWZm94129378
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Nov 2021 12:32:35 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2FE6F11C06C;
-        Thu, 18 Nov 2021 12:32:35 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0AD8811C058;
-        Thu, 18 Nov 2021 12:32:32 +0000 (GMT)
-Received: from sig-9-65-86-194.ibm.com (unknown [9.65.86.194])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 18 Nov 2021 12:32:31 +0000 (GMT)
-Message-ID: <e0e704761d5929f73e5e53ac99cd4935ea268cc5.camel@linux.ibm.com>
-Subject: Re: [PATCH v7 13/17] KEYS: link secondary_trusted_keys to machine
- trusted keys
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
-        linux-integrity@vger.kernel.org, dhowells@redhat.com,
-        dwmw2@infradead.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, jarkko@kernel.org, jmorris@namei.org,
-        serge@hallyn.com
-Cc:     keescook@chromium.org, torvalds@linux-foundation.org,
-        weiyongjun1@huawei.com, nayna@linux.ibm.com, ebiggers@google.com,
-        ardb@kernel.org, nramas@linux.microsoft.com, lszubowi@redhat.com,
-        jason@zx2c4.com, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
-        konrad.wilk@oracle.com
-Date:   Thu, 18 Nov 2021 07:32:31 -0500
-In-Reply-To: <20211116001545.2639333-14-eric.snowberg@oracle.com>
-References: <20211116001545.2639333-1-eric.snowberg@oracle.com>
-         <20211116001545.2639333-14-eric.snowberg@oracle.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: zH7RcI7km63Zba6YA6wZKy5T8JBqoELH
-X-Proofpoint-ORIG-GUID: -SNCk1tKuH50dAgR1QIAbaIj4ZZ9mBeb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-18_05,2021-11-17_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- priorityscore=1501 impostorscore=0 mlxscore=0 malwarescore=0 spamscore=0
- clxscore=1015 phishscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111180073
+        Thu, 18 Nov 2021 07:36:11 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52881C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 04:33:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=35pW5d9C2lDavDzNiLwiDhFMaMD5Y4hZdtLMABTEiE0=; b=eauBMzEkPKZufthSqkLEWgyEpf
+        46daHuqD3Q5ZNy3kW8Lvia0u3vQfNzodCCX4XUvC9z3lJ59q6TXKDSj5ewkT4TuKkTPSgva6k9Elm
+        T4UXW2Y9nN2XwQ/UIbGDPWazmHdYbHKfQrdYIx5rfE3BebGIR8LB5o7MbWPn1aqrjByldTrv1gpwN
+        cVioLpF2bRRBXiJa3Xhn1fpANDU3g8Nd4F8dGyZY+StMO6pFjIbBn6Utxtdyw2mBnclbSFlbVbaTt
+        m9RkO7vFOhqfvAm0SzYe5/kdt9daOIBalbzWF7YF4tVkebhv5cmkjkYRkpK/Oeq+KrCvC+QbhjYUN
+        /dwY2lrQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mngb5-00GgoL-Q6; Thu, 18 Nov 2021 12:32:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 65330300093;
+        Thu, 18 Nov 2021 13:32:59 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4F8B82D3CA53D; Thu, 18 Nov 2021 13:32:59 +0100 (CET)
+Date:   Thu, 18 Nov 2021 13:32:59 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Stephane Eranian <eranian@google.com>
+Cc:     linux-kernel@vger.kernel.org, kim.phillips@amd.com,
+        acme@redhat.com, jolsa@redhat.com, songliubraving@fb.com,
+        mpe@ellerman.id.au, maddy@linux.ibm.com
+Subject: Re: [PATCH v2 03/13] perf/x86/amd: add AMD Fam19h Branch Sampling
+ support
+Message-ID: <YZZH+5odIawPQtgJ@hirez.programming.kicks-ass.net>
+References: <20211111084415.663951-1-eranian@google.com>
+ <20211111084415.663951-4-eranian@google.com>
+ <YY6QBXs0sM16DdbV@hirez.programming.kicks-ass.net>
+ <CABPqkBShSBaJH+PR6rMkRRzjZAKN5zPhcdnLWx=4a-yQWxcA2A@mail.gmail.com>
+ <20211116082923.GX174703@worktop.programming.kicks-ass.net>
+ <CABPqkBQ4BCswvNPpkO79dBamhudikz1cGCXFpwAp9xsTb3F8xQ@mail.gmail.com>
+ <YZZE+bPCokVrTARM@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZZE+bPCokVrTARM@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+On Thu, Nov 18, 2021 at 01:20:09PM +0100, Peter Zijlstra wrote:
+> On Tue, Nov 16, 2021 at 11:23:39PM -0800, Stephane Eranian wrote:
 
-Is the subject line left over from the original patch?   Shouldn't it
-be "link machine trusted keys to secondary_trusted_keys".
-
-On Mon, 2021-11-15 at 19:15 -0500, Eric Snowberg wrote:
-> Allow the .machine keyring to be linked to the secondary_trusted_keys.
-> After the link is created, keys contained in the .machine keyring will
-> automatically be searched when searching secondary_trusted_keys.
+> > Ok, I made the changes you suggested. It looks closer to the way LBR is handled.
+> > However, this means that there is no path by which you can get to
+> > amd_pmu_disable_event()
+> > without having gone through amd_pmu_disable_all(). Is that always the
+> > case? And same thing
+> > on the enable side.
 > 
-> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
-> ---
-> v3: Initial version
-> v4: Unmodified from v3
-> v5: Rename to machine keyring
-> v7: Unmodified from v5
-> ---
->  certs/system_keyring.c | 3 +++
->  1 file changed, 3 insertions(+)
+> So that's true for ->add() and ->del(), those cannot be called without
+> being wrapped in ->pmu_disable(), ->pmu_enable().
 > 
-> diff --git a/certs/system_keyring.c b/certs/system_keyring.c
-> index ba732856ebd0..2a2dc70b126c 100644
-> --- a/certs/system_keyring.c
-> +++ b/certs/system_keyring.c
-> @@ -101,6 +101,9 @@ static __init struct key_restriction *get_secondary_restriction(void)
->  void __init set_machine_trusted_keys(struct key *keyring)
->  {
->  	machine_trusted_keys = keyring;
-> +
-> +	if (key_link(secondary_trusted_keys, machine_trusted_keys) < 0)
-> +		panic("Can't link (machine) trusted keyrings\n");
->  }
->  
->  /**
+> There is however the ->stop() and ->start() usage for throttling, which
+> can stop an individual event (while leaving the event scheduled on the
+> PMU). Now, I think the ->stop() gets called with the PMU enabled, but
+> the ->start() is with it disabled again.
 
-In general is the ordering of the patches "bisect safe"[1]?  Only in
-the next patch is machine_trusted_keys set.   In this case, either
-merge the two patches or reverse their order.
+I just looked, and the throttling depends on the PMU's PMI handler
+implementation, for Intel it will have the PMU disabled, for generic and
+AMD it has it enabled (see x86_pmu_handle_irq -- also these are really
+NMIs but lets not do a mass rename just now).
 
-thanks,
-
-Mimi
-
-[1] Refer to the section "Separate your changes" in
-Documentation/process/submitting-patches.rst.
-
+> The ramification would be that we'd stop the event, but leave BRS
+> enabled for a throttled event. Which should be harmless, no?
