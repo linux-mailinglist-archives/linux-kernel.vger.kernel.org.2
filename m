@@ -2,84 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5042455E5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:38:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A00E455E5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:39:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbhKROln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 09:41:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229514AbhKROlm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 09:41:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 138BC61A40;
-        Thu, 18 Nov 2021 14:38:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637246322;
-        bh=pD4G7qW+x2KbwwtQMCGnHfxLMGX7bM3IVbUSdTzZuoo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Nl335lEOgtonooJ1AmxqZ7gbLg2ZK4bE1yqe+Bu2OfQt/0hU8hVoTN7cuODAvARuO
-         /oTUvMQkWowi6fH6yh9lHnIKSDCIil0ugwkY1nKPp9tputgevhuG9+NqSYl1aXhiSJ
-         eQKaQBfJxIwS8B2MFxnArZ44v0RpQ4wyC+JouWZa0TBsMLZjfEpP/uOjbCiPYpA0o7
-         lAQVbWU1Yy1s2clw9ojoKaRgdzPruZLN1CVtZ4epWel8RbNvBr18nUk/MG2Wpqqcmy
-         aCpNn/12I977252NzAYDYn0rZnUssFZlk5lUdaU4yEmWSrKqCqV6uEd7OaZZ0Ny0Ad
-         vGTBcLtck74+w==
-Received: by mail-ed1-f44.google.com with SMTP id g14so27962026edb.8;
-        Thu, 18 Nov 2021 06:38:42 -0800 (PST)
-X-Gm-Message-State: AOAM533fb/4vrldDq6ZYK9CaTHRYaw8VZwlMMjfV+fvLEWEg3j9k2nlf
-        /VPfbohi5R42NiSzZMgCEi41ETVYwcHlrXXuWQ==
-X-Google-Smtp-Source: ABdhPJyOhXQHvTcURpMYCd+ExjovfdgFB53E0/G+tY3NoX68Ljj4B0aI15Jv0BevTj64Nx8D/hi2bSWPp2mlCQoC7kc=
-X-Received: by 2002:a17:907:7f25:: with SMTP id qf37mr34307372ejc.147.1637246320480;
- Thu, 18 Nov 2021 06:38:40 -0800 (PST)
+        id S230088AbhKROlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 09:41:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46047 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229514AbhKROlo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 09:41:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637246323;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CRQoJO+AcQGP2FqOYnaDKbQVEGRVzlVuSSKNk+R736s=;
+        b=EW88W7TUbiaZkwiD3P3i6oEW2YQEmP3V43liUV2iyvXH5hD7vRbKTl8X4mrf/nku3qo8Yf
+        fPmlOLlvb85JWrFnC6ME1ele0wUXFcDMy6jOfcXVpYwEFkB7O5tOQ9fJGDf1w2yp6vZ+P6
+        ljb8IuVbz9SIcK1puhcoUxA9oAQ58pA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-196-GtsSBbZNMqaG2tAzcJc_zw-1; Thu, 18 Nov 2021 09:38:38 -0500
+X-MC-Unique: GtsSBbZNMqaG2tAzcJc_zw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B36E1006AA3;
+        Thu, 18 Nov 2021 14:38:36 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2CACE5F4ED;
+        Thu, 18 Nov 2021 14:38:32 +0000 (UTC)
+Message-ID: <42820429-f09d-2576-50c4-5ecb74f49891@redhat.com>
+Date:   Thu, 18 Nov 2021 15:38:31 +0100
 MIME-Version: 1.0
-References: <1637133726-6581-1-git-send-email-u0084500@gmail.com>
-In-Reply-To: <1637133726-6581-1-git-send-email-u0084500@gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 18 Nov 2021 08:38:29 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJim5emHCnP4JLbxuuPcaLYiW5e6g9GCq1iEUg4vvr+nw@mail.gmail.com>
-Message-ID: <CAL_JsqJim5emHCnP4JLbxuuPcaLYiW5e6g9GCq1iEUg4vvr+nw@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: leds: Replace moonlight with indicator in
- mt6360 example
-To:     cy_huang <u0084500@gmail.com>, Pavel Machek <pavel@ucw.cz>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Gene Chen <gene.chen.richtek@gmail.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, wilma.wu@mediatek.com,
-        benjamin.chao@mediatek.com, ChiYuan Huang <cy_huang@richtek.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 02/15] KVM: VMX: Avoid to rdmsrl(MSR_IA32_SYSENTER_ESP)
+Content-Language: en-US
+To:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <20211118110814.2568-1-jiangshanlai@gmail.com>
+ <20211118110814.2568-3-jiangshanlai@gmail.com>
+ <94d4b7d8-1e56-69e9-dd52-d154bee6c461@redhat.com>
+ <e2c646a1-7e02-5dc5-0f02-1b4247772a69@linux.alibaba.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <e2c646a1-7e02-5dc5-0f02-1b4247772a69@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 1:22 AM cy_huang <u0084500@gmail.com> wrote:
->
-> From: ChiYuan Huang <cy_huang@richtek.com>
->
-> Replace moonlight with indicator in mt6360 example to prevent the below
-> build error:
->
-> Error: Documentation/devicetree/bindings/leds/leds-mt6360.example.dts:114.24-25
-> syntax error
-> FATAL ERROR: Unable to parse input tree
-> make[1]: *** [scripts/Makefile.lib:385:
-> Documentation/devicetree/bindings/leds/leds-mt6360.example.dt.yaml]
-> Error 1
->
-> Link: https://lore.kernel.org/lkml/CAL_JsqJRMVE163LaHTbtFARc4f_qg33bfQx+sD3ukce_xQF+gA@mail.gmail.com/
-> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> ---
-> Hi, Gene:
->
-> I saw you have removed LED_FUNCTION_MOONLIGHT in v14.
-> But you may forget to remove it from the binding example.
->
-> Please help to review this change.
-> ---
->  Documentation/devicetree/bindings/leds/leds-mt6360.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On 11/18/21 15:17, Lai Jiangshan wrote:
+> 
+> The change in vmx_vcpu_load_vmcs() handles only the percpu constant case:
+> (cpu_entry_stack(cpu) + 1), it doesn't handle the case where
+> MSR_IA32_SYSENTER_ESP is NULL.
+> 
+> The change in vmx_set_constant_host_state() handles the case where
+> MSR_IA32_SYSENTER_ESP is NULL, it does be constant host state in this case.
+> If it is not the case, the added code in vmx_vcpu_load_vmcs() will override
+> it safely.
+> 
+> If an else branch with "vmcs_writel(HOST_IA32_SYSENTER_ESP, 0);" is 
+> added to
+> vmx_vcpu_load_vmcs(), we will not need to change 
+> vmx_set_constant_host_state().
 
-Acked-by: Rob Herring <robh@kernel.org>
+We can change vmx_set_constant_host_state to write 0.
+
+Paolo
+
