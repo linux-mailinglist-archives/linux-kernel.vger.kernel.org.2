@@ -2,117 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B94C455257
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 02:46:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1851845525F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 02:51:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242352AbhKRBt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 20:49:29 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:14951 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239516AbhKRBt1 (ORCPT
+        id S242359AbhKRByV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 20:54:21 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:62529 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239516AbhKRByV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 20:49:27 -0500
-Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HvjJJ55DHzZd6c;
-        Thu, 18 Nov 2021 09:44:00 +0800 (CST)
-Received: from [10.174.179.200] (10.174.179.200) by
- dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.20; Thu, 18 Nov 2021 09:46:24 +0800
-Subject: Re: [PATCH net v2] net: vlan: fix a UAF in vlan_dev_real_dev()
-To:     Petr Machata <petrm@nvidia.com>, Jakub Kicinski <kuba@kernel.org>
-CC:     <davem@davemloft.net>, <jgg@nvidia.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20211102021218.955277-1-william.xuanziyang@huawei.com>
- <87k0h9bb9x.fsf@nvidia.com>
- <20211115094940.138d86dc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <87a6i3t2zg.fsf@nvidia.com>
-From:   "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
-Message-ID: <7f7cbbec-8c4e-a2dc-787b-570d1049a6b4@huawei.com>
-Date:   Thu, 18 Nov 2021 09:46:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 17 Nov 2021 20:54:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1637200282; x=1668736282;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=pHAUTMlLZUcPH+j0lo9O2t4oMTrQMjACYd/sq9HoKG0=;
+  b=olT+tvH7Ueg+IPoykr2HVt6b3BBoAt/0cgs9DEpZa5OZUgVZiT0+YzNW
+   d+bf1NG6gqfJjrA2Bl79E78v83G0qGN0SvI1grIxCHR+rCRNMGDO/nBP9
+   cF9Z624JB4UGYWMBdyhUeKBp1mdvQDUOn8n0GXkJkUf876CG4fgnlG7pd
+   E=;
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 17 Nov 2021 17:51:21 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2021 17:51:20 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Wed, 17 Nov 2021 17:51:19 -0800
+Received: from quicinc.com (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Wed, 17 Nov
+ 2021 17:51:19 -0800
+Date:   Wed, 17 Nov 2021 17:51:18 -0800
+From:   Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <robh+dt@kernel.org>, <tglx@linutronix.de>, <maz@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <manivannan.sadhasivam@linaro.org>,
+        "kernel test robot" <lkp@intel.com>
+Subject: Re: [PATCH v4 3/6] clk: qcom: Add SDX65 GCC support
+Message-ID: <20211118015117.GA18984@quicinc.com>
+References: <cover.1637047731.git.quic_vamslank@quicinc.com>
+ <b61d16ad890bcf07057f8fbd83dfffaf9812cda6.1637047731.git.quic_vamslank@quicinc.com>
+ <YZNsvjwp0/AX0Hdo@matsya>
 MIME-Version: 1.0
-In-Reply-To: <87a6i3t2zg.fsf@nvidia.com>
-Content-Type: text/plain; charset="gbk"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.200]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggeml757-chm.china.huawei.com (10.1.199.137)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YZNsvjwp0/AX0Hdo@matsya>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 16, 2021 at 02:03:02PM +0530, Vinod Koul wrote:
+> On 15-11-21, 23:38, quic_vamslank@quicinc.com wrote:
+> > From: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
+> > 
+> > Add Global Clock Controller (GCC) support for SDX65 SoCs from Qualcomm.
+> > 
+> > Signed-off-by: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
+> > Reported-by: kernel test robot <lkp@intel.com>
 > 
-> Jakub Kicinski <kuba@kernel.org> writes:
-> 
->> On Mon, 15 Nov 2021 18:04:42 +0100 Petr Machata wrote:
->>> Ziyang Xuan <william.xuanziyang@huawei.com> writes:
->>>
->>>> diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
->>>> index 55275ef9a31a..a3a0a5e994f5 100644
->>>> --- a/net/8021q/vlan.c
->>>> +++ b/net/8021q/vlan.c
->>>> @@ -123,9 +123,6 @@ void unregister_vlan_dev(struct net_device *dev, struct list_head *head)
->>>>  	}
->>>>  
->>>>  	vlan_vid_del(real_dev, vlan->vlan_proto, vlan_id);
->>>> -
->>>> -	/* Get rid of the vlan's reference to real_dev */
->>>> -	dev_put(real_dev);
->>>>  }
->>>>  
->>>>  int vlan_check_real_dev(struct net_device *real_dev,
->>>> diff --git a/net/8021q/vlan_dev.c b/net/8021q/vlan_dev.c
->>>> index 0c21d1fec852..aeeb5f90417b 100644
->>>> --- a/net/8021q/vlan_dev.c
->>>> +++ b/net/8021q/vlan_dev.c
->>>> @@ -843,6 +843,9 @@ static void vlan_dev_free(struct net_device *dev)
->>>>  
->>>>  	free_percpu(vlan->vlan_pcpu_stats);
->>>>  	vlan->vlan_pcpu_stats = NULL;
->>>> +
->>>> +	/* Get rid of the vlan's reference to real_dev */
->>>> +	dev_put(vlan->real_dev);
->>>>  }
->>>>  
->>>>  void vlan_setup(struct net_device *dev)  
->>>
->>> This is causing reference counting issues when vetoing is involved.
->>> Consider the following snippet:
->>>
->>>     ip link add name bond1 type bond mode 802.3ad
->>>     ip link set dev swp1 master bond1
->>>     ip link add name bond1.100 link bond1 type vlan protocol 802.1ad id 100
->>>     # ^ vetoed, no netdevice created
->>>     ip link del dev bond1
->>>
->>> The setup process goes like this: vlan_newlink() calls
->>> register_vlan_dev() calls netdev_upper_dev_link() calls
->>> __netdev_upper_dev_link(), which issues a notifier
->>> NETDEV_PRECHANGEUPPER, which yields a non-zero error,
->>> because a listener vetoed it.
->>>
->>> So it unwinds, skipping dev_hold(real_dev), but eventually the VLAN ends
->>> up decreasing reference count of the real_dev. Then when when the bond
->>> netdevice is removed, we get an endless loop of:
->>>
->>>     kernel:unregister_netdevice: waiting for bond1 to become free. Usage count = 0 
->>>
->>> Moving the dev_hold(real_dev) to always happen even if the
->>> netdev_upper_dev_link() call makes the issue go away.
->>
->> I think we should move the dev_hold() to ndo_init(), otherwise 
->> it's hard to reason if destructor was invoked or not if
->> register_netdevice() errors out.
-> 
-> Ziyang Xuan, do you intend to take care of this?
-> .
+> Missing support reported ??
 
-I am reading the related processes according to the problem scenario.
-And I will give a more clear sequence and root cause as soon as possible
-by some necessary tests.
+Not mising support but it reported to delete unused varaibles and after
+the fix mentioned to add the reported tag.
 
-Thank you!
+> 
+> > +static struct clk_branch gcc_ahb_pcie_link_clk = {
+> > +	.halt_reg = 0x2e004,
+> > +	.halt_check = BRANCH_HALT,
+> > +	.clkr = {
+> > +		.enable_reg = 0x2e004,
+> > +		.enable_mask = BIT(0),
+> > +		.hw.init = &(struct clk_init_data){
+> > +			.name = "gcc_ahb_pcie_link_clk",
+> > +			.flags = CLK_IS_CRITICAL,
+> > +			.ops = &clk_branch2_ops,
+> > +		},
+> 
+> If this clk is critical then why model in linux, enable directly in probe
+> and leave it...?
+
+Yes, actually i have the code which is enabling it directly inside the probe function.
+so i will remove it here.
+
+> 
+> > +static struct clk_branch gcc_pcie_0_clkref_en = {
+> > +	.halt_reg = 0x88004,
+> > +	.halt_check = BRANCH_HALT_DELAY,
+> 
+> Why delay, add a comment at least for that
+
+sure, will do
+
+> > +	.clkr = {
+> > +		.enable_reg = 0x88004,
+> > +		.enable_mask = BIT(0),
+> > +		.hw.init = &(struct clk_init_data){
+> > +			.name = "gcc_pcie_0_clkref_en",
+> > +			.ops = &clk_branch2_ops,
+> > +		},
+> > +	},
+> > +};
+> > +
+> > +static struct clk_branch gcc_pcie_aux_clk = {
+> > +	.halt_reg = 0x43034,
+> > +	.halt_check = BRANCH_HALT_DELAY,
+> 
+> Here too
+
+will do.
+
+> 
+> > +static struct clk_branch gcc_pcie_mstr_axi_clk = {
+> > +	.halt_reg = 0x43024,
+> > +	.halt_check = BRANCH_HALT_VOTED,
+> > +	.hwcg_reg = 0x43024,
+> > +	.hwcg_bit = 1,
+> > +	.clkr = {
+> > +		.enable_reg = 0x6d010,
+> > +		.enable_mask = BIT(1),
+> > +		.hw.init = &(struct clk_init_data){
+> > +			.name = "gcc_pcie_mstr_axi_clk",
+> > +			.ops = &clk_branch2_ops,
+> > +		},
+> > +	},
+> > +};
+> > +
+> > +static struct clk_branch gcc_pcie_pipe_clk = {
+> > +	.halt_reg = 0x4303c,
+> > +	.halt_check = BRANCH_HALT_DELAY,
+> 
+> here as well and few more places I guess
+> 
+> > +static struct clk_branch gcc_xo_pcie_link_clk = {
+> > +	.halt_reg = 0x2e008,
+> > +	.halt_check = BRANCH_HALT,
+> > +	.hwcg_reg = 0x2e008,
+> > +	.hwcg_bit = 1,
+> > +	.clkr = {
+> > +		.enable_reg = 0x2e008,
+> > +		.enable_mask = BIT(0),
+> > +		.hw.init = &(struct clk_init_data){
+> > +			.name = "gcc_xo_pcie_link_clk",
+> > +			.flags = CLK_IS_CRITICAL,
+> 
+> Here as well
+
+Same as above.
+
+
+> -- 
+> ~Vinod
