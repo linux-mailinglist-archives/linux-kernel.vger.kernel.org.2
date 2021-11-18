@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3BE455C73
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:15:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC79455C18
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:02:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbhKRNSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 08:18:06 -0500
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:38631 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhKRNSF (ORCPT
+        id S230121AbhKRNFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 08:05:32 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:14952 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234332AbhKRNDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 08:18:05 -0500
-Received: by mail-oi1-f173.google.com with SMTP id r26so14178447oiw.5;
-        Thu, 18 Nov 2021 05:15:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=52oLeLHIWh1xHoLlS9D+Tl+qwNv+fGRWrOK+8Oypj1U=;
-        b=REfpOoFxpGY5M3VBg47a6Tb9xt069wzIzy/fm34BS8yW/HJn8TDVi1coilsUfJ0F6d
-         nBNov5EBGiOQLI0QynHtjZAojhb6sylMpmjL6uZPgxw+tE4tYK4MeON+AooGuJJjF6UB
-         ZQ0mNluq1Dgxn5NzEN++pfxe9/x3FNqDnDeoHWPR0ak2djiQMuUrc2YP38PfZ2MG37iA
-         YVwH+/dXC5UdWBWW1EK5fOl6Toor2mIRfCk8b5gpdz1FkJ1WZTt6KEOs9tDGtNCPwUKL
-         gyVE/C8eMunZ0gfWM2RyRVqg9Y988tJK5k5C/B0lJezIeXLxAdavZ/yElKqT26NGvZaD
-         WU8w==
-X-Gm-Message-State: AOAM532q7Md2an+q3vI8ALJ+iUYu61PwV+NxMX9cazWTbTsuMMa0E6lE
-        07SeASaVpkCXqQYDyyz1i8hw/t0PhWuyh2ngxsjbi6DFBDs=
-X-Google-Smtp-Source: ABdhPJznVs8RdU58nNdpoEVh7Va5XIjxAah0DS4EqoY0YLpBdNkaHrgSESoA4MuVtUS6Hp8Sn4vadDFuOUkO5r1REHg=
-X-Received: by 2002:a05:6808:14c3:: with SMTP id f3mr7709090oiw.51.1637241304764;
- Thu, 18 Nov 2021 05:15:04 -0800 (PST)
+        Thu, 18 Nov 2021 08:03:36 -0500
+Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hw0G84bWNzZd8Y;
+        Thu, 18 Nov 2021 20:58:08 +0800 (CST)
+Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
+ dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 18 Nov 2021 21:00:33 +0800
+Received: from huawei.com (10.175.124.27) by dggpemm500004.china.huawei.com
+ (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Thu, 18 Nov
+ 2021 21:00:32 +0800
+From:   Laibin Qiu <qiulaibin@huawei.com>
+To:     <tj@kernel.org>, <axboe@kernel.dk>
+CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] blk-throttle: Set BIO_THROTTLED when bio has been throttled
+Date:   Thu, 18 Nov 2021 21:15:51 +0800
+Message-ID: <20211118131551.810931-1-qiulaibin@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-References: <20211118124553.599419-1-kai.heng.feng@canonical.com>
-In-Reply-To: <20211118124553.599419-1-kai.heng.feng@canonical.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 18 Nov 2021 14:14:54 +0100
-Message-ID: <CAJZ5v0gaCgqJy59YEp3KPOGO9W99rLFUDJ1Bw5iGLokA-U5R_Q@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: intel_pstate: Avoid using CPPC when ACPI CPC is
- not valid
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "open list:INTEL PSTATE DRIVER" <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500004.china.huawei.com (7.185.36.219)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 1:46 PM Kai-Heng Feng
-<kai.heng.feng@canonical.com> wrote:
->
-> If ACPI CPC is not valid, dereference cpc_desc in cppc_get_perf() causes
-> a NULL pointer dereference. So avoid using CPPC for that scenario.
->
-> Fixes: 46573fd6369f ("cpufreq: intel_pstate: hybrid: Rework HWP calibration")
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+1.In current process, all bio will set the BIO_THROTTLED flag
+after __blk_throtl_bio().
 
-The bug is real, but it is not in intel_pstate.
+2.If bio needs to be throttled, it will start the timer and
+stop submit bio directly. Bio will submit in blk_throtl_dispatch_work_fn()
+when the timer expires. But in the current process, if bio is throttled.
+The BIO_THROTTLED will be set to bio after timer start. If the bio
+has been completed, it may cause use-after-free.
 
-cppc_get_perf() should return an error in that case.
+Fix this by move BIO_THROTTLED set before timer set.
 
-Let me fix this.
+Signed-off-by: Laibin Qiu <qiulaibin@huawei.com>
+---
+ block/blk-throttle.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
->  drivers/cpufreq/intel_pstate.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-> index 815df3daae9df..24c7d705b99b6 100644
-> --- a/drivers/cpufreq/intel_pstate.c
-> +++ b/drivers/cpufreq/intel_pstate.c
-> @@ -3369,7 +3369,7 @@ static int __init intel_pstate_init(void)
->                         if (!default_driver)
->                                 default_driver = &intel_pstate;
->
-> -                       if (boot_cpu_has(X86_FEATURE_HYBRID_CPU))
-> +                       if (boot_cpu_has(X86_FEATURE_HYBRID_CPU) && acpi_cpc_valid())
->                                 intel_pstate_cppc_set_cpu_scaling();
->
->                         goto hwp_cpu_matched;
-> --
-> 2.32.0
->
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index 39bb6e68a9a2..ddfbff4465d5 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -2149,6 +2149,7 @@ bool __blk_throtl_bio(struct bio *bio)
+ 	td->nr_queued[rw]++;
+ 	throtl_add_bio_tg(bio, qn, tg);
+ 	throttled = true;
++	bio_set_flag(bio, BIO_THROTTLED);
+ 
+ 	/*
+ 	 * Update @tg's dispatch time and force schedule dispatch if @tg
+@@ -2163,7 +2164,6 @@ bool __blk_throtl_bio(struct bio *bio)
+ 
+ out_unlock:
+ 	spin_unlock_irq(&q->queue_lock);
+-	bio_set_flag(bio, BIO_THROTTLED);
+ 
+ #ifdef CONFIG_BLK_DEV_THROTTLING_LOW
+ 	if (throttled || !td->track_bio_latency)
+-- 
+2.22.0
+
