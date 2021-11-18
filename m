@@ -2,118 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7DE455A0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE78455AB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343722AbhKRLY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 06:24:29 -0500
-Received: from m43-7.mailgun.net ([69.72.43.7]:18689 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343897AbhKRLXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 06:23:30 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1637234430; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=V0O5o9Y5iT8rkl0A/PwJ6T3Pn0iIKrXiHMODcgx8FkE=; b=oU13Bkq3nNJpg/z/h/RFfObDLfdlPdlvpMRt9cpS9jQZxJYxxcrF6PciNyCYbbG41y2bLJRO
- GujvvKbp8Ywa1wrG4GeYbVnCoKwaUnNrBpRW6jJJbViQsPLrI/9niJlu7fhE3Wgd59smHN9y
- CcT6oHVeoCgRgQlzncf/uDY9RvA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 619636fcf5c956d49e74a093 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 18 Nov 2021 11:20:28
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 976A5C4360D; Thu, 18 Nov 2021 11:20:28 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 95489C4338F;
-        Thu, 18 Nov 2021 11:20:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 95489C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org, judyhsiao@chromium.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Venkata Prasad Potturu <potturu@codeaurora.org>
-Subject: [PATCH] ASoC: codecs: MBHC: Remove useless condition check
-Date:   Thu, 18 Nov 2021 16:50:11 +0530
-Message-Id: <1637234411-554-1-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1344344AbhKRLkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 06:40:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344263AbhKRLjT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 06:39:19 -0500
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1E30BC061226;
+        Thu, 18 Nov 2021 03:35:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=3qPb/kuMpBeJCwng87X0Eo8wE0IVCGJu3uFW57LRXkY=; b=VST2QYzk/z+mP
+        J+yEvXpptTQauJq0ZBm11EBktMrJap4D91g2DwhMeQJtT3njE5ui2DEl1ay5CXVx
+        wRjsxwmhBc/2MobsWQPbo2R1fEjKxVoj2oSlKS/XBqHFtPoB+yV/2T0k8tzxzqQc
+        G/xYHzG9isb2SUjI3rU7FpkKqcSB+8=
+Received: from xhacker (unknown [101.86.18.22])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBnLsxMOpZhi51cAQ--.6032S2;
+        Thu, 18 Nov 2021 19:34:36 +0800 (CST)
+Date:   Thu, 18 Nov 2021 19:21:30 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "=?UTF-8?B?Qmo=?= =?UTF-8?B?w7ZybiBUw7ZwZWw=?=" <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Tong Tiangen <tongtiangen@huawei.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: [PATCH v4 0/12] riscv: switch to relative extable and other
+ improvements
+Message-ID: <20211118192130.48b8f04c@xhacker>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygBnLsxMOpZhi51cAQ--.6032S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFyftryDWFWkJF13tw1rtFb_yoW8Kw17pF
+        sxCF9xCFZ5Gr97uw4akr109F1rGa1rW345tr1xWr18Aw42vF48twn5t397CFyDJayYqF1I
+        9F1Skr1Fkw1UAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkmb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7
+        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0E
+        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JV
+        WxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2fMaUUUUU
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove redundant conditional check and clean code in special
-headset support functions.
+From: Jisheng Zhang <jszhang@kernel.org>
 
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
----
- sound/soc/codecs/wcd-mbhc-v2.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
+Similar as other architectures such as arm64, x86 and so on, use
+offsets relative to the exception table entry values rather than
+absolute addresses for both the exception locationand the fixup.
+And recently, arm64 and x86 remove anonymous out-of-line fixups, we
+want to acchieve the same result.
 
-diff --git a/sound/soc/codecs/wcd-mbhc-v2.c b/sound/soc/codecs/wcd-mbhc-v2.c
-index d6545e4..99586ce 100644
---- a/sound/soc/codecs/wcd-mbhc-v2.c
-+++ b/sound/soc/codecs/wcd-mbhc-v2.c
-@@ -1055,12 +1055,8 @@ static bool wcd_mbhc_check_for_spl_headset(struct wcd_mbhc *mbhc)
- 	hs_threshold = wcd_mbhc_get_spl_hs_thres(mbhc);
- 	hph_threshold = wcd_mbhc_adc_get_hph_thres(mbhc);
- 
--	if (output_mv > hs_threshold || output_mv < hph_threshold) {
--		if (mbhc->force_linein == true)
--			is_spl_hs = false;
--	} else {
-+	if (!(output_mv > hs_threshold || output_mv < hph_threshold))
- 		is_spl_hs = true;
--	}
- 
- 	/* Back MIC_BIAS2 to 1.8v if the type is not special headset */
- 	if (!is_spl_hs) {
-@@ -1149,13 +1145,13 @@ static void wcd_correct_swch_plug(struct work_struct *work)
- 		plug_type = wcd_mbhc_get_plug_from_adc(mbhc, output_mv);
- 		is_pa_on = wcd_mbhc_read_field(mbhc, WCD_MBHC_HPH_PA_EN);
- 
--		if ((output_mv > hs_threshold) && (!is_spl_hs)) {
-+		if (output_mv > hs_threshold && !is_spl_hs) {
- 			is_spl_hs = wcd_mbhc_check_for_spl_headset(mbhc);
- 			output_mv = wcd_measure_adc_once(mbhc, MUX_CTL_IN2P);
- 
- 			if (is_spl_hs) {
--				hs_threshold = (hs_threshold * wcd_mbhc_get_micbias(mbhc)) /
--									micbias_mv;
-+				hs_threshold *= wcd_mbhc_get_micbias(mbhc);
-+				hs_threshold /= micbias_mv;
- 			}
- 		}
- 
-@@ -1185,7 +1181,7 @@ static void wcd_correct_swch_plug(struct work_struct *work)
- 		}
- 
- 		/* cable is extension cable */
--		if (output_mv > hs_threshold || mbhc->force_linein == true)
-+		if (output_mv > hs_threshold || mbhc->force_linein)
- 			plug_type = MBHC_PLUG_TYPE_HIGH_HPH;
- 	}
- 
+patch1 remove unused macro.
+
+patch2 consolidates the __ex_table construction, it's a great code
+clean up even w/o the 2nd patch.
+
+patch3 swith to relative extable.
+
+The remaining patches are inspired by arm64 version. They remove
+the anonymous out-of-line fixups for risv.
+
+Since v3:
+  - collect Reviewed-by tag for patch2 and patch3
+  - add patch1 to remove unused macro
+  - add patches to remove anonymous out-of-line fixups
+
+Since v2:
+  - directly check R_RISCV_SUB32 in __ex_table instead of adding
+    addend_riscv_rela()
+
+Since v1:
+  - fix build error for NOMMU case, thank lkp@intel.com
+
+
+Jisheng Zhang (12):
+  riscv: remove unused __cmpxchg_user() macro
+  riscv: consolidate __ex_table construction
+  riscv: switch to relative exception tables
+  riscv: bpf: move rv_bpf_fixup_exception signature to extable.h
+  riscv: extable: make fixup_exception() return bool
+  riscv: extable: use `ex` for `exception_table_entry`
+  riscv: lib: uaccess: fold fixups into body
+  riscv: extable: consolidate definitions
+  riscv: extable: add `type` and `data` fields
+  riscv: add gpr-num.h
+  riscv: extable: add a dedicated uaccess handler
+  riscv: vmlinux.lds.S|vmlinux-xip.lds.S: remove `.fixup` section
+
+ arch/riscv/include/asm/Kbuild        |   1 -
+ arch/riscv/include/asm/asm-extable.h |  65 +++++++++++
+ arch/riscv/include/asm/extable.h     |  48 ++++++++
+ arch/riscv/include/asm/futex.h       |  30 ++---
+ arch/riscv/include/asm/gpr-num.h     |  77 +++++++++++++
+ arch/riscv/include/asm/uaccess.h     | 162 ++++-----------------------
+ arch/riscv/kernel/vmlinux-xip.lds.S  |   1 -
+ arch/riscv/kernel/vmlinux.lds.S      |   3 +-
+ arch/riscv/lib/uaccess.S             |  28 +++--
+ arch/riscv/mm/extable.c              |  66 ++++++++---
+ arch/riscv/net/bpf_jit_comp64.c      |   9 +-
+ scripts/mod/modpost.c                |  15 +++
+ scripts/sorttable.c                  |   4 +-
+ 13 files changed, 308 insertions(+), 201 deletions(-)
+ create mode 100644 arch/riscv/include/asm/asm-extable.h
+ create mode 100644 arch/riscv/include/asm/extable.h
+ create mode 100644 arch/riscv/include/asm/gpr-num.h
+
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.33.0
+
 
