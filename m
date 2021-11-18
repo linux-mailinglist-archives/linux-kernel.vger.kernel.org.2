@@ -2,82 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D3E455565
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 08:17:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA50455563
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 08:17:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243708AbhKRHUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 02:20:35 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:36503 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243690AbhKRHUX (ORCPT
+        id S243694AbhKRHUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 02:20:25 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:51848 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235676AbhKRHUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 02:20:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1637219844; x=1668755844;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=zRAeZCYa4NAS9qCMxMUo8oi7QA94Zfv6TYf1xH0Ja3U=;
-  b=g/7BRzHZyFmU8Fdq9t8oFtzFpHlREWTQ4hRnw5cGeuO9qBC/QE9bN+4j
-   Rd38LqL3RZERUAeITekEPFkn/jas49cEZ8eGFnw8KKmmCTdswdG6XF/tG
-   81/98ePE02Jez566IWAXL8ZGOXC1P9VeRmDCwn/uiw3hlKjrnKGa1XA+4
-   Y9DbTjmu+gUPJ2bAPfcgnBlQQ0j3UGIlLaEklW04KiMX065wfuNC78ysw
-   v5BDf8ts+WHD6zE+NYkVbWleWVURoj1b8W0xRtpCalff4awBLYy74PECx
-   Kt4qRC0rmci6aWjIj97C4nT0fI6oguA7D632l6s7dMZ1PFGDn/i9cdJDT
-   g==;
-IronPort-SDR: +bz2zeS6C0DvXqQFYzZvTXE/jpSCZN7TusASMM0A5wIJi+AjpugurLAsjLnPGu1VJtS0Lxf5j3
- FwsioPLat75VPWVMMareCWjkzPBiyeCm783ZA00YwjCvnQo0/fecukgdCJzT0OoVOnjiIXbf9a
- vS90lp9mZeniImff5yiqIanhTegSNto5wX8vB5ehYgE6HminU+78lCv1JVwjydO0bSx1ae5aBZ
- 1PfxRybhwue2SGEm3/HhDpcRHbFHF1S97vjAcdH/K6Qfx2fLnYlrIMC6RzhzI9ohmHB5IbMknG
- S0VAept0HtUxWRA6xfn0Kh23
-X-IronPort-AV: E=Sophos;i="5.87,243,1631602800"; 
-   d="scan'208";a="76837084"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Nov 2021 00:17:23 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 18 Nov 2021 00:17:23 -0700
-Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Thu, 18 Nov 2021 00:17:20 -0700
-From:   Eugen Hristev <eugen.hristev@microchip.com>
-To:     <leonl@leopardimaging.com>, <linux-media@vger.kernel.org>
-CC:     <skomatineni@nvidia.com>, <sakari.ailus@linux.intel.com>,
-        <luca@lucaceresoli.net>, <linux-kernel@vger.kernel.org>,
-        Eugen Hristev <eugen.hristev@microchip.com>
-Subject: [PATCH] media: i2c: imx274: fix trivial typo expsoure/exposure
-Date:   Thu, 18 Nov 2021 09:17:15 +0200
-Message-ID: <20211118071715.280548-1-eugen.hristev@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 18 Nov 2021 02:20:17 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 077701FD37;
+        Thu, 18 Nov 2021 07:17:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637219837; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=SQ9Izf0aRRgIduyBEe8Mkfcip9lM9CfOfJa1x/AwxQg=;
+        b=C+cTRv38ZZ2cYkZdkq2otOo8QFJXfS5eY/omwuVljy/7GpN6MANCZIl/sbqsySE8KqhR7S
+        OTg2RkJSUfE17/pIveleBSgUiEnJyEd4regqNI+kkVmEuNeTCr8ytEH2wKXTlSRUhMwckp
+        txak1c70XVQBqItKPpF+72jCBRZJlE4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637219837;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=SQ9Izf0aRRgIduyBEe8Mkfcip9lM9CfOfJa1x/AwxQg=;
+        b=mvLHc170sa0jDUL29ZvEL1IBJ1z3pyFYd6Q5EjLyRBAI/OHkJ0mz3SVTHgo0MGZ0rWF1Cf
+        FmpLFc+RCDooz4CQ==
+Received: from localhost.localdomain (unknown [10.100.208.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id D0614A3B83;
+        Thu, 18 Nov 2021 07:17:16 +0000 (UTC)
+From:   Jiri Slaby <jslaby@suse.cz>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiri Slaby <jslaby@suse.cz>
+Subject: [PATCH] n_gsm: remove unused parameters from gsm_error()
+Date:   Thu, 18 Nov 2021 08:17:16 +0100
+Message-Id: <20211118071716.11984-1-jslaby@suse.cz>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix typo expsoure/exposure
+data and flag are unused in gsm_error(), so remove them.
 
-Fixes: 0985dd306f72 ("media: imx274: V4l2 driver for Sony imx274 CMOS sensor")
-Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/media/i2c/imx274.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/n_gsm.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
-index 6e63fdcc5e46..106706abc72a 100644
---- a/drivers/media/i2c/imx274.c
-+++ b/drivers/media/i2c/imx274.c
-@@ -1515,7 +1515,7 @@ static int imx274_s_stream(struct v4l2_subdev *sd, int on)
- 			goto fail;
+diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
+index 0b96b14bbfe1..68e6df27d2e3 100644
+--- a/drivers/tty/n_gsm.c
++++ b/drivers/tty/n_gsm.c
+@@ -2074,8 +2074,6 @@ static void gsm1_receive(struct gsm_mux *gsm, unsigned char c)
+ /**
+  *	gsm_error		-	handle tty error
+  *	@gsm: ldisc data
+- *	@data: byte received (may be invalid)
+- *	@flag: error received
+  *
+  *	Handle an error in the receipt of data for a frame. Currently we just
+  *	go back to hunting for a SOF.
+@@ -2083,8 +2081,7 @@ static void gsm1_receive(struct gsm_mux *gsm, unsigned char c)
+  *	FIXME: better diagnostics ?
+  */
  
- 		/*
--		 * update frame rate & expsoure. if the last mode is different,
-+		 * update frame rate & exposure. if the last mode is different,
- 		 * HMAX could be changed. As the result, frame rate & exposure
- 		 * are changed.
- 		 * gain is not affected.
+-static void gsm_error(struct gsm_mux *gsm,
+-				unsigned char data, unsigned char flag)
++static void gsm_error(struct gsm_mux *gsm)
+ {
+ 	gsm->state = GSM_SEARCH;
+ 	gsm->io_error++;
+@@ -2504,7 +2501,7 @@ static void gsmld_receive_buf(struct tty_struct *tty, const unsigned char *cp,
+ 		case TTY_BREAK:
+ 		case TTY_PARITY:
+ 		case TTY_FRAME:
+-			gsm_error(gsm, *cp, flags);
++			gsm_error(gsm);
+ 			break;
+ 		default:
+ 			WARN_ONCE(1, "%s: unknown flag %d\n",
 -- 
-2.25.1
+2.33.1
 
