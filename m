@@ -2,180 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08AD94556F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C5C4556F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244304AbhKRI3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 03:29:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20971 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244455AbhKRI3Z (ORCPT
+        id S244660AbhKRIaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 03:30:16 -0500
+Received: from mail-ua1-f53.google.com ([209.85.222.53]:46595 "EHLO
+        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244527AbhKRI3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 03:29:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637223984;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MWLA1YzTePDJq3pIVkNmy8dXmzvGKKkiOeMC4Pl3Co8=;
-        b=Jfr5awnO8XFjpvH2JJHbRP/y7ZET6+QcMJ95R/PKgbu/tIh51NAYQpe++FaUdOE9rZ8E/5
-        n5xwUigwpjhTjmL6cd6RB7UWLQnQda5y1d2cnIdrgw92uhF12EGh+B3frbTcAL4p+n7zHO
-        taBRYhiaLBn8x67UakcpOHXwo2R/qQM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-450-DA3qFCKGObCYuFOHjdkKTA-1; Thu, 18 Nov 2021 03:26:21 -0500
-X-MC-Unique: DA3qFCKGObCYuFOHjdkKTA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A146F802C91;
-        Thu, 18 Nov 2021 08:26:19 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3F963604CC;
-        Thu, 18 Nov 2021 08:26:11 +0000 (UTC)
-Message-ID: <d5226a55-35d2-dec1-7aef-d4866ccbc6fb@redhat.com>
-Date:   Thu, 18 Nov 2021 09:26:10 +0100
+        Thu, 18 Nov 2021 03:29:48 -0500
+Received: by mail-ua1-f53.google.com with SMTP id az37so11848910uab.13;
+        Thu, 18 Nov 2021 00:26:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UWwtY9YsySvXg/7Lw9HdiFiuskQgydDNkqP2vDd2c4k=;
+        b=UvtkZnm8NSSB63Z6XOce8qmNpFL4fYqviwlxcOu4TmHKeVblJwxHrBtJZmt8Iae7VH
+         s9da/e6qEfn9Ksmfv4T9WW9O3RgS6fE4ppqMhqy7qo+yCO+rN7sU9DsgBomP2Jga7AFU
+         tdgs8jm6xRdOvx33A2ZtoFX/D1QQc6j9WhHgDhMzzlL0PtdaoId95mARP2ys4aEdLi4v
+         eiCFcHqY3OnNIxdi1nd5EeqWdo1BjA5/6MYgo7hYZv7utIeNCDHOAAnLEfqkqcTZRzbl
+         aLTWNemnCuMvLp5M0Iow9/WokcbjXeO7lHFYvfYKzJ1laoXEL2zmPEb6W8S5+7t+2r+/
+         xkjA==
+X-Gm-Message-State: AOAM530JsEaUGJNxYi5E6SlciR6oRXeEOkg+MF3OtfcZlZ3iUF5Cqce0
+        0r2ffuWGJZcz7IMrcyTyfC5TAFByJ+C3fQ==
+X-Google-Smtp-Source: ABdhPJxT4hNGHFrPSuFLDaZIMilih4FXtlR8SyeW1Vt0hBX5j1DHkye5QGQVu6eku3jFPREtI97CDw==
+X-Received: by 2002:a05:6102:e8b:: with SMTP id l11mr78677827vst.20.1637224008109;
+        Thu, 18 Nov 2021 00:26:48 -0800 (PST)
+Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com. [209.85.221.175])
+        by smtp.gmail.com with ESMTPSA id p69sm1370465uap.1.2021.11.18.00.26.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Nov 2021 00:26:47 -0800 (PST)
+Received: by mail-vk1-f175.google.com with SMTP id t127so3278937vke.13;
+        Thu, 18 Nov 2021 00:26:47 -0800 (PST)
+X-Received: by 2002:a05:6122:50e:: with SMTP id x14mr100762688vko.7.1637224007329;
+ Thu, 18 Nov 2021 00:26:47 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 01/15] KVM: x86/mmu: Remove redundant flushes when
- disabling dirty logging
-Content-Language: en-US
-To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        David Hildenbrand <david@redhat.com>
-References: <20211115234603.2908381-1-bgardon@google.com>
- <20211115234603.2908381-2-bgardon@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211115234603.2908381-2-bgardon@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20211117135800.0b7072cd@canb.auug.org.au> <70141efe-8137-4491-f234-110b24f9d623@infradead.org>
+In-Reply-To: <70141efe-8137-4491-f234-110b24f9d623@infradead.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 18 Nov 2021 09:26:35 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWbHd9iLpXqpzxfXwSOZ0U5FmKVYMQ15VLCRu=YpLgteg@mail.gmail.com>
+Message-ID: <CAMuHMdWbHd9iLpXqpzxfXwSOZ0U5FmKVYMQ15VLCRu=YpLgteg@mail.gmail.com>
+Subject: Re: linux-next: Tree for Nov 17 (fs/dlm/lowcomms.c)
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Aring <aahringo@redhat.com>,
+        David Teigland <teigland@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/21 00:45, Ben Gardon wrote:
-> tdp_mmu_zap_spte_atomic flushes on every zap already, so no need to
-> flush again after it's done.
-> 
-> Reviewed-by: David Matlack <dmatlack@google.com>
-> 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
->   arch/x86/kvm/mmu/mmu.c     |  4 +---
->   arch/x86/kvm/mmu/tdp_mmu.c | 21 ++++++---------------
->   arch/x86/kvm/mmu/tdp_mmu.h |  5 ++---
->   3 files changed, 9 insertions(+), 21 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 354d2ca92df4..baa94acab516 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -5870,9 +5870,7 @@ void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
->   
->   	if (is_tdp_mmu_enabled(kvm)) {
->   		read_lock(&kvm->mmu_lock);
-> -		flush = kvm_tdp_mmu_zap_collapsible_sptes(kvm, slot, flush);
-> -		if (flush)
-> -			kvm_arch_flush_remote_tlbs_memslot(kvm, slot);
-> +		kvm_tdp_mmu_zap_collapsible_sptes(kvm, slot);
->   		read_unlock(&kvm->mmu_lock);
->   	}
->   }
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 7c5dd83e52de..b3c78568ae60 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -1364,10 +1364,9 @@ void kvm_tdp_mmu_clear_dirty_pt_masked(struct kvm *kvm,
->    * Clear leaf entries which could be replaced by large mappings, for
->    * GFNs within the slot.
->    */
-> -static bool zap_collapsible_spte_range(struct kvm *kvm,
-> +static void zap_collapsible_spte_range(struct kvm *kvm,
->   				       struct kvm_mmu_page *root,
-> -				       const struct kvm_memory_slot *slot,
-> -				       bool flush)
-> +				       const struct kvm_memory_slot *slot)
->   {
->   	gfn_t start = slot->base_gfn;
->   	gfn_t end = start + slot->npages;
-> @@ -1378,10 +1377,8 @@ static bool zap_collapsible_spte_range(struct kvm *kvm,
->   
->   	tdp_root_for_each_pte(iter, root, start, end) {
->   retry:
-> -		if (tdp_mmu_iter_cond_resched(kvm, &iter, flush, true)) {
-> -			flush = false;
-> +		if (tdp_mmu_iter_cond_resched(kvm, &iter, false, true))
->   			continue;
-> -		}
->   
->   		if (!is_shadow_present_pte(iter.old_spte) ||
->   		    !is_last_spte(iter.old_spte, iter.level))
-> @@ -1401,30 +1398,24 @@ static bool zap_collapsible_spte_range(struct kvm *kvm,
->   			iter.old_spte = READ_ONCE(*rcu_dereference(iter.sptep));
->   			goto retry;
->   		}
-> -		flush = true;
->   	}
->   
->   	rcu_read_unlock();
-> -
-> -	return flush;
->   }
->   
->   /*
->    * Clear non-leaf entries (and free associated page tables) which could
->    * be replaced by large mappings, for GFNs within the slot.
->    */
-> -bool kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
-> -				       const struct kvm_memory_slot *slot,
-> -				       bool flush)
-> +void kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
-> +				       const struct kvm_memory_slot *slot)
->   {
->   	struct kvm_mmu_page *root;
->   
->   	lockdep_assert_held_read(&kvm->mmu_lock);
->   
->   	for_each_tdp_mmu_root_yield_safe(kvm, root, slot->as_id, true)
-> -		flush = zap_collapsible_spte_range(kvm, root, slot, flush);
-> -
-> -	return flush;
-> +		zap_collapsible_spte_range(kvm, root, slot);
->   }
->   
->   /*
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-> index 476b133544dd..3899004a5d91 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.h
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
-> @@ -64,9 +64,8 @@ void kvm_tdp_mmu_clear_dirty_pt_masked(struct kvm *kvm,
->   				       struct kvm_memory_slot *slot,
->   				       gfn_t gfn, unsigned long mask,
->   				       bool wrprot);
-> -bool kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
-> -				       const struct kvm_memory_slot *slot,
-> -				       bool flush);
-> +void kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
-> +				       const struct kvm_memory_slot *slot);
->   
->   bool kvm_tdp_mmu_write_protect_gfn(struct kvm *kvm,
->   				   struct kvm_memory_slot *slot, gfn_t gfn,
-> 
+On Wed, Nov 17, 2021 at 11:23 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+> On 11/16/21 6:58 PM, Stephen Rothwell wrote:
+> > Hi all,
+> >
+> > Changes since 20211116:
+> >
+>
+> on m68k (but probably other places as well):
+> when CONFIG_IPV6 is not set/enabled:
+>
+> In file included from ../fs/dlm/lowcomms.c:46:
+> ../fs/dlm/lowcomms.c: In function 'lowcomms_error_report':
+> ../include/net/sock.h:386:45: error: 'struct sock_common' has no member named 'skc_v6_daddr'; did you mean 'skc_daddr'?
+>    386 | #define sk_v6_daddr             __sk_common.skc_v6_daddr
+>        |                                             ^~~~~~~~~~~~
 
-Queued, thanks.
+Introduced by commit 4c3d90570bcc2b33 ("fs: dlm: don't call
+kernel_getpeername() in error_report()"), which has not been sent
+for review to any public mailing list archived by lore.
 
-Paolo
+I have sent a fix
+https://lore.kernel.org/r/20211118082355.983825-1-geert@linux-m68k.org
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
