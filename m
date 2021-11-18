@@ -2,130 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87C79456392
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 20:36:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C49456394
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 20:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231966AbhKRTjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 14:39:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229574AbhKRTji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 14:39:38 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C1EC61507;
-        Thu, 18 Nov 2021 19:36:36 +0000 (UTC)
-Date:   Thu, 18 Nov 2021 14:36:34 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     ebiederm@xmission.com (Eric W. Biederman)
-Cc:     "Yordan Karadzhov \(VMware\)" <y.karadz@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, mingo@redhat.com, hagen@jauu.net,
-        rppt@kernel.org, James.Bottomley@HansenPartnership.com,
-        akpm@linux-foundation.org, vvs@virtuozzo.com, shakeelb@google.com,
-        christian.brauner@ubuntu.com, mkoutny@suse.com,
-        Linux Containers <containers@lists.linux.dev>
-Subject: Re: [RFC PATCH 0/4] namespacefs: Proof-of-Concept
-Message-ID: <20211118143634.3f7d43e9@gandalf.local.home>
-In-Reply-To: <87pmqxuv4n.fsf@email.froward.int.ebiederm.org>
-References: <20211118181210.281359-1-y.karadz@gmail.com>
-        <87a6i1xpis.fsf@email.froward.int.ebiederm.org>
-        <20211118140211.7d7673fb@gandalf.local.home>
-        <87pmqxuv4n.fsf@email.froward.int.ebiederm.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232274AbhKRTkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 14:40:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhKRTkT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 14:40:19 -0500
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F5EC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 11:37:19 -0800 (PST)
+Received: by mail-pl1-x64a.google.com with SMTP id f16-20020a170902ce9000b001436ba39b2bso3466970plg.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 11:37:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=R5/tL/rDWxPQEUOLlylgnRCNYpZbnkH43K1OGrjgMBQ=;
+        b=GZ+2yw4W+dbPb+KsAI3xbbsFG+EC/IJLhoTZ9CrO3c2d/3fTlQUXBnW/UtQizCe2wx
+         t2X5jMJmBKZQdpfFJYegwJgx1RNYOdJLhRST4amEdbnhnRizOf00Nc8Bmq5vYoCL3CPM
+         44Mi8MJyH37svWN8Bvgz0cPrwtlF84wOQWE6XZlChqib1G8MMAaA14XHCdlIyR8bIV54
+         YaWNTZHlzhgHfmxHXLaN4Hzhs07BwApsG8hT49MK7ExrcJwOC9cAsd2CWrfRPmOwdaUZ
+         jEngiJB5T79RhA4VFbO8r2NKDcXQGC/RGXV1Aeo5ELkf+zlSmWmIx9s0hddoAGUraNqL
+         eclA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=R5/tL/rDWxPQEUOLlylgnRCNYpZbnkH43K1OGrjgMBQ=;
+        b=RXQjs3Cl8VL3bFgaAyKbfK4mdGmRZVD+LW3hYurXDUSW00oWSa2NiE9yTQxbKogdJ2
+         vUBVprpYg1cAxFf/2M9c7u+v2C3u/y6EPCrUGrXLIx4czpYcUnZ2hD9RfKBvsNJ+L27s
+         KQgTqmZpGR+xnoWYAxYdjdv+WDj1lRaAyhUpdxoLtcrOLwocHSyoEjVcjtlHHW7CtJOc
+         QbZCRYAp4f6axihHNHMz9Oul0kdbno8QH/CnZ29M6/o5DNPJuAergkFOkk1tVRi8bAWK
+         4DmNkxcX+E3W3uKHJyIhlYwEYQFnC8XxU6NMGuYAff5otNBrWuRwef8qY07DnP9i7Y3i
+         Gxfw==
+X-Gm-Message-State: AOAM5320gSN0E0YC3Dsy0meG23vPkZLnbsPOuYzKTBLz/PCen1MYKE+G
+        NmbesdtLPh86KJ4xPpggRu3+6lMdPn4p
+X-Google-Smtp-Source: ABdhPJxyTIPodpBQC30q2dnJ0SXUgdh0ksxpTRbcPgsXkxz7LfVbGKOyJWndsDShbNsNUWNH9Vi3UC+Zbmxu
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:3908:af20:80e3:e47])
+ (user=irogers job=sendgmr) by 2002:a05:6a00:84c:b0:494:6d40:ed76 with SMTP id
+ q12-20020a056a00084c00b004946d40ed76mr58534568pfk.65.1637264238666; Thu, 18
+ Nov 2021 11:37:18 -0800 (PST)
+Date:   Thu, 18 Nov 2021 11:37:14 -0800
+Message-Id: <20211118193714.2293728-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+Subject: [PATCH] perf map: Fix namespace memory leak
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Nov 2021 13:22:16 -0600
-ebiederm@xmission.com (Eric W. Biederman) wrote:
+This leak was happening reliably with test "Lookup mmap thread" with
+stack traces like:
 
-> Steven Rostedt <rostedt@goodmis.org> writes:
+Direct leak of 5504 byte(s) in 172 object(s) allocated from:
+    #0 0x7f4685e47987 in __interceptor_calloc
+    #1 0x56063b974c2a in nsinfo__new util/namespaces.c:142
+    #2 0x56063b9781ff in thread__new util/thread.c:70
+    #3 0x56063b944953 in ____machine__findnew_thread util/machine.c:543
+    #4 0x56063b944ac6 in __machine__findnew_thread util/machine.c:574
+    #5 0x56063b944b36 in machine__findnew_thread util/machine.c:584
+    #6 0x56063b94c892 in machine__process_fork_event util/machine.c:1954
+    #7 0x56063b94cc1f in machine__process_event util/machine.c:2019
+    #8 0x56063b894f18 in perf_event__process util/event.c:567
+    #9 0x56063ba17951 in perf_tool__process_synth_event util/synthetic-events.c:65
+    #10 0x56063ba19086 in perf_event__synthesize_fork util/synthetic-events.c:287
+    #11 0x56063ba1c39d in __event__synthesize_thread util/synthetic-events.c:775
+    #12 0x56063ba1cf6f in __perf_event__synthesize_threads util/synthetic-events.c:929
+    #13 0x56063ba1d4ab in perf_event__synthesize_threads util/synthetic-events.c:1000
+    #14 0x56063b821a3d in synth_all tests/mmap-thread-lookup.c:136
+    #15 0x56063b821c86 in mmap_events tests/mmap-thread-lookup.c:174
+    #16 0x56063b8221b7 in test__mmap_thread_lookup tests/mmap-thread-lookup.c:230
 
-> > 
-> I am refreshing my nack on the concept.  My nack has been in place for
-> good technical reasons since about 2006.
+The dso->nsinfo is overwritten, but without a nsinfo__put this can leak
+the overwritten nsinfo.
 
-I'll admit, we are new to this, as we are now trying to add more visibility
-into the workings of things like kubernetes. And having a way of knowing
-what containers are running and how to monitor them is needed, and we need
-to do this for all container infrastructures.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/map.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> 
-> I see no way forward.  I do not see a compelling use case.
+diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
+index 8af693d9678c..ceed8f407bc0 100644
+--- a/tools/perf/util/map.c
++++ b/tools/perf/util/map.c
+@@ -192,6 +192,7 @@ struct map *map__new(struct machine *machine, u64 start, u64 len,
+ 			if (!(prot & PROT_EXEC))
+ 				dso__set_loaded(dso);
+ 		}
++		nsinfo__put(dso->nsinfo);
+ 		dso->nsinfo = nsi;
+ 
+ 		if (build_id__is_defined(bid))
+-- 
+2.34.0.rc2.393.gf8c9666880-goog
 
-What do you use to debug issues in a kubernetes cluster of hundreds of
-machines running thousands of containers? Currently, if something is amiss,
-a node is restarted in the hopes that the issue does not appear again. But
-we would like to add infrastructure that takes advantage of tracing and
-profiling to be able to narrow that down. But to do so, we need to
-understand what tasks belong to what containers.
-
-> 
-> There have been many conversations in the past attempt to implement
-> something that requires a namespace of namespaces and they have never
-> gotten anywhere.
-
-We are not asking about a "namespace" of namespaces, but a filesystem (one,
-not a namespace of one), that holds the information at the system scale,
-not a container view.
-
-I would be happy to implement something that makes a container having this
-file system available "special" as most containers do not need this.
-
-> 
-> I see no attempt a due diligence or of actually understanding what
-> hierarchy already exists in namespaces.
-
-This is not trivial. What did we miss?
-
-> 
-> I don't mean to be nasty but I do mean to be clear.  Without a
-> compelling new idea in this space I see no hope of an implementation.
-> 
-> What they are attempting to do makes it impossible to migrate a set of
-> process that uses this feature from one machine to another.  AKA this
-> would be a breaking change and a regression if merged.
-
-The point of this is not to allow that migration. I'd be happy to add that
-if a container has access to this file system, it is pinned to the system
-and can not be migrated. The whole point of this file system is to monitor
-all containers no the system, and it makes no sense in migrating it.
-
-We would duplicate it over several systems, but there's no reason to move
-it once it is running.
-
-> 
-> The breaking and regression are caused by assigning names to namespaces
-> without putting those names into a namespace of their own.   That
-> appears fundamental to the concept not to the implementation.
-
-If you think this should be migrated then yes, it is broken. But we don't
-want this to work across migrations. That defeats the purpose of this work.
-
-> 
-> Since the concept if merged would cause a regression it qualifies for
-> a nack.
-> 
-> We can explore what problems they are trying to solve with this and
-> explore other ways to solve those problems.  All I saw was a comment
-> about monitoring tools and wanting a global view.  I did not see
-> any comments about dealing with all of the reasons why a global view
-> tends to be a bad idea.
-
-If you only care about a working environment of the system that runs a set
-of containers, how is that a bad idea. Again, I'm happy with implementing
-something that makes having this file system prevent it from being
-migrated. A pinned privileged container.
-
-> 
-> I should have added that we have to some extent a way to walk through
-> namespaces using ioctls on nsfs inodes.
-
-How robust is this? And is there a library or tooling around it?
-
--- Steve
