@@ -2,128 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 342A0455CE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:42:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF54455CEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbhKRNpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 08:45:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230349AbhKRNpp (ORCPT
+        id S231603AbhKRNsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 08:48:04 -0500
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:36328
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229976AbhKRNsD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 08:45:45 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 490C9C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 05:42:45 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id y26so26152198lfa.11
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 05:42:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=KmJklbxeovu0jbhadZ0czuuGmkYq4VZ7SEWyJcSVlOQ=;
-        b=c5xok6oMtw/ix8p2nStj1oMqImeqN7dDEZEnVj2mc1WK9OoQU/wfDaDnWB4gcMbixe
-         omBy4LvhXcQF50VfGuO6Sipk4//6A/a2WbGNtm7veOap++6+/jaBbRb+ks1qQsMf+YEQ
-         OqeC9PzL1VxSQbLDwC8U4ksox8KrRNLAHFwhWiVs1PxMaCSjV+L5bfngABOr34wmTiDg
-         jGccS2p5FBMEqVAWBoYkoI/IT3qCRIYhOg58PU665EdWUYKKOeJ5zMBM5QG8GVIcl8LO
-         P2khD7nhtHW2v7bIDihE/7HIiZ6Zy0aBQObZzTFDHolW0zQT1nibn5c2IBrRZkVgTS0Z
-         XGsg==
+        Thu, 18 Nov 2021 08:48:03 -0500
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 87C5E409FC
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 13:45:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1637243101;
+        bh=SkABN7FSLVoCTXNwtMsVpF/6O00jmyQ1cjla8kqAH/Q=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=A6ab9N+voGfFgu2BnBMXc0ljb2ybP2N3oT8DtCAVJ4Q2JT+TccapvwjQ9As75Uf9K
+         DtZc+WDe577X2znT3rDUcyUbkv24x3349VCThrGlhEwqlN5Boyb2T2udRMjd79zu2i
+         o/etNws8P3VQw7SEjnlHWfYoiTw+hIVu3FIfa7xg/tcQ2swWpdr+e0GV0VKouEP4HG
+         WQThmc2DR34gqw17pV5zxQGtcx462qS+Qis6p9oIiqiBrBqqSam4eatXW8gE70BUB3
+         RoJpC6YjoHfr3I4xK0Y46YhfbqUhFWOuS2hzl2giMXKOxuRyyjnW3IvQO6Q3ekahAi
+         FKDS5HKY/xO4w==
+Received: by mail-lf1-f69.google.com with SMTP id u20-20020a056512129400b0040373ffc60bso4051657lfs.15
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 05:45:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=KmJklbxeovu0jbhadZ0czuuGmkYq4VZ7SEWyJcSVlOQ=;
-        b=M8+dh0HrpKwUkOZqQb0RG2GiYJWB/BqtqA4H099/U5Zf44vXDkPZa8fafNxw/QVQSJ
-         jQXB/ktIqftPYujihy+TovwVi8KEwvpfFOjUWQtIWY/MzlLOmHPpemHJQ5tBgSrPYto4
-         q6k9xozN133l5SGGBpVM4XgpFAAMLFKtJOIoS34g6/J7iDsINbeJv2nQguoL3vT/Trih
-         hkIhuL9OieTGy3l4CEXzBq5lhOuowZ+5kBonVztaKkY8YgWH9F4aDtZ0sIxBaAOqVhU6
-         X9NIdCBpAeff103haZSN5n6QKI3PZ0pbYl0Nx5w+9LEuWmpj+ojfu7Q8vEYeGnZTQXV/
-         Uu8Q==
-X-Gm-Message-State: AOAM530iYqF0c2vgAnkQ5WA2oi/sW1x8O3C8tG+WxPwCkpVSO+mDnuij
-        57IZXvMm1WDNTVDPp76r0E9qTkN+awZPxuhUnGY=
-X-Google-Smtp-Source: ABdhPJxPCRkrydzhKnuFMmmkmCdMKvueRyC8Cm4739vHrIM+jHps6ue4NrcK6V+GjhF9vyuyMCGcsMwp8SQbjCI/Ra0=
-X-Received: by 2002:a19:4f42:: with SMTP id a2mr24026721lfk.47.1637242962140;
- Thu, 18 Nov 2021 05:42:42 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=SkABN7FSLVoCTXNwtMsVpF/6O00jmyQ1cjla8kqAH/Q=;
+        b=wvlMFefBSD+02FeU6kooFs6dkpAztCT+zwFoEe/2cw4/LdnSY0QNRGjaICeYdOTJ81
+         GwgL1MY6tyitWJZIVFU2A2zLrRxOARtHdOfJEywnxQUzzK2AQ6TjfzzK3GJkDL/6zLFX
+         yN4zRBDXcSOQZlNOMuu/JU9KcZj8nYQSof2K6jYQRkOHnY//A27SVdJ7eEBNojp76+rV
+         DGCH+aIX2xyxn1HdendUqKb7Q7HYNtpgBUzC757+9YRObYVwR9IbACfx3+yIPho0a3i8
+         bCZXrFzd/jgSQ68ZArHqDXc1SUwpL0p9A4R561c3AuKIiAqKJqj/AHFgnyKwf6oWXqSL
+         QiQQ==
+X-Gm-Message-State: AOAM533FQ9SyW4QfGhb+RCoSpoTTERaE4zYQXu+o3d1fKSK0sNq2dISc
+        deprB1e764B2nz2XT0mEBvKD2KgvcY7nmgh35gjm8kR+Tqlu48h6IYjl+St+GvTwIJ0srWnnli+
+        nDoYVKfDMN88pGu2sDYAgwc1+sL1N3i6dFgtiRhks+w==
+X-Received: by 2002:a2e:5852:: with SMTP id x18mr16682697ljd.184.1637243101047;
+        Thu, 18 Nov 2021 05:45:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyxp+b3XRdQRVsPuseT9rrdDR4Py0VnFvJx/IzhVQvRG8lUQZ8e6YNXcADek8vpy+yLeVubtg==
+X-Received: by 2002:a2e:5852:: with SMTP id x18mr16682670ljd.184.1637243100797;
+        Thu, 18 Nov 2021 05:45:00 -0800 (PST)
+Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id e3sm316851lfc.259.2021.11.18.05.44.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Nov 2021 05:45:00 -0800 (PST)
+Message-ID: <d368dd0e-b883-26a1-7f2f-47f21c5f9763@canonical.com>
+Date:   Thu, 18 Nov 2021 14:44:59 +0100
 MIME-Version: 1.0
-Received: by 2002:a05:6504:16c9:0:0:0:0 with HTTP; Thu, 18 Nov 2021 05:42:41
- -0800 (PST)
-Reply-To: msbelinaya892@gmail.com
-From:   msbelinaya <generaldavidperkins061@gmail.com>
-Date:   Thu, 18 Nov 2021 13:42:41 +0000
-Message-ID: <CAJMWtRb4kvN+ou9F4k+Oyo1qH+iAcm_vJpGuJnhCOgBs2bbMww@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v2 1/6] riscv: dts: sifive unmatched: Name gpio lines
+Content-Language: en-US
+To:     Vincent Pelletier <plr.vincent@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        David Abdurachmanov <david.abdurachmanov@sifive.com>
+References: <bb7e8e36425a2c243cfbf03a23af525499268822.1637107062.git.plr.vincent@gmail.com>
+ <1444ff08-24a6-afbe-1512-9ea24ad5b32d@canonical.com>
+ <20211118003418.2edd1913@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211118003418.2edd1913@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ich biete meine Freundschaft an und glaube, dass Sie mich mit gutem
-Herzen akzeptieren werden. Ich wurde gedr=C3=A4ngt, Sie zu kontaktieren und
-zu sehen, wie wir einander am besten unterst=C3=BCtzen k=C3=B6nnen. Ich bin=
- Frau
-Kodjovi Hegbor aus der T=C3=BCrkei und arbeite als Divisionsleiterin f=C3=
-=BCr
-Operationen bei der StandardBNP bank limited Turkey . Ich glaube, es
-ist der Wille Gottes, dass ich Ihnen jetzt begegnen werde. Ich habe
-ein wichtiges gesch=C3=A4ftliches Gespr=C3=A4ch, das ich mit Ihnen teilen
-m=C3=B6chte, von dem ich glaube, dass es Sie interessiert, da es mit Ihrem
-Nachnamen in Verbindung steht und Sie davon profitieren werden.
+On 18/11/2021 01:34, Vincent Pelletier wrote:
+> On Wed, 17 Nov 2021 10:28:59 +0100, Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> wrote:
+>> On 17/11/2021 00:57, Vincent Pelletier wrote:
+>>> Follow the pin descriptions given in the version 3 of the board schematics.
+>>>
+>>> Signed-off-by: Vincent Pelletier <plr.vincent@gmail.com>
+>>>
+>>> --
+>>> Changes since v1:
+>>> - Remove trailing "." on subject line.
+>>> ---  
+>>
+>> This is not a correct changelog placement - you have to use '---' just
+>> like git uses it. Just test it yourself and you will see the problem.
+> 
+> Indeed, thanks for catching this.
+> 
+> Is there a recommended way for managing these not-for-commit-message
+> chunks automatically ?
+> I obviously compose them by hand so far, and put them in my local git
+> working copy commit messages, but I would be happier if I did not have
+> to make (bad) decisions on such mechanical detail.
 
- Im Jahr 2006 hat ein B=C3=BCrger Ihres Landes ein Nicht-Residentenkonto
-f=C3=BCr 36 Monate des Kalenders im Wert von =C2=A38.400.000,00 bei meiner =
-Bank
-eingerichtet. Das Ablaufdatum f=C3=BCr diesen Depotvertrag war der 16.
-Januar 2009. Leider starb er w=C3=A4hrend einer Gesch=C3=A4ftsreise bei ein=
-em
-t=C3=B6dlichen Erdbeben am 12. Mai 2008 in Sichuan, China, bei dem
-mindestens 68.000 Menschen ums Leben kamen.
+There is an idea of git notes (wasn't really efficient) or git branch
+description for cover letter (--cover-from-description, didn't try yet).
 
-Das Management meiner Bank hat noch nichts von seinem Tod erfahren,
-ich wusste davon, weil er mein Freund war und ich sein Kontof=C3=BChrer
-war, als das Konto vor meiner Bef=C3=B6rderung er=C3=B6ffnet wurde. Jedoch =
-Herr
- erw=C3=A4hnte bei der Kontoer=C3=B6ffnung keine n=C3=A4chsten Verwandten/E=
-rben, und
-er war nicht verheiratet und hatte keine Kinder. Letzte Woche hat
-meine Bankdirektion mich gebeten, Anweisungen zu geben, was mit seinen
-Geldern zu tun ist, wenn der Vertrag verl=C3=A4ngert werden soll.
+> 
+> On a related topic, is there a way to automate "git send-email"
+> recipient list using get_maintainer.pl (plus some more magic lines,
+> for example to exclude bouncing addresses) ?
 
-Ich wei=C3=9F, dass dies passieren wird, und deshalb habe ich nach einem
-Mittel gesucht, um mit der Situation umzugehen, denn wenn meine
-Bankdirektoren wissen, dass sie tot sind und keinen Erben haben,
-werden sie das Geld f=C3=BCr ihren pers=C3=B6nlichen Gebrauch nehmen, also =
-Ich
-m=C3=B6chte nicht, dass so etwas passiert. Als ich Ihren Nachnamen sah, war
-ich gl=C3=BCcklich und suche jetzt Ihre Mitarbeit, um Sie als Next of
-Kin/Erbe des Kontos zu pr=C3=A4sentieren, da Sie den gleichen Nachnamen wie
-er haben und meine Bankzentrale das Konto freigeben wird f=C3=BCr dich. Es
-besteht kein Risiko; die Transaktion wird im Rahmen einer legitimen
-Vereinbarung ausgef=C3=BChrt, die Sie vor Rechtsverletzungen sch=C3=BCtzt.
+There are few different options, so depends what do you want, e.g.:
+git send-email --cc-cmd "scripts/get_maintainer.pl --no-git --no-roles
+--no-rolestats" --to linux-kernel@vger.kernel.org 0*
 
-Es ist besser, dass wir das Geld beanspruchen, als es den
-Bankdirektoren zu erlauben, es zu nehmen, sie sind bereits reich. Ich
-bin kein gieriger Mensch, daher schlage ich vor, dass wir das Geld zu
-gleichen Teilen teilen, 50/50% auf beide Parteien. Mein Anteil wird
-mir helfen, mein eigenes Unternehmen zu gr=C3=BCnden und den Erl=C3=B6s f=
-=C3=BCr
-wohlt=C3=A4tige Zwecke zu verwenden, was mein Traum war.
+However above does not take care about cover-letter.
 
-Teilen Sie mir Ihre Meinung zu meinem Vorschlag mit, bitte, ich
-brauche wirklich Ihre Hilfe bei dieser Transaktion. Ich habe Sie
-ausgew=C3=A4hlt, um mir zu helfen, nicht durch mein eigenes Tun, mein
-Lieber, sondern bei Gott wollte ich, dass Sie wissen, dass ich mir
-Zeit zum Beten genommen habe =C3=BCber diese Mitteilung, bevor ich Sie
-jemals kontaktiert habe, teilen Sie mir Ihre Meinung dazu mit und
-behandeln Sie diese Informationen bitte als STRENG GEHEIM. Nach Erhalt
-Ihrer Antwort, ausschlie=C3=9Flich =C3=BCber meine pers=C3=B6nliche E-Mail-=
-Adresse,
-msbelinaya892@gmail.com
-gibt Ihnen Details zur Transaktion. Und eine Kopie der
-Einlagenbescheinigung des Fonds sowie die Gr=C3=BCndungsurkunde der
-Gesellschaft, die den Fonds erstellt hat.
-Gott segne, in Erwartung Ihrer dringenden Antwort
-Mit freundlichen Gr=C3=BC=C3=9Fen
-Frau Kodjovi Hegbor
-msbelinaya892@gmail.coma
+> 
+> While process/submitting-patches.rst describes what the result should
+> look like, it feels to me that it (or another related file) could be
+> more directive on what commands/workflows help to get such result, for
+> casual contributors like myself. Have I missed such documentation ?
+
+Not sure. Anyway just look at the lists at lore.kernel.org how other
+people are doing it.
+
+
+Best regards,
+Krzysztof
