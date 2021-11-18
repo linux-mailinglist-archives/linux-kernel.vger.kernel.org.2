@@ -2,118 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0BA455B70
+	by mail.lfdr.de (Postfix) with ESMTP id 5E213455B71
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344622AbhKRMYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 07:24:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42068 "EHLO
+        id S1344645AbhKRMY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 07:24:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344601AbhKRMX3 (ORCPT
+        with ESMTP id S1344613AbhKRMXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 07:23:29 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2431C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 04:20:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7Mc1mIWeVIb520Yf93FSRQoiFKTag2SI2WNlovSiJRo=; b=gn0VcZLVsi5yJB2CaDBIgetpwm
-        I82ELxpb8BI13q/V+hbU3E9HMsAvuZ8tcrQVhouLIRdjnwfHpfqMRQudmdRSRLBGuvTGwBg5kdd4k
-        B/qKiRi7uOy5W+Wyh+QkVj9uQ9XC7QURC9MWgzskbPjgByu8FP3ZY+t/fkW11cMAlEBC5KVykeVFK
-        gn0Jcb+UWBooWCqFHk/KjzSF2nGjPgAKoGFswxbbSzHBYwLMk5TUtaZdJBjyNi6mux4vObforiMj8
-        fx3EnvigbJr1Hgz0zE4xT+KrNE65BtjgGO0lC44YgGY1Cs8cM8bVmnnIg+WTOTySpnz6yK96OmTY2
-        H2wT1fTw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mngOg-00GgiQ-Kw; Thu, 18 Nov 2021 12:20:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 45B1D300243;
-        Thu, 18 Nov 2021 13:20:09 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 246092D3CA545; Thu, 18 Nov 2021 13:20:09 +0100 (CET)
-Date:   Thu, 18 Nov 2021 13:20:09 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Stephane Eranian <eranian@google.com>
-Cc:     linux-kernel@vger.kernel.org, kim.phillips@amd.com,
-        acme@redhat.com, jolsa@redhat.com, songliubraving@fb.com,
-        mpe@ellerman.id.au, maddy@linux.ibm.com
-Subject: Re: [PATCH v2 03/13] perf/x86/amd: add AMD Fam19h Branch Sampling
- support
-Message-ID: <YZZE+bPCokVrTARM@hirez.programming.kicks-ass.net>
-References: <20211111084415.663951-1-eranian@google.com>
- <20211111084415.663951-4-eranian@google.com>
- <YY6QBXs0sM16DdbV@hirez.programming.kicks-ass.net>
- <CABPqkBShSBaJH+PR6rMkRRzjZAKN5zPhcdnLWx=4a-yQWxcA2A@mail.gmail.com>
- <20211116082923.GX174703@worktop.programming.kicks-ass.net>
- <CABPqkBQ4BCswvNPpkO79dBamhudikz1cGCXFpwAp9xsTb3F8xQ@mail.gmail.com>
+        Thu, 18 Nov 2021 07:23:30 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3256DC061766
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 04:20:30 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id n12so25195310lfe.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 04:20:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tibbo.com; s=google;
+        h=subject:to:references:cc:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language;
+        bh=zAWwsFO8j7y6AlgFPfx815dEezRcNwOx2V1LdD0AChI=;
+        b=JQc2fNRH0/5gcLQE7HFGll9HLuq9GI4uYb6ozCCqOhDtM1RJ1EjvmGqPb2GGPU+jtc
+         vMafNvjhvDo9WzH16BLxHsjc3BuHvbAfE8fosHFal/dh86ZR3JjlT3eVD6atFLM+zr1d
+         X+ubNZfL3Og/O+j1PkXhQ2pX5hqz7VGHjcYZ36pIqozb5ZC4gUt3i7Yr87Aed8+TOaIu
+         iHWL6OdIck5Mi/jUg3qcVj3fR1/t7DSY3bNuOfBLooGB0/VmvOou9sMnuIjONhThARPN
+         cfyri/oD7pX6wzl4iB52A6x/YAR/7DOF4V0C+StXteykDi8QSReRhgpSpwbPfdpehQkR
+         tfTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:cc:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language;
+        bh=zAWwsFO8j7y6AlgFPfx815dEezRcNwOx2V1LdD0AChI=;
+        b=iEemWID7AWY6n7J+W9ownkNpPbZD1TctMGPuMGlC/byb5gK4Qa44vV//gSjmGOykRJ
+         RKyzqrKmwoxYJFIkLY+14gsXRcTSC+9yNn3zKFzgFIMjPDECWZjMNpMhuyDhoeYXyHwY
+         5GRxlQmFCxUsxec9AX6qiDrL19LfsQFfunsRUanKfQV6k0TYl89RCpGKpbTe/xgCm638
+         QseEkATtlOVtL2YHq50T2gKNURXNXjsDQZlxIrOd2+jq5T/J2YLGU3Apf+G9/1eLJBCa
+         Pd5pDbcJriVcDF+g72IjJlnHLckAvwW91XAj7FQHgXT91IcgH+2v6FuLY1hKWDG1LDTy
+         7Nnw==
+X-Gm-Message-State: AOAM530DnscQBPi7FShMBkeIGBN2Rnxa9RrYnvZvnoMj/VwhZejmXEyr
+        +SBzn/PsB4LMH0s+XsK3mHQ8kA==
+X-Google-Smtp-Source: ABdhPJyB5nP/Z8/u0d5p3sI90Ix7Td7kz1PgcxjR35x7aJplOKnjjMTABDXPmo8WxKLc8u9Ggx2n7A==
+X-Received: by 2002:a05:651c:a0f:: with SMTP id k15mr17198015ljq.298.1637238028473;
+        Thu, 18 Nov 2021 04:20:28 -0800 (PST)
+Received: from localhost.localdomain ([5.167.98.73])
+        by smtp.gmail.com with ESMTPSA id br24sm293670lfb.104.2021.11.18.04.20.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Nov 2021 04:20:28 -0800 (PST)
+Subject: Re: [PATCH 3/3] devicetree: bindings: pinctrl: Add bindings doc for
+ Sunplus SP7021.
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Wells Lu <wellslutw@gmail.com>
+References: <1635324926-22319-1-git-send-email-wells.lu@sunplus.com>
+ <1635324926-22319-4-git-send-email-wells.lu@sunplus.com>
+ <CACRpkdaqAtP0rykP2Q25wc+t1Uk2xXYFvcrCdBXyWVRnHNGtGA@mail.gmail.com>
+ <f315d79da3e742b4a4ec0131d6035046@sphcmbx02.sunplus.com.tw>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org, qinjian@cqplus1.com
+From:   Dvorkin Dmitry <dvorkin@tibbo.com>
+Organization: Tibbo Technology Inc.
+Message-ID: <b88855af-bdbe-2894-f7ac-c1ea9dba87e4@tibbo.com>
+Date:   Thu, 18 Nov 2021 15:20:26 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABPqkBQ4BCswvNPpkO79dBamhudikz1cGCXFpwAp9xsTb3F8xQ@mail.gmail.com>
+In-Reply-To: <f315d79da3e742b4a4ec0131d6035046@sphcmbx02.sunplus.com.tw>
+Content-Type: multipart/mixed;
+ boundary="------------2B6DCA0BF58703AB4283FD5F"
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 11:23:39PM -0800, Stephane Eranian wrote:
-> On Tue, Nov 16, 2021 at 12:29 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Mon, Nov 15, 2021 at 11:48:01PM -0800, Stephane Eranian wrote:
-> > > On Fri, Nov 12, 2021 at 8:02 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > > >
-> > > > On Thu, Nov 11, 2021 at 12:44:05AM -0800, Stephane Eranian wrote:
-> > > > > diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-> > > > > index 38b2c779146f..28559557f966 100644
-> > > > > --- a/arch/x86/events/core.c
-> > > > > +++ b/arch/x86/events/core.c
-> > > > > @@ -683,11 +683,16 @@ void x86_pmu_disable_all(void)
-> > > > >
-> > > > >               if (!test_bit(idx, cpuc->active_mask))
-> > > > >                       continue;
-> > > > > +
-> > > > > +             if (is_amd_brs(hwc))
-> > > > > +                     amd_brs_disable();
-> > > > > +
-> > > > >               rdmsrl(x86_pmu_config_addr(idx), val);
-> > > > >               if (!(val & ARCH_PERFMON_EVENTSEL_ENABLE))
-> > > > >                       continue;
-> > > > >               val &= ~ARCH_PERFMON_EVENTSEL_ENABLE;
-> > > > >               wrmsrl(x86_pmu_config_addr(idx), val);
-> > > > > +
-> > > > >               if (is_counter_pair(hwc))
-> > > > >                       wrmsrl(x86_pmu_config_addr(idx + 1), 0);
-> > > > >       }
-> > > >
-> > > > Please, stick that in amd_pmu_disable_all().
-> > >
-> > >
-> > > If I do that, I need to add a for_each_counter() loop to
-> > > amd_pmu_disable_all() but it does not have one call systematically.
-> > > If you are okay with it, then I am fine as well.
-> >
-> > Why ? There is only one BRS you can disable it first, and then do the
-> > loop. Same on the enable_all side, enable it once, not per event.
-> > ->add/->del can keep a per-event count for sharing purposes, but you
-> > don't need that for {en,dis}able_all, right?
-> 
-> Ok, I made the changes you suggested. It looks closer to the way LBR is handled.
-> However, this means that there is no path by which you can get to
-> amd_pmu_disable_event()
-> without having gone through amd_pmu_disable_all(). Is that always the
-> case? And same thing
-> on the enable side.
+This is a multi-part message in MIME format.
+--------------2B6DCA0BF58703AB4283FD5F
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-So that's true for ->add() and ->del(), those cannot be called without
-being wrapped in ->pmu_disable(), ->pmu_enable().
+Dear Linus!
 
-There is however the ->stop() and ->start() usage for throttling, which
-can stop an individual event (while leaving the event scheduled on the
-PMU). Now, I think the ->stop() gets called with the PMU enabled, but
-the ->start() is with it disabled again.
+I am the person who wrote this driver. Let me answer to your questions...
 
-The ramification would be that we'd stop the event, but leave BRS
-enabled for a throttled event. Which should be harmless, no?
+-----Original Message-----
+>> From: Linus Walleij <linus.walleij@linaro.org>
+>> Sent: Tuesday, November 9, 2021 12:00 PM
+>> To: Wells Lu <wellslutw@gmail.com>
+>> Cc: linux-gpio@vger.kernel.org; linux-kernel@vger.kernel.org;
+>> robh+dt@kernel.org; devicetree@vger.kernel.org; qinjian@cqplus1.com;
+>> dvorkin@tibbo.com; Wells Lu 呂芳騰 <wells.lu@sunplus.com>
+>> Subject: Re: [PATCH 3/3] devicetree: bindings: pinctrl: Add bindings doc for
+>> Sunplus SP7021.
+>>
+>>
+>>> +        zero_func:
+>>> +          description: |
+>>> +            Disabled pins which are not used by pinctrl node's client
+>> device.
+>>> +          $ref: /schemas/types.yaml#/definitions/uint32-array
+>> I have never seen this before. Can't you just use pin control hogs for this so the
+>> pin controller just take care of these pins?
+
+zero_func is required.
+
+The bootloader may have different device tree (I am using general sp7021 
+DTS in my u-boot setup, for example), while the kernel DTS may be 
+changed between boots and specifies it more precisely - it is configured 
+by user. So u-boot DTB and kernel DTB may be different -> result is that 
+some pins may be muxed wrongly after u-boot starts kernel. Or even in 
+pre-u-boot stage (we have the bootloader that starts u-boot, called 
+XBoot). This XBoot also do some muxing. So we need this feature to get 
+rid of possible unneded muxes done before kernel has been started.
+
+There is the "group of pins" functions and individual pins that may 
+intersect.
+
+You may have "group of pins", say, emmc preconfigured before kernel 
+started (in general DTS for u-boot) and you may want to have the pin 
+from emmc group to be muxed as, say, SD card detect. You mux it in 
+kernel DTS as GPIO, it will be in correct GPIO state, configured 
+correctly, but while emmc group is enabled (nobody disabled it in kernel 
+DTS!) the pin will belong to emmc function (preset group) and will not 
+be functional.
+
+I invented zero_func while has been debugging the problem like "why my 
+Eth is not working when all pins are configured correctly and muxed to 
+Eth". I spend some time to find that the pin I muxed to Eth has been 
+muxed to SPI_FLASH GROUP in very early stage (in ROM boot). And I have 
+no way to cleanup this mux group easily.
+
+zero_func is the way to easily guarantee that you will successfully and 
+correctly mux some pins / functions on kernel load even if somebody 
+muxed other pins to this functions before kernel.
+
+If I'd implement "automatic" mux cleanup before muxing some pin, the 
+code would be more complex. I would like to keep code as simple as I can 
+and give better control to user.
+
+
+>>
+>>> +      allOf:
+>>> +        - if:
+>>> +            properties:
+>>> +              function:
+>>> +                enum:
+>>> +                  - SPI_FLASH
+>>> +          then:
+>>> +            properties:
+>>> +              groups:
+>>> +                enum:
+>>> +                  - SPI_FLASH1
+>>> +                  - SPI_FLASH2
+>>> +        - if:
+>>> +            properties:
+>>> +              function:
+>>> +                enum:
+>>> +                  - SPI_FLASH_4BIT
+>>> +          then:
+>>> +            properties:
+>>> +              groups:
+>>> +                enum:
+>>> +                  - SPI_FLASH_4BIT1
+>>> +                  - SPI_FLASH_4BIT2
+>>> +        - if:
+>>> +            properties:
+>>> +              function:
+>>> +                enum:
+>>> +                  - HDMI_TX
+>>> +          then:
+>>> +            properties:
+>>> +              groups:
+>>> +                enum:
+>>> +                  - HDMI_TX1
+>>> +                  - HDMI_TX2
+>>> +                  - HDMI_TX3
+>>> +        - if:
+>>> +            properties:
+>>> +              function:
+>>> +                enum:
+>>> +                  - LCDIF
+>>> +          then:
+>>> +            properties:
+>>> +              groups:
+>>> +                enum:
+>>> +                  - LCDIF
+>>>
+>>> This looks complex to me, I need feedback from bindings people on this.
+
+sp7021 supports two types of muxes:
+
+1) group muxing (1-N sets of predefined pins for some function)
+
+2) individual pin muxing
+
+Some functions may be muxed only in group, like SPI_FLASH or HDMI.
+
+That's why we have
+
+pins = <...>;
+
+and
+
+function = <funcname>;
+
+group = <funcsubname-group>;
+
+second case could be cuted to
+
+function = <funcsubname-group> only;
+
+But I think, the syntax of a pair {function,group} fits SoC logic 
+better. Especially if customer is reading possible muxes table for the chip.
+
+
+>>>
+>>> +        pins_uart0: pins_uart0 {
+>>> +            function = "UA0";
+>>> +            groups = "UA0";
+>>> +        };
+>>> +
+>>> +        pins_uart1: pins_uart1 {
+>>> +            pins = <
+>>> +
+>> SPPCTL_IOPAD(11,SPPCTL_PCTL_G_PMUX,MUXF_UA1_TX,0)
+>>> +
+>> SPPCTL_IOPAD(10,SPPCTL_PCTL_G_PMUX,MUXF_UA1_RX,0)
+>>> +
+>> SPPCTL_IOPAD(7,SPPCTL_PCTL_G_GPIO,0,SPPCTL_PCTL_L_OUT)
+>>> +            >;
+>>> +        };
+>> This first looks like two ways to do the same thing?
+>> UART0 uses strings for group + function and uart1 control individual pins.
+>>
+>> Is it possible to just do it one way?
+>>
+>> I think the pins = <...> scheme includes also multiplexing settings and then it
+>> should be named pinmux = <...>:
+No. Sorry. It is two different way of supported two different types of 
+muxing, described above.
+>>
+>> Please read
+>> Documentation/devicetree/bindings/pinctrl/pinmux-node.yaml
+>> closely.
+>>
+>> Yours,
+>> Linus Walleij
+
+--------------2B6DCA0BF58703AB4283FD5F
+Content-Type: text/x-vcard; charset=utf-8;
+ name="dvorkin.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="dvorkin.vcf"
+
+BEGIN:VCARD
+VERSION:4.0
+EMAIL;PREF=1:dvorkin@tibbo.com
+EMAIL:dvorkindmitry@gmail.com
+FN:Dmitry Dvorkin
+NICKNAME:dv
+ORG:Tibbo Technology Inc.;
+TITLE:Embedded Linux Architect
+N:Dvorkin;Dmitry;;;
+ADR:;;9F-3\, No.31, Lane 169, Kang-Ning St., Hsi-Chih;New Taipei City;;2218
+ 0;Taiwan
+TEL;VALUE=TEXT:+79190546388
+URL;VALUE=URL:https://tibbo.com/
+UID:1c58210f-ac8c-4337-b391-0bde146d2d83
+END:VCARD
+
+--------------2B6DCA0BF58703AB4283FD5F--
