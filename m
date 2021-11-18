@@ -2,99 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFC14556E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:26:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8151E4556EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:26:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244499AbhKRI27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 03:28:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244304AbhKRI26 (ORCPT
+        id S244541AbhKRI3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 03:29:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21949 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244552AbhKRI3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 03:28:58 -0500
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFF5C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:25:58 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:8d84:8075:bcc:d376])
-        by albert.telenet-ops.be with bizsmtp
-        id KkRv260044DeBRs06kRv0q; Thu, 18 Nov 2021 09:25:55 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mncjy-00DJaP-D6; Thu, 18 Nov 2021 09:25:54 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mnci4-0047wv-Dz; Thu, 18 Nov 2021 09:23:56 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Alexander Aring <aahringo@redhat.com>,
-        Christine Caulfield <ccaulfie@redhat.com>,
-        David Teigland <teigland@redhat.com>
-Cc:     "Reported-by : Randy Dunlap" <rdunlap@infradead.org>,
-        cluster-devel@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] fs: dlm: Protect IPV6 field access by CONFIG_IPV6
-Date:   Thu, 18 Nov 2021 09:23:55 +0100
-Message-Id: <20211118082355.983825-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Thu, 18 Nov 2021 03:29:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637223970;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KfYISkdEc2V4yWdoQrmXj3ghyO61a+5LaQtRAknXNrU=;
+        b=KmEqAP4PKceypJbeTogkxI1qIcuvjv/27GzrDcc8ANs6Y9qJchhySabGor0kMQy9U6EyNO
+        Dlwn1q0pHddRIut78LKbGVroAMKmKFLNC57m/w+6QvGtf7lWk1h+kFDmuKZYd9IpCifTER
+        Qy3gxFw3YkEs3wIv+SqFdKC3BGUpbNY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-511-iCq5skcUOBOPSUwlQra6zg-1; Thu, 18 Nov 2021 03:26:06 -0500
+X-MC-Unique: iCq5skcUOBOPSUwlQra6zg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5C935802C99;
+        Thu, 18 Nov 2021 08:26:04 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6809D62A44;
+        Thu, 18 Nov 2021 08:25:52 +0000 (UTC)
+Message-ID: <d85d87d3-8ace-ec64-c6dd-0784063e9fb0@redhat.com>
+Date:   Thu, 18 Nov 2021 09:25:51 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 05/15] KVM: x86/mmu: Remove need for a vcpu from
+ kvm_slot_page_track_is_active
+Content-Language: en-US
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>,
+        David Hildenbrand <david@redhat.com>
+References: <20211115234603.2908381-1-bgardon@google.com>
+ <20211115234603.2908381-6-bgardon@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211115234603.2908381-6-bgardon@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CONFIG_IPV6=n:
+On 11/16/21 00:45, Ben Gardon wrote:
+> kvm_slot_page_track_is_active only uses its vCPU argument to get a
+> pointer to the assoicated struct kvm, so just pass in the struct KVM to
+> remove the need for a vCPU pointer.
+> 
+> No functional change intended.
+> 
+> 
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> ---
+>   arch/x86/include/asm/kvm_page_track.h | 2 +-
+>   arch/x86/kvm/mmu/mmu.c                | 4 ++--
+>   arch/x86/kvm/mmu/page_track.c         | 4 ++--
+>   3 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_page_track.h b/arch/x86/include/asm/kvm_page_track.h
+> index 9d4a3b1b25b9..e99a30a4d38b 100644
+> --- a/arch/x86/include/asm/kvm_page_track.h
+> +++ b/arch/x86/include/asm/kvm_page_track.h
+> @@ -63,7 +63,7 @@ void kvm_slot_page_track_add_page(struct kvm *kvm,
+>   void kvm_slot_page_track_remove_page(struct kvm *kvm,
+>   				     struct kvm_memory_slot *slot, gfn_t gfn,
+>   				     enum kvm_page_track_mode mode);
+> -bool kvm_slot_page_track_is_active(struct kvm_vcpu *vcpu,
+> +bool kvm_slot_page_track_is_active(struct kvm *kvm,
+>   				   struct kvm_memory_slot *slot, gfn_t gfn,
+>   				   enum kvm_page_track_mode mode);
+>   
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 2ada6dee920a..7d0da79668c0 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -2587,7 +2587,7 @@ int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, struct kvm_memory_slot *slot,
+>   	 * track machinery is used to write-protect upper-level shadow pages,
+>   	 * i.e. this guards the role.level == 4K assertion below!
+>   	 */
+> -	if (kvm_slot_page_track_is_active(vcpu, slot, gfn, KVM_PAGE_TRACK_WRITE))
+> +	if (kvm_slot_page_track_is_active(vcpu->kvm, slot, gfn, KVM_PAGE_TRACK_WRITE))
+>   		return -EPERM;
+>   
+>   	/*
+> @@ -3884,7 +3884,7 @@ static bool page_fault_handle_page_track(struct kvm_vcpu *vcpu,
+>   	 * guest is writing the page which is write tracked which can
+>   	 * not be fixed by page fault handler.
+>   	 */
+> -	if (kvm_slot_page_track_is_active(vcpu, fault->slot, fault->gfn, KVM_PAGE_TRACK_WRITE))
+> +	if (kvm_slot_page_track_is_active(vcpu->kvm, fault->slot, fault->gfn, KVM_PAGE_TRACK_WRITE))
+>   		return true;
+>   
+>   	return false;
+> diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
+> index cc4eb5b7fb76..35c221d5f6ce 100644
+> --- a/arch/x86/kvm/mmu/page_track.c
+> +++ b/arch/x86/kvm/mmu/page_track.c
+> @@ -173,7 +173,7 @@ EXPORT_SYMBOL_GPL(kvm_slot_page_track_remove_page);
+>   /*
+>    * check if the corresponding access on the specified guest page is tracked.
+>    */
+> -bool kvm_slot_page_track_is_active(struct kvm_vcpu *vcpu,
+> +bool kvm_slot_page_track_is_active(struct kvm *kvm,
+>   				   struct kvm_memory_slot *slot, gfn_t gfn,
+>   				   enum kvm_page_track_mode mode)
+>   {
+> @@ -186,7 +186,7 @@ bool kvm_slot_page_track_is_active(struct kvm_vcpu *vcpu,
+>   		return false;
+>   
+>   	if (mode == KVM_PAGE_TRACK_WRITE &&
+> -	    !kvm_page_track_write_tracking_enabled(vcpu->kvm))
+> +	    !kvm_page_track_write_tracking_enabled(kvm))
+>   		return false;
+>   
+>   	index = gfn_to_index(gfn, slot->base_gfn, PG_LEVEL_4K);
+> 
 
-    In file included from fs/dlm/lowcomms.c:46:
-    fs/dlm/lowcomms.c: In function ‘lowcomms_error_report’:
-    ./include/net/sock.h:386:34: error: ‘struct sock_common’ has no member named ‘skc_v6_daddr’; did you mean ‘skc_daddr’?
-      386 | #define sk_v6_daddr  __sk_common.skc_v6_daddr
-	  |                                  ^~~~~~~~~~~~
-    ./include/linux/printk.h:422:19: note: in expansion of macro ‘sk_v6_daddr’
-      422 |   _p_func(_fmt, ##__VA_ARGS__);    \
-	  |                   ^~~~~~~~~~~
-    ./include/linux/printk.h:450:26: note: in expansion of macro ‘printk_index_wrap’
-      450 | #define printk(fmt, ...) printk_index_wrap(_printk, fmt, ##__VA_ARGS__)
-	  |                          ^~~~~~~~~~~~~~~~~
-    ./include/linux/printk.h:644:3: note: in expansion of macro ‘printk’
-      644 |   printk(fmt, ##__VA_ARGS__);    \
-	  |   ^~~~~~
-    fs/dlm/lowcomms.c:612:3: note: in expansion of macro ‘printk_ratelimited’
-      612 |   printk_ratelimited(KERN_ERR "dlm: node %d: socket error "
-	  |   ^~~~~~~~~~~~~~~~~~
+Queued, thanks.
 
-Fix this by protecting the code that accesses IPV6-only fields by a
-check for CONFIG_IPV6.
-
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Fixes: 4c3d90570bcc2b33 ("fs: dlm: don't call kernel_getpeername() in error_report()")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- fs/dlm/lowcomms.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/dlm/lowcomms.c b/fs/dlm/lowcomms.c
-index 203470189011102d..f7fc1ac76ce83a5f 100644
---- a/fs/dlm/lowcomms.c
-+++ b/fs/dlm/lowcomms.c
-@@ -608,6 +608,7 @@ static void lowcomms_error_report(struct sock *sk)
- 				   ntohs(inet->inet_dport), sk->sk_err,
- 				   sk->sk_err_soft);
- 		break;
-+#if IS_ENABLED(CONFIG_IPV6)
- 	case AF_INET6:
- 		printk_ratelimited(KERN_ERR "dlm: node %d: socket error "
- 				   "sending to node %d at %pI6c, "
-@@ -616,6 +617,7 @@ static void lowcomms_error_report(struct sock *sk)
- 				   ntohs(inet->inet_dport), sk->sk_err,
- 				   sk->sk_err_soft);
- 		break;
-+#endif
- 	default:
- 		printk_ratelimited(KERN_ERR "dlm: node %d: socket error "
- 				   "invalid socket family %d set, "
--- 
-2.25.1
+Paolo
 
