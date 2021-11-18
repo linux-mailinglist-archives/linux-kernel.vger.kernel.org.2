@@ -2,100 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F356E456065
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:27:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E25E456068
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233268AbhKRQaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 11:30:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233257AbhKRQaJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 11:30:09 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C6CC061748
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:27:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=pjZR40SghMbXazmVkswNYKLL8Oa6wp6d3+uvy6rXGrI=;
-        t=1637252829; x=1638462429; b=BXda4ev4jm9Eqg398plgeI9+4SAY0wbTtGSYLE6A7AVNTyP
-        ADndKjqlBLrdF3vlJ+XByyRBZ2esJ6cYRUqsshh1Cb15budoNqto7JnxnWf72H0HH9Sg6w2Iv50kW
-        iOaOrQUQttPZw2G3uVFq9KNvUd2fAUEnmi7GcSfmUnV6fW0WNLTOnYy4zuEldS7XxuEf89daEb4Px
-        p0bIs2qJUHbEloWIAYwKbSia3n+SINDDVsfe1gLIJAU1qkG8g6zR7dyl7PFuQ7z2lfTJh9FmFoWkv
-        P7mbGLJbL6jwz2WsOriF9Wc+pWD4n0gjXL703DObZ1YepRYlp8bT8loxpHy2ga0w==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.95)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1mnkFR-00H3rj-3t;
-        Thu, 18 Nov 2021 17:26:53 +0100
-Message-ID: <21f86e2bc817b6ec0c7a9194a4fefb1d55e3040b.camel@sipsolutions.net>
-Subject: Re: [tip:x86/core 1/1] arch/x86/um/../lib/csum-partial_64.c:98:12:
- error: implicit declaration of function 'load_unaligned_zeropad'
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        linux-um@lists.infradead.org
-Date:   Thu, 18 Nov 2021 17:26:51 +0100
-In-Reply-To: <YZZ4upqWGMOY+r56@hirez.programming.kicks-ass.net>
-References: <202111180219.YkyoBMpf-lkp@intel.com>
-         <CANn89iJfh+x-s4GtWJcyRFpMmSvvyq-r1TGV4sDLXy3F50zD6w@mail.gmail.com>
-         <CANn89iJj4zeNUiXCmG=rSejbHAwPhBEPKUv1tPL9ig=e4vg7pQ@mail.gmail.com>
-         <YZZ4upqWGMOY+r56@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
+        id S233311AbhKRQaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 11:30:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32968 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233284AbhKRQaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 11:30:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0FE961B3A;
+        Thu, 18 Nov 2021 16:27:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637252839;
+        bh=BKVKyK0RlVmHW5sfIELd2vWo+bvbaMsuAw2qnj28Ue0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ze+6hgboZl91trBQhNlBH077hrKXNgtwB6YfrpkbRCYgLPgZJ7ozp+hHd56FHqXjJ
+         pm4H82eHZSfXbeGJkCzsQatDC5i2IbgjF1Kv1Xj6Bb1X+C9LdQwbVD9JsVnb3K0o/k
+         71CsuygyZTMzp6QhFIvN/YfCmb+QlGQ41aqPEv4C5+MeD0eJMVNfcpXytDtATCKzyd
+         flpSNnQGQsD3sHvPJocK2isgUWy1BzN1T9RbzoFHctJPglHk3O4JVVv/ifxkZGeRjc
+         ZXpVA/fBP/noYRsX6F25J4zLeb+pFXxdro0ZXgIhfO4cNiB9WCvzb4mFyFJbJWCzdp
+         GRNLUoYQ1W0qA==
+Received: by mail-wr1-f43.google.com with SMTP id d27so12660395wrb.6;
+        Thu, 18 Nov 2021 08:27:18 -0800 (PST)
+X-Gm-Message-State: AOAM531u3xzm912I+65umjNtDeMTYjOQch0PQNpmfcdHNWF/sxYYDtS7
+        8ojW6Z4E36pxoBtNDGr/WW9RZ6Kfke75UYRkBmc=
+X-Google-Smtp-Source: ABdhPJxqq79QoLh4sUptBU5OL4FavBN2lAtrn/gnM+dcbHtabFve0M/Wdkl43chENdBC2FQ4OXkwCdIHmrQ8McCzDtc=
+X-Received: by 2002:adf:f088:: with SMTP id n8mr32462459wro.411.1637252837334;
+ Thu, 18 Nov 2021 08:27:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+References: <20211118142124.526901-1-arnd@kernel.org> <YZZ5b0FoppEBRcdL@archlinux-ax161>
+In-Reply-To: <YZZ5b0FoppEBRcdL@archlinux-ax161>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 18 Nov 2021 17:27:01 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1N8gsXFV=19gWAu033_kCUcf8+DoV4PXyLnaDEitSTXw@mail.gmail.com>
+Message-ID: <CAK8P3a1N8gsXFV=19gWAu033_kCUcf8+DoV4PXyLnaDEitSTXw@mail.gmail.com>
+Subject: Re: [PATCH] [v3] iwlwifi: pcie: fix constant-conversion warning
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kernel test robot <lkp@intel.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Yaara Baruch <yaara.baruch@intel.com>,
+        Matti Gottlieb <matti.gottlieb@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-11-18 at 17:00 +0100, Peter Zijlstra wrote:
-> On Wed, Nov 17, 2021 at 11:40:35AM -0800, Eric Dumazet wrote:
-> > On Wed, Nov 17, 2021 at 10:55 AM Eric Dumazet <edumazet@google.com> wrote:
-> > > 
-> > > On Wed, Nov 17, 2021 at 10:46 AM kernel test robot <lkp@intel.com> wrote:
-> > > > 
-> > > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
-> > > > head:   d31c3c683ee668ba5d87c0730610442fd672525f
-> > > > commit: d31c3c683ee668ba5d87c0730610442fd672525f [1/1] x86/csum: Rewrite/optimize csum_partial()
-> > > > config: um-x86_64_defconfig (attached as .config)
-> > > > compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> > > > reproduce (this is a W=1 build):
-> > > >         # https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=d31c3c683ee668ba5d87c0730610442fd672525f
-> > > >         git remote add tip https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
-> > > >         git fetch --no-tags tip x86/core
-> > > >         git checkout d31c3c683ee668ba5d87c0730610442fd672525f
-> > > >         # save the attached .config to linux build tree
-> > > >         make W=1 ARCH=um SUBARCH=x86_64
-> > > > 
-> > > > If you fix the issue, kindly add following tag as appropriate
-> > > > Reported-by: kernel test robot <lkp@intel.com>
-> > > > 
-> > > > All errors (new ones prefixed by >>):
-> > > > 
-> > > >    arch/x86/um/../lib/csum-partial_64.c: In function 'csum_partial':
-> > > > > > arch/x86/um/../lib/csum-partial_64.c:98:12: error: implicit declaration of function 'load_unaligned_zeropad' [-Werror=implicit-function-declaration]
-> > > >       98 |   trail = (load_unaligned_zeropad(buff) << shift) >> shift;
-> > > >          |            ^~~~~~~~~~~~~~~~~~~~~~
-> > > >    cc1: some warnings being treated as errors
-> > > > 
-> > > > 
-> > > 
-> > > Hmmm... it seems we need to guard this with CONFIG_DCACHE_WORD_ACCESS ?
-> > 
-> > Perhaps something like the following ?
-> 
-> Dear um folks, is this indeed the best solution? It's a bit sad to have
-> to add this to x86_64, but if that's the way it is...
-> 
+On Thu, Nov 18, 2021 at 5:03 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> On Thu, Nov 18, 2021 at 03:21:02PM +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > gcc-11 points out a potential issue with integer overflow when
+> > the iwl_dev_info_table[] array is empty:
+> >
+> > drivers/net/wireless/intel/iwlwifi/pcie/drv.c:1344:42: error: implicit conversion from 'unsigned long' to 'int' changes value from 18446744073709551615 to -1 [-Werror,-Wconstant-conversion]
+> >         for (i = ARRAY_SIZE(iwl_dev_info_table) - 1; i >= 0; i--) {
+> >                ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+>
+> For what it's worth, I do see this warning with Clang when both
+> CONFIG_IWLDVM and CONFIG_IWLMVM are disabled and looking through the GCC
+> warning docs [1], I do not see a -Wconstant-conversion option? Maybe
+> there is another warning that is similar but that warning right there
+> appears to have come from clang, as it matches mine exactly.
+>
+> drivers/net/wireless/intel/iwlwifi/pcie/drv.c:1344:42: error: implicit conversion from 'unsigned long' to 'int' changes value from 18446744073709551615 to -1 [-Werror,-Wconstant-conversion]
+>         for (i = ARRAY_SIZE(iwl_dev_info_table) - 1; i >= 0; i--) {
+>                ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+> 1 error generated.
+>
+> [1]: https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html
 
-I guess we can add load_unaligned_zeropad() or even just somehow add the
-include with it (asm/word-at-a-time.h) from x86?
+Ok, got it: it turns out this warning /also/ happens with gcc-11 and
+the initial changelog was the one for matching the clang warning.
+This is the gcc output, which is very similar but has a different
+warning option.
 
-johannes
+drivers/net/wireless/intel/iwlwifi/pcie/drv.c: In function
+'iwl_pci_find_dev_info':
+include/linux/kernel.h:46:25: error: overflow in conversion from 'long
+unsigned int' to 'int' changes value from '18446744073709551615' to
+'-1' [-Werror=overflow]
+   46 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) +
+__must_be_array(arr))
+      |                         ^
+drivers/net/wireless/intel/iwlwifi/pcie/drv.c:1344:18: note: in
+expansion of macro 'ARRAY_SIZE'
+ 1344 |         for (i = ARRAY_SIZE(iwl_dev_info_table) - 1; i >= 0; i--) {
+
+My v2 patch only addressed the clang warning, while v3 works with both
+gcc and clang. I can send a v4 if I should update the changelog again
+to explain that, but I suppose it's still close enough.
+
+      Arnd
