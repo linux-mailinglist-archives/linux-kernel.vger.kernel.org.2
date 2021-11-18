@@ -2,115 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF2454559C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9341D4559D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:13:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343761AbhKRLOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 06:14:24 -0500
-Received: from foss.arm.com ([217.140.110.172]:39524 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343765AbhKRLMh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 06:12:37 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EAB671FB;
-        Thu, 18 Nov 2021 03:09:35 -0800 (PST)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9C2123F5A1;
-        Thu, 18 Nov 2021 03:09:33 -0800 (PST)
-Date:   Thu, 18 Nov 2021 11:09:31 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Marco Elver <elver@google.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>,
-        Will Deacon <will@kernel.org>, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, x86@kernel.org
-Subject: Re: [PATCH v2 02/23] kcsan: Remove redundant zero-initialization of
- globals
-Message-ID: <20211118110931.GB5233@lakrids.cambridge.arm.com>
-References: <20211118081027.3175699-1-elver@google.com>
- <20211118081027.3175699-3-elver@google.com>
+        id S1343946AbhKRLQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 06:16:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:30751 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1343690AbhKRLOH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 06:14:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637233866;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xlJYgspkLimNGxuB/C/pD4kxgVVL0fJmGNsVDzRzj0E=;
+        b=IlCmzyzZPO0/rjeOLGnup2ntH+r9V5R718Y5ecefJhBvZTi1lm3Un+G7Kzm5w9kRh/NbJx
+        ONX2r/fJgXYxWqGVd3sYOri2dmb0kmCvjPwJAJ9Zn49SNA0VuyPhnMSmlt6lC50Bb8nwg2
+        Vxd1mbHiejXVUSTjyc1lqSimXnrfPL0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-1-zvCB1T1SMt66wARDl9q-VA-1; Thu, 18 Nov 2021 06:11:05 -0500
+X-MC-Unique: zvCB1T1SMt66wARDl9q-VA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 77AC187D547;
+        Thu, 18 Nov 2021 11:11:04 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4DA335C25D;
+        Thu, 18 Nov 2021 11:11:03 +0000 (UTC)
+Message-ID: <4ee9fe58-73ca-98fd-3d79-198e1093f722@redhat.com>
+Date:   Thu, 18 Nov 2021 12:11:02 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211118081027.3175699-3-elver@google.com>
-User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2] KVM: x86: check PIR even for vCPUs with disabled APICv
+Content-Language: en-US
+To:     Maxim Levitsky <mlevitsk@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>
+References: <20211118072531.1534938-1-pbonzini@redhat.com>
+ <8ad47d43a7c8ae19f09cc6ada73665d6e348e213.camel@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <8ad47d43a7c8ae19f09cc6ada73665d6e348e213.camel@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 09:10:06AM +0100, Marco Elver wrote:
-> They are implicitly zero-initialized, remove explicit initialization.
-> It keeps the upcoming additions to kcsan_ctx consistent with the rest.
+On 11/18/21 10:56, Maxim Levitsky wrote:
+> vmx_sync_pir_to_irr has 'if (KVM_BUG_ON(!vcpu->arch.apicv_active,
+> vcpu->kvm))' That has to be removed I think for this to work.
+
+Good point.
+
+> Plus the above calls now can happen when APICv is fully disabled (and
+> not just inhibited), which is also something that I think that
+> vmx_sync_pir_to_irr should be fixed to be aware of.
+
+No, that works because sync_pir_to_irr is set to NULL as you point out 
+below.  static_call sites are updated right after ops->hardware_setup(), 
+in kvm_arch_hardware_setup.
+
+Paolo
+
+> Also note that VMX has code that sets vmx_x86_ops.sync_pir_to_irr to
+> NULL in its 'hardware_setup' if APICv is disabled. I wonder if that
+> done befor or after the static_call_cond sites are updated.
 > 
-> No functional change intended.
-> 
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
->  init/init_task.c    | 9 +--------
->  kernel/kcsan/core.c | 5 -----
->  2 files changed, 1 insertion(+), 13 deletions(-)
-> 
-> diff --git a/init/init_task.c b/init/init_task.c
-> index 2d024066e27b..61700365ce58 100644
-> --- a/init/init_task.c
-> +++ b/init/init_task.c
-> @@ -181,14 +181,7 @@ struct task_struct init_task
->  	.kasan_depth	= 1,
->  #endif
->  #ifdef CONFIG_KCSAN
-> -	.kcsan_ctx = {
-> -		.disable_count		= 0,
-> -		.atomic_next		= 0,
-> -		.atomic_nest_count	= 0,
-> -		.in_flat_atomic		= false,
-> -		.access_mask		= 0,
-> -		.scoped_accesses	= {LIST_POISON1, NULL},
-> -	},
-> +	.kcsan_ctx = { .scoped_accesses = {LIST_POISON1, NULL} },
+> I think that this code should be removed as well, and
+> vmx_sync_pir_to_irr should just do nothing when APICv is fully
+> disabled.
 
-I'd recommend leaving this as:
-
-	.kcsan_ctx = {
-		.scoped_accesses = {LIST_POISON1, NULL},
-	},
-
-... which'd be consistent with the DEFINE_PER_CPU() usage below, and
-makes it easier to add fields to in future without needing structural
-changes.
-
-Either way:
-
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-
->  #endif
->  #ifdef CONFIG_TRACE_IRQFLAGS
->  	.softirqs_enabled = 1,
-> diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
-> index 6bfd3040f46b..e34a1710b7bc 100644
-> --- a/kernel/kcsan/core.c
-> +++ b/kernel/kcsan/core.c
-> @@ -44,11 +44,6 @@ bool kcsan_enabled;
->  
->  /* Per-CPU kcsan_ctx for interrupts */
->  static DEFINE_PER_CPU(struct kcsan_ctx, kcsan_cpu_ctx) = {
-> -	.disable_count		= 0,
-> -	.atomic_next		= 0,
-> -	.atomic_nest_count	= 0,
-> -	.in_flat_atomic		= false,
-> -	.access_mask		= 0,
->  	.scoped_accesses	= {LIST_POISON1, NULL},
->  };
->  
-> -- 
-> 2.34.0.rc2.393.gf8c9666880-goog
-> 
