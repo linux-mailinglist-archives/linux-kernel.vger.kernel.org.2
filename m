@@ -2,162 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD075455E74
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:45:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD4C455E79
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbhKROst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 09:48:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhKROss (ORCPT
+        id S229973AbhKROtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 09:49:23 -0500
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:33452 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229587AbhKROtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 09:48:48 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF22C06173E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 06:45:48 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id r130so6259150pfc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 06:45:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=accesio-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=B7hIaWZDJSqH7ZBKx51wYV/GWlEC3ywkcW+qADgYkvg=;
-        b=dwoQNt3Jff5uTYpDvrDpEMhncekuP4IdCvez5HTvKbWwUnX2o33eeQbAxaOovIBeOA
-         sUd5YNXqK0pe0p7Mt8aeFe19S6s7+Cm9x4bTtXfUZ4+R8irv8OrfL/Q14X5kJmSn8+am
-         /bCX8kUusvnC6+MnU79ZfBfZZG+OOkuC11DkYQCcUZfG6b5eV9AIGdB/CI+CvtRvd2/y
-         HvqUrXlmkn+g5K0180q26/NbNzIPdPfuA4w3LJRxJ6nOYZnQ2TN1eLq1uq5Fx6FJ2PPp
-         ibGB9fK+ARRAidQ03sKqugVFgax2WRGwKBSIwc1nABJg57qCrxUiEl0ztupiEcpvXmwU
-         g0pQ==
+        Thu, 18 Nov 2021 09:49:21 -0500
+Received: by mail-ot1-f46.google.com with SMTP id h12-20020a056830034c00b0055c8458126fso11401183ote.0;
+        Thu, 18 Nov 2021 06:46:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=B7hIaWZDJSqH7ZBKx51wYV/GWlEC3ywkcW+qADgYkvg=;
-        b=QHCe41dGnO4f7iwOWUWlkULnNVP9YxIC/BmMxSbLcPGuXhkPmpOXy9DNOrqmLd9rFG
-         Id23xEiSLtLbc3CuzeBdiWCjDjkwLwNExraWNBG1xPHgMS5VFy7SDDr3NEjUQHd4Ekvi
-         CK0o7Q5p3b7JF9owa3P1YNYmBhU65R7vGzbWotdwGrS1tWo/8k1UI79ubEo2vAWeH6Cd
-         SR2FD3RQ41p3PGXt0ibPicF4gy/c7KUugAhugNCn/RV1TXUUTe/YoeLPXRbEVB3Ke6HB
-         lfF42LPcCoalzrx0z/rBoKVIrv9ELHZtTfMZifsoEJigHaCmsQKrJQympyhXFaS9YEmu
-         K90A==
-X-Gm-Message-State: AOAM532NRuXznndQbFbDIgD58vlqeNDkFpe3Km3JnDQmnL/7RuNI1mvO
-        bwun0N4TuE/gfn1jjChhoEI2vfv8kzRf
-X-Google-Smtp-Source: ABdhPJxq8gmwavKfvux/U/MN1E2smM3lGLnJjd9vJM85cjy4lh+fyuA9/gHkkS8Ep/+fCvvWZHFNlQ==
-X-Received: by 2002:a63:91c2:: with SMTP id l185mr11505340pge.57.1637246747985;
-        Thu, 18 Nov 2021 06:45:47 -0800 (PST)
-Received: from [172.16.8.241] ([98.149.220.160])
-        by smtp.gmail.com with ESMTPSA id m127sm2545416pgm.64.2021.11.18.06.45.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Nov 2021 06:45:47 -0800 (PST)
-Subject: Re: [PATCH v1 1/2] serial: 8250_pci: Split out Pericom driver
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-References: <20211117145750.43911-1-andriy.shevchenko@linux.intel.com>
- <20211117145750.43911-2-andriy.shevchenko@linux.intel.com>
- <36a3c24a-59c1-2537-14ef-c750aaa55ea9@accesio.com>
- <CAHp75VfDPuPbvRsfKX2+0NT0K36-+xzDA2QscXD5Wcta1Q5zuQ@mail.gmail.com>
-From:   Jay Dolan <jay.dolan@accesio.com>
-Message-ID: <9fcd2bbf-069b-aae5-07e2-e1faa9aa6428@accesio.com>
-Date:   Thu, 18 Nov 2021 06:45:46 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4fPLCC/lGDe6nSg2L0GXzk92DuK5SfiaVXrmm2j2MVs=;
+        b=Zo7ob7Z44m0Iei370J6/EPmfbWdLBFKxGudkbfkhF/AMq3Q3MePX+eZ30j2KdqMwDc
+         9a+uiP9AnyU087MZzlx1ubAZYPAVCshnTJCaM0m0Tlfml2RgkTvCeZA3qxlO/kAUDXlJ
+         4z3SjvoFqhPMl6JmvqOzvJCHWCEhokVZWIzqLhPHdH9BmHez1k9g98fymZWrbAjGRSco
+         CFo6Fg/2JBmlKgKQ+tUyQkaFKPdyYYXy7I6l6DWHz1xIufJr6eJZmFhHB1R4ztUiW2ik
+         OCHq3tZNVGO59vSog8Q7DXHKIsCqXuRYQHGo2/9OieRZpmBk471tKYzV3OhqZx0aYAzV
+         XxDQ==
+X-Gm-Message-State: AOAM531OsPjdnuVsj6gJ9nj6E1DTD05NShVVCe7wRouMnCNotAh6C4zy
+        dYoFz6Us/Dh2tRGe2o3AjhtVwz5/PKfWLH2+NBaqrZrPCMI=
+X-Google-Smtp-Source: ABdhPJy8QKzZL1z6g5aFUr30ddDVC64W+lwBHux0Ym4byl/nYpAo2gjoXbsVYpcnAXhv/onfFQfWeM7AeWVkSCP5Bsw=
+X-Received: by 2002:a9d:a64:: with SMTP id 91mr21419631otg.198.1637246780981;
+ Thu, 18 Nov 2021 06:46:20 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfDPuPbvRsfKX2+0NT0K36-+xzDA2QscXD5Wcta1Q5zuQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211109134728.1710-1-guozhengkui@vivo.com>
+In-Reply-To: <20211109134728.1710-1-guozhengkui@vivo.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 18 Nov 2021 15:46:10 +0100
+Message-ID: <CAJZ5v0ixtvzNiAwwLtXXgG-8FdvtWYy7RUh0pFz65sjcmyuNdQ@mail.gmail.com>
+Subject: Re: [PATCH] ACPICA: fix swap.cocci warning
+To:     Guo Zhengkui <guozhengkui@vivo.com>
+Cc:     Robert Moore <robert.moore@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel@vivo.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 9, 2021 at 2:47 PM Guo Zhengkui <guozhengkui@vivo.com> wrote:
+>
+> Fix following swap.cocci warning:
+> ./drivers/acpi/acpica/nsrepair2.c:896:33-34: WARNING
+> opportunity for swap()
+>
+> Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
 
+This change needs to be submitted to the upstream ACPICA project via
+https://github.com/acpica/acpica/
 
-On 11/18/21 1:50 AM, Andy Shevchenko wrote:
-> On Thu, Nov 18, 2021 at 4:39 AM Jay Dolan <jay.dolan@accesio.com> wrote:
->> On 11/17/21 6:57 AM, Andy Shevchenko wrote:
-> 
-> Thanks for looking into it. My answer below.
-> 
-> ...
-> 
->>> +     for (i = 0; i < nr && i < maxnr; i++) {
->>> +             unsigned int offset = (i == 3 && nr == 4) ? 0x38 : i * 0x8;
->> I'm told this works for PCIe ACCES PIDS, but the PCI PIDs don't have the
->> fourth port at the wrong address. I didn't know this until just now.
-> 
-> For the sake of context I left below PCI IDs, all of them have PCIE
-> prefix. Moreover, the patch should not change this logic (see
-> different setup functions in the original code). So if it wasn't
-> working it is not working anyway. Besides that, what does the above
-> mean? The ID can't be the same for two different hardware.You're right. I think I was confused first. I sent the list of PIDs to 
-someone who knows all the products to verify. Either way I will get this 
-tested tonight.
-> 
->> I've never had reason to try and tell if a pci_dev is PCI or PCIe. Can
->> we query capabilities?
-> 
-> This is confusing me. What does all this imply?
-> 
->> It may also be possible to tell by the size of
->> one of the BARs.
-> 
-> This is already done by calculating maxnr.
-> 
->> I've requested a four port PCI card and should have it
->> tomorrow.
-> 
-> I'm looking forward to seeing any test results.
-> 
->> I'm currently building the previous patch set for testing.
-> 
-> Noted, thanks!
-> 
-> ...
-> 
->>> +     { PCI_VDEVICE(PERICOM, PCI_DEVICE_ID_PERICOM_PI7C9X7951) },
->>> +     { PCI_VDEVICE(PERICOM, PCI_DEVICE_ID_PERICOM_PI7C9X7952) },
->>> +     { PCI_VDEVICE(PERICOM, PCI_DEVICE_ID_PERICOM_PI7C9X7954) },
->>> +     { PCI_VDEVICE(PERICOM, PCI_DEVICE_ID_PERICOM_PI7C9X7958) },
->>> +
->>> +     /*
->>> +      * ACCES I/O Products quad
->>> +      * (Only 7954 has an offset jump for port 4)
->>> +      */
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM_2SDB) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_COM_2S) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM422_4) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM485_4) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM_4SDB) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_COM_4S) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM422_8) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM485_8) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM232_2DB) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_COM232_2) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM232_4) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM232_4DB) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_COM232_4) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM232_8) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM_2SMDB) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_COM_2SM) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM_4SM) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM_4SMDB) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_COM_4SM) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_COM_8SM) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM485_1) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM422_2) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM485_2) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM422_4) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM485_4) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_ICM_2S) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_ICM_4S) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_ICM232_2) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM232_2) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_ICM232_4) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_MPCIE_ICM232_4) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_ICM_2SM) },
->>> +     { PCI_VDEVICE(ACCESSIO, PCI_DEVICE_ID_ACCESSIO_PCIE_ICM_4SM) },
-> 
+Thanks!
+
+> ---
+>  drivers/acpi/acpica/nsrepair2.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/acpi/acpica/nsrepair2.c b/drivers/acpi/acpica/nsrepair2.c
+> index 14b71b41e845..02a904ca4caf 100644
+> --- a/drivers/acpi/acpica/nsrepair2.c
+> +++ b/drivers/acpi/acpica/nsrepair2.c
+> @@ -8,6 +8,7 @@
+>   *
+>   *****************************************************************************/
+>
+> +#include <linux/minmax.h>
+>  #include <acpi/acpi.h>
+>  #include "accommon.h"
+>  #include "acnamesp.h"
+> @@ -875,7 +876,6 @@ acpi_ns_sort_list(union acpi_operand_object **elements,
+>  {
+>         union acpi_operand_object *obj_desc1;
+>         union acpi_operand_object *obj_desc2;
+> -       union acpi_operand_object *temp_obj;
+>         u32 i;
+>         u32 j;
+>
+> @@ -892,9 +892,7 @@ acpi_ns_sort_list(union acpi_operand_object **elements,
+>                             || ((sort_direction == ACPI_SORT_DESCENDING)
+>                                 && (obj_desc1->integer.value <
+>                                     obj_desc2->integer.value))) {
+> -                               temp_obj = elements[j - 1];
+> -                               elements[j - 1] = elements[j];
+> -                               elements[j] = temp_obj;
+> +                               swap(elements[j - 1], elements[j]);
+>                         }
+>                 }
+>         }
+> --
+> 2.20.1
+>
