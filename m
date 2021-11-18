@@ -2,96 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D58F1456017
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 599A345601A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:05:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232879AbhKRQIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 11:08:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232846AbhKRQID (ORCPT
+        id S232897AbhKRQIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 11:08:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57412 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230133AbhKRQIh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 11:08:03 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C96D7C06173E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:05:02 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id fv9-20020a17090b0e8900b001a6a5ab1392so6152718pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:05:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=9Wi+Td4r6H8IIPLc8dF3k1j/ASIXAJ6TaqjW3jefuu4=;
-        b=y8BrdIWd6j3fW08uIhNafxOmUTaRaAPfhiyhQhOeooRKedZI3RpfTRhlQ+Vfo7SaIR
-         Xr2fL7Xv/lmDfO2wWkzoq8vWGyRWblh/L0Hfqs5K0Us31pQe6etNyd4b4JkCzZHZLQwT
-         q/L5kkr+q3xbVdbQAldvQJra4tCYbzptGTKjnS+ABaEkHfAlui6uHFa+ssHoYLAyenWQ
-         iHG1jDOjk1lZ3WG/upN1shTtN0DcKHjo/z6O+xdHqbIgyfZU2tYoBtZomn4fNFUEz+ZY
-         3UyIL0GX/JY8WIuBkQ6drZJH+yYB5Z2axDxMivR9ZrLtWzKFtshDrwdHNPG4YXBIre2n
-         PrBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=9Wi+Td4r6H8IIPLc8dF3k1j/ASIXAJ6TaqjW3jefuu4=;
-        b=086COqESJagEX1TlrMAm4+Pqzfq91A3i/MIHE4eMYjMwBOs2lQ4wESSF0gO3JCCifG
-         9ZktqRxK/kfHjEvXRk4Uu7JKSlb+/RC/fFv0+mtOSLZRu+oKGW+m/f1DrzYy14Mgg8zR
-         jbX6IdUNlIHijuG5hMZIBpQx4oaFrN06nQ2qkkkDpkDOuEi7ay63tqn+WfBcIjpes0xE
-         NNWbWINuYRoYk/DZFAgLHDFPlb21p96WSq6k/u30D71eyG0ucBXLpuHYxR/3HKszrDgc
-         WqSx2DisA0rQUC2OQXfmkmb640SIJt9cEHS/NDy+HNRnZzF5VQIleVmL2hOryhKhtSQi
-         HMrQ==
-X-Gm-Message-State: AOAM532J5qaFUCbhLKD20gH7CWlYEJrBYHlEepk9tEQTpzCfUM8jDWfh
-        dqQkAHNklkNGUrQyXqpgu3juGA==
-X-Google-Smtp-Source: ABdhPJz1llsX1uFZObnslzRKEjH6GvDzvEMwxhybikyDQV7QNbEw5Dwz6b/Y9m4zt+2VA9kQIyfu5g==
-X-Received: by 2002:a17:90b:4c89:: with SMTP id my9mr11577476pjb.229.1637251502237;
-        Thu, 18 Nov 2021 08:05:02 -0800 (PST)
-Received: from [192.168.254.17] ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id j8sm104637pfc.8.2021.11.18.08.05.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Nov 2021 08:05:01 -0800 (PST)
-Message-ID: <90fece34-14af-8c91-98f5-daf6fad1825b@linaro.org>
-Date:   Thu, 18 Nov 2021 08:05:01 -0800
+        Thu, 18 Nov 2021 11:08:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637251537;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NoP5kE8w00obosPq8BwwxTuvnKXCJqUeOM7n6CSCB2U=;
+        b=amd68jIpXFzW4daFc2/suo0wnS3Vl+0zGk1iH3SSLM6598OyruDNK4L2/RW9F2tgNLqesB
+        qTB5LI2ZYhpQhY2RtFcUf/bX0eyJhc3zBI5/W5oOu4UZvhpuvAeOq5Flj6sre09lIqy69M
+        Wah9a3GifMKm710UJJv0h+xb3tWXOio=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-560-kiYuzqXdNU2xjVKPhKdxmw-1; Thu, 18 Nov 2021 11:05:31 -0500
+X-MC-Unique: kiYuzqXdNU2xjVKPhKdxmw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7624C875110;
+        Thu, 18 Nov 2021 16:05:29 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5CCAA19E7E;
+        Thu, 18 Nov 2021 16:05:25 +0000 (UTC)
+Message-ID: <226fc242-ae46-3214-4e01-dbfdf5f7c0fb@redhat.com>
+Date:   Thu, 18 Nov 2021 17:05:22 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] skbuff: suppress clang object-size-mismatch error
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 05/15] KVM: VMX: Add document to state that write to uret
+ msr should always be intercepted
 Content-Language: en-US
-To:     David Miller <davem@davemloft.net>, kuba@kernel.org
-Cc:     elver@google.com, nathan@kernel.org, ndesaulniers@google.com,
-        jonathan.lemon@gmail.com, alobakin@pm.me, willemb@google.com,
-        pabeni@redhat.com, cong.wang@bytedance.com, haokexin@gmail.com,
-        ilias.apalodimas@linaro.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        keescook@chromium.org, edumazet@google.com
-References: <CANpmjNNuWfauPoUxQ6BETrZ8JMjWgrAAhAEqEXW=5BNsfWfyDA@mail.gmail.com>
- <931f1038-d7ab-f236-8052-c5e5b9753b18@linaro.org>
- <20211111095444.461b900e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20211112.154238.1786308722975241620.davem@davemloft.net>
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-In-Reply-To: <20211112.154238.1786308722975241620.davem@davemloft.net>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     kvm@vger.kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <20211118110814.2568-1-jiangshanlai@gmail.com>
+ <20211118110814.2568-6-jiangshanlai@gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211118110814.2568-6-jiangshanlai@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/21 07:42, David Miller wrote:
-> From: Jakub Kicinski <kuba@kernel.org>
-> Date: Thu, 11 Nov 2021 09:54:44 -0800
+On 11/18/21 12:08, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
 > 
->> I'm not sure if that stalled due to lack of time or some fundamental
->> problems.
+> And adds a corresponding sanity check code.
 > 
-> ran out of time, then had a stroke...
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> ---
+>   arch/x86/kvm/vmx/vmx.c | 10 +++++++++-
+>   1 file changed, 9 insertions(+), 1 deletion(-)
 > 
->> Seems like finishing that would let us clean up such misuses?
-> 
-> yes it would
-> 
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index e8a41fdc3c4d..cd081219b668 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -3703,13 +3703,21 @@ void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
+>   	if (!cpu_has_vmx_msr_bitmap())
+>   		return;
+>   
+> +	/*
+> +	 * Write to uret msr should always be intercepted due to the mechanism
+> +	 * must know the current value.  Santity check to avoid any inadvertent
+> +	 * mistake in coding.
+> +	 */
+> +	if (WARN_ON_ONCE(vmx_find_uret_msr(vmx, msr) && (type & MSR_TYPE_W)))
+> +		return;
+> +
 
-so since there is not better way of suppressing the issue atm are
-you ok with taking this fix for now?
+I'm not sure about this one, it's relatively expensive to call 
+vmx_find_uret_msr.
 
--- 
-Thanks,
-Tadeusz
+User-return MSRs and disable-intercept MSRs are almost the opposite: 
+uret is for MSRs that the host (not even the processor) never uses, 
+disable-intercept is for MSRs that the guest reads/writes often.  As 
+such it seems almost impossible that they overlap.
+
+Paolo
+
