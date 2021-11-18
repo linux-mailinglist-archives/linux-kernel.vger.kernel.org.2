@@ -2,70 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C003A455BBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF4AC455BB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:46:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344839AbhKRMt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 07:49:59 -0500
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:51622
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344808AbhKRMto (ORCPT
+        id S1344793AbhKRMth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 07:49:37 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:40560 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344779AbhKRMtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 07:49:44 -0500
-Received: from localhost.localdomain (unknown [10.101.196.174])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 5870B3F180;
-        Thu, 18 Nov 2021 12:46:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1637239602;
-        bh=3GGm/8mZHP7JAYlztAqV2/1PYddCRZrbpkZjiFEExOI=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=uuytkAMvNiHYbThxcfDEFGBFEROQ6CrIXTL9FpJleA+FmVZTzDEdekCz9V1CIC6Yj
-         RJ7IelAPbrmmnpP0dfpX4tYzGnjBvF/45YkKsQrXRVw681deb1FmgHiBuoxIbOmKnB
-         uu9PLrEFlpPYG0BzQ7r1NLlj4WWDT285FAbdNSo3jv+RGFp6e1Y4ayc2qTLhQOlRhc
-         P8huvcTtavex3YU+wXWn/7LEH7kZMMENq0aU9Ofs9zpvTA9GFtMFmfokbb5YLfXV6N
-         NIml0+3knCPFsU7gRjF3+uvEXP0v1Fg6ZIR/pfb7NCgsSshkCGB90RiAkM9FI/SGK+
-         pxLu8wvHMTmiQ==
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     srinivas.pandruvada@linux.intel.com, lenb@kernel.org,
-        rafael@kernel.org, viresh.kumar@linaro.org
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linux-pm@vger.kernel.org (open list:INTEL PSTATE DRIVER),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] cpufreq: intel_pstate: Avoid using CPPC when ACPI CPC is not valid
-Date:   Thu, 18 Nov 2021 20:45:53 +0800
-Message-Id: <20211118124553.599419-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 18 Nov 2021 07:49:32 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R611e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UxCJM88_1637239590;
+Received: from localhost.localdomain(mailfrom:xhao@linux.alibaba.com fp:SMTPD_---0UxCJM88_1637239590)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 18 Nov 2021 20:46:30 +0800
+From:   Xin Hao <xhao@linux.alibaba.com>
+To:     sj@kernel.org
+Cc:     xhao@linux.alibaba.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V2] mm/damon/schemes: Add the validity judgment of thresholds
+Date:   Thu, 18 Nov 2021 20:46:24 +0800
+Message-Id: <d78360e52158d786fcbf20bc62c96785742e76d3.1637239568.git.xhao@linux.alibaba.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If ACPI CPC is not valid, dereference cpc_desc in cppc_get_perf() causes
-a NULL pointer dereference. So avoid using CPPC for that scenario.
+In dbgfs "schemes" interface, i do some test like this:
+    # cd /sys/kernel/debug/damon
+    # echo "2 1 2 1 10 1 3 10 1 1 1 1 1 1 1 1 2 3" > schemes
+    # cat schemes
+    # 2 1 2 1 10 1 3 10 1 1 1 1 1 1 1 1 2 3 0 0
 
-Fixes: 46573fd6369f ("cpufreq: intel_pstate: hybrid: Rework HWP calibration")
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+There have some unreasonable places, i set the valules of these variables
+"<min_sz, max_sz> <min_nr_a, max_nr_a>, <min_age, max_age>, <wmarks.high,
+wmarks.mid, wmarks.low>" as "<2, 1>, <2, 1>, <10, 1>, <1, 2, 3>.
+
+So there add a validity judgment for these thresholds value.
+
+Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
 ---
- drivers/cpufreq/intel_pstate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/damon/dbgfs.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index 815df3daae9df..24c7d705b99b6 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -3369,7 +3369,7 @@ static int __init intel_pstate_init(void)
- 			if (!default_driver)
- 				default_driver = &intel_pstate;
- 
--			if (boot_cpu_has(X86_FEATURE_HYBRID_CPU))
-+			if (boot_cpu_has(X86_FEATURE_HYBRID_CPU) && acpi_cpc_valid())
- 				intel_pstate_cppc_set_cpu_scaling();
- 
- 			goto hwp_cpu_matched;
--- 
-2.32.0
+diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
+index befb27a29aab..4a96cd4df24f 100644
+--- a/mm/damon/dbgfs.c
++++ b/mm/damon/dbgfs.c
+@@ -215,6 +215,13 @@ static struct damos **str_to_schemes(const char *str, ssize_t len,
+ 			goto fail;
+ 		}
 
++		if (min_sz > max_sz || min_nr_a > max_nr_a || min_age > max_age)
++			goto fail;
++
++		if (wmarks.high < wmarks.mid || wmarks.high < wmarks.low ||
++		    wmarks.mid <  wmarks.low)
++			goto fail;
++
+ 		pos += parsed;
+ 		scheme = damon_new_scheme(min_sz, max_sz, min_nr_a, max_nr_a,
+ 				min_age, max_age, action, &quota, &wmarks);
+--
+2.31.0
