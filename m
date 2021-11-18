@@ -2,145 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 545B84559AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:09:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7228E4559AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:09:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343684AbhKRLLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 06:11:49 -0500
-Received: from foss.arm.com ([217.140.110.172]:39486 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343604AbhKRLLW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 06:11:22 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ACE881FB;
-        Thu, 18 Nov 2021 03:08:21 -0800 (PST)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 26D7E3F5A1;
-        Thu, 18 Nov 2021 03:08:19 -0800 (PST)
-Date:   Thu, 18 Nov 2021 11:08:14 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Marco Elver <elver@google.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>,
-        Will Deacon <will@kernel.org>, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, x86@kernel.org
-Subject: Re: [PATCH v2 01/23] kcsan: Refactor reading of instrumented memory
-Message-ID: <20211118110813.GA5233@lakrids.cambridge.arm.com>
-References: <20211118081027.3175699-1-elver@google.com>
- <20211118081027.3175699-2-elver@google.com>
+        id S1343631AbhKRLME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 06:12:04 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:32529 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1343624AbhKRLLZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 06:11:25 -0500
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-267-yIaQ9ldLMt-dGp5bzBnaGQ-1; Thu, 18 Nov 2021 11:08:20 +0000
+X-MC-Unique: yIaQ9ldLMt-dGp5bzBnaGQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.26; Thu, 18 Nov 2021 11:08:19 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.026; Thu, 18 Nov 2021 11:08:19 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Sergey Shtylyov' <s.shtylyov@omp.ru>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        "davem@davemloft.net" <davem@davemloft.net>
+CC:     "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH -next] ethernet: renesas: Use div64_ul instead of do_div
+Thread-Topic: [PATCH -next] ethernet: renesas: Use div64_ul instead of do_div
+Thread-Index: AQHX3FvXWbL1hyrH7EOl5fQWEw6276wJH72w
+Date:   Thu, 18 Nov 2021 11:08:19 +0000
+Message-ID: <ca35a5ba3970462d8eba69ab440da1b3@AcuMS.aculab.com>
+References: <1637203805-125780-1-git-send-email-yang.lee@linux.alibaba.com>
+ <6851a10a-e7cf-b533-ab9d-0df539bbba00@omp.ru>
+In-Reply-To: <6851a10a-e7cf-b533-ab9d-0df539bbba00@omp.ru>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211118081027.3175699-2-elver@google.com>
-User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 09:10:05AM +0100, Marco Elver wrote:
-> Factor out the switch statement reading instrumented memory into a
-> helper read_instrumented_memory().
-> 
-> No functional change.
-> 
-> Signed-off-by: Marco Elver <elver@google.com>
+RnJvbTogU2VyZ2V5IFNodHlseW92DQo+IFNlbnQ6IDE4IE5vdmVtYmVyIDIwMjEgMDk6MDgNCj4g
+T24gMTguMTEuMjAyMSA1OjUwLCBZYW5nIExpIHdyb3RlOg0KPiANCj4gPiBkb19kaXYoKSBkb2Vz
+IGEgNjQtYnktMzIgZGl2aXNpb24uIEhlcmUgdGhlIGRpdmlzb3IgaXMgYW4NCj4gPiB1bnNpZ25l
+ZCBsb25nIHdoaWNoIG9uIHNvbWUgcGxhdGZvcm1zIGlzIDY0IGJpdCB3aWRlLiBTbyB1c2UNCj4g
+PiBkaXY2NF91bCBpbnN0ZWFkIG9mIGRvX2RpdiB0byBhdm9pZCBhIHBvc3NpYmxlIHRydW5jYXRp
+b24uDQo+ID4NCj4gPiBFbGltaW5hdGUgdGhlIGZvbGxvd2luZyBjb2NjaWNoZWNrIHdhcm5pbmc6
+DQo+ID4gLi9kcml2ZXJzL25ldC9ldGhlcm5ldC9tYXJ2ZWxsL212cHAyL212cHAyX21haW4uYzoy
+NzQyOjEtNzogV0FSTklORzoNCj4gPiBkb19kaXYoKSBkb2VzIGEgNjQtYnktMzIgZGl2aXNpb24s
+IHBsZWFzZSBjb25zaWRlciB1c2luZyBkaXY2NF91bA0KPiA+IGluc3RlYWQuDQo+ID4NCj4gPiBS
+ZXBvcnRlZC1ieTogQWJhY2kgUm9ib3QgPGFiYWNpQGxpbnV4LmFsaWJhYmEuY29tPg0KPiA+IFNp
+Z25lZC1vZmYtYnk6IFlhbmcgTGkgPHlhbmcubGVlQGxpbnV4LmFsaWJhYmEuY29tPg0KPiA+IC0t
+LQ0KPiA+ICAgZHJpdmVycy9uZXQvZXRoZXJuZXQvcmVuZXNhcy9yYXZiX21haW4uYyB8IDIgKy0N
+Cj4gPiAgIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPiA+
+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L3JlbmVzYXMvcmF2Yl9tYWlu
+LmMgYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9yZW5lc2FzL3JhdmJfbWFpbi5jDQo+ID4gaW5kZXgg
+YjRjNTk3Zi4uMmI4OTcxMCAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL25ldC9ldGhlcm5ldC9y
+ZW5lc2FzL3JhdmJfbWFpbi5jDQo+ID4gKysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvcmVuZXNh
+cy9yYXZiX21haW4uYw0KPiA+IEBAIC0yNDg5LDcgKzI0ODksNyBAQCBzdGF0aWMgaW50IHJhdmJf
+c2V0X2d0aShzdHJ1Y3QgbmV0X2RldmljZSAqbmRldikNCj4gPiAgIAkJcmV0dXJuIC1FSU5WQUw7
+DQo+ID4NCj4gPiAgIAlpbmMgPSAxMDAwMDAwMDAwVUxMIDw8IDIwOw0KPiA+IC0JZG9fZGl2KGlu
+YywgcmF0ZSk7DQo+ID4gKwlpbmMgPSBkaXY2NF91bChpbmMsIHJhdGUpOw0KPiANCj4gICAgIFdo
+eSBub3QganVzdDoNCj4gDQo+IAlpbmMgPSBkaXY2NF91bCgxMDAwMDAwMDAwVUxMIDw8IDIwLCBy
+YXRlKTsNCj4gDQo+ID4gICAJaWYgKGluYyA8IEdUSV9USVZfTUlOIHx8IGluYyA+IEdUSV9USVZf
+TUFYKSB7DQo+ID4gICAJCWRldl9lcnIoZGV2LCAiZ3RpLnRpdiBpbmNyZW1lbnQgMHglbGx4IGlz
+IG91dHNpZGUgdGhlIHJhbmdlIDB4JXggLSAweCV4XG4iLA0KDQpFdmVuIHdpdGggaGFyZHdhcmUg
+ZGl2aWRlIGEgNjQvMzIgZGl2aWRlIGlzIGxpa2VseSB0byBiZSBmYXN0ZXIgdGhhdCBhIDY0LzY0
+IG9uZS4NCg0KTWF5YmUgdGhlIGNvY2NpY2hlY2sgd2FybmluZyBtZXNzYWdlIHNob3VsZCBzdWdn
+ZXN0IGNoZWNraW5nIHRoZSBkb21haW4NCm9mIHRoZSBkaXZpc29yIGFuZCB0aGVuIGNoYW5naW5n
+IHRoZSB0eXBlPz8NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwg
+QnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVn
+aXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-Nice cleanup!
-
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-
-Mark.
-
-> ---
->  kernel/kcsan/core.c | 51 +++++++++++++++------------------------------
->  1 file changed, 17 insertions(+), 34 deletions(-)
-> 
-> diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
-> index 4b84c8e7884b..6bfd3040f46b 100644
-> --- a/kernel/kcsan/core.c
-> +++ b/kernel/kcsan/core.c
-> @@ -325,6 +325,21 @@ static void delay_access(int type)
->  	udelay(delay);
->  }
->  
-> +/*
-> + * Reads the instrumented memory for value change detection; value change
-> + * detection is currently done for accesses up to a size of 8 bytes.
-> + */
-> +static __always_inline u64 read_instrumented_memory(const volatile void *ptr, size_t size)
-> +{
-> +	switch (size) {
-> +	case 1:  return READ_ONCE(*(const u8 *)ptr);
-> +	case 2:  return READ_ONCE(*(const u16 *)ptr);
-> +	case 4:  return READ_ONCE(*(const u32 *)ptr);
-> +	case 8:  return READ_ONCE(*(const u64 *)ptr);
-> +	default: return 0; /* Ignore; we do not diff the values. */
-> +	}
-> +}
-> +
->  void kcsan_save_irqtrace(struct task_struct *task)
->  {
->  #ifdef CONFIG_TRACE_IRQFLAGS
-> @@ -482,23 +497,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type, unsigned
->  	 * Read the current value, to later check and infer a race if the data
->  	 * was modified via a non-instrumented access, e.g. from a device.
->  	 */
-> -	old = 0;
-> -	switch (size) {
-> -	case 1:
-> -		old = READ_ONCE(*(const u8 *)ptr);
-> -		break;
-> -	case 2:
-> -		old = READ_ONCE(*(const u16 *)ptr);
-> -		break;
-> -	case 4:
-> -		old = READ_ONCE(*(const u32 *)ptr);
-> -		break;
-> -	case 8:
-> -		old = READ_ONCE(*(const u64 *)ptr);
-> -		break;
-> -	default:
-> -		break; /* ignore; we do not diff the values */
-> -	}
-> +	old = read_instrumented_memory(ptr, size);
->  
->  	/*
->  	 * Delay this thread, to increase probability of observing a racy
-> @@ -511,23 +510,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type, unsigned
->  	 * racy access.
->  	 */
->  	access_mask = ctx->access_mask;
-> -	new = 0;
-> -	switch (size) {
-> -	case 1:
-> -		new = READ_ONCE(*(const u8 *)ptr);
-> -		break;
-> -	case 2:
-> -		new = READ_ONCE(*(const u16 *)ptr);
-> -		break;
-> -	case 4:
-> -		new = READ_ONCE(*(const u32 *)ptr);
-> -		break;
-> -	case 8:
-> -		new = READ_ONCE(*(const u64 *)ptr);
-> -		break;
-> -	default:
-> -		break; /* ignore; we do not diff the values */
-> -	}
-> +	new = read_instrumented_memory(ptr, size);
->  
->  	diff = old ^ new;
->  	if (access_mask)
-> -- 
-> 2.34.0.rc2.393.gf8c9666880-goog
-> 
