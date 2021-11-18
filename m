@@ -2,123 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3592C455C5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:11:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB54455C62
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:12:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhKRNN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 08:13:58 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:26325 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhKRNN5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 08:13:57 -0500
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hw0RB6CnHzbhxN;
-        Thu, 18 Nov 2021 21:05:58 +0800 (CST)
-Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 18 Nov 2021 21:10:54 +0800
-Received: from [10.67.102.185] (10.67.102.185) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 18 Nov 2021 21:10:54 +0800
-Subject: Re: [PATCH v11 2/2] drivers/perf: hisi: Add driver for HiSilicon PCIe
- PMU
-To:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>
-CC:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        "Bjorn Helgaas" <bhelgaas@google.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <zhangshaokun@hisilicon.com>
-References: <20211029093632.4350-1-liuqi115@huawei.com>
- <20211029093632.4350-3-liuqi115@huawei.com>
- <CAC52Y8Zc5oRRBDiZq+zQNGw2CbURN2SRsfW9ek_gw96qDHB1zw@mail.gmail.com>
-From:   "liuqi (BA)" <liuqi115@huawei.com>
-Message-ID: <acb5a232-dd09-9292-5b24-25e8e29e98e7@huawei.com>
-Date:   Thu, 18 Nov 2021 21:10:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S229976AbhKRNPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 08:15:22 -0500
+Received: from mga06.intel.com ([134.134.136.31]:45241 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229448AbhKRNPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 08:15:22 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10171"; a="294993928"
+X-IronPort-AV: E=Sophos;i="5.87,244,1631602800"; 
+   d="scan'208";a="294993928"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 05:12:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,244,1631602800"; 
+   d="scan'208";a="646558745"
+Received: from kuha.fi.intel.com ([10.237.72.166])
+  by fmsmga001.fm.intel.com with SMTP; 18 Nov 2021 05:12:18 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 18 Nov 2021 15:12:17 +0200
+Date:   Thu, 18 Nov 2021 15:12:17 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sven Peter <sven@svenpeter.dev>,
+        Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] usb: typec: tipd: Fix initialization sequence for
+ cd321x
+Message-ID: <YZZRMfchQ7Y6gPqQ@kuha.fi.intel.com>
+References: <20211117151450.207168-1-marcan@marcan.st>
+ <20211117151450.207168-3-marcan@marcan.st>
 MIME-Version: 1.0
-In-Reply-To: <CAC52Y8Zc5oRRBDiZq+zQNGw2CbURN2SRsfW9ek_gw96qDHB1zw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.102.185]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211117151450.207168-3-marcan@marcan.st>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+On Thu, Nov 18, 2021 at 12:14:50AM +0900, Hector Martin wrote:
+> The power state switch needs to happen first, as that
+> kickstarts the firmware into normal mode.
+> 
+> Signed-off-by: Hector Martin <marcan@marcan.st>
 
-On 2021/11/18 6:41, Krzysztof Wilczyński wrote:
-> Hi Qi,
-> 
-> Thank you for working on this!  Looks really good!
-> 
-> Below a few tiny nitpicks that you are more than welcome to ignore, of
-> course, as these would have little weight on the final product, so to
-> speak.
-> 
->> +struct hisi_pcie_pmu {
->> +     struct perf_event *hw_events[HISI_PCIE_MAX_COUNTERS];
->> +     struct hlist_node node;
->> +     struct pci_dev *pdev;
->> +     struct pmu pmu;
->> +     void __iomem *base;
->> +     int irq;
->> +     u32 identifier;
->> +     /* Minimum and maximum bdf of root ports monitored by PMU */
->> +     u16 bdf_min;
->> +     u16 bdf_max;
->> +     int on_cpu;
->> +};
-> 
-> Would the above "bdf" be the PCI addressing schema?  If so, then we could
-> capitalise the acronym to keep it consistent with how it's often referred
-> to in the PCI world.
-> 
-Hi Krzysztof,
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-got it, will change it to Bdf to keep the consistent, thanks.
+Please resend these with the appropriate Fixes tag included.
 
-> [...]
->> +static int __init hisi_pcie_module_init(void)
->> +{
->> +     int ret;
->> +
->> +     ret = cpuhp_setup_state_multi(CPUHP_AP_PERF_ARM_HISI_PCIE_PMU_ONLINE,
->> +                                   "AP_PERF_ARM_HISI_PCIE_PMU_ONLINE",
->> +                                   hisi_pcie_pmu_online_cpu,
->> +                                   hisi_pcie_pmu_offline_cpu);
->> +     if (ret) {
->> +             pr_err("Failed to setup PCIe PMU hotplug, ret = %d.\n", ret);
->> +             return ret;
->> +     }
+> ---
+>  drivers/usb/typec/tipd/core.c | 33 ++++++++++++++++-----------------
+>  1 file changed, 16 insertions(+), 17 deletions(-)
 > 
-> The above error message could be made to be a little more aligned in terms
-> of format with the other messages, thus it would be as follows:
-> 
->    pr_err("Failed to setup PCIe PMU hotplug: %d.\n", ret);
->
-> Interestingly, there would be then no need to add the final dot (period) at
-> the end here, and that would be true everywhere else.
-> 
+> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+> index 4da5a0b2aed2..6d27a5b5e3ca 100644
+> --- a/drivers/usb/typec/tipd/core.c
+> +++ b/drivers/usb/typec/tipd/core.c
+> @@ -707,6 +707,7 @@ static int tps6598x_probe(struct i2c_client *client)
+>  	u32 conf;
+>  	u32 vid;
+>  	int ret;
+> +	u64 mask1;
+>  
+>  	tps = devm_kzalloc(&client->dev, sizeof(*tps), GFP_KERNEL);
+>  	if (!tps)
+> @@ -730,11 +731,6 @@ static int tps6598x_probe(struct i2c_client *client)
+>  	if (i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
+>  		tps->i2c_protocol = true;
+>  
+> -	/* Make sure the controller has application firmware running */
+> -	ret = tps6598x_check_mode(tps);
+> -	if (ret)
+> -		return ret;
+> -
+>  	if (np && of_device_is_compatible(np, "apple,cd321x")) {
+>  		/* Switch CD321X chips to the correct system power state */
+>  		ret = cd321x_switch_power_state(tps, TPS_SYSTEM_POWER_STATE_S0);
+> @@ -742,24 +738,27 @@ static int tps6598x_probe(struct i2c_client *client)
+>  			return ret;
+>  
+>  		/* CD321X chips have all interrupts masked initially */
+> -		ret = tps6598x_write64(tps, TPS_REG_INT_MASK1,
+> -					APPLE_CD_REG_INT_POWER_STATUS_UPDATE |
+> -					APPLE_CD_REG_INT_DATA_STATUS_UPDATE |
+> -					APPLE_CD_REG_INT_PLUG_EVENT);
+> -		if (ret)
+> -			return ret;
+> +		mask1 = APPLE_CD_REG_INT_POWER_STATUS_UPDATE |
+> +			APPLE_CD_REG_INT_DATA_STATUS_UPDATE |
+> +			APPLE_CD_REG_INT_PLUG_EVENT;
+>  
+>  		irq_handler = cd321x_interrupt;
+>  	} else {
+>  		/* Enable power status, data status and plug event interrupts */
+> -		ret = tps6598x_write64(tps, TPS_REG_INT_MASK1,
+> -				       TPS_REG_INT_POWER_STATUS_UPDATE |
+> -				       TPS_REG_INT_DATA_STATUS_UPDATE |
+> -				       TPS_REG_INT_PLUG_EVENT);
+> -		if (ret)
+> -			return ret;
+> +		mask1 = TPS_REG_INT_POWER_STATUS_UPDATE |
+> +			TPS_REG_INT_DATA_STATUS_UPDATE |
+> +			TPS_REG_INT_PLUG_EVENT;
+>  	}
+>  
+> +	/* Make sure the controller has application firmware running */
+> +	ret = tps6598x_check_mode(tps);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = tps6598x_write64(tps, TPS_REG_INT_MASK1, mask1);
+> +	if (ret)
+> +		return ret;
+> +
+>  	ret = tps6598x_read32(tps, TPS_REG_STATUS, &status);
+>  	if (ret < 0)
+>  		return ret;
+> -- 
+> 2.33.0
 
-thanks for your reminder , I'll fix that printout message to keep align.
+thanks,
 
-Thanks,
-Qi
-
-
-> Again, thank you so much for working on this, it's very much appreciated!
-> 
-> Acked-by: Krzysztof Wilczyński <kw@linux.com>
-> 
->          Krzysztof
-> .
-> 
+-- 
+heikki
