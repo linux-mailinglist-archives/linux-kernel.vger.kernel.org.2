@@ -2,133 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F33D4562BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:43:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D1B4562BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:43:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233962AbhKRSqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 13:46:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233904AbhKRSqP (ORCPT
+        id S233904AbhKRSqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 13:46:35 -0500
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:39782 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231204AbhKRSqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 13:46:15 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D68C06173E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:43:15 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id m6so16293315oim.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:43:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dsHgrt3f1EilcZuTcpPj1Uibbk6NZSW0KCEvWuPSgaA=;
-        b=dfb4NHDvEkj3BC0fHWPSnJOucM9uBQPYun5TISX7bpUpB0jCAJwUVcP5N9FTAKhQe5
-         3bT/dFWcq+5RZJY8na+AdpyJt6bvMK3CAxHElXXCraHes83ilGYVcaIw0NRDLjZllGME
-         9rOj5iWZgQF1lvJ0+c/c2AgdOds4WnUYGL6/jE9MNLmiSKbBexf7yej741WRfqi/sHie
-         1ROChNXPDL1LLWq+RrR1gHEwwfTy1kh4+KGx1workcrW3ZpqK/gz5TTnrr2Y9dgVeLBo
-         +bUq6ZnYvYiMFnye2VqGFtkt+RF8fWOG6fE8xtDUWqe6OgLEhg6tMN6/GcBDZOoGwx5d
-         8Csg==
+        Thu, 18 Nov 2021 13:46:33 -0500
+Received: by mail-oi1-f177.google.com with SMTP id bf8so16266819oib.6;
+        Thu, 18 Nov 2021 10:43:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dsHgrt3f1EilcZuTcpPj1Uibbk6NZSW0KCEvWuPSgaA=;
-        b=7QcndsaWM3h2xqbHsyTFbMiaiB3WLm4CW29RU2OsNZcVSld8RR5zDYJmz1Xqeqxl13
-         j/d50j15ZASLQfkm4Ilo5gQxO7NBpbpfWzbNUziWc8IUQ6hHRP4oiy4nx/bmSKsYuT7f
-         t4hgdKB1CWldqS+jq5Ntmt6hee5WtCF03zAAoYdzvXAD3QcqHoNpm2SYbeWXnhr2szj7
-         T2vj2boXXSWHgDL81nOZj68hei9zYGBIhrNp2WUXPd2AmrEP8vLSV2ev/Zl3H/kur0dJ
-         pYWkLfVbUM1bv4KN3/dGYfSFeY2h2U3kW3FrBaCQTNR9m8rxR5KWdM5GZUVtMe3qdbyx
-         xiIw==
-X-Gm-Message-State: AOAM532lh/R3WT6CvBJ5/XPvY6JPtcYRN1nujcxT9ngADQ1KVke1z2QL
-        Z5+XD1QMMM4JbjtN237qPEaouCCaVbj3RTooN9yY1g==
-X-Google-Smtp-Source: ABdhPJw6w0Zi8W9bt5228Ldv0ZCK8SRbrpkPWfvrUH89RTZAP9oilxdXqZv6iwBHs+Ol+3+gMO/PVdwFbqZjbjRk+f4=
-X-Received: by 2002:a05:6808:3012:: with SMTP id ay18mr10076246oib.88.1637260994768;
- Thu, 18 Nov 2021 10:43:14 -0800 (PST)
+        bh=1kySb+QlzVqZ4BCjNqmHk4U4EiQ858nhVYzzDU2WDzg=;
+        b=XOoTptNYp9xM/gc0VKPFK1XlsSI6x+R5rxwhMtpuD8nWqPKTraibCIkVTCTQD1Am0w
+         kOrxf9y4YMIs1k65hs4qquaFiK43jgb4Ffe5QJbuuaYdnvdXqa6qj0cOfDjHh0kyBxQh
+         qQgSz7XdgChrvN5cupHVp/F963h16fHj+kCE/pM2OYMRLpVrlgBBA/pzIwzfl7WcAG8Y
+         E9BOfZER7OqI/xO2LneA2s6/OT/wx95opi1fV08/QuJx0+LNwL4IoCawD/7i1nEV+B4Z
+         leEmAfu0tLm/lNtEPI75TcbhANQOLefDDpv3b7hftauy1Jkc0JOv2or5dXxZtmVf7NNh
+         IPnQ==
+X-Gm-Message-State: AOAM533K/F5Zb7KyhaSfPOpWIBqO2+3ax1qf9ttjgLkg06sfxSZhx30i
+        cClMNCU80TEzwfVEaHs1YRU+N7FZX5LUYAn3YoJBeWk8
+X-Google-Smtp-Source: ABdhPJxU59+TqoM8WODxZUXubxZrIjJPnq0V0VNlKJPKi0GdLphbKEvsNJOeS5hHQdXL27kFtyTQ+GOO1VqnJUbHMvk=
+X-Received: by 2002:a05:6808:14c3:: with SMTP id f3mr9724324oiw.51.1637261013150;
+ Thu, 18 Nov 2021 10:43:33 -0800 (PST)
 MIME-Version: 1.0
-References: <CADYN=9+_UU9qZX56uahGXxz00iayqJLRAaQrRXh1CMXTvwSbAg@mail.gmail.com>
- <20211118095852.616256-1-anders.roxell@linaro.org> <20211118095852.616256-2-anders.roxell@linaro.org>
- <CADYN=9+drOj6rVjBhB-jVQ+UXgw3ue0tz04ejHih7qRhL6Km1A@mail.gmail.com>
-In-Reply-To: <CADYN=9+drOj6rVjBhB-jVQ+UXgw3ue0tz04ejHih7qRhL6Km1A@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 18 Nov 2021 10:43:02 -0800
-Message-ID: <CAKwvOdmKebwN436byQd4FY=wCBmrHdE=R4g-y=1ENKV5Mdw7MA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] selftests: clone3: simplify return logic in clone3_set_tid()
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     shuah@kernel.org, fenghua.yu@intel.com, reinette.chatre@intel.com,
-        john.stultz@linaro.org, tglx@linutronix.de,
-        akpm@linux-foundation.org, nathan@kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, llvm@lists.linux.dev, christian@brauner.io
+References: <cover.1635953446.git.yu.c.chen@intel.com> <68d1c452bbf7f742793cb39ebb66f6b4ba6a3fb3.1635953446.git.yu.c.chen@intel.com>
+ <CAJZ5v0gKu3JtCGThZKx87rQJeW+xK=ZkSD47kaP+N8Qr8Pq-Tw@mail.gmail.com> <20211118161120.GA884221@chenyu-desktop>
+In-Reply-To: <20211118161120.GA884221@chenyu-desktop>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 18 Nov 2021 19:43:22 +0100
+Message-ID: <CAJZ5v0hGrvg9Jo=QoMbSV19bmK-8npxj6-3GMP14cdoCbhUgnQ@mail.gmail.com>
+Subject: Re: [PATCH v8 1/4] efi: Introduce EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
+ and corresponding structures
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 2:03 AM Anders Roxell <anders.roxell@linaro.org> wrote:
+On Thu, Nov 18, 2021 at 5:21 PM Chen Yu <yu.c.chen@intel.com> wrote:
 >
-> On Thu, 18 Nov 2021 at 10:58, Anders Roxell <anders.roxell@linaro.org> wrote:
+> Hi Rafael,
+> On Thu, Nov 18, 2021 at 04:49:35PM +0100, Rafael J. Wysocki wrote:
+> > On Wed, Nov 3, 2021 at 4:44 PM Chen Yu <yu.c.chen@intel.com> wrote:
+> > >
+> > > Platform Firmware Runtime Update image starts with UEFI headers, and the
+> > > headers are defined in UEFI specification, but some of them have not been
+> > > defined in the kernel yet.
+> > >
+> > > For example, the header layout of a capsule file looks like this:
+> > >
+> > > EFI_CAPSULE_HEADER
+> > > EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
+> > > EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER
+> > > EFI_FIRMWARE_IMAGE_AUTHENTICATION
+> > >
+> > > These structures would be used by the Platform Firmware Runtime Update
+> > > driver to parse the format of capsule file to verify if the corresponding
+> > > version number is valid.
 > >
-> > Use ksft_exit_* and exit instead of using goto.
+> > Why does the driver need to do that?
 > >
->
-> I'm sorry, I should have added Nick to this patch, since he suggested it.
->
-> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
->
-> Cheers,
-> Anders
->
-> > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> > The firmware will reject the update if the version is invalid anyway, won't it?
+> >
+> Yes, the firmware will reject the update if the version does not match. The motivation
+> of checking it in kernel before the firmware is mainly to deal with a corner case that,
+> if the user provides an invalid capsule image, the kernel could be used as a guard to
+> reject it, without switching to the MM update mode(which might be costly).
 
-Thanks for the patch!
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+OK, but it would be good to mention this somewhere, preferably in he
+changelog and maybe also in a comment next to the related code.
 
-> > ---
-> >  tools/testing/selftests/clone3/clone3_set_tid.c | 11 +++--------
-> >  1 file changed, 3 insertions(+), 8 deletions(-)
+> > > The EFI_CAPSULE_HEADER has been defined in the
+> > > kernel, however the rest are not, thus introduce corresponding UEFI
+> > > structures accordingly.
 > >
-> > diff --git a/tools/testing/selftests/clone3/clone3_set_tid.c b/tools/testing/selftests/clone3/clone3_set_tid.c
-> > index a755fcd3af89..1b950c3c3b7c 100644
-> > --- a/tools/testing/selftests/clone3/clone3_set_tid.c
-> > +++ b/tools/testing/selftests/clone3/clone3_set_tid.c
-> > @@ -250,7 +250,8 @@ int main(int argc, char *argv[])
-> >                  * that all those tests are skipped as non-root.
-> >                  */
-> >                 ksft_cnt.ksft_xskip += ksft_plan - ksft_test_num();
-> > -               goto out;
-> > +               ksft_exit_skip(
-> > +                       "Please run the remaining tests as root - Exiting.\n");
-> >         }
+> > I would change the above in the following way:
 > >
-> >         /* Find the current active PID */
-> > @@ -371,9 +372,7 @@ int main(int argc, char *argv[])
-> >         close(pipe_2[1]);
+> > "EFI_CAPSULE_HEADER has been defined in the kernel, but the other
+> > structures have not been defined yet, so do that."
 > >
-> >         if (waitpid(ns_pid, &status, 0) < 0) {
-> > -               ksft_print_msg("Child returned %s\n", strerror(errno));
-> > -               ret = -errno;
-> > -               goto out;
-> > +               ksft_exit_fail_msg("Child returned %s\n", strerror(errno));
-> >         }
+> Ok, will do.
+> > > Besides, EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
+> > > and EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER are required to be packed
+> > > in the uefi specification.
 > >
-> >         if (!WIFEXITED(status))
-> > @@ -390,10 +389,6 @@ int main(int argc, char *argv[])
-> >                 ksft_test_result_fail(
-> >                         "PIDs in all namespaces not as expected (%d,%d,%d)\n",
-> >                         ns3, ns2, ns1);
-> > -out:
-> > -       ret = 0;
+> > > Ard has pointed out that, the __packed
+> > > attribute does indicate to the compiler that the entire thing can appear
+> > > misaligned in memory. So if one follows the other in the capsule header,
+> > > the __packed attribute may be appropriate to ensure that the second one
+> > > is not accessed using misaligned loads and stores.
 > >
-> > -       if (ret)
-> > -               ksft_exit_fail();
-> >         ksft_exit_pass();
-> >  }
-> > --
-> > 2.33.0
+> > "For this reason, use the __packed attribute to indicate to the
+> > compiler that the entire structure can appear misaligned in memory (as
+> > suggested by Ard) in case one of them follows the other directly in a
+> > capsule header."
 > >
+> Ok, will do.
+> > >
+> > > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> > > ---
+> > > v8: Use efi_guid_t instead of guid_t. (Andy Shevchenko)
+> > > v7: Use __packed instead of pragma pack(1). (Greg Kroah-Hartman, Ard Biesheuve)
+> > > v6: No change since v5.
+> > > v5: No change since v4.
+> > > v4: Revise the commit log to make it more clear. (Rafael J. Wysocki)
+> > > ---
+> > >  include/linux/efi.h | 46 +++++++++++++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 46 insertions(+)
+> > >
+> > > diff --git a/include/linux/efi.h b/include/linux/efi.h
+> > > index 6b5d36babfcc..1ec73c5ab6c9 100644
+> > > --- a/include/linux/efi.h
+> > > +++ b/include/linux/efi.h
+> > > @@ -148,6 +148,52 @@ typedef struct {
+> > >         u32 imagesize;
+> > >  } efi_capsule_header_t;
+> > >
+> > > +/* EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER */
+> > > +struct efi_manage_capsule_header {
+> > > +       u32 ver;
+> > > +       u16 emb_drv_cnt;
+> > > +       u16 payload_cnt;
+> > > +       /*
+> > > +        * Variable array indicated by number of
+> > > +        * (emb_drv_cnt + payload_cnt)
+> >
+> > * Variable-size array of the size given by the sum of
+> > * emb_drv_cnt and payload_cnt.
+> >
+> Ok, will change it.
+> > > +        */
+> > > +       u64 offset_list[];
+> > > +} __packed;
+> > > +
+> > > +/* EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER */
+> > > +struct efi_manage_capsule_image_header {
+> > > +       u32 ver;
+> > > +       efi_guid_t image_type_id;
+> > > +       u8 image_index;
+> > > +       u8 reserved_bytes[3];
+> > > +       u32 image_size;
+> > > +       u32 vendor_code_size;
+> > > +       /* ver = 2. */
+> >
+> > What does this mean?
+> >
+> > > +       u64 hw_ins;
+> > > +       /* ver = v3. */
+> >
+> > And same here?
+> >
+> The hw_ins was introduced in version 2, and capsule_support
+> was introduced in version 3 of the capsule image format.
+> I'll revise the comment in next version.
 
-
-
--- 
-Thanks,
-~Nick Desaulniers
+Please do.
