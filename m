@@ -2,169 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3153145614B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B58456150
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:17:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234036AbhKRRTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 12:19:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54804 "EHLO
+        id S234046AbhKRRUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 12:20:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234025AbhKRRTR (ORCPT
+        with ESMTP id S233968AbhKRRUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 12:19:17 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E7FC061748
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:16:16 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id p18so5784536plf.13
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:16:16 -0800 (PST)
+        Thu, 18 Nov 2021 12:20:08 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F09B3C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:17:07 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id np3so5636922pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:17:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=FndYr0qwU2GRfRJE7/Zc89ZCgTNkWQJ8LHvpWcp9GA0=;
-        b=Ju1LRNiA/W27gB9xy5brMPAbwNd4NIS3O7OF0tQibcdx032Yx3q/JWBgfrbj1EqMkv
-         hv06mzH/wUfCORLxtFPCTXHRUlKNvNmhX5HS15pGodQhDjmbZ6x6SJ7YLG2nKfjSsN7C
-         K3lvdbNgasHvN50bbOnOWjxuF3XPJFtWoTEs8=
+        bh=AdNT/e8pWXEGx8y2cLNzuIqObGx1yOxX/rki3SqI27w=;
+        b=MzTqRS09IIUcxWl66e1N7K7IoW9LHDC2F49Jzm7N7j1I2b0puAw8fiVyiEVrEuWvnf
+         9tDhXaxNBb6fRjmFnxmmjF0rB1qECOcxQFw9jwxVEEF1zCXpIpg1HdzSywathMEU6O06
+         mOzoAzahrTv+Vfrb6K7uqj27+8J9baKgZuirI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=FndYr0qwU2GRfRJE7/Zc89ZCgTNkWQJ8LHvpWcp9GA0=;
-        b=NIoehWZ/sUn8z4fHBnVM4lQjaVPzKuGUAMFquOcz/RV/YDVryBoA2xM6A9zUTe+TkF
-         fmYMJIbDy8hlLE/Ch4mQrk6Gtd4afAK6JIOhz8OAEKUEvTGFmSxx1WH6ho+oquUlGEi0
-         dmOCTdvJSILUiIL2gQi4oC9R6FZYTDHz+LoJg0Z/ldML0zBP/xp6RHcyJ3SUpaF6Ek+e
-         HzwyEwEVzfGU3TNaqQlkFRwyyuE6crCLUwagZz83AY2tWIMUJjVNUKy0rCsDfEtbT2E0
-         MVYiWkE9XtOM3JZZ17gpVXWUo2PmCoZ9Wou72tydM0OQkgEPvxwlEru+5qge4Z3EWNZO
-         4n6w==
-X-Gm-Message-State: AOAM531vb2J4/TkQcnp1NWMh30AkuFlTXLdZUacDGjg6T7fyDnN2aB4q
-        JgyQBTofR21xwSF0ZKGdjGGjyQ==
-X-Google-Smtp-Source: ABdhPJy+MBB6lHWPY8+YDrYXHI/xPNJN9EJi9uDlOmPn4pR0RXebX/Mx/tnu+yfFjq9XXjvqeAmu0Q==
-X-Received: by 2002:a17:90b:97:: with SMTP id bb23mr12331985pjb.201.1637255776529;
-        Thu, 18 Nov 2021 09:16:16 -0800 (PST)
-Received: from localhost ([2620:15c:202:201:8ceb:c68a:21af:bebe])
-        by smtp.gmail.com with UTF8SMTPSA id k3sm190564pff.211.2021.11.18.09.16.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Nov 2021 09:16:16 -0800 (PST)
-Date:   Thu, 18 Nov 2021 09:16:14 -0800
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Peter Chen <peter.chen@kernel.org>, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Roger Quadros <rogerq@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH v17 7/7] usb: Specify dependencies on USB_XHCI_PLATFORM
- with 'depends on'
-Message-ID: <YZaKXtRW7oO1SNbG@google.com>
-References: <20211116200739.924401-1-mka@chromium.org>
- <20211116120642.v17.7.If248f05613bbb06a44eb0b0909be5d97218f417b@changeid>
- <20211117022144.GA158646@rowland.harvard.edu>
+        bh=AdNT/e8pWXEGx8y2cLNzuIqObGx1yOxX/rki3SqI27w=;
+        b=2jd+jHcNZnh04yTJojZZbtOnqX3DI0PKnaPN5X7FojjxxRxwo1x/QXaumuyl/DMyE/
+         uC+4Rt94yPzszsBZUc4AOPCIjyby6QaRbmpJYlh13AEaiETmCc7U7a8gCc5Io66XUXdq
+         AfcJGOmsk7qwl0zjX0lcWHud2meFWYzZ/ZtBiL0hdC+HKvBvpI2mHZgfprBEQQqkJCLQ
+         LNigkEOi9900KlBjuXMzZsdGBkY2faJ6XjdUcMPNFHym+/ZOLuUD5Pfb3fw8p6sOgIpm
+         DH6bUriizJPnkMH+vnZjGdH3XFElCtzOHJIuimV2WTBMPCr/GVmS91cl/Lqz2j5O+7Yb
+         VngA==
+X-Gm-Message-State: AOAM533BYPnjZG2xrBqmfXmLxYHAHq0FIewTmhTVKSrisLVEsM3b0Xng
+        TykuAyWXZ55COQN9sZIMOQM8bQ==
+X-Google-Smtp-Source: ABdhPJxv5htguG5dAaQZenD+5ssUM5X/WV7alFh5ZEYdsEe8SMjBS2O4lsEoq9SmDTw7delwgAsoiA==
+X-Received: by 2002:a17:90a:1a55:: with SMTP id 21mr11950889pjl.240.1637255825349;
+        Thu, 18 Nov 2021 09:17:05 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o7sm195449pgq.59.2021.11.18.09.17.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 09:17:04 -0800 (PST)
+Date:   Thu, 18 Nov 2021 09:17:04 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Holger =?iso-8859-1?Q?Hoffst=E4tte?= 
+        <holger@applied-asynchrony.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Justin Forbes <jmforbes@linuxtx.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        stable <stable@vger.kernel.org>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        =?iso-8859-1?Q?Fran=E7ois?= Guerraz <kubrick@fgv6.net>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH 5.15 000/923] 5.15.3-rc3 review
+Message-ID: <202111180912.356B342@keescook>
+References: <20211117101657.463560063@linuxfoundation.org>
+ <YZV02RCRVHIa144u@fedora64.linuxtx.org>
+ <55c7b316-e03d-9e91-d74c-fea63c469b3b@applied-asynchrony.com>
+ <CAHk-=wjHbKfck1Ws4Y0pUZ7bxdjU9eh2WK0EFsv65utfeVkT9Q@mail.gmail.com>
+ <202111171609.56F12BD@keescook>
+ <YZYLC9D6zpUneYtn@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211117022144.GA158646@rowland.harvard.edu>
+In-Reply-To: <YZYLC9D6zpUneYtn@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 09:21:44PM -0500, Alan Stern wrote:
-> On Tue, Nov 16, 2021 at 12:07:39PM -0800, Matthias Kaehlcke wrote:
-> > Some USB controller drivers that depend on the xhci-plat driver
-> > specify this dependency using 'select' in Kconfig. This is not
-> > recommended for symbols that have other dependencies as it may
-> > lead to invalid configurations. Use 'depends on' to specify the
-> > dependency instead of 'select'.
+On Thu, Nov 18, 2021 at 09:12:59AM +0100, Greg Kroah-Hartman wrote:
+> On Wed, Nov 17, 2021 at 04:16:51PM -0800, Kees Cook wrote:
+> > On Wed, Nov 17, 2021 at 03:50:17PM -0800, Linus Torvalds wrote:
+> > > Sorry for top-posting and quoting this all, but the actual people
+> > > involved with the wchan changes don't seem to be on the participant
+> > > list.
 > > 
-> > For dwc3 specify the dependency on USB_XHCI_PLATFORM in
-> > USB_DWC3_HOST and USB_DWC3_DUAL_ROLE. Also adjust the
-> > dependencies of USB_DWC3_CORE to make sure that at least one
-> > of USB_DWC3_HOST, USB_DWC3_GADGET or USB_DWC3_DUAL_ROLE can be
-> > selected.
+> > Adding more folks from a private report and
+> > https://bugzilla.kernel.org/show_bug.cgi?id=215031
 > > 
-> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> > Reviewed-by: Roger Quadros <rogerq@kernel.org>
-> > Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> > ---
+> > and for the new people, here's a lore link for this thread:
+> > https://lore.kernel.org/stable/YZV02RCRVHIa144u@fedora64.linuxtx.org/
 > > 
-> > Changes in v17:
-> > - removed explicit dependency on USB from USB_DWC3
-> > - added 'Reviewed-by' tags from Roger and Doug
 > > 
-> > Changes in v16:
-> > - none
-> > 
-> > Changes in v15:
-> > - adjusted dependencies of USB_DWC3_CORE to make sure it can only
-> >   be enabled when at least one of USB_DWC3_HOST, USB_DWC3_GADGET
-> >   or USB_DWC3_DUAL_ROLE is selectable
-> > - updated commit message
-> > 
-> > Changes in v14:
-> > - none
-> > 
-> > Changes in v13:
-> > - patch added to the series
+> > FWIW, earlier bisection pointed to the stable backport of
+> > 5d1ceb3969b6b2e47e2df6d17790a7c5a20fcbb4 being the primary culprit.
+> > At first glance it seems to me that the problem with -stable is that an
+> > unvetted subset of the wchan refactoring series landed in -stable.
 > 
-> > diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
-> > index d1d926f8f9c2..e5e612f143a1 100644
-> > --- a/drivers/usb/host/Kconfig
-> > +++ b/drivers/usb/host/Kconfig
-> > @@ -80,7 +80,7 @@ config USB_XHCI_MTK
-> >  
-> >  config USB_XHCI_MVEBU
-> >  	tristate "xHCI support for Marvell Armada 375/38x/37xx"
-> > -	select USB_XHCI_PLATFORM
-> > +	depends on USB_XHCI_PLATFORM
-> >  	depends on HAS_IOMEM
-> >  	depends on ARCH_MVEBU || COMPILE_TEST
-> >  	help
-> > @@ -112,9 +112,9 @@ config USB_EHCI_BRCMSTB
-> >  config USB_BRCMSTB
-> >  	tristate "Broadcom STB USB support"
-> >  	depends on (ARCH_BRCMSTB && PHY_BRCM_USB) || COMPILE_TEST
-> > +	depends on !USB_XHCI_HCD || USB_XHCI_PLATFORM
-> >  	select USB_OHCI_HCD_PLATFORM if USB_OHCI_HCD
-> >  	select USB_EHCI_BRCMSTB if USB_EHCI_HCD
-> > -	select USB_XHCI_PLATFORM if USB_XHCI_HCD
-> >  	help
-> >  	  Enables support for XHCI, EHCI and OHCI host controllers
-> >  	  found in Broadcom STB SoC's.
+> What would be the vetted subset?  :)
+
+The ones with "Cc: stable" ;)
+
+> Anyway, I have now dropped the following patches that were in the
+> 5.15.3-rc tree:
+> 	bc9bbb81730e ("x86: Fix get_wchan() to support the ORC unwinder")
+> 	42a20f86dc19 ("sched: Add wrapper for get_wchan() to keep task blocked")
+> 	5d1ceb3969b6 ("x86: Fix __get_wchan() for !STACKTRACE")
 > 
-> It should be pointed out that this now requires people with xHCI systems 
-> to actively turn on CONFIG_USB_XHCI_PLATFORM before they can enable 
-> CONFIG_USB_BRCMSTB.  Before, that was not necessary.  Some users might 
-> get confused and not realize what is needed.  Perhaps something should 
-> be added to the "help" text.
+> And will push out another -rc release to let people test.
+> 
+> If there are any other commits I should have also dropped, please let me
+> know.
 
-I agree that the change could cause confusion, I'm not sure though if
-adding something to the "help" text is a good mitigation. Users won't see
-the text unless they can select the option, which requires
-CONFIG_USB_XHCI_PLATFORM to be enabled. Also the dependencies are specified
-nearby (and displayed), so it seems similar to a code comment on something
-that the code evidently does (e.g. "initialize foobar with 0").
+That looks right to me. These three were part of Peter's much larger
+wchan refactoring (of which 42a20f86dc19 was a core part).
 
-On a different note: I'm considering to break the CONFIG_USB_XHCI_PLATFORM
-related patches out of the onboard_usb_hub series, since the driver
-doesn't any longer depend on xhci_plat. In that sense I'm also open
-to abandon those patches, if they aren't considered an improvement on
-their own.
+Thanks!
+
+-- 
+Kees Cook
