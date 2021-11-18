@@ -2,170 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8104556D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:16:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B7D045567C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:11:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244566AbhKRITk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 03:19:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244546AbhKRIRs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 03:17:48 -0500
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3BD1C0432C2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:11:55 -0800 (PST)
-Received: by mail-wm1-x34a.google.com with SMTP id j193-20020a1c23ca000000b003306ae8bfb7so2243249wmj.7
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:11:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=PKWjAua1xn2U34SqPEegBKZB0S4U3BBHTPl/cM5EGNo=;
-        b=Qq5HBBXgLOy+uTTK9h/vtf7TEvtzH6VyvHygGU2SLhqC+8vkW9T8o1VCD208Q3w+t1
-         scyhlr8UQiTtjfFMGx6Pa0MUX0OoMhFYKvk2KoXHtPYZk2TkQDvtZPU5Y9rDQbMZUZUR
-         9RwXiTztJ48SUHOegy+RtYw7+odGXvL5Q5GUvFE8eBmiSh54gtVgbtOAkz51b5MDPX5i
-         1WOLBP6v9HjIxhTd6gDA75bB5J1Xt6LuJM4JC+Cf+Kgs40VYQdE6uMQRdi02AAY3W43N
-         R4lw8Nv4E9PvzfhsIBIrFuSuCgsIdmoM0hnoLL3HQ9JXmqLL31tOAHurGrQ8eG/xf/L0
-         9YHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=PKWjAua1xn2U34SqPEegBKZB0S4U3BBHTPl/cM5EGNo=;
-        b=4IRElpCGZEFUNXeE1mWYeoCtO9Gbs9UDWS+j0bqqwC3xC0OOrMnpFxtmIOBW3tF/BD
-         3qcaPZJ6UAV4/v5DrxOVWWjmQpwFh5/sVHpx1TJyICi4EsmSexb3vXIHHezyQAO4FKrV
-         5+/wFeY70m3xLOp60Rc725Ch+huEZLWXVNbHJG5nqRJowyxT8YJbX0pgwRopo3lec9CS
-         jowALpT/wV3sIlPkLyaMdZ4OvXN+i2Zv7B7viPecC2gvzuCF8XTjI7KqPmWhEpyHdQ++
-         9DgBJ5BLqlu04AWo8PSUd7gdjhoidI+jOW9J5i6/hcW55SZ1pCLViWd895mnVQmh4cc0
-         NyNA==
-X-Gm-Message-State: AOAM530rod6iD99pnw6MpSg25R/CCdrMVChAU+RiJkzM9ctjrYGqjZ8W
-        uJWuBX0AXh1Rtb5W5ULKEONNJpZEsA==
-X-Google-Smtp-Source: ABdhPJzKthNmbOLQqgVYxXXQxUry4DYDNrfOwiEu0wK+Vcy0l56yOF9N9EJA7PtQ3+5yoKs/cwhn9cVyaQ==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:7155:1b7:fca5:3926])
- (user=elver job=sendgmr) by 2002:a1c:7715:: with SMTP id t21mr7647569wmi.183.1637223114521;
- Thu, 18 Nov 2021 00:11:54 -0800 (PST)
-Date:   Thu, 18 Nov 2021 09:10:27 +0100
-In-Reply-To: <20211118081027.3175699-1-elver@google.com>
-Message-Id: <20211118081027.3175699-24-elver@google.com>
-Mime-Version: 1.0
-References: <20211118081027.3175699-1-elver@google.com>
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH v2 23/23] objtool, kcsan: Remove memory barrier
- instrumentation from noinstr
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>,
-        Will Deacon <will@kernel.org>, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S244325AbhKRIO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 03:14:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38714 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244290AbhKRIOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 03:14:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 298CF61BA2;
+        Thu, 18 Nov 2021 08:11:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637223071;
+        bh=JV2wuEBBp/+TV+h0oOZXKp/9rbQzk41OB9luAA5b+JQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z/EbAlz4zohx8Bny3LbcWNbQWgqvdKrcHJYDq3Wr4yNaahX8BqILflEENT2z8YUC0
+         VTH7ASwniczUXAhUQJoBFjU2PmdCumbkkdGDVYjlHtyDXlJE9HBF4neJJOCVZBm8o5
+         20HnqdZ9pSoYCe/qliFViFHooLXFp+k6Skmu/twi1xCTgFI3SzaWgxkHExPvKAMbwB
+         KBbhavU35+qZn3VGnAKfxWh51Z6e+74AxDOqYQv9yR6eIhZv9Chw7bCeMXD+NtKkDm
+         0rtxXmXKJwJbeXEV3OclqWMn6ly7UP8DJT6D3hEXKuTPfTg3Pwcehgb5tVB9jksYuK
+         pYjQP4N/PHX4w==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mncVS-0006CE-Fp; Thu, 18 Nov 2021 09:10:54 +0100
+Date:   Thu, 18 Nov 2021 09:10:54 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 16/16] tty: drop tty_flip_buffer_push
+Message-ID: <YZYKjmejIqub5tTf@hovoldconsulting.com>
+References: <20210914091134.17426-1-jslaby@suse.cz>
+ <20210914091415.17918-1-jslaby@suse.cz>
+ <20210914091415.17918-9-jslaby@suse.cz>
+ <YUMWaCpT4s8dQKiy@hovoldconsulting.com>
+ <1fd9ed1a-edd2-a154-da1c-022a89b2c722@kernel.org>
+ <01079c75-2d2f-fe57-db0e-6aadf9963846@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <01079c75-2d2f-fe57-db0e-6aadf9963846@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Teach objtool to turn instrumentation required for memory barrier
-modeling into nops in noinstr text.
+On Thu, Nov 18, 2021 at 08:54:05AM +0100, Jiri Slaby wrote:
+> Friendly ping Johan, Greg: any opinions on the tty_schedule_flip vs 
+> tty_flip_buffer_push case -- which one should I keep?
 
-The __tsan_func_entry/exit calls are still emitted by compilers even
-with the __no_sanitize_thread attribute. The memory barrier
-instrumentation will be inserted explicitly (without compiler help), and
-thus needs to also explicitly be removed.
+I still prefer keeping tty_flip_buffer_push() since it's name is much
+more descriptive and since it's used by almost all drivers.
 
-Signed-off-by: Marco Elver <elver@google.com>
----
-v2:
-* Rewrite after rebase to v5.16-rc1.
----
- tools/objtool/check.c               | 37 ++++++++++++++++++++++-------
- tools/objtool/include/objtool/elf.h |  2 +-
- 2 files changed, 30 insertions(+), 9 deletions(-)
+There's also no good reason to force developers to relearn the insert +
+push pattern either (and rewriting the documentation and books that
+describe it).
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 61dfb66b30b6..2b2587e5ec69 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -1071,12 +1071,7 @@ static void annotate_call_site(struct objtool_file *file,
- 		return;
- 	}
+Johan
  
--	/*
--	 * Many compilers cannot disable KCOV with a function attribute
--	 * so they need a little help, NOP out any KCOV calls from noinstr
--	 * text.
--	 */
--	if (insn->sec->noinstr && sym->kcov) {
-+	if (insn->sec->noinstr && sym->removable_instr) {
- 		if (reloc) {
- 			reloc->type = R_NONE;
- 			elf_write_reloc(file->elf, reloc);
-@@ -1991,6 +1986,32 @@ static int read_intra_function_calls(struct objtool_file *file)
- 	return 0;
- }
- 
-+static bool is_removable_instr(const char *name)
-+{
-+	/*
-+	 * Many compilers cannot disable KCOV with a function attribute so they
-+	 * need a little help, NOP out any KCOV calls from noinstr text.
-+	 */
-+	if (!strncmp(name, "__sanitizer_cov_", 16))
-+		return true;
-+
-+	/*
-+	 * Compilers currently do not remove __tsan_func_entry/exit with the
-+	 * __no_sanitize_thread attribute, remove them.
-+	 *
-+	 * Memory barrier instrumentation is not emitted by the compiler, but
-+	 * inserted explicitly, so we need to also remove them.
-+	 */
-+	if (!strncmp(name, "__tsan_func_", 12) ||
-+	    !strcmp(name, "__kcsan_mb") ||
-+	    !strcmp(name, "__kcsan_wmb") ||
-+	    !strcmp(name, "__kcsan_rmb") ||
-+	    !strcmp(name, "__kcsan_release"))
-+		return true;
-+
-+	return false;
-+}
-+
- static int classify_symbols(struct objtool_file *file)
- {
- 	struct section *sec;
-@@ -2011,8 +2032,8 @@ static int classify_symbols(struct objtool_file *file)
- 			if (!strcmp(func->name, "__fentry__"))
- 				func->fentry = true;
- 
--			if (!strncmp(func->name, "__sanitizer_cov_", 16))
--				func->kcov = true;
-+			if (is_removable_instr(func->name))
-+				func->removable_instr = true;
- 		}
- 	}
- 
-diff --git a/tools/objtool/include/objtool/elf.h b/tools/objtool/include/objtool/elf.h
-index cdc739fa9a6f..62e790a09ad2 100644
---- a/tools/objtool/include/objtool/elf.h
-+++ b/tools/objtool/include/objtool/elf.h
-@@ -58,7 +58,7 @@ struct symbol {
- 	u8 static_call_tramp : 1;
- 	u8 retpoline_thunk   : 1;
- 	u8 fentry            : 1;
--	u8 kcov              : 1;
-+	u8 removable_instr   : 1;
- 	struct list_head pv_target;
- };
- 
--- 
-2.34.0.rc2.393.gf8c9666880-goog
-
+> On 22. 09. 21, 8:57, Jiri Slaby wrote:
+> > On 16. 09. 21, 12:03, Johan Hovold wrote:
+> >> On Tue, Sep 14, 2021 at 11:14:15AM +0200, Jiri Slaby wrote:
+> >>> Since commit a9c3f68f3cd8d (tty: Fix low_latency BUG) in 2014,
+> >>> tty_flip_buffer_push() is only a wrapper to tty_schedule_flip(). All
+> >>> users were converted, so remove tty_flip_buffer_push() completely.
+> >>
+> >> Did you consider inlining tty_flip_buffer_push() or unexporting
+> >> tty_schedule_flip() instead?
+> > 
+> > Yes -- I see no reason for two functions doing the very same thing. It's 
+> > only confusing.
+> > 
+> >> The name tty_flip_buffer_push() is arguable more descriptive since the
+> >> work may already be running and is also less tied to the implementation.
+> >>
+> >> The ratio of drivers using tty_flip_buffer_push() over
+> >> tty_schedule_flip() is also something like 186 to 15 so that would
+> >> amount to a lot less churn too.
+> > 
+> > OK, I can do either way. I chose this path as tty_schedule_flip was a 
+> > wrapper to tty_flip_buffer_push. In any case, I wouldn't take the number 
+> > of changed drivers as a measure. But if it makes more sense for people 
+> > regarding the naming, I will "flip" the two flips.
