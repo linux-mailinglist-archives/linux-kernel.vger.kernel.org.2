@@ -2,98 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B27A45576B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B9345576D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:54:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244900AbhKRI53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 03:57:29 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:33303 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244873AbhKRI4X (ORCPT
+        id S244931AbhKRI5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 03:57:40 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39494 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244815AbhKRI4r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 03:56:23 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UxBM4BC_1637225601;
-Received: from 30.22.113.233(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0UxBM4BC_1637225601)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 18 Nov 2021 16:53:21 +0800
-Message-ID: <dc7cc86b-7606-573c-cfd6-86473fd67ab5@linux.alibaba.com>
-Date:   Thu, 18 Nov 2021 16:53:21 +0800
+        Thu, 18 Nov 2021 03:56:47 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AI75pEf026897;
+        Thu, 18 Nov 2021 08:53:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=wC98a+CW1L2VADEvo6Dmf/nqIylCFF1d3qUmNwcLBJw=;
+ b=ib+J11zpWL7MFz1eubqVW/0iPTsSRMz9+9nRclrt4n3rXCnbZsyjexhOwvZdBHlDih6B
+ w1vq5bI3DWNwRH5WwHs0UlVEKEB4DKflN4j7Awpcka9hLyy1pIRK6SJS35KbL4Hy9gHS
+ mnOY6V7gRrRJxs5nR10K6BGBCwgmHu/Ve9Sc+b5CC+Td4y1UhhKISSckoydqC6GVi8wf
+ sMx732AhsH70iWuaTFeDY4amYf4928L5diF28IsHIVTv9z0R/CMoHqcqzqjJ9DR2gq5z
+ OgHvNAXpePPQ5C1ZWrMhO5jkwYSR2zwRkM6AyVTNypG+u6CJUvE2lqP9IbvxN6tpB1ow iA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cdgwu3n70-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Nov 2021 08:53:39 +0000
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AI8oKrp010700;
+        Thu, 18 Nov 2021 08:53:39 GMT
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cdgwu3n63-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Nov 2021 08:53:39 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AI8r9VD001790;
+        Thu, 18 Nov 2021 08:53:36 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 3ca50bk4xf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Nov 2021 08:53:35 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AI8rXOa852630
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Nov 2021 08:53:33 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 26AF15204E;
+        Thu, 18 Nov 2021 08:53:33 +0000 (GMT)
+Received: from osiris (unknown [9.145.3.76])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id CFE0152050;
+        Thu, 18 Nov 2021 08:53:32 +0000 (GMT)
+Date:   Thu, 18 Nov 2021 09:53:31 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org,
+        kbuild-all@lists.01.org, linux-s390@vger.kernel.org,
+        kexec@lists.infradead.org, prudo@redhat.com
+Subject: Re: [PATCH v2 2/2] s390/kexec: fix kmemleak
+Message-ID: <YZYUi9XMyjtpGmAQ@osiris>
+References: <20211116032557.14075-2-bhe@redhat.com>
+ <202111180539.e7kmpOSP-lkp@intel.com>
+ <20211118071327.GF21646@MiWiFi-R3L-srv>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH 00/15] KVM: X86: Fix and clean up for register caches
-Content-Language: en-US
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <20211108124407.12187-1-jiangshanlai@gmail.com>
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-In-Reply-To: <20211108124407.12187-1-jiangshanlai@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211118071327.GF21646@MiWiFi-R3L-srv>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: tjh5oamRJKuuTU60n7_kOAtrssS2cdGp
+X-Proofpoint-GUID: xaUtqSrKmZmugcbAmpwz8qrgXKdMQZF5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-18_04,2021-11-17_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 bulkscore=0 priorityscore=1501 spamscore=0 clxscore=1011
+ malwarescore=0 mlxlogscore=757 adultscore=0 mlxscore=0 lowpriorityscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111180049
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,all
+On Thu, Nov 18, 2021 at 03:13:27PM +0800, Baoquan He wrote:
+> On 11/18/21 at 05:46am, kernel test robot wrote:
+> >    arch/s390/kernel/machine_kexec_file.c: In function 'arch_kimage_file_post_load_cleanup':
+> > >> arch/s390/kernel/machine_kexec_file.c:332:9: error: implicit declaration of function 'kvfree'; did you mean 'vfree'? [-Werror=implicit-function-declaration]
+> >      332 |         kvfree(image->arch.ipl_buf);
+> >          |         ^~~~~~
+> >          |         vfree
+> 
+> OK, kvfree is not wrong, seems vfree is more appropriate since it's
+> clear the ipl_buf is allocated with zvalloc() in ipl_report_finish().
+> 
+> Hi Heiko,
+> 
+> Could you help modify the code in your tree or append below patch to
+> mute the lkp complaint? Sorry for the inconvenience.
+...
+>  arch/s390/kernel/machine_kexec_file.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/s390/kernel/machine_kexec_file.c b/arch/s390/kernel/machine_kexec_file.c
+> index 7f51837e9bc2..351a7ff69a43 100644
+> --- a/arch/s390/kernel/machine_kexec_file.c
+> +++ b/arch/s390/kernel/machine_kexec_file.c
+> @@ -329,7 +329,7 @@ int arch_kexec_apply_relocations_add(struct purgatory_info *pi,
+>  
+>  int arch_kimage_file_post_load_cleanup(struct kimage *image)
+>  {
+> -	kvfree(image->arch.ipl_buf);
+> +	vfree(image->arch.ipl_buf);
 
-Ping
+The problem reported above indicates that slab.h was not
+included. With your patch, while it fixes the problem for this
+particular configuration, this requires vmalloc.h to be included.
 
-Thanks
-Lai
-
-On 2021/11/8 20:43, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
-> 
-> The patchset was started when I read the code of nested_svm_load_cr3()
-> and found that it marks CR3 available other than dirty when changing
-> vcpu->arch.cr3.  I thought its caller has ensured that vmcs.GUEST_CR3
-> will be or already be set to @cr3 so that it doesn't need to be marked
-> dirty.  And later I found that it is not true and it must be a bug in
-> a rare case before I realized that all the code just (ab)uses
-> vcpu->arch.regs_avail for VCPU_EXREG_CR3 and there is not such bug
-> of using regs_avail here.
-> (The above finding becomes a low meaning patch_15 rather than a fix)
-> 
-> The unhappyness of the reading code made me do some cleanup for
-> regs_avail and regs_dirty and kvm_register_xxx() functions in the hope
-> that the code become clearer with less misunderstanding.
-> 
-> Major focus was on VCPU_EXREG_CR3 and VCPU_EXREG_PDPTR.  They are
-> ensured to be marked the correct tags (available or dirty), and the
-> value is ensured to be synced to architecture before run if it is marked
-> dirty.
-> 
-> When cleaning VCPU_EXREG_PDPTR, I also checked if the corresponding
-> cr0/cr4 pdptr bits are all intercepted when !tdp_enabled, and I think
-> it is not clear enough, so X86_CR4_PDPTR_BITS is added as self-comments
-> in the code.
-> 
-> Lai Jiangshan (15):
->    KVM: X86: Ensure the dirty PDPTEs to be loaded
->    KVM: VMX: Mark VCPU_EXREG_PDPTR available in ept_save_pdptrs()
->    KVM: SVM: Always clear available of VCPU_EXREG_PDPTR in svm_vcpu_run()
->    KVM: VMX: Add and use X86_CR4_TLB_BITS when !enable_ept
->    KVM: VMX: Add and use X86_CR4_PDPTR_BITS when !enable_ept
->    KVM: X86: Move CR0 pdptr_bits into header file as X86_CR0_PDPTR_BITS
->    KVM: SVM: Remove outdate comment in svm_load_mmu_pgd()
->    KVM: SVM: Remove useless check in svm_load_mmu_pgd()
->    KVM: SVM: Remove the unneeded code to mark available for CR3
->    KVM: X86: Mark CR3 dirty when vcpu->arch.cr3 is changed
->    KVM: VMX: Update vmcs.GUEST_CR3 only when the guest CR3 is dirty
->    KVM: VMX: Reset the bits that are meaningful to be reset in
->      vmx_register_cache_reset()
->    KVM: SVM: Add and use svm_register_cache_reset()
->    KVM: X86: Remove kvm_register_clear_available()
->    KVM: nVMX: Always write vmcs.GUEST_CR3 during nested VM-Exit
-> 
->   arch/x86/kvm/kvm_cache_regs.h | 13 ++++++------
->   arch/x86/kvm/svm/nested.c     |  1 -
->   arch/x86/kvm/svm/svm.c        | 17 ++++++++--------
->   arch/x86/kvm/svm/svm.h        | 26 ++++++++++++++++++++++++
->   arch/x86/kvm/vmx/nested.c     | 30 ++++++++++++++++++----------
->   arch/x86/kvm/vmx/vmx.c        | 12 +++++++-----
->   arch/x86/kvm/vmx/vmx.h        | 37 +++++++++++++++++++++++++----------
->   arch/x86/kvm/x86.c            | 13 ++++++------
->   8 files changed, 101 insertions(+), 48 deletions(-)
-> 
+I'll merge your patch and add the missing include as well.
