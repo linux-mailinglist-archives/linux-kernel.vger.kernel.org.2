@@ -2,256 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA4D4560D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:43:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCAD44560DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233694AbhKRQqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 11:46:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233653AbhKRQqU (ORCPT
+        id S233683AbhKRQqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 11:46:55 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:52366 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233673AbhKRQqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 11:46:20 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB4BC061748
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:43:19 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id n12so29121395lfe.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:43:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A7D/BeXVr7wzzWFs8SKVTpLA5OK3s6ikrHABb23KOco=;
-        b=CqP/wh5rSorV/TnAQxzdgsZz00pJ5cWLtZd6e3yhJ0X2NfcSIeOGNa4K1m8IOgAuZ/
-         IhTPa0XJNMCiP+pgVih/Bi3fq+TwkhnPnoUretxdR/GVsXAbwudVYOECqRPhHYqKXLFQ
-         IWNRqYT+ZOi+IcKyGcxDtm9HuylzUxlZ8WwILX5upefDxs8JGP6Q2BmfWBsc3yHywHAX
-         9tg08Uy5hehL2b/S0KNhF2j1aITHPZTiUW1kXHrP4cuqQJJCU2ydhZs6+YN1zZ0LvLXR
-         xNfmFuA0sXeU3wxMPjanG//zwdlWx6bTfDU1DGAk3gOII5FKYLJHJgajYOYiOX31wQsP
-         LAww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A7D/BeXVr7wzzWFs8SKVTpLA5OK3s6ikrHABb23KOco=;
-        b=ipTbRcuAlgN5XdcDlgHVYnM3fNjI/e8v4IxKirt5FMF7qyD/g96PPBCCXP1AjPWvCq
-         alBJQsEJlmjjC/KdfsyR+ChlTl0HtrooibRV7/ReGz9oXzo1ooQqn5GOCHmXZ/wRBrBF
-         cJhouW41LcHrTzySUPs03+Oj5GB4wKyeJGZePWgP6RI9WxuKao2uJwjnJSpO9aiF3Ge8
-         0ZVwJIkurZcBn7QLi8AtjiV7Q7ySSxxeqq6KWbxl5ygQpMn5PtH0XH44dvZVfIXbm7AL
-         jxOCyOukuQ5qdE/bsF/hccSQUguXJzSFHaqdLaaLUJSDHVjkW8TeyjIEAxl89k25DUgW
-         X/Yg==
-X-Gm-Message-State: AOAM533nqn9opTe2aAnctJBkQ1h06KK+3yUdYhDBoBPxmtzI4JBl9DYs
-        kOBugJmPFWQMB0LpbUXBYhrmpxJUlgBhr7JsqpMJ32gjZTmedw==
-X-Google-Smtp-Source: ABdhPJxW6myjWm6lja6OnE0jaItEXzM/1vqY0/QtkI9jvuFbZMxUM+NzZUA0oYBmrWBnvhOYOZf0hJ2GBlFtQttYCpA=
-X-Received: by 2002:a05:6512:2804:: with SMTP id cf4mr1847789lfb.644.1637253797827;
- Thu, 18 Nov 2021 08:43:17 -0800 (PST)
+        Thu, 18 Nov 2021 11:46:54 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 48695218B0;
+        Thu, 18 Nov 2021 16:43:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637253833; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uAvLRnRmvQQtZ3go6D5e5zJVFcCKD7HB2NABcevNTLo=;
+        b=auG2BY1i8mGJfduvur7HqOxc61KzrLa9dtfPM63InvHlhhWnX7qO1cJ/5G4gyVxJ/KX28J
+        siifTEBgD0na7RHYRPqWThRSHo5NqR0yMwYBTwM3Dvmolh6085y/YNw/fVNOoHrA8xXkN6
+        p6xziFdFJN03Zs9Q0upvHOG9YF6/3Ns=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637253833;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uAvLRnRmvQQtZ3go6D5e5zJVFcCKD7HB2NABcevNTLo=;
+        b=KkQ8xd7MJnXjLrdy2bTbFJ/yroSDOuVEC8e1dTrcN6OJYHDvRi6xj0dlaxsWpwN15UhxEE
+        +Lu02cyNjLvI9RAQ==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 0EDF2A3B97;
+        Thu, 18 Nov 2021 16:43:53 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id DC2801F2C95; Thu, 18 Nov 2021 17:43:49 +0100 (CET)
+Date:   Thu, 18 Nov 2021 17:43:49 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Chengguang Xu <cgxu519@mykernel.net>
+Cc:     Jan Kara <jack@suse.cz>, Miklos Szeredi <miklos@szeredi.hu>,
+        Amir Goldstein <amir73il@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v5 06/10] ovl: implement overlayfs' ->write_inode
+ operation
+Message-ID: <20211118164349.GB8267@quack2.suse.cz>
+References: <17c5aba1fef.c5c03d5825886.6577730832510234905@mykernel.net>
+ <CAJfpegtr1NkOiY9YWd1meU1yiD-LFX-aB55UVJs94FrX0VNEJQ@mail.gmail.com>
+ <17c5adfe5ea.12f1be94625921.4478415437452327206@mykernel.net>
+ <CAJfpegt4jZpSCXGFk2ieqUXVm3m=ng7QtSzZp2bXVs07bfrbXg@mail.gmail.com>
+ <17d268ba3ce.1199800543649.1713755891767595962@mykernel.net>
+ <CAJfpegttQreuuD_jLgJmrYpsLKBBe2LmB5NSj6F5dHoTzqPArw@mail.gmail.com>
+ <17d2c858d76.d8a27d876510.8802992623030721788@mykernel.net>
+ <17d31bf3d62.1119ad4be10313.6832593367889908304@mykernel.net>
+ <20211118112315.GD13047@quack2.suse.cz>
+ <17d32ecf46e.124314f8f672.8832559275193368959@mykernel.net>
 MIME-Version: 1.0
-References: <20211110220731.2396491-1-brijesh.singh@amd.com> <20211110220731.2396491-45-brijesh.singh@amd.com>
-In-Reply-To: <20211110220731.2396491-45-brijesh.singh@amd.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Thu, 18 Nov 2021 09:43:06 -0700
-Message-ID: <CAMkAt6qGASUFv7_bEDd3zrwt2J8kRxKdNuZCGCnsNvnGr4Uv3g@mail.gmail.com>
-Subject: Re: [PATCH v7 44/45] virt: sevguest: Add support to derive key
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <17d32ecf46e.124314f8f672.8832559275193368959@mykernel.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 3:09 PM Brijesh Singh <brijesh.singh@amd.com> wrote:
->
-> The SNP_GET_DERIVED_KEY ioctl interface can be used by the SNP guest to
-> ask the firmware to provide a key derived from a root key. The derived
-> key may be used by the guest for any purposes it choose, such as a
-> sealing key or communicating with the external entities.
->
-> See SEV-SNP firmware spec for more information.
->
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  Documentation/virt/coco/sevguest.rst  | 19 ++++++++++-
->  drivers/virt/coco/sevguest/sevguest.c | 49 +++++++++++++++++++++++++++
->  include/uapi/linux/sev-guest.h        | 24 +++++++++++++
->  3 files changed, 91 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/virt/coco/sevguest.rst b/Documentation/virt/coco/sevguest.rst
-> index 002c90946b8a..0bd9a65e0370 100644
-> --- a/Documentation/virt/coco/sevguest.rst
-> +++ b/Documentation/virt/coco/sevguest.rst
-> @@ -64,10 +64,27 @@ The SNP_GET_REPORT ioctl can be used to query the attestation report from the
->  SEV-SNP firmware. The ioctl uses the SNP_GUEST_REQUEST (MSG_REPORT_REQ) command
->  provided by the SEV-SNP firmware to query the attestation report.
->
-> -On success, the snp_report_resp.data will contains the report. The report
-> +On success, the snp_report_resp.data will contain the report. The report
->  will contain the format described in the SEV-SNP specification. See the SEV-SNP
->  specification for further details.
->
-> +2.2 SNP_GET_DERIVED_KEY
-> +-----------------------
-> +:Technology: sev-snp
-> +:Type: guest ioctl
-> +:Parameters (in): struct snp_derived_key_req
-> +:Returns (out): struct snp_derived_key_req on success, -negative on error
-> +
-> +The SNP_GET_DERIVED_KEY ioctl can be used to get a key derive from a root key.
+On Thu 18-11-21 20:02:09, Chengguang Xu wrote:
+>  ---- 在 星期四, 2021-11-18 19:23:15 Jan Kara <jack@suse.cz> 撰写 ----
+>  > On Thu 18-11-21 14:32:36, Chengguang Xu wrote:
+>  > > 
+>  > >  ---- 在 星期三, 2021-11-17 14:11:29 Chengguang Xu <cgxu519@mykernel.net> 撰写 ----
+>  > >  >  ---- 在 星期二, 2021-11-16 20:35:55 Miklos Szeredi <miklos@szeredi.hu> 撰写 ----
+>  > >  >  > On Tue, 16 Nov 2021 at 03:20, Chengguang Xu <cgxu519@mykernel.net> wrote:
+>  > >  >  > >
+>  > >  >  > >  ---- 在 星期四, 2021-10-07 21:34:19 Miklos Szeredi <miklos@szeredi.hu> 撰写 ----
+>  > >  >  > >  > On Thu, 7 Oct 2021 at 15:10, Chengguang Xu <cgxu519@mykernel.net> wrote:
+>  > >  >  > >  > >  > However that wasn't what I was asking about.  AFAICS ->write_inode()
+>  > >  >  > >  > >  > won't start write back for dirty pages.   Maybe I'm missing something,
+>  > >  >  > >  > >  > but there it looks as if nothing will actually trigger writeback for
+>  > >  >  > >  > >  > dirty pages in upper inode.
+>  > >  >  > >  > >  >
+>  > >  >  > >  > >
+>  > >  >  > >  > > Actually, page writeback on upper inode will be triggered by overlayfs ->writepages and
+>  > >  >  > >  > > overlayfs' ->writepages will be called by vfs writeback function (i.e writeback_sb_inodes).
+>  > >  >  > >  >
+>  > >  >  > >  > Right.
+>  > >  >  > >  >
+>  > >  >  > >  > But wouldn't it be simpler to do this from ->write_inode()?
+>  > >  >  > >  >
+>  > >  >  > >  > I.e. call write_inode_now() as suggested by Jan.
+>  > >  >  > >  >
+>  > >  >  > >  > Also could just call mark_inode_dirty() on the overlay inode
+>  > >  >  > >  > regardless of the dirty flags on the upper inode since it shouldn't
+>  > >  >  > >  > matter and results in simpler logic.
+>  > >  >  > >  >
+>  > >  >  > >
+>  > >  >  > > Hi Miklos，
+>  > >  >  > >
+>  > >  >  > > Sorry for delayed response for this, I've been busy with another project.
+>  > >  >  > >
+>  > >  >  > > I agree with your suggesion above and further more how about just mark overlay inode dirty
+>  > >  >  > > when it has upper inode? This approach will make marking dirtiness simple enough.
+>  > >  >  > 
+>  > >  >  > Are you suggesting that all non-lower overlay inodes should always be dirty?
+>  > >  >  > 
+>  > >  >  > The logic would be simple, no doubt, but there's the cost to walking
+>  > >  >  > those overlay inodes which don't have a dirty upper inode, right?  
+>  > >  > 
+>  > >  > That's true.
+>  > >  > 
+>  > >  >  > Can you quantify this cost with a benchmark?  Can be totally synthetic,
+>  > >  >  > e.g. lookup a million upper files without modifying them, then call
+>  > >  >  > syncfs.
+>  > >  >  > 
+>  > >  > 
+>  > >  > No problem, I'll do some tests for the performance.
+>  > >  > 
+>  > > 
+>  > > Hi Miklos,
+>  > > 
+>  > > I did some rough tests and the results like below.  In practice,  I don't
+>  > > think that 1.3s extra time of syncfs will cause significant problem.
+>  > > What do you think?
+>  > 
+>  > Well, burning 1.3s worth of CPU time for doing nothing seems like quite a
+>  > bit to me. I understand this is with 1000000 inodes but although that is
+>  > quite a few it is not unheard of. If there would be several containers
+>  > calling sync_fs(2) on the machine they could easily hog the machine... That
+>  > is why I was originally against keeping overlay inodes always dirty and
+>  > wanted their dirtiness to at least roughly track the real need to do
+>  > writeback.
+>  > 
+> 
+> Hi Jan,
+> 
+> Actually, the time on user and sys are almost same with directly excute syncfs on underlying fs.
+> IMO, it only extends syncfs(2) waiting time for perticular container but not burning cpu.
+> What am I missing?
 
-derived
+Ah, right, I've missed that only realtime changed, not systime. I'm sorry
+for confusion. But why did the realtime increase so much? Are we waiting
+for some IO?
 
-> +The derived key can be used by the guest for any purpose, such as sealing keys
-> +or communicating with external entities.
-> +
-> +The ioctl uses the SNP_GUEST_REQUEST (MSG_KEY_REQ) command provided by the
-> +SEV-SNP firmware to derive the key. See SEV-SNP specification for further details
-> +on the various fields passed in the key derivation request.
-> +
-> +On success, the snp_derived_key_resp.data will contains the derived key value. See
-".data will contain the..." or ".data contains the derived key..."
+								Honza
 
-
-> +the SEV-SNP specification for further details.
->
->  Reference
->  ---------
-> diff --git a/drivers/virt/coco/sevguest/sevguest.c b/drivers/virt/coco/sevguest/sevguest.c
-> index 982714c1b4ca..bece6856573e 100644
-> --- a/drivers/virt/coco/sevguest/sevguest.c
-> +++ b/drivers/virt/coco/sevguest/sevguest.c
-> @@ -392,6 +392,52 @@ static int get_report(struct snp_guest_dev *snp_dev, struct snp_guest_request_io
->         return rc;
->  }
->
-> +static int get_derived_key(struct snp_guest_dev *snp_dev, struct snp_guest_request_ioctl *arg)
-> +{
-> +       struct snp_guest_crypto *crypto = snp_dev->crypto;
-> +       struct snp_derived_key_resp resp = {0};
-> +       struct snp_derived_key_req req;
-> +       int rc, resp_len;
-> +       u8 buf[89];
-
-Could we document this magic number?
-
-> +
-> +       if (!arg->req_data || !arg->resp_data)
-> +               return -EINVAL;
-> +
-> +       /* Copy the request payload from userspace */
-> +       if (copy_from_user(&req, (void __user *)arg->req_data, sizeof(req)))
-> +               return -EFAULT;
-> +
-> +       /* Message version must be non-zero */
-> +       if (!req.msg_version)
-> +               return -EINVAL;
-> +
-> +       /*
-> +        * The intermediate response buffer is used while decrypting the
-> +        * response payload. Make sure that it has enough space to cover the
-> +        * authtag.
-> +        */
-> +       resp_len = sizeof(resp.data) + crypto->a_len;
-> +       if (sizeof(buf) < resp_len)
-> +               return -ENOMEM;
-> +
-> +       /* Issue the command to get the attestation report */
-> +       rc = handle_guest_request(snp_dev, SVM_VMGEXIT_GUEST_REQUEST, req.msg_version,
-> +                                 SNP_MSG_KEY_REQ, &req.data, sizeof(req.data), buf, resp_len,
-> +                                 &arg->fw_err);
-> +       if (rc)
-> +               goto e_free;
-
-Should we check the first 32 bits of |data| here since that is a
-status field? If we see 16h here we could return -EINVAL, or better to
-let userspace deal with that error handling?
-
-> +
-> +       /* Copy the response payload to userspace */
-> +       memcpy(resp.data, buf, sizeof(resp.data));
-> +       if (copy_to_user((void __user *)arg->resp_data, &resp, sizeof(resp)))
-> +               rc = -EFAULT;
-> +
-> +e_free:
-> +       memzero_explicit(buf, sizeof(buf));
-> +       memzero_explicit(&resp, sizeof(resp));
-> +       return rc;
-> +}
-> +
->  static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
->  {
->         struct snp_guest_dev *snp_dev = to_snp_dev(file);
-> @@ -417,6 +463,9 @@ static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long
->         case SNP_GET_REPORT:
->                 ret = get_report(snp_dev, &input);
->                 break;
-> +       case SNP_GET_DERIVED_KEY:
-> +               ret = get_derived_key(snp_dev, &input);
-> +               break;
->         default:
->                 break;
->         }
-> diff --git a/include/uapi/linux/sev-guest.h b/include/uapi/linux/sev-guest.h
-> index eda7edcffda8..f6d9c136ff4d 100644
-> --- a/include/uapi/linux/sev-guest.h
-> +++ b/include/uapi/linux/sev-guest.h
-> @@ -36,9 +36,33 @@ struct snp_guest_request_ioctl {
->         __u64 fw_err;
->  };
->
-> +struct __snp_derived_key_req {
-> +       __u32 root_key_select;
-> +       __u32 rsvd;
-> +       __u64 guest_field_select;
-> +       __u32 vmpl;
-> +       __u32 guest_svn;
-> +       __u64 tcb_version;
-> +};
-> +
-> +struct snp_derived_key_req {
-> +       /* message version number (must be non-zero) */
-> +       __u8 msg_version;
-> +
-> +       struct __snp_derived_key_req data;
-> +};
-> +
-> +struct snp_derived_key_resp {
-> +       /* response data, see SEV-SNP spec for the format */
-> +       __u8 data[64];
-> +};
-> +
->  #define SNP_GUEST_REQ_IOC_TYPE 'S'
->
->  /* Get SNP attestation report */
->  #define SNP_GET_REPORT _IOWR(SNP_GUEST_REQ_IOC_TYPE, 0x0, struct snp_guest_request_ioctl)
->
-> +/* Get a derived key from the root */
-> +#define SNP_GET_DERIVED_KEY _IOWR(SNP_GUEST_REQ_IOC_TYPE, 0x1, struct snp_guest_request_ioctl)
-> +
->  #endif /* __UAPI_LINUX_SEV_GUEST_H_ */
-> --
-> 2.25.1
->
+>  > > Test bed: kvm vm 
+>  > > 2.50GHz cpu 32core
+>  > > 64GB mem
+>  > > vm kernel  5.15.0-rc1+ (with ovl syncfs patch V6)
+>  > > 
+>  > > one millon files spread to 2 level of dir hierarchy.
+>  > > test step:
+>  > > 1) create testfiles in ovl upper dir
+>  > > 2) mount overlayfs
+>  > > 3) excute ls -lR to lookup all file in overlay merge dir
+>  > > 4) excute slabtop to make sure overlay inode number
+>  > > 5) call syncfs to the file in merge dir
+>  > > 
+>  > > Tested five times and the reusults are in 1.310s ~ 1.326s
+>  > > 
+>  > > root@VM-144-4-centos test]# time ./syncfs ovl-merge/create-file.sh 
+>  > > syncfs success
+>  > > 
+>  > > real    0m1.310s
+>  > > user    0m0.000s
+>  > > sys     0m0.001s
+>  > > [root@VM-144-4-centos test]# time ./syncfs ovl-merge/create-file.sh 
+>  > > syncfs success
+>  > > 
+>  > > real    0m1.326s
+>  > > user    0m0.001s
+>  > > sys     0m0.000s
+>  > > [root@VM-144-4-centos test]# time ./syncfs ovl-merge/create-file.sh 
+>  > > syncfs success
+>  > > 
+>  > > real    0m1.321s
+>  > > user    0m0.000s
+>  > > sys     0m0.001s
+>  > > [root@VM-144-4-centos test]# time ./syncfs ovl-merge/create-file.sh 
+>  > > syncfs success
+>  > > 
+>  > > real    0m1.316s
+>  > > user    0m0.000s
+>  > > sys     0m0.001s
+>  > > [root@VM-144-4-centos test]# time ./syncfs ovl-merge/create-file.sh 
+>  > > syncfs success
+>  > > 
+>  > > real    0m1.314s
+>  > > user    0m0.001s
+>  > > sys     0m0.001s
+>  > > 
+>  > > 
+>  > > Directly run syncfs to the file in ovl-upper dir.
+>  > > Tested five times and the reusults are in 0.001s ~ 0.003s
+>  > > 
+>  > > [root@VM-144-4-centos test]# time ./syncfs a
+>  > > syncfs success
+>  > > 
+>  > > real    0m0.002s
+>  > > user    0m0.001s
+>  > > sys     0m0.000s
+>  > > [root@VM-144-4-centos test]# time ./syncfs ovl-upper/create-file.sh 
+>  > > syncfs success
+>  > > 
+>  > > real    0m0.003s
+>  > > user    0m0.001s
+>  > > sys     0m0.000s
+>  > > [root@VM-144-4-centos test]# time ./syncfs ovl-upper/create-file.sh 
+>  > > syncfs success
+>  > > 
+>  > > real    0m0.001s
+>  > > user    0m0.000s
+>  > > sys     0m0.001s
+>  > > [root@VM-144-4-centos test]# time ./syncfs ovl-upper/create-file.sh 
+>  > > syncfs success
+>  > > 
+>  > > real    0m0.001s
+>  > > user    0m0.000s
+>  > > sys     0m0.001s
+>  > > [root@VM-144-4-centos test]# time ./syncfs ovl-upper/create-file.sh 
+>  > > syncfs success
+>  > > 
+>  > > real    0m0.001s
+>  > > user    0m0.000s
+>  > > sys     0m0.001s
+>  > > [root@VM-144-4-centos test]# time ./syncfs ovl-upper/create-file.sh 
+>  > > syncfs success
+>  > > 
+>  > > real    0m0.001s
+>  > > user    0m0.000s
+>  > > sys     0m0.001
+>  > > 
+>  > > 
+>  > > 
+>  > > 
+>  > > 
+>  > > 
+>  > -- 
+>  > Jan Kara <jack@suse.com>
+>  > SUSE Labs, CR
+>  > 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
