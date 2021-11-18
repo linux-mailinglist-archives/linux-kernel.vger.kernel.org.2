@@ -2,215 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D56455CB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DABB455CB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 14:31:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbhKRNd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 08:33:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58042 "EHLO
+        id S231260AbhKRNeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 08:34:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230424AbhKRNd5 (ORCPT
+        with ESMTP id S230249AbhKRNeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 08:33:57 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D7ADC061570;
-        Thu, 18 Nov 2021 05:30:57 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id x7so5178191pjn.0;
-        Thu, 18 Nov 2021 05:30:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Rri8CgMU3iUgw+czpevbWjMbr1UWm75xhAwXD02I6xU=;
-        b=FDEnvL+UtpoLRk6Q1zJ5TWKgN3pkejoc+c1lfiUwMmvGmldi6KxwZO1grB8bUwgggl
-         NxymJ9lCNeYeShRKPCEoAFb/qyeXIlHXW6H9LhjrDZVVUGNirPbyJuI24LirczSzl/Na
-         OK380QfTTMyJLsiytjnQRYSmo9aAci9N0vFC8VP0JB29tQt8eoW/ggKIxCPmK5+dxsXW
-         XwurEenZVOh5wEwUMaPPAASeHd9USOigFhhHFenuvMmC1EPdDlgUL2LZwm9an0CE8meS
-         Rv6YcVKeQnHd4N1kacEKQoyflUzVHPAi/1nTgQ8d8eBhHJHyNrVBYPckBm/kGT11HH/L
-         8L/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Rri8CgMU3iUgw+czpevbWjMbr1UWm75xhAwXD02I6xU=;
-        b=a5WFdMRvp59jhSVUzUa3eYMxNzpW8Q7md3s6YaaeYv6B7nGagPp3xNDSe4S4qzCcDB
-         gBgod+Jv66g2t1uVbtTBcWfu56FEb2SvMdkW9UbcqDaaWZWmFtFOZ5Q7wCw0uL+Zw6Hm
-         IghIgj2G1L4KmyLCtUwbdzVkjgNZGZpSU3WDkUJLGykHb4eXCPONhs62AT+Uu1McOUip
-         f+kNo3TvJFpDzMAhz0fmhzqn+du/F08d8iXWR/w3Xju+3GIxnkfqBOn6W0OyoaVr/yg3
-         tKrjAsDs+UFzd9UndqdMEaPldoGAqp09Lm0u/P77JE0LHcd4FS8z1ORSjNkMMiNvNVzI
-         u3Rg==
-X-Gm-Message-State: AOAM532rTZkZbHnxzyYK6ahZXygsGr1UCOQsit2BEcvyF7POV9Q2O9CW
-        pOFUIE4dfDh9KMbfoOEtVqvNVkNSa113nkgB
-X-Google-Smtp-Source: ABdhPJw603nbU+O/fPHP8RoT4nn8P5boytORpwShOu3KLVJrVk3lFo3z0RQCNEqj18u5XFcu5Q1lpg==
-X-Received: by 2002:a17:90a:df14:: with SMTP id gp20mr10690696pjb.186.1637242256451;
-        Thu, 18 Nov 2021 05:30:56 -0800 (PST)
-Received: from theprophet ([2406:7400:63:2c47:5ffe:fc34:61f0:f1ea])
-        by smtp.gmail.com with ESMTPSA id z19sm3624615pfe.181.2021.11.18.05.30.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 05:30:56 -0800 (PST)
-Date:   Thu, 18 Nov 2021 19:00:20 +0530
-From:   Naveen Naidu <naveennaidu479@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        linux-hyperv@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
-        linux-pci@vger.kernel.org, Shawn Lin <shawn.lin@rock-chips.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Russell Currey <ruscur@russell.cc>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Toan Le <toan@os.amperecomputing.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Nirmal Patel <nirmal.patel@linux.intel.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Rob Herring <robh@kernel.org>, Wei Liu <wei.liu@kernel.org>,
-        linux-samsung-soc@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Joyce Ooi <joyce.ooi@intel.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Jianjun Wang <jianjun.wang@mediatek.com>,
-        linux-rockchip@lists.infradead.org,
-        "maintainer:BROADCOM IPROC ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Jonathan Derrick <jonathan.derrick@linux.dev>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Robert Richter <rric@kernel.org>,
-        Sean V Kelley <sean.v.kelley@intel.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Lukas Wunner <lukas@wunner.de>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-Subject: Re: [PATCH v3 01/25] PCI: Add PCI_ERROR_RESPONSE and it's related
- definitions
-Message-ID: <20211118133020.nkr3xzbzonxtrqbw@theprophet>
-References: <f7960a4dee0e417eedd7d2e031d04ac9016c6686.1634825082.git.naveennaidu479@gmail.com>
- <20211117235812.GA1786428@bhelgaas>
+        Thu, 18 Nov 2021 08:34:19 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4849FC061570;
+        Thu, 18 Nov 2021 05:31:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=U3N4YPILgQ/uPDE2BJ2/bMrkZykcR8BBN2K9CD7VYQ4=; b=XY4RacNN3IB6ryNs35EvUNthL4
+        qgYK9YeTteUIvrt6Ps4BUHoCtudpD4jjidMLXvKWnFbK2AgoUzE54LqRKyb84RpR0wa3PWjt5FIsD
+        4DBAFTU1zvtb9Qv1pU6pyEWvHjRhLzIkE/vibzPgGUnJTQcjQQFrNcL/Fz4yADNJkutgHoO8hc9Yk
+        w8KR/lN1lU6u8DFIErDJz2cODWWzstZagogy3GnHId9PDgrGn8IW0d0uXq9ZWJcXfz/wGZB/wO0vc
+        qWacPp19+cH7Hjke9jv0VS5WNNkVVnyk7rEQkKpQGpWMfmgymuo7b+P4uXGvlg4ylaWykY8FxSlVo
+        CLm3Iy/g==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55718)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mnhVR-0002yL-2O; Thu, 18 Nov 2021 13:31:13 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mnhVP-0003xW-W1; Thu, 18 Nov 2021 13:31:12 +0000
+Date:   Thu, 18 Nov 2021 13:31:11 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Sean Anderson <sean.anderson@seco.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        p.zabel@pengutronix.de, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 3/5] net: lan966x: add port module support
+Message-ID: <YZZVn6jve4BvSqyX@shell.armlinux.org.uk>
+References: <20211117091858.1971414-1-horatiu.vultur@microchip.com>
+ <20211117091858.1971414-4-horatiu.vultur@microchip.com>
+ <YZTRUfvPPu5qf7mE@shell.armlinux.org.uk>
+ <20211118095703.owsb2nen5hb5vjz2@soft-dev3-1.localhost>
+ <YZYj9fwCeWdIZJOt@shell.armlinux.org.uk>
+ <20211118125928.tav7k5xlbnhrgp3o@soft-dev3-1.localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211117235812.GA1786428@bhelgaas>
+In-Reply-To: <20211118125928.tav7k5xlbnhrgp3o@soft-dev3-1.localhost>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/11, Bjorn Helgaas wrote:
-> On Thu, Oct 21, 2021 at 08:37:26PM +0530, Naveen Naidu wrote:
-> > An MMIO read from a PCI device that doesn't exist or doesn't respond
-> > causes a PCI error.  There's no real data to return to satisfy the
-> > CPU read, so most hardware fabricates ~0 data.
-> > 
-> > Add a PCI_ERROR_RESPONSE definition for that and use it where
-> > appropriate to make these checks consistent and easier to find.
-> > 
-> > Also add helper definitions SET_PCI_ERROR_RESPONSE and
-> > RESPONSE_IS_PCI_ERROR to make the code more readable.
-> > 
-> > Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-> > Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
-> > ---
-> >  include/linux/pci.h | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> > 
-> > diff --git a/include/linux/pci.h b/include/linux/pci.h
-> > index cd8aa6fce204..689c8277c584 100644
-> > --- a/include/linux/pci.h
-> > +++ b/include/linux/pci.h
-> > @@ -154,6 +154,15 @@ enum pci_interrupt_pin {
-> >  /* The number of legacy PCI INTx interrupts */
-> >  #define PCI_NUM_INTX	4
-> >  
-> > +/*
-> > + * Reading from a device that doesn't respond typically returns ~0.  A
-> > + * successful read from a device may also return ~0, so you need additional
-> > + * information to reliably identify errors.
-> > + */
-> > +#define PCI_ERROR_RESPONSE     (~0ULL)
-> > +#define SET_PCI_ERROR_RESPONSE(val)    (*(val) = ((typeof(*(val))) PCI_ERROR_RESPONSE))
-> > +#define RESPONSE_IS_PCI_ERROR(val) ((val) == ((typeof(val)) PCI_ERROR_RESPONSE))
+On Thu, Nov 18, 2021 at 01:59:28PM +0100, Horatiu Vultur wrote:
+> The 11/18/2021 09:59, Russell King (Oracle) wrote:
+> > Another approach would be to split phylink_mii_c22_pcs_decode_state()
+> > so that the appropriate decode function is selected depending on the
+> > interface state, which may be a better idea.
 > 
-> Beautiful!  I really like this.
->
+> I have tried to look for phylink_mii_c22_pcs_decode_state() and I
+> have found it only here [1], and seems that it depends on [2]. But not
+> much activity happened to these series since October.
+> Do you think they will still get in?
 
-Thank you very much for the review ^^
+I don't see any reason the first two patches should not be sent. I'm
+carrying the second one locally because I use it in some changes I've
+made to the mv88e6xxx code - as I mentioned in the patchwork entry you
+linked to. See:
 
-> I would prefer the macros to start with "PCI_", e.g.,
-> PCI_SET_ERROR_RESPONSE().
-> 
+ http://git.armlinux.org.uk/cgit/linux-arm.git/log/?h=net-queue
 
-ACK
+ "net: phylink: Add helpers for c22 registers without MDIO"
 
-> I think "RESPONSE_IS_PCI_ERROR()" is too strong because (as the
-> comment says), ~0 *may* indicate an error.  Or it may be a successful
-> read of a register that happens to contain ~0.
-> 
-> Possibilities to convey the idea that this isn't definitive:
-> 
->   PCI_POSSIBLE_ERROR_RESPONSE(val)  # a little long
->   PCI_LIKELY_ERROR(val)             # we really have no idea whether
->   PCI_PROBABLE_ERROR(val)           #   likely or probable
->   PCI_POSSIBLE_ERROR(val)           # promising?
->
+Although I notice I committed it to my tree with the wrong author. :(
 
-ACK. Will use PCI_POSSIBLE_ERROR()
+Sean, please can you submit the mdiodev patch and this patch for
+net-next as they have general utility? Thanks.
 
-> Can you rebase to my "main" branch (v5.16-rc1), tweak the above, and
-> collect up the acks/reviews?
-> 
-
-ACK
-
-> We should also browse drivers outside drivers/pci for places we could
-> use these.  Not necessarily as part of this series, although if
-> authors there object, it would be good to learn that earlier than
-> later.
-> 
-> Drivers that implement pci_error_handlers might be a fruitful place to
-> start.  But you've done a great job finding users of ~0 and 0xffff...
-> in drivers/pci/, too.
-> 
-
-A quick grep showed that there are around 80 drivers which have
-pci_error_handlers. I was thinking that it would be better if we handle
-these drivers in another patch series since the current patch series is
-itself 25 patches long. And in my short tenure reading LKML, I gathered
-that folks generally are not so kind to a long list of patches in a
-single patch series ^^' (I might be wrong though, Apologies)
-
-The consensus on the patch series does seem slightly positive so
-ideally, I was hoping that we would not have the case where a author
-does not like the way we are handling this patch. Then again, I'm
-pretty sure that I might be wrong ^^'
-
-I hope it would be okay that I send in a new patch series with the
-suggested changes and handle the other changes in another patch series
-^^
-
-Thanks,
-Naveen
-> > +
-> >  /*
-> >   * pci_power_t values must match the bits in the Capabilities PME_Support
-> >   * and Control/Status PowerState fields in the Power Management capability.
-> > -- 
-> > 2.25.1
-> > 
-> > _______________________________________________
-> > Linux-kernel-mentees mailing list
-> > Linux-kernel-mentees@lists.linuxfoundation.org
-> > https://lists.linuxfoundation.org/mailman/listinfo/linux-kernel-mentees
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
