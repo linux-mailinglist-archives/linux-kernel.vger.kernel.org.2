@@ -2,155 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B98455FDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:50:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DAD455FF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:52:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232768AbhKRPxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 10:53:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232738AbhKRPxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 10:53:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A9BD61B6F;
-        Thu, 18 Nov 2021 15:50:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637250641;
-        bh=elgJ2bP07VrCK8IonkaoD83tPBnzisTdxG/oaHiVdjU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uBMzxTZGTSwY4q0BCXXYyKSG4vvPw6PTE5MrpI3jE9QFZHOKYX1EldxXpiK5S3P2e
-         ybzmYPCdGHfPAnOkHJi2T51glbVaF4JF4Ipd0rRXNBBDzY0E1jPIQaLATuTKBEfQfT
-         hNPlQLp+KtmilUYDavNkssIEtjoECXSYPm+AIQAkF2/Zylpcd2OL5Fj2lNCfu9WIXO
-         gNlaE5nIAZwQmzHwYSIItxEPcm0+cBqvjPbBfy1uQJJsxZ5mHP+ixg+lNq+JxmUp0r
-         PAeqTEC2Unx9oKQ1XHTeSjjpilPCd8x1BLoQGeYFkq1dDrh3jz+hxSv8c57Hay9Pg7
-         kq5f6mERG53zA==
-Received: by pali.im (Postfix)
-        id B2FB5799; Thu, 18 Nov 2021 16:50:38 +0100 (CET)
-Date:   Thu, 18 Nov 2021 16:50:38 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     Rob Herring <robh@kernel.org>, Jim Quinlan <jim2101024@gmail.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Sean V Kelley <sean.v.kelley@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Keith Busch <kbusch@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 5/8] PCI/portdrv: add mechanism to turn on subdev
- regulators
-Message-ID: <20211118155038.3x4bwgubbnuxv3dy@pali>
-References: <20211110221456.11977-1-jim2101024@gmail.com>
- <20211110221456.11977-6-jim2101024@gmail.com>
- <CAL_Jsq+6g-EhyVCeWTMkjOZmBwsOOVZo2jXpzAkjOXcZaxb2eA@mail.gmail.com>
- <CA+-6iNxfrOQtH1JDEjAdSZQkENoaw1tUDTfVc5+G7P6BAbSc6g@mail.gmail.com>
- <CAL_JsqJno4ROQD38buz8Z-tU5aaQL5b_d1R0-D+c9UwnMKYNOw@mail.gmail.com>
- <20211116205337.ui5sjrsmkef4a53k@pali>
- <CA+-6iNxz2RSmJ9C1dfjEOPmuTxELPDiGzsWoL-8KkH8FGjN3nA@mail.gmail.com>
- <20211117154512.aelgnqhcnw3gqu5s@pali>
- <CA+-6iNwUORmdLy9ii748K4JfZQ8J-N48r-q7QO1P9XAZR2W2qw@mail.gmail.com>
+        id S232769AbhKRPze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 10:55:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37015 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232464AbhKRPza (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 10:55:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637250749;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RVRccCHrHSJUs8Dx0UtuzvJdQI+OvJyg4mtalesCP0s=;
+        b=aHvMQrWvljnTyvVtJWKEtmQvC+tA+D9lDCnW4VzNPSY/v6hwubJvnY2wg6nAWPdsaJfYjg
+        KQ3KqN/LZkaIo1fJVKtFOz7wJklNDns2vwxvW/v2r1e9oPkRvBC36gvut3/SoUQPmXsf/2
+        ubvf30o0POqfCzvLUJDZ5c5ISBVrWjk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-34-dXgO5v_fMX-m-4G0OxE5oQ-1; Thu, 18 Nov 2021 10:52:24 -0500
+X-MC-Unique: dXgO5v_fMX-m-4G0OxE5oQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E33A887D543;
+        Thu, 18 Nov 2021 15:52:22 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BE4051B5B7;
+        Thu, 18 Nov 2021 15:52:10 +0000 (UTC)
+Message-ID: <24fa6ee7-a8d1-6737-7bb8-8412ac1f630d@redhat.com>
+Date:   Thu, 18 Nov 2021 16:52:09 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+-6iNwUORmdLy9ii748K4JfZQ8J-N48r-q7QO1P9XAZR2W2qw@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 15/15] KVM: nVMX: Always write vmcs.GUEST_CR3 during
+ nested VM-Exit
+Content-Language: en-US
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+References: <20211108124407.12187-1-jiangshanlai@gmail.com>
+ <20211108124407.12187-16-jiangshanlai@gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211108124407.12187-16-jiangshanlai@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 18 November 2021 10:36:00 Jim Quinlan wrote:
-> On Wed, Nov 17, 2021 at 10:45 AM Pali Rohár <pali@kernel.org> wrote:
-> >
-> > On Wednesday 17 November 2021 10:14:19 Jim Quinlan wrote:
-> > > On Tue, Nov 16, 2021 at 3:53 PM Pali Rohár <pali@kernel.org> wrote:
-> > > >
-> > > > Yes, I was looking at it... main power (12V/3.3V) and AUX power (3.3V)
-> > > > needs to be supplied at the "correct" time during establishing link
-> > > > procedure. I wrote it in my RFC email:
-> > > > https://lore.kernel.org/linux-pci/20211022183808.jdeo7vntnagqkg7g@pali/
-> > > Hello Pali,
-> > >
-> > > I really like your proposal although I would like to get my patchset
-> > > first :-) :-)
-> > >
-> > > Suppose you came up with a patchset for your ideas-- would that include
-> > > changes to existing RC drivers to use the proposed framework?  If so,
-> > > I am wary that it would
-> > > break at least a few of them.  Or would you just present the framework
-> > > and allow the
-> > > RC drivers' authors to opt-in, one by one?
-> >
-> > My idea is to add new "framework" to allow drivers implement new
-> > callbacks for this "framework". There would be no change in drivers
-> > which do not provide these callbacks to ensure that nothing is going to
-> > be broken. I'm planning to implement these callbacks only for RC drivers
-> > for which I have hardware and can properly test to not introduce any
-> > regression. For other existing RC drivers it is up to other authors +
-> > testers. But to decrease future maintenance cost of all RC drivers I
-> > expect that new drivers would not implement any ad-hoc solution in their
-> > "probe" function and instead implement these new callbacks. That is my
-> > idea.
-> >
-> > > At any rate, if you want someone to test some of your ideas I can work
-> > > with you.
-> >
-> > Perfect! If you have any concerns or you see any issues, please reply
-> > that my RFC email. So I can collect feedback.
-> >
-> > Also I sent draft for updating DTS schema for PCIe devices:
-> > https://github.com/devicetree-org/dt-schema/pull/64
+On 11/8/21 13:44, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
 > 
-> Hi Pali,
-> I don't see any mention or placement of the regulator nodes for power;
+> For VM-Enter, vmcs.GUEST_CR3 and vcpu->arch.cr3 are synced and it is
+> better to mark VCPU_EXREG_CR3 available rather than dirty to reduce a
+> redundant vmwrite(GUEST_CR3) in vmx_load_mmu_pgd().
+> 
+> But nested_vmx_load_cr3() is also served for VM-Exit which doesn't
+> set vmcs.GUEST_CR3.
+> 
+> This patch moves writing to vmcs.GUEST_CR3 into nested_vmx_load_cr3()
+> for both nested VM-Eneter/Exit and use kvm_register_mark_available().
+> 
+> This patch doesn't cause any extra writing to vmcs.GUEST_CR3 and if
+> userspace is modifying CR3 with KVM_SET_SREGS later, the dirty info
+> for VCPU_EXREG_CR3 would be set for next writing to vmcs.GUEST_CR3
+> and no update will be lost.
+> 
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> ---
+>   arch/x86/kvm/vmx/nested.c | 32 +++++++++++++++++++++-----------
+>   1 file changed, 21 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index ee5a68c2ea3a..4ddd4b1b0503 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -1133,8 +1133,28 @@ static int nested_vmx_load_cr3(struct kvm_vcpu *vcpu, unsigned long cr3,
+>   	if (!nested_ept)
+>   		kvm_mmu_new_pgd(vcpu, cr3);
+>   
+> +	/*
+> +	 * Immediately write vmcs.GUEST_CR3 when changing vcpu->arch.cr3.
+> +	 *
+> +	 * VCPU_EXREG_CR3 is marked available rather than dirty because
+> +	 * vcpu->arch.cr3 and vmcs.GUEST_CR3 are synced when enable_ept and
+> +	 * vmcs.GUEST_CR3 is irrelevant to vcpu->arch.cr3 when !enable_ept.
+> +	 *
+> +	 * For VM-Enter case, it will be propagated to vmcs12 on nested
+> +	 * VM-Exit, which can occur without actually running L2 and thus
+> +	 * without hitting vmx_load_mmu_pgd(), e.g. if L1 is entering L2 with
+> +	 * vmcs12.GUEST_ACTIVITYSTATE=HLT, in which case KVM will intercept
+> +	 * the transition to HLT instead of running L2.
+> +	 *
+> +	 * For VM-Exit case, it is likely that vmcs.GUEST_CR3 == cr3 here, but
+> +	 * L1 may set HOST_CR3 to a value other than its CR3 before VM-Entry,
+> +	 * so we just update it unconditionally.
+> +	 */
+> +	if (enable_ept)
+> +		vmcs_writel(GUEST_CR3, cr3);
+> +
+>   	vcpu->arch.cr3 = cr3;
+> -	kvm_register_mark_dirty(vcpu, VCPU_EXREG_CR3);
+> +	kvm_register_mark_available(vcpu, VCPU_EXREG_CR3);
+>   
+>   	/* Re-initialize the MMU, e.g. to pick up CR4 MMU role changes. */
+>   	kvm_init_mmu(vcpu);
+> @@ -2600,16 +2620,6 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
+>   				from_vmentry, entry_failure_code))
+>   		return -EINVAL;
+>   
+> -	/*
+> -	 * Immediately write vmcs02.GUEST_CR3.  It will be propagated to vmcs12
+> -	 * on nested VM-Exit, which can occur without actually running L2 and
+> -	 * thus without hitting vmx_load_mmu_pgd(), e.g. if L1 is entering L2 with
+> -	 * vmcs12.GUEST_ACTIVITYSTATE=HLT, in which case KVM will intercept the
+> -	 * transition to HLT instead of running L2.
+> -	 */
+> -	if (enable_ept)
+> -		vmcs_writel(GUEST_CR3, vmcs12->guest_cr3);
+> -
+>   	/* Late preparation of GUEST_PDPTRs now that EFER and CRs are set. */
+>   	if (load_guest_pdptrs_vmcs12 && nested_cpu_has_ept(vmcs12) &&
+>   	    is_pae_paging(vcpu)) {
+> 
 
-I put in above pull request draft only existing attributes (from
-pci.txt), I have not introduce anything new yet.
+I have to think more about this one and patch 17.  I queued the rest.
 
-> do you agree with where
-> I proposed we place them, ie in the first bridge under the root-complex,  e.g.
-> 
->             pcie0: pcie@7d500000 {                                /*
-> root complex */
->                     compatible = "brcm,bcm2711-pcie";
->                     reg = <0x0 0x7d500000 0x9310>;
-> 
->                     /* PCIe bridge */
->                     pci@0,0 {
->                             #address-cells = <3>;
->                             #size-cells = <2>;
->                             reg = <0x0 0x0 0x0 0x0 0x0>;
->                             compatible = "pciclass,0604";
->                             device_type = "pci";
->                             vpcie3v3-supply = <&vreg7>;     /*
-> <------------- HERE  */
+Paolo
 
-This node 'pci@0,0' describes PCIe Root Port. So yes, it is place where
-power regulators belongs. I agree with you.
-
-(Note: I would suggest to use /* PCIe Root Port */ comment instead of
-/* PCIe bridge */. As PCIe bridge is ambiguous name which could mean
-also other devices.)
-
->                             ranges;
-> 
->                             pci-ep@0,0 {        /* PCIe endpoint */
->                                     assigned-addresses =
->                                         <0x82010000 0x0 0xf8000000 0x6
-> 0x00000000 0x0 0x2000>;
->                                     reg = <0x0 0x0 0x0 0x0 0x0>;
->                                     compatible = "pci14e4,1688";
->                                     #address-cells = <3>;
->                                     #size-cells = <2>;
-> 
->                                     ranges;
->                             };
->                     };
->             };
-> 
-> 
-> Regards,
-> Jim
