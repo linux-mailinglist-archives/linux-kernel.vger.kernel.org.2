@@ -2,59 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1079B455DC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:15:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 073C3455DB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:14:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232891AbhKROSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 09:18:47 -0500
-Received: from foss.arm.com ([217.140.110.172]:41424 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233079AbhKROSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 09:18:25 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D437A101E;
-        Thu, 18 Nov 2021 06:15:24 -0800 (PST)
-Received: from localhost.localdomain (FVFF7649Q05P.cambridge.arm.com [10.1.31.30])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D2B493F766;
-        Thu, 18 Nov 2021 06:15:23 -0800 (PST)
-From:   Vincent Donnefort <vincent.donnefort@arm.com>
-To:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org
-Cc:     linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
-        valentin.schneider@arm.com,
-        Vincent Donnefort <vincent.donnefort@arm.com>
-Subject: [PATCH v2 2/2] sched/fair: Fix task_fits_capacity() capacity type
-Date:   Thu, 18 Nov 2021 14:14:11 +0000
-Message-Id: <20211118141411.2623521-2-vincent.donnefort@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211118141411.2623521-1-vincent.donnefort@arm.com>
-References: <20211118141411.2623521-1-vincent.donnefort@arm.com>
+        id S232840AbhKRORY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 09:17:24 -0500
+Received: from mail-oo1-f42.google.com ([209.85.161.42]:42970 "EHLO
+        mail-oo1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232816AbhKRORY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 09:17:24 -0500
+Received: by mail-oo1-f42.google.com with SMTP id x1-20020a4aea01000000b002c296d82604so2465677ood.9;
+        Thu, 18 Nov 2021 06:14:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2/i4V3dtpF9xb337GEz6haUH1nPDQyWK9CkRADwvN/w=;
+        b=Wo2tdUvkCdlTlzT+WCEJtD6FP+qBr1jADDXxdh/34dkSjmUfvE2tyipPe1SUrizhYi
+         WZcCFl5jm1qU4iBlrYIAp1KGLWTsC+5CFxadlQNHRbtF0w3IXFOrub92euZ/Q1aYUCiy
+         ieNbBIRyuvSyRnxACRCLUCILS7Zi43Zb5zcnmjNSy1X/gPsMn8NwnA6Infq0o5HYUuLX
+         cbwJOqyu7phTHqX4z2/s5pFNnXKsyKsa1yljadz7m62XzOy7/vmDGn5XDEledKdtNKpz
+         DL1QShr0c50hKFraYl5pf23s2vJAD3fxzecJDeM0+6ZvYglpYtFtvDs6aB3HjFn8BYdh
+         YQQA==
+X-Gm-Message-State: AOAM531DMlQgqlTrXjZpAkAFO+wPfZXky1UBPpNRPRRWC1r64Y95qJ6E
+        JLmk2HrsMdeo3J1Kc+YopA==
+X-Google-Smtp-Source: ABdhPJw5DIO10PUkulsiGGz8NUhs86NhGFWYHTAurERsDa36PCBYh8eFzT7BCiomj7x7s6JWqmBvZw==
+X-Received: by 2002:a4a:5842:: with SMTP id f63mr13573966oob.97.1637244863639;
+        Thu, 18 Nov 2021 06:14:23 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id e3sm573529otk.71.2021.11.18.06.14.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 06:14:22 -0800 (PST)
+Received: (nullmailer pid 1025107 invoked by uid 1000);
+        Thu, 18 Nov 2021 14:14:21 -0000
+Date:   Thu, 18 Nov 2021 08:14:21 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Saravana Kannan <saravanak@google.com>,
+        Dmitry Osipenko <digetx@gmail.com>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH] of: property: fw_devlink: Fixup behaviour when
+ 'node_not_dev' is set
+Message-ID: <YZZfvU2SQp5A09vF@robh.at.kernel.org>
+References: <20210902090221.820254-1-ulf.hansson@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210902090221.820254-1-ulf.hansson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-capacity is an unsigned long value, compared with a task utilization which
-is unsigned long as well. There's no need for an intermediate implicit
-long cast.
+On Thu, 02 Sep 2021 11:02:21 +0200, Ulf Hansson wrote:
+> In the struct supplier_bindings the member 'node_not_dev' is described as
+> "The consumer node containing the property is never a device.", but that is
+> inconsistent with the behaviour of the code in of_link_property(), as it
+> calls of_get_compat_node() that starts parsing for a compatible property
+> from the node it gets passed to it. The proper behaviour is to start at the
+> node's parent, so let's do that.
+> 
+> While at it, let's take the opportunity to update the description of the
+> 'node_not_dev' flag, as to clarify its purpose.
+> 
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> ---
+>  drivers/of/property.c | 17 +++++++++++++++--
+>  1 file changed, 15 insertions(+), 2 deletions(-)
+> 
 
-Fixes: 3b1baa6496e6 ("sched/fair: Add 'group_misfit_task' load-balance type")
-Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 8fde6e10e24b..26a88975f68a 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4070,7 +4070,8 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
- 	trace_sched_util_est_se_tp(&p->se);
- }
- 
--static inline int task_fits_capacity(struct task_struct *p, long capacity)
-+static inline int task_fits_capacity(struct task_struct *p,
-+				     unsigned long capacity)
- {
- 	return fits_capacity(uclamp_task_util(p), capacity);
- }
--- 
-2.25.1
-
+Applied, thanks!
