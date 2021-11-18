@@ -2,205 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53EC3455B0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:57:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 792DC455B10
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:58:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344366AbhKRMAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 07:00:03 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1144 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344232AbhKRL7z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 06:59:55 -0500
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AIBgk6F023416;
-        Thu, 18 Nov 2021 11:56:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=FenOA346W98FDSn8BoNiTZo+9+WTDEAKBpVat/VSevc=;
- b=gv+IxrHt+AgU+/wxXo1HdO2lK698p3NeQ2q3es8qGY4z8mc1Ph/Q2e3oDv/Zga0LzfFg
- 0avXKdLNBztP+sv3s1lAMUryfXAEfboDwX5pvmuowggP8uTke6jOMx493j/LaqmcvFfh
- LV07uSymzfAeNWl47vuW/aiLdjNg81RD52LLhKHjg8wsdWvTbQ8OJDdz733VhSMqMZ5Z
- Fp/dPyhqqtgR3Nqyy+4Z2L0P3ZR85t5dXCMFj9LDzOrkk0Jg8zXxSfuXDykWuiLxawuz
- s7phIaCk+utdRo+LJ/LIzPcVXrsY6ZwHYtegbokpcoAcI1S3KL1ViWfiGfvdkt3YzD5z nw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cdns98upc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 18 Nov 2021 11:56:42 +0000
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AIBItEZ001308;
-        Thu, 18 Nov 2021 11:56:41 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cdns98unx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 18 Nov 2021 11:56:41 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AIBlZXc028180;
-        Thu, 18 Nov 2021 11:56:39 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03ams.nl.ibm.com with ESMTP id 3ca50an60h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 18 Nov 2021 11:56:39 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AIBndc158982760
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Nov 2021 11:49:39 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 04F2CA404D;
-        Thu, 18 Nov 2021 11:56:37 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 648C6A405F;
-        Thu, 18 Nov 2021 11:56:36 +0000 (GMT)
-Received: from sig-9-145-38-29.uk.ibm.com (unknown [9.145.38.29])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 18 Nov 2021 11:56:36 +0000 (GMT)
-Message-ID: <06aa2d62d09bcd0a39898f7dcc7fb2fcdc262081.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf] selftests: bpf: check map in map pruning
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Date:   Thu, 18 Nov 2021 12:56:36 +0100
-In-Reply-To: <CAEf4BzZTiyyKLg2y_dSvEEgzjSsCRCeRgt99DmFAHJyGqht8tw@mail.gmail.com>
-References: <20211111161452.86864-1-lmb@cloudflare.com>
-         <CAADnVQKWk5VNT9Z_Cy6COO9NMjkUg1p9gYTsPPzH-fi1qCrDiw@mail.gmail.com>
-         <CACAyw99EhJ8k4f3zeQMf3pRC+L=hQhK=Rb3UwSz19wt9gnMPrA@mail.gmail.com>
-         <20211118010059.c2mixoshcrcz4ywq@ast-mbp>
-         <CAEf4Bza=ZipeiwhvUvLLs9r4dbOUQ6JQTAotmgF6tUr1DAc9pw@mail.gmail.com>
-         <CAEf4BzZTiyyKLg2y_dSvEEgzjSsCRCeRgt99DmFAHJyGqht8tw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: -8DdZLycEXqBpoCbV8D2IhZxJP9dCJAy
-X-Proofpoint-ORIG-GUID: eVsQqMjySa30KcufDoTJAdhDqfSSQhxa
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S1344409AbhKRMA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 07:00:56 -0500
+Received: from mga17.intel.com ([192.55.52.151]:6390 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344390AbhKRMAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 07:00:43 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10171"; a="214887273"
+X-IronPort-AV: E=Sophos;i="5.87,244,1631602800"; 
+   d="scan'208";a="214887273"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 03:57:42 -0800
+X-IronPort-AV: E=Sophos;i="5.87,244,1631602800"; 
+   d="scan'208";a="507410031"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 03:57:39 -0800
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 074CB20138;
+        Thu, 18 Nov 2021 13:57:37 +0200 (EET)
+Date:   Thu, 18 Nov 2021 13:57:37 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Jammy Huang <jammy_huang@aspeedtech.com>
+Cc:     eajames@linux.ibm.com, mchehab@kernel.org, joel@jms.id.au,
+        andrew@aj.id.au, hverkuil-cisco@xs4all.nl,
+        gregkh@linuxfoundation.org, laurent.pinchart@ideasonboard.com,
+        linux-media@vger.kernel.org, openbmc@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 03/10] media: aspeed: add more debug log messages
+Message-ID: <YZY/sfRs+/bH3Was@paasikivi.fi.intel.com>
+References: <20211118074030.685-1-jammy_huang@aspeedtech.com>
+ <20211118074030.685-4-jammy_huang@aspeedtech.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-18_05,2021-11-17_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- phishscore=0 impostorscore=0 priorityscore=1501 lowpriorityscore=0
- bulkscore=0 suspectscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111180067
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211118074030.685-4-jammy_huang@aspeedtech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-11-17 at 17:38 -0800, Andrii Nakryiko wrote:
-> On Wed, Nov 17, 2021 at 5:29 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> > 
-> > On Wed, Nov 17, 2021 at 5:01 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > > 
-> > > On Wed, Nov 17, 2021 at 08:47:45AM +0000, Lorenz Bauer wrote:
-> > > > On Sat, 13 Nov 2021 at 01:27, Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > 
-> > > > > Not sure how you've tested it, but it doesn't work in unpriv:
-> > > > > $ test_verifier 789
-> > > > > #789/u map in map state pruning FAIL
-> > > > > processed 26 insns (limit 1000000) max_states_per_insn 0
-> > > > > total_states
-> > > > > 2 peak_states 2 mark_read 1
-> > > > > #789/p map in map state pruning OK
-> > > > 
-> > > > Strange, I have a script that I use for bisecting which uses a
-> > > > minimal
-> > > > .config + virtue to run a vm, plus I was debugging in gdb at the
-> > > > same
-> > > > time. I might have missed this, apologies.
-> > > > 
-> > > > I guess vmtest.sh is the canonical way to run tests now?
-> > > 
-> > > vmtest.sh runs test_progs only. That's the minimum bar that
-> > 
-> > It runs test_progs by default, unless something else is requested.
-> > You
-> > can run anything inside it, e.g.:
-> > 
-> > ./vmtest.sh -- ./test_maps
-> > 
-> > BTW, we recently moved configs around in libbpf repo on Github, so
-> > this script broke. I'm sending a fix in a few minutes, hopefully.
-> 
-> ... and of course it's not that simple. [0] recently changed how we
-> build qemu image and vmtest.sh had some assumptions. Some trivial
-> things I fixed, but I'm not too familiar with the init scripts stuff.
-> Adding Ilya and KP to hopefully help with this. Ilya, KP, can you
-> please help restore vmtest.sh functionality?
-> 
-> After fixing few paths:
-> 
-> diff --git a/tools/testing/selftests/bpf/vmtest.sh
-> b/tools/testing/selftests/bpf/vmtest.sh
-> index 027198768fad..7ea40108b85d 100755
-> --- a/tools/testing/selftests/bpf/vmtest.sh
-> +++ b/tools/testing/selftests/bpf/vmtest.sh
-> @@ -13,8 +13,8 @@ DEFAULT_COMMAND="./test_progs"
->  MOUNT_DIR="mnt"
->  ROOTFS_IMAGE="root.img"
->  OUTPUT_DIR="$HOME/.bpf_selftests"
-> -
-> KCONFIG_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/latest.config
-> "
-> -
-> KCONFIG_API_URL="https://api.github.com/repos/libbpf/libbpf/contents/travis-ci/vmtest/configs/latest.config
-> "
-> +KCONFIG_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/config-latest.x86_64
-> "
-> +KCONFIG_API_URL="https://api.github.com/repos/libbpf/libbpf/contents/travis-ci/vmtest/configs/config-latest.x86_64
-> "
->  INDEX_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/INDEX
-> "
->  NUM_COMPILE_JOBS="$(nproc)"
->  LOG_FILE_BASE="$(date +"bpf_selftests.%Y-%m-%d_%H-%M-%S")"
-> @@ -85,7 +85,7 @@ newest_rootfs_version()
->  {
->         {
->         for file in "${!URLS[@]}"; do
-> -               if [[ $file =~ ^libbpf-vmtest-rootfs-(.*)\.tar\.zst$
-> ]]; then
-> +               if [[ $file =~
-> ^x86_64/libbpf-vmtest-rootfs-(.*)\.tar\.zst$ ]]; then
->                         echo "${BASH_REMATCH[1]}"
->                 fi
->         done
-> 
-> ... the next problem is more severe. Script complains about missing
-> /etc/rcS.d, if I just force-created it, when kernel boots we get:
-> 
-> 
-> [    1.050803] ---[ end Kernel panic - not syncing: No working init
-> found.  Try passing init= option to kernel. See Linux
-> Documentation/admin-guide/init.rst for guidance. ]---
-> 
-> 
-> Please help.
-> 
->   [0] https://github.com/libbpf/libbpf/pull/204
+Hi Jammy,
 
-I've posted a fix, please give it a try:
+On Thu, Nov 18, 2021 at 03:40:24PM +0800, Jammy Huang wrote:
+> The new messages are listed as below:
+> 1. jpeg header and capture buffer information
+> 2. information for each irq
+> 3. current capture mode, sync or direct-fetch
+> 4. time consumed for each frame
+> 5. input timing changed information
+> 
+> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+> ---
+> v5:
+>   - no update
+> v4:
+>   - modify log level
+> v3:
+>   - update commit message
+> v2:
+>   - new
+> ---
+>  drivers/media/platform/aspeed-video.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+> 
+> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
+> index 6af57467b6d4..e8dd0a7ebfc7 100644
+> --- a/drivers/media/platform/aspeed-video.c
+> +++ b/drivers/media/platform/aspeed-video.c
+> @@ -461,12 +461,17 @@ static void aspeed_video_write(struct aspeed_video *video, u32 reg, u32 val)
+>  
+>  static void update_perf(struct aspeed_video_perf *p)
+>  {
+> +	struct aspeed_video *v = container_of(p, struct aspeed_video,
+> +					      perf);
+> +
+>  	p->duration =
+>  		ktime_to_ms(ktime_sub(ktime_get(),  p->last_sample));
+>  	p->totaltime += p->duration;
+>  
+>  	p->duration_max = max(p->duration, p->duration_max);
+>  	p->duration_min = min(p->duration, p->duration_min);
+> +	v4l2_dbg(2, debug, &v->v4l2_dev, "time consumed: %d ms\n",
+> +		 p->duration);
+>  }
+>  
+>  static int aspeed_video_start_frame(struct aspeed_video *video)
+> @@ -597,6 +602,12 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
+>  	struct aspeed_video *video = arg;
+>  	u32 sts = aspeed_video_read(video, VE_INTERRUPT_STATUS);
+>  
+> +	v4l2_dbg(2, debug, &video->v4l2_dev, "irq sts=%#x %s%s%s%s\n", sts,
+> +		 sts & VE_INTERRUPT_MODE_DETECT_WD ? ", unlock" : "",
+> +		 sts & VE_INTERRUPT_MODE_DETECT ? ", lock" : "",
+> +		 sts & VE_INTERRUPT_CAPTURE_COMPLETE ? ", capture-done" : "",
+> +		 sts & VE_INTERRUPT_COMP_COMPLETE ? ", comp-done" : "");
+> +
+>  	/*
+>  	 * Resolution changed or signal was lost; reset the engine and
+>  	 * re-initialize
+> @@ -910,6 +921,7 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
+>  
+>  	/* Don't use direct mode below 1024 x 768 (irqs don't fire) */
+>  	if (size < DIRECT_FETCH_THRESHOLD) {
+> +		v4l2_dbg(1, debug, &video->v4l2_dev, "Capture: Sync Mode\n");
+>  		aspeed_video_write(video, VE_TGS_0,
+>  				   FIELD_PREP(VE_TGS_FIRST,
+>  					      video->frame_left - 1) |
+> @@ -921,6 +933,7 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
+>  					      video->frame_bottom + 1));
+>  		aspeed_video_update(video, VE_CTRL, 0, VE_CTRL_INT_DE);
+>  	} else {
+> +		v4l2_dbg(1, debug, &video->v4l2_dev, "Capture: Direct Mode\n");
+>  		aspeed_video_update(video, VE_CTRL, 0, VE_CTRL_DIRECT_FETCH);
+>  	}
+>  
+> @@ -937,6 +950,10 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
+>  		if (!aspeed_video_alloc_buf(video, &video->srcs[1], size))
+>  			goto err_mem;
+>  
+> +		v4l2_dbg(1, debug, &video->v4l2_dev, "src buf0 addr(%#x) size(%d)\n",
+> +			 video->srcs[0].dma, video->srcs[0].size);
+> +		v4l2_dbg(1, debug, &video->v4l2_dev, "src buf1 addr(%#x) size(%d)\n",
+> +			 video->srcs[1].dma, video->srcs[1].size);
+>  		aspeed_video_write(video, VE_SRC0_ADDR, video->srcs[0].dma);
+>  		aspeed_video_write(video, VE_SRC1_ADDR, video->srcs[1].dma);
+>  	}
+> @@ -1201,6 +1218,9 @@ static int aspeed_video_set_dv_timings(struct file *file, void *fh,
+>  
+>  	timings->type = V4L2_DV_BT_656_1120;
+>  
+> +	v4l2_dbg(1, debug, &video->v4l2_dev, "set new timings(%dx%d)\n",
+> +		 timings->bt.width, timings->bt.height);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -1383,6 +1403,7 @@ static void aspeed_video_resolution_work(struct work_struct *work)
+>  			.u.src_change.changes = V4L2_EVENT_SRC_CH_RESOLUTION,
+>  		};
+>  
+> +		v4l2_dbg(1, debug, &video->v4l2_dev, "fire source change event\n");
+>  		v4l2_event_queue(&video->vdev, &ev);
+>  	} else if (test_bit(VIDEO_STREAMING, &video->flags)) {
+>  		/* No resolution change so just restart streaming */
+> @@ -1715,6 +1736,7 @@ static int aspeed_video_init(struct aspeed_video *video)
+>  		dev_err(dev, "Unable to request IRQ %d\n", irq);
+>  		return rc;
+>  	}
+> +	dev_info(video->dev, "irq %d\n", irq);
+>  
+>  	video->eclk = devm_clk_get(dev, "eclk");
+>  	if (IS_ERR(video->eclk)) {
+> @@ -1751,6 +1773,8 @@ static int aspeed_video_init(struct aspeed_video *video)
+>  		rc = -ENOMEM;
+>  		goto err_release_reserved_mem;
+>  	}
+> +	dev_info(video->dev, "alloc mem size(%d) at %#x for jpeg header\n",
+> +		 VE_JPEG_HEADER_SIZE, video->jpeg.dma);
+>  
+>  	aspeed_video_init_jpeg_table(video->jpeg.virt, video->yuv420);
+>  
 
-https://lore.kernel.org/bpf/20211118115225.1349726-1-iii@linux.ibm.com/
+You're using both v4l2_*() and dev_*() functions for printing messages.
+They come with different prefixes, and it'd be better to stick with either,
+not both.
 
-Missing was the ${ARCH} prefix when downloading the image, so it ended
-up being empty. Now your ~/.bpf_selftests is poisoned with it, so
-you'll need to run vmtest.sh with -i switch once in order to remove the
-bad image.
-
-Best regards,
-Ilya
-
+-- 
+Sakari Ailus
