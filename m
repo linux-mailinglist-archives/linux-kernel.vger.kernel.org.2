@@ -2,152 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD61455199
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 01:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BB4645519C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 01:20:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241892AbhKRAV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 19:21:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
+        id S241888AbhKRAWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 19:22:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241873AbhKRAVR (ORCPT
+        with ESMTP id S241890AbhKRAWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 19:21:17 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0043C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 16:18:17 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id v15-20020a9d604f000000b0056cdb373b82so7783577otj.7
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 16:18:17 -0800 (PST)
+        Wed, 17 Nov 2021 19:22:34 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90603C061766
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 16:19:34 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id w6-20020a9d77c6000000b0055e804fa524so7805667otl.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 16:19:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=LL5DubqQCg6kyrjHofbR7ktAH9QXKAwsUlnh6eFxqLs=;
-        b=tSptpTtxWS5DDHnjcndc2UmZr2MqGJnCLlzU/lKAu9zZEOqhKfqvS4p3iH7xPo5Q1L
-         swxo+RtjrqATnlBng3/usZvoyl6MuiQK31gX/uRYyLJsetuPgvwzpebmLmlIrN4+1Q2c
-         BFfR/sgSWZC3MmEGBD4D6AiMrmS3qCM81ac38ei7ylQP70C4h580B/GKiqehJzkuYu+Q
-         c+pvo9PTluJYxsdYCERTiNPhT/aDtOSRAGM4yYeZ3/mbB+iUDgs6lfdeeboSgcynbLK2
-         4TZKKMN2YNKCUmCQO9ziDV9kUMMVhpXByH+WteD5B5Teq74OiUZngfWRFOerMIq4+XKH
-         FvKg==
+        bh=/gaJI1xE92w5bybO+2uk+Ues/5YpheyZH3EPuUGi4K8=;
+        b=Sj+T1phOokUkXxOFSzyVqGdWeBFB/EmuPW0cgTxMfAkU0p4yRF4HfxSOYIdbuYDw2S
+         zylCoSWqTJIvWAx51p1VtB/HN41WxuX5pvOoThiiqkHEW7EYEbnUaC3Durx7N2+TaHzt
+         7DxvD4uSw8AXlzNJBbSpIx3WWY1buesKq4qwIvQ5aHuGH7vD7+qV4sXT9Fg6WAHD6Puv
+         kvPx4lxiVXE5VM4U7R5hHM9wb/JQRK9ESCWh4ooUbM2Do4Rb921BLIQnQ+y/s1khn3l5
+         DPKLGAsE9kPBfrympiV6EvLSn3IrHhluCa79Jsg1qqbqoat2wn+seRwV2hOtZMZ2gaoQ
+         cmdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=LL5DubqQCg6kyrjHofbR7ktAH9QXKAwsUlnh6eFxqLs=;
-        b=F6hduNJfy01ihFwfI5nDmo+e3yXYoW995iprfG+xco+zsi8fq+3xP1KadZUDdIn0CO
-         R1uhs6g6BO6GUoLu3outw/4pMnGd67yKrh5Y0K/xhH9pgXupbHo/+ud8k1sRFPP3pJye
-         aCcbOANga3NdOYqYVBeBVjKHAJJaA7YYJcq6/1kYwA87TvPBzPLqUoxLBRDVQFG+lkzq
-         nrtRnlJerhbPD8saNDFiSpbmD5HCT1mV2SLQcCVN7CW6FQ6Sr8/KfZ0VkPE5+lGh2Y27
-         ggAvd9oL+CVwJKlZr9axdCxBWcOvqe5Uq/QbRIuTDPyprMT6DA072sfNtgoO+XllUgPg
-         BLTA==
-X-Gm-Message-State: AOAM531RC35BYxXJGTMnLi4OZTp17rri60ie4z8r1GHoE+R8oEJ6uF6q
-        f5TLREL8l2ktzRU+Zcs1RG0new==
-X-Google-Smtp-Source: ABdhPJyy41hemM9tjAl5AU+OoMFMVSQH3VD+GSG/X51UXF0JFbJWOzE/XyQmsF6xEE5SDYtjjnLqlg==
-X-Received: by 2002:a9d:5d0f:: with SMTP id b15mr16866484oti.172.1637194697044;
-        Wed, 17 Nov 2021 16:18:17 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g26sm298945ots.25.2021.11.17.16.18.15
+        bh=/gaJI1xE92w5bybO+2uk+Ues/5YpheyZH3EPuUGi4K8=;
+        b=sl/dT8WDvldtat1c11CwdkiB6RmEhftegONKQcYPbAc99Bz1NceKZ0Dhk1rJHJY0GD
+         qT4CNbVbDuArmRY6yKGDGRYimaZodZ8BR++c93kgxIV09TZq89j07+F3ct0HI+F3UbiX
+         AKBF8RLbUQ2X1u08Sabx7Wi/VtujxNdGY5ET2RdOjgOUIpGPtU0/OQdxKZ3w/zzqI44s
+         rvzxSh5m5liWnaJMAqTe7uidbToLmYMopr90dRINStL1usGtHv+dqMgitwxRsVpGjY8R
+         Bz+VOvBDSv7JYEOl3ZrvPhYTQQFJfcTM2gzprm2q1JfmA7zHB9W1Xp4ekbz9Vx71m4WT
+         dMow==
+X-Gm-Message-State: AOAM533DN29eXD1XGys0g3dqMfb6r9uOG867pBckDwMnKZr7Ad33BAjf
+        RBNgEm9B9t+j3tgE/OnLR9LFuw==
+X-Google-Smtp-Source: ABdhPJztOz3dIEXI+eue87kR2w090haDCtHhMUZS8VjEo9p8tHIAM2q7B+V2Kziz1qXoZ6C5z5RkRA==
+X-Received: by 2002:a9d:373:: with SMTP id 106mr17315004otv.127.1637194773899;
+        Wed, 17 Nov 2021 16:19:33 -0800 (PST)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id j14sm388102oil.43.2021.11.17.16.19.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 16:18:16 -0800 (PST)
-Date:   Wed, 17 Nov 2021 18:18:13 -0600
+        Wed, 17 Nov 2021 16:19:33 -0800 (PST)
+Date:   Wed, 17 Nov 2021 18:19:28 -0600
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
 To:     Vinod Koul <vkoul@kernel.org>
 Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
         linux-phy@lists.infradead.org, Andy Gross <agross@kernel.org>,
         linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/6] phy: qualcomm: ipq806x-usb: Fix kernel-doc style
-Message-ID: <YZWbxdnfHKdCI/hz@builder.lan>
+Subject: Re: [PATCH 3/6] phy: qualcomm: qmp: Add missing struct documentation
+Message-ID: <YZWcEBcJ9/ghbgTP@yoga>
 References: <20211116103951.34482-1-vkoul@kernel.org>
- <20211116103951.34482-2-vkoul@kernel.org>
+ <20211116103951.34482-3-vkoul@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211116103951.34482-2-vkoul@kernel.org>
+In-Reply-To: <20211116103951.34482-3-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Tue 16 Nov 04:39 CST 2021, Vinod Koul wrote:
 
-> The functions are documented but there were style issues, so fix
-> the style and add missing description for phy_dwc3
+> dp-* members were added to qmp_phy_combo_cfg but documentation was
+> missed, so add that.
 > 
-> drivers/phy/qualcomm/phy-qcom-ipq806x-usb.c:130:
-> drivers/phy/qualcomm/phy-qcom-ipq806x-usb.c:174:
-> drivers/phy/qualcomm/phy-qcom-ipq806x-usb.c:212: warning:
-> This comment starts with '/**', but isn't a kernel-doc comment.
-> Refer Documentation/doc-guide/kernel-doc.rst
+> drivers/phy/qualcomm/phy-qcom-qmp.c:2995: warning: Function parameter or member 'dp_aux_cfg' not described in 'qmp_phy'
+> drivers/phy/qualcomm/phy-qcom-qmp.c:2995: warning: Function parameter or member 'dp_opts' not described in 'qmp_phy'
+> drivers/phy/qualcomm/phy-qcom-qmp.c:2995: warning: Function parameter or member 'dp_clks' not described in 'qmp_phy'
 > 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
->  drivers/phy/qualcomm/phy-qcom-ipq806x-usb.c | 26 +++++++++++----------
->  1 file changed, 14 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/phy/qualcomm/phy-qcom-ipq806x-usb.c b/drivers/phy/qualcomm/phy-qcom-ipq806x-usb.c
-> index bfff0c8c9130..e1b8fa911416 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-ipq806x-usb.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-ipq806x-usb.c
-> @@ -127,12 +127,13 @@ struct phy_drvdata {
->  };
->  
->  /**
-> - * Write register and read back masked value to confirm it is written
-> + * usb_phy_write_readback - Write register and read back masked value to
 
-"Writing kernel-doc" indicates that you should have some parenthesis
-after that function.
-
-> + * confirm it is written
->   *
-> - * @base - QCOM DWC3 PHY base virtual address.
-> - * @offset - register offset.
-> - * @mask - register bitmask specifying what should be updated
-> - * @val - value to write.
-> + * @phy_dwc3: QCOM DWC3 PHY base virtual address.
-
-I guess this was "base" at some point? As you're fixing up the
-kerneldoc, it would be nice to correct this to say something like
-"usb_phy context".
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
 Regards,
 Bjorn
 
-> + * @offset: register offset.
-> + * @mask: register bitmask specifying what should be updated
-> + * @val: value to write.
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  drivers/phy/qualcomm/phy-qcom-qmp.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
+> index 456a59d8c7d0..c96639d5f581 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
+> @@ -2973,6 +2973,9 @@ struct qmp_phy_combo_cfg {
+>   * @qmp: QMP phy to which this lane belongs
+>   * @lane_rst: lane's reset controller
+>   * @mode: current PHY mode
+> + * @dp_aux_cfg: Display port aux config
+> + * @dp_opts: Display port optional config
+> + * @dp_clks: Display port clocks
 >   */
->  static inline void usb_phy_write_readback(struct usb_phy *phy_dwc3,
->  					  u32 offset,
-> @@ -171,11 +172,11 @@ static int wait_for_latch(void __iomem *addr)
->  }
->  
->  /**
-> - * Write SSPHY register
-> + * usb_ss_write_phycreg - Write SSPHY register
->   *
-> - * @base - QCOM DWC3 PHY base virtual address.
-> - * @addr - SSPHY address to write.
-> - * @val - value to write.
-> + * @phy_dwc3: QCOM DWC3 PHY base virtual address.
-> + * @addr: SSPHY address to write.
-> + * @val: value to write.
->   */
->  static int usb_ss_write_phycreg(struct usb_phy *phy_dwc3,
->  				u32 addr, u32 val)
-> @@ -209,10 +210,11 @@ static int usb_ss_write_phycreg(struct usb_phy *phy_dwc3,
->  }
->  
->  /**
-> - * Read SSPHY register.
-> + * usb_ss_read_phycreg - Read SSPHY register.
->   *
-> - * @base - QCOM DWC3 PHY base virtual address.
-> - * @addr - SSPHY address to read.
-> + * @phy_dwc3: QCOM DWC3 PHY base virtual address.
-> + * @addr: SSPHY address to read.
-> + * @val: pointer in which read is store.
->   */
->  static int usb_ss_read_phycreg(struct usb_phy *phy_dwc3,
->  			       u32 addr, u32 *val)
+>  struct qmp_phy {
+>  	struct phy *phy;
 > -- 
 > 2.31.1
 > 
