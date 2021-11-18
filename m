@@ -2,703 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE744565F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 00:00:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4249D456604
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 00:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232816AbhKRXDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 18:03:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48590 "EHLO
+        id S232944AbhKRXFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 18:05:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232992AbhKRXDS (ORCPT
+        with ESMTP id S232816AbhKRXFn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 18:03:18 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1742AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 15:00:18 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id 28so6809627pgq.8
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 15:00:18 -0800 (PST)
+        Thu, 18 Nov 2021 18:05:43 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79018C06173E;
+        Thu, 18 Nov 2021 15:02:42 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so7121980pjb.4;
+        Thu, 18 Nov 2021 15:02:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MLe38JZ2jeRXLwuOwt7Dhqgk8szpHxyFF1FYvPjS3D8=;
-        b=URm76e+295bAveBczUm1GVrdPLAEK85ETiTcjVEhiXjXKTLT6xD7fhLLpDsnbOCz3f
-         zoo2TEVQIF6qxVGZd/e/q3NBrw1XYk43uYd2m2HwAGtJStqT2XCwqwmfi72Ev1Ed/57T
-         tGOF1IUO175FT0xfDEl4mIiIGKGBZ4KVZ9o6d1GzphwNYtAZupeRAY5k/I4YbPq30xMY
-         y89zXhNs5zyCg8Kqs17iu0gu+gInpDq9uqo/WwDbogRluQ0mp3FwbILepl4R0uoN0UGs
-         nhsQ8vPUyO7GEhX+IKn+YQqh2nrq9PVbwdOzDX0QZ/+ay+YGEPARJ6vhphGzHHpGTP27
-         76sQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=bIM6Ba/7xK6AIAQ7aluqQKyzqluGdhQ73YnvOapk94w=;
+        b=otAaHStgH50NW2LsMQfOUiyFA4y7mt+NFR3+8olr0vDXdUkSDnXLT7yQazMIL5EKfM
+         QHF4RIjwZyCmk5j9qXJej6rB+/9DmyI3r8U9BH6b0GH64c/w3uFHqlN7UhXguIKLdxjG
+         h8cvYy+jLBabC7a5fT9/5cC9gCQrcG3N2a9VXSGdosH/WviTmeFTo8uwMUuczuDhHszR
+         FihNPqpaaUMNy8wiOPRbM+FaXFkTMB+tTrnWnJ3ihhW7GheXhUILIu/GqsS7UTdtZvqZ
+         nQbiQsWd39WtOjFwX2RwKUhnH6M6fv/am81VpDKPhHTdI5YPa3MTZx8Cg14B0BTZQiOS
+         XCMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=MLe38JZ2jeRXLwuOwt7Dhqgk8szpHxyFF1FYvPjS3D8=;
-        b=Ovy9SznlMS2Va0Ww4I86ZpzGtptZe7j0LIoDOStvnw0+ln4Sy8R1jMW+Qg3ypvp8YZ
-         C2k5tO+/Dr2P80VoMOP6xYUWUDIJbufrPmAttYp7JD7e9/fnsJ5E/R3L2qR/PtgUwATq
-         /21FZ5oNVmQYAQCqNe7xXtsT0n8qgOUR71B72h+LrzcZ9aWAIm6IawKlexcJ3xpBaqrh
-         XoscU2eGp10MmT0jIrNzvGFSZ/A0zPiQjcIkbEXuJuPi1HMQNIxjf/aE4skl+pJ7gx65
-         tbePgejqwQbKfJjGLqVoEdb7b/8wwuRe4TozEB1fMaeePMCu7SsFI8LivuJ6ZyHp2eKk
-         eLmQ==
-X-Gm-Message-State: AOAM531y2VvsbHABdnCosIcY+vMNaCFgW5nqsbgJzbOsp9PwOLUgGoF5
-        6ndtCjvaPSIPcoeqBhXHX58=
-X-Google-Smtp-Source: ABdhPJyLS0SLEqDMUwD0qoEXtWbL64G+y3SjhDsP4Z43FbWESGt0HmBSmrFm41ooJv7eU40zeZ84JQ==
-X-Received: by 2002:a05:6a00:2349:b0:49f:db1d:c378 with SMTP id j9-20020a056a00234900b0049fdb1dc378mr18383611pfj.53.1637276417388;
-        Thu, 18 Nov 2021 15:00:17 -0800 (PST)
-Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:bdb3:553b:5a2e:7c95])
-        by smtp.gmail.com with ESMTPSA id l1sm9174294pjh.28.2021.11.18.15.00.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 15:00:16 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-From:   Minchan Kim <minchan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>
-Subject: [PATCH] kernfs: switch global kernfs_rwsem lock to per-fs lock
-Date:   Thu, 18 Nov 2021 15:00:08 -0800
-Message-Id: <20211118230008.2679780-1-minchan@kernel.org>
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bIM6Ba/7xK6AIAQ7aluqQKyzqluGdhQ73YnvOapk94w=;
+        b=gw5KWVK1G8nAjX0JqrQdbOeUW8BBTQZW6ShCNzUDriwbf4K37cCmFhmwRy8OaPyjlD
+         NDnN8bGuQd/Cn2hMwTCnLS/EyZPUibSUxhE4KghvTI0KJRVQhGzqxWnqXib3dWaMgQYK
+         L1F3rVa3LwP/WLhg/SAY7TmDl4nH+WsNHRZYNyrvYqbtuoi/l13QeMGG98kojHFpAAtv
+         /ZZHL+lWHAzjI0KbgSOngyMsHH6UJxSNnDNBxdUJ5ebtFSUdc+wnymnLwCB1UNd8KtVO
+         CwP8XJUpzcLe7unwx00dcjg27ahHysLmk/E5857ADIjMKGTqEKiFU5s06F2iWt4FQZPS
+         ldUA==
+X-Gm-Message-State: AOAM530XYrVebFICqY238iwr81YR1/GCvdUp4QppgbNqY5bf027CMGDl
+        OU7zhKTALvafdSjWeZZszJRbz84XacRqvg2VC0wkvt4XO9Sy5Q==
+X-Google-Smtp-Source: ABdhPJxA1hukCNBkgsl+2BmMpkNsPwSY6jWJ25EHz75uDySHB65nqrHbnEyMIppdKLg+NdPPa9EMnF4PVf51OLTbz7w=
+X-Received: by 2002:a17:90b:1e4f:: with SMTP id pi15mr14529866pjb.181.1637276561761;
+ Thu, 18 Nov 2021 15:02:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAK2bqV+NuRYNU0dHni9Cmfvi5CZ7Ycp6rGrNRDLzrdU9xkSXaw@mail.gmail.com>
+ <99d07599-3d72-d389-cfc2-f463230037a5@leemhuis.info> <ed000478-2a60-0066-c337-a04bffc112b1@leemhuis.info>
+ <YZYc6uSpp76Sz4vO@kroah.com> <YZZdUxGbKJKz0x8i@kroah.com>
+In-Reply-To: <YZZdUxGbKJKz0x8i@kroah.com>
+From:   Chris Rankin <rankincj@gmail.com>
+Date:   Thu, 18 Nov 2021 23:02:30 +0000
+Message-ID: <CAK2bqVJyi-g0b=dSDPS5ELb1d8joKark4k4+6AGQdtuM81k2kg@mail.gmail.com>
+Subject: Re: [OOPS] Linux 5.14.19 crashes and burns!
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernfs implementation has big lock granularity(kernfs_rwsem) so
-every kernfs-based(e.g., sysfs, cgroup) fs are able to compete the
-lock. It makes trouble for some cases to wait the global lock
-for a long time even though they are totally independent contexts
-each other.
+Hi,
 
-A general example is process A goes under direct reclaim with holding
-the lock when it accessed the file in sysfs and process B is waiting
-the lock with exclusive mode and then process C is waiting the lock
-until process B could finish the job after it gets the lock from
-process A.
+Yes, 5.14.20 fixes the boot problem in 5.14.19. Thank you. However,
+this WARNING is still present, as with every other 5.14.x kernel I
+have been able to test:
 
-This patch switches the global kernfs_rwsem to per-fs lock, which
-put the rwsem into kernfs_root.
+[   95.796055] ------------[ cut here ]------------
+[   95.819648] WARNING: CPU: 3 PID: 1 at
+drivers/gpu/drm/ttm/ttm_bo.c:409 ttm_bo_release+0x1c/0x266 [ttm]
+[   95.827805] Modules linked in: nf_nat_ftp nf_conntrack_ftp cfg80211
+af_packet nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib
+nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct
+nft_chain_nat nf_tables ebtable_nat ebtable_broute ip6table_nat
+ip6table_mangle ip6table_raw ip6table_security iptable_nat nf_nat
+nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 libcrc32c iptable_mangle
+iptable_raw iptable_security nfnetlink ebtable_filter ebtables
+ip6table_filter ip6_tables iptable_filter bnep it87 hwmon_vid dm_mod
+dax snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio
+snd_hda_codec_hdmi snd_hda_intel btusb uvcvideo btbcm btintel
+videobuf2_vmalloc bluetooth videobuf2_memops videobuf2_v4l2
+videobuf2_common videodev ecdh_generic rfkill ecc snd_usb_audio
+snd_usbmidi_lib snd_intel_dspcfg snd_hda_codec mc snd_hwdep coretemp
+snd_virtuoso snd_oxygen_lib kvm_intel snd_hda_core input_leds
+snd_mpu401_uart kvm snd_rawmidi led_class r8169 snd_seq joydev
+irqbypass snd_seq_device snd_pcm
+[   95.827905]  snd_hrtimer snd_timer realtek gpio_ich mxm_wmi
+iTCO_wdt mdio_devres snd libphy wmi soundcore lpc_ich
+tiny_power_button psmouse pcspkr i2c_i801 i2c_smbus button i7core_edac
+acpi_cpufreq nfsd auth_rpcgss nfs_acl binfmt_misc lockd grace sunrpc
+fuse configfs zram zsmalloc ip_tables x_tables ext4 crc32c_generic
+crc16 mbcache jbd2 hid_microsoft usbhid sr_mod cdrom sd_mod amdgpu
+uhci_hcd drm_ttm_helper ttm mfd_core gpu_sched i2c_algo_bit
+drm_kms_helper cfbfillrect syscopyarea cfbimgblt sysfillrect sysimgblt
+fb_sys_fops cfbcopyarea cec xhci_pci rc_core ehci_pci drm ehci_hcd
+firewire_ohci pata_jmicron xhci_hcd ahci libahci crc32c_intel
+firewire_core libata crc_itu_t serio_raw scsi_mod usbcore usb_common
+drm_panel_orientation_quirks ipmi_devintf ipmi_msghandler msr
+sha256_ssse3 sha256_generic ipv6 crc_ccitt
+[   95.986940] CPU: 7 PID: 1 Comm: systemd Tainted: G          I
+5.14.20 #1
+[   95.993114] Hardware name: Gigabyte Technology Co., Ltd.
+EX58-UD3R/EX58-UD3R, BIOS FB  05/04/2009
+[   96.001000] RIP: 0010:ttm_bo_release+0x1c/0x266 [ttm]
+[   96.004945] Code: 44 89 e0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 41 56
+41 55 41 54 4c 8d a7 90 fe ff ff 55 53 83 7f 4c 00 48 89 fb 48 8b 6f
+e8 74 02 <0f> 0b 80 7b 18 00 48 8b 43 88 0f 85 ac 00 00 00 4c 8d 6b 90
+49 39
+[   96.023154] RSP: 0018:ffffc90000023e00 EFLAGS: 00010202
+[   96.027128] RAX: 0000000000000001 RBX: ffff888105ac0dc8 RCX: 00000000000=
+00292
+[   96.033077] RDX: 0000000000000420 RSI: ffffffffa03010db RDI: ffff888105a=
+c0dc8
+[   96.039021] RBP: ffff88810bd05308 R08: 0000000000000001 R09: 00000000000=
+00003
+[   96.045104] R10: ffff8881274e5e00 R11: ffff8881274e5e00 R12: ffff888105a=
+c0c58
+[   96.051172] R13: ffff888135fe0ff8 R14: ffff88812693d540 R15: 00000000000=
+00000
+[   96.057195] FS:  00007ff7c578cb40(0000) GS:ffff888343dc0000(0000)
+knlGS:0000000000000000
+[   96.064276] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   96.068851] CR2: 00007f2f9152e948 CR3: 00000001008de000 CR4: 00000000000=
+006e0
+[   96.074936] Call Trace:
+[   96.076091]  <TASK>
+[   96.076903]  amdgpu_bo_unref+0x15/0x1e [amdgpu]
+[   96.080419]  amdgpu_gem_object_free+0x2b/0x45 [amdgpu]
+[   96.084505]  drm_gem_dmabuf_release+0x11/0x1a [drm]
+[   96.088205]  dma_buf_release+0x36/0x7d
+[   96.090760]  __dentry_kill+0xf5/0x12f
+[   96.093250]  dput+0xfc/0x136
+[   96.094913]  __fput+0x16a/0x1bc
+[   96.096820]  task_work_run+0x64/0x75
+[   96.099202]  exit_to_user_mode_prepare+0x88/0x112
+[   96.102679]  syscall_exit_to_user_mode+0x14/0x1f
+[   96.105996]  do_syscall_64+0x7a/0x80
+[   96.108276]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[   96.112030] RIP: 0033:0x7ff7c62c2fdb
+[   96.114309] Code: 03 00 00 00 0f 05 48 3d 00 f0 ff ff 77 41 c3 48
+83 ec 18 89 7c 24 0c e8 33 81 f8 ff 8b 7c 24 0c 41 89 c0 b8 03 00 00
+00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 81 81 f8 ff
+8b 44
+[   96.131760] RSP: 002b:00007fff0b56d3f0 EFLAGS: 00000293 ORIG_RAX:
+0000000000000003
+[   96.138100] RAX: 0000000000000000 RBX: 00007ff7c578c8f0 RCX: 00007ff7c62=
+c2fdb
+[   96.143944] RDX: 0000000000000000 RSI: 0000000556cdb0cc RDI: 00000000000=
+00069
+[   96.149859] RBP: 0000000000000069 R08: 0000000000000000 R09: 00000000000=
+0007f
+[   96.155751] R10: 0000000000000000 R11: 0000000000000293 R12: 00000000000=
+00000
+[   96.161679] R13: 0000556cda037680 R14: 0000556cd9ff0719 R15: 0000556cdb0=
+cb480
+[   96.167643]  </TASK>
+[   96.168544] ---[ end trace 9ff3687327d73ce2 ]---
 
-Suggested-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Minchan Kim <minchan@kernel.org>
----
-from RFC - https://lore.kernel.org/lkml/20211116194317.1430399-1-minchan@kernel.org/
- * move kernfs_rwsem to kernfs_root - tejun@
+Cheers,
+Chris
 
- fs/kernfs/dir.c        | 110 ++++++++++++++++++++++++-----------------
- fs/kernfs/file.c       |   6 ++-
- fs/kernfs/inode.c      |  22 ++++++---
- fs/kernfs/mount.c      |  15 +++---
- fs/kernfs/symlink.c    |   5 +-
- include/linux/kernfs.h |   2 +
- 6 files changed, 97 insertions(+), 63 deletions(-)
-
-diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-index 8e0a1378a4b1..13cae0ccce74 100644
---- a/fs/kernfs/dir.c
-+++ b/fs/kernfs/dir.c
-@@ -17,7 +17,6 @@
- 
- #include "kernfs-internal.h"
- 
--DECLARE_RWSEM(kernfs_rwsem);
- static DEFINE_SPINLOCK(kernfs_rename_lock);	/* kn->parent and ->name */
- static char kernfs_pr_cont_buf[PATH_MAX];	/* protected by rename_lock */
- static DEFINE_SPINLOCK(kernfs_idr_lock);	/* root->ino_idr */
-@@ -26,7 +25,7 @@ static DEFINE_SPINLOCK(kernfs_idr_lock);	/* root->ino_idr */
- 
- static bool kernfs_active(struct kernfs_node *kn)
- {
--	lockdep_assert_held(&kernfs_rwsem);
-+	lockdep_assert_held(&kernfs_root(kn)->kernfs_rwsem);
- 	return atomic_read(&kn->active) >= 0;
- }
- 
-@@ -457,14 +456,15 @@ void kernfs_put_active(struct kernfs_node *kn)
-  * return after draining is complete.
-  */
- static void kernfs_drain(struct kernfs_node *kn)
--	__releases(&kernfs_rwsem) __acquires(&kernfs_rwsem)
-+	__releases(&kernfs_root(kn)->kernfs_rwsem)
-+	__acquires(&kernfs_root(kn)->kernfs_rwsem)
- {
- 	struct kernfs_root *root = kernfs_root(kn);
- 
--	lockdep_assert_held_write(&kernfs_rwsem);
-+	lockdep_assert_held_write(&root->kernfs_rwsem);
- 	WARN_ON_ONCE(kernfs_active(kn));
- 
--	up_write(&kernfs_rwsem);
-+	up_write(&root->kernfs_rwsem);
- 
- 	if (kernfs_lockdep(kn)) {
- 		rwsem_acquire(&kn->dep_map, 0, 0, _RET_IP_);
-@@ -483,7 +483,7 @@ static void kernfs_drain(struct kernfs_node *kn)
- 
- 	kernfs_drain_open_files(kn);
- 
--	down_write(&kernfs_rwsem);
-+	down_write(&root->kernfs_rwsem);
- }
- 
- /**
-@@ -718,11 +718,12 @@ struct kernfs_node *kernfs_find_and_get_node_by_id(struct kernfs_root *root,
- int kernfs_add_one(struct kernfs_node *kn)
- {
- 	struct kernfs_node *parent = kn->parent;
-+	struct kernfs_root *root = kernfs_root(parent);
- 	struct kernfs_iattrs *ps_iattr;
- 	bool has_ns;
- 	int ret;
- 
--	down_write(&kernfs_rwsem);
-+	down_write(&root->kernfs_rwsem);
- 
- 	ret = -EINVAL;
- 	has_ns = kernfs_ns_enabled(parent);
-@@ -753,7 +754,7 @@ int kernfs_add_one(struct kernfs_node *kn)
- 		ps_iattr->ia_mtime = ps_iattr->ia_ctime;
- 	}
- 
--	up_write(&kernfs_rwsem);
-+	up_write(&root->kernfs_rwsem);
- 
- 	/*
- 	 * Activate the new node unless CREATE_DEACTIVATED is requested.
-@@ -767,7 +768,7 @@ int kernfs_add_one(struct kernfs_node *kn)
- 	return 0;
- 
- out_unlock:
--	up_write(&kernfs_rwsem);
-+	up_write(&root->kernfs_rwsem);
- 	return ret;
- }
- 
-@@ -788,7 +789,7 @@ static struct kernfs_node *kernfs_find_ns(struct kernfs_node *parent,
- 	bool has_ns = kernfs_ns_enabled(parent);
- 	unsigned int hash;
- 
--	lockdep_assert_held(&kernfs_rwsem);
-+	lockdep_assert_held(&kernfs_root(parent)->kernfs_rwsem);
- 
- 	if (has_ns != (bool)ns) {
- 		WARN(1, KERN_WARNING "kernfs: ns %s in '%s' for '%s'\n",
-@@ -820,7 +821,7 @@ static struct kernfs_node *kernfs_walk_ns(struct kernfs_node *parent,
- 	size_t len;
- 	char *p, *name;
- 
--	lockdep_assert_held_read(&kernfs_rwsem);
-+	lockdep_assert_held_read(&kernfs_root(parent)->kernfs_rwsem);
- 
- 	/* grab kernfs_rename_lock to piggy back on kernfs_pr_cont_buf */
- 	spin_lock_irq(&kernfs_rename_lock);
-@@ -859,11 +860,12 @@ struct kernfs_node *kernfs_find_and_get_ns(struct kernfs_node *parent,
- 					   const char *name, const void *ns)
- {
- 	struct kernfs_node *kn;
-+	struct kernfs_root *root = kernfs_root(parent);
- 
--	down_read(&kernfs_rwsem);
-+	down_read(&root->kernfs_rwsem);
- 	kn = kernfs_find_ns(parent, name, ns);
- 	kernfs_get(kn);
--	up_read(&kernfs_rwsem);
-+	up_read(&root->kernfs_rwsem);
- 
- 	return kn;
- }
-@@ -883,11 +885,12 @@ struct kernfs_node *kernfs_walk_and_get_ns(struct kernfs_node *parent,
- 					   const char *path, const void *ns)
- {
- 	struct kernfs_node *kn;
-+	struct kernfs_root *root = kernfs_root(parent);
- 
--	down_read(&kernfs_rwsem);
-+	down_read(&root->kernfs_rwsem);
- 	kn = kernfs_walk_ns(parent, path, ns);
- 	kernfs_get(kn);
--	up_read(&kernfs_rwsem);
-+	up_read(&root->kernfs_rwsem);
- 
- 	return kn;
- }
-@@ -912,6 +915,7 @@ struct kernfs_root *kernfs_create_root(struct kernfs_syscall_ops *scops,
- 		return ERR_PTR(-ENOMEM);
- 
- 	idr_init(&root->ino_idr);
-+	init_rwsem(&root->kernfs_rwsem);
- 	INIT_LIST_HEAD(&root->supers);
- 
- 	/*
-@@ -1035,6 +1039,7 @@ struct kernfs_node *kernfs_create_empty_dir(struct kernfs_node *parent,
- static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
- {
- 	struct kernfs_node *kn;
-+	struct kernfs_root *root;
- 
- 	if (flags & LOOKUP_RCU)
- 		return -ECHILD;
-@@ -1046,18 +1051,19 @@ static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
- 		/* If the kernfs parent node has changed discard and
- 		 * proceed to ->lookup.
- 		 */
--		down_read(&kernfs_rwsem);
- 		spin_lock(&dentry->d_lock);
- 		parent = kernfs_dentry_node(dentry->d_parent);
- 		if (parent) {
-+			spin_unlock(&dentry->d_lock);
-+			root = kernfs_root(parent);
-+			down_read(&root->kernfs_rwsem);
- 			if (kernfs_dir_changed(parent, dentry)) {
--				spin_unlock(&dentry->d_lock);
--				up_read(&kernfs_rwsem);
-+				up_read(&root->kernfs_rwsem);
- 				return 0;
- 			}
--		}
--		spin_unlock(&dentry->d_lock);
--		up_read(&kernfs_rwsem);
-+			up_read(&root->kernfs_rwsem);
-+		} else
-+			spin_unlock(&dentry->d_lock);
- 
- 		/* The kernfs parent node hasn't changed, leave the
- 		 * dentry negative and return success.
-@@ -1066,7 +1072,8 @@ static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
- 	}
- 
- 	kn = kernfs_dentry_node(dentry);
--	down_read(&kernfs_rwsem);
-+	root = kernfs_root(kn);
-+	down_read(&root->kernfs_rwsem);
- 
- 	/* The kernfs node has been deactivated */
- 	if (!kernfs_active(kn))
-@@ -1085,10 +1092,10 @@ static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
- 	    kernfs_info(dentry->d_sb)->ns != kn->ns)
- 		goto out_bad;
- 
--	up_read(&kernfs_rwsem);
-+	up_read(&root->kernfs_rwsem);
- 	return 1;
- out_bad:
--	up_read(&kernfs_rwsem);
-+	up_read(&root->kernfs_rwsem);
- 	return 0;
- }
- 
-@@ -1102,10 +1109,12 @@ static struct dentry *kernfs_iop_lookup(struct inode *dir,
- {
- 	struct kernfs_node *parent = dir->i_private;
- 	struct kernfs_node *kn;
-+	struct kernfs_root *root;
- 	struct inode *inode = NULL;
- 	const void *ns = NULL;
- 
--	down_read(&kernfs_rwsem);
-+	root = kernfs_root(parent);
-+	down_read(&root->kernfs_rwsem);
- 	if (kernfs_ns_enabled(parent))
- 		ns = kernfs_info(dir->i_sb)->ns;
- 
-@@ -1116,7 +1125,7 @@ static struct dentry *kernfs_iop_lookup(struct inode *dir,
- 		 * create a negative.
- 		 */
- 		if (!kernfs_active(kn)) {
--			up_read(&kernfs_rwsem);
-+			up_read(&root->kernfs_rwsem);
- 			return NULL;
- 		}
- 		inode = kernfs_get_inode(dir->i_sb, kn);
-@@ -1131,7 +1140,7 @@ static struct dentry *kernfs_iop_lookup(struct inode *dir,
- 	 */
- 	if (!IS_ERR(inode))
- 		kernfs_set_rev(parent, dentry);
--	up_read(&kernfs_rwsem);
-+	up_read(&root->kernfs_rwsem);
- 
- 	/* instantiate and hash (possibly negative) dentry */
- 	return d_splice_alias(inode, dentry);
-@@ -1254,7 +1263,7 @@ static struct kernfs_node *kernfs_next_descendant_post(struct kernfs_node *pos,
- {
- 	struct rb_node *rbn;
- 
--	lockdep_assert_held_write(&kernfs_rwsem);
-+	lockdep_assert_held_write(&kernfs_root(root)->kernfs_rwsem);
- 
- 	/* if first iteration, visit leftmost descendant which may be root */
- 	if (!pos)
-@@ -1289,8 +1298,9 @@ static struct kernfs_node *kernfs_next_descendant_post(struct kernfs_node *pos,
- void kernfs_activate(struct kernfs_node *kn)
- {
- 	struct kernfs_node *pos;
-+	struct kernfs_root *root = kernfs_root(kn);
- 
--	down_write(&kernfs_rwsem);
-+	down_write(&root->kernfs_rwsem);
- 
- 	pos = NULL;
- 	while ((pos = kernfs_next_descendant_post(pos, kn))) {
-@@ -1304,14 +1314,14 @@ void kernfs_activate(struct kernfs_node *kn)
- 		pos->flags |= KERNFS_ACTIVATED;
- 	}
- 
--	up_write(&kernfs_rwsem);
-+	up_write(&root->kernfs_rwsem);
- }
- 
- static void __kernfs_remove(struct kernfs_node *kn)
- {
- 	struct kernfs_node *pos;
- 
--	lockdep_assert_held_write(&kernfs_rwsem);
-+	lockdep_assert_held_write(&kernfs_root(kn)->kernfs_rwsem);
- 
- 	/*
- 	 * Short-circuit if non-root @kn has already finished removal.
-@@ -1381,9 +1391,11 @@ static void __kernfs_remove(struct kernfs_node *kn)
-  */
- void kernfs_remove(struct kernfs_node *kn)
- {
--	down_write(&kernfs_rwsem);
-+	struct kernfs_root *root = kernfs_root(kn);
-+
-+	down_write(&root->kernfs_rwsem);
- 	__kernfs_remove(kn);
--	up_write(&kernfs_rwsem);
-+	up_write(&root->kernfs_rwsem);
- }
- 
- /**
-@@ -1469,8 +1481,9 @@ void kernfs_unbreak_active_protection(struct kernfs_node *kn)
- bool kernfs_remove_self(struct kernfs_node *kn)
- {
- 	bool ret;
-+	struct kernfs_root *root = kernfs_root(kn);
- 
--	down_write(&kernfs_rwsem);
-+	down_write(&root->kernfs_rwsem);
- 	kernfs_break_active_protection(kn);
- 
- 	/*
-@@ -1498,9 +1511,9 @@ bool kernfs_remove_self(struct kernfs_node *kn)
- 			    atomic_read(&kn->active) == KN_DEACTIVATED_BIAS)
- 				break;
- 
--			up_write(&kernfs_rwsem);
-+			up_write(&root->kernfs_rwsem);
- 			schedule();
--			down_write(&kernfs_rwsem);
-+			down_write(&root->kernfs_rwsem);
- 		}
- 		finish_wait(waitq, &wait);
- 		WARN_ON_ONCE(!RB_EMPTY_NODE(&kn->rb));
-@@ -1513,7 +1526,7 @@ bool kernfs_remove_self(struct kernfs_node *kn)
- 	 */
- 	kernfs_unbreak_active_protection(kn);
- 
--	up_write(&kernfs_rwsem);
-+	up_write(&root->kernfs_rwsem);
- 	return ret;
- }
- 
-@@ -1530,6 +1543,7 @@ int kernfs_remove_by_name_ns(struct kernfs_node *parent, const char *name,
- 			     const void *ns)
- {
- 	struct kernfs_node *kn;
-+	struct kernfs_root *root;
- 
- 	if (!parent) {
- 		WARN(1, KERN_WARNING "kernfs: can not remove '%s', no directory\n",
-@@ -1537,13 +1551,14 @@ int kernfs_remove_by_name_ns(struct kernfs_node *parent, const char *name,
- 		return -ENOENT;
- 	}
- 
--	down_write(&kernfs_rwsem);
-+	root = kernfs_root(parent);
-+	down_write(&root->kernfs_rwsem);
- 
- 	kn = kernfs_find_ns(parent, name, ns);
- 	if (kn)
- 		__kernfs_remove(kn);
- 
--	up_write(&kernfs_rwsem);
-+	up_write(&root->kernfs_rwsem);
- 
- 	if (kn)
- 		return 0;
-@@ -1562,6 +1577,7 @@ int kernfs_rename_ns(struct kernfs_node *kn, struct kernfs_node *new_parent,
- 		     const char *new_name, const void *new_ns)
- {
- 	struct kernfs_node *old_parent;
-+	struct kernfs_root *root;
- 	const char *old_name = NULL;
- 	int error;
- 
-@@ -1569,7 +1585,8 @@ int kernfs_rename_ns(struct kernfs_node *kn, struct kernfs_node *new_parent,
- 	if (!kn->parent)
- 		return -EINVAL;
- 
--	down_write(&kernfs_rwsem);
-+	root = kernfs_root(kn);
-+	down_write(&root->kernfs_rwsem);
- 
- 	error = -ENOENT;
- 	if (!kernfs_active(kn) || !kernfs_active(new_parent) ||
-@@ -1623,7 +1640,7 @@ int kernfs_rename_ns(struct kernfs_node *kn, struct kernfs_node *new_parent,
- 
- 	error = 0;
-  out:
--	up_write(&kernfs_rwsem);
-+	up_write(&root->kernfs_rwsem);
- 	return error;
- }
- 
-@@ -1694,11 +1711,14 @@ static int kernfs_fop_readdir(struct file *file, struct dir_context *ctx)
- 	struct dentry *dentry = file->f_path.dentry;
- 	struct kernfs_node *parent = kernfs_dentry_node(dentry);
- 	struct kernfs_node *pos = file->private_data;
-+	struct kernfs_root *root;
- 	const void *ns = NULL;
- 
- 	if (!dir_emit_dots(file, ctx))
- 		return 0;
--	down_read(&kernfs_rwsem);
-+
-+	root = kernfs_root(parent);
-+	down_read(&root->kernfs_rwsem);
- 
- 	if (kernfs_ns_enabled(parent))
- 		ns = kernfs_info(dentry->d_sb)->ns;
-@@ -1715,12 +1735,12 @@ static int kernfs_fop_readdir(struct file *file, struct dir_context *ctx)
- 		file->private_data = pos;
- 		kernfs_get(pos);
- 
--		up_read(&kernfs_rwsem);
-+		up_read(&root->kernfs_rwsem);
- 		if (!dir_emit(ctx, name, len, ino, type))
- 			return 0;
--		down_read(&kernfs_rwsem);
-+		down_read(&root->kernfs_rwsem);
- 	}
--	up_read(&kernfs_rwsem);
-+	up_read(&root->kernfs_rwsem);
- 	file->private_data = NULL;
- 	ctx->pos = INT_MAX;
- 	return 0;
-diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
-index 60e2a86c535e..9414a7a60a9f 100644
---- a/fs/kernfs/file.c
-+++ b/fs/kernfs/file.c
-@@ -847,6 +847,7 @@ static void kernfs_notify_workfn(struct work_struct *work)
- {
- 	struct kernfs_node *kn;
- 	struct kernfs_super_info *info;
-+	struct kernfs_root *root;
- repeat:
- 	/* pop one off the notify_list */
- 	spin_lock_irq(&kernfs_notify_lock);
-@@ -859,8 +860,9 @@ static void kernfs_notify_workfn(struct work_struct *work)
- 	kn->attr.notify_next = NULL;
- 	spin_unlock_irq(&kernfs_notify_lock);
- 
-+	root = kernfs_root(kn);
- 	/* kick fsnotify */
--	down_write(&kernfs_rwsem);
-+	down_write(&root->kernfs_rwsem);
- 
- 	list_for_each_entry(info, &kernfs_root(kn)->supers, node) {
- 		struct kernfs_node *parent;
-@@ -898,7 +900,7 @@ static void kernfs_notify_workfn(struct work_struct *work)
- 		iput(inode);
- 	}
- 
--	up_write(&kernfs_rwsem);
-+	up_write(&root->kernfs_rwsem);
- 	kernfs_put(kn);
- 	goto repeat;
- }
-diff --git a/fs/kernfs/inode.c b/fs/kernfs/inode.c
-index c0eae1725435..3d783d80f5da 100644
---- a/fs/kernfs/inode.c
-+++ b/fs/kernfs/inode.c
-@@ -99,10 +99,11 @@ int __kernfs_setattr(struct kernfs_node *kn, const struct iattr *iattr)
- int kernfs_setattr(struct kernfs_node *kn, const struct iattr *iattr)
- {
- 	int ret;
-+	struct kernfs_root *root = kernfs_root(kn);
- 
--	down_write(&kernfs_rwsem);
-+	down_write(&root->kernfs_rwsem);
- 	ret = __kernfs_setattr(kn, iattr);
--	up_write(&kernfs_rwsem);
-+	up_write(&root->kernfs_rwsem);
- 	return ret;
- }
- 
-@@ -111,12 +112,14 @@ int kernfs_iop_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
- {
- 	struct inode *inode = d_inode(dentry);
- 	struct kernfs_node *kn = inode->i_private;
-+	struct kernfs_root *root;
- 	int error;
- 
- 	if (!kn)
- 		return -EINVAL;
- 
--	down_write(&kernfs_rwsem);
-+	root = kernfs_root(kn);
-+	down_write(&root->kernfs_rwsem);
- 	error = setattr_prepare(&init_user_ns, dentry, iattr);
- 	if (error)
- 		goto out;
-@@ -129,7 +132,7 @@ int kernfs_iop_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
- 	setattr_copy(&init_user_ns, inode, iattr);
- 
- out:
--	up_write(&kernfs_rwsem);
-+	up_write(&root->kernfs_rwsem);
- 	return error;
- }
- 
-@@ -184,13 +187,14 @@ int kernfs_iop_getattr(struct user_namespace *mnt_userns,
- {
- 	struct inode *inode = d_inode(path->dentry);
- 	struct kernfs_node *kn = inode->i_private;
-+	struct kernfs_root *root = kernfs_root(kn);
- 
--	down_read(&kernfs_rwsem);
-+	down_read(&root->kernfs_rwsem);
- 	spin_lock(&inode->i_lock);
- 	kernfs_refresh_inode(kn, inode);
- 	generic_fillattr(&init_user_ns, inode, stat);
- 	spin_unlock(&inode->i_lock);
--	up_read(&kernfs_rwsem);
-+	up_read(&root->kernfs_rwsem);
- 
- 	return 0;
- }
-@@ -274,19 +278,21 @@ int kernfs_iop_permission(struct user_namespace *mnt_userns,
- 			  struct inode *inode, int mask)
- {
- 	struct kernfs_node *kn;
-+	struct kernfs_root *root;
- 	int ret;
- 
- 	if (mask & MAY_NOT_BLOCK)
- 		return -ECHILD;
- 
- 	kn = inode->i_private;
-+	root = kernfs_root(kn);
- 
--	down_read(&kernfs_rwsem);
-+	down_read(&root->kernfs_rwsem);
- 	spin_lock(&inode->i_lock);
- 	kernfs_refresh_inode(kn, inode);
- 	ret = generic_permission(&init_user_ns, inode, mask);
- 	spin_unlock(&inode->i_lock);
--	up_read(&kernfs_rwsem);
-+	up_read(&root->kernfs_rwsem);
- 
- 	return ret;
- }
-diff --git a/fs/kernfs/mount.c b/fs/kernfs/mount.c
-index f2f909d09f52..cfa79715fc1a 100644
---- a/fs/kernfs/mount.c
-+++ b/fs/kernfs/mount.c
-@@ -236,6 +236,7 @@ struct dentry *kernfs_node_dentry(struct kernfs_node *kn,
- static int kernfs_fill_super(struct super_block *sb, struct kernfs_fs_context *kfc)
- {
- 	struct kernfs_super_info *info = kernfs_info(sb);
-+	struct kernfs_root *kf_root = kfc->root;
- 	struct inode *inode;
- 	struct dentry *root;
- 
-@@ -255,9 +256,9 @@ static int kernfs_fill_super(struct super_block *sb, struct kernfs_fs_context *k
- 	sb->s_shrink.seeks = 0;
- 
- 	/* get root inode, initialize and unlock it */
--	down_read(&kernfs_rwsem);
-+	down_read(&kf_root->kernfs_rwsem);
- 	inode = kernfs_get_inode(sb, info->root->kn);
--	up_read(&kernfs_rwsem);
-+	up_read(&kf_root->kernfs_rwsem);
- 	if (!inode) {
- 		pr_debug("kernfs: could not get root inode\n");
- 		return -ENOMEM;
-@@ -334,6 +335,7 @@ int kernfs_get_tree(struct fs_context *fc)
- 
- 	if (!sb->s_root) {
- 		struct kernfs_super_info *info = kernfs_info(sb);
-+		struct kernfs_root *root = kfc->root;
- 
- 		kfc->new_sb_created = true;
- 
-@@ -344,9 +346,9 @@ int kernfs_get_tree(struct fs_context *fc)
- 		}
- 		sb->s_flags |= SB_ACTIVE;
- 
--		down_write(&kernfs_rwsem);
-+		down_write(&root->kernfs_rwsem);
- 		list_add(&info->node, &info->root->supers);
--		up_write(&kernfs_rwsem);
-+		up_write(&root->kernfs_rwsem);
- 	}
- 
- 	fc->root = dget(sb->s_root);
-@@ -371,10 +373,11 @@ void kernfs_free_fs_context(struct fs_context *fc)
- void kernfs_kill_sb(struct super_block *sb)
- {
- 	struct kernfs_super_info *info = kernfs_info(sb);
-+	struct kernfs_root *root = info->root;
- 
--	down_write(&kernfs_rwsem);
-+	down_write(&root->kernfs_rwsem);
- 	list_del(&info->node);
--	up_write(&kernfs_rwsem);
-+	up_write(&root->kernfs_rwsem);
- 
- 	/*
- 	 * Remove the superblock from fs_supers/s_instances
-diff --git a/fs/kernfs/symlink.c b/fs/kernfs/symlink.c
-index 19a6c71c6ff5..0ab13824822f 100644
---- a/fs/kernfs/symlink.c
-+++ b/fs/kernfs/symlink.c
-@@ -113,11 +113,12 @@ static int kernfs_getlink(struct inode *inode, char *path)
- 	struct kernfs_node *kn = inode->i_private;
- 	struct kernfs_node *parent = kn->parent;
- 	struct kernfs_node *target = kn->symlink.target_kn;
-+	struct kernfs_root *root = kernfs_root(parent);
- 	int error;
- 
--	down_read(&kernfs_rwsem);
-+	down_read(&root->kernfs_rwsem);
- 	error = kernfs_get_target_path(parent, target, path);
--	up_read(&kernfs_rwsem);
-+	up_read(&root->kernfs_rwsem);
- 
- 	return error;
- }
-diff --git a/include/linux/kernfs.h b/include/linux/kernfs.h
-index 3ccce6f24548..9f650986a81b 100644
---- a/include/linux/kernfs.h
-+++ b/include/linux/kernfs.h
-@@ -16,6 +16,7 @@
- #include <linux/atomic.h>
- #include <linux/uidgid.h>
- #include <linux/wait.h>
-+#include <linux/rwsem.h>
- 
- struct file;
- struct dentry;
-@@ -197,6 +198,7 @@ struct kernfs_root {
- 	struct list_head	supers;
- 
- 	wait_queue_head_t	deactivate_waitq;
-+	struct rw_semaphore	kernfs_rwsem;
- };
- 
- struct kernfs_open_file {
--- 
-2.34.0.rc2.393.gf8c9666880-goog
-
+On Thu, 18 Nov 2021 at 14:04, Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Nov 18, 2021 at 10:29:14AM +0100, Greg KH wrote:
+> > On Thu, Nov 18, 2021 at 10:15:23AM +0100, Thorsten Leemhuis wrote:
+> > > Hey Greg!
+> > >
+> > > On 18.11.21 09:57, Thorsten Leemhuis wrote:
+> > > > Lo! CCing stable and regressions list. FWIW, I have a Fedora 34 VM =
+that
+> > > > stopped booting with 5.14.19 as well. More inline:
+> > > >
+> > > > On 18.11.21 01:55, Chris Rankin wrote:
+> > > >>
+> > > >> I have tried to boot a vanilla 5.14.19 kernel, but it crashes when
+> > > >> "switching root" away from the initramfs. ("Unable to handle page
+> > > >> fault...)
+> > > >>
+> > > >> Google's "copy text from image" feature has managed to scrape this
+> > > >> information from my phone camera:
+> > > >>
+> > > >> 1tch Noo
+> > > >> BUG: unable to handle page fault for address: ffffc980006cfeDS
+> > > >> #PF: supervisor read access in kernel mode #PF: error_code (8x8888=
+) -
+> > > >> not-present page
+> > > >> PGD 100000067 P4D 100000067 PUD 18885e867 PMD 104486867 PTE 8
+> > > >> Oops: 0888 [#1] PREEMPT SMP PTI
+> > > >> CPU: 6 PID: 1 Comm: systemd Tainted: G Hardware name: Gigabyte
+> > > >> Technology Co., Ltd. EX58-UD3R/EX58-UD3R, BIOS FB 05/04/2009
+> > > >> 5.14.19 #1
+> > > >> RIP: 0010: __unwind_start+8xb5/8x15f
+> > > >> Code: 48 8d 8d 88 88 88 88 48 89 e2 48 89 e8 48 89 4d 48 48 89 55 =
+38
+> > > >> 48 RSP: 0018:ffffc90088823bf0 EFLAGS: 00010006
+> > > >> RAX: ffffc900006efde8 RBX: 0000000000000000 RCX: 08 RDX:
+> > > >> ffffc900006efe18 RSI : ffff88818a9f6c80 RDI: ffffc
+> > > >> RBP: ffffc90808823c18 R08: 00000000000001de R89: R10: ffff888107d2=
+0000
+> > > >> R11: ffff888183b4ba88 R12: ffffc900006ef dell
+> > > >> R13: ffff88810a9f73bc R14: ffff888103c58480 R15: FS: 00007f528fd19=
+b40
+> > > >> (0800) GS:ffff888343488808 (0888) knl6S:
+> > > >> CS: 0818 DS: 0000 ES: 0000 CRO: 0888000088858833
+> > > >> CR2: ffffc900006efe88 CR3: 088080818186a888 CR4: 8888
+> > > >> Call Trace:
+> > > >> <TASK>
+> > > >> get_wchan+8x42/8x8f
+> > > >> get_wchan+8x45/8x59
+> > > >> do_task_stat+0x3ab/0x38
+> > > >> proc_single_show+8x1e/8x68
+> > > >> seq_read_iter+0x151/8x342 seq_read+8xf1/8x117
+> > > >> uf's_read+Bxa3/8x183
+> > > >> ksys_read+8x71/8xb9 do_syscal1_64+8x6d/8x88
+> > > >> entry_SYSCALL_64_after_huframe+8x11/8xne
+> > > >> RIP: 8033:8x7f529884f832
+> > > >> Code: c0 e9 b2 fe ff ff 50 48 8d 3d ea 2e Bc 80 68 65 =C2=A39 01 0=
+0 0f 16 44 000
+> > > >> RSP: 082b:00087ffed3b91f18 EFLAGS: 88888246 ORIG RAX:
+> > > >> RAX: ffffffffffffffda RBX: 8888559462036658 RCX: 000071529084/83
+> > > >> RDX: 0000000000000100 RSI: 8088559462c90b78 RDI:
+> > > >> RBP: 000071529894a300 BAR:
+> > > >> te fa
+> > > >>
+> > > >> And also this:
+> > > >>
+> > > >> do_syscall_64+0x6d/0x80
+> > > >> entry_SYSCALL_64_after_huframe+0x44/0xae
+> > > >> RIP: 8033:0x7f529884f832
+> > > >> Code: c0 e9 b2 fe ff ff 50 48 8d 3d ea Ze Bc 80 e8 b5 f9 01 00 0f =
+1f
+> > > >> 44 00 00 f3 Bf 1e fa 64 8b 84 25 18 88 RSP: 082b:00087ffed3b91f 18
+> > > >> EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> > > >> RAX: ffffffffffffffda RBX: 0000559462c36650 RCX: 000071529084f832 =
+RDX:
+> > > >> 0000000000000400 RSI: 0000559462c90b70 RDI: 0000000000000006
+> > > >> RBP: 000071529094a3a0 R08: 0000000000000006 RO9: 0000000000000001 =
+R18:
+> > > >> 0000000000001000 R11: 0000000000000246 R12: 00007f528fd198f0
+> > > >> R13: 0000000000000168 R14: 00007f52909497a0 R15: 00000000000001468
+> > > >> </TASK>
+> > > >> Modules linked in: ext4 crc32c_generic crc16 mbcache jbd2 sr_mod
+> > > >> sd_mod cdrom hid_microsoft usbhid amdgpu uh ci drm_kms_helper ehci=
+_hcd
+> > > >> cf bf illrect syscopyarea cfbimgblt sysfillrect sysimgblt xhci pci
+> > > >> xhci_hcd fb_sys_ mod usb_common drm_panel_orientation_quirks
+> > > >> ipmi_devintf ipmi_msghandler msr sha256_ssse3 sha256_generic ipu C=
+RZ:
+> > > >> ffffc900006efe08
+> > > >> --- end trace 9771b79967a8dd89 ]--- RIP: 8010:_unwind_start+8xb5/0=
+x15f
+> > > >> Code: 48 8d 8d 00 00 00 00 48 89 e2 48 89 e8 48 89 4d 48 48 89 55 =
+38
+> > > >> 48 89 45 40 eb 29 48 8b 86 98 Ba 80 00 RSP: 0818:ffffc90000023bf0
+> > > >> EFLAGS: 00010006 RAX: ffffc900006efde0 RBX: 0000000000000000 RCX:
+> > > >> 0000000000000000
+> > > >> RDX: ffffc900006efe18 RSI: ffff88810a9f6c00 RDI: ffffc90000023c78 =
+RBP:
+> > > >> ffffc98800023c18 R08: 00000000000001de R09: 00000000005b20c6
+> > > >> R10: ffff888107120000 R11: ffff888103b4ba80 R12: ffffc900006ef de
+> > > >> R13: ffff88818a9f73bc R14: ffff888103c50480 R15: 0000000000000000 =
+FS:
+> > > >> 00007f528fd19b40(8000) GS:ffff888343180000 (0800)
+> > > >> knlGS:0000000000000000 CS: 0810 DS: 0000 ES: 0000 CRO:
+> > > >> 0000000080050033
+> > > >> CR2: ffffc908806efe88 CR3: 000000010186a000 CR4: 00000000000006e0
+> > > >> note: systemd [1] exited with preempt_count 1
+> > > >> Kernel panic - not syncing: Attempted to kill init!
+> > > >> exitcode=3D0x00000009 Kernel Offset: disabled
+> > > >> --- [ end Kernel panic not syncing: Attempted to kill initf
+> > > >> exitcode=3D0x00000009 1--- -
+> > > >>
+> > > >> I cannot capture the exact oops via any other means, although I ca=
+n
+> > > >> send the original camera pictures that I captured the text from, o=
+n
+> > > >> request.
+> > > >
+> > > > By default I didn't get to see any messages,
+> > >
+> > > BTW: that was a stupid error on my side, I get them now.
+> > >
+> > > > the VM just hangs when
+> > > > switching to root. Did anyone else already report or even track thi=
+s
+> > > > down already? Guess otherwise I need to take a closer look and mayb=
+e
+> > > > start bisecting...
+> > >
+> > > On a quick looks above problems seems to be similar to the one alread=
+y
+> > > reported wrt to WCHAN:
+> > > https://lore.kernel.org/stable/YZV02RCRVHIa144u@fedora64.linuxtx.org/
+> > >
+> > > Greg, is there any reason why you didn't drop them from 5.14.y as wel=
+l,
+> > > as you did for 5.15.y:
+> > > https://lore.kernel.org/all/YZYLC9D6zpUneYtn@kroah.com/
+> > >
+> > > Should I try reverting these three and see if the situations improves=
+?
+> >
+> > I will push out a new 5.14 release in a few hours with those commits
+> > reverted, as yes, you are right, they should not be there if I have
+> > dropped them from 5.15.y
+>
+> Should be resolved in 5.14.20.
+>
+> If not, please let me know.
+>
+> thanks,
+>
+> greg k-h
