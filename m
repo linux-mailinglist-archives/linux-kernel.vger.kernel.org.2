@@ -2,133 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72DDE455556
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 08:14:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF6B45555B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 08:16:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242970AbhKRHRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 02:17:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55545 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243716AbhKRHQf (ORCPT
+        id S243596AbhKRHS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 02:18:57 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:51796 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243773AbhKRHSZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 02:16:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637219615;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Thu, 18 Nov 2021 02:18:25 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id F39BD1FD35;
+        Thu, 18 Nov 2021 07:15:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637219724; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=SF4NLtdhTHJmZ2DCt6uZicYUmuLShwIcU3ZjdEhWqWs=;
-        b=XQurxYJah3dsfbW1e/0/E4fR6PRJOYA0EDI0BTm07hst2sVeNdSKtan+WgYhmXQW5CZrYN
-        wZ8tDTTByTeKnTYKqilOgMQ/+NMWj1UZ3Of85CR3YPKWHFk8FvUZPQz7NeKtUif5yxWm5o
-        gwEs/PXcO1vfLIJA9yx72wOj3VYe/Vg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-404-2tH_2BRxMSKP-fDcaQ7Xsg-1; Thu, 18 Nov 2021 02:13:32 -0500
-X-MC-Unique: 2tH_2BRxMSKP-fDcaQ7Xsg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        bh=5Mr/E/XvORtR80K5LI+JFm08oBLxIXXIo2at3Nc1HYo=;
+        b=2MW+eYwtDY5kIdnlvcnTekTMB91Gdnw8D5VSkIn7ihg5kXK32i0EBGGZJNWw5sC8QEToSE
+        jNzXeIYiL1Zza+5aC55SA+h3jDzqKxc4xEEJW81GTtHySJNpK6/upO5flzMwkq4mlTrQX/
+        C8Pjrnlm/2l+nBZiTaCJRQmqSTWUSUY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637219724;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5Mr/E/XvORtR80K5LI+JFm08oBLxIXXIo2at3Nc1HYo=;
+        b=XbPKGLpGtBVlEt+Izfix5XlERcVatM7+yGY2iBZ5rtyHOXemiClt9spvCj8mMTbucOKPEl
+        jrfS70KBxu0T3CCA==
+Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7BC3E1006AA0;
-        Thu, 18 Nov 2021 07:13:31 +0000 (UTC)
-Received: from localhost (ovpn-13-105.pek2.redhat.com [10.72.13.105])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D3E64509FF;
-        Thu, 18 Nov 2021 07:13:29 +0000 (UTC)
-Date:   Thu, 18 Nov 2021 15:13:27 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     hca@linux.ibm.com, kernel test robot <lkp@intel.com>
-Cc:     linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
-        linux-s390@vger.kernel.org, kexec@lists.infradead.org,
-        prudo@redhat.com
-Subject: Re: [PATCH v2 2/2] s390/kexec: fix kmemleak
-Message-ID: <20211118071327.GF21646@MiWiFi-R3L-srv>
-References: <20211116032557.14075-2-bhe@redhat.com>
- <202111180539.e7kmpOSP-lkp@intel.com>
+        by relay2.suse.de (Postfix) with ESMTPS id C22FEA3B83;
+        Thu, 18 Nov 2021 07:15:23 +0000 (UTC)
+Date:   Thu, 18 Nov 2021 08:15:23 +0100 (CET)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+cc:     Peter Zijlstra <peterz@infradead.org>,
+        David Laight <David.Laight@aculab.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "dvyukov@google.com" <dvyukov@google.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>,
+        live-patching@vger.kernel.org, nstange@suse.de
+Subject: Re: [PATCH 20/22] x86,word-at-a-time: Remove .fixup usage
+In-Reply-To: <20211115230737.27gqnzwvkaxoi7es@treble>
+Message-ID: <alpine.LSU.2.21.2111180811370.16632@pobox.suse.cz>
+References: <YYov8SVHk/ZpFsUn@hirez.programming.kicks-ass.net> <CAKwvOdn8yrRopXyfd299=SwZS9TAPfPj4apYgdCnzPb20knhbg@mail.gmail.com> <20211109210736.GV174703@worktop.programming.kicks-ass.net> <f6dbe42651e84278b44e44ed7d0ed74f@AcuMS.aculab.com>
+ <YYuogZ+2Dnjyj1ge@hirez.programming.kicks-ass.net> <2734a37ebed2432291345aaa8d9fd47e@AcuMS.aculab.com> <20211112015003.pefl656m3zmir6ov@treble> <YY408BW0phe9I1/o@hirez.programming.kicks-ass.net> <20211113053500.jcnx5airbn7g763a@treble>
+ <alpine.LSU.2.21.2111151353550.29981@pobox.suse.cz> <20211115230737.27gqnzwvkaxoi7es@treble>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202111180539.e7kmpOSP-lkp@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/21 at 05:46am, kernel test robot wrote:
-> Hi Baoquan,
+On Tue, 16 Nov 2021, Josh Poimboeuf wrote:
+
+> On Mon, Nov 15, 2021 at 01:59:36PM +0100, Miroslav Benes wrote:
+> > On Fri, 12 Nov 2021, Josh Poimboeuf wrote:
+> > 
+> > > If the child schedules out, and then the parent gets patched, things can
+> > > go off-script if the child later jumps back to the unpatched version of
+> > > the parent, and then for example the old parent tries to call another
+> > > patched function with a since-changed ABI.
+> > 
+> > ...
+> >  
+> > > I don't know about other patch creation tooling, but I'd imagine they
+> > > also need to know about .cold functions, unless they have that
+> > > optimization disabled.  Because the func and its .cold counterpart
+> > > always need to be patched together.
+> > 
+> > We, at SUSE, solve the issue differently... the new patched parent would 
+> > call that another patched function with a changed ABI statically in a live 
+> > patch. So in that example, .cold child would jump back to the unpatched 
+> > parent which would then call, also, the unpatched function.
 > 
-> I love your patch! Yet something to improve:
-> 
-> [auto build test ERROR on s390/features]
-> [also build test ERROR on linux/master linus/master v5.16-rc1 next-20211117]
-> [cannot apply to kvms390/next]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Baoquan-He/s390-kexec-check-the-return-value-of-ipl_report_finish/20211116-112827
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git features
-> config: s390-allmodconfig (attached as .config)
-> compiler: s390-linux-gcc (GCC) 11.2.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/d5463ab680d37f95b493b71c487a51c039dfe845
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Baoquan-He/s390-kexec-check-the-return-value-of-ipl_report_finish/20211116-112827
->         git checkout d5463ab680d37f95b493b71c487a51c039dfe845
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=s390 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    arch/s390/kernel/machine_kexec_file.c: In function 'arch_kimage_file_post_load_cleanup':
-> >> arch/s390/kernel/machine_kexec_file.c:332:9: error: implicit declaration of function 'kvfree'; did you mean 'vfree'? [-Werror=implicit-function-declaration]
->      332 |         kvfree(image->arch.ipl_buf);
->          |         ^~~~~~
->          |         vfree
+> So if I understand correctly, if a function's ABI changes then you don't
+> patch it directly, but only patch its callers to call the replacement?
 
-OK, kvfree is not wrong, seems vfree is more appropriate since it's
-clear the ipl_buf is allocated with zvalloc() in ipl_report_finish().
-
-Hi Heiko,
-
-Could you help modify the code in your tree or append below patch to
-mute the lkp complaint? Sorry for the inconvenience.
-
-
-From 8ff5547d0b31093bb361328bc9df8bf19e96155a Mon Sep 17 00:00:00 2001
-From: Baoquan He <bhe@redhat.com>
-Date: Thu, 18 Nov 2021 14:37:53 +0800
-Subject: [PATCH] s390/kexec: use vfree to free memory from vmalloc
-
-Since it's clear that memory is allocated with vzalloc in ipl_report_finish(),
-let's use vfree to free the memory instead since it's more efficient than
-kvfree.
-
-This fixes the warning reported by lkp.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Baoquan He <bhe@redhat.com>
----
- arch/s390/kernel/machine_kexec_file.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/s390/kernel/machine_kexec_file.c b/arch/s390/kernel/machine_kexec_file.c
-index 7f51837e9bc2..351a7ff69a43 100644
---- a/arch/s390/kernel/machine_kexec_file.c
-+++ b/arch/s390/kernel/machine_kexec_file.c
-@@ -329,7 +329,7 @@ int arch_kexec_apply_relocations_add(struct purgatory_info *pi,
+Yes.
  
- int arch_kimage_file_post_load_cleanup(struct kimage *image)
- {
--	kvfree(image->arch.ipl_buf);
-+	vfree(image->arch.ipl_buf);
- 	image->arch.ipl_buf = NULL;
- 
- 	return kexec_image_post_load_cleanup_default(image);
--- 
-2.17.2
+> Is there a reason for that?
 
+Not really. There were a couple of cases in the past where this was safer 
+to implement and then it became a habbit, I guess.
+
+[ Nicolai CCed, if he wants to add more details ]
+
+Miroslav
