@@ -2,102 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB314558C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 11:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23BCF4558CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 11:14:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245731AbhKRKPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 05:15:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245445AbhKRKNJ (ORCPT
+        id S245629AbhKRKQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 05:16:57 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:52495 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245664AbhKRKOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 05:13:09 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58680C061204
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 02:10:09 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id o29so4771996wms.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 02:10:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mSWch0XGdw9WQfitAuDG0nGa0+fWKH7MnIQOOP6eHa0=;
-        b=mhwGrcez7SQFjrLcUMtrR3wacB+60WOedOKv1UMCuLk1SLgWtQ4PXv8wCS+CQf0kIn
-         sNol+rWyJF5bQibbwEjUu5q7LWitxlip7qjz07FN335WBidXTapsTzuPnXtLyKWtxhPi
-         JnMZRkl00cG0PN8Ycu6vLAWcIqjfFLOdAjRjVMYROBGhmjgETUyGDM/LOEI91+dO5loG
-         qKeym2w1biDZmapDPmpSGppg/VmbyWIoHBD3DqR+FVBI0OesgQaQ0SaNZntCu+LCGKcp
-         Jo4h44c99aHXB/lHwPXrbzooLIoVE706L+k7zvkOpl3U0OlCJtiCr3nHPOgMrh1mQxV1
-         Kfrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mSWch0XGdw9WQfitAuDG0nGa0+fWKH7MnIQOOP6eHa0=;
-        b=2rS95AgHNHdneA1Yz5QyY+UYYmgfs/HGXunC7Caet75ceP8ya9m9jF++j2PnwXKWkr
-         JPOK2z2Ec9oQayznJj/qWiwxs9mxvgQqf1kWQzy5eb0iyp9nRrPZZWlG+kTmszCsz97d
-         mWos/mFkZBAXL1A728TUSaBM07sVBis3ANN6c3aTuTsLnmzr4JO6AAIaP++6y9ENfU8E
-         Mp89Oj67+CzcSyjTSeMt2TM1hYIRR8pRVaXPf7cX+CBksjBErAD0I+rykt5T9+17Vkvl
-         lM3yqeCvSW09sM+GtvhIzS5/kuHi0VG8C2f6Gu/5snhb+PSAWshTcD4NQMjmY91HSFIF
-         CSww==
-X-Gm-Message-State: AOAM531OlOWalYQwBTqCKPJO676v/Ra6xNm+WOUZDpWs6+TwxIkWSE3K
-        K2yX26ootrnzJv31xjTi8BAcIg==
-X-Google-Smtp-Source: ABdhPJwmQzBp0qtPSPyB7UjYy4JS90aVhF5fASBfXtrnRETwo038+eyorpDtUHvPdbLFf2JhN5T10Q==
-X-Received: by 2002:a05:600c:2118:: with SMTP id u24mr8389385wml.0.1637230207856;
-        Thu, 18 Nov 2021 02:10:07 -0800 (PST)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id z15sm2525846wrr.65.2021.11.18.02.10.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 02:10:07 -0800 (PST)
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>, Jonathan Corbet <corbet@lwn.net>
-Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        dmaengine@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patches@linaro.org
-Subject: [PATCH 2/2] Documentation: dmaengine: Correctly describe dmatest with channel unset
-Date:   Thu, 18 Nov 2021 10:09:52 +0000
-Message-Id: <20211118100952.27268-3-daniel.thompson@linaro.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211118100952.27268-1-daniel.thompson@linaro.org>
-References: <20211118100952.27268-1-daniel.thompson@linaro.org>
+        Thu, 18 Nov 2021 05:14:52 -0500
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 8BEA922175;
+        Thu, 18 Nov 2021 11:11:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1637230310;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nA/zdxS7sNYSW0oahJjdohaCGTaiUpU5dX8a274QxUQ=;
+        b=i03lmLLsC70LASUUNI8kZnjkkzAbbtnvYz3PwIL9JHkxbGOwXyK6zWijyZ7XDrWAQ4x6eJ
+        gVw5aXmXQ43VsRLQoC5tCSeKoin/G3Rdz/TUKGPmSfnEElot42Yw2yZOeTfBYSN5gx4q5h
+        lTjYm6V+Q/MoomBzq7i+A7RyLTQYjtU=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 18 Nov 2021 11:11:48 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     ZHIZHIKIN Andrey <andrey.zhizhikin@leica-geosystems.com>
+Cc:     =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
+        Pankaj Gupta <pankaj.gupta@nxp.com>,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        Iuliana Prodan <iuliana.prodan@nxp.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx <linux-imx@nxp.com>, Gaurav Jain <gaurav.jain@nxp.com>
+Subject: Re: [PATCH v2 2/2] crypto: caam - check jr permissions before probing
+In-Reply-To: <AM6PR06MB46915C392B6AE207F9BFD24CA69B9@AM6PR06MB4691.eurprd06.prod.outlook.com>
+References: <20211104162114.2019509-1-andrey.zhizhikin@leica-geosystems.com>
+ <20211111164601.13135-1-andrey.zhizhikin@leica-geosystems.com>
+ <20211111164601.13135-3-andrey.zhizhikin@leica-geosystems.com>
+ <e8456cc0bb9e4fc306e8188c5bd666d0@walle.cc>
+ <AM6PR06MB46914ECA12815ABFCE8C1A59A6989@AM6PR06MB4691.eurprd06.prod.outlook.com>
+ <59c04d9d-7acf-5468-1382-ce22bff8292d@nxp.com>
+ <144f646753cb6e0c7818dfaf116b5d54@walle.cc>
+ <AM6PR06MB46915C392B6AE207F9BFD24CA69B9@AM6PR06MB4691.eurprd06.prod.outlook.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <754950612adc3a5b66f976f866aee07b@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the documentation states that channels must be configured before
-running the dmatest. This has not been true since commit 6b41030fdc79
-("dmaengine: dmatest: Restore default for channel"). Fix accordingly.
+Am 2021-11-18 11:08, schrieb ZHIZHIKIN Andrey:
+> I guess there would not be much left of this patch once I'd use DT 
+> approach,
+> so I'd re-spin the series to include DT bindings instead. JR driver 
+> clean-up
+> to remove static JR counter :| would go into the first one then.
 
-Fixes: 6b41030fdc79 ("dmaengine: dmatest: Restore default for channel")
-Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
----
- Documentation/driver-api/dmaengine/dmatest.rst | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+I really like the cleanup though! Esp. the removing of the static 
+variable.
 
-diff --git a/Documentation/driver-api/dmaengine/dmatest.rst b/Documentation/driver-api/dmaengine/dmatest.rst
-index 529cc2cbbb1b..cf9859cd0b43 100644
---- a/Documentation/driver-api/dmaengine/dmatest.rst
-+++ b/Documentation/driver-api/dmaengine/dmatest.rst
-@@ -153,13 +153,14 @@ Part 5 - Handling channel allocation
- Allocating Channels
- -------------------
- 
--Channels are required to be configured prior to starting the test run.
--Attempting to run the test without configuring the channels will fail.
-+Channels do not need to be configured prior to starting a test run. Attempting
-+to run the test without configuring the channels will result in testing any
-+channels that are available.
- 
- Example::
- 
-     % echo 1 > /sys/module/dmatest/parameters/run
--    dmatest: Could not start test, no channels configured
-+    dmatest: No channels configured, continue with any
- 
- Channels are registered using the "channel" parameter. Channels can be requested by their
- name, once requested, the channel is registered and a pending thread is added to the test list.
--- 
-2.33.0
-
+-michael
