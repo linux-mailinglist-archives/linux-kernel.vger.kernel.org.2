@@ -2,92 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8243E4551AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 01:30:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34EFF4551AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 01:31:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241928AbhKRAc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 19:32:56 -0500
-Received: from gandalf.ozlabs.org ([150.107.74.76]:35791 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232147AbhKRAcy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 19:32:54 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hvgfn0Mz8z4xbs;
-        Thu, 18 Nov 2021 11:29:52 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1637195393;
-        bh=Z1cEifPobgLU2OIv1QjpAXLWMTBmer7BKS5tz9FkZmA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=V8WIrf8VCk8poxAMN9Y8vojaONclJKVIzFGIuS/2b3dH5rW1D9BnKRG44WnMEobhN
-         gZie623aaR8AnegVkRjsLEwReySIlQEoGLq99p2p4pYpKl3OCEnqoUjzra9LAXwaGo
-         xQDPs8qyU/9Y5tFTMqvSZC+NnoxOk7Fy6rSnep5RdZ97xNMJ0VZWRq2Gmn4ITxsv/d
-         l3Shy6Xm1q6gMW8WQ6CoI+QkkPZsYUHVnGbn8xgxsw/PT+DdyBSuQmv6TkP9NxaM4y
-         tdlOKnamghXv6W2kXXXLWhidoc5utK9xE3fHbfX8sEYFxpiBP8amqmE8ZU6v6du4av
-         Rj+UYR61by5uw==
-Date:   Thu, 18 Nov 2021 11:29:51 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Rob Herring <robh@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the gpio-brgl tree
-Message-ID: <20211118112951.2b788952@canb.auug.org.au>
-In-Reply-To: <20211116105112.4c99853d@canb.auug.org.au>
-References: <20211116105112.4c99853d@canb.auug.org.au>
+        id S241936AbhKRAeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 19:34:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232147AbhKRAeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Nov 2021 19:34:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5A1261B72;
+        Thu, 18 Nov 2021 00:31:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637195477;
+        bh=ge8O3XSc+rhcJ61Hra8kxuzsfavtrVhomTrdbcqrgnw=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=KPa4D0AHwOt6da6GX/CQ12bHyaG/MJ4SSVJKncg8Fu2m6eZGbol/SZRxaZzp8Cbki
+         H7G5xFdmK9zX0I3xNh7S0t3KLU/j/L/uTzsjMrgMpUy4x6fp6bDAtPlOgTdPbJfeir
+         vGnmVxkTXwHii56tF32eUKW3ZoXaw2AkXXpNDdsjcWGwQnt2ZmHtIyGn3+ag5ESjQo
+         Y4+d4AiEI78Hm7iDkDcDv7TrFGSEq4rzI3oTaT66TiA5vLMn2P5/MRhUMQFVgVaA/q
+         T+JLOy97uxc1IXeWwdrsBmF861OEBwKlzBtYNp0aD0fLICs262jUI5ONph711RxGa5
+         FqUmfQWLMIxgg==
+Received: by mail-oi1-f176.google.com with SMTP id s139so10161782oie.13;
+        Wed, 17 Nov 2021 16:31:17 -0800 (PST)
+X-Gm-Message-State: AOAM531tgne5t8aDlOek97fbeOCjU2llUt3F1gAGefm7x9Zame9VuNHp
+        CFgOR7WY7LbxwWqHPh7tJn77HGvJoNpsL6PCJG0=
+X-Google-Smtp-Source: ABdhPJwHrFQ9QeCViy/0GXzQ26v+Tgd60IkanDALYbxV/kPkmRJaBsYZbx+asHhf/Lz6u0vjZAofa6WSPeUP1z+HVcQ=
+X-Received: by 2002:a05:6808:14c3:: with SMTP id f3mr3835985oiw.51.1637195476980;
+ Wed, 17 Nov 2021 16:31:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ICAc4B1ZmPdCc9DjjP3lLPI";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Received: by 2002:ac9:4448:0:0:0:0:0 with HTTP; Wed, 17 Nov 2021 16:31:16
+ -0800 (PST)
+In-Reply-To: <YZU7EdoJmvisai+z@jeremy-acer>
+References: <5831447.lOV4Wx5bFT@natalenko.name> <CAKYAXd-KmxMeYWP8z6RYYK6za-Sj81Qtb3RO=oG+Yy3kXDaLjg@mail.gmail.com>
+ <2865530.e9J7NaK4W3@natalenko.name> <CAKYAXd9wKDTE5WPQWcBZ_mHfaAOOY+pDj7=yndi17gf2KqWpwg@mail.gmail.com>
+ <YZU7EdoJmvisai+z@jeremy-acer>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Thu, 18 Nov 2021 09:31:16 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd9TTH+Nv5ebH6CYjZfwtwgy37uo5+XER4pT9=SPdJ0hnw@mail.gmail.com>
+Message-ID: <CAKYAXd9TTH+Nv5ebH6CYjZfwtwgy37uo5+XER4pT9=SPdJ0hnw@mail.gmail.com>
+Subject: Re: ksmbd: Unsupported addition info
+To:     Jeremy Allison <jra@samba.org>
+Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steve French <sfrench@samba.org>,
+        Hyunchul Lee <hyc.lee@gmail.com>, linux-cifs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ICAc4B1ZmPdCc9DjjP3lLPI
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Tue, 16 Nov 2021 10:51:12 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
+2021-11-18 2:25 GMT+09:00, Jeremy Allison <jra@samba.org>:
+> On Wed, Nov 17, 2021 at 06:58:50PM +0900, Namjae Jeon wrote:
+>>2021-11-17 16:00 GMT+09:00, Oleksandr Natalenko
+>> <oleksandr@natalenko.name>:
+>>> Hello.
+>>>
+>>> On st=C5=99eda 17. listopadu 2021 0:36:53 CET Namjae Jeon wrote:
+>>>> 2021-11-17 6:44 GMT+09:00, Oleksandr Natalenko
+>>>> <oleksandr@natalenko.name>:
+>>>> > With the latest ksmbd from the next branch I have an issue with
+>>>> > wife's
+>>>> > Windows
+>>>> > 10 laptop while copying/removing files from the network share. On he=
+r
+>>>> > client it
+>>>> > looks like copy operation (server -> laptop) reaches 99% and then
+>>>> > stalls,
+>>>> > and
+>>>> > on the server side there's this in the kernel log:
+>>>> >
+>>>> > ```
+>>>> > ksmbd: Unsupported addition info: 0xf)
+>>>> > ksmbd: Unsupported addition info: 0x20)
 >
-> After merging the gpio-brgl tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
->=20
-> drivers/gpio/gpio-xlp.c:300:16: error: 'GPIO_VARIANT_VULCAN' undeclared h=
-ere (not in a function)
->   300 |  { "BRCM9006", GPIO_VARIANT_VULCAN },
->       |                ^~~~~~~~~~~~~~~~~~~
->=20
-> Caused by commit
->=20
->   ea708ac5bf41 ("gpio: xlp: Remove Netlogic XLP variants")
->=20
-> I have used the gpio-bgrl tree from next-20211115 for today.
-
-I am still getting this failure :-(
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ICAc4B1ZmPdCc9DjjP3lLPI
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGVnn8ACgkQAVBC80lX
-0Gwpogf/e/nqopUR0IM+ADSvb0zNsc7oQvCIed7mQoaalcNpvjq1PLs0nqBOOPOB
-ypGmBqB2P88h9TlcKPWzGdBjQczUdu4tUiuNTIhkNB1Kx8dC0iePDTedvYYCVHEq
-CNHHV1Nd9qOcg0hcg0P0Kwnkcw5+99675vmj8af3auevr5QwNx0HC+eHVcZv0IGg
-X4sJIcRtqF3kXrXYMVAhfSjwKIpBeFJEHYNOsAd/u0vzEmw9eGSe64YuupP7xGLX
-VWcg+ukHDKfTV8K1f0m6qt/c5o6g3iO0jY+7KGRhuAbopTv2UGGas9vZTizoeC9E
-WntnzxOgFIwOho427q9QFang5fYcJQ==
-=OeBd
------END PGP SIGNATURE-----
-
---Sig_/ICAc4B1ZmPdCc9DjjP3lLPI--
+Hi Jeremy,
+> Namjae, looks like your code is handling the
+> following flags in query security descriptor:
+>
+>          if (addition_info & ~(OWNER_SECINFO | GROUP_SECINFO | DACL_SECIN=
+FO
+> |
+>                                PROTECTED_DACL_SECINFO |
+>                                UNPROTECTED_DACL_SECINFO)) {
+>                  pr_err("Unsupported addition info: 0x%x)\n",
+>                         addition_info);
+>
+>  From the Samba code we have (the names are pretty
+> similar):
+>
+>          /* security_descriptor->type bits */
+>          typedef [public,bitmap16bit] bitmap {
+>                  SEC_DESC_OWNER_DEFAULTED        =3D 0x0001,
+>                  SEC_DESC_GROUP_DEFAULTED        =3D 0x0002,
+>                  SEC_DESC_DACL_PRESENT           =3D 0x0004,
+>                  SEC_DESC_DACL_DEFAULTED         =3D 0x0008,
+>                  SEC_DESC_SACL_PRESENT           =3D 0x0010,
+>                  SEC_DESC_SACL_DEFAULTED         =3D 0x0020,
+>                  SEC_DESC_DACL_TRUSTED           =3D 0x0040,
+>                  SEC_DESC_SERVER_SECURITY        =3D 0x0080,
+>                  SEC_DESC_DACL_AUTO_INHERIT_REQ  =3D 0x0100,
+>                  SEC_DESC_SACL_AUTO_INHERIT_REQ  =3D 0x0200,
+>                  SEC_DESC_DACL_AUTO_INHERITED    =3D 0x0400,
+>                  SEC_DESC_SACL_AUTO_INHERITED    =3D 0x0800,
+>                  SEC_DESC_DACL_PROTECTED         =3D 0x1000,
+>                  SEC_DESC_SACL_PROTECTED         =3D 0x2000,
+>                  SEC_DESC_RM_CONTROL_VALID       =3D 0x4000,
+>                  SEC_DESC_SELF_RELATIVE          =3D 0x8000
+>          } security_descriptor_type;
+>
+> 0xF =3D=3D
+> (SEC_DESC_OWNER_DEFAULTED|SEC_DESC_GROUP_DEFAULTED|SEC_DESC_DACL_PRESENT|=
+SEC_DESC_DACL_DEFAULTED)
+>
+> and:
+>
+> 0x20 =3D=3D SEC_DESC_SACL_DEFAULTED
+>
+> Looks like you need to handle these bits.
+>
+> Hope this helps,
+Let me check it. Thanks for your mail:)
+>
+> Jeremy.
+>
