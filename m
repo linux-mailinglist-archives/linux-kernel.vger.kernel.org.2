@@ -2,133 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E54456110
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:01:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 071D445610F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:01:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233863AbhKRREa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 12:04:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231504AbhKRRE2 (ORCPT
+        id S233845AbhKRRE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 12:04:27 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:47945 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231504AbhKRREZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 12:04:28 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D41DC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:01:28 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id x6so18275943edr.5
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:01:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bC+nM2ymxmhczmda0Fd8ML7xRCTVqUNeEVu4AX6wCkk=;
-        b=XouoDx0BWKNXem6TrrFJ2gnc/ctw6rko1v7/np/oJIPdnmB0oiM7HFQLlzym8yyc+V
-         HIJjpm20D22NP0eqryWil8GYdRefCZDrLg94//TN7hxmAHOl/ul4IIX0pGr7+03cytgA
-         GFiKmaaCsz1FlwJMjZZy6vb8XUVpfH7TTvfOwTQo8LyGnJOiGh4Nv3UR4fhi2gFEB4fE
-         dP3gDc9+W3nf5viGApjHSTwGqSyp+7vE9fhzM+loMFxtDVNTyJreJK2oMTnYwLlu5Ksv
-         qsbPpaPqBKSJoH/dvsiGcWGCP6Ob6J1KZE0Lw8XMEATWk0pRgPXJ0QM/tIu0ruz2gvUW
-         Ci5Q==
+        Thu, 18 Nov 2021 12:04:25 -0500
+Received: by mail-il1-f199.google.com with SMTP id g10-20020a92cdaa000000b00260fbb604easo4501427ild.14
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:01:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bC+nM2ymxmhczmda0Fd8ML7xRCTVqUNeEVu4AX6wCkk=;
-        b=L6EqZUV2VCh22JX3S/yVJois+gTThyfKETx2Vcl+PbmRza40xlHfVR7+wPe2Zkiu3X
-         WpO/ojlPxcK0KOrdenK/U7xF198js4LQHFfLc6hnT6Bnvxqm6bGoRHjPphJFl8zMACh0
-         WMDYG8ViQunjn0gqhJwLV68nLqxSapjtd4iDKjZQ6KamB70q+OXS5LgNodiXdTeUzVAt
-         Fk61YdCWDQ2BtDbEqOJXdps+Z/WsXo4ScoLBvHout5zjhU5ED0vfs3t5WeUsbzsSc/S0
-         qrVtThnD7Mz3piQgDbUmPV3JBUvoyx9NoTmxNVXIObyf1I/mL/ct2znmibxUzfCl9jVC
-         BNQw==
-X-Gm-Message-State: AOAM530HbKUH6p8O8aCFYlbkv1BPEX8/kW5xrRZLX8k2b9Vp8a5dKNVh
-        FP8DzH/v/NSE0wPdM7CGR3o=
-X-Google-Smtp-Source: ABdhPJzDAUKxgkP/+WG/V8buWdig3jefQfHq1Ep1E3OG5WI392Bbu/sTyXtGkIC0tlvqmsxpNpc7Ug==
-X-Received: by 2002:a05:6402:1a58:: with SMTP id bf24mr13369557edb.16.1637254886158;
-        Thu, 18 Nov 2021 09:01:26 -0800 (PST)
-Received: from localhost.localdomain (host-82-61-38-115.retail.telecomitalia.it. [82.61.38.115])
-        by smtp.gmail.com with ESMTPSA id s18sm268086edd.15.2021.11.18.09.01.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 09:01:25 -0800 (PST)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Hurley <peter@hurleysoftware.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Max Filippov <jcmvbkbc@gmail.com>, David Sterba <dsterba@suse.com>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
-        nick black <dankamongmen@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com,
-        Marco Elver <elver@google.com>
-Subject: Re: [PATCH] vt: Fix sleeping functions called from atomic context
-Date:   Thu, 18 Nov 2021 18:01:24 +0100
-Message-ID: <1701119.OD4kndUEs1@localhost.localdomain>
-In-Reply-To: <44d83e9c-d8c9-38bf-501c-019b8c2f7b5e@i-love.sakura.ne.jp>
-References: <20211116144937.19035-1-fmdefrancesco@gmail.com> <1825634.Qa45DEmgBM@localhost.localdomain> <44d83e9c-d8c9-38bf-501c-019b8c2f7b5e@i-love.sakura.ne.jp>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=AcEQ5AyPDXAvRBlZrRoMQauSLu6R4MYiaS+FBuAr3Ck=;
+        b=DAaSEQ89/wwvhnaxAUYMELJIq2H5SG6L06t7zWAov7QoU+TKFRKjSsuJ6HSrHbGYo3
+         tdQ3lU7yZ8UiiBwpL9+KDER5gO72lXltav6BWPoGZswuR8jNAjn5pJ4uCJJRLkKTAKBl
+         5bccCavdtQkHHa6iomTGmY6tGkORgUxKWg2kP1WTxQ+kn+fZc4lYgY8xPJS1MUwOQ395
+         fYQ5IJGcTaShn9xG9AWINw6bmy4VA0Mt6poqe1cp3263mBvImDKbC0Skg8sKPYu1+SO9
+         HrfIdmMy865gH/Dubz2kzwEidG3iP5vBx+Q39yx2YfcSyroQbcTeXtGQLFFiGKAhZZHt
+         I3iw==
+X-Gm-Message-State: AOAM532LEI3qfRgpHZ6FeL0md4rcZZyBLOVrDYLVU6JS0HRSUL4NFJF1
+        CTA4Ix3njKLtaozFHh1MoLr+yd0hk2GnETt8NHMfH6WN3sSI
+X-Google-Smtp-Source: ABdhPJz3pYu0fNXBC+ch96afAk1p4GEt0LoPIhRo0LwaTr6/09S/sXp60LRoIBz7OGCSpWQQLJ7MRof0Tg2q8VlaCxIZblNUFAf8
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+X-Received: by 2002:a92:d24e:: with SMTP id v14mr365927ilg.55.1637254884388;
+ Thu, 18 Nov 2021 09:01:24 -0800 (PST)
+Date:   Thu, 18 Nov 2021 09:01:24 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ca75a205d1131b87@google.com>
+Subject: [syzbot] KASAN: slab-out-of-bounds Read in copy_urb_data_to_user
+From:   syzbot <syzbot+6dc37929ddaf9d677b2b@syzkaller.appspotmail.com>
+To:     g@b4.vu, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, stern@rowland.harvard.edu,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, November 18, 2021 1:14:59 PM CET Tetsuo Handa wrote:
-> On 2021/11/18 18:38, Fabio M. De Francesco wrote:
+Hello,
 
-> If ->flow.lock were held from only schedulable context, replacing this spinlock with
-> a mutex would be possible. But stop_tty() says "may be called from any context" which
-> means that we can't use a mutex...
-> 
-> Making do_con_write() no-op when called with IRQs disabled would be the minimal change
-> that can silence the syzbot. But this does not fix the regression for drivers/tty/n_hdlc.c
-> introduced by f9e053dcfc02b0ad.
-> 
-> --- a/drivers/tty/vt/vt.c
-> +++ b/drivers/tty/vt/vt.c
-> @@ -2902,7 +2902,7 @@ static int do_con_write(struct tty_struct *tty, const unsigned char *buf, int co
->  	struct vt_notifier_param param;
->  	bool rescan;
->  
-> -	if (in_interrupt())
-> +	if (in_interrupt() || irqs_disabled())
->  		return count;
->  
->  	console_lock();
-> @@ -3358,7 +3358,7 @@ static void con_flush_chars(struct tty_struct *tty)
->  {
->  	struct vc_data *vc;
->  
-> -	if (in_interrupt())	/* from flush_to_ldisc */
-> +	if (in_interrupt() || irqs_disabled())	/* from flush_to_ldisc */
->  		return;
->  
->  	/* if we race with con_close(), vt may be null */
->
+syzbot found the following issue on:
 
-For what my opinion is worth, I like the solution by Tetsuo that is reported above. 
-The bug is real and I suppose that it must be addressed. This seems the most straightforward
-and effective way to fix it.
+HEAD commit:    c8c109546a19 Merge tag 'zstd-for-linus-v5.16' of git://git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17745dd6b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a262045c4c15a9e0
+dashboard link: https://syzkaller.appspot.com/bug?extid=6dc37929ddaf9d677b2b
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Regards,
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Fabio M. De Francesco
- 
-> According to scripts/get_maintainer.pl , Greg and Jiri are maintainers for the n_hdlc driver.
-> Greg and Jiri, what do you think? Is sacrificing ability to write to consoles when
-> n_hdlc_send_frames() is called from __start_tty() path considered tolerable? (Maybe
-> OK for now and stable kernels, for nobody was reporting this problem suggests that
-> nobody depends on this ability.)
-> 
-> But if we must fix the regression for drivers/tty/n_hdlc.c , we need to use something
-> like https://lkml.kernel.org/r/7d851c88-f657-dfd8-34ab-4891ac6388dc@i-love.sakura.ne.jp
-> in order to achieve what f9e053dcfc02b0ad meant. That is, extend tty->stopped in order
-> to be able to represent "started state (currently indicated by tty->stopped == false)",
-> "stopped state (currently indicated by tty->stopped == true)" and "changing state
-> (currently impossible due to bool)", but this approach might need to touch many locations,
-> and I worry that touching many locations introduces some oversight bugs.
-> 
-> 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6dc37929ddaf9d677b2b@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: slab-out-of-bounds in instrument_copy_to_user include/linux/instrumented.h:118 [inline]
+BUG: KASAN: slab-out-of-bounds in _copy_to_user lib/usercopy.c:32 [inline]
+BUG: KASAN: slab-out-of-bounds in _copy_to_user+0xc7/0x150 lib/usercopy.c:26
+Read of size 2 at addr ffff88803545b460 by task syz-executor.0/6756
+
+CPU: 0 PID: 6756 Comm: syz-executor.0 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_address_description.constprop.0.cold+0x8d/0x320 mm/kasan/report.c:247
+ __kasan_report mm/kasan/report.c:433 [inline]
+ kasan_report.cold+0x83/0xdf mm/kasan/report.c:450
+ check_region_inline mm/kasan/generic.c:183 [inline]
+ kasan_check_range+0x13d/0x180 mm/kasan/generic.c:189
+ instrument_copy_to_user include/linux/instrumented.h:118 [inline]
+ _copy_to_user lib/usercopy.c:32 [inline]
+ _copy_to_user+0xc7/0x150 lib/usercopy.c:26
+ copy_to_user include/linux/uaccess.h:200 [inline]
+ copy_urb_data_to_user+0x34c/0x400 drivers/usb/core/devio.c:544
+ processcompl+0x5ab/0x680 drivers/usb/core/devio.c:2024
+ proc_reapurbnonblock drivers/usb/core/devio.c:2101 [inline]
+ usbdev_do_ioctl drivers/usb/core/devio.c:2594 [inline]
+ usbdev_ioctl+0x2d7/0x36c0 drivers/usb/core/devio.c:2791
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:874 [inline]
+ __se_sys_ioctl fs/ioctl.c:860 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f1326280ae9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f13237d5188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f1326394020 RCX: 00007f1326280ae9
+RDX: 0000000020000080 RSI: 000000004008550d RDI: 0000000000000004
+RBP: 00007f13262daf6d R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f13268c7b2f R14: 00007f13237d5300 R15: 0000000000022000
+ </TASK>
+
+Allocated by task 6748:
+ kasan_save_stack+0x1e/0x50 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:434 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:513 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:472 [inline]
+ __kasan_kmalloc+0xa9/0xd0 mm/kasan/common.c:522
+ kmalloc include/linux/slab.h:595 [inline]
+ proc_do_submiturb+0x2a7d/0x3630 drivers/usb/core/devio.c:1816
+ proc_submiturb drivers/usb/core/devio.c:1975 [inline]
+ usbdev_do_ioctl drivers/usb/core/devio.c:2671 [inline]
+ usbdev_ioctl+0x692/0x36c0 drivers/usb/core/devio.c:2791
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:874 [inline]
+ __se_sys_ioctl fs/ioctl.c:860 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff88803545b460
+ which belongs to the cache kmalloc-8 of size 8
+The buggy address is located 0 bytes inside of
+ 8-byte region [ffff88803545b460, ffff88803545b468)
+The buggy address belongs to the page:
+page:ffffea0000d516c0 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x3545b
+flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000000200 ffffea000221b6c0 dead000000000002 ffff888010c41280
+raw: 0000000000000000 0000000080660066 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 25813, ts 1988498379208, free_ts 1988486053407
+ prep_new_page mm/page_alloc.c:2418 [inline]
+ get_page_from_freelist+0xa72/0x2f50 mm/page_alloc.c:4149
+ __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5369
+ alloc_pages+0x1a7/0x300 mm/mempolicy.c:2191
+ alloc_slab_page mm/slub.c:1793 [inline]
+ allocate_slab mm/slub.c:1930 [inline]
+ new_slab+0x32d/0x4a0 mm/slub.c:1993
+ ___slab_alloc+0x918/0xfe0 mm/slub.c:3022
+ __slab_alloc.constprop.0+0x4d/0xa0 mm/slub.c:3109
+ slab_alloc_node mm/slub.c:3200 [inline]
+ slab_alloc mm/slub.c:3242 [inline]
+ __kmalloc_track_caller+0x2e7/0x320 mm/slub.c:4925
+ kmemdup+0x23/0x50 mm/util.c:128
+ kmemdup include/linux/fortify-string.h:304 [inline]
+ ip6_opt_dup net/ipv6/ip6_output.c:1318 [inline]
+ ip6_setup_cork+0x686/0x1780 net/ipv6/ip6_output.c:1384
+ ip6_make_skb+0x22d/0x550 net/ipv6/ip6_output.c:1983
+ udpv6_sendmsg+0x22d6/0x2c40 net/ipv6/udp.c:1541
+ inet6_sendmsg+0x99/0xe0 net/ipv6/af_inet6.c:644
+ sock_sendmsg_nosec net/socket.c:704 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:724
+ ____sys_sendmsg+0x331/0x810 net/socket.c:2409
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
+ __sys_sendmmsg+0x195/0x470 net/socket.c:2549
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1338 [inline]
+ free_pcp_prepare+0x374/0x870 mm/page_alloc.c:1389
+ free_unref_page_prepare mm/page_alloc.c:3309 [inline]
+ free_unref_page+0x19/0x690 mm/page_alloc.c:3388
+ mm_free_pgd kernel/fork.c:647 [inline]
+ __mmdrop+0xcb/0x3f0 kernel/fork.c:698
+ mmdrop include/linux/sched/mm.h:49 [inline]
+ __mmput+0x3f1/0x4b0 kernel/fork.c:1123
+ mmput+0x56/0x60 kernel/fork.c:1134
+ free_bprm+0x65/0x2e0 fs/exec.c:1481
+ kernel_execve+0x380/0x460 fs/exec.c:1978
+ call_usermodehelper_exec_async+0x2e3/0x580 kernel/umh.c:112
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+Memory state around the buggy address:
+ ffff88803545b300: fc fc fc fc fa fc fc fc fc fb fc fc fc fc 00 fc
+ ffff88803545b380: fc fc fc fa fc fc fc fc fa fc fc fc fc fa fc fc
+>ffff88803545b400: fc fc fb fc fc fc fc fa fc fc fc fc 01 fc fc fc
+                                                       ^
+ ffff88803545b480: fc 00 fc fc fc fc 00 fc fc fc fc 00 fc fc fc fc
+ ffff88803545b500: fa fc fc fc fc fa fc fc fc fc fa fc fc fc fc fa
+==================================================================
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
