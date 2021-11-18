@@ -2,151 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6585C4555E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 08:42:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9AE4555DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 08:41:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243990AbhKRHpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 02:45:04 -0500
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:10099 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243886AbhKRHof (ORCPT
+        id S244005AbhKRHo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 02:44:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243810AbhKRHoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 02:44:35 -0500
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1AI7GPnR076150;
-        Thu, 18 Nov 2021 15:16:26 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from JammyHuang-PC.aspeed.com (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 18 Nov
- 2021 15:40:12 +0800
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-To:     <eajames@linux.ibm.com>, <mchehab@kernel.org>, <joel@jms.id.au>,
-        <andrew@aj.id.au>, <hverkuil-cisco@xs4all.nl>,
-        <sakari.ailus@linux.intel.com>, <gregkh@linuxfoundation.org>,
-        <laurent.pinchart@ideasonboard.com>, <linux-media@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5 09/10] media: aspeed: add comments and macro
-Date:   Thu, 18 Nov 2021 15:40:30 +0800
-Message-ID: <20211118074030.685-10-jammy_huang@aspeedtech.com>
+        Thu, 18 Nov 2021 02:44:12 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A81C061764;
+        Wed, 17 Nov 2021 23:41:13 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id m24so4497156pls.10;
+        Wed, 17 Nov 2021 23:41:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=cumN0MHhp/gNl7eiIb43Myz/VE/1A4Arj32bsVlFt3k=;
+        b=RCWqFij3nGrcR78WVxxI/Ygk35c1Tus0wDC+efFGB+M/xU31DIXOjJGxz0jjm4y3xR
+         DZ/DM2eKbpt6WShft9fT8pjfTjYoJwDWFQcheY32CPbhK5nb51TccBfvBfJiyM8O1ziv
+         0nXQhrJzzSu2qPStvN049aHQ8HXFZhTMD1yOaJiRz4d5TtnQEQObhXW052oF7dJ5QQwk
+         llksUjwkojKG/hnPqukvWtTwNSxMx2biAsucilH+H7O/nEfBVfGgeIxs+58DoE+tlGME
+         euNpsnT8bHlo3hhvUQ1ViSU2nTa2b2pa8eSTwR+vQbDugUfaOlCIKrlc98vBMA0IPHCB
+         LlKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=cumN0MHhp/gNl7eiIb43Myz/VE/1A4Arj32bsVlFt3k=;
+        b=3AV+r25WQAQcMloSWPQub152xfVPuulprXdC8rymX27A+zV62atjPRmF47L8VAYzb2
+         AZu6oJFJw90NLUC60jclwR98ukIo9rXO0dZUJo8GL/knrDw5fDNy+FmcGLdL1AAUU1ID
+         96Ywk5YMFuKvtBdDNTej3cvEn3b1IUKENQZsBlMnkLVoMFyIdNexi+S/a/VLADM+It5k
+         gyM9NQRgRbOb0UeuTPXpUD0GmAYzl1Ivn3bpLtM328LarbqRSReL7Tk6ERxkSr3n1Mc6
+         bSlb3HmNDyndL9C4fsqpSpQDNz01EXvgEmscAgAhV7fmim7f/1Dz6WnVs7/I7Qp5amFI
+         FFBw==
+X-Gm-Message-State: AOAM530aeQNvSq8eohR9a75AnM+8AcreQBFlWSjU5RlrZq11eM++IDAq
+        kptodXWSpGIdCFPTXhcWFISosWv9XBo=
+X-Google-Smtp-Source: ABdhPJykGJ1M0Wufnub9TreQKMkzCLGjv8nqGSqC6ecHvV7QmMKJW1iviquzQPJaKxBJ3mRr027oQw==
+X-Received: by 2002:a17:90a:be10:: with SMTP id a16mr7943634pjs.133.1637221272875;
+        Wed, 17 Nov 2021 23:41:12 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id k14sm2020991pff.6.2021.11.17.23.41.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 23:41:12 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: deng.changcheng@zte.com.cn
+To:     pdeschrijver@nvidia.com
+Cc:     jonathanh@nvidia.com, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        mturquette@baylibre.com, pgaikwad@nvidia.com, sboyd@kernel.org,
+        thierry.reding@gmail.com, zealci@zte.com.cn, cgel.zte@gmail.com,
+        deng.changcheng@zte.com.cn
+Subject: [PATCH v2] clk: tegra: Use div64_ul instead of do_div
+Date:   Thu, 18 Nov 2021 07:41:01 +0000
+Message-Id: <20211118074101.165168-1-deng.changcheng@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211118074030.685-1-jammy_huang@aspeedtech.com>
-References: <20211118074030.685-1-jammy_huang@aspeedtech.com>
+In-Reply-To: <20211117014714.159005-1-deng.changcheng@zte.com.cn>
+References: <20211117014714.159005-1-deng.changcheng@zte.com.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1AI7GPnR076150
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add comments to describe video-stat and 'struct aspeed_video'.
-Add macro, ASPEED_VIDEO_V4L2_MIN_BUF_REQ, to describe the buffers
-needed.
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
----
-v5:
-  - no update
-v4:
-  - update comments
-v3:
-  - no update
-v2:
-  - no update
----
- drivers/media/platform/aspeed-video.c | 39 ++++++++++++++++++++++++---
- 1 file changed, 36 insertions(+), 3 deletions(-)
+do_div() does a 64-by-32 division. Here the divisor is an unsigned long
+which on some platforms is 64 bit wide. So use div64_ul instead of do_div
+to avoid a possible truncation.
 
-diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
-index 419825ed7737..03bb6c46f2a1 100644
---- a/drivers/media/platform/aspeed-video.c
-+++ b/drivers/media/platform/aspeed-video.c
-@@ -33,6 +33,8 @@
- #include <linux/videodev2.h>
- #include <uapi/linux/aspeed-video.h>
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+---
+ drivers/clk/tegra/clk-utils.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/clk/tegra/clk-utils.c b/drivers/clk/tegra/clk-utils.c
+index 1a5daae4e501..12658add9dd7 100644
+--- a/drivers/clk/tegra/clk-utils.c
++++ b/drivers/clk/tegra/clk-utils.c
+@@ -26,7 +26,7 @@ int div_frac_get(unsigned long rate, unsigned parent_rate, u8 width,
+ 	if (flags & TEGRA_DIVIDER_ROUND_UP)
+ 		divider_ux1 += rate - 1;
  
-+#define ASPEED_VIDEO_V4L2_MIN_BUF_REQ 3
-+
- #define DEVICE_NAME			"aspeed-video"
+-	do_div(divider_ux1, rate);
++	divider_ux1 = div64_ul(divider_ux1, rate);
  
- #define ASPEED_VIDEO_JPEG_NUM_QUALITIES	12
-@@ -193,6 +195,15 @@
- #define VE_MEM_RESTRICT_START		0x310
- #define VE_MEM_RESTRICT_END		0x314
- 
-+/*
-+ * @VIDEO_MODE_DETECT_DONE:	a flag raised if signal lock
-+ * @VIDEO_RES_CHANGE:		a flag raised if res_change work on-going
-+ * @VIDEO_RES_DETECT:		a flag raised if res. detection on-going
-+ * @VIDEO_STREAMING:		a flag raised if user requires stream-on
-+ * @VIDEO_FRAME_INPRG:		a flag raised if hw working on a frame
-+ * @VIDEO_STOPPED:		a flag raised if device release
-+ * @VIDEO_CLOCKS_ON:		a flag raised if clk is on
-+ */
- enum {
- 	VIDEO_MODE_DETECT_DONE,
- 	VIDEO_RES_CHANGE,
-@@ -231,6 +242,28 @@ struct aspeed_video_perf {
- #define to_aspeed_video_buffer(x) \
- 	container_of((x), struct aspeed_video_buffer, vb)
- 
-+/**
-+ * struct aspeed_video - driver data
-+ *
-+ * @flags:		holds the state of video
-+ * @sequence:		holds the last number of frame completed
-+ * @max_compressed_size:holds max compressed stream's size
-+ * @srcs:		holds the buffer information for srcs
-+ * @jpeg:		holds the buffer information for jpeg header
-+ * @bcd:		holds the buffer information for bcd work
-+ * @yuv420:		a flag raised if JPEG subsampling is 420
-+ * @format:		holds the video format
-+ * @hq_mode:		a flag raised if HQ is enabled. Only for VIDEO_FMT_ASPEED
-+ * @frame_rate:		holds the frame_rate
-+ * @jpeg_quality:	holds jpeq's quality (0~11)
-+ * @jpeg_hq_quality:	holds hq's quality (0~11) only if hq_mode enabled
-+ * @compression_mode:	holds jpeg compression mode
-+ * @frame_bottom:	end position of video data in vertical direction
-+ * @frame_left:		start position of video data in horizontal direction
-+ * @frame_right:	end position of video data in horizontal direction
-+ * @frame_top:		start position of video data in vertical direction
-+ * @perf:		holds the statistics primary for debugfs
-+ */
- struct aspeed_video {
- 	void __iomem *base;
- 	struct clk *eclk;
-@@ -1305,7 +1338,7 @@ static int aspeed_video_get_parm(struct file *file, void *fh,
- 	struct aspeed_video *video = video_drvdata(file);
- 
- 	a->parm.capture.capability = V4L2_CAP_TIMEPERFRAME;
--	a->parm.capture.readbuffers = 3;
-+	a->parm.capture.readbuffers = ASPEED_VIDEO_V4L2_MIN_BUF_REQ;
- 	a->parm.capture.timeperframe.numerator = 1;
- 	if (!video->frame_rate)
- 		a->parm.capture.timeperframe.denominator = MAX_FRAME_RATE;
-@@ -1322,7 +1355,7 @@ static int aspeed_video_set_parm(struct file *file, void *fh,
- 	struct aspeed_video *video = video_drvdata(file);
- 
- 	a->parm.capture.capability = V4L2_CAP_TIMEPERFRAME;
--	a->parm.capture.readbuffers = 3;
-+	a->parm.capture.readbuffers = ASPEED_VIDEO_V4L2_MIN_BUF_REQ;
- 
- 	if (a->parm.capture.timeperframe.numerator)
- 		frame_rate = a->parm.capture.timeperframe.denominator /
-@@ -1906,7 +1939,7 @@ static int aspeed_video_setup_video(struct aspeed_video *video)
- 	vbq->drv_priv = video;
- 	vbq->buf_struct_size = sizeof(struct aspeed_video_buffer);
- 	vbq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
--	vbq->min_buffers_needed = 3;
-+	vbq->min_buffers_needed = ASPEED_VIDEO_V4L2_MIN_BUF_REQ;
- 
- 	rc = vb2_queue_init(vbq);
- 	if (rc) {
+ 	if (flags & TEGRA_DIVIDER_INT)
+ 		divider_ux1 *= mul;
 -- 
 2.25.1
 
