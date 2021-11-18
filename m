@@ -2,96 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2047445573D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:43:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB98C455740
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:45:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244943AbhKRIqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 03:46:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49394 "EHLO
+        id S244761AbhKRIsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 03:48:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244783AbhKRIo2 (ORCPT
+        with ESMTP id S243165AbhKRIsL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 03:44:28 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D42C0613B9
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:41:25 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mncyx-0004bJ-VT; Thu, 18 Nov 2021 09:41:24 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mncyw-000OOR-65; Thu, 18 Nov 2021 09:41:21 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mncyv-00088F-4X; Thu, 18 Nov 2021 09:41:21 +0100
-Date:   Thu, 18 Nov 2021 09:41:08 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     cgel.zte@gmail.com
-Cc:     deng.changcheng@zte.com.cn, lee.jones@linaro.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
-        thierry.reding@gmail.com, zealci@zte.com.cn
-Subject: Re: [PATCH V3] pwm: rcar: Use div64_ul instead of do_div
-Message-ID: <20211118084108.vfdyogbd25bwnyzf@pengutronix.de>
-References: <20211117130144.161788-1-deng.changcheng@zte.com.cn>
- <20211118030215.163306-1-deng.changcheng@zte.com.cn>
+        Thu, 18 Nov 2021 03:48:11 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40B1C061210
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:44:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=96S4EthB+6zIOtMMZ50m2yFtwma9si/mTFRJme+WPvU=; b=oaxBH2FfzEJgcO3Q5kmi4rhOiQ
+        Fie+uS6wSt0O5tQpfW/lv6Aqiw/WN+zV4KsAMPAW6G+LSEGCaWO2Pn0riDgP6NLLCpyRFktArsWwS
+        Erd9iRCxbH/7q3ULr8q+AFGMIGdH4ei0LiHtJNHb7msU166ccsP6yV2dPi+h++ta29FCrpI/Gevca
+        ZRK5pPfrQIFdVcWQX7trKgnGv4dJPZ26wA2/52dD16VlnR21akne5tBydfKHEBaG3ENWUpw3axos0
+        ZAXpU9smE4rVPE+qs9AknWIUVnctPJ5V+f0Rvp6NACgH8B2wPjJ/XGybCguMmZZGiL5CbojzdYUGA
+        gqeeZ75A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mnd24-008JLA-Pr; Thu, 18 Nov 2021 08:44:37 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 94D4E30001B;
+        Thu, 18 Nov 2021 09:44:36 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 833B72C99C22B; Thu, 18 Nov 2021 09:44:36 +0100 (CET)
+Date:   Thu, 18 Nov 2021 09:44:36 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     yajun.deng@linux.dev
+Cc:     will@kernel.org, boqun.feng@gmail.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] refcount: introduce refcount_is_one() helper function
+Message-ID: <YZYSdJh7xpkHJjoa@hirez.programming.kicks-ass.net>
+References: <20211118074200.GF174703@worktop.programming.kicks-ass.net>
+ <20211118035328.5730-1-yajun.deng@linux.dev>
+ <a4b7401c06d3baa5d3d0a43d7aa6c62c@linux.dev>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="d6lcqnwrjq4ga5ig"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211118030215.163306-1-deng.changcheng@zte.com.cn>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <a4b7401c06d3baa5d3d0a43d7aa6c62c@linux.dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 18, 2021 at 08:12:56AM +0000, yajun.deng@linux.dev wrote:
+> November 18, 2021 3:42 PM, "Peter Zijlstra" <peterz@infradead.org> wrote:
+> 
+> > On Thu, Nov 18, 2021 at 11:53:28AM +0800, Yajun Deng wrote:
+> > 
+> >> There are many cases where it is necessary to determine if refcount is one,
+> >> introduce refcount_is_one() helper function for these cases.
+> > 
+> > Give me one that is not racy?
+> 
+> The following determine refcount is one, 35 count.
 
---d6lcqnwrjq4ga5ig
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Nov 18, 2021 at 03:02:15AM +0000, cgel.zte@gmail.com wrote:
-> From: Changcheng Deng <deng.changcheng@zte.com.cn>
->=20
-> do_div() does a 64-by-32 division. Here the divisor is an unsigned long
-> which on some platforms is 64 bit wide. So use div64_ul instead of do_div
-> to avoid a possible truncation.
->=20
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
-
-You're supposed to add a S-o-b line for yourself with a email address
-that matches the sender of the patch.
-
-Other than that the patch looks fine now.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---d6lcqnwrjq4ga5ig
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGWEZwACgkQwfwUeK3K
-7AncMgf/TNY85gnpHIxioH2vicjmrkcKoXefQ2C5TqCwwqaLtwcwUFPB/FucrQoL
-zcQbQhgiL/vTY9UJcJNLtc0FvpJc3rbtLg3cgToWHpYQREbQAyKD54RG36bLXt60
-fFrVMXz5XKKVsSzZqK1+SKI8qXWZo+G5Zv7KK5z05Qb7PWHZH0cEHzv4DggZvHSD
-UFT7GsYLedClDRf99CCi2+48zZltHIBMKXlmDQl9YYelDoDUUPngnST+gY+v/y/6
-qiB75gEDoeuoiMtVGJwnWDGLGWNVtCNJPMRs5qHvPx3k3+Q8pajlU7JDjYLxyDvP
-ggM1tdCz+W8LRBKIoqkZ0DRuFxXbOQ==
-=rBwa
------END PGP SIGNATURE-----
-
---d6lcqnwrjq4ga5ig--
+Very good, now get me one that isn't broken :-)
