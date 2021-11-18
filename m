@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4D4455673
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:11:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D33F455680
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244352AbhKRIOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 03:14:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42470 "EHLO
+        id S244394AbhKRIOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 03:14:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244288AbhKRIOK (ORCPT
+        with ESMTP id S244303AbhKRIOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 03:14:10 -0500
-Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB41C061206
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:11:10 -0800 (PST)
-Received: by mail-wm1-x349.google.com with SMTP id 145-20020a1c0197000000b0032efc3eb9bcso4005757wmb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:11:10 -0800 (PST)
+        Thu, 18 Nov 2021 03:14:14 -0500
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E2A9C06120F
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:11:13 -0800 (PST)
+Received: by mail-wm1-x34a.google.com with SMTP id n16-20020a05600c3b9000b003331973fdbbso2746810wms.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 00:11:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=HAAXujUo7vJi9QoAYq1xZhWCtJcnOt42cvkKdKb2mZ0=;
-        b=ZvljMtx+aBzGVGLPn7eWAsT73ExmZFn5/qieQKn1o0FrFOeRJR+W8/ayaqbIbk9TkV
-         naIMN5BgLXuq0BX1QLAgT5iI+II4Tuc7HGQBvjS8az+pHHIEuOBs1M/cpJIFAhMVF9Dl
-         ufft4/f8dllvEUBYZMcDl+bbqasvP5vObHHZTic25m1rDP4K5b+87b4dCCiu0L5ahS/M
-         uPfzcCB/57abGkoWuIniqyUVWgh2ujmHqBG9UWHm1HA1IR7StDu4RMk25Khh0gH2UY19
-         B+D7y4ylMleQBxH4zfRbPcwxo2QlCMRALtP7AhYHfvZb+JkLzgY5i5wMs3uPDOWvh9b1
-         7J3A==
+        bh=K7olqGN/TGjGn55ZVkEX4B3oA8fATuBzpoXYDPWo+s8=;
+        b=lSb0XjstLr6FE8BYAlex4H4DOucXhMa/eDsWAfxzdlozfip0h44l0sLp32R3+Xdu5p
+         cRgEI5NPu8ANL3d/YklNrAWTPBD//ZFXFprmYerrlADA8kJb77v94IibTG4XwaHJWIXA
+         P38AlhW4PKnoU8Xlkk3/IvV4cc1TOq7w+4vWmIGL7Zydr2tgvIyiwP+2f3aQAiGYDfR7
+         89QIRhOMC5IqfMZoXAZ3rymy13CwsavWk+VAc5ucer3gPbxuzdnqXILFbBpt27+IXZo9
+         0w72TIzWjD+rFn/DvKY/BoUGNaOwGkD5/2DzBlU8jl8foApHdCq3J9EEF9O1GlLqo21h
+         j7Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=HAAXujUo7vJi9QoAYq1xZhWCtJcnOt42cvkKdKb2mZ0=;
-        b=dKbNsJr50/zvU9cwg3m0juVogLw5T0A/xCcgrbb1Ju7+gyamchf3EFjtSS5T/wXsJ/
-         1fgga+I0JnbsIzs/v+1a241Kho9+GIXWV1LWCHhIzOSsQQ8IcpilJ8wJoIa2kBZhXKzr
-         8BKjA84Mery4CY0GIux7HaeCOWSpExbLeCNTs0iUABtm94HPNZs3XbkxwMaUs/Goj/pL
-         3sK3S0EzDFTpXt43zCNLK8lvdnj46t3gyFaSNZtF3D+zn6eHhgp8/wIWgElDX8KhWu6h
-         wlPgEIdRjvUHtM0bZPjxyl1TBWIY9CijTv4zjfTHzq/HF5tN9SU2ctY3WZclhPWmVDZG
-         yCew==
-X-Gm-Message-State: AOAM532MXHRzLK6nPFP/MCOers9x12O3yF/q316LrSP31nmt64i9gmip
-        z5O2JbDnae9Ir6oyv3GCD76todwZ/g==
-X-Google-Smtp-Source: ABdhPJxasck2gvp3pyOKdAMvcZlLYm/K2gi7xrgvcQBYIVlIkj9YBNax85HUGsxAxhDiLPq3hTBplPPqCA==
+        bh=K7olqGN/TGjGn55ZVkEX4B3oA8fATuBzpoXYDPWo+s8=;
+        b=NSbuZDtNGqBKORpJpHcl/KZXQKmvubPTDxIH+dWnueil3W8bShGTwuDKGoME/JMX/A
+         OMBsVRwRq/HZqms49FeJClsZRvujgt9tnMgPFkRBOb5lXgg7SDDjyHF1P3P4hUIG4+EF
+         gk518FVV94YIpRHuMvJkpG+7z9l/T/P+A/+f5jVvwe5ay8oF7RPp3vVaKlebqFeIZg/n
+         nGruuh3aoGtXnZydJmNvPoQT5GIPElO3sFUtYuK4NTC35gsEBme0Q1+V7e0tOvkfK4PP
+         i8MKChS1XfqftVl3hb8MiD9aom5zCbTSxsTsb1k/r0VrSh+UyDeGPtSZvyf5MnvcIZsO
+         0ufg==
+X-Gm-Message-State: AOAM532C+u+rIuo650zB7U5HfZQTUdikwYd/8iPokvVU+HbsjkwO2WLr
+        1yYhksXkRDP+N2uaXuvGCkht2Uvmbw==
+X-Google-Smtp-Source: ABdhPJzNNfd9plpADaoab7s2hg00vIn01fs5fi9KbQaBWpR62h2FNBAPwGMc0qpkJtxn8fjqTKnfbHVu5g==
 X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:7155:1b7:fca5:3926])
- (user=elver job=sendgmr) by 2002:a05:600c:1d97:: with SMTP id
- p23mr7679237wms.186.1637223069169; Thu, 18 Nov 2021 00:11:09 -0800 (PST)
-Date:   Thu, 18 Nov 2021 09:10:09 +0100
+ (user=elver job=sendgmr) by 2002:a05:600c:1e27:: with SMTP id
+ ay39mr7793632wmb.84.1637223071430; Thu, 18 Nov 2021 00:11:11 -0800 (PST)
+Date:   Thu, 18 Nov 2021 09:10:10 +0100
 In-Reply-To: <20211118081027.3175699-1-elver@google.com>
-Message-Id: <20211118081027.3175699-6-elver@google.com>
+Message-Id: <20211118081027.3175699-7-elver@google.com>
 Mime-Version: 1.0
 References: <20211118081027.3175699-1-elver@google.com>
 X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH v2 05/23] kcsan: Add core memory barrier instrumentation functions
+Subject: [PATCH v2 06/23] kcsan, kbuild: Add option for barrier
+ instrumentation only
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com, "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     Alexander Potapenko <glider@google.com>,
@@ -73,183 +74,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the core memory barrier instrumentation functions. These invalidate
-the current in-flight reordered access based on the rules for the
-respective barrier types and in-flight access type.
+Source files that disable KCSAN via KCSAN_SANITIZE := n, remove all
+instrumentation, including explicit barrier instrumentation. With
+instrumentation for memory barriers, in few places it is required to
+enable just the explicit instrumentation for memory barriers to avoid
+false positives.
+
+Providing the Makefile variable KCSAN_INSTRUMENT_BARRIERS_obj.o or
+KCSAN_INSTRUMENT_BARRIERS (for all files) set to 'y' only enables the
+explicit barrier instrumentation.
 
 Signed-off-by: Marco Elver <elver@google.com>
 ---
-v2:
-* Rename kcsan_atomic_release() to kcsan_atomic_builtin_memorder() to
-  avoid confusion.
----
- include/linux/kcsan-checks.h | 41 ++++++++++++++++++++++++++++++++++--
- kernel/kcsan/core.c          | 36 +++++++++++++++++++++++++++++++
- 2 files changed, 75 insertions(+), 2 deletions(-)
+ scripts/Makefile.lib | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/include/linux/kcsan-checks.h b/include/linux/kcsan-checks.h
-index a1c6a89fde71..c9e7c39a7d7b 100644
---- a/include/linux/kcsan-checks.h
-+++ b/include/linux/kcsan-checks.h
-@@ -36,6 +36,26 @@
-  */
- void __kcsan_check_access(const volatile void *ptr, size_t size, int type);
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index d1f865b8c0cb..ab17f7b2e33c 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -182,6 +182,11 @@ ifeq ($(CONFIG_KCSAN),y)
+ _c_flags += $(if $(patsubst n%,, \
+ 	$(KCSAN_SANITIZE_$(basetarget).o)$(KCSAN_SANITIZE)y), \
+ 	$(CFLAGS_KCSAN))
++# Some uninstrumented files provide implied barriers required to avoid false
++# positives: set KCSAN_INSTRUMENT_BARRIERS for barrier instrumentation only.
++_c_flags += $(if $(patsubst n%,, \
++	$(KCSAN_INSTRUMENT_BARRIERS_$(basetarget).o)$(KCSAN_INSTRUMENT_BARRIERS)n), \
++	-D__KCSAN_INSTRUMENT_BARRIERS__)
+ endif
  
-+/**
-+ * __kcsan_mb - full memory barrier instrumentation
-+ */
-+void __kcsan_mb(void);
-+
-+/**
-+ * __kcsan_wmb - write memory barrier instrumentation
-+ */
-+void __kcsan_wmb(void);
-+
-+/**
-+ * __kcsan_rmb - read memory barrier instrumentation
-+ */
-+void __kcsan_rmb(void);
-+
-+/**
-+ * __kcsan_release - release barrier instrumentation
-+ */
-+void __kcsan_release(void);
-+
- /**
-  * kcsan_disable_current - disable KCSAN for the current context
-  *
-@@ -159,6 +179,10 @@ void kcsan_end_scoped_access(struct kcsan_scoped_access *sa);
- static inline void __kcsan_check_access(const volatile void *ptr, size_t size,
- 					int type) { }
- 
-+static inline void __kcsan_mb(void)			{ }
-+static inline void __kcsan_wmb(void)			{ }
-+static inline void __kcsan_rmb(void)			{ }
-+static inline void __kcsan_release(void)		{ }
- static inline void kcsan_disable_current(void)		{ }
- static inline void kcsan_enable_current(void)		{ }
- static inline void kcsan_enable_current_nowarn(void)	{ }
-@@ -191,12 +215,25 @@ static inline void kcsan_end_scoped_access(struct kcsan_scoped_access *sa) { }
-  */
- #define __kcsan_disable_current kcsan_disable_current
- #define __kcsan_enable_current kcsan_enable_current_nowarn
--#else
-+#else /* __SANITIZE_THREAD__ */
- static inline void kcsan_check_access(const volatile void *ptr, size_t size,
- 				      int type) { }
- static inline void __kcsan_enable_current(void)  { }
- static inline void __kcsan_disable_current(void) { }
--#endif
-+#endif /* __SANITIZE_THREAD__ */
-+
-+#if defined(CONFIG_KCSAN_WEAK_MEMORY) && \
-+		(defined(__SANITIZE_THREAD__) || defined(__KCSAN_INSTRUMENT_BARRIERS__))
-+#define kcsan_mb	__kcsan_mb
-+#define kcsan_wmb	__kcsan_wmb
-+#define kcsan_rmb	__kcsan_rmb
-+#define kcsan_release	__kcsan_release
-+#else /* CONFIG_KCSAN_WEAK_MEMORY && (__SANITIZE_THREAD__ || __KCSAN_INSTRUMENT_BARRIERS__) */
-+static inline void kcsan_mb(void)		{ }
-+static inline void kcsan_wmb(void)		{ }
-+static inline void kcsan_rmb(void)		{ }
-+static inline void kcsan_release(void)		{ }
-+#endif /* CONFIG_KCSAN_WEAK_MEMORY && (__SANITIZE_THREAD__ || __KCSAN_INSTRUMENT_BARRIERS__) */
- 
- /**
-  * __kcsan_check_read - check regular read access for races
-diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
-index 24d82baa807d..840ed8e35f75 100644
---- a/kernel/kcsan/core.c
-+++ b/kernel/kcsan/core.c
-@@ -955,6 +955,28 @@ void __kcsan_check_access(const volatile void *ptr, size_t size, int type)
- }
- EXPORT_SYMBOL(__kcsan_check_access);
- 
-+#define DEFINE_MEMORY_BARRIER(name, order_before_cond)                         \
-+	kcsan_noinstr void __kcsan_##name(void)                                \
-+	{                                                                      \
-+		struct kcsan_scoped_access *sa;                                \
-+		if (within_noinstr(_RET_IP_))                                  \
-+			return;                                                \
-+		instrumentation_begin();                                       \
-+		sa = get_reorder_access(get_ctx());                            \
-+		if (!sa)                                                       \
-+			goto out;                                              \
-+		if (order_before_cond)                                         \
-+			sa->size = 0;                                          \
-+	out:                                                                   \
-+		instrumentation_end();                                         \
-+	}                                                                      \
-+	EXPORT_SYMBOL(__kcsan_##name)
-+
-+DEFINE_MEMORY_BARRIER(mb, true);
-+DEFINE_MEMORY_BARRIER(wmb, sa->type & (KCSAN_ACCESS_WRITE | KCSAN_ACCESS_COMPOUND));
-+DEFINE_MEMORY_BARRIER(rmb, !(sa->type & KCSAN_ACCESS_WRITE) || (sa->type & KCSAN_ACCESS_COMPOUND));
-+DEFINE_MEMORY_BARRIER(release, true);
-+
- /*
-  * KCSAN uses the same instrumentation that is emitted by supported compilers
-  * for ThreadSanitizer (TSAN).
-@@ -1143,10 +1165,19 @@ EXPORT_SYMBOL(__tsan_init);
-  * functions, whose job is to also execute the operation itself.
-  */
- 
-+static __always_inline void kcsan_atomic_builtin_memorder(int memorder)
-+{
-+	if (memorder == __ATOMIC_RELEASE ||
-+	    memorder == __ATOMIC_SEQ_CST ||
-+	    memorder == __ATOMIC_ACQ_REL)
-+		__kcsan_release();
-+}
-+
- #define DEFINE_TSAN_ATOMIC_LOAD_STORE(bits)                                                        \
- 	u##bits __tsan_atomic##bits##_load(const u##bits *ptr, int memorder);                      \
- 	u##bits __tsan_atomic##bits##_load(const u##bits *ptr, int memorder)                       \
- 	{                                                                                          \
-+		kcsan_atomic_builtin_memorder(memorder);                                           \
- 		if (!IS_ENABLED(CONFIG_KCSAN_IGNORE_ATOMICS)) {                                    \
- 			check_access(ptr, bits / BITS_PER_BYTE, KCSAN_ACCESS_ATOMIC, _RET_IP_);    \
- 		}                                                                                  \
-@@ -1156,6 +1187,7 @@ EXPORT_SYMBOL(__tsan_init);
- 	void __tsan_atomic##bits##_store(u##bits *ptr, u##bits v, int memorder);                   \
- 	void __tsan_atomic##bits##_store(u##bits *ptr, u##bits v, int memorder)                    \
- 	{                                                                                          \
-+		kcsan_atomic_builtin_memorder(memorder);                                           \
- 		if (!IS_ENABLED(CONFIG_KCSAN_IGNORE_ATOMICS)) {                                    \
- 			check_access(ptr, bits / BITS_PER_BYTE,                                    \
- 				     KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC, _RET_IP_);          \
-@@ -1168,6 +1200,7 @@ EXPORT_SYMBOL(__tsan_init);
- 	u##bits __tsan_atomic##bits##_##op(u##bits *ptr, u##bits v, int memorder);                 \
- 	u##bits __tsan_atomic##bits##_##op(u##bits *ptr, u##bits v, int memorder)                  \
- 	{                                                                                          \
-+		kcsan_atomic_builtin_memorder(memorder);                                           \
- 		if (!IS_ENABLED(CONFIG_KCSAN_IGNORE_ATOMICS)) {                                    \
- 			check_access(ptr, bits / BITS_PER_BYTE,                                    \
- 				     KCSAN_ACCESS_COMPOUND | KCSAN_ACCESS_WRITE |                  \
-@@ -1200,6 +1233,7 @@ EXPORT_SYMBOL(__tsan_init);
- 	int __tsan_atomic##bits##_compare_exchange_##strength(u##bits *ptr, u##bits *exp,          \
- 							      u##bits val, int mo, int fail_mo)    \
- 	{                                                                                          \
-+		kcsan_atomic_builtin_memorder(mo);                                                 \
- 		if (!IS_ENABLED(CONFIG_KCSAN_IGNORE_ATOMICS)) {                                    \
- 			check_access(ptr, bits / BITS_PER_BYTE,                                    \
- 				     KCSAN_ACCESS_COMPOUND | KCSAN_ACCESS_WRITE |                  \
-@@ -1215,6 +1249,7 @@ EXPORT_SYMBOL(__tsan_init);
- 	u##bits __tsan_atomic##bits##_compare_exchange_val(u##bits *ptr, u##bits exp, u##bits val, \
- 							   int mo, int fail_mo)                    \
- 	{                                                                                          \
-+		kcsan_atomic_builtin_memorder(mo);                                                 \
- 		if (!IS_ENABLED(CONFIG_KCSAN_IGNORE_ATOMICS)) {                                    \
- 			check_access(ptr, bits / BITS_PER_BYTE,                                    \
- 				     KCSAN_ACCESS_COMPOUND | KCSAN_ACCESS_WRITE |                  \
-@@ -1246,6 +1281,7 @@ DEFINE_TSAN_ATOMIC_OPS(64);
- void __tsan_atomic_thread_fence(int memorder);
- void __tsan_atomic_thread_fence(int memorder)
- {
-+	kcsan_atomic_builtin_memorder(memorder);
- 	__atomic_thread_fence(memorder);
- }
- EXPORT_SYMBOL(__tsan_atomic_thread_fence);
+ # $(srctree)/$(src) for including checkin headers from generated source files
 -- 
 2.34.0.rc2.393.gf8c9666880-goog
 
