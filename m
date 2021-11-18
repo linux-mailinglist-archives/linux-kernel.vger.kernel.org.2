@@ -2,73 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D89455ACC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:41:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70560455AD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 12:42:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344264AbhKRLo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 06:44:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60588 "EHLO mail.kernel.org"
+        id S1344361AbhKRLpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 06:45:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344263AbhKRLnN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 06:43:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 922D061B04;
-        Thu, 18 Nov 2021 11:40:09 +0000 (UTC)
+        id S1344141AbhKRLnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 06:43:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1E86861BCF;
+        Thu, 18 Nov 2021 11:40:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637235610;
-        bh=qKmAo3V0HDp38cwkHV4vrgKqEIb5IOhIJTJ/rZB668c=;
+        s=k20201202; t=1637235612;
+        bh=z75Sd0PO1i42YMnBmU5hptoHe8TRz3K51r91cbRFcmU=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=lBVW1jkJnwIwV5rLQTC8a2MwAuXHdQc33OW+Vyx+weW37MIasU8h29BD6+4x4QJRM
-         X5DDHUgjoP0Cuaf9praAMXTbT48BfAE8gGwAVHPx1kfWY+3AhFn6JZounfq94tQWr/
-         D3MBQJbFVc9RVqo3nWp2NfGEusaEaabAP7BmfJa7XSBaX+CHEGDKM1dlth4bOuh9bs
-         6yL6SvDt3Mai0lyxwWQbVac9y/xA/wgU7lCZHjli0Ee4DFxgtS7iVSCkS/DE081JbT
-         iQfB/7Brpe5WzEXmwVZiF3rIg0IuvcQvIaXDfTkWWLKawTxYt6eW0eFNyaztwuAVGZ
-         OG2djo/4nQJlg==
+        b=AvQSUoog1hkEKuJtUlojJk/8OAoJY5q0d18AHpHl/AQsYdM3y+1dKatTwdY5dcvF2
+         uEVM14vnfi413Xy/Kq3MxraPywR9aG+JSBP4GQKKA/3koI1fM1AqOVygh7Z4hPeH/z
+         ZOWpvZScNJZo7Ax9YD8jZrqxo3CD5W1G+/u745+u1s70/kurVXu2MaMS/y2lctRJWz
+         JxjlKfcYdkTqYoQFT+DWrnrriE8TN9xGhZ8KPEQJ4Joe65bnEBjQQ/ghRVgAkU2L2D
+         X+B+0AKceOtAGJECFvaOlInksAkuUKLuJYmiNEp2besfQqEBjgQRLfmw/ksC+Aohoe
+         TlzJSFLAJ/Wig==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8258B60A94;
-        Thu, 18 Nov 2021 11:40:09 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 18626609CD;
+        Thu, 18 Nov 2021 11:40:12 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] page_pool: Revert "page_pool: disable dma mapping
- support..."
+Subject: Re: [PATCH net-next] net: stmmac: dwmac-qcom-ethqos: add platform level
+ clocks management
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163723560952.11739.1415863024804247853.git-patchwork-notify@kernel.org>
-Date:   Thu, 18 Nov 2021 11:40:09 +0000
-References: <20211117075652.58299-1-linyunsheng@huawei.com>
-In-Reply-To: <20211117075652.58299-1-linyunsheng@huawei.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
-        hawk@kernel.org, ilias.apalodimas@linaro.org,
-        akpm@linux-foundation.org, peterz@infradead.org, vbabka@suse.cz,
-        willy@infradead.org, will@kernel.org, feng.tang@intel.com,
-        jgg@ziepe.ca, ebiederm@xmission.com, aarcange@redhat.com,
-        guillaume.tucker@collabora.com
+Message-Id: <163723561209.11739.17599978487412465889.git-patchwork-notify@kernel.org>
+Date:   Thu, 18 Nov 2021 11:40:12 +0000
+References: <20211117110538.204948-1-bhupesh.sharma@linaro.org>
+In-Reply-To: <20211117110538.204948-1-bhupesh.sharma@linaro.org>
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     netdev@vger.kernel.org, vkoul@kernel.org, bhupesh.linux@gmail.com,
+        linux-kernel@vger.kernel.org, davem@davemloft.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (master)
+This patch was applied to netdev/net-next.git (master)
 by David S. Miller <davem@davemloft.net>:
 
-On Wed, 17 Nov 2021 15:56:52 +0800 you wrote:
-> This reverts commit d00e60ee54b12de945b8493cf18c1ada9e422514.
+On Wed, 17 Nov 2021 16:35:38 +0530 you wrote:
+> Split clocks settings from init callback into clks_config callback,
+> which could support platform level clock management.
 > 
-> As reported by Guillaume in [1]:
-> Enabling LPAE always enables CONFIG_ARCH_DMA_ADDR_T_64BIT
-> in 32-bit systems, which breaks the bootup proceess when a
-> ethernet driver is using page pool with PP_FLAG_DMA_MAP flag.
-> As we were hoping we had no active consumers for such system
-> when we removed the dma mapping support, and LPAE seems like
-> a common feature for 32 bits system, so revert it.
-> 
-> [...]
+> Cc: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> ---
+>  .../stmicro/stmmac/dwmac-qcom-ethqos.c        | 26 ++++++++++++++++---
+>  1 file changed, 23 insertions(+), 3 deletions(-)
 
 Here is the summary with links:
-  - [net] page_pool: Revert "page_pool: disable dma mapping support..."
-    https://git.kernel.org/netdev/net/c/f915b75bffb7
+  - [net-next] net: stmmac: dwmac-qcom-ethqos: add platform level clocks management
+    https://git.kernel.org/netdev/net-next/c/6c950ca7c11c
 
 You are awesome, thank you!
 -- 
