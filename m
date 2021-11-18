@@ -2,151 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB6B455370
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 04:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2488C455379
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 04:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242751AbhKRDgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 22:36:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241185AbhKRDgR (ORCPT
+        id S242756AbhKRDjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 22:39:47 -0500
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:45375 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234745AbhKRDjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 22:36:17 -0500
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E79C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 19:33:18 -0800 (PST)
-Received: by mail-ua1-x931.google.com with SMTP id r15so10708825uao.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 19:33:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A/jn/zgEzxQP9ZQwx0L5iwDA8SV1bEGJAnIDVoaBgXA=;
-        b=JaF2etFbSKwaLKzECO7evTgrEGCIalvzi/L4AwWws/5MQ1RFdDBo7lk0Hk8D19TPOS
-         5hBeTx2Go4PHeEnUOL5nZZkv5NQTN0Sk76gafNUap5rlb4d1pksHHXt6KUKliJIrZcZZ
-         oaim98jEcrP/7lYYDjSjk5JY5dxuV3WF/novS95lwB+hbkmtKoXILpTiegKv3yF9/I7b
-         Wx+WXy+6diat0CHIwnZZWpK4vQ/P9/aQLbldF0v7DLROD7mMsRZU3a6MtAQULarpMuDS
-         MCPXPTeM6rIaPmTy0scKj3pSpYJj2K3a8LMzT4aZhBSETsB9B20fauaN16KmpbGG08y2
-         2wPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A/jn/zgEzxQP9ZQwx0L5iwDA8SV1bEGJAnIDVoaBgXA=;
-        b=6syZSgyvb/sRwUn0LosA43BUBixoV8H6OLG/mUX8r4k1EVC5Pw4NvKnQq6gYTs84EJ
-         nYA9VvFpI/UUKEHmuzhTORAQ/M5a4NFBGiGi260sfiKPPXuIMjmv3wjdFZ0sVN6tOKBh
-         95ZwGEhLOxahUhfXJwRXeRK0ApuaU0nKT//hMz3Xbit0oa0Kzt8ugTC6m9Th5w0QacAD
-         O+RUsRRQndvgtA3/TXGIw74+I4nSTaBHeZ+0i9v5Ti8JFK4PCU/7NRxjBeQM2a7MEHMl
-         ONPPyXa909juVKyHI7FUngG7K3CyrbtrsUpPzltO8wf7uTeK6ojGGy0NvspZCG40t9KA
-         c48Q==
-X-Gm-Message-State: AOAM530pEN5n4DSK8gCYDDTdkdDxuW8iBsTpo0gMAHQCzt+q+7OcX9SA
-        ZkD0M6cRpnBRSC/PDhuAnFNckLxZjJd9fOdCMX4=
-X-Google-Smtp-Source: ABdhPJx+SwE+lVngvA+ZZMvKi/vw2I5Xo7+pTY18CvYLu3GrjLvmCauC65r8hLMZ/7tTPQUQdMAU6W6EFB0SJ82r3ak=
-X-Received: by 2002:a05:6102:32c9:: with SMTP id o9mr76054026vss.46.1637206397469;
- Wed, 17 Nov 2021 19:33:17 -0800 (PST)
+        Wed, 17 Nov 2021 22:39:47 -0500
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 162865C0199;
+        Wed, 17 Nov 2021 22:36:47 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Wed, 17 Nov 2021 22:36:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=71AZcMww/v9dGhq5/Lg9/+aqxm
+        2uzvsx7xw8b2lcXco=; b=mr/+oqxfKgG7E6ArPEO9HhV7fZYYKYgOOL17+S4QeI
+        kasgonFtAjXA02DSbiGlPKcmtv2o1IhqXLvsUmfsRG2FHI5ztu+xcRGnAFDfqE0p
+        PPuFva0g4Dyo5kIRl0cwqBV8oe7KGeq7d+Kv5LEPZQdpw8M2NC6Ar5ToOCsmuCNP
+        Yj4Yo3AVfP/8f5q6Omd9BaSiBDvMkmpIyyPhQYBcqLP/lTS0wZOlMvDnw9CMOpEJ
+        zbtCnfO/u5rffwI6qsRKBzeRsnMYd3LoM1lTiWwoB90poGW49suK9IKiC2Xs0LFv
+        yExbEqu19YurTMecgtRc/Xs/7FOZK8TVoYZcqz3eSXSA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=71AZcMww/v9dGhq5/
+        Lg9/+aqxm2uzvsx7xw8b2lcXco=; b=DSFhbU+jdHf2uvAAKCeK9HKZ6XvILIjZI
+        /H32KSNzAxrKSHdUhucCrKoA2NpbBCoJW3AIX3YLtzuk1t50g+rtzFmuxMQAcreY
+        RxWiDNV1YMU5SslMwyqzAJVQh03L3V6OlOlJMbQ0o2yoSJXMB1UbEHicl3ugGIg9
+        eDq15sAW8jX71aiY/HE51RNHKI8NhdtjTXXZ2Wwl1YUICRr7HygTmILHoZGbSAUn
+        Dq9E9jNf4z52qqhHupDjftZzQOAKHDRMPcC7NTGgyfBtLsiWoqUpP7vMpYUFcM+6
+        q7ugf0vW4+fEVldVjKCAaybdK8stDSHA4GZiTlpEVic46Mc+7ZjRA==
+X-ME-Sender: <xms:TsqVYTsJdLBml6rILFTxjjtcgVb9vzspNEi9nmHM_hsLfFT0ocQbiA>
+    <xme:TsqVYUcMDVZMGLpU09ec4_QpaC9tZFf2f0Fdr8O67zwyJfWqJxNEG9YpKR4GoLBbm
+    v5kqzFrDqPfBlJgUA>
+X-ME-Received: <xmr:TsqVYWxcajcOLEJ644Amuw-EsAiZWT0dMXVUWycd-byDaa-LQcw-MzEaMlOEb7Da1GCVoj8T_LkmqGq1NhPmtkrzbOvYYcxLFGFtx4SoyE_2oCDobqo-DZo5H65sQxEOtZjEwQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeehgdehlecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
+    ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrfgrth
+    htvghrnhepieetkefhheduudfgledtudefjeejfeegveehkeeufffhhfejkeehiefftdev
+    tdevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsh
+    grmhhuvghlsehshhholhhlrghnugdrohhrgh
+X-ME-Proxy: <xmx:TsqVYSPOxUdvMXFqYuwLBz_ZVQUZXG8AUT5fwrbEeCKSRQm02cxRFA>
+    <xmx:TsqVYT_78-SHf-AslkJ1SCW_kQYmHaBUZNeAB5y_c3SH5jMj3115AA>
+    <xmx:TsqVYSUwl3C6uTbW9TUB97oxCUv_bKvhZNgTndZ6Usz182XX5P-Z7A>
+    <xmx:T8qVYUM2_hUf6R8FQpMbcfDJFc0ZrDvKEIXtQmUE9YYfVBaOjLXp2w>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 17 Nov 2021 22:36:45 -0500 (EST)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        alsa-devel@alsa-project.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>
+Subject: [PATCH] ASoC: sun8i-codec: Add AIF, ADC, and DAC volume controls
+Date:   Wed, 17 Nov 2021 21:36:45 -0600
+Message-Id: <20211118033645.43524-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20211116072027.18466-1-tiwai@suse.de> <07e228eb-676a-bdb1-c2ec-a96f691f5a18@linaro.org>
- <s5h5ysqlcm8.wl-tiwai@suse.de> <b0d2b643-214a-07c5-96b7-4845c54cba72@linaro.org>
-In-Reply-To: <b0d2b643-214a-07c5-96b7-4845c54cba72@linaro.org>
-From:   Vaibhav Agarwal <vaibhav.sr@gmail.com>
-Date:   Thu, 18 Nov 2021 09:02:40 +0530
-Message-ID: <CAAs364-thiqACMRwT++JMxkMd7qa_stFApjK-4SmrEJetX6oyw@mail.gmail.com>
-Subject: Re: [greybus-dev] [PATCH] staging: greybus: Add missing rwsem around
- snd_ctl_remove() calls
-To:     Alex Elder <elder@linaro.org>
-Cc:     Takashi Iwai <tiwai@suse.de>,
-        "moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
-        Alex Elder <elder@kernel.org>, Johan Hovold <johan@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 3:25 AM Alex Elder <elder@linaro.org> wrote:
->
-> On 11/17/21 3:02 PM, Takashi Iwai wrote:
-> > On Wed, 17 Nov 2021 20:56:14 +0100,
-> > Alex Elder wrote:
-> >>
-> >> On 11/16/21 1:20 AM, Takashi Iwai wrote:
-> >>> snd_ctl_remove() has to be called with card->controls_rwsem held (when
-> >>> called after the card instantiation).  This patch adds the missing
-> >>> rwsem calls around it.
-> >>
-> >> I see the comment above snd_ctl_remove() that says you must hold
-> >> the write lock.  And given that, this seems correct to me.
-> >>
-> >> I understand why you want to take the lock just once, rather
-> >> than each time snd_ctl_remove() is called.
-> >>
-> >> However I believe the acquisition and release of the lock
-> >> belongs inside gbaudio_remove_controls(), not in its caller.
-> >>
-> >> If you disagree, can you please explain why?
-> >
-> > In general if the function returns an error and has a loop inside,
-> > taking a lock in the caller side avoids the forgotten unlock.
->
-> But taking the lock in the called function makes the
-> caller not need to take the lock (which would be even
-> more valuable if there were more than one caller).
->
-> I prefer having the lock acquisition in the called
-> function.  Please send version 2, as I suggested.
+This allows changing the volume of each digital input/output
+independently, and provides the only "master volume" for the DAC.
+(The ADC also has a gain control on the analog side.)
 
+While the hardware supports digital gain up to +72dB, the controls here
+are limited to +24dB maximum, as any gain above that level makes volume
+sliders difficult to use, and is extremely likely to cause clipping.
 
-Hi Takashi,
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+---
+ sound/soc/sunxi/sun8i-codec.c | 56 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
 
-Thanks for sharing this patch. In reference to the suggestion from Alex,
-do you think replacing snd_ctl_find_id(), snd_ctl_remove() with
-snd_ctl_remove_id() inside gbaudio_remove_controls() would be an even
-better choice without worrying about locks?
+diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+index 518bfb724a5b..0bea2162f68d 100644
+--- a/sound/soc/sunxi/sun8i-codec.c
++++ b/sound/soc/sunxi/sun8i-codec.c
+@@ -21,6 +21,7 @@
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ #include <sound/soc-dapm.h>
++#include <sound/tlv.h>
+ 
+ #define SUN8I_SYSCLK_CTL				0x00c
+ #define SUN8I_SYSCLK_CTL_AIF1CLK_ENA			11
+@@ -72,6 +73,12 @@
+ #define SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF2DACR	10
+ #define SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_ADCR		9
+ #define SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF2DACL	8
++#define SUN8I_AIF1_VOL_CTRL1				0x050
++#define SUN8I_AIF1_VOL_CTRL1_AD0L_VOL			8
++#define SUN8I_AIF1_VOL_CTRL1_AD0R_VOL			0
++#define SUN8I_AIF1_VOL_CTRL3				0x058
++#define SUN8I_AIF1_VOL_CTRL3_DA0L_VOL			8
++#define SUN8I_AIF1_VOL_CTRL3_DA0R_VOL			0
+ #define SUN8I_AIF2_ADCDAT_CTRL				0x084
+ #define SUN8I_AIF2_ADCDAT_CTRL_AIF2_ADCL_ENA		15
+ #define SUN8I_AIF2_ADCDAT_CTRL_AIF2_ADCR_ENA		14
+@@ -91,6 +98,12 @@
+ #define SUN8I_AIF2_MXR_SRC_ADCR_MXR_SRC_AIF1DA1R	10
+ #define SUN8I_AIF2_MXR_SRC_ADCR_MXR_SRC_AIF2DACL	9
+ #define SUN8I_AIF2_MXR_SRC_ADCR_MXR_SRC_ADCR		8
++#define SUN8I_AIF2_VOL_CTRL1				0x090
++#define SUN8I_AIF2_VOL_CTRL1_ADCL_VOL			8
++#define SUN8I_AIF2_VOL_CTRL1_ADCR_VOL			0
++#define SUN8I_AIF2_VOL_CTRL2				0x098
++#define SUN8I_AIF2_VOL_CTRL2_DACL_VOL			8
++#define SUN8I_AIF2_VOL_CTRL2_DACR_VOL			0
+ #define SUN8I_AIF3_CLK_CTRL_AIF3_CLK_SRC_AIF1		(0x0 << 0)
+ #define SUN8I_AIF3_CLK_CTRL_AIF3_CLK_SRC_AIF2		(0x1 << 0)
+ #define SUN8I_AIF3_CLK_CTRL_AIF3_CLK_SRC_AIF1CLK	(0x2 << 0)
+@@ -102,8 +115,14 @@
+ #define SUN8I_ADC_DIG_CTRL_ENAD				15
+ #define SUN8I_ADC_DIG_CTRL_ADOUT_DTS			2
+ #define SUN8I_ADC_DIG_CTRL_ADOUT_DLY			1
++#define SUN8I_ADC_VOL_CTRL				0x104
++#define SUN8I_ADC_VOL_CTRL_ADCL_VOL			8
++#define SUN8I_ADC_VOL_CTRL_ADCR_VOL			0
+ #define SUN8I_DAC_DIG_CTRL				0x120
+ #define SUN8I_DAC_DIG_CTRL_ENDA				15
++#define SUN8I_DAC_VOL_CTRL				0x124
++#define SUN8I_DAC_VOL_CTRL_DACL_VOL			8
++#define SUN8I_DAC_VOL_CTRL_DACR_VOL			0
+ #define SUN8I_DAC_MXR_SRC				0x130
+ #define SUN8I_DAC_MXR_SRC_DACL_MXR_SRC_AIF1DA0L		15
+ #define SUN8I_DAC_MXR_SRC_DACL_MXR_SRC_AIF1DA1L		14
+@@ -696,6 +715,41 @@ static struct snd_soc_dai_driver sun8i_codec_dais[] = {
+ 	},
+ };
+ 
++static const DECLARE_TLV_DB_SCALE(sun8i_codec_vol_scale, -12000, 75, 1);
++
++static const struct snd_kcontrol_new sun8i_codec_controls[] = {
++	SOC_DOUBLE_TLV("AIF1 AD0 Capture Volume",
++		       SUN8I_AIF1_VOL_CTRL1,
++		       SUN8I_AIF1_VOL_CTRL1_AD0L_VOL,
++		       SUN8I_AIF1_VOL_CTRL1_AD0R_VOL,
++		       0xc0, 0, sun8i_codec_vol_scale),
++	SOC_DOUBLE_TLV("AIF1 DA0 Playback Volume",
++		       SUN8I_AIF1_VOL_CTRL3,
++		       SUN8I_AIF1_VOL_CTRL3_DA0L_VOL,
++		       SUN8I_AIF1_VOL_CTRL3_DA0R_VOL,
++		       0xc0, 0, sun8i_codec_vol_scale),
++	SOC_DOUBLE_TLV("AIF2 ADC Capture Volume",
++		       SUN8I_AIF2_VOL_CTRL1,
++		       SUN8I_AIF2_VOL_CTRL1_ADCL_VOL,
++		       SUN8I_AIF2_VOL_CTRL1_ADCR_VOL,
++		       0xc0, 0, sun8i_codec_vol_scale),
++	SOC_DOUBLE_TLV("AIF2 DAC Playback Volume",
++		       SUN8I_AIF2_VOL_CTRL2,
++		       SUN8I_AIF2_VOL_CTRL2_DACL_VOL,
++		       SUN8I_AIF2_VOL_CTRL2_DACR_VOL,
++		       0xc0, 0, sun8i_codec_vol_scale),
++	SOC_DOUBLE_TLV("ADC Capture Volume",
++		       SUN8I_ADC_VOL_CTRL,
++		       SUN8I_ADC_VOL_CTRL_ADCL_VOL,
++		       SUN8I_ADC_VOL_CTRL_ADCR_VOL,
++		       0xc0, 0, sun8i_codec_vol_scale),
++	SOC_DOUBLE_TLV("DAC Playback Volume",
++		       SUN8I_DAC_VOL_CTRL,
++		       SUN8I_DAC_VOL_CTRL_DACL_VOL,
++		       SUN8I_DAC_VOL_CTRL_DACR_VOL,
++		       0xc0, 0, sun8i_codec_vol_scale),
++};
++
+ static int sun8i_codec_aif_event(struct snd_soc_dapm_widget *w,
+ 				 struct snd_kcontrol *kcontrol, int event)
+ {
+@@ -1215,6 +1269,8 @@ static int sun8i_codec_component_probe(struct snd_soc_component *component)
+ }
+ 
+ static const struct snd_soc_component_driver sun8i_soc_component = {
++	.controls		= sun8i_codec_controls,
++	.num_controls		= ARRAY_SIZE(sun8i_codec_controls),
+ 	.dapm_widgets		= sun8i_codec_dapm_widgets,
+ 	.num_dapm_widgets	= ARRAY_SIZE(sun8i_codec_dapm_widgets),
+ 	.dapm_routes		= sun8i_codec_dapm_routes,
+-- 
+2.32.0
 
---
-vaibhav
-
- >
->
->                                         -Alex
->
-> > Takashi
-> >
-> >
-> >> Otherwise, will you please submit version two, taking the
-> >> lock inside gbaudio_remove_controls()?
-> >>
-> >> Thanks.
-> >>
-> >>                                      -Alex
-> >>
-> >>> Fixes: 510e340efe0c ("staging: greybus: audio: Add helper APIs for dynamic audio modules")
-> >>> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> >>> ---
-> >>>    drivers/staging/greybus/audio_helper.c | 8 ++++++--
-> >>>    1 file changed, 6 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/drivers/staging/greybus/audio_helper.c b/drivers/staging/greybus/audio_helper.c
-> >>> index 1ed4772d2771..843760675876 100644
-> >>> --- a/drivers/staging/greybus/audio_helper.c
-> >>> +++ b/drivers/staging/greybus/audio_helper.c
-> >>> @@ -192,7 +192,11 @@ int gbaudio_remove_component_controls(struct snd_soc_component *component,
-> >>>                                   unsigned int num_controls)
-> >>>    {
-> >>>     struct snd_card *card = component->card->snd_card;
-> >>> +   int err;
-> >>>    -        return gbaudio_remove_controls(card, component->dev, controls,
-> >>> -                                  num_controls, component->name_prefix);
-> >>> +   down_write(&card->controls_rwsem);
-> >>> +   err = gbaudio_remove_controls(card, component->dev, controls,
-> >>> +                                 num_controls, component->name_prefix);
-> >>> +   up_write(&card->controls_rwsem);
-> >>> +   return err;
-> >>>    }
-> >>>
-> >>
->
-> _______________________________________________
-> greybus-dev mailing list
-> greybus-dev@lists.linaro.org
-> https://lists.linaro.org/mailman/listinfo/greybus-dev
