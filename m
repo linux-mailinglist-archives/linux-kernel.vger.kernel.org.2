@@ -2,163 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04A54455910
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 11:29:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD08745591A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 11:32:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245445AbhKRKcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 05:32:50 -0500
-Received: from foss.arm.com ([217.140.110.172]:39198 "EHLO foss.arm.com"
+        id S245314AbhKRKf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 05:35:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243723AbhKRKcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 05:32:35 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B84241FB;
-        Thu, 18 Nov 2021 02:29:33 -0800 (PST)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7E6CE3F5A1;
-        Thu, 18 Nov 2021 02:29:32 -0800 (PST)
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     catalin.marinas@arm.com, dvyukov@google.com, mark.rutland@arm.com,
-        peterz@infradead.org, quic_qiancai@quicinc.com,
-        valentin.schneider@arm.com, will@kernel.org, woodylin@google.com
-Subject: [PATCH v2] Reset task stack state in bringup_cpu()
-Date:   Thu, 18 Nov 2021 10:29:27 +0000
-Message-Id: <20211118102927.4854-1-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.11.0
+        id S245262AbhKRKe7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 05:34:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A94D61B39;
+        Thu, 18 Nov 2021 10:31:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637231519;
+        bh=hugh9tuJyoeInv+UUWi3AGGjYzy3xYdfMbnfikTqwCA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cT1j7v6wUqlZ3mkULFxwJAaAOwBIn07Yk5XVxwnocMbFPDJmw4jqBI8Oj/AbTvyp6
+         cX0r1ljF/K4pir9ieeZczYoMs2fhVKknD0JxpQS5fu1Zs5GGxuhui2sJvQ20/6hjE1
+         aGMtUh6W5VE92un3T2DTbJSiHtfUd7al9vURfEZjkFOkOpr2l7hoM79OJ1mtucKYPP
+         1G/xjtF4FwyZqCtHh+6g/N0EOtUNXi7qL2PP/O9IIKKiCO0nsO8SFrkCp50yCwW7wN
+         CvVjQxZ07tbZ7pN6f/J6kTNZZL1zcxXyLrkzAZN8PV/dz+eOhgJgdPMuWgfSCrw0A9
+         5BykrIXed0S5A==
+Received: by pali.im (Postfix)
+        id 27AA8799; Thu, 18 Nov 2021 11:31:57 +0100 (CET)
+Date:   Thu, 18 Nov 2021 11:31:56 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        kernel-team@android.com, Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH] PCI: apple: Reset the port for 100ms on probe
+Message-ID: <20211118103156.r66aso2bklm7jnns@pali>
+References: <20211117160053.232158-1-maz@kernel.org>
+ <20211117201245.GA1768803@bhelgaas>
+ <20211117202859.2m5sqwz6xsjgldji@pali>
+ <87o86h7pex.wl-maz@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87o86h7pex.wl-maz@kernel.org>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To hot unplug a CPU, the idle task on that CPU calls a few layers of C
-code before finally leaving the kernel. When KASAN is in use, poisoned
-shadow is left around for each of the active stack frames, and when
-shadow call stacks are in use. When shadow call stacks are in use the
-task's saved SCS SP is left pointing at an arbitrary point within the
-task's shadow call stack.
+On Thursday 18 November 2021 10:01:58 Marc Zyngier wrote:
+> On Wed, 17 Nov 2021 20:28:59 +0000,
+> Pali Rohár <pali@kernel.org> wrote:
+> > 
+> > Hello!
+> > 
+> > On Wednesday 17 November 2021 14:12:45 Bjorn Helgaas wrote:
+> > > [+cc Pali]
+> > > 
+> > > On Wed, Nov 17, 2021 at 04:00:53PM +0000, Marc Zyngier wrote:
+> > > > While the Apple PCIe driver works correctly when directly booted
+> > > > from the firmware, it fails to initialise when the kernel is booted
+> > > > from a bootloader using PCIe such as u-boot.
+> > > > 
+> > > > That's beacuse we're missing a proper reset of the port (we only
+> > > > clear the reset, but never assert it).
+> > > 
+> > > s/beacuse/because/
+> > > 
+> > > > Bring the port back to life by wiggling the #PERST pin for 100ms
+> > > > (as per the spec).
+> > > 
+> > > I cc'd Pali because I think he's interested in consolidating or
+> > > somehow rationalizing delays like this.
+> > > 
+> > > If we have a specific spec reference here, I think it would help that
+> > > effort.  I *think* it's PCIe r5.0, sec 6.6.1, which mentions the 100ms
+> > > along with some additional constraints, like waiting 100ms after Link
+> > > training completes for ports that support > 5.0 GT/s, whether
+> > > Readiness Notifications are used, and CRS Software Visiblity.
+> > 
+> > This is not 100ms timeout "after link training completes".
+> > 
+> > Timeout in this patch is between flipping PERST# signal, so timeout
+> > means how long needs to be endpoint card in reset state. And this
+> > timeout cannot be controller specific. In past I have tried to find this
+> > timeout in specifications, I was not able. Some summary is in my email:
+> > https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
+> > 
+> > So I would like to know, why was chosen 100ms for msleep() in this
+> > patch?
+> 
+> Excellent question. I went back to my notes (and the spec), and it
+> looks like I have mistakenly conflated *two* delays here:
+> 
+> - The post-#PERST delay, which is 100ms, and which is *not* what this
+>   patch is doing while it really should be doing it. This is
+>   documented in the base PCIe spec (in Rev 2.0, this is part of
+>   6.6.1). The amusing part is that on this HW, it seems that only the
+>   delay from the falling edge matters (which is why I didn't spot the
+>   issue).
+> 
+> - The duration of the power-on #PERST assertion (Tpvperl), which is
+>   also 100ms, and documented in the PCIe Card Electromechanical
+>   Specification (Rev 1.0a, 2.2 and 2.2.1).
 
-When a CPU is offlined than onlined back into the kernel, this stale
-state can adversely affect execution. Stale KASAN shadow can alias new
-stackframes and result in bogus KASAN warnings. A stale SCS SP is
-effectively a memory leak, and prevents a portion of the shadow call
-stack being used. Across a number of hotplug cycles the idle task's
-entire shadow call stack can become unusable.
+I think that your patch is doing also something different. It uses
+PERST# signal to reset card _after_ card was fully powered on and
+_maybe_ link was already established (depends on bootloader if it
+initialized PCIe, etc...).
 
-We previously fixed the KASAN issue in commit:
+Important is that this reset is really needed for some cards (e.g. lot
+of Atheros wifi cards as they can be stuck somewhere in broken state)
+and I do not think it is Tpvperl delay. More controller drivers add some
+delay between flipping PERST# signal. In past I wrote summary of it:
+https://lore.kernel.org/linux-pci/20200424092546.25p3hdtkehohe3xw@pali/
 
-  e1b77c92981a5222 ("sched/kasan: remove stale KASAN poison after hotplug")
+> There is also a third delay (Tperst-clk) which represents the time
+> required for the clock to ramp up before releasing #PERST. No, there
+> is no value associated with this.
 
-... by removing any stale KASAN stack poison immediately prior to
-onlining a CPU.
+But there is minimal value for Tperst-clk which is 100us defined in PCIe
+CEM spec (3.0) and also in M.2 CEM spec.
 
-Subsequently in commit:
+> Having come to my senses, and with these constraints in mind, this is
+> what I currently have in my tree:
+> 
+> 	/* Engage #PERST */
+> 	gpiod_set_value(reset, 0);
+> 
+> 	ret = apple_pcie_setup_refclk(pcie, port);
+> 	if (ret < 0)
+> 		return ret;
+> 
+> 	/* Hold #PERST for 100ms as per the electromechanical spec */
+> 	msleep(100);
+> 	rmw_set(PORT_PERST_OFF, port->base + PORT_PERST);
+> 	gpiod_set_value(reset, 1);
+> 	/* Wait for 100ms after #PERST deassertion before anothing else */
+> 	msleep(100);
+> 
+> Yes, this is totally overkill, as I assume that each port has gone
+> through a complete power-off and is only slowly coming back from the
+> dead.
 
-  f1a0a376ca0c4ef1 ("sched/core: Initialize the idle task with preemption disabled")
+For power-on it is probably overkill, but I think that delay between
+flipping PERST# should be there. IIRC Compex WLE1216 wifi card needs to
+be at least 10-11ms in reset. Last year, during testing of this card I
+saw that if PERST#-based reset was shorter then card was completely
+undetected.
 
-... the refactoring left the KASAN and SCS cleanup in one-time idle
-thread initialization code rather than something invoked prior to each
-CPU being onlined, breaking both as above.
+> In practice, I can completely remove the initial Tpvperl delay (we
+> have been powered-on for a long time already, and the clock is stable
+> when we come back from setting it up), and cut the second one by half
+> without observing any ill effect (though I feel safer keeping it to
+> its nominal value).
 
-We fixed SCS (but not KASAN) in commit:
+My opinion is that this patch does not power on/off card in PCIe slot.
+And because card is powered-on for a long time (as you wrote), it means
+that Tpvperl delay does not apply here. That is why I think that
+different delay (How long should be PCIe card in Warm Reset state)
+should be used _between_ flipping PERST# signal.
 
-  63acd42c0d4942f7 ("sched/scs: Reset the shadow stack when idle_task_exit")
+And of course after the releasing PERST# that 100ms post-PERST# delay is
+required.
 
-... but as this runs in the context of the idle task being offlined it's
-potentially fragile.
+I have an idea to move PERST# handling (with all delays) from controller
+drivers to pci core functions. Because basically every driver
+re-implements these delays in its probe function. I wrote this idea with
+some details in email. If you have a time, could you look at it? I
+summarized here also details about delays (like Tpvperl, Tperstclk, ..):
+https://lore.kernel.org/linux-pci/20211022183808.jdeo7vntnagqkg7g@pali/
 
-To fix these consistently and more robustly, reset the SCS SP and KASAN
-shadow of a CPU's idle task immediately before we online that CPU in
-bringup_cpu(). This ensures the idle task always has a consistent state
-when it is running, and removes the need to so so when exiting an idle
-task.
-
-Whenever any thread is created, dup_task_struct() will give the task a
-stack which is free of KASAN shadow, and initialize the task's SCS SP,
-so there's no need to specially initialize either for idle thread within
-init_idle(), as this was only necessary to handle hotplug cycles.
-
-I've tested this with both GCC and clang, with relevant options enabled,
-offlining and onlining CPUs with:
-
-| while true; do
-|   for C in /sys/devices/system/cpu/cpu*/online; do
-|     echo 0 > $C;
-|     echo 1 > $C;
-|   done
-| done
-
-Link: https://lore.kernel.org/lkml/20211012083521.973587-1-woodylin@google.com/
-Link: https://lore.kernel.org/linux-arm-kernel/YY9ECKyPtDbD9q8q@qian-HP-Z2-SFF-G5-Workstation/
-Link: https://lore.kernel.org/lkml/20211115113310.35693-1-mark.rutland@arm.com/
-Fixes: 1a0a376ca0c4ef1 ("sched/core: Initialize the idle task with preemption disabled")
-Reported-by: Qian Cai <quic_qiancai@quicinc.com>
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Tested-by: Qian Cai <quic_qiancai@quicinc.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Woody Lin <woodylin@google.com>
----
- kernel/cpu.c        | 7 +++++++
- kernel/sched/core.c | 4 ----
- 2 files changed, 7 insertions(+), 4 deletions(-)
-
-Since v1 [1]:
-* Clarify commit message
-* Fix typos
-* Accumulate tags
-
-[1] https://lore.kernel.org/lkml/20211115113310.35693-1-mark.rutland@arm.com/
-
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 192e43a87407..407a2568f35e 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -31,6 +31,7 @@
- #include <linux/smpboot.h>
- #include <linux/relay.h>
- #include <linux/slab.h>
-+#include <linux/scs.h>
- #include <linux/percpu-rwsem.h>
- #include <linux/cpuset.h>
- 
-@@ -588,6 +589,12 @@ static int bringup_cpu(unsigned int cpu)
- 	int ret;
- 
- 	/*
-+	 * Reset stale stack state from the last time this CPU was online.
-+	 */
-+	scs_task_reset(idle);
-+	kasan_unpoison_task_stack(idle);
-+
-+	/*
- 	 * Some architectures have to walk the irq descriptors to
- 	 * setup the vector space for the cpu which comes online.
- 	 * Prevent irq alloc/free across the bringup.
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 3c9b0fda64ac..76f9deeaa942 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8619,9 +8619,6 @@ void __init init_idle(struct task_struct *idle, int cpu)
- 	idle->flags |= PF_IDLE | PF_KTHREAD | PF_NO_SETAFFINITY;
- 	kthread_set_per_cpu(idle, cpu);
- 
--	scs_task_reset(idle);
--	kasan_unpoison_task_stack(idle);
--
- #ifdef CONFIG_SMP
- 	/*
- 	 * It's possible that init_idle() gets called multiple times on a task,
-@@ -8777,7 +8774,6 @@ void idle_task_exit(void)
- 		finish_arch_post_lock_switch();
- 	}
- 
--	scs_task_reset(current);
- 	/* finish_cpu(), as ran on the BP, will clean up the active_mm state */
- }
- 
--- 
-2.11.0
-
+> If nobody screams, I'll respin something shortly.
+> 
+> 	M.
+> 
+> -- 
+> Without deviation from the norm, progress is not possible.
