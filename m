@@ -2,81 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9A845535C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 04:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45FE945535D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 04:22:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241506AbhKRDZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 22:25:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34926 "EHLO
+        id S242566AbhKRDZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 22:25:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234085AbhKRDZW (ORCPT
+        with ESMTP id S241204AbhKRDZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 22:25:22 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2102C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 19:22:22 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id m14so4549368pfc.9
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 19:22:22 -0800 (PST)
+        Wed, 17 Nov 2021 22:25:24 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAAAAC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 19:22:24 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id 28so4052367pgq.8
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 19:22:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version;
-        bh=xedMP1ZkqZXA2h8jwzBT2LFvWL5ySMN/Y1y8FYtzcIU=;
-        b=Nl41wYBaSKRsBwRePkbDlYmaSIm1ofrircMokZqEZXuh0PLW2T7BjOQbld9LWD6AMw
-         YlYJHG7u/FG8b8uvzOv0YKeI/rdlxl4pDTFcy9CPWnq6E4SSSMrb0XEAM1EjXPSyTVrc
-         UkvjcCL7Pl2jtwb2m+oGCCRUZm8+xrittprLY=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version;
+        bh=8NXt+59mg8Ib3ZGdHhGPHWxCalz03HIOLOSspYHn70E=;
+        b=fe3AzcNkvzBKnZPUg9meK7RRktlqGP1vnnNtGfpwRGx2rc7Ij54GZzE3o6TLRRbXF7
+         AURGRNJce6rpf/TgmFrc1RESu39z9TPhKhWzfEOeJJE1bCVitLmS/GZSFbpfUttUP02M
+         iyFt1C3dtdSI1wdB6n1tHiVyRb9QaGE7Kb4FU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
-        bh=xedMP1ZkqZXA2h8jwzBT2LFvWL5ySMN/Y1y8FYtzcIU=;
-        b=bpk+PBGdiQoUkp/tJwfNNp0OAshEUv7J4HlyIB/JFD7fGB1LtRulAV+9GQhBfSmUy1
-         E/A6lqMpXh5+5vWerq4psVq7ZAMlGevPVdguQJcjbst+3Vw5ReZhif/DKp3QT1q4B08T
-         yF7aZxLdNIwjLRrTHlwB/bqPd9Mn7FZ+U8AimG5kCJ1gSZaDI554HYYXdQzZKuQfOWKv
-         x3FxQP8pD8hKed3tKmKkve88bjJ80Z4nGZoFC5YXImNVR1ORi3l2leXvX6/mkFOhLtjb
-         28O3Y+xEZNTyKrd5UAik3j7+GspYVLIqtQ4sxA/afVthoXz7taMfhTYLjyMMHy2TbclG
-         FdEg==
-X-Gm-Message-State: AOAM533s3evIILStODnxwuiIWqPVaPUUtmAvfxcuqffjXvLPBfUctzN+
-        ibI53BPyoLKrTAcmhBgrN0hYjiRPA1FZbnfW9ffDPVBt7tgOb/NDcJx2SZVR/ndHFVp9qnx3tlM
-        fx45L1MuIHMpb1o9WUTLQHYy7RYO3CIk0QSqou+yWv0BJtt6LMPyHAXvtUek1sU3Xj9E+YZ90iQ
-        15bDdKvTKXgwtpp1B3Jw==
-X-Google-Smtp-Source: ABdhPJyG8vcHm57su/Lt54mqQMlVn8EkoGKgG4m2E5IO3q/O83iasrtBG9y5eblpIEd3EU1AYZcU7w==
-X-Received: by 2002:a65:6a4b:: with SMTP id o11mr9001190pgu.305.1637205741013;
-        Wed, 17 Nov 2021 19:22:21 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version;
+        bh=8NXt+59mg8Ib3ZGdHhGPHWxCalz03HIOLOSspYHn70E=;
+        b=jA2JtfEbJ5BtkKcqAXV3fDy4skgVFJp9HkKRg/H9OviKuyry294CTVDkyiBjkIMEmS
+         nwavmOQZ4oWuKd0keIeiI5ljY0yXKhgx5yPgEN4MhU0GrLk42eHXm2N5dmtxCBKtjeuf
+         LNxFj1zBZT7VU7kL3whuKJN9euwCMorSdD6Fyt07R3ViPFLR1mrQQS3rAfRicNMP4MLA
+         MLnQ/GNYJGh7JdIaNR0aGeaNpc+khzFOe6sWw3SgsMEI9YGZV3Zr4sd4ofN/VJFSSnn/
+         2CnF9aSXUDEi8t0tr/7xpqY7t3tU/LBFlgPpvo5+uHRSrfWZBxq+hJDB1F6sqvOcXUUm
+         jTMg==
+X-Gm-Message-State: AOAM532Js7pDRo7sWwAwPK1pGcjcyu9NTPnh1XF3dUJSI6pjdNPoqZ9S
+        fWgTbcBN6fuCAv7Qgn6cEvv4RFtaEs5OJrwKX6Z+Il5wdKaY2nX9GJfvwxpIWP6xTunxcO2vTZM
+        iDAebN30LqVNIyI35rOTYOSBU7LRm81v+YNzqK3DWsd9S0Exz7UBOwlHWqJkPhKm8w+Eqw9noh3
+        DeEoHOMU7XcBTBdwFYsQ==
+X-Google-Smtp-Source: ABdhPJy2qhQkg+dt6IOc6A/m/zAIw8AKwR4VM4i6Fz7kbf5rs6LtPwit/cpovmxpQZeeZqSoUw70gg==
+X-Received: by 2002:a63:5fc8:: with SMTP id t191mr9082454pgb.361.1637205743396;
+        Wed, 17 Nov 2021 19:22:23 -0800 (PST)
 Received: from ldt-sj3-komrakov.dhcp.broadcom.net ([192.19.222.250])
-        by smtp.gmail.com with ESMTPSA id z10sm1049654pfh.106.2021.11.17.19.22.20
+        by smtp.gmail.com with ESMTPSA id z10sm1049654pfh.106.2021.11.17.19.22.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 19:22:20 -0800 (PST)
+        Wed, 17 Nov 2021 19:22:22 -0800 (PST)
 From:   Alexander Komrakov <alexander.komrakov@broadcom.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     alexander.komrakov@broadcom.com
 Subject: [PATCH 1/1] Calculate the monotonic clock from the timespec clock to generate PPS elapsed real-time event value and stores the result into /sys/class/pps/pps0/assert_elapsed.
-Date:   Wed, 17 Nov 2021 19:22:16 -0800
-Message-Id: <20211118032217.244985-1-alexander.komrakov@broadcom.com>
+Date:   Wed, 17 Nov 2021 19:22:17 -0800
+Message-Id: <20211118032217.244985-2-alexander.komrakov@broadcom.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211118032217.244985-1-alexander.komrakov@broadcom.com>
+References: <20211118032217.244985-1-alexander.komrakov@broadcom.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000b120da05d107aaec"
+        boundary="000000000000d32a3005d107aa84"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000b120da05d107aaec
+--000000000000d32a3005d107aa84
 Content-Type: text/plain; charset="US-ASCII"
 
 From: alexkom <alexander.komrakov@broadcom.com>
 
-*** BLURB HERE ***
+Because we have requirements to make sure the delta between standard time, say the GPS Time, and elapsedRealtime < 1 millisecond, regular linux clock timestamp is not enough for our use case.
+The pin PPS will generate elapsedRealtime event at 1 sec boundary which is an exact value of the monotonic clock from the kernel PPS driver (/sys/class/pps/pps0/assert_elapsed).
 
-alexkom (1):
-  Calculate the monotonic clock from the timespec clock to generate PPS
-    elapsed real-time event value and stores the result into
-    /sys/class/pps/pps0/assert_elapsed.
+Whenever AP receives this pulse, kernel's pps driver timestamp this elapsedRealtime event and let this time available via sysfs node (/sys/class/pps/pps0/assert_elapsed).
 
+Signed-off-by: alexkom <alexander.komrakov@broadcom.com>
+---
  Documentation/ABI/testing/sysfs-pps | 24 ++++++++++++++++++
  drivers/pps/kapi.c                  | 38 ++++++++++++++++++++++++++---
  drivers/pps/sysfs.c                 | 33 +++++++++++++++++++++++++
  include/linux/pps_kernel.h          |  2 ++
  4 files changed, 94 insertions(+), 3 deletions(-)
 
+diff --git a/Documentation/ABI/testing/sysfs-pps b/Documentation/ABI/testing/sysfs-pps
+index 25028c7bc37d..054617abeebd 100644
+--- a/Documentation/ABI/testing/sysfs-pps
++++ b/Documentation/ABI/testing/sysfs-pps
+@@ -1,3 +1,27 @@
++What:		/sys/class/pps/pps0/assert_elapsed
++Date:		October 2021
++Contact:	Alexander Komrakov <alexander.komrakov@broadcom.com>
++Description:
++		The /sys/class/pps/ppsX/assert_elapsed file reports the elapsed real-time assert events
++		and the elapsed real-time assert sequence number of the X-th source in the form:
++
++			<secs>.<nsec>#<sequence>
++
++		If the source has no elapsed real-time assert events the content of this file
++		is empty.
++
++What:		/sys/class/pps/ppsX/clear_elapsed
++Date:		October 2021
++Contact:	Alexander Komrakov <alexander.komrakov@broadcom.com>
++Description:
++		The /sys/class/pps/ppsX/clear_elapsed file reports the elapsed real-time clear events
++		and the elapsed real-time clear sequence number of the X-th source in the form:
++
++			<secs>.<nsec>#<sequence>
++
++		If the source has no elapsed real-time clear events the content of this file
++		is empty.
++
+ What:		/sys/class/pps/
+ Date:		February 2008
+ Contact:	Rodolfo Giometti <giometti@linux.it>
+diff --git a/drivers/pps/kapi.c b/drivers/pps/kapi.c
+index d9d566f70ed1..149c29e498fc 100644
+--- a/drivers/pps/kapi.c
++++ b/drivers/pps/kapi.c
+@@ -23,6 +23,26 @@
+ /*
+  * Local functions
+  */
++ #define NANOSEC_PER_SEC 1000000000 /* 10^9 */
++
++/**
++ * clock_gettime - get the monotonic clock in pps_ktime format
++ * @kt:		pointer to the pps_ktime to be set to raw monotonic time
++ *
++ * The function calculates the monotonic clock from the timespec clock
++ * and stores the result in pps_ktime format in the variable pointed to by @kt.
++ *
++ * The function returns the monotonic clock normalized format in nanosec.
++ */
++static __u64 clock_gettime(struct pps_ktime *kt)
++{
++	struct timespec64 ts = { .tv_sec = 0, .tv_nsec = 0 };
++
++	ktime_get_ts64(&ts);
++	kt->sec = ts.tv_sec;
++	kt->nsec = ts.tv_nsec;
++	return (__u64) ts.tv_sec * NANOSEC_PER_SEC + ts.tv_nsec;
++}
+ 
+ static void pps_add_offset(struct pps_ktime *ts, struct pps_ktime *offset)
+ {
+@@ -162,11 +182,15 @@ void pps_event(struct pps_device *pps, struct pps_event_time *ts, int event,
+ 	unsigned long flags;
+ 	int captured = 0;
+ 	struct pps_ktime ts_real = { .sec = 0, .nsec = 0, .flags = 0 };
++	struct pps_ktime ts_real_elapsed = { .sec = 0, .nsec = 0, .flags = 0 };
+ 
+ 	/* check event type */
+ 	BUG_ON((event & (PPS_CAPTUREASSERT | PPS_CAPTURECLEAR)) == 0);
++	clock_gettime(&ts_real_elapsed);
++	dev_dbg(pps->dev, "PPS event (monotonic) at %lld.%09d\n",
++			(s64)ts_real_elapsed.sec, ts_real_elapsed.nsec);
+ 
+-	dev_dbg(pps->dev, "PPS event at %lld.%09ld\n",
++	dev_dbg(pps->dev, "PPS event (timestamp) at %lld.%09ld\n",
+ 			(s64)ts->ts_real.tv_sec, ts->ts_real.tv_nsec);
+ 
+ 	timespec_to_pps_ktime(&ts_real, ts->ts_real);
+@@ -181,11 +205,15 @@ void pps_event(struct pps_device *pps, struct pps_event_time *ts, int event,
+ 	pps->current_mode = pps->params.mode;
+ 	if (event & pps->params.mode & PPS_CAPTUREASSERT) {
+ 		/* We have to add an offset? */
+-		if (pps->params.mode & PPS_OFFSETASSERT)
++		if (pps->params.mode & PPS_OFFSETASSERT) {
++			pps_add_offset(&ts_real_elapsed,
++					&pps->params.assert_off_tu);
+ 			pps_add_offset(&ts_real,
+ 					&pps->params.assert_off_tu);
++		}
+ 
+ 		/* Save the time stamp */
++		pps->assert_elapsed_tu = ts_real_elapsed;
+ 		pps->assert_tu = ts_real;
+ 		pps->assert_sequence++;
+ 		dev_dbg(pps->dev, "capture assert seq #%u\n",
+@@ -195,11 +223,15 @@ void pps_event(struct pps_device *pps, struct pps_event_time *ts, int event,
+ 	}
+ 	if (event & pps->params.mode & PPS_CAPTURECLEAR) {
+ 		/* We have to add an offset? */
+-		if (pps->params.mode & PPS_OFFSETCLEAR)
++		if (pps->params.mode & PPS_OFFSETCLEAR)	{
++			pps_add_offset(&ts_real_elapsed,
++					&pps->params.clear_off_tu);
+ 			pps_add_offset(&ts_real,
+ 					&pps->params.clear_off_tu);
++		}
+ 
+ 		/* Save the time stamp */
++		pps->clear_elapsed_tu = ts_real_elapsed;
+ 		pps->clear_tu = ts_real;
+ 		pps->clear_sequence++;
+ 		dev_dbg(pps->dev, "capture clear seq #%u\n",
+diff --git a/drivers/pps/sysfs.c b/drivers/pps/sysfs.c
+index 134bc33f6ad0..97721cb01695 100644
+--- a/drivers/pps/sysfs.c
++++ b/drivers/pps/sysfs.c
+@@ -29,6 +29,21 @@ static ssize_t assert_show(struct device *dev, struct device_attribute *attr,
+ }
+ static DEVICE_ATTR_RO(assert);
+ 
++static ssize_t assert_elapsed_show(struct device *dev,
++			   struct device_attribute *attr, char *buf)
++{
++	struct pps_device *pps = dev_get_drvdata(dev);
++
++	if (!(pps->info.mode & PPS_CAPTUREASSERT))
++		return 0;
++
++	return sprintf(buf, "%lld.%09d#%d\n",
++			(long long) pps->assert_elapsed_tu.sec,
++			pps->assert_elapsed_tu.nsec,
++			pps->assert_sequence);
++}
++static DEVICE_ATTR_RO(assert_elapsed);
++
+ static ssize_t clear_show(struct device *dev, struct device_attribute *attr,
+ 			  char *buf)
+ {
+@@ -43,6 +58,22 @@ static ssize_t clear_show(struct device *dev, struct device_attribute *attr,
+ }
+ static DEVICE_ATTR_RO(clear);
+ 
++static ssize_t clear_elapsed_show(struct device *dev,
++			  struct device_attribute *attr,
++			  char *buf)
++{
++	struct pps_device *pps = dev_get_drvdata(dev);
++
++	if (!(pps->info.mode & PPS_CAPTURECLEAR))
++		return 0;
++
++	return sprintf(buf, "%lld.%09d#%d\n",
++			(long long) pps->clear_elapsed_tu.sec,
++			pps->clear_elapsed_tu.nsec,
++			pps->clear_sequence);
++}
++static DEVICE_ATTR_RO(clear_elapsed);
++
+ static ssize_t mode_show(struct device *dev, struct device_attribute *attr,
+ 			 char *buf)
+ {
+@@ -81,7 +112,9 @@ static DEVICE_ATTR_RO(path);
+ 
+ static struct attribute *pps_attrs[] = {
+ 	&dev_attr_assert.attr,
++	&dev_attr_assert_elapsed.attr,
+ 	&dev_attr_clear.attr,
++	&dev_attr_clear_elapsed.attr,
+ 	&dev_attr_mode.attr,
+ 	&dev_attr_echo.attr,
+ 	&dev_attr_name.attr,
+diff --git a/include/linux/pps_kernel.h b/include/linux/pps_kernel.h
+index 78c8ac4951b5..1fecaaf4c8b9 100644
+--- a/include/linux/pps_kernel.h
++++ b/include/linux/pps_kernel.h
+@@ -47,6 +47,8 @@ struct pps_device {
+ 
+ 	__u32 assert_sequence;			/* PPS assert event seq # */
+ 	__u32 clear_sequence;			/* PPS clear event seq # */
++	struct pps_ktime assert_elapsed_tu; /* PPS elapsed rt assert seq # */
++	struct pps_ktime clear_elapsed_tu;  /* PPS elapsed rt clear event seq */
+ 	struct pps_ktime assert_tu;
+ 	struct pps_ktime clear_tu;
+ 	int current_mode;			/* PPS mode at event time */
 -- 
 2.25.1
 
@@ -94,7 +284,7 @@ this e-mail is strictly prohibited. If you received this e-mail in error,
 please return the e-mail to the sender, delete it from your computer, and 
 destroy any printed copy of it.
 
---000000000000b120da05d107aaec
+--000000000000d32a3005d107aa84
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -165,14 +355,14 @@ vOM4N+PxiEKCkmmYhfeSVye92Bta6vjf0b+oDE2JT82+D+9nAfiyJ9P/SRVTTvLlSzcO2fqX6GOc
 37xY9F5HGjunD+cc5mqKM/r5PXyM/LEzWjdU1lVUVuvLRerUn+GNFgAPzpksTVYDv2kuseIFwRrF
 845kQxaRMYICbTCCAmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
 di1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIM
-dggvSHLsW0JrSJrDMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCC4BsvR4ZesMIlq
-bOgvaULtje2hJsOUwu9g/lktbrYjcjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3
-DQEJBTEPFw0yMTExMTgwMzIyMjJaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCG
+dggvSHLsW0JrSJrDMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCDyLZMuCKnZpWLu
+r4ySBH1BMzgJNvaFxMOEkUz4K8qrjTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3
+DQEJBTEPFw0yMTExMTgwMzIyMjRaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCG
 SAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEB
-BzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAHSiZ6QVW0nSsG4km4uinkRKcAf8sRbuf
-JbnSEa+ASusSnGh14WtFAsRwClZeKnEJXrYDtNLji8OqcpbBuD5tiCKED9sMN/yLnVBMesS8ixl4
-TGieekKZEa2yF7j26jMSGweE4PNlN/6bEBdV+mGB8maZlIGQ55ea6q2SqGhPmdxvtlOQHtRyoBH/
-xf9M9Z11S4ZYGvaE8JfUZqA8DFvJUpd89Cm04HkvzmezOr+WhSvnK5BZKXQh72b4u2DZYkwHofcL
-xkgBxQBoE+LpcIHf6jQOt8YfUlQGu1McvcDmr0TDA7ZDEkDNGS1YLmMTVOWBpMn0rCTIiXtYODLp
-f14DIQ==
---000000000000b120da05d107aaec--
+BzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAtj7iGUGZSJBiuK4O6I86iQggd34/b/9M
+C6k75wnjm2V4DEgXgk6OSIK+MetQzRPqKRJ9E5TsVf8OC9JBTlvFmgu/zs+zVelC0WX9C+SKuxhS
+trhFhem0ap1yrsTb59FbDlCE8aqH4lMqy9SpBp5RqrpvRwic/4kHo10ibeR1hkoGsZ0SC4KuT4uc
+hru2AbvomhJcAYYcfu2UGxw0ExMe/t337m4zRkgIFNo5xLEHDeabCe0QJdL8YBI+W2bWS5aBGtpe
+PLcOkct8pEfxNP17MZv/TtMzSanbkGOapbnzKDbZ5+MivA1q+BzogvX4EOxgckQXAinjtMuyBsre
+bYD0gQ==
+--000000000000d32a3005d107aa84--
