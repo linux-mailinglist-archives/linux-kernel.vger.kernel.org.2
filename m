@@ -2,309 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E38F7455F3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:19:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8212455F43
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 16:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231804AbhKRPWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 10:22:19 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:51934 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231443AbhKRPWS (ORCPT
+        id S231994AbhKRPYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 10:24:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230243AbhKRPXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 10:22:18 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Thu, 18 Nov 2021 10:23:47 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2973AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 07:20:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=pMkBPh6t8+Vk94Ox+oIcHzPLe1Je++vi3h2wd3bMOM8=; b=lC9mZOLdlCmNg0G5TJgq+pKtbt
+        +RNCTwioSJBmDtSZ70sxcQbzsg4go2pqHI4jyikgEgEUJJeGWB/1CNXwh1sRtC/rmgGbrrNlCWFHB
+        zKrd+FNvL+5aqoBWeQBAr+f0NYj+3Kv3Y7D8wysqW6sH0gP/VFlWYdAKmz4KdqJxom78PNPzVqNNi
+        x5RJXCHgJj5V1L8VFZYG/n1FUsOVeYeGfIzVleBT3L/zlgrFgxUXygv2/QdzVT5k1vGa+wGGOFBlM
+        e0W4vPB2CpUhNR0HixT9IljRYaZLKL/+31PZA379G1Xjr90T9po3LOAgVYPY7nNp8mNrtcsyM1Zft
+        1Q4vRXVg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mnjD0-008ZaL-9J; Thu, 18 Nov 2021 15:20:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8187E1FD37;
-        Thu, 18 Nov 2021 15:19:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637248756; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xf7DkdQhGiWRoeZ1EV9Ru0DqOCR9S/9CCgSkKFVsu1E=;
-        b=uRSezixehLFQs6Hbu0zTDOBK+ONW8XmhFRjKXEHDiu7SWy1AjXmdh+wyGGM5hNLrbVRx6k
-        12yBvd3AXM+UqpRLDlFCuE+T8yqJs2I4rP9gQGk5srNHHIsGhMNC6tkhk8O0kpXbRqX58W
-        Z27FDhfLjw6EyRyvexel9TTKnNNt/JY=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0A3E913D43;
-        Thu, 18 Nov 2021 15:19:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id /blAAfRulmG/GwAAMHmgww
-        (envelope-from <jgross@suse.com>); Thu, 18 Nov 2021 15:19:16 +0000
-Subject: Re: [PATCH v3 1/4] x86/kvm: add boot parameter for adding vcpu-id
- bits
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-References: <20211116141054.17800-1-jgross@suse.com>
- <20211116141054.17800-2-jgross@suse.com>
- <7f10b8b4-e753-c977-f201-5ef17a6e81c8@suse.com> <YZWUV2jvoOS9RSq8@google.com>
- <731540b4-e8fc-0322-5aa0-e134bc55a397@suse.com> <YZZsw6b2iquFpF9P@google.com>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <eab3fe21-e209-a1af-3b7b-ed831cf1990d@suse.com>
-Date:   Thu, 18 Nov 2021 16:19:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 96DDF30001B;
+        Thu, 18 Nov 2021 16:20:17 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6CDCA3028EEF2; Thu, 18 Nov 2021 16:20:17 +0100 (CET)
+Date:   Thu, 18 Nov 2021 16:20:17 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Li Hua <hucool.lihua@huawei.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        yuehaibing@huawei.com, weiyongjun1@huawei.com,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org, w.f@huawei.com,
+        cj.chengjian@huawei.com, judy.chenhui@huawei.com
+Subject: Re: [PATCH -next 1/1] sched/rt: Try to restart rt period timer when
+ rt runtime exceeded
+Message-ID: <YZZvMbX719ZKS0CQ@hirez.programming.kicks-ass.net>
+References: <20211115014628.15017-1-hucool.lihua@huawei.com>
+ <20211115014628.15017-2-hucool.lihua@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <YZZsw6b2iquFpF9P@google.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="P2IkS8001Jv52jNnxYTynxvUQ3SHNB1Wg"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211115014628.15017-2-hucool.lihua@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---P2IkS8001Jv52jNnxYTynxvUQ3SHNB1Wg
-Content-Type: multipart/mixed; boundary="0MXfMVWoRZ298st46rlc3jOkPZu6xmN8c";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: kvm@vger.kernel.org, x86@kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
- Paolo Bonzini <pbonzini@redhat.com>, Vitaly Kuznetsov <vkuznets@redhat.com>,
- Wanpeng Li <wanpengli@tencent.com>, Jim Mattson <jmattson@google.com>,
- Joerg Roedel <joro@8bytes.org>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <eab3fe21-e209-a1af-3b7b-ed831cf1990d@suse.com>
-Subject: Re: [PATCH v3 1/4] x86/kvm: add boot parameter for adding vcpu-id
- bits
-References: <20211116141054.17800-1-jgross@suse.com>
- <20211116141054.17800-2-jgross@suse.com>
- <7f10b8b4-e753-c977-f201-5ef17a6e81c8@suse.com> <YZWUV2jvoOS9RSq8@google.com>
- <731540b4-e8fc-0322-5aa0-e134bc55a397@suse.com> <YZZsw6b2iquFpF9P@google.com>
-In-Reply-To: <YZZsw6b2iquFpF9P@google.com>
+On Mon, Nov 15, 2021 at 01:46:28AM +0000, Li Hua wrote:
+> When rt_runtime is modified from -1 to a valid control value, it may
+> cause the task to be throttled all the time. Operations like the following
+> will trigger the bug. E.g:
+> 1. echo -1 > /proc/sys/kernel/sched_rt_runtime_us
+> 2. Run a FIFO task named A that executes while(1)
+> 3. echo 950000 > /proc/sys/kernel/sched_rt_runtime_us
+> 
+> When rt_runtime is -1, The rt period timer will not be activated when task A
+> enqueued. And then the task will be throttled after setting rt_runtime to
+> 950,000. The task will always be throttled because the rt period timer is not
+> activated.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Li Hua <hucool.lihua@huawei.com>
+> ---
+>  kernel/sched/rt.c | 26 +++++++++++++++++++++++++-
+>  1 file changed, 25 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+> index bb945f8faeca..630f2cbe37d0 100644
+> --- a/kernel/sched/rt.c
+> +++ b/kernel/sched/rt.c
+> @@ -947,6 +947,23 @@ static inline int rt_se_prio(struct sched_rt_entity *rt_se)
+>  	return rt_task_of(rt_se)->prio;
+>  }
+>  
+> +static inline void try_start_rt_bandwidth(struct rt_bandwidth *rt_b)
+> +{
+> +	raw_spin_lock(&rt_b->rt_runtime_lock);
+> +	if (!rt_bandwidth_enabled() || rt_b->rt_runtime == RUNTIME_INF) {
+> +		raw_spin_unlock(&rt_b->rt_runtime_lock);
+> +		return;
+> +	}
+> +
+> +	if (!rt_b->rt_period_active) {
+> +		rt_b->rt_period_active = 1;
+> +		hrtimer_forward_now(&rt_b->rt_period_timer, rt_b->rt_period);
+> +		hrtimer_start_expires(&rt_b->rt_period_timer,
+> +				      HRTIMER_MODE_ABS_PINNED_HARD);
+> +	}
+> +	raw_spin_unlock(&rt_b->rt_runtime_lock);
+> +}
 
---0MXfMVWoRZ298st46rlc3jOkPZu6xmN8c
-Content-Type: multipart/mixed;
- boundary="------------321CAFC05EC7AF4C22ED8862"
-Content-Language: en-US
+This is almost a verbatim copy of start_rt_bandwidth() surely we can do
+better.
 
-This is a multi-part message in MIME format.
---------------321CAFC05EC7AF4C22ED8862
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+> +
+>  static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq)
+>  {
+>  	u64 runtime = sched_rt_runtime(rt_rq);
+> @@ -1027,11 +1044,16 @@ static void update_curr_rt(struct rq *rq)
+>  		struct rt_rq *rt_rq = rt_rq_of_se(rt_se);
+>  
+>  		if (sched_rt_runtime(rt_rq) != RUNTIME_INF) {
+> +			int exceeded;
+> +
+>  			raw_spin_lock(&rt_rq->rt_runtime_lock);
+>  			rt_rq->rt_time += delta_exec;
+> -			if (sched_rt_runtime_exceeded(rt_rq))
+> +			exceeded = sched_rt_runtime_exceeded(rt_rq);
+> +			if (exceeded)
+>  				resched_curr(rq);
+>  			raw_spin_unlock(&rt_rq->rt_runtime_lock);
+> +			if (exceeded)
+> +				try_start_rt_bandwidth(sched_rt_bandwidth(rt_rq));
+>  		}
+>  	}
+>  }
+> @@ -2905,8 +2927,10 @@ static int sched_rt_global_validate(void)
+>  
+>  static void sched_rt_do_global(void)
+>  {
+> +	raw_spin_lock(&def_rt_bandwidth.rt_runtime_lock);
+>  	def_rt_bandwidth.rt_runtime = global_rt_runtime();
+>  	def_rt_bandwidth.rt_period = ns_to_ktime(global_rt_period());
+> +	raw_spin_unlock(&def_rt_bandwidth.rt_runtime_lock);
 
-On 18.11.21 16:09, Sean Christopherson wrote:
-> On Thu, Nov 18, 2021, Juergen Gross wrote:
->> On 18.11.21 00:46, Sean Christopherson wrote:
->>> On Wed, Nov 17, 2021, Juergen Gross wrote:
->>>> On 16.11.21 15:10, Juergen Gross wrote:
->>>>> Today the maximum vcpu-id of a kvm guest's vcpu on x86 systems is s=
-et
->>>>> via a #define in a header file.
->>>>>
->>>>> In order to support higher vcpu-ids without generally increasing th=
-e
->>>>> memory consumption of guests on the host (some guest structures con=
-tain
->>>>> arrays sized by KVM_MAX_VCPU_IDS) add a boot parameter for adding s=
-ome
->>>>> bits to the vcpu-id. Additional bits are needed as the vcpu-id is
->>>>> constructed via bit-wise concatenation of socket-id, core-id, etc.
->>>>> As those ids maximum values are not always a power of 2, the vcpu-i=
-ds
->>>>> are sparse.
->>>>>
->>>>> The additional number of bits needed is basically the number of
->>>>> topology levels with a non-power-of-2 maximum value, excluding the =
-top
->>>>> most level.
->>>>>
->>>>> The default value of the new parameter will be 2 in order to suppor=
-t
->>>>> today's possible topologies. The special value of -1 will use the
->>>>> number of bits needed for a guest with the current host's topology.=
+And that's just wrong I think; did you test this with lockdep enabled?
+IIRC this lock is irq-safe, it has to be if you're using it form a timer
+context.
 
->>>>>
->>>>> Calculating the maximum vcpu-id dynamically requires to allocate th=
-e
->>>>> arrays using KVM_MAX_VCPU_IDS as the size dynamically.
->>>>>
->>>>> Signed-of-by: Juergen Gross <jgross@suse.com>
->>>>
->>>> Just thought about vcpu-ids a little bit more.
->>>>
->>>> It would be possible to replace the topology games completely by an
->>>> arbitrary rather high vcpu-id limit (65536?) and to allocate the mem=
-ory
->>>> depending on the max vcpu-id just as needed.
->>>>
->>>> Right now the only vcpu-id dependent memory is for the ioapic consis=
-ting
->>>> of a vcpu-id indexed bitmap and a vcpu-id indexed byte array (vector=
-s).
->>>>
->>>> We could start with a minimal size when setting up an ioapic and ext=
-end
->>>> the areas in case a new vcpu created would introduce a vcpu-id outsi=
-de
->>>> the currently allocated memory. Both arrays are protected by the ioa=
-pic
->>>> specific lock (at least I couldn't spot any unprotected usage when
->>>> looking briefly into the code), so reallocating those arrays shouldn=
-'t
->>>> be hard. In case of ENOMEM the related vcpu creation would just fail=
-=2E
->>>>
->>>> Thoughts?
->>>
->>> Why not have userspace state the max vcpu_id it intends to creates on=
- a per-VM
->>> basis?  Same end result, but doesn't require the complexity of reallo=
-cating the
->>> I/O APIC stuff.
->>>
->>
->> And if the userspace doesn't do it (like today)?
->=20
-> Similar to my comments in patch 4, KVM's current limits could be used a=
-s the
-> defaults, and any use case wanting to go beyond that would need an upda=
-ted
-> userspace.  Exceeding those limits today doesn't work, so there's no AB=
-I breakage
-> by requiring a userspace change.
 
-Hmm, nice idea. Will look into it.
-
-> Or again, this could be a Kconfig knob, though that feels a bit weird i=
-n this case.
-> But it might make sense if it can be tied to something in the kernel's =
-config?
-
-Having a Kconfig knob for an absolute upper bound of vcpus should
-be fine. If someone doesn't like the capability to explicitly let
-qemu create very large VMs, he/she can still set that upper bound
-to the normal KVM_MAX_VCPUS value.
-
-Juergen
-
---------------321CAFC05EC7AF4C22ED8862
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------321CAFC05EC7AF4C22ED8862--
-
---0MXfMVWoRZ298st46rlc3jOkPZu6xmN8c--
-
---P2IkS8001Jv52jNnxYTynxvUQ3SHNB1Wg
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmGWbvMFAwAAAAAACgkQsN6d1ii/Ey9t
-WQf+JQe4G2JgLmrVh2qcaVs4/hE5CcApGYK1CLVJJN+H/L9Qoetf357n6l+elJwgRogWJ1uxwa0K
-usWN+CLI5s7n60IsOxwyPInl7VxN++b5Vp9sygjk2irM1oKjpL4gxszodYBB36wGzB4n7Yry2p4X
-z0tY+Apuw0sNFCWvNCa2KDXIuLd/f3knfdnIP3nzNPaM0Qgri2bIpUuUf3bCgPDer75fpvcSs4Ar
-TvKZ0caMTyPu9HKY1TvwCrD0zEIduCc3U92XZssfSKrYenwOvsF4tx+Cgvc3QNaEmdhZ1L5QTcSR
-PmRw4Bj1R0XUIHA0xx0qDIflmYyK2W4sJP9TB7lfhA==
-=Das3
------END PGP SIGNATURE-----
-
---P2IkS8001Jv52jNnxYTynxvUQ3SHNB1Wg--
