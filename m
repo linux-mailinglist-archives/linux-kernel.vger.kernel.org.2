@@ -2,112 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D29145616B
+	by mail.lfdr.de (Postfix) with ESMTP id A41CC45616C
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234104AbhKRR3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 12:29:19 -0500
-Received: from mga11.intel.com ([192.55.52.93]:23277 "EHLO mga11.intel.com"
+        id S234098AbhKRR3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 12:29:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231562AbhKRR3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234079AbhKRR3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 18 Nov 2021 12:29:16 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="231724161"
-X-IronPort-AV: E=Sophos;i="5.87,245,1631602800"; 
-   d="scan'208";a="231724161"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 09:26:16 -0800
-X-IronPort-AV: E=Sophos;i="5.87,245,1631602800"; 
-   d="scan'208";a="550618531"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 09:26:14 -0800
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 523BC202B4;
-        Thu, 18 Nov 2021 19:26:12 +0200 (EET)
-Date:   Thu, 18 Nov 2021 19:26:12 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Luca Ceresoli <luca@lucaceresoli.net>
-Cc:     Eugen Hristev <eugen.hristev@microchip.com>,
-        leonl@leopardimaging.com, linux-media@vger.kernel.org,
-        skomatineni@nvidia.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: i2c: imx274: implement enum_mbus_code
-Message-ID: <YZaMtGhqaXIOLhox@paasikivi.fi.intel.com>
-References: <20211118154009.307430-1-eugen.hristev@microchip.com>
- <fa26e991-9228-7ed7-833a-b296e6b32afc@lucaceresoli.net>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2082361A07;
+        Thu, 18 Nov 2021 17:26:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637256376;
+        bh=QE4r16+cz7m3BK89h/Sjb1ZqaoOg/LCERqDrH6tb69Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oAA+BTIPwj1adxXFbA5+bQGhBP32aJ1fDxcdEl60hrmRyXDRXH5SK8ucWoVXYYOqv
+         oIv3bz01ICv3R2TXeLiTZfXhQJ/zRwfRhElcF/1MAgbR6+KHGhLURtF0yoW/9JDorz
+         HpWmoliNaGsGZf9j6/fLbZwqxYxTbxB0ua9PUvdtk7OGTpyeET9KmSwTRocXr2NqhL
+         D6h263kakpuVQYWYFuNmVBG24ZNomOZRiN7qH3uEp2ZEE4C/+T4FkRKJZLesdJOoU7
+         D//wsaBt4SrwQLMEtbT0a4LMP6mhRMjBba20MXgoqivoDPQ4TVMUTZw0iug/C289ZR
+         SgKMwgFKWGfDQ==
+Date:   Thu, 18 Nov 2021 09:26:15 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v2 02/28] mm: Add functions to zero portions of a folio
+Message-ID: <20211118172615.GA24307@magnolia>
+References: <20211108040551.1942823-1-willy@infradead.org>
+ <20211108040551.1942823-3-willy@infradead.org>
+ <20211117044527.GO24307@magnolia>
+ <YZUMhDDHott2Q4W+@casper.infradead.org>
+ <20211117170707.GW24307@magnolia>
+ <YZZ3YJucR/WOpOaF@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fa26e991-9228-7ed7-833a-b296e6b32afc@lucaceresoli.net>
+In-Reply-To: <YZZ3YJucR/WOpOaF@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luca,
+On Thu, Nov 18, 2021 at 03:55:12PM +0000, Matthew Wilcox wrote:
+> On Wed, Nov 17, 2021 at 09:07:07AM -0800, Darrick J. Wong wrote:
+> > I've started using 'next', or changing the code to make 'end' be the
+> > last element in the range the caller wants to act upon.  The thing is,
+> > those are all iterators, so 'next' fits, whereas it doesn't fit so well
+> > for range zeroing where that might have been all the zeroing we wanted
+> > to do.
+> 
+> Yeah, it doesn't really work so well for one of the patches in this
+> series:
+> 
+>                         if (buffer_new(bh)) {
+> ...
+>                                         folio_zero_segments(folio,
+>                                                 to, block_end,
+>                                                 block_start, from);
+> 
+> ("zero between block_start and block_end, except for the region
+> specified by 'from' and 'to'").  Except that for some reason the
+> ranges are specified backwards, so it's not obvious what's going on.
+> Converting that to folio_zero_ranges() would be a possibility, at the
+> expense of complexity in the caller, or using 'max' instead of 'end'
+> would also add complexity to the callers.
 
-On Thu, Nov 18, 2021 at 06:11:35PM +0100, Luca Ceresoli wrote:
-> Hi Eugen,
-> 
-> On 18/11/21 16:40, Eugen Hristev wrote:
-> > Current driver supports only SRGGB 10 bit RAW bayer format.
-> > Add the enum_mbus_code implementation to report this format supported.
-> > 
-> >  # v4l2-ctl -d /dev/v4l-subdev3 --list-subdev-mbus-codes
-> > ioctl: VIDIOC_SUBDEV_ENUM_MBUS_CODE (pad=0)
-> >         0x300f: MEDIA_BUS_FMT_SRGGB10_1X10
-> >  #
-> > 
-> > Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-> 
-> Generally OK, but I have a few minor comments.
-> 
-> > ---
-> >  drivers/media/i2c/imx274.c | 14 ++++++++++++++
-> >  1 file changed, 14 insertions(+)
-> > 
-> > diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
-> > index 2e804e3b70c4..25a4ef8f6187 100644
-> > --- a/drivers/media/i2c/imx274.c
-> > +++ b/drivers/media/i2c/imx274.c
-> > @@ -1909,7 +1909,21 @@ static int imx274_set_frame_interval(struct stimx274 *priv,
-> >  	return err;
-> >  }
-> >  
-> > +static int imx274_enum_mbus_code(struct v4l2_subdev *sd,
-> > +				 struct v4l2_subdev_state *sd_state,
-> > +				 struct v4l2_subdev_mbus_code_enum *code)
-> > +{
-> > +	if (code->index > 0)
-> > +		return -EINVAL;
-> 
-> Many driver do check code->pad too, so you might want to do
-> 
-> 	if (code->pad > 0 || code->index > 0)
-> 		return -EINVAL;
+The call above looks like it is preparing to copy some data into the
+middle of a buffer by zero-initializing the bytes before and the bytes
+after that middle region.
 
-The caller will have checked the pad exists, and there's a single one on
-the subdev I suppose.
+Admittedly my fs-addled brain actually finds this hot mess easier to
+understand:
+
+folio_zero_segments(folio, to, blocksize - 1, block_start, from - 1);
+
+but I suppose the xend method involves less subtraction everywhere.
 
 > 
-> However I don't think it is strictly necessary, thus
+> > Though.  'xend' (shorthand for 'excluded end') is different enough to
+> > signal that the reader should pay attention.  Ok, how about xend then?
 > 
-> > +
-> > +	/* only supported format in the driver is Raw 10 bits SRGGB */
-> > +	code->code = MEDIA_BUS_FMT_SRGGB10_1X10;
+> Done!
 > 
-> Maybe better:
+> @@ -367,26 +367,26 @@ static inline void memzero_page(struct page *page, size_t
+> offset, size_t len)
+>   * folio_zero_segments() - Zero two byte ranges in a folio.
+>   * @folio: The folio to write to.
+>   * @start1: The first byte to zero.
+> - * @end1: One more than the last byte in the first range.
+> + * @xend1: One more than the last byte in the first range.
+>   * @start2: The first byte to zero in the second range.
+> - * @end2: One more than the last byte in the second range.
+> + * @xend2: One more than the last byte in the second range.
+>   */
+>  static inline void folio_zero_segments(struct folio *folio,
+> -               size_t start1, size_t end1, size_t start2, size_t end2)
+> +               size_t start1, size_t xend1, size_t start2, size_t xend2)
+>  {
+> -       zero_user_segments(&folio->page, start1, end1, start2, end2);
+> +       zero_user_segments(&folio->page, start1, xend1, start2, xend2);
+>  }
 > 
->   code->code =  to_imx274(sd)->format.code
+>  /**
+>   * folio_zero_segment() - Zero a byte range in a folio.
+>   * @folio: The folio to write to.
+>   * @start: The first byte to zero.
+> - * @end: One more than the last byte in the first range.
+> + * @xend: One more than the last byte to zero.
+>   */
+>  static inline void folio_zero_segment(struct folio *folio,
+> -               size_t start, size_t end)
+> +               size_t start, size_t xend)
+>  {
+> -       zero_user_segments(&folio->page, start, end, 0, 0);
+> +       zero_user_segments(&folio->page, start, xend, 0, 0);
 
-Good idea.
+Works for me,
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-> 
-> just as a little guard for future format changes.
-> 
-> With or without these I'm OK anyway with the patch, so:
-> 
-> Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
-> 
-> -- 
-> Luca
+--D
 
--- 
-Sakari Ailus
+>  }
+> 
+>  /**
+> 
