@@ -2,124 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B58456150
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B98C8456153
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234046AbhKRRUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 12:20:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55008 "EHLO
+        id S234050AbhKRRWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 12:22:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233968AbhKRRUI (ORCPT
+        with ESMTP id S231204AbhKRRWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 12:20:08 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F09B3C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:17:07 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id np3so5636922pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:17:07 -0800 (PST)
+        Thu, 18 Nov 2021 12:22:13 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40092C061574;
+        Thu, 18 Nov 2021 09:19:13 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id r5so5977237pgi.6;
+        Thu, 18 Nov 2021 09:19:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AdNT/e8pWXEGx8y2cLNzuIqObGx1yOxX/rki3SqI27w=;
-        b=MzTqRS09IIUcxWl66e1N7K7IoW9LHDC2F49Jzm7N7j1I2b0puAw8fiVyiEVrEuWvnf
-         9tDhXaxNBb6fRjmFnxmmjF0rB1qECOcxQFw9jwxVEEF1zCXpIpg1HdzSywathMEU6O06
-         mOzoAzahrTv+Vfrb6K7uqj27+8J9baKgZuirI=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ouDQlk5zP/VXAJVsTu5rp4BRmgexGWzx5mlwojfemqc=;
+        b=U4kbcX15gvaWqE8KhuqMkEpRudV6Qdtb81j0UvxOntWtT4KLFSkbOn2p0zqzHQfM1w
+         1B6Koj+zmv5GDJcyTUKKA2KVQ8dJe+Jj82xx3f8nPA+oPegZXmVCe1dzoI8qSJbZsviH
+         hGnyTtq82W5qMyDDtYrwDhQJUO8g/2XWUgQLoZ51rJt7q/ziKybUz4BRl0NPwV5w5bMt
+         RT177gzHnsuBLarSXhczjOAXwinHFX6b/g0XqtZ54jJja9Mx+nuXUkx+ZsgdCTu+Ia3r
+         nb/fspMloJ7PNSSphBjM206T3FUmqUuoZlPDzjgbDslBiQcY1/VlqaZ1sTd+2px+C6/0
+         UZXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AdNT/e8pWXEGx8y2cLNzuIqObGx1yOxX/rki3SqI27w=;
-        b=2jd+jHcNZnh04yTJojZZbtOnqX3DI0PKnaPN5X7FojjxxRxwo1x/QXaumuyl/DMyE/
-         uC+4Rt94yPzszsBZUc4AOPCIjyby6QaRbmpJYlh13AEaiETmCc7U7a8gCc5Io66XUXdq
-         AfcJGOmsk7qwl0zjX0lcWHud2meFWYzZ/ZtBiL0hdC+HKvBvpI2mHZgfprBEQQqkJCLQ
-         LNigkEOi9900KlBjuXMzZsdGBkY2faJ6XjdUcMPNFHym+/ZOLuUD5Pfb3fw8p6sOgIpm
-         DH6bUriizJPnkMH+vnZjGdH3XFElCtzOHJIuimV2WTBMPCr/GVmS91cl/Lqz2j5O+7Yb
-         VngA==
-X-Gm-Message-State: AOAM533BYPnjZG2xrBqmfXmLxYHAHq0FIewTmhTVKSrisLVEsM3b0Xng
-        TykuAyWXZ55COQN9sZIMOQM8bQ==
-X-Google-Smtp-Source: ABdhPJxv5htguG5dAaQZenD+5ssUM5X/WV7alFh5ZEYdsEe8SMjBS2O4lsEoq9SmDTw7delwgAsoiA==
-X-Received: by 2002:a17:90a:1a55:: with SMTP id 21mr11950889pjl.240.1637255825349;
-        Thu, 18 Nov 2021 09:17:05 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id o7sm195449pgq.59.2021.11.18.09.17.04
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ouDQlk5zP/VXAJVsTu5rp4BRmgexGWzx5mlwojfemqc=;
+        b=RcqTXdiNV8UWfOvNKzW1On5WVz5GYHrUGoDfEqHJewzwaIHTjA4OVk45h7uhyhadr3
+         5yeDjQvl633tdmlqw6uPkR3NOa+jOMzp1MzcONiZEt5rIVQhXfyJUa64m0O8a7tXT2Lj
+         DUGPkkmdWsn6+t58xZGbEdP02T+EqcnHL4mnvCg8mQ//Wc53bnJukb+XaU8Hx4swosva
+         JcZ7bvmHfdEXKEo9Gdhnh1Ui1O4iqHN5G1wHSuLaFXBhpZ+QPtE/N8Ywildu1LnYqmSb
+         8dO2X05yV2lWkcrhav2SV8g7uygBSJN2m5U4Bj8odNM+eHZq56k42KkPyG5jAELQTrJe
+         MRNw==
+X-Gm-Message-State: AOAM530XrkIG2EVpq+nYehRTprg2xld2NQf8DiNYjNz7JpCGLGLrMwOn
+        C7ahsD5ZjYSAA5M55lCRTI0=
+X-Google-Smtp-Source: ABdhPJwO0ITyNRj+mvPgJqS/+PgQh3J1f7sJBQ4UVI/GSsPPZalXjYjmutxdKmG7qxXQUYyQVYhUsA==
+X-Received: by 2002:a62:4e0a:0:b0:4a0:4127:174b with SMTP id c10-20020a624e0a000000b004a04127174bmr16706105pfb.41.1637255952588;
+        Thu, 18 Nov 2021 09:19:12 -0800 (PST)
+Received: from localhost.localdomain ([2406:7400:63:2c47:5ffe:fc34:61f0:f1ea])
+        by smtp.gmail.com with ESMTPSA id u32sm191283pfg.220.2021.11.18.09.19.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 09:17:04 -0800 (PST)
-Date:   Thu, 18 Nov 2021 09:17:04 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Holger =?iso-8859-1?Q?Hoffst=E4tte?= 
-        <holger@applied-asynchrony.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Justin Forbes <jmforbes@linuxtx.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        stable <stable@vger.kernel.org>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        =?iso-8859-1?Q?Fran=E7ois?= Guerraz <kubrick@fgv6.net>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH 5.15 000/923] 5.15.3-rc3 review
-Message-ID: <202111180912.356B342@keescook>
-References: <20211117101657.463560063@linuxfoundation.org>
- <YZV02RCRVHIa144u@fedora64.linuxtx.org>
- <55c7b316-e03d-9e91-d74c-fea63c469b3b@applied-asynchrony.com>
- <CAHk-=wjHbKfck1Ws4Y0pUZ7bxdjU9eh2WK0EFsv65utfeVkT9Q@mail.gmail.com>
- <202111171609.56F12BD@keescook>
- <YZYLC9D6zpUneYtn@kroah.com>
+        Thu, 18 Nov 2021 09:19:12 -0800 (PST)
+From:   Naveen Naidu <naveennaidu479@gmail.com>
+To:     bhelgaas@google.com
+Cc:     Naveen Naidu <naveennaidu479@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: [PATCH v3 0/1] PCI: Initial KUnit test fixture for resource assignment
+Date:   Thu, 18 Nov 2021 22:48:50 +0530
+Message-Id: <cover.1637250854.git.naveennaidu479@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZYLC9D6zpUneYtn@kroah.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 09:12:59AM +0100, Greg Kroah-Hartman wrote:
-> On Wed, Nov 17, 2021 at 04:16:51PM -0800, Kees Cook wrote:
-> > On Wed, Nov 17, 2021 at 03:50:17PM -0800, Linus Torvalds wrote:
-> > > Sorry for top-posting and quoting this all, but the actual people
-> > > involved with the wchan changes don't seem to be on the participant
-> > > list.
-> > 
-> > Adding more folks from a private report and
-> > https://bugzilla.kernel.org/show_bug.cgi?id=215031
-> > 
-> > and for the new people, here's a lore link for this thread:
-> > https://lore.kernel.org/stable/YZV02RCRVHIa144u@fedora64.linuxtx.org/
-> > 
-> > 
-> > FWIW, earlier bisection pointed to the stable backport of
-> > 5d1ceb3969b6b2e47e2df6d17790a7c5a20fcbb4 being the primary culprit.
-> > At first glance it seems to me that the problem with -stable is that an
-> > unvetted subset of the wchan refactoring series landed in -stable.
-> 
-> What would be the vetted subset?  :)
+Currently it's hard to deubg issues in the resource assignment code of
+the PCI because of the long reproduction cycles between the developer
+trying to fix the code and the user testing it due to the lack of
+hardware device with the developer [1].
 
-The ones with "Cc: stable" ;)
+[1]:
+https://lore.kernel.org/all/20210621123714.GA3286648@bjorn-Precision-5520/
 
-> Anyway, I have now dropped the following patches that were in the
-> 5.15.3-rc tree:
-> 	bc9bbb81730e ("x86: Fix get_wchan() to support the ORC unwinder")
-> 	42a20f86dc19 ("sched: Add wrapper for get_wchan() to keep task blocked")
-> 	5d1ceb3969b6 ("x86: Fix __get_wchan() for !STACKTRACE")
-> 
-> And will push out another -rc release to let people test.
-> 
-> If there are any other commits I should have also dropped, please let me
-> know.
+Bjorn, suggested that it would be really good if we could have a test
+fixture for debugging/testing resource assignment. 
 
-That looks right to me. These three were part of Peter's much larger
-wchan refactoring (of which 42a20f86dc19 was a core part).
+The patch attached along with the cover letter is an attempt to lay the
+foundation and also have a proof of concept to show that it is possible 
+to have a test fixture to debug the resource assignment code.
 
-Thanks!
+Since there are a lot of things which happens during the resource
+assignement phase, the first version only tests the __pci_read_base()
+function since that was the most easiest to set up.
+
+Hopefully, in the future patches I'll be able to write more KUnit tests
+for the other parts responsible during the resource assignment phase and
+get closer to the goal of having a complete test fixtures :)
+
+Thanks,
+Naveen
+
+Changelog
+=========
+
+v3:
+    - Rename init_registers to init_test_registers 
+v2:
+    - Add test cases to test resource assignment for Type 1 devices
+    - Fix a error (a function was not static) found by Kernel Test Robot
+
+Naveen Naidu (1):
+  [PATCH v3 1/1] PCI: Add KUnit tests for __pci_read_base()
+
+ drivers/pci/Kconfig              |   4 +
+ drivers/pci/Makefile             |   3 +
+ drivers/pci/pci-read-base-test.c | 803 +++++++++++++++++++++++++++++++
+ 3 files changed, 810 insertions(+)
+ create mode 100644 drivers/pci/pci-read-base-test.c
 
 -- 
-Kees Cook
+2.25.1
+
