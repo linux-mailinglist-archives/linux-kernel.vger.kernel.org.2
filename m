@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7477C455272
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 02:57:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A003455259
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 02:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242406AbhKRCAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Nov 2021 21:00:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242400AbhKRCAi (ORCPT
+        id S242356AbhKRBtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Nov 2021 20:49:46 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:26323 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239516AbhKRBto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Nov 2021 21:00:38 -0500
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F19C1C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 17:57:38 -0800 (PST)
-Received: by mail-oi1-x233.google.com with SMTP id be32so10620689oib.11
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Nov 2021 17:57:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4GgIJU0V+ih5Gpji1Pi6wi66j+iNTVRk7nYTxCGKEII=;
-        b=R3NdEUcgp/SALb49E79HIfh/H9l6vgFtcPngo8gtuOL4QeM6wSmOrH2fKAMtc11F1O
-         uR8rQJ/5+9tqYbKiRXHMtALAW/b2OMnExwVlQqBRrIP/VPUDixGZpKtA5yjqESqc7shX
-         qanJvyIVLUlP7LtyYMPUttshh1V065F/X0ieYn89NahGTGvMh54DNL2wBAQvQ1+ql8nB
-         PbkTlM8rPIKD3eY9ZzcOgrAeEYImePXBTpjIkPVrc5eMnYQctQe3u89f9sVQQdvPCo3U
-         nnhhDXlOCxmUtF97Z7kIJaXu77l3Oh0Fd8DnW3JBmEEB/cHHTVWdpl57ofXo9ENm685C
-         VGZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4GgIJU0V+ih5Gpji1Pi6wi66j+iNTVRk7nYTxCGKEII=;
-        b=ZVsP7ttlxBBxFSQ0fh2GRRscaPit/9MzLQu/jXeULjry+T9d5PRHjbBJt40+9sQrJz
-         cj8yu473a3QNiwKPTJpVCEIlBaYEzC4r6/r/HVm6ditGDhDvJk7tPUWgqVOLOYQwgk/8
-         GVRgJK6pZ1Z8bekN2BZg0bStHyEBE78tIsPpRdcmAGOEtnmwvRtPHO5tvd113d5+0H4b
-         M5lFHo7vD9vW1JrnruHa99llEqnDKM2gf045PEyZOmThSl84ql0H/kImqNxUllJmBMHO
-         x5/TYgUBoC+t2eaB8nG5K7z3SDTY586sZUsbGTG7unb6LrAvHss6aCh1VOpzX+UPPIED
-         D2iw==
-X-Gm-Message-State: AOAM530TfCMkAUWdZtZpj6Sq+t9fFXTp+gE9SQutrWRsEKXCFUXw0OR6
-        7xlzXv9cmUZPVo7Vh3rkoMd0OcIhTCWoMsTfHBnRHi37QDbaoA==
-X-Google-Smtp-Source: ABdhPJwUZxZy+oDrVbVf3E8Uxu6BnHQNyTmrLqFBNwedah57MWTES9fU07YwFkjK4DKiKLrVOUn5MDF0Qc6cHwyKKO4=
-X-Received: by 2002:a54:4791:: with SMTP id o17mr4452519oic.114.1637200658149;
- Wed, 17 Nov 2021 17:57:38 -0800 (PST)
+        Wed, 17 Nov 2021 20:49:44 -0500
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HvjFm1xCQzbj0j;
+        Thu, 18 Nov 2021 09:41:48 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Thu, 18 Nov
+ 2021 09:46:43 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <axboe@kernel.dk>, <asml.silence@gmail.com>,
+        <io-uring@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Ye Bin <yebin10@huawei.com>
+Subject: [PATCH -next] io_uring: Fix undefined-behaviour in io_issue_sqe
+Date:   Thu, 18 Nov 2021 09:59:07 +0800
+Message-ID: <20211118015907.844807-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <cover.1637061794.git.matti.vaittinen@fi.rohmeurope.com> <740503b6b6439e01959016223f1ae464e82824c3.1637061794.git.matti.vaittinen@fi.rohmeurope.com>
-In-Reply-To: <740503b6b6439e01959016223f1ae464e82824c3.1637061794.git.matti.vaittinen@fi.rohmeurope.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 18 Nov 2021 02:57:23 +0100
-Message-ID: <CACRpkdYE1r6mYAJsaMB9XyZjjAK-bGw3-9jhOpUFASWgkXaQBQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 1/9] dt-bindings: battery: Add temperature-capacity
- degradation table
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, rostokus@gmail.com,
-        fan.chen@mediatek.com, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 1:24 PM Matti Vaittinen
-<matti.vaittinen@fi.rohmeurope.com> wrote:
+We got issue as follows:
+================================================================================
+UBSAN: Undefined behaviour in ./include/linux/ktime.h:42:14
+signed integer overflow:
+-4966321760114568020 * 1000000000 cannot be represented in type 'long long int'
+CPU: 1 PID: 2186 Comm: syz-executor.2 Not tainted 4.19.90+ #12
+Hardware name: linux,dummy-virt (DT)
+Call trace:
+ dump_backtrace+0x0/0x3f0 arch/arm64/kernel/time.c:78
+ show_stack+0x28/0x38 arch/arm64/kernel/traps.c:158
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x170/0x1dc lib/dump_stack.c:118
+ ubsan_epilogue+0x18/0xb4 lib/ubsan.c:161
+ handle_overflow+0x188/0x1dc lib/ubsan.c:192
+ __ubsan_handle_mul_overflow+0x34/0x44 lib/ubsan.c:213
+ ktime_set include/linux/ktime.h:42 [inline]
+ timespec64_to_ktime include/linux/ktime.h:78 [inline]
+ io_timeout fs/io_uring.c:5153 [inline]
+ io_issue_sqe+0x42c8/0x4550 fs/io_uring.c:5599
+ __io_queue_sqe+0x1b0/0xbc0 fs/io_uring.c:5988
+ io_queue_sqe+0x1ac/0x248 fs/io_uring.c:6067
+ io_submit_sqe fs/io_uring.c:6137 [inline]
+ io_submit_sqes+0xed8/0x1c88 fs/io_uring.c:6331
+ __do_sys_io_uring_enter fs/io_uring.c:8170 [inline]
+ __se_sys_io_uring_enter fs/io_uring.c:8129 [inline]
+ __arm64_sys_io_uring_enter+0x490/0x980 fs/io_uring.c:8129
+ invoke_syscall arch/arm64/kernel/syscall.c:53 [inline]
+ el0_svc_common+0x374/0x570 arch/arm64/kernel/syscall.c:121
+ el0_svc_handler+0x190/0x260 arch/arm64/kernel/syscall.c:190
+ el0_svc+0x10/0x218 arch/arm64/kernel/entry.S:1017
+================================================================================
 
-> Some charger/battery vendors describe the temperature impact to
-> battery capacity by providing tables with capacity change at
-> given temperature. Support providing this temperature - capacity
-> dependency using the simple-battery DT nodes.
->
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+As ktime_set only judge 'secs' if big than KTIME_SEC_MAX, but if we pass
+negative value maybe lead to overflow.
+To address this issue, we must check if 'sec' is negative.
 
-Since we already support providing the capacity at different
-temperatures using ocv-capacity-celsius and the array of
-arrays ocv-capacity-table-0, 1, 2... you are introducing a
-second parallel method of describing how capacity changes
-in accordance with temperature, right?
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ fs/io_uring.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-What do you expect to happen if someone specifies both?
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index f9e720595860..d8a6446a7921 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -6157,6 +6157,9 @@ static int io_timeout_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe,
+ 	if (get_timespec64(&data->ts, u64_to_user_ptr(sqe->addr)))
+ 		return -EFAULT;
+ 
++	if (data->ts.tv_sec < 0 || data->ts.tv_nsec < 0)
++		return -EINVAL;
++
+ 	data->mode = io_translate_timeout_mode(flags);
+ 	hrtimer_init(&data->timer, io_timeout_get_clock(data), data->mode);
+ 
+-- 
+2.31.1
 
-If this is an either/or situation then the schema has to
-guarantee the exclusiveness for each.
-
-(I would probably just use the formula you have to calculate
-a few tables using the existing method but that's just me.)
-
-Yours,
-Linus Walleij
