@@ -2,183 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337DC4562C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:44:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C5B4562C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:44:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233774AbhKRSrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 13:47:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46962 "EHLO
+        id S232597AbhKRSrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 13:47:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbhKRSrA (ORCPT
+        with ESMTP id S229632AbhKRSrs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 13:47:00 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F07A1C06173E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:43:59 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id w33-20020a17090a6ba400b001a722a06212so7247996pjj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:43:59 -0800 (PST)
+        Thu, 18 Nov 2021 13:47:48 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39297C061574;
+        Thu, 18 Nov 2021 10:44:48 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id u3so30633362lfl.2;
+        Thu, 18 Nov 2021 10:44:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jQ7Q3jdQqye6b63JEwuz0UrVtVAQHNs/hH6Rmr9vUg0=;
-        b=I1sIuz6yICjv30SpY++42NwDbq6Mp+Itq0b1L5QbT/QZ6KhUTpVUeR1e/S9LIfilBu
-         jDcHScfysDs8Lf6SQ2lBmCRcRaCtjtaz0HH6QMMueAl9e4l/dn7BpZH6Mg+QkIWQBaYU
-         T8USZP6ZHqdnKdZxIbMTMrPxXuucBrsNldIlQ=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KtBf3b/XHtk1bqoyzceQSEj+SyTHp41FF2tWEqfwnLw=;
+        b=buQn+iZM9hwMl0Gk9RdXKnnAf/E/uLVBWm7VBqTqhi6RS/ynPzXTQocvXe4q6gFupy
+         c1pu5ohqU2BD9dJasj+QURvXwsKgJUTRk45Hk31gQhqPNT+Z5y1EPSUde+St2VwwT7DK
+         h0M+lZXL54d1V7OG3GhMY7VfO+GZV48SI28SPDBZVNmJyhGRCr172x+yxpuHa0zd3kxe
+         YGf3IX+0COPwKMXGdsjOsCBXHh20eMpiV8nNopR80lIi3M45oNhmx2qx+LVb2E+ufEAW
+         CZosKf2jSR6o134g1UsmOjhVuuub0efyJLxLewm7hItoTrEtskEuPQWzb0y+5htrMR9P
+         EslA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jQ7Q3jdQqye6b63JEwuz0UrVtVAQHNs/hH6Rmr9vUg0=;
-        b=tLPTRlhv+ia4CPNgHrZFiHjiA2bsFqvauQtw3jAulPJJ2u8wsG+o7S+9gPgdLvtnBk
-         MkHSeeH6gkz8SMC0+xTkWfxR1YPVvjMaQHqETLQWXyWM5twJ1+Pv63q2LitFfO5Xvil/
-         zrz405lW2qflsDAe307gaqzEZcT1SBnAZFMK7TUhaijz2U/eL4KToTh7XjC5X7MkdJS9
-         J3E+kEYUmDyOnjzDELiHgpGqkVhkfnUMBPsObPhfe2Mjd3Cx6+6wW9PUJJESlFsv3bxS
-         5McfZQJhIs5fHiL+UE1xHTwm8hEIV3HZGX/eFCttwtDAVf2H0ICNEebCMNHtCNxLYQ/N
-         3Ipg==
-X-Gm-Message-State: AOAM532vuQN0hRkDMBM91eVrTTNjRzdvrhLOCRakbb5JRjpBNsx72P/b
-        ozAGE/RM/LX8aUOTPszXo4MJ1IWJrfRFig==
-X-Google-Smtp-Source: ABdhPJyuwtnp7HiOnoa5XciTrb7GBk22YzrDwRh1QfSzDx+VksGMYG4VQZ850rDIHTSuSpHwB6hVvg==
-X-Received: by 2002:a17:90b:4a43:: with SMTP id lb3mr13139803pjb.222.1637261039481;
-        Thu, 18 Nov 2021 10:43:59 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id e18sm274374pgl.50.2021.11.18.10.43.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 10:43:59 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] media: omap3isp: Use struct_group() for memcpy() region
-Date:   Thu, 18 Nov 2021 10:43:52 -0800
-Message-Id: <20211118184352.1284792-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KtBf3b/XHtk1bqoyzceQSEj+SyTHp41FF2tWEqfwnLw=;
+        b=V1KgUhQzZ9V/6k6F9rfvlcSC1OaZgpigDC199kaBsU5y0AJigfSfI/xa05CoCOQvMJ
+         m9MmENEkTLucF3cXbsQW4+vdDfXsvQnqQ1SRXcvwiArLwbe/3IxiK+IW9VHFBwDeznHF
+         Zbpe5LWnndYddmiWlyMIgxlzK/LqPDXwXcmLnKZrZuJLMJRpEn0piaDSWxJxc3I1H7i2
+         NYsTNT7rGdHuFrhvKIq7ST4mQVsqzwuGV91uZybQibM8qkXMnzWKiUuEcGUoEjRcwo6h
+         OAVmm8R+O6fWWYxKi0ZfgneUoc0Ye3upqIvb/TktpM8K1as/zEbX1TbytyUvsUTwa/y7
+         ucRQ==
+X-Gm-Message-State: AOAM531CJ42drX5FFdLXYw2p5sFhVWnm+LCY4u3hrQNdRHOffTPpI3kY
+        dyJ4k3q82jq5BvOGVHtmJsknurNqY07nDCj1U00=
+X-Google-Smtp-Source: ABdhPJwdjFq/6ndUGke0X96RAeuKW7QfP7GtmnYgdBZsHbyy+1ZplNrF1S0qIjKJ9TF2gDhwfHbMDv7GptCo0knLVAQ=
+X-Received: by 2002:a2e:a451:: with SMTP id v17mr19299608ljn.85.1637261086361;
+ Thu, 18 Nov 2021 10:44:46 -0800 (PST)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4161; h=from:subject; bh=6HM1xQAwdUhYlxd827odkUtGQFwknJXIWVVzXi/7nLw=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhlp7fIy4m5wHWpoRTBmOzDmU3UD7/uFHIYWL3ROtF R72c0SGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZae3wAKCRCJcvTf3G3AJieeEA Cz4NE52KfM3bLL/HppQJ+cM/f/j0SaJd9BmzANcOaX30GEFNG/i8N32N2ISlm/HcAPUFsJEiE1Zei5 xKHA57glXiE0xSX/9m7zvXcBc1/ScmhQMCqBQ5LOYgaY1PR+Lw2VY6oVoRtk7pJZPz9OSgBYgi973G pGYV59QNeNrdumxWv46xdlY8IAxhmmbY18cHA04PpAWNwJa8i7WSmS/ayOURCXbFN6hEX+vF5FpI16 KIwdJ2/L8K7vlkqpfLxivB6tHZ+t2p2ITDqlitYsrK6PsIGqH/2YkW0txU+f0fQqyAyogz7TJRJiA0 uyvt45KhgT2EiDQfcG700urMI3eEeht3r8xEf7DY9z4vTuxWzyQX+AGap5PvoY8c1NvrjPOzsFmTRy OobbQIDA57RvlfaePshSsNvJ8Bc3rxz3+GKJSowUiiQUT3G0LquG+vFF6ow+0i1nc4+MqRmcyFvVah /FDNSoAFRNfHZ66cPhOsEtxCA1cwHbyo3F/JOuYnBJWipy/TxPQlFXR0M7QBWeKsK4Mhsq0hptavFt NEl2pcCMtUbqYT5e13J5WB5MGvQ2+MmaBlNP47XKSUlyBJmVCTzWgHUrN87t8Y/jw2sn0WASeFsk9B vOV3VtAaNS+av255HKWgOFg7nuyZNyOkiDJcQ2gXDdYt6WVd09cOOKjgNKbw==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+References: <20211118115225.1349726-1-iii@linux.ibm.com>
+In-Reply-To: <20211118115225.1349726-1-iii@linux.ibm.com>
+From:   "sunyucong@gmail.com" <sunyucong@gmail.com>
+Date:   Thu, 18 Nov 2021 10:44:20 -0800
+Message-ID: <CAJygYd31WmTyhKkMNiP0gOJv7XA3PYXp_+Fqxi6Pd6K1004cbg@mail.gmail.com>
+Subject: Re: [PATCH bpf] selfetests/bpf: Adapt vmtest.sh to s390 libbpf CI changes
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Shuah Khan <shuah@kernel.org>, kernel-team@cloudflare.com,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), memmove(), and memset(), avoid
-intentionally writing across neighboring fields. Wrap the target region
-in struct_group(). This additionally fixes a theoretical misalignment
-of the copy (since the size of "buf" changes between 64-bit and 32-bit,
-but this is likely never built for 64-bit).
+On Thu, Nov 18, 2021 at 3:54 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>
+> [1] added s390 support to libbpf CI and added an ${ARCH} prefix to a
+> number of paths and identifiers in libbpf GitHub repo, which vmtest.sh
+> relies upon. Update these and make use of the new s390 support.
+>
+> [1] https://github.com/libbpf/libbpf/pull/204
+>
+> Co-developed-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+>  tools/testing/selftests/bpf/vmtest.sh | 46 ++++++++++++++++++---------
+>  1 file changed, 31 insertions(+), 15 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/vmtest.sh b/tools/testing/selftests/bpf/vmtest.sh
+> index 027198768fad..5e43c79ddc6e 100755
+> --- a/tools/testing/selftests/bpf/vmtest.sh
+> +++ b/tools/testing/selftests/bpf/vmtest.sh
+> @@ -4,17 +4,34 @@
+>  set -u
+>  set -e
+>
+> -# This script currently only works for x86_64, as
+> -# it is based on the VM image used by the BPF CI which is
+> -# x86_64.
+> -QEMU_BINARY="${QEMU_BINARY:="qemu-system-x86_64"}"
+> -X86_BZIMAGE="arch/x86/boot/bzImage"
+> +# This script currently only works for x86_64 and s390x, as
+> +# it is based on the VM image used by the BPF CI, which is
+> +# available only for these architectures.
+> +ARCH="$(uname -m)"
+> +case "${ARCH}" in
+> +s390x)
+> +       QEMU_BINARY=qemu-system-s390x
+> +       QEMU_CONSOLE="ttyS1"
+> +       QEMU_FLAGS=(-smp 2)
+> +       BZIMAGE="arch/s390/boot/compressed/vmlinux"
+> +       ;;
+> +x86_64)
+> +       QEMU_BINARY=qemu-system-x86_64
+> +       QEMU_CONSOLE="ttyS0,115200"
+> +       QEMU_FLAGS=(-cpu host -smp 8)
+> +       BZIMAGE="arch/x86/boot/bzImage"
+> +       ;;
+> +*)
+> +       echo "Unsupported architecture"
+> +       exit 1
+> +       ;;
+> +esac
+>  DEFAULT_COMMAND="./test_progs"
+>  MOUNT_DIR="mnt"
+>  ROOTFS_IMAGE="root.img"
+>  OUTPUT_DIR="$HOME/.bpf_selftests"
+> -KCONFIG_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/latest.config"
+> -KCONFIG_API_URL="https://api.github.com/repos/libbpf/libbpf/contents/travis-ci/vmtest/configs/latest.config"
+> +KCONFIG_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/config-latest.${ARCH}"
+> +KCONFIG_API_URL="https://api.github.com/repos/libbpf/libbpf/contents/travis-ci/vmtest/configs/config-latest.${ARCH}"
+>  INDEX_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/INDEX"
+>  NUM_COMPILE_JOBS="$(nproc)"
+>  LOG_FILE_BASE="$(date +"bpf_selftests.%Y-%m-%d_%H-%M-%S")"
+> @@ -85,7 +102,7 @@ newest_rootfs_version()
+>  {
+>         {
+>         for file in "${!URLS[@]}"; do
+> -               if [[ $file =~ ^libbpf-vmtest-rootfs-(.*)\.tar\.zst$ ]]; then
+> +               if [[ $file =~ ^"${ARCH}"/libbpf-vmtest-rootfs-(.*)\.tar\.zst$ ]]; then
+>                         echo "${BASH_REMATCH[1]}"
+>                 fi
+>         done
+> @@ -102,7 +119,7 @@ download_rootfs()
+>                 exit 1
+>         fi
+>
+> -       download "libbpf-vmtest-rootfs-$rootfsversion.tar.zst" |
+> +       download "${ARCH}/libbpf-vmtest-rootfs-$rootfsversion.tar.zst" |
+>                 zstd -d | sudo tar -C "$dir" -x
+>  }
+>
+> @@ -224,13 +241,12 @@ EOF
+>                 -nodefaults \
+>                 -display none \
+>                 -serial mon:stdio \
+> -               -cpu host \
+> +               "${qemu_flags[@]}" \
+>                 -enable-kvm \
+> -               -smp 8 \
+>                 -m 4G \
+>                 -drive file="${rootfs_img}",format=raw,index=1,media=disk,if=virtio,cache=none \
+>                 -kernel "${kernel_bzimage}" \
+> -               -append "root=/dev/vda rw console=ttyS0,115200"
+> +               -append "root=/dev/vda rw console=${QEMU_CONSOLE}"
+>  }
+>
+>  copy_logs()
+> @@ -282,7 +298,7 @@ main()
+>         local kernel_checkout=$(realpath "${script_dir}"/../../../../)
+>         # By default the script searches for the kernel in the checkout directory but
+>         # it also obeys environment variables O= and KBUILD_OUTPUT=
+> -       local kernel_bzimage="${kernel_checkout}/${X86_BZIMAGE}"
+> +       local kernel_bzimage="${kernel_checkout}/${BZIMAGE}"
+>         local command="${DEFAULT_COMMAND}"
+>         local update_image="no"
+>         local exit_command="poweroff -f"
+> @@ -337,13 +353,13 @@ main()
+>                 if is_rel_path "${O}"; then
+>                         O="$(realpath "${PWD}/${O}")"
+>                 fi
+> -               kernel_bzimage="${O}/${X86_BZIMAGE}"
+> +               kernel_bzimage="${O}/${BZIMAGE}"
+>                 make_command="${make_command} O=${O}"
+>         elif [[ "${KBUILD_OUTPUT:=""}" != "" ]]; then
+>                 if is_rel_path "${KBUILD_OUTPUT}"; then
+>                         KBUILD_OUTPUT="$(realpath "${PWD}/${KBUILD_OUTPUT}")"
+>                 fi
+> -               kernel_bzimage="${KBUILD_OUTPUT}/${X86_BZIMAGE}"
+> +               kernel_bzimage="${KBUILD_OUTPUT}/${BZIMAGE}"
+>                 make_command="${make_command} KBUILD_OUTPUT=${KBUILD_OUTPUT}"
+>         fi
+>
+> --
+> 2.31.1
+>
 
-FWIW, I think this code is totally broken on 64-bit (which appears to
-not be a "real" build configuration): it would either always fail (with
-an uninitialized data->buf_size) or would cause corruption in userspace
-due to the copy_to_user() in the call path against an uninitialized
-data->buf value:
-
-omap3isp_stat_request_statistics_time32(...)
-    struct omap3isp_stat_data data64;
-    ...
-    omap3isp_stat_request_statistics(stat, &data64);
-
-int omap3isp_stat_request_statistics(struct ispstat *stat,
-                                     struct omap3isp_stat_data *data)
-    ...
-    buf = isp_stat_buf_get(stat, data);
-
-static struct ispstat_buffer *isp_stat_buf_get(struct ispstat *stat,
-                                               struct omap3isp_stat_data *data)
-...
-    if (buf->buf_size > data->buf_size) {
-            ...
-            return ERR_PTR(-EINVAL);
-    }
-    ...
-    rval = copy_to_user(data->buf,
-                        buf->virt_addr,
-                        buf->buf_size);
-
-Regardless, additionally initialize data64 to be zero-filled to avoid
-undefined behavior.
-
-Fixes: 378e3f81cb56 ("media: omap3isp: support 64-bit version of omap3isp_stat_data")
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/media/platform/omap3isp/ispstat.c |  5 +++--
- include/uapi/linux/omap3isp.h             | 21 +++++++++++++--------
- 2 files changed, 16 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/media/platform/omap3isp/ispstat.c b/drivers/media/platform/omap3isp/ispstat.c
-index 5b9b57f4d9bf..68cf68dbcace 100644
---- a/drivers/media/platform/omap3isp/ispstat.c
-+++ b/drivers/media/platform/omap3isp/ispstat.c
-@@ -512,7 +512,7 @@ int omap3isp_stat_request_statistics(struct ispstat *stat,
- int omap3isp_stat_request_statistics_time32(struct ispstat *stat,
- 					struct omap3isp_stat_data_time32 *data)
- {
--	struct omap3isp_stat_data data64;
-+	struct omap3isp_stat_data data64 = { };
- 	int ret;
- 
- 	ret = omap3isp_stat_request_statistics(stat, &data64);
-@@ -521,7 +521,8 @@ int omap3isp_stat_request_statistics_time32(struct ispstat *stat,
- 
- 	data->ts.tv_sec = data64.ts.tv_sec;
- 	data->ts.tv_usec = data64.ts.tv_usec;
--	memcpy(&data->buf, &data64.buf, sizeof(*data) - sizeof(data->ts));
-+	data->buf = (uintptr_t)data64.buf;
-+	memcpy(&data->frame, &data64.frame, sizeof(data->frame));
- 
- 	return 0;
- }
-diff --git a/include/uapi/linux/omap3isp.h b/include/uapi/linux/omap3isp.h
-index 87b55755f4ff..9a6b3ed11455 100644
---- a/include/uapi/linux/omap3isp.h
-+++ b/include/uapi/linux/omap3isp.h
-@@ -162,6 +162,7 @@ struct omap3isp_h3a_aewb_config {
-  * struct omap3isp_stat_data - Statistic data sent to or received from user
-  * @ts: Timestamp of returned framestats.
-  * @buf: Pointer to pass to user.
-+ * @buf_size: Size of buffer.
-  * @frame_number: Frame number of requested stats.
-  * @cur_frame: Current frame number being processed.
-  * @config_counter: Number of the configuration associated with the data.
-@@ -176,10 +177,12 @@ struct omap3isp_stat_data {
- 	struct timeval ts;
- #endif
- 	void __user *buf;
--	__u32 buf_size;
--	__u16 frame_number;
--	__u16 cur_frame;
--	__u16 config_counter;
-+	__struct_group(/* no type */, frame, /* no attrs */,
-+		__u32 buf_size;
-+		__u16 frame_number;
-+		__u16 cur_frame;
-+		__u16 config_counter;
-+	);
- };
- 
- #ifdef __KERNEL__
-@@ -189,10 +192,12 @@ struct omap3isp_stat_data_time32 {
- 		__s32	tv_usec;
- 	} ts;
- 	__u32 buf;
--	__u32 buf_size;
--	__u16 frame_number;
--	__u16 cur_frame;
--	__u16 config_counter;
-+	__struct_group(/* no type */, frame, /* no attrs */,
-+		__u32 buf_size;
-+		__u16 frame_number;
-+		__u16 cur_frame;
-+		__u16 config_counter;
-+	);
- };
- #endif
- 
--- 
-2.30.2
-
+Acked-By: Yucong Sun <sunyucong@gmail.com>
