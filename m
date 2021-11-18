@@ -2,86 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA7A4561E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:56:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E24B74561EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:03:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234251AbhKRR7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 12:59:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41517 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229648AbhKRR7l (ORCPT
+        id S232105AbhKRSFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 13:05:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229997AbhKRSFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 12:59:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637258201;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MxhnEclBR8jNFCPokG8x6EB8ezTmbh4+h0AQiwN5yKM=;
-        b=J46Nsh4S07B3p7r0t3RJG+I6b6X+sKwqcHd7Djud8Z/MNdWTuD78bVcKuCrvPPr0xj9LPs
-        IpAEAgxlBKbPHH3nEd2EWYw3T5/gFeu2tJlU8JWbIjB/n1E+39an3vIzopBTxiuRQDpd4K
-        yhAq7SbGkRgLJ5liAa/B3A46R26hzeY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-424-7ABgYMPDPfqCTaDlTPTsEw-1; Thu, 18 Nov 2021 12:56:37 -0500
-X-MC-Unique: 7ABgYMPDPfqCTaDlTPTsEw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B953E100C609;
-        Thu, 18 Nov 2021 17:56:36 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 82A9410190A7;
-        Thu, 18 Nov 2021 17:56:35 +0000 (UTC)
-Message-ID: <4316fbc5-b758-a7c6-530d-dc5a97f4e97b@redhat.com>
-Date:   Thu, 18 Nov 2021 18:56:34 +0100
+        Thu, 18 Nov 2021 13:05:23 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1411C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:02:22 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id w33-20020a17090a6ba400b001a722a06212so7182070pjj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:02:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=F/aX29JhqFiyWVGDBmlPUQzn5wyWn1RYbWmxi309hXQ=;
+        b=dLDlUhL5ow168T0suaa5qUj0qznT4FI0Kvp1pJZVbA6U5MqG8zkvt2V0dGhbVnoF3d
+         iw8ATMy/dmp/5sYGhxyr1yY+4M3hLd+Mb7z1QeArTOOIGfFv8h3jsUmYQimnoniT0Qg9
+         5vReWRUgBQ3g2tZ2V60pYHvER1CRDSwTfD6AbTIgWwZaCa/+A91r4GU0pLEIIx1yKdTk
+         nUrjN9fr7tGJ+I4zAdW9+KUIMd4qEe7FkvRYzSKu78FY80CIXc2tiQ2+ICviGXBqevGU
+         5yYon1Dnj5eD9Z782nk0E5NsErh+lxQaxQDLu8Ajf1/oU8i14AO9e+p68Lz3oekxCWpl
+         hcIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=F/aX29JhqFiyWVGDBmlPUQzn5wyWn1RYbWmxi309hXQ=;
+        b=Uh5fgWDnat9wtRq6I9Q3HI/BzZbgwbHk6DBrmvJvDjXvuHlfUB17VXVBLFFP+zxLeh
+         OcSGOKpZR7T5IjAHxm3NCaCFJIVXZ8VVJkU1+L37WjZ3MNhojI1GJAbRXqO4A/RWbzcl
+         p/vwrDGFx2QCUkbv/r6ByzOYBKr9I8b1SUZaNUuGdniP6YEe3Tt1jnBszqXNT8DZmK1x
+         x/Vm+pbK8V9veeOKANaZrLn7U9gDgOCZIfl4aGwRo6vHBzOM4KwiwuT/22kvGWxixYaj
+         OZut/3/NBA8a2MRrRzPZOUtwj/ZyjHvwxbp0PxLHqE7IiMSHmzxib1/mOJSkjOPKR6Ti
+         IGOQ==
+X-Gm-Message-State: AOAM533YPMOP+I9SHTy1FH9K7Jgo6OnyeHaM8gSSOjw1y4owpyKWerVh
+        LuEsvsWw3+YwBS6+dggZdbpRlg==
+X-Google-Smtp-Source: ABdhPJxtYIXOknnHt8eU9kz70UZuSvvfxYXDubUQj+PZrhnxNrUfqT1GLVQ70vZ8Vjxz+b0l/mdMLw==
+X-Received: by 2002:a17:902:e544:b0:144:e3fa:3c2e with SMTP id n4-20020a170902e54400b00144e3fa3c2emr749574plf.17.1637258542157;
+        Thu, 18 Nov 2021 10:02:22 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id y7sm245178pge.44.2021.11.18.10.02.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 10:02:21 -0800 (PST)
+Date:   Thu, 18 Nov 2021 18:02:17 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [RFC 11/19] KVM: x86/mmu: Factor shadow_zero_check out of
+ make_spte
+Message-ID: <YZaVKcFoKR4lqDIZ@google.com>
+References: <20211110223010.1392399-1-bgardon@google.com>
+ <20211110223010.1392399-12-bgardon@google.com>
+ <YZW02M0+YzAzBF/w@google.com>
+ <YZXIqAHftH4d+B9Y@google.com>
+ <YZaBSf+bPc69WR1R@google.com>
+ <db8a2431-8a05-bd50-dd79-74c814c71edd@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2] KVM: x86: check PIR even for vCPUs with disabled APICv
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, stable@vger.kernel.org
-References: <20211118072531.1534938-1-pbonzini@redhat.com>
- <8ad47d43a7c8ae19f09cc6ada73665d6e348e213.camel@redhat.com>
- <4ee9fe58-73ca-98fd-3d79-198e1093f722@redhat.com>
- <YZZ8hAjbIJnkkraD@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <YZZ8hAjbIJnkkraD@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <db8a2431-8a05-bd50-dd79-74c814c71edd@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/21 17:17, Sean Christopherson wrote:
-> On Thu, Nov 18, 2021, Paolo Bonzini wrote:
->> On 11/18/21 10:56, Maxim Levitsky wrote:
->>> vmx_sync_pir_to_irr has 'if (KVM_BUG_ON(!vcpu->arch.apicv_active,
->>> vcpu->kvm))' That has to be removed I think for this to work.
->>
->> Good point.
+On Thu, Nov 18, 2021, Paolo Bonzini wrote:
+> On 11/18/21 17:37, Sean Christopherson wrote:
+> > > It's a bit ugly in that we'd pass both @kvm and @vcpu, so that needs some more
+> > > thought, but at minimum it means there's no need to recalc the reserved bits.
+> > 
+> > Ok, I think my final vote is to have the reserved bits passed in, but with the
+> > non-nested TDP reserved bits being computed at MMU init.
 > 
-> Hmm, I think I'd prefer to keep it as
+> Yes, and that's also where I was getting with the idea of moving part of the
+> "direct" MMU (man, naming these things is so hard) to struct kvm: split the
+> per-vCPU state from the constant one and initialize the latter just once.
+> Though perhaps I was putting the cart slightly before the horse.
 > 
-> 	if (KVM_BUG_ON(!enable_apicv))
-> 		return -EIO;
+> On the topic of naming, we have a lot of things to name:
 > 
-> since calling it directly or failing to nullify vmx_x86_ops.sync_pir_to_irr when
-> APICv is unsupported would lead to all sorts of errors.  It's not a strong
-> preference though.
-> 
+> - the two MMU codebases: you Googlers are trying to grandfather "legacy" and
+> "TDP" into upstream
 
-Sure, why not.  There's a few more changes required to handle 
-KVM_REQ_EVENT when APICv is !active on the CPU, so I'll post it early 
-next week.
+Heh, I think that's like 99.9% me.
 
-(The MOVE/COPY context stuff also exposed itself as a bit of a 
-trainwreck and ate half of my day).
+> but that's not a great name because the former is used also when shadowing
+> EPT/NPT.  I'm thinking of standardizing on "shadow" and "TDP" (it's not
+> perfect because of the 32-bit and tdp_mmu=0 cases, but it's a start).  Maybe
+> even split parts of mmu.c out into shadow_mmu.c.
 
-Paolo
+But shadow is flat out wrong until EPT and NPT support is ripped out of the "legacy"
+MMU.
 
+> - the two walkers (I'm quite convinced of splitting that part out of struct
+> kvm_mmu and getting rid of walk_mmu/nested_mmu): that's easy, it can be
+> walk01 and walk12 with "walk" pointing to one of them
+
+I am all in favor of walk01 and walk12, the guest_mmu vs. nested_mmu confusion
+is painful.
+
+> - the two MMUs: with nested_mmu gone, root_mmu and guest_mmu are much less
+> confusing and we can keep those names.
+
+I would prefer root_mmu and nested_tdp_mmu.  guest_mmu is misleading because its
+not used for all cases of sp->role.guest_mode=1, i.e. when L1 is not using TDP
+then guest_mode=1 but KVM isn't using guest_mmu.
