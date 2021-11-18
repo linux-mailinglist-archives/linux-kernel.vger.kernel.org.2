@@ -2,152 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B1645619D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C884561A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 18:38:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231393AbhKRRkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 12:40:53 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:60304 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234160AbhKRRko (ORCPT
+        id S232537AbhKRRlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 12:41:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230264AbhKRRlr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 12:40:44 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id B7C1E1FD38;
-        Thu, 18 Nov 2021 17:37:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637257062; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=gr4vTY2qmq+4abZaqjY58lKDgGoIRxKbq/34OYSg12s=;
-        b=DyyId0ieskvMDaBOVlUlhes5ODIBreBFDnHdGD7IDaGYOiyig/KYf4qN0eSxpgYmpyDmkm
-        CJ+DLkBERnC0Gxr068PLrSGblt7+YF2DAv5V+YzYkF4v+QZQdvfFWaqYjd9QB4/ghoHQE5
-        sRMkY0+pNLLanz6HdGqGczLVvZyNb4U=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id AF43EA3B81;
-        Thu, 18 Nov 2021 17:37:42 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 37055DA735; Thu, 18 Nov 2021 18:37:38 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.16-rc2
-Date:   Thu, 18 Nov 2021 18:37:37 +0100
-Message-Id: <cover.1637255480.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.33.0
+        Thu, 18 Nov 2021 12:41:47 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8DFEC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:38:47 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id y8so5893210plg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 09:38:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uZZaIGV1J6dR0MYTZzEkI8MN4x5huF5mh8UM/JBFaIE=;
+        b=LfzDXNKilx+XBoNwP82vKixjCJd4LNp979P9/zj9MO1twBuu2i7DdX18C9hOFJly2a
+         uxVpRXMxVUqjvkpBRdnTJnTHn62sRCYGQYrVE8uDSpX9Y/qyH4Qfsicvztk3V9lb4OVm
+         bJQB4Y2a2aQRDAdU28kYsx31IGa7CnZB9BG9hlMGh0G5lL40wXH4HgJB+r6lid3YReeD
+         7UGqa+obJHljiZYYArzBJS7Cs+8UAEX4xHs8jsRXeO03k0QdOju0hhLwv8t1pKjf1Za5
+         K5cHbxHzMy2RmFZ5QwLTR+1RtOC2oPJcWmXeZvmlkzh1OnAhkxDjCH1QTvvjhEprgwDf
+         UYeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uZZaIGV1J6dR0MYTZzEkI8MN4x5huF5mh8UM/JBFaIE=;
+        b=2auIdHJPlx4SbC6Vrf+VAo9wY+/BQ9etcKEdy1p7v0MlPij8jV+BLH+C2vwZ6NJWV/
+         pVxBZ8BhSD2dtdJwWxGYbXWLRKem0ZyzjBHEBONc3X3Qu7fTCPVGRkYCTl1ow+JuIoM7
+         me7YC0UwmaFOSyGga74NDL1vpzGihqU2KE9oy4ATUiJXWdCT1OHWnOP7j7xFtixmWbxw
+         1VOw4L/sJ9wVhUNK3DwSGtBAXcMRPsjIP/5cr+a1DnnaLO3BZCGDpZ8NXwi/saH2KEun
+         IxDgY4A2Sazz/HfMuQOxYTQQuBdjMVDveGjsCpBpEGMNfEvvwi8D6+QnRSChb7A9ZZRX
+         v3Yw==
+X-Gm-Message-State: AOAM533kbMF32MAx/1/C/tgGAUAR/YsQzGo3Ef9SbwbEM7rZSDOHXQ7s
+        6iU+SgYL4DYSJmUCtLKNMbjwCA==
+X-Google-Smtp-Source: ABdhPJzIafSm7+krxOYZpZqmelZlXgg5zMDtaTi/0mKeXEfnRV5VWipg3LI4IxuHr/MrdiMYHqgelw==
+X-Received: by 2002:a17:902:82c9:b0:142:401f:dc9 with SMTP id u9-20020a17090282c900b00142401f0dc9mr68884457plz.43.1637257126770;
+        Thu, 18 Nov 2021 09:38:46 -0800 (PST)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id j9sm223909pgt.54.2021.11.18.09.38.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 09:38:45 -0800 (PST)
+Date:   Thu, 18 Nov 2021 10:38:42 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] rpmsg: Fix documentation return formatting
+Message-ID: <20211118173842.GD2530497@p14s>
+References: <20211108140126.3530-1-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211108140126.3530-1-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Nov 08, 2021 at 03:01:26PM +0100, Arnaud Pouliquen wrote:
+> kernel documentation specification:
+> "The return value, if any, should be described in a dedicated section
+> named Return."
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> ---
+>  drivers/rpmsg/qcom_glink_native.c |  2 +-
+>  drivers/rpmsg/qcom_smd.c          |  2 +-
+>  drivers/rpmsg/rpmsg_core.c        | 24 ++++++++++++------------
+>  drivers/rpmsg/virtio_rpmsg_bus.c  |  2 +-
+>  4 files changed, 15 insertions(+), 15 deletions(-)
 
-there are several fixes and one old ioctl deprecation. Namely there's
-fix for crashes/warnings with lzo compression that was suspected to be
-caused by first pull merge resolution, but it was a different bug.
+I have applied this set.  There is a few more instances in drivers/remoteproc
+that could be fixed the same way.
 
-The branch is based on the previous pull so there's still a conflict in
-lzo.c but this time it's a trivial one (diff below). I've also tested
-the branches with/without the fix and on both 64bit and 32bit hosts so
-there should be no surprises.
+Thanks,
+Mathieu
 
-The ioctl deprecation patch is new but it's just adding a warning
-message, there's no reason to delay that for another full release.
-
-Changes:
-
-* regression, fix crash in lzo due to missing boundary checks of page
-  array
-
-* fix crashes on ARM64 due to missing barriers when synchronizing
-  status bits between work queues
-
-* silence lockdep when reading chunk tree during mount
-
-* fix false positive warning in integrity checker on devices with
-  disabled write caching
-
-* fix signedness of bitfields in scrub
-
-* start deprecation of balance v1 ioctl
-
-Please pull, thanks.
-
-Conflict resolution:
-
-diff --cc fs/btrfs/lzo.c
-index 65cb0766e62d,f410ceabcdbd..9febb8025825
---- a/fs/btrfs/lzo.c
-+++ b/fs/btrfs/lzo.c
-@@@ -131,8 -132,10 +132,11 @@@ static int copy_compressed_data_to_page
-  	u32 sector_bytes_left;
-  	u32 orig_out;
-  	struct page *cur_page;
- +	char *kaddr;
-  
-+ 	if ((*cur_out / PAGE_SIZE) >= max_nr_page)
-+ 		return -E2BIG;
-+ 
-  	/*
-  	 * We never allow a segment header crossing sector boundary, previous
-  	 * run should ensure we have enough space left inside the sector.
-@@@ -160,7 -162,9 +164,11 @@@
-  		u32 copy_len = min_t(u32, sectorsize - *cur_out % sectorsize,
-  				     orig_out + compressed_size - *cur_out);
-  
- +		kunmap(cur_page);
-++
-+ 		if ((*cur_out / PAGE_SIZE) >= max_nr_page)
-+ 			return -E2BIG;
-+ 
-  		cur_page = out_pages[*cur_out / PAGE_SIZE];
-  		/* Allocate a new page */
-  		if (!cur_page) {
-@@@ -202,7 -202,7 +210,8 @@@ int lzo_compress_pages(struct list_hea
-  	struct workspace *workspace = list_entry(ws, struct workspace, list);
-  	const u32 sectorsize = btrfs_sb(mapping->host->i_sb)->sectorsize;
-  	struct page *page_in = NULL;
- +	char *sizes_ptr;
-+ 	const unsigned long max_nr_page = *out_pages;
-  	int ret = 0;
-  	/* Points to the file offset of input data */
-  	u64 cur_in = start;
-
-----------------------------------------------------------------
-The following changes since commit d1ed82f3559e151804743df0594f45d7ff6e55fa:
-
-  btrfs: remove root argument from check_item_in_log() (2021-10-29 12:39:13 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.16-rc1-tag
-
-for you to fetch changes up to 6c405b24097c24cbb11570b47fd382676014f72e:
-
-  btrfs: deprecate BTRFS_IOC_BALANCE ioctl (2021-11-16 16:51:19 +0100)
-
-----------------------------------------------------------------
-Colin Ian King (1):
-      btrfs: make 1-bit bit-fields of scrub_page unsigned int
-
-Filipe Manana (1):
-      btrfs: silence lockdep when reading chunk tree during mount
-
-Nikolay Borisov (2):
-      btrfs: fix memory ordering between normal and ordered work functions
-      btrfs: deprecate BTRFS_IOC_BALANCE ioctl
-
-Qu Wenruo (1):
-      btrfs: fix a out-of-bound access in copy_compressed_data_to_page()
-
-Wang Yugui (1):
-      btrfs: check-integrity: fix a warning on write caching disabled disk
-
- fs/btrfs/async-thread.c | 14 ++++++++++++++
- fs/btrfs/disk-io.c      | 14 +++++++++++++-
- fs/btrfs/ioctl.c        |  4 ++++
- fs/btrfs/lzo.c          | 12 +++++++++++-
- fs/btrfs/scrub.c        |  4 ++--
- fs/btrfs/volumes.c      | 18 +++++++++++++-----
- 6 files changed, 57 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
+> index 3f377a795b33..1030cfa80e04 100644
+> --- a/drivers/rpmsg/qcom_glink_native.c
+> +++ b/drivers/rpmsg/qcom_glink_native.c
+> @@ -427,7 +427,7 @@ static void qcom_glink_handle_intent_req_ack(struct qcom_glink *glink,
+>   * Allocates a local channel id and sends a RPM_CMD_OPEN message to the remote.
+>   * Will return with refcount held, regardless of outcome.
+>   *
+> - * Returns 0 on success, negative errno otherwise.
+> + * Return: 0 on success, negative errno otherwise.
+>   */
+>  static int qcom_glink_send_open_req(struct qcom_glink *glink,
+>  				    struct glink_channel *channel)
+> diff --git a/drivers/rpmsg/qcom_smd.c b/drivers/rpmsg/qcom_smd.c
+> index 8da1b5cb31b3..540e027f08c4 100644
+> --- a/drivers/rpmsg/qcom_smd.c
+> +++ b/drivers/rpmsg/qcom_smd.c
+> @@ -1467,7 +1467,7 @@ ATTRIBUTE_GROUPS(qcom_smd_edge);
+>   * @parent:    parent device for the edge
+>   * @node:      device_node describing the edge
+>   *
+> - * Returns an edge reference, or negative ERR_PTR() on failure.
+> + * Return: an edge reference, or negative ERR_PTR() on failure.
+>   */
+>  struct qcom_smd_edge *qcom_smd_register_edge(struct device *parent,
+>  					     struct device_node *node)
+> diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
+> index d3eb60059ef1..f031b2b1b21c 100644
+> --- a/drivers/rpmsg/rpmsg_core.c
+> +++ b/drivers/rpmsg/rpmsg_core.c
+> @@ -26,7 +26,7 @@
+>   * @rpdev: rpmsg device
+>   * @chinfo: channel_info to bind
+>   *
+> - * Returns a pointer to the new rpmsg device on success, or NULL on error.
+> + * Return: a pointer to the new rpmsg device on success, or NULL on error.
+>   */
+>  struct rpmsg_device *rpmsg_create_channel(struct rpmsg_device *rpdev,
+>  					  struct rpmsg_channel_info *chinfo)
+> @@ -48,7 +48,7 @@ EXPORT_SYMBOL(rpmsg_create_channel);
+>   * @rpdev: rpmsg device
+>   * @chinfo: channel_info to bind
+>   *
+> - * Returns 0 on success or an appropriate error value.
+> + * Return: 0 on success or an appropriate error value.
+>   */
+>  int rpmsg_release_channel(struct rpmsg_device *rpdev,
+>  			  struct rpmsg_channel_info *chinfo)
+> @@ -102,7 +102,7 @@ EXPORT_SYMBOL(rpmsg_release_channel);
+>   * dynamically assign them an available rpmsg address (drivers should have
+>   * a very good reason why not to always use RPMSG_ADDR_ANY here).
+>   *
+> - * Returns a pointer to the endpoint on success, or NULL on error.
+> + * Return: a pointer to the endpoint on success, or NULL on error.
+>   */
+>  struct rpmsg_endpoint *rpmsg_create_ept(struct rpmsg_device *rpdev,
+>  					rpmsg_rx_cb_t cb, void *priv,
+> @@ -146,7 +146,7 @@ EXPORT_SYMBOL(rpmsg_destroy_ept);
+>   *
+>   * Can only be called from process context (for now).
+>   *
+> - * Returns 0 on success and an appropriate error value on failure.
+> + * Return: 0 on success and an appropriate error value on failure.
+>   */
+>  int rpmsg_send(struct rpmsg_endpoint *ept, void *data, int len)
+>  {
+> @@ -175,7 +175,7 @@ EXPORT_SYMBOL(rpmsg_send);
+>   *
+>   * Can only be called from process context (for now).
+>   *
+> - * Returns 0 on success and an appropriate error value on failure.
+> + * Return: 0 on success and an appropriate error value on failure.
+>   */
+>  int rpmsg_sendto(struct rpmsg_endpoint *ept, void *data, int len, u32 dst)
+>  {
+> @@ -206,7 +206,7 @@ EXPORT_SYMBOL(rpmsg_sendto);
+>   *
+>   * Can only be called from process context (for now).
+>   *
+> - * Returns 0 on success and an appropriate error value on failure.
+> + * Return: 0 on success and an appropriate error value on failure.
+>   */
+>  int rpmsg_send_offchannel(struct rpmsg_endpoint *ept, u32 src, u32 dst,
+>  			  void *data, int len)
+> @@ -235,7 +235,7 @@ EXPORT_SYMBOL(rpmsg_send_offchannel);
+>   *
+>   * Can only be called from process context (for now).
+>   *
+> - * Returns 0 on success and an appropriate error value on failure.
+> + * Return: 0 on success and an appropriate error value on failure.
+>   */
+>  int rpmsg_trysend(struct rpmsg_endpoint *ept, void *data, int len)
+>  {
+> @@ -263,7 +263,7 @@ EXPORT_SYMBOL(rpmsg_trysend);
+>   *
+>   * Can only be called from process context (for now).
+>   *
+> - * Returns 0 on success and an appropriate error value on failure.
+> + * Return: 0 on success and an appropriate error value on failure.
+>   */
+>  int rpmsg_trysendto(struct rpmsg_endpoint *ept, void *data, int len, u32 dst)
+>  {
+> @@ -282,7 +282,7 @@ EXPORT_SYMBOL(rpmsg_trysendto);
+>   * @filp:	file for poll_wait()
+>   * @wait:	poll_table for poll_wait()
+>   *
+> - * Returns mask representing the current state of the endpoint's send buffers
+> + * Return: mask representing the current state of the endpoint's send buffers
+>   */
+>  __poll_t rpmsg_poll(struct rpmsg_endpoint *ept, struct file *filp,
+>  			poll_table *wait)
+> @@ -313,7 +313,7 @@ EXPORT_SYMBOL(rpmsg_poll);
+>   *
+>   * Can only be called from process context (for now).
+>   *
+> - * Returns 0 on success and an appropriate error value on failure.
+> + * Return: 0 on success and an appropriate error value on failure.
+>   */
+>  int rpmsg_trysend_offchannel(struct rpmsg_endpoint *ept, u32 src, u32 dst,
+>  			     void *data, int len)
+> @@ -623,7 +623,7 @@ EXPORT_SYMBOL(rpmsg_unregister_device);
+>   * @rpdrv: pointer to a struct rpmsg_driver
+>   * @owner: owning module/driver
+>   *
+> - * Returns 0 on success, and an appropriate error value on failure.
+> + * Return: 0 on success, and an appropriate error value on failure.
+>   */
+>  int __register_rpmsg_driver(struct rpmsg_driver *rpdrv, struct module *owner)
+>  {
+> @@ -637,7 +637,7 @@ EXPORT_SYMBOL(__register_rpmsg_driver);
+>   * unregister_rpmsg_driver() - unregister an rpmsg driver from the rpmsg bus
+>   * @rpdrv: pointer to a struct rpmsg_driver
+>   *
+> - * Returns 0 on success, and an appropriate error value on failure.
+> + * Return: 0 on success, and an appropriate error value on failure.
+>   */
+>  void unregister_rpmsg_driver(struct rpmsg_driver *rpdrv)
+>  {
+> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+> index 9c112aa65040..c37451512835 100644
+> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
+> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+> @@ -547,7 +547,7 @@ static void rpmsg_downref_sleepers(struct virtproc_info *vrp)
+>   * should use the appropriate rpmsg_{try}send{to, _offchannel} API
+>   * (see include/linux/rpmsg.h).
+>   *
+> - * Returns 0 on success and an appropriate error value on failure.
+> + * Return: 0 on success and an appropriate error value on failure.
+>   */
+>  static int rpmsg_send_offchannel_raw(struct rpmsg_device *rpdev,
+>  				     u32 src, u32 dst,
+> -- 
+> 2.17.1
+> 
