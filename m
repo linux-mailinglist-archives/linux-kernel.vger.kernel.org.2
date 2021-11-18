@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBD045647E
+	by mail.lfdr.de (Postfix) with ESMTP id 30DC945647D
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 21:49:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234041AbhKRUwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 15:52:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34930 "EHLO mail.kernel.org"
+        id S234066AbhKRUwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 15:52:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233322AbhKRUwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 15:52:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 419AA61251;
-        Thu, 18 Nov 2021 20:49:03 +0000 (UTC)
+        id S233455AbhKRUwI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 15:52:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 94A8361279;
+        Thu, 18 Nov 2021 20:49:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637268543;
-        bh=+L2HuS/cQhuFzKhQgm3kXd3ugHM0Hs/Mj23uvHqafkM=;
+        s=k20201202; t=1637268547;
+        bh=BJcfY+M7BqM9mN2vN4KjobuUZYZgn6MppEPzRgR3neY=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Vn2phmrMLK3E3DyOeGlSgoJUaBgpVDepIXKpDFO0DrGMRdJ2gvUDiosvlBmIg69YL
-         CCbpNxMN3OPH1genExtrRubNW5CbKCfw1VpR09rkcl7CQ6oPCgLSx31Hnxj19hhBn1
-         x2B2hXId5iQAuHnziHls98LSRAER5mPtkCaZl+syNoJ+nwvP33wL8LTFFBYrySEW50
-         XUu4SUKza5uTmZp4j3/ubAjuQqucj3mvdkSEoxTIxLJuYk56a382V1HtRQkmf/yw05
-         3bFTEYHWfEnLu5T7o/NkH5eu/HvPkIpI72/A+0mIfa11Me5X+15SxmuR2eQL9yKDzk
-         AQzzx8DrqV+Fg==
+        b=KpsoYjIXhgnSOwgiVcSUjMpn6RY/FN3/0XxyicyLIRW9dBBVeMhTwVFqUYWz7fwQg
+         7OIIBaxlhkjzPN3S9lQd8zaDv4g7KYcrQRrI24HEA+37B4QyNtH9lXZ3o5PtbVGBm+
+         v8KTfBEEYPITcjyPBxMnqS4/0y3Tc3Hv4qG27/PiJhEz3+Md1ci/LdWtxLz/D/aA4q
+         XLQ1x2zhGQJBzUQKTBZT8y16izlkDX18GJOtZ5xfgy1877wKDGkAGOhHs7eVvhLmPy
+         7CzwwzK6onzCFaL0zncb66fhcV8g+rcoC+CxCXQp/DWOw44qgCl5nSwkBDYPBV74ee
+         i87Utt7YYs6iA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3C5F060A4E;
-        Thu, 18 Nov 2021 20:49:03 +0000 (UTC)
-Subject: Re: [GIT PULL] KVM changes for Linux 5.16-rc2
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8DA0F60A3A;
+        Thu, 18 Nov 2021 20:49:07 +0000 (UTC)
+Subject: Re: [GIT PULL] fs mapping fixes
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211118130449.71796-1-pbonzini@redhat.com>
-References: <20211118130449.71796-1-pbonzini@redhat.com>
-X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211118130449.71796-1-pbonzini@redhat.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-X-PR-Tracked-Commit-Id: 2845e7353bc334d43309f5ea6d376c8fdbc94c93
+In-Reply-To: <20211118135001.2800727-1-brauner@kernel.org>
+References: <20211118135001.2800727-1-brauner@kernel.org>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211118135001.2800727-1-brauner@kernel.org>
+X-PR-Tracked-Remote: git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/fs.idmapped.v5.16-rc2
+X-PR-Tracked-Commit-Id: 968219708108440b23bc292e0486e3cc1d9a1bed
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c46e8ece9613b18d9554e2382a228b6e1795288d
-Message-Id: <163726854323.10311.9663447744996816989.pr-tracker-bot@kernel.org>
-Date:   Thu, 18 Nov 2021 20:49:03 +0000
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
+X-PR-Merge-Commit-Id: 7cf7eed103d3eea600146ea1853d15ee1f2f0456
+Message-Id: <163726854757.10311.13665195271329510413.pr-tracker-bot@kernel.org>
+Date:   Thu, 18 Nov 2021 20:49:07 +0000
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 18 Nov 2021 08:04:49 -0500:
+The pull request you sent on Thu, 18 Nov 2021 14:50:01 +0100:
 
-> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+> git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/fs.idmapped.v5.16-rc2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c46e8ece9613b18d9554e2382a228b6e1795288d
+https://git.kernel.org/torvalds/c/7cf7eed103d3eea600146ea1853d15ee1f2f0456
 
 Thank you!
 
