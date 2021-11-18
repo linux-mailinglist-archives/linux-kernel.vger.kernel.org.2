@@ -2,138 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8B3456682
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 00:35:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A58456686
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 00:40:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233252AbhKRXiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 18:38:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231231AbhKRXiX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 18:38:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EB5F61A86;
-        Thu, 18 Nov 2021 23:35:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637278522;
-        bh=Fqau0dqCEINzmMkwJjTEgzqPnrOEmI3UQprV38RXFd0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ucRdJNh0JXxmrs6RFed71fSHkitIRuiPVywHVpbADH9wJn5rFo9NaESSCr88xfb52
-         R4OA09akXeyN2c5XGNgJ0m86J2qusiU41LSRAXgfZ9WcKuZFRBPlHd2oTpOvkWQ4pz
-         GB6L3s0HEccYXM7G19W6AB7ZLX4vEzQuL8OYsGn8IH91yugl6Q3gHbPzKpvgR2073k
-         /iEmv6ho1jXDxK80FgY0TjYc6MhDJel4Cl5+QEO6Yy42WWF739pWPpy9z9s1pALXEu
-         OnxRsIhI8F61Zc0t82NwNoH/caNkc9XIY2GHGe3j8EaEZ5gvgI5Xl+oeyMJ6oBjIJF
-         s7A9s6vYvySmw==
-Received: by mail-ed1-f50.google.com with SMTP id l25so17941603eda.11;
-        Thu, 18 Nov 2021 15:35:22 -0800 (PST)
-X-Gm-Message-State: AOAM531FW8EZLl1T0ejNaPSEfW0YyDE50Rgh+mHXph+Yu0qxMTaJvpkR
-        7ICzqQrHvYzEd7E7IPbgYc4+OtNER6wGf0jE/g==
-X-Google-Smtp-Source: ABdhPJwcyGfkHDNwA//qQiBHvHR4tBMsbq6RlSr5Nv+iHL3iTM86rng209dGFSMwRijpZAJ/aoi0m/llJIz5W6hdbFk=
-X-Received: by 2002:aa7:cd5c:: with SMTP id v28mr17372154edw.6.1637278520762;
- Thu, 18 Nov 2021 15:35:20 -0800 (PST)
+        id S233263AbhKRXnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 18:43:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229911AbhKRXnC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 18:43:02 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57258C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 15:40:01 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id c4so7660697pfj.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 15:40:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oXVLgn7Fm48aBJFzNVOVlXR9OEHonO1R9lF3Un+NrdE=;
+        b=adean6vy4yeH/XRaSWPDn2eF5HEXAskqbiJ4tLKSBOb1kEyQu9T00sNYEWyuZYH2gk
+         BuF3Urre/F4ibEf37iZjBvW4IZEl0BMap4ubCE63aePPvfePIQAiI+s9xh6cRSH/QQrU
+         BDvNCfnznWgz+Gl09t2mFIMIKWsWkcTIDmIKI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oXVLgn7Fm48aBJFzNVOVlXR9OEHonO1R9lF3Un+NrdE=;
+        b=X/ZJ6D3gaxm2HdxWBjRd8fm95m+scoxw+x8J7te2Y6qyeTe3ER2DDVxkztUPhW1mfS
+         5qw2tufUzQ9lXNAAPuRhFuUZGelZWjPLisUxCmBXN3pEbfHjRMe0Ikwr3sd97dWfddSs
+         BhE8Xnbu0KjjswWo65F2txPUN1c56ZI57Klz5b8XEYrovP5rBKF6W6gpWDlMkLx0+DNf
+         UJdo6hNY3SPeLTXkC7gL4Bs+xn6cniQoGPVmhmLPH/oQUCnoZoWITO5uUgOlsMg/8VGk
+         YFriwVCKLLbkfkL7p2p4XHQAtvBANHfGr4XYW5McK3BBKbdosXXjMCk5kWlOIqdhsypb
+         bJMA==
+X-Gm-Message-State: AOAM530Vlft4ZdliwZ4NBKmvawVLsR0D8M1w2ckr1lNutYiFnlNRo8W/
+        CtlL+ScSn+WHriHY06YgnBjd9A==
+X-Google-Smtp-Source: ABdhPJzhq8/zLZS54halfY22K3R0DFf+8t9M9mL7GrX7pO1LuSwDghC9VZ8n/iGRKAxpPjjpRv4NSg==
+X-Received: by 2002:a63:e216:: with SMTP id q22mr14105524pgh.3.1637278800301;
+        Thu, 18 Nov 2021 15:40:00 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k3sm680152pff.211.2021.11.18.15.39.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 15:40:00 -0800 (PST)
+Date:   Thu, 18 Nov 2021 15:39:59 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] sata_fsl: Use struct_group() for memcpy() region
+Message-ID: <202111181533.2D90E391@keescook>
+References: <20211118183807.1283332-1-keescook@chromium.org>
+ <0dd24142-a5e6-b146-9315-d2680ef4ed35@opensource.wdc.com>
 MIME-Version: 1.0
-References: <1635427419-22478-1-git-send-email-akhilrajeev@nvidia.com>
- <1635427419-22478-2-git-send-email-akhilrajeev@nvidia.com>
- <YYE7D2W721a1L4Mb@robh.at.kernel.org> <BN9PR12MB5273887DC5A3153A434432ADC08C9@BN9PR12MB5273.namprd12.prod.outlook.com>
-In-Reply-To: <BN9PR12MB5273887DC5A3153A434432ADC08C9@BN9PR12MB5273.namprd12.prod.outlook.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 18 Nov 2021 17:35:09 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKqG79kZCT97pRnDHxztoq6rfJ9LDjn_iiuyvQksNnR4A@mail.gmail.com>
-Message-ID: <CAL_JsqKqG79kZCT97pRnDHxztoq6rfJ9LDjn_iiuyvQksNnR4A@mail.gmail.com>
-Subject: Re: [PATCH v11 1/4] dt-bindings: dmaengine: Add doc for tegra gpcdma
-To:     Akhil R <akhilrajeev@nvidia.com>
-Cc:     "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krishna Yarlagadda <kyarlagadda@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        Rajesh Gumasta <rgumasta@nvidia.com>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0dd24142-a5e6-b146-9315-d2680ef4ed35@opensource.wdc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 5:34 AM Akhil R <akhilrajeev@nvidia.com> wrote:
->
-> > On Thu, Oct 28, 2021 at 06:53:36PM +0530, Akhil R wrote:
-> > > Add DT binding document for Nvidia Tegra GPCDMA controller.
-> > >
-> > > Signed-off-by: Rajesh Gumasta <rgumasta@nvidia.com>
-> > > Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
-> > > Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-> > > ---
-> > >  .../bindings/dma/nvidia,tegra186-gpc-dma.yaml      | 115
-> > +++++++++++++++++++++
-> > >  1 file changed, 115 insertions(+)
-> > >  create mode 100644
-> > > Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
-> > >
-> > > diff --git
-> > > a/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
-> > > b/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
-> > > new file mode 100644
-> > > index 0000000..bc97efc
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.ya
-> > > +++ ml
-> > > @@ -0,0 +1,115 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) %YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/dma/nvidia,tegra186-gpc-dma.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: NVIDIA Tegra GPC DMA Controller Device Tree Bindings
-> > > +
-> > > +description: |
-> > > +  The Tegra General Purpose Central (GPC) DMA controller is used for
-> > > +faster
-> > > +  data transfers between memory to memory, memory to device and
-> > > +device to
-> > > +  memory.
-> > > +
-> > > +maintainers:
-> > > +  - Jon Hunter <jonathanh@nvidia.com>
-> > > +  - Rajesh Gumasta <rgumasta@nvidia.com>
-> > > +
-> > > +allOf:
-> > > +  - $ref: "dma-controller.yaml#"
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    oneOf:
-> > > +      - enum:
-> > > +          - nvidia,tegra186-gpcdma
-> > > +          - nvidia,tegra194-gpcdma
-> > > +      - items:
-> > > +          - const: nvidia,tegra186-gpcdma
-> > > +          - const: nvidia,tegra194-gpcdma
-> >
-> > One of these is wrong. Either 186 has a fallback to 194 or it doesn't.
-> Not sure if I understood this correctly. Tegra186 and 194 have different chip data
-> inside driver based on the compatible. I guess, it then needs to be one of these.
-> Or is the mistake something related to formatting?
+On Fri, Nov 19, 2021 at 08:17:14AM +0900, Damien Le Moal wrote:
+> On 2021/11/19 3:38, Kees Cook wrote:
+> > In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> > field bounds checking for memcpy(), memmove(), and memset(), avoid
+> > intentionally writing across neighboring fields.
+> > 
+> > Use struct_group() in struct command_desc around members acmd and fill,
+> > so they can be referenced together. This will allow memset(), memcpy(),
+> > and sizeof() to more easily reason about sizes, improve readability,
+> > and avoid future warnings about writing beyond the end of acmd:
+> > 
+> > In function 'fortify_memset_chk',
+> >     inlined from 'sata_fsl_qc_prep' at drivers/ata/sata_fsl.c:534:3:
+> > ./include/linux/fortify-string.h:199:4: warning: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Wattribute-warning]
+> >   199 |    __write_overflow_field();
+> >       |    ^~~~~~~~~~~~~~~~~~~~~~~~
+> > 
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> 
+> This lacks some context with regard to FORTIFY_SOURCE and struct_group(). Is
+> that already in 5.16 ? It sounds like it is not. Do you want a ack ? Or do you
+> want me to queue this up for 5.17 ?
 
-It's not about what the driver uses, but what is valid in a DT file.
-Either you say the 2 implementations are different and in no way
-compatible with each other:
+Ah yes, some details are here in the earlier "big" series cover letter
+here:
+https://lore.kernel.org/linux-hardening/20210818060533.3569517-1-keescook@chromium.org/
 
-enum:
-  - nvidia,tegra186-gpcdma
-  - nvidia,tegra194-gpcdma
+One of the requests from earlier review was to split it up for separate
+trees for the maintainers that wanted to take stuff via their trees
+directly.
 
-Or you say 186 is backwards compatible with 194 (meaning 186 is a
-superset of 194 so a driver written for 194 still works on 186 (though
-not any new features)).
+The new helpers are landed as of v5.16-rc1, so it can go either way, but
+given that the merge window is closed, I would expect this to be for
+v5.17.
 
-oneOf:
-  - const: nvidia,tegra194-gpcdma
-  - items:
-    - const: nvidia,tegra186-gpcdma
-    - const: nvidia,tegra194-gpcdma
+I am happy to to carry it in my fortify topic branch that I'm expecting
+to send for 5.17, but totally up to you. Some folks like to take these
+changes via their trees, others would rather not be bothered with it. :)
 
-Rob
+Thanks!
+
+-Kees
+
+> 
+> Cheers.
+> 
+> > ---
+> >  drivers/ata/sata_fsl.c | 10 ++++++----
+> >  1 file changed, 6 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/ata/sata_fsl.c b/drivers/ata/sata_fsl.c
+> > index e5838b23c9e0..fec3c9032606 100644
+> > --- a/drivers/ata/sata_fsl.c
+> > +++ b/drivers/ata/sata_fsl.c
+> > @@ -246,8 +246,10 @@ enum {
+> >  struct command_desc {
+> >  	u8 cfis[8 * 4];
+> >  	u8 sfis[8 * 4];
+> > -	u8 acmd[4 * 4];
+> > -	u8 fill[4 * 4];
+> > +	struct_group(cdb,
+> > +		u8 acmd[4 * 4];
+> > +		u8 fill[4 * 4];
+> > +	);
+> >  	u32 prdt[SATA_FSL_MAX_PRD_DIRECT * 4];
+> >  	u32 prdt_indirect[(SATA_FSL_MAX_PRD - SATA_FSL_MAX_PRD_DIRECT) * 4];
+> >  };
+> > @@ -531,8 +533,8 @@ static enum ata_completion_errors sata_fsl_qc_prep(struct ata_queued_cmd *qc)
+> >  	/* setup "ACMD - atapi command" in cmd. desc. if this is ATAPI cmd */
+> >  	if (ata_is_atapi(qc->tf.protocol)) {
+> >  		desc_info |= ATAPI_CMD;
+> > -		memset((void *)&cd->acmd, 0, 32);
+> > -		memcpy((void *)&cd->acmd, qc->cdb, qc->dev->cdb_len);
+> > +		memset(&cd->cdb, 0, sizeof(cd->cdb));
+> > +		memcpy(&cd->cdb, qc->cdb, qc->dev->cdb_len);
+> >  	}
+> >  
+> >  	if (qc->flags & ATA_QCFLAG_DMAMAP)
+> > 
+> 
+> 
+> -- 
+> Damien Le Moal
+> Western Digital Research
+
+-- 
+Kees Cook
