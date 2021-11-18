@@ -2,126 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E35F4560EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:47:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E204560EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:49:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233718AbhKRQuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 11:50:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233699AbhKRQut (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 11:50:49 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E132261266;
-        Thu, 18 Nov 2021 16:47:47 +0000 (UTC)
-Date:   Thu, 18 Nov 2021 11:47:46 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Gavin Shan <gshan@redhat.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Subject: Re: [BUG] WARNING: CPU: 3 PID: 1 at mm/debug_vm_pgtable.c:493
-Message-ID: <20211118114746.3329bd33@gandalf.local.home>
-In-Reply-To: <CAHk-=wird-sCbSG3KxNavdD-mFWO1YkT2Qjoeb0Z1Ag4QDNwuA@mail.gmail.com>
-References: <20211012141131.3c9a2eb1@gandalf.local.home>
-        <CAHk-=wj2SbVnsO7yxgaD20HBaH=0rNM60nD92+BDSwQxofd9SQ@mail.gmail.com>
-        <20211012145540.343541e9@gandalf.local.home>
-        <CAHk-=wg6fw130AkO72GPFow9PHvP9odnC5LZ0UaY9bJQuF-C5A@mail.gmail.com>
-        <20211022083845.08fe5754@gandalf.local.home>
-        <CAHk-=wird-sCbSG3KxNavdD-mFWO1YkT2Qjoeb0Z1Ag4QDNwuA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233730AbhKRQwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 11:52:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233678AbhKRQwp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 11:52:45 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B6DC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:49:44 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id g18so6613030pfk.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:49:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=d+draVXuiToCJFuznv+X75lB2WMBUcaNE7FlgHWC0MU=;
+        b=DxgdGAKhzq3iyj9XYWSp808CqbmkOFGPmgg7YVZtMyxOrUGFfeUX+VPM+3VtI6PeNC
+         mXntPnVXxiJXKkwh4rQDq4nKwcob/ZyifgYpaCy36N+l4YM6TOIEi9xQ9mi8f82KU/5+
+         P1htAxvVenSKqKBPral+lxCJbRMW+uKe2giLruhAivHxRNXdEzvrXZbq9B6menVhBjfW
+         EYhuV5V8Hl/Zs3zYtlECxcptXXILpTecglTra9i+xPqyVG/x9HlgiiGVNLMJZhOtehTr
+         jCM3VEJN4P8HXBOJdbaAmlaaPkmd4AOyS2ykk8z6jSJiW2UJP7uifEbRy0Yv7Ig6c6Ze
+         eH8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d+draVXuiToCJFuznv+X75lB2WMBUcaNE7FlgHWC0MU=;
+        b=6Zht5NNFgrAWiwjl07p0YJFyJohaB/j67dFZZXweqpHaX2/ywIDtU/IaugmMpKUJny
+         VRvL9u8jQ1icR8iR7oTuBsWpS2AfTGhHQQPulrz14BqcTB3nAK/Wf5A900Llc43gANwd
+         bzKfHdfpiUatGrwiuFjGlcZRddim+Ll9n45KdjLkruXB8MeR05YP32f6P79hHm6Y3B29
+         R8sniegpZOAiTuStH39wPgFFh2PyJm3JRP4pS3RJmkCM8OdyvE5HYDcwv7vF6ToKJsdN
+         Tu2ZTk9ZdGUO5IKdObTfwLiyA1xFzSPbxqmpvLIJ1dHLbTOpWGU3PZAqnRQkhMa3UE/K
+         1lMg==
+X-Gm-Message-State: AOAM533uaU896xiFCP52hMtgaOMWBNjKarjP/1GQOr5hEXZIPncAkfmH
+        EQeDpnCXkkHWbPvp6wQyWZVCaA==
+X-Google-Smtp-Source: ABdhPJxizezP7GB1Qdiu6Zf7X61r6zIjOCTHRhTJXDFWIfg4vKlgMcTpvhOOyCHc3QgSDAozqFQ7Mw==
+X-Received: by 2002:a63:7d0f:: with SMTP id y15mr12032460pgc.446.1637254184220;
+        Thu, 18 Nov 2021 08:49:44 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id g21sm181147pfc.95.2021.11.18.08.49.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 08:49:43 -0800 (PST)
+Date:   Thu, 18 Nov 2021 16:49:40 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        mlevitsk@redhat.com
+Subject: Re: [PATCH v3] KVM: MMU: update comment on the number of page role
+ combinations
+Message-ID: <YZaEJDRXrN5W20sk@google.com>
+References: <20211118114039.1733976-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211118114039.1733976-1-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Oct 2021 09:34:15 -1000
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+On Thu, Nov 18, 2021, Paolo Bonzini wrote:
+> Fix the number of bits in the role, and simplify the explanation of
+> why several bits or combinations of bits are redundant.
+> 
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h | 32 ++++++++++++++++++++------------
+>  1 file changed, 20 insertions(+), 12 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 6ac61f85e07b..55f280e96b59 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -291,19 +291,27 @@ struct kvm_kernel_irq_routing_entry;
+>   * the number of unique SPs that can theoretically be created is 2^n, where n
+>   * is the number of bits that are used to compute the role.
+>   *
+> - * But, even though there are 18 bits in the mask below, not all combinations
+> - * of modes and flags are possible.  The maximum number of possible upper-level
+> - * shadow pages for a single gfn is in the neighborhood of 2^13.
+> + * There are 19 bits in the mask below, and the page tracking code only uses
+> + * 16 bits per gfn in kvm_arch_memory_slot to count whether a page is tracked.
+> + * However, not all combinations of modes and flags are possible.  First
+> + * of all, invalid shadow pages pages are not accounted, and "smm" is constant
+> + * in a given memslot (because memslots are per address space, and SMM uses
+> + * a separate address space).  Of the remaining 2^17 possibilities:
+>   *
+> - *   - invalid shadow pages are not accounted.
+> - *   - level is effectively limited to four combinations, not 16 as the number
+> - *     bits would imply, as 4k SPs are not tracked (allowed to go unsync).
+> - *   - level is effectively unused for non-PAE paging because there is exactly
+> - *     one upper level (see 4k SP exception above).
+> - *   - quadrant is used only for non-PAE paging and is exclusive with
+> - *     gpte_is_8_bytes.
+> - *   - execonly and ad_disabled are used only for nested EPT, which makes it
+> - *     exclusive with quadrant.
+> + *   - quadrant will only be used if gpte_is_8_bytes=0 (non-PAE paging);
+> + *     execonly and ad_disabled are only used for nested EPT which has
+> + *     gpte_is_8_bytes=1.  Therefore, 2 bits are always unused.
 
-> On Fri, Oct 22, 2021 at 2:38 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > It finally triggered again. And this time with this patch applied. But I
-> > don't see the added printks anywhere in the dmesg.  
-> 
-> That's strange. Those printk's were added in the only places that do a
-> "return 0".
-> 
-> Ok, there's also the dummy pud_set_huge() inline function that
-> unconditionally returns zero, but that's only if you don't have
-> CONFIG_HAVE_ARCH_HUGE_VMAP enabled. And then the testing code is
-> disabled too.
-> 
-> > [  178.714431] debug_vm_pgtable: [debug_vm_pgtable         ]: Validating architecture page table helpers
-> > [  178.723726] ------------[ cut here ]------------
-> > [  178.728389] WARNING: CPU: 2 PID: 1 at mm/debug_vm_pgtable.c:492 pud_huge_tests+0x42/0x68  
-> 
-> That's literally that
-> 
->     WARN_ON(!pud_set_huge(..));
-> 
-> and pud_set_huge() has two 'return 0' (and one 'return 1') and that
-> patch added debug-printing to both of them.
-> 
-> Oh, it shouldn't have been a pr_debug() that gets suppressed. It
-> should have been a pr_warn() or something.
+Since we're already out behind the bikeshed... :-) 
 
-Triggered it again with the new update:
+Maybe instead of "always unused", pharse it as "Therefore, 2 bits (quadrant or
+execonly+ad_disabled) are constant".  The bits are still used in the sense that
+they do key the role, they're just guaranteed to be zero.
 
-[   24.751779] IPI shorthand broadcast: enabled
-[   24.761177] sched_clock: Marking stable (23431856262, 1329270511)->(28163092341, -3401965568)
-[   24.770495] device: 'cpu_dma_latency': device_add
-[   24.775232] PM: Adding info for No Bus:cpu_dma_latency
-[   24.780929] debug_vm_pgtable: [debug_vm_pgtable         ]: Validating architecture page table helpers
-[   24.799490] mtrr_type_lookup() returned 0 (0)
-[   24.803892] ------------[ cut here ]------------
-[   24.808517] WARNING: CPU: 0 PID: 1 at mm/debug_vm_pgtable.c:492 debug_vm_pgtable+0x1315/0x1696
-[   24.817131] Modules linked in:
-[   24.820193] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.16.0-rc1-test+ #17
-[   24.827069] Hardware name: MSI MS-7823/CSM-H87M-G43 (MS-7823), BIOS V1.6 02/22/2014
-[   24.834724] RIP: 0010:debug_vm_pgtable+0x1315/0x1696
-[   24.839692] Code: 38 ff ff ff 48 c7 00 00 00 00 00 48 8b 75 b8 48 8b 95 78 ff ff ff 48 8b bd 38 ff ff ff 48 c1 e6 0c e8 d3 f4 61 fe 85 c0 75 02 <0f> 0b 48 8b bd 38 ff ff ff e8 61 f7 61 fe 85 c0 75 02 0f 0b 48 8b
-[   24.858438] RSP: 0000:ffffb59e80033da8 EFLAGS: 00010246
-[   24.863677] RAX: 0000000000000000 RBX: bffffffffffffff7 RCX: 00000000ffffefff
-[   24.870815] RDX: 0000000000000000 RSI: 00000000ffffffea RDI: 0000000000000001
-[   24.877947] RBP: ffffb59e80033e98 R08: ffffffff9b6d3b68 R09: 0000000000004ffb
-[   24.885078] R10: 00000000fffff000 R11: 3fffffffffffffff R12: ffff9abe83684078
-[   24.892211] R13: 000038b500000000 R14: 000fffffffe00000 R15: 0000000000000027
-[   24.899346] FS:  0000000000000000(0000) GS:ffff9abf9dc00000(0000) knlGS:0000000000000000
-[   24.907430] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   24.913175] CR2: ffff9abf97a01000 CR3: 0000000216612001 CR4: 00000000001706f0
-[   24.920309] Call Trace:
-[   24.922763]  <TASK>
-[   24.924880]  ? destroy_args+0x281/0x281
-[   24.928727]  do_one_initcall+0x68/0x310
-[   24.932574]  ? rcu_read_lock_sched_held+0x46/0x80
-[   24.937290]  kernel_init_freeable+0x1a5/0x1f4
-[   24.941654]  ? rest_init+0x270/0x270
-[   24.945236]  kernel_init+0x1a/0x120
-[   24.948736]  ret_from_fork+0x22/0x30
-[   24.952323]  </TASK>
-[   24.954517] irq event stamp: 902445
-[   24.958008] hardirqs last  enabled at (902455): [<ffffffff9a10c33f>] __up_console_sem+0x6f/0x80
-[   24.966700] hardirqs last disabled at (902464): [<ffffffff9a10c324>] __up_console_sem+0x54/0x80
-[   24.975395] softirqs last  enabled at (902372): [<ffffffff9ae00276>] __do_softirq+0x276/0x43d
-[   24.983912] softirqs last disabled at (902367): [<ffffffff9a098dd2>] irq_exit_rcu+0xa2/0xd0
-[   24.992262] ---[ end trace 385def99126fe75e ]---
-[   24.996891] ------------[ cut here ]------------
+> + *   - the 4 bits of level are effectively limited to the values 2/3/4/5,
+> + *     as 4k SPs are not tracked (allowed to go unsync).  In addition non-PAE
+> + *     paging has exactly one upper level, making level completely redundant
+> + *     when gpte_is_8_bytes=0.
+> + *
+> + *   - on top of this, smep_andnot_wp and smap_andnot_wp are only set if
+> + *     cr0_wp=0, therefore these three bits only give rise to 5 possibilities.
 
-Full dmesg is here:  https://rostedt.org/private/dmesg-20211118.txt
-config is here: https://rostedt.org/private/config-20211118
+Ah, I missed the opportunity to shave those bits.  Nice!
 
--- Steve
+> + *
+> + * Therefore, the maximum number of possible upper-level shadow pages for a
+> + * given (as_id, gfn) pair is a bit less than 2^12.
 
+With the unused/constant change,
+
+Reviewed-by: Sean Christopherson <seanjc@google.com>
+
+>   */
+>  union kvm_mmu_page_role {
+>  	u32 word;
+> -- 
+> 2.27.0
+> 
