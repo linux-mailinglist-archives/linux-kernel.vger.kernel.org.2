@@ -2,152 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5469B456655
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 00:17:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C75A456657
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 00:17:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233116AbhKRXUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 18:20:19 -0500
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:22440 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231751AbhKRXUS (ORCPT
+        id S233129AbhKRXUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 18:20:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231751AbhKRXUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 18:20:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1637277438; x=1668813438;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=3FRxLZFQ1ant8RvQeCMXpMeGccsTGL1wsogxaW4rxA0=;
-  b=AW+LiVzlWu9KE9IWoMklP21Nfw1wYxzhoSaXAPPn2ORllslm+RtT2l1/
-   Tz2nB2Yo/4AyeJGmfMJ3jUGiVDvUEpIskfK1je9kpA+pED9g4Wvt7giHN
-   i5hug+FecYvpD2ss8mN5y1xLTUKJ75pe3Kp1V+5CmCNGYTqUT106sdyzP
-   oCycZbpriwqJvJIZ9gCwP1cGKxT6exsq5vzSO3fgwtJpuRT88B3W1a1yc
-   sqj9Yz8IlDQelIJMX8DWahxvB2VDJF+rh/TTxfLg8tqvJUhtVs3sAby0S
-   V/55zUf7WO1S7IcBBN2hSQ2kVPB7js1AiuuovBjMOmbOE/KN71ItfCMPg
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.87,246,1631548800"; 
-   d="scan'208";a="289953269"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 19 Nov 2021 07:17:18 +0800
-IronPort-SDR: /tY5wC/KrkhxNKi6w502wEDsmMXfJYfh4iU0tAGDiloks7PldHvgJTAV8+uIohHmq5by3fzlmU
- Oe5prJmhRlITjAtm63ItuSIpoOT938NzbT5C5W3X62rtxNKP/RW8pC3ErLQTdIZJHbP+85/Xfr
- k8DrVr7zYae+8NapC+vJ9UFKvINmzOOxPYFLyovjvmmivwa4hEoPhIYuQcLYbXafnBD7nXRmYI
- 937aJ0HtYTJBgSVhnkbNVbV7734/Nw0G6ZROrIdnjrjPzAMzpB+3hKlpd0e4MkAuvOxMIa6q5/
- m7oWV/PiDWYa4a1M9U+qPuWK
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 14:50:45 -0800
-IronPort-SDR: Hrsu8F2CpHKJ9H5XesUdmaGXeBa8pIsflsxVy1ojU3VeT23i38RBkgF2P94Mw+spKEYn7Db5lt
- 9j4VIpyL1Ro/2Sh8nV8h/e00SJ0pN/UNvaT7DFB6YkreflK+gb8IKUYVWUjLiTgDjCAhiOczlX
- hia3bJNFTzfAbeETjTG+KfZUd8yxvQr+dObJqBMJy710ma301c9C5c5rxMKpyk3EpD7MplN8Hw
- L1G7n0wtD4TL2hLCQb++9zf3zR7O1Z/L9cUfE5jgHIzAOND0H8HAgd168fZF/lrF2zrr19q6XO
- tBU=
-WDCIronportException: Internal
-Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 15:17:19 -0800
-Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4HwG0Y3zSJz1RtVp
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 15:17:17 -0800 (PST)
-Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)"
-        header.d=opensource.wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        opensource.wdc.com; h=content-transfer-encoding:content-type
-        :in-reply-to:organization:from:references:to:content-language
-        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
-        1637277437; x=1639869438; bh=3FRxLZFQ1ant8RvQeCMXpMeGccsTGL1wsog
-        xaW4rxA0=; b=RcO4PLrxhZ9Wtq3TCyoGYca+66VQkzklFDz3HvLl6yp7oPdVqgG
-        B1RGsUrh9UpZ3xY3+f4U4FiqxGnHa6KqbMIvLanqGZmf0J65/OAHzDtd9U4w5A40
-        93I0hDHugPyNGSK/zI9jHuB9xdiXFFHGRaMGvBagm143cuC24TKkt4zO5mk6bP90
-        Q23lWKC1ssZtWj8x+nfF5uO2aI/URl/up3v/6vb6MkwfkScsZDV041fdaWyk5xsf
-        X58ICeGA0hYYXBkFlyHsYCjp0O2ZWbJs+5FYtO1M2xv2V2KC9oxeh1t0SGVxH2+q
-        t1/UI7VWp6b91KEA59xCwVb9MCCZrjEtHww==
-X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
-Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
-        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id JrfSe2TSpuO6 for <linux-kernel@vger.kernel.org>;
-        Thu, 18 Nov 2021 15:17:17 -0800 (PST)
-Received: from [10.225.54.48] (unknown [10.225.54.48])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4HwG0X20ylz1RtVl;
-        Thu, 18 Nov 2021 15:17:16 -0800 (PST)
-Message-ID: <0dd24142-a5e6-b146-9315-d2680ef4ed35@opensource.wdc.com>
-Date:   Fri, 19 Nov 2021 08:17:14 +0900
+        Thu, 18 Nov 2021 18:20:36 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED61C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 15:17:35 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id n12so34120392lfe.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 15:17:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=t6GvCoTsal2+f79BZzeLuS2NRlSdpapuVkKU2eGjYNs=;
+        b=gTiE2vWYAQOyhTAaWLAvX5jzkycwbbcvm6UalQ5ULKbx1Ks1cm/6/+bNqGwZ1+756b
+         2innhKXkGvo4tr1F64xknikj/lhpXePxSJijJg4Fy2QmN0WAE1YU3x2DTL7xiRaTlQPV
+         hmd8ajN77x4bh/8aUkAi79pbBZwltJWx8WUqYKC70CxRY3ro17LINo4pdCFW3iN3ffZd
+         l+E/aT2vWGrwCFGraIiyQAB4+UgXo++R3QMu/whTnG6xpBjve0uvRaTmSYcsbqhMVWGU
+         yqK1niBK5/qvGfe2z5/e3U+e5zAqqeR4Mtc0xnRoG3QDctpDAl+7lk1d85YOteCUqql7
+         lvXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t6GvCoTsal2+f79BZzeLuS2NRlSdpapuVkKU2eGjYNs=;
+        b=qryUpC97OLxqb/cru2rICx6r1RWCFFotVgz1iFuZcYyIyQBreinFReD4voCIqvK3mB
+         F/NK99UM3x3l2xSNISFMEvXB9YeRaVI66oeqwY67oCOYPIGdFvNCgLVdGgkzRbWFFluu
+         ayWkcvzemy2IfPnY6IwGeQvrSmiqFVK6LlDzy9jBE1EXoXarg1eKDGpliKtN0POlJWJ5
+         Jrhphj4KrRpfpS/tKE74HtiH349HeYNApAXAJC+ZZ35CWHlt85JWawamehCX2rMRrdga
+         vMX/CCPT3AliyBT1FRCE4vI+OE9npNp7W3J0ixIFsW443kerWB/JusdSleNkCaO8P8Vg
+         7U8g==
+X-Gm-Message-State: AOAM533rCAz30c+ABgbWwhv0PJBumYdhd+K7tx3mcLG24xkztq7Qt9Ec
+        ZWgJ1NJcs9myDZUv6DVmngr0PQ==
+X-Google-Smtp-Source: ABdhPJxZ4qKH18GDchmVCVOsNvGDWF1o0JBVwijWWjFq3zdgIYxCtN2EgDNDceiDi8FnJgdy5WcWOA==
+X-Received: by 2002:a2e:7114:: with SMTP id m20mr20643304ljc.229.1637277453725;
+        Thu, 18 Nov 2021 15:17:33 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id q15sm157729lfp.32.2021.11.18.15.17.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 15:17:32 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 345B5103121; Fri, 19 Nov 2021 02:17:37 +0300 (+03)
+Date:   Fri, 19 Nov 2021 02:17:37 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] sound updates for 5.16-rc1
+Message-ID: <20211118231737.opqojtvq6dkffh35@box.shutemov.name>
+References: <s5hwnlpmt9x.wl-tiwai@suse.de>
+ <20211117161855.m45mxcqszkfcetai@box.shutemov.name>
+ <s5hmtm2lphf.wl-tiwai@suse.de>
+ <20211117174826.23eakoivl33tawb2@box.shutemov.name>
+ <s5hfsrulkxk.wl-tiwai@suse.de>
+ <s5hpmqxki3h.wl-tiwai@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.1
-Subject: Re: [PATCH] sata_fsl: Use struct_group() for memcpy() region
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>, Jens Axboe <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20211118183807.1283332-1-keescook@chromium.org>
-From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Organization: Western Digital
-In-Reply-To: <20211118183807.1283332-1-keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="iquykasoghufro7p"
+Content-Disposition: inline
+In-Reply-To: <s5hpmqxki3h.wl-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/11/19 3:38, Kees Cook wrote:
-> In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> field bounds checking for memcpy(), memmove(), and memset(), avoid
-> intentionally writing across neighboring fields.
-> 
-> Use struct_group() in struct command_desc around members acmd and fill,
-> so they can be referenced together. This will allow memset(), memcpy(),
-> and sizeof() to more easily reason about sizes, improve readability,
-> and avoid future warnings about writing beyond the end of acmd:
-> 
-> In function 'fortify_memset_chk',
->     inlined from 'sata_fsl_qc_prep' at drivers/ata/sata_fsl.c:534:3:
-> ./include/linux/fortify-string.h:199:4: warning: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Wattribute-warning]
->   199 |    __write_overflow_field();
->       |    ^~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-This lacks some context with regard to FORTIFY_SOURCE and struct_group(). Is
-that already in 5.16 ? It sounds like it is not. Do you want a ack ? Or do you
-want me to queue this up for 5.17 ?
+--iquykasoghufro7p
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Cheers.
-
-> ---
->  drivers/ata/sata_fsl.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
+On Thu, Nov 18, 2021 at 09:01:38AM +0100, Takashi Iwai wrote:
+> I checked mine, and all worked fine.  So this doesn't look like a
+> generic breakage but somehow specific to certain devices or system.
 > 
-> diff --git a/drivers/ata/sata_fsl.c b/drivers/ata/sata_fsl.c
-> index e5838b23c9e0..fec3c9032606 100644
-> --- a/drivers/ata/sata_fsl.c
-> +++ b/drivers/ata/sata_fsl.c
-> @@ -246,8 +246,10 @@ enum {
->  struct command_desc {
->  	u8 cfis[8 * 4];
->  	u8 sfis[8 * 4];
-> -	u8 acmd[4 * 4];
-> -	u8 fill[4 * 4];
-> +	struct_group(cdb,
-> +		u8 acmd[4 * 4];
-> +		u8 fill[4 * 4];
-> +	);
->  	u32 prdt[SATA_FSL_MAX_PRD_DIRECT * 4];
->  	u32 prdt_indirect[(SATA_FSL_MAX_PRD - SATA_FSL_MAX_PRD_DIRECT) * 4];
->  };
-> @@ -531,8 +533,8 @@ static enum ata_completion_errors sata_fsl_qc_prep(struct ata_queued_cmd *qc)
->  	/* setup "ACMD - atapi command" in cmd. desc. if this is ATAPI cmd */
->  	if (ata_is_atapi(qc->tf.protocol)) {
->  		desc_info |= ATAPI_CMD;
-> -		memset((void *)&cd->acmd, 0, 32);
-> -		memcpy((void *)&cd->acmd, qc->cdb, qc->dev->cdb_len);
-> +		memset(&cd->cdb, 0, sizeof(cd->cdb));
-> +		memcpy(&cd->cdb, qc->cdb, qc->dev->cdb_len);
->  	}
->  
->  	if (qc->flags & ATA_QCFLAG_DMAMAP)
-> 
+> Could you verify the lowlatency flag off?
 
+With lowlatency off it works fine.
+
+I attached dump form /proc/asound/card*/pcm*/sub*/* for both cases while
+plaing the sample
+
+> Also, the simple aplay invocation (e.g. with a 2-channel 16bit sample)
+> also goes to the same problem, I suppose?
+
+Yes.
 
 -- 
-Damien Le Moal
-Western Digital Research
+ Kirill A. Shutemov
+
+--iquykasoghufro7p
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=state
+
+hw_params:access: MMAP_INTERLEAVED
+hw_params:format: S16_LE
+hw_params:subformat: STD
+hw_params:channels: 2
+hw_params:rate: 44100 (44100/1)
+hw_params:period_size: 1024
+hw_params:buffer_size: 4096
+info:card: 0
+info:device: 0
+info:subdevice: 0
+info:stream: PLAYBACK
+info:id: USB Audio
+info:name: USB Audio
+info:subname: subdevice #0
+info:class: 0
+info:subclass: 0
+info:subdevices_count: 1
+info:subdevices_avail: 0
+status:state: RUNNING
+status:owner_pid   : 4268
+status:trigger_time: 335.048357663
+status:tstamp      : 362.520920879
+status:delay       : -4095
+status:avail       : 8191
+status:avail_max   : 0
+status:-----
+status:hw_ptr      : 4095
+status:appl_ptr    : 0
+sw_params:tstamp_mode: ENABLE
+sw_params:period_step: 1
+sw_params:avail_min: 1024
+sw_params:start_threshold: 1
+sw_params:stop_threshold: 4611686018427387904
+sw_params:silence_threshold: 0
+sw_params:silence_size: 4611686018427387904
+sw_params:boundary: 4611686018427387904
+
+--iquykasoghufro7p
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="state.no-lowlatency"
+
+hw_params:access: MMAP_INTERLEAVED
+hw_params:format: S16_LE
+hw_params:subformat: STD
+hw_params:channels: 2
+hw_params:rate: 44100 (44100/1)
+hw_params:period_size: 1024
+hw_params:buffer_size: 4096
+info:card: 0
+info:device: 0
+info:subdevice: 0
+info:stream: PLAYBACK
+info:id: USB Audio
+info:name: USB Audio
+info:subname: subdevice #0
+info:class: 0
+info:subclass: 0
+info:subdevices_count: 1
+info:subdevices_avail: 0
+status:state: RUNNING
+status:owner_pid   : 4351
+status:trigger_time: 107.480212212
+status:tstamp      : 111.934757272
+status:delay       : -196216
+status:avail       : 200704
+status:avail_max   : 200704
+status:-----
+status:hw_ptr      : 196608
+status:appl_ptr    : 0
+sw_params:tstamp_mode: ENABLE
+sw_params:period_step: 1
+sw_params:avail_min: 1024
+sw_params:start_threshold: 1
+sw_params:stop_threshold: 4611686018427387904
+sw_params:silence_threshold: 0
+sw_params:silence_size: 4611686018427387904
+sw_params:boundary: 4611686018427387904
+
+--iquykasoghufro7p--
