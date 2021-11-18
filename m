@@ -2,138 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE10445649A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 21:59:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C663456497
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 21:58:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232260AbhKRVCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 16:02:03 -0500
-Received: from out01.mta.xmission.com ([166.70.13.231]:41574 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232033AbhKRVCC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 16:02:02 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52]:33074)
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mnoUm-00DoTt-H5; Thu, 18 Nov 2021 13:59:00 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:51282 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mnoUl-00Akvn-Ga; Thu, 18 Nov 2021 13:59:00 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Qian Cai <quic_qiancai@quicinc.com>
-Cc:     Alexey Gladkov <legion@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        <linux-kernel@vger.kernel.org>
-References: <YZV7Z+yXbsx9p3JN@fixkernel.com>
-        <875ysptfgi.fsf@email.froward.int.ebiederm.org>
-        <YZa4YbcOyjtD3+pL@fixkernel.com>
-Date:   Thu, 18 Nov 2021 14:57:17 -0600
-In-Reply-To: <YZa4YbcOyjtD3+pL@fixkernel.com> (Qian Cai's message of "Thu, 18
-        Nov 2021 15:32:33 -0500")
-Message-ID: <87k0h5rxle.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S231950AbhKRVBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 16:01:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37720 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229905AbhKRVBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 16:01:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58560613A3;
+        Thu, 18 Nov 2021 20:58:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637269098;
+        bh=/xt+uXa7glCQc4NoV8PVvEQVFQeQykCNInRgbr3iJxM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=W40RlW9A3DG5IR7234eCb49osgoPdyWqFY0IIxPdDFMWlZIidG8J98/0YJrQZ+3DM
+         2jI/eGwsASssjMFkMNTK5cmWfV83leADZtO48iF9IHxYLBvvwQVOQOIqJ5eiI7AV+P
+         /iPohx0AObaKf5rK26R9YXOnChBh/BV2+tKfEycdHo+tSPBxQ214A4IGmyr1qDTPeH
+         DqdF9/y/Bhs0xIktNREy61AZodRuHuvPAaAjsNWgOEr8Y5jI5PoNUp+S8/tDLz+QRq
+         RLXVHG2nVna4TYevQ2myx5tFc61sNOmXW45wa/pRSTB4tmKV9buFwqtJAjawhsaDUm
+         OTrzf7U4kjvPA==
+Date:   Thu, 18 Nov 2021 14:58:16 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH 18/19] mxser: move ids from pci_ids.h here
+Message-ID: <20211118205816.GA1883757@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mnoUl-00Akvn-Ga;;;mid=<87k0h5rxle.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/xFxhvjIdEI4qeidXSmsLguyRERS2BhmM=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4979]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Qian Cai <quic_qiancai@quicinc.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 451 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 11 (2.4%), b_tie_ro: 10 (2.1%), parse: 0.84
-        (0.2%), extract_message_metadata: 12 (2.6%), get_uri_detail_list: 1.66
-        (0.4%), tests_pri_-1000: 14 (3.1%), tests_pri_-950: 1.24 (0.3%),
-        tests_pri_-900: 0.98 (0.2%), tests_pri_-90: 113 (25.0%), check_bayes:
-        111 (24.5%), b_tokenize: 10 (2.2%), b_tok_get_all: 9 (2.0%),
-        b_comp_prob: 3.3 (0.7%), b_tok_touch_all: 80 (17.8%), b_finish: 1.56
-        (0.3%), tests_pri_0: 279 (61.9%), check_dkim_signature: 0.67 (0.1%),
-        check_dkim_adsp: 3.4 (0.8%), poll_dns_idle: 1.00 (0.2%), tests_pri_10:
-        2.5 (0.6%), tests_pri_500: 14 (3.0%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: BUG: KASAN: use-after-free in dec_rlimit_ucounts
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211118073125.12283-19-jslaby@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Qian Cai <quic_qiancai@quicinc.com> writes:
+On Thu, Nov 18, 2021 at 08:31:24AM +0100, Jiri Slaby wrote:
+> There is no point having MOXA PCI device IDs in include/linux/pci_ids.h.
+> Move them to the driver and sort them all by the ID.
+> 
+> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: linux-pci@vger.kernel.org
 
-> On Thu, Nov 18, 2021 at 01:46:05PM -0600, Eric W. Biederman wrote:
->> Is it possible?  Yes it is possible.  That is one place where
->> a use-after-free has shown up and I expect would show up in the
->> future.
->> 
->> That said it is hard to believe there is still a user-after-free in the
->> code.  We spent the last kernel development cycle pouring through and
->> correcting everything we saw until we ultimately found one very subtle
->> use-after-free.
->> 
->> If you have a reliable reproducer that you can share, we can look into
->> this and see if we can track down where the reference count is going
->> bad.
->> 
->> It tends to take instrumenting the entire life cycle every increment and
->> every decrement and then pouring through the logs to track down a
->> use-after-free.  Which is not something we can really do without a
->> reproducer.
->
-> The reproducer is just to run trinity by an unprivileged user on defconfig
-> with KASAN enabled (On linux-next, you can do "make defconfig debug.conf"
-> [1], but dont think other debugging options are relevent here.)
->
-> $ trinity -C 31 -N 10000000
->
-> It is always reproduced on an arm64 server here within 5-minute so far.
-> Some debugging progress so far. BTW, this could happen on user_shm_unlock()
-> path as well.
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
-Does this only happen on a single architecture?  If so I wonder if
-perhaps some of the architectures atomic primitives are implemented
-improperly.
+I would capitalize "IDs" in the subject as you did in the commit log.
 
-Unfortunately I don't have any arm64 machines where I can easily test
-this.
-
-The call path you posted from user_shm_unlock is another path where
-a use-after-free has show up in the past.
-
-My blind guess would be that I made an implementation mistake in
-inc_rlimit_get_ucounts or dec_rlimit_put_ucounts but I can't see it
-right now.
-
-Eric
-
->  Call trace:
->   dec_rlimit_ucounts
->   user_shm_unlock
->   (inlined by) user_shm_unlock at mm/mlock.c:854
->   shmem_lock
->   shmctl_do_lock
->   ksys_shmctl.constprop.0
->   __arm64_sys_shmctl
->   invoke_syscall
->   el0_svc_common.constprop.0
->   do_el0_svc
->   el0_svc
->   el0t_64_sync_handler
->   el0t_64_sync
->
-> I noticed in dec_rlimit_ucounts(), dec == 0 and type ==
-> UCOUNT_RLIMIT_MEMLOCK. 
->
-> [1] https://lore.kernel.org/lkml/20211115134754.7334-1-quic_qiancai@quicinc.com/
+> ---
+>  drivers/tty/mxser.c     | 20 +++++++++++++++++++-
+>  include/linux/pci_ids.h | 18 ------------------
+>  2 files changed, 19 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/tty/mxser.c b/drivers/tty/mxser.c
+> index f6842089459a..ba96ffed193a 100644
+> --- a/drivers/tty/mxser.c
+> +++ b/drivers/tty/mxser.c
+> @@ -159,14 +159,32 @@
+>  #define MXSER_BAUD_BASE		921600
+>  #define MXSER_CUSTOM_DIVISOR	(MXSER_BAUD_BASE * 16)
+>  
+> +#define PCI_DEVICE_ID_MOXA_RC7000	0x0001
+> +#define PCI_DEVICE_ID_MOXA_CP102	0x1020
+> +#define PCI_DEVICE_ID_MOXA_CP102UL	0x1021
+> +#define PCI_DEVICE_ID_MOXA_CP102U	0x1022
+> +#define PCI_DEVICE_ID_MOXA_CP102UF	0x1023
+> +#define PCI_DEVICE_ID_MOXA_C104		0x1040
+> +#define PCI_DEVICE_ID_MOXA_CP104U	0x1041
+> +#define PCI_DEVICE_ID_MOXA_CP104JU	0x1042
+> +#define PCI_DEVICE_ID_MOXA_CP104EL	0x1043
+>  #define PCI_DEVICE_ID_MOXA_POS104UL	0x1044
+>  #define PCI_DEVICE_ID_MOXA_CB108	0x1080
+> -#define PCI_DEVICE_ID_MOXA_CP102UF	0x1023
+>  #define PCI_DEVICE_ID_MOXA_CP112UL	0x1120
+> +#define PCI_DEVICE_ID_MOXA_CT114	0x1140
+> +#define PCI_DEVICE_ID_MOXA_CP114	0x1141
+>  #define PCI_DEVICE_ID_MOXA_CB114	0x1142
+>  #define PCI_DEVICE_ID_MOXA_CP114UL	0x1143
+> +#define PCI_DEVICE_ID_MOXA_CP118U	0x1180
+> +#define PCI_DEVICE_ID_MOXA_CP118EL	0x1181
+> +#define PCI_DEVICE_ID_MOXA_CP132	0x1320
+> +#define PCI_DEVICE_ID_MOXA_CP132U	0x1321
+> +#define PCI_DEVICE_ID_MOXA_CP134U	0x1340
+>  #define PCI_DEVICE_ID_MOXA_CB134I	0x1341
+>  #define PCI_DEVICE_ID_MOXA_CP138U	0x1380
+> +#define PCI_DEVICE_ID_MOXA_C168		0x1680
+> +#define PCI_DEVICE_ID_MOXA_CP168U	0x1681
+> +#define PCI_DEVICE_ID_MOXA_CP168EL	0x1682
+>  
+>  #define MXSER_NPORTS(ddata)		((ddata) & 0xffU)
+>  #define MXSER_HIGHBAUD			0x0100
+> diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+> index b5248f27910e..86678588d191 100644
+> --- a/include/linux/pci_ids.h
+> +++ b/include/linux/pci_ids.h
+> @@ -1965,24 +1965,6 @@
+>  #define PCI_DEVICE_ID_APPLICOM_PCI2000PFB 0x0003
+>  
+>  #define PCI_VENDOR_ID_MOXA		0x1393
+> -#define PCI_DEVICE_ID_MOXA_RC7000	0x0001
+> -#define PCI_DEVICE_ID_MOXA_CP102	0x1020
+> -#define PCI_DEVICE_ID_MOXA_CP102UL	0x1021
+> -#define PCI_DEVICE_ID_MOXA_CP102U	0x1022
+> -#define PCI_DEVICE_ID_MOXA_C104		0x1040
+> -#define PCI_DEVICE_ID_MOXA_CP104U	0x1041
+> -#define PCI_DEVICE_ID_MOXA_CP104JU	0x1042
+> -#define PCI_DEVICE_ID_MOXA_CP104EL	0x1043
+> -#define PCI_DEVICE_ID_MOXA_CT114	0x1140
+> -#define PCI_DEVICE_ID_MOXA_CP114	0x1141
+> -#define PCI_DEVICE_ID_MOXA_CP118U	0x1180
+> -#define PCI_DEVICE_ID_MOXA_CP118EL	0x1181
+> -#define PCI_DEVICE_ID_MOXA_CP132	0x1320
+> -#define PCI_DEVICE_ID_MOXA_CP132U	0x1321
+> -#define PCI_DEVICE_ID_MOXA_CP134U	0x1340
+> -#define PCI_DEVICE_ID_MOXA_C168		0x1680
+> -#define PCI_DEVICE_ID_MOXA_CP168U	0x1681
+> -#define PCI_DEVICE_ID_MOXA_CP168EL	0x1682
+>  #define PCI_DEVICE_ID_MOXA_CP204J	0x2040
+>  #define PCI_DEVICE_ID_MOXA_C218		0x2180
+>  #define PCI_DEVICE_ID_MOXA_C320		0x3200
+> -- 
+> 2.33.1
+> 
