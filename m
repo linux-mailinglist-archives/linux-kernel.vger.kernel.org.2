@@ -2,195 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2365B455649
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:08:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12E054556BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 09:15:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244234AbhKRIKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 03:10:53 -0500
-Received: from mail-mw2nam12on2088.outbound.protection.outlook.com ([40.107.244.88]:38240
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S244227AbhKRIKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 03:10:38 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lcYdkfGRbHdnlixPNRGFxPtSCZvQ+0cRqru3M1Rxng7ElXTtk0qJEGbz9uePr5qQaV5YAOnOZ7wVBrhunt4prNYQnV0bqrmtRR1+qXDmIUv+PK36L9/AHMQ5B+C6ekDdjZS9oshOch0GZM3KfswhOSQ6J9y1OU9F8XvYlcObWQXrXBdMY1hJqFMBk+IQLlu9m5Y+8lv9Ge1NK8j1Q63gKS/xEjIifoez4/wj6K/vOH6h3qB29W/J3aqiarAY/SfHrKj6f0MKPisyW6F8dwcLHVPTXxAhEgK5vc3X+HV1uRQmudqgKcJqXpy4lh0KvPDbPqeYJtj+BLGzI5tcMmXKtw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=E44AKAtXXq8B9O8/sN684mVDCfRoypwYoXIzwai9tFk=;
- b=WsA8gV1fzBkvr1zacQl7oNTbuP162/nI9mTKOSKkjx1+2UXppXLHfrZ/iJbM8LDawELjlaLr2e0RE2kC98Sfup2hShAjj08YnrDaVBRA5ux0kWo/er5xmKA0UjtPTgkcMKAFRwLvMoTOvhmHvQ/hbYy7mJ+0zjofOIv5bS3QNSU9oEjHdMEHU6fpvvZ0xNO/FrySJMveQE9JSw3LiExF6Cw0GRGrggpA4zirL6v6Jwz85i6SLXOsWx+ZbLUvgyPa9fxc8O4Os+V3zNn8etKjP3o3UCaQWMvvhA5KpW9T5/LyQU3YPYXszTEB4V6c7nV/iJQv2WZ5PaTu87LrFweWkg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=linux.intel.com smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E44AKAtXXq8B9O8/sN684mVDCfRoypwYoXIzwai9tFk=;
- b=r57FBewfE9KuMAaKeB2lq46CZpdU+C1B2bEcxLQyb00X+WfnXQUAVbrHH5U8TyXnNbAYJY8L+SRu/RARFu7xZvoJWAAQ+GHVakyeZKetumx+HzRRdf0MUs/di8OrzfqN1+Sspcy1Z00yTXckIilnWuaoERVK9uw8jOn5/QlGF9Q=
-Received: from SN4PR0501CA0014.namprd05.prod.outlook.com
- (2603:10b6:803:40::27) by BL0PR02MB4930.namprd02.prod.outlook.com
- (2603:10b6:208:53::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Thu, 18 Nov
- 2021 08:07:35 +0000
-Received: from SN1NAM02FT0041.eop-nam02.prod.protection.outlook.com
- (2603:10b6:803:40:cafe::ee) by SN4PR0501CA0014.outlook.office365.com
- (2603:10b6:803:40::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend
- Transport; Thu, 18 Nov 2021 08:07:35 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT0041.mail.protection.outlook.com (10.97.5.44) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4713.19 via Frontend Transport; Thu, 18 Nov 2021 08:07:35 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 18 Nov 2021 00:07:34 -0800
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Thu, 18 Nov 2021 00:07:34 -0800
-Envelope-to: git@xilinx.com,
- andriy.shevchenko@linux.intel.com,
- linux-kernel@vger.kernel.org,
- jic23@kernel.org,
- lars@metafoo.de,
- linux-iio@vger.kernel.org,
- gregkh@linuxfoundation.org,
- rafael@kernel.org,
- linux-acpi@vger.kernel.org,
- heikki.krogerus@linux.intel.com
-Received: from [10.254.241.49] (port=52950)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1mncSD-0008fk-ON; Thu, 18 Nov 2021 00:07:33 -0800
-Message-ID: <017031cf-6092-0c33-339b-5c6b6b5ac6c7@xilinx.com>
-Date:   Thu, 18 Nov 2021 09:07:30 +0100
+        id S244466AbhKRISF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 03:18:05 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:32017 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244446AbhKRIRD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 03:17:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637222876;
+    s=strato-dkim-0002; d=chronox.de;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=pqxqeDLYvduBqgPCaONKS31VBdYNk/GP5KTwPLPfQJE=;
+    b=e4TfzP/RSBFBhnYFpBG0Oz/NFSBdc86BMUSY4fs9cnwFrdsPztGri2n8/50l5cnp14
+    F8F5ozqprk8iyO//8YFnEQq5WmogWtbBGNHVUf7PDKxuulPTj0GHxcRFYdfBpyfGiGpa
+    61h2yC0qE8nKtycvwukgutOH1BhY+ofPCb1DgfkWuAyMgLFUsptPAVru0dd9Yn3Tlw0P
+    /FkRt5wEtNuSH78oLrtUDNN/kkcQ5fk73XoYRot1tR/AFYXYe/Q7jHSwM+FDuU2m88F4
+    VNDVG6XoYEgA0yir4ebvzY7djV/nnMJnjU1U30/GvssOPG1u/KInw4Y+V3ke2fLvAU6Z
+    rAXQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPbJvScPP/G"
+X-RZG-CLASS-ID: mo00
+Received: from tauon.chronox.de
+    by smtp.strato.de (RZmta 47.34.5 DYNA|AUTH)
+    with ESMTPSA id U02dfbxAI87toU9
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Thu, 18 Nov 2021 09:07:55 +0100 (CET)
+From:   Stephan Mueller <smueller@chronox.de>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     herbert@gondor.apana.org.au, Jarkko Sakkinen <jarkko@kernel.org>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        keyrings <keyrings@vger.kernel.org>, simo@redhat.com
+Subject: Re: [PATCH v3 2/4] crypto: add SP800-108 counter key derivation function
+Date:   Thu, 18 Nov 2021 09:07:55 +0100
+Message-ID: <3820150.6QZi0asr2n@tauon.chronox.de>
+In-Reply-To: <YZVTx01YyvCsPc9i@gmail.com>
+References: <2589009.vuYhMxLoTh@positron.chronox.de> <3412396.dWV9SEqChM@positron.chronox.de> <YZVTx01YyvCsPc9i@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH v10 3/5] iio: adc: Add Xilinx AMS driver
-Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
-CC:     <linux-kernel@vger.kernel.org>, <jic23@kernel.org>,
-        <lars@metafoo.de>, <linux-iio@vger.kernel.org>, <git@xilinx.com>,
-        <michal.simek@xilinx.com>, <gregkh@linuxfoundation.org>,
-        <rafael@kernel.org>, <linux-acpi@vger.kernel.org>,
-        <heikki.krogerus@linux.intel.com>,
-        "Manish Narani" <manish.narani@xilinx.com>
-References: <20211117161028.11775-1-anand.ashok.dumbre@xilinx.com>
- <20211117161028.11775-4-anand.ashok.dumbre@xilinx.com>
- <YZVf+Y/KxASvT2MU@smile.fi.intel.com>
-From:   Michal Simek <michal.simek@xilinx.com>
-In-Reply-To: <YZVf+Y/KxASvT2MU@smile.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5fc7815b-0cae-47be-274e-08d9aa6a7ae9
-X-MS-TrafficTypeDiagnostic: BL0PR02MB4930:
-X-Microsoft-Antispam-PRVS: <BL0PR02MB49306DFD3A9B67DED5A21E73C69B9@BL0PR02MB4930.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1s+JgBwX+VjWuad+dmk8/LxAs2ZpRO8U90aI259o21Hc6vgHusotc76/HCuL9SfJGvEqebK9gSsAaCwhzzqUdxFqGIUMHMZ4EcyumYz1/gap9GFmtO6Q+OrTzaz3DWC64XWl3ONuy/YuPcVo7/XDnThqjokiCEGRioZ1H1tNJk8C4bSEAxl1TaAKBq3p11SHk3qf0Oil7VMqIBAhviaTD6SAUw1ljSuxc/O+m3I3CQgKoBbuSM0kUEbz7TQFJAq4doq16QLAYZYhFn4NmjmdG8X5+ttReZx7Wf4wPOyo1frFzT1+5yzNAvROhO6Vi3kv2XPg0Gqv0gSDlY+lR8OEBp1vfut9G2usRyLHoiIkkbuKcsTYzTj+Jvd8wFZZVPnc+I1rvTHl//16hiRHy65FGFLyh5pBJ60YDWLaR97nMk17loAhZDokqX03hTN/fFOGlN9nQR4pOkblX9HUUfA/28l2enj48tiPOVBk0aEoQKa9AAiTvr3uKUwtDK6nT+srN3hkolcR/nHurKNVWEO9j2qLF3/fV9cgEEPv80jQWa3GXQT7cdQ6Tdk5qhkQpaO4YBp4MQHBI8IjCyJLvHJLhb1simP3WkHvEWCn7lMmN8dcu51orIjU0zaA13SEYfJC0P8o9OekyGi8BQFrkpaCe8Dx4JPZEyzkaWo37vOBlSwfmZqbrge3HfB1O5iw67s4bCQE607kYwVu/kjUVQmd56ue0ClsMQlQ/m3c1oalGauqKbcIEjgRJFJJDxkotvLE
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(36840700001)(46966006)(2616005)(6636002)(356005)(107886003)(508600001)(53546011)(9786002)(31696002)(54906003)(316002)(36906005)(70206006)(8936002)(82310400003)(83380400001)(186003)(110136005)(36756003)(2906002)(8676002)(5660300002)(44832011)(4326008)(426003)(31686004)(70586007)(47076005)(336012)(7636003)(26005)(36860700001)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2021 08:07:35.4191
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5fc7815b-0cae-47be-274e-08d9aa6a7ae9
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0041.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR02MB4930
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am Mittwoch, 17. November 2021, 20:11:03 CET schrieb Eric Biggers:
+
+Hi Eric,
+
+thanks for your comments.
+
+> On Mon, Nov 15, 2021 at 09:43:13AM +0100, Stephan M=FCller wrote:
+> > SP800-108 defines three KDFs - this patch provides the counter KDF
+> > implementation.
+> >=20
+> > The KDF is implemented as a service function where the caller has to
+> > maintain the hash / HMAC state. Apart from this hash/HMAC state, no
+> > additional state is required to be maintained by either the caller or
+> > the KDF implementation.
+> >=20
+> > The key for the KDF is set with the crypto_kdf108_setkey function which
+> > is intended to be invoked before the caller requests a key derivation
+> > operation via crypto_kdf108_ctr_generate.
+> >=20
+> > SP800-108 allows the use of either a HMAC or a hash as crypto primitive
+> > for the KDF. When a HMAC primtive is intended to be used,
+> > crypto_kdf108_setkey must be used to set the HMAC key. Otherwise, for a
+> > hash crypto primitve crypto_kdf108_ctr_generate can be used immediately
+> > after allocating the hash handle.
+> >=20
+> > Signed-off-by: Stephan Mueller <smueller@chronox.de>
+> > ---
+> >=20
+> >  crypto/Kconfig                |   7 ++
+> >  crypto/Makefile               |   5 ++
+> >  crypto/kdf_sp800108.c         | 149 ++++++++++++++++++++++++++++++++++
+> >  include/crypto/kdf_sp800108.h |  61 ++++++++++++++
+> >  4 files changed, 222 insertions(+)
+> >  create mode 100644 crypto/kdf_sp800108.c
+> >  create mode 100644 include/crypto/kdf_sp800108.h
+> >=20
+> > diff --git a/crypto/Kconfig b/crypto/Kconfig
+> > index 285f82647d2b..09c393a57b58 100644
+> > --- a/crypto/Kconfig
+> > +++ b/crypto/Kconfig
+> > @@ -1845,6 +1845,13 @@ config CRYPTO_JITTERENTROPY
+> >=20
+> >  	  random numbers. This Jitterentropy RNG registers with
+> >  	  the kernel crypto API and can be used by any caller.
+> >=20
+> > +config CRYPTO_KDF800108_CTR
+> > +	tristate "Counter KDF (SP800-108)"
+> > +	select CRYPTO_HASH
+> > +	help
+> > +	  Enable the key derivation function in counter mode compliant to
+> > +	  SP800-108.
+>=20
+> These are just some library functions, so they shouldn't be user-selectab=
+le.
+
+Ok, I will remove the user-visible entry in the kernel configuration.
+
+> > +/*
+> > + * The seeding of the KDF
+> > + */
+> > +int crypto_kdf108_setkey(struct crypto_shash *kmd,
+> > +			 const u8 *key, size_t keylen,
+> > +			 const u8 *ikm, size_t ikmlen)
+> > +{
+> > +	unsigned int ds =3D crypto_shash_digestsize(kmd);
+> > +
+> > +	/* SP800-108 does not support IKM */
+> > +	if (ikm || ikmlen)
+> > +		return -EINVAL;
+>=20
+> Why have the ikm parameter if it's not supported?
+
+The original idea is that we have a common function declaration for SP800-1=
+08=20
+and HKDF. I am still thinking that in the long run, a KDF template support =
+may=20
+make sense. In this case, a common function declaration would be needed for=
+=20
+all KDF implementations.
+
+=46urthermore, the test code can be shared between the different KDFs when =
+we=20
+allow the ikm/ikmlen parameter for this function.
+>=20
+> > +	/*
+> > +	 * We require that we operate on a MAC -- if we do not operate on a
+> > +	 * MAC, this function returns an error.
+> > +	 */
+> > +	return crypto_shash_setkey(kmd, key, keylen);
+> > +}
+> > +EXPORT_SYMBOL(crypto_kdf108_setkey);
+>=20
+> Well, crypto_shash_setkey() will succeed if the hash algorithm takes a
+> "key". That doesn't necessarily mean that it's a MAC.	It could be crc32 or
+> xxhash64, for example; those interpret the "key" as the initial value.
+
+Agreed. But I am not sure a check in this regard would be needed considerin=
+g=20
+that this KDF is only an internal service function.
+
+I have updated the comment accordingly.
+>=20
+> > +static int __init crypto_kdf108_init(void)
+> > +{
+> > +	int ret =3D kdf_test(&kdf_ctr_hmac_sha256_tv_template[0],=20
+"hmac(sha256)",
+> > +			   crypto_kdf108_setkey, crypto_kdf108_ctr_generate);
+> > +
+> > +	if (ret)
+> > +		pr_warn("alg: self-tests for CTR-KDF (hmac(sha256)) failed=20
+(rc=3D%d)\n",
+> > +			ret);
+>=20
+> This should be a WARN() since it indicates a kernel bug.
+
+Changed. Considering that the test result behavior should be identical to=20
+testmgr.c, I have added also the panic() call in case of fips_enabled.
+
+Thanks a lot for your review.
+>=20
+> - Eric
 
 
-On 11/17/21 21:03, Andy Shevchenko wrote:
-> On Wed, Nov 17, 2021 at 04:10:26PM +0000, Anand Ashok Dumbre wrote:
->> The AMS includes an ADC as well as on-chip sensors that can be used to
->> sample external voltages and monitor on-die operating conditions, such
->> as temperature and supply voltage levels. The AMS has two SYSMON blocks.
->> PL-SYSMON block is capable of monitoring off chip voltage and
->> temperature.
->>
->> PL-SYSMON block has DRP, JTAG and I2C interface to enable monitoring
->> from an external master. Out of these interfaces currently only DRP is
->> supported. Other block PS-SYSMON is memory mapped to PS.
->>
->> The AMS can use internal channels to monitor voltage and temperature as
->> well as one primary and up to 16 auxiliary channels for measuring
->> external voltages.
->>
->> The voltage and temperature monitoring channels also have event capability
->> which allows to generate an interrupt when their value falls below or
->> raises above a set threshold.
-> 
-> Thanks for an update, my comments below.
-> 
-> ...
-> 
-> Missed bitfields.h as kbuild bot noticed.
-> 
->> +#include <linux/bits.h>
->> +#include <linux/clk.h>
->> +#include <linux/delay.h>
->> +#include <linux/interrupt.h>
->> +#include <linux/io.h>
->> +#include <linux/iopoll.h>
->> +#include <linux/kernel.h>
->> +#include <linux/module.h>
->> +#include <linux/mod_devicetable.h>
->> +#include <linux/overflow.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/property.h>
->> +#include <linux/slab.h>
-> 
-> ...
-> 
->> +#define AMS_ALARM_THR_DIRECT_MASK	BIT(1)
-> 
->> +#define AMS_ALARM_THR_MIN		~(BIT(16) - 1)
-> 
-> This is wrong. I already said it.
-> 
->> +#define AMS_ALARM_THR_MAX		(BIT(16) - 1)
-> 
-> ...
-> 
->> +enum ams_alarm_bit {
->> +	AMS_ALARM_BIT_TEMP,
->> +	AMS_ALARM_BIT_SUPPLY1,
->> +	AMS_ALARM_BIT_SUPPLY2,
->> +	AMS_ALARM_BIT_SUPPLY3,
->> +	AMS_ALARM_BIT_SUPPLY4,
->> +	AMS_ALARM_BIT_SUPPLY5,
->> +	AMS_ALARM_BIT_SUPPLY6,
->> +	AMS_ALARM_BIT_RESERVED,
->> +	AMS_ALARM_BIT_SUPPLY7,
->> +	AMS_ALARM_BIT_SUPPLY8,
->> +	AMS_ALARM_BIT_SUPPLY9,
->> +	AMS_ALARM_BIT_SUPPLY10,
->> +	AMS_ALARM_BIT_VCCAMS,
->> +	AMS_ALARM_BIT_TEMP_REMOTE
-> 
-> +Comma, same to the rest where the last item is not a terminator one.
+Ciao
+Stephan
 
-And where you are touching this it will be good if you can initiate all 
-values. That's recommendation we got from Greg some time ago.
 
-Thanks,
-Michal
