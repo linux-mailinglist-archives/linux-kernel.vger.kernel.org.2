@@ -2,132 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D24C945603A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:12:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FBC1456040
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 17:14:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232984AbhKRQPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 11:15:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39848 "EHLO
+        id S233034AbhKRQRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 11:17:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232882AbhKRQPV (ORCPT
+        with ESMTP id S232944AbhKRQRg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 11:15:21 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE002C06173E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:12:20 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id k4so5636929plx.8
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 08:12:20 -0800 (PST)
+        Thu, 18 Nov 2021 11:17:36 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF04C061574;
+        Thu, 18 Nov 2021 08:14:35 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id g14so29393403edz.2;
+        Thu, 18 Nov 2021 08:14:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JtUbgJF6NuH5ekchLkHHx7uhAr5eiEYDxaa/1ZDxQZM=;
-        b=iRBhWG5YmMZ8saHTlZ/Xuz0EDAF+36mnUXW9sw4XNE40qtsP9abacRjGj7c8sYEJEN
-         RXbIuWjqZsO2VHrGVChvijshzPkxkBds4BrFHqRB1S3+hBj0sTAveaI1hlcsqSNT9Smq
-         jC28mFTpF5iFgIIvodg94YTOjPtG4lfvEgBH8ybTeo2YZ6JL4FivN48XTr4SQiXqNRIr
-         pow/xaD/Fm5PaS4WLDjH63Mi6bOt+4itX5B3TAY3F0tzBgnwAVlDU3C4MfbPRRpcloXH
-         8BFnHBhpgmg0VTW2Hj8w6dRDFUcL/0usr/iVid4soYx1bKkPTGP51kRAQO7tHc5YCgqw
-         JyAQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vVkdhLYZ2yghvtsnBfZx6aX0rdaLftB2qrWz+Mjn2N4=;
+        b=oxrMvtf7Ey8hzWQwNMB6/6bW7mFP3QERmTbgfftiUP3eHaqMIltdavOJTOQJI5/ehL
+         KxMBRasz0uCx3+dwDLHkZ93Nck7q5W7fBdJUQGxu0f9IT9oev5+tHSL69heIj4pFMrZO
+         S7mItovjhdXQJ+cBq2Fzgu1ekRgvgUSyaUnZCyLg+LgcqIrbmztmrPgBXGE0poua1s73
+         uvGbX/ehxNJCjIwcG5q6tQ1V68V39LTRPtEWL2zdMj25Lugb/u3dTBaFqT/Ol0RG4Py5
+         RsDsuKyrrnCXjWg0phgB2ixl/5FwhNRA7PPoXThSFmJ9+4if9pB/nR+cEoFEmokLGyWV
+         x9tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JtUbgJF6NuH5ekchLkHHx7uhAr5eiEYDxaa/1ZDxQZM=;
-        b=T/TxykQEELsJ8z4mcVKqNQLbWU9p8upJZTox125MLiVwB1dDJNvAY3pdxBpsg6QaoT
-         tLmhRKqeLsbQMbwod62HpYQ66ygZChQ+TszchoHywN6TyiApO/n26t233o8hv/kxVdAj
-         BD1xLFC9u4afdk58kQTosAh1LcGhA92IEdu+1MhQQmOf3A7BOFifGb8clBbDW9jaQuC1
-         Wm/9jOmshvIFTZdXfrc49baM5KNZ7prSwrcLhWFUZHiNDDUj9W30uhhMFG1OLHiNwseb
-         sefnzgTlS2AOxh5InMgZHqXp1T+feh1u6VRxd6moI1B6IL47PopK8TZdZYStHGHo2eiZ
-         1jkw==
-X-Gm-Message-State: AOAM533qWW6C6LhcjwQkzopuCfuQkZtLQT8f9T1Qcy9eNBWcTv2+X9Cg
-        enm9pdzr9wylavln0O1iJEuiWw==
-X-Google-Smtp-Source: ABdhPJz/oQk2Mm80u4EHRmjaQ3+PKJloRdFqaSBeITGTV+Ei76TrbAUwoZVcNLOQ3yPldyZqefDXDQ==
-X-Received: by 2002:a17:90a:49c2:: with SMTP id l2mr12111506pjm.23.1637251939046;
-        Thu, 18 Nov 2021 08:12:19 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id f29sm121048pgf.34.2021.11.18.08.12.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 08:12:18 -0800 (PST)
-Date:   Thu, 18 Nov 2021 16:12:15 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v3 3/4] x86/kvm: add max number of vcpus for hyperv
- emulation
-Message-ID: <YZZ7Xxg5LEoCb+oK@google.com>
-References: <20211116141054.17800-1-jgross@suse.com>
- <20211116141054.17800-4-jgross@suse.com>
- <YZVrDpjW0aZjFxo1@google.com>
- <bfe38122-0ddd-d9bc-4927-942b051a39c4@suse.com>
- <YZZn/iWsi2H845w6@google.com>
- <c3823bf6-dca3-515f-4657-14aac51679b3@suse.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vVkdhLYZ2yghvtsnBfZx6aX0rdaLftB2qrWz+Mjn2N4=;
+        b=Ft2nB7GSkU10/Kcro0ZcaZcI5zKrCfj12kElZZAmWsi3qgH0qLCdofIF3JElWcP1qM
+         fJ83bRakvGtD/J4jOZ75WRjXX6CfVSvEXPkMhXyE6j6RUWR8H+troZbc52e1CZOjpTr/
+         NJZNxFsseazmcsLJTO4V/CEX5oyM9y8YxV6cz7p/1duzmIEcYmZ+VQz5rSob7TI8nSCR
+         PCtySIWSyGdO4kwI6FjN4jfFuTVJL3iEsiHL1iZQFyxxA+2pHAW+GlD7bbML0v5Ge8Y+
+         WuTREYFCN9tlF5lKm95x+QXXu+DRJ8o6TtSakZSqg/LNUKwBu6+IZJv+kqmOh7knZ3Tf
+         Lgzg==
+X-Gm-Message-State: AOAM532MwF2OFH5EYHU5kzpBC8+w0JEJh+yilsyr//D0WQLPzRcAeSAf
+        DAR0OSx6I8Rsv0Ocx6RKnSIVNpKKPEmmFwnlTNE=
+X-Google-Smtp-Source: ABdhPJygbDY2ytW54uSb3bg9nnG5ICbHH/9W96c67TGZ90zluvUpU01RLAswsPq7zXbBk1v4b2NIzRT4YKwHcXpRjhk=
+X-Received: by 2002:aa7:c347:: with SMTP id j7mr13173830edr.272.1637252073533;
+ Thu, 18 Nov 2021 08:14:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c3823bf6-dca3-515f-4657-14aac51679b3@suse.com>
+References: <DM6PR12MB45165BFF3AB84602238FA595D89B9@DM6PR12MB4516.namprd12.prod.outlook.com>
+In-Reply-To: <DM6PR12MB45165BFF3AB84602238FA595D89B9@DM6PR12MB4516.namprd12.prod.outlook.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Thu, 18 Nov 2021 08:14:22 -0800
+Message-ID: <CAKgT0UfGvcGXAC5VBjXRpR5Y5uAPEPPCsYWjQR8RmW_1kw8TMQ@mail.gmail.com>
+Subject: Re: [igb] netconsole triggers warning in netpoll_poll_dev
+To:     Danielle Ratson <danieller@nvidia.com>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021, Juergen Gross wrote:
-> On 18.11.21 15:49, Sean Christopherson wrote:
-> > On Thu, Nov 18, 2021, Juergen Gross wrote:
-> > > On 17.11.21 21:50, Sean Christopherson wrote:
-> > > > > @@ -166,7 +166,7 @@ static struct kvm_vcpu *get_vcpu_by_vpidx(struct kvm *kvm, u32 vpidx)
-> > > > >    	struct kvm_vcpu *vcpu = NULL;
-> > > > >    	int i;
-> > > > > -	if (vpidx >= KVM_MAX_VCPUS)
-> > > > > +	if (vpidx >= min(KVM_MAX_VCPUS, KVM_MAX_HYPERV_VCPUS))
-> > > > 
-> > > > IMO, this is conceptually wrong.  KVM should refuse to allow Hyper-V to be enabled
-> > > > if the max number of vCPUs exceeds what can be supported, or should refuse to create
-> > > 
-> > > TBH, I wasn't sure where to put this test. Is there a guaranteed
-> > > sequence of ioctl()s regarding vcpu creation (or setting the max
-> > > number of vcpus) and the Hyper-V enabling?
-> > 
-> > For better or worse (mostly worse), like all other things CPUID, Hyper-V is a per-vCPU
-> > knob.  If KVM can't detect the impossible condition at compile time, kvm_check_cpuid()
-> > is probably the right place to prevent enabling Hyper-V on an unreachable vCPU.
-> 
-> With HYPERV_CPUID_IMPLEMENT_LIMITS already returning the
-> supported number of vcpus for the Hyper-V case I'm not sure
-> there is really more needed.
+On Thu, Nov 18, 2021 at 7:30 AM Danielle Ratson <danieller@nvidia.com> wrote:
+>
+> > On Thu, May 6, 2021 at 4:32 PM Jesse Brandeburg
+> > <jesse.brandeburg@intel.com> wrote:
+> > >
+> > > Alexander Duyck wrote:
+> > >
+> > > > On Sun, Apr 25, 2021 at 11:47 PM Oleksandr Natalenko
+> > > > <oleksandr@natalenko.name> wrote:
+> > > > >
+> > > > > Hello.
+> > > > >
+> > > > > On Fri, Apr 23, 2021 at 03:58:36PM -0700, Jakub Kicinski wrote:
+> > > > > > On Fri, 23 Apr 2021 10:19:44 +0200 Oleksandr Natalenko wrote:
+> > > > > > > On Wed, Apr 07, 2021 at 04:06:29PM -0700, Alexander Duyck wrote:
+> > > > > > > > On Wed, Apr 7, 2021 at 11:07 AM Jakub Kicinski
+> > <kuba@kernel.org> wrote:
+> > > > > > > > > Sure, that's simplest. I wasn't sure something is supposed
+> > > > > > > > > to prevent this condition or if it's okay to cover it up.
+> > > > > > > >
+> > > > > > > > I'm pretty sure it is okay to cover it up. In this case the
+> > > > > > > > "budget - 1" is supposed to be the upper limit on what can
+> > > > > > > > be reported. I think it was assuming an unsigned value anyway.
+> > > > > > > >
+> > > > > > > > Another alternative would be to default clean_complete to
+> > !!budget.
+> > > > > > > > Then if budget is 0 clean_complete would always return false.
+> > > > > > >
+> > > > > > > So, among all the variants, which one to try? Or there was a
+> > > > > > > separate patch sent to address this?
+> > > > > >
+> > > > > > Alex's suggestion is probably best.
+> > > > > >
+> > > > > > I'm not aware of the fix being posted. Perhaps you could take
+> > > > > > over and post the patch if Intel doesn't chime in?
+> > > > >
+> > > > > So, IIUC, Alex suggests this:
+> > > > >
+> > > > > ```
+> > > > > diff --git a/drivers/net/ethernet/intel/igb/igb_main.c
+> > > > > b/drivers/net/ethernet/intel/igb/igb_main.c
+> > > > > index a45cd2b416c8..7503d5bf168a 100644
+> > > > > --- a/drivers/net/ethernet/intel/igb/igb_main.c
+> > > > > +++ b/drivers/net/ethernet/intel/igb/igb_main.c
+> > > > > @@ -7981,7 +7981,7 @@ static int igb_poll(struct napi_struct *napi, int
+> > budget)
+> > > > >                                                      struct igb_q_vector,
+> > > > >                                                      napi);
+> > > > >         bool clean_complete = true;
+> > > > > -       int work_done = 0;
+> > > > > +       unsigned int work_done = 0;
+> > > > >
+> > > > >  #ifdef CONFIG_IGB_DCA
+> > > > >         if (q_vector->adapter->flags & IGB_FLAG_DCA_ENABLED) @@
+> > > > > -8008,7 +8008,7 @@ static int igb_poll(struct napi_struct *napi, int
+> > budget)
+> > > > >         if (likely(napi_complete_done(napi, work_done)))
+> > > > >                 igb_ring_irq_enable(q_vector);
+> > > > >
+> > > > > -       return min(work_done, budget - 1);
+> > > > > +       return min_t(unsigned int, work_done, budget - 1);
+> > > > >  }
+> > > > >
+> > > > >  /**
+> > > > > ```
+> > > > >
+> > > > > Am I right?
+> > > > >
+> > > > > Thanks.
+> > > >
+> > > > Actually a better way to go would be to probably just initialize
+> > > > "clean_complete = !!budget". With that we don't have it messing with
+> > > > the interrupt enables which would probably be a better behavior.
+> > >
+> > >
+> > > Thanks guys for the suggestions here! Finally got some time for this,
+> > > so here is the patch I'm going to queue shortly.
+> > >
+> > > From ffd24e90d688ee347ab051266bfc7fca00324a68 Mon Sep 17 00:00:00
+> > 2001
+> > > From: Jesse Brandeburg <jesse.brandeburg@intel.com>
+> > > Date: Thu, 6 May 2021 14:41:11 -0700
+> > > Subject: [PATCH net] igb: fix netpoll exit with traffic
+> > > To: netdev,
+> > >     Oleksandr Natalenko <oleksandr@natalenko.name>
+> > > Cc: Jakub Kicinski <kuba@kernel.org>, LKML
+> > > <linux-kernel@vger.kernel.org>, "Brandeburg, Jesse"
+> > > <jesse.brandeburg@intel.com>, "Nguyen, Anthony L"
+> > > <anthony.l.nguyen@intel.com>, "David S. Miller"
+> > <davem@davemloft.net>,
+> > > intel-wired-lan <intel-wired-lan@lists.osuosl.org>, Alexander Duyck
+> > > <alexander.duyck@gmail.com>
+> > >
+> > > Oleksandr brought a bug report where netpoll causes trace messages in
+> > > the log on igb.
+> > >
+> > > [22038.710800] ------------[ cut here ]------------ [22038.710801]
+> > > igb_poll+0x0/0x1440 [igb] exceeded budget in poll [22038.710802]
+> > > WARNING: CPU: 12 PID: 40362 at net/core/netpoll.c:155
+> > > netpoll_poll_dev+0x18a/0x1a0
+> > >
+> > > After some discussion and debug from the list, it was deemed that the
+> > > right thing to do is initialize the clean_complete variable to false
+> > > when the "netpoll mode" of passing a zero budget is used.
+> > >
+> > > This logic should be sane and not risky because the only time budget
+> > > should be zero on entry is netpoll.  Change includes a small refactor
+> > > of local variable assignments to clean up the look.
+> > >
+> > > Fixes: 16eb8815c235 ("igb: Refactor clean_rx_irq to reduce overhead
+> > > and improve performance")
+> > > Reported-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+> > > Suggested-by: Alexander Duyck <alexander.duyck@gmail.com>
+> > > Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+> > > ---
+> > >
+> > > Compile tested ONLY, but functionally it should be exactly the same
+> > > for all cases except when budget is zero on entry, which will
+> > > hopefully fix the bug.
+> > > ---
+> > >  drivers/net/ethernet/intel/igb/igb_main.c | 12 ++++++++----
+> > >  1 file changed, 8 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/drivers/net/ethernet/intel/igb/igb_main.c
+> > > b/drivers/net/ethernet/intel/igb/igb_main.c
+> > > index 0cd37ad81b4e..b0a9bed14071 100644
+> > > --- a/drivers/net/ethernet/intel/igb/igb_main.c
+> > > +++ b/drivers/net/ethernet/intel/igb/igb_main.c
+> > > @@ -7991,12 +7991,16 @@ static void igb_ring_irq_enable(struct
+> > igb_q_vector *q_vector)
+> > >   **/
+> > >  static int igb_poll(struct napi_struct *napi, int budget)  {
+> > > -       struct igb_q_vector *q_vector = container_of(napi,
+> > > -                                                    struct igb_q_vector,
+> > > -                                                    napi);
+> > > -       bool clean_complete = true;
+> > > +       struct igb_q_vector *q_vector;
+> > > +       bool clean_complete;
+> > >         int work_done = 0;
+> > >
+> > > +       /* if budget is zero, we have a special case for netconsole, so
+> > > +        * make sure to set clean_complete to false in that case.
+> > > +        */
+> > > +       clean_complete = !!budget;
+> > > +
+> > > +       q_vector = container_of(napi, struct igb_q_vector, napi);
+> > >  #ifdef CONFIG_IGB_DCA
+> > >         if (q_vector->adapter->flags & IGB_FLAG_DCA_ENABLED)
+> > >                 igb_update_dca(q_vector);
+> >
+> > I'm not a big fan of moving the q_vector init as a part of this patch since it
+> > just means more backport work.
+> >
+> > That said the change itself should be harmless so I am good with it either
+> > way.
+> >
+> > Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+>
+> Hi,
+>
+> I have lately added the netconsole module, and since then we see the same warning constantly in the logs.
+> I have tried to apply Jesse's patch but it didn't seem to solve the issue.
+>
+> Did anyone managed to solve the issue and can share with us?
+>
+> Thanks,
+> Danielle
 
-Yep, that'll do nicely.
+The one issue I can see is that it basically leaves the igb_poll call
+stuck in polling mode.
 
-> The problem I'm seeing is that the only thing I can do is to
-> let kvm_get_hv_cpuid() not adding the Hyper-V cpuid leaves for
-> vcpus > 64. I can't return a failure, because that would
-> probably let vcpu creation fail. And this is something we don't
-> want, as kvm_get_hv_cpuid() is called even in the case the guest
-> doesn't plan to use Hyper-V extensions.
-
-Argh, that thing is annoying.
-
-My vote is still to reject KVM_SET_CPUID{2} if userspace attempts to enable Hyper-V
-for a vCPU when the max number of vCPUs exceeds HYPERV_CPUID_IMPLEMENT_LIMITS.  If
-userspace parrots back KVM_GET_SUPPORTED_CPUID, it will specify KVM as the hypervisor,
-i.e. enabling Hyper-V requires deliberate action from userspace.
-
-The non-vCPU version of KVM_GET_SUPPORTED_HV_CPUID is not an issue, e.g. the generic
-KVM_GET_SUPPORTED_CPUID also reports features that become unsupported if dependent
-CPUID features are not enabled by userspace.
-
-The discrepancy with the per-vCPU variant of kvm_get_hv_cpuid() would be unfortunate,
-but IMO that ship sailed when the per-vCPU variant was added by commit 2bc39970e932
-("x86/kvm/hyper-v: Introduce KVM_GET_SUPPORTED_HV_CPUID").  We can't retroactively
-yank that code out, but I don't think we should be overly concerned with keeping it
-100% accurate.  IMO it's perfectly fine for KVM to define the output of
-KVM_GET_SUPPORTED_HV_CPUID as being garbage if the vCPU cannot possibly support
-Hyper-V enlightments.  That situation isn't possible today, so there's no backwards
-compatibility to worry about.
+The easiest fix for all of this in the in-kernel driver is to just get
+rid of the "min" at the end and instead just "return work_done;". The
+extra complication is only needed if you were to be polling multiple
+queues and that isn't the case here so we should simplify it and get
+rid of the buggy "budget - 1" return value.
