@@ -2,95 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211A945585F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:55:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 246C9455869
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 10:57:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245270AbhKRJ6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 04:58:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245410AbhKRJ5e (ORCPT
+        id S245368AbhKRKAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 05:00:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:22864 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245370AbhKRJ7T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 04:57:34 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3FAC06120C
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 01:54:33 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mne7i-0003yE-ID; Thu, 18 Nov 2021 10:54:30 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mne7f-000OTo-OI; Thu, 18 Nov 2021 10:54:27 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mne7d-0008SV-T7; Thu, 18 Nov 2021 10:54:25 +0100
-Date:   Thu, 18 Nov 2021 10:54:18 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     cgel.zte@gmail.com
-Cc:     alexandre.belloni@bootlin.com, deng.changcheng@zte.com.cn,
-        lee.jones@linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
-        ludovic.desroches@microchip.com, nicolas.ferre@microchip.com,
-        thierry.reding@gmail.com, zealci@zte.com.cn
-Subject: Re: [PATCH V3] pwm: Use div64_ul instead of do_div
-Message-ID: <20211118095418.mfodz4ubde5qsx57@pengutronix.de>
-References: <20211117145419.b4wb6zp42rjdpgn5@pengutronix.de>
- <20211118025254.163231-1-deng.changcheng@zte.com.cn>
+        Thu, 18 Nov 2021 04:59:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637229379;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wEk0Ix6QqXBgVWnz008QmDW0QekiZrGZyqYEU0wf5p4=;
+        b=R1IVZ+gw68ytCyB3rtw5ziFoQjoDgGTHXTNx7+fHbDiEPoRatPdaXOndkZBNiOVpZ+6s+k
+        hK2CWHNvXRNUuIi7C6lmMMwW2YaXvwy/6F2hDITgvQE17CHEl/gs6ZLSXr46e7uIB0XN3G
+        nSbhHw2zKLUTLkZsBvZnK48Wvz/3CPg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-363-uqecaitHPRmsAKjQpphpBg-1; Thu, 18 Nov 2021 04:56:16 -0500
+X-MC-Unique: uqecaitHPRmsAKjQpphpBg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1D81587D541;
+        Thu, 18 Nov 2021 09:56:14 +0000 (UTC)
+Received: from starship (unknown [10.40.194.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5D8CB5FC13;
+        Thu, 18 Nov 2021 09:56:12 +0000 (UTC)
+Message-ID: <8ad47d43a7c8ae19f09cc6ada73665d6e348e213.camel@redhat.com>
+Subject: Re: [PATCH v2] KVM: x86: check PIR even for vCPUs with disabled
+ APICv
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>
+Date:   Thu, 18 Nov 2021 11:56:11 +0200
+In-Reply-To: <20211118072531.1534938-1-pbonzini@redhat.com>
+References: <20211118072531.1534938-1-pbonzini@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7kouj4zcq22bjk3w"
-Content-Disposition: inline
-In-Reply-To: <20211118025254.163231-1-deng.changcheng@zte.com.cn>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 2021-11-18 at 02:25 -0500, Paolo Bonzini wrote:
+> The IRTE for an assigned device can trigger a POSTED_INTR_VECTOR even
+> if APICv is disabled on the vCPU that receives it.  In that case, the
+> interrupt will just cause a vmexit and leave the ON bit set together
+> with the PIR bit corresponding to the interrupt.
+100% true.
+> 
+> Right now, the interrupt would not be delivered until APICv is re-enabled.
+> However, fixing this is just a matter of always doing the PIR->IRR
+> synchronization, even if the vCPU has temporarily disabled APICv.
+> 
+> This is not a problem for performance, or if anything it is an
+> improvement.  First, in the common case where vcpu->arch.apicv_active is
+> true, one fewer check has to be performed.  Second, static_call_cond will
+> elide the function call if APICv is not present or disabled.  Finally,
+> in the case for AMD hardware we can remove the sync_pir_to_irr callback:
+> it is only needed for apic_has_interrupt_for_ppr, and that function
+> already has a fallback for !APICv.
+> 
+> Cc: stable@vger.kernel.org
+> Co-developed-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/kvm/lapic.c   |  2 +-
+>  arch/x86/kvm/svm/svm.c |  1 -
+>  arch/x86/kvm/x86.c     | 18 +++++++++---------
+>  3 files changed, 10 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> index 759952dd1222..f206fc35deff 100644
+> --- a/arch/x86/kvm/lapic.c
+> +++ b/arch/x86/kvm/lapic.c
+> @@ -707,7 +707,7 @@ static void pv_eoi_clr_pending(struct kvm_vcpu *vcpu)
+>  static int apic_has_interrupt_for_ppr(struct kvm_lapic *apic, u32 ppr)
+>  {
+>  	int highest_irr;
+> -	if (apic->vcpu->arch.apicv_active)
+> +	if (kvm_x86_ops.sync_pir_to_irr)
+>  		highest_irr = static_call(kvm_x86_sync_pir_to_irr)(apic->vcpu);
 
---7kouj4zcq22bjk3w
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>  	else
+>  		highest_irr = apic_find_highest_irr(apic);
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 5630c241d5f6..d0f68d11ec70 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -4651,7 +4651,6 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
+>  	.load_eoi_exitmap = svm_load_eoi_exitmap,
+>  	.hwapic_irr_update = svm_hwapic_irr_update,
+>  	.hwapic_isr_update = svm_hwapic_isr_update,
+> -	.sync_pir_to_irr = kvm_lapic_find_highest_irr,
+>  	.apicv_post_state_restore = avic_post_state_restore,
+>  
+>  	.set_tss_addr = svm_set_tss_addr,
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 627c955101a0..a8f12c83db4b 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -4448,8 +4448,7 @@ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
+>  static int kvm_vcpu_ioctl_get_lapic(struct kvm_vcpu *vcpu,
+>  				    struct kvm_lapic_state *s)
+>  {
+> -	if (vcpu->arch.apicv_active)
+> -		static_call(kvm_x86_sync_pir_to_irr)(vcpu);
+> +	static_call_cond(kvm_x86_sync_pir_to_irr)(vcpu);
+>  
+>  	return kvm_apic_get_state(vcpu, s);
+>  }
+> @@ -9528,8 +9527,7 @@ static void vcpu_scan_ioapic(struct kvm_vcpu *vcpu)
+>  	if (irqchip_split(vcpu->kvm))
+>  		kvm_scan_ioapic_routes(vcpu, vcpu->arch.ioapic_handled_vectors);
+>  	else {
+> -		if (vcpu->arch.apicv_active)
+> -			static_call(kvm_x86_sync_pir_to_irr)(vcpu);
+> +		static_call_cond(kvm_x86_sync_pir_to_irr)(vcpu);
+>  		if (ioapic_in_kernel(vcpu->kvm))
+>  			kvm_ioapic_scan_entry(vcpu, vcpu->arch.ioapic_handled_vectors);
+>  	}
+> @@ -9802,10 +9800,12 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>  
+>  	/*
+>  	 * This handles the case where a posted interrupt was
+> -	 * notified with kvm_vcpu_kick.
+> +	 * notified with kvm_vcpu_kick.  Assigned devices can
+> +	 * use the POSTED_INTR_VECTOR even if APICv is disabled,
+> +	 * so do it even if !kvm_vcpu_apicv_active(vcpu).
+>  	 */
+> -	if (kvm_lapic_enabled(vcpu) && vcpu->arch.apicv_active)
+> -		static_call(kvm_x86_sync_pir_to_irr)(vcpu);
+> +	if (kvm_lapic_enabled(vcpu))
+> +		static_call_cond(kvm_x86_sync_pir_to_irr)(vcpu);
+>  
+>  	if (kvm_vcpu_exit_request(vcpu)) {
+>  		vcpu->mode = OUTSIDE_GUEST_MODE;
+> @@ -9849,8 +9849,8 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>  		if (likely(exit_fastpath != EXIT_FASTPATH_REENTER_GUEST))
+>  			break;
+>  
+> -		if (kvm_lapic_enabled(vcpu) && kvm->arch.apicv_active)
+> -			static_call(kvm_x86_sync_pir_to_irr)(vcpu);
+> +		if (kvm_lapic_enabled(vcpu))
+> +			static_call_cond(kvm_x86_sync_pir_to_irr)(vcpu);
+>  
+>  		if (unlikely(kvm_vcpu_exit_request(vcpu))) {
+>  			exit_fastpath = EXIT_FASTPATH_EXIT_HANDLED;
 
-On Thu, Nov 18, 2021 at 02:52:54AM +0000, cgel.zte@gmail.com wrote:
-> From: Changcheng Deng <deng.changcheng@zte.com.cn>
->=20
-> do_div() does a 64-by-32 division. Here the divisor is an unsigned long
-> which on some platforms is 64 bit wide. So use div64_ul instead of do_div
-> to avoid a possible truncation.
->=20
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-There is no S-o-b line matching the mail sender.
+vmx_sync_pir_to_irr has 'if (KVM_BUG_ON(!vcpu->arch.apicv_active, vcpu->kvm))'
+That has to be removed I think for this to work.
 
-Best regards
-Uwe
+Plus the above calls now can happen when APICv is fully disabled (and not just inhibited),
+which is also something that I think that vmx_sync_pir_to_irr should be fixed to be aware of.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Also note that VMX has code that sets vmx_x86_ops.sync_pir_to_irr to NULL in its 'hardware_setup'
+if APICv is disabled. 
+I wonder if that done befor or after the static_call_cond sites are updated.
 
---7kouj4zcq22bjk3w
-Content-Type: application/pgp-signature; name="signature.asc"
+I think that this code should be removed as well, and vmx_sync_pir_to_irr should just
+do nothing when APICv is fully disabled.
 
------BEGIN PGP SIGNATURE-----
+I haven't run tested this code so I might be wrong of course.
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGWIsUACgkQwfwUeK3K
-7AkZ5Qf9HR7iISiYdJZ8YBH614+DPXIpNQoQGAMYpBT/IMDvHXQGKwLZwDr4tje4
-+vgghB4LPVcApwDENj78/nnJAkSCtYnoSPKk0b3YR9CBEIviBbbJLWLENtNk1hlW
-EaLOf4cs9PF1Or/zfllcRw9fpjVpd4DUtfYfLwOM7ktiYMqem30NQ8GNQalCPcOa
-DCWaVwBp/6Dl3QBxnKKoZSFbpT+WinrbVOb6gtDETANXcDe6BSe0SeyhRM+umoQ6
-UA8GcslIzt+exZ9qDbgMA4myrnQSyD7pSeEI0FhLPVly06RVhA2H3/2HQB0McYsS
-/99h9TRhwJqUhzzvk8cP0B0v66V7mw==
-=2WhT
------END PGP SIGNATURE-----
 
---7kouj4zcq22bjk3w--
+Best regards,
+	Maxim Levitsky
+
