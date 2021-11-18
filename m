@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810314555BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 08:32:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8904555BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 08:32:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244071AbhKRHfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 02:35:34 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:52178 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243860AbhKRHe3 (ORCPT
+        id S244096AbhKRHfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 02:35:41 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:46384 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243862AbhKRHe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 18 Nov 2021 02:34:29 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 31FE91FD3A;
+        by smtp-out1.suse.de (Postfix) with ESMTP id 562C1218A8;
         Thu, 18 Nov 2021 07:31:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1637220689; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=tjnWMWGIfoPwUUlnn6KHn1yJDyNJ5XWkVE80iGAbOzY=;
-        b=NBroRiGaVBAnwvsuMsQMPfxZPuK63QZp5Irq3cK2v03K/cvD2NSbf6bQjPzRVPkBM6I93g
-        QeQsHtsJCFA50K7QITiD4q7RQg0KBpKJL58fmF5WuISl0cpCfkqYzUZkdw2y+9Abeyq4Gy
-        yiEK1gq87BXI2LFncTLGPB7NYILFkRw=
+        bh=8uJEY6GawRVuGpeu4+3Tz6MShZ9mZUQ4e2P24QxckKI=;
+        b=IEr94KtyGAiXSpZFb9vdBjO5Q9asvF3B3G9Z8MovL6F9PE04sRQyzjj1wBN29Tm2hGva3h
+        mYtFd8zF97KzM7libLerNOwzraSanTeIoMNZyyLveVHKhby2QNrGslYnOXU+qiN6UCOgpt
+        8FJIojBQACCisKM0VyQzBBVabnvpCEU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1637220689;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=tjnWMWGIfoPwUUlnn6KHn1yJDyNJ5XWkVE80iGAbOzY=;
-        b=DtIgzRgd/zCdWlR3WGGubvm9rD4nD9/vxbzHhVHyOVxt0LJLdjaWpbCUg701Fjlnm8NslS
-        1QGJAKltxQZxBLBw==
+        bh=8uJEY6GawRVuGpeu4+3Tz6MShZ9mZUQ4e2P24QxckKI=;
+        b=nX3IzNhJKhGRsfdU1UYKdy5SUWx3tYPk49HoOMBR7BbfTJM8uTVnzAj8vyoZHv68/rhz10
+        mBwFUxzw+QFlOSAw==
 Received: from localhost.localdomain (unknown [10.100.208.98])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 091BAA3B84;
+        by relay2.suse.de (Postfix) with ESMTPS id 3863FA3B83;
         Thu, 18 Nov 2021 07:31:29 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 13/19] mxser: clean up timeout handling in mxser_wait_until_sent()
-Date:   Thu, 18 Nov 2021 08:31:19 +0100
-Message-Id: <20211118073125.12283-14-jslaby@suse.cz>
+Subject: [PATCH 14/19] mxser: don't throttle manually
+Date:   Thu, 18 Nov 2021 08:31:20 +0100
+Message-Id: <20211118073125.12283-15-jslaby@suse.cz>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211118073125.12283-1-jslaby@suse.cz>
 References: <20211118073125.12283-1-jslaby@suse.cz>
@@ -54,51 +54,152 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-timeout cannot be zero at the point of use. So no need to check for
-zero. Also precompute the expiration time (into expire) and use it. This
-makes the code more clear.
+First, checking tty->receive_room to signalize whether there is enough space
+in the tty buffers does not make much sense. Provided the tty buffers
+are in tty_port and those are not checked at all.
+
+Second, if the rx path is throttled, with CRTSCTS, RTS is deasserted,
+but is never asserted again. This leads to port "lockup", not accepting
+any more input.
+
+So:
+1) stty -F /dev/ttyMI0 crtscts # the mxser port
+2) stty -F /dev/ttyS6 crtscts # the connected port
+3) cat /dev/ttyMI0
+4) "write in a loop" to /dev/ttyS6
+5) cat from 3) produces the bytes from 4)
+6) killall -STOP cat (the 3)'s one)
+7) wait for RTS to drop on /dev/ttyMI0
+8) killall -CONT cat (again the 3)'s one)
+
+cat erroneously produces no more output now (i.e. no data sent from
+ttyS6 to ttyMI can be seen).
+
+Note that the step 7) is performed twice: once from n_tty by
+tty_throttle_safe(), once by mxser_stoprx() from the receive path. Then
+after step 7), n_tty correctly unthrottles the input, but mxser calls
+mxser_stoprx() again as there is still only a little space in n_tty
+buffers (tty->receive_room mentioned at the beginning), but the device's
+FIFO is/can be already filled.
+
+After this patch, the output is correctly resumed, i.e. n_tty both
+throttles and unthrottles without interfering with mxser's attempts.
+
+This allows us to get rid of the non-standard ldisc_stop_rx flag from
+struct mxser_port.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/mxser.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/tty/mxser.c | 36 ++++++------------------------------
+ 1 file changed, 6 insertions(+), 30 deletions(-)
 
 diff --git a/drivers/tty/mxser.c b/drivers/tty/mxser.c
-index b3ae3b105af0..c3f262dc936d 100644
+index c3f262dc936d..2359b4aa68af 100644
 --- a/drivers/tty/mxser.c
 +++ b/drivers/tty/mxser.c
-@@ -1420,7 +1420,7 @@ static bool mxser_tx_empty(struct mxser_port *info)
- static void mxser_wait_until_sent(struct tty_struct *tty, int timeout)
+@@ -251,8 +251,6 @@ struct mxser_port {
+ 	u8 MCR;			/* Modem control register */
+ 	u8 FCR;			/* FIFO control register */
+ 
+-	bool ldisc_stop_rx;
+-
+ 	struct async_icount icount; /* kernel counters for 4 input interrupts */
+ 	unsigned int timeout;
+ 
+@@ -1286,11 +1284,14 @@ static int mxser_get_icount(struct tty_struct *tty,
+ 	return 0;
+ }
+ 
+-static void mxser_stoprx(struct tty_struct *tty)
++/*
++ * This routine is called by the upper-layer tty layer to signal that
++ * incoming characters should be throttled.
++ */
++static void mxser_throttle(struct tty_struct *tty)
  {
  	struct mxser_port *info = tty->driver_data;
--	unsigned long orig_jiffies, char_time;
-+	unsigned long expire, char_time;
  
- 	if (info->type == PORT_UNKNOWN)
- 		return;
-@@ -1428,7 +1428,6 @@ static void mxser_wait_until_sent(struct tty_struct *tty, int timeout)
- 	if (info->xmit_fifo_size == 0)
- 		return;		/* Just in case.... */
- 
--	orig_jiffies = jiffies;
- 	/*
- 	 * Set the check interval to be 1/5 of the estimated time to
- 	 * send a single character, and make it at least 1.  The check
-@@ -1458,11 +1457,13 @@ static void mxser_wait_until_sent(struct tty_struct *tty, int timeout)
- 	if (!timeout || timeout > 2 * info->timeout)
- 		timeout = 2 * info->timeout;
- 
-+	expire = jiffies + timeout;
-+
- 	while (mxser_tx_empty(info)) {
- 		msleep_interruptible(char_time);
- 		if (signal_pending(current))
- 			break;
--		if (timeout && time_after(jiffies, orig_jiffies + timeout))
-+		if (time_after(jiffies, expire))
- 			break;
+-	info->ldisc_stop_rx = true;
+ 	if (I_IXOFF(tty)) {
+ 		if (info->board->must_hwid) {
+ 			info->IER &= ~MOXA_MUST_RECV_ISR;
+@@ -1309,21 +1310,11 @@ static void mxser_stoprx(struct tty_struct *tty)
  	}
  }
+ 
+-/*
+- * This routine is called by the upper-layer tty layer to signal that
+- * incoming characters should be throttled.
+- */
+-static void mxser_throttle(struct tty_struct *tty)
+-{
+-	mxser_stoprx(tty);
+-}
+-
+ static void mxser_unthrottle(struct tty_struct *tty)
+ {
+ 	struct mxser_port *info = tty->driver_data;
+ 
+ 	/* startrx */
+-	info->ldisc_stop_rx = false;
+ 	if (I_IXOFF(tty)) {
+ 		if (info->x_char)
+ 			info->x_char = 0;
+@@ -1515,9 +1506,6 @@ static bool mxser_receive_chars_new(struct tty_struct *tty,
+ 	if (hwid == MOXA_MUST_MU150_HWID)
+ 		gdl &= MOXA_MUST_GDL_MASK;
+ 
+-	if (gdl >= tty->receive_room && !port->ldisc_stop_rx)
+-		mxser_stoprx(tty);
+-
+ 	while (gdl--) {
+ 		u8 ch = inb(port->ioaddr + UART_RX);
+ 		tty_insert_flip_char(&port->port, ch, 0);
+@@ -1530,10 +1518,8 @@ static u8 mxser_receive_chars_old(struct tty_struct *tty,
+ 		                struct mxser_port *port, u8 status)
+ {
+ 	enum mxser_must_hwid hwid = port->board->must_hwid;
+-	int recv_room = tty->receive_room;
+ 	int ignored = 0;
+ 	int max = 256;
+-	int cnt = 0;
+ 	u8 ch;
+ 
+ 	do {
+@@ -1568,14 +1554,8 @@ static u8 mxser_receive_chars_old(struct tty_struct *tty,
+ 					port->icount.overrun++;
+ 				}
+ 			}
+-			tty_insert_flip_char(&port->port, ch, flag);
+-			cnt++;
+-			if (cnt >= recv_room) {
+-				if (!port->ldisc_stop_rx)
+-					mxser_stoprx(tty);
++			if (!tty_insert_flip_char(&port->port, ch, flag))
+ 				break;
+-			}
+-
+ 		}
+ 
+ 		if (hwid)
+@@ -1590,9 +1570,6 @@ static u8 mxser_receive_chars_old(struct tty_struct *tty,
+ static u8 mxser_receive_chars(struct tty_struct *tty,
+ 		struct mxser_port *port, u8 status)
+ {
+-	if (tty->receive_room == 0 && !port->ldisc_stop_rx)
+-		mxser_stoprx(tty);
+-
+ 	if (!mxser_receive_chars_new(tty, port, status))
+ 		status = mxser_receive_chars_old(tty, port, status);
+ 
+@@ -1798,7 +1775,6 @@ static void mxser_initbrd(struct mxser_board *brd, bool high_baud)
+ 		tty_port_init(&info->port);
+ 		info->port.ops = &mxser_port_ops;
+ 		info->board = brd;
+-		info->ldisc_stop_rx = false;
+ 
+ 		/* Enhance mode enabled here */
+ 		if (brd->must_hwid != MOXA_OTHER_UART)
 -- 
 2.33.1
 
