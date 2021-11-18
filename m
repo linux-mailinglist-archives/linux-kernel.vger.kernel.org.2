@@ -2,56 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2623455E1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:35:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97FDD455E16
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:34:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233175AbhKROht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 09:37:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231646AbhKROhl (ORCPT
+        id S233131AbhKROhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 09:37:43 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:39208 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229909AbhKROhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 09:37:41 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 096E7C061574;
-        Thu, 18 Nov 2021 06:34:41 -0800 (PST)
-Date:   Thu, 18 Nov 2021 14:34:37 -0000
+        Thu, 18 Nov 2021 09:37:40 -0500
+Date:   Thu, 18 Nov 2021 14:34:38 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637246078;
+        s=2020; t=1637246079;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/e2CHsiNW2gjAi0KCiY9Y60aoaonyMeunWGCYqn3esg=;
-        b=nrep6g9QiFvLKda7IMkhg7ic6ZHccJkGuADIuV6lqVQemGn2s0UIKlaSyEI778rctWRLu/
-        paR6ZdX0OAcB46I8NFrDe/F+4Xv0AJTUvJzOeZF6BB3iheR8UlHi/67MDWtDvo4VlfhnlH
-        Ba6w5S/9R/Pbps6v+c3ZfGNsggcExDU5PUcjkN7c5EMkwN5A8NXyBuM/Y9eizfeg+Tmw2N
-        QmakCKxzQAvetfRCyI0gAjfHU60Gkmxm5u0ORhCAtC59Rmi5S8JnvGj3TQ337SbwRbmtf9
-        pgd+HXhSU86kxI776a/4xO8XdeSxzNB9kvMvU63Uv72DdeuQEBBAVoHMiz+OAg==
+        bh=obazFwK0qJ3Ft+YyQO+zEna79biSq5r4rUoMEDx5S9Q=;
+        b=T7b6QWvoGu73IJ7soktiMb572rFoLJrEZunjI+JCJC+7218rDUYQ1e713JlP5+Rolg7SnH
+        +LfrXsR0i/ZZskfPwGxAPVdhDEtRaYle2nddo9YbhvjGJLSXvIkDrwuiioWzVuFBywJJCs
+        UgveZ8m9VH66JELkQTiLjVGEKQ9nB/0ONPjTTPFoUtV53gRLmF7TInzoa8D900oMV/NeCD
+        FcQjeZmHJ/+/8VnNtOPIIXie2pct/6n+ot6uwBpmsO8A7hT8jpJMZG1pJuKrHHWPHHde3T
+        4VluFcsBmgg97iHa3DOGtUkGfiCOVef5XPgBEaJ4eqymF0Wpun0jvGNvBHXu9g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637246078;
+        s=2020e; t=1637246079;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/e2CHsiNW2gjAi0KCiY9Y60aoaonyMeunWGCYqn3esg=;
-        b=qmJydfi7OAht/Lv9WbmWbSDA9nJxit5dRggu/Hg1XmKxpSEgP4637k0781MwrMfBeRdOwC
-        X/bx7CL9iI5sOjDw==
+        bh=obazFwK0qJ3Ft+YyQO+zEna79biSq5r4rUoMEDx5S9Q=;
+        b=1sAF5LTLhm/0quJzhedmn7/0WJSirh/20MgA3LVedYryZMuwnw6MAay5P43cOaQ/Pnyg5N
+        iD08nKZaMVyOwJDQ==
 From:   "tip-bot2 for Sean Christopherson" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] KVM: arm64: Hide kvm_arm_pmu_available behind
- CONFIG_HW_PERF_EVENTS=y
+Subject: [tip: perf/core] KVM: arm64: Convert to the generic perf callbacks
 Cc:     Sean Christopherson <seanjc@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20211111020738.2512932-16-seanjc@google.com>
-References: <20211111020738.2512932-16-seanjc@google.com>
+In-Reply-To: <20211111020738.2512932-15-seanjc@google.com>
+References: <20211111020738.2512932-15-seanjc@google.com>
 MIME-Version: 1.0
-Message-ID: <163724607789.11128.6052744162598816978.tip-bot2@tip-bot2>
+Message-ID: <163724607868.11128.9418762241597798046.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,111 +59,72 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     be399d824b432a85f8df86b566d2e5994fdf58b0
-Gitweb:        https://git.kernel.org/tip/be399d824b432a85f8df86b566d2e5994fdf58b0
+Commit-ID:     7b517831a1c6aceb0821860edb9c7bc7d4f803a2
+Gitweb:        https://git.kernel.org/tip/7b517831a1c6aceb0821860edb9c7bc7d4f803a2
 Author:        Sean Christopherson <seanjc@google.com>
-AuthorDate:    Thu, 11 Nov 2021 02:07:36 
+AuthorDate:    Thu, 11 Nov 2021 02:07:35 
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Wed, 17 Nov 2021 14:49:11 +01:00
 
-KVM: arm64: Hide kvm_arm_pmu_available behind CONFIG_HW_PERF_EVENTS=y
+KVM: arm64: Convert to the generic perf callbacks
 
-Move the definition of kvm_arm_pmu_available to pmu-emul.c and, out of
-"necessity", hide it behind CONFIG_HW_PERF_EVENTS.  Provide a stub for
-the key's wrapper, kvm_arm_support_pmu_v3().  Moving the key's definition
-out of perf.c will allow a future commit to delete perf.c entirely.
+Drop arm64's version of the callbacks in favor of the callbacks provided
+by generic KVM, which are semantically identical.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20211111020738.2512932-16-seanjc@google.com
+Reviewed-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20211111020738.2512932-15-seanjc@google.com
 ---
- arch/arm64/kernel/image-vars.h |  2 ++
- arch/arm64/kvm/perf.c          |  2 --
- arch/arm64/kvm/pmu-emul.c      |  2 ++
- include/kvm/arm_pmu.h          | 19 ++++++++++++-------
- 4 files changed, 16 insertions(+), 9 deletions(-)
+ arch/arm64/kvm/perf.c | 34 ++--------------------------------
+ 1 file changed, 2 insertions(+), 32 deletions(-)
 
-diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
-index c96a9a0..7eaf1f7 100644
---- a/arch/arm64/kernel/image-vars.h
-+++ b/arch/arm64/kernel/image-vars.h
-@@ -102,7 +102,9 @@ KVM_NVHE_ALIAS(__stop___kvm_ex_table);
- KVM_NVHE_ALIAS(kvm_arm_hyp_percpu_base);
- 
- /* PMU available static key */
-+#ifdef CONFIG_HW_PERF_EVENTS
- KVM_NVHE_ALIAS(kvm_arm_pmu_available);
-+#endif
- 
- /* Position-independent library routines */
- KVM_NVHE_ALIAS_HYP(clear_page, __pi_clear_page);
 diff --git a/arch/arm64/kvm/perf.c b/arch/arm64/kvm/perf.c
-index 374c496..52cfab2 100644
+index dfa9bce..374c496 100644
 --- a/arch/arm64/kvm/perf.c
 +++ b/arch/arm64/kvm/perf.c
-@@ -11,8 +11,6 @@
+@@ -13,42 +13,12 @@
  
- #include <asm/kvm_emulate.h>
+ DEFINE_STATIC_KEY_FALSE(kvm_arm_pmu_available);
  
--DEFINE_STATIC_KEY_FALSE(kvm_arm_pmu_available);
+-static unsigned int kvm_guest_state(void)
+-{
+-	struct kvm_vcpu *vcpu = kvm_get_running_vcpu();
+-	unsigned int state;
+-
+-	if (!vcpu)
+-		return 0;
+-
+-	state = PERF_GUEST_ACTIVE;
+-	if (!vcpu_mode_priv(vcpu))
+-		state |= PERF_GUEST_USER;
+-
+-	return state;
+-}
+-
+-static unsigned long kvm_get_guest_ip(void)
+-{
+-	struct kvm_vcpu *vcpu = kvm_get_running_vcpu();
+-
+-	if (WARN_ON_ONCE(!vcpu))
+-		return 0;
+-
+-	return *vcpu_pc(vcpu);
+-}
+-
+-static struct perf_guest_info_callbacks kvm_guest_cbs = {
+-	.state		= kvm_guest_state,
+-	.get_ip		= kvm_get_guest_ip,
+-};
 -
  void kvm_perf_init(void)
  {
- 	kvm_register_perf_callbacks(NULL);
-diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
-index a5e4bbf..3308cee 100644
---- a/arch/arm64/kvm/pmu-emul.c
-+++ b/arch/arm64/kvm/pmu-emul.c
-@@ -14,6 +14,8 @@
- #include <kvm/arm_pmu.h>
- #include <kvm/arm_vgic.h>
+-	perf_register_guest_info_callbacks(&kvm_guest_cbs);
++	kvm_register_perf_callbacks(NULL);
+ }
  
-+DEFINE_STATIC_KEY_FALSE(kvm_arm_pmu_available);
-+
- static void kvm_pmu_create_perf_event(struct kvm_vcpu *vcpu, u64 select_idx);
- static void kvm_pmu_update_pmc_chained(struct kvm_vcpu *vcpu, u64 select_idx);
- static void kvm_pmu_stop_counter(struct kvm_vcpu *vcpu, struct kvm_pmc *pmc);
-diff --git a/include/kvm/arm_pmu.h b/include/kvm/arm_pmu.h
-index 90f2189..f9ed4c1 100644
---- a/include/kvm/arm_pmu.h
-+++ b/include/kvm/arm_pmu.h
-@@ -13,13 +13,6 @@
- #define ARMV8_PMU_CYCLE_IDX		(ARMV8_PMU_MAX_COUNTERS - 1)
- #define ARMV8_PMU_MAX_COUNTER_PAIRS	((ARMV8_PMU_MAX_COUNTERS + 1) >> 1)
- 
--DECLARE_STATIC_KEY_FALSE(kvm_arm_pmu_available);
--
--static __always_inline bool kvm_arm_support_pmu_v3(void)
--{
--	return static_branch_likely(&kvm_arm_pmu_available);
--}
--
- #ifdef CONFIG_HW_PERF_EVENTS
- 
- struct kvm_pmc {
-@@ -36,6 +29,13 @@ struct kvm_pmu {
- 	struct irq_work overflow_work;
- };
- 
-+DECLARE_STATIC_KEY_FALSE(kvm_arm_pmu_available);
-+
-+static __always_inline bool kvm_arm_support_pmu_v3(void)
-+{
-+	return static_branch_likely(&kvm_arm_pmu_available);
-+}
-+
- #define kvm_arm_pmu_irq_initialized(v)	((v)->arch.pmu.irq_num >= VGIC_NR_SGIS)
- u64 kvm_pmu_get_counter_value(struct kvm_vcpu *vcpu, u64 select_idx);
- void kvm_pmu_set_counter_value(struct kvm_vcpu *vcpu, u64 select_idx, u64 val);
-@@ -65,6 +65,11 @@ int kvm_arm_pmu_v3_enable(struct kvm_vcpu *vcpu);
- struct kvm_pmu {
- };
- 
-+static inline bool kvm_arm_support_pmu_v3(void)
-+{
-+	return false;
-+}
-+
- #define kvm_arm_pmu_irq_initialized(v)	(false)
- static inline u64 kvm_pmu_get_counter_value(struct kvm_vcpu *vcpu,
- 					    u64 select_idx)
+ void kvm_perf_teardown(void)
+ {
+-	perf_unregister_guest_info_callbacks(&kvm_guest_cbs);
++	kvm_unregister_perf_callbacks();
+ }
