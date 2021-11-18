@@ -2,80 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 018AC455BBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C92DA455BDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 13:49:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344807AbhKRMtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 07:49:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47906 "EHLO
+        id S1344978AbhKRMwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 07:52:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344779AbhKRMtk (ORCPT
+        with ESMTP id S1344838AbhKRMvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 07:49:40 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F7AFC061570;
-        Thu, 18 Nov 2021 04:46:40 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id r10-20020a056830080a00b0055c8fd2cebdso10706289ots.6;
-        Thu, 18 Nov 2021 04:46:40 -0800 (PST)
+        Thu, 18 Nov 2021 07:51:46 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47BCBC061767;
+        Thu, 18 Nov 2021 04:48:31 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so8090009pjc.4;
+        Thu, 18 Nov 2021 04:48:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zDy1jFSdSdEX9dk2+PJhg/eseApJ7w84/Y/oAH27zQA=;
-        b=dgkWRvbzUNdw83L0KkR2a6ISJEKEbw3Hw10sZfoomU4jo0yXRSL6vil2PC2uGdD0e1
-         X71MEBmzvP3KHi/OmjHZQPqpwbreWVvHuGGz0EmwSgk9wBccdGdt3SgWi6tXL1b5AxKQ
-         1Ie+z7Hwn0CeHu+vBlBEgHEfmU8jZgWfQ0fiIPZ+SDcoKGkBwej/p7ah0XX1cAb9bNr2
-         iDFSAtfJTc9rjGu2r5U0i+hJW1hnrqqskf8P5MWOMXcxHdXyR7GfK2Ky3p3HtVxgIU8F
-         VYyAB5AqOqF1JAXRPlJNhhg5xNzMNvof5li9cAjkY1EaEcSxDonlki9T5/RWne0C+hbQ
-         FcIw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NWDotjV6OD/nb0uPooGwYcGhSdQOPensUwAS7MgNA/A=;
+        b=Qxq+dcVa+GQBIUt36f5GThfDaDda0iEfCiOcs4u6k1nvw4PvEJ4n1Mpf369XGYZVJs
+         rve3j7ChRaDLNdD9ZJD21Pe6sM5pJtbX7vluVjBqmrZglNDGqI28/K128B/DsdHab3ad
+         gkaD0rc7x3SZk9hlUQDZ3U+SPhUnCQvA0dIZl19C2AN5OgdJfhBEkyNCJULgXOW2yEFA
+         rLhMNCQ9v2VII4CUjy7OrWWtZ7+Y0TBz+MgLX3oRwVOua09K+HlQB2zfePyJK0fPQrQq
+         ocwiaOMXgKXWc1lBbt7u/9UUDqWE9tPagbBxCb5KowbpuMWUjIcaEwZfov8kIFZfTeZW
+         xo4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zDy1jFSdSdEX9dk2+PJhg/eseApJ7w84/Y/oAH27zQA=;
-        b=ELZu/8PpgpPbixCPRWnqHPa+yDTqHQOyEj4AAlJNwA/7nmpXmgW19KrzgLEsRK9afM
-         CrkKkHH9ql2YcdtH/l7HPaV10fz/KxqXRZ8/XrIGlEZd91PTSC2PtBQHo5Gzuw2KtiLo
-         HZh5m4Bs84xTAacAsk7hbaTYT0HiZ3PgI60ZBa3szhywu2uHRfZ3vHfqZdVSPgvYRKBy
-         O8xx+rKRodyuOTwlTjrMKOEs4ixAK46YliKBHMXCWzwR9wnSdkGjIjPWnGRul3HB3oa2
-         +B5WgMo/Euw6WhSsGlydrZzIBCwM1F8w/SRDiq8kODDdMlxHq+MIFvALXecMLyel8QUA
-         Y40Q==
-X-Gm-Message-State: AOAM5306fvc3JwgRb9qC9DjPsHQHZE9vUmR9tuVTHOHZqz256m8WP4TO
-        Y/j29HXKg35KeCuwmTl519w+wkAP+v2/5UG2x2a78DW9I9A=
-X-Google-Smtp-Source: ABdhPJyXU/MWDnNIlJR8UXymAiR1xubiZGzZ5xsU4aco1Q3a5GCh3CBfWZ/6H3C964FlppmLELSDzxToKwjpiTanub4=
-X-Received: by 2002:a9d:6f0e:: with SMTP id n14mr21115817otq.173.1637239600023;
- Thu, 18 Nov 2021 04:46:40 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NWDotjV6OD/nb0uPooGwYcGhSdQOPensUwAS7MgNA/A=;
+        b=ORl/n6dk+LC1HRrbbyUFcPrq55l34GjoukwcRNWtsxd7fYc35E41bo0IRGIDtOvzIa
+         GppT8TmLYUikD9uP+Yulf3M+dFUaT5wDIakcaNi3BkUPp5luDQ49+VaGzZnQHEbrAbj9
+         ND37tMQRDAZJIM18cdKA0EZMMJT94qsxLCrKzELRhf3zO1+EWYE6OR6G2uPEubCp7COg
+         p8r4necgiz4tujJS5zYnZA69ZcbWGmiW5CHJZtqB2doZ0q8axuTYMofvLjxF4aa/XvNR
+         If9R5PATZ0JcGrmrdX4dqI7kA+YXAlmh6fSD0FTE2ArRxcbZgxourCHD/Gc75r7hxtua
+         nYjg==
+X-Gm-Message-State: AOAM533kY8xMnXmPSFZ75uQbdbnhWjE20i7MhzYE0ClGYQpihVcVakze
+        qLFx7L1lK6ccq/ko/HP8gd2l+wvvnmA9SQ==
+X-Google-Smtp-Source: ABdhPJzv+6KgUWNtuhCefY2vc2Gavpb9UqxMa2DvsgToDpjs4uH6/1NRrixcXivvDbugyHK1qzNx9Q==
+X-Received: by 2002:a17:90b:3849:: with SMTP id nl9mr10409766pjb.145.1637239710844;
+        Thu, 18 Nov 2021 04:48:30 -0800 (PST)
+Received: from desktop.cluster.local ([43.132.141.9])
+        by smtp.gmail.com with ESMTPSA id j16sm3679404pfj.16.2021.11.18.04.48.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 04:48:30 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: imagedong@tencent.com
+To:     kuba@kernel.org, rostedt@goodmis.org
+Cc:     davem@davemloft.net, mingo@redhat.com, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, imagedong@tencent.com, ycheng@google.com,
+        kuniyu@amazon.co.jp, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH v2 net-next 0/2] net: snmp: tracepoint support for snmp
+Date:   Thu, 18 Nov 2021 20:48:10 +0800
+Message-Id: <20211118124812.106538-1-imagedong@tencent.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <CAHP4M8UvwsS6QpV6PX-qf=d2u9Qw35Hafv-BTMGUWeSc0nUBXA@mail.gmail.com>
- <CAHP4M8V4ow_JUj9gjcrZoyFtnTcqngHqiD2da-v-w4VZ2WL1hg@mail.gmail.com> <20211117154036.GC172151@rowland.harvard.edu>
-In-Reply-To: <20211117154036.GC172151@rowland.harvard.edu>
-From:   Ajay Garg <ajaygargnsit@gmail.com>
-Date:   Thu, 18 Nov 2021 18:16:27 +0530
-Message-ID: <CAHP4M8V-wCuDPyhsuefSDCRAS6XzA74tY1naGHqA=X6xTpFeoA@mail.gmail.com>
-Subject: Re: Mouse stops working at random intervals in latest kernel
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-usb@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Alan for your time.
+From: Menglong Dong <imagedong@tencent.com>
 
-> Going just by your description and the log contents, it sounds like the
-> wireless dongle's firmware is crashing.  Or possibly something has gone
-> wrong with the motherboard's on-board "rate-matching" hub.
->
-> To rule out software issues, you could try running an earlier kernel
-> version.  If that doesn't show any problems then you may want to perform
-> a git bisection.
->
-> As far as I know there have been no recent changes to ehci-hcd or
-> ehci-pci that could cause this to happen.
->
+snmp is the network package statistics module in kernel, and it is
+useful in network issue diagnosis, such as packet drop.
 
-Thanks for the update, this would help me in narrowing down things.
+However, it is hard to get the detail information about the packet.
+For example, we can know that there is something wrong with the
+checksum of udp packet though 'InCsumErrors' of UDP protocol in
+/proc/net/snmp, but we can't figure out the ip and port of the packet
+that this error is happening on.
+
+Add tracepoint for snmp. Therefor, users can use some tools (such as
+eBPF) to get the information of the exceptional packet.
+
+In the first patch, the frame of snmp-tracepoint is created. And in
+the second patch, tracepoint for udp-snmp is introduced.
+
+Changes since v1:
+- use a single trace event for all statistics type, and special
+  statistics can be filter by type (procotol) and field.
+
+Now, it will looks like this for udp statistics:
+$ cat trace
+$ tracer: nop
+$
+$ entries-in-buffer/entries-written: 4/4   #P:1
+$
+$                                _-----=> irqs-off
+$                               / _----=> need-resched
+$                              | / _---=> hardirq/softirq
+$                              || / _--=> preempt-depth
+$                              ||| / _-=> migrate-disable
+$                              |||| /     delay
+$           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
+$              | |         |   |||||     |         |
+              nc-171     [000] ..s1.    35.952997: snmp: skbaddr=(____ptrval____), type=9, field=2, val=1
+              nc-171     [000] .N...    35.957006: snmp: skbaddr=(____ptrval____), type=9, field=4, val=1
+              nc-171     [000] ..s1.    35.957822: snmp: skbaddr=(____ptrval____), type=9, field=2, val=1
+              nc-171     [000] .....    35.957893: snmp: skbaddr=(____ptrval____), type=9, field=4, val=1
+
+'type=9' means that the event is triggered by udp statistics and 'field=2'
+means that this is triggered by 'NoPorts'. 'val=1' means that increases
+of statistics (decrease can happen on tcp).
 
 
-Thanks and Regards,
-Ajay
+Menglong Dong (2):
+  net: snmp: add tracepoint support for snmp
+  net: snmp: add snmp tracepoint support for udp
+
+ include/net/udp.h           | 25 ++++++++++++++++-----
+ include/trace/events/snmp.h | 44 +++++++++++++++++++++++++++++++++++++
+ include/uapi/linux/snmp.h   | 21 ++++++++++++++++++
+ net/core/net-traces.c       |  3 +++
+ net/ipv4/udp.c              | 28 +++++++++++++----------
+ 5 files changed, 104 insertions(+), 17 deletions(-)
+ create mode 100644 include/trace/events/snmp.h
+
+-- 
+2.27.0
+
