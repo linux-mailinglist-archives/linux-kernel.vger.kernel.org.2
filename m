@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6756B455E12
+	by mail.lfdr.de (Postfix) with ESMTP id B0073455E13
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 15:34:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229830AbhKROhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 09:37:39 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:39170 "EHLO
+        id S230205AbhKROhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 09:37:40 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:39188 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbhKROhi (ORCPT
+        with ESMTP id S229472AbhKROhj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 09:37:38 -0500
-Date:   Thu, 18 Nov 2021 14:34:36 -0000
+        Thu, 18 Nov 2021 09:37:39 -0500
+Date:   Thu, 18 Nov 2021 14:34:37 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637246077;
+        s=2020; t=1637246078;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EpP0mLAQ1v7BT5lsYE94y7eC3FjqXIzy+YG0ArCcgRQ=;
-        b=c5qU/D+8rn2gn7yVUaeypa2c5HOm7oaqBFnZre+3QtOLJdQ1HWweuNIioS4P27yJDFYl9T
-        OtjExrShKyBnmaWp6j0v74vynR+UO3jg95kRmzx4tMd4sele5ogNpJxom+etUTByg2eo2z
-        OBI1rWuN8n/MGoOgEyeCHiaq977b73R+kEFbTFtoZAJIyQKxFzpmXw3K4YuKoZInNdzmXI
-        ckRihb1Y4EX1j6IDUlbabPW1PtcNA96o0dJu8Rc72PKeMUf4w7PZesvREQzWij6tQT+os2
-        UL2foZh05hKyrxav0zM5QSiWIAiaWvx1AKhqNNf9fxgUBCnD1RV0WKiCKg8piw==
+        bh=XHB6gOWe0h9Ez4HxgK/DRLVOvAZvdSaNbxrQddmzzMo=;
+        b=hCFil0kHJM02Iv+wvljyhA8QEYIgElhu4gGj050kfdSgpyXONOz9ZZUqm0ceXR5cnmx3LY
+        tmFe8SZPsKS2riqzC0pkfcDsbCKIhuQvghZzwzbEupv44inmSyiFyWN4QVKxItQkiMxOcL
+        3Kfb5yW+TE4tbLqWEywDUuuUC3a132357DqK1dEJ6WOLdS0Xv1bcEysrQNrigYauAm8Vel
+        ktUUAB6piZ11wp6ex4f3ACREy65BQECDXn5HVKOQ7IM87VJHLBquviQvnUIlapt1j6gM+X
+        i5OjlAyNi39U/j+IDwE/A/xUamOxGigM7S5cszT+bCUA+BiNtlzi8lrbapbD2A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637246077;
+        s=2020e; t=1637246078;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EpP0mLAQ1v7BT5lsYE94y7eC3FjqXIzy+YG0ArCcgRQ=;
-        b=CisKwh06oiRYmkHCqGUNLUsfUSgMckw+cKOQOY4OIqTZrorS99YZWx5ApdIhKm3+V3EaS3
-        M9i0nfuF567EhbAQ==
+        bh=XHB6gOWe0h9Ez4HxgK/DRLVOvAZvdSaNbxrQddmzzMo=;
+        b=UPWpG4Aj/an/qrYBkE+z+igyhrw1vmhu7jL7CIFcUCO6NSMJRcRwe/pKRr5/QvjFLUuH1H
+        CaHXQDioCGVRk4BQ==
 From:   "tip-bot2 for Sean Christopherson" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf: Drop guest callback (un)register stubs
+Subject: [tip: perf/core] KVM: arm64: Drop perf.c and fold its tiny bits of
+ code into arm.c
 Cc:     Sean Christopherson <seanjc@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20211111020738.2512932-18-seanjc@google.com>
-References: <20211111020738.2512932-18-seanjc@google.com>
+In-Reply-To: <20211111020738.2512932-17-seanjc@google.com>
+References: <20211111020738.2512932-17-seanjc@google.com>
 MIME-Version: 1.0
-Message-ID: <163724607635.11128.489405802899136473.tip-bot2@tip-bot2>
+Message-ID: <163724607718.11128.14758605021157906014.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,42 +59,106 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     a9f4a6e92b3b319296fb078da2615f618f6cd80c
-Gitweb:        https://git.kernel.org/tip/a9f4a6e92b3b319296fb078da2615f618f6cd80c
+Commit-ID:     17ed14eba22b3a86e82fb6df28af00fb4cadfd77
+Gitweb:        https://git.kernel.org/tip/17ed14eba22b3a86e82fb6df28af00fb4cadfd77
 Author:        Sean Christopherson <seanjc@google.com>
-AuthorDate:    Thu, 11 Nov 2021 02:07:38 
+AuthorDate:    Thu, 11 Nov 2021 02:07:37 
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 17 Nov 2021 14:49:12 +01:00
+CommitterDate: Wed, 17 Nov 2021 14:49:11 +01:00
 
-perf: Drop guest callback (un)register stubs
+KVM: arm64: Drop perf.c and fold its tiny bits of code into arm.c
 
-Drop perf's stubs for (un)registering guest callbacks now that KVM
-registration of callbacks is hidden behind GUEST_PERF_EVENTS=y.  The only
-other user is x86 XEN_PV, and x86 unconditionally selects PERF_EVENTS.
+Call KVM's (un)register perf callbacks helpers directly from arm.c and
+delete perf.c
 
 No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-Link: https://lore.kernel.org/r/20211111020738.2512932-18-seanjc@google.com
+Link: https://lore.kernel.org/r/20211111020738.2512932-17-seanjc@google.com
 ---
- include/linux/perf_event.h | 5 -----
- 1 file changed, 5 deletions(-)
+ arch/arm64/include/asm/kvm_host.h |  3 ---
+ arch/arm64/kvm/Makefile           |  2 +-
+ arch/arm64/kvm/arm.c              |  5 +++--
+ arch/arm64/kvm/perf.c             | 22 ----------------------
+ 4 files changed, 4 insertions(+), 28 deletions(-)
+ delete mode 100644 arch/arm64/kvm/perf.c
 
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 0ac7d86..7b7525e 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -1511,11 +1511,6 @@ perf_sw_event(u32 event_id, u64 nr, struct pt_regs *regs, u64 addr)	{ }
- static inline void
- perf_bp_event(struct perf_event *event, void *data)			{ }
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+index aa28b8e..541e7a8 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -675,9 +675,6 @@ unsigned long kvm_mmio_read_buf(const void *buf, unsigned int len);
+ int kvm_handle_mmio_return(struct kvm_vcpu *vcpu);
+ int io_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa);
  
--static inline void perf_register_guest_info_callbacks
--(struct perf_guest_info_callbacks *cbs)					{ }
--static inline void perf_unregister_guest_info_callbacks
--(struct perf_guest_info_callbacks *cbs)					{ }
+-void kvm_perf_init(void);
+-void kvm_perf_teardown(void);
 -
- static inline void perf_event_mmap(struct vm_area_struct *vma)		{ }
+ /*
+  * Returns true if a Performance Monitoring Interrupt (PMI), a.k.a. perf event,
+  * arrived in guest context.  For arm64, any event that arrives while a vCPU is
+diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
+index 989bb5d..0bcc378 100644
+--- a/arch/arm64/kvm/Makefile
++++ b/arch/arm64/kvm/Makefile
+@@ -12,7 +12,7 @@ obj-$(CONFIG_KVM) += hyp/
  
- typedef int (perf_ksymbol_get_name_f)(char *name, int name_len, void *data);
+ kvm-y := $(KVM)/kvm_main.o $(KVM)/coalesced_mmio.o $(KVM)/eventfd.o \
+ 	 $(KVM)/vfio.o $(KVM)/irqchip.o $(KVM)/binary_stats.o \
+-	 arm.o mmu.o mmio.o psci.o perf.o hypercalls.o pvtime.o \
++	 arm.o mmu.o mmio.o psci.o hypercalls.o pvtime.o \
+ 	 inject_fault.o va_layout.o handle_exit.o \
+ 	 guest.o debug.o reset.o sys_regs.o \
+ 	 vgic-sys-reg-v3.o fpsimd.o pmu.o \
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index b400be9..8129ee1 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -1773,7 +1773,8 @@ static int init_subsystems(void)
+ 	if (err)
+ 		goto out;
+ 
+-	kvm_perf_init();
++	kvm_register_perf_callbacks(NULL);
++
+ 	kvm_sys_reg_table_init();
+ 
+ out:
+@@ -2161,7 +2162,7 @@ out_err:
+ /* NOP: Compiling as a module not supported */
+ void kvm_arch_exit(void)
+ {
+-	kvm_perf_teardown();
++	kvm_unregister_perf_callbacks();
+ }
+ 
+ static int __init early_kvm_mode_cfg(char *arg)
+diff --git a/arch/arm64/kvm/perf.c b/arch/arm64/kvm/perf.c
+deleted file mode 100644
+index 52cfab2..0000000
+--- a/arch/arm64/kvm/perf.c
++++ /dev/null
+@@ -1,22 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * Based on the x86 implementation.
+- *
+- * Copyright (C) 2012 ARM Ltd.
+- * Author: Marc Zyngier <marc.zyngier@arm.com>
+- */
+-
+-#include <linux/perf_event.h>
+-#include <linux/kvm_host.h>
+-
+-#include <asm/kvm_emulate.h>
+-
+-void kvm_perf_init(void)
+-{
+-	kvm_register_perf_callbacks(NULL);
+-}
+-
+-void kvm_perf_teardown(void)
+-{
+-	kvm_unregister_perf_callbacks();
+-}
