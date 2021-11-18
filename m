@@ -2,182 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 358ED4562A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:41:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2344562A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:41:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233845AbhKRSoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 13:44:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233807AbhKRSoi (ORCPT
+        id S233781AbhKRSoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 13:44:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29060 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233730AbhKRSoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 13:44:38 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F04C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:41:37 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id z34so30731189lfu.8
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 10:41:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VvElXszLwjkIoRUsL1wZhCMOi1Cft0lEphidMFxQYiQ=;
-        b=tfhCkOcnElZBYRqGQUCSH+dme82Vpni11cDtKi3sPhbkkXAd4xCGYiujsK1sQhWSoq
-         ulNOeLM7vRuMSRokD7ZZvQ7O5gnP0N9lZEN9ysei3a0EkPz4mo09Dm3YdgRHgVuiyehn
-         YH8BPvQuYg7f7X2WYp1EjztWMGdgtNERicEr22IHuDMEEbPNc5jhkgujxXi7C8mJFaR/
-         E5yXBvJUT33JTk6RDh3W4m4jatPtG/XB9nTtluDfDSgnMHmeQfkw0QuvcFo/7AWWzSSN
-         O2cgAJGTW/7vF1RfNusft5yTt6hz4uo9+7LT+4cQTQYS3v0P6JJbSVO6/KFeN9Bwhzrv
-         iJDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VvElXszLwjkIoRUsL1wZhCMOi1Cft0lEphidMFxQYiQ=;
-        b=rWrzF3MBo4UKBGupYUxNd1XdzRkexDJDR1fOKIAWuO8ttBSrBS5FNe+zYbWAQJz4E2
-         53uB3FGeumZo1zRMfIWLrpulb2XpsHY2XbdG4TOV8jq2R/HZDXC3S35PyCpEOaapWzYI
-         szGWVcp9YFNV3mO4aCdeXwrxmOvAUpWlfZzC7IfBJxo0jCjp0eX3/J1/xVbqvzb5E9a0
-         dZM9P+ZNong5o9Nn9HTZpo7D6HYlcVWqXLVmcIRzZm2qENNJROz/JNWr1pcaxy9EmVHs
-         5XsVXnJ8vJW/dS8HZNLWD7WEj5t4hXSBnL5BnZmo/PRiEGy3884DY80xoKZtHr4hBnDu
-         FJfQ==
-X-Gm-Message-State: AOAM530V+iqM/uDy9HP15t50at71O/Ptt47QAhOoSF8XZ2LvJxVU64je
-        zBxtm/JH77QwW/EPfaQd5n5EH8S16wqhc6Y5d8OJIQ==
-X-Google-Smtp-Source: ABdhPJxhAY1J1WZVxgqU7eTZK7w9CGyzR/q/+PV+sQbqi1Amt65GIAIMyXxlYmcPV99KaJPI6VtBYMiZD8WipHO60P4=
-X-Received: by 2002:a05:6512:3d16:: with SMTP id d22mr25399536lfv.523.1637260895491;
- Thu, 18 Nov 2021 10:41:35 -0800 (PST)
+        Thu, 18 Nov 2021 13:44:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637260896;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=H/2EXvjEWRBka07ANn93tEZDf/F6ZMhQQB8oMKQppL8=;
+        b=Eham2C36VqRVjrOfgnLf8BurlG0dlC4d2CuzSp7mN8MBxMO9t1CxGWWrskVWRQTRq7j9LN
+        tUTWrfZlOJCGSAcP218JM50kQKJr8djyBWWMcEhVEPxPAHl7xe6z1VXXa4qm4V9FZyRy25
+        xqvax5aUZovjhwQOXxZ2rXOotBr2Vko=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-200-yqNnAm96M0uBgYYUQKObRw-1; Thu, 18 Nov 2021 13:41:32 -0500
+X-MC-Unique: yqNnAm96M0uBgYYUQKObRw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1CD77802B78;
+        Thu, 18 Nov 2021 18:41:31 +0000 (UTC)
+Received: from metal.redhat.com (unknown [10.40.193.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EF19160BF1;
+        Thu, 18 Nov 2021 18:41:29 +0000 (UTC)
+From:   Daniel Vacek <neelx@redhat.com>
+To:     paulmck@kernel.org
+Cc:     guillaume@morinfr.org, linux-kernel@vger.kernel.org
+Subject: Re: call_rcu data race patch
+Date:   Thu, 18 Nov 2021 19:41:28 +0100
+Message-Id: <20211118184128.1335912-1-neelx@redhat.com>
+In-Reply-To: <20210927161046.GU880162@paulmck-ThinkPad-P17-Gen-1>
+References: <20210927161046.GU880162@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-References: <CADYN=9+_UU9qZX56uahGXxz00iayqJLRAaQrRXh1CMXTvwSbAg@mail.gmail.com>
- <20211118095852.616256-1-anders.roxell@linaro.org> <CAKwvOdkDVeoH8J1xFDeO5m_5EzNjDWucfyUewhgVSLWi5BN_QA@mail.gmail.com>
-In-Reply-To: <CAKwvOdkDVeoH8J1xFDeO5m_5EzNjDWucfyUewhgVSLWi5BN_QA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 18 Nov 2021 10:41:23 -0800
-Message-ID: <CAKwvOdm9HuXyw64ECVVhROxc3R9LL-FT3KbO_e5XzfE4=Q-UoA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] selftests: kselftest.h: mark functions with 'noreturn'
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     shuah@kernel.org, fenghua.yu@intel.com, reinette.chatre@intel.com,
-        john.stultz@linaro.org, tglx@linutronix.de,
-        akpm@linux-foundation.org, nathan@kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, llvm@lists.linux.dev, christian@brauner.io
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 10:40 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Thu, Nov 18, 2021 at 1:58 AM Anders Roxell <anders.roxell@linaro.org> wrote:
-> >
-> > When building kselftests/capabilities the following warning shows up:
-> >
-> > clang -O2 -g -std=gnu99 -Wall    test_execve.c -lcap-ng -lrt -ldl -o test_execve
-> > test_execve.c:121:13: warning: variable 'have_outer_privilege' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
-> >         } else if (unshare(CLONE_NEWUSER | CLONE_NEWNS) == 0) {
-> >                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > test_execve.c:136:9: note: uninitialized use occurs here
-> >         return have_outer_privilege;
-> >                ^~~~~~~~~~~~~~~~~~~~
-> > test_execve.c:121:9: note: remove the 'if' if its condition is always true
-> >         } else if (unshare(CLONE_NEWUSER | CLONE_NEWNS) == 0) {
-> >                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > test_execve.c:94:27: note: initialize the variable 'have_outer_privilege' to silence this warning
-> >         bool have_outer_privilege;
-> >                                  ^
-> >                                   = false
-> >
-> > Rework so all the ksft_exit_*() functions have attribue
-> > '__attribute__((noreturn))' so the compiler knows that there wont be
-> > any return from the function. That said, without
-> > '__attribute__((noreturn))' the compiler warns about the above issue
-> > since it thinks that it will get back from the ksft_exit_skip()
-> > function, which it wont.
-> > Cleaning up the callers that rely on ksft_exit_*() return code, since
-> > the functions ksft_exit_*() have never returned anything.
-> >
-> > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
-> > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> > ---
-> >  tools/testing/selftests/clone3/clone3.c              |  4 +++-
-> >  .../testing/selftests/clone3/clone3_clear_sighand.c  |  2 +-
-> >  tools/testing/selftests/clone3/clone3_set_tid.c      |  4 +++-
-> >  tools/testing/selftests/ipc/msgque.c                 | 10 +++++-----
-> >  tools/testing/selftests/kcmp/kcmp_test.c             |  2 +-
-> >  tools/testing/selftests/kselftest.h                  | 12 ++++++------
-> >  .../membarrier/membarrier_test_multi_thread.c        |  2 +-
-> >  .../membarrier/membarrier_test_single_thread.c       |  2 +-
-> >  tools/testing/selftests/pidfd/pidfd_fdinfo_test.c    |  2 +-
-> >  tools/testing/selftests/pidfd/pidfd_open_test.c      |  4 +++-
-> >  tools/testing/selftests/pidfd/pidfd_poll_test.c      |  2 +-
-> >  tools/testing/selftests/pidfd/pidfd_test.c           |  2 +-
-> >  tools/testing/selftests/resctrl/resctrl_tests.c      |  6 +++---
-> >  tools/testing/selftests/sync/sync_test.c             |  2 +-
-> >  tools/testing/selftests/timers/adjtick.c             |  4 ++--
-> >  tools/testing/selftests/timers/alarmtimer-suspend.c  |  4 ++--
-> >  tools/testing/selftests/timers/change_skew.c         |  4 ++--
-> >  tools/testing/selftests/timers/clocksource-switch.c  |  4 ++--
-> >  tools/testing/selftests/timers/freq-step.c           |  4 ++--
-> >  tools/testing/selftests/timers/inconsistency-check.c |  4 ++--
-> >  tools/testing/selftests/timers/leap-a-day.c          | 10 +++++-----
-> >  tools/testing/selftests/timers/leapcrash.c           |  4 ++--
-> >  tools/testing/selftests/timers/mqueue-lat.c          |  4 ++--
-> >  tools/testing/selftests/timers/nanosleep.c           |  4 ++--
-> >  tools/testing/selftests/timers/nsleep-lat.c          |  4 ++--
-> >  tools/testing/selftests/timers/posix_timers.c        | 12 ++++++------
-> >  tools/testing/selftests/timers/raw_skew.c            |  6 +++---
-> >  tools/testing/selftests/timers/set-2038.c            |  4 ++--
-> >  tools/testing/selftests/timers/set-tai.c             |  4 ++--
-> >  tools/testing/selftests/timers/set-timer-lat.c       |  4 ++--
-> >  tools/testing/selftests/timers/set-tz.c              |  4 ++--
-> >  tools/testing/selftests/timers/skew_consistency.c    |  4 ++--
-> >  tools/testing/selftests/timers/threadtest.c          |  2 +-
-> >  tools/testing/selftests/timers/valid-adjtimex.c      |  6 +++---
-> >  tools/testing/selftests/vm/madv_populate.c           |  2 +-
-> >  35 files changed, 80 insertions(+), 74 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/clone3/clone3.c b/tools/testing/selftests/clone3/clone3.c
-> > index 42be3b925830..ede5da0c67b4 100644
-> > --- a/tools/testing/selftests/clone3/clone3.c
-> > +++ b/tools/testing/selftests/clone3/clone3.c
-> > @@ -191,5 +191,7 @@ int main(int argc, char *argv[])
-> >         test_clone3(CLONE_NEWPID, getpagesize() + 8, -E2BIG,
-> >                         CLONE3_ARGS_NO_TEST);
-> >
-> > -       return !ksft_get_fail_cnt() ? ksft_exit_pass() : ksft_exit_fail();
-> > +       if (ksft_get_fail_cnt())
-> > +               ksft_exit_fail();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/clone3/clone3_clear_sighand.c b/tools/testing/selftests/clone3/clone3_clear_sighand.c
-> > index 47a8c0fc3676..dcd9448eaeec 100644
-> > --- a/tools/testing/selftests/clone3/clone3_clear_sighand.c
-> > +++ b/tools/testing/selftests/clone3/clone3_clear_sighand.c
-> > @@ -124,5 +124,5 @@ int main(int argc, char **argv)
-> >
-> >         test_clone3_clear_sighand();
-> >
-> > -       return ksft_exit_pass();
-> > +       ksft_exit_pass();
-> >  }
-> > diff --git a/tools/testing/selftests/clone3/clone3_set_tid.c b/tools/testing/selftests/clone3/clone3_set_tid.c
-> > index 0229e9ebb995..a755fcd3af89 100644
-> > --- a/tools/testing/selftests/clone3/clone3_set_tid.c
-> > +++ b/tools/testing/selftests/clone3/clone3_set_tid.c
-> > @@ -393,5 +393,7 @@ int main(int argc, char *argv[])
-> >  out:
-> >         ret = 0;
-> >
-> > -       return !ret ? ksft_exit_pass() : ksft_exit_fail();
-> > +       if (ret)
-> > +               ksft_exit_fail();
-> > +       ksft_exit_pass();
->
-> err...did you update clone3_set_tid as Shuah requested in v3?
-> Otherwise what changed from v2 -> v3?
+On Fri, 17 Sep 2021 15:07:00 -0700, Paul E. McKenney wrote:
+> OK, please see below.  This is a complete shot in the dark, but could
+> potentially prevent the problem.  Or make it worse, which would at the
+> very least speed up debugging.  It might needs a bit of adjustment to
+> apply to the -stable kernels, but at first glance should apply cleanly.
+> 
+> Oh, and FYI I am having to manually paste your email address into the To:
+> line in order to get this to go back to you.  Please check your email
+> configuration.
+> 
+> Which might mean that you need to pull this from my -rcu tree here:
+> 
+> 1a792b59071b ("EXP rcu: Tighten rcu_advance_cbs_nowake() checks")
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 6a1e9d3374db..6d692a591f66 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1590,10 +1590,14 @@ static void __maybe_unused rcu_advance_cbs_nowake(struct rcu_node *rnp,
+>  						  struct rcu_data *rdp)
+>  {
+>  	rcu_lockdep_assert_cblist_protected(rdp);
+> -	if (!rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) ||
+> +	// Don't do anything unless the current grace period is guaranteed
+> +	// not to end.  This means a grace period in progress and at least
+> +	// one holdout CPU.
+> +	if (!rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) || !READ_ONCE(rnp->qsmask) ||
+>  	    !raw_spin_trylock_rcu_node(rnp))
+>  		return;
+> -	WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
+> +	if (rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) && READ_ONCE(rnp->qsmask))
+> +		WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
+>  	raw_spin_unlock_rcu_node(rnp);
+>  }
+>  
 
-Ah, this was part of a series. Sorry I missed that; gmail keeps the
-original subject line when --in-reply-to is used even when the subject
-changes.
+Hello Paul,
 
+We've received a few reports of this warning. Reviewing the code I don't really
+see any reason for the READ_ONCE(rnp->qsmask) part here and hence I started
+tracing the data before applying the patch to see the actual values before
+and after the lock is acquired to better understand the situation.
+
+This can be done with a short bash script:
+
+~~~
+perf probe 'prelock1=rcu_advance_cbs_nowake+0x29 gp_seq=%ax:x64 rnp->qsmask rnp->lock'			# gp_seq from register after the condition check so this one will always be &3!=0
+perf probe 'prelock2=rcu_advance_cbs_nowake+0x2c rnp->gp_seq    rnp->qsmask rnp->lock'			# gp_seq refetched from memory. it could already be &0x3==0
+perf probe 'acquired=rcu_advance_cbs_nowake+0x35 rnp->gp_seq    rnp->qsmask rnp->lock'			# gp_seq refetched again after taking the lock, ditto - which is bug
+perf probe 'warning_=rcu_advance_cbs_nowake+0x40 rnp->gp_seq    rnp->qsmask rnp->lock condition=%ax:s8'	# 'condition' is the return value from rcu_advance_cbs() call
+trace-cmd stream \
+	-e probe:prelock1 \
+	-e probe:prelock2 -f '!gp_seq&3' \
+	-e probe:acquired -f '!gp_seq&3' \
+	-e probe:warning_ -f condition==1
+~~~
+
+The best part is that adding the kprobes opened the race window so that with
+the tracing enabled I could reproduce the bug in matter of seconds on my VM.
+One 'top' on an idle system is enough to hit it, though to accelerate I was
+using a bunch of them (but still just enough so that the machine remains
+mostly idle - the VM has 8 vCPUs):
+
+# for i in {1..40}; do top -b -d 0.1 >/dev/null & done	# kill %{1..40}
+
+Note, that 'rcu_nocbs=1-7' kernel option needs to be used otherwise
+rcu_advance_cbs_nowake() is not even beeing called at all as well as there
+are no offload threads it could race with.
+
+The results show that indeed (confirming the code review) the node qsmask can
+be zero while still there is no warning and no subsequent stall. As long as
+rcu_seq_state(...) is true, everything is fine.
+
+Only when the GP state check is true before taking the lock and false after
+acquiring it is when rcu_advance_cbs() returns with true and the system is
+doomed (with the warning warmly announcing it) as the 'rcu_sched' thread is
+never woken again. The system will eventually run out of memory or the tasks
+get blocked on synchronize_rcu() indefinitely.
+
+With this observation I was confident enough to finally apply just the grace
+period part of your patch (below). After that the system survived 12 hours
+over night. Since I could reproduce in matter of seconds before I call it a
+success.
+
+So what is your opinion about the quiescent state mask part? Is it needed or
+rather really redundant? Perhaps upstream differs to RHEL kernel but on RHEL
+I don't really see the need and the below patch is sufficient IMO.
+
+Or perhaps I'm missing the part where the qsmask check is not really needed
+but it's just an optimization because in that case we do not need to advance
+the callbacks here as they will be advanced soon anyways?
+
+With or without the qsmask part, in both cases I believe this should go to
+stable 5.4+ and of course we want it in RHEL asap, so once Linus merges a
+version of it, we are going to backport. Since this is only reproducible
+with the 'rcu_nocbs' option I understand that the v5.17 merge window is
+a reasonable target for upstream. Nevertheless this is still a bugfix.
+
+--nX
+
+----
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 1aebb2dfbf90..96df7f68ff4d 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1389,7 +1389,8 @@ static void __maybe_unused rcu_advance_cbs_nowake(struct rcu_node *rnp,
+ 	if (!rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) ||
+ 	    !raw_spin_trylock_rcu_node(rnp))
+ 		return;
+-	WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
++	if (rcu_seq_state(rcu_seq_current(&rnp->gp_seq)))
++		WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
+ 	raw_spin_unlock_rcu_node(rnp);
+ }
+ 
 -- 
-Thanks,
-~Nick Desaulniers
+
