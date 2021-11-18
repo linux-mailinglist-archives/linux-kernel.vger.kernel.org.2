@@ -2,86 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F974561FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:09:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADB5456204
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Nov 2021 19:11:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234317AbhKRSMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 13:12:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234297AbhKRSMS (ORCPT
+        id S234323AbhKRSOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 13:14:10 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4109 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230446AbhKRSOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 13:12:18 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C03C5C061574;
-        Thu, 18 Nov 2021 10:09:17 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id x43-20020a056830246b00b00570d09d34ebso12420051otr.2;
-        Thu, 18 Nov 2021 10:09:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IcFB8gYjjLB7mVdFbNYINpla/WNywThwEFYJQ31syCU=;
-        b=T3gAzIv3tCTr8w+UvlWLzDDRx440cD0XnGKxaT84YGbEKy7tA3CK/o0Kjq3hkNhZ5b
-         Ojk3LtB4hqv2CEcUxyjI2lTZFMT6ZAvyDXGuDeqEtGsqK5RqX91L3A7MBEuWa89Oszen
-         t9M9/7ZShHpXw9+xvRe9NIbS5MludVsdxw40YkI+0tQq05Ol2TW9UTXL2kLDqgtJwnF9
-         I1ociPkNXUFtplU7kVUejEMUNRJvTLgq/Jtiros2ZJYNXLmGEobIWeH/Qq+tDCfoQ+qX
-         sEGCctG6WY2uOPNzFnP/pjk4CM3+uo/5NxfJsa+UwhUFamlh/RCfx2DBh3fu1bgsQ52T
-         aaAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=IcFB8gYjjLB7mVdFbNYINpla/WNywThwEFYJQ31syCU=;
-        b=Sx6UL8Jt688GkmStjrEwXN0TNunQRDqyB2ijs+v6H4XHks02ijn63DWmBZQOe2E2Kc
-         klEI+dcQxUNSZhKmMNj5IbK9Elr+82WwXjgrURMeDEGALdUmKrt6aPNb49AnaJym4lJh
-         45jxJYUCzn4XUXPgOsgkPZNOpffmlUT8NEMe+p0Q6hhCktZSMnzGGbpomKHfpfLmmZQn
-         ImW6dFwExKuxqSLdOk/7yRl0M7AFJtOcw38ogWUCjbnvBBK+e2KTGOq8Dio3P8YN6H/C
-         HlBtBLk5RD7XLqOhnkP2e8AnB6c4PlhOkoXgVrb8ni0r7Z2YkII9JClyxEEDkuUXHh9C
-         X45A==
-X-Gm-Message-State: AOAM5303mOqflEIglKkgYaPk0PiZLdUiTNC4Ft96M8pItnAAjAnMzWsX
-        SYE7ImJvtZG9RezCiv7joXQ=
-X-Google-Smtp-Source: ABdhPJwyqfmI1pi15/e9MpErb1Dbtt53M3K3UaxFXzRiFs+GZSrITOoDrEINtGVWpnGx5R9Vp14Msg==
-X-Received: by 2002:a9d:67d5:: with SMTP id c21mr22624062otn.128.1637258956979;
-        Thu, 18 Nov 2021 10:09:16 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t14sm97598otr.23.2021.11.18.10.09.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 10:09:16 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 18 Nov 2021 10:09:14 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.15 000/920] 5.15.3-rc4 review
-Message-ID: <20211118180914.GA3320814@roeck-us.net>
-References: <20211118081919.507743013@linuxfoundation.org>
+        Thu, 18 Nov 2021 13:14:09 -0500
+Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Hw7BP5mSyz67HxV;
+        Fri, 19 Nov 2021 02:10:21 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.20; Thu, 18 Nov 2021 19:11:06 +0100
+Received: from localhost (10.52.127.148) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Thu, 18 Nov
+ 2021 18:11:06 +0000
+Date:   Thu, 18 Nov 2021 18:11:03 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+CC:     Olivier Moysan <olivier.moysan@foss.st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        "Wan Jiabing" <wanjiabing@vivo.com>, Xu Wang <vulab@iscas.ac.cn>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: Re: [PATCH] iio: adc: stm32: fix null pointer on defer_probe error
+Message-ID: <20211118181103.000054c7@Huawei.com>
+In-Reply-To: <45a5129a-c0b1-4a07-aef8-d6e0845c7b1a@pengutronix.de>
+References: <20211118123952.15383-1-olivier.moysan@foss.st.com>
+        <45a5129a-c0b1-4a07-aef8-d6e0845c7b1a@pengutronix.de>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211118081919.507743013@linuxfoundation.org>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.127.148]
+X-ClientProxiedBy: lhreml749-chm.china.huawei.com (10.201.108.199) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 09:25:58AM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.3 release.
-> There are 920 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Thu, 18 Nov 2021 13:51:44 +0100
+Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+
+> Hello Olivier,
 > 
-> Responses should be made by Sat, 20 Nov 2021 08:14:03 +0000.
-> Anything received after that time might be too late.
+> On 18.11.21 13:39, Olivier Moysan wrote:
+> > dev_err_probe() calls __device_set_deferred_probe_reason()
+> > on -EPROBE_DEFER error.
+> > If device pointer to driver core private structure is not initialized,
+> > a null pointer error occurs.
+> > This pointer is set too late on iio_device_register() call, for iio device.  
+> 
+> Even if it were set earlier, you should call dev_err_probe with the dev of
+> the probe that's currently running. Not any other devices you created since
+> then.
+
++1 on that
+
+> 
+> > So use parent device instead for dev_err_probe() call.
+> > 
+> > Fixes: 0e346b2cfa85 ("iio: adc: stm32-adc: add vrefint calibration support")
+> > 
+
+No line break between these two tags.  Greg will reject a pull if there
+is one (and 0-day probably complain about it...)
+
+Jonathan
+
+
+> > Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+> > ---
+> >  drivers/iio/adc/stm32-adc.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+> > index 7f1fb36c747c..14c7c9d390e8 100644
+> > --- a/drivers/iio/adc/stm32-adc.c
+> > +++ b/drivers/iio/adc/stm32-adc.c
+> > @@ -217,6 +217,7 @@ struct stm32_adc_cfg {
+> >  
+> >  /**
+> >   * struct stm32_adc - private data of each ADC IIO instance
+> > + * dev:			parent device
+> >   * @common:		reference to ADC block common data
+> >   * @offset:		ADC instance register offset in ADC block
+> >   * @cfg:		compatible configuration data
+> > @@ -243,6 +244,7 @@ struct stm32_adc_cfg {
+> >   * @int_ch:		internal channel indexes array
+> >   */
+> >  struct stm32_adc {
+> > +	struct device		*dev;  
+> 
+> Can't you use the parent pointer of the indio_dev?
+> 
+> >  	struct stm32_adc_common	*common;
+> >  	u32			offset;
+> >  	const struct stm32_adc_cfg	*cfg;
+> > @@ -1986,8 +1988,7 @@ static int stm32_adc_populate_int_ch(struct iio_dev *indio_dev, const char *ch_n
+> >  			/* Get calibration data for vrefint channel */
+> >  			ret = nvmem_cell_read_u16(&indio_dev->dev, "vrefint", &vrefint);
+> >  			if (ret && ret != -ENOENT) {
+> > -				return dev_err_probe(&indio_dev->dev, ret,
+> > -						     "nvmem access error\n");
+> > +				return dev_err_probe(adc->dev, ret, "nvmem access error\n");
+> >  			}
+> >  			if (ret == -ENOENT)
+> >  				dev_dbg(&indio_dev->dev, "vrefint calibration not found\n");
+> > @@ -2221,6 +2222,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
+> >  	init_completion(&adc->completion);
+> >  	adc->cfg = (const struct stm32_adc_cfg *)
+> >  		of_match_device(dev->driver->of_match_table, dev)->data;
+> > +	adc->dev = &pdev->dev;  
+> 
+> There's struct device *dev = &pdev->dev; defined earlier, so you can use dev instead.
+> 
+> >  
+> >  	indio_dev->name = dev_name(&pdev->dev);
+> >  	indio_dev->dev.of_node = pdev->dev.of_node;
+> >   
+> 
+> Cheers,
+> Ahmad
 > 
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 482 pass: 482 fail: 0
-
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
