@@ -2,123 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7608745674E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 02:10:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB49E456750
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 02:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233961AbhKSBNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 20:13:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49036 "EHLO
+        id S233965AbhKSBOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 20:14:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233951AbhKSBNA (ORCPT
+        with ESMTP id S232504AbhKSBOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 20:13:00 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B62C061574;
-        Thu, 18 Nov 2021 17:09:59 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id y13so35113869edd.13;
-        Thu, 18 Nov 2021 17:09:59 -0800 (PST)
+        Thu, 18 Nov 2021 20:14:03 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D6C0C06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 17:11:02 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id l22so34919636lfg.7
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 17:11:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CmT5W4mUSX3ou/RnZCbEFUfEfCqiS+e0spJI+DO08qA=;
-        b=Mow62kIpCIoNVxA4RBVVKAIpVKadaBGwq27pOhtSgU7I4KiqMDNSq8mVejyDjOltBU
-         ozCPzXco/ZPFm6Px/1vKo6TV8tzQH3nSVxphkABKBgq+rr3Uvd313sFtVMq/Lqfhb96r
-         xeQvhdPzWmWyZlDOtADaKnR8g15DnoeNG4KKr/hU5AM7rnGhavtNs6X1uJTVIID7BFlp
-         2Zm7E/ClrO5ntw878mSsvyQp3oxepzciZaQ4au5hoMvuI1A+OdTNGatQs7wtBC0Xh1N7
-         hB9JvS76AZoD+v5IZbrnaMRw8ikIg7ZLocsWYfWfODzdIy7/VYvPMMUbuTu8/ydA90l2
-         6gfQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x50jM6pG1zOVTOkOckDcnqbrEYWJvq1YZ9GgThuybmM=;
+        b=LnFuJ6GGDFKUBGHDotmBDPpidrdMYO7qSi+dbFiGNHOZ1yH1kiSUv+OIy6u/UTv3rv
+         zyPxiEljS5zJlO38S5PNAVs16qHUHeDoXMrVuMVjjmgDx5YqOFVekYafSZ4YR3zf6Yga
+         Xr5T8h21knWiZ0bsZnJ3HPb2SR66tnPPRYvcvLNpPPiXcyIYCe9W0MEIoL28YIzyMUee
+         UY0gagpDJlyINCYnDEmJp/9p7tA3C0hp6PavO5ejhL4vWtJBTrxqLxdeQX9LgHN1CAjX
+         l8W8XZEzJVMoQnbGwEk2IfnKFu1unQufwi/PBIl0hZo9M8hKp8Dva+GqCJOOeo1+BXYC
+         qdgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CmT5W4mUSX3ou/RnZCbEFUfEfCqiS+e0spJI+DO08qA=;
-        b=xagD68japKYzADbqdwvbl/ftr16Fnu3/qDkI6iDzqjBlKmSje0rbD8gG3QiFVnI1nG
-         McahbOTBKNyRRR7M1yl8H0OcAQbvfNKZAI0dp5OZaQxz556mKPlfRQ4v8C0I/QcagIx9
-         Vn9N7I8TS47OEfiFKhTmt2GmG+ptyYYiO2Kxne2kvFjSx+8BRo9Oo1k/lxlBGT3Rsk0e
-         uOOQ2HGaJQ6QUtm9CqGTZeR6kiD/FRyQiEgPAwE4nvuz1N4kx6jdZxzfI36fkBePUvK9
-         KXvzDexTR72I6w0TtpIYoRtXd10EwNjKI+TNGu+XY+j/K/HCL8FdTfAzbD2bd9ghPvo0
-         cnQQ==
-X-Gm-Message-State: AOAM532CqwI1BGCt273IUdT+2E8yOwGnr99pemonNtwweLUnuwrnDZWO
-        i+OeFuI+ExE3WYRC9jNyMCbLq5f7PQI=
-X-Google-Smtp-Source: ABdhPJz6lRMSP9QP4zAPGjD6Z8zDGqlOW80H2XeCu1gi4PwhK3IIfv4XQrmAIM2WbD2lm55wq1+xSw==
-X-Received: by 2002:a17:907:d89:: with SMTP id go9mr2465272ejc.330.1637284198546;
-        Thu, 18 Nov 2021 17:09:58 -0800 (PST)
-Received: from skbuf ([188.25.163.189])
-        by smtp.gmail.com with ESMTPSA id n1sm707377edf.45.2021.11.18.17.09.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 17:09:58 -0800 (PST)
-Date:   Fri, 19 Nov 2021 03:09:57 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [net-next PATCH 07/19] net: dsa: qca8k: set regmap init as
- mandatory for regmap conversion
-Message-ID: <20211119010957.n2aziuq5ijrgsxuo@skbuf>
-References: <20211117210451.26415-1-ansuelsmth@gmail.com>
- <20211117210451.26415-8-ansuelsmth@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x50jM6pG1zOVTOkOckDcnqbrEYWJvq1YZ9GgThuybmM=;
+        b=mDpc4IOv0aiLsfOkKrQVEXDcIlQRsNvXGmaa86NyLux68P8Ei25XfPPFWt8Lhx9Iv2
+         ahMDB1icr5GQYBpthtAKgr66ciH3lAbq+wsGR70t5Rma4CEK0jI1pstB5qJD28d/WX72
+         pwfLWM9i3yMwQem9G0s+I+7eMwHzH97u3ofXKFskV/39GOFcbpoG6333Iozh2CvwI+Na
+         azHZl6rfB8bFk8ATSXwUVs3hLjkmUyF2a8PkeaEsBeuK/cHppPWhQqO6cpgEeDG2dHDu
+         ZcWZqkqXv4Qy/Dgm9u2xraxZhdWc+F3wPtQa25bmmv9UHzZHXTn84D5SCKoHpAUbYtS0
+         sB+Q==
+X-Gm-Message-State: AOAM533RZpF1Y8APv1UOrQw88IyRXsBhY0s9ynUKbKshpcBPgIu7DDXj
+        vz8kjErcy4GrIXC74FTIrToyk8Wxlw/KHvAI9sRuWrhG2gSGfg==
+X-Google-Smtp-Source: ABdhPJzF60VCgIXOgoMT0JlxAr4h5sGo54t98q/f/v4/msXsJrdVT3pwUqhpV5SbV0W4z3FADWYSFJ+6mYSAM6KxLJk=
+X-Received: by 2002:a05:6512:3b9c:: with SMTP id g28mr28619869lfv.651.1637284260284;
+ Thu, 18 Nov 2021 17:11:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211117210451.26415-8-ansuelsmth@gmail.com>
+References: <20211117174822.3632412-1-ilie.halip@gmail.com>
+In-Reply-To: <20211117174822.3632412-1-ilie.halip@gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 18 Nov 2021 17:10:48 -0800
+Message-ID: <CAKwvOd=9tsHHhPBOx2ORZoJP09VsX5dRZn58qj3MzCc2vmVosg@mail.gmail.com>
+Subject: Re: [PATCH] s390/test_unwind: use raw opcode instead of invalid instruction
+To:     Ilie Halip <ilie.halip@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Mete Durlu <meted@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        linux-s390@vger.kernel.org, llvm@lists.linux.dev,
+        Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 10:04:39PM +0100, Ansuel Smith wrote:
-> In preparation for regmap conversion, make regmap init mandatory and
-> fail if any error occurs.
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+On Wed, Nov 17, 2021 at 9:48 AM Ilie Halip <ilie.halip@gmail.com> wrote:
+>
+> Building with clang & LLVM_IAS=1 leads to an error:
+>     arch/s390/lib/test_unwind.c:179:4: error: invalid register pair
+>                         "       mvcl    %%r1,%%r1\n"
+>                         ^
+>
+> The test creates an invalid instruction that would trap at runtime, but the
+> LLVM inline assembler tries to validate it at compile time too.
+>
+> Use the raw instruction opcode instead.
+>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1421
+> Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+> Signed-off-by: Ilie Halip <ilie.halip@gmail.com>
+
+Ilie, thanks for the patch!
+
+So if I understand
+https://sourceware.org/binutils/docs/as/s390-Directives.html#s390-Directives
+https://sourceware.org/binutils/docs/as/s390-Formats.html
+that `e,` prefix is for 16B opcodes?
+
+LGTM, thanks again.
+Suggested-by: Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+I triple checked that GAS, clang, and GNU objdump are in agreement in
+terms of encoding here.
+
 > ---
+>  arch/s390/lib/test_unwind.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/s390/lib/test_unwind.c b/arch/s390/lib/test_unwind.c
+> index cfc5f5557c06..d342bc884b94 100644
+> --- a/arch/s390/lib/test_unwind.c
+> +++ b/arch/s390/lib/test_unwind.c
+> @@ -176,7 +176,7 @@ static noinline int unwindme_func4(struct unwindme *u)
+>                  * trigger specification exception
+>                  */
+>                 asm volatile(
+> -                       "       mvcl    %%r1,%%r1\n"
+> +                       "       .insn e,0x0e11\n"       /* mvcl %%r1,%%r1" */
+>                         "0:     nopr    %%r7\n"
+>                         EX_TABLE(0b, 0b)
+>                         :);
+> --
+> 2.25.1
+>
 
-Huh. Odd that someone would initialize a regmap in a driver and then
-proceed to not use it for anything. Looks like it's been sitting there
-since 6b93fb46480a ("net-next: dsa: add new driver for qca8xxx family").
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-
->  drivers/net/dsa/qca8k.c | 14 ++++++++------
->  1 file changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-> index ee04b48875e7..792b999da37c 100644
-> --- a/drivers/net/dsa/qca8k.c
-> +++ b/drivers/net/dsa/qca8k.c
-> @@ -1110,6 +1110,14 @@ qca8k_setup(struct dsa_switch *ds)
->  	int cpu_port, ret, i;
->  	u32 mask;
->  
-> +	/* Start by setting up the register mapping */
-> +	priv->regmap = devm_regmap_init(ds->dev, NULL, priv,
-> +					&qca8k_regmap_config);
-> +	if (IS_ERR(priv->regmap)) {
-> +		dev_err(priv->dev, "regmap initialization failed");
-> +		return PTR_ERR(priv->regmap);
-> +	}
-> +
->  	/* Check the detected switch id */
->  	ret = qca8k_read_switch_id(priv);
->  	if (ret)
-> @@ -1126,12 +1134,6 @@ qca8k_setup(struct dsa_switch *ds)
->  	if (ret)
->  		return ret;
->  
-> -	/* Start by setting up the register mapping */
-> -	priv->regmap = devm_regmap_init(ds->dev, NULL, priv,
-> -					&qca8k_regmap_config);
-> -	if (IS_ERR(priv->regmap))
-> -		dev_warn(priv->dev, "regmap initialization failed");
-> -
->  	ret = qca8k_setup_mdio_bus(priv);
->  	if (ret)
->  		return ret;
-> -- 
-> 2.32.0
-> 
+-- 
+Thanks,
+~Nick Desaulniers
