@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C679A457358
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:45:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D35C457359
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:45:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236691AbhKSQsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 11:48:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34416 "EHLO
+        id S236710AbhKSQsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 11:48:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236664AbhKSQsB (ORCPT
+        with ESMTP id S236674AbhKSQsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:48:01 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF89C06173E
+        Fri, 19 Nov 2021 11:48:02 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C271EC06174A
         for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:45:00 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id n85so9801395pfd.10
+Received: by mail-pf1-x42e.google.com with SMTP id m14so9825088pfc.9
         for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:45:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=rivosinc-com.20210112.gappssmtp.com; s=20210112;
         h=subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding:cc:from:to;
-        bh=2p/KFqt/ZADbSAzTepwM8vdeVayJBy01ZQFHi24kNM4=;
-        b=cXnJ0Mef1u3KUxfz8OHEsN9OmkwYgvnraNTsYjxJ3MKnYEEgXZ6tL8esNvtPN7wU1w
-         eS3lCzYiXMSKF5+CIgCIVmeBCko/kXof2cYYqfacqIbcOXtyVQRBhykpy/U/s/ShQ998
-         YX+OKMNiZMmmFvEMYuhLN1Z+JagtuSoH12V079RIVC+hdG2WtbYOOrbk7QAMp9WELrru
-         U6UX6SLSX0TgO4F6G2W4uIrleo+0q5LzDSEmgb7GgCop8AK2agifKlfmSx3Snc0uaucB
-         SLyMjykEZf5UPbXoqRFRtyKxa9Ag9kQ7XBG7cXl07O9jLpiPC4KqVN+nFcvyucJuclts
-         xKZA==
+        bh=FwXbFXmgWnoAKIPPMw3+meN78T1AYlQPW6JO5KlmOFc=;
+        b=GwHEWvJxDcaPkR1go7iczosqR2vwQdwLUkLHhDcSqLvzfLnIKDRN5b0/1dZsjz1cgG
+         jDelFqQOkpoMOlq036X1xblRXXbEVVuUtiSw6dJ8moZJpzK3xuTmVEnOqH/dMEe2tPcy
+         kv/maoq5A5u99d67Mrm4mFwFab2JomdEFQJ7HbxFlnf1qfnFA5ds8BS/t4gDkLRQ3lpm
+         ZW/2iH9AIYSFiuGN6oiLlYb0WGNzn9u8H7/74YbwOS1a5MEQX5YXwn+OvoFPCBV3aDzT
+         JYrEJHOrTdUvTRcXcOjQD/XAVdjUvhfAfrMbFVAzrWUgT/Zx3++x4zKtEsKzDlwx1Njn
+         QXbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding:cc:from:to;
-        bh=2p/KFqt/ZADbSAzTepwM8vdeVayJBy01ZQFHi24kNM4=;
-        b=JkJnG1njtzsbwQ6ovCpldijsSbcW9lh3bpKRvzywZcUXIZivayoAVjzdTHr3UygqUB
-         lv9t4hOCa0E1cW1uCmTn+xSMz8Zs4SRMxQZdEnJ6jz/IibO4x0fN3KSNE6d2DTvukz7v
-         3u5Dvjm5ambRNLwtUqy0K9vug2MuUWhlxWfZ8+JNNYDD9TeHfe+AMKqdL/ybf2IxPv3U
-         YU3Ja1/m8iUrDI3hYRXILIoDAJBSQDmblVL5nphEE0UvIhz44oxRf4V4lCDclASc9Cuc
-         HMjXzeQ1V88hg3DCE6CTUxQfmNRZcB0ScXkHRfyN7bqEG+qEPQvjUaCdzB/Cn1S+XMMh
-         lnbw==
-X-Gm-Message-State: AOAM533QAkP8GLwSJ3OSpRVI4gOKvnTUHwzenqonRBy7e0hYfJda8f9b
-        WsSL8r0t23Vyz3Yt4+cDNgZedg==
-X-Google-Smtp-Source: ABdhPJz4LrUZWT0R8rNhNOefr57C60C60P7WGoXavFq81PH0cgQ01ztvYBneRGwD/QO2VStrNrY7+g==
-X-Received: by 2002:a05:6a00:148d:b0:49f:def7:9cfe with SMTP id v13-20020a056a00148d00b0049fdef79cfemr24944991pfu.69.1637340299119;
-        Fri, 19 Nov 2021 08:44:59 -0800 (PST)
+        bh=FwXbFXmgWnoAKIPPMw3+meN78T1AYlQPW6JO5KlmOFc=;
+        b=shLdvYFhTWVmGlVBLnnpSveTXrj2dcwAiJ0OAOl+4f0p3ojZnnbPdJp8GFrKbnF/3z
+         j+IEn3wUHplcMDefSXJZa/XolWAsFlwj9DulVziQAMv3XtQrf5GffouhT4opu3EDH6dJ
+         PvhHgGS1cy5i5Vdcbe1d1ggcF3x9pN/OPzZbt1OHR07Qk3PoxOVwHEn44py554HeQQyN
+         0Lv45nnlNYf+eCNX/oAl/hBiKj0zCarKFOSRoX2qrx/dlkn9LVDwi0uj2olKwZ2+/pZ7
+         UJXfRX0pR6HUiOjf0DHlvgQgC2FcJKdCHWHbeG/IxKk/OzYjvfp39ye7Gm82qaAydOG9
+         bWhg==
+X-Gm-Message-State: AOAM5315yqI2txidnGBrNZI13W/SddHrV4BRy4P5h94IuWZxdm5OBise
+        90s7JEwC2ZDdEpU2YNLKJ+eNkA==
+X-Google-Smtp-Source: ABdhPJyFACTPphRa6klhxLhx0DCYZ9m6lKenXggXBtQoELuXEFp4/QL7G/1/q93b8AsTV1Re2tHcDw==
+X-Received: by 2002:a65:408c:: with SMTP id t12mr18370615pgp.262.1637340300380;
+        Fri, 19 Nov 2021 08:45:00 -0800 (PST)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id lb4sm12657350pjb.18.2021.11.19.08.44.58
+        by smtp.gmail.com with ESMTPSA id t13sm193989pfl.98.2021.11.19.08.44.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 08:44:58 -0800 (PST)
-Subject: [PATCH 06/12] RISC-V: defconfigs: Sort CONFIG_PTP_1588_CLOCK
-Date:   Fri, 19 Nov 2021 08:44:07 -0800
-Message-Id: <20211119164413.29052-7-palmer@rivosinc.com>
+        Fri, 19 Nov 2021 08:44:59 -0800 (PST)
+Subject: [PATCH 07/12] RISC-V: defconfigs: Sort CONFIG_MMC
+Date:   Fri, 19 Nov 2021 08:44:08 -0800
+Message-Id: <20211119164413.29052-8-palmer@rivosinc.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211119164413.29052-1-palmer@rivosinc.com>
 References: <20211119164413.29052-1-palmer@rivosinc.com>
@@ -71,10 +71,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Palmer Dabbelt <palmer@rivosinc.com>
 
-This should have no functional change, it just sorts
-CONFIG_PTP_1588_CLOCK the same way savedefconfig does.  This only
-touches the rv64 defconfig because rv32_defconfig was already sorted
-correctly.
+This should have no functional change, it just sorts CONFIG_MMC the same
+way savedefconfig does.  This only touches the rv64 defconfig because
+rv32_defconfig was already sorted correctly.
 
 Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
 ---
@@ -82,20 +81,21 @@ Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-index 0f4fe5790fb5..fa9017c60b3d 100644
+index fa9017c60b3d..ec9540392df7 100644
 --- a/arch/riscv/configs/defconfig
 +++ b/arch/riscv/configs/defconfig
-@@ -71,9 +71,9 @@ CONFIG_HW_RANDOM=y
- CONFIG_HW_RANDOM_VIRTIO=y
- CONFIG_SPI=y
- CONFIG_SPI_SIFIVE=y
-+# CONFIG_PTP_1588_CLOCK is not set
- CONFIG_GPIOLIB=y
- CONFIG_GPIO_SIFIVE=y
--# CONFIG_PTP_1588_CLOCK is not set
- CONFIG_POWER_RESET=y
- CONFIG_DRM=m
- CONFIG_DRM_RADEON=m
+@@ -90,10 +90,10 @@ CONFIG_USB_OHCI_HCD=y
+ CONFIG_USB_OHCI_HCD_PLATFORM=y
+ CONFIG_USB_STORAGE=y
+ CONFIG_USB_UAS=y
++CONFIG_MMC=y
+ CONFIG_MMC_SDHCI=y
+ CONFIG_MMC_SDHCI_PLTFM=y
+ CONFIG_MMC_SDHCI_CADENCE=y
+-CONFIG_MMC=y
+ CONFIG_MMC_SPI=y
+ CONFIG_RTC_CLASS=y
+ CONFIG_VIRTIO_PCI=y
 -- 
 2.32.0
 
