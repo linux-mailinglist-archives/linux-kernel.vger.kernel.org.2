@@ -2,187 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F37456A17
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 07:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC1B456A1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 07:14:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231793AbhKSGQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 01:16:05 -0500
-Received: from sender3-pp-o92.zoho.com.cn ([124.251.121.251]:25388 "EHLO
-        sender3-pp-o92.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230064AbhKSGQE (ORCPT
+        id S229972AbhKSGRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 01:17:34 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:47515 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229760AbhKSGRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 01:16:04 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1637302367; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=UXGCPyCFz7tX85MFg1C4SMtYUakVegGcvK+ghlkQjHF+VwkA5beSLtJXqRcn6WDT2hy4iaWAUUlJq072BFx3tBJjTh1RtLNbqmVIRK0Qm5rTbBuNhmW/KPBq3Ih4Gz3oUOjosomMGSJlau8lOK/pDh2xDJQsSq2c0u06ZLwKdIE=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1637302367; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
-        bh=FLpxUbOA32yB5Ph7jXFqI32bQbbWaYa3uHakj/Rxv4g=; 
-        b=ktF0zglxtGdmzO0UNpTLDXrHNret0srQEFDkxxOeUbZxc5vlAYcZv931tZaq/Y0WjZDzMItuA6UovKgBjsUWTQR8sFcr6mqVHzzF7VazQKcE62uuVaDkfkJTpuOYNxwBxmBASnjpg8t9N/c7+AmSp1uDLRfMbhuwBLxJy7V4McI=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1637302367;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=FLpxUbOA32yB5Ph7jXFqI32bQbbWaYa3uHakj/Rxv4g=;
-        b=XYdTETk+2zIVRC7GCNrTojZ2HsNemupRizkV8gAMU67hOBo5GcHdIEUl7IB8nL+w
-        7INnhueTlim8Q1tgkqUGfSA0OVqqS4hHbqgqLtHrDwqxEezVec9dgdZcRwSPTSBljj+
-        1AnQEuCuRL6scwz7KDN2rAskOe/Bpx11+YPLxKTk=
-Received: from mail.baihui.com by mx.zoho.com.cn
-        with SMTP id 1637302366244693.5069430140323; Fri, 19 Nov 2021 14:12:46 +0800 (CST)
-Date:   Fri, 19 Nov 2021 14:12:46 +0800
-From:   Chengguang Xu <cgxu519@mykernel.net>
-Reply-To: cgxu519@mykernel.net
-To:     "Jan Kara" <jack@suse.cz>
-Cc:     "Miklos Szeredi" <miklos@szeredi.hu>,
-        "Amir Goldstein" <amir73il@gmail.com>,
-        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
-        "overlayfs" <linux-unionfs@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>
-Message-ID: <17d36d37022.1227b6f102736.1047689367927335302@mykernel.net>
-In-Reply-To: <20211118164349.GB8267@quack2.suse.cz>
-References: <17c5aba1fef.c5c03d5825886.6577730832510234905@mykernel.net>
- <CAJfpegtr1NkOiY9YWd1meU1yiD-LFX-aB55UVJs94FrX0VNEJQ@mail.gmail.com>
- <17c5adfe5ea.12f1be94625921.4478415437452327206@mykernel.net>
- <CAJfpegt4jZpSCXGFk2ieqUXVm3m=ng7QtSzZp2bXVs07bfrbXg@mail.gmail.com>
- <17d268ba3ce.1199800543649.1713755891767595962@mykernel.net>
- <CAJfpegttQreuuD_jLgJmrYpsLKBBe2LmB5NSj6F5dHoTzqPArw@mail.gmail.com>
- <17d2c858d76.d8a27d876510.8802992623030721788@mykernel.net>
- <17d31bf3d62.1119ad4be10313.6832593367889908304@mykernel.net>
- <20211118112315.GD13047@quack2.suse.cz>
- <17d32ecf46e.124314f8f672.8832559275193368959@mykernel.net> <20211118164349.GB8267@quack2.suse.cz>
-Subject: Re: [RFC PATCH v5 06/10] ovl: implement overlayfs' ->write_inode
- operation
+        Fri, 19 Nov 2021 01:17:32 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id DF1C658091A;
+        Fri, 19 Nov 2021 01:14:30 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Fri, 19 Nov 2021 01:14:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.in; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=bgWuFoLEb87DsIPJtjpr2qz3Xy
+        aQqedmbsGqM77Zh9M=; b=no1YhPc0az9k3uzn7dlt/fUx6yd8UbiF89VRaAsHtO
+        rCcgXQacUEQIkEWr/JsCl+9JHY2vGEm0Vduk3uJ7uliVdc8yTaAgto8Mf8iVSHD1
+        5vPYQ3BmwIJdMpJaeOzZdL+gS4OoX2v0/1BDqcCS8GIeyW9AXiBDrul4XA5DIcfc
+        LIh4Xu/UqYBbvvNpPwmiYbW+ahaOQB9a9ZKdYrNqy21ilzYnSnwx4BL7aKEIkfw4
+        8uWttpxQSG4GTELs3QoeezCd0Fd0ydggBxW97v/7BB8oduyH8m0V3rLWhyAluAzR
+        HeKxdBrwhHQo34ITze3Fo+kSsRI/dfBDw5eFjLHdc1Cw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=bgWuFoLEb87DsIPJt
+        jpr2qz3XyaQqedmbsGqM77Zh9M=; b=ApM3oOl0fiFY0rU74OxwqKqtJHjPHvRLI
+        rlhAxJisc40CmvDzlgB6SImhCTRenEQB+yMQOi8wqv8zSXOX82ahCB6xig0iH8uS
+        qiwZjxu31sihtRWbgZi+Jjac/W4/f7rbAR8Vp4ChWvHSf5IqXNFCSTQumAlaZ1+X
+        bVVT+9omON9/NjT+n+83WWUJGcsAOz0kkQR3Wtuwcyt7kLsbM5OIBdueS/3aILZ0
+        jWh9uwcqXrjXDS+ecwp/CdmWNWZyVuFov6x0Xb2lJVi6G9OZQ2ZOZlc+ppmTDYTM
+        2tJw9/RJZ2IvNlvkW4Iwi/T5lipokywliLW4p3a4zC89DlQ7izJMg==
+X-ME-Sender: <xms:xkCXYbHW0z4TPlN8cTm_EsJ5cjoHEcDreq2_Hjhh4z22jyTz4zc3Tg>
+    <xme:xkCXYYWLN8SxxKAvs0jaGPHX0xYIAUhwBAPOTKidOIlKfQe-zn4cH6ftbPZMtJW9i
+    C5kz8e9JSmtrIrlLGc>
+X-ME-Received: <xmr:xkCXYdI9_F49szZQ6gmZYcdFnhj_GbdC5kT5L6kktEFDaozIdx-JzJT0TQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeejgdelvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+    dtnecuhfhrohhmpeffvggvphcuofgrjhhumhguvghruceouggvvghpsehfrghsthhmrghi
+    lhdrihhnqeenucggtffrrghtthgvrhhnpedvvedtkefhteeggfehveehgeehgeeigfekke
+    fgteejleehffffffeggfdtheetleenucffohhmrghinhepnhigphdrtghomhdpphholhho
+    lhhurdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homhepuggvvghpsehfrghsthhmrghilhdrihhn
+X-ME-Proxy: <xmx:xkCXYZFqbG9LIoIBfiZ_9OIzdOhiz8RhxX9g2IC-LBKJXRFnt3BCzA>
+    <xmx:xkCXYRVq1xBwKFTEfj9vKxBqgEfJIZs-WLLKTP60qHAHZzbXEa0oYA>
+    <xmx:xkCXYUOlSTfz_ZEOZ4L3N0mWnEEa8wI3GnHK4-dIlKZZtCgv8XYTpQ>
+    <xmx:xkCXYURQekMirRyjs576zUr2gIMqwycOvrq1aGCoxq8ECNf6Nv-yrA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 19 Nov 2021 01:14:29 -0500 (EST)
+From:   Deep Majumder <deep@fastmail.in>
+To:     wsa@kernel.org
+Cc:     linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Deep Majumder <deep@fastmail.in>
+Subject: [PATCH v2] Docs: Fixes link to I2C specification
+Date:   Fri, 19 Nov 2021 11:44:01 +0530
+Message-Id: <20211119061401.19852-1-deep@fastmail.in>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Importance: Medium
-User-Agent: ZohoCN Mail
-X-Mailer: ZohoCN Mail
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=BA=94, 2021-11-19 00:43:49 Jan Kara <=
-jack@suse.cz> =E6=92=B0=E5=86=99 ----
- > On Thu 18-11-21 20:02:09, Chengguang Xu wrote:
- > >  ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E5=9B=9B, 2021-11-18 19:23:15 Jan K=
-ara <jack@suse.cz> =E6=92=B0=E5=86=99 ----
- > >  > On Thu 18-11-21 14:32:36, Chengguang Xu wrote:
- > >  > >=20
- > >  > >  ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=89, 2021-11-17 14:11:29 =
-Chengguang Xu <cgxu519@mykernel.net> =E6=92=B0=E5=86=99 ----
- > >  > >  >  ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=BA=8C, 2021-11-16 20:35:=
-55 Miklos Szeredi <miklos@szeredi.hu> =E6=92=B0=E5=86=99 ----
- > >  > >  >  > On Tue, 16 Nov 2021 at 03:20, Chengguang Xu <cgxu519@mykern=
-el.net> wrote:
- > >  > >  >  > >
- > >  > >  >  > >  ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E5=9B=9B, 2021-10-07 2=
-1:34:19 Miklos Szeredi <miklos@szeredi.hu> =E6=92=B0=E5=86=99 ----
- > >  > >  >  > >  > On Thu, 7 Oct 2021 at 15:10, Chengguang Xu <cgxu519@my=
-kernel.net> wrote:
- > >  > >  >  > >  > >  > However that wasn't what I was asking about.  AFA=
-ICS ->write_inode()
- > >  > >  >  > >  > >  > won't start write back for dirty pages.   Maybe I=
-'m missing something,
- > >  > >  >  > >  > >  > but there it looks as if nothing will actually tr=
-igger writeback for
- > >  > >  >  > >  > >  > dirty pages in upper inode.
- > >  > >  >  > >  > >  >
- > >  > >  >  > >  > >
- > >  > >  >  > >  > > Actually, page writeback on upper inode will be trig=
-gered by overlayfs ->writepages and
- > >  > >  >  > >  > > overlayfs' ->writepages will be called by vfs writeb=
-ack function (i.e writeback_sb_inodes).
- > >  > >  >  > >  >
- > >  > >  >  > >  > Right.
- > >  > >  >  > >  >
- > >  > >  >  > >  > But wouldn't it be simpler to do this from ->write_ino=
-de()?
- > >  > >  >  > >  >
- > >  > >  >  > >  > I.e. call write_inode_now() as suggested by Jan.
- > >  > >  >  > >  >
- > >  > >  >  > >  > Also could just call mark_inode_dirty() on the overlay=
- inode
- > >  > >  >  > >  > regardless of the dirty flags on the upper inode since=
- it shouldn't
- > >  > >  >  > >  > matter and results in simpler logic.
- > >  > >  >  > >  >
- > >  > >  >  > >
- > >  > >  >  > > Hi Miklos=EF=BC=8C
- > >  > >  >  > >
- > >  > >  >  > > Sorry for delayed response for this, I've been busy with =
-another project.
- > >  > >  >  > >
- > >  > >  >  > > I agree with your suggesion above and further more how ab=
-out just mark overlay inode dirty
- > >  > >  >  > > when it has upper inode? This approach will make marking =
-dirtiness simple enough.
- > >  > >  >  >=20
- > >  > >  >  > Are you suggesting that all non-lower overlay inodes should=
- always be dirty?
- > >  > >  >  >=20
- > >  > >  >  > The logic would be simple, no doubt, but there's the cost t=
-o walking
- > >  > >  >  > those overlay inodes which don't have a dirty upper inode, =
-right? =20
- > >  > >  >=20
- > >  > >  > That's true.
- > >  > >  >=20
- > >  > >  >  > Can you quantify this cost with a benchmark?  Can be totall=
-y synthetic,
- > >  > >  >  > e.g. lookup a million upper files without modifying them, t=
-hen call
- > >  > >  >  > syncfs.
- > >  > >  >  >=20
- > >  > >  >=20
- > >  > >  > No problem, I'll do some tests for the performance.
- > >  > >  >=20
- > >  > >=20
- > >  > > Hi Miklos,
- > >  > >=20
- > >  > > I did some rough tests and the results like below.  In practice, =
- I don't
- > >  > > think that 1.3s extra time of syncfs will cause significant probl=
-em.
- > >  > > What do you think?
- > >  >=20
- > >  > Well, burning 1.3s worth of CPU time for doing nothing seems like q=
-uite a
- > >  > bit to me. I understand this is with 1000000 inodes but although th=
-at is
- > >  > quite a few it is not unheard of. If there would be several contain=
-ers
- > >  > calling sync_fs(2) on the machine they could easily hog the machine=
-... That
- > >  > is why I was originally against keeping overlay inodes always dirty=
- and
- > >  > wanted their dirtiness to at least roughly track the real need to d=
-o
- > >  > writeback.
- > >  >=20
- > >=20
- > > Hi Jan,
- > >=20
- > > Actually, the time on user and sys are almost same with directly excut=
-e syncfs on underlying fs.
- > > IMO, it only extends syncfs(2) waiting time for perticular container b=
-ut not burning cpu.
- > > What am I missing?
- >=20
- > Ah, right, I've missed that only realtime changed, not systime. I'm sorr=
-y
- > for confusion. But why did the realtime increase so much? Are we waiting
- > for some IO?
- >=20
+The link to the I2C specification is broken and is replaced in this
+patch by one that points to Rev 6 (2014) of the specification.
+Although `https://www.nxp.com" hosts the Rev 7 (2021) of this
+specification, it is behind a login-wall and thus cannot be used.
+Thus, an additional link has been added (which doesn't require a login)
+and the NXP official docs link has been updated. The additional link is
+not the Wayback Machine link since it seems that the PDF has not been
+archived.
 
-There are many places to call cond_resched() in writeback process,
-so sycnfs process was scheduled several times.
+Signed-off-by: Deep Majumder <deep@fastmail.in>
+---
+ Documentation/i2c/summary.rst | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-Thanks,
-Chengguang
-
-
+diff --git a/Documentation/i2c/summary.rst b/Documentation/i2c/summary.rst
+index 136c4e333be7..3395e2e46d9c 100644
+--- a/Documentation/i2c/summary.rst
++++ b/Documentation/i2c/summary.rst
+@@ -11,9 +11,11 @@ systems.  Some systems use variants that don't meet branding requirements,
+ and so are not advertised as being I2C but come under different names,
+ e.g. TWI (Two Wire Interface), IIC.
+ 
+-The official I2C specification is the `"I2C-bus specification and user
+-manual" (UM10204) <https://www.nxp.com/docs/en/user-guide/UM10204.pdf>`_
+-published by NXP Semiconductors.
++The official I2C specification (revision 7) is the `"I2C-bus specification and user
++manual" (UM10204) <https://www.nxp.com/webapp/Download?colCode=UM10204&location=null>`_
++published by NXP Semiconductors. However, you need to log-in to the site to
++access the PDF. An older version of the specification (revision 6) is available
++`here <https://www.pololu.com/file/0J435/UM10204.pdf>`_.
+ 
+ SMBus (System Management Bus) is based on the I2C protocol, and is mostly
+ a subset of I2C protocols and signaling.  Many I2C devices will work on an
+-- 
+2.30.2
 
