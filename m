@@ -2,111 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 266F3456706
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 01:51:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B5745670B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 01:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233799AbhKSAyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 19:54:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44848 "EHLO
+        id S233694AbhKSA4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 19:56:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233629AbhKSAye (ORCPT
+        with ESMTP id S229851AbhKSA4j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 19:54:34 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A387C06173E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 16:51:33 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id u74so18236385oie.8
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 16:51:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=8cnZgiwj9XJw4naygCZKbqiNR9D8VICQZJ/k+OihQ6c=;
-        b=ndKyn010qoO+1qpay+R1q/8TvFa7FXwoCZ5otYd7548pRDEtEpizZEyeBTiEL2qlaM
-         a0Tr6InVcaAaanlYGPMJii+j1Y8JsfEARiTy1EeEyhssCZ66U15Iusrt4nWVGNoWU+Tx
-         bFZ50xdSC9oypEdJgHpiDUc+qKPkL+gonsDL8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=8cnZgiwj9XJw4naygCZKbqiNR9D8VICQZJ/k+OihQ6c=;
-        b=KXdSwONbih0GJGgIZl801/7/MUCYjzTImDwPNnYTMKKSbkGU4hveesLR0rtl6VoZ/V
-         jE9z8IG9/x0r+7Gu7rVsWo+pulqV7CfTnIeUpXwGqZUnyyYZAT0hYFuuV6YouAbKMWru
-         mA/A2L5Dpr6lUCRikLJwcBpYMuSqK9VyFlv0xH6oZxC5Ld0lBvMmv6ZmH3ESBy7QY5Lx
-         gXjxt2nvXMltWdJ++13Rfjn00aF8UMmDTC53X0Ko9+I4GIUEq7+ZZJdE8WpOPEKlD1+i
-         o2XibBSLUeQtGoy4HTnQcCEuqagm7blbg6pW4JoEbVKk4/0nvsWn8+aM7MSvvaE37OS4
-         ot3w==
-X-Gm-Message-State: AOAM531M8Wz0CUJKHiKHikBhvX2lzao74BR78bx99S+41F/a0Hs/Wk/C
-        Vgb4SmmDiqFzq3qA6Rw31M5Yp4p0pxDkgJwU5wgNow==
-X-Google-Smtp-Source: ABdhPJzUlN8XM485ZkLTeetA/FYunzmdsJriYPUX3FQapC8fqcv/xBQkkQPI7XgpwgN+jEcRvsIXhYUgOrZn4c4JnKQ=
-X-Received: by 2002:a54:4506:: with SMTP id l6mr1274844oil.32.1637283092931;
- Thu, 18 Nov 2021 16:51:32 -0800 (PST)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 19 Nov 2021 01:51:32 +0100
+        Thu, 18 Nov 2021 19:56:39 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 219E1C061574;
+        Thu, 18 Nov 2021 16:53:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
+        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
+        bh=qKGELyL4aCtaaSFlrFfy2GDax7ugJmenjGWL4VW8cso=; b=1WWH1rqVi4pj6/R0uchiYGoIZm
+        K1G44pD6j74aMuSvjN22VweP5K3ZpalA0/3OM4avmt4ArRjg4401cyfSRbnHmpNk6HQMb90SuSAXF
+        kvbeSyCYwTiN3jQnicz2QB9ESrGzx1eGFqEvFwff1rwNAwVwApGU3y+l1ky11i/c0UkFuq76KZatI
+        Q5p83QmMRwZsvx/Jx11WKmLcYc5l9HXKz4s7D8wcIaheoznzDtTzl7qtDDTYRA+piM3c8fYvV2y75
+        2Bv0YdQSNEUl4z3ucZPS/dM4imzyy1hw1Y+1FJm/c0LL9CfOFkDNs6GL8lDONDR17gRsqHAIt860M
+        mdg89XVg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mns9k-0096Vz-Pk; Fri, 19 Nov 2021 00:53:32 +0000
+Subject: Re: mmotm 2021-11-18-15-47 uploaded (<linux/proc_fs.h>)
+To:     akpm@linux-foundation.org, broonie@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
+        Hans de Goede <hdegoede@redhat.com>
+References: <20211118234743.-bgoWMQfK%akpm@linux-foundation.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <db0b9313-fef6-2977-9b1c-4c830edea5c5@infradead.org>
+Date:   Thu, 18 Nov 2021 16:53:30 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <1637251016-21923-1-git-send-email-pillair@codeaurora.org>
-References: <1637251016-21923-1-git-send-email-pillair@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Fri, 19 Nov 2021 01:51:32 +0100
-Message-ID: <CAE-0n51Z7qimY3k5qCYO5vAJ6o_skfUZL8xYpWN8a+2ThNVUGw@mail.gmail.com>
-Subject: Re: [PATCH v6] arm64: dts: qcom: sc7280: Add WPSS remoteproc node
-To:     Rakesh Pillai <pillair@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sibis@codeaurora.org,
-        mpubbise@codeaurora.org, kuabhs@chromium.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211118234743.-bgoWMQfK%akpm@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rakesh Pillai (2021-11-18 07:56:56)
-> Add the WPSS remoteproc node in dts for
-> PIL loading.
->
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> ---
-> Changes from v5:
-> - Update the clock names
-> ---
->  arch/arm64/boot/dts/qcom/sc7280-idp.dts |  4 +++
->  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 56 +++++++++++++++++++++++++++++++++
->  2 files changed, 60 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> index 9b991ba..ddab150 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> @@ -80,3 +80,7 @@
->                 qcom,pre-scaling = <1 1>;
->         };
->  };
-> +
-> +&remoteproc_wpss {
-> +       status = "okay";
-> +};
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index 365a2e0..76c2a90 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -134,6 +134,11 @@
->                         no-map;
->                 };
->
-> +               wpss_mem: memory@9ae00000 {
-> +                       no-map;
-> +                       reg = <0x0 0x9ae00000 0x0 0x1900000>;
+On 11/18/21 3:47 PM, akpm@linux-foundation.org wrote:
+> The mm-of-the-moment snapshot 2021-11-18-15-47 has been uploaded to
+> 
+>     https://www.ozlabs.org/~akpm/mmotm/
+> 
+> mmotm-readme.txt says
+> 
+> README for mm-of-the-moment:
+> 
+> https://www.ozlabs.org/~akpm/mmotm/
+> 
+> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+> more than once a week.
+> 
+> You will need quilt to apply these patches to the latest Linus release (5.x
+> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+> https://ozlabs.org/~akpm/mmotm/series
+> 
+> The file broken-out.tar.gz contains two datestamp files: .DATE and
+> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+> followed by the base kernel version against which this patch series is to
+> be applied.
 
-Almost always reg comes first. Please swap the order of these two
-properties.
+Hi,
 
-> +               };
-> +
->                 rmtfs_mem: memory@9c900000 {
->                         compatible = "qcom,rmtfs-mem";
->                         reg = <0x0 0x9c900000 0x0 0x280000>;
+I get hundreds of warnings from <linux/proc_fs.h>:
 
-Otherwise
+from proc-make-the-proc_create-stubs-static-inlines.patch:
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+../include/linux/proc_fs.h:186:2: error: parameter name omitted
+../include/linux/proc_fs.h:186:32: error: parameter name omitted
+../include/linux/proc_fs.h:186:63: error: parameter name omitted
+
+
+-- 
+~Randy
