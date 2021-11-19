@@ -2,105 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D684571C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:38:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A17894571C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235202AbhKSPmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 10:42:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235250AbhKSPl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 10:41:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34B9A6112E;
-        Fri, 19 Nov 2021 15:38:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637336337;
-        bh=SiDyJ/VKAeOoI+SIN4+qGK8ta2JLIbvMWVnitDoSmOg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SHoopEN12ABnOJrQbGs8O4BbaND7QMXx48wiMBfW/8wzoXRR2ZcjeK7A1l1VuChGU
-         Fuvl9doTKs+BETnCb+vWs32+C6Is7JnTr00XR3VcWVsnMd1DtxETI4xwPJgPbtzNo3
-         pW4hnUxqvm5DJDMd6QDv+KL0OJpRdwOkNW1HZ4NilDKCcLoT963XPkoicDMbI/pDR9
-         PYZML153hA+AxUyOvmTwJNfnBVfUfcebUttiMN6eaCN2WZ4kCbfTM9hMWoC8bUER3V
-         ZXeBu1SjuFEwMAWoe8ghOZ+MbxJZhwjCGWB2YnA8Wzwn0z0vOjPI/tgdVSzjCf2sHp
-         ruRiK3XHBQl2A==
-Date:   Fri, 19 Nov 2021 17:38:53 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Aya Levin <ayal@mellanox.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>, drivers@pensando.io,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org,
-        Michael Chan <michael.chan@broadcom.com>,
-        netdev@vger.kernel.org, oss-drivers@corigine.com,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Simon Horman <simon.horman@corigine.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [PATCH net-next 5/6] devlink: Reshuffle resource registration
- logic
-Message-ID: <YZfFDSnnjOG+wSyK@unreal>
-References: <cover.1637173517.git.leonro@nvidia.com>
- <6176a137a4ded48501e8a06fda0e305f9cfc787c.1637173517.git.leonro@nvidia.com>
- <20211117204956.6a36963b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YZYFvIK9mkP107tD@unreal>
- <20211118174813.54c3731f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S235434AbhKSPmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 10:42:19 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:56682 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234862AbhKSPmS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 10:42:18 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 205451FD38;
+        Fri, 19 Nov 2021 15:39:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637336356; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=1j1MNeLLIwQNenVL0GJ3LtVT6hsmn8LBmDa9I+SCdEA=;
+        b=RRukonH7VR6a1V4h76tfh3yTxEh1jKqtgW3gZCl02/vOmRZrwXpGtTKwN9imaZUi+HXqEh
+        +3AhXsHfIbOUPR7338tVCJ+O6KlQsKvsvZ3//UbZE/rqgP+yDnySYUTcEXjPcVb8wLEnZW
+        1pnMgHlMZF+e7t7xPwxtiE0zE/fh958=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C5A7C13B35;
+        Fri, 19 Nov 2021 15:39:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id HM/1LiPFl2HIIwAAMHmgww
+        (envelope-from <jgross@suse.com>); Fri, 19 Nov 2021 15:39:15 +0000
+From:   Juergen Gross <jgross@suse.com>
+To:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, kernel test robot <lkp@intel.com>
+Subject: [PATCH] xen/pvh: add missing prototype to header
+Date:   Fri, 19 Nov 2021 16:39:13 +0100
+Message-Id: <20211119153913.21678-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211118174813.54c3731f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 05:48:13PM -0800, Jakub Kicinski wrote:
-> On Thu, 18 Nov 2021 09:50:20 +0200 Leon Romanovsky wrote:
-> > And it shouldn't. devlink_resource_find() will return valid resource only
-> > if there driver is completely bogus with races or incorrect allocations of
-> > resource_id.
-> > 
-> > devlink_*_register(..)
-> >  mutex_lock(&devlink->lock);
-> >  if (devlink_*_find(...)) {
-> >     mutex_unlock(&devlink->lock);
-> >     return ....;
-> >  }
-> >  .....
-> > 
-> > It is almost always wrong from locking and layering perspective the pattern above,
-> > as it is racy by definition if not protected by top layer.
-> > 
-> > There are exceptions from the rule above, but devlink is clearly not the
-> > one of such exceptions.
-> 
-> Just drop the unnecessary "cleanup" patches and limit the amount 
-> of driver code we'll have to revert if your approach fails.
+The prototype of mem_map_via_hcall() is missing in its header, so add
+it.
 
-My approach works, exactly like it works in other subsystems.
-https://lore.kernel.org/netdev/cover.1636390483.git.leonro@nvidia.com/
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: a43fb7da53007e67ad ("xen/pvh: Move Xen code for getting mem map via hcall out of common file")
+Signed-off-by: Juergen Gross <jgross@suse.com>
+---
+ arch/x86/include/asm/xen/hypervisor.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-We are waiting to see your proposal extended to support parallel devlink
-execution and to be applied to real drivers.
-https://lore.kernel.org/netdev/20211030231254.2477599-1-kuba@kernel.org/
+diff --git a/arch/x86/include/asm/xen/hypervisor.h b/arch/x86/include/asm/xen/hypervisor.h
+index 4957f59deb40..5adab895127e 100644
+--- a/arch/x86/include/asm/xen/hypervisor.h
++++ b/arch/x86/include/asm/xen/hypervisor.h
+@@ -64,6 +64,7 @@ void xen_arch_unregister_cpu(int num);
+ 
+ #ifdef CONFIG_PVH
+ void __init xen_pvh_init(struct boot_params *boot_params);
++void __init mem_map_via_hcall(struct boot_params *boot_params_p);
+ #endif
+ 
+ #endif /* _ASM_X86_XEN_HYPERVISOR_H */
+-- 
+2.26.2
 
-Anyway, you are maintainer, you want half work, you will get half work.
-
-> 
-> I spent enough time going back and forth with you.
-> 
-> Please.
-
-Disagreements are hard for everyone, not only for you.
-
-Thanks
