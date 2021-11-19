@@ -2,110 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C84457422
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:54:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8018D457430
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:54:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235889AbhKSQ5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 11:57:17 -0500
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:26224 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229519AbhKSQ5Q (ORCPT
+        id S236129AbhKSQ5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 11:57:35 -0500
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:43941 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235718AbhKSQ5e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:57:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637340855; x=1668876855;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=6DEP3t+XDa5WlLRSEM3s6XOjAWqLN52Ye0b4lfzBcLs=;
-  b=Y6/KnjawI4abBc8lx0+V4O73gHRcPJuS64sMnFiipuSn/vifAZlUY+R8
-   NHL5atCW2B23/y0tkzGC4h+rrOHK3vADEkXhrr6dua0u/4TfeBrUK5kvD
-   F3rudFuReTbDnjPeOip2eYsO6qMPdoI6rPLzcqBp76m89C2O6xZOI/7r4
-   E=;
-Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 19 Nov 2021 08:54:15 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg01-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 08:54:14 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Fri, 19 Nov 2021 08:54:14 -0800
-Received: from [10.110.5.170] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Fri, 19 Nov
- 2021 08:54:13 -0800
-Message-ID: <7b54e2fb-1268-9d66-8b6a-4be247ff9bc1@quicinc.com>
-Date:   Fri, 19 Nov 2021 08:54:12 -0800
+        Fri, 19 Nov 2021 11:57:34 -0500
+Received: by mail-oi1-f178.google.com with SMTP id o4so22877000oia.10;
+        Fri, 19 Nov 2021 08:54:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dpil0WQAiM0KLIjHgqrrx0xNvdpK721S5oR0ahyldlA=;
+        b=5MCe2uQkIincUK5rOiLG4XX/kqi8CLEadDb4x7ubDStZQz2Kxhf5vgtOVNEJ/CmR9K
+         bajSAVbsikz9hBCXCSXmedpuaNH8H8MpDx8CQPRfQucCA0zYAL3tXDzkmh6iTWcTtrqe
+         92hUk7+GTXhqHExTgAMCW5xEzP60R1l/DcZHwi2nAHoeEPfxFpoIKV0ausqkrg03u0W6
+         QaVj0nbY3MBDtfvQIPAsjZHSJT8/g+geXVQZzZU3K/DN+ErLeKxp+V/yFT0WrZPI/M8b
+         hXhRyYsOEtDX4wir2H3wqEFBWkxaLF05Yj30ivkL2b9Ru2YCQd8oSs/7+yEhbhtluy3G
+         VptA==
+X-Gm-Message-State: AOAM532odGy09r/U1bOl27TjLlwOdutUtqtAlkneByonm6oqMk9jxTG+
+        9VvSjMjLnf8FsQME5ub4cg==
+X-Google-Smtp-Source: ABdhPJwALY+8FTU2ujmpgV6UCZDd1p24i+QI2OOr62sxlSHxWVBu57DThhHCtNC+BbWHjwSsC6J5uQ==
+X-Received: by 2002:aca:110e:: with SMTP id 14mr1080576oir.100.1637340872102;
+        Fri, 19 Nov 2021 08:54:32 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id b26sm64201oti.56.2021.11.19.08.54.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 08:54:31 -0800 (PST)
+Received: (nullmailer pid 4025438 invoked by uid 1000);
+        Fri, 19 Nov 2021 16:54:30 -0000
+Date:   Fri, 19 Nov 2021 10:54:30 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH v3 1/3] dt-bindings: serial: renesas,scif: Make resets as
+ a required property
+Message-ID: <YZfWxvUNiFbggQjI@robh.at.kernel.org>
+References: <20211110232920.19198-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20211110232920.19198-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH v4] drm/msm/dp: do not initialize phy until plugin
- interrupt received
-Content-Language: en-US
-To:     Stephen Boyd <swboyd@chromium.org>, <agross@kernel.org>,
-        <airlied@linux.ie>, <bjorn.andersson@linaro.org>,
-        <daniel@ffwll.ch>, <dmitry.baryshkov@linaro.org>,
-        <robdclark@gmail.com>, <sean@poorly.run>, <vkoul@kernel.org>
-CC:     <quic_abhinavk@quicinc.com>, <aravindh@codeaurora.org>,
-        <freedreno@lists.freedesktop.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>
-References: <1636493893-7600-1-git-send-email-quic_khsieh@quicinc.com>
- <CAE-0n505-VcS46WnVARsvuaizePP-3cYEw_rfipfq9Yj7AW=Ow@mail.gmail.com>
-From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
-In-Reply-To: <CAE-0n505-VcS46WnVARsvuaizePP-3cYEw_rfipfq9Yj7AW=Ow@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211110232920.19198-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 10 Nov 2021 23:29:18 +0000, Lad Prabhakar wrote:
+> Make "resets" as required property for RZ/G2L. On RZ/G2L the devices
+> should be explicitly pulled out of reset for this reason make "resets"
+> as required property.
+> 
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> v2->v3
+> * No Change
+> ---
+>  Documentation/devicetree/bindings/serial/renesas,scif.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-On 11/18/2021 5:20 PM, Stephen Boyd wrote:
-> Quoting Kuogee Hsieh (2021-11-09 13:38:13)
->> From: Kuogee Hsieh <khsieh@codeaurora.org>
->>
->> Current DP drivers have regulators, clocks, irq and phy are grouped
->> together within a function and executed not in a symmetric manner.
->> This increase difficulty of code maintenance and limited code scalability.
->> This patch divided the driver life cycle of operation into four states,
->> resume (including booting up), dongle plugin, dongle unplugged and suspend.
->> Regulators, core clocks and irq are grouped together and enabled at resume
->> (or booting up) so that the DP controller is armed and ready to receive HPD
->> plugin interrupts. HPD plugin interrupt is generated when a dongle plugs
->> into DUT (device under test). Once HPD plugin interrupt is received, DP
->> controller will initialize phy so that dpcd read/write will function and
->> following link training can be proceeded successfully. DP phy will be
->> disabled after main link is teared down at end of unplugged HPD interrupt
->> handle triggered by dongle unplugged out of DUT. Finally regulators, code
->> clocks and irq are disabled at corresponding suspension.
->>
->> Changes in V2:
->> -- removed unnecessary dp_ctrl NULL check
->> -- removed unnecessary phy init_count and power_count DRM_DEBUG_DP logs
->> -- remove flip parameter out of dp_ctrl_irq_enable()
->> -- add fixes tag
->>
->> Changes in V3:
->> -- call dp_display_host_phy_init() instead of dp_ctrl_phy_init() at
->>          dp_display_host_init() for eDP
->>
->> Changes in V4:
->> -- rewording commit text to match this commit changes
->>
->> Fixes: e91e3065a806 ("drm/msm/dp: Add DP compliance tests on Snapdragon Chipsets")
->>
->> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
->> ---
-> What commit is this patch based on?
-
-It base on Bjorn's patch,
-
-https://patchwork.freedesktop.org/series/92992/
-
-
+Acked-by: Rob Herring <robh@kernel.org>
