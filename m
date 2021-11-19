@@ -2,218 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3960B45786D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 23:00:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBDB457870
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 23:01:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233722AbhKSWDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 17:03:30 -0500
-Received: from mail-pf1-f180.google.com ([209.85.210.180]:41689 "EHLO
-        mail-pf1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233337AbhKSWD2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 17:03:28 -0500
-Received: by mail-pf1-f180.google.com with SMTP id g19so10450371pfb.8;
-        Fri, 19 Nov 2021 14:00:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ggijRPDDjZPAsK7FXooPHxZqLE8dAs4DKChssROyTcQ=;
-        b=2VKu3V7u+pIdihfDVc7T1kUxTnX+DfaOO/HOt1HqP9rkG3jbzI8UZE1Yll0e/iNzeq
-         zEPi6dgpeQFEtCirU2K2daomxvAjTvPi1rNNp2hP3PPprppZ2AzWKcZlhzSO3vRVV05V
-         NBODSY4hqVWtPV4GnNUlwRArjUBGvfaxFPJS5pOn/MUdxvf824fVokKHkv7FC9t1Db/9
-         WmZCvm8L5PXj/gSPjMav2ghiPphuiY6j5lkUX9JVg5I03m24Me0yeXYSi1i/vlwZMNGw
-         lw0PIx+gix6TaK9efczrhbdpRmKhYDFEcNVehgCREW5MNjNSr3bM5/WzcoI1yUUw3SHe
-         +d5A==
-X-Gm-Message-State: AOAM531+vfdD1s7zfKhrNf0oeEymXUDy1spgVBbEC7tsODo+sXgtfVnA
-        PHM6yvXEuGgxyLZ5X9fGa9s=
-X-Google-Smtp-Source: ABdhPJwT052WvkT1NvuImmCFPNUEPm5pR2ZNpF1ovKwHNtK9rTaGnW9QrKdDIOqPqlLMQ0rFkdnoMw==
-X-Received: by 2002:a63:a12:: with SMTP id 18mr19349308pgk.171.1637359225752;
-        Fri, 19 Nov 2021 14:00:25 -0800 (PST)
-Received: from localhost (h67-204-187-10.bendor.broadband.dynamic.tds.net. [67.204.187.10])
-        by smtp.gmail.com with ESMTPSA id t31sm481171pgl.47.2021.11.19.14.00.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 14:00:25 -0800 (PST)
-Date:   Fri, 19 Nov 2021 14:00:23 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Russ Weight <russell.h.weight@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com
-Subject: Re: [PATCH v14 0/3] fpga: Use standard class dev_release function
-Message-ID: <YZgedxD8aejQmb6c@archbook>
-References: <20211119015553.62704-1-russell.h.weight@intel.com>
+        id S233746AbhKSWEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 17:04:32 -0500
+Received: from mga12.intel.com ([192.55.52.136]:62656 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233337AbhKSWEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 17:04:30 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10173"; a="214529787"
+X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
+   d="scan'208";a="214529787"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 14:01:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
+   d="scan'208";a="647292276"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 19 Nov 2021 14:01:26 -0800
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1moBwj-00050Z-LO; Fri, 19 Nov 2021 22:01:25 +0000
+Date:   Sat, 20 Nov 2021 06:00:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/sgx] BUILD SUCCESS
+ 5c16f7ee03c011b0c6cd4c6deccaf0b269d054b2
+Message-ID: <61981e80.mEOk8wyrQVKzUyWK%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211119015553.62704-1-russell.h.weight@intel.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russ,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/sgx
+branch HEAD: 5c16f7ee03c011b0c6cd4c6deccaf0b269d054b2  Merge branch 'x86/urgent' into x86/sgx, to resolve conflict
 
-On Thu, Nov 18, 2021 at 05:55:50PM -0800, Russ Weight wrote:
-> The FPGA framework has a convention of using managed resource functions
-> to allow parent drivers to manage the data structures allocated by the
-> class drivers. They use an empty *_dev_release() function to satisfy the
-> class driver.
-> 
-> This is inconsistent with linux driver model.
-> 
-> These changes remove the managed resource functions and populate the class
-> dev_release callback functions. They also merge the create() and register()
-> functions into a single register() or register_full() function for each of
-> the fpga-mgr, fpga-region, and fpga-bridge class drivers.
-> 
-> The new *register_full() functions accept an info data structure to provide
-> flexibility in passing optional parameters. The *register() functions
-> support the legacy parameter list for users that don't require the use of
-> optional parameters.
-> 
-> For more context, refer to this email thread:
-> 
-> https://marc.info/?l=linux-fpga&m=162127412218557&w=2
-> 
-> I turned on the configs assocated with each of the modified files, but I
-> must have been missing some dependencies, because not all of them compiled.
-> I did a run-time test specifically with the dfl-fme infrastructure. This
-> would have exercised the region, bridge, and fpga-mgr frameworks.
-> 
-> Changelog v13 -> v14:
->   - Fixed typo/bug detected by kernel test robot <lkp@intel.com>: s/mgr/br/
-> 
-> Changelog v12 -> v13:
->   - Add Acked-by tag
-> 
-> Changelog v11 -> v12:
->   - Made the requisite changes to the new versal-fpga driver
-> 
-> Changelog v10 -> v11:
->   - Rebased to latest linux-next
->   - Resolved a single conflict in fpga-mgr.c with associated with  wrapper
->     function: fpga_mgr_state(mgr)
-> 
-> Changelog v9 -> v10:
->   - Fixed commit messages to reference register_full() instead of
->     register_simple().
->   - Removed the fpga_bridge_register_full() function, because there is
->     not need for it yet. Updated the documentation and commit message
->     accordingly.
->   - Updated documentation to reference the fpga_manager_info and
->     fpga_region_info structures.
-> 
-> Changelog v8 -> v9:
->   - Cleaned up documentation for the FPGA Manager, Bridge, and Region
->     register functions
->   - Renamed fpga_*_register() to fpga_*_register_full()
->   - Renamed fpga_*_register_simple() to fpga_*_register()
->   - Renamed devm_fpga_mgr_register() to devm_fpga_mgr_register_full()
->   - Renamed devm_fpga_mgr_register_simple() to devm_fpga_mgr_register()
-> 
-> Changelog v7 -> v8:
->   - Added reviewed-by tags.
->   - Updated Documentation/driver-api/fpga/ files: fpga-mgr.rst,
->     fpga-bridge.rst, and fpga-region.rst.
-> 
-> Changelog v6 -> v7:
->   - Update the commit messages to describe the new parameters for the
->     *register() functions and to mention the *register_simple() functions.
->   - Fix function prototypes in header file to rename dev to parent.
->   - Make use of the PTR_ERR_OR_ZERO() macro when possible.
->   - Some cleanup of comments.
->   - Update function definitions/prototypes to apply const to the new info
->     parameter.
->   - Verify that info->br_ops is non-null in the fpga_bridge_register()
->     function.
->   - Verify a non-null info pointer in the fpga_region_register() function.
-> 
-> Changelog v5 -> v6:
->   - Moved FPGA manager/bridge/region optional parameters out of the ops
->     structure and back into the FPGA class driver structure.
->   - Changed fpga_*_register() function parameters to accept an info data
->     structure to provide flexibility in passing optional parameters.
->   - Added fpga_*_register_simple() functions to support current parameters
->     for users that don't require use of optional parameters.
-> 
-> Changelog v4 -> v5:
->   - Rebased on top of recently accepted patches.
->   - Removed compat_id from the fpga_mgr_register() parameter list
->     and added it to the fpga_manager_ops structure. This also required
->     dynamically allocating the dfl-fme-ops structure in order to add
->     the appropriate compat_id.
->   - Created the fpga_region_ops data structure which is optionally passed
->     to fpga_region_register(). compat_id, the get_bridges() pointer, and
->     the priv pointer are included in the fpga_region_ops structure.
-> 
-> Changelog v3 -> v4:
->   - Added the compat_id parameter to fpga_mgr_register() and
->     devm_fpga_mgr_register() to ensure that the compat_id is set before
->     the device_register() call.
->   - Added the compat_id parameter to fpga_region_register() to ensure
->     that the compat_id is set before the device_register() call.
->   - Modified the dfl_fpga_feature_devs_enumerate() function to restore
->     the fpga_region_register() call to the correct location.
-> 
-> Changelog v2 -> v3:
->   - Cleaned up comment headers for fpga_mgr_register(), fpga_bridge_register(),
->     and fpga_region_register().
->   - Fixed error return on ida_simple_get() failure for fpga_mgr_register(),
->     fpga_bridge_register(), and fpga_region_register().
->   - Fixed error return value for fpga_bridge_register(): ERR_PTR(ret) instead
->     of NULL.
-> 
-> Changelog v1 -> v2:
->   - Restored devm_fpga_mgr_register() functionality to the fpga-mgr
->     class driver, adapted for the combined create/register functionality.
->   - All previous callers of devm_fpga_mgr_register() will continue to call
->     devm_fpga_mgr_register().
->   - replaced unnecessary ternary operators in return statements with
->     standard if conditions.
-> 
-> Russ Weight (3):
->   fpga: mgr: Use standard dev_release for class driver
->   fpga: bridge: Use standard dev_release for class driver
->   fpga: region: Use standard dev_release for class driver
-> 
->  Documentation/driver-api/fpga/fpga-bridge.rst |   6 +-
->  Documentation/driver-api/fpga/fpga-mgr.rst    |  38 +++-
->  Documentation/driver-api/fpga/fpga-region.rst |  12 +-
->  drivers/fpga/altera-cvp.c                     |  12 +-
->  drivers/fpga/altera-fpga2sdram.c              |  12 +-
->  drivers/fpga/altera-freeze-bridge.c           |  10 +-
->  drivers/fpga/altera-hps2fpga.c                |  12 +-
->  drivers/fpga/altera-pr-ip-core.c              |   7 +-
->  drivers/fpga/altera-ps-spi.c                  |   9 +-
->  drivers/fpga/dfl-fme-br.c                     |  10 +-
->  drivers/fpga/dfl-fme-mgr.c                    |  22 +-
->  drivers/fpga/dfl-fme-region.c                 |  17 +-
->  drivers/fpga/dfl.c                            |  12 +-
->  drivers/fpga/fpga-bridge.c                    | 122 +++-------
->  drivers/fpga/fpga-mgr.c                       | 215 ++++++++----------
->  drivers/fpga/fpga-region.c                    | 119 ++++------
->  drivers/fpga/ice40-spi.c                      |   9 +-
->  drivers/fpga/machxo2-spi.c                    |   9 +-
->  drivers/fpga/of-fpga-region.c                 |  10 +-
->  drivers/fpga/socfpga-a10.c                    |  16 +-
->  drivers/fpga/socfpga.c                        |   9 +-
->  drivers/fpga/stratix10-soc.c                  |  16 +-
->  drivers/fpga/ts73xx-fpga.c                    |   9 +-
->  drivers/fpga/versal-fpga.c                    |   9 +-
->  drivers/fpga/xilinx-pr-decoupler.c            |  17 +-
->  drivers/fpga/xilinx-spi.c                     |  11 +-
->  drivers/fpga/zynq-fpga.c                      |  16 +-
->  drivers/fpga/zynqmp-fpga.c                    |   9 +-
->  include/linux/fpga/fpga-bridge.h              |  30 ++-
->  include/linux/fpga/fpga-mgr.h                 |  62 +++--
->  include/linux/fpga/fpga-region.h              |  36 ++-
->  31 files changed, 386 insertions(+), 517 deletions(-)
-> 
-> -- 
-> 2.25.1
-> 
+elapsed time: 722m
 
-Patchset looks good to me, I'm currently travelling, will get around to
-it next week.
+configs tested: 216
+configs skipped: 83
 
-- Moritz
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211119
+i386                 randconfig-c001-20211118
+mips                 randconfig-c004-20211118
+powerpc                         ps3_defconfig
+sh                                  defconfig
+arc                      axs103_smp_defconfig
+ia64                          tiger_defconfig
+ia64                         bigsur_defconfig
+powerpc                        warp_defconfig
+arm                        mvebu_v7_defconfig
+sh                        dreamcast_defconfig
+sh                           sh2007_defconfig
+arm                         orion5x_defconfig
+arm                  colibri_pxa300_defconfig
+arm                           h3600_defconfig
+arc                    vdk_hs38_smp_defconfig
+riscv                    nommu_virt_defconfig
+mips                   sb1250_swarm_defconfig
+powerpc                      walnut_defconfig
+arm                        mvebu_v5_defconfig
+mips                         mpc30x_defconfig
+powerpc                      acadia_defconfig
+s390                          debug_defconfig
+powerpc                 mpc8540_ads_defconfig
+mips                malta_qemu_32r6_defconfig
+arm                           omap1_defconfig
+arm                         palmz72_defconfig
+arc                     nsimosci_hs_defconfig
+nios2                               defconfig
+arm                           stm32_defconfig
+arm                        realview_defconfig
+s390                             alldefconfig
+powerpc                      pcm030_defconfig
+arm                     eseries_pxa_defconfig
+powerpc                     powernv_defconfig
+sh                           se7750_defconfig
+powerpc                   bluestone_defconfig
+mips                     loongson2k_defconfig
+arc                         haps_hs_defconfig
+sh                 kfr2r09-romimage_defconfig
+mips                           jazz_defconfig
+mips                       capcella_defconfig
+arm                         vf610m4_defconfig
+powerpc                 mpc836x_mds_defconfig
+powerpc                 mpc836x_rdk_defconfig
+mips                      bmips_stb_defconfig
+nds32                               defconfig
+arm                       cns3420vb_defconfig
+arm                       netwinder_defconfig
+powerpc                      katmai_defconfig
+arm                      integrator_defconfig
+powerpc                     pseries_defconfig
+arc                        nsim_700_defconfig
+powerpc                     tqm8555_defconfig
+arm                         s3c2410_defconfig
+powerpc                     mpc5200_defconfig
+powerpc                       maple_defconfig
+mips                           gcw0_defconfig
+mips                           ip22_defconfig
+arm                        spear3xx_defconfig
+m68k                         amcore_defconfig
+mips                    maltaup_xpa_defconfig
+arm                     am200epdkit_defconfig
+sh                           se7343_defconfig
+powerpc                  mpc885_ads_defconfig
+powerpc                      pasemi_defconfig
+powerpc                     rainier_defconfig
+sparc64                             defconfig
+riscv             nommu_k210_sdcard_defconfig
+arm                          collie_defconfig
+m68k                             alldefconfig
+arc                     haps_hs_smp_defconfig
+sh                   sh7770_generic_defconfig
+mips                       bmips_be_defconfig
+m68k                            mac_defconfig
+h8300                     edosk2674_defconfig
+arm                             mxs_defconfig
+sh                               allmodconfig
+arm                            hisi_defconfig
+mips                           ip27_defconfig
+openrisc                 simple_smp_defconfig
+i386                             alldefconfig
+sh                          sdk7786_defconfig
+arm                            mmp2_defconfig
+powerpc                 mpc837x_mds_defconfig
+s390                       zfcpdump_defconfig
+powerpc                      ppc40x_defconfig
+powerpc                        icon_defconfig
+arm                         cm_x300_defconfig
+sh                          r7780mp_defconfig
+powerpc                      obs600_defconfig
+csky                             alldefconfig
+mips                        bcm47xx_defconfig
+arm                       spear13xx_defconfig
+arm                           tegra_defconfig
+ia64                            zx1_defconfig
+sh                           se7722_defconfig
+openrisc                            defconfig
+powerpc                      cm5200_defconfig
+ia64                             alldefconfig
+arm                       imx_v6_v7_defconfig
+m68k                          sun3x_defconfig
+powerpc64                        alldefconfig
+powerpc                 mpc834x_mds_defconfig
+mips                 decstation_r4k_defconfig
+arm                  randconfig-c002-20211118
+arm                  randconfig-c002-20211119
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20211119
+x86_64               randconfig-a003-20211119
+x86_64               randconfig-a002-20211119
+x86_64               randconfig-a001-20211119
+x86_64               randconfig-a006-20211119
+x86_64               randconfig-a004-20211119
+i386                 randconfig-a006-20211119
+i386                 randconfig-a003-20211119
+i386                 randconfig-a001-20211119
+i386                 randconfig-a005-20211119
+i386                 randconfig-a004-20211119
+i386                 randconfig-a002-20211119
+x86_64               randconfig-a015-20211118
+x86_64               randconfig-a012-20211118
+x86_64               randconfig-a011-20211118
+x86_64               randconfig-a013-20211118
+x86_64               randconfig-a016-20211118
+x86_64               randconfig-a014-20211118
+i386                 randconfig-a016-20211120
+i386                 randconfig-a015-20211120
+i386                 randconfig-a012-20211120
+i386                 randconfig-a013-20211120
+i386                 randconfig-a014-20211120
+i386                 randconfig-a011-20211120
+i386                 randconfig-a016-20211118
+i386                 randconfig-a014-20211118
+i386                 randconfig-a012-20211118
+i386                 randconfig-a011-20211118
+i386                 randconfig-a013-20211118
+i386                 randconfig-a015-20211118
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+
+clang tested configs:
+i386                 randconfig-c001-20211118
+x86_64               randconfig-c007-20211118
+arm                  randconfig-c002-20211118
+s390                 randconfig-c005-20211118
+powerpc              randconfig-c003-20211118
+riscv                randconfig-c006-20211118
+mips                 randconfig-c004-20211118
+i386                 randconfig-c001-20211119
+x86_64               randconfig-c007-20211119
+arm                  randconfig-c002-20211119
+s390                 randconfig-c005-20211119
+powerpc              randconfig-c003-20211119
+riscv                randconfig-c006-20211119
+x86_64               randconfig-a005-20211118
+x86_64               randconfig-a003-20211118
+x86_64               randconfig-a001-20211118
+x86_64               randconfig-a002-20211118
+x86_64               randconfig-a006-20211118
+x86_64               randconfig-a004-20211118
+i386                 randconfig-a006-20211118
+i386                 randconfig-a003-20211118
+i386                 randconfig-a001-20211118
+i386                 randconfig-a005-20211118
+i386                 randconfig-a004-20211118
+i386                 randconfig-a002-20211118
+x86_64               randconfig-a015-20211119
+x86_64               randconfig-a011-20211119
+x86_64               randconfig-a012-20211119
+x86_64               randconfig-a013-20211119
+x86_64               randconfig-a016-20211119
+x86_64               randconfig-a014-20211119
+hexagon              randconfig-r045-20211119
+hexagon              randconfig-r041-20211119
+riscv                randconfig-r042-20211119
+s390                 randconfig-r044-20211119
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
