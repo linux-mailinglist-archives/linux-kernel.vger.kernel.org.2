@@ -2,108 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B56456DFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 12:10:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16234456E01
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 12:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234964AbhKSLMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 06:12:36 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56250 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234960AbhKSLMe (ORCPT
+        id S234978AbhKSLNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 06:13:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229521AbhKSLNU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 06:12:34 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AJ9i3TR005724;
-        Fri, 19 Nov 2021 11:09:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=DMGGL+ptrDkHqbY8K7wsnL5eoa1Z6LiRarwnFfhbyEQ=;
- b=UmWy4BvtxMPzWhAZuiZygE3zGNr/96QrAoRbS5cCcTDj9TID/Q3v7U1zPAY7UN06/XZS
- TCpFwQ8KLw+DI2ewlrLgqbPQOYzDPQmZrOgFBwyId1QmD/ms9ffhlBPASus+euumNAhC
- W5fX+nBFs7PlZPb/5lfaM4wiq7XR+XkrzEa95hNR4irJ4pqLj6CJUVbMaPymGdgQxMOS
- nr+Yo6mOoZgg3PxR7vmY+1p7exgn1nT+1h8Yv7B60bzmQlF1O9n8Au9hWVJVdy/+wAwv
- ZoOPH04XcgnoYhboVE3peJr+MmWtM0f3ZDkzYXGWo1FCqvlm7yBYdt/GxTzTg4CqkfCA xQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ce9hxsrbh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Nov 2021 11:09:30 +0000
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AJB5aOK017787;
-        Fri, 19 Nov 2021 11:09:30 GMT
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ce9hxsraw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Nov 2021 11:09:30 +0000
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AJB7ha3010426;
-        Fri, 19 Nov 2021 11:09:27 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06fra.de.ibm.com with ESMTP id 3ca4mkwg0d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Nov 2021 11:09:27 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AJB2NSJ50856220
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Nov 2021 11:02:23 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 60DD4A4065;
-        Fri, 19 Nov 2021 11:09:22 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DA3BDA4066;
-        Fri, 19 Nov 2021 11:09:21 +0000 (GMT)
-Received: from osiris (unknown [9.145.50.239])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri, 19 Nov 2021 11:09:21 +0000 (GMT)
-Date:   Fri, 19 Nov 2021 12:09:20 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Ilie Halip <ilie.halip@gmail.com>,
-        linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Mete Durlu <meted@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        linux-s390@vger.kernel.org, llvm@lists.linux.dev,
-        Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
-Subject: Re: [PATCH] s390/test_unwind: use raw opcode instead of invalid
- instruction
-Message-ID: <YZeF4JjWIcTMtaaT@osiris>
-References: <20211117174822.3632412-1-ilie.halip@gmail.com>
- <CAKwvOd=9tsHHhPBOx2ORZoJP09VsX5dRZn58qj3MzCc2vmVosg@mail.gmail.com>
- <d9ec2704-f41c-eafa-1945-ce845d65be8a@de.ibm.com>
- <YZeCcSjh4yCzzDcH@osiris>
- <658a63b5-2d18-2837-9639-75a14c959f73@de.ibm.com>
+        Fri, 19 Nov 2021 06:13:20 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92568C061574;
+        Fri, 19 Nov 2021 03:10:18 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id x7so7713233pjn.0;
+        Fri, 19 Nov 2021 03:10:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6cWAmlDlAF59x4LqcOU/XShYfmYEgb4772Ge0zuawgQ=;
+        b=ks3fFLzUFxnyfEU6VkMBuDy9Ur6tgo8k6gs9eRJyRE3XRvxt7oqPmCCzMczBDEwkJp
+         Ob5J5llfw8vqiGruy+OC4KFtXmIY8MPOGGjHloaUXpgvry4nY3rWG1Hc90hPxMVbKPsw
+         MRWEd+/O274lMNedkRjozFMLU1rYY8Nno+Zx+LIURGwVoqY/bkI1vHyayL2UQObs66CG
+         rdrMebdPSoL1yHlMLmskAqoaZ4I4gz1UeibUqaP6wxlpzqqayzrBC7VZ0SzHE3hgHwbl
+         4RQAaO59BcM8aJtyfSTD9DadiQQvikEkU3XfB6yW/Te3fbfxkYPO16dQ7cBk7+kF4mio
+         J9SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6cWAmlDlAF59x4LqcOU/XShYfmYEgb4772Ge0zuawgQ=;
+        b=K/HaTuT9cZZwV0Ly+sRblNpN9HmyLuS/FxQIHyVhNAlwcO2JF4le4LimrIlCETL4Eu
+         7mgclrYP7ya+R8U81y0TY+RJbs+CFVuolNyi4Dus6Fgb7wr34fDM8fnozPE6rhM0Nhiy
+         fV45YGAZWU4OTiYXg1BI/GSfsJhiesD84bWtNprkn6147nhAqoogkir1LEOmNpUDK7IB
+         RnnrNIogy4P2dU1c1EKb7YSBRlcrzIO7g7+7k2lPlbgSPiL4HkoEwlqID/HwXsR+NshG
+         MfxZde+iI7JNuJFgai/8w+pg6JemyMvsFENM+IOuQmmfblnmJ0yMhE4RYwlfx1RT0mE2
+         lY5A==
+X-Gm-Message-State: AOAM531KyC8Ndk7Qo+E5AWqn0e+7Rla4FBXoAQZcpont0r+7vpv45gZh
+        bb0SQENZZmj4QUcWqJpdmHOmTLwV41Rc5NBm
+X-Google-Smtp-Source: ABdhPJxV+Pk1GPCfZmTWufJoVNVs22CQ7LdNAReT9GuuuFE4f7nR5BbG9XzKTJpNj27B+JUr9T7PzA==
+X-Received: by 2002:a17:902:bd88:b0:143:d318:76e6 with SMTP id q8-20020a170902bd8800b00143d31876e6mr33099354pls.66.1637320218081;
+        Fri, 19 Nov 2021 03:10:18 -0800 (PST)
+Received: from theprophet ([2406:7400:63:2c47:da89:58f9:fd04:7bf9])
+        by smtp.gmail.com with ESMTPSA id z19sm2522822pfe.181.2021.11.19.03.10.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 03:10:17 -0800 (PST)
+Date:   Fri, 19 Nov 2021 16:40:07 +0530
+From:   Naveen Naidu <naveennaidu479@gmail.com>
+To:     bhelgaas@google.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, gregkh@linuxfoundation.org
+Subject: Re: [PATCH v4 1/1] PCI: Add KUnit tests for __pci_read_base()
+Message-ID: <20211119111007.ihxnziwbwo7u4wzx@theprophet>
+References: <cover.1637319848.git.naveennaidu479@gmail.com>
+ <a049a89cc673492d12415ebd5195a2b50c2b5626.1637319848.git.naveennaidu479@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <658a63b5-2d18-2837-9639-75a14c959f73@de.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: yXjN38N57id5v6xLCKgrJxhtcqyAIWLK
-X-Proofpoint-ORIG-GUID: Y8yjdJ5m2mzrHFDC_l0REOvIVXkdYtwH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-19_09,2021-11-17_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- suspectscore=0 bulkscore=0 adultscore=0 malwarescore=0 impostorscore=0
- phishscore=0 clxscore=1015 priorityscore=1501 spamscore=0 mlxlogscore=821
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111190062
+In-Reply-To: <a049a89cc673492d12415ebd5195a2b50c2b5626.1637319848.git.naveennaidu479@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 11:57:05AM +0100, Christian Borntraeger wrote:
-> > > > > -                       "       mvcl    %%r1,%%r1\n"
-> > > > > +                       "       .insn e,0x0e11\n"       /* mvcl %%r1,%%r1" */
-> > 
-> > Sorry, I disagree with this. As you said above rr would be the correct
-> > format for this instruction. If we go for the e format then we should
-> > also use an instruction with e format.
-> > Which in this case would simply be an illegal opcode, which would be
-> > sufficient for what this code is good for: ".insn e,0x0000".
-> 
-> Why not simply use .short then?
+Greg, I added you to the CC list, because you left comments on the v3 [1]
+of the patch. Apologies if that was not the case and sorry for the noise
+^^'.
 
-.short bypasses all sanity checks while .insn does not, so I think
-that should be preferred. But I don't care too much.
+Thanks,
+Naveen
+
+[1]:
+https://lore.kernel.org/linux-pci/cover.1637250854.git.naveennaidu479@gmail.com/T/#m0e0231f1dd9a70bc127736d436aefe79c9838115
