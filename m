@@ -2,66 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF763457073
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 15:17:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4CC5457075
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 15:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235334AbhKSOUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 09:20:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231529AbhKSOT7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 09:19:59 -0500
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E46C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 06:16:57 -0800 (PST)
-Received: by mail-ua1-x929.google.com with SMTP id p37so21476049uae.8
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 06:16:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Qv1fau932gL3Z3SgEmmBfIyBBSAQfpi6es5qskEomTo=;
-        b=jaFmOrgm4etX3A7SMoUHZ5z1nvCd/CzZqO56RV17Urbq93ZLKdCAA1Aw71og9saBf5
-         r3co7GU45tttoPS3YfrTKiboZyPHN74M5M3SPNIgWqwgCtWOun7XpZ4VzEN0qk50E3lZ
-         dToMGlDTVjTejPfBdRfJKcpzdE8ACAwvSTAVSGQvh6ZKTdOa5h0lBpFD3lR4ZDqrWvF3
-         X5FPSkwsjWS7W1He0y805QkthcpwA1jY1BfNwp5fcJz8qfg4KcNlf6dTMEvCy4lOBRM5
-         45i9k5TOjCSblGUHkDkui30NY8avqzEuXB+I6ur0RAW7ByxEzwzPBFPRGuYthBXlX3Dj
-         3BZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Qv1fau932gL3Z3SgEmmBfIyBBSAQfpi6es5qskEomTo=;
-        b=AJaig0jGqVuuW0qw5KT/S6a9yvpkQlH9aaNq4NUWXws0pc1pFRkTftFyIQ7SMceehA
-         RJ6JTGOSqDRRg5vL4kk/5ZJf5fzHmMFE0Y0WWXGknQdfovVRgA+sPTxjcbsfEaKHODvT
-         o3YI9WPOr/s0BTU93guDTkOFGBmgHDm4UKRlD2l2R60aGk7AmabfZy3DZZ6u9wV3IUuW
-         k1fIbN7n3RiLSpHQWHCRXnGgYV8mYxMmEtT53BrN4LTEqXGC5ogsGrmWs1NJxBNmQeMl
-         oI8kx5167IJNZrjWFswkkvsXVezV40yC4WsLYAq1vF1xAjtiY/S9SmFsRg4KInBNrGHw
-         Bycw==
-X-Gm-Message-State: AOAM531ZWJ0elh+A+Nfbi1w96euMqginHl/M6Dd2MsfHCelbxLQ3TA5U
-        PuK2FZUU1mH2tN41DuZ3jwWOaWwzRP8BjsXunqQ=
-X-Google-Smtp-Source: ABdhPJzjWGyruqJuw0r+1+PfZWfanZY7cCVq56ZlE6U+Nd3NWj1fJ3bsrZNjs7qVz5wjoFjmIPlX6ftCNIh4H5P3tL8=
-X-Received: by 2002:a05:6102:e10:: with SMTP id o16mr94427665vst.5.1637331416863;
- Fri, 19 Nov 2021 06:16:56 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:ab0:29d3:0:0:0:0:0 with HTTP; Fri, 19 Nov 2021 06:16:56
- -0800 (PST)
-Reply-To: mrsbillchantal2022@mail.com
-From:   "Mrs. Bill Chantal" <ainaumuhammed90@gmail.com>
-Date:   Fri, 19 Nov 2021 15:16:56 +0100
-Message-ID: <CAPw1PZy52uBe+vcLHoXGGiec_BQJw=pNAfE-g8APgDA+mD+Ypw@mail.gmail.com>
-Subject: Dear Friend
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        id S235791AbhKSOUg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 19 Nov 2021 09:20:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58308 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235781AbhKSOUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 09:20:35 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF1DD619E3;
+        Fri, 19 Nov 2021 14:17:33 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mo4hn-006Ys1-Tk; Fri, 19 Nov 2021 14:17:32 +0000
+Date:   Fri, 19 Nov 2021 14:17:31 +0000
+Message-ID: <878rxk6xhg.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sai Prakash Ranjan <quic_saipraka@quicinc.com>
+Cc:     Will Deacon <will@kernel.org>, <rostedt@goodmis.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        <quic_psodagud@quicinc.com>, <gregkh@linuxfoundation.org>,
+        <arnd@arndb.de>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <mingo@redhat.com>, Prasad Sodagudi <psodagud@codeaurora.org>
+Subject: Re: [PATCHv4 1/2] tracing: Add register read/write tracing support
+In-Reply-To: <6148397c-0565-d1ca-2f53-d15adcb9b6b8@quicinc.com>
+References: <cover.1636973694.git.quic_saipraka@quicinc.com>
+        <4bd519d008cac6b319be7c5ce144e741f7210031.1636973694.git.quic_saipraka@quicinc.com>
+        <87bl2g6z2v.wl-maz@kernel.org>
+        <6148397c-0565-d1ca-2f53-d15adcb9b6b8@quicinc.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: quic_saipraka@quicinc.com, will@kernel.org, rostedt@goodmis.org, catalin.marinas@arm.com, quic_psodagud@quicinc.com, gregkh@linuxfoundation.org, arnd@arndb.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, mingo@redhat.com, psodagud@codeaurora.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend
-You have been compensated with the sum of 5.4 million dollars in this
-united nation the payment will be Issue into ATM visa card and send to
-you from the bank  we need your address, passport and your Whatsapp
-Number.
-Thanks
+On Fri, 19 Nov 2021 14:07:09 +0000,
+Sai Prakash Ranjan <quic_saipraka@quicinc.com> wrote:
+> 
+> On 11/19/2021 7:13 PM, Marc Zyngier wrote:
+> > On Mon, 15 Nov 2021 11:33:29 +0000,
+> > Sai Prakash Ranjan <quic_saipraka@quicinc.com> wrote:
+> >> From: Prasad Sodagudi <psodagud@codeaurora.org>
+> >> 
 
-mrs.bill chantal
+[...]
+
+> >> Reason why we wouldn't need value along with mmio write log is
+> >> that value can be easily deduced from the caller_name+offset which is
+> >> printed already by the rwmmio trace events which gives the exact
+> >> location of mmio writes and the value is easily known from the driver.
+> > That's a very narrow view of what can be written in an MMIO
+> > registers. We write dynamic values at all times, and if we are able to
+> > trace MMIO writes, then the value written out must be part of the trace.
+> > 
+> > I'd rather you try and get to the bottom of this issue rather than
+> > paper over it.
+> > 
+> > Thanks,
+> > 
+> > 	M.
+> > 
+> 
+> Sure, idea was to put it out in the open if anyone has any idea as
+> to what might be happening there since the version where directly
+> instrumenting the raw read/write accessors in arm64/asm/io.h was
+> working fine casting doubts if this has to do something with
+> inlining as Arnd mentioned before.
+
+Yup. I wouldn't be surprised if MMIO accessors were getting directly
+inlined at the wrong location and creating havoc. For example:
+
+	writel(readl(addr1) | 1, addr2);
+
+If you're not careful about capturing the result of the read rather
+than the read itself, you can end-up with something really funky. No
+idea if that's what is happening, but a disassembly of the generated
+code could tell you.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
