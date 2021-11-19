@@ -2,133 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3C04572E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:27:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D164572E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:27:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236456AbhKSQaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 11:30:39 -0500
-Received: from mout.kundenserver.de ([212.227.17.10]:46661 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229944AbhKSQai (ORCPT
+        id S236472AbhKSQas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 11:30:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236466AbhKSQar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:30:38 -0500
-Received: from mail-wm1-f43.google.com ([209.85.128.43]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MOAmt-1n39g730tV-00OXVm; Fri, 19 Nov 2021 17:27:34 +0100
-Received: by mail-wm1-f43.google.com with SMTP id c71-20020a1c9a4a000000b0032cdcc8cbafso7922477wme.3;
-        Fri, 19 Nov 2021 08:27:34 -0800 (PST)
-X-Gm-Message-State: AOAM533P80MPamrpRG5ICwckOx5oi49rNDBjA3YDxc3fGHoEwrTgJNyc
-        P0GZ8xQ7hihRqJydWxdBP6upGaoDkrDb7E1jIeg=
-X-Google-Smtp-Source: ABdhPJw9pjl15kxNckhoztOwSEHm2BAFAg53rxD/nLG+Vq3q5u2bghokZvEuTw1FbjRLUctINZWvpCeY9JlD3tiwY20=
-X-Received: by 2002:a1c:2382:: with SMTP id j124mr1036531wmj.35.1637339254218;
- Fri, 19 Nov 2021 08:27:34 -0800 (PST)
+        Fri, 19 Nov 2021 11:30:47 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC69C061574;
+        Fri, 19 Nov 2021 08:27:45 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id b184-20020a1c1bc1000000b0033140bf8dd5so7916887wmb.5;
+        Fri, 19 Nov 2021 08:27:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jwyOhCiVlhmifA4bQDRHR85Pklwt1LGn8eLudMr/F2U=;
+        b=DXZJ3UxygHcwt/Ha22NnYjmjVvsTF2q5k2iQDCloE/XQtXoXu0gXs0MpgLg5nElxHX
+         92VQKPRfQ64AJB+Z3ucjT/elxJyDkna3rqIfo8QdHFSJPyOH3R4qsP/AtIetXse1ONYd
+         36iAFHEStgzGWkV4lC6x2SS4OIdDStB20P59n4sGblcn9oMkYRK1bM6HGJrIXen565+r
+         ZYDbOSN3kGL0SA1ajPS1Ra1LunjlpUiJYxia0ZuilYcr8qaZ6X2rgUhRGN59WIZMi9Z+
+         4nzqjnlJ4rw8bjjNa8cWGk+Ua7uV9O3opF84xIK1c6VEoDQoY7mnbtSdhvtW/3wtu62X
+         e31A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jwyOhCiVlhmifA4bQDRHR85Pklwt1LGn8eLudMr/F2U=;
+        b=1cwTSuEl6GKPLqw8o37W5/HSOhgjB28xny0q6V2FVY4uf0jbCNmuOJAWi7n6qdp7AQ
+         XnAwptGwkibwgP6nI9IBeoNxRVZPSGAvrXOOQnNGYFCxXfmdzegTCoRXvO9xd6lx0iMS
+         wx/aZXWOGMLcMeSyuiXaUwXcYXS6g7JuVbfG2X9scCBNeARGpFzFteOW3atAjFri89p7
+         7WH93TFkDiQsxfo//6zgb3AJe6bnq/o8uA/WX65AgFcyquAOOiMLXXAB4qmNPM66f8M5
+         8uF0Mel8l4qqRAg4ZmMRZJgNbJL6cuJLRB0wxs4MsAKbWsIHkW8hkpOSwOsmWmUtUKOy
+         Otxw==
+X-Gm-Message-State: AOAM533DA9dFHHghITz5LxlMJcLi/kPuURr321yQ7uCe5lsv7pxhgYKV
+        XQGS/ab/h7K6SLFeF3+j6che44j99N/aoA==
+X-Google-Smtp-Source: ABdhPJw89k7Fg4fI6tevke/MA4dVfBOQAF5PSa1qwrzPD2v2HDse9qwZJjlDBngFvFlQcTmuYn7KwQ==
+X-Received: by 2002:a05:600c:1d28:: with SMTP id l40mr1079389wms.192.1637339263651;
+        Fri, 19 Nov 2021 08:27:43 -0800 (PST)
+Received: from [192.168.2.41] ([46.227.18.67])
+        by smtp.gmail.com with ESMTPSA id c16sm179452wrx.96.2021.11.19.08.27.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Nov 2021 08:27:43 -0800 (PST)
+Subject: Re: [PATCH 02/13] tty: serial: atmel: Check return code of
+ dmaengine_submit()
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        ludovic.desroches@microchip.com, vkoul@kernel.org,
+        richard.genoud@gmail.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org
+Cc:     nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        mripard@kernel.org, linux-arm-kernel@lists.infradead.org,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org
+References: <20211116112036.96349-1-tudor.ambarus@microchip.com>
+ <20211116112036.96349-3-tudor.ambarus@microchip.com>
+From:   Richard Genoud <richard.genoud@gmail.com>
+Message-ID: <e87ef826-1d03-e319-1d27-d876cf4fda5f@gmail.com>
+Date:   Fri, 19 Nov 2021 17:27:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211119113644.1600-1-alx.manpages@gmail.com> <CAK8P3a0qT9tAxFkLN_vJYRcocDW2TcBq79WcYKZFyAG0udZx5Q@mail.gmail.com>
- <434296d3-8fe1-f1d2-ee9d-ea25d6c4e43e@gmail.com> <CAK8P3a2yVXw9gf8-BNvX_rzectNoiy0MqGKvBcXydiUSrc_fCA@mail.gmail.com>
- <YZfMXlqvG52ls2TE@smile.fi.intel.com> <CAK8P3a06CMzWVj2C3P5v0u8ZVPumXJKrq=TdjSq1NugmeT7-RQ@mail.gmail.com>
- <2d790206-124b-f850-895f-a57a74c55f79@gmail.com>
-In-Reply-To: <2d790206-124b-f850-895f-a57a74c55f79@gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 19 Nov 2021 17:27:17 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3O1KLzxSTn1xqi2HjUVw2Utf6m5PZWd1ns7xsExxbJOA@mail.gmail.com>
-Message-ID: <CAK8P3a3O1KLzxSTn1xqi2HjUVw2Utf6m5PZWd1ns7xsExxbJOA@mail.gmail.com>
-Subject: Re: [PATCH 00/17] Add memberof(), split some headers, and slightly
- simplify code
-To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ajit Khaparde <ajit.khaparde@broadcom.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Borislav Petkov <bp@suse.de>,
-        Corey Minyard <cminyard@mvista.com>, Chris Mason <clm@fb.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        David Sterba <dsterba@suse.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "John S . Gruber" <JohnSGruber@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ketan Mukadam <ketan.mukadam@broadcom.com>,
-        Len Brown <lenb@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:WnwNnQls7mfdin+Yp4JuTfdBk9FL8BMP42ZEZdFoDyMySz32xsc
- s+UnEAeP/43vAmvHlAAgpYkVx8608SzoPK+4TAkus8YolAMhWxzN2Z7r6UvgT3CrJ2guZeL
- IGYQC1COwgRgAxqBJFM1O3mlltJDxttlN4Z3DufHVIlIOtVJctGNYpZIJkou8YxTB32Zw+2
- fg9AIJ80yUX3AEssiybyg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5H6za9UVbdo=:RnBcymBwS3Z0v259rLRDiL
- uZaP3KG9mJQ5elYe/xWaPVVh+qX3k8inTUc7mji5iKcSPPyLRFu9d9DZtwuDF9NUft0G4ytWb
- 9zrolj+Co/ceB1IS8giEQPZuLKPKR8s7vfCnkpXS9Gd2pm4ZlyNo4Me7E6ub28hXqSH2kCk+Q
- TmVolFeTk+TI/rCV3Vm0mMl8/bN8fxvqglW7HZi/M3iGoBmL7nGpn7ffsAoY74alRUfXZnCJQ
- MWR/Eat/EXRVWwpwO8zmIBLpoxXGkN1qGuYk4SEVJmlOl0qUvYSlzLwFzHyoXQ3/IsZG4Mtuh
- 3CtM6LVHiP2d+Z8ynGo0KC46YGIBPZDQRLQmij4Wgvh+4mRxq8m4vYfbxfdbnVAXa9B1pn/aI
- 9pJ/3KIKOw0UdncGzKoGgCTLZXcXn7DPCxEZLgPoyuPF3ww7eQerEjiY/JmBatboJecdV1JKH
- R9S45hh0rrI6EzTC1oZaUP70mrgc/UNVwXJjE60niOB1eRzgRRGa7OoP+MdptuANJ4BdqUKAM
- RgMvyH1bXIJdGMKqqeRD72dssa79Nbh4JewnScIsCKLUN++ObuPCOAk3odr3q3l4EFz4UDTPc
- PfM7ivBVCqj09TFeNOCOnq03/6CDzt4qnyK1r4a1Rz1uCIarP7h1oxTL3PAnJKTosonpNp3ez
- 8B+/9YAJMjqqiX7beWp3FgmKt3axNnd+xvIiJB2zq4LJJhUretz3I2DZiQayu0hAjpw2wBERO
- tx9Zns+UyjZWPmWmQ/uMJFShTxp0oNdgGi4mcmNfH3z1D3RrnYTRHhEr7IKox0iIpzpvkcE+Q
- 8onXCEmOuAApBUdoDJKEeOvbEkpuyWp/x2UQoeT3yfKnu4ZTX0=
+In-Reply-To: <20211116112036.96349-3-tudor.ambarus@microchip.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 5:22 PM Alejandro Colomar (man-pages)
-<alx.manpages@gmail.com> wrote:
-> On 11/19/21 17:18, Arnd Bergmann wrote:
-> > On Fri, Nov 19, 2021 at 5:10 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> >> On Fri, Nov 19, 2021 at 04:57:46PM +0100, Arnd Bergmann wrote:
-> >
-> >>> The main problem with this approach is that as soon as you start
-> >>> actually reducing the unneeded indirect includes, you end up with
-> >>> countless .c files that no longer build because they are missing a
-> >>> direct include for something that was always included somewhere
-> >>> deep underneath, so I needed a second set of scripts to add
-> >>> direct includes to every .c file.
-> >>
-> >> Can't it be done with cocci support?
-> >
-> > There are many ways of doing it, but they all tend to suffer from the
-> > problem of identifying which headers are actually needed based on
-> > the contents of a file, and also figuring out where to put the extra
-> > #include if there are complex #ifdefs.
-> >
-> > For reference, see below for the naive pattern matching I tried.
-> > This is obviously incomplete and partially wrong.
->
-> FYI, if you may not know the tool,
-> theres include-what-you-use(1) (a.k.a. iwyu(1))[1],
-> although it is still not mature,
-> and I'm helping improve it a bit.
+Hi,
 
-Yes, I know that one, I tried using it as well, but it did not really
-scale to the size of the kernel as it requires having all files to use
-the correct set of #include, and to know about all the definitions.
+Le 16/11/2021 à 12:20, Tudor Ambarus a écrit :
+> The tx_submit() method of struct dma_async_tx_descriptor is entitled
+> to do sanity checks and return errors if encountered. It's not the
+> case for the DMA controller drivers that this client is using
+> (at_h/xdmac), because they currently don't do sanity checks and always
+> return a positive cookie at tx_submit() method. In case the controller
+> drivers will implement sanity checks and return errors, print a message
+> so that the client will be informed that something went wrong at
+> tx_submit() level.
+> 
+> Fixes: 08f738be88bb ("serial: at91: add tx dma support")
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+>  drivers/tty/serial/atmel_serial.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/tty/serial/atmel_serial.c b/drivers/tty/serial/atmel_serial.c
+> index 2c99a47a2535..376f7a9c2868 100644
+> --- a/drivers/tty/serial/atmel_serial.c
+> +++ b/drivers/tty/serial/atmel_serial.c
+> @@ -1004,6 +1004,11 @@ static void atmel_tx_dma(struct uart_port *port)
+>  		desc->callback = atmel_complete_tx_dma;
+>  		desc->callback_param = atmel_port;
+>  		atmel_port->cookie_tx = dmaengine_submit(desc);
+> +		if (dma_submit_error(atmel_port->cookie_tx)) {
+> +			dev_err(port->dev, "dma_submit_error %d\n",
+> +				atmel_port->cookie_tx);
+> +			return;
+> +		}
+>  	}
+>  
+>  	if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS)
+> @@ -1258,6 +1263,11 @@ static int atmel_prepare_rx_dma(struct uart_port *port)
+>  	desc->callback_param = port;
+>  	atmel_port->desc_rx = desc;
+>  	atmel_port->cookie_rx = dmaengine_submit(desc);
+> +	if (dma_submit_error(atmel_port->cookie_rx)) {
+> +		dev_err(port->dev, "dma_submit_error %d\n",
+> +			atmel_port->cookie_rx);
+> +		goto chan_err;
+> +	}
+>  
+>  	return 0;
+>  
+> 
 
-       Arnd
+Acked-by: Richard Genoud <richard.genoud@gmail.com>
+
+
+Thanks !
