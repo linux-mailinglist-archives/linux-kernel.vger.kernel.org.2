@@ -2,77 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B56E1456D49
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 11:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BEB3456D57
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 11:32:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234528AbhKSKbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 05:31:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60774 "EHLO
+        id S234507AbhKSKdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 05:33:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhKSKbl (ORCPT
+        with ESMTP id S234650AbhKSKdU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 05:31:41 -0500
-Received: from forwardcorp1o.mail.yandex.net (forwardcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F75C061574;
-        Fri, 19 Nov 2021 02:28:38 -0800 (PST)
-Received: from iva8-d2cd82b7433e.qloud-c.yandex.net (iva8-d2cd82b7433e.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:a88e:0:640:d2cd:82b7])
-        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 6613D2E0EB6;
-        Fri, 19 Nov 2021 13:28:36 +0300 (MSK)
-Received: from myt6-10e59078d438.qloud-c.yandex.net (myt6-10e59078d438.qloud-c.yandex.net [2a02:6b8:c12:5209:0:640:10e5:9078])
-        by iva8-d2cd82b7433e.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id h0SLQKlaHl-SZsmtVuA;
-        Fri, 19 Nov 2021 13:28:36 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.com; s=default;
-        t=1637317716; bh=0S0aDUeUy14R8avbT19YlFnvfDh9CegCSsSnm81HkKk=;
-        h=In-Reply-To:References:Date:From:To:Subject:Message-ID:Cc;
-        b=4LfxMCgTJBgMtcj/KSPBQHo9ceJv+E2UB75ltX57bloMNqQmwnlQQuuRvL7Zt+0rr
-         n4gwslYK/2Tu0H8pagKGWAhzvQJtMjOVWCvAY5TiHFPOpkHMMHlAvrhZQzxU2w4P9A
-         eoyN1+CKRK0ezRXjH583/Db0MvjjTC+rlGuZPPWA=
-Authentication-Results: iva8-d2cd82b7433e.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.com
-Received: from [IPv6:2a02:6b8:0:107:3e85:844d:5b1d:60a] (dynamic-red3.dhcp.yndx.net [2a02:6b8:0:107:3e85:844d:5b1d:60a])
-        by myt6-10e59078d438.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPS id xIDPXLIdDn-SZw4QS1L;
-        Fri, 19 Nov 2021 13:28:35 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-X-Yandex-Fwd: 2
-Subject: Re: [PATCH 1/6] vhost: get rid of vhost_poll_flush() wrapper
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211115153003.9140-1-arbn@yandex-team.com>
- <20211116144119.56ph52twuyc4jtdr@steredhat>
-From:   Andrey Ryabinin <arbn@yandex-team.com>
-Message-ID: <aff42feb-6ca5-1d9a-6ecf-74c213abfaa6@yandex-team.com>
-Date:   Fri, 19 Nov 2021 13:30:10 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Fri, 19 Nov 2021 05:33:20 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C94C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 02:30:18 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id w1so40726072edc.6
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 02:30:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=carminywHVkfCA+4NFBY21DE5JrCWEMoTBTfqat9eKo=;
+        b=JqTXLWoxo1pt0SAgax4z8lSGfacM06j1bbOo6BXYZWxREyW4PtseemiDrziHWIYDLW
+         n+8QuoaNkc7kMmxv9iXIr04af3CgxEX4JuYVT5UyEhA4Sia9127m2bRpxUeMU/XXWFgf
+         QsfGhDRetZT5zOt/8sjx1a6wPXY7DyI+MUQoY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=carminywHVkfCA+4NFBY21DE5JrCWEMoTBTfqat9eKo=;
+        b=O9FgdeloJNMIw0RTAc5oqhpQrQBHtr+dWyYSPuAdXQK07G8jAVsqDMra4BXXgOVYwP
+         7rNqMJaSQAeWbq0hFzaka9XPmQfFwBbx+PMP2Uh5eT+8Akkn8b1hStSQztC4RomgWndj
+         Am1ONA+rR6FlDZgESwy4yrtDcvRdMsmEPWZtV5ej7ZbEen1klzztsqbiyr+Xi0snLt0T
+         NoFTYEImeZ3XujQaKJrE0fn2Z+Vmf3jyVoMoY0w6gGNR1NMW2EEe6m/dPIXlU8ExkELO
+         z+3SvUKD8mwu2jZ88/pBD4SOJoxtRMQGJw48io8gH/BjFEKy1VluPAaxENDtE2WHEgrA
+         FtGQ==
+X-Gm-Message-State: AOAM5331o/tRJn6GGOkS8ESEdPSy0/IDsT+ZiBpP2mBee8G/EUcbh4S3
+        16EyCtsY+csvlG4yJCl2g14ncQ==
+X-Google-Smtp-Source: ABdhPJxW3RqitM6BIFpy4p8RffcLsHT+hwVTb5ABQGC5XemUNLnMWWDLgyhFpXWCLoZreYYGO99w0w==
+X-Received: by 2002:a17:907:2d20:: with SMTP id gs32mr6309596ejc.270.1637317817093;
+        Fri, 19 Nov 2021 02:30:17 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id f22sm617738edf.93.2021.11.19.02.30.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 02:30:16 -0800 (PST)
+Date:   Fri, 19 Nov 2021 11:30:14 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Cc:     George Kennedy <george.kennedy@oracle.com>,
+        gregkh@linuxfoundation.org, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm: check drm_format_info hsub and vsub to avoid divide
+ by zero
+Message-ID: <YZd8tpDN9lsq0ZbZ@phenom.ffwll.local>
+Mail-Followup-To: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
+        George Kennedy <george.kennedy@oracle.com>,
+        gregkh@linuxfoundation.org, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <1635429437-21718-1-git-send-email-george.kennedy@oracle.com>
+ <YXqt46TPL9tUZCL1@intel.com>
+ <YZdxFvGkBPXrtoQ7@phenom.ffwll.local>
+ <YZd2VI820CUGrMjv@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20211116144119.56ph52twuyc4jtdr@steredhat>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YZd2VI820CUGrMjv@intel.com>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/16/21 5:41 PM, Stefano Garzarella wrote:
-> On Mon, Nov 15, 2021 at 06:29:58PM +0300, Andrey Ryabinin wrote:
-
->> void vhost_work_queue(struct vhost_dev *dev, struct vhost_work *work)
->> {
->>     if (!dev->worker)
->> @@ -663,7 +655,7 @@ void vhost_dev_stop(struct vhost_dev *dev)
->>     for (i = 0; i < dev->nvqs; ++i) {
->>         if (dev->vqs[i]->kick && dev->vqs[i]->handle_kick) {
->>             vhost_poll_stop(&dev->vqs[i]->poll);
->> -            vhost_poll_flush(&dev->vqs[i]->poll);
->> +            vhost_work_dev_flush(dev->vqs[i]->poll.dev);
+On Fri, Nov 19, 2021 at 12:03:00PM +0200, Ville Syrj�l� wrote:
+> On Fri, Nov 19, 2021 at 10:40:38AM +0100, Daniel Vetter wrote:
+> > On Thu, Oct 28, 2021 at 05:04:19PM +0300, Ville Syrj�l� wrote:
+> > > On Thu, Oct 28, 2021 at 08:57:17AM -0500, George Kennedy wrote:
+> > > > Do a sanity check on struct drm_format_info hsub and vsub values to
+> > > > avoid divide by zero.
+> > > > 
+> > > > Syzkaller reported a divide error in framebuffer_check() when the
+> > > > DRM_FORMAT_Q410 or DRM_FORMAT_Q401 pixel_format is passed in via
+> > > > the DRM_IOCTL_MODE_ADDFB2 ioctl. The drm_format_info struct for
+> > > > the DRM_FORMAT_Q410 pixel_pattern has ".hsub = 0" and ".vsub = 0".
+> > > > fb_plane_width() uses hsub as a divisor and fb_plane_height() uses
+> > > > vsub as a divisor. These divisors need to be sanity checked for
+> > > > zero before use.
+> > > > 
+> > > > divide error: 0000 [#1] SMP KASAN NOPTI
+> > > > CPU: 0 PID: 14995 Comm: syz-executor709 Not tainted 5.15.0-rc6-syzk #1
+> > > > Hardware name: Red Hat KVM, BIOS 1.13.0-2
+> > > > RIP: 0010:framebuffer_check drivers/gpu/drm/drm_framebuffer.c:199 [inline]
+> > > > RIP: 0010:drm_internal_framebuffer_create+0x604/0xf90
+> > > > drivers/gpu/drm/drm_framebuffer.c:317
+> > > > 
+> > > > Call Trace:
+> > > >  drm_mode_addfb2+0xdc/0x320 drivers/gpu/drm/drm_framebuffer.c:355
+> > > >  drm_mode_addfb2_ioctl+0x2a/0x40 drivers/gpu/drm/drm_framebuffer.c:391
+> > > >  drm_ioctl_kernel+0x23a/0x2e0 drivers/gpu/drm/drm_ioctl.c:795
+> > > >  drm_ioctl+0x589/0xac0 drivers/gpu/drm/drm_ioctl.c:898
+> > > >  vfs_ioctl fs/ioctl.c:51 [inline]
+> > > >  __do_sys_ioctl fs/ioctl.c:874 [inline]
+> > > >  __se_sys_ioctl fs/ioctl.c:860 [inline]
+> > > >  __x64_sys_ioctl+0x19d/0x220 fs/ioctl.c:860
+> > > >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> > > >  do_syscall_64+0x3a/0x80 arch/x86/entry/common.c:80
+> > > >  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > > > 
+> > > > Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+> > > > ---
+> > > >  drivers/gpu/drm/drm_framebuffer.c | 10 ++++++++++
+> > > >  1 file changed, 10 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/gpu/drm/drm_framebuffer.c b/drivers/gpu/drm/drm_framebuffer.c
+> > > > index 07f5abc..a146e4b 100644
+> > > > --- a/drivers/gpu/drm/drm_framebuffer.c
+> > > > +++ b/drivers/gpu/drm/drm_framebuffer.c
+> > > > @@ -195,6 +195,16 @@ static int framebuffer_check(struct drm_device *dev,
+> > > >  	/* now let the driver pick its own format info */
+> > > >  	info = drm_get_format_info(dev, r);
+> > > >  
+> > > > +	if (info->hsub == 0) {
+> > > > +		DRM_DEBUG_KMS("bad horizontal chroma subsampling factor %u\n", info->hsub);
+> > > > +		return -EINVAL;
+> > > > +	}
+> > > > +
+> > > > +	if (info->vsub == 0) {
+> > > > +		DRM_DEBUG_KMS("bad vertical chroma subsampling factor %u\n", info->vsub);
+> > > > +		return -EINVAL;
+> > > > +	}
+> > > 
+> > > Looks like duct tape to me. I think we need to either fix those formats
+> > > to have valid format info, or just revert the whole patch that added such
+> > > broken things.
+> > 
+> > Yeah maybe even a compile-time check of the format table(s) to validate
+> > them properly and scream ... Or at least a selftest.
 > 
-> Not related to this patch, but while looking at vhost-vsock I'm wondering if we can do the same here in vhost_dev_stop(), I mean move vhost_work_dev_flush() outside the loop and and call it once. (In another patch eventually)
-> 
+> I really wish C had (even very limited) compile time evaluation
+> so one could actually loop over arrays like at compile time to 
+> check each element. As it stands you either have to check each
+> array element by hand, or you do some cpp macro horrors to 
+> pretend you're iterating the array.
 
-Yeah, seems reasonable. I can't see any reason why would subsequent vhost_poll_stop() require the vhost_work_dev_flush() in between.
+Python preprocess or so seems to be the usual answer, and that then just
+generates the C table after it's all checked.
+
+Or a post-processor which fishes the table out from the .o (or just links
+against it).
+
+But yeah doing this in cpp isn't going to work, aside from it'd be really
+ugly.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
