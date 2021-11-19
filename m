@@ -2,204 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5AAB456851
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 03:53:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4F2456850
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 03:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232294AbhKSC4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 21:56:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232081AbhKSC4h (ORCPT
+        id S231939AbhKSC43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 21:56:29 -0500
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:42819 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231646AbhKSC41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 21:56:37 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5E8C06173E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 18:53:36 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id g17so24143323ybe.13
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 18:53:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6A2E3X5quPNY7AkhY3QAvahE+TeTxfx7q4kDVwM1ioM=;
-        b=Z84F2PArc7rIm9/mAp5IP3wNY0IDh0q00Ts4J+cW+ywU6raVWXAVXHdXjTQ/mIsOF9
-         ZmPdiQ/9xYIshEv2qQgD/kkSjZprtV2PsnNLoPTfyAkNECizvbO8GShKmsaaNRHd+ein
-         8jam9cdfs3c+PCZwXeVzX+NTgV58Kt04CxtqdJ6Tiz7bB4BdC0LLDGvwzFtKMLVhGYJ2
-         hdGyyjQ8yNbU5RN8lFQ3/BPwBCoA1oaV4sWkKHqPtaM/6SQa5j+knmj/94/w7oIBC0ps
-         TfdymA4YN3M7/TL92a+pXL05VX4+Daxl1cNwJIV+FkdgxzdSxPjl8qca+yg/Ose1vLUp
-         oJZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6A2E3X5quPNY7AkhY3QAvahE+TeTxfx7q4kDVwM1ioM=;
-        b=KyHmIA2VvnbTEpnHB5EYem/3pVzOV9T9DIG31tVwb+f8Qvqd9EsFPmwM+8m6BhpQ6U
-         FXIc9oVUjMY74SbIHfmBdvtKoCa1Blnp0Ps4c0QOV2P0yKQQFV5OjMtHVzBSTKtdck/5
-         HZj9fGHAd98In2KYYTtLnqHtHKYxafywE+bjr/9BKJKogpGgO2rYJgjNztA9QxKfV+ev
-         skj4XV19jUIEFBcJqW4a0NzGeGVt6bjH64NEjYmrdfAbWs6ea3ZCCe5lL0sY1Je/D3+8
-         Zlgq2zJNonXaWiPOx7Y9AtDe3aqsFShJyFzUir9z1ams3n6/15zmr97G8+gdP8OLhUe4
-         QGRQ==
-X-Gm-Message-State: AOAM532v9RPLjGSOol8FEvC4rzejqz036LnzZopRnwdGa6R8G52ANDyT
-        Dr7ktRT3gIdQ1sYRo6Q1OACTKBmd7wp3PDMrccexVg==
-X-Google-Smtp-Source: ABdhPJz8vPYy/uapIjqlOin5ZgvjBZmNckWz9vlR/E8h/hxQstuIAvoYmDXA57e4u7f5Igm59/cGt7XWPS4BKHZ+jLs=
-X-Received: by 2002:a25:d15:: with SMTP id 21mr32484245ybn.141.1637290415664;
- Thu, 18 Nov 2021 18:53:35 -0800 (PST)
+        Thu, 18 Nov 2021 21:56:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1637290406; x=1668826406;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=v+XO89uBWD9Pk6mvMuKrXgEqD/DpMkl+v7f661DW/hs=;
+  b=oAesm2ROwusylXo7UX9lSFHFql4gEBKBuH5/Gunch3jzjngO6/kyOfeZ
+   hL4WAcMOdbUtS8OLb2Fr4oy2E/3RAfZtjJqU1wf9Bn9nPknxAUfScbZo3
+   oQwEU5g3zubaEwjurl+wxLf8EG3jR5zfOQgM0ewSl1k2E3J4D9r26VCdB
+   H8nY9Bi6tZOb4WI6069UlWAImw5uqujpAIPLB20x2QBkLfXG5iEBkdgkx
+   RTuOqdibkcmPL1v3XZgyTgEpsh+mBZI1p4ErNhnRUmS1fCeQiacujSFQo
+   vqNYy2CUl1hRbGWY8w1QkpqvuMrwkuJZaUdeUf3Sl5f+dWE71ocWJ2PDj
+   A==;
+X-IronPort-AV: E=Sophos;i="5.87,246,1631548800"; 
+   d="scan'208";a="185028219"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 19 Nov 2021 10:53:26 +0800
+IronPort-SDR: gqpjIvn/HRcamuWtDT+x1UDQPt4K0rIRmL5k2VYMoIPe6inP2kNhuN0QB5Q4D52e+b4pFQejJx
+ vuWjifPXX/jpVPNtOmI3AgCcVQhlRiTu/BmrouK9CUbr6ZN5gRcLAT/UOy/s4BmvBDlLOP1m2U
+ cQZNKflKOqznjzC3nK8xkMAmxy5gZ4RwCE4QubiK7KXQsMT3uOqwGz+oprKa4dJ/9XIwajsVMA
+ u0d8aXy+H2Q+rZ5m2BZcgQuiB/5DkbU1FPxrDOqyM3nkPwGXWDemsnvs2RQ/F912LCpL+kTR7X
+ PmGHGoTi5ODLznEqWgN9P6G0
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 18:28:25 -0800
+IronPort-SDR: pweLWSWS4A06BeJtZUqeMZJdAHPyDm5bUMGftT6Qd/ZRVIWZIBSU2DiQWdvjXOW5TbfrQrdW+j
+ f4GyU6J7XLALaxePm6C9I8J702geej55Hx8BLm9qAB52ec19shgE0tMrhSbPfQBUjA5xkNWV+E
+ s0XJsTjizlaFj5Jm85vcSDVyIPFwcm1CBmm0AsmFTtzAtTn3MUcr/s4l7taRyUFlXQR9bJ9pd4
+ vW/2Yps8T5/Bgv7oH7Kiy5bdmzgrTMPnurwTKs2OPDeYSq3JRTKETjNoedPwtsH61PrLykGEy7
+ LiI=
+WDCIronportException: Internal
+Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
+  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 18:53:27 -0800
+Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4HwLnx4cfCz1RtVx
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 18:53:25 -0800 (PST)
+Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)"
+        header.d=opensource.wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+        opensource.wdc.com; h=content-transfer-encoding:content-type
+        :in-reply-to:organization:from:references:to:content-language
+        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
+        1637290404; x=1639882405; bh=v+XO89uBWD9Pk6mvMuKrXgEqD/DpMkl+v7f
+        661DW/hs=; b=YCsDSKeqUoUjkav2aOdXKJy4tnOb+ezP/MLkMYwJEwNaJtuNQ5q
+        vjsv2p6bOXt7O+1MetdINniyu8dJ0fpVfEDeSkdi7lR+t3o+0a+HLA9Fe7rP9ee3
+        3csuu7GMqBJERZpw4t2NYKfDGOiBp8wE+x4vX0Sw1XuDlnnBwQV9IKXUIW9ILljj
+        ByLFKjM2rtWwODaWo5HJLzSuUUKU6xyei65lyJ/3768VhNxMQy7n5gEI4JAjY6AK
+        b+tE1qD7QxKN4HqcGgihWuoTQ2gMFa7PMpMfD9+L1FaPRRWLd3dGYzN98hwujDjI
+        nFUMpVnNrvjIRzH8wgCnEv+7hXCMg2QGWIg==
+X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
+Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
+        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id cU9x5UXcNiPK for <linux-kernel@vger.kernel.org>;
+        Thu, 18 Nov 2021 18:53:24 -0800 (PST)
+Received: from [10.225.54.48] (unknown [10.225.54.48])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4HwLnv2RJnz1RtVl;
+        Thu, 18 Nov 2021 18:53:23 -0800 (PST)
+Message-ID: <68ff6cd4-41f7-59e7-300e-566be26f26f0@opensource.wdc.com>
+Date:   Fri, 19 Nov 2021 11:53:21 +0900
 MIME-Version: 1.0
-References: <20211118094455.9068-1-songmuchun@bytedance.com> <YZZNv3JflBYwRjdd@hirez.programming.kicks-ass.net>
-In-Reply-To: <YZZNv3JflBYwRjdd@hirez.programming.kicks-ass.net>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 19 Nov 2021 10:52:56 +0800
-Message-ID: <CAMZfGtUnUjF5wW8ZNdm3KNs54jUBxRfm12q-KbXWtDDBd2HhTQ@mail.gmail.com>
-Subject: Re: [PATCH] locking/rwsem: Optimize down_read_trylock() under highly
- contended case
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>, boqun.feng@gmail.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.1
+Subject: Re: [PATCH 5.15] block: Add a helper to validate the block size
+Content-Language: en-US
+To:     Tadeusz Struk <tadeusz.struk@linaro.org>, stable@vger.kernel.org
+Cc:     axboe@kernel.dk, hch@lst.de, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+662448179365dddc1880@syzkaller.appspotmail.com,
+        xieyongji@bytedance.com
+References: <7e6c4c23-f071-f33b-7bd4-da11980d34c6@linaro.org>
+ <20211118235738.1128085-1-tadeusz.struk@linaro.org>
+ <df37d57e-86e1-56dd-54b7-f3d7b96ffd56@opensource.wdc.com>
+ <debb322e-395d-90a9-2052-0cf69d96f024@linaro.org>
+From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Organization: Western Digital
+In-Reply-To: <debb322e-395d-90a9-2052-0cf69d96f024@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 8:57 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Thu, Nov 18, 2021 at 05:44:55PM +0800, Muchun Song wrote:
->
-> > By using the above benchmark, the real executing time on a x86-64 system
-> > before and after the patch were:
->
-> What kind of x86_64 ?
+On 2021/11/19 11:41, Tadeusz Struk wrote:
+> On 11/18/21 17:55, Damien Le Moal wrote:
+>> But where is this used in 5.15 ? I do not see any callers for this.
+>> So why backport it ?
+> It will be used after the
+> af3c570fb0df ("loop: Use blk_validate_block_size() to validate block size")
+> is applied.
+> Please read the first message in the thread to get the context.
 
-Intel(R) Xeon(R) CPU E5-2650
+None of the patches in that series are marked for stable. If you want all of
+them backported, sending all patches together as a series would make things
+easier to understand.
 
->
-> >
-> >                   Before Patch  After Patch
-> >    # of Threads      real          real     reduced by
-> >    ------------     ------        ------    ----------
-> >          1          65,373        65,206       ~0.0%
-> >          4          15,467        15,378       ~0.5%
-> >         40           6,214         5,528      ~11.0%
-> >
-> > For the uncontended case, the new down_read_trylock() is the same as
-> > before. For the contended cases, the new down_read_trylock() is faster
-> > than before. The more contended, the more fast.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  kernel/locking/rwsem.c | 11 ++++-------
-> >  1 file changed, 4 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-> > index c51387a43265..ef2b2a3f508c 100644
-> > --- a/kernel/locking/rwsem.c
-> > +++ b/kernel/locking/rwsem.c
-> > @@ -1249,17 +1249,14 @@ static inline int __down_read_trylock(struct rw_semaphore *sem)
-> >
-> >       DEBUG_RWSEMS_WARN_ON(sem->magic != sem, sem);
-> >
-> > -     /*
-> > -      * Optimize for the case when the rwsem is not locked at all.
-> > -      */
-> > -     tmp = RWSEM_UNLOCKED_VALUE;
-> > -     do {
-> > +     tmp = atomic_long_read(&sem->count);
-> > +     while (!(tmp & RWSEM_READ_FAILED_MASK)) {
-> >               if (atomic_long_try_cmpxchg_acquire(&sem->count, &tmp,
-> > -                                     tmp + RWSEM_READER_BIAS)) {
-> > +                                                 tmp + RWSEM_READER_BIAS)) {
-> >                       rwsem_set_reader_owned(sem);
-> >                       return 1;
-> >               }
-> > -     } while (!(tmp & RWSEM_READ_FAILED_MASK));
-> > +     }
-> >       return 0;
-> >  }
->
-> This is weird... so the only difference is that leading load, but given
-> contention you'd expect that load to stall, also, given it's a
-> non-exclusive load, to get stolen by a competing CPU. Whereas the old
-> code would start with a cmpxchg, which obviously will also stall, but
-> does an exclusive load.
 
-The old code always assumes that rwsem is unlocked at all, so the
-initialization of local variable @tmp is 0 (RWSEM_UNLOCKED_VALUE).
-Ideally, the first cmpxchg will be successful. However, if rwsem is
-contended (e.g. mmap read lock is almost hold by other threads
-), sem->count is not always RWSEM_UNLOCKED_VALUE, so the
-first cmpxchg has to fail and the second cmpxchg usually succeeds.
-This patch will load sem->count first to @tmp and then the cmpxchg
-will usually succeed. So this patch reduces the number of executions
-of cmpxchg if running the above benchmark.
-
-I have added a patch as follows to verify this. I got the following
-statistics by using bpftrace (bpftrace -e
-'tracepoint:rwsem:rwsem_read_loop /comm == "a.out"/ {
-@cnt[args->count] = count(); }').
-
-Before patch:
-@cnt[17]: 1
-@cnt[11]: 6
-@cnt[10]: 14
-@cnt[9]: 62
-@cnt[8]: 339
-@cnt[1]: 1211
-@cnt[7]: 1585
-@cnt[6]: 7796
-@cnt[5]: 34742
-@cnt[4]: 158245
-@cnt[3]: 921631
-@cnt[2]: 25089070
-
-After patch:
-@cnt[9]: 1
-@cnt[8]: 3
-@cnt[7]: 28
-@cnt[6]: 151
-@cnt[0]: 197
-@cnt[5]: 823
-@cnt[4]: 5521
-@cnt[3]: 39126
-@cnt[2]: 328012
-@cnt[1]: 25840840
-
-As you can see the total number of executions of cmpxchg is
-reduced by about ~1x.
-
-Thanks.
-
-diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-index ef2b2a3f508c..cdeb1ad1921f 100644
---- a/kernel/locking/rwsem.c
-+++ b/kernel/locking/rwsem.c
-@@ -1246,14 +1246,18 @@ static inline int __down_read_killable(struct
-rw_semaphore *sem)
- static inline int __down_read_trylock(struct rw_semaphore *sem)
- {
-        long tmp;
-+       int count = 0;
-
-        DEBUG_RWSEMS_WARN_ON(sem->magic != sem, sem);
-
-        tmp = atomic_long_read(&sem->count);
-        while (!(tmp & RWSEM_READ_FAILED_MASK)) {
-+               count++;
-                if (atomic_long_try_cmpxchg_acquire(&sem->count, &tmp,
-                                                    tmp + RWSEM_READER_BIAS)) {
-                        rwsem_set_reader_owned(sem);
-+                       if (&current->mm->mmap_lock == sem)
-+                               trace_rwsem_read_loop(count);
-                        return 1;
-                }
-        }
-
->
-> And the thinking is that the exclusive load and the presence of the
-> cmpxchg loop would keep the line on that CPU for a little while and
-> progress is made.
->
-> Clearly this isn't working as expected. Also I suppose it would need
-> wider testing...
->
+-- 
+Damien Le Moal
+Western Digital Research
