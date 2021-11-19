@@ -2,91 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C31CB457751
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 20:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A63D457762
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 20:56:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236448AbhKSTuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 14:50:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236607AbhKSTto (ORCPT
+        id S232456AbhKST7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 14:59:47 -0500
+Received: from mailscanner01.zoner.fi ([84.34.166.10]:57778 "EHLO
+        mailscanner01.zoner.fi" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229457AbhKST7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 14:49:44 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7565FC061748;
-        Fri, 19 Nov 2021 11:46:40 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id m24so8895830pls.10;
-        Fri, 19 Nov 2021 11:46:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=MRvHq33o7p9m/i6K88NeRMGJTvgRAkoVuYcTYKu92bY=;
-        b=Q7Eu6CwU1JFaseM5zVtQnFdT8cfh/OjzGur1OTZaB8Fxwi7l1AZyNpQWrL2EOyW+vC
-         0GhCNCkyiBkYFUmaB7K2tnS+nv2vLt5j699q0RHpPela6MJxVuuD2etMP6A2V4kiiuKO
-         PiKzcLOTXzBb1ofdAKn5uY4MsDqLTUP0bGxPMhVbmHJ01f1SVU0bamiM0XBsz6EQkk7Q
-         kkIjYUXCMCiznRgnXpOGzAqr/IvELfYIBkf3lsp7CsxVrawQxVNnAcWnadF+DkIvBB63
-         pxrCaVixVehN6Rgs2kN//rewS8ssvF0vT4xERZevHMjxDb4cNvrSsdLs62wMUNSB8UiB
-         LMYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=MRvHq33o7p9m/i6K88NeRMGJTvgRAkoVuYcTYKu92bY=;
-        b=tLVNY17lUDev3egyw0gRveUFtSpwXkGhPfXaLGVJ/IlFworlTofAyJwufy0WhFt+Kd
-         3ptTmaop6acn1Txswii4pUUSBcJuUeQ9ceufLzUkPPafPOusVLMnoqQO6+Klf9xbLO4M
-         Wlp6ao03TrXQnTq7UhKBR6+r9CAKoWYYlO+Blt0aDJ3V8BJJR2XsC4tuNxqeY6mfhBWd
-         Ddj4mbjvucuWQQZ+UPMVa6nr5biEfh3/xB0tMDVLYQTqXB/gp35F1fr/1nrd2WfePAMC
-         vuxqohNEnxqrSKB+eu/fo1Qin9sIPL0i10GddsHz5z/bLqrfTwutGtMEM1IYtYPiWw3m
-         4UFw==
-X-Gm-Message-State: AOAM533M+b9I7FEttQ9phJl4jyPqBUTlRrXLSdaBfqUEWFla8S6o7bHO
-        7D6+VpjZdXk6+lZmBuy8gVJ91mbM1oKVJ20brS8=
-X-Google-Smtp-Source: ABdhPJwddXKVWTODVFowNEOHQaOmMZ/qtc3KLhZsobFoY0gy9iDDHGsFihmlYUPeUe27iZ5v+wpXuA==
-X-Received: by 2002:a17:90a:eb03:: with SMTP id j3mr2690892pjz.149.1637351199437;
-        Fri, 19 Nov 2021 11:46:39 -0800 (PST)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id b15sm434536pfv.48.2021.11.19.11.46.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 11:46:38 -0800 (PST)
-Message-ID: <6197ff1e.1c69fb81.7719c.1c2f@mx.google.com>
-Date:   Fri, 19 Nov 2021 11:46:38 -0800 (PST)
-X-Google-Original-Date: Fri, 19 Nov 2021 19:46:37 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20211119171443.892729043@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 00/21] 5.10.81-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
+        Fri, 19 Nov 2021 14:59:46 -0500
+X-Greylist: delayed 585 seconds by postgrey-1.27 at vger.kernel.org; Fri, 19 Nov 2021 14:59:46 EST
+Received: from www25.zoner.fi (www25.zoner.fi [84.34.147.45])
+        by mailscanner01.zoner.fi (Postfix) with ESMTPS id 0C6B3414F8;
+        Fri, 19 Nov 2021 21:46:57 +0200 (EET)
+Received: from mail.zoner.fi ([84.34.147.244])
+        by www25.zoner.fi with esmtp (Exim 4.94.2)
+        (envelope-from <lasse.collin@tukaani.org>)
+        id 1mo9qa-0001Yw-UW; Fri, 19 Nov 2021 21:46:56 +0200
+Date:   Fri, 19 Nov 2021 21:46:47 +0200
+From:   Lasse Collin <lasse.collin@tukaani.org>
+To:     Jubin Zhong <zhongjubin@huawei.com>
+Cc:     <akpm@linux-foundation.org>, <wangfangpeng1@huawei.com>,
+        <liaohua4@huawei.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] kbuild: Enable armthumb BCJ filter for Thumb-2 kernel
+Message-ID: <20211119214647.12932e5c@kaneli>
+In-Reply-To: <1637323647-19988-1-git-send-email-zhongjubin@huawei.com>
+References: <1637323647-19988-1-git-send-email-zhongjubin@huawei.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Nov 2021 18:37:35 +0100, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.81 release.
-> There are 21 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 2021-11-19 Jubin Zhong wrote:
+> xz_wrap.sh use $SRCARCH to detect the BCJ filter. However, assigning
+> arm BCJ filter to Thumb-2 kernel is not optimal. In my case, about 5%
+> decrease of image size is observed with armthumb BCJ filter:
 > 
-> Responses should be made by Sun, 21 Nov 2021 17:14:35 +0000.
-> Anything received after that time might be too late.
+> Test results:
+>   hardware:      QEMU emulator version 3.1.0
+>   config:        vexpress_defconfig with THUMB2_KERNEL & KERNEL_XZ on
+>   arm BCJ:       4029808
+>   armthumb BCJ:  3827280
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.81-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> Choose armthumb BCJ filter for Thumb-2 kernel to make smaller images.
 
-5.10.81-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+I didn't test the patch but it looks reasonable to me. Below are a small
+optimization idea and two very minor style suggestions.
 
+> --- a/lib/decompress_unxz.c
+> +++ b/lib/decompress_unxz.c
+> @@ -131,6 +131,9 @@
+>  #ifdef CONFIG_ARM
+>  #	define XZ_DEC_ARM
+>  #endif
+> +#ifdef CONFIG_THUMB2_KERNEL
+> +#	define XZ_DEC_ARMTHUMB
+> +#endif
+>  #ifdef CONFIG_IA64
+>  #	define XZ_DEC_IA64
+>  #endif
+
+If a Thumb-2 kernel will always use the ARM-Thumb BCJ filter, one can
+save a few bytes from the pre-boot code by omitting the ARM BCJ filter:
+
+--- a/lib/decompress_unxz.c
++++ b/lib/decompress_unxz.c
+@@ -129,7 +129,11 @@
+ #	define XZ_DEC_POWERPC
+ #endif
+ #ifdef CONFIG_ARM
+-#	define XZ_DEC_ARM
++#	ifdef CONFIG_THUMB2_KERNEL
++#		define XZ_DEC_ARMTHUMB
++#	else
++#		define XZ_DEC_ARM
++#	endif
+ #endif
+ #ifdef CONFIG_IA64
+ #	define XZ_DEC_IA64
+
+> --- a/scripts/xz_wrap.sh
+> +++ b/scripts/xz_wrap.sh
+> @@ -8,6 +8,7 @@
+>  # This file has been put into the public domain.
+>  # You can do whatever you want with this file.
+>  #
+> +. include/config/auto.conf
+
+I suggest adding an empty line before this new line so that it is
+clearly separated from the header comment.
+
+> +if [ -n "${CONFIG_THUMB2_KERNEL}" ];then
+
+I suggest adding a space after the semi-colon: ]; then
+
+With or without the above modifications:
+
+Acked-by: Lasse Collin <lasse.collin@tukaani.org>
+
+-- 
+Lasse Collin
