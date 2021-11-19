@@ -2,109 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D660F45735F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:45:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79A7C45733E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:39:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236883AbhKSQs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 11:48:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34456 "EHLO
+        id S236598AbhKSQmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 11:42:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236674AbhKSQsI (ORCPT
+        with ESMTP id S230179AbhKSQmo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:48:08 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C11D4C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:45:06 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id y7so8613580plp.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:45:06 -0800 (PST)
+        Fri, 19 Nov 2021 11:42:44 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D187DC061574;
+        Fri, 19 Nov 2021 08:39:42 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id s13so19175384wrb.3;
+        Fri, 19 Nov 2021 08:39:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=QtaSSFMsqBIq8kJ2oNDlofo69jd6X8iaroIn8+5/lTM=;
-        b=IpNlfu3x0dU6brOg5DNWCgBZ6IQQvWYdhM0507AuWCbi2OXvgJ3/FNqMM/cgIPwYqC
-         MC5RSEA3OoF0pz0467PG4AvRFBcCz+AfZuKl3gC3+52fehypa/gySy93x3sSwKL3P1SM
-         m6OB9PKLClcwxhyx/B8EhF66k6eMBvuT2/CDn+292P+PIb39RItlSffZFrwKopBmN8ac
-         xVnkdNZHzLpUkTxVwXtcF1y/GUhptW5XXy1Qo0ZhMedSilzdRH5ItRsNg2rZZcKbuIEo
-         ZsIk147WLEe2Jx93JwVbMu5ovSKypy38Oq4ywlZY7PbdlYWAj1Xv8FbAV62hCHYKpz6n
-         pVBQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WWxvb18J2OY31IOdF8stiBLalQgXLoh0/wK/1Bc450I=;
+        b=G/0sZg/TTmfGtyUBtoN7qKLoLhMKvoJ+uHbBFtA+vUeA4c8l/a4gvR/KvwdM5GgdeG
+         K5aGLhWroUkdVAKoyOy9XSCgOlka18S9LVxC4hEtS4m4ZcIjqzIt4C398fELpvAkBUGp
+         kAGIO0R+WKD0F7cs70CDOsgmPk907XfZuEH2TFWQWMJFVVvBt6fhuOcVE1VhUNQrMz/2
+         gfd7zVIdQsyQkNG4ybBUzMmdaB1YV2Daeeie5XKJWliXPsmVm1GQimSuJyTIxGBT8STd
+         HkAQkveIny04C9zN6ddwK532QR+/Fm9y3SRYaHOWk8z/fIbx7RL87GP3mWFYDPUyKWxC
+         3piw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding:cc:from:to;
-        bh=QtaSSFMsqBIq8kJ2oNDlofo69jd6X8iaroIn8+5/lTM=;
-        b=cIDShQh/l1APItTqINLB3xjXK9/jfU8NbotW81L+LGYestkwAZ78VXtUZnKFf3wGNC
-         x8fxRwuOC80Q+nu8wcpMfG21PpWEAz2slqCu93X/gS9/XRfdsdUkzlCPxi9AoD3ZGLRq
-         NgXY7G418D7m564LLwGmMwG1kGsHj52nY3MXWyH2BSyITOfWbdINb4NXvAMi/MrW8FEt
-         k3iMVdp1F2rUdes/agQMqObLIHW7vlz3FkQVFTu9o4wbZC7E9rjEYLJOsCh0oKmAVbLO
-         n4AcVxklw6nRbWy8czkI55GHH8cc9zykkLQKcx1BYHtIJkwPqtmejgWzE5kzEzPW4vLf
-         +OgQ==
-X-Gm-Message-State: AOAM530V0BPMGzMOWTNATalVbqpTG9Lo5nOzhK3Wbogboah+MKQLbbLL
-        sp1p5olMC5GPRS2Kth1F26wtog==
-X-Google-Smtp-Source: ABdhPJzam1HD0HGxNuDaeb2MJR9obhPXVMPUr0q5Y+mqSw/25JXA74d7shGTzIeWWNsFCvvqqEwzBQ==
-X-Received: by 2002:a17:902:d2c1:b0:141:f710:922 with SMTP id n1-20020a170902d2c100b00141f7100922mr42315105plc.7.1637340306392;
-        Fri, 19 Nov 2021 08:45:06 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id c2sm193607pfv.112.2021.11.19.08.45.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 08:45:05 -0800 (PST)
-Subject: [PATCH 12/12] RISC-V: defconfigs: Remove redundant K210 DT source
-Date:   Fri, 19 Nov 2021 08:44:13 -0800
-Message-Id: <20211119164413.29052-13-palmer@rivosinc.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211119164413.29052-1-palmer@rivosinc.com>
-References: <20211119164413.29052-1-palmer@rivosinc.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WWxvb18J2OY31IOdF8stiBLalQgXLoh0/wK/1Bc450I=;
+        b=CmScK6lLVUHPS+dx9vEnsgaoIVcpLHNM64qaE0o7UKuaq4k/nLkumXRz+e3RAUP1Uu
+         fb5CvInHpV9gGyuE40yh6dlCPWv9r722h5xL+HEzeBYo3Vt+UQWtsIQkY28AvQ023Ebo
+         CCyyHfq83XihugqXjTdvB1a3joxtyZb11O/rNJlSn1AfPTzKB36AImOf7yxMGMQzmvZh
+         pOMYct8epSCbAmCQgY8Ke/yH6gXKU1s9lmR0U4By7XJf4NXtboO3qUkNlusjJMG2yeGc
+         ds4JCucx3Ew+G3X+uGJc4Z3AjajkeQU3UHGfT9amQSIbpCip4CPYt98oYRuKE2/kQ2nF
+         8vag==
+X-Gm-Message-State: AOAM531FTGDorw3y72xMxa/4LnUer+E6R2mH1BSVnKnwWFOMhSsi+gH9
+        0RVpA0nsLmCJTBmDSJliSEaK6GUUbasYnuCXABA=
+X-Google-Smtp-Source: ABdhPJxfl7O5ix42iKo6OVNO1pcXl3m9LKgUvG/qGjMcTbNPkTvvG4O8hTy0Lvlihamj11q+V2U2n8BSL8Km1tAxcyc=
+X-Received: by 2002:a5d:6351:: with SMTP id b17mr8718687wrw.151.1637339981245;
+ Fri, 19 Nov 2021 08:39:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, aou@eecs.berkeley.edu,
-        anup.patel@wdc.com, heinrich.schuchardt@canonical.com,
-        atish.patra@wdc.com, bin.meng@windriver.com,
-        sagar.kadam@sifive.com, damien.lemoal@wdc.com, axboe@kernel.dk,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Palmer Dabbelt <palmer@rivosinc.com>
-From:   Palmer Dabbelt <palmer@rivosinc.com>
-To:         linux-riscv@lists.infradead.org
+References: <20211117224841.3442482-1-briannorris@chromium.org>
+ <20211117144807.v2.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
+ <20211118123928.545dec8a@eldfell> <CAF6AEGuc9JbOsC4Lrvoqo8VzMHq+7ru7Y6_UwoZaGV2wHQ6E5g@mail.gmail.com>
+ <20211119115419.505155b5@eldfell>
+In-Reply-To: <20211119115419.505155b5@eldfell>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Fri, 19 Nov 2021 08:44:45 -0800
+Message-ID: <CAF6AEGus9CtgjvpJRX-YPkrrNeE+--9KeGxKBN_U=aOzzRE8FA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] drm/input_helper: Add new input-handling helper
+To:     Pekka Paalanen <ppaalanen@gmail.com>
+Cc:     Brian Norris <briannorris@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-input@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Palmer Dabbelt <palmer@rivosinc.com>
+On Fri, Nov 19, 2021 at 1:54 AM Pekka Paalanen <ppaalanen@gmail.com> wrote:
+>
+> On Thu, 18 Nov 2021 15:30:38 -0800
+> Rob Clark <robdclark@gmail.com> wrote:
+>
+> > On Thu, Nov 18, 2021 at 2:39 AM Pekka Paalanen <ppaalanen@gmail.com> wrote:
+> > >
+> > > On Wed, 17 Nov 2021 14:48:40 -0800
+> > > Brian Norris <briannorris@chromium.org> wrote:
+> > >
+> > > > A variety of applications have found it useful to listen to
+> > > > user-initiated input events to make decisions within a DRM driver, given
+> > > > that input events are often the first sign that we're going to start
+> > > > doing latency-sensitive activities:
+> > > >
+> > > >  * Panel self-refresh: software-directed self-refresh (e.g., with
+> > > >    Rockchip eDP) is especially latency sensitive. In some cases, it can
+> > > >    take 10s of milliseconds for a panel to exit self-refresh, which can
+> > > >    be noticeable. Rockchip RK3399 Chrome OS systems have always shipped
+> > > >    with an input_handler boost, that preemptively exits self-refresh
+> > > >    whenever there is input activity.
+> > > >
+> > > >  * GPU drivers: on GPU-accelerated desktop systems, we may need to
+> > > >    render new frames immediately after user activity. Powering up the
+> > > >    GPU can take enough time that it is worthwhile to start this process
+> > > >    as soon as there is input activity. Many Chrome OS systems also ship
+> > > >    with an input_handler boost that powers up the GPU.
+> > > >
+> > > > This patch provides a small helper library that abstracts some of the
+> > > > input-subsystem details around picking which devices to listen to, and
+> > > > some other boilerplate. This will be used in the next patch to implement
+> > > > the first bullet: preemptive exit for panel self-refresh.
+> > > >
+> > > > Bits of this are adapted from code the Android and/or Chrome OS kernels
+> > > > have been carrying for a while.
+> > > >
+> > > > Signed-off-by: Brian Norris <briannorris@chromium.org>
+> > > > ---
+> > >
+> > > Thanks Simon for the CC.
+> > >
+> > > Hi Brian,
+> > >
+> > > while this feature in general makes sense and sounds good, to start
+> > > warming up display hardware early when something might start to happen,
+> > > this particular proposal has many problems from UAPI perspective (as it
+> > > has none). Comments below.
+> > >
+> > > Btw. if PSR is that slow to wake up from, how much do you actually gain
+> > > from this input event watching? I would imagine the improvement to not
+> > > be noticeable.
+> > >
+> > > I think some numbers about how much this feature helps would be really
+> > > good, even if they are quite specific use cases. You also need to
+> > > identify the userspace components, because I think different display
+> > > servers are very different in their reaction speed.
+> > >
+> > > If KMS gets a pageflip or modeset in no time after an input event, then
+> > > what's the gain. OTOH, if the display server is locking on to vblank,
+> > > there might be a delay worth avoiding. But then, is it worth
+> > > short-circuiting the wake-up in kernel vs. adding a new ioctl that
+> > > userspace could hit to start the warming up process?
+> >
+> > In my measurements, it takes userspace a frame or two to respond and
+> > get to the point of starting to build cmdstream (before eventually
+> > doing atomic/pageflip ioctl).. possibly longer if you don't also have
+> > a similar boost mechanism to spool up cpufreq
+> >
+> > But the important thing, IMO, is that atomic/pageflip ioctl is the
+> > cumulation of a long sequence of events.. input-boost is letting
+> > whatever it may be (PSR exit, GPU resume, etc) happen in parallel with
+> > that long sequence.
+>
+> Right, exactly. That is why I was musing about a *new* ioctl that
+> userspace could hit as soon as any input device fd (or network fd!)
+> shows signs of life. Would that be enough, avoiding all the annoying
+> questions about which input and DRM devices should participate here
+> (and what about non-input devices that still want to trigger the
+> warm-up, like network traffic, e.g. remote control?), or does it really
+> need to be kernel internal to be fast enough?
+>
+> As Brian wrote about his quick hack to test that via debugfs, sounds
+> like the userspace solution would be totally sufficient.
+>
 
-The "k210_generic" DT has been the default in Kconfig since 7d96729a9e7
-("riscv: Update Canaan Kendryte K210 device tree"), so drop it from the
-defconfigs to avoid diff with savedefconfig.
+The question is, I think we want to use this for at least a couple
+different things.. PSR exit, and/or early GPU wakeup/boost.  So I'm
+not quite sure where/what this ioctl should be.  Different drivers may
+have different uses.  Also, because of the CrOS userspace sandbox
+architecture, the place that could do a kms ioctl isn't really the
+place that would know when to call the ioctl.
 
-Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
----
- arch/riscv/configs/nommu_k210_defconfig        | 1 -
- arch/riscv/configs/nommu_k210_sdcard_defconfig | 1 -
- 2 files changed, 2 deletions(-)
+But if we want to move the policy out of the kernel, one approach
+would just be to have some sysfs where userspace could configure the
+input_device_id[] filter..
 
-diff --git a/arch/riscv/configs/nommu_k210_defconfig b/arch/riscv/configs/nommu_k210_defconfig
-index 89ab76349ea8..e8ceab678e8b 100644
---- a/arch/riscv/configs/nommu_k210_defconfig
-+++ b/arch/riscv/configs/nommu_k210_defconfig
-@@ -29,7 +29,6 @@ CONFIG_EMBEDDED=y
- CONFIG_SLOB=y
- # CONFIG_MMU is not set
- CONFIG_SOC_CANAAN=y
--CONFIG_SOC_CANAAN_K210_DTB_SOURCE="k210_generic"
- CONFIG_MAXPHYSMEM_2GB=y
- CONFIG_SMP=y
- CONFIG_NR_CPUS=2
-diff --git a/arch/riscv/configs/nommu_k210_sdcard_defconfig b/arch/riscv/configs/nommu_k210_sdcard_defconfig
-index 84b87f8bfc8f..46aa3879f19c 100644
---- a/arch/riscv/configs/nommu_k210_sdcard_defconfig
-+++ b/arch/riscv/configs/nommu_k210_sdcard_defconfig
-@@ -21,7 +21,6 @@ CONFIG_EMBEDDED=y
- CONFIG_SLOB=y
- # CONFIG_MMU is not set
- CONFIG_SOC_CANAAN=y
--CONFIG_SOC_CANAAN_K210_DTB_SOURCE="k210_generic"
- CONFIG_MAXPHYSMEM_2GB=y
- CONFIG_SMP=y
- CONFIG_NR_CPUS=2
--- 
-2.32.0
-
+BR,
+-R
