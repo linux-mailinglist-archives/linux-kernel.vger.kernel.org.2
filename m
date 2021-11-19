@@ -2,99 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B06A45722C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 365CF45722F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236033AbhKSPz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 10:55:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50404 "EHLO
+        id S236068AbhKSP4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 10:56:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229936AbhKSPz1 (ORCPT
+        with ESMTP id S236042AbhKSP4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 10:55:27 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FACEC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 07:52:25 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id b12so18897191wrh.4
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 07:52:25 -0800 (PST)
+        Fri, 19 Nov 2021 10:56:43 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1810FC06173E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 07:53:41 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id r11so44454485edd.9
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 07:53:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=URGGz2DffAqjn0dAbbmnD9qwB9QB95QEBB6LZZJOy3c=;
-        b=LKWVO4if3eKNyClg05m39utn0okgtHUyAVEtBUCMmgRTN+4H4oEST79JdJVSjgLjJ4
-         DU8Az3lHgHg/ihHnFJNfcZNvaqnZwqLDv/Vja4P3sKDdeRfszD2tbga6l7rq2aatyH3u
-         0n0Mp2gJjs7YN0WUvjtUcXyO46AcyJ3WwhTu8WvfPObCQKNMIg9kmtB5OOPQOmWcEVkQ
-         eqHJpKxVY9Rkf0JYtsg07xizvSEFcFtJ37/DCsDosceBy/usy+5/2RZKV6ONLV7d1kj6
-         YYFub/2xEVmjd7pit9cExrU9xaCmcAjAA3PheClCHNuBzavMIiamkWjtQkMiYpsC2AuV
-         GYRg==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j6ZBHEuBMINUI0NHynx/JAd182zvPE30UGgO4LSxZT8=;
+        b=cLFaCrFUDWnjM6RN44xaIUWGhlA8AjiwIjNMiFnJqzFbwcCLaR6yZdIpS3XgyfSgbk
+         b+DRNaySfaXQUmTRqpOy7OP6qlDUSpFFdyJSmTW/fn1hHKhWMtQJR6HftSM0RBnDWNDM
+         QbOa7oEN/xYZlgy4yy5pnup7ZkqxiSKzMcWMo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=URGGz2DffAqjn0dAbbmnD9qwB9QB95QEBB6LZZJOy3c=;
-        b=Bxf/NPy6sWqNuj1WEbb5H7mov3Gb7CwnjfFPvSRrS8ShoKKyC3V6fBkF61Bx4EMnHs
-         Mz0jTaiS3w4QnKe3Ek32b884/Shi/xAZfb2XSC990lWEEDXRNpABLhNyo93GFMznPXh8
-         r4sMcsbhM3EnOQPTvEKdt6DW7Q0wb7kost+OMy8z1XosflfYeEW3rH0qZ8Ii08GgHNhI
-         h4GOa13qQbKeGOF5dL6VMtiFlpfIxXWM7ljgAg7x5/hteWQEpMZswGABATwdro44yiq0
-         Zhq4fHj6piGh7InpnrtCUWIal513KVl1szORsq3EzqxYa78RaPw3pC8bhiRA0yK6Vp6i
-         8C/Q==
-X-Gm-Message-State: AOAM532En1Ab6HKiMb3nh0VuukPxSLX3BbkK+mJfp3wNm2V1bLU5EgK3
-        rqG7UbQU/eV9rJ/no6rlA235tOBiOdfHSg==
-X-Google-Smtp-Source: ABdhPJzUBoYaVrTLL0awLWU/Y+x9YspluWNm1bh+LPesKtEwGqjBhkEp74V0VHLwqKydQeaR1HKOLA==
-X-Received: by 2002:a5d:648e:: with SMTP id o14mr8777969wri.69.1637337144186;
-        Fri, 19 Nov 2021 07:52:24 -0800 (PST)
-Received: from [192.168.0.160] ([170.253.36.171])
-        by smtp.gmail.com with ESMTPSA id z18sm146300wrq.11.2021.11.19.07.52.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Nov 2021 07:52:23 -0800 (PST)
-Message-ID: <04bd3abf-44e3-ab2d-7226-b12ff951cd26@gmail.com>
-Date:   Fri, 19 Nov 2021 16:52:22 +0100
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=j6ZBHEuBMINUI0NHynx/JAd182zvPE30UGgO4LSxZT8=;
+        b=lGVd/no+Fg66Pqh5wEDdmJqPojCM3vlhwBSm/AXeBaE5E61u87TdNAUjSH0xjl2fXc
+         m6LS+/tZmtb/fR7zauoOVVyixz5NzDS4ncu+xDI25R2DBdju3v57s2/4CB47LljcWSn2
+         JfrDmglv1r32aYWRm60aR8mNmBOQx6OUfSc/bd7hXG1kjaDBTbTv5i1v3S3wB0s/M2ib
+         i0AYGfbOjBcBhMFhta+H7b9MIBaCTWRTuVUK7g5vUpoS96rs5D9GCxIIXcxTZdu9E2B8
+         F20aLBdTZdTwBqNtgW79M5spCAg8Ys4b9i6AXVbtpTXJU1jdc9qpgtpOdzIaAFl66gKc
+         d/uA==
+X-Gm-Message-State: AOAM532jNF8EhnzsQIr2ja1J0SUdupWWrA6xDr0hVm1yWgZSkFEDpWRv
+        AIXD3M6Bd46ZVxaeBnjCi1Ww9Q==
+X-Google-Smtp-Source: ABdhPJyLTIXW2cwncUjF6nOaAAumf42PL7T8ocCSEESmqxIgDOARKf7XOwdXaq6ojG/YVWRcdZwvog==
+X-Received: by 2002:a17:907:7f8b:: with SMTP id qk11mr9088107ejc.176.1637337219520;
+        Fri, 19 Nov 2021 07:53:39 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id r18sm96198eje.90.2021.11.19.07.53.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 07:53:39 -0800 (PST)
+Date:   Fri, 19 Nov 2021 16:53:37 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Pekka Paalanen <ppaalanen@gmail.com>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Brian Norris <briannorris@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Doug Anderson <dianders@chromium.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        linux-input@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] drm/input_helper: Add new input-handling helper
+Message-ID: <YZfIgd8s7uGXAD2X@phenom.ffwll.local>
+Mail-Followup-To: Pekka Paalanen <ppaalanen@gmail.com>,
+        Rob Clark <robdclark@gmail.com>, Rob Clark <robdclark@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Brian Norris <briannorris@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Doug Anderson <dianders@chromium.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        linux-input@vger.kernel.org
+References: <20211117224841.3442482-1-briannorris@chromium.org>
+ <20211117144807.v2.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
+ <20211118123928.545dec8a@eldfell>
+ <CAF6AEGuc9JbOsC4Lrvoqo8VzMHq+7ru7Y6_UwoZaGV2wHQ6E5g@mail.gmail.com>
+ <20211119115419.505155b5@eldfell>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH 00/17] Add memberof(), split some headers, and slightly
- simplify code
-Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20211119113644.1600-1-alx.manpages@gmail.com>
- <CAK8P3a0qT9tAxFkLN_vJYRcocDW2TcBq79WcYKZFyAG0udZx5Q@mail.gmail.com>
- <434296d3-8fe1-f1d2-ee9d-ea25d6c4e43e@gmail.com>
- <YZfEHZa3f5MXeqoH@smile.fi.intel.com>
- <f1a90f53-060e-2960-3926-e30b44a1be28@gmail.com>
- <4a39bc52-53ff-ca79-8d34-4310b2894f43@gmail.com>
- <YZfHi0GXk129wmQE@smile.fi.intel.com>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-In-Reply-To: <YZfHi0GXk129wmQE@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211119115419.505155b5@eldfell>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/19/21 16:49, Andy Shevchenko wrote:
->>
->> I think the problem was in
->> <linux/memberof.h> requiring NULL from <linux/stddef.h>
->> <linux/stddef.h> requiring memberof() from <linux/memberof.h>
->> or something like that.
+On Fri, Nov 19, 2021 at 11:54:19AM +0200, Pekka Paalanen wrote:
+> On Thu, 18 Nov 2021 15:30:38 -0800
+> Rob Clark <robdclark@gmail.com> wrote:
 > 
-> There is no memberof.h in the kernel. Something is done wrongly on your series.
+> > On Thu, Nov 18, 2021 at 2:39 AM Pekka Paalanen <ppaalanen@gmail.com> wrote:
+> > >
+> > > On Wed, 17 Nov 2021 14:48:40 -0800
+> > > Brian Norris <briannorris@chromium.org> wrote:
+> > >  
+> > > > A variety of applications have found it useful to listen to
+> > > > user-initiated input events to make decisions within a DRM driver, given
+> > > > that input events are often the first sign that we're going to start
+> > > > doing latency-sensitive activities:
+> > > >
+> > > >  * Panel self-refresh: software-directed self-refresh (e.g., with
+> > > >    Rockchip eDP) is especially latency sensitive. In some cases, it can
+> > > >    take 10s of milliseconds for a panel to exit self-refresh, which can
+> > > >    be noticeable. Rockchip RK3399 Chrome OS systems have always shipped
+> > > >    with an input_handler boost, that preemptively exits self-refresh
+> > > >    whenever there is input activity.
+> > > >
+> > > >  * GPU drivers: on GPU-accelerated desktop systems, we may need to
+> > > >    render new frames immediately after user activity. Powering up the
+> > > >    GPU can take enough time that it is worthwhile to start this process
+> > > >    as soon as there is input activity. Many Chrome OS systems also ship
+> > > >    with an input_handler boost that powers up the GPU.
+> > > >
+> > > > This patch provides a small helper library that abstracts some of the
+> > > > input-subsystem details around picking which devices to listen to, and
+> > > > some other boilerplate. This will be used in the next patch to implement
+> > > > the first bullet: preemptive exit for panel self-refresh.
+> > > >
+> > > > Bits of this are adapted from code the Android and/or Chrome OS kernels
+> > > > have been carrying for a while.
+> > > >
+> > > > Signed-off-by: Brian Norris <briannorris@chromium.org>
+> > > > ---  
+> > >
+> > > Thanks Simon for the CC.
+> > >
+> > > Hi Brian,
+> > >
+> > > while this feature in general makes sense and sounds good, to start
+> > > warming up display hardware early when something might start to happen,
+> > > this particular proposal has many problems from UAPI perspective (as it
+> > > has none). Comments below.
+> > >
+> > > Btw. if PSR is that slow to wake up from, how much do you actually gain
+> > > from this input event watching? I would imagine the improvement to not
+> > > be noticeable.
+> > >
+> > > I think some numbers about how much this feature helps would be really
+> > > good, even if they are quite specific use cases. You also need to
+> > > identify the userspace components, because I think different display
+> > > servers are very different in their reaction speed.
+> > >
+> > > If KMS gets a pageflip or modeset in no time after an input event, then
+> > > what's the gain. OTOH, if the display server is locking on to vblank,
+> > > there might be a delay worth avoiding. But then, is it worth
+> > > short-circuiting the wake-up in kernel vs. adding a new ioctl that
+> > > userspace could hit to start the warming up process?  
+> > 
+> > In my measurements, it takes userspace a frame or two to respond and
+> > get to the point of starting to build cmdstream (before eventually
+> > doing atomic/pageflip ioctl).. possibly longer if you don't also have
+> > a similar boost mechanism to spool up cpufreq
+> > 
+> > But the important thing, IMO, is that atomic/pageflip ioctl is the
+> > cumulation of a long sequence of events.. input-boost is letting
+> > whatever it may be (PSR exit, GPU resume, etc) happen in parallel with
+> > that long sequence.
+> 
+> Right, exactly. That is why I was musing about a *new* ioctl that
+> userspace could hit as soon as any input device fd (or network fd!)
+> shows signs of life. Would that be enough, avoiding all the annoying
+> questions about which input and DRM devices should participate here
+> (and what about non-input devices that still want to trigger the
+> warm-up, like network traffic, e.g. remote control?), or does it really
+> need to be kernel internal to be fast enough?
+> 
+> As Brian wrote about his quick hack to test that via debugfs, sounds
+> like the userspace solution would be totally sufficient.
 
-memberof.h was my first addition in this patch series.
+Random idea ... should we perhaps let userspace connect the boosting? I.e.
+we do a bunch of standardized boost targets (render clocks, display sr
+exit), and userspace can then connect it to whichever input device it
+wants to?
 
-Since I replaced (((T *)0)->m) by memberof(),
-and that construction is used in <linux/stddef.h>
-for example for sizeof_field(),
-I included <linux/memberof.h> from <linux/stddef.h>.
+That also avoids the multi-user lol of us boosting the wrong seat, we
+could do a drm ioctl where you pass it an eventfd and essentially say
+"listen to this mkay?" That way the boosting would also neatly get passed
+along with compositors as we vt switch them, in case you have one that's
+all tablet, and another one (console emulation) that's kbd only.
 
+Also this avoids the latency problem perhaps of a compositor which just
+dumbly paints every frame because it's VR or something like that, so never
+any sr exit possible.
 
-
+Just an idea, compositor people pls shred it :-)
+-Daniel
 -- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
