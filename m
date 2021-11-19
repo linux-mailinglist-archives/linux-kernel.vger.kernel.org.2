@@ -2,311 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD84C4567DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 03:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1727F4567DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 03:10:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233337AbhKSCMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 21:12:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbhKSCMw (ORCPT
+        id S233925AbhKSCNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 21:13:01 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:26329 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233873AbhKSCNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 21:12:52 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9BEC061574;
-        Thu, 18 Nov 2021 18:09:51 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id v23so10841773iom.12;
-        Thu, 18 Nov 2021 18:09:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zkj+89k4bp/s4LnUnVtL6QeRLgRYmRxuKfg3h3lP7po=;
-        b=VWz1Bb6+EvjP44SxI0BISi7o37khpapsDVScvVh0l0hkpN8axeOEUxsuAN1fjH91Lq
-         WVan0da+70+e47Ud35nXhvfgvl8K2bozex8sUiMsEk20j49SMPAjkYLvs3O59kJ5EYOU
-         6iz+4bSF/QT50vkaS055SMsIlO+tf8EuKSHJdfEj+XDK8+/jE/TqCxl5nkY4Mm1hzOVk
-         3B7TkC73LHMQeHQ9HJYA5iTMCwLhp4pTTETkqCSHtLBAK32z+re9oCZq2VAaz2PkfyX4
-         fByzGMSmJvJ2hY53c8WhTRJvENDsKIdqO65Yu2mdmGx74//ct7Aic3lHyKomVTUBnaN4
-         0E7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zkj+89k4bp/s4LnUnVtL6QeRLgRYmRxuKfg3h3lP7po=;
-        b=26o+x7EqKl+0BBdWYYI9anKiODCgaRqSjJ5jMyr+uotbPG2piZbm/wN9KCodpEL287
-         lQgGpqeb4bovwxCv2OF/ltdFJ9GNO3z+VV7InA4/2Vz+iNOwDEUD+SSaxkRYpj/tldCQ
-         oyB+y5woHyjk6USP3G5OxVtPNDLWSwQEjt1G8LOKe09OfrdGERN0Q9X2DqLC0mjfgvJ5
-         AAWCpaULWcpEwW/bMLuI9yols8f2rPOJ/wmTa6Bx0zuK4osGFNaLELz8Iz7CpF/S0F5Z
-         2k94sj2X5k5Ti9+x6e0cQmO4pS02SlPLP3rL5n1BOxiTS5e/MnnIxgkqkqM2LILw1G0W
-         Q+tw==
-X-Gm-Message-State: AOAM531PvmzmKkTRwE01/Ad6UL0QN2T4IcYGU02Yzs7k8bhGGvTfycuw
-        sFMKeaPJ5DfuC0lwyK7CKwQ=
-X-Google-Smtp-Source: ABdhPJysoaDcF+fM8klQulU0vAxQW97JiZTi9zHn13yGKDlI+IWP8/LVRfBwQbq0687+xFi2+hTYeQ==
-X-Received: by 2002:a02:9586:: with SMTP id b6mr24062795jai.24.1637287791069;
-        Thu, 18 Nov 2021 18:09:51 -0800 (PST)
-Received: from localhost.localdomain (047-006-019-138.res.spectrum.com. [47.6.19.138])
-        by smtp.gmail.com with ESMTPSA id q20sm897527iob.42.2021.11.18.18.09.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 18:09:50 -0800 (PST)
-From:   Chuck Ritola <cjritola@gmail.com>
-To:     crope@iki.fi
-Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chuck Ritola <cjritola@gmail.com>
-Subject: [PATCH] media: dvb-frontends: a8293: fix LNB powerup failure in PCTV 461e
-Date:   Thu, 18 Nov 2021 21:09:05 -0500
-Message-Id: <20211119020905.22725-1-cjritola@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Thu, 18 Nov 2021 21:13:00 -0500
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HwKk46rXQzbhjk;
+        Fri, 19 Nov 2021 10:05:00 +0800 (CST)
+Received: from kwepemm600017.china.huawei.com (7.193.23.234) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 19 Nov 2021 10:09:57 +0800
+Received: from [10.174.179.234] (10.174.179.234) by
+ kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 19 Nov 2021 10:09:55 +0800
+Subject: Re: [PATCH 03/12] riscv: switch to relative exception tables
+To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        "Song Liu" <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        "Nick Desaulniers" <ndesaulniers@google.com>
+References: <20211118192130.48b8f04c@xhacker>
+ <20211118192251.749c04f7@xhacker>
+CC:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kbuild@vger.kernel.org>
+From:   tongtiangen <tongtiangen@huawei.com>
+Message-ID: <bc466684-b02e-c6b0-13cf-a071eeebff8c@huawei.com>
+Date:   Fri, 19 Nov 2021 10:09:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211118192251.749c04f7@xhacker>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.234]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600017.china.huawei.com (7.193.23.234)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes a8293 failure to raise LNB voltage in PCTV 461e DVB-S2 Stick
-affecting multiple users over several years as found here:
+Hi jisheng:
+eBPF's exception tables needs to be modified to relative synchronously.
 
-http://www.linuxquestions.org/questions/linux-hardware-18/pctv-dvb-s2-stick-461e-not-feeding-lnb-4175529374/
-https://www.linuxtv.org/wiki/index.php/Pinnacle_PCTV_DVB-S2_Stick_(461e)
-https://github.com/OpenELEC/OpenELEC.tv/issues/3731
+I modified and verified the code as follows:
 
-Caused by vIN undervoltage lockout (status register bit 7) when raising LNB to 18V.
-Addressed by using the higher-precision voltages available on the a8293 to gradually
-increase (slew) the voltage when voltage increases are requested.
+===================
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -499,7 +499,7 @@ static int add_exception_handler(const struct bpf_insn *insn,
+         offset = pc - (long)&ex->insn;
+         if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
+                 return -ERANGE;
+-       ex->insn = pc;
++       ex->insn = offset;
+===================
 
-Adds volt_slew_nanos_per_mv to a8293_platform_data struct for specifying slew rate.
-If value is <1 or non-sane (>1600), the original no-slew version for a8293_set_voltage is used.
+Thanks.
 
-Signed-off-by: Chuck Ritola <cjritola@gmail.com>
----
- drivers/media/dvb-frontends/a8293.c   | 147 +++++++++++++++++++++++++-
- drivers/media/dvb-frontends/a8293.h   |   2 +
- drivers/media/usb/em28xx/em28xx-dvb.c |   3 +
- 3 files changed, 150 insertions(+), 2 deletions(-)
+Reviewed-by:Tong Tiangen <tongtiangen@huawei.com>
 
-diff --git a/drivers/media/dvb-frontends/a8293.c b/drivers/media/dvb-frontends/a8293.c
-index 57f52c004..f86af43ee 100644
---- a/drivers/media/dvb-frontends/a8293.c
-+++ b/drivers/media/dvb-frontends/a8293.c
-@@ -3,16 +3,139 @@
-  * Allegro A8293 SEC driver
-  *
-  * Copyright (C) 2011 Antti Palosaari <crope@iki.fi>
-+ * Copyright (C) 2021 Chuck Ritola <cjritola@gmail.com>
-  */
- 
- #include "a8293.h"
- 
-+#define A8293_FLAG_ODT			0x10
-+
-+
- struct a8293_dev {
- 	struct i2c_client *client;
- 	u8 reg[2];
-+	int volt_slew_nanos_per_mv;
- };
- 
--static int a8293_set_voltage(struct dvb_frontend *fe,
-+/*
-+ * When increasing voltage, do so in minimal steps over time, minimizing risk of vIN undervoltage.
-+ */
-+
-+static int a8293_set_voltage_slew(struct a8293_dev *dev,
-+				struct i2c_client *client,
-+			     enum fe_sec_voltage fe_sec_voltage,
-+				int min_nanos_per_mv)
-+{
-+	int ret;
-+	u8 reg0, reg1;
-+	int new_volt_idx;
-+	const int idx_to_mv[] = {0,    12709, 13042, 13375, 14042, 15042, 18042, 18709, 19042};
-+	const u8 idx_to_reg[] = {0x00, 0x20,  0x21,  0x22,  0x24,  0x27,  0x28,  0x2A,  0x2B };
-+	int this_volt_idx;
-+	u8 status;
-+	int prev_volt_idx;
-+
-+	dev_dbg(&client->dev, "set_voltage_slew fe_sec_voltage=%d\n", fe_sec_voltage);
-+
-+	/* Read status register to clear any stale faults. */
-+	ret = i2c_master_recv(client, &status, 1);
-+	if (ret < 0)
-+		goto err;
-+
-+	/* Determine previous voltage */
-+	switch (dev->reg[0] & 0x2F) {
-+	case 0x00:
-+		prev_volt_idx = 0;
-+		break;
-+	case 0x20:
-+		prev_volt_idx = 1;
-+		break;
-+	case 0x21:
-+		prev_volt_idx = 2;
-+		break;
-+	case 0x22:
-+		prev_volt_idx = 3;
-+		break;
-+	case 0x24:
-+		prev_volt_idx = 4;
-+		break;
-+	case 0x27:
-+		prev_volt_idx = 5;
-+		break;
-+	case 0x28:
-+		prev_volt_idx = 6;
-+		break;
-+	case 0x2A:
-+		prev_volt_idx = 7;
-+		break;
-+	case 0x2B:
-+		prev_volt_idx = 8;
-+		break;
-+	default:
-+		prev_volt_idx = 0;
-+	}
-+
-+	/* Determine new voltage */
-+	switch (fe_sec_voltage) {
-+	case SEC_VOLTAGE_OFF:
-+		new_volt_idx = 0;
-+		break;
-+	case SEC_VOLTAGE_13:
-+		new_volt_idx = 2;
-+		break;
-+	case SEC_VOLTAGE_18:
-+		new_volt_idx = 6;
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	/* Slew to new voltage if new voltage is greater than current voltage */
-+	this_volt_idx = prev_volt_idx;
-+	if (this_volt_idx < new_volt_idx) {
-+		while (this_volt_idx < new_volt_idx) {
-+			int delta_mv = idx_to_mv[this_volt_idx+1] - idx_to_mv[this_volt_idx];
-+			int min_wait_time = delta_mv * min_nanos_per_mv;
-+
-+			reg0 = idx_to_reg[this_volt_idx+1];
-+			reg0 |= A8293_FLAG_ODT;
-+
-+			ret = i2c_master_send(client, &reg0, 1);
-+			if (ret < 0)
-+				goto err;
-+			dev->reg[0] = reg0;
-+			this_volt_idx++;
-+			usleep_range(min_wait_time, min_wait_time * 2);
-+		}
-+	} else { /* Else just set the voltage */
-+		reg0 = idx_to_reg[new_volt_idx];
-+		reg0 |= A8293_FLAG_ODT;
-+		ret = i2c_master_send(client, &reg0, 1);
-+		if (ret < 0)
-+			goto err;
-+		dev->reg[0] = reg0;
-+	}
-+
-+	/* TMODE=0, TGATE=1 */
-+	reg1 = 0x82;
-+	if (reg1 != dev->reg[1]) {
-+		ret = i2c_master_send(client, &reg1, 1);
-+		if (ret < 0)
-+			goto err;
-+		dev->reg[1] = reg1;
-+	}
-+
-+	usleep_range(1500, 5000);
-+
-+	return 0;
-+err:
-+	dev_dbg(&client->dev, "failed=%d\n", ret);
-+	return ret;
-+}
-+
-+
-+static int a8293_set_voltage_noslew(struct dvb_frontend *fe,
- 			     enum fe_sec_voltage fe_sec_voltage)
- {
- 	struct a8293_dev *dev = fe->sec_priv;
-@@ -20,7 +143,7 @@ static int a8293_set_voltage(struct dvb_frontend *fe,
- 	int ret;
- 	u8 reg0, reg1;
- 
--	dev_dbg(&client->dev, "fe_sec_voltage=%d\n", fe_sec_voltage);
-+	dev_dbg(&client->dev, "set_voltage_noslew fe_sec_voltage=%d\n", fe_sec_voltage);
- 
- 	switch (fe_sec_voltage) {
- 	case SEC_VOLTAGE_OFF:
-@@ -62,6 +185,24 @@ static int a8293_set_voltage(struct dvb_frontend *fe,
- 	return ret;
- }
- 
-+static int a8293_set_voltage(struct dvb_frontend *fe,
-+			     enum fe_sec_voltage fe_sec_voltage)
-+{
-+	struct a8293_dev *dev = fe->sec_priv;
-+	struct i2c_client *client = dev->client;
-+	int volt_slew_nanos_per_mv = dev->volt_slew_nanos_per_mv;
-+
-+	dev_dbg(&client->dev, "set_voltage volt_slew_nanos_per_mv=%d\n", volt_slew_nanos_per_mv);
-+
-+	/* Use slew version if slew rate is set to a sane value */
-+	if (volt_slew_nanos_per_mv > 0 && volt_slew_nanos_per_mv < 1600)
-+		a8293_set_voltage_slew(dev, client, fe_sec_voltage, volt_slew_nanos_per_mv);
-+	else
-+		a8293_set_voltage_noslew(fe, fe_sec_voltage);
-+
-+	return 0;
-+}
-+
- static int a8293_probe(struct i2c_client *client,
- 		       const struct i2c_device_id *id)
- {
-@@ -78,6 +219,7 @@ static int a8293_probe(struct i2c_client *client,
- 	}
- 
- 	dev->client = client;
-+	dev->volt_slew_nanos_per_mv = pdata->volt_slew_nanos_per_mv;
- 
- 	/* check if the SEC is there */
- 	ret = i2c_master_recv(client, buf, 2);
-@@ -127,5 +269,6 @@ static struct i2c_driver a8293_driver = {
- module_i2c_driver(a8293_driver);
- 
- MODULE_AUTHOR("Antti Palosaari <crope@iki.fi>");
-+MODULE_AUTHOR("Chuck Ritola <cjritola@gmail.com>");
- MODULE_DESCRIPTION("Allegro A8293 SEC driver");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/media/dvb-frontends/a8293.h b/drivers/media/dvb-frontends/a8293.h
-index 8c09635ef..0a807c022 100644
---- a/drivers/media/dvb-frontends/a8293.h
-+++ b/drivers/media/dvb-frontends/a8293.h
-@@ -18,9 +18,11 @@
- /**
-  * struct a8293_platform_data - Platform data for the a8293 driver
-  * @dvb_frontend: DVB frontend.
-+ * @volt_slew_nanos_per_mv: Slew rate when increasing LNB voltage, in nanoseconds per millivolt.
-  */
- struct a8293_platform_data {
- 	struct dvb_frontend *dvb_frontend;
-+	int volt_slew_nanos_per_mv;
- };
- 
- #endif /* A8293_H */
-diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index 471bd7466..859f4a33e 100644
---- a/drivers/media/usb/em28xx/em28xx-dvb.c
-+++ b/drivers/media/usb/em28xx/em28xx-dvb.c
-@@ -1208,6 +1208,9 @@ static int em28178_dvb_init_pctv_461e(struct em28xx *dev)
- 
- 	/* attach SEC */
- 	a8293_pdata.dvb_frontend = dvb->fe[0];
-+	/* 461e has a tendency to have vIN undervoltage troubles. Slew mitigates this. */
-+	a8293_pdata.volt_slew_nanos_per_mv = 20;
-+
- 	dvb->i2c_client_sec = dvb_module_probe("a8293", NULL,
- 					       &dev->i2c_adap[dev->def_i2c_bus],
- 					       0x08, &a8293_pdata);
--- 
-2.20.1
-
+On 2021/11/18 19:22, Jisheng Zhang wrote:
+> From: Jisheng Zhang <jszhang@kernel.org>
+>
+> Similar as other architectures such as arm64, x86 and so on, use
+> offsets relative to the exception table entry values rather than
+> absolute addresses for both the exception locationand the fixup.
+>
+> However, RISCV label difference will actually produce two relocations,
+> a pair of R_RISCV_ADD32 and R_RISCV_SUB32. Take below simple code for
+> example:
+>
+> $ cat test.S
+> .section .text
+> 1:
+>         nop
+> .section __ex_table,"a"
+>         .balign 4
+>         .long (1b - .)
+> .previous
+>
+> $ riscv64-linux-gnu-gcc -c test.S
+> $ riscv64-linux-gnu-readelf -r test.o
+> Relocation section '.rela__ex_table' at offset 0x100 contains 2 entries:
+>   Offset          Info           Type           Sym. Value    Sym. Name + Addend
+> 000000000000  000600000023 R_RISCV_ADD32     0000000000000000 .L1^B1 + 0
+> 000000000000  000500000027 R_RISCV_SUB32     0000000000000000 .L0  + 0
+>
+> The modpost will complain the R_RISCV_SUB32 relocation, so we need to
+> patch modpost.c to skip this relocation for .rela__ex_table section.
+>
+> After this patch, the __ex_table section size of defconfig vmlinux is
+> reduced from 7072 Bytes to 3536 Bytes.
+>
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>  arch/riscv/include/asm/Kbuild    |  1 -
+>  arch/riscv/include/asm/extable.h | 25 +++++++++++++++++++++++++
+>  arch/riscv/include/asm/uaccess.h |  4 ++--
+>  arch/riscv/lib/uaccess.S         |  4 ++--
+>  arch/riscv/mm/extable.c          |  2 +-
+>  scripts/mod/modpost.c            | 15 +++++++++++++++
+>  scripts/sorttable.c              |  2 +-
+>  7 files changed, 46 insertions(+), 7 deletions(-)
+>  create mode 100644 arch/riscv/include/asm/extable.h
+>
+> diff --git a/arch/riscv/include/asm/Kbuild b/arch/riscv/include/asm/Kbuild
+> index 445ccc97305a..57b86fd9916c 100644
+> --- a/arch/riscv/include/asm/Kbuild
+> +++ b/arch/riscv/include/asm/Kbuild
+> @@ -1,6 +1,5 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  generic-y += early_ioremap.h
+> -generic-y += extable.h
+>  generic-y += flat.h
+>  generic-y += kvm_para.h
+>  generic-y += user.h
+> diff --git a/arch/riscv/include/asm/extable.h b/arch/riscv/include/asm/extable.h
+> new file mode 100644
+> index 000000000000..84760392fc69
+> --- /dev/null
+> +++ b/arch/riscv/include/asm/extable.h
+> @@ -0,0 +1,25 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ASM_RISCV_EXTABLE_H
+> +#define _ASM_RISCV_EXTABLE_H
+> +
+> +/*
+> + * The exception table consists of pairs of relative offsets: the first
+> + * is the relative offset to an instruction that is allowed to fault,
+> + * and the second is the relative offset at which the program should
+> + * continue. No registers are modified, so it is entirely up to the
+> + * continuation code to figure out what to do.
+> + *
+> + * All the routines below use bits of fixup code that are out of line
+> + * with the main instruction path.  This means when everything is well,
+> + * we don't even have to jump over them.  Further, they do not intrude
+> + * on our cache or tlb entries.
+> + */
+> +
+> +struct exception_table_entry {
+> +	int insn, fixup;
+> +};
+> +
+> +#define ARCH_HAS_RELATIVE_EXTABLE
+> +
+> +int fixup_exception(struct pt_regs *regs);
+> +#endif
+> diff --git a/arch/riscv/include/asm/uaccess.h b/arch/riscv/include/asm/uaccess.h
+> index 714cd311d9f1..0f2c5b9d2e8f 100644
+> --- a/arch/riscv/include/asm/uaccess.h
+> +++ b/arch/riscv/include/asm/uaccess.h
+> @@ -12,8 +12,8 @@
+>
+>  #define _ASM_EXTABLE(from, to)						\
+>  	"	.pushsection	__ex_table, \"a\"\n"			\
+> -	"	.balign "	RISCV_SZPTR "	 \n"			\
+> -	"	" RISCV_PTR	"(" #from "), (" #to ")\n"		\
+> +	"	.balign		4\n"					\
+> +	"	.long		(" #from " - .), (" #to " - .)\n"	\
+>  	"	.popsection\n"
+>
+>  /*
+> diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
+> index 63bc691cff91..55f80f84e23f 100644
+> --- a/arch/riscv/lib/uaccess.S
+> +++ b/arch/riscv/lib/uaccess.S
+> @@ -7,8 +7,8 @@
+>  100:
+>  	\op \reg, \addr
+>  	.section __ex_table,"a"
+> -	.balign RISCV_SZPTR
+> -	RISCV_PTR 100b, \lbl
+> +	.balign 4
+> +	.long (100b - .), (\lbl - .)
+>  	.previous
+>  	.endm
+>
+> diff --git a/arch/riscv/mm/extable.c b/arch/riscv/mm/extable.c
+> index ddb7d3b99e89..d8d239c2c1bd 100644
+> --- a/arch/riscv/mm/extable.c
+> +++ b/arch/riscv/mm/extable.c
+> @@ -28,6 +28,6 @@ int fixup_exception(struct pt_regs *regs)
+>  		return rv_bpf_fixup_exception(fixup, regs);
+>  #endif
+>
+> -	regs->epc = fixup->fixup;
+> +	regs->epc = (unsigned long)&fixup->fixup + fixup->fixup;
+>  	return 1;
+>  }
+> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+> index cb8ab7d91d30..6bfa33217914 100644
+> --- a/scripts/mod/modpost.c
+> +++ b/scripts/mod/modpost.c
+> @@ -1830,6 +1830,14 @@ static int addend_mips_rel(struct elf_info *elf, Elf_Shdr *sechdr, Elf_Rela *r)
+>  	return 0;
+>  }
+>
+> +#ifndef EM_RISCV
+> +#define EM_RISCV		243
+> +#endif
+> +
+> +#ifndef R_RISCV_SUB32
+> +#define R_RISCV_SUB32		39
+> +#endif
+> +
+>  static void section_rela(const char *modname, struct elf_info *elf,
+>  			 Elf_Shdr *sechdr)
+>  {
+> @@ -1866,6 +1874,13 @@ static void section_rela(const char *modname, struct elf_info *elf,
+>  		r_sym = ELF_R_SYM(r.r_info);
+>  #endif
+>  		r.r_addend = TO_NATIVE(rela->r_addend);
+> +		switch (elf->hdr->e_machine) {
+> +		case EM_RISCV:
+> +			if (!strcmp("__ex_table", fromsec) &&
+> +			    ELF_R_TYPE(r.r_info) == R_RISCV_SUB32)
+> +				continue;
+> +			break;
+> +		}
+>  		sym = elf->symtab_start + r_sym;
+>  		/* Skip special sections */
+>  		if (is_shndx_special(sym->st_shndx))
+> diff --git a/scripts/sorttable.c b/scripts/sorttable.c
+> index b7c2ad71f9cf..0c031e47a419 100644
+> --- a/scripts/sorttable.c
+> +++ b/scripts/sorttable.c
+> @@ -376,6 +376,7 @@ static int do_file(char const *const fname, void *addr)
+>  	case EM_PARISC:
+>  	case EM_PPC:
+>  	case EM_PPC64:
+> +	case EM_RISCV:
+>  		custom_sort = sort_relative_table;
+>  		break;
+>  	case EM_ARCOMPACT:
+> @@ -383,7 +384,6 @@ static int do_file(char const *const fname, void *addr)
+>  	case EM_ARM:
+>  	case EM_MICROBLAZE:
+>  	case EM_MIPS:
+> -	case EM_RISCV:
+>  	case EM_XTENSA:
+>  		break;
+>  	default:
+>
