@@ -2,129 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72CF8457271
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:10:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4E045727D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:11:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236305AbhKSQNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 11:13:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58672 "EHLO mail.kernel.org"
+        id S236272AbhKSQOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 11:14:15 -0500
+Received: from mga17.intel.com ([192.55.52.151]:33412 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236201AbhKSQNW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:13:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C882F61B1B;
-        Fri, 19 Nov 2021 16:10:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637338220;
-        bh=cG3wQEplh35ow0AJ/zjgDPh/OW/YWgrK5UulYqGDxjE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QUzBGA8kmIZtcrQJdOESL4mgFezTBQBPZ6IJx94GDM8Ef7cYTtYicM66ZX5CwB0hx
-         hA7DYnF4aiHKQN36IrOX5FgjRiwxDfgkbE3k4wUdt11b4arRylJqWuD807VFUPW1l0
-         JvIs0+qmP+m53U0tTF1kVVogBHKOQZEL2GXW6FtRK9bL8uPx/IBh9SDPCrihQ+kdya
-         Zde82zythWLeWnYmxBwh8D/SCXg8y1hqI0uJWl1IbYa2+cnZ/yJ48ODdcpt/8V3oP3
-         LrO7YvEvAV+mSHDCz5egdvctVjH9uueybHVHdwgcZsJ55gEnmnbLJGVH6mFl2pF0Yv
-         qeTxPJmaxMR9Q==
-Date:   Fri, 19 Nov 2021 08:10:17 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Aya Levin <ayal@mellanox.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>, drivers@pensando.io,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org,
-        Michael Chan <michael.chan@broadcom.com>,
-        netdev@vger.kernel.org, oss-drivers@corigine.com,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Simon Horman <simon.horman@corigine.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [PATCH net-next 5/6] devlink: Reshuffle resource registration
- logic
-Message-ID: <20211119081017.6676843b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YZfFDSnnjOG+wSyK@unreal>
-References: <cover.1637173517.git.leonro@nvidia.com>
-        <6176a137a4ded48501e8a06fda0e305f9cfc787c.1637173517.git.leonro@nvidia.com>
-        <20211117204956.6a36963b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YZYFvIK9mkP107tD@unreal>
-        <20211118174813.54c3731f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YZfFDSnnjOG+wSyK@unreal>
+        id S234964AbhKSQOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 11:14:15 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="215153606"
+X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
+   d="scan'208";a="215153606"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 08:11:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
+   d="scan'208";a="673260937"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 19 Nov 2021 08:11:11 -0800
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mo6Tm-0004i3-UI; Fri, 19 Nov 2021 16:11:10 +0000
+Date:   Sat, 20 Nov 2021 00:10:26 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [paulmck-rcu:dev.2021.11.15a] BUILD SUCCESS
+ f2a84e8af06cd9055250eea3e844d405c5ae94c5
+Message-ID: <6197cc72.gXV+Evs5nsFfEn2K%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Nov 2021 17:38:53 +0200 Leon Romanovsky wrote:
-> On Thu, Nov 18, 2021 at 05:48:13PM -0800, Jakub Kicinski wrote:
-> > On Thu, 18 Nov 2021 09:50:20 +0200 Leon Romanovsky wrote:  
-> > > And it shouldn't. devlink_resource_find() will return valid resource only
-> > > if there driver is completely bogus with races or incorrect allocations of
-> > > resource_id.
-> > > 
-> > > devlink_*_register(..)
-> > >  mutex_lock(&devlink->lock);
-> > >  if (devlink_*_find(...)) {
-> > >     mutex_unlock(&devlink->lock);
-> > >     return ....;
-> > >  }
-> > >  .....
-> > > 
-> > > It is almost always wrong from locking and layering perspective the pattern above,
-> > > as it is racy by definition if not protected by top layer.
-> > > 
-> > > There are exceptions from the rule above, but devlink is clearly not the
-> > > one of such exceptions.  
-> > 
-> > Just drop the unnecessary "cleanup" patches and limit the amount 
-> > of driver code we'll have to revert if your approach fails.  
-> 
-> My approach works, exactly like it works in other subsystems.
-> https://lore.kernel.org/netdev/cover.1636390483.git.leonro@nvidia.com/
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.11.15a
+branch HEAD: f2a84e8af06cd9055250eea3e844d405c5ae94c5  squash! rcu: Tighten rcu_advance_cbs_nowake() checks
 
-What "other subsystems"? I'm aware of the RFC version of these patches.
+elapsed time: 724m
 
-Breaking up the locks to to protect sub-objects only is fine for
-protecting internal lists but now you can't guarantee that the object
-exists when driver is called.
+configs tested: 65
+configs skipped: 3
 
-I'm sure you'll utter your unprovable "in real drivers.." but the fact
-is my approach does not suffer from any such issues. Or depends on
-drivers registering devlink last.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-I can start passing a pointer to a devlink_port to split/unsplit
-functions, which is a great improvement to the devlink driver API.
+gcc tested configs:
+arm                              allyesconfig
+arm                              allmodconfig
+arm                                 defconfig
+arm64                               defconfig
+arm64                            allyesconfig
+arm                  randconfig-c002-20211118
+ia64                                defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nds32                             allnoconfig
+nios2                               defconfig
+arc                              allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+s390                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                             allyesconfig
+sparc                               defconfig
+sparc                            allyesconfig
+mips                             allmodconfig
+mips                             allyesconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+powerpc                          allyesconfig
+x86_64               randconfig-a012-20211118
+x86_64               randconfig-a011-20211118
+x86_64               randconfig-a013-20211118
+x86_64               randconfig-a016-20211118
+x86_64               randconfig-a014-20211118
+x86_64               randconfig-a015-20211118
+arc                  randconfig-r043-20211119
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
 
-> We are waiting to see your proposal extended to support parallel devlink
-> execution and to be applied to real drivers.
-> https://lore.kernel.org/netdev/20211030231254.2477599-1-kuba@kernel.org/
+clang tested configs:
+hexagon              randconfig-r041-20211119
+riscv                randconfig-r042-20211119
+s390                 randconfig-r044-20211119
+hexagon              randconfig-r045-20211119
 
-The conversion to xarray you have done is a great improvement, I don't
-disagree with the way you convert to allow parallel calls either.
-
-I already told you that real drivers can be converted rather easily,
-even if it's not really necessary.
-
-But I'm giving you time to make your proposal. If I spend time
-polishing my patches I'll be even more eager to put this behind me.
-
-> Anyway, you are maintainer, you want half work, you will get half work.
-
-What do you mean half work? You have a record of breaking things 
-in the area and changing directions. How is my request to limit
-unnecessary "cleanups" affecting drivers until the work is finished
-not perfectly reasonable?!?!
-
-> > I spent enough time going back and forth with you.
-> 
-> Disagreements are hard for everyone, not only for you.
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
