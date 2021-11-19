@@ -2,77 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0B4457935
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 23:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3770457940
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 00:00:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235080AbhKSW7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 17:59:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47208 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233433AbhKSW7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 17:59:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6581661A3D;
-        Fri, 19 Nov 2021 22:56:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1637362605;
-        bh=5TYNXOCWQqd9lahvFRSbbGUcFcxuELMbOWq1RB6UIKg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=2dqufVZKmWo4eojHhdQmYJmMrhpHQKnua1AZQB3W8tMbkWb/oAtT0DpgeW3ZYiAlW
-         RqpuBS8EHfDKyO2I7aHvbrFgYnXtvWVuK41H6mjoI4WhDI3g504NbZdxEKkiKNI93d
-         ZNUNmF+x7lzsMulF54ax2R3jiYBj4FK9lGXrGpnM=
-Date:   Fri, 19 Nov 2021 14:56:43 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Muchun Song <songmuchun@bytedance.com>, adobriyan@gmail.com,
-        gladkov.alexey@gmail.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2] fs: proc: store PDE()->data into inode->i_private
-Message-Id: <20211119145643.21bbd5ee8e2830dd72d983e3@linux-foundation.org>
-In-Reply-To: <YZdQ+0D7n5xCnw5A@infradead.org>
-References: <20211119041104.27662-1-songmuchun@bytedance.com>
-        <YZdQ+0D7n5xCnw5A@infradead.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S234827AbhKSXDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 18:03:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232286AbhKSXDp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 18:03:45 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4578EC06173E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 15:00:43 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id g14so48759177edb.8
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 15:00:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=It4uFIPm/TcoK+jPH5YkeMMq3zsyxm4gO2u58vGukR0=;
+        b=3pJoQe2hjfrg/7hSbzLxsod9OrFWCoaug9P7fvkrEFg0rv9ffCcPK1UzNYydItGFTZ
+         8Gsmt/c334dnG4toozreaXjNphhZPsZYp2nlHPw3e/IL09S/41opYVanB2nzNO6/romw
+         i1rKm54xMk9+J65ZcFGOcZQ1SLjAb01WfAXpC5IjfPdVnhpO70u2p2JsMNKHDcQdADrz
+         aY47nKih2yF8knoiTAME51sXes1K6AV8Z51vQZXQFjkOEDpmKlNrruLgqJUvnP5ZmTFO
+         EX6tdfLRUPCJosqeGFNBGk62gvwF20K+oZOxePAEXnDwZsit9k4eDkfGa6isnfm5eM4B
+         QSvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=It4uFIPm/TcoK+jPH5YkeMMq3zsyxm4gO2u58vGukR0=;
+        b=qjtqxlpKETV5RJsAp9BUiYQ9Uj8EBHZjoN20JeuzTzjbmWwEs0+n9Ew8yTvUlT5ugP
+         XDPlc/nFH7MGF4GH1/otZX5N601VSfI4Q15HHEe9bpjAbE1PUaVC6/gNnys1wnmzn9/l
+         ai01kRGqWniPisFYsCc9lNEwz3VAMcCh18cC5Tti558uqk9Kj5+nziOx+ADUf9RHHdFK
+         VB2tDkRaqEeOx6/FcXChDZENa232c5KFZkqdv4pGtG8ou1w3pWttfwGATZTZ4O767grq
+         wCatvKdLsaW7fzvNCPZ5lEH4JL+KrTsJEmnpv22qrsBHvtaNfVQyDddqZvchclMYS8k3
+         4EMQ==
+X-Gm-Message-State: AOAM531JzlmHFNEFXbnwgdrZVHhhVkeshvV/BWEBBnlYTmcybx1Tzu1P
+        G+lFxeC0/h9w3Le5Y3CpCnsaaTSLyAObt49Uw8qi
+X-Google-Smtp-Source: ABdhPJwj8srWh1Z1Q4zO93E9LesvzJGVPu0HuTT8W9Stihxm6dQnTTI+EpjPhsnLo9c1VlkWaxAuFRFcd+EwUhAciqo=
+X-Received: by 2002:a17:907:629b:: with SMTP id nd27mr12593174ejc.24.1637362841746;
+ Fri, 19 Nov 2021 15:00:41 -0800 (PST)
+MIME-Version: 1.0
+References: <20211112180720.2858135-1-tkjos@google.com>
+In-Reply-To: <20211112180720.2858135-1-tkjos@google.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 19 Nov 2021 18:00:31 -0500
+Message-ID: <CAHC9VhQaHzrjdnr_DvZdPfWGiehC17yJVAJdVJMn8tOC1_Y+gA@mail.gmail.com>
+Subject: Re: [PATCH] binder: fix test regression due to sender_euid change
+To:     Todd Kjos <tkjos@google.com>
+Cc:     gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
+        maco@android.com, christian@brauner.io, jmorris@namei.org,
+        serge@hallyn.com, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, keescook@chromium.org, jannh@google.com,
+        jeffv@google.com, zohar@linux.ibm.com,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        joel@joelfernandes.org, kernel-team@android.com,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Nov 2021 23:23:39 -0800 Christoph Hellwig <hch@infradead.org> wrote:
+On Fri, Nov 12, 2021 at 1:07 PM Todd Kjos <tkjos@google.com> wrote:
+>
+> This is a partial revert of commit
+> 29bc22ac5e5b ("binder: use euid from cred instead of using task").
+> Setting sender_euid using proc->cred caused some Android system test
+> regressions that need further investigation. It is a partial
+> reversion because subsequent patches rely on proc->cred.
+>
+> Cc: stable@vger.kernel.org # 4.4+
+> Fixes: 29bc22ac5e5b ("binder: use euid from cred instead of using task")
+> Signed-off-by: Todd Kjos <tkjos@google.com>
+> Change-Id: I9b1769a3510fed250bb21859ef8beebabe034c66
+> ---
+> - the issue was introduced in 5.16-rc1, so please apply to 5.16
+> - this should apply cleanly to all stable branches back to 4.4
+>   that contain "binder: use euid from cred instead of using task"
+>
+>
+>  drivers/android/binder.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-> On Fri, Nov 19, 2021 at 12:11:04PM +0800, Muchun Song wrote:
-> > +
-> > +/*
-> > + * Obtain the private data passed by user through proc_create_data() or
-> > + * related.
-> > + */
-> > +static inline void *pde_data(const struct inode *inode)
-> > +{
-> > +	return inode->i_private;
-> > +}
-> > +
-> > +#define PDE_DATA(i)	pde_data(i)
-> 
-> What is the point of pde_data?
+This looks okay to me.  I assume this is going in via GregKH's tree?
 
-It's a regular old C function, hence should be in lower case.
+Acked-by: Paul Moore <paul@paul-moore.com>
 
-I assume the upper case thing is a holdover from when it was
-implemented as a macro.
+> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+> index 49fb74196d02..cffbe57a8e08 100644
+> --- a/drivers/android/binder.c
+> +++ b/drivers/android/binder.c
+> @@ -2710,7 +2710,7 @@ static void binder_transaction(struct binder_proc *proc,
+>                 t->from = thread;
+>         else
+>                 t->from = NULL;
+> -       t->sender_euid = proc->cred->euid;
+> +       t->sender_euid = task_euid(proc->tsk);
+>         t->to_proc = target_proc;
+>         t->to_thread = target_thread;
+>         t->code = tr->code;
+> --
+> 2.34.0.rc1.387.gb447b232ab-goog
 
->  If we really think changing to lower
-> case is worth it (I don't think so, using upper case for getting at
-> private data is a common idiom in file systems),
-
-It is?  How odd.
-
-I find the upper-case thing to be actively misleading.  It's mildly
-surprising to discover that it's actually a plain old C function.
-
-> we can just do that
-> scripted in one go.
-
-Yes, I'd like to see a followup patch which converts the current
-PDE_DATA() callsites.
-
+-- 
+paul moore
+www.paul-moore.com
