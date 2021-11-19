@@ -2,132 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D181B4576D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 20:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F157C4576DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 20:03:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235807AbhKSTFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 14:05:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37594 "EHLO
+        id S235836AbhKSTGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 14:06:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234568AbhKSTFg (ORCPT
+        with ESMTP id S235809AbhKSTF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 14:05:36 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4CBC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 11:02:33 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id z34so47687335lfu.8
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 11:02:33 -0800 (PST)
+        Fri, 19 Nov 2021 14:05:58 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBAB6C061574;
+        Fri, 19 Nov 2021 11:02:56 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id b11so8798312pld.12;
+        Fri, 19 Nov 2021 11:02:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zyZL3RTv0TvPMt4xtflBBfvrXYlylAFPWUcrVRJ4EDs=;
-        b=nWw1gsnD9O98jerNZ1sC4DKktH5192XhCwJPKSOZfpv1VOtDSge4Ja05sy1/F8+Avn
-         cNlbAxDFBVLpREu9M18VbUSUz3v2gHZhV7m2Lb3+8ZIcfD/1c4eDKFUsmeRlwLpa897Q
-         8WaJkkcB0RabbyouUToQ/ZuCVVhP8RFS/AIQ6ETcf/Ne1PJt8ML2LmXsdlLF5Gplz6fJ
-         3xjptzyoxwFeKtZaGR4jtmtbt7KX6nPU5FaKUPWNyKqTAbKOrL+qb2YAPzSJglX8ZPM3
-         2q2qyAAifOZs72R6WigdAJzy42IhuexhikuRwjMOabqVGsTMJvdDrTY5ii1Cco9Ybn1G
-         rp1w==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=l9Ikqxwffx28rzFOT+MDzvh/Hy9XNgRXjs9M7rYzZPY=;
+        b=CWDP5fkd+gqQEOcsP/kA4LsIr1VUEia4w+O7f5r32yyhzKlyjk0MOYaseV9dMObyyY
+         B5/wNlWWw2I3Y7zNGfXgL+kgBxTuPdEeEMCMzuSwgIaIiebfjC+nQ5AlzLVP7YXyA/JL
+         dEJEmC+b3pAaLixWZodXM8A274UtOIj6J30QBHmZz8IixCEwW65wCwxUpe6hRaWlrrf1
+         YHPHYfJilUN81IZJzpZ8naKe1FbO/TO/9oz0MrZB6dDX5+D5/MdV4Qzmv7PWk5jJMv2d
+         y/W8uq3WVIPkKHbK2PPinBS/5iIlv/dI82yMo89uusa1P62KdENwtOkFW8iYBMi7ZYhD
+         QsWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zyZL3RTv0TvPMt4xtflBBfvrXYlylAFPWUcrVRJ4EDs=;
-        b=VEaNS9a+/KpdxFvrv/C+jT6A62pC6YjHn/rfeMJ3bgW8n//TUqCPyOpn8Wo+RQYVkO
-         Gt20+l+6iJWNdk3pHTC3eK+S4J/PDVpm5VL7aJHUDyvDB/fqtXonYIYRrQOfyNTa1giV
-         cPDWG8MMIwGojWMfHx/TMyIqLNGQ9zMiWwaAIRrSHBIOXoPDj0TnJiKEzp/XN/8eBKGl
-         5wwuRRv+R22O/4XTz+nDiThrmmGU3WXAiUhX8meAo0VW15+lAILzDDusrofaZ/Q9OB6b
-         8e4zt1KwW8KegY3G6h5qkgHFTmgT5DJ7eZjL945qiGJT38HtmspJ7uTRaw6EriiZEq89
-         gVqw==
-X-Gm-Message-State: AOAM533AZ2tSZzeIptWuoj0fWU+9DtxNxTAcDU0BWwh6IKkOoaVYuXp+
-        SBH8qxlKBRrxdmTQ3oXpjL8YgDnXHSzHxVpxo00VTw==
-X-Google-Smtp-Source: ABdhPJwY9ByD7EPyR/BRypXRZWP52cbPyvXPOT8z9uoVse36nnaavQAo5B5rBbYe3m+bJeFGzeUM/Zn46pKAQXbTVZ0=
-X-Received: by 2002:ac2:4d19:: with SMTP id r25mr33923024lfi.82.1637348551242;
- Fri, 19 Nov 2021 11:02:31 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=l9Ikqxwffx28rzFOT+MDzvh/Hy9XNgRXjs9M7rYzZPY=;
+        b=q6CG7u4Ohu0VaQQcc2i24j0fP9J5LL3ZE5aHU7RbcSnhDeQf5VHuCHwPemhNKyJNzQ
+         2AWpf3CyvzdSYmuOjKuXQtrMxDprVZUb9f/y+11klfEVByks4WCeFvmZ//0NRCtIun2v
+         7vvUA8qj+IgHxqsVzdYqU2P5fP6/agRRnHc+HQNS+sn3aZg+WS1E3BalYjnsDVepIuml
+         wqvb0hRkuzA3H+YzUQTsaGbNlQwe2bIgu1TPhCN/9Bx9NueBFEEVTIqz71hAbj2keE2x
+         8mXzzELzmfG39YFzrShoPCWm/DJnmhBdKU22cBl73ZjDOoT3F91z5ZhpNzvzFKnBpjro
+         lUqQ==
+X-Gm-Message-State: AOAM533RH4/xoJCqo2leFQG9VizPxZHXn38KvGuCHMUoVYRZLtZKGeEC
+        VDuJx5ri7DMoWOsyiM5bzaTugFc/W80=
+X-Google-Smtp-Source: ABdhPJzQvxE0Qt/0W+ric4saOa2K6hYLAZjI580rdcKvEZ+TMxMR4iMFgXgxOsnizfiC3BMyWIki/w==
+X-Received: by 2002:a17:90b:4f84:: with SMTP id qe4mr2453801pjb.102.1637348575929;
+        Fri, 19 Nov 2021 11:02:55 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id a12sm337274pgg.28.2021.11.19.11.02.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Nov 2021 11:02:55 -0800 (PST)
+Subject: Re: [PATCH 5.14 00/15] 5.14.21-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20211119171443.724340448@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <334112e7-3ef8-2ccd-79c4-8b7a96185b0a@gmail.com>
+Date:   Fri, 19 Nov 2021 11:02:53 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211119165023.249607540@infradead.org> <20211119165630.219152765@infradead.org>
-In-Reply-To: <20211119165630.219152765@infradead.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 19 Nov 2021 11:02:19 -0800
-Message-ID: <CAKwvOdn0+eaV66xuY=hjA=CZCZ=6wt_dEsYf_nUq0TTQKWf2VA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] x86: Move RETPOLINE*_CFLAGS to arch Makefile
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        keescook@chromium.org, hjl.tools@gmail.com,
-        andrew.cooper3@citrix.com, mark.rutland@arm.com, will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211119171443.724340448@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 8:57 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> Currently RETPOLINE*_CFLAGS are defined in the top-level Makefile but
-> only x86 makes use of them, move them there. If ever another
-> architecture finds the need, we can reconsider.
->
-> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  Makefile          |   11 -----------
->  arch/x86/Makefile |   11 +++++++++++
->  2 files changed, 11 insertions(+), 11 deletions(-)
->
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -688,17 +688,6 @@ ifdef CONFIG_FUNCTION_TRACER
->    CC_FLAGS_FTRACE := -pg
->  endif
->
-> -ifdef CONFIG_CC_IS_GCC
-> -RETPOLINE_CFLAGS       := $(call cc-option,-mindirect-branch=thunk-extern -mindirect-branch-register)
-> -RETPOLINE_VDSO_CFLAGS  := $(call cc-option,-mindirect-branch=thunk-inline -mindirect-branch-register)
-> -endif
-> -ifdef CONFIG_CC_IS_CLANG
-> -RETPOLINE_CFLAGS       := -mretpoline-external-thunk
-> -RETPOLINE_VDSO_CFLAGS  := -mretpoline
-> -endif
-> -export RETPOLINE_CFLAGS
-> -export RETPOLINE_VDSO_CFLAGS
-> -
->  include $(srctree)/arch/$(SRCARCH)/Makefile
->
->  ifdef need-config
-> --- a/arch/x86/Makefile
-> +++ b/arch/x86/Makefile
-> @@ -12,6 +12,17 @@ else
->          KBUILD_DEFCONFIG := $(ARCH)_defconfig
->  endif
->
-> +ifdef CONFIG_CC_IS_GCC
-> +RETPOLINE_CFLAGS       := $(call cc-option,-mindirect-branch=thunk-extern -mindirect-branch-register)
-> +RETPOLINE_VDSO_CFLAGS  := $(call cc-option,-mindirect-branch=thunk-inline -mindirect-branch-register)
-> +endif
-> +ifdef CONFIG_CC_IS_CLANG
-> +RETPOLINE_CFLAGS       := -mretpoline-external-thunk
-> +RETPOLINE_VDSO_CFLAGS  := -mretpoline
-> +endif
-> +export RETPOLINE_CFLAGS
-> +export RETPOLINE_VDSO_CFLAGS
+On 11/19/21 9:38 AM, Greg Kroah-Hartman wrote:
+> --------------------
+> 
+> Note, this will be the LAST 5.14.y kernel release.  After this one it
+> will be marked end-of-life.  Please move to the 5.15.y tree at this
+> point in time.
+> 
+> --------------------
+> 
+> This is the start of the stable review cycle for the 5.14.21 release.
+> There are 15 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 21 Nov 2021 17:14:35 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.21-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-I appreciate the cleanup.
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-If we wanted to be more aggressive here, RETPOLINE_VDSO_CFLAGS is only
-used in arch/x86/entry/vdso/Makefile. If the definition of it was
-moved there, then we wouldn't need to export it.  Though it is perhaps
-descriptive to contrast how the flags used differs between the kernel
-and vdso; having them together does demonstrate that clearly and all
-in one place.
-
-> +
->  # For gcc stack alignment is specified with -mpreferred-stack-boundary,
->  # clang has the option -mstack-alignment for that purpose.
->  ifneq ($(call cc-option, -mpreferred-stack-boundary=4),)
->
->
-
-
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Thanks,
-~Nick Desaulniers
+Florian
