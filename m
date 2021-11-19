@@ -2,149 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2D7456AC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 08:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E82456ACB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 08:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233498AbhKSHUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 02:20:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231877AbhKSHUI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 02:20:08 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F25BC061574;
-        Thu, 18 Nov 2021 23:17:07 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id b68so8609039pfg.11;
-        Thu, 18 Nov 2021 23:17:07 -0800 (PST)
+        id S233643AbhKSHUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 02:20:17 -0500
+Received: from mx1.tq-group.com ([93.104.207.81]:47581 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231877AbhKSHUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 02:20:16 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:content-language:to:cc
-         :references:from:organization:subject:in-reply-to
-         :content-transfer-encoding;
-        bh=6qz6xI7WFRPHmyljg0Mk2T7aho0flV//gMy0C1tzj1c=;
-        b=NMFPKBHakbF5Bk3iavj3f7hTz+cMS5OMW02RF3iaiDkiLBXa/fkIE5DRP0hqeA2rH9
-         jMA3fP1jg5Tgp4aBhhfLHZE9DOpttAMHvPdKeLyvpK45YG49vYveJEabluc+INZ4psGZ
-         u4S3IQRjpXlBGP/P5UsiVBC0MCvqGUh5GBDLol0Ss43rqX9eJUURIjIeh/Q1/cwGCnqz
-         o5ilkjOPbcOoZS5dO70a+gSn9hhLuU3EpNIjoe0kBIz2iwqA4rh32LzgcMxC3Kcjkh7V
-         Nlz+qlz9zy+Xb3O/MPULPfTZ40JvwSyFmhwjpAgN4jHWJGsQbK9A7IhUXXuWiZq85VHM
-         0RTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=6qz6xI7WFRPHmyljg0Mk2T7aho0flV//gMy0C1tzj1c=;
-        b=OrjTNP5gdpkt9bL3EiqMi/J7X1JlZgGBqX6NFTZHItWA/CRm+QAReWblMCnk4Uk4d4
-         V4R5wsH8hbRcAhqWr+4svdGD/CUJPynmhdzqGWze9Orent4gY9yOEJ++7jJqhzXi3pE4
-         6E7arCUZxpalR52PYcccTSWqQahLSYZrZvw+HYJlJOVfcFsjgKupymxpSSI6P/JQ2GPJ
-         ObZjwygF9fCiKM/mHsGrabU7J1y7gsunPt6Spai1QxnEMSyi1Xin7VSCEb0Jj31mE1m6
-         httU+pe2sbeIXWJLz2oJ8kmXVM6QfJnu7gLf5he9ZI+F8FIkw45rQtGfqM7OWQZHwTOS
-         59iw==
-X-Gm-Message-State: AOAM531B02/s2uk4AmnIhPkHksR/iS267jsUvaf9o+V9MSrGF/kODZz4
-        cWt2IyPp8yqYMChxTIFA9EI=
-X-Google-Smtp-Source: ABdhPJw0ZoneS2RMFMxxlLnzXy/Xf3b0nC2tFxPTj1tVmugmNHJ46o2d7pdxVE0qzQDt6efHxNIvSQ==
-X-Received: by 2002:a63:ea51:: with SMTP id l17mr15578754pgk.363.1637306226647;
-        Thu, 18 Nov 2021 23:17:06 -0800 (PST)
-Received: from [192.168.255.10] ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id qe2sm1417853pjb.42.2021.11.18.23.17.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Nov 2021 23:17:06 -0800 (PST)
-Message-ID: <e3b3ad6f-b48a-24fa-a242-e28d2422a7f3@gmail.com>
-Date:   Fri, 19 Nov 2021 15:16:57 +0800
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1637306235; x=1668842235;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=4G1S93gjbwabrmFAdC43P4Mc+uXwLG7qww8pxE91teM=;
+  b=ixvpQc5OJsFqVkHuvkCKytxWUz7Nqq/YAeC0q8zy6zwpBaUu5XrbH9cH
+   pBNGuxmwTaVFr3DG4jylwNz6veWdpyMhgX6qE2zlfhGOMuOTEPYg0AHd3
+   PMUWsxLuK1/IzsN0H51BZjgfiiOqKz97pg2BxHbRlfEcJH/R/WGuwKSRA
+   xVdDf4IPf/8fValIrJk+6uy3dqANoT5wm/K/rXskODzVKCyQKP6uTE0HC
+   QBkRJRhUJwk8bzV7p3VvBFHg2LZ7zI7UTNcyCK2rbv1CyPVFKz1xTvPcG
+   CvBqJSnOX9+S/8/Ty23u7X+gxTuTUjJAT46AYJ8gels3F2RFGujipvOUU
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.87,246,1631570400"; 
+   d="scan'208";a="20555075"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 19 Nov 2021 08:17:14 +0100
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Fri, 19 Nov 2021 08:17:14 +0100
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Fri, 19 Nov 2021 08:17:14 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1637306234; x=1668842234;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=4G1S93gjbwabrmFAdC43P4Mc+uXwLG7qww8pxE91teM=;
+  b=VonlOVp2ANH6/O0kZw0xhmC6NLmZ2zvq+GuWdc9CAnB1hKOMmlxnFMro
+   00P2FzQSZNHB7fE3RC/ljp/qs0fUyOvDzycvh0j1WbBbTTXCtp9B/dNCe
+   F4BjQHyQAVVByjOTbSwO7Tim8BPuYG4lww0LjoYVT0C448pC4r1Twx6nY
+   cLYmUFjKDHXRY4KHVU1TK+My+dGj+QQ1cjP/ft5gVLQrDgOoTlyDLTuRl
+   0a5zjPi2HJCngnihw7/e8y14j4zakqkuT3ZZ1Nc6BWNf6pWSJx5khaDuA
+   eckz9nFtL1oUY11jiI0CMa7pdTnKk1NFdD+9DsisShEhJS7gKOiDb7/Es
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.87,246,1631570400"; 
+   d="scan'208";a="20555074"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 19 Nov 2021 08:17:14 +0100
+Received: from steina-w (unknown [10.123.49.12])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id B802D280065;
+        Fri, 19 Nov 2021 08:17:13 +0100 (CET)
+Message-ID: <000f8f724ef9a8c2652e9cab0a5bb1f7768869c3.camel@ew.tq-group.com>
+Subject: Re: (EXT) Re: [PATCH v4 12/12] dt-bindings: serial: fsl-lpuart: Add
+ i.MX8DXL compatible
+From:   Alexander Stein <alexander.stein@ew.tq-group.com>
+To:     Rob Herring <robh@kernel.org>, Abel Vesa <abel.vesa@nxp.com>
+Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Date:   Fri, 19 Nov 2021 08:17:11 +0100
+In-Reply-To: <YZb4BClv4fXU65yz@robh.at.kernel.org>
+References: <1636566415-22750-1-git-send-email-abel.vesa@nxp.com>
+         <1636566415-22750-13-git-send-email-abel.vesa@nxp.com>
+         <YZb4BClv4fXU65yz@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Content-Language: en-US
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>
-References: <20211116122030.4698-1-likexu@tencent.com>
- <20211116122030.4698-4-likexu@tencent.com>
- <85286356-8005-8a4d-927c-c3d70c723161@redhat.com>
-From:   Like Xu <like.xu.linux@gmail.com>
-Organization: Tencent
-Subject: Re: [PATCH 3/4] KVM: x86/pmu: Reuse find_perf_hw_id() and drop
- find_fixed_event()
-In-Reply-To: <85286356-8005-8a4d-927c-c3d70c723161@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/11/2021 11:00 pm, Paolo Bonzini wrote:
-> On 11/16/21 13:20, Like Xu wrote:
->> +static inline unsigned int intel_find_fixed_event(int idx)
->> +{
->> +    u32 event;
->> +    size_t size = ARRAY_SIZE(fixed_pmc_events);
->> +
->> +    if (idx >= size)
->> +        return PERF_COUNT_HW_MAX;
->> +
->> +    event = fixed_pmc_events[array_index_nospec(idx, size)];
->> +    return intel_arch_events[event].event_type;
->> +}
->> +
->> +
->>   static unsigned int intel_find_perf_hw_id(struct kvm_pmc *pmc)
->>   {
->>       struct kvm_pmu *pmu = pmc_to_pmu(pmc);
->> @@ -75,6 +88,9 @@ static unsigned int intel_find_perf_hw_id(struct kvm_pmc *pmc)
->>       u8 unit_mask = (pmc->eventsel & ARCH_PERFMON_EVENTSEL_UMASK) >> 8;
->>       int i;
->> +    if (pmc_is_fixed(pmc))
->> +        return intel_find_fixed_event(pmc->idx - INTEL_PMC_IDX_FIXED);
+Am Donnerstag, dem 18.11.2021 um 19:04 -0600 schrieb Rob Herring:
+> On Wed, Nov 10, 2021 at 07:46:55PM +0200, Abel Vesa wrote:
+> > Add i.MX8DXL lpuart compatible to the bindings documentation.
+> > 
+> > Signed-off-by: Abel Vesa <
+> > abel.vesa@nxp.com
+> > >
+> > ---
+> >  Documentation/devicetree/bindings/serial/fsl-lpuart.yaml | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/serial/fsl-
+> > lpuart.yaml b/Documentation/devicetree/bindings/serial/fsl-
+> > lpuart.yaml
+> > index dc1f0e07cbd4..fa8a602ccb22 100644
+> > --- a/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
+> > +++ b/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
+> > @@ -27,6 +27,10 @@ properties:
+> >        - items:
+> >            - const: fsl,imx8qm-lpuart
+> >            - const: fsl,imx8qxp-lpuart
+> > +      - items:
+> > +          - const: fsl,imx8dxl-lpuart
+> > +          - const: fsl,imx8qxp-lpuart
+> > +          - const: fsl,imx7ulp-lpuart
 > 
-> Is intel_find_fixed_event needed at all?  As you point out in the commit
-> message, eventsel/unit_mask are valid so you can do
-> 
-> @@ -88,13 +75,11 @@ static unsigned int intel_pmc_perf_hw_id(struct kvm_pmc *pmc)
->       u8 unit_mask = (pmc->eventsel & ARCH_PERFMON_EVENTSEL_UMASK) >> 8;
->       int i;
-> 
-> -    if (pmc_is_fixed(pmc))
-> -        return intel_find_fixed_event(pmc->idx - INTEL_PMC_IDX_FIXED);
-> -
->       for (i = 0; i < ARRAY_SIZE(intel_arch_events); i++)
->           if (intel_arch_events[i].eventsel == event_select
->               && intel_arch_events[i].unit_mask == unit_mask
-> -            && (pmu->available_event_types & (1 << i)))
-> +            && (pmc_is_fixed(pmc) ||
-> +            pmu->available_event_types & (1 << i)))
+> I'm confused why 8dxl is compatible with 7ulp, but 8qm is not? From
+> the 
+> driver, it looks like the difference is clocks.
 
-It's a good move while the tricky thing I've found recently is:
+There is a difference between 8qm and 7ulp regarding the clocks. Are
+they still considered compatible? Depending on the answer [1] might not
+be the correct solution for earlycon regression on 8qm.
 
-the events masked in pmu->available_event_types are just *Intel CPUID* events
-(they're not a subset or superset of the *kernel generic* hw events),
-some of which can be programmed and enabled with generic or fixed counter.
+Best regards,
+Alexander
 
-According Intel SDM, when an Intel CPUID event (e.g. "instructions retirement")
-is not masked in pmu->available_event_types (configured via Intel CPUID.0A.EBX),
-the guest should not use generic or fixed counter to count/sample this event.
+[1] 
+http://lists.infradead.org/pipermail/linux-arm-kernel/2021-November/696770.html
 
-This issue is detailed in another patch set [1] and comments need to be collected.
 
-It's proposed to get [V2] merged and continue to review the fixes from [1] 
-seamlessly,
-and then further unify all fixed/gp stuff including intel_find_fixed_event() as 
-a follow up.
-
-[1] https://lore.kernel.org/kvm/20211112095139.21775-1-likexu@tencent.com/
-[V2] https://lore.kernel.org/kvm/20211119064856.77948-1-likexu@tencent.com/
-
->               break;
-> 
->       if (i == ARRAY_SIZE(intel_arch_events))
-> 
-> What do you think?  It's less efficient but makes fixed/gp more similar.
-> 
-> Can you please resubmit the series based on the review feedback?
-> 
-> Thanks,
-> 
-> 
