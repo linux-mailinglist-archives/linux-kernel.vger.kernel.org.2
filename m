@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A494456E69
+	by mail.lfdr.de (Postfix) with ESMTP id BBF36456E6B
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 12:44:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235142AbhKSLk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 06:40:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48472 "EHLO
+        id S235294AbhKSLlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 06:41:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235248AbhKSLk2 (ORCPT
+        with ESMTP id S235249AbhKSLk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 06:40:28 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5964C06175E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 03:37:24 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id g191-20020a1c9dc8000000b0032fbf912885so7252603wme.4
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 03:37:24 -0800 (PST)
+        Fri, 19 Nov 2021 06:40:27 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F52C06173E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 03:37:25 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 133so8236300wme.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 03:37:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=X3clzLNfg5xHosDfnGl6o8FHox4hJTJBQfvcHoNjogw=;
-        b=FZkApWF7U/akT49BTBcVhfUpOGm186Gw2w9hJT1ALr4wxyoVPSSPxQ20ew9vXzmxZw
-         V41vs9JUDSOpKE7sNNWM3eKDHaDOKoRAOh2MAdKlA1ALEWnTxWpU6fh+hxHU/+pzYwwa
-         kMCotQhVYsMG1d4842dSqdgHP3FcDQdhNCoEM3G64i560ELcuWS6s+qxmHIFc0V42ZDU
-         tCP6ht+6zGWVDFoNGXl9ZU/mk6/+Ud118wgM43MPQZUNANWCh8gPSG6SuvLj/e4o/Dj3
-         NXdCr9ZcBfcQGXu6ipJ1/Aed9IUFPJ/ilAs9SnTFrMz7pShziwD/Amqar2zGE8W0wA6i
-         wOKA==
+        bh=ZVPyhY98kaZDy81xIhcO8lqE/X6yuYhnt0vCnbF9jg4=;
+        b=cbjhxS4bdn7C8DMo+9UxDfsd9ffrsbILongzNVKYHz7NqHt26SmWPO/hNKV7wB8G0E
+         qTmgMN9awTqfAXnMs4nGn+efBD3CXnzaIUDp3GiRKhIS0+10r/QO4yEnuNgpylyTOnsF
+         XTDh7UcXPYosNs2eFepTfosKW3VhqieuEX0D4jHc2jjraX/030381abA994BPFuKcw1M
+         5xTuZGuz1Z0I2micq99+cfzDe8MZ3GdP2PjFwMZLB1s3canMoN0A0zuzR8k+dY4SkPV8
+         isdusJAtmMkOalNyb8Gtx0ddUYiqjATYLu4vihwlGd4cEmO6SCB6anyThrKOFAxCeBbH
+         0VVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=X3clzLNfg5xHosDfnGl6o8FHox4hJTJBQfvcHoNjogw=;
-        b=i0YsSed+0+c/z9iqRPuDutoAFPSNWxACfAXsuOdsd41+snqcWiAU0SwMw6NxGawpTU
-         TO65PBbKgN6WJkFoZ5hFO7vItbhjXQzxVEtH4I4Cj0n7oiIXrf3nlfkk6z4+eT2E+gq1
-         73+rgZ1X377h244BF2AsOPsxJMdv9mg/iJN8MMqBiifnyjZS9xMHYacAfKdD5RbPwg3E
-         vA6m2HD7nHUjecvJfR3L7MGU5CR6IaokiLUQcvkIZbeOXASKiU5lK//WOs+Hsv6rsTwn
-         UFBVsvN0zbawrTCadTwsAPyTZp4ChgWnZ+KR5hU5qCCxQlRqtZYhO8Yx7R4eCvtW9xAM
-         Z7qA==
-X-Gm-Message-State: AOAM532od2gvC1A7mscA7lwlbs5WUOUNuUissI7DIYMeoGyJTET2PVDd
-        jt7JpxPYkOk9MwY67QzK1CUWrr2gYkCB7w==
-X-Google-Smtp-Source: ABdhPJxViWXe6trewTlgLfeo7loTIBTlI3dyrvPfYikrhBkcP2Qv71QKqOK31xxSoYFyNsM6V5wRuw==
-X-Received: by 2002:a05:600c:3586:: with SMTP id p6mr6098783wmq.34.1637321843478;
-        Fri, 19 Nov 2021 03:37:23 -0800 (PST)
+        bh=ZVPyhY98kaZDy81xIhcO8lqE/X6yuYhnt0vCnbF9jg4=;
+        b=HeLti4KOadOh9qfTs8v76AOxFdGmgCG9YD/c2LgkODbqfqZeXrUiMQkAc3Zdu0kcOa
+         vN+of/MSI3PcsidMTeg7T2y5qZBZTzoQQgqlzHPSsRqYmKmjm8Rvo/ISWe4RiCMcgcve
+         ZrJLZ+Dcb7IMnkUkzy58uCuxaugIradpUgbapIelKbWQNWIsTuzSA8NpPwZWeh24UqjL
+         S9MdtbCnuXIbfnYq7vmNoxdrem8gX/YgmyLsMJY6S+y38ocp/zF1D5hHp2UTc7B5rgul
+         2Lg/5q16TQ69XDXGHXicqhfDiKM2Fw79QrAyxWCD6Eq0Vzt6bO49LZ+leM95QjQzes9W
+         vALQ==
+X-Gm-Message-State: AOAM533NRacCRvuZJ85mt7eE4g7roNXwyrmIpiAZ9ANTelqEBgnAfzPR
+        YVSEdob2ybPcww7t+IfkyiimPimAwauTaA==
+X-Google-Smtp-Source: ABdhPJwBPM4R5OITaJRmTj3PtiQGIN0roTYMj8LQzOJpklNzRUyhqMlSbMuWWTAtwIuYrugbQUjcWg==
+X-Received: by 2002:a1c:9a4f:: with SMTP id c76mr5880206wme.162.1637321844236;
+        Fri, 19 Nov 2021 03:37:24 -0800 (PST)
 Received: from ady1.alejandro-colomar.es ([170.253.36.171])
-        by smtp.googlemail.com with ESMTPSA id f15sm3361260wmg.30.2021.11.19.03.37.22
+        by smtp.googlemail.com with ESMTPSA id f15sm3361260wmg.30.2021.11.19.03.37.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 19 Nov 2021 03:37:23 -0800 (PST)
 From:   Alejandro Colomar <alx.manpages@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Alejandro Colomar <alx.manpages@gmail.com>
-Subject: [PATCH 16/17] linux/array_size.h: Move ARRAY_SIZE(arr) to a separate header
-Date:   Fri, 19 Nov 2021 12:36:44 +0100
-Message-Id: <20211119113644.1600-17-alx.manpages@gmail.com>
+Subject: [PATCH 17/17] include/: Include <linux/array_size.h> for ARRAY_SIZE()
+Date:   Fri, 19 Nov 2021 12:36:45 +0100
+Message-Id: <20211119113644.1600-18-alx.manpages@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211119113644.1600-1-alx.manpages@gmail.com>
 References: <20211119113644.1600-1-alx.manpages@gmail.com>
@@ -63,313 +63,270 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Touching files so used for the kernel,
-forces 'make' to recompile most of the kernel.
-
-Having those definitions in more granular files
-helps avoid recompiling so much of the kernel.
-
 Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
 ---
- include/linux/array_size.h                    | 15 +++++++++++++++
- include/linux/clk-provider.h                  |  1 +
- include/linux/counter.h                       |  1 +
- include/linux/genl_magic_func.h               |  1 +
- include/linux/hashtable.h                     |  1 +
- include/linux/kernel.h                        |  7 +------
- include/linux/kfifo.h                         |  1 +
- include/linux/kvm_host.h                      |  1 +
- include/linux/moduleparam.h                   |  3 +++
- include/linux/mtd/rawnand.h                   |  1 +
- include/linux/netfilter.h                     |  1 +
- include/linux/pagemap.h                       |  1 +
- include/linux/phy.h                           |  1 +
- include/linux/pinctrl/machine.h               |  1 +
- include/linux/property.h                      |  1 +
- include/linux/rcupdate_wait.h                 |  1 +
- include/linux/regmap.h                        |  1 +
- include/linux/skmsg.h                         |  2 ++
- include/linux/string.h                        |  1 +
- include/linux/surface_aggregator/controller.h |  1 +
- 20 files changed, 37 insertions(+), 6 deletions(-)
- create mode 100644 include/linux/array_size.h
+ include/crypto/internal/blake2b.h          | 1 +
+ include/crypto/internal/blake2s.h          | 1 +
+ include/crypto/internal/chacha.h           | 1 +
+ include/drm/drm_mipi_dbi.h                 | 1 +
+ include/drm/drm_mode_object.h              | 1 +
+ include/kunit/test.h                       | 1 +
+ include/net/bond_3ad.h                     | 1 +
+ include/net/dsa.h                          | 1 +
+ include/net/ip_vs.h                        | 1 +
+ include/net/netfilter/nf_conntrack_tuple.h | 1 +
+ include/net/netfilter/nf_tables.h          | 1 +
+ include/net/netlink.h                      | 1 +
+ include/rdma/uverbs_ioctl.h                | 1 +
+ include/rdma/uverbs_named_ioctl.h          | 1 +
+ include/scsi/scsi_host.h                   | 1 +
+ include/sound/soc-dapm.h                   | 1 +
+ include/sound/soc.h                        | 1 +
+ include/trace/events/wbt.h                 | 1 +
+ include/uapi/linux/netfilter/xt_sctp.h     | 1 +
+ include/xen/hvm.h                          | 1 +
+ 20 files changed, 20 insertions(+)
 
-diff --git a/include/linux/array_size.h b/include/linux/array_size.h
-new file mode 100644
-index 000000000000..4f62840f808a
---- /dev/null
-+++ b/include/linux/array_size.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_ARRAY_SIZE_H
-+#define _LINUX_ARRAY_SIZE_H
-+
-+#include <linux/compiler.h>
-+
-+
-+/**
-+ * ARRAY_SIZE - get the number of elements in array @arr
-+ * @arr: array to be sized
-+ */
-+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
-+
-+
-+#endif  /* _LINUX_ARRAY_SIZE_H */
-diff --git a/include/linux/clk-provider.h b/include/linux/clk-provider.h
-index f59c875271a0..f6860d22d1ab 100644
---- a/include/linux/clk-provider.h
-+++ b/include/linux/clk-provider.h
+diff --git a/include/crypto/internal/blake2b.h b/include/crypto/internal/blake2b.h
+index 982fe5e8471c..870561f85a51 100644
+--- a/include/crypto/internal/blake2b.h
++++ b/include/crypto/internal/blake2b.h
+@@ -9,6 +9,7 @@
+ 
+ #include <crypto/blake2b.h>
+ #include <crypto/internal/hash.h>
++#include <linux/array_size.h>
+ #include <linux/string.h>
+ 
+ void blake2b_compress_generic(struct blake2b_state *state,
+diff --git a/include/crypto/internal/blake2s.h b/include/crypto/internal/blake2s.h
+index 8e50d487500f..6d7649759bc9 100644
+--- a/include/crypto/internal/blake2s.h
++++ b/include/crypto/internal/blake2s.h
+@@ -9,6 +9,7 @@
+ 
+ #include <crypto/blake2s.h>
+ #include <crypto/internal/hash.h>
++#include <linux/array_size.h>
+ #include <linux/string.h>
+ 
+ void blake2s_compress_generic(struct blake2s_state *state,const u8 *block,
+diff --git a/include/crypto/internal/chacha.h b/include/crypto/internal/chacha.h
+index b085dc1ac151..0d27df9ecbfa 100644
+--- a/include/crypto/internal/chacha.h
++++ b/include/crypto/internal/chacha.h
+@@ -5,6 +5,7 @@
+ 
+ #include <crypto/chacha.h>
+ #include <crypto/internal/skcipher.h>
++#include <linux/array_size.h>
+ #include <linux/crypto.h>
+ 
+ struct chacha_ctx {
+diff --git a/include/drm/drm_mipi_dbi.h b/include/drm/drm_mipi_dbi.h
+index 05e194958265..9ca24caa3f91 100644
+--- a/include/drm/drm_mipi_dbi.h
++++ b/include/drm/drm_mipi_dbi.h
+@@ -8,6 +8,7 @@
+ #ifndef __LINUX_MIPI_DBI_H
+ #define __LINUX_MIPI_DBI_H
+ 
++#include <linux/array_size.h>
+ #include <linux/mutex.h>
+ #include <drm/drm_device.h>
+ #include <drm/drm_simple_kms_helper.h>
+diff --git a/include/drm/drm_mode_object.h b/include/drm/drm_mode_object.h
+index c34a3e8030e1..83c1f4eef982 100644
+--- a/include/drm/drm_mode_object.h
++++ b/include/drm/drm_mode_object.h
+@@ -23,6 +23,7 @@
+ #ifndef __DRM_MODESET_H__
+ #define __DRM_MODESET_H__
+ 
++#include <linux/array_size.h>
+ #include <linux/kref.h>
+ #include <drm/drm_lease.h>
+ struct drm_object_properties;
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index b26400731c02..6d316249be95 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -12,6 +12,7 @@
+ #include <kunit/assert.h>
+ #include <kunit/try-catch.h>
+ 
++#include <linux/array_size.h>
+ #include <linux/container_of.h>
+ #include <linux/err.h>
+ #include <linux/init.h>
+diff --git a/include/net/bond_3ad.h b/include/net/bond_3ad.h
+index 38785d48baff..a1fceafcb630 100644
+--- a/include/net/bond_3ad.h
++++ b/include/net/bond_3ad.h
+@@ -7,6 +7,7 @@
+ #define _NET_BOND_3AD_H
+ 
+ #include <asm/byteorder.h>
++#include <linux/array_size.h>
+ #include <linux/skbuff.h>
+ #include <linux/netdevice.h>
+ #include <linux/if_ether.h>
+diff --git a/include/net/dsa.h b/include/net/dsa.h
+index eff5c44ba377..3d6effe14cca 100644
+--- a/include/net/dsa.h
++++ b/include/net/dsa.h
+@@ -7,6 +7,7 @@
+ #ifndef __LINUX_NET_DSA_H
+ #define __LINUX_NET_DSA_H
+ 
++#include <linux/array_size.h>
+ #include <linux/if.h>
+ #include <linux/if_ether.h>
+ #include <linux/list.h>
+diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
+index ff1804a0c469..0abb6706145c 100644
+--- a/include/net/ip_vs.h
++++ b/include/net/ip_vs.h
+@@ -10,6 +10,7 @@
+ 
+ #include <asm/types.h>                  /* for __uXX types */
+ 
++#include <linux/array_size.h>
+ #include <linux/list.h>                 /* for struct list_head */
+ #include <linux/spinlock.h>             /* for struct rwlock_t */
+ #include <linux/atomic.h>               /* for struct atomic_t */
+diff --git a/include/net/netfilter/nf_conntrack_tuple.h b/include/net/netfilter/nf_conntrack_tuple.h
+index 9334371c94e2..473ba3943b59 100644
+--- a/include/net/netfilter/nf_conntrack_tuple.h
++++ b/include/net/netfilter/nf_conntrack_tuple.h
+@@ -11,6 +11,7 @@
+ #ifndef _NF_CONNTRACK_TUPLE_H
+ #define _NF_CONNTRACK_TUPLE_H
+ 
++#include <linux/array_size.h>
+ #include <linux/netfilter/x_tables.h>
+ #include <linux/netfilter/nf_conntrack_tuple_common.h>
+ #include <linux/list_nulls.h>
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index a0d9e0b47ab8..324f23b7a2c4 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -3,6 +3,7 @@
+ #define _NET_NF_TABLES_H
+ 
+ #include <asm/unaligned.h>
++#include <linux/array_size.h>
+ #include <linux/list.h>
+ #include <linux/netfilter.h>
+ #include <linux/netfilter/nfnetlink.h>
+diff --git a/include/net/netlink.h b/include/net/netlink.h
+index 7a2a9d3144ba..bc5cdb6d2f99 100644
+--- a/include/net/netlink.h
++++ b/include/net/netlink.h
+@@ -2,6 +2,7 @@
+ #ifndef __NET_NETLINK_H
+ #define __NET_NETLINK_H
+ 
++#include <linux/array_size.h>
+ #include <linux/types.h>
+ #include <linux/netlink.h>
+ #include <linux/jiffies.h>
+diff --git a/include/rdma/uverbs_ioctl.h b/include/rdma/uverbs_ioctl.h
+index 23bb404aba12..8d08414ca386 100644
+--- a/include/rdma/uverbs_ioctl.h
++++ b/include/rdma/uverbs_ioctl.h
 @@ -6,6 +6,7 @@
- #ifndef __LINUX_CLK_PROVIDER_H
- #define __LINUX_CLK_PROVIDER_H
+ #ifndef _UVERBS_IOCTL_
+ #define _UVERBS_IOCTL_
+ 
++#include <linux/array_size.h>
+ #include <rdma/uverbs_types.h>
+ #include <linux/uaccess.h>
+ #include <rdma/rdma_user_ioctl.h>
+diff --git a/include/rdma/uverbs_named_ioctl.h b/include/rdma/uverbs_named_ioctl.h
+index ee7873f872c3..1882ce8cb0c2 100644
+--- a/include/rdma/uverbs_named_ioctl.h
++++ b/include/rdma/uverbs_named_ioctl.h
+@@ -6,6 +6,7 @@
+ #ifndef _UVERBS_NAMED_IOCTL_
+ #define _UVERBS_NAMED_IOCTL_
+ 
++#include <linux/array_size.h>
+ #include <rdma/uverbs_ioctl.h>
+ 
+ #ifndef UVERBS_MODULE_NAME
+diff --git a/include/scsi/scsi_host.h b/include/scsi/scsi_host.h
+index ebe059badba0..34c453591953 100644
+--- a/include/scsi/scsi_host.h
++++ b/include/scsi/scsi_host.h
+@@ -2,6 +2,7 @@
+ #ifndef _SCSI_SCSI_HOST_H
+ #define _SCSI_SCSI_HOST_H
+ 
++#include <linux/array_size.h>
+ #include <linux/device.h>
+ #include <linux/list.h>
+ #include <linux/types.h>
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index c3039e97929a..6585e53a6f9b 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -10,6 +10,7 @@
+ #ifndef __LINUX_SND_SOC_DAPM_H
+ #define __LINUX_SND_SOC_DAPM_H
+ 
++#include <linux/array_size.h>
+ #include <linux/types.h>
+ #include <sound/control.h>
+ #include <sound/soc-topology.h>
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 8e6dd8a257c5..4de5c7dbdcd2 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -10,6 +10,7 @@
+ #ifndef __LINUX_SND_SOC_H
+ #define __LINUX_SND_SOC_H
  
 +#include <linux/array_size.h>
  #include <linux/of.h>
- #include <linux/of_clk.h>
- 
-diff --git a/include/linux/counter.h b/include/linux/counter.h
-index b7d0a00a61cf..f7f6f2e50390 100644
---- a/include/linux/counter.h
-+++ b/include/linux/counter.h
-@@ -6,6 +6,7 @@
- #ifndef _COUNTER_H_
- #define _COUNTER_H_
- 
-+#include <linux/array_size.h>
- #include <linux/cdev.h>
- #include <linux/device.h>
- #include <linux/kernel.h>
-diff --git a/include/linux/genl_magic_func.h b/include/linux/genl_magic_func.h
-index 939b1a8f571b..e3b5bd816bcd 100644
---- a/include/linux/genl_magic_func.h
-+++ b/include/linux/genl_magic_func.h
-@@ -2,6 +2,7 @@
- #ifndef GENL_MAGIC_FUNC_H
- #define GENL_MAGIC_FUNC_H
- 
-+#include <linux/array_size.h>
- #include <linux/build_bug.h>
- #include <linux/genl_magic_struct.h>
- 
-diff --git a/include/linux/hashtable.h b/include/linux/hashtable.h
-index f6c666730b8c..09c5f1522b06 100644
---- a/include/linux/hashtable.h
-+++ b/include/linux/hashtable.h
-@@ -7,6 +7,7 @@
- #ifndef _LINUX_HASHTABLE_H
- #define _LINUX_HASHTABLE_H
- 
-+#include <linux/array_size.h>
- #include <linux/list.h>
+ #include <linux/platform_device.h>
  #include <linux/types.h>
- #include <linux/kernel.h>
-diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index 77755ac3e189..1437bfaadec5 100644
---- a/include/linux/kernel.h
-+++ b/include/linux/kernel.h
-@@ -2,6 +2,7 @@
- #ifndef _LINUX_KERNEL_H
- #define _LINUX_KERNEL_H
- 
-+#include <linux/array_size.h>
- #include <linux/stdarg.h>
- #include <linux/align.h>
- #include <linux/limits.h>
-@@ -39,12 +40,6 @@
- #define READ			0
- #define WRITE			1
- 
--/**
-- * ARRAY_SIZE - get the number of elements in array @arr
-- * @arr: array to be sized
-- */
--#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
--
- #define PTR_IF(cond, ptr)	((cond) ? (ptr) : NULL)
- 
- #define u64_to_user_ptr(x) (		\
-diff --git a/include/linux/kfifo.h b/include/linux/kfifo.h
-index 86249476b57f..ef0e4b979ba0 100644
---- a/include/linux/kfifo.h
-+++ b/include/linux/kfifo.h
-@@ -36,6 +36,7 @@
-  * to lock the reader.
-  */
- 
-+#include <linux/array_size.h>
- #include <linux/kernel.h>
- #include <linux/spinlock.h>
- #include <linux/stddef.h>
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index f89a516f3a39..67dfcf9dd166 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -3,6 +3,7 @@
- #define __KVM_HOST_H
- 
- 
-+#include <linux/array_size.h>
- #include <linux/types.h>
- #include <linux/hardirq.h>
- #include <linux/list.h>
-diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
-index 962cd41a2cb5..4a6eb8ce7c94 100644
---- a/include/linux/moduleparam.h
-+++ b/include/linux/moduleparam.h
-@@ -2,10 +2,13 @@
- #ifndef _LINUX_MODULE_PARAMS_H
- #define _LINUX_MODULE_PARAMS_H
- /* (C) Copyright 2001, 2002 Rusty Russell IBM Corporation */
-+
-+#include <linux/array_size.h>
- #include <linux/init.h>
- #include <linux/stringify.h>
- #include <linux/kernel.h>
- 
-+
- /* You can override this manually, but generally this should match the
-    module name. */
- #ifdef MODULE
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index b2f9dd3cbd69..cdb8e92db7ec 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -13,6 +13,7 @@
- #ifndef __LINUX_MTD_RAWNAND_H
- #define __LINUX_MTD_RAWNAND_H
- 
-+#include <linux/array_size.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/nand.h>
- #include <linux/mtd/flashchip.h>
-diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
-index 3fda1a508733..11a01c1fcc3c 100644
---- a/include/linux/netfilter.h
-+++ b/include/linux/netfilter.h
-@@ -2,6 +2,7 @@
- #ifndef __LINUX_NETFILTER_H
- #define __LINUX_NETFILTER_H
- 
-+#include <linux/array_size.h>
- #include <linux/init.h>
- #include <linux/skbuff.h>
- #include <linux/net.h>
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 1a0c646eb6ff..529282a85cb3 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
+diff --git a/include/trace/events/wbt.h b/include/trace/events/wbt.h
+index 9c66e59d859c..7a8a83d061ed 100644
+--- a/include/trace/events/wbt.h
++++ b/include/trace/events/wbt.h
 @@ -5,6 +5,7 @@
- /*
-  * Copyright 1995 Linus Torvalds
-  */
-+#include <linux/array_size.h>
- #include <linux/mm.h>
- #include <linux/fs.h>
- #include <linux/list.h>
-diff --git a/include/linux/phy.h b/include/linux/phy.h
-index 96e43fbb2dd8..ca86f7990751 100644
---- a/include/linux/phy.h
-+++ b/include/linux/phy.h
-@@ -11,6 +11,7 @@
- #ifndef __PHY_H
- #define __PHY_H
+ #if !defined(_TRACE_WBT_H) || defined(TRACE_HEADER_MULTI_READ)
+ #define _TRACE_WBT_H
  
 +#include <linux/array_size.h>
- #include <linux/compiler.h>
- #include <linux/spinlock.h>
- #include <linux/ethtool.h>
-diff --git a/include/linux/pinctrl/machine.h b/include/linux/pinctrl/machine.h
-index e987dc9fd2af..6c264dd0e163 100644
---- a/include/linux/pinctrl/machine.h
-+++ b/include/linux/pinctrl/machine.h
-@@ -11,6 +11,7 @@
- #ifndef __LINUX_PINCTRL_MACHINE_H
- #define __LINUX_PINCTRL_MACHINE_H
+ #include <linux/tracepoint.h>
+ #include "../../../block/blk-wbt.h"
  
-+#include <linux/array_size.h>
- #include <linux/bug.h>
- 
- #include <linux/pinctrl/pinctrl-state.h>
-diff --git a/include/linux/property.h b/include/linux/property.h
-index 88fa726a76df..add29cf6c0c4 100644
---- a/include/linux/property.h
-+++ b/include/linux/property.h
-@@ -10,6 +10,7 @@
- #ifndef _LINUX_PROPERTY_H_
- #define _LINUX_PROPERTY_H_
- 
-+#include <linux/array_size.h>
- #include <linux/bits.h>
- #include <linux/fwnode.h>
- #include <linux/types.h>
-diff --git a/include/linux/rcupdate_wait.h b/include/linux/rcupdate_wait.h
-index 699b938358bf..a321404eeec0 100644
---- a/include/linux/rcupdate_wait.h
-+++ b/include/linux/rcupdate_wait.h
-@@ -6,6 +6,7 @@
-  * RCU synchronization types and methods:
-  */
- 
-+#include <linux/array_size.h>
- #include <linux/rcupdate.h>
- #include <linux/completion.h>
- 
-diff --git a/include/linux/regmap.h b/include/linux/regmap.h
-index e3c9a25a853a..e039cd815fc1 100644
---- a/include/linux/regmap.h
-+++ b/include/linux/regmap.h
-@@ -10,6 +10,7 @@
-  * Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
-  */
- 
-+#include <linux/array_size.h>
- #include <linux/list.h>
- #include <linux/rbtree.h>
- #include <linux/ktime.h>
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index 46e76f4ff0de..2f1bdc81fafb 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -4,6 +4,7 @@
- #ifndef _LINUX_SKMSG_H
- #define _LINUX_SKMSG_H
- 
-+#include <linux/array_size.h>
- #include <linux/bpf.h>
- #include <linux/filter.h>
- #include <linux/offsetofend.h>
-@@ -14,6 +15,7 @@
- #include <net/tcp.h>
- #include <net/strparser.h>
- 
-+
- #define MAX_MSG_FRAGS			MAX_SKB_FRAGS
- #define NR_MSG_FRAG_IDS			(MAX_MSG_FRAGS + 1)
- 
-diff --git a/include/linux/string.h b/include/linux/string.h
-index 555b6f00c73d..88324a05c34a 100644
---- a/include/linux/string.h
-+++ b/include/linux/string.h
+diff --git a/include/uapi/linux/netfilter/xt_sctp.h b/include/uapi/linux/netfilter/xt_sctp.h
+index b4d804a9fccb..748fedc04228 100644
+--- a/include/uapi/linux/netfilter/xt_sctp.h
++++ b/include/uapi/linux/netfilter/xt_sctp.h
 @@ -2,6 +2,7 @@
- #ifndef _LINUX_STRING_H_
- #define _LINUX_STRING_H_
+ #ifndef _XT_SCTP_H_
+ #define _XT_SCTP_H_
  
 +#include <linux/array_size.h>
- #include <linux/compiler.h>	/* for inline */
- #include <linux/NULL.h>
- #include <linux/types.h>	/* for size_t */
-diff --git a/include/linux/surface_aggregator/controller.h b/include/linux/surface_aggregator/controller.h
-index 74bfdffaf7b0..9a355c38132c 100644
---- a/include/linux/surface_aggregator/controller.h
-+++ b/include/linux/surface_aggregator/controller.h
-@@ -12,6 +12,7 @@
- #ifndef _LINUX_SURFACE_AGGREGATOR_CONTROLLER_H
- #define _LINUX_SURFACE_AGGREGATOR_CONTROLLER_H
- 
-+#include <linux/array_size.h>
- #include <linux/completion.h>
- #include <linux/device.h>
  #include <linux/types.h>
+ 
+ #define XT_SCTP_SRC_PORTS	        0x01
+diff --git a/include/xen/hvm.h b/include/xen/hvm.h
+index b7fd7fc9ad41..adac232da84d 100644
+--- a/include/xen/hvm.h
++++ b/include/xen/hvm.h
+@@ -3,6 +3,7 @@
+ #ifndef XEN_HVM_H__
+ #define XEN_HVM_H__
+ 
++#include <linux/array_size.h>
+ #include <xen/interface/hvm/params.h>
+ #include <asm/xen/hypercall.h>
+ 
 -- 
 2.33.1
 
