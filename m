@@ -2,105 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E82E457974
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 00:18:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0250457976
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 00:19:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235589AbhKSXVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 18:21:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235454AbhKSXVM (ORCPT
+        id S235580AbhKSXWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 18:22:10 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:17126 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234989AbhKSXV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 18:21:12 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A25C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 15:18:09 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id z18so14806516iof.5
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 15:18:09 -0800 (PST)
+        Fri, 19 Nov 2021 18:21:56 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aT6hrhuWj3ZYzGaOlZxezTwCrC6bMSZiYfy7gkx4Mf4=;
-        b=BkGDXNt+StKNTgZZsZht1DOOO6ciL1KKT/QU30f3FGZ9bSTCXK8Tymdk+fHlHEI6Wg
-         nlblamnDMM1AdgTR8b3FGzFsuSpjKMhcxlOQk022ouXV2HeNpT45ZBMmphXSOT1FuuIr
-         t8HRPnbKSyMalCKloc2y9A+CEMybwozB6Ko3Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aT6hrhuWj3ZYzGaOlZxezTwCrC6bMSZiYfy7gkx4Mf4=;
-        b=Fb7csyHFwgo+KaPNR8WfBK7xWbOkBn5z4Abs02SdjTYDywEOeP0sqld9yQwoqufwW/
-         ABv38joiGQmQeHsr4FQW7Y5W2Fc5ecVg0kZBqge2Ncz9X//Q82+xYLm324iC2zCSY+nz
-         flQEc9xYqgtFJdmhNEQFYEgMGXs6fuuCUyRlsOir9OgroCD6A7bBaMbRQrQnAi4FeRLW
-         axUi8+v9fRuVswRqn+e8jjLvis/GXSqc0/FqtAvg8nkNH0XXd1pAagyl0oWKV4qdgqlk
-         zVxyAwF9jn59sfJxmHIWlojmBaVLWBmUFdNkIXC254W23zR3GEMOU3XhkyK+UPhg/Gtt
-         HOog==
-X-Gm-Message-State: AOAM530LqtlkVmu5EeZr5as7136FC7R9XRfiXEc0lCI47H7C+I6bBGWO
-        brSxm7BnzFhdsRNlVqQraD2q4g==
-X-Google-Smtp-Source: ABdhPJw3XHrxFaZCfi1/jt5fR31gpMg9fn3PLrZ1/4xILAsgyGr+Us49qMkzDTc5x16LqVYN1PHTcw==
-X-Received: by 2002:a02:caac:: with SMTP id e12mr31829423jap.29.1637363889403;
-        Fri, 19 Nov 2021 15:18:09 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c22sm600143ioz.15.2021.11.19.15.18.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Nov 2021 15:18:08 -0800 (PST)
-Subject: Re: [PATCH 5.14 00/15] 5.14.21-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20211119171443.724340448@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <bca7991d-ccf8-de7f-beb9-52b61bfa8f4c@linuxfoundation.org>
-Date:   Fri, 19 Nov 2021 16:18:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1637363934; x=1668899934;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=X8rozlh7XZA6KcsavrAkZ5+YLzbzFayI4fUmiQGnRwA=;
+  b=MR4XLjz18o1wtq2T3tUY49HJ/cLS94WbXDtFgIXle+hnlqFHe3YFlmoR
+   6EdqJX8gAbP4RYltVZ6CEw5N31VJ0wILDNG0B5fUVNUcxwHETVEj5MQ3f
+   iWrOBfH21Z+ollHjAaw5L+o4guo1C7BPxI6ntE4a152wM1O6vadZ57Ut+
+   s=;
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 19 Nov 2021 15:18:54 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 15:18:54 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Fri, 19 Nov 2021 15:18:53 -0800
+Received: from abhinavk-linux.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Fri, 19 Nov 2021 15:18:53 -0800
+From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        <freedreno@lists.freedesktop.org>, <gregkh@linuxfoundation.org>,
+        <robdclark@gmail.com>, <seanpaul@chromium.org>,
+        <swboyd@chromium.org>, <nganji@codeaurora.org>,
+        <aravindh@codeaurora.org>, <dmitry.baryshkov@linaro.org>,
+        <daniel@ffwll.ch>
+Subject: [PATCH] MAINTAINERS: update designated reviewer entry for MSM DRM driver
+Date:   Fri, 19 Nov 2021 15:18:36 -0800
+Message-ID: <1637363916-18257-1-git-send-email-quic_abhinavk@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20211119171443.724340448@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/19/21 10:38 AM, Greg Kroah-Hartman wrote:
-> --------------------
-> 
-> Note, this will be the LAST 5.14.y kernel release.  After this one it
-> will be marked end-of-life.  Please move to the 5.15.y tree at this
-> point in time.
-> 
-> --------------------
-> 
-> This is the start of the stable review cycle for the 5.14.21 release.
-> There are 15 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 21 Nov 2021 17:14:35 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.21-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Adding myself as a designated reviewer to assist with the
+code reviews for the changes coming into MSM DRM.
 
-Compiled and booted on my test system. No dmesg regressions.
+Acked-by: Rob Clark <robdclark@gmail.com>
+Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 5b33791..503112d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5938,6 +5938,7 @@ M:	Sean Paul <sean@poorly.run>
+ L:	linux-arm-msm@vger.kernel.org
+ L:	dri-devel@lists.freedesktop.org
+ L:	freedreno@lists.freedesktop.org
++R:	Abhinav Kumar <quic_abhinavk@quicinc.com>
+ S:	Maintained
+ T:	git https://gitlab.freedesktop.org/drm/msm.git
+ F:	Documentation/devicetree/bindings/display/msm/
+-- 
+2.7.4
 
