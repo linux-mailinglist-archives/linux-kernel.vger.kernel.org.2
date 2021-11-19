@@ -2,80 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F1E457610
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 18:46:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C84457613
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 18:49:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230405AbhKSRtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 12:49:07 -0500
-Received: from mga01.intel.com ([192.55.52.88]:59299 "EHLO mga01.intel.com"
+        id S231670AbhKSRwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 12:52:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229585AbhKSRtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 12:49:06 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10173"; a="258250350"
-X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
-   d="scan'208";a="258250350"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 09:44:15 -0800
-X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
-   d="scan'208";a="605621417"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 09:44:13 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mo7vj-008bil-2h;
-        Fri, 19 Nov 2021 19:44:07 +0200
-Date:   Fri, 19 Nov 2021 19:44:06 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     kernel test robot <lkp@intel.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [pinctrl-intel:review-andy 18/19]
- drivers/pinctrl/pinctrl-zynqmp.c:825:13: warning: variable 'pin' is
- uninitialized when used here
-Message-ID: <YZfiZmd14pD4JQMY@smile.fi.intel.com>
-References: <202111191618.SSj1gGvK-lkp@intel.com>
- <YZdhYEVCgqh5MB3J@smile.fi.intel.com>
- <YZfc4wmvcQW9Kpcz@archlinux-ax161>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZfc4wmvcQW9Kpcz@archlinux-ax161>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S231599AbhKSRwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 12:52:05 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F8BA6117A;
+        Fri, 19 Nov 2021 17:49:02 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.95)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1mo80T-001NIC-HG;
+        Fri, 19 Nov 2021 12:49:01 -0500
+Message-ID: <20211119174730.441176580@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Fri, 19 Nov 2021 12:47:30 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [for-linus][PATCH 0/3] tracing: Fixes for 5.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 10:20:35AM -0700, Nathan Chancellor wrote:
-> On Fri, Nov 19, 2021 at 10:33:36AM +0200, Andy Shevchenko wrote:
-> > On Fri, Nov 19, 2021 at 04:08:32PM +0800, kernel test robot wrote:
+ - Fix double free in destroy_hist_field
 
-...
+ - Harden memset() of trace_iterator structure
 
-> > > All warnings (new ones prefixed by >>):
-> > > 
-> > > >> drivers/pinctrl/pinctrl-zynqmp.c:825:13: warning: variable 'pin' is uninitialized when used here [-Wuninitialized]
-> > >            if (IS_ERR(pin->name))
-> > >                       ^~~
-> > >    drivers/pinctrl/pinctrl-zynqmp.c:811:37: note: initialize the variable 'pin' to silence this warning
-> > >            struct pinctrl_pin_desc *pins, *pin;
-> > >                                               ^
-> > >                                                = NULL
-> > >    1 warning generated.
-> > 
-> > Utterly inappropriate suggestion by the compiler (it found an actual error,
-> > though).
-> > 
-> > Can be Clang fixed, really?
-> 
-> I reported this upstream: https://bugs.llvm.org/show_bug.cgi?id=52559
+ - Do not warn in trace printk check when test buffer fills up
 
-Thanks!
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+for-next
 
--- 
-With Best Regards,
-Andy Shevchenko
+Head SHA1: 2ef75e9bd2c998f1c6f6f23a3744136105ddefd5
 
 
+Kalesh Singh (1):
+      tracing/histogram: Fix UAF in destroy_hist_field()
+
+Kees Cook (1):
+      tracing: Use memset_startat() to zero struct trace_iterator
+
+Nikita Yushchenko (1):
+      tracing: Don't use out-of-sync va_list in event printing
+
+----
+ kernel/trace/trace.c             | 16 +++++++++++++---
+ kernel/trace/trace_events_hist.c | 41 +++++++++++++++++++++-------------------
+ 2 files changed, 35 insertions(+), 22 deletions(-)
