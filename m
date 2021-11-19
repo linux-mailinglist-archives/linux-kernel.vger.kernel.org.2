@@ -2,143 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F9C456F96
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:28:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3665B456F9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:29:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235409AbhKSNbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 08:31:07 -0500
-Received: from mga11.intel.com ([192.55.52.93]:8560 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232869AbhKSNbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 08:31:07 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="231893535"
-X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
-   d="scan'208";a="231893535"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 05:28:05 -0800
-X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
-   d="scan'208";a="737059327"
-Received: from taoki-mobl3.gar.corp.intel.com ([10.254.64.179])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 05:28:01 -0800
-Message-ID: <aaa08cd0912576c3848eaacccc9d09273ddc73f9.camel@linux.intel.com>
-Subject: Re: [PATCH] cpufreq: intel_pstate: ITMT support for overclocked
- system
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Michael Larabel <Michael@MichaelLarabel.com>, lenb@kernel.org,
-        rafael@kernel.org, viresh.kumar@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        ricardo.neri@intel.com, tim.c.chen@intel.com, peterz@infradead.org,
-        arjan@linux.intel.com
-Date:   Fri, 19 Nov 2021 05:27:57 -0800
-In-Reply-To: <a2a18288-fa7c-02fb-6376-730777823637@MichaelLarabel.com>
-References: <20211119051801.1432724-1-srinivas.pandruvada@linux.intel.com>
-         <a2a18288-fa7c-02fb-6376-730777823637@MichaelLarabel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0-1 
+        id S235448AbhKSNck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 08:32:40 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:54431 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232869AbhKSNcj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 08:32:39 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 77EB6580D4B;
+        Fri, 19 Nov 2021 08:29:37 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Fri, 19 Nov 2021 08:29:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=BTqa9V4sNzf2Hf3EnYLoECME+NW
+        Ze3HdYdsh3e4uy2A=; b=apW7Ds+cCq9t+uB0eMfs+Xkzs6hVs9xjliKyLH/LUaW
+        AdcOOMMzvZhMWKnao+tZ3RQpyGlb8T3Ao1rT8PXTuD59Rh2R3jmxB6R5VRtjtZmV
+        8YGHNMZJULBFtPU1ZdJrM28brsSv2q6uRMWiedkNCi+8zpc5k+hTnozbN7mY2Kb9
+        2hTQUEKGTBbaTu+XblfLflW+AyCyr9V/jNJB8KJ1hFBLVKoJGBp95+rP9LvKkGfm
+        ptun11ZPfZcsM/LcrEhfnPlbdMDQ5HEQI5rYJn0OSJfExTvelKAKk5ERFv0inIzs
+        X1mV4uBPoQ84St1r28FCCyGO1SDFKQwc0BTE89ABpiA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=BTqa9V
+        4sNzf2Hf3EnYLoECME+NWZe3HdYdsh3e4uy2A=; b=FakVhT0/bQnT7/duK5mi1k
+        ZAoA7IftHrai1/Yb5TEbRyDejIkA4ixpCppsrYsrT9Nn6sX9jsjZJxyLpTjNI3Ge
+        ewBtvfV/o8oo5qnUftWIlqu3KEmTX14o7rTE2aPrTwKZB/eHiVSSL0q7EF44hLZh
+        kOO9Dp6WujNZaPm43/NwuAJKr54QBd1mIWiUGNshe+KCI1gNH6igEs5yG01SIYPJ
+        M57yDWia0PV7Z2klyYCxcZQDjgahE7Fl7N37l54zz9bxneQHj3mPasXeuU2IXha1
+        Th8KndqxaUkGRe+Wzvpx+1JikHyAcvlhdNY9mAXunt9VBAEU4ohcnGcZNE+chXvQ
+        ==
+X-ME-Sender: <xms:wKaXYW7T0CKzPstg5ishlh086E85vvol9EWnWnkUmyC6K6ELFoQbrA>
+    <xme:wKaXYf71PAZsubaGgW1pz2kPQNYxyiWwuzt1DLsW0HoasELjQ2BCRRJXIS_iQlBXf
+    hMx1WZ0tC0kKA>
+X-ME-Received: <xmr:wKaXYVdJf25mIec3-aAH6VVnX1cVV40g5V0bziVvSVZYabk768P6IDbBlXRwIsAN1TFuug_7WL0D3uGrh32U1J9B0b-djpBe>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeekgdehvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
+    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
+    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
+    gtohhm
+X-ME-Proxy: <xmx:wKaXYTLQLbtXqifvlSvf2HumT-iXF04Y1JAE-7vZK75j8Y57Q-pn7g>
+    <xmx:wKaXYaJV6mECg0p1vdoMUzg0VWgJIExRPv6rv1HOWE07f_BB6J_czw>
+    <xmx:wKaXYUye9Ceh_4fjaOwZv3lmvzSjklare8EZiXGPFTTdkrCDjqueng>
+    <xmx:waaXYfCjUhbdP0E9BIDHNQ46etf8X1AL8C8ce2jtePo0Ztxf9_GIIg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 19 Nov 2021 08:29:36 -0500 (EST)
+Date:   Fri, 19 Nov 2021 14:29:25 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Meng Li <Meng.Li@windriver.com>
+Cc:     stable@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, linux@armlinux.org.uk, andrew@lunn.ch,
+        qiangqing.zhang@nxp.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH 0/6] backport patches to improve clocks management for
+ stmmac driver
+Message-ID: <YZemteFqu3/5ryNL@kroah.com>
+References: <20211119025359.30815-1-Meng.Li@windriver.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211119025359.30815-1-Meng.Li@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-11-19 at 05:19 -0600, Michael Larabel wrote:
-> On 11/18/21 23:18, Srinivas Pandruvada wrote:
-> > On systems with overclocking enabled, CPPC Highest Performance can
-> > be
-> > hard coded to 0xff. In this case even if we have cores with
-> > different
-> > highest performance, ITMT can't be enabled as the current
-> > implementation
-> > depends on CPPC Highest Performance.
-> > 
-> > On such systems we can use MSR_HWP_CAPABILITIES maximum performance
-> > field
-> > when CPPC.Highest Performance is 0xff.
-> > 
-> > Due to legacy reasons, we can't solely depend on
-> > MSR_HWP_CAPABILITIES as
-> > in some older systems CPPC Highest Performance is the only way to
-> > identify
-> > different performing cores.
-> > 
-> > Reported-by: Michael Larabel <Michael@MichaelLarabel.com>
-> > Signed-off-by: Srinivas Pandruvada < 
-> > srinivas.pandruvada@linux.intel.com>
-> > ---
-> > This patch was tested on one Alder Lake system by enabling
-> > Overclocking.
-> > Once overclocking is enabled, we see
-> > $cat /sys/devices/system/cpu/cpu*/acpi_cppc/highest_perf
-> > 255 (P-Cores)
-> > 255 (P-Cores
-> > ...
-> > ...
-> > 255 (E-Cores)
-> > 255 (E-Cores)
-> > The real max performance for CPUs on this system was
-> > 0x40 for P-cores and 0x26 for E-cores.
-> > With this change applied we will see
-> > $cat /proc/sys/kernel/sched_itmt_enabled
-> > 1
-> > The resultant ITMT priorities
-> > for P-core 0x40, P-core HT sibling 0x10 and E-core 0x26
+On Fri, Nov 19, 2021 at 10:53:53AM +0800, Meng Li wrote:
+> From: Meng Li <meng.li@windriver.com>
 > 
+> In stable kernel v5.10, when run below command to remove ethernet driver on
+> stratix10 platform, there will be warning trace as below:
 > 
-> With this patch I can confirm that now sched_itmt_enabled = 1 and 
-> correct highest_perf with the ASUS ROG STRIX Z690-E GAMING WIFI board
-> on 
-> the latest BIOS. Thanks.
+> $ cd /sys/class/net/eth0/device/driver/
+> $ echo ff800000.ethernet > unbind
 > 
-> Tested-by: Michael Larabel <Michael@MichaelLarabel.com>
+> WARNING: CPU: 3 PID: 386 at drivers/clk/clk.c:810 clk_core_unprepare+0x114/0x274
+> Modules linked in: sch_fq_codel
+> CPU: 3 PID: 386 Comm: sh Tainted: G        W         5.10.74-yocto-standard #1
+> Hardware name: SoCFPGA Stratix 10 SoCDK (DT)
+> pstate: 00000005 (nzcv daif -PAN -UAO -TCO BTYPE=--)
+> pc : clk_core_unprepare+0x114/0x274
+> lr : clk_core_unprepare+0x114/0x274
+> sp : ffff800011bdbb10
+> clk_core_unprepare+0x114/0x274
+>  clk_unprepare+0x38/0x50
+>  stmmac_remove_config_dt+0x40/0x80
+>  stmmac_pltfr_remove+0x64/0x80
+>  platform_drv_remove+0x38/0x60
+>  ... ..
+>  el0_sync_handler+0x1a4/0x1b0
+>  el0_sync+0x180/0x1c0
+> This issue is introduced by introducing upstream commit 8f269102baf7
+> ("net: stmmac: disable clocks in stmmac_remove_config_dt()")
+> 
+> But in latest mainline kernel, there is no this issue. Because commit
+> 5ec55823438e("net: stmmac: add clocks management for gmac driver") and its
+> folowing fixing commits improved clocks management for stmmac driver.
+> Therefore, backport them to stable kernel v5.10.
 > 
 
-Thanks Michael for confirming.
+All now queued up, thanks.
 
--Srinivas
-
-> Michael
-> 
-> 
-> > 
-> >   drivers/cpufreq/intel_pstate.c | 10 ++++++++++
-> >   1 file changed, 10 insertions(+)
-> > 
-> > diff --git a/drivers/cpufreq/intel_pstate.c
-> > b/drivers/cpufreq/intel_pstate.c
-> > index 815df3daae9d..3106e62ffb25 100644
-> > --- a/drivers/cpufreq/intel_pstate.c
-> > +++ b/drivers/cpufreq/intel_pstate.c
-> > @@ -338,6 +338,8 @@ static void
-> > intel_pstste_sched_itmt_work_fn(struct work_struct *work)
-> >   
-> >   static DECLARE_WORK(sched_itmt_work,
-> > intel_pstste_sched_itmt_work_fn);
-> >   
-> > +#define CPPC_MAX_PERF  U8_MAX
-> > +
-> >   static void intel_pstate_set_itmt_prio(int cpu)
-> >   {
-> >         struct cppc_perf_caps cppc_perf;
-> > @@ -348,6 +350,14 @@ static void intel_pstate_set_itmt_prio(int
-> > cpu)
-> >         if (ret)
-> >                 return;
-> >   
-> > +       /*
-> > +        * On some systems with overclocking enabled,
-> > CPPC.highest_perf is hardcoded to 0xff.
-> > +        * In this case we can't use CPPC.highest_perf to enable
-> > ITMT.
-> > +        * In this case we can look at MSR_HWP_CAPABILITIES bits
-> > [8:0] to decide.
-> > +        */
-> > +       if (cppc_perf.highest_perf == CPPC_MAX_PERF)
-> > +               cppc_perf.highest_perf =
-> > HWP_HIGHEST_PERF(READ_ONCE(all_cpu_data[cpu]->hwp_cap_cached));
-> > +
-> >         /*
-> >          * The priorities can be set regardless of whether or not
-> >          * sched_set_itmt_support(true) has been called and it is
-> > valid to
-
-
+greg k-h
