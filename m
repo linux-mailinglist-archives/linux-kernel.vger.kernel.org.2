@@ -2,96 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE4A4576EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 20:15:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B045C4576F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 20:18:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232402AbhKSTSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 14:18:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40452 "EHLO
+        id S232932AbhKSTVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 14:21:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhKSTSb (ORCPT
+        with ESMTP id S229675AbhKSTVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 14:18:31 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA84C061574;
-        Fri, 19 Nov 2021 11:15:29 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id g18so10150826pfk.5;
-        Fri, 19 Nov 2021 11:15:29 -0800 (PST)
+        Fri, 19 Nov 2021 14:21:07 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A471C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 11:18:05 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id np6-20020a17090b4c4600b001a90b011e06so9585892pjb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 11:18:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PTE/LkuVqRne50PhrC9asQcDCzYeHYuc0TLAK4FwREE=;
-        b=bu7yms1va7xh7VXH3fu/Hz2It1jq26QK9SRMenIPOvRLIfR9DG94HXpPG8Un7rYegr
-         YhSc/sDx2ys/qs0qFyEyPJqiUiFGMGSeHiMOJHoboYtlWA+qzk6U85DSsGokumb4oFkr
-         6KdO2WWK/vgO4b2pqfw7nD5vmA+B/L3bsqdKDOYg3a885dO1+rhibiuibpyTPl5wrzJB
-         /x+7japRMddh4VhnDVeQI4mN/LPgLpUgeGJyggIWGwD8d4Ry4/N9WhhUgbbZnYbMDzpV
-         qkMwI3ONW1NqdMPioCsyOX/CXnj4sklVeoVrpmTx0gUqvXhD9eDxYY1LGBa97QY5iDxy
-         vK+A==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=g/YNskCC8H0pIrRty3bOxTWWIwZezM/dF8uipgTGVfY=;
+        b=CNOzkM2IBiGjqfRhSRYpA8+aOR9+w9kYa1mO17Fub/lEhXiodlJQQbYvAU23XPSB80
+         zEPvGqgAhRJ6Ac9fwqtRfF+TRjsCcSQq5iPvk/1Ntl7JnciUfiF+ZDILvu0CHa2qGnpl
+         ujk4JKugJX/qAenq8IEMYsdgtnjBtqpUR91i9SBdt8L7pGQrEmbiL4/gffr02rrMSJmz
+         6yzyBXWa8jt0zBA9CA494YG0zM4LbpueA4wdoIYm5oesyznYRillp/PJwv9KFNX7usVm
+         7PTxEHROAZHj6Qj+AaUATSaSV1EpFTybV/lhNnk/ZpIoUTNLB6A6TpiLrhOQ7Y6XFsOL
+         ut9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PTE/LkuVqRne50PhrC9asQcDCzYeHYuc0TLAK4FwREE=;
-        b=alhWqfsX3EV9iMoLu8Zn7+IVXOry/EsQvx7D7+avtvlnVyygAUKxT1ezWlUQxRqCvF
-         a+4N1rzona2UmX+w8Bt/fRHQLbpEIExANgPgr91BiR+qTVoAWGYMd+gQIR3uWQY9/Xie
-         C678TF9U7tY80kP/CrG0Pe+qKheLtlIytv2KY3eux6PNCWkkPAE+Om1yhM6jqsZTsXid
-         uPdCPfGiJs2KaR+xOdr3fkLsvWmjxrEfPhC3ZqjB1dG//r8QDNlqAA6a9mpxSjNhkqP9
-         9Ds/PsbYvuOBixYWieflDpWfu9UcU22JRRZStjsY60SgGvaaxJLBkwzbIfQ8ZrASUz4r
-         JQpQ==
-X-Gm-Message-State: AOAM5319MMIUFDjhZT70hh5F6cAOCfABQAW9EsJsIH73YB+MH7DmeiY7
-        1xDIDOIB/mTAN3q7ke88oMu/M2HCvZA=
-X-Google-Smtp-Source: ABdhPJwnEVuYnIut29Ja9J4ISpceDqFlPuGWxbDXvtRUSFJN+02hdKH7cpIH9ALO8j0csbRDpCr8mQ==
-X-Received: by 2002:a05:6a00:2181:b0:44d:c18d:7af9 with SMTP id h1-20020a056a00218100b0044dc18d7af9mr66923978pfi.16.1637349329047;
-        Fri, 19 Nov 2021 11:15:29 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id i13sm351244pgr.22.2021.11.19.11.15.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Nov 2021 11:15:28 -0800 (PST)
-Subject: Re: [PATCH 5.15 00/20] 5.15.4-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20211119171444.640508836@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <f0825e38-49d3-7aa9-9795-ecd2fe90d8a6@gmail.com>
-Date:   Fri, 19 Nov 2021 11:15:26 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=g/YNskCC8H0pIrRty3bOxTWWIwZezM/dF8uipgTGVfY=;
+        b=J+Hr+jEGVbTOVKY37qf33tgAQO3dWToCizQ8p1xJxipqlO3YTNAoZGT4TDMHfQQQGd
+         BYhfnrIQQWY6l5DXLJipuXigVFAqDnBKRZf9XnDW5dqAHHwhdyzADo7ruDsseRensjXb
+         /ucF3nuOswTZXCWucwh08poYE+7AX2UdvUoPms/XE8IgBXHxPiJy1cD+as5L+ivbCy+c
+         NMurYfiqGK2/aTS+3JUAE1SZDoNQH90LAuchngOVp0eW+8C01tpyUHekneFFpJ8hCS7u
+         NI6N/jPzDjEXwFCz/peC+HBtuEJmJGFNeMosdjdj0ilDcOsUHHnZxRID/UNMA2bAb+An
+         YCxQ==
+X-Gm-Message-State: AOAM533jfRE/CPby/lof0/K1+GhzXJc/h9qjlNFyhruHKY5m7SDRXspH
+        kMAWx3HjqgiLy3jflx+/MEKU/vr15cSYnQ==
+X-Google-Smtp-Source: ABdhPJxLPt6CntmozfnHLwXqny0KwCU2vgLZSjJXfMA4iRfgP9luxNnbV0AtIM87S/ieQOg/r1KAAQ==
+X-Received: by 2002:a17:902:b28a:b0:142:3e17:38d8 with SMTP id u10-20020a170902b28a00b001423e1738d8mr80638372plr.56.1637349484440;
+        Fri, 19 Nov 2021 11:18:04 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id f15sm426180pfe.171.2021.11.19.11.18.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 11:18:03 -0800 (PST)
+Date:   Fri, 19 Nov 2021 19:18:00 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Chao Peng <chao.p.peng@linux.intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, qemu-devel@nongnu.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J . Bruce Fields" <bfields@fieldses.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
+        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com
+Subject: Re: [RFC v2 PATCH 01/13] mm/shmem: Introduce F_SEAL_GUEST
+Message-ID: <YZf4aAlbyeWw8wUk@google.com>
+References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
+ <20211119134739.20218-2-chao.p.peng@linux.intel.com>
+ <20211119151943.GH876299@ziepe.ca>
+ <df11d753-6242-8f7c-cb04-c095f68b41fa@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20211119171444.640508836@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <df11d753-6242-8f7c-cb04-c095f68b41fa@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/19/21 9:39 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.4 release.
-> There are 20 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Nov 19, 2021, David Hildenbrand wrote:
+> On 19.11.21 16:19, Jason Gunthorpe wrote:
+> > As designed the above looks useful to import a memfd to a VFIO
+> > container but could you consider some more generic naming than calling
+> > this 'guest' ?
 > 
-> Responses should be made by Sun, 21 Nov 2021 17:14:35 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.4-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> +1 the guest terminology is somewhat sob-optimal.
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+For the F_SEAL part, maybe F_SEAL_UNMAPPABLE?
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+No ideas for the kernel API, but that's also less concerning since it's not set
+in stone.  I'm also not sure that dedicated APIs for each high-ish level use case
+would be a bad thing, as the semantics are unlikely to be different to some extent.
+E.g. for the KVM use case, there can be at most one guest associated with the fd,
+but there can be any number of VFIO devices attached to the fd.
