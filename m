@@ -2,109 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1BD456B95
+	by mail.lfdr.de (Postfix) with ESMTP id E0D01456B97
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 09:24:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234385AbhKSI0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 03:26:13 -0500
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:48059 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233909AbhKSI0M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 03:26:12 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id DBA4B580839;
-        Fri, 19 Nov 2021 03:23:10 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 19 Nov 2021 03:23:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=fH8UWWwhRdsoVeWKQCjiZSlkqy1
-        TytBtq7tiuhzF1E0=; b=nGL+14vY16pfLmkhnn5BulPIW4f0UDwXCW1Z6Ks6xmE
-        ItkO7dtlPQx7futTeggOVI8Wwq0vq6vzKbvsEg06YWF62dHnQ9aCDbVDOUoeE/IE
-        so3vUzA76jO7nh06buaoY2tTDj62Aqc22+EWYR3/f7skdRxovwxXtQ+mVT2/2b1I
-        XAlAnEMddqBj9I7ZeJYpSTM5eWyogwZ59eeDrfE4hiRQHBZpwbUNmBwiACQUJgP4
-        TJ2c5qJQIP+3wo0VBdaxyarKJ0kCdwvTyDb4LB48TDIL/3WQq54ccxmN5ADKmzHW
-        y/GigD6PAk2lWkRmRlGnsu/WApNBcazXHdJtuIKMPMw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=fH8UWW
-        whRdsoVeWKQCjiZSlkqy1TytBtq7tiuhzF1E0=; b=dRE94y0G6IXse8R6r1UJ6F
-        Ptl9/6mKzHxMKD7eithJKt1cM8PJPZ8nGoCTHjAkPQFLKp501rtXy5XJULJhzz41
-        +VwtHodmZB4KKCUgCx8l3+yhB4BP7+qCQdYb2xRVkcODSl3RjnzHNDGJDOmBGA/q
-        uCEoqjmqvvHyI5qXJBDJE0J777mYOTbYxlyOJUYGEeUYqrF96H5R9C/e86VMNT4b
-        mffZw1Vuor7AO+eazYy/TUplPCrX/Th10UAAE2drNZ9Z1JDfv4Swv8iD3zs8hMZs
-        iW2f7ypBtYSuz449ljNj3kgXVBk2XdG9fXpOMRDLbCOUPVO2A9o7rQi5/GuGDYXw
-        ==
-X-ME-Sender: <xms:7l6XYUbqsD4Z5sR6ZvwP7aDvxfF0gP7YApi2jViM2VCy6nUnqOkitQ>
-    <xme:7l6XYfa_TJjWdQaN5ImwKdRXjms47agMZnKaq5m3glzS8BqRQumFMqyjBORmlGiBT
-    sDfgXsONENmlxdgsT8>
-X-ME-Received: <xmr:7l6XYe8XTQ_-W6SnuTXF8pISLujiiASsM_45zDDZEIjTtwkYkKru6a2RBFVM8GjjUNph9Yc3J6ubU1KN32Ek4JpbQu7lyA-U5UhQ8a6KncQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeejgdduudejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:7l6XYepWi16o_rbNCat4sB3_dd0O6wwK2atE0sTmovf1Nh0evFDaUQ>
-    <xmx:7l6XYfoBZrmtKp5rH5DlMnHevzIqJulbgWiIUQG2MEd-_ouJByv74Q>
-    <xmx:7l6XYcQPlLWmUhKGe41dE0_suPl6oX1cTfzQMFBD6Qg_XshRqzZL4Q>
-    <xmx:7l6XYYSbHSYZmzSs6-LgvS1Ld1QujsLTCjgZau4vQ8jvjNUR_F7DIA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 19 Nov 2021 03:23:10 -0500 (EST)
-Date:   Fri, 19 Nov 2021 09:23:08 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH 2/2] media: cedrus: Add support for the D1 variant
-Message-ID: <20211119082308.2tc6mpnmr36m4nwq@gilmour>
-References: <20211119031519.23430-1-samuel@sholland.org>
- <20211119031519.23430-2-samuel@sholland.org>
+        id S234392AbhKSI0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 03:26:39 -0500
+Received: from mga14.intel.com ([192.55.52.115]:65390 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234356AbhKSI0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 03:26:39 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="234616335"
+X-IronPort-AV: E=Sophos;i="5.87,246,1631602800"; 
+   d="scan'208";a="234616335"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 00:23:37 -0800
+X-IronPort-AV: E=Sophos;i="5.87,246,1631602800"; 
+   d="scan'208";a="673130433"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 00:23:35 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mnzBB-008TOl-Dh;
+        Fri, 19 Nov 2021 10:23:29 +0200
+Date:   Fri, 19 Nov 2021 10:23:29 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jay Dolan <jay.dolan@accesio.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH v1 0/2] serial: 8250_pci: Split Pericom driver
+Message-ID: <YZdfAdOcH2Bn1K+W@smile.fi.intel.com>
+References: <20211117145750.43911-1-andriy.shevchenko@linux.intel.com>
+ <b99aabbe-add9-9c1e-ed4b-8850c69233de@accesio.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4cfaoqdsthlokqps"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211119031519.23430-2-samuel@sholland.org>
+In-Reply-To: <b99aabbe-add9-9c1e-ed4b-8850c69233de@accesio.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 18, 2021 at 10:32:51PM -0800, Jay Dolan wrote:
+> On 11/17/21 6:57 AM, Andy Shevchenko wrote:
+> > Split Pericom driver to a separate module.
+> > While at it, re-enable high baud rates.
+> > 
+> > Jay, can you, please, test this on as many hardware as you have?
+> > 
+> > The series depends on the fix-series: https://lore.kernel.org/linux-serial/20211117145502.43645-1-andriy.shevchenko@linux.intel.com/T/#u
 
---4cfaoqdsthlokqps
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> I have my current state here: https://github.com/accesio/linux/blob/split-pericom-driver/drivers/tty/serial/8250/8250_pericom.c
+> 
+> * Change port type to UPIO_PORT
+> * Add in pericom_do_startup() because the UPF_MAGIC_MULTIPLIER doesn't
+> stick.
 
-On Thu, Nov 18, 2021 at 09:15:18PM -0600, Samuel Holland wrote:
-> D1 has a unique variant of the video engine, which appears to drop the
-> VP8 support found on most earlier variants.
->=20
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+Thanks, I have updated my local tree with these changes.
 
-Acked-by: Maxime Ripard <maxime@cerno.tech>
+> When I'm testing baud rates greater than baud_base I'm seeing strange things
+> on the scope.
 
-Maxime
+Can you confirm that there are no issues with the first (fixes) series?
+I have slightly changed your set_divisor() refactoring, it may be that issue
+is there.
 
---4cfaoqdsthlokqps
-Content-Type: application/pgp-signature; name="signature.asc"
+> Maybe I'm just tired, and it's human error. I should be able
+> to get back to it and get it done on Saturday.
 
------BEGIN PGP SIGNATURE-----
+Thank you.
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYZde7AAKCRDj7w1vZxhR
-xfUkAP9/kmkUHrB8UAkA47UZrdJORmB5i0s7uRA6P/5Tgw+U8wEA6doJM16BjxUG
-v+XmYJppXhIEBWIOmsT3spUul0IP9gc=
-=IyNX
------END PGP SIGNATURE-----
+-- 
+With Best Regards,
+Andy Shevchenko
 
---4cfaoqdsthlokqps--
+
