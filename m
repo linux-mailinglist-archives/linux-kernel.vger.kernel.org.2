@@ -2,152 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1F2457048
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 15:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F06845704C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 15:07:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235640AbhKSOJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 09:09:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235655AbhKSOJw (ORCPT
+        id S235668AbhKSOK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 09:10:28 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:30797 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229879AbhKSOK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 09:09:52 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5370DC06173E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 06:06:50 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id t26so43749397lfk.9
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 06:06:50 -0800 (PST)
+        Fri, 19 Nov 2021 09:10:27 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=p/p7LzZgnhIc3Hls3ppZXC5lo3Y6+VGNPzWmpnyjNbY=;
-        b=Jz8TGdTQquyFyf7C8JZDfWYklF6AStjiEpGw0cJd3w5dAyax7bQJvG17dDAF8o8uWK
-         L2l5naPSPIawPn67w3c3BUC9+Ne7oti9IiNurfl3z16wRToYL22Q1gckYIspO8fahDJu
-         FZWRgCvi6pbdJmlwOgQOyPrzXoBQgVy/8Vws1E2bsdArcgZW3dzblXP9jnXoTJoGDdCT
-         OJxgef3sV7RN5qnCC6uHIL+0bcpHufTelEEDt/2qDSKQO+4CMd1IvpO864bSNldt7iFV
-         F2XqqUDpoAzPpfui2Mp8HsLQQBREneywnDc7F2kGjx87Vxz9906o0IkS7vO/yg5pLfVT
-         d/IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=p/p7LzZgnhIc3Hls3ppZXC5lo3Y6+VGNPzWmpnyjNbY=;
-        b=Bq7x1Prkk3niE7jNxrraLGCNGZ90UeqaWsVLtrxiXFjwlpwOgzsYrj6vh+IrVhKCVz
-         VEGIZI2RnCrHV5Io2IlEJ/BuQe2eQRO4HN8q7tjtJSGsO8dO1Fb8dEpC4mLJ62BQdJ6+
-         +/DHkqzu36GNyfD7QAzbkCrbqGHASEobcguZbXnGX/wBcDgdOWwkWXGMb2kkPVItGTwi
-         zDOx9CkGK+JeMOKAmn5Mt4QRUElhmBNwSLT+AYktRC/Uc03G1dJB6MDyI+BAAo0v/A16
-         dwV84doghz/SY7eup4iXEdGkzYHTqYjFAxuKVDHfgz+c9A+ooVoitC09iiyNyoFGOrf1
-         h4+w==
-X-Gm-Message-State: AOAM532Ql0ngbJf79I34hJDhCSLMldFQpyaCRBU9XWPcob7WoEpCd+2G
-        4aENqhPccNgXnBKG0LW6XD6phN8FqjuZpQIyh0J9z01jfioh1g==
-X-Google-Smtp-Source: ABdhPJxyfsCECkBAJmpBN2ThSM9Ag+16VJM/mGeASZ5VdhV4tLZyVRXlEKeqFuNQpWIH0BvA5HbyjS4F5zUUUdJKRHI=
-X-Received: by 2002:a05:6512:10c4:: with SMTP id k4mr13787353lfg.373.1637330807775;
- Fri, 19 Nov 2021 06:06:47 -0800 (PST)
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1637330846; x=1668866846;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=5I3N5IfAvO2BfTMzWJajgsfZI/vacIAWuRSlbSeMXbg=;
+  b=WFuJKZPHpmbf5EdoXKz25O0wmSRicEOMYAdzTU4+yDnfxyH7ydNQjBI1
+   rlNdrUrUW3409jRtt42g1+3LRR33TmXLyqznJCg3OSeZSdn8ORPKECDQt
+   /qIHG8ekzROEvyVdXetw9rYxpV1CsFV2tqdPjPTmWaMFhUHLYPkWzrBXw
+   I=;
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 19 Nov 2021 06:07:25 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 06:07:24 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Fri, 19 Nov 2021 06:07:17 -0800
+Received: from [10.50.57.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Fri, 19 Nov
+ 2021 06:07:12 -0800
+Message-ID: <6148397c-0565-d1ca-2f53-d15adcb9b6b8@quicinc.com>
+Date:   Fri, 19 Nov 2021 19:37:09 +0530
 MIME-Version: 1.0
-References: <22161945.a8.17d061e089f.Coremail.sensor1010@163.com>
- <20211112150036.6lhhoak4uk5hhgqt@pengutronix.de> <3b92f2f6.791c.17d3839dd51.Coremail.sensor1010@163.com>
-In-Reply-To: <3b92f2f6.791c.17d3839dd51.Coremail.sensor1010@163.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 19 Nov 2021 15:06:11 +0100
-Message-ID: <CAPDyKFq0Kn28SfE15WyHR_HrCT1PDoDiqNFBu-qEUoNQYxjzRw@mail.gmail.com>
-Subject: Re: Re: drivers/mmc/cor/bus: Delete redundant match function
-To:     lizhe <sensor1010@163.com>
-Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "srinivas.pandruvada@linux.intel.com" 
-        <srinivas.pandruvada@linux.intel.com>, pali@kernel.org,
-        TheSven73@gmail.com, lznuaa@gmail.com, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCHv4 1/2] tracing: Add register read/write tracing support
+Content-Language: en-US
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Will Deacon <will@kernel.org>, <rostedt@goodmis.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        <quic_psodagud@quicinc.com>, <gregkh@linuxfoundation.org>,
+        <arnd@arndb.de>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <mingo@redhat.com>, Prasad Sodagudi <psodagud@codeaurora.org>
+References: <cover.1636973694.git.quic_saipraka@quicinc.com>
+ <4bd519d008cac6b319be7c5ce144e741f7210031.1636973694.git.quic_saipraka@quicinc.com>
+ <87bl2g6z2v.wl-maz@kernel.org>
+From:   Sai Prakash Ranjan <quic_saipraka@quicinc.com>
+In-Reply-To: <87bl2g6z2v.wl-maz@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Nov 2021 at 13:45, lizhe <sensor1010@163.com> wrote:
+On 11/19/2021 7:13 PM, Marc Zyngier wrote:
+> On Mon, 15 Nov 2021 11:33:29 +0000,
+> Sai Prakash Ranjan <quic_saipraka@quicinc.com> wrote:
+>> From: Prasad Sodagudi <psodagud@codeaurora.org>
+>>
+>> Generic MMIO read/write i.e., __raw_{read,write}{b,l,w,q} accessors
+>> are typically used to read/write from/to memory mapped registers
+>> and can cause hangs or some undefined behaviour in following few
+>> cases,
+>>
+>> * If the access to the register space is unclocked, for example: if
+>>    there is an access to multimedia(MM) block registers without MM
+>>    clocks.
+>>
+>> * If the register space is protected and not set to be accessible from
+>>    non-secure world, for example: only EL3 (EL: Exception level) access
+>>    is allowed and any EL2/EL1 access is forbidden.
+>>
+>> * If xPU(memory/register protection units) is controlling access to
+>>    certain memory/register space for specific clients.
+>>
+>> and more...
+>>
+>> Such cases usually results in instant reboot/SErrors/NOC or interconnect
+>> hangs and tracing these register accesses can be very helpful to debug
+>> such issues during initial development stages and also in later stages.
+>>
+>> So use ftrace trace events to log such MMIO register accesses which
+>> provides rich feature set such as early enablement of trace events,
+>> filtering capability, dumping ftrace logs on console and many more.
+>>
+>> Sample output:
+>>
+>> rwmmio_read: gic_peek_irq+0xd0/0xd8 readl addr=0xffff800010040104
+>> rwmmio_write: gic_poke_irq+0xe4/0xf0 writel addr=0xffff800010040184
+>> rwmmio_read: gic_do_wait_for_rwp+0x54/0x90 readl addr=0xffff800010040000
+>> rwmmio_write: gic_set_affinity+0x1bc/0x1e8 writeq addr=0xffff800010046130
+>>
+>> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+>> [saiprakash: Rewrote commit msg and trace event field edits]
+>> Signed-off-by: Sai Prakash Ranjan <quic_saipraka@quicinc.com>
+>> ---
+>>
+>> Have dropped value parameter for mmio write trace event as that
+>> was causing hangs in strange ways, i.e., if we pass any other
+>> 64bit value, it works fine but passing value would just hang.
+>> Not just using the log apis, even simple trace_printk with value
+>> printed would cause hang. It wasn't noticed in early version
+>> because dyndbg would filter the logging in my system (I had
+>> set it to trace only specific qcom directory) but once this
+>> version starts recording all the reads/writes with value passed,
+>> it just hangs system when rwmmio write event tracing is enabled.
+> Why is that so? Not being able to track the value written out makes
+> the feature pretty useless if you're not writing fixed values.
 >
+>> Reason why we wouldn't need value along with mmio write log is
+>> that value can be easily deduced from the caller_name+offset which is
+>> printed already by the rwmmio trace events which gives the exact
+>> location of mmio writes and the value is easily known from the driver.
+> That's a very narrow view of what can be written in an MMIO
+> registers. We write dynamic values at all times, and if we are able to
+> trace MMIO writes, then the value written out must be part of the trace.
 >
-> HI :
->         Does this patch need to be changed? If  need to modify something,=
- please let me know and I will fix it soon
+> I'd rather you try and get to the bottom of this issue rather than
+> paper over it.
 >
->                                                                          =
-                                                                           =
-                       Thanks
->                                                                          =
-                                                                           =
-                        lizhe
+> Thanks,
+>
+> 	M.
+>
 
-Hi Lizhe,
+Sure, idea was to put it out in the open if anyone has any idea as to 
+what might be happening
+there since the version where directly instrumenting the raw read/write 
+accessors in arm64/asm/io.h
+was working fine casting doubts if this has to do something with 
+inlining as Arnd mentioned before.
 
-Please read Documentation/process/submitting-patches.rst carefully. It
-guides you through the process of how to submit a patch.
-
-For example, you need to use "git send-email" and we only use plain text em=
-ails.
-
-Kind regards
-Uffe
-
->
->
->
->
->
->
-> At 2021-11-12 23:00:36, "Uwe Kleine-K=C3=B6nig" <u.kleine-koenig@pengutro=
-nix.de> wrote:
-> >On Wed, Nov 10, 2021 at 03:12:51AM +0800, =E6=9D=8E=E5=93=B2 wrote:
-> >> HI=EF=BC=9A
-> >>      I failed to send kernel patch mail with git sendmail,
-> >>     could  you help me take a look at the submitted patch?
-> >>     the attachment is a patch file,
-> >>     For convenience, I put the content of the patch in the body of the=
- email
-> >>
-> >>
-> >>                                                                       =
-                      thanks.
-> >>                                                                       =
-                      lizhe
-> >> patch :
-> >> |
-> >> From 40577316f4dbcf35061a14f27f7a777c2f4199a1 Mon Sep 17 00:00:00 2001
-> >> From: lizhe <sensor1010@163.com>
-> >> Date: Tue, 9 Nov 2021 10:13:43 -0800
-> >> Subject: [PATCH] drivers/mmc/cor/bus: Delete redundant match function
-> >>
-> >>
-> >> When the device and the driver are matching,
-> >> if the device or the bus to which the device driver belongs
-> >> does not provide a match function,
-> >> then the device and the driver are matched by default.
-> >> function 'driver_match_device' illustrates this mechanism.
-> >> Because the return value of mmc_bus_match is 1,
-> >> even if this function is not provided,
-> >> the function 'driver_match_device' returns 1,
-> >> so function 'mmc_bus_match' is redundant.
-> >>
-> >>
-> >> Signed-off-by: lizhe <sensor1010@163.com>
-> >
-> >Acked-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-> >
-> >Apart from how the patch is put in the mail, a maintainer responsible
-> >for picking patches up in this area will probably refuse because the
-> >name in the From line of your mail doesn't match the name used in the
-> >Signed-off-by: line.
-> >
-> >Best regards
-> >Uwe
-> >
-> >--
-> >Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig      =
-      |
-> >Industrial Linux Solutions                 | https://www.pengutronix.de/=
- |
->
->
->
->
+Thanks,
+Sai
