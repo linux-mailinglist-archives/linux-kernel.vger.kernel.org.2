@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A906457354
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:44:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 695A3457355
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:44:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236635AbhKSQrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 11:47:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34354 "EHLO
+        id S236642AbhKSQr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 11:47:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236052AbhKSQru (ORCPT
+        with ESMTP id S236582AbhKSQr5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:47:50 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F49C06173E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:44:49 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id x131so9808706pfc.12
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:44:48 -0800 (PST)
+        Fri, 19 Nov 2021 11:47:57 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC323C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:44:55 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id 28so9103088pgq.8
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:44:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=rivosinc-com.20210112.gappssmtp.com; s=20210112;
         h=subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding:cc:from:to;
-        bh=SB6EgCTuUg8MJlUo+ml24NJI9nw+lDZjDHqU1EIISBQ=;
-        b=xZBTX2fkClhsrAhAhHvzzo3gipmQJBe9KDtvFo2Al+JGruCpMlsfpmz+hHWMrOvMfv
-         /CN0knlgAf9BQT/GfzTUnEpeNc+zQn6thds6pyjL/qxPhfTGCWm1TajlN3mY/hMKq3G1
-         gbZy/bTOStCDE4xY7mN8NfhIwa49nLhVohe5Dtu56Y8EzjxkOus4igegCZM+ePXheS0U
-         Y98Lac6ygTleo0oICOyMK/h8hDT5ayBcO5YwLn8al7NrFJQgymrth90UFq4ug6FB7HrZ
-         Tk1G/fjf6w+EAGKJo1wChfVJcHIW/wTXacZUSPEScWlYuXufKzgXSx8NWcGvMGxfggsE
-         uhJg==
+        bh=ah5lr8SoLo+6+fPsQpE+n96JZomp2g2I5RmGsEvEAmU=;
+        b=pOJQtnsqxtFlWChG6PkVngOnfkyHnERrgKRjNTlYPB/YBSnuMwPlFghMuhCkXeoplH
+         BMJu4/s7M9Za6VPNKuZceUae7/SnCq4u5ldTdPyVcKvS+AaqptyJKbjlnF2zYyTCKi4Z
+         bGvNwq5YQD+ptHK3qkOhbmqVFujgNPiz8fAZif0wD9OAgjOI9txOT/na0QJjjlJAIrE7
+         WrDW356fvVFf/jW3LC+EQQ+sLvQo66Iimpa6fglWx51wCdqRklJDRqzdDYzWAh3EttNz
+         unyy3aIqQyaj43LKMo24DbylFzOw23ut154TojTySwrPTP6tDgiznq4jKWQRQremCD3C
+         pYtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding:cc:from:to;
-        bh=SB6EgCTuUg8MJlUo+ml24NJI9nw+lDZjDHqU1EIISBQ=;
-        b=2A6UhiWKR9SrDrBBtpBWUI5gs4GoQl7Tmc7u/3+2WAZs3nqnLqSp5lAr+q3uCoR9QU
-         A+8zYBlsmcsjzLNXFXt2NnIJ0R66WI/H3gVyPypicgQZqIeaE32kwDWYypmQXBkrMJHR
-         /lyywZiOrqQK2HODzPFAgbl24o5DwgrMk3xfhWbz2dTFTAi8G3j1jSGg772PEwJXcUsx
-         Txvj7ZPPtky5LySIuMkr4xES0r4sEvBPCUcPrAsGQwKzG6bNufgPNuUG+R0Jxki4MUXt
-         C7yriIEc6zZ5Pf4q9ctPFAgwT4GOoSOpvu8fYT7MIbQKFGq3n/QXSSWEKO2i+gQXRFD5
-         EQ7Q==
-X-Gm-Message-State: AOAM530fc7Ajgxg0WDJJVEvv1uva0lC0bTa16b/DS1y78NzEdVU6kE1Q
-        REnTPSXp5y0bytgNqTiUCiGqZg==
-X-Google-Smtp-Source: ABdhPJzh8J4KCx4EO8kuEnK1oVC5fTwdJ/I9PGqYQcKUN1CBeBpJvZzXndIvprNjCMgwhkZQgvDsMA==
-X-Received: by 2002:aa7:9af6:0:b0:4a2:fa4a:714c with SMTP id y22-20020aa79af6000000b004a2fa4a714cmr23848682pfp.40.1637340285451;
-        Fri, 19 Nov 2021 08:44:45 -0800 (PST)
+        bh=ah5lr8SoLo+6+fPsQpE+n96JZomp2g2I5RmGsEvEAmU=;
+        b=m3hl6/OWd9bKXZI1kdSfCEWifxxuYjSocqmuqmHz+Ey+hmyubwZFiGBRKt6zM8YMv3
+         5JqeteOOD9FQROp/LMGuDvCK3cmiALLRxh6Ap33MImuV7DKwtlrViQEsnrSTn4OjpgG/
+         4OAwDm0GXjQLE9RFvqUlXB3RCvdiEpICpk9LbiqZau5tVyWjWjSGlYdWbItLgqyIAGb3
+         FiM3Rz+yFm7dHPgz3sP3K1J2Bq5LEyjKtZLMeZ8A+W+kpEjhg9HqXjX2Zf7ncL+aNNeP
+         Bx0YbLTJA7Clns6E/QPlgwYmo84tjWyBsq4Vt2mLHYUr/EElYrcvHjyQsR8XUiTcIBoS
+         el/w==
+X-Gm-Message-State: AOAM532ZC/cmnwuZc/9RmNHlvjwiTHy2AcJ50eClcp1LPkJuUUWg++zB
+        OsToCCP3jw5WM80yLR5NJFxA8Q==
+X-Google-Smtp-Source: ABdhPJw6Rk0SaD1ydLEFj1AC3ZiqOl6ymHlDrc8KuQWuuILh5CwIVLyIgXMGI0rf3H5bD5vi3o9dEg==
+X-Received: by 2002:a63:f95b:: with SMTP id q27mr18665923pgk.202.1637340289537;
+        Fri, 19 Nov 2021 08:44:49 -0800 (PST)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id v10sm195914pfu.123.2021.11.19.08.44.44
+        by smtp.gmail.com with ESMTPSA id f4sm214917pfj.61.2021.11.19.08.44.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 08:44:44 -0800 (PST)
-Subject: [PATCH 02/12] RISC-V: MAXPHYSMEM_2GB doesn't depend on CMODEL_MEDLOW
-Date:   Fri, 19 Nov 2021 08:44:03 -0800
-Message-Id: <20211119164413.29052-3-palmer@rivosinc.com>
+        Fri, 19 Nov 2021 08:44:48 -0800 (PST)
+Subject: [PATCH 03/12] RISC-V: defconfigs: Sort CONFIG_BPF_SYSCALL
+Date:   Fri, 19 Nov 2021 08:44:04 -0800
+Message-Id: <20211119164413.29052-4-palmer@rivosinc.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211119164413.29052-1-palmer@rivosinc.com>
 References: <20211119164413.29052-1-palmer@rivosinc.com>
@@ -62,7 +62,7 @@ Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
         atish.patra@wdc.com, bin.meng@windriver.com,
         sagar.kadam@sifive.com, damien.lemoal@wdc.com, axboe@kernel.dk,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Palmer Dabbelt <palmer@rivosinc.com>, stable@vger.kernel.org
+        Palmer Dabbelt <palmer@rivosinc.com>
 From:   Palmer Dabbelt <palmer@rivosinc.com>
 To:         linux-riscv@lists.infradead.org
 Precedence: bulk
@@ -71,40 +71,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Palmer Dabbelt <palmer@rivosinc.com>
 
-For non-relocatable kernels we need to be able to link the kernel at
-approximately PAGE_OFFSET, thus requiring medany (as medlow requires the
-code to be linked within 2GiB of 0).  The inverse doesn't apply, though:
-since medany code can be linked anywhere it's fine to link it close to
-0, so we can support the smaller memory config.
+This should have no functional change, it just sorts CONFIG_BPF_SYSCALL
+the same way savedefconfig does.
 
-Fixes: de5f4b8f634b ("RISC-V: Define MAXPHYSMEM_1GB only for RV32")
-Cc: stable@vger.kernel.org
 Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
-
 ---
+ arch/riscv/configs/defconfig      | 2 +-
+ arch/riscv/configs/rv32_defconfig | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-I found this when going through the savedefconfig diffs for the K210
-defconfigs.  I'm not entirely sure they're doing the right thing here
-(they should probably be setting CMODEL_LOW to take advantage of the
-better code generation), but I don't have any way to test those
-platforms so I don't want to change too much.
----
- arch/riscv/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 821252b65f89..61f64512dcde 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -280,7 +280,7 @@ choice
- 		depends on 32BIT
- 		bool "1GiB"
- 	config MAXPHYSMEM_2GB
--		depends on 64BIT && CMODEL_MEDLOW
-+		depends on 64BIT
- 		bool "2GiB"
- 	config MAXPHYSMEM_128GB
- 		depends on 64BIT && CMODEL_MEDANY
+diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+index 11de2ab9ed6e..a6cb99cf4d3c 100644
+--- a/arch/riscv/configs/defconfig
++++ b/arch/riscv/configs/defconfig
+@@ -2,6 +2,7 @@ CONFIG_SYSVIPC=y
+ CONFIG_POSIX_MQUEUE=y
+ CONFIG_NO_HZ_IDLE=y
+ CONFIG_HIGH_RES_TIMERS=y
++CONFIG_BPF_SYSCALL=y
+ CONFIG_IKCONFIG=y
+ CONFIG_IKCONFIG_PROC=y
+ CONFIG_CGROUPS=y
+@@ -13,7 +14,6 @@ CONFIG_USER_NS=y
+ CONFIG_CHECKPOINT_RESTORE=y
+ CONFIG_BLK_DEV_INITRD=y
+ CONFIG_EXPERT=y
+-CONFIG_BPF_SYSCALL=y
+ CONFIG_SOC_SIFIVE=y
+ CONFIG_SOC_VIRT=y
+ CONFIG_SOC_MICROCHIP_POLARFIRE=y
+diff --git a/arch/riscv/configs/rv32_defconfig b/arch/riscv/configs/rv32_defconfig
+index 05b6f17adbc1..8a57c940d5ef 100644
+--- a/arch/riscv/configs/rv32_defconfig
++++ b/arch/riscv/configs/rv32_defconfig
+@@ -2,6 +2,7 @@ CONFIG_SYSVIPC=y
+ CONFIG_POSIX_MQUEUE=y
+ CONFIG_NO_HZ_IDLE=y
+ CONFIG_HIGH_RES_TIMERS=y
++CONFIG_BPF_SYSCALL=y
+ CONFIG_IKCONFIG=y
+ CONFIG_IKCONFIG_PROC=y
+ CONFIG_CGROUPS=y
+@@ -13,7 +14,6 @@ CONFIG_USER_NS=y
+ CONFIG_CHECKPOINT_RESTORE=y
+ CONFIG_BLK_DEV_INITRD=y
+ CONFIG_EXPERT=y
+-CONFIG_BPF_SYSCALL=y
+ CONFIG_SOC_SIFIVE=y
+ CONFIG_SOC_VIRT=y
+ CONFIG_ARCH_RV32I=y
 -- 
 2.32.0
 
