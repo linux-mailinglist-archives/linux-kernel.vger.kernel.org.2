@@ -2,84 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82979456B2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 08:57:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A74A456B36
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 09:00:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233135AbhKSIAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 03:00:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43122 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229501AbhKSIAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 03:00:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D29261B04;
-        Fri, 19 Nov 2021 07:57:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637308638;
-        bh=06f0t7T5g2+sFHylnxPjV+6gXXRZ9fVMkiz17s+krrQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Wo7IhRJbw0y02YDfkt1RvaFUyG5j0sT8NHgAdWfK942Tv2jPniUdWk5+SJZPzZlbc
-         WCN5vZcPCRwiOQZiX9oKDSvVynzPdNQT7GIm8vUd3SSnSb/2LBFchwCt2fHerwiNxO
-         yRx+xpktxSph4iZFa1m5ILxDkqacZT6oMkbjKwRvC2zRtTEM4kwiv1cHHkTZVVl3sT
-         VMXs0mFFDJcyZUhEN6zF/dGePj71WaS6LKczBANuZisEtaS0R7awVPJNq0DKovRvxT
-         WoAP6gxF5SnBDuouRFwjeo9jerD392jglMjrupvAHCWFJQLJhLV7mXrRPFAASjMcmc
-         T+KrltudfHldw==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mnylY-00088X-BK; Fri, 19 Nov 2021 08:57:01 +0100
-Date:   Fri, 19 Nov 2021 08:57:00 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        id S233423AbhKSIDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 03:03:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229879AbhKSIDN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 03:03:13 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 892CDC061574;
+        Fri, 19 Nov 2021 00:00:12 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id np6-20020a17090b4c4600b001a90b011e06so8127884pjb.5;
+        Fri, 19 Nov 2021 00:00:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ylfEgGFi9fXXyFv3lgk0Ku/SSf+pSdJSd2RLuFwQy1I=;
+        b=Piq1nJJ8yUxBmd7q2OqqhZ04o/Z/X8wPRFgtRzc8HIEZny/6x/zgzkJJLIzrhAa0e4
+         +m/UkOZhCq/qceHyHLy6mrK1/J5X45CiYNHNz4LLNboBkuPFruTDbeHDANZN9gaBX4zE
+         BOB6y13oTjWi0vF7xJd+4tsqCwxEUlAfE+LU/vlE+4bU80+Ekh940qsjxgz9xnCUr3Qi
+         VmT32x+yuH4lxl7Rhd+Oz9STONwHrFxbc04IdCvrFJWCSYvRIOjZFaZysr2qzarcVla2
+         /GqHkfvvxM0BK3O8jT5cWAzBmRaFUrfRWcGlu9hx9ier0QPDw7te7Gc5F9LDdGi5XMS6
+         NbRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ylfEgGFi9fXXyFv3lgk0Ku/SSf+pSdJSd2RLuFwQy1I=;
+        b=lOYxKAUMxrenvnNDiLzp59p8WEkf9cmfvFD6MmPaWestxJDLim2PsJ2kgRU8C2ZpyI
+         LxFiEiA6LrnRynRgFExLxONgjgf21otzq6hTckkX8w4Y5ZlylyatX2FgqrgtVBQaJlpX
+         zrNVcZxzjgihvug7bXtXnfWOv0zsdusAcrxL1kI5EFbjwlWnhdoVLztlia2iS/j3n7/J
+         MjQABYJ/kZYLBH3Hq/CCY1JgwwMRo7Be9HVR4dOLNfGXuR3YRpwGE5pG7JCdCtujLRbq
+         LS5Qum45qp6MnvxmCPSkpZMg53QhvnUuqkVrM1a2mm9Uv7gxZhSW9kANICEeHIgtR+Kx
+         yGBA==
+X-Gm-Message-State: AOAM531zoYjR7uoie1MD9A9FHS7jmPNz66Su0c2/Zzff3qVo0/LAG4zn
+        KlMLeU5k/39IZj5MOu2wLaE=
+X-Google-Smtp-Source: ABdhPJyEWl+rgTyJQilluTm65FmkmgWn+LtcD21UQsyfWBcLVUYOXziJspjYdNkg7WaRzd0koE7wlA==
+X-Received: by 2002:a17:90a:8815:: with SMTP id s21mr2424180pjn.82.1637308812121;
+        Fri, 19 Nov 2021 00:00:12 -0800 (PST)
+Received: from localhost.localdomain ([103.99.179.247])
+        by smtp.gmail.com with ESMTPSA id o6sm1791259pfh.70.2021.11.18.23.59.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 00:00:11 -0800 (PST)
+From:   Calvin Zhang <calvinzhang.cool@gmail.com>
+To:     Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Rich Felker <dalias@libc.org>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Vladimir Isaev <isaev@synopsys.com>,
+        Calvin Zhang <calvinzhang.cool@gmail.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        "Kirill A. Shutemov" <kirill.shtuemov@linux.intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Marc Zyngier <maz@kernel.org>,
+        David Brazdil <dbrazdil@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        Jinyang He <hejinyang@loongson.cn>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Andreas Oetken <andreas.oetken@siemens.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Zhang Yunkai <zhang.yunkai@zte.com.cn>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] gpiolib: improve coding style for local variables
-Message-ID: <YZdYzLqQgvA96LoU@hovoldconsulting.com>
-References: <20211118132317.15898-1-brgl@bgdev.pl>
+        Markus Elfring <elfring@users.sourceforge.net>,
+        Ganesh Goudar <ganeshgr@linux.ibm.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Alexandre Ghiti <alex@ghiti.fr>,
+        Vitaly Wool <vitaly.wool@konsulko.com>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauri Sandberg <sandberg@mailfence.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp, linux-mips@vger.kernel.org,
+        openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, devicetree@vger.kernel.org
+Subject: [PATCH 0/2] of: remove reserved regions count restriction
+Date:   Fri, 19 Nov 2021 15:58:17 +0800
+Message-Id: <20211119075844.2902592-1-calvinzhang.cool@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211118132317.15898-1-brgl@bgdev.pl>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 02:23:16PM +0100, Bartosz Golaszewski wrote:
-> Drop unneeded whitespaces and put the variables of the same type
-> together for consistency with the rest of the code.
-> 
-> Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
->  drivers/gpio/gpiolib.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> index abfbf546d159..20d63028b85c 100644
-> --- a/drivers/gpio/gpiolib.c
-> +++ b/drivers/gpio/gpiolib.c
-> @@ -594,11 +594,10 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
->  			       struct lock_class_key *request_key)
->  {
->  	struct fwnode_handle *fwnode = gc->parent ? dev_fwnode(gc->parent) : NULL;
-> -	unsigned long	flags;
-> -	int		ret = 0;
-> -	unsigned	i;
-> -	int		base = gc->base;
-> +	int ret = 0, base = gc->base;
+The count of reserved regions in /reserved-memory was limited because
+the struct reserved_mem array was defined statically. This series sorts
+out reserved memory code and allocates that array from early allocator.
 
-This only makes the code harder to read for no good reason.
+Note: reserved region with fixed location must be reserved before any
+memory allocation. While struct reserved_mem array should be allocated
+after allocator is activated. We make early_init_fdt_scan_reserved_mem()
+do reservation only and add another call to initialize reserved memory.
+So arch code have to change for it.
 
-Keep declarations on separate lines, especially if also initialising.
+I'm only familiar with arm and arm64 architectures. Approvals from arch
+maintainers are required. Thank you all.
 
-Note that all but one function in this file initialises return value
-variables on their own lines too (as they should).
+Calvin Zhang (2):
+  of: Sort reserved_mem related code
+  of: reserved_mem: Remove reserved regions count restriction
 
->  	struct gpio_device *gdev;
-> +	unsigned long flags;
-> +	unsigned int i;
+ arch/arc/mm/init.c                 |   3 +
+ arch/arm/kernel/setup.c            |   2 +
+ arch/arm64/kernel/setup.c          |   3 +
+ arch/csky/kernel/setup.c           |   3 +
+ arch/h8300/kernel/setup.c          |   2 +
+ arch/mips/kernel/setup.c           |   3 +
+ arch/nds32/kernel/setup.c          |   3 +
+ arch/nios2/kernel/setup.c          |   2 +
+ arch/openrisc/kernel/setup.c       |   3 +
+ arch/powerpc/kernel/setup-common.c |   3 +
+ arch/riscv/kernel/setup.c          |   2 +
+ arch/sh/kernel/setup.c             |   3 +
+ arch/xtensa/kernel/setup.c         |   2 +
+ drivers/of/fdt.c                   | 107 +---------------
+ drivers/of/of_private.h            |  12 +-
+ drivers/of/of_reserved_mem.c       | 189 ++++++++++++++++++++++++-----
+ include/linux/of_reserved_mem.h    |   4 +
+ 17 files changed, 207 insertions(+), 139 deletions(-)
 
->  
->  	/*
->  	 * First: allocate and populate the internal stat container, and
+-- 
+2.30.2
 
-Johan
