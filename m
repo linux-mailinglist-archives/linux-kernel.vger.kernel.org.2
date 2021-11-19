@@ -2,527 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F416456E38
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 12:32:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2558456E6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 12:44:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235085AbhKSLdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 06:33:21 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:55842 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235125AbhKSLdP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 06:33:15 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AJ7qxYl021939;
-        Fri, 19 Nov 2021 06:30:13 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3ce7wxs0t7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Nov 2021 06:30:13 -0500
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 1AJBUCmr049465
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 19 Nov 2021 06:30:12 -0500
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Fri, 19 Nov 2021
- 06:30:11 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
- Transport; Fri, 19 Nov 2021 06:30:11 -0500
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 1AJBU3KM014813;
-        Fri, 19 Nov 2021 06:30:09 -0500
-From:   Cristian Pop <cristian.pop@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>, <devicetree@vger.kernel.org>,
-        <robh+dt@kernel.org>, Cristian Pop <cristian.pop@analog.com>
-Subject: [PATCH v1 2/2] iio:frequency:admv4420.c: Add support for ADMV4420
-Date:   Fri, 19 Nov 2021 13:40:11 +0200
-Message-ID: <20211119114011.75406-2-cristian.pop@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211119114011.75406-1-cristian.pop@analog.com>
-References: <20211119114011.75406-1-cristian.pop@analog.com>
+        id S230385AbhKSLpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 06:45:53 -0500
+Received: from mga12.intel.com ([192.55.52.136]:16097 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229687AbhKSLpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 06:45:52 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="214430517"
+X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
+   d="gz'50?scan'50,208,50";a="214430517"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 03:42:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
+   d="gz'50?scan'50,208,50";a="495838258"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 19 Nov 2021 03:42:48 -0800
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mo2I3-0004Ss-WE; Fri, 19 Nov 2021 11:42:48 +0000
+Date:   Fri, 19 Nov 2021 19:42:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: [mcgrof-next:20211118-sysctl-cleanups-set-04-v2 33/36]
+ fs/exec.c:2180:62: error: macro "register_sysctl_init" passed 3 arguments,
+ but takes just 2
+Message-ID: <202111191913.ZOlvbufs-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: sQdJxvr4GDnv42UD9s1bOtF2Q4YlE8BZ
-X-Proofpoint-ORIG-GUID: sQdJxvr4GDnv42UD9s1bOtF2Q4YlE8BZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-19_09,2021-11-17_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- priorityscore=1501 spamscore=0 malwarescore=0 bulkscore=0 adultscore=0
- mlxlogscore=999 mlxscore=0 clxscore=1015 lowpriorityscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111190064
+Content-Type: multipart/mixed; boundary="azLHFNyN32YCQGCU"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for K Band Downconverter with Integrated
-Fractional-N PLL and VCO.
-More info:
-https://www.analog.com/en/products/admv4420.html
 
-Signed-off-by: Cristian Pop <cristian.pop@analog.com>
+--azLHFNyN32YCQGCU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git 20211118-sysctl-cleanups-set-04-v2
+head:   3110d41a56792588bd2f64621080948b0fceb6ab
+commit: 06e103c9b0d01c4e2e8c341e44a599e5d17413d2 [33/36] fs: move fs/exec.c sysctls into its own file
+config: nds32-allnoconfig (attached as .config)
+compiler: nds32le-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/commit/?id=06e103c9b0d01c4e2e8c341e44a599e5d17413d2
+        git remote add mcgrof-next https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git
+        git fetch --no-tags mcgrof-next 20211118-sysctl-cleanups-set-04-v2
+        git checkout 06e103c9b0d01c4e2e8c341e44a599e5d17413d2
+        # save the attached .config to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=nds32 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   fs/exec.c: In function 'init_fs_exec_sysctls':
+>> fs/exec.c:2180:62: error: macro "register_sysctl_init" passed 3 arguments, but takes just 2
+    2180 |         register_sysctl_init("fs", fs_exec_sysctls, "fs_exec");
+         |                                                              ^
+   In file included from include/linux/key.h:17,
+                    from include/linux/cred.h:13,
+                    from include/linux/sched/signal.h:10,
+                    from include/linux/rcuwait.h:6,
+                    from include/linux/percpu-rwsem.h:7,
+                    from include/linux/fs.h:33,
+                    from include/linux/fdtable.h:16,
+                    from fs/exec.c:29:
+   include/linux/sysctl.h:220: note: macro "register_sysctl_init" defined here
+     220 | #define register_sysctl_init(path, table) __register_sysctl_init(path, table, #table)
+         | 
+>> fs/exec.c:2180:9: error: 'register_sysctl_init' undeclared (first use in this function); did you mean 'register_sysctl_paths'?
+    2180 |         register_sysctl_init("fs", fs_exec_sysctls, "fs_exec");
+         |         ^~~~~~~~~~~~~~~~~~~~
+         |         register_sysctl_paths
+   fs/exec.c:2180:9: note: each undeclared identifier is reported only once for each function it appears in
+   fs/exec.c:2182:74: error: macro "register_sysctl_init" passed 3 arguments, but takes just 2
+    2182 |         register_sysctl_init("kernel", kernel_exec_sysctls, "kernel_exec");
+         |                                                                          ^
+   In file included from include/linux/key.h:17,
+                    from include/linux/cred.h:13,
+                    from include/linux/sched/signal.h:10,
+                    from include/linux/rcuwait.h:6,
+                    from include/linux/percpu-rwsem.h:7,
+                    from include/linux/fs.h:33,
+                    from include/linux/fdtable.h:16,
+                    from fs/exec.c:29:
+   include/linux/sysctl.h:220: note: macro "register_sysctl_init" defined here
+     220 | #define register_sysctl_init(path, table) __register_sysctl_init(path, table, #table)
+         | 
+   At top level:
+   fs/exec.c:2152:25: warning: 'kernel_exec_sysctls' defined but not used [-Wunused-variable]
+    2152 | static struct ctl_table kernel_exec_sysctls[] = {
+         |                         ^~~~~~~~~~~~~~~~~~~
+   fs/exec.c:2127:25: warning: 'fs_exec_sysctls' defined but not used [-Wunused-variable]
+    2127 | static struct ctl_table fs_exec_sysctls[] = {
+         |                         ^~~~~~~~~~~~~~~
+
+
+vim +/register_sysctl_init +2180 fs/exec.c
+
+  2177	
+  2178	static int __init init_fs_exec_sysctls(void)
+  2179	{
+> 2180		register_sysctl_init("fs", fs_exec_sysctls, "fs_exec");
+  2181	#ifdef CONFIG_COREDUMP
+  2182		register_sysctl_init("kernel", kernel_exec_sysctls, "kernel_exec");
+  2183	#endif
+  2184		return 0;
+  2185	}
+  2186	
+
 ---
- drivers/iio/frequency/Kconfig    |  10 +
- drivers/iio/frequency/Makefile   |   1 +
- drivers/iio/frequency/admv4420.c | 413 +++++++++++++++++++++++++++++++
- 3 files changed, 424 insertions(+)
- create mode 100644 drivers/iio/frequency/admv4420.c
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-diff --git a/drivers/iio/frequency/Kconfig b/drivers/iio/frequency/Kconfig
-index 2c9e0559e8a4..e2a8428a72df 100644
---- a/drivers/iio/frequency/Kconfig
-+++ b/drivers/iio/frequency/Kconfig
-@@ -50,6 +50,16 @@ config ADF4371
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called adf4371.
- 
-+config ADMV4420
-+	tristate "Analog Devices ADMV4420 K Band Downconverter"
-+	depends on SPI
-+	help
-+	  Say yes here to build support for Analog Devices K Band
-+	  Downconverter with integrated Fractional-N PLL and VCO.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called admv4420.
-+
- config ADRF6780
-         tristate "Analog Devices ADRF6780 Microwave Upconverter"
-         depends on SPI
-diff --git a/drivers/iio/frequency/Makefile b/drivers/iio/frequency/Makefile
-index ae3136c79202..f582305b3086 100644
---- a/drivers/iio/frequency/Makefile
-+++ b/drivers/iio/frequency/Makefile
-@@ -7,4 +7,5 @@
- obj-$(CONFIG_AD9523) += ad9523.o
- obj-$(CONFIG_ADF4350) += adf4350.o
- obj-$(CONFIG_ADF4371) += adf4371.o
-+obj-$(CONFIG_ADMV4420) += admv4420.o
- obj-$(CONFIG_ADRF6780) += adrf6780.o
-diff --git a/drivers/iio/frequency/admv4420.c b/drivers/iio/frequency/admv4420.c
-new file mode 100644
-index 000000000000..728e86ec93b6
---- /dev/null
-+++ b/drivers/iio/frequency/admv4420.c
-@@ -0,0 +1,413 @@
-+// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
-+/*
-+ * ADMV4420
-+ *
-+ * Copyright 2021 Analog Devices Inc.
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/iio/iio.h>
-+#include <linux/iio/sysfs.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+#include <linux/spi/spi.h>
-+
-+/* ADMV4420 Register Map */
-+#define ADMV4420_SPI_CONFIG_1			0x00
-+#define ADMV4420_SPI_CONFIG_2			0x01
-+#define ADMV4420_CHIPTYPE			0x03
-+#define ADMV4420_PRODUCT_ID_L			0x04
-+#define ADMV4420_PRODUCT_ID_H			0x05
-+#define ADMV4420_SCRATCHPAD			0x0A
-+#define ADMV4420_SPI_REV			0x0B
-+#define ADMV4420_ENABLES			0x103
-+#define ADMV4420_SDO_LEVEL			0x108
-+#define ADMV4420_INT_L				0x200
-+#define ADMV4420_INT_H				0x201
-+#define ADMV4420_FRAC_L				0x202
-+#define ADMV4420_FRAC_M				0x203
-+#define ADMV4420_FRAC_H				0x204
-+#define ADMV4420_MOD_L				0x208
-+#define ADMV4420_MOD_M				0x209
-+#define ADMV4420_MOD_H				0x20A
-+#define ADMV4420_R_DIV_L			0x20C
-+#define ADMV4420_R_DIV_H			0x20D
-+#define ADMV4420_REFERENCE			0x20E
-+#define ADMV4420_VCO_DATA_READBACK1		0x211
-+#define ADMV4420_VCO_DATA_READBACK2		0x212
-+#define ADMV4420_PLL_MUX_SEL			0x213
-+#define ADMV4420_LOCK_DETECT			0x214
-+#define ADMV4420_BAND_SELECT			0x215
-+#define ADMV4420_VCO_ALC_TIMEOUT		0x216
-+#define ADMV4420_VCO_MANUAL			0x217
-+#define ADMV4420_ALC				0x219
-+#define ADMV4420_VCO_TIMEOUT1			0x21C
-+#define ADMV4420_VCO_TIMEOUT2			0x21D
-+#define ADMV4420_VCO_BAND_DIV			0x21E
-+#define ADMV4420_VCO_READBACK_SEL		0x21F
-+#define ADMV4420_AUTOCAL			0x226
-+#define ADMV4420_CP_STATE			0x22C
-+#define ADMV4420_CP_BLEED_EN			0x22D
-+#define ADMV4420_CP_CURRENT			0x22E
-+#define ADMV4420_CP_BLEED			0x22F
-+
-+#define ADMV4420_SPI_CONFIG_1_SOFTRESET		BIT(1)
-+#define ADMV4420_SPI_CONFIG_1_SOFTRESET_	BIT(7)
-+
-+#define ADMV4420_REFERENCE_IN_MODE(x)		(x << 1)
-+#define ADMV4420_REFERENCE_DOUBLER(x)		(x << 2)
-+#define ADMV4420_REFERENCE_DIVIDE_BY_2_MASK	BIT(0)
-+#define ADMV4420_REFERENCE_MODE_MASK		BIT(1)
-+#define ADMV4420_REFERENCE_DOUBLER_MASK		BIT(2)
-+#define ADMV4420_REF_DIVIDER_MAX_VAL		GENMASK(9, 0)
-+#define ADMV4420_N_COUNTER_INT_MAX		GENMASK(15, 0)
-+#define ADMV4420_N_COUNTER_FRAC_MAX		GENMASK(23, 0)
-+#define ADMV4420_N_COUNTER_MOD_MAX		GENMASK(23, 0)
-+
-+#define ADMV4420_L_MASK				GENMASK(7, 0)
-+#define ADMV4420_H_MASK				GENMASK(15, 8)
-+#define ADMV4420_FRAC_L_MASK			GENMASK(7, 0)
-+#define ADMV4420_FRAC_M_MASK			GENMASK(15, 8)
-+#define ADMV4420_FRAC_H_MASK			GENMASK(23, 16)
-+#define ADMV4420_MOD_L_MASK			GENMASK(7, 0)
-+#define ADMV4420_MOD_M_MASK			GENMASK(15, 8)
-+#define ADMV4420_MOD_H_MASK			GENMASK(23, 16)
-+
-+#define ENABLE_PLL				BIT(6)
-+#define ENABLE_LO				BIT(5)
-+#define ENABLE_VCO				BIT(3)
-+#define ENABLE_IFAMP				BIT(2)
-+#define ENABLE_MIXER				BIT(1)
-+#define ENABLE_LNA				BIT(0)
-+
-+#define ADAR1000_SCRATCH_PAD_VAL_1		0xAD
-+#define ADAR1000_SCRATCH_PAD_VAL_2		0xEA
-+#define ADMV4420_DEF_REF_HZ			50000000
-+#define ADMV4420_DEF_REF_DIVIDER		1
-+#define ADMV4420_DEF_NC_INT			0xA7
-+#define ADMV4420_DEF_NC_FRAC			0x02
-+#define ADMV4420_DEF_NC_MOD			0x04
-+
-+enum admv4420_option_st {
-+	ADMV4420_DISABLED,
-+	ADMV4420_ENABLED,
-+};
-+
-+enum admv4420_ref_op {
-+	ADMV4420_DOUBLER,
-+	ADMV4420_DIVIDE_BY_2,
-+	ADMV4420_REF_SINGLE_ENDED,
-+};
-+
-+enum admv4420_mux_sel {
-+	ADMV4420_LOW = 0,
-+	ADMV4420_LOCK_DTCT = 1,
-+	ADMV4420_R_COUNTER_PER_2 = 4,
-+	ADMV4420_N_CONUTER_PER_2 = 5,
-+	ADMV4420_HIGH = 8,
-+};
-+
-+enum admv4420_n_counter_par {
-+	ADMV4420_N_COUNTER_INT,
-+	ADMV4420_N_COUNTER_FRAC,
-+	ADMV4420_N_COUNTER_MOD,
-+};
-+
-+struct admv4420_reference_block {
-+	bool doubler_en;
-+	bool divide_by_2_en;
-+	bool ref_single_ended;
-+	u32 freq_hz;
-+	u32 divider;
-+};
-+
-+struct admv4420_n_counter {
-+	u32 int_val;
-+	u32 frac_val;
-+	u32 mod_val;
-+	u32 n_counter;
-+};
-+
-+struct admv4420_state {
-+	struct spi_device		*spi;
-+	struct regmap			*regmap;
-+	u64				pfd_freq_hz;
-+	u64				vco_freq_hz;
-+	u64				lo_freq_hz;
-+	struct admv4420_reference_block ref_block;
-+	struct admv4420_n_counter	n_counter;
-+	enum admv4420_mux_sel		mux_sel;
-+	struct mutex			lock;
-+};
-+
-+static const struct regmap_config admv4420_regmap_config = {
-+	.reg_bits = 16,
-+	.val_bits = 8,
-+	.read_flag_mask = BIT(7),
-+};
-+
-+static int admv4420_reg_access(struct iio_dev *indio_dev,
-+			       u32 reg, u32 writeval,
-+			       u32 *readval)
-+{
-+	struct admv4420_state *st = iio_priv(indio_dev);
-+
-+	if (readval)
-+		return regmap_read(st->regmap, reg, readval);
-+	else
-+		return regmap_write(st->regmap, reg, writeval);
-+}
-+
-+static void admv4420_calc_vco_freq(struct admv4420_state *st)
-+{
-+	u64 tmp;
-+
-+	tmp = div_u64((st->pfd_freq_hz * st->n_counter.frac_val), st->n_counter.mod_val);
-+	tmp += st->pfd_freq_hz * st->n_counter.int_val;
-+	st->vco_freq_hz = tmp;
-+}
-+
-+static void admv4420_calc_pfd_freq(struct admv4420_state *st)
-+{
-+	u32 tmp;
-+
-+	tmp = st->ref_block.freq_hz * (st->ref_block.doubler_en ? 2 : 1);
-+	tmp = DIV_ROUND_CLOSEST(tmp, st->ref_block.divider *
-+				(st->ref_block.divide_by_2_en ? 2 : 1));
-+	st->pfd_freq_hz = tmp;
-+
-+	admv4420_calc_vco_freq(st);
-+	st->lo_freq_hz = st->vco_freq_hz * 2;
-+}
-+
-+static int admv4420_set_n_counter(struct admv4420_state *st, u32 int_val, u32 frac_val, u32 mod_val)
-+{
-+	int ret;
-+
-+	ret = regmap_write(st->regmap, ADMV4420_FRAC_H, FIELD_GET(ADMV4420_FRAC_H_MASK, frac_val));
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_write(st->regmap, ADMV4420_FRAC_M, FIELD_GET(ADMV4420_FRAC_M_MASK, frac_val));
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_write(st->regmap, ADMV4420_FRAC_L, FIELD_GET(ADMV4420_FRAC_L_MASK, frac_val));
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_write(st->regmap, ADMV4420_MOD_H, FIELD_GET(ADMV4420_MOD_H_MASK, mod_val));
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_write(st->regmap, ADMV4420_MOD_M, FIELD_GET(ADMV4420_MOD_M_MASK, mod_val));
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_write(st->regmap, ADMV4420_MOD_L, FIELD_GET(ADMV4420_MOD_L_MASK, mod_val));
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_write(st->regmap, ADMV4420_INT_H, FIELD_GET(ADMV4420_H_MASK, int_val));
-+	if (ret)
-+		return ret;
-+
-+	return regmap_write(st->regmap, ADMV4420_INT_L, FIELD_GET(ADMV4420_L_MASK, int_val));
-+}
-+
-+static int admv4420_read_raw(struct iio_dev *indio_dev,
-+			     struct iio_chan_spec const *chan,
-+			     int *val, int *val2, long info)
-+{
-+	struct admv4420_state *st = iio_priv(indio_dev);
-+
-+	switch (info) {
-+	case IIO_CHAN_INFO_FREQUENCY:
-+		*val = div_u64(st->lo_freq_hz, 1000000);
-+		div_u64_rem(st->lo_freq_hz, 1000000, val2);
-+
-+		return IIO_VAL_INT_PLUS_MICRO;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static const struct iio_info admv4420_info = {
-+	.read_raw = admv4420_read_raw,
-+	.debugfs_reg_access = &admv4420_reg_access,
-+};
-+
-+#define ADMV4420_CHAN_LO(_channel) {				\
-+	.type = IIO_ALTVOLTAGE,					\
-+	.output = 0,						\
-+	.indexed = 1,						\
-+	.channel = _channel,					\
-+	.info_mask_separate = BIT(IIO_CHAN_INFO_FREQUENCY)	\
-+}
-+
-+static const struct iio_chan_spec admv4420_channels[] = {
-+	ADMV4420_CHAN_LO(0),
-+};
-+
-+static void admv4420_dt_parse(struct admv4420_state *st)
-+{
-+	struct spi_device *spi = st->spi;
-+
-+	st->ref_block.ref_single_ended = of_property_read_bool(spi->dev.of_node,
-+							       "adi,ref_single_ended");
-+	st->ref_block.doubler_en = of_property_read_bool(spi->dev.of_node, "adi,ref_doubler_en");
-+	st->ref_block.divide_by_2_en = of_property_read_bool(spi->dev.of_node,
-+							     "adi,ref_divide_by_2_en");
-+	device_property_read_u32(&spi->dev, "adi,ref_freq_hz", &st->ref_block.freq_hz);
-+	device_property_read_u32(&spi->dev, "adi,ref_divider", &st->ref_block.divider);
-+	device_property_read_u32(&spi->dev, "adi,N_counter_int_val", &st->n_counter.int_val);
-+	device_property_read_u32(&spi->dev, "adi,N_counter_frac_val", &st->n_counter.frac_val);
-+	device_property_read_u32(&spi->dev, "adi,N_counter_mod_val", &st->n_counter.mod_val);
-+	device_property_read_u32(&spi->dev, "adi,mux_sel", &st->mux_sel);
-+}
-+
-+static int admv4420_setup(struct iio_dev *indio_dev)
-+{
-+	struct admv4420_state *st = iio_priv(indio_dev);
-+	u32 val = 0;
-+	int ret;
-+
-+	/* Software reset and activate SDO */
-+	ret = regmap_write(st->regmap, ADMV4420_SPI_CONFIG_1,
-+			   ADMV4420_SPI_CONFIG_1_SOFTRESET_ | ADMV4420_SPI_CONFIG_1_SOFTRESET);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_write(st->regmap, ADMV4420_SCRATCHPAD, ADAR1000_SCRATCH_PAD_VAL_1);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_read(st->regmap, ADMV4420_SCRATCHPAD, &val);
-+	if (ret)
-+		return ret;
-+
-+	if (val != ADAR1000_SCRATCH_PAD_VAL_1) {
-+		dev_err(indio_dev->dev.parent, "Failed ADMV4420 to read/write scratchpad %x ", val);
-+		return -EIO;
-+	}
-+
-+	ret = regmap_write(st->regmap, ADMV4420_SCRATCHPAD, ADAR1000_SCRATCH_PAD_VAL_2);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_read(st->regmap, ADMV4420_SCRATCHPAD, &val);
-+	if (ret)
-+		return ret;
-+
-+	if (val != ADAR1000_SCRATCH_PAD_VAL_2) {
-+		dev_err(indio_dev->dev.parent, "Failed ADMV4420 to read/write scratchpad %x ", val);
-+		return -EIO;
-+	}
-+
-+	st->ref_block.freq_hz = ADMV4420_DEF_REF_HZ;
-+	st->ref_block.ref_single_ended = false;
-+	st->ref_block.doubler_en = false;
-+	st->ref_block.divide_by_2_en = false;
-+	st->ref_block.divider = ADMV4420_DEF_REF_DIVIDER;
-+
-+	st->n_counter.int_val = ADMV4420_DEF_NC_INT;
-+	st->n_counter.frac_val = ADMV4420_DEF_NC_FRAC;
-+	st->n_counter.mod_val = ADMV4420_DEF_NC_MOD;
-+
-+	st->mux_sel = ADMV4420_LOCK_DTCT;
-+
-+	admv4420_dt_parse(st);
-+
-+	ret = regmap_write(st->regmap, ADMV4420_R_DIV_L,
-+			   FIELD_GET(ADMV4420_L_MASK, st->ref_block.divider));
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_write(st->regmap, ADMV4420_R_DIV_H,
-+			   FIELD_GET(ADMV4420_H_MASK, st->ref_block.divider));
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_write(st->regmap, ADMV4420_REFERENCE,
-+			   st->ref_block.divide_by_2_en |
-+			   ADMV4420_REFERENCE_IN_MODE(st->ref_block.ref_single_ended) |
-+			   ADMV4420_REFERENCE_DOUBLER(st->ref_block.doubler_en));
-+	if (ret)
-+		return ret;
-+
-+	ret = admv4420_set_n_counter(st, st->n_counter.int_val, st->n_counter.frac_val,
-+				     st->n_counter.mod_val);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_write(st->regmap, ADMV4420_PLL_MUX_SEL, st->mux_sel);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_write(st->regmap, ADMV4420_ENABLES, ENABLE_PLL | ENABLE_LO | ENABLE_VCO |
-+			   ENABLE_IFAMP | ENABLE_MIXER | ENABLE_LNA);
-+	if (ret)
-+		return ret;
-+
-+	admv4420_calc_pfd_freq(st);
-+
-+	return 0;
-+}
-+
-+static int admv4420_probe(struct spi_device *spi)
-+{
-+	struct iio_dev *indio_dev;
-+	struct admv4420_state *st;
-+	struct regmap *regmap;
-+	int ret;
-+
-+	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
-+	if (!indio_dev)
-+		return -ENOMEM;
-+
-+	regmap = devm_regmap_init_spi(spi, &admv4420_regmap_config);
-+	if (IS_ERR(regmap)) {
-+		dev_err(&spi->dev, "Error  ADMV4420 initializing spi regmap: %ld\n",
-+			PTR_ERR(regmap));
-+		return PTR_ERR(regmap);
-+	}
-+
-+	st = iio_priv(indio_dev);
-+	st->spi = spi;
-+	st->regmap = regmap;
-+	mutex_init(&st->lock);
-+
-+	indio_dev->dev.parent = &spi->dev;
-+	indio_dev->name = "admv4420";
-+	indio_dev->info = &admv4420_info;
-+	indio_dev->channels = admv4420_channels;
-+	indio_dev->num_channels = ARRAY_SIZE(admv4420_channels);
-+
-+	ret = admv4420_setup(indio_dev);
-+	if (ret) {
-+		dev_err(&spi->dev, "Setup ADMV4420 failed (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	return devm_iio_device_register(&spi->dev, indio_dev);
-+}
-+
-+static const struct of_device_id admv4420_of_match[] = {
-+	{ .compatible = "adi,admv4420" },
-+	{ },
-+};
-+
-+MODULE_DEVICE_TABLE(of, admv4420_of_match);
-+
-+static struct spi_driver admv4420_driver = {
-+	.driver = {
-+		.name	= "admv4420",
-+		.of_match_table = admv4420_of_match,
-+	},
-+	.probe		= admv4420_probe,
-+};
-+module_spi_driver(admv4420_driver);
-+
-+MODULE_AUTHOR("Cristian Pop <cristian.pop@analog.com>");
-+MODULE_DESCRIPTION("Analog Devices ADMV44200 K Band Downconverter");
-+MODULE_LICENSE("Dual BSD/GPL");
--- 
-2.17.1
+--azLHFNyN32YCQGCU
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
+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
+
+--azLHFNyN32YCQGCU--
