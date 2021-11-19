@@ -2,208 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ACE845729E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 404E845729A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:16:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236365AbhKSQTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 11:19:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55962 "EHLO
+        id S236349AbhKSQTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 11:19:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236354AbhKSQTg (ORCPT
+        with ESMTP id S236345AbhKSQTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:19:36 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D1DC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:16:34 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id c32so45723092lfv.4
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:16:34 -0800 (PST)
+        Fri, 19 Nov 2021 11:19:34 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B432DC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:16:31 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id fv9-20020a17090b0e8900b001a6a5ab1392so9227858pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:16:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PT99iXBgpFIqepfqqbxcYIJQ3M5siuSp1UK8d1YL76U=;
-        b=jHnYvtbACgEqbUWh2jxPk+A/JrzDhbXD8GN8W5j+q116oOn4I3SOuYu6WXCtrrggre
-         F7RpoUb/u9Up8UEnvaefDtRgviWR4D0TRw1rW/Phwc80x7ZOoDd8O2dfgi/c+ROR+lX5
-         Yy2fFiZqBJ5+RA1uTtjpnhhyj1hCKxOF02fIylR+5hy8M6tyWFndK21K7bQVKGshQUbZ
-         i/FNRVp4LEQcjTlUBmMdV3GUS7OuM5jx1rMJe4MjQZPdej9ePypZgGW9aGrETXY4QiZp
-         kerRyGX2XuCWsfQK8QYTwunTBoAEJdQvm1+FgZtHsirRQWxrNm3WV5XlSKSARBFjr8R5
-         GQrg==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=eibhgHyEnDty6prD7kw2qZTGk1uH223Sz/QXKL+fHLw=;
+        b=ZZT+647Uz8SpqIzDGjkCorUYqTbdRKcZfquePZQtptm3RyD6TXHuAvyBBOOJX4kKEL
+         IaRtyMOttCu5u9ILhRb1tcMIX6B5AQd1/MH/qNaQCeY0OOXWBojBbsPZ0wFKbY3g0Tpr
+         OvDrA36yTgG7Vnl4RDT0DsLx4pC0ATqDE4O6kCc0peHMw/Rw1CzsOZq5i4dKyyBZCIht
+         +DbPnZhT8x0D3dJZTlI/vsUYmQQR09Oj1GONUnU7EtsrCCQTF9WmEoK1yl6LDCs36qdw
+         JJtYZd9+ufI2JvQqME3ckPt3JP/T+27UAoehGZi4ZDsEOZ9VdG0LESwCe40W2x2HBWIt
+         LCLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PT99iXBgpFIqepfqqbxcYIJQ3M5siuSp1UK8d1YL76U=;
-        b=sprpQsquKOsZ0DmNnOKsuCjKKTdHn+nbD5ZrmqBgexd9MttTK/1N5LOrn8ELb9JBp+
-         yOu4HmY7DFOCSnM43s/kITtk9Jit58hF+g885S65Ss4BuFKnyXsF3SIpGKajioeOVn7A
-         4uQYZj33xrTJDM6/CILIDWXO3RcYMxvNiPwGZBluFEqwD0hRKMMEoSj2uzmFyqLMO5Ln
-         5sf3qN6a3ynSlEsZFZnqFDQSJ1xgAeJL23zW9JhkDhf0yzhTPVnYm3rr6wQIcj6DVXux
-         idJw6/bH/Atsq+A8vCn2YWMRg5bILggveAHNFBMLC88/NzBX0qCG8m/COXkPXe/Sb8XZ
-         4AUw==
-X-Gm-Message-State: AOAM5300MV/6I8dRBjHC9jRsNziT4s4LcnMY06TD7f8GAJVpqEkzKlKo
-        Jupiaysj2Ib8bZg7BZxYiXhDYJwHtQxrVCXa7AH9SA==
-X-Google-Smtp-Source: ABdhPJyWR8stzdTiCGjrREyonaNUfQgQWz4uaz8HWtQNIMD89ICA71wJAEljhEu8NgU+6QnOvVwM8eP3k2kVjE8qGLw=
-X-Received: by 2002:a2e:9f15:: with SMTP id u21mr26972655ljk.132.1637338591736;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=eibhgHyEnDty6prD7kw2qZTGk1uH223Sz/QXKL+fHLw=;
+        b=GBGTw4L1sie0b1UsQauUj4nTsNCvvZmG3nflmfyEtn116y/allDyxorm+8PYZ3iIIm
+         53JI7gCAPLHTqK3T2GY+/0YG8+amKMV8O9fnB0BHVb+IlRqV6phx+mEXtsOCxOAMIKoN
+         pIFdhiJQf+c4H5JDxYf1UqhYgOtunWWuZPfCYq1mkSOeLxxJ8+mdWYffYuwz6+AGLJyg
+         978tFVtGK07e5tJhH+Ql6yyd3w6NN70giKsAu/BVrd7sRrXMkA3i6yjhA5L+rCldFD8U
+         cD/sELcuQDS9rIjg9NaqAYflqSbi7r5KuHYj0QwGSckRkkW04MxVbMfgn4rbFHCLwSx0
+         qF1A==
+X-Gm-Message-State: AOAM532olwyNjKQZl2CmY1+dA9+TGZIChTDXdoUmnDMsocNv/pvSEaTd
+        ZI2wW40lg4y0a6E+Xej6kOw3dXevQcWM6H6dX3M=
+X-Google-Smtp-Source: ABdhPJx3h925az28R2FGXXKehSs96JNHe8xARoAmfIHgXvmk9Mb6Se8YwelLzQjrn+b4Xm8VOpr796J3HhtdQGPKjow=
+X-Received: by 2002:a17:90b:3890:: with SMTP id mu16mr975971pjb.186.1637338591155;
  Fri, 19 Nov 2021 08:16:31 -0800 (PST)
 MIME-Version: 1.0
-References: <20211110220731.2396491-1-brijesh.singh@amd.com>
- <20211110220731.2396491-44-brijesh.singh@amd.com> <CAMkAt6q3D4h=01XhHcxXTEwbWLM9CnAaq+6vgNzxyqzt+X00UQ@mail.gmail.com>
- <ff3ceeb5-e120-fe07-2a0c-4cd51f552db8@amd.com>
-In-Reply-To: <ff3ceeb5-e120-fe07-2a0c-4cd51f552db8@amd.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Fri, 19 Nov 2021 09:16:20 -0700
-Message-ID: <CAMkAt6pAcM-+odnagFTiaY7PPGE1CfAt27x=tG=-4UU9c+dQXA@mail.gmail.com>
-Subject: Re: [PATCH v7 43/45] virt: Add SEV-SNP guest driver
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com
+Received: by 2002:a05:6a20:44d:b0:5b:6541:6b4b with HTTP; Fri, 19 Nov 2021
+ 08:16:30 -0800 (PST)
+Reply-To: msbelinaya892@gmail.com
+From:   msbelinaya <huisterlui75@gmail.com>
+Date:   Fri, 19 Nov 2021 16:16:30 +0000
+Message-ID: <CAAcQqWju=KN9KfNSG1YT8eYi=+99c9JL5dm0hk8LRARRLk4eBA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 10:32 AM Brijesh Singh <brijesh.singh@amd.com> wrote:
->
->
->
-> On 11/17/21 5:34 PM, Peter Gonda wrote:
->
->
-> >> +The guest ioctl should be issued on a file descriptor of the /dev/sev-guest device.
-> >> +The ioctl accepts struct snp_user_guest_request. The input and output structure is
-> >> +specified through the req_data and resp_data field respectively. If the ioctl fails
-> >> +to execute due to a firmware error, then fw_err code will be set.
-> >
-> > Should way say what it will be set to? Also Sean pointed out on CCP
-> > driver that 0 is strange to set the error to, its a uint so we cannot
-> > do -1 like we did there. What about all FFs?
-> >
->
-> Sure, all FF's works, I can document and use it.
->
->
-> >> +static inline u64 __snp_get_msg_seqno(struct snp_guest_dev *snp_dev)
-> >> +{
-> >> +       u64 count;
-> >
-> > I may be overly paranoid here but how about
-> > `lockdep_assert_held(&snp_cmd_mutex);` when writing or reading
-> > directly from this data?
-> >
->
-> Sure, I can do it.
->
-> ...
->
-> >> +
-> >> +       if (rc)
-> >> +               return rc;
-> >> +
-> >> +       rc = verify_and_dec_payload(snp_dev, resp_buf, resp_sz);
-> >> +       if (rc) {
-> >> +               /*
-> >> +                * The verify_and_dec_payload() will fail only if the hypervisor is
-> >> +                * actively modifiying the message header or corrupting the encrypted payload.
-> > modifiying
-> >> +                * This hints that hypervisor is acting in a bad faith. Disable the VMPCK so that
-> >> +                * the key cannot be used for any communication.
-> >> +                */
-> >
-> > This looks great, thanks for changes Brijesh. Should we mention in
-> > comment here or at snp_disable_vmpck() the AES-GCM issues with
-> > continuing to use the key? Or will future updaters to this code
-> > understand already?
-> >
->
-> Sure, I can add comment about the AES-GCM.
->
-> ...
->
-> >> +
-> >> +/* See SNP spec SNP_GUEST_REQUEST section for the structure */
-> >> +enum msg_type {
-> >> +       SNP_MSG_TYPE_INVALID = 0,
-> >> +       SNP_MSG_CPUID_REQ,
-> >> +       SNP_MSG_CPUID_RSP,
-> >> +       SNP_MSG_KEY_REQ,
-> >> +       SNP_MSG_KEY_RSP,
-> >> +       SNP_MSG_REPORT_REQ,
-> >> +       SNP_MSG_REPORT_RSP,
-> >> +       SNP_MSG_EXPORT_REQ,
-> >> +       SNP_MSG_EXPORT_RSP,
-> >> +       SNP_MSG_IMPORT_REQ,
-> >> +       SNP_MSG_IMPORT_RSP,
-> >> +       SNP_MSG_ABSORB_REQ,
-> >> +       SNP_MSG_ABSORB_RSP,
-> >> +       SNP_MSG_VMRK_REQ,
-> >> +       SNP_MSG_VMRK_RSP,
-> >
-> > Did you want to include MSG_ABSORB_NOMA_REQ and MSG_ABSORB_NOMA_RESP here?
-> >
->
-> Yes, I can includes those for the completeness.
->
-> ...
->
-> >> +struct snp_report_req {
-> >> +       /* message version number (must be non-zero) */
-> >> +       __u8 msg_version;
-> >> +
-> >> +       /* user data that should be included in the report */
-> >> +       __u8 user_data[64];
-> >
-> > Are we missing the 'vmpl' field here? Does those default all requests
-> > to be signed with VMPL0? Users might want to change that, they could
-> > be using a paravisor.
-> >
->
-> Good question, so far I was thinking that guest kernel will provide its
-> vmpl level instead of accepted the vmpl level from the userspace. Do you
-> see a need for a userspace to provide this information ?
+Ich biete meine Freundschaft an und glaube, dass Sie mich mit gutem
+Herzen akzeptieren werden. Ich wurde gedr=C3=A4ngt, Sie zu kontaktieren und
+zu sehen, wie wir einander am besten unterst=C3=BCtzen k=C3=B6nnen. Ich bin=
+ Frau
+Kodjovi Hegbor aus der T=C3=BCrkei und arbeite als Divisionsleiterin f=C3=
+=BCr
+Operationen bei der StandardBNP bank limited Turkey . Ich glaube, es
+ist der Wille Gottes, dass ich Ihnen jetzt begegnen werde. Ich habe
+ein wichtiges gesch=C3=A4ftliches Gespr=C3=A4ch, das ich mit Ihnen teilen
+m=C3=B6chte, von dem ich glaube, dass es Sie interessiert, da es mit Ihrem
+Nachnamen in Verbindung steht und Sie davon profitieren werden.
 
-That seems fine. I am just confused because we are just encrypting
-this struct as the payload for the PSP. Doesn't the message require a
-struct that looks like 'snp_report_req_user_data' below?
+ Im Jahr 2006 hat ein B=C3=BCrger Ihres Landes ein Nicht-Residentenkonto
+f=C3=BCr 36 Monate des Kalenders im Wert von =C2=A38.400.000,00 bei meiner =
+Bank
+eingerichtet. Das Ablaufdatum f=C3=BCr diesen Einlagenvertrag war der 16.
+Januar 2009. Leider starb er w=C3=A4hrend einer Gesch=C3=A4ftsreise bei ein=
+em
+t=C3=B6dlichen Erdbeben am 12. Mai 2008 in Sichuan, China, bei dem
+mindestens 68.000 Menschen ums Leben kamen.
 
-snp_report_req{
-       /* message version number (must be non-zero) */
-       __u8 msg_version;
+Das Management meiner Bank hat noch nichts von seinem Tod erfahren,
+ich wusste davon, weil er mein Freund war und ich sein Kontof=C3=BChrer
+war, als das Konto vor meiner Bef=C3=B6rderung er=C3=B6ffnet wurde. Jedoch =
+Herr
+ erw=C3=A4hnte bei der Kontoer=C3=B6ffnung keine n=C3=A4chsten Verwandten/E=
+rben, und
+er war nicht verheiratet und hatte keine Kinder. Letzte Woche hat
+meine Bankdirektion mich gebeten, Anweisungen zu geben, was mit seinen
+Geldern zu tun ist, wenn der Vertrag verl=C3=A4ngert werden soll.
 
-      /* user data that should be included in the report */
-       struct snp_report_req_user_data;
-};
+Ich wei=C3=9F, dass dies passieren wird, und deshalb habe ich nach einem
+Mittel gesucht, um mit der Situation umzugehen, denn wenn meine
+Bankdirektoren wissen, dass sie tot sind und keinen Erben haben,
+werden sie das Geld f=C3=BCr ihren pers=C3=B6nlichen Gebrauch nehmen, also =
+Ich
+m=C3=B6chte nicht, dass so etwas passiert. Das war, als ich Ihren Nachnamen
+sah, ich war gl=C3=BCcklich und suche jetzt Ihre Mitarbeit, um Sie als Next
+of Kin/Erbe des Kontos zu pr=C3=A4sentieren, da Sie den gleichen Nachnamen
+wie er haben und meine Bankzentrale das Konto freigeben wird f=C3=BCr dich.
+Es besteht kein Risiko; die Transaktion wird im Rahmen einer legitimen
+Vereinbarung ausgef=C3=BChrt, die Sie vor Rechtsverletzungen sch=C3=BCtzt.
 
-struct snp_report_req_user_data {
-  u8 user_data[64];
-  u32 vmpl;
-  u32 reserved;
-};
+Es ist besser, dass wir das Geld beanspruchen, als es den
+Bankdirektoren zu erlauben, es zu nehmen, sie sind bereits reich. Ich
+bin kein gieriger Mensch, daher schlage ich vor, dass wir das Geld zu
+gleichen Teilen teilen, 50/50% auf beide Parteien. Mein Anteil wird
+mir helfen, mein eigenes Unternehmen zu gr=C3=BCnden und den Erl=C3=B6s f=
+=C3=BCr
+wohlt=C3=A4tige Zwecke zu verwenden, was mein Traum war.
 
-
->
->
-> thanks
+Teilen Sie mir Ihre Meinung zu meinem Vorschlag mit, bitte ich brauche
+wirklich Ihre Hilfe bei dieser Transaktion. Ich habe Sie ausgew=C3=A4hlt,
+um mir zu helfen, nicht durch mein eigenes Tun, meine Liebe, sondern
+durch Gott wollte ich, dass Sie wissen, dass ich mir Zeit zum Beten
+genommen habe =C3=BCber diese Mitteilung, bevor ich Sie jemals kontaktiert
+habe, teilen Sie mir Ihre Meinung dazu mit und behandeln Sie diese
+Informationen bitte als STRENG GEHEIM. Nach Erhalt Ihrer Antwort,
+ausschlie=C3=9Flich =C3=BCber meine pers=C3=B6nliche E-Mail-Adresse,
+msbelinaya892@gmail.com
+gibt Ihnen Details zur Transaktion. Und eine Kopie der
+Einlagenbescheinigung des Fonds sowie die Gr=C3=BCndungsurkunde der
+Gesellschaft, die den Fonds erstellt hat.
+Gott segne, in Erwartung Ihrer dringenden Antwort
+Mit freundlichen Gr=C3=BC=C3=9Fen
+Frau Kodjovi Hegbor
+msbelinaya892@gmail.com
