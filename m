@@ -2,260 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD0C456BCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 09:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD35456BD1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 09:44:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232894AbhKSIqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 03:46:14 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:41698 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229830AbhKSIqN (ORCPT
+        id S233482AbhKSIrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 03:47:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232151AbhKSIrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 03:46:13 -0500
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AJ8W2Ib020985;
-        Fri, 19 Nov 2021 08:43:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2021-07-09; bh=HsOxSuUFE3oK4VdPanNfGJCmTiCK7MzJxizyPnVhXOw=;
- b=GMzIStgnED96hd5SlBmukpiBJh1edXwXZGuHgrtu357GFM6qq9V8Cp8XeIJ0RFFyURiQ
- mnn8kZCLBfH69Z11j5BFu6Dq8ji6D71HOWZKqSMZBHEDXZzlcWrHg/NakPb0JgF+uzbx
- +56jGY2IXCeeBmWEq5aFI/PrfAlW6DcpMvZAWkp7pOP8s/B4Z/da9PdL3pDesXSnK5bA
- 8soKL3z2XgxbalojTXyDAQW3o7D4BoGNOBm++6T2M9RiZWcZml2sMQJyMLYH5snHDuCy
- 1MDtD3kpG4b+Smi1pYupHzqA4o1dbI9lckGXJJy2l0y8npCnds0j7CNWlp6Ezn2yBji9 GA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3cd4qyvcbt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Nov 2021 08:43:06 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AJ8amPj145726;
-        Fri, 19 Nov 2021 08:43:06 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 3ca569x759-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Nov 2021 08:43:06 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1AJ8h52s171434;
-        Fri, 19 Nov 2021 08:43:05 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.147.25.63])
-        by aserp3020.oracle.com with ESMTP id 3ca569x74e-1;
-        Fri, 19 Nov 2021 08:43:05 +0000
-From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Cc:     harshit.m.mogalapalli@oracle.com, vijayendra.suman@oracle.com,
-        ramanan.govindarajan@oracle.com, george.kennedy@oracle.com,
-        syzkaller <syzkaller@googlegroups.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net: sched: sch_netem: Fix a divide error in netem_enqueue during randomized corruption.
-Date:   Fri, 19 Nov 2021 00:42:41 -0800
-Message-Id: <20211119084241.14984-1-harshit.m.mogalapalli@oracle.com>
-X-Mailer: git-send-email 2.27.0
+        Fri, 19 Nov 2021 03:47:02 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 430F9C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 00:44:01 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mnzUv-0006Rg-Rl; Fri, 19 Nov 2021 09:43:53 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mnzUu-000Qv7-RB; Fri, 19 Nov 2021 09:43:52 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mnzUt-0004nv-SX; Fri, 19 Nov 2021 09:43:51 +0100
+Date:   Fri, 19 Nov 2021 09:43:51 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Alvaro Gamez <alvaro.gamez@hazent.com>,
+        linux-kernel@vger.kernel.org, michal.simek@xilinx.com
+Subject: Re: [PATCH v10 3/3] pwm: Add support for Xilinx AXI Timer
+Message-ID: <20211119084351.hhk4omumje45hpge@pengutronix.de>
+References: <20211112185504.1921780-1-sean.anderson@seco.com>
+ <20211112185504.1921780-3-sean.anderson@seco.com>
+ <20211118092813.xhulsyy5l36ukngw@pengutronix.de>
+ <e826e68c-d725-79ef-2140-365383eaf0e0@seco.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: dJEt7xwKpWDWIWsB3aige1JN9P7wCb3K
-X-Proofpoint-GUID: dJEt7xwKpWDWIWsB3aige1JN9P7wCb3K
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jjoutxsjvw4quph7"
+Content-Disposition: inline
+In-Reply-To: <e826e68c-d725-79ef-2140-365383eaf0e0@seco.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In netem_enqueue function the value of skb_headlen(skb) can be zero
-which leads to a division error during randomized corruption of the packet.
-This fix  adds a check to skb_headlen(skb) to prevent the division error.
 
-Crash report:
-[  343.170349] netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family
-0 port 6081 - 0
-[  343.216110] netem: version 1.3
-[  343.235841] divide error: 0000 [#1] PREEMPT SMP KASAN NOPTI
-[  343.236680] CPU: 3 PID: 4288 Comm: reproducer Not tainted 5.16.0-rc1+
-[  343.237569] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-BIOS 1.11.0-2.el7 04/01/2014
-[  343.238707] RIP: 0010:netem_enqueue+0x1590/0x33c0 [sch_netem]
-[  343.239499] Code: 89 85 58 ff ff ff e8 5f 5d e9 d3 48 8b b5 48 ff ff
-ff 8b 8d 50 ff ff ff 8b 85 58 ff ff ff 48 8b bd 70 ff ff ff 31 d2 2b 4f
-74 <f7> f1 48 b8 00 00 00 00 00 fc ff df 49 01 d5 4c 89 e9 48 c1 e9 03
-[  343.241883] RSP: 0018:ffff88800bcd7368 EFLAGS: 00010246
-[  343.242589] RAX: 00000000ba7c0a9c RBX: 0000000000000001 RCX:
-0000000000000000
-[  343.243542] RDX: 0000000000000000 RSI: ffff88800f8edb10 RDI:
-ffff88800f8eda40
-[  343.244474] RBP: ffff88800bcd7458 R08: 0000000000000000 R09:
-ffffffff94fb8445
-[  343.245403] R10: ffffffff94fb8336 R11: ffffffff94fb8445 R12:
-0000000000000000
-[  343.246355] R13: ffff88800a5a7000 R14: ffff88800a5b5800 R15:
-0000000000000020
-[  343.247291] FS:  00007fdde2bd7700(0000) GS:ffff888109780000(0000)
-knlGS:0000000000000000
-[  343.248350] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  343.249120] CR2: 00000000200000c0 CR3: 000000000ef4c000 CR4:
-00000000000006e0
-[  343.250076] Call Trace:
-[  343.250423]  <TASK>
-[  343.250713]  ? memcpy+0x4d/0x60
-[  343.251162]  ? netem_init+0xa0/0xa0 [sch_netem]
-[  343.251795]  ? __sanitizer_cov_trace_pc+0x21/0x60
-[  343.252443]  netem_enqueue+0xe28/0x33c0 [sch_netem]
-[  343.253102]  ? stack_trace_save+0x87/0xb0
-[  343.253655]  ? filter_irq_stacks+0xb0/0xb0
-[  343.254220]  ? netem_init+0xa0/0xa0 [sch_netem]
-[  343.254837]  ? __kasan_check_write+0x14/0x20
-[  343.255418]  ? _raw_spin_lock+0x88/0xd6
-[  343.255953]  dev_qdisc_enqueue+0x50/0x180
-[  343.256508]  __dev_queue_xmit+0x1a7e/0x3090
-[  343.257083]  ? netdev_core_pick_tx+0x300/0x300
-[  343.257690]  ? check_kcov_mode+0x10/0x40
-[  343.258219]  ? _raw_spin_unlock_irqrestore+0x29/0x40
-[  343.258899]  ? __kasan_init_slab_obj+0x24/0x30
-[  343.259529]  ? setup_object.isra.71+0x23/0x90
-[  343.260121]  ? new_slab+0x26e/0x4b0
-[  343.260609]  ? kasan_poison+0x3a/0x50
-[  343.261118]  ? kasan_unpoison+0x28/0x50
-[  343.261637]  ? __kasan_slab_alloc+0x71/0x90
-[  343.262214]  ? memcpy+0x4d/0x60
-[  343.262674]  ? write_comp_data+0x2f/0x90
-[  343.263209]  ? __kasan_check_write+0x14/0x20
-[  343.263802]  ? __skb_clone+0x5d6/0x840
-[  343.264329]  ? __sanitizer_cov_trace_pc+0x21/0x60
-[  343.264958]  dev_queue_xmit+0x1c/0x20
-[  343.265470]  netlink_deliver_tap+0x652/0x9c0
-[  343.266067]  netlink_unicast+0x5a0/0x7f0
-[  343.266608]  ? netlink_attachskb+0x860/0x860
-[  343.267183]  ? __sanitizer_cov_trace_pc+0x21/0x60
-[  343.267820]  ? write_comp_data+0x2f/0x90
-[  343.268367]  netlink_sendmsg+0x922/0xe80
-[  343.268899]  ? netlink_unicast+0x7f0/0x7f0
-[  343.269472]  ? __sanitizer_cov_trace_pc+0x21/0x60
-[  343.270099]  ? write_comp_data+0x2f/0x90
-[  343.270644]  ? netlink_unicast+0x7f0/0x7f0
-[  343.271210]  sock_sendmsg+0x155/0x190
-[  343.271721]  ____sys_sendmsg+0x75f/0x8f0
-[  343.272262]  ? kernel_sendmsg+0x60/0x60
-[  343.272788]  ? write_comp_data+0x2f/0x90
-[  343.273332]  ? write_comp_data+0x2f/0x90
-[  343.273869]  ___sys_sendmsg+0x10f/0x190
-[  343.274405]  ? sendmsg_copy_msghdr+0x80/0x80
-[  343.274984]  ? slab_post_alloc_hook+0x70/0x230
-[  343.275597]  ? futex_wait_setup+0x240/0x240
-[  343.276175]  ? security_file_alloc+0x3e/0x170
-[  343.276779]  ? write_comp_data+0x2f/0x90
-[  343.277313]  ? __sanitizer_cov_trace_pc+0x21/0x60
-[  343.277969]  ? write_comp_data+0x2f/0x90
-[  343.278515]  ? __fget_files+0x1ad/0x260
-[  343.279048]  ? __sanitizer_cov_trace_pc+0x21/0x60
-[  343.279685]  ? write_comp_data+0x2f/0x90
-[  343.280234]  ? __sanitizer_cov_trace_pc+0x21/0x60
-[  343.280874]  ? sockfd_lookup_light+0xd1/0x190
-[  343.281481]  __sys_sendmsg+0x118/0x200
-[  343.281998]  ? __sys_sendmsg_sock+0x40/0x40
-[  343.282578]  ? alloc_fd+0x229/0x5e0
-[  343.283070]  ? write_comp_data+0x2f/0x90
-[  343.283610]  ? write_comp_data+0x2f/0x90
-[  343.284135]  ? __sanitizer_cov_trace_pc+0x21/0x60
-[  343.284776]  ? ktime_get_coarse_real_ts64+0xb8/0xf0
-[  343.285450]  __x64_sys_sendmsg+0x7d/0xc0
-[  343.285981]  ? syscall_enter_from_user_mode+0x4d/0x70
-[  343.286664]  do_syscall_64+0x3a/0x80
-[  343.287158]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  343.287850] RIP: 0033:0x7fdde24cf289
-[  343.288344] Code: 01 00 48 81 c4 80 00 00 00 e9 f1 fe ff ff 0f 1f 00
-48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f
-05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d b7 db 2c 00 f7 d8 64 89 01 48
-[  343.290729] RSP: 002b:00007fdde2bd6d98 EFLAGS: 00000246 ORIG_RAX:
-000000000000002e
-[  343.291730] RAX: ffffffffffffffda RBX: 0000000000000000 RCX:
-00007fdde24cf289
-[  343.292673] RDX: 0000000000000000 RSI: 00000000200000c0 RDI:
-0000000000000004
-[  343.293618] RBP: 00007fdde2bd6e20 R08: 0000000100000001 R09:
-0000000000000000
-[  343.294557] R10: 0000000100000001 R11: 0000000000000246 R12:
-0000000000000000
-[  343.295493] R13: 0000000000021000 R14: 0000000000000000 R15:
-00007fdde2bd7700
-[  343.296432]  </TASK>
-[  343.296735] Modules linked in: sch_netem ip6_vti ip_vti ip_gre ipip
-sit ip_tunnel geneve macsec macvtap tap ipvlan macvlan 8021q garp mrp
-hsr wireguard libchacha20poly1305 chacha_x86_64 poly1305_x86_64
-ip6_udp_tunnel udp_tunnel libblake2s blake2s_x86_64 libblake2s_generic
-curve25519_x86_64 libcurve25519_generic libchacha xfrm_interface
-xfrm6_tunnel tunnel4 veth netdevsim psample batman_adv nlmon dummy team
-bonding tls vcan ip6_gre ip6_tunnel tunnel6 gre tun ip6t_rpfilter
-ipt_REJECT nf_reject_ipv4 ip6t_REJECT nf_reject_ipv6 xt_conntrack ip_set
-ebtable_nat ebtable_broute ip6table_nat ip6table_mangle
-ip6table_security ip6table_raw iptable_nat nf_nat nf_conntrack
-nf_defrag_ipv6 nf_defrag_ipv4 iptable_mangle iptable_security
-iptable_raw ebtable_filter ebtables rfkill ip6table_filter ip6_tables
-iptable_filter ppdev bochs drm_vram_helper drm_ttm_helper ttm
-drm_kms_helper cec parport_pc drm joydev floppy parport sg syscopyarea
-sysfillrect sysimgblt i2c_piix4 qemu_fw_cfg fb_sys_fops pcspkr
-[  343.297459]  ip_tables xfs virtio_net net_failover failover sd_mod
-sr_mod cdrom t10_pi ata_generic pata_acpi ata_piix libata virtio_pci
-virtio_pci_legacy_dev serio_raw virtio_pci_modern_dev dm_mirror
-dm_region_hash dm_log dm_mod
-[  343.311074] Dumping ftrace buffer:
-[  343.311532]    (ftrace buffer empty)
-[  343.312040] ---[ end trace a2e3db5a6ae05099 ]---
-[  343.312691] RIP: 0010:netem_enqueue+0x1590/0x33c0 [sch_netem]
-[  343.313481] Code: 89 85 58 ff ff ff e8 5f 5d e9 d3 48 8b b5 48 ff ff
-ff 8b 8d 50 ff ff ff 8b 85 58 ff ff ff 48 8b bd 70 ff ff ff 31 d2 2b 4f
-74 <f7> f1 48 b8 00 00 00 00 00 fc ff df 49 01 d5 4c 89 e9 48 c1 e9 03
-[  343.315893] RSP: 0018:ffff88800bcd7368 EFLAGS: 00010246
-[  343.316622] RAX: 00000000ba7c0a9c RBX: 0000000000000001 RCX:
-0000000000000000
-[  343.317585] RDX: 0000000000000000 RSI: ffff88800f8edb10 RDI:
-ffff88800f8eda40
-[  343.318549] RBP: ffff88800bcd7458 R08: 0000000000000000 R09:
-ffffffff94fb8445
-[  343.319503] R10: ffffffff94fb8336 R11: ffffffff94fb8445 R12:
-0000000000000000
-[  343.320455] R13: ffff88800a5a7000 R14: ffff88800a5b5800 R15:
-0000000000000020
-[  343.321414] FS:  00007fdde2bd7700(0000) GS:ffff888109780000(0000)
-knlGS:0000000000000000
-[  343.322489] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  343.323283] CR2: 00000000200000c0 CR3: 000000000ef4c000 CR4:
-00000000000006e0
-[  343.324264] Kernel panic - not syncing: Fatal exception in interrupt
-[  343.333717] Dumping ftrace buffer:
-[  343.334175]    (ftrace buffer empty)
-[  343.334653] Kernel Offset: 0x13600000 from 0xffffffff81000000
-(relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-[  343.336027] Rebooting in 86400 seconds..
+--jjoutxsjvw4quph7
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reported-by: syzkaller <syzkaller@googlegroups.com>
-Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
----
- net/sched/sch_netem.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+Hello Sean,
 
-diff --git a/net/sched/sch_netem.c b/net/sched/sch_netem.c
-index ecbb10db1111..e1e1a00fedda 100644
---- a/net/sched/sch_netem.c
-+++ b/net/sched/sch_netem.c
-@@ -513,8 +513,14 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch,
- 			goto finish_segs;
- 		}
- 
--		skb->data[prandom_u32() % skb_headlen(skb)] ^=
--			1<<(prandom_u32() % 8);
-+		if (unlikely(!skb_headlen(skb))) {
-+			qdisc_drop(skb, sch, to_free);
-+			skb = NULL;
-+			goto finish_segs;
-+		} else {
-+			skb->data[prandom_u32() % skb_headlen(skb)] ^=
-+				1<<(prandom_u32() % 8);
-+		}
- 	}
- 
- 	if (unlikely(sch->q.qlen >= sch->limit)) {
--- 
-2.27.0
+On Thu, Nov 18, 2021 at 04:08:45PM -0500, Sean Anderson wrote:
+> On 11/18/21 4:28 AM, Uwe Kleine-K=C3=B6nig wrote:
+> > On Fri, Nov 12, 2021 at 01:55:04PM -0500, Sean Anderson wrote:
+> > > [...]
+> > > +	/* cycles has a max of 2^32 + 2 */
+> > > +	return DIV64_U64_ROUND_CLOSEST(cycles * NSEC_PER_SEC,
+> > > +				       clk_get_rate(priv->clk));
+> >=20
+> > Please round up here.
+>=20
+> Please document the correct rounding mode you expect. The last time we
+> discussed this (3 months ago), you only said that rounding down was
+> incorrect...
 
+I think you refer to
+https://lore.kernel.org/linux-pwm/20210817180407.ru4prwu344dxpynu@pengutron=
+ix.de
+here, right? I agree that I could have been a bit more explicit here.
+
+=2Eapply should first round down .period to the next achievable setting
+and then .duty_cycle should be round down to the next achievable setting
+(in combination with the chosen period).
+
+To get .apply =E2=88=98 .get_state idempotent (i.e. if I apply the result f=
+rom
+get_state there are no changes), .get_state has to round up.
+
+After our longer discussion about v4 I would have expected that this was
+already obvious. There you wrote[1]:
+
+> * The apply_state function shall only round the requested period down, and
+>    may do so by no more than one unit cycle. If the requested period is
+>    unrepresentable by the PWM, the apply_state function shall return
+>    -ERANGE.
+> * The apply_state function shall only round the requested duty cycle
+>    down. The apply_state function shall not return an error unless there
+>    is no duty cycle less than the requested duty cycle which is
+>    representable by the PWM.
+> * After applying a state returned by round_state with apply_state,
+>    get_state must return that state.
+
+The requirement to round up is a direct consequence of these three
+points, which I confirmed (apart from some wording issues).
+
+[1] https://lore.kernel.org/linux-pwm/ddd2ad0c-1dff-c437-17a6-4c7be72c2fce@=
+seco.com
+
+> > > +	period_cycles =3D min_t(u64, state->period, ULONG_MAX * NSEC_PER_SE=
+C);
+> > > +	period_cycles =3D mul_u64_u32_div(period_cycles, rate, NSEC_PER_SEC=
+);
+> > > +	if (period_cycles < 2 || period_cycles - 2 > priv->max)
+> > > +		return -ERANGE;
+> >=20
+> > if period_cycles - 2 > priv->max the right reaction is to do
+> >=20
+> > 	period_cycles =3D priv->max + 2
+>=20
+> It has been 5 months since we last talked about this, and yet you have
+> not submitted any patches for a "pwm_round_rate" function. Forgive me if
+> I am reticent to implement forward compatibility for an API which shows
+> no signs of appearing.
+
+This requirement is not only for round_state. It's also to get some
+common behaviour for at least new drivers. The primary goal here is to
+make the result for pwm_apply more predictable.
+
+> > > +static int xilinx_timer_probe(struct platform_device *pdev)
+> > > +{
+> > > +	int ret;
+> > > +	struct device *dev =3D &pdev->dev;
+> > > +	struct device_node *np =3D dev->of_node;
+> > > +	struct xilinx_timer_priv *priv;
+> > > +	struct xilinx_pwm_device *pwm;
+> >=20
+> > The name "pwm" is usually reserved for struct pwm_device pointers. A
+> > typical name for this would be xlnxpwm or ddata.
+>=20
+> I suppose. However, no variables of struct pwm_device are used in
+> this driver.
+
+Still it provokes wrong expectations when reading
+
+	platform_set_drvdata(pdev, pwm);
+
+in a pwm driver.
+
+> > > +	u32 pwm_cells, one_timer, width;
+> > > +	void __iomem *regs;
+> > > +
+> > > +	ret =3D of_property_read_u32(np, "#pwm-cells", &pwm_cells);
+> > > +	if (ret =3D=3D -EINVAL)
+> > > +		return -ENODEV;
+> >=20
+> > A comment about why this is done would be great.
+>=20
+> OK. How about:
+>=20
+> /* If there are no #pwm-cells, this binding is for a timer and not a PWM =
+*/
+
+Fine. Does that mean the timer driver won't bind in the presence of the
+#pwm-cells property, and the timer driver uses the same compatible?
+Sounds a bit strange to me.
+
+> > > +	/*
+> > > +	 * The polarity of the generate outputs must be active high for PWM
+> >=20
+> > s/generate/generated/
+>=20
+> The signals I am referring to are called "GenerateOut0" and
+> "GenerateOut1".
+
+Then maybe:
+
+	The polarity of the outputs "GenerateOut0" and "GenerateOut1"
+	...
+
+?
+
+> > > +static struct platform_driver xilinx_timer_driver =3D {
+> > > +	.probe =3D xilinx_timer_probe,
+> > > +	.remove =3D xilinx_timer_remove,
+> > > +	.driver =3D {
+> > > +		.name =3D "xilinx-timer",
+> >=20
+> > Doesn't this give a wrong impression as this is a PWM driver, not a
+> > timer driver?
+
+This directly relates to the fact that the timer driver and the pwm
+driver (seem to) bind on the same compatible as already mentioned above.
+The dt people didn't agree to this yet, did they?
+
+> Perhaps. Though this is the PWM driver for the Xilinx AXI timer, not the
+> Xilinx AXI PWM.
+
+I would be happier with "xilinx-timer-pwm" then.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--jjoutxsjvw4quph7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGXY8MACgkQwfwUeK3K
+7Ami0Qf/XojQGupME2R59XL954UP3h1Mvkt4lm0+lwyIsNWvCKgciys1iPkwTSPi
+1o2DQYQInawTy/r0+6WqQ1CECPY6eTt4I00/tAqjGu+8aomH6srl6lvc5wSVVB1n
+v0HNo7FHYNTUpXO0bnYw8U8eDl7o+jxzn/ufY/fUNVTQH/aMT/PvrLGROoYXLtIr
+iJE6z8u/iSNbZCjfPHSJUmfuXlanllDj2wuGjbblCWBZOG1eyeEemoy0Q+yuloen
+x8zBGZIfX+mLx2lqwJi2Tc+jdmYZayGBTm/jIYYZoc/R4I/iSiA41jHhYsznIJwd
++jShC+o6iF/0R0NaG8RzfNS/Yf0aYw==
+=gzPZ
+-----END PGP SIGNATURE-----
+
+--jjoutxsjvw4quph7--
