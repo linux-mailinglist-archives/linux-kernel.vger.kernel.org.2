@@ -2,102 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E19B459821
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 00:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D49BE4598A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 00:53:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231392AbhKVXEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 18:04:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229739AbhKVXEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 18:04:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DBA960FED;
-        Mon, 22 Nov 2021 23:01:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637622097;
-        bh=5HPGeejKcq0/skHJyiqCEkuW5nT9h90VXdWH7CYPbFE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nEdiJ23lulIvuZIRcBfsS+qhZQdy45DABTeQ/9eMEUl1h55xvksxls/uuZO4VBeI8
-         VaCo7TKNLJwRLa3QYvdv6RNwEp2FVuh3jDzzlTQaQEP63m8H/MG3PA9JAEloDYolQp
-         c9/rmjY39HvZyawWUPIV3NjC+iYFEvh7eF6njpejVduCoCGuYmDwm0WoROg8MZpuON
-         SIl6D9XkBqQ40owCHtFzbFPFXQsgb6+Hp4V/BoNJJJnMHVdW/zgOyJBpirCAwPOfIz
-         HcfB+kkGUqemGZoka/SinHrWStHXFAUQPzrIQFgTm1oadehKRNNCm1qA6BWKPpcaq0
-         1TgibwoU5fvdw==
-Date:   Mon, 22 Nov 2021 23:01:28 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andy Gross <agross@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Scott Branden <sbranden@broadcom.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com,
-        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2 00/11] dmaengine: kill off dma_slave_config->slave_id
-Message-ID: <YZwhSPkhAqZy3bqY@sirena.org.uk>
-References: <20211122222203.4103644-1-arnd@kernel.org>
+        id S232198AbhKVXzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 18:55:37 -0500
+Received: from mx08-00227901.pphosted.com ([91.207.212.184]:59606 "EHLO
+        mx08-00227901.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232101AbhKVXzX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 18:55:23 -0500
+Received: from pps.filterd (m0097674.ppops.net [127.0.0.1])
+        by mx08-.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AJ7wixe018132;
+        Fri, 19 Nov 2021 10:27:12 +0100
+Received: from zbw2k16ex01.bardusch.net ([185.80.186.174])
+        by mx08-.pphosted.com (PPS) with ESMTPS id 3cdmdm1455-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA bits=256 verify=NOT);
+        Fri, 19 Nov 2021 10:27:11 +0100
+Received: from ZBW2K16EX01.bardusch.net (172.25.1.1) by
+ ZBW2K16EX01.bardusch.net (172.25.1.1) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.2308.20;
+ Fri, 19 Nov 2021 10:27:10 +0100
+Received: from User (172.25.1.131) by ZBW2K16EX01.bardusch.net (172.25.1.1)
+ with Microsoft SMTP Server id 15.1.2308.20 via Frontend Transport; Fri, 19
+ Nov 2021 10:26:59 +0100
+Reply-To: <josechoondak@gmail.com>
+From:   Joseph Choondak <info@ndd.co.mz>
+Subject: I hope this email finds you well.
+Date:   Fri, 19 Nov 2021 01:27:13 -0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="71Si6a9AhnlReqww"
-Content-Disposition: inline
-In-Reply-To: <20211122222203.4103644-1-arnd@kernel.org>
-X-Cookie: Lake Erie died for your sins.
+Content-Type: text/plain; charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-ID: <e7a31752-8681-4042-9ad5-c01248965c5f@ZBW2K16EX01.bardusch.net>
+To:     Undisclosed recipients:;
+X-Proofpoint-GUID: CmkypoSbrhIOZjoh10HOlF5xTX1kBMKq
+X-Proofpoint-ORIG-GUID: CmkypoSbrhIOZjoh10HOlF5xTX1kBMKq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-19_08,2021-11-17_01,2020-04-07_01
+X-Proofpoint-Spam-Reason: orgsafe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+May I please ask with considerable urgency for your kind assistance with the following matter.
+I'm a financial person, I think  I have something huge you might be interested in.
 
---71Si6a9AhnlReqww
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Looking forward to hearing from you.
 
-On Mon, Nov 22, 2021 at 11:21:52PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> I recently came across some new uses of the 'slave_id' field that
-> I had (almost) removed a few years ago. There are no legitimate
-> uses of this field in the kernel, only a few stale references and
-> two drivers that abuse the field as a side-channel between the
-> dmaengine driver and its client.
 
-Acked-by: Mark Brown <broonie@kernel.org>
-
---71Si6a9AhnlReqww
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGcIUcACgkQJNaLcl1U
-h9B/hgf6AiPwJAMMKcdb/6uCfAJACPZtqMFn2hE6HQgrw8mlTsR3sGqhQj3c3NWF
-vkLYtSZ20L2tPvS1uyAxjIRzIm91rqriu6pNurmupB6D+347UfSMpYhtbEKXvbBw
-1UF5ftPw1t5IGduAX6HKBfaN1Iab53577DJb/uJwR3Mb/WBh9aFpuyRwuZgjBOwE
-MvpTaAK2GHY4loDjJChSAK+zlCQMFbc4I2mZuahtf4wvBts/eZn7bAqAruzPMnTL
-e3crlktLeH7C0DMKJpmrxvTvS0CDsEUUOJ+tM7aNmtsdyYTAZEG35vzJgVly61jc
-7e5I5GHB1Jxsid3oM7WeznOhbimQEw==
-=AKUT
------END PGP SIGNATURE-----
-
---71Si6a9AhnlReqww--
+Respectfully!!
+Joseph Choondak
+Account Executive.
