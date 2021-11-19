@@ -2,63 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4D7456E1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 12:20:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFCC2456EE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 13:36:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235028AbhKSLXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 06:23:06 -0500
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:21655 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233041AbhKSLXF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 06:23:05 -0500
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Fri, 19 Nov 2021 03:19:56 -0800
-Received: from sc-dbc2135.eng.vmware.com (sc-dbc2135.eng.vmware.com [10.182.28.35])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id A2F7020E5D;
-        Fri, 19 Nov 2021 03:20:03 -0800 (PST)
-From:   Bryan Tan <bryantan@vmware.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>
-CC:     <Pv-drivers@vmware.com>, <gregkh@linuxfoundation.org>,
-        <vdasa@vmware.com>, <jgg@nvidia.com>, <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>, Bryan Tan <bryantan@vmware.com>
-Subject: [PATCH RESEND] MAINTAINERS: Update for VMware PVRDMA driver
-Date:   Fri, 19 Nov 2021 03:19:30 -0800
-Message-ID: <1637320770-44878-1-git-send-email-bryantan@vmware.com>
-X-Mailer: git-send-email 2.6.2
+        id S235035AbhKSMjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 07:39:22 -0500
+Received: from static.115.105.130.94.clients.your-server.de ([94.130.105.115]:49686
+        "EHLO static.115.105.130.94.clients.your-server.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230385AbhKSMjW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 07:39:22 -0500
+X-Greylist: delayed 4595 seconds by postgrey-1.27 at vger.kernel.org; Fri, 19 Nov 2021 07:39:21 EST
+Received: from [::1] (port=56930 helo=hostname.ican.md)
+        by hostname.ican.md with esmtpa (Exim 4.94.2)
+        (envelope-from <backup1@load42.com>)
+        id 1mo1vl-0000TY-3b
+        for linux-kernel@vger.kernel.org; Fri, 19 Nov 2021 13:19:43 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: bryantan@vmware.com does not
- designate permitted sender hosts)
+Date:   Fri, 19 Nov 2021 13:19:43 +0200
+From:   David Kone <backup1@load42.com>
+To:     linux-kernel@vger.kernel.org
+Subject: My dear
+Reply-To: Konedavid768001@gmail.com
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <61c872d39f15a85aa939f2fba74f9096@load42.com>
+X-Sender: backup1@load42.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostname.ican.md
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - load42.com
+X-Get-Message-Sender-Via: hostname.ican.md: authenticated_id: backup1@load42.com
+X-Authenticated-Sender: hostname.ican.md: backup1@load42.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update maintainer info for the VMware PVRDMA driver.
 
-Reviewed-by: Adit Ranadive <aditr@vmware.com>
-Reviewed-by: Vishnu Dasa <vdasa@vmware.com>
-Signed-off-by: Bryan Tan <bryantan@vmware.com>
----
- MAINTAINERS | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index abdcbcfef73d..b3b5b8b0e207 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -20022,7 +20022,8 @@ F:	arch/x86/include/asm/vmware.h
- F:	arch/x86/kernel/cpu/vmware.c
- 
- VMWARE PVRDMA DRIVER
--M:	Adit Ranadive <aditr@vmware.com>
-+M:	Bryan Tan <bryantan@vmware.com>
-+M:	Vishnu Dasa <vdasa@vmware.com>
- M:	VMware PV-Drivers <pv-drivers@vmware.com>
- L:	linux-rdma@vger.kernel.org
- S:	Maintained
 -- 
-2.14.1
+My dear,
 
+I work with Nsia Bank, and the account manager to Engineer Jonas, who 
+has an account valued at $16.7Million usd. He died with his wife, and 
+their two children on the 21st of April 2018 in a ghastly car accident 
+along Yamoussoukro express road here in Ivory Coast.
+
+Since we've been unsuccessful in locating the relatives for two years 
+now, i seek your acceptance to present you as a relative to the 
+deceased, for the fund to be released to you as his next of kin which 
+will be transferred to your account, and upon confirmation in your 
+account it will be sheared 50%/50% between us.
+
+All I require is your honest cooperation to receive and secure the fund 
+in your account till it is sheared accordingly. It is risk free as our 
+interest will be protected. If you are capable of securing the fund , 
+respond to my proposition by providing your address, age, occupation and 
+your mobile number.
+
+Waiting to hear from you.
+David Kone
