@@ -2,111 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CDFB456DE9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 12:00:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F66456DEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 12:02:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234944AbhKSLDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 06:03:30 -0500
-Received: from mga03.intel.com ([134.134.136.65]:65295 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232004AbhKSLDZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 06:03:25 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="234344450"
-X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
-   d="scan'208";a="234344450"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 03:00:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
-   d="scan'208";a="506410953"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 19 Nov 2021 03:00:20 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id D645A5B2; Fri, 19 Nov 2021 13:00:23 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 3/3] x86/quirks: Join string literals back
-Date:   Fri, 19 Nov 2021 13:00:17 +0200
-Message-Id: <20211119110017.48510-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211119110017.48510-1-andriy.shevchenko@linux.intel.com>
-References: <20211119110017.48510-1-andriy.shevchenko@linux.intel.com>
+        id S234926AbhKSLEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 06:04:04 -0500
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:37621 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232004AbhKSLED (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 06:04:03 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 0407C5C00D4;
+        Fri, 19 Nov 2021 06:01:01 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 19 Nov 2021 06:01:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-type:content-transfer-encoding; s=fm1; bh=
+        aqV1j+PWhw1EcvbQXT1J3L/THztodbDSfacb7pAVugM=; b=ftbKAxf07PobC8tc
+        3xnTmS8A5B+lTLU5mM6sNe0Cl17dgo+Hfm8byyKLzo/D3VXtRpWUZlBtlN6+5qfB
+        J4jOlfRjj2JD6mUbSeUyVfg+8hhkDxL7yeoJFZGc0g6Dhp7HGYbf9t6YrERVO/Ad
+        TqRGbafDqh5BmIUuCvnHyVH5gB8UkBgdw43nl2BPk4GI3CW1cKMKCk0mgcfOBdjB
+        JOtD5/AVeBa2oxOPNVt+/SsvQRG84nWJChTt7suSCZOzfrDfXrWoRCVYOFpHg4j8
+        fw9dKu9zDIsGpYQBhro2Cr0Lm29hb+DFFxBYmm0Zx7uhB8Sche/0uNXeWe7YKlWn
+        8JYY+Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=aqV1j+PWhw1EcvbQXT1J3L/THztodbDSfacb7pAVu
+        gM=; b=H+4YAfIklh5jmWWnXafnjUsLSKbg8zIQ6nqM9avIZ5UkAj8TY3VrP5ytF
+        xYsa1YbPh/ZRzZRt0V9Kz9cScuC+duehuhZJO6WLvLjgq4ywoah2FGJGFsILV4mF
+        7QEzjMao7pgC3svRBzSFxZlMKCtXwwzlrIQqJTR8HBNndKlJFK29bRfgJ++21AUY
+        5u00wP5Hk0wAK7PvD8FCfbNszvC8c0H37PLwUjSBXOIfUIQR616EK8xrPnW5mX1R
+        96jhNdiGIiq1Y8qCa930xlOzvkaib6c4uKNvDffud72i6EUQcz++E+fYpeanR1bx
+        KgJzQOM/DjqiV8sA9Gyq3Tu5HrMtg==
+X-ME-Sender: <xms:7IOXYTk49j4kro134d7Of7BnHXnls_ilMt4e_L-OuRNdSPxr9Q_Nrw>
+    <xme:7IOXYW1C249-KZMTjIelZ0JsWVVlmHFBuPXyXNfNcy-8ZQaUhKI-OBsI_1MSWQENN
+    unxs3yhG3atuiMQVQc>
+X-ME-Received: <xmr:7IOXYZqO5ffRpQ5pE25xuLk1GXQXW2nJqykQpCU23Ev9mo4TwVI64sJEKq4UwSFZUhTCa1MsaR0aNf_6kN4PKsGEFcxHASdm1e6jd0_3OVc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeekgddvvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgjfhggtgfgsehtkeertdertdejnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepjeeugfegkeffgfeuvedtvddufffhjeffjeejvddvudduteehhfefhfefgeei
+    keeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:7IOXYbl_txF_lipHZxwMYl3vuVcleg7hb0kA2rlX1MuoZCdXUhRlkQ>
+    <xmx:7IOXYR1csdC__J0iMFBBRpXe10cLUSPi3Xte1rlcON4tGV5KIAcGdg>
+    <xmx:7IOXYavi6MWKPRZlRoEz5smVrZ_vI6cxquVWMDCjK0ISsMleY8uk5g>
+    <xmx:7IOXYelB_ig3WITGQ5wJDq0Mtj9d2bGg3r69G3qXL02K80cDdOPY2w>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 19 Nov 2021 06:00:59 -0500 (EST)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Emma Anholt <emma@anholt.net>
+Cc:     Maxime Ripard <maxime@cerno.tech>, kernel-janitors@vger.kernel.org,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: (subset) [PATCH] drm/vc4: fix error code in vc4_create_object()
+Date:   Fri, 19 Nov 2021 12:00:56 +0100
+Message-Id: <163731964127.830809.14126199659521737361.b4-ty@cerno.tech>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211118111416.GC1147@kili>
+References: <20211118111416.GC1147@kili>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need to split string literals. Moreover, it would be simpler
-to grep for an actual code line, when debugging, by using almost any
-part of the string literal in question.
+On Thu, 18 Nov 2021 14:14:16 +0300, Dan Carpenter wrote:
+> The ->gem_create_object() functions are supposed to return NULL if there
+> is an error.  None of the callers expect error pointers so returing one
+> will lead to an Oops.  See drm_gem_vram_create(), for example.
+> 
+> 
 
-No functional change intended.
+Applied to drm/drm-misc (drm-misc-fixes).
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- arch/x86/kernel/quirks.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
-
-diff --git a/arch/x86/kernel/quirks.c b/arch/x86/kernel/quirks.c
-index 7280125aed4d..9db1702d493d 100644
---- a/arch/x86/kernel/quirks.c
-+++ b/arch/x86/kernel/quirks.c
-@@ -36,8 +36,7 @@ static void quirk_intel_irqbalance(struct pci_dev *dev)
- 	pci_bus_read_config_word(dev->bus, PCI_DEVFN(8, 0), 0x4c, &word);
- 
- 	if (!(word & (1 << 13))) {
--		dev_info(&dev->dev, "Intel E7520/7320/7525 detected; "
--			"disabling irq balancing and affinity\n");
-+		dev_info(&dev->dev, "Intel E7520/7320/7525 detected; disabling irq balancing and affinity\n");
- 		noirqdebug_setup("");
- #ifdef CONFIG_PROC_FS
- 		no_irq_affinity = 1;
-@@ -110,16 +109,14 @@ static void ich_force_enable_hpet(struct pci_dev *dev)
- 	pci_read_config_dword(dev, 0xF0, &rcba);
- 	rcba &= 0xFFFFC000;
- 	if (rcba == 0) {
--		dev_printk(KERN_DEBUG, &dev->dev, "RCBA disabled; "
--			"cannot force enable HPET\n");
-+		dev_printk(KERN_DEBUG, &dev->dev, "RCBA disabled; cannot force enable HPET\n");
- 		return;
- 	}
- 
- 	/* use bits 31:14, 16 kB aligned */
- 	rcba_base = ioremap(rcba, 0x4000);
- 	if (rcba_base == NULL) {
--		dev_printk(KERN_DEBUG, &dev->dev, "ioremap failed; "
--			"cannot force enable HPET\n");
-+		dev_printk(KERN_DEBUG, &dev->dev, "ioremap failed; cannot force enable HPET\n");
- 		return;
- 	}
- 
-@@ -149,8 +146,7 @@ static void ich_force_enable_hpet(struct pci_dev *dev)
- 	if (err) {
- 		force_hpet_address = 0;
- 		iounmap(rcba_base);
--		dev_printk(KERN_DEBUG, &dev->dev,
--			"Failed to force enable HPET\n");
-+		dev_printk(KERN_DEBUG, &dev->dev, "Failed to force enable HPET\n");
- 	} else {
- 		force_hpet_resume_type = ICH_FORCE_HPET_RESUME;
- 		hpet_dev_print_force_hpet_address(&dev->dev);
-@@ -182,8 +178,7 @@ static struct pci_dev *cached_dev;
- 
- static void hpet_print_force_info(void)
- {
--	printk(KERN_INFO "HPET not enabled in BIOS. "
--	       "You might try hpet=force boot option\n");
-+	printk(KERN_INFO "HPET not enabled in BIOS. You might try hpet=force boot option\n");
- }
- 
- static void old_ich_force_hpet_resume(void)
--- 
-2.33.0
-
+Thanks!
+Maxime
