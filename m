@@ -2,211 +2,428 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C5C457054
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 15:09:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA68457058
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 15:09:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235680AbhKSOMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 09:12:12 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:11275 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbhKSOML (ORCPT
+        id S235696AbhKSOMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 09:12:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229879AbhKSOMl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 09:12:11 -0500
+        Fri, 19 Nov 2021 09:12:41 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2CEFC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 06:09:39 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id j7so3027466ilk.13
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 06:09:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637330950; x=1668866950;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=RzKaAcngVk8ke6sw4Hmes1jEcz67SzLurWxT4aZMDsQ=;
-  b=LB0Xko3FFjwMvdYXlpKECp57Ih7gr7BlYMS+qiFm8HbiewyMTfTWI2IF
-   WwFWoZz2IqHUU8TPBhptWl5d6lKhaQ2eav0egthc9qgsKUjciAv791JWL
-   V/HIZDQT3JHdqwm89zMzkksgb5R2p6sNAuo99sDfMw6u3sdFMlmEFddut
-   s=;
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 19 Nov 2021 06:09:09 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 06:09:08 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Fri, 19 Nov 2021 06:09:08 -0800
-Received: from [10.50.57.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Fri, 19 Nov
- 2021 06:09:04 -0800
-Message-ID: <92acd810-28c1-6f6f-512a-a961311dfa88@quicinc.com>
-Date:   Fri, 19 Nov 2021 19:39:01 +0530
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=uH5+LijC2//yZ3zDrCNfSRI5ao+iauirzsE3A/1TQsY=;
+        b=is7eXdz4qfpteEjiaagClNYuz3XlZjSoUKAwzEAPFEmQiKECAf/Pun22IBZ5fVKNHH
+         MR5ylOp1OTwGcGGecyFz/fhQaRm0qguNxLPcEn8uBFgic7J9NbyFMQ/do2PucOxGNrUw
+         zIBJdjHXB2Zr9SjGLuAawUDiGg2Dl2JZPv8xgDwAQR61FpO2qg3ZLuuQQLSFl58nh87/
+         wCfb0gFvyK8JZLaPb9E3ggWjUuc2yQ+7Nd5J3E37CQ1nLJkJsP/N7q+PYVCvjnpUxi3p
+         1CRofm6bgSJFjhwTwsyd3DySO+6o2GUC985YlFWrQCBS+/TpjKW/kShwtAYqlLjbvbeg
+         C49w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=uH5+LijC2//yZ3zDrCNfSRI5ao+iauirzsE3A/1TQsY=;
+        b=HjFdxP/DkSYIVqhQGzpGqgOoExS3JTsHBoUNW7O3mavIbAvnZUdhWeUnmsGDo6pnVg
+         CPLwBivHUywa3hNmeaLBKDFfDdsti//YsC2HzPFYu3awkMRhBWAKhBj8u5FzxrhmxIOK
+         SmJx3cYqShLaoDHxqqLZhoztJiZjx7oyvEfGNLNcYqCysgu3n0UHoNjRt7cMuLNHy9IK
+         7de0FFRGLMZN9BI/tMJJxHovfdfoTPV/kwExmDOcANEKo12S6P9LPolu4EJOaxt1YXOr
+         OJGpZ7/t7tUxyN/Ypyy9O7SB+J6ci+8FjIG1npn4UOutaFa9pxntdSvLV62DdSqD/V0q
+         WZVQ==
+X-Gm-Message-State: AOAM533TbtxHBMQhBCHRM1SHwB5BwBm1Cne3+eshTuyNJiv/EEah2IE1
+        DpEnFhu8unkFmDwrHHKH+6Ajf/gl6IqewHLDjCMkIxZXcbI=
+X-Google-Smtp-Source: ABdhPJzcPs8BTDEQDatUVFnv80eNNwO8+7JZDfwin1ICbJWyjZMykoKICiD7FN8nmkSVbqGSccsUxLL5oRPpK9kC+Wg=
+X-Received: by 2002:a05:6e02:1605:: with SMTP id t5mr802646ilu.233.1637330979385;
+ Fri, 19 Nov 2021 06:09:39 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCHv4 2/2] arm64/io: Add a header for mmio access
- instrumentation
-Content-Language: en-US
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Will Deacon <will@kernel.org>, <rostedt@goodmis.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        <quic_psodagud@quicinc.com>, <gregkh@linuxfoundation.org>,
-        <arnd@arndb.de>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <mingo@redhat.com>
-References: <cover.1636973694.git.quic_saipraka@quicinc.com>
- <9396fbdc415a3096ab271868960372b21479e4fb.1636973694.git.quic_saipraka@quicinc.com>
- <87a6i06ytr.wl-maz@kernel.org>
-From:   Sai Prakash Ranjan <quic_saipraka@quicinc.com>
-In-Reply-To: <87a6i06ytr.wl-maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+References: <1637130234-57238-1-git-send-email-quic_jiangenj@quicinc.com>
+ <CACT4Y+YwNawV9H7uFMVSCA5WB-Dkyu9TX+rMM3FR6gNGkKFPqw@mail.gmail.com>
+ <DM8PR02MB8247720860A08914CAA41D42F89C9@DM8PR02MB8247.namprd02.prod.outlook.com>
+ <CACT4Y+a07DxQdYFY6uc5Y4GhTUbcnETij6gg3y+JRDvtwSmK5g@mail.gmail.com>
+ <DM8PR02MB8247A19843220E03B34BA440F89C9@DM8PR02MB8247.namprd02.prod.outlook.com>
+ <CACT4Y+Y36wgP_xjYVQApNLdMOFTr2-KCHc=AipcZyZiAhwf1Nw@mail.gmail.com> <CACT4Y+YF4Ngm6em_Sn2p+N0x1L+O8A=BEVTNhd00LmSZ+aH1iQ@mail.gmail.com>
+In-Reply-To: <CACT4Y+YF4Ngm6em_Sn2p+N0x1L+O8A=BEVTNhd00LmSZ+aH1iQ@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Fri, 19 Nov 2021 15:09:28 +0100
+Message-ID: <CA+fCnZct-Fy6JEUoHgk0h=2aFeBAWz2Ax_kOCee3-i_6zU-wfQ@mail.gmail.com>
+Subject: Re: [PATCH] kcov: add KCOV_PC_RANGE to limit pc range
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     "JianGen Jiao (QUIC)" <quic_jiangenj@quicinc.com>,
+        syzkaller <syzkaller@googlegroups.com>,
+        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexander Lochmann <info@alexander-lochmann.de>,
+        "Likai Ding (QUIC)" <quic_likaid@quicinc.com>,
+        Kaipeng Zeng <kaipeng94@gmail.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/19/2021 7:18 PM, Marc Zyngier wrote:
-> On Mon, 15 Nov 2021 11:33:30 +0000,
-> Sai Prakash Ranjan <quic_saipraka@quicinc.com> wrote:
->> The new generic header mmio-instrumented.h will keep arch code clean
->> and separate from instrumented version which traces mmio register
->> accesses. This instrumented header is generic and can be used by other
->> architectures as well. Also add a generic flag (__DISABLE_TRACE_MMIO__)
->> which is used to disable MMIO tracing in nVHE and if required can be
->> used to disable tracing for specific drivers.
->>
->> Signed-off-by: Sai Prakash Ranjan <quic_saipraka@quicinc.com>
->> ---
->>   arch/arm64/include/asm/io.h       | 25 ++++-------
->>   arch/arm64/kvm/hyp/nvhe/Makefile  |  2 +-
->>   include/linux/mmio-instrumented.h | 70 +++++++++++++++++++++++++++++++
->>   3 files changed, 80 insertions(+), 17 deletions(-)
->>   create mode 100644 include/linux/mmio-instrumented.h
->>
->> diff --git a/arch/arm64/include/asm/io.h b/arch/arm64/include/asm/io.h
->> index 7fd836bea7eb..a635aaaf81b9 100644
->> --- a/arch/arm64/include/asm/io.h
->> +++ b/arch/arm64/include/asm/io.h
->> @@ -10,6 +10,7 @@
->>   
->>   #include <linux/types.h>
->>   #include <linux/pgtable.h>
->> +#include <linux/mmio-instrumented.h>
->>   
->>   #include <asm/byteorder.h>
->>   #include <asm/barrier.h>
->> @@ -21,32 +22,27 @@
->>   /*
->>    * Generic IO read/write.  These perform native-endian accesses.
->>    */
->> -#define __raw_writeb __raw_writeb
->> -static inline void __raw_writeb(u8 val, volatile void __iomem *addr)
->> +static inline void arch_raw_writeb(u8 val, volatile void __iomem *addr)
->>   {
->>   	asm volatile("strb %w0, [%1]" : : "rZ" (val), "r" (addr));
->>   }
->>   
->> -#define __raw_writew __raw_writew
->> -static inline void __raw_writew(u16 val, volatile void __iomem *addr)
->> +static inline void arch_raw_writew(u16 val, volatile void __iomem *addr)
->>   {
->>   	asm volatile("strh %w0, [%1]" : : "rZ" (val), "r" (addr));
->>   }
->>   
->> -#define __raw_writel __raw_writel
->> -static __always_inline void __raw_writel(u32 val, volatile void __iomem *addr)
->> +static __always_inline void arch_raw_writel(u32 val, volatile void __iomem *addr)
->>   {
->>   	asm volatile("str %w0, [%1]" : : "rZ" (val), "r" (addr));
->>   }
->>   
->> -#define __raw_writeq __raw_writeq
->> -static inline void __raw_writeq(u64 val, volatile void __iomem *addr)
->> +static inline void arch_raw_writeq(u64 val, volatile void __iomem *addr)
->>   {
->>   	asm volatile("str %x0, [%1]" : : "rZ" (val), "r" (addr));
->>   }
->>   
->> -#define __raw_readb __raw_readb
->> -static inline u8 __raw_readb(const volatile void __iomem *addr)
->> +static inline u8 arch_raw_readb(const volatile void __iomem *addr)
->>   {
->>   	u8 val;
->>   	asm volatile(ALTERNATIVE("ldrb %w0, [%1]",
->> @@ -56,8 +52,7 @@ static inline u8 __raw_readb(const volatile void __iomem *addr)
->>   	return val;
->>   }
->>   
->> -#define __raw_readw __raw_readw
->> -static inline u16 __raw_readw(const volatile void __iomem *addr)
->> +static inline u16 arch_raw_readw(const volatile void __iomem *addr)
->>   {
->>   	u16 val;
->>   
->> @@ -68,8 +63,7 @@ static inline u16 __raw_readw(const volatile void __iomem *addr)
->>   	return val;
->>   }
->>   
->> -#define __raw_readl __raw_readl
->> -static __always_inline u32 __raw_readl(const volatile void __iomem *addr)
->> +static __always_inline u32 arch_raw_readl(const volatile void __iomem *addr)
->>   {
->>   	u32 val;
->>   	asm volatile(ALTERNATIVE("ldr %w0, [%1]",
->> @@ -79,8 +73,7 @@ static __always_inline u32 __raw_readl(const volatile void __iomem *addr)
->>   	return val;
->>   }
->>   
->> -#define __raw_readq __raw_readq
->> -static inline u64 __raw_readq(const volatile void __iomem *addr)
->> +static inline u64 arch_raw_readq(const volatile void __iomem *addr)
->>   {
->>   	u64 val;
->>   	asm volatile(ALTERNATIVE("ldr %0, [%1]",
->> diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
->> index c3c11974fa3b..ff56d2165ea9 100644
->> --- a/arch/arm64/kvm/hyp/nvhe/Makefile
->> +++ b/arch/arm64/kvm/hyp/nvhe/Makefile
->> @@ -4,7 +4,7 @@
->>   #
->>   
->>   asflags-y := -D__KVM_NVHE_HYPERVISOR__ -D__DISABLE_EXPORTS
->> -ccflags-y := -D__KVM_NVHE_HYPERVISOR__ -D__DISABLE_EXPORTS
->> +ccflags-y := -D__KVM_NVHE_HYPERVISOR__ -D__DISABLE_EXPORTS -D__DISABLE_TRACE_MMIO__
->>   
->>   hostprogs := gen-hyprel
->>   HOST_EXTRACFLAGS += -I$(objtree)/include
->> diff --git a/include/linux/mmio-instrumented.h b/include/linux/mmio-instrumented.h
->> new file mode 100644
->> index 000000000000..99979c025cc1
->> --- /dev/null
->> +++ b/include/linux/mmio-instrumented.h
->> @@ -0,0 +1,70 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +/*
->> + * Copyright (c) 2021 Qualcomm Innovation Center, Inc. All rights reserved.
->> + */
->> +
->> +#ifndef _LINUX_MMIO_INSTRUMENTED_H
->> +#define _LINUX_MMIO_INSTRUMENTED_H
->> +
->> +#include <linux/tracepoint-defs.h>
->> +
->> +/*
->> + * Tracepoint and MMIO logging symbols should not be visible at EL2(HYP) as
->> + * there is no way to execute them and any such MMIO access from EL2 will
->> + * explode instantly (Words of Marc Zyngier). So introduce a generic flag
->> + * __DISABLE_TRACE_MMIO__ to disable MMIO tracing in nVHE and other drivers
->> + * if required.
->> + */
-> This Gospel would be better placed next to the code that defines the
-> macro, given that this is an arch-independent include file, and hardly
-> anyone understands the quirks of a nVHE KVM (and only nVHE, something
-> that the comment fails to capture).
+On Fri, Nov 19, 2021 at 2:07 PM Dmitry Vyukov <dvyukov@google.com> wrote:
 >
-> 	M.
+> On Fri, 19 Nov 2021 at 13:55, Dmitry Vyukov <dvyukov@google.com> wrote:
+> >
+> > +Kaipeng, Hangbin who contributed the coverage filter to syzkaller.
+> > This is a discussion about adding a similar filter to the kernel. You
+> > can see whole discussion here:
+> > https://groups.google.com/g/kasan-dev/c/TQmYUdUC08Y
 >
+> Joey, what do you think in general about passing a filter bitmap to the k=
+ernel?
+>
+> Since the bitmap is large, it can make sense to reuse it across
+> different KCOV instances.
+> I am thinking about something along the following lines:
+>
+> kcov_fd =3D open("/debugfs/kcov");
+> filter_fd =3D ioctl(kcov_fd, KCOV_CREATE_FILTER, &{... some args
+> specifying start/end ...});
+> filter =3D mmap(..., filter_fd);
+> ... write to the filter ...
+>
+> ...
+> kcov_fd2 =3D open("/debugfs/kcov");
+> ioctl(kcov_fd2, KCOV_ATTACH_FILTER, filter_fd);
+> ioctl(kcov_fd2, KCOV_ENABLE);
+>
+>
+> This would allow us to create 2 filters:
+> 1. One the interesting subsystems
+> 2. Second only for yet uncovered PCs in the interesting subsystems
+> (updated as we discover more coverage)
+>
+> During fuzzing we attach the second filter to KCOV.
+> But when we want to obtain full program coverage, we attach the first one=
+.
+>
+> The filters (bitmaps) are reused across all threads in all executor
+> processes (so that we have only 2 filters globally per VM).
+>
+> KCOV_CREATE_FILTER could also accept how many bytes each bit
+> represents (that scaling factor, as hardcoding 4, 8, 16 may be bad for
+> a stable kernel interface).
+>
+> But I am still not sure how to support both the main kernel and
+> modules. We could allow setting up multiple filters for different PC
+> ranges. Or may be just 2 (one for kernel and one for modules range).
+> Or maybe 1 bitmap can cover both kernel and modules?
+>
+> Thoughts?
 
-I'll move the comment and include nVHE in the comment as well.
+Throwing in a thought without a concrete design suggestion: how about
+en eBPF-based filter? The flexibility would allow covering as many PC
+ranges as one wants. And, perhaps, do other things.
 
-Thanks,
-Sai
+>
+>
+> > On Fri, 19 Nov 2021 at 12:21, JianGen Jiao (QUIC)
+> > <quic_jiangenj@quicinc.com> wrote:
+> > >
+> > > Yes, on x86_64, module address space is after kernel. But like below =
+on arm64, it's different.
+> > >
+> > > # grep stext /proc/kallsyms
+> > > ffffffc010010000 T _stext
+> > > # cat /proc/modules |sort -k 6 | tail -2
+> > > Some_module_1 552960 0 - Live 0xffffffc00ca05000 (O)
+> > > Some_module_1 360448 0 - Live 0xffffffc00cb8f000 (O) # cat /proc/modu=
+les |sort -k 6 | head -2
+> > > Some_module_3 16384 1 - Live 0xffffffc009430000
+> > >
+> > > -----Original Message-----
+> > > From: Dmitry Vyukov <dvyukov@google.com>
+> > > Sent: Friday, November 19, 2021 6:38 PM
+> > > To: JianGen Jiao (QUIC) <quic_jiangenj@quicinc.com>
+> > > Cc: andreyknvl@gmail.com; kasan-dev@googlegroups.com; LKML <linux-ker=
+nel@vger.kernel.org>; Alexander Lochmann <info@alexander-lochmann.de>; Lika=
+i Ding (QUIC) <quic_likaid@quicinc.com>
+> > > Subject: Re: [PATCH] kcov: add KCOV_PC_RANGE to limit pc range
+> > >
+> > > WARNING: This email originated from outside of Qualcomm. Please be wa=
+ry of any links or attachments, and do not enable macros.
+> > >
+> > > On Fri, 19 Nov 2021 at 04:17, JianGen Jiao (QUIC) <quic_jiangenj@quic=
+inc.com> wrote:
+> > > >
+> > > > Hi Dmitry,
+> > > > I'm using the start, end pc from cover filter, which currently is t=
+he fast way compared to the big bitmap passing from syzkaller solution, as =
+I only set the cover filter to dirs/files I care about.
+> > >
+> > > I see.
+> > > But if we are unlucky and our functions of interest are at the very l=
+ow and high addresses, start/end will cover almost all kernel code...
+> > >
+> > > > I checked
+> > > > https://groups.google.com/g/kasan-dev/c/oVz3ZSWaK1Q/m/9ASztdzCAAAJ,
+> > > > The bitmap seems not the same as syzkaller one, which one will be u=
+sed finally?
+> > >
+> > > I don't know yet. We need to decide.
+> > > In syzkaller we are more flexible and can change code faster, while k=
+ernel interfaces are stable and need to be kept forever. So I think we need=
+ to concentrate more on the good kernel interface and then support it in sy=
+zkaller.
+> > >
+> > > > ``` Alexander's one
+> > > > + pos =3D (ip - canonicalize_ip((unsigned long)&_stext)) / 4; idx =
+=3D pos
+> > > > + % BITS_PER_LONG; pos /=3D BITS_PER_LONG; if (likely(pos <
+> > > > + t->kcov_size)) WRITE_ONCE(area[pos], READ_ONCE(area[pos]) | 1L <<
+> > > > + idx);
+> > > > ```
+> > > > Pc offset is divided by 4 and start is _stext. But for some arch, p=
+c is less than _stext.
+> > >
+> > > You mean that modules can have PC < _stext?
+> > >
+> > > > ``` https://github.com/google/syzkaller/blob/master/syz-manager/cov=
+filter.go#L139-L154
+> > > >         data :=3D make([]byte, 8+((size>>4)/8+1))
+> > > >         order :=3D binary.ByteOrder(binary.BigEndian)
+> > > >         if target.LittleEndian {
+> > > >                 order =3D binary.LittleEndian
+> > > >         }
+> > > >         order.PutUint32(data, start)
+> > > >         order.PutUint32(data[4:], size)
+> > > >
+> > > >         bitmap :=3D data[8:]
+> > > >         for pc :=3D range pcs {
+> > > >                 // The lowest 4-bit is dropped.
+> > > >                 pc =3D uint32(backend.NextInstructionPC(target, uin=
+t64(pc)))
+> > > >                 pc =3D (pc - start) >> 4
+> > > >                 bitmap[pc/8] |=3D (1 << (pc % 8))
+> > > >         }
+> > > >         return data
+> > > > ```
+> > > > Pc offset is divided by 16 and start is cover filter start pc.
+> > > >
+> > > > I think divided by 8 is more reasonable? Because there is at least =
+one instruction before each __sanitizer_cov_trace_pc call.
+> > > > 0000000000000160 R_AARCH64_CALL26  __sanitizer_cov_trace_pc
+> > > > 0000000000000168 R_AARCH64_CALL26  __sanitizer_cov_trace_pc
+> > > >
+> > > > I think we still need my patch because we still need a way to keep =
+the trace_pc call and post-filter in syzkaller doesn't solve trace_pc dropp=
+ing, right?
+> > >
+> > > Yes, the in-kernel filter solves the problem of trace capacity/overfl=
+ows.
+> > >
+> > >
+> > > > But for sure I can use the bitmap from syzkaller.
+> > > >
+> > > > THX
+> > > > Joey
+> > > > -----Original Message-----
+> > > > From: Dmitry Vyukov <dvyukov@google.com>
+> > > > Sent: Thursday, November 18, 2021 10:00 PM
+> > > > To: JianGen Jiao (QUIC) <quic_jiangenj@quicinc.com>
+> > > > Cc: andreyknvl@gmail.com; kasan-dev@googlegroups.com; LKML
+> > > > <linux-kernel@vger.kernel.org>; Alexander Lochmann
+> > > > <info@alexander-lochmann.de>
+> > > > Subject: Re: [PATCH] kcov: add KCOV_PC_RANGE to limit pc range
+> > > >
+> > > > WARNING: This email originated from outside of Qualcomm. Please be =
+wary of any links or attachments, and do not enable macros.
+> > > >
+> > > > ,On Wed, 17 Nov 2021 at 07:24, Joey Jiao <quic_jiangenj@quicinc.com=
+> wrote:
+> > > > >
+> > > > > Sometimes we only interested in the pcs within some range, while
+> > > > > there are cases these pcs are dropped by kernel due to `pos >=3D
+> > > > > t->kcov_size`, and by increasing the map area size doesn't help.
+> > > > >
+> > > > > To avoid disabling KCOV for these not intereseted pcs during buil=
+d
+> > > > > time, adding this new KCOV_PC_RANGE cmd.
+> > > >
+> > > > Hi Joey,
+> > > >
+> > > > How do you use this? I am concerned that a single range of PCs is t=
+oo restrictive. I can only see how this can work for single module (continu=
+ous in memory) or a single function. But for anything else (something in th=
+e main kernel, or several modules), it won't work as PCs are not continuous=
+.
+> > > >
+> > > > Maybe we should use a compressed bitmap of interesting PCs? It allo=
+ws to support all cases and we already have it in syz-executor, then syz-ex=
+ecutor could simply pass the bitmap to the kernel rather than post-filter.
+> > > > It's also overlaps with the KCOV_MODE_UNIQUE mode that +Alexander p=
+roposed here:
+> > > > https://groups.google.com/g/kasan-dev/c/oVz3ZSWaK1Q/m/9ASztdzCAAAJ
+> > > > It would be reasonable if kernel uses the same bitmap format for th=
+ese
+> > > > 2 features.
+> > > >
+> > > >
+> > > >
+> > > > > An example usage is to use together syzkaller's cov filter.
+> > > > >
+> > > > > Change-Id: I954f6efe1bca604f5ce31f8f2b6f689e34a2981d
+> > > > > Signed-off-by: Joey Jiao <quic_jiangenj@quicinc.com>
+> > > > > ---
+> > > > >  Documentation/dev-tools/kcov.rst | 10 ++++++++++
+> > > > >  include/uapi/linux/kcov.h        |  7 +++++++
+> > > > >  kernel/kcov.c                    | 18 ++++++++++++++++++
+> > > > >  3 files changed, 35 insertions(+)
+> > > > >
+> > > > > diff --git a/Documentation/dev-tools/kcov.rst
+> > > > > b/Documentation/dev-tools/kcov.rst
+> > > > > index d83c9ab..fbcd422 100644
+> > > > > --- a/Documentation/dev-tools/kcov.rst
+> > > > > +++ b/Documentation/dev-tools/kcov.rst
+> > > > > @@ -52,9 +52,15 @@ program using kcov:
+> > > > >      #include <fcntl.h>
+> > > > >      #include <linux/types.h>
+> > > > >
+> > > > > +    struct kcov_pc_range {
+> > > > > +      uint32 start;
+> > > > > +      uint32 end;
+> > > > > +    };
+> > > > > +
+> > > > >      #define KCOV_INIT_TRACE                    _IOR('c', 1, unsi=
+gned long)
+> > > > >      #define KCOV_ENABLE                        _IO('c', 100)
+> > > > >      #define KCOV_DISABLE                       _IO('c', 101)
+> > > > > +    #define KCOV_TRACE_RANGE                   _IOW('c', 103, st=
+ruct kcov_pc_range)
+> > > > >      #define COVER_SIZE                 (64<<10)
+> > > > >
+> > > > >      #define KCOV_TRACE_PC  0
+> > > > > @@ -64,6 +70,8 @@ program using kcov:
+> > > > >      {
+> > > > >         int fd;
+> > > > >         unsigned long *cover, n, i;
+> > > > > +        /* Change start and/or end to your interested pc range. =
+*/
+> > > > > +        struct kcov_pc_range pc_range =3D {.start =3D 0, .end =
+=3D
+> > > > > + (uint32)(~((uint32)0))};
+> > > > >
+> > > > >         /* A single fd descriptor allows coverage collection on a=
+ single
+> > > > >          * thread.
+> > > > > @@ -79,6 +87,8 @@ program using kcov:
+> > > > >                                      PROT_READ | PROT_WRITE, MAP_=
+SHARED, fd, 0);
+> > > > >         if ((void*)cover =3D=3D MAP_FAILED)
+> > > > >                 perror("mmap"), exit(1);
+> > > > > +        if (ioctl(fd, KCOV_PC_RANGE, pc_range))
+> > > > > +               dprintf(2, "ignore KCOV_PC_RANGE error.\n");
+> > > > >         /* Enable coverage collection on the current thread. */
+> > > > >         if (ioctl(fd, KCOV_ENABLE, KCOV_TRACE_PC))
+> > > > >                 perror("ioctl"), exit(1); diff --git
+> > > > > a/include/uapi/linux/kcov.h b/include/uapi/linux/kcov.h index
+> > > > > 1d0350e..353ff0a 100644
+> > > > > --- a/include/uapi/linux/kcov.h
+> > > > > +++ b/include/uapi/linux/kcov.h
+> > > > > @@ -16,12 +16,19 @@ struct kcov_remote_arg {
+> > > > >         __aligned_u64   handles[0];
+> > > > >  };
+> > > > >
+> > > > > +#define PC_RANGE_MASK ((__u32)(~((u32) 0))) struct kcov_pc_range=
+ {
+> > > > > +       __u32           start;          /* start pc & 0xFFFFFFFF =
+*/
+> > > > > +       __u32           end;            /* end pc & 0xFFFFFFFF */
+> > > > > +};
+> > > > > +
+> > > > >  #define KCOV_REMOTE_MAX_HANDLES                0x100
+> > > > >
+> > > > >  #define KCOV_INIT_TRACE                        _IOR('c', 1, unsi=
+gned long)
+> > > > >  #define KCOV_ENABLE                    _IO('c', 100)
+> > > > >  #define KCOV_DISABLE                   _IO('c', 101)
+> > > > >  #define KCOV_REMOTE_ENABLE             _IOW('c', 102, struct kco=
+v_remote_arg)
+> > > > > +#define KCOV_PC_RANGE                  _IOW('c', 103, struct kco=
+v_pc_range)
+> > > > >
+> > > > >  enum {
+> > > > >         /*
+> > > > > diff --git a/kernel/kcov.c b/kernel/kcov.c index 36ca640..5955045=
+0
+> > > > > 100644
+> > > > > --- a/kernel/kcov.c
+> > > > > +++ b/kernel/kcov.c
+> > > > > @@ -36,6 +36,7 @@
+> > > > >   *  - initial state after open()
+> > > > >   *  - then there must be a single ioctl(KCOV_INIT_TRACE) call
+> > > > >   *  - then, mmap() call (several calls are allowed but not usefu=
+l)
+> > > > > + *  - then, optional to set trace pc range
+> > > > >   *  - then, ioctl(KCOV_ENABLE, arg), where arg is
+> > > > >   *     KCOV_TRACE_PC - to trace only the PCs
+> > > > >   *     or
+> > > > > @@ -69,6 +70,8 @@ struct kcov {
+> > > > >          * kcov_remote_stop(), see the comment there.
+> > > > >          */
+> > > > >         int                     sequence;
+> > > > > +       /* u32 Trace PC range from start to end. */
+> > > > > +       struct kcov_pc_range    pc_range;
+> > > > >  };
+> > > > >
+> > > > >  struct kcov_remote_area {
+> > > > > @@ -192,6 +195,7 @@ static notrace unsigned long
+> > > > > canonicalize_ip(unsigned long ip)  void notrace
+> > > > > __sanitizer_cov_trace_pc(void)  {
+> > > > >         struct task_struct *t;
+> > > > > +       struct kcov_pc_range pc_range;
+> > > > >         unsigned long *area;
+> > > > >         unsigned long ip =3D canonicalize_ip(_RET_IP_);
+> > > > >         unsigned long pos;
+> > > > > @@ -199,6 +203,11 @@ void notrace __sanitizer_cov_trace_pc(void)
+> > > > >         t =3D current;
+> > > > >         if (!check_kcov_mode(KCOV_MODE_TRACE_PC, t))
+> > > > >                 return;
+> > > > > +       pc_range =3D t->kcov->pc_range;
+> > > > > +       if (pc_range.start < pc_range.end &&
+> > > > > +               ((ip & PC_RANGE_MASK) < pc_range.start ||
+> > > > > +               (ip & PC_RANGE_MASK) > pc_range.end))
+> > > > > +               return;
+> > > > >
+> > > > >         area =3D t->kcov_area;
+> > > > >         /* The first 64-bit word is the number of subsequent PCs.=
+ */
+> > > > > @@ -568,6 +577,7 @@ static int kcov_ioctl_locked(struct kcov *kco=
+v, unsigned int cmd,
+> > > > >         int mode, i;
+> > > > >         struct kcov_remote_arg *remote_arg;
+> > > > >         struct kcov_remote *remote;
+> > > > > +       struct kcov_pc_range *pc_range;
+> > > > >         unsigned long flags;
+> > > > >
+> > > > >         switch (cmd) {
+> > > > > @@ -589,6 +599,14 @@ static int kcov_ioctl_locked(struct kcov *kc=
+ov, unsigned int cmd,
+> > > > >                 kcov->size =3D size;
+> > > > >                 kcov->mode =3D KCOV_MODE_INIT;
+> > > > >                 return 0;
+> > > > > +       case KCOV_PC_RANGE:
+> > > > > +               /* Limit trace pc range. */
+> > > > > +               pc_range =3D (struct kcov_pc_range *)arg;
+> > > > > +               if (copy_from_user(&kcov->pc_range, pc_range, siz=
+eof(kcov->pc_range)))
+> > > > > +                       return -EINVAL;
+> > > > > +               if (kcov->pc_range.start >=3D kcov->pc_range.end)
+> > > > > +                       return -EINVAL;
+> > > > > +               return 0;
+> > > > >         case KCOV_ENABLE:
+> > > > >                 /*
+> > > > >                  * Enable coverage for the current task.
+> > > > > --
+> > > > > 2.7.4
