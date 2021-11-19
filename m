@@ -2,140 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 253294579A8
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 00:39:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B0D4579AD
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 00:40:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234119AbhKSXmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 18:42:46 -0500
-Received: from mail-cusazon11021015.outbound.protection.outlook.com ([52.101.62.15]:1646
-        "EHLO na01-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229610AbhKSXmo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 18:42:44 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m6RozdnmdRQrl/EVs4ejphrZjBclYmdvNqY1Se5AGrqFSsOuWTaZ7LDnFquo9kF8o2y8WbtqOCTVJBhAH9UuBj2+FQc9SsDbzdccqK8mNUkJ7WBkJrkIsppcx+9fZwE6dFxcDu90ExS3n0ch3MmcCmb9mVgNdgHYEhr99jnzp3S5zS2EYFYnn+9tL8SKXi14uL7H0oLMRMLbb50bzNTho1k7Xf/6LwIHdA/PNbj1YjEaBz9KiVbcTHuBoRk9aTtQp2bFFO/AcY/isumf6E2L+mWtYhuhgCApibF22CAInbatfnbu5QTB35XLdQnX3XiMaRa3YBbi7KDSUh7FbTHlWA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bBcrA3GicMcPSiX1v4GySeuSNmJUZRkaDr3BIwU3pmE=;
- b=N6ZLbK9OYSVTTJ0tc50QWenRJSIlGa+71p+OY71wzZ+8uuYSp2uKzfJInDfP3/M026hcTVU/BRGJkS6lH9Yil0728WFiVJGjARzhea+F1xaKUf/R+NzziAmB/FuoFO4CGIfDa+PWGqmpLrooxdFS3g3QVRwj4kqB7zumVDrVAqo0IInQXQpu35S3LQ1AaOFonj6ITHNmHtlxkWGcE9ASKEu5InrqiLp11lyjRVKCrcDoUvDnBr5/wHERR6xXmsnvro/1I310sVB6WnAS3AUo79I2PRb0f0mjHq2AaWQC3utg54pmDic1W9KO+eMlvKE5T7fW1FnWkVPggUPv12h+tA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bBcrA3GicMcPSiX1v4GySeuSNmJUZRkaDr3BIwU3pmE=;
- b=FKarZZoIdKTR/u78L8BShPaXD9WIzOXZfVSG+EmsCTVMVXCOYGIil5M4xvHfcn0ZwQDQsEwH/DTQOYLqsdYVO3EJfdI6/Z+Zx82Q3jwd13NcJRBdLg9+EWHo4JU0rin3cn4kipLVAdYqIFNDDqZBlNlcZdq/hYw9RpZDXupJv1k=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-Received: from DM6PR21MB1514.namprd21.prod.outlook.com (2603:10b6:5:22d::11)
- by DM5PR21MB0507.namprd21.prod.outlook.com (2603:10b6:3:eb::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.13; Fri, 19 Nov
- 2021 23:39:39 +0000
-Received: from DM6PR21MB1514.namprd21.prod.outlook.com
- ([fe80::289a:20fc:5d8c:9142]) by DM6PR21MB1514.namprd21.prod.outlook.com
- ([fe80::289a:20fc:5d8c:9142%3]) with mapi id 15.20.4713.009; Fri, 19 Nov 2021
- 23:39:39 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     mark.rutland@arm.com, lorenzo.pieralisi@arm.com,
-        sudeep.holla@arm.com, steven.price@arm.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     mikelley@microsoft.com
-Subject: [PATCH 1/1] firmware: smccc: Fix check for ARCH_SOC_ID not implemented
-Date:   Fri, 19 Nov 2021 15:39:01 -0800
-Message-Id: <1637365141-16823-1-git-send-email-mikelley@microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-Content-Type: text/plain
-X-ClientProxiedBy: CO2PR04CA0150.namprd04.prod.outlook.com (2603:10b6:104::28)
- To DM6PR21MB1514.namprd21.prod.outlook.com (2603:10b6:5:22d::11)
+        id S236091AbhKSXnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 18:43:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236028AbhKSXnO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 18:43:14 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B0FC061748
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 15:40:11 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id b1so49922858lfs.13
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 15:40:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rBqNH03SQHw54nf1sSLFeWZJtpAA4tMJRhcRf6KK130=;
+        b=ZEUS3rHgG5f2CCTc1i5ALCmvS4HcCVZiaidRuvK86lumr9erVB2h2XrBaYGm7oIjKp
+         JWQJtexwctyJWKSZdCQVixTIO2Zxj3BoXhxok/WV0QIi5SJJsgdwVKwexMLdJE97En+3
+         iE9UfXKoSopnS4zhM5A3LGjsMGvogDbNEVQ7YDxixypMv3iUuOzbmd4lWJfqJQZgKeRS
+         7b/sJfvO+At756/nSyk9U+8OOMUIv/j1CC4fTM06hC+oIGQJvZRxvVeFRXLT6H6twA8M
+         Bskhfub2s1U69JF2cRPZXO93m8/NhW/yqzRgVarKHG+TF/56zv1FoScXbVc8eg/CMpiN
+         mT7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rBqNH03SQHw54nf1sSLFeWZJtpAA4tMJRhcRf6KK130=;
+        b=YCDW0zwcPUtorcq/KK73i8VZUcdpBpLq7vO8D5T6vNlmo+PCA4OEtBhpqJ8Uof4OKP
+         S+LGRs/OAXKD0zfDph77o0KbwTWyhm05Y2W/8/0X7FE4dpVKLqDYE8GTbVqKTzbYLwi9
+         o6b+pHSXBbjwhzMTbVScKVouLKTxYjy/pEp2oxWJqjder0Am9KG8WetOO3Wzwjxu7rOz
+         uS1ipUSWbvmp2m1dHa2uzZOkjw4PNNqwDMtvWmTzb6guowduc862Mogv/0cAh/FA7BBP
+         aHtlzJCsOAGZiMMIX62jxxhlGfRlOSp2IfQwKzGPqTBeR2ZCl/0TmMUo4fB+CrJwSnU8
+         UN7A==
+X-Gm-Message-State: AOAM53210Lgjlo3qU6ITrqRKhY3I0Pz7UM3zTCr7uKFk76JIYAsg+EMB
+        t6Csup3Ds1/yjl+kRIa+PtL0amBnvlyE4439VZfh0w==
+X-Google-Smtp-Source: ABdhPJzxz4GreJQD8XtyasARCmhfSzifXzAHxJK+0NBW3rz8ATOv0jsOv/R4JyiSyBLSmIv/Uo7ALRra8bmC0ysep0g=
+X-Received: by 2002:a05:6512:22c7:: with SMTP id g7mr37002485lfu.668.1637365209836;
+ Fri, 19 Nov 2021 15:40:09 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mhkdev.corp.microsoft.com (131.107.147.144) by CO2PR04CA0150.namprd04.prod.outlook.com (2603:10b6:104::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21 via Frontend Transport; Fri, 19 Nov 2021 23:39:39 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4105c54e-5c55-46c5-6a0f-08d9abb5daaa
-X-MS-TrafficTypeDiagnostic: DM5PR21MB0507:
-X-LD-Processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-X-Microsoft-Antispam-PRVS: <DM5PR21MB0507AD153EC9FA962367ED7DD79C9@DM5PR21MB0507.namprd21.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Z+v7bbrErPeb/39RoNKb/bHExd5FzSx0k7y7zmyjLSYJS7Kq/Is7oqasgILhexPVmomGk+C7Pp0Grm70Qj02qDpuCptprvO7Jyfqy/MFUR1afhLg0iIAr2/getZ737adie2LEZOMo5T+liA8syYeI9s82EZys6dKwCFx321nhQDDHmoih8FibR7FMsSXclkmvovH9YSUvfYOS12QXVOiJ0dnlpOOx5dv2d/odw4+QrIhOsWqxkZxZtiwVn/eyM1z0HW7U+fdHtU52jhIh9B/vsq969T0g1450vSrz9C1I17LiBFyZQLogrBKp5TLns9HdThKaX9EaCYRY9qUGHc/5or4z72KIMO8aW6nwXF3uHvAhOVnqF58FoVjLDkzHQJn/JmU075NMLWmz8nyYJBbbGSkRHAbJ9I1+M+ed2e5/aL349Pvk/mXjXU61D9Ou0r4ISNu8oIJvSmzjIfFM8pT7Ojdx+gSZ5iZbMWn8mtCPfcPRPhieTHNqLzkbAYgFrhA29ds1bT2Tp0n3G7a5/HiD0HlowTsgoM8hOkY8EpbXqjFX7GQVYH8zA8vAHYpv8IpGLmBBH01c7qfF/eEOrggFw3mOEYSKPo3XQ4iyqFU2RtFJ5ELV0qYx6rHoBbD8f9zCo1AOu5Llm7HAvHiFEq4bgBuwfWowtkPeg+E5kbYK2iyAJ3GgoO7UrO5epD10xdX1fnbQGulv9AaBxp274t8Q3qS0pg3bjy6gcWlo+Os+x6jKcSvH4xPVNQ6KnSOJKY2
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR21MB1514.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(26005)(4326008)(10290500003)(83380400001)(186003)(52116002)(6486002)(36756003)(508600001)(956004)(2616005)(6666004)(7696005)(107886003)(38350700002)(5660300002)(82950400001)(66946007)(2906002)(66556008)(316002)(86362001)(66476007)(8936002)(8676002)(38100700002)(82960400001)(20210929001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?IARyChbm7QJ/a5azSEG2n/5aJISPpVE+FT1S1UlKVeJmCFZMVfDyShkFIsof?=
- =?us-ascii?Q?ORxJV0gzmAWpmOjZSrsfvUtvtR+5j1m6U8eNEwzAjnwW2p66qa48v+V3uVk9?=
- =?us-ascii?Q?Vvs/eUYUx5InxXlBCpxSJKUu2lhw2JyYZuwCA234SGS3XgPnSSUXdBy+c2J6?=
- =?us-ascii?Q?A54B15kvKnYYnJQCuQeANPx+jsZrnQc7m0545v8udAlZ2X/rYSJ8hEaZYSEf?=
- =?us-ascii?Q?l5CM1nLYnKn9Mc0mmhpJG6ZWWcLNuyCLSpaZXHX1yKzU95hXe1ZmF6DWUN5H?=
- =?us-ascii?Q?38ivWlpW3sX937HX5jk0DWNLL97oW6lH+mOZYwkxmz6vPBgEqIgcJtNlbzdO?=
- =?us-ascii?Q?1M3ABSYuZgUQiGK/k6gm+wcDL7C9UtZVCrIVrg41sb+EFjDiytmh84kEnBCW?=
- =?us-ascii?Q?5Sb0nG9MLkgB5rwxjdHJU8ZdN1AumH8WM4sBqf4MQ42nf3R9eL7EN515hlfU?=
- =?us-ascii?Q?E2FxX9c2ptuEjJQtTNixcUoXlXHJJ0uQUjtRuAmKE/5C6dP8phy+8W0J1fUH?=
- =?us-ascii?Q?RvbaSZDuXwPx8woPiuXrTDUep0OtcYMnS5fpRRX84KlwvJq4zCVxk/RMewUh?=
- =?us-ascii?Q?AVXnRdwCD1OYN8Gf4jLZYlgPSCg/d83++hx4zi84lDYyiP3N7OAIXQgky4Yu?=
- =?us-ascii?Q?z6zWZgkPDm5cSUtFCB6qDBb17gQifTPQp1I/dtopLPicfwV5hMuUy8W+wZc4?=
- =?us-ascii?Q?1HklrT4ch7fyKTXSu1u5lc0FTF2PDmHGgP80spYK7ttOVXRVlus03OF1nkFV?=
- =?us-ascii?Q?FF+/IZuPWPoCm6QiTGY1atMYIDjO9mpJPHmQUUf0xPBjfdbphxYL33Dyyw3s?=
- =?us-ascii?Q?PKd/yKw6K6f1o+pf+KLWfqVYhdH85Kb09AKsH65j79H5hBumpEiG84Kqlx/V?=
- =?us-ascii?Q?K3x3/cgsBl4ozNyVJ5l1KIuIpTpQDmoJ3fshrNRIoY1+MkINWMy0TaWbRYav?=
- =?us-ascii?Q?2F8JVnOgnoS1YwhD7cnTKDc+bTPG5QFmCZC2/9T7ebPUOstZ3yC8iTRh3EgP?=
- =?us-ascii?Q?ExNZpOERmL83urbKvWdfQdP3NysgpoMvO7t2HLVhRDxmY6RzUwAz9ngU0jgl?=
- =?us-ascii?Q?P/wmQuQ9rRYgobF3rnriSEsSNdx8IEpegk+PM4J8LALxNSvNeIQR6V3HHZI0?=
- =?us-ascii?Q?ZUvUIFlh5YJU6FiFomGUEftin4iE563hgdyA9EVlKISdTgiXcwOA6SWyOoDd?=
- =?us-ascii?Q?wwKuFxpRmvIX9Dn18fCJr4uJBAo9us0JE0SKXsO1V5CwUFgbOPWMSNsPu49V?=
- =?us-ascii?Q?DHEu7H9uB6M1QFHFaXGGPmhCyvB3Nl2moEhiHj7uocqqydQxtCVnFd51lYP+?=
- =?us-ascii?Q?eKFcGHyNLefEbJgDkYaCm5k1+QAORg2Ln7oCI8oDHIRNLRFIar938sLuiV6G?=
- =?us-ascii?Q?inQ1n9T0CyinjEtbdh0X24Ylq2wQWzibBco1Oez/lYlKBaMA+rJvzSW8ZsUf?=
- =?us-ascii?Q?yoS/tOL7D20rxwC4jFZfHhGdPyGOA+Xozuj0mbTz7qaXc5RWnbkwiCu++gQG?=
- =?us-ascii?Q?Yr2ld2lInQYnhTxQAJ3fDa9zvQ7LqJC941+bBJegbefrdoiLpTDoouVWYtI1?=
- =?us-ascii?Q?GYjK0bkv5vUT9eRyInphBObusPjz/2SqWKLayRpXILcnJwgICpOXbyKQIZkQ?=
- =?us-ascii?Q?SrUkPpdDEvFHvUykuHQw9fQ=3D?=
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4105c54e-5c55-46c5-6a0f-08d9abb5daaa
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR21MB1514.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2021 23:39:39.6643
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JvTqc6sn17JoRnQXG/NBpnMFGLZSUPzvwpK35iNPiya+lh2eNZZR0SzCfuPt4S8IQ4ikErHDbWLR29m0C0KdUw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR21MB0507
+References: <20211112180720.2858135-1-tkjos@google.com> <CAHC9VhQaHzrjdnr_DvZdPfWGiehC17yJVAJdVJMn8tOC1_Y+gA@mail.gmail.com>
+In-Reply-To: <CAHC9VhQaHzrjdnr_DvZdPfWGiehC17yJVAJdVJMn8tOC1_Y+gA@mail.gmail.com>
+From:   Todd Kjos <tkjos@google.com>
+Date:   Fri, 19 Nov 2021 15:39:59 -0800
+Message-ID: <CAHRSSEwUUUxXOnb2_fg1qnEXbCtD+G7KW8=xwKZFA5r-PKcPBg@mail.gmail.com>
+Subject: Re: [PATCH] binder: fix test regression due to sender_euid change
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
+        maco@android.com, christian@brauner.io, jmorris@namei.org,
+        serge@hallyn.com, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, keescook@chromium.org, jannh@google.com,
+        jeffv@google.com, zohar@linux.ibm.com,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        joel@joelfernandes.org, kernel-team@android.com,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ARCH_FEATURES function ID is a 32-bit SMC call, which returns
-a 32-bit result per the SMCCC spec.  Current code is doing a 64-bit
-comparison against -1 (SMCCC_RET_NOT_SUPPORTED) to detect that the
-feature is unimplemented.  That check doesn't work in a Hyper-V VM,
-where the upper 32-bits are zero as allowed by the spec.
+On Fri, Nov 19, 2021 at 3:00 PM Paul Moore <paul@paul-moore.com> wrote:
+>
+> On Fri, Nov 12, 2021 at 1:07 PM Todd Kjos <tkjos@google.com> wrote:
+> >
+> > This is a partial revert of commit
+> > 29bc22ac5e5b ("binder: use euid from cred instead of using task").
+> > Setting sender_euid using proc->cred caused some Android system test
+> > regressions that need further investigation. It is a partial
+> > reversion because subsequent patches rely on proc->cred.
+> >
+> > Cc: stable@vger.kernel.org # 4.4+
+> > Fixes: 29bc22ac5e5b ("binder: use euid from cred instead of using task")
+> > Signed-off-by: Todd Kjos <tkjos@google.com>
+> > Change-Id: I9b1769a3510fed250bb21859ef8beebabe034c66
 
-Cast the result as an 'int' so the comparison works. The change also
-makes the code consistent with other similar checks in this file.
+Greg, I neglected to remove the "Change-Id" from my Android pre-submit
+testing. Can you remove that, or would you like me to resubmit without
+it?
 
-Fixes: 821b67fa4639 ("firmware: smccc: Add ARCH_SOC_ID support")
-Signed-off-by: Michael Kelley <mikelley@microsoft.com>
----
- drivers/firmware/smccc/soc_id.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/firmware/smccc/soc_id.c b/drivers/firmware/smccc/soc_id.c
-index 581aa5e..dd7c3d5 100644
---- a/drivers/firmware/smccc/soc_id.c
-+++ b/drivers/firmware/smccc/soc_id.c
-@@ -50,7 +50,7 @@ static int __init smccc_soc_init(void)
- 	arm_smccc_1_1_invoke(ARM_SMCCC_ARCH_FEATURES_FUNC_ID,
- 			     ARM_SMCCC_ARCH_SOC_ID, &res);
- 
--	if (res.a0 == SMCCC_RET_NOT_SUPPORTED) {
-+	if ((int)res.a0 == SMCCC_RET_NOT_SUPPORTED) {
- 		pr_info("ARCH_SOC_ID not implemented, skipping ....\n");
- 		return 0;
- 	}
--- 
-1.8.3.1
-
+> > ---
+> > - the issue was introduced in 5.16-rc1, so please apply to 5.16
+> > - this should apply cleanly to all stable branches back to 4.4
+> >   that contain "binder: use euid from cred instead of using task"
+> >
+> >
+> >  drivers/android/binder.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> This looks okay to me.  I assume this is going in via GregKH's tree?
+>
+> Acked-by: Paul Moore <paul@paul-moore.com>
+>
+> > diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+> > index 49fb74196d02..cffbe57a8e08 100644
+> > --- a/drivers/android/binder.c
+> > +++ b/drivers/android/binder.c
+> > @@ -2710,7 +2710,7 @@ static void binder_transaction(struct binder_proc *proc,
+> >                 t->from = thread;
+> >         else
+> >                 t->from = NULL;
+> > -       t->sender_euid = proc->cred->euid;
+> > +       t->sender_euid = task_euid(proc->tsk);
+> >         t->to_proc = target_proc;
+> >         t->to_thread = target_thread;
+> >         t->code = tr->code;
+> > --
+> > 2.34.0.rc1.387.gb447b232ab-goog
+>
+> --
+> paul moore
+> www.paul-moore.com
