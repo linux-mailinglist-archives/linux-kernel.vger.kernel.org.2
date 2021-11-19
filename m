@@ -2,283 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB6E456FDF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D6C8456FD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:48:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235591AbhKSNv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 08:51:26 -0500
-Received: from mga18.intel.com ([134.134.136.126]:21926 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230410AbhKSNvY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 08:51:24 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="221293774"
-X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
-   d="scan'208";a="221293774"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 05:48:22 -0800
-X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
-   d="scan'208";a="507904652"
-Received: from sgconnee-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.21.83])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 05:48:10 -0800
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Ajit Khaparde <ajit.khaparde@broadcom.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Borislav Petkov <bp@suse.de>,
-        Corey Minyard <cminyard@mvista.com>, Chris Mason <clm@fb.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        David Sterba <dsterba@suse.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "John S . Gruber" <JohnSGruber@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ketan Mukadam <ketan.mukadam@broadcom.com>,
-        Len Brown <lenb@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
-        intel-gfx@lists.freedesktop.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-btrfs@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 00/17] Add memberof(), split some headers, and slightly
- simplify code
-In-Reply-To: <a9522c0e-0762-c7cd-edb1-0376c435c4d9@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20211119113644.1600-1-alx.manpages@gmail.com>
- <87mtm0jos3.fsf@intel.com>
- <a9522c0e-0762-c7cd-edb1-0376c435c4d9@gmail.com>
-Date:   Fri, 19 Nov 2021 15:48:02 +0200
-Message-ID: <87k0h4jlyl.fsf@intel.com>
+        id S235549AbhKSNvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 08:51:21 -0500
+Received: from mail-co1nam11on2041.outbound.protection.outlook.com ([40.107.220.41]:22984
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230410AbhKSNvU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 08:51:20 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CtgjSz/xagtJhabW9p3f3yCUn5BIhWGjJkpP9TUtwZs7YvtRZK8LIxHbaj+6SWepxqRAw56qDDsBixjHHv5nW25iqT3sbcjsfjOvM+piJZWs6ZrwrBremkj5V+OvWjSrMy7G3AVz4oZOdCn1tsaoooUR292QglL/xfeNqiM0UCNZr4ZKy5C0ycWwuYXeunKdtZ/049A96YnP4heCRO2lIO/D5NaMdWxMPfEKbV8GC1pmz732skZLFTQaTe82MlTZq2In42w+wuYRJqzI/ZMZ5hAO4SkfeNimcKHO/KVjUI+wv5aFEusSKBNhHi9z4c9SPbaicAHdI+AIGRzVwj8CvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EpVMiiQQvdIrSgHYr78zNoas/Mw8bwqItxS7UFa1ZeY=;
+ b=PJYB4T4bCmPNct6xa/CyOAP5RtM1tcXiDLsY0ZabetPpGlKK2NRDpmIE6V/KNULjnQsy5LOYrVJg21MA9s5rw8A90Es4wd5dVC+2jxhnbD1wK26sB5e5mBGMpVkI7lUHGknc5pZaU/Yjh3DxbeZoWxdSVTdSZmpalJ8ijg89nLjZuoFIw5fzgl7P+mlqeKffgdbzNH6q2uFjXJDhEHr2YrWPTTx2yupI7FLMoJfvKSwlvrjQ5JUm0i4wUBqTJFtSYY7jDwX6r0BCLEY5OzbCDBcR1QJVbU/Mp108/uPFZuCXQCZTkcwSjG9Fx7FCSFVa+rzTTLde6zaKWoL2yahdDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EpVMiiQQvdIrSgHYr78zNoas/Mw8bwqItxS7UFa1ZeY=;
+ b=OIdbHvKaRudRxC1p4xS+LWAWCEswJnZeg/uhuHL6QPodPEgfo93Z9JvbayRII0CYhcHvWBQ5nA9FBRrfb103jFN6n/xjzK4Mc+HFeRcudtxi8AVGqMqyUmwmflqEl9+Oqi5qjgvrAFhuyktZztiLMkTRIWr/hqtiEVNpQkc6/fH6PPm4oJuLmSjKYvbu91HA/IpU/hsL3s1Toevr3gd89i7XJByH0P3BolBfdaXuod8z+DQRvgx9NnbkgvBV0U1RdNyeOxo7CpmO+2lfzmxywhOYvtHCxwtZftXY1TLXveZakzwfDqlcsei7PJiPsq0zGXllApbTvBbWWuh5uWKoRw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5287.namprd12.prod.outlook.com (2603:10b6:208:317::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Fri, 19 Nov
+ 2021 13:48:17 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::5897:83b2:a704:7909]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::5897:83b2:a704:7909%7]) with mapi id 15.20.4713.022; Fri, 19 Nov 2021
+ 13:48:17 +0000
+Date:   Fri, 19 Nov 2021 09:48:16 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bryan Tan <bryantan@vmware.com>
+Cc:     linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, Pv-drivers@vmware.com,
+        gregkh@linuxfoundation.org, vdasa@vmware.com, dledford@redhat.com,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH RESEND] MAINTAINERS: Update for VMware PVRDMA driver
+Message-ID: <20211119134816.GA2921280@nvidia.com>
+References: <1637320770-44878-1-git-send-email-bryantan@vmware.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1637320770-44878-1-git-send-email-bryantan@vmware.com>
+X-ClientProxiedBy: BLAPR03CA0116.namprd03.prod.outlook.com
+ (2603:10b6:208:32a::31) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Type: text/plain
+Received: from mlx.ziepe.ca (142.162.113.129) by BLAPR03CA0116.namprd03.prod.outlook.com (2603:10b6:208:32a::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22 via Frontend Transport; Fri, 19 Nov 2021 13:48:16 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mo4FU-00CFyC-74; Fri, 19 Nov 2021 09:48:16 -0400
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1baba9d1-1c0b-4805-77c0-08d9ab633d5c
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5287:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5287B0C2F6298339E5C7786AC29C9@BL1PR12MB5287.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2089;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7BdMjfZ3+VK5VBmhoZShsU9nKsbm6gTfJIZYMNzYEV+KDnkawJ4UzV6YfqE2n5MawnNR5+K9QpnrVWIFMWPpJRG67wXxQbND8xou3fhU7gLIQDwv3iURQ6er/pE9j2ZRWueZUPtIB9lHkbnyv06LW7JDoQ3PrkEXgY7TVWBrqbfOkpH0OVh11J9LGJvLDwbNZrLOKKgBvhMUqnQUl6mdiMI5ReXrs1iszqs/TBeTLwN8dZazYzf9T9ZOw8DxqSS3tWdzMmqRQDOBYu4rWElK9UDs0wTyvbnqmXLEKz007taLqmwoydUP0CZ3d8uz993MffVHB5rwi0W6zPF/fvVG09oqlO7MIcYP8/GD9m6kYMD6oHwd7MlbpqVdbIC3Y5mEAeNgqF+nkzK18i/f9HMUZcWxE8g8O4HJcXlPGH2W5jO4ERV706lsC2LuCNV0Cjmf4YZob7xHed/OcVjCxMLlaYxrsgqX/MOd8LjfW5iMoBod/1sbxKmeeg8KxrmIsP21hKY/1I0GE+/jTNk3thTnZbrEiPbKFK8V2BgJbTCMz84WS6ENai/fq9CaGyOSA6Dpg3QW9QonS1b0oE4kSzg+LxCzlmSTRTWkxl3TBr/+88zDL4zNuVjTR6COY6X9PsgVxfw83S2ssYBd2U1ZkaC2jA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(36756003)(33656002)(6916009)(426003)(83380400001)(66556008)(9746002)(508600001)(66946007)(9786002)(2616005)(38100700002)(66476007)(186003)(316002)(8936002)(4326008)(1076003)(86362001)(4744005)(2906002)(26005)(5660300002)(15650500001)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TcDuLrrX1liNUogRxz7/Boue4NbTdGPlGBuK6kcrrGl4JlxLtvg0CHWURuxL?=
+ =?us-ascii?Q?ISIZKAG+QMFz225ZhafNPfnA8bkmVtEvMERYrbaQUaIFIea5sv/xTPe4Ypof?=
+ =?us-ascii?Q?imWUDlTr2JnY0j1wE4Af0MhY+e+fR3Vt59jWP0RPXxBtvL1V4B1h+qZfUJvt?=
+ =?us-ascii?Q?PWtvAYYCwPXRg2rCOud5oEhH4PL2B0xQV1i6IQaXAZahEIEuUptWxN5MFBer?=
+ =?us-ascii?Q?uVVlscEBGlIFhlxPa9VoyVX+EgmL/oqbINyn9qgYQayS590nnBxeRQGoo+KY?=
+ =?us-ascii?Q?DYbwCmFo5JbHYuV+fVDf1vcOpQ627esENQ/FMujAM0sMAwVgR9CKiOCSTjnY?=
+ =?us-ascii?Q?0FjdR4pGy3+LtREBeCvtcCEElYiws61DJRSl4p/QbC67wtKGGes122FL3gyR?=
+ =?us-ascii?Q?0mF5NNz8bu0XvrxWnaHr9IlPr6Mf6mhAESGrnd2EJnPKnVwdjdcVuN7yQLtB?=
+ =?us-ascii?Q?1Q/wTkZg813XpRRYLPx0GN1QYBgRAbxtdI+5b+xXQIGvbbprD8Zm2JpGygBg?=
+ =?us-ascii?Q?u8mQ2Z0YVYCTUWmASu7jhwax9pH4rIZAezR7V6f/dkJi44+sydO9+w9WGzKc?=
+ =?us-ascii?Q?twc6d1tLuFAqBBojwkDMB+KXsz3nfkweWLuEjSvp7tVFtsGFFBDCcjDq7Kbg?=
+ =?us-ascii?Q?tx5Xv9QUigZ5fA1PXDysVfPSEdveFS3lZNH2wrf6iBlsCGfm5vn6UdRuzXCv?=
+ =?us-ascii?Q?thprKODY8r55/084Vdb+HgRR8CWy9uYM58Qsa2QbIXKdORZs4/x32h/LNLED?=
+ =?us-ascii?Q?nJ+227tBKgHYzsG3gP5cGjBauUDpGfVKfVztzusSv9++keuOwehHogzps1QF?=
+ =?us-ascii?Q?YIDkeEkrhorSV2aVJnkoDxTe7Aikey2emAdscGaMt23oRTSnZdS9vgWWnyb3?=
+ =?us-ascii?Q?GtQHDMKOpzjSGqWCGLVDnTkr7888y5LEa3qSJi1KZwUq6a6O16XkcvVjXvpJ?=
+ =?us-ascii?Q?fnQpyGvnTa9K6ekLHgXKHbO+o2HvcweGOyRwehdqDLpM7SNTc4t7Q2DiMtN6?=
+ =?us-ascii?Q?fLDo0xEB/+aj9NtW8exNHXHkhagbP10lBec7RFmheNie+khFGgmNyaQzZSfy?=
+ =?us-ascii?Q?22kiUV2CveMnJuMcZhbjketf+2rPFWz/Q4CKl0B0rSmQ/AkCsVqLbZRutAXU?=
+ =?us-ascii?Q?4GjUHQcOtLf/AX7tnPB33xBPVKdnEOmW05WVTaTcXF6g/cE5yahoQxMAQ3Tm?=
+ =?us-ascii?Q?2Qv4T5FCEi4jCroBd9uEqgXA32tpx9H9vlfAFV0YqX+VCIDlpso3teO8kSrX?=
+ =?us-ascii?Q?3NoO+j5CkfePQSV0dbtKXbsMjeHhHx8WfRc3yxbvr0Oo9ltaz5gLlmhYl3gf?=
+ =?us-ascii?Q?pZNtCvbpg9kV92LWdyjEuSQ0FUIiszqLH8DXtn085jmWgLjsQOo2dSER7CeP?=
+ =?us-ascii?Q?WkqRUl5NttHT800EGjSHtvsNQKQfUHIESDNkySanyycYPRzPJ/o2SWcACQsK?=
+ =?us-ascii?Q?Zqv/H4axBlRBPT/DPJJTQ2ieNQLrmJwdA2meSpzW5fLBE78T7/Pf+bbdDYMT?=
+ =?us-ascii?Q?LOmM9kR7i6nLnpyTvoUGZDFR5iQM3wRDYR7kx7iWXgSQSva2DwggQVixNeop?=
+ =?us-ascii?Q?/YEC/Rsvu4l4vqemHU0=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1baba9d1-1c0b-4805-77c0-08d9ab633d5c
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2021 13:48:17.0920
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uNLqnsQxxB7odiFPeRWOZPYRFqVKCiaFU+8tGkbGAan1H2FjWhioU4SDhf71eIGM
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5287
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Nov 2021, "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com> wrote:
-> Hi Jani,
->
-> On 11/19/21 13:47, Jani Nikula wrote:
->> On Fri, 19 Nov 2021, Alejandro Colomar <alx.manpages@gmail.com> wrote:
->>> In the first and second commits
->>> I changed a lot of stuff in many parts,
->>> and that's why I CCd so many people (also in this cover letter).
->>> However, to avoid spamming,
->>> and since it would be a nightmare to
->>> find all the relevant people affected in so many different areas,
->>> I only CCd in 01, 02 and in the cover letter.
->>> If anyone is interested in reading the full patch set,
->>> I sent it to the LKML.
->> 
->> I think with the patch split you have this would be a nightmare to get
->> merged. Please consider refactoring the headers first, and once those
->> are reviewed and merged, you can proceed with using them elsewhere. For
->> example, we'd want the drm/i915 changes in patches separate from changes
->> to other drivers or the core headers.
->
-> So,
-> would it be preferable something like this?:
->
-> Patch set 1:
-> - Add <linux/memberof.h> with memberof()
-> - Split offsetof() to <linux/offsetof.h>
-> - Split offsetofend() to <linux/offsetofend.h>
-> - Split typeof_member() to <linux/typeof_member.h>
-> - Split sizeof_field() to <linux/sizeof_field.h>
-> - Split NULL to <linux/NULL.h>
-> - Split ARRAY_SIZE() to <linux/array_size.h>
-> - Implement offsetof() in terms of memberof()
-> - Implement typeof_member() in terms of memberof()
-> - Implement sizeof_field() in terms of memberof()
-> - Implement container_of_safe() in terms of container_of()
-> - Remove unnecessary cast from container_of[_safe]()
-> - Cosmetic changes
->
-> Patch set 2:
-> - And in a different patch set, fix all other files
->    that make use of these macros.
->
->
-> Patch 1 without editing any other files except for the basic ones,
-> and adding includes where the definition had been previously,
-> to not break stuff.
->
-> And then,
-> start patching individual subsystems and
-> send tiny patch sets to each of them?
->
->
-> For the first part,
-> I agree it is better.
-> I'll change it to do that.
-> I'll send an v2 with less changes and more organized.
->
->
-> For the second part,
-> I'll see what I can do after the first one has been reviewed.
-> I'll do tiny patches with a few changes to one or few files,
-> so that I can reorganize them easily with a rebase -i afterwards,
-> and then decide.
+On Fri, Nov 19, 2021 at 03:19:30AM -0800, Bryan Tan wrote:
+> Update maintainer info for the VMware PVRDMA driver.
+> 
+> Reviewed-by: Adit Ranadive <aditr@vmware.com>
+> Reviewed-by: Vishnu Dasa <vdasa@vmware.com>
+> Signed-off-by: Bryan Tan <bryantan@vmware.com>
+> ---
+>  MAINTAINERS | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-Sounds about right. I presume just the first series is going to generate
-quite a bit of discussion, in particular <linux/NULL.h> looks like
-everyone's going to have an opinion. And for that, you really don't need
-or want all the users (patch series 2) Cc'd.
+Applied to for-rc, thanks
 
-
-BR,
-Jani.
-
-
-
->
->
-> Thanks,
-> Alex
->
->> 
->>>
->>>
->>> Alejandro Colomar (17):
->>>    linux/container_of.h: Add memberof(T, m)
->>>    Use memberof(T, m) instead of explicit NULL dereference
->>>    Replace some uses of memberof() by its wrappers
->>>    linux/memberof.h: Move memberof() to separate header
->>>    linux/typeof_member.h: Move typeof_member() to a separate header
->>>    Simplify sizeof(typeof_member()) to sizeof_field()
->>>    linux/NULL.h: Move NULL to a separate header
->>>    linux/offsetof.h: Move offsetof(T, m) to a separate header
->>>    linux/offsetof.h: Implement offsetof() in terms of memberof()
->>>    linux/container_of.h: Implement container_of_safe() in terms of
->>>      container_of()
->>>    linux/container_of.h: Cosmetic
->>>    linux/container_of.h: Remove unnecessary cast to (void *)
->>>    linux/sizeof_field.h: Move sizeof_field(T, m) to a separate header
->>>    include/linux/: Include a smaller header if just for NULL
->>>    linux/offsetofend.h: Move offsetofend(T, m) to a separate header
->>>    linux/array_size.h: Move ARRAY_SIZE(arr) to a separate header
->>>    include/: Include <linux/array_size.h> for ARRAY_SIZE()
->>>
->>>   arch/x86/include/asm/bootparam_utils.h        |  3 +-
->>>   arch/x86/kernel/signal_compat.c               |  5 ++--
->>>   drivers/gpu/drm/i915/i915_sw_fence.c          |  1 +
->>>   drivers/gpu/drm/i915/i915_utils.h             |  5 ++--
->>>   drivers/gpu/drm/i915/intel_runtime_pm.h       |  3 +-
->>>   drivers/net/ethernet/emulex/benet/be.h        | 10 +++----
->>>   drivers/net/ethernet/i825xx/ether1.c          |  7 +++--
->>>   drivers/platform/x86/wmi.c                    |  3 +-
->>>   drivers/scsi/be2iscsi/be.h                    | 12 ++++----
->>>   drivers/scsi/be2iscsi/be_cmds.h               |  5 +++-
->>>   fs/btrfs/ctree.h                              |  5 ++--
->>>   fs/proc/inode.c                               |  1 +
->>>   include/acpi/actypes.h                        |  4 ++-
->>>   include/crypto/internal/blake2b.h             |  1 +
->>>   include/crypto/internal/blake2s.h             |  1 +
->>>   include/crypto/internal/chacha.h              |  1 +
->>>   include/drm/drm_mipi_dbi.h                    |  1 +
->>>   include/drm/drm_mode_object.h                 |  1 +
->>>   include/kunit/test.h                          |  1 +
->>>   include/linux/NULL.h                          | 10 +++++++
->>>   include/linux/arm_ffa.h                       |  1 +
->>>   include/linux/array_size.h                    | 15 ++++++++++
->>>   include/linux/blk_types.h                     |  1 +
->>>   include/linux/can/core.h                      |  1 +
->>>   include/linux/clk-provider.h                  |  1 +
->>>   include/linux/container_of.h                  | 28 ++++++++++-------
->>>   include/linux/counter.h                       |  1 +
->>>   include/linux/crash_core.h                    |  1 +
->>>   include/linux/efi.h                           |  1 +
->>>   include/linux/extable.h                       |  2 +-
->>>   include/linux/f2fs_fs.h                       |  1 +
->>>   include/linux/filter.h                        |  3 ++
->>>   include/linux/fs.h                            |  1 +
->>>   include/linux/genl_magic_func.h               |  1 +
->>>   include/linux/hashtable.h                     |  1 +
->>>   include/linux/ieee80211.h                     |  1 +
->>>   include/linux/kbuild.h                        |  3 ++
->>>   include/linux/kernel.h                        |  7 +----
->>>   include/linux/kfifo.h                         |  1 +
->>>   include/linux/kvm_host.h                      |  3 ++
->>>   include/linux/libata.h                        |  1 +
->>>   include/linux/llist.h                         |  1 +
->>>   include/linux/memberof.h                      | 11 +++++++
->>>   include/linux/mlx5/device.h                   |  1 +
->>>   include/linux/mlx5/driver.h                   |  1 +
->>>   include/linux/mm_types.h                      |  1 +
->>>   include/linux/moduleparam.h                   |  3 ++
->>>   include/linux/mtd/rawnand.h                   |  1 +
->>>   include/linux/netdevice.h                     |  1 +
->>>   include/linux/netfilter.h                     |  1 +
->>>   include/linux/nvme-fc.h                       |  2 ++
->>>   include/linux/offsetof.h                      | 17 +++++++++++
->>>   include/linux/offsetofend.h                   | 19 ++++++++++++
->>>   include/linux/pagemap.h                       |  1 +
->>>   include/linux/phy.h                           |  1 +
->>>   include/linux/phy_led_triggers.h              |  1 +
->>>   include/linux/pinctrl/machine.h               |  1 +
->>>   include/linux/property.h                      |  1 +
->>>   include/linux/rcupdate.h                      |  1 +
->>>   include/linux/rcupdate_wait.h                 |  1 +
->>>   include/linux/regmap.h                        |  1 +
->>>   include/linux/sched/task.h                    |  1 +
->>>   include/linux/sizeof_field.h                  | 14 +++++++++
->>>   include/linux/skb_array.h                     |  1 +
->>>   include/linux/skbuff.h                        |  1 +
->>>   include/linux/skmsg.h                         |  3 ++
->>>   include/linux/slab.h                          |  2 ++
->>>   include/linux/spinlock_types.h                |  1 +
->>>   include/linux/stddef.h                        | 30 +++----------------
->>>   include/linux/string.h                        |  5 +++-
->>>   include/linux/surface_aggregator/controller.h |  1 +
->>>   include/linux/surface_aggregator/serial_hub.h |  1 +
->>>   include/linux/swap.h                          |  1 +
->>>   include/linux/ti-emif-sram.h                  |  1 +
->>>   include/linux/typeof_member.h                 | 11 +++++++
->>>   include/linux/ucs2_string.h                   |  2 +-
->>>   include/linux/vdpa.h                          |  1 +
->>>   include/linux/virtio_config.h                 | 17 ++++++-----
->>>   include/linux/wireless.h                      |  2 ++
->>>   include/net/bond_3ad.h                        |  1 +
->>>   include/net/dsa.h                             |  1 +
->>>   include/net/ip_vs.h                           |  1 +
->>>   include/net/netfilter/nf_conntrack_tuple.h    |  1 +
->>>   include/net/netfilter/nf_tables.h             |  1 +
->>>   include/net/netlink.h                         |  1 +
->>>   include/rdma/uverbs_ioctl.h                   |  1 +
->>>   include/rdma/uverbs_named_ioctl.h             |  1 +
->>>   include/scsi/scsi_host.h                      |  1 +
->>>   include/sound/soc-dapm.h                      |  1 +
->>>   include/sound/soc.h                           |  1 +
->>>   include/trace/events/wbt.h                    |  1 +
->>>   include/uapi/linux/netfilter/xt_sctp.h        |  1 +
->>>   include/xen/hvm.h                             |  1 +
->>>   kernel/kallsyms.c                             |  3 +-
->>>   94 files changed, 255 insertions(+), 79 deletions(-)
->>>   create mode 100644 include/linux/NULL.h
->>>   create mode 100644 include/linux/array_size.h
->>>   create mode 100644 include/linux/memberof.h
->>>   create mode 100644 include/linux/offsetof.h
->>>   create mode 100644 include/linux/offsetofend.h
->>>   create mode 100644 include/linux/sizeof_field.h
->>>   create mode 100644 include/linux/typeof_member.h
->> 
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Jason
