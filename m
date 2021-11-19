@@ -2,80 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF82B456CB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 10:47:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50905456C2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 10:14:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233185AbhKSJst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 04:48:49 -0500
-Received: from xmbg8.mail.qq.com ([116.128.173.86]:45037 "EHLO
-        xmbg8.mail.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230121AbhKSJss (ORCPT
+        id S233624AbhKSJQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 04:16:57 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:54348 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232142AbhKSJQ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 04:48:48 -0500
-X-Greylist: delayed 11234 seconds by postgrey-1.27 at vger.kernel.org; Fri, 19 Nov 2021 04:48:47 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1637315082;
-        bh=3708+Mfh+zJTCD8kMqzQyKwRz6cgzdVxOwONIux6TME=;
-        h=From:To:Cc:Subject:Date;
-        b=we50jw4gUfptVBj+7i+VWY8BS8Tvd4r5Jaog7LxONDrecNojW5pojMt7Q/8CyyEfE
-         lcMii6b7RXqqr2y/0KuhKKjyc1rkairdEs7qJD+41z78UPuHP4v9IZar5mGcGMpzvp
-         1UJ1bcZeJ8NRdpjaa8Iyz/szEDcNDLJM5ukrIVmM=
-Received: from localhost.localdomain ([159.226.95.43])
-        by newxmesmtplogicsvrsza9.qq.com (NewEsmtp) with SMTP
-        id 3239B626; Fri, 19 Nov 2021 17:12:35 +0800
-X-QQ-mid: xmsmtpt1637313155tl2drclly
-Message-ID: <tencent_BA28CC6897B7C95A92EB8C580B5D18589105@qq.com>
-X-QQ-XMAILINFO: MpO6L0LObisW1c6wsWy9l5h1QvWkiNyInZrGzZGx8VZ/M8UcrvZCTGzupqj/DR
-         jmugwBZeT/jxEZIAkC45WrsX9T2TGL1rTU/rzjzBngiIe6Wsb5WKDLpK7vMMl58ealshK0jX2vkr
-         /K8MQr/UcwP4VRmHr/+4Tk28r1hhSd9Zb4GRD+gg8rcRRvVF7Dre2aISejLZzxch/Vwq1N/w1Ok4
-         yS6N2wMiL2q67EK4o403axJvAQ7j1UX3aqm0SvJuZ3eFPdVJ9ABPCHassru5XmCs4BhY7y/8rJ4j
-         3ncniYJecH2QTC3M9taADco9ZbE9tEwloBYsFJfmvm/05CMGMQPO+MH1fGwhguFgyLZP0brV5U8G
-         +flDF5VjJHlXYC3tuc99ZEdU/w7fFgA+0saRJaTVH3ToXmbPgmRr/Wj3QmXpuLjkDcLjGT8vh3VW
-         bMJ6hS/3886vzgPH/lXswxGlWimHoBlMSogv5QFeBj6pEi/FkqqNP3J0GlNs8lZAx4eKAbvlFTdQ
-         kMS0mrgTYRI6NpiWBbxX4u4EfWZei7MFBZe/sttLVXcZc8p8ItD8OO/FpZde+1yVhRMJYtJxhfIZ
-         I4fOxsuu0Rxcl54fwKoD5jnsKIZBKtbRlEI8pezx6SJb7m+oa6Zjjzy7lUTFqLQ6VLnIuLAFBktG
-         yQA4dWICUR+1IamPbrItaldTjmfu5/MQSDgIifvaoAumJceb2Uc4qYQbssdOl9XYU/LJJPKanpK8
-         QT6G8VKYbXDWZOk67CbVJu2YFeQ/EMFIwxRldFAVumDcWdM6JgN9Te1odl4mIu9CKjprWvaCplJ6
-         2eYiqOs3NW6X52Ohbs7/d74flBSnvtQfeO12rPUTxYUiUuPEdC/QOQhCSDdL+6PHbNn+c+2Re7B7
-         5trULPrY6m
-From:   Peiwei Hu <jlu.hpw@foxmail.com>
-To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        aneesh.kumar@linux.ibm.com, ardb@kernel.org,
-        rafael.j.wysocki@intel.com, masahiroy@kernel.org,
-        npiggin@gmail.com, andriy.shevchenko@linux.intel.com,
-        adobriyan@gmail.com, clg@kaod.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        trivial@kernel.org, Peiwei Hu <jlu.hpw@foxmail.com>
-Subject: [PATCH] powerpc/prom_init: fix the improper check of prom_getprop
-Date:   Fri, 19 Nov 2021 17:12:18 +0800
-X-OQ-MSGID: <20211119091218.2215024-1-jlu.hpw@foxmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 19 Nov 2021 04:16:56 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 77D59212CB;
+        Fri, 19 Nov 2021 09:13:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1637313234; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=p0FNsmCu12CGcSBrgmxCSHp4VXVsKt9zdX96iTqQRP0=;
+        b=I/KjU/zD+rCIJJIJVm1qWcDclv/jKgwKet5yKG89+jBrLh274YbJsnr8+5Z4Ju7rnKqr1R
+        3VDidKmxLcwjb821M9hZDVRbn6v/ih2MVq45ki3GqgcWVL1zl42IB5nW+UHwxJg06qjyiS
+        w1h9V5PjsFKjMZPvMdL0n2FbWkA+jpk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1637313234;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=p0FNsmCu12CGcSBrgmxCSHp4VXVsKt9zdX96iTqQRP0=;
+        b=FKv7advt4OblXUHbFpDJQtYsAccAWyYfZcSm7vJ505LAX6X4SkY4kdJj79ca2rYg4qxlUz
+        4rMbtbPietwsRECg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 68DB9A3B84;
+        Fri, 19 Nov 2021 09:13:54 +0000 (UTC)
+Date:   Fri, 19 Nov 2021 10:13:54 +0100
+Message-ID: <s5hwnl4fqy5.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] sound updates for 5.16-rc1
+In-Reply-To: <20211118232628.hynb5vy6phsqj5oi@box.shutemov.name>
+References: <s5hwnlpmt9x.wl-tiwai@suse.de>
+        <20211117161855.m45mxcqszkfcetai@box.shutemov.name>
+        <s5hmtm2lphf.wl-tiwai@suse.de>
+        <20211117174826.23eakoivl33tawb2@box.shutemov.name>
+        <s5hfsrulkxk.wl-tiwai@suse.de>
+        <s5hpmqxki3h.wl-tiwai@suse.de>
+        <s5hilwph05c.wl-tiwai@suse.de>
+        <20211118232628.hynb5vy6phsqj5oi@box.shutemov.name>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: multipart/mixed;
+ boundary="Multipart_Fri_Nov_19_10:13:54_2021-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-prom_getprop() can return PROM_ERROR. Binary operator can not identify it.
+--Multipart_Fri_Nov_19_10:13:54_2021-1
+Content-Type: text/plain; charset=US-ASCII
 
-Signed-off-by: Peiwei Hu <jlu.hpw@foxmail.com>
+On Fri, 19 Nov 2021 00:26:28 +0100,
+Kirill A. Shutemov wrote:
+> 
+> On Thu, Nov 18, 2021 at 05:57:35PM +0100, Takashi Iwai wrote:
+> > And it'd be helpful if you can gather the log (from tracing) with the
+> > patch below (from the start of speaker-test until the stall).
+> 
+> The trace is attached.
+
+Thanks!  From the previous log, I noticed that you're using dmix
+plugin, and that was the problem.  The dmix plugin changes the PCM
+sw_params parameters at a late stage, and this confused the driver as
+if it were OK with the low-latency mode.  And, while reviewing the
+code, I also found another bug.
+
+Below are two fix patches.  Please give it a try.
+
+
+Takashi
+
+
+--Multipart_Fri_Nov_19_10:13:54_2021-1
+Content-Type: application/octet-stream; type=patch
+Content-Disposition: attachment; filename="0001-ALSA-usb-audio-Switch-back-to-non-latency-mode-at-a-.patch"
+Content-Transfer-Encoding: 7bit
+
+From 4b9f4f8e236ef3b40ca4f3e0e59f6e094d090d59 Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Fri, 19 Nov 2021 10:04:49 +0100
+Subject: [PATCH 1/2] ALSA: usb-audio: Switch back to non-latency mode at a
+ later point
+
+The recent regression report revealed that the judgment of the
+low-latency playback mode based on the runtime->stop_threshold cannot
+work reliably at the prepare stage, as sw_params call may happen at
+any time, and PCM dmix actually sets it up after the prepare call.
+This ended up with the stall of the stream as PCM ack won't be issued
+at all.
+
+For addressing this, check the free-wheeling mode again at the PCM
+trigger right before starting the stream again, and allow switching to
+the non-LL mode at a late stage.
+
+Fixes: d5f871f89e21 ("ALSA: usb-audio: Improved lowlatency playback support")
+Reported-by: Kirill A. Shutemov <kirill@shutemov.name>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- arch/powerpc/kernel/prom_init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/pcm.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
-index 18b04b08b983..f845065c860e 100644
---- a/arch/powerpc/kernel/prom_init.c
-+++ b/arch/powerpc/kernel/prom_init.c
-@@ -2991,7 +2991,7 @@ static void __init fixup_device_tree_efika_add_phy(void)
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 95ec8eec1bb0..57b046e73bfe 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -581,6 +581,12 @@ static int snd_usb_hw_free(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
  
- 	/* Check if the phy-handle property exists - bail if it does */
- 	rv = prom_getprop(node, "phy-handle", prop, sizeof(prop));
--	if (!rv)
-+	if (rv <= 0)
- 		return;
- 
- 	/*
++/* free-wheeling mode? (e.g. dmix) */
++static int in_free_wheeling_mode(struct snd_pcm_runtime *runtime)
++{
++	return runtime->stop_threshold > runtime->buffer_size;
++}
++
+ /* check whether early start is needed for playback stream */
+ static int lowlatency_playback_available(struct snd_pcm_runtime *runtime,
+ 					 struct snd_usb_substream *subs)
+@@ -592,8 +598,7 @@ static int lowlatency_playback_available(struct snd_pcm_runtime *runtime,
+ 	/* disabled via module option? */
+ 	if (!chip->lowlatency)
+ 		return false;
+-	/* free-wheeling mode? (e.g. dmix) */
+-	if (runtime->stop_threshold > runtime->buffer_size)
++	if (in_free_wheeling_mode(runtime))
+ 		return false;
+ 	/* implicit feedback mode has own operation mode */
+ 	if (snd_usb_endpoint_implicit_feedback_sink(subs->data_endpoint))
+@@ -1552,6 +1557,8 @@ static int snd_usb_substream_playback_trigger(struct snd_pcm_substream *substrea
+ 					      subs);
+ 		if (subs->lowlatency_playback &&
+ 		    cmd == SNDRV_PCM_TRIGGER_START) {
++			if (in_free_wheeling_mode(substream->runtime))
++				subs->lowlatency_playback = false;
+ 			err = start_endpoints(subs);
+ 			if (err < 0) {
+ 				snd_usb_endpoint_set_callback(subs->data_endpoint,
 -- 
-2.25.1
+2.31.1
 
+
+--Multipart_Fri_Nov_19_10:13:54_2021-1
+Content-Type: application/octet-stream; type=patch
+Content-Disposition: attachment; filename="0002-ALSA-usb-audio-Don-t-start-stream-for-capture-at-pre.patch"
+Content-Transfer-Encoding: 7bit
+
+From 2eeb527a4f3481452fd00263d8cee99d5297178a Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Fri, 19 Nov 2021 10:02:42 +0100
+Subject: [PATCH 2/2] ALSA: usb-audio: Don't start stream for capture at
+ prepare
+
+The recent change made mistakenly the stream for capture started at
+prepare stage.  Add the stream direction check to avoid it.
+
+Fixes: 9c9a3b9da891 ("ALSA: usb-audio: Rename early_playback_start flag with lowlatency_playback")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/pcm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 57b046e73bfe..cec6e91afea2 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -640,7 +640,8 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+ 	runtime->delay = 0;
+ 
+ 	subs->lowlatency_playback = lowlatency_playback_available(runtime, subs);
+-	if (!subs->lowlatency_playback)
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
++	    !subs->lowlatency_playback)
+ 		ret = start_endpoints(subs);
+ 
+  unlock:
+-- 
+2.31.1
+
+
+--Multipart_Fri_Nov_19_10:13:54_2021-1--
