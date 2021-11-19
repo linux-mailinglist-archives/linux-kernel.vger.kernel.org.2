@@ -2,31 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3BC4571A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:34:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 802F84571A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:34:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235108AbhKSPhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 10:37:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231563AbhKSPhD (ORCPT
+        id S235234AbhKSPhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 10:37:14 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:45198 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231563AbhKSPhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 10:37:03 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB0FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 07:34:02 -0800 (PST)
+        Fri, 19 Nov 2021 10:37:13 -0500
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: adalessandro)
-        with ESMTPSA id 239861F47554
+        with ESMTPSA id A9EA01F47557
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637336040; bh=oBj7QbVGHlYfnfMUOtd1HZT668Gjf5aMJe4be82ORbo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LU1D/2znRnmWQq9S9C99bWFA/kPVCKSRmdq6IEpjNr/rKOJ4bFAO3EQ2mLbFD0TP/
-         PlOdn37gYW6Uquu+IGHXIg04zDysKrMQgoR8P+UJ8FGWNAxgKbd00zRG2r7hqQZtsa
-         0TtEArzfJ6/8/a0yJ5y1xg8qI0QcAcyK8h1+A+FYGLxkLFT/Tt/ayZIlJOLDEjEC2v
-         5v/EY0JnOPiVMeR5EavyjjUDwy8Sw3Q9IV2zfUDPaYUJtQJvzuV0b29l0ZlpDKaimj
-         lAUIfOpTh2FmOrTcVSToFOwkzS3NbFST9BvuKJdoirPFTV0ExeGt2bt7Ps+ZIYZlRh
-         jJR0rwu89STRQ==
+        t=1637336044; bh=+WJq9p/OLtoII51RYDtOsRr+UMSRm2h49gRsaYg7JsM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Pb5qrBGKnYlPTaj8/1WNQLtWmVOGSRe0E8uRF/0L9bSDi86RKE62N8nlezDZ6KjZm
+         8QGaChhOUs/3ViCWVCLMAuMLLd5VmxBQN3eeyKTKn3auz/MFrN7n2jTPCZLakLwYiQ
+         IpFAhxk85OJlwcWKrgczYcAxo9+OFpN6qbJZ/ukT2sUHq5EpnunraBlPW+kifS3IxF
+         pdXLFIvYDrbit6+9hEGbe4mFbyrMAWoU+iu3altB0Zg/5c9qs8z7sVeM7Jv/t1H8+5
+         EWf633L0leIPvqFHsUetfQFCkLZaWafm1Lvje2uBDQMeCH0ent6607df+GR1IUmX7C
+         K3jkd4ugUFYng==
 From:   Ariel D'Alessandro <ariel.dalessandro@collabora.com>
 To:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org
@@ -35,39 +32,36 @@ Cc:     Xiubo.Lee@gmail.com, ariel.dalessandro@collabora.com,
         kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com,
         michael@amarulasolutions.com, nicoleotsuka@gmail.com,
         perex@perex.cz, shengjiu.wang@gmail.com, tiwai@suse.com
-Subject: [RFC patch 0/5] Support BCLK input clock in tlv320aic31xx
-Date:   Fri, 19 Nov 2021 12:32:43 -0300
-Message-Id: <20211119153248.419802-1-ariel.dalessandro@collabora.com>
+Subject: [RFC patch 1/5] ASoC: tlv320aic31xx: Fix typo in BCLK clock name
+Date:   Fri, 19 Nov 2021 12:32:44 -0300
+Message-Id: <20211119153248.419802-2-ariel.dalessandro@collabora.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211119153248.419802-1-ariel.dalessandro@collabora.com>
+References: <20211119153248.419802-1-ariel.dalessandro@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The tlv320aic31xx codec allows using BCLK as the input clock for PLL,
-deriving all the frequencies through a set of divisors.
+Signed-off-by: Ariel D'Alessandro <ariel.dalessandro@collabora.com>
+---
+ sound/soc/codecs/tlv320aic31xx.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-In this case, codec sysclk is determined by the hwparams sample
-rate/format. So its frequency must be updated from the codec itself when
-these are changed.
-
-This patchset modifies the tlv320aic31xx driver to update its sysclk if
-BCLK is used as the input clock. This allows to be used by the generic
-fsl-asoc-card, without having to add a specific driver.
-
-Ariel D'Alessandro (5):
-  ASoC: tlv320aic31xx: Fix typo in BCLK clock name
-  ASoC: tlv320aic31xx: Add support for pll_r coefficient
-  ASoC: tlv320aic31xx: Add divs for bclk as clk_in
-  ASoC: tlv320aic31xx: Handle BCLK set as PLL input configuration
-  ASoC: fsl-asoc-card: Support fsl,imx-audio-tlv320aic31xx codec
-
- sound/soc/codecs/tlv320aic31xx.c | 105 ++++++++++++++++++++-----------
- sound/soc/codecs/tlv320aic31xx.h |   2 +-
- sound/soc/fsl/fsl-asoc-card.c    |  12 ++++
- 3 files changed, 83 insertions(+), 36 deletions(-)
-
+diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
+index 2513922a0292..80d062578fb5 100644
+--- a/sound/soc/codecs/tlv320aic31xx.h
++++ b/sound/soc/codecs/tlv320aic31xx.h
+@@ -118,7 +118,7 @@ struct aic31xx_pdata {
+ #define AIC31XX_PLL_CLKIN_MASK		GENMASK(3, 2)
+ #define AIC31XX_PLL_CLKIN_SHIFT		(2)
+ #define AIC31XX_PLL_CLKIN_MCLK		0x00
+-#define AIC31XX_PLL_CLKIN_BCKL		0x01
++#define AIC31XX_PLL_CLKIN_BCLK		0x01
+ #define AIC31XX_PLL_CLKIN_GPIO1		0x02
+ #define AIC31XX_PLL_CLKIN_DIN		0x03
+ #define AIC31XX_CODEC_CLKIN_MASK	GENMASK(1, 0)
 -- 
 2.30.2
 
