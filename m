@@ -2,143 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70CF94574F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:59:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3181B4574FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 18:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236377AbhKSRCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 12:02:41 -0500
-Received: from mail-bo1ind01olkn0168.outbound.protection.outlook.com ([104.47.101.168]:7890
-        "EHLO IND01-BO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234030AbhKSRCj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 12:02:39 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ESq7YlKXl+EmAB4cMPti7xf/8xlYUZ6jL1JCObWXJn2yWDpFhyEn83AgH0RCR1fSwY9gSdQZTIiKEEJAVUoLPC52lxPHLSCIRZljk8CpPukGC8TDRTSOMpiMvlOaJHLMTE8wLeXFfkcT0nOI+tSrfkabxU1vir6C8psf72SJ/k96nO2u+PwIXknWS2fcDG4NMhCugGfc2SXOeDIqwyWoGg6C/8NkleksNIgEGuKdEjbzTOnCnuzkbRTbjyZEtwcPR8GQ3xwvspvKeYS0TfUh5QMKbBVU92LWqFjEft/WXCN7HoFJaU+o8SuJrMZnERGo5Hxr9/oxr1HZfUzmbgGtHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=u1WZ20gIs8SqMhtqEtCg+PkcoYpk9zK+UKo58u2vcP4=;
- b=cbBTU1/HmsnYi6ArfivJ/sWX5rnzGEsCj1kyLY5UQXlOmtk3lsPQGOHvZtnd537pyXW4QWnCMNbRVQQTKsY52GkRrQfKvnmhfoBnZq6a+62VwPsgLUqgZGr6O8mdD7g9FSFlvlV2mCy74AgjATurro+RMrkwsXAF1oePMblL8jQ8giEfJ0l760gT6X3zec87TX9eVmRMquRgJmhbKKvqOPN0twdt+RNhFRQ5peOf4AdqZrYonC8f15CnBXaUmnyaZ7M5shpPLm6wLdC2a2f63pzCBYjSeI+EbUpyupdzxPA9DyYS2Rjs4Yz1LUkjIcGj7B7KwgfvejoJyAbE3Tc8eg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=live.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u1WZ20gIs8SqMhtqEtCg+PkcoYpk9zK+UKo58u2vcP4=;
- b=awyORlJMJA3OXf1/Cc3Px6d8T/zrmImSSqNLrS5VwkGZQ5DxlltWAKw008vf+9SlW8ycXO2tzXARlEjSHxwHc71zCBzVRqOCrHF6cHhqk6WqQFZSI8U8sywuD6RexN2JeRWx81imexWEaWMgkdKOPcTT0OIY6Q1oykyKKPumFs6L7sQ59f66dMeJiF6U121Z+fILlPIWSOuI3608udbY+UWTO3IzY7Qn2o2MVT055qZei6YOAaKra46ucavP/gEHWgf/7UPrBe2PjatPQgn+X0vvCWjDTE/Oi3VJ241Mrkc2wN7GjNQvvtg4wtCpB/9Mqk8rwoK+gNIsj89Z/6NxwQ==
-Received: from PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:1b::13)
- by PN2PR01MB5256.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:5a::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Fri, 19 Nov
- 2021 16:59:32 +0000
-Received: from PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM
- ([fe80::cdc4:def5:dc73:28f7]) by PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM
- ([fe80::cdc4:def5:dc73:28f7%7]) with mapi id 15.20.4690.029; Fri, 19 Nov 2021
- 16:59:32 +0000
-From:   Aditya Garg <gargaditya08@live.com>
-To:     Marcel Holtmann <marcel@holtmann.org>
-CC:     Orlando Chamberlain <redecorating@protonmail.com>,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        Daniel Winkler <danielwinkler@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Johan Hedberg <johan.hedberg@intel.com>,
-        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
-        "sonnysasaka@chromium.org" <sonnysasaka@chromium.org>
-Subject: Re: [PATCHv2] Bluetooth: quirk disabling LE Read Transmit Power
-Thread-Topic: [PATCHv2] Bluetooth: quirk disabling LE Read Transmit Power
-Thread-Index: AQHX0vJ15A6zQVMGfEiNGmUN6kF0hKv3vuGAgA4gSACAAAxJAIAABrOAgAEuUwCAAEInAIAAIdSAgAAEmwCAADPsAIAAaCCAgAMCoIA=
-Date:   Fri, 19 Nov 2021 16:59:32 +0000
-Message-ID: <40550C00-4EE5-480F-AFD4-A2ACA01F9DBB@live.com>
-References: <20211001083412.3078-1-redecorating@protonmail.com>
- <YYePw07y2DzEPSBR@kroah.com>
- <70a875d0-7162-d149-dbc1-c2f5e1a8e701@leemhuis.info>
- <20211116090128.17546-1-redecorating@protonmail.com>
- <e75bf933-9b93-89d2-d73f-f85af65093c8@leemhuis.info>
- <3B8E16FA-97BF-40E5-9149-BBC3E2A245FE@live.com> <YZSuWHB6YCtGclLs@kroah.com>
- <52DEDC31-EEB2-4F39-905F-D5E3F2BBD6C0@live.com>
- <8919a36b-e485-500a-2722-529ffa0d2598@leemhuis.info>
- <20211117124717.12352-1-redecorating@protonmail.com>
- <F8D12EA8-4B37-4887-998E-DC0EBE60E730@holtmann.org>
-In-Reply-To: <F8D12EA8-4B37-4887-998E-DC0EBE60E730@holtmann.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-tmn:  [Dq6e8ab1WhxuAnggjNla7NOSUdljpyA3zCPAilLa/8ZcZHCG9wHjuO1S2v+HbGA5]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: bb3f7af7-d8d2-459f-330a-08d9ab7df56e
-x-ms-traffictypediagnostic: PN2PR01MB5256:
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: F2VFo6sabM8eZcnNkec+2SuJ0Xxd6AyIu+qGDQCjrPev7doF5Sz7OZCMYD7V9V/eFGGymv7M74BpQ709Spj9Ct2tAVXBLDB5wYLDeNFzE1kgAUJYJEYUlmF8LK+P6eIYPgZ4lFAIWVmjrzvmGeD72MmSF9Sq9Rf73Dzou5kUajqUCaM60N+nTAOaJOwzOAIgkOWvXea+W3aL+qfBJyS5OLHMQ4ZdzkwYo0sqAOLcmIoTyBQzgD1yag4+sEAi83JK08n4l9PT9wvrUYriTOGm3T45ds4X7xSwTHtQdMxi7kcADSGMbfKcr8yqBRyXYxkeYbGBqjzovcx05ITH8K+9ldqbbC1Ig5e70DZH29qaYEsO4IJkxcXzd21WGztwF47fu7Rr7BWNeAAGXKpAjDpqafZdviail70W5HerfJxqLx8qkD6aK+Rj0yGIMh0n8WsNkgXr8fC4j2C1p5OLXgsI9wnwjEx1D0aJdDL2g6XxazwMTwLjC5cbCBiPV55vg8HL5PRyHb7PVfVnLebX2J2zTeR+mGprYud74hfiePhi5IBA2cpSto7ud3zd0I1bkl5e9rgIvpJAyLeEwhkWprg+eQ==
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: IICF0/hyHBwiYvHKd2HOnG9uGguQlcKAR2ZyLXQ1BRIw3P3lVTwLsqStUe8AEhfaFRuZ3srx6XJjTxHugNVN7cBhYmC47VUp2AD7fnHWslLdvHCQiPRSczmBtRjgCbvyNfly7W7ucmNtjo3Ja+trOjwnnvfPUZ4PSJXC4VVMgXffa+vbOeSW1HnDn4a69i2928lE3TP7GjCvmvY2ovXmGmKVUUCC+l5iQKGASaSIvZaKqlwkEJzorpWLJrpeFFpl4EDwNUj6VwjepbgTTuSgU6gEN67cHFHtWx5aQv9lJb5AsfHi5U8cYBu0Z5UAYMxO1YE4gVlBNCueygRTNf2ugmFDrFTyztL9IdT8iNkGBPFO4Q1qy0jJ2NWFQPW+wgjjfz0AJlguy4NR0N/tEHlvne0AXT37y5uvlFvsQbf6gz30YVkDUvxjgmGoMEqK3WZ4DkTEakmiDRiX20XsyFSuNJuap4laXHbmMnQM8chsR5aEkPmDZbTdtgRVrP4VMEN+Aqt8ZHcCYOdfio53cV5pRw1zGnqjW7je23QvPneHYsglx7UQDETDCYSpRpKV24I9GztUPwS3/6zUk6iB7cBGK+iy+RCBW2fD0fHvXe57vVCOx/bT6cZWBUptu2aPEZbVL1LIlUmfgjpfvZkO2jl2Ye4lVWeZgfVW2zhpuqANf6Ag6MJqxApwiURHg7DOqWvOC1GUvO8nfWqKkomWjGNEwqPCn1mPVMM3dXQBR0BPMuXWGjE+WD+fqPVTgjIO7/eaQcZzarFwJL5JVSDmz7Q69Q==
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <E0631C0AB96C4D4BB50251C598AB6F99@INDPRD01.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: quoted-printable
+        id S236387AbhKSRER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 12:04:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236126AbhKSREQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 12:04:16 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F21DC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 09:01:14 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id k4so8560282plx.8
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 09:01:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=VPWqgftTickrFvrexyF8BcHESCqZpL9MnOlpgEvMP3A=;
+        b=8QNIG7yIiGF3Rcjbc+djL5c1OdipK94U4ovE9uHL1PjgM7aiwZEl9TD1hwwRPAaK3k
+         pIsU+LY5Ndk5E303F00OrWJVQ2F3+wrYoUqMJY2oiqwAbW2eVMBs6oEO948+mXC7FBVJ
+         3NztVvyGo6pe/x1KBX45xdOOXMIda+M+tBZWwOSEL7FcK5Bryn2GyGz4nZupvkMdWSfS
+         NE8+r17V2JtvufXsU6OeEwhGkIhvw/Q1kaFj3X4Da1qXwMIaiDcD/kwIJ8W5JAIskMci
+         6DUVn1/cn7nbxBYgbfnHY2/mGbWflJ0jjfD9ny2WKoyi4G4SC9KR6hvKJ+BcniJHhste
+         8FUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=VPWqgftTickrFvrexyF8BcHESCqZpL9MnOlpgEvMP3A=;
+        b=oAQK5+8oDO8l/s2nXs7dr4SJbfAs4D367wU16P2desU+3YbCCtZG+ktAC2ty5aIqte
+         8kE6I+eMuD/7muN0XxsCHNe8exUjIU2tEB9Foam7l/luofdbIORjDEiDAeHkPjkaKbcB
+         2Ix7zc9xiOgKM03/I3D5crQvVgbeODpm5Xy0jPfCXbP0ZlQNIByq3YLccKvCAADoh5B9
+         Z2W3+z0mT0NUZcpcPoMYyO0G5HDv8f+SzQ2kmEpoNlX8bwTF1zNZ0FeNMosRd9JLPP58
+         dXUFkJS0cevtX0PdgN1U5mSPd9z/Kgheb+ZHS2QqwruNolOdkzM1pWNYk2YDkF2KzlvK
+         LS5w==
+X-Gm-Message-State: AOAM532Ciwb7S4fyfHoR4pxW43CM+uLJNfmLJ30no23sN4zIdW4YTYib
+        5KZFRUWgZsu7zmMsDPYmsSgOtw==
+X-Google-Smtp-Source: ABdhPJywP71ekWuPYIacj4odxV2uZhgeoyR2lGK7E4ymUDuzSHxhDDTt0i2WYFFLKVI3p0NbKV9kNg==
+X-Received: by 2002:a17:90a:312:: with SMTP id 18mr1394680pje.178.1637341273775;
+        Fri, 19 Nov 2021 09:01:13 -0800 (PST)
+Received: from hermes.local (204-195-33-123.wavecable.com. [204.195.33.123])
+        by smtp.gmail.com with ESMTPSA id q9sm247206pfj.88.2021.11.19.09.01.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 09:01:13 -0800 (PST)
+Date:   Fri, 19 Nov 2021 09:01:10 -0800
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+        vijayendra.suman@oracle.com, ramanan.govindarajan@oracle.com,
+        george.kennedy@oracle.com, syzkaller <syzkaller@googlegroups.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: sched: sch_netem: Fix a divide error in
+ netem_enqueue during randomized corruption.
+Message-ID: <20211119090110.75d8351b@hermes.local>
+In-Reply-To: <629fe4fc-8fbf-4dec-8192-32e1126fa185@gmail.com>
+References: <20211119084241.14984-1-harshit.m.mogalapalli@oracle.com>
+        <629fe4fc-8fbf-4dec-8192-32e1126fa185@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: sct-15-20-3174-20-msonline-outlook-a1a1a.templateTenant
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb3f7af7-d8d2-459f-330a-08d9ab7df56e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Nov 2021 16:59:32.5073
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN2PR01MB5256
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 19 Nov 2021 07:49:59 -0800
+Eric Dumazet <eric.dumazet@gmail.com> wrote:
 
+> On 11/19/21 12:42 AM, Harshit Mogalapalli wrote:
+> > In netem_enqueue function the value of skb_headlen(skb) can be zero
+> > which leads to a division error during randomized corruption of the packet.
+> > This fix  adds a check to skb_headlen(skb) to prevent the division error.
+> > 
+> > Crash report:
+> > [  343.170349] netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family
+> > 0 port 6081 - 0
+> > [  343.216110] netem: version 1.3
+> > [  343.235841] divide error: 0000 [#1] PREEMPT SMP KASAN NOPTI
+> > [  343.236680] CPU: 3 PID: 4288 Comm: reproducer Not tainted 5.16.0-rc1+
+> > [  343.237569] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> > BIOS 1.11.0-2.el7 04/01/2014
+> > [  343.238707] RIP: 0010:netem_enqueue+0x1590/0x33c0 [sch_netem]
+> > [  343.239499] Code: 89 85 58 ff ff ff e8 5f 5d e9 d3 48 8b b5 48 ff ff
+> > ff 8b 8d 50 ff ff ff 8b 85 58 ff ff ff 48 8b bd 70 ff ff ff 31 d2 2b 4f
+> > 74 <f7> f1 48 b8 00 00 00 00 00 fc ff df 49 01 d5 4c 89 e9 48 c1 e9 03
+> > [  343.241883] RSP: 0018:ffff88800bcd7368 EFLAGS: 00010246
+> > [  343.242589] RAX: 00000000ba7c0a9c RBX: 0000000000000001 RCX:
+> > 0000000000000000
+> > [  343.243542] RDX: 0000000000000000 RSI: ffff88800f8edb10 RDI:
+> > ffff88800f8eda40
+> > [  343.244474] RBP: ffff88800bcd7458 R08: 0000000000000000 R09:
+> > ffffffff94fb8445
+> > [  343.245403] R10: ffffffff94fb8336 R11: ffffffff94fb8445 R12:
+> > 0000000000000000
+> > [  343.246355] R13: ffff88800a5a7000 R14: ffff88800a5b5800 R15:
+> > 0000000000000020
+> > [  343.247291] FS:  00007fdde2bd7700(0000) GS:ffff888109780000(0000)
+> > knlGS:0000000000000000
+> > [  343.248350] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [  343.249120] CR2: 00000000200000c0 CR3: 000000000ef4c000 CR4:
+> > 00000000000006e0
+> > [  343.250076] Call Trace:
+> > [  343.250423]  <TASK>
+> > [  343.250713]  ? memcpy+0x4d/0x60
+> > [  343.251162]  ? netem_init+0xa0/0xa0 [sch_netem]
+> > [  343.251795]  ? __sanitizer_cov_trace_pc+0x21/0x60
+> > [  343.252443]  netem_enqueue+0xe28/0x33c0 [sch_netem]
+> > [  343.253102]  ? stack_trace_save+0x87/0xb0
+> > [  343.253655]  ? filter_irq_stacks+0xb0/0xb0
+> > [  343.254220]  ? netem_init+0xa0/0xa0 [sch_netem]
+> > [  343.254837]  ? __kasan_check_write+0x14/0x20
+> > [  343.255418]  ? _raw_spin_lock+0x88/0xd6
+> > [  343.255953]  dev_qdisc_enqueue+0x50/0x180
+> > [  343.256508]  __dev_queue_xmit+0x1a7e/0x3090
+> > [  343.257083]  ? netdev_core_pick_tx+0x300/0x300
+> > [  343.257690]  ? check_kcov_mode+0x10/0x40
+> > [  343.258219]  ? _raw_spin_unlock_irqrestore+0x29/0x40
+> > [  343.258899]  ? __kasan_init_slab_obj+0x24/0x30
+> > [  343.259529]  ? setup_object.isra.71+0x23/0x90
+> > [  343.260121]  ? new_slab+0x26e/0x4b0
+> > [  343.260609]  ? kasan_poison+0x3a/0x50
+> > [  343.261118]  ? kasan_unpoison+0x28/0x50
+> > [  343.261637]  ? __kasan_slab_alloc+0x71/0x90
+> > [  343.262214]  ? memcpy+0x4d/0x60
+> > [  343.262674]  ? write_comp_data+0x2f/0x90
+> > [  343.263209]  ? __kasan_check_write+0x14/0x20
+> > [  343.263802]  ? __skb_clone+0x5d6/0x840
+> > [  343.264329]  ? __sanitizer_cov_trace_pc+0x21/0x60
+> > [  343.264958]  dev_queue_xmit+0x1c/0x20
+> > [  343.265470]  netlink_deliver_tap+0x652/0x9c0
+> > [  343.266067]  netlink_unicast+0x5a0/0x7f0
+> > [  343.266608]  ? netlink_attachskb+0x860/0x860
+> > [  343.267183]  ? __sanitizer_cov_trace_pc+0x21/0x60
+> > [  343.267820]  ? write_comp_data+0x2f/0x90
+> > [  343.268367]  netlink_sendmsg+0x922/0xe80
+> > [  343.268899]  ? netlink_unicast+0x7f0/0x7f0
+> > [  343.269472]  ? __sanitizer_cov_trace_pc+0x21/0x60
+> > [  343.270099]  ? write_comp_data+0x2f/0x90
+> > [  343.270644]  ? netlink_unicast+0x7f0/0x7f0
+> > [  343.271210]  sock_sendmsg+0x155/0x190
+> > [  343.271721]  ____sys_sendmsg+0x75f/0x8f0
+> > [  343.272262]  ? kernel_sendmsg+0x60/0x60
+> > [  343.272788]  ? write_comp_data+0x2f/0x90
+> > [  343.273332]  ? write_comp_data+0x2f/0x90
+> > [  343.273869]  ___sys_sendmsg+0x10f/0x190
+> > [  343.274405]  ? sendmsg_copy_msghdr+0x80/0x80
+> > [  343.274984]  ? slab_post_alloc_hook+0x70/0x230
+> > [  343.275597]  ? futex_wait_setup+0x240/0x240
+> > [  343.276175]  ? security_file_alloc+0x3e/0x170
+> > [  343.276779]  ? write_comp_data+0x2f/0x90
+> > [  343.277313]  ? __sanitizer_cov_trace_pc+0x21/0x60
+> > [  343.277969]  ? write_comp_data+0x2f/0x90
+> > [  343.278515]  ? __fget_files+0x1ad/0x260
+> > [  343.279048]  ? __sanitizer_cov_trace_pc+0x21/0x60
+> > [  343.279685]  ? write_comp_data+0x2f/0x90
+> > [  343.280234]  ? __sanitizer_cov_trace_pc+0x21/0x60
+> > [  343.280874]  ? sockfd_lookup_light+0xd1/0x190
+> > [  343.281481]  __sys_sendmsg+0x118/0x200
+> > [  343.281998]  ? __sys_sendmsg_sock+0x40/0x40
+> > [  343.282578]  ? alloc_fd+0x229/0x5e0
+> > [  343.283070]  ? write_comp_data+0x2f/0x90
+> > [  343.283610]  ? write_comp_data+0x2f/0x90
+> > [  343.284135]  ? __sanitizer_cov_trace_pc+0x21/0x60
+> > [  343.284776]  ? ktime_get_coarse_real_ts64+0xb8/0xf0
+> > [  343.285450]  __x64_sys_sendmsg+0x7d/0xc0
+> > [  343.285981]  ? syscall_enter_from_user_mode+0x4d/0x70
+> > [  343.286664]  do_syscall_64+0x3a/0x80
+> > [  343.287158]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [  343.287850] RIP: 0033:0x7fdde24cf289
+> > [  343.288344] Code: 01 00 48 81 c4 80 00 00 00 e9 f1 fe ff ff 0f 1f 00
+> > 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f
+> > 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d b7 db 2c 00 f7 d8 64 89 01 48
+> > [  343.290729] RSP: 002b:00007fdde2bd6d98 EFLAGS: 00000246 ORIG_RAX:
+> > 000000000000002e
+> > [  343.291730] RAX: ffffffffffffffda RBX: 0000000000000000 RCX:
+> > 00007fdde24cf289
+> > [  343.292673] RDX: 0000000000000000 RSI: 00000000200000c0 RDI:
+> > 0000000000000004
+> > [  343.293618] RBP: 00007fdde2bd6e20 R08: 0000000100000001 R09:
+> > 0000000000000000
+> > [  343.294557] R10: 0000000100000001 R11: 0000000000000246 R12:
+> > 0000000000000000
+> > [  343.295493] R13: 0000000000021000 R14: 0000000000000000 R15:
+> > 00007fdde2bd7700
+> > [  343.296432]  </TASK>
+> > [  343.296735] Modules linked in: sch_netem ip6_vti ip_vti ip_gre ipip
+> > sit ip_tunnel geneve macsec macvtap tap ipvlan macvlan 8021q garp mrp
+> > hsr wireguard libchacha20poly1305 chacha_x86_64 poly1305_x86_64
+> > ip6_udp_tunnel udp_tunnel libblake2s blake2s_x86_64 libblake2s_generic
+> > curve25519_x86_64 libcurve25519_generic libchacha xfrm_interface
+> > xfrm6_tunnel tunnel4 veth netdevsim psample batman_adv nlmon dummy team
+> > bonding tls vcan ip6_gre ip6_tunnel tunnel6 gre tun ip6t_rpfilter
+> > ipt_REJECT nf_reject_ipv4 ip6t_REJECT nf_reject_ipv6 xt_conntrack ip_set
+> > ebtable_nat ebtable_broute ip6table_nat ip6table_mangle
+> > ip6table_security ip6table_raw iptable_nat nf_nat nf_conntrack
+> > nf_defrag_ipv6 nf_defrag_ipv4 iptable_mangle iptable_security
+> > iptable_raw ebtable_filter ebtables rfkill ip6table_filter ip6_tables
+> > iptable_filter ppdev bochs drm_vram_helper drm_ttm_helper ttm
+> > drm_kms_helper cec parport_pc drm joydev floppy parport sg syscopyarea
+> > sysfillrect sysimgblt i2c_piix4 qemu_fw_cfg fb_sys_fops pcspkr
+> > [  343.297459]  ip_tables xfs virtio_net net_failover failover sd_mod
+> > sr_mod cdrom t10_pi ata_generic pata_acpi ata_piix libata virtio_pci
+> > virtio_pci_legacy_dev serio_raw virtio_pci_modern_dev dm_mirror
+> > dm_region_hash dm_log dm_mod
+> > [  343.311074] Dumping ftrace buffer:
+> > [  343.311532]    (ftrace buffer empty)
+> > [  343.312040] ---[ end trace a2e3db5a6ae05099 ]---
+> > [  343.312691] RIP: 0010:netem_enqueue+0x1590/0x33c0 [sch_netem]
+> > [  343.313481] Code: 89 85 58 ff ff ff e8 5f 5d e9 d3 48 8b b5 48 ff ff
+> > ff 8b 8d 50 ff ff ff 8b 85 58 ff ff ff 48 8b bd 70 ff ff ff 31 d2 2b 4f
+> > 74 <f7> f1 48 b8 00 00 00 00 00 fc ff df 49 01 d5 4c 89 e9 48 c1 e9 03
+> > [  343.315893] RSP: 0018:ffff88800bcd7368 EFLAGS: 00010246
+> > [  343.316622] RAX: 00000000ba7c0a9c RBX: 0000000000000001 RCX:
+> > 0000000000000000
+> > [  343.317585] RDX: 0000000000000000 RSI: ffff88800f8edb10 RDI:
+> > ffff88800f8eda40
+> > [  343.318549] RBP: ffff88800bcd7458 R08: 0000000000000000 R09:
+> > ffffffff94fb8445
+> > [  343.319503] R10: ffffffff94fb8336 R11: ffffffff94fb8445 R12:
+> > 0000000000000000
+> > [  343.320455] R13: ffff88800a5a7000 R14: ffff88800a5b5800 R15:
+> > 0000000000000020
+> > [  343.321414] FS:  00007fdde2bd7700(0000) GS:ffff888109780000(0000)
+> > knlGS:0000000000000000
+> > [  343.322489] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [  343.323283] CR2: 00000000200000c0 CR3: 000000000ef4c000 CR4:
+> > 00000000000006e0
+> > [  343.324264] Kernel panic - not syncing: Fatal exception in interrupt
+> > [  343.333717] Dumping ftrace buffer:
+> > [  343.334175]    (ftrace buffer empty)
+> > [  343.334653] Kernel Offset: 0x13600000 from 0xffffffff81000000
+> > (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+> > [  343.336027] Rebooting in 86400 seconds..
+> > 
+> > Reported-by: syzkaller <syzkaller@googlegroups.com>
+> > Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+> > ---
+> >  net/sched/sch_netem.c | 10 ++++++++--
+> >  1 file changed, 8 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/net/sched/sch_netem.c b/net/sched/sch_netem.c
+> > index ecbb10db1111..e1e1a00fedda 100644
+> > --- a/net/sched/sch_netem.c
+> > +++ b/net/sched/sch_netem.c
+> > @@ -513,8 +513,14 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch,
+> >  			goto finish_segs;
+> >  		}
+> >  
+> > -		skb->data[prandom_u32() % skb_headlen(skb)] ^=
+> > -			1<<(prandom_u32() % 8);
+> > +		if (unlikely(!skb_headlen(skb))) {
+> > +			qdisc_drop(skb, sch, to_free);
+> > +			skb = NULL;
+> > +			goto finish_segs;
+> > +		} else {
+> > +			skb->data[prandom_u32() % skb_headlen(skb)] ^=
+> > +				1<<(prandom_u32() % 8);
+> > +		}
+> >  	}
+> >  
+> >  	if (unlikely(sch->q.qlen >= sch->limit)) {
+> >   
+> 
+> 
+> If we accept the fact that a packet can reach qdisc with nothing in skb->head,
+> then we have other serious issues.
+> 
+> Why dropping the packet ?
+> 
+> I would rather pull headers here.
+> 
 
-> On 18-Nov-2021, at 12:31 AM, Marcel Holtmann <marcel@holtmann.org> wrote:
->=20
-> Hi Orlando,
->=20
->>> So if this just affects two macs, why can't the fix be realized as a
->>> quirk that is only enabled on those two systems? Or are they impossible
->>> to detect clearly via DMI data or something like that?
->>=20
->> I think we should be able to quirk based off the acpi _CID "apple-uart-b=
-lth"
->> or _HID "BCM2E7C". Marcel suggested quirking based of the acpi table her=
-e
->> https://lore.kernel.org/linux-bluetooth/1D2217A9-EA73-4D93-8D0B-5BC2718D=
-4788@holtmann.org/
->>=20
->> This would catch some unaffected Macs, but they don't support the LE Rea=
-d
->> Transmit Power command anyway (the affected macs were released after it
->> was added to the Bluetooth spec, while the unaffected Macs were released
->> before it was added to the spec, and thus don't support it).
->>=20
->> I'm not sure how to go about applying a quirk based off this, there are
->> quirks in drivers/bluetooth/hci_bcm.c (no_early_set_baudrate and
->> drive_rts_on_open), but they don't seem to be based off acpi ids.
->>=20
->> It might be simpler to make it ignore the Unknown Command error, like
->> in this patch https://lore.kernel.org/linux-bluetooth/CABBYNZLjSfcG_KqTE=
-bL6NOSvHhA5-b1t_S=3D3FQP4=3DGwW21kuzg@mail.gmail.com/
->> however that only applies on bluetooth-next and needed the status it
->> checks for to be -56, not 0x01.
->=20
-> so we abstain from try-and-error sending of commands. The Bluetooth spec
-> has a list of supported commands that a host can query for a reason. This
-> is really broken behavior of the controller and needs to be pointed out a=
-s
-> such.
-Well all I can do is provide you any logs or information I can. But we do r=
-eally wish to get this regression fixed soon.
->=20
-> The question is just how we quirk it.
->=20
-> Regards
->=20
-> Marcel
->=20
-
+Agree with Eric, would be to just linearize befor the corruption step.
+There is also the issue of checksum offload here.
