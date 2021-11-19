@@ -2,181 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26644456BB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 09:32:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86219456BB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 09:33:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234425AbhKSIfK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 19 Nov 2021 03:35:10 -0500
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:57241 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbhKSIfJ (ORCPT
+        id S234450AbhKSIfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 03:35:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:25777 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229633AbhKSIfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 03:35:09 -0500
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 94574E000B;
-        Fri, 19 Nov 2021 08:32:05 +0000 (UTC)
-Date:   Fri, 19 Nov 2021 09:32:04 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Herve Codina <herve.codina@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 4/4] mtd: rawnand: fsmc: Fix timing computation
-Message-ID: <20211119093204.1511b4b8@xps13>
-In-Reply-To: <20211119073909.1492538-5-herve.codina@bootlin.com>
-References: <20211119073909.1492538-1-herve.codina@bootlin.com>
-        <20211119073909.1492538-5-herve.codina@bootlin.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 19 Nov 2021 03:35:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637310756;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tUuoKjixLQkWOo6/knJS/yxc8h9J4lm72RKU4yaFvIo=;
+        b=BnHzNqTNgI98k4D2gX6o7CU2a9QdVPAefJNT3rIJ27r23V1Vjf5DTUT27McJtBz9I5Zqj5
+        3rUuyokjIWYQaN2B2pFX6HnyKr+w9LJP6OREOgWnmTojrawIwNLkI6TRj9AFOIWd1pIAAK
+        T+TyhzxrQjlvzLheopWrKIBrJrATXpA=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-451-NCkPxFDAO4e3fLn2UV9EHQ-1; Fri, 19 Nov 2021 03:32:35 -0500
+X-MC-Unique: NCkPxFDAO4e3fLn2UV9EHQ-1
+Received: by mail-wm1-f69.google.com with SMTP id g11-20020a1c200b000000b003320d092d08so3715371wmg.9
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 00:32:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=tUuoKjixLQkWOo6/knJS/yxc8h9J4lm72RKU4yaFvIo=;
+        b=aW8ryLzv4d5NWbFXhLsU2STCbc+x61eue7FNFlFNFBq8ffWgI81pMxoOSgRp0prch/
+         ccC6Cz9D8kUTE+y0b1cj95LLsdBXhZzEx5tn9NC3micAQlmkDORVk1i0Pdbc9AfRubKH
+         nwcZ7JhsStsLeV7XeVd+BfQ+86BZUJjMqkuBEkTiKzcOAnIKLh8vsuktrRLUlyek+jyt
+         lBjEnbaWkX4eFNBxJFmq+dMjPj/t/AoiaQP92G9l0m86EsBD5GC8uWk2G7eE+3joWJdW
+         rriTWWGFqIdrbi4YpAtOmlG54L7iyLyrsu/zbYFEWxpvVXavEOm7pgvEK+CtJCeb8EeS
+         Auyw==
+X-Gm-Message-State: AOAM533NdfO8vAnfbYxzCeaaYMBoqRfa2a20Qosv7DbdsGFA3ruBZZOk
+        dSnHbMAJtySegAlMd6xhbuPwiWtrAGLju/D4Ofeivb30cAHUpabSMonCny4g8GhZqCqU+zdzMH8
+        AyPtvuTY0kPH+YiK6BWTNDKCc
+X-Received: by 2002:a05:600c:2156:: with SMTP id v22mr4877445wml.159.1637310753860;
+        Fri, 19 Nov 2021 00:32:33 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx+6a7rxjlIR8+FNOMhZH5MUe8GhJzMMes1/fzoti38R1czb1GyITps3evRL1yExeB1HLGWNA==
+X-Received: by 2002:a05:600c:2156:: with SMTP id v22mr4877410wml.159.1637310753625;
+        Fri, 19 Nov 2021 00:32:33 -0800 (PST)
+Received: from [192.168.1.102] ([92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id n184sm10977123wme.2.2021.11.19.00.32.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Nov 2021 00:32:33 -0800 (PST)
+Message-ID: <9b41eb05-a095-39af-8b76-a73fa2532e92@redhat.com>
+Date:   Fri, 19 Nov 2021 09:32:32 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] spidev: Make probe to fail early if a spidev compatible
+ is used
+Content-Language: en-US
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org
+References: <20211109225920.1158920-1-javierm@redhat.com>
+ <20211110074247.g7eaq2z27bwdt4m5@pengutronix.de>
+ <YZaZpx7cudaAEGIP@sirena.org.uk>
+ <20211119074015.kji2hzarevxgfl5l@pengutronix.de>
+From:   Javier Martinez Canillas <javierm@redhat.com>
+In-Reply-To: <20211119074015.kji2hzarevxgfl5l@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Herve,
+Hello Uwe,
 
-herve.codina@bootlin.com wrote on Fri, 19 Nov 2021 08:39:09 +0100:
+On 11/19/21 08:40, Uwe Kleine-König wrote:
 
-> Under certain circumstances, the timing settings calculated by
-> the FSMC NAND controller driver were inaccurate.
-> These settings lead to incorrect data reads or fallback to
-
-led to
-
-oneOf:
-  - fallbacks to timing mode 0
-  - fallbacks to mode 0
-but "mode X timing" does not look good :) (same below, it applies all
-over this commit log)
-
-> mode 0 timings depending on NAND chip used.
-
-depending on the NAND chip used
+[snip]
 
 > 
-> The timing computation did not take into account the following
-> constraint given in SPEAr3xx reference manual:
->   twait >= tCEA - tset*TCLK + TOUTDEL + TINDEL
-
-See below for the style request (this really is nitpicking, I'm sorry)
-
+> It affects c) only if the device tree has a device with compatible =
+> "spidev". For such a device the history is:
+>
+>   - Before 956b200a846e ("spi: spidev: Warn loudly if instantiated from
+>     DT as "spidev"") in v4.1-rc1:
+>     Just bound silently
 > 
-> Enhance the timings calculation by taking into account this
-> additional constraint.
+>   - After 956b200a846e up to 6840615f85f6 ("spi: spidev: Add SPI ID
+>     table") in v5.15-rc6:
+>     The device was automatically bound with a warning
 > 
-> The change has no impact on slow timing mode such as mode 0.
-
-This change?
-slow timing modes
-
-> Indeed, on mode 0 timing, computed values are the same with and
-> without the patch.
+>   - After 6840615f85f6:
+>     The device doesn't bind automatically, when using driver_override
+>     you get a warning.
 > 
-> The NAND that previously used the mode 0 fallback timing is
-> working in mode 3 timing.
+>   - With the proposed patch:
+>     The device cannot be bound even using driver_override
+>
 
-I believe we should be more generic:
-"NANDs which previously stayed in mode 0 because of ... can now work
-at higher speeds and NANDs which were not working at all because of the
-corrupted data returned interact at high speeds without troubles.
-
-Overall improvement on a <flash name/type>:"
-
-> The read/writes accesses performances (flash_speed tool result)
-> are the following:
->                         mode0       mode3
-> eraseblock write speed  3220 KiB/s  4511 KiB/s
-> eraseblock read speed   4491 KiB/s  7529 KiB/s
+My understanding is that there's an agreement that using "spidev" as the
+specific compatible string is something that should not be supported.
+ 
+> Not this affects also devices that use
 > 
-> The NAND where data reads were previously incorrect are correct
-> and this NAND is also working at mode 3 timing.
+> 	compatible = "myvender,devicename", "spidev";
 > 
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> ---
-> Changes v1 to v2:
-> - Commit log reword
-> - Added performance details in commit log
-> - Used #define for TOUTDEL and TINDEL and
->   Fixed coding style
-> - Used max3()
-> 
->  drivers/mtd/nand/raw/fsmc_nand.c | 32 ++++++++++++++++++++++++--------
->  1 file changed, 24 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-> index 0a6c9ef0ea8b..56b9da252346 100644
-> --- a/drivers/mtd/nand/raw/fsmc_nand.c
-> +++ b/drivers/mtd/nand/raw/fsmc_nand.c
-> @@ -94,6 +94,14 @@
->  
->  #define FSMC_BUSY_WAIT_TIMEOUT	(1 * HZ)
->  
-> +/*
-> + * According to SPEAr300 Reference Manual (RM0082)
-> + *  TOUDEL = 7ns (Output delay from the flip-flops to the board)
-> + *  TINDEL = 5ns (Input delay from the board to the flipflop)
-> + */
-> +#define TOUTDEL	7000
-> +#define TINDEL	5000
-> +
->  struct fsmc_nand_timings {
->  	u8 tclr;
->  	u8 tar;
-> @@ -278,7 +286,7 @@ static int fsmc_calc_timings(struct fsmc_nand_data *host,
->  {
->  	unsigned long hclk = clk_get_rate(host->clk);
->  	unsigned long hclkn = NSEC_PER_SEC / hclk;
-> -	u32 thiz, thold, twait, tset;
-> +	u32 thiz, thold, twait, tset, twait_min;
->  
->  	if (sdrt->tRC_min < 30000)
->  		return -EOPNOTSUPP;
-> @@ -310,13 +318,6 @@ static int fsmc_calc_timings(struct fsmc_nand_data *host,
->  	else if (tims->thold > FSMC_THOLD_MASK)
->  		tims->thold = FSMC_THOLD_MASK;
->  
-> -	twait = max(sdrt->tRP_min, sdrt->tWP_min);
-> -	tims->twait = DIV_ROUND_UP(twait / 1000, hclkn) - 1;
-> -	if (tims->twait == 0)
-> -		tims->twait = 1;
-> -	else if (tims->twait > FSMC_TWAIT_MASK)
-> -		tims->twait = FSMC_TWAIT_MASK;
-> -
->  	tset = max(sdrt->tCS_min - sdrt->tWP_min,
->  		   sdrt->tCEA_max - sdrt->tREA_max);
->  	tims->tset = DIV_ROUND_UP(tset / 1000, hclkn) - 1;
-> @@ -325,6 +326,21 @@ static int fsmc_calc_timings(struct fsmc_nand_data *host,
->  	else if (tims->tset > FSMC_TSET_MASK)
->  		tims->tset = FSMC_TSET_MASK;
->  
-> +	/*
-> +	 * According to SPEAr300 Reference Manual (RM0082) which gives more
-> +	 * information related to FSMSC timings than the SPEAr600 one (RM0305),
-> +	 *   twait >= tCEA - tset*TCLK + TOUTDEL + TINDEL
 
-It is certainly best if in plain text we follow the same spacing
-convention than in the code: (tset * TCLK). Same applies to your commit
-log.
+This is indeed a corner case and I'm less sure what the kernel should do
+about it. I just learned now that of_device_is_compatible() return value
+is not a boolean but instead a "score":
 
-> +	 */
-> +	twait_min = sdrt->tCEA_max - ((tims->tset + 1) * hclkn * 1000)
-> +		    + TOUTDEL + TINDEL;
-> +	twait = max3(sdrt->tRP_min, sdrt->tWP_min, twait_min);
-> +
-> +	tims->twait = DIV_ROUND_UP(twait / 1000, hclkn) - 1;
-> +	if (tims->twait == 0)
-> +		tims->twait = 1;
-> +	else if (tims->twait > FSMC_TWAIT_MASK)
-> +		tims->twait = FSMC_TWAIT_MASK;
-> +
->  	return 0;
->  }
->  
+https://elixir.bootlin.com/linux/latest/source/drivers/of/base.c#L455
 
-Otherwise looks good.
+I wonder if we could add another helper that returns the index instead,
+and do: of_device_is_compatible_index(spi->dev.of_node, "spidev") == 0
 
-Thanks,
-Miquèl
+Another option is to add an of_device_is_compatible_specific() helper.
+
+Or just consider DT nodes with a general "spidev" compatible string to
+also not be valid. I would lean towards this one I think.
+
+Best regards,
+-- 
+Javier Martinez Canillas
+Linux Engineering
+Red Hat
+
